@@ -1,0 +1,135 @@
+{
+  "status": "PASS_OBSERVER_POSITIVE_AND_NEGATIVE",
+  "confidence_minimum": 45,
+  "cases": [
+    {
+      "source": "/var/tmp/rock-pc-link-ui-4e31554-03/1/0017-ocr-failure.png",
+      "sha256": "7c2284ee170122bf66b77712cb76e13b8ab3471d9da45132eecdacb16076f0f5",
+      "expected_match": true,
+      "matches": [
+        {
+          "x": 148,
+          "y": 294,
+          "box": [
+            36,
+            276,
+            223,
+            36
+          ]
+        }
+      ],
+      "tokens": [
+        [
+          {
+            "text": "遠隔",
+            "confidence": 87.978607,
+            "box": [
+              36,
+              278,
+              222,
+              25
+            ]
+          },
+          {
+            "text": "の",
+            "confidence": 97.000099,
+            "box": [
+              96,
+              276,
+              21,
+              36
+            ]
+          },
+          {
+            "text": "状態",
+            "confidence": 95.99247,
+            "box": [
+              116,
+              278,
+              58,
+              25
+            ]
+          },
+          {
+            "text": "を",
+            "confidence": 96.912949,
+            "box": [
+              173,
+              276,
+              21,
+              36
+            ]
+          },
+          {
+            "text": "照合",
+            "confidence": 68.902344,
+            "box": [
+              193,
+              276,
+              49,
+              36
+            ]
+          },
+          {
+            "text": "中",
+            "confidence": 96.892235,
+            "box": [
+              241,
+              276,
+              18,
+              36
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "source": "/var/tmp/rock-pc-link-ui-4e31554-03/1/0008-connected-complete.png",
+      "sha256": "c6a4f2c611c392e606f50574d17d4013a6aa6aa63a1ff89360473a593e6df9c8",
+      "expected_match": false,
+      "matches": [],
+      "tokens": [
+        [
+          {
+            "text": "遠隔",
+            "confidence": 88.96788,
+            "box": [
+              36,
+              278,
+              121,
+              25
+            ]
+          },
+          {
+            "text": "で",
+            "confidence": 96.840042,
+            "box": [
+              96,
+              276,
+              24,
+              36
+            ]
+          },
+          {
+            "text": "完了",
+            "confidence": 96.527924,
+            "box": [
+              119,
+              278,
+              38,
+              25
+            ]
+          }
+        ]
+      ]
+    },
+    {
+      "source": "/var/tmp/rock-pc-link-ui-4e31554-03/1/0005-prepare-not-send.png",
+      "sha256": "fdbdd76dbbfca09029683141b7abccfcc7c1e22b95d2bb83d40ba3913ae2eac1",
+      "expected_match": false,
+      "matches": [],
+      "tokens": []
+    }
+  ],
+  "selects_input": false
+}

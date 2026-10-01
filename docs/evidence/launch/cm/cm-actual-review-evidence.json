@@ -1,0 +1,72 @@
+{
+  "observed_utc": "2026-09-10T20:40:34.576102+00:00",
+  "source": {
+    "path": "/Users/kaiya/Documents/Codex/2026-09-09/gi/outputs/KAIYA_PV_RockstarOS_1m09.mp4",
+    "sha256": "6b4d7a314c77139ff7b26a65b94cadf860fefdc86cd63c8513c4ffc00515ff1b",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "avg_frame_rate": "0/0",
+          "nb_frames": "3248"
+        },
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "avg_frame_rate": "24000/1001",
+          "nb_frames": "1660"
+        }
+      ],
+      "format": {
+        "duration": "69.235833",
+        "size": "136497309"
+      }
+    }
+  },
+  "audio_analysis": {
+    "method": "Existing local whisper-cli with ggml-base.en.bin, English, actual final MP4 audio extracted at 16 kHz mono PCM; machine transcription, not human listening",
+    "model_path": "/private/tmp/ggml-base.en.bin",
+    "model_sha256": "a03779c86df3323075f5e796cb2ce5029f00ec8869eee3fdfb897afe36c6d002",
+    "external_media_transfer": false,
+    "complete_audio_seconds": 69.235833
+  },
+  "visual_analysis": {
+    "method": "ffmpeg fps=2 across entire file, local Vision OCR on all 138 sampled frames, visual inspection of five full-duration sheets plus original full-size product frames; not exhaustive frame-by-frame reading",
+    "frames": 138,
+    "sample_interval_seconds": 0.5,
+    "subtitles": "No subtitle stream; no burned dialogue subtitle observed in sampled frames",
+    "small_generated_ui_text": "Some text is distorted/unreadable; do not present OCR guesses as exact copy"
+  },
+  "evidence": [
+    {
+      "path": "actual-final-audio-16k.wav",
+      "sha256": "dda6cbed7e57ecdfddb472f49e3054adbb45bf165fafbae1ceacebe08239c88f"
+    },
+    {
+      "path": "actual-final-whisper-base.txt",
+      "sha256": "78dd971f330a9262e579d960e6a1076a42ffe6c610a4833e1b5081215f245da8"
+    },
+    {
+      "path": "actual-final-whisper-base.srt",
+      "sha256": "e1a75449611ca62d145a08785b7c76884ffb117e22787059c19c142073faebdd"
+    },
+    {
+      "path": "actual-final-whisper-base.json",
+      "sha256": "87b9588fef010b45d01d951ef3bdf41f26396fb6bec8df3e576a655eaadfd217"
+    },
+    {
+      "path": "actual-frame-text.jsonl",
+      "sha256": "ca858d3c1fb3a109810705dc66389fd3b8da221d3952250216ea90286a19e84d"
+    },
+    {
+      "path": "scan-frame-text.swift",
+      "sha256": "2edc1706bb25cecd6c62387ff354e105a0f55fa8bcc9faefa5b7c65b2eaab708"
+    }
+  ],
+  "status": "CONTENT_REVIEW_COMPLETED_WITH_PRESENTATION_CONDITIONS",
+  "lch05_status": "AWAITING_OWNER_SELECTION_AND_REAL_BROWSER_PAGE_QA",
+  "source_media_modified": false
+}

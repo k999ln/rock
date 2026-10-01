@@ -1,0 +1,12 @@
+{
+  "status": "SCAFFOLD_REVIEWED_NOT_PRODUCTION_ACCEPTED",
+  "reviewedScaffoldCommit": "9af98aea7ae23741f36f1acbf6ab72ef5c431d96",
+  "fixtureTests": 22,
+  "independentReview": "PASS_NO_REMAINING_CONCRETE_FINDING",
+  "fixedFinding": "Reject PAX/GNU metadata before allocation; stream and bound USTAR content/trailer",
+  "actualArchiveSha256": "121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2",
+  "actualArchiveMembersChecked": 706,
+  "environment": "NOT_FOUND",
+  "productionSigningKey": "NOT_CONFIGURED",
+  "adminBypassSetting": "NOT_EXPOSED_BY_GITHUB_API; actual independent current-run approval required"
+}

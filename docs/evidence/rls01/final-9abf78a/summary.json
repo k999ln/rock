@@ -1,0 +1,259 @@
+{
+  "schema": "rock-final-rls01-acceptance/1",
+  "observed_utc": "2026-09-10T10:33:52.619978+00:00",
+  "status": "PASS_RLS01_LIFECYCLE_SCOPE",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "overall_preview_install_and_game_ui": "PENDING_SEPARATE_A_OS_GATES",
+  "public_release": "NOT_CLEARED",
+  "manifest_candidate_status_unchanged": true,
+  "requirements": [
+    "RQ-12",
+    "RQ-16",
+    "RQ-17"
+  ],
+  "host": {
+    "architecture": "arm64",
+    "lima": "limactl version 2.2.0",
+    "openssl": "OpenSSL 3.6.3 9 Jun 2026 (Library: OpenSSL 3.6.3 9 Jun 2026)",
+    "os": "15.7.4",
+    "python": "3.14.7"
+  },
+  "guest": {
+    "image_preflight": "PASS",
+    "linux": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "package_versions": "e2fsprogs\t1.47.2-3+b11\nopenssl\t3.5.7-1~deb13u2\npython3\t3.13.5-1\nqemu-system-arm\t1:10.0.11+ds-0+deb13u1\nqemu-utils\t1:10.0.11+ds-0+deb13u1\n",
+    "python": "3.13.5",
+    "qemu": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)"
+  },
+  "inputs": {
+    "images": "A final freeze/2 current triple plus raw base manifest, exact profile and default fixed sandbox configuration",
+    "legal_info": "A deterministic legal-info tar.gz with exact source/archive/config/Buildroot pin, complete license/source/patch inventory and repeat SHA",
+    "public_fixture_key": "RFC8032 explicitly public development signing key; independent manifest and DER fingerprints required",
+    "key_der_sha256": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+    "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+    "profile_sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb",
+    "image_sha256": {
+      "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+      "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+      "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+    },
+    "source_archive_sha256": "1fac2382110401638dd9ea6d5d5d4d67bf902b5198f5bd38a187c66508719532",
+    "base_freeze_sha256": "4376d52d7db3e9cda5357287092e9065d5c8227e5a94ede5fa434bc336629b61",
+    "legal_info_archive": {
+      "path": "work/installer-inputs-final1/final-9abf78a-legal-info-v2.tar.gz",
+      "bytes": 934132130,
+      "sha256": "7c9cdc0d32faf4006b8693d5d8dc85efd8259ae937c90274888da3f943920a0c",
+      "manifest_sha256": "51c2435711936d3dba6786ffe41ca78f4b8dafbe9901e489f9cd143167913234",
+      "status": "NOT_CLEARED",
+      "regular_files": 298,
+      "full_source_files": 1364,
+      "repeat_serialization": "IDENTICAL_SHA256_AND_BYTES"
+    }
+  },
+  "release_manifest_sha256": "e06fb8d9df292103e63f6cd56df95b189202ae0b13b6e1c578cb6eef0ffc5971",
+  "archive_sha256": "121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2",
+  "installed_release_sha256": "15737fa3315354f0e3cffff42f3c1e22f754959926045b68839b0bdcd41f4733",
+  "host_and_guest_package_members_unchanged": 706,
+  "deterministic_outputs": 9,
+  "acquisition": "owned loopback HTTP to independent empty destination; all nine hashes and downloaded bootstrap signature verified; not GitHub/public acquisition for this OS lifecycle",
+  "installation_preparation_cli_seconds": 41.87,
+  "default_vm_disk_gib": 16,
+  "native_boots": 3,
+  "local_citation": {
+    "input_bytes": 150,
+    "output_bytes": 151,
+    "job_count": 1,
+    "code_citation_retained": true
+  },
+  "financial": {
+    "authority_database_count": 7,
+    "authority_snapshot_sha256": "73aab8cb9939b73433f2fe88c5899a4d01f170f82eb44ea6784b5e967e36dd59",
+    "authority_table_count": 122,
+    "boot_logs": {
+      "/var/tmp/rock-star-desktop/preview/sessions/14e594c32328486c90eeb6e9b7435427/boot.log": {
+        "ab_health_confirmed": true,
+        "bytes": 15883,
+        "native_ui_health_ready": true,
+        "power_down": true,
+        "sha256": "6cc3451abca79b12153bfbc146ef9da9f6a42c4028722a7d03d88eca17edf694"
+      },
+      "/var/tmp/rock-star-desktop/preview/sessions/8f50d668314f4e71929f309cecf92ba5/boot.log": {
+        "ab_health_confirmed": true,
+        "bytes": 15846,
+        "native_ui_health_ready": true,
+        "power_down": true,
+        "sha256": "ffce4a585b3fe9a37c4838daf0d1b9a3a205b8a02ced7fb9aa9e5ef3a888125d"
+      },
+      "/var/tmp/rock-star-desktop/recovered/sessions/45fec14ef7604e7da7dce653bb755060/boot.log": {
+        "ab_health_confirmed": true,
+        "bytes": 15845,
+        "native_ui_health_ready": true,
+        "power_down": true,
+        "sha256": "04edab6295caafa41623ee2fe7153cd828999a55085930a852e128363bfe323f"
+      }
+    },
+    "complete_authority_unchanged_by_readback": true,
+    "games": {
+      "game-a": {
+        "account_units": {
+          "ISSUANCE_CLEARING": -10,
+          "PLAYER_PURCHASED": 10
+        },
+        "epoch": 2,
+        "epoch_receipts": 1,
+        "grants": 1
+      },
+      "game-b": {
+        "account_units": {},
+        "epoch": 2,
+        "epoch_receipts": 1,
+        "grants": 0
+      }
+    },
+    "schema": "rock-final-stopped-financial-readback/1",
+    "simulation_only": true,
+    "status": "PASS",
+    "wallet": {
+      "accounts_minor": {
+        "AVAILABLE": 9897,
+        "GAME_FEES": 3,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 100,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000
+      },
+      "bill_count": 0,
+      "exchange_states": [
+        [
+          "COMPLETED",
+          0,
+          103,
+          0
+        ]
+      ],
+      "monthly_consent": false,
+      "withdrawal_count": 0
+    }
+  },
+  "normal_shutdown_receipts": {
+    "preserved": 2,
+    "new_on_recovered": 1
+  },
+  "whole_restore": {
+    "SIGKILL_after_authority_DONE": true,
+    "partial_OS_copy_bytes": 16777216,
+    "pending_start_guards_refused": 3,
+    "same_original_intent_recovered": true,
+    "same_authority_receipt": true,
+    "all_three_disks_exact_before_recovered_boot": true,
+    "original_device_permanently_retired": true,
+    "authority_epochs": 2,
+    "historical_or_crosshost_import": false
+  },
+  "retention": {
+    "installed_frozen_guest_observer": "PASS",
+    "external_restart_tables": 71,
+    "external_restored_tables": 122,
+    "only_declared_bounded_monotonic_read_clock_columns": true,
+    "default_D6_unchanged_observer_relaxed": false
+  },
+  "removal": {
+    "schema": "rock-final-owned-removal/1",
+    "status": "PASS",
+    "force_used": false,
+    "installation_state": "REMOVED",
+    "owned_vm_directory_absent": true,
+    "export_file_hashes_after_removal": "PASS",
+    "export_files": 19,
+    "export_bytes": 1074564436,
+    "listener_pids": {
+      "8899": [
+        "77657"
+      ],
+      "8900": [],
+      "5910": []
+    },
+    "other_existing_resources_modified": false
+  },
+  "private_originals": {
+    "authority-stopped.tar.gz": {
+      "bytes": 82382,
+      "sha256": "97e34b0922160ab5dcde0f0806567b852bf7330f9ee2ff6076a1ae0ffa74f9d3"
+    },
+    "recovered-userdata.ext4": {
+      "bytes": 268435456,
+      "sha256": "8f24aaf417ddd48fa101a5a151af7fb54e235ee4b80f12c61b2bb11e72f8b90b"
+    },
+    "desktop-records.tar.gz": {
+      "bytes": 9616,
+      "sha256": "7713e3791b12b6a4d9baf0252c5e3ade40a6f5252661d32af2e22c232c382fbe"
+    }
+  },
+  "original_failures_preserved": [
+    "arm64 full native ten TLS deadline errors; exact x86_64 CI report succeeds and is bound to image freeze",
+    "legal collector original v1 helper variable shadowing failure; independent v2 full collection PASS, bytes equal",
+    "B original-retention collector filehandle.chmod typo after successful source audit; separate v2 os.fchmod full rerun PASS; installed files never changed",
+    "intermediate8bd guest read-clock observer failure remains its original result"
+  ],
+  "observed_ui_inconveniences": [
+    "Wallet synchronization can ignore Game header clicks; Hub then Game provided a usable path",
+    "Initial GameA connection response unavailable was recovered using the existing Update action",
+    "Second-boot history list preserved the completed exchange but detail clicks during synchronization were not observed to navigate; restored third boot displayed the exact detail successfully"
+  ],
+  "scope_limits": [
+    "synthetic public fixture only",
+    "manual CUA rendered UI, no automatic QMP/OCR timing claim",
+    "host tools already installed and official Debian base may have been cached",
+    "public product license remains unset; development key is not a production trust root",
+    "existing pre-task VM/viewer untouched"
+  ],
+  "evidence_sha256": {
+    "authority-after-recovered-boot.json": "aa3e6ee29a42ac55a9742db9325604b3706949905549992667fd25686545b1ce",
+    "authority-after-restart.json": "1573eb2ac2495ec3bca5503f3f7ad9c4b92e7460410f8b3e02466948a9386e92",
+    "authority-before-recovered-boot.json": "d580c5a36637a24eda1d5d0fcb1396bbebbf39ec6a022a72d290d23b4e039758",
+    "authority-before-restart.json": "536b6137645d0526372e3472a1fd93c96a37a3237c115f63c672397f570d31a6",
+    "authority-recovered-comparison.json": "3e6ebda5b225b21903b9c51ed318f5eeb6f3b25a1efdb7f19f779da68aa353de",
+    "authority-restart-comparison.json": "4f35d116701222e17eea04afcdaa69ee998d2dfacd1aada38f6612d09f55ba38",
+    "backup.log": "e55de57b1caed29fe46468efde08e26894e3595d8614a46e634e2bf5f33484cc",
+    "business-observer.py": "c5b3f520a3502afc901ed72776c7ecf69349db6fb8c3954d90d595bd923ff082",
+    "business-readback.json": "15dbe3e6c40e7c89e2e200e7ea16c43004120310322ffbb312935ec97902a141",
+    "capacity-after-install.json": "4d54a376f8a1905526ee9b5fb93352e258a95e5f3d9b9635441dab182ab8e66d",
+    "capacity-after-recovery.json": "14bc8164f8e1b351e47b10f947b207f17199871fd57fe07e17c643825bd7850e",
+    "capacity-after-removal.json": "5c13aa31d7fff29fd487deef46bc7934a0fc89d30b8e026b220b31c3dcbc7b7c",
+    "capacity-before-backup.json": "8557fc28309980705fb2250a542f0613843f13bf14befb6896fe60357e72086c",
+    "capacity-before-install.json": "2545b8dcde0b1f285d66fa7f972de0f0eb641dfdd0d6c60edc0a1b55f0c4966c",
+    "capacity-before-package.json": "4178f5efc8112de116340b7df4ac14438f36d57466bec89615afad704f4fe0d4",
+    "capacity-before-restore.json": "e039beb56539832fc156b1fc76a178b87f5e36d8984939536b21b036ba84adb0",
+    "capacity-observer.py": "44b2e708ea1687aacfed480e06aa92cc14e6a84a6618c64ea051866e9797f3c8",
+    "citation-observer.py": "d11acceeadfb55bbf3aee4b0a5f88c0a0ee90cfb6427ec31e8df624fe9e520ff",
+    "citation-readback.json": "ea55b1894480cbb553ccbbc99876222308a781e03518fe9447cfe957d3016061",
+    "collector-v1-failure.log": "e7d620cf77b8c4c5669b21d468c4300c5be941e136a6e50e6dea985f1f6e2598",
+    "collector-v1.py": "428589cbc70e6acca36a30cc74200d59ec2929de8a6c38bc7495dd7f171341b6",
+    "collector-v2.log": "3db778b8341fb79a0d1d9c31a3bbe4895118a8d324c4e4ef0aed97ea41dd14d4",
+    "collector-v2.py": "d078520f6fce128abfcbcdaa084703521257348146c9966369a6ebe3eae89df5",
+    "fault-injection.py": "ea35048653c1cd41957f0c70098cc1b8127aae4add44ae7b60d81c15757e573e",
+    "financial-observer.py": "185e75950e329d22191921434b8d369a6d7e2b69628955b1e85bcc45589f69c7",
+    "financial-readback.json": "73efeb1fa4525c1472ea4e494b877bd1464cb4982395b9e4bc47a27d7c96cd5b",
+    "initial-empty-authority.json": "649c9c4ac63030218bc6996161100ca7ac82a46e17cf6cc810c65db7a64d82f7",
+    "install.log": "65556b75fc46b168ddc790d7d2bc002ccc8458f32fb378421a19ef16ba04fa8a",
+    "interruption.json": "e3d243fd8221ff968af4646100ae22fb71fff2f6547ed1341827c9d902c2f400",
+    "legal-inspection.json": "dac9a70fbb0bab6b2b50a931766e69de917a821241dbf13d32779cb1f52635ac",
+    "legal-inspector.py": "50612f1ba87ab0b2fd5800d219bd4163cfb0101f3ae0f11aee1d7ef802d969a0",
+    "loopback-acquisition.json": "42b4db4d5dd4e17a6095a84c703ab6851ff7f571d473292a478a1ec5f81c2915",
+    "loopback-driver.py": "b242d95cd47e12116fe16479669c98abf160d6074a7e1e81a245bfb4d618ac49",
+    "package-repeat.json": "1a8bf521628065716627ab5ee75de18471099cd97f697399fd1708eb0cef3741",
+    "pending-guards.json": "b89870e42996ce9dce1899043a9fb75ed4bfd52338494c2ba595e5ee594b46df",
+    "pending-probe.py": "c7dc29ecdea2162aa33cefa76261c0168e391f3bd59c50554dfa7dfc7a4c2f59",
+    "plan.json": "b2a0a15c3301f6c7370f6ea59a99aa1546be38e33812333fe9cfacca995c26c8",
+    "preserved-originals.json": "be4be6ba6186c5570642dcf0733aa1304490c12d17b3593b24c6c95917424d80",
+    "recovery-probe.py": "8ba5d9b0714558fdbe490ad4bf275cf3a9c413fa95089cef4798c016a31e70d5",
+    "recovery.json": "2be81911159fed31ef5755245e947a2046a784d20f0d53568761d1245d4419be",
+    "removal.json": "cf7a0f2d4110875b07200b68468448b43fec6e89ba856190f64f3e61bf1cd109",
+    "remove.log": "9025961a1c4ee3a4f27815b92a7d7df40030435d7a3f25a520119ff61e071fb3",
+    "restore-recovery.log": "40747c202e2015fba68f09554eb1c1e2eb8112cab38fc998f0382d4e7622dd72",
+    "stop1.log": "6ccdf5540664c9a63453990fa092a0b10eb6327f808b69ab77037c950b8ceff5",
+    "stop2.log": "6ccdf5540664c9a63453990fa092a0b10eb6327f808b69ab77037c950b8ceff5",
+    "stop3.log": "6ccdf5540664c9a63453990fa092a0b10eb6327f808b69ab77037c950b8ceff5",
+    "ui-observation.json": "632f4a2033a2d1741f8d60611cc912386074a797f1efc212ea011c1fb482fcaa"
+  }
+}

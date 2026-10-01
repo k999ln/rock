@@ -1,0 +1,425 @@
+{
+  "schema": "rock-final-linux-readonly-closure/2",
+  "started_utc": "2026-09-10T13:18:01.458781+00:00",
+  "status": "PASS_READONLY_CLOSURE",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "source_files_verified": 1364,
+  "generated_files_outside_frozen_source_inventory": [
+    {
+      "path": "systems/rock-star-os/artifacts/os/Image",
+      "bytes": 13767168,
+      "mtime_ns": 1789033198844958364
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/SHA256SUMS",
+      "bytes": 231,
+      "mtime_ns": 1789033202196448203
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/build.log",
+      "bytes": 188327,
+      "mtime_ns": 1789033202212445770
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/buildroot.config",
+      "bytes": 170192,
+      "mtime_ns": 1789033198964940085
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/freeze-manifest.json",
+      "bytes": 174967,
+      "mtime_ns": 1789033204672071829
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/linux.config",
+      "bytes": 111120,
+      "mtime_ns": 1789033198964940085
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/rootfs.ext4",
+      "bytes": 402653184,
+      "mtime_ns": 1789033198964940085
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/source-lock.json",
+      "bytes": 1871,
+      "mtime_ns": 1789033198968939476
+    },
+    {
+      "path": "systems/rock-star-os/artifacts/os/stage0.cpio.gz",
+      "bytes": 10344480,
+      "mtime_ns": 1789033198784967504
+    },
+    {
+      "path": "systems/rock-star-os/os/atm/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 469,
+      "mtime_ns": 1789038416712828468
+    },
+    {
+      "path": "systems/rock-star-os/os/atm/__pycache__/simulator.cpython-313.pyc",
+      "bytes": 33905,
+      "mtime_ns": 1789038416712828468
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 260,
+      "mtime_ns": 1789038416596830900
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/device.cpython-313.pyc",
+      "bytes": 53860,
+      "mtime_ns": 1789038416596830900
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/protocol.cpython-313.pyc",
+      "bytes": 7037,
+      "mtime_ns": 1789038416604830732
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/store.cpython-313.pyc",
+      "bytes": 48369,
+      "mtime_ns": 1789038416604830732
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/__pycache__/wallet_bridge.cpython-313.pyc",
+      "bytes": 10711,
+      "mtime_ns": 1789038416608830648
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 264,
+      "mtime_ns": 1789038416576831319
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/client.cpython-313.pyc",
+      "bytes": 35794,
+      "mtime_ns": 1789038416632830145
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/connections.cpython-313.pyc",
+      "bytes": 56087,
+      "mtime_ns": 1789038416636830061
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/current_restore.cpython-313.pyc",
+      "bytes": 38435,
+      "mtime_ns": 1789038416644829893
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/device_client.cpython-313.pyc",
+      "bytes": 13859,
+      "mtime_ns": 1789038416596830900
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_authority.cpython-313.pyc",
+      "bytes": 16134,
+      "mtime_ns": 1789038416640829977
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_gateway.cpython-313.pyc",
+      "bytes": 5756,
+      "mtime_ns": 1789038416792826791
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_ledger.cpython-313.pyc",
+      "bytes": 23467,
+      "mtime_ns": 1789038416640829977
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_protocol.cpython-313.pyc",
+      "bytes": 23557,
+      "mtime_ns": 1789038416624830313
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_restore.cpython-313.pyc",
+      "bytes": 6796,
+      "mtime_ns": 1789038416700828720
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_server.cpython-313.pyc",
+      "bytes": 6832,
+      "mtime_ns": 1789038416652829726
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_service.cpython-313.pyc",
+      "bytes": 35463,
+      "mtime_ns": 1789038416796826707
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_signer.cpython-313.pyc",
+      "bytes": 3372,
+      "mtime_ns": 1789038416640829977
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/exchange_worker.cpython-313.pyc",
+      "bytes": 14276,
+      "mtime_ns": 1789038416640829977
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/fixture.cpython-313.pyc",
+      "bytes": 11962,
+      "mtime_ns": 1789038416636830061
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/http.cpython-313.pyc",
+      "bytes": 11827,
+      "mtime_ns": 1789038416628830229
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/protocol.cpython-313.pyc",
+      "bytes": 54433,
+      "mtime_ns": 1789038416580831235
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/reference_sdk.cpython-313.pyc",
+      "bytes": 58854,
+      "mtime_ns": 1789038416628830229
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/sandbox.cpython-313.pyc",
+      "bytes": 40227,
+      "mtime_ns": 1789038416696828803
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/sandbox_backup.cpython-313.pyc",
+      "bytes": 22154,
+      "mtime_ns": 1789038416696828803
+    },
+    {
+      "path": "systems/rock-star-os/os/game_exchange/__pycache__/storage.cpython-313.pyc",
+      "bytes": 12419,
+      "mtime_ns": 1789038416632830145
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 261,
+      "mtime_ns": 1789038416676829223
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/device.cpython-313.pyc",
+      "bytes": 19518,
+      "mtime_ns": 1789038416680829139
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/onboarding.cpython-313.pyc",
+      "bytes": 13931,
+      "mtime_ns": 1789038416684829055
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/release.cpython-313.pyc",
+      "bytes": 1094,
+      "mtime_ns": 1789038416684829055
+    },
+    {
+      "path": "systems/rock-star-os/os/operations/__pycache__/state.cpython-313.pyc",
+      "bytes": 16068,
+      "mtime_ns": 1789038416688828971
+    },
+    {
+      "path": "systems/rock-star-os/os/platform/__pycache__/registry_control.cpython-313.pyc",
+      "bytes": 16320,
+      "mtime_ns": 1789038416672829306
+    },
+    {
+      "path": "systems/rock-star-os/os/platform/__pycache__/runner_control.cpython-313.pyc",
+      "bytes": 47466,
+      "mtime_ns": 1789038416676829223
+    },
+    {
+      "path": "systems/rock-star-os/os/platform/__pycache__/service.cpython-313.pyc",
+      "bytes": 56403,
+      "mtime_ns": 1789038416668829390
+    },
+    {
+      "path": "systems/rock-star-os/os/platform/__pycache__/wallet_view.cpython-313.pyc",
+      "bytes": 7811,
+      "mtime_ns": 1789038416688828971
+    },
+    {
+      "path": "systems/rock-star-os/os/registry/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 258,
+      "mtime_ns": 1789038416620830396
+    },
+    {
+      "path": "systems/rock-star-os/os/registry/__pycache__/common.cpython-313.pyc",
+      "bytes": 15252,
+      "mtime_ns": 1789038416620830396
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 251,
+      "mtime_ns": 1789038416620830396
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/__pycache__/client.cpython-313.pyc",
+      "bytes": 7348,
+      "mtime_ns": 1789038416676829223
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/__pycache__/protocol.cpython-313.pyc",
+      "bytes": 8406,
+      "mtime_ns": 1789038416624830313
+    },
+    {
+      "path": "systems/rock-star-os/os/runner/__pycache__/transport.cpython-313.pyc",
+      "bytes": 12867,
+      "mtime_ns": 1789038416624830313
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 525,
+      "mtime_ns": 1789038416680829139
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/__pycache__/controller.cpython-313.pyc",
+      "bytes": 22039,
+      "mtime_ns": 1789038416680829139
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/__pycache__/os_client.cpython-313.pyc",
+      "bytes": 14812,
+      "mtime_ns": 1789038416684829055
+    },
+    {
+      "path": "systems/rock-star-os/os/service_access/__pycache__/status.cpython-313.pyc",
+      "bytes": 10130,
+      "mtime_ns": 1789038416684829055
+    },
+    {
+      "path": "systems/rock-star-os/os/update/__pycache__/rock_update.cpython-313.pyc",
+      "bytes": 34737,
+      "mtime_ns": 1789038416688828971
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_auth/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 451,
+      "mtime_ns": 1789038416584831151
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_auth/__pycache__/protocol.cpython-313.pyc",
+      "bytes": 27615,
+      "mtime_ns": 1789038416584831151
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_auth/__pycache__/service.cpython-313.pyc",
+      "bytes": 41197,
+      "mtime_ns": 1789038416720828300
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 265,
+      "mtime_ns": 1789038416608830648
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/authority_fence.cpython-313.pyc",
+      "bytes": 58253,
+      "mtime_ns": 1789038416648829810
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/client.cpython-313.pyc",
+      "bytes": 47503,
+      "mtime_ns": 1789038416612830564
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/contract_runtime.cpython-313.pyc",
+      "bytes": 53027,
+      "mtime_ns": 1789038416660829558
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/owner_router.cpython-313.pyc",
+      "bytes": 32285,
+      "mtime_ns": 1789038416692828887
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/runtime_contracts.cpython-313.pyc",
+      "bytes": 6977,
+      "mtime_ns": 1789038416648829810
+    },
+    {
+      "path": "systems/rock-star-os/os/wallet_backend/__pycache__/server.cpython-313.pyc",
+      "bytes": 35641,
+      "mtime_ns": 1789038416652829726
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/__init__.cpython-313.pyc",
+      "bytes": 282,
+      "mtime_ns": 1789038416588831067
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/deadline.cpython-313.pyc",
+      "bytes": 3126,
+      "mtime_ns": 1789038416604830732
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/hub.cpython-313.pyc",
+      "bytes": 26071,
+      "mtime_ns": 1789038416668829390
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/packages.cpython-313.pyc",
+      "bytes": 16302,
+      "mtime_ns": 1789038416588831067
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/recipe_worker.cpython-313.pyc",
+      "bytes": 17985,
+      "mtime_ns": 1789038416592830983
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/storage.cpython-313.pyc",
+      "bytes": 9519,
+      "mtime_ns": 1789038416600830816
+    },
+    {
+      "path": "systems/rock-star-os/src/blackberryrock/__pycache__/wallet.cpython-313.pyc",
+      "bytes": 39873,
+      "mtime_ns": 1789038416600830816
+    }
+  ],
+  "source_mismatches": [],
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "profile_sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "c_device": {
+    "name": "rock-final-c-ui",
+    "config": "/var/tmp/rock-release-os-20260910/final-9abf78a-empty-authority/root-c-device.json",
+    "config_sha256": "1fbd4924c545823b313a6852b428aadce3f9ef2bc1dc11d57b2d078fb7316b8f",
+    "state": "/var/tmp/rock-star-desktop/rock-final-c-ui",
+    "running": false,
+    "existing_device_lock_available": true
+  },
+  "authority": {
+    "config": "/var/tmp/rockstaros-preview-authority/sandbox.json",
+    "config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+    "status": {
+      "schema": "rock-game-sandbox-status/1",
+      "running": false,
+      "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+      "config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+      "pid": null,
+      "simulation_only": true
+    },
+    "all_existing_lifetime_locks_available": true
+  },
+  "qemu_and_unittest_processes": [],
+  "free_ports": [
+    9443,
+    9444,
+    9641,
+    9642,
+    9643
+  ],
+  "observed_config_and_session_metadata_unchanged": true,
+  "source_and_image_mutations": 0,
+  "authority_and_userdata_mutations": 0,
+  "guest_start_stop_actions": 0,
+  "financial_operations": 0,
+  "uid": 501,
+  "gid": 1000,
+  "scope": "Current C has intentional synthetic nonzero state after acceptance; this check verifies stop/fence and frozen bytes, not an empty initial state or new transactional acceptance.",
+  "finished_utc": "2026-09-10T13:18:02.523326+00:00"
+}

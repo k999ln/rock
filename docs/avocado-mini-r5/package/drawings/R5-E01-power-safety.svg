@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1000" viewBox="0 0 1620 1000"><rect width="1620" height="1000" fill="white"/>
+<rect x="45" y="105" width="345" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="217.5" y="174.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">外部低電圧給電</text>
+<text x="217.5" y="215.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">入力保護と変換</text>
+<rect x="600" y="105" width="405" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="802.5" y="174.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">主SoC・保存</text>
+<text x="802.5" y="215.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">センサー・通信</text>
+<rect x="1230" y="105" width="345" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="1402.5" y="174.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">表示駆動系</text>
+<text x="1402.5" y="215.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">未選定</text>
+<polyline points="390,195 600,195" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="600,195 590.0950818741205,199.78462087522354 590.0950818741205,190.21537912477646" fill="#333"/>
+<polyline points="495,195 495,60 1410,60" fill="none" stroke="#333" stroke-width="2"/>
+<polyline points="1410,60 1410,105" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1410,105 1405.2153791247765,95.09508187412055 1414.7846208752235,95.09508187412055" fill="#333"/>
+<rect x="45" y="495" width="345" height="210" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="217.5" y="559.5" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">物理停止</text>
+<text x="217.5" y="600.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">温度・姿勢・蓋</text>
+<text x="217.5" y="640.5" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">採用方式で追加</text>
+<rect x="600" y="495" width="405" height="210" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="802.5" y="579.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">独立した安全監視</text>
+<text x="802.5" y="620.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">出力許可・故障保持</text>
+<rect x="1230" y="495" width="345" height="210" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1402.5" y="579.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">電源遮断／遮光</text>
+<text x="1402.5" y="620.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">無励磁で安全側</text>
+<polyline points="390,600 600,600" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="600,600 590.0950818741205,604.7846208752235 590.0950818741205,595.2153791247765" fill="#333"/>
+<polyline points="1005,600 1230,600" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1230,600 1220.0950818741205,604.7846208752235 1220.0950818741205,595.2153791247765" fill="#333"/>
+<polyline points="1410,495 1410,285" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1410,285 1414.7846208752235,294.9049181258794 1405.2153791247765,294.9049181258794" fill="#333"/>
+<polyline points="795,285 795,495" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="795,495 790.2153791247765,485.0950818741206 799.7846208752235,485.0950818741206" fill="#333"/>
+<rect x="739.0" y="339.50000000000006" width="112.0" height="33.0" fill="white"/>
+<text x="795.0" y="355.50000000000006" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="25.0" fill="#111111">正常監視</text>
+<text x="810" y="849.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">OS・通信の故障で危険出力を継続させない</text>
+<text x="810" y="890.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">検出時間と遮断時間は光学危険分析から確定する</text>
+<text x="810" y="960.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="25.0" fill="#111111">R5 E01  安全ブロック図  回路・部品の安全認証を示さない</text>
+</svg>

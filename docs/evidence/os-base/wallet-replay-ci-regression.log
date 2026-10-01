@@ -1,0 +1,14 @@
+make: Entering directory '/var/tmp/rock-wallet-replay-test/work/native-root-ui/ui'
+rm -f rock-ui *.o rock-ui-test rock-ipc-test rock-ui-health-test
+make: Leaving directory '/var/tmp/rock-wallet-replay-test/work/native-root-ui/ui'
+make: Entering directory '/var/tmp/rock-wallet-replay-test/work/native-root-ui/ui'
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread -DROCK_UI_HEALTH_TEST  -o rock-ui-health-test test_health.c health.c
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread -I/usr/include/cairo -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/pixman-1 -I/usr/include/json-c   -c -o test_ui.o test_ui.c
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread -I/usr/include/cairo -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/pixman-1 -I/usr/include/json-c   -c -o ui.o ui.c
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread -I/usr/include/cairo -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/pixman-1 -I/usr/include/json-c   -c -o device.o device.c
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread -I/usr/include/cairo -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/pixman-1 -I/usr/include/json-c   -c -o ipc.o ipc.c
+cc -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong -pthread  -o rock-ui-test test_ui.o ui.o device.o ipc.o -lcairo -lfreetype -ljson-c  -lm -pthread
+make: Leaving directory '/var/tmp/rock-wallet-replay-test/work/native-root-ui/ui'
+PASS wallet: real C inputs, authenticated Wallet, fourteen frames, closed synthetic balance
+PASS atm: real C inputs, authenticated Wallet, fourteen frames, closed synthetic balance
+PASS seven stale coordinates and missing PageDown rejected before wrong-action dispatch

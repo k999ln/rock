@@ -1,0 +1,56 @@
+{
+  "authority_database_count": 5,
+  "authority_snapshot_sha256": "7c50142f33066c50969c917baac1b2f378ec56edc737096db5d99cf6f0edef5c",
+  "authority_table_count": 71,
+  "complete_authority_unchanged_by_readback": true,
+  "games": {
+    "game-a": {
+      "account_units": {
+        "ISSUANCE_CLEARING": -10,
+        "PLAYER_PURCHASED": 10
+      },
+      "epoch": 1,
+      "epoch_receipts": 0,
+      "grants": 1
+    },
+    "game-b": {
+      "account_units": {
+        "ISSUANCE_CLEARING": -10,
+        "PLAYER_PURCHASED": 10
+      },
+      "epoch": 1,
+      "epoch_receipts": 0,
+      "grants": 1
+    }
+  },
+  "schema": "rock-final-stopped-financial-readback/1",
+  "simulation_only": true,
+  "status": "PASS",
+  "wallet": {
+    "accounts_minor": {
+      "AVAILABLE": 9794,
+      "GAME_FEES": 6,
+      "GAME_HOLD": 0,
+      "GAME_PURCHASES": 200,
+      "PENDING_SETTLEMENT": 0,
+      "SALE_CLEARING": -10000
+    },
+    "bill_count": 0,
+    "exchange_states": [
+      [
+        "COMPLETED",
+        0,
+        103,
+        0
+      ],
+      [
+        "COMPLETED",
+        0,
+        103,
+        0
+      ]
+    ],
+    "monthly_consent": false,
+    "withdrawal_count": 0
+  }
+}

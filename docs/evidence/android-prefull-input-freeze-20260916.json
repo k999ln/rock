@@ -1,0 +1,52 @@
+{
+  "schema": "avocadoos-android-prefull-input-freeze-evidence/1",
+  "recordedAt": "2026-09-16",
+  "target": "Google Pixel 10 / frankel / GL066",
+  "result": "VALIDATORS_PASS_ACTUAL_EXTERNAL_INPUTS_PENDING",
+  "officialSourceReview": {
+    "factoryPage": "https://developers.google.com/android/images",
+    "fullOtaPage": "https://developers.google.com/android/ota",
+    "reviewedAt": "2026-09-16",
+    "ownerTermsAcceptedByThisWork": false,
+    "artifactsDownloadedByThisWork": false,
+    "factoryImageErasesData": true,
+    "fullOtaNormallyAvoidsUnlockAndWipe": true,
+    "pixel10May2026AntiRollbackWarningConfirmed": true,
+    "matchingFullOtaBothSlotPreparationRequired": true
+  },
+  "implementation": {
+    "googleRecoveryPairActualByteHashing": true,
+    "sameFrankelBuildZipInspection": true,
+    "detachedDownloadOnlyOwnerTermsRecord": true,
+    "officialDownloadUrlAndPublishedSha256Binding": true,
+    "vendorTreeDeterministicInventory": true,
+    "vendorTreePostFreezeReverification": true,
+    "adevtoolRevisionBinding": true,
+    "signingPolicyAndProcedureHashFreeze": true,
+    "phoneBuildEntryIntegration": true
+  },
+  "verification": {
+    "syntheticTests": "PASS_9_OF_9",
+    "actualGoogleFactoryImage": "NOT_PROVIDED",
+    "actualGoogleFullOta": "NOT_PROVIDED",
+    "actualGeneratedVendorTree": "NOT_AVAILABLE_BEFORE_SOURCE_SYNC_AND_ADEVTOOL",
+    "actualHsm": "NOT_PROVISIONED",
+    "actualSigningBridges": "NOT_VERIFIED"
+  },
+  "safety": {
+    "downloadsGoogleArtifacts": false,
+    "acceptsTermsForOwner": false,
+    "createsOrReadsPrivateKeys": false,
+    "runsFullOsBuild": false,
+    "unlocksOrFlashesDevice": false,
+    "authorizesWipe": false
+  },
+  "sources": [
+    "scripts/freeze-phone-build-inputs.py",
+    "tests/test_freeze_phone_build_inputs.py",
+    "scripts/build-phone-bringup.sh",
+    "data/android-stock-recovery-policy.json",
+    "data/android-signing-custody-policy.json",
+    "os/physical/frankel-source-lock.json"
+  ]
+}

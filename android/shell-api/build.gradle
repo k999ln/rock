@@ -1,0 +1,8 @@
+plugins { id 'com.android.library' }
+android {
+    namespace 'dev.rock.shellapi'
+    compileSdk 35
+    defaultConfig { minSdk 35 }
+    buildFeatures { aidl true }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_11; targetCompatibility JavaVersion.VERSION_11 }
+}

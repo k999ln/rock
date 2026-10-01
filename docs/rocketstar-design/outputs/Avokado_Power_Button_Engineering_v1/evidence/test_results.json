@@ -1,0 +1,142 @@
+{
+  "date": "2026-09-24",
+  "python": "3.14.7",
+  "scope": "Deterministic SIMULATION of proposed power-button behavior. No MCU/OS/power-switch hardware testing.",
+  "passed": 32,
+  "total": 32,
+  "cases": [
+    {
+      "id": "test_power_button.BehaviorTests.test_booting_short_is_not_replayed_after_ready",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_bounce_filter_emits_one_down_and_one_up",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_clock_reversal_cannot_extend_or_replay_gesture",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_confirmation_while_holding_never_reboots",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_double_from_standby_is_one_home_action",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_double_goes_home_without_transient_standby",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_duplicate_down_does_not_reset_force_timer",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_exact_double_deadline_is_two_single_gestures",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_force_threshold_emits_once_and_does_not_claim_off",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_fresh_hold_during_booting_can_request_force_off",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_hold_during_click_suppression_still_has_emergency_path",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_holding_past_three_does_not_run_normal_off_before_release",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_incomplete_long_has_no_short_fallback",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_invalid_very_short_second_does_not_lose_first_single",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_long_release_requests_shutdown_without_cutting_power",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_no_external_power_means_no_boot_action",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_off_double_is_absorbed_even_if_host_is_ready_quickly",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_off_initial_press_starts_once_and_never_forces_off",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_off_is_recorded_only_on_device_confirmation",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_power_restore_with_held_button_needs_release_then_new_press",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_second_down_freezes_single_until_its_release",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_second_press_becoming_long_cancels_first_single",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_shutdown_ack_then_short_does_not_restart",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_shutdown_has_no_automatic_force_timeout",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_single_waits_for_double_window_and_then_enters_standby",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_stale_duplicate_or_wrong_session_events_are_rejected",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_standby_single_resumes_without_capture",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_transition_origin_long_is_not_promoted_after_host_ready",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_transition_origin_short_is_not_promoted_after_host_ready",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_triple_click_does_not_toggle_after_double",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_unstable_signal_is_not_a_press",
+      "passed": true
+    },
+    {
+      "id": "test_power_button.BehaviorTests.test_update_blocks_normal_gestures_but_not_fresh_emergency_hold",
+      "passed": true
+    }
+  ],
+  "sourceSha256": {
+    "power_button_model.py": "33793aa245f58593adfe99490e8556173a16036e21f6c1c4fcb0d374996f2d83",
+    "test_power_button.py": "60db561f90852620bc64eaaef2872b03478dff3a2bf611f7c74261764098811d",
+    "button_behavior.json": "c1173138c21edf7b192bbaf054145b6fe7f8733fe1e7f31bdf9b3c9b2bd8f9ec"
+  }
+}

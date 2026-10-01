@@ -1,0 +1,51 @@
+{
+  "schema": "rockstaros-installer-template-probe/1",
+  "scope": "fresh Lima template/dependencies only; no RockstarOS image/Hub/Wallet/Game acceptance",
+  "source_commit": "d844ff81d582d53a7f9d40b63fe79316d119b7b3",
+  "runtime_working_tree_changes": true,
+  "template_sha256": "79cecfcfc03a1009875b309d71f4257ad8ddf9806ce1830a17ac5feefd7639b2",
+  "lima_config_sha256": "79cecfcfc03a1009875b309d71f4257ad8ddf9806ce1830a17ac5feefd7639b2",
+  "vm_identity_sha256": "731bbcad13fc569d6ddf84cc731e13b5c41bd680bfd12914cc0bcbbba034a324",
+  "log_sha256": "9c65d2cabbcd6f69393f42d2e1f7d823585100851cbf3a4d9a7362ffb54e0969",
+  "base_download_cache_reused": true,
+  "old_vm_or_userdata_reused": false,
+  "started_utc": "2026-09-10T06:09:04Z",
+  "ready_utc": "2026-09-10T06:09:48Z",
+  "elapsed_create_seconds": 44,
+  "guest_check_exit": 0,
+  "guest": {
+    "status": "PASS",
+    "read_only_write_errno": 30,
+    "host_users_absent": true,
+    "virtiofs_mounts": [
+      [
+        "/mnt/rockstaros-package",
+        "ro,relatime"
+      ]
+    ],
+    "protected_copy_readable": true,
+    "qemu": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)",
+    "package_versions": "e2fsprogs\t1.47.2-3+b11\nopenssl\t3.5.7-1~deb13u2\npython3\t3.13.5-1\nqemu-system-arm\t1:10.0.11+ds-0+deb13u1\nqemu-utils\t1:10.0.11+ds-0+deb13u1\n",
+    "linux": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+  },
+  "delete": {
+    "status": "PASS",
+    "stop_exit": 0,
+    "delete_exit": 0,
+    "elapsed_seconds": 3.21,
+    "force_used": false,
+    "vm_directory_absent": true,
+    "host_payload_preserved": true
+  },
+  "linux_tests": {
+    "exit_code": 0,
+    "output": ".............................\n----------------------------------------------------------------------\nRan 29 tests in 0.161s\n\nOK\n",
+    "input_sha256": {
+      "os/desktop/preview.py": "bf456e1446ee473f79652f535e647f50787b45dc7fd878b845d0061d341ce421",
+      "os/desktop/package_preview.py": "01b72c92672e34a9862aef1a6887d736aeb8ca10ad1c8f65f676a96076801776",
+      "os/desktop/browser_server.py": "40556b33337027dcf25b222f62017f3cc145de7eba4a7413c2ab69c227fc030b",
+      "tests/test_os_desktop_preview.py": "4076a6ab18dace49855f459712e2c00e5424747f1590e8aea3ba2a66b54bb33f"
+    },
+    "host": "fresh Debian13.6 arm64 VM; lifecycle calls mocked in this suite"
+  }
+}

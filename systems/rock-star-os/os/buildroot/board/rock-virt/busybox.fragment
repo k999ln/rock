@@ -1,0 +1,24 @@
+CONFIG_START_STOP_DAEMON=y
+CONFIG_FEATURE_START_STOP_DAEMON_LONG_OPTIONS=y
+CONFIG_FEATURE_START_STOP_DAEMON_FANCY=y
+CONFIG_TIMEOUT=y
+CONFIG_SETSID=y
+CONFIG_SETUIDGID=y
+CONFIG_FEATURE_MOUNT_FLAGS=y
+CONFIG_MOUNTPOINT=y
+CONFIG_SWITCH_ROOT=y
+CONFIG_POWEROFF=y
+CONFIG_SEQ=y
+CONFIG_CHROOT=y
+CONFIG_UDHCPC=y
+CONFIG_IFCONFIG=y
+CONFIG_ROUTE=y
+# Exclude the affected awk/ash applets. The OS uses finite recipes and POSIX
+# startup scripts; mount validation is supplied by rock-mount-check.
+# CONFIG_AWK is not set
+# CONFIG_ASH is not set
+# CONFIG_SH_IS_ASH is not set
+# CONFIG_HUSH is not set
+# CONFIG_SH_IS_HUSH is not set
+CONFIG_SH_IS_NONE=y
+# /bin/sh is supplied by Dash, including the required set -u protection.

@@ -1,0 +1,29 @@
+{
+  "schema": "rock-final-c-citation-update-and-demo-plan/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "driver_sha256": "230b5e61a6c3b7cf921a8443c144874f4af03fbaffb177c4ac909f176b194ea7",
+  "diagnostic_observer_commit": "664f67a5e979299b21b1ca801e8ea771b20ca4ce",
+  "diagnostic_observer_sha256": "58edfb30d45cde34367db2ba8e05b79d787e4040f9cd6c7c4f375dbaa06223df",
+  "update_boundary_sha256": "2749146b9a83b35f019fd17f2e5deaa22b9cc82fb9393e3260fc05356e7246fc",
+  "new_output": "/var/tmp/rock-final-c-9abf78a-continuation-03",
+  "process_umask": "0077",
+  "reused_completed_stages": [
+    "game",
+    "audit",
+    "financial"
+  ],
+  "new_stages": [
+    "citations --existing-local-citation",
+    "demo"
+  ],
+  "new_financial_actions": 0,
+  "changes": "Only host baseline-gated v1.1.0 update selector replaces nonexistent install control. Original 3 cycles, deadlines, signatures, isolated execution, original-key recovery, complete retained data checks, normal shutdown and demo remain unchanged.",
+  "original_failures_retained": [
+    "original v3 umask preflight, guest0",
+    "original v4 installed-label mismatch, guest1 normally closed separately",
+    "normal-close final immediate port guard TIME_WAIT; original FAIL retained and new bind proof passes"
+  ],
+  "film": "Original unmodified 9ab 90-second actual QMP capture on same device",
+  "prior_unexecuted_driver_sha256": "613f2cbf8f1f4ec6b67245b93605f54a0204f666438469a2050c9611d5e8144d",
+  "pre_execution_correction": "Fixed a placeholder substitution inside the literal expected boundary status before any execution; original unused draft preserved."
+}

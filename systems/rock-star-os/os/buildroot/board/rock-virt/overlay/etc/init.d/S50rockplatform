@@ -1,0 +1,44 @@
+#!/bin/sh
+set -eu
+case "${1:-start}" in
+  start)
+    mountpoint -q /data
+    mkdir -p /data/platform /data/wallet /run/rock-platform /run/rock-wallet /var/log
+    chown 1002:1002 /data/platform
+    chown 1003:1003 /data/wallet
+    chmod 0700 /data/platform /data/wallet
+    chown 1002:1000 /run/rock-platform
+    chown 1003:1002 /run/rock-wallet
+    chmod 0750 /run/rock-platform /run/rock-wallet
+    touch /var/log/rock-wallet.log /var/log/rock-platform.log
+    chown 1003:1003 /var/log/rock-wallet.log
+    chown 1002:1002 /var/log/rock-platform.log
+    chmod 0600 /var/log/rock-wallet.log /var/log/rock-platform.log
+    start-stop-daemon --start --background --make-pidfile --pidfile /run/rock-wallet.pid --chuid rock-wallet:rock-wallet --exec /usr/libexec/rock-wallet-launch
+    start-stop-daemon --start --background --make-pidfile --pidfile /run/rock-platform.pid --chuid rock-platform:rock-platform --exec /usr/libexec/rock-platform-launch
+    ready=0
+    for attempt in $(seq 1 20); do
+      if /usr/libexec/rock-platform-health 2>/dev/null; then ready=1; break; fi
+      sleep 1
+    done
+    [ "$ready" -eq 1 ] || { echo 'Rock platform failed to start' >&2; exit 1; }
+    echo 'ROCK_PLATFORM_READY'
+    ;;
+  stop)
+    for role in platform wallet; do
+      pidfile="/run/rock-$role.pid"
+      [ -f "$pidfile" ] || continue
+      service_pid=$(cat "$pidfile")
+      start-stop-daemon --stop --pidfile "$pidfile" || true
+      for attempt in 1 2 3 4 5; do
+        kill -0 "$service_pid" 2>/dev/null || break
+        sleep 1
+      done
+      if kill -0 "$service_pid" 2>/dev/null && tr '\000' ' ' < "/proc/$service_pid/cmdline" | grep -q 'rock-platform/service.py'; then
+        kill -KILL "$service_pid"
+      fi
+      rm -f "$pidfile"
+    done
+    ;;
+  *) exit 2 ;;
+esac

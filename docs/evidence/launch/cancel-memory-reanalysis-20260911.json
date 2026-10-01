@@ -1,0 +1,31 @@
+{
+  "status": "DIAGNOSTIC_NOT_ACCEPTANCE",
+  "sourceCommit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "method": "Select samples at or after first sample monotonic + report.boot_seconds; exact ready monotonic was not retained. Includes shutdown and is not a steady-state performance test.",
+  "originalLimitKiB": 524288,
+  "originalExceedanceRetained": true,
+  "cycles": [
+    {
+      "cycle": 1,
+      "samplesSha256": "a8a5c7964029b691b61804558295707f05e468aa1c2ac5a5e96905d73245d94b",
+      "reportSha256": "8e2aea2d1ed917ce36f12896718cf7e92b865f00c6bac07b41f12d26ce854744",
+      "fullGrowthKiB": 721328,
+      "conservativeAfterBoot": {
+        "sampleCount": 15,
+        "seconds": 28.09516943000017,
+        "growthKiB": 7504
+      }
+    },
+    {
+      "cycle": 2,
+      "samplesSha256": "3f6a9a72bfae6f6a12fbcc1641aef3831ac46542c6450194a02f4dfcd4be0b1c",
+      "reportSha256": "001cd813cd41b09f62160af654dfbc9118657fcb95c7ccfc1a1a16a416efbf5b",
+      "fullGrowthKiB": 714104,
+      "conservativeAfterBoot": {
+        "sampleCount": 7,
+        "seconds": 12.065874161000465,
+        "growthKiB": 23376
+      }
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "schema": "avocadoos-android-pre-full-build-tests/2",
+  "testedAt": "2026-09-16",
+  "fullOsBuildStarted": false,
+  "test1LocalAi": {
+    "status": "PASS_STANDALONE_PHYSICAL_PIXEL",
+    "unsignedArm64ReleaseApk": "PASS",
+    "apkSha256": "d65039dc766a4b881c537bceba93a9be8834eabe881af5b5b15035aa6ec944b9",
+    "apkSizeBytes": 26392828,
+    "physicalTestSignedApkSha256": "f36fe4b807fb9a4f6e09d3f69fd33e4da0408389763759c12348da88e545465b",
+    "physicalTestSigningCertificateSha256": "610499604b3469ae2f6c158b8482bbd6b0fb6e324862fb67e92731fe8a241f57",
+    "internetPermission": false,
+    "wakeLockPermission": true,
+    "binderServicePresent": true,
+    "emulatorInstallLaunch": "PASS",
+    "signedBinderConnection": "PASS",
+    "headlessJsNoModelFailClosed": "PASS_NO_MODEL",
+    "physicalAndroidInstrumentation": "PASS_6_OF_6",
+    "ggufModelSelected": true,
+    "ggufModelSha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+    "ggufInference": "PASS",
+    "airplaneModeInference": "PASS",
+    "responseReasoningPresentation": "PASS_CLEAN_OK_NO_RAW_THINK_TAGS",
+    "rebootPersistenceAndReload": "PASS",
+    "physicalPixel": "PASS_PIXEL_10_GL066_FRANKEL",
+    "thermalThirtyMinutes": "PASS_2002_SECONDS_15_INFERENCES_MAX_34_4C_NO_THERMAL_WARNING",
+    "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+    "notProven": [
+      "production signing",
+      "Soong OS image integration",
+      "SELinux enforcing behavior",
+      "flash, boot, OTA, rollback or recovery"
+    ]
+  },
+  "test2SkyZemaToolWallet": {
+    "status": "PASS_ROCK_OWNED_PHYSICAL_REBOOT_RECOVERY_PROVIDER_SANDBOX_PENDING",
+    "skyToZemaSingleUseHandoff": "PASS",
+    "zemaJobLifecycleAndProgress": "PASS",
+    "androidToolBinderSQLiteReviewFlow": "PASS",
+    "walletAndVerifiedEarningsSubsystems": "PASS",
+    "automaticToolWalletReceiptBridge": "PASS",
+    "rockOwnedEndToEndReceiptFixture": "PASS",
+    "physicalPixelCorrelatedSplitBoundary": "PASS_6_OF_6_PHYSICAL_AND_7_OF_7_HOST",
+    "nativeSkyZemaToolRebootRecovery": "PASS_BOOT_COUNT_24_TO_25_SELECTED_TOOL_RESULT_HISTORY_REVIEW",
+    "focusedHostTests": "PASS_7_OF_7",
+    "evidence": "docs/evidence/tool-earning-wallet-bridge-20260915.json",
+    "physicalEvidence": "docs/evidence/pixel-tool-wallet-correlation-20260916.json",
+    "notProven": [
+      "real sale or income",
+      "external payment provider sandbox",
+      "refund or chargeback flow",
+      "real payout",
+      "production deployment",
+      "one deployed physical Pixel to external Provider to production Wallet transaction"
+    ]
+  },
+  "androidInstrumentation": {
+    "environment": "Android 15 API 35 arm64 Pixel 10 device-profile emulator plus physical Pixel 10 GL066 / Android 17",
+    "priorFreshEmulator": {
+      "tests": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "latestPhysicalPixel": {
+      "tests": 23,
+      "passed": 23,
+      "failed": 0
+    },
+    "latestPhysicalBreakdown": {
+      "brokerToolLocalAiWallet": "11_of_11",
+      "shellSkyZemaBackup": "5_of_5",
+      "operatorAgentRestrictedCommands": "5_of_5",
+      "physicalRebootPhases": "2_of_2"
+    },
+    "testSigner": "debug-only shared signer; not a release credential"
+  },
+  "androidBuildAndLint": {
+    "status": "PASS",
+    "gradleTasks": 279,
+    "scope": "Platform Core, Tool SDK, Broker, Shell, article Tool and Operator Agent APKs; standalone Gradle only, not Soong or an OS image"
+  },
+  "focusedHostTests": {
+    "tests": 20,
+    "passed": 20,
+    "failed": 0,
+    "coverage": [
+      "Sky-Zema handoff",
+      "job lifecycle and ownership",
+      "workflow ordering and review",
+      "verified earnings settlement and Wallet connection"
+    ]
+  },
+  "repositoryRegression": {
+    "status": "PASS",
+    "webUnitTests": 312,
+    "fashionBrandOpsTests": 19,
+    "workerD1Assertions": 143,
+    "productionWebBuild": "PASS"
+  },
+  "physicalPreFullBuildAcceptance": {
+    "status": "PASS_TEST_SIGNED_APKS_NO_FLASH",
+    "rebootPersistence": "PASS",
+    "hardwareBackedRecoverySecret": true,
+    "hardwareBackedDeviceWrap": true,
+    "fileDescriptorStorageSyncConfirmed": true,
+    "operatorAgent": "PASS_5_OF_5_FAIL_CLOSED_WITHOUT_DEVICE_OWNER",
+    "physicalWipeAndRestore": "NOT_RUN",
+    "evidence": "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
+  },
+  "defectsFoundAndFixed": [
+    "overlay application could silently target an unrelated parent Git repository",
+    "AIDL generation was disabled in the upstream Android app",
+    "public Android SDK builds used hidden UserHandle methods",
+    "the release manifest removed WAKE_LOCK required by Headless JS",
+    "raw Qwen think markers reached saved chat and OS streaming output",
+    "the standalone APK build script misresolved a relative output path after changing directories"
+  ],
+  "remainingBeforePaidFullBuild": [
+    "source, artifact and signing-plan freeze",
+    "GL066 factory/full-OTA artifacts and vendor inventory",
+    "production Operator credential, StrongBox attestation overlay and Device Owner provisioning plan",
+    "physical Keystore-loss wipe and owner-phrase restore drill"
+  ],
+  "decision": "DO_NOT_START_PAID_FULL_OS_BUILD_REMAINING_FREEZE_GATES"
+}

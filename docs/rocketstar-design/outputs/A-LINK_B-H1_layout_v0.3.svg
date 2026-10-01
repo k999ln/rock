@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="328" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 328" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="328"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-328)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="308" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 11px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,616) scale(1,-1)">展開時の機能配置 / B-H1</text>
+			<rect x="194" y="231" width="112" height="35" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,64%,47%); fill-rule: evenodd;"/>
+			<text x="232.0" y="245" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,490) scale(1,-1)">機器区画</text>
+			<rect x="20" y="163" width="115" height="61" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(14%,27%,39%); fill-rule: evenodd;"/>
+			<path d="M 39.166667,163 L 39.166667,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 58.333333,163 L 58.333333,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 77.5,163 L 77.5,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 96.666667,163 L 96.666667,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 115.833333,163 L 115.833333,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 20,183 L 135,183 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 20,203 L 135,203 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<rect x="365" y="163" width="115" height="61" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(14%,27%,39%); fill-rule: evenodd;"/>
+			<path d="M 384.166667,163 L 384.166667,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 403.333333,163 L 403.333333,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 422.5,163 L 422.5,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 441.666667,163 L 441.666667,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 460.833333,163 L 460.833333,224 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 365,183 L 480,183 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 365,203 L 480,203 Z" style="stroke: rgb(52%,67%,75%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<path d="M 135,194 L 164,194 Z" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 3;"/>
+			<path d="M 336,194 L 365,194 Z" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 3;"/>
+			<rect x="164" y="151" width="172" height="86" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.5; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<path d="M 207,151 L 207,237 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<path d="M 250,151 L 250,237 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<path d="M 293,151 L 293,237 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<path d="M 164,172 L 336,172 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<path d="M 164,194 L 336,194 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<path d="M 164,216 L 336,216 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<text x="200.0" y="197" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,394) scale(1,-1)">地球側の平面アンテナ</text>
+			<text x="210.0" y="179" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,358) scale(1,-1)">面積・分割数は未確定</text>
+			<text x="59.0" y="236" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,472) scale(1,-1)">太陽電池</text>
+			<text x="404.0" y="236" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,472) scale(1,-1)">太陽電池</text>
+			<text x="323.5" y="282" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,564) scale(1,-1)">宇宙側：放熱面</text>
+			<path d="M 318,278 L 285,266 Z" style="stroke: rgb(38%,45%,49%); stroke-linecap: butt; stroke-width: 0.7;"/>
+			<path d="M 250,151 L 250,117 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="250 117, 252.6098 122.4027, 247.3902 122.4027" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="191.9287109375" y="101" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,202) scale(1,-1)">地球へ / avokadoとの通信</text>
+			<path d="M 0,84 L 501.275591,84 Z" style="stroke: rgb(84%,88%,89%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="0" y="65" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,130) scale(1,-1)">収納時</text>
+			<rect x="100" y="13" width="119" height="47" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(74%,64%,47%); fill-rule: evenodd;"/>
+			<rect x="89" y="13" width="9" height="47" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(14%,27%,39%); fill-rule: evenodd;"/>
+			<rect x="221" y="13" width="9" height="47" style="stroke: rgb(9%,19%,24%); stroke-linecap: butt; stroke-width: 1; fill: rgb(14%,27%,39%); fill-rule: evenodd;"/>
+			<rect x="99" y="8" width="121" height="7" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="127.5" y="32" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,64) scale(1,-1)">折り畳んで保持</text>
+			<text x="259" y="46" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,92) scale(1,-1)">分離後に展開・固定</text>
+			<text x="259" y="27" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,54) scale(1,-1)">収納包絡と干渉は詳細設計で確認</text>
+		</g>
+	</g>
+</svg>

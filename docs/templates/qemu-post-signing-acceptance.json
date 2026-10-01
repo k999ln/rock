@@ -1,0 +1,56 @@
+{
+  "schema": "rockstaros-qemu-post-signing-acceptance/1",
+  "status": "NOT_RUN",
+  "completedAt": null,
+  "candidate": {
+    "version": "1.0.0-preview.20260911-rc2",
+    "sourceCommit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+    "archive": {
+      "name": "rockstaros-1.0.0-preview.20260911-rc2-macos-arm64.tar.gz",
+      "bytes": 1003224286,
+      "sha256": "5ce072f65fc4e24212ff6acc6887cbb03f3e7f664b50d574756738892e4ed95e"
+    }
+  },
+  "immutableCandidate": {
+    "beforeSha256": null,
+    "afterSha256": null,
+    "bytesUnchanged": false
+  },
+  "signing": {
+    "status": "NOT_RUN",
+    "authenticationStatus": null,
+    "releaseManifestSha256": null,
+    "releaseAuthenticationSha256": null,
+    "publicKeySha256": null,
+    "trustBundleSha256": null,
+    "evidence": []
+  },
+  "legal": {
+    "productLicense": null,
+    "licenseFileSha256": null,
+    "noticeSha256": null,
+    "sbomSha256": null,
+    "evidence": []
+  },
+  "freshWorkspace": false,
+  "sourceDeviceReused": null,
+  "environment": {
+    "hostOs": null,
+    "hostVersion": null,
+    "architecture": null,
+    "qemuVersion": null,
+    "machine": "virt-10.0"
+  },
+  "checks": [
+    { "id": "authentication", "status": "NOT_RUN", "evidence": [] },
+    { "id": "fresh-install", "status": "NOT_RUN", "evidence": [] },
+    { "id": "update", "status": "NOT_RUN", "evidence": [] },
+    { "id": "rollback", "status": "NOT_RUN", "evidence": [] },
+    { "id": "backup", "status": "NOT_RUN", "evidence": [] },
+    { "id": "restore", "status": "NOT_RUN", "evidence": [] },
+    { "id": "interruption-recovery", "status": "NOT_RUN", "evidence": [] },
+    { "id": "diagnostics", "status": "NOT_RUN", "evidence": [] },
+    { "id": "normal-shutdown", "status": "NOT_RUN", "evidence": [] },
+    { "id": "removal", "status": "NOT_RUN", "evidence": [] }
+  ]
+}

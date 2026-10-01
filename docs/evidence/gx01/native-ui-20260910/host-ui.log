@@ -1,0 +1,10 @@
+REMOTE_HIT editor-open-at-end 360 761
+REMOTE_HIT cloud-prepare-at-top 360 496
+REMOTE_HIT preview-submit-at-end 360 652
+REMOTE_HIT preview-discard-at-end 360 728
+REMOTE_HIT cancelled-editor-at-end 360 716
+PASS purchaser service fee disclosure, stale/context rejection, Wallet navigation, paid recovery, schema4 remote UI
+PASS startup polling: initial cadence, completion deadline, bounded backoff, recovery and UI/intent preservation
+PASS native MCP selection, confirmation, expiry, epoch, exact retry and pending result
+PASS native Game consent separation, fee/expiry guards, masked PIN, exact retry, denial and Hub availability
+PASS native UI actions, request identities, errors, input limits, rendering, framebuffer conversion, evdev coordinates

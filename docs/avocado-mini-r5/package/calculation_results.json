@@ -1,0 +1,144 @@
+{
+  "revision": "R5",
+  "physical_tests": 0,
+  "manufacturing_release": false,
+  "all_values_are_ideal_models_or_assumptions": true,
+  "packaging": {
+    "height_limit_mm": 200,
+    "comparison_base_D_mm": 96,
+    "comparison_base_H_mm": 25,
+    "comparison_tower_D_mm": 30,
+    "comparison_tower_H_mm": 175,
+    "cm5_bare_board_min_horizontal_circle_mm": 68.0074,
+    "cm5io_bare_board_min_horizontal_circle_mm": 183.5756,
+    "plate_98x160_min_circle_mm": 187.6273,
+    "shape_surface_area_m2": 0.03127141,
+    "natural_convection_W_at_h5_delta10": 1.5636,
+    "natural_convection_W_at_h10_delta10": 3.1271,
+    "not_a_manufacturing_drawing": true
+  },
+  "height_tolerance_example": {
+    "nominal_total_mm": 197,
+    "five_segments_tolerance_each_mm": 0.4,
+    "worst_case_stack_mm": 199,
+    "margin_to_max_mm": 1,
+    "segment_geometry_unselected": true
+  },
+  "power_sensitivity": [
+    {
+      "display_assumption_W": 0,
+      "non_display_assumption_W": 22.5,
+      "load_W": 22.5,
+      "input_W_at_90pct": 25.0,
+      "current_A_at_20V": 1.25,
+      "ideal_airflow_CFM_at_15K": 2.9282
+    },
+    {
+      "display_assumption_W": 5,
+      "non_display_assumption_W": 22.5,
+      "load_W": 27.5,
+      "input_W_at_90pct": 30.5556,
+      "current_A_at_20V": 1.5278,
+      "ideal_airflow_CFM_at_15K": 3.579
+    },
+    {
+      "display_assumption_W": 15,
+      "non_display_assumption_W": 22.5,
+      "load_W": 37.5,
+      "input_W_at_90pct": 41.6667,
+      "current_A_at_20V": 2.0833,
+      "ideal_airflow_CFM_at_15K": 4.8804
+    },
+    {
+      "display_assumption_W": 30,
+      "non_display_assumption_W": 22.5,
+      "load_W": 52.5,
+      "input_W_at_90pct": 58.3333,
+      "current_A_at_20V": 2.9167,
+      "ideal_airflow_CFM_at_15K": 6.8326
+    }
+  ],
+  "camera_height_example_m": 0.18,
+  "person_height_example_m": 1.8,
+  "camera_geometry": [
+    {
+      "horizontal_distance_m": 0.5,
+      "top_ray_deg": 72.848,
+      "feet_ray_deg": -19.799,
+      "required_vertical_FOV_deg": 92.646,
+      "aim_tilt_deg": 26.524,
+      "fits_ideal_60deg_VFOV": false
+    },
+    {
+      "horizontal_distance_m": 1,
+      "top_ray_deg": 58.314,
+      "feet_ray_deg": -10.204,
+      "required_vertical_FOV_deg": 68.518,
+      "aim_tilt_deg": 24.055,
+      "fits_ideal_60deg_VFOV": false
+    },
+    {
+      "horizontal_distance_m": 2,
+      "top_ray_deg": 39.007,
+      "feet_ray_deg": -5.143,
+      "required_vertical_FOV_deg": 44.15,
+      "aim_tilt_deg": 16.932,
+      "fits_ideal_60deg_VFOV": true
+    },
+    {
+      "horizontal_distance_m": 3,
+      "top_ray_deg": 28.369,
+      "feet_ray_deg": -3.434,
+      "required_vertical_FOV_deg": 31.803,
+      "aim_tilt_deg": 12.468,
+      "fits_ideal_60deg_VFOV": true
+    }
+  ],
+  "stereo_ideal": {
+    "horizontal_pixels": 640,
+    "horizontal_FOV_deg": 75,
+    "baseline_m": 0.02,
+    "disparity_error_px": 0.25,
+    "focal_px": 417.0321,
+    "depth_error_mm_at_1m": 29.9737,
+    "depth_error_mm_at_2m": 119.8948
+  },
+  "network": {
+    "depth_640x480_16bit_30fps_Mbps": 147.456,
+    "rgb_1280x720_24bit_30fps_Mbps": 663.552,
+    "combined_one_node_Mbps": 811.008,
+    "skeleton_25joints_7float_60Hz_kbps": 336.0,
+    "skeleton_four_nodes_Mbps": 1.344,
+    "raw_depth_one_hour_GB_decimal": 66.3552
+  },
+  "particle": {
+    "count": 10000,
+    "naive_pairs_per_frame": 49995000,
+    "naive_pairs_per_second_at60": 2999700000,
+    "double_buffer_64byte_particle_MB": 1.28,
+    "point_visits_per_second_1000x1x60": 60000,
+    "point_visits_per_second_10000x1x60": 600000,
+    "point_visits_per_second_1000x10x60": 600000
+  },
+  "sync": {
+    "time_error_mm_at1mps_1ms": 1.0,
+    "time_error_mm_at1mps_5ms": 5.0,
+    "rotation_error_mm_at1m_0p1deg": 1.7453
+  },
+  "stability_sensitivity": {
+    "mass_assumption_kg": 0.5,
+    "support_radius_assumption_m": 0.048,
+    "force_height_assumption_m": 0.2,
+    "tip_force_N_no_dynamic_effects": 1.1772
+  },
+  "latency_comparison_ms": {
+    "frame_wait_max_at60": 16.7,
+    "preprocess": 5,
+    "tracking": 8,
+    "simulation_wait": 8.3,
+    "network": 2,
+    "display_wait": 16.7,
+    "simple_sum": 56.7,
+    "not_a_measured_percentile": true
+  }
+}

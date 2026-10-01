@@ -1,0 +1,4 @@
+# Public derived log; original basename: 43-closed-inspection.log
+# Original SHA-256: 3f3f0987f505e1a0ae19eaa71ff76df0d8557b7ba1447514544b3697860af4b4
+# Private VM evidence/source paths replaced; original retained unchanged.
+{"status": "PASS_CLOSED_INSPECTION_ONLY", "jobs": 47, "actions": 55, "original_test_status": "FAIL"}

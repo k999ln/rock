@@ -1,0 +1,127 @@
+{
+  "all_originals_retained_in_private_evidence_draft": true,
+  "automatic_retry": false,
+  "candidate_index_sha256": "0440543f5846cf634f5131533eff522f66f4e42507a22173812a19f53198f941",
+  "candidate_release_id": 386933271,
+  "candidate_still_exact_eight_assets": true,
+  "checker_revision": "FIRST_END_HEADER_FIX_V2",
+  "checker_sha256": "2ab36843707e053f67495e2d72a35559212f93babdf146037a585ae849e9501d",
+  "compressed_bytes_streamed_and_sha256_verified": 2032555178,
+  "evidence_release_id": 387142563,
+  "file_count": 212,
+  "finished_unix": 1789146949.792887,
+  "frozen_ci_control_pins": {
+    "launch-plan.json": "3ac4df9794a9be06058c68345b493eac9a725b22f6e162a94089eb3f6d19083e",
+    "run-final-d4-ci.py": "4315b33d631856e326f8b95abbf27f8ad0239b0643242500730d22ed13f42912",
+    "verify-ci-inputs.py": "6aa41a340451b38466ac24ab02a625182950919f7c82ed6d118159d54df3c3b4"
+  },
+  "head": "a55e5be39c2571da0c78f3f7fc04f980f5cee081",
+  "job_id": 103325441875,
+  "legacy_report_validator_sha256": "f6eb1379b5464eade42384c153ee68916758272eb8c32c3e81ffffd2989f3a96",
+  "logical_bytes": 25674324490,
+  "matrix": {
+    "archive_members": 716,
+    "boots": 41,
+    "cases": [
+      {
+        "boots": 14,
+        "log_sha256": "4ca26c9b48aad3d11d6d707335c05ed009241df2f3ceb652066552f968603e8f",
+        "name": "ui-startup",
+        "original_report_member": "evidence/d4/ui-startup/report.json",
+        "report_sha256": "c7d5bf2b33bd74f201f389563e1d7cae9483567a220ca15e135af94e9aec959b"
+      },
+      {
+        "boots": 8,
+        "log_sha256": "331b45b9b62e54ddf1ead8d252c78bd2790a6f407329360f03850747ef84c152",
+        "name": "ab",
+        "original_report_member": "images/verify-ab-20260911T160911Z-1ip1gjxs/report.json",
+        "report_sha256": "bbe9c5644dc6f38cd3d8ec7d897a75a56559268e51d10b45b6cae6b6ee5922b3"
+      },
+      {
+        "boots": 13,
+        "log_sha256": "8bf4a6ef3e4fa88d699efd367dc908966569fb555e272c74d6369ae8240c2b2b",
+        "name": "faults",
+        "original_report_member": "images/verify-faults-20260911T162009Z-occ840lu/report.json",
+        "report_sha256": "581f6eae6d18f5f67cc2e299bb8c55cad801e6d01e6db1fc9db3114179ee4cb7"
+      },
+      {
+        "boots": 3,
+        "log_sha256": "4e92b2077450b9d7168133f703f13ecaaf28a4d406592f851af3b07a74f4d166",
+        "name": "auth-health",
+        "original_report_member": "evidence/d4/auth-health/report.json",
+        "report_sha256": "477d4cd3ba44ff3a3a8d6a62be2f606f7a6a31cace213df1dce59662dbdbf56f"
+      },
+      {
+        "boots": 3,
+        "log_sha256": "bd8b8afc0870ed03819264c6dd5b54d9ae30e04b430e0bea702a4d9863e6ab45",
+        "name": "data-abi",
+        "original_report_member": "evidence/d4/data-abi/report.json",
+        "report_sha256": "7a57d34c7682914a81f493eda5b22c410f1890da660813fead377c0a4632eeaf"
+      }
+    ],
+    "immutable_image_sha256": {
+      "Image": "8e2a90cd5cb19bbef756a059f4b636acdf9da9042331a0801ad22a40605cdcc1",
+      "rootfs.ext4": "8ac63eca1a9bf49d3e5f45f33a47c2eb337612a5b6fa5951cf88040929b87cf5",
+      "stage0.cpio.gz": "36c868b3e78975bd937a8565562e11f50c6132687f2d2698c3a3d984fdf894b9"
+    },
+    "other_acceptance_gates": "NOT_REASSESSED",
+    "public_test_only": true,
+    "source_files": 1725
+  },
+  "native_matrix_reexecuted": false,
+  "not_managed_signing_or_legal_clearance": true,
+  "not_overall_D0_D6_or_lost_VM_restore": true,
+  "receipt_pin": {
+    "bytes": 1880,
+    "id": 557628350,
+    "name": "remote-complete.json",
+    "sha256": "ed8025b6035034837b5af5f4f37879c8e26b5ce1e93e6abcc7f3df77fac0357c"
+  },
+  "run_id": 34618244790,
+  "schema": "rock-d4-root-stream-readback/2",
+  "selected_original_bytes_retained": 131677,
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "status": "PASS_ROOT_STREAMED_ALL_RAW_D4_SCOPED",
+  "storage_status": "STREAMED_NOT_LOCALLY_ARCHIVED",
+  "stream_verification": {
+    "archive_passes": 1,
+    "compressed_parts_verified": [
+      {
+        "bytes": 1073741824,
+        "id": 557625224,
+        "name": "rock-rc2-d4-34618244790-1.tar.gz.part-0000",
+        "sha256": "190d841ac8f659b24000fcf8fae20e30211548c1bc6c913d9d218746bb99ff7d"
+      },
+      {
+        "bytes": 958813354,
+        "id": 557626868,
+        "name": "rock-rc2-d4-34618244790-1.tar.gz.part-0001",
+        "sha256": "7ee0afc3586b6e724039a0547f65699c08739c603d91ac47dd21607e9dc74382"
+      }
+    ],
+    "members_verified": 212,
+    "selected_raw_reports": [
+      "evidence/d4/auth-health/report.json",
+      "evidence/d4/data-abi/report.json",
+      "evidence/d4/plan.json",
+      "evidence/d4/report.json",
+      "evidence/d4/ui-startup/report.json",
+      "evidence/inputs.json",
+      "evidence/launch.json",
+      "evidence/prepared.json",
+      "evidence/process-cleanup.json",
+      "evidence/result.json",
+      "images/verify-ab-20260911T160911Z-1ip1gjxs/report.json",
+      "images/verify-faults-20260911T162009Z-occ840lu/report.json"
+    ]
+  },
+  "terminal_header_validation": "BOTH_FIRST_AND_SECOND_ZERO_HEADERS_AND_FULL_TRAILER",
+  "verifier_published_or_booted": false,
+  "original_summary_sha256": "3d160e865867e619ff5899ce19b0125f04eb0ebf3b2e16bddfe896ca2213d32d",
+  "root_reader_sha256": "2ab36843707e053f67495e2d72a35559212f93babdf146037a585ae849e9501d",
+  "previous_readback_retained": {
+    "summary_sha256": "c10432accd5de2170ca16634cf23c852460ebfe924903b3be5f1e864337be89b",
+    "native_matrix_reexecuted": false,
+    "reason": "Strict first tar end-header verification added to byte-identical raw evidence; all 12 selected reports match"
+  }
+}

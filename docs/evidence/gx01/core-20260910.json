@@ -1,0 +1,54 @@
+{
+  "schema": "rock-gx01-core-evidence/1",
+  "status": "PASS_SCOPED_CORE",
+  "environment": "Debian13 arm64 real TLS actual C/OwnerRouter/SQLite",
+  "base_commit": "7ed57d95c6b52effe13c02982920451e1a807cb9",
+  "source_sha256": {
+    "os/game_exchange/exchange_protocol.py": "4a14445d18e0a17aa78d887b783db437539fe33b93f33a62fc37b4860bc424b5",
+    "os/game_exchange/exchange_ledger.py": "3cab72d2765e80ce64526cf1bc7f82a099a9f14533dbdf883595245c3e7981de",
+    "os/game_exchange/exchange_service.py": "a15549c154f4a2aa57a6a7dc69f55c7595703909407436ade59db48e19a1e820",
+    "os/game_exchange/exchange_authority.py": "37686f36347bd4e4aaaa3e7c1b5e7c12f2d739af08e930192a555662fcb2cfc2",
+    "os/game_exchange/exchange_worker.py": "7121f7284c356fb487f763f715be2d3c353da887e1630ff7435947f6fd2d768a",
+    "os/game_exchange/exchange_server.py": "43e82e6d9d44b540faf6b79f483fe5d88761de61f902e096b9fd9cddb85c6275",
+    "os/game_exchange/exchange_gateway.py": "325c0893e56ae1658c324663dbd6066ae86e244e3181b0850736a13eaaa0b044",
+    "src/blackberryrock/wallet.py": "c7c6c34d62d83eb01f6d38082ff3e83069ca25b373fcb72924f233946cfa4b24",
+    "src/blackberryrock/deadline.py": "5b94df591892c148ca0a39a64a4cae878183e760442ff16d0a41cfe718242716",
+    "tests/test_game_exchange_tls.py": "b6c4332ad6fbaf4457c491b4a245b1ac3315c913be125d398e2f993dea1a20e5",
+    "tests/test_game_exchange_migration.py": "21ad01df82633393da441525b5d9c6918a53d3f496f880c6415c09e8d91ba003"
+  },
+  "runs": [
+    {
+      "suite": "test_game_exchange_tls test_game_exchange_migration",
+      "tests": 10,
+      "seconds": 8.592,
+      "failures": 0,
+      "skips": 0
+    },
+    {
+      "suite": "all test_game*.py before final author/migration acceptance addition",
+      "tests": 82,
+      "seconds": 72.035,
+      "failures": 0,
+      "skips": 0
+    },
+    {
+      "suite": "managed_owner + C/runtime regression",
+      "tests": 52,
+      "seconds": 3.852,
+      "failures": 0,
+      "skips": 0
+    }
+  ],
+  "initial_failures_resolved": [
+    "Game issuer key JSON encoded as list but strict parser requires object; wrapped trusted keys in an object",
+    "sqlite_sequence intrinsic rowid changed during table rebuild; now preserves all rowid/name/seq triples",
+    "legacy fixture admission signature and mock monotonic call count retained through optional Game-only deadlines"
+  ],
+  "not_claimed": [
+    "SDK complete",
+    "process-kill/epoch restore complete",
+    "OS profile/UI integrated",
+    "final image acceptance",
+    "real money/live game"
+  ]
+}

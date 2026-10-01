@@ -1,0 +1,29 @@
+{
+  "finished_utc": "2026-09-10T11:36:24.382057+00:00",
+  "original_source_files_unchanged": 1364,
+  "original_triple_unchanged": true,
+  "plan_sha256": "68bcad101d5b541f73b120dd89400ab270c09d12becc2b64e4df57b7656186cf",
+  "preflight_report": "/var/tmp/rock-release-os-20260910/d3-inventory-probe-1135/hub-fault-dy1vovmf/report.json",
+  "preflight_report_sha256": "aef3dc158c01972e10e6232396dea33043ef11d8be049b32fb152fa62d65b56c",
+  "private_wallet_file_metadata_attested": true,
+  "probe_exact_overlay_unchanged": {
+    "systems/rock-star-os/os/verify-hub-faults.py": "1da9a8197eeb931cc4a4e0c85aaebf33a7d6c32f7350033df44f8090d74057be",
+    "systems/rock-star-os/tests/test_os_hub_fault_evidence.py": "fceee9151eac2287617fb2584215df1c0936cde4d025b269fe04e985345b5075"
+  },
+  "production_host_observers_absent_from_runtime": true,
+  "regressions": [
+    {
+      "log_sha256": "9e2bbe774d76664ebf6b67e381d97d1068b6fffd2a88528e81a7c45702057a02",
+      "name": "test_os_hub_fault_evidence"
+    },
+    {
+      "log_sha256": "4321ba506bca0422311cd5e329df63ffea095653896617064892d5808eb5ecd7",
+      "name": "test_os_image_inventory"
+    }
+  ],
+  "runtime_manifest_paths": 1945,
+  "runtime_manifest_sha256": "f8de3ab5111812472022627d2a803dd2999dff74734ea5a62609812b932188e0",
+  "schema": "rock-hub-inventory-observer-probe/1",
+  "status": "PASS_OBSERVER_PREFLIGHT_ONLY",
+  "tests": 24
+}

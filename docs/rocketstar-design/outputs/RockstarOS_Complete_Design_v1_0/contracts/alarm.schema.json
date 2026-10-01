@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:icd:alarm:v1",
+  "title": "alarm / DESIGN SPECIFICATION ONLY",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "rockstaros.icd.alarm.v1"
+    },
+    "executionMode": {
+      "enum": [
+        "SIMULATION",
+        "HARDWARE_IN_LOOP",
+        "OPERATIONAL"
+      ]
+    },
+    "dataClass": {
+      "enum": [
+        "SYNTHETIC",
+        "MEASURED",
+        "ESTIMATED",
+        "REPLAY"
+      ]
+    },
+    "siteId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "nodeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "messageId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "issuedAt": {
+      "type": "object",
+      "properties": {
+        "utcMs": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "monotonicMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bootId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+        },
+        "quality": {
+          "enum": [
+            "TRUSTED",
+            "DEGRADED",
+            "UNTRUSTED"
+          ]
+        },
+        "uncertaintyMs": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "utcMs",
+        "monotonicMs",
+        "bootId",
+        "quality",
+        "uncertaintyMs"
+      ],
+      "additionalProperties": false
+    },
+    "alarmId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "assetId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "faultCode": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "severity": {
+      "enum": [
+        "INFO",
+        "WARNING",
+        "CRITICAL"
+      ]
+    },
+    "state": {
+      "enum": [
+        "ACTIVE",
+        "ACKNOWLEDGED",
+        "CLEARED"
+      ]
+    },
+    "acknowledgedBy": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "conditionPresent": {
+      "type": "boolean"
+    },
+    "procedureRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+      },
+      "minItems": 1,
+      "maxItems": 128,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "executionMode",
+    "dataClass",
+    "siteId",
+    "nodeId",
+    "messageId",
+    "issuedAt",
+    "alarmId",
+    "assetId",
+    "faultCode",
+    "severity",
+    "state",
+    "acknowledgedBy",
+    "conditionPresent",
+    "procedureRef",
+    "evidenceRefs"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "ACKNOWLEDGED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "acknowledgedBy": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "CLEARED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "conditionPresent": {
+            "const": false
+          }
+        }
+      }
+    }
+  ]
+}

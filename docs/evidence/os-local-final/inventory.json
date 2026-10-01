@@ -1,0 +1,87 @@
+{
+  "schema": "rock-local-final-evidence-inventory/1",
+  "producer_source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "files": {
+    "collect-final-local-acceptance-v2.py": {
+      "bytes": 5855,
+      "sha256": "0a8e84b57f2fa7beca7146249ee067eaa051e61e81120ad4c0e8ac8de757b433"
+    },
+    "d1-d3-original-report.json": {
+      "bytes": 3872,
+      "sha256": "48e0614ef14cdb7fff06ea4d4b9aca3ad1c3b63ff46724ebd20bd77293bb9da9"
+    },
+    "final-d2-lifecycle-plan.json": {
+      "bytes": 8523,
+      "sha256": "2388291c5fa66a109ac1a649b69e1607c1e9aaa1dfcf823420d2d82870687373"
+    },
+    "final-d2-lifecycle-report.json": {
+      "bytes": 180156,
+      "sha256": "1cea41d7c8a19ba6ebdf636172d424fbc3789f152ce119076a600e092ca3d077"
+    },
+    "final-d2-observation-correction.json": {
+      "bytes": 1712,
+      "sha256": "3a2d094b6aafa14e90e39b6358d890f76292041619f9c1ec22afc9a29ed6cebe"
+    },
+    "final-d4-continuation-plan.json": {
+      "bytes": 5510,
+      "sha256": "5ccd33fc0e85df395f19a3996d58b9b928becf4c9eb289405cf7f6e143127892"
+    },
+    "final-d4-continuation-report.json": {
+      "bytes": 6562,
+      "sha256": "e93dca22501e92f31d098a99abfdb8f8731e77ca1ac8df1df94dc310be042f7d"
+    },
+    "final-hub-continuation-plan.json": {
+      "bytes": 9127,
+      "sha256": "2ca063992194547ed84b3751e2f6062bac148de1f01a7ca46e0b1207318c1563"
+    },
+    "final-hub-continuation-report.json": {
+      "bytes": 55997,
+      "sha256": "9fa7878e3b46bf1a5e3aa77fdf89a0fcd18a5ce36afee665d7cee063dcd7b899"
+    },
+    "final-local-os-handoff-report.json": {
+      "bytes": 77122,
+      "sha256": "b6bbbbe65ea51bba3e951f21d6895d605f44ddbd15535608cb34e63c1dd0a9ae"
+    },
+    "hub-original-fail.json": {
+      "bytes": 2155,
+      "sha256": "e1895100340847c20dafe8197da577fe07e190b0ed165fdd0e3a526488f59766"
+    },
+    "hub-original-fail.log": {
+      "bytes": 1572,
+      "sha256": "198d72ee1dcbcc64aef8e3f3d02cdc6387a3fb9d912e78a49b472706b31a4aa0"
+    },
+    "image-inventory-tests.log": {
+      "bytes": 1202,
+      "sha256": "4321ba506bca0422311cd5e329df63ffea095653896617064892d5808eb5ecd7"
+    },
+    "inventory-plan.json": {
+      "bytes": 1436,
+      "sha256": "68bcad101d5b541f73b120dd89400ab270c09d12becc2b64e4df57b7656186cf"
+    },
+    "inventory-preflight.json": {
+      "bytes": 1381,
+      "sha256": "845d6e07c18000d90e584d5d9352fbbe5a0137140a2254bb221ae53a23831964"
+    },
+    "inventory-tests.log": {
+      "bytes": 3067,
+      "sha256": "9e2bbe774d76664ebf6b67e381d97d1068b6fffd2a88528e81a7c45702057a02"
+    },
+    "nonfinancial-original-report.json": {
+      "bytes": 4953,
+      "sha256": "6464653605abb3f335be01d991e71a18778295dd3737020329f43887e33a148b"
+    },
+    "probe-hub-inventory-1135.py": {
+      "bytes": 4168,
+      "sha256": "6e7c9ea2ed8372981c2a2c8874053d434f598ff94d6247e3105722d6edd319e3"
+    },
+    "run-final-hub-continuation.py": {
+      "bytes": 4765,
+      "sha256": "7efd03785986d6524e819343c84c63a7588e1f42119b773d14c7df074d1ca97f"
+    },
+    "compatibility-matrix.json": {
+      "bytes": 11763,
+      "sha256": "4870b7e8b12c16406153cf643b2ffb24ff2cf5d5ce7ba9db5a93ec428faddb88"
+    }
+  },
+  "status": "SCOPED_LOCAL_GATES_RECORDED_WITH_ORIGINAL_FAILURES"
+}

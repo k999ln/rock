@@ -1,0 +1,32 @@
+{
+  "schema": "rock-ui-pin-source-review/1",
+  "status": "PASS_SOURCE_ONLY_UPDATE",
+  "base_source_commit": "5030717",
+  "changed_source": "os/ui/game-ui.inc",
+  "source_sha256": "d6bbef68e2d79deb7dfd27a1badf521f16b2daebd673e505ddd3668c0b1da256",
+  "profiles_unchanged": true,
+  "review": "Disabled EXPIRED/REVOKED label explains the existing immutable binding contract. No new connection, purchase, PIN pixels or deadlines.",
+  "canonical_command": "sudo -n python3 -B os/ui/test_wallet_replay.py --renderer /var/tmp/rock-ui-expiry-renderer-01/rock-ui-test --font os/assets/NotoSansCJKjp-Regular.otf --output /var/tmp/rock-pin-expiry-original-guard-02",
+  "canonical_exit_code": 0,
+  "canonical_scope": {
+    "wallet_frames": 14,
+    "atm_frames": 14,
+    "stale_coordinates_rejected": 7,
+    "missing_pagedown_rejected": true
+  },
+  "targeted_tests": {
+    "test_pin_readiness": 11,
+    "test_ui_pin_source_profile": 1,
+    "status": "PASS"
+  },
+  "previous_attempt": {
+    "exit_code": 2,
+    "reason": "Canonical root-owned fixture requires root; initial invocation was unprivileged. No product mutation."
+  },
+  "preliminary_review": "Unprivileged source review passed exact profiles, but is not the canonical privileged fixture evidence.",
+  "logs_sha256": {
+    "ui-expiry-original-pin-guard-01.log": "c7b3c12e9030be78f6102ff31dc4cf165097924b5f3d55cf3980a9b829b3b68a",
+    "ui-expiry-original-pin-guard-02.log": "3ca131bd581a767ea485c35548b19879ceb60848cb7cb8fbe2362c7e0e672d04"
+  },
+  "final_image_acceptance": "NOT_RUN"
+}

@@ -1,0 +1,46 @@
+.................E.
+======================================================================
+ERROR: test_unplanned_index_row_is_not_removed_from_original_snapshot (test_game_current_restore.CurrentGameRestoreTests.test_unplanned_index_row_is_not_removed_from_original_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<local-work>/gx00-game-restore-candidate/systems/rock-star-os/os/wallet_backend/client.py", line 144, in exchange
+    response = connection.getresponse()
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/client.py", line 1478, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/client.py", line 343, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/http/client.py", line 304, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "<local-work>/gx00-game-restore-candidate/systems/rock-star-os/os/runner/transport.py", line 149, in readinto
+    value = self.stream.recv(len(buffer))
+  File "<local-work>/gx00-game-restore-candidate/systems/rock-star-os/os/runner/transport.py", line 98, in recv
+    return self.stream.recv(size)
+           ~~~~~~~~~~~~~~~~^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1285, in recv
+    return self.read(buflen)
+           ~~~~~~~~~^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/ssl.py", line 1140, in read
+    return self._sslobj.read(len)
+           ~~~~~~~~~~~~~~~~~^^^^^
+TimeoutError: The read operation timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<local-work>/gx00-game-restore-candidate/systems/rock-star-os/tests/test_game_current_restore.py", line 40, in setUp
+    else:self.f.connect_four()
+         ~~~~~~~~~~~~~~~~~~~^^
+  File "<local-work>/gx00-game-restore-candidate/systems/rock-star-os/tests/game_legacy_basis.py", line 225, in connect_four
+    if reply.get('ok') is not True or self.owner_transport(device).exchange(request)!=reply:raise AssertionError('approval/replay did not return immutable consent')
+                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "<local-work>/gx00-game-restore-candidate/systems/rock-star-os/os/wallet_backend/client.py", line 188, in exchange
+    raise BackendUnavailable('Wallet response unavailable; reconcile with the same key') from exc
+wallet_backend.client.BackendUnavailable: Wallet response unavailable; reconcile with the same key
+
+----------------------------------------------------------------------
+Ran 19 tests in 85.675s
+
+FAILED (errors=1)

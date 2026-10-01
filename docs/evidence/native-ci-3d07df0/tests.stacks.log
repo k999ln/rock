@@ -1,0 +1,62 @@
+Timeout (0:09:30)!
+Thread 0x00007faaeaffe6c0 (most recent call first):
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/email/message.py", line ??? in _splitparam
+  <invalid frame>
+
+Thread 0x00007faaebfff6c0 (most recent call first):
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 363 in wait
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 660 in wait
+  File "/home/runner/work/rock/rock/systems/rock-star-os/os/mcp_broker/broker.py", line 594 in _loop
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 995 in run
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 1044 in _bootstrap_inner
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 1015 in _bootstrap
+
+Thread 0x00007faaf9d276c0 (most recent call first):
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/selectors.py", line 398 in select
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/socketserver.py", line 235 in serve_forever
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 995 in run
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 1044 in _bootstrap_inner
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 1015 in _bootstrap
+
+Thread 0x00007faadbfff6c0 (most recent call first):
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/selectors.py", line 398 in select
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/socketserver.py", line 235 in serve_forever
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 995 in run
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 1044 in _bootstrap_inner
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 1015 in _bootstrap
+
+Thread 0x00007faafbeff6c0 (most recent call first):
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/selectors.py", line 398 in select
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/socketserver.py", line 235 in serve_forever
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 995 in run
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 1044 in _bootstrap_inner
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/threading.py", line 1015 in _bootstrap
+
+Thread 0x00007fab04621b80 (most recent call first):
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/ssl.py", line 1140 in read
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/ssl.py", line 1285 in recv
+  File "/home/runner/work/rock/rock/systems/rock-star-os/os/runner/transport.py", line 98 in recv
+  File "/home/runner/work/rock/rock/systems/rock-star-os/os/runner/transport.py", line 149 in readinto
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/http/client.py", line 304 in _read_status
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/http/client.py", line 343 in begin
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/http/client.py", line 1478 in getresponse
+  File "/home/runner/work/rock/rock/systems/rock-star-os/os/mcp_broker/device_client.py", line 336 in request
+  File "/home/runner/work/rock/rock/systems/rock-star-os/tests/test_mcp_runtime.py", line 45 in call
+  File "/home/runner/work/rock/rock/systems/rock-star-os/tests/test_mcp_runtime.py", line 102 in test_restart_preserves_result_connection_and_disconnect_generation_without_resend
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/case.py", line 606 in _callTestMethod
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/case.py", line 651 in run
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/case.py", line 707 in __call__
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/suite.py", line 122 in run
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/suite.py", line 84 in __call__
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/suite.py", line 122 in run
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/suite.py", line 84 in __call__
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/suite.py", line 122 in run
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/suite.py", line 84 in __call__
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/runner.py", line 240 in run
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/main.py", line 270 in runTests
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/main.py", line 104 in __init__
+  File "/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/unittest/__main__.py", line 18 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 98 in _run_module_code
+  File "<frozen runpy>", line 231 in run_module
+  File "<string>", line 14 in <module>

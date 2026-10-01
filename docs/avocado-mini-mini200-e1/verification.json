@@ -1,0 +1,33 @@
+{
+  "schema": "mini200-e1-documentation-verification/1",
+  "recordedAt": "2026-09-21",
+  "baseCommit": "83649c7256fbd5dafa664a0d2d7bfbf9651a8bfa",
+  "branch": "codex/avocado-mini-e1-voice-design",
+  "scope": "Documentation, authored SVGs and abstract reference models only; not product runtime acceptance",
+  "checks": [
+    {
+      "command": "python3 -B docs/avocado-mini-mini200-e1/engineering/verify_all.py",
+      "status": "passed",
+      "matchedEntries": 140,
+      "note": "9 core + 14 mechanical + 18 voice + 99 interaction; overlapping assumptions possible. 1000 synthetic merges are inside one core check, not extra tests."
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/mini200-e1-docs.test.mjs tests/material-invention.test.mjs tests/product-baseline.test.mjs tests/patent-assistant.test.mjs",
+      "status": "passed",
+      "tests": 20
+    },
+    { "command": "npm run typecheck", "status": "passed" },
+    { "command": "npm run lint:product", "status": "passed" },
+    {
+      "command": "npm run verify",
+      "status": "incomplete",
+      "note": "Local Node v26.0.0: prerequisite checks through typecheck and lint passed; npm test stopped producing output without completing. No overall PASS claimed. Repository CI uses Node 22; its result must be read separately."
+    }
+  ],
+  "actualAsrTests": 0,
+  "physicalTests": 0,
+  "runtimeIntegrated": false,
+  "manufacturingReleased": false,
+  "mainMerged": false,
+  "publishedSiteUpdated": false
+}

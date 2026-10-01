@@ -1,0 +1,44 @@
+[
+  {
+    "apiUrl": "https://api.github.com/repos/k999ln/rock/releases/assets/555810398",
+    "contentType": "application/gzip",
+    "createdAt": "2026-09-10T20:58:44Z",
+    "digest": "sha256:0bcc5633243e4993ba3273d134c10e0ae605afaecf19fc27876d2dd6feea97ff",
+    "downloadCount": 0,
+    "id": "RA_kwDOUPU0Mc4hIP5e",
+    "label": "",
+    "name": "full-distribution-inventory.jsonl.gz",
+    "size": 41224933,
+    "state": "uploaded",
+    "updatedAt": "2026-09-10T20:58:51Z",
+    "url": "https://github.com/k999ln/rock/releases/download/untagged-cb5d5ddfcd889ee3ffb3/full-distribution-inventory.jsonl.gz"
+  },
+  {
+    "apiUrl": "https://api.github.com/repos/k999ln/rock/releases/assets/555810399",
+    "contentType": "application/x-gtar",
+    "createdAt": "2026-09-10T20:58:44Z",
+    "digest": "sha256:a99dcbd322c5dfb59a8c8d594c0146a4d1283b26c2354f6806db5cbf0e790298",
+    "downloadCount": 0,
+    "id": "RA_kwDOUPU0Mc4hIP5f",
+    "label": "",
+    "name": "rockstaros-9abf78a-lch02-review-evidence-20260910.tar.gz",
+    "size": 842551,
+    "state": "uploaded",
+    "updatedAt": "2026-09-10T20:58:45Z",
+    "url": "https://github.com/k999ln/rock/releases/download/untagged-cb5d5ddfcd889ee3ffb3/rockstaros-9abf78a-lch02-review-evidence-20260910.tar.gz"
+  },
+  {
+    "apiUrl": "https://api.github.com/repos/k999ln/rock/releases/assets/555810401",
+    "contentType": "application/json",
+    "createdAt": "2026-09-10T20:58:44Z",
+    "digest": "sha256:7230751757d800efcb32f75c6cc9991a9c7841d6fc3f1c5e8cc819e27aa0d77f",
+    "downloadCount": 0,
+    "id": "RA_kwDOUPU0Mc4hIP5h",
+    "label": "",
+    "name": "supplement-manifest.json",
+    "size": 5716,
+    "state": "uploaded",
+    "updatedAt": "2026-09-10T20:58:44Z",
+    "url": "https://github.com/k999ln/rock/releases/download/untagged-cb5d5ddfcd889ee3ffb3/supplement-manifest.json"
+  }
+]

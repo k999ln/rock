@@ -1,0 +1,24 @@
+{
+  "schema": "avocadoos-android-boot-state-observation/1",
+  "observedDate": "2026-09-16",
+  "method": "read-only ADB property allowlist",
+  "deviceSerialStored": false,
+  "target": {
+    "commercialModel": "Pixel 10",
+    "sku": "GL066",
+    "codename": "frankel"
+  },
+  "observed": {
+    "flashLocked": true,
+    "vbmetaDeviceState": "locked",
+    "verifiedBootState": "yellow",
+    "oemUnlockPropertyAvailable": false
+  },
+  "unlockPath": {
+    "available": true,
+    "basis": "The device is currently booting an alternate verified-boot root while locked. Installing that alternate OS required the Pixel bootloader unlock path and subsequent relock; the official GrapheneOS installer documents both operations and the yellow alternate-key state.",
+    "currentOemUnlockToggleClaimedEnabled": false,
+    "officialProcedure": "https://grapheneos.org/install/web"
+  },
+  "scope": "Confirms the observed locked alternate-OS boot state and that this handset has used the unlock/relock path. It does not authorize unlocking, flashing, erasing data, or changing the current OEM unlocking setting."
+}

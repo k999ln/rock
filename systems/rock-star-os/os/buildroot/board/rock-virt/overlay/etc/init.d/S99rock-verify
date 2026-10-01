@@ -1,0 +1,51 @@
+#!/bin/sh
+set -eu
+[ "${1:-start}" = start ] || exit 0
+case " $(cat /proc/cmdline) " in
+  *" rock.verify=1 "*) ;;
+  *) exit 0 ;;
+esac
+finish() {
+  result=$?
+  if [ "$result" -eq 0 ]; then
+    echo ROCK_OS_VERIFY_PASS
+  else
+    echo "ROCK_OS_VERIFY_FAIL exit=$result"
+  fi
+  sync
+  poweroff -f
+}
+trap finish EXIT
+echo ROCK_BOOT_TEST_BEGIN
+cat /etc/os-release
+uname -a
+[ "$(uname -m)" = aarch64 ]
+/usr/libexec/rock-mount-check / - ext4 ro
+echo ROCK_ROOT_READONLY_PASS
+/usr/libexec/rock-mount-check /data /dev/vdb ext4 rw,nosuid,nodev,noexec
+echo ROCK_DATA_MOUNT_PASS
+[ -d /data/seedrng ]
+[ "$(cat /proc/sys/kernel/random/entropy_avail)" -gt 0 ]
+echo ROCK_RNG_INIT_PASS
+for attempt in 1 2 3 4 5; do
+  if /usr/bin/rockctl status; then break; fi
+  sleep 1
+done
+status=$(/usr/bin/rockctl status)
+before=$(printf '%s\n' "$status" | sed -n 's/.* completed=\([0-9][0-9]*\)$/\1/p')
+[ -n "$before" ]
+if [ -f /data/rock-verify.expected ]; then
+  [ "$before" = "$(cat /data/rock-verify.expected)" ]
+  echo "ROCK_REBOOT_PERSISTENCE_PASS completed=$before"
+else
+  [ "$before" = 0 ]
+  echo ROCK_FIRST_BOOT_PASS
+fi
+/usr/bin/rockctl self-test
+status=$(/usr/bin/rockctl status)
+after=$(printf '%s\n' "$status" | sed -n 's/.* completed=\([0-9][0-9]*\)$/\1/p')
+[ "$after" -eq "$((before + 1))" ]
+printf '%s\n' "$after" > /data/rock-verify.expected
+sync
+# This uses private /tmp state, leaving the persistent service untouched.
+/usr/libexec/rocktest /usr/sbin/rockd /usr/bin/rockctl

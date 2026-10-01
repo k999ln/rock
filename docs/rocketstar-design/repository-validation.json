@@ -1,0 +1,32 @@
+{
+  "schema": "rocketstar-repository-validation/1",
+  "validated_on": "2026-09-24",
+  "base_commit": "261251871115c782790ec8cc752a3dd4077a2ec0",
+  "scope": "Design archive and documentation integration; runtime source unchanged",
+  "archive_command": "python3 scripts/verify-rocketstar-archive.py --git --source ORIGINAL_TASK_PATH",
+  "archive_checks_passed": 15,
+  "source_files_matched": 932,
+  "source_bytes_matched": 148595667,
+  "zip_crc_checks_passed": 8,
+  "product_baseline_check": "PASS",
+  "design_document_index_check": "PASS",
+  "project_status_check": "PASS",
+  "git_diff_check": "PASS",
+  "repository_command": "npm run verify",
+  "repository_result": "PASS",
+  "environment": {
+    "platform": "macOS",
+    "node": "26.0.0",
+    "npm": "11.12.1",
+    "dependencies": "npm ci --ignore-scripts using existing package-lock.json",
+    "local_test_server_permissions": "Verification completed with local execution permissions after the restricted run stalled in Miniflare-based tests"
+  },
+  "local_api_assertions_passed": 149,
+  "source_inventory": "inventory.json",
+  "archive_evidence": "verification.json",
+  "remote_ci": "Use the pull request or commit checks for the exact published SHA; this record is local verification",
+  "site_deployed": false,
+  "os_image_changed": false,
+  "manufacturing_release": false,
+  "flight_release": false
+}

@@ -1,0 +1,66 @@
+name: Release signing control tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/release_signing*.py
+      - scripts/check-release-signing.mjs
+      - scripts/prepare_release_candidate.py
+      - scripts/verify_owner_legal_approval.py
+      - systems/rock-star-os/os/desktop/package_preview.py
+      - systems/rock-star-os/os/desktop/preview.py
+      - tests/test_release_signing.py
+      - tests/test_release_signing_owner.py
+      - tests/test_prepare_release_candidate.py
+      - tests/test_owner_legal_approval.py
+      - docs/owner-legal-approval.md
+      - .github/workflows/release-signing*.yml
+      - data/release-trust*.json
+      - data/release-signing-policy*.json
+      - data/release-signing-control-protection.json
+      - data/qemu-release-audit.json
+      - data/release-readiness.json
+      - package.json
+  pull_request:
+    paths:
+      - scripts/release_signing*.py
+      - scripts/check-release-signing.mjs
+      - scripts/prepare_release_candidate.py
+      - scripts/verify_owner_legal_approval.py
+      - systems/rock-star-os/os/desktop/package_preview.py
+      - systems/rock-star-os/os/desktop/preview.py
+      - tests/test_release_signing.py
+      - tests/test_release_signing_owner.py
+      - tests/test_prepare_release_candidate.py
+      - tests/test_owner_legal_approval.py
+      - docs/owner-legal-approval.md
+      - .github/workflows/release-signing*.yml
+      - data/release-trust*.json
+      - data/release-signing-policy*.json
+      - data/release-signing-control-protection.json
+      - data/qemu-release-audit.json
+      - data/release-readiness.json
+      - package.json
+permissions:
+  contents: read
+concurrency:
+  group: release-signing-fixtures-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
+jobs:
+  public-fixture-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Verify public-fixture mechanics and rejection boundaries
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          python3 -m unittest discover -s tests -p test_release_signing.py -v
+          python3 -m unittest discover -s tests -p test_release_signing_owner.py -v
+          python3 -m unittest discover -s tests -p test_prepare_release_candidate.py -v
+          python3 -m unittest discover -s tests -p test_owner_legal_approval.py -v
+      # No production Environment, signing secret, dependency install, or write token.

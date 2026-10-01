@@ -1,0 +1,10 @@
+{
+  "schema": "rock-citation-quality-preparation/1",
+  "status": "FAIL",
+  "recorded_utc": "2026-09-10T07:13:59.475248+00:00",
+  "scope": "Preparation only, no product process ran",
+  "path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/citation-source-quality-01",
+  "cause": "Expected PC result placed the --- line after the blank line, inconsistent with previously retained exact155byte/hash output. Fixed expected fixture from original preserved PC output before running a new directory.",
+  "product_invocations": 0,
+  "retry_directory": "citation-source-quality-02"
+}

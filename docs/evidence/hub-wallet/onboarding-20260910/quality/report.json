@@ -1,0 +1,44 @@
+{
+  "schema": "rock-citation-source-quality/1",
+  "status": "PASS_SCOPED_SOURCE_QUALITY",
+  "plan_sha256": "fb478dab38c66789fc37e8a52bf23bca15453a73ac3c7f79cb861aad94a31af1",
+  "started_utc": "2026-09-10T07:10:14.033437+00:00",
+  "results": [
+    {
+      "path": "before",
+      "exit_code": 0,
+      "machine_process_seconds": 0.020059042028151453,
+      "output_bytes": 151,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "exact_expected_output": true
+    },
+    {
+      "path": "after",
+      "exit_code": 0,
+      "machine_process_seconds": 0.019380625046323985,
+      "output_bytes": 151,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "exact_expected_output": true
+    },
+    {
+      "path": "pc",
+      "exit_code": 0,
+      "machine_process_seconds": 0.03975512500619516,
+      "output_bytes": 155,
+      "output_sha256": "30dafde5d3c32d7c690276656f8d5ed0ff924b2c9b5617ede86820efc0b1a0f6",
+      "exact_expected_output": true
+    }
+  ],
+  "source_unchanged": true,
+  "native_before_after_byte_equal": true,
+  "native_pc_byte_equal": false,
+  "difference": "PC contains the four-byte Markdown separator ---\\n before ## 出典; output is not normalized",
+  "preserved_quality": [
+    "code block and its example citation unchanged",
+    "body citation moved to source list",
+    "original citation link target and label retained"
+  ],
+  "human_time": "NOT_MEASURED",
+  "final_os_acceptance": "NOT_RUN",
+  "finished_utc": "2026-09-10T07:10:14.114180+00:00"
+}

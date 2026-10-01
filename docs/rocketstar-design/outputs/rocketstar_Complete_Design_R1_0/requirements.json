@@ -1,0 +1,1058 @@
+{
+  "schema_version": "1.0",
+  "register_revision": "R1.0-design",
+  "as_of": "2026-09-24",
+  "source_register": "outputs/rocketstar_C3_package/design_register.json",
+  "status": "design_requirements",
+  "gate_semantics": "gateは本要求の確認に必要な証拠を求める段階。通過、採用数値の確定、実機検証または認定を表さない。後続段階での再検証は変更影響により決める。",
+  "gates": {
+    "G0": "要求・配置",
+    "G1": "成立性",
+    "G2": "詳細設計",
+    "G3": "製造・地上評価",
+    "G4": "飛行・回収実証",
+    "G5": "再飛行適合"
+  },
+  "evidence_semantics": "required_evidenceは今後取得・審査する必要証拠であり、取得済み証拠の一覧ではない。",
+  "items": [
+    {
+      "id": "RSR-001",
+      "statement": "両段を回収し、同一個体として再飛行できる無人二段式を製品要求とし、両段回収と両段再使用の実証を別に記録すること。",
+      "section_key": "scope",
+      "rdr_links": [
+        "RDR-001",
+        "RDR-037"
+      ],
+      "verification_method": "要求審査",
+      "gate": "G0",
+      "required_evidence": [
+        "要求承認記録",
+        "回収・再使用の実証定義"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-002",
+      "statement": "基準ミッションの搭載物、軌道、運用範囲、射場・回収地点を版管理し、比較用仮定と採用要求を区別すること。",
+      "section_key": "mission",
+      "rdr_links": [
+        "RDR-002",
+        "RDR-029"
+      ],
+      "verification_method": "要求・運用構想審査",
+      "gate": "G0",
+      "required_evidence": [
+        "基準ミッション票",
+        "仮定・未決事項台帳"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-003",
+      "statement": "上昇、搭載物放出、軌道離脱、帰還、接地までを同じ機体構成と資源台帳で整合評価すること。",
+      "section_key": "mission",
+      "rdr_links": [
+        "RDR-004",
+        "RDR-005"
+      ],
+      "verification_method": "統合成立性解析",
+      "gate": "G1",
+      "required_evidence": [
+        "統合解析報告",
+        "入力構成一覧",
+        "分散・感度評価"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-004",
+      "statement": "段、段間、衛星保持物、保持式扉、熱防護、着陸装置の所属と通常飛行中に残る部品を構成表で定義すること。",
+      "section_key": "configuration",
+      "rdr_links": [
+        "RDR-003",
+        "RDR-011"
+      ],
+      "verification_method": "構成審査",
+      "gate": "G0",
+      "required_evidence": [
+        "機体構成表",
+        "段別部品所属表"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-005",
+      "statement": "意匠の銀色・黒い縦面・シアン表示を設計図に対応付け、意匠だけから材料、開口、発光機器、耐熱機能を指定しないこと。",
+      "section_key": "appearance",
+      "rdr_links": [
+        "RDR-006",
+        "RDR-007"
+      ],
+      "verification_method": "図面・意匠整合審査",
+      "gate": "G2",
+      "required_evidence": [
+        "意匠と工学図面の対応表",
+        "変更影響記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-006",
+      "statement": "採用外形、内部配置、収納・掃引包絡、整備アクセスを共通座標と公差付きの承認図面で管理すること。",
+      "section_key": "geometry",
+      "rdr_links": [
+        "RDR-007",
+        "RDR-032"
+      ],
+      "verification_method": "図面検査・干渉解析",
+      "gate": "G2",
+      "required_evidence": [
+        "外形・組立図",
+        "包絡モデル",
+        "公差・干渉検討記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-007",
+      "statement": "各段の乾燥質量、搭載物、消耗品、保持部品、残留物を重複なく積み上げ、状態別質量の正本を一つにすること。",
+      "section_key": "mass",
+      "rdr_links": [
+        "RDR-004",
+        "RDR-032"
+      ],
+      "verification_method": "質量台帳照合",
+      "gate": "G1",
+      "required_evidence": [
+        "状態別質量台帳",
+        "部品別計上規則",
+        "差分照合結果"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-008",
+      "statement": "質量・資源の推定、実測、誤差、設計余裕を分離し、未確定値をゼロに置き換えず成立性への影響を示すこと。",
+      "section_key": "mass",
+      "rdr_links": [
+        "RDR-004",
+        "RDR-005"
+      ],
+      "verification_method": "不確かさ・感度解析",
+      "gate": "G1",
+      "required_evidence": [
+        "誤差・余裕台帳",
+        "成立性への感度報告"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-009",
+      "statement": "衛星の放出状態、残留物、消耗に対応した重心・慣性を構造、熱、制御、着陸の解析へ同じ版で渡すこと。",
+      "section_key": "mass",
+      "rdr_links": [
+        "RDR-004",
+        "RDR-010",
+        "RDR-022",
+        "RDR-032"
+      ],
+      "verification_method": "モデル整合審査",
+      "gate": "G2",
+      "required_evidence": [
+        "状態別質量特性モデル",
+        "解析間入力照合記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-010",
+      "statement": "帰還、再始動、待機、安全化までに必要な推進剤・電力等を上昇と共通の資源予算に含めること。",
+      "section_key": "mass",
+      "rdr_links": [
+        "RDR-004",
+        "RDR-016",
+        "RDR-026"
+      ],
+      "verification_method": "資源予算解析",
+      "gate": "G1",
+      "required_evidence": [
+        "全行程資源予算",
+        "使用不能量・残留量の根拠"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-011",
+      "statement": "打上げ前、飛行、段分離後、帰還、接地、引渡し、整備、再飛行の状態と各段の管理責任を定義すること。",
+      "section_key": "lifecycle",
+      "rdr_links": [
+        "RDR-001",
+        "RDR-029",
+        "RDR-031",
+        "RDR-034"
+      ],
+      "verification_method": "運用状態審査",
+      "gate": "G0",
+      "required_evidence": [
+        "段別ライフサイクル図",
+        "状態と責任の対応表"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-012",
+      "statement": "段分離後の各段が他段や地上通信に依存せず、必要な電源、計算、計測、時刻保持、記録の機能を持つこと。",
+      "section_key": "av1",
+      "rdr_links": [
+        "RDR-021",
+        "RDR-024",
+        "RDR-026",
+        "RDR-027"
+      ],
+      "verification_method": "機能分担解析・接続審査",
+      "gate": "G2",
+      "required_evidence": [
+        "段別機能配置図",
+        "依存関係解析",
+        "分離時ICD"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-013",
+      "statement": "図面、解析モデル、ソフト、ICD、試験構成を適用機番と便に結び付け、変更時に影響先と再検証範囲を記録すること。",
+      "section_key": "v1",
+      "rdr_links": [
+        "RDR-006",
+        "RDR-034",
+        "RDR-038"
+      ],
+      "verification_method": "構成管理監査",
+      "gate": "G2",
+      "required_evidence": [
+        "構成識別規則",
+        "構成ベースライン",
+        "変更・適用性記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-014",
+      "statement": "採用材料の許容値、調達状態、温度・腐食環境への適用性を根拠資料と対応する試験で裏付けること。",
+      "section_key": "manufacture",
+      "rdr_links": [
+        "RDR-008",
+        "RDR-039"
+      ],
+      "verification_method": "材料適合審査",
+      "gate": "G2",
+      "required_evidence": [
+        "材料仕様・許容値根拠",
+        "環境適合評価",
+        "材料検証計画"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-015",
+      "statement": "タンク、主構造、開口補強、機器取付部の荷重経路と流体・温度・圧力条件を実形状の解析へ結び付けること。",
+      "section_key": "v2",
+      "rdr_links": [
+        "RDR-009",
+        "RDR-010"
+      ],
+      "verification_method": "構造・タンク設計解析",
+      "gate": "G2",
+      "required_evidence": [
+        "構造モデル",
+        "タンク設計図",
+        "荷重・境界条件一覧"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-016",
+      "statement": "接合、溶接、検査工程の適用条件を認識し、工程の承認根拠と製造個体の作業・検査記録を追跡できること。",
+      "section_key": "manufacture",
+      "rdr_links": [
+        "RDR-009",
+        "RDR-039"
+      ],
+      "verification_method": "工程審査・実部品検査",
+      "gate": "G3",
+      "required_evidence": [
+        "接合・溶接工程仕様",
+        "工程評価結果",
+        "個体別製造検査記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-017",
+      "statement": "採用した飛行・熱・流体条件で強度、座屈、疲労、振動、変形が機能限界に適合することを示すこと。",
+      "section_key": "v2",
+      "rdr_links": [
+        "RDR-008",
+        "RDR-010"
+      ],
+      "verification_method": "構造解析・設計審査",
+      "gate": "G2",
+      "required_evidence": [
+        "強度・座屈・疲労解析",
+        "振動・変形評価",
+        "許容値と係数の適用根拠"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-018",
+      "statement": "地上支持、吊上げ、輸送、海上・陸上回収から機体に入る荷重を飛行荷重と区別して評価すること。",
+      "section_key": "v2",
+      "rdr_links": [
+        "RDR-010",
+        "RDR-030",
+        "RDR-031"
+      ],
+      "verification_method": "支持・取扱荷重解析",
+      "gate": "G2",
+      "required_evidence": [
+        "支持点・吊点仕様",
+        "地上・回収荷重条件",
+        "構造適合評価"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-019",
+      "statement": "段分離機構の保持、解除、状態検知、分離後干渉を対象構成で検証し、指令送信を分離完了と扱わないこと。",
+      "section_key": "v5",
+      "rdr_links": [
+        "RDR-011",
+        "RDR-020"
+      ],
+      "verification_method": "機構試験・故障注入",
+      "gate": "G3",
+      "required_evidence": [
+        "段分離ICD",
+        "機構試験結果",
+        "状態検知・干渉評価"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-020",
+      "statement": "保持式扉の位置と固定を別に検知し、温度・荷重・変形下での保持、干渉、継目の熱防護を検証すること。",
+      "section_key": "v4",
+      "rdr_links": [
+        "RDR-011",
+        "RDR-018"
+      ],
+      "verification_method": "機構・熱構造試験",
+      "gate": "G3",
+      "required_evidence": [
+        "扉・ラッチ組立仕様",
+        "閉鎖・固定読戻し試験",
+        "熱変形・保持評価"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-021",
+      "statement": "着陸装置が対象構成と支持面条件の接地・横荷重、滑り、転倒、機体変形に適合することを検証すること。",
+      "section_key": "v6",
+      "rdr_links": [
+        "RDR-012",
+        "RDR-029"
+      ],
+      "verification_method": "代表荷重試験・接地安定解析",
+      "gate": "G3",
+      "required_evidence": [
+        "着陸装置試験結果",
+        "接地面条件",
+        "安定性評価"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-022",
+      "statement": "両段のLOX・液体メタン採用方針と部品共通化を区別し、共通化する範囲と段固有の要求を明記すること。",
+      "section_key": "v3",
+      "rdr_links": [
+        "RDR-013",
+        "RDR-014"
+      ],
+      "verification_method": "推進構成審査",
+      "gate": "G1",
+      "required_evidence": [
+        "推進系機能構成",
+        "共通化・専用品の区分表"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-023",
+      "statement": "主推進と上段着陸推進の候補について機体への取付、性能適用範囲、熱・振動、寿命、保守条件を選定根拠に含めること。",
+      "section_key": "v3",
+      "rdr_links": [
+        "RDR-014",
+        "RDR-016"
+      ],
+      "verification_method": "機器選定・接続審査",
+      "gate": "G2",
+      "required_evidence": [
+        "候補評価・選定根拠",
+        "機器ICD",
+        "性能・寿命の根拠資料"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-024",
+      "statement": "貯蔵、供給、加圧、排出、保護、計測、地上接続を機能系統図と機器ICDで管理し、未確定の作動値を確定扱いしないこと。",
+      "section_key": "v3",
+      "rdr_links": [
+        "RDR-015",
+        "RDR-030"
+      ],
+      "verification_method": "系統・接続・故障解析",
+      "gate": "G2",
+      "required_evidence": [
+        "推進系統図",
+        "機器・計測点一覧",
+        "ICD",
+        "故障解析"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-025",
+      "statement": "再始動、残液、着陸用供給に関する候補機器の能力を使用条件に対応する試験で確認し、比較計算を採用根拠の代用にしないこと。",
+      "section_key": "v3",
+      "rdr_links": [
+        "RDR-014",
+        "RDR-016"
+      ],
+      "verification_method": "採用構成の機能試験",
+      "gate": "G3",
+      "required_evidence": [
+        "供給条件の適合証拠",
+        "再始動・残量評価",
+        "対象構成の試験記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-026",
+      "statement": "上段の熱防護領域、端部、可動部、扉、継目、取付部を外形の版と対応付け、熱・圧力履歴を領域別に定義すること。",
+      "section_key": "v4",
+      "rdr_links": [
+        "RDR-017",
+        "RDR-018"
+      ],
+      "verification_method": "熱防護配置・環境解析",
+      "gate": "G2",
+      "required_evidence": [
+        "TPS領域図",
+        "加熱・圧力履歴",
+        "配置と外形の対応表"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-027",
+      "statement": "TPS材料、断熱、取付、隙間、内部機器温度を繰返し使用条件と合わせて評価すること。",
+      "section_key": "v4",
+      "rdr_links": [
+        "RDR-018",
+        "RDR-036"
+      ],
+      "verification_method": "熱・熱構造設計解析",
+      "gate": "G2",
+      "required_evidence": [
+        "材料・取付候補の評価",
+        "機内熱モデル",
+        "繰返し使用の評価計画"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-028",
+      "statement": "TPSの材料試験から継目・取付部を含む部分試験へ段階を進め、機体モデルとの相関と再使用後の性質を確認すること。",
+      "section_key": "v4",
+      "rdr_links": [
+        "RDR-018",
+        "RDR-035",
+        "RDR-038"
+      ],
+      "verification_method": "材料・部分構造試験",
+      "gate": "G3",
+      "required_evidence": [
+        "TPS試験結果",
+        "モデル相関記録",
+        "試験後検査結果"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-029",
+      "statement": "軌道離脱前に必要なTPS状態評価の観測、判定範囲、確認不能時の扱いを定め、正常状態の仮定だけで帰還可能と判定しないこと。",
+      "section_key": "v4",
+      "rdr_links": [
+        "RDR-019",
+        "RDR-023"
+      ],
+      "verification_method": "状態評価設計・飛行証拠照合",
+      "gate": "G4",
+      "required_evidence": [
+        "状態評価仕様",
+        "飛行中観測の証拠",
+        "判断根拠と未確認事項"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-030",
+      "statement": "第1段海上回収と第2段陸上帰還を別環境として評価し、帰還・着陸の成立条件を同じ質量、熱、資源、機器構成で示すこと。",
+      "section_key": "v6",
+      "rdr_links": [
+        "RDR-005",
+        "RDR-017",
+        "RDR-022",
+        "RDR-029"
+      ],
+      "verification_method": "統合帰還成立性解析",
+      "gate": "G1",
+      "required_evidence": [
+        "段別帰還条件",
+        "統合解析入力",
+        "不確かさを含む成立性報告"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-031",
+      "statement": "座標系、単位、時刻系、時刻品質、測定時刻と受信時刻を区別し、航法・機構・地上記録で解釈を一致させること。",
+      "section_key": "av4",
+      "rdr_links": [
+        "RDR-021",
+        "RDR-033"
+      ],
+      "verification_method": "データICD審査",
+      "gate": "G2",
+      "required_evidence": [
+        "座標・時刻仕様",
+        "単位・符号規則",
+        "時刻品質と誤差の定義"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-032",
+      "statement": "航法・操舵に必要な観測の品質、故障、遅延を識別し、センサー入力を失った場合の適用可能な状態を検証すること。",
+      "section_key": "av1",
+      "rdr_links": [
+        "RDR-020",
+        "RDR-021",
+        "RDR-023"
+      ],
+      "verification_method": "センサー統合試験・故障注入",
+      "gate": "G3",
+      "required_evidence": [
+        "センサー統合試験記録",
+        "誤差・遅延評価",
+        "故障注入結果"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-033",
+      "statement": "飛行制御、姿勢遷移、着陸機能の検証構成と対象範囲を定義し、模擬環境の結果を実飛行実績として扱わないこと。",
+      "section_key": "v6",
+      "rdr_links": [
+        "RDR-022",
+        "RDR-028",
+        "RDR-038"
+      ],
+      "verification_method": "統合模型・機器結合試験",
+      "gate": "G3",
+      "required_evidence": [
+        "制御機能検証計画",
+        "試験構成・条件",
+        "模型と実機の差異台帳"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-034",
+      "statement": "故障の発生、検知、隔離、影響を段別に評価し、共通原因と単一の観測だけでは確定できない状態を特定すること。",
+      "section_key": "reliability",
+      "rdr_links": [
+        "RDR-023",
+        "RDR-027"
+      ],
+      "verification_method": "故障・共通原因解析",
+      "gate": "G2",
+      "required_evidence": [
+        "故障解析台帳",
+        "共通原因評価",
+        "状態不確実性の一覧"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-035",
+      "statement": "独立飛行安全機能と飛行電装、地上設備、端末の境界を定義し、依存関係と必要な独立性を対象構成で検証すること。",
+      "section_key": "reliability",
+      "rdr_links": [
+        "RDR-023",
+        "RDR-027",
+        "RDR-040"
+      ],
+      "verification_method": "独立性審査・統合試験",
+      "gate": "G3",
+      "required_evidence": [
+        "安全機能境界図",
+        "独立性評価",
+        "対象構成試験記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-036",
+      "statement": "回路図、電源配分、保護、監視、電子機器BOMを一致させ、電源系統の正本を機番と版で識別すること。",
+      "section_key": "av4",
+      "rdr_links": [
+        "RDR-024",
+        "RDR-026",
+        "RDR-039"
+      ],
+      "verification_method": "電装設計審査",
+      "gate": "G2",
+      "required_evidence": [
+        "回路図・電源系統図",
+        "電子機器BOM",
+        "設計照合記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-037",
+      "statement": "ハーネス、端子、接地、遮蔽、電磁適合を両側の接続条件として管理し、代表構成の電気・通信干渉試験で確認すること。",
+      "section_key": "av4",
+      "rdr_links": [
+        "RDR-025",
+        "RDR-033"
+      ],
+      "verification_method": "ハーネス検査・電磁適合試験",
+      "gate": "G3",
+      "required_evidence": [
+        "ハーネス・端子表",
+        "接地・遮蔽仕様",
+        "干渉試験結果"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-038",
+      "statement": "各段の蓄電と電源供給が帰還後の待機・引渡しまで必要な負荷を支え、劣化、温度、切離し状態を含むことを確認すること。",
+      "section_key": "av1",
+      "rdr_links": [
+        "RDR-024",
+        "RDR-026"
+      ],
+      "verification_method": "電力解析・代表負荷試験",
+      "gate": "G3",
+      "required_evidence": [
+        "全行程負荷予算",
+        "蓄電能力の根拠",
+        "代表負荷・切離し試験"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-039",
+      "statement": "飛行ソフトのOS、CPU、BSP、ライブラリ、コンパイラを固定して評価し、cFSとRTEMSの候補選定を搭載認定と扱わないこと。",
+      "section_key": "av2",
+      "rdr_links": [
+        "RDR-028",
+        "RDR-038"
+      ],
+      "verification_method": "ソフト構成・適用性審査",
+      "gate": "G2",
+      "required_evidence": [
+        "評価構成表",
+        "互換性・適用性根拠",
+        "未解決項目台帳"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-040",
+      "statement": "飛行ソフトを再現可能にビルドし、対象構成、入力、期待結果、故障注入、結果の証拠を要求へ追跡できること。",
+      "section_key": "av6",
+      "rdr_links": [
+        "RDR-006",
+        "RDR-028",
+        "RDR-038"
+      ],
+      "verification_method": "再現ビルド・ソフト統合試験",
+      "gate": "G3",
+      "required_evidence": [
+        "ビルド環境・版・ダイジェスト",
+        "試験記録",
+        "要求と試験の対応表"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-041",
+      "statement": "地上要求の身元、認可、対象機器、構成、期限、内容の同一性を検証し、AIや端末表示から飛行操作権限を得られないこと。",
+      "section_key": "av5",
+      "rdr_links": [
+        "RDR-027",
+        "RDR-033"
+      ],
+      "verification_method": "認可境界試験・審査",
+      "gate": "G3",
+      "required_evidence": [
+        "認証・認可設計",
+        "要求全体の結合仕様",
+        "拒否・改変試験結果"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-042",
+      "statement": "時刻品質低下、再起動、期限切れ、通信断からの復帰時に要求の有効性を再評価し、過去の受領を新たな実行許可にしないこと。",
+      "section_key": "av4",
+      "rdr_links": [
+        "RDR-021",
+        "RDR-027",
+        "RDR-033"
+      ],
+      "verification_method": "時刻・再起動・再接続試験",
+      "gate": "G3",
+      "required_evidence": [
+        "時刻品質と有効性規則",
+        "再起動識別仕様",
+        "期限・再接続試験結果"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-043",
+      "statement": "衛星側分離部品を衛星質量、上段に残るアダプター・保持物を上段質量へ計上し、搭載機ごとの質量特性を確認すること。",
+      "section_key": "av3",
+      "rdr_links": [
+        "RDR-004",
+        "RDR-032"
+      ],
+      "verification_method": "搭載物質量整合解析",
+      "gate": "G1",
+      "required_evidence": [
+        "機別搭載物台帳",
+        "部品所属・質量照合表"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-044",
+      "statement": "衛星の取付面、収納・掃引包絡、重心・慣性、離隔条件、取扱い条件を衛星側と上段側で合意すること。",
+      "section_key": "av3",
+      "rdr_links": [
+        "RDR-007",
+        "RDR-032",
+        "RDR-033"
+      ],
+      "verification_method": "搭載物機械ICD審査",
+      "gate": "G2",
+      "required_evidence": [
+        "搭載物機械ICD",
+        "干渉・分離解析",
+        "両側承認記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-045",
+      "statement": "衛星への電力供給、データ、時刻、電気切離し、送信・展開禁止の境界を定義し、未採用の電圧や方式を確定扱いしないこと。",
+      "section_key": "av4",
+      "rdr_links": [
+        "RDR-025",
+        "RDR-032",
+        "RDR-033"
+      ],
+      "verification_method": "搭載物電装ICD審査",
+      "gate": "G2",
+      "required_evidence": [
+        "搭載物電力・データICD",
+        "切離し境界",
+        "禁止・許可条件の責任表"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-046",
+      "statement": "衛星保持、区画内有無、衛星自身の健康状態、扉位置、固定の読戻しを区別し、データ欠落を放出成功に変換しないこと。",
+      "section_key": "av3",
+      "rdr_links": [
+        "RDR-011",
+        "RDR-032",
+        "RDR-033"
+      ],
+      "verification_method": "読戻し・故障注入試験",
+      "gate": "G3",
+      "required_evidence": [
+        "状態・信号の意味定義",
+        "矛盾・欠落試験結果",
+        "放出確認の証拠規則"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-047",
+      "statement": "衛星残留、解除のみ確認、扉閉鎖不能、状態不明を別構成として扱い、承認済みの評価がない状態を正常帰還可能と判定しないこと。",
+      "section_key": "v5",
+      "rdr_links": [
+        "RDR-005",
+        "RDR-011",
+        "RDR-019",
+        "RDR-032"
+      ],
+      "verification_method": "異常構成解析・故障注入",
+      "gate": "G3",
+      "required_evidence": [
+        "異常構成台帳",
+        "残留質量・熱・拘束評価",
+        "状態判定試験"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-048",
+      "statement": "A-LINKの衛星通信サービスと打上げ機の飛行系を分離し、外部サービスの受信成功を飛行指令や衛星放出の成功と扱わないこと。",
+      "section_key": "av5",
+      "rdr_links": [
+        "RDR-027",
+        "RDR-033"
+      ],
+      "verification_method": "サービス・飛行系境界審査",
+      "gate": "G2",
+      "required_evidence": [
+        "通信サービス境界図",
+        "接続可否・責任表",
+        "データ種別定義"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-049",
+      "statement": "地上側は受信、認可、受理、実行、物理読戻しを区別し、結果不明時は照合を優先して実行要求を自動再発行しないこと。",
+      "section_key": "av5",
+      "rdr_links": [
+        "RDR-027",
+        "RDR-033"
+      ],
+      "verification_method": "通信断・重複・結果照合試験",
+      "gate": "G3",
+      "required_evidence": [
+        "要求・結果状態仕様",
+        "重複防止規則",
+        "未知結果の照合試験"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-050",
+      "statement": "Ops Coreは構成・履歴・観測の管理を担い、各段の即時判断は搭載系が持つこと。またavokadoの電源ボタン操作を飛行コマンドにしないこと。",
+      "section_key": "ground",
+      "rdr_links": [
+        "RDR-027",
+        "RDR-028",
+        "RDR-033"
+      ],
+      "verification_method": "機能分担・端末境界試験",
+      "gate": "G3",
+      "required_evidence": [
+        "地上・搭載機能分担",
+        "端末イベント経路",
+        "切断・端末操作の境界試験"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-051",
+      "statement": "発射・整備・充填設備の支持、電力、流体、接地、データの接続を機体構成と一致させ、接続状態を引渡し記録に残すこと。",
+      "section_key": "ground",
+      "rdr_links": [
+        "RDR-025",
+        "RDR-030",
+        "RDR-033"
+      ],
+      "verification_method": "地上設備適合審査・接続試験",
+      "gate": "G3",
+      "required_evidence": [
+        "地上設備図・ICD",
+        "接続適合試験",
+        "引渡し様式"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-052",
+      "statement": "回収設備、固定、吊上げ、輸送の仕様を機体の残留状態と構造許容条件に対応させ、確認不能事項を引渡し時に継承すること。",
+      "section_key": "ground",
+      "rdr_links": [
+        "RDR-010",
+        "RDR-029",
+        "RDR-031"
+      ],
+      "verification_method": "回収設備適合審査・取扱評価",
+      "gate": "G3",
+      "required_evidence": [
+        "回収・輸送ICD",
+        "支持・固定の適合証拠",
+        "機番付き引渡し記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-053",
+      "statement": "射場、回収区域、飛行・再突入の運用適合と必要な承認を便別に確認し、設計書の存在を運用リリースと扱わないこと。",
+      "section_key": "ground",
+      "rdr_links": [
+        "RDR-029",
+        "RDR-040"
+      ],
+      "verification_method": "運用適合・リリース審査",
+      "gate": "G4",
+      "required_evidence": [
+        "適用区域・条件の根拠",
+        "必要承認一覧と取得証拠",
+        "便別運用リリース"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-054",
+      "statement": "段、主要構造、機器、交換部品の個体識別と製造・試験・飛行・保管の履歴を継続し、不明な履歴を新造同等と扱わないこと。",
+      "section_key": "lifecycle",
+      "rdr_links": [
+        "RDR-034",
+        "RDR-036",
+        "RDR-039"
+      ],
+      "verification_method": "個体追跡監査",
+      "gate": "G3",
+      "required_evidence": [
+        "個体識別規則",
+        "製造・試験履歴",
+        "部品交換・所在記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-055",
+      "statement": "回収後検査の範囲、非破壊検査の検出能力、計測器校正、合否値、逸脱処置、修理後の再確認を機番ごとに記録すること。",
+      "section_key": "v7",
+      "rdr_links": [
+        "RDR-035",
+        "RDR-038"
+      ],
+      "verification_method": "回収検査・修理記録審査",
+      "gate": "G5",
+      "required_evidence": [
+        "回収時状態記録",
+        "検査・校正結果",
+        "修理・交換・再試験証拠"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-056",
+      "statement": "再使用寿命と交換周期を対象構成の負荷履歴と劣化根拠から判定し、未実証の再使用回数・整備日数を保証値にしないこと。",
+      "section_key": "v7",
+      "rdr_links": [
+        "RDR-035",
+        "RDR-036"
+      ],
+      "verification_method": "寿命評価・整備実績照合",
+      "gate": "G5",
+      "required_evidence": [
+        "寿命モデル",
+        "個体負荷・劣化履歴",
+        "整備・交換の実績"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-057",
+      "statement": "同じ両段の機番が打上げ、回収、整備、次の飛行・回収まで連続する証拠で両段再使用を示し、主構造を丸ごと交換した段を同一個体と数えないこと。",
+      "section_key": "v8",
+      "rdr_links": [
+        "RDR-001",
+        "RDR-034",
+        "RDR-037"
+      ],
+      "verification_method": "同一個体再飛行実績審査",
+      "gate": "G5",
+      "required_evidence": [
+        "同一個体の判定規則",
+        "連続した便別記録",
+        "再飛行後回収記録"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-058",
+      "statement": "要求ごとに方法、構成、条件、合否基準、必要設備、計測誤差、確認者を定め、模型・地上・飛行の証拠を区別すること。",
+      "section_key": "verification",
+      "rdr_links": [
+        "RDR-038"
+      ],
+      "verification_method": "検証計画審査",
+      "gate": "G2",
+      "required_evidence": [
+        "要求検証マトリクス",
+        "試験仕様・設備計画",
+        "証拠種別と適用性の規則"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-059",
+      "statement": "部品BOM、供給者根拠、受入検査、製造工程、品質逸脱を構成と機番に結び付け、未承認代替品を同等品として扱わないこと。",
+      "section_key": "manufacture",
+      "rdr_links": [
+        "RDR-006",
+        "RDR-039"
+      ],
+      "verification_method": "調達・製造・品質監査",
+      "gate": "G3",
+      "required_evidence": [
+        "調達・部品BOM",
+        "受入・製造記録",
+        "代替品評価・逸脱処置"
+      ],
+      "physical_verified": false
+    },
+    {
+      "id": "RSR-060",
+      "statement": "G0からG5の要求証拠と責任を段階ごとに定め、初回飛行の許可、回収実績、再飛行適合を個別に審査すること。",
+      "section_key": "development",
+      "rdr_links": [
+        "RDR-037",
+        "RDR-038",
+        "RDR-040"
+      ],
+      "verification_method": "開発・リリース計画審査",
+      "gate": "G0",
+      "required_evidence": [
+        "開発ゲート計画",
+        "判定責任・独立確認の規則",
+        "未取得証拠の台帳"
+      ],
+      "physical_verified": false
+    }
+  ]
+}

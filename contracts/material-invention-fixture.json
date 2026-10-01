@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "goal": {
+    "id": "goal:lightweight-sheet",
+    "title": "軽量な成形シート候補の机上比較",
+    "targetProperties": ["軽量", "再成形可能"],
+    "prohibitedMaterialIds": [],
+    "prohibitedHazards": ["explosive", "radioactive", "biohazard"],
+    "maxTemperatureC": 80,
+    "maxPressureKpa": 110,
+    "allowedEquipment": ["closed-mixer"]
+  },
+  "materials": [
+    {
+      "id": "material:plant-fiber-a",
+      "name": "植物繊維A",
+      "composition": "由来と組成を記録した合成fixture",
+      "state": "solid",
+      "purityPercent": 95,
+      "source": "synthetic-test-source",
+      "lot": "fixture-lot-a",
+      "unit": "mass_fraction",
+      "uncertaintyPercent": 2,
+      "sdsRef": "fixture:sds:plant-fiber-a:v1",
+      "hazards": ["none"],
+      "regulatoryRefs": []
+    },
+    {
+      "id": "material:binder-b",
+      "name": "結合材B",
+      "composition": "由来と組成を記録した合成fixture",
+      "state": "solid",
+      "purityPercent": 98,
+      "source": "synthetic-test-source",
+      "lot": "fixture-lot-b",
+      "unit": "mass_fraction",
+      "uncertaintyPercent": 1,
+      "sdsRef": "fixture:sds:binder-b:v1",
+      "hazards": ["none"],
+      "regulatoryRefs": []
+    }
+  ],
+  "ratioPercentSteps": [25, 50, 75],
+  "process": {
+    "id": "process:fixture-mix",
+    "version": 1,
+    "steps": [
+      {
+        "order": 1,
+        "operation": "sandbox-mix",
+        "temperatureC": 25,
+        "pressureKpa": 101.325,
+        "durationSeconds": 60,
+        "atmosphere": "ambient",
+        "equipment": "closed-mixer"
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "ssh_alive_while_preparing": true,
+  "foreign_endpoint_passes_actual_websocket_probe": true,
+  "ssh_does_not_own_listener": true,
+  "actual_fixture_pid_owns_exact_listener": true,
+  "owned_child_reaped": true,
+  "foreign_listener_unchanged_after_child_cleanup": true,
+  "status": "PASS_SCOPED_MECHANISM",
+  "elapsed_seconds": 0.24363337497925386,
+  "qemu": "NOT_RUN",
+  "launcher_full_actual": "NOT_RUN",
+  "source_sha256": "16d578cc733881dd90383677061ea2dd87bd122f996e25caf0abf835420388be",
+  "python": "3.14.7",
+  "platform": "darwin"
+}

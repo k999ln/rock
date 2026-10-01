@@ -1,0 +1,35 @@
+{
+  "status": "LOCAL_BROWSER_PASS_PARTIAL_LCH04",
+  "origin": "http://localhost:5184",
+  "browser": "Codex in-app browser",
+  "identity": "Sites local synthetic user",
+  "scope": "Web/PC UI only; not hosted Site or native OS acceptance",
+  "checks": [
+    "390px mobile Hub/Wallet/settings have no horizontal overflow",
+    "1440px desktop Hub has no horizontal overflow",
+    "anonymous runner offers signin and disables input",
+    "local sign-in then citation sample produces deduplicated result",
+    "new workflow saved using /api/work-jobs",
+    "manual synthetic 888JPY book entry saved and labeled unverified",
+    "search empty result and reset work",
+    "mobile sidebar navigation closes and opens settings",
+    "old loop-app-v2 cache deleted on new service worker activation",
+    "API responses absent from loop-app-v3 cache",
+    "390px OS page has no horizontal overflow",
+    "technical demo loaded90.04s and played to23.65s, paused via real controls; error null"
+  ],
+  "pwa": {
+    "oldCacheRemoved": true,
+    "apiCacheEntries": 0,
+    "activeScript": "/sw.js",
+    "cachedPaths": [
+      "/rock-icon-192.png"
+    ]
+  },
+  "not_verified": [
+    "existing hosted Site account/project/DB",
+    "final selected CM playback and authenticated asset URL",
+    "native OS launch at new source",
+    "offline full application availability"
+  ]
+}

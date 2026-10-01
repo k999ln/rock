@@ -1,0 +1,20 @@
+{
+  "schema": "rock-public-ci-evidence/1",
+  "source_commit": "d16ba2d34e42e69ce9c948101f538658c170a68d",
+  "runs": {
+    "native": 34418134951,
+    "web": 34418134541,
+    "android": 34418134512
+  },
+  "conclusions": {
+    "native": "success",
+    "web": "success",
+    "android": "success"
+  },
+  "native_python_executions": 1357,
+  "native_checks": 14,
+  "skip_or_unclean_log": false,
+  "all_native_log_hashes_verified": true,
+  "native_source_unchanged": true,
+  "scope": "Public same-commit source CI; separate from frozen b8287bc OS and physical hardware."
+}

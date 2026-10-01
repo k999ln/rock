@@ -1,0 +1,46 @@
+{
+  "recordedAt": "2026-09-24T22:55:38-04:00",
+  "taskId": "WEB19",
+  "publicPresentation": "avocadoMini Tower20 E3",
+  "framework": "Astro 7.3.5",
+  "reference": {
+    "type": "owner-supplied screen recording and screenshots",
+    "sourceAssetsReusedWithoutRegeneration": true,
+    "historicalSiteSourceCommit": "12305e7"
+  },
+  "github": {
+    "repository": "https://github.com/k999ln/rock.git",
+    "branch": "main",
+    "sourceCommit": "4e7221de017897b74ef3ff6b5957aeeba47cfb80",
+    "status": "PUSHED"
+  },
+  "site": {
+    "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
+    "sourceCommit": "b7a3b722f04f965ea2b038ace7bee752e2945109",
+    "versionNumber": 66,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_79468a38d920819183ea0b0edfa9698e",
+    "deploymentId": "appgdep_6ab5e2a14b4c81919479f8a24538ada7",
+    "deploymentStatus": "succeeded",
+    "url": "https://avocado-mini.kirin-999.chatgpt.site",
+    "archiveSha256": "19168a17bbc5551670265c3e392fb047d4c15e2adb43963c0065352f89dcd08c",
+    "uploadedContentHash": "sha256:51c66fc5500bae8b95acb4f7be58b7c2daac361a243473904691be35c65d9226",
+    "archiveFileCount": 75
+  },
+  "checks": {
+    "siteTests": "12/12 PASS",
+    "siteBuild": "PASS — 11 Astro routes plus Worker artifact",
+    "repositoryVerify": "INCOMPLETE — root npm test remained active after completed prerequisite checks and was interrupted; Site build/tests passed independently",
+    "localBrowserHero": "PASS — four Tower20 units and separate Edge Hub",
+    "localBrowserHighlights": "PASS — four horizontal E3 cards and controls",
+    "localBrowserRockstarOS": "PASS — RockstarOS installer panel and orbit treatment",
+    "fragmentAndMetadataAudit": "PASS",
+    "thirdPartyFonts": "NONE"
+  },
+  "truthBoundaries": {
+    "conceptRendering": true,
+    "physicalHardwareTests": 0,
+    "manufacturingApproval": "HOLD",
+    "salesOpen": false,
+    "paymentTermsFinal": false
+  }
+}

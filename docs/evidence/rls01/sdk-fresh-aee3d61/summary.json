@@ -1,0 +1,205 @@
+{
+  "schema": "rock-rls01-fresh-sdk-onboarding/1",
+  "status": "PASS_INTERNAL_SYNTHETIC",
+  "source_commit": "aee3d6103a0d9a0439f49ad27a7195af56891589",
+  "source_installation": "exact git archive copied to readonly native directory in an independent new Lima VM; no prior OS or authority/client data reused",
+  "host": {
+    "architecture": "arm64",
+    "lima": "limactl version 2.2.0",
+    "openssl": "OpenSSL 3.6.3 9 Jun 2026 (Library: OpenSSL 3.6.3 9 Jun 2026)",
+    "os": "15.7.4",
+    "python": "3.14.7"
+  },
+  "vm_config_sha256": "850c8b6295c491c5490dd0027ab756d9d34608b93b6dcd211ec1ed9e1320a15e",
+  "vm_identity_sha256": "f6e9dd09caf5fb2993f47af816dc81f3bbcb16b56dcfe8d2489b44b8ae84ce2b",
+  "setting_count": 2,
+  "setting_inputs": [
+    "fixed public config",
+    "private client state"
+  ],
+  "example_code_lines": {
+    "author.py": 38,
+    "owner.py": 110
+  },
+  "machine_elapsed_seconds": {
+    "first_exchange_seconds": 7.1962837969999995,
+    "cause_identification_seconds": 0.23992959500000666,
+    "recovery_seconds": 2.2200168729999916,
+    "total_seconds": 11.700720224000001
+  },
+  "measurement_scope": "CLI harness time inside already provisioned new VM; not download/install time, external author study or human execution/diagnosis time",
+  "failure_injection": "stopped owned real TLS authority before first send of Game B quote; exact original operation/key retained UNKNOWN; diagnose reports unavailable; restart and original retry complete",
+  "not_claimed": "response loss after financial commit is covered by separate core/SIGKILL tests, not this offline failure",
+  "complete_history_items": 2,
+  "committed_minor_per_exchange": 103,
+  "held_minor_per_exchange": 0,
+  "independent_stopped_final_snapshot_sha256": "d9a131f98ee7308fdd49bf8d5a0eca22979ab499a2f4114513de08054fb5d7c6",
+  "independent_snapshot_matches_harness_final": true,
+  "independent_wallet": {
+    "accounts_minor": {
+      "AVAILABLE": 9794,
+      "GAME_FEES": 6,
+      "GAME_HOLD": 0,
+      "GAME_PURCHASES": 200,
+      "PENDING_SETTLEMENT": 0,
+      "SALE_CLEARING": -10000
+    },
+    "bill_count": 0
+  },
+  "independent_games": {
+    "game-a": {
+      "account_units": {
+        "ISSUANCE_CLEARING": -10,
+        "PLAYER_PURCHASED": 10
+      },
+      "grants": 1,
+      "epoch": 1
+    },
+    "game-b": {
+      "account_units": {
+        "ISSUANCE_CLEARING": -10,
+        "PLAYER_PURCHASED": 10
+      },
+      "grants": 1,
+      "epoch": 1
+    }
+  },
+  "authoritative_databases": 5,
+  "authoritative_tables": 71,
+  "earlier_defect": {
+    "source_commit": "9cfe6e7ecec9fcf2af742dc092982e6ce44a39e2",
+    "evidence": "../sdk-fresh-diagnostic-failure-20260910.json",
+    "status": "FAIL_RETAINED",
+    "cause": "successful stale Wallet cache return was incorrectly classified as live TLS"
+  },
+  "cleanup": {
+    "authority_stopped": true,
+    "only_owned_vm_deleted": true,
+    "force_used": false,
+    "original_events_and_private_client_state_preserved_on_host": true
+  },
+  "events": [
+    {
+      "label": "authority-start",
+      "exit_code": 0,
+      "elapsed_seconds": 0.838564943999998,
+      "original_sha256": "21d9b90365011123df606cfaec3b29a85bbfecd1f61b3fb8cf4c687acf8148e1"
+    },
+    {
+      "label": "owner-diagnose",
+      "exit_code": 0,
+      "elapsed_seconds": 0.36507751100000263,
+      "original_sha256": "209d7ddf3215ba797d8668f2d8f8df0392677cf92ebfe299c644262badebe0a5"
+    },
+    {
+      "label": "owner-wallet",
+      "exit_code": 0,
+      "elapsed_seconds": 1.699829495000003,
+      "original_sha256": "7a502e7b5ffc6b0077c19d37feb6d11f10f55bf68fe0c5df387c49fb79c34a7f"
+    },
+    {
+      "label": "owner-connect",
+      "exit_code": 0,
+      "elapsed_seconds": 0.8969124500000021,
+      "original_sha256": "eb9ff8fd74a83fafc4b72780cc1b8af67b7853f26ff3642c41025e3537c16421"
+    },
+    {
+      "label": "owner-connect",
+      "exit_code": 0,
+      "elapsed_seconds": 0.7922150290000047,
+      "original_sha256": "7819cef475095c6e72488a1b529a7247e198a3a67ad97d73c0ec9183674211be"
+    },
+    {
+      "label": "author-quote",
+      "exit_code": 0,
+      "elapsed_seconds": 0.6019952890000013,
+      "original_sha256": "b21608dab582bcb09dcc2d3c4d5b5f42c2345e4ca4361dc391410dd3f9f57757"
+    },
+    {
+      "label": "owner-quote",
+      "exit_code": 0,
+      "elapsed_seconds": 0.5791159289999968,
+      "original_sha256": "c5a9e572eaf458ac44411220ae806b1c8e2574e636f0ff18472f9782fbfb579f"
+    },
+    {
+      "label": "owner-approve",
+      "exit_code": 0,
+      "elapsed_seconds": 0.7871277100000071,
+      "original_sha256": "6cc8321ad1fccbd4260fa0a840a11f482494fe76dc28d32bd939347f34c873be"
+    },
+    {
+      "label": "owner-status",
+      "exit_code": 0,
+      "elapsed_seconds": 0.6208403529999913,
+      "original_sha256": "1af0cd5ac7fa5c21fae61b92c8115f5e352b769e0b2a3d7c4931b67c0fa2ccfb"
+    },
+    {
+      "label": "author-status",
+      "exit_code": 0,
+      "elapsed_seconds": 0.28268774200000735,
+      "original_sha256": "a3daab39ccd6c40c54a9481074dc01676f07e88f8db4f482c78470847ddd385a"
+    },
+    {
+      "label": "authority-stop",
+      "exit_code": 0,
+      "elapsed_seconds": 0.4491067419999979,
+      "original_sha256": "f5d68e29d15503b2fbe4d49c78eb6ee0081f47ae1519fe3e969ec58b32c4739d"
+    },
+    {
+      "label": "owner-quote",
+      "exit_code": 1,
+      "elapsed_seconds": 0.19329353300000207,
+      "original_sha256": "d78941f5b6262c912ed74ce7c709e7bb2fcc9d66db814cd6962b4560c7d6ddfc"
+    },
+    {
+      "label": "owner-diagnose",
+      "exit_code": 0,
+      "elapsed_seconds": 0.23964048499999535,
+      "original_sha256": "0a13c19988d55f3c94f6a2c66c3a52a1fdc474a4abd345c273c96861532d209b"
+    },
+    {
+      "label": "authority-start",
+      "exit_code": 0,
+      "elapsed_seconds": 0.680179441000007,
+      "original_sha256": "d8a18f98d4210b41a1d90d1e70ade78d3b493e149b37b1d1fc541ee85b558135"
+    },
+    {
+      "label": "owner-retry",
+      "exit_code": 0,
+      "elapsed_seconds": 0.3143195089999864,
+      "original_sha256": "b6348e794317db0d398d841479218b2fb794fbe53a9d82ab3b40d17f0424a736"
+    },
+    {
+      "label": "owner-approve",
+      "exit_code": 0,
+      "elapsed_seconds": 0.8682321800000068,
+      "original_sha256": "104a7b2d9bc4642cf999ac0f18035d2059e7917916b7a7f71155ccd75d283b69"
+    },
+    {
+      "label": "owner-status",
+      "exit_code": 0,
+      "elapsed_seconds": 0.35406231700000035,
+      "original_sha256": "2e226e2726410a83298e72728cffab79738f9336a4f770d8bb65d8bc2d9b5245"
+    },
+    {
+      "label": "owner-history",
+      "exit_code": 0,
+      "elapsed_seconds": 0.4289712200000082,
+      "original_sha256": "f09da5fbd0a9e741b301f9a6d5a24fbcfac1ef86b7a720336dfa64af3531fb21"
+    },
+    {
+      "label": "owner-diagnose",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2828432989999925,
+      "original_sha256": "ebfbbc1b510e3305f81a6b6a4de9592d07b186dbe6f12ce325ca2fd9286df1a7"
+    },
+    {
+      "label": "authority-stop",
+      "exit_code": 0,
+      "elapsed_seconds": 0.39093063000001393,
+      "original_sha256": "2ea8dd1867fafe60390ed15d6dd623fe8121f306a7e196e2c9b374d454bddb9e"
+    }
+  ],
+  "original_report_sha256": "705fcd9eb629cefc722ed545a0cebc554bd57e06734572e8ab3973b905fa2f18",
+  "independent_stopped_sha256": "fb7ead4d50f57c32b8321b82a7f47f1318c73ee0bcf6f35832a140aed2fc852b"
+}

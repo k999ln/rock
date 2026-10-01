@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "kind": "public-development-fixture",
+  "events": [
+    {
+      "schema_version": 1,
+      "issuer": "fulfillment",
+      "event_id": "fixture-os-handoff-2026-09-08",
+      "stream": "device:fixture-rock-arm64-001",
+      "sequence": 1,
+      "occurred_at": 1788825600,
+      "kind": "handoff",
+      "payload": {
+        "device_ref": "fixture-rock-arm64-001",
+        "owner_ref": "fixture-owner-alice",
+        "purchase_ref": "fixture-purchase-rock-arm64-001",
+        "verification_ref": "fixture-verification-handoff-001",
+        "verified_at": 1788825600,
+        "valid_until": 1796601600
+      },
+      "signature": "9b46f38ff4d7f81367db1975a49c887a7e6cc9d81ec3c63298a149ac1ff1f1d7"
+    }
+  ]
+}

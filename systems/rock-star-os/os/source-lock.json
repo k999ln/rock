@@ -1,0 +1,32 @@
+{
+  "target": "qemu-virt-aarch64",
+  "blackberry_model": null,
+  "buildroot": {
+    "version": "2026.08",
+    "url": "https://buildroot.org/downloads/buildroot-2026.08.tar.xz",
+    "sha256": "87aaca4164ea9d5c8085854953018263f7963f07c22e73a2a2185cc98c581c34",
+    "license": "GPL-2.0-or-later, with per-file exceptions",
+    "verification": "Official HTTPS release; pinned SHA-256 recorded at intake. Detached signature not independently verified."
+  },
+  "linux": {
+    "version": "6.18.50",
+    "url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.50.tar.xz",
+    "sha256": "d2fc041dab4e11d9645e3ba53be058faa52b8ce28a8a97c889bb2cacee170461",
+    "selection": "Current 6.18 LTS maintenance release on kernel.org at 2026-09-08; earlier 6.18.7 experiment images remain separate evidence",
+    "integrity": "Official SHA-256 plus detached developer signature over the uncompressed archive; os/security/kernel/verification.log",
+    "signer_fingerprint": "647F28654894E3BD457199BE38DBBDC86092693E",
+    "license": "GPL-2.0-only"
+  },
+  "scope": "Local development kernel and root filesystem; no secure-boot signing key, handset flash or public release.",
+  "dash": {
+    "version": "0.5.13.5",
+    "download_url": "https://sources.buildroot.net/dash/dash-0.5.13.5.tar.gz",
+    "sha256": "40090101a2a491f13e901d3d48e90414f26634628b9bfff35ff540363c227a7d",
+    "sha512": "ae326c110713a9da6b7afb977ca6fd931793b03011f0a7aa2c42e873f116ed09448deea9ef5ca4515fe3afe24e210e0aaa580f7de89934edda9cf31ee44c94dd",
+    "license": "BSD-3-Clause, GPL-2.0-or-later (mksignames.c)",
+    "license_sha256": "254a7894923ff62e69184a991dcbccae97edee58a1105e8efbe78caf10595d72",
+    "hash_source": "Buildroot 2026.08 package/dash/dash.hash (previously pinned Buildroot release)",
+    "recorded_utc": "2026-09-08T10:31:40.672345+00:00",
+    "signature": "not independently verified"
+  }
+}

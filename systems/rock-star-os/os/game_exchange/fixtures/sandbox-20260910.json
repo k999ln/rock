@@ -1,0 +1,1 @@
+{"authority_id":"6fdcc9a6-90c7-4e28-a165-aadf9c904910","device_ref":"fixture-rock-arm64-001","fixture_date":1788998400,"ports":{"game_a":9642,"game_b":9643,"wallet":9641},"schema":"rock-game-sandbox-config/1","simulation_only":true,"state":"/var/tmp/rockstaros-preview-authority"}

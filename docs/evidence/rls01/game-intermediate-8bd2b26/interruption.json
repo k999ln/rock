@@ -1,0 +1,23 @@
+{
+  "schema": "rock-rls01-restore-interruption/1",
+  "status": "INTERRUPTED_AS_PLANNED",
+  "observation": {
+    "schema": "rock-test-copy-interruption/1",
+    "method": "SIGKILL",
+    "source": "/var/tmp/rock-star-desktop/preview/backups/20260910T081255Z-9869e18f8e5f/slot-a.ext4",
+    "destination": "/var/tmp/rock-star-desktop/recovered/slot-a.ext4",
+    "copied_bytes": 16777216,
+    "phase": "after actual authority current-copy, during first OS component copy"
+  },
+  "installation_state": "RESTORE_PENDING",
+  "pending_restore": {
+    "backup": "/var/tmp/rockstaros-preview-backups/5fc5aca0-3641-49a9-ae92-757a5157cf8e",
+    "backup_sha256": "1c0e75af830414e62d64e26326dfaff234db6dd83b47763ba38469dd37a2038f",
+    "intent": "01ec8732-946c-472f-8012-d766ebb9dc12",
+    "name": "recovered",
+    "source": "preview"
+  },
+  "bootstrap_sha256": "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce",
+  "installed_source_files_mutated": false,
+  "original_qemu_signalled": false
+}

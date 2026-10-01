@@ -1,0 +1,523 @@
+{
+  "status": "PASS",
+  "scope": "actual Linux ptrace/UID1002/non-dumpable parent/pidfd signal fixture; not Rock OS or Hub evidence",
+  "cases": [
+    {
+      "mode": "crash",
+      "iteration": 0,
+      "fault": {
+        "identity": {
+          "pid": 11,
+          "start_ticks": 860196,
+          "ppid": 7,
+          "tgid": 11,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            7,
+            8,
+            9
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.0019666389998747036
+        },
+        "signal": 9,
+        "exited": true,
+        "stopped": false,
+        "elapsed_seconds": 0.0015633860002708388
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": false,
+        "output": "",
+        "elapsed_seconds": 0.005873543001143844
+      }
+    },
+    {
+      "mode": "crash",
+      "iteration": 1,
+      "fault": {
+        "identity": {
+          "pid": 16,
+          "start_ticks": 860198,
+          "ppid": 12,
+          "tgid": 16,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            12,
+            13,
+            14
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.0019672220005304553
+        },
+        "signal": 9,
+        "exited": true,
+        "stopped": false,
+        "elapsed_seconds": 0.0025321020002593286
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": false,
+        "output": "",
+        "elapsed_seconds": 0.00566224900103407
+      }
+    },
+    {
+      "mode": "crash",
+      "iteration": 2,
+      "fault": {
+        "identity": {
+          "pid": 21,
+          "start_ticks": 860201,
+          "ppid": 17,
+          "tgid": 21,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            17,
+            18,
+            19
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.002210974000263377
+        },
+        "signal": 9,
+        "exited": true,
+        "stopped": false,
+        "elapsed_seconds": 0.002922187999502057
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": false,
+        "output": "",
+        "elapsed_seconds": 0.0059233770007267594
+      }
+    },
+    {
+      "mode": "crash",
+      "iteration": 3,
+      "fault": {
+        "identity": {
+          "pid": 26,
+          "start_ticks": 860204,
+          "ppid": 22,
+          "tgid": 26,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            22,
+            23,
+            24
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.0020159729992883513
+        },
+        "signal": 9,
+        "exited": true,
+        "stopped": false,
+        "elapsed_seconds": 0.0028161450009065447
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": false,
+        "output": "",
+        "elapsed_seconds": 0.007017050998911145
+      }
+    },
+    {
+      "mode": "crash",
+      "iteration": 4,
+      "fault": {
+        "identity": {
+          "pid": 31,
+          "start_ticks": 860207,
+          "ppid": 27,
+          "tgid": 31,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            27,
+            28,
+            29
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.001895221999802743
+        },
+        "signal": 9,
+        "exited": true,
+        "stopped": false,
+        "elapsed_seconds": 0.0027636039994831663
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": false,
+        "output": "",
+        "elapsed_seconds": 0.005326330998286721
+      }
+    },
+    {
+      "mode": "deadline",
+      "iteration": 0,
+      "fault": {
+        "identity": {
+          "pid": 36,
+          "start_ticks": 860210,
+          "ppid": 32,
+          "tgid": 36,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            32,
+            33,
+            34
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.0020142649991612416
+        },
+        "signal": 19,
+        "exited": false,
+        "stopped": true,
+        "elapsed_seconds": 0.002841519999492448
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": true,
+        "elapsed_seconds": 3.0103822109995235
+      }
+    },
+    {
+      "mode": "deadline",
+      "iteration": 1,
+      "fault": {
+        "identity": {
+          "pid": 41,
+          "start_ticks": 860513,
+          "ppid": 37,
+          "tgid": 41,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            37,
+            38,
+            39
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.0019898480004485464
+        },
+        "signal": 19,
+        "exited": false,
+        "stopped": true,
+        "elapsed_seconds": 0.0028624380011024186
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": true,
+        "elapsed_seconds": 3.010843477999515
+      }
+    },
+    {
+      "mode": "deadline",
+      "iteration": 2,
+      "fault": {
+        "identity": {
+          "pid": 46,
+          "start_ticks": 860816,
+          "ppid": 42,
+          "tgid": 46,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            42,
+            43,
+            44
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.001911014000143041
+        },
+        "signal": 19,
+        "exited": false,
+        "stopped": true,
+        "elapsed_seconds": 0.0030144390002533328
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": true,
+        "elapsed_seconds": 3.0087752679992263
+      }
+    },
+    {
+      "mode": "deadline",
+      "iteration": 3,
+      "fault": {
+        "identity": {
+          "pid": 51,
+          "start_ticks": 861119,
+          "ppid": 47,
+          "tgid": 51,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            47,
+            48,
+            49
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.001954931000000215
+        },
+        "signal": 19,
+        "exited": false,
+        "stopped": true,
+        "elapsed_seconds": 0.0030046049996599322
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": true,
+        "elapsed_seconds": 3.0077804409993405
+      }
+    },
+    {
+      "mode": "deadline",
+      "iteration": 4,
+      "fault": {
+        "identity": {
+          "pid": 56,
+          "start_ticks": 861422,
+          "ppid": 52,
+          "tgid": 56,
+          "uid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "gid": [
+            1002,
+            1002,
+            1002,
+            1002
+          ],
+          "exe": "/usr/libexec/rock-sandbox-exec",
+          "command": [
+            "/usr/libexec/rock-sandbox-exec",
+            "recipe"
+          ],
+          "tracer_pid": 2,
+          "no_new_privs": 1
+        },
+        "prearm_inventory": {
+          "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+          "thread_ids": [
+            52,
+            53,
+            54
+          ],
+          "process_count": 3,
+          "existing_children": 0,
+          "elapsed_seconds": 0.001975514998775907
+        },
+        "signal": 19,
+        "exited": false,
+        "stopped": true,
+        "elapsed_seconds": 0.003255064999393653
+      },
+      "outcome": {
+        "returncode": -9,
+        "timeout": true,
+        "elapsed_seconds": 3.0120111529995484
+      }
+    }
+  ],
+  "existing_child_refusal": "PASS",
+  "prearm_threads_per_case": 3
+}

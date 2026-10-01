@@ -1,0 +1,66 @@
+{
+  "schema": "rock-d2-independent-review/1",
+  "observed_utc": "2026-09-11T15:32:35.497962+00:00",
+  "result": "PASS_SCOPED_CORROBORATED",
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "candidate_freeze_sha256": "918ecd2c3e98fbc9f585f2b2f8795ea0ef4752fe684365d2b155ba298a11fcfd",
+  "plan": {
+    "path": "raw/plan.json",
+    "bytes": 8524,
+    "sha256": "ee63ed6aa096ab399c0ace54968133a50a5d1026c932099af9158307b3e9570b"
+  },
+  "plan_canonical_sha256": "8fae0f17da41d05dc2ad59c67946bdadfc53bdf39e87dc57692751a07e7a18d8",
+  "report": {
+    "path": "raw/report.json",
+    "bytes": 179834,
+    "sha256": "642e911a72a6f0092fec336324c2faba8c42c43d83bbfc65f0278d1966aff3cb"
+  },
+  "operations": 16,
+  "successful_jobs": 5,
+  "authority": {
+    "snapshots_identical": 3,
+    "canonical_sha256": "fc2357c6658e903640b677b1b97e983aed2271625617a0193728f9a086d0d433",
+    "file_sha256": "ab63fdc299665bd2e9e19f5da21eb17094da64d3715c213bdcfa409a90089f95",
+    "databases": 5,
+    "tables": 71,
+    "required_empty_tables": 19,
+    "identities": 8,
+    "scope": "D2 frozen snapshot comparison only; no current/default authority read or mutation"
+  },
+  "qualifications": [
+    "D2 whole_gate remains INCOMPLETE; in_flight_cancel and wallet_synthetic_flow NOT_RUN. This D2 report has D6 NOT_RUN.",
+    "Cycle 0 completed with no jobs; cycle 1 created all five and shut down. This run does not prove a later reboot retains those five jobs.",
+    "The real delete is corroborated by durable uninstall audit/receipt, delivered DELETE statements, v1.1 cache removal and reopen-after-delete result. Screenshot 0081-uninstalled.png shows the success notice alongside a still-visible installed card; absence of that card is not an asserted oracle and UI list refresh is unproven.",
+    "Signed-stage0 is the public test/development boot chain, not owner production release signing. No license or public-release approval is inferred.",
+    "Lifecycle timings/resource samples are observations, not a D6 soak/resource acceptance pass."
+  ],
+  "independent_review_sha256": "54dcf2bfb0c06d7c9585d6ef263ef2901826702879276700fd91119c4e82046c",
+  "cycles": [
+    {
+      "number": 0,
+      "jobs": 0,
+      "actions": 0,
+      "boot_seconds": 27.34888378300002,
+      "shutdown_seconds": 10.355508627000006,
+      "normal_guest_shutdown_correlated": true,
+      "authority_unchanged": true,
+      "disk_sha256": "3a8e40178bffcd723ae6b048a3bdd11b8772970aa84041ce85d46fab5df008a9"
+    },
+    {
+      "number": 1,
+      "jobs": 5,
+      "actions": 16,
+      "boot_seconds": 22.693682912000014,
+      "shutdown_seconds": 9.156861677000052,
+      "normal_guest_shutdown_correlated": true,
+      "authority_unchanged": true,
+      "disk_sha256": "a40879e684d0da493d2f958eafdeed5fb1f9a3238fb5e5217df4702b277e6f1d"
+    }
+  ],
+  "raw_copy": {
+    "verified_files": 136,
+    "verified_bytes": 10842251,
+    "disk_copied": false
+  },
+  "original_disks": "Preserved in owned build VM; hash inventory retained privately"
+}

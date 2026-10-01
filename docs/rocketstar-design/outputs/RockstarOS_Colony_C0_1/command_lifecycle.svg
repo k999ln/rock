@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="178" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 178" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="178"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-178)" style="clip-path: url(#clip)">
+		<g transform=" matrix(1,0,0,1,0,-20)">
+			<text x="0" y="183" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,366) scale(1,-1)">指令の状態 / 模型のAPPLIEDは希望設定の保存まで</text>
+			<rect x="0" y="105" width="114" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="48.0" y="133.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,266) scale(1,-1)">提案</text>
+			<text x="32.243408203125" y="119.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,238) scale(1,-1)">PREPARED</text>
+			<path d="M 114,129 L 129,129 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="129 129, 124.4978 131.1748, 124.4978 126.8252" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="129" y="105" width="114" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="177.0" y="133.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,266) scale(1,-1)">承認</text>
+			<text x="166.74755859375" y="119.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,238) scale(1,-1)">QUEUED</text>
+			<path d="M 243,129 L 258,129 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="258 129, 253.4978 131.1748, 253.4978 126.8252" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="258" y="105" width="114" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="297.0" y="133.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,266) scale(1,-1)">送信記録</text>
+			<text x="302.99853515625" y="119.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,238) scale(1,-1)">SENT</text>
+			<path d="M 372,129 L 387,129 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="387 129, 382.4978 131.1748, 382.4978 126.8252" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="387" y="105" width="114" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="421.5" y="133.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,266) scale(1,-1)">設備の判定</text>
+			<text x="412.24072265625" y="119.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,238) scale(1,-1)">APPLIED / 拒否</text>
+			<rect x="258" y="28" width="114" height="45" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="297.0" y="54.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,109) scale(1,-1)">結果不明</text>
+			<text x="288.749267578125" y="40.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,81) scale(1,-1)">UNCERTAIN</text>
+			<rect x="387" y="28" width="114" height="45" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="412.5" y="54.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,109) scale(1,-1)">設備記録を照合</text>
+			<text x="417.0" y="40.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,81) scale(1,-1)">再送はしない</text>
+			<path d="M 315,105 L 315,73 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="315 73, 317.1748 77.50224, 312.8252 77.50224" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 372,50 L 387,50 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="387 50, 382.4978 52.17483, 382.4978 47.82517" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 444,73 L 444,105 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="444 105, 441.8252 100.4978, 446.1748 100.4978" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="0" y="67" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,134) scale(1,-1)">復旧時は最新状態を読み直す</text>
+			<text x="0" y="48" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,96) scale(1,-1)">過去の結果と現在の状態を分ける</text>
+			<text x="0" y="28" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,56) scale(1,-1)">重要設備の自由操作APIは作らない</text>
+		</g>
+	</g>
+</svg>

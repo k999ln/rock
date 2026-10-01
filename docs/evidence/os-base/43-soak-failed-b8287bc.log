@@ -1,0 +1,86 @@
+# Public derived log; original basename: 43-native-soak-result-ocr.log
+# Original SHA-256: 453188d5596f441315a9b9e37f2a4b08f264897d6280fabcd2becb57b1610919
+# Private VM evidence/source paths replaced; original retained unchanged.
+{"cycle": 0, "status": "VERIFIED_CLOSED", "evidence": "<owned-business-evidence>"}
+{"cycle": 1, "status": "VERIFIED_CLOSED", "evidence": "<owned-business-evidence>"}
+{"cycle": 2, "status": "VERIFIED_CLOSED", "evidence": "<owned-business-evidence>"}
+{"cycle": 3, "status": "VERIFIED_CLOSED", "evidence": "<owned-business-evidence>"}
+{"cycle": 4, "completed_soak_jobs": 1, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 2, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 3, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 4, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 5, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 6, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 7, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 8, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 9, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 10, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 11, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 12, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 13, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 14, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 15, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 16, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 17, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 18, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 19, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 20, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 21, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 22, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 23, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 24, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 25, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 26, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 27, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 28, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 29, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 30, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 31, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 32, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 33, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 34, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 35, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 36, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 37, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 38, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 39, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 40, "required": 61}
+{"cycle": 4, "completed_soak_jobs": 41, "required": 61}
+{"status": "FAIL", "evidence": "<owned-business-evidence>"}
+Traceback (most recent call last):
+  File "<frozen-compatible-host-source>/os/desktop/verify-business.py", line 1090, in <module>
+    if __name__ == '__main__': main()
+                               ~~~~^^
+  File "<frozen-compatible-host-source>/os/desktop/verify-business.py", line 1086, in main
+    run(args.images, args.output, args.mode, args.source_commit, boot_profile=args.boot_profile,
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        prepare_backup=args.prepare_backup, preflight_only=args.preflight_only)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen-compatible-host-source>/os/desktop/verify-business.py", line 965, in run
+    cycle['jobs'].append(run_job(driver, operations, '1.0.0', f'C4J{index}', folder))
+                         ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen-compatible-host-source>/os/desktop/verify-business.py", line 635, in run_job
+    driver.wait(label, label='typed-input')
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen-compatible-host-source>/os/desktop/verify-business.py", line 512, in wait
+    lines, metadata = self.scan(deadline, regions=regions)
+                      ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen-compatible-host-source>/os/desktop/verify-business.py", line 479, in scan
+    lines = recognize_frame(path, deadline, regions=regions)
+  File "<frozen-compatible-host-source>/os/desktop/verify-business.py", line 307, in recognize_frame
+    result = subprocess.run(['tesseract', str(path), 'stdout', '-l', 'eng+jpn', '--psm', '11', 'tsv'],
+                            capture_output=True, text=True, check=True, timeout=budget(), env=ocr_env)
+  File "/usr/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 2129, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 1269, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['tesseract', '<owned-business-evidence>/cycle-4/probe.png', 'stdout', '-l', 'eng+jpn', '--psm', '11', 'tsv']' timed out after 10 seconds

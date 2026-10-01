@@ -1,0 +1,27 @@
+{
+  "schema": "rock-root-final-user-flow-launch-plan/1",
+  "status": "WAIT_A_D2_D1_D3_AND_STOPPED_HANDOFF",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "source": "/var/tmp/rock-final-9abf78a/systems/rock-star-os",
+  "images": "/var/tmp/rock-final-9abf78a-profile",
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "sandbox_config": "/var/tmp/rockstaros-preview-authority/sandbox.json",
+  "orchestrator": "/var/tmp/rock-final-c-orchestrator-v2.py",
+  "orchestrator_sha256": "256c4ce5a926c6db6406d1c25c72473acb5d48b2511d29e3180b0bb9e4fc60bb",
+  "config": "/var/tmp/rock-release-os-20260910/final-9abf78a-empty-authority/root-c-device.json",
+  "output": "/var/tmp/rock-final-c-9abf78a-01",
+  "steps": [
+    "fresh Game and citation two normal boots",
+    "stopped independent ledger audit",
+    "monthly888 once and ATMfee0 reservation/cancel two normal boots",
+    "optional citation1.1 TLS stop/original request recovery three normal boots",
+    "one 90s actual QEMU recording and normal shutdown",
+    "copy raw evidence to Mac and encode without changing frames",
+    "decode and visually review chapters, copy final media and generate optional VTT"
+  ],
+  "source_and_images_preflight": "all frozen Git archive files and image triple; fail before first operation on mismatch",
+  "repeat_credit_or_purchase_after_failure": false,
+  "final_acceptance": "NOT_RUN",
+  "prior_orchestrator_sha256": "e45afc53ea41179bb19e11f94e4053912c8677aae56e322301f47b3acd45e89a",
+  "additional_demo_retention": "Pre/post stopped authority capture and compare via unchanged frozen CLI; non-Hub guest roles via unchanged frozen compare_business. No runtime or UI probe modifications. Fail closed on any extra side effect."
+}

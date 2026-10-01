@@ -1,0 +1,67 @@
+{
+  "schema": "rock-intermediate-demo-evidence/1",
+  "status": "PASS_INTERMEDIATE_CAPTURE_AND_ENCODING_WITH_PRODUCT_DEFECT_FOUND",
+  "source_commit": "4e31554a5cfd415b0f9a9878e1e1306f949f1596",
+  "original_capture_status": "PASS_RAW_DEMO_PENDING_ENCODE_AND_VISUAL_REVIEW",
+  "recorded_seconds": 90.00115706100041,
+  "frames": 360,
+  "max_interframe_seconds": 0.42515855400415603,
+  "normal_shutdown_seconds": 8.893405847004033,
+  "chapters": [
+    {
+      "seconds": 0.0013266980022308417,
+      "title": "QEMU上のHub"
+    },
+    {
+      "seconds": 15.395425421003893,
+      "title": "同じ公開サンプルを実処理"
+    },
+    {
+      "seconds": 18.59533367500262,
+      "title": "保存された実行結果"
+    },
+    {
+      "seconds": 31.141942923000897,
+      "title": "履歴から再表示"
+    },
+    {
+      "seconds": 41.33631615000195,
+      "title": "合成Wallet・実際の資金ではありません"
+    },
+    {
+      "seconds": 52.3149132900071,
+      "title": "本人が接続した合成Game"
+    },
+    {
+      "seconds": 65.19659137100098,
+      "title": "完了した交換の履歴"
+    },
+    {
+      "seconds": 78.33075606500643,
+      "title": "成果はHubの履歴に保存"
+    }
+  ],
+  "recorded_job": {
+    "id": "5000cac3-74e1-4058-8a9f-6ad8d47bf818",
+    "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+    "package_hash": "e26178e828b45f651f4c1ff5c0fa20450195548edc4e6e116005a730238a0535",
+    "status": "succeeded",
+    "tool_id": "org.rockstar.citation-organizer",
+    "version": "1.0.0"
+  },
+  "mp4_sha256": "d15d72f2e51cc6442011a295c428d127ec9d7b1cb9e6b1b7b544389791aec485",
+  "mp4_bytes": 585030,
+  "encoded_seconds": 90.0,
+  "raw_plan_sha256": "389655871474fc8918f35459c50be955818c0eb6123c2930b9e97d08e9f3041d",
+  "raw_report_sha256": "74310d5c9753c46607842d20c279f160e0c0f3eaa868b051de9a3e723b68d059",
+  "raw_frames_index_sha256": "15e081b5906c5f0ff3250e96d5be9e4f90cb7ce1f33fa9d649a448fc519ce3c1",
+  "visual_review": {
+    "decoded_seconds": [
+      19,
+      68
+    ],
+    "result": "Readable real citation result and retained A/B exchange history. Game A connection expired after its one-hour lifetime; reconnect button is disabled. Must fix before final candidate. Final Wallet chapter will scroll to the actual available balance."
+  },
+  "raw_artifacts": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/demo-trial-copy",
+  "final_same_candidate_demo": "NOT_RUN"
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "rock-final-c-remaining-stages-plan/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "driver_sha256": "3f3232c638c8309d40a9b9ef0dee22269116fe7e8ef9dc872666df8f19a63851",
+  "original_orchestration_sha256": "31c6be06bf1ebe9c7bb992b95ff5ab171e4019692da7f928433b52f32e2a893d",
+  "original_result": "FAIL_RETAINED",
+  "preflight_correction_sha256": "9d6c7545b612b9fa2ec236049aaa9bb72719701fe84ba52cb0c5dbb691576030",
+  "new_output": "/var/tmp/rock-final-c-9abf78a-continuation-02",
+  "process_umask": "0077",
+  "reused_completed_stages": [
+    "game",
+    "audit",
+    "financial"
+  ],
+  "new_stages": [
+    "citations",
+    "demo"
+  ],
+  "all_original_probe_bytes_commands_limits_unchanged": true,
+  "financial_actions_repeated": 0,
+  "scope": "Same closed device; new invocation of remaining original probes only after complete unchanged stopped state and zero original citation guest boots confirmed."
+}

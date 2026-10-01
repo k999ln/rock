@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:icd:authority-lease:v1",
+  "title": "authority-lease / DESIGN SPECIFICATION ONLY",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "rockstaros.icd.authority-lease.v1"
+    },
+    "executionMode": {
+      "enum": [
+        "SIMULATION",
+        "HARDWARE_IN_LOOP",
+        "OPERATIONAL"
+      ]
+    },
+    "dataClass": {
+      "enum": [
+        "SYNTHETIC",
+        "MEASURED",
+        "ESTIMATED",
+        "REPLAY"
+      ]
+    },
+    "siteId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "nodeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "messageId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "issuedAt": {
+      "type": "object",
+      "properties": {
+        "utcMs": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "monotonicMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bootId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+        },
+        "quality": {
+          "enum": [
+            "TRUSTED",
+            "DEGRADED",
+            "UNTRUSTED"
+          ]
+        },
+        "uncertaintyMs": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "utcMs",
+        "monotonicMs",
+        "bootId",
+        "quality",
+        "uncertaintyMs"
+      ],
+      "additionalProperties": false
+    },
+    "authorityEpoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "holderDeviceRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "targetAssetId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "targetBootId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "approvedProfileDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "issuedUtcMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "expiresUtcMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "proofRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "executionMode",
+    "dataClass",
+    "siteId",
+    "nodeId",
+    "messageId",
+    "issuedAt",
+    "authorityEpoch",
+    "holderDeviceRef",
+    "targetAssetId",
+    "targetBootId",
+    "approvedProfileDigest",
+    "issuedUtcMs",
+    "expiresUtcMs",
+    "proofRef"
+  ],
+  "additionalProperties": false
+}

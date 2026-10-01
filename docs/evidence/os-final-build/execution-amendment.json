@@ -1,0 +1,150 @@
+{
+  "schema": "rock-final-execution-location-amendment/1",
+  "status": "FROZEN_BEFORE_REORDERED_OR_REMOTE_GATES",
+  "created_utc": "2026-09-10T10:07:11.232870+00:00",
+  "reason": "Local Mac battery is discharging and cannot support the remaining one-hour soak plus local UI gates; preserve original numerical and semantic acceptance conditions on independent Linux hosts.",
+  "authorization": "Parent integration lead instructed this amendment before reordered/remote execution at 2026-09-10T10:06Z.",
+  "original_plan": {
+    "path": "/var/tmp/rock-release-os-20260910/final-9abf78a-acceptance-plan.json",
+    "sha256": "20795f3b4de6e9f562c8ec373b96bfea6407e4b0418064286e73d1096b744e0f",
+    "unchanged": true
+  },
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "source_archive_sha256": "1fac2382110401638dd9ea6d5d5d4d67bf902b5198f5bd38a187c66508719532",
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "base_freeze_sha256": "4376d52d7db3e9cda5357287092e9065d5c8227e5a94ede5fa434bc336629b61",
+  "profile_sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "factory_sha256": "3dde9d407e4917cd381a046660c9a897128dc0c25df2bc09f550c59819af34d8",
+  "sandbox_configuration_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+  "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+  "canonical_verifier_sha256": {
+    "D1": {
+      "os/verify-boot.py": "f8e2d23b4e6212c442b89409295daf0bc53e27518b5d252cf560e834903704f7",
+      "os/verify-system.py": "c56790991435b99a38337d24d7994a149c5d0c6f23daf14b35e1a81b6f356dc0"
+    },
+    "D2": {
+      "os/desktop/verify-business.py": "0a00f91fe5f7847484a0c1a793c9de44c227642b053cf4c41d4c1b9cf3440be3",
+      "os/desktop/observe-game-os.py": "f845cbc8435f2e6f372cace7e3f59be373c0205302a5774ddbd5cfceeae9e3ea",
+      "os/desktop/observe-financial-game-os.py": "86f941dec498a74914eb70cff662fdfc7c15cc09a5f30e1b7203e20a0099a3d1",
+      "os/desktop/observe-pc-link-os.py": "06ef032b89751b707a07808b34d5956715724abd5e26ae0dc45d952926de3004"
+    },
+    "D3": {
+      "os/verify-platform.py": "23d843d3cd7267f44ccc778497de17dd549b258635909d52fe6fe8b15fe83b06",
+      "os/verify-store.py": "c1fdfe05d6a8d28443be2b129fd02311b3b31d7bad936614e2a8d3a3e991bea2",
+      "os/verify-remote.py": "7247865b98d8a4a31783baed75dfcbfa58c6f66814f0c3dfba8c8927b5452766",
+      "os/registry/verify_negative.py": "220b45c716cd867aeaf702ea909bbf09b848ec30537527ef0fb0109d07338dc7",
+      "os/verify-hub-faults.py": "42ab2274cf2b2a1fda9fc78153613a019da4a8cfc9208948c3017802a19b9167"
+    },
+    "D4": {
+      "os/update/verify-ui-startup.py": "895120541d31cdd0d4e1eb9ba5a257e860c37201d137f9f4e1a3832d55f7bca0",
+      "os/update/verify-qemu.py": "270723914fe6a10a40e523705ea930a0650d35fad2f1d709dece9cccdadf86f6",
+      "os/update/verify-faults.py": "f70fd4deeb8f981bfb9d88fe7cda71187b0f260e6c4662e912e0a2505e742930",
+      "os/update/verify-auth-health.py": "8c7661b50fd1bbbbf6f17a6b43f0912c0cd0bca924acbe23e25084d0aaa9a0c1",
+      "os/update/verify-data-abi.py": "3b00a9e952de73f5a845fd309580d6bb4ef515034b16edbc0afe00b501fe9355"
+    },
+    "D5": {
+      "os/desktop/game_backup.py": "b17c9c66e9743adce63c19f67a4292334bfcbde16467af6c1b25786562f22a13",
+      "os/desktop/preview.py": "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce"
+    },
+    "D6": {
+      "os/desktop/verify-business.py": "0a00f91fe5f7847484a0c1a793c9de44c227642b053cf4c41d4c1b9cf3440be3",
+      "os/desktop/business_contract.py": "7f862080d1142c7e9c29c4e1665a00d969d2f4b8aa17e7e3a9185dd6661a6533",
+      "os/desktop/game_authority_observer.py": "451532903b86be2639a79c05d9853bca414a4faabe6eeb2fe4f0a551073015b7"
+    }
+  },
+  "D6": {
+    "contract": {
+      "schema": "rock-native-business-plan/1",
+      "mode": "soak",
+      "tool": "org.rockstar.proposal-draft",
+      "versions": [
+        "1.0.0",
+        "1.1.0"
+      ],
+      "normal_boot_shutdown_cycles": 5,
+      "soak_seconds": 3600,
+      "soak_jobs": 61,
+      "job_interval_seconds": 60,
+      "network": "none",
+      "limits": {
+        "boot_seconds": 180,
+        "shutdown_seconds": 60,
+        "ui_state_seconds": 30,
+        "job_seconds": 90,
+        "stored_job_seconds": 30,
+        "soak_max_seconds": 4200,
+        "max_job_start_gap_seconds": 180,
+        "peak_rss_kib": 2097152,
+        "rss_growth_kib": 524288,
+        "cpu_cores_average": 3.5,
+        "sample_seconds": 2,
+        "sample_gap_seconds": 10,
+        "max_samples": 4000,
+        "max_screenshots": 1000,
+        "max_probes": 12000,
+        "max_screenshot_bytes": 268435456,
+        "max_evidence_bytes": 629145600
+      },
+      "zero_tolerance": [
+        "missing or duplicate receipt/job",
+        "changed retained job/output",
+        "unexpected audit/registry/Wallet/membership/authenticator/remote DB mutation",
+        "QMP reset or host shutdown",
+        "unclosed journal or filesystem error",
+        "missing UI state, visible error, OCR uncertainty"
+      ],
+      "scope": {
+        "wallet": "SIMULATOR_ONLY; no consent, credit, payment or withdrawal actions",
+        "real_funds": "NOT_RUN",
+        "hardware": "NOT_RUN",
+        "in_flight_cancel": "NOT_RUN; disable denies later use, not a timed cancellation test",
+        "resources": "host QEMU RSS/CPU only; guest per-service UID/cgroup is NOT_RUN",
+        "evidence": "actual QMP input + semantic screenshots + stopped-disk SQLite; no mutation RPC"
+      }
+    },
+    "network_profile": "game-authority-ab QEMU user NAT with fixed configured Wallet/Game only",
+    "ocr_minimum_confidence": 45,
+    "game_read_sync_allowed": false,
+    "initial_game_sdk_maximum_time": 0,
+    "external_authority": "all schema/typed tables and protected identities exactly unchanged",
+    "financial_auth_membership_required_empty_tables": 19
+  },
+  "local_sequence": [
+    "finish original D4 41-boot fixed run",
+    "prepare previously absent fixed default empty authority and stopped complete snapshot",
+    "D2 fresh userdata, sixteen operations and five jobs; preserve complete empty authority",
+    "D1 four boots and D3 scoped platform plus eight nonfinancial boots; complete stopped authority equality",
+    "fresh C device may be handed off after local nonfinancial gates and owned fixture shutdown"
+  ],
+  "independent_remote_D6": {
+    "status": "NOT_STARTED_BY_THIS_RECORD",
+    "host": "separate GitHub Debian 13 container with QEMU 10",
+    "source": "exact same source archive and original image/profile/freeze bytes; no rebuild or reprofiling",
+    "state": "new independent empty authority and new userdata; no state copied from local or installer",
+    "command": "python3 -B /var/tmp/rock-final-9abf78a/systems/rock-star-os/os/desktop/verify-business.py --images /var/tmp/rock-final-9abf78a-profile --output /var/tmp/rock-d6-ci-evidence --source-commit 9abf78a80d27aa9f847c4051d20e4c552e407276 --mode soak --boot-profile game-authority-ab --device-config /var/tmp/rock-final-9abf78a-device.json",
+    "order": "may start while local D4 is running; its result cannot complete the overall acceptance before all required D4 and other gates pass",
+    "new_run_required": true,
+    "separate_workflow_environment_and_driver_hash_plan_required": true
+  },
+  "C_remote_fallback": {
+    "status": "PREPARATION_ONLY_NOT_STARTED",
+    "condition": "separate job and new independent authority/userdata; never share D6 authority; same image and canonical native UI observers",
+    "host_evidence": "additional internal QEMU acceptance host only; not a new supported user host or physical device acceptance"
+  },
+  "immutable_constraints": {
+    "original_plan_and_failed_results_preserved": true,
+    "same_image_profile_source_and_canonical_host_tools": true,
+    "all_assertions_unchanged": true,
+    "all_deadlines_thresholds_and_OCR_unchanged": true,
+    "all_complete_authority_and_SDK_retention_unchanged": true,
+    "no_gate_exemption": true,
+    "no_automatic_retry": true,
+    "no_intermediate_success_inheritance": true
+  },
+  "final_acceptance": "Every required same-candidate gate, including the complete original D4 run and remote D6, must pass with its actual host and run provenance. Any FAIL/NOT_RUN prevents the complete claim."
+}

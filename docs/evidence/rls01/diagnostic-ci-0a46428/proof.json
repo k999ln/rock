@@ -1,0 +1,19 @@
+{
+  "schema": "rock-native-ci-failure-proof/1",
+  "head_sha": "0a464288b718e2a3150c197a47a023c5f9d1e843",
+  "run_id": 34481989571,
+  "url": "https://github.com/k999ln/rock/actions/runs/34481989571",
+  "status": "FAIL",
+  "native_inputs_verified": 697,
+  "logs_verified": 14,
+  "total_tests": 1655,
+  "passed_checks": 13,
+  "report_sha256": "2a808c22fbef8d62ffaac871f01b96a04a6d6ba2f404e43d2f67900210ccde63",
+  "failed_check": "c-ui-ipc",
+  "error": "12 tests / 19 errors: FileNotFoundError rock-ipc-test",
+  "cause": "Optional runpy trampoline gave a relative __file__ for a relative script command; direct Python sets an absolute __file__. The IPC fixture then passed a basename to subprocess instead of an absolute executable path.",
+  "frozen_runtime_changed": false,
+  "main_tests_passed": 1391,
+  "long_wait_stacks_nonempty": false,
+  "original_failure_preserved": true
+}

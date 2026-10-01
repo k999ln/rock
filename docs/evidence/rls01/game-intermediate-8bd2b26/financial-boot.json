@@ -1,0 +1,54 @@
+{
+  "simulation_only": true,
+  "wallet": {
+    "accounts_minor": {
+      "AVAILABLE": 9897,
+      "GAME_FEES": 3,
+      "GAME_HOLD": 0,
+      "GAME_PURCHASES": 100,
+      "PENDING_SETTLEMENT": 0,
+      "SALE_CLEARING": -10000
+    },
+    "bill_count": 0
+  },
+  "games": {
+    "game-a": {
+      "account_units": {
+        "ISSUANCE_CLEARING": -10,
+        "PLAYER_PURCHASED": 10
+      },
+      "grants": 1,
+      "epoch": 2,
+      "epoch_receipts": 1
+    },
+    "game-b": {
+      "account_units": {},
+      "grants": 0,
+      "epoch": 2,
+      "epoch_receipts": 1
+    }
+  },
+  "boot_logs": {
+    "/var/tmp/rock-star-desktop/preview/sessions/5a02890db538493d9f09e018cf2b0ef9/boot.log": {
+      "sha256": "1596fb700746287fa66d76a3874598260d327596d7a44bdd02fe668bef867869",
+      "bytes": 15837,
+      "native_ui_health_ready": true,
+      "ab_health_confirmed": true,
+      "power_down": true
+    },
+    "/var/tmp/rock-star-desktop/preview/sessions/1d26db7c6374447d82d5bf246b4ea121/boot.log": {
+      "sha256": "cf3f3d4b795bcf5ddd92be362dcfe6cf44e7f21e6e13e21acbd7523076c39006",
+      "bytes": 15846,
+      "native_ui_health_ready": true,
+      "ab_health_confirmed": true,
+      "power_down": true
+    },
+    "/var/tmp/rock-star-desktop/recovered/sessions/8aea0892f7b14f079c5dc0d4d7adaa38/boot.log": {
+      "sha256": "5451917a7be2f0718f836ad3c25feb28725f630de82e15d8c2f2ad1649e0487c",
+      "bytes": 15875,
+      "native_ui_health_ready": true,
+      "ab_health_confirmed": true,
+      "power_down": true
+    }
+  }
+}

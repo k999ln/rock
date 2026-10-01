@@ -1,0 +1,3 @@
+cc  -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong  -o rockd rockd.c 
+cc  -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong  -o rockctl rockctl.c 
+cc  -O2 -std=c11 -Wall -Wextra -Werror -fstack-protector-strong  -o rocktest rocktest.c 

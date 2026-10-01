@@ -1,0 +1,332 @@
+{
+  "checked": "2026-09-24",
+  "scope": "method references; no compliance or qualification claim",
+  "sources": [
+    {
+      "id": "RS-S01",
+      "title": "NASA Appendix L — Interface Requirements Document Outline",
+      "url": "https://www.nasa.gov/reference/appendix-l-interface-requirements-document-outline/",
+      "design_application": "責任・座標・許容差・機械/流体/電気/データ/環境の接続内容"
+    },
+    {
+      "id": "RS-S02",
+      "title": "NASA Systems Engineering Handbook — Product Realization",
+      "url": "https://www.nasa.gov/reference/5-0-product-realization/",
+      "design_application": "設計検証・資格評価・各個体の受入とリリースの区別"
+    },
+    {
+      "id": "RS-S03",
+      "title": "ECSS-E-ST-10C Rev.1 — System Engineering General Requirements",
+      "url": "https://ecss.nl/standard/ecss-e-st-10c-rev-1-system-engineering-general-requirements-15-february-2017/",
+      "design_application": "仕様、機能構成、予算、比較、要求対応の管理"
+    },
+    {
+      "id": "M-S1",
+      "title": "NASA Glenn — Ideal Rocket Equation",
+      "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/ideal-rocket-equation/",
+      "design_application": "質量比と比推力による理想増分。実軌道や本機性能を保証しない"
+    },
+    {
+      "id": "VR-S1",
+      "title": "NASA-STD-5001B with Change 3 — Structural Design and Test Factors of Safety for Spaceflight Hardware",
+      "publisher": "NASA",
+      "url": "https://standards.nasa.gov/standard/NASA/NASA-STD-5001",
+      "locator": "Document Scope; version B with Change 3, active summary",
+      "verified_summary": "The standard addresses structural design, test, and service-life factors used in spaceflight hardware development and verification.",
+      "design_application": "Define a project-approved load, strength, test, and life basis for structures, joints, tank supports, and landing-load paths.",
+      "limits": "The source does not select our materials, factors, geometry, loads, or life. Citing it does not establish compliance or structural qualification."
+    },
+    {
+      "id": "VR-S2",
+      "title": "NASA-STD-5012C — Strength and Life Assessment Requirements for Liquid-Fueled Space Propulsion System Engines",
+      "publisher": "NASA",
+      "url": "https://standards.nasa.gov/standard/NASA/NASA-STD-5012",
+      "locator": "Document Scope; version C, active summary",
+      "verified_summary": "The standard addresses engine structural strength and life, including fatigue and creep, through analyses and tests. It does not cover all system requirements for engine hot-fire testing.",
+      "design_application": "Separate engine structural/life evidence from complete propulsion-system performance and integration evidence; retain serial-number life records.",
+      "limits": "It is not an engine construction guide or proof that an engine has been selected. No operational values or test procedures were copied."
+    },
+    {
+      "id": "VR-S3",
+      "title": "Thermal Protection Materials Branch — Reusable Materials",
+      "publisher": "NASA Ames",
+      "url": "https://www.nasa.gov/general/thermal-protection-materials-branch-reusable-materials/",
+      "locator": "Reusable TPS overview and material-system examples",
+      "verified_summary": "NASA describes reusable TPS, including servicing, material combinations, attachment systems, and application-dependent capability.",
+      "design_application": "Evaluate surface material, joints, attachments, thermal gradients, repeated exposure, inspection, repair, and replacement as one subsystem.",
+      "limits": "Listed heritage materials and temperatures are not rocketstar material choices, operating limits, or evidence of upper-stage reentry capability."
+    },
+    {
+      "id": "VR-S4",
+      "title": "ECSS-E-ST-33-01C Rev.2 — Mechanisms",
+      "publisher": "European Cooperation for Space Standardization",
+      "url": "https://ecss.nl/standard/ecss-e-st-33-01c-rev-2-1-march-2019-space-engineering-mechanisms/",
+      "locator": "Scope; mechanism specification/design/analytical-verification/user-manual deliverables",
+      "verified_summary": "The standard covers spacecraft and payload mechanism definition, design, analysis, development, production, verification, and operation. Launcher applicability is left to the launcher project.",
+      "design_application": "Use mechanism specifications, design descriptions, analysis, tests, and operating constraints to structure retained-door and payload-separation interfaces.",
+      "limits": "Do not assert automatic launcher applicability, compliance, or approved separation/door design."
+    },
+    {
+      "id": "VR-S5",
+      "title": "GSFC-STD-7000B — General Environmental Verification Standard",
+      "publisher": "NASA Goddard",
+      "url": "https://standards.nasa.gov/node/791",
+      "locator": "Document Scope; active version B",
+      "verified_summary": "GEVS provides guidance for environmental verification of GSFC payloads, subsystems, and components using tests and/or analysis against expected mission environments.",
+      "design_application": "Define configuration-specific environment verification and affected-function retests after repair, component replacement, or interface change.",
+      "limits": "Guideline levels are not rocketstar qualification values and are not automatically applicable to a reusable launch vehicle or every refurbishment."
+    },
+    {
+      "id": "VR-S6",
+      "title": "Appendix D — Requirements Verification Matrix",
+      "publisher": "NASA",
+      "url": "https://www.nasa.gov/reference/appendix-d-requirements-verification-matrix/",
+      "locator": "Requirements Verification Matrix",
+      "verified_summary": "The matrix approach links uniquely identified requirements to verification methods and evidence.",
+      "design_application": "Tie configuration, interface revision, numerical acceptance criteria, test results, deviations, and release decisions to requirement IDs.",
+      "limits": "A populated matrix or a defined requirement is not evidence that testing passed or that flight approval exists."
+    },
+    {
+      "id": "AVP-S1",
+      "title": "NASA cFS official bundle README",
+      "url": "https://github.com/nasa/cFS",
+      "verified_facts": [
+        "cFSは汎用飛行ソフトウェアアーキテクチャ",
+        "公開bundleはflight distributionではなくミッション側の検証が必要"
+      ],
+      "design_application": "cFS+RTEMSを評価候補に留め、cFE/OSAL/PSP/app/targetを固定して検証する",
+      "limits": "機上採用版やrocketstar適合を決めた根拠ではない"
+    },
+    {
+      "id": "AVP-S2",
+      "title": "RTEMS User Manual 6.1 — Board Support Packages",
+      "url": "https://docs.rtems.org/docs/6.1/user/bsps/index.html",
+      "verified_facts": [
+        "BSPと対象別build/test要件を文書化"
+      ],
+      "design_application": "CPU/基板/BSP/ドライバーの組で評価する",
+      "limits": "6.1を搭載採用版として固定せず、実CPUとcFS各版の互換確認が必要"
+    },
+    {
+      "id": "AVP-S3",
+      "title": "NASA GSFC-STD-7000 — General Environmental Verification Standard",
+      "url": "https://standards.nasa.gov/standard/GSFC/GSFC-STD-7000",
+      "verified_facts": [
+        "GSFCの飛行計画/プロジェクトの環境検証を扱う文書"
+      ],
+      "design_application": "ミッション環境に応じて試験/解析条件を定める計画参考",
+      "limits": "NASA適合・本機の認定・規定環境値の自動転用を主張しない"
+    }
+  ],
+  "local_baselines": [
+    {
+      "id": "AVP-L1",
+      "title": "rocketstar C3 payload and interface baseline",
+      "used": [
+        "500kg級2機、550km/53度は比較仮定",
+        "上段にアダプターと扉が残る",
+        "PL-E01/E02/S01/S02/RF01/RF02の未完条件",
+        "片方/両方残留と扉不閉鎖の帰還成立は未判定",
+        "A-LINKと9704実証の区別"
+      ],
+      "files": [
+        {
+          "original": "outputs/rocketstar_C3_package/payload_interfaces.md",
+          "copy": "reference_c3/payload_interfaces.md",
+          "sha256": "cc19a1b3e01edaa51c4ff168986b412b386bfb0e9b6db7040574e4a11cbc3cb9"
+        },
+        {
+          "original": "outputs/rocketstar_C3_package/payload_interfaces.json",
+          "copy": "reference_c3/payload_interfaces.json",
+          "sha256": "3b5acf997e6fd37219a353c4eb89ae7837a51ced557a7b758b022ce7783629d9"
+        },
+        {
+          "original": "outputs/rocketstar_C3_package/interface_crossrefs.json",
+          "copy": "reference_c3/interface_crossrefs.json",
+          "sha256": "63fda210b4ea309b7334bea023e4687562a6ccb0799bc47631b4fcb9fdd54c3a"
+        }
+      ]
+    },
+    {
+      "id": "AVP-L2",
+      "title": "RockstarOS Complete Design v1.0",
+      "used": [
+        "地上Operations Coreと機上局所制御の分離",
+        "cFS+RTEMS第一評価候補・搭載未認定",
+        "指令UNKNOWNとWork active、receiptと物理作用の区別",
+        "公開HMAC/actorは認証ではない",
+        "共通ICD v1は機上バイナリー仕様そのものではない"
+      ],
+      "files": [
+        {
+          "original": "outputs/RockstarOS_Complete_Design_v1_0/RockstarOS_Complete_Design_v1_0.md",
+          "copy": "context/AVP-L2/RockstarOS_Complete_Design_v1_0.md",
+          "sha256": "dac28acec44684785d7bddd1376d1734d982d35e7e590461c0e128b7e89bc641"
+        },
+        {
+          "original": "outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md",
+          "copy": "context/AVP-L2/README.md",
+          "sha256": "852d4feb03de27599e16f240d64b3f1bcd3200e688337e1e076b211857a9df4c"
+        },
+        {
+          "original": "outputs/RockstarOS_Complete_Design_v1_0/contracts/result.schema.json",
+          "copy": "context/AVP-L2/result.schema.json",
+          "sha256": "635d4bd3644f2561f0f145fc8dd5e75233a64cf53f2f2dd05e765086b56b0511"
+        },
+        {
+          "original": "outputs/RockstarOS_Complete_Design_v1_0/sources/flight_equipment_sources.json",
+          "copy": "context/AVP-L2/flight_equipment_sources.json",
+          "sha256": "9fe31c3e22648cf3c4d105a07d845a68d1c0c51e0731fa201e4d6fed36bbabf1"
+        }
+      ]
+    },
+    {
+      "id": "AVP-L3",
+      "title": "Avokado Power Button Engineering v1",
+      "used": [
+        "1回待機/復帰、2回ホーム、3秒以上10秒未満解放は正常OFF要求、10秒保持は強制OFF要求",
+        "端末内状態USER_STANDBYとHub電源制御",
+        "時間値は設計閾値で実機OFF完了時刻ではない"
+      ],
+      "files": [
+        {
+          "original": "outputs/Avokado_Power_Button_Engineering_v1/button_behavior.json",
+          "copy": "context/AVP-L3/button_behavior.json",
+          "sha256": "c1173138c21edf7b192bbaf054145b6fe7f8733fe1e7f31bdf9b3c9b2bd8f9ec"
+        }
+      ]
+    }
+  ],
+  "c3_copies": [
+    {
+      "original": "outputs/rocketstar_C3_package/A-LINK_C3_functional_layout.svg",
+      "copy": "reference_c3/A-LINK_C3_functional_layout.svg",
+      "sha256": "bb9b4c0dce7f483b957ead7f17bcc361d92db538ab3678b36aa0589ba53c0a48"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/A-LINK_E3_C3_network.svg",
+      "copy": "reference_c3/A-LINK_E3_C3_network.svg",
+      "sha256": "d4851c075a62c87cd8b0ea2ab490f1b9f448559383b777ed99ba76d2b53aef06"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/README.md",
+      "copy": "reference_c3/README.md",
+      "sha256": "149887c1c9048c777c5953c4fd21c0624ae0dd84b40b633981f75208e32a42fa"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/appearance_definition.json",
+      "copy": "reference_c3/appearance_definition.json",
+      "sha256": "374a787dad9528be24c9bf6606a9669a1e2074d4a0c6953df5a4bf920614ba26"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/consistency_review.md",
+      "copy": "reference_c3/consistency_review.md",
+      "sha256": "018db7ef41127134f1b5192185fea1dfc220c3bdfa367223ebf5043d8ebc41e1"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/design_register.csv",
+      "copy": "reference_c3/design_register.csv",
+      "sha256": "c7904eed01531bb6f50473944c359af8b4099307285b73135d9df0d2c1dc0c26"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/design_register.json",
+      "copy": "reference_c3/design_register.json",
+      "sha256": "9dfeff10b6f01cda7b84d77450abdc78ddae23a8d8675c40705ac5e4488250b9"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/design_register.md",
+      "copy": "reference_c3/design_register.md",
+      "sha256": "8b7eab1e24c8bcfc79aa8d445ad68a47c48b782036e8292999516e313f389e54"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/generation_record.json",
+      "copy": "reference_c3/generation_record.json",
+      "sha256": "bd5e846c65ba68e87683c90fcbe0f265636eb37d021ba6c2ff9e07220f5c8312"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/image_prompt.txt",
+      "copy": "reference_c3/image_prompt.txt",
+      "sha256": "1ee3b1985056cd4f6bdbcd204185679eafb8c35f295653927ab39ccaa7e59b04"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/interface_crossrefs.json",
+      "copy": "reference_c3/interface_crossrefs.json",
+      "sha256": "63fda210b4ea309b7334bea023e4687562a6ccb0799bc47631b4fcb9fdd54c3a"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/manifest.json",
+      "copy": "reference_c3/manifest.json",
+      "sha256": "d10e1c4a47720d9041db5b0de2d153b2490ff560f8e9ac412c03e5eae6a86105"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/mass_study.json",
+      "copy": "reference_c3/mass_study.json",
+      "sha256": "10325fcd3c62847ddb6c4cb3e2383fb35b2b40145a8a3fa046bf3a27bcad410d"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/mass_study.md",
+      "copy": "reference_c3/mass_study.md",
+      "sha256": "6768a221b5c479659e4b0e342db48aa1b7762b635926f93a3b324a0b644df1b7"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/mass_study.py",
+      "copy": "reference_c3/mass_study.py",
+      "sha256": "609ba3bc1eff55bd63d56576580d04390a54898107193c6e7a73243617d36e39"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/naming_checks.json",
+      "copy": "reference_c3/naming_checks.json",
+      "sha256": "7bddb97bc654df9d74ec86834271e76737ee02d46d28b2e4dc7a937720ddfcdb"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/naming_decision.json",
+      "copy": "reference_c3/naming_decision.json",
+      "sha256": "be9363dfda8dae178d3bb3a8840a9017b6e51c78838405e2c3e1c5edc5e20237"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/naming_image_edit.json",
+      "copy": "reference_c3/naming_image_edit.json",
+      "sha256": "982f661c46de41c24dffbbf72fa8ae71725c5ca29825abfba5cd18776db9bd07"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/naming_image_prompt.txt",
+      "copy": "reference_c3/naming_image_prompt.txt",
+      "sha256": "e5eb2bae4617ffaa1e17e7d79cc9ba739c70c8b1361e4866ddfb61826841ee72"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/payload_interfaces.json",
+      "copy": "reference_c3/payload_interfaces.json",
+      "sha256": "3b5acf997e6fd37219a353c4eb89ae7837a51ced557a7b758b022ce7783629d9"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/payload_interfaces.md",
+      "copy": "reference_c3/payload_interfaces.md",
+      "sha256": "cc19a1b3e01edaa51c4ff168986b412b386bfb0e9b6db7040574e4a11cbc3cb9"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/revision_notes.md",
+      "copy": "reference_c3/revision_notes.md",
+      "sha256": "afa770843b04424125794ac11de8bfe60ae225d413d4963cd5f63793ae48692c"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/rocketstar_C3_Integrated_Design_Baseline.md",
+      "copy": "reference_c3/rocketstar_C3_Integrated_Design_Baseline.md",
+      "sha256": "e06517cc35053590699bcd0a3be7d94ebe280030436b86a54f176d3ae03603ad"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/rocketstar_C3_external_concept.png",
+      "copy": "reference_c3/rocketstar_C3_external_concept.png",
+      "sha256": "8f30a9c08cd24a5aacd212b3bdfcba4c2bce04b1e9224262b3db5d408b38f8f8"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/rocketstar_C3_functional_layout.svg",
+      "copy": "reference_c3/rocketstar_C3_functional_layout.svg",
+      "sha256": "690840b1e9bfbb078d018e9d87dc15333d1615e76bc3eae9529b317c45d342fb"
+    },
+    {
+      "original": "outputs/rocketstar_C3_package/rocketstar_C3_mass_comparison.svg",
+      "copy": "reference_c3/rocketstar_C3_mass_comparison.svg",
+      "sha256": "b9b121a4eaf51bc1648e51e1e7984cf75348e8d163648d4ba37d2f69e70575a8"
+    }
+  ]
+}

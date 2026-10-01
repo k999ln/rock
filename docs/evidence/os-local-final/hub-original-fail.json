@@ -1,0 +1,49 @@
+{
+  "cases": [],
+  "error": "ValueError: runtime export failed: etc; debugfs 1.47.2 (1-Jan-2025)\ndump_file: Invalid argument while changing ownership of /var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/hub-fault-mov_i28m/original-runtime/etc/rock-wallet/backend.json\ndump_file: Invalid argument while changing ownership of /var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/hub-fault-mov_i28m/original-runtime/etc/rock-wallet/backend-token\n",
+  "finished_utc": "2026-09-10T11:24:00.616598+00:00",
+  "game_scope_plan_sha256": "bbfec778cda8c4457220e0779bf47d55a5b9e1a7f9d826ef5c1f706909faad13",
+  "limits": {
+    "Hub_deadline_seconds": 3,
+    "boots": 3,
+    "capture_seconds": 4,
+    "per_boot_seconds": 240,
+    "platform_threads": 16,
+    "prearm_seconds": 2,
+    "process_inventory": 4096,
+    "stat_bytes": 4096
+  },
+  "original_images_unchanged": true,
+  "runtime_manifest_metadata_scope": "content hashes, file/directory modes and symlink targets; source UID/GID are not attested",
+  "runtime_manifest_prefixes": [
+    "usr",
+    "lib",
+    "bin",
+    "sbin",
+    "etc"
+  ],
+  "schema": "rock-hub-fault-evidence/1",
+  "scope": {
+    "fault_target": "launcher before sandbox execution",
+    "fixture": "derived rootfs; fixed root tracer and owner API",
+    "gui": "NOT_RUN",
+    "network": "none",
+    "platform_service_crash_interruption": "NOT_RUN",
+    "real_funds": "NOT_RUN",
+    "stage0_ab": "NOT_RUN",
+    "whole_D3": "INCOMPLETE"
+  },
+  "source_image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "source_image_sha256_after": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "status": "FAIL",
+  "verification_scope": "game-isolation",
+  "wallet": "NOT_RUN"
+}

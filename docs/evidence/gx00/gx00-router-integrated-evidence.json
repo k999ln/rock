@@ -1,0 +1,41 @@
+{
+  "evidence": {
+    "gx00-managed-tls-first.log": "0f32ced1de44e1016666e209ff6378cadad3be76afc723fccb2f497ccbb0bc2e",
+    "gx00-managed-tls-linux-final.log": "b9ba703b5288d8b1216664f08747e29798de18343fd3c7c0bcef0f687c86ff56"
+  },
+  "files": {
+    "os/entitlement/._device.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/entitlement/._store.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/entitlement/._wallet_bridge.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/entitlement/device.py": "63528db17a55d86adae3aecc7adf37e099f1fce1c6df8f7cab489fb023096a00",
+    "os/entitlement/store.py": "8116afa1abdcd5b6a2548fd882610731c2fc34d9dfbae8840bc6ba2a617b794b",
+    "os/entitlement/wallet_bridge.py": "56c4bf55632f58b9adc1f97d59a9fd677df14b48b2aa883b943dfb5bdb13b330",
+    "os/platform/._service.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/platform/service.py": "767fbeb7133d30b29219f96c2353ee0482825e721d4e2ef0abff87a9fe3324e5",
+    "os/wallet_backend/._OWNER-ROUTER.md": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/wallet_backend/._authority_fence.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/wallet_backend/._client.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/wallet_backend/._contract_runtime.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/wallet_backend/._owner_router.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/wallet_backend/._runtime_contracts.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/wallet_backend/._server.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "os/wallet_backend/OWNER-ROUTER.md": "fd7391436d97f99cfee06b9ed41bc8419fcc15da00e6795ec4d799f038cf3b7e",
+    "os/wallet_backend/authority_fence.py": "3c83784d0c63626077cbcf9ea40bdad6b79dcdf11c5dee1e612baa982417c43d",
+    "os/wallet_backend/client.py": "e2aa8f314a147ab7884c11f195e77aec60cd1a6d9399eaa8dd7cd8a72f6c5cb0",
+    "os/wallet_backend/contract_runtime.py": "8352caf63b82669cfc9b415ec75f8d49a0c2a05a0ef3fec762de733d500c8edc",
+    "os/wallet_backend/owner_router.py": "cc7817014315e675a12a215604b4d4033c96c2d62afe0b96ba41086aea97a0a9",
+    "os/wallet_backend/runtime_contracts.py": "27b173d8a09499a18307aa7a9820ed2f47a1316fb78986a6fd71757069cfdea4",
+    "os/wallet_backend/server.py": "89af89957aa644d05782381027088d9f39d4ffa66ce0b55d4595f6211af8ee5f",
+    "src/blackberryrock/._wallet.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "src/blackberryrock/wallet.py": "7d0e230a3dc868d911328abac170b0fb14b36a001e09b5d463292afb6a8e6d58",
+    "tests/._test_wallet_backend_device_client.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "tests/._test_wallet_client_v3.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "tests/._test_wallet_managed_tls.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "tests/._test_wallet_owner_router.py": "2ec818ab81ba9760dc8de15fdc764e634248679410e80756da37d8d5c0424106",
+    "tests/test_wallet_backend_device_client.py": "9a87bba63e229c12f6b64d49e11cccec39e382b39ef22ae756700f1c77b26bfa",
+    "tests/test_wallet_client_v3.py": "c14b4911b289f3d0ebb8950d4c5e056f4ca602222dce615a75bf7408b8a956f3",
+    "tests/test_wallet_managed_tls.py": "6645beda60612282fa8bed9c78fb4ff9a3430e25ab61a57b5a1f250e09cac34b",
+    "tests/test_wallet_owner_router.py": "4bcc641ef18bfbdab0d336ed4aa1ffbb95ea1bb4b922e86d9a6b0708cd71fc19"
+  },
+  "integrated_tar_sha256": "8a770b2e9a8b240cde43fa47bfeec72f6a73dfb2185324217544135f05874d74"
+}

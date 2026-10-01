@@ -1,0 +1,54 @@
+{
+  "schema": "rock-gx00-required-acceptance/1",
+  "recorded_at": "2026-09-10T05:54:08.393853+00:00",
+  "base_commit": "91debc28174d87be023b789980d2c46112a66979",
+  "status": "HOST_GX00_REQUIRED_CASES_PASS",
+  "scope": "Linux aarch64 Python 3.13; public synthetic data; actual loopback TLS, Handler, OwnerRouter, C admission and Wallet/Auth SQLite. Not an OS image or production acceptance.",
+  "source_sha256": {
+    "systems/rock-star-os/os/game_exchange/connections.py": "f9683b385883a51f808a22161643878e3c71771610156793bda9e4146a1b63a5",
+    "systems/rock-star-os/tests/test_game_connections_tls.py": "ad9a51ede2733aa22585d26dca3f2b875ce17d73f936fe99db6ad02ec0240cf7",
+    "systems/rock-star-os/tests/test_wallet_managed_tls.py": "463427da4786fc0b380d46e5f7722a11c8ae7e29eb0f0d8e51a762a0ba9d6298"
+  },
+  "checks": [
+    {
+      "name": "game-regression",
+      "tests": 74,
+      "seconds": 33.373,
+      "exit_code": 0,
+      "status": "PASS",
+      "log_sha256": "26a3dbff95668ae79c85e4c1af4549ef94daa56c72ecd0e97cf05e3c458fbf6b"
+    },
+    {
+      "name": "owner-fence-regression",
+      "tests": 52,
+      "seconds": 3.528,
+      "exit_code": 0,
+      "status": "PASS",
+      "log_sha256": "1ba47bc3f3e292046e123ad033f9b1044830981666c883473494a8d7163d9486"
+    }
+  ],
+  "required_cases": {
+    "cross_game_reconcile_namespace": "PASS: same begin/approve/reconcile external keys in two games; changed same-game payload rejected; complete restart exact replay",
+    "legacy_namespace": "PASS: original immutable key/request/result and schema retained; other-game v2 receipt added; old-game payload change rejected before and after restart",
+    "monthly_two_owner_three_device": "PASS: each owner has exactly one September 888 bill; A1/A2 same schedule and account; Bob separate schedule/account",
+    "insufficient_noninterference": "PASS: Alice 887 fails then explicitly retries over TLS; Bob 888 paid and full typed rows/schema of both DBs unchanged",
+    "foreign_quote_receipt": "PASS: both directions reject foreign OPEN quote cancellation and exact original issue request; no code, withdrawal id or result projection; both DBs including counters/receipt unchanged; original owner exact replay",
+    "server_worker_scope": "PASS: same live Thread object processes A1 -> B1 actual policy exception -> A2; exact binding and own C hooks inside service; no binding, C ticket/inflight or deadline remains after each request"
+  },
+  "reused_regressions": "74 game tests include legacy nonempty adoption, lost-response owner client, current-copy migration interruption and old writer rejection; 52 owner/fence tests include four new required TLS cases.",
+  "known_limits": [
+    "OwnerConnectionClient still journals (operation,key) and is not a general SDK",
+    "Current-copy remains stopped all-owner, same-host and retained original C/B/index only",
+    "No game currency exchange, SDK, new OS image, real game, real money or arbitrary historical backup acceptance in this GX00 result"
+  ],
+  "first_failed_invocations": [
+    {
+      "reason": "First broad game discovery omitted required PYTHONPATH=src:os; one import error. Reran with repository test-native.py environment.",
+      "result": "60 tests, 1 error; not PASS"
+    },
+    {
+      "reason": "During test construction, an existing method tail was misplaced into new legacy test. Restored original test tail before final regression.",
+      "result": "12 tests, 1 failure; not PASS"
+    }
+  ]
+}

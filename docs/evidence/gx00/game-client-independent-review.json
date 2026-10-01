@@ -1,0 +1,53 @@
+{
+  "status": "PASS_SCOPED_INDEPENDENT_REVIEW",
+  "source_sha256": {
+    "os/game_exchange/client.py": "2acd6babecf3aee81aaf651751da2212ef9fbd869b6d9d0563c39542b7569449",
+    "os/game_exchange/storage.py": "19fcffb29ef430cf91fd69feb698258e2b0ff5723f4d99fd33d65294c59fe67c",
+    "os/wallet_backend/client.py": "e2aa8f314a147ab7884c11f195e77aec60cd1a6d9399eaa8dd7cd8a72f6c5cb0"
+  },
+  "scope": [
+    "durable request commit and directory fsync before send",
+    "same immutable request/receipt identity; fresh current authorization on every retry",
+    "actual TLS CA/settings, transport timeout, key/game snapshot pins before and after send",
+    "unknown outcome retained after SQLite/fsync failures; no cached status fallback",
+    "client close serialized with in-flight I/O and durable receipt work"
+  ],
+  "actual_probes": {
+    "timeout_before": {
+      "case": "actual HTTPSWalletTransport timeout changed to None after owner-client pin",
+      "accepted_by_current_check": true,
+      "network_sent_after_mutation": false,
+      "original_timeout": 3
+    },
+    "timeout_before_log_note": "Verbatim JSON values copied from original exec output; mutation sent no network request.",
+    "timeout_after": {
+      "same_probe_exit": 1,
+      "expected": "ProtocolError: fixed finite bounded Wallet timeout required",
+      "log": "game-client-timeout-independent-after.log"
+    },
+    "concurrent_close": {
+      "status": "PASS",
+      "actual_server_commit_before_timeout": true,
+      "close_waited_for_in_flight": true,
+      "request_preserved_unknown_across_close": true,
+      "same_saved_request_recovered": true,
+      "configured_timeout_seconds": 0.4,
+      "elapsed_to_close_seconds": 0.43191783397924155,
+      "qemu_operations": 0
+    }
+  },
+  "limits": [
+    "Pure public synthetic connection flow only; no currency exchange, funds, OS integration or real external game.",
+    "Independent review did not rerun all B tests; B owns complete runtime/TLS regression.",
+    "No QEMU or production/source repo mutation."
+  ],
+  "changed_boundary": "Finite .05-3 second transport timeout is checked on every access and pinned by float.hex; altered timeout fails before send. Minimum TLS 1.2 is enforced.",
+  "additional_blockers": [],
+  "artifact_sha256": {
+    "review-game-client-timeout.py": "0a1d9ed26fd8b0fec109136f59d1e23e7fedc247ca9dbb97010a2253e367061d",
+    "review-game-client-close.py": "754e99a7916cf1dd6fffa07792d3e3105595c7d367e1678175c33f33a9b68e7b",
+    "game-client-timeout-independent-before.log": "61aaa8c63994027b25a9663020c2df9972bd18e65ae1b01b5c5a5d50a42d73f3",
+    "game-client-timeout-independent-after.log": "f87607d9f56b2c7a703fa1be98eb2fd77568aad707835f6b180bf91484b2de9c",
+    "game-client-close-independent.log": "1634e22fdd155a0e5aca4b2d432d947058c2cfce0e53b90bff3367d5ae59a14b"
+  }
+}

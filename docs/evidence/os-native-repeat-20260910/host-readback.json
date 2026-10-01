@@ -1,0 +1,105 @@
+{
+  "schema": "rock-native-repeat-host-readback/1",
+  "status": "PASS_ALL_14_LOGS_AND_REPORTS",
+  "candidate_source": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "files": {
+    "native-driver.log": {
+      "bytes": 4334,
+      "sha256": "7f1dd744326486715ab52fb93c41e6ca3d804f8d8706b091fa192a0170de4a68"
+    },
+    "native-r2-host-after.json": {
+      "bytes": 3025,
+      "sha256": "2bdaeb1e956aebf6331da36a3b8a2a254b78b35cf13d6bf2eb9fb174f219603d"
+    },
+    "native-r2-host-before.json": {
+      "bytes": 3472,
+      "sha256": "b3402291120f5f5f154586011037823ddc55288e3a3adbdb46f89d00d1942c62"
+    },
+    "native-r2-readonly-preflight.json": {
+      "bytes": 732,
+      "sha256": "d8a9153a5ae0749a098161ece282316a9243119278ddbdf6059fd87d3ad15dad"
+    },
+    "native-tests/c-core.log": {
+      "bytes": 259,
+      "sha256": "fd91775029f963b4f3eb553a49d6c33012ef4a9e6384e1a265eb70ab0ac96403"
+    },
+    "native-tests/c-platform.log": {
+      "bytes": 130,
+      "sha256": "68e812194c9ae59796ee89d0e42c7a62b163e5ab1b79c326be21ddd75b088daa"
+    },
+    "native-tests/c-ui-actions.log": {
+      "bytes": 544,
+      "sha256": "3933e9ba3249a51510398cc7ca27fe7a420951629545b55c3e7f39d19dfaa270"
+    },
+    "native-tests/c-ui-build-tests.log": {
+      "bytes": 744,
+      "sha256": "6dc732f11fb83fb1feb4f934091d1250469bbfe6d0af46fa4de0ab7408ae1bfc"
+    },
+    "native-tests/c-ui-ipc.log": {
+      "bytes": 1262,
+      "sha256": "c20dd1121e5bd2c0e731952a452f01b14830d3a33a5373e9eb6ff2d66c394e73"
+    },
+    "native-tests/c-ui-native-replay.log": {
+      "bytes": 425,
+      "sha256": "1bcb8f552c25044a5c319d249dba0a33f6dac6e46899a2e389aa04f386aacb3f"
+    },
+    "native-tests/c-ui.log": {
+      "bytes": 1214,
+      "sha256": "0069088559ed14f3efccaad4d0e2cda15a45fceb83b68158eb76fade6db8bdf7"
+    },
+    "native-tests/os-ai_routes-tests.log": {
+      "bytes": 3893,
+      "sha256": "4307965a63f7ae0f19c3bfaa76ac7d8aa1c558158a7cd7bc807ef19f9f8716fd"
+    },
+    "native-tests/os-atm-tests.log": {
+      "bytes": 6719,
+      "sha256": "09563ed7c47775163a27097dc3eb115d8877c791bea5e8893ef33ec14568f154"
+    },
+    "native-tests/os-entitlement-tests.log": {
+      "bytes": 14914,
+      "sha256": "766741022a88bc10865b6faa648368dbf144de3eefc97d61f4f9c2fa25ef7fc1"
+    },
+    "native-tests/os-service_access-tests.log": {
+      "bytes": 4639,
+      "sha256": "a9df99892215532b0b0361ce25c4c2d84a045464a2d9d7d5e269e8752e10365b"
+    },
+    "native-tests/os-wallet_auth-tests.log": {
+      "bytes": 11036,
+      "sha256": "7fcbec9c8780ebe358bbc7d985b781ef32f7d4f80e33582094e737c30d984d5c"
+    },
+    "native-tests/report.json": {
+      "bytes": 96888,
+      "sha256": "69b519c01696dcd990938fb77187f290de3aab07649798a3dacd60873f23b110"
+    },
+    "native-tests/tests.log": {
+      "bytes": 249567,
+      "sha256": "1272daa5084d25e6dc3986563fe3f4d6b30911d32eb0a3fb7c3072747793ef08"
+    },
+    "native-tests/ui-observers.log": {
+      "bytes": 2361,
+      "sha256": "7467588fc1ac2d5ff390928f3873c1f08c89566a76e6e96df64dd34e0b4eab52"
+    },
+    "plan.json": {
+      "bytes": 5689,
+      "sha256": "4654bbf7f6b2e407d9f42eb00169723902e28ef999fff3d8c2b0256fcc7d6f0d"
+    },
+    "report.json": {
+      "bytes": 2828,
+      "sha256": "f0e2f7890f289da5d1625c6aa67a0d1c857df99cfe49ab2af8906f4d7bd4e8c7"
+    },
+    "root-c-finished-for-native-r2.json": {
+      "bytes": 729,
+      "sha256": "3cb2392f03a1158a828bed557a49eea122c13c8db0bd1167b4f8c23933296901"
+    },
+    "linux-processes-after.json": {
+      "bytes": 89,
+      "sha256": "a097a6874a7e4e3cb81740ee91ee1f49beab8165f8d28712ef93c230f9369463"
+    }
+  },
+  "native_report_sha256": "69b519c01696dcd990938fb77187f290de3aab07649798a3dacd60873f23b110",
+  "repeat_report_sha256": "f0e2f7890f289da5d1625c6aa67a0d1c857df99cfe49ab2af8906f4d7bd4e8c7",
+  "native_checks": 14,
+  "started_utc": "2026-09-10T12:59:18.903567+00:00",
+  "finished_utc": "2026-09-10T13:02:33.547305+00:00",
+  "host_evidence_root": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/os-acceptance/native-r2-recovered"
+}

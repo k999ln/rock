@@ -1,0 +1,27 @@
+{
+  "capabilities": {
+    "assets_snapshot": false,
+    "connections": false,
+    "exchange": false,
+    "history": false,
+    "simulation_only": true
+  },
+  "files": {
+    "docs/gx00-connection-wire-v1.md": "7faa59b05f21998d360407a791ea339584d8a21527be28d20c20d96007f73823",
+    "systems/rock-star-os/os/game_exchange/__init__.py": "f9694af485e1dc5f0b93509928e6c35b198cbbb2a598ba5b654ed496c33bc491",
+    "systems/rock-star-os/os/game_exchange/fixtures/connection-v1-vectors.json": "c2382e94932bd42a284ac64dec30519c762eeddcc13b5ee76ae836b82a011871",
+    "systems/rock-star-os/os/game_exchange/protocol.py": "1d464fe735ca545e5ad59d07394fdef0bb219654ae560bfcd7c24b45dfdb6d13",
+    "systems/rock-star-os/tests/test_game_connection_protocol.py": "1fa5f7e41d23cd50858ed4ecc6b864c289ff9cc90d41f7c0d8ea439670e4cb05"
+  },
+  "patch_sha256": "f092c90c97f49d479513e145303d94e73a071fa5a59eaabf11397f2534c44a41",
+  "scope": "schema and actual Ed25519 verification; HTTP/DB/OS acceptance NOT_RUN",
+  "skip_mentions": 0,
+  "test_groups": [
+    [
+      "18",
+      "0.843"
+    ]
+  ],
+  "test_log_sha256": "3b93874d74b3b04bea7843d43bad1eb7bd91be365f82c2106717a0b10407b3b4",
+  "warning_mentions": 0
+}

@@ -1,0 +1,144 @@
+{
+  "schema": "rock-native-intermediate-game-build-evidence/1",
+  "status": "BUILD_AND_DERIVATION_VERIFIED_ONLY",
+  "observed_utc": "2026-09-10T07:32:56.396215+00:00",
+  "source_commit": "7ed6cf72d16f77c2cfb804914df1819b4282682d",
+  "purpose": "find actual Game/Wallet/Hub integration issues before final source freeze; no final acceptance reused",
+  "trace": {
+    "rq": "RQ06/09/10/12/13/16/17",
+    "principle": "明確な楽観主義",
+    "inconvenience": "native base and signed Game profile have different images requiring independently bound provenance",
+    "reuse": "original git archive, completed native regressions, Buildroot cache, existing source/factory guards",
+    "minimum_change": "host-only freeze and content comparison",
+    "measure": "exact source/native/full image inventory and three declared additions",
+    "acceptance_evidence": "this receipt and the preserved raw freezes/inventories"
+  },
+  "source_tests": {
+    "status": "PASS",
+    "started_utc": "2026-09-10T07:20:04.140526+00:00",
+    "finished_utc": "2026-09-10T07:22:26.815293+00:00",
+    "total_python_test_executions": 1499,
+    "source_unchanged": true,
+    "changed_inputs": []
+  },
+  "checks": 14,
+  "source_archive_sha256": "818427297d9a96459c9abafb2fed1115ba4b58c8b78b53f53342922a1730c340",
+  "source_report_sha256": "2b8d5f170743e133e0c0c7be0fc7cb7c86c44c70d9193d0bf4e54813978d85a2",
+  "build_interval": [
+    "2026-09-10T07:22:55Z",
+    "2026-09-10T07:23:38Z"
+  ],
+  "cache_origin_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "cache_reused": true,
+  "base_images": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "9d989798d0a91680bf17ab91ccbf43ba75491aebb74b9e6a827b12ad19e77cb8",
+    "stage0.cpio.gz": "21e54a94c4aa046568b499774e387e37284062777bbccaceed594aab347016b1"
+  },
+  "profile_images": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "dbeec66f42c3b9df73c84572ec3a8f2807eded9f4ef3c9dd00528e9cf7c0b0dc",
+    "stage0.cpio.gz": "95c589531456a4879c1cbf6460276a7e3afa3b1fa339f76739b495543fb46cd9"
+  },
+  "base_freeze_sha256": "d011a1ab49161d13ba27b58d43df99a5ed87198de451ab64a8af7f491d83a587",
+  "profile_sha256": "4405f0a403db2865c0ad3c2086fa7a4cdf1887a9087086159b3e15c0c46db4b9",
+  "derived_freeze_sha256": "97d806be526d01416cc0e24db219bf9e73579a945d245d726a56557f346729e5",
+  "profile_derivation": {
+    "schema": "rock-native-profile-derivation/1",
+    "status": "DERIVATION_VERIFIED_FROZEN",
+    "profile": "development-game-authority",
+    "profile_sha256": "4405f0a403db2865c0ad3c2086fa7a4cdf1887a9087086159b3e15c0c46db4b9",
+    "base_images_sha256": {
+      "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+      "rootfs.ext4": "9d989798d0a91680bf17ab91ccbf43ba75491aebb74b9e6a827b12ad19e77cb8",
+      "stage0.cpio.gz": "21e54a94c4aa046568b499774e387e37284062777bbccaceed594aab347016b1"
+    },
+    "images_sha256": {
+      "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+      "rootfs.ext4": "dbeec66f42c3b9df73c84572ec3a8f2807eded9f4ef3c9dd00528e9cf7c0b0dc",
+      "stage0.cpio.gz": "95c589531456a4879c1cbf6460276a7e3afa3b1fa339f76739b495543fb46cd9"
+    },
+    "source_guard": "PASS_EXACT_BYTES",
+    "base_images_unchanged": true,
+    "stage0_other_entries_sha256": "8b05dfca25d561cf6efccd0a35693e7993a11c7e58ec02e4b5113fa4243c7a48",
+    "filesystem_comparison": {
+      "status": "PASS_EXACT_DECLARED_ADDITIONS",
+      "changes": {
+        "/etc/rock-wallet": {
+          "before": null,
+          "after": {
+            "inode": 1988,
+            "mode": 493,
+            "uid": 0,
+            "gid": 0,
+            "kind": "directory"
+          }
+        },
+        "/etc/rock-wallet/backend.json": {
+          "before": null,
+          "after": {
+            "inode": 1989,
+            "mode": 384,
+            "uid": 1003,
+            "gid": 1003,
+            "kind": "file",
+            "size": 3214,
+            "sha256": "737c31d09953c167925da49735537bef89eca98ca010d9d31b6fc1cdaef19984"
+          }
+        },
+        "/etc/rock-wallet/backend-token": {
+          "before": null,
+          "after": {
+            "inode": 1990,
+            "mode": 384,
+            "uid": 1003,
+            "gid": 1003,
+            "kind": "file",
+            "size": 49,
+            "sha256": "6d45e465aee36b7bef706fcba82fcd7927fcf12538462c515578e4d7933bdae5"
+          }
+        }
+      },
+      "inventories": {
+        "base-rootfs-inventory.json": {
+          "sha256": "f9301446aa53e0d4e88dca0e1ba46b2e9c87065d02a9e53ff285e51aaf513ff4",
+          "path_count": 1977,
+          "content_bytes": 65759249
+        },
+        "profile-rootfs-inventory.json": {
+          "sha256": "7dfca8999574b96f4fe0386f1ad8cc715027a8ef7f9158dd2550ab162df9967d",
+          "path_count": 1980,
+          "content_bytes": 65762512
+        }
+      },
+      "coverage": "all filesystem paths, inode number, uid/gid, mode, regular file bytes and symlink targets",
+      "excluded_metadata": "filesystem allocation and timestamps; directory byte size"
+    },
+    "initial_state": "empty-unregistered-no-consent",
+    "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+    "sandbox_configuration_sha256": "5c52349ed7442e4f6ab681c81d75622392bcef0b5c4525e9283f65862ba01928",
+    "guest_acceptance": "NOT_RUN"
+  },
+  "independent_authority": "/var/tmp/rockstaros-intermediate-game-7ed6cf7-authority",
+  "final_authority_untouched": true,
+  "source_directory": "/var/tmp/rock-intermediate-game-7ed6cf7",
+  "images_directory": "/var/tmp/rock-intermediate-game-7ed6cf7-profile",
+  "inventory_directory": "/var/tmp/rock-release-os-20260910/intermediate-game-7ed6cf7-derivation",
+  "legal_info": {
+    "status": "COLLECTED_INTERMEDIATE_ONLY",
+    "path": "/var/tmp/rk-build-b8287bc/output/legal-info",
+    "product_license": "NOT_SELECTED",
+    "required_next": "final candidate rerun plus actual original Buildroot archive, corresponding sources/config/licenses; distribution conditions NOT_DETERMINED"
+  },
+  "retained_failures": [
+    {
+      "status": "INVALID_PROVENANCE_NOT_ACCEPTED",
+      "scope": "first base freeze used an incorrectly transcribed cache-origin commit; final record corrected using the verified prior freeze; image bytes unchanged",
+      "raw": "/var/tmp/rock-release-os-20260910/intermediate-game-7ed6cf7-invalid-cache-origin.json",
+      "rejection": "/var/tmp/rock-release-os-20260910/intermediate-game-7ed6cf7-invalid-cache-origin.rejection.json"
+    }
+  ],
+  "guest_acceptance_D0_D6": "NOT_RUN_IN_THIS_RECEIPT",
+  "physical_hardware": "NOT_RUN",
+  "real_funds": "NOT_USED"
+}

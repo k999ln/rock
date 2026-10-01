@@ -1,0 +1,43 @@
+{
+  "schema": "rock-hub-onboarding-host/1",
+  "status": "PASS_SCOPED_HOST",
+  "base_commit": "28e5ca6",
+  "source_sha256": {
+    "systems/rock-star-os/os/ui/ui.c": "54c3c3d11d981dcfbafe2292ed2bc845f8a0e17eb9e29f3990ebebb2415ad772",
+    "systems/rock-star-os/os/ui/ui.h": "b2a65933c060e9f6b88f8f5c58ec25d07217a87857205a9f884f954138b8f2e3",
+    "systems/rock-star-os/os/ui/test_ui.c": "fd2820b5ef44ca28fbdd0a8871220adfac14284f66f2039fb980e601aeecef7e",
+    "systems/rock-star-os/os/ui/test_onboarding.inc": "091d7e16afa2b5073dcd3131ae51a8a6bf6571a43f6cbda8ec7944ce1da46f5b",
+    "systems/rock-star-os/os/desktop/verify-business.py": "bf075ed71d3f191382a428f9d281a6a09353e68fef69af1e086cfdaa4b86800b"
+  },
+  "checks": [
+    {
+      "name": "native C real events/rendering regression",
+      "result": "PASS",
+      "environment": "Linux aarch64 GCC Cairo JSON-C; actual sample pointer presses and explicit run request"
+    },
+    {
+      "name": "business UI harness/contract",
+      "result": "PASS",
+      "tests": 41,
+      "seconds": 0.246,
+      "skip": 0
+    }
+  ],
+  "visual_review": [
+    "citation sample has real source marker and protected code",
+    "historical result title uses executed package after uninstall",
+    "cost/income unconnected is distinct from synthetic Wallet amount"
+  ],
+  "not_run": [
+    "candidate QEMU sample flow",
+    "candidate old-slot and backup acceptance",
+    "human time saving",
+    "external user research"
+  ],
+  "failed_attempts": [
+    "host C renderer font path absent; reran with existing verified Noto CJK asset",
+    "new UI test expected input key instead of existing text key; test corrected to actual existing wire before pass",
+    "old-image observation collector called nonexistent Monitor.drain after normal shutdown; unchanged FAIL report independently closed and audited",
+    "first stopped observation used completed/input instead of existing succeeded/request_hash contract; no mutation performed, read-only checker corrected"
+  ]
+}

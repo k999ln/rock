@@ -1,0 +1,88 @@
+{
+  "schema": "rock-final-portable-browser-qa/1",
+  "status": "PASS_BOUNDED_LAYOUT_NAVIGATION_VIDEO_WITH_CAPTION_RENDER_NOT_CONFIRMED",
+  "source_commit": "ba900e49c5ceac3f6453030518d75a0467c0f6ac",
+  "url": "http://127.0.0.1:8765/index.html",
+  "started": "2026-09-10T12:52:49.324Z",
+  "finished": "2026-09-10T12:57:08.641Z",
+  "heavy_browser_work_stopped_utc": "2026-09-10T12:57:08.693Z",
+  "owned_tab_closed": "48015117",
+  "temporary_viewport_reset": true,
+  "widths_tested": [
+    1512,
+    390
+  ],
+  "navigation": [
+    "landing first-result link -> guide.html#first-result",
+    "guide recovery anchor -> #recovery",
+    "guide back link -> index.html",
+    "landing start CTA -> #start"
+  ],
+  "layout": "No document horizontal overflow at the two tested widths; long guide command blocks use their own overflow-x:auto",
+  "video": {
+    "duration_seconds": 90.04,
+    "pixels": [
+      720,
+      960
+    ],
+    "playback_observed_seconds": 10.375289,
+    "paused_seek_observations_seconds": [
+      23.885283,
+      54.078337,
+      69.983606
+    ],
+    "visuals": [
+      "citation result with source list and retained code citation",
+      "synthetic Wallet $89.06",
+      "Game A/B completed exchange history"
+    ],
+    "http": {
+      "status": 200,
+      "mime": "video/mp4",
+      "bytes": 730404,
+      "sha256": "58c832e84b2b952f6713cdc2abf9a417b8be338e4ccc13e6d6f7ad7a7406fd42"
+    }
+  },
+  "captions": {
+    "optional_dom_track": "captions/ja/操作の説明/default=false/mode=disabled",
+    "http": {
+      "status": 200,
+      "mime": "text/vtt",
+      "bytes": 630,
+      "sha256": "653fc274fce595d4a3e421dd06a3e8fb45298f004f0d3ffcb127921fc60910b1",
+      "cue_timings": [
+        "00:00:00.000 --> 00:00:40.110",
+        "00:00:40.110 --> 00:00:55.954",
+        "00:00:55.954 --> 00:01:16.091",
+        "00:01:16.091 --> 00:01:30.040"
+      ],
+      "cue_count": 4,
+      "vtt": "WEBVTT\n\nNOTE QEMU actual screen recording; synthetic Wallet/Game; optional action descriptions, no spoken audio.\n\n1\n00:00:00.000 --> 00:00:40.110\nQEMUの実画面。公開サンプルを実処理し、履歴から引用整理の結果を開きます。\n\n2\n00:00:40.110 --> 00:00:55.954\n合成Walletを開き、月額テストと残高を確認します。実際の資金ではありません。\n\n3\n00:00:55.954 --> 00:01:16.091\n合成Game A/Bの接続と、事前に完了した交換の履歴を確認します。\n\n4\n00:01:16.091 --> 00:01:30.040\nHubの履歴に戻り、保存した引用整理の結果を開き直します。\n"
+    },
+    "native_menu_selection_and_render": "NOT_CONFIRMED",
+    "note": "Optional track and four valid served VTT cues verified; not represented as native caption rendering PASS."
+  },
+  "findings": [
+    {
+      "severity": "minor",
+      "detail": "Guide says 配布候補を検証中です and 合成Game A/Bを同じ配布候補で受入中です while landing states internal acceptance. This is conservative stale copy, not an unsupported success claim.",
+      "root_response": "Text-only correction planned in a later source/export; original ba900 evidence retained, no need to repeat playback if media/control/layout bytes remain identical."
+    }
+  ],
+  "runtime_VM_financial_tests": 0,
+  "source_or_assets_modified": false,
+  "checks_sha256": {
+    "browser-observations.json": "2e8da0261b9f89143683b0762f6b7eb25b4c9a832bce547e9c58a02a9b4b07c0",
+    "desktop-home.png": "9a503d895cf9b385811d8d717107435c9504a91568b8d8ec318111295948617a",
+    "http-media.json": "7c7c49d26df37c9281e47c401cc1e027397c36b01194a4de53df62d2ccbe046e",
+    "mobile-guide-recovery.png": "982a1a5a1800759be6045cca2ee46ab453916bf18a44094957f02e3f0210955f",
+    "mobile-home.png": "5993175c042e5d0c6052df04d4a24dbb9f26672c8cba32bbecd1751f6873e2af",
+    "video-seek-24.png": "da4341f00ba264797c9aa7f54ef08e02e2ebd677294ad6ad46e6dab0a91a5e4e",
+    "video-seek-54.png": "3eec6c76c98451e8a53d213fad5f2c3aee764597f660580e742375e6e09bfc22",
+    "video-seek-70.png": "bb5541d6bef77a3075ccd8da32b76904e1ad158d9855bb0b83c022c432234c22"
+  },
+  "original_export_file_sha256": {
+    "index.html": "e1d6ee55c421dd05cea101a468198410dba98b16e6d85f1b222f72dfa817796d",
+    "guide.html": "9bc8b6d404309cc3d4b0d17113b1c885d2f60178856642b683bc964b9e35516c"
+  }
+}

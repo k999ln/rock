@@ -1,0 +1,121 @@
+{
+  "document": "rocketstar mission profile",
+  "revision": "R1.0",
+  "date": "2026-09-24",
+  "requirements": {
+    "name": "rocketstar",
+    "uncrewed": true,
+    "small_satellite_launch": true,
+    "stage_count": 2,
+    "recover_and_reuse_both_stages": true,
+    "reuse_same_serial_required": true
+  },
+  "selected_for_study": {
+    "propellants": [
+      "LOX",
+      "liquid methane"
+    ],
+    "stage1_recovery": "downrange offshore vertical landing",
+    "stage2_recovery": "designated land vertical landing",
+    "payload_door": "retained leeward door",
+    "windward_tps": "continuous reusable thermal protection",
+    "flight_software_candidate": "cFS + RTEMS; not flight selected or qualified"
+  },
+  "comparison_assumptions": {
+    "status": "analysis_assumption_not_guaranteed_performance",
+    "satellites": 2,
+    "satellite_mass_each_kg": 500,
+    "payload_total_kg": 1000,
+    "orbit_altitude_km": 550,
+    "inclination_deg": 53
+  },
+  "open_inputs": {
+    "launch_country": {
+      "value": null,
+      "meaning": "発射国・適用制度",
+      "responsible_discipline": "運用/システム",
+      "rdr": "RDR-040"
+    },
+    "launch_site": {
+      "value": null,
+      "meaning": "射場・射向の条件",
+      "responsible_discipline": "運用/飛行",
+      "rdr": "RDR-002"
+    },
+    "recovery_sites": {
+      "value": null,
+      "meaning": "両段の回収区域・設備条件",
+      "responsible_discipline": "回収/飛行",
+      "rdr": "RDR-029"
+    },
+    "payload_envelope": {
+      "value": null,
+      "meaning": "衛星実機の包絡・質量特性",
+      "responsible_discipline": "衛星/構造",
+      "rdr": "RDR-032"
+    },
+    "injection_tolerances": {
+      "value": null,
+      "meaning": "投入状態・許容誤差",
+      "responsible_discipline": "ミッション/衛星",
+      "rdr": "RDR-002"
+    },
+    "coupled_performance": {
+      "value": null,
+      "meaning": "同一構成の上昇・帰還・余裕",
+      "responsible_discipline": "統合性能",
+      "rdr": "RDR-005"
+    },
+    "vehicle_dimensions": {
+      "value": null,
+      "meaning": "全高・直径・板厚・可動範囲",
+      "responsible_discipline": "構造/配置",
+      "rdr": "RDR-007"
+    },
+    "engine_selection": {
+      "value": null,
+      "meaning": "型式・個数・運転範囲・寿命",
+      "responsible_discipline": "推進",
+      "rdr": "RDR-014"
+    },
+    "materials_processes": {
+      "value": null,
+      "meaning": "材料・接合・製造工程",
+      "responsible_discipline": "材料/製造",
+      "rdr": "RDR-008"
+    },
+    "tps_selection": {
+      "value": null,
+      "meaning": "熱防護の材料・厚さ・取付",
+      "responsible_discipline": "熱/構造",
+      "rdr": "RDR-018"
+    },
+    "avionics_selection": {
+      "value": null,
+      "meaning": "計算機・電源・回路・ハーネス",
+      "responsible_discipline": "電装",
+      "rdr": "RDR-024"
+    },
+    "link_specification": {
+      "value": null,
+      "meaning": "管制RF・周波数・可視・容量",
+      "responsible_discipline": "通信/運用",
+      "rdr": "RDR-033"
+    },
+    "reuse_life": {
+      "value": null,
+      "meaning": "再使用回数・寿命・検査限界",
+      "responsible_discipline": "整備/品質",
+      "rdr": "RDR-036"
+    },
+    "schedule_cost": {
+      "value": null,
+      "meaning": "開発期間・体制・費用・調達",
+      "responsible_discipline": "プロジェクト",
+      "rdr": "RDR-039"
+    }
+  },
+  "manufacturing_release": false,
+  "flight_release": false,
+  "physical_validation": false
+}

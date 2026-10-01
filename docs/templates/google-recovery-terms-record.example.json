@@ -1,0 +1,29 @@
+{
+  "schema": "avocadoos-google-recovery-terms/1",
+  "target": {
+    "manufacturer": "Google",
+    "model": "Pixel 10",
+    "codename": "frankel",
+    "sku": "GL066"
+  },
+  "acceptedByOwner": false,
+  "acceptedAt": null,
+  "factoryPage": "https://developers.google.com/android/images",
+  "fullOtaPage": "https://developers.google.com/android/ota",
+  "scope": "personal_owned_pixel_10_recovery_download",
+  "artifactRedistributionAllowed": false,
+  "flashOrWipeAuthorized": false,
+  "officialSelection": {
+    "buildId": null,
+    "factoryImage": {
+      "downloadUrl": null,
+      "fileName": null,
+      "sha256": null
+    },
+    "fullOta": {
+      "downloadUrl": null,
+      "fileName": null,
+      "sha256": null
+    }
+  }
+}

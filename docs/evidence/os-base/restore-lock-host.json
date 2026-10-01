@@ -1,0 +1,57 @@
+{
+  "schema": "rock-restore-verifier-lock-host-tests/1",
+  "status": "PASS",
+  "scope": "host verification only; existing device locks, full closed disk observations and absolute deadlines",
+  "patch": "work/restore-verifier-lock.patch",
+  "patch_sha256": "16d235e020d68fa338237eba6dad3fb3b2a105eef4eb3d0a660d3e9880bc1b63",
+  "changed_files": [
+    "systems/rock-star-os/os/desktop/verify-backup.py",
+    "systems/rock-star-os/tests/test_os_desktop_backup_profiles.py",
+    "systems/rock-star-os/tests/test_os_desktop_backup_locking.py"
+  ],
+  "tests": [
+    {
+      "host": "macOS arm64",
+      "command": "python3 -m unittest discover -s tests -p 'test_os_desktop_backup*.py' -v",
+      "tests": 47,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "elapsed_seconds": 1.666,
+      "note": "before final current-record reporting guard; final source tested on Linux"
+    },
+    {
+      "host": "Debian Linux arm64 isolated fixture directory",
+      "command": "python3 -m unittest discover -s tests -p 'test_os_desktop_backup*.py' -v",
+      "tests": 47,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "elapsed_seconds": 1.169
+    }
+  ],
+  "new_negative_and_concurrency_tests": 12,
+  "evidence": [
+    "Actual independent process flock rejects writer while source hashes and restore failure finalization run; lock is released after report",
+    "Live process, real orphan AF_UNIX socket, replaced running record, changed config and reused destination rejected",
+    "Intervening complete session in snapshot-to-start gap rejected",
+    "Copied manifest change before source lock acquisition rejected",
+    "Exit observed after shared absolute shutdown deadline and late readiness predicate fail closed",
+    "Both manifest version orchestration fixtures still preserve full disk comparisons; required external restoration remains INCOMPLETE"
+  ],
+  "not_run": {
+    "qemu_actual_restore": "NOT_RUN",
+    "real_filesystem_boot": "NOT_RUN",
+    "physical_device": "NOT_RUN",
+    "real_funds": "NOT_RUN"
+  },
+  "unchanged": [
+    "guest.py",
+    "backup.py",
+    "frozen runtime image",
+    "native UI input routes",
+    "strict DB retention scope",
+    "external service restoration gate"
+  ],
+  "public_record_note": "Personal filesystem prefix omitted; patch SHA-256 and measured results preserved."
+}

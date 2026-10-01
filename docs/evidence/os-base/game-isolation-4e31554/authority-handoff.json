@@ -1,0 +1,17 @@
+{
+  "status": "PASS_SCOPED",
+  "d3_evidence": "/var/tmp/rock-intermediate-game-4e31554-profile/platform-20260910T074118Z-98g8g0lh",
+  "guest_checks": 47,
+  "sdk_tool_checks": 45,
+  "resource_modes": [
+    "memory",
+    "cpu",
+    "file-size",
+    "crash"
+  ],
+  "normal_shutdown": true,
+  "filesystem_consistent": true,
+  "authority_after": "STOPPED_EMPTY_ALL_TYPED_ROWS_IDENTICAL",
+  "financial_assertions": "NOT_RUN",
+  "root_ui_ready": true
+}

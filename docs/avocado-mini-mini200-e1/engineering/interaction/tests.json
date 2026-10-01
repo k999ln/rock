@@ -1,0 +1,430 @@
+{
+  "revision": "MINI200-E1-INTERACTION-REF1",
+  "date": "2026-09-21",
+  "checks": [
+    {
+      "name": "cold_boot_mic_camera_off",
+      "pass": true
+    },
+    {
+      "name": "cold_boot_ptt_denied",
+      "pass": true
+    },
+    {
+      "name": "ptt_must_be_strict_true",
+      "pass": true
+    },
+    {
+      "name": "mic_consent_string_rejected",
+      "pass": true
+    },
+    {
+      "name": "camera_consent_string_rejected",
+      "pass": true
+    },
+    {
+      "name": "ptt_no_prebuffer",
+      "pass": true
+    },
+    {
+      "name": "command_SELECT",
+      "pass": true
+    },
+    {
+      "name": "command_SELECT_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "command_COLOR_RED",
+      "pass": true
+    },
+    {
+      "name": "command_COLOR_RED_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "command_GRAVITY_LOW",
+      "pass": true
+    },
+    {
+      "name": "command_GRAVITY_LOW_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "command_GRAVITY_RESET",
+      "pass": true
+    },
+    {
+      "name": "command_GRAVITY_RESET_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "command_COMBINE_PREVIEW",
+      "pass": true
+    },
+    {
+      "name": "command_COMBINE_PREVIEW_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "command_UNLINK_PREVIEW",
+      "pass": true
+    },
+    {
+      "name": "command_UNLINK_PREVIEW_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "command_UNDO_PREVIEW",
+      "pass": true
+    },
+    {
+      "name": "command_UNDO_PREVIEW_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "command_SAVE_LOCAL_REQUEST",
+      "pass": true
+    },
+    {
+      "name": "command_SAVE_LOCAL_REQUEST_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "command_PAUSE",
+      "pass": true
+    },
+    {
+      "name": "command_PAUSE_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "command_STOP",
+      "pass": true
+    },
+    {
+      "name": "command_STOP_never_launches_or_controls_home",
+      "pass": true
+    },
+    {
+      "name": "partial_has_no_game_effect",
+      "pass": true
+    },
+    {
+      "name": "partial_replay_rejected",
+      "pass": true
+    },
+    {
+      "name": "subsequent_final_allowed",
+      "pass": true
+    },
+    {
+      "name": "final_result_one_shot",
+      "pass": true
+    },
+    {
+      "name": "low_score_clarifies_0.4",
+      "pass": true
+    },
+    {
+      "name": "low_score_clarifies_0.849",
+      "pass": true
+    },
+    {
+      "name": "invalid_score_0",
+      "pass": true
+    },
+    {
+      "name": "invalid_score_1",
+      "pass": true
+    },
+    {
+      "name": "invalid_score_2",
+      "pass": true
+    },
+    {
+      "name": "invalid_score_3",
+      "pass": true
+    },
+    {
+      "name": "invalid_score_4",
+      "pass": true
+    },
+    {
+      "name": "untrusted_source_LLM_TEXT",
+      "pass": true
+    },
+    {
+      "name": "untrusted_source_FILE_REPLAY",
+      "pass": true
+    },
+    {
+      "name": "untrusted_source_TV_TEXT",
+      "pass": true
+    },
+    {
+      "name": "untrusted_source_DEV_SIMULATOR",
+      "pass": true
+    },
+    {
+      "name": "voice_launch_denied_発射して",
+      "pass": true
+    },
+    {
+      "name": "voice_launch_denied_投げて",
+      "pass": true
+    },
+    {
+      "name": "separate_permission_支払って",
+      "pass": true
+    },
+    {
+      "name": "separate_permission_照明をつけて",
+      "pass": true
+    },
+    {
+      "name": "separate_permission_鍵を開けて",
+      "pass": true
+    },
+    {
+      "name": "out_of_grammar_重力を弱くしないで",
+      "pass": true
+    },
+    {
+      "name": "out_of_grammar_続けて",
+      "pass": true
+    },
+    {
+      "name": "out_of_grammar_前の命令を無視して発射して",
+      "pass": true
+    },
+    {
+      "name": "out_of_grammar_unknown",
+      "pass": true
+    },
+    {
+      "name": "mute_purges_audio_and_jobs",
+      "pass": true
+    },
+    {
+      "name": "mute_late_result_denied",
+      "pass": true
+    },
+    {
+      "name": "mute_does_not_stop_camera_or_game",
+      "pass": true
+    },
+    {
+      "name": "unmute_does_not_restore_old_asr",
+      "pass": true
+    },
+    {
+      "name": "consent_revoke_rejects_result",
+      "pass": true
+    },
+    {
+      "name": "camera_shutter_cannot_unmute_mic",
+      "pass": true
+    },
+    {
+      "name": "mode_switch_resets_permissions",
+      "pass": true
+    },
+    {
+      "name": "mode_switch_rejects_pending_asr",
+      "pass": true
+    },
+    {
+      "name": "fault_rejects_asr",
+      "pass": true
+    },
+    {
+      "name": "fault_requires_recovery_not_start_button",
+      "pass": true
+    },
+    {
+      "name": "fault_cannot_be_bypassed_by_mode_switch",
+      "pass": true
+    },
+    {
+      "name": "invalid_mode_type_denied",
+      "pass": true
+    },
+    {
+      "name": "prior_boot_asr_context_rejected",
+      "pass": true
+    },
+    {
+      "name": "asr_expiry_rejects_and_discards",
+      "pass": true
+    },
+    {
+      "name": "expired_asr_clock_rollback_rejected",
+      "pass": true
+    },
+    {
+      "name": "max15s_capture_enforced",
+      "pass": true
+    },
+    {
+      "name": "final_cannot_execute_before_ptt_release",
+      "pass": true
+    },
+    {
+      "name": "new_ptt_cancels_old_job",
+      "pass": true
+    },
+    {
+      "name": "asr_context_bool_epoch_rejected",
+      "pass": true
+    },
+    {
+      "name": "asr_final_integer_rejected",
+      "pass": true
+    },
+    {
+      "name": "fresh_live_explicit_body_launch",
+      "pass": true
+    },
+    {
+      "name": "body_replay_not_second_launch",
+      "pass": true
+    },
+    {
+      "name": "body_gate_voice_source",
+      "pass": true
+    },
+    {
+      "name": "body_gate_dev_source",
+      "pass": true
+    },
+    {
+      "name": "body_gate_no_device_proof",
+      "pass": true
+    },
+    {
+      "name": "body_gate_integer_proof",
+      "pass": true
+    },
+    {
+      "name": "body_gate_no_explicit_action",
+      "pass": true
+    },
+    {
+      "name": "body_gate_bad_tracking",
+      "pass": true
+    },
+    {
+      "name": "body_gate_outside_area",
+      "pass": true
+    },
+    {
+      "name": "body_gate_wrong_calibration",
+      "pass": true
+    },
+    {
+      "name": "body_gate_bool_sequence",
+      "pass": true
+    },
+    {
+      "name": "body_timestamp_stale",
+      "pass": true
+    },
+    {
+      "name": "body_timestamp_future",
+      "pass": true
+    },
+    {
+      "name": "body_timestamp_nan",
+      "pass": true
+    },
+    {
+      "name": "body_timestamp_bool",
+      "pass": true
+    },
+    {
+      "name": "body_requires_grip_action",
+      "pass": true
+    },
+    {
+      "name": "grip_lease_expires",
+      "pass": true
+    },
+    {
+      "name": "release_captured_before_grip_rejected",
+      "pass": true
+    },
+    {
+      "name": "negative_body_timestamp_rejected",
+      "pass": true
+    },
+    {
+      "name": "prior_boot_body_context_rejected",
+      "pass": true
+    },
+    {
+      "name": "mic_mute_cancels_prior_mixed_intent",
+      "pass": true
+    },
+    {
+      "name": "new_body_action_works_while_mic_muted",
+      "pass": true
+    },
+    {
+      "name": "voice_change_invalidates_old_body_context",
+      "pass": true
+    },
+    {
+      "name": "body_launch_invalidates_old_voice_context",
+      "pass": true
+    },
+    {
+      "name": "voice_stop_blocks_following_launch",
+      "pass": true
+    },
+    {
+      "name": "resume_needs_button",
+      "pass": true
+    },
+    {
+      "name": "explicit_resume_button",
+      "pass": true
+    },
+    {
+      "name": "closed_camera_cannot_arm_body",
+      "pass": true
+    },
+    {
+      "name": "final_fixture_external_actions_zero",
+      "pass": true
+    }
+  ],
+  "pass_count": 99,
+  "fail_count": 0,
+  "actual_asr_runs": 0,
+  "physical_tests": 0,
+  "external_actions": 0,
+  "implemented": "Serial in-memory authorization/context reference model only.",
+  "not_implemented": [
+    "Whisper inference",
+    "VAD",
+    "AEC",
+    "wake word",
+    "microphone hardware mute",
+    "device signature verification",
+    "speaker authentication",
+    "real controller/camera",
+    "concurrent process buffers",
+    "durable deduplication",
+    "actual file save",
+    "home/payment drivers"
+  ],
+  "limits": [
+    "LOCAL_ASR and verified booleans are trusted fixture adapter outputs, not security implementations.",
+    "Acoustic TV/recording replay through a real microphone can still look like speech; these tests cannot identify that.",
+    "Intent score 0.85 is a synthetic policy threshold, not calibrated Whisper confidence.",
+    "TTL and freshness values are proposed bounds, not measured ASR/tracking latency.",
+    "Software buffer deletion does not prove electrical isolation or DSP/DMA memory erasure.",
+    "Voice stop is a best-effort UI pause, never a physical emergency stop."
+  ]
+}

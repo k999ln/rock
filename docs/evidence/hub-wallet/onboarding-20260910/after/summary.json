@@ -1,0 +1,117 @@
+{
+  "schema": "rock-hub-after-summary/1",
+  "status": "PASS_SCOPED_UX",
+  "source_commit": "d7927dd69ddc53e3b95d501c7292ea7f8c015123",
+  "cycles": [
+    {
+      "status": "PASS_SCOPED_UX",
+      "boot_ui_seconds": 40.894985138002085,
+      "reopen_to_render_seconds": 1.722844822004845,
+      "normal_shutdown_seconds": 8.547097023998504,
+      "elapsed_seconds": 77.14883199799806,
+      "stored_job_seconds": 0.401766300201416,
+      "power_receipts": 1,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "job_id": "3ca842bc-9129-4d99-88cd-97470297a75c",
+      "package_hash": "e26178e828b45f651f4c1ff5c0fa20450195548edc4e6e116005a730238a0535",
+      "data_sha256": "cdeb24b26a384c81985284900faec0302c0d4343792cfa3b53ade6b18f5d4bdb",
+      "financial_summary": {
+        "available_minor": 0,
+        "bill_count": 0,
+        "bill_total_minor": 0,
+        "billed_minor": 0,
+        "credential_count": 0,
+        "currency": "USD",
+        "dispensed_minor": 0,
+        "held_minor": 0,
+        "ledger_balance_minor": 0,
+        "pending_minor": 0,
+        "sale_count": 0,
+        "simulation_only": true,
+        "withdrawal_count": 0
+      },
+      "retained_rows_unchanged": false,
+      "run_to_render_seconds": 2.8825816829994437,
+      "event_counts": {
+        "click": 12,
+        "pointer_park": 12,
+        "keys": 35
+      },
+      "qmp_power": [
+        {
+          "data": {
+            "guest": true,
+            "reason": "guest-shutdown"
+          },
+          "event": "SHUTDOWN",
+          "observed_unix": 1789022025.8604293,
+          "timestamp": {
+            "microseconds": 859836,
+            "seconds": 1789022025
+          }
+        }
+      ],
+      "report_sha256": "391b70e69388d4084ebd7b78b983796d64cbce029019f33260d5b2db186f98de"
+    },
+    {
+      "status": "PASS_SCOPED_UX",
+      "boot_ui_seconds": 45.99849358800566,
+      "reopen_to_render_seconds": 6.207283583004028,
+      "normal_shutdown_seconds": 12.694434133001778,
+      "elapsed_seconds": 72.33112947400514,
+      "stored_job_seconds": 0.401766300201416,
+      "power_receipts": 2,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "job_id": "3ca842bc-9129-4d99-88cd-97470297a75c",
+      "package_hash": "e26178e828b45f651f4c1ff5c0fa20450195548edc4e6e116005a730238a0535",
+      "data_sha256": "9e6fc5381058c22a0324425fca825d5df8d5a2ead60c086b669321dda4aa9394",
+      "financial_summary": {
+        "available_minor": 0,
+        "bill_count": 0,
+        "bill_total_minor": 0,
+        "billed_minor": 0,
+        "credential_count": 0,
+        "currency": "USD",
+        "dispensed_minor": 0,
+        "held_minor": 0,
+        "ledger_balance_minor": 0,
+        "pending_minor": 0,
+        "sale_count": 0,
+        "simulation_only": true,
+        "withdrawal_count": 0
+      },
+      "retained_rows_unchanged": true,
+      "run_to_render_seconds": null,
+      "event_counts": {
+        "click": 6,
+        "pointer_park": 6
+      },
+      "qmp_power": [
+        {
+          "data": {
+            "guest": true,
+            "reason": "guest-shutdown"
+          },
+          "event": "SHUTDOWN",
+          "observed_unix": 1789022097.5613396,
+          "timestamp": {
+            "microseconds": 553179,
+            "seconds": 1789022097
+          }
+        }
+      ],
+      "report_sha256": "09f39b5f99f8bfe8e5b4274d21dee0e98a66c98af244e22adcfd9b208f8f08be"
+    }
+  ],
+  "input_bytes": 150,
+  "input_sha256": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+  "expected_native_bytes": 151,
+  "pc_result_bytes": 155,
+  "pc_result_sha256": "30dafde5d3c32d7c690276656f8d5ed0ff924b2c9b5617ede86820efc0b1a0f6",
+  "same_input_as_prior_pc": true,
+  "byte_equal_to_pc": false,
+  "difference": "PC product adds a Markdown horizontal rule (---) before sources. Native preserves code and source URL/label but does not add this rule. Outputs are retained without normalization.",
+  "human_time": "NOT_MEASURED",
+  "before_same_input_native_ui": "NOT_RUN; original generic sample differs. Prior image observation demonstrates first-sample failure, not a paired timing baseline.",
+  "not_final_release_acceptance": true
+}

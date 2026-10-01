@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/var/tmp/observe-pc-link-os-05.py", line 316, in <module>
+    if __name__=='__main__':raise SystemExit(main())
+                                             ~~~~^^
+  File "/var/tmp/observe-pc-link-os-05.py", line 309, in main
+    if summary['status']=='PASS_SCOPED_PC_LINK':stop(registry,'registry-stop')
+                                                ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/observe-pc-link-os-05.py", line 104, in stop
+    assert code==0,'owned fixture did not stop normally'
+           ^^^^^^^
+AssertionError: owned fixture did not stop normally

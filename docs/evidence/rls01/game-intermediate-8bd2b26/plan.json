@@ -1,0 +1,37 @@
+{
+  "schema": "rock-rls01-game-lifecycle-plan/1",
+  "source_commit": "8bd2b26b23bbb953c12027f69d0f68297c49e2ae",
+  "label": "intermediate full Game installer candidate; final acceptance requires same unmodified release scope",
+  "install_root": "/Users/kaiya/Library/RockstarOS/rls01-game1",
+  "image_profile": "development-game-authority",
+  "authority_state": "/var/tmp/rockstaros-preview-authority",
+  "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+  "archive_repeat_expectation": "same version/source/images/public dev signer yields identical archive, manifest and signature bytes",
+  "normal_flow": [
+    "signed metadata/image/source preflight",
+    "fresh Lima install without old data",
+    "normal native Hub bundled citation input/run/history",
+    "explicit native Wallet enrolment + public fixture PIN0000 + separate terms consent + explicit public $100 test credit + GameA connection consent + explicit ten-unit purchase",
+    "native shutdown",
+    "same OS restart and history check",
+    "native shutdown + stop public authority",
+    "complete OS and authority backup with off-VM export",
+    "same-current restore to new device",
+    "restored normal boot and Hub/Wallet/Game observation",
+    "native shutdown + external stop",
+    "exact component and retained source checks",
+    "owned VM removal; export and old unrelated viewer retained"
+  ],
+  "failure_flow": [
+    "record exact host RESTORE_PENDING before remote restore",
+    "test-only process SIGKILL during first new OS disk copy after actual authority current-copy completes",
+    "observe both start paths refused by VM aggregate PENDING and host pending",
+    "repeat exact same restore intent/name through unmodified installer",
+    "verify authority completion recovered without a second epoch increase and all three OS disks match",
+    "verify direct retired source device start refused after DONE"
+  ],
+  "limitations": [
+    "No historical/cross-host restore claim",
+    "Public fixtures only; no real money or real game"
+  ]
+}

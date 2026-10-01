@@ -1,0 +1,88 @@
+{
+  "status": "PASS_HOST_COMPONENTS_WITH_EXPLICIT_LIMITS",
+  "patch": "work/gx00-fence.patch",
+  "patch_sha256": "386742c57370c91669b4c8c773498d210a5546859887bf3b461590da2ed515ba",
+  "base_revision": "b87c20b970a15c6156e21032c364f3bf6ab994eb",
+  "linux": {
+    "main_run": {
+      "cases": {
+        "tests/test_managed_write_hooks.py": 7,
+        "tests/test_authority_fence.py": 12,
+        "tests/test_adopt_legacy.py": 6,
+        "tests/test_managed_restore.py": 6,
+        "tests/test_wallet.py": 13,
+        "os/entitlement/tests/test_entitlement.py": 26,
+        "os/entitlement/tests/test_bridge.py": 8
+      },
+      "tests": 78,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": true
+    },
+    "independent_regressions": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": true
+    },
+    "total_tests": 80,
+    "warnings_as_errors": true,
+    "isolated_directory": "/var/tmp/rock-gx00-fence-01",
+    "qemu_started": false
+  },
+  "independent_review": {
+    "reviewer": "design_review",
+    "evidence": "work/gx00-c-independent-review-final.log",
+    "tests": 3,
+    "scenarios": 8,
+    "scope": "six durable writes, second recovery epoch3, actual frozen old server lock"
+  },
+  "actual_frozen_source_probe": {
+    "commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+    "evidence": "work/gx00-old-reader/evidence/report.json",
+    "source_verification": "work/gx00-old-reader/source-verification.json",
+    "server": "REJECTS before lower constructors",
+    "old_direct_wallet_and_store": "OPEN_AND_WRITE_ALLOWED on disposable copies; no old local library protection",
+    "retired_probe": "marker projection; separate real RETIRED promotion tests supplied"
+  },
+  "retention_fixture": {
+    "synthetic_credit": 5000,
+    "billed": 888,
+    "bill_count": 1,
+    "available": 3112,
+    "held": 1000,
+    "authorization": "CLAIMED after actual bill commit and injected acknowledgement loss",
+    "other_nonempty": [
+      "revoked credential and counter",
+      "unresolved ATM quote",
+      "ATM hold and credentials",
+      "API request/response receipts",
+      "additional BLOB business table"
+    ],
+    "oracle": "every original user table and schema object; exact original DB bytes through current-copy promotion"
+  },
+  "not_implemented": [
+    "arbitrary historical backup import or rollback of newer committed transactions",
+    "missing source disk recovery",
+    "different host/coordinator promotion",
+    "owner credential registry restore or same-path/same-UUID historical rollback detection",
+    "retroactive protection in frozen OS direct Wallet/Store libraries",
+    "OS local ledger adoption or signed data ABI and A/B compatibility",
+    "QEMU/hardware/real funds acceptance"
+  ],
+  "integration_requirements": [
+    "A runtime_contracts.py with bind_owner_registry / registry_identity protocols",
+    "A ContractRuntime initializes before activate, binds registered account before later mutations",
+    "B current protected OwnerRouter remains separate and pinned",
+    "managed server worker/scheduler cleanup completes before permit release"
+  ],
+  "source_sha256": {
+    "os/wallet_backend/authority_fence.py": "225f9f2e74e19bedbf0f87ae7e9fd4855d98685ac32cecfaacffd88417cb9061",
+    "os/wallet_backend/adopt_legacy.py": "f30666a8750e0b68ab20cec0466d41c0ebebe5d34b08900f2bf7c63822e81ce2",
+    "os/entitlement/wallet_bridge.py": "56c4bf55632f58b9adc1f97d59a9fd677df14b48b2aa883b943dfb5bdb13b330",
+    "src/blackberryrock/wallet.py": "7d0e230a3dc868d911328abac170b0fb14b36a001e09b5d463292afb6a8e6d58",
+    "os/entitlement/store.py": "8116afa1abdcd5b6a2548fd882610731c2fc34d9dfbae8840bc6ba2a617b794b"
+  }
+}

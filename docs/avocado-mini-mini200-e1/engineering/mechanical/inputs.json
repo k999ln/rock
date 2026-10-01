@@ -1,0 +1,38 @@
+{
+  "revision": "Mini200-E1-ME-REF1",
+  "date": "2026-09-21",
+  "status": "REFERENCE_ALLOCATION_ONLY_NOT_FOR_FABRICATION",
+  "physical_tests": 0,
+  "configuration": "One fixed main body with integrated game computer, two tracking camera candidates, central RGB and microphone array candidate. D0 appearance is provisional, not user-approved styling.",
+  "units": "mm unless a suffix gives another unit",
+  "outer": {"W": 198, "D": 178, "H": 198, "total_tolerance_budget": 1, "wall_nominal": 2, "wall_budget": 0.2, "feet": 4, "feet_budget": 0.2, "proposed_axis_limit": 200},
+  "coordinates": "X left/right about body center; Y rearward from front; Z up from foot bottom. Optical forward is -Y. External power supply, cable plugs/bend space and mounting support are separate.",
+  "usable_inner_budget": {"x": [-96.3, 96.3], "y": [2.2, 174.8], "z": [6.4, 194.8]},
+  "zones": {
+    "compute_board_RAM_SSD": {"x": [-85, 85], "y": [14, 132], "z": [14, 49], "scope": "170x118x35 reserved for APU board, RAM and SSD. No selected motherboard fit. 32GB/1TB are capacity budgets, not fitted parts."},
+    "compute_heatsink_duct": {"x": [-85, 85], "y": [14, 130], "z": [55, 101], "scope": "170x116x46 reserved. Heatsink, thermal bridge and supports HOLD."},
+    "rear_fan_plenum": {"x": [-85, 85], "y": [136, 172], "z": [16, 106], "scope": "170x36x90 reserved; fan, guard, wiring and acoustic treatment not selected."},
+    "camera_modules_support": {"x": [-90, 90], "y": [8, 54], "z": [108, 172], "scope": "Small camera candidates and supports only. Not the old GS plus Theia three-lens assembly."},
+    "internal_privacy_shutter": {"x": [-90, 90], "y": [3, 7], "z": [108, 172], "scope": "Reserve only; shutter travel, sensing, width and optical clearance HOLD. No mechanism released."},
+    "vision_controller": {"x": [-85, 85], "y": [58, 168], "z": [110, 145], "scope": "170x110x35 for OAK-FFC 4P USB candidate. Actual PCB outline, fasteners, heat spreader, FFC and USB routing HOLD."},
+    "DC_protection": {"x": [-85, -29], "y": [62, 122], "z": [148, 170], "scope": "56x60x22 reserved; protection, conversion and EMI parts not laid out."},
+    "rear_connector_service": {"x": [-85, 85], "y": [138, 172], "z": [149, 170], "scope": "170x34x21 reserve; recessed ports and cable strain relief HOLD; outside plugs/bends not included."},
+    "audio_array": {"x": [-55, 55], "y": [10, 120], "z": [174.5, 194.5], "scope": "110x110x20 reference envelope for XVF3800 candidate, microphone inlet side toward top. Not a confirmed assembled height or connector fit."},
+    "top_mute_control": {"x": [58, 76], "y": [53, 71], "z": [180, 194.5], "scope": "Separate physical mute actuator/electrical switch reserve; flush top actuation. Actual hard-mute circuit HOLD."}
+  },
+  "barriers": {
+    "hot_to_vision": {"x": [-94, 94], "y": [4, 134], "z": [103, 106]},
+    "audio_floor": {"x": [-94, 94], "y": [4, 174], "z": [172.5, 174]},
+    "notes": "Concept separators, not released material/thickness or a dB isolation claim. Sealed harness feedthroughs, service access and vibration mounts HOLD. Audio layer needs its own thermal path, not a sealed uncooled chamber."
+  },
+  "front": {"visual_window_diameter": 54, "center_x": [-60, 0, 60], "optical_z": 140, "camera_candidate_envelope_WDH": [44, 38, 44], "camera_candidate_y": [12, 50], "camera_candidate_z": [118, 162], "window_status": "Appearance REF only. Optical aperture, cover glass, vignetting and inner shutter are not verified.", "candidates": ["left OAK-FFC-OV9282", "center OAK-FFC-IMX378", "right OAK-FFC-OV9282"]},
+  "audio": {"candidate": "Seeed ReSpeaker XVF3800 USB 4-Mic Array without XIAO, SKU101991441; candidate only", "published_PCB_diameter": 100, "published_PCB_thickness": 1.2, "published_mic_square_pitch": 66, "board_center_xy": [0, 65], "top_port_centers": [[-33, 32], [33, 32], [-33, 98], [33, 98]], "port_diameter": null, "inlet_face": "Seeed-logo microphone-inlet side toward top sound ports; verify physical board variant", "physical_mute_position_xy": [67, 62], "scope": "Four microphones are a comparison candidate, not proof of far-field recognition or full-band beamforming. PTT mono testing remains possible. No local loudspeaker in this thermal allocation; TV/audio output external."},
+  "power_allocation_W": {"APU": 45, "board_RAM": 12, "SSD": 5, "vision": 8, "audio": 5, "fan_control": 5},
+  "thermal": {"DC_efficiency_assumption": 0.9, "air_density_kg_m3": 1.2, "air_Cp_J_kgK": 1005, "air_delta_K": 10, "flow_factor": 2, "ambient_upper_C": 26, "surface_target_C": 45, "measurement_margin_K": 1, "side_intake_each_YZ": [100, 90], "side_intake_count": 2, "rear_exhaust_XZ": [160, 84], "open_fraction_assumption": 0.5, "intake_panel_y": [20, 120], "intake_panel_z": [10, 100], "exhaust_panel_x": [-80, 80], "exhaust_panel_z": [18, 102], "scope": "All continuous power allocations, not measurements or peak ratings. External USB loads disabled initially or separately budgeted. DC loss assumed inside enclosure; external AC adapter heat excluded. Actual fan P-Q, pressure drop, temperatures and noise HOLD."},
+  "sources": [
+    {"id": "LUX_FFC", "url": "https://docs.luxonis.com/hardware/platform/deploy/ffc", "basis": "Official modular baseboards and mono/RGB camera candidates; no E1 PCB fit inferred."},
+    {"id": "LUX_CAL", "url": "https://docs.luxonis.com/hardware/platform/depth/manual-calibration", "basis": "A custom camera layout requires measured extrinsics and configuration/calibration."},
+    {"id": "XVF_ME", "url": "https://files.seeedstudio.com/wiki/respeaker_xvf3800_usb/respeaker_xvf3800_2d_mechanical_drawing.pdf", "page": 1, "basis": "PDF and rendered page inspected: PCB diameter100, thickness1.20, 66mm microphone square. No manufactured integration tolerance supplied."},
+    {"id": "XVF_WIKI", "url": "https://wiki.seeedstudio.com/respeaker_xvf3800_introduction/", "basis": "Microphone inlet on Seeed-logo side; board mode and mute hardware must be verified independently."}
+  ]
+}

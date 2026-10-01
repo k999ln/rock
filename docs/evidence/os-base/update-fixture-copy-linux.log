@@ -1,0 +1,30 @@
+test_copy_failure_preserves_input_and_reports_failure (test_update_fixture_copy.FixtureCopyTests.test_copy_failure_preserves_input_and_reports_failure) ... ok
+test_existing_destinations_are_never_copied_or_chmodded (test_update_fixture_copy.FixtureCopyTests.test_existing_destinations_are_never_copied_or_chmodded) ... ok
+test_frozen_source_yields_private_writable_distinct_copy (test_update_fixture_copy.FixtureCopyTests.test_frozen_source_yields_private_writable_distinct_copy) ... ok
+test_real_readonly_ext4_copy_accepts_injection_without_source_change (test_update_fixture_copy.FixtureCopyTests.test_real_readonly_ext4_copy_accepts_injection_without_source_change) ... ok
+test_replaced_destination_cannot_redirect_copy_to_source (test_update_fixture_copy.FixtureCopyTests.test_replaced_destination_cannot_redirect_copy_to_source) ... ok
+test_source_symlink_or_directory_refused_before_destination_creation (test_update_fixture_copy.FixtureCopyTests.test_source_symlink_or_directory_refused_before_destination_creation) ... ok
+test_ui_uses_the_guarded_copy_for_both_derived_images (test_update_fixture_copy.FixtureCopyTests.test_ui_uses_the_guarded_copy_for_both_derived_images) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.051s
+
+OK
+test_absent_process_is_not_rendered_ui_evidence (test_ui_startup_verifier.StartupVerifierTests.test_absent_process_is_not_rendered_ui_evidence) ... ok
+test_boolean_or_float_persistent_counters_cannot_equal_integer_evidence (test_ui_startup_verifier.StartupVerifierTests.test_boolean_or_float_persistent_counters_cannot_equal_integer_evidence) ... ok
+test_changed_durable_floor_pending_or_attempts_are_rejected (test_ui_startup_verifier.StartupVerifierTests.test_changed_durable_floor_pending_or_attempts_are_rejected) ... ok
+test_evidence_path_alias_cannot_write_inside_frozen_images (test_ui_startup_verifier.StartupVerifierTests.test_evidence_path_alias_cannot_write_inside_frozen_images) ... ok
+test_healthy_factory_requires_real_proof_before_confirmation (test_ui_startup_verifier.StartupVerifierTests.test_healthy_factory_requires_real_proof_before_confirmation) ... ok
+test_invalid_limits_record_failure_without_starting_or_creating_disks (test_ui_startup_verifier.StartupVerifierTests.test_invalid_limits_record_failure_without_starting_or_creating_disks) ... ok
+test_kernel_timestamped_panic_after_success_markers_is_failure (test_ui_startup_verifier.StartupVerifierTests.test_kernel_timestamped_panic_after_success_markers_is_failure) ... ok
+test_mark_good_or_headless_after_fault_is_failure (test_ui_startup_verifier.StartupVerifierTests.test_mark_good_or_headless_after_fault_is_failure) ... ok
+test_qemu_drive_option_separators_in_paths_are_rejected (test_ui_startup_verifier.StartupVerifierTests.test_qemu_drive_option_separators_in_paths_are_rejected) ... ok
+test_real_stop_and_death_effect_required (test_ui_startup_verifier.StartupVerifierTests.test_real_stop_and_death_effect_required) ... ok
+test_rollback_requires_original_slot_and_exhausted_trials (test_ui_startup_verifier.StartupVerifierTests.test_rollback_requires_original_slot_and_exhausted_trials) ... ok
+test_serial_partial_and_quoted_records_are_not_proofs (test_ui_startup_verifier.StartupVerifierTests.test_serial_partial_and_quoted_records_are_not_proofs) ... ok
+test_stale_or_invalid_health_cannot_pass (test_ui_startup_verifier.StartupVerifierTests.test_stale_or_invalid_health_cannot_pass) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.046s
+
+OK

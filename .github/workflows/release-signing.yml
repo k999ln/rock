@@ -1,0 +1,95 @@
+name: Protected release authentication
+on:
+  workflow_dispatch:
+    inputs:
+      draft_release_id:
+        description: Numeric ID of NEW draft containing candidate-index.json and all declared assets
+        required: true
+        type: string
+      source_sha:
+        description: Reviewed exact 40-character candidate source commit
+        required: true
+        type: string
+      candidate_index_sha256:
+        description: Independently reviewed SHA-256 of candidate-index.json
+        required: true
+        type: string
+      trust_bundle_sha256:
+        description: Independently published SHA-256 of the control ref trust bundle
+        required: true
+        type: string
+permissions: {}
+concurrency:
+  group: rock-protected-release-signing
+  cancel-in-progress: false
+jobs:
+  preflight:
+    if: github.repository == 'k999ln/rock' && github.ref == 'refs/heads/codex/release-signing-control' && github.sha == vars.ROCK_SIGNING_CONTROL_SHA
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      # Pins resolved from official actions/* GitHub ref APIs on 2026-09-10.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Verify real GitHub protection before approval
+        env:
+          GH_TOKEN: ${{ secrets.ROCK_SIGNING_POLICY_READ_TOKEN }}
+          CONTROL_SHA: ${{ vars.ROCK_SIGNING_CONTROL_SHA }}
+        run: python3 scripts/release_signing_preflight.py policy --control-sha "$CONTROL_SHA" --policy data/release-signing-policy.json
+      - name: Download bounded immutable candidate data
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_ID: ${{ inputs.draft_release_id }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          INDEX_SHA: ${{ inputs.candidate_index_sha256 }}
+        run: python3 scripts/release_signing_preflight.py download --release-id "$RELEASE_ID" --source "$SOURCE_SHA" --index-sha256 "$INDEX_SHA" --directory "$RUNNER_TEMP/candidate"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: checked-candidate
+          path: ${{ runner.temp }}/candidate/
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0
+  sign:
+    needs: preflight
+    if: github.repository == 'k999ln/rock' && github.ref == 'refs/heads/codex/release-signing-control' && github.sha == vars.ROCK_SIGNING_CONTROL_SHA
+    environment: rock-release-signing
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: checked-candidate
+          path: ${{ runner.temp }}/candidate/
+      - name: Recheck protection after independent approval
+        env:
+          GH_TOKEN: ${{ secrets.ROCK_SIGNING_POLICY_READ_TOKEN }}
+          CONTROL_SHA: ${{ vars.ROCK_SIGNING_CONTROL_SHA }}
+        run: python3 scripts/release_signing_preflight.py policy --control-sha "$CONTROL_SHA" --policy data/release-signing-policy.json --require-approval
+      - name: Sign approved bytes with managed identity
+        env:
+          ROCK_RELEASE_SIGNING_KEY_PKCS8_B64: ${{ secrets.ROCK_RELEASE_SIGNING_KEY_PKCS8_B64 }}
+          FINGERPRINT: ${{ vars.ROCK_RELEASE_KEY_SHA256 }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          INDEX_SHA: ${{ inputs.candidate_index_sha256 }}
+          TRUST_SHA: ${{ inputs.trust_bundle_sha256 }}
+        run: python3 scripts/release_signing.py sign --directory "$RUNNER_TEMP/candidate" --output "$RUNNER_TEMP/signed-metadata" --source "$SOURCE_SHA" --index-sha256 "$INDEX_SHA" --trust-bundle data/release-trust.json --trust-sha256 "$TRUST_SHA" --fingerprint "$FINGERPRINT"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: signed-metadata-not-launch-accepted
+          path: ${{ runner.temp }}/signed-metadata/
+          if-no-files-found: error
+          retention-days: 7
+      # No publish, contents:write, ID token, install, cache, archive execution, or external webhook.

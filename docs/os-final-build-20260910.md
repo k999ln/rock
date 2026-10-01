@@ -1,0 +1,28 @@
+# Final 9abf78a build and source evidence
+
+Status at this checkpoint: **BUILD/PROFILE FROZEN; GUEST ACCEPTANCE IN PROGRESS**. This is the exact candidate `9abf78a80d27aa9f847c4051d20e4c552e407276`. It is not a D0–D6 completion claim. The immutable [observation](evidence/os-final-build/observation.json) binds the raw source reports, complete source archive, build environment, configuration, image triple, profile, legal bundle and pre-execution acceptance plan.
+
+Requirement/principle/inconvenience/reuse/minimal change/measure/evidence: RQ09/12/16/17 and D0 need a traceable candidate; a local TLS deadline failure must remain visible while independent evidence is assessed; reuse the unchanged native regression and freeze contracts; pass the original exact-source CI report through the existing CLI without modifying reports, deadlines or source; require all 694 native input hashes, all 14 original log hashes, all source/image/configuration links and unchanged source; the observation records the actual results and remaining guest gates.
+
+The ARM64 local full native run at 09:18:19–09:26:41 UTC remains **FAIL**: 1,631 Python executions, 14 checks, unchanged source, and ten TLS read/frame deadline errors in the main suite. The other 13 checks passed. The errors occurred in existing enrollment/connection/quote/approval paths. Their root cause is not determined. The original report, complete logs and observed process/power environment remain preserved; later isolated successes do not retroactively change this result.
+
+The same Git commit's [GitHub native run 34459916162](https://github.com/k999ln/rock/actions/runs/34459916162) passed on Linux x86_64/Python 3.13.15: 1,631 Python executions, 14 checks, no skips or unclean subprocesses, and unchanged source. Its unmodified report SHA is `34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8`. The existing `verify_source` and `verify_regressions` functions accepted that report, all 694 exact input files and all 14 raw log hashes. The existing contract does not require the test host to equal the build host. The build therefore records ARM64 as its actual environment and retains independent CI provenance alongside the failed local report; it does not report the ARM64 native suite as passing.
+
+The unchanged builder ran at 09:38:05–09:40:02 UTC using the previously verified Buildroot cache. The normal base freeze and signed Game profile freeze completed. The public sandbox configuration remains the fixed sample, and no final authority or guest data was created during derivation.
+
+| Frozen item | SHA-256 |
+| --- | --- |
+| Final freeze | `d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc` |
+| Game profile | `0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb` |
+| Image | `a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197` |
+| rootfs.ext4 | `0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c` |
+| stage0.cpio.gz | `bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01` |
+| Pre-execution acceptance plan | `20795f3b4de6e9f562c8ec373b96bfea6407e4b0418064286e73d1096b744e0f` |
+
+The corresponding-source bundle is 934,132,130 bytes, SHA `7c9cdc0d32faf4006b8693d5d8dc85efd8259ae937c90274888da3f943920a0c`. It includes 24 target and 37 host package manifests, exact Buildroot and Git source archives, configuration and license material, the original CI evidence, and the original ARM64 failure evidence. The second collector run verified all 298 regular members, an identical second serialization, and unchanged source/image bytes. The first collector run failed at its final source recheck because a loop variable shadowed its helper function; its raw failure and byte-identical archive were retained. The correction changed only the external collector's helper name and the second run repeated the complete collection and verification.
+
+Legal status remains **NOT_CLEARED**, with the product license **UNSET**. Original Buildroot warnings remain present. The exact Buildroot archive was collected manually; the custom ROCK package source is in the full Git archive, and no missing product license was invented. Correspondence is not redistribution clearance.
+
+D4's original 14+8+13+3+3 boot sequence began after these records were fixed. The remaining D6, D2, D1/D3, native first-use flows and independent fresh-VM installation/aggregate restore must use the same frozen triple and their original limits. Intermediate images and run44 remain separate evidence.
+
+At 10:06 UTC the integration lead authorized an [execution-location amendment](evidence/os-final-build/execution-amendment.json), fixed before reordered or remote gates. The Mac was still discharging, with insufficient remaining battery for the one-hour soak and subsequent UI gates. Local work keeps D4 first, then prepares the previously absent empty authority and runs D2 followed by D1/D3. D6 may run concurrently in a separate GitHub Debian 13/QEMU 10 environment with new independent empty state, the exact frozen image and the unchanged canonical verifier. A separate remote native UI fallback may be prepared as well. Every host records its own execution environment, driver hashes and results. All original assertions, deadlines, OCR thresholds, complete authority/SDK retention and required gates remain mandatory. The original plan bytes remain unchanged, and overall acceptance still waits for all required gates, including the full D4 run. This adds internal QEMU evidence on another host; it does not establish physical-device support or a newly supported user installation environment.

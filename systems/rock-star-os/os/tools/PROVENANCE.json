@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "implementation": {
+    "origin": "local-development",
+    "paths": [
+      "src/blackberryrock/recipe_worker.py",
+      "os/tools/packages/"
+    ],
+    "license": "LicenseRef-Development-Only",
+    "method": "independent implementation informed by reviewed source behavior; not clean-room",
+    "upstream_code_vendored": false
+  },
+  "references": [
+    {
+      "tool_id": "org.rockstar.proposal-draft",
+      "repository": "https://github.com/k999ln/Mr",
+      "requested_repository": "k999ln/Mr.",
+      "commit": "935a63d2daf33ba4af3733545c3a692c6aafd850",
+      "path": "packages/automation-hub/index.mjs",
+      "blob_sha": "13d0ead340c86bf8f96208b48260a82e5e624d3b",
+      "license": "MIT",
+      "license_blob_sha": "4cd07b88b15ee31087b1acdc1fb260c7a55b02d9",
+      "adaptation": "Pure proposal draft only; original local wording; no subscription or payment operation."
+    },
+    {
+      "tool_id": "org.rockstar.citation-organizer",
+      "repository": "https://github.com/k999ln/Mr",
+      "requested_repository": "k999ln/Mr.",
+      "commit": "935a63d2daf33ba4af3733545c3a692c6aafd850",
+      "path": "skills/writer-agent/scripts/_shared/citation-strip.py",
+      "blob_sha": "5443c7632fea2dc110bbe246074ab3c3861f5ffa",
+      "license": "MIT",
+      "license_blob_sha": "4cd07b88b15ee31087b1acdc1fb260c7a55b02d9",
+      "adaptation": "Independent conservative Markdown handling; protects code and keeps unsupported markers intact."
+    },
+    {
+      "tool_id": "org.rockstar.utf8-sha256",
+      "repository": "https://github.com/k999ln/Mr",
+      "requested_repository": "k999ln/Mr.",
+      "commit": "935a63d2daf33ba4af3733545c3a692c6aafd850",
+      "path": "apps/rockstar_ibot/lib/content-object-store.js",
+      "blob_sha": "8cd2314f3ba90d4e9e2a104b285ba24daa2f34e7",
+      "license": "MIT",
+      "license_blob_sha": "4cd07b88b15ee31087b1acdc1fb260c7a55b02d9",
+      "adaptation": "Scope narrowed to SHA-256 of supplied UTF-8 text; no file store, arbitrary paths or verified delivery."
+    }
+  ],
+  "excluded": [
+    "unreviewed Mr submodules",
+    "Mr custom Buyer License product implementations",
+    "rock implementation without repository license"
+  ],
+  "manifest_source_note": "Manifest source identifies the actual local development recipe, not an upstream commit falsely claimed to contain this implementation. Fixed reference commits are recorded here."
+}

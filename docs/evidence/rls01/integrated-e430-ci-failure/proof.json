@@ -1,0 +1,27 @@
+{
+  "schema": "rock-original-integrated-head-ci-failure/1",
+  "status": "ORIGINAL_FAIL_RETAINED_INPUTS_AND_LOGS_VERIFIED",
+  "run_id": 34477407336,
+  "url": "https://github.com/k999ln/rock/actions/runs/34477407336",
+  "head_sha": "e430648c8ba799d004a5ecd0da8166ca811d3ae5",
+  "started_utc": "2026-09-10T12:34:09.171627+00:00",
+  "finished_utc": "2026-09-10T12:42:32.898374+00:00",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "python": "3.13.15 (main, Aug  6 2026, 02:15:18) [GCC 13.3.0]",
+  "source_unchanged": true,
+  "source_inputs_verified": 696,
+  "checks_verified": 14,
+  "total_python_test_executions": 1649,
+  "main_tests": 1385,
+  "failed_checks": [
+    {
+      "name": "tests",
+      "exit_code": 1,
+      "log_sha256": "b6afdedb9873483c88ee5819304cbe4dc5088037fea9c9491c944af56b25b0e0"
+    }
+  ],
+  "report_sha256": "6468659081f20f4ca75d26f676174e466b9f4ec644a4a82c9159fc638202327e",
+  "failure_excerpt_sha256": "796c2815c36e6a3804ed74ec1d3b3480cee1a3f795b7eabbd355aa8061c551ee",
+  "failure": "One TLS response read timeout during initial Game approval before the backend-restart phase. BackendUnavailable requires reconciliation with same key. Cause not established. No threshold change or CI retry.",
+  "scope": "Integrated branch adds host-only observers/tests. Frozen distribution native9ab and its CI34459916162 remain separate. Later head CI and controlled original9ab local rerun are separate runs, never rewrite this FAIL."
+}

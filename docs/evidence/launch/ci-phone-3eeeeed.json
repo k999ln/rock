@@ -1,0 +1,49 @@
+{
+  "baseRefName": "codex/rockstaros-launch-candidate-20260910",
+  "headRefOid": "3eeeeed66ed438f8d543ae88260e072c63bd0132",
+  "state": "OPEN",
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T18:59:57Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34636391793/job/103385229852",
+      "name": "source-preparation",
+      "startedAt": "2026-09-11T18:59:50Z",
+      "status": "COMPLETED",
+      "workflowName": "Phone source preparation (not OS boot)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T18:59:52Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34636387264/job/103385216070",
+      "name": "source-preparation",
+      "startedAt": "2026-09-11T18:59:47Z",
+      "status": "COMPLETED",
+      "workflowName": "Phone source preparation (not OS boot)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T19:03:17Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34636391741/job/103385229830",
+      "name": "prototype",
+      "startedAt": "2026-09-11T18:59:55Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star Android prototype"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T19:00:42Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34636391712/job/103385229660",
+      "name": "verify",
+      "startedAt": "2026-09-11T18:59:50Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star verification"
+    }
+  ],
+  "url": "https://github.com/k999ln/rock/pull/7",
+  "scope": "Phone source preparation, standard Android emulator and Web checks; not OS build or physical boot"
+}

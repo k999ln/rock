@@ -1,0 +1,11 @@
+{
+  "version": "0.5.13.5",
+  "download_url": "https://sources.buildroot.net/dash/dash-0.5.13.5.tar.gz",
+  "sha256": "40090101a2a491f13e901d3d48e90414f26634628b9bfff35ff540363c227a7d",
+  "sha512": "ae326c110713a9da6b7afb977ca6fd931793b03011f0a7aa2c42e873f116ed09448deea9ef5ca4515fe3afe24e210e0aaa580f7de89934edda9cf31ee44c94dd",
+  "license": "BSD-3-Clause, GPL-2.0-or-later (mksignames.c)",
+  "license_sha256": "254a7894923ff62e69184a991dcbccae97edee58a1105e8efbe78caf10595d72",
+  "hash_source": "Buildroot 2026.08 package/dash/dash.hash (previously pinned Buildroot release)",
+  "recorded_utc": "2026-09-08T10:31:40.672345+00:00",
+  "signature": "not independently verified"
+}

@@ -1,0 +1,165 @@
+{
+  "revision": "Mini200-E1-VOICE-01",
+  "status": "CALCULATION_ONLY_NOT_PHYSICAL_ACCEPTANCE",
+  "physical_measurements_count": 0,
+  "pcm_payload_cases": [
+    {
+      "sample_width_bits_assumed": 16,
+      "capture_payload_Mbit_s": 1.536,
+      "playback_payload_Mbit_s_assumed": 1.536,
+      "duplex_payload_Mbit_s_assumed": 3.072,
+      "capture_bytes_per_second": 192000.0,
+      "USB_protocol_overhead_included": false
+    },
+    {
+      "sample_width_bits_assumed": 24,
+      "capture_payload_Mbit_s": 2.304,
+      "playback_payload_Mbit_s_assumed": 2.304,
+      "duplex_payload_Mbit_s_assumed": 4.608,
+      "capture_bytes_per_second": 288000.0,
+      "USB_protocol_overhead_included": false
+    },
+    {
+      "sample_width_bits_assumed": 32,
+      "capture_payload_Mbit_s": 3.072,
+      "playback_payload_Mbit_s_assumed": 3.072,
+      "duplex_payload_Mbit_s_assumed": 6.144,
+      "capture_bytes_per_second": 384000.0,
+      "USB_protocol_overhead_included": false
+    }
+  ],
+  "host_PCM_buffer_sizes_only": {
+    "ASR_bytes_per_second": 32000.0,
+    "PTT_prebuffer_bytes": 0.0,
+    "future_wake_prebuffer_bytes": 64000.0,
+    "maximum_utterance_bytes": 480000.0,
+    "maximum_utterance_plus_optional_prebuffer_bytes": 544000.0,
+    "ASR_chunk_samples": 320.0,
+    "ASR_chunk_bytes": 640.0,
+    "raw_driver_DSP_ASR_model_buffers_included": false
+  },
+  "array_pair_geometry": [
+    {
+      "pair_zero_based": [
+        0,
+        1
+      ],
+      "separation_mm": 66.0,
+      "maximum_geometric_TDOA_us": 192.4198250728863
+    },
+    {
+      "pair_zero_based": [
+        0,
+        2
+      ],
+      "separation_mm": 93.33809511662427,
+      "maximum_geometric_TDOA_us": 272.1227262875343
+    },
+    {
+      "pair_zero_based": [
+        0,
+        3
+      ],
+      "separation_mm": 66.0,
+      "maximum_geometric_TDOA_us": 192.4198250728863
+    },
+    {
+      "pair_zero_based": [
+        1,
+        2
+      ],
+      "separation_mm": 66.0,
+      "maximum_geometric_TDOA_us": 192.4198250728863
+    },
+    {
+      "pair_zero_based": [
+        1,
+        3
+      ],
+      "separation_mm": 93.33809511662427,
+      "maximum_geometric_TDOA_us": 272.1227262875343
+    },
+    {
+      "pair_zero_based": [
+        2,
+        3
+      ],
+      "separation_mm": 66.0,
+      "maximum_geometric_TDOA_us": 192.4198250728863
+    }
+  ],
+  "max_TDOA_in_16k_samples": 4.353963620600549,
+  "max_TDOA_in_48k_samples": 13.061890861801647,
+  "one_way_acoustic_propagation": [
+    {
+      "distance_m": 0.3,
+      "one_way_acoustic_delay_ms": 0.8746355685131195
+    },
+    {
+      "distance_m": 1.0,
+      "one_way_acoustic_delay_ms": 2.9154518950437316
+    },
+    {
+      "distance_m": 3.0,
+      "one_way_acoustic_delay_ms": 8.746355685131196
+    }
+  ],
+  "independent_clock_drift_sensitivity_not_measurement": [
+    {
+      "relative_clock_error_ppm_assumed": 50,
+      "elapsed_seconds": 10,
+      "timing_drift_ms": 0.5,
+      "drift_in_16k_samples": 8.0
+    },
+    {
+      "relative_clock_error_ppm_assumed": 50,
+      "elapsed_seconds": 60,
+      "timing_drift_ms": 3.0,
+      "drift_in_16k_samples": 48.0
+    },
+    {
+      "relative_clock_error_ppm_assumed": 100,
+      "elapsed_seconds": 10,
+      "timing_drift_ms": 1.0,
+      "drift_in_16k_samples": 16.0
+    },
+    {
+      "relative_clock_error_ppm_assumed": 100,
+      "elapsed_seconds": 60,
+      "timing_drift_ms": 6.0,
+      "drift_in_16k_samples": 96.0
+    }
+  ],
+  "power_allocation": {
+    "previous_DC_allocation_W": 78,
+    "revised_DC_allocation_W": 80,
+    "revised_source_DC_W_conservative_heat_model": 88.88888888888889,
+    "conversion_loss_W_assumed": 8.888888888888886,
+    "revision_source_delta_W": 2.2222222222222223,
+    "voice_budget_equivalent_5V_current_A": 1.0,
+    "USB_actual_current_A": null,
+    "USB_current_permission_proven": false
+  },
+  "arithmetic_checks": {
+    "four_microphones": true,
+    "six_mic_pairs": true,
+    "square_edge_66mm": true,
+    "square_diagonal_93_338mm": true,
+    "mono_16k_S16_is_32000_Bps": true,
+    "PTT_has_no_preroll": true,
+    "optional_2sec_is_64000_bytes": true,
+    "15sec_command_is_480000_bytes": true,
+    "20ms_chunk_is_320_samples": true,
+    "48k_stereo_32bit_duplex_is_6_144Mbps": true,
+    "100ppm_60sec_drift_is_6ms": true,
+    "audio_5W_replaces_3W_not_added_to_78W": true,
+    "revised_source_is_88_889W": true,
+    "budget_is_not_device_power_rating": true,
+    "no_physical_measurements": true,
+    "no_recording_or_upload_by_default": true,
+    "physical_mute_circuit_not_claimed_complete": true,
+    "no_barge_in_certification": true
+  },
+  "passed_check_count": 18,
+  "all_arithmetic_checks_pass": true
+}

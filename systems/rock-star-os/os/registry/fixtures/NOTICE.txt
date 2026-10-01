@@ -1,0 +1,5 @@
+DEVELOPMENT ONLY.
+The TLS key and Ed25519 signing fixture are PUBLIC RFC 8032 section 7.1 data.
+The author token is also public synthetic test data. None provides production identity, secrecy, or publisher trust.
+Do not regenerate this certificate during a running test; copy the checked-in explicit CA to the guest.
+No new private key was generated.

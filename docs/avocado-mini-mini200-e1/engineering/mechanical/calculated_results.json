@@ -1,0 +1,166 @@
+{
+  "revision": "Mini200-E1-ME-REF1",
+  "physical_tests": 0,
+  "status": "REFERENCE_ALLOCATION_ONLY_NOT_FOR_FABRICATION",
+  "outer_nominal_mm": {
+    "W": 198,
+    "D": 178,
+    "H": 198
+  },
+  "outer_max_budget_mm": {
+    "W": 199,
+    "D": 179,
+    "H": 199
+  },
+  "zone_dimensions_WDH_mm": {
+    "compute_board_RAM_SSD": [
+      170,
+      118,
+      35
+    ],
+    "compute_heatsink_duct": [
+      170,
+      116,
+      46
+    ],
+    "rear_fan_plenum": [
+      170,
+      36,
+      90
+    ],
+    "camera_modules_support": [
+      180,
+      46,
+      64
+    ],
+    "internal_privacy_shutter": [
+      180,
+      4,
+      64
+    ],
+    "vision_controller": [
+      170,
+      110,
+      35
+    ],
+    "DC_protection": [
+      56,
+      60,
+      22
+    ],
+    "rear_connector_service": [
+      170,
+      34,
+      21
+    ],
+    "audio_array": [
+      110,
+      110,
+      20.0
+    ],
+    "top_mute_control": [
+      18,
+      18,
+      14.5
+    ]
+  },
+  "zone_outside_usable_inner": [],
+  "zone_overlaps": [],
+  "barrier_zone_overlaps": [],
+  "camera_geometry": {
+    "adjacent_nominal_pitch_mm": 60,
+    "tracking_nominal_baseline_mm": 120,
+    "candidate_module_neighbor_gap_mm": 16,
+    "visual_window_web_nominal_mm": 6,
+    "window_vignetting_status": "HOLD; no selected optical model, entrance pupil or cover-window test"
+  },
+  "audio_geometry": {
+    "published_mic_pitch_mm": [
+      66,
+      66
+    ],
+    "board_to_zone_side_reserve_nominal_mm": 5.0,
+    "fan_to_audio_vertical_zone_gap_mm": 68.5,
+    "zone_top_to_worst_budget_inner_lid_mm": 0.30000000000001137,
+    "meaning": "Zone separation only, not acoustic attenuation. Nominal side reserve excludes cable bends. Thin upper margin demands actual stack-up/CAD."
+  },
+  "thermal_budget": {
+    "DC_allocation_W": 80,
+    "assumed_inside_DC_loss_W": 8.888888888888886,
+    "enclosure_heat_W": 88.88888888888889,
+    "minimum_energy_balance_flow_m3_h": 26.53399668325041,
+    "provisional_factor2_flow_m3_h": 53.06799336650082,
+    "two_side_intakes_total_free_area_cm2": 90.0,
+    "rear_exhaust_free_area_cm2": 67.2,
+    "mean_intake_velocity_m_s": 1.6379010298302725,
+    "mean_exhaust_velocity_m_s": 2.1936174506655433,
+    "surface_effective_theta_budget_K_W": 0.2025,
+    "status": "Allocation only. APU sustained/boost, SSD, USB, PSU peak and fan operating point are not certified. Surface theta is only a screening inequality, not a heatsink thermal-resistance specification."
+  },
+  "nonclaims": [
+    "No selected APU motherboard fits verified",
+    "No OAK controller/FFC/USB routing verified",
+    "No completed privacy shutter",
+    "No released fastening or wall mount",
+    "No acoustic recognition distance, accuracy or fan-noise guarantee",
+    "No old D0 full-body coverage retained automatically"
+  ],
+  "model_tests": [
+    {
+      "name": "outer_budget_all_axes_le_200",
+      "pass": true
+    },
+    {
+      "name": "allocated_zones_within_inner_budget",
+      "pass": true
+    },
+    {
+      "name": "allocated_boxes_nonoverlap",
+      "pass": true
+    },
+    {
+      "name": "barriers_do_not_intersect_allocated_boxes",
+      "pass": true
+    },
+    {
+      "name": "game_computer_has_separate_zone",
+      "pass": true
+    },
+    {
+      "name": "vision_controller_has_separate_zone",
+      "pass": true
+    },
+    {
+      "name": "audio_allocation_110x110x20",
+      "pass": true
+    },
+    {
+      "name": "audio_board_diameter_nominal_within_xy",
+      "pass": true
+    },
+    {
+      "name": "four_ports_follow_published_square",
+      "pass": true
+    },
+    {
+      "name": "tracking_baseline_120",
+      "pass": true
+    },
+    {
+      "name": "camera_envelope_nominal_separation",
+      "pass": true
+    },
+    {
+      "name": "audio_5W_replaces_3W",
+      "pass": true
+    },
+    {
+      "name": "thermal_80_divided_by_90pct",
+      "pass": true
+    },
+    {
+      "name": "no_external_USB_or_speaker_load_assumed",
+      "pass": true
+    }
+  ]
+}

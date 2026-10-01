@@ -1,0 +1,35 @@
+{
+  "schema": "rock-final-demo-stopped-retention/1",
+  "status": "PASS",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "external_authority": {
+    "after_sha256": "73622331ced2f7417eaabfe5b4f082feac5e237827d4b2f000759919a6e28dd5",
+    "before_sha256": "ef013a683e4fc25234cd5e4888aa88d64793d7320595a1836d54704eaed43f65",
+    "database_count": 5,
+    "default_unchanged_policy_modified": false,
+    "maximum_time_after": 1789043828,
+    "maximum_time_before": 1789040986,
+    "other_typed_rows_schema_sequences_and_identities": "EXACTLY_UNCHANGED",
+    "policy": "index-identity-maximum-time-only/1",
+    "schema": "rock-game-authority-ui-retention-result/1",
+    "status": "PASS",
+    "table_count": 71
+  },
+  "non_hub_guest_roles": [
+    "authenticator",
+    "game_connection_a",
+    "game_connection_b",
+    "game_exchange_cache",
+    "power",
+    "remote",
+    "wallet_cache"
+  ],
+  "guest_policy": "Canonical frozen compare_business with complete non-Hub coverage; typed read clocks only as predeclared in device profile. Original demo separately verifies all prior Hub jobs and exactly one real new result.",
+  "inputs_sha256": {
+    "demo-authority-before.json": "8613ad407c1521e6c8c92692a750595972688bfb1de2b7bab5fa2305831925d3",
+    "demo-authority-after.json": "40201b8e2e8fad7e01ad913e48cca86d206b0fa76573f92d54d3600aaccfc811",
+    "demo/guest-before.json": "ab0c401f10ef1d36cdd2306719bbc96620acedcf0a9f6d5e8e086826af204d33",
+    "demo/guest-state.json": "a63f24771fb3b07af0b65d1296e65a7bb88b9bc564b44c19f930acf247f1f20c",
+    "demo/report.json": "e7572f193267101293b6a7fb3cf181a1acbb6e5b29b7b3570a89917626867e1d"
+  }
+}

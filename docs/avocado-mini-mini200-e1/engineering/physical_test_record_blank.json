@@ -1,0 +1,151 @@
+{
+  "revision": "E1",
+  "executed_physical_tests": 0,
+  "executed_asr_tests": 0,
+  "rows": [
+    {
+      "id": "PH01",
+      "test": "actual board and connectors fit incl tolerances, cable bends and tools",
+      "proposed_acceptance": "all-axis body max <=200 mm; clearance and assembly reviewed",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH02",
+      "test": "power inrush sustained and peak; USB permission and brownout",
+      "proposed_acceptance": "update budgets with actual loads; stable boot and no unsafe back-power",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH03",
+      "test": "closed enclosure thermal airflow noise; blocked intake and fan fault",
+      "proposed_acceptance": "approved component and touch limits; safe stop; no false claims from flow budget",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH04",
+      "test": "stereo calibration, hand visibility, lighting, occlusion",
+      "proposed_acceptance": "1-2 m calibrated operation; stop when tracking invalid",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH05",
+      "test": "body-to-display including actual TV",
+      "proposed_acceptance": "P95 <=100 ms proposed; report P50 P95 P99",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH06",
+      "test": "Japanese 12 speakers x10 phrases x5 repetitions x3 distances x3 conditions",
+      "proposed_acceptance": "5400 planned; 1-2 m quiet intent>=95%, +10dB>=90%; 3 m and0dB stress only",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH07",
+      "test": "voice endpoint-to-UI during game rendering",
+      "proposed_acceptance": "P95 <=1200 ms proposed; report stale2s TTL rejects separately",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH08",
+      "test": "TV replay and other speakers with/without PTT",
+      "proposed_acceptance": "30 h no-PTT observation; no external operations; targeted PTT negative trials too",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH09",
+      "test": "hardware MIC OFF and revoke while ASR pending",
+      "proposed_acceptance": "electrical isolation and back-power, software cancellation, no stale results; restore does not auto-record",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH10",
+      "test": "HDMI/USB reference delay and independent clocks; stereo mismatch",
+      "proposed_acceptance": "no hands-free or barge-in release until actual TV configurations pass",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH11",
+      "test": "32-particle game + body + ASR + save",
+      "proposed_acceptance": "1080p60 fps target measured with temperatures and frame times",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    },
+    {
+      "id": "PH12",
+      "test": "boot recovery offline and updates",
+      "proposed_acceptance": "home P95<=60s proposed; input default OFF; recovery verified",
+      "measurement": null,
+      "result": "NOT_RUN",
+      "unit_serial": null,
+      "firmware_hash": null,
+      "model_hash": null,
+      "operator": null,
+      "date": null
+    }
+  ]
+}

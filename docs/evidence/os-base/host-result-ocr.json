@@ -1,0 +1,98 @@
+{
+  "schema": "rock-business-result-ocr-candidate/1",
+  "status": "PASS_HOST_OCR_SCOPE",
+  "patch_sha256": "2f8d026a5babae75c8e0d0118f5c85cb16cc6f2826673e592fd4245f24dfef9a",
+  "files": [
+    "os/desktop/verify-business.py",
+    "os/desktop/BUSINESS-VERIFY.md",
+    "tests/test_os_business_result_ocr.py",
+    "tests/fixtures/business-result-before.tsv",
+    "tests/fixtures/business-result-ocr.json",
+    "tests/fixtures/business-result-labels-ocr.json"
+  ],
+  "base_commit": "851081a45dd70580fdaa73c47e882eb51c3c4725",
+  "original_failure_run": "42",
+  "original_failure_status_unchanged": "FAIL",
+  "actual_frame": {
+    "label": "C4J5",
+    "png_sha256": "e86fe9149704c78cbc5c7f229237e16e757ebd6eccc6fdba7ed016ab08ca70e3",
+    "elapsed_seconds": 1.1917958599988197,
+    "matches": [
+      {
+        "x": 310,
+        "y": 698,
+        "box": [
+          256,
+          688,
+          109,
+          20
+        ]
+      }
+    ],
+    "header": true,
+    "original_png_unchanged": true,
+    "passed": true
+  },
+  "root_cause": "Original page OCR read C4J5 at 10.222254 and Brief at 21.390390, below unchanged confidence45; repeated correct frame remained unselectable until original deadline.",
+  "change": "Only on the same exact result-page header, use original page if it already reads any literal Brief CnJn in body at >=45; otherwise one fixed body ROI/2x/PSM6. Expected input label is never provided to pass selection. Exact Brief+label and ASCII boundaries, body placement and uniqueness gate result/run/history/delete.",
+  "thresholds_unchanged": {
+    "minimum_confidence": 45,
+    "duplicate_box_min_iou": 0.7,
+    "ui_state_seconds": 30,
+    "whole_job_seconds": 90,
+    "tesseract_subprocess_max_seconds": 10
+  },
+  "C_renderer": {
+    "scope": "actual C rendering of explicit synthetic output snapshots, no Hub execution/QEMU/Wallet changes",
+    "cases": 66,
+    "passed": 66,
+    "max_scan_seconds": 1.0909938790027809,
+    "cross_label_mismatches": 0,
+    "ui_source_sha256": "3f163f895541acdc7e3a7ee0082edb06be32481c9d6b9340309bfe5034977bda",
+    "font_sha256": "68a3fc98800b2a27b371f2fb79991daf3633bd89309d4ffaa6946fd587f375b5"
+  },
+  "tests": {
+    "mac": {
+      "status": "PASS",
+      "tests": 68,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "warnings": "errors",
+      "platform": "darwin",
+      "qemu_started": false
+    },
+    "linux": {
+      "status": "PASS",
+      "tests": 68,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "warnings": "errors",
+      "platform": "linux",
+      "qemu_started": false
+    }
+  },
+  "iterations_preserved": {
+    "body_only": {
+      "passed": 65,
+      "failed": [
+        "C1J1"
+      ],
+      "reason": "concise original page was clearer than resized body"
+    },
+    "merged": {
+      "passed": 11,
+      "failed_count": 55,
+      "reason": "existing IoU.70 correctly refused duplicate hypotheses with different word box heights; threshold not changed"
+    }
+  },
+  "not_run": [
+    "QEMU by this task",
+    "new actual D6",
+    "guest runtime changes",
+    "new database mutations",
+    "funds/hardware"
+  ],
+  "original_png_sha256_after": "e86fe9149704c78cbc5c7f229237e16e757ebd6eccc6fdba7ed016ab08ca70e3"
+}

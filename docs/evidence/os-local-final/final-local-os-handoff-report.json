@@ -1,0 +1,1584 @@
+{
+  "schema": "rock-final-local-os-acceptance/2",
+  "status": "PASS_SCOPED_LOCAL_D1_D2_HUB_D3_NONFINANCIAL_D4",
+  "observed_utc": "2026-09-10T11:45:36.702025+00:00",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+  "profile_sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "source_files_verified_unchanged": 1364,
+  "build_and_guest_host": {
+    "system": "Linux",
+    "release": "6.12.95+deb13-cloud-arm64",
+    "architecture": "aarch64",
+    "uid": 501,
+    "gid": 1000
+  },
+  "D4": {
+    "directory": "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation",
+    "report_sha256": "e93dca22501e92f31d098a99abfdb8f8731e77ca1ac8df1df94dc310be042f7d",
+    "plan_raw_sha256": "5ccd33fc0e85df395f19a3996d58b9b928becf4c9eb289405cf7f6e143127892",
+    "report": {
+      "schema": "rock-game-d4-run/1",
+      "status": "PASS_SCOPED",
+      "plan_sha256": "5ccd33fc0e85df395f19a3996d58b9b928becf4c9eb289405cf7f6e143127892",
+      "started_utc": "2026-09-10T10:33:20.165941+00:00",
+      "checks": [
+        {
+          "name": "ui-startup-crash",
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-d4-observer-review-1020/systems/rock-star-os/os/update/verify-ui-startup.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--evidence",
+            "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/ui-startup-crash",
+            "--case",
+            "crash"
+          ],
+          "status": "PASS",
+          "started_utc": "2026-09-10T10:33:20.296621+00:00",
+          "pid": 1377779,
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T10:38:02.127082+00:00",
+          "log_sha256": "ac8b519040e704fabfe242da94a630fe30bbb985f191033fe0fcc8eccb9c58b3",
+          "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/ui-startup-crash",
+          "boots": 4,
+          "report_sha256": "faa485c7511eaeb7b90984bd77e3f3516c45a9bc3d3cc82cfa7e3073535c8572"
+        },
+        {
+          "name": "ab",
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/update/verify-qemu.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile"
+          ],
+          "status": "PASS",
+          "started_utc": "2026-09-10T10:38:02.875056+00:00",
+          "pid": 1377931,
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T10:46:43.589489+00:00",
+          "log_sha256": "b1b776308cb03b690d63bb0201f48638a37dec863b6c929ceb40e04e5eed9572",
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/verify-ab-20260910T103802Z-0o0ppq5w",
+          "boots": 8,
+          "report_sha256": "6f72d5736d93a01a8c7920ea51fcea06d19947eb29c6c0915125ecdc0310ca6d"
+        },
+        {
+          "name": "faults",
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/update/verify-faults.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--ab-evidence",
+            "/var/tmp/rock-final-9abf78a-profile/verify-ab-20260910T103802Z-0o0ppq5w"
+          ],
+          "status": "PASS",
+          "started_utc": "2026-09-10T10:46:44.284782+00:00",
+          "pid": 1378139,
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T10:55:48.649070+00:00",
+          "log_sha256": "6ff5e4ffa3058d0e6f5ae2bed0403b6cfaf62becf46050c74f7e5adc94a29234",
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/verify-faults-20260910T104644Z-q0ir5_0d",
+          "boots": 13,
+          "report_sha256": "90de49142f28891a0ca1ac66ca1847970ace47fcadccc80f91ce541a442c8a8a"
+        },
+        {
+          "name": "auth-health",
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/update/verify-auth-health.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--evidence",
+            "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/auth-health"
+          ],
+          "status": "PASS",
+          "started_utc": "2026-09-10T10:55:49.423816+00:00",
+          "pid": 1378415,
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T10:58:03.585472+00:00",
+          "log_sha256": "fdc7fc430f5342b27eb9ee41075cedeb0dab3f622208b37c52037a2245418a8d",
+          "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/auth-health",
+          "boots": 3,
+          "report_sha256": "e2dcbdd8f69413231674222e6ab530d23df20ad8ab796617fb0e4a80c5c27c3b"
+        },
+        {
+          "name": "data-abi",
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/update/verify-data-abi.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--evidence",
+            "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/data-abi"
+          ],
+          "status": "PASS",
+          "started_utc": "2026-09-10T10:58:04.290352+00:00",
+          "pid": 1378506,
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:01:01.100844+00:00",
+          "log_sha256": "9bcbe83404947557ecc82c99235b75c2dea9f7c31740c418e695f69a39cb4b93",
+          "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d4-continuation/data-abi",
+          "boots": 3,
+          "report_sha256": "2744feec51432b3d9348bfdc30726956c1d737f36a09241621c1165ec49b6864"
+        }
+      ],
+      "boots": 41,
+      "new_boots": 31,
+      "reused_boots": 10,
+      "original_whole_run_status": "FAIL_RETAINED",
+      "ui_startup_case_coverage": [
+        {
+          "case": "ready",
+          "boots": 2,
+          "status": "PASS_FROM_COMPLETE_ORIGINAL_CASE",
+          "raw_log_sha256": {
+            "ui-startup/ready/boot-1.log": "6b528e7aae959d19facf669d7e0bf4be968247f4e0f28ff2635112a4d8174802",
+            "ui-startup/ready/boot-2.log": "6438e94c2c33fd83159d298af966bbe437e86b9ab37cc1c982120e55927488cf"
+          }
+        },
+        {
+          "case": "absent",
+          "boots": 4,
+          "status": "PASS_FROM_COMPLETE_ORIGINAL_CASE",
+          "raw_log_sha256": {
+            "ui-startup/absent/boot-1.log": "d6320e238352b833c2d391a30c0346f63bb7b94e9269e5801eda3be9e4c7726b",
+            "ui-startup/absent/boot-2.log": "d33f6d8b04c0a13fbe5dc4676a90ea4284eecce09fa45064753e768ac431c936",
+            "ui-startup/absent/boot-3.log": "189c44fe11213cfd56b9c61ceb8ccb5d78664637a01b382f1edfddc375988601",
+            "ui-startup/absent/boot-4.log": "484b6958c7d093904af6b458582682e16d8eaf73e0e4fa4aa03cdba118187d5c"
+          }
+        },
+        {
+          "case": "freeze",
+          "boots": 4,
+          "status": "PASS_FROM_COMPLETE_ORIGINAL_CASE",
+          "raw_log_sha256": {
+            "ui-startup/freeze/boot-1.log": "a304fc404753d8e6e320263798aad36abe611558ca5a57d2b5d585379e56d03b",
+            "ui-startup/freeze/boot-2.log": "0c951f7a1426dd02ed252eed98a87965588bcc6f1f4d128546b4a1171c1dddd7",
+            "ui-startup/freeze/boot-3.log": "a06b5c830176a07875ad18ae70bcc6f1bc197cf79567b2146f065cab49e6911e",
+            "ui-startup/freeze/boot-4.log": "4227dcde684dcecedaf9a05817da4ae7ed71c84b9b242be0789780b2fb900c96"
+          }
+        },
+        {
+          "case": "crash",
+          "boots": 4,
+          "status": "PASS_NEW_DIAGNOSTIC_OBSERVER"
+        }
+      ],
+      "immutable_image_sha256": {
+        "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+        "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+        "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+      },
+      "other_acceptance_gates": "NOT_RUN_BY_THIS_ORCHESTRATOR",
+      "finished_utc": "2026-09-10T11:01:01.742617+00:00"
+    }
+  },
+  "D2_Hub": {
+    "directory": "/var/tmp/rock-release-os-20260910/final-9abf78a-lifecycle/business-5dab7c8b7ed14e95929e",
+    "report_sha256": "1cea41d7c8a19ba6ebdf636172d424fbc3789f152ce119076a600e092ca3d077",
+    "plan_raw_sha256": "2388291c5fa66a109ac1a649b69e1607c1e9aaa1dfcf823420d2d82870687373",
+    "report": {
+      "status": "PASS_SCOPED",
+      "D2": {
+        "business_lifecycle": "PASS",
+        "in_flight_cancel": "NOT_RUN",
+        "meaning": "install/approve/run/result/history/update/rollback/disable/reapprove/delete verified",
+        "reinstall_after_delete": {
+          "jobs": 5,
+          "operations": 16,
+          "status": "PASS"
+        },
+        "wallet_synthetic_flow": "NOT_RUN",
+        "whole_gate": "INCOMPLETE"
+      },
+      "normal_boots": 2,
+      "plan_canonical_sha256": "dc7a4a39e375721418ec19e5d118e8f458e46ab12ce6c1ccfb31d22b4e47ad7a",
+      "authority_retention": [
+        "PASS_ALL_DECLARED_DATABASES_AND_IDENTITIES",
+        "PASS_ALL_DECLARED_DATABASES_AND_IDENTITIES"
+      ]
+    }
+  },
+  "D1_D3_original": {
+    "directory": "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3",
+    "report_sha256": "48e0614ef14cdb7fff06ea4d4b9aca3ad1c3b63ff46724ebd20bd77293bb9da9",
+    "plan_raw_sha256": "63fa6489f45f29ff1b8a94f352a01371a3f8861f15bebbca5a3017399484bc16",
+    "report": {
+      "schema": "rock-final-d1-d3/1",
+      "status": "FAIL",
+      "plan_sha256": "63fa6489f45f29ff1b8a94f352a01371a3f8861f15bebbca5a3017399484bc16",
+      "started_utc": "2026-09-10T11:15:36.502888+00:00",
+      "gates": [
+        {
+          "name": "boot",
+          "status": "PASS_SCOPED",
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-boot.py"
+          ],
+          "started_utc": "2026-09-10T11:15:36.807540+00:00",
+          "pid": 1380209,
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:16:15.688130+00:00",
+          "log_sha256": "d735f28f49e61908791ece8ccb5900d63a0c45b325deb93dbef698e4e8169b24",
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/verify-20260910T111536Z-rr_jrevd",
+          "boots": 2,
+          "report_sha256": "acfe9f839aab4ac155e573a518cbf09d4bfbe61569f05a39498ad6da958968b2",
+          "authority_all_state": "UNCHANGED",
+          "authority_after_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e"
+        },
+        {
+          "name": "system",
+          "status": "PASS_SCOPED",
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-system.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile"
+          ],
+          "started_utc": "2026-09-10T11:16:16.236920+00:00",
+          "pid": 1380228,
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:17:13.309650+00:00",
+          "log_sha256": "0e0d10072fabab4bb08b06cac3090dcbdc0b1e4dbd6d286c33bd8e7b276a369b",
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/system-20260910T111616Z-jmkwrqr3",
+          "boots": 2,
+          "report_sha256": "9533ca2c24f14e700c5abcad4c9ec1b82a58f475bb5a286ebc03566f0961ff20",
+          "authority_all_state": "UNCHANGED",
+          "authority_after_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e"
+        },
+        {
+          "name": "isolation",
+          "status": "PASS_SCOPED",
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-platform.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--scope",
+            "game-isolation"
+          ],
+          "started_utc": "2026-09-10T11:17:13.863281+00:00",
+          "pid": 1380248,
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:17:48.035123+00:00",
+          "log_sha256": "a61b578003306868a6d60dcffbe7b03ea30a61ba311253ac8d5c3d6b3685008f",
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/platform-20260910T111713Z-txo0nsgr",
+          "guest_isolation_checks": 47,
+          "guest_tools_checks": 45,
+          "boots": 1,
+          "report_sha256": "92b94de29a2011a9b5f2cdd681549ebc25b1ad4f381e34e906f0f8ff9ff2653a",
+          "authority_all_state": "UNCHANGED",
+          "authority_after_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e"
+        },
+        {
+          "name": "nonfinancial",
+          "status": "RUNNING",
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-release-os-20260910/run-game-gates.py",
+            "--source",
+            "/var/tmp/rock-final-9abf78a",
+            "--images",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--evidence",
+            "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial",
+            "--source-commit",
+            "9abf78a80d27aa9f847c4051d20e4c552e407276"
+          ],
+          "started_utc": "2026-09-10T11:17:48.567356+00:00",
+          "pid": 1380337,
+          "exit_code": 1,
+          "finished_utc": "2026-09-10T11:24:00.710632+00:00",
+          "log_sha256": "70a336b63a6dddf9f0e436d1fdebf5e08e1a421fa844c40f75f854a14bf1fab3",
+          "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial"
+        }
+      ],
+      "error_type": "RuntimeError",
+      "error": "canonical verifier failed; all originals preserved",
+      "finished_utc": "2026-09-10T11:24:00.714726+00:00"
+    }
+  },
+  "D1_D3_coverage": {
+    "directory": "/var/tmp/rock-release-os-20260910/final-9abf78a-hub-continuation",
+    "report_sha256": "9fa7878e3b46bf1a5e3aa77fdf89a0fcd18a5ce36afee665d7cee063dcd7b899",
+    "plan_raw_sha256": "2ca063992194547ed84b3751e2f6062bac148de1f01a7ca46e0b1207318c1563",
+    "report": {
+      "boots": 13,
+      "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-hub-continuation/hub-fault-gfnctxo9",
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T11:45:09.106563+00:00",
+      "inner_report_sha256": "3e311315a541418f8931f91bdf5dd0f152d14936e37af0db391720df1db18329",
+      "log_sha256": "8a0a09a91943309ca1c585102773f89fb6cc0fb4f83158ded718eb204d1b6aa0",
+      "new_boots": 3,
+      "new_hub_report": {
+        "all_existing_runtime_files_unchanged": true,
+        "cases": [
+          {
+            "command": [
+              "qemu-system-aarch64",
+              "-machine",
+              "virt-10.0,gic-version=3",
+              "-accel",
+              "tcg",
+              "-cpu",
+              "cortex-a53",
+              "-m",
+              "1024",
+              "-smp",
+              "2",
+              "-display",
+              "none",
+              "-serial",
+              "stdio",
+              "-monitor",
+              "none",
+              "-no-reboot",
+              "-nic",
+              "none",
+              "-kernel",
+              "/var/tmp/rock-final-9abf78a-profile/Image",
+              "-append",
+              "console=ttyAMA0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.hubfault=crash rock.hubfault.scope=game-isolation",
+              "-drive",
+              "if=none,file=/var/tmp/rock-release-os-20260910/final-9abf78a-hub-continuation/hub-fault-gfnctxo9/derived-rootfs.ext4,format=raw,id=osdisk,readonly=on",
+              "-device",
+              "virtio-blk-pci,drive=osdisk,addr=0x1",
+              "-drive",
+              "if=none,file=/var/tmp/rock-release-os-20260910/final-9abf78a-hub-continuation/hub-fault-gfnctxo9/userdata.ext4,format=raw,id=userdata",
+              "-device",
+              "virtio-blk-pci,drive=userdata,addr=0x2",
+              "-object",
+              "rng-random,filename=/dev/urandom,id=rockrng",
+              "-device",
+              "virtio-rng-pci,rng=rockrng,addr=0x3"
+            ],
+            "data_sha256": "4f23becca4f3ccccf0bc829bbf18d8a4ad4c0102c33a4b60813dac5f3fad48aa",
+            "elapsed_seconds": 53.182657773002575,
+            "exit_code": 0,
+            "filesystem_check": {
+              "exit_code": 0,
+              "output": "Pass 1: Checking inodes, blocks, and sizes\nPass 2: Checking directory structure\nPass 3: Checking directory connectivity\nPass 4: Checking reference counts\nPass 5: Checking group summary information\nrock-hub-fault: 48/32768 files (10.4% non-contiguous), 14199/131072 blocks\ne2fsck 1.47.2 (1-Jan-2025)\n"
+            },
+            "log_sha256": "1d007f73e8034cfafff704829b1a615410c53ba399509f63c49687f6fcbeee03",
+            "mode": "crash",
+            "proof": {
+              "accepted": {
+                "ok": true,
+                "result": {
+                  "created": 1789040600.3670318,
+                  "error": null,
+                  "finished": null,
+                  "id": "5c767e9e-a5c2-4886-a483-2e8480bc76d9",
+                  "input_bytes": 22,
+                  "key": "d3-hub:crash",
+                  "output": null,
+                  "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                  "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                  "status": "running",
+                  "tool_id": "org.rockstar.text-tidy",
+                  "version": "1.0.0"
+                }
+              },
+              "boot_id": "d52c925b-701f-48da-864c-1dbd32dad56c",
+              "conflict": {
+                "code": "rejected",
+                "error": "idempotency conflict",
+                "ok": false
+              },
+              "durable_rows": {
+                "hub_audit": [
+                  {
+                    "body": "{\"hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}",
+                    "created": 1789040595.3200307,
+                    "event": "installed_disabled",
+                    "seq": 1
+                  },
+                  {
+                    "body": "{\"hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"id\":\"org.rockstar.text-tidy\"}",
+                    "created": 1789040597.8320487,
+                    "event": "enabled",
+                    "seq": 2
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"5c767e9e-a5c2-4886-a483-2e8480bc76d9\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040600.3691516,
+                    "event": "run_approved",
+                    "seq": 3
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"22ebb5c6-96cc-4253-903a-f0b816c08c2e\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040610.1691859,
+                    "event": "run_approved",
+                    "seq": 4
+                  }
+                ],
+                "hub_jobs": [
+                  {
+                    "created": 1789040600.3670318,
+                    "error": "worker interrupted or invalid output",
+                    "finished": 1789040600.4237123,
+                    "id": "5c767e9e-a5c2-4886-a483-2e8480bc76d9",
+                    "input_bytes": 22,
+                    "key": "d3-hub:crash",
+                    "output": null,
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "failed",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  },
+                  {
+                    "created": 1789040610.1676886,
+                    "error": null,
+                    "finished": 1789040610.6426384,
+                    "id": "22ebb5c6-96cc-4253-903a-f0b816c08c2e",
+                    "input_bytes": 22,
+                    "key": "d3-hub:crash:explicit-retry",
+                    "output": "Fixed Hub recovery",
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "succeeded",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  }
+                ],
+                "hub_requests": [
+                  {
+                    "key": "d3-hub:approve",
+                    "request_hash": "7d48b334175f623a014c0b865c2ce94781af9c0a8f3a26c78ed67f1df65c0936",
+                    "result": "{\"enabled\":true,\"id\":\"org.rockstar.text-tidy\"}"
+                  },
+                  {
+                    "key": "d3-hub:crash",
+                    "request_hash": "76c2355a791b63ca9a94acbde51d89be69839c6c3aee68aa467c01d645e6e721",
+                    "result": "{\"created\":1789040600.3670318,\"error\":null,\"finished\":null,\"id\":\"5c767e9e-a5c2-4886-a483-2e8480bc76d9\",\"input_bytes\":22,\"key\":\"d3-hub:crash\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:crash:explicit-retry",
+                    "request_hash": "c381df3c23ba0965201b5719e2f72f7387e0985713fb5c8572bcb7966bd64bc8",
+                    "result": "{\"created\":1789040610.1676886,\"error\":null,\"finished\":null,\"id\":\"22ebb5c6-96cc-4253-903a-f0b816c08c2e\",\"input_bytes\":22,\"key\":\"d3-hub:crash:explicit-retry\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:install",
+                    "request_hash": "7c2c4502977fa61080d021748516afa8ae35984b4ca7d820159e7bef694e8774",
+                    "result": "{\"enabled\":false,\"hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  }
+                ]
+              },
+              "failed_job": {
+                "created": 1789040600.3670318,
+                "error": "worker interrupted or invalid output",
+                "finished": 1789040600.4237123,
+                "id": "5c767e9e-a5c2-4886-a483-2e8480bc76d9",
+                "input_bytes": 22,
+                "key": "d3-hub:crash",
+                "output": null,
+                "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                "status": "failed",
+                "tool_id": "org.rockstar.text-tidy",
+                "version": "1.0.0"
+              },
+              "fault": {
+                "capture_elapsed_seconds": 2.358668496,
+                "elapsed_seconds": 0.015227727999999274,
+                "exited": true,
+                "identity": {
+                  "command": [
+                    "/usr/libexec/rock-sandbox-exec",
+                    "recipe"
+                  ],
+                  "exe": "/usr/libexec/rock-sandbox-exec",
+                  "gid": [
+                    1002,
+                    1002,
+                    1002,
+                    1002
+                  ],
+                  "no_new_privs": 1,
+                  "pid": 214,
+                  "ppid": 151,
+                  "start_ticks": 2823,
+                  "tgid": 214,
+                  "tracer_pid": 199,
+                  "uid": [
+                    1002,
+                    1002,
+                    1002,
+                    1002
+                  ]
+                },
+                "prearm_inventory": {
+                  "elapsed_seconds": 0.07514796799999957,
+                  "existing_children": 0,
+                  "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+                  "process_count": 57,
+                  "thread_ids": [
+                    151,
+                    155,
+                    156
+                  ]
+                },
+                "signal": 9,
+                "signature_verifier": {
+                  "exit_status": 0,
+                  "identity": {
+                    "command": [
+                      "openssl",
+                      "pkeyutl",
+                      "-verify",
+                      "-pubin",
+                      "-inkey",
+                      "/tmp/rock-verify-7dafya4m/key.der",
+                      "-keyform",
+                      "DER",
+                      "-rawin",
+                      "-in",
+                      "/tmp/rock-verify-7dafya4m/payload",
+                      "-sigfile",
+                      "/tmp/rock-verify-7dafya4m/signature"
+                    ],
+                    "exe": "/usr/bin/openssl",
+                    "gid": [
+                      1002,
+                      1002,
+                      1002,
+                      1002
+                    ],
+                    "no_new_privs": 1,
+                    "pid": 212,
+                    "ppid": 151,
+                    "start_ticks": 2812,
+                    "tgid": 212,
+                    "tracer_pid": 199,
+                    "uid": [
+                      1002,
+                      1002,
+                      1002,
+                      1002
+                    ]
+                  },
+                  "input_sha256": {
+                    "key.der": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+                    "payload": "2c77b28890e165c1135bec992732cafdafe8bc7860d66beeacbae0a1916d3e3c",
+                    "signature": "a38b19ebf650158a8489209335d95cb0063459e05172ce0add1bb7459c354852"
+                  },
+                  "resumed_without_signal": true
+                },
+                "stopped": false
+              },
+              "job_count": 2,
+              "mode": "crash",
+              "platform_identity": {
+                "command": [
+                  "/usr/bin/python3",
+                  "-I",
+                  "-B",
+                  "/usr/lib/rock-platform/service.py",
+                  "--role",
+                  "platform"
+                ],
+                "exe": "/usr/bin/python3.14",
+                "gid": [
+                  1002,
+                  1002,
+                  1002,
+                  1002
+                ],
+                "no_new_privs": 1,
+                "pid": 151,
+                "ppid": 1,
+                "start_ticks": 398,
+                "tgid": 151,
+                "tracer_pid": 0,
+                "uid": [
+                  1002,
+                  1002,
+                  1002,
+                  1002
+                ]
+              },
+              "replay": {
+                "ok": true,
+                "result": {
+                  "created": 1789040600.3670318,
+                  "error": null,
+                  "finished": null,
+                  "id": "5c767e9e-a5c2-4886-a483-2e8480bc76d9",
+                  "input_bytes": 22,
+                  "key": "d3-hub:crash",
+                  "output": null,
+                  "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                  "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                  "status": "running",
+                  "tool_id": "org.rockstar.text-tidy",
+                  "version": "1.0.0"
+                }
+              },
+              "retry_job": {
+                "created": 1789040610.1676886,
+                "error": null,
+                "finished": 1789040610.6426384,
+                "id": "22ebb5c6-96cc-4253-903a-f0b816c08c2e",
+                "input_bytes": 22,
+                "key": "d3-hub:crash:explicit-retry",
+                "output": "Fixed Hub recovery",
+                "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                "status": "succeeded",
+                "tool_id": "org.rockstar.text-tidy",
+                "version": "1.0.0"
+              },
+              "runtime_sha256": "46512e35ded64a3e0cd03dee3a4eba06c7f95a71fc520e535aa8ad11cb76d652",
+              "schema": "rock-hub-fault-proof/1",
+              "scope": "fixed production launcher exec fault; actual owner API/Hub deadline; no GUI or sandbox-workload fault claim",
+              "status": "PASS",
+              "verification_scope": "game-isolation",
+              "wallet": "NOT_RUN",
+              "wallet_observation": {
+                "financial_assertions": "NOT_RUN",
+                "mode": "game-isolation",
+                "reason": "remote authority unavailable; complete host authority retention is a separate required observation",
+                "schema": "rock-guest-wallet-observation/1",
+                "state_sha256": null
+              },
+              "wallet_sha256": "a4648b6660c6ede2e7b9391d274cc0b607f7eb22f334058794e5211ad905af4f",
+              "wallet_state_scope": "SDK_DISPLAY_AND_REQUEST_CACHE_ONLY"
+            },
+            "status": "PASS"
+          },
+          {
+            "command": [
+              "qemu-system-aarch64",
+              "-machine",
+              "virt-10.0,gic-version=3",
+              "-accel",
+              "tcg",
+              "-cpu",
+              "cortex-a53",
+              "-m",
+              "1024",
+              "-smp",
+              "2",
+              "-display",
+              "none",
+              "-serial",
+              "stdio",
+              "-monitor",
+              "none",
+              "-no-reboot",
+              "-nic",
+              "none",
+              "-kernel",
+              "/var/tmp/rock-final-9abf78a-profile/Image",
+              "-append",
+              "console=ttyAMA0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.hubfault=deadline rock.hubfault.scope=game-isolation",
+              "-drive",
+              "if=none,file=/var/tmp/rock-release-os-20260910/final-9abf78a-hub-continuation/hub-fault-gfnctxo9/derived-rootfs.ext4,format=raw,id=osdisk,readonly=on",
+              "-device",
+              "virtio-blk-pci,drive=osdisk,addr=0x1",
+              "-drive",
+              "if=none,file=/var/tmp/rock-release-os-20260910/final-9abf78a-hub-continuation/hub-fault-gfnctxo9/userdata.ext4,format=raw,id=userdata",
+              "-device",
+              "virtio-blk-pci,drive=userdata,addr=0x2",
+              "-object",
+              "rng-random,filename=/dev/urandom,id=rockrng",
+              "-device",
+              "virtio-rng-pci,rng=rockrng,addr=0x3"
+            ],
+            "data_sha256": "293fee00c26bf0ed18ba2d215f4fe75997f74631cfa4c05b55b4791fe9f9d95d",
+            "elapsed_seconds": 48.29773017100524,
+            "exit_code": 0,
+            "filesystem_check": {
+              "exit_code": 0,
+              "output": "Pass 1: Checking inodes, blocks, and sizes\nPass 2: Checking directory structure\nPass 3: Checking directory connectivity\nPass 4: Checking reference counts\nPass 5: Checking group summary information\nrock-hub-fault: 48/32768 files (10.4% non-contiguous), 14210/131072 blocks\ne2fsck 1.47.2 (1-Jan-2025)\n"
+            },
+            "log_sha256": "9f88805ecea27f81ca090da60c7aeed2d3a466251a02a038deed0c30df0e42f9",
+            "mode": "deadline",
+            "proof": {
+              "accepted": {
+                "ok": true,
+                "result": {
+                  "created": 1789040646.4592116,
+                  "error": null,
+                  "finished": null,
+                  "id": "160b72f0-a5e4-4e85-a7cf-92d693fe581d",
+                  "input_bytes": 22,
+                  "key": "d3-hub:deadline",
+                  "output": null,
+                  "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                  "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                  "status": "running",
+                  "tool_id": "org.rockstar.text-tidy",
+                  "version": "1.0.0"
+                }
+              },
+              "boot_id": "6ec7dd17-985c-4fd2-9e69-9e6ee7b71124",
+              "conflict": {
+                "code": "rejected",
+                "error": "idempotency conflict",
+                "ok": false
+              },
+              "durable_rows": {
+                "hub_audit": [
+                  {
+                    "body": "{\"hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}",
+                    "created": 1789040595.3200307,
+                    "event": "installed_disabled",
+                    "seq": 1
+                  },
+                  {
+                    "body": "{\"hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"id\":\"org.rockstar.text-tidy\"}",
+                    "created": 1789040597.8320487,
+                    "event": "enabled",
+                    "seq": 2
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"5c767e9e-a5c2-4886-a483-2e8480bc76d9\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040600.3691516,
+                    "event": "run_approved",
+                    "seq": 3
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"22ebb5c6-96cc-4253-903a-f0b816c08c2e\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040610.1691859,
+                    "event": "run_approved",
+                    "seq": 4
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"160b72f0-a5e4-4e85-a7cf-92d693fe581d\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040646.4662185,
+                    "event": "run_approved",
+                    "seq": 5
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"45d35471-91bf-4744-8841-33eefa4174d1\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040658.8351054,
+                    "event": "run_approved",
+                    "seq": 6
+                  }
+                ],
+                "hub_jobs": [
+                  {
+                    "created": 1789040600.3670318,
+                    "error": "worker interrupted or invalid output",
+                    "finished": 1789040600.4237123,
+                    "id": "5c767e9e-a5c2-4886-a483-2e8480bc76d9",
+                    "input_bytes": 22,
+                    "key": "d3-hub:crash",
+                    "output": null,
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "failed",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  },
+                  {
+                    "created": 1789040610.1676886,
+                    "error": null,
+                    "finished": 1789040610.6426384,
+                    "id": "22ebb5c6-96cc-4253-903a-f0b816c08c2e",
+                    "input_bytes": 22,
+                    "key": "d3-hub:crash:explicit-retry",
+                    "output": "Fixed Hub recovery",
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "succeeded",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  },
+                  {
+                    "created": 1789040646.4592116,
+                    "error": "time limit exceeded",
+                    "finished": 1789040649.5173626,
+                    "id": "160b72f0-a5e4-4e85-a7cf-92d693fe581d",
+                    "input_bytes": 22,
+                    "key": "d3-hub:deadline",
+                    "output": null,
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "failed",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  },
+                  {
+                    "created": 1789040658.8332503,
+                    "error": null,
+                    "finished": 1789040659.4273934,
+                    "id": "45d35471-91bf-4744-8841-33eefa4174d1",
+                    "input_bytes": 22,
+                    "key": "d3-hub:deadline:explicit-retry",
+                    "output": "Fixed Hub recovery",
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "succeeded",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  }
+                ],
+                "hub_requests": [
+                  {
+                    "key": "d3-hub:approve",
+                    "request_hash": "7d48b334175f623a014c0b865c2ce94781af9c0a8f3a26c78ed67f1df65c0936",
+                    "result": "{\"enabled\":true,\"id\":\"org.rockstar.text-tidy\"}"
+                  },
+                  {
+                    "key": "d3-hub:crash",
+                    "request_hash": "76c2355a791b63ca9a94acbde51d89be69839c6c3aee68aa467c01d645e6e721",
+                    "result": "{\"created\":1789040600.3670318,\"error\":null,\"finished\":null,\"id\":\"5c767e9e-a5c2-4886-a483-2e8480bc76d9\",\"input_bytes\":22,\"key\":\"d3-hub:crash\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:crash:explicit-retry",
+                    "request_hash": "c381df3c23ba0965201b5719e2f72f7387e0985713fb5c8572bcb7966bd64bc8",
+                    "result": "{\"created\":1789040610.1676886,\"error\":null,\"finished\":null,\"id\":\"22ebb5c6-96cc-4253-903a-f0b816c08c2e\",\"input_bytes\":22,\"key\":\"d3-hub:crash:explicit-retry\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:deadline",
+                    "request_hash": "2b5748d54214afb53b68779c7a5fb4e9c38cc6423c37ddde61363cc49927c9e7",
+                    "result": "{\"created\":1789040646.4592116,\"error\":null,\"finished\":null,\"id\":\"160b72f0-a5e4-4e85-a7cf-92d693fe581d\",\"input_bytes\":22,\"key\":\"d3-hub:deadline\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:deadline:explicit-retry",
+                    "request_hash": "300e59ea981c1071ddc8563c9dc97acff5c611a8d867bcfb793527f26890a684",
+                    "result": "{\"created\":1789040658.8332503,\"error\":null,\"finished\":null,\"id\":\"45d35471-91bf-4744-8841-33eefa4174d1\",\"input_bytes\":22,\"key\":\"d3-hub:deadline:explicit-retry\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:install",
+                    "request_hash": "7c2c4502977fa61080d021748516afa8ae35984b4ca7d820159e7bef694e8774",
+                    "result": "{\"enabled\":false,\"hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  }
+                ]
+              },
+              "failed_job": {
+                "created": 1789040646.4592116,
+                "error": "time limit exceeded",
+                "finished": 1789040649.5173626,
+                "id": "160b72f0-a5e4-4e85-a7cf-92d693fe581d",
+                "input_bytes": 22,
+                "key": "d3-hub:deadline",
+                "output": null,
+                "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                "status": "failed",
+                "tool_id": "org.rockstar.text-tidy",
+                "version": "1.0.0"
+              },
+              "fault": {
+                "capture_elapsed_seconds": 2.612534624000002,
+                "elapsed_seconds": 0.011503344000001192,
+                "exited": false,
+                "identity": {
+                  "command": [
+                    "/usr/libexec/rock-sandbox-exec",
+                    "recipe"
+                  ],
+                  "exe": "/usr/libexec/rock-sandbox-exec",
+                  "gid": [
+                    1002,
+                    1002,
+                    1002,
+                    1002
+                  ],
+                  "no_new_privs": 1,
+                  "pid": 205,
+                  "ppid": 148,
+                  "start_ticks": 2125,
+                  "tgid": 205,
+                  "tracer_pid": 196,
+                  "uid": [
+                    1002,
+                    1002,
+                    1002,
+                    1002
+                  ]
+                },
+                "prearm_inventory": {
+                  "elapsed_seconds": 0.0887850400000012,
+                  "existing_children": 0,
+                  "method": "all-platform-threads-stopped-and-proc-stat-ppid",
+                  "process_count": 56,
+                  "thread_ids": [
+                    148,
+                    152,
+                    153
+                  ]
+                },
+                "signal": 19,
+                "signature_verifier": {
+                  "exit_status": 0,
+                  "identity": {
+                    "command": [
+                      "openssl",
+                      "pkeyutl",
+                      "-verify",
+                      "-pubin",
+                      "-inkey",
+                      "/tmp/rock-verify-h_6yud9b/key.der",
+                      "-keyform",
+                      "DER",
+                      "-rawin",
+                      "-in",
+                      "/tmp/rock-verify-h_6yud9b/payload",
+                      "-sigfile",
+                      "/tmp/rock-verify-h_6yud9b/signature"
+                    ],
+                    "exe": "/usr/bin/openssl",
+                    "gid": [
+                      1002,
+                      1002,
+                      1002,
+                      1002
+                    ],
+                    "no_new_privs": 1,
+                    "pid": 203,
+                    "ppid": 148,
+                    "start_ticks": 2114,
+                    "tgid": 203,
+                    "tracer_pid": 196,
+                    "uid": [
+                      1002,
+                      1002,
+                      1002,
+                      1002
+                    ]
+                  },
+                  "input_sha256": {
+                    "key.der": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+                    "payload": "2c77b28890e165c1135bec992732cafdafe8bc7860d66beeacbae0a1916d3e3c",
+                    "signature": "a38b19ebf650158a8489209335d95cb0063459e05172ce0add1bb7459c354852"
+                  },
+                  "resumed_without_signal": true
+                },
+                "stopped": true
+              },
+              "job_count": 4,
+              "mode": "deadline",
+              "platform_identity": {
+                "command": [
+                  "/usr/bin/python3",
+                  "-I",
+                  "-B",
+                  "/usr/lib/rock-platform/service.py",
+                  "--role",
+                  "platform"
+                ],
+                "exe": "/usr/bin/python3.14",
+                "gid": [
+                  1002,
+                  1002,
+                  1002,
+                  1002
+                ],
+                "no_new_privs": 1,
+                "pid": 148,
+                "ppid": 1,
+                "start_ticks": 286,
+                "tgid": 148,
+                "tracer_pid": 0,
+                "uid": [
+                  1002,
+                  1002,
+                  1002,
+                  1002
+                ]
+              },
+              "replay": {
+                "ok": true,
+                "result": {
+                  "created": 1789040646.4592116,
+                  "error": null,
+                  "finished": null,
+                  "id": "160b72f0-a5e4-4e85-a7cf-92d693fe581d",
+                  "input_bytes": 22,
+                  "key": "d3-hub:deadline",
+                  "output": null,
+                  "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                  "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                  "status": "running",
+                  "tool_id": "org.rockstar.text-tidy",
+                  "version": "1.0.0"
+                }
+              },
+              "retry_job": {
+                "created": 1789040658.8332503,
+                "error": null,
+                "finished": 1789040659.4273934,
+                "id": "45d35471-91bf-4744-8841-33eefa4174d1",
+                "input_bytes": 22,
+                "key": "d3-hub:deadline:explicit-retry",
+                "output": "Fixed Hub recovery",
+                "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                "status": "succeeded",
+                "tool_id": "org.rockstar.text-tidy",
+                "version": "1.0.0"
+              },
+              "runtime_sha256": "46512e35ded64a3e0cd03dee3a4eba06c7f95a71fc520e535aa8ad11cb76d652",
+              "schema": "rock-hub-fault-proof/1",
+              "scope": "fixed production launcher exec fault; actual owner API/Hub deadline; no GUI or sandbox-workload fault claim",
+              "status": "PASS",
+              "verification_scope": "game-isolation",
+              "wallet": "NOT_RUN",
+              "wallet_observation": {
+                "financial_assertions": "NOT_RUN",
+                "mode": "game-isolation",
+                "reason": "remote authority unavailable; complete host authority retention is a separate required observation",
+                "schema": "rock-guest-wallet-observation/1",
+                "state_sha256": null
+              },
+              "wallet_sha256": "a4648b6660c6ede2e7b9391d274cc0b607f7eb22f334058794e5211ad905af4f",
+              "wallet_state_scope": "SDK_DISPLAY_AND_REQUEST_CACHE_ONLY"
+            },
+            "status": "PASS"
+          },
+          {
+            "command": [
+              "qemu-system-aarch64",
+              "-machine",
+              "virt-10.0,gic-version=3",
+              "-accel",
+              "tcg",
+              "-cpu",
+              "cortex-a53",
+              "-m",
+              "1024",
+              "-smp",
+              "2",
+              "-display",
+              "none",
+              "-serial",
+              "stdio",
+              "-monitor",
+              "none",
+              "-no-reboot",
+              "-nic",
+              "none",
+              "-kernel",
+              "/var/tmp/rock-final-9abf78a-profile/Image",
+              "-append",
+              "console=ttyAMA0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.hubfault=recovery rock.hubfault.scope=game-isolation",
+              "-drive",
+              "if=none,file=/var/tmp/rock-release-os-20260910/final-9abf78a-hub-continuation/hub-fault-gfnctxo9/derived-rootfs.ext4,format=raw,id=osdisk,readonly=on",
+              "-device",
+              "virtio-blk-pci,drive=osdisk,addr=0x1",
+              "-drive",
+              "if=none,file=/var/tmp/rock-release-os-20260910/final-9abf78a-hub-continuation/hub-fault-gfnctxo9/userdata.ext4,format=raw,id=userdata",
+              "-device",
+              "virtio-blk-pci,drive=userdata,addr=0x2",
+              "-object",
+              "rng-random,filename=/dev/urandom,id=rockrng",
+              "-device",
+              "virtio-rng-pci,rng=rockrng,addr=0x3"
+            ],
+            "data_sha256": "37da6619cd9df8df3de4ca787d9641b119d31b6079ed41b4dc26054da80ce6e3",
+            "elapsed_seconds": 32.622613122002804,
+            "exit_code": 0,
+            "filesystem_check": {
+              "exit_code": 0,
+              "output": "Pass 1: Checking inodes, blocks, and sizes\nPass 2: Checking directory structure\nPass 3: Checking directory connectivity\nPass 4: Checking reference counts\nPass 5: Checking group summary information\nrock-hub-fault: 48/32768 files (10.4% non-contiguous), 14217/131072 blocks\ne2fsck 1.47.2 (1-Jan-2025)\n"
+            },
+            "log_sha256": "f2f9b7936135d54189da1bd6520220367187bb3b7525161c3856f32a9274f46d",
+            "mode": "recovery",
+            "proof": {
+              "boot_id": "b1446c0b-d8c2-43ad-b084-48ec888bcdd1",
+              "durable_rows": {
+                "hub_audit": [
+                  {
+                    "body": "{\"hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}",
+                    "created": 1789040595.3200307,
+                    "event": "installed_disabled",
+                    "seq": 1
+                  },
+                  {
+                    "body": "{\"hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"id\":\"org.rockstar.text-tidy\"}",
+                    "created": 1789040597.8320487,
+                    "event": "enabled",
+                    "seq": 2
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"5c767e9e-a5c2-4886-a483-2e8480bc76d9\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040600.3691516,
+                    "event": "run_approved",
+                    "seq": 3
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"22ebb5c6-96cc-4253-903a-f0b816c08c2e\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040610.1691859,
+                    "event": "run_approved",
+                    "seq": 4
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"160b72f0-a5e4-4e85-a7cf-92d693fe581d\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040646.4662185,
+                    "event": "run_approved",
+                    "seq": 5
+                  },
+                  {
+                    "body": "{\"actual_host\":\"rock_os_linux_namespace\",\"amount_minor\":0,\"execution_target\":\"device_local\",\"job_id\":\"45d35471-91bf-4744-8841-33eefa4174d1\",\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"sent_to_cloud\":false}",
+                    "created": 1789040658.8351054,
+                    "event": "run_approved",
+                    "seq": 6
+                  }
+                ],
+                "hub_jobs": [
+                  {
+                    "created": 1789040600.3670318,
+                    "error": "worker interrupted or invalid output",
+                    "finished": 1789040600.4237123,
+                    "id": "5c767e9e-a5c2-4886-a483-2e8480bc76d9",
+                    "input_bytes": 22,
+                    "key": "d3-hub:crash",
+                    "output": null,
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "failed",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  },
+                  {
+                    "created": 1789040610.1676886,
+                    "error": null,
+                    "finished": 1789040610.6426384,
+                    "id": "22ebb5c6-96cc-4253-903a-f0b816c08c2e",
+                    "input_bytes": 22,
+                    "key": "d3-hub:crash:explicit-retry",
+                    "output": "Fixed Hub recovery",
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "succeeded",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  },
+                  {
+                    "created": 1789040646.4592116,
+                    "error": "time limit exceeded",
+                    "finished": 1789040649.5173626,
+                    "id": "160b72f0-a5e4-4e85-a7cf-92d693fe581d",
+                    "input_bytes": 22,
+                    "key": "d3-hub:deadline",
+                    "output": null,
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "failed",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  },
+                  {
+                    "created": 1789040658.8332503,
+                    "error": null,
+                    "finished": 1789040659.4273934,
+                    "id": "45d35471-91bf-4744-8841-33eefa4174d1",
+                    "input_bytes": 22,
+                    "key": "d3-hub:deadline:explicit-retry",
+                    "output": "Fixed Hub recovery",
+                    "package_hash": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+                    "request_hash": "b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477",
+                    "status": "succeeded",
+                    "tool_id": "org.rockstar.text-tidy",
+                    "version": "1.0.0"
+                  }
+                ],
+                "hub_requests": [
+                  {
+                    "key": "d3-hub:approve",
+                    "request_hash": "7d48b334175f623a014c0b865c2ce94781af9c0a8f3a26c78ed67f1df65c0936",
+                    "result": "{\"enabled\":true,\"id\":\"org.rockstar.text-tidy\"}"
+                  },
+                  {
+                    "key": "d3-hub:crash",
+                    "request_hash": "76c2355a791b63ca9a94acbde51d89be69839c6c3aee68aa467c01d645e6e721",
+                    "result": "{\"created\":1789040600.3670318,\"error\":null,\"finished\":null,\"id\":\"5c767e9e-a5c2-4886-a483-2e8480bc76d9\",\"input_bytes\":22,\"key\":\"d3-hub:crash\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:crash:explicit-retry",
+                    "request_hash": "c381df3c23ba0965201b5719e2f72f7387e0985713fb5c8572bcb7966bd64bc8",
+                    "result": "{\"created\":1789040610.1676886,\"error\":null,\"finished\":null,\"id\":\"22ebb5c6-96cc-4253-903a-f0b816c08c2e\",\"input_bytes\":22,\"key\":\"d3-hub:crash:explicit-retry\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:deadline",
+                    "request_hash": "2b5748d54214afb53b68779c7a5fb4e9c38cc6423c37ddde61363cc49927c9e7",
+                    "result": "{\"created\":1789040646.4592116,\"error\":null,\"finished\":null,\"id\":\"160b72f0-a5e4-4e85-a7cf-92d693fe581d\",\"input_bytes\":22,\"key\":\"d3-hub:deadline\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:deadline:explicit-retry",
+                    "request_hash": "300e59ea981c1071ddc8563c9dc97acff5c611a8d867bcfb793527f26890a684",
+                    "result": "{\"created\":1789040658.8332503,\"error\":null,\"finished\":null,\"id\":\"45d35471-91bf-4744-8841-33eefa4174d1\",\"input_bytes\":22,\"key\":\"d3-hub:deadline:explicit-retry\",\"output\":null,\"package_hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"request_hash\":\"b404eadde5803e576a3a39c50f50bd20f16e8ffd4c5a679fb39671fd07a5b477\",\"status\":\"running\",\"tool_id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  },
+                  {
+                    "key": "d3-hub:install",
+                    "request_hash": "7c2c4502977fa61080d021748516afa8ae35984b4ca7d820159e7bef694e8774",
+                    "result": "{\"enabled\":false,\"hash\":\"f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af\",\"id\":\"org.rockstar.text-tidy\",\"version\":\"1.0.0\"}"
+                  }
+                ]
+              },
+              "job_count": 4,
+              "mode": "recovery",
+              "platform_identity": {
+                "command": [
+                  "/usr/bin/python3",
+                  "-I",
+                  "-B",
+                  "/usr/lib/rock-platform/service.py",
+                  "--role",
+                  "platform"
+                ],
+                "exe": "/usr/bin/python3.14",
+                "gid": [
+                  1002,
+                  1002,
+                  1002,
+                  1002
+                ],
+                "no_new_privs": 1,
+                "pid": 150,
+                "ppid": 1,
+                "start_ticks": 404,
+                "tgid": 150,
+                "tracer_pid": 0,
+                "uid": [
+                  1002,
+                  1002,
+                  1002,
+                  1002
+                ]
+              },
+              "runtime_sha256": "46512e35ded64a3e0cd03dee3a4eba06c7f95a71fc520e535aa8ad11cb76d652",
+              "schema": "rock-hub-fault-proof/1",
+              "scope": "fixed production launcher exec fault; actual owner API/Hub deadline; no GUI or sandbox-workload fault claim",
+              "status": "PASS",
+              "verification_scope": "game-isolation",
+              "wallet": "NOT_RUN",
+              "wallet_observation": {
+                "financial_assertions": "NOT_RUN",
+                "mode": "game-isolation",
+                "reason": "remote authority unavailable; complete host authority retention is a separate required observation",
+                "schema": "rock-guest-wallet-observation/1",
+                "state_sha256": null
+              },
+              "wallet_sha256": "a4648b6660c6ede2e7b9391d274cc0b607f7eb22f334058794e5211ad905af4f",
+              "wallet_state_scope": "SDK_DISPLAY_AND_REQUEST_CACHE_ONLY"
+            },
+            "status": "PASS"
+          }
+        ],
+        "derived_filesystem_check": {
+          "exit_code": 0,
+          "output": "Pass 1: Checking inodes, blocks, and sizes\nPass 2: Checking directory structure\nPass 3: Checking directory connectivity\nPass 4: Checking reference counts\nPass 5: Checking group summary information\nrootfs: 1994/98304 files (0.7% non-contiguous), 100046/393216 blocks\ne2fsck 1.47.2 (1-Jan-2025)\n"
+        },
+        "derived_rootfs_sha256": "c4f4942f5703dd1eeacbe2f0537685ecf4bab07d16dc94d86c0db6956be476e9",
+        "finished_utc": "2026-09-10T11:45:08.561078+00:00",
+        "game_authority_retention": {
+          "after_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+          "authority": "ALL_TYPED_STATE_IDENTICAL_STOPPED",
+          "before_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+          "guest_financial_assertions": "NOT_RUN",
+          "plan_sha256": "f281d8a7270337cc2b77a54712f523d7fc6c76ed3f56d3fb433e15e766c14494",
+          "status": "PASS_SCOPED"
+        },
+        "game_scope_plan_sha256": "f281d8a7270337cc2b77a54712f523d7fc6c76ed3f56d3fb433e15e766c14494",
+        "injections": [
+          {
+            "path": "usr/libexec/rock-hub-fault-fixture.py",
+            "sha256": "266dba96ba92a62fde3bb174b62a0135317f9783a1d08694a06cb6409233f4b2",
+            "test_only": true
+          },
+          {
+            "path": "usr/libexec/rock-hub-fault-runtime.json",
+            "sha256": "46512e35ded64a3e0cd03dee3a4eba06c7f95a71fc520e535aa8ad11cb76d652",
+            "test_only": true
+          },
+          {
+            "path": "etc/init.d/S98rock-hub-fault-verify",
+            "sha256": "68077db73efbcc9f7ad41df80475fc84a05be289fccbd234763de0718fa00e80",
+            "test_only": true
+          }
+        ],
+        "limits": {
+          "Hub_deadline_seconds": 3,
+          "boots": 3,
+          "capture_seconds": 4,
+          "per_boot_seconds": 240,
+          "platform_threads": 16,
+          "prearm_seconds": 2,
+          "process_inventory": 4096,
+          "stat_bytes": 4096
+        },
+        "original_images_unchanged": true,
+        "plan_sha256": "b10e74cfef9fd20ea4b184c6e4706391fecae77d48b2978578818e2bbb11146c",
+        "runtime_manifest_metadata_scope": "all selected paths: kind, mode, source UID/GID; regular content and symlink target bytes bound by size and SHA256; inode numbers excluded",
+        "runtime_manifest_prefixes": [
+          "usr",
+          "lib",
+          "bin",
+          "sbin",
+          "etc"
+        ],
+        "runtime_manifest_schema": "rock-hub-runtime-manifest/2",
+        "runtime_sha256": {
+          "etc/init.d/S50rockplatform": "f5964fd3c4b19550a827fe5e63232e273d1e44509cf438d8386737ffcbf5e751",
+          "usr/bin/openssl": "afd0d523f27d45f9429c98161147382bca85fc9634ef591bb2d0302b2bef3624",
+          "usr/lib/rock-platform/blackberryrock/hub.py": "2f65591cc2d2a4a46c9e44c634c96d8e95a66698d20cc28ebbcbf4035fc57579",
+          "usr/lib/rock-platform/blackberryrock/packages.py": "5fe4bb0da093a92ab2e9c009022c6ad14245ce27d5e6e7d885786e48053f3773",
+          "usr/lib/rock-platform/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e",
+          "usr/lib/rock-platform/service.py": "3fa60f3239083fe749c423ab3906c7daf1843392c68705bdf754c2796cc53e30",
+          "usr/libexec/rock-sandbox-exec": "01fffd3b500e759d6008f120f9fe1874b22b18296f4d3b45994146fa69008f36",
+          "usr/share/rock/registry/org.rockstar.text-tidy--1.0.0.rock.json": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af"
+        },
+        "schema": "rock-hub-fault-evidence/1",
+        "scope": {
+          "fault_target": "launcher before sandbox execution",
+          "fixture": "derived rootfs; fixed root tracer and owner API",
+          "gui": "NOT_RUN",
+          "network": "none",
+          "platform_service_crash_interruption": "NOT_RUN",
+          "real_funds": "NOT_RUN",
+          "stage0_ab": "NOT_RUN",
+          "whole_D3": "INCOMPLETE"
+        },
+        "signed_package_sha256": "f68b06352b5d58b917b679a3dff243af889eaba8fd980263b5c67e56c38bc7af",
+        "source_image_sha256": {
+          "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+          "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+          "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+        },
+        "source_image_sha256_after": {
+          "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+          "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+          "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+        },
+        "status": "PASS_SCOPED",
+        "verification_scope": "game-isolation",
+        "wallet": "NOT_RUN"
+      },
+      "original_whole_runs": "FAIL_RETAINED",
+      "plan_sha256": "2ca063992194547ed84b3751e2f6062bac148de1f01a7ca46e0b1207318c1563",
+      "reused_boots": 10,
+      "reused_completed_gates": [
+        {
+          "authority_after_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e",
+          "authority_all_state": "UNCHANGED",
+          "boots": 2,
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-boot.py"
+          ],
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/verify-20260910T111536Z-rr_jrevd",
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:16:15.688130+00:00",
+          "log_sha256": "d735f28f49e61908791ece8ccb5900d63a0c45b325deb93dbef698e4e8169b24",
+          "name": "boot",
+          "pid": 1380209,
+          "report_sha256": "acfe9f839aab4ac155e573a518cbf09d4bfbe61569f05a39498ad6da958968b2",
+          "started_utc": "2026-09-10T11:15:36.807540+00:00",
+          "status": "PASS_SCOPED"
+        },
+        {
+          "authority_after_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e",
+          "authority_all_state": "UNCHANGED",
+          "boots": 2,
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-system.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile"
+          ],
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/system-20260910T111616Z-jmkwrqr3",
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:17:13.309650+00:00",
+          "log_sha256": "0e0d10072fabab4bb08b06cac3090dcbdc0b1e4dbd6d286c33bd8e7b276a369b",
+          "name": "system",
+          "pid": 1380228,
+          "report_sha256": "9533ca2c24f14e700c5abcad4c9ec1b82a58f475bb5a286ebc03566f0961ff20",
+          "started_utc": "2026-09-10T11:16:16.236920+00:00",
+          "status": "PASS_SCOPED"
+        },
+        {
+          "authority_after_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e",
+          "authority_all_state": "UNCHANGED",
+          "boots": 1,
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-platform.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--scope",
+            "game-isolation"
+          ],
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/platform-20260910T111713Z-txo0nsgr",
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:17:48.035123+00:00",
+          "guest_isolation_checks": 47,
+          "guest_tools_checks": 45,
+          "log_sha256": "a61b578003306868a6d60dcffbe7b03ea30a61ba311253ac8d5c3d6b3685008f",
+          "name": "isolation",
+          "pid": 1380248,
+          "report_sha256": "92b94de29a2011a9b5f2cdd681549ebc25b1ad4f381e34e906f0f8ff9ff2653a",
+          "started_utc": "2026-09-10T11:17:13.863281+00:00",
+          "status": "PASS_SCOPED"
+        },
+        {
+          "authority": {
+            "after_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+            "authority": "ALL_TYPED_STATE_IDENTICAL_STOPPED",
+            "before_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+            "guest_financial_assertions": "NOT_RUN",
+            "plan_sha256": "4d25ecb30c05477d690863edfbfd5c30930267ce3c2fa668e9fea068e8620d14",
+            "status": "PASS_SCOPED"
+          },
+          "boots": 2,
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-store.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--scope",
+            "game-isolation"
+          ],
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/store-20260910T111748Z-ps1wozlq",
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:20:10.444117+00:00",
+          "log_sha256": "904d1237e0a2c0bdf96c7cbfe6bb6ddabed31175623f913bab7b4bdf784bf1d9",
+          "name": "store",
+          "pid": 1380338,
+          "report_sha256": "abed687455cfb94daa2549ca04aee4a685ed7ba2cb73e9f1bc27b3a1a6f0fa66",
+          "started_utc": "2026-09-10T11:17:48.895304+00:00",
+          "status": "PASS_SCOPED"
+        },
+        {
+          "authority": {
+            "after_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+            "authority": "ALL_TYPED_STATE_IDENTICAL_STOPPED",
+            "before_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+            "guest_financial_assertions": "NOT_RUN",
+            "plan_sha256": "b45c809ca9ec034bc1303e692dbd30f4a96f8dc087202d2cf725fefaee99f63d",
+            "status": "PASS_SCOPED"
+          },
+          "boots": 2,
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-remote.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--scope",
+            "game-isolation"
+          ],
+          "evidence": "/var/tmp/rock-final-9abf78a-profile/remote-20260910T112010Z-_1if5ea1",
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:22:07.945162+00:00",
+          "log_sha256": "8377e2ff0372602c1979ba9dc4f0c2709a42b5f7a75546f39627fbcf9831721e",
+          "name": "remote",
+          "pid": 1380483,
+          "report_sha256": "94a103b5a7786b8f716b0ae42f000676f8077ff2f0666cfd6a32f0b785226389",
+          "started_utc": "2026-09-10T11:20:10.780805+00:00",
+          "status": "PASS_SCOPED"
+        },
+        {
+          "authority": {
+            "after_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+            "authority": "ALL_TYPED_STATE_IDENTICAL_STOPPED",
+            "before_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+            "guest_financial_assertions": "NOT_RUN",
+            "plan_sha256": "ae32b6ca945938beb6dd2e30dc4ca221a43a8949939f98c09f6cba77edef8288",
+            "status": "PASS_SCOPED"
+          },
+          "boots": 1,
+          "command": [
+            "/usr/bin/python3",
+            "-B",
+            "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/registry/verify_negative.py",
+            "--artifacts",
+            "/var/tmp/rock-final-9abf78a-profile",
+            "--output",
+            "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/negative",
+            "--scope",
+            "game-isolation"
+          ],
+          "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/negative",
+          "exit_code": 0,
+          "finished_utc": "2026-09-10T11:23:57.668010+00:00",
+          "log_sha256": "cd24a6dc4df1c7a5d0da26fd51fa8d1e928e508cb198a7e33abc9c66795cf7fd",
+          "name": "negative",
+          "pid": 1380644,
+          "report_sha256": "3e12c5ce133fb4d7c25b09544eafc236bf8b49aa5c0c3f91a2e8b70dde785b17",
+          "started_utc": "2026-09-10T11:22:08.232809+00:00",
+          "status": "PASS_SCOPED"
+        }
+      ],
+      "schema": "rock-final-hub-continuation/1",
+      "source_images_unchanged": true,
+      "started_utc": "2026-09-10T11:42:45.540715+00:00",
+      "status": "PASS_SCOPED"
+    }
+  },
+  "handoff": {
+    "authority_state": "EMPTY_STOPPED_EXACTLY_UNCHANGED",
+    "empty": {
+      "status": "EMPTY_BEFORE_UI",
+      "required_empty_tables": {
+        "wallet-simulator.db": [
+          "wallet_journals",
+          "wallet_postings",
+          "wallet_sales",
+          "wallet_bills",
+          "wallet_consents",
+          "wallet_withdrawals",
+          "wallet_idempotency",
+          "atm_credentials",
+          "wallet_auth_credentials",
+          "wallet_auth_credential_state",
+          "wallet_auth_challenges",
+          "wallet_auth_terms",
+          "wallet_auth_quotes",
+          "wallet_auth_approvals"
+        ],
+        "entitlement.db": [
+          "accounts",
+          "consents",
+          "authorizations",
+          "device_monthly_due",
+          "device_api_receipts"
+        ]
+      },
+      "authority_snapshot_sha256": "4a81ac199fc84743a5868e946f4b2839793d9a2e5ae56f2ecbc7cb8096605937"
+    },
+    "baseline_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e",
+    "current_snapshot_canonical_sha256": "4a81ac199fc84743a5868e946f4b2839793d9a2e5ae56f2ecbc7cb8096605937",
+    "root_c_config": "/var/tmp/rock-release-os-20260910/final-9abf78a-empty-authority/root-c-device.json",
+    "root_c_config_sha256": "1fbd4924c545823b313a6852b428aadce3f9ef2bc1dc11d57b2d078fb7316b8f",
+    "root_c_device_name": "rock-final-c-ui",
+    "root_c_device_directory_absent": true,
+    "qemu_processes": 0,
+    "ports_free": [
+      9443,
+      9444,
+      9641,
+      9642,
+      9643
+    ]
+  },
+  "other_acceptance": "root native Game/Wallet/PC/demo, remote D6 and B D5/SDK remain separate evidence; no whole-product acceptance inferred",
+  "original_failures": "original D4 and D1/D3 whole run failures, Hub preflight failure, and local ARM64 native regression failure retained; source-regression admission uses exact original x86_64 CI report",
+  "collector_sha256": "0a8e84b57f2fa7beca7146249ee067eaa051e61e81120ad4c0e8ac8de757b433"
+}

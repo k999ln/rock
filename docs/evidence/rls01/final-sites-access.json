@@ -1,0 +1,24 @@
+{
+  "checked_utc": "2026-09-10T13:12:00Z",
+  "project_id": "appgprj_6a9b70d966fc8191a1ec30efce14582d",
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "SitesConnectorError: Sites project not found"
+      }
+    ],
+    "structuredContent": {
+      "error": "SitesConnectorError: Sites project not found",
+      "error_code": "NOT_FOUND",
+      "error_data": {
+        "type": "project_not_found",
+        "message": "Sites project not found",
+        "code": 404
+      }
+    },
+    "isError": true
+  },
+  "mutation": false,
+  "public_release_ready": false
+}

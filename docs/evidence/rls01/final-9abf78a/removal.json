@@ -1,0 +1,18 @@
+{
+  "schema": "rock-final-owned-removal/1",
+  "status": "PASS",
+  "force_used": false,
+  "installation_state": "REMOVED",
+  "owned_vm_directory_absent": true,
+  "export_file_hashes_after_removal": "PASS",
+  "export_files": 19,
+  "export_bytes": 1074564436,
+  "listener_pids": {
+    "8899": [
+      "77657"
+    ],
+    "8900": [],
+    "5910": []
+  },
+  "other_existing_resources_modified": false
+}

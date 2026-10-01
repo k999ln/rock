@@ -1,0 +1,58 @@
+{
+  "schema": "rock-private-final-media-readback/1",
+  "status": "PASS_THREE_ASSET_HASHES_AND_FULL_ARCHIVE_MEMBER_READBACK",
+  "measured_utc": "2026-09-10T13:14:49.879324+00:00",
+  "acquisition_sha256": "20acb047f30278f13e0e5af04de2702cd2be4cfe030c57c42c1e8d135a75f2dc",
+  "archive": {
+    "sha256": "19d9cae205b8fd44454d4202c6fcdf988d9640b17b652320a5ba720cab10693c",
+    "bytes": 52135719,
+    "regular_members": 825,
+    "total_member_bytes": 58761946,
+    "inventory_sha256": "f5c90ae196d65482b95cfcb792a2eba1b85e12341a34a44c4a7f01ff984a9ea9",
+    "inventory_evidence_files": 824,
+    "all_inventory_file_bytes_and_hashes_match": true,
+    "duplicates_or_nonregular_or_unsafe_names": 0,
+    "extracted_to_filesystem": false,
+    "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+    "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+    "image_sha256": {
+      "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+      "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+      "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+    },
+    "original_orchestration_status_preserved": "FAIL_RETAINED",
+    "source_binding_scope": "Pinned archive inventory fields match final 9ab candidate identities. This readback does not rerun the OS sequence or reclassify original FAIL."
+  },
+  "mp4": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "index": 0,
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 720,
+        "height": 960,
+        "nb_frames": "361"
+      }
+    ],
+    "format": {
+      "duration": "90.040000",
+      "size": "730404"
+    }
+  },
+  "mp4_scope": "Downloaded bytes read and container metadata inspected, not a new browser playback or full decoder run. Same hash as original independently browser-tested media.",
+  "vtt": {
+    "bytes": 630,
+    "cues": [
+      "00:00:00.000 --> 00:00:40.110",
+      "00:00:40.110 --> 00:00:55.954",
+      "00:00:55.954 --> 00:01:16.091",
+      "00:01:16.091 --> 00:01:30.040"
+    ],
+    "rendering": "NOT_RETESTED; original native caption-render NOT_CONFIRMED retained"
+  },
+  "authenticated_private_draft_only": true,
+  "general_public_access_verified": false,
+  "source_runtime_or_vm_mutations": false
+}

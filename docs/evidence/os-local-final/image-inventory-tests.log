@@ -1,0 +1,13 @@
+test_exact_private_additions (test_os_image_inventory.ProfileInventory.test_exact_private_additions) ... ok
+test_existing_wallet_configuration_is_not_replaced (test_os_image_inventory.ProfileInventory.test_existing_wallet_configuration_is_not_replaced) ... ok
+test_nonzero_inodes_and_valid_listing_are_required (test_os_image_inventory.ProfileInventory.test_nonzero_inodes_and_valid_listing_are_required) ... ok
+test_removed_or_extra_path_is_rejected (test_os_image_inventory.ProfileInventory.test_removed_or_extra_path_is_rejected) ... ok
+test_token_must_remain_private_owned_and_identical (test_os_image_inventory.ProfileInventory.test_token_must_remain_private_owned_and_identical) ... ok
+test_undeclared_file_change_is_rejected (test_os_image_inventory.ProfileInventory.test_undeclared_file_change_is_rejected) ... ok
+test_undeclared_owner_or_inode_changes_are_rejected (test_os_image_inventory.ProfileInventory.test_undeclared_owner_or_inode_changes_are_rejected) ... ok
+test_wrong_directory_owner_is_rejected (test_os_image_inventory.ProfileInventory.test_wrong_directory_owner_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.001s
+
+OK

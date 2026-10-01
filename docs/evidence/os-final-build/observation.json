@@ -1,0 +1,136 @@
+{
+  "schema": "rock-final-build-observation/1",
+  "status": "BUILD_PROFILE_FROZEN_GUEST_ACCEPTANCE_IN_PROGRESS",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "source_archive_sha256": "1fac2382110401638dd9ea6d5d5d4d67bf902b5198f5bd38a187c66508719532",
+  "files_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+    "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+  },
+  "configuration_sha256": {
+    "buildroot.config": "17f91594f2609c64ce9b966b148d3d85a02e90920167e8582471ed0277288bb6",
+    "linux.config": "d744e7f5beb172660189d402bda5c15a9429c33d6dd5bf2a50e5ce7c1c9a829f",
+    "source-lock.json": "6efd72448219b9c226646817656ff4c9d2d808422fe5647cff10c0754473414c",
+    "SHA256SUMS": "9d8d1638c0b3a474746c7dd65ae66b051bf2637c0636f70a1be5e9f3a963c43a"
+  },
+  "environment": {
+    "host_os_release": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "host_kernel": "6.12.95+deb13-cloud-arm64",
+    "architecture": "aarch64",
+    "compiler": "aarch64-buildroot-linux-musl-gcc.br_real (Buildroot 2026.08) 15.3.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "qemu": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)\nCopyright (c) 2003-2025 Fabrice Bellard and the QEMU Project developers",
+    "python": "3.13.5"
+  },
+  "cache_origin_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "source_files": 1364,
+  "freeze": {
+    "path": "/var/tmp/rock-final-9abf78a-profile/freeze-manifest.json",
+    "sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+    "bytes": 358784
+  },
+  "base_freeze": {
+    "path": "/var/tmp/rock-final-9abf78a-profile/base-freeze-manifest.json",
+    "sha256": "4376d52d7db3e9cda5357287092e9065d5c8227e5a94ede5fa434bc336629b61",
+    "bytes": 174967
+  },
+  "profile": {
+    "path": "/var/tmp/rock-final-9abf78a-profile/profile.json",
+    "sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb",
+    "bytes": 5540
+  },
+  "native_ci": {
+    "status": "PASS",
+    "total_python_test_executions": 1631,
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "python": "3.13.15 (main, Aug  6 2026, 02:15:18) [GCC 13.3.0]",
+    "source_unchanged": true,
+    "started_utc": "2026-09-10T09:19:02.180305+00:00",
+    "finished_utc": "2026-09-10T09:24:53.461790+00:00",
+    "report": {
+      "path": "/var/tmp/rock-final-9abf78a-ci/native-tests/report.json",
+      "sha256": "34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8",
+      "bytes": 97194
+    },
+    "checks": 14,
+    "input_files": 694,
+    "provenance": {
+      "path": "/var/tmp/rock-final-9abf78a-ci/ci-provenance.json",
+      "sha256": "38b1f0ac1c4ac70633804ea519e6d2b06f4ce31d3866a6b90cd8701cc99fe858",
+      "bytes": 3883
+    }
+  },
+  "native_local": {
+    "status": "FAIL",
+    "total_python_test_executions": 1631,
+    "platform": "Linux-6.12.95+deb13-cloud-arm64-aarch64-with-glibc2.41",
+    "machine": "aarch64",
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+    "source_unchanged": true,
+    "started_utc": "2026-09-10T09:18:19.387747+00:00",
+    "finished_utc": "2026-09-10T09:26:41.203363+00:00",
+    "report": {
+      "path": "/var/tmp/rock-final-9abf78a-tests/report.json",
+      "sha256": "5a49bed70b8fb8ab328fb7a40c4e085591ce6e5e91abccb390984315a2e01340",
+      "bytes": 96888
+    },
+    "checks": 14,
+    "input_files": 694,
+    "errors": 10,
+    "error": "TLS read/frame deadline; root cause not determined",
+    "original_logs_retained": true,
+    "not_reclassified": true
+  },
+  "admission": {
+    "path": "/var/tmp/rock-release-os-20260910/final-9abf78a-ci-admission.json",
+    "sha256": "4b03e5d23df8165332664124f4b02e32775a408df3fefa58e2e1b0a55ee2b99b",
+    "bytes": 1960
+  },
+  "build_report": {
+    "path": "/var/tmp/rock-release-os-20260910/final-9abf78a-ci-build/report.json",
+    "sha256": "81cf62c1767c749ba9a2b8bcbbaacf230327d19217658335b058b041db354e9c",
+    "bytes": 450
+  },
+  "acceptance_plan": {
+    "path": "/var/tmp/rock-release-os-20260910/final-9abf78a-acceptance-plan.json",
+    "sha256": "20795f3b4de6e9f562c8ec373b96bfea6407e4b0418064286e73d1096b744e0f",
+    "bytes": 6906
+  },
+  "legal_v2_report": {
+    "path": "/var/tmp/rock-release-os-20260910/final-9abf78a-legal-v2/report.json",
+    "sha256": "d56122031d5dee4cbdba95e1d696d38ab6c049cf5577d4e7c56ae3366b3e7367",
+    "bytes": 628
+  },
+  "legal_v2": {
+    "archive": "/var/tmp/rock-release-os-20260910/final-9abf78a-legal-info-v2.tar.gz",
+    "archive_bytes": 934132130,
+    "archive_sha256": "7c9cdc0d32faf4006b8693d5d8dc85efd8259ae937c90274888da3f943920a0c",
+    "deterministic_second_serialization": "IDENTICAL_SHA256_AND_BYTES",
+    "legal_status": "NOT_CLEARED",
+    "manifest_sha256": "51c2435711936d3dba6786ffe41ca78f4b8dafbe9901e489f9cd143167913234",
+    "original_images_unchanged": true,
+    "schema": "rock-corresponding-sources-bundle/1",
+    "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+    "status": "COLLECTED_VERIFIED_NOT_CLEARED",
+    "verified_regular_files": 298
+  },
+  "legal_v1": {
+    "status": "FAIL_COLLECTOR_VARIABLE_SHADOWING_AT_FINAL_SOURCE_RECHECK",
+    "original_manifest": {
+      "path": "/var/tmp/rock-release-os-20260910/final-9abf78a-legal/manifest.json",
+      "sha256": "51c2435711936d3dba6786ffe41ca78f4b8dafbe9901e489f9cd143167913234",
+      "bytes": 93669
+    },
+    "original_archive_retained_on_host": true,
+    "source_image_changed": false
+  },
+  "guest": {
+    "D4": "RUNNING",
+    "D1": "NOT_RUN",
+    "D2": "NOT_RUN",
+    "D3": "NOT_RUN",
+    "D5": "NOT_RUN",
+    "D6": "NOT_RUN"
+  }
+}

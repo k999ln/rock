@@ -1,0 +1,83 @@
+name: Local AI APK build (not OS image)
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'android/local-ai-api/**'
+      - 'contracts/local-ai-runtime.json'
+      - 'os/physical/local-action-assistant-*.json'
+      - 'os/physical/local-ai-overlay.patch'
+      - 'scripts/build-local-ai-apk.sh'
+      - 'scripts/prepare-local-ai-runtime.py'
+      - 'scripts/stage-local-ai-apk.py'
+      - 'tests/test_prepare_local_ai_runtime.py'
+      - 'tests/test_stage_local_ai_apk.py'
+      - '.github/workflows/local-ai-apk.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: local-ai-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unsigned-arm64-apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - name: Check build inputs
+        run: |
+          java -version
+          test -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" || command -v sdkmanager
+          bash -n scripts/build-local-ai-apk.sh
+          node scripts/check-os-contracts.mjs
+          python3 -m unittest tests.test_prepare_local_ai_runtime tests.test_stage_local_ai_apk -v
+      - name: Install pinned Android build packages
+        run: |
+          { yes || true; } | sdkmanager --licenses >/dev/null
+          sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'ndk;27.1.12297006'
+      - name: Fetch the locked upstream source
+        env:
+          ROCK_LOCAL_AI_TREE: ${{ runner.temp }}/rock-local-ai-os
+        run: |
+          source_repo="$(jq -r .repository os/physical/local-action-assistant-source-lock.json)"
+          source_commit="$(jq -r .commit os/physical/local-action-assistant-source-lock.json)"
+          source_dir="$ROCK_LOCAL_AI_TREE/external/local-action-assistant"
+          mkdir -p "$source_dir"
+          git -C "$source_dir" init
+          git -C "$source_dir" remote add origin "$source_repo"
+          git -C "$source_dir" fetch --depth=1 origin "$source_commit"
+          git -C "$source_dir" checkout --detach FETCH_HEAD
+          test "$(git -C "$source_dir" rev-parse HEAD)" = "$source_commit"
+          test -z "$(git -C "$source_dir" status --porcelain --untracked-files=normal)"
+      - name: Build the reviewed overlay as one unsigned arm64 APK
+        env:
+          ROCK_LOCAL_AI_TREE: ${{ runner.temp }}/rock-local-ai-os
+          ROCK_LOCAL_AI_OUTPUT: ${{ runner.temp }}/rock-local-ai-os/out/reviewed-source
+        run: |
+          mkdir -p work/local-ai-apk
+          bash scripts/build-local-ai-apk.sh "$ROCK_LOCAL_AI_TREE" "$ROCK_LOCAL_AI_OUTPUT" | tee work/local-ai-apk/build.log
+          apk="$(tail -n 1 work/local-ai-apk/build.log)"
+          test -f "$apk"
+          aapt2="$ANDROID_HOME/build-tools/36.0.0/aapt2"
+          cp "$apk" work/local-ai-apk/LocalActionAssistant-unsigned.apk
+          python3 scripts/stage-local-ai-apk.py inspect work/local-ai-apk/LocalActionAssistant-unsigned.apk --aapt2 "$aapt2" > work/local-ai-apk/inspection.json
+          cp "$ROCK_LOCAL_AI_OUTPUT/rockstaros-overlay.json" work/local-ai-apk/overlay.json
+          sha256sum work/local-ai-apk/LocalActionAssistant-unsigned.apk > work/local-ai-apk/SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: local-ai-unsigned-arm64-${{ github.run_id }}
+          path: work/local-ai-apk/
+          if-no-files-found: error
+          retention-days: 7
+
+      # This job emits an unsigned inspection artifact only. It does not update
+      # the artifact lock, sign an APK, build an OS image, or flash a device.

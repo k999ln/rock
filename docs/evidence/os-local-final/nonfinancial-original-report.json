@@ -1,0 +1,121 @@
+{
+  "schema": "rock-game-nonfinancial-gates/1",
+  "status": "FAIL",
+  "plan_sha256": "e22a91a85e0b0180040cc11ecd2f32123504e369b94f96035e1cc44940062a5c",
+  "started_utc": "2026-09-10T11:17:48.860925+00:00",
+  "gates": [
+    {
+      "name": "store",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-store.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--scope",
+        "game-isolation"
+      ],
+      "status": "PASS_SCOPED",
+      "started_utc": "2026-09-10T11:17:48.895304+00:00",
+      "pid": 1380338,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T11:20:10.444117+00:00",
+      "log_sha256": "904d1237e0a2c0bdf96c7cbfe6bb6ddabed31175623f913bab7b4bdf784bf1d9",
+      "evidence": "/var/tmp/rock-final-9abf78a-profile/store-20260910T111748Z-ps1wozlq",
+      "boots": 2,
+      "report_sha256": "abed687455cfb94daa2549ca04aee4a685ed7ba2cb73e9f1bc27b3a1a6f0fa66",
+      "authority": {
+        "status": "PASS_SCOPED",
+        "plan_sha256": "4d25ecb30c05477d690863edfbfd5c30930267ce3c2fa668e9fea068e8620d14",
+        "authority": "ALL_TYPED_STATE_IDENTICAL_STOPPED",
+        "before_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+        "after_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+        "guest_financial_assertions": "NOT_RUN"
+      }
+    },
+    {
+      "name": "remote",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-remote.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--scope",
+        "game-isolation"
+      ],
+      "status": "PASS_SCOPED",
+      "started_utc": "2026-09-10T11:20:10.780805+00:00",
+      "pid": 1380483,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T11:22:07.945162+00:00",
+      "log_sha256": "8377e2ff0372602c1979ba9dc4f0c2709a42b5f7a75546f39627fbcf9831721e",
+      "evidence": "/var/tmp/rock-final-9abf78a-profile/remote-20260910T112010Z-_1if5ea1",
+      "boots": 2,
+      "report_sha256": "94a103b5a7786b8f716b0ae42f000676f8077ff2f0666cfd6a32f0b785226389",
+      "authority": {
+        "status": "PASS_SCOPED",
+        "plan_sha256": "b45c809ca9ec034bc1303e692dbd30f4a96f8dc087202d2cf725fefaee99f63d",
+        "authority": "ALL_TYPED_STATE_IDENTICAL_STOPPED",
+        "before_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+        "after_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+        "guest_financial_assertions": "NOT_RUN"
+      }
+    },
+    {
+      "name": "negative",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/registry/verify_negative.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--output",
+        "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/negative",
+        "--scope",
+        "game-isolation"
+      ],
+      "status": "PASS_SCOPED",
+      "started_utc": "2026-09-10T11:22:08.232809+00:00",
+      "pid": 1380644,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T11:23:57.668010+00:00",
+      "log_sha256": "cd24a6dc4df1c7a5d0da26fd51fa8d1e928e508cb198a7e33abc9c66795cf7fd",
+      "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/negative",
+      "boots": 1,
+      "report_sha256": "3e12c5ce133fb4d7c25b09544eafc236bf8b49aa5c0c3f91a2e8b70dde785b17",
+      "authority": {
+        "after_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+        "authority": "ALL_TYPED_STATE_IDENTICAL_STOPPED",
+        "before_sha256": "3ad222db9722e97bee9190e938cd3699368605d290cc2cd703c00750053859be",
+        "guest_financial_assertions": "NOT_RUN",
+        "plan_sha256": "ae32b6ca945938beb6dd2e30dc4ca221a43a8949939f98c09f6cba77edef8288",
+        "status": "PASS_SCOPED"
+      }
+    },
+    {
+      "name": "hubfaults",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-hub-faults.py",
+        "--images",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--output",
+        "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial",
+        "--scope",
+        "game-isolation"
+      ],
+      "status": "RUNNING",
+      "started_utc": "2026-09-10T11:23:58.096341+00:00",
+      "pid": 1380829,
+      "exit_code": 1,
+      "finished_utc": "2026-09-10T11:24:00.653467+00:00",
+      "log_sha256": "198d72ee1dcbcc64aef8e3f3d02cdc6387a3fb9d912e78a49b472706b31a4aa0",
+      "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/hub-fault-mov_i28m"
+    }
+  ],
+  "error_type": "RuntimeError",
+  "error": "inner gate failed; preserve all source data and reports",
+  "finished_utc": "2026-09-10T11:24:00.655055+00:00"
+}

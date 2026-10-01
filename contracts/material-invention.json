@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rockstaros.dev/contracts/material-invention-sandbox-request-v1.json",
+  "title": "RockstarOS Material Invention Sandbox Request v1",
+  "description": "Two-material candidate generation contract. This contract cannot authorize or execute a physical experiment.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "goal",
+    "materials",
+    "ratioPercentSteps",
+    "process"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "goal": { "$ref": "#/$defs/goal" },
+    "materials": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 16,
+      "items": { "$ref": "#/$defs/material" }
+    },
+    "ratioPercentSteps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 19,
+      "uniqueItems": true,
+      "items": { "type": "integer", "minimum": 1, "maximum": 99 }
+    },
+    "process": { "$ref": "#/$defs/process" }
+  },
+  "$defs": {
+    "shortText": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 80,
+      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+    },
+    "hazard": {
+      "enum": [
+        "none",
+        "unknown",
+        "flammable",
+        "toxic",
+        "corrosive",
+        "oxidizer",
+        "reactive",
+        "explosive",
+        "biohazard",
+        "radioactive",
+        "controlled"
+      ]
+    },
+    "goal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "targetProperties",
+        "prohibitedMaterialIds",
+        "prohibitedHazards",
+        "maxTemperatureC",
+        "maxPressureKpa",
+        "allowedEquipment"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "title": { "$ref": "#/$defs/shortText" },
+        "targetProperties": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/shortText" }
+        },
+        "prohibitedMaterialIds": {
+          "type": "array",
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "prohibitedHazards": {
+          "type": "array",
+          "maxItems": 11,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/hazard" }
+        },
+        "maxTemperatureC": {
+          "type": "number",
+          "minimum": -273.15,
+          "maximum": 3000
+        },
+        "maxPressureKpa": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        "allowedEquipment": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        }
+      }
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "composition",
+        "state",
+        "purityPercent",
+        "source",
+        "lot",
+        "unit",
+        "uncertaintyPercent",
+        "sdsRef",
+        "hazards",
+        "regulatoryRefs"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "name": { "$ref": "#/$defs/shortText" },
+        "composition": { "$ref": "#/$defs/shortText" },
+        "state": {
+          "enum": ["solid", "liquid", "gas", "dispersion", "unknown"]
+        },
+        "purityPercent": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 100
+        },
+        "source": { "$ref": "#/$defs/shortText" },
+        "lot": { "$ref": "#/$defs/shortText" },
+        "unit": {
+          "enum": ["mass_fraction", "volume_fraction", "mole_fraction"]
+        },
+        "uncertaintyPercent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "sdsRef": {
+          "oneOf": [
+            { "type": "string", "minLength": 1, "maxLength": 500 },
+            { "type": "null" }
+          ]
+        },
+        "hazards": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 11,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/hazard" }
+        },
+        "regulatoryRefs": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/shortText" }
+        }
+      }
+    },
+    "processStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "order",
+        "operation",
+        "temperatureC",
+        "pressureKpa",
+        "durationSeconds",
+        "atmosphere",
+        "equipment"
+      ],
+      "properties": {
+        "order": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "operation": { "$ref": "#/$defs/identifier" },
+        "temperatureC": {
+          "type": "number",
+          "minimum": -273.15,
+          "maximum": 3000
+        },
+        "pressureKpa": { "type": "number", "minimum": 0, "maximum": 1000000 },
+        "durationSeconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 31536000
+        },
+        "atmosphere": { "$ref": "#/$defs/identifier" },
+        "equipment": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "steps"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "version": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": { "$ref": "#/$defs/processStep" }
+        }
+      }
+    }
+  },
+  "x-rockstaros-safety": {
+    "executionMode": "SANDBOX_ONLY",
+    "physicalExecutionAllowed": false,
+    "unknownHazardPolicy": "BLOCKED",
+    "missingSdsPolicy": "BLOCKED",
+    "simulationCountsAsExperimentalProof": false
+  }
+}

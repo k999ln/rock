@@ -1,0 +1,14 @@
+{
+  "schema": "rock-final-citation-result-readback/1",
+  "status": "PASS",
+  "job_count": 1,
+  "tool_id": "org.rockstar.citation-organizer",
+  "version": "1.0.0",
+  "job_status": "succeeded",
+  "input_bytes": 150,
+  "output_bytes": 151,
+  "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+  "public_sample_output": "紹介文です。\n\n```text\n（出典: [コード内の例](https://example.test/code)）\n```\n\n## 出典\n\n- [店舗情報](https://example.test/store)\n",
+  "stopped_data_before_after_sha256": "b022956b195ab67c1fdf53a14d7767ca51e765e1bf67a4d40bd4110bbb01bf59",
+  "installed_export_observer_sha256": "53a1eda3dc3faf2e538b4fa0cbcbae25c070a4cae531d6baea10f891da0f63d2"
+}

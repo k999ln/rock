@@ -1,0 +1,956 @@
+{
+  "cases": {
+    "test_approval_after_commit_recovers_original_receipt_once": {
+      "all_files_sha256": "4d52ebc5e3b36f1561b05f885b53933288bccd8ace39adf2841c6f3862ece4cf",
+      "all_typed_sqlite_snapshots_sha256": "d3aebf6153cdab24784fe6c96b1092f7de02698fd9214978b7636b62c7a265f4",
+      "children": [
+        {
+          "arguments": [
+            "kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_approval_after_commit_recovers_original_receipt_once/fixture-0",
+            "approval-after-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "arguments": [
+            "recover",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_approval_after_commit_recovers_original_receipt_once/fixture-0"
+          ],
+          "returncode": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "78a08dda97b48f861030291bdeb7ab776fd5ed89837b3be5ca0b3dab261a5f77"
+        }
+      ],
+      "file_count": 54,
+      "full_case_sha256": "a5c9aa8f3f90ef923206498291b31ac8f87257e1a2f6a86a71b0d74695f280ca",
+      "passed": true,
+      "recovery_invariants": {
+        "after": {
+          "attempts": [
+            [
+              "f880954e-66ef-43dd-8e0e-1eb51a2b2c3d",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 3,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 100,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 1,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 103,
+              "held_minor": 0,
+              "id": "190e761a-6e15-4431-975d-ee1b52a1f4ad",
+              "released_minor": 0,
+              "state": "COMPLETED"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "approval_receipt_sha256": "f83e02ed8b1f2873f4b73b43a3651df90137996fdf66aeebefa9ea4280f0faf6",
+        "approval_request_sha256": "850f291bfff240767264ba3943313cb0ae0fb8d3718343129b20de1c25c170bc",
+        "before": {
+          "attempts": [
+            [
+              "f880954e-66ef-43dd-8e0e-1eb51a2b2c3d",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 0,
+            "GAME_HOLD": 103,
+            "GAME_PURCHASES": 0,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 0,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 0,
+              "held_minor": 103,
+              "id": "190e761a-6e15-4431-975d-ee1b52a1f4ad",
+              "released_minor": 0,
+              "state": "QUEUED"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "game_after": 10,
+        "game_before": 0,
+        "original_request_retained": true,
+        "pending": [],
+        "quote_sha256": "decf2c35d50b5550113f94fbea5fb9911afdff12c615ee6993af7304faffd877",
+        "terminal_receipt_sha256": "f7f0c3133ae2f246ab5b707ba02c12df55c289df2557193d5e99b6761753161c"
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/killed.json": "3853283b8631d6fbc34c2f146e4cc1e273b61900ce5ada834e02acdaa1dbc242"
+      },
+      "run_count": 1,
+      "seconds": 5.173813847999554,
+      "skips": 0,
+      "sqlite_count": 16
+    },
+    "test_approval_before_commit_rolls_back_counter_hold_outbox_together": {
+      "all_files_sha256": "0d04051e7014a4c87b6601549e89e71517e0b2919f3ebebc30422360c6a89f86",
+      "all_typed_sqlite_snapshots_sha256": "16643174952a695d315cfbb926ea38c9f1434d11da2be9924f3e03b33246dfac",
+      "children": [
+        {
+          "arguments": [
+            "kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_approval_before_commit_rolls_back_counter_hold_outbox_together/fixture-0",
+            "approval-before-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "arguments": [
+            "recover",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_approval_before_commit_rolls_back_counter_hold_outbox_together/fixture-0"
+          ],
+          "returncode": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "7b64b2a51db5c9799199ed41f98d49210af5eb5f80083e6c6157ad1d35cf3fa4"
+        }
+      ],
+      "file_count": 54,
+      "full_case_sha256": "83188cb6f4014d55b41bdcf8d2d0ee7f4869c52cec9ae8b4ab0c15d95db03f91",
+      "passed": true,
+      "recovery_invariants": {
+        "after": {
+          "attempts": [
+            [
+              "fb2f2e3a-3b81-42d4-9ec8-220bef658833",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 3,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 100,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 1,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 103,
+              "held_minor": 0,
+              "id": "23cf6a79-0bf7-4eb8-b674-1fbe72c5c36d",
+              "released_minor": 0,
+              "state": "COMPLETED"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "approval_receipt_sha256": "9fa80f002ee7fc4a5eefabbb18d9d0f461ecf2f6d61ce773bb2c718aac09863e",
+        "approval_request_sha256": "75d0cf5f074504786ec52eec44fdd8b1b218d3e00cfa537bc6a1619621a9e1fd",
+        "before": {
+          "attempts": [
+            [
+              "fb2f2e3a-3b81-42d4-9ec8-220bef658833",
+              "OPEN"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 5000,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 0,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 0,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 0,
+          "credential_sign_counts": [
+            1
+          ],
+          "exchanges": [],
+          "opaque": "00ff6c6567616379"
+        },
+        "game_after": 10,
+        "game_before": 0,
+        "original_request_retained": true,
+        "pending": [],
+        "quote_sha256": "0c12dbd9235298eeb619ee2aa8014f0f20935a377de0f80f9a8b8a437145f8b7",
+        "terminal_receipt_sha256": "ff1f18bb9a9671783dde7c5450509a22f50582db3f8a912ba65b33815b6b9899"
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/killed.json": "06c5260bbf0c46406073bc124ca8d740101e37b6785cae56dd6765ce9d896819"
+      },
+      "run_count": 1,
+      "seconds": 4.554939106004895,
+      "skips": 0,
+      "sqlite_count": 16
+    },
+    "test_claim_after_commit_keeps_unknown_hold_and_original_apply": {
+      "all_files_sha256": "fd0e805873590c3f3409b66027a44e31a525615f901823361ebea65c82ed1865",
+      "all_typed_sqlite_snapshots_sha256": "364beabcb49397f16c7264f8d79fef1df6d2cb1e92bfe620c8224a7e7db0f06d",
+      "children": [
+        {
+          "arguments": [
+            "kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_claim_after_commit_keeps_unknown_hold_and_original_apply/fixture-0",
+            "claim-after-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "arguments": [
+            "recover",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_claim_after_commit_keeps_unknown_hold_and_original_apply/fixture-0"
+          ],
+          "returncode": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "db6b0f3ba0d14ffd06304e860cb0d76a933748bbba99e698ae8aeadc27926540"
+        }
+      ],
+      "file_count": 54,
+      "full_case_sha256": "43951908e2a99037f61ab04a179e62ccee35472ec970be63a9e048e346701391",
+      "passed": true,
+      "recovery_invariants": {
+        "after": {
+          "attempts": [
+            [
+              "1bf90246-f711-45e9-94e2-5baf5ebb87fa",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 3,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 100,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 3,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 103,
+              "held_minor": 0,
+              "id": "9e7211ad-bdc4-4b69-8ad3-1baffdd41e14",
+              "released_minor": 0,
+              "state": "COMPLETED"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "approval_receipt_sha256": "467437959b28c474050a635b2d7d612215b1b780f285265349362634eeb7fada",
+        "approval_request_sha256": "3c733a7374079199bf59c341fdb5f9f0dd8cd37d88271980341427265c949fc1",
+        "before": {
+          "attempts": [
+            [
+              "1bf90246-f711-45e9-94e2-5baf5ebb87fa",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 0,
+            "GAME_HOLD": 103,
+            "GAME_PURCHASES": 0,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 1,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 0,
+              "held_minor": 103,
+              "id": "9e7211ad-bdc4-4b69-8ad3-1baffdd41e14",
+              "released_minor": 0,
+              "state": "CONFIRMING"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "game_after": 10,
+        "game_before": 0,
+        "original_request_retained": true,
+        "pending": [],
+        "quote_sha256": "89b2fbb175ea75b72053fd20e6813e12154bd669311a0966646783ef778857ad",
+        "terminal_receipt_sha256": "dd3aee7442b1ae95fa68beb9f7a9946c84c80ebf8110d7be58780f35ed689926"
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/killed.json": "cafda95fdfc2ddb33d1320534645ecd0dc8555697395b4de7a1f5ddac7b42dbd"
+      },
+      "run_count": 1,
+      "seconds": 5.27469686200493,
+      "skips": 0,
+      "sqlite_count": 16
+    },
+    "test_game_after_commit_recovers_original_terminal_receipt": {
+      "all_files_sha256": "609f579ce8cca935bd72af324a61583462d314664a1944c202f1f560a0a495d1",
+      "all_typed_sqlite_snapshots_sha256": "828bad65d0a565b3afd8dfa55095dde9dc644263242ff06a22a44520ae6e8082",
+      "children": [
+        {
+          "arguments": [
+            "kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_game_after_commit_recovers_original_terminal_receipt/fixture-0",
+            "game-after-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "arguments": [
+            "recover",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_game_after_commit_recovers_original_terminal_receipt/fixture-0"
+          ],
+          "returncode": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "c834e1c1dc8f2718df230738c91226d829a939535bdfed098bff35cfe50c204e"
+        }
+      ],
+      "file_count": 54,
+      "full_case_sha256": "cb8cc5a6b5147a99c0f256e3b7516633046aa2fb7739a10d58b9900810a5c952",
+      "passed": true,
+      "recovery_invariants": {
+        "after": {
+          "attempts": [
+            [
+              "e5bc4c52-64df-4859-bec4-e07192e59ef2",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 3,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 100,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 2,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 103,
+              "held_minor": 0,
+              "id": "528827b0-4b01-4b34-b1c6-5dd6e2eeb414",
+              "released_minor": 0,
+              "state": "COMPLETED"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "approval_receipt_sha256": "92fa78cd66a4f70ba7ee32ff1d2e4fecd694da9355e1fde6078db5034b5a6a0a",
+        "approval_request_sha256": "d163cca7bdc69c5f9f576db982cf2fd2418f1ef21cb09cf8e67fabbe47af8469",
+        "before": {
+          "attempts": [
+            [
+              "e5bc4c52-64df-4859-bec4-e07192e59ef2",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 0,
+            "GAME_HOLD": 103,
+            "GAME_PURCHASES": 0,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 1,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 0,
+              "held_minor": 103,
+              "id": "528827b0-4b01-4b34-b1c6-5dd6e2eeb414",
+              "released_minor": 0,
+              "state": "CONFIRMING"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "game_after": 10,
+        "game_before": 10,
+        "original_request_retained": true,
+        "pending": [],
+        "quote_sha256": "234acf195b585457cae2a93ea71307bbee3b562db46218e38b9d18109c951fde",
+        "terminal_receipt_sha256": "cfc84533f9516195ad5870e7ecb636f7e23e5f030a6757aba5550dc0e34f50df"
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/killed.json": "5017acb8bcdae99298dd4c92d0c05e94d3651c96372836cfeed75d68750f7cf6"
+      },
+      "run_count": 1,
+      "seconds": 2.5820587820053333,
+      "skips": 0,
+      "sqlite_count": 16
+    },
+    "test_migration_kill_after_commit_recovers_only_original_migration_receipt": {
+      "all_files_sha256": "978e4ce096d7f4674d010f86c3fb20b2faba19a7ce2685220031c8dceb7cd30d",
+      "all_typed_sqlite_snapshots_sha256": "6e1917454ed6738dd39e6cdc76233b688533830e5b43071a1e2f4284f741fa02",
+      "children": [
+        {
+          "arguments": [
+            "migration-kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_migration_kill_after_commit_recovers_only_original_migration_receipt/fixture-0",
+            "migration-after-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "arguments": [
+            "migration-recover",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_migration_kill_after_commit_recovers_only_original_migration_receipt/fixture-0"
+          ],
+          "returncode": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "7503509d29ede5e405baad1f55437ce55a5fa512b06e4834a7f59b4c22b48b9a"
+        }
+      ],
+      "file_count": 25,
+      "full_case_sha256": "be05881e0ef79828c3f9d3dc84631c3b51f2ec4dd9c4c01f567678e4bec97e13",
+      "passed": true,
+      "recovery_invariants": {
+        "balances": {
+          "AVAILABLE": 5000,
+          "CASH_DISPENSED": 0,
+          "GAME_FEES": 0,
+          "GAME_HOLD": 0,
+          "GAME_PURCHASES": 0,
+          "PENDING_SETTLEMENT": 200,
+          "SALE_CLEARING": -5200,
+          "SERVICE_FEES": 0,
+          "WITHDRAW_HOLD": 0
+        },
+        "migration_receipt_sha256": "49f14584309340fe8212d1c27c17a459bb32b434f6121336b0e0dd07bb103ba4",
+        "opaque": "00ff6f7061717565",
+        "original_typed_tables_preserved": 19,
+        "was_installed": true
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/killed.json": "51be815acec41206be620f355724b4abfbe56a3089f9d948b040f5f5059a5eed"
+      },
+      "run_count": 1,
+      "seconds": 2.100792012999591,
+      "skips": 0,
+      "sqlite_count": 4
+    },
+    "test_migration_kill_before_commit_preserves_original_nonempty_schema": {
+      "all_files_sha256": "f2ef79912c310f9a954bd165bc49e7c25a97bd6e55ab7b03ebbb12b8d9f42f5e",
+      "all_typed_sqlite_snapshots_sha256": "c71c97962743498e0512cdaaa78d59fd099ba629b3318c4a96e44bd540137888",
+      "children": [
+        {
+          "arguments": [
+            "migration-kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_migration_kill_before_commit_preserves_original_nonempty_schema/fixture-0",
+            "migration-before-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "arguments": [
+            "migration-recover",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_migration_kill_before_commit_preserves_original_nonempty_schema/fixture-0"
+          ],
+          "returncode": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "f87600f9b39ebc1c349487b65e13f20d0c269be7e92b810ae2f0c548c3413bc7"
+        }
+      ],
+      "file_count": 25,
+      "full_case_sha256": "d3f8d40a66caa0fbb2be06307df6e98ffe45b7d414ca36a08dc8b8ce09c5a930",
+      "passed": true,
+      "recovery_invariants": {
+        "balances": {
+          "AVAILABLE": 5000,
+          "CASH_DISPENSED": 0,
+          "GAME_FEES": 0,
+          "GAME_HOLD": 0,
+          "GAME_PURCHASES": 0,
+          "PENDING_SETTLEMENT": 200,
+          "SALE_CLEARING": -5200,
+          "SERVICE_FEES": 0,
+          "WITHDRAW_HOLD": 0
+        },
+        "migration_receipt_sha256": "30d3943279f1f97603b310ffc7ee59c36df84ff5cd552e197944e9dcd24bf8d3",
+        "opaque": "00ff6f7061717565",
+        "original_typed_tables_preserved": 19,
+        "was_installed": false
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/killed.json": "90577072162e3fe0de2e77e14956ce7fb10a9db236f983ec893d7eb6b9cea33a"
+      },
+      "run_count": 1,
+      "seconds": 0.9169973380048759,
+      "skips": 0,
+      "sqlite_count": 4
+    },
+    "test_restore_kill_after_final_receipt_commit_recovers_same_completion": {
+      "all_files_sha256": "8fc1851149d3f847f28334435759c9363e460c60a9ce6094b672eee02fb68c9b",
+      "all_typed_sqlite_snapshots_sha256": "361339f6d0184543fa1dd3cfcf8eec728b1136af0853f9630cbc7578f1ddfead",
+      "children": [
+        {
+          "arguments": [
+            "restore-kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_restore_kill_after_final_receipt_commit_recovers_same_completion/fixture-0/authority/sandbox.json",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_restore_kill_after_final_receipt_commit_recovers_same_completion/fixture-0/backup",
+            "c1959e31-3687-4882-80bc-d90541974b17",
+            "restore-done-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "file_count": 51,
+      "full_case_sha256": "a683d99114a1a962e0fb81ff6f1d29afd9c7566e5aee52b0766d618bce12a0cc",
+      "passed": true,
+      "restore_invariants": {
+        "backup_manifest_sha256": "c1b3f61db495af2a4c6ef2f1ed7fa5dd19035d71c6dcbe7cf7b4a7278775473f",
+        "game_epochs": {
+          "public-game-a": {
+            "before_sha256": "02ae06abf4ac11f652a579203a0f760f502491f06e905861d32e964ca21cdd1d",
+            "new_epoch": 2,
+            "old_epoch": 1,
+            "status": "DONE"
+          },
+          "public-game-b": {
+            "before_sha256": "59c006116ef043771bde4264467256cd3434af64aeba79f10dd5fa119e496860",
+            "new_epoch": 2,
+            "old_epoch": 1,
+            "status": "DONE"
+          }
+        },
+        "intent": "c1959e31-3687-4882-80bc-d90541974b17",
+        "new_device": "process-restored-device",
+        "new_writer_epoch": 2,
+        "observed_source_epoch": 1,
+        "observed_source_state": "RETIRED",
+        "post_snapshot_sha256": "107dc536730accdb12a5162a3b081bbae3684d9e617606a8103ee2fcfe2ce6e7",
+        "receipt_sha256": "97ae8d69d927a18c86565e400a267fa15889a8de3fdb36ae2c225038c84e09c7",
+        "record": "fixture-0/authority/restores/c1959e31-3687-4882-80bc-d90541974b17.json",
+        "record_sha256": "b243b8e4a291d2bfb0b683ac0eb9df2ab944fee5a747c3aa7e67221e88e5ae31",
+        "same_host_current_copy_only": true,
+        "source_retired": true,
+        "state": "DONE",
+        "status": "DONE"
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/authority/killed.json": "7388c66c82d5e3e4d0ec329eb9ff4a8381325b548187cefde7a575a87397edd9",
+        "fixture-0/authority/restores/c1959e31-3687-4882-80bc-d90541974b17.json": "b243b8e4a291d2bfb0b683ac0eb9df2ab944fee5a747c3aa7e67221e88e5ae31"
+      },
+      "run_count": 1,
+      "seconds": 5.690187664993573,
+      "skips": 0,
+      "sqlite_count": 12
+    },
+    "test_restore_kill_after_first_independent_game_epoch_commit": {
+      "all_files_sha256": "e71f955343fbf7ca8e3e4318627a59755536e4e10714de29229fe21a5d3be0fe",
+      "all_typed_sqlite_snapshots_sha256": "0fc0f4bae336ed289b3ebb342b2d6a4327b47a67bf7c8f9f7dae72bbd76f72c0",
+      "children": [
+        {
+          "arguments": [
+            "restore-kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_restore_kill_after_first_independent_game_epoch_commit/fixture-0/authority/sandbox.json",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_restore_kill_after_first_independent_game_epoch_commit/fixture-0/backup",
+            "be1c2162-ea66-40f7-8ee8-ff61f546ed98",
+            "restore-game-a-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "file_count": 51,
+      "full_case_sha256": "edba60118e7f99b4cd72036124d8b56f4361479b0142811af7603a819435b43b",
+      "passed": true,
+      "restore_invariants": {
+        "backup_manifest_sha256": "6196d1064d9f7f9404e5485651693bc227dbb95bdba7734da52ab2d5c1bbd07d",
+        "game_epochs": {
+          "public-game-a": {
+            "before_sha256": "e251ef9e5a948e38a27631e710c85f4253dcc04e94ef3757cc4ed09941ba96c2",
+            "new_epoch": 2,
+            "old_epoch": 1,
+            "status": "DONE"
+          },
+          "public-game-b": {
+            "before_sha256": "aa754d11a55fb415374dabf57633b293c3b9e0211d1031fdd2afc7a2c58d3c40",
+            "new_epoch": 2,
+            "old_epoch": 1,
+            "status": "DONE"
+          }
+        },
+        "intent": "be1c2162-ea66-40f7-8ee8-ff61f546ed98",
+        "new_device": "process-restored-device",
+        "new_writer_epoch": 2,
+        "observed_source_epoch": 1,
+        "observed_source_state": "RETIRED",
+        "post_snapshot_sha256": "286d8889425a42babec753b3bafc7d33a48b3af5b7ecc5159f9f47c9bfee61e6",
+        "receipt_sha256": "c58830f0386c84bac0d1ec0fc5fd0c07c851b086faa440289ee33f365b96298f",
+        "record": "fixture-0/authority/restores/be1c2162-ea66-40f7-8ee8-ff61f546ed98.json",
+        "record_sha256": "8afc21044735a26e22abda90486a1c5b8194f0ba9daaa72bfc19258dfbeff4cc",
+        "same_host_current_copy_only": true,
+        "source_retired": true,
+        "state": "DONE",
+        "status": "DONE"
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/authority/killed.json": "5ef377e3fb3a50cd43039ee591aa8071ee2d6e19d07d4ba5aa49f2c947d8c337",
+        "fixture-0/authority/restores/be1c2162-ea66-40f7-8ee8-ff61f546ed98.json": "8afc21044735a26e22abda90486a1c5b8194f0ba9daaa72bfc19258dfbeff4cc"
+      },
+      "run_count": 1,
+      "seconds": 4.42711466000037,
+      "skips": 0,
+      "sqlite_count": 12
+    },
+    "test_restore_kill_after_wallet_epoch_commit": {
+      "all_files_sha256": "4a20ee5c0d8532bff150e41211371082121a646568ae7b3e772e6e2c97465882",
+      "all_typed_sqlite_snapshots_sha256": "912dd1ecc0217e28431ff619f8e2f30650e9a92c73f5790c0e8ccb3a2e03029b",
+      "children": [
+        {
+          "arguments": [
+            "restore-kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_restore_kill_after_wallet_epoch_commit/fixture-0/authority/sandbox.json",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_restore_kill_after_wallet_epoch_commit/fixture-0/backup",
+            "100c62fc-0201-47bf-84da-7ac34ed4a583",
+            "restore-wallet-epoch-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "file_count": 51,
+      "full_case_sha256": "a8a38d289a9e20bacc05e4ddad73433eac812c64dbd1ae5f23474cabd26d9343",
+      "passed": true,
+      "restore_invariants": {
+        "backup_manifest_sha256": "3aa731793cd1ee1ab10b4ac23fc8f910964d51628c09d9494b4c1c9255b0a315",
+        "game_epochs": {
+          "public-game-a": {
+            "before_sha256": "11729859dede3612b60dc0e2fe152fdba6f9d0ffdedb4299844b8fbd8ec781d4",
+            "new_epoch": 2,
+            "old_epoch": 1,
+            "status": "DONE"
+          },
+          "public-game-b": {
+            "before_sha256": "fffd092bcece97362cc06193d33462f4f9a18ee61c4712889960d25d91d1c67e",
+            "new_epoch": 2,
+            "old_epoch": 1,
+            "status": "DONE"
+          }
+        },
+        "intent": "100c62fc-0201-47bf-84da-7ac34ed4a583",
+        "new_device": "process-restored-device",
+        "new_writer_epoch": 2,
+        "observed_source_epoch": 1,
+        "observed_source_state": "RETIRED",
+        "post_snapshot_sha256": "438579e0b814403d324678b40e8ae8a7fedd15b70d0e15f2586562902d9083bf",
+        "receipt_sha256": "84d9b363f93a8874f70c84e7d465a73c1fe1fa17dc3984c71953b8a3a9099e5f",
+        "record": "fixture-0/authority/restores/100c62fc-0201-47bf-84da-7ac34ed4a583.json",
+        "record_sha256": "b25c6a9ccd1e063c86a0306c63d7a4dcbdd815e3992644c1979d01eb00d539c3",
+        "same_host_current_copy_only": true,
+        "source_retired": true,
+        "state": "DONE",
+        "status": "DONE"
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/authority/killed.json": "f2fbba20bf550b4e54f99287a8b3a265272a230f813eed41df4585565c9a95d8",
+        "fixture-0/authority/restores/100c62fc-0201-47bf-84da-7ac34ed4a583.json": "b25c6a9ccd1e063c86a0306c63d7a4dcbdd815e3992644c1979d01eb00d539c3"
+      },
+      "run_count": 1,
+      "seconds": 4.569839509997109,
+      "skips": 0,
+      "sqlite_count": 12
+    },
+    "test_wallet_after_settle_commit_cannot_consume_or_grant_again": {
+      "all_files_sha256": "034a732d724c8499d43629d7a225ece8eb8f913713ca8eef2191ede2f50aec46",
+      "all_typed_sqlite_snapshots_sha256": "ba055f3bf7197aa02bbb40819b189b68c81c12e4e21909cf475d0bc5ee925e3d",
+      "children": [
+        {
+          "arguments": [
+            "kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_wallet_after_settle_commit_cannot_consume_or_grant_again/fixture-0",
+            "wallet-after-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "arguments": [
+            "recover",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_wallet_after_settle_commit_cannot_consume_or_grant_again/fixture-0"
+          ],
+          "returncode": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "743c3d11cbf13a17f6d4bd6b35cd874c66690f10127d577be3d8ca7dd6c04a58"
+        }
+      ],
+      "file_count": 54,
+      "full_case_sha256": "06a446be531c4aef0b81c5c796b71bdb83cd977fcb1a098698616e9e353009b2",
+      "passed": true,
+      "recovery_invariants": {
+        "after": {
+          "attempts": [
+            [
+              "18e32335-fba8-4f82-b738-f2c6f6dba1da",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 3,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 100,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 1,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 103,
+              "held_minor": 0,
+              "id": "e1338f71-86cf-4b68-be84-2baa9fa42a9c",
+              "released_minor": 0,
+              "state": "COMPLETED"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "approval_receipt_sha256": "6b8ff922373ffe63c27eda8294f1889f0f5d04d25a017d28bd1cda20122294e5",
+        "approval_request_sha256": "66adbb8535f1a73a8a33a4dc5d4d09a809fe43d592865be3f60d3fa762a98416",
+        "before": {
+          "attempts": [
+            [
+              "18e32335-fba8-4f82-b738-f2c6f6dba1da",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 3,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 100,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 1,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 103,
+              "held_minor": 0,
+              "id": "e1338f71-86cf-4b68-be84-2baa9fa42a9c",
+              "released_minor": 0,
+              "state": "COMPLETED"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "game_after": 10,
+        "game_before": 10,
+        "original_request_retained": true,
+        "pending": [],
+        "quote_sha256": "a7329075c155c90a2ec337e0eb2920271392c233f47408e7e97c6e945820fa48",
+        "terminal_receipt_sha256": "8870f3005fbef9cc85e49232f0d997e8bb29fbbef08ddd9efb3ed5a20a0c45a3"
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/killed.json": "5b8d6af302eb8eaa644904178f5e3f3ce4f871c69c986a6822754b816c7e68af"
+      },
+      "run_count": 1,
+      "seconds": 10.998499884997727,
+      "skips": 0,
+      "sqlite_count": 16
+    },
+    "test_wallet_before_settle_commit_keeps_hold_until_same_terminal": {
+      "all_files_sha256": "60c8eb57e7cf2230b6085948f1da96c6d5159e3838c8cff7706d2d93c3bb0caa",
+      "all_typed_sqlite_snapshots_sha256": "b8f3b7c763d72e3e48bd18fc6ededc863f0aa0cab356403d9756015dc3ac268a",
+      "children": [
+        {
+          "arguments": [
+            "kill",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_wallet_before_settle_commit_keeps_hold_until_same_terminal/fixture-0",
+            "wallet-before-commit"
+          ],
+          "returncode": -9,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "arguments": [
+            "recover",
+            "/var/tmp/rock-game-final-kill-evidence-20260910/test_wallet_before_settle_commit_keeps_hold_until_same_terminal/fixture-0"
+          ],
+          "returncode": 0,
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stdout_sha256": "215719b976403a340cb4a5370eb800c71bfa99db805a74f99314305b6c5ffd67"
+        }
+      ],
+      "file_count": 54,
+      "full_case_sha256": "d93c537e58b7af582966e91edbdd20aec3c21f9f2baf4beb620254191a4bbe48",
+      "passed": true,
+      "recovery_invariants": {
+        "after": {
+          "attempts": [
+            [
+              "f215a899-4adf-4f48-a078-bc06d5cfe8c4",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 3,
+            "GAME_HOLD": 0,
+            "GAME_PURCHASES": 100,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 2,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 103,
+              "held_minor": 0,
+              "id": "5604ce63-c99d-4daa-be5a-a17b2948e12c",
+              "released_minor": 0,
+              "state": "COMPLETED"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "approval_receipt_sha256": "9ee584c4fb15e42db54abdcd8a5eb99dee79d16171ae1b8f2bc5b2679826ab58",
+        "approval_request_sha256": "dc98a9d315edce4e7855ee0bee496f31709bff169d37ab7f6b34f0df51e7dd82",
+        "before": {
+          "attempts": [
+            [
+              "f215a899-4adf-4f48-a078-bc06d5cfe8c4",
+              "APPROVED"
+            ]
+          ],
+          "balances": {
+            "AVAILABLE": 4897,
+            "CASH_DISPENSED": 0,
+            "GAME_FEES": 0,
+            "GAME_HOLD": 103,
+            "GAME_PURCHASES": 0,
+            "PENDING_SETTLEMENT": 200,
+            "SALE_CLEARING": -5200,
+            "SERVICE_FEES": 0,
+            "WITHDRAW_HOLD": 0
+          },
+          "claims": 1,
+          "credential_sign_counts": [
+            2
+          ],
+          "exchanges": [
+            {
+              "committed_minor": 0,
+              "held_minor": 103,
+              "id": "5604ce63-c99d-4daa-be5a-a17b2948e12c",
+              "released_minor": 0,
+              "state": "CONFIRMING"
+            }
+          ],
+          "opaque": "00ff6c6567616379"
+        },
+        "game_after": 10,
+        "game_before": 10,
+        "original_request_retained": true,
+        "pending": [],
+        "quote_sha256": "e17ccb7fbfaa162e33074d62c1780fa6ff4254d731413cc3d5468caf554b89a1",
+        "terminal_receipt_sha256": "a821edf72cc5e55acc40cee0f1b74be21eb3057e54f98223d165ae67361977ea"
+      },
+      "retained_request_and_receipt_files": {
+        "fixture-0/killed.json": "f60aa34c13dd5cfecfc555a83527dce8fe5df2066cd9dbd4875cde9c1f9dc09a"
+      },
+      "run_count": 1,
+      "seconds": 16.875435201000073,
+      "skips": 0,
+      "sqlite_count": 16
+    }
+  },
+  "digest_encoding": "UTF-8 JSON, sort_keys=True, separators=(comma,colon), ensure_ascii=False",
+  "finished_at": 1789028690.14648,
+  "full_raw": {
+    "bytes": 739704,
+    "linux_path": "/var/tmp/rock-game-final-kill-evidence-20260910/report.json",
+    "local_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-game/work/gx01-evidence-raw-20260910/process-kill-retained-20260910.json",
+    "sha256": "e99c02c333ed91b0a2acd890a6407b5de13f331a42c1f8b2cc2167f97f50d2b5"
+  },
+  "schema": "rock-game-process-kill-summary/1",
+  "simulation_only": true,
+  "source_commit": "9cfe6e7",
+  "started_at": 1789028626.465219,
+  "status": "PASS_SCOPED_SYNTHETIC"
+}

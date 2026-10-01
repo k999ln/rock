@@ -1,0 +1,13 @@
+{
+  "default_vm_disk_gib": 16,
+  "host": {
+    "free": 32777465856,
+    "total": 494384795648,
+    "used": 461607329792
+  },
+  "minimum_guest_free_bytes": 0,
+  "observed_unix": 1789036109.159432,
+  "phase": "after-owned-removal",
+  "schema": "rock-final-capacity-observation/1",
+  "status": "PASS"
+}

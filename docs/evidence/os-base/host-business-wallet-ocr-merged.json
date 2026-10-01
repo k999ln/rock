@@ -1,0 +1,2285 @@
+{
+  "schema": "rock-business-wallet-ocr-fixture/1",
+  "status": "PASS_HOST_FIXTURE",
+  "qemu": "NOT_RUN",
+  "D2": "NOT_RUN",
+  "D5": "NOT_RUN",
+  "scope": "host C/OCR and disposable signed Wallet only",
+  "input_events": [
+    {
+      "action": "click",
+      "value": [
+        606,
+        913
+      ],
+      "sent_unix": 1788989238.9867873
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        362
+      ],
+      "sent_unix": 1788989240.0698993
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        524
+      ],
+      "sent_unix": 1788989242.2662196
+    },
+    {
+      "action": "public-test-pin-entry",
+      "value": {
+        "digits": 4,
+        "value_recorded": false
+      },
+      "sent_unix": 1788989244.0173528
+    },
+    {
+      "action": "click",
+      "value": [
+        522,
+        838
+      ],
+      "sent_unix": 1788989244.9734733
+    },
+    {
+      "action": "click",
+      "value": [
+        359,
+        524
+      ],
+      "sent_unix": 1788989246.0675352
+    },
+    {
+      "action": "click",
+      "value": [
+        496,
+        578
+      ],
+      "sent_unix": 1788989247.6347826
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989249.8111947
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989251.4215474
+    },
+    {
+      "action": "click",
+      "value": [
+        348,
+        809
+      ],
+      "sent_unix": 1788989253.121233
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989254.3360872
+    },
+    {
+      "action": "click",
+      "value": [
+        250,
+        743
+      ],
+      "sent_unix": 1788989256.271002
+    },
+    {
+      "action": "keys",
+      "value": [
+        "ctrl",
+        "a"
+      ],
+      "sent_unix": 1788989256.2720642
+    },
+    {
+      "action": "type",
+      "value": "20.00",
+      "sent_unix": 1788989256.272989
+    },
+    {
+      "action": "click",
+      "value": [
+        191,
+        824
+      ],
+      "sent_unix": 1788989259.0953684
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989261.09128
+    },
+    {
+      "action": "click",
+      "value": [
+        564,
+        660
+      ],
+      "sent_unix": 1788989264.361711
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        913
+      ],
+      "sent_unix": 1788989265.5899854
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        806
+      ],
+      "sent_unix": 1788989266.4932199
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989267.705976
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        611
+      ],
+      "sent_unix": 1788989271.1330898
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989275.2384045
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        311
+      ],
+      "sent_unix": 1788989277.1224883
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989279.8813665
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989281.7632291
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989283.4465525
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989285.226424
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989287.0654647
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989287.0663686
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989287.067186
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989287.067989
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        838
+      ],
+      "sent_unix": 1788989290.1067278
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989290.1076255
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989290.108657
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989290.1095467
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989290.1103635
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989290.111162
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgup"
+      ],
+      "sent_unix": 1788989290.11195
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989292.509921
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989294.136563
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989295.7951171
+    },
+    {
+      "action": "click",
+      "value": [
+        528,
+        776
+      ],
+      "sent_unix": 1788989297.6523962
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        642
+      ],
+      "sent_unix": 1788989299.2115889
+    },
+    {
+      "action": "public-test-pin-entry",
+      "value": {
+        "digits": 4,
+        "value_recorded": false
+      },
+      "sent_unix": 1788989301.5772758
+    },
+    {
+      "action": "click",
+      "value": [
+        520,
+        840
+      ],
+      "sent_unix": 1788989302.431749
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        654
+      ],
+      "sent_unix": 1788989305.639196
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        913
+      ],
+      "sent_unix": 1788989306.910722
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989309.6874263
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989311.2955544
+    },
+    {
+      "action": "click",
+      "value": [
+        348,
+        809
+      ],
+      "sent_unix": 1788989312.7815678
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788989313.7917426
+    },
+    {
+      "action": "click",
+      "value": [
+        528,
+        820
+      ],
+      "sent_unix": 1788989315.642095
+    },
+    {
+      "action": "click",
+      "value": [
+        92,
+        800
+      ],
+      "sent_unix": 1788989316.4362545
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "0001-wallet-registration.png",
+      "bytes": 95887,
+      "sha256": "c0d9f0a063199d1292573b529613fc52a7f54785587c5b46cc2efe43f757b3b2",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "898063f6a7dfce03bebc143dfe6280a385fa72ce492a4edd8f0c1cd7e14842d3"
+    },
+    {
+      "name": "0002-registration-without-consent.png",
+      "bytes": 121941,
+      "sha256": "398caa52417e909288280a77653eed014602acc4d621a66c24aaedcb1bdd8b7a",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "72b2e19ee643af471604eeed0d7b1f7264797156649cb920a2dcd77cf962a488"
+    },
+    {
+      "name": "0003-wallet-enrollment.png",
+      "bytes": 121941,
+      "sha256": "398caa52417e909288280a77653eed014602acc4d621a66c24aaedcb1bdd8b7a",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "72b2e19ee643af471604eeed0d7b1f7264797156649cb920a2dcd77cf962a488"
+    },
+    {
+      "name": "0004-public-enrollment-review.png",
+      "bytes": 70366,
+      "sha256": "5fc924e5c4b7b9176b27a2e3751cd2c07b3ba02866a5a883c8d31284b89eeddd",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "d0b3473e929cd3058e0a403ab637686190218d64ec68a43cccc291439bcdbb97"
+    },
+    {
+      "name": "0005-public-authenticator-pin.png",
+      "bytes": 70366,
+      "sha256": "5fc924e5c4b7b9176b27a2e3751cd2c07b3ba02866a5a883c8d31284b89eeddd",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "d0b3473e929cd3058e0a403ab637686190218d64ec68a43cccc291439bcdbb97"
+    },
+    {
+      "name": "0006-public-authenticator-confirmed.png",
+      "bytes": 70566,
+      "sha256": "ae2db0696924e482a0e2afbbc6105bc2dc628fbbe70eb25faa6c54f53e55ba3f",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "084924ce8c829b7e479186bec54c20730d8b860c0b6fabbd6e47cabca0b32242"
+    },
+    {
+      "name": "0007-separate-wallet-terms.png",
+      "bytes": 125139,
+      "sha256": "e81af608f91115b2aaee9a8d1315aa1297eba2fbba97fa7155c083cd6213522e",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "6f373c2cab173bc568a99666ff3095461c5341f96f0c20e5735c925dc1814bda"
+    },
+    {
+      "name": "0008-wallet-terms-review.png",
+      "bytes": 127645,
+      "sha256": "12f3820f946ac3e277e36583485270319a2f4e91e4a7c8b568eb60cff37bd51a",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "785487c8d42a07d130c158f24cbb2f65ef1b6fa8d26535fe0f74b12bfc500725"
+    },
+    {
+      "name": "0009-wallet-terms-accepted.png",
+      "bytes": 127645,
+      "sha256": "12f3820f946ac3e277e36583485270319a2f4e91e4a7c8b568eb60cff37bd51a",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "785487c8d42a07d130c158f24cbb2f65ef1b6fa8d26535fe0f74b12bfc500725"
+    },
+    {
+      "name": "0010-wallet-active.png",
+      "bytes": 127162,
+      "sha256": "cc12b276bf7a78bae154e501878b227b3dbb9308516d929e16364b529c8f1579",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "1ab02e9d2e8182d8ea4a0433dac3be7f797e29d3397f36f5637583bd550fda46"
+    },
+    {
+      "name": "0011-local-simulator-controls.png",
+      "bytes": 96079,
+      "sha256": "83ff7ef182c7b9ad51f83643458ef20bd624e6a958f631a934554c1f7741ab22",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "b20f26f30f88e33a48ebef5c7457afcad70eb43a9ba9e3d2f12c2a87e94dfa2e"
+    },
+    {
+      "name": "0012-simulator-amount-label.png",
+      "bytes": 99129,
+      "sha256": "a213ca033cbd024a2ab63cba6c7e124213192475ad568eacdf4c16ab8f946d55",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "fe501d20512cc3fbb6399af65a98b15ff5230807194d57ab261766635f809cb3"
+    },
+    {
+      "name": "0013-synthetic-credit-amount.png",
+      "bytes": 100506,
+      "sha256": "9f28cebdf9e737f19f489a6ec559761feab7c86989a3a342046b6b82955f07a9",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "200e291e3873ec06222d694408d862338039fa959728b99bb0392090f71dfd82"
+    },
+    {
+      "name": "0014-synthetic-sale.png",
+      "bytes": 100506,
+      "sha256": "9f28cebdf9e737f19f489a6ec559761feab7c86989a3a342046b6b82955f07a9",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "200e291e3873ec06222d694408d862338039fa959728b99bb0392090f71dfd82"
+    },
+    {
+      "name": "0015-credit-unsettled.png",
+      "bytes": 92782,
+      "sha256": "ffcb9de4fe1988bea868ca2bbfc91043c6c8ae4aa7fe68d15f28295a108c2963",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "db51f5664b75be4e0be48a003e9f746769f0630d3f2e4c88d8d805d233b4a0f7"
+    },
+    {
+      "name": "0016-synthetic-settlement.png",
+      "bytes": 92782,
+      "sha256": "ffcb9de4fe1988bea868ca2bbfc91043c6c8ae4aa7fe68d15f28295a108c2963",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "db51f5664b75be4e0be48a003e9f746769f0630d3f2e4c88d8d805d233b4a0f7"
+    },
+    {
+      "name": "0017-credit-settled.png",
+      "bytes": 92088,
+      "sha256": "9185ffb6dba56e5d8fa78c0308e7107397e238882d35e79ad685512476f4795c",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "0b198d62c59b373807e2129d535eaede6533587e0cef9df65013ea8df7204420"
+    },
+    {
+      "name": "0018-separate-monthly-consent.png",
+      "bytes": 117534,
+      "sha256": "8253e76784c5d455901375cf904dba81fdf89cea793d9f0330d6f422b2c119a1",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "2368ee2b27c0c7de61fd80999156351ec89c1a92466dae145da3e8a1f21f7d71"
+    },
+    {
+      "name": "0019-monthly-consent-recorded.png",
+      "bytes": 113474,
+      "sha256": "790e1a6ca60afa1dafce2df653ed57f68efd3d6527f6827c1e5131fce04a2db1",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "9f5522d462326eccb380153fba81def8a6829044991bb0191c53168c9b725b61"
+    },
+    {
+      "name": "0020-same-month-request-0.png",
+      "bytes": 113474,
+      "sha256": "790e1a6ca60afa1dafce2df653ed57f68efd3d6527f6827c1e5131fce04a2db1",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "9f5522d462326eccb380153fba81def8a6829044991bb0191c53168c9b725b61"
+    },
+    {
+      "name": "0021-same-month-receipt-0.png",
+      "bytes": 114041,
+      "sha256": "39b39fb95adb07dac9cc0ff39806a6681ce79b6645b6afb352ea7ee395fbce4a",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "06a1d16486ec78de9b50c8dceaf73023869f85228e32d4bbc05b915a16c9b5fe"
+    },
+    {
+      "name": "0022-same-month-paid-0.png",
+      "bytes": 114041,
+      "sha256": "39b39fb95adb07dac9cc0ff39806a6681ce79b6645b6afb352ea7ee395fbce4a",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "06a1d16486ec78de9b50c8dceaf73023869f85228e32d4bbc05b915a16c9b5fe"
+    },
+    {
+      "name": "0023-same-month-request-1.png",
+      "bytes": 92793,
+      "sha256": "0aef6f12353b974811bc84e5a3eb317bdbf6929688533bbedca9a4670aec6b03",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "76de1cd5754ecec8bba9a7f554bb9ed3e32010f482ca18dd6330bde1a8322ece"
+    },
+    {
+      "name": "0024-same-month-receipt-1.png",
+      "bytes": 94344,
+      "sha256": "9a1c68a1394b0293c1b04aac5f0ed78222ce68bbb7b527d787323faad61df505",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "8baa1efa9cbded679c4b6d3d65cb20da39ef42ccdb0aaa5d0a22bae50d652ae4"
+    },
+    {
+      "name": "0025-same-month-paid-1.png",
+      "bytes": 121902,
+      "sha256": "eda3d1675d4d1d73a301345135bd580ec198ef9ef0d39b7c1064e0ea9767dc7e",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "a0090c6cb18d3f9c66d7cb6168ffc0b58ad9cc30e8062b6cd024f060be58c4e8"
+    },
+    {
+      "name": "0026-monthly-renewal-canceled.png",
+      "bytes": 121902,
+      "sha256": "eda3d1675d4d1d73a301345135bd580ec198ef9ef0d39b7c1064e0ea9767dc7e",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "a0090c6cb18d3f9c66d7cb6168ffc0b58ad9cc30e8062b6cd024f060be58c4e8"
+    },
+    {
+      "name": "0027-paid-period-retained.png",
+      "bytes": 128432,
+      "sha256": "166fbdb7bb1a7fa77c06ffe789e682188dcc0cdef65ab7a058f1f4c44d985f53",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "31936fc94fc61b62a5cbac9e34a4892b859e72ae98f2932573bc41aef096b6a3"
+    },
+    {
+      "name": "0028-native-atm-test.png",
+      "bytes": 98088,
+      "sha256": "d96c7539814cc772f808f18dc091282e7b004e43614a7ceae186072de6f80ae2",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "59b4111d5ee7983fea54c3e6696f60c8452e4e2b772250c8c2d6c24de1b72d44"
+    },
+    {
+      "name": "0029-ten-dollar-hold-review.png",
+      "bytes": 88974,
+      "sha256": "2737dfae617837cf4e3ab2f0d52435d18082e7359d4165ea395002939f1ed13e",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "f63962aae9a718ac58e5b3aee7c03b28369f332881f5b8d973663a301c0916fc"
+    },
+    {
+      "name": "0030-signed-atm-quote.png",
+      "bytes": 88974,
+      "sha256": "2737dfae617837cf4e3ab2f0d52435d18082e7359d4165ea395002939f1ed13e",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "f63962aae9a718ac58e5b3aee7c03b28369f332881f5b8d973663a301c0916fc"
+    },
+    {
+      "name": "0031-atm-authorization-review.png",
+      "bytes": 79957,
+      "sha256": "f677430d7cd71de5d5e4961cb27184a69e92b1cd5bd14bd9391df5c07b5cbe15",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "d5a31151fec08ccb5bf1e51d0c9d0ef59a575aa98497e8054622554707723733"
+    },
+    {
+      "name": "0032-atm-fee-disclosure.png",
+      "bytes": 79957,
+      "sha256": "f677430d7cd71de5d5e4961cb27184a69e92b1cd5bd14bd9391df5c07b5cbe15",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "d5a31151fec08ccb5bf1e51d0c9d0ef59a575aa98497e8054622554707723733"
+    },
+    {
+      "name": "0033-public-authenticator-pin.png",
+      "bytes": 79753,
+      "sha256": "73a1bf79886ea8f10df07dfba82547d58b0211f89c37e5d6ba8f89042c6a29e8",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "0588c708b197f251728a4598063ea414f2686997ad2cbe4c2085037868db53a8"
+    },
+    {
+      "name": "0034-public-authenticator-confirmed.png",
+      "bytes": 80050,
+      "sha256": "cb264f99d431d6609eae0d700a62bd9b67b4bef7f38e0af616cfb694c86feb90",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "b4ea1ec399b73a2b040879e9cf027cd51e5e202a4b878d003c836a0103ca145a"
+    },
+    {
+      "name": "0035-actual-reservation.png",
+      "bytes": 85981,
+      "sha256": "fca2fe4992af66480c02c36f5c0b3f073420390935d9a119535a5ea7f01df735",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "b9abbf7beba8eb521e1c50d61f33f7c7ece4844873c985d9726075500a79aab0"
+    },
+    {
+      "name": "0036-actual-hold.png",
+      "bytes": 85981,
+      "sha256": "fca2fe4992af66480c02c36f5c0b3f073420390935d9a119535a5ea7f01df735",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "b9abbf7beba8eb521e1c50d61f33f7c7ece4844873c985d9726075500a79aab0"
+    },
+    {
+      "name": "0037-owner-cancel-unused-reservation.png",
+      "bytes": 85981,
+      "sha256": "fca2fe4992af66480c02c36f5c0b3f073420390935d9a119535a5ea7f01df735",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "b9abbf7beba8eb521e1c50d61f33f7c7ece4844873c985d9726075500a79aab0"
+    },
+    {
+      "name": "0038-actual-cancellation.png",
+      "bytes": 88087,
+      "sha256": "4e0a636fff1680b0074531665a936cd1ef46ad0fcd7bb06a4ea91e2024b48717",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "4f41039266ed428ad47f4571746bd9f219b9b3d5c0296f31d660a68fb4f19145"
+    },
+    {
+      "name": "0039-hold-returned.png",
+      "bytes": 88087,
+      "sha256": "4e0a636fff1680b0074531665a936cd1ef46ad0fcd7bb06a4ea91e2024b48717",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "4f41039266ed428ad47f4571746bd9f219b9b3d5c0296f31d660a68fb4f19145"
+    },
+    {
+      "name": "0040-retained-monthly-cancellation.png",
+      "bytes": 118340,
+      "sha256": "2a9229fd1dab14262c96c46a0a26dd7528fc443ef8dfd220a8db13f34a9143ff",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "1d40130cadeb50e4d0dfc73694d79d5f21d7e3884ed0c00013d0a62be1ce7bdf"
+    },
+    {
+      "name": "0041-retained-paid-month.png",
+      "bytes": 118340,
+      "sha256": "2a9229fd1dab14262c96c46a0a26dd7528fc443ef8dfd220a8db13f34a9143ff",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "1d40130cadeb50e4d0dfc73694d79d5f21d7e3884ed0c00013d0a62be1ce7bdf"
+    },
+    {
+      "name": "0042-retained-simulator-view.png",
+      "bytes": 87798,
+      "sha256": "b8dc47d28dd8b250d8f147b756fd726411baf5917e0708ce51c1b0aae62b80ba",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "1463dd944d912a48ba89ac3012f8fd9593d9ec325d6792147cb79121b340d585"
+    },
+    {
+      "name": "0043-retained-atm-history.png",
+      "bytes": 91674,
+      "sha256": "08e6944bea024a02acdbb007ac930485924d0f4c788954f760105f446f9c06b5",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "3c25601730d3af51cbd879c9024b76d1a5e34a44c1cb95da55cd24dfddae0d51"
+    },
+    {
+      "name": "0044-reopen-retained-atm-result.png",
+      "bytes": 88414,
+      "sha256": "4520ae885e292bcb87f49ec156559db6a619369c45d7b2dfebf17b175ab0f317",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "b67cecf6b7a8d909391b71f896c8043f30bcc38f4c900b0cf8b7f8a4cc2f6bed"
+    },
+    {
+      "name": "0045-retained-zero-hold.png",
+      "bytes": 88087,
+      "sha256": "4e0a636fff1680b0074531665a936cd1ef46ad0fcd7bb06a4ea91e2024b48717",
+      "dimensions": [
+        720,
+        960
+      ],
+      "ocr_sha256": "4f41039266ed428ad47f4571746bd9f219b9b3d5c0296f31d660a68fb4f19145"
+    }
+  ],
+  "qmp_events": [],
+  "ui_states": [
+    {
+      "phrase": "テスト登録を始める",
+      "screenshot_sha256": "c0d9f0a063199d1292573b529613fc52a7f54785587c5b46cc2efe43f757b3b2",
+      "observed_unix": 1788989240.0638094,
+      "matches": [
+        {
+          "x": 360,
+          "y": 362,
+          "box": [
+            273,
+            348,
+            174,
+            29
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "月額テストへの同意はまだありません",
+      "screenshot_sha256": "398caa52417e909288280a77653eed014602acc4d621a66c24aaedcb1bdd8b7a",
+      "observed_unix": 1788989241.1577559,
+      "matches": [
+        {
+          "x": 200,
+          "y": 273,
+          "box": [
+            57,
+            258,
+            287,
+            30
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "試験認証器を登録する",
+      "screenshot_sha256": "398caa52417e909288280a77653eed014602acc4d621a66c24aaedcb1bdd8b7a",
+      "observed_unix": 1788989242.257565,
+      "matches": [
+        {
+          "x": 360,
+          "y": 524,
+          "box": [
+            252,
+            507,
+            215,
+            34
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "試験認証器の登録",
+      "screenshot_sha256": "5fc924e5c4b7b9176b27a2e3751cd2c07b3ba02866a5a883c8d31284b89eeddd",
+      "observed_unix": 1788989242.8286028,
+      "matches": [
+        {
+          "x": 134,
+          "y": 46,
+          "box": [
+            35,
+            26,
+            198,
+            41
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "試験PINを入力",
+      "screenshot_sha256": "5fc924e5c4b7b9176b27a2e3751cd2c07b3ba02866a5a883c8d31284b89eeddd",
+      "observed_unix": 1788989243.410955,
+      "matches": [
+        {
+          "x": 102,
+          "y": 370,
+          "box": [
+            41,
+            354,
+            122,
+            33
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "PINを確認して登録",
+      "screenshot_sha256": "ae2db0696924e482a0e2afbbc6105bc2dc628fbbe70eb25faa6c54f53e55ba3f",
+      "observed_unix": 1788989244.9481843,
+      "matches": [
+        {
+          "x": 522,
+          "y": 838,
+          "box": [
+            435,
+            825,
+            173,
+            26
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "Wallet利用条件を確認する",
+      "screenshot_sha256": "e81af608f91115b2aaee9a8d1315aa1297eba2fbba97fa7155c083cd6213522e",
+      "observed_unix": 1788989246.063492,
+      "matches": [
+        {
+          "x": 359,
+          "y": 524,
+          "box": [
+            231,
+            508,
+            256,
+            33
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "Wallet試験の利用条件",
+      "screenshot_sha256": "12f3820f946ac3e277e36583485270319a2f4e91e4a7c8b568eb60cff37bd51a",
+      "observed_unix": 1788989246.8446808,
+      "matches": [
+        {
+          "x": 220,
+          "y": 362,
+          "box": [
+            94,
+            343,
+            251,
+            37
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "確認して実行",
+      "screenshot_sha256": "12f3820f946ac3e277e36583485270319a2f4e91e4a7c8b568eb60cff37bd51a",
+      "observed_unix": 1788989247.6278336,
+      "matches": [
+        {
+          "x": 496,
+          "y": 578,
+          "box": [
+            438,
+            564,
+            117,
+            29
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "試験認証器とWallet利用条件を確認済み",
+      "screenshot_sha256": "cc12b276bf7a78bae154e501878b227b3dbb9308516d929e16364b529c8f1579",
+      "observed_unix": 1788989248.7182493,
+      "matches": [
+        {
+          "x": 362,
+          "y": 524,
+          "box": [
+            182,
+            508,
+            359,
+            32
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "テスト操作を開く",
+      "screenshot_sha256": "83ff7ef182c7b9ad51f83643458ef20bd624e6a958f631a934554c1f7741ab22",
+      "observed_unix": 1788989253.1167977,
+      "matches": [
+        {
+          "x": 348,
+          "y": 809,
+          "box": [
+            268,
+            792,
+            161,
+            34
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "テスト金額 (USD)",
+      "screenshot_sha256": "a213ca033cbd024a2ab63cba6c7e124213192475ad568eacdf4c16ab8f946d55",
+      "observed_unix": 1788989256.2667253,
+      "matches": [
+        {
+          "x": 110,
+          "y": 688,
+          "box": [
+            37,
+            672,
+            146,
+            32
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "20.00",
+      "screenshot_sha256": "9f28cebdf9e737f19f489a6ec559761feab7c86989a3a342046b6b82955f07a9",
+      "observed_unix": 1788989257.6637902,
+      "matches": [
+        {
+          "x": 84,
+          "y": 742,
+          "box": [
+            54,
+            733,
+            61,
+            19
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "売上を作る",
+      "screenshot_sha256": "9f28cebdf9e737f19f489a6ec559761feab7c86989a3a342046b6b82955f07a9",
+      "observed_unix": 1788989259.086727,
+      "matches": [
+        {
+          "x": 191,
+          "y": 824,
+          "box": [
+            143,
+            809,
+            96,
+            29
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "PENDING_SETTLEMENT",
+      "screenshot_sha256": "ffcb9de4fe1988bea868ca2bbfc91043c6c8ae4aa7fe68d15f28295a108c2963",
+      "observed_unix": 1788989263.0250587,
+      "matches": [
+        {
+          "x": 132,
+          "y": 676,
+          "box": [
+            56,
+            669,
+            152,
+            13
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "売上を確定",
+      "screenshot_sha256": "ffcb9de4fe1988bea868ca2bbfc91043c6c8ae4aa7fe68d15f28295a108c2963",
+      "observed_unix": 1788989264.3549993,
+      "matches": [
+        {
+          "x": 564,
+          "y": 660,
+          "box": [
+            515,
+            643,
+            97,
+            35
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "SETTLED",
+      "screenshot_sha256": "9185ffb6dba56e5d8fa78c0308e7107397e238882d35e79ad685512476f4795c",
+      "observed_unix": 1788989265.586127,
+      "matches": [
+        {
+          "x": 83,
+          "y": 674,
+          "box": [
+            55,
+            669,
+            56,
+            11
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "$8.88 / 月のテストに同意する",
+      "screenshot_sha256": "8253e76784c5d455901375cf904dba81fdf89cea793d9f0330d6f422b2c119a1",
+      "observed_unix": 1788989266.485766,
+      "matches": [
+        {
+          "x": 360,
+          "y": 806,
+          "box": [
+            227,
+            792,
+            266,
+            27
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "月額テストの同意を取り消す",
+      "screenshot_sha256": "790e1a6ca60afa1dafce2df653ed57f68efd3d6527f6827c1e5131fce04a2db1",
+      "observed_unix": 1788989269.6330848,
+      "matches": [
+        {
+          "x": 360,
+          "y": 548,
+          "box": [
+            232,
+            534,
+            257,
+            28
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "今月のテスト請求を確認・再試行",
+      "screenshot_sha256": "790e1a6ca60afa1dafce2df653ed57f68efd3d6527f6827c1e5131fce04a2db1",
+      "observed_unix": 1788989271.1246214,
+      "matches": [
+        {
+          "x": 360,
+          "y": 611,
+          "box": [
+            212,
+            594,
+            295,
+            34
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "請求要求を受け付けました",
+      "screenshot_sha256": "39b39fb95adb07dac9cc0ff39806a6681ce79b6645b6afb352ea7ee395fbce4a",
+      "observed_unix": 1788989272.4847944,
+      "matches": [
+        {
+          "x": 134,
+          "y": 171,
+          "box": [
+            47,
+            157,
+            174,
+            28
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "テスト請求が完了しました",
+      "screenshot_sha256": "39b39fb95adb07dac9cc0ff39806a6681ce79b6645b6afb352ea7ee395fbce4a",
+      "observed_unix": 1788989273.8281722,
+      "matches": [
+        {
+          "x": 239,
+          "y": 497,
+          "box": [
+            140,
+            482,
+            198,
+            30
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "今月のテスト請求を確認・再試行",
+      "screenshot_sha256": "0aef6f12353b974811bc84e5a3eb317bdbf6929688533bbedca9a4670aec6b03",
+      "observed_unix": 1788989277.1150575,
+      "matches": [
+        {
+          "x": 360,
+          "y": 311,
+          "box": [
+            212,
+            294,
+            295,
+            34
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "請求要求を受け付けました",
+      "screenshot_sha256": "9a1c68a1394b0293c1b04aac5f0ed78222ce68bbb7b527d787323faad61df505",
+      "observed_unix": 1788989278.4316146,
+      "matches": [
+        {
+          "x": 134,
+          "y": 171,
+          "box": [
+            47,
+            157,
+            174,
+            28
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "テスト請求が完了しました",
+      "screenshot_sha256": "eda3d1675d4d1d73a301345135bd580ec198ef9ef0d39b7c1064e0ea9767dc7e",
+      "observed_unix": 1788989288.8327162,
+      "matches": [
+        {
+          "x": 239,
+          "y": 787,
+          "box": [
+            140,
+            772,
+            198,
+            30
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "月額テストの同意を取り消す",
+      "screenshot_sha256": "eda3d1675d4d1d73a301345135bd580ec198ef9ef0d39b7c1064e0ea9767dc7e",
+      "observed_unix": 1788989290.0988805,
+      "matches": [
+        {
+          "x": 360,
+          "y": 838,
+          "box": [
+            232,
+            824,
+            257,
+            28
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "自動更新は停止済み",
+      "screenshot_sha256": "166fbdb7bb1a7fa77c06ffe789e682188dcc0cdef65ab7a058f1f4c44d985f53",
+      "observed_unix": 1788989291.3184063,
+      "matches": [
+        {
+          "x": 136,
+          "y": 273,
+          "box": [
+            59,
+            258,
+            154,
+            30
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "ATMで内容を確認",
+      "screenshot_sha256": "d96c7539814cc772f808f18dc091282e7b004e43614a7ceae186072de6f80ae2",
+      "observed_unix": 1788989297.6475346,
+      "matches": [
+        {
+          "x": 528,
+          "y": 776,
+          "box": [
+            449,
+            766,
+            158,
+            19
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "10.00",
+      "screenshot_sha256": "2737dfae617837cf4e3ab2f0d52435d18082e7359d4165ea395002939f1ed13e",
+      "observed_unix": 1788989298.4374628,
+      "matches": [
+        {
+          "x": 85,
+          "y": 522,
+          "box": [
+            55,
+            512,
+            60,
+            19
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "予約内容を確認",
+      "screenshot_sha256": "2737dfae617837cf4e3ab2f0d52435d18082e7359d4165ea395002939f1ed13e",
+      "observed_unix": 1788989299.2057016,
+      "matches": [
+        {
+          "x": 360,
+          "y": 642,
+          "box": [
+            282,
+            628,
+            155,
+            29
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "ATMの予約内容を確認",
+      "screenshot_sha256": "f677430d7cd71de5d5e4961cb27184a69e92b1cd5bd14bd9391df5c07b5cbe15",
+      "observed_unix": 1788989299.79226,
+      "matches": [
+        {
+          "x": 159,
+          "y": 42,
+          "box": [
+            34,
+            30,
+            250,
+            25
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "手数料",
+      "screenshot_sha256": "f677430d7cd71de5d5e4961cb27184a69e92b1cd5bd14bd9391df5c07b5cbe15",
+      "observed_unix": 1788989300.3782244,
+      "matches": [
+        {
+          "x": 68,
+          "y": 220,
+          "box": [
+            41,
+            204,
+            53,
+            31
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "試験PINを入力",
+      "screenshot_sha256": "73a1bf79886ea8f10df07dfba82547d58b0211f89c37e5d6ba8f89042c6a29e8",
+      "observed_unix": 1788989300.967622,
+      "matches": [
+        {
+          "x": 102,
+          "y": 488,
+          "box": [
+            41,
+            471,
+            122,
+            33
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "認証して予約する",
+      "screenshot_sha256": "cb264f99d431d6609eae0d700a62bd9b67b4bef7f38e0af616cfb694c86feb90",
+      "observed_unix": 1788989302.415611,
+      "matches": [
+        {
+          "x": 520,
+          "y": 840,
+          "box": [
+            442,
+            826,
+            156,
+            27
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "予約済み",
+      "screenshot_sha256": "fca2fe4992af66480c02c36f5c0b3f073420390935d9a119535a5ea7f01df735",
+      "observed_unix": 1788989303.514231,
+      "matches": [
+        {
+          "x": 89,
+          "y": 242,
+          "box": [
+            35,
+            221,
+            108,
+            43
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "保留中: USD 10.00",
+      "screenshot_sha256": "fca2fe4992af66480c02c36f5c0b3f073420390935d9a119535a5ea7f01df735",
+      "observed_unix": 1788989304.595263,
+      "matches": [
+        {
+          "x": 114,
+          "y": 519,
+          "box": [
+            35,
+            503,
+            157,
+            32
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "予約を取消・保留を照合",
+      "screenshot_sha256": "fca2fe4992af66480c02c36f5c0b3f073420390935d9a119535a5ea7f01df735",
+      "observed_unix": 1788989305.6347158,
+      "matches": [
+        {
+          "x": 360,
+          "y": 654,
+          "box": [
+            252,
+            639,
+            216,
+            29
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "取消済み",
+      "screenshot_sha256": "4e0a636fff1680b0074531665a936cd1ef46ad0fcd7bb06a4ea91e2024b48717",
+      "observed_unix": 1788989306.258918,
+      "matches": [
+        {
+          "x": 90,
+          "y": 243,
+          "box": [
+            35,
+            221,
+            110,
+            44
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "保留中: USD 0.00",
+      "screenshot_sha256": "4e0a636fff1680b0074531665a936cd1ef46ad0fcd7bb06a4ea91e2024b48717",
+      "observed_unix": 1788989306.891031,
+      "matches": [
+        {
+          "x": 108,
+          "y": 520,
+          "box": [
+            35,
+            503,
+            147,
+            33
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "自動更新は停止済み",
+      "screenshot_sha256": "2a9229fd1dab14262c96c46a0a26dd7528fc443ef8dfd220a8db13f34a9143ff",
+      "observed_unix": 1788989307.8511624,
+      "matches": [
+        {
+          "x": 136,
+          "y": 231,
+          "box": [
+            59,
+            216,
+            154,
+            30
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "テスト請求が完了しました",
+      "screenshot_sha256": "2a9229fd1dab14262c96c46a0a26dd7528fc443ef8dfd220a8db13f34a9143ff",
+      "observed_unix": 1788989308.8040102,
+      "matches": [
+        {
+          "x": 238,
+          "y": 754,
+          "box": [
+            140,
+            740,
+            196,
+            29
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "テスト操作を開く",
+      "screenshot_sha256": "b8dc47d28dd8b250d8f147b756fd726411baf5917e0708ce51c1b0aae62b80ba",
+      "observed_unix": 1788989312.776324,
+      "matches": [
+        {
+          "x": 348,
+          "y": 809,
+          "box": [
+            268,
+            792,
+            161,
+            34
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "ATMで内容を確認",
+      "screenshot_sha256": "08e6944bea024a02acdbb007ac930485924d0f4c788954f760105f446f9c06b5",
+      "observed_unix": 1788989315.6365345,
+      "matches": [
+        {
+          "x": 528,
+          "y": 820,
+          "box": [
+            449,
+            811,
+            158,
+            19
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "取消済み",
+      "screenshot_sha256": "4520ae885e292bcb87f49ec156559db6a619369c45d7b2dfebf17b175ab0f317",
+      "observed_unix": 1788989316.4334173,
+      "matches": [
+        {
+          "x": 92,
+          "y": 800,
+          "box": [
+            55,
+            784,
+            74,
+            31
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    },
+    {
+      "phrase": "保留中: USD 0.00",
+      "screenshot_sha256": "4e0a636fff1680b0074531665a936cd1ef46ad0fcd7bb06a4ea91e2024b48717",
+      "observed_unix": 1788989317.0681388,
+      "matches": [
+        {
+          "x": 108,
+          "y": 520,
+          "box": [
+            35,
+            503,
+            147,
+            33
+          ]
+        }
+      ],
+      "required_same_frame": {},
+      "within": null,
+      "exact_line": false
+    }
+  ],
+  "fixed_action_checks": [
+    {
+      "phrase": "wallet-footer",
+      "action": "ACTION_NAV",
+      "point": [
+        606,
+        913
+      ],
+      "rectangle": [
+        524.0,
+        878.0,
+        164.0,
+        68.0
+      ]
+    },
+    {
+      "phrase": "テスト登録を始める",
+      "action": "ACTION_WALLET_REGISTER",
+      "point": [
+        360,
+        362
+      ],
+      "rectangle": [
+        56.0,
+        334.0,
+        608.0,
+        52.0
+      ]
+    },
+    {
+      "phrase": "試験認証器を登録する",
+      "action": "ACTION_AUTH_BEGIN",
+      "point": [
+        360,
+        524
+      ],
+      "rectangle": [
+        56.0,
+        495.0,
+        608.0,
+        54.0
+      ]
+    },
+    {
+      "phrase": "PINを確認して登録",
+      "action": "ACTION_AUTH_SIGN",
+      "point": [
+        522,
+        838
+      ],
+      "rectangle": [
+        358.0,
+        811.0,
+        324.0,
+        45.0
+      ]
+    },
+    {
+      "phrase": "Wallet利用条件を確認する",
+      "action": "ACTION_WALLET_TERMS",
+      "point": [
+        359,
+        524
+      ],
+      "rectangle": [
+        56.0,
+        495.0,
+        608.0,
+        54.0
+      ]
+    },
+    {
+      "phrase": "確認して実行",
+      "action": "ACTION_CONFIRM",
+      "point": [
+        496,
+        578
+      ],
+      "rectangle": [
+        369.0,
+        550.0,
+        256.0,
+        53.0
+      ]
+    },
+    {
+      "phrase": "テスト操作を開く",
+      "action": "ACTION_WALLET_EXPAND",
+      "point": [
+        348,
+        809
+      ],
+      "rectangle": [
+        32.0,
+        780.0,
+        656.0,
+        54.0
+      ]
+    },
+    {
+      "phrase": "テスト金額 (USD)",
+      "action": "ACTION_AMOUNT",
+      "point": [
+        250,
+        743
+      ],
+      "rectangle": [
+        32.0,
+        713.0,
+        656.0,
+        64.0
+      ]
+    },
+    {
+      "phrase": "売上を作る",
+      "action": "ACTION_SALE",
+      "point": [
+        191,
+        824
+      ],
+      "rectangle": [
+        32.0,
+        795.0,
+        320.0,
+        53.0
+      ]
+    },
+    {
+      "phrase": "売上を確定",
+      "action": "ACTION_SETTLE",
+      "point": [
+        564,
+        660
+      ],
+      "rectangle": [
+        464.0,
+        633.0,
+        199.0,
+        50.0
+      ]
+    },
+    {
+      "phrase": "wallet-footer",
+      "action": "ACTION_NAV",
+      "point": [
+        606,
+        913
+      ],
+      "rectangle": [
+        524.0,
+        878.0,
+        164.0,
+        68.0
+      ]
+    },
+    {
+      "phrase": "$8.88 / 月のテストに同意する",
+      "action": "ACTION_CONSENT",
+      "point": [
+        360,
+        806
+      ],
+      "rectangle": [
+        56.0,
+        779.0,
+        608.0,
+        50.0
+      ]
+    },
+    {
+      "phrase": "今月のテスト請求を確認・再試行",
+      "action": "ACTION_BILL",
+      "point": [
+        360,
+        611
+      ],
+      "rectangle": [
+        56.0,
+        587.0,
+        608.0,
+        44.0
+      ]
+    },
+    {
+      "phrase": "今月のテスト請求を確認・再試行",
+      "action": "ACTION_BILL",
+      "point": [
+        360,
+        311
+      ],
+      "rectangle": [
+        56.0,
+        287.0,
+        608.0,
+        44.0
+      ]
+    },
+    {
+      "phrase": "月額テストの同意を取り消す",
+      "action": "ACTION_CONSENT",
+      "point": [
+        360,
+        838
+      ],
+      "rectangle": [
+        56.0,
+        811.0,
+        608.0,
+        45.0
+      ]
+    },
+    {
+      "phrase": "ATMで内容を確認",
+      "action": "ACTION_ATM_OPEN",
+      "point": [
+        528,
+        776
+      ],
+      "rectangle": [
+        368.0,
+        750.0,
+        320.0,
+        53.0
+      ]
+    },
+    {
+      "phrase": "予約内容を確認",
+      "action": "ACTION_ATM_ISSUE",
+      "point": [
+        360,
+        642
+      ],
+      "rectangle": [
+        32.0,
+        612.0,
+        656.0,
+        56.0
+      ]
+    },
+    {
+      "phrase": "認証して予約する",
+      "action": "ACTION_AUTH_SIGN",
+      "point": [
+        520,
+        840
+      ],
+      "rectangle": [
+        358.0,
+        811.0,
+        324.0,
+        45.0
+      ]
+    },
+    {
+      "phrase": "予約を取消・保留を照合",
+      "action": "ACTION_ATM_CANCEL",
+      "point": [
+        360,
+        654
+      ],
+      "rectangle": [
+        32.0,
+        625.0,
+        656.0,
+        52.0
+      ]
+    },
+    {
+      "phrase": "wallet-footer",
+      "action": "ACTION_NAV",
+      "point": [
+        606,
+        913
+      ],
+      "rectangle": [
+        524.0,
+        878.0,
+        164.0,
+        68.0
+      ]
+    },
+    {
+      "phrase": "テスト操作を開く",
+      "action": "ACTION_WALLET_EXPAND",
+      "point": [
+        348,
+        809
+      ],
+      "rectangle": [
+        32.0,
+        780.0,
+        656.0,
+        54.0
+      ]
+    },
+    {
+      "phrase": "ATMで内容を確認",
+      "action": "ACTION_ATM_OPEN",
+      "point": [
+        528,
+        820
+      ],
+      "rectangle": [
+        368.0,
+        795.0,
+        320.0,
+        53.0
+      ]
+    },
+    {
+      "phrase": "取消済み",
+      "action": "ACTION_ATM_RESULT",
+      "point": [
+        92,
+        800
+      ],
+      "rectangle": [
+        32.0,
+        732.0,
+        656.0,
+        100.0
+      ]
+    }
+  ],
+  "action_map": {
+    "テスト登録を始める": "ACTION_WALLET_REGISTER",
+    "試験認証器を登録する": "ACTION_AUTH_BEGIN",
+    "PINを確認して登録": "ACTION_AUTH_SIGN",
+    "Wallet利用条件を確認する": "ACTION_WALLET_TERMS",
+    "確認して実行": "ACTION_CONFIRM",
+    "テスト操作を開く": "ACTION_WALLET_EXPAND",
+    "テスト金額 (USD)": "ACTION_AMOUNT",
+    "売上を作る": "ACTION_SALE",
+    "売上を確定": "ACTION_SETTLE",
+    "$8.88 / 月のテストに同意する": "ACTION_CONSENT",
+    "今月のテスト請求を確認・再試行": "ACTION_BILL",
+    "月額テストの同意を取り消す": "ACTION_CONSENT",
+    "ATMで内容を確認": "ACTION_ATM_OPEN",
+    "予約内容を確認": "ACTION_ATM_ISSUE",
+    "認証して予約する": "ACTION_AUTH_SIGN",
+    "予約を取消・保留を照合": "ACTION_ATM_CANCEL",
+    "取消済み": "ACTION_ATM_RESULT"
+  },
+  "limits": {
+    "schema": "rock-nonempty-wallet-prerequisite/1",
+    "additional_normal_boot_shutdown_cycles": 2,
+    "wallet_ui_seconds": 600,
+    "credit_minor": 2000,
+    "monthly_fee_minor": 888,
+    "same_month_bill_requests": 2,
+    "hold_minor": 1000,
+    "atm_fee_minor": 0,
+    "available_final_minor": 1112,
+    "renewal_final": false,
+    "real_funds": "NOT_RUN",
+    "real_atm": "NOT_CONNECTED",
+    "guest_observer": false,
+    "meaning": "separate post-business population then a read-only retained-state boot; not a restored boot"
+  },
+  "minimum_confidence": 45,
+  "ui_state_seconds": 30,
+  "ocr_thread_limit": 1,
+  "source_sha256": {
+    "os/desktop/verify-business.py": "800c42df48f4de283c57d6b41f6394d7fce52ef0a48baecfae95205f11edd095",
+    "os/desktop/check-wallet-ocr.py": "516135fd34134a705ea90bd3416fd9f15bc609ee12858d7b4e42666e9b1e1e51",
+    "os/ui/ui.c": "3f163f895541acdc7e3a7ee0082edb06be32481c9d6b9340309bfe5034977bda",
+    "os/ui/test_wallet_replay.inc": "598a68c4a0eb1f56a741d534a07b4fdc2f85cef00d3e091d77d0d69b303d7491",
+    "os/ui/rock-ui-test": "b5962a065eb957ed03a123c9fb10e4c79e42390ebc0b7764658d633a01dd18fc",
+    "os/assets/NotoSansCJKjp-Regular.otf": "68a3fc98800b2a27b371f2fb79991daf3633bd89309d4ffaa6946fd587f375b5"
+  },
+  "wallet_ui_seconds": 67.908399938,
+  "closed_wallet_evidence": {
+    "schema": "rock-nonempty-wallet-closed-evidence/1",
+    "status": "PASS",
+    "available_minor": 1112,
+    "pending_minor": 0,
+    "held_minor": 0,
+    "dispensed_minor": 0,
+    "monthly_fee_minor": 888,
+    "bill_count": 1,
+    "sale_count": 1,
+    "canceled_withdrawal_count": 1,
+    "monthly_work": "PAID_QUIESCENT",
+    "monthly_consent": "REVOKED",
+    "native_distinct_keys": 15,
+    "financial_journals": 5,
+    "postings": 10,
+    "registration_and_assertion_reverified": true,
+    "rock_atm_fee_minor": 0,
+    "private_rows_sha256": "7049770ce835e55dd014dd0b8a1c36bf149fcf303c6d2b0725a9374fb2669d55",
+    "private_code_in_report": false,
+    "real_funds": "NOT_RUN",
+    "real_atm": "NOT_CONNECTED"
+  },
+  "available_minor": 1112,
+  "held_minor": 0,
+  "billed_minor": 888,
+  "operations": [
+    "snapshot",
+    "snapshot",
+    "wallet.register",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.begin",
+    "auth.create",
+    "wallet.auth.enroll",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.terms",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.sale",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.settle",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.consent",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.bill",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.bill",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.consent",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.atm.history",
+    "snapshot",
+    "wallet.atm.history",
+    "snapshot",
+    "wallet.atm.quote",
+    "auth.get",
+    "wallet.atm.issue",
+    "wallet.atm.status",
+    "snapshot",
+    "wallet.atm.status",
+    "snapshot",
+    "wallet.atm.status",
+    "snapshot",
+    "wallet.atm.cancel",
+    "wallet.atm.status",
+    "snapshot",
+    "wallet.atm.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.auth.status",
+    "snapshot",
+    "wallet.atm.history",
+    "snapshot",
+    "wallet.atm.status",
+    "snapshot"
+  ],
+  "renderer_processes": 2
+}

@@ -1,0 +1,64 @@
+{
+  "schema": "rock-rls01-manual-native-ui-observation/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "mode": "CUA native browser canvas, observed rendered screenshots, no QMP event recorder claim",
+  "first_boot": {
+    "session": "8f50d668314f4e71929f309cecf92ba5",
+    "owned_browser_tab": "48015076",
+    "actions": [
+      "fresh catalog citations 1.0.0 install and local permission",
+      "bundled sample 150 bytes",
+      "execute once, completed result with code citation retained and source list",
+      "Wallet explicit registration, public PIN0000 and separate Wallet terms",
+      "monthly terms not approved",
+      "single synthetic credit $100",
+      "Game A explicit connection approval",
+      "quote $1 principal+$0.03 game fee+$0 external expense=10 COIN_A",
+      "separate purchase PIN and approval once",
+      "exchange completed, hold $0",
+      "Wallet $98.97, month consent available and no bill",
+      "native device poweroff confirmation",
+      "delivered bootstrap stop returned owned guest and Game authority stopped",
+      "owned viewer tab closed"
+    ],
+    "observed_inconveniences": [
+      {
+        "kind": "navigation",
+        "observation": "Wallet background synchronization caused several Game header clicks to be ignored; Hub navigation then Game opened successfully."
+      },
+      {
+        "kind": "connection_response",
+        "observation": "Game A connection approval first displayed connection response unavailable; explicit existing Update recovered connected state; no new connection key was requested."
+      }
+    ],
+    "stopped_at_or_before_utc": "2026-09-10T10:15:29.728279+00:00"
+  },
+  "second_boot": {
+    "status": "OBSERVED_AND_NORMAL_STOPPED",
+    "owned_browser_tab": "48015099",
+    "actions": [
+      "Hub initial catalog retained citation installed",
+      "History shows exactly one completed citation1.0.0 run dated09/10 10:02:06",
+      "Original result shows introduction, fenced code citation unchanged, source list store",
+      "Game A connected, B unconnected, same one public-game-a exchange completed history",
+      "Wallet $98.97, no monthly bill and monthly consent not accepted",
+      "Native device poweroff confirmation, delivered bootstrap normal stop, owned tab closed"
+    ],
+    "detail_view_limitation": "Game completed history remained on list after multiple clicks during synchronization; did not claim second-boot detail-page display. Full stored receipt verified later with frozen stopped-state observer.",
+    "stopped_at_or_before_utc": "2026-09-10T10:20:30.140573+00:00"
+  },
+  "recovered_boot": {
+    "status": "OBSERVED_AND_NORMAL_STOPPED",
+    "owned_browser_tab": "48015103",
+    "actions": [
+      "Hub catalog retains citation installed",
+      "History exactly one citation1.0.0 succeeded at09/10 10:02:06",
+      "Original output introduction/code citation/source list displayed",
+      "GameA connected, GameB unconnected, exactly one GameA completed history",
+      "Original exchange detail displayed: principal$1/gamefee$0.03/external$0/10COIN_A/held$0",
+      "Wallet98.97/no monthlybill/monthlyconsent unapproved",
+      "Native poweroff confirmed, deliveredbootstrapstop succeeded, ownedtabclosed"
+    ],
+    "completed_at_or_before_utc": "2026-09-10T10:29:34.127557+00:00"
+  }
+}

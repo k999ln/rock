@@ -1,0 +1,52 @@
+{
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "command": [
+    "node",
+    "systems/rock-star-os/examples/game/verify-golden.mjs"
+  ],
+  "inputs": {
+    "systems/rock-star-os/examples/game/verify-golden.mjs": {
+      "sha256": "9020a17ef287e91e0b5701b7659ec0c64664d2fc281bd9f56cc0158ede967fec",
+      "bytes": 2124
+    },
+    "systems/rock-star-os/os/game_exchange/fixtures/exchange-v1/apply.json": {
+      "sha256": "9dffd667a79f6183969ca78f986a08d3431158948b064a19a102e259bc10a396",
+      "bytes": 5503
+    },
+    "systems/rock-star-os/os/game_exchange/fixtures/exchange-v1/approval.json": {
+      "sha256": "d6912428414242b9ea83fd3bc03db6b8755853220fcbeda04db1f4edabd49bc8",
+      "bytes": 3668
+    },
+    "systems/rock-star-os/os/game_exchange/fixtures/exchange-v1/quote.json": {
+      "sha256": "d239f95a7042a4ffa555ad88adb62c1534db3dfa96cc06523dd51743c86c6690",
+      "bytes": 4798
+    },
+    "systems/rock-star-os/os/game_exchange/fixtures/exchange-v1/reject.json": {
+      "sha256": "93c2a1548b04f10da3fc9489b2de5b43b72f80896a26642c6eb60e2f95398261",
+      "bytes": 7122
+    },
+    "systems/rock-star-os/os/game_exchange/fixtures/exchange-v1/status.json": {
+      "sha256": "d0da2c3d822d5d1ff4acc452db4fde64f9445dcfb37aaeb9cc1e6e9adc3ed001",
+      "bytes": 7083
+    },
+    "systems/rock-star-os/os/game_exchange/fixtures/exchange-v1/terminal.json": {
+      "sha256": "6b8997f6fbe9054a2eaa71337020e32de5ba7c180f81bd59aef83b34de5c4a85",
+      "bytes": 5640
+    }
+  },
+  "scope": "Host Node independent golden verification; no network, guest or production signature.",
+  "started_utc": "2026-09-11T16:03:45.893000+00:00",
+  "finished_utc": "2026-09-11T16:03:45.991035+00:00",
+  "exit_code": 0,
+  "result": {
+    "status": "PASS",
+    "runtime": "v26.0.0",
+    "vectors": 6,
+    "checks": "exact canonical bytes, SHA256, Ed25519 and six separate signing domains",
+    "simulation_only": true
+  },
+  "inputs_unchanged": true,
+  "stdout_sha256": "3e9e6d4502a0690b4b3cca124e249161a6b9ee869250e2143c506a6c856f531d",
+  "plan_sha256": "d28418f7b781a01aef6dcd432c412e83ca92e0e8228fd381984fde07015688e1",
+  "original_report_sha256": "cb6ca8073714b3284ad35d2485a6163754cbc0a1c5737aad2b01177ee7238a2b"
+}

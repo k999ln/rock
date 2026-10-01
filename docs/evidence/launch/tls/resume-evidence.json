@@ -1,0 +1,173 @@
+{
+  "schema": "rock-lch01-resumed-causal-investigation/1",
+  "created_utc": "2026-09-10T22:13:40.330641+00:00",
+  "historical_cause": "UNDETERMINED",
+  "lch01_status": "BLOCKED_ORIGINAL_OBSERVATION_MISSING",
+  "checkout_head_observed": "97d952937add42de04092a2e6c2fac8aba3d8bad",
+  "runtime_edited": false,
+  "production_timeout_changed": false,
+  "workflows_rerun": false,
+  "environment": {
+    "platform": "macOS-15.7.4-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7",
+    "machine": "arm64"
+  },
+  "causally_supported_fixture_defect": {
+    "source": "systems/rock-star-os/tests/test_contract_runtime_lifetime.py:221",
+    "historical_source": "e430648c8ba799d004a5ecd0da8166ca811d3ae5",
+    "source_sha256": "c09a04af0f6a4a7ae04d784a6f90614516c8ea1075ac07bc643b54337dcdb1c1",
+    "mechanism": "Patching module.time.monotonic mutates the shared Python time module. An unrelated real reader consumes the first value of the finite side_effect list; the target expires before entering verifier admission.",
+    "deterministic_schedule": "Start an unrelated waiting thread before fixture patch. Release and join its single monotonic read immediately after the original patch enters, before original dispatch. No sleep, altered deadline or retry.",
+    "before": {
+      "original_test_passed": false,
+      "unrelated_clock": [
+        0.0
+      ],
+      "global_clock_restored": true,
+      "worker_joined": true,
+      "regression": "1 test, 1 failure, 0 errors, 0 skipped"
+    },
+    "after": {
+      "original_test_passed": true,
+      "unrelated_clock_real": true,
+      "global_clock_restored": true,
+      "worker_joined": true,
+      "regression_and_existing": "13 tests, 13 pass, 0 skipped"
+    },
+    "minimal_fix": "Patch only wallet_backend.contract_runtime.time with a wrapping proxy, then set proxy.monotonic.side_effect. No runtime file change.",
+    "patch": "clock-fixture-isolation.patch",
+    "apply_check": "PASS",
+    "historical_attribution": "NOT ESTABLISHED. Original clock fixture passed at zero-based ordinal39; TLS failure occurred at157, with117 intervening cases. The clock patch was no longer active."
+  },
+  "thread_lifecycle_observation": {
+    "related_modules": [
+      "test_contract_runtime_lifetime",
+      "test_developer_settlement",
+      "test_game_connections_tls",
+      "test_game_exchange_races",
+      "test_game_exchange_restore",
+      "test_game_exchange_tls"
+    ],
+    "tests": 70,
+    "passed": true,
+    "skipped": 0,
+    "wall_seconds": 33.17463962500915,
+    "all_post_cleanup_thread_counts_zero": true,
+    "all_shared_function_identities_restored": true,
+    "conclusion": "No persistent thread leak or retained global monkeypatch observed across these70 related cases. Does not prove absence under original runner scheduling."
+  },
+  "original_order_prefix_observation": {
+    "cases_invoked": 158,
+    "errors": 0,
+    "failures": 0,
+    "host_skips": 2,
+    "acceptance": "INCOMPLETE_HOST_SCOPE",
+    "wall_seconds": 27.736695958010387,
+    "all_post_cleanup_thread_counts_zero": true,
+    "all_shared_function_identities_restored": true,
+    "skip_reason": "Two existing ext4 local-image tests require Linux image tools; this Mac run is not canonical native PASS/skip0 evidence."
+  },
+  "busy_loop_review": {
+    "tls_reader": "Every body loop reduces bounded remaining count or rejects EOF; raw header readline syscall amplification remains proven by prior study, not a demonstrated infinite spin.",
+    "game_workers": "ExchangeWorker returns no-work and waits0.2s when no due claim exists; exact initial GameConnections failure fixture disables scheduler and has no started exchange workers.",
+    "limits": "Static review and observed cleanups cannot establish historical process CPU/run-queue state."
+  },
+  "original_observation_availability": {
+    "run_id": 34477407336,
+    "url": "https://github.com/k999ln/rock/actions/runs/34477407336",
+    "artifact_files": 15,
+    "stack_or_timing_sidecars": 0,
+    "artifact_hash_verified": true,
+    "failure_stack": "Client blocked in TLS read at1s; no simultaneous server stack or execution-stage timing."
+  },
+  "exact_missing_observation": [
+    "At original1s client failure, server worker stack and current request stage: TLS handshake/header/body parsing, owner admission, SQLite wait/commit, signature verification, or response send.",
+    "Per-request elapsed time and server thread/process CPU counters together with runnable/waiting thread state to distinguish CPU scheduling/GIL pressure from I/O/lock waiting.",
+    "Original runner CPU throttling/run-queue or I/O wait observation if server request timing shows unexplained scheduling or disk delay."
+  ],
+  "closure_requirements": "Attribute historical cause only with supporting original simultaneous observations or a faithful documented environmental reproduction explaining the original trace. Fresh passes and synthetic injection alone are insufficient.",
+  "available_next_evidence": "Already integrated failure-time all-thread/resource capture and hashed sidecars can capture server state on recurrence without modifying deadlines/outcomes. Successful final CI sidecars are empty and cannot recover past state.",
+  "harness_incidents": [
+    {
+      "files": [
+        "clock-race-original.json",
+        "clock-race-fixed.json"
+      ],
+      "meaning": "First research harness incorrectly replaced patch object protocol; fixture setUp failed before experiment. Both owned child processes were terminated and harness corrected. These outputs are excluded from causal results and retained."
+    }
+  ],
+  "artifacts": {
+    "clock-fixture-isolation.patch": {
+      "bytes": 3276,
+      "sha256": "b7d8bcc4bf3b786f8803f6726899da72b320920e9e45bdd9199760c014c2e35d"
+    },
+    "clock_race.py": {
+      "bytes": 2465,
+      "sha256": "578c239ed381f626cf9d475a0eee100c9c8fbc8e76644cd1eba5dafe1c402498"
+    },
+    "check_fixture_patch.py": {
+      "bytes": 1246,
+      "sha256": "851fae8c87af8ed3d130a396ae07db32a1db80611be8aee22770d630e279f582"
+    },
+    "lifecycle_audit.py": {
+      "bytes": 3632,
+      "sha256": "88c619578492a08c69c1cb929ca541f8e7cbf19fd23fa207d1025f70a7370b79"
+    },
+    "clock-race-original-v2.json": {
+      "bytes": 1699,
+      "sha256": "0e2c381264922210ec5215e5c8c91bff9b1de313de57b3dfc0eb46a9882ce305"
+    },
+    "clock-race-fixed-v2.json": {
+      "bytes": 760,
+      "sha256": "7845817ba52aa3262e1522c7060ca2601cb8dc8c1629ada64f4c5c21ede89d56"
+    },
+    "fixture-before.log": {
+      "bytes": 2169,
+      "sha256": "0564d69494eb577e9970ccf31357b4438d727ae2eea36bdcadea5e748c6ecde9"
+    },
+    "fixture-after.log": {
+      "bytes": 2757,
+      "sha256": "1026ba995f648f9c873bea8d0436bfd6492adbb7db8faea0e8320c2ce87c9a5c"
+    },
+    "lifecycle-audit.json": {
+      "bytes": 22555,
+      "sha256": "f1d261599b9fb15cfb9929fe5255e7067bd85aed4094924a569146f30850b348"
+    },
+    "lifecycle-original.log": {
+      "bytes": 13294,
+      "sha256": "ada8bf1058331bc65f5108d4d04013306cd466bbfa29771a480ec2fbe15943bf"
+    },
+    "original-prefix-audit/lifecycle-audit.json": {
+      "bytes": 50093,
+      "sha256": "f1470f8c278ddc8793aeeb83e0d6cf87113ea7049467d2cf2932d902ddff5a4a"
+    },
+    "original-prefix-audit/lifecycle-original.log": {
+      "bytes": 29771,
+      "sha256": "a1818cf629e902b8e74da8dfbfdee55ffe83074e66f55f02a5d63e9c23db03bd"
+    },
+    "original-order.json": {
+      "bytes": 295674,
+      "sha256": "78686aa35c97756f677071d361f48a5195bab74f423b6651d6b32a6e86750f56"
+    },
+    "original-artifact-forensics.json": {
+      "bytes": 794,
+      "sha256": "bb98e1a2a6a0ceafff1e4986f6893c4d974aeee2ef44ff9b0a7eccf6d6636b8f"
+    },
+    "original-e430-artifact.zip": {
+      "bytes": 88003,
+      "sha256": "76d9fa1d717dcd2a9bcd839148c157d5067ce769dd9f5c4a179b98cb2f8cb9d1"
+    },
+    "original-fixture/tests/test_contract_runtime_lifetime.py": {
+      "bytes": 14732,
+      "sha256": "c09a04af0f6a4a7ae04d784a6f90614516c8ea1075ac07bc643b54337dcdb1c1"
+    },
+    "fixture-proposal/tests/test_contract_runtime_lifetime.py": {
+      "bytes": 14925,
+      "sha256": "5d5ba47682fa2d34e30ea3f0162493d98f0001d38836c24dca97f21d01e9caf6"
+    },
+    "fixture-proposal/tests/test_contract_runtime_clock_isolation.py": {
+      "bytes": 2263,
+      "sha256": "20a52118eb9946a5a26a695275ddc702baf259ec61c81bfc87a5fb82a28e6932"
+    }
+  }
+}

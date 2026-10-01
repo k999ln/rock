@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "rockstaros.icd.authority-lease.v1",
+  "executionMode": "SIMULATION",
+  "dataClass": "SYNTHETIC",
+  "siteId": "site:fixture",
+  "nodeId": "node:fixture",
+  "messageId": "message:fixture",
+  "issuedAt": {
+    "utcMs": 1000000,
+    "monotonicMs": 1000,
+    "bootId": "boot:fixture-A",
+    "quality": "TRUSTED",
+    "uncertaintyMs": 1
+  },
+  "authorityEpoch": 1,
+  "holderDeviceRef": "device:fixture",
+  "targetAssetId": "asset:load",
+  "targetBootId": "boot:fixture-A",
+  "approvedProfileDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "issuedUtcMs": 1000000,
+  "expiresUtcMs": 1030000,
+  "proofRef": "proof:placeholder"
+}

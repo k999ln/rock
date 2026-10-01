@@ -1,0 +1,120 @@
+{
+  "schema": "rock-signing-bootstrap-feasibility/1",
+  "recorded_at_utc": "2026-09-10T22:09:20Z",
+  "repository": "k999ln/rock",
+  "status": "BLOCKED_FOR_FIRST_PROTECTED_DISPATCH_UNDER_CURRENT_CONSTRAINTS",
+  "scope": "Read-only feasibility research, not production signing or launch acceptance",
+  "observations": {
+    "provenance": "Current live GitHub API readback reported by root task; this research did not independently repeat these endpoints or mutate GitHub",
+    "repository_public": true,
+    "root_has_admin_access": true,
+    "known_direct_collaborators": [{"login": "k999ln", "id": 231327239}],
+    "environment": {"name": "rock-release-signing", "http_status": 404},
+    "control_branch": {"name": "codex/release-signing-control", "http_status": 404},
+    "workflow": {"path": ".github/workflows/release-signing.yml", "http_status": 404},
+    "selected_independent_reviewer": null,
+    "selected_key_custody": null
+  },
+  "authorization_constraints": {
+    "main_merge_or_modification_before_final_approval": false,
+    "general_publication_before_final_approval": false,
+    "registration_event_workaround": false,
+    "security_gate_bypass": false,
+    "new_repository_workaround": false
+  },
+  "findings": [
+    {
+      "id": "BOOTSTRAP_DEFAULT_BRANCH",
+      "claim": "GitHub documents default-branch presence for manual workflow_dispatch. The CLI --ref and REST ref select execution branch/tag; they do not provide an independent workflow-registration endpoint.",
+      "source_ids": ["manual", "dispatch_api"]
+    },
+    {
+      "id": "PRIOR_RUN_NUANCE",
+      "claim": "The event reference also says a workflow that has run at least once can be dispatched to another branch/tag through API/CLI. That statement does not bootstrap this presently unregistered, never-run, workflow_dispatch-only workflow under the no-alternate-event constraint.",
+      "source_ids": ["events"]
+    },
+    {
+      "id": "APPROVAL_DEPENDENCY",
+      "claim": "A real independent User must be designated and eligible. Prevent-self-review excludes the initiating person. The known direct-collaborator list is not proof that no other public-repository reader could ever qualify; no second reviewer is currently selected.",
+      "source_ids": ["deployment_rules"]
+    },
+    {
+      "id": "NOT_PLAN_OR_ADMIN_BLOCKER",
+      "claim": "The reported public repository and administrator/owner access do not establish a plan or access blocker for Environment/reviewer setup. Missing bootstrap authorization and owner decisions are the relevant dependencies.",
+      "source_ids": ["environments"]
+    }
+  ],
+  "dependency_loop": {
+    "protected_github_signing_evidence_requires": "Registered runnable workflow, protected control ref and Environment, actual independent approval, policy-read credential and managed key/trust setup",
+    "documented_initial_registration_route_requires": "Workflow file placed on default branch",
+    "current_user_order": "No main change until final approval; LCH03 evidence required before launch completion",
+    "result": "The current protected-GitHub-signing route cannot close this ordering automatically. A specifically authorized limited default-branch bootstrap or a separately approved architecture/order change is required. Do not imply general product merge/publication approval."
+  },
+  "authorized_preparation_assessment": {
+    "control_branch_creation": "Creating a new control branch at the final independently reviewed full SHA and then applying exact strong branch protection is legitimate preparation that need not change main, select a reviewer or handle a signing secret.",
+    "expected_protection": {
+      "lock_branch": true,
+      "enforce_admins": true,
+      "allow_force_pushes": false,
+      "allow_deletions": false,
+      "required_approving_review_count_minimum": 1,
+      "dismiss_stale_reviews": true,
+      "require_last_push_approval": true,
+      "bypass_pull_request_allowances": {"users": [], "teams": [], "apps": []}
+    },
+    "review_result": "No concrete additional security concern identified for that preparation under the stated final-SHA and readback conditions. It does not register workflow_dispatch, prove human approval or satisfy LCH03.",
+    "useful_work_now": [
+      "Unsigned candidate/index preparation and bounded asset verification",
+      "Public-fixture, tamper and fail-closed policy tests",
+      "Final reviewed control-code/configuration payload preparation",
+      "Optional exact control-branch creation/protection after implementation and tests, with live ref/protection readback"
+    ],
+    "avoid_fake_setup": [
+      "No empty Environment merely to remove a 404 from status",
+      "No dummy reviewer, owner self-approval substitution, invented fingerprint or test-key production secret",
+      "No broad local administrator credential copied into Actions as the policy-read token",
+      "No claim that branch setup or fixture CI proves production signing"
+    ],
+    "source_ids": ["refs_api", "branch_protection_api", "environments"]
+  },
+  "unmerged_bootstrap_advisory": {
+    "status": "PREPARATION_WITHIN_STATED_DRAFT_PR_SCOPE_NO_CONCRETE_SECURITY_FINDING",
+    "independent_readback": {
+      "pr_url": "https://github.com/k999ln/rock/pull/5",
+      "is_draft": true,
+      "head_sha": "a4411622031858d6d9684c599d857cadaf90bb94",
+      "base_sha": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+      "live_main_sha": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+      "changed_files": [{"path": ".github/workflows/release-signing.yml", "additions": 95, "deletions": 0}],
+      "workflow_bytes": 4399,
+      "workflow_sha256": "5a6638e70a5b04b69b396e3d38b484c590e24fb32c2a3b756bd634b70db5f336",
+      "method": "gh pr view 5 JSON, GitHub contents API bytes at exact head SHA, and live main ref API"
+    },
+    "semantics": [
+      "Preparing an unmerged Draft PR containing only the reviewed workflow makes the needed limited default-branch exception reviewable without changing main now.",
+      "The workflow has only workflow_dispatch; its signing and preflight jobs both require the exact repository, control branch and configured control SHA. Dispatch on main fails the branch condition, so the absent control scripts on this bootstrap branch are not executed.",
+      "After separately authorized bootstrap merge, dispatch with the protected control branch selects that branch/tag ref. Checkout explicitly selects github.sha, providing the full reviewed control code from the control branch. Exact ref/SHA, policy and independent approval checks remain in force.",
+      "A Draft PR by itself does not establish registration, approve main modification, prove protected signing or authorize general publication.",
+      "The PR body correctly makes limited bootstrap approval explicit and requires a fresh product-PR tree/CI comparison after main changes."
+    ],
+    "remaining_live_validation": [
+      "After explicit limited bootstrap approval and merge, verify actual workflow registration and dispatch ref/SHA via GitHub readback",
+      "Only after independently designated reviewer and real policy/trust/key setup, exercise the protected signing and negative verification paths",
+      "Reconcile product PR4 against changed main and rerun exact candidate checks before its separate final approval"
+    ],
+    "source_ids": ["manual", "events", "job_if", "github_context", "draft_pr"]
+  },
+  "sources": [
+    {"id": "manual", "title": "GitHub: Manually running a workflow", "url": "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow", "consulted_date": "2026-09-10"},
+    {"id": "events", "title": "GitHub: Events that trigger workflows — workflow_dispatch", "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch", "consulted_date": "2026-09-10"},
+    {"id": "dispatch_api", "title": "GitHub REST: Create a workflow dispatch event", "url": "https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event", "consulted_date": "2026-09-10"},
+    {"id": "deployment_rules", "title": "GitHub: Deployments and environments — Required reviewers", "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments#required-reviewers", "consulted_date": "2026-09-10"},
+    {"id": "environments", "title": "GitHub: Managing environments for deployment", "url": "https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments", "consulted_date": "2026-09-10"},
+    {"id": "refs_api", "title": "GitHub REST: Create a reference", "url": "https://docs.github.com/en/rest/git/refs#create-a-reference", "consulted_date": "2026-09-10"},
+    {"id": "branch_protection_api", "title": "GitHub REST: Update branch protection", "url": "https://docs.github.com/en/rest/branches/branch-protection#update-branch-protection", "consulted_date": "2026-09-10"},
+    {"id": "job_if", "title": "GitHub workflow syntax: jobs.<job_id>.if", "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idif", "consulted_date": "2026-09-10"},
+    {"id": "github_context", "title": "GitHub Actions contexts: github context", "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#github-context", "consulted_date": "2026-09-10"},
+    {"id": "draft_pr", "title": "GitHub: Draft pull requests", "url": "https://docs.github.com/en/pull-requests/reference/pull-requests#draft-pull-requests", "consulted_date": "2026-09-10"}
+  ],
+  "mutation_performed_by_this_research": false
+}

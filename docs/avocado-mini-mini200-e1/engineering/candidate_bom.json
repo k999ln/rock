@@ -1,0 +1,69 @@
+{
+  "revision": "E1",
+  "purchase_order_ready": false,
+  "items": [
+    {
+      "id": "E1-C01",
+      "function": "game computer",
+      "candidate": "AMD Ryzen AI 9 HX 370 / Radeon 890M equipped motherboard",
+      "qty": 1,
+      "status": "HOLD actual motherboard model, dimensions, connectors, Linux support and cooling not selected"
+    },
+    {
+      "id": "E1-C02",
+      "function": "shared RAM",
+      "candidate": "32 GB class; logical budget 32 GiB",
+      "qty": 1,
+      "status": "ALLOCATION not a selected component"
+    },
+    {
+      "id": "E1-C03",
+      "function": "storage",
+      "candidate": "NVMe SSD 1 TB nominal",
+      "qty": 1,
+      "status": "ALLOCATION form factor and peak power HOLD"
+    },
+    {
+      "id": "E1-V01",
+      "function": "vision controller",
+      "candidate": "Luxonis OAK-FFC 4P USB",
+      "qty": 1,
+      "status": "CANDIDATE board revision, host power and fit HOLD"
+    },
+    {
+      "id": "E1-V02",
+      "function": "stereo mono",
+      "candidate": "Luxonis OAK-FFC-OV9282",
+      "qty": 2,
+      "status": "CANDIDATE 120 mm baseline proposed; calibration and fit HOLD"
+    },
+    {
+      "id": "E1-V03",
+      "function": "RGB",
+      "candidate": "Luxonis OAK-FFC-IMX378",
+      "qty": 1,
+      "status": "CANDIDATE rolling shutter; fit and channel assignment HOLD"
+    },
+    {
+      "id": "E1-A01",
+      "function": "voice",
+      "candidate": "Seeed reSpeaker XVF3800 USB 4-Mic Array SKU 101991441; no XIAO",
+      "qty": 1,
+      "status": "CANDIDATE descriptor, current, fit, isolation and AEC HOLD"
+    },
+    {
+      "id": "E1-A02",
+      "function": "ASR",
+      "candidate": "whisper.cpp with multilingual Whisper base / small comparison",
+      "qty": null,
+      "status": "SOFTWARE CANDIDATE no actual inference executed"
+    },
+    {
+      "id": "E1-P01",
+      "function": "power cooling privacy",
+      "candidate": null,
+      "qty": null,
+      "status": "HOLD DC supply/conversion/protection, heatsink, fan, hardware mute, shutter, fasteners and cables not released"
+    }
+  ]
+}

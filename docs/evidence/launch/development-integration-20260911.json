@@ -1,0 +1,45 @@
+{
+  "schema": "rock-development-integration/1",
+  "date": "2026-09-11",
+  "request": "ここまでのところをrockに矛盾しないように追加して",
+  "targetBranch": "codex/rockstaros-launch-candidate-20260910",
+  "previousCandidateCommit": "3cb27f9a5f27b25a7d6847e625d566ec486495e7",
+  "integratedPhoneCommit": "3eeeeed66ed438f8d543ae88260e072c63bd0132",
+  "mainAtStart": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+  "currentState": "docs/current-state-20260911.md",
+  "nextPrompt": "docs/prompts/rock-current-next-20260911.md",
+  "validation": {
+    "webVerify": "PASS: 93 tests, typecheck, lint, build, 143 synthetic API assertions",
+    "phoneTests": "PASS: 8 host tests; no real device",
+    "osContracts": "PASS: static source consistency",
+    "shellSyntax": "PASS",
+    "documentLinksAndStatus": "PASS",
+    "independentConsistencyReviews": "2 reviews; previous findings resolved; no new material findings"
+  },
+  "preserved": {
+    "qemuRuntimeAndAssets": true,
+    "androidP1Runtime": true,
+    "deployedSiteSource": "a750908329d42bbfb78e07243f414b51d1534cf8",
+    "monthlyFeeUsdCents": 888,
+    "rockAtmFeeMinor": 0,
+    "historicalEvidence": true
+  },
+  "notPerformed": [
+    "product main merge",
+    "Sites redeployment",
+    "public release",
+    "cloud provisioning or spending",
+    "production key generation or signing",
+    "phone OS build or device flashing"
+  ],
+  "cloudBudget": {
+    "currency": "USD",
+    "proposedInitialServerBudgetExcludingTax": 10,
+    "approved": null
+  },
+  "validationLogs": {
+    "verify.log": "c425caa96e7a3e6d6455ea0e30241025b7501374dad7f7a596c854976d1388dd",
+    "phone-tests.log": "73e10d3e4e716fbb9b17b255216b42fbf8071e6fe1c6d59149eb4d577ca3fa0b"
+  },
+  "ciScope": "Phone source commit evidence is ci-phone-3eeeeed.json; final integration HEAD CI must be read from PR4, not inferred from this record."
+}

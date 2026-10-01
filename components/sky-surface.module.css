@@ -1,0 +1,15 @@
+.sky {
+  color-scheme: dark;
+  --sky-bg: #0b0f14;
+  --sky-panel: #151d25;
+  --sky-line: #2e3c47;
+  --sky-text: #edf3f7;
+  --sky-muted: #a0b1bc;
+  --sky-accent: #c3e1f0;
+}
+.sky :global(.rock-main) { padding: 0; color: var(--sky-text); background: var(--sky-bg); }
+.sky :global(.rock-main-column) { min-width: 0; background: var(--sky-bg); }
+.sky :global(.rock-topbar) { padding-inline: max(24px, calc((100% - 1160px) / 2)); border-color: var(--sky-line); background: var(--sky-bg); }
+.sky :global(.rock-bottom-note) { border-color: var(--sky-line); background: var(--sky-bg); }
+.sky :is(button, a, input, textarea, select, summary):focus-visible { outline: 2px solid var(--sky-accent); outline-offset: 3px; }
+@media (max-width: 640px) { .sky :global(.rock-topbar) { padding-inline: 16px; } }

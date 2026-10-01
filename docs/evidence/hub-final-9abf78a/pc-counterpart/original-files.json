@@ -1,0 +1,52 @@
+{
+  "run-01": {
+    "all_original_file_hashes": {
+      "after-normal-exit.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "after-normal-exit.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after-normal-exit.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "first-process.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "first-process.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "first-process.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "plan.json": "2c290e908a364375c3e7bb74166615f0113a5a18bb56e65a735a4c11e8f60b7a",
+      "repeat-1.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "repeat-1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "repeat-1.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "repeat-2.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "repeat-2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "repeat-2.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "repeat-3.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "repeat-3.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "repeat-3.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "report.json": "b5d665f036a6ed571cd7e9e640f4f35beb1381d7daabb515f1edd410eafe2e3f",
+      "source/systems/rock-star-os/os/tools/fixtures/citations.md": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+      "source/systems/rock-star-os/os/tools/packages/org.rockstar.citation-organizer--1.0.0.recipe.json": "a1b8cf21232875b6118e7adf8db91131e2e3f7a7ef2833915f7d05b820c4b635",
+      "source/systems/rock-star-os/src/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e"
+    },
+    "git_summary_scope": "Plan/report and one shared identical output; all five original stdout/stderr/output files remain in private run directory."
+  },
+  "run-02": {
+    "all_original_file_hashes": {
+      "after-normal-exit.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "after-normal-exit.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after-normal-exit.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "first-process.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "first-process.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "first-process.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "plan.json": "058e69f37473ca5d82bd1d92d7a7e7ad6abe5f6b567e8ddb096d1ac2cfff0767",
+      "repeat-1.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "repeat-1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "repeat-1.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "repeat-2.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "repeat-2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "repeat-2.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "repeat-3.md": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7",
+      "repeat-3.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "repeat-3.stdout": "81e56d6579ebd5a694301800663039c148b4faf9d04dc9e3acdd1b40693ca880",
+      "report.json": "2e11e0335fbbec53dced23d7a25659cad274034731ab09c8c69838935d299770",
+      "source/systems/rock-star-os/os/tools/fixtures/citations.md": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+      "source/systems/rock-star-os/os/tools/packages/org.rockstar.citation-organizer--1.0.0.recipe.json": "a1b8cf21232875b6118e7adf8db91131e2e3f7a7ef2833915f7d05b820c4b635",
+      "source/systems/rock-star-os/src/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e"
+    },
+    "git_summary_scope": "Plan/report and one shared identical output; all five original stdout/stderr/output files remain in private run directory."
+  }
+}

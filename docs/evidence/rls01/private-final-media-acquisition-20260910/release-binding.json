@@ -1,0 +1,35 @@
+{
+  "id": 386171909,
+  "draft": true,
+  "prerelease": true,
+  "target_commitish": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "assets": [
+    {
+      "id": 555005163,
+      "name": "rockstaros-demo-9abf78a.mp4",
+      "size": 730404,
+      "digest": "sha256:58c832e84b2b952f6713cdc2abf9a417b8be338e4ccc13e6d6f7ad7a7406fd42",
+      "state": "uploaded",
+      "content_type": "video/mp4",
+      "url": "https://api.github.com/repos/k999ln/rock/releases/assets/555005163"
+    },
+    {
+      "id": 555005164,
+      "name": "rockstaros-demo-9abf78a.vtt",
+      "size": 630,
+      "digest": "sha256:653fc274fce595d4a3e421dd06a3e8fb45298f004f0d3ffcb127921fc60910b1",
+      "state": "uploaded",
+      "content_type": "text/vtt; charset=utf-8",
+      "url": "https://api.github.com/repos/k999ln/rock/releases/assets/555005164"
+    },
+    {
+      "id": 555005165,
+      "name": "rockstaros-native-ui-evidence-9abf78a.tar.gz",
+      "size": 52135719,
+      "digest": "sha256:19d9cae205b8fd44454d4202c6fcdf988d9640b17b652320a5ba720cab10693c",
+      "state": "uploaded",
+      "content_type": "application/x-gtar",
+      "url": "https://api.github.com/repos/k999ln/rock/releases/assets/555005165"
+    }
+  ]
+}

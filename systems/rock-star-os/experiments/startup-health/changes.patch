@@ -1,0 +1,1388 @@
+--- a/os/buildroot/board/rock-virt/overlay/etc/init.d/S60rockui
++++ b/os/buildroot/board/rock-virt/overlay/etc/init.d/S60rockui
+@@ -13,6 +13,15 @@
+       chown 1000:1000 "$device"
+       chmod 0600 "$device"
+     done
++    # Volatile private listener directory. The UI owns the endpoint; the root
++    # checker authenticates its actual process, not just this pathname.
++    if [ -e /run/rock-ui-health ] || [ -L /run/rock-ui-health ]; then
++      [ -d /run/rock-ui-health ] && [ ! -L /run/rock-ui-health ] || exit 1
++    else
++      mkdir /run/rock-ui-health
++    fi
++    chown 1000:1000 /run/rock-ui-health
++    chmod 0700 /run/rock-ui-health
+     touch /var/log/rock-ui.log
+     chown 1000:1000 /var/log/rock-ui.log
+     chmod 0600 /var/log/rock-ui.log
+--- a/os/desktop/guest.py
++++ b/os/desktop/guest.py
+@@ -124,7 +124,7 @@
+             '-serial', 'file:' + str(session / 'boot.log'), '-monitor', 'none',
+             '-qmp', 'unix:' + str(state / 'qmp.sock') + ',server=on,wait=off',
+             '-kernel', str(images / 'Image'), '-append',
+-            'console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1',
++            'console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.ui=required',
+             '-drive', f'if=none,file={images / "rootfs.ext4"},format=raw,id=osdisk,readonly=on',
+             '-device', 'virtio-blk-pci,drive=osdisk,addr=0x1',
+             '-drive', f'if=none,file={state / "userdata.ext4"},format=raw,id=userdata',
+@@ -134,7 +134,7 @@
+             '-device', 'virtio-gpu-pci,xres=720,yres=960,addr=0x4',
+             '-device', 'virtio-keyboard-pci,addr=0x5', '-device', 'virtio-tablet-pci,addr=0x6']
+     if config.get('schema') == 'rock-desktop-device/5':
+-        args[args.index('-append')+1] = 'console=ttyAMA0 vt.global_cursor_default=0 ro rootwait panic=-1'
++        args[args.index('-append')+1] = 'console=ttyAMA0 vt.global_cursor_default=0 ro rootwait panic=-1 rock.ui=required'
+         args[args.index('-drive')+1] = f'if=none,file={state / "slot-a.ext4"},format=raw,id=osdisk'
+         for index, value in enumerate(args):
+             if value == 'virtio-gpu-pci,xres=720,yres=960,addr=0x4': args[index] = 'virtio-gpu-pci,xres=720,yres=960,addr=0x6'
+--- a/os/operations/verify_native.py
++++ b/os/operations/verify_native.py
+@@ -276,7 +276,7 @@
+             argv=['qemu-system-aarch64','-machine','virt-10.0,gic-version=3','-accel','tcg','-cpu','cortex-a53',
+                 '-m','1024','-smp','2','-display','none','-serial','file:'+str(log),'-monitor','none','-no-reboot',
+                 '-qmp',f'unix:{qmp},server=on,wait=off','-kernel',str(args.private/'profile/Image'),
+-                '-initrd',str(args.private/'profile/stage0.cpio.gz'),'-append','console=ttyAMA0 vt.global_cursor_default=0 ro rootwait panic=-1',
++                '-initrd',str(args.private/'profile/stage0.cpio.gz'),'-append','console=ttyAMA0 vt.global_cursor_default=0 ro rootwait panic=-1 rock.ui=required',
+                 '-drive',f'if=none,file={a},format=raw,id=slota','-device','virtio-blk-pci,drive=slota,addr=0x1',
+                 '-drive',f'if=none,file={data},format=raw,id=userdata','-device','virtio-blk-pci,drive=userdata,addr=0x2',
+                 '-object','rng-random,filename=/dev/urandom,id=rockrng','-device','virtio-rng-pci,rng=rockrng,addr=0x3',
+--- a/os/ui/Makefile
++++ b/os/ui/Makefile
+@@ -5,22 +5,31 @@
+ override CPPFLAGS += $(shell $(PKG_CONFIG) --cflags cairo freetype2 json-c)
+ override LDLIBS += $(shell $(PKG_CONFIG) --libs cairo freetype2 json-c) -lm -pthread
+ 
+-.PHONY: all clean install test
++.PHONY: all clean install test test-health
+ all: rock-ui
+ 
+-rock-ui: main.o ui.o device.o ipc.o
++rock-ui: main.o ui.o device.o ipc.o health.o
+ 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+ 
+-main.o: main.c ui.h ipc.h device.h
++main.o: main.c ui.h ipc.h device.h health.h
+ ui.o: ui.c ui.h ipc.h remote-ui.inc atm-ui.inc auth-ui.inc service-ui.inc activation-ui.inc mcp-ui.inc
+ device.o: device.c device.h
+ ipc.o: ipc.c ipc.h
++health.o: health.c health.h
+ 
+ install: rock-ui
+ 	install -D -m 0755 rock-ui $(DESTDIR)/usr/bin/rock-ui
+ 
+ clean:
+-	rm -f rock-ui *.o rock-ui-test rock-ipc-test
++	rm -f rock-ui *.o rock-ui-test rock-ipc-test rock-ui-health-test
++
++# Real root -> UID1000 peer checks require root; this separate Linux target is
++# not installed and never changes the normal unprivileged visual test target.
++rock-ui-health-test: test_health.c health.c health.h
++	$(CC) $(CFLAGS) -DROCK_UI_HEALTH_TEST $(LDFLAGS) -o $@ test_health.c health.c
++
++test-health: rock-ui-health-test
++	./rock-ui-health-test
+ 
+ rock-ui-test: test_ui.o ui.o device.o ipc.o
+ 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+--- a/os/ui/activation-ui.inc
++++ b/os/ui/activation-ui.inc
+@@ -20,6 +20,17 @@
+         strict_bool(view, "can_activate", 1) && strict_bool(view, "recovery_required", 0);
+ }
+ 
++static int activation_pending(struct rock_ui *ui)
++{
++    if (!ui->connected || !ui->snapshot) return 1;
++    if (ui->page != PAGE_ACTIVATION && !(ui->page == PAGE_HUB && !ui->activation_seen &&
++        strict_string(field(ui->snapshot, "service_access"), "mode", "purchaser-fixture"))) return 0;
++    json_object *view = field(ui->snapshot, "device_activation");
++    return !activation_view_valid(view) ||
++        !strict_bool(view, "recovery_required", 0) ||
++        (!activation_ready(ui) && !strict_string(view, "state", "ACTIVE"));
++}
++
+ static const char *activation_reason(json_object *view)
+ {
+     const char *reason = string(view, "reason");
+@@ -29,7 +40,7 @@
+         return "この機種でのOS動作をまだ確認できていません。対応機種の確認後に進めます。";
+     if (strstr(reason, "IDENTITY") || strstr(reason, "PURCHASE") || strstr(reason, "OWNER") || strstr(reason, "BINDING"))
+         return "端末と購入情報の確認が必要です。引き渡し時の情報と接続状態を確認してください。";
+-    return "端末の確認情報を取得しています。接続状態を確認して、もう一度更新してください。";
++    return "確認情報を自動で読み直しています。接続と起動の確認が整うと操作できます。";
+ }
+ 
+ static void draw_activation(struct rock_ui *ui)
+--- /dev/null
++++ b/os/ui/health.c
+@@ -0,0 +1,203 @@
++#define _GNU_SOURCE
++#include "health.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <inttypes.h>
++#include <stdio.h>
++#include <string.h>
++#include <sys/socket.h>
++#include <sys/stat.h>
++#include <sys/un.h>
++#include <time.h>
++#include <unistd.h>
++
++static int64_t monotonic_ms(void)
++{
++    struct timespec value;
++    if (clock_gettime(CLOCK_MONOTONIC, &value) < 0 || value.tv_sec < 0 ||
++        value.tv_sec > (INT64_MAX - 1000) / 1000) return -1;
++    return (int64_t)value.tv_sec * 1000 + value.tv_nsec / 1000000;
++}
++
++static void drop(struct rock_ui_health_client *client)
++{
++    if (client->fd >= 0) close(client->fd);
++    client->fd = -1;
++    client->deadline_ms = 0;
++}
++
++void rock_ui_health_init(struct rock_ui_health *health)
++{
++    memset(health, 0, sizeof(*health));
++    health->listener = -1;
++    for (int i = 0; i < ROCK_UI_HEALTH_CLIENTS; i++) health->clients[i].fd = -1;
++}
++
++void rock_ui_health_close(struct rock_ui_health *health)
++{
++    struct stat info;
++    for (int i = 0; i < ROCK_UI_HEALTH_CLIENTS; i++) drop(&health->clients[i]);
++    if (health->listener >= 0) close(health->listener);
++    health->listener = -1;
++    /* Never unlink another process's replacement or a symlink. */
++    if (health->opened && lstat(health->path, &info) == 0 && S_ISSOCK(info.st_mode) &&
++        info.st_uid == 1000 && info.st_dev == health->device && info.st_ino == health->inode)
++        (void)unlink(health->path);
++    health->opened = 0;
++    health->failed = 1;
++}
++
++static int open_path(struct rock_ui_health *health, const char *path)
++{
++    struct sockaddr_un address = { .sun_family = AF_UNIX };
++    struct stat parent, info;
++    char directory[sizeof(address.sun_path)];
++    char *slash;
++    if (!health || !path || getuid() != 1000 || geteuid() != 1000 ||
++        health->listener >= 0 || health->opened || health->failed ||
++        path[0] != '/' || strlen(path) >= sizeof(address.sun_path)) {
++        errno = EINVAL;
++        return -1;
++    }
++    memcpy(directory, path, strlen(path) + 1);
++    slash = strrchr(directory, '/');
++    if (!slash || slash == directory) { errno = EINVAL; return -1; }
++    *slash = '\0';
++    if (lstat(directory, &parent) < 0) return -1;
++    if (!S_ISDIR(parent.st_mode) || parent.st_uid != 1000 ||
++        (parent.st_mode & 07777) != 0700) { errno = EPERM; return -1; }
++    if (lstat(path, &info) == 0) { errno = EEXIST; return -1; }
++    if (errno != ENOENT) return -1;
++    health->listener = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
++    if (health->listener < 0) return -1;
++    memcpy(address.sun_path, path, strlen(path) + 1);
++    if (bind(health->listener, (struct sockaddr *)&address, sizeof(address)) < 0) goto failed;
++    if (lstat(path, &info) < 0 || !S_ISSOCK(info.st_mode) || info.st_uid != 1000) goto failed;
++    health->opened = 1;
++    health->device = info.st_dev;
++    health->inode = info.st_ino;
++    memcpy(health->path, path, strlen(path) + 1);
++    if (chmod(path, 0600) < 0 || listen(health->listener, ROCK_UI_HEALTH_CLIENTS) < 0) goto failed;
++    return 0;
++failed:
++    {
++        int error = errno;
++        rock_ui_health_close(health);
++        errno = error;
++        return -1;
++    }
++}
++
++int rock_ui_health_open(struct rock_ui_health *health)
++{
++    return open_path(health, ROCK_UI_HEALTH_PATH);
++}
++
++#ifdef ROCK_UI_HEALTH_TEST
++int rock_ui_health_open_at(struct rock_ui_health *health, const char *path)
++{
++    return open_path(health, path);
++}
++#endif
++
++void rock_ui_health_present(struct rock_ui_health *health, int width, int height, int inputs)
++{
++    if (!health->opened || health->failed) return;
++    if (health->frames == UINT64_MAX || width < 320 || width > 4096 ||
++        height < 320 || height > 4096 || inputs < 0 || inputs > 24) {
++        health->failed = 1;
++        return;
++    }
++    health->frames++;
++    health->width = width;
++    health->height = height;
++    health->inputs = inputs;
++}
++
++/* recvmsg may install SCM_RIGHTS descriptors even when the packet is rejected. */
++static void close_rights(struct msghdr *message)
++{
++    struct cmsghdr *item;
++    for (item = CMSG_FIRSTHDR(message); item; item = CMSG_NXTHDR(message, item)) {
++        if (item->cmsg_level == SOL_SOCKET && item->cmsg_type == SCM_RIGHTS &&
++            item->cmsg_len >= CMSG_LEN(0)) {
++            size_t bytes = item->cmsg_len - CMSG_LEN(0);
++            unsigned char *data = CMSG_DATA(item);
++            for (size_t at = 0; at + sizeof(int) <= bytes; at += sizeof(int)) {
++                int descriptor;
++                memcpy(&descriptor, data + at, sizeof(descriptor));
++                if (descriptor >= 0) close(descriptor);
++            }
++        }
++    }
++}
++
++static ssize_t receive_packet(int fd, char *data, int *invalid)
++{
++    union { struct cmsghdr align; unsigned char bytes[CMSG_SPACE(sizeof(int) * 16)]; } control;
++    struct iovec vector = { .iov_base = data, .iov_len = ROCK_UI_HEALTH_MAX };
++    struct msghdr message = { .msg_iov = &vector, .msg_iovlen = 1,
++        .msg_control = control.bytes, .msg_controllen = sizeof(control.bytes) };
++    ssize_t size = recvmsg(fd, &message, MSG_DONTWAIT | MSG_CMSG_CLOEXEC);
++    *invalid = 0;
++    if (size >= 0) {
++        *invalid = (message.msg_flags & (MSG_TRUNC | MSG_CTRUNC)) || message.msg_controllen != 0;
++        close_rights(&message);
++    }
++    return size;
++}
++
++static void service_client(struct rock_ui_health *health, struct rock_ui_health_client *client)
++{
++    static const char prefix[] = "ROCK_UI_HEALTH/1 ";
++    char packet[ROCK_UI_HEALTH_MAX], extra[ROCK_UI_HEALTH_MAX], reply[ROCK_UI_HEALTH_MAX];
++    char nonce[65];
++    int invalid;
++    ssize_t size = receive_packet(client->fd, packet, &invalid);
++    if (size < 0 && (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)) return;
++    if (size != (ssize_t)(sizeof(prefix) - 1 + 64 + 1) || invalid ||
++        memcmp(packet, prefix, sizeof(prefix) - 1) || packet[size - 1] != '\n') goto finished;
++    memcpy(nonce, packet + sizeof(prefix) - 1, 64); nonce[64] = '\0';
++    for (int i = 0; i < 64; i++)
++        if (!((nonce[i] >= '0' && nonce[i] <= '9') || (nonce[i] >= 'a' && nonce[i] <= 'f'))) goto finished;
++    /* One packet, one reply. Reject any additional packet already queued. A
++     * later write after reply cannot retroactively change this observation. */
++    size = receive_packet(client->fd, extra, &invalid);
++    if (size >= 0 || (errno != EAGAIN && errno != EWOULDBLOCK)) goto finished;
++    if (health->failed || !health->frames || !health->loops || health->inputs < 1) goto finished;
++    int length = snprintf(reply, sizeof(reply), "ROCK_UI_READY/1 %s %ld %" PRIu64 " %" PRIu64 " %d %d %d\n",
++        nonce, (long)getpid(), health->frames, health->loops, health->width, health->height, health->inputs);
++    if (length > 0 && length < (int)sizeof(reply))
++        (void)send(client->fd, reply, (size_t)length, MSG_DONTWAIT | MSG_NOSIGNAL);
++finished:
++    drop(client);
++}
++
++void rock_ui_health_after_poll(struct rock_ui_health *health)
++{
++    if (!health->opened || health->failed) return;
++    int64_t now = monotonic_ms();
++    if (now < 0 || health->loops == UINT64_MAX) { health->failed = 1; return; }
++    if (health->frames) health->loops++;
++    for (int i = 0; i < ROCK_UI_HEALTH_CLIENTS; i++)
++        if (health->clients[i].fd >= 0 && now >= health->clients[i].deadline_ms) drop(&health->clients[i]);
++    /* Bounded work even if another process floods the listen backlog. */
++    for (int accepted = 0; accepted < ROCK_UI_HEALTH_CLIENTS; accepted++) {
++        int fd = accept4(health->listener, NULL, NULL, SOCK_NONBLOCK | SOCK_CLOEXEC);
++        if (fd < 0) {
++            if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR) health->failed = 1;
++            break;
++        }
++        struct ucred peer;
++        socklen_t length = sizeof(peer);
++        int slot = -1;
++        for (int i = 0; i < ROCK_UI_HEALTH_CLIENTS; i++) if (health->clients[i].fd < 0) { slot = i; break; }
++        if (slot < 0 || getsockopt(fd, SOL_SOCKET, SO_PEERCRED, &peer, &length) < 0 ||
++            length != sizeof(peer) || peer.uid != 0) { close(fd); continue; }
++        health->clients[slot].fd = fd;
++        health->clients[slot].deadline_ms = now + 1000;
++    }
++    for (int i = 0; i < ROCK_UI_HEALTH_CLIENTS; i++)
++        if (health->clients[i].fd >= 0) service_client(health, &health->clients[i]);
++}
+--- /dev/null
++++ b/os/ui/health.h
+@@ -0,0 +1,46 @@
++#ifndef ROCK_UI_HEALTH_H
++#define ROCK_UI_HEALTH_H
++
++#include <stdint.h>
++#include <sys/types.h>
++
++#define ROCK_UI_HEALTH_PATH "/run/rock-ui-health/ready.sock"
++#define ROCK_UI_HEALTH_MAX 256
++#define ROCK_UI_HEALTH_CLIENTS 4
++
++struct rock_ui_health_client {
++    int fd;
++    int64_t deadline_ms;
++};
++
++struct rock_ui_health {
++    int listener, opened, failed;
++    uint64_t frames, loops;
++    int width, height, inputs;
++    dev_t device;
++    ino_t inode;
++    char path[108];
++    struct rock_ui_health_client clients[ROCK_UI_HEALTH_CLIENTS];
++};
++
++/* Native framebuffer mode only. No thread, network or business-service calls.
++ * init must precede every cleanup path; open never replaces an existing path.
++ * A successful open requires the S60-created UID1000 directory with mode0700. */
++void rock_ui_health_init(struct rock_ui_health *health);
++int rock_ui_health_open(struct rock_ui_health *health);
++
++/* Call present only after Cairo and the actual framebuffer copy succeeded.
++ * Call after_poll once after each successful main-loop poll (including timeout),
++ * before its ready<=0 continue. Never invoke it from an auxiliary worker.
++ * Invalid dimensions/counters cannot produce READY; an idle frame need not be
++ * redrawn for a fresh probe. The root checker requires two advancing loops. */
++void rock_ui_health_present(struct rock_ui_health *health, int width, int height, int inputs);
++void rock_ui_health_after_poll(struct rock_ui_health *health);
++void rock_ui_health_close(struct rock_ui_health *health);
++
++#ifdef ROCK_UI_HEALTH_TEST
++/* Test-only pathname seam; UID and peer authentication remain real and fixed. */
++int rock_ui_health_open_at(struct rock_ui_health *health, const char *path);
++#endif
++
++#endif
+--- a/os/ui/main.c
++++ b/os/ui/main.c
+@@ -2,6 +2,7 @@
+ #include "ui.h"
+ #include "ipc.h"
+ #include "device.h"
++#include "health.h"
+ 
+ #include <errno.h>
+ #include <fcntl.h>
+@@ -148,11 +149,12 @@
+     struct rock_input inputs[ROCK_INPUT_MAX];
+     struct rock_ui ui;
+     struct api_worker worker;
++    struct rock_ui_health health;
+     char error[256];
+     int count = 0, result = 1, dirty = 1;
+-    int64_t next_refresh;
+     time_t last_clock_tick = (time_t)-1;
+     memset(&fb, 0, sizeof(fb));
++    rock_ui_health_init(&health);
+     fb.fd = -1;
+     for (int i = 1; i < argc; i++) {
+         if (!strcmp(argv[i], "--wallet-tests")) { wallet_tests = 1; continue; }
+@@ -258,26 +260,27 @@
+         }
+     }
+     count = rock_inputs_open(inputs, ROCK_INPUT_MAX, input_pattern);
++    if (rock_ui_health_open(&health) < 0) {
++        perror("rock-ui: readiness socket");
++        goto done;
++    }
+     fprintf(stdout, "rock-ui native framebuffer %dx%d, uid=%u, input_devices=%d\n", width, height, (unsigned)geteuid(), count);
+     if (count == 0) fprintf(stderr, "rock-ui: no readable evdev input nodes; check init ownership\n");
+     fflush(stdout);
+-    next_refresh = 0;
++    rock_ui_poll_reset(&ui);
+     while (!stopping) {
+         struct pollfd polls[ROCK_INPUT_MAX];
+         int update = collect(&worker, &ui);
+         int64_t now = now_ms();
+         if (update) {
+             dirty = 1;
+-            if (update == 2) next_refresh = 0;
++            rock_ui_poll_completed(&ui, now, update == 2);
+         }
+         if (!ui.busy && ui.queued_request) {
+             rock_ui_flush_queued(&ui);
+             dirty = 1;
+         }
+-        if (!ui.busy && now >= next_refresh) {
+-            rock_ui_refresh(&ui);
+-            next_refresh = now + rock_ui_refresh_interval(&ui);
+-        }
++        if (rock_ui_poll(&ui, now)) dirty = 1;
+         /* Minute-only clock does not repaint the full framebuffer every second.
+          * Authentication and ATM expiry still update at one-second resolution. */
+         time_t wall_now = time(NULL);
+@@ -289,6 +292,7 @@
+                 fprintf(stderr, "rock-ui: rendering failed: %s\n", cairo_status_to_string(cairo_status(ui.cr)));
+                 goto done;
+             }
++            rock_ui_health_present(&health, width, height, count);
+             dirty = 0;
+         }
+         for (int i = 0; i < count; i++) polls[i] = (struct pollfd){ .fd = inputs[i].fd, .events = POLLIN, .revents = 0 };
+@@ -296,6 +300,7 @@
+          * owned background response is outstanding. */
+         int ready = poll(polls, (nfds_t)count, ui.busy ? 16 : 250);
+         if (ready < 0 && errno != EINTR) { perror("rock-ui: input poll"); goto done; }
++        if (ready >= 0) rock_ui_health_after_poll(&health);
+         if (ready <= 0) continue;
+         for (int i = 0; i < count; i++) {
+             if (!(polls[i].revents & POLLIN)) continue;
+@@ -322,12 +327,13 @@
+                     rock_ui_key(&ui, event->code, event->value);
+                     dirty = 1;
+                 }
+-                if (ui.page != previous_page) next_refresh = 0;
++                if (ui.page != previous_page) rock_ui_poll_reset(&ui);
+             }
+         }
+     }
+     result = 0;
+ done:
++    rock_ui_health_close(&health);
+     if (worker.started) {
+         pthread_join(worker.thread, NULL);
+         if (worker.request) json_object_put(worker.request);
+--- a/os/ui/test_activation.inc
++++ b/os/ui/test_activation.inc
+@@ -16,7 +16,8 @@
+ 
+ static void activation_ui_test(struct rock_ui *ui)
+ {
+-    ui->busy = ui->busy_read = ui->editing = ui->activation_seen = 0;
++    ui->busy = ui->busy_read = ui->editing = ui->activation_seen = ui->message_error = 0;
++    ui->message[0] = '\0';
+     if (ui->retry_request) { json_object_put(ui->retry_request); ui->retry_request = NULL; }
+     if (ui->queued_request) { json_object_put(ui->queued_request); ui->queued_request = NULL; }
+     ui->page = PAGE_HUB;
+@@ -67,3 +68,126 @@
+     json_object_put(blocked); json_object_put(complete); json_object_put(complete_snapshot);
+     json_object_put(bad); json_object_put(original); json_object_put(response); json_object_put(read);
+ }
++
++static int reject_poll(void *unused, json_object *request)
++{
++    (void)unused;
++    require(rock_ui_request_is_read(request), "background submission failure is a read only");
++    return -1;
++}
++
++static void activation_poll_test(struct rock_ui *ui)
++{
++    json_object *pending = activation_fixture(0, 0), *ready = activation_fixture(1, 1);
++    json_object *read = json_tokener_parse("{\"v\":1,\"op\":\"snapshot\"}");
++    ui->busy = ui->busy_read = ui->editing = ui->activation_seen = ui->message_error = 0;
++    ui->message[0] = '\0'; ui->page = PAGE_HUB;
++    rock_ui_poll_reset(ui);
++    int count = request_count;
++    require(rock_ui_poll(ui, 100) && request_count == count + 1 && ui->busy_read,
++            "first automatic request starts without a click");
++    require(!strcmp(value(last_request, "op"), "snapshot") && json_object_object_length(last_request) == 2,
++            "startup automatic request has no key, activation or payment payload");
++    require(!rock_ui_poll(ui, 5000) && request_count == count + 1,
++            "slow outstanding read cannot start a second worker");
++    rock_ui_response(ui, last_request, pending, "");
++    rock_ui_poll_completed(ui, 5000, 0);
++    require(ui->page == PAGE_ACTIVATION && ui->refresh_due_ms == 6000,
++            "first pending response schedules next read after completion");
++    require(!rock_ui_poll(ui, 5999), "read deadline is not early");
++    for (int step = 1; step <= 29; step++) {
++        int64_t now = 5000 + step * 1000;
++        require(rock_ui_poll(ui, now), "initial readiness checks remain one second apart");
++        require(!strcmp(value(last_request, "op"), "snapshot") && json_object_object_length(last_request) == 2,
++                "pending boot cannot activate, sign, consent or pay automatically");
++        rock_ui_response(ui, last_request, pending, "");
++        rock_ui_poll_completed(ui, now, 0);
++        require(ui->refresh_due_ms == now + 1000, "first thirty seconds do not back off readiness");
++    }
++    int64_t now = 35000;
++    for (int delay = 2000; delay <= 8000; delay *= 2) {
++        require(rock_ui_poll(ui, now), "long pending read starts at its deadline");
++        rock_ui_response(ui, last_request, pending, "");
++        rock_ui_poll_completed(ui, now, 0);
++        require(ui->refresh_due_ms == now + delay, "prolonged waiting backs off in bounded steps");
++        now += delay;
++    }
++    require(rock_ui_poll(ui, now), "capped readiness read starts");
++    require(!rock_ui_poll(ui, now + 9000), "long read remains one outstanding request");
++    rock_ui_response(ui, last_request, pending, "");
++    rock_ui_poll_completed(ui, now + 9000, 0);
++    require(ui->refresh_due_ms == now + 17000 && !rock_ui_poll(ui, now + 16999),
++            "backoff caps at eight seconds measured after slow completion");
++
++    snprintf(ui->text, sizeof(ui->text), "draft preserved");
++    snprintf(ui->search, sizeof(ui->search), "search preserved");
++    snprintf(ui->message, sizeof(ui->message), "previous operation error");
++    ui->message_error = 1; ui->scroll = 27; ui->focus = 2; ui->editing = 1;
++    count = request_count;
++    require(rock_ui_poll(ui, ui->refresh_due_ms), "ready state is discovered without manual refresh");
++    rock_ui_response(ui, last_request, ready, "");
++    rock_ui_poll_completed(ui, now + 17000, 0);
++    require(ui->page == PAGE_ACTIVATION && ui->editing == 1 && ui->scroll == 27 && ui->focus == 2 &&
++            !strcmp(ui->text, "draft preserved") && !strcmp(ui->search, "search preserved") &&
++            !strcmp(ui->message, "previous operation error") && ui->message_error,
++            "readiness recovery preserves navigation, draft, focus and operation error");
++    require(request_count == count + 1 && ui->startup_retry_ms == 0 && !ui->startup_waiting,
++            "ready response resets startup backoff without activation or another request");
++    require(action_enabled(ui, ACTION_NAV), "ready response is renderable without a click");
++
++    ui->page = PAGE_EDITOR;
++    rock_ui_poll_reset(ui);
++    ui->retry_request = json_tokener_parse("{\"v\":1,\"op\":\"device.activation.activate\",\"key\":\"original-uncertain\"}");
++    json_object *original = json_object_get(ui->retry_request);
++    require(rock_ui_poll(ui, 60000), "unknown mutation allows only a fresh read");
++    require(!strcmp(value(last_request, "op"), "snapshot"), "automatic polling never retries the mutation");
++    json_object *denied = json_tokener_parse("{\"ok\":false,\"code\":\"unavailable\",\"error\":\"background failure\"}");
++    rock_ui_response(ui, last_request, denied, "");
++    rock_ui_poll_completed(ui, 60000, 0);
++    require(ui->retry_request == original && !strcmp(ui->message, "previous operation error") &&
++            ui->message_error && ui->page == PAGE_EDITOR && !strcmp(ui->text, "draft preserved"),
++            "background refusal retains uncertain request, error and editor");
++    require(!rock_ui_poll(ui, 60999), "transport refusal observes completion delay");
++    require(rock_ui_poll(ui, 61000), "unavailable snapshot can recover by another read");
++    rock_ui_response(ui, last_request, ready, "");
++    rock_ui_poll_completed(ui, 61000, 0);
++    require(ui->retry_request == original && ui->page == PAGE_EDITOR && ui->connected,
++            "successful read preserves original uncertain intent without navigation");
++    json_object_put(ui->retry_request); ui->retry_request = NULL; json_object_put(original);
++
++    ui->busy = 1; count = request_count;
++    rock_ui_poll_reset(ui);
++    require(!rock_ui_poll(ui, 70000), "poll cannot interrupt a mutation");
++    ui->busy = 0; ui->queued_request = json_object_get(read);
++    require(!rock_ui_poll(ui, 70000), "poll cannot displace an explicitly queued request");
++    json_object_put(ui->queued_request); ui->queued_request = NULL;
++    ui->page = PAGE_AUTH_PIN;
++    require(!rock_ui_poll(ui, 70000) && request_count == count, "poll cannot replace a displayed signing challenge");
++
++    ui->page = PAGE_HUB; ui->editing = ui->activation_seen = 0;
++    json_object *missing = activation_fixture(0, 0);
++    json_object_object_del(test_field(missing, "snapshot"), "device_activation");
++    require(rock_ui_poll(ui, 70000), "startup may read an incomplete activation projection");
++    rock_ui_response(ui, last_request, missing, "");
++    rock_ui_poll_completed(ui, 70000, 0);
++    require(ui->page == PAGE_HUB && !ui->activation_seen && ui->refresh_due_ms == 71000,
++            "missing initial activation projection remains eligible for prompt read-only recovery");
++    json_object_put(missing);
++
++    ui->page = PAGE_HUB; ui->editing = 1; ui->activation_seen = ui->message_error = 0;
++    require(rock_ui_poll(ui, 71000), "late first snapshot is read in the current page");
++    rock_ui_response(ui, last_request, pending, "");
++    rock_ui_poll_completed(ui, 71000, 0);
++    require(ui->page == PAGE_HUB && ui->editing == 1 && !strcmp(ui->text, "draft preserved"),
++            "late startup snapshot cannot navigate away from active input");
++    ui->page = PAGE_ACTIVATION; ui->message_error = 1;
++    ui->submit = reject_poll; rock_ui_poll_reset(ui);
++    require(rock_ui_poll(ui, 80000) && !ui->busy && ui->refresh_due_ms == 81000 &&
++            !rock_ui_poll(ui, 80001) && !strcmp(ui->message, "previous operation error"),
++            "worker creation failure preserves error and cannot busy-loop");
++    ui->submit = capture;
++    rock_ui_poll_reset(ui); ui->message_error = ui->editing = 0;
++    ui->message[0] = ui->text[0] = ui->search[0] = '\0';
++    json_object_put(denied); json_object_put(read); json_object_put(ready); json_object_put(pending);
++    puts("PASS startup polling: initial cadence, completion deadline, bounded backoff, recovery and UI/intent preservation");
++}
+--- /dev/null
++++ b/os/ui/test_health.c
+@@ -0,0 +1,321 @@
++#define _GNU_SOURCE
++#include "health.h"
++
++#include <dirent.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <grp.h>
++#include <inttypes.h>
++#include <poll.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/socket.h>
++#include <sys/stat.h>
++#include <sys/time.h>
++#include <sys/un.h>
++#include <sys/wait.h>
++#include <time.h>
++#include <unistd.h>
++
++/* Real Linux credentials; run this separate target as root. The server child
++ * drops all groups and both UIDs to1000. No test authorization bypass exists. */
++struct fixture {
++    char directory[128], socket_directory[128], path[128];
++    pid_t pid;
++    int command, response;
++};
++enum { REQUEST_SIZE = sizeof("ROCK_UI_HEALTH/1 ") - 1 + 64 + 1 };
++static struct fixture active = { .command = -1, .response = -1 };
++#define CHECK(x) do { if (!(x)) { fprintf(stderr, "health test failed at %s:%d: %s (errno=%d)\n", __FILE__, __LINE__, #x, errno); exit(1); } } while (0)
++#define CHILD(x) do { if (!(x)) _exit(90); } while (0)
++
++static void cleanup(void)
++{
++    if (active.pid > 0) {
++        (void)kill(active.pid, SIGKILL);
++        while (waitpid(active.pid, NULL, 0) < 0 && errno == EINTR) {}
++    }
++    if (active.command >= 0) close(active.command);
++    if (active.response >= 0) close(active.response);
++    if (*active.path) (void)unlink(active.path);
++    if (*active.socket_directory) (void)rmdir(active.socket_directory);
++    if (*active.directory) (void)rmdir(active.directory);
++    memset(&active, 0, sizeof(active));
++    active.command = active.response = -1;
++}
++
++static void server(int command, int response, const char *path)
++{
++    struct rock_ui_health health;
++    CHILD(setgroups(0, NULL) == 0 && setgid(1000) == 0 && setuid(1000) == 0);
++    rock_ui_health_init(&health);
++    CHILD(rock_ui_health_open_at(&health, path) == 0);
++    CHILD(write(response, "R", 1) == 1);
++    char action;
++    while (read(command, &action, 1) == 1 && action != 'Q') {
++        switch (action) {
++        case 'P': rock_ui_health_present(&health, 720, 960, 2); break;
++        case 'I': rock_ui_health_present(&health, 720, 960, 0); break;
++        case 'D': rock_ui_health_present(&health, 319, 960, 2); break;
++        case 'X': health.frames = UINT64_MAX; rock_ui_health_present(&health, 720, 960, 2); break;
++        case 'Y': health.loops = UINT64_MAX; break;
++        case 'T':
++            CHILD(poll(NULL, 0, 1) == 0);
++            rock_ui_health_after_poll(&health);
++            break;
++        case 'F':
++            CHILD((fcntl(health.listener, F_GETFL) & O_NONBLOCK) != 0);
++            CHILD((fcntl(health.listener, F_GETFD) & FD_CLOEXEC) != 0);
++            for (int i = 0; i < ROCK_UI_HEALTH_CLIENTS; i++) if (health.clients[i].fd >= 0) {
++                CHILD((fcntl(health.clients[i].fd, F_GETFL) & O_NONBLOCK) != 0);
++                CHILD((fcntl(health.clients[i].fd, F_GETFD) & FD_CLOEXEC) != 0);
++            }
++            break;
++        case 'O': CHILD(rock_ui_health_open_at(&health, path) < 0); break;
++        case 'C': rock_ui_health_close(&health); rock_ui_health_close(&health); break;
++        default: _exit(91);
++        }
++        CHILD(write(response, "R", 1) == 1);
++    }
++    rock_ui_health_close(&health);
++    close(command); close(response);
++    _exit(0);
++}
++
++static void ack(void)
++{
++    struct pollfd p = { .fd = active.response, .events = POLLIN };
++    char value;
++    CHECK(poll(&p, 1, 1000) == 1);
++    CHECK(read(active.response, &value, 1) == 1 && value == 'R');
++}
++
++static void action(char value)
++{
++    CHECK(write(active.command, &value, 1) == 1); ack();
++}
++
++static void start(void)
++{
++    int commands[2], responses[2];
++    CHECK(active.pid == 0);
++    strcpy(active.directory, "/tmp/rock-ui-health-test.XXXXXX");
++    CHECK(mkdtemp(active.directory) != NULL && chmod(active.directory, 0711) == 0);
++    CHECK(snprintf(active.socket_directory, sizeof(active.socket_directory), "%s/ready", active.directory) < (int)sizeof(active.socket_directory));
++    CHECK(snprintf(active.path, sizeof(active.path), "%s/ready.sock", active.socket_directory) < (int)sizeof(active.path));
++    CHECK(mkdir(active.socket_directory, 0700) == 0 && chown(active.socket_directory, 1000, 1000) == 0);
++    CHECK(pipe2(commands, O_CLOEXEC) == 0 && pipe2(responses, O_CLOEXEC) == 0);
++    active.pid = fork(); CHECK(active.pid >= 0);
++    if (!active.pid) {
++        close(commands[1]); close(responses[0]);
++        server(commands[0], responses[1], active.path);
++    }
++    close(commands[0]); close(responses[1]);
++    active.command = commands[1]; active.response = responses[0]; ack();
++}
++
++static void stop(void)
++{
++    int status;
++    CHECK(write(active.command, "Q", 1) == 1);
++    CHECK(waitpid(active.pid, &status, 0) == active.pid && WIFEXITED(status) && WEXITSTATUS(status) == 0);
++    active.pid = 0; cleanup();
++}
++
++static int connect_client(void)
++{
++    struct sockaddr_un address = { .sun_family = AF_UNIX };
++    struct timeval timeout = { .tv_sec = 1 };
++    int fd = socket(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0);
++    CHECK(fd >= 0 && strlen(active.path) < sizeof(address.sun_path));
++    memcpy(address.sun_path, active.path, strlen(active.path) + 1);
++    CHECK(setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) == 0);
++    CHECK(setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout)) == 0);
++    CHECK(connect(fd, (struct sockaddr *)&address, sizeof(address)) == 0);
++    return fd;
++}
++
++static size_t request(char *out, char nonce)
++{
++    size_t prefix = sizeof("ROCK_UI_HEALTH/1 ") - 1;
++    memcpy(out, "ROCK_UI_HEALTH/1 ", prefix);
++    memset(out + prefix, nonce, 64); out[prefix + 64] = '\n';
++    return REQUEST_SIZE;
++}
++
++static int send_request(char nonce)
++{
++    char wire[REQUEST_SIZE]; int fd = connect_client();
++    CHECK(send(fd, wire, request(wire, nonce), MSG_NOSIGNAL) == REQUEST_SIZE);
++    return fd;
++}
++
++static void closed(int fd)
++{
++    struct pollfd p = { .fd = fd, .events = POLLIN };
++    char raw[ROCK_UI_HEALTH_MAX];
++    CHECK(poll(&p, 1, 500) == 1);
++    CHECK(recv(fd, raw, sizeof(raw), 0) <= 0);
++    close(fd);
++}
++
++static uint64_t ready(int fd, char nonce, uint64_t expected_frames)
++{
++    char wire[ROCK_UI_HEALTH_MAX + 1], echoed[65], expected[65];
++    long pid; uint64_t frames, loops; int width, height, inputs, consumed = 0;
++    ssize_t size = recv(fd, wire, ROCK_UI_HEALTH_MAX, 0);
++    CHECK(size > 0 && size < ROCK_UI_HEALTH_MAX); wire[size] = '\0';
++    CHECK(sscanf(wire, "ROCK_UI_READY/1 %64[0-9a-f] %ld %" SCNu64 " %" SCNu64 " %d %d %d\n%n",
++        echoed, &pid, &frames, &loops, &width, &height, &inputs, &consumed) == 7);
++    memset(expected, nonce, 64); expected[64] = '\0';
++    CHECK(consumed == size && wire[size - 1] == '\n' && !strcmp(echoed, expected));
++    CHECK(pid == active.pid && frames == expected_frames && loops > 0 && width == 720 && height == 960 && inputs == 2);
++    closed(fd); return loops;
++}
++
++static void test_present_and_poll_and_fresh_loop(void)
++{
++    start(); action('F');
++    int fd = send_request('a'); action('T'); closed(fd); /* No frame. */
++    action('P'); fd = send_request('a');
++    struct pollfd wait = { .fd = fd, .events = POLLIN };
++    CHECK(poll(&wait, 1, 60) == 0); /* A frame alone, with no loop progress, is insufficient. */
++    action('T'); uint64_t first = ready(fd, 'a', 1);
++    fd = send_request('b'); CHECK(poll(&(struct pollfd){.fd=fd,.events=POLLIN}, 1, 60) == 0);
++    action('T'); CHECK(ready(fd, 'b', 1) > first); /* No extra redraw required. */
++    stop(); puts("PASS present, main-loop progress and fresh nonce");
++}
++
++static void test_connect_send_race_and_expiry(void)
++{
++    start(); action('P'); int fd = connect_client(); action('T'); action('F');
++    char wire[REQUEST_SIZE]; CHECK(send(fd, wire, request(wire, 'a'), MSG_NOSIGNAL) == REQUEST_SIZE);
++    action('T'); ready(fd, 'a', 1);
++    fd = connect_client(); action('T');
++    struct timespec delay = { .tv_sec = 1, .tv_nsec = 100000000 };
++    CHECK(nanosleep(&delay, NULL) == 0); action('T'); closed(fd);
++    fd = send_request('b'); action('T'); ready(fd, 'b', 1);
++    stop(); puts("PASS connect-before-send retained and bounded expiry recovered");
++}
++
++static void test_capacity_and_close(void)
++{
++    start(); action('P'); int pending[ROCK_UI_HEALTH_CLIENTS];
++    for (int i = 0; i < ROCK_UI_HEALTH_CLIENTS; i++) pending[i] = connect_client();
++    action('T'); action('F'); int excess = connect_client(); action('T'); closed(excess);
++    for (int i = 0; i < ROCK_UI_HEALTH_CLIENTS; i++) close(pending[i]);
++    action('T'); int fd = send_request('a'); action('T'); ready(fd, 'a', 1);
++    fd = connect_client(); action('T'); action('C'); closed(fd);
++    struct stat info; CHECK(lstat(active.path, &info) < 0 && errno == ENOENT);
++    stop(); puts("PASS fixed capacity, cleanup and repeated close");
++}
++
++static void test_strict_packets(void)
++{
++    start(); action('P'); char wire[ROCK_UI_HEALTH_MAX + 1];
++    for (int which = 0; which < 7; which++) {
++        size_t length = request(wire, 'a');
++        if (which == 0) wire[0] = 'r';
++        if (which == 1) wire[sizeof("ROCK_UI_HEALTH/1 ") - 1] = 'A';
++        if (which == 2) wire[40] = '\0';
++        if (which == 3) wire[REQUEST_SIZE - 1] = ' ';
++        if (which == 4) wire[length++] = '\n';
++        if (which == 5) { memset(wire + length, 'x', sizeof(wire) - length); length = sizeof(wire); }
++        int fd = connect_client(); CHECK(send(fd, wire, length, MSG_NOSIGNAL) == (ssize_t)length);
++        if (which == 6) CHECK(send(fd, wire, length, MSG_NOSIGNAL) == (ssize_t)length);
++        action('T'); closed(fd);
++    }
++    int fd = send_request('b'); action('T'); ready(fd, 'b', 1);
++    stop(); puts("PASS exact packet, lowercase nonce, truncation and extra packet rejection");
++}
++
++static int descriptor_count(pid_t pid)
++{
++    char path[64]; snprintf(path, sizeof(path), "/proc/%ld/fd", (long)pid);
++    DIR *directory = opendir(path); CHECK(directory != NULL);
++    int count = 0; struct dirent *entry;
++    while ((entry = readdir(directory))) if (entry->d_name[0] != '.') count++;
++    closedir(directory); return count;
++}
++
++static void test_ancillary_descriptors_closed(void)
++{
++    start(); action('P'); int before = descriptor_count(active.pid);
++    for (int count = 1; count <= 20; count += 19) {
++        int fd = connect_client(), original = open("/dev/null", O_RDONLY | O_CLOEXEC);
++        CHECK(original >= 0); int descriptors[20];
++        for (int i = 0; i < count; i++) descriptors[i] = original;
++        char wire[REQUEST_SIZE]; request(wire, 'a');
++        union { struct cmsghdr align; char bytes[CMSG_SPACE(sizeof(descriptors))]; } control;
++        memset(&control, 0, sizeof(control));
++        struct iovec vector = { .iov_base=wire, .iov_len=sizeof(wire) };
++        struct msghdr message = { .msg_iov=&vector, .msg_iovlen=1,
++            .msg_control=control.bytes, .msg_controllen=CMSG_SPACE(sizeof(int)*(size_t)count) };
++        struct cmsghdr *header = CMSG_FIRSTHDR(&message);
++        header->cmsg_level=SOL_SOCKET; header->cmsg_type=SCM_RIGHTS; header->cmsg_len=CMSG_LEN(sizeof(int)*(size_t)count);
++        memcpy(CMSG_DATA(header), descriptors, sizeof(int)*(size_t)count);
++        CHECK(sendmsg(fd, &message, MSG_NOSIGNAL) == REQUEST_SIZE); close(original);
++        action('T'); closed(fd); CHECK(descriptor_count(active.pid) == before);
++    }
++    stop(); puts("PASS ancillary rejection closes received and truncated SCM_RIGHTS");
++}
++
++static void test_root_peer_required(void)
++{
++    start(); action('P'); int synchronized[2]; CHECK(pipe2(synchronized, O_CLOEXEC) == 0);
++    pid_t client = fork(); CHECK(client >= 0);
++    if (!client) {
++        CHILD(setgroups(0, NULL) == 0 && setgid(1000) == 0 && setuid(1000) == 0);
++        int fd = send_request('a'); CHILD(write(synchronized[1], "R", 1) == 1);
++        char buffer[256]; ssize_t received = recv(fd, buffer, sizeof(buffer), 0);
++        close(fd); _exit(received <= 0 ? 0 : 92);
++    }
++    close(synchronized[1]); char value; CHECK(read(synchronized[0], &value, 1) == 1); close(synchronized[0]);
++    action('T'); int status; CHECK(waitpid(client, &status, 0) == client && WIFEXITED(status) && WEXITSTATUS(status) == 0);
++    int fd = send_request('b'); action('T'); ready(fd, 'b', 1);
++    stop(); puts("PASS actual UID1000 client denied and actual root accepted");
++}
++
++static void test_invalid_readiness_and_overflow(void)
++{
++    const char cases[] = { 'I', 'D', 'X', 'Y' };
++    for (size_t i = 0; i < sizeof(cases); i++) {
++        start(); action(cases[i]); int fd = send_request('a'); action('T');
++        if (cases[i] == 'I') closed(fd);
++        else { CHECK(poll(&(struct pollfd){.fd=fd,.events=POLLIN}, 1, 60) == 0); close(fd); }
++        stop();
++    }
++    puts("PASS zero inputs, invalid dimensions and counter overflow fail closed");
++}
++
++static void test_open_owner_path_and_preserved_listener(void)
++{
++    start(); struct stat info; CHECK(lstat(active.path, &info) == 0 && S_ISSOCK(info.st_mode));
++    CHECK(info.st_uid == 1000 && (info.st_mode & 07777) == 0600);
++    struct rock_ui_health rejected; rock_ui_health_init(&rejected);
++    CHECK(rock_ui_health_open_at(&rejected, active.path) < 0); /* Root cannot serve as the UI. */
++    rock_ui_health_close(&rejected); action('O'); action('P');
++    int fd = send_request('a'); action('T'); ready(fd, 'a', 1);
++    stop(); puts("PASS fixed UI owner, protected socket and no overwrite");
++}
++
++int main(void)
++{
++    if (getuid() != 0 || geteuid() != 0) {
++        fputs("Run the isolated Linux test-health target as root for real UID0/UID1000 checks.\n", stderr);
++        return 2;
++    }
++    signal(SIGPIPE, SIG_IGN); CHECK(atexit(cleanup) == 0);
++    test_present_and_poll_and_fresh_loop();
++    test_connect_send_race_and_expiry();
++    test_capacity_and_close();
++    test_strict_packets();
++    test_ancillary_descriptors_closed();
++    test_root_peer_required();
++    test_invalid_readiness_and_overflow();
++    test_open_owner_path_and_preserved_listener();
++    puts("PASS: 8 native UI readiness protocol/ownership/lifecycle test groups");
++    return 0;
++}
+--- a/os/ui/test_ui.c
++++ b/os/ui/test_ui.c
+@@ -661,6 +661,7 @@
+     auth_ui_test(&ui);
+     purchaser_ui_test(&ui);
+     activation_ui_test(&ui);
++    activation_poll_test(&ui);
+     mcp_ui_test(&ui);
+     rock_ui_destroy(&ui);
+     if (last_request) json_object_put(last_request);
+--- a/os/ui/ui.c
++++ b/os/ui/ui.c
+@@ -1160,8 +1160,13 @@
+         ui->busy_read = rock_ui_request_is_read(request);
+         if (!rock_ui_request_is_read(request)) ui->message[0] = '\0';
+     } else {
+-        snprintf(ui->message, sizeof(ui->message), "要求を送信できませんでした。");
+-        ui->message_error = 1;
++        if (ui->refresh_background && rock_ui_request_is_read(request)) {
++            ui->connected = 0;
++            snprintf(ui->connection_error, sizeof(ui->connection_error), "状態の読み取りを開始できませんでした。");
++        } else {
++            snprintf(ui->message, sizeof(ui->message), "要求を送信できませんでした。");
++            ui->message_error = 1;
++        }
+     }
+ }
+ 
+@@ -1189,6 +1194,7 @@
+ 
+ int rock_ui_refresh_interval(struct rock_ui *ui)
+ {
++    if (activation_pending(ui)) return ui->startup_retry_ms ? ui->startup_retry_ms : 1000;
+     if (!ui->connected || ui->queued_request || ui->retry_request || ui->page == PAGE_ACTIVATION)
+         return 1000;
+     if (ui->page == PAGE_WALLET || ui->page == PAGE_REMOTE || ui->page == PAGE_REMOTE_RESULT ||
+@@ -1198,6 +1204,44 @@
+     for (size_t i = 0; i < array_size(jobs); i++) if (active_job(array_item(jobs, i))) return 1000;
+     if (registry_refreshing(field(ui->snapshot, "registry"))) return 1000;
+     return 10000;
++}
++
++void rock_ui_poll_reset(struct rock_ui *ui)
++{
++    ui->refresh_due_ms = 0;
++    ui->startup_waiting = ui->startup_retry_ms = 0;
++}
++
++void rock_ui_poll_completed(struct rock_ui *ui, int64_t now_ms, int mutation)
++{
++    /* Measure from completion: a slow read must not immediately start another.
++     * Keep normal boot responsive for 30 seconds before backing off a prolonged
++     * unavailable state. Only an explicit user action can repeat a mutation. */
++    if (activation_pending(ui)) {
++        if (!ui->startup_waiting) {
++            ui->startup_waiting = 1;
++            ui->startup_wait_ms = now_ms;
++        }
++        if (now_ms - ui->startup_wait_ms < 30000) ui->startup_retry_ms = 1000;
++        else if (ui->startup_retry_ms < 8000) ui->startup_retry_ms =
++            ui->startup_retry_ms < 2000 ? 2000 : ui->startup_retry_ms * 2;
++    } else {
++        ui->startup_waiting = ui->startup_retry_ms = 0;
++    }
++    ui->refresh_due_ms = mutation ? now_ms : now_ms + rock_ui_refresh_interval(ui);
++}
++
++int rock_ui_poll(struct rock_ui *ui, int64_t now_ms)
++{
++    if (ui->busy || ui->queued_request || ui->page == PAGE_AUTH_PIN || now_ms < ui->refresh_due_ms)
++        return 0;
++    ui->refresh_background = 1;
++    rock_ui_refresh(ui);
++    if (!ui->busy) {
++        ui->refresh_background = 0;
++        rock_ui_poll_completed(ui, now_ms, 0);
++    }
++    return 1;
+ }
+ 
+ void rock_ui_refresh(struct rock_ui *ui)
+@@ -1284,6 +1328,7 @@
+         navigate(ui, PAGE_RESULT);
+         return;
+     case ACTION_REFRESH:
++        rock_ui_poll_reset(ui);
+         rock_ui_refresh(ui);
+         return;
+     case ACTION_INPUT:
+@@ -1431,6 +1476,8 @@
+     const char *operation = string(request, "op");
+     int snapshot = !strcmp(operation, "snapshot");
+     int read_only = rock_ui_request_is_read(request);
++    int background_read = ui->refresh_background && read_only;
++    ui->refresh_background = 0;
+     ui->busy = 0;
+     ui->busy_read = 0;
+     if (rock_auth_operation(operation)) { (void)auth_response(ui, request, response); return; }
+@@ -1466,8 +1513,10 @@
+             rock_ui_response(ui, request, NULL, *message ? message : "端末操作の受領結果を確認できません");
+             return;
+         }
+-        snprintf(ui->message, sizeof(ui->message), "%s", *message ? message : "サービスが要求を拒否しました。");
+-        ui->message_error = 1;
++        if (!background_read) {
++            snprintf(ui->message, sizeof(ui->message), "%s", *message ? message : "サービスが要求を拒否しました。");
++            ui->message_error = 1;
++        }
+         if (is_retry(ui, request) && (!strcmp(string(response, "code"), "rejected") ||
+                                       !strcmp(string(response, "code"), "unauthorized") ||
+                                       (power_operation(operation) && !strcmp(string(response, "code"), "busy")))) {
+@@ -1515,6 +1564,7 @@
+             strict_string(field(state, "service_access"), "mode", "purchaser-fixture")) {
+             ui->activation_seen = 1;
+             if (ui->page == PAGE_HUB && !ui->retry_request && !ui->queued_request &&
++                !ui->editing && !ui->confirm_request && !ui->message_error &&
+                 (!activation_view_valid(activation) || !strict_string(activation, "state", "ACTIVE") ||
+                  !strict_bool(activation, "recovery_required", 0))) navigate(ui, PAGE_ACTIVATION);
+         }
+@@ -1976,7 +2026,10 @@
+         else if (ui->page > PAGE_WALLET) navigate(ui, ui->return_page);
+         return;
+     }
+-    if (ui->control && code == KEY_R) { if (!ui->busy) rock_ui_refresh(ui); return; }
++    if (ui->control && code == KEY_R) {
++        if (!ui->busy) { rock_ui_poll_reset(ui); rock_ui_refresh(ui); }
++        return;
++    }
+     if (ui->control && code == KEY_ENTER && ui->page == PAGE_EDITOR && can_mutate(ui)) {
+         struct rock_hit run = { .action = ACTION_RUN, .enabled = boolean(installed(ui, ui->selected_id), "enabled") };
+         snprintf(run.id, sizeof(run.id), "%s", ui->selected_id);
+--- a/os/ui/ui.h
++++ b/os/ui/ui.h
+@@ -6,6 +6,7 @@
+ #include FT_FREETYPE_H
+ #include <json-c/json.h>
+ #include <stddef.h>
++#include <stdint.h>
+ 
+ #define ROCK_UI_WIDTH 720
+ #define ROCK_UI_HEIGHT 960
+@@ -67,6 +68,8 @@
+     char text[ROCK_UI_TEXT_MAX + 1], amount[32], search[ROCK_UI_SEARCH_MAX + 1];
+     char message[512], connection_error[256], confirm_title[160];
+     int connected, busy, busy_read, message_error, wallet_expanded, shift, control, caps_lock, activation_seen;
++    int refresh_background, startup_waiting, startup_retry_ms;
++    int64_t refresh_due_ms, startup_wait_ms;
+     int focus, hit_count, editing, select_all;
+     struct rock_hit hits[ROCK_UI_HITS];
+     double scroll, content_height, content_top;
+@@ -91,4 +94,7 @@
+ void rock_ui_flush_queued(struct rock_ui *ui);
+ int rock_ui_request_is_read(json_object *request);
+ int rock_ui_refresh_interval(struct rock_ui *ui);
++int rock_ui_poll(struct rock_ui *ui, int64_t now_ms);
++void rock_ui_poll_completed(struct rock_ui *ui, int64_t now_ms, int mutation);
++void rock_ui_poll_reset(struct rock_ui *ui);
+ #endif
+--- a/os/update/S97rock-update-health
++++ b/os/update/S97rock-update-health
+@@ -12,7 +12,9 @@
+      [ -x /usr/libexec/rock-platform-health ] &&
+      /usr/libexec/rock-platform-health &&
+      [ -x /usr/libexec/rock-authenticator-health ] &&
+-     /usr/libexec/rock-authenticator-health; then
++     /usr/libexec/rock-authenticator-health &&
++     [ -x /usr/libexec/rock-ui-health ] &&
++     /usr/libexec/rock-ui-health; then
+     healthy=1
+     break
+   fi
+--- a/os/update/install-target.sh
++++ b/os/update/install-target.sh
+@@ -6,6 +6,8 @@
+ [ -d "$target/etc" ] && [ -d "$target/usr" ]
+ mkdir -p "$target/usr/lib/rock-update" "$target/usr/libexec" "$target/usr/sbin" "$target/etc/rock-update" "$target/etc/init.d" "$target/data" "$target/run"
+ install -m 0644 "$source_dir/rock_update.py" "$target/usr/lib/rock-update/rock_update.py"
++install -m 0644 "$source_dir/ui_health.py" "$target/usr/lib/rock-update/ui_health.py"
++install -m 0755 "$source_dir/rock-ui-health" "$target/usr/libexec/rock-ui-health"
+ install -m 0755 "$source_dir/rock-update" "$target/usr/sbin/rock-update"
+ install -m 0755 "$source_dir/S97rock-update-health" "$target/etc/init.d/S97rock-update-health"
+ install -m 0755 "$source_dir/rock-boot-watchdog" "$target/usr/libexec/rock-boot-watchdog"
+--- /dev/null
++++ b/os/update/rock-ui-health
+@@ -0,0 +1,2 @@
++#!/bin/sh
++exec /usr/bin/python3 -I -B /usr/lib/rock-update/ui_health.py
+--- /dev/null
++++ b/os/update/ui_health.py
+@@ -0,0 +1,231 @@
++"""Root boot check of the native UI's first present and responsive event loop.
++
++The challenge is served by rock-ui's main loop, not by a separate health thread.
++This is a pre-commit software readiness check, not proof of physical scanout,
++continuous post-commit supervision, or protection from a compromised kernel.
++"""
++from contextlib import ExitStack
++import array
++from dataclasses import dataclass
++import json
++import os
++from pathlib import Path
++import re
++import secrets
++import select
++import socket
++import stat
++import struct
++import sys
++import time
++
++MAX_PACKET = 256
++TOTAL_SECONDS = 2.0
++PREFIX = b'ROCK_UI_HEALTH/1 '
++REPLY = re.compile(rb'ROCK_UI_READY/1 ([0-9a-f]{64}) ([1-9][0-9]{0,9}) '
++                   rb'([1-9][0-9]{0,19}) ([1-9][0-9]{0,19}) '
++                   rb'([1-9][0-9]{0,3}) ([1-9][0-9]{0,3}) ([1-9][0-9]?)\n')
++
++
++@dataclass(frozen=True)
++class Paths:
++    pid: Path = Path('/run/rock-ui.pid')
++    endpoint: Path = Path('/run/rock-ui-health/ready.sock')
++    executable: Path = Path('/usr/bin/rock-ui')
++    proc: Path = Path('/proc')
++
++
++def require(value, message):
++    if not value:
++        raise ValueError(message)
++
++
++def mode_from_cmdline(raw):
++    require(type(raw) is bytes and len(raw) <= 16384 and b'\0' not in raw,
++            'UI_BOOT_ARGUMENTS_INVALID')
++    words = raw.decode('ascii', 'strict').split()
++    selected = [word for word in words if word == 'rock.ui' or word.startswith('rock.ui=')]
++    require(len(selected) <= 1 and (not selected or selected[0] in
++            ('rock.ui=required', 'rock.ui=headless')), 'UI_BOOT_MODE_INVALID')
++    # Absence never silently converts a failed display into a headless boot.
++    return 'headless' if selected == ['rock.ui=headless'] else 'required'
++
++
++def file_identity(info):
++    return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
++
++
++def protected_parent(path, owner, *, exact_mode=None):
++    info = path.lstat()
++    require(stat.S_ISDIR(info.st_mode) and info.st_uid == owner and not info.st_mode & 0o022,
++            'UI_PROTECTED_DIRECTORY_REQUIRED')
++    if exact_mode is not None:
++        require(stat.S_IMODE(info.st_mode) == exact_mode, 'UI_DIRECTORY_MODE_INVALID')
++
++
++def read_pid(path, root_uid):
++    protected_parent(path.parent, root_uid)
++    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC)
++    with os.fdopen(fd, 'rb') as stream:
++        before = os.fstat(stream.fileno())
++        require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and
++                before.st_uid == root_uid and not before.st_mode & 0o022 and
++                1 <= before.st_size <= 32, 'UI_PID_FILE_INVALID')
++        raw = stream.read(33)
++        require(file_identity(before) == file_identity(os.fstat(stream.fileno())),
++                'UI_PID_FILE_CHANGED')
++    require(re.fullmatch(rb'[1-9][0-9]{0,9}\n?', raw) is not None, 'UI_PID_INVALID')
++    pid = int(raw)
++    require(1 < pid <= 2147483647, 'UI_PID_INVALID')
++    return pid, file_identity(before)
++
++
++def process_birth(proc_fd, pid):
++    fd = os.open('stat', os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW, dir_fd=proc_fd)
++    with os.fdopen(fd, 'rb') as stream:
++        raw = stream.read(4097)
++    require(0 < len(raw) <= 4096 and raw.startswith(str(pid).encode() + b' ('),
++            'UI_PROCESS_STAT_INVALID')
++    end = raw.rfind(b') ')
++    require(end >= 0, 'UI_PROCESS_STAT_INVALID')
++    fields = raw[end + 2:].split()
++    require(len(fields) >= 20 and fields[0] in (b'R', b'S', b'D', b'I', b'T', b't', b'W')
++            and fields[19].isdigit(), 'UI_PROCESS_NOT_LIVE')
++    return int(fields[19])
++
++
++def process_executable(proc_fd, expected):
++    # /proc/<pinned directory>/exe is intentionally followed. Ordinary input
++    # paths are opened without following links. Compare the actual inode.
++    fd = os.open('exe', os.O_RDONLY | os.O_CLOEXEC, dir_fd=proc_fd)
++    try:
++        require(file_identity(os.fstat(fd)) == expected, 'UI_EXECUTABLE_MISMATCH')
++    finally:
++        os.close(fd)
++
++
++def endpoint_identity(paths, peer_uid, root_uid):
++    protected_parent(paths.endpoint.parent.parent, root_uid)
++    protected_parent(paths.endpoint.parent, peer_uid, exact_mode=0o700)
++    info = paths.endpoint.lstat()
++    require(stat.S_ISSOCK(info.st_mode) and info.st_nlink == 1 and info.st_uid == peer_uid
++            and stat.S_IMODE(info.st_mode) == 0o600, 'UI_SOCKET_INVALID')
++    return file_identity(info)
++
++
++def parse_response(raw, nonce, pid):
++    require(type(raw) is bytes and len(raw) <= MAX_PACKET and
++            type(nonce) is str and re.fullmatch('[0-9a-f]{64}', nonce), 'UI_RESPONSE_INVALID')
++    match = REPLY.fullmatch(raw)
++    require(match is not None and match[1].decode() == nonce and int(match[2]) == pid,
++            'UI_CHALLENGE_MISMATCH')
++    frames, loops, width, height, inputs = (int(match[i]) for i in range(3, 8))
++    require(frames <= 2**64 - 1 and loops <= 2**64 - 1 and
++            320 <= width <= 4096 and 320 <= height <= 4096 and 1 <= inputs <= 24,
++            'UI_FRAME_OR_INPUT_NOT_READY')
++    return {'frames': frames, 'loops': loops, 'width': width, 'height': height, 'inputs': inputs}
++
++
++def close_ancillary(ancillary):
++    # A malformed peer must not leak received SCM_RIGHTS descriptors locally.
++    for level, kind, raw in ancillary:
++        if level == socket.SOL_SOCKET and kind == socket.SCM_RIGHTS:
++            descriptors = array.array('i')
++            descriptors.frombytes(raw[:len(raw) - len(raw) % descriptors.itemsize])
++            for fd in descriptors:
++                os.close(fd)
++
++
++def remaining(deadline):
++    duration = deadline - time.monotonic()
++    require(duration > 0, 'UI_HEALTH_DEADLINE')
++    return duration
++
++
++def check(paths=Paths(), *, root_uid=0, peer_uid=1000, peer_gid=1000):
++    """Parameters support isolated tests; the installed CLI has no overrides."""
++    require(sys.platform == 'linux' and os.geteuid() == root_uid and hasattr(os, 'pidfd_open'),
++            'ROOT_LINUX_UI_CHECK_REQUIRED')
++    deadline = time.monotonic() + TOTAL_SECONDS
++    pid, pid_record = read_pid(paths.pid, root_uid)
++    protected_parent(paths.executable.parent, 0)
++    with ExitStack() as stack:
++        executable = os.open(paths.executable, os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW)
++        stack.callback(os.close, executable)
++        info = os.fstat(executable)
++        require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and info.st_uid == 0
++                and not info.st_mode & 0o022 and info.st_mode & 0o111, 'UI_EXECUTABLE_NOT_PROTECTED')
++        expected_executable = file_identity(info)
++        pidfd = os.pidfd_open(pid, 0)
++        stack.callback(os.close, pidfd)
++        proc_fd = os.open(paths.proc / str(pid), os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC | os.O_NOFOLLOW)
++        stack.callback(os.close, proc_fd)
++        require(os.fstat(proc_fd).st_uid == peer_uid, 'UI_PROCESS_OWNER_MISMATCH')
++        birth = process_birth(proc_fd, pid)
++        endpoint = endpoint_identity(paths, peer_uid, root_uid)
++
++        def unchanged():
++            require(not select.select([pidfd], [], [], 0)[0], 'UI_PROCESS_EXITED')
++            require(process_birth(proc_fd, pid) == birth, 'UI_PROCESS_REPLACED')
++            process_executable(proc_fd, expected_executable)
++            require(read_pid(paths.pid, root_uid) == (pid, pid_record), 'UI_PID_FILE_CHANGED')
++            require(endpoint_identity(paths, peer_uid, root_uid) == endpoint, 'UI_SOCKET_REPLACED')
++            require(file_identity(paths.executable.lstat()) == expected_executable,
++                    'UI_EXECUTABLE_REPLACED')
++            remaining(deadline)
++
++        samples = []
++        for _ in range(2):
++            unchanged()
++            nonce = secrets.token_hex(32)
++            with socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET | socket.SOCK_CLOEXEC) as client:
++                client.settimeout(remaining(deadline))
++                client.connect(str(paths.endpoint))
++                peer = struct.unpack('3i', client.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))
++                require(peer == (pid, peer_uid, peer_gid), 'UI_PEER_MISMATCH')
++                wire = PREFIX + nonce.encode() + b'\n'
++                client.settimeout(remaining(deadline))
++                require(client.send(wire) == len(wire), 'UI_CHALLENGE_TRUNCATED')
++                client.settimeout(remaining(deadline))
++                raw, ancillary, flags, _ = client.recvmsg(MAX_PACKET + 1, socket.CMSG_SPACE(16 * 4),
++                                                         getattr(socket, 'MSG_CMSG_CLOEXEC', 0))
++                close_ancillary(ancillary)
++                require(not ancillary and not flags & (socket.MSG_TRUNC | socket.MSG_CTRUNC),
++                        'UI_RESPONSE_FRAMING_INVALID')
++                sample = parse_response(raw, nonce, pid)
++                client.settimeout(remaining(deadline))
++                # One response packet then EOF. Extra queued packets or a peer
++                # that keeps the connection open are not successful health.
++                extra, extra_ancillary, extra_flags, _ = client.recvmsg(
++                    MAX_PACKET + 1, socket.CMSG_SPACE(16 * 4), getattr(socket, 'MSG_CMSG_CLOEXEC', 0))
++                close_ancillary(extra_ancillary)
++                require(not extra and not extra_ancillary and not extra_flags &
++                        (socket.MSG_TRUNC | socket.MSG_CTRUNC), 'UI_EXTRA_RESPONSE')
++                unchanged()
++                samples.append(sample)
++        first, second = samples
++        require(second['loops'] > first['loops'] and second['frames'] >= first['frames'] and
++                all(first[k] == second[k] for k in ('width', 'height', 'inputs')), 'UI_EVENT_LOOP_NOT_ADVANCING')
++        return {'schema': 'rock-native-ui-health/1', 'status': 'READY', 'native_ui_checked': True,
++                'pid': pid, 'process_start_ticks': birth, 'samples': samples,
++                'scope': 'Two fresh main-loop responses after framebuffer memory presentation; no physical scanout or post-commit monitoring claim.'}
++
++
++def main():
++    require(len(sys.argv) == 1 and os.geteuid() == 0, 'ROOT_FIXED_UI_HEALTH_ENTRY_REQUIRED')
++    with Path('/proc/cmdline').open('rb') as stream:
++        mode = mode_from_cmdline(stream.read(16385))
++    if mode == 'headless':
++        print('ROCK_UI_HEALTH_HEADLESS ' + json.dumps({'schema': 'rock-native-ui-health/1',
++              'mode': 'explicit-development-headless', 'native_ui_checked': False}), flush=True)
++    else:
++        result = check()
++        print('ROCK_UI_HEALTH_READY ' + json.dumps(result, separators=(',', ':')), flush=True)
++
++
++if __name__ == '__main__':
++    try:
++        main()
++    except (OSError, ValueError, RuntimeError) as error:
++        print('ROCK_UI_HEALTH_REJECTED ' + type(error).__name__ + ': ' + str(error), file=sys.stderr, flush=True)
++        raise SystemExit(1)
+--- a/os/update/verify-auth-health.py
++++ b/os/update/verify-auth-health.py
+@@ -198,7 +198,7 @@
+                   ('fault-readback-b', None, 'B sequence=2 reason=committed', '/dev/vdc')]
+         for number, (phase, fault, selection, device) in enumerate(phases, 1):
+             log = evidence / f'boot-{number}.log'
+-            cmdline = f'console=ttyAMA0 ro rootwait panic=1 rock.abtest={phase}'
++            cmdline = f'console=ttyAMA0 ro rootwait panic=1 rock.ui=headless rock.abtest={phase}'
+             if fault:
+                 cmdline += ' rock.abfault=' + fault
+             command = base + ['-append', cmdline]
+--- a/os/update/verify-faults.py
++++ b/os/update/verify-faults.py
+@@ -88,7 +88,7 @@
+             for phase, fault, selection in steps:
+                 number += 1
+                 log = case / f'boot-{number}-{phase}.log'
+-                cmdline = f'console=ttyAMA0 ro rootwait panic=1 rock.abtest={phase}' + (f' rock.abfault={fault}' if fault else '')
++                cmdline = f'console=ttyAMA0 ro rootwait panic=1 rock.ui=headless rock.abtest={phase}' + (f' rock.abfault={fault}' if fault else '')
+                 command = base + ['-append', cmdline]
+                 print(f'Fault guest boot {number}/13 case={name} phase={phase}; {log}', flush=True)
+                 marker = ('ROCK_AB_FAULT_READY point=' + fault).encode() if fault else b'unused'
+--- a/os/update/verify-qemu.py
++++ b/os/update/verify-qemu.py
+@@ -220,7 +220,7 @@
+         ]
+         for number, (phase, selection, markers) in enumerate(phases, 1):
+             log = evidence / f"boot-{number}-{phase}.log"
+-            command = base + ["-append", f"console=ttyAMA0 ro rootwait panic=1 rock.abtest={phase}"]
++            command = base + ["-append", f"console=ttyAMA0 ro rootwait panic=1 rock.ui=headless rock.abtest={phase}"]
+             print(f"A/B guest boot {number}/8 phase={phase}; {log}", flush=True)
+             result = boot(command, log, args.timeout, power_cut=phase == "interrupt")
+             if phase == 'interrupt':
+--- a/os/update/verify_purchaser.py
++++ b/os/update/verify_purchaser.py
+@@ -195,7 +195,7 @@
+     with tempfile.TemporaryDirectory(prefix='rock-purchaser-ab-qmp-') as temporary:
+         monitor = Path(temporary) / 'qmp.sock'
+         command = base + ['-qmp', f'unix:{monitor},server=on,wait=off', '-append',
+-                         f'console=ttyAMA0 ro rootwait panic=-1 rock.purchaser.update={phase}']
++                         f'console=ttyAMA0 ro rootwait panic=-1 rock.ui=required rock.purchaser.update={phase}']
+         entry['command'] = command
+         try:
+             with log.open('xb') as stream:

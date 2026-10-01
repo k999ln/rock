@@ -1,0 +1,46 @@
+{
+  "section": "hardware_power_button_boundary",
+  "checked": "2026-09-24",
+  "status": "design_only_not_hardware_verified",
+  "sources": [
+    {
+      "id": "HB-S1",
+      "title": "ASRock Industrial 4X4-AI350 / 4X4-AI340 User Manual",
+      "version": "1.0, March 5 2025",
+      "url": "https://download.asrock.com/IPC/Manual/4X4-AI350.pdf",
+      "locations": ["本文3頁/PDF9頁: DC入力とAT/ATX", "本文11頁/PDF17頁: PANEL1", "本文21頁/PDF27頁: Restore on AC/Power Loss、Deep S5", "本文23〜24頁/PDF29〜30頁: WakeとUSB電源設定"],
+      "verified_facts": [
+        "PANEL1 pin5=GND、pin6=PWRBTN#、pin7=RESET#、pin8=GND",
+        "PLED: 動作時点灯、S3点滅、S4/S5消灯",
+        "DC12〜24V入力、AT/ATX動作を説明",
+        "停電復帰Power Off/Power Onの設定を説明"
+      ],
+      "not_established": ["独自1回/2回/3秒/10秒の認識", "PWRBTN#定格・保証パルス幅", "外付けcontroller用常時給電の保証", "利用可能な基板power-good/standby引出し信号", "実PCB/BIOS版の動作一致"],
+      "inspection_note": "本文テキストを確認。web screenshot機能はこの呼出しで利用不能だったため、ピンの物理向きの画像確認・実配線は未実施。"
+    },
+    {
+      "id": "HB-S2",
+      "title": "UEFI ACPI 6.6 — ACPI Hardware Specification",
+      "url": "https://uefi.org/specs/ACPI/6.6/04_ACPI_Hardware_Specification.html#power-button-override",
+      "locations": ["§4.8.2.2.1 Power Button", "§4.8.2.2.1.3 Power Button Override"],
+      "verified_facts": ["長押しによるpower-button overrideを説明", "4秒を超える押下でsoft-offへ移行する標準動作を説明"],
+      "design_use": "PWRBTN#直結の物理長押しと独自10秒認識を同一にできない根拠",
+      "limits": "4X4-AI350個体の実測タイマー、BIOS設定、長押し完了時間の保証ではない。"
+    }
+  ],
+  "design_choices_not_vendor_claims": [
+    "主系電源スイッチより上流で動くcontrollerへ押下判定を集約",
+    "PWRBTN#へ物理接点を直結せず、ON時だけ接点模擬の短パルスを最大1回出す",
+    "1回待機/復帰、2回ホーム、3秒以上10秒未満で解放するとOS正常OFF要求",
+    "10秒保持ではOSを経由せず、主系DC遮断ラッチへ要求する方式を選定",
+    "主板とTowerを遮断範囲へ含め、USB等からの逆給電を評価",
+    "PWRBTN#長assertとRESET#は強制OFFに使用しない",
+    "OFFから始めた押下はON要求1回として消費し、解放まで長押しに再解釈しない",
+    "USER_STANDBYはOS/Scheduler/通信が稼働する製品内待機でS3/S4/S0ixではない。復帰時のカメラ/マイク再許可が必要",
+    "正常OFFはOS手順と観測された電源状態を確認後に主系遮断。PLED単独ではOFFとしない",
+    "外部給電なしでは無効、復電だけでは自動ONしない。初回ONの主電源有効/準備確認/パルス幅とAC設定は未受入",
+    "電源状態不明では反復パルスしない",
+    "10秒の要求発行とOFF完了を分離",
+    "DC遮断部の定格・完了時間・放電・逆給電防止・状態検知は未実証"
+  ]
+}

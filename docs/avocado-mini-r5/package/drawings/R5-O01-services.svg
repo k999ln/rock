@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1000" viewBox="0 0 1620 1000"><rect width="1620" height="1000" fill="white"/>
+<rect x="45" y="120" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="255.0" y="189.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">入力</text>
+<text x="255.0" y="230.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">手・身体・声</text>
+<rect x="600" y="120" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="810.0" y="189.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">意図候補</text>
+<text x="810.0" y="230.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">座標・品質・対象</text>
+<rect x="1155" y="120" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1365.0" y="189.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">実行権限</text>
+<text x="1365.0" y="230.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">本人・範囲・期限</text>
+<polyline points="465,210 600,210" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="600,210 590.0950818741205,214.78462087522354 590.0950818741205,205.21537912477646" fill="#333"/>
+<polyline points="1020,210 1155,210" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1155,210 1145.0950818741205,214.78462087522354 1145.0950818741205,205.21537912477646" fill="#333"/>
+<rect x="45" y="450" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="255.0" y="519.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">空間モデル</text>
+<text x="255.0" y="560.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">観測と推定を区別</text>
+<rect x="600" y="450" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="810.0" y="519.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">ゲーム・手順</text>
+<text x="810.0" y="560.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">状態と履歴</text>
+<rect x="1155" y="450" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1365.0" y="519.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">アダプター</text>
+<text x="1365.0" y="560.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">費用・版・接続</text>
+<polyline points="255,300 255,450" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="255,450 250.21537912477646,440.0950818741206 259.78462087522354,440.0950818741206" fill="#333"/>
+<polyline points="465,540 600,540" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="600,540 590.0950818741205,544.7846208752235 590.0950818741205,535.2153791247765" fill="#333"/>
+<polyline points="1365,300 1365,450" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1365,450 1360.2153791247765,440.0950818741206 1369.7846208752235,440.0950818741206" fill="#333"/>
+<polyline points="1020,540 1155,540" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1155,540 1145.0950818741205,544.7846208752235 1145.0950818741205,535.2153791247765" fill="#333"/>
+<rect x="45" y="765" width="420" height="150" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="255.0" y="819.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">ローカル表示 HAL</text>
+<text x="255.0" y="860.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">能力未検証なら停止</text>
+<rect x="600" y="765" width="420" height="150" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="810.0" y="819.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">Asset Registry</text>
+<text x="810.0" y="860.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">作品・権利・持ち出し</text>
+<rect x="1155" y="765" width="420" height="150" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1365.0" y="819.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">外部送信・機器操作</text>
+<text x="1365.0" y="860.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">必要な時のみ許可</text>
+<polyline points="810,630 255,765" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="255,765 263.4934353554074,758.0098958617547 265.7551407543698,767.3080180574888" fill="#333"/>
+<polyline points="810,630 810,765" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="810,765 805.2153791247765,755.0950818741205 814.7846208752235,755.0950818741205" fill="#333"/>
+<polyline points="1365,630 1365,765" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1365,765 1360.2153791247765,755.0950818741205 1369.7846208752235,755.0950818741205" fill="#333"/>
+<text x="810" y="60.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="32.5" fill="#111111">R5 O01  同じmini内のOS機能と権限境界</text>
+</svg>

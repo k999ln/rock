@@ -1,0 +1,159 @@
+{
+  "status": "PASS",
+  "scope": "actual Linux user-namespace UID1002 to UID65534; no QEMU or Hub fault claim",
+  "cases": [
+    {
+      "mode": "memory",
+      "status": "PASS",
+      "returncode": 0,
+      "elapsed_seconds": 0.039640560999941954,
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "memory",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "outcome": {
+        "mode": "memory",
+        "outcome": "MemoryError"
+      }
+    },
+    {
+      "mode": "cpu",
+      "status": "PASS",
+      "returncode": 137,
+      "elapsed_seconds": 2.017170768000142,
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "cpu",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "outcome": null
+    },
+    {
+      "mode": "file-size",
+      "status": "PASS",
+      "returncode": 0,
+      "elapsed_seconds": 0.031920227000227896,
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "file-size",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "outcome": {
+        "bytes": 1048576,
+        "mode": "file-size",
+        "outcome": "EFBIG"
+      }
+    },
+    {
+      "mode": "crash",
+      "status": "PASS",
+      "returncode": 139,
+      "elapsed_seconds": 0.025349869999899965,
+      "armed": {
+        "limits": {
+          "as": [
+            268435456,
+            268435456
+          ],
+          "core": [
+            0,
+            0
+          ],
+          "cpu": [
+            2,
+            2
+          ],
+          "fsize": [
+            1048576,
+            1048576
+          ]
+        },
+        "mode": "crash",
+        "schema": "rock-sandbox-resource-probe/1",
+        "uid": 65534
+      },
+      "outcome": null
+    }
+  ],
+  "default_probe": {
+    "checks": {
+      "cpu_bounded": true,
+      "data_hidden": true,
+      "fds_bounded": true,
+      "fork_denied": true,
+      "host_root_hidden": true,
+      "inet_denied": true,
+      "memory_bounded": true,
+      "network_namespace": true,
+      "no_new_privs": true,
+      "platform_socket_hidden": true,
+      "proc_isolated": true,
+      "seccomp_filter": true,
+      "system_readonly": true,
+      "uid_unprivileged": true,
+      "unix_denied": true,
+      "wallet_socket_hidden": true
+    },
+    "network_interfaces": [
+      "lo"
+    ],
+    "ok": true
+  },
+  "recipe_unchanged": true,
+  "invalid_argument_sets_rejected": 4
+}

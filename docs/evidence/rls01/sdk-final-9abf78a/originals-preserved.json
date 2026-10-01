@@ -1,0 +1,16 @@
+{
+  "schema": "rock-final-sdk-originals/1",
+  "status": "PASS",
+  "native_inventory": {
+    "status": "PASS",
+    "native_files": 692,
+    "matches_signed_final_release": true
+  },
+  "financial_snapshot_matches_harness": true,
+  "private_files": {
+    "authority-and-client-state.tar.gz": {
+      "sha256": "d956ac9ef262f0203118ec46c50383edc2802326b7a2b9be7e7960cfe4501a60",
+      "bytes": 75089
+    }
+  }
+}

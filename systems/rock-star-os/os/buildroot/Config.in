@@ -1,0 +1,3 @@
+source "$BR2_EXTERNAL_ROCK_PATH/package/rock-core/Config.in"
+source "$BR2_EXTERNAL_ROCK_PATH/package/rock-platform/Config.in"
+source "$BR2_EXTERNAL_ROCK_PATH/package/rock-ui/Config.in"

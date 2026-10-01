@@ -1,0 +1,42 @@
+{
+  "schema": "rock-live-observation-correction/1",
+  "status": "CORRECTED_INTERPRETATION_NO_PRODUCT_FAILURE",
+  "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-lifecycle/business-5dab7c8b7ed14e95929e/cycle-1",
+  "immutable_frames": [
+    {
+      "file": "0051-input-editor.png",
+      "mtime_utc": "2026-09-10T11:10:43.356008+00:00",
+      "sha256": "0e0704cc044b9277293acf34d8f228887b865481ee09909db54b00c4ca84d427"
+    },
+    {
+      "file": "0098-input-editor.png",
+      "mtime_utc": "2026-09-10T11:13:01.249032+00:00",
+      "sha256": "96ee0c7c3f4c317c57a5f391f836c7a06ffd9c7f94dbe026e1f566057f04fb37"
+    },
+    {
+      "file": "0099-typed-input.png",
+      "mtime_utc": "2026-09-10T11:13:31.100386+00:00",
+      "sha256": "1bcbee07efe1c92bcc793b0cd55e3122041c224aee07e917a9598b5b875d8588"
+    },
+    {
+      "file": "0100-job-completed.png",
+      "mtime_utc": "2026-09-10T11:13:33.884326+00:00",
+      "sha256": "4c2df18edc86cd9fca4a2304317af0464292183b60a16c66ded023c85fa3e536"
+    }
+  ],
+  "correction": "The mutable probe.png read was not correlated with the current immutable step. Subsequent immutable frame sequence proves continued typing and job completion; the report writes completed cycles only.",
+  "input_added_by_diagnosis": false,
+  "runtime_or_observer_changed": false,
+  "deadline_changed": false,
+  "final16operations5jobs": "PENDING_ORIGINAL_VERIFIER",
+  "final_validation": {
+    "status": "PASS_SCOPED",
+    "report_sha256": "1cea41d7c8a19ba6ebdf636172d424fbc3789f152ce119076a600e092ca3d077",
+    "normal_boots": 2,
+    "operations": 16,
+    "jobs": 5,
+    "input_added_by_diagnosis": false,
+    "source_modified": false,
+    "original_deadlines_preserved": true
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "execution_receipt": {
+    "revision_sha256": "80db22fd828d52576b84bacafae79785158dd73dc1391c71bb04b4a0f8feb730",
+    "execution_id": "sample-writer",
+    "contract_sha256": "80db22fd828d52576b84bacafae79785158dd73dc1391c71bb04b4a0f8feb730",
+    "artifacts": [
+      {
+        "path": "draft.md",
+        "sha256": "0c3e2ab725ea8695032126bb279ef82d66d131f66ef76eb8552bd14816c29ba4",
+        "bytes": 98
+      }
+    ]
+  },
+  "reviewer_context_id": "sample-reviewer",
+  "review": {
+    "criteria": [
+      {
+        "clause": "依頼されたテーマの見出しと本文を含む原稿を作成する",
+        "status": "PASS",
+        "evidence": "このサンプルは見出しと本文を含んでいます。"
+      }
+    ],
+    "factual_claims": [],
+    "verdict": "PASS",
+    "reason": "デモ用の形式照合"
+  }
+}

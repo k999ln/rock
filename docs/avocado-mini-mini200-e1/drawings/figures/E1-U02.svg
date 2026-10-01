@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#314354"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial Unicode MS,Arial,sans-serif;fill:#15202b} .wire{fill:none;stroke:#314354;stroke-width:3} .dim{fill:none;stroke:#66737d;stroke-width:2}</style>
+<text x="38" y="48" font-size="32" font-weight="bold">起動とプライバシーの見え方</text>
+<text x="38" y="976" font-size="19">RockstarOS avocadoMini   Mini200 E1   設計提案   実機未検証   NTS</text>
+<rect x="45" y="100" width="735" height="350" rx="12" fill="#f8fafb" stroke="#314354" stroke-width="2"/>
+<text x="70" y="146" font-size="29" font-weight="bold">1 電源 ON</text>
+<rect x="73" y="205" width="170" height="170" rx="10" fill="#e8f0ed" stroke="#314354" stroke-width="2"/>
+<circle cx="108" cy="263" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<circle cx="158" cy="263" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<circle cx="208" cy="263" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<text x="96" y="267" font-size="18">L</text>
+<text x="149" y="267" font-size="13">RGB</text>
+<text x="201" y="267" font-size="18">R</text>
+<path d="M108,348 L208,348" stroke="#49957f" stroke-width="3" fill="none"/>
+<text x="275" y="245" font-size="25">cameraとmicはOFF</text>
+<text x="275" y="298" font-size="25">設定と終了を先に利用</text>
+<text x="275" y="351" font-size="25">本体は伸長しない</text>
+<rect x="830" y="100" width="735" height="350" rx="12" fill="#f8fafb" stroke="#314354" stroke-width="2"/>
+<text x="855" y="146" font-size="29" font-weight="bold">2 ゲームを選ぶ</text>
+<rect x="858" y="205" width="170" height="170" rx="10" fill="#e8f0ed" stroke="#314354" stroke-width="2"/>
+<circle cx="893" cy="263" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<circle cx="943" cy="263" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<circle cx="993" cy="263" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<text x="881" y="267" font-size="18">L</text>
+<text x="934" y="267" font-size="13">RGB</text>
+<text x="986" y="267" font-size="18">R</text>
+<path d="M893,348 L993,348" stroke="#49957f" stroke-width="3" fill="none"/>
+<text x="1060" y="245" font-size="25">撮影と音声を別々に許可</text>
+<text x="1060" y="298" font-size="25">撮影表示とmic状態を確認</text>
+<text x="1060" y="351" font-size="25">音声なしでも遊べる</text>
+<rect x="45" y="495" width="735" height="350" rx="12" fill="#f8fafb" stroke="#314354" stroke-width="2"/>
+<text x="70" y="541" font-size="29" font-weight="bold">3 話すときだけ</text>
+<rect x="73" y="600" width="170" height="170" rx="10" fill="#e8f0ed" stroke="#314354" stroke-width="2"/>
+<circle cx="108" cy="658" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<circle cx="158" cy="658" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<circle cx="208" cy="658" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<text x="96" y="662" font-size="18">L</text>
+<text x="149" y="662" font-size="13">RGB</text>
+<text x="201" y="662" font-size="18">R</text>
+<path d="M108,743 L208,743" stroke="#49957f" stroke-width="3" fill="none"/>
+<text x="275" y="640" font-size="25">物理PTTを押して発話</text>
+<text x="275" y="693" font-size="25">文字と実行予定を表示</text>
+<text x="275" y="746" font-size="25">ゲーム音量を一時的に下げる</text>
+<rect x="830" y="495" width="735" height="350" rx="12" fill="#f8fafb" stroke="#314354" stroke-width="2"/>
+<text x="855" y="541" font-size="29" font-weight="bold">4 終了または取消</text>
+<rect x="858" y="600" width="170" height="170" rx="10" fill="#e8f0ed" stroke="#314354" stroke-width="2"/>
+<circle cx="893" cy="658" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<circle cx="943" cy="658" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<circle cx="993" cy="658" r="20" fill="#d9e3e9" stroke="#314354" stroke-width="3"/>
+<text x="881" y="662" font-size="18">L</text>
+<text x="934" y="662" font-size="13">RGB</text>
+<text x="986" y="662" font-size="18">R</text>
+<path d="M893,743 L993,743" stroke="#49957f" stroke-width="3" fill="none"/>
+<text x="1060" y="640" font-size="25">入力権限と古い結果を失効</text>
+<text x="1060" y="693" font-size="25">保存確認後に通常終了</text>
+<text x="1060" y="746" font-size="25">MIC OFFは途中でも有効</text>
+<text x="55" y="946" font-size="22">電源からホーム P95 60秒以下を評価目標とする。実測なし。初回設定や本人確認の待ち時間は別。</text>
+</svg>

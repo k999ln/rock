@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:colony:sim-only:command:1",
+  "title": "RockstarOS Colony command fixture / 1",
+  "description": "Strict structural contract for a synthetic noncritical load command. Public fixture MAC is not authentication. Runtime checks are required for digest, authorization, freshness, and plant state.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "rockstaros-colony-command/1"
+    },
+    "mode": {
+      "const": "SIM_ONLY"
+    },
+    "sourceClass": {
+      "const": "SYNTHETIC"
+    },
+    "siteId": {
+      "const": "sim-ground-01"
+    },
+    "nodeId": {
+      "const": "sim-utility-01"
+    },
+    "ownerRef": {
+      "const": "sim-operator-organization"
+    },
+    "workId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "requestId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "commandId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "payloadDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "holderId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "authorityEpoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "componentGeneration": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "expiresAt": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000000000
+    },
+    "expectedRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "sim.noncritical_load.set"
+        },
+        "desiredFlexibleKw": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "operation",
+        "desiredFlexibleKw"
+      ],
+      "additionalProperties": false
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "schema",
+    "mode",
+    "sourceClass",
+    "siteId",
+    "nodeId",
+    "ownerRef",
+    "workId",
+    "requestId",
+    "commandId",
+    "idempotencyKey",
+    "payloadDigest",
+    "holderId",
+    "authorityEpoch",
+    "componentGeneration",
+    "expiresAt",
+    "expectedRevision",
+    "payload",
+    "signature"
+  ],
+  "additionalProperties": false
+}

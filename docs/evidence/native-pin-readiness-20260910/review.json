@@ -1,0 +1,34 @@
+{
+  "schema": "rock-pin-source-review/1",
+  "status": "PASS_UNCHANGED_PIXELS_REVIEW",
+  "started_utc": "2026-09-10T07:08:37.273002+00:00",
+  "scope": "Root-owned host C/real Wallet fixture only; no QEMU or final OS acceptance",
+  "original_manifest_sha256": "a549d56364935f4c0171e3429983f977563fc3878342068bab25ded22f0f087c",
+  "original_sources": {
+    "os/ui/ui.c": "3f163f895541acdc7e3a7ee0082edb06be32481c9d6b9340309bfe5034977bda",
+    "os/ui/auth-ui.inc": "37e9015e87cdf26e4d22df8beec9520bc40ff296ea7c67cea2ed8f1df6b2b16b",
+    "os/ui/main.c": "534568c1251e1d904e3df69612470413e5cae379502ed85618c29adb67f3b52a",
+    "os/assets/NotoSansCJKjp-Regular.otf": "68a3fc98800b2a27b371f2fb79991daf3633bd89309d4ffaa6946fd587f375b5"
+  },
+  "candidate_sources": {
+    "os/assets/NotoSansCJKjp-Regular.otf": "68a3fc98800b2a27b371f2fb79991daf3633bd89309d4ffaa6946fd587f375b5",
+    "os/ui/activation-ui.inc": "656d3ac0b8731842e8ec70e81d754992cc0524877bb4e95795ca620e980ab968",
+    "os/ui/atm-ui.inc": "66225c262e8c9aabe15e3b043200212e8ac79ae63a0b37918b6247c043a22dfe",
+    "os/ui/auth-ui.inc": "37e9015e87cdf26e4d22df8beec9520bc40ff296ea7c67cea2ed8f1df6b2b16b",
+    "os/ui/game-ui.inc": "e7c04958815f8f94468b58c486dbee6155926ceb2f5dcdae8a67b94aab3127e1",
+    "os/ui/ipc.h": "3e6ace92e6f1fcde6cc02cadc8899c51c58d9271caed08c124003db61914bdf4",
+    "os/ui/main.c": "5e3e3cf71fec19a9ea0b0b017e6739891403953504ef337e869c122de59bdfb7",
+    "os/ui/mcp-ui.inc": "38c3855f2e3bec881e9404b114ef2b6297bc7d16bda89e350330067ad7ea0e13",
+    "os/ui/remote-ui.inc": "5b4736efec786c2cd7a01daa83671238a40a1c8e6873031de11e07165b987f5e",
+    "os/ui/service-ui.inc": "e33a1104b95df4bf6ce6eae678e464ab2fb5c0eb27e02fa10ba3f11896a8e78c",
+    "os/ui/ui.c": "9e492cd2dac4ae5370f8e1f0191d5236cf6295d86f6cf250437d58f1645b6bfd",
+    "os/ui/ui.h": "318288d8866ec4d7e7a97ed3104a201b2e61eb3432256d5cf56682353a07bbc1"
+  },
+  "renderer_sha256": "a7c585addc9040d07af76ea1bcd4caa65823f074c5bfb79dfc384da8260c5f6f",
+  "pixel_definitions_changed": false,
+  "canonical_guard_overwritten": false,
+  "source_unchanged": true,
+  "candidate_manifest_sha256": "b7f662085b43860fb5be6e56cbcaf4612f98ef835465d1eba659dd09c4a68378",
+  "next": "Visually review masked frames, apply source-only candidate, run original tests unmodified",
+  "finished_utc": "2026-09-10T07:08:42.521019+00:00"
+}

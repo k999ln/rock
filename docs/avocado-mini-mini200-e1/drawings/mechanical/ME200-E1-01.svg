@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080">
+<style>text{font-family:Arial,"Hiragino Sans","Noto Sans CJK JP",sans-serif;fill:#193449}</style>
+<rect width="1600" height="1080" fill="white"/><rect x="22" y="22" width="1556" height="1036" fill="none" stroke="#768f9b"/>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#388d9e"/></marker></defs>
+<text x="48" y="65" font-size="29" text-anchor="start" style="fill:#193449">ME200-E1-01  前面3窓・上面音声・固定外形</text>
+<text x="48" y="100" font-size="18" text-anchor="start" style="fill:#193449">Mini200 E1 | 1本体・計算機内蔵・音声入力 | 単位mm / 外観仮参照 / 全区画REF・実機未検証</text>
+<line x1="40" y1="124" x2="1560" y2="124" stroke="#617f8f" stroke-width="2"/>
+<line x1="40" y1="1008" x2="1560" y2="1008" stroke="#617f8f" stroke-width="2"/>
+<text x="48" y="1040" font-size="16" text-anchor="start" style="fill:#193449">2026-09-21 | 公差は設計予算。型番の配置・加工穴・取付強度・放熱・音響はHOLD。</text>
+<text x="1545" y="1040" font-size="16" text-anchor="end" style="fill:#a34e37">NOT FOR FABRICATION</text>
+<text x="290" y="190" font-size="22" text-anchor="middle" style="fill:#193449">正面 / 光学前方 -Y</text>
+<rect x="92" y="272" width="396" height="388" fill="#e4f0eb" stroke="#3c6074" stroke-width="2"/>
+<rect x="128" y="660" width="24" height="8" fill="#a0b0b6" stroke="#3c6074" stroke-width="2"/>
+<rect x="428" y="660" width="24" height="8" fill="#a0b0b6" stroke="#3c6074" stroke-width="2"/>
+<line x1="114" y1="388" x2="466" y2="388" stroke="#76a395" stroke-width="1" stroke-dasharray="7 5"/>
+<circle cx="170" cy="388" r="54" fill="#335f74" stroke="#3c6074" stroke-width="2"/>
+<text x="170" y="395" font-size="20" text-anchor="middle" style="fill:#ffffff">L</text>
+<circle cx="290" cy="388" r="54" fill="#597b98" stroke="#3c6074" stroke-width="2"/>
+<text x="290" y="395" font-size="20" text-anchor="middle" style="fill:#ffffff">RGB</text>
+<circle cx="410" cy="388" r="54" fill="#335f74" stroke="#3c6074" stroke-width="2"/>
+<text x="410" y="395" font-size="20" text-anchor="middle" style="fill:#ffffff">R</text>
+<rect x="150" y="618" width="280" height="6" fill="#55a38a" stroke="#55a38a" stroke-width="2"/>
+<text x="290" y="565" font-size="18" text-anchor="middle" style="fill:#193449">前面状態表示 / REF</text>
+<line x1="170" y1="232" x2="290" y2="232" stroke="#617f8f" stroke-width="1"/>
+<line x1="170" y1="226" x2="170" y2="238" stroke="#617f8f" stroke-width="1"/>
+<line x1="290" y1="226" x2="290" y2="238" stroke="#617f8f" stroke-width="1"/>
+<text x="230.0" y="222" font-size="17" text-anchor="middle" style="fill:#193449">60 REF</text>
+<line x1="290" y1="232" x2="410" y2="232" stroke="#617f8f" stroke-width="1"/>
+<line x1="290" y1="226" x2="290" y2="238" stroke="#617f8f" stroke-width="1"/>
+<line x1="410" y1="226" x2="410" y2="238" stroke="#617f8f" stroke-width="1"/>
+<text x="350.0" y="222" font-size="17" text-anchor="middle" style="fill:#193449">60 REF</text>
+<line x1="92" y1="722" x2="488" y2="722" stroke="#617f8f" stroke-width="1"/>
+<line x1="92" y1="716" x2="92" y2="728" stroke="#617f8f" stroke-width="1"/>
+<line x1="488" y1="716" x2="488" y2="728" stroke="#617f8f" stroke-width="1"/>
+<text x="290.0" y="712" font-size="17" text-anchor="middle" style="fill:#193449">W198 ±1 / 最大199</text>
+<line x1="56" y1="272" x2="56" y2="668" stroke="#617f8f" stroke-width="1"/>
+<line x1="50" y1="272" x2="62" y2="272" stroke="#617f8f" stroke-width="1"/>
+<line x1="50" y1="668" x2="62" y2="668" stroke="#617f8f" stroke-width="1"/>
+<text x="45" y="470.0" font-size="17" text-anchor="middle" transform="rotate(-90 45 470.0)">H198 ±1（足4含む）</text>
+<line x1="540" y1="388" x2="540" y2="668" stroke="#617f8f" stroke-width="1"/>
+<line x1="534" y1="388" x2="546" y2="388" stroke="#617f8f" stroke-width="1"/>
+<line x1="534" y1="668" x2="546" y2="668" stroke="#617f8f" stroke-width="1"/>
+<text x="529" y="528.0" font-size="17" text-anchor="middle" transform="rotate(-90 529 528.0)">光学中心 z140 REF</text>
+<text x="843" y="190" font-size="22" text-anchor="middle" style="fill:#193449">右側面 / 後方 +Y</text>
+<rect x="665" y="272" width="356" height="388" fill="#e4f0eb" stroke="#3c6074" stroke-width="2"/>
+<rect x="713" y="660" width="24" height="8" fill="#a0b0b6" stroke="#3c6074" stroke-width="2"/>
+<rect x="949" y="660" width="24" height="8" fill="#a0b0b6" stroke="#3c6074" stroke-width="2"/>
+<rect x="705" y="468" width="200" height="180" fill="#e5f0f7" stroke="#6990a0" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="805" y="541" font-size="18" text-anchor="middle" style="fill:#193449">側面吸気 REF</text>
+<text x="805" y="572" font-size="17" text-anchor="middle" style="fill:#193449">100 x 90 / 左右</text>
+<line x1="1005" y1="464" x2="1005" y2="632" stroke="#b46c49" stroke-width="6" stroke-dasharray="5 5"/>
+<text x="843" y="425" font-size="18" text-anchor="middle" style="fill:#193449">後方fan・排気</text>
+<line x1="665" y1="722" x2="1021" y2="722" stroke="#617f8f" stroke-width="1"/>
+<line x1="665" y1="716" x2="665" y2="728" stroke="#617f8f" stroke-width="1"/>
+<line x1="1021" y1="716" x2="1021" y2="728" stroke="#617f8f" stroke-width="1"/>
+<text x="843.0" y="712" font-size="17" text-anchor="middle" style="fill:#193449">D178 ±1 / 最大179</text>
+<text x="1318" y="190" font-size="22" text-anchor="middle" style="fill:#193449">上面 / 前面が上</text>
+<rect x="1120" y="272" width="396" height="356" fill="#f0f6f3" stroke="#3c6074" stroke-width="2"/>
+<circle cx="1318" cy="402" r="100" fill="none" stroke="#9ca9ba" stroke-width="2" stroke-dasharray="7 5"/>
+<circle cx="1252" cy="336" r="6" fill="#245c70" stroke="#3c6074" stroke-width="2"/>
+<circle cx="1384" cy="336" r="6" fill="#245c70" stroke="#3c6074" stroke-width="2"/>
+<circle cx="1252" cy="468" r="6" fill="#245c70" stroke="#3c6074" stroke-width="2"/>
+<circle cx="1384" cy="468" r="6" fill="#245c70" stroke="#3c6074" stroke-width="2"/>
+<line x1="1252" y1="235" x2="1384" y2="235" stroke="#617f8f" stroke-width="1"/>
+<line x1="1252" y1="229" x2="1252" y2="241" stroke="#617f8f" stroke-width="1"/>
+<line x1="1384" y1="229" x2="1384" y2="241" stroke="#617f8f" stroke-width="1"/>
+<text x="1318.0" y="225" font-size="17" text-anchor="middle" style="fill:#193449">mic 66 REF</text>
+<rect x="1434" y="378" width="36" height="36" fill="#de8e69" stroke="#3c6074" stroke-width="2"/>
+<text x="1318" y="548" font-size="17" text-anchor="middle" style="fill:#193449">4音孔候補 / 孔径HOLD</text>
+<text x="1318" y="666" font-size="17" text-anchor="middle" style="fill:#193449">破線: 候補PCB Ø100（内部）</text>
+<text x="1318" y="702" font-size="17" text-anchor="middle" style="fill:#193449">上面右: 物理MUTE（flush）</text>
+<text x="85" y="789" font-size="20" text-anchor="start" style="fill:#193449">前面3丸窓Ø54は外観REF。左/右tracking候補 + 中央RGB、左右baseline120。</text>
+<text x="85" y="825" font-size="20" text-anchor="start" style="fill:#193449">小型cameraの搭載枠へ変更。旧GS + Theia 3本を収納済みとはしない。</text>
+<text x="85" y="861" font-size="20" text-anchor="start" style="fill:#193449">本体は伸縮しない。足・操作部・遮光部は通常使用中も外形内へ収める。</text>
+<text x="85" y="917" font-size="18" text-anchor="start" style="fill:#a34e37">XVF3800候補のmic間隔66を参照。導音孔・ガスケット・配線・防振の加工寸法は未確定。</text>
+<text x="85" y="949" font-size="18" text-anchor="start" style="fill:#a34e37">外部支持・AC電源・差込プラグ/ケーブル曲げ空間は198 x178 x198の範囲外。</text>
+</svg>

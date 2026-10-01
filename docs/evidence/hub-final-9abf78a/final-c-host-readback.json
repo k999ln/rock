@@ -1,0 +1,10 @@
+{
+  "schema": "rock-final-c-host-independent-readback/1",
+  "status": "PASS_ALL_824_ORIGINAL_FILES",
+  "recorded_utc": "2026-09-10T12:39:00.931963+00:00",
+  "inventory_sha256": "f5c90ae196d65482b95cfcb792a2eba1b85e12341a34a44c4a7f01ff984a9ea9",
+  "regular_files": 824,
+  "total_bytes": 58595047,
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "scope": "Independent Mac readback of every copied Linux input file: size/SHA, regular file/no symlink/hardlink, complete path set; original failed reports remain failed; C02 reused service DBs inventoried at final time."
+}

@@ -1,0 +1,20 @@
+#!/bin/sh
+# Development-only guest driver; installed only with --include-tests.
+set -eu
+[ "${1:-start}" = start ] || exit 0
+case " $(cat /proc/cmdline) " in
+  *" rock.abtest="*) ;;
+  *) exit 0 ;;
+esac
+finish() {
+  result=$?
+  if [ "$result" -ne 0 ]; then
+    echo "ROCK_AB_TEST_FAIL exit=$result"
+  fi
+  sync
+  reboot -f
+}
+trap finish EXIT
+mkdir -p /run/rock-ab-fixtures
+mount -t ext4 -o ro,nosuid,nodev,noexec /dev/vdd /run/rock-ab-fixtures
+/usr/bin/python3 -B -I /usr/lib/rock-update/guest_test.py

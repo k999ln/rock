@@ -1,0 +1,8 @@
+test_actual_frozen_legacy_writer_blocks_adoption_before_marker_change (test_independent_restore_review.IndependentRestoreReview.test_actual_frozen_legacy_writer_blocks_adoption_before_marker_change) ... ok
+test_each_promotion_write_after_durable_commit_can_finish_same_restore (test_independent_restore_review.IndependentRestoreReview.test_each_promotion_write_after_durable_commit_can_finish_same_restore) ... ok
+test_second_current_restore_preserves_ledger_and_increments_epoch_again (test_independent_restore_review.IndependentRestoreReview.test_second_current_restore_preserves_ledger_and_increments_epoch_again) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.369s
+
+OK

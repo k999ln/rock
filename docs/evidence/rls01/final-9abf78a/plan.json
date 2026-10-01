@@ -1,0 +1,141 @@
+{
+  "schema": "rock-final-installer-acceptance-plan/1",
+  "status": "FROZEN_BEFORE_FINAL_PACKAGE_AND_INSTALL",
+  "requirements": [
+    "RQ-12",
+    "RQ-16",
+    "RQ-17"
+  ],
+  "reused_components": [
+    "signed preview packager and bootstrap",
+    "Lima ownership lifecycle",
+    "stage0 A/B/data backup",
+    "Game sandbox current-copy with retained C",
+    "explicit stopped UI retention observers"
+  ],
+  "version": "1.0.0-preview.20260910",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "inputs": {
+    "images": "A final freeze/2 current triple plus raw base manifest, exact profile and default fixed sandbox configuration",
+    "legal_info": "A deterministic legal-info tar.gz with exact source/archive/config/Buildroot pin, complete license/source/patch inventory and repeat SHA",
+    "public_fixture_key": "RFC8032 explicitly public development signing key; independent manifest and DER fingerprints required",
+    "key_der_sha256": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+    "freeze_sha256": "d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc",
+    "profile_sha256": "0d6f4924d98f1cd43d4e3104b9a9c3b4f2a4b2557e96f64bd626f9930f4b34bb",
+    "image_sha256": {
+      "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+      "rootfs.ext4": "0c5893425ab76256875b23b0c1c0ca34c211480b493a69d9fb502c4140a2825c",
+      "stage0.cpio.gz": "bf4200977ac520dd097f4bc7c1fc7cd87702d6ca4e3f9e0a73b4a8b555e41c01"
+    },
+    "source_archive_sha256": "1fac2382110401638dd9ea6d5d5d4d67bf902b5198f5bd38a187c66508719532",
+    "base_freeze_sha256": "4376d52d7db3e9cda5357287092e9065d5c8227e5a94ede5fa434bc336629b61",
+    "legal_info_archive": {
+      "path": "work/installer-inputs-final1/final-9abf78a-legal-info-v2.tar.gz",
+      "bytes": 934132130,
+      "sha256": "7c9cdc0d32faf4006b8693d5d8dc85efd8259ae937c90274888da3f943920a0c",
+      "manifest_sha256": "51c2435711936d3dba6786ffe41ca78f4b8dafbe9901e489f9cd143167913234",
+      "status": "NOT_CLEARED",
+      "regular_files": 298,
+      "full_source_files": 1364,
+      "repeat_serialization": "IDENTICAL_SHA256_AND_BYTES"
+    }
+  },
+  "package_checks": [
+    "Exact git source commit/source inventory and image freeze/provenance match",
+    "Exact default Game profile and immutable source/config/key hashes",
+    "Legal bundle source/config/Buildroot/inventory hashes match the same frozen build",
+    "Two clean packaging destinations yield every output byte-identical",
+    "Delivered bootstrap verifies signature plus independent key and manifest fingerprints",
+    "Third-party sources/NOTICE/LICENSE texts retained; legal NOT_CLEARED remains explicit"
+  ],
+  "fresh_install_root": "/Users/kaiya/Library/RockstarOS/rls01-final1",
+  "off_vm_export": "/Users/kaiya/Library/RockstarOS/rls01-final1-backup",
+  "native_actions": [
+    "Fresh standard catalog local citation1.0.0 install and local permission",
+    "Bundled150-byte sample, execute once, inspect151-byte output/history",
+    "Explicit Wallet registration/public PIN0000/Wallet terms and one-time synthetic credit",
+    "GameA separate connection consent and ten-unit purchase approval, hold0",
+    "Native normal shutdown, same-device restart, saved outputs/balance/Game history",
+    "Native normal shutdown and external authority stop",
+    "Complete OS plus Wallet/Game/C backup and separate host export",
+    "Real SIGKILL during first new OS disk copy after authority current-copy DONE",
+    "All pending start paths refuse; same original intent/name resumes using unmodified delivered installer",
+    "Identical authority receipt with one epoch transition, all three new disks exact, retired source refused",
+    "Restored normal boot, saved output/Game receipt/Wallet balance retained, native normal shutdown",
+    "Frozen guest read-clock policy and explicit external UI read policy comparisons",
+    "Owned VM normal deletion; off-VM export hashes and unrelated8899 viewer preserved"
+  ],
+  "constraints": {
+    "standard_remote_provider_required": false,
+    "remote_citation1_1_in_standard_catalog": false,
+    "new_monthly_consent": false,
+    "real_money": false,
+    "historical_crosshost_import": false,
+    "public_upload": false,
+    "product_license_invented": false,
+    "quiescent_D6_default_authority_policy_relaxed": false,
+    "original_intermediate_failures_relabelled": false
+  },
+  "acquisition": {
+    "method": "owned127.0.0.1 HTTP GET\u2192different empty download directory\u2192all9file hashes and signature\u2192freshinstall from downloaded bootstrap/archive",
+    "driver": "work/fetch-final-candidate-loopback.py",
+    "driver_sha256": "b242d95cd47e12116fe16479669c98abf160d6074a7e1e81a245bfb4d618ac49",
+    "public_url_claim": false,
+    "production_https_guard_changed": false
+  },
+  "test_drivers": {
+    "work/final1-interrupt-restore.py": "ea35048653c1cd41957f0c70098cc1b8127aae4add44ae7b60d81c15757e573e",
+    "work/final1-check-pending.py": "c7dc29ecdea2162aa33cefa76261c0168e391f3bd59c50554dfa7dfc7a4c2f59",
+    "work/final1-check-recovery.py": "8ba5d9b0714558fdbe490ad4bf275cf3a9c413fa95089cef4798c016a31e70d5",
+    "work/final1-business-readback.py": "c5b3f520a3502afc901ed72776c7ecf69349db6fb8c3954d90d595bd923ff082",
+    "work/inspect-final-legal-bundle.py": "50612f1ba87ab0b2fd5800d219bd4163cfb0101f3ae0f11aee1d7ef802d969a0",
+    "work/sdk-final1-fresh-onboarding.py": "f685eb8561a1421b046980a899b203546a64e93f385f4b7c18be8e85544d89e2",
+    "work/final1-financial-readback.py": "185e75950e329d22191921434b8d369a6d7e2b69628955b1e85bcc45589f69c7",
+    "work/final1-capacity.py": "44b2e708ea1687aacfed480e06aa92cc14e6a84a6618c64ea051866e9797f3c8"
+  },
+  "final_sdk_followup": {
+    "root": "/Users/kaiya/Library/RockstarOS/rls01-sdk-final1",
+    "source": "full native inventory copied from the verified same final delivered package",
+    "scope": "separate fresh SDK VM, two configuration inputs, initial blank authority, first exchange, actual offline diagnose, original operation key recovery, both games, stopped financial readback",
+    "prior_aee3_fresh_report_preserved": true
+  },
+  "source_fixed_utc": "2026-09-10T09:18:29Z",
+  "frozen_native_observer_and_runtime_sha256": {
+    "systems/rock-star-os/os/desktop/preview.py": "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce",
+    "systems/rock-star-os/os/desktop/package_preview.py": "f93728d3e5b8549636a4978a7e18c00f7c7dd470cb9eee79751e3b00b852a37b",
+    "systems/rock-star-os/os/desktop/game_backup.py": "b17c9c66e9743adce63c19f67a4292334bfcbde16467af6c1b25786562f22a13",
+    "systems/rock-star-os/os/desktop/verify-backup.py": "53a1eda3dc3faf2e538b4fa0cbcbae25c070a4cae531d6baea10f891da0f63d2",
+    "systems/rock-star-os/os/desktop/game_authority_ui_retention.py": "c1df0ef1cc8d2c6306f02ea15f79a0ae3f13c41b13db98ed9d4225231fd947d8",
+    "systems/rock-star-os/os/desktop/game_cache_retention.py": "3151af62bf266144806354f33f89949bca9b5440b2f5f5c4588d0af1c7c66748",
+    "systems/rock-star-os/os/game_exchange/reference_sdk.py": "da74b8604584d9b9c0a16a8910779ed0828b0fd1ed194aa69f00233174be29f3",
+    "systems/rock-star-os/os/game_exchange/device_client.py": "4bea3f515effecd79390c608491b580f84bb28cbf567c90986674c28bccf165c",
+    "systems/rock-star-os/examples/game/acceptance.py": "ca0f57be2a1c5f0e9dad3cead2ca10a704ea26f556439d2666e814953544ea73",
+    "systems/rock-star-os/examples/game/owner.py": "c3c53bc2a5c44e340ba065d6c37153fe06ed9bfe138d8f175d01e283f3f19072",
+    "systems/rock-star-os/examples/game/author.py": "879369993de46cadc62d26a4bb9aa17101fd7b50bdd0a69fbf7762cb7b292e35"
+  },
+  "source_regression_provenance": {
+    "successful_report": "exact GitHub CI original report and all fourteen logs",
+    "reported_report_sha256": "34bf46580fe2f3655f765c5266d55e2786143bb28fb423f4e97e537f68a06af8",
+    "reported_environment": "x86_64 Linux / Python 3.13.15",
+    "reported_python_executions": 1631,
+    "reported_checks": 14,
+    "reported_inputs": 694,
+    "image_build_host": "aarch64 Debian 13 Lima VZ",
+    "original_local_arm64_full_native": "FAIL with ten TLS one-second deadline errors; report and all logs to be preserved in legal bundle",
+    "actual_bundle_verification": "PASS exact original reports and all logs included"
+  },
+  "capacity_gates": {
+    "default_vm_disk_gib": 16,
+    "maximum_logical_bytes_per_os_device": 1073741824,
+    "after_install_before_boot_minimum_free_gib": 5,
+    "before_backup_minimum_free_gib": 4,
+    "before_restore_minimum_free_gib": 3,
+    "after_recovery": "observe actual",
+    "host_before_package_and_install_and_after_removal": "observe actual",
+    "outer_package_archive_copied_into_guest": false,
+    "nested_legal_tar_expanded_in_guest": false,
+    "insufficient_space_action": "stop before next mutation and report to root; no disk/profile change or data cleanup"
+  },
+  "legal_collection_original_v1": "Original collector ended FAIL after archive readback but before final source recheck (helper variable shadowing); original log retained separately; v2 independently repeated all stages successfully with identical archive bytes",
+  "frozen_utc": "2026-09-10T09:52:18.522570+00:00"
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "rock-business-wallet-foundation/1",
+  "status": "PASS_SCOPED",
+  "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "purpose": "B02-NATIVE and B03-FIXTURE prerequisites for independent host GX00 implementation only",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+    "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+  },
+  "native_business": {
+    "case": "closed cycle1 of business16",
+    "jobs": 5,
+    "actions": 16,
+    "clean_exit": true,
+    "receipt_output_and_package_match": true,
+    "scope": "Actual proposal install/approve/run/results and stored outputs. The later independent Wallet-preparation phase failed; whole business16 remains FAIL."
+  },
+  "wallet_foundation": {
+    "case": "actual wallet UI12 + actual ATM protocol10",
+    "wallet_frames": 14,
+    "atm_boots": 2,
+    "atm_checks": 34,
+    "synthetic_credit_minor": 2000,
+    "monthly_fee_once_minor": 888,
+    "final_available_minor": 1112,
+    "scope": "Separate registration, enrollment, Wallet terms, monthly consent, settlement, repeat billing without double charge; ATM unknown/partial/reconcile in independent protocol test."
+  },
+  "excluded": {
+    "D2_complete": "NOT_RUN: combined fresh lifecycle/Wallet retry pending",
+    "D5_new_restore": "NOT_RUN",
+    "D6_soak": "NOT_RUN",
+    "GX00_acceptance": "NOT_RUN",
+    "real_funds": "NOT_RUN"
+  },
+  "basis_review": "Original prerequisite gates do not require D5 backup preparation; independent read-only reviewer agreed. Partial closed business evidence is confined to its completed phase, not the failed later phase.",
+  "evidence": {
+    "business-wallet-preparation-failed-b8287bc.json": "c9686d3635637be1463ed39fa57c3ed1ab4075bead1c5e01e7f7baa662305d41",
+    "business-wallet-preparation-failed-plan-b8287bc.json": "9307612b0b0b675ba0f3c533ba739eabf96f1a237144e9f0f17260a39972fff9",
+    "wallet-ui-b8287bc.json": "6d606f091338568d4a557c18616b53b2ac9aff96cc6e9593b0979819b0a79fe1",
+    "atm-protocol-b8287bc.json": "97e0ac34733c8bb44d8af510a0da8c073021b0d25107d644034c929bb64868c6"
+  }
+}

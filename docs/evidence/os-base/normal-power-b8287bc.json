@@ -1,0 +1,187 @@
+{
+  "status": "PASS",
+  "started_utc": "2026-09-09T19:34:53.405952+00:00",
+  "scope": "actual guest UID1000 -> platform -> root power daemon -> normal BusyBox init",
+  "blackberry": "NOT_RUN",
+  "wallet": "SIMULATOR_ONLY",
+  "images": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "qmp_events": [
+    {
+      "observed_unix": 1788982515.7034726,
+      "timestamp": {
+        "seconds": 1788982515,
+        "microseconds": 702791
+      },
+      "event": "RESET",
+      "data": {
+        "guest": true,
+        "reason": "guest-reset"
+      }
+    },
+    {
+      "observed_unix": 1788982541.5538754,
+      "timestamp": {
+        "seconds": 1788982541,
+        "microseconds": 552782
+      },
+      "event": "SHUTDOWN",
+      "data": {
+        "guest": true,
+        "reason": "guest-shutdown"
+      }
+    }
+  ],
+  "command": [
+    "qemu-system-aarch64",
+    "-machine",
+    "virt-10.0,gic-version=3",
+    "-accel",
+    "tcg",
+    "-cpu",
+    "cortex-a53",
+    "-m",
+    "1024",
+    "-smp",
+    "2",
+    "-display",
+    "none",
+    "-serial",
+    "stdio",
+    "-monitor",
+    "none",
+    "-qmp",
+    "unix:/tmp/rock-system-qmp-klq46mdz/qmp.sock,server=on,wait=off",
+    "-nic",
+    "none",
+    "-kernel",
+    "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+    "-append",
+    "console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.system.verify=1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/rootfs.ext4,format=raw,id=osdisk,readonly=on",
+    "-device",
+    "virtio-blk-pci,drive=osdisk,addr=0x1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/system-20260909T193452Z-1b7vcc9h/userdata.ext4,format=raw,id=userdata",
+    "-device",
+    "virtio-blk-pci,drive=userdata,addr=0x2",
+    "-object",
+    "rng-random,filename=/dev/urandom,id=rockrng",
+    "-device",
+    "virtio-rng-pci,rng=rockrng,addr=0x3",
+    "-device",
+    "virtio-gpu-pci,xres=720,yres=960,addr=0x4",
+    "-device",
+    "virtio-keyboard-pci,addr=0x5",
+    "-device",
+    "virtio-tablet-pci,addr=0x6"
+  ],
+  "exit_code": 0,
+  "boots": [
+    {
+      "boot_id": "d3259c82-fda1-410c-93fc-6e6c52347271"
+    },
+    {
+      "boot_id": "d8bfaed9-c899-46e5-8acf-d9c7c5866023"
+    }
+  ],
+  "receipts": [
+    {
+      "phase": 1,
+      "receipt": {
+        "ok": true,
+        "result": {
+          "accepted": true,
+          "boot_id": "d3259c82-fda1-410c-93fc-6e6c52347271",
+          "key": "system-3481fee74bea4136abd64512f5c89d26",
+          "meaning": "accepted; execution and OS completion are not confirmed by this receipt",
+          "op": "reboot"
+        }
+      }
+    },
+    {
+      "phase": 2,
+      "receipt": {
+        "ok": true,
+        "result": {
+          "accepted": true,
+          "boot_id": "d8bfaed9-c899-46e5-8acf-d9c7c5866023",
+          "key": "system-3292c1bdaac043538c4005d20a5fe70e",
+          "meaning": "accepted; execution and OS completion are not confirmed by this receipt",
+          "op": "poweroff"
+        }
+      }
+    }
+  ],
+  "power_records": [
+    {
+      "key": "system-3481fee74bea4136abd64512f5c89d26",
+      "operation": "reboot",
+      "boot_id": "d3259c82-fda1-410c-93fc-6e6c52347271",
+      "instance": "ea5016048d8c4ba88b67cf4d91b360ed",
+      "request_json": "{\"key\":\"system-3481fee74bea4136abd64512f5c89d26\",\"op\":\"reboot\",\"v\":1}",
+      "receipt_json": "{\"ok\":true,\"result\":{\"accepted\":true,\"boot_id\":\"d3259c82-fda1-410c-93fc-6e6c52347271\",\"key\":\"system-3481fee74bea4136abd64512f5c89d26\",\"meaning\":\"accepted; execution and OS completion are not confirmed by this receipt\",\"op\":\"reboot\"}}",
+      "status": "dispatched",
+      "created_unix": 1788982507.6281333,
+      "replied_unix": 1788982507.6432292,
+      "dispatched_unix": 1788982508.4073248,
+      "command_returncode": 0,
+      "command_error": null
+    },
+    {
+      "key": "system-3292c1bdaac043538c4005d20a5fe70e",
+      "operation": "poweroff",
+      "boot_id": "d8bfaed9-c899-46e5-8acf-d9c7c5866023",
+      "instance": "5c779b8e8c734c6b94938b7dce13303b",
+      "request_json": "{\"key\":\"system-3292c1bdaac043538c4005d20a5fe70e\",\"op\":\"poweroff\",\"v\":1}",
+      "receipt_json": "{\"ok\":true,\"result\":{\"accepted\":true,\"boot_id\":\"d8bfaed9-c899-46e5-8acf-d9c7c5866023\",\"key\":\"system-3292c1bdaac043538c4005d20a5fe70e\",\"meaning\":\"accepted; execution and OS completion are not confirmed by this receipt\",\"op\":\"poweroff\"}}",
+      "status": "dispatched",
+      "created_unix": 1788982534.1700938,
+      "replied_unix": 1788982534.2016327,
+      "dispatched_unix": 1788982534.9764948,
+      "command_returncode": 0,
+      "command_error": null
+    }
+  ],
+  "data_filesystem_clean": true,
+  "guest_proof": {
+    "blackberry": "NOT_RUN",
+    "checks": [
+      "direct UI peer denied even with permissive DAC",
+      "different real kernel boot ID",
+      "one persisted prior reboot dispatch",
+      "identical retry receipt across reboot",
+      "no old action redispatch",
+      "root filesystem remains readonly",
+      "persistent data remains protected"
+    ],
+    "first_boot_id": "d3259c82-fda1-410c-93fc-6e6c52347271",
+    "first_dispatch": {
+      "boot_id": "d3259c82-fda1-410c-93fc-6e6c52347271",
+      "command_error": null,
+      "command_returncode": 0,
+      "created_unix": 1788982507.6281333,
+      "dispatched_unix": 1788982508.4073248,
+      "instance": "ea5016048d8c4ba88b67cf4d91b360ed",
+      "key": "system-3481fee74bea4136abd64512f5c89d26",
+      "operation": "reboot",
+      "receipt_json": "{\"ok\":true,\"result\":{\"accepted\":true,\"boot_id\":\"d3259c82-fda1-410c-93fc-6e6c52347271\",\"key\":\"system-3481fee74bea4136abd64512f5c89d26\",\"meaning\":\"accepted; execution and OS completion are not confirmed by this receipt\",\"op\":\"reboot\"}}",
+      "replied_unix": 1788982507.6432292,
+      "request_json": "{\"key\":\"system-3481fee74bea4136abd64512f5c89d26\",\"op\":\"reboot\",\"v\":1}",
+      "status": "dispatched"
+    },
+    "normal_init": true,
+    "phase": 2,
+    "reboot_key": "system-3481fee74bea4136abd64512f5c89d26",
+    "schema": "rock-system-guest-proof/1",
+    "second_boot_id": "d8bfaed9-c899-46e5-8acf-d9c7c5866023",
+    "shutdown_key": "system-3292c1bdaac043538c4005d20a5fe70e",
+    "simulation_wallet": true,
+    "status": "AWAITING_ACTUAL_SHUTDOWN"
+  },
+  "host_power_commands_sent": 0,
+  "finished_utc": "2026-09-09T19:35:42.632939+00:00"
+}

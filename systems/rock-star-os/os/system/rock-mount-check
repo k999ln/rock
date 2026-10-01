@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+. /usr/lib/rock-system/mount-check-lib.sh
+rock_mount_matches "$@" < /proc/mounts

@@ -1,0 +1,17 @@
+{
+  "schema": "rock-local-ai-apk/1",
+  "stage": "APK_REVIEWED_NOT_IN_IMAGE",
+  "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "moduleName": "RockLocalActionAssistant",
+  "packageName": "com.localactionassistant",
+  "versionCode": 1,
+  "requiredAbis": ["arm64-v8a"],
+  "internetPermission": false,
+  "wakeLockPermission": true,
+  "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
+  "aospCertificate": "testkey",
+  "apkSha256": "b748cd207fb65c43eacaea172b5d80d313a7e5ab3e976f4aaa8b5de161491f4c",
+  "apkSizeBytes": 26395708,
+  "imageIntegrated": false,
+  "notes": "Reproducible unsigned arm64 release APK built from the pinned source, response-sanitizing base overlay and plan-v2 extension on 2026-09-16. Package, version, ABI, Binder service, USE_LOCAL_AI, WAKE_LOCK and absence of INTERNET were inspected. A same-test-key copy passed 8 Broker tests and 3 Shell tests on Android 15 emulator, plus the same counts on Pixel 10 GL066 including plan-only JSON Schema, selected Tool execution, result and history. This is not production signing, OS-image integration, flash or boot evidence."
+}

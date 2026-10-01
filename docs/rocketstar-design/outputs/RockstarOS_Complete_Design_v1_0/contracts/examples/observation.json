@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "rockstaros.icd.observation.v1",
+  "executionMode": "SIMULATION",
+  "dataClass": "SYNTHETIC",
+  "siteId": "site:fixture",
+  "nodeId": "node:fixture",
+  "messageId": "message:fixture",
+  "issuedAt": {
+    "utcMs": 1000000,
+    "monotonicMs": 1000,
+    "bootId": "boot:fixture-A",
+    "quality": "TRUSTED",
+    "uncertaintyMs": 1
+  },
+  "assetId": "asset:load",
+  "channelId": "power:actual",
+  "sequence": 1,
+  "stateRevision": 1,
+  "configurationDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "calibrationRef": null,
+  "unit": "kW",
+  "value": 2.0,
+  "quality": "VALID",
+  "observedAt": {
+    "utcMs": 1000000,
+    "monotonicMs": 1000,
+    "bootId": "boot:fixture-A",
+    "quality": "TRUSTED",
+    "uncertaintyMs": 1
+  },
+  "receivedAt": {
+    "utcMs": 1000000,
+    "monotonicMs": 1000,
+    "bootId": "boot:fixture-A",
+    "quality": "TRUSTED",
+    "uncertaintyMs": 1
+  }
+}

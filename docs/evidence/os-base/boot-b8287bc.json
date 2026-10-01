@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "started_utc": "20260909T193050Z",
+  "target": "QEMU virt-10.0 ARM64 (not BlackBerry)",
+  "qemu_version": "QEMU emulator version 10.0.11 (Debian 1:10.0.11+ds-0+deb13u1)\nCopyright (c) 2003-2025 Fabrice Bellard and the QEMU Project developers\n",
+  "command": [
+    "/usr/bin/qemu-system-aarch64",
+    "-machine",
+    "virt-10.0,gic-version=3",
+    "-cpu",
+    "cortex-a53",
+    "-accel",
+    "tcg",
+    "-m",
+    "512",
+    "-smp",
+    "2",
+    "-nographic",
+    "-monitor",
+    "none",
+    "-no-reboot",
+    "-nic",
+    "none",
+    "-kernel",
+    "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+    "-append",
+    "console=ttyAMA0 root=/dev/vda ro rootwait panic=-1 rock.verify=1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/rootfs.ext4,format=raw,id=osdisk,readonly=on",
+    "-device",
+    "virtio-blk-pci,drive=osdisk,addr=0x1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/verify-20260909T193050Z-8ew31qtz/userdata.ext4,format=raw,id=userdata",
+    "-device",
+    "virtio-blk-pci,drive=userdata,addr=0x2",
+    "-object",
+    "rng-random,filename=/dev/urandom,id=rockrng",
+    "-device",
+    "virtio-rng-pci,rng=rockrng,addr=0x3"
+  ],
+  "network_adapter": "none",
+  "image_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "boots": [
+    {
+      "number": 1,
+      "exit_code": 0,
+      "log": "boot-1.log",
+      "passed": true,
+      "missing": []
+    },
+    {
+      "number": 2,
+      "exit_code": 0,
+      "log": "boot-2.log",
+      "passed": true,
+      "missing": []
+    }
+  ],
+  "blackberry": "NOT TESTED",
+  "os_update_recovery": "NOT IMPLEMENTED",
+  "verified": [
+    "actual ARM64 kernel/init/rootfs boot",
+    "read-only OS",
+    "separate persistent data",
+    "unprivileged boot service",
+    "peer credentials and malformed/oversized/timeout rejection",
+    "service crash/restart/corrupt-state tests inside guest",
+    "counter survives complete guest power-off and second boot"
+  ],
+  "finished_utc": "2026-09-09T19:31:20.745683+00:00"
+}

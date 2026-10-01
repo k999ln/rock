@@ -1,0 +1,245 @@
+# Native business lifecycle and soak evidence
+
+`verify-business.py` is a Linux-host verification candidate. Importing it or
+passing its host fixtures does not execute QEMU and does not prove D2 or D6.
+It requires the native UI version selector and Tool disable confirmation added
+after the initial OS operational-base build. It never installs a guest observer.
+
+The host needs Python 3, OpenSSL, `qemu-system-aarch64`, `e2fsprogs`,
+`tesseract-ocr`, `tesseract-ocr-eng`, `tesseract-ocr-jpn`, and `python3-pil`. Confirm both `eng`
+and `jpn` appear in `tesseract --list-langs`. Evidence and image directories must
+have absolute paths without spaces or QEMU/debugfs option characters. The
+evidence parent must be owned by the invoking user with mode 0700.
+
+```sh
+python3 os/desktop/verify-business.py \
+  --images /absolute/immutable-build/images \
+  --output /absolute/private-evidence \
+  --source-commit FULL_40_CHARACTER_BUILD_COMMIT \
+  --mode lifecycle
+```
+
+The default `--boot-profile legacy-local` uses a fresh offline device with one
+data disk. `--boot-profile local-ab` selects strict local development schema 6
+and the signed stage0/A/B/data machinery described in `LOCAL-AB.md`. It requires
+the immutable `Image`, `rootfs.ext4`, and `stage0.cpio.gz` triple and verifies the
+real signed factory record and unconfigured image before starting. It cannot
+select or reinterpret purchaser schema 5.
+
+Use `--preflight-only` to write the frozen plan and verify host prerequisites,
+image profile and both signed business packages without creating disks or
+starting QEMU. Its result is `PREFLIGHT_ONLY`, with D2 and D6 `NOT_RUN`.
+Use `--prepare-backup` when a successful run must become a populated source for
+`verify-backup.py`: after the actual deletion/history check, the harness uses the
+UI to reinstall 1.0.0, approve it, and complete a new uniquely identified job.
+It then performs the independent nonempty Wallet prerequisite described below.
+The successful report records `source_device` and `backup_source_ready` only
+after these additional boots pass.
+
+`--mode lifecycle` uses a new, random device name and two normal boots. The first
+boot/shutdown establishes the untouched Wallet/Hub/credential baseline and
+preserves a private full data-image copy. The second uses real native input to:
+
+1. Find the signed `org.rockstar.proposal-draft` product in the catalog, explicitly
+   select 1.0.0, review its version and permissions, install and approve it.
+2. Type a synthetic client brief, run it, inspect the proposal and reopen it from
+   history. The expected result is a useful proposal draft; it is not a diagnostic
+   hash job and does not submit a proposal or claim revenue.
+3. Update to the separately signed 1.1.0, approve its package hash and run a second
+   brief, then roll back to cached 1.0.0, approve again and run a third brief.
+4. Confirm Tool disable, observe the disabled permission screen, approve again
+   and run a fourth brief, then confirm deletion and reopen its retained result.
+5. Confirm normal native shutdown. No QMP power/reset/quit operation is permitted.
+
+`--mode soak` uses a separate fresh device and repeats the same lifecycle. It
+retains the installation through five normal boot/shutdown cycles in total:
+baseline, lifecycle, two additional saved-data boots with a job each, then 61
+new proposal jobs at 60-second intended start intervals for at least 3600 seconds.
+Deletion occurs after the last job; history is reopened after deletion. Each
+closed cycle must preserve every previous job, receipt, output and audit row.
+No existing desktop, backup or userdata file is used as the test device.
+
+With `--prepare-backup`, two further normal boots run after all business
+assertions. They are frozen in `wallet_preparation` before launch and recorded
+in `wallet_cycles`, separately from D6's original five cycles. The first uses
+native UI registration, the public software authenticator, separate Wallet
+terms, a USD 20.00 test credit and settlement, explicit monthly consent, two
+same-month billing requests that must resolve to one USD 8.88 debit, and renewal
+cancellation. It then authorizes one USD 10.00 ATM test hold using the dedicated
+quote and public authenticator, and cancels the unused reservation. The ATM's
+own fee must remain zero. The raw reservation code is never revealed. The
+second additional boot only views the retained paid month and canceled hold.
+The Wallet input phase has a fixed 600-second limit; normal boot, UI-state,
+shutdown, resource and evidence limits still apply. These are synthetic units,
+not real money or a real ATM connection.
+
+After each additional shutdown, read-only evidence joins the actual 15 native
+request keys, signature-verified enrollment and assertion, separate consents,
+paid monthly authorization, one settled credit, one canceled withdrawal, five
+journals and ten postings. The expected available balance is 1112 cents, with
+no pending/held/dispensed amount. Monthly work must be `paid`, with no pending
+manual retry or unfinished receipt. The second closed snapshot must preserve
+all Wallet/membership/authenticator rows, including extra tables, and all Tool
+state. This is reported as a D5 prerequisite; it does not replace the actual
+backup, new-device restore and restored boot in `verify-backup.py`. In
+particular, an existing Wallet binding is not assumed portable from an empty
+ledger: the nonempty restored boot still has to succeed.
+
+The plan is written and hashed **before the first boot**. Its fixed acceptance
+thresholds are: boot 180 s, normal shutdown 60 s, individual UI state 30 s,
+complete business UI job 90 s, durable worker record 30 s, soak 3600–4200 s,
+61 soak jobs, maximum job start gap 180 s, host QEMU peak RSS 2 GiB, RSS growth
+during the already-booted soak at most 512 MiB, and QEMU process average CPU at
+most 3.5 CPU cores. Sampling is every 2 s with no gap over 10 s. Screenshot
+retention is bounded to 1000 files/256 MiB per cycle; total evidence including
+the 256 MiB baseline disk is bounded to 600 MiB. No threshold override is
+accepted during a run. To change a threshold, review the failure, change the
+test contract, and start a separately identified test; retain the failed run.
+
+State waits use QMP screenshots and Tesseract `eng+jpn`, page segmentation 11,
+with minimum matched-word confidence 45. Bounded dark-green button regions get a
+second OCR pass: bright label pixels become black text on a white background,
+with fixed 2× bicubic enlargement, a 10-pixel white border and page segmentation 7. Only pixels inside each row's observed green contour
+can become label ink; rounded exterior corners stay white rather than becoming
+border noise. Disabled labels below the existing brightness threshold remain
+unselectable. The same green region also receives an original-size color pass
+to preserve dense Japanese antialiasing; each accepted word must contain bright
+contour ink from the unchanged threshold. Enabled secondary buttons use the
+exact C background `e8ede5`, excluding the disabled `e7e7e0` background, and
+receive original-size one-line OCR. Primary and secondary regions together
+remain bounded to eight. Only words wholly inside the detected region replace
+the original OCR hypothesis there. Region geometry alone cannot select or click
+a control. Search text and the first catalog/installed/history card title may
+receive at most two additional one-line passes over explicit native-layout
+regions: 2× for search/catalog/installed titles, original size for history titles. Their full text must match; a rectangle alone cannot authorize a click.
+Catalog selection requires the typed product ID in the same frame and clicks
+the large signed product name. Detail validation requires its product name,
+publisher and exact version together. Installed/history selection reads the
+first card title; history then requires the unique job label in the opened
+result. Deletion uses the catalog name that the native renderer displays.
+Result inspection adds one fixed `[32,380,688,856]` body pass at 2× bicubic scale,
+10-pixel white border and block segmentation 6, only when the same frame's
+literal `実行結果` header is recognized inside `[32,55,535,108]`, and the
+original page has not already recognized a complete literal `Brief CnJn`
+within the body at confidence 45. The expected input label is not used to
+select the OCR pass: a confidently read different label still fails the
+subsequent exact match. This keeps one result hypothesis and preserves the
+original recognition of concise prose without weakening confidence or box
+overlap requirements. Refinement never erases original-page error text.
+The result must contain exactly one full `Brief CnJn` phrase within the body,
+with non-ASCII-alphanumeric boundaries: `C4J5` cannot match `C4J50`, and `5/S`
+or other visually similar characters are never substituted. This result check
+is used after execution, history reopen and deletion. The same original 30-second
+state and 90-second whole-job deadlines include every OCR pass. This changes
+screen observation only; the stopped-DB output/receipt oracle is unchanged.
+Wallet label refinement first requires a unique literal `Wallet`, `ATMテスト`,
+or `予約の状態` header at confidence45 inside `[32,55,535,108]` in the same
+frame. A completed Hub history row does not establish this page context.
+Wallet labels may receive at most two original-size line passes anchored by
+the literal, confident words `金額` or `完了` within the content area. Anchors
+only locate a row for OCR; the complete required phrase must still match at
+confidence 45 before its position can be used. The fixed native notification
+lane receives one original-size pass only when its actual success/error
+background is present. All original recognized errors remain fatal. Tesseract
+uses one OpenMP thread to bound oversubscription during concurrent host work.
+These preprocessing choices are frozen in the plan before a new run.
+The signed package preflight pins these names and publisher. No small catalog
+version or fixed card coordinate triggers navigation. Recognized page errors
+survive text refinement. Tesseract TSV is parsed literally, with CSV quote
+handling disabled, so JSON quote text cannot swallow subsequent OCR rows.
+The original evidence PNG remains unchanged. OCR text uses
+NFKC, case folding and whitespace removal, followed by exact phrase comparison;
+there is no fuzzy-text match. Two observations of the same exact phrase are
+deduplicated only when their boxes overlap at least 70 percent by intersection
+over union. Distinct controls with matching phrases remain an ambiguity error.
+All OCR passes share the original UI state deadline, and a late match is
+rejected before a click. The pointer is moved to an empty margin after each click without another button
+press; this prevents the native cursor dot from covering label text.
+Clicks use the matched words' boxes,
+including when update/rollback/delete share a row. An ambiguous selector,
+unrecognized state, visible error, timeout or resource fault stops the run.
+Only transient blank/disconnected boot frames may wait within the original
+180-second boot budget. The known QEMU 640×480 “Display output is not active.”
+frame and a blank 720×960 native framebuffer return no selectable UI and run no
+OCR. Their PNG structure, CRCs and bounded decoded size are validated; the
+640×480 startup content must match the captured QEMU fixture. The first frame
+of each pending kind is retained with `boot_pending` metadata. Repeated pending
+frames cannot reset the deadline or cause clicks/scrolling. Malformed images,
+other unexpected content, or pending frames after boot are fatal.
+There is no happy-path sleep that substitutes for a state observation and no
+fallback direct platform mutation. NativeInput still supplies its existing short
+key/button delivery intervals. Saved actual search and power frames, plus
+actual C-rendered product/lifecycle/result fixtures, exercise the OCR selectors.
+They validate recognition only; they do not turn the preserved failed QEMU run
+into a pass or replace a new complete run of the built image.
+
+`check-wallet-ocr.py` runs the same Wallet write/read UI flows against the real
+C renderer and a new Linux-root synthetic Wallet/authenticator fixture. Before
+each click it rejects coordinates outside the expected action from a fixed
+map; it never substitutes a hitbox coordinate when OCR fails. Read-only C
+refresh requests retrieve reservation status. A second fresh C UI process
+checks the retained ledger with default view state. The existing closed Wallet
+oracle then verifies authentication, unique receipts, monthly quiescence and
+the exact five journals/ten postings. The only C bridge additions expose an
+existing action name and park the pointer without pressing a button; neither
+the bridge nor fixture is installed in the OS.
+
+```sh
+sudo python3 os/desktop/check-wallet-ocr.py \
+  --renderer os/ui/rock-ui-test \
+  --font os/assets/NotoSansCJKjp-Regular.otf \
+  --output /absolute/new-private-wallet-ocr-evidence
+```
+
+Its `PASS_HOST_FIXTURE` validates C/OCR/fixture behavior only. It does not run
+QEMU, restart an OS, prove D2/D5 or change an earlier failed run. PIN and ATM
+bearer text are not exported; only public synthetic masked screens and the
+existing redacted Wallet proof are retained.
+
+After actual QMP guest shutdown, the verifier holds the existing device lock,
+checks the current process record and rejects live/orphan display sockets. It
+keeps that lock across read-only `e2fsck -f -n`,
+then reuses the backup verifier's `debugfs` SQLite export and complete schema
+inventory. It refuses pending WAL/journal data. It compares every table in all
+six required local business databases, including additional tables. The only
+allowed mutations are the declared Hub lifecycle/jobs and exactly one new
+dispatched native power receipt for each distinct kernel boot. Wallet,
+membership, authenticator and remote tables must equal the first closed
+baseline. Crossing a month boundary is not silently exempted. Both signed
+packages are extracted from the immutable built rootfs and signature-verified
+before launch; cached and executed hashes must match these exact versions.
+
+`plan.json`, `report.json`, per-cycle screenshots and resource samples link the
+typed input, exact expected proposal, actual persisted result, native request
+key, receipt hash, package hash, audit and data-image hash. The input/expected
+files are explicitly labelled expectations; their existence alone is not a
+passing result. `source_commit_declared` is the operator's build-source claim;
+the independent build report must link it to the measured immutable image
+hashes. Source identity is not inferred from an arbitrary string.
+
+On failure, the harness writes `FAIL` and preserves the owned device for
+inspection. It does not force shutdown, repair data, reset QEMU or repeat an
+uncertain mutation with another key. A host interruption is not success. Retain
+the evidence and inspect the device before deciding a recovery action.
+
+Successful scoped automation is `PASS_SCOPED`. D2's complete gate remains
+`INCOMPLETE`: an actual timed in-flight cancellation is not performed here.
+The Wallet synthetic flow is `NOT_RUN` unless the separate `--prepare-backup`
+phase passes. Tool disable demonstrates later use
+requires approval; it does not establish cancellation timing for a running job.
+In lifecycle mode D6 is `NOT_RUN`; only a complete soak can report its bounded
+workload `PASS`. Resource observations are of the host QEMU process, not guest
+per-service UID/cgroup measurements. Hardware installation, MetaMask, real funds,
+provider behavior, whole-OS acceptance and production release are not attested.
+
+Host fixtures, with no VM or money operations:
+
+```sh
+python3 -m unittest discover -s tests -p 'test_os_business_ui_*.py' -v
+```
+
+## Whole-process shutdown observation
+
+A real 2026-09-09 soak attempt was rejected after native poweroff: the `/proc` identity-based running check returned false but a display socket still accepted a connection. The stopped-disk guard correctly refused all subsequent disk reads. The failed report remains evidence; it is not a completed cycle. Later read-only inspection found the exact PID gone and the remaining sockets refusing connections. This is consistent with a process-exit observation race, not direct proof of its kernel cause.
+
+The host observer now checks the exact QEMU identity before and after opening a Linux pidfd with flags0, before sending normal UI power input. It waits for whole-process exit on that descriptor, including after the leader identity becomes unavailable, within the original60-second shutdown deadline. The descriptor closes even on failure. No signal is sent, and current-record, configuration, live-socket, guest-event, receipt and filesystem checks remain mandatory. Linux pidfd support is required; a missing capability is not a passed shutdown. See the primary [pidfd_open semantics](https://man7.org/linux/man-pages/man2/pidfd_open.2.html). The fixed runtime image and acceptance thresholds are unchanged.

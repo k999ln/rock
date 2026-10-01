@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1000" viewBox="0 0 1620 1000"><rect width="1620" height="1000" fill="white"/>
+<rect x="45" y="120" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="255.0" y="189.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">1 電源投入</text>
+<text x="255.0" y="230.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">出力は停止状態</text>
+<rect x="600" y="120" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="810.0" y="189.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">2 自己診断</text>
+<text x="810.0" y="230.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">保存・安全・入力</text>
+<rect x="1155" y="120" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1365.0" y="189.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">3 入力方法を選ぶ</text>
+<text x="1365.0" y="230.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">声・ボタン・身体</text>
+<rect x="1155" y="495" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1365.0" y="564.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">4 必要な範囲だけ校正</text>
+<text x="1365.0" y="605.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">表示能力を検査</text>
+<rect x="600" y="495" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="810.0" y="564.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">5 ゲームを開始</text>
+<text x="810.0" y="605.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">保存・取消・休止</text>
+<rect x="45" y="495" width="420" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="255.0" y="564.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">6 終了</text>
+<text x="255.0" y="605.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">保存と出力停止</text>
+<polyline points="465,210 600,210" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="600,210 590.0950818741205,214.78462087522354 590.0950818741205,205.21537912477646" fill="#333"/>
+<polyline points="1020,210 1155,210" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1155,210 1145.0950818741205,214.78462087522354 1145.0950818741205,205.21537912477646" fill="#333"/>
+<polyline points="1365,300 1365,495" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1365,495 1360.2153791247765,485.0950818741206 1369.7846208752235,485.0950818741206" fill="#333"/>
+<polyline points="1155,585 1020,585" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1020,585 1029.9049181258795,580.2153791247765 1029.9049181258795,589.7846208752235" fill="#333"/>
+<polyline points="600,585 465,585" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="465,585 474.9049181258794,580.2153791247765 474.9049181258794,589.7846208752235" fill="#333"/>
+<text x="810" y="819.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">表示未認証 → 出力を有効化せず理由を通知</text>
+<text x="810" y="860.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">身体の校正が困難な人も初回設定から代替入力を使える</text>
+<text x="810" y="945.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="27.5" fill="#111111">R5 U01  目標の起動体験  実機画面と起動時間の実測ではない</text>
+</svg>

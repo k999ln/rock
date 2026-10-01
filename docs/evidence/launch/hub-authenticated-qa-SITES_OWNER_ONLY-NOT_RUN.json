@@ -1,0 +1,117 @@
+{
+  "schema": "rock-hub-authenticated-qa/1",
+  "definedBy": "rockstar_bot｜画面",
+  "definedAt": "2026-09-11T22:45:00Z",
+  "repository": "k999ln/rock",
+  "pullRequest": 4,
+  "branch": "codex/rockstaros-launch-candidate-20260910",
+  "branchHeadShaAtDefinition": "fe81c05aaa4b",
+  "procedurePath": "docs/evidence/launch/hub-authenticated-qa-procedure.md",
+  "environment": "SITES_OWNER_ONLY",
+  "siteAuthenticatedQa": "NOT_RUN",
+  "launchClaimAllowed": false,
+  "deployedDoesNotMeanUsable": true,
+  "sitesMeta": {
+    "transition": "data/sites-transition-20260911.json",
+    "deploymentEvidence": "docs/evidence/launch/sites-owner-private-20260911.json",
+    "status": "DEPLOYED_OWNER_ONLY",
+    "urlFromEvidence": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+    "deployedSourceCommitFromEvidence": "a750908329d42bbfb78e07243f414b51d1534cf8",
+    "note": "deployedSourceCommit may differ from branch HEAD; do not equate HEAD QA with Sites QA"
+  },
+  "requiredCaseIds": [
+    "U1",
+    "U2",
+    "U3",
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "H1",
+    "H2",
+    "W1",
+    "W2",
+    "W3",
+    "S1",
+    "S2"
+  ],
+  "optionalCaseIds": [
+    "H3",
+    "S3",
+    "PC_CONNECT"
+  ],
+  "cases": {
+    "U1": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "U2": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "U3": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "E1": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "E2": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "E3": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "E4": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "H1": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "H2": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "H3": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "W1": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "W2": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "W3": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "S1": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "S2": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "S3": {
+      "status": "NOT_RUN",
+      "evidence": null
+    },
+    "PC_CONNECT": {
+      "status": "NOT_RUN",
+      "evidence": null
+    }
+  },
+  "evidenceDirPattern": "docs/evidence/launch/hub-authenticated-qa-<envId>-<YYYYMMDD>/",
+  "resultJsonPattern": "docs/evidence/launch/hub-authenticated-qa-<envId>-<YYYYMMDD>.json",
+  "hostLocalNote": "HOST_LOCAL results must use environment=HOST_LOCAL and never set siteAuthenticatedQa=PASS",
+  "b02Note": "B02 Hub実利用は環境別に記録。Sites本番合格は本 JSON の SITES_OWNER_ONLY 実行後のみ"
+}

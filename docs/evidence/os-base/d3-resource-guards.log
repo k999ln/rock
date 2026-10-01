@@ -1,0 +1,11 @@
+test_all_four_exact_contracts (test_os_resource_probes.ResourceEvidenceTests.test_all_four_exact_contracts) ... ok
+test_changed_identity_mode_or_limits_are_rejected (test_os_resource_probes.ResourceEvidenceTests.test_changed_identity_mode_or_limits_are_rejected) ... ok
+test_missing_duplicate_extra_or_truncated_proof_is_rejected (test_os_resource_probes.ResourceEvidenceTests.test_missing_duplicate_extra_or_truncated_proof_is_rejected) ... ok
+test_unbounded_elapsed_output_or_unknown_mode_is_rejected (test_os_resource_probes.ResourceEvidenceTests.test_unbounded_elapsed_output_or_unknown_mode_is_rejected) ... ok
+test_wrapper_signal_exit_is_distinct_from_ordinary_success (test_os_resource_probes.ResourceEvidenceTests.test_wrapper_signal_exit_is_distinct_from_ordinary_success) ... ok
+test_wrong_failure_or_file_size_is_rejected (test_os_resource_probes.ResourceEvidenceTests.test_wrong_failure_or_file_size_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK

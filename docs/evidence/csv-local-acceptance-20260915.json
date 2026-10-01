@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "csv-local-acceptance/1",
+  "observedAt": "2026-09-15T08:42:00+09:00",
+  "environment": "wrangler local production build on 127.0.0.1:8790",
+  "sourceCommit": null,
+  "syntheticOnly": true,
+  "input": {
+    "name": "test-input.csv",
+    "bytes": 83,
+    "sha256": "40088291753f43db2d70e008026773c332b781a16a829ae1e576ce935c9458b0",
+    "encoding": "utf8",
+    "contains": ["duplicate_key", "leading_zero", "quoted_newline", "edge_whitespace"]
+  },
+  "job": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "paymentStatus": "sample",
+    "attempts": 1,
+    "terminalStatus": "completed",
+    "outputSha256": "ec86555871d375b268af517ddfac79fc8f6ea29be8183b63df7bca8f9d94b51b"
+  },
+  "validation": {
+    "header": "pass",
+    "rowCount": "pass_2",
+    "cellValues": "pass_no_unrequested_conversion",
+    "limits": "pass",
+    "otherUserArtifactAccess": "rejected_404_not_found",
+    "artifacts": ["result.csv", "spreadsheet-safe.csv", "report.json", "report.html"]
+  },
+  "outputPreview": [
+    ["顧客ID", "氏名", "note"],
+    ["002", "鈴木", "line\nbreak"],
+    ["001", "佐藤", "first"]
+  ],
+  "notProved": [
+    "real_customer",
+    "real_payment",
+    "provider_verified_revenue",
+    "background_completion_after_mobile_browser_close",
+    "physical_ios_safari",
+    "physical_android_chrome"
+  ]
+}

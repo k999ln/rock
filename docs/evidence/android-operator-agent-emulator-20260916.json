@@ -1,0 +1,71 @@
+{
+  "schema": "avocadoos-android-operator-agent-evidence/1",
+  "testedAt": "2026-09-16T20:46:41Z",
+  "sourceBaseCommit": "a4bc441b8af128a6a502abd8582c92fc890aa169",
+  "scope": "source_and_android_15_emulator_only",
+  "environment": {
+    "device": "avocado_pixel10_api35(AVD)",
+    "androidApi": 35,
+    "androidRelease": "15",
+    "buildVariant": "debug",
+    "aospFullBuildRun": false,
+    "physicalPixelConnected": false
+  },
+  "results": {
+    "operatorDockNodeTests": {
+      "passed": 14,
+      "failed": 0,
+      "covers": [
+        "Cloudflare Access JWT authorization",
+        "WebAuthn operator command signature and monotonic counter",
+        "management-server-only command rejection",
+        "signed device poll, acknowledgement and result",
+        "device nonce replay rejection",
+        "scheduled reset warning delivery and early acknowledgement rejection",
+        "Operator Dock isolation from the user OS"
+      ]
+    },
+    "workerDryRun": "passed",
+    "typescript": "passed",
+    "androidGradleBuild": "passed",
+    "androidLint": "passed",
+    "androidInstrumentation": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "covers": [
+        "independent WebAuthn signature verification",
+        "altered action and wrong-device rejection",
+        "expired and invalid reset-window rejection",
+        "persistent command replay and counter rollback rejection",
+        "Android Keystore device identity stability and signing",
+        "factory reset refusal without Device Owner"
+      ]
+    },
+    "debugApkSha256": "3988443f476fa4ccb28fa82ef480bfe25d202e30e7f549e5b8243e401e95d6a1"
+  },
+  "implementedBoundaries": {
+    "launcherVisible": false,
+    "arbitraryOrRootShell": false,
+    "privateUserContentRead": false,
+    "walletOrBackupAuthority": false,
+    "productDataPlaneBinderEdge": false,
+    "deviceRequestSignature": "Android_Keystore_P256",
+    "operatorCommandSignature": "WebAuthn_P256_UP_UV",
+    "localAudit": "Android_Keystore_HMAC_SHA256_chain_and_append_only_triggers",
+    "factoryResetReleaseGateEnabled": false
+  },
+  "notProven": [
+    "production Operator Dock deployment or D1 migration",
+    "production WebAuthn hardware credential provisioning",
+    "Pixel 10 StrongBox key attestation and enrollment",
+    "Device Owner allowlisted command execution on a physical device",
+    "remote Provider session revocation",
+    "SELinux enforcing behavior in the final user build",
+    "factory reset cancellation and recovery drill",
+    "penetration test or independent security review",
+    "AOSP Soong full build or physical flash"
+  ],
+  "destructiveActionsPerformed": false,
+  "secretsOrProductionIdentifiersRecorded": false
+}

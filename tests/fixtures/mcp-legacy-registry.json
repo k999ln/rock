@@ -1,0 +1,15 @@
+{
+  "schema": "rockstaros-mcp-registry/1",
+  "servers": [
+    {
+      "id": "legacy-mcp",
+      "name": "Legacy MCP fixture",
+      "description": "MCP 2025-06-18 negotiation fixture",
+      "transport": "stdio",
+      "command": "node",
+      "args": ["mcp-legacy-server.mjs"],
+      "cwd": ".",
+      "required": true
+    }
+  ]
+}

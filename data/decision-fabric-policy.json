@@ -1,0 +1,82 @@
+{
+  "schema": "rockstaros-decision-fabric-policy/1",
+  "version": "1.0.0-design",
+  "updatedAt": "2026-09-18",
+  "status": "DESIGN_APPROVED_IMPLEMENTATION_PENDING",
+  "authority": "docs/jev-local-qwen-decision-fabric-design.md",
+  "contract": "contracts/decision-provider.json",
+  "controlOrder": [
+    "deterministic_code",
+    "atomic_semantic_decision",
+    "local_private_reasoning",
+    "consented_cloud_reasoning",
+    "independent_verification",
+    "hard_policy_and_owner_approval"
+  ],
+  "routes": [
+    "CODE",
+    "JEV",
+    "LOCAL_QWEN",
+    "CLOUD_LLM",
+    "TOOL",
+    "ASK_USER",
+    "BLOCK"
+  ],
+  "providers": [
+    { "id": "mock", "status": "planned", "productionAllowed": false },
+    {
+      "id": "local_qwen",
+      "status": "existing_runtime_adapter_planned",
+      "productionAllowed": false
+    },
+    { "id": "typesafe_jev", "status": "planned", "productionAllowed": false },
+    { "id": "cloud_llm", "status": "planned", "productionAllowed": false },
+    { "id": "openjev", "status": "candidate", "productionAllowed": false }
+  ],
+  "existingLocalBaseline": {
+    "runtime": "llama.rn@0.12.9",
+    "model": "Qwen3-0.6B Q8_0 GGUF",
+    "device": "Pixel 10 GL066",
+    "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+    "osImageIntegrated": false
+  },
+  "hardInvariants": {
+    "confidenceIsAuthority": false,
+    "providerMayGrantCapability": false,
+    "providerMayReadSecrets": false,
+    "providerMayCallToolsDirectly": false,
+    "providerMayWriteWalletLedger": false,
+    "providerMayExecuteLiveMarketOrder": false,
+    "providerMayControlPhysicalEquipment": false,
+    "cloudFallbackWithoutConsent": false,
+    "externalWriteAutomaticRetryAfterUnknownResult": false,
+    "resultSelfReportCountsAsVerified": false,
+    "chainOfThoughtStored": false
+  },
+  "limits": {
+    "maxProvidersPerRequest": 2,
+    "maxAttemptsPerRequest": 3,
+    "maxQuestionCount": 64,
+    "maxProviderLatencyMs": 300000,
+    "initialConcurrentLocalInference": 1
+  },
+  "effectClasses": ["none", "local-pure", "remote-read", "external-write"],
+  "dataClasses": ["public", "owner_private", "confidential", "secret"],
+  "secretCloudAllowed": false,
+  "marketMode": "PAPER_ONLY",
+  "walletAiRole": "ADVISORY_ONLY",
+  "physicalExecutionAllowed": false,
+  "thresholds": {
+    "status": "UNSET_PENDING_OWNED_FIXTURE_CALIBRATION",
+    "minimumFixtureCountPerDomain": 200,
+    "dangerousFalseAllowRequired": 0
+  },
+  "phases": [
+    "contract_and_mock",
+    "local_qwen_adapter",
+    "typesafe_jev_shadow",
+    "cloud_and_codex",
+    "knowledge_sky_zema",
+    "market_wallet_material"
+  ]
+}

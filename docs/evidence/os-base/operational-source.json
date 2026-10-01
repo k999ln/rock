@@ -1,0 +1,578 @@
+{
+  "schema": "rock-operational-source/1",
+  "integration_commit": "797c663de60dcf4e7509c29de49447c3a521b90d",
+  "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "runtime_report": "runtime-b8287bc.json",
+  "runtime_report_sha256": "18ef906441962f45eb26bede67c42c8c59f359049796928ef52941aef8d4b679",
+  "results": {
+    "source_regressions": {
+      "status": "PASS",
+      "python_executions": 1089,
+      "source_unchanged": true
+    },
+    "startup_python": {
+      "status": "PASS",
+      "tests": 15
+    },
+    "startup_c_root_uid1000": {
+      "status": "PASS",
+      "groups": 8
+    },
+    "backup_python": {
+      "status": "PASS",
+      "tests": 35
+    },
+    "all_ui_observers_root": {
+      "status": "PASS",
+      "tests": 55,
+      "skips": 0,
+      "resource_warnings": 0,
+      "source_base": "dea78e326e946f1599d45938e9becdb459403df4",
+      "applied_host_patch_sha256": "ab0e245eaf94b21dd690f89b33c45a058051e9c96ca259b7d8fee2ae8426cac7",
+      "power_fixture_sha256": "6b20e1cb2f5155d82d46250bf6aa9232c0703297f33acb3949f1f4abf9de7e7b"
+    },
+    "qemu_new_image": {
+      "status": "BUILT",
+      "source_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "new_empty_build_directory": "/var/tmp/rk-build-b8287bc",
+      "source_directory": "/var/tmp/rk3",
+      "old_build_output_reused": false,
+      "qemu_boot": "PASS_TWO_BASIC_BOOTS",
+      "files_sha256": {
+        "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+        "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+        "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+      },
+      "freeze_manifest": "freeze-b8287bc.json",
+      "freeze_manifest_sha256": "6a58860076c14aef7d9c6aaa9c9027cc990615fa07719075ccaa59a951096557",
+      "built_at": "2026-09-09T19:29:12Z",
+      "scope": "Frozen runtime image; basic boot, platform, native checklist, normal power and ATM protocol passed; D0–D6 aggregate remains INCOMPLETE",
+      "platform": "PASS",
+      "native_ui": "PASS",
+      "normal_system_power": "PASS",
+      "gui_wallet": "PASS",
+      "native_power_ui": "PASS",
+      "atm_protocol": "PASS"
+    },
+    "physical_device": {
+      "status": "NOT_RUN"
+    },
+    "real_funds": {
+      "status": "NOT_RUN"
+    },
+    "local_ab_backup": {
+      "status": "PASS",
+      "linux_tests": 63,
+      "skips": 0,
+      "warnings": 0,
+      "actual_ext4_cases": 2,
+      "scope": "Host tests; actual OS restore boot NOT_RUN",
+      "log": "local-ab-linux.log"
+    },
+    "d3_kernel_probes": {
+      "status": "PASS",
+      "scope": "Linux build host in outer disposable user namespace; actual target OS NOT_RUN",
+      "report": "d3-linux-resource-result.json",
+      "evidence_guards": 6
+    },
+    "host_acceptance_harnesses": {
+      "status": "PASS",
+      "source_commit": "c7b29a9dc2a6bdf646a098992dfa5104ad6ad7fd",
+      "python_executions": 1119,
+      "root_ui_tests": 61,
+      "skips": 0,
+      "resource_warnings": 0,
+      "report": "host-c7b29a9.json",
+      "report_sha256": "5a63f005bf1160837f37241eadd67771c5e4184099ea09ddbd2ae35faca51b36",
+      "root_log": "host-c7b29a9-root-ui.log",
+      "root_log_sha256": "980b4f2fe6a4dbc3a58d10efff101a45823aadee6551234dfe855188da911212",
+      "runtime_changes_after_b8287bc": false,
+      "actual_qemu": "NOT_RUN"
+    },
+    "qemu_native_ui": {
+      "status": "PASS",
+      "report": "native-ui-b8287bc.json",
+      "real_screenshots": 9,
+      "image_unchanged": true,
+      "source_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "host_harness_commit": "c7b29a9dc2a6bdf646a098992dfa5104ad6ad7fd",
+      "scope": "Actual native checklist install/approve/input/result/history; Wallet unchanged; proposal lifecycle still NOT_RUN"
+    },
+    "qemu_power_ui": {
+      "status": "PASS",
+      "report": "power-ui-b8287bc.json",
+      "report_sha256": "ccced5225377611b5d37532a0cd9c9392bb069795b94f98ee3221c4ae735912c",
+      "scope": "Actual native UI cancel, reboot and normal shutdown; two kernel boot IDs, eight captures, no host power commands",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
+    },
+    "qemu_atm_protocol": {
+      "status": "PASS",
+      "report": "atm-protocol-b8287bc.json",
+      "report_sha256": "97e0ac34733c8bb44d8af510a0da8c073021b0d25107d644034c929bb64868c6",
+      "scope": "Two actual no-NIC guest boots, 34 checks; synthetic funds, unknown/partial/reconcile; no physical ATM",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
+    },
+    "qemu_wallet_ui": {
+      "status": "PASS",
+      "report": "wallet-ui-b8287bc.json",
+      "report_sha256": "6d606f091338568d4a557c18616b53b2ac9aff96cc6e9593b0979819b0a79fe1",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "host_harness_commit": "b8d8305",
+      "original_frames": 14,
+      "scope": "Actual native registration/enrollment/terms, synthetic credit2000, 888 billed once despite two requests, renewal canceled; available1112. Public test authenticator; real funds NOT_RUN."
+    },
+    "web_regressions_current": {
+      "status": "PASS",
+      "source_base": "d9b8ae6",
+      "command": "npm run verify",
+      "loopback_permission_required": true,
+      "unrestricted_test_log_sha256": "c11e30142ec09afdba932e21bf9d1270689aa0741530f6433aaab0629d7e577f",
+      "earlier_sandbox_attempt": "FAIL: localhost listen EPERM; same suite rerun with local socket permission"
+    },
+    "qemu_ui_startup": {
+      "status": "PASS",
+      "host_commit": "a21927746c7bac9c6ae7b0d9d574340bdd24eb89",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "report": "ui-startup-b8287bc.json",
+      "report_sha256": "ae44aff598b60a335234012fe24fcbd2e8abdd44342b30ca9ba189b1e8efd4f2",
+      "visual_review": "ui-startup-b8287bc-visual-review.json",
+      "boots": 14,
+      "scope": "Actual GUI readiness commits B; absent/freeze/crash reject two B trials and recover A. Whole D4 still needs independent corrupt/partial/no-space/data ABI cases."
+    },
+    "pc_citations": {
+      "status": "PASS",
+      "report": "../pc-citations/integration.json",
+      "scope": "Mac/Linux actual fixed CLI + stdio MCP; no native Hub/USB connection or durable keys"
+    },
+    "qemu_business_lifecycle": {
+      "status": "PASS_SCOPED",
+      "report": "business-lifecycle-b8287bc.json",
+      "report_sha256": "740218bf47d95a66f01c428879d814eeb0384dfb30f336a363e39413926c817c",
+      "plan": "business-lifecycle-plan-b8287bc.json",
+      "normal_boots": 4,
+      "business_jobs": 5,
+      "native_actions": 16,
+      "frames": 171,
+      "scope": "Actual no-NIC signed local A/B: full proposal lifecycle plus two synthetic Wallet boots; optional in-flight cancellation NOT_RUN; D6 NOT_RUN. Earlier failed runs retained separately."
+    },
+    "qemu_ab_updates": {
+      "status": "PASS",
+      "report": "ab-updates-b8287bc.json",
+      "report_sha256": "10c77907db18fc6b8a706c6c89dfb99757c1c7ceb8a9dfd197662efb2b602933",
+      "boots": 8,
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "host_commit": "a02401bf1661d75446da858b48e6e90afd2ed263",
+      "scope": "Actual stage0: signature/payload/installed-slot tamper, failed health/init watchdog, actual1MiB partial write and recover, successful newer release and software downgrade refusal. Headless; GUI14 separate. Capacity/ABI independent."
+    },
+    "qemu_ab_faults": {
+      "status": "PASS",
+      "report": "ab-faults-b8287bc.json",
+      "report_sha256": "57348ca8090008a7b3ecffc672dcebbada5afa96f7b944264a080f9e6bcf34f2",
+      "boots": 13,
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "host_commit": "a02401bf1661d75446da858b48e6e90afd2ed263",
+      "scope": "Four actual saved-state interruption boundaries and genuine allocated-volume ENOSPC with unchanged failed-write state; valid A/B retained and later B update completed. Headless; data ABI separate."
+    },
+    "qemu_authenticator_health": {
+      "status": "PASS",
+      "actual_boots": 3,
+      "owned_confirmation_power_cuts": 1,
+      "report": "auth-health-b8287bc.json",
+      "report_sha256": "645297baf1445d65b0f20bdfb7d1e336f650310c5c7f2f7729d4fa3c37b16b2b",
+      "scope": "frozen S97 authenticator health before mark-good, committed recovery; headless public fixture, no Wallet DB shutdown claim"
+    },
+    "qemu_hub_faults": {
+      "status": "PASS_SCOPED",
+      "actual_boots": 3,
+      "report": "hub-faults-b8287bc.json",
+      "report_sha256": "3f63c0169f633fe021cc4b9610da0540e50e5fc2ea1ea67749a90fb374f1f077",
+      "scope": "actual signed package helper then exact launcher crash/deadline; immutable receipt, explicit retry success, preserved Wallet/Hub rows after normal API poweroff and actual restart; no GUI or platform-daemon crash claim"
+    },
+    "host_wallet_ocr_merged": {
+      "status": "PASS_HOST_FIXTURE",
+      "report": "host-business-wallet-ocr-merged.json",
+      "report_sha256": "10faa30ef6cf085b16d49bbcddc99635c3fefbb66433467c2033141e5d5d62bd",
+      "states": 45,
+      "fixed_action_checks": 23,
+      "financial_journals": 5,
+      "postings": 10,
+      "qemu": "NOT_RUN"
+    },
+    "qemu_data_abi": {
+      "status": "PASS",
+      "actual_boots": 3,
+      "report": "data-abi-b8287bc.json",
+      "report_sha256": "d9907efe96b3b08306b3f7b531de719b8457e0800402a09537a7665361326ff6",
+      "scope": "host independently verified proper development signature; fixed guest Updater rejected foreign ABI before slot/state writes; retained proof and valid B on next real boot; no data migration or GUI claim"
+    },
+    "D4_startup_update": {
+      "status": "PASS_SCOPED",
+      "report": "startup-update-acceptance-b8287bc.json",
+      "actual_boots": 41,
+      "scope": "QEMU public-development fixture; no migration, hardware trust or full OS acceptance"
+    },
+    "host_wallet_page_header": {
+      "status": "PASS_HOST_FIXTURE",
+      "report": "host-wallet-header-flow.json",
+      "states": 45,
+      "fixed_action_checks": 23,
+      "actual_failed_history_review": "business-history-header-review.json",
+      "limits_unchanged": true,
+      "qemu": "NOT_RUN"
+    },
+    "qemu_atm_ui": {
+      "status": "PASS",
+      "report": "atm-ui-b8287bc.json",
+      "report_sha256": "42e28ed8acaf7e345dede5ad7d6cf8b9e619639c0e28b3ac04869090d913f9ec",
+      "proof": "atm-ui-proof-b8287bc.json",
+      "frames": 14,
+      "input_scope": "actual evdev and masked PIN4/enabled sign pixels; no actor commands or reveal actions",
+      "ledger": "synthetic5000 credit/settlement,1000 hold,cancel->5000 available/0 held; monthly consent not inferred; fee0",
+      "original_images_unchanged": true
+    },
+    "qemu_backup_restore": {
+      "status": "PASS_SCOPED",
+      "raw_status": "AUTOMATED_PASS",
+      "report": "backup-restore-b8287bc.json",
+      "report_sha256": "d46549399e41fef38f4d2e78dd42934ef746c62ec3e507aae658b658e6f33727",
+      "root_visual_review": "business-backup-acceptance-b8287bc.json",
+      "actual_restored_boots": 1,
+      "frames": 8,
+      "scope": "new offline destination, whole A/B/data bytes before boot, all six DB schemas/tables/sequences retained after boot except one normal power receipt; source/backup unchanged; external backend/runner/game restore not claimed"
+    },
+    "D2_native_use": {
+      "status": "PASS_SCOPED",
+      "report": "business-backup-acceptance-b8287bc.json",
+      "stop": "disable/reapprove; optional timed in-flight cancellation NOT_RUN"
+    },
+    "D5_offline_retention_restore": {
+      "status": "PASS_SCOPED",
+      "report": "business-backup-acceptance-b8287bc.json",
+      "scope": "network-none local synthetic Wallet device; excludes external authority restoration"
+    },
+    "qemu_remote": {
+      "status": "PASS",
+      "report": "remote-b8287bc.json",
+      "report_sha256": "5042cc50b30f7467ed122892650ce061714e8228e84b28cf2074a42222b0e1b4",
+      "actual_boots": 2,
+      "checks": 46,
+      "actual_executor_calls": 2,
+      "scope": "actual guest API and new owned TLS runner; durable acceptance followed by truncated reply and actual virtio link loss/reconnect; second boot no NIC; no production cloud or USB; no local jobs or Wallet proceeds"
+    },
+    "qemu_store": {
+      "status": "PASS",
+      "report": "store-b8287bc.json",
+      "report_sha256": "22c1e4dc2e523011af206459f274cc7fa885895e24741d8b48f2db077ff7d20b",
+      "actual_boots": 2,
+      "checks": 33,
+      "scope": "actual SDK packages and fresh TLS registry, install/update/rollback/exact approval, actual disconnect and no-NIC restart; negative acceptance recorded separately in registry-negative-b8287bc.json"
+    },
+    "qemu_registry_negative": {
+      "status": "PASS",
+      "report": "registry-negative-b8287bc.json",
+      "report_sha256": "6a44ab66981164150bd607e774e3e8823c35558a3815b2c4d09e8d36e9462fd4",
+      "guest_proof": "registry-negative-proof-b8287bc.json",
+      "actual_boots": 1,
+      "denial_cases": 10,
+      "scope": "actual UID1000/Platform/TLS; crypto signature rejection, minimum OS before download, two actual truncated responses, cache ENOSPC, hash-specific consent and signed permanent revocation; observed-rootfs copy preserves all target runtime source bytes; no GUI"
+    },
+    "host_pidfd_exit": {
+      "status": "PASS_HOST_MECHANISM",
+      "report": "pidfd-exit-mechanism.json",
+      "guards": 59,
+      "guards_log": "host-pidfd-business.log",
+      "scope": "real Linux last-thread exit/socket mechanism; not proof of the exact cause of run39; fixed60s and actual guest shutdown/closed socket guards retained",
+      "new_soak": "43 FAIL environment interruption, 41/61 jobs; normal close/47 jobs/55 actions retained separately. New run44 RUNNING_AS_OF_CHECKPOINT with AC and unchanged limits; no D6 acceptance yet."
+    },
+    "soak43": {
+      "status": "FAIL",
+      "failure_class": "ENVIRONMENT_INTERRUPTION",
+      "report": "43-summary-b8287bc.json",
+      "report_sha256": "13b496ead5241401bf37961555da9fca20c067ae2cd3b27a068beacdd82feba9",
+      "soak_jobs_completed": 41,
+      "soak_jobs_required": 61,
+      "normal_cleanup": "PASS_SEPARATE",
+      "closed_jobs": 47,
+      "closed_actions": 55,
+      "e2fsck_exit": 0,
+      "original_reports_preserved": true
+    }
+  },
+  "logs_sha256": {
+    "runtime-candidate.log": "8d0c8e3c9aec1e2c767cc98520de9afa12a6efd82534e30d963fbc256eab1c5a",
+    "observer-root-clean.log": "ddfcb801d4d4fdc9817c87ec58339c2f5dd0a0ec4a4ee9314b9ceaffea4ad223"
+  },
+  "environment": {
+    "new_isolated_vm": true,
+    "guest": "Debian 13 aarch64",
+    "vcpu": 4,
+    "ram_gib": 6,
+    "disk_gib": 60,
+    "host_mounts": false,
+    "old_vm_or_ssd_used": false
+  },
+  "attempts": [
+    {
+      "result": "FAIL",
+      "cause": "First source extraction inherited group-write mode; normalized new extraction only before retry."
+    },
+    {
+      "result": "FAIL",
+      "cause": "First native baseline skipped11 ext4 cases because non-root PATH omitted /usr/sbin; corrected environment, reran all1056 without skips."
+    },
+    {
+      "result": "FAIL",
+      "cause": "First extra observer root run used non-root-owned handoff and0755 test state; fixture corrected."
+    },
+    {
+      "result": "FAIL",
+      "cause": "All55 tests then exited0 but logs exposed power fixture SQLite connections not closed. Tracemalloc located2 test sites; explicitly close and rerun55 with clean log."
+    },
+    {
+      "result": "FAIL",
+      "cause": "GitHub native CI run 34388326821: four startup fixture cases selected user-owned hosted Python; retry assertion raced 10ms against SQLite latency. Production restrictions/timeouts retained; protected system-interpreter peer fixture and deterministic controller-clock test passed Linux 15/27 targeted cases."
+    }
+  ],
+  "source_history": [
+    {
+      "commit": "f3ec84386421fa3363959b448f9a2a7c71f21ef8",
+      "report": "runtime-f3ec843.json",
+      "report_sha256": "e849e31630ef833f4d7f8663d87436145069ca72c154638dfcbc93baab6c1666",
+      "python_executions": 1056
+    },
+    {
+      "commit": "d5fd1d556466b7ee076fa5ad0b90564a1f447663",
+      "report": "runtime-d5fd1d5.json",
+      "report_sha256": "93bdb2749d486b9a2012b581c21a18b2eb6b01d089ead40a6accd210a36e7d0b",
+      "python_executions": 1069
+    }
+  ],
+  "build_attempts": [
+    {
+      "status": "FAIL",
+      "source_commit": "dea78e326e946f1599d45938e9becdb459403df4",
+      "stage": "post-build platform install",
+      "reason": "Public source omitted docs/PRODUCT-EXPERIMENTS-OS.md but installer still referenced it. No completed Image/rootfs/stage0 set; boot NOT_RUN."
+    },
+    {
+      "status": "PASS",
+      "source_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "new_empty_build_directory": "/var/tmp/rk-build-b8287bc",
+      "source_archive_sha256": "96a449effab25c97f6280c06540803a6d7dac5f746c54d8fc21aadba93e1e88d",
+      "build_log_sha256": "2803ba103843708d775104f51252260907c8eeeb2538b7ae92901b94320f4cf0",
+      "files_sha256": {
+        "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+        "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+        "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+      },
+      "finished_utc": "2026-09-09T19:29:12Z"
+    }
+  ],
+  "ci_history": [
+    {
+      "head_commit": "b5cbd8ae1ec74ffd0f9a49557c69f6cab67caca7",
+      "native": {
+        "run": 34388326821,
+        "status": "FAIL"
+      }
+    },
+    {
+      "head_commit": "82faec4dafafe837b7e18eec559c95cc8b76c5e7",
+      "native": {
+        "run": 34390671228,
+        "status": "PASS"
+      },
+      "web": {
+        "run": 34390671203,
+        "status": "PASS"
+      },
+      "android": {
+        "run": 34390671239,
+        "status": "PASS"
+      }
+    },
+    {
+      "head_commit": "2d9bd3ae32a6febb441c0d8466aeba91560e67d8",
+      "native": {
+        "run": 34392915846,
+        "status": "PASS"
+      },
+      "web": {
+        "run": 34392915867,
+        "status": "FAIL",
+        "reason": "Generated project.md update not included in commit; corrected in c7b29a9."
+      },
+      "android": {
+        "run": 34392915866,
+        "status": "PASS"
+      }
+    },
+    {
+      "head_commit": "c7b29a9dc2a6bdf646a098992dfa5104ad6ad7fd",
+      "native": {
+        "run": 34394252067,
+        "status": "PASS"
+      },
+      "web": {
+        "run": 34394252080,
+        "status": "PASS"
+      },
+      "android": {
+        "run": 34394252183,
+        "status": "PASS"
+      }
+    },
+    {
+      "head_commit": "a21927746c7bac9c6ae7b0d9d574340bdd24eb89",
+      "native": {
+        "run": 34399906544,
+        "status": "PASS",
+        "python_executions": 1157,
+        "root_ui_tests": 61,
+        "root_readiness_groups": 8,
+        "wallet_replay_frames": 28,
+        "wallet_replay_negative_cases": 8,
+        "skips": 0,
+        "resource_warnings": 0,
+        "report": "ci-a219277-native.json"
+      },
+      "web": {
+        "run": 34399906545,
+        "status": "PASS"
+      },
+      "android": {
+        "run": 34399906548,
+        "status": "PASS"
+      }
+    },
+    {
+      "source_commit": "a02401bf1661d75446da858b48e6e90afd2ed263",
+      "web_run": 34403201347,
+      "native_run": 34403201154,
+      "android_run": 34403201020,
+      "all_status": "PASS",
+      "native_python_executions": 1177,
+      "root_observer_tests": 61,
+      "root_startup_groups": 8,
+      "wallet_replay": "14 Wallet +14 ATM frames; 8 negatives; synchronous host C fixture only",
+      "native_report": "ci-a02401b-native.json",
+      "native_report_sha256": "bec424d2375853ed4b92d65698b7565654b8a4b631c083dd357794cd07cf94fc",
+      "runtime_image_remains": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
+    },
+    {
+      "source_commit": "180904620b66023081a04a7d9fdc7f8ec3dbf00c",
+      "web_run": 34407409574,
+      "native_run": 34407409570,
+      "android_run": 34407409642,
+      "all_status": "PASS",
+      "native_python_executions": 1198,
+      "root_observer_tests": 61,
+      "root_pin_readiness_tests": 11,
+      "root_startup_groups": 8,
+      "wallet_replay": "14 Wallet +14 ATM, eight geometry negatives; host C fixture only",
+      "native_report": "ci-1809046-native.json",
+      "native_report_sha256": "a924a1e18abf1c341376e2a9b5c31893cddd0579bf539a8544a5147b37ee7486",
+      "runtime_image_remains": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9"
+    },
+    {
+      "source_commit": "057ea989434fbbca6723b4b8164aea8f05831a1e",
+      "native_run": 34410496387,
+      "web_run": 34410496424,
+      "android_run": 34410496472,
+      "status": "PASS",
+      "native_python_executions": 1199,
+      "root_observers": 61,
+      "root_pin": 11,
+      "report": "ci-057ea98-native.json",
+      "report_sha256": "2da9c4d4014fe16c9d142dd7e8d2f47ee1af6e3da9429289d3714ab6cddd7e58"
+    }
+  ],
+  "host_observation_failures": [
+    {
+      "case": "wallet-native-ui",
+      "status": "FAIL",
+      "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+      "reason": "Stale host registration point hit blank area; no registration performed. Host-only geometry replay corrected and 14+14 C fixture frames passed; actual retry pending. Fresh actual GUI retry passed14 original frames on unchanged b828 images."
+    },
+    {
+      "case": "business-lifecycle-initial",
+      "status": "FAIL",
+      "reason": "Host rejected actual 640x480 QEMU startup placeholder before any input. Fixed bounded known-pixel wait in b8d8305; failed device later closed by actual native UI; cleanup is not acceptance."
+    },
+    {
+      "case": "business-normal-cleanup-ocr",
+      "status": "FAIL",
+      "reason": "Rounded exterior button corners corrupted OCR. Original screenshot retained; row-wise actual green contour fix kept confidence45 and deadlines; exact saved/rendered frames7/7 passed."
+    },
+    {
+      "case": "ui-startup-fixture-prepare",
+      "status": "FAIL",
+      "reason": "Disposable copy inherited frozen0444 and debugfs could not inject first marker; no QEMU started and original image unchanged. Host copy fix pending. Corrected in d9b8ae6; 20 Linux guards including real ext4 injection passed. Actual retry pending. Fresh GUI-required retry passed all14 boots with original image triple unchanged."
+    },
+    {
+      "case": "hub-launcher-fault-observer",
+      "status": "FAIL",
+      "reason": "Actual kernel omits proc task children interface used by tracer; job not submitted. Fixture observer adjustment pending; no runtime change."
+    },
+    {
+      "case": "business-catalog-version-ocr",
+      "status": "FAIL",
+      "reason": "Fresh retry passed normal signed boot0 and native shutdown. In cycle1 actual correct proposal search result rendered, but small version OCR exceeded unchanged30-second deadline before any install. Host selector repair pending; failed source preserved."
+    },
+    {
+      "case": "business-lifecycle-16-wallet-preparation",
+      "status": "FAIL",
+      "reason": "Two business cycles closed normally; five proposal jobs and 16 lifecycle actions matched closed DB receipts. Following separate Wallet preparation failed OCR before enrollment. Whole run remains FAIL; fresh retry required.",
+      "report": "business-wallet-preparation-failed-b8287bc.json",
+      "cleanup": "Exact owned guest closed normally by native UI after failure; not acceptance"
+    },
+    {
+      "case": "atm-native-ui-17",
+      "status": "FAIL",
+      "reason": "Enrollment/terms/synthetic5000 settlement passed; issued stage was not observed within25s after PIN/sign input. Fixed C replay was synchronous; actual PIN/render readiness remains under investigation.",
+      "report": "atm-ui-failed-b8287bc.json"
+    },
+    {
+      "case": "hub-launcher-18-diagnostic",
+      "status": "FAIL",
+      "reason": "Only exe/argv predicates differed; nine identity predicates matched. Real DeviceHub.run Linux fixture reproduced its preceding OpenSSL signature-check child. No signal sent to mismatched process; exact verifier observation fix pending."
+    },
+    {
+      "case": "data-abi-preflight-24",
+      "status": "FAIL",
+      "reason": "Host source comparison used usr/bin/rockd, while actual frozen install is usr/sbin/rockd. Failed before any QEMU; final audit proved original inputs unchanged. Path corrected; fresh preflight required."
+    },
+    {
+      "case": "hub-23-power-request",
+      "status": "FAIL",
+      "report": "hub-power-request-failed-b8287bc.json",
+      "reason": "Actual signed helper and exact launcher crash, immutable receipt replay and explicit successful retry completed; following fixed fixture power key used colons, rejected by frozen root power key grammar. Whole run FAIL, originals unchanged. Fixed only test key separators and tested against real production validate; fresh three boots pending."
+    },
+    {
+      "case": "data-abi-26-serial-prefix",
+      "status": "FAIL",
+      "report": "data-abi-serial-failed-b8287bc.json",
+      "reason": "Second boot produced ABI refusal proof, unchanged A/B/state and normal kernel poweroff; fixed BusyBox login prompt precedes background proof. Host start-of-line parser missed it. Whole run FAIL, original inputs unchanged. Exact optional prompt recognized with negative guards; fresh three boots pending."
+    },
+    {
+      "case": "atm-31-pin-golden",
+      "status": "FAIL",
+      "report": "atm-pin-golden-failed-b8287bc.json",
+      "reason": "Actual QMP anonymous-memory capture and empty PIN recognition passed. After4 keys, sign golden was unknown. Real C reproduction proved golden came from diagnostic pointer-on-sign frame, not keys-only. Replaced only two golden hashes from actual C keys-only frames; pointer-over-button negative and parked equivalence added. Fresh actual trial pending."
+    },
+    {
+      "case": "business-32-wallet-labels-on-history",
+      "status": "FAIL",
+      "report": "business-wallet-header-failed-b8287bc.json",
+      "reason": "Four actual business jobs succeeded but fourth history listing contained four completed labels, triggering the incorrectly global Wallet segmentation bound. Failed run preserved and exact guest closed normally by native UI. Same actual history frame now recognized with Wallet-header gate, old confidence/deadlines unchanged; fresh trial required."
+    },
+    {
+      "report": "soak-stopped-socket-failed-b8287bc.json",
+      "status": "FAIL",
+      "reason": "after UI poweroff, /proc-derived running predicate was false while a display socket still accepted; closed-disk guard refused",
+      "preservation": "failure retained, no force/reset/repair; later exact owned PID absent and remaining display sockets refused connection",
+      "diagnosis": "consistent with whole-process exit observation race; cause of this specific occurrence not directly sampled",
+      "followup": "pin Linux pidfd before shutdown, wait whole process exit inside unchanged60s, keep closed socket guards; restart acceptance on a fresh device"
+    }
+  ]
+}

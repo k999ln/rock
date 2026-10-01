@@ -1,0 +1,1956 @@
+{
+  "schema": "rock-independent-os-evidence-audit/1",
+  "reviewed_at": "2026-09-09T22:35:31.492202+00:00",
+  "root_head_at_finish": "851081a45dd70580fdaa73c47e882eb51c3c4725",
+  "scope": "Read-only existing evidence and exact Git source verification; no QEMU or runtime tests performed by this audit",
+  "checks": [
+    {
+      "id": "frozen_git_source_closure",
+      "status": "PASS",
+      "actual": {
+        "commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+        "files": 778,
+        "mismatches": []
+      }
+    },
+    {
+      "id": "runtime-b8287bc.json",
+      "status": "PASS",
+      "actual": {
+        "python_executions": 1089,
+        "groups": 13,
+        "source_unchanged": true
+      }
+    },
+    {
+      "id": "ci-057ea98-native.json",
+      "status": "PASS",
+      "actual": {
+        "python_executions": 1199,
+        "groups": 14,
+        "source_unchanged": true
+      }
+    },
+    {
+      "id": "operational-source.json-references",
+      "status": "PASS",
+      "actual": {
+        "references": 17,
+        "mismatches": []
+      }
+    },
+    {
+      "id": "startup-update-acceptance-b8287bc.json-references",
+      "status": "PASS",
+      "actual": {
+        "references": 5,
+        "mismatches": []
+      }
+    },
+    {
+      "id": "business-restore-root-review-bindings",
+      "status": "PASS",
+      "actual": "both raw reports match root visual-review record"
+    },
+    {
+      "id": "original-image-bindings",
+      "status": "PASS",
+      "actual": [
+        {
+          "report": "boot-b8287bc.json",
+          "key": "image_sha256",
+          "matched": true
+        },
+        {
+          "report": "platform-b8287bc.json",
+          "key": "image_sha256",
+          "matched": true
+        },
+        {
+          "report": "native-ui-b8287bc.json",
+          "key": "image_sha256_before",
+          "matched": true
+        },
+        {
+          "report": "native-ui-b8287bc.json",
+          "key": "image_sha256_after",
+          "matched": true
+        },
+        {
+          "report": "wallet-ui-b8287bc.json",
+          "key": "image_sha256_before",
+          "matched": true
+        },
+        {
+          "report": "wallet-ui-b8287bc.json",
+          "key": "image_sha256_after",
+          "matched": true
+        },
+        {
+          "report": "atm-ui-b8287bc.json",
+          "key": "image_sha256_before",
+          "matched": true
+        },
+        {
+          "report": "atm-ui-b8287bc.json",
+          "key": "image_sha256_after",
+          "matched": true
+        },
+        {
+          "report": "atm-protocol-b8287bc.json",
+          "key": "image_sha256",
+          "matched": true
+        },
+        {
+          "report": "hub-faults-b8287bc.json",
+          "key": "source_image_sha256",
+          "matched": true
+        },
+        {
+          "report": "hub-faults-b8287bc.json",
+          "key": "source_image_sha256_after",
+          "matched": true
+        },
+        {
+          "report": "remote-b8287bc.json",
+          "key": "image_sha256",
+          "matched": true
+        },
+        {
+          "report": "backup-restore-b8287bc.json",
+          "key": "image_sha256",
+          "matched": true
+        },
+        {
+          "report": "startup-update-acceptance-b8287bc.json",
+          "key": "input_sha256",
+          "matched": true
+        },
+        {
+          "report": "registry-negative-b8287bc.json",
+          "key": "images_before",
+          "matched": true
+        }
+      ]
+    },
+    {
+      "id": "backup-six-databases",
+      "status": "PASS",
+      "actual": {
+        "databases": [
+          "authenticator",
+          "hub",
+          "membership",
+          "power",
+          "remote",
+          "wallet"
+        ]
+      }
+    },
+    {
+      "id": "backup-source-backup-byte-closure",
+      "status": "PASS",
+      "actual": {
+        "disks": [
+          "slot-a.ext4",
+          "slot-b.ext4",
+          "userdata.ext4"
+        ]
+      }
+    },
+    {
+      "id": "backup-all-observed-tables",
+      "status": "PASS",
+      "actual": {
+        "tables": {
+          "authenticator": 3,
+          "hub": 7,
+          "membership": 15,
+          "power": 1,
+          "remote": 2,
+          "wallet": 16
+        },
+        "additional_tables": {
+          "authenticator": [],
+          "hub": [],
+          "membership": [],
+          "power": [],
+          "remote": [],
+          "wallet": []
+        },
+        "exception": "one extra normal power request; four old receipts preserved"
+      }
+    },
+    {
+      "id": "backup-offline-boundary",
+      "status": "PASS",
+      "actual": {
+        "network": "none",
+        "external_state": {
+          "authority_id": null,
+          "backend_config_sha256": null,
+          "included_in_device_backup": false,
+          "meaning": "external backup, fresh-target restore and reconciliation are not performed by this offline guest harness",
+          "required": false,
+          "required_components": {},
+          "status": "NOT_APPLICABLE"
+        },
+        "normal_shutdown_seconds": 7.330272553999748
+      }
+    },
+    {
+      "id": "actual-business-restore-frames",
+      "status": "PASS",
+      "actual": {
+        "total": 179,
+        "matched": 179,
+        "missing_or_changed": []
+      }
+    },
+    {
+      "id": "snapshot-stability",
+      "status": "PASS",
+      "actual": []
+    },
+    {
+      "id": "frozen-host-preflight-source-bindings",
+      "status": "PASS",
+      "actual": [
+        {
+          "path": "systems/rock-star-os/os/service_access/os_client.py",
+          "sha256": "e93a064f00dfd09d64be2d3637fc5d4bfaf44a852eafa9d6067f84a76afaa34a",
+          "matches_frozen": true
+        },
+        {
+          "path": "systems/rock-star-os/os/service_access/status.py",
+          "sha256": "ebfeed3dab710568e91b8bce632a4c6fcdb2695dea9f0eb91c459cd8459aed45",
+          "matches_frozen": true
+        },
+        {
+          "path": "systems/rock-star-os/os/platform/service.py",
+          "sha256": "c1215e39648f1b308a68eb3aaba99b4fbbc0cbabb36849ffdc40c37856a16a17",
+          "matches_frozen": true
+        },
+        {
+          "path": "systems/rock-star-os/os/wallet_backend/client.py",
+          "sha256": "56c06081d114ba703a6d268460a97e6303dae04a1ed2661feba9b2777d8ff569",
+          "matches_frozen": true
+        },
+        {
+          "path": "systems/rock-star-os/os/wallet_auth/daemon.py",
+          "sha256": "b5646dcdd65cb5149faa7df9532ce4cda2e929a7790f28c1035bcc7b88b43e8d",
+          "matches_frozen": true
+        },
+        {
+          "path": "systems/rock-star-os/os/registry/fixtures/development-ca.pem",
+          "sha256": "a8709619319348ebdd48ce89e2e9553351c1554d7c8311d77a7b3e78a3020aac",
+          "matches_frozen": true
+        }
+      ]
+    },
+    {
+      "id": "basic-guest-entropy-ro-root-uid",
+      "status": "PASS",
+      "actual": "Both original guest logs show crng init, read-only root and UID1000; this is initialization evidence, not entropy quality certification."
+    },
+    {
+      "id": "soak42-failed-report-plan-binding",
+      "status": "PASS",
+      "actual": {
+        "plan_file_sha256": "e36b5b9a17a0b2703797eea220a9f83a7eb535596463e31a74acd6c40203733d",
+        "canonical_json_sha256": "6cdd0789adb4d2dcf34dffe8eff49d2b0cec3713dc748d31897ef6762f093850",
+        "raw_failure_status": "FAIL",
+        "raw_subgate_status_preserved": "NOT_RUN"
+      }
+    }
+  ],
+  "files": {
+    "data/execution-approval.json": {
+      "sha256": "701d9ef5281279b0e77d21c42c4b469a01ea8419015d3fccd89d876c755fb93a",
+      "bytes": 1960
+    },
+    "data/product-baseline.json": {
+      "sha256": "877b1afa1cd6812b0fc2fb91ee3771953eaba206598feec6a1ff34f29361c103",
+      "bytes": 3640
+    },
+    "docs/evidence/os-base/ab-faults-b8287bc.json": {
+      "sha256": "57348ca8090008a7b3ecffc672dcebbada5afa96f7b944264a080f9e6bcf34f2",
+      "bytes": 28913
+    },
+    "docs/evidence/os-base/ab-updates-b8287bc.json": {
+      "sha256": "10c77907db18fc6b8a706c6c89dfb99757c1c7ceb8a9dfd197662efb2b602933",
+      "bytes": 4917
+    },
+    "docs/evidence/os-base/atm-pin-golden-failed-b8287bc.json": {
+      "sha256": "bb287e1d6bb01e45c241ed7bb1096594a447ecf2178cd20f6c709d7d706cbeeb",
+      "bytes": 4139
+    },
+    "docs/evidence/os-base/atm-protocol-b8287bc.json": {
+      "sha256": "97e0ac34733c8bb44d8af510a0da8c073021b0d25107d644034c929bb64868c6",
+      "bytes": 11690
+    },
+    "docs/evidence/os-base/atm-ui-b8287bc.json": {
+      "sha256": "42e28ed8acaf7e345dede5ad7d6cf8b9e619639c0e28b3ac04869090d913f9ec",
+      "bytes": 11636
+    },
+    "docs/evidence/os-base/atm-ui-failed-b8287bc.json": {
+      "sha256": "0afb361d8768e8c9273b094b8ca62f6e71dc69de2c93dd08ad0a4acbb637e4d6",
+      "bytes": 8392
+    },
+    "docs/evidence/os-base/atm-ui-proof-b8287bc.json": {
+      "sha256": "3f511566d87bf19a69fa6ca5d9396316b424d5b442004894ce64b962504b1302",
+      "bytes": 51062
+    },
+    "docs/evidence/os-base/atm-ui-visual-review-b8287bc.json": {
+      "sha256": "724cca7ddbc6466e531b24dc87ecc1f92c6bc7f5e6859b364a2716c0087242eb",
+      "bytes": 846
+    },
+    "docs/evidence/os-base/auth-health-b8287bc.json": {
+      "sha256": "645297baf1445d65b0f20bdfb7d1e336f650310c5c7f2f7729d4fa3c37b16b2b",
+      "bytes": 10231
+    },
+    "docs/evidence/os-base/backup-restore-b8287bc.json": {
+      "sha256": "d46549399e41fef38f4d2e78dd42934ef746c62ec3e507aae658b658e6f33727",
+      "bytes": 28190
+    },
+    "docs/evidence/os-base/boot-b8287bc.json": {
+      "sha256": "5a2388b0687cefd6792d930a5bea7a33a89f06f5d9a048a96f752fda7c23d1d4",
+      "bytes": 2194
+    },
+    "docs/evidence/os-base/business-backup-acceptance-b8287bc.json": {
+      "sha256": "ecd75defcb394d1b19d8a49f0348fff9c7a7e00059628db48141cf552971aa63",
+      "bytes": 4189
+    },
+    "docs/evidence/os-base/business-history-header-review.json": {
+      "sha256": "e45cb15602537c1f2064d6ee46e7155a741062edc3de1d0a06253897bd9e2203",
+      "bytes": 9959
+    },
+    "docs/evidence/os-base/business-lifecycle-b8287bc.json": {
+      "sha256": "740218bf47d95a66f01c428879d814eeb0384dfb30f336a363e39413926c817c",
+      "bytes": 242911
+    },
+    "docs/evidence/os-base/business-lifecycle-plan-b8287bc.json": {
+      "sha256": "0968807d5ab89a5c17745fb62c5dce5469ce11178fe32f1f0b9ad77be173039f",
+      "bytes": 3893
+    },
+    "docs/evidence/os-base/business-wallet-foundation-b8287bc.json": {
+      "sha256": "9ebc46c11950ff6d747c97f29080e1efd3528afd36465bc36af8c561f8ca2ac6",
+      "bytes": 2232
+    },
+    "docs/evidence/os-base/business-wallet-header-failed-b8287bc.json": {
+      "sha256": "6685ea77d71e96026a7ac77b58ef0400de07ac1f2bc8185349a8c69bd796b46e",
+      "bytes": 121529
+    },
+    "docs/evidence/os-base/business-wallet-host.json": {
+      "sha256": "7bcce6c9e5f3254fd861ee114bea55b281314fcf90d0287ce551d9269ec89cc9",
+      "bytes": 1656
+    },
+    "docs/evidence/os-base/business-wallet-linux.log": {
+      "sha256": "9a52a178b65d6bf63c7beb8caa6f02a6bc3633c52f14e91c8188c4cd27639083",
+      "bytes": 7108
+    },
+    "docs/evidence/os-base/business-wallet-preparation-failed-b8287bc.json": {
+      "sha256": "c9686d3635637be1463ed39fa57c3ed1ab4075bead1c5e01e7f7baa662305d41",
+      "bytes": 182413
+    },
+    "docs/evidence/os-base/business-wallet-preparation-failed-plan-b8287bc.json": {
+      "sha256": "9307612b0b0b675ba0f3c533ba739eabf96f1a237144e9f0f17260a39972fff9",
+      "bytes": 3403
+    },
+    "docs/evidence/os-base/ci-057ea98-health.log": {
+      "sha256": "0d07c8c655899f3da139b6ae686ba23a0753d9c49a04ffb200abfae07be89aad",
+      "bytes": 553
+    },
+    "docs/evidence/os-base/ci-057ea98-native.json": {
+      "sha256": "2da9c4d4014fe16c9d142dd7e8d2f47ee1af6e3da9429289d3714ab6cddd7e58",
+      "bytes": 81045
+    },
+    "docs/evidence/os-base/ci-057ea98-observers.log": {
+      "sha256": "1065791b62284d1efbc3f133be0716375c1631879b059e68791b634fbe384182",
+      "bytes": 10117
+    },
+    "docs/evidence/os-base/ci-057ea98-pin-readiness.log": {
+      "sha256": "4b145e5aa11224193223c6f01a11a56682f9c2a70cf50c616ef306831d32817c",
+      "bytes": 1797
+    },
+    "docs/evidence/os-base/ci-057ea98-wallet-replay.log": {
+      "sha256": "2b5f79f2f9854eeca4cfcdea49fee660ccad5f79a40bdbe077690bb0bea60d53",
+      "bytes": 269
+    },
+    "docs/evidence/os-base/ci-1809046-health.log": {
+      "sha256": "0d07c8c655899f3da139b6ae686ba23a0753d9c49a04ffb200abfae07be89aad",
+      "bytes": 553
+    },
+    "docs/evidence/os-base/ci-1809046-native.json": {
+      "sha256": "a924a1e18abf1c341376e2a9b5c31893cddd0579bf539a8544a5147b37ee7486",
+      "bytes": 81045
+    },
+    "docs/evidence/os-base/ci-1809046-observers.log": {
+      "sha256": "31e4ee117cc9a83796d6b6b3e18656ff05cc3250656392843ab0e2311955317b",
+      "bytes": 10117
+    },
+    "docs/evidence/os-base/ci-1809046-pin-readiness.log": {
+      "sha256": "7e089bea38d687c7dea5b3c59d0c7e2c600a43227eec5cb363a3ea49a64af308",
+      "bytes": 1797
+    },
+    "docs/evidence/os-base/ci-1809046-wallet-replay.log": {
+      "sha256": "2b5f79f2f9854eeca4cfcdea49fee660ccad5f79a40bdbe077690bb0bea60d53",
+      "bytes": 269
+    },
+    "docs/evidence/os-base/ci-a02401b-health.log": {
+      "sha256": "0d07c8c655899f3da139b6ae686ba23a0753d9c49a04ffb200abfae07be89aad",
+      "bytes": 553
+    },
+    "docs/evidence/os-base/ci-a02401b-native.json": {
+      "sha256": "bec424d2375853ed4b92d65698b7565654b8a4b631c083dd357794cd07cf94fc",
+      "bytes": 79764
+    },
+    "docs/evidence/os-base/ci-a02401b-observers.log": {
+      "sha256": "59ab63f0b07762e6a1e2ad6ab6f7ce3a3ab96af996ed1f466f5ee19f10b7e1f0",
+      "bytes": 10117
+    },
+    "docs/evidence/os-base/ci-a02401b-wallet-replay.log": {
+      "sha256": "2b5f79f2f9854eeca4cfcdea49fee660ccad5f79a40bdbe077690bb0bea60d53",
+      "bytes": 269
+    },
+    "docs/evidence/os-base/ci-a219277-native.json": {
+      "sha256": "aedf89bbe512849d9f5978f3601d54edceacd3fd0636baf4f8ce78871aca704a",
+      "bytes": 79076
+    },
+    "docs/evidence/os-base/ci-a219277-root-health.log": {
+      "sha256": "0d07c8c655899f3da139b6ae686ba23a0753d9c49a04ffb200abfae07be89aad",
+      "bytes": 553
+    },
+    "docs/evidence/os-base/ci-a219277-root-observers.log": {
+      "sha256": "97764646b8f7f2333f0f339b28acdf1af239f043b7ab515dcf093cfc51c3aa1d",
+      "bytes": 10117
+    },
+    "docs/evidence/os-base/ci-a219277-wallet-replay.log": {
+      "sha256": "2b5f79f2f9854eeca4cfcdea49fee660ccad5f79a40bdbe077690bb0bea60d53",
+      "bytes": 269
+    },
+    "docs/evidence/os-base/d3-linux-resource-result.json": {
+      "sha256": "bbeace39306f59b7d139b37bf3575cf7995c481bc3672ec9a88a9450072e6572",
+      "bytes": 3261
+    },
+    "docs/evidence/os-base/d3-resource-guards.log": {
+      "sha256": "e49f61fac4b50d6adafe9e59f7ecb0a36ee807186ca6bcb21ff2a2d7eae67fbd",
+      "bytes": 1030
+    },
+    "docs/evidence/os-base/data-abi-b8287bc.json": {
+      "sha256": "d9907efe96b3b08306b3f7b531de719b8457e0800402a09537a7665361326ff6",
+      "bytes": 16947
+    },
+    "docs/evidence/os-base/data-abi-serial-failed-b8287bc.json": {
+      "sha256": "b16b7dc218af67b9a3e6d8f05dbfc277136b289c8a94bc5f6468e281b4641d77",
+      "bytes": 11733
+    },
+    "docs/evidence/os-base/freeze-b8287bc.json": {
+      "sha256": "6a58860076c14aef7d9c6aaa9c9027cc990615fa07719075ccaa59a951096557",
+      "bytes": 98685
+    },
+    "docs/evidence/os-base/host-business-wallet-ocr-merged.json": {
+      "sha256": "10faa30ef6cf085b16d49bbcddc99635c3fefbb66433467c2033141e5d5d62bd",
+      "bytes": 52521
+    },
+    "docs/evidence/os-base/host-c7b29a9-root-ui.log": {
+      "sha256": "980b4f2fe6a4dbc3a58d10efff101a45823aadee6551234dfe855188da911212",
+      "bytes": 10117
+    },
+    "docs/evidence/os-base/host-c7b29a9.json": {
+      "sha256": "5a63f005bf1160837f37241eadd67771c5e4184099ea09ddbd2ae35faca51b36",
+      "bytes": 77451
+    },
+    "docs/evidence/os-base/host-pidfd-business.log": {
+      "sha256": "3ca9b2dcc8dbb75ffc872b7beb7c931812a3e87743b2cd07e0886bf3e93b8b73",
+      "bytes": 11143
+    },
+    "docs/evidence/os-base/host-wallet-header-flow.json": {
+      "sha256": "f4e5095957a572f3abfea6db246c2fe100e80c52de5e64b4a125bfdafe22bdd8",
+      "bytes": 52525
+    },
+    "docs/evidence/os-base/hub-fault-ext4-observer.log": {
+      "sha256": "740f345b04b20014ded1f0386abe596fd8db09e8bf52dc7564a1553d424454bf",
+      "bytes": 142
+    },
+    "docs/evidence/os-base/hub-fault-host-guards.log": {
+      "sha256": "7114aa72318c6c493efa6dccdbb765b0ebfd21a0e16b5ae9302ffdf21c623d26",
+      "bytes": 1724
+    },
+    "docs/evidence/os-base/hub-fault-linux-observer.json": {
+      "sha256": "cc3fc26c74d4426fde66e42c20a06356d644d4ce5cda538ef83a0b299bb2c282",
+      "bytes": 9028
+    },
+    "docs/evidence/os-base/hub-faults-b8287bc.json": {
+      "sha256": "3f63c0169f633fe021cc4b9610da0540e50e5fc2ea1ea67749a90fb374f1f077",
+      "bytes": 44240
+    },
+    "docs/evidence/os-base/hub-inventory-linux-final.log": {
+      "sha256": "3ab244c8d4abbd6e5e9928b04a031bb4c64fcac2f47b2609136c7f380d4ed047",
+      "bytes": 12985
+    },
+    "docs/evidence/os-base/hub-inventory-linux-host-tests.log": {
+      "sha256": "5133879a4da8684aa27cee42cb35bc3e8abd6d5dd1c05c2054189a2fbedce6c1",
+      "bytes": 3139
+    },
+    "docs/evidence/os-base/hub-inventory-linux-result.json": {
+      "sha256": "aa4ef4bbd83fa07ca3f26d293c61c56cdb3b13f1678702b9eec0b36f5ad03f52",
+      "bytes": 12222
+    },
+    "docs/evidence/os-base/hub-power-request-failed-b8287bc.json": {
+      "sha256": "ab3fd24ea44152ee93b89f627c9e67137f598186baac3cee10e906d16dc9c237",
+      "bytes": 5015
+    },
+    "docs/evidence/os-base/integration-source.json": {
+      "sha256": "399a8e7a6210d96a514e56ed1f850671213d07274dcfe988d2f9aaa3b3881361",
+      "bytes": 909
+    },
+    "docs/evidence/os-base/local-ab-linux.log": {
+      "sha256": "a46a565b57c1a551899521c8ab680e5d9dd1b46929c196f4379f1ff5a5abb1ca",
+      "bytes": 11585
+    },
+    "docs/evidence/os-base/native-replay-linux.log": {
+      "sha256": "3dcdd61ff7f3bcdeab25eb83d6ac22cd395e863b498ae16c6ce8d08d24b59b9d",
+      "bytes": 860
+    },
+    "docs/evidence/os-base/native-ui-b8287bc.json": {
+      "sha256": "3a014b0178c88f7375ff7d6b0c5212a37bbaaeb26179d64c6ab714d5a269938a",
+      "bytes": 8276
+    },
+    "docs/evidence/os-base/normal-power-b8287bc.json": {
+      "sha256": "efcfa375eb4a5cce10e0c1c4129dedef16b2df6aa8068f34f635454100c7fb49",
+      "bytes": 6562
+    },
+    "docs/evidence/os-base/observer-root-clean.log": {
+      "sha256": "ddfcb801d4d4fdc9817c87ec58339c2f5dd0a0ec4a4ee9314b9ceaffea4ad223",
+      "bytes": 8929
+    },
+    "docs/evidence/os-base/operational-source.json": {
+      "sha256": "8c24edcf0cf6c60d8d53b7424a1329f7e0dcb0001779f49920496ff67ea13b8b",
+      "bytes": 26405
+    },
+    "docs/evidence/os-base/pidfd-exit-mechanism.json": {
+      "sha256": "499b0cf6aa56df5203c8f7e9048be48ee4773712f2629fe51bb157bc0aef2532",
+      "bytes": 459
+    },
+    "docs/evidence/os-base/platform-b8287bc.json": {
+      "sha256": "b7a0e2405a4c6ab00086f269b18a412355aff4153ebe65f0fd59a2b1a36550e0",
+      "bytes": 4391
+    },
+    "docs/evidence/os-base/platform-proof-b8287bc.json": {
+      "sha256": "b4707514a2ef230bfbc3da340abc3976fce3cb636109dace25b771def97abecb",
+      "bytes": 6330
+    },
+    "docs/evidence/os-base/power-ui-b8287bc.json": {
+      "sha256": "ccced5225377611b5d37532a0cd9c9392bb069795b94f98ee3221c4ae735912c",
+      "bytes": 9279
+    },
+    "docs/evidence/os-base/registry-negative-b8287bc.json": {
+      "sha256": "6a44ab66981164150bd607e774e3e8823c35558a3815b2c4d09e8d36e9462fd4",
+      "bytes": 24018
+    },
+    "docs/evidence/os-base/registry-negative-proof-b8287bc.json": {
+      "sha256": "7b95ed56f88fa48505f623923f6d159a58a629e656a8bfff63e6a932342bf142",
+      "bytes": 36779
+    },
+    "docs/evidence/os-base/remote-b8287bc.json": {
+      "sha256": "5042cc50b30f7467ed122892650ce061714e8228e84b28cf2074a42222b0e1b4",
+      "bytes": 31763
+    },
+    "docs/evidence/os-base/restore-lock-host.json": {
+      "sha256": "5c33bd41a641ec40f2040dd138e4da569a7cbef62f6ca4396b3b4e5279b8e016",
+      "bytes": 2334
+    },
+    "docs/evidence/os-base/restore-lock-macos.log": {
+      "sha256": "ba1d5fa920144298add0c780a9d034807a1a2d32fc2f5d71cbfca59341b63e1f",
+      "bytes": 8773
+    },
+    "docs/evidence/os-base/runtime-b8287bc.json": {
+      "sha256": "18ef906441962f45eb26bede67c42c8c59f359049796928ef52941aef8d4b679",
+      "bytes": 75679
+    },
+    "docs/evidence/os-base/runtime-candidate.log": {
+      "sha256": "8d0c8e3c9aec1e2c767cc98520de9afa12a6efd82534e30d963fbc256eab1c5a",
+      "bytes": 13522
+    },
+    "docs/evidence/os-base/runtime-d5fd1d5.json": {
+      "sha256": "93bdb2749d486b9a2012b581c21a18b2eb6b01d089ead40a6accd210a36e7d0b",
+      "bytes": 75187
+    },
+    "docs/evidence/os-base/runtime-f3ec843.json": {
+      "sha256": "e849e31630ef833f4d7f8663d87436145069ca72c154638dfcbc93baab6c1666",
+      "bytes": 74432
+    },
+    "docs/evidence/os-base/soak-stopped-socket-failed-b8287bc.json": {
+      "sha256": "334476e9a2f8d8d1aaaf03a3f0fb0b489134c8a47eec9862f050c9648a6469e1",
+      "bytes": 126466
+    },
+    "docs/evidence/os-base/startup-update-acceptance-b8287bc.json": {
+      "sha256": "967fea863eb274a262e3f9b1c12b8a98396b966e7effe745c8126a0b224526ed",
+      "bytes": 3276
+    },
+    "docs/evidence/os-base/store-b8287bc.json": {
+      "sha256": "22c1e4dc2e523011af206459f274cc7fa885895e24741d8b48f2db077ff7d20b",
+      "bytes": 14109
+    },
+    "docs/evidence/os-base/ui-startup-b8287bc-visual-review.json": {
+      "sha256": "c1f3a5bf24e6d45537a2ec4a1dc65e7d03fe2ae59ab6fb1ce15ad20640e6751b",
+      "bytes": 2864
+    },
+    "docs/evidence/os-base/ui-startup-b8287bc.json": {
+      "sha256": "ae44aff598b60a335234012fe24fcbd2e8abdd44342b30ca9ba189b1e8efd4f2",
+      "bytes": 50596
+    },
+    "docs/evidence/os-base/update-fixture-copy-linux.log": {
+      "sha256": "c8edd06e4d0bded3e61909affd0baec300a57d705116989dc7376d91230221cc",
+      "bytes": 3567
+    },
+    "docs/evidence/os-base/wallet-replay-ci-regression.log": {
+      "sha256": "5dbdf376d441ca9feeb730fa68fc02b2e44ccf08af3580457319d592c362458f",
+      "bytes": 1810
+    },
+    "docs/evidence/os-base/wallet-replay-host-regression.log": {
+      "sha256": "7b2010d6798b6d76911350b8448fb0f2699a7e62e75b92fd08f6713dc302a92d",
+      "bytes": 11122
+    },
+    "docs/evidence/os-base/wallet-ui-b8287bc.json": {
+      "sha256": "6d606f091338568d4a557c18616b53b2ac9aff96cc6e9593b0979819b0a79fe1",
+      "bytes": 10339
+    },
+    "docs/execution-approval-20260909.md": {
+      "sha256": "ea2b5093f595ba2ba539ca5907f153be22e126dd8551bc983dd6b5d10f8db1ba",
+      "bytes": 2618
+    },
+    "docs/gx00-owner-isolation-adr.md": {
+      "sha256": "eeb2520f9a840bfa1948714f5a3290c53ea4b6f6052575709ae25ebc4b576758",
+      "bytes": 31690
+    },
+    "docs/product-baseline.md": {
+      "sha256": "d79abaf2b9954cf85a4f9b23aff5ab160fb4904f90f2ebb33c27ee416a786d1f",
+      "bytes": 23520
+    },
+    "docs/prompts/os-operational-base-next.md": {
+      "sha256": "f12a015fed3642b20f29ab1c1de5198124b6aba6d2bdfd3e80ef7b78c4e1ec66",
+      "bytes": 29497
+    },
+    "docs/templates/os-acceptance-report.md": {
+      "sha256": "47af9e3f5d18a8a052a9e14bbd6c28fb1fe2c04a9cf7f8610b0c19c0c8ea2152",
+      "bytes": 6921
+    },
+    "systems/rock-star-os/IMPORT-MANIFEST.json": {
+      "sha256": "fa802dbd370a069bb5489748ce78945b6825598d4b1c4e9d554e17af5daf4438",
+      "bytes": 98125
+    },
+    "systems/rock-star-os/README.md": {
+      "sha256": "df7164498ced3a62b0412dadb75313df04d74de31cfc009d6fb3ed7846043eb3",
+      "bytes": 5021
+    },
+    "systems/rock-star-os/os/README.md": {
+      "sha256": "a0ea21419a2c20f6a40573bf05f2aae713c724ae9851670face0a4141bec586f",
+      "bytes": 5869
+    },
+    "systems/rock-star-os/os/assets/SOURCE.json": {
+      "sha256": "f0c85d8a2953c2efec89f6c448a0e227d8f8e9400e708d85dd93bbff89b9d9c6",
+      "bytes": 530
+    },
+    "systems/rock-star-os/os/desktop/LOCAL-AB.md": {
+      "sha256": "d51920881d2f98baae461b9107d8c5cb09e1190b94113b7f92b9617f786bfd01",
+      "bytes": 4407
+    },
+    "systems/rock-star-os/os/desktop/README.md": {
+      "sha256": "4f501d6a1ce482988f11971582768dc9a7c066ddc048472c4b09aff3b45e3368",
+      "bytes": 12252
+    },
+    "systems/rock-star-os/os/source-lock.json": {
+      "sha256": "6efd72448219b9c226646817656ff4c9d2d808422fe5647cff10c0754473414c",
+      "bytes": 1871
+    },
+    "vendor/mr/provenance.json": {
+      "sha256": "e782c0b741e9bcdcc3a591e2e6c3bcdaf5b03b51d08e77e4becf218b1e4cbd4f",
+      "bytes": 1233
+    }
+  },
+  "frames": [
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-0/0001-boot-pending.png",
+      "sha256": "3392b61102d466ed7c1afd6a20a33ae1ab10c4bc27b94b8bc654d47991422d37",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-0/0002-boot-pending.png",
+      "sha256": "be3d89aca8d5db41f8dcc74a2522b3f2d88b54e61831bf7dee51a737219b6fe6",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-0/0003-boot-ready.png",
+      "sha256": "4bfac38bb2ddd014b7570a4b125f37639503104ffb48898f0fc082d5ef896fbb",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-0/0004-wallet-baseline.png",
+      "sha256": "269ab7cde71f1d74285a03b0f24536b02c3fe65727d92405aaa42d142c40b627",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-0/0005-normal-poweroff.png",
+      "sha256": "352a3447ec8901d2017bc7ba9f5465987f016ab9d270c4cff9833c4ce4317521",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-0/0006-normal-poweroff-confirm.png",
+      "sha256": "62b56a56a0793e316e250f5b766ca10b27599a656a9cb55ddcfeeb408a86c76d",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-0/0007-normal-poweroff-confirmed.png",
+      "sha256": "b1cff82da9249c861c22a72a57c4135222cf26f871afe2dc0bd377b29475070c",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0001-boot-pending.png",
+      "sha256": "3392b61102d466ed7c1afd6a20a33ae1ab10c4bc27b94b8bc654d47991422d37",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0002-boot-pending.png",
+      "sha256": "be3d89aca8d5db41f8dcc74a2522b3f2d88b54e61831bf7dee51a737219b6fe6",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0003-boot-ready.png",
+      "sha256": "70c83b95e73ca5959fa1ca0721ab3d2db560a8ad6ed12f83501c99166e374b62",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0004-catalog-search-state.png",
+      "sha256": "8c035a66d025d85e9764398ad6f07907babbec18482a0913ab7db2737a6f9ba6",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0005-catalog-search.png",
+      "sha256": "a7352ec51a3878ad44f4b6ce500421d8f471b29306e452e33cad0473e94b67c5",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0006-latest-catalog-product.png",
+      "sha256": "4819ef50c36a012033e6f3448933a339975a1930fb6c5f3d64544c999a5dbcac",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0007-catalog-product-reviewed.png",
+      "sha256": "2e90034a88e476c2ad091fac0c4dd3a2f897ff6b36d847575e1c6bc96835d859",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0008-choose-signed-old-version.png",
+      "sha256": "2e90034a88e476c2ad091fac0c4dd3a2f897ff6b36d847575e1c6bc96835d859",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0009-selected-old-version.png",
+      "sha256": "fa61d9584cb5a8028b6536f3d053e0ad56caca4971abf3820384f6420d709b7e",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0010-install-review.png",
+      "sha256": "fee01f4f297ff8a26c1b0c60edcd4c7c078017535bb90573b20258c70fbc8d7c",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0011-disabled.png",
+      "sha256": "0fb4ecbfd777ef658865b2b9c7d8292fa1be83b89975ff53164f18df636ac248",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0012-permission-review.png",
+      "sha256": "0fb4ecbfd777ef658865b2b9c7d8292fa1be83b89975ff53164f18df636ac248",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0013-enabled.png",
+      "sha256": "93fb0737e421163181217664b015cc9bb539b70ef5b225e1ce41db26cce6ba0a",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0014-installed-product.png",
+      "sha256": "e15684ba95853b7f81b5d323d934ff609e29457ac2ef75f60aaaed26abff4df8",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0015-installed-version.png",
+      "sha256": "3e489c58225458e67019b452952c4964b3120bf730f3842c7788f2ec6198a1ec",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0016-open-business-tool.png",
+      "sha256": "e5eb3cc670e43a4713902e8a4188ab1620fd4cf99aee31a7c8b6856fa4a4d5b1",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0017-input-editor.png",
+      "sha256": "d2150d2926b914f0fd6c29d65706a9a351d88ad8626c509a7faf2b3f3ffafa4e",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0018-typed-input.png",
+      "sha256": "b4f312e3362b5b4671b7d25e619ce0520d0bfa0ec9d10e0f45e51a37627b80c3",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0019-job-completed.png",
+      "sha256": "f6fef08669a4a30d2105424633da1a18a8821710c3a9737b8c8162da46ac194e",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0020-business-result.png",
+      "sha256": "f6fef08669a4a30d2105424633da1a18a8821710c3a9737b8c8162da46ac194e",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0021-saved-history-product.png",
+      "sha256": "7fb1c5fc61fb7418de017c7907ba07785a2a019c5d98db10456382edc552d3ee",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0022-history-completed.png",
+      "sha256": "728dfe070d7c91d85ebf6e789f54f1c6d93ebf45c823563c27aeaeb3a11191ee",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0023-reopened-result.png",
+      "sha256": "523103e300fbd227c54be41de2a7d2aacf4cb50c17709e8bc16fb9fd0af857c0",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0024-installed-product.png",
+      "sha256": "13c5a4279ba662d2e5a6504b2557bafc6ab6af94240a2d457b0e4522ab43ce75",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0025-installed-version.png",
+      "sha256": "66cda0327e3857f66cdec2f028587de6f10e0d25c5159ab88c3defa66e3bcc69",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0026-update-review.png",
+      "sha256": "54735c4ee1815d3a865fcf556d84607101deb63a0c4f6e79128f9fc8d462c50d",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0027-disabled.png",
+      "sha256": "ddd108fa32700a887ffaa82b32435e79b2d05c4d4162c0be3323dd3ed7bbe9e2",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0028-permission-review.png",
+      "sha256": "ddd108fa32700a887ffaa82b32435e79b2d05c4d4162c0be3323dd3ed7bbe9e2",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0029-enabled.png",
+      "sha256": "df5ac672091acd97abee7270f88285d2de0e18f46e240798fa84da119245eebd",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0030-installed-product.png",
+      "sha256": "ab9571de71c239a97432e431c60c40b41ce809ea6ab1dcf64042252baac39a0e",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0031-installed-version.png",
+      "sha256": "689bd50fb0c86241b713ac19436c96bd8ac07f15b00c67aff63812943f83fc10",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0032-open-business-tool.png",
+      "sha256": "689bd50fb0c86241b713ac19436c96bd8ac07f15b00c67aff63812943f83fc10",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0033-input-editor.png",
+      "sha256": "6e37730aab7cd7bdd45c1b25f471dd4e34328650e257702e6dd460c059bd6ba2",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0034-typed-input.png",
+      "sha256": "1cd4e0a687d8407d9c427d3bf0184d8f25b0970dd0db9c987d01a088a6efbee1",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0035-job-completed.png",
+      "sha256": "0dde369e09bb3a3551cf49f4ccd8b718b046dac6010094b36715534ca7376f0d",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0036-business-result.png",
+      "sha256": "0dde369e09bb3a3551cf49f4ccd8b718b046dac6010094b36715534ca7376f0d",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0037-saved-history-product.png",
+      "sha256": "df1219f36bdf20eef6a52f06d9b487dd462c2630cf977f865bccbf7dbc42a5cf",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0038-history-completed.png",
+      "sha256": "c010047d41b2b3455938dc01c642a6e0a6dc8b41ec6e2b61d04266b5e0115569",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0039-reopened-result.png",
+      "sha256": "926820cf6e5ad040fc35e9012aad2c42ef21baba00980773b9b453812e3b6b47",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0040-installed-product.png",
+      "sha256": "35d77719b3efe386191dc3849b8e5712a8ca33aa430a37abb565eeba2ee0d0bf",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0041-installed-version.png",
+      "sha256": "b89ed49914bb61373a744468ff1eab4a5b33338cca475284ce70d8dbc2cf76bf",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0042-rollback-review.png",
+      "sha256": "b89ed49914bb61373a744468ff1eab4a5b33338cca475284ce70d8dbc2cf76bf",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0043-rollback-confirm.png",
+      "sha256": "14604d53557650d8093906de57b82aa8bf5bb55799a43f9c6e1533acc82384df",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0044-rollback-confirmed.png",
+      "sha256": "621b8d5fe5b7bb7e416219068cb88bea00a8d7fdbe23fb1d10d9b5602eea4a8b",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0045-disabled.png",
+      "sha256": "8660d9220ba7b03dacfb5b5a33b0c37efc11651fc1e6d6d9bd3d7f4d5237b9f9",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0046-permission-review.png",
+      "sha256": "8660d9220ba7b03dacfb5b5a33b0c37efc11651fc1e6d6d9bd3d7f4d5237b9f9",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0047-enabled.png",
+      "sha256": "3491c14c8d45227a292c8b03f31a3f7a26f808ccbb6913ac182dc80c092c85eb",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0048-installed-product.png",
+      "sha256": "4e4d0ebce296f0f3803bc5c0fad7666b7b8fcf8687fa6fac13773138e162a301",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0049-installed-version.png",
+      "sha256": "3dba58550b967b5ec261f97c3eaea9674497aba561613b3501924d3e36c7a47e",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0050-open-business-tool.png",
+      "sha256": "57775766cdcaac3dbca685e90a60d115190ac17f5e847b9bcbf0b3f0de5377f2",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0051-input-editor.png",
+      "sha256": "4b2fcecec6af1bdaf976754134a86a3561e305fcc7a9042a3384b02262d6a585",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0052-typed-input.png",
+      "sha256": "a32900eeb60fe968220ac32c22c203af98035dc13c3153c7e862da3bcff53614",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0053-job-completed.png",
+      "sha256": "242472980c96045eb7d6a12cc96a2b7d134b2a8dddf7236d5739ecd5b391bdaf",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0054-business-result.png",
+      "sha256": "242472980c96045eb7d6a12cc96a2b7d134b2a8dddf7236d5739ecd5b391bdaf",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0055-saved-history-product.png",
+      "sha256": "51893f4da561f153379027228e8d686613802834873530dddb01548ae6aa06f5",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0056-history-completed.png",
+      "sha256": "2843a47dacd360f598a8b8fe9c33ae5d4f9845bb3c83f734d875fb13a0460ba4",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0057-reopened-result.png",
+      "sha256": "8db9538d89c0a2791bd520db43f81eb27d99b0a9e570e0ff7e03ba8e86e41b3d",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0058-installed-product.png",
+      "sha256": "cad199a0d4f0d77503226e8b80aee72c0ea6f96f37ec84f5240b6c9cf17e5963",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0059-installed-version.png",
+      "sha256": "0ac6f40c85f2e2a3b24f88c36189601e975e2cfbcaa1648e4fd9b238e236a558",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0060-disable-review.png",
+      "sha256": "80fa98256dc369c8bec4d41764498778188a549d0a19386f48deee492017ad64",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0061-disable-confirm.png",
+      "sha256": "a5da34f1f8ff3041e22eaf11f894add120aa6e4700cf5cc62dc3a6ffb17df0e1",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0062-disable-confirmed.png",
+      "sha256": "807cc1bbbf300a93468f78e14e08bb6cde7e7ab802c41360ffda8a028902b890",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0063-disabled.png",
+      "sha256": "f6cd04eba246a08812b0ad3fbaf1014d6ef319a15494a38062d8e703a0844108",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0064-permission-review.png",
+      "sha256": "0d6d46b1abf05802437a0b9bcb18f700036dfa4c3ed915f19777b36155570932",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0065-enabled.png",
+      "sha256": "6631916fba502c1b01dfbc663cb0c07d3b08df816abcb725f4d8bd5be1034ea6",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0066-installed-product.png",
+      "sha256": "cad199a0d4f0d77503226e8b80aee72c0ea6f96f37ec84f5240b6c9cf17e5963",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0067-installed-version.png",
+      "sha256": "0ac6f40c85f2e2a3b24f88c36189601e975e2cfbcaa1648e4fd9b238e236a558",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0068-open-business-tool.png",
+      "sha256": "129e2f86c659b86b0c9e491cc9b2e829e0fb5e8649ca03e5f36b8189f80f6c4d",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0069-input-editor.png",
+      "sha256": "2c59811d2623ae0547dd3830683ef83427a0838fd927a0efef24c1fed196b482",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0070-typed-input.png",
+      "sha256": "73088a082dfd4a13c4cb2440f4c84e9e6a57e96d1aadb063ea34f2c4d5caef89",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0071-job-completed.png",
+      "sha256": "feb9aab69d169cd712f087c72d0e5bccafb7b6be78f98aece9d41a976ba3e28f",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0072-business-result.png",
+      "sha256": "feb9aab69d169cd712f087c72d0e5bccafb7b6be78f98aece9d41a976ba3e28f",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0073-saved-history-product.png",
+      "sha256": "9d706929204d5cb24ef06ec28ca136d9df1022037adf738ad030dbb52c40bd50",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0074-history-completed.png",
+      "sha256": "cb5a4d1d71490d9aecfc783a30897def5fa4ca61384f3ecf64afc10e96ce9970",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0075-reopened-result.png",
+      "sha256": "c54be29c7418a93ddd2b0f111086488f90481f87d2c88833347374c7a4845d58",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0076-installed-product.png",
+      "sha256": "c8aceee776119d0ef4fca31060beb87032aa3f8d355efbc702563a38e3d668f5",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0077-installed-version.png",
+      "sha256": "496b7772ab2036a287519a6f2ba8c733022aa1b395ad22ec63a584da8a7157fb",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0078-uninstall-review.png",
+      "sha256": "ddfe6d3c38cd20d053aed708b78bbdb3b6d902be567ce2da09361f2bc124bd61",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0079-uninstall-confirm.png",
+      "sha256": "2786595b04e2834df75a765391b41e9bc136b325bb2de9446bf4f36ffd42452a",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0080-uninstall-confirmed.png",
+      "sha256": "34762e94881b4fdc5b72670139af332520acd3a7d679d914c3c81159de346a99",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0081-uninstalled.png",
+      "sha256": "c1131c898e8a9b3b9653ad35246c6cd134d0868f8fa655e16ded84915f7b253a",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0082-saved-history-product.png",
+      "sha256": "5ed9ee1162ef8f28eb7f85ad6e03828c0664808bc341be81a2ded711efeda430",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0083-result-after-delete.png",
+      "sha256": "405bbe9979cbe372db8c37adf4ef5c2afbf5967fd30ebf83c60c035d930180dc",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0084-catalog-search-state.png",
+      "sha256": "06a84eadd2395a2b051cb49e00315248445ccb5cb84578eb13c80488920cab07",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0085-clear-prior-search.png",
+      "sha256": "f08bae8adb5d5add18f5d4f4faaab7bbeaeaa82e77c124ae34ccaae979ce96d3",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0086-catalog-search.png",
+      "sha256": "2269c284f0da43778f97691bffc575b7daa5223b8fc9142d3045c8a839b77562",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0087-latest-catalog-product.png",
+      "sha256": "63ddb63dd4d45b3d78558a0af78616e4165630f6bd83c3dd6a70b30ed9a07d1a",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0088-catalog-product-reviewed.png",
+      "sha256": "491417d2f38a704daec98e84e5c4fbf7b8ad42dd2ebb60527b1209595aafbba4",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0089-reinstall-version.png",
+      "sha256": "491417d2f38a704daec98e84e5c4fbf7b8ad42dd2ebb60527b1209595aafbba4",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0090-reinstall-version-reviewed.png",
+      "sha256": "f6862a29de8b3b7daf0163e6822fe8980d5c4e6cf6ef1c72c6e15c70b76f59c1",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0091-install-review.png",
+      "sha256": "a6a1a1aa9f7573c62184a97a941346c0e4b563f3ebeabda704b65ab036076b61",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0092-disabled.png",
+      "sha256": "1667db6ea871661cc6cf01e86c87f4dd828920742523d38d8dd9b7adb5a33919",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0093-permission-review.png",
+      "sha256": "1667db6ea871661cc6cf01e86c87f4dd828920742523d38d8dd9b7adb5a33919",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0094-enabled.png",
+      "sha256": "c532b1299537faead1a62c26eff3181850a2a52a653553f98e3f345986b13a24",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0095-installed-product.png",
+      "sha256": "c8aceee776119d0ef4fca31060beb87032aa3f8d355efbc702563a38e3d668f5",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0096-installed-version.png",
+      "sha256": "08f98b7ccc2c907f6f017da8f9885c36d253d332f234c568cf83a2933660d033",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0097-open-business-tool.png",
+      "sha256": "1eba64c4964879b5376f45a8d99a53393e9db33fe4548fd3232d43640f71c4f2",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0098-input-editor.png",
+      "sha256": "6f0e1386eeac24e490ac0ce06e6bea7df98046b8fabe0df14cab0db4c495a439",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0099-typed-input.png",
+      "sha256": "6001a7bae1b7f015a853847fd3e09ad16adbfb19222fa434c98bcd447ef1d8ff",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0100-job-completed.png",
+      "sha256": "7255f82a099147766efaeaac88df3bc1c287833b2fe37bb510963d6ab9dfd051",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0101-business-result.png",
+      "sha256": "7255f82a099147766efaeaac88df3bc1c287833b2fe37bb510963d6ab9dfd051",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0102-saved-history-product.png",
+      "sha256": "67fa0ecf6b549ecefb745b9609a799a879c751ab5dbf4176be2d02f0a49113fd",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0103-history-completed.png",
+      "sha256": "07e3d9e161f596a109a1d6bcaecc088f8d30817babdc2e061d2c2b5a7b3b060b",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0104-reopened-result.png",
+      "sha256": "4cc00db2a43c89f94e0b58db06ee9eda4c1894cfc70cb9688b2ed0b14081e6f2",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0105-normal-poweroff.png",
+      "sha256": "4cbba21dc7b18d3d7ed4541921c1dbe249ec2adc2e2fbac2050ef5330c55ff9c",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0106-normal-poweroff-confirm.png",
+      "sha256": "43a1aac0b7671f14dc79394330f5c6c340e879c63207cc3d9c0a52bd5b8f2d69",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-1/0107-normal-poweroff-confirmed.png",
+      "sha256": "71ebb327adf5dc61e28324c2ff0844c9818f395b112c242ee7acbc86c08db2fe",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0001-boot-pending.png",
+      "sha256": "3392b61102d466ed7c1afd6a20a33ae1ab10c4bc27b94b8bc654d47991422d37",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0002-boot-pending.png",
+      "sha256": "be3d89aca8d5db41f8dcc74a2522b3f2d88b54e61831bf7dee51a737219b6fe6",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0003-boot-ready.png",
+      "sha256": "685e5bb9abea93e9a652cc402452a11c4d0e9eb6694b43598e45a33004dc9fe5",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0004-wallet-registration.png",
+      "sha256": "005092c44991fac800d4b0f234afb627324ea35a620b8de99487d1c2afa1e447",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0005-registration-without-consent.png",
+      "sha256": "5df619aaccfa4ea8d3acc2a96ee85641284c9de87a4abf03882a3e3231831db0",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0006-wallet-enrollment.png",
+      "sha256": "63e6d072f6a72812cdaff7978ecd55e6783686fdfdebf64c3151d0986ad0abd4",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0007-public-enrollment-review.png",
+      "sha256": "dca44757240c02bd8fb197378b73d35a4460d42aa2f3d583eed2f7a4d9ecb6dc",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0008-public-authenticator-pin.png",
+      "sha256": "22ffcc58b5d8f2778ce4c7d6983fbe60ebff011701ed026659524cc768bd2a39",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0009-public-authenticator-confirmed.png",
+      "sha256": "fb9dc17e43fdfe15c609b4b0f716e7c313d7bbbf5008e8754283c6b4c49f1f88",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0010-separate-wallet-terms.png",
+      "sha256": "18bd28ba8c33b05a8190621684ad89b3a27f34d2ab7f427c17af282b5349aa65",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0011-wallet-terms-review.png",
+      "sha256": "fcc9b9ba5774e3b617dc83720fc28a387a47b80d1abd3ee93bc42090d9510afa",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0012-wallet-terms-accepted.png",
+      "sha256": "6d0fb90564bd27286caff936440d2c77487bb4890bc113e3cf225a5562f1c418",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0013-wallet-active.png",
+      "sha256": "8eda7d74fd57ea0e07cf5dfa1d4c9ba800cf5b0993e06ba746e0c7012979d9a2",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0014-local-simulator-controls.png",
+      "sha256": "9e2425b9657cb7ddc27a424c69911527a974e8921aaa2672a8f4a37b33ab592e",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0015-simulator-amount-label.png",
+      "sha256": "5c91b78d56462f8a74898696f1e677816c126e22c8b7d4f653d8acc031506ef6",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0016-synthetic-credit-amount.png",
+      "sha256": "dd4a38ce923b234eb0685b114587117c153692a14b9dde48057debd0500ef37b",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0017-synthetic-sale.png",
+      "sha256": "dd4a38ce923b234eb0685b114587117c153692a14b9dde48057debd0500ef37b",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0018-credit-unsettled.png",
+      "sha256": "69bfe49be5ffa65a578efbee313556ec31ddf193fdda04a00062a0f44bd6f016",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0019-synthetic-settlement.png",
+      "sha256": "69bfe49be5ffa65a578efbee313556ec31ddf193fdda04a00062a0f44bd6f016",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0020-credit-settled.png",
+      "sha256": "8a1e6e357e4abe63ecedb1a697812c861bb3a53d8b58e787a481bb62874dd3cb",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0021-separate-monthly-consent.png",
+      "sha256": "6c7ac698da5302bf8c73cf0391adce05c679df5a7e2bbfcd68c2842ca031f928",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0022-monthly-consent-recorded.png",
+      "sha256": "e32fedff8ffb48a9fed8d1e5ec4ebd6edba7ae4706ce2e81779d689cb2c9af90",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0023-same-month-request-0.png",
+      "sha256": "e32fedff8ffb48a9fed8d1e5ec4ebd6edba7ae4706ce2e81779d689cb2c9af90",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0024-same-month-receipt-0.png",
+      "sha256": "aebfa7ab2dd469ae3778a1a30b20a66bae1e07ae67b76f0d0fc799b7f3f55d60",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0025-same-month-paid-0.png",
+      "sha256": "d6af71f120bc29279d5dc97a82edff9776700f55ca45fff583c6ee78379ddd0f",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0026-same-month-request-1.png",
+      "sha256": "3d29bb0364b4dcf65ff2269e578ee5af4b23374d66516e77d4ab6ec863b28b78",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0027-same-month-receipt-1.png",
+      "sha256": "c82a19d542ad91364a55f93c7d2132b3a0e9d8ff6576646e62aa5ae73224d4ba",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0028-same-month-paid-1.png",
+      "sha256": "a99507ce7292e27f027326fec533d9ca550c91903093838fd42ec14024ded803",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0029-monthly-renewal-canceled.png",
+      "sha256": "a99507ce7292e27f027326fec533d9ca550c91903093838fd42ec14024ded803",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0030-paid-period-retained.png",
+      "sha256": "d4eb11b40c77120ac15abc220d808584f9a01c8aef90b581f2792e10f6833797",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0031-native-atm-test.png",
+      "sha256": "c9bf2f870d30943fd56b5ca818b6c63cc38b7c7e9b7358ddc0339d27c006beb4",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0032-ten-dollar-hold-review.png",
+      "sha256": "5bae85a3b4eb6e4df4debe0424b412d9a01673f43351f1af0aa27d7633ec28ab",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0033-signed-atm-quote.png",
+      "sha256": "3d949e49c9e5725407360ebbac89501b631edb8cb3772f3d8e79d068ed0a95f9",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0034-atm-authorization-review.png",
+      "sha256": "179aa862222ce06ffd1322ae012388dba0ea6cb867b51d57788700496e4f9210",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0035-atm-fee-disclosure.png",
+      "sha256": "defa5457feb592e00685ba288bc8e4ebff3fb7ab46ff4037014ed7df5feb8d43",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0036-public-authenticator-pin.png",
+      "sha256": "a5fd26f78a4ba2a2b61da68258edcda0c21e39be561574895629676b10012151",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0037-public-authenticator-confirmed.png",
+      "sha256": "03c29ec94ca2bddd57cceeddc6e36afa35cce996da73b0f05ca59e9fbb88c763",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0038-actual-reservation.png",
+      "sha256": "cbdf2f7aae90b95e9bc93739bc15eb9217848125370bc4f3f82bcc168cfa6c4b",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0039-actual-hold.png",
+      "sha256": "cbdf2f7aae90b95e9bc93739bc15eb9217848125370bc4f3f82bcc168cfa6c4b",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0040-owner-cancel-unused-reservation.png",
+      "sha256": "cbdf2f7aae90b95e9bc93739bc15eb9217848125370bc4f3f82bcc168cfa6c4b",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0041-actual-cancellation.png",
+      "sha256": "7cfd74328230d2868be0306c93a3dc7151f130a8726199c6ec50cc818956c301",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0042-hold-returned.png",
+      "sha256": "2537a9bf9a76cf3e5f8f18809cfc80dd7cf50f55b593eea22b74b7fe77b56fa8",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0043-normal-poweroff.png",
+      "sha256": "339d43038ad421b055544cc210c3366c2052282f1d2343d65a9df7c8da7026d2",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0044-normal-poweroff-confirm.png",
+      "sha256": "3a0a43b352852e8067d0bda38ad0768bf0bf4bbe4fe5a6a5566e0ebc77af8d82",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-2/0045-normal-poweroff-confirmed.png",
+      "sha256": "c0b33372177509385874143f92a400adae293165b361b5cd627b568a8037f7c9",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0001-boot-pending.png",
+      "sha256": "3392b61102d466ed7c1afd6a20a33ae1ab10c4bc27b94b8bc654d47991422d37",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0002-boot-pending.png",
+      "sha256": "be3d89aca8d5db41f8dcc74a2522b3f2d88b54e61831bf7dee51a737219b6fe6",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0003-boot-ready.png",
+      "sha256": "df76a27746bb8a9a775de635d0fc904e9cfd6a389dedcf0c1e4936c7dede04b3",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0004-retained-monthly-cancellation.png",
+      "sha256": "18723063adf743aaef3cbad716ec53c059cf7eaefb9409a866fa4bd89615c095",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0005-retained-paid-month.png",
+      "sha256": "bfdc450a5ea1b1601013915f37b3f8f36af2a3ecf656ded103e9071680146909",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0006-retained-simulator-view.png",
+      "sha256": "27b7145abc7b66b14454aec5b9c5a28435104aa2136921e0f6987652e2e48f08",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0007-retained-atm-history.png",
+      "sha256": "7fdf44f4dfba2692f19070945151b66ffc28b62d13d30b54311814196d7520b4",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0008-reopen-retained-atm-result.png",
+      "sha256": "9e39c8fc5526a614b9d2fc0ccb8d7f5a117837fdaf4e86ad0479f66308e5e4e5",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0009-retained-zero-hold.png",
+      "sha256": "9c8c4182e45b6425d5f6476089d1a84a399ffdd4bc90f9432afe2e9830feb5ec",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0010-normal-poweroff.png",
+      "sha256": "58272aba0a448169391a0e729d118b37a974b9610caaf4dddf5c60d9629c7759",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0011-normal-poweroff-confirm.png",
+      "sha256": "0e260cf68e31388095ac2b0c2fde3a80ac5e8f8e7d72488bb978d1ebbc6fa66b",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "business-lifecycle-b8287bc.json",
+      "path": "cycle-3/0012-normal-poweroff-confirmed.png",
+      "sha256": "8436acbba9e7fcb3dcceda6dda2fd173690b1468ed0f5bdf865431e06777eafa",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "backup-restore-b8287bc.json",
+      "path": "00-restored-hub.png",
+      "sha256": "898910f45cd9fa1843088f89f4e9372c27ebdd64eb8f835ecd2f06b7400de554",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "backup-restore-b8287bc.json",
+      "path": "01-preserved-installed-tools.png",
+      "sha256": "9b64ba4564806a7daecbe08b53400612cddb354a06eb4013be71f5a63dd06a66",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "backup-restore-b8287bc.json",
+      "path": "02-preserved-job-history.png",
+      "sha256": "a1d7c4040d2ff2e9ed5f9f2246411fa1f8b8a54c30abe7988c8c0d19cba771ab",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "backup-restore-b8287bc.json",
+      "path": "03-preserved-job-result.png",
+      "sha256": "c7190ae83992bcd25008aa8b51cc40f2aa2e2eff54b3a03d9a6c6b51664f86df",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "backup-restore-b8287bc.json",
+      "path": "04-restored-wallet-membership.png",
+      "sha256": "277368f3d8422804cc9daded49bf9867ababe5fa10d66ac4da4a1bdb9f052422",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "backup-restore-b8287bc.json",
+      "path": "05-restored-wallet-balances.png",
+      "sha256": "231959a06fd419642d3291f8e78459f90cff17ca3952c13024b6904b01aedea3",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "backup-restore-b8287bc.json",
+      "path": "06-device-power.png",
+      "sha256": "09de8a495be125cee1492b55620da0f8964d08006edab45e7294768c4bf8df07",
+      "available": true,
+      "match": true
+    },
+    {
+      "report": "backup-restore-b8287bc.json",
+      "path": "07-normal-shutdown-confirmation.png",
+      "sha256": "6f5f27d75acc56cfa2ace2f3fb86fe72163270143a5df05bad0d117116e93a7b",
+      "available": true,
+      "match": true
+    }
+  ],
+  "additional_attachments": [
+    {
+      "path": "docs/evidence/os-base/acceptance-basic-boot-1-b8287bc.log",
+      "sha256": "91c1077116d031d562ebf9dc033bc00f3605fcda618e660427596589c943aab9",
+      "bytes": 12305
+    },
+    {
+      "path": "docs/evidence/os-base/acceptance-basic-boot-2-b8287bc.log",
+      "sha256": "f157e2ce5b13882d18bc92214524129f194ce7ba441a3636c0e50ceeb672dbe8",
+      "bytes": 12350
+    },
+    {
+      "path": "docs/evidence/os-base/soak-plan42-b8287bc.json",
+      "sha256": "e36b5b9a17a0b2703797eea220a9f83a7eb535596463e31a74acd6c40203733d",
+      "bytes": 3383
+    },
+    {
+      "path": "docs/evidence/os-base/soak42-ocr-failed-b8287bc.json",
+      "sha256": "a3cc0306769973ea4fb3b9168b0c698a128770afd7098967a4a2afa951de70bf",
+      "bytes": 326321
+    },
+    {
+      "path": "docs/evidence/os-base/soak42-ocr-failed-b8287bc.log",
+      "sha256": "f3199b930bb2a7d6a447593b6d3586459340f47ca389c7e1edbe7b338896525d",
+      "bytes": 2760
+    }
+  ],
+  "root_worktree_at_snapshot": "clean; root Git status observed independently"
+}

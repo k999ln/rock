@@ -1,0 +1,24 @@
+{
+  "schema": "rock-final-original-retention/1",
+  "status": "PASS",
+  "host_payload_original_inventory": "PASS",
+  "guest_inventory": {
+    "status": "PASS",
+    "files": 706,
+    "all_exact_source_image_legal_members": true
+  },
+  "private_records": {
+    "authority-stopped.tar.gz": {
+      "bytes": 22968,
+      "sha256": "3142e5f036bcecb2538a270464ef48b5bb013f10b9e1103831aa68f2aa13b671"
+    },
+    "userdata.ext4": {
+      "bytes": 268435456,
+      "sha256": "b022956b195ab67c1fdf53a14d7767ca51e765e1bf67a4d40bd4110bbb01bf59"
+    },
+    "desktop-records.tar.gz": {
+      "bytes": 7070,
+      "sha256": "5294fbb3bd804a11d9579edc48454ced2f2c6f31e6addfd4e6c0a501cb58ca2e"
+    }
+  }
+}

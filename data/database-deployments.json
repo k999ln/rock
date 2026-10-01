@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "updatedAt": "2026-09-15",
+  "boundaries": {
+    "web-d1": {
+      "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",
+      "deploymentStatus": "OWNER_ACCESS_BLOCKED",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": ["docs/evidence/launch/sites-owner-auth-blocker-20260915.json"],
+      "nextAction": "既存Sitesの所有workspaceへ接続し、検証済み最新mainを同じSiteへ配備。公開設定変更後に匿名health、本人別API、migration、件数、孤立関係、backup状態をreadbackする"
+    },
+    "sky-billing-d1": {
+      "runtime": "Cloudflare D1 / Sky Billing Worker",
+      "deploymentStatus": "DOCUMENTED_NOT_READ_BACK",
+      "productionAppliedThrough": "0004_rock_settlement_wallet.sql",
+      "productionReadbackAt": null,
+      "evidence": ["docs/validation.md"],
+      "nextAction": "current productionをreadbackし、0004適用と台帳件数を再確認する"
+    },
+    "operator-dock-d1": {
+      "runtime": "Cloudflare D1 / isolated Operator Dock Worker",
+      "deploymentStatus": "SOURCE_ONLY",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": ["services/operator-dock/README.md"],
+      "nextAction": "ownerが専用hostname、Cloudflare Access application、D1を作成後、0001・0002適用、production credential設定、端末attestation登録と認証済みreadbackを行う"
+    },
+    "os-wallet-spend-sqlite": {
+      "runtime": "RockstarOS device-local SQLite",
+      "deploymentStatus": "QEMU_SCOPED",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": ["docs/value-spend-runtime.md"],
+      "nextAction": "同一QEMU候補と将来の実機で保存・再起動・復旧を別々に受入する"
+    },
+    "android-work-sqlite": {
+      "runtime": "Android Work Engine SQLite",
+      "deploymentStatus": "EMULATOR_SCOPED",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": ["docs/os-prototype.md"],
+      "nextAction": "対象端末を確定後、full buildと実機保存・復旧を受入する"
+    },
+    "android-platform-sqlite": {
+      "runtime": "Android Platform Core SQLite",
+      "deploymentStatus": "SOURCE_ONLY",
+      "productionAppliedThrough": null,
+      "productionReadbackAt": null,
+      "evidence": ["docs/local-ai-os-integration-20260915.md"],
+      "nextAction": "Kotlin/APK native build後、Soong imageと実機でschema移行を受入する"
+    }
+  }
+}

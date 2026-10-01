@@ -1,0 +1,51 @@
+{
+  "schema": "rock-gx00-current-copy-foundations-evidence/1",
+  "status": "HOST_FOUNDATIONS_PASS",
+  "base_commit": "b3257678a9c79a7c224483750438c107659adfc3",
+  "files": {
+    "systems/rock-star-os/tests/game_legacy_basis.py": "09adb94581dac474884d5da1cdb46067a3bd8e6a64935d54048e9fbdb730c651",
+    "systems/rock-star-os/tests/test_game_legacy_basis.py": "f94916afa03b3efdb7554b2f6ef5918d9c37bd7556bd03c63dd5d34e2a564cd0",
+    "docs/gx00-legacy-game-basis.md": "a5d23b093315e04b54650b0253154195b9fcc82045a28f54ee48a0535c18a55a",
+    "systems/rock-star-os/os/wallet_backend/authority_fence.py": "1fdc700bcb1a735d258574ca76e36cd70e664100c5ab83027021c21b08918baf",
+    "systems/rock-star-os/os/wallet_backend/current_restore.py": "2da97e52e487435b747402f752c288e8b411b1a25646c1c78fbab6e257efee60",
+    "systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md": "c57a022b43fd4e8ea37baba4ec732d6ca4c1f3c568868bf7207ee7335273f014",
+    "systems/rock-star-os/tests/test_current_restore_api.py": "0ff087234a79ddcb8cae3f827fe850a8f83c70a381d07c85e338dd675ba2008c"
+  },
+  "logs": {
+    "gx00-legacy-game-root.log": "fc5d005c5b5237edbe54fe6dcbf97056110157bef5e16598f83b2c94e961b039",
+    "gx00-legacy-game-final-v2.log": "fceace21ac631c6d96729a222ec38d41996e8877db60f1dac67131471c90392f",
+    "current-restore-api-root.log": "7498f32da3270352143098cf59783f61fd8b90e9fa6873e49232fec46c92dabf",
+    "current-restore-api-regression.log": "f9ff0470ca2f974de033d0661e2f328e40d8cc87aae8c7fc76193bd4eb221b96",
+    "current-restore-api-final-14.log": "fe94e94ff279bfff80ed90ba2efc94e9b8666d2178d6533ff177c5e16ab6827e",
+    "current-restore-api-wal-before.log": "ce9da58f251f7930a9872c3971e7b0f353a74125cd89ad0f878d0c751067c531"
+  },
+  "root_checks": {
+    "legacy_real_tls": {
+      "tests": 2,
+      "seconds": 1.989,
+      "passed": 2,
+      "skipped": 0
+    },
+    "current_restore_api": {
+      "tests": 14,
+      "seconds": 2.555,
+      "passed": 14,
+      "skipped": 0
+    }
+  },
+  "preserved_failure": {
+    "log": "current-restore-api-wal-before.log",
+    "meaning": "Actual committed WAL retained by a real reader exposed the closed-only identity lookup. One error before the ACTIVE live-read fix.",
+    "public_copy": {
+      "source_sha256": "62dde5d5899f9e5ec43bd2041c3d0f52a037ccae35150ccd3fdacd67c6901cd5",
+      "public_sha256": "ce9da58f251f7930a9872c3971e7b0f353a74125cd89ad0f878d0c751067c531",
+      "transform": "Replace local candidate prefix with <candidate> in seven traceback paths and prepend this public-copy notice; no test result or failure edited."
+    }
+  },
+  "limits": [
+    "Host synthetic fixture only; current game handover and ordinary-open gate require the next integration.",
+    "No frozen b8287bc runtime mutation; D6 43 is separately running.",
+    "No OS game UI/ABI/restore acceptance, external game provider or real funds.",
+    "Foreign sidecar UID is a declared stat guard fixture; process flocks, WAL commits and TLS listeners are actual host operations."
+  ]
+}

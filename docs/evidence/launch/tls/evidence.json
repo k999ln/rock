@@ -1,0 +1,628 @@
+{
+  "schema": "rock-lch01-independent-research/1",
+  "source_commit": "29e4f7203f72d9949e2dfc90b64c4215d4bbb765",
+  "runtime_checkout_edited": false,
+  "historical_cause": "UNDETERMINED",
+  "environment": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "python": "3.14.7"
+  },
+  "original_9ab_log": {
+    "sha256": "e7e8e958b89fe095df559f6abe17544d3bd7d3692ef9b646f9e36040d23fc141",
+    "matches_retained_evidence": true
+  },
+  "scope": "Read-only source/GitHub log inspection, scratch local TLS profiling and bounded-buffer proposal. No OS image, source regression or original-failure cause acceptance.",
+  "source_files": {
+    "systems/rock-star-os/os/wallet_backend/server.py": "ebcc1f349699d1f2cdc95e05101bfe9417d1fb27671f0a4f2582dd401274a7fb",
+    "systems/rock-star-os/os/wallet_backend/client.py": "50cc2721f9a6fd9af07217f8aec7196b2fa603cac8ce6ccfae862117acce8597",
+    "systems/rock-star-os/tests/test_game_connections_tls.py": "818d9228e87b0f79b1181ea31679fa8dbd01ef6f759787b7aeb52a5bf4c6c324"
+  },
+  "experiments": {
+    "profile_request.log": {
+      "sha256": "c43eaafa40ee500467a0abd555af15a4138cfdf6b103dd7da2cc21a22960a7da",
+      "result": {
+        "ok": true,
+        "elapsed": 0.7834763749851845,
+        "counts": {
+          "read_calls": 4671,
+          "one_byte_reads": 4657,
+          "read_bytes": 10522
+        },
+        "requests": [
+          {
+            "op": "wallet.register",
+            "seconds": 0.014746083004865795
+          },
+          {
+            "op": "wallet.auth.begin",
+            "seconds": 0.021866583032533526
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "seconds": 0.047125292010605335
+          },
+          {
+            "op": "wallet.terms",
+            "seconds": 0.024304541992023587
+          },
+          {
+            "op": "wallet.register",
+            "seconds": 0.01568462501745671
+          },
+          {
+            "op": "wallet.auth.begin",
+            "seconds": 0.022958874993491918
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "seconds": 0.038545083021745086
+          },
+          {
+            "op": "wallet.terms",
+            "seconds": 0.028524083027150482
+          },
+          {
+            "op": "game.connection.begin",
+            "seconds": 0.03866091702366248
+          },
+          {
+            "op": "game.connection.approve",
+            "seconds": 0.05127295799320564
+          },
+          {
+            "op": "game.connection.begin",
+            "seconds": 0.032740166992880404
+          },
+          {
+            "op": "game.connection.approve",
+            "seconds": 0.04973966698162258
+          },
+          {
+            "op": "game.connection.status",
+            "seconds": 0.03854650002904236
+          }
+        ],
+        "dispatch_seconds": [
+          0.012043167022056878,
+          0.02062412502709776,
+          0.04553383303573355,
+          0.022707374999299645,
+          0.014163332991302013,
+          0.02151554200099781,
+          0.03653783298796043,
+          0.026762333000078797,
+          0.036603957996703684,
+          0.04922166600590572,
+          0.031036791973747313,
+          0.048108500021044165,
+          0.00026304100174456835,
+          0.03957270900718868,
+          0.03710654203314334
+        ]
+      }
+    },
+    "profile_buffered.log": {
+      "sha256": "75471e28871faf7bad1ddf213a40f0a16279bf21503a6376076b7a9bc32632bc",
+      "result": {
+        "ok": true,
+        "elapsed": 0.686092916992493,
+        "counts": {
+          "read_calls": 4671,
+          "one_byte_reads": 4657,
+          "tls_recv_into_calls": 33,
+          "tls_one_byte_recv_calls": 0,
+          "read_bytes": 10522
+        },
+        "requests": [
+          {
+            "op": "wallet.register",
+            "seconds": 0.01566045795334503
+          },
+          {
+            "op": "wallet.auth.begin",
+            "seconds": 0.020050582999829203
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "seconds": 0.029963415989186615
+          },
+          {
+            "op": "wallet.terms",
+            "seconds": 0.022213042015209794
+          },
+          {
+            "op": "wallet.register",
+            "seconds": 0.014146917033940554
+          },
+          {
+            "op": "wallet.auth.begin",
+            "seconds": 0.021541624970268458
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "seconds": 0.028917291027028114
+          },
+          {
+            "op": "wallet.terms",
+            "seconds": 0.01929345802636817
+          },
+          {
+            "op": "game.connection.begin",
+            "seconds": 0.031925750023219734
+          },
+          {
+            "op": "game.connection.approve",
+            "seconds": 0.047514582984149456
+          },
+          {
+            "op": "game.connection.begin",
+            "seconds": 0.03188387502450496
+          },
+          {
+            "op": "game.connection.approve",
+            "seconds": 0.0481305830180645
+          },
+          {
+            "op": "game.connection.status",
+            "seconds": 0.04039758403087035
+          }
+        ],
+        "dispatch_seconds": [
+          0.014172457973472774,
+          0.01888150000013411,
+          0.028469374985434115,
+          0.020948166027665138,
+          0.013077749987132847,
+          0.020497541991062462,
+          0.02723154198611155,
+          0.018058375047985464,
+          0.03043737495318055,
+          0.045965291967149824,
+          0.03043445898219943,
+          0.04660195799078792,
+          0.0002720420015975833,
+          0.03472054103622213,
+          0.03902862500399351
+        ]
+      }
+    },
+    "gil-original.log": {
+      "sha256": "2869f145085b448902487daac162f143613995623da021e083229d6bd37b4898",
+      "result": {
+        "buffered": false,
+        "competitor": true,
+        "ok": false,
+        "elapsed": 1.628387208969798,
+        "requests": [
+          {
+            "op": "wallet.register",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.025243124982807785
+          },
+          {
+            "op": "wallet.auth.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.036877833015751094
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.04363841604208574
+          },
+          {
+            "op": "wallet.terms",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.02545729198027402
+          },
+          {
+            "op": "wallet.register",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.01678954198723659
+          },
+          {
+            "op": "wallet.auth.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.025972000032197684
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.044068916991818696
+          },
+          {
+            "op": "wallet.terms",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.0332952500320971
+          },
+          {
+            "op": "game.connection.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.040062125015538186
+          },
+          {
+            "op": "game.connection.approve",
+            "timeout": 1.0,
+            "error": "BackendUnavailable",
+            "cause": "The read operation timed out",
+            "seconds": 1.018614417000208
+          }
+        ]
+      }
+    },
+    "gil-buffered.log": {
+      "sha256": "95b17f3199a5d758cac4c6dddf3c4c75c2526c1323a5708a3276eea17be55581",
+      "result": {
+        "buffered": true,
+        "competitor": true,
+        "ok": false,
+        "elapsed": 1.583818707964383,
+        "requests": [
+          {
+            "op": "wallet.register",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.02093283401336521
+          },
+          {
+            "op": "wallet.auth.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.025018999993335456
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.042675709002651274
+          },
+          {
+            "op": "wallet.terms",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.024157417006790638
+          },
+          {
+            "op": "wallet.register",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.023489665996748954
+          },
+          {
+            "op": "wallet.auth.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.034641875012312084
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.045252792013343424
+          },
+          {
+            "op": "wallet.terms",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.03044545801822096
+          },
+          {
+            "op": "game.connection.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.040431708039250225
+          },
+          {
+            "op": "game.connection.approve",
+            "timeout": 1.0,
+            "error": "BackendUnavailable",
+            "cause": "The read operation timed out",
+            "seconds": 1.00681137497304
+          }
+        ]
+      }
+    },
+    "gil-header-original.log": {
+      "sha256": "0bba730b3469a3b758f950dd126cfc067581b6d76081ae5eab566627aee1045d",
+      "result": {
+        "buffered": false,
+        "competitor": true,
+        "header_only": true,
+        "ok": true,
+        "elapsed": 1.7879454159992747,
+        "requests": [
+          {
+            "op": "wallet.register",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.014180541969835758
+          },
+          {
+            "op": "wallet.auth.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.021471749991178513
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.028936165967024863
+          },
+          {
+            "op": "wallet.terms",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.019925624947063625
+          },
+          {
+            "op": "wallet.register",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.016713750024791807
+          },
+          {
+            "op": "wallet.auth.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.026350832951720804
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.03461545903701335
+          },
+          {
+            "op": "wallet.terms",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.023467375023756176
+          },
+          {
+            "op": "game.connection.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.03743904200382531
+          },
+          {
+            "op": "game.connection.approve",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.4948762080166489
+          },
+          {
+            "op": "game.connection.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.055484000011347234
+          },
+          {
+            "op": "game.connection.approve",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.47758466604864225
+          },
+          {
+            "op": "game.connection.status",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.07087062497157604
+          }
+        ]
+      }
+    },
+    "gil-header-buffered.log": {
+      "sha256": "7a4b5a559635ecfa6107fc8ba02df145458a66ab2c9dc63991108d9a73794c76",
+      "result": {
+        "buffered": true,
+        "competitor": true,
+        "header_only": true,
+        "ok": true,
+        "elapsed": 1.181702000030782,
+        "requests": [
+          {
+            "op": "wallet.register",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.01531712495489046
+          },
+          {
+            "op": "wallet.auth.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.023760417010635138
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.032746207958552986
+          },
+          {
+            "op": "wallet.terms",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.02163595799356699
+          },
+          {
+            "op": "wallet.register",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.014446916000451893
+          },
+          {
+            "op": "wallet.auth.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.020897874957881868
+          },
+          {
+            "op": "wallet.auth.enroll",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.0351652079843916
+          },
+          {
+            "op": "wallet.terms",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.020284917030949146
+          },
+          {
+            "op": "game.connection.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.03487787500489503
+          },
+          {
+            "op": "game.connection.approve",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.1794862499809824
+          },
+          {
+            "op": "game.connection.begin",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.039560417004395276
+          },
+          {
+            "op": "game.connection.approve",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.20766629197169095
+          },
+          {
+            "op": "game.connection.status",
+            "timeout": 1.0,
+            "ok": true,
+            "seconds": 0.06845179200172424
+          }
+        ]
+      }
+    }
+  },
+  "boundary_tests": {
+    "count": 4,
+    "passed": true,
+    "log_sha256": "a75a4749780ed37e6c45355d4c7106932185028b49b948a950a1fb58b97d8c34"
+  },
+  "preserved_limits": {
+    "wallet_client_seconds": 1,
+    "wallet_test_server_seconds": 3,
+    "native_main_seconds": 600,
+    "native_support_seconds": 300
+  },
+  "script_hashes": {
+    "reproduce_gil.py": "ae8c02c9aa303dff74678afb9e00c95328da0526bd36f417bf21a1dbc946aa40",
+    "test_buffered_reader.py": "4892f1f831a175802b4b14aa1ce69a9b02c1584fd8cf1a72bbe283a21d79758d",
+    "profile_request.py": "df0ae5512899e46bdaefe6902f844c5a0950c2d51aa6134146f2bdc987aa2748",
+    "buffered_reader.py": "9da9044483e33078b4bd96b391bb6e67ac0554c46456456e8695271e6bc3fcc4"
+  },
+  "original_failures": [
+    {
+      "source": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+      "environment": "original Linux ARM64",
+      "status": "FAIL_RETAINED",
+      "errors": [
+        "test_connection_revoked_before_first_claim_creates_only_signed_rejection (test_game_exchange_races.ExchangeRaces.test_connection_revoked_before_first_claim_creates_only_signed_rejection)",
+        "test_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version (test_game_exchange_races.ExchangeRaces.test_expired_signed_approval_denial_is_permanent_then_explicit_new_quote_version)",
+        "test_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply (test_game_exchange_races.ExchangeRaces.test_owner_assertion_credential_revoked_before_first_claim_cannot_dispatch_new_apply)",
+        "test_real_apply_and_conditional_reject_race_has_one_durable_outcome (test_game_exchange_races.ExchangeRaces.test_real_apply_and_conditional_reject_race_has_one_durable_outcome)",
+        "test_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable (test_game_exchange_races.ExchangeRaces.test_revocation_after_claim_keeps_original_apply_authorized_and_receipt_recoverable)",
+        "test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered (test_game_exchange_restore.ExchangeCurrentRestore.test_each_issuer_cas_retains_rows_then_old_apply_refused_and_original_terminal_recovered)",
+        "test_foreign_restore_or_mutated_game_journal_cannot_resume_epoch (test_game_exchange_restore.ExchangeCurrentRestore.test_foreign_restore_or_mutated_game_journal_cannot_resume_epoch)",
+        "test_foreign_receipt_and_malformed_receipt_cannot_release_hold (test_game_exchange_tls.ExchangeTLS.test_foreign_receipt_and_malformed_receipt_cannot_release_hold)",
+        "test_separate_author_credential_same_key_namespace_and_private_owner_redaction (test_game_exchange_tls.ExchangeTLS.test_separate_author_credential_same_key_namespace_and_private_owner_redaction)",
+        "test_signed_insufficient_denial_consumes_counter_and_never_later_approves (test_game_exchange_tls.ExchangeTLS.test_signed_insufficient_denial_consumes_counter_and_never_later_approves)"
+      ],
+      "main_tests": 1367,
+      "main_seconds": 447.965,
+      "total_executions": 1631,
+      "checks": 14,
+      "main_log_sha256": "e7e8e958b89fe095df559f6abe17544d3bd7d3692ef9b646f9e36040d23fc141"
+    },
+    {
+      "source": "e430648c8ba799d004a5ecd0da8166ca811d3ae5",
+      "run_id": 34477407336,
+      "status": "FAIL_RETAINED",
+      "error": "test_author_revocation_survives_full_backend_restart_without_disabling_other_game (test_game_connections_tls.GameConnectionsTLS.test_author_revocation_survives_full_backend_restart_without_disabling_other_game)",
+      "main_tests": 1385,
+      "checks": 14,
+      "total_executions": 1649,
+      "main_log_sha256": "b6afdedb9873483c88ee5819304cbe4dc5088037fea9c9491c944af56b25b0e0",
+      "failure_trace": "ERROR: test_author_revocation_survives_full_backend_restart_without_disabling_other_game (test_game_connections_tls.GameConnectionsTLS.test_author_revocation_survives_full_backend_restart_without_disabling_other_game)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/os/wallet_backend/client.py\", line 144, in exchange\n    response = connection.getresponse()\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/http/client.py\", line 1478, in getresponse\n    response.begin()\n    ~~~~~~~~~~~~~~^^\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/http/client.py\", line 343, in begin\n    version, status, reason = self._read_status()\n                              ~~~~~~~~~~~~~~~~~^^\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/http/client.py\", line 304, in _read_status\n    line = str(self.fp.readline(_MAXLINE + 1), \"iso-8859-1\")\n               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/os/runner/transport.py\", line 149, in readinto\n    value = self.stream.recv(len(buffer))\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/os/runner/transport.py\", line 98, in recv\n    return self.stream.recv(size)\n           ~~~~~~~~~~~~~~~~^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/ssl.py\", line 1285, in recv\n    return self.read(buflen)\n           ~~~~~~~~~^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/ssl.py\", line 1140, in read\n    return self._sslobj.read(len)\n           ~~~~~~~~~~~~~~~~~^^^^^\nTimeoutError: The read operation timed out\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/tests/test_game_connections_tls.py\", line 436, in test_author_revocation_survives_full_backend_restart_without_disabling_other_game\n    intent=self.begin(A1,name,key='begin-'+name)['result'];_,reply=self.approve(A1,intent,key='approve-'+name)\n                                                                   ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/tests/test_game_connections_tls.py\", line 154, in approve\n    return req,self.transports[device].exchange(req)\n               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/os/wallet_backend/client.py\", line 188, in exchange\n    raise BackendUnavailable('Wallet response unavailable; reconcile with the same key') from exc\nwallet_backend.client.BackendUnavailable: Wallet response unavailable; reconcile with the same key\n"
+    },
+    {
+      "source": "ba900e49c5ceac3f6453030518d75a0467c0f6ac",
+      "run_id": 34478360425,
+      "status": "FAIL_RETAINED",
+      "main_deadline_seconds": 600,
+      "exit_code": 124,
+      "raw_log_sha256": "061376d0a7ce2d6a9cf4b013827b2b49a04d74003d2676099212f4681c0e8b78",
+      "complete_main_count": null,
+      "later_checks": "NOT_RUN"
+    },
+    {
+      "schema": "rock-native-ci-timeout-analysis/1",
+      "head_sha": "3d07df03bac9cf0e03a0fe2b46b19aa5f2a9916e",
+      "run_id": 34498721201,
+      "url": "https://github.com/k999ln/rock/actions/runs/34498721201",
+      "status": "FAIL",
+      "main_exit_code": 124,
+      "main_deadline_seconds": 600,
+      "remaining_native_checks": "NOT_RUN",
+      "root_ui": "NOT_RUN",
+      "test_lines_started": 676,
+      "unittest_fail_or_error_lines": 0,
+      "main_reported_completed_count": 0,
+      "main_log_sha256": "ce42d710ec957d87b06701dce1da128a0cd73f42c10c8291270799dc8611a083",
+      "report_sha256": "a603e3c0545ce778251c5a38d91efd0c65220211a8e1474030f913b23f2a03f6",
+      "stack_sha256": "edc0329fb9c086d8f8daee2ef798fab8c355ff70c4952b94aef724175c1ff277",
+      "last_log_line": "test_purchaser_profile_preserves_actual_remote_cache_and_all_additional_tables (test_os_desktop_backup_verify.CompleteSchemaEvidenceGuards.test_purchaser_profile_preserves_actual_remote_cache_and_all_additional_tables) ... ",
+      "stack_at_seconds": 570,
+      "stack_test": "test_mcp_runtime.RuntimePersistenceTests.test_restart_preserves_result_connection_and_disconnect_generation_without_resend",
+      "stack_test_later_reported_ok": true,
+      "progress_after_stack": "Unittest later reached test_os_desktop_backup_verify; the stack is not proof of a permanent TLS hang.",
+      "native_inputs_identical_to_successful_1a2f4d1": true,
+      "native_input_count": 697,
+      "prior_successful_main_tests": 1392,
+      "prior_successful_main_seconds": 297.908,
+      "diagnosis": "Cumulative main-suite deadline exceeded while tests continued. This artifact does not identify why this runner was slower.",
+      "prior_intermittent_tls_error_cause": "UNDETERMINED",
+      "fix_scope": "Partition complete discovery by module across four isolated CI jobs, retaining per-request deadlines and each main process deadline of 600 seconds; support checks and root UI remain required."
+    }
+  ],
+  "ci_only_proposal": {
+    "path": "/Users/kaiya/Documents/Codex/2026-09-10/gi/work/tls-research/native-failure-diagnostics.patch",
+    "sha256": "27b879682fbc37b3038af37be647a729c5081c79c6cf49b52723b3c9f820d8b1",
+    "files": [
+      "scripts/test-native.py",
+      "systems/rock-star-os/tests/native_partition.py",
+      "systems/rock-star-os/tests/native_failure_diagnostics.py",
+      "systems/rock-star-os/tests/test_native_failure_diagnostics.py"
+    ],
+    "runtime_changed": false,
+    "integrated": false,
+    "tests": {
+      "count": 17,
+      "new_tests": 6,
+      "passed": true,
+      "skipped": 0,
+      "seconds": 2.752,
+      "log_sha256": "ed8ef6fbc57b327c184232931cd11761b4cb59303816e5f320e76b80b3646b7b"
+    },
+    "behavior": "Opt-in addError/addFailure/addSubTest capture before cleanup, private exclusive sidecar, process resource counters and all-thread stacks with no locals/exception payload/subtest parameter values; original verdict, timeouts, discovery and retry policy unchanged."
+  },
+  "lch01_status": "BLOCKED_HISTORICAL_CAUSE_UNDETERMINED"
+}

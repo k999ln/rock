@@ -1,0 +1,48 @@
+[Public copy: local candidate prefix replaced by <candidate>; original failure and line numbers retained.]
+test_current_state_and_source_process_locks_stay_held_until_plan_finishes (test_current_restore_api.CurrentRestoreAPI.test_current_state_and_source_process_locks_stay_held_until_plan_finishes) ... ok
+test_existing_permit_unknown_id_and_pending_restore_refused (test_current_restore_api.CurrentRestoreAPI.test_existing_permit_unknown_id_and_pending_restore_refused) ... ok
+test_forged_permit_and_foreign_thread_cannot_reuse_real_admission (test_current_restore_api.CurrentRestoreAPI.test_forged_permit_and_foreign_thread_cannot_reuse_real_admission) ... ok
+test_initial_whole_copy_refuses_external_state_lock_holder (test_current_restore_api.CurrentRestoreAPI.test_initial_whole_copy_refuses_external_state_lock_holder) ... ok
+test_mixed_copy_bytes_inode_and_typed_record_are_rejected (test_current_restore_api.CurrentRestoreAPI.test_mixed_copy_bytes_inode_and_typed_record_are_rejected) ... ok
+test_nonempty_completed_copy_proof_retains_every_copy_and_rows (test_current_restore_api.CurrentRestoreAPI.test_nonempty_completed_copy_proof_retains_every_copy_and_rows) ... ok
+test_open_active_initialization_join_is_allowed_before_constructor_only (test_current_restore_api.CurrentRestoreAPI.test_open_active_initialization_join_is_allowed_before_constructor_only) ... ok
+test_other_thread_cannot_open_new_writer_before_initial_plan_commit (test_current_restore_api.CurrentRestoreAPI.test_other_thread_cannot_open_new_writer_before_initial_plan_commit) ... ok
+test_resume_reads_current_generation_with_real_committed_wal (test_current_restore_api.CurrentRestoreAPI.test_resume_reads_current_generation_with_real_committed_wal) ... ERROR
+test_resume_requires_actual_current_thread_permit_and_matching_record (test_current_restore_api.CurrentRestoreAPI.test_resume_requires_actual_current_thread_permit_and_matching_record) ... ok
+test_retired_marker_receipt_and_extra_copy_file_rejected_without_new_mutation (test_current_restore_api.CurrentRestoreAPI.test_retired_marker_receipt_and_extra_copy_file_rejected_without_new_mutation) ... ok
+test_source_write_after_retirement_and_missing_lock_are_rejected (test_current_restore_api.CurrentRestoreAPI.test_source_write_after_retirement_and_missing_lock_are_rejected) ... ok
+
+======================================================================
+ERROR: test_resume_reads_current_generation_with_real_committed_wal (test_current_restore_api.CurrentRestoreAPI.test_resume_reads_current_generation_with_real_committed_wal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<candidate>/systems/rock-star-os/tests/test_current_restore_api.py", line 251, in test_resume_reads_current_generation_with_real_committed_wal
+    with self.coordinator.current_restore_generation(self.restore_id,record_sha256=proof.record_sha256):
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/contextlib.py", line 148, in __exit__
+    next(self.gen)
+    ~~~~^^^^^^^^^^
+  File "<candidate>/systems/rock-star-os/os/wallet_backend/current_restore.py", line 191, in current_restore_generation
+    coordinator._verify_marker(permit)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<candidate>/systems/rock-star-os/os/wallet_backend/authority_fence.py", line 401, in _verify_marker
+    self._validate_identity(permit, row['account_id'], allow_unbound_account=True)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<candidate>/systems/rock-star-os/os/wallet_backend/authority_fence.py", line 438, in _validate_identity
+    d = permit.descriptor; identity = wallet_identity(d.canonical_state / DB_NAMES[0]); actual = self._observed_account(d)
+                                      ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<candidate>/systems/rock-star-os/os/wallet_backend/authority_fence.py", line 151, in wallet_identity
+    with closing(readonly(path)) as db:
+                 ~~~~~~~~^^^^^^
+  File "<candidate>/systems/rock-star-os/os/wallet_backend/authority_fence.py", line 140, in readonly
+    file_identity(sidecar); require(sidecar.stat().st_size == 0, 'checkpointed closed database required')
+                            ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<candidate>/systems/rock-star-os/os/wallet_backend/authority_fence.py", line 31, in require
+    if not value: raise RuntimeUnavailable(message)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+wallet_backend.runtime_contracts.RuntimeUnavailable: checkpointed closed database required
+
+----------------------------------------------------------------------
+Ran 12 tests in 2.034s
+
+FAILED (errors=1)

@@ -1,0 +1,34 @@
+#!/bin/sh
+set -eu
+case "${1:-start}" in
+  start)
+    /usr/libexec/rock-mount-check /data /dev/vdb ext4 rw
+    mkdir -p /run/rock
+    mkdir -p /data/rock
+    chown 1000:1000 /data/rock /run/rock
+    chmod 0700 /data/rock
+    chmod 0750 /run/rock
+    start-stop-daemon --start --background --make-pidfile --pidfile /run/rockd.pid --chuid rock:rock --exec /usr/sbin/rockd -- --state-dir /data/rock --socket /run/rock/rockd.sock
+    ready=0
+    for attempt in 1 2 3 4 5; do
+      if /usr/bin/rockctl status; then ready=1; break; fi
+      sleep 1
+    done
+    [ "$ready" -eq 1 ] || { echo 'rockd failed to start' >&2; exit 1; }
+    ;;
+  stop)
+    if [ -f /run/rockd.pid ]; then
+      rock_pid=$(cat /run/rockd.pid)
+      start-stop-daemon --stop --pidfile /run/rockd.pid
+      for attempt in 1 2 3 4 5; do
+        kill -0 "$rock_pid" 2>/dev/null || break
+        sleep 1
+      done
+      if kill -0 "$rock_pid" 2>/dev/null; then
+        start-stop-daemon --stop --signal KILL --pidfile /run/rockd.pid --exec /usr/sbin/rockd
+      fi
+      rm -f /run/rockd.pid
+    fi
+    ;;
+  *) exit 2 ;;
+esac

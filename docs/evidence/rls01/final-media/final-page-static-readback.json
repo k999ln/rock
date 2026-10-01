@@ -1,0 +1,25 @@
+{
+  "schema": "rock-final-portable-page-readback/1",
+  "status": "PASS_STATIC_LINK_ASSET_AND_HTTP_BYTES_BROWSER_QA_SEPARATE",
+  "recorded_utc": "2026-09-10T12:53:18.752278+00:00",
+  "source_commit": "ba900e49c5ceac3f6453030518d75a0467c0f6ac",
+  "export_manifest_sha256": "dff298edd987c4184e30b96bb4edcdb508b3b0c38f305a9b876b3239d32bcea5",
+  "pages": 2,
+  "hash_bound_files": 8,
+  "local_links_and_assets_checked": 24,
+  "external_links": [
+    "https://github.com/k999ln/rock",
+    "https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/docs/preview-installation-ja.md",
+    "https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/docs/preview-legal-notice.md",
+    "https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/docs/preview-release-notes.md",
+    "https://github.com/k999ln/rock/blob/9abf78a80d27aa9f847c4051d20e4c552e407276/systems/rock-star-os/examples/game/README.md",
+    "https://github.com/k999ln/rock/blob/codex/rockstaros-release-20260910/docs/os-acceptance-9abf78a-20260910.md"
+  ],
+  "video": {
+    "controls": true,
+    "autoplay": false,
+    "caption_mime": "text/vtt",
+    "video_mime": "video/mp4"
+  },
+  "scope": "Every local href/src, fragment ID, asset hash and actual localhost HTTP bytes checked. This checks the portable export; browser layout/playback is an independent record and no public deployment is claimed."
+}

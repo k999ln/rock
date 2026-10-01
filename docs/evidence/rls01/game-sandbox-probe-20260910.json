@@ -1,0 +1,83 @@
+{
+  "schema": "rock-rls01-game-sandbox-probe/1",
+  "status": "PASS_SDK_ONLY",
+  "final_release_acceptance": false,
+  "source_commit": "4366cfa5a412dbcf6f711da865c1ffa339debbd6",
+  "wrapper_files_sha256": {
+    "systems/rock-star-os/os/desktop/preview.py": "d84eb57dd29f7669234ef57d3fba5019ac512c1aedba3a23de46791ad1068dff",
+    "systems/rock-star-os/os/desktop/package_preview.py": "f93728d3e5b8549636a4978a7e18c00f7c7dd470cb9eee79751e3b00b852a37b"
+  },
+  "host": {
+    "architecture": "arm64",
+    "lima": "limactl version 2.2.0",
+    "openssl": "OpenSSL 3.6.3 9 Jun 2026 (Library: OpenSSL 3.6.3 9 Jun 2026)",
+    "os": "15.7.4",
+    "python": "3.14.7"
+  },
+  "installation_created_unix": 1789024517.685756,
+  "prepared_lifecycle_seconds": 45.826334953308105,
+  "removed_unix": 1789024781.341986,
+  "fresh_owned_vm": true,
+  "old_vm_or_authority_reused": false,
+  "image_booted": false,
+  "release_packaged": false,
+  "process_cycles": 2,
+  "snapshot_complete_equality": true,
+  "snapshot_before_sha256": "af25438bec56bece7bbad6f1a8087390b0ddc2908bb55202d4d6a5100252a617",
+  "snapshot_after_sha256": "af25438bec56bece7bbad6f1a8087390b0ddc2908bb55202d4d6a5100252a617",
+  "prepared": {
+    "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+    "config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+    "descriptor": {
+      "canonical_state": "/var/tmp/rockstaros-preview-authority/contracts/alice",
+      "ledger_ref": "public-sandbox-alice",
+      "ledger_uuid": "f2b5e743-8f09-4527-baa0-e5b8fde8ab42",
+      "owner_actor": "alice",
+      "owner_ref": "fixture-owner-alice",
+      "primary_device_ref": "fixture-rock-arm64-001",
+      "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+      "writer_epoch": 1
+    },
+    "game_uuids": {
+      "public-game-a": "5355d4eb-2236-493e-97a5-a8c232cd37ee",
+      "public-game-b": "eb61aaac-1204-4700-a5f3-216b520c4cd9"
+    },
+    "index_uuid": "36115c7c-cca8-4e54-a251-b2ab3f420ab7",
+    "initialization": "explicit-public-fixture",
+    "schema": "rock-game-sandbox-prepared/1",
+    "simulation_only": true
+  },
+  "tls": {
+    "listeners": [
+      "LISTEN 0      12         127.0.0.1:9643      0.0.0.0:*    users:((\"python3\",pid=2124,fd=14))",
+      "LISTEN 0      12         127.0.0.1:9642      0.0.0.0:*    users:((\"python3\",pid=2124,fd=13))",
+      "LISTEN 0      12         127.0.0.1:9641      0.0.0.0:*    users:((\"python3\",pid=2124,fd=16))"
+    ],
+    "tls_peers": [
+      {
+        "certificate_sha256": "24f20d1192b62e09456a634abf9641b985c727e3a04e5c62339908920c8c2191",
+        "port": 9641,
+        "tls": "TLSv1.3",
+        "verified_hostname": "127.0.0.1"
+      },
+      {
+        "certificate_sha256": "24f20d1192b62e09456a634abf9641b985c727e3a04e5c62339908920c8c2191",
+        "port": 9642,
+        "tls": "TLSv1.3",
+        "verified_hostname": "127.0.0.1"
+      },
+      {
+        "certificate_sha256": "24f20d1192b62e09456a634abf9641b985c727e3a04e5c62339908920c8c2191",
+        "port": 9643,
+        "tls": "TLSv1.3",
+        "verified_hostname": "127.0.0.1"
+      }
+    ]
+  },
+  "owned_vm_removed": true,
+  "limitations": [
+    "SDK-only source probe; no OS image or final release acceptance",
+    "Public development CA and credentials, synthetic empty authority only",
+    "No credit, enrolment, consent, reservation, exchange or settlement request was submitted"
+  ]
+}

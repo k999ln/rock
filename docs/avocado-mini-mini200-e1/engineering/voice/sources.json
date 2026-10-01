@@ -1,0 +1,20 @@
+{
+  "checked_on": "2026-09-21",
+  "primary_sources_only": true,
+  "sources": [
+    {"id":"V-S1","title":"Seeed Studio SKU 101991441 product page","url":"https://www.seeedstudio.com/ReSpeaker-XVF3800-USB-Mic-Array-p-6488.html","supports":"product identity and USB 4-microphone candidate; no purchase made"},
+    {"id":"V-S2","title":"Seeed XVF3800 official 2D mechanical drawing, one page","url":"https://files.seeedstudio.com/wiki/respeaker_xvf3800_usb/respeaker_xvf3800_2d_mechanical_drawing.pdf","local_copy":"sources/respeaker_xvf3800_2d_mechanical_drawing.pdf","visual_review":"page 1 rendered and inspected","supports":"PCB diameter 100.00, thickness 1.20, 66.00 square spacing, side dimensions; no explicit overall cable/connector envelope guarantee"},
+    {"id":"V-S3","title":"Seeed Getting Started with ReSpeaker XVF3800","url":"https://wiki.seeedstudio.com/respeaker_xvf3800_introduction/","supports":"UAC2 USB-C power/data, TLV320AIC3104, mic inlet orientation, GPIO mute control, geometry coordinates, resources"},
+    {"id":"V-S4","title":"Seeed official firmware folder","url":"https://github.com/respeaker/reSpeaker_XVF3800_USB_4MIC_ARRAY/tree/master/xmos_firmwares/usb","supports":"exact v2.1.0_48k2ch and v2.1.0_16k6ch image names; profile not full descriptor"},
+    {"id":"V-S5","title":"Seeed USB firmware changelog","url":"https://raw.githubusercontent.com/respeaker/reSpeaker_XVF3800_USB_4MIC_ARRAY/master/xmos_firmwares/usb/changelog.md","supports":"v2.1.0 routing changes; old 6-channel raw mapping; v2.0.5 mute button software debounce; not independent physical privacy proof"},
+    {"id":"V-S6","title":"Seeed XVF3800 FAQ","url":"https://wiki.seeedstudio.com/respeaker_xvf3800_faq/","supports":"48k2ch dedicated image, no descriptor dump/sample-width proof, no built-in speaker"},
+    {"id":"V-S7","title":"XMOS XVF3800 datasheet v3.2.1, 2024-10-29","url":"https://www.xmos.com/documentation/XM-014888-PC/pdf/xvf3800_datasheet_v3.2.1.pdf","local_copy":"sources/xvf3800_datasheet_v3.2.1.pdf","relevant_printed_pages":[2,9,10,11],"visual_review":"PDF pages 5, 13, 14 inspected; printed pages 2, 10, 11","supports":"core USB typical400mW, internal16kHz, USB sample-format firmware options, mono left reference/right ignored,192ms tail, fixed0-500ms reference delay, mic-to-I2S minimum58ms; not Seeed board guarantee"},
+    {"id":"V-S8","title":"XMOS Tuning the Application v3.2.1","url":"https://www.xmos.com/documentation/XM-014888-PC/html/modules/fwk_xvf/doc/user_guide/04_tuning_the_application.html","supports":"causality, reference/mic alignment, AUDIO_MGR_SYS_DELAY and mic_ref_correlate tuning; web indexed text checked, direct fetch406"},
+    {"id":"V-S9","title":"Seeed ReSpeaker XVF3800 product brief","url":"https://files.seeedstudio.com/wiki/respeaker_xvf3800_usb/ReSpeaker_XVF_3800.pdf","local_copy":"sources/ReSpeaker_XVF_3800.pdf","visual_review":"one page rendered and inspected","supports":"variants and bottom-firing mic; advertised5m is not integrated Mini200 acceptance"}
+  ],
+  "conflicts_and_limits": [
+    "The alternate Seeed corporate landing page /product/respeaker-mic-array-v2-0 lists 35x86mm and max16kHz; these conflict with the linked actual phi100 mechanical drawing and current 48k2ch firmware. E1 uses the published drawing plus specific firmware image; unit inspection remains mandatory.",
+    "XMOS silicon/reference firmware values must not be represented as measured Seeed-board USB latency, maximum board input current, or finished Mini200 recognition performance.",
+    "Physical assembly dimensions, electrical hardware mute isolation and final USB descriptor have not been measured."
+  ]
+}

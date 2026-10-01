@@ -1,0 +1,13 @@
+{
+  "schema": "rock-posthoc-stopped-disk-audit-plan/1",
+  "source_commit": "7c5b41a1db7fe36970e3963d661a82c1f90cdd97",
+  "scope": "separate supplemental observation, not retroactive replacement of original 8bd comparison FAIL",
+  "before": "/var/tmp/rock-star-desktop/preview/backups/20260910T081255Z-9869e18f8e5f/userdata.ext4",
+  "after": "/var/tmp/rock-star-desktop/recovered/userdata.ext4",
+  "read_only": true,
+  "inputs": {
+    "game_cache_retention.py": "3151af62bf266144806354f33f89949bca9b5440b2f5f5c4588d0af1c7c66748",
+    "verify-backup.py": "53a1eda3dc3faf2e538b4fa0cbcbae25c070a4cae531d6baea10f891da0f63d2",
+    "wallet_cache_retention.py": "88887dd9f8bd2fd01071ee5c1697332f1402e67ebec89d799f3fba7102df5f54"
+  }
+}

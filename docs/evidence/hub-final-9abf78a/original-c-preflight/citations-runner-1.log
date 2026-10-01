@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/runner/serve.py", line 53, in <module>
+    main()
+    ~~~~^^
+  File "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/runner/serve.py", line 33, in main
+    executor = IsolatedRecipeExecutor(args.launcher, args.worker, Path(__file__).with_name('isolated_entry.py'))
+  File "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/runner/executor.py", line 22, in __init__
+    raise RunnerError('fixed executor components must be regular and not group/world writable')
+runner.protocol.RunnerError: fixed executor components must be regular and not group/world writable

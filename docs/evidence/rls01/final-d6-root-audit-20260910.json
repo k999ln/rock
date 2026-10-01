@@ -1,0 +1,20 @@
+{
+  "schema": "rock-final-d6-root-byte-audit/1",
+  "status": "PASS_BYTES_AND_COMPACT_BINDINGS",
+  "observed_utc": "2026-09-10T11:43:49.362255+00:00",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "raw_archive_sha256": "aa7c64f1e9c58860d27b04399911c354d62e94a843616207da9c0478d7bb4d4e",
+  "raw_regular_files": 916,
+  "raw_expanded_bytes": 378262134,
+  "compact_sha256": "f3f9a961ee181a894bb8aaee901fb8a4c60c7c501c4903dccc89f43df8ec1222",
+  "evidence_bindings": {
+    "independent-readback.json": "independent_readback_sha256",
+    "audit-final.py": "independent_observer_sha256",
+    "github-original.log": "github_original_log_sha256",
+    "raw/launch-plan.json": "launch_plan_sha256",
+    "raw/preparation.json": "preparation_sha256",
+    "raw/business-fd91448c65c74a0eb0ce/report.json": "raw_report_sha256"
+  },
+  "original_read_only_helpers_verified": 3,
+  "scope": "Review and independent byte/summary verification of original D6 evidence; no new workload or extension of acceptance scope."
+}

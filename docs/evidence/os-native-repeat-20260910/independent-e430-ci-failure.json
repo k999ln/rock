@@ -1,0 +1,46 @@
+{
+  "schema": "rock-independent-native-ci-failure-note/1",
+  "observed_utc": "2026-09-10T12:49:11.585274+00:00",
+  "source_commit": "e430648c8ba799d004a5ecd0da8166ca811d3ae5",
+  "run_id": 34477407336,
+  "status": "FAIL",
+  "checks": 14,
+  "python_executions": 1649,
+  "errors": [
+    "test_author_revocation_survives_full_backend_restart_without_disabling_other_game (test_game_connections_tls.GameConnectionsTLS.test_author_revocation_survives_full_backend_restart_without_disabling_other_game)"
+  ],
+  "report_path": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/final-handoff/ci-e430-native-artifact/native-tests/report.json",
+  "report_sha256": "6468659081f20f4ca75d26f676174e466b9f4ec644a4a82c9159fc638202327e",
+  "main_log_sha256": "b6afdedb9873483c88ee5819304cbe4dc5088037fea9c9491c944af56b25b0e0",
+  "failure_trace": "ERROR: test_author_revocation_survives_full_backend_restart_without_disabling_other_game (test_game_connections_tls.GameConnectionsTLS.test_author_revocation_survives_full_backend_restart_without_disabling_other_game)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/os/wallet_backend/client.py\", line 144, in exchange\n    response = connection.getresponse()\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/http/client.py\", line 1478, in getresponse\n    response.begin()\n    ~~~~~~~~~~~~~~^^\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/http/client.py\", line 343, in begin\n    version, status, reason = self._read_status()\n                              ~~~~~~~~~~~~~~~~~^^\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/http/client.py\", line 304, in _read_status\n    line = str(self.fp.readline(_MAXLINE + 1), \"iso-8859-1\")\n               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/os/runner/transport.py\", line 149, in readinto\n    value = self.stream.recv(len(buffer))\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/os/runner/transport.py\", line 98, in recv\n    return self.stream.recv(size)\n           ~~~~~~~~~~~~~~~~^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/ssl.py\", line 1285, in recv\n    return self.read(buflen)\n           ~~~~~~~~~^^^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.13.15/x64/lib/python3.13/ssl.py\", line 1140, in read\n    return self._sslobj.read(len)\n           ~~~~~~~~~~~~~~~~~^^^^^\nTimeoutError: The read operation timed out\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/tests/test_game_connections_tls.py\", line 436, in test_author_revocation_survives_full_backend_restart_without_disabling_other_game\n    intent=self.begin(A1,name,key='begin-'+name)['result'];_,reply=self.approve(A1,intent,key='approve-'+name)\n                                                                   ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/tests/test_game_connections_tls.py\", line 154, in approve\n    return req,self.transports[device].exchange(req)\n               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File \"/home/runner/work/rock/rock/systems/rock-star-os/os/wallet_backend/client.py\", line 188, in exchange\n    raise BackendUnavailable('Wallet response unavailable; reconcile with the same key') from exc\nwallet_backend.client.BackendUnavailable: Wallet response unavailable; reconcile with the same key\n",
+  "original9ab_ci": "34459916162 PASS remains unchanged",
+  "original9ab_arm64": "FAIL retained",
+  "one_pending_repeat": "exact9ab canonical1631/14 only; not this later source",
+  "cause": "UNDETERMINED; not proven ARM64-specific or CPU-caused",
+  "ci_retry_requested": false,
+  "deadlines_changed": false,
+  "three_observed_failure_path_files": {
+    "systems/rock-star-os/tests/test_game_connections_tls.py": {
+      "commits": {
+        "9abf78a80d27aa9f847c4051d20e4c552e407276": "818d9228e87b0f79b1181ea31679fa8dbd01ef6f759787b7aeb52a5bf4c6c324",
+        "e430648c8ba799d004a5ecd0da8166ca811d3ae5": "818d9228e87b0f79b1181ea31679fa8dbd01ef6f759787b7aeb52a5bf4c6c324"
+      },
+      "bytes_equal": true
+    },
+    "systems/rock-star-os/os/wallet_backend/client.py": {
+      "commits": {
+        "9abf78a80d27aa9f847c4051d20e4c552e407276": "50cc2721f9a6fd9af07217f8aec7196b2fa603cac8ce6ccfae862117acce8597",
+        "e430648c8ba799d004a5ecd0da8166ca811d3ae5": "50cc2721f9a6fd9af07217f8aec7196b2fa603cac8ce6ccfae862117acce8597"
+      },
+      "bytes_equal": true
+    },
+    "systems/rock-star-os/os/runner/transport.py": {
+      "commits": {
+        "9abf78a80d27aa9f847c4051d20e4c552e407276": "0fd48c060e8ff2742c5b387b57495e2cbba45c99bcca952d8254e1ac3ea906e6",
+        "e430648c8ba799d004a5ecd0da8166ca811d3ae5": "0fd48c060e8ff2742c5b387b57495e2cbba45c99bcca952d8254e1ac3ea906e6"
+      },
+      "bytes_equal": true
+    }
+  },
+  "comparison_scope": "Exact three source files in the observed test/transport stack only; does not establish an environmental cause or substitute full-source acceptance"
+}

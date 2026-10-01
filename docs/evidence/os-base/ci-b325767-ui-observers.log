@@ -1,0 +1,21 @@
+test_empty_fresh_and_incremental_stages_are_observed_not_success (test_evidence.EvidenceTests.test_empty_fresh_and_incremental_stages_are_observed_not_success) ... ok
+test_extra_job_and_reordered_audit_rejected (test_evidence.EvidenceTests.test_extra_job_and_reordered_audit_rejected) ... ok
+test_guard_cannot_write_or_poweroff_unflagged_host (test_evidence.EvidenceTests.test_guard_cannot_write_or_poweroff_unflagged_host) ... ok
+test_host_rechecks_full_proof_and_rejects_false_guest_pass (test_evidence.EvidenceTests.test_host_rechecks_full_proof_and_rejects_false_guest_pass) ... ok
+test_missing_duplicate_conflicting_and_non_ui_receipts_rejected (test_evidence.EvidenceTests.test_missing_duplicate_conflicting_and_non_ui_receipts_rejected) ... ok
+test_observer_refuses_every_mutation_before_socket_connect (test_evidence.EvidenceTests.test_observer_refuses_every_mutation_before_socket_connect) ... ok
+test_peer_uid_checked_before_request (test_evidence.EvidenceTests.test_peer_uid_checked_before_request) ... ok
+test_read_framing_limits_and_api_errors (test_evidence.EvidenceTests.test_read_framing_limits_and_api_errors) ... ok
+test_read_only_database_does_not_create_or_change_state (test_evidence.EvidenceTests.test_read_only_database_does_not_create_or_change_state) ... ok
+test_remote_guard_cannot_write_or_poweroff_unflagged_host (test_evidence.EvidenceTests.test_remote_guard_cannot_write_or_poweroff_unflagged_host) ... ok
+test_remote_refresh_receipt_requires_ready_queue_and_exact_key (test_evidence.EvidenceTests.test_remote_refresh_receipt_requires_ready_queue_and_exact_key) ... ok
+test_remote_registry_observation_is_read_only (test_evidence.EvidenceTests.test_remote_registry_observation_is_read_only) ... ok
+test_serial_proof_parser_rejects_absent_or_duplicate (test_evidence.EvidenceTests.test_serial_proof_parser_rejects_absent_or_duplicate) ... ok
+test_valid_exact_job_audit_receipts (test_evidence.EvidenceTests.test_valid_exact_job_audit_receipts) ... ok
+test_wallet_changes_never_count_as_tool_success (test_evidence.EvidenceTests.test_wallet_changes_never_count_as_tool_success) ... ok
+test_wrong_input_output_target_or_job_identity_rejected (test_evidence.EvidenceTests.test_wrong_input_output_target_or_job_identity_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.018s
+
+OK

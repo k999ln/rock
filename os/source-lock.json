@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "purpose": "virtual-development-only",
+  "checkedAt": "2026-09-05",
+  "manifestUrl": "https://android.googlesource.com/platform/manifest",
+  "manifestTag": "android-16.0.0_r4",
+  "manifestCommit": "15128c9e27cfa599c48d294babd39286ee8f1426",
+  "product": "rock_cf_x86_64_phone",
+  "releaseConfig": "aosp_current",
+  "releaseAliasTarget": "bp4a",
+  "variant": "userdebug",
+  "rockCheckoutPath": "device/rock",
+  "imageBuildVerified": false,
+  "imageBootVerified": false,
+  "pixelSupported": false
+}

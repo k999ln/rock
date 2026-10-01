@@ -1,0 +1,109 @@
+{
+  "schema": "rockstaros-personal-number-release-audit/1",
+  "evaluatedAt": "2026-09-13",
+  "declaredStatus": "blocked",
+  "activationState": "disabled",
+  "dataCapture": {
+    "collectsPersonalNumber": false,
+    "storesPersonalNumber": false,
+    "storesCardImage": false,
+    "normalProfileField": false,
+    "controller": null,
+    "authorizedPurpose": null,
+    "identityProvider": null,
+    "processors": [],
+    "retentionPeriod": null,
+    "deletionTrigger": null
+  },
+  "controls": {
+    "legalBasis": null,
+    "necessityAssessment": null,
+    "authorizedPersonnelRegister": null,
+    "dataFlowVersion": null,
+    "securityReviewVersion": null,
+    "incidentPlanVersion": null,
+    "vendorOversightVersion": null
+  },
+  "activation": {
+    "environment": null,
+    "startDate": null,
+    "responsiblePerson": null,
+    "independentReviewer": null
+  },
+  "gateEvidence": {
+    "purpose-and-necessity": [],
+    "authorized-operator-and-provider": [],
+    "data-flow-retention-and-deletion": [],
+    "security-and-privacy-review": [],
+    "incident-and-vendor-governance": [],
+    "activation-approval": []
+  },
+  "requirements": [
+    {
+      "id": "disabled-until-approved",
+      "required": true,
+      "status": "pass",
+      "evidence": ["docs/sky-identity-connection.md", "docs/product-baseline.md"],
+      "meaning": "番号・カード画像を取得せず、通常profileにも項目を設けないfail-closed境界"
+    },
+    {
+      "id": "purpose-and-necessity",
+      "required": true,
+      "status": "blocked",
+      "ownerAction": "番号法上許される具体的な事務、必要性、法的根拠、本人への通知内容を専門家と確定する",
+      "requiredEvidence": ["authorized-processing", "necessity-assessment", "legal-review", "notice"]
+    },
+    {
+      "id": "authorized-operator-and-provider",
+      "required": true,
+      "status": "blocked",
+      "ownerAction": "取扱主体、事務取扱担当者、本人確認provider、委託・再委託関係と契約上の責任を確定する",
+      "requiredEvidence": ["controller", "authorized-personnel", "identity-provider", "processor-contracts"]
+    },
+    {
+      "id": "data-flow-retention-and-deletion",
+      "required": true,
+      "status": "blocked",
+      "nextAction": "取得、利用、保存、提供、監査、保存期限到来、削除・媒体廃棄までのdata flowと証跡を設計・審査する",
+      "requiredEvidence": ["data-flow", "retention", "deletion", "media-disposal", "audit-log"]
+    },
+    {
+      "id": "security-and-privacy-review",
+      "required": true,
+      "status": "blocked",
+      "nextAction": "通常profileから分離し、組織的・人的・物理的・技術的安全管理措置、アクセス制御、暗号鍵、外的環境を審査する",
+      "requiredEvidence": ["organizational", "personnel", "physical", "technical", "key-management", "external-environment"]
+    },
+    {
+      "id": "incident-and-vendor-governance",
+      "required": true,
+      "status": "blocked",
+      "nextAction": "漏えい時の拡大防止、調査、影響範囲、委員会報告、本人通知、再発防止と委託先監督を手順化する",
+      "requiredEvidence": ["incident-response", "regulator-notification", "data-subject-notification", "vendor-oversight"]
+    },
+    {
+      "id": "activation-approval",
+      "required": true,
+      "status": "blocked",
+      "ownerAction": "上記全gateの証拠を独立確認した後、対象環境・開始日・責任者を指定して有効化を明示承認する",
+      "requiredEvidence": ["independent-review", "owner-activation"]
+    }
+  ],
+  "references": [
+    {
+      "id": "ppc-business-guideline",
+      "url": "https://www.ppc.go.jp/legal/policy/my_number_guideline_jigyosha/",
+      "scope": "利用・収集・保管・提供の制限と安全管理措置"
+    },
+    {
+      "id": "ppc-guideline-materials",
+      "url": "https://www.ppc.go.jp/legal/policy/document/",
+      "scope": "現行の事業者向け説明資料"
+    },
+    {
+      "id": "ppc-guideline-faq",
+      "url": "https://www.ppc.go.jp/legal/policy/faq/",
+      "scope": "委託、漏えい、運用に関する現行Q&A"
+    }
+  ]
+}

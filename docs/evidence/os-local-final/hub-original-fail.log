@@ -1,0 +1,19 @@
+{"status": "FAIL", "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/hub-fault-mov_i28m"}
+Traceback (most recent call last):
+  File "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-hub-faults.py", line 354, in <module>
+    if __name__ == '__main__': main()
+                               ~~~~^^
+  File "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-hub-faults.py", line 251, in main
+    original = tree_manifest(inputs['rootfs.ext4'],output/'original-runtime')
+  File "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-hub-faults.py", line 79, in tree_manifest
+    require(result.returncode == 0 and not lines and (parent/prefix).exists(),
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            'runtime export failed: '+prefix+'; '+result.stderr[:2000])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/platform/hub_fault_fixture.py", line 49, in require
+    if not value: raise ValueError(message)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: runtime export failed: etc; debugfs 1.47.2 (1-Jan-2025)
+dump_file: Invalid argument while changing ownership of /var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/hub-fault-mov_i28m/original-runtime/etc/rock-wallet/backend.json
+dump_file: Invalid argument while changing ownership of /var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial/hub-fault-mov_i28m/original-runtime/etc/rock-wallet/backend-token
+

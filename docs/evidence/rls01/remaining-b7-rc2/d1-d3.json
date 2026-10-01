@@ -1,0 +1,90 @@
+{
+  "schema": "rock-d1-d3-originals-preservation/1",
+  "status": "ALL_CLOSED_MEMBER_BYTES_AND_ORIGINALS_UNCHANGED",
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "completed_report_sha256": "c6e4817d2ffe4c9d8393a5263d8e8fd4718bfdeb78e7acc2ff0ffb052dc76831",
+  "freeze_sha256": "918ecd2c3e98fbc9f585f2b2f8795ea0ef4752fe684365d2b155ba298a11fcfd",
+  "image_sha256": {
+    "Image": "8e2a90cd5cb19bbef756a059f4b636acdf9da9042331a0801ad22a40605cdcc1",
+    "rootfs.ext4": "8ac63eca1a9bf49d3e5f45f33a47c2eb337612a5b6fa5951cf88040929b87cf5",
+    "stage0.cpio.gz": "36c868b3e78975bd937a8565562e11f50c6132687f2d2698c3a3d984fdf894b9"
+  },
+  "source_files_verified": 1725,
+  "authority_saved_canonical_sha256": "fc2357c6658e903640b677b1b97e983aed2271625617a0193728f9a086d0d433",
+  "authority_current_database_opened": false,
+  "boots": 13,
+  "isolation_checks": 47,
+  "guest_tool_checks": 45,
+  "regular_files": 129,
+  "regular_bytes": 1681764405,
+  "archive": {
+    "bytes": 69206929,
+    "sha256": "1ebe22e07f340a72c92e11b6c2bdda1a3d2ccb5657b6c36862de0d31e80dca79"
+  },
+  "all_archive_member_hash_size_mode_match": true,
+  "all_original_stat_identity_and_bytes_unchanged": true,
+  "special_entries_not_copied": [],
+  "before_audit_sha256": "ba3a2f9f7ac842694b66f5a7891c76c85fcb36f0e0ac9adafa4e4cacc8fec409",
+  "after_audit_sha256": "afd739acb64f73487a4c47be6822851708d81623c736f751a16921e36ab02f98",
+  "reader_sha256": "e14c0469ffab00e511b41168ade2d54c37bfb00dfe148e9a70951e00955995ef",
+  "preserver_sha256": "e2f9656632c987141ee85ee515544c61a6942e6173ce7775ea3d9987ad25ed5b",
+  "elapsed_seconds": 16.278610834036954,
+  "finished_utc": "2026-09-11T16:51:58.570810+00:00",
+  "scope": "Private raw closed evidence, including userdata and diagnostic derived rootfs. No runtime rerun, live authority/SQLite open, QMP/process action, image repair, checkout or GitHub mutation. Host tar members read in stream without extraction. D3 financial, signed-stage0, whole OS/release gates remain separate.",
+  "gate_criteria": [
+    {
+      "gate": "boot",
+      "boots": 2,
+      "status": "PASS",
+      "report_sha256": "877b7345f3b934f5616d9e213686eb65a3f191bf3b3d72798b671c70cf5d20cc"
+    },
+    {
+      "gate": "system",
+      "boots": 2,
+      "status": "PASS",
+      "report_sha256": "e32c934091ee896e8c6c6a89c3e10b1f5d080468b7f07b41503318a39a1888f1"
+    },
+    {
+      "gate": "isolation",
+      "boots": 1,
+      "status": "PASS_SCOPED",
+      "report_sha256": "f5bd309e373c5d2551d92843831a6e7e0bf62690fd279ffcb9bed5dae1f4376f"
+    },
+    {
+      "gate": "nonfinancial",
+      "boots": 8,
+      "status": "PASS_SCOPED",
+      "report_sha256": "acef5c530ba7e00619734c8a73e3680870a3856b0bb7f3fa08740c82cce71424"
+    },
+    {
+      "gate": "store",
+      "boots": 2,
+      "status": "PASS_SCOPED",
+      "report_sha256": "49b5f30c67bb0c24c5ed06b4cc37607cdf415289fc2c489e65d152eb69d16a86"
+    },
+    {
+      "gate": "remote",
+      "boots": 2,
+      "status": "PASS_SCOPED",
+      "report_sha256": "0af49067c7b523d7e786c11fb4ffe5e9812c01b2bf44142477b33cb132fdfef8"
+    },
+    {
+      "gate": "negative",
+      "boots": 1,
+      "status": "PASS_SCOPED",
+      "report_sha256": "8389c31373030e1e94d34ae532c3c1fa2d90331adbe96da6c101963986cd5646"
+    },
+    {
+      "gate": "hubfaults",
+      "boots": 3,
+      "status": "PASS_SCOPED",
+      "report_sha256": "5d8c6c923b4fbbcf16f44431ad848f84e0f7b6be6e631ac4fc874a8a76914e38"
+    }
+  ],
+  "limitations": [
+    "Saved closed reports and raw markers were independently read and all source/image/original file bytes were hashed. Underlying guest semantic tests were not rerun; live or copied SQLite databases were not opened by this review.",
+    "D1 direct-kernel four boots and D3 isolation/nonfinancial nine boots only. D3 online financial/first-use, signed-stage0 D2/D4/D5/D6, production signature, legal and public release are separate.",
+    "Two preparation-audit errors were retained: unnecessarily rejecting a legitimate 3-link source patch, and a draft reader spelling the second remote key incorrectly. The reader was corrected to original source contract; no guest runtime/evidence file changed or guest test rerun."
+  ],
+  "original_summary_sha256": "2aea0bf8e76e17b52be747ff15e10fffa4d877086d3938a21c9c0dfc1433be8a"
+}

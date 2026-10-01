@@ -1,0 +1,180 @@
+{
+  "schema": "rock-rc2-d4-ci-proposal/1",
+  "status": "IMPLEMENTATION_PROPOSAL_NOT_RUN",
+  "repository": "k999ln/rock",
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "source_tree": "948a4f8a8b66bddb116ea5b557d120d4eef53e58",
+  "candidate": {
+    "release_id": 386933271,
+    "tag": "v1.0.0-preview.20260911-rc2",
+    "version": "1.0.0-preview.20260911-rc2",
+    "index_sha256": "0440543f5846cf634f5131533eff522f66f4e42507a22173812a19f53198f941",
+    "assets": [
+      {
+        "id": 556968817,
+        "name": "candidate-export.json",
+        "bytes": 1142,
+        "sha256": "ed81ef58adff464d0b0b590c9de04296af7dbb5147e5f628aab2fae91980854a"
+      },
+      {
+        "id": 556968820,
+        "name": "candidate-index.json",
+        "bytes": 1091,
+        "sha256": "0440543f5846cf634f5131533eff522f66f4e42507a22173812a19f53198f941"
+      },
+      {
+        "id": 556968816,
+        "name": "candidate-manifest.json",
+        "bytes": 106109,
+        "sha256": "9887796bd85a32263f143c34a6500f7349e33c221b93120e09ea9be9cbc4ecb6"
+      },
+      {
+        "id": 556968818,
+        "name": "preview-installation-ja.md",
+        "bytes": 13520,
+        "sha256": "d9b526ef55f189133c300084b43b0339c5c94f5fa584f5ff5309453a23e33f82"
+      },
+      {
+        "id": 556968815,
+        "name": "preview-legal-notice.md",
+        "bytes": 2863,
+        "sha256": "11401fa9e337b282a65f552e9354c41591ebaa0b2a6c2c78c75bdf2e207387c0"
+      },
+      {
+        "id": 556968828,
+        "name": "preview-release-notes.md",
+        "bytes": 7611,
+        "sha256": "b58a594e38b0e2d40c10c02fd49caa06d695129710c5ffa1c16e6a0d5d1d13a8"
+      },
+      {
+        "id": 556968829,
+        "name": "preview.py",
+        "bytes": 55048,
+        "sha256": "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce"
+      },
+      {
+        "id": 556968830,
+        "name": "rockstaros-1.0.0-preview.20260911-rc2-macos-arm64.tar.gz",
+        "bytes": 1003224286,
+        "sha256": "5ce072f65fc4e24212ff6acc6887cbb03f3e7f664b50d574756738892e4ed95e"
+      }
+    ]
+  },
+  "public_test_only": {
+    "envelope": {
+      "name": "acceptance-manifest-public-test.json",
+      "bytes": 106276,
+      "sha256": "6d3576b84aef98398005fd58717a9190e578706208ed6211a91ebece4d22c403"
+    },
+    "key": {
+      "name": "acceptance-public-test-key.der",
+      "bytes": 44,
+      "sha256": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9"
+    },
+    "allowed_manifest_difference": [
+      "trust"
+    ],
+    "unsigned_trust": "EXTERNAL_RELEASE_KEY",
+    "test_trust": "PUBLIC_RFC8032_DEVELOPMENT_ONLY",
+    "may_add_to_candidate_release": false
+  },
+  "frozen": {
+    "freeze": {
+      "name": "freeze-manifest.json",
+      "bytes": 454100,
+      "sha256": "918ecd2c3e98fbc9f585f2b2f8795ea0ef4752fe684365d2b155ba298a11fcfd"
+    },
+    "profile": {
+      "name": "profile.json",
+      "bytes": 5567,
+      "sha256": "b023a0ad12b6c000c440f200271fac1c03863b75f6456b64dcaf42677095de85"
+    },
+    "source_archive_sha256": "bbe4b2e6417587c55c5344508cbb2aa5ec8fdff878eeb2a55719cc9165408404",
+    "source_file_count": 1725,
+    "native_member_count": 702,
+    "files_sha256": {
+      "Image": "8e2a90cd5cb19bbef756a059f4b636acdf9da9042331a0801ad22a40605cdcc1",
+      "rootfs.ext4": "8ac63eca1a9bf49d3e5f45f33a47c2eb337612a5b6fa5951cf88040929b87cf5",
+      "stage0.cpio.gz": "36c868b3e78975bd937a8565562e11f50c6132687f2d2698c3a3d984fdf894b9"
+    },
+    "trusted_scripts_sha256": {
+      "scripts/release_signing.py": "54fb79e1d770e3ca35ab86d0848255b858a28cd430f0a679ba6e54dfec024b75",
+      "systems/rock-star-os/os/desktop/preview.py": "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce"
+    },
+    "matrix_orchestrator": {
+      "name": "run-d4-frozen.py",
+      "bytes": 6257,
+      "sha256": "8a9f780eec52a41888b6e3cb6354740ad4f41372fb7094116fc136bd06b4e269"
+    }
+  },
+  "matrix": [
+    {
+      "name": "ui-startup",
+      "verifier": "systems/rock-star-os/os/update/verify-ui-startup.py",
+      "verifier_sha256": "5887cb2ed198429df20f3cc27b2c6252c20d1aa8ffae56d28a8321b28dd48be7",
+      "boots": 14,
+      "native_per_boot_seconds": 180,
+      "outer_seconds": 3120
+    },
+    {
+      "name": "ab",
+      "verifier": "systems/rock-star-os/os/update/verify-qemu.py",
+      "verifier_sha256": "270723914fe6a10a40e523705ea930a0650d35fad2f1d709dece9cccdadf86f6",
+      "boots": 8,
+      "native_per_boot_seconds": 300,
+      "outer_seconds": 3000
+    },
+    {
+      "name": "faults",
+      "verifier": "systems/rock-star-os/os/update/verify-faults.py",
+      "verifier_sha256": "f70fd4deeb8f981bfb9d88fe7cda71187b0f260e6c4662e912e0a2505e742930",
+      "boots": 13,
+      "native_per_boot_seconds": 300,
+      "outer_seconds": 4500
+    },
+    {
+      "name": "auth-health",
+      "verifier": "systems/rock-star-os/os/update/verify-auth-health.py",
+      "verifier_sha256": "8c7661b50fd1bbbbf6f17a6b43f0912c0cd0bca924acbe23e25084d0aaa9a0c1",
+      "boots": 3,
+      "native_per_boot_seconds": 300,
+      "outer_seconds": 1200
+    },
+    {
+      "name": "data-abi",
+      "verifier": "systems/rock-star-os/os/update/verify-data-abi.py",
+      "verifier_sha256": "3b00a9e952de73f5a845fd309580d6bb4ef515034b16edbc0afe00b501fe9355",
+      "boots": 3,
+      "native_per_boot_seconds": 180,
+      "outer_seconds": 840
+    }
+  ],
+  "limits": {
+    "boots": 41,
+    "outer_seconds_sum": 12660,
+    "job_minutes": 360,
+    "minimum_free_bytes_after_dependencies": 28991029248,
+    "minimum_free_bytes_before_dependencies": 33285996544,
+    "retained_d4_estimate_bytes": 13958643712,
+    "compressed_evidence_estimate_bytes": 2684354560,
+    "free_reserve_bytes": 8589934592,
+    "minimum_cpus": 4,
+    "minimum_ram_bytes": 4294967296,
+    "evidence_chunk_max_bytes": 1073741824,
+    "automatic_retry": false,
+    "delete_local_evidence": false,
+    "step_minutes_sum": 343,
+    "job_overhead_minutes": 17
+  },
+  "evidence_destination": {
+    "release_id": 387142563,
+    "tag": "v1.0.0-preview.20260911-rc2-d4-evidence",
+    "required_draft": true,
+    "required_prerelease": true,
+    "required_target_commitish": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+    "must_differ_from_candidate": true,
+    "never_publish_or_patch_release": true,
+    "status": "ROOT_CREATED_EMPTY_DRAFT_PINNED"
+  },
+  "scope": "Independent Linux D4 only; no managed signing, license clearance, full D0-D6, lost-VM restore or Mac installation claim"
+}

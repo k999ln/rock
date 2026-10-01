@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-12",
+  "scope": "local Sky web and Rockstar Ledger on the same PC",
+  "source": {
+    "rockstarLedgerCommit": "4ddece0266abfc4874c0836192877b5125436007",
+    "distributionSha256": "c4a5e30766b333551204658bb5dd66affd4a7b53fc797b31082e65e5f1cda314"
+  },
+  "checks": {
+    "catalogEntryVisible": true,
+    "categoryVisible": true,
+    "localLedgerConnected": true,
+    "currencyTotalsShownSeparately": true,
+    "actionAlertsShown": true,
+    "subscriptionRowsShown": true,
+    "errorOverlay": false,
+    "consoleErrors": 0,
+    "pythonUnitTests": 4,
+    "skyNodeTests": 100,
+    "workerApiAssertions": 143,
+    "productionBuild": "pass",
+    "chatSuggestedQuestion": "pass",
+    "chatFreeTextQuestion": "pass",
+    "chatUsesLocalLedgerOnly": true,
+    "chatAutomaticCancellation": false,
+    "coverageSourcesShown": 6,
+    "coverageRefusesFalseComplete": true,
+    "historicalSubscriptions": 10,
+    "transactionsImported": 0,
+    "missingRenewalDates": 3
+  },
+  "privacy": {
+    "personalDatabaseCommitted": false,
+    "personalScreenshotCommitted": false,
+    "skyAccess": "read-only"
+  },
+  "notProven": [
+    "HTTPS hosted Sky to loopback connection",
+    "native Sky MCP broker persistence",
+    "Wallet cost posting",
+    "complete Apple, Google Play, card, bank, PayPal, and billing-email account-history audit",
+    "automated cancellation, payment, or tax filing"
+  ],
+  "result": "PASS_LOCAL_PC"
+}

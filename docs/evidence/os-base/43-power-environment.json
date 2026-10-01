@@ -1,0 +1,38 @@
+{
+  "schema": "rock-soak-host-power-observation/1",
+  "run": 43,
+  "status": "ENVIRONMENT_INTERRUPTION_OBSERVED",
+  "publication": {
+    "kind": "public-derived-evidence",
+    "original_basename": "43-pmset-selected-raw.log",
+    "original_sha256": "22962cad5cc4f0cc45b2f8030aa8916dc8f1d3cda55a092371af45eef549875c",
+    "original_unchanged": true,
+    "selection": "Exactly the Sleep and Wake records at the two named timestamps from read-only pmset -g log",
+    "omitted": "Other power records, WakeRequest details, kernel wake reasons, process/device identifiers and unrelated personal activity are not published."
+  },
+  "events": [
+    {
+      "event": "Sleep",
+      "reason": "Low Power Sleep",
+      "local_time": "2026-09-09T19:55:54-04:00",
+      "utc_time": "2026-09-09T23:55:54Z",
+      "power_source": "Battery",
+      "charge_percent": 1,
+      "reported_duration_seconds": 2217
+    },
+    {
+      "event": "Wake",
+      "local_time": "2026-09-09T20:32:51-04:00",
+      "utc_time": "2026-09-10T00:32:51Z",
+      "power_source": "AC",
+      "charge_percent": 1
+    }
+  ],
+  "later_power_observation": {
+    "observed_utc": "2026-09-10T00:50:18.540902+00:00",
+    "power_source": "AC Power",
+    "charge_percent": 24,
+    "state": "charging"
+  },
+  "interpretation": "The host low-power hibernation overlaps the interrupted QEMU/observer interval. Classify run43 as an environment-interrupted FAIL; do not waive OCR/sample deadlines or infer continuous OS endurance."
+}

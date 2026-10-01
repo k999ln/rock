@@ -1,0 +1,69 @@
+{
+  "schema": "rock-startup-update-acceptance/1",
+  "gate": "D4",
+  "status": "PASS_SCOPED",
+  "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "input_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+    "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+  },
+  "actual_boots": 41,
+  "reports": [
+    {
+      "report": "ui-startup-b8287bc.json",
+      "sha256": "ae44aff598b60a335234012fe24fcbd2e8abdd44342b30ca9ba189b1e8efd4f2",
+      "actual_boots": 14,
+      "status": "PASS"
+    },
+    {
+      "report": "ab-updates-b8287bc.json",
+      "sha256": "10c77907db18fc6b8a706c6c89dfb99757c1c7ceb8a9dfd197662efb2b602933",
+      "actual_boots": 8,
+      "status": "PASS"
+    },
+    {
+      "report": "ab-faults-b8287bc.json",
+      "sha256": "57348ca8090008a7b3ecffc672dcebbada5afa96f7b944264a080f9e6bcf34f2",
+      "actual_boots": 13,
+      "status": "PASS"
+    },
+    {
+      "report": "auth-health-b8287bc.json",
+      "sha256": "645297baf1445d65b0f20bdfb7d1e336f650310c5c7f2f7729d4fa3c37b16b2b",
+      "actual_boots": 3,
+      "status": "PASS"
+    },
+    {
+      "report": "data-abi-b8287bc.json",
+      "sha256": "d9907efe96b3b08306b3f7b531de719b8457e0800402a09537a7665361326ff6",
+      "actual_boots": 3,
+      "status": "PASS"
+    }
+  ],
+  "required_coverage": {
+    "fresh_ui_health_identity_and_rendered_loop": "ready two boots plus source15/root C8/observer guards; separate actual visual review",
+    "absent_frozen_crashed_ui_not_committed": "each four actual stage0 boots; failed B trials then retained A",
+    "signature_payload_installed_slot_tamper": "eight-boot A/B suite rejects before installation or slot boot",
+    "partial_write_and_interruption": "actual one MiB partial new prefix/old suffix; guest recovery; no host state rewrite",
+    "saved_state_boundary_interruptions": "payload_synced/pending_saved/attempt_saved/committed_saved actual owned cuts",
+    "full_data": "actual zero available blocks and errno28; retained state hash; guest recovery and subsequent valid install",
+    "data_abi_mismatch": "proper development signature independently verified; frozen guest rejects foreign ABI before slot/state writes; next real B boot retains refusal proof",
+    "authenticator_health": "frozen health required before mark-good; confirmation interrupted then retained B"
+  },
+  "limits": [
+    "QEMU isolated development fixture only",
+    "public RFC8032 development trust; no production secure boot or hardware antirollback",
+    "derived test images contain explicit observers only; original image triple unchanged",
+    "headless tests do not count as GUI tests",
+    "no userdata migration implemented or implied",
+    "post-commit continuous UI supervision not measured",
+    "whole OS D0-D6 remains INCOMPLETE; D2/D5/D6 evidence pending",
+    "past failed trials retained separately; none rewritten as PASS"
+  ],
+  "visual_review": {
+    "report": "ui-startup-b8287bc-visual-review.json",
+    "sha256": "c1f3a5bf24e6d45537a2ec4a1dc65e7d03fe2ae59ab6fb1ce15ad20640e6751b",
+    "scope": "root visual inspection of actual ready/absent/freeze/crash/recovered frames"
+  }
+}

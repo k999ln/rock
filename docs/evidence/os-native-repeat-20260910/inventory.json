@@ -1,0 +1,50 @@
+{
+  "schema": "rock-native-repeat-committed-evidence/1",
+  "status": "PASS_EXACT9AB_REPEAT_OTHER_FAILURES_RETAINED",
+  "files": {
+    "host-readback.json": {
+      "bytes": 4022,
+      "sha256": "f799083676e65cd2137e8ca022d20279a22e2f0163302db3900fc7a1b7532912"
+    },
+    "independent-ba900-ci-timeout.json": {
+      "bytes": 5687,
+      "sha256": "a8352573d199b9cb9700e6286fdce7db783606c99caa0c4b5085dce352be46f1"
+    },
+    "independent-e430-ci-failure.json": {
+      "bytes": 5247,
+      "sha256": "8281eb49f61f0596fb32b36294e94c6b8036961c8aee8e7bf85af10ed8e05e1e"
+    },
+    "linux-processes-after.json": {
+      "bytes": 89,
+      "sha256": "a097a6874a7e4e3cb81740ee91ee1f49beab8165f8d28712ef93c230f9369463"
+    },
+    "mac-after.json": {
+      "bytes": 3025,
+      "sha256": "2bdaeb1e956aebf6331da36a3b8a2a254b78b35cf13d6bf2eb9fb174f219603d"
+    },
+    "mac-before.json": {
+      "bytes": 3472,
+      "sha256": "b3402291120f5f5f154586011037823ddc55288e3a3adbdb46f89d00d1942c62"
+    },
+    "native-report.json": {
+      "bytes": 96888,
+      "sha256": "69b519c01696dcd990938fb77187f290de3aab07649798a3dacd60873f23b110"
+    },
+    "plan.json": {
+      "bytes": 5689,
+      "sha256": "4654bbf7f6b2e407d9f42eb00169723902e28ef999fff3d8c2b0256fcc7d6f0d"
+    },
+    "repeat-report.json": {
+      "bytes": 2828,
+      "sha256": "f0e2f7890f289da5d1625c6aa67a0d1c857df99cfe49ab2af8906f4d7bd4e8c7"
+    },
+    "root-completion-signal.json": {
+      "bytes": 729,
+      "sha256": "3cb2392f03a1158a828bed557a49eea122c13c8db0bd1167b4f8c23933296901"
+    },
+    "run-final-native-r2.py": {
+      "bytes": 5288,
+      "sha256": "449df02b9efa3d3cd99ef472a2937a3c2fa8130b4aa2eec97ee24040bee8ecb0"
+    }
+  }
+}

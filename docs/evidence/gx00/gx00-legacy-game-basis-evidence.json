@@ -1,0 +1,49 @@
+{
+  "schema": "rock-gx00-legacy-game-basis-host-evidence/1",
+  "status": "HOST_SYNTHETIC_PASS",
+  "base_commit": "e05f69001741d9687d62a1b0c1a128aae9e475c5",
+  "dependencies": [
+    {
+      "patch": "gx00-connections-runtime.patch",
+      "sha256": "05f49d3bc9b75a3c26f71d2f0f940e37c21d683477769b41bd297234c1dd44ad"
+    },
+    {
+      "patch": "game-constructor-cleanup.patch",
+      "sha256": "261460ec767cb5f586824b4ec7865b717423f528b170193b50192fd63c196694"
+    }
+  ],
+  "patch_sha256": "49da9a5d85b16bee2086e2476d8471f325cb0da6e10ec963a20a1d43c7a1f692",
+  "files": {
+    "systems/rock-star-os/tests/game_legacy_basis.py": "09adb94581dac474884d5da1cdb46067a3bd8e6a64935d54048e9fbdb730c651",
+    "systems/rock-star-os/tests/test_game_legacy_basis.py": "f94916afa03b3efdb7554b2f6ef5918d9c37bd7556bd03c63dd5d34e2a564cd0",
+    "docs/gx00-legacy-game-basis.md": "a5d23b093315e04b54650b0253154195b9fcc82045a28f54ee48a0535c18a55a"
+  },
+  "test_log": {
+    "path": "work/gx00-legacy-game-final-v2.log",
+    "sha256": "fceace21ac631c6d96729a222ec38d41996e8877db60f1dac67131471c90392f",
+    "tests": 2,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "warnings": 0
+  },
+  "tested": [
+    "real legacy v1 TLS population",
+    "actual OwnerRouter identity pinned before C adoption",
+    "all original typed table/schema digests after adoption",
+    "available3112/pending237/hold1000/billed888 retained",
+    "existing revoked credential/public record/counter retained",
+    "all original Wallet and Device API receipts plus BLOB retained",
+    "real managed TLS 2 owners / 3 devices / 4 game connections",
+    "actual scheduler CLAIMED to existing PAID acknowledgement without another bill",
+    "same-month A1/A2 identical receipt",
+    "cross-owner and revoked game/ATM rejection"
+  ],
+  "not_tested": [
+    "current-copy restoration/new epoch game handover",
+    "OS/QEMU/data ABI/game backup restore",
+    "external game HTTP session provider",
+    "real funds",
+    "general GX00 completion"
+  ]
+}

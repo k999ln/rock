@@ -1,0 +1,59 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/.vinext/
+/out/
+
+# misc
+.DS_Store
+._*
+__MACOSX/
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local environment
+.env*
+!.env.example
+!**/.env.example
+
+# deployment and generated files
+.vercel
+next-env.d.ts
+/dist/
+/.wrangler/
+/outputs/
+/work/
+
+*.tsbuildinfo
+/data/discovered.json
+/data/*.tmp
+
+# Android/OS generated artifacts and local toolchains
+/android/.gradle/
+/android/**/build/
+/android/local.properties
+/android/.idea/
+*.jks
+*.keystore
+/os/local/
+
+# Python tool caches
+__pycache__/
+*.pyc

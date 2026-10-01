@@ -1,0 +1,7 @@
+RockstarOS 1.0 Developer Preview
+{
+  "status": "REMOVED",
+  "deleted": "owned VM and all its OS data/in-VM backups",
+  "retained": "host package, receipts and separately exported backups",
+  "directory": "/Users/kaiya/Library/RockstarOS/rls01-github-smoke1"
+}

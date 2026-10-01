@@ -1,0 +1,261 @@
+{
+  "title": "rocketstar 質量・性能モデル独立監査",
+  "audit_date": "2026-09-24",
+  "audit_scope": "Source preservation, isolated replay, independent scalar arithmetic, register consistency, retained-payload sensitivity.",
+  "physical_validation": false,
+  "manufacturing_release": false,
+  "flight_release": false,
+  "source_directory": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/outputs/rocketstar_C3_package",
+  "sources": {
+    "mass_study.py": {
+      "sha256_before": "609ba3bc1eff55bd63d56576580d04390a54898107193c6e7a73243617d36e39",
+      "sha256_after": "609ba3bc1eff55bd63d56576580d04390a54898107193c6e7a73243617d36e39"
+    },
+    "mass_study.json": {
+      "sha256_before": "10325fcd3c62847ddb6c4cb3e2383fb35b2b40145a8a3fa046bf3a27bcad410d",
+      "sha256_after": "10325fcd3c62847ddb6c4cb3e2383fb35b2b40145a8a3fa046bf3a27bcad410d"
+    },
+    "mass_study.md": {
+      "sha256_before": "6768a221b5c479659e4b0e342db48aa1b7762b635926f93a3b324a0b644df1b7",
+      "sha256_after": "6768a221b5c479659e4b0e342db48aa1b7762b635926f93a3b324a0b644df1b7"
+    },
+    "design_register.json": {
+      "sha256_before": "9dfeff10b6f01cda7b84d77450abdc78ddae23a8d8675c40705ac5e4488250b9",
+      "sha256_after": "9dfeff10b6f01cda7b84d77450abdc78ddae23a8d8675c40705ac5e4488250b9"
+    }
+  },
+  "reproduction": {
+    "isolated_directory": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/work/rocket_complete_v1/mass_audit/replay",
+    "python": "3.14.7",
+    "script_bytes_match": true,
+    "json_bytes_match": true,
+    "json_values_match": true,
+    "markdown_bytes_match": true,
+    "process_exit_code": 0,
+    "stdout": {
+      "sensitivity_cases": 96,
+      "fixed_dry_inverse_cases": 192,
+      "dry_growth_inverse_cases": 144,
+      "outputs": [
+        "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/work/rocket_complete_v1/mass_audit/replay/mass_study.md",
+        "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/work/rocket_complete_v1/mass_audit/replay/mass_study.json"
+      ]
+    },
+    "source_unchanged": true
+  },
+  "counts": {
+    "forward_rows": 96,
+    "unique_forward_input_tuples": 84,
+    "fixed_dry_inverse_rows": 192,
+    "hypothetical_dry_growth_inverse_rows": 144,
+    "inverse_crossings": 290,
+    "inverse_no_crossing_rows": 46,
+    "independently_checked_rows": 434,
+    "independently_checked_return_table_rows": 4,
+    "scalar_field_comparisons": 4790
+  },
+  "independent_checks": {
+    "all_checked_numeric_fields_match": true,
+    "maximum_absolute_scalar_difference": 3.637978807091713e-12,
+    "maximum_inverse_residual_m_s": 3.637978807091713e-12,
+    "maximum_growth_law_difference_t": 0.0,
+    "mass_conservation_and_category_checks": true,
+    "original_search_limits_replayed_not_global_impossibility_proof": true
+  },
+  "nominal_comparison_B0": {
+    "s2_dry_t": 18,
+    "s2_return_t": 4,
+    "s2_ascent_t": 150.0,
+    "s2_residual_t": 0.6,
+    "payload_t": 1.0,
+    "isp1_s": 330.0,
+    "isp2_s": 370.0,
+    "s2_stage_t": 172.6,
+    "s2_with_payload_t": 173.6,
+    "launch_t": 618.6,
+    "s1_end_t": 238.60000000000002,
+    "s2_end_t": 23.6,
+    "loaded_propellant_and_residual_t": 559.6,
+    "dv1_m_s": 3083.0265488832174,
+    "dv2_m_s": 7240.618654241352,
+    "dv_total_m_s": 10323.645203124568,
+    "illustrative_two_burn_return_required_t": 4.896384216710427,
+    "illustrative_two_burn_return_margin_t": -0.8963842167104268,
+    "covers_illustrative_two_burn_return": false,
+    "margins_m_s": {
+      "9600": 723.6452031245681,
+      "9800": 523.6452031245681,
+      "10080": 243.64520312456807,
+      "10290": 33.64520312456807
+    }
+  },
+  "approximately_819_7_t_inverse_comparison": {
+    "dry_anchor_t": 22.0,
+    "return_t": 6.0,
+    "isp1_s": 320.0,
+    "isp2_s": 360.0,
+    "target_m_s": 10290.0,
+    "marginal_dry_per_propellant": 0.03,
+    "search_ascent_range_t": [
+      0.0,
+      2000.0
+    ],
+    "status": "first_mathematical_crossing",
+    "solution": {
+      "s2_dry_t": 27.73949039560431,
+      "s2_return_t": 6.0,
+      "s2_ascent_t": 339.31634652014367,
+      "s2_residual_t": 0.6,
+      "payload_t": 1.0,
+      "isp1_s": 320.0,
+      "isp2_s": 360.0,
+      "s2_stage_t": 373.65583691574795,
+      "s2_with_payload_t": 374.65583691574795,
+      "launch_t": 819.655836915748,
+      "s1_end_t": 439.65583691574795,
+      "s2_end_t": 35.33949039560431,
+      "loaded_propellant_and_residual_t": 750.9163465201437,
+      "dv1_m_s": 1954.7157960503212,
+      "dv2_m_s": 8335.284203949679,
+      "dv_total_m_s": 10290.0,
+      "illustrative_two_burn_return_required_t": 7.460270617346975,
+      "illustrative_two_burn_return_margin_t": -1.4602706173469748,
+      "covers_illustrative_two_burn_return": false,
+      "margins_m_s": {
+        "9600": 690.0,
+        "9800": 490.0,
+        "10080": 210.0,
+        "10290": 0.0
+      }
+    }
+  },
+  "conditional_comparison_counts": {
+    "10080": {
+      "ascent_comparison_pass_rows": 4,
+      "ascent_and_illustrative_return_pass_rows": 2,
+      "interpretation": "Rows only, not unique designs, trajectory closure, or qualification."
+    },
+    "10290": {
+      "ascent_comparison_pass_rows": 2,
+      "ascent_and_illustrative_return_pass_rows": 0,
+      "interpretation": "Rows only, not unique designs, trajectory closure, or qualification."
+    }
+  },
+  "retained_payload_cases": [
+    {
+      "retained_payload_t": 0.0,
+      "terminal_mass_t": 18.6,
+      "return_start_with_4t_t": 22.6,
+      "illustrative_150_600_m_s_return_required_t": 4.896384216710429,
+      "illustrative_shortfall_against_4t_t": 0.8963842167104286,
+      "legacy_allocated_departure_dv_m_s": 127.23517552065934,
+      "legacy_allocated_landing_dv_m_s": 498.172764713937,
+      "status": "conditional_arithmetic_not_approved_return_case"
+    },
+    {
+      "retained_payload_t": 0.5,
+      "terminal_mass_t": 19.1,
+      "return_start_with_4t_t": 23.1,
+      "illustrative_150_600_m_s_return_required_t": 5.0280074483424295,
+      "illustrative_shortfall_against_4t_t": 1.0280074483424295,
+      "legacy_allocated_departure_dv_m_s": 124.43205178770263,
+      "legacy_allocated_landing_dv_m_s": 486.0908286194849,
+      "status": "conditional_arithmetic_not_approved_return_case"
+    },
+    {
+      "retained_payload_t": 1.0,
+      "terminal_mass_t": 19.6,
+      "return_start_with_4t_t": 23.6,
+      "illustrative_150_600_m_s_return_required_t": 5.1596306799744305,
+      "illustrative_shortfall_against_4t_t": 1.1596306799744305,
+      "legacy_allocated_departure_dv_m_s": 121.74978908460002,
+      "legacy_allocated_landing_dv_m_s": 474.58214055779655,
+      "status": "conditional_arithmetic_not_approved_return_case"
+    }
+  ],
+  "register": {
+    "item_count": 40,
+    "status_counts_recounted": {
+      "requirement_locked": 2,
+      "analysis_assumption": 4,
+      "architecture_selected": 6,
+      "open": 28
+    },
+    "status_counts_match": true,
+    "dangling_dependencies": [],
+    "certified_count": 0,
+    "manufacturing_release": false,
+    "flight_release": false,
+    "mass_related": [
+      {
+        "id": "RDR-004",
+        "title": "質量・重心・慣性・消耗品の統合予算",
+        "status": "analysis_assumption",
+        "current_disposition": "618.6t・上段乾燥18t・帰還4tは旧比較点B0。C1の確定質量ではない。乾燥25%余裕の二重加算を禁じ、姿勢制御/冷却/再始動等を別計上する。上段乾燥18/20/22/24tと帰還4/4.9/6/8t等の感度を検討し、逆算による大型化値を採用仕様にしない。"
+      },
+      {
+        "id": "RDR-005",
+        "title": "上昇・軌道離脱・帰還の同時成立",
+        "status": "open",
+        "current_disposition": "B0の正の算術余裕を飛行成立とみなさない。仮要求10290m/sへの差は約34m/sで、質量/Ispの組合せ次第で消失する。乾燥成長を仮連動した上昇逆算は帰還量の再計算も必要で、C1で新しい質量/推進剤仕様は確定していない。"
+      },
+      {
+        "id": "RDR-014",
+        "title": "主推進・上段着陸推進の採用仕様",
+        "status": "open",
+        "current_disposition": "上昇用エンジンをそのまま絞れば着陸できるとは扱わない。部品型番や製造条件を発明しない。"
+      },
+      {
+        "id": "RDR-016",
+        "title": "再始動・残液・着陸用供給",
+        "status": "open",
+        "current_disposition": "旧0.8t離脱/3.2t着陸は確定必要量ではない。4.9tも乾燥18tの特定仮条件だけの値。乾燥増加、姿勢遷移、蒸発/冷却/再着火消費を含む帰還必要量と液供給は未成立。"
+      },
+      {
+        "id": "RDR-032",
+        "title": "衛星質量・包絡・分離条件",
+        "status": "analysis_assumption",
+        "current_disposition": "B-H1の機能配置はD07で方式選定済み。ただし本項目の500kg×2・包絡・分離条件は引き続き計算仮定であり確定性能ではない。2機から常時通信を保証せず、別軌道面配置能力を現予算に含めない。"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "MA-01",
+      "kind": "verified_arithmetic",
+      "detail": "Original replay and independent mass/ideal-delta-v arithmetic checked. This cannot validate unmeasured inputs."
+    },
+    {
+      "id": "MA-02",
+      "kind": "open_engineering",
+      "detail": "B0 and approximately 819.7 t comparison are not selected performance. Neither closes actual ascent and return together."
+    },
+    {
+      "id": "MA-03",
+      "kind": "missing_case",
+      "detail": "Original return example assumes all payload released. Retained payload now has explicit arithmetic cases; geometry, centre of gravity, heat and landing control remain open."
+    },
+    {
+      "id": "MA-04",
+      "kind": "accounting_rule",
+      "detail": "40 t and 18 t dry masses already include 25% old allocation. No second 25% may be added without a separate named allocation."
+    },
+    {
+      "id": "MA-05",
+      "kind": "source_history",
+      "detail": "Old RETURN-1 title and work/design_freeze run command remain in preserved mass source. New package should name current report rocketstar and identify replay instructions separately, not alter historical evidence."
+    }
+  ],
+  "remaining_physical_inputs": [
+    "site and mission",
+    "ascent and return path",
+    "part-level dry mass",
+    "tank volume and structural sizing",
+    "thrust/Isp versus operating point and burn duration",
+    "aerodynamic and heating models",
+    "usable propellant, residuals and all other fluids",
+    "power and waiting duration",
+    "payload state and centre of gravity",
+    "measurement and model uncertainty"
+  ]
+}

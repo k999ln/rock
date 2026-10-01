@@ -1,0 +1,22 @@
+{
+  "schema": "rock-final-publication-review/1",
+  "status": "PASS_BOUNDED_READ_ONLY",
+  "measured_utc": "2026-09-10T13:09:55.949157+00:00",
+  "web_proof_sha256": "cedcfde2585544e62573ba4e98ce5b47abc516b0f292d38445e5153f5f8c7d2e",
+  "overlay_proof_sha256": "f9cc1ff0597256facc08f5ccbcd865bee83ca6f5123455cee0301de3ee4211bd",
+  "prior_linux_tests": {
+    "rerun": false,
+    "log_sha256": "baf17d06c46343595fea7b0ded196245d21f421584963ca04664988cfb98dac3",
+    "count": 9,
+    "elapsed_seconds": 0.19,
+    "status": "ORIGINAL_PASS_LOG_READ_ONLY",
+    "test_file_sha256": "a001454d3021e97f3f328e8a9df98e423495cad7cc77f4617f6fc4648c1e729e"
+  },
+  "prior_browser_summary_sha256": "35aceaafd9a3f3a9b2c420a8d4c1fc7312376d52aa0e8e9ac9c3addc95b036c7",
+  "no_new_native_vm_financial_or_browser_test": true,
+  "product_license": "UNSET",
+  "legal_status": "NOT_CLEARED",
+  "general_public_distribution": "NOT_STARTED",
+  "prior_browser_summary_path": "browser-ba900/summary.json",
+  "inspection_script_sha256": "1c26e9850efb480a5a7d83fbfe74f2bd27c431a98d26ff7c83fc3667f53522d4"
+}

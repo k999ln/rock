@@ -1,0 +1,43 @@
+{
+  "schema": "rockstaros-web-security-policy/1",
+  "evaluatedAt": "2026-09-13",
+  "scope": "all_application_responses",
+  "universalHeaders": {
+    "Content-Security-Policy": "base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Resource-Policy": "same-origin",
+    "Referrer-Policy": "no-referrer",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Permissions-Policy": "bluetooth=(), camera=(), geolocation=(), hid=(), microphone=(), payment=(), serial=(), usb=()"
+  },
+  "routeHeaders": {
+    "/sw.js": {
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      "Service-Worker-Allowed": "/"
+    },
+    "/manifest.webmanifest": {
+      "Cache-Control": "no-cache, must-revalidate"
+    },
+    "/_next/static/*": {
+      "Cache-Control": "public, max-age=31536000, immutable"
+    }
+  },
+  "claims": {
+    "framingRejected": true,
+    "pluginObjectsRejected": true,
+    "foreignFormTargetsRejected": true,
+    "mimeSniffingRejected": true,
+    "sensitiveBrowserCapabilitiesDisabled": true,
+    "crossOriginOpenerIsolated": true,
+    "referrerSuppressed": true,
+    "hstsDeclared": true,
+    "serviceWorkerUpdateRevalidated": true,
+    "hashedStaticAssetsImmutable": true
+  },
+  "deploymentAcceptance": {
+    "required": true,
+    "rule": "A current owner-private deployment must return every universal header with the exact value before the latest-source gate can pass."
+  }
+}

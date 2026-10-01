@@ -1,0 +1,60 @@
+{
+  "schema": "rock-frozen-compatible-host-overlay/1",
+  "status": "PREPARED_HOST_ONLY",
+  "base_commit": "1a960756fbd5edc7f13a0578f3e7fc50025534c8",
+  "base_archive_sha256": "78a5c97a9c01ecb5b8a91e12c051faad0518e219690ecb0524bfb2aea5324132",
+  "embedded_runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "payload_sha256": "10961504c950726c2f445fca966b80f6bab32772d037b58b1f0ea153403367a8",
+  "overlay_patch_sha256": "2f8d026a5babae75c8e0d0118f5c85cb16cc6f2826673e592fd4245f24dfef9a",
+  "overlay_files": {
+    "os/desktop/verify-business.py": "cfe485e5318ab89a9841adad5eed87de4c7ea5fd3f116e567ffeeeb4037c680b",
+    "os/desktop/BUSINESS-VERIFY.md": "169338b96eca90ac973295c19b3efc0fe4e9f33bcab2f2c3504d4d1178246cfb",
+    "tests/test_os_business_result_ocr.py": "677bba94a011b20bf80346b3665f94c9e261f47edde7f36e689acb5f8dfba507",
+    "tests/fixtures/business-result-before.tsv": "88ef3d922c06d2255e8f508628bb264964b0c50ae77259fb873a32f56fd44dec",
+    "tests/fixtures/business-result-ocr.json": "84791457e54b5991a46cb100cdc19889fadf877ee110d80ba01c05a203c89c59",
+    "tests/fixtures/business-result-labels-ocr.json": "f869d55d7e3df05810d79bd756c4f88cf71461a5b2503c473020b95e73f40494"
+  },
+  "only_six_overlay_files_changed": true,
+  "base_files": 569,
+  "payload_files": 573,
+  "source_bindings": {
+    "os/service_access/os_client.py": {
+      "embedded_path": "/usr/lib/rock-platform/service_access/os_client.py",
+      "sha256": "e93a064f00dfd09d64be2d3637fc5d4bfaf44a852eafa9d6067f84a76afaa34a",
+      "matches_frozen_git_blob": true
+    },
+    "os/service_access/status.py": {
+      "embedded_path": "/usr/lib/rock-platform/service_access/status.py",
+      "sha256": "ebfeed3dab710568e91b8bce632a4c6fcdb2695dea9f0eb91c459cd8459aed45",
+      "matches_frozen_git_blob": true
+    },
+    "os/platform/service.py": {
+      "embedded_path": "/usr/lib/rock-platform/service.py",
+      "sha256": "c1215e39648f1b308a68eb3aaba99b4fbbc0cbabb36849ffdc40c37856a16a17",
+      "matches_frozen_git_blob": true
+    },
+    "os/wallet_backend/client.py": {
+      "embedded_path": "/usr/lib/rock-platform/wallet_backend/client.py",
+      "sha256": "56c06081d114ba703a6d268460a97e6303dae04a1ed2661feba9b2777d8ff569",
+      "matches_frozen_git_blob": true
+    },
+    "os/wallet_auth/daemon.py": {
+      "embedded_path": "/usr/lib/rock-platform/wallet_auth/daemon.py",
+      "sha256": "b5646dcdd65cb5149faa7df9532ce4cda2e929a7790f28c1035bcc7b88b43e8d",
+      "matches_frozen_git_blob": true
+    },
+    "os/registry/fixtures/development-ca.pem": {
+      "embedded_path": "/usr/share/rock/development-store-ca.pem",
+      "sha256": "a8709619319348ebdd48ce89e2e9553351c1554d7c8311d77a7b3e78a3020aac",
+      "matches_frozen_git_blob": true
+    }
+  },
+  "source_bindings_match_embedded": true,
+  "guest_script_sha256": "df2487651a1a3680c0b93b6b082514ab4656c466fdffcfbd885a0e70673ea1ca",
+  "linux_inventory_verified": 573,
+  "readonly_image_preflight": true,
+  "source_unchanged_after_preflight": true,
+  "runtime_GX00_overlay": false,
+  "old_directories_modified": false,
+  "scope": "Derived public frozen-compatible host overlay manifest; local guest/source paths omitted. All payload files verified before execution."
+}

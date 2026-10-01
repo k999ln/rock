@@ -1,0 +1,99 @@
+{
+  "schema": "rock-final-d1-d3/1",
+  "status": "FAIL",
+  "plan_sha256": "63fa6489f45f29ff1b8a94f352a01371a3f8861f15bebbca5a3017399484bc16",
+  "started_utc": "2026-09-10T11:15:36.502888+00:00",
+  "gates": [
+    {
+      "name": "boot",
+      "status": "PASS_SCOPED",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-boot.py"
+      ],
+      "started_utc": "2026-09-10T11:15:36.807540+00:00",
+      "pid": 1380209,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T11:16:15.688130+00:00",
+      "log_sha256": "d735f28f49e61908791ece8ccb5900d63a0c45b325deb93dbef698e4e8169b24",
+      "evidence": "/var/tmp/rock-final-9abf78a-profile/verify-20260910T111536Z-rr_jrevd",
+      "boots": 2,
+      "report_sha256": "acfe9f839aab4ac155e573a518cbf09d4bfbe61569f05a39498ad6da958968b2",
+      "authority_all_state": "UNCHANGED",
+      "authority_after_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e"
+    },
+    {
+      "name": "system",
+      "status": "PASS_SCOPED",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-system.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile"
+      ],
+      "started_utc": "2026-09-10T11:16:16.236920+00:00",
+      "pid": 1380228,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T11:17:13.309650+00:00",
+      "log_sha256": "0e0d10072fabab4bb08b06cac3090dcbdc0b1e4dbd6d286c33bd8e7b276a369b",
+      "evidence": "/var/tmp/rock-final-9abf78a-profile/system-20260910T111616Z-jmkwrqr3",
+      "boots": 2,
+      "report_sha256": "9533ca2c24f14e700c5abcad4c9ec1b82a58f475bb5a286ebc03566f0961ff20",
+      "authority_all_state": "UNCHANGED",
+      "authority_after_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e"
+    },
+    {
+      "name": "isolation",
+      "status": "PASS_SCOPED",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-final-9abf78a/systems/rock-star-os/os/verify-platform.py",
+        "--artifacts",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--scope",
+        "game-isolation"
+      ],
+      "started_utc": "2026-09-10T11:17:13.863281+00:00",
+      "pid": 1380248,
+      "exit_code": 0,
+      "finished_utc": "2026-09-10T11:17:48.035123+00:00",
+      "log_sha256": "a61b578003306868a6d60dcffbe7b03ea30a61ba311253ac8d5c3d6b3685008f",
+      "evidence": "/var/tmp/rock-final-9abf78a-profile/platform-20260910T111713Z-txo0nsgr",
+      "guest_isolation_checks": 47,
+      "guest_tools_checks": 45,
+      "boots": 1,
+      "report_sha256": "92b94de29a2011a9b5f2cdd681549ebc25b1ad4f381e34e906f0f8ff9ff2653a",
+      "authority_all_state": "UNCHANGED",
+      "authority_after_sha256": "f600fa12f7d11ef0fd532b8c4d21e850ddf3e811e77c8ec5c780052a5ae7db3e"
+    },
+    {
+      "name": "nonfinancial",
+      "status": "RUNNING",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/var/tmp/rock-release-os-20260910/run-game-gates.py",
+        "--source",
+        "/var/tmp/rock-final-9abf78a",
+        "--images",
+        "/var/tmp/rock-final-9abf78a-profile",
+        "--evidence",
+        "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial",
+        "--source-commit",
+        "9abf78a80d27aa9f847c4051d20e4c552e407276"
+      ],
+      "started_utc": "2026-09-10T11:17:48.567356+00:00",
+      "pid": 1380337,
+      "exit_code": 1,
+      "finished_utc": "2026-09-10T11:24:00.710632+00:00",
+      "log_sha256": "70a336b63a6dddf9f0e436d1fdebf5e08e1a421fa844c40f75f854a14bf1fab3",
+      "evidence": "/var/tmp/rock-release-os-20260910/final-9abf78a-d1-d3/nonfinancial"
+    }
+  ],
+  "error_type": "RuntimeError",
+  "error": "canonical verifier failed; all originals preserved",
+  "finished_utc": "2026-09-10T11:24:00.714726+00:00"
+}

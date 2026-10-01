@@ -1,0 +1,83 @@
+{
+  "schema": "rock-cancel-independent-readback/1",
+  "status": "VERIFIED_ORIGINAL_NOT_OBSERVED_SINGLE_ATTEMPT",
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "original_result": "NOT_OBSERVED_SINGLE_ATTEMPT",
+  "original_exit_code_contract": 2,
+  "kit_sha256": "56d5130665123033399d70d9fb8cf2ed230dad41f7f12b187d75a62c7043786e",
+  "plan_sha256": "074d79b145d3e78f1dc5fd5da1449a360ec0a3a50135c86b4df9e919defc2ef0",
+  "original_summary_sha256": "07380ce4f873dbdb69c247237989920bcfb84c5f931ab04f564b406d8e8c727e",
+  "normal_closed_boots": 2,
+  "authority": {
+    "databases": 5,
+    "tables": 71,
+    "identities": 8,
+    "canonical_sha256": "00cdf33bc53545890cf7491ece7d519196e5524df9fd0d9207ad3880234d6544",
+    "whole_saved_before_after1_after2_exact": true,
+    "index_clock_exception": false,
+    "current_live_authority_db_opened": false
+  },
+  "retention": {
+    "raw_guest_dbs_rederived": 16,
+    "all_db_integrity_and_foreign_keys": "ok",
+    "hub_rows_receipts_audits_result_exact_after_boot2": true,
+    "game_all_three_snapshots_exact": true,
+    "wallet_cache": "Original received_at-only read synchronization policy; other state exact",
+    "power": "One new normal shutdown row, all previous rows and schema/sequences/additional tables retained",
+    "all_local_original_bytes_unchanged_after_readback": true
+  },
+  "visual": {
+    "result": "キャンセル UI の実行中状態は観測不成立。入力画面の固定座標クリックでキャンセルを証明できない。",
+    "before_frame_matches_original_editor_bytes": true,
+    "before_capture_seconds": 0.16289202999905683,
+    "click_down_seconds": 0.16291115499916486,
+    "after_deadline_capture_requested_seconds": 3.5009311199992226,
+    "manual_view": {
+      "01-before-cancel.png": "入力編集画面。キャンセルボタンなし。元 editor-before と同一 SHA。",
+      "02-after-click.png": "入力編集画面のまま「処理中…」。クリック位置は入力欄内。",
+      "03-after-original-worker-deadline.png": "実行結果画面に引用整理 v1.0.0 の「完了」と151byte結果。"
+    },
+    "raw_pngs_hash_verified": 27,
+    "job_id_in_pixels": false,
+    "child_started_or_terminated": "NOT_OBSERVED_NO_PID_PROOF",
+    "speed_cause_inferred": false
+  },
+  "limitations": [
+    "UI cancel / child PID kill / D2 in-flight cancellation PASS にはしない。既存一回観測の観測不成立をそのまま維持する。",
+    "2 boot は今回専用deviceの範囲。過去のfirst-use 8 bootに置き換えたり合算して受入件数を水増ししない。",
+    "authority は元observerの保存済み全5 DB/71 tables/8 identitiesのsnapshot比較。現liveDBや秘密鍵ファイルを開いていない。",
+    "resource rawも再算出して原reportと一致。ただしRSS growthは721328/714104 KiBでplanの524288 KiBを超える。元kitは全性能gateを判定していないため、D6/soak/performance PASSを導かない。",
+    "公開合成開発fixture・テスト署名のOS操作。正式署名、license clearance、一般公開の承認ではない。"
+  ],
+  "independent_summary_sha256": "349912555e5ae1a576bee355563bc31e98777c5851199056ada92bbdc5ac5ba6",
+  "resources": [
+    {
+      "cpu_cores_average": 0.8279653594126922,
+      "max_sample_gap_seconds": 2.0527691309998772,
+      "peak_rss_kib": 844872,
+      "rss_growth_kib": 721328,
+      "samples": 33
+    },
+    {
+      "cpu_cores_average": 1.1071853293689815,
+      "max_sample_gap_seconds": 2.0566029640012857,
+      "peak_rss_kib": 838380,
+      "rss_growth_kib": 714104,
+      "samples": 20
+    }
+  ],
+  "performance_gate_pass": false,
+  "rss_growth_limit_kib": 524288,
+  "raw_preservation": {
+    "files": 68,
+    "original_bytes": 2790111,
+    "archive": {
+      "bytes": 2036692,
+      "sha256": "1867a32225ad89ee92e3102579297b4a4967dd1479e2335ddb3695ca941f1d43"
+    },
+    "all_member_hashes_size_modes_verified": true,
+    "original_before_after_equal": true,
+    "strict_first_end_header_and_gzip_eof": true
+  },
+  "root_visual_review_sha256": "d139064a523f4def10a134ae069e39ad21745724a72f189a805562da04a35a91"
+}

@@ -1,0 +1,101 @@
+{
+  "archive": {
+    "all_regular_files_read_back": 977,
+    "bytes": 106830006,
+    "large_disks_retained_in_archive": true,
+    "sha256": "f8d338b0f7319e64efd7463d148d9083427f4f089d0204c28c0143f5344c9602",
+    "small_files_extracted": 973
+  },
+  "authority": {
+    "all_fields_equal": true,
+    "canonical_sha256": "fc2357c6658e903640b677b1b97e983aed2271625617a0193728f9a086d0d433",
+    "clock_exclusions": [],
+    "databases": 5,
+    "snapshots_compared": 6,
+    "tables": 71
+  },
+  "baseline_sqlite_databases": 8,
+  "cycles": [
+    {
+      "authority_equal": true,
+      "boot_id": "6354109f-4533-4517-a3ec-a45b14677e5a",
+      "new_jobs": 0,
+      "normal_shutdown": true,
+      "number": 0,
+      "resource_samples": 21,
+      "retained_jobs": 0,
+      "screenshots": 7
+    },
+    {
+      "authority_equal": true,
+      "boot_id": "6501de64-18a2-4a03-8370-e472b21fcf92",
+      "new_jobs": 4,
+      "normal_shutdown": true,
+      "number": 1,
+      "resource_samples": 131,
+      "retained_jobs": 4,
+      "screenshots": 78
+    },
+    {
+      "authority_equal": true,
+      "boot_id": "8aab70a8-39d4-4e57-bc1f-e7b0d8919fb5",
+      "new_jobs": 1,
+      "normal_shutdown": true,
+      "number": 2,
+      "resource_samples": 37,
+      "retained_jobs": 5,
+      "screenshots": 16
+    },
+    {
+      "authority_equal": true,
+      "boot_id": "93190a75-064c-4c86-930a-a695f66737af",
+      "new_jobs": 1,
+      "normal_shutdown": true,
+      "number": 3,
+      "resource_samples": 36,
+      "retained_jobs": 6,
+      "screenshots": 16
+    },
+    {
+      "authority_equal": true,
+      "boot_id": "762af7f1-f0a6-474c-a64c-cb6e59345741",
+      "new_jobs": 61,
+      "normal_shutdown": true,
+      "number": 4,
+      "resource_samples": 1842,
+      "retained_jobs": 67,
+      "screenshots": 624
+    }
+  ],
+  "earlier_jobs_retained_across_reboots": [
+    4,
+    5,
+    6
+  ],
+  "final_sqlite_databases": 8,
+  "inventory_sha256": "d69e22c86720deac1a2d8333e92898aa9ca729b586d3fec6572937763bc3333f",
+  "normal_shutdowns": 5,
+  "qualification": "Last 61 soak jobs are stored before final shutdown; this 5-cycle run does not reboot afterward. Resource proof is host QEMU, not guest per-service cgroups. Wallet cache received_at uses only the original declared policy; no Game or authority clock is normalized. No live authority DB was opened.",
+  "required_empty_authority_tables": 19,
+  "resources": {
+    "cpu_cores_average": 0.26540612714317874,
+    "max_sample_gap_seconds": 2.1274411969998255,
+    "peak_rss_kib": 906808,
+    "rss_growth_kib": 76144,
+    "samples": 1817
+  },
+  "schema": "rock-d6-independent-readback/1",
+  "soak": {
+    "elapsed_seconds": 3642.0170088639998,
+    "jobs": 61,
+    "max_job_seconds": 42.32469615399987,
+    "max_start_gap_seconds": 60.00874028100043
+  },
+  "soak_jobs": 61,
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "status": "PASS_SCOPED_CORROBORATED",
+  "total_jobs": 67,
+  "original_summary_sha256": "83c6cfb7b3c82810ed1512f7c98b5dee42d48441c94b7475ec748b35c91496dd",
+  "readback_kit_sha256": "585f80c51a875d6cd8f723a1530c17fc6c5ed4d5b7aaa35611385b9014a9a7e9",
+  "reader_revision": "v1 stopped before guest output because two immutable Buildroot source patches had three legitimate legal-info hardlinks. v2 requires exact two paths, bytes and full fixed three-alias topology. Original observer, data and acceptance limits unchanged; v1 failure retained."
+}

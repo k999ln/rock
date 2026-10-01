@@ -1,0 +1,61 @@
+{
+  "schema": "rock-current-restore-api-work-report/1",
+  "status": "PASS_SCOPED_HOST_API",
+  "patch_sha256": "7700d02a7b052f08f0b59a51941e8748abe3911372a488dd06431f63c6ebc312",
+  "files": [
+    "systems/rock-star-os/os/wallet_backend/authority_fence.py",
+    "systems/rock-star-os/os/wallet_backend/current_restore.py",
+    "systems/rock-star-os/os/wallet_backend/CURRENT-RESTORE.md",
+    "systems/rock-star-os/tests/test_current_restore_api.py"
+  ],
+  "test_runs": [
+    {
+      "file": "current-restore-api-regression.log",
+      "tests": 75,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "platform": "macOS",
+      "real_loopback_tls": true
+    },
+    {
+      "file": "current-restore-api-final-14.log",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "warnings": 0,
+      "platform": "macOS",
+      "purpose": "final bounded subprocess wait adjustment"
+    }
+  ],
+  "negative_before_fix": {
+    "file": "current-restore-api-wal-before.log",
+    "tests": 12,
+    "errors": 1,
+    "meaning": "Real reader retained committed WAL; closed-only C identity reader rejected API2 after an actual append commit.",
+    "public_copy": {
+      "source_sha256": "62dde5d5899f9e5ec43bd2041c3d0f52a037ccae35150ccd3fdacd67c6901cd5",
+      "public_sha256": "ce9da58f251f7930a9872c3971e7b0f353a74125cd89ad0f878d0c751067c531",
+      "transform": "Replace local candidate prefix with <candidate> in seven traceback paths and prepend this public-copy notice; no test result or failure edited."
+    }
+  },
+  "scope": [
+    "Owned protected C DONE record, current identity and source/copy lineage only.",
+    "Initial context holds C mutex plus both actual state flocks through external plan commit.",
+    "Resume context requires real registered current-thread admission or actual open_active initialize with ACTIVE marker; holds C and source lock while destination lifetime permit stays held.",
+    "Live ACTIVE identity uses safe readonly committed WAL; source/adoption/initial copy still require closed immutable state.",
+    "No index transition implementation, game retag, arbitrary backup import, source repair, QEMU or frozen runtime change."
+  ],
+  "coverage": [
+    "Nonempty adopted Wallet: 888 bill/CLAIMED, 1000 hold, revoked credential, quote, receipts, extra BLOB table preserved.",
+    "Separate process flock acquisition/refusal, separate thread open blocking, source and destination locks, unknown/pending/malformed typed record, missing source lock, mixed copy bytes/inode, forged/no ticket/foreign thread, exact source RETIRED and destination ACTIVE receipt.",
+    "Actual nonempty WAL commit and subsequent admission, owner mismatch visible only through committed WAL, marker replacement, nonprivate sidecar, explicit mocked kernel-UID guard fixture."
+  ],
+  "limits": [
+    "Different-UID sidecar case is a stat guard fixture on non-root Mac, not an actual chown experiment.",
+    "A ordinary-open/bootstrap guard and the index/Wallet handover journal are separate required integration work.",
+    "Linux source CI has not been run by this subagent; no acceptance of old OS ABI or real funds."
+  ]
+}

@@ -1,0 +1,373 @@
+{
+  "business": {
+    "actual_output_sha256": "34230e3614c2d06650ddb8bd08aba9b68ee69974085f26a0810ad036040af90d",
+    "all_source_receipts_unchanged": true,
+    "completion_receipt_sha256": "bfd2674e10947967cf8e9e45025f221bff53e862ea89fa4fadfa043540bc4231",
+    "expected_public_output": "Plan the day\n\nMake something useful\nShare the result",
+    "input_bytes": 65,
+    "installed_and_enabled": true,
+    "no_duplicate_jobs_or_receipts": true,
+    "package_sha256": "e26178e828b45f651f4c1ff5c0fa20450195548edc4e6e116005a730238a0535",
+    "receipts": 3,
+    "successful_jobs": 1,
+    "tool_id": "org.rockstar.citation-organizer",
+    "version": "1.0.0"
+  },
+  "created_utc": "2026-09-09T23:11:51.340543+00:00",
+  "environment": {
+    "device_profile": "rock-desktop-device/6 local-development signed-stage0",
+    "distinct_boots": true,
+    "frontend": "Mac Chrome canvas viewer",
+    "guest": "ARM64 QEMU development OS inside dedicated Linux VM",
+    "network": "none",
+    "same_device_reopened": true
+  },
+  "excluded_scope": [
+    "Original 300-second reopen observer remains FAIL; its missed QMP event is not reconstructed.",
+    "No 60-minute soak or hardware installation acceptance is established by this trial.",
+    "No MetaMask, blockchain, real-money transfer, external service, or real Wallet balance was exercised.",
+    "This trial Wallet and membership state are empty; no nonempty financial retention claim.",
+    "This is same-device reopening, not a backup/restore test.",
+    "All observed tables in six configured DBs were compared; additional tables were absent, and other DB files/non-SQLite postboot trees were not enumerated.",
+    "Retrospective receipts, serial shutdown sequence and stopped process establish the bounded closed inspection; no claim of continuous monitoring after the original observer timed out."
+  ],
+  "frames": {
+    "first": {
+      "bytes": 54557,
+      "file": "first-result.png",
+      "sha256": "c216884d7bae72a031f90d70c37a5316203d44632dd9342dd51b31a83c9c55b6",
+      "source": "unaltered native framebuffer captured from actual QEMU session",
+      "visual_review": "Only public fixture output and native UI; no browser URL or credential displayed."
+    },
+    "reopen": {
+      "bytes": 54665,
+      "file": "reopen-result.png",
+      "sha256": "ec57cb148aeefb9f9f6cc51b5209495b3040084863b251fe9b8850a91decb3d8",
+      "source": "unaltered native framebuffer captured from actual QEMU session",
+      "visual_review": "Only public fixture output and native UI; no browser URL or credential displayed."
+    }
+  },
+  "normal_shutdown_evidence": {
+    "limitation": "The second QMP event was not observed; this does not repair the timed-out live observer.",
+    "power_down_count": 1,
+    "qemu_error_log_bytes": 0,
+    "serial_ordered_markers": [
+      "stopped /usr/bin/rock-ui",
+      "EXT4-fs (vdb): unmounting filesystem ",
+      "Requesting system poweroff",
+      "reboot: Power down"
+    ],
+    "serial_sha256": "3b9b3fbfde8e475ce210d42e0e84b16187669ab7a2ce9f155e42559e696d65df",
+    "status": "PASS_RETROSPECTIVE_RECEIPT_AND_SERIAL"
+  },
+  "privacy": "Public synthetic input/output, schema/table counts and hashes only; no host paths, process IDs, device session IDs, raw private rows, browser URL fragments, or display credentials.",
+  "purpose": "Actual Mac launcher trial, native Tool execution, saved-result reopening, and separate stopped-data inspection.",
+  "results": {
+    "first_session": {
+      "filesystem_exit": 0,
+      "normal_guest_shutdown_event": true,
+      "status": "PASS_MAC_TRIAL_SESSION"
+    },
+    "reopen_closed_inspection": {
+      "all_sockets_absent_or_connection_refused": true,
+      "filesystem_exit": 0,
+      "interpretation": "Independent inspection after later normal UI shutdown; it does not change the failed live observation or prove shutdown within its deadline.",
+      "no_power_or_input_commands_sent": true,
+      "recorded_pid_absent": true,
+      "same_session_record": true,
+      "source_device_locked_entire_inspection": true,
+      "source_disks_unchanged_during_inspection": true,
+      "status": "PASS_REOPEN_CLOSED_INSPECTION"
+    },
+    "reopen_live_observer": {
+      "deadline_seconds": 300,
+      "original_evidence_preserved": true,
+      "reason": "observer deadline exceeded; no power action sent",
+      "second_shutdown_event_observed": false,
+      "status": "FAIL"
+    }
+  },
+  "retention": {
+    "additional_tables_observed": 0,
+    "all_database_summaries": {
+      "authenticator": {
+        "additional_tables": [],
+        "foreign_keys": "ok",
+        "integrity": "ok",
+        "internal_sequences": {},
+        "schema_sha256": "693230298463086a61ea249d4b244b7dd52f435c06afff4ec15f3686648b644d",
+        "tables": {
+          "credentials": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "metadata": {
+            "logical_sha256": "f6aade18d633626f8650aa2299884a03a5cfd4fb93add4e312a34f9f1b578fce",
+            "rows": 1
+          },
+          "requests": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          }
+        }
+      },
+      "hub": {
+        "additional_tables": [],
+        "foreign_keys": "ok",
+        "integrity": "ok",
+        "internal_sequences": {
+          "sqlite_sequence": {
+            "logical_sha256": "7037311da61af716422afa140a801217c8db0da0a8d9bea4d66f46118ba57b93",
+            "rows": 1
+          }
+        },
+        "schema_sha256": "1aa435eba44f86e29237c32ae88072871b9d98c7e699a50f31bdabd8d1614680",
+        "tables": {
+          "hub_audit": {
+            "logical_sha256": "6e210269edef6b83ad704502633106c245a7f8e493519eb0a57b1247b01aa72f",
+            "rows": 3
+          },
+          "hub_installed": {
+            "logical_sha256": "3f609fe7a7adb25b3e52253cc28111d957ea2d5aef831e7d05f00ba97daf9378",
+            "rows": 1
+          },
+          "hub_jobs": {
+            "logical_sha256": "446925e7eb8b0fbc0488f5116270a8fd3a67d1ad283dc9460024748fa6fb27ac",
+            "rows": 1
+          },
+          "hub_packages": {
+            "logical_sha256": "841445c9fab02fa46a5cc533635b616dbbe58318452af4dd16b5340ad8be25ae",
+            "rows": 1
+          },
+          "hub_requests": {
+            "logical_sha256": "049f24dd4696abe2c6fbb4d1ac7a3629bc5069bdc90c3de056bfbbbb6c0d2c43",
+            "rows": 3
+          },
+          "hub_revoked": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "rock_registry_requests": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          }
+        }
+      },
+      "membership": {
+        "additional_tables": [],
+        "financial_summary": {
+          "auto_renew_accounts": 0,
+          "paid_authorizations": 0,
+          "paid_months": 0,
+          "registered_accounts": 0
+        },
+        "foreign_keys": "ok",
+        "integrity": "ok",
+        "internal_sequences": {},
+        "schema_sha256": "bc0622009648a5d9b108e405f1f57786885839da2d669c216cde9df0ec779dd9",
+        "tables": {
+          "account_devices": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "accounts": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "authorization_claims": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "authorizations": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "consents": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "device_api_receipts": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "device_binding": {
+            "logical_sha256": "9fd6f7bef6545cc203d7046b0c3cf1876dd16f95d753bee7a88b8f94e8d531b2",
+            "rows": 1
+          },
+          "device_monthly_due": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "device_register_origins": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "device_runtime": {
+            "logical_sha256": "07456b53a8652d7c31ab647ec301020650e780f87ee9d5ab91af712081cf59b6",
+            "rows": 1
+          },
+          "devices": {
+            "logical_sha256": "f726b5509579e2f02cbae8d31e606c0ef30af217f83ac10d61749ef9aaf4f686",
+            "rows": 1
+          },
+          "events": {
+            "logical_sha256": "adab4e7b6243f3117d37f936ac955e52e31cb81539d54cc0ca96c00503847636",
+            "rows": 1
+          },
+          "receipts": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "streams": {
+            "logical_sha256": "620124ebc09e5658dc5ac30338f4c5a88588f7a3c68eb833534c6584cef6ef84",
+            "rows": 1
+          },
+          "wallet_bindings": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          }
+        }
+      },
+      "power": {
+        "additional_tables": [],
+        "foreign_keys": "ok",
+        "integrity": "ok",
+        "internal_sequences": {},
+        "schema_sha256": "e57439beed3e8b8bfdc03b3a38e20e7bcb507b2955fe670bd10c1ed659f592bd",
+        "tables": {
+          "requests": {
+            "logical_sha256": "678da861762cc7abb926784d92520374c1ff59c41f7cfe9138591a8d84f451dc",
+            "rows": 2
+          }
+        }
+      },
+      "remote": {
+        "additional_tables": [],
+        "foreign_keys": "ok",
+        "integrity": "ok",
+        "internal_sequences": {},
+        "schema_sha256": "766974ffea16c93d52b7cbc6242e662dcc30706d908bcbf8778ac32eac7aa7d9",
+        "tables": {
+          "remote_cancel_receipts": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "remote_jobs": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          }
+        }
+      },
+      "wallet": {
+        "additional_tables": [],
+        "financial_summary": {
+          "available_minor": 0,
+          "bill_count": 0,
+          "bill_total_minor": 0,
+          "billed_minor": 0,
+          "credential_count": 0,
+          "currency": "USD",
+          "dispensed_minor": 0,
+          "held_minor": 0,
+          "ledger_balance_minor": 0,
+          "pending_minor": 0,
+          "sale_count": 0,
+          "simulation_only": true,
+          "withdrawal_count": 0
+        },
+        "foreign_keys": "ok",
+        "integrity": "ok",
+        "internal_sequences": {
+          "sqlite_sequence": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          }
+        },
+        "schema_sha256": "56a2506372ee1fc753bb29dbd071ce4880e515542d17d8c7c9fbe577e0b48589",
+        "tables": {
+          "atm_credentials": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "atm_wallet_binding": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_auth_approvals": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_auth_challenges": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_auth_credential_state": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_auth_credentials": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_auth_mode": {
+            "logical_sha256": "0155abc0ad7bb72ce08dbd9822d9b4e4537b22714407955b86eb71e1f28a054b",
+            "rows": 1
+          },
+          "wallet_auth_quotes": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_auth_terms": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_bills": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_consents": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_idempotency": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_journals": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_postings": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_sales": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          },
+          "wallet_withdrawals": {
+            "logical_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "rows": 0
+          }
+        }
+      }
+    },
+    "comparison": "All observed non-power SQLite tables, schema, internal sequences and summary values exactly match first session.",
+    "databases": 6,
+    "new_action": "poweroff",
+    "new_dispatched": true,
+    "new_distinct_boot": true,
+    "new_power_receipt_sha256": "df3bedcefc5a1b0dca313c512e3c4726f040c0081218d6f5e1c7f60202d1d45b",
+    "new_power_rows": 1,
+    "non_power_tables_compared": 43,
+    "old_power_receipts_unchanged": true
+  },
+  "runtime_commit": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+  "schema": "rock-mac-trial-public-evidence/1",
+  "source_evidence_sha256": {
+    "failed_reopen_report": "4fa088004157b116ff10926f7927f4551f3e7deb8e077bd92a422319bdc6ac24",
+    "first_report": "e5e67024ffe15ea56815b69ed19acb31b8d25b22df92135e9b60af033989fa17",
+    "separate_closed_inspection": "33b15940d10499e761245442b125c2fb31fa2d868cb94a8fd08d6e5ae2c7a5ee"
+  },
+  "status": "PARTIAL_MAC_TRIAL_EVIDENCE"
+}

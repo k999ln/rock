@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1000" viewBox="0 0 1500 1000">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L8,3 z" fill="#245966"/></marker>
+    <style>text{font-family:'Arial Unicode MS',Arial,sans-serif;fill:#172a34;font-size:21px}.title{font-size:32px;font-weight:bold}.head{font-size:25px;font-weight:bold}.small{font-size:19px}.muted{fill:#48606c}.box{fill:#f3f7f8;stroke:#597581;stroke-width:2}.hold{fill:#fff7e8;stroke:#967647;stroke-width:2}.line{fill:none;stroke:#245966;stroke-width:3;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1500" height="1000" fill="white"/>
+  <text x="40" y="48" class="title">VA-E101 / Mini200 E1 音声経路とプライバシー境界</text>
+  <text x="40" y="85" class="small muted">設計候補・実測0・完全配線未承認 / 本体＋TV＋手元操作器 / 外部計算Hubなし</text>
+  <text x="40" y="119" class="head">A. 収音経路：初期は「押して話す」（PTT）＋ゲーム音量の一時減衰</text>
+  <rect x="40" y="145" width="340" height="183" rx="8" class="box"/>
+  <text x="62" y="179" class="head">利用者の声 → 4マイク</text>
+  <text x="62" y="217">SKU 101991441 / USB版</text>
+  <text x="62" y="250">PCB φ100・マイク66mm角</text>
+  <text x="62" y="285">音孔を上面へ／ダクト隔離</text>
+  <text x="62" y="313" class="small">TV音・fan振動の混入は試験対象</text>
+  <rect x="475" y="145" width="390" height="183" rx="8" class="box"/>
+  <text x="497" y="179" class="head">XVF3800 音声DSP</text>
+  <text x="497" y="217">AEC・beamforming・雑音抑圧</text>
+  <text x="497" y="250">内部16kHz / USB UAC 2.0</text>
+  <text x="497" y="285">48kHz 2ch firmware候補</text>
+  <text x="497" y="313" class="small">USB形式・ch割付は現物固定待ち</text>
+  <rect x="960" y="145" width="500" height="183" rx="8" class="box"/>
+  <text x="982" y="179" class="head">本体 x86 / ローカル認識</text>
+  <text x="982" y="217">帯域制限変換 → 16k mono S16</text>
+  <text x="982" y="250">PTT許可 → VAD → ASR → 確認UI</text>
+  <text x="982" y="285">カメラ・機器操作の許可は別</text>
+  <text x="982" y="313" class="small">NPUによる自動高速化を保証しない</text>
+  <path d="M380 228 H463" class="line"/><text x="394" y="212" class="small">音声</text>
+  <path d="M865 228 H948" class="line"/><text x="878" y="212" class="small">USB</text>
+  <text x="40" y="395" class="head">B. 再生とAEC参照</text>
+  <text x="960" y="395" class="small">ステレオTV音の完全除去は未保証</text>
+  <rect x="40" y="445" width="340" height="175" rx="8" class="box"/>
+  <text x="62" y="479" class="head">本体のゲーム＋TTS</text>
+  <text x="62" y="519">最終ミックス PCM</text>
+  <text x="62" y="553">音量・ducking反映後</text>
+  <text x="62" y="592" class="small">TV内蔵アプリの音は参照外</text>
+  <rect x="475" y="445" width="390" height="175" rx="8" class="hold"/>
+  <text x="497" y="479" class="head">参照PCM分岐 / HOLD</text>
+  <text x="497" y="519">通常：HDMI stereo ＋ PTT</text>
+  <text x="497" y="553">検証：同じmonoを2経路へ</text>
+  <text x="497" y="592" class="small">clock差・遅延を測り補正する</text>
+  <rect x="960" y="445" width="500" height="175" rx="8" class="box"/>
+  <text x="982" y="479" class="head">TV / スピーカー → 部屋</text>
+  <text x="982" y="519">HDMI・TV処理・音響伝搬</text>
+  <text x="982" y="553">USBとは別clock／遅延・EQあり</text>
+  <text x="982" y="592" class="small">barge-in・hands-freeは合格後のみ</text>
+  <path d="M380 527 H463" class="line"/><text x="391" y="510" class="small">PCM</text>
+  <path d="M865 527 H948" class="line"/><text x="876" y="510" class="small">HDMI</text>
+  <path d="M660 445 V340" class="line"/>
+  <text x="705" y="362" class="small">USB playback 左mono → AEC参照</text>
+  <rect x="40" y="669" width="700" height="215" rx="8" class="hold"/>
+  <text x="62" y="705" class="head">独立した MIC OFF / 回路HOLD</text>
+  <text x="62" y="745">保持スイッチ → VBUS遮断＋data逆給電対策</text>
+  <text x="62" y="779">eFuseだけではUSB dataを遮断しない</text>
+  <text x="62" y="813">基板ボタン／OS muteは独立遮断の証明ではない</text>
+  <text x="62" y="847">OFF → buffer・認識job破棄／解除後も再同意</text>
+  <text x="62" y="875" class="small">スイッチ・保護・状態灯・USB信号品質を現物評価</text>
+  <rect x="770" y="669" width="690" height="215" rx="8" class="box"/>
+  <text x="792" y="705" class="head">保存しない初期設定 / RAM一時取得を明示</text>
+  <text x="792" y="745">PTT前録り0秒 / 最大15秒PCM = 480,000 B</text>
+  <text x="792" y="779">将来のwakeword：明示opt-in時のみ2秒 = 64,000 B</text>
+  <text x="792" y="813">音声保存・クラウド送信・音声ログは初期OFF</text>
+  <text x="792" y="847">swap／dump防止・DSP内部buffer検証も必要</text>
+  <text x="792" y="875" class="small">PCM領域のみの値。ASRモデル等の使用RAMは別。</text>
+  <text x="40" y="928" class="small">計算枠：音声5Wは旧3Wを置換 → 全80W DC / 仮効率90% → 88.889W入力・保守熱モデル</text>
+  <text x="40" y="959" class="small">Seeed公式SKU・寸法図・firmware、XMOS v3.2.1に基づく機能図。製造配線図／認識性能保証ではない。</text>
+  <text x="40" y="990" class="small muted">Source IDs V-S1～V-S9: sources.json / 2026-09-21 / 外観は承認前D0参照、機構ポート位置は別図REF</text>
+</svg>

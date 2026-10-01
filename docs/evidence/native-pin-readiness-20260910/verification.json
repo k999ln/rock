@@ -1,0 +1,28 @@
+{
+  "schema": "rock-pin-source-review-verification/1",
+  "status": "PASS_SCOPED_HOST",
+  "scope": "Real host C UI and disposable authenticated Wallet/ATM; not guest or final OS",
+  "review_source_commit": "18317380731086c39b02357dfe66126bd5932846",
+  "failed_ci": "https://github.com/k999ln/rock/actions/runs/34447861231",
+  "failed_ci_source_gate": {
+    "status": "PASS",
+    "python_executions": 1480,
+    "root_ui_status": "FAIL_STALE_PIN_SOURCE_HASH"
+  },
+  "canonical_guard": {
+    "sha256": "b7f662085b43860fb5be6e56cbcaf4612f98ef835465d1eba659dd09c4a68378",
+    "original_pixel_profiles_unchanged": true,
+    "render_include_dependencies_added": true
+  },
+  "unmodified_validation": {
+    "wallet_and_atm_positive_frames": 28,
+    "all_masked_digit_counts": "0..4",
+    "stale_coordinates_rejected": 7,
+    "missing_pagedown_rejected": true,
+    "original_deadline_and_hitboxes_unchanged": true,
+    "pin_memory_deadline_negative_tests": 11,
+    "log_sha256": "a12ca631871063091d19fc6ec572c318c0b5abc78f74f1af475ee4df1d95568d"
+  },
+  "visual_review": "Actual newly rendered enrollment and ATM confirmation PNGs inspected; text, amount, fee, masking and disabled confirmation readable; no overlap",
+  "source_guard_regression": "ordinary non-root source gate now checks current canonical source hashes and every ui.c include"
+}

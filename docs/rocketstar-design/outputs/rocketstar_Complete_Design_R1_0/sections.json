@@ -1,0 +1,193 @@
+{
+  "revision": "R1.0",
+  "section_groups": {
+    "mass": {
+      "entry": "mass1",
+      "members": [
+        "mass1",
+        "mass2",
+        "mass3",
+        "mass4",
+        "mass5"
+      ],
+      "meaning": "質量関連要求の本文参照は08章から続く08-12章の一連の設計と監査を指す"
+    }
+  },
+  "items": [
+    {
+      "key": "scope",
+      "title": "本書の範囲と現在の設計状態",
+      "number": 1
+    },
+    {
+      "key": "mission",
+      "title": "ミッションと成功判定",
+      "number": 2
+    },
+    {
+      "key": "configuration",
+      "title": "システム分割と開発の責任",
+      "number": 3
+    },
+    {
+      "key": "appearance",
+      "title": "外観と機能の対応",
+      "number": 4
+    },
+    {
+      "key": "geometry",
+      "title": "全機配置・座標・形状の管理",
+      "number": 5
+    },
+    {
+      "key": "lifecycle",
+      "title": "飛行・回収・再使用の状態",
+      "number": 6
+    },
+    {
+      "key": "interfaces",
+      "title": "機体・地上・搭載品の接続仕様",
+      "number": 7
+    },
+    {
+      "key": "mass1",
+      "title": "質量・性能の位置付けと再現監査",
+      "number": 8
+    },
+    {
+      "key": "mass2",
+      "title": "質量区分と状態別の重量",
+      "number": 9
+    },
+    {
+      "key": "mass3",
+      "title": "理想上昇性能と帰還量の照合",
+      "number": 10
+    },
+    {
+      "key": "mass4",
+      "title": "逆算値・衛星残留の比較",
+      "number": 11
+    },
+    {
+      "key": "mass5",
+      "title": "性能を確定する条件と監査記録",
+      "number": 12
+    },
+    {
+      "key": "v1",
+      "title": "構成の正本と設計責任",
+      "number": 13
+    },
+    {
+      "key": "v2",
+      "title": "主構造・タンク・取付部",
+      "number": 14
+    },
+    {
+      "key": "v3",
+      "title": "推進系と機体の接続",
+      "number": 15
+    },
+    {
+      "key": "v4",
+      "title": "上段熱防護と保持式扉",
+      "number": 16
+    },
+    {
+      "key": "v5",
+      "title": "分離・残留衛星の異常を扱う",
+      "number": 17
+    },
+    {
+      "key": "v6",
+      "title": "帰還・着陸の機体成立条件",
+      "number": 18
+    },
+    {
+      "key": "v7",
+      "title": "回収・検査・整備の証拠を残す",
+      "number": 19
+    },
+    {
+      "key": "v8",
+      "title": "同じ個体の再飛行を判定する",
+      "number": 20
+    },
+    {
+      "key": "aero_gnc",
+      "title": "空力・飛行力学・航法制御の結合設計",
+      "number": 21
+    },
+    {
+      "key": "av1",
+      "title": "各段の自律と地上運用核の分担",
+      "number": 22
+    },
+    {
+      "key": "av2",
+      "title": "飛行ソフトの第一評価構成",
+      "number": 23
+    },
+    {
+      "key": "av3",
+      "title": "搭載衛星・扉・放出状態の確認",
+      "number": 24
+    },
+    {
+      "key": "av4",
+      "title": "電源・データ・時刻のICD",
+      "number": 25
+    },
+    {
+      "key": "av5",
+      "title": "地上要求・結果照合・端末の境界",
+      "number": 26
+    },
+    {
+      "key": "av6",
+      "title": "構成管理・試験・再使用証拠",
+      "number": 27
+    },
+    {
+      "key": "budgets",
+      "title": "電力・熱・記録・通信の資源予算",
+      "number": 28
+    },
+    {
+      "key": "ground",
+      "title": "発射・回収・輸送の地上設備",
+      "number": 29
+    },
+    {
+      "key": "reliability",
+      "title": "故障・信頼性と飛行の独立性",
+      "number": 30
+    },
+    {
+      "key": "manufacture",
+      "title": "製造・部品・構成管理への引渡し",
+      "number": 31
+    },
+    {
+      "key": "verification",
+      "title": "開発段階と検証計画",
+      "number": 32
+    },
+    {
+      "key": "requirements",
+      "title": "要求と既存設計台帳の対応",
+      "number": 33
+    },
+    {
+      "key": "development",
+      "title": "未確定事項を解決する開発順序",
+      "number": 34
+    },
+    {
+      "key": "sources",
+      "title": "納品構成と一次資料",
+      "number": 35
+    }
+  ]
+}

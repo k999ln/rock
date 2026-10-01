@@ -1,0 +1,86 @@
+{
+  "revision": "C3",
+  "pdf": "rocketstar_C3_Integrated_Design_Baseline.pdf",
+  "document": "rocketstar_C3_Integrated_Design_Baseline.md",
+  "visual": "rocketstar_C3_external_concept.png",
+  "appearance_rules": "appearance_definition.json",
+  "register": "design_register.json",
+  "manufacturing_release": false,
+  "flight_release": false,
+  "source_locations": [
+    {
+      "source_id": "BASE",
+      "title": "RETURN-1 / AVOKADO LINK v0.1",
+      "original_path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/outputs/RETURN-1_Avokado_Link_Design_v0.1.md",
+      "url": null,
+      "package_relative_path": null,
+      "availability": "historical_external_reference"
+    },
+    {
+      "source_id": "REVIEW",
+      "title": "機能成立の未解決事項と閉じ方",
+      "original_path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/work/resolution/closure_review.md",
+      "url": null,
+      "package_relative_path": null,
+      "availability": "historical_external_reference"
+    },
+    {
+      "source_id": "CALC",
+      "title": "space-budget-checks.json",
+      "original_path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/outputs/A-LINK_Avokado_Receiver_Prototype_v0.4/evidence/space-budget-checks.json",
+      "url": null,
+      "package_relative_path": null,
+      "availability": "historical_external_reference"
+    },
+    {
+      "source_id": "NASA-RVM",
+      "title": "NASA Systems Engineering Handbook — Appendix D: Requirements Verification Matrix",
+      "original_path": null,
+      "url": "https://www.nasa.gov/reference/appendix-d-requirements-verification-matrix/",
+      "package_relative_path": null,
+      "availability": "web"
+    },
+    {
+      "source_id": "NASA-LIFECYCLE",
+      "title": "NASA Systems Engineering Handbook — 3.0 NASA Program/Project Life Cycle",
+      "original_path": null,
+      "url": "https://www.nasa.gov/reference/3-0-nasa-program-project-life-cycle/",
+      "package_relative_path": null,
+      "availability": "web"
+    },
+    {
+      "source_id": "C1",
+      "title": "RETURN-1 C1 / 統合設計基準書 D01–D08",
+      "original_path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/work/design_freeze/main.md",
+      "url": null,
+      "package_relative_path": null,
+      "availability": "historical_external_reference"
+    },
+    {
+      "source_id": "MASS-MEMO",
+      "title": "RETURN-1 質量・上昇性能の設計判断メモ",
+      "original_path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/work/design_freeze/mass_study.md",
+      "url": null,
+      "package_relative_path": "mass_study.md",
+      "availability": "included"
+    },
+    {
+      "source_id": "MASS-DATA",
+      "title": "C1 mass_study.json",
+      "original_path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/work/design_freeze/mass_study.json",
+      "url": null,
+      "package_relative_path": "mass_study.json",
+      "availability": "included"
+    },
+    {
+      "source_id": "C3",
+      "title": "rocketstar C3 / 統合設計基準書：avokado 意匠の統合改訂",
+      "original_path": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/outputs/rocketstar_C3_package/rocketstar_C3_Integrated_Design_Baseline.md",
+      "url": null,
+      "package_relative_path": "rocketstar_C3_Integrated_Design_Baseline.md",
+      "availability": "included"
+    }
+  ],
+  "rocket_name": "rocketstar",
+  "name_revision_date": "2026-09-24"
+}

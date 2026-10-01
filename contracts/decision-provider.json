@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rockstaros.dev/contracts/decision-provider-v1.json",
+  "title": "RockstarOS Decision Provider Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "request", "result"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "request": { "$ref": "#/$defs/request" },
+    "result": { "$ref": "#/$defs/result" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "question": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "kind",
+            "instructions",
+            "options",
+            "unknownOptionRequired"
+          ],
+          "properties": {
+            "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$" },
+            "kind": { "const": "choice" },
+            "instructions": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "options": {
+              "type": "object",
+              "minProperties": 2,
+              "maxProperties": 32,
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              }
+            },
+            "unknownOptionRequired": { "type": "boolean" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "instructions", "levels"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$" },
+            "kind": { "const": "score" },
+            "instructions": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "levels": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 16,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1, "maxLength": 500 }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "instructions", "yesMeans", "noMeans"],
+          "properties": {
+            "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$" },
+            "kind": { "const": "boolean_probability" },
+            "instructions": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "yesMeans": { "type": "string", "minLength": 1, "maxLength": 500 },
+            "noMeans": { "type": "string", "minLength": 1, "maxLength": 500 }
+          }
+        }
+      ]
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "requestId",
+        "ownerRef",
+        "workId",
+        "purpose",
+        "state",
+        "stateDigest",
+        "questions",
+        "dataClasses",
+        "effect",
+        "constraints",
+        "policyVersion"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "requestId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "ownerRef": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "workId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "purpose": {
+          "enum": [
+            "route",
+            "classify",
+            "score",
+            "detect",
+            "retrieve",
+            "verify",
+            "plan",
+            "generate"
+          ]
+        },
+        "state": {},
+        "stateDigest": { "$ref": "#/$defs/digest" },
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": { "$ref": "#/$defs/question" }
+        },
+        "dataClasses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["public", "owner_private", "confidential", "secret"]
+          }
+        },
+        "effect": {
+          "enum": ["none", "local-pure", "remote-read", "external-write"]
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "offlineRequired",
+            "cloudAllowed",
+            "maxLatencyMs",
+            "maxCostMicros",
+            "maxAttempts"
+          ],
+          "properties": {
+            "offlineRequired": { "type": "boolean" },
+            "cloudAllowed": { "type": "boolean" },
+            "maxLatencyMs": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300000
+            },
+            "maxCostMicros": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000000
+            },
+            "maxAttempts": { "type": "integer", "minimum": 1, "maximum": 3 }
+          }
+        },
+        "policyVersion": { "type": "string", "minLength": 1, "maxLength": 64 }
+      }
+    },
+    "answer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "enum": ["choice", "score", "boolean_probability"] },
+        "value": { "oneOf": [{ "type": "string" }, { "type": "number" }] },
+        "probabilities": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "requestId",
+        "provider",
+        "providerVersion",
+        "modelId",
+        "modelRevision",
+        "answers",
+        "status",
+        "reasonCodes",
+        "stateDigest",
+        "questionSetDigest",
+        "startedAt",
+        "completedAt",
+        "usage"
+      ],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "requestId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "provider": {
+          "enum": ["mock", "local_qwen", "typesafe_jev", "cloud_llm", "openjev"]
+        },
+        "providerVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "modelId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "modelRevision": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "answers": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/answer" }
+        },
+        "status": { "enum": ["answered", "abstained", "blocked", "failed"] },
+        "reasonCodes": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "type": "string", "maxLength": 64 }
+        },
+        "stateDigest": { "$ref": "#/$defs/digest" },
+        "questionSetDigest": { "$ref": "#/$defs/digest" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "inputTokens": { "type": "integer", "minimum": 0 },
+            "outputTokens": { "type": "integer", "minimum": 0 },
+            "costMicros": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    }
+  }
+}

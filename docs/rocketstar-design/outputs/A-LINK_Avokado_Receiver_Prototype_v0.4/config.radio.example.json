@@ -1,0 +1,11 @@
+{
+  "mode": "radio-lab",
+  "radio_approved": false,
+  "device": "avokado-lab-01",
+  "key_file": "lab-key.bin",
+  "state_dir": "local-state",
+  "serial_port": "/dev/serial/by-id/YOUR-VERIFIED-RADIO",
+  "topic": null,
+  "budget_epoch": "bench-session-01",
+  "max_receipt_attempts": 10
+}

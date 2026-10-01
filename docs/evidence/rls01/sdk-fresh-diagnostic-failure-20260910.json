@@ -1,0 +1,115 @@
+{
+  "schema": "rock-game-sdk-fresh-first-run/1",
+  "status": "FAIL_DIAGNOSTIC_MISCLASSIFIED_STALE_CACHE_AS_LIVE_TLS",
+  "source_commit": "9cfe6e7ecec9fcf2af742dc092982e6ce44a39e2",
+  "fresh_vm": true,
+  "fresh_authority": true,
+  "original_harness_report": {
+    "cause_identification_seconds": 0.18628670700000072,
+    "first_exchange_seconds": 4.634291305000005,
+    "initial_snapshot_sha256": "10d675482d77de77b34fcb2c4742c866349bdd9b2001ccf10077cc16fe9310c8",
+    "schema": "rock-game-sdk-onboarding/1",
+    "simulation_only": true,
+    "status": "INCOMPLETE"
+  },
+  "events": [
+    {
+      "label": "authority-start",
+      "exit_code": 0,
+      "elapsed_seconds": 0.7713601489999959
+    },
+    {
+      "label": "owner-diagnose",
+      "exit_code": 0,
+      "elapsed_seconds": 0.294762764000005
+    },
+    {
+      "label": "owner-wallet",
+      "exit_code": 0,
+      "elapsed_seconds": 0.40769388699999354
+    },
+    {
+      "label": "owner-connect",
+      "exit_code": 0,
+      "elapsed_seconds": 0.3266839330000053
+    },
+    {
+      "label": "owner-connect",
+      "exit_code": 0,
+      "elapsed_seconds": 0.48614016900000223
+    },
+    {
+      "label": "author-quote",
+      "exit_code": 0,
+      "elapsed_seconds": 0.29269113299999816
+    },
+    {
+      "label": "owner-quote",
+      "exit_code": 0,
+      "elapsed_seconds": 0.551041939000001
+    },
+    {
+      "label": "owner-approve",
+      "exit_code": 0,
+      "elapsed_seconds": 1.1659417740000038
+    },
+    {
+      "label": "owner-status",
+      "exit_code": 0,
+      "elapsed_seconds": 0.32498118600000225
+    },
+    {
+      "label": "author-status",
+      "exit_code": 0,
+      "elapsed_seconds": 0.1502281600000046
+    },
+    {
+      "label": "authority-stop",
+      "exit_code": 0,
+      "elapsed_seconds": 0.3507627399999933
+    },
+    {
+      "label": "owner-quote",
+      "exit_code": 1,
+      "elapsed_seconds": 0.19405273500000675
+    },
+    {
+      "label": "owner-diagnose",
+      "exit_code": 0,
+      "elapsed_seconds": 0.18607274500000415
+    }
+  ],
+  "diagnostic": {
+    "contact": "VERIFIED_OWNER_TLS",
+    "backend_connected": false,
+    "backend_stale": true,
+    "pending": [
+      {
+        "game_id": "public-game-b",
+        "key": "retained-after-offline",
+        "last_contact": "UNKNOWN",
+        "operation": "game.exchange.quote",
+        "request_sha256": "4108d0a6661de8477ce796919c7fc04fa32a83370c1caf1c2b72e59cc3fa4a75"
+      }
+    ]
+  },
+  "original_event_files_sha256": {
+    "01-authority-start.json": "db91b56afffccc147aaea33bd617d6d466a4e4d0c051037705a68a08345a9b7e",
+    "02-owner-diagnose.json": "65057c8ec4483cef6536818d31938f1f3caa8dd38898ddc63b3749f00189942c",
+    "03-owner-wallet.json": "ae95641c5905231aa7dd38990e9c5aeabb30fc0d3605842259d23210aa638483",
+    "04-owner-connect.json": "109308c580d468b1142a00e69d0397c28d537f1c7f08774a0b3c116b32a01597",
+    "05-owner-connect.json": "f007b0db5d715b644d9532b28e9d10531ec3d9bdce83bb11dbee4415c5a7d151",
+    "06-author-quote.json": "cdcd3fe506bd88720f333135ddf63b690485e8973bbb9f84d76c1dae06c45b95",
+    "07-owner-quote.json": "4224508f6194af5478720e572f15232f6192b907efaa539fb08f4180e9bb4229",
+    "08-owner-approve.json": "c006e75465ccb051d20b8292e0cf99d721fb67736cf1a6074e80fb3f7d236d62",
+    "09-owner-status.json": "a5a7d8b557564b7c40628fcf181e9675ad28291af8dcd099dd4a2573178a7edd",
+    "10-author-status.json": "e0619b42cc6ae173e05c63cd975e65831327ae82655db2a16e931a94316efe94",
+    "11-authority-stop.json": "10669aaaf369a06c29c523f72dc57d76b10d79a3ac112d411a5e1116a8c999cd",
+    "12-owner-quote.json": "6c06157fabeac916316cc7f835aaa0422eabd7400c89948275db9f41d5c1028c",
+    "13-owner-diagnose.json": "a8fddac2e5c2cef164ad2fd424b59bcb19b2cd82cf4d4eda72f39cb9f957f81e",
+    "report.json": "06f26881c6929da41d62649cadde64762cd2fc3c02ac37049edb40ce643c9a95"
+  },
+  "financial_recovery_attempted": false,
+  "authority_running_after_harness": false,
+  "simulation_only": true
+}

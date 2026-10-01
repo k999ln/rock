@@ -1,0 +1,12 @@
+{
+  "schema": "rock-final-handoff-timing-extract/1",
+  "source_file": "outputs/verification/final-acceptance.json",
+  "source_sha256": "f96e0e6ea92216dfa0380c7890027a50cf44e5e54c3b8d9a91b81fc0d1624414",
+  "timing": {
+    "started_utc": "2026-09-10T05:43:35+00:00",
+    "end_utc": "2026-09-10T13:45:19.822614+00:00",
+    "elapsed_seconds": 28904.822614,
+    "active_seconds": null,
+    "scope": "Development, verification and final handoff checkpoint. Includes tool and CI waits; not CPU time or measured human active time. Deliverable serialization and storage follow this checkpoint."
+  }
+}

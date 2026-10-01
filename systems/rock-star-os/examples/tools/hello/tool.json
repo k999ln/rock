@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "org.blackberryrock.hello",
+  "name": "Hello",
+  "version": "0.1.0",
+  "description": "Returns a greeting without network access or external side effects.",
+  "source": {
+    "type": "local",
+    "license": "UNLICENSED",
+    "notice": "First-party demonstration only."
+  },
+  "runtime": {
+    "kind": "python",
+    "version": ">=3.11"
+  },
+  "entrypoint": "hello.py",
+  "permissions": [],
+  "resources": {
+    "timeout_seconds": 5,
+    "memory_mb": 64,
+    "disk_mb": 1
+  },
+  "confirmation": {
+    "external_side_effects": "never"
+  }
+}

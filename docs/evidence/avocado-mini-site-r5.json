@@ -1,0 +1,54 @@
+{
+  "recordedAt": "2026-09-24T22:26:00-04:00",
+  "taskId": "WEB18",
+  "productBaseline": "avocadoMini R5",
+  "framework": "Astro 7.3.5",
+  "github": {
+    "repository": "https://github.com/k999ln/rock.git",
+    "branch": "main",
+    "sourceCommit": "4dcacf2",
+    "status": "PUSHED"
+  },
+  "site": {
+    "projectId": "appgprj_6aaf6a375b908191b3b0c1845dc78291",
+    "sourceCommit": "7388127c8174171f6a6fc3bc4ab7ad33b32d16f3",
+    "versionNumber": 64,
+    "versionId": "appgprj_6aaf6a375b908191b3b0c1845dc78291~appgver_a076c8f48f988191b1e19f9f5d6ea53f",
+    "deploymentId": "appgdep_6ab5db9bbfe08191b88540cf3c136002",
+    "deploymentStatus": "succeeded",
+    "url": "https://avocado-mini.kirin-999.chatgpt.site",
+    "archiveSha256": "5c9aa6c71464c72a24bcee58bb16cd6b5da1bf87a675041737cabde1caaa402d",
+    "uploadedContentHash": "sha256:dfeca6212cf502f70cf8f9f680c0dedc796710492cc33d75a7786c15d59570a4",
+    "archiveFileCount": 75
+  },
+  "checks": {
+    "siteTests": "12/12 PASS — 6 Astro build/language/navigation contracts + 6 preorder API",
+    "siteBuild": "PASS — 11 Astro routes plus Worker artifact",
+    "repositoryChecks": "PASS — project, repository map, R5 package",
+    "repositoryVerify": "INCOMPLETE — root npm test did not terminate; baseline, project, database and the 3 R5 boundary tests pass, and the Site build/tests pass independently",
+    "r5PackageIntegrity": "PASS",
+    "localBrowserHome": "PASS",
+    "localBrowserRocketStar": "PASS",
+    "localBrowserSalesClosed": "PASS",
+    "approvedVisualBaseline": "PASS — restored black/silver video-reference product-film layout",
+    "productImageBackground": "PASS — seamless black studio",
+    "originalProductImagery": "PASS — supplied R5 black-studio image and existing approved assets only; no generated replacement shipped",
+    "scrollStory": "PASS — six honest product chapters; no unbacked front/side/rear rotation claim",
+    "appleReferenceLayout": "PASS — floating product nav, product-first hero, four selectable highlight tabs, reduced decoration",
+    "englishFirst": "PASS — all 11 Astro routes declare English and contain no Japanese interface copy",
+    "localBrowserAllRoutes": "PASS — 11/11 routes have content, no runtime overlay, no console errors",
+    "desktop1280": "PASS — original hero image centered; highlight headings retain display size",
+    "mobile390": "PASS — original hero image, highlight controls, zero horizontal overflow",
+    "fragmentAndImageAudit": "PASS — zero broken images and zero missing same-page fragments",
+    "subpageBrandSizing": "PASS — shared metallic mark constrained to 24px without mobile overflow"
+  },
+  "truthBoundaries": {
+    "physicalHardwareTests": 0,
+    "manufacturingApproval": "HOLD",
+    "salesOpen": false,
+    "r5PriceApproved": false,
+    "legacyE3PriceApplies": false,
+    "visualRedesignAuthorized": false,
+    "layoutReferenceAuthorized": true
+  }
+}

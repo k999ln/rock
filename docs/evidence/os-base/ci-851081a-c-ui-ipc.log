@@ -1,0 +1,17 @@
+test_backend_rejection_is_preserved (__main__.NativeIPC.test_backend_rejection_is_preserved) ... ok
+test_install_and_update_allow_bounded_download_latency (__main__.NativeIPC.test_install_and_update_allow_bounded_download_latency) ... ok
+test_install_still_has_a_total_deadline (__main__.NativeIPC.test_install_still_has_a_total_deadline) ... ok
+test_json_escaped_text_round_trip (__main__.NativeIPC.test_json_escaped_text_round_trip) ... ok
+test_malformed_and_missing_status_are_rejected (__main__.NativeIPC.test_malformed_and_missing_status_are_rejected) ... ok
+test_peer_authentication (__main__.NativeIPC.test_peer_authentication) ... ok
+test_power_receipt_allows_slow_durable_commit (__main__.NativeIPC.test_power_receipt_allows_slow_durable_commit) ... ok
+test_request_limit_checked_before_connect (__main__.NativeIPC.test_request_limit_checked_before_connect) ... ok
+test_response_limit (__main__.NativeIPC.test_response_limit) ... ok
+test_success_and_exact_request (__main__.NativeIPC.test_success_and_exact_request) ... ok
+test_timeout (__main__.NativeIPC.test_timeout) ... ok
+test_truncated_response (__main__.NativeIPC.test_truncated_response) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 32.432s
+
+OK

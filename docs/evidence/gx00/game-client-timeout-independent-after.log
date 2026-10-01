@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "<local-work>/review-game-client-timeout.py", line 11, in <module>
+    client._check()
+    ~~~~~~~~~~~~~^^
+  File "<local-work>/game-client-candidate/systems/rock-star-os/os/game_exchange/client.py", line 113, in _check
+    p.require(self._transport_identity()==self._transport_pin,'owner transport changed after binding')
+              ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "<local-work>/game-client-candidate/systems/rock-star-os/os/game_exchange/client.py", line 79, in _transport_identity
+    p.require(type(t.timeout) in (int,float) and math.isfinite(t.timeout) and .05<=t.timeout<=3,
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              'fixed finite bounded Wallet timeout required')
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<local-work>/game-client-candidate/systems/rock-star-os/os/game_exchange/protocol.py", line 35, in require
+    if not value:raise ProtocolError(message)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+game_exchange.protocol.ProtocolError: fixed finite bounded Wallet timeout required

@@ -1,0 +1,11 @@
+{
+  "schema": "rock-portable-preview-check/1",
+  "source_commit": "1ad0920c8c412f4334664616dc0b0149baa177e7",
+  "status": "PASS_LOCAL_EXPORT_LINKS_AND_SOURCE_PAGE_VISUAL_REVIEW",
+  "local_links_checked": 16,
+  "all_export_hashes": "PASS",
+  "one_h1_per_page": true,
+  "scripts_forms_iframes": 0,
+  "visual_review": "Actual browser announcement and guide upper pages reviewed; clear headings, readable scope notice, navigation to announcement followed successfully. Media section remains absent until final candidate recording passes.",
+  "not_tested": "Final candidate media, deployed Site, other viewport sizes and public download route"
+}

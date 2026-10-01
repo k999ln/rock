@@ -1,0 +1,23 @@
+{
+  "schema": "rock-checkpoint-document-audit/1",
+  "recorded_at": "2026-09-10T01:06:15.116145+00:00",
+  "status": "PASS_CONSISTENCY_ONLY",
+  "checks": [
+    "Integrated 72-test source hashes match current runtime/test files",
+    "All 15 integrated public artifact hashes verified",
+    "Independent GX00 audit source hashes match same integrated runtime",
+    "Run43 public references and original-hash mappings verified",
+    "Run44 plan has the same limits/workload/runtime as failed run43",
+    "Mac third-run frame hash and normal shutdown evidence verified",
+    "Current JSON and new document links parse and resolve",
+    "README/project.md match data/project-status.json"
+  ],
+  "unchanged_gate_results": {
+    "V01-ACCEPT": "INCOMPLETE",
+    "D6": "FAIL_LATEST_COMPLETED_RUN; run44 pending",
+    "GX00-ISOLATION": "INCOMPLETE",
+    "GX01-CONTRACT": "NOT_IMPLEMENTED",
+    "physical_devices_real_funds": "NOT_RUN"
+  },
+  "scope": "Document/source/evidence consistency only; does not convert unit tests or historical audit into full OS/game acceptance."
+}

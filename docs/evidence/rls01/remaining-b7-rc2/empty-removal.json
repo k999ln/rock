@@ -1,0 +1,17 @@
+{
+  "schema": "rock-rc2-empty-vm-removal/1",
+  "status": "PASS_EMPTY_INSTALLATION_REMOVAL",
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "removed_root": "/private/tmp/rk11-rc2-remove",
+  "requires_explicit_delete": true,
+  "owned_vm_absent": true,
+  "host_receipt_retained": true,
+  "protected_installation_and_build_config_unchanged": true,
+  "native_boot": "NOT_RUN_BY_THIS_CASE",
+  "saved_data_removal": "NOT_RUN_BY_THIS_EMPTY_CASE",
+  "existing_backup_export": "UNTOUCHED",
+  "plan_sha256": "44a272f3ffb0955752e7486951be677d5ec161636b30dff897a9f857f85c0a53",
+  "guard_sha256": "9356435ba291023a843d1ca03c81f90897decd67258b2fc6e6ee3bede17cc881",
+  "remove_log_sha256": "3c2dbcf836d74dd188498f409d61061c923cedf626718cb2c6bae2701220b0a1",
+  "removed_installation_receipt_sha256": "c8815f4df41758c3670977d36b3a91791855a1a61a34cd471a4642e38974a2c8"
+}

@@ -1,0 +1,114 @@
+name: Rock star native OS source
+on:
+  push:
+    branches: [main]
+    paths: ['systems/rock-star-os/**', 'scripts/test-native.py', '.github/workflows/native-os.yml']
+  pull_request:
+    paths: ['systems/rock-star-os/**', 'scripts/test-native.py', '.github/workflows/native-os.yml']
+permissions:
+  contents: read
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  partitions:
+    # The launcher needs bwrap's --disable-userns (absent from Ubuntu 22.04).
+    # Ubuntu 24.04 restricts unprivileged userns before bwrap can start; the
+    # disposable runner relaxes that outer host control only for this job.
+    # Rock's no_new_privs, bwrap namespaces/--disable-userns and seccomp stay on.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [main-0, main-1, main-2, main-3, support]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare Linux source-test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential bubblewrap pkg-config libseccomp-dev libcairo2-dev libfreetype6-dev libjson-c-dev openssl e2fsprogs
+          python3 -m pip install --disable-pip-version-check Pillow==12.3.0
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Verify real non-root runner isolation
+        working-directory: systems/rock-star-os
+        run: |
+          id
+          /usr/bin/bwrap --version
+          /usr/bin/cc -O2 -Wall -Wextra -Werror -o /tmp/rock-runner-sandbox os/runner/sandbox_launcher.c
+          printf '%s' '{"text":"  hello  ","recipe":[{"op":"trim_lines"}]}' \
+            | /tmp/rock-runner-sandbox "$PWD/src/blackberryrock/recipe_worker.py" "$PWD/os/runner/isolated_entry.py" \
+            | grep -Fx '{"text": "hello"}'
+      - name: Native source regressions (not OS boot)
+        env:
+          NATIVE_PART: ${{ matrix.part }}
+        run: |
+          if [ "$NATIVE_PART" = support ]; then
+            python3 scripts/test-native.py --output work/native-tests --diagnostic-stacks --part support
+          else
+            python3 scripts/test-native.py --output work/native-tests --diagnostic-stacks \
+              --part main --shard-index "${NATIVE_PART#main-}" --shard-count 4
+          fi
+      - name: Root-owned disposable UI observers, replay geometry and readiness protocol
+        if: matrix.part == 'support'
+        run: |
+          mkdir -p work/native-root-ui
+          sudo "$(command -v python3)" -B -W error::ResourceWarning -m unittest discover -s systems/rock-star-os/os/ui -p 'test_*evidence.py' -v > work/native-root-ui/observers.log 2>&1
+          cat work/native-root-ui/observers.log
+          if grep -E 'ResourceWarning:|Exception ignored|\.\.\. skipped' work/native-root-ui/observers.log; then exit 1; fi
+          cp -R systems/rock-star-os/os/ui work/native-root-ui/ui
+          make -C work/native-root-ui/ui rock-ui-health-test rock-ui-test
+          sudo work/native-root-ui/ui/rock-ui-health-test > work/native-root-ui/health.log 2>&1
+          cat work/native-root-ui/health.log
+          sudo "$(command -v python3)" -B -W error::ResourceWarning systems/rock-star-os/os/ui/test_wallet_replay.py \
+            --renderer work/native-root-ui/ui/rock-ui-test \
+            --font systems/rock-star-os/os/assets/NotoSansCJKjp-Regular.otf > work/native-root-ui/wallet-replay.log 2>&1
+          cat work/native-root-ui/wallet-replay.log
+          sudo "$(command -v python3)" -B -W error::ResourceWarning systems/rock-star-os/os/ui/test_pin_readiness.py -v > work/native-root-ui/pin-readiness.log 2>&1
+          cat work/native-root-ui/pin-readiness.log
+          if grep -E 'ResourceWarning:|Exception ignored|\.\.\. skipped' work/native-root-ui/pin-readiness.log; then exit 1; fi
+          if grep -E 'ResourceWarning:|Exception ignored|\.\.\. skipped' work/native-root-ui/wallet-replay.log; then exit 1; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-source-part-${{ matrix.part }}
+          path: |
+            work/native-tests/
+            work/native-root-ui/*.log
+          retention-days: 7
+  source-tests:
+    name: source-tests
+    if: always()
+    needs: partitions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: native-source-part-*
+          path: work/native-parts
+      - name: Require every partition and root UI gate to succeed
+        env:
+          PARTITION_RESULT: ${{ needs.partitions.result }}
+        run: test "$PARTITION_RESULT" = success
+      - name: Verify complete discovery, source inventories and original logs
+        run: python3 scripts/test-native.py --merge-parts work/native-parts --output work/native-merged --shard-count 4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-source-test-results
+          path: |
+            work/native-merged/
+            work/native-parts/
+          retention-days: 7

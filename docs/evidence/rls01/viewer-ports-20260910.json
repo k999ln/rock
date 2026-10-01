@@ -1,0 +1,23 @@
+{
+  "schema": "rockstaros-owned-viewer-port-probe/1",
+  "scope": "real owned Mac viewer process/socket/CSP/cleanup; QEMU NOT_RUN",
+  "source_sha256": {
+    "launcher.py": "268d2aedb42f7e0d73187b7c8cbd592b0114b80d6510038760d125d9730caff4",
+    "browser_server.py": "b67c966edd90799b317a1fb9a410ec0c815dc08cd59382dd64f755226d49a4b9",
+    "browser/viewer.js": "4624669507f1ba87f4709093a0b437f8cee40200624bca4526d59400ba936918",
+    "preview.py": "7ffa08ac78afcc8ba89aa0eaf1725215e46dcba5c2e3238ea30800e66ae2cc10"
+  },
+  "viewer_port": 8900,
+  "websocket_port": 5910,
+  "http_status": 200,
+  "viewer_js_sha256": "47d0478b04fa20a37a35b1fb563d6c6f7126a344618f64aac47b58d1667b2b29",
+  "csp": "default-src 'none'; script-src 'self'; style-src 'self'; img-src data: blob:; connect-src ws://127.0.0.1:5910; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+  "unique_instance_build_process_health": true,
+  "owned_pid": 35315,
+  "cleanup": {
+    "viewer": "STOPPED"
+  },
+  "status": "PASS",
+  "unrelated_8899_listener_unchanged": true,
+  "owned_port_released": true
+}

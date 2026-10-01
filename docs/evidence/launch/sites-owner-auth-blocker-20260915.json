@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-09-15",
+  "scope": "owner-only Sites deployment and Web D1 production readback",
+  "source": {
+    "repository": "k999ln/rock",
+    "branch": "main",
+    "commit": "7cb7017269a269275df7add58b4577091f0f1697",
+    "verificationWorkflow": "success",
+    "androidWorkflow": "success"
+  },
+  "target": {
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "audience": "owner-only"
+  },
+  "observations": [
+    {
+      "surface": "browser",
+      "result": "ACCESS_DENIED",
+      "detail": "Sign in with ChatGPT completed, but the selected account is not allowed to access the owner-only Site."
+    },
+    {
+      "surface": "Sites API",
+      "result": "PROJECT_NOT_FOUND",
+      "detail": "The selected Sites workspace cannot resolve the project ID."
+    }
+  ],
+  "productionReadbackPerformed": false,
+  "dataMutationPerformed": false,
+  "blockedReason": "The active ChatGPT/Sites account does not match the workspace that owns the target project.",
+  "resumeCondition": "Connect Codex and browser authentication to the workspace that owns the target project, then deploy the recorded commit and perform read-only production checks before any data mutation."
+}

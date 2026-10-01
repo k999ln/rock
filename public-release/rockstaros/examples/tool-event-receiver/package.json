@@ -1,0 +1,14 @@
+{
+  "name": "@avokado-ink/rockstaros-tool-event-receiver-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

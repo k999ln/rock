@@ -1,0 +1,400 @@
+{
+  "schema": "rock-native-atm-ui-harness/1",
+  "status": "FAIL",
+  "started_utc": "2026-09-09T20:43:17.072345+00:00",
+  "scope": "actual native ARM64 framebuffer/evdev input and closed simulator ATM",
+  "blackberry": "NOT_RUN",
+  "real_money": "NOT_RUN",
+  "real_atm": "NOT_CONNECTED",
+  "real_identity": "NOT_CONNECTED",
+  "code_reveal_actions_sent": 0,
+  "atm_actor_actions_sent": 0,
+  "image_sha256_before": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "input_events": [
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788986617.832699
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        360
+      ],
+      "sent_unix": 1788986619.6393633
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788986623.1281972
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        480
+      ],
+      "sent_unix": 1788986624.933439
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        419
+      ],
+      "sent_unix": 1788986625.9399967
+    },
+    {
+      "action": "public-test-pin-entry",
+      "value": {
+        "digits": 4,
+        "value_recorded": false
+      },
+      "sent_unix": 1788986626.7443619
+    },
+    {
+      "action": "click",
+      "value": [
+        520,
+        833
+      ],
+      "sent_unix": 1788986626.8300722
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788986630.518327
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        480
+      ],
+      "sent_unix": 1788986632.3232229
+    },
+    {
+      "action": "click",
+      "value": [
+        497,
+        576
+      ],
+      "sent_unix": 1788986633.1229396
+    },
+    {
+      "action": "click",
+      "value": [
+        606,
+        912
+      ],
+      "sent_unix": 1788986636.8173344
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788986638.524079
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788986638.6748438
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788986638.830584
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        807
+      ],
+      "sent_unix": 1788986639.0624933
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788986639.2634792
+    },
+    {
+      "action": "keys",
+      "value": [
+        "pgdn"
+      ],
+      "sent_unix": 1788986639.4144933
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        461
+      ],
+      "sent_unix": 1788986639.646587
+    },
+    {
+      "action": "keys",
+      "value": [
+        "ctrl",
+        "a"
+      ],
+      "sent_unix": 1788986639.8475525
+    },
+    {
+      "action": "keys",
+      "value": [
+        "5"
+      ],
+      "sent_unix": 1788986639.9981596
+    },
+    {
+      "action": "keys",
+      "value": [
+        "0"
+      ],
+      "sent_unix": 1788986640.1493423
+    },
+    {
+      "action": "keys",
+      "value": [
+        "dot"
+      ],
+      "sent_unix": 1788986640.3089468
+    },
+    {
+      "action": "keys",
+      "value": [
+        "0"
+      ],
+      "sent_unix": 1788986640.4598289
+    },
+    {
+      "action": "keys",
+      "value": [
+        "0"
+      ],
+      "sent_unix": 1788986640.6114593
+    },
+    {
+      "action": "click",
+      "value": [
+        192,
+        537
+      ],
+      "sent_unix": 1788986642.0711281
+    },
+    {
+      "action": "click",
+      "value": [
+        563,
+        716
+      ],
+      "sent_unix": 1788986646.0592701
+    },
+    {
+      "action": "click",
+      "value": [
+        531,
+        26
+      ],
+      "sent_unix": 1788986649.7742665
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        640
+      ],
+      "sent_unix": 1788986652.078268
+    },
+    {
+      "action": "click",
+      "value": [
+        360,
+        536
+      ],
+      "sent_unix": 1788986652.882152
+    },
+    {
+      "action": "public-test-pin-entry",
+      "value": {
+        "digits": 4,
+        "value_recorded": false
+      },
+      "sent_unix": 1788986653.7033567
+    },
+    {
+      "action": "click",
+      "value": [
+        520,
+        833
+      ],
+      "sent_unix": 1788986653.7891202
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "00-unregistered-zero-wallet.png",
+      "bytes": 96455,
+      "sha256": "fc30f80a220ff72e9909c41313646af705648eb5ee0c4c648deb22d30e1dc10f",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "01-registered-no-billing-consent.png",
+      "bytes": 114637,
+      "sha256": "fd7f52753ffe8b60b06ee24c299edd45299ab01b6765706e845e94b9c4e7880d",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "auth-01-explicit-enrollment.png",
+      "bytes": 70366,
+      "sha256": "6d4485e5475b79d19bce3af32ce632a25a0fbf0463a0bc0a012c5cccafe6891c",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "auth-02-enrolled-wallet-terms-required.png",
+      "bytes": 115000,
+      "sha256": "e22679e787764af4741343d4d542c26a966937d519cb5909826fa4772364031c",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "auth-03-separate-wallet-terms.png",
+      "bytes": 113211,
+      "sha256": "2c716afa7bf6144755ef2e622fd4f6fda706f0c1c1cc973a79bf94f408ff15d5",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "02-native-test-credit-amount.png",
+      "bytes": 98364,
+      "sha256": "6a6dda9bfcc826e172a3e23f31ccfec344c263b07734d9fe2f2a73043eb2c1c3",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "03-actual-unsettled-credit.png",
+      "bytes": 91950,
+      "sha256": "e7f0cc5241865fec63084437d73586c983a1feeda93c97683ab18a5f67923acf",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "04-actual-settled-5000.png",
+      "bytes": 89577,
+      "sha256": "4e29b56904c692d31e9f7175f453023aa29994439a3937becdf0a776d07fa07a",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "05-owner-atm-before-issue.png",
+      "bytes": 89957,
+      "sha256": "432625c56c9c153a3de53c3b7141f0dfecfd58d631980ac063ab9336dbaf39c3",
+      "dimensions": [
+        720,
+        960
+      ]
+    },
+    {
+      "name": "06-owner-issue-confirmation.png",
+      "bytes": 79961,
+      "sha256": "6f146f79da7ad2677b340810dc29add6c0576cd43375a0f1c40fa440acd7dcd5",
+      "dimensions": [
+        720,
+        960
+      ]
+    }
+  ],
+  "command": [
+    "qemu-system-aarch64",
+    "-machine",
+    "virt-10.0,gic-version=3",
+    "-accel",
+    "tcg",
+    "-cpu",
+    "cortex-a53",
+    "-m",
+    "1024",
+    "-smp",
+    "2",
+    "-display",
+    "none",
+    "-serial",
+    "stdio",
+    "-monitor",
+    "none",
+    "-qmp",
+    "unix:/tmp/rock-atm-qmp-u7ywn5ty/qmp.sock,server=on,wait=off",
+    "-no-reboot",
+    "-nic",
+    "none",
+    "-kernel",
+    "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+    "-append",
+    "console=ttyAMA0 vt.global_cursor_default=0 root=/dev/vda ro rootflags=noload rootwait panic=-1 rock.ui.atm.verify=1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/rootfs.ext4,format=raw,id=osdisk,readonly=on",
+    "-device",
+    "virtio-blk-pci,drive=osdisk,addr=0x1",
+    "-drive",
+    "if=none,file=/var/tmp/rk3/systems/rock-star-os/artifacts/os/atm-ui-20260909T204316Z-adyok76w/userdata.ext4,format=raw,id=userdata",
+    "-device",
+    "virtio-blk-pci,drive=userdata,addr=0x2",
+    "-object",
+    "rng-random,filename=/dev/urandom,id=rockrng",
+    "-device",
+    "virtio-rng-pci,rng=rockrng,addr=0x3",
+    "-device",
+    "virtio-gpu-pci,xres=720,yres=960,addr=0x4",
+    "-device",
+    "virtio-keyboard-pci,addr=0x5",
+    "-device",
+    "virtio-tablet-pci,addr=0x6"
+  ],
+  "error": "TimeoutError: missing actual ATM stage: ROCK_UI_ATM_ISSUED",
+  "image_sha256_after": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+  },
+  "finished_utc": "2026-09-09T20:44:39.735209+00:00"
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "rock-citation-source-quality/1",
+  "commits": {
+    "before": "b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9",
+    "after": "18317380731086c39b02357dfe66126bd5932846"
+  },
+  "input_sha256": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+  "source_sha256": {
+    "before/systems/rock-star-os/src/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e",
+    "before/systems/rock-star-os/os/tools/fixtures/citations.md": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+    "before/systems/rock-star-os/os/tools/packages/org.rockstar.citation-organizer--1.0.0.recipe.json": "a1b8cf21232875b6118e7adf8db91131e2e3f7a7ef2833915f7d05b820c4b635",
+    "after/systems/rock-star-os/src/blackberryrock/recipe_worker.py": "f3bf50337383bfcac2593599285afec1b91d930f6c368ae1e1e6131784dbfe3e",
+    "after/systems/rock-star-os/os/tools/fixtures/citations.md": "bad73028a4b23b6e046abc4a1463f2fa14ffd4f55844ec9146cdc9acc3b1387e",
+    "after/systems/rock-star-os/os/tools/packages/org.rockstar.citation-organizer--1.0.0.recipe.json": "a1b8cf21232875b6118e7adf8db91131e2e3f7a7ef2833915f7d05b820c4b635",
+    "after/toolkits/mr/rock_star_tools.py": "42f138200a472a0351f9b61d5ba7a0b487b0cabff4d9b4e9b96312b55fbff40f",
+    "after/vendor/mr/citation-strip.py": "ed5c28225402c5885c1265c0648b5d4d227a2345ca71e387275a8f205b4ffd13",
+    "after/vendor/mr/provenance.json": "e782c0b741e9bcdcc3a591e2e6c3bcdaf5b03b51d08e77e4becf218b1e4cbd4f",
+    "after/vendor/mr/LICENSE": "6cf38019109830262ffd5a3e1dca12e6e972c9750d2a68f99d5494d173960fac"
+  },
+  "runtime": {
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 17.0.0 (clang-1700.6.4.2)]",
+    "executable": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "platform": "macOS-15.7.4-arm64-arm-64bit-Mach-O"
+  },
+  "deadline_per_process_seconds": 3,
+  "attempts_per_path": 1,
+  "expected": {
+    "native": "紹介文です。\n\n```text\n（出典: [コード内の例](https://example.test/code)）\n```\n\n## 出典\n\n- [店舗情報](https://example.test/store)\n",
+    "pc": "紹介文です。\n\n```text\n（出典: [コード内の例](https://example.test/code)）\n```\n---\n\n## 出典\n\n- [店舗情報](https://example.test/store)\n"
+  },
+  "scope": "Actual source processes only; no OS/GUI/physical USB/external API or human timing",
+  "old_native_same_input_ui": "NOT_RUN: old framebuffer keyboard has no Japanese input method",
+  "prior_ui_comparison": "Old generic sample and new citation sample differ; do not compare their elapsed time"
+}

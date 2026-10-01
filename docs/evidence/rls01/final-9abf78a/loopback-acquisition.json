@@ -1,0 +1,80 @@
+{
+  "schema": "rock-final-loopback-acquisition/1",
+  "status": "ALL_FILES_HASHED_AND_SIGNATURE_VERIFIED",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "source_directory": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-installer/work/preview-final1",
+  "destination_directory": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-installer/work/preview-final1-download",
+  "owned_transport_origin": "http://127.0.0.1:62904",
+  "bound_only_to_loopback": true,
+  "public_upload": false,
+  "public_URL_retrieval_tested": false,
+  "production_HTTPS_download_guard_modified": false,
+  "files": [
+    {
+      "file": "SHA256SUMS",
+      "sha256": "7a5f03bd9d4c6e68dc6781c1deaaaaaef7faaae174d0c04d6f2c4a9cba761355",
+      "bytes": 728,
+      "elapsed_seconds": 0.018369666999205947,
+      "transport": "HTTP_GET_LOOPBACK_ONLY"
+    },
+    {
+      "file": "packaging-result.json",
+      "sha256": "2a1bdf89136a05153e931644f6b33ac534971dda45d7093251e7caf9d3a1932c",
+      "bytes": 511,
+      "elapsed_seconds": 0.0011269170208834112,
+      "transport": "HTTP_GET_LOOPBACK_ONLY"
+    },
+    {
+      "file": "preview-installation-ja.md",
+      "sha256": "d9b526ef55f189133c300084b43b0339c5c94f5fa584f5ff5309453a23e33f82",
+      "bytes": 13520,
+      "elapsed_seconds": 0.000538207998033613,
+      "transport": "HTTP_GET_LOOPBACK_ONLY"
+    },
+    {
+      "file": "preview-legal-notice.md",
+      "sha256": "11401fa9e337b282a65f552e9354c41591ebaa0b2a6c2c78c75bdf2e207387c0",
+      "bytes": 2863,
+      "elapsed_seconds": 0.0005184999899938703,
+      "transport": "HTTP_GET_LOOPBACK_ONLY"
+    },
+    {
+      "file": "preview-release-notes.md",
+      "sha256": "7fdc6a86f3f917de650b913f265606261e2074c0c216e0bcc09bc5f8cd3267ba",
+      "bytes": 6985,
+      "elapsed_seconds": 0.00044720800360664725,
+      "transport": "HTTP_GET_LOOPBACK_ONLY"
+    },
+    {
+      "file": "preview.py",
+      "sha256": "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce",
+      "bytes": 55048,
+      "elapsed_seconds": 0.004724541970063001,
+      "transport": "HTTP_GET_LOOPBACK_ONLY"
+    },
+    {
+      "file": "release-key.der",
+      "sha256": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9",
+      "bytes": 44,
+      "elapsed_seconds": 0.0011765000526793301,
+      "transport": "HTTP_GET_LOOPBACK_ONLY"
+    },
+    {
+      "file": "release-manifest.json",
+      "sha256": "e06fb8d9df292103e63f6cd56df95b189202ae0b13b6e1c578cb6eef0ffc5971",
+      "bytes": 104790,
+      "elapsed_seconds": 0.001125750015489757,
+      "transport": "HTTP_GET_LOOPBACK_ONLY"
+    },
+    {
+      "file": "rockstaros-1.0.0-preview.20260910-macos-arm64.tar.gz",
+      "sha256": "121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2",
+      "bytes": 1000928255,
+      "elapsed_seconds": 2.385739333985839,
+      "transport": "HTTP_GET_LOOPBACK_ONLY"
+    }
+  ],
+  "verification_stdout": "RockstarOS 1.0 Developer Preview\n{\n  \"status\": \"VERIFIED\",\n  \"source_commit\": \"9abf78a80d27aa9f847c4051d20e4c552e407276\",\n  \"trust\": \"PUBLIC_RFC8032_DEVELOPMENT_ONLY\",\n  \"archive_sha256\": \"121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2\",\n  \"OS_acceptance\": \"separate gate\"\n}\n",
+  "elapsed_seconds": 3.392994042020291,
+  "owned_server_closed": true
+}

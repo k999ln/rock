@@ -1,0 +1,214 @@
+[
+  {
+    "id": "NEED1",
+    "title": "子育て世帯の家事関連時間",
+    "description": "総務省統計局『令和3年社会生活基本調査 生活時間及び生活行動に関する結果 結果の概要』、2022-08-31公表",
+    "url": "https://www.stat.go.jp/data/shakai/2021/pdf/gaiyoua.pdf"
+  },
+  {
+    "id": "NEED2",
+    "title": "「使い方が分からない」というデジタル利用障壁",
+    "description": "消費者庁『令和5年版消費者白書』第1部第2章第1節(2)、図表I-2-1-7。元データは2022年度消費者意識基本調査",
+    "url": "https://www.caa.go.jp/policies/policy/consumer_research/white_paper/2023/white_paper_122.html"
+  },
+  {
+    "id": "NEED3",
+    "title": "学習のきっかけ・時間の障壁",
+    "description": "内閣府『生涯学習に関する世論調査（令和4年7月調査）』問4。文部科学省2024-04-18参考資料でも再掲",
+    "url": "https://survey.gov-online.go.jp/r04/r04-gakushu/3_chosahyo.html"
+  },
+  {
+    "id": "NEED4",
+    "title": "支援技術は多様で、利用者との共同設計が必要",
+    "description": "WHO, “Assistive technology”, 2024-01-02",
+    "url": "https://www.who.int/en/news-room/fact-sheets/detail/assistive-technology"
+  },
+  {
+    "id": "NEED5",
+    "title": "没入型機器は「身体を動かせる人専用」にしない",
+    "description": "W3C, XR Accessibility User Requirements, Working Group Note, 2021-08-25",
+    "url": "https://www.w3.org/TR/xaur/"
+  },
+  {
+    "id": "NEED6",
+    "title": "交流の入口。ただしAIによる孤独解消を約束しない",
+    "description": "内閣府『人々のつながりに関する基礎調査（令和7年）』2026-04-14公表",
+    "url": "https://www.cao.go.jp/kodoku_koritsu/torikumi/zenkokuchousa/r7/pdf/tyosakekka_point.pdf"
+  },
+  {
+    "id": "NEED7",
+    "title": "学びを生活に入れるには時間制約への対応が重要",
+    "description": "OECD (2025), Trends in Adult Learning: New Data from the 2023 Survey of Adult Skills, chapter “Why is participation not more common?”, 2025-07-08",
+    "url": "https://www.oecd.org/en/publications/trends-in-adult-learning_ec0624a6-en/full-report/why-is-participation-not-more-common_73893b53.html"
+  },
+  {
+    "id": "NEED8",
+    "title": "サービスの「始めやすいがやめにくい」を再生産しない",
+    "description": "消費者庁『令和5年度消費者意識基本調査 調査結果の概要』問9、図2-9、本文p18（PDF12枚目）",
+    "url": "https://www.caa.go.jp/policies/policy/consumer_research/research_report/survey_002/assets/consumer_research_cms201_240614_15.pdf"
+  },
+  {
+    "id": "HCI1",
+    "title": "音声は一部の障害者に日常操作の入口を増やす",
+    "description": "Pradhan, Mehta & Findlater (2018), *“Accessibility Came by Accident”: Use of Voice-Controlled Intelligent Personal Assistants by People with Disabilities*, CHI.",
+    "url": "https://doi.org/10.1145/3173574.3174033"
+  },
+  {
+    "id": "HCI2",
+    "title": "「便利そう」と継続して使えることは別",
+    "description": "Pradhan, Lazar & Findlater (2020), *Use of Intelligent Voice Assistants by Older Adults with Low Technology Use*, TOCHI 27(4), Article 31.",
+    "url": "https://doi.org/10.1145/3373759"
+  },
+  {
+    "id": "HCI3",
+    "title": "空中操作は疲労を増やし得る",
+    "description": "Hincapié-Ramos et al. (2014), *Consumed Endurance: A Metric to Quantify Arm Fatigue of Mid-Air Interactions*, CHI.",
+    "url": "https://doi.org/10.1145/2556288.2557130"
+  },
+  {
+    "id": "HCI4",
+    "title": "作業位置に情報を合わせる価値はあるが、万能な高速化ではない",
+    "description": "Tang et al. (2003), *Comparative Effectiveness of Augmented Reality in Object Assembly*, CHI.",
+    "url": "https://doi.org/10.1145/642611.642626"
+  },
+  {
+    "id": "HCI5",
+    "title": "調理支援には発話認識だけでなく、作業の文脈が必要",
+    "description": "Jaber et al. (2024), *Cooking With Agents: Designing Context-aware Voice Interaction for Complex Tasks*, CHI.",
+    "url": "https://doi.org/10.1145/3613904.3642183"
+  },
+  {
+    "id": "HCI6",
+    "title": "運動ゲームは支援設計と組み合わせて評価する",
+    "description": "Staiano et al. (2018), *Home-based exergaming among children with overweight and obesity: a randomized clinical trial*, Pediatric Obesity 13,724–733.",
+    "url": "https://onlinelibrary.wiley.com/doi/10.1111/ijpo.12438"
+  },
+  {
+    "id": "HCI7",
+    "title": "ゲーム機を渡すだけで生活全体の活動が増えるとは限らない",
+    "description": "Baranowski et al. (2012), *Impact of an Active Video Game on Healthy Children’s Physical Activity*, Pediatrics 129,e636–e642. DOI 10.1542/peds.2011-2050",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/22371457/"
+  },
+  {
+    "id": "HCI8",
+    "title": "家族・訪問者のプライバシーも使いやすさの一部",
+    "description": "Lau, Zimmerman & Schaub (2018), *Alexa, Are You Listening? Privacy Perceptions, Concerns and Privacy-seeking Behaviors with Smart Speakers*, PACM HCI 2(CSCW),102.",
+    "url": "https://doi.org/10.1145/3274371"
+  },
+  {
+    "id": "HCI9",
+    "title": "ASRの平均精度だけを見ない",
+    "description": "ASRの平均精度だけを見ない",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7149386/"
+  },
+  {
+    "id": "HCI10",
+    "title": "誤起動は実測すべき独立項目",
+    "description": "誤起動は実測すべき独立項目",
+    "url": "https://petsymposium.org/popets/2020/popets-2020-0072.php"
+  },
+  {
+    "id": "HCI11",
+    "title": "2026年の調理支援研究も、まだ人間代行を使用",
+    "description": "2026年の調理支援研究も、まだ人間代行を使用",
+    "url": "https://aclanthology.org/2026.iwsds-1.15/"
+  },
+  {
+    "id": "HCI12",
+    "title": "没入感と理解度・転移を別々に測る",
+    "description": "没入感と理解度・転移を別々に測る",
+    "url": "https://www.sciencedirect.com/science/article/pii/S0959475217303274"
+  },
+  {
+    "id": "SYS1",
+    "title": "小さい端末では「定型操作」と「自由な会話」を分ける",
+    "description": "Home Assistant, *Speech-to-Phrase brings voice home*, 2025-02-13",
+    "url": "https://www.home-assistant.io/blog/2025/02/13/voice-chapter-9-speech-to-phrase/"
+  },
+  {
+    "id": "SYS2",
+    "title": "「対応言語」を部品ごとに確認する",
+    "description": "OHF-Voice/speech-to-phrase、閲覧時READMEのSupported languages",
+    "url": "https://github.com/OHF-voice/speech-to-phrase"
+  },
+  {
+    "id": "SYS3",
+    "title": "対応機器とのローカル接続は既存標準を利用する",
+    "description": "Connectivity Standards Alliance, *Matter FAQ*",
+    "url": "https://csa-iot.org/all-solutions/matter/matter-faq/"
+  },
+  {
+    "id": "SYS4",
+    "title": "別筐体のHubなしと、制御・無線機能なしは違う",
+    "description": "Home Assistant, *Matter*",
+    "url": "https://www.home-assistant.io/integrations/matter"
+  },
+  {
+    "id": "SYS5",
+    "title": "探し物は「最後に観測した場所」を返す課題として定義する",
+    "description": "Ego4D, *Episodic Memory*",
+    "url": "https://ego4d-data.org/docs/benchmarks/episodic-memory/"
+  },
+  {
+    "id": "SYS6",
+    "title": "所有者の同意だけでは生活空間の信頼を説明しきれない",
+    "description": "Bernd, Abu-Salma & Frik (2020), *Bystanders' Privacy: The Perspectives of Nannies on Smart Home Surveillance*, FOCI 20",
+    "url": "https://www.usenix.org/conference/foci20/presentation/bernd"
+  },
+  {
+    "id": "SYS7",
+    "title": "セキュリティは購入後の支援まで設計する",
+    "description": "NIST IR 8259 Rev.1, *Foundational Cybersecurity Activities for IoT Product Manufacturers*, 2026-04",
+    "url": "https://csrc.nist.gov/pubs/ir/8259/r1/final"
+  },
+  {
+    "id": "SYS8",
+    "title": "生成物の来歴と、権利・真実性は分ける",
+    "description": "C2PA, *C2PA and Content Credentials Explainer*, 2.2版",
+    "url": "https://spec.c2pa.org/specifications/specifications/2.2/explainer/Explainer.html"
+  },
+  {
+    "id": "SYS9",
+    "title": "3Dデータの持ち出しを可能にする",
+    "description": "Khronos, glTF 2.0 Specification, §2.1",
+    "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html"
+  },
+  {
+    "id": "TECH1",
+    "title": "新しい空中表示研究も「通常の室内空間全域」とは別",
+    "description": "Kumagai et al. (2026), *Dual-Path Holographic Laser-Excited Volumetric Display*, ACM TOG 45(5),174",
+    "url": "https://doi.org/10.1145/3816042"
+  },
+  {
+    "id": "TECH2",
+    "title": "物理粒子による表示は存在するが、ゲーム内粒子と別物",
+    "description": "Smalley et al. (2018), *A photophoretic-trap volumetric display*, Nature553,486–490",
+    "url": "https://www.nature.com/articles/nature25176"
+  },
+  {
+    "id": "EDU1",
+    "title": "粒子学習には、演出よりモデルと問いの設計が要る",
+    "description": "Wieman, Adams & Perkins (2008), *PhET: Simulations That Enhance Learning*, Science322,682–683",
+    "url": "https://phet.colorado.edu/phet-dist/publications/PhET_Simulations_That_Enhance_Learning.pdf"
+  },
+  {
+    "id": "HW01",
+    "description": "Raspberry Pi Compute Module 5 公式製品仕様。寸法と接続の比較根拠。S11と同じ資料。",
+    "url": "https://www.raspberrypi.com/products/compute-module-5/"
+  },
+  {
+    "id": "OPT01",
+    "description": "Hirayama et al. 2019 A volumetric display for visual tactile and audio presentation using acoustic trapping.",
+    "url": "https://www.nature.com/articles/s41586-019-1739-5"
+  },
+  {
+    "id": "OPT02",
+    "description": "FlexiVol CHI 2025 弾性拡散面による体積表示。著者所属機関の公開論文。",
+    "url": "https://academica-e.unavarra.es/bitstreams/416dec8f-ee2d-4e88-8385-f0fec0b1e50e/download"
+  },
+  {
+    "id": "OPT03",
+    "description": "ASKA3D 空中結像の原理。平面像と体積表示を区別する根拠。",
+    "url": "https://aska3d.com/ja/technology.html"
+  }
+]

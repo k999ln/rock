@@ -1,0 +1,31 @@
+{
+  "schema": "rock-final-c-original-registry-continuation-plan/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "driver_sha256": "d3c22070fd4f477bc91f6998e1aabd75a5ad0d1e1e91b40c50a7127a2f5de227",
+  "diagnostic_observer_commit": "664f67a5e979299b21b1ca801e8ea771b20ca4ce",
+  "diagnostic_observer_sha256": "58edfb30d45cde34367db2ba8e05b79d787e4040f9cd6c7c4f375dbaa06223df",
+  "update_boundary_sha256": "2749146b9a83b35f019fd17f2e5deaa22b9cc82fb9393e3260fc05356e7246fc",
+  "new_output": "/var/tmp/rock-final-c-9abf78a-continuation-04",
+  "process_umask": "0077",
+  "reused_completed_stages": [
+    "game",
+    "audit",
+    "financial"
+  ],
+  "new_stages": [
+    "citations --existing-local-citation",
+    "demo"
+  ],
+  "new_financial_actions": 0,
+  "changes": "Reuse original guest-pinned signed registry and runner DBs through existing --service-state option; B verified installed selector and all frozen thresholds/3boot/receipt/retention checks remain identical.",
+  "original_failures_retained": [
+    "original v3 umask preflight, guest0",
+    "original v4 installed-label mismatch, guest1 normally closed separately",
+    "normal-close final immediate port guard TIME_WAIT; original FAIL retained and new bind proof passes",
+    "v5 new registry same-revision equivocation; failed boot normally closed separately",
+    "recovery delayed Device navigation and small label OCR failures retained; actual original signed index recovered"
+  ],
+  "film": "Original unmodified 9ab 90-second actual QMP capture on same device",
+  "equivocation_boundary_sha256": "06c242ef8314090fc83834c1540c65ba909e1a848a171d7803e7412d8bfdff69",
+  "service_state": "/var/tmp/rock-final-c-9abf78a-continuation-02/citations"
+}

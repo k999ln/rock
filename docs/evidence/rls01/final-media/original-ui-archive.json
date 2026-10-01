@@ -1,0 +1,11 @@
+{
+  "schema": "rock-final-ui-evidence-archive/1",
+  "status": "PASS_ALL_ARCHIVE_MEMBER_BYTES",
+  "created_utc": "2026-09-10T12:44:55.745621+00:00",
+  "name": "rockstaros-native-ui-evidence-9abf78a.tar.gz",
+  "bytes": 52135719,
+  "sha256": "19d9cae205b8fd44454d4202c6fcdf988d9640b17b652320a5ba720cab10693c",
+  "regular_members": 825,
+  "inventory_sha256": "f5c90ae196d65482b95cfcb792a2eba1b85e12341a34a44c4a7f01ff984a9ea9",
+  "scope": "824 original readback files plus inventory. Public/synthetic development fixture data only. Includes success, original setup failures, independent normal closes and unaltered QMP video frames."
+}

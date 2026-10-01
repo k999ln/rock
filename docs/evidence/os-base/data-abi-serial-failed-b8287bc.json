@@ -1,0 +1,340 @@
+{
+  "schema": "rock-data-abi-boots/1",
+  "status": "FAIL",
+  "boots": [
+    {
+      "number": 1,
+      "status": "PASS",
+      "log": "boot-1.log",
+      "command": [
+        "qemu-system-aarch64",
+        "-machine",
+        "virt-10.0,gic-version=3",
+        "-cpu",
+        "cortex-a53",
+        "-accel",
+        "tcg",
+        "-m",
+        "1024",
+        "-smp",
+        "2",
+        "-nographic",
+        "-monitor",
+        "none",
+        "-no-reboot",
+        "-nic",
+        "none",
+        "-kernel",
+        "/var/tmp/rk3/systems/rock-star-os/artifacts/os/Image",
+        "-initrd",
+        "/var/tmp/rk3/systems/rock-star-os/artifacts/os/stage0.cpio.gz",
+        "-drive",
+        "if=none,file=/var/tmp/rk-data-abi-b828/slot-a.ext4,format=raw,id=slota",
+        "-device",
+        "virtio-blk-pci,drive=slota,addr=0x1",
+        "-drive",
+        "if=none,file=/var/tmp/rk-data-abi-b828/userdata.ext4,format=raw,id=userdata",
+        "-device",
+        "virtio-blk-pci,drive=userdata,addr=0x2",
+        "-drive",
+        "if=none,file=/var/tmp/rk-data-abi-b828/slot-b.ext4,format=raw,id=slotb",
+        "-device",
+        "virtio-blk-pci,drive=slotb,addr=0x4",
+        "-drive",
+        "if=none,file=/var/tmp/rk-data-abi-b828/payloads.ext4,format=raw,id=fixtures,readonly=on",
+        "-device",
+        "virtio-blk-pci,drive=fixtures,addr=0x5",
+        "-object",
+        "rng-random,filename=/dev/urandom,id=rockrng",
+        "-device",
+        "virtio-rng-pci,rng=rockrng,addr=0x3",
+        "-append",
+        "console=ttyAMA0 ro rootwait panic=1 rock.ui=headless rock.abtest=fault-stage"
+      ],
+      "exit_code": 0,
+      "deliberate_power_cut": false
+    }
+  ],
+  "started_utc": "2026-09-09T21:24:47.544617+00:00",
+  "scope": "actual frozen Updater foreign ABI refusal before writes and retained valid B boot",
+  "guest_ui": "NOT_RUN: explicit headless test; separate GUI suite required",
+  "data_migration": "NOT_IMPLEMENTED",
+  "physical_device": "NOT_RUN",
+  "real_funds": "NOT_USED",
+  "network_adapter": "none",
+  "trust": "PUBLIC RFC8032 development fixture",
+  "per_boot_seconds": 180,
+  "host_boot_metadata_mutations": 0,
+  "initial_input_snapshot": {
+    "Image": {
+      "identity": [
+        65025,
+        342171,
+        33060,
+        13767168,
+        1788982152084909166
+      ],
+      "sha256": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197"
+    },
+    "rootfs.ext4": {
+      "identity": [
+        65025,
+        342172,
+        33060,
+        402653184,
+        1788982152124909324
+      ],
+      "sha256": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+    },
+    "stage0.cpio.gz": {
+      "identity": [
+        65025,
+        342170,
+        33060,
+        10344513,
+        1788982152068909103
+      ],
+      "sha256": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+    },
+    "harness/verify-data-abi.py": {
+      "identity": [
+        65025,
+        36429,
+        33188,
+        15330,
+        1788988988000000000
+      ],
+      "sha256": "5c2921e42b0b6765412aa3cec2125f3a42e920c495e747139ee4d2b5bb1d2dad"
+    },
+    "harness/data_abi_fixture.py": {
+      "identity": [
+        65025,
+        36408,
+        33188,
+        3290,
+        1788988988000000000
+      ],
+      "sha256": "166ce372a82936f924d0ed84abeeeda1b97af428a09469a91d3edb96ae956582"
+    },
+    "harness/verify-ui-startup.py": {
+      "identity": [
+        65025,
+        36432,
+        33188,
+        24642,
+        1788988988000000000
+      ],
+      "sha256": "895120541d31cdd0d4e1eb9ba5a257e860c37201d137f9f4e1a3832d55f7bca0"
+    },
+    "harness/verify-auth-health.py": {
+      "identity": [
+        65025,
+        36428,
+        33188,
+        16036,
+        1788988988000000000
+      ],
+      "sha256": "8c7661b50fd1bbbbf6f17a6b43f0912c0cd0bca924acbe23e25084d0aaa9a0c1"
+    },
+    "harness/verify-qemu.py": {
+      "identity": [
+        65025,
+        36431,
+        33261,
+        17077,
+        1788988988000000000
+      ],
+      "sha256": "270723914fe6a10a40e523705ea930a0650d35fad2f1d709dece9cccdadf86f6"
+    },
+    "harness/make_bundle.py": {
+      "identity": [
+        65025,
+        36415,
+        33261,
+        4463,
+        1788988988000000000
+      ],
+      "sha256": "08a735993b32b351ef8b2f2a2003e8b72e1ae55e8dec68dfb423eeb84c62f2bc"
+    }
+  },
+  "input_sha256": {
+    "Image": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197",
+    "rootfs.ext4": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763",
+    "stage0.cpio.gz": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+  },
+  "harness_sha256": {
+    "verify-data-abi.py": "5c2921e42b0b6765412aa3cec2125f3a42e920c495e747139ee4d2b5bb1d2dad",
+    "data_abi_fixture.py": "166ce372a82936f924d0ed84abeeeda1b97af428a09469a91d3edb96ae956582",
+    "verify-ui-startup.py": "895120541d31cdd0d4e1eb9ba5a257e860c37201d137f9f4e1a3832d55f7bca0",
+    "verify-auth-health.py": "8c7661b50fd1bbbbf6f17a6b43f0912c0cd0bca924acbe23e25084d0aaa9a0c1",
+    "verify-qemu.py": "270723914fe6a10a40e523705ea930a0650d35fad2f1d709dece9cccdadf86f6",
+    "make_bundle.py": "08a735993b32b351ef8b2f2a2003e8b72e1ae55e8dec68dfb423eeb84c62f2bc"
+  },
+  "source_sha256": {
+    "os/update/S97rock-update-health": "9b1e47650b210bd2bdf1c43ee2533390c6c5224b271d61ecef2443756c9d1692",
+    "os/update/S99rock-ab-test": "1ed09a171cd70cf90af6b1f8b2f69e3bc8abd2c2f19b0ee96f78603fdb873c66",
+    "os/update/guest_test.py": "7cf2c7b990bed028fab012eaf8f81c413900a9967651de44e284a2503a326357",
+    "os/update/fault_guest.py": "fd82c5d8234b92815d43d9471e210b4d6181461424b77a2faee6a96fd3f65499",
+    "os/update/fault_cli.py": "a0b26837c773ec4cc43c8a55e21103c438a1fac5d6f947ba69e970cab8e178e8",
+    "os/update/test_faults.py": "bfa00522eaa280842beaa213e0635d0a3dc06abf7e381872955d54e6f685469d",
+    "os/update/rock_update.py": "ab5722a3057d72699f135487bed26cd31a120a5e0254d6a5a497c3676275276a",
+    "os/update/rock-boot-watchdog": "c97768c3699b21142fecb8e6fc7c04c64d320b3d87b9ae72ffbcc9a773e325e3",
+    "os/wallet_auth/health.py": "b858f964ea6ea929a5f4aaddd1a2a7b9db95c1b6a9701c1913117a754d0f55a7",
+    "os/wallet_auth/daemon.py": "b5646dcdd65cb5149faa7df9532ce4cda2e929a7790f28c1035bcc7b88b43e8d",
+    "os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator": "5ca12ec132fa72846fde578f96bda28d8c05afac451927e5de27cc9447ab42c1",
+    "os/update/verify-auth-health.py": "8c7661b50fd1bbbbf6f17a6b43f0912c0cd0bca924acbe23e25084d0aaa9a0c1",
+    "os/update/verify-qemu.py": "270723914fe6a10a40e523705ea930a0650d35fad2f1d709dece9cccdadf86f6",
+    "os/update/make_bundle.py": "08a735993b32b351ef8b2f2a2003e8b72e1ae55e8dec68dfb423eeb84c62f2bc",
+    "os/update/init": "eda6fc61066313b7f827a784f09c7c5896ffc1f1457e15b80eb5593134ceb0d0"
+  },
+  "injections": [
+    {
+      "path": "etc/rock-update/build-marker",
+      "sha256": "c39c8f9e90cfc9941d9c79f0f93de224655737dc7ed4b3f2e2233ed6e21d2940",
+      "test_only": true
+    },
+    {
+      "path": "usr/lib/rock-update/data-abi-fixture.py",
+      "sha256": "166ce372a82936f924d0ed84abeeeda1b97af428a09469a91d3edb96ae956582",
+      "test_only": true
+    },
+    {
+      "path": "etc/init.d/S98rock-data-abi",
+      "sha256": "914e244b2343cf151a1999b5c6a3501aa9a162b6cd758e78782cd2dbbb47b8ba",
+      "test_only": true
+    }
+  ],
+  "unchanged_guest_files": {
+    "usr/lib/rock-update/rock_update.py": "ab5722a3057d72699f135487bed26cd31a120a5e0254d6a5a497c3676275276a",
+    "usr/lib/rock-update/guest_test.py": "7cf2c7b990bed028fab012eaf8f81c413900a9967651de44e284a2503a326357",
+    "usr/lib/rock-update/fault_guest.py": "fd82c5d8234b92815d43d9471e210b4d6181461424b77a2faee6a96fd3f65499",
+    "etc/init.d/S97rock-update-health": "9b1e47650b210bd2bdf1c43ee2533390c6c5224b271d61ecef2443756c9d1692",
+    "etc/init.d/S99rock-ab-test": "1ed09a171cd70cf90af6b1f8b2f69e3bc8abd2c2f19b0ee96f78603fdb873c66",
+    "usr/bin/rock-ui": "7219c2451891a649b99490a7d745a2046eee9ec7f756025ca001f4925632fb98",
+    "usr/sbin/rockd": "3a56c1d8ea201ff61dde0552d58a51c4c81bdfa07a2ec0fa4fd36fd1585aaa8a",
+    "usr/libexec/rock-sandbox-exec": "01fffd3b500e759d6008f120f9fe1874b22b18296f4d3b45994146fa69008f36",
+    "usr/lib/rock-platform/service.py": "c1215e39648f1b308a68eb3aaba99b4fbbc0cbabb36849ffdc40c37856a16a17"
+  },
+  "candidate_envelope": {
+    "manifest": {
+      "schema": "rock-os-rootfs-v2",
+      "architecture": "aarch64",
+      "layout": "rock-virt-ab1",
+      "data_abi": "rock-data-v1",
+      "sequence": 2,
+      "version": "release-2",
+      "size": 402653184,
+      "sha256": "7f3fc640e94114aaa7bda9ef32ea3c9a0eeb270711a3da4e68154f5d690f0bb3"
+    },
+    "signature": "5b889f7bfbe70c3524702ec1fc975868a7e4f7ecddcddde558054bb57567a45686e8a661ee9b56ef0817c6a89e063e7798729124fc40dc6d514f48253357d306"
+  },
+  "foreign_envelope": {
+    "manifest": {
+      "schema": "rock-os-rootfs-v2",
+      "architecture": "aarch64",
+      "layout": "rock-virt-ab1",
+      "data_abi": "incompatible-data-v2",
+      "sequence": 3,
+      "version": "foreign-abi-test",
+      "size": 402653184,
+      "sha256": "7f3fc640e94114aaa7bda9ef32ea3c9a0eeb270711a3da4e68154f5d690f0bb3"
+    },
+    "signature": "cafd1e539d65d0a915d0c19823d442434321235ffe392472aa1d1b06ddc370052c92aa8aa75cff9766ad6f062f3d6801c7290aa6632c38f4aaccbfbacf45a00c"
+  },
+  "foreign_bundle_sha256": "9ea50a2c30802f31339b5d5d3bc5aec05b4ae92273c92962e07742c1c1c4f12c",
+  "error": "RuntimeError: exact ABI proof and normal shutdown required",
+  "final_input_snapshot": {
+    "Image": {
+      "identity": [
+        65025,
+        342171,
+        33060,
+        13767168,
+        1788982152084909166
+      ],
+      "sha256": "a15eb83ce94adf1d067130d422e20bdd5538fda724eb816b4d8b9e79a1f52197"
+    },
+    "rootfs.ext4": {
+      "identity": [
+        65025,
+        342172,
+        33060,
+        402653184,
+        1788982152124909324
+      ],
+      "sha256": "16742d4a5b4bbc6a960b8e59665a0660f58a7ff7618da1e115ec52d4193c8763"
+    },
+    "stage0.cpio.gz": {
+      "identity": [
+        65025,
+        342170,
+        33060,
+        10344513,
+        1788982152068909103
+      ],
+      "sha256": "3e4cbe79760ca1a95df75426a5780a95e55ca607d37c97e2d2031cf97b2ad55e"
+    },
+    "harness/verify-data-abi.py": {
+      "identity": [
+        65025,
+        36429,
+        33188,
+        15330,
+        1788988988000000000
+      ],
+      "sha256": "5c2921e42b0b6765412aa3cec2125f3a42e920c495e747139ee4d2b5bb1d2dad"
+    },
+    "harness/data_abi_fixture.py": {
+      "identity": [
+        65025,
+        36408,
+        33188,
+        3290,
+        1788988988000000000
+      ],
+      "sha256": "166ce372a82936f924d0ed84abeeeda1b97af428a09469a91d3edb96ae956582"
+    },
+    "harness/verify-ui-startup.py": {
+      "identity": [
+        65025,
+        36432,
+        33188,
+        24642,
+        1788988988000000000
+      ],
+      "sha256": "895120541d31cdd0d4e1eb9ba5a257e860c37201d137f9f4e1a3832d55f7bca0"
+    },
+    "harness/verify-auth-health.py": {
+      "identity": [
+        65025,
+        36428,
+        33188,
+        16036,
+        1788988988000000000
+      ],
+      "sha256": "8c7661b50fd1bbbbf6f17a6b43f0912c0cd0bca924acbe23e25084d0aaa9a0c1"
+    },
+    "harness/verify-qemu.py": {
+      "identity": [
+        65025,
+        36431,
+        33261,
+        17077,
+        1788988988000000000
+      ],
+      "sha256": "270723914fe6a10a40e523705ea930a0650d35fad2f1d709dece9cccdadf86f6"
+    },
+    "harness/make_bundle.py": {
+      "identity": [
+        65025,
+        36415,
+        33261,
+        4463,
+        1788988988000000000
+      ],
+      "sha256": "08a735993b32b351ef8b2f2a2003e8b72e1ae55e8dec68dfb423eeb84c62f2bc"
+    }
+  },
+  "original_inputs_unchanged": true,
+  "finished_utc": "2026-09-09T21:26:30.750510+00:00"
+}

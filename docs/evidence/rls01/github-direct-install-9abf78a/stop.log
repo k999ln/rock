@@ -1,0 +1,14 @@
+RockstarOS 1.0 Developer Preview
+OS 右上の端末操作 → 電源を切る → 確認して実行を選んでください。ブラウザを閉じるだけでは終了しません。
+{
+  "running": false,
+  "observed": "owned QEMU stopped; use the OS UI for normal shutdown",
+  "game": {
+    "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+    "config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+    "pid": null,
+    "running": false,
+    "schema": "rock-game-sandbox-status/1",
+    "simulation_only": true
+  }
+}

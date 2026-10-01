@@ -1,0 +1,25 @@
+{
+  "schema": "rock-game-node-fixture-tamper/2",
+  "status": "PASS_NEGATIVE",
+  "mutation": "one appended whitespace byte per separate temporary fixture copy; originals unchanged",
+  "verifier_sha256": "6cf2d0df6af5133e43811bfd7184765f634aeb3ac6fb2e59d57f346aab71c665",
+  "cases": [
+    {
+      "target": "connection-v1-vectors.json",
+      "original_sha256": "c2382e94932bd42a284ac64dec30519c762eeddcc13b5ee76ae836b82a011871",
+      "exit_code": 1,
+      "stdout_bytes": 0,
+      "stderr_sha256": "ebf59aafb6717b311473c4327fc5111dc525cb6e6f24fa8c6acac4b0b5a74e13",
+      "rejected_at": "historical-UUID-account/fixed-public-fixture-sha256"
+    },
+    {
+      "target": "connection-v1-prefixed-account-vectors.json",
+      "original_sha256": "120f3edc5d5b19b6442e7ba87f2bdee7cd31435534bd5f82af77ef67b6daa346",
+      "exit_code": 1,
+      "stdout_bytes": 0,
+      "stderr_sha256": "bac130d6117d7586a9523c5e23521ea883791cbc0294960ef18dc035ad659fbe",
+      "rejected_at": "existing-prefixed-account/fixed-public-fixture-sha256"
+    }
+  ],
+  "scope": "two owned Node processes, each reaped before temporary copy cleanup; no endpoint/SDK/DB acceptance"
+}

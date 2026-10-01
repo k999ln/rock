@@ -1,0 +1,33 @@
+{
+  "schema": "rock-rls01-manual-native-ui/1",
+  "source_commit": "8bd2b26b23bbb953c12027f69d0f68297c49e2ae",
+  "archive_sha256": "001a43c10df411496ce3df4604e06ed3c1bcb1d2ac27ebbcbd3fe32c5b5f8d56",
+  "interface": "installed browser viewer controlled with CUA; no database writes outside native UI",
+  "hub": {
+    "product": "citation\u6574\u7406 v1.0.0",
+    "input_bytes": 150,
+    "result": "inline citation extracted; code citation retained; appended source list",
+    "jobs": 1
+  },
+  "wallet": {
+    "initial": "unregistered zero",
+    "explicit_registration": true,
+    "public_pin": "0000",
+    "explicit_wallet_terms": true,
+    "monthly_consent": false,
+    "one_time_public_credit_minor": 10000,
+    "available_minor": 9897
+  },
+  "game_a": {
+    "connection_consent": true,
+    "separate_purchase_approval": true,
+    "principal_minor": 100,
+    "fee_minor": 3,
+    "external_cost_minor": 0,
+    "units": 10,
+    "status": "SETTLED / \u4ea4\u63db\u5b8c\u4e86",
+    "held_minor": 0
+  },
+  "game_b": "not connected / not purchased",
+  "real_money": false
+}

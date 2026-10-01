@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /usr/bin/python3 -B -I /usr/lib/rock-update/rock_update.py "$@"

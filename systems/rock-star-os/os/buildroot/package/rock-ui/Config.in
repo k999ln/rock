@@ -1,0 +1,16 @@
+config BR2_PACKAGE_ROCK_UI
+	bool "rock-ui"
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	depends on BR2_TOOLCHAIN_HAS_SYNC_4
+	select BR2_PACKAGE_CAIRO
+	select BR2_PACKAGE_CAIRO_PNG
+	select BR2_PACKAGE_FREETYPE
+	select BR2_PACKAGE_JSON_C
+	help
+	  Native Rock star os framebuffer Hub with evdev input and local
+	  authenticated Unix-domain platform API. No browser or X server.
+	  A Japanese OpenType font must be installed separately at
+	  /usr/share/fonts/rock/NotoSansCJKjp-Regular.otf.
+
+comment "rock-ui needs a toolchain with threads and 32-bit atomic operations"
+	depends on !BR2_TOOLCHAIN_HAS_THREADS || !BR2_TOOLCHAIN_HAS_SYNC_4

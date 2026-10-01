@@ -1,0 +1,50 @@
+{
+  "manifest": {
+    "schema_version": 2,
+    "id": "org.rockstar.citation-organizer",
+    "name": "引用整理",
+    "description": "入力文の（出典: [名前](https://...)）を出典一覧に整理します。コード部分と通常のリンクは保持し、リンク先にはアクセスしません。",
+    "publisher": "org.rockstar.development",
+    "version": "1.0.0",
+    "kind": "Tool",
+    "runtime": "rock-recipe/1",
+    "execution_targets": [
+      "device_local"
+    ],
+    "permissions": [
+      "text.input",
+      "text.output"
+    ],
+    "data": {
+      "input": "user_supplied_text",
+      "destinations": []
+    },
+    "resources": {
+      "input_bytes": 65536,
+      "output_bytes": 131072,
+      "timeout_seconds": 3,
+      "max_steps": 16
+    },
+    "price": {
+      "currency": "USD",
+      "amount_minor": 0,
+      "unit": "run"
+    },
+    "source": {
+      "repository": "local-development",
+      "commit": "local-development",
+      "license": "LicenseRef-Development-Only"
+    },
+    "recipe_sha256": "5472d8114fff7414a9cacd07a7b1bca65af9b230b262ea20dec6a467924fcb5f",
+    "lifecycle": {
+      "updates": "explicit_approval",
+      "rollback": "cached_signed_version",
+      "uninstall": "retain_receipts"
+    }
+  },
+  "recipe": [
+    {
+      "op": "organize_citations"
+    }
+  ]
+}

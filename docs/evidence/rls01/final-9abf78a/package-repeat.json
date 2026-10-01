@@ -1,0 +1,50 @@
+{
+  "schema": "rock-final-package-determinism/1",
+  "status": "ALL_NINE_FILES_BYTE_IDENTICAL",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "observed_unix": 1789034101.507637,
+  "acceptance_plan_sha256": "b2a0a15c3301f6c7370f6ea59a99aa1546be38e33812333fe9cfacca995c26c8",
+  "first_output": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-installer/work/preview-final1",
+  "second_output": "/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s/work/rock-installer/work/preview-final1-repeat",
+  "files": {
+    "SHA256SUMS": {
+      "bytes": 728,
+      "sha256": "7a5f03bd9d4c6e68dc6781c1deaaaaaef7faaae174d0c04d6f2c4a9cba761355"
+    },
+    "packaging-result.json": {
+      "bytes": 511,
+      "sha256": "2a1bdf89136a05153e931644f6b33ac534971dda45d7093251e7caf9d3a1932c"
+    },
+    "preview-installation-ja.md": {
+      "bytes": 13520,
+      "sha256": "d9b526ef55f189133c300084b43b0339c5c94f5fa584f5ff5309453a23e33f82"
+    },
+    "preview-legal-notice.md": {
+      "bytes": 2863,
+      "sha256": "11401fa9e337b282a65f552e9354c41591ebaa0b2a6c2c78c75bdf2e207387c0"
+    },
+    "preview-release-notes.md": {
+      "bytes": 6985,
+      "sha256": "7fdc6a86f3f917de650b913f265606261e2074c0c216e0bcc09bc5f8cd3267ba"
+    },
+    "preview.py": {
+      "bytes": 55048,
+      "sha256": "6c18029c00654aaa17a88e644ba88ccb819067c35c20a59ce6eeb33c1c3a87ce"
+    },
+    "release-key.der": {
+      "bytes": 44,
+      "sha256": "06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9"
+    },
+    "release-manifest.json": {
+      "bytes": 104790,
+      "sha256": "e06fb8d9df292103e63f6cd56df95b189202ae0b13b6e1c578cb6eef0ffc5971"
+    },
+    "rockstaros-1.0.0-preview.20260910-macos-arm64.tar.gz": {
+      "bytes": 1000928255,
+      "sha256": "121389f0df92ae43197ec23d381012dab02aa1d0ff5a3f519803e66e0c7b46a2"
+    }
+  },
+  "archive_contains_corresponding_sources": true,
+  "legal_status": "NOT_CLEARED",
+  "acceptance_status": "CANDIDATE"
+}

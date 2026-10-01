@@ -1,0 +1,15 @@
+{
+  "schema": "rock-checkpoint-project-validation/1",
+  "recorded_at": "2026-09-10T01:01:50.882281+00:00",
+  "status": "PASS",
+  "command": "npm run verify",
+  "unit_tests": 54,
+  "api_assertions": 143,
+  "type_lint_build_repository_baseline_project_checks": "PASS",
+  "original_log_sha256": "85c178d412f4f223999312e34abd8a045b689e2d34b96062b17fda9b5caae536",
+  "public_log_sha256": "85c178d412f4f223999312e34abd8a045b689e2d34b96062b17fda9b5caae536",
+  "public_log": "checkpoint-project-verify.log",
+  "path_projection": "Local checkout path replaced; original log retained locally.",
+  "prior_restricted_environment_attempt": "verify-current-game-integration.log ended with EPERM on local API listener. Same command passed with permitted local listening; this is not a code or acceptance relaxation.",
+  "scope": "Current checkpoint source project verification. Native/GX00 host tests and frozen OS acceptance are separate."
+}

@@ -1,0 +1,202 @@
+{
+  "schema": "rock-native-partition-github-validation/1",
+  "head_sha": "f88b392e3e2e2ec95a3bedb0d4fa5b4a195b6092",
+  "status": "PASS",
+  "native_ci": {
+    "run_id": 34502833180,
+    "url": "https://github.com/k999ln/rock/actions/runs/34502833180",
+    "conclusion": "success",
+    "created_utc": "2026-09-10T16:33:29Z",
+    "completed_utc": "2026-09-10T16:36:11Z"
+  },
+  "web_ci": {
+    "conclusion": "success",
+    "headSha": "f88b392e3e2e2ec95a3bedb0d4fa5b4a195b6092",
+    "status": "completed",
+    "url": "https://github.com/k999ln/rock/actions/runs/34502833025"
+  },
+  "jobs": [
+    {
+      "name": "partitions (main-3)",
+      "conclusion": "success",
+      "started_utc": "2026-09-10T16:33:33Z",
+      "completed_utc": "2026-09-10T16:35:52Z"
+    },
+    {
+      "name": "partitions (main-1)",
+      "conclusion": "success",
+      "started_utc": "2026-09-10T16:33:33Z",
+      "completed_utc": "2026-09-10T16:35:11Z"
+    },
+    {
+      "name": "partitions (main-0)",
+      "conclusion": "success",
+      "started_utc": "2026-09-10T16:33:33Z",
+      "completed_utc": "2026-09-10T16:34:31Z"
+    },
+    {
+      "name": "partitions (main-2)",
+      "conclusion": "success",
+      "started_utc": "2026-09-10T16:33:33Z",
+      "completed_utc": "2026-09-10T16:35:40Z"
+    },
+    {
+      "name": "partitions (support)",
+      "conclusion": "success",
+      "started_utc": "2026-09-10T16:34:10Z",
+      "completed_utc": "2026-09-10T16:35:58Z"
+    },
+    {
+      "name": "source-tests",
+      "conclusion": "success",
+      "started_utc": "2026-09-10T16:36:01Z",
+      "completed_utc": "2026-09-10T16:36:10Z"
+    }
+  ],
+  "native_inputs_verified": 699,
+  "native_inventory_sha256": "a297fab7e738f57a295b439e68c2e5d43f230df087019dec0c7d1c3ffa0d4a1c",
+  "merged_report_sha256": "47cc99b0fa61a295941941418a5fce92195a62cf1a9fcc98fec2a1f5b138eac6",
+  "checks": 17,
+  "python_test_executions": 1660,
+  "main_test_executions": 1396,
+  "main_discovery_matches_verified_linux": true,
+  "main_partitions": [
+    {
+      "index": 0,
+      "tests": 347,
+      "seconds": 32.815,
+      "report_sha256": "34b4c1c30a20c433b44f5efe3263a96b9872714a2758074295f2bff4cafb04da"
+    },
+    {
+      "index": 1,
+      "tests": 309,
+      "seconds": 68.473,
+      "report_sha256": "bf457b681577b8f5e14e249144be63e002464f0428a647b3ed5fa82ae3e9c789"
+    },
+    {
+      "index": 2,
+      "tests": 402,
+      "seconds": 101.388,
+      "report_sha256": "4dac8540ba6fde9c1f6d75443bd7051ec6601fd21a06aec448fbd27b7ae0d75e"
+    },
+    {
+      "index": 3,
+      "tests": 338,
+      "seconds": 116.423,
+      "report_sha256": "7a148e92912beae773342fd914ce9686bfe1599a95989072307cdb132d515477"
+    }
+  ],
+  "logs_verified": [
+    {
+      "name": "main-0-tests",
+      "tests": 347,
+      "log_sha256": "17732a88f49a87a9c961cb1832a880584dc87a159816c02890182b820dacb2f1"
+    },
+    {
+      "name": "main-1-tests",
+      "tests": 309,
+      "log_sha256": "c5036632e1d9dcbf7064ab68bb95ae0102fbe194bffe17d8e7adbb06b429cb53"
+    },
+    {
+      "name": "main-2-tests",
+      "tests": 402,
+      "log_sha256": "4f2a76743c6ebc1c234f322ff53a70a108c6b77b2d365d6d4274e6883ed5f045"
+    },
+    {
+      "name": "main-3-tests",
+      "tests": 338,
+      "log_sha256": "73bdbbbf21ee0d6b7a6fb216e8dabc7c03c37ee68811f3a0f1b801ec78029352"
+    },
+    {
+      "name": "os-wallet_auth-tests",
+      "tests": 63,
+      "log_sha256": "b1e1da1d8877a3447f95f940d05c66a41161952e804a467bbe1b3865e220e78a"
+    },
+    {
+      "name": "os-entitlement-tests",
+      "tests": 85,
+      "log_sha256": "eff8ad93b00807d2c06690db36cc2f2f1edaba497c03da270564028d49aa998e"
+    },
+    {
+      "name": "os-atm-tests",
+      "tests": 40,
+      "log_sha256": "ff40d0f196382c70fee849695fb7d242f5b7bc3a9426dfb5157fec28ca61bb70"
+    },
+    {
+      "name": "os-service_access-tests",
+      "tests": 25,
+      "log_sha256": "636d8a6693a01d4455817990b8b04b1baf2bacba0c73534e239a8ad2491a6007"
+    },
+    {
+      "name": "os-ai_routes-tests",
+      "tests": 23,
+      "log_sha256": "4293d4be274ec5063d501a4d644a789fc0d422b7477f0b5a0657b3044a61842b"
+    },
+    {
+      "name": "c-core",
+      "tests": 0,
+      "log_sha256": "fd91775029f963b4f3eb553a49d6c33012ef4a9e6384e1a265eb70ab0ac96403"
+    },
+    {
+      "name": "c-platform",
+      "tests": 0,
+      "log_sha256": "68e812194c9ae59796ee89d0e42c7a62b163e5ab1b79c326be21ddd75b088daa"
+    },
+    {
+      "name": "c-ui",
+      "tests": 0,
+      "log_sha256": "0069088559ed14f3efccaad4d0e2cda15a45fceb83b68158eb76fade6db8bdf7"
+    },
+    {
+      "name": "c-ui-build-tests",
+      "tests": 0,
+      "log_sha256": "6dc732f11fb83fb1feb4f934091d1250469bbfe6d0af46fa4de0ab7408ae1bfc"
+    },
+    {
+      "name": "c-ui-actions",
+      "tests": 0,
+      "log_sha256": "3933e9ba3249a51510398cc7ca27fe7a420951629545b55c3e7f39d19dfaa270"
+    },
+    {
+      "name": "c-ui-native-replay",
+      "tests": 0,
+      "log_sha256": "1bcb8f552c25044a5c319d249dba0a33f6dac6e46899a2e389aa04f386aacb3f"
+    },
+    {
+      "name": "c-ui-ipc",
+      "tests": 12,
+      "log_sha256": "5dc0419c98ea342eed325a98fb365ec815ac0a3175246cd0bb671cb2738af632"
+    },
+    {
+      "name": "ui-observers",
+      "tests": 16,
+      "log_sha256": "65eb98f5d160f20c1085c7a651c8acb869856f7d6f5c26b7973185fab5854d1c"
+    }
+  ],
+  "root_ui_logs": [
+    {
+      "file": "observers.log",
+      "bytes": 10117,
+      "sha256": "9f301e43ba39dad9b5fcd9680521c1fe98c213d10eb0ff847e053c853ade9542"
+    },
+    {
+      "file": "wallet-replay.log",
+      "bytes": 269,
+      "sha256": "2b5f79f2f9854eeca4cfcdea49fee660ccad5f79a40bdbe077690bb0bea60d53"
+    },
+    {
+      "file": "health.log",
+      "bytes": 553,
+      "sha256": "0d07c8c655899f3da139b6ae686ba23a0753d9c49a04ffb200abfae07be89aad"
+    },
+    {
+      "file": "pin-readiness.log",
+      "bytes": 1797,
+      "sha256": "1e6aaf679e78b50f6d2fe7538d5531160b3f75c2ddca4d647fc633a048700ecd"
+    }
+  ],
+  "frozen_distribution_source_unchanged": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "original_failure_preserved": true,
+  "scope": "CI host regressions, complete discovery and original log readback; no new OS build, QEMU acceptance or production claim.",
+  "prior_tls_error_cause": "UNDETERMINED"
+}

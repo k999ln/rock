@@ -1,0 +1,3 @@
+#!/bin/sh
+# Installed instead of the ordinary launcher only by --include-tests.
+exec /usr/bin/python3 -B -I /usr/lib/rock-update/fault_cli.py "$@"

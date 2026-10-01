@@ -1,0 +1,109 @@
+{
+  "headRefOid": "0b9f37e79853765e53184c7298a5a1e06cc28a37",
+  "isDraft": true,
+  "mergeable": "MERGEABLE",
+  "number": 4,
+  "state": "OPEN",
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:41:03Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538632843/job/103075932121",
+      "name": "public-fixture-tests",
+      "startedAt": "2026-09-10T22:40:53Z",
+      "status": "COMPLETED",
+      "workflowName": "Release signing control tests"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:40:56Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538628485/job/103075918333",
+      "name": "public-fixture-tests",
+      "startedAt": "2026-09-10T22:40:49Z",
+      "status": "COMPLETED",
+      "workflowName": "Release signing control tests"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:43:53Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538632855/job/103075933061",
+      "name": "prototype",
+      "startedAt": "2026-09-10T22:40:53Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star Android prototype"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:41:56Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538632858/job/103075933282",
+      "name": "partitions (main-0)",
+      "startedAt": "2026-09-10T22:40:53Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:41:38Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538632841/job/103075932886",
+      "name": "verify",
+      "startedAt": "2026-09-10T22:40:53Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:43:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538632858/job/103075933359",
+      "name": "partitions (main-1)",
+      "startedAt": "2026-09-10T22:40:53Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:42:53Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538632858/job/103075933432",
+      "name": "partitions (main-2)",
+      "startedAt": "2026-09-10T22:40:53Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:43:43Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538632858/job/103075933335",
+      "name": "partitions (main-3)",
+      "startedAt": "2026-09-10T22:40:53Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:42:35Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538632858/job/103075933115",
+      "name": "partitions (support)",
+      "startedAt": "2026-09-10T22:40:53Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T22:44:00Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/k999ln/rock/actions/runs/34538632858/job/103076651474",
+      "name": "source-tests",
+      "startedAt": "2026-09-10T22:43:47Z",
+      "status": "COMPLETED",
+      "workflowName": "Rock star native OS source"
+    }
+  ]
+}

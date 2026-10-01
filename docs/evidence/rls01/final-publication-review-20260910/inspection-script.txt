@@ -1,0 +1,88 @@
+import hashlib,json,subprocess,datetime,stat
+from pathlib import Path
+from html.parser import HTMLParser
+R=Path('/Users/kaiya/Documents/Codex/2026-09-10/j-a-r-v-i-s')
+OUT=R/'work/rock-installer/docs/evidence/rls01/final-publication-review-20260910'
+OUT.mkdir(parents=True,exist_ok=True)
+def sha(b): return hashlib.sha256(b).hexdigest()
+def write(n,o): (OUT/n).write_text(json.dumps(o,ensure_ascii=False,indent=2)+'\n')
+class Structure(HTMLParser):
+ def __init__(self): super().__init__(convert_charrefs=False);self.tokens=[]
+ def handle_starttag(self,t,a): self.tokens.append(['start',t,a])
+ def handle_startendtag(self,t,a): self.tokens.append(['empty',t,a])
+ def handle_endtag(self,t): self.tokens.append(['end',t])
+ def handle_decl(self,d): self.tokens.append(['decl',d])
+ def handle_comment(self,d): self.tokens.append(['comment',d])
+changes={'index.html':[('内部受入済み・公開準備中','QEMU・合成環境で検証済み')], 'guide.html':[('配布候補を検証中です。','QEMU・合成環境で内部検証済みです。'),('受入と公開条件の確認後に案内する配布記録で、','公開条件を確認した後に案内する配布記録で、'),('合成Game A/Bを同じ配布候補で受入中です。','同じ配布候補で、合成Game A/Bの接続・交換・保存履歴を内部検証しました。')]}
+versions=[]
+for name,commit in [('rockstaros-preview-final','ba900e49c5ceac3f6453030518d75a0467c0f6ac'),('rockstaros-preview-final-v2','26d2551c9fb8eef4b47f2cddfcb1fdeb07e7b82e')]:
+ p=R/'outputs'/name;m=json.loads((p/'site-export.json').read_bytes());actual={str(x.relative_to(p)):sha(x.read_bytes()) for x in sorted(p.rglob('*')) if x.is_file()}
+ assert m['source_commit']==commit and m['dirty_preview'] is False
+ assert set(actual)==set(m['files_sha256'])|{'site-export.json'}
+ assert all(actual[n]==s for n,s in m['files_sha256'].items())
+ for n,s in m['source_files_sha256'].items():
+  b=subprocess.check_output(['git','show',commit+':'+n],cwd=R/'work/rock');assert sha(b)==s
+ versions.append({'path':str(p),'source_commit':commit,'exporter_sha256':m['exporter_sha256'],'files_sha256':actual,'source_files_sha256':m['source_files_sha256'],'manifest_and_git_source_hashes_verified':True})
+pages=[]
+for n,replacements in changes.items():
+ a=(R/'outputs/rockstaros-preview-final'/n).read_text();b=(R/'outputs/rockstaros-preview-final-v2'/n).read_text();normalized=a
+ for old,new in replacements:
+  assert normalized.count(old)==1, (n,old,normalized.count(old));normalized=normalized.replace(old,new)
+ assert normalized==b,n
+ pa=Structure();pa.feed(a);pb=Structure();pb.feed(b);assert pa.tokens==pb.tokens
+ pages.append({'name':n,'exact_text_replacements':[{'from':x,'to':y} for x,y in replacements],'only_these_bytes_changed':True,'all_tag_attribute_comment_declaration_tokens_equal':True,'structure_tokens':len(pa.tokens),'structure_sha256':sha(json.dumps(pa.tokens,ensure_ascii=False,separators=(',',':')).encode())})
+changed=[n for n,s in versions[0]['files_sha256'].items() if versions[1]['files_sha256'][n]!=s]
+assert set(changed)=={'index.html','guide.html','site-export.json'}
+web={'schema':'rock-final-web-text-review/1','status':'PASS_EXACT_FOUR_TEXT_SUBSTITUTIONS_AND_METADATA_ONLY','measured_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'versions':versions,'changed_files':changed,'pages':pages,'identical_files':[n for n in versions[0]['files_sha256'] if n not in changed],'scope':'Static byte/HTML structure and Git source audit. Previous ba900 browser QA is retained with its original source and caption-render limitation; no new playback or browser assertion for v2.'}
+write('web-v2-proof.json',web)
+remote=r"""import json,hashlib,stat,datetime
+from pathlib import Path
+original=Path('/var/tmp/rock-final-9abf78a');overlay=Path('/var/tmp/rock-c-citation-selector-1213');fp=Path('/var/tmp/rock-final-9abf78a-profile/freeze-manifest.json')
+def h(p):
+ before=p.lstat();assert stat.S_ISREG(before.st_mode),str(p)
+ d=hashlib.sha256()
+ with p.open('rb') as f:
+  for b in iter(lambda:f.read(1048576),b''):d.update(b)
+ after=p.lstat();assert (before.st_dev,before.st_ino,before.st_size,before.st_mtime_ns,before.st_mode)==(after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns,after.st_mode),str(p)
+ return d.hexdigest()
+f=json.loads(fp.read_bytes());freeze_sha=h(fp)
+assert freeze_sha=='d258a303794a3a16bbec792807bc39427fa3bf3ea3c3d86492be07948f1736fc'
+source=f['source_files_sha256'];assert len(source)==1364
+changed='systems/rock-star-os/os/desktop/observe-pc-link-os.py';added='systems/rock-star-os/tests/test_pc_link_existing_citation.py'
+expected_change='58edfb30d45cde34367db2ba8e05b79d787e4040f9cd6c7c4f375dbaa06223df';expected_test='a001454d3021e97f3f328e8a9df98e423495cad7cc77f4617f6fc4648c1e729e'
+original_mismatch=[];overlay_mismatch=[];approved=[]
+for n,s in source.items():
+ os=h(original/n);es=h(overlay/n)
+ if os!=s:original_mismatch.append({'path':n,'expected':s,'actual':os})
+ if es!=s:
+  record={'path':n,'original_sha256':s,'overlay_sha256':es}
+  if n==changed and es==expected_change:approved.append(record)
+  else:overlay_mismatch.append(record)
+regular={};nonregular=[]
+for p in sorted(overlay.rglob('*')):
+ m=p.lstat().st_mode
+ if stat.S_ISREG(m):regular[str(p.relative_to(overlay))]=p.stat().st_size
+ elif not stat.S_ISDIR(m):nonregular.append(str(p.relative_to(overlay)))
+missing=sorted(set(source)-set(regular));extras=[]
+for n in sorted(set(regular)-set(source)):
+ s=h(overlay/n);base=original/n;exists=base.exists()
+ bs=h(base) if exists and stat.S_ISREG(base.lstat().st_mode) else None
+ kind='added_host_observer_test' if n==added else ('inherited_python_cache' if n.endswith('.pyc') else 'inherited_base_build_artifact')
+ extras.append({'path':n,'bytes':regular[n],'sha256':s,'classification':kind,'original_counterpart_exists':exists,'original_counterpart_sha256':bs,'byte_identical_to_original_counterpart':s==bs if bs else False})
+new=[x for x in extras if x['path']==added];inherited=[x for x in extras if x['path']!=added]
+ok=not original_mismatch and not overlay_mismatch and not missing and not nonregular and len(approved)==1 and len(new)==1 and new[0]['sha256']==expected_test and not new[0]['original_counterpart_exists'] and len(inherited)==74 and all(x['byte_identical_to_original_counterpart'] for x in inherited)
+result={'schema':'rock-host-observer-overlay-audit/1','status':'PASS_SOURCE_BOUND_OVERLAY_WITH_EXPLICIT_INHERITED_EXTRAS' if ok else 'FAIL','measured_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'source_commit':f['source_commit'],'freeze_path':str(fp),'freeze_sha256':freeze_sha,'original_source':str(original),'overlay':str(overlay),'original_source_file_count':len(source),'original_source_mismatches':original_mismatch,'unchanged_frozen_source_files':len(source)-len(approved)-len(overlay_mismatch),'approved_source_differences':approved,'unapproved_source_differences':overlay_mismatch,'missing_source_paths':missing,'nonregular_overlay_entries':nonregular,'overlay_regular_files':len(regular),'overlay_regular_bytes':sum(regular.values()),'extras':extras,'counts':{'added_test':len(new),'inherited_python_cache':sum(x['classification']=='inherited_python_cache' for x in inherited),'inherited_base_build_artifact':sum(x['classification']=='inherited_base_build_artifact' for x in inherited)},'read_only_method':'stdlib Python -B, no imports from either tree; lstat identity/size/mtime/mode stable around every hash. File access time may be updated by the filesystem. No deletion or changes performed.','scope':'This is an explicit host observer overlay, not a pristine Git checkout and not a modified release image. Inherited artifacts are the original base build, not the final Game-profile image. Prior strict-extra rejection and original failed OS runs remain unchanged.'}
+print(json.dumps(result,ensure_ascii=False))
+"""
+r=subprocess.run(['env','LIMA_HOME=/private/tmp/rock-20260909-P8wXsN','limactl','shell','--workdir','/','rock-native','python3','-B','-'],input=remote,text=True,capture_output=True,timeout=60)
+(OUT/'overlay-read-stderr.txt').write_text(r.stderr)
+assert r.returncode==0,(r.returncode,r.stderr,r.stdout)
+overlay=json.loads(r.stdout);write('overlay-proof.json',overlay)
+log=R/'work/rock/docs/evidence/rls01/citation-update-observer-20260910/linux-tests.log'
+logdata=log.read_bytes();assert b'Ran 9 tests in 0.190s' in logdata and logdata.rstrip().endswith(b'OK')
+(OUT/'prior-linux-tests.log').write_bytes(logdata)
+qa=R/'work/browser-final-qa'
+for n in ['summary.json','browser-observations.json','http-media.json']:
+ (OUT/('prior-browser-'+n)).write_bytes((qa/n).read_bytes())
+write('review-summary.json',{'schema':'rock-final-publication-review/1','status':'PASS_BOUNDED_READ_ONLY' if overlay['status'].startswith('PASS_') else 'FAIL_OVERLAY','measured_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'web_proof_sha256':sha((OUT/'web-v2-proof.json').read_bytes()),'overlay_proof_sha256':sha((OUT/'overlay-proof.json').read_bytes()),'prior_linux_tests':{'rerun':False,'log_sha256':sha(logdata),'count':9,'elapsed_seconds':0.190,'status':'ORIGINAL_PASS_LOG_READ_ONLY','test_file_sha256':'a001454d3021e97f3f328e8a9df98e423495cad7cc77f4617f6fc4648c1e729e'},'prior_browser_summary_sha256':sha((qa/'summary.json').read_bytes()),'no_new_native_vm_financial_or_browser_test':True,'product_license':'UNSET','legal_status':'NOT_CLEARED','general_public_distribution':'NOT_STARTED'})
+print(json.dumps({'output':str(OUT),'overlay_status':overlay['status'],'overlay_counts':overlay['counts'],'web_status':web['status'],'changed_files':changed,'review_summary_sha256':sha((OUT/'review-summary.json').read_bytes())},ensure_ascii=False))

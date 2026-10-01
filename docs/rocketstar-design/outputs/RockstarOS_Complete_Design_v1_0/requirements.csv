@@ -1,0 +1,61 @@
+﻿要求ID,章ID,要求,検証段階,今回までの部分証拠,残る受入,実機合格
+OSR-001,scope,環境と証拠を区分し、合成結果を実機合格へ昇格させない,"V0,V1",modeの構造例、既存35SIM,端から端までの分類と表示拒否,いいえ
+OSR-002,architecture,地上・Hub・機上・衛星の対象profileを分ける,"V1,V4",設計のみ,各対象imageのbuildと起動,いいえ
+OSR-003,architecture,WANやUI停止時も局所制御・必要警報を継続する,"V3,V4",旧C0.1同一host別process模型,電源・計算機・バスを含む故障注入,いいえ
+OSR-004,services,13の論理責任と各正本writerを実装へ対応付ける,"V1,V2",設計のみ,process/UID/DB/APIの責任照合,いいえ
+OSR-005,services,所有者以外からDB・機器へ直接書込みできない,V2,元OSの部分実装読取,実権限で拒否と迂回試験,いいえ
+OSR-006,platform-01,source・kernel・compiler・driver・profileを固定する,"V1,V4",元repoSHA読取,固定manifestと再現build,いいえ
+OSR-007,platform-01,E3 Hubのarchitectureとdriverを個別受入する,"V3,V4",既存E3仕様読取,音声・GPU・給電・熱・復旧実測,いいえ
+OSR-008,platform-02,AIとToolのUID・namespace・syscall・資源を隔離する,V2,設計のみ,CPU枯渇・OOM・禁止入出力試験,いいえ
+OSR-009,platform-03,IPCの本人をOS由来peer資格から取得する,"V1,V2",既存Platform読取,専用socket・偽装・資格失効試験,いいえ
+OSR-010,platform-03,版・型・容量・同時数・期限を入口で制限する,"V1,V2",新schema構造検査,profile上限・burst・timeout試験,いいえ
+OSR-011,platform-04,指令UNKNOWN中はWeb Workをactiveに保つ,V1,既存WorkとBroker読取,新adapterの状態対応試験,いいえ
+OSR-012,platform-04,sample結果で実工程を完了させない,V1,既存Work読取,新templateのSIM分類拒否試験,いいえ
+OSR-013,platform-04,局所DBを単一writer・WAL/FULLで保存する,"V1,V3",設計DDL限定検査,媒体の電源断・WAL破損・checkpoint,いいえ
+OSR-014,platform-05,bootで世代・状態・資格・未照合を先に確認する,"V1,V3",旧模型の再起動試験,新imageと実機の復旧試験,いいえ
+OSR-015,platform-05,強制停止後の承認とleaseを再利用しない,"V1,V3",旧模型の世代/期限試験,実際の発行・失効・再開試験,いいえ
+OSR-016,platform-05,更新とデータ移行の中断・復元を処理する,"V1,V4",既存QEMU部分実装読取,対象機の署名起動・移行・rollback,いいえ
+OSR-017,platform-05,backupは整合したDBと索引を一組で取得する,"V1,V3",設計のみ,鍵非平文・全損復元・二重writer排除,いいえ
+OSR-018,platform-06,同じsource/image/profileで統合受入する,V1,設計のみ,Workから結果reviewまで一周,いいえ
+OSR-019,icd,7型schemaの未知項目・欠落・不正型を拒否する,"V0,V1",新7schema・構造例43項目の一部,runtimeへの組込と境界値網羅,いいえ
+OSR-020,icd,時刻品質・世代・連番・単位を観測に保存する,"V1,V3",observation構造例,欠測・逆順・旧boot・校正試験,いいえ
+OSR-021,icd,古い契約を明示adapterで移し暗黙互換にしない,V1,旧3schemaの標準構造確認,旧APPLIEDと新結果の意味検証,いいえ
+OSR-022,command_state,承認を対象・内容・構成・期限に拘束する,"V1,V2",旧模型のdigest試験,新暗号proofと資格による検証,いいえ
+OSR-023,command_state,永続claimを保存してから外部送信する,"V1,V3",旧模型・新DDL一意制約,全クラッシュ点で確認,いいえ
+OSR-024,command_state,同じIDの変更を拒否し同一内容だけ過去結果を返す,"V1,V3",旧模型とDDL限定検査,機器側重複判定・保持期限試験,いいえ
+OSR-025,command_state,返事喪失をUNKNOWNにし自動execute再送をしない,"V1,V3",旧模型の応答喪失試験,新経路の落失・再起動・新ID抑止,いいえ
+OSR-026,command_state,SUCCEEDEDを作用範囲と必要証拠へ結び付ける,"V1,V3",result構造拒否例,実測・機器証明と相関検査,いいえ
+OSR-027,persistence,意図・receipt・現物観測を独立記録する,"V1,V3",設計DDL・旧模型,実作用と保存間の停止・照合,いいえ
+OSR-028,persistence,証拠file確定後に索引を登録する,"V1,V3",設計のみ,電源断・file欠損・hash不一致,いいえ
+OSR-029,capacity,実測byteと負荷から容量を算定する,"V1,V4",44.914GiBの仮定計算,対象workload測定と保持上限,いいえ
+OSR-030,capacity,満杯時に未照合記録を消さず新規作用を止める,"V1,V2",設計のみ,DB/spool/ledger満杯・枯渇試験,いいえ
+OSR-031,network-01,IP相手をmTLSで確認し状態変更0RTTを禁止する,V2,一次資料に基づく設計,実証明書と再送攻撃・誤相手拒否,いいえ
+OSR-032,network-02,人・機器・processを別の資格として検証する,V2,設計のみ,WebAuthn/機器登録/IPC連携,いいえ
+OSR-033,network-02,AIは提案のみ、有限capabilityで対象操作を限定する,V2,設計のみ,PoP・scope・audience・本文変更拒否,いいえ
+OSR-034,network-03,鍵用途と信頼ルートを分離し登録・失効を監査する,"V2,V3",設計のみ,鍵保管・侵害復旧・交代・二者確認,いいえ
+OSR-035,network-03,期限切れや失効情報の古さで新規権限を解放しない,V2,設計のみ,オフライン・失効・時刻未確定,いいえ
+OSR-036,network-04,署名を本文全体と承認・capabilityの内容へ拘束する,V2,schema参照は構造のみ,canonical化・署名・参照置換攻撃,いいえ
+OSR-037,network-04,時刻誤差を含め保守的に期限を判定する,"V1,V2",旧模型の時計検査は別契約,UTC/単調時計/boot/誤差の異常試験,いいえ
+OSR-038,network-04,長距離回線は提案を運び現地で新しく承認する,"V2,V3",設計のみ,長遅延・重複・古い提案の再判定,いいえ
+OSR-039,network-05,BP配送・受信・実行を別の状態として保持する,"V2,V3",設計のみ,BP/BPSec構成・経路・相互接続,いいえ
+OSR-040,network-05,優先度別容量・TTL・公平配分を適用する,V2,地上参照数値を設計選定,暗号込み量・P0偽装・満杯試験,いいえ
+OSR-041,network-05,結果台帳をspoolから分け未照合を自動削除しない,"V1,V2",設計のみ,90日保持・4GiB枯渇の縮退試験,いいえ
+OSR-042,flight-01,cFS/RTEMS評価構成を版・CPU/BSP単位で固定する,V4,一次資料確認のみ,互換build・driver・実機受入,いいえ
+OSR-043,flight-02,cFE/OSAL/PSP/BSPとmission appの責任を分ける,V4,設計のみ,message辞書・境界・依存試験,いいえ
+OSR-044,flight-02,A-LINK管理系と通信ペイロードを分離する,"V3,V4",既存透過中継案読取,帯域・電源・熱・fault伝播試験,いいえ
+OSR-045,flight-03,周期・締切・WCET・待ち・割込みを計上する,V4,計算方法の設計,機体応答から期限導出・対象CPU解析,いいえ
+OSR-046,flight-03,CPU/RAM/stack/queueを故障時まで予算化する,V4,設計のみ,ピーク・欠測・burst・stack測定,いいえ
+OSR-047,flight-04,局所missionの起動・遷移・復旧条件を値入り定義する,"V3,V4",モード骨格のみ,飛行phase別表・禁止条件・HIL,いいえ
+OSR-048,flight-04,機上healthを独立保護の証明にしない,"V3,V4",一次資料と設計,共通電源/時計/CPU障害の解析,いいえ
+OSR-049,flight-05,生命維持の制御と保護を現地に置く,"V3,V4,V5",旧電力模型の限定例,空気・水・熱・電力の機器受入,いいえ
+OSR-050,mission_modes,Coreと設備と通信のモードを区別する,"V1,V3",設計のみ,状態遷移表と誤表示・再開検査,いいえ
+OSR-051,mission_modes,epoch更新と旧holder排除後に監督権を移す,"V2,V3",旧模型のepoch検査,分断・旧機復活・別機実証,いいえ
+OSR-052,avokado,欠測・採取時刻・実測分類と希望/観測を表示する,"V1,V3",操作設計のみ,現地利用者の表示・誤解防止受入,いいえ
+OSR-053,avokado,MIC OFF/所有者変更でbufferと入力ticketを失効する,"V2,V3",既存E3仕様読取,実Hubのprivacy/停止/再起動検証,いいえ
+OSR-054,avokado,AIの文書入力で権限を増やさず秘密を渡さない,V2,設計のみ,悪意文書・tool結果・鍵アクセス拒否,いいえ
+OSR-055,logistics,貨物検収と設備稼働を別状態で証拠に結ぶ,"V1,V3",cargo構造拒否例,計量・封印・受渡し・commissioning,いいえ
+OSR-056,logistics,各個体の再使用履歴と検査判定を保持する,"V1,V5",rocketstar C3方針,実機荷重・熱・修理・再飛行判定,いいえ
+OSR-057,faults,機器別に異常応答と再開条件を定める,"V3,V4,V5",11異常の設計表,故障期限・連鎖・復旧回数の試験,いいえ
+OSR-058,verification,実装・模型・物理試験の証拠を同じ版へ追跡する,"V0,V1",43契約/DDLと旧35を別管理,構成別evidence registryの統合,いいえ
+OSR-059,migration,release manifestで版・互換・試験・復旧を確認する,"V1,V4",release構造例,署名・実image・data移行の受入,いいえ
+OSR-060,open_inputs,未入力の実機条件で運用を解放しない,"V1,V4,V5",openInputsのnullを保存,値入りミッション/機器profileの認定,いいえ

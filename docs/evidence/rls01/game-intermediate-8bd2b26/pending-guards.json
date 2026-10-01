@@ -1,0 +1,108 @@
+{
+  "schema": "rock-rls01-game-pending-guards/1",
+  "status": "PASS",
+  "guards": [
+    {
+      "guard": "host start",
+      "returncode": 1,
+      "error": "RockstarOS 1.0 Developer Preview: restore is pending; keep writers stopped and repeat the same Game restore name to recover"
+    },
+    {
+      "guard": "authority start",
+      "returncode": 1,
+      "error": "game_exchange.protocol.ProtocolError: aggregate OS/authority restore incomplete; keep every writer stopped"
+    },
+    {
+      "guard": "source OS start",
+      "returncode": 1,
+      "error": "game_exchange.protocol.ProtocolError: aggregate OS/authority restore incomplete; keep every writer stopped"
+    }
+  ],
+  "state": {
+    "gate": {
+      "authority_manifest_sha256": "9f20699dde14a532ee506abddeb9f734cb464b69974311544c16cf415118f6ee",
+      "intent": "01ec8732-946c-472f-8012-d766ebb9dc12",
+      "new_device": "recovered",
+      "os_backup_sha256": "1d3c54b1107022baa2e66286728b6f9ec8f4b26f0290e8df15cdd20dcf89be3f",
+      "retired_devices": [
+        "preview"
+      ],
+      "schema": "rock-game-desktop-restore/1",
+      "source_device": "preview",
+      "state": "PENDING"
+    },
+    "authority_journal_state": "DONE",
+    "authority_receipt": {
+      "authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+      "backup_id": "5fc5aca0-3641-49a9-ae92-757a5157cf8e",
+      "backup_manifest_sha256": "9f20699dde14a532ee506abddeb9f734cb464b69974311544c16cf415118f6ee",
+      "config_sha256": "cdb9609518187dc057a4e747d28b9550da0946c59636fc0cc8346027cdb5ab9c",
+      "connection_receipt": {
+        "c_record_sha256": "6945969a4fa73baead80240e74aa1fa73099f415d7883fe0eb62c0a433a2bfd6",
+        "index_uuid": "cde1748f-c4a1-439d-9254-a412e4d4e214",
+        "ledger_ref": "public-sandbox-alice",
+        "plan_sha256": "4a82111549a2c6f6cc28fc08b685a747bbf35a985c10a18b04a4ce64d6e113ff",
+        "restore_id": "01ec8732-946c-472f-8012-d766ebb9dc12",
+        "schema": "rock-game-current-restore-receipt/1",
+        "status": "DONE",
+        "writer_epoch": 2
+      },
+      "descriptor": {
+        "canonical_state": "/var/tmp/rockstaros-preview-authority/contracts/current-copy-01ec8732-946c-472f-8012-d766ebb9dc12",
+        "ledger_ref": "public-sandbox-alice",
+        "ledger_uuid": "da049e8d-f292-49cd-87d1-edb47811aa6b",
+        "owner_actor": "alice",
+        "owner_ref": "fixture-owner-alice",
+        "primary_device_ref": "fixture-rock-arm64-001",
+        "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910",
+        "writer_epoch": 2
+      },
+      "destination": "/var/tmp/rockstaros-preview-authority/contracts/current-copy-01ec8732-946c-472f-8012-d766ebb9dc12",
+      "game_epochs": {
+        "public-game-a": {
+          "before_sha256": "b4a44b8a6a3e1d50b415cf735f983d6bc7f0037ed5b604fbcc5724edd1b4eb35",
+          "c_record_sha256": "6945969a4fa73baead80240e74aa1fa73099f415d7883fe0eb62c0a433a2bfd6",
+          "game_authority_id": "public-game-authority-a",
+          "game_id": "public-game-a",
+          "game_plan_sha256": "4a82111549a2c6f6cc28fc08b685a747bbf35a985c10a18b04a4ce64d6e113ff",
+          "game_store_uuid": "1071657c-dddd-4d64-801c-2e4d310e6c13",
+          "index_uuid": "cde1748f-c4a1-439d-9254-a412e4d4e214",
+          "ledger_uuid": "da049e8d-f292-49cd-87d1-edb47811aa6b",
+          "new_epoch": 2,
+          "old_epoch": 1,
+          "restore_id": "01ec8732-946c-472f-8012-d766ebb9dc12",
+          "schema": "rock-game-grant-epoch-receipt/1",
+          "simulation_only": true,
+          "status": "DONE",
+          "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910"
+        },
+        "public-game-b": {
+          "before_sha256": "3a61f0f6e958a4bbac4e1eebe6d43b37847eb7e1eb84d535e4f2b12852874983",
+          "c_record_sha256": "6945969a4fa73baead80240e74aa1fa73099f415d7883fe0eb62c0a433a2bfd6",
+          "game_authority_id": "public-game-authority-b",
+          "game_id": "public-game-b",
+          "game_plan_sha256": "4a82111549a2c6f6cc28fc08b685a747bbf35a985c10a18b04a4ce64d6e113ff",
+          "game_store_uuid": "67b22707-c221-423b-81d4-0ec6f3cee944",
+          "index_uuid": "cde1748f-c4a1-439d-9254-a412e4d4e214",
+          "ledger_uuid": "da049e8d-f292-49cd-87d1-edb47811aa6b",
+          "new_epoch": 2,
+          "old_epoch": 1,
+          "restore_id": "01ec8732-946c-472f-8012-d766ebb9dc12",
+          "schema": "rock-game-grant-epoch-receipt/1",
+          "simulation_only": true,
+          "status": "DONE",
+          "wallet_authority_id": "6fdcc9a6-90c7-4e28-a165-aadf9c904910"
+        }
+      },
+      "intent": "01ec8732-946c-472f-8012-d766ebb9dc12",
+      "new_device": "recovered",
+      "post_snapshot_sha256": "185033b9557864d31e7f6c89e5d14529215a3571e04613ab731a6bf00a20e8e4",
+      "same_host_current_copy_only": true,
+      "schema": "rock-game-sandbox-current-restore-receipt/1",
+      "simulation_only": true,
+      "source_retired": true,
+      "status": "DONE"
+    },
+    "partial_disk_bytes": 16777216
+  }
+}

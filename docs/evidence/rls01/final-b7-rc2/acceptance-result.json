@@ -1,0 +1,285 @@
+{
+  "schema": "rock-rc2-acceptance-result/1",
+  "status": "PASS_INTERNAL_INSTALL_SAVE_RESTART_RECOVERY",
+  "recorded_utc": "2026-09-11T10:25:51.654073+00:00",
+  "source_commit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
+  "version": "1.0.0-preview.20260911-rc2",
+  "release_ready": false,
+  "trust": "PUBLIC_RFC8032_DEVELOPMENT_ONLY separate acceptance envelope; unsigned candidate unchanged",
+  "archive": {
+    "name": "rockstaros-1.0.0-preview.20260911-rc2-macos-arm64.tar.gz",
+    "bytes": 1003224286,
+    "sha256": "5ce072f65fc4e24212ff6acc6887cbb03f3e7f664b50d574756738892e4ed95e"
+  },
+  "candidate_index_sha256": "0440543f5846cf634f5131533eff522f66f4e42507a22173812a19f53198f941",
+  "artifact_provenance": {
+    "packaging": "two full unsigned exports byte-identical",
+    "github_release_id": 386933271,
+    "github_download": "all8 assets independently downloaded; hash and size match index and GitHub metadata",
+    "install_input": "local produced archive; subsequently proven byte-identical to all downloaded bytes",
+    "installed_members": "716 host and716 guest files independently match canonical manifest;1,389,403,103bytes each"
+  },
+  "environment": {
+    "host": "macOS15.7.4 arm64",
+    "lima": "2.2.0",
+    "guest": "Debian13 arm64",
+    "os": "Buildroot2026.08 Linux6.18.50 QEMU",
+    "fresh_install": "/private/tmp/rk11-rc2-accept",
+    "active_device_after_restore": "recovered"
+  },
+  "checks": {
+    "citation": {
+      "status": "PASS",
+      "job_count": 1,
+      "tool_id": "org.rockstar.citation-organizer",
+      "version": "1.0.0",
+      "input_bytes": 150,
+      "output_bytes": 151,
+      "output_sha256": "e5e655f1c0c3008fd895f0eba61f206cf83035d376ab63d76846bf0636840fa7"
+    },
+    "wallet": {
+      "accounts_minor": {
+        "AVAILABLE": 9897,
+        "GAME_FEES": 3,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 100,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000
+      },
+      "bill_count": 0,
+      "exchange_states": [
+        [
+          "COMPLETED",
+          0,
+          103,
+          0
+        ]
+      ],
+      "monthly_consent": false,
+      "withdrawal_count": 0
+    },
+    "games": {
+      "game-a": {
+        "account_units": {
+          "ISSUANCE_CLEARING": -10,
+          "PLAYER_PURCHASED": 10
+        },
+        "epoch": 2,
+        "epoch_receipts": 1,
+        "grants": 1
+      },
+      "game-b": {
+        "account_units": {},
+        "epoch": 2,
+        "epoch_receipts": 1,
+        "grants": 0
+      }
+    },
+    "boot_logs": {
+      "/var/tmp/rock-star-desktop/preview/sessions/359a6bd9c2bb4b4c89692bc2bac0b9c5/boot.log": {
+        "ab_health_confirmed": true,
+        "bytes": 15842,
+        "native_ui_health_ready": true,
+        "power_down": true,
+        "sha256": "d01f526c5b76e5ffd19ebf91e32269ccb424776ea823b2e0d0fcfe26020ceeb2"
+      },
+      "/var/tmp/rock-star-desktop/preview/sessions/7ea0a3ed9e1c4158a2f72f3a67956ce1/boot.log": {
+        "ab_health_confirmed": true,
+        "bytes": 15843,
+        "native_ui_health_ready": true,
+        "power_down": true,
+        "sha256": "8d7d334ab74d88037a3f4a0c25c655a7fcf3fa24a69d64c4ae51a21ec23ab998"
+      },
+      "/var/tmp/rock-star-desktop/recovered/sessions/908aeafa7bdb47bd8db494f7e2a3715b/boot.log": {
+        "ab_health_confirmed": true,
+        "bytes": 15797,
+        "native_ui_health_ready": true,
+        "power_down": true,
+        "sha256": "d8523ca22aa968c4d81fe5227c465397723c8a9477e86a06cb4ed306186890ba"
+      }
+    },
+    "business_readback": {
+      "status": "PASS",
+      "frozen_observer_status": "PASS",
+      "source_disks_preserved": {
+        "slot-a.ext4": {
+          "sha256": "8ac63eca1a9bf49d3e5f45f33a47c2eb337612a5b6fa5951cf88040929b87cf5",
+          "bytes": 402653184
+        },
+        "slot-b.ext4": {
+          "sha256": "3201548f7070f0ae5adf2c869b15df99b5f85ca51feda443c1597c130976619a",
+          "bytes": 402653184
+        },
+        "userdata.ext4": {
+          "sha256": "c291317a8dd257cc4ef8a921d32ae4587b169806ad34f635005e4fafd9ca64f5",
+          "bytes": 268435456
+        }
+      },
+      "hub_jobs": {
+        "rows": 1,
+        "logical_sha256": "a39d4aeae2480d8ff945f56bbac823f5b2fd71627b88abfbfc24b51fe3cac232"
+      },
+      "old_power_receipts_preserved": 2,
+      "new_dispatched_native_shutdowns": 1
+    },
+    "restart_authority": {
+      "after_sha256": "277b6dea104583f438b3d1c932c41589abce74e362328b3dc26e35696ca477c5",
+      "before_sha256": "c4825bee4615ae24b6cf4b0c8703d24b68510043e372e7e37fc588323027c426",
+      "database_count": 5,
+      "default_unchanged_policy_modified": false,
+      "maximum_time_after": 1789121707,
+      "maximum_time_before": 1789121345,
+      "other_typed_rows_schema_sequences_and_identities": "EXACTLY_UNCHANGED",
+      "policy": "index-identity-maximum-time-only/1",
+      "schema": "rock-game-authority-ui-retention-result/1",
+      "status": "PASS",
+      "table_count": 71
+    },
+    "recovered_authority": {
+      "after_sha256": "69d240286d0a238f1879ffdc1408329856c3ec1e063f69816c10d801fa9ea21d",
+      "before_sha256": "2ee3d68200e14e59689822eba2a0468af25ab96a685ae127e8ef38b19df704b9",
+      "database_count": 7,
+      "default_unchanged_policy_modified": false,
+      "maximum_time_after": 1789122092,
+      "maximum_time_before": 1789121707,
+      "other_typed_rows_schema_sequences_and_identities": "EXACTLY_UNCHANGED",
+      "policy": "index-identity-maximum-time-only/1",
+      "schema": "rock-game-authority-ui-retention-result/1",
+      "status": "PASS",
+      "table_count": 122
+    },
+    "interruption": {
+      "bytes_copied_before_SIGKILL": 16777216,
+      "production_files_mutated": false,
+      "pending_guards": [
+        {
+          "guard": "host start",
+          "returncode": 1,
+          "error": "RockstarOS 1.0 Developer Preview: restore is pending; keep writers stopped and repeat the same Game restore name to recover"
+        },
+        {
+          "guard": "authority start",
+          "returncode": 1,
+          "error": "game_exchange.protocol.ProtocolError: aggregate OS/authority restore incomplete; keep every writer stopped"
+        },
+        {
+          "guard": "source OS start",
+          "returncode": 1,
+          "error": "game_exchange.protocol.ProtocolError: aggregate OS/authority restore incomplete; keep every writer stopped"
+        }
+      ]
+    },
+    "restore": {
+      "status": "PASS",
+      "same_authority_receipt": true,
+      "epoch_not_incremented_twice": true,
+      "retired_source_start_refused": "game_exchange.protocol.ProtocolError: retired source OS cannot spend after current-copy restore"
+    },
+    "external_backup": "19 payload files1,074,564,436bytes plus receipt; all pinned hashes, inventory and permissions matched"
+  },
+  "attempts_and_limits": [
+    "First authority comparison refused0644 host evidence files; corrected metadata to0600 with bytes unchanged, reran once and passed. Original failure preserved.",
+    "Clipboard/typeText did not enter native PIN; documented keyboard path pressKey succeeded.",
+    "Only public/synthetic inputs and public test authentication used. No real funds, ATM withdrawal or monthly consent.",
+    "Three boots do not replace full D0-D6, fresh SDK, mobile hardware, uninstall or failure-of-entire-VM acceptance.",
+    "Restore scope is current-copy in same owned VM; import into replacement VM is unsupported.",
+    "Managed release signing, owner license selection/clearance, original Sites access and public publication remain uncompleted."
+  ],
+  "private_originals": [
+    {
+      "file": "rc2-reproducibility.json",
+      "bytes": 1314,
+      "sha256": "64c53d488f9a8aa368fde7875e77f5744322c600060fecad9035c824c4874398"
+    },
+    {
+      "file": "draft-readback.json",
+      "bytes": 6033,
+      "sha256": "2423476c6b4132ecb07f49462b5c9628ee5c3404b2ecb4153d6a3b79c0c3f7b3"
+    },
+    {
+      "file": "installed-member-readback.json",
+      "bytes": 440815,
+      "sha256": "149a92d093e4c6fa579c2cf2ee72e97d5af7e2e28f41d7a9a7ae1e348211c271"
+    },
+    {
+      "file": "export-readback.json",
+      "bytes": 5129,
+      "sha256": "fb6f03502f3e2ef049e26553812bef9b648261e548dc3e6ef203bc1628998bfe"
+    },
+    {
+      "file": "ui-observation.json",
+      "bytes": 5813,
+      "sha256": "2a9ba27a788b64bdeadffc23188d336dec95294641b107ea6987bdda0278e460"
+    },
+    {
+      "file": "business-readback.json",
+      "bytes": 22242,
+      "sha256": "6a30f6b176a95a1f45925395de8b7307cda66c317d7d51bd38b78454f8b08b10"
+    },
+    {
+      "file": "citation-readback.json",
+      "bytes": 727,
+      "sha256": "d7b2efec71273167a45a2cbdd8b7ad0bcfeec1e8d476713ed46965baac99dd65"
+    },
+    {
+      "file": "financial-readback.json",
+      "bytes": 1966,
+      "sha256": "a13e9a8fbac10e629333f7765e18a4e9a8c3c226c77de055554448313269eb49"
+    },
+    {
+      "file": "authority-restart-comparison.json",
+      "bytes": 496,
+      "sha256": "d64f992c559f5b0d4120520ce2c35e348c7e9795ebd34d73c9f6aefa769df58b"
+    },
+    {
+      "file": "authority-recovered-comparison.json",
+      "bytes": 497,
+      "sha256": "242bc31ad0a1d58c5258bad1dbc8971105a3721f7343d4af5e075d0430350073"
+    },
+    {
+      "file": "recovery.json",
+      "bytes": 11822,
+      "sha256": "78e9701094d29a1c58af4ddb42486fa6e770f58713f7454c2a930a81ad8d028b"
+    },
+    {
+      "file": "pending-guards.json",
+      "bytes": 4975,
+      "sha256": "972d810076e7e4706232e34841f6deef53007c04af70b8c018dc6757c6445ba9"
+    },
+    {
+      "file": "authority-comparison-first-attempt.json",
+      "bytes": 627,
+      "sha256": "1ca0007e8a3867f081db29a2d473051130083bd43c1d586f7dd0c00204c1a305"
+    },
+    {
+      "file": "diagnose-final.log",
+      "bytes": 1256,
+      "sha256": "c9962608817cf6bdca399d6940a52c248e189c8876b0b4f7e26d0c23d9c6f589"
+    },
+    {
+      "file": "originals-preservation.json",
+      "bytes": 1039,
+      "sha256": "38b40be4996e252181b6f63dd9c4d39675fe3561becd209718732f7439e1e74a"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "boot3-citation.png",
+      "sha256": "75a1664aa29f2f10226d66d91325b999ebe70cfa2870cd5ab60eb9478483267e",
+      "source_capture_sha256": "9376db12f23f799e8a70a3501f781d778989b59f461e1803f620218a85870512",
+      "method": "capture-only QMP screendump after CUA manual UI observation; no input sent by capture"
+    },
+    {
+      "file": "boot3-game.png",
+      "sha256": "49d3e84f03d810c3801ba85b13fa4d2cf8cad5b821632d0b0352de31a130c8ca",
+      "source_capture_sha256": "fa7625add6b7a4a602691ba7616762af9036b60dc879fdd4496d315e747fc046",
+      "method": "capture-only QMP screendump after CUA manual UI observation; no input sent by capture"
+    },
+    {
+      "file": "boot3-wallet.png",
+      "sha256": "43174a8ebcf313652c4814a13bc2440f042503cb814e3d4a518e00de62a1b3e4",
+      "source_capture_sha256": "03316502406eeabdecbe9738ac9c5e265e31a6b0886f5d4f2a8aea0a29f46480",
+      "method": "capture-only QMP screendump after CUA manual UI observation; no input sent by capture"
+    }
+  ]
+}

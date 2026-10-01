@@ -1,0 +1,5 @@
+config BR2_PACKAGE_ROCK_CORE
+	bool "rock-core"
+	help
+	  Rock star os boot service and local IPC client.
+	  This development component is not a general untrusted-code runtime.

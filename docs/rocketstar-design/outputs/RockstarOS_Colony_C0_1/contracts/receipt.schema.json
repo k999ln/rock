@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:colony:sim-only:receipt:1",
+  "title": "RockstarOS Colony receipt fixture / 1",
+  "description": "APPLIED means only the synthetic desired-load state was durably accepted. It does not assert actual load delivery, physical equipment motion, or habitat safety.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "rockstaros-colony-receipt/1"
+    },
+    "mode": {
+      "const": "SIM_ONLY"
+    },
+    "sourceClass": {
+      "const": "SYNTHETIC"
+    },
+    "siteId": {
+      "const": "sim-ground-01"
+    },
+    "nodeId": {
+      "const": "sim-utility-01"
+    },
+    "commandId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "requestDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "payloadDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "componentGeneration": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "stateRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "enum": [
+        "APPLIED",
+        "REJECTED"
+      ]
+    },
+    "reason": {
+      "enum": [
+        null,
+        "TIME_UNTRUSTED",
+        "STALE_COMPONENT_GENERATION",
+        "EXPIRED",
+        "NO_AUTHORITY",
+        "REVISION_CONFLICT",
+        "LOCAL_RESOURCE_BUDGET"
+      ]
+    },
+    "appliedScope": {
+      "const": "synthetic desired-load state only"
+    },
+    "decidedAt": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000000000
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "schema",
+    "mode",
+    "sourceClass",
+    "siteId",
+    "nodeId",
+    "commandId",
+    "requestDigest",
+    "payloadDigest",
+    "componentGeneration",
+    "stateRevision",
+    "status",
+    "reason",
+    "appliedScope",
+    "decidedAt",
+    "signature"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "APPLIED"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "reason": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "reason": {
+            "enum": [
+              "TIME_UNTRUSTED",
+              "STALE_COMPONENT_GENERATION",
+              "EXPIRED",
+              "NO_AUTHORITY",
+              "REVISION_CONFLICT",
+              "LOCAL_RESOURCE_BUDGET"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

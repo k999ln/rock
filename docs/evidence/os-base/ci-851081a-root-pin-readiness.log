@@ -1,0 +1,16 @@
+test_context_and_unknown_pin_or_button_rejected (__main__.PinReadinessTests.test_context_and_unknown_pin_or_button_rejected) ... ok
+test_disabled_four_digit_frame_never_clicks_or_renews_deadline (__main__.PinReadinessTests.test_disabled_four_digit_frame_never_clicks_or_renews_deadline) ... ok
+test_exact_frame_retained_without_reopening_for_planned_capture (__main__.PinReadinessTests.test_exact_frame_retained_without_reopening_for_planned_capture) ... ok
+test_final_capture_observed_after_deadline_is_rejected (__main__.PinReadinessTests.test_final_capture_observed_after_deadline_is_rejected) ... ok
+test_known_zero_to_four_states_and_unknown_frames (__main__.PinReadinessTests.test_known_zero_to_four_states_and_unknown_frames) ... ok
+test_memory_fd_closes_when_capture_fails (__main__.PinReadinessTests.test_memory_fd_closes_when_capture_fails) ... ok
+test_real_child_can_open_only_owned_memory_file_and_fd_closes (__main__.PinReadinessTests.test_real_child_can_open_only_owned_memory_file_and_fd_closes) ... ok
+test_replay_never_signs_or_records_receipt_when_four_digit_readiness_fails (__main__.PinReadinessTests.test_replay_never_signs_or_records_receipt_when_four_digit_readiness_fails) ... ok
+test_replay_rejects_receipt_first_observed_after_original_deadline (__main__.PinReadinessTests.test_replay_rejects_receipt_first_observed_after_original_deadline) ... ok
+test_replay_shares_deadline_and_clicks_sign_only_after_visible_readiness (__main__.PinReadinessTests.test_replay_shares_deadline_and_clicks_sign_only_after_visible_readiness) ... ok
+test_waits_for_actual_four_digits_and_enabled_button (__main__.PinReadinessTests.test_waits_for_actual_four_digits_and_enabled_button) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.933s
+
+OK

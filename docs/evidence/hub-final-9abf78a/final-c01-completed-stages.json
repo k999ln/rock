@@ -1,0 +1,344 @@
+{
+  "schema": "rock-final-c01-completed-game-financial/1",
+  "source_commit": "9abf78a80d27aa9f847c4051d20e4c552e407276",
+  "status": "PASS_SCOPED_GAME_AND_FINANCIAL_PAIRED_WITH_STOPPED_LEDGER_AUDIT",
+  "original_overall_status": "FAIL_ORIGINAL_STAGE_RETAINED",
+  "original_game_status": "PASS_SCOPED_UI_SEQUENCE_PENDING_LEDGER_AUDIT",
+  "following_ledger_audit_status": "PASS_SCOPED_STOPPED_LEDGER",
+  "original_game_status_not_rewritten": true,
+  "inputs_sha256": {
+    "orchestration.json": "31c6be06bf1ebe9c7bb992b95ff5ab171e4019692da7f928433b52f32e2a893d",
+    "game/summary.json": "3a0a96bd39ce0359be807fa9b81b9ffc8d8526173a6fee389ddd58addd7fd162",
+    "audit/report.json": "18428ca8c8ef30fe00b5c42fc2cd9c4929eae91b4c51cdc19be6d3df3f04793e",
+    "financial/summary.json": "4aeb762f558df49eba10fe6852b1792bf15ab50a0d6c056e6b7342c8e7adcf04"
+  },
+  "cycles": [
+    {
+      "stage": "game",
+      "cycle": 1,
+      "status": "PASS_SCOPED_UI_SEQUENCE",
+      "report_sha256": "8b508c1d7c2188b37c7d63b6e01bb000f816196dd065aaa9125881ba2be9eeb6",
+      "normal_shutdown_seconds": 8.794429020003008,
+      "power_boot_id": "ce30082f-cc7f-40c6-9d33-eab0b1b156d9",
+      "elapsed_seconds": 154.60764808599924,
+      "automated_clicks": 32,
+      "automated_key_events": 56
+    },
+    {
+      "stage": "game",
+      "cycle": 2,
+      "status": "PASS_SCOPED_UI_SEQUENCE",
+      "report_sha256": "11f8fd233337053f261564a2ec14842f40d48209d5fb65f52a815f4b8371f8bf",
+      "normal_shutdown_seconds": 8.80144062799809,
+      "power_boot_id": "f777ec94-5079-4c0f-9fcb-66027536c049",
+      "elapsed_seconds": 54.671494290996634,
+      "automated_clicks": 7,
+      "automated_key_events": 3
+    },
+    {
+      "stage": "financial",
+      "cycle": 1,
+      "status": "PASS_SCOPED_FINANCIAL_UI",
+      "report_sha256": "a7011db2d6aa009180e4c0c0c45d1990c50f39b821f656e6a397d8535f802ad9",
+      "normal_shutdown_seconds": 8.542590943994583,
+      "power_boot_id": "b5d86cf8-56b5-4076-adca-eac871eebdd1",
+      "elapsed_seconds": 107.74019361200044,
+      "automated_clicks": 14,
+      "automated_key_events": 34
+    },
+    {
+      "stage": "financial",
+      "cycle": 2,
+      "status": "PASS_SCOPED_FINANCIAL_UI",
+      "report_sha256": "f87e983cd68d6fd0a661cd5280698cac246a0c4602773b9e7811d44b91d67d71",
+      "normal_shutdown_seconds": 9.712701704003848,
+      "power_boot_id": "17821ed1-7f70-4d2e-8dd2-e1dc229868af",
+      "elapsed_seconds": 58.1016845539998,
+      "automated_clicks": 7,
+      "automated_key_events": 8
+    }
+  ],
+  "game": {
+    "expected_games": 2,
+    "expected_available_minor": 9794,
+    "balances": {
+      "AVAILABLE": 9794,
+      "GAME_FEES": 6,
+      "GAME_HOLD": 0,
+      "GAME_PURCHASES": 200,
+      "PENDING_SETTLEMENT": 0,
+      "SALE_CLEARING": -10000
+    },
+    "monthly_consent": false,
+    "monthly_charges": 0,
+    "synthetic_sale_count": 1
+  },
+  "exchanges": [
+    {
+      "game": "public-game-a",
+      "exchange_id": "ui-03314827c3747247f68971ba3735bf8a",
+      "state": "COMPLETED",
+      "held_minor": 0,
+      "committed_minor": 103,
+      "released_minor": 0,
+      "units": 10,
+      "quote_sha256": "ff312975882b235b9f29bdb3854bbfbf9aebf18078bad53da2f463b798d77ccd",
+      "command_sha256": "fa2a7b15c50120d191455757b3873b4c1674c34b8275647ecd357e7566e443c5",
+      "terminal_sha256": "7bf6118dff64c0d837ae911e9e6c25ca265f2fb17854f0aa294ace8f3747d054"
+    },
+    {
+      "game": "public-game-b",
+      "exchange_id": "ui-b42158955f7c043ad5ed318fcde369bf",
+      "state": "COMPLETED",
+      "held_minor": 0,
+      "committed_minor": 103,
+      "released_minor": 0,
+      "units": 10,
+      "quote_sha256": "90be54355b58b33da5aa15b5342836b0a69598a2b4bbc8fd13d3279ea4bfeea3",
+      "command_sha256": "52eb2dede30cb052f68aad2e9b3b210903ba8abff4c0ecb49f9f54c7a49385bb",
+      "terminal_sha256": "a4360a6d6d2c41178748fb79aab351005a7a1ff5e6ea3e74537946df81b18ec3"
+    }
+  ],
+  "financial_stages": [
+    {
+      "auto_renew": 0,
+      "balances": {
+        "AVAILABLE": 9794,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000
+      },
+      "bills": [],
+      "label": "initial-completed-games",
+      "observed_unix": 1789041003.2067597,
+      "quote_count": 0,
+      "quote_state": null,
+      "withdrawals": []
+    },
+    {
+      "auto_renew": 1,
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888
+      },
+      "bills": [
+        {
+          "amount_minor": 888,
+          "consent_id": "ca1d3eff-368c-4c05-aff7-d72893077d38",
+          "created_at": "2026-09-10T11:50:37.119805+00:00",
+          "id": "b49bbc68-5d81-4de6-ab08-b64796dde363",
+          "journal_id": "bda0d7a5-405e-45c8-b448-9ceb3812f034",
+          "period": "2026-09"
+        }
+      ],
+      "label": "first-monthly-paid",
+      "observed_unix": 1789041051.9131763,
+      "quote_count": 0,
+      "quote_state": null,
+      "withdrawals": []
+    },
+    {
+      "auto_renew": 1,
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888
+      },
+      "bills": [
+        {
+          "amount_minor": 888,
+          "consent_id": "ca1d3eff-368c-4c05-aff7-d72893077d38",
+          "created_at": "2026-09-10T11:50:37.119805+00:00",
+          "id": "b49bbc68-5d81-4de6-ab08-b64796dde363",
+          "journal_id": "bda0d7a5-405e-45c8-b448-9ceb3812f034",
+          "period": "2026-09"
+        }
+      ],
+      "label": "same-period-no-second-charge",
+      "observed_unix": 1789041069.079739,
+      "quote_count": 0,
+      "quote_state": null,
+      "withdrawals": []
+    },
+    {
+      "auto_renew": 0,
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888
+      },
+      "bills": [
+        {
+          "amount_minor": 888,
+          "consent_id": "ca1d3eff-368c-4c05-aff7-d72893077d38",
+          "created_at": "2026-09-10T11:50:37.119805+00:00",
+          "id": "b49bbc68-5d81-4de6-ab08-b64796dde363",
+          "journal_id": "bda0d7a5-405e-45c8-b448-9ceb3812f034",
+          "period": "2026-09"
+        }
+      ],
+      "label": "future-consent-cancelled",
+      "observed_unix": 1789041083.5536578,
+      "quote_count": 0,
+      "quote_state": null,
+      "withdrawals": []
+    },
+    {
+      "auto_renew": 0,
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888
+      },
+      "bills": [
+        {
+          "amount_minor": 888,
+          "consent_id": "ca1d3eff-368c-4c05-aff7-d72893077d38",
+          "created_at": "2026-09-10T11:50:37.119805+00:00",
+          "id": "b49bbc68-5d81-4de6-ab08-b64796dde363",
+          "journal_id": "bda0d7a5-405e-45c8-b448-9ceb3812f034",
+          "period": "2026-09"
+        }
+      ],
+      "label": "quote-before-owner-approval",
+      "observed_unix": 1789041088.7037165,
+      "quote_count": 1,
+      "quote_state": "OPEN",
+      "withdrawals": []
+    },
+    {
+      "auto_renew": 0,
+      "balances": {
+        "AVAILABLE": 7906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888,
+        "WITHDRAW_HOLD": 1000
+      },
+      "bills": [
+        {
+          "amount_minor": 888,
+          "consent_id": "ca1d3eff-368c-4c05-aff7-d72893077d38",
+          "created_at": "2026-09-10T11:50:37.119805+00:00",
+          "id": "b49bbc68-5d81-4de6-ab08-b64796dde363",
+          "journal_id": "bda0d7a5-405e-45c8-b448-9ceb3812f034",
+          "period": "2026-09"
+        }
+      ],
+      "label": "owner-approved-one-hold",
+      "observed_unix": 1789041094.9810596,
+      "quote_count": 1,
+      "quote_state": "CONSUMED",
+      "withdrawals": [
+        {
+          "amount_minor": 1000,
+          "created_at": "2026-09-10T11:51:31.400350+00:00",
+          "dispensed_minor": 0,
+          "id": "b9922f04-d3c6-4924-9f7e-7dbf189f95ad",
+          "released_minor": 0,
+          "status": "RESERVED",
+          "updated_at": "2026-09-10T11:51:31.400350+00:00"
+        }
+      ]
+    },
+    {
+      "auto_renew": 0,
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888,
+        "WITHDRAW_HOLD": 0
+      },
+      "bills": [
+        {
+          "amount_minor": 888,
+          "consent_id": "ca1d3eff-368c-4c05-aff7-d72893077d38",
+          "created_at": "2026-09-10T11:50:37.119805+00:00",
+          "id": "b49bbc68-5d81-4de6-ab08-b64796dde363",
+          "journal_id": "bda0d7a5-405e-45c8-b448-9ceb3812f034",
+          "period": "2026-09"
+        }
+      ],
+      "label": "cancel-restores-only-unused-hold",
+      "observed_unix": 1789041097.0194888,
+      "quote_count": 1,
+      "quote_state": "CONSUMED",
+      "withdrawals": [
+        {
+          "amount_minor": 1000,
+          "created_at": "2026-09-10T11:51:31.400350+00:00",
+          "dispensed_minor": 0,
+          "id": "b9922f04-d3c6-4924-9f7e-7dbf189f95ad",
+          "released_minor": 1000,
+          "status": "REVERSED",
+          "updated_at": "2026-09-10T11:51:36.300474+00:00"
+        }
+      ]
+    },
+    {
+      "auto_renew": 0,
+      "balances": {
+        "AVAILABLE": 8906,
+        "GAME_FEES": 6,
+        "GAME_HOLD": 0,
+        "GAME_PURCHASES": 200,
+        "PENDING_SETTLEMENT": 0,
+        "SALE_CLEARING": -10000,
+        "SERVICE_FEES": 888,
+        "WITHDRAW_HOLD": 0
+      },
+      "bills": [
+        {
+          "amount_minor": 888,
+          "consent_id": "ca1d3eff-368c-4c05-aff7-d72893077d38",
+          "created_at": "2026-09-10T11:50:37.119805+00:00",
+          "id": "b49bbc68-5d81-4de6-ab08-b64796dde363",
+          "journal_id": "bda0d7a5-405e-45c8-b448-9ceb3812f034",
+          "period": "2026-09"
+        }
+      ],
+      "label": "read-only-restart-no-charge-or-hold",
+      "observed_unix": 1789041153.4307642,
+      "quote_count": 1,
+      "quote_state": "CONSUMED",
+      "withdrawals": [
+        {
+          "amount_minor": 1000,
+          "created_at": "2026-09-10T11:51:31.400350+00:00",
+          "dispensed_minor": 0,
+          "id": "b9922f04-d3c6-4924-9f7e-7dbf189f95ad",
+          "released_minor": 1000,
+          "status": "REVERSED",
+          "updated_at": "2026-09-10T11:51:36.300474+00:00"
+        }
+      ]
+    }
+  ],
+  "scope": "One OS owner uses Game A and B. Contract/SDK independently cover two owners and multiple devices. Counts are automated physical input events, not human steps or time saving. Monthly888 once; future renewal cancelled; synthetic ATM1000 quote+approval+hold+unused cancellation, Rock fee0, no dispense."
+}
