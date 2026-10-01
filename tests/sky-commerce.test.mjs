@@ -90,7 +90,7 @@ function stripeFixture() {
     assert.equal(url.origin, 'https://api.stripe.com');
     const headers = new Headers(init.headers);
     assert.equal(headers.get('authorization'), `Bearer ${runtime.SKY_STRIPE_SECRET_KEY}`);
-    assert.equal(init.redirect, 'error');
+    assert.equal(init.redirect, 'manual');
     const parameters = new URLSearchParams(init.body);
     const call = { path: url.pathname, method: init.method, parameters, headers, search: url.searchParams };
     calls.push(call);

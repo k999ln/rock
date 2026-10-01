@@ -199,10 +199,19 @@ export type TextGenerationRequest = {
   maxOutputTokens?: number;
 };
 
+export type TextGenerationUsage = {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  cachedInputTokens: number | null;
+};
+
 export type TextGenerationResult = {
   provider: TextModelProviderId;
   model: string;
   text: string;
+  durationMs?: number;
+  usage?: TextGenerationUsage | null;
 };
 
 export type LlmRuntimeEnv = {
@@ -262,9 +271,17 @@ function messagesFor(request: TextGenerationRequest) {
 }
 
 async function jsonResponse(response: Response) {
-  const payload = (await response.json().catch(() => null)) as unknown;
   if (!response.ok) throw new LlmProviderError('UPSTREAM_ERROR', 502);
-  return payload as Record<string, unknown> | null;
+  let payload: unknown;
+  try { payload = await response.json(); }
+  catch (error) {
+    if (error instanceof SyntaxError)
+      throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+    throw error;
+  }
+  const record = asRecord(payload);
+  if (!record) throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+  return record;
 }
 
 function textFromOpenAiResponse(payload: Record<string, unknown> | null) {
@@ -300,7 +317,45 @@ function textFromChatResponse(payload: Record<string, unknown> | null) {
   return text;
 }
 
+function openAiUsage(payload: Record<string, unknown>): TextGenerationUsage | null {
+  const usage = asRecord(payload.usage);
+  if (!usage) return null;
+  const input = usage.input_tokens;
+  const output = usage.output_tokens;
+  const total = usage.total_tokens;
+  const valid = (value: unknown): value is number =>
+    typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+  if (!valid(input) || !valid(output) || !valid(total) ||
+      !Number.isSafeInteger(input + output) || total !== input + output) return null;
+  const cached = asRecord(usage.input_tokens_details)?.cached_tokens;
+  return {
+    inputTokens: input, outputTokens: output, totalTokens: total,
+    cachedInputTokens: valid(cached) && cached <= input ? cached : null,
+  };
+}
+
 export async function generateText(
+  request: TextGenerationRequest,
+  runtimeEnv: LlmRuntimeEnv,
+  fetchImpl: FetchLike = fetch,
+): Promise<TextGenerationResult> {
+  const startedAt = Date.now();
+  // Edge Workers support manual redirects. Never forward provider credentials.
+  const guardedFetch: FetchLike = (input, init) =>
+    fetchImpl(input, { ...init, redirect: 'manual' });
+  try {
+    const result = await generateTextRequest(request, runtimeEnv, guardedFetch);
+    return { ...result, durationMs: Math.max(0, Date.now() - startedAt) };
+  } catch (error) {
+    if (error instanceof LlmProviderError) throw error;
+    if (error instanceof Error &&
+        (error.name === 'TimeoutError' || error.name === 'AbortError'))
+      throw new LlmProviderError('UPSTREAM_TIMEOUT', 504);
+    throw new LlmProviderError('UPSTREAM_UNAVAILABLE', 502);
+  }
+}
+
+async function generateTextRequest(
   request: TextGenerationRequest,
   runtimeEnv: LlmRuntimeEnv,
   fetchImpl: FetchLike = fetch,
@@ -377,10 +432,14 @@ export async function generateText(
       }),
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
+    const payload = await jsonResponse(response);
+    if (payload.status !== undefined && payload.status !== 'completed')
+      throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
     return {
       provider: request.provider,
       model,
-      text: textFromOpenAiResponse(await jsonResponse(response)),
+      text: textFromOpenAiResponse(payload),
+      usage: openAiUsage(payload),
     };
   }
 

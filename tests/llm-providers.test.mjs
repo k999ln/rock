@@ -98,3 +98,41 @@ void test('local Qwen uses an explicitly configured loopback OpenAI-compatible b
   assert.equal(seen.url, 'http://127.0.0.1:4317/v1/chat/completions');
   assert.equal(seen.init.headers.Authorization, 'Bearer local-only');
 });
+
+void test('OpenAI returns measured duration and provider usage without inventing missing counts', async () => {
+  const output = [{ content: [{ type: 'output_text', text: 'ok' }] }];
+  for (const [usage, expected] of [
+    [{ input_tokens: 12, output_tokens: 5, total_tokens: 17, input_tokens_details: { cached_tokens: 4 } },
+      { inputTokens: 12, outputTokens: 5, totalTokens: 17, cachedInputTokens: 4 }],
+    [undefined, null],
+    [{ input_tokens: -1, output_tokens: 5, total_tokens: 4 }, null],
+    [{ input_tokens: 12, output_tokens: 5, total_tokens: 100 }, null],
+  ]) {
+    const result = await generateText({ provider: 'openai', prompt: 'hello' },
+      { OPENAI_API_KEY: 'fixture-key' }, async (_url, init) => {
+        assert.equal(init.redirect, 'manual');
+        assert.equal(JSON.parse(init.body).store, false);
+        return response({ status: 'completed', output, usage });
+      });
+    assert.deepEqual(result.usage, expected);
+    assert.ok(Number.isSafeInteger(result.durationMs) && result.durationMs >= 0);
+  }
+});
+
+void test('provider failures distinguish timeout, transport and invalid or incomplete responses', async () => {
+  const cases = [
+    [async () => { throw new DOMException('sensitive provider details', 'TimeoutError'); }, 'UPSTREAM_TIMEOUT', 504],
+    [async () => { throw new TypeError('sensitive network details'); }, 'UPSTREAM_UNAVAILABLE', 502],
+    [async () => new Response('invalid json'), 'UPSTREAM_INVALID_RESPONSE', 502],
+    [async () => response({ status: 'incomplete', output: [{ content: [{ type: 'output_text', text: 'partial' }] }] }), 'INCOMPLETE_RESPONSE', 502],
+    [async () => new Response(null, { status: 302, headers: { location: 'https://example.com' } }), 'UPSTREAM_ERROR', 502],
+  ];
+  for (const [fetcher, code, status] of cases) {
+    let calls = 0;
+    await assert.rejects(generateText({ provider: 'openai', prompt: 'hello' },
+      { OPENAI_API_KEY: 'fixture-key' }, async (...args) => { calls++; return fetcher(...args); }),
+      error => error instanceof LlmProviderError && error.code === code && error.status === status &&
+        !/sensitive|fixture-key/.test(error.message));
+    assert.equal(calls, 1, 'failed requests must not be retried as duplicate billable requests');
+  }
+});

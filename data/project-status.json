@@ -3325,12 +3325,12 @@
   "skyStandalonePublication": {
     "stage": "public_live_signin_required",
     "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
-    "version": 3,
-    "sourceCommit": "4d6d66332f7793b3e0d47ac175e100b6fea10b56",
+    "version": 11,
+    "sourceCommit": "c76268678f7c40e78c03816308107756816ccf4a",
     "deploymentStatus": "succeeded",
     "url": "https://sky-marketplace.noellesugar1.chatgpt.site/sky/marketplace",
     "audience": "public",
-    "authenticatedProductionExecutionVerified": false,
+    "authenticatedProductionExecutionVerified": true,
     "productSiteLinkAdded": false,
     "releaseVerification": {
       "evaluatedAt": "2026-10-01",
@@ -3340,10 +3340,12 @@
         "mr-free-article",
         "mr-citations"
       ],
-      "livePayment": "unsupported_worker_redirect_reproduced_fix_awaiting_live_test",
-      "cloudAI": "not_connected",
+      "livePayment": "JPY_50_paid_stripe_verified_webhook_200_completed_pixel_download_reload_sha256_match",
+      "cloudAI": "credentials_missing_adapter_usage_timeout_fixture_9_pass",
       "externalOAuth": "not_verified",
-      "nextAction": "Deploy safe payment diagnostics and CSV sign-in recovery, then reproduce the same 50-yen checkout."
+      "nextAction": "Verify corrected branding and cancellation on a new unpaid Checkout; complete desktop sign-in, provider secret and real cloud response; classify all services without treating local drafts as external execution.",
+      "paymentCancellation": "Pixel_cancel_return_quoted_unpaid_attempt_0",
+      "merchantBranding": "avokado_Sky_verified_new_checkout"
     }
   }
 }
