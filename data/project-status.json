@@ -3340,7 +3340,7 @@
         "mr-free-article",
         "mr-citations"
       ],
-      "livePayment": "checkout_502_unresolved",
+      "livePayment": "unsupported_worker_redirect_reproduced_fix_awaiting_live_test",
       "cloudAI": "not_connected",
       "externalOAuth": "not_verified",
       "nextAction": "Deploy safe payment diagnostics and CSV sign-in recovery, then reproduce the same 50-yen checkout."

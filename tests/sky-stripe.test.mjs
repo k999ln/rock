@@ -91,7 +91,7 @@ void test('Checkout sends the stored amount, exact ten percent, seller destinati
   assert.equal(call.headers['Stripe-Version'], SKY_STRIPE_API_VERSION);
   assert.equal(call.headers['Idempotency-Key'], 'sky:checkout:order-123');
   assert.equal(call.headers.Authorization, 'Bearer sk_test_fixture');
-  assert.equal(call.redirect, 'error');
+  assert.equal(call.redirect, 'manual');
   assert.ok(call.signal instanceof AbortSignal);
   const expected = {
     mode: 'payment', 'payment_method_types[0]': 'card',
@@ -208,4 +208,16 @@ void test('network, provider, invalid JSON and malformed result errors never exp
       return true;
     });
   }
+});
+
+void test('redirect responses are rejected without a second credential-bearing request', async (t) => {
+  t.mock.method(console, 'error', () => {});
+  let calls = 0;
+  const client = skyStripe(readSkyStripeConfig(env), async (_url, init) => {
+    calls++;
+    assert.equal(init.redirect, 'manual');
+    return new Response(null, { status: 302, headers: { Location: 'https://evil.example' } });
+  });
+  await assert.rejects(client.retrieveAccount('acct_seller'), { status: 502 });
+  assert.equal(calls, 1);
 });

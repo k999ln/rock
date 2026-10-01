@@ -209,7 +209,9 @@ export function skyStripe(
         method,
         headers,
         body: method === 'POST' ? fields.toString() : undefined,
-        redirect: 'error',
+        // Workers implements manual/follow only. Non-2xx responses below remain rejected.
+        // Never follow a redirect carrying the payment credential.
+        redirect: 'manual',
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       });
       if (!response.ok) {

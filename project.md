@@ -1,5 +1,7 @@
 ## 2026-10-01 — Sky本番決済の診断とCSV復帰導線
 
+Cloudflare workerdで `redirect: error` の非対応を再現。StripeとSky MCPを `manual` に変更し、非2xxを拒否して転送先への資格情報漏えいを防ぐ。実workerdの50円Checkout fixtureと302拒否を追加。前段の正本verifyは604件＋API483項目が合格。
+
 本番CSV決済開始が502で停止したため、Stripe応答のHTTP status・許可リスト内のerror code・検証したrequest IDだけを記録する診断を追加。秘密値・Provider message・入力本文は記録しない。CSVは完了後も同じ画面で成果物を取得できるようにし、途中の401で利用可能状態を解除してサインイン復帰を表示する。対象Stripe/50円試験31件と型検査は合格。実決済、外部OAuth、クラウドAIは引き続き未受入。次は公開版の同一50円受付でStripeの拒否理由を照合し、修正後に決済・通知・納品を確認する。
 
 ## 2026-10-01 — Skyサービスのローンチ設計と前提条件の表示

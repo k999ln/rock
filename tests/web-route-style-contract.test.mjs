@@ -192,7 +192,9 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
     resolve(root, 'components/csv-business-workspace.tsx'),
     'utf8',
   );
-  assert.match(csv, /router\.push\('\/chat\?tool=rockstar-csv-cleanup'\)/);
+  assert.doesNotMatch(csv, /router\.push\('\/chat\?tool=rockstar-csv-cleanup'\)/);
+  assert.match(csv, /needsSignin &&/);
+  assert.match(csv, /reason\.status === 401/);
   assert.match(workRoute, /redirect\('\/chat\?view=work'\)/);
   assert.match(activityRoute, /redirect\('\/chat\?view=work'\)/);
 });
