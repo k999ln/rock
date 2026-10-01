@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS sky_service_schema (version INTEGER PRIMARY KEY);

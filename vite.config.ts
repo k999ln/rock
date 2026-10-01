@@ -15,7 +15,7 @@ const { d1, r2 } = hostingConfig;
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 
 const localBindingConfig = {
-  main: 'vinext/server/fetch-handler',
+  main: './sky-service-worker.ts',
   compatibility_flags: ['nodejs_compat'],
   vars: { A2A_EGRESS_ALLOWED_ORIGINS: '' },
   d1_databases: d1
@@ -24,7 +24,7 @@ const localBindingConfig = {
           binding: d1,
           database_name: 'site-creator-d1',
           database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
-          migrations_dir: 'drizzle',
+          migrations_dir: 'sky-hosting-migrations',
         },
       ]
     : [],
