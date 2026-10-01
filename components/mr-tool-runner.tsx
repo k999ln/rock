@@ -1,6 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import {
+  readSkyResults,
+  saveSkyResult,
+  deleteSkyResult,
+  type SkySavedResult,
+} from '@/lib/sky-result-library';
+import {
   ExecutionSignin,
   useExecutionAccess,
 } from '@/components/execution-access';
@@ -58,6 +64,57 @@ export function MrToolRunner({
   onRunningChange?: (running: boolean) => void;
   executionDisabled?: boolean;
 }) {
+  const [savedResults, setSavedResults] = useState<SkySavedResult[]>([]);
+  const [libraryNotice, setLibraryNotice] = useState('');
+  useEffect(() => {
+    const load = () => {
+      try {
+        setSavedResults(readSkyResults(window.localStorage));
+      } catch {
+        setLibraryNotice(
+          '保存した成果を読み込めません。ブラウザの保存設定を確認してください。',
+        );
+      }
+    };
+    load();
+    window.addEventListener('storage', load);
+    return () => window.removeEventListener('storage', load);
+  }, []);
+  function saveResult() {
+    try {
+      setSavedResults(
+        saveSkyResult(window.localStorage, {
+          id: crypto.randomUUID(),
+          tool,
+          title:
+            output
+              .split('\n')
+              .find((line) => line.trim())
+              ?.replace(/^#+\s*/, '')
+              .slice(0, 120) || '成果',
+          output,
+          createdAt: new Date().toISOString(),
+        }),
+      );
+      setLibraryNotice(
+        'この端末に保存しました。下の「保存した成果」から開けます。',
+      );
+    } catch (e) {
+      setLibraryNotice(
+        e instanceof Error
+          ? e.message
+          : '保存できません。ファイルで保存してください。',
+      );
+    }
+  }
+  function removeResult(id: string) {
+    try {
+      setSavedResults(deleteSkyResult(window.localStorage, id));
+      setLibraryNotice('削除しました。');
+    } catch {
+      setLibraryNotice('削除できませんでした。');
+    }
+  }
   const [text, setText] = useState(''),
     [proposal, setProposal] = useState(''),
     [bucket, setBucket] = useState('single'),
@@ -496,6 +553,7 @@ export function MrToolRunner({
           <div className="bench-heading">
             <h3>{result ? result.summary : '結果ができました'}</h3>
             <div className="output-actions">
+              <button onClick={saveResult}>この端末に保存</button>
               <button onClick={copy} aria-label="結果をコピー">
                 {copied ? <Check size={17} /> : <Copy size={17} />}
               </button>
@@ -523,10 +581,43 @@ export function MrToolRunner({
           )}
           <Textarea aria-label="生成結果" readOnly rows={8} value={output} />
           <span className="subnote">
-            この結果はページを閉じると消えます。必要なら保存してください。
+            「この端末に保存」でSkyから開き直せます。別端末で使う場合はMarkdownファイルを保存してください。
           </span>
         </div>
       )}
+      <section aria-label="保存した成果">
+        <h3>保存した成果</h3>
+        <p className="subnote">
+          このブラウザに最大20件保存します。同じブラウザを使う人も閲覧できます。共有端末ではファイル保存を使ってください。
+        </p>
+        {libraryNotice && <output>{libraryNotice}</output>}
+        {savedResults.filter((item) => item.tool === tool).length === 0 && (
+          <p>保存した成果はありません。</p>
+        )}
+        {savedResults
+          .filter((item) => item.tool === tool)
+          .map((item) => (
+            <div key={item.id} className="bench-heading">
+              <button
+                onClick={() => {
+                  setOutput(item.output);
+                  setEditing(false);
+                  setResult(null);
+                  setError('');
+                }}
+              >
+                {item.title} ·{' '}
+                {new Date(item.createdAt).toLocaleDateString('ja-JP')}
+              </button>
+              <button
+                onClick={() => removeResult(item.id)}
+                aria-label={`${item.title}を削除`}
+              >
+                削除
+              </button>
+            </div>
+          ))}
+      </section>
     </section>
   );
 }

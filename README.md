@@ -53,7 +53,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理） / 完了 65/91件
+最終更新: 2026-10-01 / Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理） / 完了 65/91件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -70,7 +70,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | SKY11 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
 | SKY12 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
 | SKY13 | GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](lib/operations.ts) · [記録](tests/operations.test.mjs) · [記録](docs/chat-usability-20260912.md) |
-| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
+| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-writing-service.tsx) · [記録](lib/sky-result-library.ts) · [記録](tests/sky-result-library.test.mjs) · [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
 | SKY15 | Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装 | 完了 | [記録](components/rock-studio.tsx) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](app/studio/page.tsx) · [記録](app/sky/publish/page.tsx) · [記録](tests/sky-code-intake.test.mjs) · [記録](tests/sky-studio-chat.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
 | WLT02 | 本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
@@ -303,3 +303,7 @@ PCパックは `public/toolkits/mr-toolkit.zip`。元コードのハッシュが
 詳しい今回の動作と会計モデルは `docs/fund-and-mcp.md` を参照。
 
 ローカル保存領域の初期化: `npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc`。プレビューの保存には `/signin-with-chatgpt?return_to=/` から標準のローカルサインインを使います。
+
+### Sky文章ツールの利用
+
+Skyの「文章ツールをマーケットで探す」から、出典整理・記事の無料版・応募前チェックを選び、サインインして実行します。「この端末に保存」した成果は同じツールから開き直せます。成果保存は同じブラウザだけ（全体20件）で、別端末にはMarkdownファイルで移せます。共有端末での成果保存は他利用者も閲覧可能です。

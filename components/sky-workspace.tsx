@@ -429,6 +429,7 @@ export default function SkyWorkspace({
             <div className="sky-store-title">
               <span>Sky</span>
               <h1 id="sky-feed-title">アプリ</h1>
+              <Link href="/sky/marketplace" className="text-link">文章ツールをマーケットで探す →</Link>
             </div>
             <Tabs
               value={filter}

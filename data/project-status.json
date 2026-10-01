@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-15",
+  "updatedAt": "2026-10-01",
   "milestone": "Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理）",
   "nextAction": "B05独立Queue配置と実スマホを閉じた後の完了、公式市場が許すbuyer納品経路、実顧客・Provider入金/返金、直接費を含む月額条件のtest請求とrefund/SCA、production operator allowlist/Secrets、外部公開は未実施。",
   "tasks": [
@@ -185,6 +185,9 @@
       "status": "done",
       "dependsOn": ["SKY13"],
       "evidence": [
+        "components/sky-writing-service.tsx",
+        "lib/sky-result-library.ts",
+        "tests/sky-result-library.test.mjs",
         "components/sky-chat-workspace.tsx",
         "components/mcp-bot-runner.tsx",
         "lib/mcp-hub.ts",

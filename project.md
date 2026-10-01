@@ -1,3 +1,8 @@
+
+## 2026-10-01 — Sky文章ツールの利用入口と成果保存
+
+既存配備元7c79e43を基準に、Skyホーム→`/sky/marketplace`→`/sky/tools/{toolId}`の文章ツール入口を追加。対象は出典整理、記事の無料版メーカー、ココナラ応募前チェック。既存本人確認とjob状態遷移を用いて実行し、成果は明示操作で同一ブラウザへ全Tool合計20件保存、同じToolで再表示・コピー・Markdown保存・削除できる。元原稿は保存しない。成果はlocalStorageで、アカウント別クラウド同期ではなく共有ブラウザの他利用者からも読めるため注意を表示する。保存拒否・容量超過を成功扱いにしない。関連15試験とtypecheck合格。公開準備中、既存公開設定を維持。実Provider、決済、OS実機の合格ではない。
+
 # Rock star — 事業・設計・進捗
 
 ## 2026-09-15 — CSV buyer納品・決済台帳・運営操作をローカル統合
@@ -452,7 +457,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-09-15 / Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理） / 完了 65/91件
+最終更新: 2026-10-01 / Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理） / 完了 65/91件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -469,7 +474,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY11 | MCP掲載前診断とPC接続の互換性・初回導線を改善 | 完了 | [記録](lib/mcp-inspection.ts) · [記録](app/api/sky/mcp/inspect/route.ts) · [記録](lib/device.ts) · [記録](components/sky-publisher-form.tsx) · [記録](components/device-connection.tsx) · [記録](tests/mcp-inspection.test.mjs) · [記録](tests/device-lifecycle.test.mjs) |
 | SKY12 | ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](docs/sky-identity-connection.md) |
 | SKY13 | GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](app/workspace.css) · [記録](lib/operations.ts) · [記録](tests/operations.test.mjs) · [記録](docs/chat-usability-20260912.md) |
-| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
+| SKY14 | 接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理 | 完了 | [記録](components/sky-writing-service.tsx) · [記録](lib/sky-result-library.ts) · [記録](tests/sky-result-library.test.mjs) · [記録](components/sky-chat-workspace.tsx) · [記録](components/mcp-bot-runner.tsx) · [記録](lib/mcp-hub.ts) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](docs/chat-mcp-control-room-20260913.md) |
 | SKY15 | Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装 | 完了 | [記録](components/rock-studio.tsx) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](app/studio/page.tsx) · [記録](app/sky/publish/page.tsx) · [記録](tests/sky-code-intake.test.mjs) · [記録](tests/sky-studio-chat.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | WLT01 | Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装 | 完了 | [記録](docs/wallet-front-design.md) · [記録](components/sky-billing.tsx) · [記録](components/operations-workspace.tsx) · [記録](app/workspace.css) |
 | WLT02 | 本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装 | 完了 | [記録](app/api/wallet/route.ts) · [記録](components/wallet-workspace.tsx) · [記録](lib/operations.ts) · [記録](tests/wallet-backend.test.mjs) |
