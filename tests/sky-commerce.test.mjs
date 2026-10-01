@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { handleSkyCommerce } from '../lib/sky-commerce.ts';
@@ -32,6 +32,8 @@ class Statement {
 function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
+  const bootstrap = new URL('./fixtures/sky-service-test-schema.sql', import.meta.url);
+  if (existsSync(bootstrap)) sqlite.exec(readFileSync(bootstrap, 'utf8'));
   for (const migration of migrations) sqlite.exec(migration);
   return {
     sqlite,

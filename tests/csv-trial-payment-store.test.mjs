@@ -1,12 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { csvTrialPayments } from '../lib/csv-trial-payment.ts';
 const jobId = 'ab123456-1234-1234-1234-123456789012';
 function fixture(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
+  const bootstrap = new URL('./fixtures/sky-service-test-schema.sql', import.meta.url);
+  if (existsSync(bootstrap)) sqlite.exec(readFileSync(bootstrap, 'utf8'));
   for (const name of readdirSync(new URL('../drizzle/', import.meta.url))
     .filter((n) => n.endsWith('.sql'))
     .sort())
