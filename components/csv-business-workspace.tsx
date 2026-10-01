@@ -1,7 +1,7 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { OperationRequestError } from '@/lib/operations-client';
 import { CSV_TRIAL_SAMPLE } from '@/lib/csv-trial-sample';
@@ -74,6 +74,8 @@ export default function CsvBusinessWorkspace() {
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
   const [needsSignin, setNeedsSignin] = useState(false);
+  const [paymentReturn, setPaymentReturn] = useState<{ jobId: string; canceled: boolean } | null>(null);
+  const restoredPaymentJob = useRef<string | null>(null);
   const reportError = useCallback((reason: unknown, fallback: string) => {
     if (reason instanceof OperationRequestError && reason.status === 401) {
       setReady(false);
@@ -151,6 +153,28 @@ export default function CsvBusinessWorkspace() {
     const timer = window.setInterval(() => void refresh(), 3000);
     return () => window.clearInterval(timer);
   }, [jobs, refresh]);
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const jobId = query.get('paymentJob');
+    if (!jobId || !/^[0-9a-f-]{36}$/i.test(jobId)) return;
+    const timer = window.setTimeout(() => {
+      setPaymentReturn({ jobId, canceled: query.get('canceled') === '1' });
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const returnedJob = paymentReturn
+    ? jobs.find((job) => job.id === paymentReturn.jobId)
+    : undefined;
+  useEffect(() => {
+    if (!ready || !returnedJob || restoredPaymentJob.current === returnedJob.id) return;
+    const element = document.getElementById(`csv-job-${returnedJob.id}`);
+    if (!element) return;
+    element.scrollIntoView({ block: 'start' });
+    element.focus({ preventScroll: true });
+    restoredPaymentJob.current = returnedJob.id;
+  }, [ready, returnedJob]);
 
   async function quote(selected: File, sample: boolean, trial = false) {
     setBusy(true);
@@ -495,7 +519,16 @@ export default function CsvBusinessWorkspace() {
           )}
           <div className={styles.jobs}>
             {jobs.map((job) => (
-              <article key={job.id} className={styles.job}>
+              <article key={job.id} id={`csv-job-${job.id}`} tabIndex={-1} className={styles.job}>
+                {returnedJob?.id === job.id && (
+                  <output>
+                    {job.paymentStatus === 'stripe_verified' && job.status === 'completed'
+                      ? 'お支払いを確認しました。成果物を取得できます。'
+                      : paymentReturn?.canceled && job.paymentStatus === 'unpaid'
+                        ? '支払いを完了せず戻りました。受付は未払いです。'
+                        : '支払い状況を確認中です。未確認の場合は下の確認ボタンを使ってください。'}
+                  </output>
+                )}
                 <div className={styles.jobHead}>
                   <div>
                     <strong>{job.inputName}</strong>

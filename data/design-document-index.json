@@ -310,7 +310,18 @@
   "catalogTools": [
     {
       "id": "rockstar-csv-cleanup",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "releaseAcceptance": {
+        "document": "docs/sky-tools-complete-design.md#5-csv整形検査納品",
+        "checks": [
+          "JPY_50_without_currency_conversion",
+          "owner_scoped_checkout_return",
+          "server_verified_payment_and_completed_artifacts",
+          "unpaid_cancel_without_execution",
+          "reload_and_output_hash",
+          "Apple_Pay_requires_supported_device_acceptance"
+        ]
+      }
     },
     {
       "id": "rockstar-markets-analysis",

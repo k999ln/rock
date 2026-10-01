@@ -387,6 +387,7 @@ export function skyStripe(
             'line_items[0][quantity]': '1',
             'line_items[0][price_data][currency]': 'jpy',
             'line_items[0][price_data][unit_amount]': '50',
+            'adaptive_pricing[enabled]': 'false',
             'line_items[0][price_data][product_data][name]':
               'Sky CSV・50円試験',
             'metadata[csv_job_id]': jobId,

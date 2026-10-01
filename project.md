@@ -1,5 +1,7 @@
 ## 2026-10-01 — Sky本番決済の診断とCSV復帰導線
 
+追加: 50円試験のJPY表示固定と、決済復帰時の本人受付への移動・server状態の案内を実装。換算無効・Worker fixtureを含む対象36試験、型検査合格。変更前の全体verifyは614件、Fashion 19件、Worker/D1 API502項目に合格。新変更の公開実機受入と全体再検査は実施中。
+
 Cloudflare workerdで `redirect: error` の非対応を再現。StripeとSky MCPを `manual` に変更し、非2xxを拒否して転送先への資格情報漏えいを防ぐ。実workerdの50円Checkout fixtureと302拒否を追加。前段の正本verifyは604件＋API483項目が合格。
 
 本番CSV決済開始が502で停止したため、Stripe応答のHTTP status・許可リスト内のerror code・検証したrequest IDだけを記録する診断を追加。秘密値・Provider message・入力本文は記録しない。CSVは完了後も同じ画面で成果物を取得できるようにし、途中の401で利用可能状態を解除してサインイン復帰を表示する。対象Stripe/50円試験31件と型検査は合格。本番50円試験はStripe確認済み・処理完了。Pixelで結果CSV保存、同一受付の再読み込み、成果物4種の復元、保存CSVとserver成果物SHA-256一致を確認した。WebhookはStripe側でJPY 50・paid・livemodeと200配送を確認。作成済みCheckoutには旧店舗名のsnapshotが残ったため、public profileをavokado Skyへ修正した。新規Checkoutはavokado Sky表示を実機で確認し、未払いキャンセル後にquoted/unpaid・attempt 0を確認。Apple Pay実機、desktop復帰、外部OAuth、クラウドAI本番応答・実費は未受入。

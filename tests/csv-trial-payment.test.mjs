@@ -59,6 +59,7 @@ void test('JPY Checkout requests exactly 50 yen with no marketplace transfer or 
   assert.equal(fields.get('line_items[0][price_data][unit_amount]'), '50');
   assert.equal(fields.get('line_items[0][price_data][currency]'), 'jpy');
   assert.equal(fields.get('payment_method_types[0]'), 'card');
+  assert.equal(fields.get('adaptive_pricing[enabled]'), 'false');
   assert.equal(fields.get('metadata[csv_job_id]'), jobId);
   assert.equal(fields.get('payment_intent_data[application_fee_amount]'), null);
   assert.equal(
