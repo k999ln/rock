@@ -988,3 +988,11 @@ export const esimProviderOrders = sqliteTable(
     check('esim_provider_orders_profile_digest_check', sql`${table.profileDigest} IS NULL OR length(${table.profileDigest}) = 64`),
   ],
 );
+
+export const csvTrialPayments = sqliteTable('csv_trial_payments', {
+  id: text('id').primaryKey(),
+  jobId: text('job_id').notNull(),
+  mode: text('mode').notNull(),
+  sessionId: text('session_id'),
+  createdAt: integer('created_at').notNull(),
+}, (table) => [uniqueIndex('idx_csv_trial_session').on(table.sessionId)]);

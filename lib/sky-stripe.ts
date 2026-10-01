@@ -49,7 +49,10 @@ export interface StripePaymentIntent {
   status?: string;
   livemode?: boolean;
   application_fee_amount?: number | null;
-  transfer_data?: { destination?: string | { id: string }; amount?: number } | null;
+  transfer_data?: {
+    destination?: string | { id: string };
+    amount?: number;
+  } | null;
   metadata?: Record<string, string>;
   latest_charge?: string | StripeCharge | null;
 }
@@ -91,9 +94,12 @@ export const SKY_STRIPE_API_VERSION = '2026-08-26.dahlia';
 const STRIPE_API_ORIGIN = 'https://api.stripe.com';
 const REQUEST_TIMEOUT_MS = 15_000;
 const CONFIG_ERROR = '決済の接続設定が完了していません。';
-const PROVIDER_ERROR = '決済サービスとの通信に失敗しました。時間をおいてもう一度お試しください。';
+const PROVIDER_ERROR =
+  '決済サービスとの通信に失敗しました。時間をおいてもう一度お試しください。';
 
-export function readSkyStripeConfig(env: Record<string, unknown>): SkyStripeConfig {
+export function readSkyStripeConfig(
+  env: Record<string, unknown>,
+): SkyStripeConfig {
   const mode = env.SKY_PAYMENTS_MODE;
   const secretKey = env.SKY_STRIPE_SECRET_KEY;
   const webhookSecret = env.SKY_STRIPE_WEBHOOK_SECRET;
@@ -114,10 +120,16 @@ export function readSkyStripeConfig(env: Record<string, unknown>): SkyStripeConf
   } catch {
     throw new SkyPaymentError(CONFIG_ERROR, 503);
   }
-  const localTest = mode === 'test' && ['localhost', '127.0.0.1'].includes(origin.hostname);
+  const localTest =
+    mode === 'test' && ['localhost', '127.0.0.1'].includes(origin.hostname);
   if (
-    (origin.protocol !== 'https:' && !(localTest && origin.protocol === 'http:')) ||
-    origin.username || origin.password || origin.search || origin.hash || origin.pathname !== '/'
+    (origin.protocol !== 'https:' &&
+      !(localTest && origin.protocol === 'http:')) ||
+    origin.username ||
+    origin.password ||
+    origin.search ||
+    origin.hash ||
+    origin.pathname !== '/'
   ) {
     throw new SkyPaymentError(CONFIG_ERROR, 503);
   }
@@ -125,7 +137,11 @@ export function readSkyStripeConfig(env: Record<string, unknown>): SkyStripeConf
 }
 
 function stripeId(value: string, prefix: string): string {
-  if (typeof value !== 'string' || !new RegExp(`^${prefix}_[A-Za-z0-9_]+$`).test(value) || value.length > 255) {
+  if (
+    typeof value !== 'string' ||
+    !new RegExp(`^${prefix}_[A-Za-z0-9_]+$`).test(value) ||
+    value.length > 255
+  ) {
     throw new SkyPaymentError('決済情報を確認できません。', 400);
   }
   return value;
@@ -139,7 +155,13 @@ function validateStripeRedirect(value: unknown, hostname: string): string {
   } catch {
     throw new SkyPaymentError(PROVIDER_ERROR, 502);
   }
-  if (url.protocol !== 'https:' || url.hostname !== hostname || url.username || url.password || url.port) {
+  if (
+    url.protocol !== 'https:' ||
+    url.hostname !== hostname ||
+    url.username ||
+    url.password ||
+    url.port
+  ) {
     throw new SkyPaymentError(PROVIDER_ERROR, 502);
   }
   return url.href;
@@ -153,7 +175,10 @@ function validateIdempotencyKey(value: string): string {
 }
 
 /** Server-side only. The caller owns authentication, persisted orders and fulfillment. */
-export function skyStripe(config: SkyStripeConfig, fetcher: typeof fetch = fetch) {
+export function skyStripe(
+  config: SkyStripeConfig,
+  fetcher: typeof fetch = fetch,
+) {
   // Revalidate even when a caller constructs the config instead of using the env reader.
   const validated = readSkyStripeConfig({
     SKY_PAYMENTS_MODE: config.mode,
@@ -175,8 +200,10 @@ export function skyStripe(config: SkyStripeConfig, fetcher: typeof fetch = fetch
       Authorization: `Bearer ${validated.secretKey}`,
       'Stripe-Version': SKY_STRIPE_API_VERSION,
     };
-    if (idempotencyKey !== undefined) headers['Idempotency-Key'] = validateIdempotencyKey(idempotencyKey);
-    if (method === 'POST') headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    if (idempotencyKey !== undefined)
+      headers['Idempotency-Key'] = validateIdempotencyKey(idempotencyKey);
+    if (method === 'POST')
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
     try {
       const response = await fetcher(url.href, {
         method,
@@ -197,7 +224,10 @@ export function skyStripe(config: SkyStripeConfig, fetcher: typeof fetch = fetch
     }
   }
 
-  function validateResultId<T extends { id: string }>(result: T, prefix: string): T {
+  function validateResultId<T extends { id: string }>(
+    result: T,
+    prefix: string,
+  ): T {
     try {
       stripeId(result.id, prefix);
       return result;
@@ -208,32 +238,63 @@ export function skyStripe(config: SkyStripeConfig, fetcher: typeof fetch = fetch
 
   return {
     async createAccount(idempotencyKey: string): Promise<StripeAccount> {
-      return validateResultId(await request<StripeAccount>('/v1/accounts', 'POST', {
-        'controller[fees][payer]': 'application',
-        'controller[losses][payments]': 'application',
-        'controller[stripe_dashboard][type]': 'express',
-      }, validateIdempotencyKey(idempotencyKey)), 'acct');
+      return validateResultId(
+        await request<StripeAccount>(
+          '/v1/accounts',
+          'POST',
+          {
+            'controller[fees][payer]': 'application',
+            'controller[losses][payments]': 'application',
+            'controller[stripe_dashboard][type]': 'express',
+          },
+          validateIdempotencyKey(idempotencyKey),
+        ),
+        'acct',
+      );
     },
     async retrieveAccount(id: string): Promise<StripeAccount> {
-      return validateResultId(await request<StripeAccount>(`/v1/accounts/${stripeId(id, 'acct')}`, 'GET'), 'acct');
+      return validateResultId(
+        await request<StripeAccount>(
+          `/v1/accounts/${stripeId(id, 'acct')}`,
+          'GET',
+        ),
+        'acct',
+      );
     },
     async createAccountLink(accountId: string): Promise<{ url: string }> {
-      const result = await request<{ url: string }>('/v1/account_links', 'POST', {
-        account: stripeId(accountId, 'acct'),
-        type: 'account_onboarding',
-        return_url: `${validated.origin}/sky/sell`,
-        refresh_url: `${validated.origin}/sky/sell?onboarding=refresh`,
-      });
+      const result = await request<{ url: string }>(
+        '/v1/account_links',
+        'POST',
+        {
+          account: stripeId(accountId, 'acct'),
+          type: 'account_onboarding',
+          return_url: `${validated.origin}/sky/sell`,
+          refresh_url: `${validated.origin}/sky/sell?onboarding=refresh`,
+        },
+      );
       return { url: validateStripeRedirect(result.url, 'connect.stripe.com') };
     },
-    async createCheckout(order: SkyStripeOrder, idempotencyKey: string): Promise<StripeCheckoutSession> {
+    async createCheckout(
+      order: SkyStripeOrder,
+      idempotencyKey: string,
+    ): Promise<StripeCheckoutSession> {
       if (
-        !Number.isSafeInteger(order.amountMinor) || order.amountMinor <= 0 || order.amountMinor > 99_999_999 ||
-        !Number.isSafeInteger(order.commissionMinor) || order.commissionMinor !== marketplaceCommissionMinor(order.amountMinor) ||
+        !Number.isSafeInteger(order.amountMinor) ||
+        order.amountMinor <= 0 ||
+        order.amountMinor > 99_999_999 ||
+        !Number.isSafeInteger(order.commissionMinor) ||
+        order.commissionMinor !==
+          marketplaceCommissionMinor(order.amountMinor) ||
         !/^[a-z]{3}$/.test(order.currency) ||
-        ![order.id, order.packageKey, order.name].every((value) =>
-          typeof value === 'string' && value.trim().length > 0 && value.length <= 500 &&
-          Array.from(value).every((character) => character.charCodeAt(0) >= 32))
+        ![order.id, order.packageKey, order.name].every(
+          (value) =>
+            typeof value === 'string' &&
+            value.trim().length > 0 &&
+            value.length <= 500 &&
+            Array.from(value).every(
+              (character) => character.charCodeAt(0) >= 32,
+            ),
+        )
       ) {
         throw new SkyPaymentError('商品の決済条件を確認できません。', 400);
       }
@@ -241,48 +302,130 @@ export function skyStripe(config: SkyStripeConfig, fetcher: typeof fetch = fetch
       returnUrl.searchParams.set('order', order.id);
       const cancelUrl = new URL(returnUrl);
       cancelUrl.searchParams.set('canceled', '1');
-      const result = validateResultId(await request<StripeCheckoutSession>('/v1/checkout/sessions', 'POST', {
-        mode: 'payment',
-        'payment_method_types[0]': 'card',
-        'line_items[0][quantity]': '1',
-        'line_items[0][price_data][currency]': order.currency,
-        'line_items[0][price_data][unit_amount]': String(order.amountMinor),
-        'line_items[0][price_data][product_data][name]': order.name,
-        'payment_intent_data[application_fee_amount]': String(order.commissionMinor),
-        'payment_intent_data[transfer_data][destination]': stripeId(order.accountId, 'acct'),
-        'payment_intent_data[metadata][order_id]': order.id,
-        'payment_intent_data[metadata][package_key]': order.packageKey,
-        'metadata[order_id]': order.id,
-        'metadata[package_key]': order.packageKey,
-        client_reference_id: order.id,
-        success_url: returnUrl.href,
-        cancel_url: cancelUrl.href,
-        locale: 'ja',
-      }, validateIdempotencyKey(idempotencyKey)), 'cs');
+      const result = validateResultId(
+        await request<StripeCheckoutSession>(
+          '/v1/checkout/sessions',
+          'POST',
+          {
+            mode: 'payment',
+            'payment_method_types[0]': 'card',
+            'line_items[0][quantity]': '1',
+            'line_items[0][price_data][currency]': order.currency,
+            'line_items[0][price_data][unit_amount]': String(order.amountMinor),
+            'line_items[0][price_data][product_data][name]': order.name,
+            'payment_intent_data[application_fee_amount]': String(
+              order.commissionMinor,
+            ),
+            'payment_intent_data[transfer_data][destination]': stripeId(
+              order.accountId,
+              'acct',
+            ),
+            'payment_intent_data[metadata][order_id]': order.id,
+            'payment_intent_data[metadata][package_key]': order.packageKey,
+            'metadata[order_id]': order.id,
+            'metadata[package_key]': order.packageKey,
+            client_reference_id: order.id,
+            success_url: returnUrl.href,
+            cancel_url: cancelUrl.href,
+            locale: 'ja',
+          },
+          validateIdempotencyKey(idempotencyKey),
+        ),
+        'cs',
+      );
       result.url = validateStripeRedirect(result.url, 'checkout.stripe.com');
       return result;
     },
+    async createCsvTrialCheckout(
+      jobId: string,
+      idempotencyKey: string,
+    ): Promise<StripeCheckoutSession> {
+      if (!/^[0-9a-f-]{36}$/i.test(jobId))
+        throw new SkyPaymentError('受付番号を確認できません。');
+      const success = new URL('/csv', validated.origin);
+      success.searchParams.set('paymentJob', jobId);
+      const cancel = new URL(success);
+      cancel.searchParams.set('canceled', '1');
+      // Hosted Checkout offers eligible Apple Pay wallets through the card method.
+      // JPY is zero-decimal: 50 here means exactly 50 yen, never 5,000 yen.
+      const session = validateResultId(
+        await request<StripeCheckoutSession>(
+          '/v1/checkout/sessions',
+          'POST',
+          {
+            mode: 'payment',
+            'payment_method_types[0]': 'card',
+            'line_items[0][quantity]': '1',
+            'line_items[0][price_data][currency]': 'jpy',
+            'line_items[0][price_data][unit_amount]': '50',
+            'line_items[0][price_data][product_data][name]':
+              'Sky CSV・50円試験',
+            'metadata[csv_job_id]': jobId,
+            'metadata[purpose]': 'csv_trial_50',
+            'payment_intent_data[metadata][csv_job_id]': jobId,
+            'payment_intent_data[metadata][purpose]': 'csv_trial_50',
+            client_reference_id: jobId,
+            success_url: success.href,
+            cancel_url: cancel.href,
+            locale: 'ja',
+          },
+          validateIdempotencyKey(idempotencyKey),
+        ),
+        'cs',
+      );
+      session.url = validateStripeRedirect(session.url, 'checkout.stripe.com');
+      return session;
+    },
     async retrieveCheckout(id: string): Promise<StripeCheckoutSession> {
-      const result = validateResultId(await request<StripeCheckoutSession>(`/v1/checkout/sessions/${stripeId(id, 'cs')}`, 'GET', {
-        'expand[0]': 'payment_intent.latest_charge',
-      }), 'cs');
-      if (result.url != null) result.url = validateStripeRedirect(result.url, 'checkout.stripe.com');
+      const result = validateResultId(
+        await request<StripeCheckoutSession>(
+          `/v1/checkout/sessions/${stripeId(id, 'cs')}`,
+          'GET',
+          {
+            'expand[0]': 'payment_intent.latest_charge',
+          },
+        ),
+        'cs',
+      );
+      if (result.url != null)
+        result.url = validateStripeRedirect(result.url, 'checkout.stripe.com');
       return result;
     },
     async retrievePaymentIntent(id: string): Promise<StripePaymentIntent> {
-      return validateResultId(await request<StripePaymentIntent>(`/v1/payment_intents/${stripeId(id, 'pi')}`, 'GET', {
-        'expand[0]': 'latest_charge',
-      }), 'pi');
+      return validateResultId(
+        await request<StripePaymentIntent>(
+          `/v1/payment_intents/${stripeId(id, 'pi')}`,
+          'GET',
+          {
+            'expand[0]': 'latest_charge',
+          },
+        ),
+        'pi',
+      );
     },
     async retrieveCharge(id: string): Promise<StripeCharge> {
-      return validateResultId(await request<StripeCharge>(`/v1/charges/${stripeId(id, 'ch')}`, 'GET'), 'ch');
+      return validateResultId(
+        await request<StripeCharge>(`/v1/charges/${stripeId(id, 'ch')}`, 'GET'),
+        'ch',
+      );
     },
-    async refund(paymentIntentId: string, idempotencyKey: string): Promise<StripeRefund> {
-      return validateResultId(await request<StripeRefund>('/v1/refunds', 'POST', {
-        payment_intent: stripeId(paymentIntentId, 'pi'),
-        reverse_transfer: 'true',
-        refund_application_fee: 'true',
-      }, validateIdempotencyKey(idempotencyKey)), 're');
+    async refund(
+      paymentIntentId: string,
+      idempotencyKey: string,
+    ): Promise<StripeRefund> {
+      return validateResultId(
+        await request<StripeRefund>(
+          '/v1/refunds',
+          'POST',
+          {
+            payment_intent: stripeId(paymentIntentId, 'pi'),
+            reverse_transfer: 'true',
+            refund_application_fee: 'true',
+          },
+          validateIdempotencyKey(idempotencyKey),
+        ),
+        're',
+      );
     },
   };
 }

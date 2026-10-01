@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { CSV_TRIAL_SAMPLE } from '@/lib/csv-trial-sample';
 import {
   Download,
   FileCheck2,
@@ -73,6 +74,10 @@ export default function CsvBusinessWorkspace() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
+  const [trialPayment, setTrialPayment] = useState<{
+    available: boolean;
+    mode: string | null;
+  }>({ available: false, mode: null });
 
   const specification = useMemo(() => {
     const renames: Record<string, string> = {};
@@ -110,10 +115,12 @@ export default function CsvBusinessWorkspace() {
 
   const refresh = useCallback(async () => {
     try {
-      const data = await json<{ jobs: Job[] }>(
-        await fetch('/api/csv-jobs', { cache: 'no-store' }),
-      );
+      const data = await json<{
+        jobs: Job[];
+        trialPayment?: { available: boolean; mode: string | null };
+      }>(await fetch('/api/csv-jobs', { cache: 'no-store' }));
       setJobs(data.jobs);
+      if (data.trialPayment) setTrialPayment(data.trialPayment);
       setReady(true);
       setError('');
     } catch (reason) {
@@ -140,7 +147,7 @@ export default function CsvBusinessWorkspace() {
     return () => window.clearInterval(timer);
   }, [jobs, refresh]);
 
-  async function quote(selected: File, sample: boolean) {
+  async function quote(selected: File, sample: boolean, trial = false) {
     setBusy(true);
     setError('');
     try {
@@ -148,6 +155,7 @@ export default function CsvBusinessWorkspace() {
       form.set('id', crypto.randomUUID());
       form.set('file', selected);
       form.set('sample', String(sample));
+      form.set('trial', String(trial));
       form.set('specification', JSON.stringify(specification));
       const { job } = await json<{ job: Job }>(
         await fetch('/api/csv-jobs', {
@@ -203,6 +211,35 @@ export default function CsvBusinessWorkspace() {
     }
   }
 
+  async function payment(job: Job, action: 'checkout' | 'confirm') {
+    setBusy(true);
+    setError('');
+    try {
+      const data = await json<{ url?: string; job?: Job }>(
+        await fetch(`/api/csv-jobs/${job.id}/payment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action }),
+          signal: AbortSignal.timeout(60000),
+        }),
+      );
+      if (action === 'checkout' && data.url) window.location.assign(data.url);
+      if (data.job)
+        setJobs((items) => [
+          data.job!,
+          ...items.filter((item) => item.id !== data.job!.id),
+        ]);
+    } catch (reason) {
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : '支払いを確認できませんでした。',
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function remove(job: Job) {
     if (!window.confirm(`「${job.inputName}」と成果物を削除しますか？`)) return;
     setBusy(true);
@@ -222,13 +259,9 @@ export default function CsvBusinessWorkspace() {
     }
   }
 
-  const sample = new File(
-    [
-      'customer_id,name,note\r\n001, 佐藤 ,"改行\nあり"\r\n001,佐藤,重複\r\n002, 鈴木 ,=1+1\r\n',
-    ],
-    'sample.csv',
-    { type: 'text/csv' },
-  );
+  const sample = new File([CSV_TRIAL_SAMPLE], 'sample.csv', {
+    type: 'text/csv',
+  });
   return (
     <WorkspaceShell title="Sky · CSV仕事" hideTopActions>
       <div className={styles.page}>
@@ -385,10 +418,32 @@ export default function CsvBusinessWorkspace() {
               <button disabled={busy} onClick={() => void quote(sample, true)}>
                 サンプルを完走
               </button>
+              <button
+                disabled={busy || !ready || !trialPayment.available}
+                onClick={() => void quote(sample, false, true)}
+              >
+                50円試験の見積りを作る
+              </button>
             </div>
           </section>
 
           <aside className={styles.card}>
+            <h2>50円の決済試験</h2>
+            <p>
+              サンプルCSVを50円で処理します。見積りの後、決済画面で金額を確認してお支払いください。
+            </p>
+            <p>
+              Apple
+              Payは対応環境で決済画面に表示されます。カードも利用できます。
+            </p>
+            <p>
+              {trialPayment.available
+                ? trialPayment.mode === 'live'
+                  ? '本番決済：実際に50円を請求します。'
+                  : 'テスト環境：実際の請求は発生しません。'
+                : '決済の接続準備中です。無料サンプルは利用できます。'}
+            </p>
+
             <div className={styles.step}>
               <span>2</span>
               <div>
@@ -483,15 +538,35 @@ export default function CsvBusinessWorkspace() {
                     </dd>
                   </div>
                 </dl>
-                {job.status === 'quoted' && job.paymentStatus !== 'sample' && (
-                  <button
-                    className={styles.primary}
-                    disabled={busy || paymentReference.trim().length < 4}
-                    onClick={() => void accept(job)}
-                  >
-                    入金確認済みとして開始
-                  </button>
+                {job.quoteMinor === 5000 && job.status === 'quoted' && (
+                  <div className={styles.actions}>
+                    <button
+                      disabled={busy || !trialPayment.available}
+                      onClick={() => void payment(job, 'checkout')}
+                    >
+                      {trialPayment.mode === 'test'
+                        ? '50円のテスト決済へ'
+                        : '50円を支払う'}
+                    </button>
+                    <button
+                      disabled={busy || !trialPayment.available}
+                      onClick={() => void payment(job, 'confirm')}
+                    >
+                      支払いを確認して開始
+                    </button>
+                  </div>
                 )}
+                {job.status === 'quoted' &&
+                  job.paymentStatus !== 'sample' &&
+                  job.quoteMinor !== 5000 && (
+                    <button
+                      className={styles.primary}
+                      disabled={busy || paymentReference.trim().length < 4}
+                      onClick={() => void accept(job)}
+                    >
+                      入金確認済みとして開始
+                    </button>
+                  )}
                 {job.status === 'quality_failed' && (
                   <button
                     disabled={busy || job.attempt >= 3}
@@ -537,7 +612,8 @@ export default function CsvBusinessWorkspace() {
 
         <footer className={styles.footer}>
           <p>
-            販売者向けの8.88 USD料金案は、収益動線が決まるまで保留中です。現在、新たな利用料の計上・請求は行いません。
+            販売者向けの8.88
+            USD料金案は、収益動線が決まるまで保留中です。現在、新たな利用料の計上・請求は行いません。
           </p>
           <Link href="/csv/terms">取引条件・プライバシー・返金</Link>
         </footer>
