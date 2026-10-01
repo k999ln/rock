@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -20,6 +21,7 @@ import {
   type MarketSide,
 } from '@/lib/everything-market';
 import type { MarketProposal } from '@/lib/everything-market-store';
+import { OperationRequestError } from '@/lib/operations-client';
 
 type Snapshot = {
   schema: string;
@@ -61,7 +63,7 @@ function operationId(prefix: string) {
 async function readJson<T>(response: Response) {
   const value = (await response.json()) as T & { error?: string };
   if (!response.ok)
-    throw new Error(value.error || '市場を更新できませんでした。');
+    throw new OperationRequestError(value.error || '市場を更新できませんでした。', response.status);
   return value;
 }
 
@@ -76,6 +78,7 @@ export default function EverythingMarket() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
+  const [needsSignin, setNeedsSignin] = useState(false);
   const [notice, setNotice] = useState('');
   const [creatorOpen, setCreatorOpen] = useState(false);
 
@@ -87,7 +90,9 @@ export default function EverythingMarket() {
       );
       setSnapshot(value);
       setError('');
+      setNeedsSignin(false);
     } catch (caught) {
+      setNeedsSignin(caught instanceof OperationRequestError && caught.status === 401);
       setError(
         caught instanceof Error ? caught.message : '市場を読み込めませんでした。',
       );
@@ -148,6 +153,7 @@ export default function EverythingMarket() {
       await refresh(true);
       if (result.proposal.status === 'EXECUTED') setSelected(null);
     } catch (caught) {
+      setNeedsSignin(caught instanceof OperationRequestError && caught.status === 401);
       setError(caught instanceof Error ? caught.message : '操作に失敗しました。');
     } finally {
       setBusy('');
@@ -225,6 +231,14 @@ export default function EverythingMarket() {
         {(error || notice) && (
           <div className={`market-message ${error ? 'is-error' : ''}`} role={error ? 'alert' : 'status'}>
             {error || notice}
+            {needsSignin && <div>
+              <a href="/signin-with-chatgpt?return_to=/market" target="_blank" rel="noreferrer" className="market-primary">
+                別タブでサインイン（入力を保持）
+              </a>
+              <button type="button" className="market-primary" onClick={() => void refresh()} disabled={loading}>
+                サインイン後に再読み込み
+              </button>
+            </div>}
           </div>
         )}
 
@@ -374,6 +388,7 @@ export default function EverythingMarket() {
               setCreatorOpen(false);
               setNotice('新しい取引対象を市場へ登録しました。');
             } catch (caught) {
+              setNeedsSignin(caught instanceof OperationRequestError && caught.status === 401);
               setError(caught instanceof Error ? caught.message : '登録できませんでした。');
             } finally {
               setBusy('');

@@ -364,7 +364,9 @@ export function LegalIntakeRunner({
                       </span>
                       {aiLoading ? (
                         <p className="legal-agent-thinking">
-                          政府・裁判所の公式情報をオンライン確認しています…
+                          {remoteResearch
+                            ? '政府・裁判所の公式情報をオンライン確認しています…'
+                            : '本文を送らず実行履歴を保存しています…'}
                         </p>
                       ) : aiResult ? (
                         <MessageResponse>{aiResult.answer}</MessageResponse>
@@ -674,7 +676,7 @@ export function LegalIntakeRunner({
                 </strong>
                 <small>
                   {aiResult.mode === 'local-registry'
-                    ? '通信なしで作成'
+                    ? '本文は端末内で処理'
                     : `${new Date(aiResult.searchedAt).toLocaleString('ja-JP')} 確認`}
                 </small>
               </div>

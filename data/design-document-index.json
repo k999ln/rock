@@ -325,7 +325,13 @@
     },
     {
       "id": "rockstar-markets-analysis",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "signinRecoveryAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": "components/everything-market.tsx",
+        "trigger": "HTTP401",
+        "recovery": "separate-tab-signin-and-refresh"
+      }
     },
     {
       "id": "mercari-revenue",
