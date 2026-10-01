@@ -3331,6 +3331,19 @@
     "url": "https://sky-marketplace.noellesugar1.chatgpt.site/sky/marketplace",
     "audience": "public",
     "authenticatedProductionExecutionVerified": false,
-    "productSiteLinkAdded": false
+    "productSiteLinkAdded": false,
+    "releaseVerification": {
+      "evaluatedAt": "2026-10-01",
+      "completeLaunchClaim": false,
+      "pixelBrowserTools": [
+        "rockstar-csv-cleanup",
+        "mr-free-article",
+        "mr-citations"
+      ],
+      "livePayment": "checkout_502_unresolved",
+      "cloudAI": "not_connected",
+      "externalOAuth": "not_verified",
+      "nextAction": "Deploy safe payment diagnostics and CSV sign-in recovery, then reproduce the same 50-yen checkout."
+    }
   }
 }

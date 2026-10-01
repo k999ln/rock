@@ -212,14 +212,41 @@ export function skyStripe(
         redirect: 'error',
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       });
-      if (!response.ok) throw new SkyPaymentError(PROVIDER_ERROR, 502);
+      if (!response.ok) {
+        // Keep provider diagnostics useful without recording submitted data or messages.
+        const requestId = response.headers.get('request-id');
+        const knownCodes = new Set([
+          'api_key_expired', 'invalid_api_key', 'account_invalid',
+          'amount_too_small', 'parameter_unknown', 'parameter_invalid_integer',
+          'rate_limit', 'idempotency_key_in_use', 'platform_account_required',
+        ]);
+        let code = 'unclassified';
+        try {
+          const body = await response.json() as { error?: { code?: unknown } };
+          if (typeof body.error?.code === 'string' && knownCodes.has(body.error.code))
+            code = body.error.code;
+        } catch { /* Non-JSON errors still retain the HTTP status. */ }
+        console.error('[sky-stripe] provider_response', {
+          status: response.status,
+          operation: path.startsWith('/v1/checkout/sessions') ? 'checkout' : 'payment-api',
+          code,
+          requestId: requestId && /^req_[A-Za-z0-9]{1,100}$/.test(requestId) ? requestId : null,
+        });
+        throw new SkyPaymentError(PROVIDER_ERROR, 502);
+      }
       const result: unknown = await response.json();
       if (!result || typeof result !== 'object' || Array.isArray(result)) {
         throw new SkyPaymentError(PROVIDER_ERROR, 502);
       }
       return result as T;
-    } catch {
+    } catch (error) {
       // Provider messages can include submitted data. Never return or log them.
+      if (!(error instanceof SkyPaymentError)) {
+        console.error('[sky-stripe] transport_failure', {
+          kind: error instanceof Error && ['TimeoutError', 'AbortError', 'SyntaxError'].includes(error.name)
+            ? error.name : 'network-or-response',
+        });
+      }
       throw new SkyPaymentError(PROVIDER_ERROR, 502);
     }
   }

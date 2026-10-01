@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { OperationRequestError } from '@/lib/operations-client';
 import { CSV_TRIAL_SAMPLE } from '@/lib/csv-trial-sample';
 import {
   Download,
@@ -47,7 +47,7 @@ const statusLabel: Record<string, string> = {
 
 async function json<T>(response: Response) {
   const data = (await response.json()) as T & { error?: string };
-  if (!response.ok) throw new Error(data.error || '処理できませんでした。');
+  if (!response.ok) throw new OperationRequestError(data.error || '処理できませんでした。', response.status);
   return data;
 }
 const columns = (value: string) =>
@@ -57,7 +57,6 @@ const columns = (value: string) =>
     .filter(Boolean);
 
 export default function CsvBusinessWorkspace() {
-  const router = useRouter();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [rename, setRename] = useState('');
@@ -74,6 +73,15 @@ export default function CsvBusinessWorkspace() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
+  const [needsSignin, setNeedsSignin] = useState(false);
+  const reportError = useCallback((reason: unknown, fallback: string) => {
+    if (reason instanceof OperationRequestError && reason.status === 401) {
+      setReady(false);
+      setNeedsSignin(true);
+      setTrialPayment({ available: false, mode: null });
+    }
+    setError(reason instanceof Error ? reason.message : fallback);
+  }, []);
   const [trialPayment, setTrialPayment] = useState<{
     available: boolean;
     mode: string | null;
@@ -122,15 +130,12 @@ export default function CsvBusinessWorkspace() {
       setJobs(data.jobs);
       if (data.trialPayment) setTrialPayment(data.trialPayment);
       setReady(true);
+      setNeedsSignin(false);
       setError('');
     } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : '履歴を読み込めませんでした。',
-      );
+      reportError(reason, '履歴を読み込めませんでした。');
     }
-  }, []);
+  }, [reportError]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => void refresh(), 0);
@@ -167,11 +172,7 @@ export default function CsvBusinessWorkspace() {
       setJobs((items) => [job, ...items.filter((item) => item.id !== job.id)]);
       if (sample) await accept(job, true);
     } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : '見積りを作成できませんでした。',
-      );
+      reportError(reason, '見積りを作成できませんでした。');
     } finally {
       setBusy(false);
     }
@@ -198,14 +199,9 @@ export default function CsvBusinessWorkspace() {
         updated,
         ...items.filter((item) => item.id !== updated.id),
       ]);
-      router.push('/chat?tool=rockstar-csv-cleanup');
     } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : '開始できませんでした。入力は保存されています。',
-      );
       await refresh();
+      reportError(reason, '開始できませんでした。入力は保存されています。');
     } finally {
       setBusy(false);
     }
@@ -230,11 +226,7 @@ export default function CsvBusinessWorkspace() {
           ...items.filter((item) => item.id !== data.job!.id),
         ]);
     } catch (reason) {
-      setError(
-        reason instanceof Error
-          ? reason.message
-          : '支払いを確認できませんでした。',
-      );
+      reportError(reason, '支払いを確認できませんでした。');
     } finally {
       setBusy(false);
     }
@@ -251,9 +243,7 @@ export default function CsvBusinessWorkspace() {
       if (!response.ok) await json(response);
       setJobs((items) => items.filter((item) => item.id !== job.id));
     } catch (reason) {
-      setError(
-        reason instanceof Error ? reason.message : '削除できませんでした。',
-      );
+      reportError(reason, '削除できませんでした。');
     } finally {
       setBusy(false);
     }
@@ -293,7 +283,7 @@ export default function CsvBusinessWorkspace() {
         {error && (
           <div className={styles.error} role="alert">
             {error}
-            {!ready && (
+            {needsSignin && (
               <a href="/signin-with-chatgpt?return_to=/csv" target="_top">
                 サインイン
               </a>
