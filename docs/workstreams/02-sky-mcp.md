@@ -1,6 +1,6 @@
 ## 2026-10-01 SKY21 / ROCK — 独立Skyのサービスローンチ
 
-[ローンチ設計](../sky-launch-design.md)と`data/sky-service-launch.json`を追加。基本利用、外部作者市場、有料販売、別client/実機対応を別々に受け入れる。service-status APIと同じ利用条件をSky home/market/detailへ反映し、標準ガイドと外部AIを分離。`/sky/help`で現在の保存場所と制限を案内する。source/fixture/publication/authenticated productionの証拠を分け、未設定の決済や未受入のMCP公開を完成扱いにしない。
+[ローンチ設計](../sky-launch-design.md)と`data/sky-service-launch.json`を追加。基本利用、外部作者市場、有料販売、別client/実機対応を別々に受け入れる。service-status APIと同じ利用条件をSky home/market/detailへ反映し、標準ガイドと外部AIを分離。`/sky/help`で現在の保存場所と制限を案内し、公開readback済み。作者申請は入力前に本人条件を確認し、401はサインインへ案内、接続失敗は再確認可能。運用・受入手順を `docs/sky-launch-operations.md` に追加。source/fixture/publication/authenticated productionの証拠を分け、未設定の決済や未受入のMCP公開を完成扱いにしない。
 
 # Sky / MCP
 
@@ -72,12 +72,16 @@
 
 2026-09-30の明示指示を[継続実行契約・受入計画](../sky-cloud-continuity.md)へ固定。既存SKY07、primaryOwner ROCK。rockDeliverableは受付receipt、永続controller、予算・期限、承認待ち、停止確認、再接続照合。externalDependencyはcloud/model/MCP provider、ownerActionは契約・費用確定後の実接続判断。承認本文の暗号保存とlocal Cloudflare Workflow dispatch controllerまで実装・fixture確認済みだが、本番runtimeは未接続で12受入シナリオは未実行。ROCK_READYにはしない。
 
+2026-10-01 provider候補再調査: Cloudflare Workers/Workflows/D1は既存controller継続候補。Cloudflare Containers/SandboxesはGA済みの隔離Linux候補（公開上限4 vCPU/12 GiB、GPUなし）、Google Cloud RunはGPU推論候補として比較表へ追加。Cloudflare料金はWorkflows step/storage課金開始を含め公式単価へ更新。実際のdata region・account terms・負荷試験・契約見積は未取得。[Provider readiness](../provider-contract-readiness-20260930.md)。
+
 2026-09-30追加：人・端末・サービスとGTAへの適合は[Sky MCP設計](../sky-mcp-architecture.md)へ記録。既存SKY07／SKY15とGame側DX01に関連する要件準備。GTAとの実接続・動作試験は未実施。
 
 2026-09-30 A2A agent接続基盤のROCK進捗：端末・アプリ・サービス・ゲームがagentとして参加しうる前提で、Skyを発見／接続、Zemaを委任job管理、Core/Brokerをidentity・権限・予算の強制、MCP/A2Aを交換可能なprotocolとして整理。`lib/a2a-client.ts`のA2A 1.0 JSON-RPC discovery／send／get／cancel、本人指定originからのAgent Card取得・owner-scoped snapshot/digest保存と`services/sky-agent-runtime`のscheduled Cloudflare Workflow dispatch／status reconciliation／one-shot cancelを実装。D1 migrations `0019`〜`0023`はowner-scoped委任、承認digest、期限・予算、idempotency、one-shot marker、append-only event、暗号化入力と成果を保存する。remote text artifactは32 KB以内に正規化・暗号化し、owner-only `GET /api/sky/a2a-delegations/{id}/artifacts`で取得可能。Zema Workbenchに委任draft・条件digest表示・状態確認・停止要求・成果レビューを接続したが、Wallet／Provider acceptanceまでは実行承認UIを無効にし、APIとWorkerのdispatch双方も明示enable flagがなければ停止する。`rock-a2a-broker-authorization/1`のEd25519 proofについて、Web検証器に加え`Broker.authorize_a2a_delegation()`の発行methodを実装。本文をBroker receiptへ保存せず、exact consent・owner/device・target・input hash・budget・deadlineを短命proofへ束ね、同じkeyの再要求には同一receiptを返す。Ed25519鍵は外部signer adapterからのみ利用する。Python Broker 45件、Web proof verifier/trust fixture 3件はcross-language固定signing bytes vectorを含め成功。実機signer／Wallet-WebAuthn、owner/device key登録・失効、native OS UIとHub wire公開、owner-scoped proof API、operator-managed trust resolver、Runtime Worker認可hookはfixture接続済み。実鍵管理とWallet連携は未実装。A2A関連テスト35件、API統合251 assertionsも成功。旧Worker local smoke（origin allowlist追加前）はAgent Card到達失敗→`remote_failed/PREFLIGHT_FAILED_BEFORE_SEND`を確認した。現在の空listはauth fixture、Worker dry-run、サイトAPIの認証済みdiscovery 403で検証し、実Providerへは未送信。Sky全体の検索・Agent Card審査・提供者認証、本番egress経路の受入、Wallet予約、同一production D1・secret、異社SDK interoperability、Provider sandbox受入、remote file artifact取得、鍵rotation／KMSは未完了。production readback 0/6、remote migration未適用。SKY07はin_progressを保持する。詳細は[Sky A2A Bridge](../sky-a2a-bridge.md)、[native Broker](../../systems/rock-star-os/docs/MCP-BROKER.md)、[継続実行契約](../sky-cloud-continuity.md)。
 # 2026-09-30 Broker proofをA2A承認・送信境界へ接続
 
 `POST /api/sky/a2a-delegations/{id}/broker-authorization`は本人・署名鍵・owner/device・現在の依頼本文と委任条件を検証し、承認待ち中にproofを一度保存する。通常のWeb承認は、現在の信頼鍵でproofが再検証できる場合だけ`prepared`へ進む。Runtime WorkerもAgent Card取得前、one-shot外部送信marker前、A2A `message/send`直前に同じproofを照合する。不在・期限切れ・失効鍵・intent差替え時は外部HTTP要求前に停止する。`A2A_TRUSTED_BROKER_KEYS`はoperator-managed JSON allowlistで、現在のhost fixture以外の鍵は設定されていない。HubGateway/device wire、実device鍵登録・失効authority、Wallet原子的予算予約、本番D1/secret、Provider sandbox実接続は未完了。
+
+2026-10-01 Cloud usage receiptのWorkflow縦断fixture：`services/sky-agent-runtime/vitest.config.ts`は専用Ed25519 fixture provider keyで、A2A completed task metadataへRockstar usage receiptを署名して返す。Runtime Workerは`A2A_TRUSTED_USAGE_KEYS`で署名とtask/owner/agent/通貨/capを検証し、D1 receiptと子予約settlementを一括反映する。`npm run sky:a2a:workflow:positive` 3/3、`npm run typecheck`成功。USD 100 centsの内部予約から37 centsだけをsettleし、親pool `reserved=0 / settled=37`、同じprovider receipt reference、再起動後のone-shot dispatchを確認。これはlocal fixture／D1内部poolだけで、実provider請求やnative Wallet残高の予約・settlement handoffではない。
 
 再現検査: `npm run typecheck`、`npm run schema:check`、A2A fixture suite（35件）、`npm run build`、`npm run test:api`（Miniflare Worker/D1 251 assertions）、`npm run sky:agent-runtime:check`。Miniflare APIは所有loopbackで実行する。runtime dry-runはbundle構成の確認でありWorkflow dispatchの実行試験ではない。Workflow付きMiniflareはbinding RPC取得時に停止したためno-proof dispatchのend-to-endは未検証。
 
@@ -88,3 +92,19 @@ D1 migration `0025_a2a_shared_budget_reservations.sql`を追加。parent job単�
 `tests/a2a-delegation-store.test.mjs`へ同時承認・親cap超過・owner分離・pre-send解放・indeterminate保持の5 assertion群を追加。D1 triggerのmetadataが複数rowを数える場合に正常状態遷移を失敗扱いしたため、guarded update／reservation insertの成功条件を「少なくとも1行が変化」に修正し、event row自体は厳密に検査する。Workflow local E2Eを新schemaに追随させ、proofなし・期限切れ・失効鍵の全3ケースで予約を保持したままpreflight拒否、`remote_send_claimed=0`、Agent Card discovery未到達、予約解放を検証した。
 
 今回の検査: A2A関連Node tests 38/38、native Broker loopback tests 30/30、Cloudflare Wrangler local Workflow/D1 3/3、`npm run typecheck`成功、`npm run schema:check` 45 tables/25 migrations。`npm run database:status`は93 tables・production readback 0/6を記録した。migrationはsourceにありremote D1未適用。Wallet台帳との実予約・receipt settlement、production secrets/D1、端末signer/key lifecycle、Provider sandbox dispatch・利用量確認・cancel acceptance、A2A異社実装interoperabilityは未完了。旧上のWorkflow試験未検証メモはこのlocal fixture範囲では置き換える。SKY07は`in_progress`のまま。
+
+# 2026-10-01 圏外継続の本人同意をZemaからWorkerまで固定
+
+ZemaのA2A draftで「受付・承認後に端末が圏外／アプリ終了中もクラウドで続ける」本人選択を既定offで追加。falseのままではUIがdraft作成を止め、APIとstoreも拒否する。同意値をD1 `agent_delegations.continue_while_device_offline`へ保存し、idempotency比較とapproval digestへ含める。既存recordのmigration defaultはfalse。
+
+`rock-a2a-broker-authorization/2`へschema/domainを上げ、Web・Pythonの署名fieldに同意値を加えた。RockstarOS Brokerとnative Wallet reservation checkはtrue以外を拒否する。Runtime Workerも署名検証の前に同意を確認し、古い／false rowはAgent Card取得やremote send claim前に`PREFLIGHT_FAILED_BEFORE_SEND`で停止する。
+
+確認: A2A fixture 46/46、Cloudflare Wrangler/Workerd Workflow 3/3、Python Broker 33/33、Wallet/Spend 17/17、API Worker/D1 301 assertions、typecheck、schema check、design check、product lint、Runtime Worker dry-run、web buildを通過。Worker local testは有効な署名を持つoffline consent=false draftをAgent discovery／send claim前に`PREFLIGHT_FAILED_BEFORE_SEND`として拒否し、予約を解放する。Python/TypeScript固定proof vectorも一致。Provider sandbox、production D1/Secrets、実機Broker signer/owner presence、端末圏外継続の12受入シナリオは未実施。SKY07は`in_progress`を保持する。
+
+2026-10-01 lost-response recovery: draft POST応答が失われた場合、Zemaは保持している同じparent job・idempotency keyと本文SHA-256でowner-scoped status lookupを行う。戻ったdelegationのID、message、target、budget、deadline、同意、input digestを元の依頼と一致照合し、`awaiting_approval`なら既存のauthorization digestを再表示する。結果が見つからない／一致しない時は新しいキーで再送しない。store/API・UIの実装を追加し、A2A fixture 45/45、API Worker/D1 301 assertions、typecheck、product lint、buildを確認。Providerが受付後に応答を落としたremote `messageId`照合とは別であり、契約sandboxが必要。
+
+# 2026-10-01 A2A非同期task進捗・最終成果・利用量の縦断fixture
+
+Cloudflare Workers Vitest／local D1上で、制御されたservice-binding上のA2A 1.0 test agent fixtureが`SendMessage`へ`TASK_STATE_SUBMITTED`を返し、別Workflow reconciliationで`TASK_STATE_WORKING`、次回に`TASK_STATE_COMPLETED`・成果artifact・Provider署名usage receiptを返す非同期fixtureを追加。Zema側では受付時点でremote task IDを保存し、作業中は子予算reservationを保持、terminal完了時にowner/task/agent/budgetへ束縛したusage receipt 42 centsだけを一度settle。最終成果物はowner-scoped encryptionでD1へ保管し、remote send claimは全過程で一回。Workers Vitest 4/4、A2A clientの独立Node/Python HTTP agent相互運用7/7、typecheck、Worker dry-runが成功。これはCloudflare/fixture構成上の縦断契約検証であり、実Provider sandbox、Provider task IDの実仕様、production D1/secrets、異なる実企業agent二者の契約接続ではない。Providerの結果不明後のGetTask/CancelTask・usage invoice意味論と秘密鍵運用は契約後に受入する。
+
+2026-10-01 post-change verification: `npm run verify` passed after the asynchronous workflow fixture was added: repository-wide Node tests 530/530, release-signing checks 64/64, type/lint/build, Worker/D1 API 301 assertions, bundle/assets checks; targeted Workers Vitest 4/4 and independent Node/Python A2A interop 7/7 also pass. Product gates are still declared honestly: public targets ready 0/6, production D1 readback 0/6 and Pixel first-flash 0/4. This does not constitute a contracted provider, live cloud, funded Wallet or physical-device acceptance.

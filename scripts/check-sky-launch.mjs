@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const report = JSON.parse(readFileSync(resolve(root, 'data/sky-service-launch.json'), 'utf8'));
+if (report.completeLaunchScope !== 'standalone-web-paid-marketplace') throw new Error('Sky complete-launch scope must be explicit.');
 if (report.schema !== 'sky-service-launch/1' || !Array.isArray(report.gates) || !report.gates.length)
   throw new Error('Sky launch report is missing its gates.');
 const stages = Object.keys(report.stageDependencies);

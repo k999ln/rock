@@ -32,14 +32,15 @@
     {
       "id": "runtime-prerequisites",
       "stage": "basic",
-      "status": "in_progress",
+      "status": "passed",
       "owner": "ROCK",
       "acceptance": "設定なし・DB不達をカードへ正確に反映し、秘密を返さない",
       "evidence": [
         "tests/sky-service-status.test.mjs",
-        "scripts/check-work-api.mjs"
+        "scripts/check-work-api.mjs",
+        "docs/sky-launch-operations.md"
       ],
-      "environment": "local-fixture"
+      "environment": "production-readback-and-local-fixture"
     },
     {
       "id": "authenticated-first-use",
@@ -154,5 +155,6 @@
     "コードの試験とprovider sandboxと本番受入を分離する",
     "候補22件・eSIM・native OS製造を基本Webローンチの必須条件にしない",
     "外部AI・決済のruntime設定は公開Skyで未設定だった。秘密値をこの記録に入れない"
-  ]
+  ],
+  "completeLaunchScope": "standalone-web-paid-marketplace"
 }

@@ -17,7 +17,9 @@
         "lib/sky-service-status.ts",
         "app/api/sky/service-status/route.ts",
         "app/sky/help/page.tsx",
-        "tests/sky-service-status.test.mjs"
+        "tests/sky-service-status.test.mjs",
+        "docs/sky-launch-operations.md",
+        "components/sky-publisher-form.tsx"
       ]
     },
     {
@@ -197,12 +199,29 @@
         "docs/ai-native-os-architecture.md",
         "android/core/src/main/java/dev/rock/core/platform/RuntimeManifest.java",
         "android/core/src/main/java/dev/rock/core/platform/ModelProfileManifest.java",
+        "android/core/src/main/java/dev/rock/core/platform/TrustedModelPublisherVerifier.java",
+        "android/core/src/main/java/dev/rock/core/platform/TrustedModelArtifactPipeline.java",
+        "android/core/src/main/java/dev/rock/core/platform/ResumableModelArtifactStager.java",
         "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
         "android/core/src/main/java/dev/rock/core/Engine.java",
         "android/core/src/test/java/dev/rock/core/PlatformStoreTest.java",
-        "android/core/src/test/java/dev/rock/core/EngineTest.java"
+        "android/core/src/test/java/dev/rock/core/EngineTest.java",
+        "android/core/src/test/java/dev/rock/core/platform/TrustedModelPublisherVerifierTest.java",
+        "android/core/src/test/java/dev/rock/core/platform/ResumableModelArtifactStagerTest.java",
+        "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
+        "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+        "contracts/local-ai-runtime.json",
+        "os/physical/local-ai-profile-v3.patch",
+        "docs/evidence/local-ai-profile-v3-validation-20261001.json",
+        "docs/evidence/ai02-core-java-validation-20261001.json",
+        "android/local-ai-api/src/main/aidl/dev/rock/localai/ILocalAiService.aidl",
+        "os/physical/local-ai-model-handoff-v4.patch",
+        "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json",
+        "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
+        "android/automation/src/main/java/dev/rock/automation/ModelProfileOperationLock.java",
+        "scripts/check-os-contracts.mjs"
       ],
-      "nextAction": "Bind ZemaOrchestrator to an authenticated pre-inference model-profile pin and add a profile-aware Local AI API contract; preserve pins in recoverable backups, implement real staged-artifact verification, and validate two compatible profiles on Pixel 10. Android Java tests still need a JDK-equipped host."
+      "nextAction": "API v3 profile planning and API v4 read-only descriptor handoff now have source overlays. Android source adds a Broker activation coordinator that sequences publisher signature verification, Broker-private weights staging, Local AI load/receipt/status verification, then active-profile commit; it attempts to reload the previous model if commit fails after a successful load. PlatformStore blocks a model switch during active work or a recent plan reservation, and Zema submission shares a process lock with activation. Core JVM tests pass 46/46; API v4 clean source overlay and 23 upstream Jest tests, lint/type checks pass. `npm run verify` passes 530 Node tests, 19 Fashion tests, 301 API assertions and build. Remaining: no user-facing model catalogue/activation endpoint or production artifact source, publisher trust keyset, tokenizer/template/licence pipeline; Android automation/AIDL source is uncompiled because Android SDK platform/build-tools are unavailable. Next implement a signed-catalog install entry only after defining the operator-controlled trust/source configuration, then compile and run Binder/profile-swap/offline inference on Android CI and Pixel 10."
     },
     {
       "id": "AI03",
@@ -231,14 +250,25 @@
     {
       "id": "AI05",
       "title": "Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
-      ]
+        "docs/ai-native-os-architecture.md",
+        "contracts/compute-device-capabilities.json",
+        "systems/rock-star-os/os/ai_routes/policy.py",
+        "systems/rock-star-os/os/ai_routes/store.py",
+        "contracts/device-capability-snapshot.json",
+        "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
+        "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
+        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+        "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "systems/rock-star-os/os/ai_routes/tests/test_policy_budget.py"
+      ],
+      "nextAction": "Android Broker snapshot v2 reports public-API device/resource/eUICC observations and Local AI runtime load state; Zema checks ready/modelLoaded before and after planning. Device/API static checks and the repository build pass, but Android instrumentation is not run. Next bind authenticated owner/device identity and exact model profile to Sky discovery and submit/claim rechecks; add a documented refresh boundary after eSIM install or OS resume without reading ICCID/EID/profile inventory; then verify snapshot freshness and SKU/model fit on Android CI and a physical Pixel 10. Capability re-evaluation and hardware acceptance remain incomplete."
     },
     {
       "id": "AI06",
@@ -644,8 +674,15 @@
         "tests/fixtures/a2a/python_agent.py",
         "services/sky-agent-runtime/vitest.config.ts",
         "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
-        "docs/evidence/sky-a2a-workflow-local-20260930.json"
-      ]
+        "docs/evidence/sky-a2a-workflow-local-20260930.json",
+        "drizzle/0033_a2a_offline_continuation_consent.sql",
+        "systems/rock-star-os/os/mcp_broker/a2a_authorization.py",
+        "systems/rock-star-os/src/blackberryrock/spend.py",
+        "systems/rock-star-os/tests/test_spend_runtime.py",
+        "lib/a2a-delegation-recovery.ts",
+        "tests/a2a-delegation-recovery.test.mjs"
+      ],
+      "nextAction": "A2A 1.0 JSON-RPC adapter, owner-scoped Agent Card candidates/delegations, approval-boundary checks, encrypted inputs/artifacts, parent-child budget holds, durable Cloudflare Workflow/D1 controller, offline-continuation consent, and signed usage receipts are implemented in source. Verification: two local independent Node/Python server interop paths 7/7; local negative Workflow/restart cases 3 pass with zero send claims for invalid proofs; positive local Workflow 4/4; full Worker/D1 API 301 assertions and `npm run verify` pass. These are fixtures/local Cloudflare runtime only. Next add an authenticated native-device gateway and end-to-end funded Wallet reservation/settlement receipt bridge; run provider sandbox task lookup/cancel, worker restart, and terminal usage reconciliation under a real contract. Production deployment and execution remain disabled."
     },
     {
       "id": "SKY08",
@@ -1990,8 +2027,15 @@
         "docs/evidence/android-zema-selected-tool-20260916.json",
         "docs/evidence/android-local-ai-plan-v2-20260916.json",
         "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
-        "android/sepolicy/private/rockstar_platform.te"
-      ]
+        "android/sepolicy/private/rockstar_platform.te",
+        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
+        "android/automation/src/androidTest/java/dev/rock/automation/DeviceCapabilitySnapshotTest.java",
+        "contracts/device-capability-snapshot.json",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "scripts/check-os-contracts.mjs"
+      ],
+      "nextAction": "Run :shell:connectedDebugAndroidTest and :shell:lintDebug on the JDK-equipped Android CI/device host; verify eUICC supported/disabled/unknown status on representative emulator and Pixel hardware. Then extend the Broker Capability API with provenance and expiry before using capability results to select or execute tools. Current host has no Java runtime/Gradle, so the Android changes remain authored but uncompiled and unexecuted."
     },
     {
       "id": "OS11",
@@ -2579,12 +2623,21 @@
         "lib/esimgo-provider.ts",
         "drizzle/0030_esim_provider_order_once.sql",
         "lib/esim-plan-catalog.ts",
+        "lib/esim-public-catalog.ts",
+        "app/api/esim/catalog/route.ts",
+        "app/sky/esim/page.tsx",
+        "components/esim-catalog.tsx",
+        "components/sky-commerce.tsx",
+        "components/sky-commerce.module.css",
+        "tests/esim-public-catalog.test.mjs",
         "app/api/esim/orders/[orderId]/issue/route.ts",
         "app/api/esim/orders/[orderId]/status/route.ts",
         "app/api/esim/orders/[orderId]/reconcile/route.ts",
         "tests/esim-plan-catalog.test.mjs",
+        "scripts/check-work-api.mjs",
         "lib/esim-install-material.ts",
         "app/api/esim/orders/[orderId]/install-material/route.ts",
+        "components/esim-purchase-setup.tsx",
         "drizzle/0031_esim_install_material_delivery.sql",
         "tests/esim-install-material.test.mjs",
         "scripts/check-work-api.mjs",
@@ -2606,9 +2659,11 @@
         "tests/a2a-usage-receipt.test.mjs",
         "services/sky-agent-runtime/vitest.config.ts",
         "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
-        "docs/evidence/sky-a2a-workflow-local-20260930.json"
+        "docs/evidence/sky-a2a-workflow-local-20260930.json",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "docs/evidence/esim-host-validation-20261001.json"
       ],
-      "nextAction": "Test process-level Workerd/controller loss and provider task reconciliation. Then complete provider sandbox, funded Wallet reservation/debit reconciliation and native device Gateway wiring. Keep production dispatch, real charges, provider eSIM and device activation disabled until contract and acceptance gates pass."
+      "nextAction": "The eSIM bootstrap host fixture supports distinct lifeline/developer packs, owner/device-bound activation, fixed offline leases, duplicate-safe issuance reconciliation and fail-closed real-provider mode; 17 bootstrap tests pass. Sky paid-order eligibility, provider one-shot issue claim, immutable pricing snapshot, signed callback reconciliation, encrypted owner-only install-material delivery and explicit erase acknowledgement are implemented as source; all 38 eSIM tests pass. The purchase-history UI is implemented; signed-in browser acceptance remains pending. Status API now reports providerProfileBoundToOrder separately from deviceInstallState=unverified and esimDeviceEntitlementState=not_connected; Worker/D1 API fixture confirms these states, ordinary paid non-eSIM orders, and owner scoping (315 assertions). Android's current non-privileged Broker does not inspect active profiles or request READ_PHONE_STATE. Next verify the screen in an authenticated browser; then obtain a contracted provider/OEM method for signed install proof tied to owner/device/order without ICCID/EID disclosure and connect that proof through the authenticated device gateway. QR image fallback, pre-purchase capability filtering, real carrier sandbox, LPA installation and entitlement activation remain unaccepted. Keep checkout and provider debit disabled."
     },
     {
       "id": "BIL03",
@@ -3121,34 +3176,91 @@
     "validation": "node --test tests/esim-bootstrap.test.mjs",
     "integrationTestSweep": {
       "status": "HOST_FIXTURE_ONLY_PASS",
-      "testsPassed": 33,
+      "testsPassed": 38,
       "validation": "node --test tests/esim-bootstrap.test.mjs tests/esim-plan-catalog.test.mjs tests/esimgo-webhook.test.mjs tests/esim-install-material.test.mjs tests/esim-reconciliation-worker.test.mjs",
       "lastRunAt": "2026-10-01",
       "providerSandbox": false,
       "deviceInstall": false
     },
-    "nextAction": "既存Sky本人・注文利用権adapter、通信会社adapter、端末受信部の順に接続する。実eSIM発行と端末推論は未実施。",
-    "repositoryVerification": "BLOCKED_BY_PREEXISTING_VISUAL_BASELINE_FAILURE",
-    "fullTestSuite": "INCOMPLETE_INTERRUPTED_AFTER_UNRELATED_FAILURES"
+    "statusApiIntegration": {
+      "status": "LOCAL_WORKER_D1_FIXTURE_PASS",
+      "assertionsPassed": 315,
+      "validation": "npm run test:api",
+      "lastRunAt": "2026-10-01",
+      "esimOrderReportsIssuancePending": true,
+      "ordinaryPaidSkyOrderRejectedAsEsim": true,
+      "ownerScopedInstallMaterialAndQuickLinks": true,
+      "installMaterialDeliveryApiTested": true,
+      "directInstallUi": true,
+      "providerProfileBindingSeparatedFromDeviceInstall": true,
+      "deviceInstallState": "unverified",
+      "esimDeviceEntitlementState": "not_connected",
+      "purchaseSetupUi": "IMPLEMENTED_BROWSER_ACCEPTANCE_PENDING",
+      "providerSandbox": false,
+      "deviceInstall": false
+    },
+    "nextAction": "購入履歴のeSIM状態・導入表示UIを本人ログイン済みブラウザで受入する。実Provider sandbox、実端末install、端末署名証跡と既存Sky利用権adapterは未実施。Lifeline/Developer初期agent packはhost fixture内のみで、審査済み実Packageと注文への束縛が未実装。",
+    "repositoryVerification": "PASS_NPM_VERIFY_2026-10-01_CURRENT_WORKTREE_EXIT_0_NODE_537_FASHION_19_API_315",
+    "fullTestSuite": "PASS_NPM_VERIFY_2026-10-01_CURRENT_WORKTREE_EXIT_0_NODE_537_FASHION_19_API_315"
   },
   "cloudContinuationPreparation": {
-    "status": "REQUIREMENTS_AND_ACCEPTANCE_PLAN_READY",
+    "status": "OFFLINE_CONSENT_PATH_IMPLEMENTED_LOCAL_FIXTURES_PASS; FULL_12_SCENARIO_ACCEPTANCE_PENDING",
     "document": "docs/sky-cloud-continuity.md",
     "relatedTask": "SKY07",
     "primaryOwner": "ROCK",
     "acceptanceScenarios": 12,
     "acceptanceScenariosExecuted": 0,
+    "localEvidenceMatrix": "docs/sky-cloud-continuity.md#ローカル証拠の対応表全体受け入れ数には算入しない",
+    "localEvidenceMapping": {
+      "scope": "host/local-D1/local-Workflow component evidence only",
+      "partiallyCoveredScenarios": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12
+      ],
+      "noVerticalEvidenceScenario": [
+        10
+      ],
+      "countsTowardFullAcceptance": false
+    },
     "cloudDeployed": false,
     "llmExecuted": false,
-    "nextAction": "既存Sky/Zemaへ承認snapshotと受付receiptを接続し、永続controllerとworkerで機内モード・再接続・上限・停止を縦断検証する。"
+    "nextAction": "Contract and configure shared production D1/Secrets, then connect funded Wallet reservation and native Broker device-presence gateway; run the 12 cloud-continuity acceptance scenarios on a contracted sandbox and representative offline device.",
+    "consentAuthorization": {
+      "field": "continueWhileDeviceOffline",
+      "default": false,
+      "persistedIn": "agent_delegations.continue_while_device_offline",
+      "brokerProofSchema": "rock-a2a-broker-authorization/2",
+      "falseConsentSendClaims": 0,
+      "productionAcceptance": false
+    }
   },
   "satelliteConnectivityPreparation": {
-    "status": "GOAL_RECORDED_RESEARCH_REQUIRED",
+    "status": "DESK_RESEARCH_COMPLETE_MNO_DIRECT_TO_CELL_MVP_CANDIDATE; CONTRACT_DEVICE_API_AND_FIELD_ACCEPTANCE_PENDING",
     "ownConstellationIncluded": true,
     "spectrumAndCoverageUnresolved": true,
     "hardwareAndLaunchUnresolved": true,
+    "mvpPath": "Evaluate existing mobile-network direct-to-cell integration before own constellation; Japan candidate KDDI au Starlink Direct",
+    "primaryDataEsimIsSeparate": true,
+    "publicPlanIsWholesaleOrResaleAuthorization": false,
+    "exactPixel10Gl066Acceptance": false,
     "contractsSigned": false,
     "fieldTests": 0,
+    "researchUpdatedAt": "2026-10-01",
+    "evidence": [
+      "https://www.au.com/mobile/service/starlink-direct/exclusive-plan-plus/",
+      "https://starlink-direct-support.au.com/TOP.html",
+      "https://www.itu.int/en/ITU-R/space/support/nonGSO/Pages/default.aspx"
+    ],
+    "nextAction": "After owner-approved provider engagement, confirm wholesale/eSIM issuance, billing owner, exact supported SKU and app approval/API, satellite limitations and field-test process; assess own-constellation spectrum, regulatory, hardware, launch and operations separately.",
     "document": "docs/sky-cloud-continuity.md"
   },
   "universalAdaptationPreparation": {
@@ -3164,14 +3276,14 @@
     "gtaIntegrationTested": false
   },
   "agentInterconnectionPreparation": {
-    "status": "LOCAL_POSITIVE_CLOUDFLARE_WORKFLOW_COMPLETION_AND_AMBIGUOUS_SEND_RESTART_GUARDS_PASS; PROVIDER_RECONCILIATION_SANDBOX_FUNDED_WALLET_AND_NATIVE_GATEWAY_PENDING",
+    "status": "LOCAL_POSITIVE_AMBIGUOUS_SEND_AND_PROCESS_RESTART_RECOVERY_PASS; EXPLICIT_OFFLINE_CONSENT_GATE_PASS; CONTRACT_SANDBOX_TASK_RECONCILIATION_FUNDED_WALLET_AND_NATIVE_GATEWAY_PENDING",
     "document": "docs/sky-mcp-architecture.md",
     "relatedTasks": [
       "SKY07",
       "SKY15"
     ],
     "externalAgentInteropTests": 0,
-    "nextAction": "Test process-level Workerd/controller loss and provider task reconciliation; then use a contracted Provider sandbox with two independent implementations. Connect funded Wallet reservation/debit reconciliation and device WebAuthn Gateway before production dispatch.",
+    "nextAction": "After provider contract, run the submitted/working/completed and accepted-but-unanswered reconciliation cases against the contracted provider sandbox, including its exact GetTask/CancelTask/idempotency and signed-usage semantics; then wire production trust-key custody and D1-to-native Gateway delivery, reconcile a funded Wallet debit, and verify supported hardware. Keep production sends and real billing disabled until acceptance passes.",
     "evidence": [
       "docs/sky-a2a-bridge.md",
       "lib/a2a-usage-receipt.ts",
@@ -3180,7 +3292,45 @@
       "services/sky-agent-runtime/src/worker.ts",
       "docs/evidence/sky-a2a-workflow-local-20260930.json",
       "services/sky-agent-runtime/vitest.config.ts",
+      "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
+      "drizzle/0033_a2a_offline_continuation_consent.sql",
+      "systems/rock-star-os/tests/test_spend_runtime.py",
+      "systems/rock-star-os/src/blackberryrock/a2a_usage_receipt.py",
+      "systems/rock-star-os/tests/test_a2a_usage_receipt.py",
+      "systems/rock-star-os/tests/fixtures/a2a-usage-receipt-v1.json",
       "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs"
-    ]
+    ],
+    "localAcceptance": {
+      "positiveWorkflowCases": 4,
+      "workerUsageReceiptSettlement": "LOCAL_ED25519_RECEIPT_AND_SYNTHETIC_D1_POOL_PASS",
+      "nativeWalletSettlementHandoff": false,
+      "proofRejectionCases": 4,
+      "a2aHostTests": 46,
+      "eSimFixtureTests": 33,
+      "repositoryVerification": "npm run verify completed with exit code 0 on 2026-10-01 after async workflow changes: project/repository/schema/database/release/design/Sky/device gates ran; Node tests 530/530; release-signing tests 64/64; billing/operator dry-runs; build; bundle/assets checks; Worker/D1 API 301 assertions. Separate Cloudflare Workers Vitest positive workflow 4/4 and independent Node/Python A2A client interop 7/7 passed. Release readiness remains 0/6 public targets ready and Pixel first-flash 0/4. Local fixtures only; not production/provider/device acceptance.",
+      "productionProviderSandbox": false,
+      "cloudflareProduction": false,
+      "nativeDeviceGateway": false,
+      "pythonBrokerTests": 33,
+      "walletSpendTests": 17,
+      "apiAssertions": 301,
+      "nativeWalletSyntheticReceiptSettlement": true,
+      "hubReceiptTests": 10,
+      "asynchronousRemoteTaskWorkflow": "SUBMITTED_TO_WORKING_TO_COMPLETED_LOCAL_WORKER_D1_FIXTURE_PASS",
+      "asyncWorkflowTests": 4,
+      "independentAgentInteropTests": 7
+    },
+    "processRestartHarness": "PASS_LOCAL_TWO_WRANGLER_WORKER_PROCESSES_SHARED_D1_PREPARED_JOB_RECOVERY_AND_FAIL_CLOSED_PROOF_CHECK"
+  },
+  "skyStandalonePublication": {
+    "stage": "public_live_signin_required",
+    "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "version": 3,
+    "sourceCommit": "4d6d66332f7793b3e0d47ac175e100b6fea10b56",
+    "deploymentStatus": "succeeded",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site/sky/marketplace",
+    "audience": "public",
+    "authenticatedProductionExecutionVerified": false,
+    "productSiteLinkAdded": false
   }
 }
