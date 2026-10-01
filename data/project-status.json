@@ -19,7 +19,14 @@
         "app/sky/help/page.tsx",
         "tests/sky-service-status.test.mjs",
         "docs/sky-launch-operations.md",
-        "components/sky-publisher-form.tsx"
+        "components/sky-publisher-form.tsx",
+        "lib/operations.ts",
+        "lib/local-guide-history.ts",
+        "components/local-guide-history-consent.tsx",
+        "components/legal-intake-runner.tsx",
+        "components/patent-assistant-runner.tsx",
+        "tests/local-guide-history.test.mjs",
+        "tests/operations.test.mjs"
       ]
     },
     {

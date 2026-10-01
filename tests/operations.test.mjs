@@ -74,6 +74,20 @@ const finish = {
 const rejects = (f, code) =>
   assert.rejects(f, (e) => e instanceof OperationError && e.status === code);
 
+await test('legal and patent browser jobs persist owned metadata through the existing lifecycle', async () => {
+  const { a, b, sqlite } = fixture();
+  try {
+    for (const tool of ['rockstar-legal-intake', 'rockstar-patent-assistant']) {
+      const input = job({ tool });
+      await a.createJob(input);
+      await a.changeJob(input.id, { action: 'start' });
+      await a.changeJob(input.id, finish);
+      assert.equal((await a.getJob(input.id)).status, 'completed');
+      await rejects(() => b.changeJob(input.id, finish), 404);
+    }
+  } finally { sqlite.close(); }
+});
+
 await test('job lifecycle records completion and history exactly once; terminal state is immutable', async () => {
   const { a, sqlite } = fixture(),
     input = job();

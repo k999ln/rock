@@ -45,6 +45,9 @@ import {
   buildLocalLegalResult,
   type LegalAiResult,
 } from '@/lib/legal-ai';
+import { executeLocalGuide } from '@/lib/local-guide-history';
+import { processedBytes } from '@/lib/operations-client';
+import { LocalGuideHistoryConsent, LocalGuideSignin } from './local-guide-history-consent';
 
 const locationLabels: Record<LegalLocation, string> = {
   nyc: 'ニューヨーク市',
@@ -161,6 +164,8 @@ export function LegalIntakeRunner({
   const [input, setInput] = useState<LegalIntakeInput>(emptyInput);
   const [understood, setUnderstood] = useState(false);
   const [remoteResearch, setRemoteResearch] = useState(false);
+  const [saveHistory, setSaveHistory] = useState(false);
+  const [needsSignin, setNeedsSignin] = useState(false);
   const [assessment, setAssessment] = useState<LegalAssessment | null>(null);
   const [notice, setNotice] = useState('まず安全と期限を確認します。');
   const [copied, setCopied] = useState(false);
@@ -210,6 +215,7 @@ export function LegalIntakeRunner({
     setStep(3);
     setAiResult(null);
     setAiError('');
+    setNeedsSignin(false);
     setNotice(
       next.primaryCounselId
         ? '刑事弁護の第一連絡候補として藤原茜弁護士を表示しました。連絡前に内容を確認してください。'
@@ -223,10 +229,26 @@ export function LegalIntakeRunner({
       return;
     }
     if (!remoteResearch) {
-      setAiResult(buildLocalLegalResult(input, next));
-      setNotice('端末内のローカルガイドと公的窓口を準備しました。通信は行っていません。');
+      setAiLoading(saveHistory);
+      try {
+        const tracked = await executeLocalGuide({
+          tool: 'rockstar-legal-intake', saveHistory,
+          inputBytes: processedBytes(input),
+          task: () => {
+            const guide = buildLocalLegalResult(input, next);
+            return { output: JSON.stringify(guide), guide };
+          },
+        });
+        setAiResult(tracked.result.guide);
+        setNeedsSignin(tracked.needsSignin);
+        setNotice(tracked.warning || (saveHistory
+          ? '端末内のガイドを作成し、本文を含まない実行履歴をSkyに保存しました。'
+          : '端末内のローカルガイドと公的窓口を準備しました。通信は行っていません。'));
+      } finally {
+        setAiLoading(false);
+        onRunningChange?.(false);
+      }
       onOutcome?.({ ok: true, text: '端末内の法務ガイドと公的窓口を準備しました。内容はこのカードで確認してください。' });
-      onRunningChange?.(false);
       return;
     }
     setAiLoading(true);
@@ -596,6 +618,8 @@ export function LegalIntakeRunner({
               通信を許可して、公式情報のオンライン検索を追加する（任意・OpenAIへ送信）
             </span>
           </label>
+          <LocalGuideHistoryConsent checked={saveHistory && !remoteResearch}
+            disabled={remoteResearch || aiLoading} onChange={setSaveHistory} />
           <div className="legal-runner-form-actions">
             <button
               className="legal-runner-back"
@@ -609,7 +633,7 @@ export function LegalIntakeRunner({
               type="submit"
               disabled={
                 executionDisabled ||
-                !understood ||
+                !understood || aiLoading ||
                 input.situationSummary.trim().length < 20
               }
             >
@@ -626,6 +650,7 @@ export function LegalIntakeRunner({
       >
         {notice}
       </output>
+      {step === 3 && needsSignin && <LocalGuideSignin tool="rockstar-legal-intake" />}
 
       {step === 3 && assessment && (
         <section className="legal-runner-result" aria-live="polite">

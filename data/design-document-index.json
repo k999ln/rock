@@ -365,11 +365,39 @@
     },
     {
       "id": "rockstar-legal-intake",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "localHistoryAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/local-guide-history.ts",
+          "components/local-guide-history-consent.tsx"
+        ],
+        "tests": [
+          "tests/local-guide-history.test.mjs",
+          "tests/operations.test.mjs"
+        ],
+        "consent": "optional-default-off",
+        "contentStored": false,
+        "remoteExecutionVerified": false
+      }
     },
     {
       "id": "rockstar-patent-assistant",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "localHistoryAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/local-guide-history.ts",
+          "components/local-guide-history-consent.tsx"
+        ],
+        "tests": [
+          "tests/local-guide-history.test.mjs",
+          "tests/operations.test.mjs"
+        ],
+        "consent": "optional-default-off",
+        "contentStored": false,
+        "remoteExecutionVerified": false
+      }
     },
     {
       "id": "faster-whisper",

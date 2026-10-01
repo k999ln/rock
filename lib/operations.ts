@@ -13,6 +13,8 @@ const CORE_JOB_TOOLS = [
   'mr-free-article',
   'mr-citations',
   'mr-delivery',
+  'rockstar-legal-intake',
+  'rockstar-patent-assistant',
 ] as const;
 const SKY_CANDIDATE_TOOLS = [
   'rockstar-ip-studio',
@@ -48,8 +50,6 @@ export const SKY_CONNECTION_TOOLS = [
   'fashion-brand-ops',
   'rockstar-ip-studio',
   'rockstar-ledger',
-  'rockstar-legal-intake',
-  'rockstar-patent-assistant',
   'jev-evaluation',
 ] as const;
 export type SkyConnectionTool = (typeof SKY_CONNECTION_TOOLS)[number];
