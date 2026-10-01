@@ -244,11 +244,15 @@ export function LegalIntakeRunner({
         setNotice(tracked.warning || (saveHistory
           ? '端末内のガイドを作成し、本文を含まない実行履歴をSkyに保存しました。'
           : '端末内のローカルガイドと公的窓口を準備しました。通信は行っていません。'));
+        onOutcome?.({ ok: true, text: '端末内の法務ガイドと公的窓口を準備しました。内容はこのカードで確認してください。' });
+      } catch {
+        setAiError('端末内のガイドを作成できませんでした。入力を確認してください。');
+        setNotice('端末内のガイドを作成できませんでした。相談内容を修正して再実行してください。');
+        onOutcome?.({ ok: false, text: '端末内のガイド作成に失敗しました。入力を確認してください。' });
       } finally {
         setAiLoading(false);
         onRunningChange?.(false);
       }
-      onOutcome?.({ ok: true, text: '端末内の法務ガイドと公的窓口を準備しました。内容はこのカードで確認してください。' });
       return;
     }
     setAiLoading(true);

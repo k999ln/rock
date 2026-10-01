@@ -376,7 +376,8 @@
         "design": "docs/sky-tools-complete-design.md",
         "implementation": [
           "lib/local-guide-history.ts",
-          "components/local-guide-history-consent.tsx"
+          "components/local-guide-history-consent.tsx",
+          "lib/operations-client.ts"
         ],
         "tests": [
           "tests/local-guide-history.test.mjs",
@@ -384,7 +385,15 @@
         ],
         "consent": "optional-default-off",
         "contentStored": false,
-        "remoteExecutionVerified": false
+        "remoteExecutionVerified": false,
+        "diagnosticCodes": [
+          "HTTP_STATUS",
+          "TIMEOUT",
+          "NETWORK",
+          "INVALID_RESPONSE",
+          "CLIENT_ERROR"
+        ],
+        "calculationFailureRetry": false
       }
     },
     {
@@ -394,7 +403,8 @@
         "design": "docs/sky-tools-complete-design.md",
         "implementation": [
           "lib/local-guide-history.ts",
-          "components/local-guide-history-consent.tsx"
+          "components/local-guide-history-consent.tsx",
+          "lib/operations-client.ts"
         ],
         "tests": [
           "tests/local-guide-history.test.mjs",
@@ -402,7 +412,15 @@
         ],
         "consent": "optional-default-off",
         "contentStored": false,
-        "remoteExecutionVerified": false
+        "remoteExecutionVerified": false,
+        "diagnosticCodes": [
+          "HTTP_STATUS",
+          "TIMEOUT",
+          "NETWORK",
+          "INVALID_RESPONSE",
+          "CLIENT_ERROR"
+        ],
+        "calculationFailureRetry": false
       }
     },
     {

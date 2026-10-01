@@ -8,6 +8,25 @@ export class OperationRequestError extends Error {
     this.status = status;
   }
 }
+export class OperationResponseError extends Error {
+  code: 'TIMEOUT' | 'NETWORK' | 'INVALID_RESPONSE';
+  constructor(code: 'TIMEOUT' | 'NETWORK' | 'INVALID_RESPONSE') {
+    const messages = {
+      TIMEOUT: '保存の応答が時間内に返りませんでした。',
+      NETWORK: '保存先へ接続できませんでした。',
+      INVALID_RESPONSE: '保存先の応答を確認できませんでした。',
+    };
+    super(messages[code]);
+    this.code = code;
+  }
+}
+// Fixed diagnostic codes only: never expose response bodies or error messages.
+export function operationFailureCode(error: unknown): string {
+  if (error instanceof OperationRequestError)
+    return `HTTP_${error.status}`;
+  if (error instanceof OperationResponseError) return error.code;
+  return 'CLIENT_ERROR';
+}
 export async function operationRequest<T>(
   path: string,
   method = 'GET',
@@ -17,18 +36,41 @@ export async function operationRequest<T>(
     method,
     signal: AbortSignal.timeout(10000),
     cache: 'no-store',
+    redirect: 'manual',
   };
   if (value !== undefined && method !== 'GET') {
     options.headers = { 'Content-Type': 'application/json' };
     options.body = JSON.stringify(value);
   }
-  const response = await fetch(path, options);
-  const data = (await response.json()) as T & { error?: string };
+  let response: Response;
+  try {
+    response = await fetch(path, options);
+  } catch (error) {
+    throw new OperationResponseError(
+      error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)
+        ? 'TIMEOUT' : 'NETWORK',
+    );
+  }
+  // These owned JSON endpoints redirect only to sign-in. Never follow a redirect.
+  if (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400))
+    throw new OperationRequestError('サインインを確認してください。', 401);
+  let data: T & { error?: string };
+  try {
+    data = (await response.json()) as T & { error?: string };
+  } catch (error) {
+    if (!response.ok)
+      throw new OperationRequestError('保存できませんでした。', response.status);
+    if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name))
+      throw new OperationResponseError('TIMEOUT');
+    throw new OperationResponseError('INVALID_RESPONSE');
+  }
   if (!response.ok)
     throw new OperationRequestError(
-      data.error || '保存できませんでした。',
+      data?.error || '保存できませんでした。',
       response.status,
     );
+  if (!data || typeof data !== 'object')
+    throw new OperationResponseError('INVALID_RESPONSE');
   return data as T;
 }
 export const processedBytes = (value: unknown) =>
@@ -119,9 +161,9 @@ export async function executeTracked<T extends { output: string }>(options: {
     let warning = '';
     try {
       await finish('completed', processedBytes(result.output));
-    } catch {
+    } catch (error) {
       warning =
-        '結果はできましたが、完了の保存を確認できません。結果を保存し、履歴を確認してください。';
+        `結果はできましたが、完了の保存を確認できません。結果を保存し、履歴を確認してください。（完了通知: ${operationFailureCode(error)}、受付: ${job.id}）`;
     }
     return { result, warning };
   } finally {

@@ -173,11 +173,16 @@ export function PatentAssistantRunner({
         setNotice(tracked.warning || (saveHistory
           ? '端末内で書類ドラフトを作成し、本文を含まない実行履歴をSkyに保存しました。'
           : '端末内で予備評価と書類ドラフトを作成しました。通信は行っていません。'));
+        onOutcome?.({ ok: true, text: '端末内で予備評価と書類ドラフトを作成しました。出願・提出はしていません。内容はこのカードで確認してください。' });
+      } catch {
+        setAssessment(null);
+        setError('端末内の書類作成に失敗しました。入力を確認してください。');
+        setNotice('技術内容を修正して再実行してください。');
+        onOutcome?.({ ok: false, text: '端末内の書類作成に失敗しました。入力を確認してください。' });
       } finally {
         setRunning(false);
         onRunningChange?.(false);
       }
-      onOutcome?.({ ok: true, text: '端末内で予備評価と書類ドラフトを作成しました。出願・提出はしていません。内容はこのカードで確認してください。' });
       return;
     }
 
