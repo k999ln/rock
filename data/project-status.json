@@ -3394,5 +3394,13 @@
     "automaticResubmission": false,
     "productionOwnerAcceptance": false,
     "evidence": "docs/evidence/sky-access-recovery-verification.json"
+  },
+  "skyToolExecutionBoundaryPreparation": {
+    "stage": "local_tests_passed_ui_pending",
+    "runtimePublished": false,
+    "catalogCount": 34,
+    "classificationIsLiveAcceptance": false,
+    "productionOwnerAcceptance": false,
+    "evidence": "docs/evidence/sky-tool-execution-boundaries.json"
   }
 }

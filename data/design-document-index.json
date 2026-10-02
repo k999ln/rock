@@ -747,5 +747,21 @@
       "test": "scripts/check-csv-storage.mjs",
       "acceptance": "Fresh bootstrap and version-2 local D1 recovery with preserved jobs, artifacts and trial sessions; no production acceptance"
     }
+  },
+  "toolExecutionBoundaryVerification": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "lib/sky-tool-execution-scope.ts",
+      "lib/sky-candidate-output.ts",
+      "lib/sky-tool-ui.ts",
+      "lib/sky-tool-labels.ts",
+      "components/sky-candidate-runner.tsx",
+      "scripts/check-sky.mjs"
+    ],
+    "test": "tests/sky-tool-execution-scope.test.mjs",
+    "evidence": "docs/evidence/sky-tool-execution-boundaries.json",
+    "catalogCount": 34,
+    "classificationIsLiveAcceptance": false,
+    "deploymentAcceptance": false
   }
 }
