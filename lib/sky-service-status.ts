@@ -10,6 +10,7 @@ export type SkyServiceStatus = {
   patentAiConfigured: boolean;
   jevConfigured: boolean;
   payments: 'unconfigured' | 'test' | 'live';
+  csvPayments: 'unconfigured' | 'test' | 'live';
 };
 
 export function skyServiceStatus(
@@ -24,6 +25,16 @@ export function skyServiceStatus(
     const config = readSkyStripeConfig(bindings);
     if (config.origin === origin) payments = config.mode;
   } catch { /* An invalid or foreign-origin configuration cannot enable payments. */ }
+  let csvPayments: SkyServiceStatus['csvPayments'] = 'unconfigured';
+  try {
+    // CSV has its own webhook and must not inherit the marketplace signing secret.
+    const config = readSkyStripeConfig({
+      ...bindings,
+      SKY_STRIPE_WEBHOOK_SECRET: bindings.SKY_CSV_STRIPE_WEBHOOK_SECRET,
+    });
+    if (databaseAvailable && bindings.DB && bindings.BUCKET && config.origin === origin)
+      csvPayments = config.mode;
+  } catch { /* A working marketplace configuration does not prove CSV is connected. */ }
   return {
     version: 1,
     database: databaseAvailable ? 'available' : 'unavailable',
@@ -32,6 +43,7 @@ export function skyServiceStatus(
     patentAiConfigured: remoteEnabled && present('OPENAI_API_KEY'),
     jevConfigured: remoteEnabled && present('AI_GATEWAY_API_KEY'),
     payments,
+    csvPayments,
   };
 }
 
@@ -40,6 +52,7 @@ export function parseSkyServiceStatus(value: unknown): SkyServiceStatus | undefi
   const v = value as Record<string, unknown>;
   if (v.version !== 1 || (v.database !== 'available' && v.database !== 'unavailable') ||
     (v.payments !== 'unconfigured' && v.payments !== 'test' && v.payments !== 'live') ||
+    (v.csvPayments !== undefined && v.csvPayments !== 'unconfigured' && v.csvPayments !== 'test' && v.csvPayments !== 'live') ||
     !['csvStorageConfigured', 'legalAiConfigured', 'patentAiConfigured', 'jevConfigured'].every((key) => typeof v[key] === 'boolean')) return undefined;
   return {
     version: 1,
@@ -49,5 +62,6 @@ export function parseSkyServiceStatus(value: unknown): SkyServiceStatus | undefi
     patentAiConfigured: v.patentAiConfigured as boolean,
     jevConfigured: v.jevConfigured as boolean,
     payments: v.payments as SkyServiceStatus['payments'],
+    csvPayments: (v.csvPayments ?? 'unconfigured') as SkyServiceStatus['csvPayments'],
   };
 }

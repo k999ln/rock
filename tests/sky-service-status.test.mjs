@@ -16,7 +16,7 @@ const configured = {
 void test('empty public deployment reports missing providers without claiming the database is ready', () => {
   assert.deepEqual(skyServiceStatus({}, false, origin), {
     version: 1, database: 'unavailable', csvStorageConfigured: false,
-    legalAiConfigured: false, patentAiConfigured: false, jevConfigured: false, payments: 'unconfigured',
+    legalAiConfigured: false, patentAiConfigured: false, jevConfigured: false, payments: 'unconfigured', csvPayments: 'unconfigured',
   });
 });
 
@@ -38,17 +38,34 @@ void test('payment mode, key, webhook and origin must all match', () => {
     assert.equal(skyServiceStatus({ ...configured, ...overrides }, true, origin).payments, 'unconfigured');
 });
 
+void test('CSV payment configuration is independent of marketplace payments and needs its own webhook and storage', () => {
+  const csvOnly = { ...configured, SKY_STRIPE_WEBHOOK_SECRET: undefined, SKY_CSV_STRIPE_WEBHOOK_SECRET: 'whsec_csvfixture' };
+  assert.equal(skyServiceStatus(csvOnly, true, origin).csvPayments, 'test');
+  assert.equal(skyServiceStatus(csvOnly, true, origin).payments, 'unconfigured');
+  assert.equal(skyServiceStatus(configured, true, origin).csvPayments, 'unconfigured');
+  const live = { ...csvOnly, SKY_PAYMENTS_MODE: 'live', SKY_STRIPE_SECRET_KEY: 'sk_live_synthetic' };
+  assert.equal(skyServiceStatus(live, true, origin).csvPayments, 'live');
+  for (const overrides of [
+    { SKY_CSV_STRIPE_WEBHOOK_SECRET: '' }, { SKY_CSV_STRIPE_WEBHOOK_SECRET: 'invalid' },
+    { SKY_STRIPE_SECRET_KEY: 'sk_test_synthetic' }, { SKY_PAYMENT_ORIGIN: 'https://foreign.example' },
+    { DB: undefined }, { BUCKET: undefined },
+  ]) assert.equal(skyServiceStatus({ ...live, ...overrides }, true, origin).csvPayments, 'unconfigured');
+  assert.equal(skyServiceStatus(live, false, origin).csvPayments, 'unconfigured');
+});
+
 void test('the public status has no credentials, origin or user identity', () => {
   const result = skyServiceStatus({ ...configured, userId: 'synthetic-user' }, true, origin);
   const serialized = JSON.stringify(result);
   for (const secret of ['synthetic', 'OPENAI_API_KEY', 'SKY_STRIPE', origin, 'userId']) assert.ok(!serialized.includes(secret));
-  assert.deepEqual(Object.keys(result).sort(), ['version', 'database', 'csvStorageConfigured', 'legalAiConfigured', 'patentAiConfigured', 'jevConfigured', 'payments'].sort());
+  assert.deepEqual(Object.keys(result).sort(), ['version', 'database', 'csvStorageConfigured', 'legalAiConfigured', 'patentAiConfigured', 'jevConfigured', 'payments', 'csvPayments'].sort());
 });
 
 void test('malformed status responses leave configuration unknown rather than enabling a tool', () => {
   const valid = skyServiceStatus(configured, true, origin);
-  for (const bad of [null, [], {}, { ...valid, version: 2 }, { ...valid, database: 'healthy' }, { ...valid, database: { toString: 'available' } }, { ...valid, payments: ['live'] }, { ...valid, csvStorageConfigured: 'true' }, { ...valid, payments: 'ready' }]) assert.equal(parseSkyServiceStatus(bad), undefined);
+  for (const bad of [null, [], {}, { ...valid, version: 2 }, { ...valid, database: 'healthy' }, { ...valid, database: { toString: 'available' } }, { ...valid, payments: ['live'] }, { ...valid, csvPayments: 'ready' }, { ...valid, csvPayments: ['live'] }, { ...valid, csvStorageConfigured: 'true' }, { ...valid, payments: 'ready' }]) assert.equal(parseSkyServiceStatus(bad), undefined);
   assert.deepEqual(parseSkyServiceStatus({ ...valid, secret: 'discard-me' }), valid);
+  const { csvPayments: _csvPayments, ...legacy } = valid;
+  assert.deepEqual(parseSkyServiceStatus(legacy), { ...legacy, csvPayments: 'unconfigured' });
 });
 
 void test('AI-guided tools retain their standard guide while provider configuration is missing', () => {

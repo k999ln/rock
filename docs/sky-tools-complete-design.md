@@ -176,6 +176,8 @@ catalogued → selected → connected → ready → running → review → compl
 
 ## 5. CSV整形・検査・納品
 
+公開接続状態の`csvPayments`はCSV専用Webhook、同一originのStripe設定、DB/R2を確認し、一般Marketplaceの`payments`とは別に返す。CSV専用secretをMarketplaceへ転用しない。利用案内は「購入・販売」と「CSVの50円試験」を分けて表示する。`live`は設定確認であり、新規実決済や全商品の販売受入を証明しない。
+
 ### 目的と一周
 
 利用者がCSV一件と、列名、列順、空白、重複、並び、文字codeの指示を送る。受付がsizeと変換可能性を検査し、決定的に変換する。別検査が入力、出力、変更報告を照合し、結果CSV、変更報告、検査JSONを一組で渡す。

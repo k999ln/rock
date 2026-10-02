@@ -19,9 +19,10 @@ export default function SkyServiceHelp() {
         <div aria-live="polite">{service ? <dl>
           <div><dt>実行記録</dt><dd>{service.database === 'available' ? 'データ保存サービスに接続可能' : '接続を確認しています。実行を待ってください。'}</dd></div>
           <div><dt>CSVファイル</dt><dd>{service.database === 'available' && service.csvStorageConfigured ? '保存設定あり。ファイル操作の成功は実行時に確認します。' : '保存サービスの接続待ち'}</dd></div>
-          <div><dt>法務・特許の外部AI</dt><dd>{service.legalAiConfigured && service.patentAiConfigured ? '設定あり。送信前の同意が必要です。' : '接続待ち。標準ガイド・整理機能を利用してください。'}</dd></div>
-          <div><dt>Jev評価</dt><dd>{service.jevConfigured ? '設定あり。送信前の同意が必要です。' : '外部AIの接続待ち'}</dd></div>
+          <div><dt>法務・特許の外部AI</dt><dd>単価見積・支出上限・利用明細の接続待ちです。接続まで標準ガイドと整理機能を利用できます。</dd></div>
+          <div><dt>Jev評価</dt><dd>Provider設定の有無にかかわらず、料金確認機能が受け入れられるまで外部評価を停止しています。</dd></div>
           <div><dt>購入・販売</dt><dd>{service.payments === 'live' ? '実決済の設定あり。商品ごとの条件を確認してください。' : service.payments === 'test' ? 'テスト決済のみ。実際の購入はできません。' : '決済サービスの接続待ち'}</dd></div>
+          <div><dt>CSVの50円試験</dt><dd>{service.csvPayments === 'live' ? '本番決済の設定あり。実際に50円が請求されます。' : service.csvPayments === 'test' ? 'テスト決済の設定あり。実際の請求はありません。' : 'CSV専用決済の接続待ち'}</dd></div>
         </dl> : <p>接続状態を確認しています。確認できない場合は時間をおいて開き直してください。</p>}</div>
         <p>接続設定は、本番動作・外部投稿・銀行着金の完了を示すものではありません。</p>
       </section>

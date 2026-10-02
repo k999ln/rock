@@ -321,6 +321,19 @@
           "reload_and_output_hash",
           "Apple_Pay_requires_supported_device_acceptance"
         ]
+      },
+      "paymentStatusContract": {
+        "implementation": [
+          "lib/sky-service-status.ts",
+          "components/sky-service-help.tsx"
+        ],
+        "tests": [
+          "tests/sky-service-status.test.mjs",
+          "scripts/check-work-api.mjs"
+        ],
+        "csvPayments": "dedicated CSV webhook plus valid mode/key/origin and available DB/R2",
+        "payments": "marketplace configuration only; not CSV trial availability",
+        "configuredIsPaymentProof": false
       }
     },
     {
