@@ -1,6 +1,6 @@
 ## 2026-10-02 — Skyクラウド依頼の準備と履歴復帰
 
-WEB04/ROCK: 同じSkyのブラウザ仕事画面へ見積履歴・仕事URL復元・認証期限切れ案内を同期。既存auth/Stripe/各Toolを保持し、料金表/quoteの追加schemaだけを配備対象にする。関連30試験、Site Worker/D1更新15項目、型、product lint、build合格。正本full verifyは663 Node/19 Fashion/858 Worker-D1合格。v25公開はnative migrationの複文trigger分割でincomplete inputエラー、Worker公開未完了。新規tableの部分作成を保持し、schema-upgradesと起動時静的JSONの全guard適用へ一本化して同一Siteで再配備する。実Provider/請求/本人OAuth/Apple Pay/OS連携は別受入で、実行gateはfalse。
+WEB04/ROCK: 同じSkyのブラウザ仕事画面へ見積履歴・仕事URL復元・認証期限切れ案内を同期。既存auth/Stripe/各Toolを保持し、料金表/quoteの追加schemaだけを配備対象にする。関連30試験、Site Worker/D1更新15項目、型、product lint、build合格。正本full verifyは663 Node/19 Fashion/858 Worker-D1合格。v25公開はnative migrationの複文trigger分割でincomplete inputエラー、Worker公開未完了。新規tableの部分作成を保持し、schema-upgradesと起動時静的JSONの全guard適用へ一本化。旧SQLを含む成果物の再利用でv26も失敗したため、再ビルドしarchive内のmigrationを2既存fileだけへ確認。部分migration回復15項目合格。新source版で再配備する。実Provider/請求/本人OAuth/Apple Pay/OS連携は別受入で、実行gateはfalse。
 
 ## 2026-10-02 — Skyの発注前下書き削除
 
