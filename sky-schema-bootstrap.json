@@ -183,5 +183,7 @@
   "CREATE TRIGGER IF NOT EXISTS remote_ai_text_settle AFTER UPDATE OF state ON remote_ai_text_executions\nWHEN OLD.state IN ('sending','unreconciled') AND NEW.state = 'completed'\nBEGIN\n  UPDATE agent_delegation_budget_pools\n    SET reserved_minor = reserved_minor - OLD.maximum_charge_minor,\n        settled_minor = settled_minor + NEW.settled_minor,\n        revision = revision + 1, updated_at = NEW.updated_at\n    WHERE owner_user_id = OLD.owner_user_id AND parent_job_id = OLD.parent_job_id;\nEND;",
   "CREATE TRIGGER IF NOT EXISTS remote_ai_text_no_delete BEFORE DELETE ON remote_ai_text_executions\nBEGIN SELECT RAISE(ABORT, 'REMOTE_AI_TEXT_AUDIT_RECORD_IMMUTABLE'); END;",
   "CREATE TABLE IF NOT EXISTS `csv_trial_payments` (\n\t`id` text PRIMARY KEY NOT NULL,\n\t`job_id` text NOT NULL,\n\t`mode` text NOT NULL,\n\t`session_id` text,\n\t`created_at` integer NOT NULL\n);",
-  "CREATE UNIQUE INDEX IF NOT EXISTS `idx_csv_trial_session` ON `csv_trial_payments` (`session_id`);"
+  "CREATE UNIQUE INDEX IF NOT EXISTS `idx_csv_trial_session` ON `csv_trial_payments` (`session_id`);",
+  "CREATE TABLE IF NOT EXISTS sky_library_items (user_id text NOT NULL, tool text NOT NULL, saved_at integer NOT NULL)",
+  "CREATE UNIQUE INDEX IF NOT EXISTS idx_sky_library_owner_tool ON sky_library_items (user_id, tool)"
 ]

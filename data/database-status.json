@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 104,
+    "tableCount": 105,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "Sky公開候補のschema v3・支払い台帳復旧はlocal合成143 assertions、支払い30/30、schema/台帳4/4まで合格。AI02等の既存参照不足を正本との版照合で解消し、PC権限・本人OAuth・本番配備/復旧は別受入。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。"
   },
   "webSchema": {
-    "tableCount": 50,
+    "tableCount": 51,
     "tables": [
       "a2a_usage_receipts",
       "agent_delegation_artifacts",
@@ -60,6 +60,7 @@
       "sky_commerce_sellers",
       "sky_connections",
       "sky_developer_tokens",
+      "sky_library_items",
       "sky_provider_connections",
       "sky_remote_ai_rate_limits",
       "sky_tool_events",
@@ -71,8 +72,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 34,
-    "latestMigration": "0037_csv_trial_payments.sql",
+    "migrationCount": 35,
+    "latestMigration": "0038_sky_library.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -114,6 +115,7 @@
           "sky_commerce_sellers",
           "sky_connections",
           "sky_developer_tokens",
+          "sky_library_items",
           "sky_provider_connections",
           "sky_remote_ai_rate_limits",
           "sky_tool_events",
@@ -122,7 +124,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 23
+        "tableCount": 24
       },
       {
         "id": "marketplace",
@@ -217,6 +219,7 @@
         "sky_commerce_sellers",
         "sky_connections",
         "sky_developer_tokens",
+        "sky_library_items",
         "sky_provider_connections",
         "sky_remote_ai_rate_limits",
         "sky_tool_events",
@@ -228,8 +231,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0037_csv_trial_payments.sql",
-      "tableCount": 50,
+      "expectedAppliedThrough": "0038_sky_library.sql",
+      "tableCount": 51,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

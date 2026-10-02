@@ -3413,5 +3413,41 @@
       "clients"
     ],
     "evidence": "tests/sky-launch-validation.test.mjs"
+  },
+  "skyLibraryIntegrationPreparation": {
+    "stage": "local_worker_and_partial_ui_verified",
+    "runtimePublished": false,
+    "savedToolsGrantExecution": false,
+    "schemaVersion": 4,
+    "currentCandidateAccepted": false,
+    "evidence": [
+      "app/api/sky/library/route.ts",
+      "app/zema/library/page.tsx",
+      "scripts/check-csv-storage.mjs",
+      "tests/sky-hosting-schema.test.mjs"
+    ],
+    "unitTests": {
+      "passed": 51,
+      "failed": 0
+    },
+    "workerD1R2Assertions": {
+      "passed": 212,
+      "syntheticIdentity": true
+    },
+    "uiVerified": [
+      "Sky tool save",
+      "Zema saved list after reload",
+      "Zema citation tool launch",
+      "browser processing with actual Worker completed metadata",
+      "local result restoration after reload",
+      "anonymous save refusal and blank-tab sign-in link"
+    ],
+    "uiNotAccepted": [
+      "Markdown download (browser automation timeout)",
+      "clipboard contents (empty readback)",
+      "PC start/wait/failure/reconnect (auto-review rejection)",
+      "public owner authentication",
+      "physical Pixel"
+    ]
   }
 }

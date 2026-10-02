@@ -1,7 +1,7 @@
 import handler from 'vinext/server/fetch-handler';
 import schema from './sky-schema-bootstrap.json';
 
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 let initializing: Promise<void> | undefined;
 async function ensureSchema(db: D1Database) {
   const ready = await db.prepare('SELECT version FROM sky_service_schema WHERE version = ?').bind(SCHEMA_VERSION).first();

@@ -1586,3 +1586,7 @@ Workers Vitestの管理下にある制御service-binding Agent Card／A2A 1.0 te
 ## Skyの同一候補の受入判定とR1限定統合
 
 保存済みR1から旧Sites監査の固定fixtureと負例2件だけを統合。現行lockの検査件数と本番validator/設定は保持し、35件合格。Skyの最終stageは既存paidとclientsの両方を必要とし、passedの実受入JSONを同一source/build/deployment/versionへ固定する。異なる候補・模擬実行・環境差・gate欠落を拒否する。旧部分合格2件はhistoricalAcceptanceへ保持し、現行候補のgateは未完了。r46と既存158 taskの状態は変更しない。
+
+## Skyの保存からZemaライブラリへのR2統合候補
+
+保護した公開sourceへ、保存済みR2のlibrary/API/OS policyを限定統合。現行Tool runner・Sky配色・会話入口・決済処理・サインイン復帰を保持。保存は本人別bookmarkだけで、接続同意や購入権限を作らない。元SQLをjournalの0038に保存し、schema v4で新規/旧v3/部分失敗を検証する。型・関連51試験・buildと同じWorker/D1/R2の212 assertionsが合格。合成localhostでSky保存→再読込→Zema起動→出典整理→端末保存成果の復元を確認し、完了metadataの入力162/output103 bytesを画面と照合。Markdown downloadは内蔵ブラウザ試験timeout、clipboardは空readbackで未受入。接続開始ボタンは自動承認審査が拒否し、最新候補の待機/失敗/復帰は未検証。公開/実PC/実Provider/Pixel実機の未完了と親gateを維持する。

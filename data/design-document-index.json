@@ -741,11 +741,12 @@
     "deploymentAcceptance": false,
     "signinGate": "Main and detailed network connection buttons are blocked until existing authenticated jobs-array check succeeds. Recheck is read-only.",
     "runtimeSchemaRecovery": {
-      "version": 3,
+      "version": 4,
       "canonicalSql": "drizzle-source/0037_csv_trial_payments.sql",
       "worker": "sky-service-worker.ts",
       "test": "scripts/check-csv-storage.mjs",
-      "acceptance": "Fresh bootstrap and version-2 local D1 recovery with preserved jobs, artifacts and trial sessions; no production acceptance"
+      "acceptance": "Fresh bootstrap and version-2 local D1 recovery with preserved jobs, artifacts and trial sessions; no production acceptance",
+      "librarySql": "drizzle-source/0038_sky_library.sql"
     }
   },
   "toolExecutionBoundaryVerification": {
@@ -776,5 +777,21 @@
       "clients"
     ],
     "actualCustomerJourneyAccepted": false
+  },
+  "skyLibraryIntegration": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "app/api/sky/library/route.ts",
+      "app/zema/library/page.tsx",
+      "app/zema/tools/[toolId]/page.tsx",
+      "components/sky-library.tsx",
+      "components/sky-library-save.tsx",
+      "components/zema-navigation.tsx",
+      "lib/operations.ts"
+    ],
+    "sourceSql": "drizzle-source/0038_sky_library.sql",
+    "schemaVersion": 4,
+    "saveIsEntitlement": false,
+    "productionAccepted": false
   }
 }

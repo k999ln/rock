@@ -614,3 +614,17 @@ Skyの発見・利用条件表示から実行画面への境界を`lib/sky-tool-
 候補の出力関数を`lib/sky-candidate-output.ts`へ分離し、21関数の合成入力・空入力拒否・未接続表示を試験する。このうちRouterはUI実行として受け入れない。34件すべての分類と未知ID拒否は`tests/sky-tool-execution-scope.test.mjs`で確認する。接続許可検査は既存`SKY_CONNECTION_TOOLS`の展開後の集合を参照し、CORE_JOB_TOOLSを落とす文字列部分抽出を廃止する。許可項目の追加や利用権発行は行わない。
 
 証拠は`docs/evidence/sky-tool-execution-boundaries.json`に候補のsource hash、実行した試験、未検証を記録する。局所試験の合格を全体verify、実接続、本人公開受入へ転用しない。初回公開判断・公開gate・親taskは未完了。
+
+## Sky保存からZema実行への限定統合（未配備）
+
+保存済みR2のライブラリを、公開v33から保護した候補へ統合する。SkyのTool画面からZemaライブラリへ保存し、`/zema/library`の保存・登録一覧から`/zema/tools/<toolId>`で現在のrunnerを使う。既存`/chat`の会話・仕事入口とSky内での直接実行は保持し、会話sidebarにライブラリへのリンクを追加する。提出候補の旧配色は移植せず、現在のSky CSS変数と共通カードを使用する。
+
+`GET/PUT /api/sky/library`は既存の本人確認・同一origin・JSON上限・Tool allowlistを使う。`sky_library_items`はuser_id＋toolの一意indexとsaved_atだけを持ち、本文・結果・鍵・購入権限・実行同意を保存しない。重複保存は同じ行へ収束し、削除は同じ本人の行だけを対象にする。Sky登録の既存行はライブラリで別の登録記録として参照し、保存を本体接続と表示しない。
+
+公開候補はschema v4にライブラリtable/indexを追加する。元の提出SQLと同じbytesを`drizzle-source/0038_sky_library.sql`へ保存し、既存journalの後に追加する。静的bootstrapへ同じguardを追加し、v3の支払い台帳と既存job/R2成果を保持する。部分的な不正tableはAPIを503に止め、全guardが揃うまでv4を記録しない。
+
+ライブラリは現在の本人の購入記録を既存のread-only hookで参照する。既存の決済開始・Stripe設定・購入権限処理は変更せず、共有signin表示だけを追加する。ライブラリからの再サインインは別タブとし、元の入力画面を保持する。OS利用ルールは保存済みの配置binding専用resolverを使用し、ブラウザ判定や申告で共有・購入権限を付与しない。Web既定は本人別、保存人数未設定は無制限を意味しない。
+
+対象の受入は合成localhostの保存→再読込→Zema起動→出典整理→成果取得と実Worker metadata照合。本人の公開認証、Pixel実機、実PC接続、実Provider、本番配備/復旧は未受入。r46親taskと公開gateを部分試験で昇格させない。
+
+R2限定統合の型・関連51試験・build、同じbuilt Worker/D1/R2の212 assertionsが合格。UIではSky保存→ライブラリ再読込→Zemaで出典整理→端末保存成果を再読込後に復元を確認。input162/output103 bytesがcompleted jobと一致し、Sky接続一覧は空のまま。Markdown downloadは10秒のbrowser event timeout、clipboardは空readbackであり取得成功としない。PC開始クリックは自動承認審査が拒否し、最新schema v4候補で待機/失敗/再接続へ進めない。既存の単体負例・過去候補の画面結果を今回の実接続受入へ換算しない。

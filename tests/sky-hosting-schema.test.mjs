@@ -12,6 +12,18 @@ function fixture(t) {
   return db;
 }
 
+void test('library bookmarks survive idempotent schema replay and remain unique per owner', (t) => {
+  const db = fixture(t); bootstrap(db);
+  db.prepare('INSERT INTO sky_library_items VALUES (?,?,?)').run('synthetic-a','mr-citations',1);
+  bootstrap(db);
+  assert.equal(db.prepare('SELECT COUNT(*) AS count FROM sky_library_items').get().count,1);
+  assert.throws(() => db.prepare('INSERT INTO sky_library_items VALUES (?,?,?)').run('synthetic-a','mr-citations',2), /UNIQUE/);
+  db.prepare('INSERT INTO sky_library_items VALUES (?,?,?)').run('synthetic-b','mr-citations',2);
+  assert.equal(db.prepare('SELECT COUNT(*) AS count FROM sky_library_items WHERE user_id=?').get('synthetic-a').count,1);
+  assert.equal(db.prepare('SELECT COUNT(*) AS count FROM sky_connections').get().count,0);
+  assert.equal(db.prepare('SELECT COUNT(*) AS count FROM devices').get().count,0);
+});
+
 void test('hosting bootstrap contains every canonical table, column and guard', (t) => {
   const source = fixture(t), hosted = fixture(t);
   const folder = new URL(`../${migrationSourceDirectory}/`, import.meta.url);

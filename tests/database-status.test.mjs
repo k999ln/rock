@@ -20,10 +20,10 @@ void test('database status inventories every boundary and keeps production readb
   );
   assert.equal(report.summary.boundaryCount, 6);
   assert.deepEqual(report.boundaries.map(({ id, tableCount }) => [id, tableCount]), [
-    ['web-d1', 50], ['sky-billing-d1', 13], ['operator-dock-d1', 5],
+    ['web-d1', 51], ['sky-billing-d1', 13], ['operator-dock-d1', 5],
     ['os-wallet-spend-sqlite', 19], ['android-work-sqlite', 7], ['android-platform-sqlite', 10],
   ]);
-  assert.equal(report.summary.tableCount, 104);
+  assert.equal(report.summary.tableCount, 105);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
@@ -34,17 +34,17 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 50);
-  assert.equal(report.webSchema.migrationCount, 34);
+  assert.equal(report.webSchema.tableCount, 51);
+  assert.equal(report.webSchema.migrationCount, 35);
   assert.ok(report.webSchema.tables.includes('csv_trial_payments'));
-  assert.equal(report.webSchema.latestMigration, '0037_csv_trial_payments.sql');
+  assert.equal(report.webSchema.latestMigration, '0038_sky_library.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
   assert.deepEqual(
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
       ['core', 8],
-      ['sky', 23],
+      ['sky', 24],
       ['marketplace', 7],
       ['csv', 5],
       ['business', 7],
