@@ -119,3 +119,10 @@ WEB06/ROCK: main b3e2676からCSVの受付ID衝突・競合cleanupと期限切�
 
 
 独立branch検証: mainのlockfileでtypecheck/対象lint/build/design、172 Worker API＋113 CSV-D1-R2項目が合格。`npm run verify`は既存visual-system baseline不整合でexit1。Node全体は440件中429 pass/11 failで、変更を退避して未変更mainを同じ環境で検査した結果も同じ11件だった。mainのCI/statusは同一SHAで0件を観測し、成功へ換算しない。今回の差分で既存R5/migration/baselineの不整合やデザインを変更せず、draftでレビューする。公開Sky v32の全体sourceと同じcommitではなく、同等CSV修正だけのGitHub反映候補であり、mainへの統合は未完了。
+
+上記CSV検証の失敗記録は修正前の履歴。以下の検証整合を加えて、同じbranch全体を再検査する。
+
+
+2026-10-02 Sky公開前のGitHub検証整合: main b3e2676の既存エラーを分離branchで修正中。CSS/componentを変更せず、既存pale-blueのvisual baseline、英語READMEの製造保留/実機0/進捗リンク、既存marketplace migration後の37 tableへ検証を合わせる。履歴DBの全schema・保存値比較と製品の未受入境界は維持する。公開Site配備やmain mergeとは別に、full verifyと同一SHA CIを確認する。
+
+分離branchの`npm run verify`はexit 0。古いFashion Producerボタン名の判定も現行の「プランを作って保存」へ同期した。ローカルはNode 26と既存dependency treeを再利用し、base lockのインストール済みpackage版は全一致。GitHub Node 22・fresh npm ciの同一SHA CIは別途確認する。
