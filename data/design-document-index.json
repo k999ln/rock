@@ -202,7 +202,8 @@
         "components/sky-service-help.tsx",
         "lib/sky-service-status.ts",
         "app/api/sky/service-status/route.ts",
-        "lib/sky-tool-labels.ts"
+        "lib/sky-tool-labels.ts",
+        "components/execution-access.tsx"
       ],
       "documents": [
         "docs/sky-tools-complete-design.md",
