@@ -262,5 +262,45 @@ try {
   check(await stored(invalid.id),null);check((await bucket.list({prefix:`csv/${invalid.id}/`})).objects.length,0);
   check((await (await worker.getWorker()).scheduled({cron:CSV_RETENTION_CRON})).outcome,'ok');
   check(Boolean(await stored(processing.id)),true);
+  // A delayed deletion from an earlier incarnation must not touch recreated
+  // input/results, even when the client reuses the ID and revision numbers.
+  const oldJob=await finish(await create(randomUUID(),retentionUser),retentionUser);
+  const oldRow=await stored(oldJob.id);
+  let signalEntered, releaseDeletion;
+  const entered=new Promise(resolve=>{signalEntered=resolve;});
+  const delayed=new Promise(resolve=>{releaseDeletion=resolve;});
+  const oldDeletion=removeCsvJobStorage(db,{delete:async keys=>{signalEntered();await delayed;await bucket.delete(keys);}},oldRow);
+  await entered;
+  check(await removeCsvJobStorage(db,bucket,await stored(oldJob.id)),'deleted');
+  const recreated=await finish(await create(oldJob.id,retentionUser),retentionUser);
+  const recreatedRow=await stored(recreated.id), recreatedArtifacts=await artifacts(recreated,retentionUser);
+  check(recreatedRow.input_key===oldRow.input_key,false);
+  check(recreatedRow.result_key===oldRow.result_key,false);
+  releaseDeletion();check(await oldDeletion,'changed');
+  check(await stored(recreated.id),recreatedRow);
+  check(await artifacts(recreated,retentionUser),recreatedArtifacts);
+  // Stale snapshots cannot claim a new incarnation with a matching revision.
+  check(await removeCsvJobStorage(db,{delete:async()=>assert.fail('stale incarnation must not delete')},{...oldRow,revision:recreatedRow.revision}),'changed');
+
+  // Exact ABA: both old/new deletion claims have revision 1. The old DB
+  // finalization must preserve the new pending row and its events as well.
+  const aba=await create(randomUUID(),retentionUser), abaRow=await stored(aba.id);
+  let enterOld, releaseOld;
+  const oldEntered=new Promise(resolve=>{enterOld=resolve;}), oldWait=new Promise(resolve=>{releaseOld=resolve;});
+  const pendingOld=removeCsvJobStorage(db,{delete:async keys=>{enterOld();await oldWait;await bucket.delete(keys);}},abaRow);
+  await oldEntered;
+  check(await removeCsvJobStorage(db,bucket,await stored(aba.id)),'deleted');
+  await create(aba.id,retentionUser);
+  let enterNew, releaseNew;
+  const newEntered=new Promise(resolve=>{enterNew=resolve;}), newWait=new Promise(resolve=>{releaseNew=resolve;});
+  const pendingNew=removeCsvJobStorage(db,{delete:async keys=>{enterNew();await newWait;await bucket.delete(keys);}},await stored(aba.id));
+  await newEntered;
+  const newPending=await stored(aba.id);
+  check(newPending.revision,abaRow.revision+1);
+  releaseOld();check(await pendingOld,'changed');
+  check(await stored(aba.id),newPending);
+  check((await db.prepare('SELECT count(*) AS count FROM csv_job_events WHERE job_id=?').bind(aba.id).first()).count,1);
+  check(Boolean(await bucket.get(newPending.input_key)),true);
+  releaseNew();check(await pendingNew,'deleted');check(await stored(aba.id),null);
   console.log(`CSV Worker/D1/R2 regression passed (${assertions} assertions; synthetic only).`);
 } finally { await stop(); rmSync(temporary,{recursive:true,force:true}); }

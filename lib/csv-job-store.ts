@@ -1,4 +1,4 @@
-import { purgeExpiredCsvJobs, removeCsvJobStorage } from './csv-retention';
+import { csvOutputKeys, purgeExpiredCsvJobs, removeCsvJobStorage } from './csv-retention';
 import { CsvRequestLimitError } from './csv-request-limit';
 import { env } from 'cloudflare:workers';
 import { CSV_TRIAL_SAMPLE } from './csv-trial-sample';
@@ -302,13 +302,8 @@ async function processCsvJob(row: CsvJobRow) {
       bytes,
       JSON.parse(row.specification_json),
     );
-    const base = `csv/${row.id}`;
-    const resultKey = `${base}/result.csv`,
-      reportJsonKey = `${base}/report.json`,
-      reportHtmlKey = `${base}/report.html`;
-    const safeResultKey = result.safeOutput
-      ? `${base}/spreadsheet-safe.csv`
-      : null;
+    const [resultKey, safeKey, reportJsonKey, reportHtmlKey] = csvOutputKeys(row);
+    const safeResultKey = result.safeOutput ? safeKey : null;
     await bucket.put(resultKey, result.output, {
       httpMetadata: { contentType: 'text/csv' },
       customMetadata: { sha256: result.outputSha256 },
@@ -348,12 +343,7 @@ async function processCsvJob(row: CsvJobRow) {
     });
     return view(row);
   } catch (error) {
-    await bucket.delete([
-      `csv/${row.id}/result.csv`,
-      `csv/${row.id}/spreadsheet-safe.csv`,
-      `csv/${row.id}/report.json`,
-      `csv/${row.id}/report.html`,
-    ]);
+    await bucket.delete(csvOutputKeys(row));
     const code =
       error instanceof CsvError || error instanceof CsvJobError
         ? error.code

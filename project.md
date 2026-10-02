@@ -1598,3 +1598,5 @@ MR成果保存を短命のDOM外Blobクリックから通常のUTF-8 Markdownリ
 ## Sky CSV削除の再試行候補
 
 保護した公開source上で、owner/revision/processingを照合する共通削除、削除待ち状態、R2後のDB transaction、期限切れ一覧のfilter、集計のみのscheduled handlerを追加。最初のbuilt Worker/D1/R2検証355 assertionsと関連33単体が合格し、R2の部分失敗、DB削除失敗rollback、再起動、支払いsession保持、別job key拒否、処理中保護を確認。境界の追加試験と同一最終buildでの再検証結果は作業receiptへ固定する。Worker Cron登録・公開配備・実際の物理削除・processing lease復旧・監視通知は未受入。既存S0-02/22項目/r46、親task/公開gateと他担当のA2A/eSIM変更を保持し、実PC権限・Provider・実課金は操作しない。
+
+配備前レビューで重複cleanupと同一ID再作成の競合を確認したため、成果keyをrandom inputの世代へ束縛し、claim/DB finalizeにもinput key照合を追加。遅延R2削除とrevision再利用を再現して同一最終buildで再検証する。

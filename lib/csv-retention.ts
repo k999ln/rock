@@ -13,6 +13,14 @@ export type CsvRemovalRow = {
   report_html_key: string | null;
 };
 
+// New jobs get a random input object on every creation, even if the client
+// reuses an ID after deletion. Bind outputs to that incarnation as well.
+export function csvOutputKeys(row: { id: string; input_key: string }) {
+  const match = new RegExp(`^csv/${row.id}/input-([0-9a-f-]{36})\\.csv$`, 'i').exec(row.input_key);
+  const prefix = `csv/${row.id}/${match ? match[1] + '-' : ''}`;
+  return ['result.csv', 'spreadsheet-safe.csv', 'report.json', 'report.html'].map(name => prefix + name);
+}
+
 export function csvRemovalKeys(row: CsvRemovalRow): string[] {
   if (!/^[0-9a-f-]{36}$/i.test(row.id)) throw new Error('CSV removal identity invalid');
   if (typeof row.input_key !== 'string' || !row.input_key) throw new Error('CSV removal input key invalid');
@@ -21,7 +29,8 @@ export function csvRemovalKeys(row: CsvRemovalRow): string[] {
   if (recorded.some(key => !key.startsWith(prefix) || key.slice(prefix.length).includes('/')))
     throw new Error('CSV removal key outside job');
   // Include outputs written before a failed DB finalization, not only recorded keys.
-  return [...new Set([...recorded, ...['result.csv', 'spreadsheet-safe.csv', 'report.json', 'report.html'].map(name => prefix + name)])];
+  // Also clean legacy fixed output keys. New incarnations never write those.
+  return [...new Set([...recorded, ...csvOutputKeys(row), ...['result.csv', 'spreadsheet-safe.csv', 'report.json', 'report.html'].map(name => prefix + name)])];
 }
 
 export async function removeCsvJobStorage(
@@ -32,15 +41,15 @@ export async function removeCsvJobStorage(
 ): Promise<'deleted' | 'busy' | 'changed'> {
   if (row.status === 'processing') return 'busy';
   const keys = csvRemovalKeys(row);
-  const claimed = await db.prepare("UPDATE csv_jobs SET status = 'cleanup_pending', revision = revision + 1, updated_at = ? WHERE id = ? AND user_id = ? AND revision = ? AND status <> 'processing' AND (? = 0 OR expires_at <= ?)")
-    .bind(now, row.id, row.user_id, row.revision, expiredOnly ? 1 : 0, now).run();
+  const claimed = await db.prepare("UPDATE csv_jobs SET status = 'cleanup_pending', revision = revision + 1, updated_at = ? WHERE id = ? AND user_id = ? AND revision = ? AND input_key = ? AND status <> 'processing' AND (? = 0 OR expires_at <= ?)")
+    .bind(now, row.id, row.user_id, row.revision, row.input_key, expiredOnly ? 1 : 0, now).run();
   if (claimed.meta.changes !== 1) return 'changed';
   // The persisted state fences new processing, and retains every key on R2 failure.
   await bucket.delete(keys);
   const revision = row.revision + 1;
   const results = await db.batch([
-    db.prepare("DELETE FROM csv_job_events WHERE job_id = ? AND user_id = ? AND EXISTS (SELECT 1 FROM csv_jobs WHERE id = ? AND user_id = ? AND revision = ? AND status = 'cleanup_pending')").bind(row.id, row.user_id, row.id, row.user_id, revision),
-    db.prepare("DELETE FROM csv_jobs WHERE id = ? AND user_id = ? AND revision = ? AND status = 'cleanup_pending'").bind(row.id, row.user_id, revision),
+    db.prepare("DELETE FROM csv_job_events WHERE job_id = ? AND user_id = ? AND EXISTS (SELECT 1 FROM csv_jobs WHERE id = ? AND user_id = ? AND revision = ? AND input_key = ? AND status = 'cleanup_pending')").bind(row.id, row.user_id, row.id, row.user_id, revision, row.input_key),
+    db.prepare("DELETE FROM csv_jobs WHERE id = ? AND user_id = ? AND revision = ? AND input_key = ? AND status = 'cleanup_pending'").bind(row.id, row.user_id, revision, row.input_key),
   ]);
   return results[1].meta.changes === 1 ? 'deleted' : 'changed';
 }
@@ -67,7 +76,7 @@ export async function purgeExpiredCsvJobs(
     } catch {
       summary.failed++;
       // Defer persistent failures behind other expired jobs; retain data for retry.
-      await db.prepare("UPDATE csv_jobs SET updated_at = ? WHERE id = ? AND user_id = ? AND expires_at <= ? AND status <> 'processing'").bind(now, row.id, row.user_id, now).run().catch(() => undefined);
+      await db.prepare("UPDATE csv_jobs SET updated_at = ? WHERE id = ? AND user_id = ? AND input_key = ? AND expires_at <= ? AND status <> 'processing'").bind(now, row.id, row.user_id, row.input_key, now).run().catch(() => undefined);
     }
   }
   return summary;

@@ -113,7 +113,7 @@ sandboxで成功、取消、失敗、通知再送/順序逆転、受取先停止
 
 ## CSV期限切れ削除の候補
 
-`lib/csv-retention.ts`が本人操作と期限切れ削除の共通処理を持つ。先に本人・job ID・revision・非processingを照合して`cleanup_pending`へ更新し、新しい処理開始をfenceする。元のinput keyと固定4種類の成果keyを削除するため、DBへの最終記録前に書かれた部分成果も対象になる。記録されたkeyが別jobのprefixを指す場合、削除を拒否して記録を保持する。
+`lib/csv-retention.ts`が本人操作と期限切れ削除の共通処理を持つ。先に本人・job ID・revision・非processingを照合して`cleanup_pending`へ更新し、新しい処理開始をfenceする。作成ごとにランダムなinput keyから成果keyの世代を分離し、claimとDB最終削除にもinput keyを照合する。同じ受付番号を再作成しても、遅い旧削除は新しいinput・成果・DB行に作用しない。元のinput keyとその世代の4種類の成果key（旧版の固定keyも互換cleanup）を削除するため、DBへの最終記録前に書かれた部分成果も対象になる。記録されたkeyが別jobのprefixを指す場合、削除を拒否して記録を保持する。
 
 R2削除失敗ではkeyとjobを保持し、再試行で不存在objectも安全に扱う。R2削除後のDB失敗ではjob/eventの削除をD1 batchのtransactionでrollbackし、worker再起動後も削除待ちから再試行する。CSV試験の独立支払いsession台帳は削除しない。集計logはscanned/deleted/failed/changedの件数だけで、owner・ファイル名・本文・key・Stripe情報を出さない。
 
