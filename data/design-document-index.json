@@ -641,10 +641,12 @@
       "app/api/llm/quotes/route.ts",
       "app/api/llm/quotes/[id]/route.ts",
       "app/api/llm/text/route.ts",
-      "drizzle/0003_remote_ai_text_executions.sql",
+      "sky-schema-upgrades/0003_remote_ai_text_executions.sql",
       "lib/remote-ai-text-request.ts",
       "lib/remote-ai-text-client.ts",
-      "components/workbench.tsx"
+      "components/workbench.tsx",
+      "sky-schema-bootstrap.json",
+      "sky-service-worker.ts"
     ],
     "tests": [
       "tests/remote-ai-rate-card.test.mjs",

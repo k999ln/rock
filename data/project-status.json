@@ -3371,6 +3371,7 @@
     "productionProviderExecutionVerified": false,
     "productionOwnerSigninVerified": false,
     "evidence": "docs/evidence/sky-cloud-ui-verification.json",
-    "inheritedSourceInventoryChecks": "Site design/project check fails on pre-existing missing canonical device-capability/SKY20 evidence references, also present in v24 source. Canonical checks pass. This is not runtime or full Site verify acceptance."
+    "inheritedSourceInventoryChecks": "Site design/project check fails on pre-existing missing canonical device-capability/SKY20 evidence references, also present in v24 source. Canonical checks pass. This is not runtime or full Site verify acceptance.",
+    "deploymentRecovery": "v25 failed with incomplete input SQLITE_ERROR in native migration splitting. Preserve partial new rate table; complex trigger statements are installed whole by existing fail-closed Worker bootstrap version 2. No paid record deletion or provider charge."
   }
 }
