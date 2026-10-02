@@ -338,7 +338,8 @@
         "completedHistoryInWorkspace": true,
         "receiptReadbackAfterReload": true,
         "successClosesTicketAndFocusesActivity": true,
-        "jsonTimeoutMs": 10000
+        "jsonTimeoutMs": 10000,
+        "mobileSearchInHeaderGrid": true
       }
     },
     {
