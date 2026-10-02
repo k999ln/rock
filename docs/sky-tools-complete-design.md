@@ -602,3 +602,5 @@ pendingは一操作だけ。offline・画面破棄後の古い応答は棄却し
 原本のSQL/journalは `drizzle-source/`、配備のbootstrapは `sky-hosting-migrations/`、Sites固有の既存upgradeは `drizzle/` として混同しない。source検査は50 table、34 migration、Marketplace relation guard 8、Sky review guard 2を照合し、同じ列とguardがruntime bootstrapにあることを試験する。CSV paymentの原本は既存 `0001_csv_trial_payments.sql` と同一bytesを `0037_csv_trial_payments.sql` として保存し、既存の正本作業版と番号を揃える。remote AI用の追加台帳は既存のまま保持する。
 
 受入はローカルの同じビルド・使い捨てD1/R2・合成ユーザーで確認する。新規初期化、旧version 2からの復旧、保存済み支払いsessionの保持と重複拒否、CSV処理・保存・再起動後の成果物取得が対象。本番D1への適用、公開配備、実Stripe/Apple Pay、Pixelの受入は未実施。全体のproject checkは別の既存AI02等の証跡不足で未合格のため、根拠を削除して通さない。
+
+初期化途中の不正schemaではAPIを503で止め、version 3を記録しない。部分schemaの修復後に同じWorkerで再試行でき、既存成果物を維持することまで、合成Worker/D1/R2の143 assertionsで確認した。公開復旧の合格ではない。

@@ -106,6 +106,11 @@ try {
     await db.prepare('DROP TABLE csv_trial_payments').run();
     await db.prepare('DELETE FROM sky_service_schema WHERE version=3').run();
     await db.prepare('INSERT OR IGNORE INTO sky_service_schema(version) VALUES (2)').run();
+    // A partial/invalid upgrade must fail closed without publishing version 3.
+    await db.prepare('CREATE TABLE csv_trial_payments(id TEXT PRIMARY KEY)').run();
+    await call('/api/csv-jobs',{user:null,status:503});
+    check(await db.prepare('SELECT version FROM sky_service_schema WHERE version=3').first(), null);
+    await db.prepare('DROP TABLE csv_trial_payments').run();
     await call('/api/csv-jobs',{user:null,status:401});
     check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=3').first()), true);
     check(await artifacts(first),before);

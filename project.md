@@ -1577,4 +1577,4 @@ Workers Vitestの管理下にある制御service-binding Agent Card／A2A 1.0 te
 
 ## Sky公開候補の支払い台帳の初期化・復旧
 
-保護した公開v33 source上で、runtime schema version 3にCSV試験の支払い台帳と一意indexを追加。source SQL/journalとschema検査の参照を修正。支払い関連30/30、schema/台帳4/4、同じ本番ビルドのWorker/D1/R2合成試験141 assertionsが合格。新規環境、旧version 2の不足table復旧、既存job/成果物/支払いsessionの保持を確認。新規実課金・PC権限発行・公開配備は行わず、親task/公開gateは未完了。全体checkは既存AI02等の証跡不足、design checkは既存device-capability契約の欠落で未合格。これらを削除・合成して通さない。
+保護した公開v33 source上で、runtime schema version 3にCSV試験の支払い台帳と一意indexを追加。source SQL/journalとschema検査の参照を修正。支払い関連30/30、schema/台帳4/4、同じ本番ビルドのWorker/D1/R2合成試験143 assertionsが合格。新規環境、旧version 2の不足table復旧、既存job/成果物/支払いsessionの保持を確認。新規実課金・PC権限発行・公開配備は行わず、親task/公開gateは未完了。全体checkは既存AI02等の証跡不足、design checkは既存device-capability契約の欠落で未合格。これらを削除・合成して通さない。
