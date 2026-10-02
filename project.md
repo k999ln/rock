@@ -1594,3 +1594,7 @@ Workers Vitestの管理下にある制御service-binding Agent Card／A2A 1.0 te
 ## Sky成果保存のリンク化とschema v4配備条件
 
 MR成果保存を短命のDOM外Blobクリックから通常のUTF-8 Markdownリンクへ変更。色・操作位置・本文の端末内処理を維持し、lone surrogateをUTF-8ファイルと同じ置換文字へ正規化する。日本語/絵文字/先頭BOM/CRLF/URL記号/大きな成果を含む関連9試験とtype/lint/build、同じbuilt Worker/D1/R2の212 assertionsが合格。Chromeの画面上の保存リンク内容は結果128 bytesと一致し、Workerのinput200/output128 completed metadataと照合。内蔵ブラウザ/Chromeのdownload API timeoutとvirtual clipboardの制限により、実ファイル受取とcopy/pasteは未受入。ブラウザのdownloads記録ページはURL policyで拒否され、別経路で回避しない。運用文書の旧schema v1記述を未配備v4のguard/503/retryへ修正し、同じ候補のDB/R2復元・旧版互換・本番切替の未受入を保持。r46、親task、公開gate、Stripe/PC/Provider設定は変更しない。
+
+## Sky CSV削除の再試行候補
+
+保護した公開source上で、owner/revision/processingを照合する共通削除、削除待ち状態、R2後のDB transaction、期限切れ一覧のfilter、集計のみのscheduled handlerを追加。最初のbuilt Worker/D1/R2検証355 assertionsと関連33単体が合格し、R2の部分失敗、DB削除失敗rollback、再起動、支払いsession保持、別job key拒否、処理中保護を確認。境界の追加試験と同一最終buildでの再検証結果は作業receiptへ固定する。Worker Cron登録・公開配備・実際の物理削除・processing lease復旧・監視通知は未受入。既存S0-02/22項目/r46、親task/公開gateと他担当のA2A/eSIM変更を保持し、実PC権限・Provider・実課金は操作しない。

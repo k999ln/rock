@@ -41,6 +41,7 @@ const statusLabel: Record<string, string> = {
   quoted: '見積り確認待ち',
   accepted: '受付済み',
   processing: '処理中',
+  cleanup_pending: '削除待ち・再試行可能',
   completed: '検査合格・納品可能',
   quality_failed: '検査不合格・再試行待ち',
 };
@@ -267,6 +268,7 @@ export default function CsvBusinessWorkspace() {
       if (!response.ok) await json(response);
       setJobs((items) => items.filter((item) => item.id !== job.id));
     } catch (reason) {
+      await refresh();
       reportError(reason, '削除できませんでした。');
     } finally {
       setBusy(false);
@@ -622,7 +624,8 @@ export default function CsvBusinessWorkspace() {
                 )}
                 <button
                   className={styles.delete}
-                  disabled={busy}
+                  disabled={busy || job.status === 'processing'}
+                  title={job.status === 'processing' ? '処理の完了後に削除できます。' : undefined}
                   onClick={() => void remove(job)}
                 >
                   <Trash2 size={15} />

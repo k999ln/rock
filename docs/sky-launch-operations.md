@@ -82,7 +82,7 @@ sandboxで成功、取消、失敗、通知再送/順序逆転、受取先停止
 - provider障害は外部AI/Toolだけ停止し、ブラウザ内の有限処理まで不要に停止させない。結果不明の外部操作は照合してから再開する。
 - 購入/返金が不明なら再課金を止め、Stripe再照合と注文receiptを確認する。DB上の状態を直接paidに書き換えない。
 - D1と私有R2を対でバックアップ・復元し、owner、hash、期限、削除済み状態の整合をstagingで確認する。
-- CSVの7日は取得期限。定期cleanupと削除失敗の再送が未実装なので、物理削除の保証時刻を契約へ書かない。
+- CSVの7日は取得期限。未配備候補には定期cleanup handlerと失敗後の再試行を実装したが、本番Cronは未設定・未受入。処理中の仕事は対象から外し、停止したprocessingのlease照合は別途必要。物理削除の保証時刻を契約へ書かない。
 - Skyの未配備候補はruntime schema v4。静的bootstrapは既存DBにも不足table/indexを補い、全guardが揃うまでAPIを503に止める。0037のCSV支払い台帳と0038のライブラリは追加のみ。破損tableや既存dataの変換は自動修復しない。旧codeの再配備だけでDBを戻さず、旧codeとの互換と対になるDB/R2復元を別に受け入れる。
 
 ## 完了判定
@@ -109,3 +109,16 @@ sandboxで成功、取消、失敗、通知再送/順序逆転、受取先停止
 新しいWorkerはAPIの初回requestでschema guardを確認する。失敗は503/Retry-Afterで止まり、v4 markerを先に書かない。同一の失敗promiseを保持せず、修復後の次requestで再試行する。既存v3、部分失敗、保存済みCSV/支払い/成果物の保持は、built Worker/D1/R2の合成212 assertionsで確認済み。本番DB/R2からのexport・restore、実稼働Worker切替、旧Workerへのrollbackは未受入。
 
 配備後は取得したdeployment IDとsite versionをsource/buildに結び付け、公開本人のSky保存→Zema library→run→結果取得、本人A/B分離、認証失効、支払い/購入権限、停止/復旧をこの配備で再検証する。local synthetic結果や公開v33の過去の有料CSV完了を新配備の受入に転記しない。最終判定は `npm run sky:launch:check -- --require-stage complete` でpaidとclientsを両方要求する。設定あり・candidate提出・stage合格を区別する。
+
+
+## CSV期限切れ削除の候補
+
+`lib/csv-retention.ts`が本人操作と期限切れ削除の共通処理を持つ。先に本人・job ID・revision・非processingを照合して`cleanup_pending`へ更新し、新しい処理開始をfenceする。元のinput keyと固定4種類の成果keyを削除するため、DBへの最終記録前に書かれた部分成果も対象になる。記録されたkeyが別jobのprefixを指す場合、削除を拒否して記録を保持する。
+
+R2削除失敗ではkeyとjobを保持し、再試行で不存在objectも安全に扱う。R2削除後のDB失敗ではjob/eventの削除をD1 batchのtransactionでrollbackし、worker再起動後も削除待ちから再試行する。CSV試験の独立支払いsession台帳は削除しない。集計logはscanned/deleted/failed/changedの件数だけで、owner・ファイル名・本文・key・Stripe情報を出さない。
+
+本人一覧は期限切れを表示せず、削除失敗1件で有効な仕事の一覧を停止しない。未期限の本人削除が失敗した行は「削除待ち・再試行可能」と表示し、成果取得と新しい処理を止める。処理中の本人削除は409で拒否する。期限切れの処理中jobは取得410で拒否するが、active writerとの競合を防ぐため自動削除から外す。長時間停止したprocessingの検出・lease照合・停止後の削除は未受入。
+
+Workerの`scheduled`は既知のCSV Cronだけを処理し、1回20件を上限に、失敗した行を後ろへ回しつつ他の行を続ける。失敗件数があればCron実行を例外にして監視から成功と見せない。handler単体では定期実行されない。本番へのTrigger登録とSites配備の対応確認は未完了であり、SitesのAI編集scheduleをデータ削除Cronの代わりに作らない。DDL・新しいDB・binding・権限・本番secretは追加していない。
+
+合成localhostの実Worker/D1/R2で、本人分離、20件上限、支払いsession保持、部分R2削除、DB失敗rollback、再起動、誤ったprefixの拒否、処理中保護、結果再取得を検証する。R2の部分失敗注入は同じsource helperを実ローカルD1/R2へ渡すcomponent試験で、Provider障害の実証とはしない。公開の物理削除、運用監視通知、processing lease復旧は合格へ転記しない。

@@ -1,5 +1,6 @@
 import handler from 'vinext/server/fetch-handler';
 import schema from './sky-schema-bootstrap.json';
+import { CSV_RETENTION_CRON, purgeExpiredCsvJobs } from './lib/csv-retention';
 
 const SCHEMA_VERSION = 4;
 let initializing: Promise<void> | undefined;
@@ -16,6 +17,13 @@ async function ensureSchema(db: D1Database) {
   await initializing;
 }
 export default {
+  async scheduled(controller: ScheduledController, env: { DB: D1Database; BUCKET: R2Bucket }) {
+    if (controller.cron !== CSV_RETENTION_CRON) return;
+    await ensureSchema(env.DB);
+    const summary = await purgeExpiredCsvJobs(env.DB, env.BUCKET);
+    console.info(JSON.stringify({ event: 'csv-retention', ...summary }));
+    if (summary.failed) throw new Error(`CSV retention incomplete: ${summary.failed} failed`);
+  },
   async fetch(request: Request, env: { DB: D1Database }, ctx: ExecutionContext) {
     if (new URL(request.url).pathname.startsWith('/api/')) {
       try { await ensureSchema(env.DB); }

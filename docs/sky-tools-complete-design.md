@@ -632,3 +632,7 @@ R2限定統合の型・関連51試験・build、同じbuilt Worker/D1/R2の212 a
 ### MR成果保存のUTF-8リンク
 
 通常のdownloadリンクと手元のdata URLを使用し、本文をサーバーや別originへ送信しない。JavaScriptの不正なUTF-16 scalarはBlobのUTF-8変換と同じ置換文字へ正規化する。画面の出典整理結果とdecodeしたリンクが128 bytesで一致し、実Workerの200 input/128 output completed metadataを照合した。関連9試験と同じbuilt Workerの212 assertionsが合格。これは生成するファイル内容と画面/APIの照合であり、実ファイルの受取成功ではない。IAB/Chromeのdownload通知timeout、virtual clipboardの制約、downloads記録画面のURL policy拒否を記録し、私有ブラウザ情報を別経路で調べない。本人の手動保存・Pixel・公開版での取得受入は未完了。通常リンクには従来と同じ配色・位置を適用し、既存コピー・端末保存の操作は保持する。
+
+### CSV成果の削除・再試行
+
+CSV7日の取得期限を保持する。削除は`cleanup_pending`のrevision claimでwriterを止め、R2のinput/固定成果を削除した後、本人job/eventをD1 transactionで削除する。失敗はkeyを持つ行に残し、再試行する。独立CSV試験支払いsessionは保持する。別job keyやprocessingへの削除は拒否する。UIは削除待ちを表示し、処理開始・取得を再開しない。期限切れ一覧は失敗や20件超のbacklogがあっても有効な仕事だけを表示する。期限切れprocessingのlease復旧は別条件。本番Cron未設定、配備/実削除/通知の運用受入は未完了。詳細と故障試験範囲は `docs/sky-launch-operations.md`。

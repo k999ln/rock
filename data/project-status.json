@@ -3465,5 +3465,22 @@
       "tests/sky-result-download.test.mjs",
       "docs/sky-launch-operations.md"
     ]
+  },
+  "skyCsvRetentionPreparation": {
+    "stage": "local_failure_recovery_verified_public_pending",
+    "runtimePublished": false,
+    "workerTriggerConfigured": false,
+    "retentionDays": 7,
+    "physicalDeletionSlaAccepted": false,
+    "processingLeaseRecoveryAccepted": false,
+    "paymentSessionLedgerDeleted": false,
+    "productionAccepted": false,
+    "evidence": [
+      "lib/csv-retention.ts",
+      "sky-service-worker.ts",
+      "scripts/check-csv-storage.mjs",
+      "tests/csv-retention.test.mjs",
+      "docs/sky-launch-operations.md"
+    ]
   }
 }

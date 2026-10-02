@@ -806,5 +806,21 @@
     "downloadAccepted": false,
     "clipboardAccepted": false,
     "productionAccepted": false
+  },
+  "skyCsvRetention": {
+    "document": "docs/sky-tools-complete-design.md",
+    "operations": "docs/sky-launch-operations.md",
+    "implementation": [
+      "lib/csv-retention.ts",
+      "lib/csv-job-store.ts",
+      "sky-service-worker.ts",
+      "components/csv-business-workspace.tsx"
+    ],
+    "verification": [
+      "tests/csv-retention.test.mjs",
+      "scripts/check-csv-storage.mjs"
+    ],
+    "publicScheduledCleanupAccepted": false,
+    "processingLeaseRecoveryAccepted": false
   }
 }
