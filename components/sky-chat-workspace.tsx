@@ -77,6 +77,8 @@ import {
   type ZemaChatSession,
 } from '@/lib/zema-chat-session';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
+import { formatCurrencyMinor, parseCurrencyInputToMinor } from '@/lib/currency-format';
+import { remoteAiTextRequest, RemoteAiTextClientError } from '@/lib/remote-ai-text-client';
 
 type ChatEntry = {
   id: string;
@@ -84,6 +86,28 @@ type ChatEntry = {
   text: string;
   tool?: string;
   suggestedTool?: string;
+};
+
+type RemoteAiEstimateResult = {
+  currencies?: string[];
+  estimate: {
+    providerId: string;
+    modelId: string;
+    pricingVersion: string;
+    currency: string;
+    inputTokenUpperBound: number;
+    outputTokenLimit: number;
+    maximumChargeMinor: number;
+    rateCardDigest: string;
+    expiresAt: number;
+  };
+  withinUserCap: boolean;
+  userCapMinor: number | null;
+  rateSource: string;
+  cardId: string;
+  estimateOnly: true;
+  providerSubmission: 'not_performed';
+  executionAuthorized: false;
 };
 
 type ActiveRequest = {
@@ -251,7 +275,13 @@ export default function SkyChatWorkspace() {
   const [allBotsOpen, setAllBotsOpen] = useState(false);
   const [outcome, setOutcome] = useState<{ ok: boolean; text: string } | null>(null);
   const [chatLoading, setChatLoading] = useState(false);
-  const [remoteConsent, setRemoteConsent] = useState(false);
+  const [remoteEstimate, setRemoteEstimate] = useState<RemoteAiEstimateResult | null>(null);
+  const [cloudWorkDraft, setCloudWorkDraft] = useState<{
+    prompt: string; currency: string; maximumBudgetInput: string; model?: string;
+  } | null>(null);
+  const [remoteCurrency, setRemoteCurrency] = useState('');
+  const [remoteCurrencyOptions, setRemoteCurrencyOptions] = useState<string[]>([]);
+  const [remoteBudgetInput, setRemoteBudgetInput] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
@@ -680,7 +710,6 @@ export default function SkyChatWorkspace() {
     setWorkflowStatus('ready');
     setOutcome(null);
     setError('');
-    setRemoteConsent(false);
     setThreadId('');
     setThreadCreatedAt(0);
     setSessionReady(false);
@@ -746,7 +775,7 @@ export default function SkyChatWorkspace() {
     }
   }
 
-  function sendMessage(event: SyntheticEvent<HTMLFormElement>) {
+  async function sendMessage(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     const text = draft.trim();
     if (!text) return;
@@ -764,10 +793,52 @@ export default function SkyChatWorkspace() {
     const nextThreadId = threadId || crypto.randomUUID();
 
     const conversational = !toolId && !routedRole;
-    if (remoteTextProvider && !remoteConsent) {
-      setError(`${textProviderDefinition.name}へ依頼を送るには、下の送信許可を確認してください。`);
+    if (remoteTextProvider) {
+      const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
+        .slice(-12)
+        .map((message) => `${message.side === 'me' ? 'ユーザー' : 'Zema'}: ${message.text}`)
+        .join('\n\n');
+      const estimatePrompt = tool
+        ? `担当Bot: ${tool.name}\n役割: ${roleFor(tool)}\n説明: ${tool.description}\n依頼: ${text}`
+        : conversation;
+      const estimateSystem = tool
+        ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
+        : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。';
+      setChatLoading(true);
+      setError('');
+      try {
+        const parsedBudget = remoteBudgetInput.trim() && remoteCurrency
+          ? parseCurrencyInputToMinor(remoteBudgetInput, remoteCurrency)
+          : null;
+        if (remoteBudgetInput.trim() && parsedBudget === null)
+          throw new Error(`${remoteCurrency || '選択した通貨'}の上限額を確認してください。`);
+        const result = await remoteAiTextRequest<RemoteAiEstimateResult>('/api/llm/estimate', 'POST', {
+          provider: textProvider,
+          model: providerRouting.textGenerationModel || undefined,
+          system: estimateSystem,
+          prompt: estimatePrompt.slice(-20_000),
+          maxOutputTokens: 1_200,
+          currency: remoteCurrency || undefined,
+          maximumBudgetMinor: parsedBudget ?? undefined,
+        });
+        if (!result.estimate) throw new Error('料金見積を確認できませんでした。状態を更新してください。');
+        setRemoteEstimate(result);
+        setRemoteCurrency(result.estimate.currency);
+        setRemoteCurrencyOptions([]);
+        setError('料金上限を確認しました。現在は見積のみで、Providerへの実行は未接続です。');
+      } catch (reason) {
+        setRemoteEstimate(null);
+        if (reason instanceof RemoteAiTextClientError) {
+          if (reason.status === 401) setNeedsSignin(true);
+          if (reason.code === 'RATE_CARD_CURRENCY_REQUIRED') setRemoteCurrencyOptions(reason.currencies);
+        }
+        setError(reason instanceof Error ? reason.message : 'クラウドAIの料金見積を取得できませんでした。');
+      } finally {
+        setChatLoading(false);
+      }
       return;
     }
+    setRemoteEstimate(null);
     setDraft('');
     setError('');
     setOutcome(null);
@@ -830,7 +901,7 @@ export default function SkyChatWorkspace() {
             ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
             : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。',
           prompt: selectedToolPrompt.slice(-20_000),
-          consent: remoteTextProvider && remoteConsent,
+          consent: false,
         }),
         signal: controller.signal,
       }).then(async (response) => {
@@ -866,11 +937,9 @@ export default function SkyChatWorkspace() {
           chatAbortRef.current = null;
           setChatLoading(false);
         }
-        setRemoteConsent(false);
       });
     } else {
       setChatLoading(false);
-      setRemoteConsent(false);
     }
     if (toolId) {
       setWorkflowStatus('ready');
@@ -1118,7 +1187,7 @@ export default function SkyChatWorkspace() {
                 </div>
               )}
             </section>
-            <Workbench embedded />
+            <Workbench embedded cloudDraft={cloudWorkDraft} />
           </section>
         ) : needsSignin ? (
           <div className="sky-chat-centered">
@@ -1442,16 +1511,67 @@ export default function SkyChatWorkspace() {
                   }
                   placeholder={selectedTool ? 'このツールでやりたいことを入力…' : '何を進めたいですか？'}
                 />
-                <button disabled={!draft.trim() || chatLoading} aria-label="送信">
+                <button disabled={!draft.trim() || chatLoading || Boolean(remoteBudgetInput.trim() && remoteCurrency && parseCurrencyInputToMinor(remoteBudgetInput, remoteCurrency) === null)} aria-label={remoteTextProvider ? '料金を見積もる' : '送信'}>
                   <Send size={18} />
                 </button>
               </div>
               {chatLoading && <output className="zema-thinking">Zemaが返答を考えています…</output>}
               {remoteTextProvider && (
-                <label className="zema-remote-consent">
-                  <input type="checkbox" checked={remoteConsent} onChange={(event) => setRemoteConsent(event.target.checked)} />
-                  <span>会話を{textProviderDefinition.name}へ送ることを今回だけ許可する</span>
-                </label>
+                <section className="zema-remote-consent" aria-live="polite">
+                  <p>クラウドAIの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
+                  {remoteEstimate && (
+                    <dl>
+                      <div><dt>最大費用</dt><dd>{formatCurrencyMinor(remoteEstimate.estimate.maximumChargeMinor, remoteEstimate.estimate.currency)}</dd></div>
+                      <div><dt>入力上限</dt><dd>{remoteEstimate.estimate.inputTokenUpperBound.toLocaleString('ja-JP')} token相当（UTF-8上限方式）</dd></div>
+                      <div><dt>出力上限</dt><dd>{remoteEstimate.estimate.outputTokenLimit.toLocaleString('ja-JP')} tokens</dd></div>
+                      <div><dt>料金版</dt><dd>{remoteEstimate.estimate.pricingVersion}</dd></div>
+                      <div><dt>見積期限</dt><dd>{new Date(remoteEstimate.estimate.expiresAt).toLocaleString('ja-JP')}</dd></div>
+                      <div><dt>上限確認</dt><dd>{remoteEstimate.userCapMinor === null ? '未設定' : remoteEstimate.withinUserCap ? '指定上限内' : '指定上限を超過'}</dd></div>
+                      <div><dt>出典</dt><dd><a href={remoteEstimate.rateSource} target="_blank" rel="noreferrer">{remoteEstimate.cardId} · 料金情報</a></dd></div>
+                    </dl>
+                  )}
+                  {remoteCurrency && (
+                    <label>この依頼の支出上限（{remoteCurrency}）
+                      <input
+                        type="number"
+                        min="0"
+                        step={remoteCurrency === 'JPY' || remoteCurrency === 'KRW' ? '1' : '0.01'}
+                        inputMode="decimal"
+                        value={remoteBudgetInput}
+                        onChange={(event) => {
+                          setRemoteBudgetInput(event.target.value);
+                          setRemoteEstimate(null);
+                        }}
+                        aria-label={`支出上限 ${remoteCurrency}`}
+                      />
+                    </label>
+                  )}
+                  {remoteCurrencyOptions.length > 1 && (
+                    <label>見積通貨
+                      <select value={remoteCurrency} onChange={(event) => {
+                        setRemoteCurrency(event.target.value);
+                        setRemoteBudgetInput('');
+                        setRemoteEstimate(null);
+                      }}>
+                        <option value="">選択してください</option>
+                        {remoteCurrencyOptions.map((currency) => <option key={currency} value={currency}>{currency}</option>)}
+                      </select>
+                    </label>
+                  )}
+                  {remoteCurrency && remoteBudgetInput &&
+                    parseCurrencyInputToMinor(remoteBudgetInput, remoteCurrency) === null && (
+                      <p role="alert">{remoteCurrency}の金額形式を確認してください。</p>
+                    )}
+                  {remoteCurrency && <p>入力した上限はこの依頼の見積判定にのみ使います。実行承認や残高予約には使われず、クラウド実行は引き続き無効です。</p>}
+                  {textProvider === 'openai' && <button type="button" disabled={chatLoading || !draft.trim()} onClick={() => {
+                    setCloudWorkDraft({
+                      prompt: draft.trim(), currency: remoteCurrency,
+                      maximumBudgetInput: remoteBudgetInput,
+                      model: providerRouting.textGenerationModel?.trim() || undefined,
+                    });
+                    router.push('/chat?view=work');
+                  }}>この依頼文を仕事へ引き継ぐ <ArrowRight size={16} aria-hidden="true" /></button>}
+                </section>
               )}
               <details className="zema-model-settings">
                 <summary>会話モデル: {textProviderDefinition.name}</summary>

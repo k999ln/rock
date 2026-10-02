@@ -244,8 +244,10 @@ async function sha256Hex(value: string) {
 }
 export default function Workbench({
   embedded = false,
+  cloudDraft,
 }: {
   embedded?: boolean;
+  cloudDraft?: { prompt: string; currency: string; maximumBudgetInput: string; model?: string } | null;
 }) {
   const [jobs, setJobs] = useState<WorkJob[]>([]),
     [selectedId, setSelectedId] = useState('');
@@ -271,10 +273,11 @@ export default function Workbench({
     continueWhileDeviceOffline: false,
   });
   const [delegationReview, setDelegationReview] = useState<DelegationReview | null>(null);
-  const [remoteTextPrompt, setRemoteTextPrompt] = useState('');
-  const [remoteTextCurrency, setRemoteTextCurrency] = useState('USD');
+  const [remoteTextPrompt, setRemoteTextPrompt] = useState(cloudDraft?.prompt ?? '');
+  const [remoteTextModel] = useState(cloudDraft?.model ?? '');
+  const [remoteTextCurrency, setRemoteTextCurrency] = useState(cloudDraft?.currency || 'USD');
   const [remoteTextCurrencyOptions, setRemoteTextCurrencyOptions] = useState<string[]>([]);
-  const [remoteTextCapMinor, setRemoteTextCapMinor] = useState('');
+  const [remoteTextCapMinor, setRemoteTextCapMinor] = useState(cloudDraft?.maximumBudgetInput ?? '');
   const [remoteTextParentCapMinor, setRemoteTextParentCapMinor] = useState('');
   const [remoteTextSaveResult, setRemoteTextSaveResult] = useState(false);
   const [remoteTextEstimate, setRemoteTextEstimate] = useState<RemoteTextEstimate | null>(null);
@@ -283,7 +286,8 @@ export default function Workbench({
   const [remoteTextError, setRemoteTextError] = useState('');
   const [remoteTextNeedsSignin, setRemoteTextNeedsSignin] = useState(false);
   const [remoteTextBusy, setRemoteTextBusy] = useState(false);
-  const [remoteTextResult, setRemoteTextResult] = useState('');
+  const [remoteTextResult, setRemoteTextResult] = useState<{ executionId: string; text: string } | null>(null);
+  const [remoteTextDeleteId, setRemoteTextDeleteId] = useState<string | null>(null);
   const remoteTextSubmission = useRef<{ fingerprint: string; requestId: string } | null>(null);
   const delegationSubmission = useRef<{ fingerprint: string; request: DelegationRequest } | null>(null);
   const selectedIdRef = useRef('');
@@ -386,7 +390,7 @@ export default function Workbench({
     if (cause instanceof RemoteAiTextClientError && cause.status === 401) {
       setRemoteTextNeedsSignin(true);
       setRemoteTextExecutions([]);
-      setRemoteTextResult('');
+      setRemoteTextResult(null);
     }
   }, []);
   const refreshRemoteText = useCallback(async (parentJobId: string) => {
@@ -446,10 +450,10 @@ export default function Workbench({
     const requestId = remoteTextSubmission.current.requestId;
     setRemoteTextBusy(true);
     setRemoteTextError('');
-    setRemoteTextResult('');
+    setRemoteTextResult(null);
     try {
       const estimateData = await remoteAiTextRequest<RemoteTextEstimate>('/api/llm/estimate', 'POST', {
-        provider: 'openai', prompt: remoteTextPrompt.trim(), maxOutputTokens: 1200, currency, maximumBudgetMinor: capMinor,
+        provider: 'openai', model: remoteTextModel || undefined, prompt: remoteTextPrompt.trim(), maxOutputTokens: 1200, currency, maximumBudgetMinor: capMinor,
       });
       if (selectedIdRef.current !== parentJobId) return;
       if (!estimateData.estimate) throw new Error('クラウドAIの料金見積を確認できませんでした。');
@@ -479,7 +483,7 @@ export default function Workbench({
     const prompt = remoteTextPrompt.trim();
     setRemoteTextBusy(true);
     setRemoteTextError('');
-    setRemoteTextResult('');
+    setRemoteTextResult(null);
     try {
       const requestHash = await remoteAiTextRequestDigest({
         model: execution.quote.ceiling.modelId, prompt, maxOutputTokens: execution.quote.ceiling.outputTokenLimit,
@@ -498,7 +502,7 @@ export default function Workbench({
           quoteId: execution.id, approvalDigest: execution.approvalDigest, consent: true }, 120000);
       if (selectedIdRef.current !== parentJobId) return;
       if (result.execution) setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? result.execution! : item));
-      if (result.text) setRemoteTextResult(result.text);
+      if (result.text) setRemoteTextResult({ executionId: execution.id, text: result.text });
       await refreshRemoteText(parentJobId);
       await refreshDelegations(parentJobId);
     } catch (cause) {
@@ -524,6 +528,36 @@ export default function Workbench({
       if (!(cause instanceof RemoteAiTextClientError && cause.status === 401))
         await refreshRemoteText(execution.parentJobId);
     } finally { setRemoteTextBusy(false); }
+  }
+  function downloadRemoteText(text: string, executionId: string) {
+    const url = URL.createObjectURL(new Blob([text], { type: 'text/markdown;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `sky-ai-${executionId.replace(/[^A-Za-z0-9._-]/g, '-')}.md`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  async function deleteRemoteTextResult(execution: RemoteTextExecution) {
+    const parentJobId = execution.parentJobId;
+    if (selectedIdRef.current !== parentJobId || execution.state !== 'completed') return;
+    setRemoteTextBusy(true);
+    setRemoteTextError('');
+    try {
+      const data = await remoteAiTextRequest<{ execution: RemoteTextExecution; resultDeleted: boolean }>(
+        `/api/llm/quotes/${encodeURIComponent(execution.id)}`, 'DELETE');
+      if (selectedIdRef.current !== parentJobId) return;
+      if (!data.resultDeleted || data.execution.id !== execution.id || data.execution.parentJobId !== parentJobId || data.execution.resultText !== null)
+        throw new Error('保存した回答の削除を確認できませんでした。状態を更新してください。');
+      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? data.execution : item));
+      setRemoteTextResult((current) => current?.executionId === execution.id ? null : current);
+    } catch (cause) {
+      remoteTextFailure(cause, parentJobId);
+      // GET reconciliation only; do not repeat an uncertain DELETE.
+      if (!(cause instanceof RemoteAiTextClientError && cause.status === 401))
+        await refreshRemoteText(parentJobId);
+    } finally { setRemoteTextBusy(false); setRemoteTextDeleteId(null); }
   }
   useEffect(() => {
     if (!selectedId) return;
@@ -565,13 +599,14 @@ export default function Workbench({
     selectedIdRef.current = id;
     setRemoteTextExecutionAvailable(false);
     setRemoteTextNeedsSignin(false);
+    setRemoteTextDeleteId(null);
     setSelectedId(id);
     setArtifactDocuments({});
     setDelegationBudgetPool(null);
     setDelegationBudgetReservations([]);
     void refreshDelegations(id);
     setRemoteTextExecutions([]);
-    setRemoteTextResult('');
+    setRemoteTextResult(null);
     setRemoteTextError('');
     setRemoteTextEstimate(null);
     void refreshRemoteText(id);
@@ -587,6 +622,7 @@ export default function Workbench({
   const pendingRemoteTextAnchor = remoteTextExecutions.find((item) => ['quoted', 'reserved', 'sending', 'unreconciled', 'completed'].includes(item.state));
   const remoteTextBudgetCurrency = delegationBudgetPool?.currency ?? pendingRemoteTextAnchor?.quote.ceiling.currency ?? null;
   const remoteTextBudgetLimit = delegationBudgetPool?.budgetLimitMinor ?? pendingRemoteTextAnchor?.parentBudgetLimitMinor ?? null;
+  const remoteTextDeleteTarget = remoteTextExecutions.find((item) => item.id === remoteTextDeleteId && item.parentJobId === selectedId && item.state === 'completed' && item.resultText !== null);
   const currentStep = selected?.steps.find((step) => !step.passed);
   const openRunner = selected?.steps.find((step) => step.id === runnerStep);
   const locked = busy || running || pending !== null || loading;
@@ -891,6 +927,7 @@ export default function Workbench({
             </button>
           </div>
         )}
+        {cloudDraft && <p className="work-notice">会話の依頼文を引き継ぎました。仕事を選ぶか作成して、見積もりを確認してください。実行はまだ始まりません。</p>}
         <section className="work-create" aria-label="新しい仕事">
           <label>
             仕事の名前
@@ -1013,7 +1050,7 @@ export default function Workbench({
                 <section className="work-delegations" aria-labelledby="work-delegations-title">
                   <h3 id="work-delegations-title">Agent委任</h3>
                   {delegationBudgetPool && (
-                    <p>親jobの支出上限: {formatCurrencyMinor(delegationBudgetPool.budgetLimitMinor, delegationBudgetPool.currency)} · 予約中 {formatCurrencyMinor(delegationBudgetPool.reservedMinor, delegationBudgetPool.currency)} · Provider署名receipt照合済み {formatCurrencyMinor(delegationBudgetPool.settledMinor, delegationBudgetPool.currency)}</p>
+                    <p>親jobの支出上限: {formatCurrencyMinor(delegationBudgetPool.budgetLimitMinor, delegationBudgetPool.currency)} · 予約中 {formatCurrencyMinor(delegationBudgetPool.reservedMinor, delegationBudgetPool.currency)} · 利用量確定記録（請求照合前） {formatCurrencyMinor(delegationBudgetPool.settledMinor, delegationBudgetPool.currency)}</p>
                   )}
                   {['active', 'review'].includes(selected.status) && !delegationReview && (
                     <form
@@ -1234,7 +1271,7 @@ export default function Workbench({
                   <div className="work-delegations-heading">
                     <div>
                       <h3 id="work-cloud-text-title">クラウドAIへ依頼</h3>
-                      <p>OpenAI text-only。依頼をこの親jobの上限へ束縛し、見積保存後に利用者が個別承認します。</p>
+                      <p>OpenAI{remoteTextModel ? ` · ${remoteTextModel}` : ''}。見積もりと上限を確認し、実行前に承認します。</p>
                     </div>
                     <button type="button" disabled={remoteTextBusy || !selected.id} onClick={() => void refreshRemoteText(selected.id)}>
                       <RefreshCw size={14} /> 状態を更新
@@ -1290,7 +1327,13 @@ export default function Workbench({
                         <ul>{execution.price.items.map((item) => <li key={item.category}>{item.category}: {item.tokens.toLocaleString('ja-JP')} tokens · {item.rateMinorMicrosPerMillionTokens.toLocaleString('ja-JP')} minor-unit micro / 1M tokens</li>)}</ul>
                         <small>これはProvider利用量に基づく計算記録であり、請求書・決済照合済みを意味しません。</small>
                       </section>}
-                      {execution.resultText && <details><summary>保存済み成果を表示</summary><pre>{execution.resultText}</pre></details>}
+                      {execution.resultText && <>
+                        <details><summary>保存した回答を表示</summary><pre>{execution.resultText}</pre></details>
+                        <div className="work-delegation-actions">
+                          <a href={`/api/llm/quotes/${encodeURIComponent(execution.id)}?download=1`} download>回答をダウンロード</a>
+                          {execution.state === 'completed' && <button type="button" disabled={remoteTextBusy || remoteTextNeedsSignin} onClick={() => setRemoteTextDeleteId(execution.id)}>保存した回答を削除</button>}
+                        </div>
+                      </>}
                       {execution.state === 'quoted' && <div className="work-delegation-actions">
                         {remoteTextExecutionAvailable && <button type="button" disabled={remoteTextBusy || !remoteTextPrompt.trim()} onClick={() => void runRemoteText(execution)}>この上限で承認して実行</button>}
                         <button type="button" disabled={remoteTextBusy} onClick={() => void cancelRemoteTextQuote(execution)}>見積を取り消す</button>
@@ -1298,7 +1341,9 @@ export default function Workbench({
                       {execution.state === 'quoted' && !remoteTextPrompt.trim() && <small>再接続後に実行する場合は、見積時と同じ依頼文を入力してください。内容が一致しない場合は実行しません。</small>}
                     </article>)}
                   </div>}
-                  {remoteTextResult && <section className="work-delegation-artifact" aria-label="Cloud LLMの成果"><strong>Cloud LLMの回答</strong><pre>{remoteTextResult}</pre></section>}
+                  {remoteTextResult && <section className="work-delegation-artifact" aria-label="クラウドAIの回答"><strong>クラウドAIの回答</strong><pre>{remoteTextResult.text}</pre>
+                    <button type="button" onClick={() => downloadRemoteText(remoteTextResult.text, remoteTextResult.executionId)}>回答をダウンロード</button>
+                  </section>}
                 </section>
                 {selected.status === 'active' && currentStep && (
                   <button
@@ -1396,6 +1441,19 @@ export default function Workbench({
           原稿とファイルは端末内で処理されます。サンプルは手順を進めません。履歴は本人の端末から報告された処理結果で、売上・送信・外部納品の実績には含めません。
         </p>
       </div>
+      <Dialog open={Boolean(remoteTextDeleteTarget)} onOpenChange={(open) => { if (!open && !remoteTextBusy) setRemoteTextDeleteId(null); }}>
+        <DialogContent>
+          <DialogTitle>保存した回答を削除しますか？</DialogTitle>
+          <DialogDescription>回答本文だけを削除します。元に戻せません。実行状態と利用明細は残ります。必要な回答は先にダウンロードしてください。</DialogDescription>
+          {remoteTextDeleteTarget && <>
+            <p>{remoteTextDeleteTarget.quote.ceiling.modelId} · {new Date(remoteTextDeleteTarget.createdAt).toLocaleString('ja-JP')} · {remoteTextDeleteTarget.id.slice(0, 8)}</p>
+            <div className="work-delegation-actions">
+              <button type="button" disabled={remoteTextBusy} onClick={() => setRemoteTextDeleteId(null)}>戻る</button>
+              <button type="button" className="work-primary" disabled={remoteTextBusy} onClick={() => void deleteRemoteTextResult(remoteTextDeleteTarget)}>{remoteTextBusy ? '削除を確認中…' : '回答本文を削除する'}</button>
+            </div>
+          </>}
+        </DialogContent>
+      </Dialog>
       <Dialog open={deviceOpen} onOpenChange={setDeviceOpen}>
         <DialogContent className="market-wide-dialog">
           <DialogTitle>PC接続</DialogTitle>

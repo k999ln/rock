@@ -24,6 +24,17 @@ export async function GET(request: Request, context: Context) {
     if (!scoped) return missingRockstarServiceScope('RockstarOS');
     const row = await store.expireBeforeSend(owner, id);
     if (!row) throw new RemoteAiTextStoreError('NOT_FOUND');
+    if (new URL(request.url).searchParams.get('download') === '1') {
+      if (row.state !== 'completed' || row.resultText === null)
+        throw new RemoteAiTextStoreError('NOT_FOUND');
+      return new Response(row.resultText, { headers: {
+        'Content-Type': 'text/markdown; charset=utf-8',
+        'Content-Disposition': `attachment; filename="sky-ai-${row.id.replace(/[^A-Za-z0-9._-]/g, '-')}.md"`,
+        'Cache-Control': 'private, no-store',
+        'X-Content-Type-Options': 'nosniff',
+        'Referrer-Policy': 'no-referrer',
+      } });
+    }
     return remoteAiTextJson({ execution: remoteAiTextPublicRecord(row), executionAvailable: remoteAiTextExecutionAvailable(
       { SKY_REMOTE_LLM_ENABLED: runtime.SKY_REMOTE_LLM_ENABLED, OPENAI_API_KEY: runtime.OPENAI_API_KEY }) });
   } catch (error) { return remoteAiTextHttpError(error); }

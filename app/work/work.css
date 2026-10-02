@@ -378,6 +378,7 @@
 .work-delegation-title span,
 .work-delegation small { color: #596b82; font-size: 0.82rem; }
 .work-delegation-actions { justify-content: start; flex-wrap: wrap; }
+.work-delegation-actions a,
 .work-delegation-actions button,
 .work-delegations-heading button {
   display: inline-flex;

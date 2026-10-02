@@ -1,3 +1,7 @@
+## 2026-10-02 — Sky保存回答と会話引継ぎのローカル受入
+
+WEB04/ROCK: 会話の現在の依頼文だけをcomponent memoryで仕事画面へ引き継ぎ、仕事選択・見積・承認は本人の操作とする。URL/新しいbrowser storage/D1へ依頼本文を追加保存せず、reloadで未送信の下書きは消える。保存済み回答は本人認証付きMarkdown attachment（private/no-store）で取得でき、未保存/削除済み/別本人は拒否する。本文削除は対象と不可逆性をdialogで確認し、state・usage・予算台帳は保持する。共有予算の確定額は請求書照合済みと表示しない。ローカルbuilt Siteの合成アカウントで引継ぎ/再読込/削除dialog取消/135byteのダウンロード一致を確認、Worker/D1で24項目合格。実AI/本番ownerログイン/Apple Payは未受入、追加課金なし。正本の全verifyと同一Site公開は次の検証。
+
 ## 2026-10-02 — Skyクラウド依頼の準備と履歴復帰
 
 WEB04/ROCK: 同じSkyのブラウザ仕事画面へ見積履歴・仕事URL復元・認証期限切れ案内を同期。既存auth/Stripe/各Toolを保持し、料金表/quoteの追加schemaだけを配備対象にする。関連30試験、Site Worker/D1更新15項目、型、product lint、build合格。正本full verifyは663 Node/19 Fashion/858 Worker-D1合格。v25公開はnative migrationの複文trigger分割でincomplete inputエラー、Worker公開未完了。新規tableの部分作成を保持し、schema-upgradesと起動時静的JSONの全guard適用へ一本化。旧SQLを含む成果物の再利用でv26も失敗したため、再ビルドしarchive内のmigrationを2既存fileだけへ確認。部分migration回復15項目合格。新source版で再配備する。実Provider/請求/本人OAuth/Apple Pay/OS連携は別受入で、実行gateはfalse。
