@@ -763,5 +763,18 @@
     "catalogCount": 34,
     "classificationIsLiveAcceptance": false,
     "deploymentAcceptance": false
+  },
+  "skyIntegratedAcceptance": {
+    "document": "docs/sky-launch-design.md",
+    "implementation": [
+      "scripts/sky-launch-validation.mjs",
+      "scripts/check-sky-launch.mjs"
+    ],
+    "test": "tests/sky-launch-validation.test.mjs",
+    "finalStages": [
+      "paid",
+      "clients"
+    ],
+    "actualCustomerJourneyAccepted": false
   }
 }

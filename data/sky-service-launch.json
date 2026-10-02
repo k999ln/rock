@@ -1,6 +1,6 @@
 {
   "schema": "sky-service-launch/1",
-  "evaluatedAt": "2026-10-01",
+  "evaluatedAt": "2026-10-02",
   "design": "docs/sky-launch-design.md",
   "liveUrl": "https://sky-marketplace.noellesugar1.chatgpt.site/sky/marketplace",
   "sourceGithubHead": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
@@ -14,6 +14,10 @@
     ],
     "clients": [
       "basic"
+    ],
+    "complete": [
+      "paid",
+      "clients"
     ]
   },
   "completeLaunchClaim": false,
@@ -21,18 +25,28 @@
     {
       "id": "public-entry",
       "stage": "basic",
-      "status": "passed",
+      "status": "in_progress",
       "owner": "ROCK",
       "acceptance": "公開URLとSky manifest・本人サインイン入口を確認",
       "evidence": [
         "data/project-status.json"
       ],
-      "environment": "production-public-entry-only"
+      "environment": "production-public-entry-only",
+      "historicalAcceptance": {
+        "status": "passed",
+        "evaluatedAt": "2026-10-01",
+        "environment": "production-public-entry-only",
+        "evidence": [
+          "data/project-status.json"
+        ],
+        "scope": "Historical partial observation, not same-candidate integrated acceptance"
+      },
+      "reason": "同一候補のsource/build/deployment/versionを持つ実受入記録が未取得。過去の部分確認は保持する。"
     },
     {
       "id": "runtime-prerequisites",
       "stage": "basic",
-      "status": "passed",
+      "status": "in_progress",
       "owner": "ROCK",
       "acceptance": "設定なし・DB不達をカードへ正確に反映し、秘密を返さない",
       "evidence": [
@@ -40,7 +54,19 @@
         "scripts/check-work-api.mjs",
         "docs/sky-launch-operations.md"
       ],
-      "environment": "production-readback-and-local-fixture"
+      "environment": "production-readback-and-local-fixture",
+      "historicalAcceptance": {
+        "status": "passed",
+        "evaluatedAt": "2026-10-01",
+        "environment": "production-readback-and-local-fixture",
+        "evidence": [
+          "tests/sky-service-status.test.mjs",
+          "scripts/check-work-api.mjs",
+          "docs/sky-launch-operations.md"
+        ],
+        "scope": "Historical partial observation, not same-candidate integrated acceptance"
+      },
+      "reason": "同一候補のsource/build/deployment/versionを持つ実受入記録が未取得。過去の部分確認は保持する。"
     },
     {
       "id": "authenticated-first-use",
@@ -154,7 +180,9 @@
   "notes": [
     "コードの試験とprovider sandboxと本番受入を分離する",
     "候補22件・eSIM・native OS製造を基本Webローンチの必須条件にしない",
-    "外部AI・決済のruntime設定は公開Skyで未設定だった。秘密値をこの記録に入れない"
+    "外部AI・決済のruntime設定は公開Skyで未設定だった。秘密値をこの記録に入れない",
+    "2026-10-02の利用者指定: 最終受入はWeb/OS/他アプリと有料市場を同一候補で照合する。旧Webのみのcomplete判定を最終完成へ転用しない。"
   ],
-  "completeLaunchScope": "standalone-web-paid-marketplace"
+  "completeLaunchScope": "web-os-app-paid-marketplace",
+  "candidate": null
 }

@@ -1582,3 +1582,7 @@ Workers Vitestの管理下にある制御service-binding Agent Card／A2A 1.0 te
 ## Sky公開候補の実行範囲と表示の整合
 
 34件のcatalogに静的な実装範囲を定義。PAPER市場とメルカリ準備をブラウザ内の実処理と一括表示しない。候補の定型テンプレートと接続計画を純粋関数へ分離し、入力保持・空入力拒否・未接続表示を検証する。接続許可リストの検査は文字列の部分抽出から既存exportの集合照合へ修正し、権限を増やさず誤判定を解消。全体公開gateと親taskの未完了、既存158 taskの状態を維持。本人認証・実Provider・実PC・同一版の配備/復旧は別の未受入条件。
+
+## Skyの同一候補の受入判定とR1限定統合
+
+保存済みR1から旧Sites監査の固定fixtureと負例2件だけを統合。現行lockの検査件数と本番validator/設定は保持し、35件合格。Skyの最終stageは既存paidとclientsの両方を必要とし、passedの実受入JSONを同一source/build/deployment/versionへ固定する。異なる候補・模擬実行・環境差・gate欠落を拒否する。旧部分合格2件はhistoricalAcceptanceへ保持し、現行候補のgateは未完了。r46と既存158 taskの状態は変更しない。

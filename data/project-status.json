@@ -3402,5 +3402,16 @@
     "classificationIsLiveAcceptance": false,
     "productionOwnerAcceptance": false,
     "evidence": "docs/evidence/sky-tool-execution-boundaries.json"
+  },
+  "skyIntegratedAcceptancePreparation": {
+    "stage": "local_validator_verified",
+    "runtimePublished": false,
+    "sameCandidateAcceptance": false,
+    "historicalPartialObservationsPreserved": 2,
+    "finalStages": [
+      "paid",
+      "clients"
+    ],
+    "evidence": "tests/sky-launch-validation.test.mjs"
   }
 }
