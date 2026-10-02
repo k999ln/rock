@@ -288,8 +288,9 @@ int main(int argc, char **argv)
         time_t clock_tick = ui.page == PAGE_AUTH_PIN || ui.page == PAGE_ATM_STATUS ||
                            ui.page == PAGE_GAME_PIN || ui.page == PAGE_GAME_QUOTE ? wall_now : wall_now / 60;
         if (clock_tick != last_clock_tick) { dirty = 1; last_clock_tick = clock_tick; }
-        if (ui.page == PAGE_SYSTEM && ui.scroll > 150 && now / 100 != last_spider_frame) {
-            dirty = 1; last_spider_frame = now / 100;
+        if (now / 50 != last_spider_frame) {
+            if (rock_ui_spider_tick(&ui, now)) dirty = 1;
+            last_spider_frame = now / 50;
         }
         if (dirty) {
             rock_ui_draw(&ui);
@@ -303,7 +304,7 @@ int main(int argc, char **argv)
         for (int i = 0; i < count; i++) polls[i] = (struct pollfd){ .fd = inputs[i].fd, .events = POLLIN, .revents = 0 };
         /* Input wakes poll immediately. Short polling is only needed while an
          * owned background response is outstanding. */
-        int ready = poll(polls, (nfds_t)count, ui.busy ? 16 : ui.page == PAGE_SYSTEM && ui.scroll > 150 ? 100 : 250);
+        int ready = poll(polls, (nfds_t)count, ui.busy ? 16 : ui.spider.active ? 50 : 250);
         if (ready < 0 && errno != EINTR) { perror("rock-ui: input poll"); goto done; }
         if (ready >= 0) rock_ui_health_after_poll(&health);
         if (ready <= 0) continue;

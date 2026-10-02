@@ -172,6 +172,82 @@ class SensitiveGuardTests(unittest.TestCase):
             self.assertFalse(watcher.status()['workerAlive'])
             self.assertFalse(watcher.status()['fresh'])
 
+    def test_agent_tracks_real_scan_detection_denial_and_monotonic_expiry(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'draft.txt'
+            watcher = guard.SensitiveGuard(directory)
+            self.addCleanup(watcher.close)
+            self.assertEqual('starting', watcher.status()['agent']['state'])
+            self.assertIsNone(watcher.status()['agent']['lastAction'])
+            observed = []
+            scan = watcher._scan_files
+            def first_scan():
+                observed.append(watcher.status()['agent']['state'])
+                return scan()
+            with patch.object(watcher, '_scan_files', side_effect=first_scan):
+                watcher.start()
+            self.assertEqual(['starting'], observed)
+            self.assertEqual('watching', watcher.status()['agent']['state'])
+            path.write_text('API_KEY="synthetic-agent-fixture"')
+            watcher._scan()
+            self.assertEqual('sensitive_data_detected', watcher.status()['agent']['state'])
+            with self.assertRaisesRegex(ValueError, '^SENSITIVE_DATA_BLOCKED$'):
+                watcher.inspect({'text': 'person@example.test'}, 'mcp.submit')
+            current = watcher.status()['agent']
+            self.assertEqual('recent_block', current['state'])
+            self.assertEqual({'action', 'boundary', 'count', 'kinds', 'time'}, set(current['lastAction']))
+            self.assertEqual('mcp.submit', current['lastAction']['boundary'])
+            self.assertEqual(['personal'], current['lastAction']['kinds'])
+            self.assertEqual(1, current['lastAction']['count'])
+            watcher.inspect('A public message', 'mcp.submit')
+            with patch.object(guard.time, 'time', return_value=1):
+                self.assertEqual('recent_block', watcher.status()['agent']['state'])
+            with patch.object(guard.time, 'monotonic', return_value=watcher._last_block_monotonic + 31):
+                self.assertEqual('sensitive_data_detected', watcher.status()['agent']['state'])
+                self.assertEqual(current['lastAction'], watcher.status()['agent']['lastAction'])
+            path.unlink()
+            watcher._scan()
+            with patch.object(guard.time, 'monotonic', return_value=watcher._last_block_monotonic + 31):
+                self.assertEqual('watching', watcher.status()['agent']['state'])
+            encoded = json.dumps(watcher.status())
+            self.assertNotIn('synthetic-agent-fixture', encoded)
+            self.assertNotIn('person@example.test', encoded)
+            current['lastAction']['kinds'].clear()
+            self.assertEqual(['personal'], watcher.status()['agent']['lastAction']['kinds'])
+
+    def test_agent_unhealthy_worker_overrides_actual_recent_block(self):
+        with tempfile.TemporaryDirectory() as directory:
+            watcher = guard.SensitiveGuard(directory)
+            self.addCleanup(watcher.close)
+            watcher.start()
+            with self.assertRaises(ValueError):
+                watcher.inspect({'password': 'synthetic-agent-fixture'}, 'remote.send')
+            with patch.object(watcher.thread, 'is_alive', return_value=False):
+                self.assertEqual('unavailable', watcher.status()['agent']['state'])
+            watcher._last_success_monotonic = time.monotonic() - 91
+            self.assertEqual('unavailable', watcher.status()['agent']['state'])
+            with patch.object(watcher, '_scan_files', side_effect=OSError('private error text')):
+                watcher._scan()
+            self.assertEqual('unavailable', watcher.status()['agent']['state'])
+            self.assertNotIn('private error text', json.dumps(watcher.status()))
+            watcher.close()
+            self.assertEqual('stopped', watcher.status()['agent']['state'])
+            self.assertEqual('blocked', watcher.status()['agent']['lastAction']['action'])
+
+    def test_agent_action_uses_allowlisted_boundary_and_records_limit_denials(self):
+        with tempfile.TemporaryDirectory() as directory:
+            watcher = guard.SensitiveGuard(directory)
+            self.addCleanup(watcher.close)
+            watcher.start()
+            with self.assertRaises(ValueError):
+                watcher.inspect('x' * (guard.MAX_TEXT_LENGTH + 1), 'private-unrecognized-boundary')
+            action = watcher.status()['agent']['lastAction']
+            self.assertEqual('unclassified', action['boundary'])
+            self.assertEqual(0, action['count'])
+            self.assertEqual([], action['kinds'])
+            self.assertEqual('recent_block', watcher.status()['agent']['state'])
+            self.assertNotIn('private-unrecognized-boundary', json.dumps(watcher.status()))
+
     def wait_for(self, check):
         deadline = time.monotonic() + 3
         while time.monotonic() < deadline:

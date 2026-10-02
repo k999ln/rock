@@ -4,6 +4,10 @@
 
 主担当はSecurityのROCK。OS本体への同梱・起動監督まで実装対象とするが、変更後の同一image boot、Pixel実機、24時間連続運転は未受入。検出値を画面・記録へ出さず、未検査・停止・失敗を安全や稼働中と表示しない。任意アプリ・OS全体の通信の遮断、root権限、侵害防止の保証は追加しない。既存のRQ01〜RQ49、権限・本人承認、Operator Dock分離、Pixel/QEMU・署名・公開gateを維持する。
 
+同日の追加指示: 利用者が提示した[映像1](https://www.instagram.com/reel/DdhYiKdz-6t/)・[映像2](https://www.instagram.com/reel/DdmGyhRRQGi/)と[追加投稿](https://www.instagram.com/p/Dd97sTPjEu6/?img_index=2)を見た目だけの参照に、nativeのクモを細い発光関節脚、青い足先の輪、pink／cyanの小さなcoreで表現する改善を進める。実findingへの移動・囲みと、新しい実拒否counterへの短い反応を実装し、stale／dead／disconnected等では停止する。これは表示の改訂であり、検出実績・送信拒否・24時間運用の証拠を追加する指示ではない。前版`a7cfca3`の検証記録は保持し、改訂後の描画試験は別に記録する。
+
+同日の追加「セキュリティーエージェント」指定: クモに実際の監視・検査・拒否・報告の役割を割り当て、Platformの実worker状態、実finding、最新の実拒否に基づくAgent metadataとnative表示を接続する。役割付与は既存のUID・認証・固定範囲・対応送信経路を拡大せず、検出値を返さない。現在の表示先はnative security panelとし、OS全体のoverlayは未選択。役割追加のLinux source検証は直前のアニメーション検証と別記録し、OS boot・Pixel・24時間受入の未完了を維持する。
+
 ## 2026-09-27 Sky Marketの現行手数料
 
 Sky Marketは自動化ToolとLLMを掲載対象にし、登録・接続・公開・基本利用料は0円とする。検証済みTool売上のSky Market手数料は10%。外部決済、API、AIモデル、cloud等の第三者実費は別表示する。Provider、本人確認、返金、照合の受入前は請求・回収・払出しを有効化しない。旧8.88 USD案と0%の記載は過去の判断履歴・回帰資料であり、この現行方針を上書きしない。

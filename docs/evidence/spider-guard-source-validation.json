@@ -245,5 +245,413 @@
       "scope": "existing native UI suite log; final additional Spider renderer result recorded separately in nativeUi"
     }
   },
-  "interpretation": "The 129 Python checks ran as UID/GID 1002 in a network-disabled Linux container. This does not prove a RockstarOS image booted, Pixel installation, 24-hour protection, or same-SHA CI. Prior test counts are superseded, not added to these totals."
+  "interpretation": "The 129 Python checks ran as UID/GID 1002 in a network-disabled Linux container. This does not prove a RockstarOS image booted, Pixel installation, 24-hour protection, or same-SHA CI. Prior test counts are superseded, not added to these totals.",
+  "nativeAnimationRevisions": [
+    {
+      "id": "2026-10-02-native-animation-1",
+      "requestedAt": "2026-10-02",
+      "status": "source_renderer_validated_os_acceptance_pending",
+      "task": "SYS15",
+      "taskStatus": "in_progress",
+      "source": {
+        "baseCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+        "stateAtRevisionStart": "uncommitted_changes_in_progress",
+        "testedCommitSha": null,
+        "sourceHashesAtValidation": {
+          "scripts/review-native-pin-source.py": "d3400e024b00eef6c2c84597628898d090afc5e1f35751ae3a451ed5037a0928",
+          "systems/rock-star-os/os/ui/Makefile": "be75806ad3cc86e9b1ed95ceb55aee4a2d384b1e18cd3c3f1d0e49d6c1716b89",
+          "systems/rock-star-os/os/ui/main.c": "f1ec7aebd590a8c2ac8a61f3a4d0b0b4733106f9d3aa380b74ac1a67a9393619",
+          "systems/rock-star-os/os/ui/pin-readiness.json": "54401dc41ce12618ccac700afebfd4253d19d10e1fc42cd5c6e40b04e7b0eaad",
+          "systems/rock-star-os/os/ui/security-ui.inc": "0b22b027a68cedc34f5857347f741286ba9ff379c5b506c91b233767126c53ad",
+          "systems/rock-star-os/os/ui/spider-motion.c": "7cc9124378a56328ba28f0048302dd1a806cf45ce14cecddfa968dc726c15c1c",
+          "systems/rock-star-os/os/ui/spider-motion.h": "f300bcc7d325e04ff74cce747d910868e3a37c9352d6f0613046b60c5548a2ab",
+          "systems/rock-star-os/os/ui/test_ui.c": "6544aa2a457f32f8eb9db20f158e6483c93630cbdab156e39ce5a3049fae2758",
+          "systems/rock-star-os/os/ui/ui.h": "ebb6086d64c296676b20547ca5db493374ba82edbe9b5130a4d5b7c46b28d4c0",
+          "systems/rock-star-os/tests/test_ui_pin_source_profile.py": "941e37ff6a7ae7ef314ab4458213364b411bc52d23fbe5907770592743159670"
+        },
+        "previousSourceHashesPreserved": true,
+        "previous32HashesMatchBaseCommit": true,
+        "stateAtValidation": "uncommitted_working_tree_before_security_agent_role_addition",
+        "fileHashAlgorithm": "sha256",
+        "sameShaCiVerified": false,
+        "sourceHashScope": "Ten changed/new native renderer, PIN review script, test and source profile files at animation validation; excludes the later security-agent role addition."
+      },
+      "references": [
+        {
+          "url": "https://www.instagram.com/reel/DdhYiKdz-6t/",
+          "role": "user-provided visual reference"
+        },
+        {
+          "url": "https://www.instagram.com/reel/DdmGyhRRQGi/",
+          "role": "user-provided visual reference"
+        },
+        {
+          "url": "https://www.instagram.com/p/Dd97sTPjEu6/?img_index=2",
+          "role": "user-provided visual reference only; spider highlights text and links; no inferred implementation technology"
+        }
+      ],
+      "observedVisualDirection": "Thin luminous curved articulated feet with blue endpoint rings, a moving small square pink/cyan core, dark background and node graph.",
+      "requestedBehavior": [
+        "move toward real findings and encircle focused finding row",
+        "prioritize actual secret candidates",
+        "brief response only for a newly observed increase in actual blocked counter",
+        "do not replay historical initial counts, unchanged values or counter reset as new events",
+        "halt motion and responses on stale, dead, failed, missing or disconnected status",
+        "render at most three sanitized metadata findings with no IPC or outbound requests"
+      ],
+      "unchangedBoundary": [
+        "Platform UID 1002",
+        "owner status authorization",
+        "detector and monitoring scope",
+        "outbound rejection policy",
+        "no raw secret display"
+      ],
+      "validation": {
+        "environment": {
+          "os": "Ubuntu 24.04 Linux aarch64",
+          "python": "3.12.3",
+          "pillow": "10.2.0",
+          "network": "none",
+          "sourceMount": "read-only",
+          "nativeRendererUid": 1002,
+          "pinFixtureUid": 0
+        },
+        "nativeCBuild": {
+          "status": "passed",
+          "targets": [
+            "rock-ui",
+            "rock-ui-test"
+          ],
+          "compilerWarnings": "-Werror"
+        },
+        "rendererTests": {
+          "status": "passed",
+          "scope": "Full native UI suite plus deterministic controller/rendering tests, actual metadata targeting, newly increased counter response, initial/unchanged/reset counters, inactive and malformed health states, maximum three findings and no rendering IPC."
+        },
+        "visualInspection": {
+          "status": "passed",
+          "scope": "Root inspected synthetic native renderer frames 030 (blocked response) and 079 (patrol).",
+          "fixtureExport": {
+            "frames": 80,
+            "durationSeconds": 8,
+            "framesPerSecond": 10,
+            "activation": "ROCK_SPIDER_FRAMES opt-in in test binary only",
+            "runtimeDetectionEvidence": false,
+            "artifactOutsideRepository": "outputs/spider-guard-motion.gif",
+            "artifactPathReusedByLaterRevision": true,
+            "artifactProvenanceNote": "The later Security Agent revision regenerates this external preview path; the currently present GIF is not a byte-preserved artifact of this earlier animation stage."
+          }
+        },
+        "pinSourceBindingReview": {
+          "status": "passed",
+          "cause": "Native source hash bindings in the PIN readiness profile were stale; CI errors also existed at the baseline parent.",
+          "change": "Reviewed source hashes only, including security-ui.inc and spider-motion.c/h.",
+          "pixelDefinitionsChanged": false,
+          "rgbRoiThresholdsDeadlinesChanged": false,
+          "walletFrames": 14,
+          "atmFrames": 14,
+          "negativeActionRejections": 8,
+          "pinReadinessTestsPassed": 11,
+          "sourceProfileTestsPassed": 1,
+          "visualInspection": "Root and reviewer inspected real C Wallet/ATM masked PIN fixture frames.",
+          "githubCiRerun": false,
+          "osBoot": false
+        },
+        "webAndPythonRegression": {
+          "status": "not_rerun_for_animation_revision",
+          "priorNativePython129AndWeb49AreHistorical": true,
+          "typescriptSourceChanged": false
+        },
+        "fullVerify": {
+          "status": "failed_preexisting_baseline",
+          "command": "npm run verify",
+          "passedBeforeStop": [
+            "project:check",
+            "repository:check",
+            "version:check",
+            "schema:check",
+            "database:check",
+            "release:check",
+            "release:signing:check"
+          ],
+          "releaseSigningPublicFixtureTestsPassed": 64,
+          "stoppedAt": "scripts/check-product-baseline.mjs:1057",
+          "reason": "Previously reproduced baseline visual requirement mismatch.",
+          "laterGates": "not run in this invocation"
+        }
+      },
+      "priorEvidenceRule": "Top-level nativePython/nativeUi/webAndConnector/checks and source.fileHashes describe the initial implementation saved as a7cfca3; they are preserved historical evidence, not fresh validation of this renderer revision.",
+      "notVerified": [
+        "RockstarOS image build",
+        "same-image boot",
+        "QEMU acceptance",
+        "Pixel deployment",
+        "24-hour operation",
+        "production deployment"
+      ],
+      "currentSurface": "native security panel",
+      "globalOverlayScope": "not selected; user has not answered the surface question",
+      "logDigests": {
+        "work/spider-evidence/motion/renderer.log": {
+          "pathBase": "task-work",
+          "sha256": "a70de19544b431955a7ddd0331602022ddd5999ba8068e08a76af390cb5f0a82",
+          "bytes": 2733,
+          "tracked": false
+        },
+        "work/spider-evidence/motion/renderer-health-types.log": {
+          "pathBase": "task-work",
+          "sha256": "31e573dace71942b1243fa1952ea42d457161cbc79e4df900c0bd06ccd1d3b05",
+          "bytes": 2131,
+          "tracked": false
+        },
+        "work/spider-motion-verify.log": {
+          "pathBase": "task-work",
+          "sha256": "e6f7457fd698e6f9f92098787201a7517236f22034d5890f388e8f9634d8875b",
+          "bytes": 13922,
+          "tracked": false
+        },
+        "work/pin-review-linux/review.log": {
+          "pathBase": "repository",
+          "sha256": "aea2c57ea5cf40447cdd528fc1f51af3a05f9206e7c3a42d9d6931f66194cd4c",
+          "bytes": 1782,
+          "tracked": false
+        },
+        "work/pin-review-linux/unmodified-validation.log": {
+          "pathBase": "repository",
+          "sha256": "b7e05c3609288a92f663ec64dedc72c9ac7a835ef9894a6ea59822861de0c4f5",
+          "bytes": 3798,
+          "tracked": false
+        },
+        "work/pin-review-linux/evidence/review/review.json": {
+          "pathBase": "repository",
+          "sha256": "8922785d2b542a32c7422f2a91de4408e4742300ceef2dd092cc61788d260e4a",
+          "bytes": 3362,
+          "tracked": false
+        }
+      },
+      "validationBoundary": "These results precede the requested security-agent role addition; they do not validate that later change."
+    }
+  ],
+  "nativeSecurityAgentRevisions": [
+    {
+      "id": "2026-10-02-security-agent-role-1",
+      "requestedAt": "2026-10-02",
+      "status": "source_validated_os_acceptance_pending",
+      "task": "SYS15",
+      "taskStatus": "in_progress",
+      "userIntent": "Assign Spider the actual security-agent role for watching, inspecting, denying supported outgoing content and reporting real state.",
+      "source": {
+        "baseCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+        "testedCommitSha": null,
+        "sourceHashesAtValidation": {
+          "scripts/review-native-pin-source.py": "d3400e024b00eef6c2c84597628898d090afc5e1f35751ae3a451ed5037a0928",
+          "systems/rock-star-os/os/platform/sensitive_guard.py": "ef27a90fd471db5b99f11c52547ee4eecc387b2734bfc564a280fabb6b73b664",
+          "systems/rock-star-os/os/platform/service.py": "618d9f8205a34148bee9e6be5e8f45a3d271325898de564e2508ef4b5af654b4",
+          "systems/rock-star-os/os/ui/Makefile": "be75806ad3cc86e9b1ed95ceb55aee4a2d384b1e18cd3c3f1d0e49d6c1716b89",
+          "systems/rock-star-os/os/ui/main.c": "f1ec7aebd590a8c2ac8a61f3a4d0b0b4733106f9d3aa380b74ac1a67a9393619",
+          "systems/rock-star-os/os/ui/pin-readiness.json": "532738f4bae090e9c7f147b1f4252f30dbaaa37cd761b45e74f412f23aed035e",
+          "systems/rock-star-os/os/ui/security-ui.inc": "e5142f058d3f57433984905bc8018df8902e17bc374093b281aad8f1497531e3",
+          "systems/rock-star-os/os/ui/spider-motion.c": "7cc9124378a56328ba28f0048302dd1a806cf45ce14cecddfa968dc726c15c1c",
+          "systems/rock-star-os/os/ui/spider-motion.h": "f300bcc7d325e04ff74cce747d910868e3a37c9352d6f0613046b60c5548a2ab",
+          "systems/rock-star-os/os/ui/test_ui.c": "e4f077685478a3ef41bee3044e10df701f53e622f18dc9c3c16b965626a2cc67",
+          "systems/rock-star-os/os/ui/ui.h": "ebb6086d64c296676b20547ca5db493374ba82edbe9b5130a4d5b7c46b28d4c0",
+          "systems/rock-star-os/tests/test_os_security_guard_integration.py": "aabb0ef6b34d36128becda2d5b774bdc28ee6fad66c429e9dabd0a73ce700170",
+          "systems/rock-star-os/tests/test_sensitive_guard.py": "0de60bdbbb1d6f47a0559538d01b8765a66e5db6460b710d0fd7b08b6ed7fd9a",
+          "systems/rock-star-os/tests/test_ui_pin_source_profile.py": "941e37ff6a7ae7ef314ab4458213364b411bc52d23fbe5907770592743159670"
+        },
+        "stateAtValidation": "uncommitted_working_tree",
+        "sameShaCiVerified": false,
+        "remoteMainUpdated": false,
+        "fileHashAlgorithm": "sha256",
+        "fileHashSelection": "Changed tracked plus untracked production/test/config files relative to baseCommit; excludes docs, root data and generated ZIP."
+      },
+      "contract": {
+        "id": "spider",
+        "role": "security",
+        "state": "derived from real worker liveness, freshness and findings",
+        "lastAction": {
+          "initial": null,
+          "action": "blocked",
+          "boundaries": [
+            "mcp.prepare",
+            "mcp.submit",
+            "remote.prepare",
+            "remote.send",
+            "unclassified"
+          ],
+          "countRange": [
+            0,
+            2001
+          ],
+          "kindAllowlist": [
+            "secret",
+            "personal"
+          ],
+          "maximumKinds": 2,
+          "time": "finite epoch seconds",
+          "retention": "in-memory until process restart; remains after 30 seconds and safe sends",
+          "limitDenialMayHaveNoCandidates": true,
+          "timeRange": [
+            0,
+            253402300799
+          ],
+          "countKindsConsistency": "count 0 requires kinds []; positive count requires one or two allowed kinds"
+        },
+        "currentSurface": "native security panel",
+        "protectionAuthorityChanged": false,
+        "scopeExpanded": false,
+        "rawValuesExposed": false,
+        "scope": "platform-data",
+        "duties": [
+          "watch_platform_data",
+          "inspect_outbound",
+          "deny_sensitive_outbound",
+          "report_health"
+        ],
+        "states": [
+          "starting",
+          "stopped",
+          "unavailable",
+          "recent_block",
+          "sensitive_data_detected",
+          "watching"
+        ],
+        "recentBlockSeconds": 30,
+        "monitoringCadenceOrOrderChanged": false
+      },
+      "validation": {
+        "nativePython": {
+          "status": "passed",
+          "environment": "Ubuntu 24.04 Linux aarch64, Python 3.12.3, UID/GID 1002, network none",
+          "passed": 26,
+          "suites": {
+            "test_sensitive_guard": 11,
+            "test_os_security_guard_integration": 12,
+            "test_platform_service_lifecycle": 3
+          },
+          "scope": "Actual worker/file and outbound denial fixtures; bounded role metadata, state, monotonic recent-block expiry, process-only last action, health precedence and service projection; no OS boot."
+        },
+        "nativeRenderer": {
+          "status": "passed",
+          "environment": "Ubuntu 24.04 Linux aarch64, UID/GID 1002, network none, read-only source",
+          "buildTargets": [
+            "rock-ui",
+            "rock-ui-test"
+          ],
+          "compilerWarnings": "-Werror",
+          "scope": "Full native UI suite, deterministic motion/controller, bounded role/action rendering, count-zero limit refusals, health/malformed-state inactivity, real metadata only and no rendering IPC.",
+          "visualInspection": "Root inspected final frame 030: Security Agent label and actual refusal/action wording are readable with no overlap."
+        },
+        "pinSourceProfileReview": {
+          "status": "passed",
+          "environment": "Ubuntu 24.04 Linux aarch64, Python 3.12.3, Pillow 10.2.0, network none, disposable root-owned fixture",
+          "walletFrames": 14,
+          "atmFrames": 14,
+          "negativeActionRejections": 8,
+          "pinReadinessTestsPassed": 11,
+          "sourceProfileTestsPassed": 1,
+          "profileChange": "Exactly the visually reviewed source-only candidate; original RGB/ROI/thresholds/deadlines unchanged.",
+          "candidateMatchesProfile": true,
+          "currentSourcesMatchReviewedHashes": true,
+          "visualInspection": "Root inspected masked Wallet auth 01 and ATM 06 frames.",
+          "githubCiRerun": false,
+          "osBoot": false
+        },
+        "fullVerify": {
+          "status": "failed_preexisting_baseline",
+          "command": "npm run verify",
+          "exitCode": 1,
+          "passedBeforeStop": [
+            "project:check",
+            "repository:check",
+            "version:check",
+            "schema:check",
+            "database:check",
+            "release:check",
+            "release:signing:check"
+          ],
+          "releaseSigningPublicFixtureTestsPassed": 64,
+          "stoppedAt": "scripts/check-product-baseline.mjs:1057",
+          "reason": "Same previously reproduced baseline visual requirement mismatch.",
+          "laterGates": "not run in this invocation"
+        },
+        "webTests": {
+          "status": "not_rerun",
+          "typescriptSourceChanged": false,
+          "historicalWeb49AndNative129NotAddedToNewTotals": true
+        },
+        "documentChecks": {
+          "status": "passed",
+          "commands": [
+            "npm run project:update",
+            "npm run database:status",
+            "npm run design:check",
+            "npm run project:check",
+            "npm run database:check",
+            "git diff --check"
+          ]
+        }
+      },
+      "priorEvidenceRule": "Earlier animation and initial implementation tests remain historical; they are not fresh validation of this role addition.",
+      "notVerified": [
+        "RockstarOS image build",
+        "same-image boot",
+        "QEMU acceptance",
+        "Pixel deployment",
+        "24-hour operation",
+        "production deployment"
+      ],
+      "logDigests": {
+        "work/agent-backend-linux.log": {
+          "pathBase": "repository",
+          "sha256": "2a22599805151eb168eddc29ba6c5078be00feb26084de8178c4ab911529daa1",
+          "bytes": 4945,
+          "tracked": false
+        },
+        "work/spider-evidence/motion/renderer-security-agent-final.log": {
+          "pathBase": "task-work",
+          "sha256": "a70de19544b431955a7ddd0331602022ddd5999ba8068e08a76af390cb5f0a82",
+          "bytes": 2733,
+          "tracked": false
+        },
+        "work/pin-review-linux/agent-final-review.log": {
+          "pathBase": "repository",
+          "sha256": "34e47ec9ee4a6781051074d084fce7f086d3d5cd7080230ad9385a4e43914135",
+          "bytes": 1721,
+          "tracked": false
+        },
+        "work/pin-review-linux/agent-final-unmodified.log": {
+          "pathBase": "repository",
+          "sha256": "41957ae6336b148570580de00038cbccbe64017d1197382682080f7e9338dd81",
+          "bytes": 3798,
+          "tracked": false
+        },
+        "work/pin-review-linux/evidence/agent-final-review/review.json": {
+          "pathBase": "repository",
+          "sha256": "9f665db2e5ddbb3c2020a36d4df6c75cbc0bc25f0cfcd6e3819dd7b626cfaebb",
+          "bytes": 3653,
+          "tracked": false
+        },
+        "work/spider-security-agent-verify.log": {
+          "pathBase": "repository",
+          "sha256": "0c4d484aa1e1e7d981736b3483e9ca38849361d84a399b7f8f4c95e1eda0ef5f",
+          "bytes": 13922,
+          "tracked": false
+        }
+      },
+      "preview": {
+        "artifactOutsideRepository": "outputs/spider-guard-motion.gif",
+        "sha256": "ca845c8c437247eb5df2379f2152d4c9680d1f15b0fd9962f923455317881a23",
+        "bytes": 183122,
+        "width": 656,
+        "height": 454,
+        "frames": 80,
+        "durationSeconds": 8,
+        "framesPerSecond": 10,
+        "source": "ROCK_SPIDER_FRAMES opt-in native test fixture, regenerated with Security Agent role",
+        "runtimeDetectionEvidence": false,
+        "osBootEvidence": false
+      }
+    }
+  ]
 }

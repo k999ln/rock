@@ -48,6 +48,10 @@ class PlatformSecurityTests(unittest.TestCase):
         self.assertEqual('platform-data', status['result']['scope'])
         self.assertFalse(status['result']['workerAlive'])
         self.assertFalse(status['result']['fresh'])
+        self.assertEqual('spider', status['result']['agent']['id'])
+        self.assertEqual('security', status['result']['agent']['role'])
+        self.assertEqual('platform-data', status['result']['agent']['scope'])
+        self.assertEqual('starting', status['result']['agent']['state'])
 
     def test_mcp_prepare_and_submit_block_before_any_client_call(self):
         client = Mock()
@@ -166,6 +170,58 @@ class PlatformSecurityTests(unittest.TestCase):
             platform.close()
         self.assertFalse(platform.security.thread.is_alive())
         platform.runner = None
+
+    def test_snapshot_agent_reports_actual_guard_work_without_payload(self):
+        client = Mock()
+        platform = self.platform(start=True, client=client, seed='API_KEY="synthetic-agent-fixture"')
+        agent = platform.security_summary()['agent']
+        self.assertEqual('sensitive_data_detected', agent['state'])
+        self.assertEqual(['watch_platform_data', 'inspect_outbound', 'deny_sensitive_outbound', 'report_health'], agent['duties'])
+        self.assertIsNone(agent['lastAction'])
+        with self.assertRaisesRegex(ValueError, '^SENSITIVE_DATA_BLOCKED$'):
+            platform.dispatch({'v': 1, 'op': 'mcp.prepare', 'alias': 'notes',
+                               'key': 'guard-test', 'text': 'person@example.test'}, peer_uid=service.UI_UID)
+        client.request.assert_not_called()
+        result = platform.security_summary()['agent']
+        self.assertEqual('recent_block', result['state'])
+        self.assertEqual('mcp.prepare', result['lastAction']['boundary'])
+        self.assertEqual(['personal'], result['lastAction']['kinds'])
+        self.assertNotIn('person@example.test', json.dumps(result))
+        self.assertNotIn('synthetic-agent-fixture', json.dumps(result))
+
+    def test_snapshot_rejects_unbounded_or_unhealthy_agent_claims(self):
+        platform = self.platform(start=True)
+        valid = platform.security.status()
+        for change in ({'id': 'another-agent'}, {'role': 'root'}, {'scope': '/data/wallet'},
+                       {'state': 'protected'}, {'lastAction': {'action': 'blocked', 'boundary': 'secret-value'}}):
+            report = {**valid, 'agent': {**valid['agent'], **change}}
+            with self.subTest(change=change), patch.object(platform.security, 'status', return_value=report):
+                result = platform.security_summary()['agent']
+                self.assertEqual('spider', result['id'])
+                self.assertEqual('security', result['role'])
+                self.assertEqual('platform-data', result['scope'])
+                self.assertNotIn('secret-value', json.dumps(result))
+                self.assertIsNone(result['lastAction'])
+                if 'lastAction' not in change:
+                    self.assertEqual('unavailable', result['state'])
+        for health in ({'workerAlive': False}, {'fresh': False}, {'fresh': 1}, {'status': 'error'}, {'status': []}):
+            report = {**valid, **health, 'agent': {**valid['agent'], 'state': 'recent_block'}}
+            with self.subTest(health=health), patch.object(platform.security, 'status', return_value=report):
+                self.assertEqual('unavailable', platform.security_summary()['agent']['state'])
+
+        action = {'action': 'blocked', 'boundary': 'mcp.submit', 'count': 1,
+                  'kinds': ['secret'], 'time': 1234567890}
+        for invalid in ({'boundary': 'private-unrecognized-boundary'}, {'count': True},
+                        {'count': 2002}, {'count': 0}, {'kinds': []},
+                        {'kinds': ['secret'] * 3}, {'kinds': ['private-value']},
+                        {'time': float('nan')}, {'time': 10 ** 1000}, {'text': 'private-value'}):
+            report = {**valid, 'agent': {**valid['agent'], 'state': 'recent_block',
+                                       'lastAction': {**action, **invalid}}}
+            with self.subTest(field=next(iter(invalid))), patch.object(platform.security, 'status', return_value=report):
+                result = platform.security_summary()['agent']
+                self.assertEqual('unavailable', result['state'])
+                self.assertIsNone(result['lastAction'])
+                self.assertNotIn('private-value', json.dumps(result))
 
 
 if __name__ == '__main__':

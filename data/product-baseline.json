@@ -1491,7 +1491,10 @@
       "runner_prepare_and_first_durable_send_claim_checks",
       "os_package_boot_and_supervision_integration"
     ],
-    "companionScope": ["web_ai_guard", "mcp_connector_guard"],
+    "companionScope": [
+      "web_ai_guard",
+      "mcp_connector_guard"
+    ],
     "deploymentTarget": "rockstaros_native_platform",
     "platformUid": 1002,
     "ownerUiUid": 1000,
@@ -1507,6 +1510,25 @@
     "linuxInstallTestsPassed": 1,
     "linuxPythonTestsPassed": 129,
     "webGuardTestsPassed": 49,
+    "priorSourceValidationCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+    "nativeAnimationRevision": {
+      "requestedAt": "2026-10-02",
+      "status": "source_renderer_validated_os_acceptance_pending",
+      "baseCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+      "references": [
+        "https://www.instagram.com/reel/DdhYiKdz-6t/",
+        "https://www.instagram.com/reel/DdmGyhRRQGi/",
+        "https://www.instagram.com/p/Dd97sTPjEu6/?img_index=2"
+      ],
+      "visualIntent": "Thin luminous curved articulated legs, blue endpoint rings and a small pink/cyan square core moving toward actual findings and encircling the focused row.",
+      "eventResponse": "brief response only to a newly observed actual blocked counter increase",
+      "unhealthyState": "no motion on stale, dead, failed, missing or disconnected status",
+      "freshRendererTestsRecorded": true,
+      "priorTestCountsAreHistorical": true,
+      "protectionAuthorityChanged": false,
+      "currentSurface": "native security panel",
+      "globalOverlaySelected": false
+    },
     "serviceInstalled": false,
     "runtimeAcceptanceRecorded": false,
     "productionDeploymentVerified": false,
@@ -1514,7 +1536,69 @@
     "osWideTrafficProtectionClaim": false,
     "rawSensitiveValuesInDiagnosticsAllowed": false,
     "existingRequirementsAndReleaseGatesPreserved": true,
-    "operatorDockAuthorityExpanded": false
+    "operatorDockAuthorityExpanded": false,
+    "securityAgentRole": {
+      "requestedAt": "2026-10-02",
+      "status": "source_validated_os_acceptance_pending",
+      "id": "spider",
+      "role": "security",
+      "stateSource": "actual worker liveness, freshness and findings",
+      "sensitiveFindingState": "sensitive_data_detected",
+      "lastActionSource": "sanitized metadata from actual latest blocked request",
+      "currentSurface": "native security panel",
+      "protectionAuthorityChanged": false,
+      "monitoringCadenceOrScopeChanged": false,
+      "freshValidationRecorded": true,
+      "scope": "platform-data",
+      "duties": [
+        "watch_platform_data",
+        "inspect_outbound",
+        "deny_sensitive_outbound",
+        "report_health"
+      ],
+      "states": [
+        "starting",
+        "stopped",
+        "unavailable",
+        "recent_block",
+        "sensitive_data_detected",
+        "watching"
+      ],
+      "recentBlockSeconds": 30,
+      "lastAction": {
+        "initial": null,
+        "action": "blocked",
+        "boundaries": [
+          "mcp.prepare",
+          "mcp.submit",
+          "remote.prepare",
+          "remote.send",
+          "unclassified"
+        ],
+        "countRange": [
+          0,
+          2001
+        ],
+        "kindAllowlist": [
+          "secret",
+          "personal"
+        ],
+        "maximumKinds": 2,
+        "time": "finite epoch seconds",
+        "retention": "in-memory until process restart; remains after 30 seconds and safe sends",
+        "limitDenialMayHaveNoCandidates": true,
+        "timeRange": [
+          0,
+          253402300799
+        ],
+        "countKindsConsistency": "count 0 requires kinds []; positive count requires one or two allowed kinds"
+      },
+      "monitoringCadenceOrOrderChanged": false,
+      "linuxBackendTestsPassed": 26,
+      "linuxNativeRendererPassed": true,
+      "pinReadinessTestsPassed": 11,
+      "pinSourceProfileTestsPassed": 1
+    }
   },
   "commercialPolicyRevision": {
     "requestedAt": "2026-09-17",

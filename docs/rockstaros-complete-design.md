@@ -292,6 +292,10 @@ Operator DockはOS外、端末Agentはlauncher非表示・限定scope。管理se
 
 Web AI送信前検査とMCP Connectorは補助系統として保持する。これらの成功をOS本体の常駐・24時間受入へ振り替えない。OS全体のpacket interceptionや任意アプリの全内容検査を本機能の実装範囲とはしない。
 
+2026-10-02 native表示改訂: 利用者の追加映像参照と作業継続指示により、細い発光関節脚、青い足先の輪、小さなpink／cyan coreを使い、実finding行へ移動して重点対象を囲む動きへ改訂する。拒否反応は新たな実`blocked` counter増加時だけに限り、初回の過去累計やresetを新規事件として再生しない。stale／dead／error／missing／disconnected時は停止する。API・UID・保護判定を変更せず、描画からIPCを起動しない。参照、状態遷移、counter境界の受入は[詳細設計](spider-guard.md#nativeアニメーション改訂)に記録する。保存版`a7cfca3`の試験を変更後rendererの合格へ転用せず、新しい描画試験と目視結果を別記録する。Linuxのnative build・描画・counter／health境界、合成fixtureの目視、source hashだけを更新したPIN profileの確認は記録済み。
+
+同日Security Agent役割追加: 利用者の明示により、認証済み`security`状態へ`agent`（id `spider`、role `security`、scope `platform-data`、duties `watch_platform_data`／`inspect_outbound`／`deny_sensitive_outbound`／`report_health`）を接続する。状態は実workerの生存・鮮度とfinding、`lastAction`は最新の実拒否の値を含まないmetadataから導く。healthを優先し、健全時は実拒否後30秒の`recent_block`、候補があれば`sensitive_data_detected`、なければ`watching`。最新拒否はallowlist化した境界・件数・分類・時刻だけをmemory内で保持し、再起動でresetする。走査周期・順序は変えない。native security panelに役割と監視状態・検出候補・直近の送信拒否を示す。固定scope、UID、owner認証、送信前検査と原本非変更は維持する。再起動後に過去の行動を生成せず、stale／dead／errorは稼働成功と表示しない。役割追加のLinux Python 26件、native build・描画、PIN readiness 11／source profile 1とWallet／ATM描画fixtureは成功し、前段階と別のsource hash・証拠へ記録した。OS全体overlayへの表示拡大は未選択であり、現在のsecurity panelを維持する。
+
 ## 20. Device Support Package
 
 共通Coreと機種固有driver／firmware／partition／power／thermal／camera等を分離する。DSPは対応Core範囲とhardware capabilityを宣言し、未確認機種を同型として扱わない。

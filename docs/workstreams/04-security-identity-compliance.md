@@ -13,6 +13,7 @@
 - 運営1名で開始できる緊急保護policy、利用者OSと分離したOperator Dock、Access JWT／WebAuthn検証、専用D1命令キュー、署名付き端末channel、launcher非表示のAndroid Agent、端末側独立検証、Keystore identity、HMAC追記監査はsource実装済み。Android 15 emulator 6/6と試験署名Pixel 10の5/5は合格した。本番公開trust入力をrepo外から検査してproduct RROへstageする入口、StrongBox必須、factory reset無効、challengeごとの別端末鍵も固定済み。専用配備、production credential、実StrongBox attestation／Device Owner登録、remote Provider session失効、管理側侵害試験は未完了。
 - npm依存には追加review対象があり、inventory完成を法的clearanceと扱わない。
 - `SYS15`でRockstarOS本体に常駐するSpider Guardへ着手。Platform UID 1002の固定範囲監視、Platform MCP／RunnerControl送信前の拒否、認証付き状態とnative画面、同梱・boot監督をROCKが担当する。Web／Connector送信前検査は補助である。同一image boot、Pixel実機、24時間運転は未受入で、root権限やOS全通信の保護は追加しない。[範囲と受入](../spider-guard.md)を正本とする。
+- `SYS15`のnative表示は追加映像を参照し、実findingへの移動・囲み、新しい実拒否counterへの反応、非稼働時の停止をLinux描画fixtureで検証した。続く利用者指定のSecurity Agent役割（監視・検査・拒否・報告）と最新の実拒否metadataは接続済みで、Linux backend 26件、native renderer、PIN readiness 11／profile 1と描画fixtureの追加検証が成功した。表示先は現在のsecurity panelを維持する。初期実装の保存版`a7cfca3`の129 Python／49 Node、アニメーション改訂、新しいAgent役割の証拠を分け、前の合格を後の変更へ転用しない。
 
 主なtask: `SYS01`〜`SYS13`, `SYS15`, `LCH02`, `LCH03`, `OS05`。
 

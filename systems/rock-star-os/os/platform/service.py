@@ -35,7 +35,7 @@ from blackberryrock.packages import CURRENT_PROFILE, MAX_PACKAGE_BYTES, PUBLIC_T
 from blackberryrock.wallet import Wallet
 from registry_control import RegistryControl
 from runner_control import RunnerControl
-from sensitive_guard import SensitiveGuard
+from sensitive_guard import SensitiveGuard, security_agent_summary
 from operations.device import DeviceActivation
 from wallet_view import WalletView
 from wallet_backend.client import READS as WALLET_READS
@@ -264,6 +264,7 @@ class Platform:
         # fields from an older guard snapshot must never imply protection.
         summary['workerAlive'] = status.get('workerAlive') is True
         summary['fresh'] = status.get('fresh') is True
+        summary['agent'] = security_agent_summary(status)
         summary['findings'] = status.get('findings', [])[:3]
         summary['findingsTruncated'] = bool(status.get('findingsTruncated') or len(status.get('findings', [])) > 3)
         return summary

@@ -10,6 +10,8 @@
 
 OSへの同梱、boot時起動、再起動監督、native画面の実データ表示までが実装範囲。現在は実装・検証中で、変更後の同一imageのboot、Pixel実機、24時間連続運転は未受入。過去のQEMU／Pixel試験を今回の常駐保護の成功に流用しない。
 
+2026-10-02、利用者は追加の映像参照に沿ったnativeアニメーション改善を進めるよう明示した。細い発光脚、青い足先の輪、pink／cyanの小さな四角いcoreを、実際の検出位置への移動と重点表示へ取り込む。このアニメーションのLinux source検証は記録済み。さらに利用者はクモに「セキュリティーエージェント」の役割を明示し、実際の監視・検査・拒否・報告と役割表示を接続し、追加のsource検証を記録した。現在の表示先はnative security panelであり、OS全体のoverlayは未選択。以下の旧source検証は保存commit `a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae`に対応し、変更後のrendererの合格証拠へ流用しない。
+
 ## 責任と範囲
 
 | 項目 | 内容 |
@@ -45,6 +47,28 @@ OSへの同梱、boot時起動、再起動監督、native画面の実データ�
 
 通常の認証済みsnapshotの`security`には状態、最終検査時刻、周期、検査file数、候補総数・秘密・個人情報、実拒否・検査counter、制限・省略のflagと先頭3件を含める。`workerAlive`は実Threadの生存と停止要求から、`fresh`はmonotonic時刻で最後の成功からの経過が`max(3 × interval, 90秒)`以内かつworkerが生存していることから計算する。欠落・不正型はfalseとして扱う。native `security-ui.inc`は接続・生存・鮮度が揃った実データだけを稼働表示し、架空の候補・件数を生成しない。
 
+### Nativeアニメーション改訂
+
+利用者提供の[参照映像1](https://www.instagram.com/reel/DdhYiKdz-6t/)と[参照映像2](https://www.instagram.com/reel/DdmGyhRRQGi/)から、黒い背景上の細く発光する曲線の関節脚、青い足先の輪、pink／cyanの四角いcore、node graph内を動く表現を見た目の参照とする。追加の[参照投稿](https://www.instagram.com/p/Dd97sTPjEu6/?img_index=2)では文字・リンク上をクモが重点表示する見た目を参照する。投稿の実装技術は推定しない。参照動画自体を配布物へ同梱せず、既存の黒・銀・ice-blueのnative security panelへ実装する。
+
+- 移動先と囲む行は取得した実findingに結び付け、秘密候補を重点的に示す。nodeや候補がない場合に架空の検出位置を補わない。
+- 関節脚と足先の輪を動かし、選んだ実finding行へ近づいて囲む。見た目の動きから新しい権限、検出、送信拒否を発生させない。
+- 短い拒否反応は、新たに観測した実`blocked` counterの増加にだけ対応する。初回取得の過去累計、同じ値の再描画、counterのresetを新たな拒否として再生しない。
+- 接続、生存、鮮度の判定を維持し、stale／dead／error／missing／disconnectedでは移動と反応を停止する。最終受信した画像を現在も監視中と見せない。
+- API、検出器、監視周期、UID、送信前の拒否契約はこの見た目の改訂では変更しない。rendererは値を含まない最大3件のmetadataだけを使い、描画からIPCや送信を起動しない。
+
+受入は、新しいnative C build／renderer試験、複数時刻の画像比較、実findingへの移動・囲み、counter初期値／増加／同値／reset、非稼働各状態の停止、最大3件・秘密非表示・IPC非発生を対象とする。新規結果は検証記録の`nativeAnimationRevisions`へ別に追記し、旧source hash mapを上書きしない。
+
+### Security Agentの役割
+
+利用者の追加指示により、クモを実処理に接続されたSecurity Agentとして扱う。Platformが返す`security.agent`は`id: spider`、`role: security`、`scope: platform-data`、`duties: [watch_platform_data, inspect_outbound, deny_sensitive_outbound, report_health]`を持つ。監視workerの生存・鮮度と実findingから現在の状態を導き、実際の送信拒否から値を含まない`lastAction`を返す。native画面には役割、監視状態・検出候補・直近の送信拒否を示す。新たな検査・拒否を画面の動きから生成しない。
+
+`watch`は固定Platform dataの継続検査、`inspect`は対応経路の送信前検査、`deny`は既存の拒否境界、`report`はowner認証付きmetadata表示に対応する。独立したLLM判断、外部送信、root権限、任意fileの修正・隔離、全OS通信の遮断を追加しない。guard停止、結果の古さ、制限はAgentの状態にも反映し、記録のない過去の行動を生成しない。固定の検査周期・file走査順は変えず、候補への注意を表示する。restartでcounter／eventと最新行動をresetする。
+
+Agentの`state`は`starting`／`stopped`／`unavailable`をhealthに応じて優先する。健全なworkerでは実拒否後30秒間（monotonic計時）は`recent_block`、それ以外は直前走査の候補があれば`sensitive_data_detected`、なければ`watching`とする。`lastAction`は実拒否までnull、その後は`action: blocked`、allowlist化した`boundary`（`mcp.prepare`／`mcp.submit`／`remote.prepare`／`remote.send`／`unclassified`）、`count`（0〜2001）、分類`kinds`（secret／personalの重複なし・最大2）、有限のepoch秒`time`（0〜253402300799）だけを返す。上限による拒否は候補数不明としてcount 0／kinds空を許す。count 0には空のkinds、正のcountには既知の分類1〜2件を要求し、矛盾するmetadataは表示へ通さない。30秒経過や正常送信で最新行動を消さず、process再起動で失う。原文・path・値の追加保存はしない。
+
+この役割追加ではPythonの実状態・最新拒否metadata、native表示、変更後sourceに対するPIN profileを改めて検証し、`nativeSecurityAgentRevisions`へ記録した。直前のアニメーション試験を合格証拠へ流用しない。OS全体へクモを重ねる表示範囲は未選択のため、現在のsecurity panel内で進める。
+
 Platformの起動は`supervisor.py`を経由し、子processの異常終了後は1秒から最大30秒へ待機を増やして再起動する。60秒を超えて稼働した後は最短待機へ戻す。UIDは既存Platformの1002を維持し、shellや追加権限は与えない。Linux `PDEATHSIG`で監督process喪失時に子を終了させ、subreaperとして孤児になった子孫を引き取る。停止時と子leaderのcrash後には同じprocess groupへTERM、4秒以内に終了しなければKILLし、子孫をreapしてから再起動する。Platformのbind／serve失敗時もworkerを終了する。これは子process終了の回復であり、hangの検知、監督process自身の再起動、電源OFF・suspend中の検査、24時間可用性の証明ではない。
 
 ### 接続先と同梱入口
@@ -60,7 +84,9 @@ Platformの起動は`supervisor.py`を経由し、子processの異常終了後�
 | `systems/rock-star-os/os/platform/install-target.sh` | `/usr/lib/rock-platform`への同梱と起動補助の配置 |
 | `systems/rock-star-os/os/buildroot/package/rock-platform/rock-platform.mk` | BuildrootのPlatform package入口 |
 | `systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform` | Platform UIDでのOS boot／stop、起動確認と監督の接続 |
-| `systems/rock-star-os/os/ui/security-ui.inc` | 認証済みsnapshotの実検出結果を描画するnative UI |
+| `systems/rock-star-os/os/ui/security-ui.inc` | 認証済みsnapshotの実検出結果とAgentの役割を描画するnative UI |
+| `systems/rock-star-os/os/ui/spider-motion.c` / `spider-motion.h` | 実finding metadataとcounterを入力にしたnative移動状態 |
+| `scripts/review-native-pin-source.py` / `systems/rock-star-os/tests/test_ui_pin_source_profile.py` | Native source変更時のPIN描画再確認とsource profile整合検査 |
 | `toolkits/spider-guard/` | Web／Connector用の共通検出。OS本体の常駐とは別 |
 
 ## 共通の実装契約
@@ -74,6 +100,32 @@ Platformの起動は`supervisor.py`を経由し、子processの異常終了後�
 - 継続監視はプロセスが稼働している間の対応範囲に限る。再起動後の起動、sleep中の扱い、service監視、障害復旧まで確認する前に「24時間保護」を宣言しない。
 
 ## 検証と引継ぎ
+
+### Security Agent役割の最終source検証
+
+Ubuntu 24.04 Linux aarch64（Python 3.12.3、network none、UID／GID 1002）で検出器11、Platform統合12、lifecycle 3、計26/26試験が成功した。worker／file／実送信前拒否fixture、health優先、30秒のmonotonic期限、最新拒否metadataの上限・整合を含む。同じLinux条件のread-only sourceで通常`rock-ui`と`rock-ui-test`を`-Werror`でbuildし、全native UI suiteと役割・直近拒否・count 0上限拒否・非稼働停止の描画試験が成功した。
+
+最終sourceに対してWallet 14枚、ATM 14枚、誤操作8件の拒否、PIN readiness 11/11、source profile 1/1も再実行して成功した。PIN確認はroot所有の使い捨てfixtureであり、一般UIDやOS imageの実行へ読み替えない。実際のmasked auth画像を目視したsource-only candidateと現在のprofile／source hashの一致を照合し、RGB・ROI・閾値・deadlineを変更していない。
+
+Security Agent表示を含む最終frame 030を目視し、役割・直近の拒否が重ならず読めることを確認した。repository外の`outputs/spider-guard-motion.gif`は656×454、80枚／8秒／10fpsの最新合成fixtureであり、以前のアニメーションpreviewと同じpathを置き換える。実検出・OS bootの映像ではない。最終source 14 file、log／reportとpreviewのSHA-256を[機械可読記録](evidence/spider-guard-source-validation.json)の`nativeSecurityAgentRevisions`へ別保存した。検証時点は未commitで、同一SHAのGitHub CIやremote mainの成功は未確認。
+
+最終`npm run verify`はproject／repository／version／schema／database／release／release:signing（公開fixture64件）まで成功し、従来から再現済みの`baseline:check` visual期待値（`scripts/check-product-baseline.mjs:1057`）でexit 1となった。後続gateは未実行。project／database／designの個別整合検査も成功した。変更のないWeb試験は今回再実行せず、旧129 Python／49 Nodeを新しい試験数へ加算しない。同一image boot、QEMU、Pixel、24時間運転は未受入で、`SYS15`は`in_progress`を維持する。
+
+### アニメーション単体のsource検証（役割追加前の履歴）
+
+起点は`a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae`、検証時点は未commit作業木。Ubuntu 24.04 Linux aarch64（Python 3.12.3、Pillow 10.2.0、network none、read-only source）でUID 1002の通常`rock-ui`と`rock-ui-test`を`-Werror`でbuildし、deterministic controllerと全native renderer suiteが成功した。不正型のhealth、counter境界、非稼働状態の停止も含む。
+
+Test binaryのopt-in出力だけで80枚／8秒／10fpsの合成fixtureを生成し、frame 030の拒否反応と079の巡回を目視確認した。この段階の描画fixtureはpreview用であり、実際の検出やOS起動の証拠ではない。出力pathは上記の最終役割版で置き換えられている。
+
+Native source変更に伴うPIN profileの古いhashは、実際のWallet／ATM描画を確認後にsource hashだけ更新した。RGB、ROI、閾値、deadlineは維持し、root所有の使い捨てLinux fixtureでWallet 14枚、ATM 14枚、誤操作8件の拒否、PIN readiness 11/11、source profile 1/1が成功した。GitHub CIの再実行やOS bootの記録ではない。
+
+この段階の`npm run verify`はproject／repository／version／schema／database／release／release:signing（公開fixture64件）まで成功後、以前から再現済みの`baseline:check` visual期待値（`scripts/check-product-baseline.mjs:1057`）で停止した。後続gateは未実行。Webの変更・49 Node試験の再実行はなく、初期129 Python試験も今回の件数へ加算しない。
+
+[機械可読記録](evidence/spider-guard-source-validation.json)の`nativeAnimationRevisions`にこの時点のsource hashと短いlogのdigestを保存した。その後に依頼されたSecurity Agentの役割・最新行動表示は別の`nativeSecurityAgentRevisions`へ検証結果を記録する。同一image boot、QEMU、Pixel、24時間運転の未受入は維持する。
+
+### 初期実装のsource検証（保存版 a7cfca3）
+
+以下は前回検証時点の履歴である。32のproduction／test source hashは保存commit `a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae`と全件一致した。改訂中のrendererの最新結果ではない。
 
 2026-10-02、ColimaのDebian bookworm Linux container（Python 3.13、`--network none`、UID／GID 1002）でnative回帰125/125、supervisor 3/3、install 1/1、計129 Python試験が成功した。skipなし、`ResourceWarning`をerrorとして実行。file／Thread／境界拒否、Platformの終了cleanup、crash時の再起動と孤児process groupのkill／reapを含む。native Cの`rock-ui`／`rock-ui-test`は`-Werror`でbuildし、既存UI suiteが成功した。Spider描画fixtureも成功し、稼働時の移動、stale／dead／error／missing／disconnected時の停止、最大3件の表示、描画からのIPC非発生を確認した。active／staleのnative描画は目視で読めることを確認した。sourceと試験fileのSHA-256は機械可読記録に固定した。
 

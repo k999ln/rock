@@ -25,6 +25,61 @@ MAX_FILE_BYTES = MAX_TEXT_LENGTH * 4
 MAX_REPORT_FINDINGS = 300
 MASK = '[機密情報を非表示]'
 TEXT_EXTENSIONS = frozenset({'.json', '.txt', '.md', '.csv', '.env'})
+AGENT_RECENT_BLOCK_SECONDS = 30
+AGENT_DUTIES = ('watch_platform_data', 'inspect_outbound', 'deny_sensitive_outbound', 'report_health')
+OUTBOUND_BOUNDARIES = frozenset({'mcp.prepare', 'mcp.submit', 'remote.prepare', 'remote.send', 'unclassified'})
+AGENT_STATES = frozenset({'starting', 'stopped', 'unavailable', 'watching', 'sensitive_data_detected', 'recent_block'})
+
+
+def _agent_contract(state='unavailable', last_action=None):
+    return {'id': 'spider', 'role': 'security', 'scope': 'platform-data',
+            'duties': list(AGENT_DUTIES), 'state': state, 'lastAction': last_action}
+
+
+def _validated_block_action(value):
+    if type(value) is not dict or set(value) != {'action', 'boundary', 'count', 'kinds', 'time'}:
+        return None
+    kinds, timestamp = value['kinds'], value['time']
+    if (value['action'] != 'blocked' or type(value['boundary']) is not str
+            or value['boundary'] not in OUTBOUND_BOUNDARIES
+            or type(value['count']) is not int or not 0 <= value['count'] <= MAX_FINDINGS + 1
+            or type(kinds) is not list or len(kinds) > 2
+            or any(type(kind) is not str or kind not in {'secret', 'personal'} for kind in kinds)
+            or len(kinds) != len(set(kinds))
+            or (value['count'] == 0) != (len(kinds) == 0)
+            or type(timestamp) not in (int, float) or not 0 <= timestamp <= 253402300799
+            or not math.isfinite(timestamp)):
+        return None
+    return {'action': 'blocked', 'boundary': value['boundary'], 'count': value['count'],
+            'kinds': sorted(kinds), 'time': timestamp}
+
+
+def security_agent_summary(status):
+    """Bound the native snapshot contract; old or malformed claims fail closed."""
+    if type(status) is not dict:
+        return _agent_contract()
+    agent = status.get('agent')
+    if (type(agent) is not dict or agent.get('id') != 'spider'
+            or agent.get('role') != 'security' or agent.get('scope') != 'platform-data'
+            or type(agent.get('state')) is not str or agent['state'] not in AGENT_STATES):
+        return _agent_contract()
+    action = _validated_block_action(agent.get('lastAction'))
+    state = agent['state']
+    status_label = status.get('status') if type(status.get('status')) is str else ''
+    if state in {'watching', 'sensitive_data_detected', 'recent_block'}:
+        healthy = (status.get('workerAlive') is True and status.get('fresh') is True
+                   and status_label in {'watching', 'scanning'})
+        count = status.get('candidateCount')
+        if (not healthy or (state == 'recent_block' and action is None)
+                or (state == 'sensitive_data_detected' and
+                    (type(count) is not int or not 0 < count <= MAX_FILES * MAX_FINDINGS))):
+            state = 'unavailable'
+    elif state == 'starting':
+        if status_label not in {'starting', 'scanning'} or status.get('lastScanAt') is not None:
+            state = 'unavailable'
+    elif state == 'stopped' and status_label != 'stopped':
+        state = 'unavailable'
+    return _agent_contract(state, action)
 
 
 class SensitiveDataBlockedError(ValueError):
@@ -221,6 +276,8 @@ class SensitiveGuard:
         self._stopping = threading.Event()
         self.thread = None
         self._last_success_monotonic = None
+        self._last_block_monotonic = None
+        self._last_block_action = None
         self._report = {
             'schemaVersion': 1, 'status': 'starting', 'scope': 'platform-data',
             'intervalSeconds': interval, 'lastScanAt': None, 'nextScanAt': None,
@@ -230,13 +287,18 @@ class SensitiveGuard:
         }
 
     def _event(self, boundary, action, count=0, kinds=()):
-        boundary = boundary if type(boundary) is str and re.fullmatch(r'[A-Za-z0-9_.:-]{1,80}', boundary) else 'unclassified'
-        if inspect_text(boundary):
-            boundary = 'unclassified'
-        self._report['events'].insert(0, {'time': time.time(), 'boundary': boundary,
-                                             'action': action, 'count': count,
-                                             'kinds': sorted(set(kinds) & {'secret', 'personal'})})
+        boundaries = OUTBOUND_BOUNDARIES if action == 'blocked' else {'platform-data'}
+        boundary = boundary if type(boundary) is str and boundary in boundaries else 'unclassified'
+        maximum = MAX_FINDINGS + 1 if action == 'blocked' else MAX_FILES * MAX_FINDINGS
+        count = min(maximum, max(0, count)) if type(count) is int else 0
+        timestamp = time.time()
+        if not math.isfinite(timestamp) or not 0 <= timestamp <= 253402300799:
+            timestamp = 0
+        event = {'time': timestamp, 'boundary': boundary, 'action': action, 'count': count,
+                 'kinds': sorted(set(kinds) & {'secret', 'personal'})}
+        self._report['events'].insert(0, event)
         del self._report['events'][30:]
+        return event
 
     def inspect(self, value, boundary):
         try:
@@ -245,7 +307,9 @@ class SensitiveGuard:
             with self._lock:
                 self._report['inspections'] += 1
                 self._report['blocked'] += 1
-                self._event(boundary, 'blocked', getattr(error, 'count', 0), getattr(error, 'kinds', ()))
+                event = self._event(boundary, 'blocked', getattr(error, 'count', 0), getattr(error, 'kinds', ()))
+                self._last_block_monotonic = time.monotonic()
+                self._last_block_action = _validated_block_action(event)
             raise ValueError('SENSITIVE_DATA_BLOCKED') from None
         with self._lock:
             self._report['inspections'] += 1
@@ -255,11 +319,24 @@ class SensitiveGuard:
         with self._lock:
             result = copy.deepcopy(self._report)
             alive = bool(self.thread is not None and self.thread.is_alive() and not self._stopping.is_set())
-            age = (max(0, time.monotonic() - self._last_success_monotonic)
+            now = time.monotonic()
+            age = (max(0, now - self._last_success_monotonic)
                    if self._last_success_monotonic is not None else None)
             result.update(workerAlive=alive, lastScanAgeSeconds=age,
                           fresh=bool(alive and age is not None and age <= max(3 * self.interval, 90)
                                      and result['status'] in {'watching', 'scanning'}))
+            if self._stopping.is_set() or result['status'] == 'stopped':
+                state = 'stopped'
+            elif result['status'] in {'starting', 'scanning'} and self._last_success_monotonic is None:
+                state = 'starting'
+            elif not result['fresh']:
+                state = 'unavailable'
+            elif (self._last_block_monotonic is not None and self._last_block_action is not None
+                  and 0 <= now - self._last_block_monotonic < AGENT_RECENT_BLOCK_SECONDS):
+                state = 'recent_block'
+            else:
+                state = 'sensitive_data_detected' if result['candidateCount'] > 0 else 'watching'
+            result['agent'] = _agent_contract(state, copy.deepcopy(self._last_block_action))
             return result
 
     def start(self):
