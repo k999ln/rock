@@ -1,3 +1,7 @@
+## Sky公開版への接続復帰の限定統合（ROCK / WEB04・S2-02）
+
+公開v33のsource 00109c6から保護したbranchで、保存済みr46の端末判定と接続状態制御を統合。既存サインイン復帰・接続管理・device helper・Stripe/DB/サービスworkerは保持。導線は実在するZema /chat を使用し、未実装libraryと実PC権限・本番受入は未完了。関連34試験、typecheck、対象lintとローカルbuildが合格。同ビルドのWorkerを使い、匿名401でPC接続無効、合成gatewayのGET/jobs 200で読取再確認から復帰、待機・6秒案内・503失敗・再試行、390px横overflowなし、keyboardで詳細開閉/元のfocus復帰を部分検証。最終詳細画面の匿名無効化は再確認中。本人の公開認証・実PC権限・200%拡大・本番受入は未完了。元の公開sourceのproject:updateはSKY20の既存migration根拠欠落で失敗。公開未実施。
+
 ## 2026-10-02 — Sky共通接続確認と復旧
 
 WEB04/ROCK: 503/通信断/timeout/不正応答で実行可能になっていた共通接続確認を修正。認証が戻るまで実行/設定保存を停止し、再確認は読取だけ、未保存入力はcomponent memoryに保持する。接続設定は一覧取得失敗中の保存を止め、復旧後に編集入力を維持して一覧を取り直す。合成ローカル実ブラウザで401からの復旧、明示的な出典整理、server metadata完了1件、端末成果保存/再取得を確認。公開・本人desktop/Pixel・実AI/Apple Payの受入は別途記録する。

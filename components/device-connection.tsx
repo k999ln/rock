@@ -18,7 +18,7 @@ import {
   DEVICE_URL,
 } from '@/lib/device';
 
-export function DeviceConnection() {
+export function DeviceConnection({ connectionBlocked = false }: { connectionBlocked?: boolean }) {
   const [connected, setConnected] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -31,6 +31,7 @@ export function DeviceConnection() {
   }, []);
 
   async function connect() {
+    if (connectionBlocked) return;
     setBusy(true);
     setMessage('');
     try {
@@ -67,7 +68,7 @@ export function DeviceConnection() {
       <section className="panel device-card device-install-card">
         <button
           className="black-button"
-          disabled={busy}
+          disabled={busy || connectionBlocked}
           onClick={() => void connect()}
         >
           {connected ? <Check size={16} /> : <Cable size={16} />}
@@ -77,6 +78,7 @@ export function DeviceConnection() {
               ? 'もう一度接続を確認'
               : 'このPCを接続'}
         </button>
+        {connectionBlocked && <output>Skyへのサインインを確認してください。閉じてサインインすると、この画面から接続を再確認できます。</output>}
         <details>
           <summary>自動準備が使えない環境の接続手順</summary>
           <ol className="device-install-steps">

@@ -398,3 +398,5 @@ Open `/sky/marketplace` to use the same marketplace outside the OS home. Sky pag
 ## Skyサービスの利用とローンチ設計
 
 Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除・接続状態・対応環境は `/sky/help`。OS導入は必須ではありません。外部AIや購入/販売は必要な接続設定と本人の条件が揃ってから利用できます。[サービス設計と受入](docs/sky-launch-design.md)・[段階別の受入記録](data/sky-service-launch.json)・[運用と作者/決済の受入手順](docs/sky-launch-operations.md)を参照してください。設定あり・コード試験・本番合格は別の状態です。
+
+Sky接続復帰の未配備候補: `/sky/network` で端末案内・サインイン確認・待機・失敗・明示再試行をまとめます。端末判定は権限ではなく、接続確認だけではPC接続を開始しません。Zemaの公開版入口は `/chat` を保持します。実PC権限・公開認証・本番配備/復旧の受入は未完了です。詳細は `docs/sky-tools-complete-design.md` のSky公開候補の端末接続・復帰を参照してください。

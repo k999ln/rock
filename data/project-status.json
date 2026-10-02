@@ -3019,7 +3019,20 @@
     "historicalLocalCandidateCommit": "9a8da90f64c8e6acedb17f163ee23a8ed17a35fc",
     "historicalLocalCandidateEvidence": "docs/evidence/launch/backend-rc3-local-20260912.json",
     "historicalLocalCandidateAcceptance": "PASS_SCOPED_LOCAL_QEMU_DEVELOPER_PREVIEW_NOT_CURRENT_HEAD",
-    "historicalLocalCandidateDistribution": "LOCAL_ONLY_NOT_PUBLISHED_NOT_LEGALLY_CLEARED"
+    "historicalLocalCandidateDistribution": "LOCAL_ONLY_NOT_PUBLISHED_NOT_LEGALLY_CLEARED",
+    "skyPublicNetworkIntegration": {
+      "status": "isolated_network_candidate_public_and_real_pc_acceptance_pending",
+      "baseSiteSource": "00109c6adccc7b1aa4ff3f72d740d18e1de8ec94",
+      "savedCandidateRevision": 46,
+      "focusedTestsPassed": 34,
+      "realPcGrantIssued": false,
+      "deployed": false,
+      "accepted": false,
+      "buildPassed": true,
+      "localSyntheticUiPartiallyVerified": true,
+      "projectCheck": "baseline SKY20 migration evidence missing",
+      "ownerSigninAccepted": false
+    }
   },
   "physicalDevicePreview": {
     "status": "PIXEL_10_GL066_SOURCE_TAG_AND_DEVICE_LAYOUT_FROZEN_RECOVERY_ARTIFACTS_PENDING",

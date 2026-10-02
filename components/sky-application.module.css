@@ -1,0 +1,6 @@
+.frame { min-height:100dvh; color-scheme:dark; background:#0b0f14; }
+.navigation { display:flex; flex-wrap:wrap; gap:4px; padding:0; }
+.navigation a { display:inline-flex; gap:7px; align-items:center; min-height:40px; padding:8px 12px; border:1px solid transparent; border-radius:10px; color:var(--sky-muted); text-decoration:none; font-size:12px; }
+.navigation a:hover, .navigation a[aria-current=page] { color:var(--sky-text); background:var(--sky-panel); border-color:var(--sky-line); }
+.navigation a:focus-visible { outline:2px solid var(--sky-accent); outline-offset:3px; }
+@media(max-width:600px) { .navigation { gap:2px; } .navigation a { padding:7px 6px; font-size:11px; } }

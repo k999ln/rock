@@ -203,7 +203,14 @@
         "lib/sky-service-status.ts",
         "app/api/sky/service-status/route.ts",
         "lib/sky-tool-labels.ts",
-        "components/execution-access.tsx"
+        "components/execution-access.tsx",
+        "app/sky/network/page.tsx",
+        "components/sky-network.tsx",
+        "components/sky-network.module.css",
+        "components/sky-navigation.tsx",
+        "components/sky-application.module.css",
+        "lib/sky-network-device.ts",
+        "lib/sky-network-session.ts"
       ],
       "documents": [
         "docs/sky-tools-complete-design.md",
@@ -704,5 +711,34 @@
     "contentStorageAdded": false,
     "localEvidence": "docs/evidence/sky-access-recovery-verification.json",
     "productionOwnerAcceptance": false
+  },
+  "networkConnectionRecovery": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "app/sky/network/page.tsx",
+      "components/sky-network.tsx",
+      "components/sky-network.module.css",
+      "components/sky-navigation.tsx",
+      "components/sky-application.module.css",
+      "lib/sky-network-device.ts",
+      "lib/sky-network-session.ts",
+      "components/device-connection.tsx",
+      "components/sky-mcp-center.tsx",
+      "components/execution-access.tsx"
+    ],
+    "states": [
+      "idle",
+      "checking",
+      "connecting",
+      "connected",
+      "failed",
+      "offline"
+    ],
+    "deviceHintIsAuthority": false,
+    "successRequires": "Existing connectDevice or verifyDevice completes; UI timer does not grant success",
+    "permissionBoundary": "No real /connect or reconnect acceptance until separately approved PC trial",
+    "providerConnectionDraftsAreExecution": false,
+    "deploymentAcceptance": false,
+    "signinGate": "Main and detailed network connection buttons are blocked until existing authenticated jobs-array check succeeds. Recheck is read-only."
   }
 }
