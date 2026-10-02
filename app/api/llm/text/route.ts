@@ -12,6 +12,10 @@ import {
 } from '@/lib/remote-ai-guard';
 import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import { remoteAiPricingGateAccepted, remoteAiPricingUnavailable } from '@/lib/remote-ai-pricing-gate';
+import { RemoteAiTextStore, RemoteAiTextStoreError } from '@/lib/remote-ai-text-store';
+import { executeReservedRemoteAiText } from '@/lib/remote-ai-text-execution';
+import { loadVerifiedRemoteAiTextRate } from '@/lib/remote-ai-text-rate';
+import { remoteAiTextPublicRecord, remoteAiTextHttpError } from '@/lib/remote-ai-text-http';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
@@ -70,6 +74,7 @@ export async function POST(request: Request) {
       SKY_OLLAMA_BASE_URL?: string;
       SKY_LOCAL_LLM_BASE_URL?: string;
       SKY_LOCAL_LLM_API_KEY?: string;
+      REMOTE_AI_TRUSTED_RATE_KEYS?: string;
     };
     const definition = textModelProviderDefinition(provider);
     const requestedBaseUrl = typeof value.baseUrl === 'string'
@@ -95,6 +100,34 @@ export async function POST(request: Request) {
       throw new LlmProviderError('REMOTE_LLM_DISABLED', 503);
     if (remote && !remoteAiPricingGateAccepted())
       return remoteAiPricingUnavailable();
+    if (remote) {
+      if (provider !== 'openai') return remoteAiPricingUnavailable();
+      if (typeof value.quoteId !== 'string' || !/^[A-Za-z0-9._:-]{1,128}$/.test(value.quoteId) ||
+        typeof value.approvalDigest !== 'string' || !/^[a-f0-9]{64}$/.test(value.approvalDigest))
+        throw new LlmProviderError('APPROVED_TEXT_QUOTE_REQUIRED', 400);
+      const store = new RemoteAiTextStore(db);
+      const current = await store.expireBeforeSend(owner, value.quoteId);
+      if (!current) throw new RemoteAiTextStoreError('NOT_FOUND');
+      const model = typeof value.model === 'string' && value.model.trim()
+        ? value.model.trim() : definition.defaultModel;
+      const verified = await loadVerifiedRemoteAiTextRate(db, runtimeEnv.REMOTE_AI_TRUSTED_RATE_KEYS,
+        model, current.quote.ceiling.currency);
+      const execution = await executeReservedRemoteAiText({
+        store, ownerId: owner, id: current.id, approvalDigest: value.approvalDigest,
+        verified, runtimeEnv,
+        intent: {
+          ownerId: owner, requestId: current.requestId, model,
+          prompt: value.prompt, system: typeof value.system === 'string' ? value.system : undefined,
+          maxOutputTokens: typeof value.maxOutputTokens === 'number' ? value.maxOutputTokens : 1_200,
+          maximumBudgetMinor: current.quote.approvedCapMinor,
+        },
+      });
+      return Response.json({
+        ...(execution.result ?? { provider: 'openai', model, text: execution.record?.resultText ?? null }),
+        execution: execution.record ? remoteAiTextPublicRecord(execution.record) : null,
+        providerSubmission: execution.providerSubmission,
+      }, { status: execution.record?.state === 'completed' ? 200 : 202, headers: noStoreHeaders });
+    }
 
     const requestEnv = requestedBaseUrl
       ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
@@ -114,6 +147,7 @@ export async function POST(request: Request) {
     );
     return Response.json(result, { headers: noStoreHeaders });
   } catch (error) {
+    if (error instanceof RemoteAiTextStoreError) return remoteAiTextHttpError(error);
     if (error instanceof RemoteAiGuardError)
       return Response.json(
         {

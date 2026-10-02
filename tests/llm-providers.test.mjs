@@ -106,7 +106,7 @@ void test('OpenAI returns measured duration and provider usage without inventing
   const output = [{ content: [{ type: 'output_text', text: 'ok' }] }];
   for (const [usage, expected] of [
     [{ input_tokens: 12, output_tokens: 5, total_tokens: 17, input_tokens_details: { cached_tokens: 4 } },
-      { inputTokens: 12, outputTokens: 5, totalTokens: 17, cachedInputTokens: 4 }],
+      { inputTokens: 12, outputTokens: 5, totalTokens: 17, cachedInputTokens: 4, cacheWriteInputTokens: null }],
     [undefined, null],
     [{ input_tokens: -1, output_tokens: 5, total_tokens: 4 }, null],
     [{ input_tokens: 12, output_tokens: 5, total_tokens: 100 }, null],
@@ -181,9 +181,41 @@ void test('cited research preserves search restrictions and returns measured pro
     assert.equal(parse(result.payload).citations[0].url, citation);
     assert.equal(result.webSearchCalls, 1);
     assert.equal(result.model, 'fixture-model-actual');
-    assert.deepEqual(result.usage, { inputTokens: 11, outputTokens: 4, totalTokens: 15, cachedInputTokens: null });
+    assert.deepEqual(result.usage, { inputTokens: 11, outputTokens: 4, totalTokens: 15, cachedInputTokens: null, cacheWriteInputTokens: null });
     assert.ok(Number.isSafeInteger(result.durationMs) && result.durationMs >= 0);
   }
+});
+
+void test('standard text transport retains cache partitions, actual tier and unexpected tool use', async () => {
+  const run = async (usage, output) => generateText({ provider: 'openai', model: 'fixture-model', prompt: 'test' },
+    { OPENAI_API_KEY: 'fixture-key' }, async (_url, init) => {
+      assert.equal(JSON.parse(init.body).service_tier, 'default');
+      return response({ id: 'resp_fixture', model: 'fixture-model', service_tier: 'priority', status: 'completed', usage, output });
+    });
+  const message = { type: 'message', content: [{ type: 'output_text', text: 'result' }] };
+  const usage = { input_tokens: 12, output_tokens: 5, total_tokens: 17,
+    input_tokens_details: { cached_tokens: 4, cache_write_tokens: 3 } };
+  const result = await run(usage, [message, { type: 'web_search_call' }]);
+  assert.equal(result.serviceTier, 'priority', 'actual processing tier must not be inferred from the request');
+  assert.equal(result.reportedModel, 'fixture-model');
+  assert.equal(result.responseStatus, 'completed');
+  assert.equal(result.providerResponseId, 'resp_fixture');
+  assert.equal(result.webSearchCalls, 1);
+  assert.equal(result.textOnlyOutput, false);
+  assert.deepEqual(result.usage, { inputTokens: 12, outputTokens: 5, totalTokens: 17,
+    cachedInputTokens: 4, cacheWriteInputTokens: 3 });
+  const unknownTool = await run(usage, [message, { type: 'future_billable_tool' }]);
+  assert.equal(unknownTool.textOnlyOutput, false);
+  const invalid = await run({ ...usage, input_tokens_details: { cached_tokens: 10, cache_write_tokens: 3 } }, [message]);
+  assert.equal(invalid.usage, null, 'cache categories must partition, not exceed, total input');
+  const incomplete = await createOpenAiResponse({ model: 'fixture-model' }, { OPENAI_API_KEY: 'fixture-key' },
+    async () => response({ usage }));
+  assert.equal(incomplete.webSearchCalls, null, 'missing output is unknown, not zero tool usage');
+  assert.equal(incomplete.serviceTier, null);
+  assert.equal(incomplete.textOnlyOutput, false);
+  assert.equal(incomplete.reportedModel, null, 'request model fallback is not observed provider identity');
+  assert.equal(incomplete.responseStatus, null);
+  assert.equal(incomplete.providerResponseId, null);
 });
 
 void test('research transport does not submit without a credential or valid model', async () => {
@@ -193,6 +225,8 @@ void test('research transport does not submit without a credential or valid mode
     error => error.code === 'MISSING_PROVIDER_CREDENTIAL' && error.status === 503);
   await assert.rejects(createOpenAiResponse({ model: '' }, { OPENAI_API_KEY: 'fixture-key' }, fetcher),
     error => error.code === 'INVALID_MODEL' && error.status === 400);
+  await assert.rejects(createOpenAiResponse({ model: 'fixture-model' }, { OPENAI_API_KEY: 'fixture-key' }, fetcher, 'bad\nheader'),
+    error => error.code === 'INVALID_CLIENT_REQUEST_ID' && error.status === 400);
   assert.equal(calls, 0);
 });
 
@@ -200,7 +234,9 @@ void test('research response body timeout is indeterminate and never automatical
   let calls = 0;
   await assert.rejects(createOpenAiResponse({ model: 'fixture-model' }, { OPENAI_API_KEY: 'fixture-key' }, async () => {
     calls++;
-    return { ok: true, json: async () => { throw new DOMException('private body error', 'AbortError'); } };
-  }), error => error.code === 'UPSTREAM_TIMEOUT' && error.status === 504 && !/private/.test(error.message));
+    return { ok: true, headers: new Headers({ 'x-request-id': 'req_fixture_body_timeout' }),
+      json: async () => { throw new DOMException('private body error', 'AbortError'); } };
+  }), error => error.code === 'UPSTREAM_TIMEOUT' && error.status === 504 &&
+    error.providerRequestId === 'req_fixture_body_timeout' && !/private/.test(error.message));
   assert.equal(calls, 1);
 });

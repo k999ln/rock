@@ -197,6 +197,7 @@ export type TextGenerationRequest = {
   system?: string;
   prompt: string;
   maxOutputTokens?: number;
+  clientRequestId?: string;
 };
 
 export type TextGenerationUsage = {
@@ -204,6 +205,7 @@ export type TextGenerationUsage = {
   outputTokens: number;
   totalTokens: number;
   cachedInputTokens: number | null;
+  cacheWriteInputTokens: number | null;
 };
 
 export type TextGenerationResult = {
@@ -212,6 +214,14 @@ export type TextGenerationResult = {
   text: string;
   durationMs?: number;
   usage?: TextGenerationUsage | null;
+  serviceTier?: string | null;
+  webSearchCalls?: number | null;
+  textOnlyOutput?: boolean;
+  reportedModel?: string | null;
+  responseStatus?: string | null;
+  providerResponseId?: string | null;
+  clientRequestId?: string | null;
+  providerRequestId?: string | null;
 };
 
 export type LlmRuntimeEnv = {
@@ -228,6 +238,7 @@ export type LlmRuntimeEnv = {
 export class LlmProviderError extends Error {
   readonly code: string;
   readonly status: number;
+  providerRequestId?: string;
 
   constructor(code: string, status = 502) {
     super(code);
@@ -327,10 +338,15 @@ function openAiUsage(payload: Record<string, unknown>): TextGenerationUsage | nu
     typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
   if (!valid(input) || !valid(output) || !valid(total) ||
       !Number.isSafeInteger(input + output) || total !== input + output) return null;
-  const cached = asRecord(usage.input_tokens_details)?.cached_tokens;
+  const details = asRecord(usage.input_tokens_details);
+  const cached = details?.cached_tokens;
+  const written = details?.cache_write_tokens;
+  if ((valid(cached) && cached > input) || (valid(written) && written > input) ||
+      (valid(cached) && valid(written) && cached + written > input)) return null;
   return {
     inputTokens: input, outputTokens: output, totalTokens: total,
-    cachedInputTokens: valid(cached) && cached <= input ? cached : null,
+    cachedInputTokens: valid(cached) ? cached : null,
+    cacheWriteInputTokens: valid(written) ? written : null,
   };
 }
 
@@ -339,7 +355,14 @@ export type OpenAiResponseResult = {
   model: string;
   durationMs: number;
   usage: TextGenerationUsage | null;
-  webSearchCalls: number;
+  webSearchCalls: number | null;
+  serviceTier: string | null;
+  textOnlyOutput: boolean;
+  reportedModel: string | null;
+  responseStatus: string | null;
+  providerResponseId: string | null;
+  clientRequestId: string | null;
+  providerRequestId: string | null;
 };
 
 /** Shared transport for text and cited research. Callers must authorize spending first. */
@@ -347,12 +370,16 @@ export async function createOpenAiResponse(
   body: Record<string, unknown>,
   runtimeEnv: Pick<LlmRuntimeEnv, 'OPENAI_API_KEY'>,
   fetchImpl: FetchLike = fetch,
+  clientRequestId?: string,
 ): Promise<OpenAiResponseResult> {
   if (!runtimeEnv.OPENAI_API_KEY)
     throw new LlmProviderError('MISSING_PROVIDER_CREDENTIAL', 503);
   if (typeof body.model !== 'string' || !body.model.trim() || body.model.length > 120)
     throw new LlmProviderError('INVALID_MODEL', 400);
+  if (clientRequestId !== undefined && !/^[A-Za-z0-9._:-]{1,128}$/.test(clientRequestId))
+    throw new LlmProviderError('INVALID_CLIENT_REQUEST_ID', 400);
   const startedAt = Date.now();
+  let providerRequestId: string | null = null;
   try {
     const response = await fetchImpl('https://api.openai.com/v1/responses', {
       method: 'POST',
@@ -360,10 +387,13 @@ export async function createOpenAiResponse(
       headers: {
         Authorization: `Bearer ${runtimeEnv.OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
+        ...(clientRequestId ? { 'X-Client-Request-Id': clientRequestId } : {}),
       },
       body: JSON.stringify({ ...body, store: false }),
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
+    const requestHeader = response.headers?.get('x-request-id');
+    providerRequestId = requestHeader && /^req_[A-Za-z0-9_-]{1,200}$/.test(requestHeader) ? requestHeader : null;
     const payload = await jsonResponse(response);
     if (payload.status !== undefined && payload.status !== 'completed')
       throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
@@ -373,16 +403,36 @@ export async function createOpenAiResponse(
         ? payload.model : body.model,
       durationMs: Math.max(0, Date.now() - startedAt),
       usage: openAiUsage(payload),
+      clientRequestId: clientRequestId ?? null,
+      providerRequestId,
+      reportedModel: typeof payload.model === 'string' && /^[A-Za-z0-9._:-]{1,120}$/.test(payload.model)
+        ? payload.model : null,
+      responseStatus: typeof payload.status === 'string' ? payload.status : null,
+      providerResponseId: typeof payload.id === 'string' && /^resp_[A-Za-z0-9_-]{1,200}$/.test(payload.id)
+        ? payload.id : null,
+      serviceTier: typeof payload.service_tier === 'string' && /^[a-z_]{1,32}$/.test(payload.service_tier)
+        ? payload.service_tier : null,
+      textOnlyOutput: Array.isArray(payload.output) && payload.output.every((item) => {
+        const value = asRecord(item);
+        if (value?.type === 'reasoning') return true;
+        return value?.type === 'message' && Array.isArray(value.content) &&
+          value.content.every((content) => ['output_text', 'refusal'].includes(String(asRecord(content)?.type)));
+      }),
       // These are observed output items, not a reconciled provider invoice.
       webSearchCalls: Array.isArray(payload.output)
-        ? payload.output.filter((item) => asRecord(item)?.type === 'web_search_call').length : 0,
+        ? payload.output.filter((item) => asRecord(item)?.type === 'web_search_call').length : null,
     };
   } catch (error) {
-    if (error instanceof LlmProviderError) throw error;
-    if (error instanceof Error &&
-        (error.name === 'TimeoutError' || error.name === 'AbortError'))
-      throw new LlmProviderError('UPSTREAM_TIMEOUT', 504);
-    throw new LlmProviderError('UPSTREAM_UNAVAILABLE', 502);
+    if (error instanceof LlmProviderError) {
+      if (providerRequestId) error.providerRequestId = providerRequestId;
+      throw error;
+    }
+    const failure = error instanceof Error &&
+      (error.name === 'TimeoutError' || error.name === 'AbortError')
+      ? new LlmProviderError('UPSTREAM_TIMEOUT', 504)
+      : new LlmProviderError('UPSTREAM_UNAVAILABLE', 502);
+    if (providerRequestId) failure.providerRequestId = providerRequestId;
+    throw failure;
   }
 }
 
@@ -473,15 +523,25 @@ async function generateTextRequest(
         model,
         input: messages,
         max_output_tokens: maxOutputTokens,
+        service_tier: 'default',
       },
       runtimeEnv,
       fetchImpl,
+      request.clientRequestId,
     );
     return {
       provider: request.provider,
       model: result.model,
       text: textFromOpenAiResponse(result.payload),
       usage: result.usage,
+      serviceTier: result.serviceTier,
+      webSearchCalls: result.webSearchCalls,
+      textOnlyOutput: result.textOnlyOutput,
+      reportedModel: result.reportedModel,
+      responseStatus: result.responseStatus,
+      providerResponseId: result.providerResponseId,
+      clientRequestId: result.clientRequestId,
+      providerRequestId: result.providerRequestId,
     };
   }
 

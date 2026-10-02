@@ -1,3 +1,7 @@
+## 2026-10-02 — Skyクラウド依頼の準備と履歴復帰
+
+WEB04/ROCK: 同じSkyのブラウザ仕事画面へ見積履歴・仕事URL復元・認証期限切れ案内を同期。既存auth/Stripe/各Toolを保持し、料金表/quoteの追加schemaだけを配備対象にする。関連30試験、Site Worker/D1更新15項目、型、product lint、build合格。正本full verifyは663 Node/19 Fashion/858 Worker-D1合格。公開は準備中。実Provider/請求/本人OAuth/Apple Pay/OS連携は別受入で、実行gateはfalse。
+
 ## 2026-10-02 — Skyの発注前下書き削除
 
 実ユーザーのデータ管理のため、本人別・同一origin・revision・draft状態を照合する削除APIと対象確認画面を実装。担当開始済みの案件は削除せず、結果不明の再読込はGETのみ。現在は正本のDB/認証/API試験と配備前検証中で、本番削除受入を完了扱いにしない。配信用checkoutの単体試験はmigrationが部分的なためDB試験を実行できず、全migrationを持つ正本の同試験4/4は合格。次にfull verify、既存Skyへの公開、Pixelで取消・削除・再読込・D1行不在を確認する。クラウド資格情報、料金/予算、Apple Pay、外部OAuthと進行済み案件の保持/削除は別の未完了項目。

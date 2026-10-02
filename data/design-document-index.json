@@ -627,5 +627,44 @@
       "runtimeImported": false,
       "r5RequirementsChanged": false
     }
-  ]
+  ],
+  "remoteAiTextPricingPreparation": {
+    "design": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "lib/remote-ai-rate-card.ts",
+      "lib/remote-ai-text-pricing.ts",
+      "lib/llm-providers.ts",
+      "lib/remote-ai-text-store.ts",
+      "lib/remote-ai-text-execution.ts",
+      "lib/remote-ai-text-rate.ts",
+      "lib/remote-ai-text-http.ts",
+      "app/api/llm/quotes/route.ts",
+      "app/api/llm/quotes/[id]/route.ts",
+      "app/api/llm/text/route.ts",
+      "drizzle/0003_remote_ai_text_executions.sql",
+      "lib/remote-ai-text-request.ts",
+      "lib/remote-ai-text-client.ts",
+      "components/workbench.tsx"
+    ],
+    "tests": [
+      "tests/remote-ai-rate-card.test.mjs",
+      "tests/llm-providers.test.mjs",
+      "tests/remote-ai-text-client.test.mjs"
+    ],
+    "scope": "OpenAI standard text-only; cache read/write priced separately; no hosted-tool fee coverage",
+    "quotePersistence": true,
+    "budgetReservationConnected": true,
+    "pricingGateAccepted": false,
+    "productionProviderExecutionVerified": false,
+    "verificationEnvironment": "Canonical synthetic runtime plus Site-specific synthetic schema upgrade; not live provider",
+    "productionQuotePersistence": false,
+    "productionBudgetReservationConnected": false,
+    "fundedWalletConnected": false,
+    "conversationUiConnected": false,
+    "workbenchUiConnected": true,
+    "workbenchQuoteHistoryAndSyntheticSigninLocallyVerified": true,
+    "productionOwnerSigninVerified": false,
+    "conversationComposerConnected": false,
+    "uiEvidence": "docs/evidence/sky-cloud-ui-verification.json"
+  }
 }

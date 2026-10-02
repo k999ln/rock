@@ -7,6 +7,14 @@ export function remoteAiPricingGateAccepted() {
   return false;
 }
 
+export function remoteAiTextExecutionAvailable(runtime: {
+  SKY_REMOTE_LLM_ENABLED?: string;
+  OPENAI_API_KEY?: string;
+}) {
+  return remoteAiPricingGateAccepted() && runtime.SKY_REMOTE_LLM_ENABLED === 'true' &&
+    typeof runtime.OPENAI_API_KEY === 'string' && runtime.OPENAI_API_KEY.length > 0;
+}
+
 export function remoteAiPricingUnavailable() {
   return Response.json(
     {

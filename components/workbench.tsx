@@ -9,6 +9,10 @@ import {
   type WorkCommand,
 } from '@/lib/workflow';
 import { type RunRecorder } from '@/lib/device';
+import { matchesA2ADelegationRecovery } from '@/lib/a2a-delegation-recovery';
+import { formatCurrencyMinor, parseCurrencyInputToMinor } from '@/lib/currency-format';
+import { remoteAiTextRequestDigest } from '@/lib/remote-ai-text-request';
+import { remoteAiTextRequest, RemoteAiTextClientError } from '@/lib/remote-ai-text-client';
 import { MrToolRunner, type MrRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
 import {
@@ -36,8 +40,14 @@ const stateNames = {
 type Update = { jobId: string; revision: number; command: WorkCommand };
 type Delegation = {
   id: string;
+  parentJobId: string;
+  idempotencyKey: string;
+  messageId: string;
+  targetOrigin: string;
   targetAgentName: string;
   targetAgentVersion: string;
+  inputSha256: string;
+  authorizationSha256: string;
   state: string;
   remoteTaskId: string | null;
   remoteState: string | null;
@@ -45,8 +55,19 @@ type Delegation = {
   budgetCurrency: string;
   budgetLimitMinor: number;
   parentBudgetLimitMinor: number;
+  continueWhileDeviceOffline: boolean;
   artifactsCaptured: number;
   updatedAt: number;
+  liveUsageSnapshot?: {
+    sequence: number;
+    providerId: string;
+    currency: string;
+    cumulativeAmountMinor: number;
+    pricingVersion: string;
+    issuedAt: number;
+    receivedAt: number;
+    snapshot: { usage?: Array<{ meter: string; quantity: number; unit: string; amountMinor: number }> } | null;
+  } | null;
 };
 type DelegationBudgetPool = {
   currency: string;
@@ -60,6 +81,18 @@ type DelegationBudgetReservation = {
   reservedMinor: number;
   settledMinor: number | null;
   state: 'held' | 'released' | 'settled';
+};
+type DelegationFinalUsageReceipt = {
+  providerId: string;
+  providerReference: string;
+  currency: string;
+  amountMinor: number;
+  issuedAt: number;
+  receipt: { pricingVersion?: string; usage?: Array<{ meter: string; quantity: number; unit: string; amountMinor: number }> } | null;
+};
+type DelegationUsageDetails = {
+  usageReceipt: DelegationFinalUsageReceipt | null;
+  liveUsageSnapshot: NonNullable<Delegation['liveUsageSnapshot']> | null;
 };
 type A2AAgentConnection = {
   id: string;
@@ -93,11 +126,50 @@ type DelegationRequest = {
   budgetCurrency: string;
   budgetLimitMinor: number;
   parentBudgetLimitMinor: number;
+  continueWhileDeviceOffline: boolean;
   deadlineAt: number;
 };
 type DelegationReview = {
   request: DelegationRequest;
   authorizationSha256: string;
+};
+type RemoteTextExecution = {
+  id: string;
+  parentJobId: string;
+  parentBudgetLimitMinor: number;
+  requestId: string;
+  approvalDigest: string;
+  state: 'quoted' | 'reserved' | 'sending' | 'completed' | 'unreconciled' | 'cancelled' | 'expired';
+  quote: {
+    requestDigest: string;
+    createdAt: number;
+    expiresAt: number;
+    approvedCapMinor: number;
+    ceiling: {
+      currency: string;
+      maximumChargeMinor: number;
+      inputTokenUpperBound: number;
+      outputTokenLimit: number;
+      modelId: string;
+      pricingVersion: string;
+      rateCardDigest: string;
+    };
+  };
+  settledMinor: number | null;
+  usage: { inputTokens: number; cachedInputTokens: number; cacheWriteInputTokens: number; outputTokens: number } | null;
+  price: { chargeMinor: number; currency: string; pricingVersion: string; items: Array<{ category: string; tokens: number; rateMinorMicrosPerMillionTokens: number }> } | null;
+  resultText: string | null;
+  errorCode: string | null;
+  saveResult: boolean;
+  createdAt: number;
+  updatedAt: number;
+};
+type RemoteTextEstimate = {
+  estimate: RemoteTextExecution['quote']['ceiling'];
+  rateSource: string;
+  cardId: string;
+  withinUserCap: boolean;
+  currencies?: string[];
 };
 function delegationStateName(state: string) {
   const labels: Record<string, string> = {
@@ -166,6 +238,10 @@ async function delegationRequest<T>(path: string, method = 'GET', value?: unknow
   if (!response.ok) throw new Error(data.error || '委任を保存できませんでした。');
   return data;
 }
+async function sha256Hex(value: string) {
+  const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return [...new Uint8Array(bytes)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
 export default function Workbench({
   embedded = false,
 }: {
@@ -174,6 +250,8 @@ export default function Workbench({
   const [jobs, setJobs] = useState<WorkJob[]>([]),
     [selectedId, setSelectedId] = useState('');
   const [delegations, setDelegations] = useState<Delegation[]>([]);
+  const delegationsRef = useRef(delegations);
+  useEffect(() => { delegationsRef.current = delegations; }, [delegations]);
   const [delegationBudgetPool, setDelegationBudgetPool] = useState<DelegationBudgetPool | null>(null);
   const [delegationBudgetReservations, setDelegationBudgetReservations] = useState<DelegationBudgetReservation[]>([]);
   const [a2aAgents, setA2aAgents] = useState<A2AAgentConnection[]>([]);
@@ -181,6 +259,7 @@ export default function Workbench({
   const [delegationBusy, setDelegationBusy] = useState(false);
   const [delegationError, setDelegationError] = useState('');
   const [artifactDocuments, setArtifactDocuments] = useState<Record<string, ArtifactDocument[]>>({});
+  const [delegationUsageDetails, setDelegationUsageDetails] = useState<Record<string, DelegationUsageDetails | null>>({});
   const [delegationForm, setDelegationForm] = useState({
     targetOrigin: '',
     targetAgentName: '',
@@ -189,8 +268,23 @@ export default function Workbench({
     budgetCurrency: 'USD',
     budgetLimitMinor: 0,
     parentBudgetLimitMinor: 0,
+    continueWhileDeviceOffline: false,
   });
   const [delegationReview, setDelegationReview] = useState<DelegationReview | null>(null);
+  const [remoteTextPrompt, setRemoteTextPrompt] = useState('');
+  const [remoteTextCurrency, setRemoteTextCurrency] = useState('USD');
+  const [remoteTextCurrencyOptions, setRemoteTextCurrencyOptions] = useState<string[]>([]);
+  const [remoteTextCapMinor, setRemoteTextCapMinor] = useState('');
+  const [remoteTextParentCapMinor, setRemoteTextParentCapMinor] = useState('');
+  const [remoteTextSaveResult, setRemoteTextSaveResult] = useState(false);
+  const [remoteTextEstimate, setRemoteTextEstimate] = useState<RemoteTextEstimate | null>(null);
+  const [remoteTextExecutions, setRemoteTextExecutions] = useState<RemoteTextExecution[]>([]);
+  const [remoteTextExecutionAvailable, setRemoteTextExecutionAvailable] = useState(false);
+  const [remoteTextError, setRemoteTextError] = useState('');
+  const [remoteTextNeedsSignin, setRemoteTextNeedsSignin] = useState(false);
+  const [remoteTextBusy, setRemoteTextBusy] = useState(false);
+  const [remoteTextResult, setRemoteTextResult] = useState('');
+  const remoteTextSubmission = useRef<{ fingerprint: string; requestId: string } | null>(null);
   const delegationSubmission = useRef<{ fingerprint: string; request: DelegationRequest } | null>(null);
   const selectedIdRef = useRef('');
   const [title, setTitle] = useState(''),
@@ -230,6 +324,11 @@ export default function Workbench({
         if (active) {
           setJobs(data.jobs);
           setReady(true);
+          const restoreId = new URL(window.location.href).searchParams.get('workJob');
+          if (restoreId && data.jobs.some((job) => job.id === restoreId)) {
+            selectedIdRef.current = restoreId;
+            setSelectedId(restoreId);
+          }
         }
       })
       .catch((e: unknown) => {
@@ -271,6 +370,7 @@ export default function Workbench({
             budgetCurrency: data.budget!.currency,
             parentBudgetLimitMinor: data.budget!.budgetLimitMinor,
           }));
+          setRemoteTextCurrency(data.budget.currency);
         }
       }
     } catch (cause) {
@@ -279,6 +379,175 @@ export default function Workbench({
       setDelegationBusy(false);
     }
   }, []);
+  const remoteTextFailure = useCallback((cause: unknown, parentJobId: string) => {
+    if (selectedIdRef.current !== parentJobId) return;
+    setRemoteTextExecutionAvailable(false);
+    setRemoteTextError(cause instanceof Error ? cause.message : '保存済みの状態を確認できませんでした。');
+    if (cause instanceof RemoteAiTextClientError && cause.status === 401) {
+      setRemoteTextNeedsSignin(true);
+      setRemoteTextExecutions([]);
+      setRemoteTextResult('');
+    }
+  }, []);
+  const refreshRemoteText = useCallback(async (parentJobId: string) => {
+    if (!parentJobId) return;
+    try {
+      const data = await remoteAiTextRequest<{ executions?: RemoteTextExecution[]; executionAvailable?: boolean }>(
+        `/api/llm/quotes?parentJobId=${encodeURIComponent(parentJobId)}`);
+      if (selectedIdRef.current !== parentJobId) return;
+      setRemoteTextExecutions((data.executions ?? []).filter((item) => item.parentJobId === parentJobId));
+      setRemoteTextExecutionAvailable(data.executionAvailable === true);
+      setRemoteTextNeedsSignin(false);
+    } catch (cause) { remoteTextFailure(cause, parentJobId); }
+  }, [remoteTextFailure]);
+  useEffect(() => {
+    if (!selectedId || remoteTextNeedsSignin) return;
+    let active = true;
+    let inFlight = false;
+    const poll = async () => {
+      if (!active || inFlight) return;
+      inFlight = true;
+      try {
+        await refreshRemoteText(selectedId);
+        if (active) await refreshDelegations(selectedId);
+      } finally { inFlight = false; }
+    };
+    void poll();
+    const timer = window.setInterval(() => { void poll(); }, 10000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, [selectedId, remoteTextNeedsSignin, refreshRemoteText, refreshDelegations]);
+  async function createRemoteTextQuote(event: { preventDefault(): void }) {
+    event.preventDefault();
+    if (!selected || selected.status !== 'active') return;
+    const currency = remoteTextCurrency.trim().toUpperCase();
+    const capMinor = parseCurrencyInputToMinor(remoteTextCapMinor, currency);
+    const pendingAnchor = remoteTextExecutions.find((item) => ['quoted', 'reserved', 'sending', 'unreconciled', 'completed'].includes(item.state));
+    const anchoredCurrency = delegationBudgetPool?.currency ?? pendingAnchor?.quote.ceiling.currency ?? null;
+    const anchoredParentCap = delegationBudgetPool?.budgetLimitMinor ?? pendingAnchor?.parentBudgetLimitMinor ?? null;
+    const poolCurrencyMismatch = anchoredCurrency !== null && anchoredCurrency !== currency;
+    const poolCap = anchoredCurrency === currency ? anchoredParentCap : null;
+    const typedParentCap = parseCurrencyInputToMinor(remoteTextParentCapMinor, currency);
+    const parentCap = poolCap ?? typedParentCap;
+    const availableParent = poolCap === null
+      ? parentCap
+      : poolCap - (delegationBudgetPool?.reservedMinor ?? 0) - (delegationBudgetPool?.settledMinor ?? 0);
+    if (poolCurrencyMismatch || !remoteTextPrompt.trim() || remoteTextPrompt.length > 24_000 ||
+      capMinor === null || capMinor === 0 || parentCap === null || parentCap === 0 || availableParent === null ||
+      !Number.isSafeInteger(availableParent) || capMinor > availableParent || capMinor > parentCap) {
+      setRemoteTextError(poolCurrencyMismatch
+        ? `この仕事の共通予算は${anchoredCurrency}です。通貨を合わせてください。`
+        : '依頼文、通貨、依頼別上限を確認してください。上限は同じ親jobの残り予算以下にしてください。');
+      return;
+    }
+    const parentJobId = selected.id;
+    const fingerprint = JSON.stringify({ parentJobId: selected.id, prompt: remoteTextPrompt.trim(), currency, capMinor, parentCap, saveResult: remoteTextSaveResult });
+    if (remoteTextSubmission.current?.fingerprint !== fingerprint)
+      remoteTextSubmission.current = { fingerprint, requestId: crypto.randomUUID() };
+    const requestId = remoteTextSubmission.current.requestId;
+    setRemoteTextBusy(true);
+    setRemoteTextError('');
+    setRemoteTextResult('');
+    try {
+      const estimateData = await remoteAiTextRequest<RemoteTextEstimate>('/api/llm/estimate', 'POST', {
+        provider: 'openai', prompt: remoteTextPrompt.trim(), maxOutputTokens: 1200, currency, maximumBudgetMinor: capMinor,
+      });
+      if (selectedIdRef.current !== parentJobId) return;
+      if (!estimateData.estimate) throw new Error('クラウドAIの料金見積を確認できませんでした。');
+      setRemoteTextEstimate(estimateData);
+      const quoteData = await remoteAiTextRequest<{ execution?: RemoteTextExecution; executionAvailable?: boolean }>(
+        '/api/llm/quotes', 'POST', { requestId, parentJobId, parentBudgetLimitMinor: parentCap,
+          model: estimateData.estimate.modelId, prompt: remoteTextPrompt.trim(), maxOutputTokens: 1200,
+          currency: estimateData.estimate.currency, maximumBudgetMinor: capMinor, saveResult: remoteTextSaveResult });
+      if (selectedIdRef.current !== parentJobId) return;
+      if (!quoteData.execution) throw new Error('見積の保存を確認できませんでした。状態を更新してください。');
+      setRemoteTextExecutionAvailable(quoteData.executionAvailable === true);
+      setRemoteTextExecutions((items) => [quoteData.execution!, ...items.filter((item) => item.id !== quoteData.execution!.id)]);
+      setRemoteTextCurrency(estimateData.estimate.currency);
+      setRemoteTextCurrencyOptions([]);
+      setRemoteTextError(quoteData.executionAvailable
+        ? '見積を保存しました。内容と最大費用を確認し、明示承認してから実行してください。'
+        : '見積を保存しました。外部Provider実行gateは未受入のため、送信していません。');
+    } catch (cause) {
+      if (selectedIdRef.current === parentJobId && cause instanceof RemoteAiTextClientError &&
+        cause.code === 'RATE_CARD_CURRENCY_REQUIRED') setRemoteTextCurrencyOptions(cause.currencies);
+      remoteTextFailure(cause, parentJobId);
+    } finally { setRemoteTextBusy(false); }
+  }
+  async function runRemoteText(execution: RemoteTextExecution) {
+    const parentJobId = execution.parentJobId;
+    if (!remoteTextExecutionAvailable || selectedIdRef.current !== parentJobId || execution.state !== 'quoted') return;
+    const prompt = remoteTextPrompt.trim();
+    setRemoteTextBusy(true);
+    setRemoteTextError('');
+    setRemoteTextResult('');
+    try {
+      const requestHash = await remoteAiTextRequestDigest({
+        model: execution.quote.ceiling.modelId, prompt, maxOutputTokens: execution.quote.ceiling.outputTokenLimit,
+      });
+      if (!prompt || requestHash !== execution.quote.requestDigest)
+        throw new Error('見積時の依頼文と一致しません。元の依頼文を貼り付けてから承認してください。');
+      if (selectedIdRef.current !== parentJobId) return;
+      const approval = await remoteAiTextRequest<{ execution: RemoteTextExecution }>(
+        `/api/llm/quotes/${encodeURIComponent(execution.id)}`, 'POST',
+        { action: 'approve', approvalDigest: execution.approvalDigest, consent: true });
+      if (selectedIdRef.current !== parentJobId) return;
+      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? approval.execution : item));
+      const result = await remoteAiTextRequest<{ text?: string; execution?: RemoteTextExecution }>(
+        '/api/llm/text', 'POST', { provider: 'openai', model: execution.quote.ceiling.modelId,
+          prompt, maxOutputTokens: execution.quote.ceiling.outputTokenLimit,
+          quoteId: execution.id, approvalDigest: execution.approvalDigest, consent: true }, 120000);
+      if (selectedIdRef.current !== parentJobId) return;
+      if (result.execution) setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? result.execution! : item));
+      if (result.text) setRemoteTextResult(result.text);
+      await refreshRemoteText(parentJobId);
+      await refreshDelegations(parentJobId);
+    } catch (cause) {
+      remoteTextFailure(cause, parentJobId);
+      if (!(cause instanceof RemoteAiTextClientError && cause.status === 401)) {
+        await refreshRemoteText(parentJobId);
+        await refreshDelegations(parentJobId);
+      }
+    } finally { setRemoteTextBusy(false); }
+  }
+  async function cancelRemoteTextQuote(execution: RemoteTextExecution) {
+    setRemoteTextBusy(true);
+    setRemoteTextError('');
+    try {
+      const data = await remoteAiTextRequest<{ execution: RemoteTextExecution }>(
+        `/api/llm/quotes/${encodeURIComponent(execution.id)}`, 'POST',
+        { action: 'cancel', approvalDigest: execution.approvalDigest, consent: true });
+      if (selectedIdRef.current !== execution.parentJobId) return;
+      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? data.execution : item));
+      await refreshDelegations(execution.parentJobId);
+    } catch (cause) {
+      remoteTextFailure(cause, execution.parentJobId);
+      if (!(cause instanceof RemoteAiTextClientError && cause.status === 401))
+        await refreshRemoteText(execution.parentJobId);
+    } finally { setRemoteTextBusy(false); }
+  }
+  useEffect(() => {
+    if (!selectedId) return;
+    let active = true;
+    let inFlight = false;
+    const poll = async () => {
+      if (inFlight || !delegationsRef.current.some((item) => item.remoteTaskId &&
+        !['remote_completed', 'remote_failed', 'remote_cancelled', 'remote_rejected', 'cancelled_before_dispatch', 'expired'].includes(item.state))) return;
+      inFlight = true;
+      try {
+        const response = await fetch(`/api/sky/a2a-delegations?parentJobId=${encodeURIComponent(selectedId)}`,
+          { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+        const data = await response.json() as { delegations?: Delegation[]; budget?: DelegationBudgetPool | null; reservations?: DelegationBudgetReservation[] };
+        if (active && response.ok) {
+          setDelegations(data.delegations ?? []);
+          setDelegationBudgetPool(data.budget ?? null);
+          setDelegationBudgetReservations(data.reservations ?? []);
+        }
+      } catch { /* transient connectivity must not erase the last signed snapshot */ }
+      finally { inFlight = false; }
+    };
+    const timer = window.setInterval(() => { void poll(); }, 10_000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, [selectedId]);
   const refreshA2aAgents = useCallback(async () => {
     try {
       const data = await delegationRequest<{ agents: A2AAgentConnection[] }>(
@@ -290,12 +559,22 @@ export default function Workbench({
     }
   }, []);
   function selectJob(id: string) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('workJob', id);
+    window.history.replaceState(window.history.state, '', url);
     selectedIdRef.current = id;
+    setRemoteTextExecutionAvailable(false);
+    setRemoteTextNeedsSignin(false);
     setSelectedId(id);
     setArtifactDocuments({});
     setDelegationBudgetPool(null);
     setDelegationBudgetReservations([]);
     void refreshDelegations(id);
+    setRemoteTextExecutions([]);
+    setRemoteTextResult('');
+    setRemoteTextError('');
+    setRemoteTextEstimate(null);
+    void refreshRemoteText(id);
     void refreshA2aAgents();
   }
   useEffect(() => {
@@ -305,6 +584,9 @@ export default function Workbench({
     return () => window.removeEventListener('loop-run-state', update);
   }, []);
   const selected = jobs.find((job) => job.id === selectedId);
+  const pendingRemoteTextAnchor = remoteTextExecutions.find((item) => ['quoted', 'reserved', 'sending', 'unreconciled', 'completed'].includes(item.state));
+  const remoteTextBudgetCurrency = delegationBudgetPool?.currency ?? pendingRemoteTextAnchor?.quote.ceiling.currency ?? null;
+  const remoteTextBudgetLimit = delegationBudgetPool?.budgetLimitMinor ?? pendingRemoteTextAnchor?.parentBudgetLimitMinor ?? null;
   const currentStep = selected?.steps.find((step) => !step.passed);
   const openRunner = selected?.steps.find((step) => step.id === runnerStep);
   const locked = busy || running || pending !== null || loading;
@@ -362,11 +644,12 @@ export default function Workbench({
   const record = useCallback<RunRecorder>(
     async (...args) => {
       const [tool, transport, status, started, sample, outcome] = args;
-      if (!selected || !runnerStep)
+      const currentJob = jobs.find((job) => job.id === selectedId);
+      if (!currentJob || !runnerStep)
         throw new Error('仕事と手順を選んでください。');
       await submit({
-        jobId: selected.id,
-        revision: selected.revision,
+        jobId: currentJob.id,
+        revision: currentJob.revision,
         command: {
           id: crypto.randomUUID(),
           action: 'record',
@@ -379,7 +662,7 @@ export default function Workbench({
         },
       });
     },
-    [selected, runnerStep, submit],
+    [jobs, selectedId, runnerStep, submit],
   );
   async function finish(action: 'complete' | 'cancel') {
     if (!selected) return;
@@ -421,6 +704,20 @@ export default function Workbench({
       setDelegationBusy(false);
     }
   }
+  async function loadUsageDetails(delegationId: string) {
+    setDelegationBusy(true);
+    setDelegationError('');
+    try {
+      const data = await delegationRequest<DelegationUsageDetails>(
+        `/api/sky/a2a-delegations/${encodeURIComponent(delegationId)}`,
+      );
+      setDelegationUsageDetails((current) => ({ ...current, [delegationId]: data }));
+    } catch (cause) {
+      setDelegationError(cause instanceof Error ? cause.message : '利用明細を取得できませんでした。');
+    } finally {
+      setDelegationBusy(false);
+    }
+  }
   async function requestDelegationCancel(delegationId: string) {
     if (!window.confirm('この委任先へ停止要求を送りますか？相手側で停止が確認されるまで「停止未確認」と表示します。')) return;
     setDelegationBusy(true);
@@ -441,7 +738,8 @@ export default function Workbench({
       setDelegationBusy(false);
     }
   }
-  async function createDelegationDraft() {
+  const createDelegationDraft = useCallback(async () => {
+    const selected = jobs.find((job) => job.id === selectedId);
     if (!selected) return;
     setDelegationBusy(true);
     setDelegationError('');
@@ -462,6 +760,7 @@ export default function Workbench({
         budgetCurrency: delegationForm.budgetCurrency.trim().toUpperCase(),
         budgetLimitMinor: delegationForm.budgetLimitMinor,
         parentBudgetLimitMinor: delegationForm.parentBudgetLimitMinor,
+        continueWhileDeviceOffline: delegationForm.continueWhileDeviceOffline,
         deadlineAt: Date.now() + 24 * 60 * 60 * 1000,
       };
       delegationSubmission.current = { fingerprint, request };
@@ -476,11 +775,34 @@ export default function Workbench({
       setDelegationReview({ request, authorizationSha256: data.approval.digest });
       await refreshDelegations(selected.id);
     } catch (cause) {
-      setDelegationError(cause instanceof Error ? cause.message : '委任条件を保存できませんでした。');
+      let recovered = false;
+      try {
+        const inputSha256 = await sha256Hex(request.message);
+        const query = new URLSearchParams({
+          parentJobId: request.parentJobId,
+          idempotencyKey: request.idempotencyKey,
+          inputSha256,
+        });
+        const result = await delegationRequest<{ delegation: Delegation | null }>(
+          `/api/sky/a2a-delegations?${query}`,
+        );
+        const existing = result.delegation;
+        if (matchesA2ADelegationRecovery(request, existing, inputSha256)) {
+          recovered = true;
+          if (existing.state === 'awaiting_approval')
+            setDelegationReview({ request, authorizationSha256: existing.authorizationSha256 });
+          await refreshDelegations(request.parentJobId);
+        }
+      } catch {
+        // Keep the original error; the status read is a recovery check only.
+      }
+      setDelegationError(recovered
+        ? '受付状態を照合しました。同じ依頼を再送せず、最新状態を確認してください。'
+        : cause instanceof Error ? cause.message : '委任条件を保存できませんでした。');
     } finally {
       setDelegationBusy(false);
     }
-  }
+  }, [jobs, selectedId, delegationForm, refreshDelegations]);
   async function discoverAgent() {
     setDelegationBusy(true);
     setDelegationError('');
@@ -691,7 +1013,7 @@ export default function Workbench({
                 <section className="work-delegations" aria-labelledby="work-delegations-title">
                   <h3 id="work-delegations-title">Agent委任</h3>
                   {delegationBudgetPool && (
-                    <p>親job共通枠: {delegationBudgetPool.currency} {delegationBudgetPool.budgetLimitMinor} · 予約中 {delegationBudgetPool.reservedMinor} · 利用量照合済み {delegationBudgetPool.settledMinor}</p>
+                    <p>親jobの支出上限: {formatCurrencyMinor(delegationBudgetPool.budgetLimitMinor, delegationBudgetPool.currency)} · 予約中 {formatCurrencyMinor(delegationBudgetPool.reservedMinor, delegationBudgetPool.currency)} · Provider署名receipt照合済み {formatCurrencyMinor(delegationBudgetPool.settledMinor, delegationBudgetPool.currency)}</p>
                   )}
                   {['active', 'review'].includes(selected.status) && !delegationReview && (
                     <form
@@ -703,6 +1025,7 @@ export default function Workbench({
                     >
                       <h3>別のエージェントへ委任する</h3>
                       <p>公開HTTPS originを入力してAgent Cardを取得し、Skyに自分の候補として保存できます。</p>
+                      <p>親jobあたり最大8件、同時に4件までです。現在はRockstarOSから外部Agentへの一段委任のみ対応し、Agentによる自動再委任は許可しません。</p>
                       <label>
                         Agent Cardを探す
                         <input
@@ -763,11 +1086,11 @@ export default function Workbench({
                       </label>
                       <div className="work-delegation-fields">
                         <label>
-                          予算上限の通貨
+                          上限の通貨
                           <input required maxLength={3} pattern="[A-Za-z]{3}" value={delegationForm.budgetCurrency} onChange={(event) => setDelegationForm((current) => ({ ...current, budgetCurrency: event.target.value }))} />
                         </label>
                         <label>
-                          予算上限（通貨最小単位）
+                          利用上限（Provider見積ではありません）
                           <input required type="number" min={0} step={1} max={100000000} value={delegationForm.budgetLimitMinor} onChange={(event) => setDelegationForm((current) => ({ ...current, budgetLimitMinor: Number(event.target.value) }))} />
                         </label>
                       </div>
@@ -776,8 +1099,14 @@ export default function Workbench({
                         <input required type="number" min={0} step={1} max={100000000} value={delegationForm.parentBudgetLimitMinor} onChange={(event) => setDelegationForm((current) => ({ ...current, parentBudgetLimitMinor: Number(event.target.value) }))} />
                       </label>
                       <p>子Agentごとの上限を承認時にこの共通枠から予約します。同じ親jobの全委任で、共通上限と通貨を揃えます。未使用枠は利用量receiptの照合が終わるまで保持します。</p>
+                      <p className="work-delegation-price-note">Agent Providerの確定単価表・依頼別見積・実行中meterはまだ接続されていません。ここで入力する金額は「請求見積」ではなく、実行可能になった場合の絶対上限です。Provider単価と署名済み価格条件が確認できない有料実行は無効のままです。</p>
                       <p>期限は作成から24時間です。発見・比較はSky側で確認済みのAgent Cardを使ってください。</p>
-                      <button className="work-primary" type="submit" disabled={delegationBusy || delegationForm.message.trim().length === 0 || delegationForm.budgetLimitMinor < 0 || !Number.isSafeInteger(delegationForm.budgetLimitMinor) || delegationForm.parentBudgetLimitMinor < delegationForm.budgetLimitMinor || !Number.isSafeInteger(delegationForm.parentBudgetLimitMinor)}>
+                      <label className="work-offline-consent">
+                        <input type="checkbox" checked={delegationForm.continueWhileDeviceOffline} onChange={(event) => setDelegationForm((current) => ({ ...current, continueWhileDeviceOffline: event.target.checked }))} />
+                        <span>受付・承認後、この仕事を端末が圏外またはアプリ終了中も、表示した予算と期限の範囲でクラウド上で続けることを許可します。</span>
+                      </label>
+                      <p>圏外中に新しい指示や停止を届けることはできません。停止要求は再接続まで未送信のままです。チェックしない場合、クラウドagentへの委任は作成できません。</p>
+                      <button className="work-primary" type="submit" disabled={delegationBusy || !delegationForm.continueWhileDeviceOffline || delegationForm.message.trim().length === 0 || delegationForm.budgetLimitMinor < 0 || !Number.isSafeInteger(delegationForm.budgetLimitMinor) || delegationForm.parentBudgetLimitMinor < delegationForm.budgetLimitMinor || !Number.isSafeInteger(delegationForm.parentBudgetLimitMinor)}>
                         条件を確認する
                       </button>
                     </form>
@@ -789,8 +1118,11 @@ export default function Workbench({
                       <dl>
                         <dt>送信先</dt><dd>{delegationReview.request.targetOrigin}</dd>
                         <dt>Agent</dt><dd>{delegationReview.request.targetAgentName} · v{delegationReview.request.targetAgentVersion}</dd>
-                        <dt>予算上限</dt><dd>{delegationReview.request.budgetCurrency} {delegationReview.request.budgetLimitMinor}（通貨最小単位）</dd>
-                        <dt>親job共通上限</dt><dd>{delegationReview.request.budgetCurrency} {delegationReview.request.parentBudgetLimitMinor}（通貨最小単位）</dd>
+                        <dt>最大支出上限</dt><dd>{formatCurrencyMinor(delegationReview.request.budgetLimitMinor, delegationReview.request.budgetCurrency)}（依頼別の最大額。料金見積ではありません）</dd>
+                        <dt>親job共通上限</dt><dd>{formatCurrencyMinor(delegationReview.request.parentBudgetLimitMinor, delegationReview.request.budgetCurrency)}</dd>
+                        <dt>委任の範囲</dt><dd>この親jobから1段のみ · 親jobあたり最大8件 · 同時に4件まで</dd>
+                        <dt>Provider単価・見積</dt><dd>未接続。確定した見積・価格版を確認できるまで有料実行しません。</dd>
+                        <dt>圏外中の継続</dt><dd>{delegationReview.request.continueWhileDeviceOffline ? '許可（クラウドに永続保存された後）' : '許可しない'}</dd>
                         <dt>期限</dt><dd>{new Date(delegationReview.request.deadlineAt).toLocaleString('ja-JP')}</dd>
                         <dt>依頼文</dt><dd><pre>{delegationReview.request.message}</pre></dd>
                         <dt>条件digest</dt><dd><code>{delegationReview.authorizationSha256}</code></dd>
@@ -826,13 +1158,21 @@ export default function Workbench({
                           </div>
                           <p>{delegationStateName(delegation.state)}</p>
                           <small>
-                            子Agent上限 {delegation.budgetCurrency} {delegation.budgetLimitMinor} · 親job共通上限 {delegation.budgetCurrency} {delegation.parentBudgetLimitMinor} · 予約 {delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.state === 'held' ? `保持中 ${delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.reservedMinor}` : delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.state ?? '未予約'} · 期限 {new Date(delegation.deadlineAt).toLocaleString('ja-JP')}
+                            Agent上限 {formatCurrencyMinor(delegation.budgetLimitMinor, delegation.budgetCurrency)} · 親job上限 {formatCurrencyMinor(delegation.parentBudgetLimitMinor, delegation.budgetCurrency)} · 予約 {delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.state === 'held' ? `保持中 ${formatCurrencyMinor(delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.reservedMinor ?? 0, delegation.budgetCurrency)}` : delegationBudgetReservations.find((item) => item.delegationId === delegation.id)?.state ?? '未予約'} · 期限 {new Date(delegation.deadlineAt).toLocaleString('ja-JP')}
                           </small>
+                          {delegation.liveUsageSnapshot ? (
+                            <small>Provider報告の実行中暫定累計: {formatCurrencyMinor(delegation.liveUsageSnapshot.cumulativeAmountMinor, delegation.liveUsageSnapshot.currency)} · {new Date(delegation.liveUsageSnapshot.issuedAt).toLocaleTimeString('ja-JP')}時点 · 最終請求額ではありません</small>
+                          ) : <small>予約額は上限を確保した額です。Provider meterの報告待ちのため、実行中費用はまだ未確認です。</small>}
                           {delegation.remoteState && <small>相手の状態: {delegation.remoteState}</small>}
                           <div className="work-delegation-actions">
                             {delegation.remoteTaskId && (
                               <button disabled={delegationBusy || delegation.artifactsCaptured !== 1} onClick={() => void loadArtifacts(delegation.id)}>
                                 成果を確認
+                              </button>
+                            )}
+                            {delegation.remoteTaskId && (
+                              <button disabled={delegationBusy} onClick={() => void loadUsageDetails(delegation.id)}>
+                                料金・利用明細
                               </button>
                             )}
                             {!['remote_cancelled', 'remote_completed', 'remote_failed', 'remote_rejected', 'cancelled_before_dispatch', 'expired'].includes(delegation.state) && (
@@ -841,6 +1181,34 @@ export default function Workbench({
                               </button>
                             )}
                           </div>
+                          {Object.hasOwn(delegationUsageDetails, delegation.id) && (
+                            <section className="work-delegation-usage" aria-label="Provider署名済み利用明細">
+                              {delegationUsageDetails[delegation.id]?.liveUsageSnapshot && (
+                                <>
+                                  <h4>実行中のProvider報告（暫定）</h4>
+                                  <p>累計: {formatCurrencyMinor(delegationUsageDetails[delegation.id]!.liveUsageSnapshot!.cumulativeAmountMinor, delegationUsageDetails[delegation.id]!.liveUsageSnapshot!.currency)} · sequence {delegationUsageDetails[delegation.id]!.liveUsageSnapshot!.sequence} · {delegationUsageDetails[delegation.id]!.liveUsageSnapshot!.pricingVersion}</p>
+                                  <ul>
+                                    {(delegationUsageDetails[delegation.id]!.liveUsageSnapshot!.snapshot?.usage ?? []).map((line, index) => (
+                                      <li key={`live-${line.meter}-${index}`}>{line.meter}: {line.quantity.toLocaleString('ja-JP')} {line.unit} · {formatCurrencyMinor(line.amountMinor, delegationUsageDetails[delegation.id]!.liveUsageSnapshot!.currency)}</li>
+                                    ))}
+                                  </ul>
+                                  <small>{new Date(delegationUsageDetails[delegation.id]!.liveUsageSnapshot!.issuedAt).toLocaleString('ja-JP')} · Provider署名を検証して受信。最終receiptとの照合前のため請求確定額ではありません。</small>
+                                </>
+                              )}
+                              {delegationUsageDetails[delegation.id]?.usageReceipt ? (
+                                <>
+                                  <h4>照合済み利用明細</h4>
+                                  <p>確定額: {formatCurrencyMinor(delegationUsageDetails[delegation.id]!.usageReceipt!.amountMinor, delegationUsageDetails[delegation.id]!.usageReceipt!.currency)} · Provider: {delegationUsageDetails[delegation.id]!.usageReceipt!.providerId} · 価格版: {delegationUsageDetails[delegation.id]!.usageReceipt!.receipt?.pricingVersion ?? '記録なし'}</p>
+                                  <ul>
+                                    {(delegationUsageDetails[delegation.id]!.usageReceipt!.receipt?.usage ?? []).map((line, index) => (
+                                      <li key={`${line.meter}-${index}`}>{line.meter}: {line.quantity.toLocaleString('ja-JP')} {line.unit} · {formatCurrencyMinor(line.amountMinor, delegationUsageDetails[delegation.id]!.usageReceipt!.currency)}</li>
+                                    ))}
+                                  </ul>
+                                  <small>{new Date(delegationUsageDetails[delegation.id]!.usageReceipt!.issuedAt).toLocaleString('ja-JP')} · Provider署名済みreceiptをサーバーで照合</small>
+                                </>
+                              ) : <p>署名済み確定receiptはまだ届いていません。暫定meterと予約上限は実際の確定請求額として扱いません。</p>}
+                            </section>
+                          )}
                           {delegation.artifactsCaptured !== 1 && delegation.remoteTaskId && (
                             <small>成果を相手側から照合中です。停止状態や成果の取得を完了とは扱いません。</small>
                           )}
@@ -861,6 +1229,76 @@ export default function Workbench({
                       ))}
                     </div>
                   )}
+                </section>
+                <section className="work-delegations" aria-labelledby="work-cloud-text-title">
+                  <div className="work-delegations-heading">
+                    <div>
+                      <h3 id="work-cloud-text-title">クラウドAIへ依頼</h3>
+                      <p>OpenAI text-only。依頼をこの親jobの上限へ束縛し、見積保存後に利用者が個別承認します。</p>
+                    </div>
+                    <button type="button" disabled={remoteTextBusy || !selected.id} onClick={() => void refreshRemoteText(selected.id)}>
+                      <RefreshCw size={14} /> 状態を更新
+                    </button>
+                  </div>
+                  {selected.status === 'active' ? <form className="work-delegation-create" onSubmit={(event) => void createRemoteTextQuote(event)}>
+                    <label htmlFor="work-cloud-text-prompt">
+                      AIへの依頼
+                      <Textarea id="work-cloud-text-prompt" value={remoteTextPrompt} onChange={(event) => { setRemoteTextPrompt(event.target.value); setRemoteTextEstimate(null); }} rows={5} maxLength={24000} placeholder="依頼を具体的に入力してください" />
+                    </label>
+                    <div className="work-delegation-fields">
+                      <label>見積通貨
+                        {remoteTextCurrencyOptions.length > 1 ? <select value={remoteTextCurrency} disabled={remoteTextBudgetCurrency !== null} onChange={(event) => { setRemoteTextCurrency(event.target.value); setRemoteTextEstimate(null); }}>
+                          {remoteTextCurrencyOptions.map((currency) => <option key={currency} value={currency}>{currency}</option>)}
+                        </select> : <input value={remoteTextCurrency} maxLength={3} disabled={remoteTextBudgetCurrency !== null} onChange={(event) => { setRemoteTextCurrency(event.target.value.toUpperCase()); setRemoteTextEstimate(null); }} />}
+                      </label>
+                      <label>この依頼の最大額（{remoteTextCurrency}）
+                        <input type="number" min="0.01" step={remoteTextCurrency === 'JPY' || remoteTextCurrency === 'KRW' ? '1' : '0.01'} value={remoteTextCapMinor} onChange={(event) => { setRemoteTextCapMinor(event.target.value); setRemoteTextEstimate(null); }} />
+                      </label>
+                      {remoteTextBudgetCurrency === remoteTextCurrency && remoteTextBudgetLimit !== null ? <p>
+                        親job共通上限 {formatCurrencyMinor(remoteTextBudgetLimit, remoteTextCurrency)} · 予約 {formatCurrencyMinor(delegationBudgetPool?.reservedMinor ?? 0, remoteTextCurrency)} · 確定記録 {formatCurrencyMinor(delegationBudgetPool?.settledMinor ?? 0, remoteTextCurrency)}
+                      </p> : <label>親job全体の上限（{remoteTextCurrency}）
+                        <input type="number" min="0.01" step={remoteTextCurrency === 'JPY' || remoteTextCurrency === 'KRW' ? '1' : '0.01'} value={remoteTextParentCapMinor} onChange={(event) => setRemoteTextParentCapMinor(event.target.value)} />
+                      </label>}
+                    </div>
+                    <label className="work-delegation-consent work-cloud-text-consent">
+                      <input type="checkbox" checked={remoteTextSaveResult} onChange={(event) => setRemoteTextSaveResult(event.target.checked)} />
+                      完了後の回答をCloudのjob履歴へ保存する（初期設定は保存しない）
+                    </label>
+                    <button className="work-primary" type="submit" disabled={remoteTextBusy || remoteTextNeedsSignin || !remoteTextPrompt.trim() || selected.status !== 'active'}>
+                      {remoteTextBusy ? '料金を確認中…' : '料金見積を確認して保存'}
+                    </button>
+                    <p>見積と保存だけではProviderへ依頼文を送信しません。支出上限はこの親jobの残り予算内に設定してください。Cloud taskとして実行する許可は別の操作です。</p>
+                  </form> : <p>Cloud AI依頼は作業中の親jobから追加できます。完了・取消済みのjobには追加できません。</p>}
+                  {remoteTextEstimate && <dl>
+                    <div><dt>最大見積</dt><dd>{formatCurrencyMinor(remoteTextEstimate.estimate.maximumChargeMinor, remoteTextEstimate.estimate.currency)}</dd></div>
+                    <div><dt>モデル / 価格版</dt><dd>{remoteTextEstimate.estimate.modelId} · {remoteTextEstimate.estimate.pricingVersion}</dd></div>
+                    <div><dt>入力 / 出力上限</dt><dd>{remoteTextEstimate.estimate.inputTokenUpperBound.toLocaleString('ja-JP')} / {remoteTextEstimate.estimate.outputTokenLimit.toLocaleString('ja-JP')} tokens</dd></div>
+                    <div><dt>料金表</dt><dd><a href={remoteTextEstimate.rateSource} target="_blank" rel="noreferrer">{remoteTextEstimate.cardId}</a></dd></div>
+                  </dl>}
+                  {remoteTextError && <p className="work-delegation-error" role="alert">{remoteTextError}</p>}
+                  {remoteTextNeedsSignin && <a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(typeof window === 'undefined' ? '/work' : window.location.pathname + window.location.search)}`} target="_top">サインインして続ける</a>}
+                  {!remoteTextExecutionAvailable && <p className="work-delegation-gate">クラウドAIの実行は準備中です。見積もりを保存しても、AIへの送信や課金は始まりません。</p>}
+                  {remoteTextExecutions.length > 0 && <div className="work-delegation-list" aria-label="Cloud LLM依頼履歴">
+                    {remoteTextExecutions.map((execution) => <article className="work-delegation" key={execution.id}>
+                      <div className="work-delegation-title"><strong>{execution.state === 'quoted' ? '見積・承認待ち' : execution.state === 'reserved' ? '上限を予約済み' : execution.state === 'sending' ? 'Cloud AI実行中' : execution.state === 'completed' ? '処理完了' : execution.state === 'unreconciled' ? '利用量照合待ち' : execution.state === 'cancelled' ? '取消済み' : '期限切れ'}</strong><small>{new Date(execution.createdAt).toLocaleString('ja-JP')}</small></div>
+                      <p>最大額 {formatCurrencyMinor(execution.quote.ceiling.maximumChargeMinor, execution.quote.ceiling.currency)} · {execution.quote.ceiling.modelId} · 期限 {new Date(execution.quote.expiresAt).toLocaleString('ja-JP')}</p>
+                      {execution.state === 'reserved' || execution.state === 'sending' ? <p>予約上限 {formatCurrencyMinor(execution.quote.ceiling.maximumChargeMinor, execution.quote.ceiling.currency)}を保持中。Providerから実行中meterはまだ確認できないため、実費とは区別しています。</p> : null}
+                      {execution.state === 'unreconciled' && <p>利用量が確定できず上限予約を保持しています。自動再送は行いません。照合後に状態を更新してください。{execution.errorCode ? ` (${execution.errorCode})` : ''}</p>}
+                      {execution.price && <section className="work-delegation-usage" aria-label="Cloud LLM利用明細">
+                        <h4>計算済み利用明細（Provider invoice照合前）</h4>
+                        <p>利用量から計算した金額: {formatCurrencyMinor(execution.price.chargeMinor, execution.price.currency)} · 価格版 {execution.price.pricingVersion}</p>
+                        <ul>{execution.price.items.map((item) => <li key={item.category}>{item.category}: {item.tokens.toLocaleString('ja-JP')} tokens · {item.rateMinorMicrosPerMillionTokens.toLocaleString('ja-JP')} minor-unit micro / 1M tokens</li>)}</ul>
+                        <small>これはProvider利用量に基づく計算記録であり、請求書・決済照合済みを意味しません。</small>
+                      </section>}
+                      {execution.resultText && <details><summary>保存済み成果を表示</summary><pre>{execution.resultText}</pre></details>}
+                      {execution.state === 'quoted' && <div className="work-delegation-actions">
+                        {remoteTextExecutionAvailable && <button type="button" disabled={remoteTextBusy || !remoteTextPrompt.trim()} onClick={() => void runRemoteText(execution)}>この上限で承認して実行</button>}
+                        <button type="button" disabled={remoteTextBusy} onClick={() => void cancelRemoteTextQuote(execution)}>見積を取り消す</button>
+                      </div>}
+                      {execution.state === 'quoted' && !remoteTextPrompt.trim() && <small>再接続後に実行する場合は、見積時と同じ依頼文を入力してください。内容が一致しない場合は実行しません。</small>}
+                    </article>)}
+                  </div>}
+                  {remoteTextResult && <section className="work-delegation-artifact" aria-label="Cloud LLMの成果"><strong>Cloud LLMの回答</strong><pre>{remoteTextResult}</pre></section>}
                 </section>
                 {selected.status === 'active' && currentStep && (
                   <button

@@ -3,14 +3,14 @@ import schema from './sky-schema-bootstrap.json';
 
 let initializing: Promise<void> | undefined;
 async function ensureSchema(db: D1Database) {
-  const ready = await db.prepare('SELECT version FROM sky_service_schema WHERE version = 1').first();
+  const ready = await db.prepare('SELECT version FROM sky_service_schema WHERE version = 2').first();
   if (ready) return;
   initializing ??= (async () => {
     // Static, idempotent schema only. No app request is admitted until every guard exists.
     for (let offset = 0; offset < schema.length; offset += 40) {
       await db.batch(schema.slice(offset, offset + 40).map((sql) => db.prepare(sql)));
     }
-    await db.prepare('INSERT OR IGNORE INTO sky_service_schema(version) VALUES (1)').run();
+    await db.prepare('INSERT OR IGNORE INTO sky_service_schema(version) VALUES (2)').run();
   })().finally(() => { initializing = undefined; });
   await initializing;
 }

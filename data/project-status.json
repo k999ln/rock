@@ -3361,5 +3361,16 @@
         "nextAction": "Full verify then same-site publication and Pixel cancel/delete/reload/D1 absence acceptance"
       }
     }
+  },
+  "skyCloudUiReleasePreparation": {
+    "stage": "verified_local_deployment_pending",
+    "published": false,
+    "focusedTests": 30,
+    "siteApiAssertions": 15,
+    "pricingGateAccepted": false,
+    "productionProviderExecutionVerified": false,
+    "productionOwnerSigninVerified": false,
+    "evidence": "docs/evidence/sky-cloud-ui-verification.json",
+    "inheritedSourceInventoryChecks": "Site design/project check fails on pre-existing missing canonical device-capability/SKY20 evidence references, also present in v24 source. Canonical checks pass. This is not runtime or full Site verify acceptance."
   }
 }

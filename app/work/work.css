@@ -298,6 +298,8 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
 }
+.work-delegation-create label.work-offline-consent { display: flex; align-items: flex-start; gap: .65rem; padding: .8rem; border: 1px solid #a9bfd0; border-radius: .5rem; background: #f2f7fa; line-height: 1.55; }
+.work-delegation-create .work-offline-consent > input { flex: none; width: 1.1rem; height: 1.1rem; margin: .15rem 0 0; padding: 0; }
 .work-a2a-agent-list { display: grid; gap: 0.55rem; }
 .work-a2a-agent {
   display: grid;
@@ -339,6 +341,18 @@
   background: #fff8e9;
   color: #654b1b !important;
 }
+.work-delegation-price-note,
+.work-delegation-usage {
+  border-left: 3px solid #7b94ab;
+  padding: 0.65rem 0.8rem;
+  background: #f0f5f9;
+  color: #34475c;
+  overflow-wrap: anywhere;
+}
+.work-delegation-usage h4 { margin: 0 0 0.35rem; font-size: 0.95rem; }
+.work-delegation-usage p { margin: 0.35rem 0; }
+.work-delegation-usage ul { margin: 0.45rem 0; padding-left: 1.2rem; }
+.work-delegation-usage li { padding: 0.2rem 0; font-variant-numeric: tabular-nums; }
 .work-delegations-heading,
 .work-delegation-title,
 .work-delegation-actions {
@@ -460,4 +474,15 @@
   .work-delegation-review dl {
     grid-template-columns: 1fr;
   }
+}
+
+.work-delegation-create .work-cloud-text-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.work-delegation-create .work-cloud-text-consent input[type="checkbox"] {
+  width: 16px;
+  flex: 0 0 16px;
+  margin: 3px 0 0;
 }
