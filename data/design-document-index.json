@@ -352,7 +352,13 @@
     },
     {
       "id": "rockstar-ip-studio",
-      "catalogStatus": "candidate"
+      "catalogStatus": "candidate",
+      "launchRecovery": {
+        "desktopOnly": true,
+        "mobileAndUnknownHostLoopbackLink": false,
+        "runtimeAvailabilityVerifiedByLaunchLink": false,
+        "design": "docs/sky-tools-complete-design.md#85-ip-studio--交換可能な制作配信ゲーム展開"
+      }
     },
     {
       "id": "coconala",
