@@ -65,6 +65,7 @@ export default function CoconalaTeamWorkspace() {
   const [form, setForm] = useState<TeamTerms>(blank);
   const [editingId, setEditingId] = useState('');
   const [formOpen, setFormOpen] = useState(false);
+  const [deleteCaseId, setDeleteCaseId] = useState('');
   const [selectedId, setSelectedId] = useState('');
   const [note, setNote] = useState('');
   const [moneyKind, setMoneyKind] = useState<'record_customer_receipt' | 'record_refund' | 'record_worker_payment'>('record_customer_receipt');
@@ -96,6 +97,7 @@ export default function CoconalaTeamWorkspace() {
   }, [refresh]);
 
   const selected = cases.find((item) => item.id === selectedId) ?? cases[0] ?? null;
+  const deleteTarget = cases.find((item) => item.id === deleteCaseId);
   const estimate = useMemo(() => {
     const fee = Math.round(form.grossYen * form.estimatedPlatformFeePercent / 100);
     return { net: form.grossYen - fee, margin: form.grossYen - fee - form.workerFeeYen };
@@ -153,6 +155,24 @@ export default function CoconalaTeamWorkspace() {
     finally { setBusy(false); }
   }
 
+  async function deleteDraft() {
+    if (!deleteTarget || busy || needsSignin) return;
+    setBusy(true); setError(''); setNotice('');
+    try {
+      const result = await request<{ deletedCaseId: string }>('DELETE', {
+        caseId: deleteTarget.id, revision: deleteTarget.revision,
+      });
+      if (result.deletedCaseId !== deleteTarget.id) throw new Error('削除結果を確認できませんでした。案件を再読込してください。');
+      setCases((current) => current.filter((item) => item.id !== result.deletedCaseId));
+      setSelectedId((current) => current === result.deletedCaseId ? '' : current);
+      setDeleteCaseId('');
+      setNotice('下書きを削除しました。');
+    } catch (caught) {
+      if (caught instanceof OperationRequestError && caught.status === 401) setNeedsSignin(true);
+      setError(caught instanceof Error ? caught.message : '削除できませんでした。案件を再読込してください。');
+    } finally { setBusy(false); }
+  }
+
   const signinRecovery = <section className={styles.empty} aria-label="サインインの復帰">
     <h2>サインインして案件を管理</h2>
     <p>入力はこの画面に残ります。別タブでサインイン後、接続を確認してください。案件と報酬の記録はあなたのアカウントだけに保存されます。</p>
@@ -204,7 +224,7 @@ export default function CoconalaTeamWorkspace() {
       </div>
       </details>
 
-      {error && !formOpen && <p className={styles.error} role="alert">{error}</p>}
+      {error && !formOpen && !deleteCaseId && <p className={styles.error} role="alert">{error}</p>}
       {notice && <output className={styles.notice}>{notice}</output>}
       {needsSignin ? signinRecovery :
         <div className={styles.layout}>
@@ -218,7 +238,10 @@ export default function CoconalaTeamWorkspace() {
 
           {selected && <section className={styles.detail}>
             <div className={styles.detailHead}><div><span className={styles.eyebrow}>{statusNames[selected.status]}</span><h2>{selected.terms.title}</h2><p>案件参照 {selected.terms.orderReference} · 顧客 {selected.terms.clientLabel} · 担当 {selected.terms.workerName}</p></div>
-              {selected.status === 'draft' && <button className={styles.secondary} onClick={() => { setForm(selected.terms); setEditingId(selected.id); setFormOpen(true); }}>条件を編集</button>}
+              {selected.status === 'draft' && <div className={styles.actionRow}>
+                <button className={styles.secondary} disabled={busy} onClick={() => { setForm(selected.terms); setEditingId(selected.id); setFormOpen(true); }}>条件を編集</button>
+                <button className={styles.secondary} disabled={busy} onClick={() => { setError(''); setDeleteCaseId(selected.id); }}>下書きを削除</button>
+              </div>}
             </div>
             <div className={styles.metrics}>
               <div><small>顧客受注額</small><strong>{yen(selected.terms.grossYen)}</strong></div>
@@ -258,6 +281,20 @@ export default function CoconalaTeamWorkspace() {
           {needsSignin && signinRecovery}
           <button className={styles.primary} disabled={busy || needsSignin}>{busy ? '保存中…' : '下書きとして保存'}</button></form>
       </DialogContent></Dialog>
+      <Dialog open={Boolean(deleteCaseId)} onOpenChange={(open) => { if (!busy && !open) setDeleteCaseId(''); }}>
+        <DialogContent className={`${styles.modal} ${styles.deleteModal}`} showCloseButton={false}>
+          <DialogTitle>この下書きを削除しますか？</DialogTitle>
+          <DialogDescription>Skyに保存したこの下書きと変更履歴を削除します。取り消せません。ココナラの契約やメッセージは変更しません。</DialogDescription>
+          <p className={styles.deleteTitle}>{deleteTarget?.terms.title ?? '案件を再読込してください。'}</p>
+          {error && <p className={styles.error} role="alert">{error}</p>}
+          {needsSignin && signinRecovery}
+          <div className={styles.actionRow}>
+            <button className={styles.secondary} disabled={busy} onClick={() => setDeleteCaseId('')}>削除せず戻る</button>
+            {error && <button className={styles.secondary} disabled={busy} onClick={() => { setDeleteCaseId(''); void refresh(); }}>閉じて再読込</button>}
+            <button className={styles.primary} disabled={busy || needsSignin || !deleteTarget} onClick={() => void deleteDraft()}>{busy ? '削除中…' : 'この下書きを削除'}</button>
+          </div>
+        </DialogContent>
+      </Dialog>
       </>}
     </div>
     <Dialog open={infoOpen} onOpenChange={setInfoOpen}>

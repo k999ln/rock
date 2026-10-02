@@ -375,6 +375,18 @@
         "wrapButtons": true,
         "minimumButtonHeightPx": 44,
         "restoredOutputDarkContrast": true
+      },
+      "draftDeletion": {
+        "confirmationRequired": true,
+        "ownerScoped": true,
+        "sameOriginRequired": true,
+        "expectedRevisionRequired": true,
+        "draftOnly": true,
+        "atomicStateAndRevisionCheck": true,
+        "deletesCaseContentAndHistory": true,
+        "refreshDoesNotDelete": true,
+        "externalTransactionUnchanged": true,
+        "activeCaseRetentionAccepted": false
       }
     },
     {

@@ -1,3 +1,7 @@
+## 2026-10-02 — Skyの発注前下書き削除
+
+実ユーザーのデータ管理のため、本人別・同一origin・revision・draft状態を照合する削除APIと対象確認画面を実装。担当開始済みの案件は削除せず、結果不明の再読込はGETのみ。現在は正本のDB/認証/API試験と配備前検証中で、本番削除受入を完了扱いにしない。配信用checkoutの単体試験はmigrationが部分的なためDB試験を実行できず、全migrationを持つ正本の同試験4/4は合格。次にfull verify、既存Skyへの公開、Pixelで取消・削除・再読込・D1行不在を確認する。クラウド資格情報、料金/予算、Apple Pay、外部OAuthと進行済み案件の保持/削除は別の未完了項目。
+
 IP StudioのPixel入口にPC内loopbackリンクが表示される不具合を修正。スマホ・判定前／不明端末ではPC条件を案内し、PCでは起動確認が未取得と示す。設計・台帳・READMEを同期。メルカリ支援の合成原稿と見込950円のD1保存・新ページ復元・終了（revision 1）をPixelで確認。外部出品・販売・精算なし。新変更の公開受入は実施中。
 
 全体verify完走：Node631、Fashion19、Worker/D1 API622 assertions合格。PixelでPAPER提案→承認→実行とD1 receipt/position保存を確認。市場サンプル表記・次操作への移動・完了履歴の再取得を実装し公開受入中。

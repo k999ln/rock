@@ -3353,7 +3353,13 @@
       "externalOAuth": "not_verified",
       "nextAction": "Verify corrected branding and cancellation on a new unpaid Checkout; complete desktop sign-in, provider secret and real cloud response; classify all services without treating local drafts as external execution.",
       "paymentCancellation": "Pixel_cancel_return_quoted_unpaid_attempt_0",
-      "merchantBranding": "avokado_Sky_verified_new_checkout"
+      "merchantBranding": "avokado_Sky_verified_new_checkout",
+      "coconalaDraftDeletion": {
+        "stage": "implemented_local_testing",
+        "productionVerified": false,
+        "scope": "owner-scoped pre-assignment drafts only; active-case retention not accepted",
+        "nextAction": "Full verify then same-site publication and Pixel cancel/delete/reload/D1 absence acceptance"
+      }
     }
   }
 }

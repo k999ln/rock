@@ -28,5 +28,11 @@ export function coconalaTeamStore(db: Pick<D1Database, 'prepare'>) {
         caseFile.id, user, previousRevision).run();
       return result.meta.changes === 1;
     },
+    async removeDraft(user: string, id: string, revision: number): Promise<boolean> {
+      const result = await db.prepare(
+        "DELETE FROM coconala_team_cases WHERE id = ? AND user_id = ? AND revision = ? AND json_extract(payload, '$.status') = 'draft'",
+      ).bind(id, user, revision).run();
+      return result.meta.changes === 1;
+    },
   };
 }

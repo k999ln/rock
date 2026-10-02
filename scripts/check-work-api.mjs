@@ -670,6 +670,23 @@ try {
     },
     { path: teamPath, status: 409 },
   );
+  // Draft deletion is owner-scoped and checks the last confirmed revision.
+  const deleteInput = { id: randomUUID(), terms: { ...teamInput.terms, title: '削除検証用の合成下書き' } };
+  const { caseFile: deleteCase } = await call('POST', deleteInput, { path: teamPath, status: 201 });
+  const deletion = { caseId: deleteCase.id, revision: 0 };
+  await call('DELETE', deletion, { path: teamPath, user: null, status: 401 });
+  await call('DELETE', deletion, { path: teamPath, origin: 'https://untrusted.example', status: 403 });
+  await call('DELETE', deletion, { path: teamPath, user: bob, status: 404 });
+  await call('DELETE', { ...deletion, revision: -1 }, { path: teamPath, status: 400 });
+  await call('DELETE', { ...deletion, revision: '0' }, { path: teamPath, status: 400 });
+  await call('DELETE', { ...deletion, extra: true }, { path: teamPath, status: 400 });
+  await call('DELETE', { ...deletion, revision: 1 }, { path: teamPath, status: 409 });
+  check((await call('GET', undefined, { path: teamPath })).cases.find((item) => item.id === deleteCase.id).status, 'draft');
+  const deleted = await call('DELETE', deletion, { path: teamPath });
+  check(deleted.deletedCaseId, deleteCase.id);
+  check((await call('GET', undefined, { path: teamPath })).cases.some((item) => item.id === deleteCase.id), false);
+  await call('DELETE', deletion, { path: teamPath, status: 404 });
+  await call('DELETE', { caseId: caseFile.id, revision: caseFile.revision }, { path: teamPath, status: 409 });
   await stop();
   await start();
   check(
