@@ -336,6 +336,20 @@
         "csvPayments": "dedicated CSV webhook plus valid mode/key/origin and available DB/R2",
         "payments": "marketplace configuration only; not CSV trial availability",
         "configuredIsPaymentProof": false
+      },
+      "storageIsolationContract": {
+        "implementation": [
+          "lib/csv-job-store.ts"
+        ],
+        "tests": [
+          "scripts/check-csv-storage.mjs"
+        ],
+        "evidence": [
+          "docs/evidence/sky-csv-storage-verification.json",
+          "docs/evidence/sky-production-auth-verification.json"
+        ],
+        "insertion": "attempt-specific R2 input key; owner-scoped replay; reconcile uncertain commit before cleanup",
+        "productionOwnerAcceptance": false
       }
     },
     {

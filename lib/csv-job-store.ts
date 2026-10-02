@@ -220,23 +220,28 @@ export async function createCsvJob(
   await transformCsv(input.bytes, specification);
   const hash = await sha256(input.bytes);
   const now = Date.now();
-  const inputKey = `csv/${input.id}/input.csv`;
-  const existing = await db
-    .prepare('SELECT * FROM csv_jobs WHERE id = ? AND user_id = ?')
-    .bind(input.id, user)
-    .first<CsvJobRow>();
-  if (existing) {
+  const specificationJson = JSON.stringify(specification);
+  const replay = (row: CsvJobRow) => {
     if (
-      existing.input_sha256 !== hash ||
-      existing.specification_json !== JSON.stringify(specification)
+      row.user_id !== user ||
+      row.input_sha256 !== hash ||
+      row.specification_json !== specificationJson
     )
       throw new CsvJobError(
         409,
         'IDEMPOTENCY',
-        '同じ受付番号に異なる内容は保存できません。',
+        'この受付番号では保存できません。新しい受付として作成してください。',
       );
-    return view(existing);
-  }
+    return view(row);
+  };
+  const existing = await db
+    .prepare('SELECT * FROM csv_jobs WHERE id = ?')
+    .bind(input.id)
+    .first<CsvJobRow>();
+  if (existing) return replay(existing);
+  // Each insertion attempt owns its object. A losing concurrent request may
+  // remove only this key, never the input referenced by another saved row.
+  const inputKey = `csv/${input.id}/input-${crypto.randomUUID()}.csv`;
   await bucket.put(inputKey, input.bytes, {
     httpMetadata: { contentType: 'text/csv' },
     customMetadata: {
@@ -258,7 +263,7 @@ export async function createCsvJob(
         input.bytes.byteLength,
         hash,
         decoded.encoding,
-        JSON.stringify(specification),
+        specificationJson,
         input.sample ? 0 : input.trial ? 5000 : 300000,
         now + RETENTION_MS,
         now,
@@ -266,7 +271,14 @@ export async function createCsvJob(
       )
       .run();
   } catch (error) {
-    await bucket.delete(inputKey);
+    // Reconcile before cleanup: an uncertain INSERT may already have committed.
+    // If D1 cannot be read, retain the object rather than risk deleting input.
+    const persisted = await db
+      .prepare('SELECT * FROM csv_jobs WHERE id = ?')
+      .bind(input.id)
+      .first<CsvJobRow>();
+    if (persisted?.input_key !== inputKey) await bucket.delete(inputKey);
+    if (persisted) return replay(persisted);
     throw error;
   }
   const row = await owned(db, user, input.id);

@@ -1,0 +1,184 @@
+{
+  "schema": "sky-csv-storage-verification/1",
+  "recordedAt": "2026-10-02T11:01:33.717885+00:00",
+  "sourceStatus": "CSV collision fix built and locally verified; publication pending",
+  "defect": {
+    "environment": "local staging, archived Workers with persistent Miniflare D1/R2",
+    "existingVersion": 30,
+    "request": "different synthetic owner uploads an existing CSV job ID",
+    "responseStatus": 500,
+    "originalR2InputRetained": false,
+    "reproduced": true
+  },
+  "priorArtifactRecovery": {
+    "environment": "local staging, archived Workers with persistent Miniflare D1/R2",
+    "transitions": [
+      "v28 restart",
+      "v28 to v30 update",
+      "v30 to v28 rollback"
+    ],
+    "artifactHashes": {
+      "result": {
+        "bytes": 41,
+        "sha256": "1d74c6c16d92b460fe8006d1b65bf538ec374862e8f11e54df6e52efecdd4827"
+      },
+      "spreadsheet-safe": {
+        "bytes": 42,
+        "sha256": "3b997d6bb56b7d6b1f7cdb5ea650ef531abbdb896f83c14cbfd974b3fe161a3f"
+      },
+      "report-json": {
+        "bytes": 984,
+        "sha256": "1fb92a3a07f3c7f15f4b1dc19b0268a951742ebfb9f5e698ec485e77b29a3735"
+      },
+      "report-html": {
+        "bytes": 1062,
+        "sha256": "5b4123624cfd00ccef8dc5e32fad3f34e17750badc312f38983658cea6c8d33a"
+      }
+    },
+    "passedChecksBeforeCollision": 126,
+    "completeRecoveryGate": false
+  },
+  "repair": {
+    "inputObjects": "attempt-specific random key referenced by the committed owner row",
+    "collision": "409 before upload or after concurrent insert reconciliation; cleanup only losing attempt object",
+    "uncertainInsert": "read persisted row before cleanup; retain object if D1 cannot be read"
+  },
+  "regression": {
+    "command": "node scripts/check-csv-storage.mjs",
+    "environment": "synthetic loopback Worker/D1/R2",
+    "exitCode": 0,
+    "assertions": 95,
+    "scope": [
+      "same-owner replay",
+      "cross-owner known ID collision",
+      "same-owner concurrent replay",
+      "different-owner concurrent insertion",
+      "private artifact headers",
+      "owner and anonymous access",
+      "Worker restart with persistent D1/R2",
+      "owner deletion",
+      "retention expiry"
+    ]
+  },
+  "productionAuthV30": {
+    "environment": "production non-user platform service access",
+    "origin": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "sourceExpected": "5bdb4ecc0a1f12eb7036163818c4bbb86e224e78",
+    "ownerSigninVerified": false,
+    "serviceCredentialIsUserIdentity": false,
+    "requestsReadOnly": true,
+    "newPayment": false,
+    "checks": [
+      {
+        "name": "public-entry",
+        "path": "/sky",
+        "status": 200,
+        "pass": true,
+        "responseBytes": 41007,
+        "responseSha256": "d6a5b22495fc0005c9ef82dbb563b90f46295258b1b74f24b5f43d426bb5b182",
+        "contentType": "text/html; charset=utf-8",
+        "contentEncoding": null
+      },
+      {
+        "name": "public-health",
+        "path": "/api/health",
+        "status": 200,
+        "pass": true,
+        "responseBytes": 15,
+        "responseSha256": "a29ee2b15c494311c52521766e44af56a3ad2248e7a8ab465e5206463c13d288",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-jobs",
+        "path": "/api/jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-csv-history",
+        "path": "/api/csv-jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 103,
+        "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-paid-csv-result",
+        "path": "/api/csv-jobs/6a969274-8d50-4a6f-8b54-1b2f143f6bdb/artifact/result",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 103,
+        "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-paid-csv-report",
+        "path": "/api/csv-jobs/6a969274-8d50-4a6f-8b54-1b2f143f6bdb/artifact/report-json",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 103,
+        "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-coconala",
+        "path": "/api/coconala-team",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 66,
+        "responseSha256": "9333b5cf4d0432a406b05ec22b91b143a2c3453357eb57e7a2d628693a51ca10",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-mercari",
+        "path": "/api/revenue/mercari",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "forged-user-id",
+        "path": "/api/jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "forged-email-dispatch",
+        "path": "/api/jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      }
+    ],
+    "allPassed": true
+  },
+  "pixel": {
+    "model": "Pixel 10",
+    "showing": true,
+    "inputRestricted": true,
+    "ownerJourneyAccepted": false
+  },
+  "newPayments": 0,
+  "realCloudProviderCalls": 0,
+  "releaseDecision": "incomplete: owner desktop/Pixel, actual cloud provider/rate/budget and Apple Pay acceptance remain"
+}
