@@ -346,10 +346,12 @@
         ],
         "evidence": [
           "docs/evidence/sky-csv-storage-verification.json",
-          "docs/evidence/sky-production-auth-verification.json"
+          "docs/evidence/sky-production-auth-verification.json",
+          "docs/evidence/sky-csv-expiry-verification.json"
         ],
         "insertion": "attempt-specific R2 input key; owner-scoped replay; reconcile uncertain commit before cleanup",
-        "productionOwnerAcceptance": false
+        "productionOwnerAcceptance": false,
+        "expiry": "processing and retry reject before claim after expiry; unauthorized requests do not purge another owner"
       }
     },
     {

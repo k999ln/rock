@@ -103,5 +103,25 @@ try {
   await db.prepare('UPDATE csv_jobs SET expires_at=? WHERE id=?').bind(Date.now()-1,expired.id).run();
   await call(`/api/csv-jobs/${expired.id}/artifact/result`,{status:410});
   check(await stored(expired.id),null);check((await bucket.list({prefix:`csv/${expired.id}/`})).objects.length,0);
+  async function failedInputJob() {
+    const quoted=await create(), row=await stored(quoted.id);
+    const object=await bucket.get(row.input_key), bytes=new Uint8Array(await object.arrayBuffer());
+    await bucket.delete(row.input_key);
+    await call('/api/csv-jobs/'+quoted.id,{method:'POST',body:{revision:quoted.revision},status:500});
+    const failed=await stored(quoted.id);check(failed.status,'quality_failed');check(failed.attempt,1);
+    await bucket.put(row.input_key,bytes,{httpMetadata:{contentType:'text/csv'},customMetadata:object.customMetadata});
+    return failed;
+  }
+  const retryable=await failedInputJob();
+  const recovered=(await (await call('/api/csv-jobs/'+retryable.id,{method:'POST',body:{action:'retry',revision:retryable.revision}})).json()).job;
+  check(recovered.status,'completed');check(recovered.attempt,2);check(recovered.validation.passed,true);
+  const expiredFailure=await failedInputJob();
+  await db.prepare('UPDATE csv_jobs SET expires_at=? WHERE id=?').bind(Date.now()-1,expiredFailure.id).run();
+  const retryBody={action:'retry',revision:expiredFailure.revision};
+  await call('/api/csv-jobs/'+expiredFailure.id,{method:'POST',user:null,body:retryBody,status:401});
+  await call('/api/csv-jobs/'+expiredFailure.id,{method:'POST',user:bob,body:retryBody,status:404});
+  check((await stored(expiredFailure.id)).attempt,1);
+  await call('/api/csv-jobs/'+expiredFailure.id,{method:'POST',body:retryBody,status:410});
+  check(await stored(expiredFailure.id),null);check((await bucket.list({prefix:`csv/${expiredFailure.id}/`})).objects.length,0);
   console.log(`CSV Worker/D1/R2 regression passed (${assertions} assertions; synthetic only).`);
 } finally { await stop(); rmSync(temporary,{recursive:true,force:true}); }

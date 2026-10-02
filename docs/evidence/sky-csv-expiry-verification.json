@@ -1,0 +1,42 @@
+{
+  "schema": "sky-csv-expiry-verification/1",
+  "recordedAt": "2026-10-02T11:20:18.719676+00:00",
+  "beforeFix": {
+    "environment": "local staging disaster recovery, exact v31 archive and persistent Miniflare D1/R2",
+    "sourceExpected": "c89a651d9e2cd29011f2f6153201a93a82033643",
+    "productionRecoveryAccepted": false,
+    "staleBackupDeletionReplayAccepted": false,
+    "identity": "two synthetic loopback-only users; no production sign-in",
+    "realProviderCalls": 0,
+    "newPayments": 0,
+    "archives": {
+      "v31": "01a5abdfb15aa38e5458e03cd25f56b64c822df2274736156369bdc2b345c82f"
+    },
+    "checks": [
+      {
+        "name": "runtime schema bootstrap",
+        "version": "v31",
+        "pass": true
+      },
+      {
+        "name": "POST /api/csv-jobs status 201 (synthetic-durable-owner-a)",
+        "version": "v31",
+        "pass": true
+      }
+    ],
+    "allPassed": false,
+    "expiredRetry": {
+      "firstResponse": 500,
+      "firstState": "quality_failed",
+      "retryResponse": 200,
+      "returnedStatus": "completed",
+      "attempt": 2
+    },
+    "failure": "expired failed job must not execute again\n\n200 !== 410\n"
+  },
+  "repair": "Check expiry before processing claim for initial processing and retry. Owner expiry rejection deletes retained job objects/record, returns 410, never increments attempt.",
+  "status": "source repaired; verification and publication pending",
+  "newPayment": false,
+  "realProviderCall": false,
+  "productionOwnerAccepted": false
+}

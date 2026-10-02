@@ -293,6 +293,10 @@ export async function createCsvJob(
 async function processCsvJob(row: CsvJobRow) {
   const { db, bucket } = resources();
   const now = Date.now();
+  if (row.expires_at <= now) {
+    await deleteCsvJob(row.user_id, row.id);
+    throw new CsvJobError(410, 'EXPIRED', '保管期限を過ぎたため削除しました。');
+  }
   if (row.attempt >= MAX_ATTEMPTS)
     throw new CsvJobError(409, 'ATTEMPTS', '自動再試行の上限に達しました。');
   const claim = await db
