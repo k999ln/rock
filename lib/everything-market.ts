@@ -71,7 +71,7 @@ export const baseMarketAssets: MarketAsset[] = [
   },
   {
     id: 'rock:research-brief',
-    title: '検証済みリサーチブリーフ',
+    title: 'リサーチブリーフ（サンプル）',
     description: '出典付き調査成果を1 brief単位で取引',
     category: 'digital',
     unit: 'brief',

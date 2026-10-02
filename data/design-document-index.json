@@ -331,6 +331,14 @@
         "implementation": "components/everything-market.tsx",
         "trigger": "HTTP401",
         "recovery": "separate-tab-signin-and-refresh"
+      },
+      "paperAcceptance": {
+        "samplesNotVerifiedServices": true,
+        "samplePriceNotPerformance": true,
+        "completedHistoryInWorkspace": true,
+        "receiptReadbackAfterReload": true,
+        "successClosesTicketAndFocusesActivity": true,
+        "jsonTimeoutMs": 10000
       }
     },
     {
