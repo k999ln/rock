@@ -3000,7 +3000,7 @@
   "csvStorageHardening": {
     "scope": "CSV storage/expiry fixes isolated from other in-progress Sky changes",
     "evidence": "docs/evidence/sky-csv-storage-hardening.json",
-    "status": "CSV/Worker checks passed; draft review ready; main-wide pre-existing failures unchanged",
+    "status": "CSV fixes and existing verification alignment pass combined local full verify; fresh same-head CI pending",
     "productionOwnerJourneyAccepted": false
   },
   "repositoryVerificationAlignment": {
@@ -3009,10 +3009,11 @@
     "scope": "existing Web visual baseline, translated README assertions, committed migration table count",
     "visualSourceChanged": false,
     "productionDeploymentChanged": false,
-    "fullVerify": "passed",
+    "fullVerify": "combined_csv_and_alignment_passed",
     "localNode": "26.0.0",
     "localDependencies": "shared canonical installed tree; installed base package versions all match; fresh npm ci reserved for GitHub CI",
     "fullVerifyLogSha256": "cef357d9c82304d10b35f0e1501058835891cea63ab104117db9e2b43742221a",
-    "existingFashionActionLabelAligned": true
+    "existingFashionActionLabelAligned": true,
+    "evidence": "docs/evidence/sky-release-verification-alignment.json"
   }
 }

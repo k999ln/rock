@@ -126,3 +126,5 @@ WEB06/ROCK: main b3e2676からCSVの受付ID衝突・競合cleanupと期限切�
 2026-10-02 Sky公開前のGitHub検証整合: main b3e2676の既存エラーを分離branchで修正中。CSS/componentを変更せず、既存pale-blueのvisual baseline、英語READMEの製造保留/実機0/進捗リンク、既存marketplace migration後の37 tableへ検証を合わせる。履歴DBの全schema・保存値比較と製品の未受入境界は維持する。公開Site配備やmain mergeとは別に、full verifyと同一SHA CIを確認する。
 
 分離branchの`npm run verify`はexit 0。古いFashion Producerボタン名の判定も現行の「プランを作って保存」へ同期した。ローカルはNode 26と既存dependency treeを再利用し、base lockのインストール済みpackage版は全一致。GitHub Node 22・fresh npm ciの同一SHA CIは別途確認する。
+
+CSV修正との合成branchも`npm run verify` exit0: Node441/441、Fashion19/19、Worker-D1 172、CSV-D1/R2 113、bundle131、asset114/missing0。証拠`docs/evidence/sky-release-verification-alignment.json`。同一headのfresh CIとmain merge、本番owner・Cloud・Apple Pay受入はまだ別gate。
