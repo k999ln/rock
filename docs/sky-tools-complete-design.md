@@ -356,6 +356,8 @@ Pixelで結果の保存ボタンが縦に細く伸びる問題を確認したた
 
 ## 14. 法務受付
 
+法務・特許のオンライン処理は共通Responses transportを利用する。資格情報はserverだけで使用し、20秒のabort、redirect拒否、`store:false`、失敗時の自動再送なしを維持する。未完了・不正JSON・公式citationなしを成功にしない。成功応答には実model・経過時間・検証済みtoken数（欠落/不整合ならnull）・観測したweb検索call数を返す。これらは応答metadataであり、D1利用台帳・請求額・provider invoice照合の完了ではない。入力本文を追加保存しない。trusted料金表、検索料金、本人の予算予約、精算が同じ経路へ接続するまで料金gateは閉じ、資格情報だけで実行を開始しない。本人認証とRockstarサービス利用権checkを保持する。公開版では既存のpreview設定を維持し、利用権enforcementの有効化とclaim用D1 migration受入は別作業である。Fixture合格と実provider実行を区別する。公式schema: https://developers.openai.com/api/reference/cli/resources/responses/methods/create 。
+
 - 目的: 状況を整理し、政府・裁判所等の公式情報と無料窓口を案内し、必要なら専門家への引継ぎを準備する。
 - 入力: 分野、地域、危険、逮捕、公的書類、期限、状況、希望。
 - 出力: 緊急案内、確認事項、公式source、一般情報、引継ぎsummary。

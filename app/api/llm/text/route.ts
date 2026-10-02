@@ -10,6 +10,8 @@ import {
   authorizeRemoteAiRequest,
   RemoteAiGuardError,
 } from '@/lib/remote-ai-guard';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
+import { remoteAiPricingGateAccepted, remoteAiPricingUnavailable } from '@/lib/remote-ai-pricing-gate';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
@@ -25,7 +27,14 @@ function isLoopbackEndpoint(value: string | undefined) {
 
 export async function POST(request: Request) {
   try {
-    await authorizeRemoteAiRequest(request, 'llm-text', database());
+    const db = database();
+    const owner = await authorizeRemoteAiRequest(request, 'llm-text', db);
+    if (!(await rockstarServiceScopeAllowed(
+      db,
+      owner,
+      'rockstaros_access',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+    ))) return missingRockstarServiceScope('RockstarOS');
 
     const raw = await request.text();
     if (raw.length > 28_000) throw new LlmProviderError('INVALID_INPUT', 400);
@@ -70,14 +79,22 @@ export async function POST(request: Request) {
       (provider !== 'local-model' || !isLoopbackEndpoint(requestedBaseUrl) ||
         !/^https?:$/i.test(new URL(requestedBaseUrl).protocol)))
       throw new LlmProviderError('LOCAL_ENDPOINT_REQUIRED', 400);
+    const configuredEndpoint = provider === 'local-model'
+      ? requestedBaseUrl || runtimeEnv.SKY_LOCAL_LLM_BASE_URL
+      : provider === 'ollama'
+        ? runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434'
+        : provider === 'openai-compatible'
+          ? runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL
+          : undefined;
     const remote =
       definition.locality === 'remote' ||
-      (provider === 'openai-compatible' &&
-        !isLoopbackEndpoint(runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL));
+      Boolean(configuredEndpoint && !isLoopbackEndpoint(configuredEndpoint));
     if (remote && value.consent !== true)
       throw new LlmProviderError('EXPLICIT_REMOTE_CONSENT_REQUIRED', 403);
     if (remote && runtimeEnv.SKY_REMOTE_LLM_ENABLED !== 'true')
       throw new LlmProviderError('REMOTE_LLM_DISABLED', 503);
+    if (remote && !remoteAiPricingGateAccepted())
+      return remoteAiPricingUnavailable();
 
     const requestEnv = requestedBaseUrl
       ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
@@ -114,7 +131,12 @@ export async function POST(request: Request) {
     const code = error instanceof LlmProviderError ? error.code : 'INVALID_INPUT';
     console.error('text llm failed', code);
     return Response.json(
-      { error: '選択したLLMを利用できません。', code },
+      {
+        error: code === 'REMOTE_AI_PRICING_GATE_UNAVAILABLE'
+          ? 'クラウドAIの料金確認機能が接続されるまで外部LLMを利用できません。'
+          : '選択したLLMを利用できません。',
+        code,
+      },
       { status, headers: noStoreHeaders },
     );
   }

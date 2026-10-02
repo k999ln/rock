@@ -71,15 +71,15 @@ export function skyToolUiState(
     };
   if (tool.runner === 'jev-evaluation')
     return {
-      label: service?.jevConfigured ? '外部AI設定済み・利用同意が必要' : '外部AI接続が必要',
-      detail: '利用同意とProvider設定後に評価。設定済みは本番動作の保証ではありません',
+      label: '料金見積・上限制御の接続待ち',
+      detail: 'provider設定があっても、価格・予算予約・usage receiptを接続するまで外部送信しません',
       className: 'is-connect',
     };
   if (tool.id === 'rockstar-legal-intake' || tool.id === 'rockstar-patent-assistant') {
     const configured = tool.id === 'rockstar-legal-intake' ? service?.legalAiConfigured : service?.patentAiConfigured;
     return {
-      label: configured ? 'AI設定済み・利用同意が必要' : '標準ガイドのみ・AI接続待ち',
-      detail: configured ? '外部AIへの送信前に内容と利用条件を確認' : '公的案内と標準の整理機能を利用できます。外部AIは設定待ちです',
+      label: configured ? 'Provider設定あり・価格制御未接続' : '標準ガイドのみ・価格確認待ち',
+      detail: '単価見積・利用者上限・最終usage照合を接続するまで外部AIへ送信しません',
       className: 'is-connect',
     };
   }

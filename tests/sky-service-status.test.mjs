@@ -26,6 +26,10 @@ void test('key presence cannot override disabled external processing', () => {
   assert.equal(result.patentAiConfigured, false);
   assert.equal(result.jevConfigured, false);
   assert.equal(skyServiceStatus({ ...configured, OPENAI_API_KEY: '  ' }, true, origin).legalAiConfigured, false);
+  const priceGateClosed = skyServiceStatus(configured, true, origin);
+  assert.equal(priceGateClosed.legalAiConfigured, false);
+  assert.equal(priceGateClosed.patentAiConfigured, false);
+  assert.equal(priceGateClosed.jevConfigured, false);
 });
 
 void test('payment mode, key, webhook and origin must all match', () => {
@@ -50,8 +54,8 @@ void test('malformed status responses leave configuration unknown rather than en
 void test('AI-guided tools retain their standard guide while provider configuration is missing', () => {
   const service = skyServiceStatus({}, true, origin);
   for (const id of ['rockstar-legal-intake', 'rockstar-patent-assistant']) {
-    assert.equal(skyToolUiState(tool(id), { service }).label, '標準ガイドのみ・AI接続待ち');
-    assert.equal(skyToolUiState(tool(id), { service: skyServiceStatus(configured, true, origin) }).label, 'AI設定済み・利用同意が必要');
+    assert.equal(skyToolUiState(tool(id), { service }).label, '標準ガイドのみ・価格確認待ち');
+    assert.match(skyToolUiState(tool(id), { service: skyServiceStatus(configured, true, origin) }).label, /価格/);
   }
 });
 

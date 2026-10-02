@@ -434,6 +434,26 @@
           "CLIENT_ERROR"
         ],
         "calculationFailureRetry": false
+      },
+      "cloudTransportAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/llm-providers.ts",
+          "lib/remote-ai-pricing-gate.ts"
+        ],
+        "tests": [
+          "tests/llm-providers.test.mjs",
+          "scripts/check-work-api.mjs"
+        ],
+        "timeoutMs": 20000,
+        "automaticRetry": false,
+        "redirects": "manual",
+        "responseStore": false,
+        "usage": "validated-provider-counts-or-null",
+        "observedSearchCalls": "not-invoice-proof",
+        "pricingGateAccepted": false,
+        "productionProviderExecutionVerified": false,
+        "persistence": "response-metadata-only; no usage-ledger settlement yet"
       }
     },
     {
@@ -461,6 +481,26 @@
           "CLIENT_ERROR"
         ],
         "calculationFailureRetry": false
+      },
+      "cloudTransportAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/llm-providers.ts",
+          "lib/remote-ai-pricing-gate.ts"
+        ],
+        "tests": [
+          "tests/llm-providers.test.mjs",
+          "scripts/check-work-api.mjs"
+        ],
+        "timeoutMs": 20000,
+        "automaticRetry": false,
+        "redirects": "manual",
+        "responseStore": false,
+        "usage": "validated-provider-counts-or-null",
+        "observedSearchCalls": "not-invoice-proof",
+        "pricingGateAccepted": false,
+        "productionProviderExecutionVerified": false,
+        "persistence": "response-metadata-only; no usage-ledger settlement yet"
       }
     },
     {

@@ -2,11 +2,14 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   generateText,
+  createOpenAiResponse,
   isTextModelProvider,
   readTextModelSelection,
   textModelProviders,
   LlmProviderError,
 } from '../lib/llm-providers.ts';
+import { buildLegalAiRequest, parseLegalAiResponse } from '../lib/legal-ai.ts';
+import { buildPatentAiRequest, parsePatentAiResponse } from '../lib/patent-ai.ts';
 
 const response = (value, status = 200) =>
   new Response(JSON.stringify(value), {
@@ -135,4 +138,69 @@ void test('provider failures distinguish timeout, transport and invalid or incom
         !/sensitive|fixture-key/.test(error.message));
     assert.equal(calls, 1, 'failed requests must not be retried as duplicate billable requests');
   }
+});
+
+void test('cited research preserves search restrictions and returns measured provider usage', async () => {
+  const legal = {
+    issueType: 'housing', location: 'nyc', matterStage: 'general_information',
+    situationSummary: 'Synthetic research input for the shared transport fixture.',
+    desiredOutcome: 'Official information',
+  };
+  const patent = {
+    inventionTitle: 'Synthetic research fixture', problem: 'Technical problem fixture',
+    mechanism: 'Mechanism fixture', architecture: 'Architecture fixture',
+    technicalEffect: 'Effect fixture', differences: 'Difference fixture',
+    knownPriorArt: '', inventor: '', applicant: '', disclosureStatus: 'not_disclosed',
+  };
+  for (const [body, parse, citation] of [
+    [buildLegalAiRequest(legal, '2026-10-02', 'fixture-model'), parseLegalAiResponse, 'https://nycourts.gov/'],
+    [buildPatentAiRequest(patent, '2026-10-02', 'fixture-model'), parsePatentAiResponse, 'https://jpo.go.jp/'],
+  ]) {
+    let calls = 0;
+    const result = await createOpenAiResponse(body, { OPENAI_API_KEY: 'fixture-server-key' }, async (url, init) => {
+      calls++;
+      assert.equal(url, 'https://api.openai.com/v1/responses');
+      assert.equal(init.redirect, 'manual');
+      assert.ok(init.signal instanceof AbortSignal);
+      const sent = JSON.parse(init.body);
+      assert.deepEqual(sent.tools, body.tools);
+      assert.deepEqual(sent.tool_choice, body.tool_choice);
+      assert.equal(sent.max_tool_calls, body.max_tool_calls);
+      assert.equal(sent.store, false);
+      assert.doesNotMatch(init.body, /fixture-server-key/);
+      return response({ status: 'completed', model: 'fixture-model-actual',
+        usage: { input_tokens: 11, output_tokens: 4, total_tokens: 15 },
+        output: [
+          { type: 'web_search_call', status: 'completed' },
+          { type: 'message', content: [{ type: 'output_text', text: 'Cited fixture result',
+            annotations: [{ type: 'url_citation', title: 'Official fixture', url: citation }] }] },
+        ],
+      });
+    });
+    assert.equal(calls, 1);
+    assert.equal(parse(result.payload).citations[0].url, citation);
+    assert.equal(result.webSearchCalls, 1);
+    assert.equal(result.model, 'fixture-model-actual');
+    assert.deepEqual(result.usage, { inputTokens: 11, outputTokens: 4, totalTokens: 15, cachedInputTokens: null });
+    assert.ok(Number.isSafeInteger(result.durationMs) && result.durationMs >= 0);
+  }
+});
+
+void test('research transport does not submit without a credential or valid model', async () => {
+  let calls = 0;
+  const fetcher = async () => { calls++; return response({}); };
+  await assert.rejects(createOpenAiResponse({ model: 'fixture-model' }, {}, fetcher),
+    error => error.code === 'MISSING_PROVIDER_CREDENTIAL' && error.status === 503);
+  await assert.rejects(createOpenAiResponse({ model: '' }, { OPENAI_API_KEY: 'fixture-key' }, fetcher),
+    error => error.code === 'INVALID_MODEL' && error.status === 400);
+  assert.equal(calls, 0);
+});
+
+void test('research response body timeout is indeterminate and never automatically resubmitted', async () => {
+  let calls = 0;
+  await assert.rejects(createOpenAiResponse({ model: 'fixture-model' }, { OPENAI_API_KEY: 'fixture-key' }, async () => {
+    calls++;
+    return { ok: true, json: async () => { throw new DOMException('private body error', 'AbortError'); } };
+  }), error => error.code === 'UPSTREAM_TIMEOUT' && error.status === 504 && !/private/.test(error.message));
+  assert.equal(calls, 1);
 });

@@ -334,6 +334,58 @@ function openAiUsage(payload: Record<string, unknown>): TextGenerationUsage | nu
   };
 }
 
+export type OpenAiResponseResult = {
+  payload: Record<string, unknown>;
+  model: string;
+  durationMs: number;
+  usage: TextGenerationUsage | null;
+  webSearchCalls: number;
+};
+
+/** Shared transport for text and cited research. Callers must authorize spending first. */
+export async function createOpenAiResponse(
+  body: Record<string, unknown>,
+  runtimeEnv: Pick<LlmRuntimeEnv, 'OPENAI_API_KEY'>,
+  fetchImpl: FetchLike = fetch,
+): Promise<OpenAiResponseResult> {
+  if (!runtimeEnv.OPENAI_API_KEY)
+    throw new LlmProviderError('MISSING_PROVIDER_CREDENTIAL', 503);
+  if (typeof body.model !== 'string' || !body.model.trim() || body.model.length > 120)
+    throw new LlmProviderError('INVALID_MODEL', 400);
+  const startedAt = Date.now();
+  try {
+    const response = await fetchImpl('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      redirect: 'manual',
+      headers: {
+        Authorization: `Bearer ${runtimeEnv.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ...body, store: false }),
+      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
+    });
+    const payload = await jsonResponse(response);
+    if (payload.status !== undefined && payload.status !== 'completed')
+      throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
+    return {
+      payload,
+      model: typeof payload.model === 'string' && payload.model.length <= 120
+        ? payload.model : body.model,
+      durationMs: Math.max(0, Date.now() - startedAt),
+      usage: openAiUsage(payload),
+      // These are observed output items, not a reconciled provider invoice.
+      webSearchCalls: Array.isArray(payload.output)
+        ? payload.output.filter((item) => asRecord(item)?.type === 'web_search_call').length : 0,
+    };
+  } catch (error) {
+    if (error instanceof LlmProviderError) throw error;
+    if (error instanceof Error &&
+        (error.name === 'TimeoutError' || error.name === 'AbortError'))
+      throw new LlmProviderError('UPSTREAM_TIMEOUT', 504);
+    throw new LlmProviderError('UPSTREAM_UNAVAILABLE', 502);
+  }
+}
+
 export async function generateText(
   request: TextGenerationRequest,
   runtimeEnv: LlmRuntimeEnv,
@@ -416,30 +468,20 @@ async function generateTextRequest(
   }
 
   if (request.provider === 'openai') {
-    if (!runtimeEnv.OPENAI_API_KEY)
-      throw new LlmProviderError('MISSING_PROVIDER_CREDENTIAL', 503);
-    const response = await fetchImpl('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${runtimeEnv.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const result = await createOpenAiResponse(
+      {
         model,
         input: messages,
         max_output_tokens: maxOutputTokens,
-        store: false,
-      }),
-      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
-    });
-    const payload = await jsonResponse(response);
-    if (payload.status !== undefined && payload.status !== 'completed')
-      throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
+      },
+      runtimeEnv,
+      fetchImpl,
+    );
     return {
       provider: request.provider,
-      model,
-      text: textFromOpenAiResponse(payload),
-      usage: openAiUsage(payload),
+      model: result.model,
+      text: textFromOpenAiResponse(result.payload),
+      usage: result.usage,
     };
   }
 

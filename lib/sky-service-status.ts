@@ -1,4 +1,5 @@
 import { readSkyStripeConfig } from './sky-stripe.ts';
+import { remoteAiPricingGateAccepted } from './remote-ai-pricing-gate.ts';
 
 // Public prerequisite information only. Configured never means provider-tested.
 export type SkyServiceStatus = {
@@ -16,7 +17,7 @@ export function skyServiceStatus(
   databaseAvailable: boolean,
   origin: string,
 ): SkyServiceStatus {
-  const remoteEnabled = bindings.SKY_REMOTE_LLM_ENABLED === 'true';
+  const remoteEnabled = bindings.SKY_REMOTE_LLM_ENABLED === 'true' && remoteAiPricingGateAccepted();
   const present = (name: string) => typeof bindings[name] === 'string' && (bindings[name] as string).trim().length > 0;
   let payments: SkyServiceStatus['payments'] = 'unconfigured';
   try {
