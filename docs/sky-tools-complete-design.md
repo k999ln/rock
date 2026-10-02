@@ -176,6 +176,9 @@ catalogued → selected → connected → ready → running → review → compl
 - 入力: CSV一件、最大10 MB／50,000行／100列、変換指示。
 - 出力: 変換CSV、変更report、独立inspection JSON。
 - 保存: 暗号化private storage。受付から7日で取得拒否、または本人削除。
+- 受付衝突: 同owner・同入力/指示は同じ受付へ収束し、別owner/異なる入力は409。挿入試行ごとに一意なinput keyを保存rowへ結び、競合の敗者は自分の未採用objectだけを削除する。INSERT応答が不明なら保存rowを照合し、照合不能なら入力を削除しない。旧固定keyも保存rowで取得する。
+- 期限と復旧: initial processingとquality_failed retryのclaim前に期限を確認し、ownerの期限切れ受付/objectsを削除して410を返す。匿名/別ownerは削除へ進めない。期限内の正当なretryは維持する。
+- 合格条件: `scripts/check-csv-storage.mjs`で既存ID衝突・同時受付・private成果・永続restart・owner削除・expiry・正常retryを実Worker/D1/R2で検証する。本番owner/Cloud/Apple Pay受入は別。
 - 禁止: 値の推測、文字列の勝手な数値化、複数file結合、外部市場代理操作。
 - effect: 変換はTool内。buyer共有、販売、入金、返金は別adapter／承認。
 - 完了: 3成果のhashと検査合格。手入力入金をWallet収益にしない。

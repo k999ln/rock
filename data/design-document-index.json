@@ -214,7 +214,7 @@
     }
   ],
   "catalogTools": [
-    { "id": "rockstar-csv-cleanup", "catalogStatus": "ready" },
+    {"id": "rockstar-csv-cleanup", "catalogStatus": "ready", "storageIsolationContract": {"implementation": ["lib/csv-job-store.ts"], "tests": ["scripts/check-csv-storage.mjs"], "evidence": ["docs/evidence/sky-csv-storage-hardening.json"], "input": "attempt-specific object; cross-owner collision 409; uncertain insert reconciled before cleanup", "expiry": "processing/retry rejected before claim; owner objects purged after expiry", "productionOwnerAcceptance": false}},
     { "id": "rockstar-markets-analysis", "catalogStatus": "ready" },
     { "id": "mercari-revenue", "catalogStatus": "ready" },
     { "id": "fashion-brand-ops", "catalogStatus": "ready" },

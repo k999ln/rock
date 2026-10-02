@@ -921,7 +921,10 @@
         "app/rockstaros/preview.module.css",
         "app/api/health/route.ts",
         "scripts/check-work-api.mjs",
-        "docs/workstreams/05-web-pwa-sites.md"
+        "docs/workstreams/05-web-pwa-sites.md",
+        "lib/csv-job-store.ts",
+        "scripts/check-csv-storage.mjs",
+        "docs/evidence/sky-csv-storage-hardening.json"
       ]
     },
     {
@@ -2993,5 +2996,11 @@
     "recoverableBackupInstalledComponentAuthorityRestored": false,
     "recoverableBackupPhysicalKeystoreLossRestoreVerified": false
   },
-  "currentStateDocument": "docs/current-state-20260911.md"
+  "currentStateDocument": "docs/current-state-20260911.md",
+  "csvStorageHardening": {
+    "scope": "CSV storage/expiry fixes isolated from other in-progress Sky changes",
+    "evidence": "docs/evidence/sky-csv-storage-hardening.json",
+    "status": "CSV/Worker checks passed; draft review ready; main-wide pre-existing failures unchanged",
+    "productionOwnerJourneyAccepted": false
+  }
 }
