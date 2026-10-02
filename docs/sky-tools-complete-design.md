@@ -628,3 +628,7 @@ Skyの発見・利用条件表示から実行画面への境界を`lib/sky-tool-
 対象の受入は合成localhostの保存→再読込→Zema起動→出典整理→成果取得と実Worker metadata照合。本人の公開認証、Pixel実機、実PC接続、実Provider、本番配備/復旧は未受入。r46親taskと公開gateを部分試験で昇格させない。
 
 R2限定統合の型・関連51試験・build、同じbuilt Worker/D1/R2の212 assertionsが合格。UIではSky保存→ライブラリ再読込→Zemaで出典整理→端末保存成果を再読込後に復元を確認。input162/output103 bytesがcompleted jobと一致し、Sky接続一覧は空のまま。Markdown downloadは10秒のbrowser event timeout、clipboardは空readbackであり取得成功としない。PC開始クリックは自動承認審査が拒否し、最新schema v4候補で待機/失敗/再接続へ進めない。既存の単体負例・過去候補の画面結果を今回の実接続受入へ換算しない。
+
+### MR成果保存のUTF-8リンク
+
+通常のdownloadリンクと手元のdata URLを使用し、本文をサーバーや別originへ送信しない。JavaScriptの不正なUTF-16 scalarはBlobのUTF-8変換と同じ置換文字へ正規化する。画面の出典整理結果とdecodeしたリンクが128 bytesで一致し、実Workerの200 input/128 output completed metadataを照合した。関連9試験と同じbuilt Workerの212 assertionsが合格。これは生成するファイル内容と画面/APIの照合であり、実ファイルの受取成功ではない。IAB/Chromeのdownload通知timeout、virtual clipboardの制約、downloads記録画面のURL policy拒否を記録し、私有ブラウザ情報を別経路で調べない。本人の手動保存・Pixel・公開版での取得受入は未完了。通常リンクには従来と同じ配色・位置を適用し、既存コピー・端末保存の操作は保持する。

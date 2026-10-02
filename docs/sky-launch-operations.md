@@ -83,7 +83,7 @@ sandboxで成功、取消、失敗、通知再送/順序逆転、受取先停止
 - 購入/返金が不明なら再課金を止め、Stripe再照合と注文receiptを確認する。DB上の状態を直接paidに書き換えない。
 - D1と私有R2を対でバックアップ・復元し、owner、hash、期限、削除済み状態の整合をstagingで確認する。
 - CSVの7日は取得期限。定期cleanupと削除失敗の再送が未実装なので、物理削除の保証時刻を契約へ書かない。
-- SiteのDB bootstrapは新規DB用version 1。既存DBを変更する場合は明示migrationと旧code互換の受入が必要。旧codeの再配備だけでDBを戻さない。
+- Skyの未配備候補はruntime schema v4。静的bootstrapは既存DBにも不足table/indexを補い、全guardが揃うまでAPIを503に止める。0037のCSV支払い台帳と0038のライブラリは追加のみ。破損tableや既存dataの変換は自動修復しない。旧codeの再配備だけでDBを戻さず、旧codeとの互換と対になるDB/R2復元を別に受け入れる。
 
 ## 完了判定
 
@@ -98,3 +98,14 @@ sandboxで成功、取消、失敗、通知再送/順序逆転、受取先停止
 顧客インタビューの固定テーマ・仮説と予定調整の固定日時・時間・形式が入力に反することを再現した。候補処理はAI分析済みと表示せず、入力を添えた記入用テンプレートであることを画面と出力へ示す。2 Toolは未検証のテーマ・仮説・日時を自動確定せず、確認欄を未記入にする。本文・結果はserverへ送らず、共通jobsへ状態・処理時間・サイズを記録する。reloadで候補の本文は復元されないため、Markdownを手元へ保存する。クラウドAIの実接続とカレンダーOAuthは残る。合格条件は異なる合成入力でも固定の事実を捏造せず、入力保持、外部未実行表示、metadataと出力サイズ一致を再buildしたUIで確認すること。
 
 候補の認証失効試験では、旧共通signinが同じタブを遷移させ、直接Tool画面の入力がサンプルへ戻る不具合を再現した。共通ExecutionSigninは元画面を保持し、別タブsigninと明示GET接続確認へ変更する。成功はowner jobsのJSON配列を読み戻して判定し、401/redirect・通信失敗・不正JSONでは既知の失効を解除しない。接続確認はjob作成/実行を再送せず、本人の次の実行まで入力をメモリへ保持する。全Toolの本文を10分保存すると誤って約束していた共通説明も訂正した。候補と記事Toolで未認証→別タブsignin→接続確認→一度だけの実行、確認失敗時の停止を再buildしたUIで受け入れる。
+
+
+## 公開v33からschema v4候補への配備・復旧条件
+
+2026-10-02の照合では公開先は既存Skyの `appgprj_6abdfad4c5648191bcae957913bd02fa`、公開version 33。候補のnative Sites sourceとGitHub mainは異なる履歴なので、このworktreeのnative履歴をGitHubへpushしない。Sky用の4つの決済設定名は既存設定を再利用し、11hotelや別Siteへ付け替えない。値をログ/証拠へ出さない。汎用Market webhook secretとAI provider資格情報は、確認時点の設定名に存在しない。CSVの専用webhook secretは別であり、汎用購入権限へ流用しない。
+
+配備前に、候補source commit、server/client bundle hash、migration journal（0037/0038）、schema bootstrap、既存DB/R2 bindingと秘密設定名を同じ候補の記録へ固定する。新しい同名DBやbucketを作って稼働済みの記録を失わない。旧版のCSV job・Stripe session・私有artifact・接続失効状態を含むバックアップと復元を非公開環境で確認し、支払い不明は再徴収せず照会する。公開DBの破損実験、Stripe状態の手書き変更、本人PC権限の代行発行は行わない。
+
+新しいWorkerはAPIの初回requestでschema guardを確認する。失敗は503/Retry-Afterで止まり、v4 markerを先に書かない。同一の失敗promiseを保持せず、修復後の次requestで再試行する。既存v3、部分失敗、保存済みCSV/支払い/成果物の保持は、built Worker/D1/R2の合成212 assertionsで確認済み。本番DB/R2からのexport・restore、実稼働Worker切替、旧Workerへのrollbackは未受入。
+
+配備後は取得したdeployment IDとsite versionをsource/buildに結び付け、公開本人のSky保存→Zema library→run→結果取得、本人A/B分離、認証失効、支払い/購入権限、停止/復旧をこの配備で再検証する。local synthetic結果や公開v33の過去の有料CSV完了を新配備の受入に転記しない。最終判定は `npm run sky:launch:check -- --require-stage complete` でpaidとclientsを両方要求する。設定あり・candidate提出・stage合格を区別する。

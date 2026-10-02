@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-10-02",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
-  "nextAction": "Sky公開候補のschema v3・支払い台帳復旧はlocal合成143 assertions、支払い30/30、schema/台帳4/4まで合格。AI02等の既存参照不足を正本との版照合で解消し、PC権限・本人OAuth・本番配備/復旧は別受入。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
+  "nextAction": "Sky公開候補のschema v4・ライブラリ統合はlocal合成212 assertions、関連51試験、保存→Zema起動→出典整理→端末成果復元まで確認。ファイルdownload・clipboardは未受入。S0-02の技術/公開判断を分離したr46と22作業再評価を保持し、親gateは未完了。AI02等の既存参照不足を正本との版照合で解消し、PC権限・本人OAuth・本番配備/復旧は別受入。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
     {
       "id": "SKY21",
@@ -3448,6 +3448,22 @@
       "PC start/wait/failure/reconnect (auto-review rejection)",
       "public owner authentication",
       "physical Pixel"
+    ]
+  },
+  "skyResultExportPreparation": {
+    "stage": "local_payload_and_ui_verified",
+    "runtimePublished": false,
+    "unitTestsPassed": 9,
+    "workerAssertionsPassed": 212,
+    "metadataInputBytes": 200,
+    "metadataOutputBytes": 128,
+    "fileDownloadAccepted": false,
+    "clipboardAccepted": false,
+    "publicOwnerAccepted": false,
+    "evidence": [
+      "lib/sky-result-download.ts",
+      "tests/sky-result-download.test.mjs",
+      "docs/sky-launch-operations.md"
     ]
   }
 }

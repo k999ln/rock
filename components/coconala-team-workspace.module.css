@@ -82,7 +82,8 @@
   background: #162228;
   color: #edf3f5;
 }
-.checkPanel :global(.output-actions button) {
+.checkPanel :global(.output-actions button),
+.checkPanel :global(.output-actions a) {
   background: #354852;
   color: #c8e3ed;
 }
@@ -708,7 +709,8 @@
     flex-wrap: wrap;
     width: 100%;
   }
-  .checkPanel :global(.output-actions button) {
+  .checkPanel :global(.output-actions button),
+  .checkPanel :global(.output-actions a) {
     min-height: 44px;
     flex: 0 1 auto;
   }

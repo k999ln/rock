@@ -408,3 +408,5 @@ Sky接続復帰の未配備候補: `/sky/network` で端末案内・サインイ
 Skyの最終ローンチ判定は、既存12 gateをWeb・有料市場・OS/他アプリへまとめ、同じsource/build/deployment/versionの実受入記録を照合します。`npm run sky:launch:check -- --require-stage complete`は未受入の間は失敗します。過去の部分確認とローカル試験は保持し、全体完成には数えません。
 
 未配備候補ではSkyのToolをZemaライブラリへ保存し、保存一覧から起動できます。保存は本人別のTool IDと日時だけで、購入・実行許可・PC接続を行いません。既存の会話入口と配色を保持しています。合成localhostの保存・再読込・出典整理・端末保存成果の復元を確認し、実Workerの完了metadataと一致しました。ファイルdownload・clipboard・本人の公開受入は未完了です。
+
+未配備候補のMR成果保存は、通常のMarkdownリンクから手元のUTF-8結果を取得する方式です。表示とリンク内容、実Workerの処理量を照合しました。実ファイル受取・clipboard・本番本人の受入は保留し、配備・復旧条件は `docs/sky-launch-operations.md` に記載しています。

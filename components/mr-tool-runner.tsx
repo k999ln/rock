@@ -19,6 +19,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import { skyMarkdownDownloadHref } from '@/lib/sky-result-download';
 import {
   Select,
   SelectTrigger,
@@ -343,16 +344,6 @@ export function MrToolRunner({
       );
     }
   }
-  function download() {
-    const objectUrl = URL.createObjectURL(
-      new Blob([output], { type: 'text/markdown;charset=utf-8' }),
-    );
-    const a = document.createElement('a');
-    a.href = objectUrl;
-    a.download = `rock-star-${tool}.md`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
-  }
   if (tool === 'delivery-local')
     return (
       <DeliveryRunner
@@ -582,9 +573,9 @@ export function MrToolRunner({
               <button onClick={copy} aria-label="結果をコピー">
                 {copied ? <Check size={17} /> : <Copy size={17} />}
               </button>
-              <button onClick={download} aria-label="結果をMarkdownで保存">
+              <a href={skyMarkdownDownloadHref(output)} download={`rock-star-${tool}.md`} aria-label="結果をMarkdownで保存">
                 <Download size={17} />
-              </button>
+              </a>
             </div>
           </div>
           {result && (

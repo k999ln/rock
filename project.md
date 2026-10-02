@@ -1590,3 +1590,7 @@ Workers Vitestの管理下にある制御service-binding Agent Card／A2A 1.0 te
 ## Skyの保存からZemaライブラリへのR2統合候補
 
 保護した公開sourceへ、保存済みR2のlibrary/API/OS policyを限定統合。現行Tool runner・Sky配色・会話入口・決済処理・サインイン復帰を保持。保存は本人別bookmarkだけで、接続同意や購入権限を作らない。元SQLをjournalの0038に保存し、schema v4で新規/旧v3/部分失敗を検証する。型・関連51試験・buildと同じWorker/D1/R2の212 assertionsが合格。合成localhostでSky保存→再読込→Zema起動→出典整理→端末保存成果の復元を確認し、完了metadataの入力162/output103 bytesを画面と照合。Markdown downloadは内蔵ブラウザ試験timeout、clipboardは空readbackで未受入。接続開始ボタンは自動承認審査が拒否し、最新候補の待機/失敗/復帰は未検証。公開/実PC/実Provider/Pixel実機の未完了と親gateを維持する。
+
+## Sky成果保存のリンク化とschema v4配備条件
+
+MR成果保存を短命のDOM外Blobクリックから通常のUTF-8 Markdownリンクへ変更。色・操作位置・本文の端末内処理を維持し、lone surrogateをUTF-8ファイルと同じ置換文字へ正規化する。日本語/絵文字/先頭BOM/CRLF/URL記号/大きな成果を含む関連9試験とtype/lint/build、同じbuilt Worker/D1/R2の212 assertionsが合格。Chromeの画面上の保存リンク内容は結果128 bytesと一致し、Workerのinput200/output128 completed metadataと照合。内蔵ブラウザ/Chromeのdownload API timeoutとvirtual clipboardの制限により、実ファイル受取とcopy/pasteは未受入。ブラウザのdownloads記録ページはURL policyで拒否され、別経路で回避しない。運用文書の旧schema v1記述を未配備v4のguard/503/retryへ修正し、同じ候補のDB/R2復元・旧版互換・本番切替の未受入を保持。r46、親task、公開gate、Stripe/PC/Provider設定は変更しない。

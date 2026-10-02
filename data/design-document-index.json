@@ -793,5 +793,18 @@
     "schemaVersion": 4,
     "saveIsEntitlement": false,
     "productionAccepted": false
+  },
+  "skyResultExport": {
+    "document": "docs/sky-tools-complete-design.md",
+    "operations": "docs/sky-launch-operations.md",
+    "implementation": [
+      "components/mr-tool-runner.tsx",
+      "lib/sky-result-download.ts"
+    ],
+    "verification": "tests/sky-result-download.test.mjs",
+    "contentUploadAdded": false,
+    "downloadAccepted": false,
+    "clipboardAccepted": false,
+    "productionAccepted": false
   }
 }
