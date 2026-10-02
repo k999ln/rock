@@ -594,3 +594,11 @@ pendingは一操作だけ。offline・画面破棄後の古い応答は棄却し
 合格条件は型/lint、端末判定、offline競合・重複操作・破棄応答の試験と、同じビルドで待機/失敗/再試行を確認すること。失敗専用runtime fixtureは503を返し、Connector起動も token発行も行わない。実PCの権限発行・停止/再接続は別の具体的承認と後片付けが必要。公開配備、実利用権、復旧/運用、初回商品・対象の本人判断をこの部分試験へ換算しない。復旧は未配備候補の破棄、配備後は検証済み旧版へのrollbackを別途受入する。
 
 接続開始前に既存ExecutionAccessのchecking/signin/unavailableを確認し、authenticated jobs-array応答が得られるまで主操作と詳細画面の接続を無効にする。接続を再確認する操作はGETのみで、PCの権限発行を開始しない。他の旧接続入口も含む全体の権限受入は、この画面の部分試験と分ける。
+
+## Sky公開候補の新規環境・復旧時の支払い台帳
+
+公開v33のSite sourceを保護した候補だけで修正する。初回起動のschema version 3は、既存のidempotent bootstrapへCSV試験の支払い台帳とsession一意indexを含める。新規環境はhosting用のbootstrap migrationだけから起動し、旧version 2も既存のCSV job、成果物、支払いsessionを保持して更新する。schema versionは全SQL適用後だけに記録し、失敗時の503と再試行を維持する。Stripeへの新規課金、本人の接続権限、外部Provider接続はこの初期化とは別である。
+
+原本のSQL/journalは `drizzle-source/`、配備のbootstrapは `sky-hosting-migrations/`、Sites固有の既存upgradeは `drizzle/` として混同しない。source検査は50 table、34 migration、Marketplace relation guard 8、Sky review guard 2を照合し、同じ列とguardがruntime bootstrapにあることを試験する。CSV paymentの原本は既存 `0001_csv_trial_payments.sql` と同一bytesを `0037_csv_trial_payments.sql` として保存し、既存の正本作業版と番号を揃える。remote AI用の追加台帳は既存のまま保持する。
+
+受入はローカルの同じビルド・使い捨てD1/R2・合成ユーザーで確認する。新規初期化、旧version 2からの復旧、保存済み支払いsessionの保持と重複拒否、CSV処理・保存・再起動後の成果物取得が対象。本番D1への適用、公開配備、実Stripe/Apple Pay、Pixelの受入は未実施。全体のproject checkは別の既存AI02等の証跡不足で未合格のため、根拠を削除して通さない。

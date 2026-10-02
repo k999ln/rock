@@ -739,6 +739,13 @@
     "permissionBoundary": "No real /connect or reconnect acceptance until separately approved PC trial",
     "providerConnectionDraftsAreExecution": false,
     "deploymentAcceptance": false,
-    "signinGate": "Main and detailed network connection buttons are blocked until existing authenticated jobs-array check succeeds. Recheck is read-only."
+    "signinGate": "Main and detailed network connection buttons are blocked until existing authenticated jobs-array check succeeds. Recheck is read-only.",
+    "runtimeSchemaRecovery": {
+      "version": 3,
+      "canonicalSql": "drizzle-source/0037_csv_trial_payments.sql",
+      "worker": "sky-service-worker.ts",
+      "test": "scripts/check-csv-storage.mjs",
+      "acceptance": "Fresh bootstrap and version-2 local D1 recovery with preserved jobs, artifacts and trial sessions; no production acceptance"
+    }
   }
 }

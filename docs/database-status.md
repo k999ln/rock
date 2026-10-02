@@ -2,21 +2,21 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-10-01
+更新日: 2026-10-02
 
 ## 全体
 
-- データ境界: 6、table: 103
+- データ境界: 6、table: 104
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 157 task中 104 done、33 in progress、19 planned、1 blocked
+- 作業進捗: 158 task中 104 done、35 in progress、18 planned、1 blocked
 - 現在milestone: Pixel 10 compile-only Developer Previewの初回full build準備
 
 ## 保存境界と配備状態
 
 | 境界 | 責任 | table | source | 配備状態 | 本番適用済み | current readback |
 | --- | --- | ---: | --- | --- | --- | --- |
-| Web D1 | Webサービス状態 | 49 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
+| Web D1 | Webサービス状態 | 50 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
 | Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 19 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
@@ -25,8 +25,8 @@
 
 ## Web D1
 
-- expected latest migration: 0032_esim_order_pricing_snapshot.sql
-- migration files: 33
+- expected latest migration: 0037_csv_trial_payments.sql
+- migration files: 34
 - accidental duplicate: 0
 - published convergence definitions: 6
 - Marketplace relation guards: 8
@@ -36,14 +36,14 @@
 | 仕事・実行・端末・基本台帳 | 8 | book_records, devices, fund_plans, job_events, jobs, tool_controls, tool_runs, work_jobs |
 | Sky接続・Tool管理 | 23 | a2a_usage_receipts, agent_delegation_artifacts, agent_delegation_broker_authorizations, agent_delegation_budget_pools, agent_delegation_budget_reservations, agent_delegation_events, agent_delegation_inputs, agent_delegations, sky_a2a_agent_connections, sky_activation_codes, sky_commerce_events, sky_commerce_offers, sky_commerce_orders, sky_commerce_sellers, sky_connections, sky_developer_tokens, sky_provider_connections, sky_remote_ai_rate_limits, sky_tool_events, sky_tool_grants, sky_tool_package_reviews, sky_tool_packages, sky_tool_submissions |
 | Marketplace | 7 | marketplace_approvals, marketplace_assets, marketplace_events, marketplace_positions, marketplace_proposals, marketplace_receipts, marketplace_reservations |
-| CSV業務 | 4 | csv_billing_accounts, csv_job_events, csv_jobs, csv_monthly_fees |
+| CSV業務 | 5 | csv_billing_accounts, csv_job_events, csv_jobs, csv_monthly_fees, csv_trial_payments |
 | 自動化ファンド・受託案件・事業補助 | 7 | automation_fund_memberships, automation_funds, coconala_team_cases, esim_provider_orders, esim_provider_profile_bindings, esim_provider_webhook_inbox, mercari_revenue_plans |
 
 ## 境界別の全table
 
-<details><summary>Web D1: 49 table</summary>
+<details><summary>Web D1: 50 table</summary>
 
-`a2a_usage_receipts`、`agent_delegation_artifacts`、`agent_delegation_broker_authorizations`、`agent_delegation_budget_pools`、`agent_delegation_budget_reservations`、`agent_delegation_events`、`agent_delegation_inputs`、`agent_delegations`、`automation_fund_memberships`、`automation_funds`、`book_records`、`coconala_team_cases`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`devices`、`esim_provider_orders`、`esim_provider_profile_bindings`、`esim_provider_webhook_inbox`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`sky_a2a_agent_connections`、`sky_activation_codes`、`sky_commerce_events`、`sky_commerce_offers`、`sky_commerce_orders`、`sky_commerce_sellers`、`sky_connections`、`sky_developer_tokens`、`sky_provider_connections`、`sky_remote_ai_rate_limits`、`sky_tool_events`、`sky_tool_grants`、`sky_tool_package_reviews`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
+`a2a_usage_receipts`、`agent_delegation_artifacts`、`agent_delegation_broker_authorizations`、`agent_delegation_budget_pools`、`agent_delegation_budget_reservations`、`agent_delegation_events`、`agent_delegation_inputs`、`agent_delegations`、`automation_fund_memberships`、`automation_funds`、`book_records`、`coconala_team_cases`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`csv_trial_payments`、`devices`、`esim_provider_orders`、`esim_provider_profile_bindings`、`esim_provider_webhook_inbox`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`sky_a2a_agent_connections`、`sky_activation_codes`、`sky_commerce_events`、`sky_commerce_offers`、`sky_commerce_orders`、`sky_commerce_sellers`、`sky_connections`、`sky_developer_tokens`、`sky_provider_connections`、`sky_remote_ai_rate_limits`、`sky_tool_events`、`sky_tool_grants`、`sky_tool_package_reviews`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
 
 次の確認: 既存Sitesの所有workspaceへ接続し、検証済み最新mainを同じSiteへ配備。公開設定変更後に匿名health、本人別API、migration、件数、孤立関係、backup状態をreadbackする
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
+Sky公開候補のschema v3・支払い台帳復旧はlocal合成141 assertions、支払い30/30、schema/台帳4/4まで合格。AI02等の既存参照不足を正本との版照合で解消し、PC権限・本人OAuth・本番配備/復旧は別受入。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

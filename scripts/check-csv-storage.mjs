@@ -1,7 +1,7 @@
 // Loopback Worker/D1/R2 regression. Synthetic users, no payments or providers.
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
-import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -66,12 +66,20 @@ async function artifacts(job, user=alice) {
 try {
   cpSync(join(root,'dist'),join(temporary,'dist'), {recursive:true,filter:p=>!p.split(/[\\/]/).at(-1).startsWith('._')});
   await start();
-  // Canonical builds use migrations; Sites builds also have an idempotent bootstrap.
-  for (const file of readdirSync(join(root,'drizzle')).filter(f=>f.endsWith('.sql')).sort())
-    for (const sql of readFileSync(join(root,'drizzle',file),'utf8').split('--> statement-breakpoint').filter(s=>s.trim()))
+  // Use the actual hosting migration set. Preloading the payment upgrade would
+  // hide a missing table in the deployed Worker's fresh/recovery bootstrap.
+  const hostedBootstrap = existsSync(join(root, 'sky-schema-bootstrap.json'));
+  const migrationDirectory = hostedBootstrap ? 'sky-hosting-migrations' : 'drizzle';
+  for (const file of readdirSync(join(root,migrationDirectory)).filter(f=>f.endsWith('.sql')).sort())
+    for (const sql of readFileSync(join(root,migrationDirectory,file),'utf8').split('--> statement-breakpoint').filter(s=>s.trim()))
       await db.prepare(sql).run();
   await db.prepare('CREATE TABLE IF NOT EXISTS sky_service_schema(version INTEGER PRIMARY KEY)').run();
   await call('/api/csv-jobs',{user:null,status:401});
+  if (hostedBootstrap) {
+    check(Boolean(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='csv_trial_payments'").first()), true);
+    check(Boolean(await db.prepare("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_csv_trial_session'").first()), true);
+    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=3').first()), true);
+  }
   await call('/api/csv-jobs',{method:'POST',body:{},requestOrigin:'https://invalid.example',status:403});
   let first = await create(); const originalHash=await inputHash(first.id);
   check(first.quoteMinor,0);check(await create(first.id),first);
@@ -93,6 +101,21 @@ try {
   check((await bucket.list({prefix:`csv/${collisionId}/`})).objects.length,1);
   first=await finish(first);check(first.status,'completed');check(first.validation.passed,true);
   const before=await artifacts(first);check(Object.keys(before).length,4);
+  if (hostedBootstrap) {
+    // Recover a version-2 database with jobs but without the payment upgrade.
+    await db.prepare('DROP TABLE csv_trial_payments').run();
+    await db.prepare('DELETE FROM sky_service_schema WHERE version=3').run();
+    await db.prepare('INSERT OR IGNORE INTO sky_service_schema(version) VALUES (2)').run();
+    await call('/api/csv-jobs',{user:null,status:401});
+    check(Boolean(await db.prepare('SELECT version FROM sky_service_schema WHERE version=3').first()), true);
+    check(await artifacts(first),before);
+    // An already-populated payment table must survive the idempotent upgrade.
+    await db.prepare("INSERT INTO csv_trial_payments VALUES ('synthetic-payment',?,'test','synthetic-session',1)").bind(first.id).run();
+    await db.prepare('DELETE FROM sky_service_schema WHERE version=3').run();
+    await call('/api/csv-jobs',{user:null,status:401});
+    check(await db.prepare("SELECT session_id FROM csv_trial_payments WHERE id='synthetic-payment'").first(), {session_id:'synthetic-session'});
+    await db.prepare("DELETE FROM csv_trial_payments WHERE id='synthetic-payment'").run();
+  }
   await stop();await start();check(await artifacts(first),before);
   await call('/api/csv-jobs/'+first.id,{method:'DELETE',user:bob,status:404});
   check(await artifacts(first),before);

@@ -113,3 +113,11 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - `npm run test:api`
 
 - 2026-10-02 WEB04: 共通接続確認は成功配列応答だけで実行を許可し、503/切断/timeout/不正応答では入力保持・読取再確認・明示実行へ復旧する。接続設定は取得失敗中の保存を止め、復旧時に編集入力を上書きしない。[合成ブラウザ証拠](../evidence/sky-access-recovery-verification.json)と[Tool詳細設計](../sky-tools-complete-design.md)を参照。本人実機・実AI・本番公開の受入を別記する。
+
+## Sky公開候補の新規環境・復旧時の支払い台帳
+
+公開v33のSite sourceを保護した候補だけで修正する。初回起動のschema version 3は、既存のidempotent bootstrapへCSV試験の支払い台帳とsession一意indexを含める。新規環境はhosting用のbootstrap migrationだけから起動し、旧version 2も既存のCSV job、成果物、支払いsessionを保持して更新する。schema versionは全SQL適用後だけに記録し、失敗時の503と再試行を維持する。Stripeへの新規課金、本人の接続権限、外部Provider接続はこの初期化とは別である。
+
+原本のSQL/journalは `drizzle-source/`、配備のbootstrapは `sky-hosting-migrations/`、Sites固有の既存upgradeは `drizzle/` として混同しない。source検査は50 table、34 migration、Marketplace relation guard 8、Sky review guard 2を照合し、同じ列とguardがruntime bootstrapにあることを試験する。CSV paymentの原本は既存 `0001_csv_trial_payments.sql` と同一bytesを `0037_csv_trial_payments.sql` として保存し、既存の正本作業版と番号を揃える。remote AI用の追加台帳は既存のまま保持する。
+
+受入はローカルの同じビルド・使い捨てD1/R2・合成ユーザーで確認する。新規初期化、旧version 2からの復旧、保存済み支払いsessionの保持と重複拒否、CSV処理・保存・再起動後の成果物取得が対象。本番D1への適用、公開配備、実Stripe/Apple Pay、Pixelの受入は未実施。全体のproject checkは別の既存AI02等の証跡不足で未合格のため、根拠を削除して通さない。

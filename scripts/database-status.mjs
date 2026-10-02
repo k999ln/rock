@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { webSchemaStatus } from './check-web-schema.mjs';
+import { migrationSourceDirectory, webSchemaStatus } from './check-web-schema.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -109,7 +109,7 @@ export function buildDatabaseStatus() {
       label: 'Web D1',
       engine: 'Cloudflare D1',
       authority: 'Webサービス状態',
-      sources: ['db/schema.ts', 'drizzle/'],
+      sources: ['db/schema.ts', `${migrationSourceDirectory}/`],
       tables: webSchemaStatus.tables,
       expectedAppliedThrough: webSchemaStatus.latestMigration,
     },
