@@ -12,7 +12,7 @@ rock-ui: main.o ui.o device.o ipc.o health.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 main.o: main.c ui.h ipc.h device.h health.h
-ui.o: ui.c ui.h ipc.h remote-ui.inc atm-ui.inc auth-ui.inc service-ui.inc activation-ui.inc mcp-ui.inc game-ui.inc
+ui.o: ui.c ui.h ipc.h remote-ui.inc atm-ui.inc auth-ui.inc service-ui.inc activation-ui.inc mcp-ui.inc game-ui.inc security-ui.inc
 device.o: device.c device.h
 ipc.o: ipc.c ipc.h
 health.o: health.c health.h

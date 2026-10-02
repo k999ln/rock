@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 /* Explicit test fixtures. No test data is linked into the installed rock-ui. */
 static json_object *last_request;
@@ -182,6 +183,118 @@ static void test_image(struct rock_ui *ui, const char *name)
     require(snprintf(path, sizeof(path), "%s/%s.png", test_image_directory, name) < (int)sizeof(path), "test image path fits");
     rock_ui_draw(ui);
     require(cairo_surface_write_to_png(ui->surface, path) == CAIRO_STATUS_SUCCESS, "unit renderer image saved");
+}
+
+static uint64_t image_region(struct rock_ui *ui, int x, int y, int width, int height)
+{
+    require(ui->scale == 1 && ui->offset_x == 0 && ui->offset_y == 0,
+            "renderer comparison uses native test geometry");
+    require(x >= 0 && y >= 0 && x + width <= ui->width && y + height <= ui->height,
+            "renderer comparison stays inside image");
+    cairo_surface_flush(ui->surface);
+    const unsigned char *pixels = cairo_image_surface_get_data(ui->surface);
+    int stride = cairo_image_surface_get_stride(ui->surface);
+    uint64_t hash = UINT64_C(14695981039346656037);
+    for (int row = y; row < y + height; row++)
+        for (int col = x * 4; col < (x + width) * 4; col++) {
+            hash ^= pixels[row * stride + col];
+            hash *= UINT64_C(1099511628211);
+        }
+    return hash;
+}
+
+static int security_panel(struct rock_ui *ui)
+{
+    rock_ui_draw(ui);
+    rock_ui_scroll(ui, 10000);
+    rock_ui_draw(ui);
+    int top = (int)(ui->content_top + ui->content_height - ui->scroll - 474);
+    require(top >= ui->content_top && top + 454 <= 856,
+            "complete Spider Guard panel fits below existing power controls");
+    return top;
+}
+
+static void security_ui_test(struct rock_ui *ui)
+{
+    ui->busy = ui->editing = ui->pointer_visible = 0;
+    ui->message[0] = '\0';
+    if (ui->retry_request) { json_object_put(ui->retry_request); ui->retry_request = NULL; }
+    snapshot(ui, 0, 0);
+    ui->page = PAGE_SYSTEM;
+    json_object *guard = json_tokener_parse(
+        "{\"status\":\"watching\",\"workerAlive\":true,\"fresh\":true,"
+        "\"intervalSeconds\":30,\"filesScanned\":4,\"candidateCount\":3,"
+        "\"secretCount\":2,\"personalCount\":1,\"blocked\":4,\"coverageLimited\":true,"
+        "\"findings\":[{\"id\":\"fixture-a\",\"kind\":\"secret\",\"label\":\"API credential\",\"path\":\"local.env\",\"line\":2},"
+        "{\"id\":\"fixture-b\",\"kind\":\"personal\",\"label\":\"Email address\",\"path\":\"notes.txt\",\"line\":5},"
+        "{\"id\":\"fixture-c\",\"kind\":\"secret\",\"label\":\"Private key\",\"path\":\"draft.txt\",\"line\":9}]}");
+    json_object_object_add(ui->snapshot, "security", guard);
+    int before = request_count;
+    int top = security_panel(ui);
+    uint64_t active_status = image_region(ui, 56, top + 49, 596, 25);
+    uint64_t spider = image_region(ui, 60, top + 128, 127, 171);
+    uint64_t counts = image_region(ui, 56, top + 82, 596, 25);
+    uint64_t rows = image_region(ui, 235, top + 126, 410, 204);
+    test_image(ui, "unit-spider-guard-active");
+    struct timespec delay = {.tv_nsec = 160000000};
+    int moving = 0;
+    for (int retry = 0; retry < 3 && !moving; retry++) {
+        nanosleep(&delay, NULL);
+        rock_ui_draw(ui);
+        moving = spider != image_region(ui, 60, top + 128, 127, 171);
+    }
+    require(moving, "fresh connected living worker animates native spider");
+
+    json_object *findings, *first;
+    json_object_object_get_ex(guard, "findings", &findings);
+    first = json_object_array_get_idx(findings, 0);
+    json_object_object_add(first, "label", json_object_new_string("Password assignment"));
+    json_object_object_add(first, "path", json_object_new_string("changed.txt"));
+    json_object_object_add(first, "line", json_object_new_int(17));
+    json_object_object_add(guard, "blocked", json_object_new_int(23));
+    rock_ui_draw(ui);
+    require(rows != image_region(ui, 235, top + 126, 410, 204),
+            "actual finding label path and line change rendered metadata");
+    require(counts != image_region(ui, 56, top + 82, 596, 25),
+            "actual block count changes rendered count");
+    rows = image_region(ui, 235, top + 126, 410, 204);
+    json_object_array_add(findings, json_tokener_parse(
+        "{\"kind\":\"secret\",\"label\":\"FOURTH ROW MUST NOT RENDER\",\"path\":\"extra.txt\",\"line\":4}"));
+    rock_ui_draw(ui);
+    require(rows == image_region(ui, 235, top + 126, 410, 204),
+            "native finding preview is bounded to three metadata rows");
+    json_object_array_del_idx(findings, 3, 1);
+
+    const char *states[] = {"stale", "dead", "failed", "missing-health", "disconnected", "missing"};
+    uint64_t stopped_spider = 0;
+    for (size_t i = 0; i < sizeof(states) / sizeof(states[0]); i++) {
+        json_object_object_add(guard, "status", json_object_new_string(i == 2 ? "error" : "watching"));
+        json_object_object_add(guard, "workerAlive", json_object_new_boolean(i != 1));
+        json_object_object_add(guard, "fresh", json_object_new_boolean(i != 0));
+        if (i == 3) {
+            json_object_object_del(guard, "workerAlive");
+            json_object_object_del(guard, "fresh");
+        }
+        ui->connected = i != 4;
+        if (i == 5) json_object_object_del(ui->snapshot, "security");
+        top = security_panel(ui);
+        require(active_status != image_region(ui, 56, top + 49, 596, 25),
+                "unavailable guard never renders the active service claim");
+        uint64_t current_spider = image_region(ui, 60, top + 128, 127, 171);
+        if (!i) stopped_spider = current_spider;
+        require(stopped_spider == current_spider,
+                "stale dead failed missing and disconnected workers share inactive spider");
+        nanosleep(&delay, NULL);
+        rock_ui_draw(ui);
+        require(current_spider == image_region(ui, 60, top + 128, 127, 171),
+                "unavailable guard does not animate between frames");
+        char name[80];
+        snprintf(name, sizeof(name), "unit-spider-guard-%s", states[i]);
+        test_image(ui, name);
+    }
+    require(request_count == before, "Spider Guard display and animation perform no IPC or mutation");
+    snapshot(ui, 0, 0);
+    ui->scroll = 0;
 }
 
 static void remote_wallet_cache_test(struct rock_ui *ui)
@@ -664,6 +777,7 @@ int main(int argc, char **argv)
     membership_test(&ui);
     wallet_geometry_test(&ui);
     remote_wallet_cache_test(&ui);
+    security_ui_test(&ui);
     power_ui_test(&ui);
     remote_ui_test(&ui);
     read_queue_test(&ui);

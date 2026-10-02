@@ -167,8 +167,10 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
+[Spider Guard](docs/spider-guard.md) is being integrated into **RockstarOS itself** (`SYS15`): the existing Platform service inspects its fixed application-data scope and checks supported MCP/Runner requests before sending. Native status uses authenticated, sanitized findings. Web and MCP Connector safeguards are secondary. Same-image boot, Pixel deployment, and 24-hour operation remain unverified; arbitrary OS traffic and other users' private storage are outside this scope.
+
 <!-- project-overview:start -->
-Updated: 2026-09-27 / 157 tasks: 104 done, 32 in progress, 20 planned, 1 blocked
+Updated: 2026-10-02 / 158 tasks: 104 done, 33 in progress, 20 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)

@@ -29,9 +29,11 @@ class PlatformInstallInputsTests(unittest.TestCase):
             protocol = historical['preregistration.md']
             self.assertEqual((target / 'usr/lib/rock-benchmark/preregistration.md').read_bytes(), protocol)
             for path in ('usr/lib/rock-platform/service.py', 'usr/lib/rock-platform/wallet_auth/daemon.py',
+                         'usr/lib/rock-platform/sensitive_guard.py', 'usr/lib/rock-platform/supervisor.py',
                          'usr/libexec/rock-wallet-evidence-auth.py', 'usr/libexec/rock-platform-health',
                          'usr/share/fonts/rock/NotoSansCJKjp-Regular.otf'):
                 self.assertGreater((target / path).stat().st_size, 0, path)
+            self.assertIn('rock-platform/supervisor.py', (target / 'usr/libexec/rock-platform-launch').read_text())
             # Resolve the installed guest's actual document path in an isolated
             # interpreter. Import does not run its guarded measurement main().
             probe = subprocess.run([sys.executable, '-I', '-B', '-c',

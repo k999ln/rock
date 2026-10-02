@@ -1,3 +1,9 @@
+## 2026-10-02 Spider Guardの実処理への接続
+
+利用者はクモが秘密コード・個人情報のある場所を優先して守る継続監視を求め、表示デモではなく正本repository `k999ln/rock` への実装と、常駐先をRockstarOS本体とすることを指定した。[Spider Guard](spider-guard.md)を新規 `SYS15` の範囲・責任・受入の正本とする。Platform UID 1002で固定範囲の平文application dataを継続検査し、MCP送信とRunnerControlのprepare／初回送信確定前に検査・拒否を接続する。native画面は認証付き`security.status`の実結果を表示する。Web／Connectorの送信前検査は補助である。
+
+主担当はSecurityのROCK。OS本体への同梱・起動監督まで実装対象とするが、変更後の同一image boot、Pixel実機、24時間連続運転は未受入。検出値を画面・記録へ出さず、未検査・停止・失敗を安全や稼働中と表示しない。任意アプリ・OS全体の通信の遮断、root権限、侵害防止の保証は追加しない。既存のRQ01〜RQ49、権限・本人承認、Operator Dock分離、Pixel/QEMU・署名・公開gateを維持する。
+
 ## 2026-09-27 Sky Marketの現行手数料
 
 Sky Marketは自動化ToolとLLMを掲載対象にし、登録・接続・公開・基本利用料は0円とする。検証済みTool売上のSky Market手数料は10%。外部決済、API、AIモデル、cloud等の第三者実費は別表示する。Provider、本人確認、返金、照合の受入前は請求・回収・払出しを有効化しない。旧8.88 USD案と0%の記載は過去の判断履歴・回帰資料であり、この現行方針を上書きしない。

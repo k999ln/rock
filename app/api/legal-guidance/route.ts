@@ -1,3 +1,4 @@
+import { SensitiveDataBlockedError } from '@/toolkits/spider-guard/detector.mjs';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
@@ -52,6 +53,7 @@ export async function POST(request: Request) {
     const searchedAt = new Date().toISOString();
     const upstream = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',
+      redirect: 'error',
       headers: {
         Authorization: `Bearer ${runtimeEnv.OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
@@ -76,6 +78,17 @@ export async function POST(request: Request) {
       headers: noStoreHeaders,
     });
   } catch (error) {
+    if (error instanceof SensitiveDataBlockedError)
+      return Response.json(
+        {
+          error:
+            'Spider Guardが機密情報の外部送信を止めました。内容を取り除いて再試行してください。',
+          code: error.code,
+          count: error.count,
+          kinds: error.kinds,
+        },
+        { status: error.status, headers: noStoreHeaders },
+      );
     if (error instanceof RemoteAiGuardError)
       return Response.json(
         {
@@ -89,10 +102,7 @@ export async function POST(request: Request) {
         },
         { status: error.status, headers: noStoreHeaders },
       );
-    console.error(
-      'legal guidance failed',
-      error instanceof Error ? error.message : 'unknown',
-    );
+    console.error('legal guidance failed', 'UPSTREAM_OR_INPUT_ERROR');
     return Response.json(
       { error: '入力を確認して、もう一度お試しください。' },
       { status: 400, headers: noStoreHeaders },

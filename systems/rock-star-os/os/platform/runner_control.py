@@ -19,6 +19,7 @@ import time
 from blackberryrock.packages import canonical, digest, require_compatible, verify_package
 from runner.client import consent_for
 from runner.protocol import MAX_INPUT, MAX_OUTPUT, TERMINAL, RunnerError, TransportError, identifier
+from sensitive_guard import assert_safe_outbound
 
 ACTIVE = {'queued', 'sending', 'unknown', 'accepted', 'running'}
 LOCAL_TERMINAL = TERMINAL | {'rejected'}
@@ -27,7 +28,8 @@ LOCAL_TERMINAL = TERMINAL | {'rejected'}
 class RunnerControl:
     def __init__(self, hub, state_dir, *, registry_control=None, clients=None, start=True,
                  retry_initial=0.1, retry_max=5, poll_seconds=0.5, max_prepared=16,
-                 max_active=8, max_history=100, max_bytes=32 * 1024 * 1024):
+                 max_active=8, max_history=100, max_bytes=32 * 1024 * 1024,
+                 sensitive_guard=None):
         if (any(isinstance(value,bool) or not isinstance(value,(int,float)) for value in (retry_initial,retry_max,poll_seconds))
                 or not 0.01 <= retry_initial <= retry_max <= 30 or not 0.05 <= poll_seconds <= 30):
             raise ValueError('invalid bounded remote retry policy')
@@ -35,6 +37,7 @@ class RunnerControl:
             if type(value) is not int or not 1 <= value <= maximum:
                 raise ValueError('invalid remote storage quota')
         self.hub, self.registry = hub, registry_control
+        self.sensitive_guard = sensitive_guard
         self.clients = dict(clients or {})
         if set(self.clients) - {'cloud', 'pc_usb'}:
             raise ValueError('unsupported configured remote target')
@@ -182,6 +185,7 @@ class RunnerControl:
             raise ValueError('invalid Tool id')
         if target not in {'cloud','pc_usb'} or not isinstance(text, str) or len(text.encode('utf-8')) > MAX_INPUT:
             raise ValueError('invalid target or input exceeds 64 KiB UTF-8')
+        self._inspect_outbound({'text': text, 'key': key}, 'remote.prepare')
         request_sha = digest({'id': tool_id, 'target': target, 'text': text, 'key': key})
         with self._admission(), self.mutex, closing(self.connect()) as db, db:
             db.execute('BEGIN IMMEDIATE')
@@ -192,6 +196,7 @@ class RunnerControl:
                 return json.loads(old['preview'])
             client = self._client(target)
             package, manifest, sha = self._installed(tool_id, target)
+            self._inspect_submission(package, text, key, client.endpoint_id, 'remote.prepare')
             count, pending, used = db.execute("SELECT COUNT(*),COALESCE(SUM(state='prepared'),0),COALESCE(SUM(LENGTH(CAST(input_text AS BLOB))+LENGTH(CAST(package AS BLOB))),0) FROM remote_jobs").fetchone()
             reserved = (count + 1) * (MAX_OUTPUT * 6 + 16384) + used + len(text.encode()) + len(canonical(package))
             if count >= self.max_history or pending >= self.max_prepared or reserved > self.max_bytes:
@@ -318,6 +323,23 @@ class RunnerControl:
             result=candidate
         return result
 
+    def _inspect_outbound(self, value, boundary):
+        if self.sensitive_guard is None:
+            assert_safe_outbound(value)
+        else:
+            self.sensitive_guard.inspect(value, boundary)
+
+    def _inspect_submission(self, package, text, key, endpoint_id, boundary):
+        # Signed recipe literals and manifest metadata are still transmitted
+        # content, not an exemption from disclosure policy. Transport tokens,
+        # package signatures and approval digests remain under their existing
+        # cryptographic validation and are not user content to classify.
+        self._inspect_outbound({
+            'v': 1, 'op': 'submit', 'endpoint_id': endpoint_id, 'key': key,
+            'package': {'manifest': package['manifest'], 'recipe': package['recipe']},
+            'text': text,
+        }, boundary)
+
     def _policy(self, row):
         self._client(row['target'],row['endpoint_id'])
         package, _, _ = self._installed(row['tool_id'],row['target'],expected_hash=row['package_hash'],expected_version=row['version'])
@@ -353,6 +375,10 @@ class RunnerControl:
                 return None
             try:
                 package, consent = self._policy(row)
+                # Reinspect persisted pre-upgrade/preparation data before the
+                # first durable send claim. Already-sent operations retain the
+                # existing metadata-only status/cancel reconciliation path.
+                self._inspect_submission(package, row['input_text'], row['key'], row['endpoint_id'], 'remote.send')
             except ValueError as error:
                 if not row['send_claimed']:
                     db.execute("UPDATE remote_jobs SET state='rejected',package=NULL,input_text=NULL,error=?,updated=? WHERE key=?",(str(error)[:256],time.time(),key))

@@ -1,5 +1,13 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-02 — Spider Guardの継続検査と送信前保護に着手
+
+利用者は秘密コード・個人情報をクモが優先して守る機能について、表示デモではなく`k999ln/rock`の実処理への接続と、常駐先をRockstarOS本体とすることを指定した。Security / Identity / ComplianceのROCK担当として`SYS15`を`in_progress`で管理する。Platform UID 1002による固定範囲監視、MCP prepare／submitとRunnerControl prepare／初回send claimの送信前拒否、認証付き状態とnative表示、同梱・boot監督が主対象。Web／Connector送信前検査は補助とする。[詳細設計](docs/spider-guard.md)、OS全体設計§19.1と既存security設計台帳を同期した。既存`SYS02`とRQ01〜RQ49、Operator Dock分離、Pixel/QEMU・署名・公開のgateは保持する。
+
+Linux container（Colima／Debian bookworm、Python 3.13、network none、UID/GID 1002）でnative回帰125、supervisor 3、install 1、計129/129 Python試験が成功（skipなし、ResourceWarningをerror扱い）。Web／MCPのNode試験49/49、typecheck、lint:product、MCP配布物一致も成功した。native Cは`-Werror`でbuildし既存UI suiteが合格。生存・monotonic鮮度の両方を稼働表示に必要とし、送信本文だけでなくmanifest・recipe・key／endpoint metadataを検査する。監督は同じUIDで再起動し、Linux subreaperでcrash後の孤児process groupを終了・reapする。[機械可読証拠](docs/evidence/spider-guard-source-validation.json)と[再現command](docs/spider-guard.md#検証と引継ぎ)を記録した。対象はbase HEAD `b3e2676abd8ae2a0b3f78f48483e067b429d9bc8`上の未commit作業木で、same-SHA CIやremote main反映ではない。
+
+全体`npm test`は455件中444成功・11失敗であり、全体合格とは記録しない。変更前HEADでもvisual baselineの同じエラーとREADMEの2つの期待文言欠落を確認した。D1試験もHEADの必要42fileだけで9件中2成功・7失敗（37対32の6子試験と親）を再現し、計11失敗が変更前から存在することを確認した。Spider描画fixtureとactive／staleの目視確認も成功した。最終`npm run verify`はproject／repository／version／schema／database／release／release:signing（公開fixture64件）まで成功し、HEADでも再現する`baseline:check`の既存visual期待値で停止した。後続gateをこの実行の成功へ換算しない。変更したproduction／test sourceのSHA-256を機械可読証拠へ保存した。同一image boot、QEMU、Pixel実機、24時間運転は未受入で、`SYS15`は`in_progress`を維持する。
+
 ## 2026-09-26 — avokadoホームの用途紹介を体験中心へ簡素化
 
 利用者の「説明すぎる」という指摘に従い、ホームの用途紹介から3コマ・矢印・役割表・長文を撤去。研究、制作、生活、ゲームを一場面ずつ示すコンセプト画像と短い見出しに置き換え、各カードからMini／Proの商品説明へ進めるようにした。既存の製品画像、価格、単体利用の説明、決済停止条件は維持。主担当ROCK、既存WEB19の表示改善。
@@ -1117,7 +1125,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-27 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/157件
+最終更新: 2026-10-02 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/158件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1217,6 +1225,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS11 | Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合 | 完了 | [記録](vite.config.ts) · [記録](scripts/web-bundle-inventory.mjs) · [記録](scripts/check-web-bundle-inventory.mjs) · [記録](tests/web-bundle-inventory.test.mjs) · [記録](package.json) · [記録](data/release-readiness.json) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS12 | 運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定 | 完了 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](docs/product-baseline.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
 | SYS13 | 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 | 進行中 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](services/operator-dock/public/index.html) · [記録](services/operator-dock/src/worker.ts) · [記録](services/operator-dock/src/access-auth.ts) · [記録](services/operator-dock/src/operator-control.ts) · [記録](services/operator-dock/src/device-channel.ts) · [記録](services/operator-dock/migrations/0001_operator_device_control.sql) · [記録](services/operator-dock/migrations/0002_signed_device_channel.sql) · [記録](android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java) · [記録](android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorAgentJobService.java) · [記録](tests/operator-control.test.mjs) · [記録](tests/operator-device-channel.test.mjs) · [記録](tests/operator-access-auth.test.mjs) · [記録](tests/operator-dock-isolation.test.mjs) · [記録](android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java) · [記録](android/operator-agent/src/main/res/values/overlayable.xml) · [記録](scripts/stage-operator-agent-overlay.py) · [記録](tests/test_stage_operator_agent_overlay.py) · [記録](os/physical/operator-agent-overlay/README.md) · [記録](docs/evidence/android-operator-agent-emulator-20260916.json) · [記録](docs/evidence/android-pixel-10-prefull-physical-20260916.json) · [記録](docs/evidence/android-operator-overlay-stager-20260916.json) |
+| SYS15 | Spider GuardをRockstarOS本体のPlatformへ常駐統合し、固定範囲監視・送信前拒否・native表示・boot監督を受け入れる（ROCK・同一image起動未受入） | 進行中 | [記録](docs/spider-guard.md) · [記録](docs/evidence/spider-guard-source-validation.json) · [記録](docs/workstreams/04-security-identity-compliance.md) · [記録](docs/product-baseline.md) · [記録](docs/rockstaros-complete-design.md) · [記録](data/design-document-index.json) · [記録](systems/rock-star-os/os/platform/sensitive_guard.py) · [記録](systems/rock-star-os/os/platform/supervisor.py) · [記録](systems/rock-star-os/os/platform/service.py) · [記録](systems/rock-star-os/os/platform/runner_control.py) · [記録](systems/rock-star-os/os/platform/install-target.sh) · [記録](systems/rock-star-os/os/ui/security-ui.inc) · [記録](systems/rock-star-os/tests/test_sensitive_guard.py) · [記録](systems/rock-star-os/tests/test_os_security_guard_integration.py) · [記録](systems/rock-star-os/tests/test_os_runner_control.py) |
 | SYS14 | 製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定 | 完了 | [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](scripts/check-system-composition.mjs) · [記録](tests/system-composition.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
@@ -1298,7 +1307,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
+次の作業: SYS15でRockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
 <!-- project-status:end -->
 
 ## 次段階の設計

@@ -272,6 +272,26 @@ Fundは複数Toolの検証済み純実績が蓄積するまでPAPER。LIVE運用
 
 Operator DockはOS外、端末Agentはlauncher非表示・限定scope。管理serverだけでは有効命令を作れず、利用者確認済みWebAuthn署名、端末側検証、単調counter、追記監査を必要とする。
 
+### 19.1 Spider Guard — OS本体の継続検査と送信前保護
+
+2026-10-02の利用者指定により、Spider Guardの常駐先はRockstarOS本体とする。既存Security領域のPlatform機能として追加し、独立したSky catalog ToolやOperator Dockの管理権限へ変更しない。詳細正本は[Spider Guard](spider-guard.md)、作業は`SYS15`（ROCK・`in_progress`）。この追加は原本PDFや過去の受入を変更せず、同一image boot・Pixel実機・24時間運転の新しい成功を意味しない。
+
+| 設計項目 | OSへの接続契約 |
+| --- | --- |
+| 目的・利用者 | 本人の秘密コード・個人情報の候補を継続検査し、対応する外部送信を実行前に拒否する |
+| 操作体験 | boot→Platform内の監視開始→固定範囲を検査→本人native画面で実結果と最終検査を表示。クモの演出と保護状態を分ける |
+| 責任・禁止権限 | Platform UID 1002で実行し、root権限、任意filesystem、他UIDのWallet保存域、運営による私的本文取得を追加しない |
+| 入出力・版・上限 | 固定state `/data/platform`の許可した平文fileを既定30秒周期で検査。本文でscan rootを変更できない。`v:1`の`security.status`を認証済みowner UI UID 1000へ返す。file／pass／深さ／候補上限は詳細正本と実装に固定する |
+| 状態・失敗 | `starting`／`scanning`／`watching`／`error`／`stopped`、実workerの生存`workerAlive`、monotonic鮮度`fresh`、最終検査、`coverageLimited`、省略件数を示す。制限・失敗・停止を検出0件や保護成功へ換算しない |
+| 保存・保持・削除・backup | guardは原本を変更せず、検出値を保存・送信しない。結果最大300件と最新30eventはmemory内。restartでcounter／eventをresetし再走査。診断に原文を含めない |
+| Offline・再試行・重複・不明 | 検出は端末内。Platform MCP prepare／submitとRunnerControl prepare／初回send claimでtext・manifest・recipe・key／endpoint metadataを検査し、送信済みの不明結果は既存のmetadata照会・取消で回復する。署名・承認digest・transport credentialの既存検証は維持する |
+| 更新・互換・復旧 | `sensitive_guard.py`と`supervisor.py`を`install-target.sh`で同梱し、`S50rockplatform`へ接続する。同じ非root UIDで終了したPlatformをbackoff再起動し、PDEATHSIGとsubreaperでleaderと孤児process groupを終了・reapする。同じimageのboot・停止・再起動・rollbackは別受入 |
+| 安全・privacy・承認 | owner認証、capability、送信先allowlist、本人承認は維持。検出0件は承認でなく、拒否時にも値を返さない。画面の演出停止で検査を無効化しない |
+| 受入環境・証拠 | host検出器・実file/thread fixture、Linux UID/IPC、QEMU同一image boot、Pixel実機、24時間運転を別に記録。host試験だけでOS常駐受入を完了にしない |
+| 未決定と決め方 | 実負荷・検査遅延・再起動監督・復旧時間は同一image試験で決める。Pixel/AOSP移植は既存Core契約・機種gateで判定し、QEMU sourceのpath移植で代用しない |
+
+Web AI送信前検査とMCP Connectorは補助系統として保持する。これらの成功をOS本体の常駐・24時間受入へ振り替えない。OS全体のpacket interceptionや任意アプリの全内容検査を本機能の実装範囲とはしない。
+
 ## 20. Device Support Package
 
 共通Coreと機種固有driver／firmware／partition／power／thermal／camera等を分離する。DSPは対応Core範囲とhardware capabilityを宣言し、未確認機種を同型として扱わない。

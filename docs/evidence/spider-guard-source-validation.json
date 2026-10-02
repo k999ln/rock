@@ -1,0 +1,249 @@
+{
+  "schema": "rockstaros-spider-guard-source-validation/1",
+  "recordedAt": "2026-10-02",
+  "task": "SYS15",
+  "taskStatus": "in_progress",
+  "source": {
+    "repository": "k999ln/rock",
+    "baseHead": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "testedCommitSha": null,
+    "sameShaCiVerified": false,
+    "remoteMainUpdated": false,
+    "scope": "Source, container, packaging and renderer checks only; no built RockstarOS image acceptance.",
+    "stateAtValidation": "uncommitted_working_tree",
+    "fileHashAlgorithm": "sha256",
+    "fileHashSelection": "Changed tracked paths from git diff --name-only plus untracked paths from git ls-files --others --exclude-standard; production/test source only, excluding docs, data, and generated ZIP.",
+    "fileHashes": {
+      "app/api/jev-evaluation/route.ts": "e18d25f6b44d792524fadf7567011ee8505a4bc4c2c27194152c894717c272c9",
+      "app/api/legal-guidance/route.ts": "ac396ea996570da22b9c2c70bcacf049015616d227640a3fe646527503a2650d",
+      "app/api/llm/text/route.ts": "57b4254bd0f2f971b02d06fafa1c214c07318e62328f6c15c06009388be6b659",
+      "app/api/patent-research/route.ts": "6e5eb4a6c05afd46e9deecc0f90adc4ce91e3aa49a71f1af6d8fba5b6eee9a8a",
+      "lib/decision-layer.ts": "fbae571af074351f84ea43f5ddeccc930d0cdea1e534813c20161f85215649bc",
+      "lib/jev-evaluation.ts": "a2eec4e517278efb2c010f1256f4b4f92fc1fa381398563daea30049d3089994",
+      "lib/legal-ai.ts": "bc1f8e232808b1aa3a085e6f2bb6ce6cdafb0ba145db007230e9f18c8f06e6ba",
+      "lib/llm-providers.ts": "07f00ed9665ca98e8c2cac0b38278de0c45840163c5bce39444beabed656d498",
+      "lib/patent-ai.ts": "80bca2b4d1454c1413c2157cf0f02edb112348c087da2982cd7e19e216209392",
+      "scripts/package-sky-mcp.py": "b9cb26bdeeb1cc1df9547df825eee3759110895dc4b10504ba041cd45b275f93",
+      "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform": "b0adcdb7f5139298a45608369cfd2ed25dc15ee42de58bf3c71bbcc4c7ebd6a7",
+      "systems/rock-star-os/os/platform/install-target.sh": "42e96c3ffaf5b9f47b6590407272f94aadc8104e6a439ddde26231cf27b89faf",
+      "systems/rock-star-os/os/platform/runner_control.py": "d41a9343b379a5c5fcb9cff8d9835e79ac3b99626ad82e0139a1932c3136d78f",
+      "systems/rock-star-os/os/platform/sensitive_guard.py": "724272108fae56b5e9dd073a8ac1d7d3e90e06a6f3ae4c2c751753fa963de0b8",
+      "systems/rock-star-os/os/platform/service.py": "a9171913f271d56d9785dbfa553c56960616356b5a622619a8ad8834ce52d20e",
+      "systems/rock-star-os/os/platform/supervisor.py": "5c8fb520437a6054e60294d3594e2a4ad855f3354d8379844d8aefb6473be41b",
+      "systems/rock-star-os/os/ui/Makefile": "26b7148f27b7e48370a956fb5c011a1c9c244773b6f41c35b418856ea1b7cef6",
+      "systems/rock-star-os/os/ui/main.c": "30c2c4e41fa477546289cf0d14a3ced8031f8b1a64216c64f166cca79539809b",
+      "systems/rock-star-os/os/ui/security-ui.inc": "8f756cac63b50bd0678955a3732863c94f0ea86376ace990fcca778345de1751",
+      "systems/rock-star-os/os/ui/test_ui.c": "ad02debfebad7b64e0eca1b669f3fcf7f9551a2fa1bd4ae52d269b74e5f82266",
+      "systems/rock-star-os/os/ui/ui.c": "68f76b4fd28bc5969a78ec22b4ea367f20600ead4575d66ca0494443aee19329",
+      "systems/rock-star-os/tests/test_os_platform_install.py": "baaccdd4af7b46512f7deae963ee6d3ea60b896066c9b203c1ff14738e88142f",
+      "systems/rock-star-os/tests/test_os_runner_control.py": "c708ac913fd7fc5208a3ceb23e80226ec6e939c5b08cbfb29935a1a3823c7489",
+      "systems/rock-star-os/tests/test_os_security_guard_integration.py": "190021943bd040de55ccc9f227bd5bc6794ad2e9d7e88d840288f9ba13a4775a",
+      "systems/rock-star-os/tests/test_platform_service_lifecycle.py": "2169f70e6752f55b40738a24d16c95a4529be1640ebda64f60353cb6c95a6bf8",
+      "systems/rock-star-os/tests/test_platform_supervisor.py": "c6c142f88f86a94220d6e1ad9e964672db061e209d3429a5b68e2704bc316208",
+      "systems/rock-star-os/tests/test_sensitive_guard.py": "e41172fd41327741f5be92fa51ae1021431e05e8d86cff8f5ad19567488e3493",
+      "tests/mcp-spider-guard.test.mjs": "6addd5d8fefcd0479eee70e552e49df433d16073267ce6301aae6082e7b6ba4a",
+      "tests/spider-guard.test.mjs": "1366b390676f8d4062b0a8fafd99c45809e4455012be6b6170f5e69c213fda59",
+      "toolkits/sky-mcp-connector/server.mjs": "8b988573ca050adf21ed24af091e02c0d6af465e38b75b5f11a79d71468defbe",
+      "toolkits/spider-guard/detector.d.mts": "fe5ac321bcab9047fe0984dc61867dcd95c146cbd6288a1136d95e5070e5d0bd",
+      "toolkits/spider-guard/detector.mjs": "daa161878c710bc404e9fa98fc1919433e32dbbabe491d437fda91f1eba7b686"
+    },
+    "hashedFileCount": 32
+  },
+  "target": {
+    "runtime": "rockstaros_native_platform",
+    "platformUid": 1002,
+    "ownerUiUid": 1000,
+    "fixedRoot": "/data/platform",
+    "defaultIntervalSeconds": 30,
+    "rootPrivilegeAdded": false,
+    "webAndMcpConnectorRole": "secondary outbound safeguards; not native OS deployment"
+  },
+  "nativePython": {
+    "status": "pass",
+    "environment": {
+      "runtime": "Colima Linux container",
+      "distribution": "Debian bookworm",
+      "python": "3.13",
+      "uid": 1002,
+      "gid": 1002,
+      "network": "none",
+      "resourceWarnings": "error"
+    },
+    "regression": {
+      "passed": 125,
+      "failed": 0,
+      "skipped": 0,
+      "modules": [
+        "test_os_security_guard_integration",
+        "test_os_runner_control",
+        "test_os_platform",
+        "test_sensitive_guard",
+        "test_mcp_hub_gateway",
+        "test_mcp_device_client",
+        "test_compatibility_admission",
+        "test_os_registry_control",
+        "test_os_purchaser_health",
+        "test_platform_service_lifecycle"
+      ],
+      "reproductionCommand": "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os:systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_os_security_guard_integration test_os_runner_control test_os_platform test_sensitive_guard test_mcp_hub_gateway test_mcp_device_client test_compatibility_admission test_os_registry_control test_os_purchaser_health test_platform_service_lifecycle -v"
+    },
+    "supervisor": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "modules": [
+        "test_platform_supervisor"
+      ],
+      "scope": [
+        "fixed command",
+        "child crash restart",
+        "stop cleanup",
+        "orphan descendant process-group kill and reap before restart"
+      ],
+      "reproductionCommand": "PYTHONPATH=systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_platform_supervisor -v"
+    },
+    "install": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "modules": [
+        "test_os_platform_install"
+      ],
+      "scope": "source installer outputs and fresh benchmark preparation; no boot",
+      "reproductionCommand": "PYTHONPATH=systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_os_platform_install -v"
+    },
+    "totalPassed": 129
+  },
+  "nativeUi": {
+    "build": "pass",
+    "targets": [
+      "rock-ui",
+      "rock-ui-test"
+    ],
+    "warningsAsErrors": true,
+    "existingUiSuite": "pass",
+    "spiderRenderFixture": "pass",
+    "environment": "Linux container; renderer tests are not framebuffer verification on booted RockstarOS",
+    "spiderRenderTestSource": "systems/rock-star-os/os/ui/test_ui.c",
+    "spiderRenderAssertions": [
+      "live worker animates",
+      "stale/dead/error/missing/disconnected status stops animation",
+      "maximum three sanitized finding rows",
+      "rendering issues no IPC"
+    ],
+    "visualInspection": "active and stale native renders inspected by root; readable"
+  },
+  "webAndConnector": {
+    "status": "pass",
+    "passed": 49,
+    "failed": 0,
+    "testFiles": [
+      "tests/spider-guard.test.mjs",
+      "tests/mcp-spider-guard.test.mjs",
+      "tests/mcp-connector.test.mjs",
+      "tests/llm-providers.test.mjs",
+      "tests/legal-intake.test.mjs",
+      "tests/patent-assistant.test.mjs",
+      "tests/jev-evaluation.test.mjs",
+      "tests/jev-router-availability.test.mjs"
+    ],
+    "reproductionCommand": "node --experimental-strip-types --test tests/spider-guard.test.mjs tests/mcp-spider-guard.test.mjs tests/mcp-connector.test.mjs tests/llm-providers.test.mjs tests/legal-intake.test.mjs tests/patent-assistant.test.mjs tests/jev-evaluation.test.mjs tests/jev-router-availability.test.mjs"
+  },
+  "checks": {
+    "typecheck": "pass",
+    "lintProduct": "pass",
+    "mcpPackageCheck": "pass",
+    "designCheck": "pass",
+    "projectCheck": "pass",
+    "databaseCheck": "pass",
+    "fullVerify": "failed_preexisting_baseline",
+    "fullNpmTest": {
+      "status": "failed",
+      "total": 455,
+      "passed": 444,
+      "failed": 11,
+      "failureGroups": [
+        "legacy visual baseline assertions",
+        "README Japanese-text assertions versus current English README",
+        "D1 table-count assertion expects 32 rather than 37"
+      ],
+      "baselineReproduction": "confirmed_preexisting_on_base_head",
+      "preexistingFailuresConfirmed": true,
+      "baselineEvidence": {
+        "baseHead": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+        "visual": "HEAD baseline JSON and all referenced documents read with git show reproduce the same visual error underlying two assertions",
+        "readme": "HEAD README lacks the same two Japanese expressions expected by the current tests",
+        "d1": {
+          "isolation": "42-file minimal HEAD snapshot",
+          "total": 9,
+          "passed": 2,
+          "failed": 7,
+          "detail": "six child assertions compare actual 37 tables with expected 32; their parent also fails"
+        },
+        "result": "All 11 observed failures reproduce from base-HEAD content; no full-suite pass is claimed"
+      }
+    },
+    "fullVerifyDetails": {
+      "passedBeforeStop": [
+        "project:check",
+        "repository:check",
+        "version:check",
+        "schema:check",
+        "database:check",
+        "release:check",
+        "release:signing:check"
+      ],
+      "releaseSigningPublicFixtureTestsPassed": 64,
+      "stoppedAt": "baseline:check",
+      "errorLocation": "scripts/check-product-baseline.mjs:1057",
+      "reason": "Legacy visual requirement differs from the current graphite visual system; the identical error reproduces from base HEAD.",
+      "laterSteps": "not reached by this full verify invocation; separately executed checks retain their individual results"
+    }
+  },
+  "coverage": [
+    "secret and personal-information detection without retaining raw values",
+    "fixed-scope plaintext inspection with bounded traversal and limited-coverage reporting",
+    "live worker and monotonic freshness status",
+    "authenticated owner-only sanitized security.status",
+    "MCP prepare/submit outgoing content inspection",
+    "Runner prepare and first durable send claim inspect text, manifest, recipe and routing metadata",
+    "already-sent jobs retain metadata-only status/cancel recovery",
+    "Platform bind/serve failure cleans up workers",
+    "supervisor same-UID respawn and orphan descendant reaping"
+  ],
+  "notVerified": {
+    "rockstarosImageBuild": true,
+    "sameImageBoot": true,
+    "qemuAcceptance": true,
+    "pixelDeployment": true,
+    "alwaysOn24Hours": true,
+    "productionDeployment": true,
+    "arbitraryOsTrafficProtection": true,
+    "fullFilesystemInspection": true,
+    "remoteProviderProductionAcceptance": true
+  },
+  "logs": {
+    "native-python": {
+      "localIgnoredPath": "work/spider-evidence/native-python.log",
+      "sha256": "5ed168b7594efe63decf4ca0301f548e5b6f2e80bd57b958be8f3087e03acef4"
+    },
+    "supervisor": {
+      "localIgnoredPath": "work/spider-evidence/supervisor.log",
+      "sha256": "5690e994d1f90b6cde2bdea2dcca561ae5f40826d0aafa2adc91f5b77ef6c7d5"
+    },
+    "install": {
+      "localIgnoredPath": "work/spider-evidence/install.log",
+      "sha256": "dd0a71c45229543d7271b3eb6529531eaa21e254314d1d85feace01ccd7aae0d"
+    },
+    "ui-build": {
+      "localIgnoredPath": "work/spider-evidence/ui-build.log",
+      "sha256": "da6b9ab3a3cafc7e519dafd37777b8cb414d53778ca0cb9ba03268073aa58aa8"
+    },
+    "ui-tests": {
+      "localIgnoredPath": "work/spider-evidence/ui-tests.log",
+      "sha256": "3933e9ba3249a51510398cc7ca27fe7a420951629545b55c3e7f39d19dfaa270",
+      "scope": "existing native UI suite log; final additional Spider renderer result recorded separately in nativeUi"
+    }
+  },
+  "interpretation": "The 129 Python checks ran as UID/GID 1002 in a network-disabled Linux container. This does not prove a RockstarOS image booted, Pixel installation, 24-hour protection, or same-SHA CI. Prior test counts are superseded, not added to these totals."
+}

@@ -1,3 +1,5 @@
+import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
+
 export const JEV_MODEL = 'typesafe-ai/jev' as const;
 export const JEV_RUBRIC_ID = 'sky-output-quality-v1' as const;
 export const JEV_MAX_STATE_LENGTH = 4_000;
@@ -96,6 +98,7 @@ export function validateJevEvaluationInput(value: unknown): JevEvaluationInput {
     !Number.isFinite(Date.parse(consent.approvedAt))
   )
     throw new Error('INVALID_INPUT');
+  assertSafeOutbound(input.state);
   return {
     rubricId: JEV_RUBRIC_ID,
     state: input.state.trim(),
