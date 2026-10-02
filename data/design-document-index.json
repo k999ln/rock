@@ -822,5 +822,20 @@
     ],
     "publicScheduledCleanupAccepted": false,
     "processingLeaseRecoveryAccepted": false
+  },
+  "skyConnectionEntry": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "components/sky-workspace.tsx",
+      "components/sky-network.tsx",
+      "components/sky-navigation.tsx"
+    ],
+    "verification": [
+      "tests/sky-network-device.test.mjs",
+      "tests/sky-network-session.test.mjs"
+    ],
+    "navigationIssuesRights": false,
+    "realPcAccepted": false,
+    "fullUxAccepted": false
   }
 }

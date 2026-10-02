@@ -3482,5 +3482,21 @@
       "tests/csv-retention.test.mjs",
       "docs/sky-launch-operations.md"
     ]
+  },
+  "skyConnectionEntryPreparation": {
+    "stage": "candidate_pending_public_verification",
+    "sourceBaseline": "58f4e2d247c69141c643ba23594b9aa601cb47e5",
+    "routes": [
+      "/sky",
+      "/sky/network"
+    ],
+    "changedEntrypoints": [
+      "market_header",
+      "pc_tool_management"
+    ],
+    "designPreserved": true,
+    "navigationCreatesDeviceRights": false,
+    "realPcAccepted": false,
+    "fullUxAccepted": false
   }
 }

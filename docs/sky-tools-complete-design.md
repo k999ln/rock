@@ -636,3 +636,7 @@ R2限定統合の型・関連51試験・build、同じbuilt Worker/D1/R2の212 a
 ### CSV成果の削除・再試行
 
 CSV7日の取得期限を保持する。削除は`cleanup_pending`のrevision claimでwriterを止め、R2のinput/固定成果を削除した後、本人job/eventをD1 transactionで削除する。失敗はkeyを持つ行に残し、再試行する。独立CSV試験支払いsessionは保持する。別job keyやprocessingへの削除は拒否する。UIは削除待ちを表示し、処理開始・取得を再開しない。期限切れ一覧は失敗や20件超のbacklogがあっても有効な仕事だけを表示する。期限切れprocessingのlease復旧は別条件。本番Cron未設定、配備/実削除/通知の運用受入は未完了。詳細と故障試験範囲は `docs/sky-launch-operations.md`。
+
+### 市場から接続画面への入口
+
+市場の上部「PCを接続」とPCツール管理の未接続案内は `/sky/network` へ進む。Skyが商品・接続を担当し、Mac等の表示判定・本人サインイン・接続開始/待機/失敗/再確認は既存network controllerを使う。ページ遷移は権限を発行しない。Zemaの会話・仕事へは同画面の既存リンクで戻る。実PC接続には専用承認と同一候補での実行証拠が必要。納品確認の個別dialogを含めた全UX受入は未完了。合格条件は市場のクリックで現行接続画面が開き、本人未認証やofflineで実行されないこと。
