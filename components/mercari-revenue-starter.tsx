@@ -16,7 +16,7 @@ import {
   WalletCards,
 } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
-import { useExecutionAccess } from '@/components/execution-access';
+import { ExecutionSignin, useExecutionAccess } from '@/components/execution-access';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import type { MercariRevenuePlan } from '@/lib/mercari-revenue';
 
@@ -54,7 +54,7 @@ export default function MercariRevenueStarter() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState('');
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
   const active = useMemo(
     () => plans.filter((plan) => plan.status !== 'cancelled'),
     [plans],
@@ -221,20 +221,11 @@ export default function MercariRevenueStarter() {
           </article>
         </section>
 
-        {needsSignin ? (
-          <div className="rock-service-notice">
-            <strong>サインインして収益フローを保存してください。</strong>
-            <p>
-              商品情報と進捗は本人別に保存されます。メルカリのパスワードやCookieは保存しません。
-            </p>
-            <a
-              className="rock-button rock-button-dark"
-              href="/signin-with-chatgpt?return_to=%2Fincome%2Fmercari"
-              target="_top"
-            >
-              サインインして使う
-            </a>
-          </div>
+        {executionBlocked ? (
+          <>
+            <ExecutionSignin state={accessState} />
+            <p>商品情報と進捗は本人別に保存されます。メルカリのパスワードやCookieは保存しません。</p>
+          </>
         ) : (
           <div className="mercari-grid">
             <section className="mercari-panel">

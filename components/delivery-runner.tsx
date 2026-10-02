@@ -28,7 +28,7 @@ export function DeliveryRunner({
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
   const [connected, setConnected] = useState(false),
     [review, setReview] = useState(''),
     [files, setFiles] = useState<File[]>([]),
@@ -131,8 +131,8 @@ export function DeliveryRunner({
   }
   return (
     <section className="mr-workbench">
-      {needsSignin && <ExecutionSignin />}
-      <fieldset disabled={busy || executionDisabled || needsSignin}>
+      {executionBlocked && <ExecutionSignin state={accessState} />}
+      <fieldset disabled={busy || executionDisabled || executionBlocked}>
         <div className="bench-heading">
           <h3>PCで納品記録を照合</h3>
           <span className="outline-tag">

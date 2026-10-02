@@ -170,7 +170,7 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(catalog, /id: 'rockstar-csv-cleanup'/);
   assert.match(routing, /label: 'CSV自動化役'/);
   assert.match(chat, /href="\/chat\?view=work"/);
-  assert.match(chat, /<Workbench embedded \/>/);
+  assert.match(chat, /<Workbench embedded cloudDraft=\{cloudWorkDraft\} \/>/);
   assert.match(chat, /<ChatLiveProgress/);
   assert.match(chat, /<h1>Zema<\/h1>/);
   assert.doesNotMatch(chat, /<h1>Chat<\/h1>/);

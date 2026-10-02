@@ -284,7 +284,7 @@ export default function SkyChatWorkspace() {
   const [remoteBudgetInput, setRemoteBudgetInput] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatAbortRef = useRef<AbortController | null>(null);
@@ -358,7 +358,7 @@ export default function SkyChatWorkspace() {
   }, []);
 
   useEffect(() => {
-    if (workView || needsSignin) return;
+    if (workView || executionBlocked) return;
     let active = true;
     const refresh = () => {
       void operationRequest<Job[]>('/api/jobs')
@@ -374,10 +374,10 @@ export default function SkyChatWorkspace() {
       window.clearInterval(timer);
       window.removeEventListener('focus', refresh);
     };
-  }, [hasActiveJob, needsSignin, workView]);
+  }, [hasActiveJob, executionBlocked, workView]);
 
   useEffect(() => {
-    if (workView || needsSignin) return;
+    if (workView || executionBlocked) return;
     let active = true;
     const refresh = () => {
       void fetch('/api/csv-jobs', { cache: 'no-store' })
@@ -398,10 +398,10 @@ export default function SkyChatWorkspace() {
       window.clearInterval(timer);
       window.removeEventListener('focus', refresh);
     };
-  }, [hasActiveCsvJob, needsSignin, workView]);
+  }, [hasActiveCsvJob, executionBlocked, workView]);
 
   useEffect(() => {
-    if (workView || needsSignin) return;
+    if (workView || executionBlocked) return;
     let active = true;
     const refresh = () => {
       if (active) setFundRefreshing(true);
@@ -426,7 +426,7 @@ export default function SkyChatWorkspace() {
       window.clearInterval(timer);
       window.removeEventListener('focus', refresh);
     };
-  }, [needsSignin, preferredFund, workView]);
+  }, [executionBlocked, preferredFund, workView]);
 
   useEffect(() => {
     const update = () => setFashionConnected(fashionMcpConnected());
@@ -1189,9 +1189,9 @@ export default function SkyChatWorkspace() {
             </section>
             <Workbench embedded cloudDraft={cloudWorkDraft} />
           </section>
-        ) : needsSignin ? (
+        ) : executionBlocked ? (
           <div className="sky-chat-centered">
-            <ExecutionSignin />
+            <ExecutionSignin state={accessState} />
           </div>
         ) : loading ? (
           <div className="sky-chat-centered">Zemaを読み込んでいます…</div>

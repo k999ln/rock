@@ -686,5 +686,23 @@
     "productionOwnerSigninVerified": false,
     "conversationComposerConnected": false,
     "uiEvidence": "docs/evidence/sky-cloud-ui-verification.json"
+  },
+  "executionAccessRecovery": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "components/execution-access.tsx",
+      "components/sky-connection-center.tsx"
+    ],
+    "states": [
+      "checking",
+      "ready",
+      "signin",
+      "unavailable"
+    ],
+    "gate": "only authenticated array response enables execution",
+    "recovery": "read-only recheck; preserve current component draft; explicit execution only",
+    "contentStorageAdded": false,
+    "localEvidence": "docs/evidence/sky-access-recovery-verification.json",
+    "productionOwnerAcceptance": false
   }
 }

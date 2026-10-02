@@ -214,7 +214,7 @@ export default function SkyWorkspace({
   const [localServers, setLocalServers] = useState<McpConnection[]>([]);
   const [localBusy, setLocalBusy] = useState('');
   const [localError, setLocalError] = useState<{ id: string; message: string } | null>(null);
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
   const router = useRouter();
 
   useEffect(() => {
@@ -607,8 +607,8 @@ export default function SkyWorkspace({
                     Skyへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
                     <span>依頼はZemaへ引き継ぐ</span>
                   </div>
-                  {needsSignin ? (
-                    <ExecutionSignin />
+                  {executionBlocked ? (
+                    <ExecutionSignin state={accessState} />
                   ) : connectedTools.includes(selected.id) ? (
                     <div className="sky-connect-complete">
                       <CheckCircle2 size={22} />

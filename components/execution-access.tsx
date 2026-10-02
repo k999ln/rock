@@ -1,29 +1,43 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Sites authentication is a top-level gateway route. */
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 
 const accessCheckEvent = 'sky-execution-access-check';
 
+export type ExecutionAccessState = 'checking' | 'ready' | 'signin' | 'unavailable';
+
 export function useExecutionAccess() {
-  const [needsSignin, setNeedsSignin] = useState(false);
+  const [accessState, setAccessState] = useState<ExecutionAccessState>('checking');
+  const requestVersion = useRef(0);
+  const pendingVersion = useRef<number | null>(null);
+  const setNeedsSignin = useCallback((value: boolean) => {
+    requestVersion.current++;
+    pendingVersion.current = null;
+    setAccessState(value ? 'signin' : 'ready');
+  }, []);
   useEffect(() => {
     let active = true;
-    let checking = false;
+    const discardCheck = () => {
+      requestVersion.current++;
+      pendingVersion.current = null;
+    };
     async function check() {
-      if (checking) return;
-      checking = true;
+      if (pendingVersion.current !== null) return;
+      const version = ++requestVersion.current;
+      pendingVersion.current = version;
+      if (active && version === requestVersion.current) setAccessState('checking');
       try {
         const jobs = await operationRequest<unknown[]>('/api/jobs');
-        if (!Array.isArray(jobs)) return;
-        if (active) setNeedsSignin(false);
+        if (active && version === requestVersion.current) setAccessState(Array.isArray(jobs) ? 'ready' : 'unavailable');
       } catch (error) {
-        if (active && error instanceof OperationRequestError && error.status === 401)
-          setNeedsSignin(true);
-        // An unavailable service does not prove that authentication succeeded.
+        if (active && version === requestVersion.current) setAccessState(
+          error instanceof OperationRequestError && error.status === 401
+            ? 'signin' : 'unavailable',
+        );
       } finally {
-        checking = false;
+        if (pendingVersion.current === version) pendingVersion.current = null;
       }
     }
     void check();
@@ -31,14 +45,37 @@ export function useExecutionAccess() {
     window.addEventListener(accessCheckEvent, recheck);
     return () => {
       active = false;
+      discardCheck();
       window.removeEventListener(accessCheckEvent, recheck);
     };
   }, []);
-  return { needsSignin, setNeedsSignin };
+  return {
+    needsSignin: accessState === 'signin',
+    executionBlocked: accessState !== 'ready',
+    accessState,
+    setNeedsSignin,
+  };
 }
 
-export function ExecutionSignin() {
+export function ExecutionSignin({ state = 'signin' }: { state?: ExecutionAccessState }) {
   const pathname = usePathname();
+  if (state === 'ready') return null;
+  if (state !== 'signin') return (
+    <div className="rock-service-notice" role={state === 'checking' ? 'status' : 'alert'}>
+      <strong>{state === 'checking' ? '接続を確認しています…' : '接続を確認できませんでした。'}</strong>
+      <p>{state === 'checking'
+        ? '処理はまだ実行していません。'
+        : '入力はこの画面に残っています。通信を確認して、もう一度接続を確認してください。再確認だけでは処理を実行しません。'}</p>
+      <button
+        type="button"
+        className="rock-button"
+        disabled={state === 'checking'}
+        onClick={() => window.dispatchEvent(new Event(accessCheckEvent))}
+      >
+        {state === 'checking' ? '接続を確認中…' : '接続を再確認'}
+      </button>
+    </div>
+  );
   return (
     <div className="rock-service-notice">
       <strong>サインインを確認してください。</strong>

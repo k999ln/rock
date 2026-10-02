@@ -163,7 +163,7 @@ export function SkyCandidateRunner({
   const [sampleInput, setSampleInput] = useState(!initialInput?.trim());
   const [productHuntUrl, setProductHuntUrl] = useState('');
   const [productHuntError, setProductHuntError] = useState('');
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
 
   function openProductHuntImport() {
     const normalized = parseProductHuntUrl(productHuntUrl);
@@ -179,7 +179,7 @@ export function SkyCandidateRunner({
   }
 
   async function run() {
-    if (running || executionDisabled || needsSignin) return;
+    if (running || executionDisabled || executionBlocked) return;
     setRunning(true);
     onRunningChange?.(true);
     setError('');
@@ -239,8 +239,8 @@ export function SkyCandidateRunner({
 
   return (
     <section className="mr-workbench">
-      {needsSignin && <ExecutionSignin />}
-      <fieldset disabled={running || executionDisabled || needsSignin}>
+      {executionBlocked && <ExecutionSignin state={accessState} />}
+      <fieldset disabled={running || executionDisabled || executionBlocked}>
         <div className="bench-heading">
           <h3>{name}</h3>
           <span className="outline-tag">{isLocalDraft ? 'ローカル下書き' : '接続条件の確認'} · 外部接続なし</span>

@@ -12,6 +12,9 @@ function fixture() {
     sqlite.exec(
       readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'),
     );
+  // The deployed Site initializes its full schema through the packaged bootstrap.
+  for (const sql of JSON.parse(readFileSync(new URL('../sky-schema-bootstrap.json', import.meta.url), 'utf8')))
+    sqlite.exec(sql);
   let now = Date.parse('2026-09-05T12:00:00Z');
   const db = {
     prepare(sql) {

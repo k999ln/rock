@@ -137,7 +137,7 @@ export function MrToolRunner({
     [error, setError] = useState(''),
     [copied, setCopied] = useState(false),
     [editing, setEditing] = useState(false);
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
   const [connected, setConnected] = useState(false),
     [running, setRunning] = useState(false),
     [sampleInput, setSampleInput] = useState(false);
@@ -396,8 +396,8 @@ export function MrToolRunner({
     );
   return (
     <section className="mr-workbench">
-      {needsSignin && <ExecutionSignin />}
-      <fieldset disabled={running || executionDisabled || needsSignin}>
+      {executionBlocked && <ExecutionSignin state={accessState} />}
+      <fieldset disabled={running || executionDisabled || executionBlocked}>
         <div className="bench-heading">
           <h3>
             {tool === 'coconala'

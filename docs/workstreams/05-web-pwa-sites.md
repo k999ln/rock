@@ -111,3 +111,5 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - `npm run release:web-bundle:check`
 - `npm run release:web-assets:check`
 - `npm run test:api`
+
+- 2026-10-02 WEB04: 共通接続確認は成功配列応答だけで実行を許可し、503/切断/timeout/不正応答では入力保持・読取再確認・明示実行へ復旧する。接続設定は取得失敗中の保存を止め、復旧時に編集入力を上書きしない。[合成ブラウザ証拠](../evidence/sky-access-recovery-verification.json)と[Tool詳細設計](../sky-tools-complete-design.md)を参照。本人実機・実AI・本番公開の受入を別記する。
