@@ -2517,9 +2517,245 @@
         "scanExclusionsAdded": false
       },
       "publicationEvidence": {
-        "status": "pending; see PR52 after exact-SHA readback"
+        "commit": "5f35b363d89685ab9b17af88d748a3796c4bae8e",
+        "fullVerify": {
+          "run": 37132150219,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37132150213,
+          "attempt": 1,
+          "conclusion": "success",
+          "pythonTests": 1789,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1886204138,
+          "pythonAnalysis": 1886206655,
+          "open": 37,
+          "fixed": 11,
+          "individuallyFixed": [
+            33
+          ],
+          "otherStateChanges": [],
+          "lineShiftsOnly": [
+            37,
+            46
+          ]
+        },
+        "history": {
+          "run": 37132150253,
+          "scanCompleted": true,
+          "commits": 671,
+          "candidates": 2367,
+          "conclusion": "failure"
+        },
+        "classification": "verification-quality repair; not a production runtime vulnerability fix"
       },
       "projectDatabaseDesignChecks": "passed in required verify before missing ai dependency"
+    },
+    {
+      "cycle": 15,
+      "baselineCommit": "5f35b363d89685ab9b17af88d748a3796c4bae8e",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "two validation regressions strengthened; publication same-SHA CI and individual alert readback pending",
+      "repairCount": 0,
+      "validationImprovementCount": 1,
+      "runtimeVulnerabilityFixed": false,
+      "reviewedAlerts": [
+        34,
+        35
+      ],
+      "focusedFinding": "The two source-retention tests accept wrong documents if the expected URL remains somewhere in the output. Validate each complete deterministic fixture output with independent literal expectations.",
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 37,
+        "dependabot": 18,
+        "historyCandidates": 2367
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-15-feedback/report.json",
+        "sha256": "5d72a42626efa6cea3b05ac4d4b10b7b88d86a2aacd2f46e85327bfd59737129",
+        "collectedAt": "2026-10-03T16:00:51.843Z",
+        "targetHead": "5f35b363d89685ab9b17af88d748a3796c4bae8e",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 55,
+          "actionable": 35,
+          "review": 18,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 37,
+            "retrievedCount": 37,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "change": {
+        "file": "tests/mr-tools.test.mjs",
+        "existingTestsStrengthened": 2,
+        "newTests": 0,
+        "existingTestCount": 12,
+        "productionRuntimeChanged": false,
+        "helperOrParserAdded": false,
+        "otherAssertionsPreserved": true
+      },
+      "testedSourceSha256": {
+        "tests/mr-tools.test.mjs": "be576702f197f50312c2dc85843285af014ce24f45cb5b1286705237d7bbfb05",
+        "lib/mr-tools.ts": "d2a1905f165053c195b9f02a89f2cff57a5e146f729b34066807eb498b993192",
+        "toolkits/mr/rock_star_tools.py": "671bc5d2f2b31926e579c1134b1815f21e8b825716c88e875cfb6ec9f30bb6ae",
+        "toolkits/mr/examples/article.md": "1a06b655dd4fa5f03e807a1adf18cad99bef1ab26cf37b35bd58023f1d05b965",
+        "toolkits/mr/examples/summary.md": "c0b0171efe59f47c694508262cbb62eac78416a9718acd3012e9860a9ae34aa5",
+        ".github/workflows/ci.yml": "c7f1f9aae26f3bea7b5a759b75c0f775f13447d200f4eb60d43c4d32bfb3d25d",
+        ".github/workflows/spider-regressions.yml": "fed247f403a4c7560fa37ed3d29d4c310052a72cd1c96d302685fda62db1aadb",
+        "package.json": "5a498327a0f41bdac38c486fc684bd06035dbe8fcff44768cc42373a14d30414"
+      },
+      "hostChecks": {
+        "command": "node --experimental-strip-types --test tests/mr-tools.test.mjs tests/mcp.test.mjs",
+        "node": "v26.0.0",
+        "platform": "Darwin",
+        "testsRun": 18,
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "newRegressionTests": 0,
+        "strengthenedRegressionTests": 2,
+        "logSha256": "bf93f39d4a054ec689e7223cf778ed2975b7063a65ac54b7707b18e8e21a5db9"
+      },
+      "mutationProbe": {
+        "classification": "VALIDATION_QUALITY_REPAIR",
+        "command": "node --experimental-strip-types work/spider-ci/cycle-15-url-probe.mjs",
+        "sourceExtraction": "The complete bodies of both actual test callbacks are extracted from the pinned Git baseline and the current working file, then executed with only makeFreeArticle output substituted for each synthetic mutant. Other assertions execute unchanged.",
+        "totals": {
+          "cases": 26,
+          "canonicalCases": 2,
+          "invalidCasesAcceptedBefore": 24,
+          "invalidCasesRejectedAfter": 24
+        },
+        "findings": [
+          {
+            "alert": 34,
+            "name": "free edition retains sources and leaves substantive paid content",
+            "beforeLine": 22,
+            "afterLine": 22,
+            "beforeTestBodySha256": "ce93ee8e7cc189126478f83554f45f3e1e20b0858769adbf5bd5069ea5879537",
+            "afterTestBodySha256": "022aafdcea3b5b9826ded0e4ea79ac910432a998631776e956287c886ae2d4f6",
+            "onlyTargetAssertionReplaced": true,
+            "allOtherOriginalAssertionsRetained": true,
+            "canonicalOutputBytes": 583,
+            "canonicalOutputSha256": "d55a12eb6fcae567ab9531db3041655b58b50bbcc0591895dc1baf21d43d91fe",
+            "actualBusinessFunctionAcceptedBeforeAndAfter": true,
+            "invalidCasesAcceptedBefore": 12,
+            "invalidCasesRejectedAfter": 12
+          },
+          {
+            "alert": 35,
+            "name": "source code fences do not truncate the source section",
+            "beforeLine": 28,
+            "afterLine": 37,
+            "beforeTestBodySha256": "f57a39216990dfc6ab05eea9bb936152ef515f079deaafb61d0e17f9397b440c",
+            "afterTestBodySha256": "8762d9250082e42908448b60e2152373a7acc77f2b2c9bce1d2f9e63acc10602",
+            "onlyTargetAssertionReplaced": true,
+            "allOtherOriginalAssertionsRetained": true,
+            "canonicalOutputBytes": 412,
+            "canonicalOutputSha256": "f1a915eb930a908e1a0e8675c1d4d90bd5729095621b04aab19dac35e6163431",
+            "actualBusinessFunctionAcceptedBeforeAndAfter": true,
+            "invalidCasesAcceptedBefore": 12,
+            "invalidCasesRejectedAfter": 12
+          }
+        ],
+        "workEvidenceSha256": "1a3229fca31fcb0952d72312bcf4944cd836259972d0437d71560c2ce8ce55f7",
+        "workOnlyProbeSha256": "66e795640510150b5b0d24b3dbd1aaac03f009699863939cb844aee01c1822ef",
+        "probeLocation": "work/spider-ci/cycle-15-url-probe.mjs (local diagnostic; not a tracked runtime file)"
+      },
+      "independentReview": {
+        "conclusion": "No actionable blocker found. Static complete-document equality is appropriate for these two fixed free-edition preservation fixtures.",
+        "preservation": {
+          "onlyTwoTargetAssertionsReplaced": true,
+          "allOtherSourceBytesAndAssertionsUnchanged": true,
+          "existingTestNamesAndOrderUnchanged": true,
+          "testCount": 12,
+          "productionRuntimeUnchanged": true,
+          "newHelperOrDependency": false,
+          "scanExclusionsAdded": false
+        },
+        "expectedOutputMetadata": [
+          {
+            "literalLines": 22,
+            "utf8Bytes": 583,
+            "sha256": "d55a12eb6fcae567ab9531db3041655b58b50bbcc0591895dc1baf21d43d91fe",
+            "endsWithOneNewline": true
+          },
+          {
+            "literalLines": 25,
+            "utf8Bytes": 412,
+            "sha256": "f1a915eb930a908e1a0e8675c1d4d90bd5729095621b04aab19dac35e6163431",
+            "endsWithOneNewline": true
+          }
+        ],
+        "validation": {
+          "reviewerChecks": [
+            "git diff --check",
+            "Replace only the two new equality assertions with their original includes assertions and verify byte-for-byte equality with HEAD.",
+            "Parse literal expectation arrays without evaluation; confirm all elements are constant strings.",
+            "Check identical 12 test names/order and no production/toolkit/vendor/workflow/package diff."
+          ],
+          "parentReportedTests": {
+            "command": "node --experimental-strip-types --test tests/mr-tools.test.mjs tests/mcp.test.mjs",
+            "passed": 18,
+            "skipped": 0,
+            "independentlyRerunByReviewer": false
+          },
+          "existingCiRoutes": [
+            "npm run verify -> npm test -> tests/*.test.mjs",
+            ".github/workflows/spider-regressions.yml explicitly runs tests/mr-tools.test.mjs"
+          ]
+        }
+      },
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "7f10cdfe6b53e27569fb9476b4a438263660bdf4a7252ac340ba3e6e0a1cdfd8"
+      },
+      "remaining": {
+        "codeql": "Same-ref #34/#35 and all other IDs must be read after new analysis; no dismissal.",
+        "dependencies": "18 default-branch alerts; existing PR53-56 unchanged; no duplicate PR.",
+        "history": "2367 pattern candidates; not a count of unique valid secrets."
+      },
+      "limits": [
+        "Only synthetic fixture/test validation improved; no production URL authorization or formatter changed.",
+        "Host Node and local Python CLI fixtures are not manual HTTP/D1 or OS/device acceptance."
+      ],
+      "boundaries": {
+        "mainMerged": false,
+        "forcePush": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false,
+        "vendorChanged": false,
+        "scanExclusionsAdded": false
+      },
+      "publicationEvidence": {
+        "status": "pending; see PR52 after exact-SHA readback"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency"
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."

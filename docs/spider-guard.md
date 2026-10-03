@@ -284,3 +284,10 @@ Web側の共通検証は `npm run typecheck`、`npm run lint:product`、対象�
 CodeQL #33の `scripts/verify-mcp-flow.mjs` は、固定の合成入力に対する手動loopback検証である。従来は返された文書中に期待URLがあれば合格し、未整形の入力を返す場合や余計な文書まで通した。返り値全体を固定の期待文書と照合するようにし、実stdio MCPに同じ入力を渡す回帰試験を追加した。認証、送信先、整形器、既存の状態／件数検証は変更しない。
 
 全文一致の失敗は検証失敗として停止する。出力仕様が意図的に変わる場合は、手動検証とstdio回帰の期待値をレビューして同時に更新する。関連host18試験、合成の不正出力に対する旧／新assertion比較、source hash、独立review、同一refの個別警告状態は[改善記録](evidence/spider-improvement-cycle.json)で追跡する。これは検証盲点の修正であり、runtimeのURL脆弱性やmanual HTTP／D1 flow、OS boot・実機受入の完了ではない。
+
+
+## 第15cycle: 出典保持回帰の全文照合
+
+CodeQL #34／#35は `tests/mr-tools.test.mjs` の通常記事とコードfence付き出典に対する2つの固定fixtureで、URL文字列だけを部分一致していた。両方を独立した全文期待値へ強化し、出典の欠落・変更や本文への余計な追加を検出する。元の本文先頭、有料本文の除外、footer、fence保存の確認を保持する。公開用fixtureの文書仕様を変える場合は、意図した本文・出典・無料／有料境界をレビューして期待値を更新し、不一致を見逃さない。
+
+これは既存テストの検証改善で、productionのURL認可やformatterの修正ではない。既存のPython CLIとの一致試験を含むhost18件、旧／新の実assertionへの合成入力、source hashと独立review、同一refの個別alert確認を[改善記録](evidence/spider-improvement-cycle.json)へ保存する。例外・除外・test削除は追加せず、未取得の解析をfixedと呼ばない。
