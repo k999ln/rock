@@ -1,0 +1,53 @@
+{
+  "schema": "sky-csv-storage-hardening/1",
+  "baseCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "scope": "CSV input isolation and processing expiry only",
+  "fixes": [
+    "attempt-specific input object and owner-scoped replay",
+    "concurrent insertion reconciliation before object cleanup",
+    "expiry rejection before processing or quality retry claim"
+  ],
+  "verification": {
+    "status": "focused checks passed; existing main-wide failures reproduced unchanged",
+    "typecheck": true,
+    "targetedLint": true,
+    "build": true,
+    "designCheck": true,
+    "workApiAssertions": 172,
+    "csvD1R2Assertions": 113,
+    "fullVerifyExitCode": 1,
+    "fullVerifyStop": "pre-existing visual-system baseline mismatch",
+    "nodeTests": 440,
+    "nodePassed": 429,
+    "nodeFailed": 11,
+    "unchangedMainControl": {
+      "tests": 440,
+      "passed": 429,
+      "failed": 11,
+      "sameFailures": true
+    },
+    "failureGroups": [
+      "R5 documentation/baseline consistency",
+      "migration-union fixture expectations",
+      "game-first documentation assertions",
+      "shared visual-system assertion"
+    ],
+    "logSha256": {
+      "pr-csv-verify.log": "2cabe6b75a9d7b3f7f87d106a50ab7aa546946cb8699136c05c1c0815bbd4929",
+      "pr-csv-unit.log": "12a4071f7a194da793de3bc309a846494766fe56652dd1e511febcb6cc3e30bf",
+      "pr-main-control-unit.log": "7b0242f44963a854873feceba6677f6412c528da993ad0072a90ba34f4bed049",
+      "pr-csv-api.log": "77188e329f8e161cc5104efdb566662593d6171f75d8ec3e34367a9b145f53ef"
+    }
+  },
+  "productionReference": {
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "version": 32,
+    "source": "5fcfe884d7038723e228156a54bfd78bfcabde89",
+    "equivalentFixesPublished": true,
+    "sameFullSourceAsThisBranch": false
+  },
+  "newPayments": 0,
+  "realProviderCalls": 0,
+  "launchComplete": false,
+  "recordedAt": "2026-10-02T11:43:21.548755+00:00"
+}

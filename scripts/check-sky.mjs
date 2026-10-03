@@ -170,7 +170,7 @@ for (const marker of [
 const fashionRunner = read('components/fashion-brand-ops-runner.tsx');
 for (const marker of [
   'Producerモード',
-  'プロデュース開始',
+  'プランを作って保存',
   'ワンクリックで接続',
 ])
   requireValue(

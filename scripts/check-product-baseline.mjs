@@ -1059,7 +1059,7 @@ export function validateBaseline(
       data.visualSystem?.surfaces?.includes('/rockstaros') &&
       data.visualSystem?.surfaces?.includes('/studio') &&
       data.visualSystem?.surfaces?.includes('workspace_shell') &&
-      data.visualSystem?.accent === 'acid_green' &&
+      data.visualSystem?.accent === 'ice_blue' &&
       data.visualSystem?.productHomeAppearance === 'light_scroll_product_showcase' &&
       data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
       !data.visualSystem?.homePrimaryApps?.includes('work') &&
@@ -1093,7 +1093,7 @@ export function validateBaseline(
         'RockstarOS / Studio — shared dark launch system',
       ) &&
       workspaceStyles.includes('RockstarOS 1.0 — unified OS chrome') &&
-      workspaceStyles.includes('--studio-green: #c8ff2e'),
+      workspaceStyles.includes('--studio-green: #bedce6'),
     'RockstarOS全体の共通visual systemとフロント機能性改善を維持してください',
   );
   requireValue(
