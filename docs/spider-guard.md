@@ -70,6 +70,8 @@ main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Researc
 
 同じSHAの[履歴検査](https://github.com/k999ln/rock/actions/runs/37092932783)は659 commit完走・2,362候補による失敗を維持する。Dependabot18件・既存PR53〜56も未解決。警告数だけを根拠にせず、個別状態・同一SHA解析・source hash・途中の失敗を[第3cycleの機械可読記録](evidence/spider-improvement-cycle.json)へ保存する。
 
+第4cycleは `3cb15f1`の#11（端末ID応答header）、#7（合成observerの出力）、#39／#40（noVNCの範囲内byte配列書込）、#32（上流暗号libraryの余分な乱数byteを用いた縮約）を確認した。現sourceで修正が必要な脆弱性は確証できず、runtime・検査・vendor・警告状態は変更していない。既存host7試験、合成ID拒否4件、encoding／添字probe4,102件が合格したが、実HTTP／RFB／実機や乱数品質の受入ではない。source hashと確認範囲を[第4cycleの記録](evidence/spider-improvement-cycle.json)に残し、sourceが変わった場合は再評価する。修正件数0を明記し、CodeQL38件・Dependabot18件を未解決として保持する。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。

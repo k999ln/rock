@@ -454,6 +454,141 @@
       },
       "repairCommit": "6b7d1486b6f7abc4859b1ff6e946ca8293c2dd9f",
       "validatedCommit": "a9b10fbf999d4092121cf845b24ac035a93f94d3"
+    },
+    {
+      "cycle": 4,
+      "baselineCommit": "3cb15f14a25ef5b40cecb1eeee703f1a1970e834",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "reviewed_without_verified_repair",
+      "repairCount": 0,
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabotDefaultBranch": 18
+      },
+      "baselineAnalysisIds": [
+        1884845517,
+        1884847420
+      ],
+      "reviewedAlerts": [
+        {
+          "numbers": [
+            11
+          ],
+          "decision": "no response-splitting path confirmed",
+          "reason": "Only registered device identifiers matching the full identifier grammar become authenticated response fields after exact credential-map lookup and authentication. Managed owner routing validates the same identifier contract.",
+          "locations": [
+            "systems/rock-star-os/os/wallet_backend/server.py:147",
+            "systems/rock-star-os/os/wallet_backend/contract_runtime.py:207",
+            "systems/rock-star-os/os/entitlement/protocol.py:52"
+          ],
+          "scope": "Registry helper rejection and source dataflow, not a live HTTP injection test."
+        },
+        {
+          "numbers": [
+            7
+          ],
+          "decision": "no real-secret logging path confirmed",
+          "reason": "The authenticated simulation-only observer selects fixed status, validated periods, aggregate synthetic money and worker metadata; it does not copy tokens or raw Wallet responses. Types derive from the trusted producers; this does not establish safety for an arbitrary replacement reader.",
+          "locations": [
+            "systems/rock-star-os/os/entitlement/guest_observer.py:21",
+            "systems/rock-star-os/os/entitlement/guest_observer.py:42",
+            "systems/rock-star-os/os/entitlement/device.py:253",
+            "systems/rock-star-os/os/entitlement/device.py:632",
+            "systems/rock-star-os/src/blackberryrock/wallet.py:586"
+          ]
+        },
+        {
+          "numbers": [
+            39,
+            40
+          ],
+          "decision": "reviewed sinks are bounded numeric typed-array writes",
+          "reason": "encodeUTF8 returns a primitive string truncated to 63 bytes. NUL terminators write numeric indexes64..127 into Uint8Array(128), or0..63 into Uint8Array(64). Network DH values do not control a property name.",
+          "upstreamCommit": "63107bd06d9e1f6136ff21aeda8cd62cbf0d433e",
+          "localSourceMatchesPinnedIntakeDigest": true,
+          "scope": "No live RFB handshake, upstream browser suite, crypto or physical-device acceptance."
+        },
+        {
+          "numbers": [
+            32
+          ],
+          "decision": "no relevant exploitable bias established; leave open",
+          "reason": "The bundled noble-curves1.9.1 generator oversamples48 CSPRNG bytes for a256-bit group before modulo reduction. Source-map inputs match the pinned upstream files. Billing source uses signature verification and crypto.randomUUID, with no private-key-generation call found.",
+          "scope": "Uniform entropy and runtime reachability were not empirically proved; the reported line points to a conversion helper. No crypto patch, blanket exclusion or security certification."
+        }
+      ],
+      "sourceSha256": {
+        "systems/rock-star-os/os/wallet_backend/server.py": "53cf36132d5d32eed5e5fc3f220bf25bebd45246a0c971046e3b4d4eaef3c527",
+        "systems/rock-star-os/os/wallet_backend/contract_runtime.py": "d59714f19b509df59e55a22bff9961cc2c907fa08d7be16aa4bafc84204666c5",
+        "systems/rock-star-os/os/wallet_backend/owner_router.py": "cc7817014315e675a12a215604b4d4033c96c2d62afe0b96ba41086aea97a0a9",
+        "systems/rock-star-os/os/entitlement/protocol.py": "ff67b8b5cc6602cde96e1bc7504ced3d1bee3ef27c95acb12054010668c4a788",
+        "systems/rock-star-os/os/entitlement/guest_observer.py": "e6538ebd9dcf442ff48dc7c839808b466753a133b28c8b0902c7a87f059c08e7",
+        "systems/rock-star-os/os/entitlement/device.py": "468ac4542d3c661735b46621a7eca3919cb40f9978022dcb702b8373bb67ad72",
+        "systems/rock-star-os/src/blackberryrock/wallet.py": "8bf1b67e1e4ba705743dae8c4de117264795e53b55f94bbcf51dbfd19b50d4be",
+        "systems/rock-star-os/os/desktop/browser/novnc/core/rfb.js": "c46dfefbf869eda0c6d06c5dd86c42e96fc8a77c125e91599a2cdf3841261564",
+        "systems/rock-star-os/os/desktop/browser/novnc/core/util/strings.js": "77d0604c7bf9e95de780f8cb9764d918ae24c86811a0a1c5b08cd30e50ad2a3a",
+        "systems/rock-star-os/os/desktop/browser/viewer.js": "4624669507f1ba87f4709093a0b437f8cee40200624bca4526d59400ba936918",
+        "services/sky-billing/work/sky-billing-dry-run/worker.js": "84b567aaa5af9b2ab25240c7cc92c185877c37a7ff727d2fe0e79f50df4798d1",
+        "services/sky-billing/work/sky-billing-dry-run/worker.js.map": "9334c521c0204d59f0daeedb7826f5fdad2e56f1a669d10bcd727e3ccc0aed01",
+        "services/sky-billing/src/worker.ts": "5c32a000577a8a5b740814fc851119679a3d633aa936ffd419d29f404726eef8",
+        "package-lock.json": "e0b7a8a0f0babbf5ce70b6ceb86d606e7b85d422a5e443367cba3be983a495a3"
+      },
+      "hostChecks": [
+        {
+          "command": "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os python3 -B -W error::ResourceWarning -m unittest entitlement.tests.test_device_wallet.DeviceWalletTests.test_observer_contract_uses_only_reads_and_checks_actual_wallet_bill -v",
+          "passed": 1,
+          "failed": 0
+        },
+        {
+          "command": "python3 -B -m unittest discover -s systems/rock-star-os/tests -p test_os_desktop_browser.py -q",
+          "passed": 6,
+          "failed": 0
+        },
+        {
+          "probe": "credential registration helper rejects CRLF, LF, TAB and NUL",
+          "syntheticCasesPassed": 4,
+          "validIdentifierAccepted": true,
+          "liveHttpTest": false
+        },
+        {
+          "probe": "actual noVNC encodeUTF8 plus reviewed numeric bounds",
+          "syntheticCasesPassed": 4102,
+          "liveRfbTest": false
+        }
+      ],
+      "localFullVerify": {
+        "status": "incomplete",
+        "passedThrough": "project/repository/version/schema/database/release/signing/baseline/avocado/design/composition",
+        "failure": "ai package not installed at llm:architecture:check",
+        "laterGates": "not run locally"
+      },
+      "remaining": {
+        "codeqlOnTargetBranch": 38,
+        "dependabotOnDefaultBranch": 18,
+        "existingDependabotPullRequests": [
+          53,
+          54,
+          55,
+          56
+        ],
+        "historySecretCandidates": 2362,
+        "baselineSecretRun": 37093293903,
+        "baselineReachableCommits": 660
+      },
+      "nextReview": "Use these exact source hashes when deciding whether a finding needs renewed review. A changed input/protocol/source invalidates this bounded assessment; other findings and dependency fixes remain open.",
+      "boundaries": {
+        "runtimeSourceChanged": false,
+        "testSourceChanged": false,
+        "scannerOrAuthenticationWeakened": false,
+        "vendorChanged": false,
+        "mainMerged": false,
+        "deployed": false,
+        "deviceChanged": false,
+        "secretsRotated": false
+      },
+      "publicationEvidence": "Final document-commit checks are read back separately in PR52 and the local SPIDER improvement-cycle artifact; no runtime repair is claimed."
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."
