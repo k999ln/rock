@@ -82,6 +82,8 @@ main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Researc
 
 第8cycleは#6のprivate SSH応答を追跡し、その後段のMac browser起動でsession passwordがプロセス引数へ入る問題を合成fixtureで再現した。browser起動を固定osascript argvと標準入力へ変更し、厳密なloopback URL検証、10秒timeout、固定error、no-open時の未取得を維持する。新4件を含むhost42件が合格し、独立reviewで新4件を再確認。Macの実interpreterはproduction statementを非実行分岐で構文確認し、合成passwordが子process引数へ現れないことを確認した。実browser／QEMU／別UID観測は未試験。#6のstdout指摘自体の解消とは呼ばず、公開後の同一SHA再解析と分ける。
 
+第9cycleは#17〜#20の認証検証observerの一時権限を確認した。専用flag付きの使い捨てguestだけへ注入され、本文前のpeer UID拒否と別のprivate storageが維持される。製品の越権欠陥は確証できず、修正0・dismiss0。関連host2試験と全合成14ケースが成功した。通常失敗時の復元呼出しを確認したが、復元syscall失敗・強制終了・実UID／DACの検証とは区別する。9source hash、復元処理の制約、再確認条件を[第9cycleの記録](evidence/spider-improvement-cycle.json)へ保存する。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。

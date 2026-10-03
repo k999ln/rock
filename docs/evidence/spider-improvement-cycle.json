@@ -1261,7 +1261,209 @@
         "vmOrDeviceChanged": false,
         "secretsRotated": false
       },
-      "publicationEvidence": "Same-SHA GitHub checks, individual alert states and report readback are recorded after push in PR52 and the external SPIDER artifact."
+      "publicationEvidence": "Same-SHA GitHub checks, individual alert states and report readback are recorded after push in PR52 and the external SPIDER artifact.",
+      "publicationReadback": {
+        "commit": "bca17b6b95b6ced38a2df95e6e0c145296757053",
+        "fullVerifyRun": 37112042529,
+        "regressionRun": 37112042565,
+        "nativeRun": 37112042546,
+        "nativeAggregateArtifact": 11269164806,
+        "sourceAndRegressionChecks": "success",
+        "nativePythonTestExecutions": 1780,
+        "sourceInventoryEntries": 720,
+        "codeqlAnalysisIds": [
+          1885493271,
+          1885493224
+        ],
+        "comparedAlertIds": 48,
+        "stateChanges": 0,
+        "newIds": 0,
+        "missingIds": 0,
+        "open": 38,
+        "fixed": 10,
+        "targetAlert6": "open; downstream argv repair is independently validated",
+        "historySecrets": {
+          "run": 37112042548,
+          "artifact": 11269554493,
+          "scanCompleted": true,
+          "reachableCommits": 665,
+          "candidateMatches": 2364,
+          "candidateCountChange": 0,
+          "metadataRows": 100,
+          "scope": "Bounded metadata only; no complete per-candidate comparison."
+        }
+      }
+    },
+    {
+      "cycle": 9,
+      "baselineCommit": "bca17b6b95b6ced38a2df95e6e0c145296757053",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "source_triage_no_verified_product_defect",
+      "repairCount": 0,
+      "reviewedAlerts": [
+        17,
+        18,
+        19,
+        20
+      ],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabotDefaultBranch": 18
+      },
+      "baselineAnalysisIds": [
+        1885493271,
+        1885493224
+      ],
+      "review": {
+        "source": "systems/rock-star-os/os/ui/guest-ui-auth-evidence.py:130",
+        "decision": "Retain the current negative-authorization probe and alert state; no runtime permission change or security-rule suppression is justified by this review alone.",
+        "boundaries": [
+          {
+            "file": "systems/rock-star-os/os/ui/guest-ui-auth-evidence.py",
+            "line": 274,
+            "conclusion": "The observer entry point requires root, aarch64, and exactly one explicit rock.ui.auth.verify=1 boot token."
+          },
+          {
+            "file": "systems/rock-star-os/os/ui/guest-ui-auth-evidence.py",
+            "line": 224,
+            "conclusion": "The only runtime boundary_probe call follows a fresh USD simulator/empty-row check and environment validation. environment() checks the dedicated authenticator process, seccomp, directory ownership/type and production modes."
+          },
+          {
+            "file": "systems/rock-star-os/os/ui/verify-auth.py",
+            "line": 51,
+            "conclusion": "The verification harness injects this observer and its flag-guarded startup hook into a new rootfs copy only. The ordinary platform installer does not install guest-ui-auth-evidence.py."
+          },
+          {
+            "file": "systems/rock-star-os/os/ui/verify-auth.py",
+            "line": 162,
+            "conclusion": "The harness creates a separate test rootfs and new userdata, boots QEMU with no network and a read-only copied rootfs, and checks original images/source hashes afterward."
+          },
+          {
+            "file": "systems/rock-star-os/os/ui/guest-ui-auth-evidence.py",
+            "line": 130,
+            "conclusion": "Directory 0755 and socket 0666 deliberately remove DAC barriers for a negative peer-UID check. The directory remains unwritable to other UIDs. The observer sends only auth.status and snapshot reads; no credentials or mutation requests are issued."
+          },
+          {
+            "file": "systems/rock-star-os/os/wallet_auth/daemon.py",
+            "line": 129,
+            "conclusion": "The actual authenticator rejects every nonowner peer UID from SO_PEERCRED before reading the request body. The daemon retains four bounded slots and finite deadlines; widening socket DAC does not bypass this authorization."
+          },
+          {
+            "file": "systems/rock-star-os/os/ui/guest-ui-auth-evidence.py",
+            "line": 80,
+            "conclusion": "Authenticator data directory 0700 and database 0600 are checked and not relaxed by boundary_probe; the socket permission changes do not grant database/file access."
+          },
+          {
+            "file": "systems/rock-star-os/os/ui/guest-ui-auth-evidence.py",
+            "line": 138,
+            "conclusion": "Ordinary completion and exceptions enter finally and restore socket 0660 then directory 0750. The restored:true result is returned only if both restoration calls succeed."
+          },
+          {
+            "file": "systems/rock-star-os/os/ui/verify-auth.py",
+            "line": 231,
+            "conclusion": "The host harness detects observer failure and its finally closes the monitor and terminates then kills its own QEMU child if still running. This bounds persistence of test-guest runtime permission changes; it does not modify the source image or another live device."
+          }
+        ],
+        "cleanupLimitation": {
+          "file": "systems/rock-star-os/os/ui/guest-ui-auth-evidence.py",
+          "line": 138,
+          "condition": "If the first restoration chmod itself fails, the following directory chmod is skipped. Forced termination before finally can likewise prevent restoration.",
+          "scope": "Source-level resilience limitation in the explicitly booted disposable verification guest. No actual production credential disclosure, peer-UID bypass, or cross-device persistence was demonstrated.",
+          "possibleFollowup": "If restoration robustness becomes a separate requirement, attempt directory restoration in a nested finally while preserving failure reporting and both original errors. Test independent restore failures and host child cleanup. Do not weaken or remove the intentional negative-authorization probe merely to silence the warning."
+        },
+        "changedInputInvalidatesReview": true
+      },
+      "sourceSha256": {
+        "systems/rock-star-os/os/ui/guest-ui-auth-evidence.py": "83c0d153e9ab3a77c6428fff58b3db659d978878aac4dfb9dd3abcb3b080a060",
+        "systems/rock-star-os/os/ui/verify-auth.py": "73bbe877f3c8fb283a219af0eee091ad745e1bfdf967216c95aefd63013a2ac1",
+        "systems/rock-star-os/os/ui/guest-ui-evidence.py": "9d4eedd394b3e7afba458d97c943911c706563c4870966feba98bb24a160ccc4",
+        "systems/rock-star-os/os/wallet_auth/daemon.py": "83bf51eb2e400013989da04f1925e39c3f942ac32ef1d3809b285d230316e9e8",
+        "systems/rock-star-os/os/platform/install-target.sh": "38cc7d58fedb980f4a0e99615fd33c819e235e85551d3c5f4d17d3f0dbeebd11",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator": "5ca12ec132fa72846fde578f96bda28d8c05afac451927e5de27cc9447ab42c1",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/post-build.sh": "4be6387a3f30479e528e2c7df7a640a17b64371a359c425a1a841787d5ae3bcf",
+        "systems/rock-star-os/os/ui/Makefile": "be75806ad3cc86e9b1ed95ceb55aee4a2d384b1e18cd3c3f1d0e49d6c1716b89",
+        "systems/rock-star-os/os/ui/test_evidence.py": "1b2c5c2744c16cc1b2c1f2fa59c47fcb7006e0c5603d70153552eefd325a4cb6"
+      },
+      "hostChecks": {
+        "existingTests": {
+          "names": [
+            "test_evidence.EvidenceTests.test_observer_refuses_every_mutation_before_socket_connect",
+            "test_evidence.EvidenceTests.test_guard_cannot_write_or_poweroff_unflagged_host"
+          ],
+          "passed": 2,
+          "failed": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "syntheticBoundaryCases": {
+          "passed": 7,
+          "failed": 0,
+          "cases": [
+            "normal success",
+            "early role mismatch",
+            "peer rejection mismatch",
+            "TimeoutExpired",
+            "OSError",
+            "parent relaxation failure",
+            "socket relaxation failure"
+          ],
+          "restoration": "After entering temporary DAC block, ordinary failures request socket0660 then parent0750; failure is not reported as success."
+        },
+        "syntheticEntrypointCases": {
+          "passed": 7,
+          "failed": 0,
+          "cases": [
+            "nonroot rejected",
+            "non-ARM64 rejected",
+            "missing flag rejected",
+            "duplicate flag rejected",
+            "similar flag rejected",
+            "exact gate accepted",
+            "observer failure emits sanitized FAIL"
+          ]
+        },
+        "method": "Existing read-only API/base observer tests plus AST-extracted auth boundary/main with all OS/subprocess/Path collaborators simulated. Scratch probe excluded from Git.",
+        "hostSystem": "Darwin",
+        "pythonVersion": "3.14.7",
+        "limitations": [
+          "Only AST-extracted functions ran with synthetic os/subprocess/Path; no actual guest path filesystem operation or child process occurred in probes.",
+          "Existing2 tests cover shared observer mutation rejection and unprivileged entrypoint guard; direct auth gate and chmod cleanup use separate synthetic checks.",
+          "No real UID switch, SO_PEERCRED/DAC enforcement, guest/VM/browser/root, service action, device or physical acceptance.",
+          "Restore syscall failure, process termination/SIGKILL or host crash are not proven to restore DAC; finally is not crash recovery.",
+          "No tracked changes, alert dismissal, deletion or weakening of test code performed."
+        ],
+        "probeSha256": "c9d85e465d87ec0687acaf9474819acff249234ffde37ecde0a0238c12c8e86e"
+      },
+      "localFullVerify": {
+        "status": "incomplete",
+        "failure": "ai package missing at llm:architecture:check",
+        "laterGates": "not run locally"
+      },
+      "remaining": {
+        "codeqlOpen": 38,
+        "dependabotDefaultBranch": 18,
+        "historyCandidates": 2364,
+        "existingDependabotPullRequests": [
+          53,
+          54,
+          55,
+          56
+        ],
+        "nextReview": "Unreviewed validation-code alerts and existing dependency PR failures; avoid repeating unchanged source triage."
+      },
+      "boundaries": {
+        "runtimeChanged": false,
+        "testSourceChanged": false,
+        "scannerPolicyChanged": false,
+        "mainMerged": false,
+        "guestBoot": "NOT_RUN",
+        "realUidDac": "NOT_RUN",
+        "physicalDevice": "NOT_RUN",
+        "continuous24Hours": "NOT_RUN"
+      },
+      "publicationEvidence": "Same-SHA CI and individual alert readback will be recorded after push in PR52 and the external SPIDER artifact."
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."
