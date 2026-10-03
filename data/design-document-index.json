@@ -852,5 +852,18 @@
       "tests/coconala-sky-entry.test.mjs"
     ],
     "publicOwnerAcceptance": false
+  },
+  "skyConnectorPilotPreparation": {
+    "document": "docs/sky-mcp-connector.md",
+    "implementation": [
+      "toolkits/sky-mcp-connector/server.mjs",
+      "toolkits/sky-mcp-connector/pilot-policy.mjs",
+      "toolkits/sky-mcp-connector/registry.pilot.json"
+    ],
+    "verification": [
+      "tests/mcp-pilot-policy.test.mjs"
+    ],
+    "actualIssuanceAccepted": false,
+    "actualExpiryShutdownAccepted": false
   }
 }

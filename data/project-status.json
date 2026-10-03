@@ -3510,5 +3510,20 @@
     "librarySaveGrantsExecutionRights": false,
     "publicOwnerAcceptance": false,
     "loadingLayoutGuard": true
+  },
+  "skyConnectorPilotPreparation": {
+    "stage": "policy_and_denial_http_tested_issuance_held",
+    "origin": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "tools": [
+      "coconala_check",
+      "format_citations",
+      "make_free_article",
+      "verify_delivery"
+    ],
+    "ttlMinutes": 30,
+    "sdkDiscovery": false,
+    "connectionIssuanceAccepted": false,
+    "realPcAccepted": false,
+    "expiryShutdownAccepted": false
   }
 }
