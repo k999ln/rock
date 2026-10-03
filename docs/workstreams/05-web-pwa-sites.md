@@ -111,6 +111,8 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - `npm run release:web-bundle:check`
 - `npm run release:web-assets:check`
 - `npm run test:api`
+- `npm run test:avocado-mini-site`（avocadoMini SiteのAstro配布物契約と予約・決済Worker試験。依存導入不要で`npm run verify`に含む）
+
 
 
 ## 2026-10-02 — CSV保存・期限切れ修正の独立反映
