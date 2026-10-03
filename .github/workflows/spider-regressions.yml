@@ -33,6 +33,7 @@ jobs:
       - name: Test delivery workspace isolation and existing MR tools
         run: |
           python3 -B -W error::ResourceWarning -m unittest discover -s tests -p test_mr_delivery_boundary.py -v
+          python3 -B -W error::ResourceWarning -m unittest discover -s tests -p test_mr_http_deadline.py -v
           node --experimental-strip-types --test tests/mr-tools.test.mjs tests/mcp.test.mjs tests/mr-pc-adapter.test.mjs
       - name: Verify distributed MR toolkit matches source
         run: |

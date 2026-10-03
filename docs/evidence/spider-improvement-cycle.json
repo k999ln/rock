@@ -589,6 +589,179 @@
         "secretsRotated": false
       },
       "publicationEvidence": "Final document-commit checks are read back separately in PR52 and the local SPIDER improvement-cycle artifact; no runtime repair is claimed."
+    },
+    {
+      "cycle": 5,
+      "baselineCommit": "ce8b0a22edffcc46843a825f8d0900f72dbd5ac5",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "host_validated_awaiting_same_sha_ci",
+      "repairCount": 1,
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabotDefaultBranch": 18
+      },
+      "baselineAnalysisIds": [
+        1885037764,
+        1885038590
+      ],
+      "adjacentAlert": {
+        "number": 10,
+        "rule": "py/http-response-splitting",
+        "stateBefore": "open",
+        "decision": "allowlisted Origin injection not reproduced; leave alert open",
+        "repairIsDifferentDefect": true
+      },
+      "defect": {
+        "location": "toolkits/mr/mcp_server.py",
+        "cause": "A per-recv inactivity timeout on the sequential loopback HTTPServer can be extended indefinitely by an unauthenticated trickle.",
+        "impact": "One incomplete request delays acceptance of subsequent clients.",
+        "baselineProbe": {
+          "hostSystem": "Darwin",
+          "pythonVersion": "3.14.7",
+          "sourceSha256": "c94f54f5760fda02016e99d3990f0bf50e71ff06ddf8c14715c003888393da16",
+          "scope": "synthetic loopback HTTP; production Bridge with timeout shortened to 0.2s in test subclass",
+          "responseHeaderChecks": {
+            "validOrigin204": true,
+            "foldedInvalidOrigin403": true,
+            "invalidOriginNotReflected": true,
+            "separateInjectedRequestHeaderNotReflected": true
+          },
+          "slowHeader": {
+            "requestAuthenticated": false,
+            "inactivityTimeoutSeconds": 0.2,
+            "trickleIntervalSeconds": 0.05,
+            "heldSeconds": 0.913,
+            "validRequestTimedOutWhileHeaderOpen": true,
+            "validRequestRecovered204AfterClose": true,
+            "recoverySeconds": 0.001
+          },
+          "tokensIssued": 0,
+          "toolCalls": 0,
+          "unexpectedServerErrors": 0,
+          "productionModified": false,
+          "linuxGuestTest": false
+        }
+      },
+      "repair": {
+        "absoluteReceiveDeadlineSeconds": 10,
+        "deadlineCovers": [
+          "request-line",
+          "headers",
+          "body"
+        ],
+        "recheckBeforeDispatch": [
+          "complete body",
+          "JSON parse"
+        ],
+        "incompleteBodyRejected": true,
+        "bufferedReaderPreserved": true,
+        "responseWriteTimeoutSeconds": 10,
+        "expectedIoErrors": "close without logging input or raw exception",
+        "threadingModelUnchanged": true
+      },
+      "sourceSha256": {
+        "toolkits/mr/mcp_server.py": "643420c5bf4505b36b6b2435e34e39923f5fd1fb619692ee41ee631b4e787fb0",
+        "tests/test_mr_http_deadline.py": "b7d38d59a72975cec73e5d3f5e093b071c4bb63c3779936c4bc2c69a77e88818",
+        "toolkits/mr/README.md": "3490dcd465b2a023a0fce273cf098af5da4b536d0a15258a68e337bed4259530",
+        ".github/workflows/spider-regressions.yml": "fed247f403a4c7560fa37ed3d29d4c310052a72cd1c96d302685fda62db1aadb",
+        "public/toolkits/mr-toolkit.zip": "a94c3330036c8ef326cb6140520ce761d924fff096311267ad35e954d8e84c21",
+        "public/toolkits/sky-mcp-connector.zip": "e61a4a9c4729a62e6a2eb38551d09ffd6b84264ff85b4285acba7e700d76f59d"
+      },
+      "archives": [
+        {
+          "path": "public/toolkits/mr-toolkit.zip",
+          "httpServerAndReadmeMatchSource": true
+        },
+        {
+          "path": "public/toolkits/sky-mcp-connector.zip",
+          "httpServerAndReadmeMatchSource": true
+        }
+      ],
+      "hostChecks": [
+        {
+          "command": "python3 -B -W error::ResourceWarning -m unittest discover -s tests -p test_mr_http_deadline.py -v",
+          "passed": 11,
+          "failed": 0,
+          "scope": "real synthetic loopback HTTP with short receive budget; three trickle stages, shared deadline, client recovery before hostile socket closes, no expired/incomplete dispatch, read-ahead and fragmented body larger than default buffer, auth/CORS, independent response timeout, stream cleanup"
+        },
+        {
+          "command": "python3 -B -W error::ResourceWarning -m unittest discover -s tests -p test_mr_delivery_boundary.py -v",
+          "passed": 14,
+          "failed": 0
+        },
+        {
+          "command": "node --experimental-strip-types --test tests/mr-tools.test.mjs tests/mcp.test.mjs tests/mr-pc-adapter.test.mjs",
+          "passed": 18,
+          "failed": 0,
+          "nestedAdapterPythonTests": 19
+        },
+        {
+          "command": "python3 scripts/package-sky-mcp.py --check",
+          "status": "passed"
+        }
+      ],
+      "hostEnvironment": {
+        "os": "Darwin",
+        "python": "3.14.7",
+        "node": "26.0.0"
+      },
+      "independentReview": {
+        "blockingFindings": 0,
+        "independentlyReexecutedHttpTests": 11
+      },
+      "intermediateFailures": [
+        {
+          "stage": "first HTTP fixture execution",
+          "passed": 10,
+          "failed": 1,
+          "reason": "40KB fixture was smaller than Python3.14 default 128KB buffer",
+          "resolution": "make fixture larger than runtime default, retain bounded short fragmented sends; final 11 pass"
+        },
+        {
+          "stage": "project:update before agent saved test file",
+          "reason": "new evidence path not yet present",
+          "resolution": "rerun after real test file saved; passed"
+        }
+      ],
+      "localFullVerify": {
+        "status": "incomplete",
+        "passedThrough": "project/repository/version/schema/database/release/signing/baseline/avocado/design/composition",
+        "failure": "ai package not installed at llm:architecture:check",
+        "laterGates": "not run locally"
+      },
+      "remaining": {
+        "codeqlOnTargetBranch": 38,
+        "dependabotOnDefaultBranch": 18,
+        "existingDependabotPullRequests": [
+          53,
+          54,
+          55,
+          56
+        ],
+        "existingDependencyCiFailures": {
+          "53-55": "Run npm run verify",
+          "56": "Run npm ci"
+        },
+        "historySecretCandidates": 2362,
+        "baselineSecretRun": 37098642400,
+        "baselineReachableCommits": 661
+      },
+      "limits": [
+        "loopback per-request receive bound, not direct Internet reachability or connection-flood resistance",
+        "Tool execution itself can outlive the receive deadline",
+        "no OS boot, physical-device, 24-hour runtime acceptance"
+      ],
+      "boundaries": {
+        "scannerOrAuthenticationWeakened": false,
+        "vendorChanged": false,
+        "mainMerged": false,
+        "deployed": false,
+        "deviceChanged": false,
+        "secretsRotated": false
+      },
+      "publicationEvidence": "Same-SHA GitHub results and per-alert comparison will be read back after publication; final document-commit evidence is kept separately in PR52 and the local deliverable."
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."
