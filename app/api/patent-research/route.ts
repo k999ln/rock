@@ -1,4 +1,3 @@
-import { SensitiveDataBlockedError } from '@/toolkits/spider-guard/detector.mjs';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
@@ -6,12 +5,12 @@ import {
   parsePatentAiResponse,
   validatePatentAiInput,
 } from '@/lib/patent-ai';
+import { authorizeRemoteAiRequest } from '@/lib/remote-ai-guard';
 import {
-  authorizeRemoteAiRequest,
-  RemoteAiGuardError,
-} from '@/lib/remote-ai-guard';
-
-const noStoreHeaders = { 'Cache-Control': 'no-store' };
+  requestResearchAi,
+  researchAiErrorResponse,
+  researchAiNoStoreHeaders as noStoreHeaders,
+} from '@/lib/research-ai';
 
 export async function POST(request: Request) {
   try {
@@ -43,64 +42,22 @@ export async function POST(request: Request) {
       );
 
     const searchedAt = new Date().toISOString();
-    const upstream = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      redirect: 'error',
-      headers: {
-        Authorization: `Bearer ${runtimeEnv.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(
-        buildPatentAiRequest(
-          input,
-          searchedAt.slice(0, 10),
-          runtimeEnv.OPENAI_PATENT_MODEL,
-        ),
+    const payload = await requestResearchAi(
+      buildPatentAiRequest(
+        input,
+        searchedAt.slice(0, 10),
+        runtimeEnv.OPENAI_PATENT_MODEL,
       ),
-    });
-    const payload = (await upstream.json()) as unknown;
-    if (!upstream.ok) {
-      console.error('patent research upstream failed', upstream.status);
-      return Response.json(
-        {
-          error:
-            '特許調査AIを利用できません。検索式を使って公式データベースを確認してください。',
-        },
-        { status: 502, headers: noStoreHeaders },
-      );
-    }
+      runtimeEnv.OPENAI_API_KEY,
+    );
     return Response.json(parsePatentAiResponse(payload, searchedAt), {
       headers: noStoreHeaders,
     });
   } catch (error) {
-    if (error instanceof SensitiveDataBlockedError)
-      return Response.json(
-        {
-          error:
-            'Spider Guardが機密情報の外部送信を止めました。内容を取り除いて再試行してください。',
-          code: error.code,
-          count: error.count,
-          kinds: error.kinds,
-        },
-        { status: error.status, headers: noStoreHeaders },
-      );
-    if (error instanceof RemoteAiGuardError)
-      return Response.json(
-        {
-          error:
-            error.code === 'RATE_LIMITED'
-              ? '利用上限に達しました。1分後に再試行してください。'
-              : error.code === 'ORIGIN'
-                ? 'このサイトから操作してください。'
-                : 'サインインしてください。',
-          code: error.code,
-        },
-        { status: error.status, headers: noStoreHeaders },
-      );
-    console.error('patent research failed', 'UPSTREAM_OR_INPUT_ERROR');
-    return Response.json(
-      { error: '入力を確認して、もう一度お試しください。' },
-      { status: 400, headers: noStoreHeaders },
-    );
+    return researchAiErrorResponse(error, {
+      logLabel: 'patent research',
+      upstream:
+        '特許調査AIを利用できません。検索式を使って公式データベースを確認してください。',
+    });
   }
 }

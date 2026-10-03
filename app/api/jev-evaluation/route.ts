@@ -1,13 +1,12 @@
 import { SensitiveDataBlockedError } from '@/toolkits/spider-guard/detector.mjs';
-import { experimental_evaluate as evaluate } from 'ai';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
-  JEV_MODEL,
   JEV_RUBRICS,
   makeJevReceipt,
   validateJevEvaluationInput,
 } from '@/lib/jev-evaluation';
+import { evaluateJev } from '@/lib/jev-transport';
 import {
   authorizeRemoteAiRequest,
   RemoteAiGuardError,
@@ -45,13 +44,10 @@ export async function POST(request: Request) {
       );
 
     const requestId = crypto.randomUUID();
-    const result = await evaluate({
-      model: JEV_MODEL,
+    const result = await evaluateJev({
+      apiKey: runtimeEnv.AI_GATEWAY_API_KEY,
       state: input.state,
       questions: JEV_RUBRICS[input.rubricId],
-      maxRetries: 0,
-      headers: { Authorization: `Bearer ${runtimeEnv.AI_GATEWAY_API_KEY}` },
-      providerOptions: { gateway: { zeroDataRetention: true } },
     });
     const receipt = await makeJevReceipt(requestId, input, result);
     return Response.json(receipt, { headers: noStoreHeaders });

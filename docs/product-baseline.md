@@ -10,6 +10,10 @@
 
 同日のコード検査・ファイル指定: 自分のコードを貼り付けて編集すると自動検査し、実際の指摘をクモで可視化する。offline単一HTML `outputs/SPIDER.html`と、OS owner限定の`security.inspectCode`を実装範囲に加える。検査は明示入力したsourceの静的分析であり、コード実行、外部送信、入力の永続保存、SDK／API keyを要求しない。既存Platformの常駐監視と送信前拒否は維持し、HTMLの動作をOS boot・24時間運転の合格へ換算しない。新しい検証結果は別に記録する。
 
+## 2026-10-02 既存Web外観と検証の整合
+
+READMEと既存workspace CSSに実装済みのgraphite・silver・pale-blue外観を維持し、機械可読visualSystemのaccentを`ice_blue`へ同期する。旧acid-greenを要求する検証だけを訂正し、CSS・component・公開Siteの見た目は変更しない。READMEの英語化と既存marketplace migrationを検証へ反映し、R5の製造保留・実機試験0と履歴DBのschema/保存値比較は維持する。これは新しい製品方針や本番受入の宣言ではない。
+
 ## 2026-09-27 Sky Marketの現行手数料
 
 Sky Marketは自動化ToolとLLMを掲載対象にし、登録・接続・公開・基本利用料は0円とする。検証済みTool売上のSky Market手数料は10%。外部決済、API、AIモデル、cloud等の第三者実費は別表示する。Provider、本人確認、返金、照合の受入前は請求・回収・払出しを有効化しない。旧8.88 USD案と0%の記載は過去の判断履歴・回帰資料であり、この現行方針を上書きしない。

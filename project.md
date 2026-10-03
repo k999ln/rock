@@ -8,6 +8,8 @@
 
 修正後のhost Node検証は28件合格・未対応OS専用1件skip。正常SDK発見／停止、一回承認、送信前検査、差し替え・肥大化・FIFO拒否を確認し、独立レビューも追加指摘なし。既存PRにmain更新との競合があるため、mainの変更を作業branchへ取り込んで保持し、整合後の同一SHAを再解析する。これは作業branch内の同期であり、mainへの統合ではない。
 
+`a4217bb`に修正を保存した後、上流`31ef33a`の共通基盤・CSV・検証基準を取り込み、Research／Jevの共通化へSPIDERの送信前検査とredirect／エラー秘匿を保持した。159 task中105 doneとSYS15 in_progressを両立し、配布ZIP2種をsourceへ同期した。統合後のConnector系28合格・1skip、Fashion25合格、Research等19合格と独立レビューを確認。最終ローカルverifyはbaselineを通過後に未導入`ai`で停止し、実依存・型・buildを同一SHAのGitHubで確認する。
+
 ## 2026-10-02 — SPIDER検出からコード改善への反復を開始
 
 利用者の指示により既存SYS15で`検出 → 原因確認 → 修正 → 回帰テスト → 同一commit再検査 → PR報告`を実装する。metadata-only収集commandは基準commit `936c632`のCodeQL 47件とdefault branch Dependabot 18件を実取得した。1時間ごとのローカルCodex follow-upを設定し、PCとアプリ起動中に高優先度の小さな修正を進め、重要な変化だけ報告する。main merge・deploy・秘密失効・例外拡大は自動化しない。
@@ -40,6 +42,14 @@
 Linux container（Colima／Debian bookworm、Python 3.13、network none、UID/GID 1002）でnative回帰125、supervisor 3、install 1、計129/129 Python試験が成功（skipなし、ResourceWarningをerror扱い）。Web／MCPのNode試験49/49、typecheck、lint:product、MCP配布物一致も成功した。native Cは`-Werror`でbuildし既存UI suiteが合格。生存・monotonic鮮度の両方を稼働表示に必要とし、送信本文だけでなくmanifest・recipe・key／endpoint metadataを検査する。監督は同じUIDで再起動し、Linux subreaperでcrash後の孤児process groupを終了・reapする。[機械可読証拠](docs/evidence/spider-guard-source-validation.json)と[再現command](docs/spider-guard.md#検証と引継ぎ)を記録した。対象はbase HEAD `b3e2676abd8ae2a0b3f78f48483e067b429d9bc8`上の未commit作業木で、same-SHA CIやremote main反映ではない。
 
 全体`npm test`は455件中444成功・11失敗であり、全体合格とは記録しない。変更前HEADでもvisual baselineの同じエラーとREADMEの2つの期待文言欠落を確認した。D1試験もHEADの必要42fileだけで9件中2成功・7失敗（37対32の6子試験と親）を再現し、計11失敗が変更前から存在することを確認した。Spider描画fixtureとactive／staleの目視確認も成功した。最終`npm run verify`はproject／repository／version／schema／database／release／release:signing（公開fixture64件）まで成功し、HEADでも再現する`baseline:check`の既存visual期待値で停止した。後続gateをこの実行の成功へ換算しない。変更したproduction／test sourceのSHA-256を機械可読証拠へ保存した。同一image boot、QEMU、Pixel実機、24時間運転は未受入で、`SYS15`は`in_progress`を維持する。
+
+## 2026-10-02 — 重複実装と検証入口の統合（G04）
+
+利用者の「重複・似たプログラムを統合して」に従い、Git / CI / Operations（ROCK）を主担当として、main `b3e2676` から共通処理を集約する。PR #51 のCSV安全修正・既存検査整合、PR #39 のSite試験接続を履歴ごと取り込んだ。法務／特許AIの通信・引用、Jev通信、MCPのsession／RPC、Tool registry、owner／revision保存、Stripe低水準通信・署名、公開PreviewとWebのSky→Zema契約を対象にする。
+
+各Toolの認証、外部送信同意、owner分離、CAS競合、決済・在庫・本人承認は各adapterに残す。Android／Linuxの実行器、バックアップ形式、商品固有アルゴリズム、固定原本は独立した責務であり削除しない。未mergeのAI／Fund／Game等の新機能PRも重複とみなさず、今回の完了範囲に含めない。共通処理の実装とローカル全体検証は完了。GitHubの同一SHA CIとmain統合はPRの状態・merge commitで追跡する。公開配備、実決済、実機試験は本統合の検証に含まない。
+
+fresh `npm ci`後の`npm run verify` exit 0。root 485/485、Fashion 22/22、Site 18/18、公開Preview 21/21、Worker-D1 172項目、CSV-D1/R2 113項目、bundle 131、asset 114（欠落0）が合格。Mini fresh buildは13 route。配布ZIPと共通Stripeコピーをsourceへ同期し、Fashion単体ZIPもverify必須にした。後続のSite配布物一致試験1件も追加し、最終CIで再確認する。独立レビューの追加41試験とstrict型確認で未解決の指摘なし。[証拠](docs/evidence/common-foundation-integration.json)。このdoneはG04の共通実装範囲に限り、未mergeの新機能PR・native実行器・Provider・実機受入を完了に変えない。
 
 ## 2026-09-26 — avokadoホームの用途紹介を体験中心へ簡素化
 
@@ -155,6 +165,12 @@ Astro buildは11 route、Site試験10/10。ローカル実ブラウザで全11 r
 利用者指定のApple iPhone 18 Proページを、画像やブランドを模倣するのではなく、余白、文字の強弱、浮いた製品ナビ、製品を主役にする画面構成、横送りハイライト、固定スクロールの参考として適用した。avokadoの名称、黒・銀の配色、利用者指定のavocadoMini画像、現行R5の内容は維持する。意味を持たない円形軌道装飾を外し、Highlightsには4項目を直接選べるタブを追加した。
 
 PCと390px幅のローカル実ブラウザで、製品ナビ、冒頭画像、4タブ連動、正面から背面へ変化する固定スクロール、横overflowなし、error overlayなしを確認した。Astro buildは11 route、Site試験9/9。GitHub `main`は`6622c80`、Site sourceは`133c6b8afc885dd4b7a025e679a5511fec0b35e0`、公開v61、deployment `appgdep_6ab5d14a5ca08191a153ada67bf7c7dd`が成功した。販売停止、実機0件、製造承認保留は変更しない。
+
+## 2026-09-24 — avocadoMini Site試験をCIの`npm run verify`へ接続
+
+公開avocadoMini Siteの予約・決済Worker試験6件（販売条件が揃うまでの販売停止、規約同意、サーバー側価格と在庫の一回確保、Webhookだけによる入金確定、期限切れ予約の解放、管理APIのBearer保護）とAstro配布物のroute契約試験3件、計9件は`sites/avocado-mini/tests/`にあるが、rootの`npm test`（`tests/*.test.mjs`）にも`npm run verify`にも含まれず、PRとmainのCIで一度も実行されていなかった。rootに`npm run test:avocado-mini-site`を追加して`verify`へ組み込み、`tests/verify-coverage.test.mjs`で`sites/`と`toolkits/`配下の試験を持つpackageが必ず`verify`から到達されることを検査する。Site試験はNode標準機能（`node:sqlite`等）だけで動き、Site側の依存導入は不要。Site source、公開Site、予約・決済の販売停止状態、WEB15の未完了条件は変更しない。主担当Git/CI、関連task WEB15。
+
+検証: 変更前は新しい網羅試験が`sites/avocado-mini`未実行を検出して失敗し、変更後は`npm run test:avocado-mini-site` 9/9、root Node試験365/365、`npm run verify` exit 0。GitHub保存（PR）とmain統合、Sites配備は別の事象であり、本変更はSites配備を伴わない。
 
 ## 2026-09-24 — avocadoMiniの製品画像とスクロール切替を復元
 
@@ -1158,7 +1174,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-02 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/158件
+最終更新: 2026-10-02 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 105/159件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1216,7 +1232,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/system-settings.module.css) · [記録](components/csv-business-workspace.module.css) · [記録](components/workspace-shell.tsx) · [記録](components/sky-surface.module.css) · [記録](components/sky-workspace.tsx) · [記録](components/sky-workspace.module.css) · [記録](components/sky-tool-card.tsx) · [記録](components/sky-tool-card.module.css) · [記録](components/sky-marketplace.tsx) · [記録](components/sky-marketplace.module.css) · [記録](components/sky-tool-workspace.tsx) · [記録](components/sky-tool-workspace.module.css) · [記録](components/fashion-brand-ops-runner.tsx) · [記録](components/fashion-brand-ops-runner.module.css) · [記録](components/sky-connection-center.tsx) · [記録](components/sky-connection-center.module.css) · [記録](components/sky-mcp-center.tsx) · [記録](components/sky-mcp-center.module.css) · [記録](components/sky-publisher-form.tsx) · [記録](components/sky-publisher-form.module.css) · [記録](lib/use-sky-tool-context.ts) · [記録](components/rock-studio.tsx) · [記録](components/coconala-team-workspace.tsx) · [記録](components/coconala-team-workspace.module.css) · [記録](app/workspace.css) · [記録](components/sky-chat-workspace.tsx) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/workstreams/01-product-ux.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/guide/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/dist/client/index.html) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
-| WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](lib/csv-job-store.ts) · [記録](scripts/check-csv-storage.mjs) · [記録](docs/evidence/sky-csv-storage-hardening.json) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
@@ -1224,7 +1240,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB12 | 利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする | 完了 | [記録](public/rockstaros/avocado-mini-tower-concept.png) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](README.md) · [記録](docs/avocado-mini-hardware-design.md) |
 | WEB13 | 旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す | 進行中 | [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/guide/index.astro) · [記録](sites/avocado-mini/src/pages/crowdfunding/index.astro) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](README.md) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/main.js) · [記録](project.md) · [記録](sites/avocado-mini/src/pages/rockstaros/index.astro) · [記録](sites/avocado-mini/astro.config.mjs) · [記録](sites/avocado-mini/src/pages/rocket-star/index.astro) · [記録](sites/avocado-mini/rocket-star/main.js) · [記録](sites/avocado-mini/rocket-star/design.css) · [記録](sites/avocado-mini/scripts/build-rocketstar.mjs) · [記録](docs/evidence/rocketstar-site-r1.json) · [記録](sites/avocado-mini/public/downloads/rocketstar-complete-design-r1.0.pdf) · [記録](sites/avocado-mini/public/downloads/rocketstar-complete-design-r1.0.zip) · [記録](sites/avocado-mini/public/rocket-star/design/index.html) · [記録](sites/avocado-mini/public/rocket-star/design/source.md) |
 | WEB14 | RockstarOS導入入口を製品ページへ置き、Pixel 10向け実インストーラーを配布・安全ゲート合格後に接続する | 進行中 | [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/pages/install/index.astro) · [記録](sites/avocado-mini/astro.config.mjs) · [記録](data/android-first-flash-gate.json) · [記録](docs/workstreams/05-web-pwa-sites.md) |
-| WEB15 | avocadoMiniの予約販売画面と決済バックエンドを用意し、販売条件確定後に全額決済を有効化する | 進行中 | [記録](sites/avocado-mini/src/pages/preorder/index.astro) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/db/schema.ts) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
+| WEB15 | avocadoMiniの予約販売画面と決済バックエンドを用意し、販売条件確定後に全額決済を有効化する | 進行中 | [記録](sites/avocado-mini/src/pages/preorder/index.astro) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/db/schema.ts) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](package.json) · [記録](tests/verify-coverage.test.mjs) |
 | WEB16 | 公開avocadoMini Siteを現行R5へ同期し、旧E3商品構成・価格を販売導線から撤去する | 完了 | [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/pages/preorder/index.astro) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](sites/avocado-mini/public/downloads/avocadoMini-R5-integrated-design.pdf) · [記録](docs/evidence/avocado-mini-site-r5.json) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
 | WEB17 | 公開avocadoMini SiteをAstroへ移行し、承認済みデザイン・全route・Worker配布契約を維持する | 完了 | [記録](sites/avocado-mini/package.json) · [記録](sites/avocado-mini/astro.config.mjs) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/rocket-star/index.astro) · [記録](sites/avocado-mini/src/pages/preorder/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
 | WEB18 | 公開avocadoMini Siteの画像原本を保護し、表示・導線・アクセシビリティ・SEOの不具合を解消する | 完了 | [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/worker/index.js) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) · [記録](sites/avocado-mini/public/robots.txt) · [記録](sites/avocado-mini/public/sitemap.xml) · [記録](docs/evidence/avocado-mini-site-r5.json) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
@@ -1320,6 +1336,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](tests/billing-worker.test.mjs) · [記録](docs/evidence/launch/sky-billing-fee-hold-20260924.json) · [記録](lib/sky-commerce.ts) · [記録](lib/sky-commerce-store.ts) · [記録](lib/sky-stripe.ts) · [記録](components/sky-commerce.tsx) · [記録](drizzle/0018_sky_commerce.sql) · [記録](tests/sky-commerce.test.mjs) · [記録](tests/sky-stripe.test.mjs) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
+| G04 | 重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化 | 完了 | [記録](docs/git-consolidation.md) · [記録](docs/evidence/common-foundation-integration.json) · [記録](tests/sky-zema-contract.test.mjs) · [記録](tests/shared-stripe.test.mjs) · [記録](tests/mcp-client.test.mjs) · [記録](tests/owner-revision-json-store.test.mjs) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -1364,3 +1381,20 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 - Matched the avocadoMini visual language with black studio space, oversized white type, satin metal, cyan sensor light, soft blur transitions, a compact progress rail, and responsive mobile composition.
 - Funding stays display-only and fail closed. The call to action remains disabled and explicitly states that payments are not open.
 - Published as avocadoMini Site v34 from source `1a78977a0b9272310dfc7e2a062c2ff8bafd7b2e`; the public route and desktop/mobile layouts were verified before release.
+
+
+## 2026-10-02 — CSV保存・期限切れ修正の独立反映
+
+WEB06/ROCK: main b3e2676からCSVの受付ID衝突・競合cleanupと期限切れretryだけを切り出した。入力objectを試行ごとのUUIDにし、owner照合とINSERTの保存状態照合を維持する。quality_failed retryも期限切れなら処理claim前にowner row/objectを削除して410を返す。回帰はscripts/check-csv-storage.mjsでmain自身の依存・migration・buildを使って確認する。公開Sky v32には同等修正が既にあるが、このbranchは公開版全体と同じsourceではなく、未反映のStripe/Cloud/SIM作業を混入しない。全体verifyはこのbranchでは未完了。本番owner・実Cloud・Apple Pay・運用受入の完了とはしない。証拠docs/evidence/sky-csv-storage-hardening.json。
+
+
+独立branch検証: mainのlockfileでtypecheck/対象lint/build/design、172 Worker API＋113 CSV-D1-R2項目が合格。`npm run verify`は既存visual-system baseline不整合でexit1。Node全体は440件中429 pass/11 failで、変更を退避して未変更mainを同じ環境で検査した結果も同じ11件だった。mainのCI/statusは同一SHAで0件を観測し、成功へ換算しない。今回の差分で既存R5/migration/baselineの不整合やデザインを変更せず、draftでレビューする。公開Sky v32の全体sourceと同じcommitではなく、同等CSV修正だけのGitHub反映候補であり、mainへの統合は未完了。
+
+上記CSV検証の失敗記録は修正前の履歴。以下の検証整合を加えて、同じbranch全体を再検査する。
+
+
+2026-10-02 Sky公開前のGitHub検証整合: main b3e2676の既存エラーを分離branchで修正中。CSS/componentを変更せず、既存pale-blueのvisual baseline、英語READMEの製造保留/実機0/進捗リンク、既存marketplace migration後の37 tableへ検証を合わせる。履歴DBの全schema・保存値比較と製品の未受入境界は維持する。公開Site配備やmain mergeとは別に、full verifyと同一SHA CIを確認する。
+
+分離branchの`npm run verify`はexit 0。古いFashion Producerボタン名の判定も現行の「プランを作って保存」へ同期した。ローカルはNode 26と既存dependency treeを再利用し、base lockのインストール済みpackage版は全一致。GitHub Node 22・fresh npm ciの同一SHA CIは別途確認する。
+
+CSV修正との合成branchも`npm run verify` exit0: Node441/441、Fashion19/19、Worker-D1 172、CSV-D1/R2 113、bundle131、asset114/missing0。証拠`docs/evidence/sky-release-verification-alignment.json`。同一headのfresh CIとmain merge、本番owner・Cloud・Apple Pay受入はまだ別gate。

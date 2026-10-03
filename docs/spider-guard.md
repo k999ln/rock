@@ -54,6 +54,10 @@ GitHubのcommit `a13c3f5599aa5bec61f0cf9c9391d9a6a8adffbd`に対する[回帰job
 
 `4c5d32c`でも回帰・実測・CodeQLの成功と3件のfixedを再確認した。[初回cycleの機械可読記録](evidence/spider-improvement-cycle.json)に、検証commit・run・警告状態・未解決件数を保存する。初回成功は全警告の解消、main統合、端末の24時間保護を意味しない。
 
+第2cycleは`65b4601`の44件／Dependabot 18件を基準に、CodeQL #38のPC Tool descriptor読取競合を修正する。`a4217bb`で一度だけ開いたhandleに検証と読取を結び、4 KiB上限を読取中にも適用した。symlink／FIFO／権限・所有者不一致を拒否し、成功・失敗ともhandleを閉じる。defaultのowner専用directoryと親は信頼するローカル境界であり、遠隔攻撃の成立や同一UIDへの完全防御を主張しない。必要なopen flagがない環境では自動検出を拒否する。
+
+main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Research／Jev transportと、SPIDERの送信前拒否・redirect拒否・秘密値を含まないエラーを両方保持した。配布ZIP2種を再生成した。同期後のhost回帰はConnector／SDK／guard 28合格・未対応OS専用1skip、Fashion 25合格、Research／Jev入力・remote guard 19合格。独立レビューは追加指摘なし。全体verifyは既存baselineを含む先行gateを通過後、ローカル未導入の`ai`で停止し、依存のある型検査・SDK・buildはGitHubへ引き継ぐ。警告解消は同一SHAの再解析待ちで、取得件数だけから成功としない。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。

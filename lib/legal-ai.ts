@@ -7,6 +7,10 @@ import type {
   LegalMatterStage,
 } from './legal-intake';
 import { getSelfHelpResources, legalIssueCategories } from './legal-intake.ts';
+import {
+  parseResearchAiResponse,
+  type ResearchAiCitation,
+} from './research-ai.ts';
 
 export const LEGAL_AI_MODEL = 'gpt-5.4-nano';
 
@@ -34,7 +38,7 @@ export const LEGAL_AI_ALLOWED_DOMAINS = [
   'ftc.gov',
 ] as const;
 
-export type LegalAiCitation = { title: string; url: string };
+export type LegalAiCitation = ResearchAiCitation;
 
 export type LegalAiResult = {
   answer: string;
@@ -69,28 +73,6 @@ const stageIds = new Set<LegalMatterStage>([
   'document_review',
   'court_or_agency',
 ]);
-
-type OpenAiAnnotation = {
-  type?: string;
-  title?: string;
-  url?: string;
-};
-
-type OpenAiContent = {
-  type?: string;
-  text?: string;
-  annotations?: OpenAiAnnotation[];
-};
-
-type OpenAiOutputItem = {
-  type?: string;
-  content?: OpenAiContent[];
-};
-
-type OpenAiResponse = {
-  output?: OpenAiOutputItem[];
-  error?: { message?: string };
-};
 
 export function validateLegalAiInput(value: unknown): LegalIntakeInput {
   if (!value || typeof value !== 'object') throw new Error('INVALID_INPUT');
@@ -178,48 +160,12 @@ export function buildLegalAiRequest(
   };
 }
 
-function isAllowedCitation(url: string): boolean {
-  try {
-    const hostname = new URL(url).hostname.toLowerCase();
-    return LEGAL_AI_ALLOWED_DOMAINS.some(
-      (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
-    );
-  } catch {
-    return false;
-  }
-}
-
 export function parseLegalAiResponse(
   value: unknown,
   searchedAt = new Date().toISOString(),
 ): LegalAiResult {
-  const response = value as OpenAiResponse;
-  const answerParts: string[] = [];
-  const citations = new Map<string, LegalAiCitation>();
-  for (const item of response.output ?? []) {
-    if (item.type !== 'message') continue;
-    for (const content of item.content ?? []) {
-      if (content.type !== 'output_text' || !content.text) continue;
-      answerParts.push(content.text);
-      for (const annotation of content.annotations ?? []) {
-        if (
-          annotation.type === 'url_citation' &&
-          annotation.url &&
-          isAllowedCitation(annotation.url)
-        ) {
-          citations.set(annotation.url, {
-            title: annotation.title?.trim() || new URL(annotation.url).hostname,
-            url: annotation.url,
-          });
-        }
-      }
-    }
-  }
-  const answer = answerParts.join('\n\n').trim();
-  if (!answer || citations.size === 0) throw new Error('UNCITED_RESPONSE');
   return {
-    answer,
-    citations: [...citations.values()],
+    ...parseResearchAiResponse(value, LEGAL_AI_ALLOWED_DOMAINS),
     searchedAt,
     mode: 'remote-search',
   };

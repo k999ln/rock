@@ -1,3 +1,5 @@
+import { stripeRequest, verifyStripeSignature } from './shared/stripe.mjs';
+
 const products = {
   r5: { name: 'avocadoMini R5', baseJpy: null, amountKey: 'PREORDER_R5_TOTAL_JPY', capacityKey: 'PREORDER_R5_CAPACITY' },
 };
@@ -126,7 +128,7 @@ async function createCheckout(request, env) {
     await env.DB.prepare('INSERT INTO preorders (id, sku, amount_jpy, terms_snapshot_json, terms_version, terms_accepted_at, stripe_expires_at, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
       .bind(orderId, sku, amount, JSON.stringify({ sku, amountJpy: amount, acceptedAt, ...configuration.terms }), configuration.terms.version, acceptedAt, expiresAt * 1000, 'pending_payment', now, now).run();
     const origin = new URL(request.url).origin;
-    const form = new URLSearchParams({
+    const parameters = {
       mode: 'payment',
       client_reference_id: orderId,
       'line_items[0][price_data][currency]': 'jpy',
@@ -141,29 +143,23 @@ async function createCheckout(request, env) {
       expires_at: String(expiresAt),
       success_url: `${origin}/preorder/complete/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/preorder/`,
-    });
-    let stripeResponse;
+    };
     let session;
     for (let attempt = 0; attempt < 2; attempt += 1) {
       try {
-        stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-          method: 'POST',
-          headers: {
-            authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
-            'content-type': 'application/x-www-form-urlencoded',
-            'idempotency-key': orderId,
-          },
-          body: form,
+        session = await stripeRequest({
+          path: '/v1/checkout/sessions', secretKey: env.STRIPE_SECRET_KEY,
+          parameters, idempotencyKey: orderId,
         });
-        session = await stripeResponse.json();
-        if (stripeResponse.ok) break;
-        if (stripeResponse.status < 500) break;
+        break;
       } catch (error) {
-        if (attempt === 1) throw error;
+        // Preserve the bounded retry with the SAME key and reservation. Client
+        // errors are definitive; uncertain failures retain the order below.
+        if (attempt === 1 || (error.status && error.status < 500)) throw error;
       }
     }
     const checkoutUrl = session?.url ? new URL(session.url) : null;
-    if (!stripeResponse?.ok || !session?.id || !checkoutUrl || checkoutUrl.protocol !== 'https:' || checkoutUrl.hostname !== 'checkout.stripe.com') {
+    if (!session?.id || !checkoutUrl || checkoutUrl.protocol !== 'https:' || checkoutUrl.hostname !== 'checkout.stripe.com') {
       throw new Error('Stripe checkout session could not be created');
     }
     await env.DB.prepare('UPDATE preorders SET stripe_session_id = ?, updated_at = ? WHERE id = ?')
@@ -186,13 +182,12 @@ function constantTimeEqual(a, b) {
 }
 
 async function verifyStripe(raw, signature, secret) {
-  const fields = Object.fromEntries(signature.split(',').map(part => part.split('=', 2)));
-  const timestamp = Number(fields.t);
-  if (!Number.isSafeInteger(timestamp) || Math.abs(Date.now() / 1000 - timestamp) > 300 || !fields.v1) return false;
-  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const digest = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(`${timestamp}.${raw}`));
-  const expected = [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('');
-  return signature.split(',').some(part => part.startsWith('v1=') && constantTimeEqual(part.slice(3), expected));
+  try {
+    await verifyStripeSignature(raw, signature, secret);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function webhook(request, env) {
