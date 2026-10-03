@@ -1768,6 +1768,161 @@
         "continuous24Hours": "NOT_RUN"
       },
       "publicationEvidence": "Same-SHA CI, complete per-ID same-ref alert comparison and post-push hashes will be recorded in PR52 and external SPIDER artifact.",
+      "projectDatabaseDesignChecks": "passed",
+      "publicationReadback": {
+        "commit": "9e12c12df33b67b720091632be28ebffef62512b",
+        "outcome": "explicit platform guest entry gate verified with host regressions and same-SHA Linux source CI",
+        "fullVerify": {
+          "run": 37122166524,
+          "status": "success"
+        },
+        "native": {
+          "run": 37122166547,
+          "status": "success",
+          "artifact": 11273951409,
+          "sourceInventoryEntries": 720,
+          "pythonTestExecutions": 1787,
+          "newGateTestsExecuted": 7,
+          "sourceInventoryMatched": true
+        },
+        "codeql": {
+          "analysisIds": [
+            1885860410,
+            1885858735
+          ],
+          "sameRefComparedIds": 48,
+          "newOrMissingIds": 0,
+          "stateOrRuleChanges": 0,
+          "locationOnlyPlusFourLines": [
+            13,
+            14,
+            15,
+            16
+          ],
+          "open": 38,
+          "fixed": 10
+        },
+        "history": {
+          "runID": 37122166513,
+          "scanCompleted": true,
+          "reachableCommits": 668,
+          "candidateMatches": 2367,
+          "conclusion": "failure"
+        },
+        "dependabot": 18,
+        "mainMerged": false,
+        "guestBoot": "NOT_RUN"
+      }
+    },
+    {
+      "cycle": 12,
+      "baselineCommit": "9e12c12df33b67b720091632be28ebffef62512b",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "no runtime defect confirmed; documented deliberate fixture permission tests",
+      "repairCount": 0,
+      "reviewedAlerts": [
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabot": 18,
+        "historyCandidates": 2367
+      },
+      "review": {
+        "decision": "no runtime defect confirmed; preserve deliberate negative fixtures",
+        "broker": "private TemporaryDirectory database deliberately made0644 to verify strict storage rejection; return to0600",
+        "power": "temporary fixture permissions0755/0666 verify kernel UID refusal;0777 allows a UID1002 fake server to demonstrate client refusal before sending",
+        "runtimeInstallation": "Power unit tests are not copied into the installed service; normal root-owned state and peer checks remain",
+        "cleanup": "normal teardown removes fixture directories and child resources; forced termination, cleanup exceptions or child termination timeout are not guaranteed cleanup",
+        "ciScope": "current native CI covers top-level broker tests but does not discover os/system/tests/test_power.py; power root/UID tests NOT_RUN in cycle12"
+      },
+      "sourceSha256": {
+        "systems/rock-star-os/os/system/tests/test_power.py": "84730ac252ce8377d3ffe0857eae2eb545806464e9ee13cd4d1352da142f4e79",
+        "systems/rock-star-os/os/system/power_service.py": "280f138ce5dab54384a92909501c127aecc9e2f747b9d528c73635d9a33f3865",
+        "systems/rock-star-os/os/system/powerctl.py": "6d974b7843760e48ee393dfa4848e7f2dcd6c9ae5a99b05f2fb86d89db5cec81",
+        "systems/rock-star-os/os/platform/install-target.sh": "38cc7d58fedb980f4a0e99615fd33c819e235e85551d3c5f4d17d3f0dbeebd11",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S45rocksystem": "f2253397a553611ef607024095b2bb15d2304107a3424d411f3454cbdfed9ad6",
+        "scripts/test-native.py": "868d676d2f563af1241f40a5a3e81a7ec9839d93b2578741eb7c07aa34e91515",
+        "systems/rock-star-os/tests/native_partition.py": "4a10c19dfd9b81021e183b96d236a831b7ffc31007ae00742d9bf236277fa0d0",
+        ".github/workflows/native-os.yml": "6e86889463c3b5fc9abd282b17b81752882c603de269d05a4238977884137f82",
+        "systems/rock-star-os/tests/test_mcp_broker_core.py": "e422a7b4119eae694d0f6b67ca92bc3e4341ba656cd872033f32394d0ce28ade",
+        "systems/rock-star-os/os/mcp_broker/broker.py": "c1332d6c6f8c0594dee102969f13ec2ba9be5c337541d9631a0d331a5dbf4cfa",
+        "systems/rock-star-os/os/mcp_broker/fixture.py": "f113ad25d83dc7a343de4d8350a231545d98d035afbee23a58ce92fa569457a4"
+      },
+      "hostChecks": {
+        "command": "PYTHONPATH=systems/rock-star-os/src python3 -B -W error::ResourceWarning work/spider-ci/cycle-12-broker-test-check.py",
+        "existingTestCommand": "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_mcp_broker_core.BrokerTests.test_database_and_lock_private_single_owner -v",
+        "underlyingTest": "BrokerTests.test_database_and_lock_private_single_owner",
+        "host": "Darwin",
+        "python": "3.14.7",
+        "callerNonRoot": true,
+        "testsRun": 1,
+        "passed": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "success": true,
+        "durationSeconds": 0.044,
+        "observations": [
+          {
+            "temporaryParentMode": "0o700",
+            "temporaryParentOwnedByCaller": true,
+            "temporaryParentOutsideRepository": true,
+            "brokerDirectoryMode": "0o700",
+            "databaseInitialMode": "0o600",
+            "databaseRestoredMode": "0o600",
+            "fixtureWireRequests": 0,
+            "temporaryParentRemoved": true
+          }
+        ],
+        "sandboxMode": "escalated_host_non_root_for_disposable_loopback_fixture",
+        "observerScriptSha256": "58dbd5a90af3fa74607df8ce28e272f8b8a120e36ce1c343111e867804da34f6",
+        "setupAttemptsNotCountedAsPass": [
+          "missing native src import path",
+          "sandbox loopback setup denial"
+        ]
+      },
+      "localFullVerify": {
+        "status": "incomplete",
+        "exitCode": 1,
+        "failure": "ai package missing at llm:architecture:check",
+        "laterGates": "not run locally",
+        "logSha256": "bcebf1c2bca7c9447b5218a2fcb5dc2413e4ef5a32b552407b115186633987d6"
+      },
+      "limitations": [
+        "Power source review is not live Linux root/peer-UID validation.",
+        "No real secret, actual service path or power command was used.",
+        "The PowerTest decorator requires Linux root but does not create or enforce an isolated VM.",
+        "No finding is dismissed, excluded or treated as resolved merely because it belongs to a fixture."
+      ],
+      "remaining": {
+        "codeql": 38,
+        "dependabot": 18,
+        "historyCandidates": 2367,
+        "dependencyPrs": [
+          53,
+          54,
+          55,
+          56
+        ]
+      },
+      "boundaries": {
+        "runtimeChanged": false,
+        "testSourceChanged": false,
+        "scannerPolicyChanged": false,
+        "mainMerged": false,
+        "guestBoot": "NOT_RUN",
+        "physicalDevice": "NOT_RUN",
+        "continuous24Hours": "NOT_RUN"
+      },
+      "publicationEvidence": "After push, same-SHA CI and per-ID same-ref alert state will be recorded in PR52 and the external SPIDER artifact.",
+      "changedInputInvalidatesReview": true,
       "projectDatabaseDesignChecks": "passed"
     }
   ],

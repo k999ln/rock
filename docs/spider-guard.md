@@ -92,6 +92,12 @@ main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Researc
 
 旧sourceの合成5ケースで入口の不備を再現し、修正後のhost18試験（新規7を含む）が成功。誤起動防止の修正でありroot制御からの隔離や#13〜#16の警告解消ではない。正規の使い方・失敗時の復旧は[OS検証](native-os-validation.md#platform検証guestの起動条件sys152026-10-03)、source hash・独立review・同一SHA公開後検査は[改善記録](evidence/spider-improvement-cycle.json)に保存する。実guest／VM／実機の変更・起動は行わない。
 
+### 第12cycle: private fixtureの権限拒否試験
+
+基準 `9e12c12`で #24〜#28 を調査した。Brokerの0644は親0700の一時DBで不正modeを拒否する試験であり、既存host1件が成功。親のcaller所有・repo外配置、DBの0600復帰、fixtureへのHTTP要求0、通常cleanupを確認した。Powerの0755／0666／0777は使い捨て領域でkernel UID拒否と偽serverへの送信前拒否を試す設定で、実power命令は代替callbackに置換し、testsを製品へ同梱しない。
+
+runtime不備は確証できず、修正0・test変更0・dismiss0。PowerTestはLinux rootを要求するがVM隔離自体は作らず、専用の使い捨て環境でのみ実行する。今回の実UID試験は未実行で、現在の通常native CIもこのos/system/tests suiteを含まない。cleanupの強制終了・例外時の限界を保持し、sourceが変われば再確認する。[第12cycleの範囲とhash](evidence/spider-improvement-cycle.json)に記録する。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。
