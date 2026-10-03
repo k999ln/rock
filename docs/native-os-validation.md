@@ -1,5 +1,13 @@
 # Native OSのRock統合検証
 
+## Gameの不確定応答からの復旧試験（SYS15、2026-10-03）
+
+`test_game_exchange_deadlines.py`はprivate fixtureの合成Game／Walletとloopback TLSを使うsource回帰である。`ExchangeWorker.once()`のTrueはclaimを処理した意味で、remote適用やNOT_FOUNDの証拠ではない。次へ進む前に永続claimのoperation／resultを確認し、保留金額・付与数・journal件数を別に照合する。
+
+停滞中も別GameとATMが進む既存試験は、解除後の最初の要求を意図的に未適用で終える。これでNOT_FOUND→元のapplyという前提を制御し、3秒の期限・全時間上限・既存残高照合を保持する。別の回帰では一度のstatus失敗からUNKNOWN→NOT_FOUND→TERMINAL、さらに結果不明後に元要求が遅れて適用される場合のstatus→TERMINALを確認する。未確認の結果で保留を解除せず、元要求だけを用い、二重付与しない。
+
+遅延適用は本物のauthority処理へ元要求を後から届ける制御fixtureで、過去CIの通信時系列を再現したとは扱わない。追加のretry loopやdeadline緩和はせず、予期しない状態は失敗として残す。ROCKの検証器改善でありproductionの権限・金額・timeout・Provider契約は変更しない。guest boot・実機・実資金・24時間運用は対象外である。
+
 ## Platform検証guestの起動条件（SYS15、2026-10-03）
 
 `systems/rock-star-os/os/verify-platform.py`を、検証用artifactを用意したLinux環境から実行する既存入口を維持する。このhost入口は新規userdata、networkなし、読み取り専用rootfsで検証guestを起動し、kernel command lineへ `rock.platform.verify=1` を指定する。`--scope game-isolation`だけが追加scopeを指定する。既存imageの受入を新sourceへ流用しない。

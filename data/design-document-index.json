@@ -122,6 +122,17 @@
     },
     {
       "id": "linux_qemu",
+      "gameRecoveryFixtureValidation": {
+        "document": "docs/native-os-validation.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "regressions": "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+        "purpose": "verify unresolved transport outcomes through durable claim state and exact single grant",
+        "input": "private synthetic Game/Wallet, one controlled transport error or delayed original apply",
+        "success": "verified status/terminal evidence, exact hold release and one journal entry; once True alone is insufficient",
+        "failure": "unexpected claim outcome fails; no extra retry loop or deadline widening",
+        "recovery": "next bounded status reconciles the original signed result or retains the hold",
+        "scope": "test fixture behavior only; production deadlines and authorization unchanged; no guest or real funds"
+      },
       "platformGuestVerificationEntry": {
         "document": "docs/native-os-validation.md",
         "completeDesign": "docs/rockstaros-complete-design.md",

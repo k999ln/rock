@@ -1923,6 +1923,269 @@
       },
       "publicationEvidence": "After push, same-SHA CI and per-ID same-ref alert state will be recorded in PR52 and the external SPIDER artifact.",
       "changedInputInvalidatesReview": true,
+      "projectDatabaseDesignChecks": "passed",
+      "publicationReadback": {
+        "commit": "813f8ee075fb1b7c16e1d7d1be2ee6f7a3749303",
+        "outcome": "docs-only triage; CodeQL states unchanged; native first failure then same-SHA retry success",
+        "fullVerify": {
+          "run": 37125209992,
+          "status": "success"
+        },
+        "native": {
+          "run": 37125210005,
+          "attempt1": "failure",
+          "attempt2": "success",
+          "artifact": 11275580897,
+          "pythonTestExecutions": 1787,
+          "sourceInventoryEntries": 720,
+          "correctedInitialFailure": {
+            "classification": "FAIL",
+            "test": "test_game_exchange_deadlines.IndependentGameDeadlines.test_actual_stalled_tls_keeps_hold_while_other_game_and_atm_finish",
+            "source": "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+            "line": 50,
+            "assertion": "self.assertEqual(self.f.balances()['GAME_HOLD'],103)",
+            "exceptionMessage": "AssertionError: 0 != 103",
+            "actual": 0,
+            "expected": 103,
+            "meaning": "The synthetic GAME_HOLD balance was zero at the assertion expecting 103.",
+            "grantBalanceAssertionLine": 52,
+            "grantBalanceObservedAtLine52": null
+          },
+          "historicalNarrativeCorrection": "Earlier grant-balance interpretation was a substring parser error; cycle13 records exact original log evidence."
+        },
+        "codeql": {
+          "analysisIds": [
+            1885967673,
+            1885968261
+          ],
+          "sameRefComparedIds": 48,
+          "stateRuleLocationChanges": 0,
+          "open": 38,
+          "fixed": 10
+        },
+        "history": {
+          "run": 37125209964,
+          "scanCompleted": true,
+          "reachableCommits": 669,
+          "candidateMatches": 2367,
+          "conclusion": "failure"
+        },
+        "dependabot": 18,
+        "mainMerged": false
+      }
+    },
+    {
+      "cycle": 13,
+      "baselineCommit": "813f8ee075fb1b7c16e1d7d1be2ee6f7a3749303",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "host validation passed; same-SHA publication pending",
+      "repairCount": 0,
+      "validationImprovementCount": 1,
+      "runtimeVulnerabilityFixed": false,
+      "reviewedAlerts": [],
+      "focusedFinding": "cycle12 native attempt1 Game recovery test failure",
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabot": 18,
+        "historyCandidates": 2367
+      },
+      "historicalFailureCorrection": {
+        "runId": 37125210005,
+        "attempt": 1,
+        "artifact": {
+          "id": 11275045373,
+          "name": "native-source-part-main-1-attempt-1",
+          "sha256": "218da38542cf4c362aa76fa307c582c4de2f5b88005098865c62a03678a7d341",
+          "reportSha256": "a7f409da10b8cc9d4f3f931e677a395f37560c8c6701e12b554db2ff4c52b873",
+          "testsLogSha256": "aa7729bcd1a0f0a565292fec87ca118b5510c073f77559bcf8eb614f87d660b6",
+          "archiveReportAndLogHashesMatchPriorRecord": true,
+          "totalFailureHeaders": 1
+        },
+        "originalRecord": {
+          "path": "work/spider-ci/cycle-12-native-failure.json",
+          "sha256": "e335078b2aae17ee86791738f1d170dd92d3ab4c494b973a828cfa3ebf5494cd",
+          "preservedUnmodified": true
+        },
+        "correctedFailure": {
+          "classification": "FAIL",
+          "test": "test_game_exchange_deadlines.IndependentGameDeadlines.test_actual_stalled_tls_keeps_hold_while_other_game_and_atm_finish",
+          "source": "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+          "line": 50,
+          "assertion": "self.assertEqual(self.f.balances()['GAME_HOLD'],103)",
+          "exceptionMessage": "AssertionError: 0 != 103",
+          "actual": 0,
+          "expected": 103,
+          "meaning": "The synthetic GAME_HOLD balance was zero at the assertion expecting 103.",
+          "grantBalanceAssertionLine": 52,
+          "grantBalanceObservedAtLine52": null
+        },
+        "mismatchCause": {
+          "type": "diagnostic_parser_substring_false_match",
+          "oldPredicate": "\"AssertionError: 0 != 10\" in tail",
+          "oldPredicateReturnsTrueForActualMessage": true,
+          "why": "The expected string ending in 10 is a prefix of the actual line ending in 103.",
+          "incorrectPriorFields": [
+            "failures[0].syntheticAssertionMatches.grantBalanceStillZeroInsteadOfTen",
+            "fixedFailureInterpretation"
+          ],
+          "traceLineAndMethodWereCorrect": true,
+          "sourceTransformationNeededToExplainMismatch": false
+        },
+        "parserCorrection": {
+          "path": "work/spider-ci/cycle-12-native-failure.py",
+          "sha256": "98916e619dcf3db51354989ceede552b8cf3531cb273a86f66780d97bf1c7da9",
+          "originalUtilityCopy": "work/spider-ci/cycle-12-native-failure.before-exact-match.py",
+          "method": "re.fullmatch numeric AssertionError lines, then exact set membership; output goes to a separate create-only corrected record.",
+          "actualMessageClassification": {
+            "grantBalanceStillZeroInsteadOfTen": false,
+            "holdBalanceZeroInsteadOf103": true,
+            "holdStill103InsteadOfZero": false
+          },
+          "tests": {
+            "command": "python3 -B work/spider-ci/cycle-13-failure-parser-test.py -v",
+            "passed": 4,
+            "failed": 0,
+            "scope": "Synthetic 0 != 103 and 0 != 10 distinction, prefix/suffix/longer-number rejection, multiple exact messages."
+          }
+        }
+      },
+      "testChange": {
+        "cause": "Stalled fixture delegated the original apply after client timeout; a still-valid server deadline permits late application, so unconditional NOT_FOUND/hold103 was not guaranteed. once True does not prove remote outcome.",
+        "change": "make the existing unapplied stall explicitly fail without dispatch; assert durable recovery outcomes; add two deterministic UNKNOWN and late-apply recovery regressions",
+        "preservation": {
+          "allOriginalTimingAndBalanceAssertionsRetained": true,
+          "originalWaitAndJoinCallsUnchanged": true,
+          "productionSourceUnchanged": true,
+          "hiddenRetryLoopsAdded": false
+        },
+        "originalCIWireTimeline": "not captured; exact historical sequence is not established solely by the assertion",
+        "productionDeadlinesSeconds": 3,
+        "productionChanged": false
+      },
+      "baselineSourceSha256": {
+        "systems/rock-star-os/tests/test_game_exchange_deadlines.py": "7e8e6ab2c24c3619d123d2fc572dbf473e7e2efaf32a6de203f14b90ad662489",
+        "systems/rock-star-os/tests/test_game_reference_sdk.py": "ffce67467703b0fc34c96c21066cc7b2cf70a92d2385c853ea60efa21591c796",
+        "systems/rock-star-os/tests/test_game_exchange_tls.py": "b6c4332ad6fbaf4457c491b4a245b1ac3315c913be125d398e2f993dea1a20e5",
+        "systems/rock-star-os/tests/test_game_connections_tls.py": "818d9228e87b0f79b1181ea31679fa8dbd01ef6f759787b7aeb52a5bf4c6c324",
+        "systems/rock-star-os/os/game_exchange/exchange_worker.py": "5d7e3c4bddfa16a2d800bf1b6e75e02068a2640605abaa5dd68a9b3c4e253410",
+        "systems/rock-star-os/os/game_exchange/http.py": "853676f419d23ac3067d9019f5f4b79d86052c478e7b4577bcce89b5b184576b",
+        "systems/rock-star-os/os/game_exchange/exchange_authority.py": "8f982cd7507d5bb8d622eca7ab5c513913b7e27078f6ee9550755db58463a56b",
+        "systems/rock-star-os/os/game_exchange/exchange_server.py": "43e82e6d9d44b540faf6b79f483fe5d88761de61f902e096b9fd9cddb85c6275",
+        "systems/rock-star-os/os/wallet_backend/server.py": "53cf36132d5d32eed5e5fc3f220bf25bebd45246a0c971046e3b4d4eaef3c527"
+      },
+      "testedSourceSha256": {
+        "systems/rock-star-os/tests/test_game_exchange_deadlines.py": "330594bad9cbad652b643748ffed6e92ae890941ffee23f0e392d2d5df3ea72f",
+        "systems/rock-star-os/tests/test_game_exchange_tls.py": "b6c4332ad6fbaf4457c491b4a245b1ac3315c913be125d398e2f993dea1a20e5",
+        "systems/rock-star-os/os/game_exchange/exchange_worker.py": "5d7e3c4bddfa16a2d800bf1b6e75e02068a2640605abaa5dd68a9b3c4e253410",
+        "systems/rock-star-os/os/game_exchange/exchange_authority.py": "8f982cd7507d5bb8d622eca7ab5c513913b7e27078f6ee9550755db58463a56b",
+        "systems/rock-star-os/os/game_exchange/http.py": "853676f419d23ac3067d9019f5f4b79d86052c478e7b4577bcce89b5b184576b",
+        "systems/rock-star-os/os/game_exchange/exchange_server.py": "43e82e6d9d44b540faf6b79f483fe5d88761de61f902e096b9fd9cddb85c6275"
+      },
+      "hostChecks": {
+        "command": "python3 -B -W error::ResourceWarning work/spider-ci/cycle-13-game-recovery-check.py",
+        "host": "Darwin",
+        "python": "3.14.7",
+        "scope": "Non-root synthetic loopback TLS, temporary SQLite; no external provider/guest/root/device.",
+        "testSelections": [
+          "test_game_exchange_deadlines",
+          "test_game_exchange_tls.ExchangeTLS.test_game_commit_lost_reply_reconciles_real_tls_receipt_once",
+          "test_game_exchange_tls.ExchangeTLS.test_unknown_not_found_keeps_hold_then_signed_reject_prevents_late_apply"
+        ],
+        "testsRun": 9,
+        "passed": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "success": true,
+        "durationSeconds": 13.383,
+        "failureMetadata": []
+      },
+      "baselineUnknownProbe": {
+        "passed": true,
+        "claimResults": [
+          "apply/null",
+          "status/UNKNOWN",
+          "status/NOT_FOUND",
+          "apply/TERMINAL"
+        ],
+        "holds": [
+          103,
+          103,
+          103,
+          0
+        ],
+        "grants": [
+          0,
+          0,
+          0,
+          10
+        ],
+        "historicalAttribution": false
+      },
+      "independentReview": {
+        "verdict": "no_actionable_findings",
+        "findings": [],
+        "sourceSha256": {
+          "systems/rock-star-os/tests/test_game_exchange_deadlines.py": "330594bad9cbad652b643748ffed6e92ae890941ffee23f0e392d2d5df3ea72f",
+          "systems/rock-star-os/tests/test_game_reference_sdk.py": "ffce67467703b0fc34c96c21066cc7b2cf70a92d2385c853ea60efa21591c796",
+          "systems/rock-star-os/tests/test_game_exchange_tls.py": "b6c4332ad6fbaf4457c491b4a245b1ac3315c913be125d398e2f993dea1a20e5",
+          "systems/rock-star-os/tests/test_game_connections_tls.py": "818d9228e87b0f79b1181ea31679fa8dbd01ef6f759787b7aeb52a5bf4c6c324",
+          "systems/rock-star-os/os/game_exchange/exchange_worker.py": "5d7e3c4bddfa16a2d800bf1b6e75e02068a2640605abaa5dd68a9b3c4e253410",
+          "systems/rock-star-os/os/game_exchange/http.py": "853676f419d23ac3067d9019f5f4b79d86052c478e7b4577bcce89b5b184576b",
+          "systems/rock-star-os/os/game_exchange/exchange_authority.py": "8f982cd7507d5bb8d622eca7ab5c513913b7e27078f6ee9550755db58463a56b",
+          "systems/rock-star-os/os/game_exchange/exchange_server.py": "43e82e6d9d44b540faf6b79f483fe5d88761de61f902e096b9fd9cddb85c6275",
+          "systems/rock-star-os/os/wallet_backend/server.py": "53cf36132d5d32eed5e5fc3f220bf25bebd45246a0c971046e3b4d4eaef3c527",
+          "systems/rock-star-os/src/blackberryrock/deadline.py": "5b94df591892c148ca0a39a64a4cae878183e760442ff16d0a41cfe718242716"
+        },
+        "preservation": {
+          "allOriginalStallAssertionsRetained": true,
+          "originalStallAssertionCount": 21,
+          "originalWaitJoinCallsUnchanged": true,
+          "waitJoinCallCount": 5,
+          "otherOriginalMethodAstUnchangedCount": 6,
+          "productionAndFixtureDependenciesUnchanged": true,
+          "hiddenRetryLoopsAdded": false,
+          "deadlineWidening": false,
+          "assertionsRemoved": false
+        },
+        "independentRuntimeTestsRun": 0
+      },
+      "localFullVerify": {
+        "status": "incomplete",
+        "exitCode": 1,
+        "failure": "ai package missing at llm:architecture:check",
+        "laterGates": "not run locally",
+        "logSha256": "b3cc593c9c81e46d5a04ab0bde497c3796b78ca1bd0b2484ecc5dff18e9889b9"
+      },
+      "remaining": {
+        "codeql": 38,
+        "dependabot": 18,
+        "historyCandidates": 2367,
+        "dependencyPrs": [
+          53,
+          54,
+          55,
+          56
+        ]
+      },
+      "limits": [
+        "Synthetic non-root temporary SQLite and loopback TLS; no guest/device/real funds.",
+        "Controlled late-apply ordering is not a wire-level replay of historical CI.",
+        "The old record remains preserved; its grantBalanceStillZeroInsteadOfTen classification is superseded by correctedFailure.",
+        "Only test behavior and work-only diagnostic extraction changed; no production timeout/auth/ledger change."
+      ],
+      "boundaries": {
+        "runtimeChanged": false,
+        "testSourceChanged": true,
+        "scannerPolicyChanged": false,
+        "mainMerged": false,
+        "guestBoot": "NOT_RUN",
+        "physicalDevice": "NOT_RUN",
+        "continuous24Hours": "NOT_RUN"
+      },
+      "publicationEvidence": "Post-push exact-SHA CI and per-ID same-ref alert comparison recorded in PR52 and external SPIDER artifact.",
       "projectDatabaseDesignChecks": "passed"
     }
   ],

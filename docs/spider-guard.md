@@ -98,6 +98,12 @@ main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Researc
 
 runtime不備は確証できず、修正0・test変更0・dismiss0。PowerTestはLinux rootを要求するがVM隔離自体は作らず、専用の使い捨て環境でのみ実行する。今回の実UID試験は未実行で、現在の通常native CIもこのos/system/tests suiteを含まない。cleanupの強制終了・例外時の限界を保持し、sourceが変われば再確認する。[第12cycleの範囲とhash](evidence/spider-improvement-cycle.json)に記録する。
 
+### 第13cycle: Game復旧fixtureと前回失敗記録の訂正
+
+前回 `813f8ee` のnative初回失敗を元artifact／log hashで再確認した。実際は50行の保留残高 `0 != 103` であり、作業用抽出器が文字列 `0 != 10` を部分一致させたため付与残高の未反映と誤分類していた。旧記録を保持して訂正を追記する。行番号やsource変換が原因ではない。
+
+workerの試行完了はremote適用成功を意味せず、元要求がclientの期限後に適用されると、次のstatusで保留0になる合法経路がある。未適用を前提にした既存fixtureは解除後に明示失敗させ、すべての時間・残高assertionを維持する。別回帰でUNKNOWNからの復旧と遅延適用後のterminal照合・一回だけの付与を確認する。productionの脆弱性修正とは扱わず、検証fixtureと診断の改善として[第13cycleの証拠](evidence/spider-improvement-cycle.json)へ記録する。過去CIの通信履歴は未取得で、合法経路との整合だけから完全な原因特定を宣言しない。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。
