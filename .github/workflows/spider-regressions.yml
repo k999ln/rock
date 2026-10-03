@@ -41,8 +41,6 @@ jobs:
       CI: 'true'
       WRANGLER_SEND_METRICS: 'false'
       WRANGLER_WRITE_LOGS: 'false'
-      WRANGLER_LOG_PATH: ${{ runner.temp }}/spider-web-logs
-      MINIFLARE_REGISTRY_PATH: ${{ runner.temp }}/spider-web-registry
       SPIDER_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -59,6 +57,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          export WRANGLER_LOG_PATH="$RUNNER_TEMP/spider-web-logs"
+          export MINIFLARE_REGISTRY_PATH="$RUNNER_TEMP/spider-web-registry"
           node --input-type=module <<'NODE'
           import { createHash } from 'node:crypto';
           import { execFileSync } from 'node:child_process';
@@ -85,6 +85,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          export WRANGLER_LOG_PATH="$RUNNER_TEMP/spider-web-logs"
+          export MINIFLARE_REGISTRY_PATH="$RUNNER_TEMP/spider-web-registry"
           wrangler=(node node_modules/wrangler/bin/wrangler.js)
           state="$RUNNER_TEMP/spider-web-state"
           "${wrangler[@]}" d1 migrations apply site-creator-d1 --local \
