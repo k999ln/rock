@@ -338,7 +338,63 @@
         "public/toolkits/sky-mcp-connector.zip": "805a83d29c5c6942303661038e4f4bc08b8d89a58eab97f786834013a4c8a5f9"
       },
       "githubValidation": {
-        "status": "pending_same_commit"
+        "status": "verified_repair",
+        "commit": "a9b10fbf999d4092121cf845b24ac035a93f94d3",
+        "codeql": {
+          "pushRun": 37092928900,
+          "pullRequestRun": 37092932775,
+          "conclusion": "success",
+          "analysisIds": [
+            1884834584,
+            1884833462
+          ],
+          "beforeOpen": 42,
+          "afterOpen": 38,
+          "fixedTargetAlerts": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "previousFixedAlerts": [
+            38,
+            42,
+            31,
+            47,
+            29,
+            48
+          ],
+          "newAlertIdsAfter48": 0,
+          "individualBranchInstances": "fixed",
+          "note": "Fresh analyses match the validated commit. Fixed finding instances retain their last-observed baseline SHA."
+        },
+        "fullVerify": {
+          "run": 37092932788,
+          "conclusion": "success",
+          "mainTests": {
+            "passed": 546,
+            "skipped": 1,
+            "failed": 0
+          },
+          "lint": {
+            "warnings": 0,
+            "errors": 0
+          },
+          "typecheck": "success",
+          "productionBuild": "success",
+          "webAssetsAndApi": "success",
+          "lockedDependencies": "npm ci"
+        },
+        "regressionAndProductionMeasurement": {
+          "run": 37092932773,
+          "conclusion": "success",
+          "deliveryBoundaryPythonPassed": 14,
+          "mrMcpAdapterNodePassed": 18,
+          "bothDistributionPackagesMatchSource": true,
+          "routes": 8,
+          "universalHeaders": 8,
+          "servedWorkerMatchesSource": true
+        }
       },
       "remaining": {
         "existingDependabotPullRequests": [
@@ -347,7 +403,25 @@
           55,
           56
         ],
-        "historyCandidates": "unresolved; values not collected"
+        "historyCandidates": "unresolved; values not collected",
+        "codeqlOnTargetBranch": 38,
+        "dependabotOnDefaultBranch": 18,
+        "historyScan": {
+          "schemaVersion": 1,
+          "recordedAt": "2026-10-03T03:25:46.897420+00:00",
+          "headSHA": "a9b10fbf999d4092121cf845b24ac035a93f94d3",
+          "runID": 37092932783,
+          "artifactID": 11263631870,
+          "conclusion": "failure",
+          "scanCompleted": true,
+          "reachableCommits": 659,
+          "candidateMatches": 2362,
+          "scannerStatus": "findings",
+          "runURL": "https://github.com/k999ln/rock/actions/runs/37092932783",
+          "artifactName": "spider-security-report-37092932783",
+          "artifactSha256": "48babcba16fa10693aff0ab70b1d8340d59c102b0d03e0caa93048ac1f793a33",
+          "reportSha256": "0b337aaf475cfb337b24e462eb7fe804002bf8a4891fe144c5f58d4c68c953f2"
+        }
       },
       "boundaries": {
         "trusted": "workspace ancestors and same UID; no multi-file atomic snapshot guarantee",
@@ -357,7 +431,7 @@
         "secretsRotated": false
       },
       "localStorage": "Capacity exhaustion interrupted edits; atomic writes preserved originals. Byte-verified copy-on-write deduplication preserved file contents and paths; no dependency installation attempted.",
-      "status": "implemented_waiting_for_same_commit_validation",
+      "status": "verified_repair_with_unresolved_findings",
       "localFullVerify": {
         "status": "incomplete",
         "passedThrough": "project/repository/version/schema/database/release/signing/baseline/avocado/design/composition checks",
@@ -377,7 +451,9 @@
         "boundaryPythonPassed": 14,
         "mrMcpAdapterNodePassed": 18,
         "productionWebMeasurement": "success"
-      }
+      },
+      "repairCommit": "6b7d1486b6f7abc4859b1ff6e946ca8293c2dd9f",
+      "validatedCommit": "a9b10fbf999d4092121cf845b24ac035a93f94d3"
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."
