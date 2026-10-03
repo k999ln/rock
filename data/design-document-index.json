@@ -141,6 +141,15 @@
     {
       "id": "mcp_and_providers",
       "coverage": "DETAILED_REAL_PROVIDER_GAPS",
+      "localDescriptorSecurity": {
+        "document": "docs/sky-mcp-connector.md",
+        "implementation": "toolkits/sky-mcp-connector/local-descriptor.mjs",
+        "sameHandleValidationAndRead": true,
+        "maximumBytes": 4096,
+        "rejectSymlinksAndNonRegularFiles": true,
+        "parentDirectoryTrust": "existing owner-local boundary",
+        "regressions": "tests/mcp-local-descriptor.test.mjs"
+      },
       "implementation": ["scripts/sky-local-runtime.mjs", "lib/sky-local-runtime.ts", "tests/sky-local-runtime.test.mjs", "components/delivery-runner.tsx"],
       "documents": [
         "docs/sky-mcp-connector.md",

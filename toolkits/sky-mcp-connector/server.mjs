@@ -16,6 +16,7 @@ import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { assertSafeOutbound } from '../spider-guard/detector.mjs';
+import { readPrivateLocalDescriptor } from './local-descriptor.mjs';
 
 export const PROTOCOL_VERSIONS = [
   '2025-11-25',
@@ -263,9 +264,7 @@ async function discoverLocalTools(directory) {
   for (const file of files) {
     try {
       const path = join(directory, file);
-      const info = await lstat(path);
-      if (!info.isFile() || (info.mode & 0o077) || info.size > 4_096) continue;
-      const spec = validateLocalDescriptor(JSON.parse(await readFile(path, 'utf8')), file);
+      const spec = validateLocalDescriptor(await readPrivateLocalDescriptor(path), file);
       process.kill(spec.pid, 0);
       specs.push(spec);
     } catch { /* A damaged descriptor cannot become a connection. */ }
