@@ -56,7 +56,11 @@ GitHubのcommit `a13c3f5599aa5bec61f0cf9c9391d9a6a8adffbd`に対する[回帰job
 
 第2cycleは`65b4601`の44件／Dependabot 18件を基準に、CodeQL #38のPC Tool descriptor読取競合を修正する。`a4217bb`で一度だけ開いたhandleに検証と読取を結び、4 KiB上限を読取中にも適用した。symlink／FIFO／権限・所有者不一致を拒否し、成功・失敗ともhandleを閉じる。defaultのowner専用directoryと親は信頼するローカル境界であり、遠隔攻撃の成立や同一UIDへの完全防御を主張しない。必要なopen flagがない環境では自動検出を拒否する。
 
-main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Research／Jev transportと、SPIDERの送信前拒否・redirect拒否・秘密値を含まないエラーを両方保持した。配布ZIP2種を再生成した。同期後のhost回帰はConnector／SDK／guard 28合格・未対応OS専用1skip、Fashion 25合格、Research／Jev入力・remote guard 19合格。独立レビューは追加指摘なし。全体verifyは既存baselineを含む先行gateを通過後、ローカル未導入の`ai`で停止し、依存のある型検査・SDK・buildはGitHubへ引き継ぐ。警告解消は同一SHAの再解析待ちで、取得件数だけから成功としない。
+main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Research／Jev transportと、SPIDERの送信前拒否・redirect拒否・秘密値を含まないエラーを両方保持した。配布ZIP2種を再生成した。同期後のhost回帰はConnector／SDK／guard 28合格・未対応OS専用1skip、Fashion 25合格、Research／Jev入力・remote guard 19合格。独立レビューは追加指摘なし。
+
+`d1c3e52`の[CodeQL](https://github.com/k999ln/rock/actions/runs/37088933855)と[回帰・実production build計測](https://github.com/k999ln/rock/actions/runs/37088933845)が成功した。同じbranchの#38は個別instanceでfixed、既存#42／#31／#47もfixedを維持し、新規警告なし。openは44→43件。最新解析のSHAと結果を照合し、findingが保持する最終検出SHAと区別した。`202b5ea`で案内ガイドを補完した後、GitHubの実依存で型検査まで成功したが、全体verifyは追加script／testのlint 47件で停止したため、規約に沿って修正し再検査する。ローカルの既存依存を参照した全単体試験は518合格・1skip・5失敗で、失敗5つはworkerd native binary不足。GitHubのクリーン環境の結果を完了条件にする。
+
+同じ`202b5ea`の[履歴検査](https://github.com/k999ln/rock/actions/runs/37089343085)は654 commitを完走し、2,362候補一致による失敗を維持した。これは重複を含む履歴のpattern一致数で、秘密の種類数や有効性の確認結果ではない。Dependabot 18件と既存修正PR #53〜#56も未解決として残す。main統合、required check設定、OS同一image／Pixel／24時間運転は未実施。
 
 ## 自分のコードを貼って検査する
 

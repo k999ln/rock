@@ -7,7 +7,7 @@ import { spawnSync } from 'node:child_process';
 
 const workflow = readFileSync(new URL('../.github/workflows/spider-codeql.yml', import.meta.url), 'utf8');
 
-test('SPIDER scans both requested languages on branch pushes, PRs, daily and manual runs', () => {
+void test('SPIDER scans both requested languages on branch pushes, PRs, daily and manual runs', () => {
   assert.match(workflow, /^name: SPIDER CodeQL security$/m);
   assert.match(workflow, /^  push:\n    branches: \[main, codex\/spider-guard\]$/m);
   assert.match(workflow, /^  pull_request:\s*$/m);
@@ -18,7 +18,7 @@ test('SPIDER scans both requested languages on branch pushes, PRs, daily and man
   assert.doesNotMatch(workflow, /pull_request_target|paths-ignore|continue-on-error/);
 });
 
-test('scan job has minimal permissions and only pinned official actions', () => {
+void test('scan job has minimal permissions and only pinned official actions', () => {
   assert.match(workflow, /^permissions: \{\}$/m);
   const permissions = workflow.match(/^    permissions:\n((?:      [\w-]+: [\w]+\n)+)/m)?.[1];
   assert.equal(permissions, '      contents: read\n      security-events: write\n');
@@ -32,7 +32,7 @@ test('scan job has minimal permissions and only pinned official actions', () => 
   assert.doesNotMatch(workflow, /^\s+(?:ref|token):|secrets\./m);
 });
 
-test('analysis has no project execution and waits for actual result processing', () => {
+void test('analysis has no project execution and waits for actual result processing', () => {
   assert.match(workflow, /^          build-mode: none$/m);
   assert.match(workflow, /^          queries: security-extended$/m);
   assert.match(workflow, /^          upload: always$/m);
@@ -44,7 +44,7 @@ test('analysis has no project execution and waits for actual result processing',
   assert.match(workflow, /^        if: always\(\)$/m);
 });
 
-test('summary distinguishes completed analysis from failed, skipped or cancelled runs', () => {
+void test('summary distinguishes completed analysis from failed, skipped or cancelled runs', () => {
   const script = workflow.split('        run: |\n')[1].split('\n').map(line => line.replace(/^          /,'')).join('\n');
   const directory = mkdtempSync(join(tmpdir(),'spider-codeql-summary-'));
   try {

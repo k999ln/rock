@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createContext, Script } from 'node:vm';
 
-test('standalone inspector bundles the real detector in a data-only worker', async () => {
+void test('standalone inspector bundles the real detector in a data-only worker', async () => {
   const directory = await mkdtemp(resolve(tmpdir(), 'spider-artifact-'));
   try {
     const output = resolve(directory, 'SPIDER.html');

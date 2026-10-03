@@ -158,14 +158,14 @@ void test('nonregular directory and FIFO descriptors are rejected without a bloc
   await exec('mkfifo', ['-m', '600', fifo]);
   // A separate process makes a missing NONBLOCK regression fail with a bounded
   // timeout, rather than leave the test runner stuck in a filesystem open.
-  const module = new URL('../toolkits/sky-mcp-connector/local-descriptor.mjs', import.meta.url).href;
+  const descriptorModuleUrl = new URL('../toolkits/sky-mcp-connector/local-descriptor.mjs', import.meta.url).href;
   const result = await exec(process.execPath, ['--input-type=module', '-e', `
     const { readPrivateLocalDescriptor } = await import(process.argv[1]);
     try { await readPrivateLocalDescriptor(process.argv[2]); process.exitCode = 1; }
     catch (error) {
       if (error.message !== 'invalid_local_descriptor') process.exitCode = 2;
     }
-  `, module, fifo], { timeout: 5_000 });
+  `, descriptorModuleUrl, fifo], { timeout: 5_000 });
   assert.equal(result.stdout, '');
   assert.equal(result.stderr, '');
 });

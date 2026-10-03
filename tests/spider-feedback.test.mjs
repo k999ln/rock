@@ -14,7 +14,7 @@ const dependency = (number = 1, overrides = {}) => ({ number, state: 'open', rul
 
 function fixture({ alerts = [], dependencies = [], runs, head = HEAD, requestHook } = {}) {
   const calls = [];
-  return { calls, request(endpoint, projection) {
+  const request = (endpoint, projection) => {
     calls.push({ endpoint, projection });
     const override = requestHook?.(endpoint, projection, calls);
     if (override !== undefined) return override;
@@ -23,10 +23,11 @@ function fixture({ alerts = [], dependencies = [], runs, head = HEAD, requestHoo
     if (endpoint.includes('/dependabot/')) return dependencies;
     if (endpoint.includes('/actions/workflows/')) return runs ?? { total: 1, runs: [{ id: 123, status: 'completed', conclusion: 'success', head, branch: REF }] };
     throw new Error('unexpected endpoint');
-  } };
+  };
+  return { calls, request };
 }
 
-test('collects bounded metadata, keeps stable alert IDs and scopes current-head evidence', () => {
+void test('collects bounded metadata, keeps stable alert IDs and scopes current-head evidence', () => {
   const transport = fixture({ alerts: [codeql(4), codeql(2, { path: 'tests/xss.test.ts' }), codeql(3, { path: 'vendor/mr/src/parser.py' })], dependencies: [dependency(5), dependency(6, { patchedVersion: null })] });
   const report = collectFeedback({ request: transport.request, now: () => new Date('2026-10-03T00:00:00Z') });
   assert.equal(report.status, 'complete');
@@ -47,7 +48,7 @@ test('collects bounded metadata, keeps stable alert IDs and scopes current-head 
   assert.match(markdown(report), /Tests and vendor code still require review/);
 });
 
-test('untrusted metadata cannot inject Markdown, commands, credential values or URLs', () => {
+void test('untrusted metadata cannot inject Markdown, commands, credential values or URLs', () => {
   const secret = 'gh' + 'p_' + 'A1b2'.repeat(9);
   const malicious = '![instructions](https://evil.invalid)\n::error::run code';
   const transport = fixture({ alerts: [codeql(2, { rule: malicious, path: `src/${secret}.ts` }), codeql(3, { path: '../outside.ts' })], dependencies: [dependency(4, { package: malicious, patchedVersion: '$(touch marker)' })] });
@@ -60,7 +61,7 @@ test('untrusted metadata cannot inject Markdown, commands, credential values or 
   for (const path of ['/absolute', 'a//b', 'a/./b', 'a/../b', 'a\\b', '日本語.py', 'a\nb.py', 'a'.repeat(241)]) assert.equal(publicPath(path), '[redacted-path]');
 });
 
-test('retrieval failure and malformed or wrong-ref alerts preserve unknown totals and partial evidence', () => {
+void test('retrieval failure and malformed or wrong-ref alerts preserve unknown totals and partial evidence', () => {
   for (const bad of [null, {}, [codeql(1, { ref: 'refs/heads/main' })], [codeql(1, { commit: null })], [codeql(1, { number: -1 })], [codeql(1, { line: true })], [codeql(1, { state: 'dismissed' })], [codeql(1, { extra: 'private detail' })], [codeql(1, { severity: 'unknown' })]]) {
     const transport = fixture({ requestHook: endpoint => endpoint.includes('/code-scanning/') ? bad : undefined });
     const report = collectFeedback({ request: transport.request });
@@ -76,7 +77,7 @@ test('retrieval failure and malformed or wrong-ref alerts preserve unknown total
   assert.match(markdown(report), /Total open alerts: unknown/);
 });
 
-test('pagination is bounded, complete across pages, and refuses duplicate or truncated snapshots', () => {
+void test('pagination is bounded, complete across pages, and refuses duplicate or truncated snapshots', () => {
   const requestHook = endpoint => {
     if (!endpoint.includes('/code-scanning/')) return undefined;
     const page = Number(new URL(`https://api.github.com/${endpoint}`).searchParams.get('page'));
@@ -101,7 +102,7 @@ test('pagination is bounded, complete across pages, and refuses duplicate or tru
   assert.equal(duplicate.sources.codeql.error, 'ALERT_PAGINATION_CHANGED');
 });
 
-test('missing, stale, pending and failed runs do not imply current analysis success', () => {
+void test('missing, stale, pending and failed runs do not imply current analysis success', () => {
   for (const runs of [ { total: 0, runs: [] }, { total: 1, runs: [{ id: 1, status: 'completed', conclusion: 'success', head: OLD, branch: REF }] }, { total: 1, runs: [] } ]) {
     const report = collectFeedback({ request: fixture({ runs }).request });
     assert.equal(report.status, 'incomplete');
@@ -116,7 +117,7 @@ test('missing, stale, pending and failed runs do not imply current analysis succ
   }
 });
 
-test('Dependabot follows bounded opaque cursors, never obsolete page parameters or external next URLs', () => {
+void test('Dependabot follows bounded opaque cursors, never obsolete page parameters or external next URLs', () => {
   const transport = fixture({ requestHook: endpoint => {
     if (!endpoint.includes('/dependabot/')) return undefined;
     const url = new URL(`https://api.github.com/${endpoint}`);
@@ -151,7 +152,7 @@ test('Dependabot follows bounded opaque cursors, never obsolete page parameters 
   assert.equal(endless.sources.dependabot.error, 'PAGINATION_LIMIT_REACHED');
 });
 
-test('branch changes during collection fail closed and forbidden refs never dispatch', () => {
+void test('branch changes during collection fail closed and forbidden refs never dispatch', () => {
   let reads = 0;
   const report = collectFeedback({ request: fixture({ requestHook: endpoint => endpoint.includes('/git/ref/') ? { sha: ++reads === 1 ? HEAD : OLD } : undefined }).request });
   assert.equal(report.status, 'incomplete');
@@ -162,7 +163,7 @@ test('branch changes during collection fail closed and forbidden refs never disp
   assert.equal(invoked, false);
 });
 
-test('gh dispatch is GET-only argv with a projection, bounded pipes and no inherited debug hooks', () => {
+void test('gh dispatch is GET-only argv with a projection, bounded pipes and no inherited debug hooks', () => {
   let call;
   const response = githubRequest('repos/k999ln/rock/git/ref/heads/main', '{sha: .object.sha}', {
     environment: { PATH: '/usr/bin', HOME: '/safe-home', GH_TOKEN: 'private-token', GH_DEBUG: 'api', NODE_OPTIONS: '--require untrusted', GH_HOST: 'evil.invalid', GH_PAGER: 'untrusted' },
@@ -183,7 +184,7 @@ test('gh dispatch is GET-only argv with a projection, bounded pipes and no inher
   }
 });
 
-test('real subprocess receives literal arguments; metadata is written privately and symlinks refused', () => {
+void test('real subprocess receives literal arguments; metadata is written privately and symlinks refused', () => {
   const directory = realpathSync(mkdtempSync(join(tmpdir(), 'spider-feedback-test-')));
   try {
     const helper = join(directory, 'fake-gh');
@@ -209,7 +210,55 @@ test('real subprocess receives literal arguments; metadata is written privately 
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });
 
-test('CLI rejects unknown repository and does not echo hostile argument strings', () => {
+void test('publication cleanup preserves write failures, closes handles and reports cleanup-only failures', () => {
+  const directory = realpathSync(mkdtempSync(join(tmpdir(), 'spider-feedback-cleanup-')));
+  try {
+    for (const stage of ['write', 'rename', 'cleanup']) {
+      const result = spawnSync(process.execPath, ['--input-type=module', '-e', `
+        import fs from 'node:fs';
+        import assert from 'node:assert/strict';
+        import { syncBuiltinESMExports } from 'node:module';
+        const { publish } = await import(process.argv[1]);
+        const output = process.argv[2];
+        const stage = process.argv[3];
+        const primary = new Error('fixture_publication_failed');
+        const cleanup = new Error('fixture_cleanup_failed');
+        const write = fs.writeFileSync.bind(fs);
+        const close = fs.closeSync.bind(fs);
+        const rename = fs.renameSync.bind(fs);
+        const unlink = fs.unlinkSync.bind(fs);
+        let closed = 0;
+        let removed = 0;
+        fs.writeFileSync = (...args) => {
+          if (stage === 'write') throw primary;
+          return write(...args);
+        };
+        fs.closeSync = (...args) => { closed += 1; return close(...args); };
+        fs.renameSync = (...args) => {
+          if (stage === 'rename') throw primary;
+          return rename(...args);
+        };
+        fs.unlinkSync = (...args) => {
+          removed += 1;
+          try { unlink(...args); } catch (error) {
+            if (error.code !== 'ENOENT') throw error;
+          }
+          throw cleanup;
+        };
+        syncBuiltinESMExports();
+        let failure;
+        try { publish({}, output); } catch (error) { failure = error; }
+        assert.equal(failure, stage === 'cleanup' ? cleanup : primary);
+        assert.equal(closed, 1);
+        assert.equal(removed, 1);
+        assert.deepEqual(fs.readdirSync(output), stage === 'cleanup' ? ['report.json'] : []);
+      `, new URL('../scripts/spider-feedback.mjs', import.meta.url).href, join(directory, stage), stage], { encoding: 'utf8', timeout: 5000 });
+      assert.equal(result.status, 0, result.stderr);
+    }
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+});
+
+void test('CLI rejects unknown repository and does not echo hostile argument strings', () => {
   const result = spawnSync(process.execPath, [resolve('scripts/spider-feedback.mjs'), '--repo', 'evil/secret-private-name', '--output', 'unused'], { encoding: 'utf8', timeout: 5000 });
   assert.equal(result.status, 2);
   assert.match(result.stderr, /ARGUMENTS_INVALID/);

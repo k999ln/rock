@@ -28,7 +28,8 @@ class FeedbackError extends Error {}
 const fail = code => { throw new FeedbackError(code); };
 const integer = value => Number.isSafeInteger(value) && value > 0;
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
-const keys = (value, expected) => object(value) && Object.keys(value).sort().join(',') === [...expected].sort().join(',');
+const compareKeys = (left, right) => left < right ? -1 : left > right ? 1 : 0;
+const keys = (value, expected) => object(value) && Object.keys(value).sort(compareKeys).join(',') === [...expected].sort(compareKeys).join(',');
 
 function identifier(value, maximum = 100) {
   if (typeof value !== 'string' || !value || value.length > maximum || !/^[A-Za-z0-9@._+/-]+$/.test(value) || CREDENTIAL.test(value)) return '[redacted]';
@@ -219,15 +220,19 @@ function writePrivate(directory, name, text) {
   catch (error) { if (error.code !== 'ENOENT') throw error; }
   const temporary = join(directory, `.spider-feedback-${randomUUID()}`);
   let descriptor;
+  let failure;
   try {
     descriptor = openSync(temporary, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY | constants.O_NOFOLLOW, 0o600);
     writeFileSync(descriptor, text, 'utf8');
     closeSync(descriptor); descriptor = undefined;
     renameSync(temporary, target);
-  } finally {
-    if (descriptor !== undefined) closeSync(descriptor);
-    try { unlinkSync(temporary); } catch (error) { if (error.code !== 'ENOENT') throw error; }
-  }
+  } catch (error) { failure = error; }
+  // Complete both cleanup attempts without replacing the original write error.
+  try { if (descriptor !== undefined) closeSync(descriptor); }
+  catch (error) { failure ??= error; }
+  try { unlinkSync(temporary); }
+  catch (error) { if (error.code !== 'ENOENT') failure ??= error; }
+  if (failure !== undefined) throw failure;
 }
 
 export function publish(report, output) {

@@ -47,13 +47,17 @@ function workerHarness(cacheNames = [], getClient = async () => ownerWindow) {
 }
 
 function sendMessage(harness, overrides = {}) {
+  /** @type {Promise<void> | undefined} */
   let work;
   harness.listeners.get('message')({
     origin: 'https://owner.example',
     source: ownerWindow,
     data: { type: 'ROCKSTAROS_ACTIVATE_UPDATE' },
     ...overrides,
-    waitUntil(value) { work = value; },
+    waitUntil(value) {
+      assert.ok(value instanceof Promise);
+      work = value;
+    },
   });
   return work;
 }

@@ -100,10 +100,43 @@
         "status": "incomplete",
         "failure": "ai package not installed at llm:architecture:check",
         "baselinePassed": true,
-        "realSdkTypecheckBuild": "pending clean CI"
+        "realSdkTypecheckBuild": "Production build passed with locked real dependencies in GitHub run 37088933845; full verify tracked separately."
       },
       "githubValidation": {
-        "status": "pending"
+        "status": "target_fixed_full_verify_pending",
+        "validatedCommit": "d1c3e5257b7b960e6754d5bf4017c5be38990498",
+        "ref": "refs/heads/codex/spider-guard",
+        "codeql": {
+          "pushRun": 37088931540,
+          "pullRequestRun": 37088933855,
+          "conclusion": "success",
+          "analysisIds": [
+            1884697263,
+            1884698017
+          ],
+          "fixedAlert": 38,
+          "previousFixedAlerts": [
+            42,
+            31,
+            47
+          ],
+          "beforeOpen": 44,
+          "afterOpen": 43,
+          "newAlerts": 0,
+          "note": "Individual branch instances are fixed. Fresh analyses match the validated commit; finding instances retain their last-seen commits."
+        },
+        "regressionAndProductionBuild": {
+          "run": 37088933845,
+          "conclusion": "success"
+        },
+        "fullVerify": {
+          "commit": "202b5ea07213698b99444b54e1696fbf52ce5612",
+          "run": 37089343088,
+          "conclusion": "failure",
+          "passedThrough": "real dependency typecheck",
+          "failure": "lint:product 47 diagnostics; correction in progress"
+        },
+        "guideCorrection": "202b5ea adds the existing SPIDER shared module to PROJECTS.md; sky:check passed locally."
       },
       "scope": "Owner-local descriptor read boundary; preserve main common transports and existing outbound guard, redirects and sanitized diagnostics.",
       "mainMerged": false,
@@ -117,6 +150,44 @@
         "app/api/jev-evaluation/route.ts": "ca5acc6eee24780c3f85c89a34bf1e131c3ddda925e78fb21c4463483f8d03e7",
         "app/api/legal-guidance/route.ts": "abb77393e4796b0cd4c33dab149170a0c1decac044aaeb95de59f5fd65d3f926",
         "app/api/patent-research/route.ts": "f6d33a870a747abe2f00953af7b9627f094cb8b0ea96a0e6a9c0fb5722536ac3"
+      },
+      "remaining": {
+        "codeqlOnTargetBranch": 43,
+        "dependabotOnDefaultBranch": 18,
+        "existingDependabotPullRequests": [
+          53,
+          54,
+          55,
+          56
+        ],
+        "historyScan": {
+          "commit": "202b5ea07213698b99444b54e1696fbf52ce5612",
+          "run": 37089343085,
+          "metadataArtifact": 11261941083,
+          "conclusion": "failure",
+          "scanCompleted": true,
+          "reachableCommits": 654,
+          "candidateMatches": 2362,
+          "note": "Repeated historical pattern matches, not unique or validated credentials. No broad exclusions or dismissals."
+        }
+      },
+      "localSharedDependencyUnitTests": {
+        "passed": 518,
+        "skipped": 1,
+        "failed": 5,
+        "failure": "workerd native binary unavailable in reused dependency directory"
+      },
+      "sourceSha256Commit": "d1c3e5257b7b960e6754d5bf4017c5be38990498",
+      "verificationMaintenance": {
+        "reason": "Existing full lint gate now reached after baseline and guide synchronization",
+        "lint": "passed complete lint:product locally with matching oxlint 1.76.0 and tsgolint 7.0.2001",
+        "targetedTests": {
+          "passed": 46,
+          "skipped": 1,
+          "failed": 0
+        },
+        "changes": "Explicit Promise handling and callback types in tests; comparator and preserved primary filesystem failure in feedback writer; cleanup regression in isolated subprocess.",
+        "ci": "pending current commit"
       }
     }
   ]

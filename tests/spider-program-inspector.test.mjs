@@ -7,7 +7,7 @@ import {
 
 const codeRules = report => report.findings.filter(finding => finding.kind === 'code').map(finding => finding.rule);
 
-test('reports Unicode and multiline secret positions without source or values', () => {
+void test('reports Unicode and multiline secret positions without source or values', () => {
   const source = 'const 日本語 = "🐈";\r\nAPI_KEY="fixture_value_only"\r\n// next\n-----BEGIN PRIVATE KEY-----\nTEST_ONLY\n-----END PRIVATE KEY-----\nperson@example.test';
   const report = inspectProgram(source, {language:'text'});
   assert.deepEqual(report.findings.map(f => [f.kind,f.line,f.endLine]), [
@@ -24,7 +24,7 @@ test('reports Unicode and multiline secret positions without source or values', 
   assert.deepEqual(inspectProgram(source,{language:'text'}),report);
 });
 
-test('managed environment references are not literal secrets', () => {
+void test('managed environment references are not literal secrets', () => {
   for (const source of [
     'const API_KEY = process.env.API_KEY;',
     'const API_KEY = import.meta.env.API_KEY;',
@@ -35,7 +35,7 @@ test('managed environment references are not literal secrets', () => {
   assert.equal(inspectProgram('API_KEY="os.getenv(test)"').counts.secret,1);
 });
 
-test('four narrow JavaScript patterns produce actionable potential-risk findings', () => {
+void test('four narrow JavaScript patterns produce actionable potential-risk findings', () => {
   const source = 'eval(input);\nnew Function(input);\nchild_process.exec(command);\nnode.innerHTML = untrusted;\nhttps.request({rejectUnauthorized: false});';
   const report = inspectProgram(source);
   assert.deepEqual(codeRules(report), ['dynamic_eval','dynamic_eval','shell_execution','unsafe_html','tls_verification_disabled']);
@@ -45,7 +45,7 @@ test('four narrow JavaScript patterns produce actionable potential-risk findings
   assert(report.findings.every(f => !JSON.stringify(f).includes('untrusted')));
 });
 
-test('comments, strings and regex literals do not become executable patterns', () => {
+void test('comments, strings and regex literals do not become executable patterns', () => {
   const source = [
     '// eval(input); node.innerHTML = input;',
     '/* child_process.exec(input); rejectUnauthorized: false */',
@@ -63,12 +63,12 @@ test('comments, strings and regex literals do not become executable patterns', (
   assert.equal(report.coverageLimited,false);
 });
 
-test('sensitive values in comments are still inspected as exposed data', () => {
+void test('sensitive values in comments are still inspected as exposed data', () => {
   const report = inspectProgram('// API_KEY="only_a_fixture"\n// eval(input)');
   assert.equal(report.counts.secret,1); assert.equal(report.counts.code,0);
 });
 
-test('Python dynamic calls, shell opt-in and disabled TLS are recognized', () => {
+void test('Python dynamic calls, shell opt-in and disabled TLS are recognized', () => {
   const source = [
     'eval(data)', 'exec(data)', 'os.system(command)',
     'subprocess.run(args, shell=True)',
@@ -82,12 +82,12 @@ test('Python dynamic calls, shell opt-in and disabled TLS are recognized', () =>
   ]);
 });
 
-test('multiline nested calls have bounded correct line ranges', () => {
+void test('multiline nested calls have bounded correct line ranges', () => {
   const report = inspectProgram('eval(\n  choose(\n    data\n  )\n);');
   assert.equal(report.findings[0].line,1); assert.equal(report.findings[0].endLine,5);
 });
 
-test('unclosed strings and unparsed interpolation are explicitly incomplete', () => {
+void test('unclosed strings and unparsed interpolation are explicitly incomplete', () => {
   for (const source of ['const broken = "unfinished', '/* unfinished', 'const text = `${eval(data)}`;']) {
     const report = inspectProgram(source);
     assert.equal(report.coverageLimited,true);
@@ -98,7 +98,7 @@ test('unclosed strings and unparsed interpolation are explicitly incomplete', ()
   assert.equal(python.coverageLimited,true); assert.equal(python.state,'incomplete');
 });
 
-test('empty, clean and text-only reports preserve bounded-scope limitations', () => {
+void test('empty, clean and text-only reports preserve bounded-scope limitations', () => {
   assert.equal(inspectProgram(' \n\t').state,'empty');
   const clean = inspectProgram('element.textContent = message;');
   assert.equal(clean.state,'no_findings'); assert(clean.limitations.length >= 2);
@@ -107,7 +107,7 @@ test('empty, clean and text-only reports preserve bounded-scope limitations', ()
   assert(text.limitations.some(value => value.includes('テキスト')));
 });
 
-test('finding cap reports partial coverage rather than claiming completion', () => {
+void test('finding cap reports partial coverage rather than claiming completion', () => {
   const report = inspectProgram('eval(input);\n'.repeat(MAX_PROGRAM_FINDINGS + 7));
   assert.equal(report.findings.length,MAX_PROGRAM_FINDINGS);
   assert.equal(report.counts.total,MAX_PROGRAM_FINDINGS);
@@ -115,7 +115,7 @@ test('finding cap reports partial coverage rather than claiming completion', () 
   assert(report.limitations.some(value => value.includes('100')));
 });
 
-test('finding cap preserves later secrets ahead of early code findings', () => {
+void test('finding cap preserves later secrets ahead of early code findings', () => {
   const source = 'eval(input);\n'.repeat(MAX_PROGRAM_FINDINGS) +
     'person@example.test\nAPI_KEY="late_fixture_only"\nPASSWORD="last_fixture_only"';
   const report = inspectProgram(source);
@@ -129,7 +129,7 @@ test('finding cap preserves later secrets ahead of early code findings', () => {
   assert(!JSON.stringify(report).includes('late_fixture_only'));
 });
 
-test('source is never evaluated, even when it would mutate global state', () => {
+void test('source is never evaluated, even when it would mutate global state', () => {
   globalThis.__spiderInspectorProbe = 0;
   const report = inspectProgram('globalThis.__spiderInspectorProbe = 99; eval("globalThis.__spiderInspectorProbe = 100")');
   assert.equal(globalThis.__spiderInspectorProbe,0);
@@ -137,7 +137,7 @@ test('source is never evaluated, even when it would mutate global state', () => 
   delete globalThis.__spiderInspectorProbe;
 });
 
-test('byte, line and type limits use constant typed errors without payloads', () => {
+void test('byte, line and type limits use constant typed errors without payloads', () => {
   const check = expected => error => {
     assert(error instanceof ProgramInspectionError);
     assert.equal(error.code,expected); assert.equal(error.message,expected);
