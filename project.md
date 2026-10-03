@@ -6,6 +6,8 @@
 
 初回はFashion HTTPの固定bearer認証回避と内部エラー非表示、SW更新messageのorigin／window client境界を修正し、回帰と配布ZIPを更新する。独立Actions jobで回帰を実行し、CodeQLの対象#42／#31／#47を同じrefで再確認する。進捗・検査失敗・未解決候補は[改善サイクル](docs/spider-guard.md#検出からコード改善へ戻すサイクル)とPR #52へ記録する。OS同一image boot、Pixel、24時間運転の未受入と既存baseline gateは維持する。
 
+初回のhost44試験とGitHub回帰が成功し、commit `a13c3f5`のCodeQL再解析で対象3件のfixedを確認した。openは44件、Dependabotは18件。SW変更で古くなったWeb応答測定記録を実production buildで再取得する。
+
 ## 2026-10-02 — GitHub上の実リポジトリ保護へSPIDERを接続
 
 利用者は`k999ln/rock`自体の公開時のセキュリティ対策とGitHub上での表示を要求した。既存SYS15の範囲に、履歴内の秘密候補を検査する独立Actions check、JavaScript／TypeScript・PythonのCodeQL、metadata-only report、実workflow badgeを追加する。GitleaksとActionsを固定し、候補programは実行せず、scanner／policyはworkflow内の固定commitから読む。既存のsecret scanning／push protectionは有効と確認し、Dependabot vulnerability alertsとsecurity-fix PRを有効化・readbackした。GitHub mainは`b3e2676`でrequired checkなし。main merge、既存CI失敗の免除、実機保護／24時間運転の受入は行わない。最終実行結果と残る候補は[GitHub連携](docs/spider-guard.md#github上でrockを検査する)へ記録する。 scanner6／実policy6／CodeQL設定4件が合格し、637コミットのmerge差分を含む履歴検査は2,357候補でexit 1。候補数は有効秘密数ではない。project／database／designは成功、verifyは既存baseline1057で停止した。source hashと設定readbackはdocs/evidence/spider-github-source-validation.jsonへ保存する。

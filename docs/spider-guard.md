@@ -50,6 +50,8 @@ npm run spider:feedback -- --ref codex/spider-guard --output work/spider-feedbac
 
 初回修正のhost Node検証はcollector 10、SW 8、CodeQL設定4、Fashion toolkit 22の計44件が合格し、配布ZIP一致、project／database／design整合も成功した。途中のhost容量不足による試験失敗後、空き容量回復時の再実行で全44件を確認した。全体verifyはSW変更により既存Web security policyの測定input hashが古くなったためrelease gateで停止しており、測定更新とGitHub実行を別途確認する。
 
+GitHubのcommit `a13c3f5599aa5bec61f0cf9c9391d9a6a8adffbd`に対する[回帰job](https://github.com/k999ln/rock/actions/runs/37084628784)と[CodeQL解析](https://github.com/k999ln/rock/actions/runs/37084628780)が成功した。対象branchの#42／#31／#47はそれぞれfixedで、新規番号の警告はなく、open CodeQLは47→44件となった。collectorでも44＋Dependabot 18＝62件を再取得した。[秘密検査](https://github.com/k999ln/rock/actions/runs/37084628781)は640コミットを完走し、未解決の2,357履歴候補で失敗を維持している。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。

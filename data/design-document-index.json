@@ -172,7 +172,7 @@
       "id": "security_operator_release",
       "spiderImprovementCycle": {
         "document": "docs/spider-guard.md",
-        "status": "IMPLEMENTED_RESCAN_PENDING",
+        "status": "FIRST_REPAIRS_RESCANNED_MAIN_INTEGRATION_PENDING",
         "collector": "scripts/spider-feedback.mjs",
         "regressions": ".github/workflows/spider-regressions.yml",
         "cadence": "hourly local Codex follow-up; host and app must be running",

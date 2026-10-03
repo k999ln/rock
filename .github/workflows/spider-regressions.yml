@@ -21,6 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -31,3 +32,136 @@ jobs:
         run: npm --prefix toolkits/fashion-brand-ops test
       - name: Verify distributed toolkit matches source
         run: python3 scripts/package-sky-mcp.py --check
+
+  web-security-measurement:
+    name: SPIDER / production web security measurement
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+      WRANGLER_SEND_METRICS: 'false'
+      WRANGLER_WRITE_LOGS: 'false'
+      WRANGLER_LOG_PATH: ${{ runner.temp }}/spider-web-logs
+      MINIFLARE_REGISTRY_PATH: ${{ runner.temp }}/spider-web-registry
+      SPIDER_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked production build dependencies
+        run: npm ci
+      - name: Bind measurement to the checkout and build current source
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { execFileSync } from 'node:child_process';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          const commit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          if (!/^[a-f0-9]{40}$/.test(commit) || commit !== process.env.SPIDER_SOURCE_SHA)
+            throw new Error('web measurement checkout mismatch');
+          execFileSync('git', ['diff', '--quiet', 'HEAD', '--']);
+          const names = [
+            'data/web-security-policy.json', 'public/_headers', 'next.config.ts',
+            'scripts/check-web-security-response.mjs', 'public/sw.js', 'app/manifest.ts',
+            'public/rock-icon-192.png', 'public/rock-icon-512.png', 'public/rock-icon-maskable.svg',
+          ];
+          const hash = (path) => createHash('sha256').update(readFileSync(path)).digest('hex');
+          writeFileSync(join(process.env.RUNNER_TEMP, 'spider-web-inputs.json'), JSON.stringify({
+            sourceCommit: commit,
+            packageLockSha256: hash('package-lock.json'),
+            inputs: Object.fromEntries(names.map((path) => [path, hash(path)])),
+          }), { mode: 0o600 });
+          NODE
+          npm run build
+      - name: Measure actual local production responses
+        shell: bash
+        run: |
+          set -euo pipefail
+          wrangler=(node node_modules/wrangler/bin/wrangler.js)
+          state="$RUNNER_TEMP/spider-web-state"
+          "${wrangler[@]}" d1 migrations apply site-creator-d1 --local \
+            --config dist/server/wrangler.json --persist-to "$state"
+          "${wrangler[@]}" dev --local --ip 127.0.0.1 --port 8787 \
+            --config dist/server/wrangler.json --persist-to "$state" \
+            > "$RUNNER_TEMP/spider-web-server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; wait "$server_pid" 2>/dev/null || true' EXIT
+          ready=false
+          for attempt in {1..60}; do
+            if ! kill -0 "$server_pid" 2>/dev/null; then
+              echo 'Local production server exited before measurement' >&2
+              exit 1
+            fi
+            if curl --fail --silent --max-time 2 http://127.0.0.1:8787/api/health -o /dev/null; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" != true ]; then
+            echo 'Local production server readiness timed out' >&2
+            exit 1
+          fi
+          node --input-type=module <<'NODE'
+          import { createHash } from 'node:crypto';
+          import { execFileSync } from 'node:child_process';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          execFileSync('git', ['diff', '--quiet', 'HEAD', '--']);
+          const before = JSON.parse(readFileSync(join(process.env.RUNNER_TEMP, 'spider-web-inputs.json'), 'utf8'));
+          const hash = (value) => createHash('sha256').update(value).digest('hex');
+          for (const [path, expected] of Object.entries(before.inputs))
+            if (hash(readFileSync(path)) !== expected) throw new Error('web measurement input changed');
+          if (hash(readFileSync('package-lock.json')) !== before.packageLockSha256)
+            throw new Error('web measurement lockfile changed');
+          const checked = JSON.parse(execFileSync(process.execPath, [
+            'scripts/check-web-security-response.mjs', 'http://127.0.0.1:8787',
+          ], { encoding: 'utf8', timeout: 120000, maxBuffer: 1024 * 1024 }));
+          if (checked.schema !== 'rockstaros-web-security-response-check/1' || checked.status !== 'PASS' ||
+              checked.baseOrigin !== 'http://127.0.0.1:8787' || checked.universalHeaders !== 8 ||
+              !Array.isArray(checked.routes) || checked.routes.length !== 8)
+            throw new Error('web measurement did not complete');
+          const worker = await fetch('http://127.0.0.1:8787/sw.js', {
+            cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(10000),
+          });
+          if (!worker.ok || hash(Buffer.from(await worker.arrayBuffer())) !== before.inputs['public/sw.js'])
+            throw new Error('production worker response does not match source');
+          const evidence = {
+            schema: 'rockstaros-web-security-response-evidence/1',
+            observedAt: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+            scope: 'LOCAL_PRODUCTION_BUILD_NOT_SITES_DEPLOYMENT',
+            server: { runtime: 'wrangler-local', origin: checked.baseOrigin, productionBuild: true },
+            sourceCommit: before.sourceCommit,
+            measurement: {
+              githubRunId: process.env.GITHUB_RUN_ID,
+              githubRunAttempt: process.env.GITHUB_RUN_ATTEMPT,
+              nodeVersion: process.version,
+              packageLockSha256: before.packageLockSha256,
+              servedWorkerSha256: before.inputs['public/sw.js'],
+            },
+            inputs: before.inputs,
+            result: { status: checked.status, universalHeaders: checked.universalHeaders, routes: checked.routes },
+            boundary: {
+              sitesDeploymentVerified: false,
+              nextAction: '同じsource SHAを本人限定Sitesへ同期した後、本人認証済みresponseから同じ8 headerを再読取りする',
+            },
+          };
+          writeFileSync(join(process.env.RUNNER_TEMP, 'spider-web-security-measurement.json'),
+            JSON.stringify(evidence, null, 2) + '\n', { mode: 0o600 });
+          console.log('Measured production web security: PASS; 8 routes; 8 universal headers; current worker bytes verified');
+          NODE
+      - name: Save measured metadata only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: spider-web-security-measurement-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/spider-web-security-measurement.json
+          if-no-files-found: error
+          retention-days: 7
