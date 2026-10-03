@@ -103,7 +103,7 @@
         "realSdkTypecheckBuild": "Production build passed with locked real dependencies in GitHub run 37088933845; full verify tracked separately."
       },
       "githubValidation": {
-        "status": "target_fixed_full_verify_pending",
+        "status": "target_fixed",
         "validatedCommit": "d1c3e5257b7b960e6754d5bf4017c5be38990498",
         "ref": "refs/heads/codex/spider-guard",
         "codeql": {
@@ -152,7 +152,7 @@
         "app/api/patent-research/route.ts": "f6d33a870a747abe2f00953af7b9627f094cb8b0ea96a0e6a9c0fb5722536ac3"
       },
       "remaining": {
-        "codeqlOnTargetBranch": 43,
+        "codeqlOnTargetBranch": 42,
         "dependabotOnDefaultBranch": 18,
         "existingDependabotPullRequests": [
           53,
@@ -187,8 +187,110 @@
           "failed": 0
         },
         "changes": "Explicit Promise handling and callback types in tests; comparator and preserved primary filesystem failure in feedback writer; cleanup regression in isolated subprocess.",
-        "ci": "pending current commit"
-      }
+        "ci": "success",
+        "commit": "0e2f26dfe6d9b7cc62a13c37ebaf62ae07f01cf5",
+        "independentReview": "no actionable findings; cleanup regression independently passed",
+        "nativeSource": {
+          "run": 37090007098,
+          "conclusion": "success",
+          "scope": "source checks only, not same-image boot or 24-hour acceptance"
+        },
+        "fullVerify": {
+          "run": 37090007093,
+          "conclusion": "success",
+          "unitTests": {
+            "passed": 546,
+            "skipped": 1,
+            "failed": 0
+          },
+          "gates": "locked npm ci, typecheck, lint, full unit tests, packages, service/site/SDK tests, production build, web bundle/assets, API and synthetic game wire vectors"
+        },
+        "regressionAndProductionMeasurement": {
+          "run": 37090007173,
+          "conclusion": "success",
+          "routes": 8,
+          "universalHeaders": 8,
+          "servedWorkerMatchesSource": true
+        },
+        "codeql": {
+          "pushRun": 37090004096,
+          "pullRequestRun": 37090007094,
+          "analysisIds": [
+            1884734727,
+            1884736939
+          ],
+          "conclusion": "success",
+          "fixedTargetAlerts": [
+            38,
+            42,
+            31,
+            47
+          ],
+          "open": 43,
+          "reidentifiedTestAlert": {
+            "old": 29,
+            "new": 48,
+            "path": "tests/spider-codeql-workflow.test.mjs",
+            "line": 32,
+            "review": "Same pre-existing negative test expression; open-count stability is not proof of no new finding IDs.",
+            "clarificationCommit": "6fdea6f",
+            "change": "Equivalent assertions separate forbidden ref/token YAML keys and literal secrets. substring; no policy or exclusions changed.",
+            "localRegression": "4 passed",
+            "sameCommitAnalysis": "fixed in 6fdea6f; see finalValidation"
+          }
+        }
+      },
+      "finalValidation": {
+        "commit": "6fdea6fa7c91960d7a09f428e830d12a54cee068",
+        "fullVerify": {
+          "run": 37090334478,
+          "conclusion": "success",
+          "mainTests": {
+            "passed": 546,
+            "skipped": 1,
+            "failed": 0
+          },
+          "lint": {
+            "warnings": 0,
+            "errors": 0
+          },
+          "typecheck": "success",
+          "productionBuild": "success",
+          "webAssetsAndApi": "success"
+        },
+        "regressionAndProductionMeasurement": {
+          "run": 37090334475,
+          "conclusion": "success",
+          "routes": 8,
+          "universalHeaders": 8,
+          "servedWorkerMatchesSource": true
+        },
+        "codeql": {
+          "status": "success",
+          "pushRun": 37090331083,
+          "pullRequestRun": 37090334468,
+          "analysisIds": [
+            1884746410,
+            1884745898
+          ],
+          "ref": "refs/heads/codex/spider-guard",
+          "fixedProductTargets": [
+            38,
+            42,
+            31,
+            47
+          ],
+          "fixedTestFindingIds": [
+            29,
+            48
+          ],
+          "open": 42,
+          "newAlertIdsAfter48": 0,
+          "note": "29 and 48 identify the same test expression across analyses, not two product vulnerabilities. Fixed states are checked per branch instance; analyses match the finalValidation commit."
+        }
+      },
+      "status": "verified_repair_with_unresolved_findings"
     }
-  ]
+  ],
+  "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."
 }

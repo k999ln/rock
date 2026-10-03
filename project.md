@@ -1,18 +1,12 @@
 # RockstarOS — 事業・設計・進捗
 
-## 2026-10-02 — SPIDER第2cycle: PC Tool定義の読取競合
+## 2026-10-02 — SPIDER第2cycle: PC Tool定義の読取競合を修正
 
-定期実行でPR #52とcommit `65b4601`のCodeQL 44件／Dependabot 18件を再取得した。主担当SecurityのROCK、既存SYS15を継続し、実際のpath確認後の開き直し競合があるCodeQL #38だけを修正対象にする。Connectorのdescriptorを一度だけ開き、そのhandleで種類・権限・sizeを検査して上限付きで読む。正常SDKの接続／一回承認を回帰し、配布ZIPと設計台帳も更新する。別候補#7のobserverは現行sourceで秘密値の出力を確認できず、警告を消すための変更やdismissは行わない。
+主担当SecurityのROCK、既存SYS15でCodeQL #38を修正した。基準`65b4601`はCodeQL 44件／Dependabot 18件。`a4217bb`でdescriptorを一度開いたhandleに検証・読取を結び、4 KiB上限、所有者・権限・通常file判定、差し替え／肥大化／FIFO拒否を回帰した。main `31ef33a`を作業branchへ同期し、共通Research／Jev transportへ送信前拒否・redirect拒否・固定エラーを保持した。配布ZIP2種も更新済み。別候補#7はsourceで秘密値出力を確証できず、dismissしない。
 
-取得時のmainは`31ef33a`へ8 commit進んでいる。対象Connector source自体は変更されていないが、共通基盤・文書・検証基準等のmain更新はこのbranchへ未統合。mainへのmerge・公開配備・実機操作は行わない。容量不足で初回fetchは失敗し、一時コンパイルcache解放後にfetchを完了した。変更後の試験・同一SHA解析・残る条件は[SPIDER改善cycle](docs/spider-guard.md#検出からコード改善へ戻すサイクル)へ追記する。
+最終source/test commit `6fdea6f`の全体verify、production build・8経路／8header／配信SW一致の実測、CodeQLが成功した。実依存typecheck・lint（警告0／エラー0）・主テスト546合格／環境条件1skip・関連service／site／SDK試験・build／APIまで完走。#38／#42／#31／#47のbranch instanceはfixedを確認した。検査用テストの同一式が#29→#48として再識別されたため、禁止設定キーと秘密変数参照を等価な別条件に整理し、両IDのfixedも確認した。製品の新規脆弱性2件と数えない。検証run・SHA・hashは[第2cycleの証拠](docs/evidence/spider-improvement-cycle.json)に保存した。
 
-修正後のhost Node検証は28件合格・未対応OS専用1件skip。正常SDK発見／停止、一回承認、送信前検査、差し替え・肥大化・FIFO拒否を確認し、独立レビューも追加指摘なし。既存PRにmain更新との競合があるため、mainの変更を作業branchへ取り込んで保持し、整合後の同一SHAを再解析する。これは作業branch内の同期であり、mainへの統合ではない。
-
-`a4217bb`に修正を保存した後、上流`31ef33a`の共通基盤・CSV・検証基準を取り込み、Research／Jevの共通化へSPIDERの送信前検査とredirect／エラー秘匿を保持した。159 task中105 doneとSYS15 in_progressを両立し、配布ZIP2種をsourceへ同期した。統合後のConnector系28合格・1skip、Fashion25合格、Research等19合格と独立レビューを確認。最終ローカルverifyはbaselineを通過後に未導入`ai`で停止し、実依存・型・buildを同一SHAのGitHubで確認する。
-
-`d1c3e52`のCodeQL・回帰・実production build計測が成功し、#38のbranch instanceをfixedと確認した。既存3件もfixedを維持、CodeQL openは43件で新規なし。`202b5ea`の実依存typecheckも成功。全体verifyで分かったPROJECTS.md記載漏れを修正し、続くscript／testのlintは除外を加えず修正して再検査する。hostの既存依存を利用した全単体試験は518合格・1skip・workerd binary不足の5失敗で、clean CIの成功とは区別する。履歴検査は654 commit完走・2,362候補一致による失敗を維持し、依存警告18件／既存修正PR53〜56は残す。記録は[第2cycleの証拠](docs/evidence/spider-improvement-cycle.json)のfollowUpCyclesに追加する。
-
-lint全47件の修正後、全体lint・project／database／design整合・配布ZIP2種の一致が成功。関係する46試験合格・1環境条件skipを確認し、feedback保存時の元エラー保持とcleanupの失敗試験も追加した。最新commitのclean CIを再実行する。
+残るCodeQLは42件、default branch Dependabot18件。既存修正PR53〜56を再利用する。履歴検査は`202b5ea`で654 commit完走・2,362候補一致による失敗を確認した（重複を含むpattern一致で秘密の種類数ではない）。ローカルの容量不足と共有依存のworkerd欠落はclean CIの成功と区別して記録する。mainへのmerge、公開配備、秘密失効、OS同一image／Pixel／24時間運転の受入は実施していない。SYS15はin_progressのまま次の小さな修正へ進む。
 
 ## 2026-10-02 — SPIDER検出からコード改善への反復を開始
 
@@ -1361,7 +1355,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: SYS15第2cycleのCodeQL #38は同一SHA d1c3e52の個別branch instanceでfixed、既存3件もfixedを維持。main31ef33aは作業branchへ同期済みで、mainへのmergeは未実施。GitHubの実依存build・回帰・型検査は成功し、全体verifyで判明したscript／testのlintを修正して同一SHAを再検査する。残るCodeQL43件とdefault branch Dependabot18件、履歴候補を優先度順に調べ、既存依存修正PR53〜56を再利用する。1時間ごとのローカルCodex実行はPC／アプリ起動を要する。main統合・required check・OS同一image／Pixel／24時間運転は未受入。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
+次の作業: SYS15第2cycleは6fdea6fの全体CI・production計測・CodeQLが成功し、PC Tool定義の読取競合#38と既存3件のfixedを確認済み。検査用テストの同一指摘29／48も条件を明確化して解消。main31ef33aは作業branchへ同期済み。残るCodeQL42件とdefault branch Dependabot18件、履歴候補を優先度順に調べ、既存依存修正PR53〜56を再利用する。修正ごとにsource確認・回帰・同一SHA再解析・PR報告を続ける。1時間ごとのローカルCodex実行はPC／アプリ起動を要する。main統合・required check・OS同一image／Pixel／24時間運転は未受入。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
 <!-- project-status:end -->
 
 ## 次段階の設計

@@ -58,9 +58,11 @@ GitHubのcommit `a13c3f5599aa5bec61f0cf9c9391d9a6a8adffbd`に対する[回帰job
 
 main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Research／Jev transportと、SPIDERの送信前拒否・redirect拒否・秘密値を含まないエラーを両方保持した。配布ZIP2種を再生成した。同期後のhost回帰はConnector／SDK／guard 28合格・未対応OS専用1skip、Fashion 25合格、Research／Jev入力・remote guard 19合格。独立レビューは追加指摘なし。
 
-`d1c3e52`の[CodeQL](https://github.com/k999ln/rock/actions/runs/37088933855)と[回帰・実production build計測](https://github.com/k999ln/rock/actions/runs/37088933845)が成功した。同じbranchの#38は個別instanceでfixed、既存#42／#31／#47もfixedを維持し、新規警告なし。openは44→43件。最新解析のSHAと結果を照合し、findingが保持する最終検出SHAと区別した。`202b5ea`で案内ガイドを補完した後、GitHubの実依存で型検査まで成功したが、全体verifyは追加script／testのlint 47件で停止したため、規約に沿って修正し再検査する。ローカルの既存依存を参照した全単体試験は518合格・1skip・5失敗で、失敗5つはworkerd native binary不足。GitHubのクリーン環境の結果を完了条件にする。
+最終source/test commit `6fdea6f`の[全体verify](https://github.com/k999ln/rock/actions/runs/37090334478)、[回帰・実production build計測](https://github.com/k999ln/rock/actions/runs/37090334475)、[CodeQL](https://github.com/k999ln/rock/actions/runs/37090334468)が成功した。実依存typecheck、lint警告0／エラー0、主テスト546合格／未対応OS専用1skip、配布ZIP整合、service／site／SDK試験、build／web assets／APIまで完走した。実HTTP測定は8経路・8共通header・現行worker bytes一致。
 
-同じ`202b5ea`の[履歴検査](https://github.com/k999ln/rock/actions/runs/37089343085)は654 commitを完走し、2,362候補一致による失敗を維持した。これは重複を含む履歴のpattern一致数で、秘密の種類数や有効性の確認結果ではない。Dependabot 18件と既存修正PR #53〜#56も未解決として残す。main統合、required check設定、OS同一image／Pixel／24時間運転は未実施。
+同じbranchの#38は個別instanceでfixed、既存#42／#31／#47もfixedを維持した。検査用の同じ正規表現は#29から#48へ再識別されたため、禁止設定キーと秘密変数参照を等価な別assertionに分け、両IDのfixedを確認した。新しい製品脆弱性2件とは扱わない。最終openは42件。最新解析SHAと各instanceの結果を照合し、findingが保持する最終検出SHAと区別する。
+
+`202b5ea`の[履歴検査](https://github.com/k999ln/rock/actions/runs/37089343085)は654 commitを完走し、2,362候補一致による失敗を維持した。これは重複を含む履歴のpattern一致数で、秘密の種類数や有効性の確認結果ではない。Dependabot18件と既存修正PR #53〜#56も未解決として残す。main統合、required check設定、OS同一image／Pixel／24時間運転は未実施。ローカル未導入依存、workerd不足、途中のlint失敗は[第2cycleの機械可読記録](evidence/spider-improvement-cycle.json)で検証時点と分けて保存する。
 
 ## 自分のコードを貼って検査する
 
