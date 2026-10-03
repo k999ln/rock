@@ -12,6 +12,24 @@ OSへの同梱、boot時起動、再起動監督、native画面の実データ�
 
 2026-10-02、利用者は追加の映像参照に沿ったnativeアニメーション改善を進めるよう明示した。細い発光脚、青い足先の輪、pink／cyanの小さな四角いcoreを、実際の検出位置への移動と重点表示へ取り込む。このアニメーションのLinux source検証は記録済み。さらに利用者はクモに「セキュリティーエージェント」の役割を明示し、実際の監視・検査・拒否・報告と役割表示を接続し、追加のsource検証を記録した。現在の表示先はnative security panelであり、OS全体のoverlayは未選択。以下の旧source検証は保存commit `a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae`に対応し、変更後のrendererの合格証拠へ流用しない。
 
+## GitHub上でrockを検査する
+
+利用者の追加指示により、`k999ln/rock`そのものをActionsで検査し、GitHubのPR check、実行summary、Security画面へ結果を表示する。ローカル画面への貼り付けは不要。
+
+- [SPIDER repository security](https://github.com/k999ln/rock/actions/workflows/spider.yml): Gitleaks 8.30.1の公式archiveを固定SHA-256で検証し、検査対象HEADから到達できるGit履歴の秘密情報パターンを検査する。候補と検査失敗はcheck失敗。秘密値・本文・commit message・authorをreportへ保存しない。公開fixtureの例外はruleとpathと値を絞って根拠を記す。履歴全体やtest directoryを一括除外しない。
+- [SPIDER code analysis](https://github.com/k999ln/rock/actions/workflows/spider-codeql.yml): JavaScript／TypeScriptとPythonをCodeQLのsecurity-extendedで解析し、[Code scanning](https://github.com/k999ln/rock/security/code-scanning)へ結果を送る。解析成功と警告0件は別であり、C／C++、Java／KotlinやOS runtime保護の受入は含まない。
+- GitHub標準のsecret scanning／push protectionは既に有効だった。Dependabot vulnerability alertsとautomated security-fix PRは2026-10-03 UTCに有効化・readbackした。設定と警告の有無は別で、今回の初回取得はopen alert 0件だった。修正PRの自動mergeは設定しない。
+
+push（main／codex/spider-guard）、PR、手動実行に反応する。毎日の定時実行はdefault branchへのworkflow統合後からで、GitHub側の遅延・停止条件がある。常時接続や24時間可用性を保証するものではない。GitHub上のソース検査は、Platform固定dataの個人情報検出／外部送信前拒否とは別の境界である。
+
+秘密検査は`contents: read`のみ、CodeQLは必要な`security-events: write`を解析jobだけに与える。checkoutは資格情報を残さず、対象のpackage install／build／source実行を行わない。秘密検査のscannerとpolicyはworkflowに明記したcommitを使い、候補側のignore file／inline allowコメントを無視する。例外更新はpolicyを先にreview・commitしてcontrol commitを更新する。workflow自身の改変を防ぐにはowner reviewが必要である。
+
+`main`は導入確認時点で保護ruleなし。checkが赤くなることとmergeを禁止することは別で、今回main mergeやrequired check設定は行わない。統合後は`SPIDER / secrets`をrequired checkとして指定し、CodeQLの警告をreviewする。既存CIのbaseline失敗を合格へ読み替えない。[SECURITY.md](../SECURITY.md)に運用・秘密失効・例外reviewの手順を記載する。
+
+source検証はscanner境界6件、実Gitleaks例外policy 6件、CodeQL設定・summary 4件が合格した。実binaryで履歴から削除された秘密、候補側ignoreとinline allow、`.gitattributes -diff`による検査回避を検知し、任意diff helperを実行しないことを確認した。既存`beb99b0`の637コミットをmerge差分も含めて検査し、2,357履歴候補を返した。これは同じ値の再登場を含み、2,357個の有効な秘密が漏れたという意味ではない。初回のmergeを除く583 generic候補のうち373件はfilename label、8件は明示hash label、150件はkey label、52件はその他であり、除外根拠の未確認部分は残した。公開用の正確な3値だけを例外にし、全体を合格へ変更しない。[source・設定の検証記録](evidence/spider-github-source-validation.json)を保存する。
+
+今回のproject／database／design整合は成功。`npm run verify`は既存baseline visual期待値1057で停止した。GitHub実行結果は上のworkflowとPR checkから参照する。新規workflowのmain統合は未実施。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。

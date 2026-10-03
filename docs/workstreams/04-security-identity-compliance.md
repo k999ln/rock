@@ -17,6 +17,8 @@
 
 - `SYS15`へ利用者指定の貼り付けコード検査を追加した。offline単一HTMLとowner限定`security.inspectCode`で明示入力を静的検査し、編集後の実候補を可視化する。コード実行・外部送信・永続保存を追加せず、既存常駐guardの範囲を維持する。生成HTML／Node 14件とloopback HTTPのブラウザ動作、native host Python 23件が成功。今回native Linuxの検証は未実行で、既存guardのLinux結果を流用しない。
 
+- `SYS15`へGitHub repository検査を追加する。秘密検査・JS/TS/Python CodeQLを既存verifyから独立させ、実際のcheck／Security結果へ接続する。Dependabot通知・修正PRを有効化済み。main統合・required check・定時稼働は未実施として分ける。[GitHub連携](../spider-guard.md#github上でrockを検査する)と[security policy](../../SECURITY.md)を参照。
+
 主なtask: `SYS01`〜`SYS13`, `SYS15`, `LCH02`, `LCH03`, `OS05`。
 
 ## 次に進める順番

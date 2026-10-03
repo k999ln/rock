@@ -1,0 +1,8 @@
+# Changes to security controls and exceptions need the repository owner's review.
+# Review requests become effective after this file reaches the base branch.
+/.github/workflows/ @k999ln
+/.github/spider/ @k999ln
+/.github/CODEOWNERS @k999ln
+/scripts/spider-repository-scan.py @k999ln
+/tests/test_spider_repository_scan.py @k999ln
+/SECURITY.md @k999ln

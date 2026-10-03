@@ -1,5 +1,11 @@
 <div align="center">
 
+[![SPIDER secrets](https://github.com/k999ln/rock/actions/workflows/spider.yml/badge.svg?branch=codex%2Fspider-guard)](https://github.com/k999ln/rock/actions/workflows/spider.yml?query=branch%3Acodex%2Fspider-guard)
+[![SPIDER code analysis](https://github.com/k999ln/rock/actions/workflows/spider-codeql.yml/badge.svg?branch=codex%2Fspider-guard)](https://github.com/k999ln/rock/actions/workflows/spider-codeql.yml?query=branch%3Acodex%2Fspider-guard)
+
+SPIDER inspects this repository's Git history for suspected secrets and runs CodeQL on JavaScript/TypeScript and Python. Open the badges for the actual checks, or [Security](https://github.com/k999ln/rock/security) for alerts. The badges currently follow the integration branch; default-branch scheduling and required merge checks are pending integration. See [security policy](SECURITY.md) for coverage, privacy and response steps.
+
+
 <img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokado product concept: one slim silver avocadoMini R5 stands beside the words PLAY, MAKE, and LIVE with subtle animated lines" width="100%">
 
 # avokado
