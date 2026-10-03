@@ -4,7 +4,7 @@
 
 Security／ROCKのSYS15として、基準3890f16のCodeQL42件・Dependabot18件からMR納品照合のpath境界を調べる。CodeQL #1〜#4の周辺sourceで、成果物以外の契約／保存receiptは親symlinkを通ってworkspace外へ読み出されることを合成fixtureで再現した。固定vendorを変更せず、必要なfileだけを安全なhandleから上限付きで読みprivate snapshotへ渡す修正を行う。通常照合、symlink、差し替え、size／FIFO、失敗時cleanupを回帰し、配布ZIP・同一SHA解析を確認する。OS socket権限#12／#21／#22／#23は専用groupとSO_PEERCREDの既存設計に一致しており、このcycleでは変更・dismissしない。main統合・配備・実機・秘密失効は行わない。
 
-新規boundary14／既存MR・MCP・PC adapterのNode18（内部Python19）が合格し、実CLI／adapter／MCPの155 byte一致と独立レビューを確認した。source pin・配布ZIPとCI回帰を更新した。同一SHAのGitHub検査と個別alert解消は未取得。 全体verifyはbaseline／design／compositionまで成功後、未導入ai依存によりLLM architectureで停止。後続はclean CIで確認する。
+新規boundary14／既存MR・MCP・PC adapterのNode18（内部Python19）が合格し、実CLI／adapter／MCPの155 byte一致と独立レビューを確認した。source pin・配布ZIPとCI回帰を更新した。同一SHAのGitHub検査と個別alert解消は未取得。 全体verifyはbaseline／design／compositionまで成功後、未導入ai依存によりLLM architectureで停止。後続はclean CIで確認する。 初回GitHub検査6b7d148は境界14・MR連携18・主546合格／1skipとproduction測定が成功したが、MRを同梱するSky MCP ZIPの更新漏れで停止。配布物を再生成し再検査する。
 
 ## 2026-10-02 — SPIDER第2cycle: PC Tool定義の読取競合を修正
 

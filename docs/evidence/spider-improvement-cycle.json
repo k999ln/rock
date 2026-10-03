@@ -327,13 +327,15 @@
           "outputBytes": 155,
           "exactCliAdapterMcpBytesEqual": true
         },
-        "vendorUnchanged": true
+        "vendorUnchanged": true,
+        "bothDistributionPackagesMatchSource": true
       },
       "sourceSha256": {
         "toolkits/mr/rock_star_tools.py": "671bc5d2f2b31926e579c1134b1815f21e8b825716c88e875cfb6ec9f30bb6ae",
         "toolkits/mr/pc_citations.py": "1d81ba7c24e638ae72e5347b7d5ae3a42cab206bfc77325a578f25db21482edc",
         "tests/test_mr_delivery_boundary.py": "7aa86b845c4d8c242b1f0bb2f0750db50a83aa20c32afe7d4015dac327d87c04",
-        "public/toolkits/mr-toolkit.zip": "be2fe8a8ecb216f34591f1068fcd1fb1d4f9cd3e6a02e49b4436f8b8be22998b"
+        "public/toolkits/mr-toolkit.zip": "be2fe8a8ecb216f34591f1068fcd1fb1d4f9cd3e6a02e49b4436f8b8be22998b",
+        "public/toolkits/sky-mcp-connector.zip": "805a83d29c5c6942303661038e4f4bc08b8d89a58eab97f786834013a4c8a5f9"
       },
       "githubValidation": {
         "status": "pending_same_commit"
@@ -361,6 +363,20 @@
         "passedThrough": "project/repository/version/schema/database/release/signing/baseline/avocado/design/composition checks",
         "failure": "ai package not installed at llm:architecture:check",
         "laterGates": "not run locally; clean GitHub CI pending"
+      },
+      "initialGithubValidation": {
+        "commit": "6b7d1486b6f7abc4859b1ff6e946ca8293c2dd9f",
+        "fullVerifyRun": 37092776439,
+        "regressionRun": 37092776552,
+        "result": "failure: bundled MR copy in Sky MCP ZIP was not regenerated",
+        "mainTests": {
+          "passed": 546,
+          "skipped": 1,
+          "failed": 0
+        },
+        "boundaryPythonPassed": 14,
+        "mrMcpAdapterNodePassed": 18,
+        "productionWebMeasurement": "success"
       }
     }
   ],
