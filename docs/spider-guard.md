@@ -86,6 +86,12 @@ main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Researc
 
 第10cycleは#5の試験用保存を追跡した。指摘行の保存値は合成commit識別子によるignore fingerprintで、前段のPAT形状markerも未発行の合成値である。privateな一時Git履歴を使う検出回帰として維持し、修正0・dismiss0と記録。関連privacy2試験が成功したが、ローカル実Gitleaks1件はbinary不在でskip。通常cleanupと異常終了時の削除保証を区別し、固定control sourceとの同一性・公開後CI・個別alert状態を[第10cycleの記録](evidence/spider-improvement-cycle.json)で追跡する。
 
+### 第11cycle: platform検証scriptの直接起動を制限
+
+基準 `6e88d0b`のCodeQL #13〜#16は、peer認証拒否をDACと独立して試す一時権限である。別の不備として、通常imageへ搭載される検証script本体がenable flagを確認せず、root／ARM64の直接起動で状態変更へ進むことを確認した。`main()`で正確な `rock.platform.verify=1` を1個必須にし、欠落・不正・重複を副作用とPASS出力の前に拒否する。既存のscope・root／ARM64・peer認証試験は維持する。
+
+旧sourceの合成5ケースで入口の不備を再現し、修正後のhost18試験（新規7を含む）が成功。誤起動防止の修正でありroot制御からの隔離や#13〜#16の警告解消ではない。正規の使い方・失敗時の復旧は[OS検証](native-os-validation.md#platform検証guestの起動条件sys152026-10-03)、source hash・独立review・同一SHA公開後検査は[改善記録](evidence/spider-improvement-cycle.json)に保存する。実guest／VM／実機の変更・起動は行わない。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。

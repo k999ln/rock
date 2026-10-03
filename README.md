@@ -183,6 +183,8 @@ Native CI reruns retain earlier evidence and select the latest attempt for each 
 
 The Mac virtual-device launcher passes the browser session credential through private standard input to a fixed opener command. It rejects malformed viewer URLs and reports fixed errors; `--no-open` does not fetch a display credential. [Display handoff and acceptance scope](systems/rock-star-os/os/desktop/README.md).
 
+The platform guest verifier also requires an explicit verification boot when invoked directly as root. Use the existing `verify-platform.py` host entry; ordinary boots reject the verifier before it can change guest state. [Invocation contract and validation scope](docs/native-os-validation.md#platform検証guestの起動条件sys152026-10-03).
+
 Its native security panel now has source-validated motion toward actual findings and reactions only to newly observed blocked requests. The panel also reports its Security Agent role, actual health, candidates and latest real refusal; the new backend, renderer and PIN profile checks passed in Linux fixtures. Earlier tests remain evidence for their recorded source revisions, including saved revision `a7cfca3`.
 
 A paste-and-edit code inspector is available as an offline single HTML file, `outputs/SPIDER.html` outside this repository. It checks source locally without running, uploading or persisting it, and needs no SDK or API key. Build and usage details are in [Spider Guard](docs/spider-guard.md#自分のコードを貼って検査する); its Node/loopback-browser checks and native host tests passed. Native Linux validation for this revision remains pending.

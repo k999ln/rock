@@ -1626,7 +1626,149 @@
         "currentPr52Verify": "success",
         "remediation": "On existingPR53, regenerate and review inventory for its exact lock; preserve component scopes and NOT_CLEARED, then rerun unchanged fullverify. No validator bypass or duplicate bump.",
         "dependencyBranchChanged": false
+      },
+      "publicationReadback": {
+        "commit": "6e88d0ba7d0bce759afa50a838f16c9cd3c70bf4",
+        "outcome": "same-SHA source CI succeeded; no repair or dismissal in cycle 10",
+        "codeql": {
+          "open": 38,
+          "fixed": 10,
+          "individualAlertStateRulePathLineUnchanged": true,
+          "analysisIds": [
+            1885718855,
+            1885718501
+          ]
+        },
+        "fullVerifyRun": 37118574684,
+        "fullVerify": "success",
+        "nativeRun": 37118574687,
+        "native": "success",
+        "history": {
+          "runID": 37118574707,
+          "conclusion": "failure",
+          "scanCompleted": true,
+          "reachableCommits": 667,
+          "candidateMatches": 2367,
+          "newHeadCandidateCountInMetadata": 0
+        },
+        "dependabot": 18,
+        "mainMerged": false
       }
+    },
+    {
+      "cycle": 11,
+      "baselineCommit": "6e88d0ba7d0bce759afa50a838f16c9cd3c70bf4",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "host regression passed; same-SHA publication validation pending",
+      "repairCount": 1,
+      "reviewedAlerts": [
+        13,
+        14,
+        15,
+        16
+      ],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabot": 18,
+        "historyCandidates": 2367
+      },
+      "baselineAnalysisIds": [
+        1885718855,
+        1885718501
+      ],
+      "repair": {
+        "cause": "guest-test.py is routinely installed but main relied on boot wrapper enable check; privileged ARM64 direct invocation could reach state-changing probes without explicit verification boot flag",
+        "classification": "accidental privileged direct-invocation safety; not privilege escalation or DAC/peer-auth bypass",
+        "change": "require exactly one rock.platform.verify=1 token before scope/root checks and any verification effect",
+        "preserved": [
+          "scope selection",
+          "effective UID0 and aarch64 requirements",
+          "intentional DAC/peer authorization tests",
+          "server/client authentication"
+        ],
+        "alertResolutionClaim": false
+      },
+      "baselineReproduction": {
+        "sourceSha256": "ef3b0fc5b3a5a99dcd3095d10477d389a41aaed7c6d2dd289ee08cd12e427742",
+        "syntheticCases": 5,
+        "allReachedFirstInventorySentinel": true,
+        "actualEffectsExecuted": false
+      },
+      "baselineSourceSha256": {
+        "systems/rock-star-os/os/platform/guest-test.py": "ef3b0fc5b3a5a99dcd3095d10477d389a41aaed7c6d2dd289ee08cd12e427742",
+        "systems/rock-star-os/os/platform/service.py": "6d71cc3dbe48f1653b70b6ffdfa92de6d8c76eb312e4ef78641c2989f9410764",
+        "systems/rock-star-os/os/platform/install-target.sh": "38cc7d58fedb980f4a0e99615fd33c819e235e85551d3c5f4d17d3f0dbeebd11",
+        "systems/rock-star-os/os/verify-platform.py": "23d843d3cd7267f44ccc778497de17dd549b258635909d52fe6fe8b15fe83b06",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S99rock-platform-verify": "dd7e795357f15263409a93034f83ec7388e96854dbd727137c501c4ea2aac71c",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform": "b0adcdb7f5139298a45608369cfd2ed25dc15ee42de58bf3c71bbcc4c7ebd6a7",
+        "systems/rock-star-os/os/security/guest-inventory.py": "becda600ef43e8ca34ca6fa40a9a983c104686006510313d560a1fe62062d538",
+        "systems/rock-star-os/os/README.md": "c302b5d6c34c2620abddb9309366d9d5d37317764877de0839f93dfb82afd86c",
+        "docs/os-game-profile-d3-isolation-20260910.md": "e89a43987373259fb195f95d98ee6772109dec77d0a3cb0869af67e86f99f0d6"
+      },
+      "repairedSourceSha256": {
+        "systems/rock-star-os/os/platform/guest-test.py": "b8e2af5796897e36dcb3df78b803c3702bc1888e3cede42e9cf6a2b74dab58ac",
+        "systems/rock-star-os/tests/test_os_platform_isolation_proof.py": "db2a26ec2af094ed12f5276e43528abdf4e2a668f1d247b405d5ad70596a0ad5"
+      },
+      "hostChecks": {
+        "command": "PYTHONPATH=systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_os_platform_isolation_proof test_os_game_verifier_scope -v",
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "newGateTests": 7,
+        "existingEntryAndScopeTests": 11,
+        "scope": "Production main/check functions extracted via AST and executed with synthetic os/Path/subprocess/IPC collaborators; source files are the only real inputs. Existing scoped proof tests are host fixtures.",
+        "logSha256": "db598a5ff426a36867f5e32a7a0239c3a2b909e3a095a39aa7ef3d027dfa392d"
+      },
+      "independentReview": {
+        "verdict": "no_blocker_found",
+        "findings": [],
+        "sourceSha256": {
+          "systems/rock-star-os/os/platform/guest-test.py": "b8e2af5796897e36dcb3df78b803c3702bc1888e3cede42e9cf6a2b74dab58ac",
+          "systems/rock-star-os/tests/test_os_platform_isolation_proof.py": "db2a26ec2af094ed12f5276e43528abdf4e2a668f1d247b405d5ad70596a0ad5",
+          "systems/rock-star-os/os/verify-platform.py": "23d843d3cd7267f44ccc778497de17dd549b258635909d52fe6fe8b15fe83b06",
+          "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S99rock-platform-verify": "dd7e795357f15263409a93034f83ec7388e96854dbd727137c501c4ea2aac71c",
+          "systems/rock-star-os/os/platform/service.py": "6d71cc3dbe48f1653b70b6ffdfa92de6d8c76eb312e4ef78641c2989f9410764"
+        },
+        "newGateTestsIndependentlyPassed": 7,
+        "existingFourTestsAstUnchanged": true
+      },
+      "localFullVerify": {
+        "status": "incomplete",
+        "exitCode": 1,
+        "failure": "ai package missing at llm:architecture:check",
+        "laterGates": "not run locally",
+        "logSha256": "d91d0e1974867b6058ab7c42313b654d7fa274f446284f1f9d2d7a14697001a9"
+      },
+      "limitations": [
+        "Root control remains trusted; this gate prevents accidental privileged invocation.",
+        "Intentional DAC permission alerts #13-16 remain independently open until same-ref readback.",
+        "Existing finally cleanup cannot guarantee restoration on forced termination or failed first restoration.",
+        "No guest image rebuild, boot, VM, physical device or 24-hour acceptance."
+      ],
+      "remaining": {
+        "codeql": 38,
+        "dependabot": 18,
+        "historyCandidates": 2367,
+        "dependencyPrs": [
+          53,
+          54,
+          55,
+          56
+        ]
+      },
+      "boundaries": {
+        "runtimeSourceChanged": true,
+        "testSourceChanged": true,
+        "scannerPolicyChanged": false,
+        "mainMerged": false,
+        "guestBoot": "NOT_RUN",
+        "physicalDevice": "NOT_RUN",
+        "continuous24Hours": "NOT_RUN"
+      },
+      "publicationEvidence": "Same-SHA CI, complete per-ID same-ref alert comparison and post-push hashes will be recorded in PR52 and external SPIDER artifact.",
+      "projectDatabaseDesignChecks": "passed"
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."

@@ -122,6 +122,19 @@
     },
     {
       "id": "linux_qemu",
+      "platformGuestVerificationEntry": {
+        "document": "docs/native-os-validation.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/platform/guest-test.py",
+        "regressions": "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
+        "input": "/proc/cmdline requires exactly one rock.platform.verify=1 token before any guest verification effect",
+        "authorization": "existing effective UID 0 and aarch64 requirements; does not protect against control of root",
+        "scope": "default local-full or one explicit game-isolation; peer authorization probes unchanged",
+        "failure": "missing, malformed, false, duplicate or conflicting enable tokens fail before PASS, subprocess, IPC, chmod or business mutation",
+        "recovery": "use os/verify-platform.py with fresh userdata, no NIC and read-only rootfs; no automatic enable fallback",
+        "storage": "no new credential, file or persistent setting",
+        "acceptance": "synthetic production-entry regression and Linux source CI; guest image boot remains separate"
+      },
       "desktopCredentialHandoff": {
         "document": "systems/rock-star-os/os/desktop/README.md",
         "completeDesign": "docs/rockstaros-complete-design.md",

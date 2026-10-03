@@ -471,3 +471,9 @@ Mac launcherは、現在のlive sessionに結びつくVNC credentialを既存の
 入力は固定loopback host・index.html・有効なport・8文字のsession credentialだけで、script文字列・改行・外部URLを拒否する。browser起動は固定argvのosascriptへ標準入力で渡す。秘密をargv・環境変数・一時ファイル・通常resultへ出さず、viewerはfragmentを依存module読込前に消す。`--no-open`は秘密を取得しない。非browser VNCの既存経路とguestの秘密ファイル／peer境界は維持する。
 
 起動成功時だけ通常のcredentialなしdisplay URLを返す。起動失敗・10秒timeout・実行file欠落は固定errorとし、秘密付きargvへfallbackしない。既存OSと接続を保持し、復旧後に本人が同じlauncherを再実行する。試験はprivate stdin受渡し、URL注入拒否、例外とstdout／stderrの非漏出、no-openを確認し、同一SHAのLinux source検査と分けて記録する。Macの実browser／QEMU接続、別UIDでのprocess観測、browser内部や特権memoryの保護は別受入である。[契約と検証](../systems/rock-star-os/os/desktop/README.md)。
+
+### Platform検証guestの明示起動（SYS15）
+
+通常imageに含まれる検証scriptはToolやsimulator状態を変更するため、ROCKがboot wrapperとscript本体で検証専用起動を確認する。本体はroot／ARM64に加えkernel command lineの正確な `rock.platform.verify=1` 1個を要求し、未指定・無効値・重複ではinventory・IPC・権限・業務操作前に停止する。default local-fullと明示game-isolationの既存scopeを保持し、未取得の結果をPASSとして出力しない。
+
+新しい永続設定や資格情報は保存しない。拒否時は既存データを変更せず、適合artifactを使う `verify-platform.py` から新しい検証guestを起動して復旧する。一時DAC緩和によるpeer拒否試験と本番service認証は維持する。専用起動を明示する条件であり、rootからの隔離や新OS imageの受入を意味しない。[入力・失敗・復旧・回帰と未実行範囲](native-os-validation.md#platform検証guestの起動条件sys152026-10-03)を正本とする。

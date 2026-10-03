@@ -1,5 +1,15 @@
 # Native OSのRock統合検証
 
+## Platform検証guestの起動条件（SYS15、2026-10-03）
+
+`systems/rock-star-os/os/verify-platform.py`を、検証用artifactを用意したLinux環境から実行する既存入口を維持する。このhost入口は新規userdata、networkなし、読み取り専用rootfsで検証guestを起動し、kernel command lineへ `rock.platform.verify=1` を指定する。`--scope game-isolation`だけが追加scopeを指定する。既存imageの受入を新sourceへ流用しない。
+
+通常imageにも配置する `os/platform/guest-test.py` は、boot wrapperだけでなく本体でもroot・ARM64と1個の正確なenable tokenを必須にする。enable未指定、無効値、空値、重複・競合を拒否し、default local-full／単独のgame-isolation以外のscopeを拒否する。拒否はinventory子process、IPC、chmod、Tool操作、simulator操作、PASS出力より前に行う。rootで直接呼んでも通常bootでは検証処理へ進まない。これは誤った直接起動を防ぐ条件で、root権限保有者に対する隔離境界ではない。
+
+ROCKが検証器とそのhost回帰を管理する。入力はkernelの起動tokenと実行identityで、追加credentialや永続設定は保存しない。起動条件が満たされない場合は失敗を返し、flagを自動補完して継続しない。復旧は適合する検証artifactから既存host入口で専用guestを起動する。既存guestデータをこの拒否で変更しない。
+
+peer UIDをDACから独立検査する一時的な0755／0666と、通常復元の0660／0750、本文前のUID認証は保持する。復元syscall自体の失敗や強制終了への保証を追加したとは扱わない。host回帰は不正起動の無副作用と正規2scopeの継続を確認し、CodeQL #13〜#16の一時権限警告や、実guest／実機／24時間受入とは分離して記録する。
+
 ## CI再実行の結果選択（SYS15、2026-10-03）
 
 nativeのsource検査は4つのmain partitionとsupportに分割する。artifact名にGitHubのrun attemptを含め、`scripts/select-native-artifacts.py`が同じrun／headのAPI metadataから各partitionの最大attemptを選ぶ。IDや時刻、PASSの有無では選択しない。再実行されなかった区分は同じrunの以前のattemptを再利用する。
