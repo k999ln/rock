@@ -29,7 +29,11 @@ void test('MCP lifecycle lists four tools and runs all four through stdio',()=>{
   assert.equal(outputs.length,6);assert.equal(outputs[0].result.protocolVersion,'2025-11-25');assert.equal(outputs[1].result.tools.length,4);
   assert.equal(outputs[2].result.structuredContent.status,'PASS');
   for(const o of outputs.slice(2)){assert.equal(o.result.isError,false,JSON.stringify(o));assert.ok(o.result.structuredContent.output.length>0);}
-  assert.match(outputs[3].result.structuredContent.output,/https:\/\/python.org/);assert.equal(outputs[5].result.structuredContent.status,'PASS');
+  assert.equal(
+    outputs[3].result.structuredContent.output,
+    '本文。\n---\n\n## 出典\n\n- [Python](https://python.org)\n',
+  );
+  assert.equal(outputs[5].result.structuredContent.status,'PASS');
 });
 void test('MCP reports ineligible work as needs-review rather than a passed step',()=>{
   const output=messages([call(1,'coconala_check',{brief:'毎週Zoom面談への参加が必須です。',proposal:'対応します。',bucket:'retainer'})])[0];

@@ -3348,6 +3348,236 @@
         "secretRotation": false
       },
       "publicationEvidence": {
+        "commit": "08e77ff21483ff5f3259cfd24c271721f09b6899",
+        "fullVerify": {
+          "run": 37143287824,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37143287881,
+          "attempt": 1,
+          "conclusion": "success",
+          "pythonTests": 1789,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1886583860,
+          "pythonAnalysis": 1886584113,
+          "open": 34,
+          "fixed": 14,
+          "individuallyFixed": [
+            30
+          ],
+          "otherStateOrLocationChanges": []
+        },
+        "history": {
+          "run": 37143287857,
+          "scanCompleted": true,
+          "commits": 674,
+          "candidates": 2367,
+          "conclusion": "failure"
+        },
+        "classification": "test validation improvement; not a runtime XSS repair"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency"
+    },
+    {
+      "cycle": 18,
+      "baselineCommit": "08e77ff21483ff5f3259cfd24c271721f09b6899",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "two MCP output assertions strengthened; exact-SHA publication checks pending",
+      "repairCount": 0,
+      "validationImprovementCount": 1,
+      "runtimeVulnerabilityFixed": false,
+      "reviewedAlerts": [
+        45,
+        46
+      ],
+      "focusedFinding": "Two regression tests accept wrong documents or a domain in unrelated response metadata. Compare independent literal complete documents in the structured output field and check Connector tool success.",
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 34,
+        "dependabot": 18,
+        "historyCandidates": 2367
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-18-feedback/report.json",
+        "sha256": "48f97f0e88e9f8f9c1afe14033407dfa2f70fe48e5e6a36b0735538ed8e314b7",
+        "collectedAt": "2026-10-03T19:03:23.848Z",
+        "targetHead": "08e77ff21483ff5f3259cfd24c271721f09b6899",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 52,
+          "actionable": 35,
+          "review": 15,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 34,
+            "retrievedCount": 34,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "change": {
+        "testFiles": [
+          "tests/mcp.test.mjs",
+          "tests/mcp-connector.test.mjs"
+        ],
+        "existingTestsStrengthened": 2,
+        "newTests": 0,
+        "existingTests": 12,
+        "productionRuntimeChanged": false,
+        "otherAssertionsPreserved": true,
+        "expectedOutputGeneratedByProduction": false
+      },
+      "hostChecks": {
+        "command": "node --experimental-strip-types --test --test-reporter=tap tests/mcp.test.mjs tests/mcp-connector.test.mjs",
+        "platform": "Darwin",
+        "nodeVersion": "v26.0.0",
+        "pythonVersion": "Python 3.14.7",
+        "exitCode": 0,
+        "tests": 12,
+        "pass": 12,
+        "fail": 0,
+        "skipped": 0,
+        "testNames": [
+          "SDK tools appear in the PC hub and execute only after one-time approval",
+          "registry is declarative, bounded and rejects duplicate server identities",
+          "remote transport rejects credentials, insecure URLs and local network targets",
+          "one connector negotiates the latest shared MCP protocol and arbitrary tool counts",
+          "tool execution requires an exact, single-use approval and blocks direct bypass",
+          "connector binds browser token to an allowlisted Origin",
+          "MCP flow citation sample returns the complete formatted document",
+          "MCP lifecycle lists four tools and runs all four through stdio",
+          "MCP reports ineligible work as needs-review rather than a passed step",
+          "delivery verifies supplied bytes and rejects altered artifacts",
+          "MCP rejects filesystem escapes, shell requests, invalid input and gigantic numbers without dying",
+          "MCP malformed JSON receives a protocol error and no-id calls never execute"
+        ],
+        "dependencyInstall": false,
+        "attempts": 1,
+        "environment": "PATH and synthetic temporary SKY_LOCAL_TOOL_DIR only. Existing test harnesses use local stdio tools and loopback HTTP. No external provider configured.",
+        "temporaryDefaultToolDirectoryRemoved": true,
+        "rawTestLogsSaved": false,
+        "externalNetworkRequests": 0
+      },
+      "sourceFacts": [
+        "The protected citations adapter masks code spans/fences, invokes the fixed vendor transform, and restores protected content. The fixed samples become the unchanged body plus one source block with the original label and destination and a final newline.",
+        "mcp_server.execute(format_citations) returns {output: string}; rpc puts it in result.structuredContent and reports result.isError false.",
+        "Connector Hub.rpc unwraps the JSON-RPC result; Hub.execute returns it after exact approval checks; /execute wraps it as {result: MCP tool result}. HTTP 200 alone does not establish result.isError false.",
+        "The new tests compare literal full documents in result.structuredContent.output; the Connector also rejects result.isError true. Expectations are constant and not generated by the production formatter."
+      ],
+      "testedSourceSha256": {
+        "tests/mcp.test.mjs": "a3341669dce0554da924cfb2e04f246e8f8d0f125d926798eec71059c9440e8a",
+        "tests/mcp-connector.test.mjs": "50bdc4d41fe79037afcc912552edd53cda31464dbf418dba23b2c120d340d2c1",
+        "toolkits/mr/mcp_server.py": "643420c5bf4505b36b6b2435e34e39923f5fd1fb619692ee41ee631b4e787fb0",
+        "toolkits/mr/pc_citations.py": "1d81ba7c24e638ae72e5347b7d5ae3a42cab206bfc77325a578f25db21482edc",
+        "toolkits/mr/rock_star_tools.py": "671bc5d2f2b31926e579c1134b1815f21e8b825716c88e875cfb6ec9f30bb6ae",
+        "toolkits/sky-mcp-connector/server.mjs": "30695057af1a71b6037fcb2d861f5a22cb868bd926abeb49fb86f26a45918c4b",
+        "toolkits/sky-mcp-connector/registry.json": "23d0e9f2d2bda6a0860ca355a9d3f817f0d8179140a5a38a01300e40500aeeb4",
+        "vendor/mr/citation-strip.py": "ed5c28225402c5885c1265c0648b5d4d227a2345ca71e387275a8f205b4ffd13",
+        "vendor/mr/provenance.json": "e782c0b741e9bcdcc3a591e2e6c3bcdaf5b03b51d08e77e4becf218b1e4cbd4f",
+        "toolkits/mr/pc_citations_worker.py": "cca361ad08c2c37259877157b892ec092b6a8693f82efb140c46e0984239ae33"
+      },
+      "baselineTestSha256": {
+        "tests/mcp.test.mjs": "f48855ff28128225bbe59f01a4d46ad5ac75e468ca33012e4274d779db8f29e5",
+        "tests/mcp-connector.test.mjs": "857b31935a15ce225d2eae1bb3f68ab6b04fbf594a0ec01ca13f8ba070a13d20"
+      },
+      "expectedOutputMetadata": {
+        "stdio": {
+          "utf8Bytes": 57,
+          "sha256": "1e83749f0ff56565a270964d998e680114bd31c1e3f3548d6276b7909655cbb4"
+        },
+        "connector": {
+          "utf8Bytes": 68,
+          "sha256": "589e1bdf452b78f28dda2582fc3d71037da09be26f12ef3fd5ea873c7e47e8b6"
+        }
+      },
+      "mutationProbe": {
+        "cases": 17,
+        "beforeAndAfterEvaluations": 34,
+        "weakOldAssertionsAcceptedInvalidResults": 13,
+        "validControls": 2,
+        "existingRejectionControls": 2,
+        "stdioScope": "The complete actual before/after lifecycle callback ran in a VM with spawnSync and fixture reads replaced by synthetic collaborators. No subprocess or filesystem fixture execution occurred.",
+        "connectorScope": "Only the actual changed assertion block, including HTTP status and JSON read, ran before/after. The approval and replay requests were source-reviewed, not mocked or executed by this probe."
+      },
+      "probeSourceSha256": "e34a700cc55385be9d93ac3a8cfb836dcb10988669ae0814367e8fbc68d7c080",
+      "probeSourceScope": "Ignored local diagnostic; not a tracked runtime input.",
+      "independentReview": {
+        "conclusion": "No actionable blocker found. Exact complete-document equality checks the correct structured output field for these fixed fixtures.",
+        "preservation": {
+          "onlyTargetAssertionBlocksReplaced": true,
+          "allOtherSourceBytesAndAssertionsUnchanged": true,
+          "existingTestNamesAndOrderUnchanged": true,
+          "testCounts": {
+            "mcp": 6,
+            "connector": 6
+          },
+          "productionRuntimeUnchanged": true,
+          "newDependency": false,
+          "scanExclusionsAdded": false,
+          "lifecycleProtocolToolCountStatusesAndFourToolRunsPreserved": true,
+          "connectorDirectBypass403AlteredApproval409Replay403DisconnectStaleApproval403Preserved": true
+        },
+        "validation": {
+          "command": "node work/spider-ci/cycle-18-output-probe.mjs",
+          "gitDiffCheck": "PASS",
+          "noNetwork": true,
+          "noRealCredentials": true,
+          "noTrackedWrites": true,
+          "hostSuitesRepeatedByReviewer": false
+        },
+        "reviewEvidenceSha256": "7c32df8eb8b318f8c98d5c736963063ff4c35d8e76878adc40b4aa1855453538"
+      },
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "81c7c637b068120d360fca2a7358497ffe966ce93ad9d6a36b58316febb05f24"
+      },
+      "remaining": {
+        "codeql": "Same-ref #45/#46 and all other IDs must be read after new analysis; #37 source line shifts by four lines only.",
+        "dependencies": "18 default-branch alerts; existing PR53-56 unchanged; no duplicate PR.",
+        "history": "2367 pattern candidates; not a count of unique valid secrets."
+      },
+      "limits": [
+        "This probe is bounded synthetic test-observability evidence, not a live HTTP approval-flow, formatter execution, external-provider integration, or runtime URL security test.",
+        "Existing MCP lifecycle isError assertions already rejected error responses; the old lifecycle finding is limited to weak formatted-document content validation.",
+        "No CodeQL reanalysis or alert-closure outcome is inferred from source review.",
+        "Host Node/Python fixture results do not establish browser, full Web/API flow, guest OS, device, live provider or production acceptance.",
+        "A future CodeQL analysis must establish alert status; no warning was dismissed.",
+        "Existing targeted tests were run once with authorized local listeners; this is not a full npm-ci or full repository verify."
+      ],
+      "boundaries": {
+        "runtimeChanged": false,
+        "testChanged": true,
+        "scannerPolicyChanged": false,
+        "vendorChanged": false,
+        "dependencyChanged": false,
+        "mainMerged": false,
+        "forcePush": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false
+      },
+      "publicationEvidence": {
         "status": "pending; see PR52 after exact-SHA readback"
       },
       "projectDatabaseDesignChecks": "passed before missing ai dependency"

@@ -305,3 +305,9 @@ CodeQL #36はFashion MCPのdefault Origin確認である。`loadConfig` の `spl
 CodeQL #30のCSV報告テストは、小文字のscript tagだけを否定していた。HTML全体を静的fixtureと比較する形へ強化し、大小文字・空白・属性を変えたタグ、イベント属性、5特殊文字、通常のUnicodeを含む7入力をjob ID／warningへ個別に渡す。通常のwarningなし分岐も含む15renderを確認する。既存の5つのCSV変換testと元の小文字sampleは保持する。
 
 fixtureは実rendererから実行時に生成しない。文書レイアウトを変更する場合は、安全な静的markupと数値／encoding／text位置をレビューして期待値を更新する。productionのescape処理や認証・配信headerを変更せず、この結果を現APIのXSS修正やブラウザ実行試験とは扱わない。依存不足による初回未実行と、同版の既存依存を使う限定host試験を分け、source hash・誤出力比較・独立review・同一SHAの再検査を[改善記録](evidence/spider-improvement-cycle.json)へ保存する。
+
+## 第18cycle: MCPの結果欄を全文照合
+
+CodeQL #46のstdio MCPテストと#45のConnector承認後テストは、応答にドメイン名が含まれるだけで結果を受理していた。固定入力に対する出典文書を独立したliteral期待値と全文照合し、Connectorでは正しい`result.structuredContent.output`と`isError`を確認する。本文・URL・出典位置の変更や、期待ドメインが別のmetadataにあるだけの応答を合格にしない。
+
+既存のlifecycle／4 Tool実行と、直接呼出拒否・引数変更拒否・一回承認・再送／停止後拒否は保持する。formatter・URL認可・承認ロジック・vendor・配布ZIPは変更しない。これは結果検証の改善でありruntimeの認可欠陥の修正ではない。source hash・旧新assertionの比較・関連host試験・同一SHAのCIを[改善記録](evidence/spider-improvement-cycle.json)へ保存する。

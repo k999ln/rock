@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-10-03",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
-  "nextAction": "SYS15第17cycleでCodeQL #30のHTML報告テストを確認し、小文字<script>だけの否定から静的な期待HTML全体との一致へ強化する。固定7入力をjob ID／warningの2text contextで確認し、通常出力も保持する。関連host8試験成功、同一SHAのGitHub再検査と個別alert状態を確認する。productionのescape処理・URL／認証・依存は変更せず、runtime XSS修正とは扱わない。Dependabot18件・履歴2,367候補と既存PR53〜56は継続調査。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
+  "nextAction": "SYS15第18cycleでMCPの結果テスト2件（CodeQL #45／#46）を確認する。ドメイン名の部分一致だけで合格する盲点を、正しいstructured resultの全文照合で補う。既存の本人承認・引数変更拒否・再送拒否を保持し、runtimeのURL認可修正とは区別する。関連host12試験成功、旧判定が受理する誤出力13件を新判定は拒否。独立reviewで他のassertion保持を確認。同じSHAの再検査と個別alert比較は公開後に確認する。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
     {
       "id": "ORG01",
@@ -1728,7 +1728,8 @@
         "tests/mcp.test.mjs",
         "tests/mr-tools.test.mjs",
         "tests/csv-transform.test.mjs",
-        "tests/fixtures/csv-report.html"
+        "tests/fixtures/csv-report.html",
+        "tests/mcp-connector.test.mjs"
       ]
     },
     {
