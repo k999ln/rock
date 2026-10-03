@@ -18,6 +18,10 @@ At setup, `main` had no required status checks. Workflow failures are visible bu
 
 ## Reporting and response
 
+The improvement cycle is: collect metadata → inspect the source → implement a focused repair → run regression tests → rescan the same commit → report a reviewable PR. `npm run spider:feedback -- --ref codex/spider-guard --output work/spider-feedback` reads CodeQL alerts for that branch, Dependabot alerts for the default branch and current-HEAD workflow status. It never changes or dismisses alerts. Collection failure, incomplete pagination and missing checks remain unknown, not zero findings. A successful collection is not a clean security result.
+
+An hourly local Codex follow-up continues this cycle while its computer and app are running. It reuses existing dependency fix PRs and reports meaningful findings, verified repairs and failures. It does not merge, deploy, rotate credentials or weaken checks. The `SPIDER / repair regressions` job exercises the collector, service-worker sender boundary and MCP authentication/error regressions. Unlike static scans, this job runs repository tests in an isolated GitHub runner with read-only repository permission and no configured secrets.
+
 Do not post credentials, personal records, recovery phrases or exploit details in a public issue or PR. If GitHub offers “Report a vulnerability” in this repository's Security tab, use that private channel. Otherwise arrange a private channel with the repository owner before sharing details; this document does not promise that private reporting is enabled.
 
 If a genuine secret is found, revoke or rotate it at its issuer first, then remove its use from source and review access logs. Deleting the current line does not erase Git history or invalidate a credential. Do not add an exception to silence a genuine leak. Any history rewrite is a separate owner-controlled operation.

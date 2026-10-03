@@ -1,0 +1,33 @@
+name: SPIDER repair regressions
+
+on:
+  push:
+    branches: [main, codex/spider-guard]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: spider-regressions-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regression:
+    name: SPIDER / repair regressions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - name: Test feedback collection and update-message boundaries
+        run: node --test tests/spider-feedback.test.mjs tests/service-worker-update.test.mjs
+      - name: Test MCP authentication, errors and existing toolkit behavior
+        run: npm --prefix toolkits/fashion-brand-ops test
+      - name: Verify distributed toolkit matches source
+        run: python3 scripts/package-sky-mcp.py --check

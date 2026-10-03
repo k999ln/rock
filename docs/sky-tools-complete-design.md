@@ -224,6 +224,8 @@ catalogued → selected → connected → ready → running → review → compl
 - 入力: brand policy、product、goal、asset、social account ref、顧客event、決済event。
 - 出力: plan、draft、approval request、DM draft、order、production task、analytics。
 - 実行: 本人PCのNode MCP。初期Providerはmock。
+- HTTP認証: 固定bearerを設定した構成ではOriginによる認証mode切替と`/connect`発行を禁止。ワンクリックsessionはbearer未設定・loopback bind・実peer loopback・exact origin／Hostに限定する。tenant境界は保持する。
+- HTTP失敗: JSON構文、署名、Provider設定、その他の失敗を固定error codeへ変換し、入力本文や内部例外を返さない。実HTTP回帰で認証回避拒否と秘密fixture非表示を確認する。
 - secret: `env://`またはvault参照。access token本文をDBやmetadataへ保存しない。
 - external-write: 価格変更、外部生成、投稿、広告、DM送信、請求、返金、通知は操作別の署名付きapprovalが必要。
 - money: `paid`／`refunded`は署名検証済みProvider eventだけが変更できる。

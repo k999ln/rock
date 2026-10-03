@@ -5,6 +5,8 @@
 
 SPIDER inspects this repository's Git history for suspected secrets and runs CodeQL on JavaScript/TypeScript and Python. Open the badges for the actual checks, or [Security](https://github.com/k999ln/rock/security) for alerts. The badges currently follow the integration branch; default-branch scheduling and required merge checks are pending integration. See [security policy](SECURITY.md) for coverage, privacy and response steps.
 
+SPIDER's improvement cycle collects alerts, reviews the source, makes a focused repair, runs regression tests and rescans the same commit before reporting a fix in a PR. Run `npm run spider:feedback -- --ref codex/spider-guard --output work/spider-feedback` to refresh the metadata-only queue. The configured hourly Codex follow-up needs the local computer and app running; it does not merge PRs. See [cycle and reporting](docs/spider-guard.md#検出からコード改善へ戻すサイクル).
+
 
 <img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokado product concept: one slim silver avocadoMini R5 stands beside the words PLAY, MAKE, and LIVE with subtle animated lines" width="100%">
 

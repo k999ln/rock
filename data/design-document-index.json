@@ -170,6 +170,16 @@
     },
     {
       "id": "security_operator_release",
+      "spiderImprovementCycle": {
+        "document": "docs/spider-guard.md",
+        "status": "IMPLEMENTED_RESCAN_PENDING",
+        "collector": "scripts/spider-feedback.mjs",
+        "regressions": ".github/workflows/spider-regressions.yml",
+        "cadence": "hourly local Codex follow-up; host and app must be running",
+        "autoMerge": false,
+        "firstRepairs": [42, 31, 47],
+        "toolDesign": "docs/sky-tools-complete-design.md#8-instagram運用・受注型ブランド管理"
+      },
       "coverage": "DETAILED_PRODUCTION_ENROLLMENT_PENDING",
       "spiderGuardStatus": "NATIVE_PLATFORM_INTEGRATION_IN_PROGRESS_SAME_IMAGE_BOOT_PENDING",
       "spiderGuardAnimationRevision": {

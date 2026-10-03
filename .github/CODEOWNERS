@@ -4,5 +4,7 @@
 /.github/spider/ @k999ln
 /.github/CODEOWNERS @k999ln
 /scripts/spider-repository-scan.py @k999ln
+/scripts/spider-feedback.mjs @k999ln
+/tests/spider-feedback.test.mjs @k999ln
 /tests/test_spider_repository_scan.py @k999ln
 /SECURITY.md @k999ln

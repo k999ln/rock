@@ -18,7 +18,7 @@ OSへの同梱、boot時起動、再起動監督、native画面の実データ�
 
 - [SPIDER repository security](https://github.com/k999ln/rock/actions/workflows/spider.yml): Gitleaks 8.30.1の公式archiveを固定SHA-256で検証し、検査対象HEADから到達できるGit履歴の秘密情報パターンを検査する。候補と検査失敗はcheck失敗。秘密値・本文・commit message・authorをreportへ保存しない。公開fixtureの例外はruleとpathと値を絞って根拠を記す。履歴全体やtest directoryを一括除外しない。
 - [SPIDER code analysis](https://github.com/k999ln/rock/actions/workflows/spider-codeql.yml): JavaScript／TypeScriptとPythonをCodeQLのsecurity-extendedで解析し、[Code scanning](https://github.com/k999ln/rock/security/code-scanning)へ結果を送る。解析成功と警告0件は別であり、C／C++、Java／KotlinやOS runtime保護の受入は含まない。
-- GitHub標準のsecret scanning／push protectionは既に有効だった。Dependabot vulnerability alertsとautomated security-fix PRは2026-10-03 UTCに有効化・readbackした。設定と警告の有無は別で、今回の初回取得はopen alert 0件だった。修正PRの自動mergeは設定しない。
+- GitHub標準のsecret scanning／push protectionは既に有効だった。Dependabot vulnerability alertsとautomated security-fix PRは2026-10-03 UTCに有効化・readbackした。有効化直後の取得は0件だったが、その後18件と修正PR #53〜#56の生成を確認した。設定の有効化と警告0件は別で、修正PRの自動mergeは設定しない。
 
 push（main／codex/spider-guard）、PR、手動実行に反応する。毎日の定時実行はdefault branchへのworkflow統合後からで、GitHub側の遅延・停止条件がある。常時接続や24時間可用性を保証するものではない。GitHub上のソース検査は、Platform固定dataの個人情報検出／外部送信前拒否とは別の境界である。
 
@@ -29,6 +29,26 @@ push（main／codex/spider-guard）、PR、手動実行に反応する。毎日�
 source検証はscanner境界6件、実Gitleaks例外policy 6件、CodeQL設定・summary 4件が合格した。実binaryで履歴から削除された秘密、候補側ignoreとinline allow、`.gitattributes -diff`による検査回避を検知し、任意diff helperを実行しないことを確認した。既存`beb99b0`の637コミットをmerge差分も含めて検査し、2,357履歴候補を返した。これは同じ値の再登場を含み、2,357個の有効な秘密が漏れたという意味ではない。初回のmergeを除く583 generic候補のうち373件はfilename label、8件は明示hash label、150件はkey label、52件はその他であり、除外根拠の未確認部分は残した。公開用の正確な3値だけを例外にし、全体を合格へ変更しない。[source・設定の検証記録](evidence/spider-github-source-validation.json)を保存する。
 
 今回のproject／database／design整合は成功。`npm run verify`は既存baseline visual期待値1057で停止した。GitHub実行結果は上のworkflowとPR checkから参照する。新規workflowのmain統合は未実施。
+
+## 検出からコード改善へ戻すサイクル
+
+利用者の追加指示により、検査結果を報告するだけでなく、`検出 → 原因確認 → 修正 → 回帰テスト → 同一commitを再検査 → PRで報告`へ戻す。既存SYS15を継続し、修正後も次の検出へ進む。
+
+```sh
+npm run spider:feedback -- --ref codex/spider-guard --output work/spider-feedback
+```
+
+このcommandは認証済み`gh`で固定repo `k999ln/rock`を読み、`report.json`と`queue.md`を作る。CodeQLは指定ref、Dependabotはdefault branchの警告であり、両者のscopeを混同しない。取得前後のHEAD、各警告の番号・rule・安全なpath／行・解析commit、現HEADのworkflow状態を保持する。本文、snippet、secret-scanningの秘密値、Actions logは取得しない。ページ上限、取得失敗、HEAD移動、欠落したcheckは不完全として示す。exit 0は収集完了であって、警告解消や安全保証ではない。
+
+このチャットに1時間ごとのCodex follow-upを設定した。これはローカルPCとCodexアプリが起動している間に進む改善担当で、GitHub上の検査とは別である。sourceを確認して高優先度1件または同じ原因の小さな一組を修正し、既存PRへ追記する。依存関係はDependabotの既存修正PRを再利用する。test／vendor／文書内の指摘は文脈を確認し、件数を減らすための一括除外や自動dismissはしない。秘密の失効・本番deploy・main mergeはこのcycleで自動実行しない。
+
+報告対象は新しい重要な問題、検証できた修正、実行失敗、本人判断が必要な事項とする。変化のない回で同じ通知を繰り返さない。修正完了の判断には対象警告の同じref上の状態と解析commitを確認し、件数の減少だけを根拠にしない。main未統合のworkflowを定時稼働済みとしない。
+
+初回の取得基準はcommit `936c63215330adb0e510be178f4fc74ba1d20b28`のCodeQL 47件、default branchのDependabot 18件。履歴秘密検査は2,357候補でcheck失敗を維持している。初回修正はFashion HTTPの設定済みbearer認証回避（#42）と内部エラー応答（#31）、Service Worker更新messageのorigin／window client検証（#47）。SWの修正はmessage境界の強化で、実ブラウザでcross-origin攻撃が成立したという主張ではない。
+
+`.github/workflows/spider-regressions.yml`は収集処理、SW更新境界、Fashion toolkit全体、配布ZIP一致を独立して検証する。collectorのread-only GETと静的scannerとは異なり、回帰jobはread-only権限・secret未設定のGitHub runnerで対象のテストコードを実行する。現在の実装・試験とGitHub再解析の結果はPR #52へ記録し、未解決警告を残したまま全体合格としない。
+
+初回修正のhost Node検証はcollector 10、SW 8、CodeQL設定4、Fashion toolkit 22の計44件が合格し、配布ZIP一致、project／database／design整合も成功した。途中のhost容量不足による試験失敗後、空き容量回復時の再実行で全44件を確認した。全体verifyはSW変更により既存Web security policyの測定input hashが古くなったためrelease gateで停止しており、測定更新とGitHub実行を別途確認する。
 
 ## 自分のコードを貼って検査する
 
