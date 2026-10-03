@@ -291,3 +291,10 @@ CodeQL #33の `scripts/verify-mcp-flow.mjs` は、固定の合成入力に対す
 CodeQL #34／#35は `tests/mr-tools.test.mjs` の通常記事とコードfence付き出典に対する2つの固定fixtureで、URL文字列だけを部分一致していた。両方を独立した全文期待値へ強化し、出典の欠落・変更や本文への余計な追加を検出する。元の本文先頭、有料本文の除外、footer、fence保存の確認を保持する。公開用fixtureの文書仕様を変える場合は、意図した本文・出典・無料／有料境界をレビューして期待値を更新し、不一致を見逃さない。
 
 これは既存テストの検証改善で、productionのURL認可やformatterの修正ではない。既存のPython CLIとの一致試験を含むhost18件、旧／新の実assertionへの合成入力、source hashと独立review、同一refの個別alert確認を[改善記録](evidence/spider-improvement-cycle.json)へ保存する。例外・除外・test削除は追加せず、未取得の解析をfixedと呼ばない。
+
+
+## 第16cycle: 配列によるOrigin照合
+
+CodeQL #36はFashion MCPのdefault Origin確認である。`loadConfig` の `split`／`trim`／`filter` が作る配列に対する `includes` は、各URL全体との一致であり文字列の部分一致ではない。通常HTTP起動はこのconfig生成経路を使用する。実requestのOrigin照合も同じ配列を使い、loopback bind・socket peer・Hostの条件を追加する。固定bearerとtenantの検証をOriginで代替しない。
+
+この範囲でruntime欠陥は確証できず、実装・試験・policy・警告状態を変更しない。既存試験、合成requestの境界確認、source hash、独立reviewを[改善記録](evidence/spider-improvement-cycle.json)に保存する。内部APIへの任意config注入や同一processの改変に対する隔離保証ではなく、config生成・HTTP入口・認証条件が変われば再評価する。

@@ -2753,9 +2753,285 @@
         "scanExclusionsAdded": false
       },
       "publicationEvidence": {
-        "status": "pending; see PR52 after exact-SHA readback"
+        "commit": "c2ccfdb5d5616ff435270595eaf9a7c5930e1357",
+        "fullVerify": {
+          "run": 37135768684,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37135768710,
+          "attempt": 1,
+          "conclusion": "success",
+          "pythonTests": 1789,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1886326718,
+          "pythonAnalysis": 1886326708,
+          "open": 35,
+          "fixed": 13,
+          "individuallyFixed": [
+            34,
+            35
+          ],
+          "otherStateChanges": []
+        },
+        "history": {
+          "run": 37135768693,
+          "scanCompleted": true,
+          "commits": 672,
+          "candidates": 2367,
+          "conclusion": "failure"
+        },
+        "classification": "verification-quality improvement; no production runtime vulnerability fixed"
       },
       "projectDatabaseDesignChecks": "passed before missing ai dependency"
+    },
+    {
+      "cycle": 16,
+      "baselineCommit": "c2ccfdb5d5616ff435270595eaf9a7c5930e1357",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "source-reviewed; no actionable defect confirmed; publication checks pending",
+      "repairCount": 0,
+      "validationImprovementCount": 0,
+      "runtimeVulnerabilityFixed": false,
+      "reviewedAlerts": [
+        36
+      ],
+      "focusedFinding": "browserOrigins is an array and includes performs exact element matching; no URL-substring authorization defect established in current source.",
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 35,
+        "dependabot": 18,
+        "historyCandidates": 2367
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-16-feedback/report.json",
+        "sha256": "0bb2e17dfbe8f29490bcde7644d241749e50910918be7908e4f10652a7733277",
+        "collectedAt": "2026-10-03T17:01:01.795Z",
+        "targetHead": "c2ccfdb5d5616ff435270595eaf9a7c5930e1357",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 53,
+          "actionable": 35,
+          "review": 16,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 35,
+            "retrievedCount": 35,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "configType": {
+        "array": true,
+        "elementType": "string",
+        "usesNativeArrayIncludes": true,
+        "defaultElementCount": 10,
+        "frozenConfigObject": true,
+        "overrideSplitTrimFilterAndExactMembershipVerified": true,
+        "valuesInRecord": false
+      },
+      "sourceExtraction": {
+        "flaggedWholeTestBodyExecuted": true,
+        "testBodySha256": "5072bd3eafa6c658f79a9bd63c909968d26f9cbe3cd6eb9e2fff16d7cfd154c6",
+        "productionOriginFunctionExecuted": true,
+        "productionFunctionSha256": "83dc7bcbdc3b921bdbb7f72bd3ec4154cd972d5b8c77f659f4d3ec3e182bf0ee",
+        "method": "Source-extracted actual callback and browserRequestAllowed function in an isolated vm; production function inputs are synthetic request objects."
+      },
+      "syntheticOriginProbe": {
+        "command": "node work/spider-ci/cycle-16-origin-probe.mjs",
+        "platform": "darwin",
+        "nodeVersion": "v26.0.0",
+        "cases": [
+          {
+            "name": "exact_allowed_origin",
+            "accepted": true,
+            "expected": true
+          },
+          {
+            "name": "host_suffix",
+            "accepted": false,
+            "expected": false
+          },
+          {
+            "name": "userinfo_with_query_decoy",
+            "accepted": false,
+            "expected": false
+          },
+          {
+            "name": "other_host_path_decoy",
+            "accepted": false,
+            "expected": false
+          },
+          {
+            "name": "other_host_query_decoy",
+            "accepted": false,
+            "expected": false
+          },
+          {
+            "name": "path_suffix",
+            "accepted": false,
+            "expected": false
+          },
+          {
+            "name": "opaque_null_origin",
+            "accepted": false,
+            "expected": false
+          },
+          {
+            "name": "wrong_host",
+            "accepted": false,
+            "expected": false
+          },
+          {
+            "name": "non_loopback_peer",
+            "accepted": false,
+            "expected": false
+          },
+          {
+            "name": "non_loopback_bind",
+            "accepted": false,
+            "expected": false
+          }
+        ],
+        "casesPassed": 10,
+        "networkRequests": 0,
+        "realHttpBehaviorClaimedForTheseCases": false
+      },
+      "hostChecks": {
+        "exitCode": 0,
+        "command": "node --test --test-reporter=tap toolkits/fashion-brand-ops/test/mcp-webhook.test.mjs toolkits/fashion-brand-ops/test/browser-connect.test.mjs toolkits/fashion-brand-ops/test/http-security.test.mjs",
+        "tests": 10,
+        "pass": 10,
+        "fail": 0,
+        "skipped": 0,
+        "testNames": [
+          "browser one-click session initializes, lists 41 tools, and revokes cleanly",
+          "configured bearer and tenant cannot be bypassed with Origin or a minted browser session",
+          "non-loopback bind cannot mint sessions using forged loopback Host and allowed Origin",
+          "HTTP JSON and tool database failures expose only fixed codes, while signed-webhook failures remain denied",
+          "MCP initializes, discovers all required tools, and calls a tool",
+          "default browser origins include the current owner-only Sky site",
+          "Stripe webhook signatures are timestamp-bound and tamper evident",
+          "Instagram webhook parsing accepts message text and ignores unsupported events",
+          "Meta webhook signature rejects tampered DM payloads",
+          "Instagram webhook cannot route a signed event to another brand"
+        ],
+        "diagnosticBytesCapturedNotPublished": 0,
+        "rawLogsSaved": false,
+        "initialSandboxAttempt": {
+          "exitCode": 1,
+          "tests": 10,
+          "pass": 6,
+          "fail": 4,
+          "skipped": 0,
+          "failureCodes": [
+            "EPERM"
+          ]
+        },
+        "environment": "PATH-only child environment; built-in mocks and disposable SQLite fixture paths; host loopback HTTP tests",
+        "externalProviderCalls": 0
+      },
+      "boundaryFacts": [
+        {
+          "source": "toolkits/fashion-brand-ops/src/config.mjs:24",
+          "fact": "Trusted process configuration is split on commas, trimmed and filtered into an actual string array; no per-request origin value modifies it."
+        },
+        {
+          "source": "toolkits/fashion-brand-ops/src/http.mjs:48",
+          "fact": "browserRequestAllowed rejects non-loopback bind and non-loopback socket peers, then exact origin array membership and exact allowed Host set membership are required."
+        },
+        {
+          "source": "toolkits/fashion-brand-ops/src/http.mjs:73",
+          "fact": "A browser session also requires an existing random bearer, exact origin binding and an unexpired timestamp."
+        },
+        {
+          "source": "toolkits/fashion-brand-ops/src/http.mjs:88",
+          "fact": "A configured bearer selects fixed-token authentication independently of Origin; tenant equality is checked before parsing MCP bodies. Browser /connect is disabled in that mode."
+        },
+        {
+          "source": "toolkits/fashion-brand-ops/src/http.mjs:132",
+          "fact": "Connect and preflight call the same origin gate; CORS headers are returned only when that gate passes."
+        },
+        {
+          "source": "toolkits/fashion-brand-ops/src/runtime.mjs:8",
+          "fact": "Normal HTTP startup calls createRuntime without overrides, which loads config from the process environment. Programmatic config overrides are trusted host code, not HTTP input."
+        },
+        {
+          "source": "toolkits/fashion-brand-ops/README.md:108",
+          "fact": "The documented local browser mode is intentionally loopback-only with exact configured origins; fixed bearer and tenant mode is separate."
+        }
+      ],
+      "testedSourceSha256": {
+        "toolkits/fashion-brand-ops/test/mcp-webhook.test.mjs": "59a4fbb2466228056960d62a23fcc1658e5f79c81fb09d35b9eff61817c4bff0",
+        "toolkits/fashion-brand-ops/src/http.mjs": "a73cbfe6c750f3aa294b69874bd26af81a75f3ec768575cdcbf7de489b575e99",
+        "toolkits/fashion-brand-ops/src/config.mjs": "965ac0f983750894fa3d7cb442721cc51d0230e41a9e1099fd96fe079815c720",
+        "toolkits/fashion-brand-ops/src/runtime.mjs": "a61485926af390e7549640a9b0db5a408be816fb65f8ea6ba95b598c9f6f44a9",
+        "toolkits/fashion-brand-ops/src/mcp.mjs": "a71b03531fb87038d8f3a1a3064d7af275b0b615f5931143636aa4dd5abf742b",
+        "toolkits/fashion-brand-ops/test/browser-connect.test.mjs": "1fe79e26dfe0b85fcabceecf4ac2716b302490966f6a30de6e3f8ee9eadd2d4a",
+        "toolkits/fashion-brand-ops/test/http-security.test.mjs": "4ba679d95cbf50f367fe14ead597d5e9b5fc53c55730600299cd61a87f79187e",
+        "toolkits/fashion-brand-ops/package.json": "822f9bd0bca9a6cc5a31a14eb981e45c09628cca5468f8f82cd9ac1c01201f7e",
+        "toolkits/fashion-brand-ops/README.md": "c0597e7edbac925442511a2c7b597018da653fc1a1c69da87493dc333d024bf6",
+        ".github/workflows/spider-regressions.yml": "fed247f403a4c7560fa37ed3d29d4c310052a72cd1c96d302685fda62db1aadb",
+        "package.json": "5a498327a0f41bdac38c486fc684bd06035dbe8fcff44768cc42373a14d30414"
+      },
+      "independentReview": {
+        "conclusion": "No actionable URL-substring validation defect found in this alert group. The receiver is an array and includes checks an entire allowlist member.",
+        "testsExecutedByReviewer": 0,
+        "classification": "CONTEXTUAL_FALSE_POSITIVE / NO_REPAIR_SOURCE_TRIAGE; not a runtime or test fix and not an alert dismissal"
+      },
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "26af155e2b4c630ee076777b75d23381ff07c631270fa03f380afb626c3d8803"
+      },
+      "remaining": {
+        "codeql": "#36 remains open; no dismissal or suppression. Other open alerts remain under review.",
+        "dependencies": "18 default-branch alerts; existing PR53-56 unchanged; no duplicate PR.",
+        "history": "2367 pattern candidates; not a count of unique valid secrets."
+      },
+      "limits": [
+        "The existing test name does not independently establish remote site ownership, account access or owner-only hosting policy; that external site was not visited.",
+        "Origin and Host are forgeable by non-browser local clients. The intentionally trusted local no-Origin mode and configured origin policy are not claimed to authenticate hostile local processes.",
+        "The ten existing host tests used mock providers and disposable SQLite fixtures. One existing negative test briefly binds 0.0.0.0 with fixed credentials while clients connect only to 127.0.0.1; this is not a production deployment or browser-engine CORS test.",
+        "The first sandbox run passed six tests and denied the four local listener tests with EPERM. Authorized host execution then passed all ten; initial denial is retained, not presented as a source regression.",
+        "Synthetic VM request probes do not replace actual browser serialization, CORS enforcement or deployed environment validation.",
+        "No whole-toolkit test run, current CI run, live provider, real user data, root/guest/device operation or global security clearance is claimed.",
+        "Future changes to the reviewed source or configuration policy invalidate this bounded conclusion."
+      ],
+      "boundaries": {
+        "runtimeChanged": false,
+        "testChanged": false,
+        "scannerPolicyChanged": false,
+        "mainMerged": false,
+        "forcePush": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false
+      },
+      "publicationEvidence": {
+        "status": "pending; see PR52 after exact-SHA readback"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency",
+      "notificationDecision": "no new actionable defect, fix or owner action; remain quiet after successful publication checks"
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."
