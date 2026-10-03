@@ -460,6 +460,14 @@ APIは領域別に分ける。
 
 各serviceを専用UIDと有限IPCで接続し、UIへdatabase socketやroot権限を渡さない。QEMUのservice配置をAndroidへpath単位で移植せず、契約とfixtureを比較してplatform固有実装へ写す。
 
+### native MCPのHTTPSとCA境界（SYS15）
+
+ROCKの`MCPHttpClient`は、明示選択した入力とbearerを固定originへ送る前に接続設定を検査する。HTTPSでは明示した空でないCAを必須とし、欠落・空文字・false相当のCAでclientを生成しない。無効なCAは接続・送信前に失敗し、平文へのfallbackや自動再試行を行わない。正しいCA設定へ直した後にclientを作り直す。CAの内容は既存のTLS context生成で読み込み、証明書・hostname検証と全通信共通deadlineを維持する。
+
+平文HTTPの例外は既存の`allow_http_fixture=True`と正確な`127.0.0.1`の組合せだけに限定する。今回、providerの選択・購入資格・一回同意・receipt・保存状態を追加または変更しない。既存runtimeの使用先は合成HTTP providerで、任意の外部設定から空CAを渡す経路や実credentialの露出は確認していない。別実装の`HubClient`は開発用固定HTTPS gatewayと公開fixture credentialの範囲を維持する。
+
+合格条件は、旧sourceの合成loopback再現、空CA各形態で接続呼出0の回帰、正当なPath CAで既存TLS通信が成功し、期限切れ・半応答・id不一致を引き続き拒否すること。同じSHAのnative Linux source検査を照合し、hostの成功をOS boot・実機・外部provider受入へ転用しない。sourceと試験・制約は[SPIDER改善記録](evidence/spider-improvement-cycle.json)で追跡する。
+
 ### native CIの再実行と証拠選択（SYS15）
 
 source検査の結果はrun／head／partition／attemptへ結び、再実行では各区分の最新attemptを明示IDで取得する。最新FAILを古いPASSへ戻さず、未取得・曖昧な重複・期限切れを成功にしない。元ログ・source inventory・全discoveryの照合と全job成功gateを維持し、過去の失敗artifactを削除しない。ROCKが同一SHAの部分再実行と集計で確認し、OS bootや実機合格とは区別する。[収集上限・拒否条件・復旧と受入](native-os-validation.md#ci再実行の結果選択sys152026-10-03)。

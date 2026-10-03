@@ -3578,6 +3578,383 @@
         "secretRotation": false
       },
       "publicationEvidence": {
+        "commit": "f4f0155a8334668613bef9aea162dafe27d3224e",
+        "fullVerify": {
+          "run": 37146967600,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37146967573,
+          "attempt": 1,
+          "conclusion": "success",
+          "pythonTests": 1789,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1886706394,
+          "pythonAnalysis": 1886707862,
+          "open": 32,
+          "fixed": 16,
+          "individuallyFixed": [
+            45,
+            46
+          ],
+          "otherStateChanges": [],
+          "lineShiftOnly": {
+            "37": "39 to43; identical target and trailing source"
+          }
+        },
+        "history": {
+          "run": 37146967611,
+          "scanCompleted": true,
+          "commits": 675,
+          "candidates": 2367,
+          "conclusion": "failure"
+        },
+        "classification": "MCP result validation improvement; not a runtime authorization repair"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency"
+    },
+    {
+      "cycle": 19,
+      "baselineCommit": "f4f0155a8334668613bef9aea162dafe27d3224e",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "empty HTTPS CA rejected before network; same-SHA publication checks pending",
+      "repairCount": 1,
+      "validationImprovementCount": 0,
+      "runtimeVulnerabilityFixed": true,
+      "reviewedAlerts": [
+        8,
+        9
+      ],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "focusedFinding": {
+        "path": "systems/rock-star-os/os/mcp_broker/http.py",
+        "guardLine": 99,
+        "contextLine": 118,
+        "sendLines": [
+          171,
+          173,
+          178,
+          179
+        ],
+        "description": "The HTTPS constructor rejected only ca_file is None, while context creation and TLS wrapping used truthiness. Empty string, False and zero passed the guard but produced no SSLContext; assigning the raw socket to HTTPSConnection bypassed its implicit connect/handshake. The client accepted a normal plaintext discovery response while describing its transport as HTTPS.",
+        "reachability": "Confirmed through the public MCPHttpClient constructor with locally supplied malformed CA configuration. The reviewed production runtime caller currently selects its intentional loopback HTTP fixture; no external request or deployed configuration path to choose an empty HTTPS CA was established.",
+        "impact": "For this API/configuration path, the HTTPS promise was not enforced and a public synthetic Authorization header reached a plaintext loopback listener. This does not establish exposure of an actual credential, selected user data or deployed service."
+      },
+      "originalAlertAssessment": "The two flagged calls wrap owned loopback synthetic test servers with PROTOCOL_TLS_SERVER and an existing public fixture certificate/key. This host has TLS1.2 minimum by default. No change was made to those fixture contexts and no alert dismissal or resolution is claimed.",
+      "baselineOpen": {
+        "codeql": 32,
+        "dependabot": 18,
+        "historyCandidates": 2367
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-19-feedback/report.json",
+        "sha256": "d2d44e316f11034c384855c5bb6285e32365a3af144cdf46087a8d02a13e159d",
+        "collectedAt": "2026-10-03T20:04:31.685Z",
+        "targetHead": "f4f0155a8334668613bef9aea162dafe27d3224e",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 50,
+          "actionable": 35,
+          "review": 13,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 32,
+            "retrievedCount": 32,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "change": {
+        "path": "systems/rock-star-os/os/mcp_broker/http.py",
+        "description": "Reject any falsey CA for HTTPS before socket activity. Preserve the existing SSLContext creation and all HTTP fixture behavior. Successful HTTPS construction now necessarily follows the existing truthy-CA branch and creates a validating context.",
+        "whyNoAdditionalContextBranchChange": "Changing context creation to scheme-based would also change the existing HTTP-plus-CA combination outside the proven gap. The guard matches the existing truthy predicate and closes the verified path without that unrelated behavior change."
+      },
+      "beforeProof": {
+        "record": "work/spider-ci/cycle-19-tls-baseline.json",
+        "recordSha256": "b88863ef951ef46fd86eda6528ccc51133ff22093c5190be52a3c428bbc09c44",
+        "command": "python3 -B -W error::ResourceWarning work/spider-ci/cycle-19-tls-probe.py before",
+        "cases": [
+          {
+            "caKind": "empty_string",
+            "declaredScheme": "https",
+            "contextMissing": true,
+            "discoverAccepted": true
+          },
+          {
+            "caKind": "false_boolean",
+            "declaredScheme": "https",
+            "contextMissing": true,
+            "discoverAccepted": true
+          },
+          {
+            "caKind": "zero_integer",
+            "declaredScheme": "https",
+            "contextMissing": true,
+            "discoverAccepted": true
+          }
+        ],
+        "requests": 3,
+        "observations": [
+          {
+            "plainHttpRequestParsed": true,
+            "postMcpPath": true,
+            "publicFixtureAuthorizationPresent": true,
+            "discoverOnly": true
+          },
+          {
+            "plainHttpRequestParsed": true,
+            "postMcpPath": true,
+            "publicFixtureAuthorizationPresent": true,
+            "discoverOnly": true
+          },
+          {
+            "plainHttpRequestParsed": true,
+            "postMcpPath": true,
+            "publicFixtureAuthorizationPresent": true,
+            "discoverOnly": true
+          }
+        ],
+        "listenerBoundToLoopback": true,
+        "listenerStopped": true,
+        "applicationEffects": 0,
+        "credentialClass": "existing public synthetic fixture only",
+        "wireValuesSaved": false,
+        "externalNetworkRequests": 0,
+        "newKeysGenerated": false
+      },
+      "regression": {
+        "testFile": "systems/rock-star-os/tests/test_mcp_http_deadline.py",
+        "newTest": "MCPDeadlineTests.test_https_requires_nonempty_ca_before_network",
+        "newTestMethods": 1,
+        "subtests": 6,
+        "caKinds": [
+          "None",
+          "empty string",
+          "False",
+          "zero integer",
+          "empty list",
+          "empty dict"
+        ],
+        "networkAssertion": "socket.create_connection.assert_not_called()",
+        "before": {
+          "command": "python3 -B -W error::ResourceWarning work/spider-ci/cycle-19-tls-probe.py regression-before",
+          "testsRun": 1,
+          "failedSubtests": 5,
+          "errors": 0,
+          "skipped": 0,
+          "productionSourceSha256": "3831282e7dcd18e14cf7821c4baeff5f6e7a13fa406f1a664c50204099640d53",
+          "meaning": "The new test runs against the original production source; None was already rejected, while the five other falsey inputs incorrectly constructed a client."
+        },
+        "after": {
+          "command": "python3 -B -W error::ResourceWarning work/spider-ci/cycle-19-tls-probe.py after",
+          "equivalentTestSelection": [
+            "test_mcp_device_client",
+            "test_mcp_http_deadline"
+          ],
+          "testsRun": 31,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "resourceWarningsAsErrors": true,
+          "meaning": "The existing 30 tests plus the new one pass. Owned real loopback HTTPS with the public CA, explicit HTTP fixture, wire deadlines, no automatic effect retry, envelope bindings and private configuration checks remain covered."
+        },
+        "baselineWholeSuitesRepeated": false
+      },
+      "contextMetadata": {
+        "python": "3.14.7",
+        "platform": "Darwin",
+        "openssl": "OpenSSL 3.6.3 9 Jun 2026",
+        "testServerDefault": {
+          "protocol": "PROTOCOL_TLS_SERVER",
+          "minimumVersion": "TLSv1_2",
+          "maximumVersion": "MAXIMUM_SUPPORTED",
+          "verifyMode": "CERT_NONE",
+          "checkHostname": false,
+          "securityLevel": 2,
+          "cipherProtocolLabels": [
+            "TLSv1.2",
+            "TLSv1.3"
+          ]
+        },
+        "validMCPHttpClient": {
+          "protocol": "PROTOCOL_TLS_CLIENT",
+          "minimumVersion": "TLSv1_2",
+          "maximumVersion": "MAXIMUM_SUPPORTED",
+          "verifyMode": "CERT_REQUIRED",
+          "checkHostname": true,
+          "securityLevel": 2,
+          "cipherProtocolLabels": [
+            "TLSv1.2",
+            "TLSv1.3"
+          ]
+        },
+        "HubClient": {
+          "protocol": "PROTOCOL_TLS_CLIENT",
+          "minimumVersion": "TLSv1_2",
+          "maximumVersion": "MAXIMUM_SUPPORTED",
+          "verifyMode": "CERT_REQUIRED",
+          "checkHostname": true,
+          "securityLevel": 2,
+          "cipherProtocolLabels": [
+            "TLSv1.2",
+            "TLSv1.3"
+          ]
+        }
+      },
+      "sourceFacts": [
+        {
+          "source": "systems/rock-star-os/os/mcp_broker/http.py:93",
+          "fact": "Origin credentials/path/query/fragment are refused; literal IP required. HTTP requires allow_http_fixture is True and exact 127.0.0.1; HTTPS requires an explicit nonempty CA."
+        },
+        {
+          "source": "systems/rock-star-os/os/mcp_broker/http.py:118",
+          "fact": "HTTPS contexts use create_default_context with the configured CA and wrap_socket(server_hostname=literal host). The descriptor includes the configured CA file digest; this is not asserted to be an SPKI or exact leaf-certificate pin."
+        },
+        {
+          "source": "systems/rock-star-os/os/mcp_broker/device_client.py:77",
+          "fact": "HubClient is a separate development client limited to HTTPS 127.0.0.1/10.0.2.2 with explicit port and no URL credentials, query or fragment."
+        },
+        {
+          "source": "systems/rock-star-os/os/mcp_broker/device_client.py:91",
+          "fact": "The Hub CA is loaded through NOFOLLOW/NONBLOCK, checked as bounded regular owner/root-owned non-writable file. A byte digest participates in retained configuration binding."
+        },
+        {
+          "source": "systems/rock-star-os/os/mcp_broker/device_client.py:301",
+          "fact": "HubClient uses PROTOCOL_TLS_CLIENT and explicit TLS1.2 minimum, loads CA bytes and validates the configured server host."
+        },
+        {
+          "source": "systems/rock-star-os/os/mcp_broker/device_client.py:432",
+          "fact": "Existing protected binding includes profile, gateway configuration and CA SHA256, and configuration drift remains unavailable instead of rebinding silently."
+        },
+        {
+          "source": "systems/rock-star-os/os/mcp_broker/gateway.py:261",
+          "fact": "The development gateway requires a loopback bind and explicitly sets TLS1.2 minimum for its server context."
+        },
+        {
+          "source": "systems/rock-star-os/os/mcp_broker/runtime.py:92",
+          "fact": "The current runtime uses the explicit local HTTP provider fixture, then serves its device-facing gateway over TLS. No call-site configuration expansion was introduced."
+        }
+      ],
+      "baselineSourceSha256": {
+        "systems/rock-star-os/tests/test_mcp_device_client.py": "00c35c896274b11acbd65199df59f3e73c6056e650553c3dfb5e120c8e262de8",
+        "systems/rock-star-os/tests/test_mcp_http_deadline.py": "2a465df75c752b69bce18112380917b154b0910b9d801b00f97bbb86e8f98cfe",
+        "systems/rock-star-os/os/mcp_broker/http.py": "3831282e7dcd18e14cf7821c4baeff5f6e7a13fa406f1a664c50204099640d53",
+        "systems/rock-star-os/os/mcp_broker/device_client.py": "39b57843cba22d0298175a33deb04a51e919b09bb95bc81414e177f2112688e9",
+        "systems/rock-star-os/os/mcp_broker/gateway.py": "cdca1f9c28c85a705e3631ce175e7380907386bc2367ffe15d76ed4f9d211cbb",
+        "systems/rock-star-os/os/mcp_broker/runtime.py": "ce0c55c6449deedf2f24564134b894445d61bffd5bb1888d56a1221beb25c673",
+        "systems/rock-star-os/os/runner/transport.py": "0fd48c060e8ff2742c5b387b57495e2cbba45c99bcca952d8254e1ac3ea906e6",
+        "systems/rock-star-os/os/registry/fixtures/development-ca.pem": "a8709619319348ebdd48ce89e2e9553351c1554d7c8311d77a7b3e78a3020aac",
+        "systems/rock-star-os/os/registry/fixtures/PUBLIC-FIXTURE-KEY.pem": "c4932a9b6b97423b249a53e58d706f820185467464699038ed7ca5b29815ba03",
+        ".github/workflows/native-os.yml": "6e86889463c3b5fc9abd282b17b81752882c603de269d05a4238977884137f82",
+        "scripts/test-native.py": "868d676d2f563af1241f40a5a3e81a7ec9839d93b2578741eb7c07aa34e91515"
+      },
+      "testedSourceSha256": {
+        "systems/rock-star-os/tests/test_mcp_device_client.py": "00c35c896274b11acbd65199df59f3e73c6056e650553c3dfb5e120c8e262de8",
+        "systems/rock-star-os/tests/test_mcp_http_deadline.py": "d58c79ba3e32e2ed1de847648d2cee0f07aafab212aa8efb3be02e5269601095",
+        "systems/rock-star-os/os/mcp_broker/http.py": "f64914138a42494093998d961db9d68e22b742c0fedd8c176fed44a64358d6c6",
+        "systems/rock-star-os/os/mcp_broker/device_client.py": "39b57843cba22d0298175a33deb04a51e919b09bb95bc81414e177f2112688e9",
+        "systems/rock-star-os/os/mcp_broker/gateway.py": "cdca1f9c28c85a705e3631ce175e7380907386bc2367ffe15d76ed4f9d211cbb",
+        "systems/rock-star-os/os/mcp_broker/runtime.py": "ce0c55c6449deedf2f24564134b894445d61bffd5bb1888d56a1221beb25c673",
+        "systems/rock-star-os/os/runner/transport.py": "0fd48c060e8ff2742c5b387b57495e2cbba45c99bcca952d8254e1ac3ea906e6",
+        "systems/rock-star-os/os/registry/fixtures/development-ca.pem": "a8709619319348ebdd48ce89e2e9553351c1554d7c8311d77a7b3e78a3020aac",
+        "systems/rock-star-os/os/registry/fixtures/PUBLIC-FIXTURE-KEY.pem": "c4932a9b6b97423b249a53e58d706f820185467464699038ed7ca5b29815ba03",
+        ".github/workflows/native-os.yml": "6e86889463c3b5fc9abd282b17b81752882c603de269d05a4238977884137f82",
+        "scripts/test-native.py": "868d676d2f563af1241f40a5a3e81a7ec9839d93b2578741eb7c07aa34e91515"
+      },
+      "workOnlyProbeSha256": "d6a05866e58a1f1a7cf7bc286116249e9004dfb2c4b903521092315d52dd38bd",
+      "workOnlyProbeScope": "ignored diagnostic; not a tracked runtime input",
+      "independentReview": {
+        "conclusion": "No actionable blocker found; the minimal guard closes the demonstrated empty-CA HTTPS plaintext path.",
+        "productionChange": "Only the HTTPS CA guard changes from ca_file is None to not ca_file.",
+        "invariant": "For the supported stable scalar/path configuration values, a successful HTTPS constructor now requires truthy CA input and therefore must execute the existing verifying SSLContext construction; invalid paths/CA data still raise rather than selecting plaintext.",
+        "unchanged": [
+          "TLS context setup and CA verification",
+          "host passed as server_hostname",
+          "explicit HTTP fixture restriction and existing HTTP+CA behavior",
+          "request, deadline and cleanup paths",
+          "all prior 15 test/helper method ASTs in test_mcp_http_deadline.py",
+          "all source bytes in test_mcp_device_client.py"
+        ],
+        "newRegression": {
+          "name": "test_https_requires_nonempty_ca_before_network",
+          "caForms": 6,
+          "rejectsBeforeSocketCreate": true,
+          "oldGuardResult": "1 test with 5 failing subtests; None was already rejected",
+          "afterResult": "new test passes within the targeted 31-test suite"
+        },
+        "sourceSha256After": {
+          "systems/rock-star-os/os/mcp_broker/http.py": "f64914138a42494093998d961db9d68e22b742c0fedd8c176fed44a64358d6c6",
+          "systems/rock-star-os/tests/test_mcp_http_deadline.py": "d58c79ba3e32e2ed1de847648d2cee0f07aafab212aa8efb3be02e5269601095"
+        },
+        "diffCheck": "PASS",
+        "originalAlertsModifiedOrDismissed": false,
+        "sourceEditsByReviewer": false
+      },
+      "independentReviewEvidenceSha256": "506f141f32b019aa3b07cfb578efd4350aa63463df447a80be1bcd6b0025f5cd",
+      "primaryReferences": [
+        {
+          "title": "Python 3.13 ssl role-specific protocol contexts",
+          "url": "https://docs.python.org/3.13/library/ssl.html#ssl.PROTOCOL_TLS_SERVER"
+        },
+        {
+          "title": "Python 3.13 SSLContext TLS 1.2 minimum since Python3.10",
+          "url": "https://docs.python.org/3.13/library/ssl.html#ssl.SSLContext"
+        },
+        {
+          "title": "Python 3.13 create_default_context verification defaults",
+          "url": "https://docs.python.org/3.13/library/ssl.html#ssl.create_default_context"
+        }
+      ],
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "10a75631e5e5b0b5834bc085d17c1574967ee65efbad0d72a9496fe0b0864469"
+      },
+      "remaining": {
+        "codeql": "Original #8/#9 are separate server fixture alerts and remain open; compare all IDs on the same ref after publishing.",
+        "dependencies": "18 default-branch alerts; PR53-56 unchanged; no duplicate PR.",
+        "history": "2367 pattern candidates; not a count of unique valid secrets."
+      },
+      "limits": [
+        "These are Darwin Python3.14.7/OpenSSL3.6.3 host measurements and synthetic fixtures, not Linux CI, built OS, QEMU, device or production acceptance. CI source selects Python3.13, but its current runtime was not measured in this local record.",
+        "The server context CERT_NONE and check_hostname=False describe a server not requiring client certificates; client CA/hostname validation is measured separately.",
+        "TLS1.0/1.1 handshake rejection was not independently exercised; minimum-version metadata is recorded without claiming a full protocol/cipher security audit.",
+        "Only existing public fixture CA/key material was loaded. No new certificate or key was created and no PEM/token/request values were printed or saved.",
+        "The plaintext baseline applies to a malformed local client API CA configuration. No actual external user-controlled route or deployed disclosure was demonstrated.",
+        "The original fixture alerts #8/#9 remain a separate source-triage result; this adjacent fix does not imply their resolution."
+      ],
+      "boundaries": {
+        "runtimeChanged": true,
+        "testChanged": true,
+        "scannerPolicyChanged": false,
+        "fixtureCertificateOrKeyChanged": false,
+        "newKeysGenerated": false,
+        "mainMerged": false,
+        "forcePush": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false
+      },
+      "publicationEvidence": {
         "status": "pending; see PR52 after exact-SHA readback"
       },
       "projectDatabaseDesignChecks": "passed before missing ai dependency"

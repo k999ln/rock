@@ -311,3 +311,11 @@ fixtureは実rendererから実行時に生成しない。文書レイアウト�
 CodeQL #46のstdio MCPテストと#45のConnector承認後テストは、応答にドメイン名が含まれるだけで結果を受理していた。固定入力に対する出典文書を独立したliteral期待値と全文照合し、Connectorでは正しい`result.structuredContent.output`と`isError`を確認する。本文・URL・出典位置の変更や、期待ドメインが別のmetadataにあるだけの応答を合格にしない。
 
 既存のlifecycle／4 Tool実行と、直接呼出拒否・引数変更拒否・一回承認・再送／停止後拒否は保持する。formatter・URL認可・承認ロジック・vendor・配布ZIPは変更しない。これは結果検証の改善でありruntimeの認可欠陥の修正ではない。source hash・旧新assertionの比較・関連host試験・同一SHAのCIを[改善記録](evidence/spider-improvement-cycle.json)へ保存する。
+
+## 第19cycle: HTTPSの空CAによる平文送信を拒否
+
+#8／#9のローカルTLS server fixtureを確認する過程で、関連`MCPHttpClient`に別の欠陥を確認した。HTTPSのCAをNoneだけ検査し、context生成はtruthinessで選んでいたため、空文字・False・0でTLSなしのsocketをHTTPS接続へ直接渡せた。旧sourceと合成loopback serverで3回のdiscoverと公開fixture認証headerの平文到達を確認した。実credential・選択本文は使わず、値は保存していない。
+
+HTTPSでfalsey CAをconstructor時に拒否し、接続前に停止する。新1testは欠落・空文字・False・0・空list・空dictを確認し、旧sourceの1test内5 subtest失敗、修正後の関連31 host試験成功を区別して保存する。正当CAのTLS通信、HTTPの明示loopback例外、期限・例外・再送拒否は保持する。現runtimeは既存HTTP fixtureのみで、任意の外部設定からの到達や実credentialの漏洩は確証していない。
+
+元のserver context2件には今回修正根拠を得ておらず、警告をopenで維持する。hostのcontext metadataや独立reviewは他runtime全般の保証ではない。[通信境界と復旧・合格条件](rockstaros-complete-design.md#native-mcpのhttpsとca境界sys15)と[改善記録](evidence/spider-improvement-cycle.json)へsource、限定再現、試験、同一SHAの確認を保存する。
