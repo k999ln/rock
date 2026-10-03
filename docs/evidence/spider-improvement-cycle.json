@@ -290,6 +290,78 @@
         }
       },
       "status": "verified_repair_with_unresolved_findings"
+    },
+    {
+      "cycle": 3,
+      "baselineCommit": "3890f165f0d284bed1cfdc464b5f3861813b5cee",
+      "ref": "refs/heads/codex/spider-guard",
+      "targetAlerts": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "baselineOpen": {
+        "codeql": 42,
+        "dependabotDefaultBranch": 18
+      },
+      "confirmedDefect": "A synthetic requirements parent symlink allowed an outside contract to be read and returned by the pinned verifier; a consistent synthetic receipt could produce PASS.",
+      "repair": "Bounded directory-handle-relative no-follow regular-file capture of artifacts, contract and stored receipt, verified by unchanged vendor in a private temporary snapshot.",
+      "limits": {
+        "artifactCount": 100,
+        "aggregateArtifactBytes": 10000000,
+        "eachMetadataBytes": 1000000,
+        "pathBytes": 4096,
+        "pathComponents": 64,
+        "unsupportedPlatform": "fail closed"
+      },
+      "localChecks": {
+        "deliveryBoundaryPassed": 14,
+        "mrMcpAdapterNodePassed": 18,
+        "nestedAdapterPythonPassed": 19,
+        "resourceWarnings": "error",
+        "independentReview": "no actionable findings; independently passed 14 tests",
+        "citationsAcceptance": {
+          "status": "PASS",
+          "inputBytes": 150,
+          "outputBytes": 155,
+          "exactCliAdapterMcpBytesEqual": true
+        },
+        "vendorUnchanged": true
+      },
+      "sourceSha256": {
+        "toolkits/mr/rock_star_tools.py": "671bc5d2f2b31926e579c1134b1815f21e8b825716c88e875cfb6ec9f30bb6ae",
+        "toolkits/mr/pc_citations.py": "1d81ba7c24e638ae72e5347b7d5ae3a42cab206bfc77325a578f25db21482edc",
+        "tests/test_mr_delivery_boundary.py": "7aa86b845c4d8c242b1f0bb2f0750db50a83aa20c32afe7d4015dac327d87c04",
+        "public/toolkits/mr-toolkit.zip": "be2fe8a8ecb216f34591f1068fcd1fb1d4f9cd3e6a02e49b4436f8b8be22998b"
+      },
+      "githubValidation": {
+        "status": "pending_same_commit"
+      },
+      "remaining": {
+        "existingDependabotPullRequests": [
+          53,
+          54,
+          55,
+          56
+        ],
+        "historyCandidates": "unresolved; values not collected"
+      },
+      "boundaries": {
+        "trusted": "workspace ancestors and same UID; no multi-file atomic snapshot guarantee",
+        "mainMerged": false,
+        "deployed": false,
+        "deviceChanged": false,
+        "secretsRotated": false
+      },
+      "localStorage": "Capacity exhaustion interrupted edits; atomic writes preserved originals. Byte-verified copy-on-write deduplication preserved file contents and paths; no dependency installation attempted.",
+      "status": "implemented_waiting_for_same_commit_validation",
+      "localFullVerify": {
+        "status": "incomplete",
+        "passedThrough": "project/repository/version/schema/database/release/signing/baseline/avocado/design/composition checks",
+        "failure": "ai package not installed at llm:architecture:check",
+        "laterGates": "not run locally; clean GitHub CI pending"
+      }
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."

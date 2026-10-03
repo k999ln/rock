@@ -330,6 +330,16 @@ Skyで`coconala`を選ぶと`/sky/tools/coconala`へ直接進む。同じ画面�
 - 完了: 全参照file digestと照合結果を表示し、本人が納品判断する。
 - 失敗: file欠落、schema不一致、別成果のdigestを拒否する。
 
+### PC納品照合の読取境界（SYS15）
+
+成果物と、指定revisionの契約、指定executionの保存receiptだけを読む。workspace directoryを開き、各directoryとfileをsymlinkを追わずに相対openし、通常fileであることと読取中のbyte上限を検証する。成果物は既存の最大100件・合計10,000,000 bytes、契約と保存receiptは各1,000,000 bytesに制限する。
+
+読んだbytesを本人だけがアクセスできる一時snapshotへ固定し、hash固定した元verifierにはそのsnapshotだけを渡す。照合中の元path差し替えで別のfileを読み直さない。元fileを変更せず、正常／拒否／例外後にsnapshotを回収する。外部送信、追加の本人承認、恒久保存は発生しない。
+
+通常のPASS／REVISE／BLOCKEDは元verifierが判定する。危険なpath、非通常file、上限超過、安全な相対openを提供しない環境では処理を拒否し、入力本文を診断へ含めない。対象はmacOS／LinuxのPOSIX filesystemであり、workspaceの親と実行者自身の権限は既存の信頼境界に残る。同一UIDによるprocess侵害や全fileの同時点snapshotを保証しない。
+
+受入は正常なCLI／MCP sampleとUTF-8 nested file、外側の契約／receiptへの親symlink、成果物link、読取中の差し替え・肥大化、FIFO、原本とsnapshotの分離、失敗時cleanupを合成fileで検証する。関連: `tests/test_mr_delivery_boundary.py`、`tests/mr-tools.test.mjs`、`tests/mcp.test.mjs`。
+
 正本: `toolkits/mr/rock_star_tools.py`、[Mr integration](mr-integration.md)。
 
 ## 13. サブスク顧問

@@ -64,6 +64,8 @@ main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Researc
 
 `202b5ea`の[履歴検査](https://github.com/k999ln/rock/actions/runs/37089343085)は654 commitを完走し、2,362候補一致による失敗を維持した。これは重複を含む履歴のpattern一致数で、秘密の種類数や有効性の確認結果ではない。Dependabot18件と既存修正PR #53〜#56も未解決として残す。main統合、required check設定、OS同一image／Pixel／24時間運転は未実施。ローカル未導入依存、workerd不足、途中のlint失敗は[第2cycleの機械可読記録](evidence/spider-improvement-cycle.json)で検証時点と分けて保存する。
 
+第3cycleは基準 `3890f16`のCodeQL #1〜#4周辺で、契約と保存済み制作記録の親symlinkを通したworkspace外読取を合成fixtureで再現し、MR納品照合を修正した。固定vendorを維持し、成果物・契約・保存receiptの実byteをdirectory handle基準のno-follow読取で上限付き取得し、private snapshotで照合する。パス差し替え、肥大化、FIFO、metadata衝突、cleanupの新規14試験と既存MR／MCP／PC adapterのNode18試験（内部Python19試験）が合格。実CLI／adapter／MCPの155 byte出力一致も確認し、source pinと配布ZIPを同期した。独立レビューで追加指摘なし。POSIX保護primitiveがない環境では拒否し、workspace祖先と同一UIDは信頼範囲とする。同一SHAのGitHub検査と各alert instanceの結果は取得待ちで、解消済みとは記録しない。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。

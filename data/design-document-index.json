@@ -168,6 +168,17 @@
     {
       "id": "mcp_and_providers",
       "coverage": "DETAILED_REAL_PROVIDER_GAPS",
+      "mrDeliverySecurity": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "toolkits/mr/rock_star_tools.py",
+        "readBoundary": "directory-handle-relative no-follow opens; bounded regular-file reads",
+        "verifierInput": "private snapshot of selected artifacts, contract and stored receipt",
+        "artifactMaximumBytes": 10000000,
+        "metadataMaximumBytes": 1000000,
+        "unsupportedPlatform": "fail closed",
+        "vendorSnapshotChanged": false,
+        "regressions": "tests/test_mr_delivery_boundary.py"
+      },
       "localDescriptorSecurity": {
         "document": "docs/sky-mcp-connector.md",
         "implementation": "toolkits/sky-mcp-connector/local-descriptor.mjs",
