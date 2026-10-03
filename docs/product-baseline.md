@@ -8,6 +8,8 @@
 
 同日の追加「セキュリティーエージェント」指定: クモに実際の監視・検査・拒否・報告の役割を割り当て、Platformの実worker状態、実finding、最新の実拒否に基づくAgent metadataとnative表示を接続する。役割付与は既存のUID・認証・固定範囲・対応送信経路を拡大せず、検出値を返さない。現在の表示先はnative security panelとし、OS全体のoverlayは未選択。役割追加のLinux source検証は直前のアニメーション検証と別記録し、OS boot・Pixel・24時間受入の未完了を維持する。
 
+同日のコード検査・ファイル指定: 自分のコードを貼り付けて編集すると自動検査し、実際の指摘をクモで可視化する。offline単一HTML `outputs/SPIDER.html`と、OS owner限定の`security.inspectCode`を実装範囲に加える。検査は明示入力したsourceの静的分析であり、コード実行、外部送信、入力の永続保存、SDK／API keyを要求しない。既存Platformの常駐監視と送信前拒否は維持し、HTMLの動作をOS boot・24時間運転の合格へ換算しない。新しい検証結果は別に記録する。
+
 ## 2026-09-27 Sky Marketの現行手数料
 
 Sky Marketは自動化ToolとLLMを掲載対象にし、登録・接続・公開・基本利用料は0円とする。検証済みTool売上のSky Market手数料は10%。外部決済、API、AIモデル、cloud等の第三者実費は別表示する。Provider、本人確認、返金、照合の受入前は請求・回収・払出しを有効化しない。旧8.88 USD案と0%の記載は過去の判断履歴・回帰資料であり、この現行方針を上書きしない。

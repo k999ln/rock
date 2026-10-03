@@ -653,5 +653,144 @@
         "osBootEvidence": false
       }
     }
+  ],
+  "codeInspectorRevisions": [
+    {
+      "id": "2026-10-02-pasted-code-inspector-1",
+      "status": "standalone_validated_native_linux_pending",
+      "task": "SYS15",
+      "taskStatus": "in_progress",
+      "baseCommit": "3598598e6310b75516aa0ff3f29808dafc76689f",
+      "testedCommitSha": null,
+      "stateAtValidation": "uncommitted_working_tree",
+      "sourceHashesSha256": {
+        "scripts/build-spider-inspector.mjs": "ef73d9563ae47a82b4bb7d268aa8de67f605bbba562f3d34579f5024715d2f21",
+        "systems/rock-star-os/os/platform/code_inspector.py": "c7b900ff53edc86def0b98fa73d81092381f11c94a944e9b6ec129305564e507",
+        "systems/rock-star-os/os/platform/install-target.sh": "38cc7d58fedb980f4a0e99615fd33c819e235e85551d3c5f4d17d3f0dbeebd11",
+        "systems/rock-star-os/os/platform/service.py": "6d71cc3dbe48f1653b70b6ffdfa92de6d8c76eb312e4ef78641c2989f9410764",
+        "systems/rock-star-os/tests/test_code_inspector.py": "54eb930622cb8a2bee72c309685b1a891311e8bb550d4fc4b6b60d80bdee1ef6",
+        "systems/rock-star-os/tests/test_os_platform_install.py": "b38af6889ee6103b66d7e3c07aebb9810e322fdfb2ece1d1bbcf576b221f0e3d",
+        "systems/rock-star-os/tests/test_os_security_guard_integration.py": "74700e9c595e04bc90758135cd38f764765fec422342e82fdacf5cf566417862",
+        "tests/spider-inspector-artifact.test.mjs": "4406d72c76a12701a6d1f0d2b7316b7e287f90469320ccf3af6865523c3e41fe",
+        "tests/spider-program-inspector.test.mjs": "7c974ac259fa2e4594641d2c6af8ae9091b825836ea3a47e7d5b78abe6732cdd",
+        "toolkits/spider-guard/inspector.html": "4cc425dfdbc6a53b13f270609f2fd3a5eb45e3c61e6ec989d82a767941511db9",
+        "toolkits/spider-guard/program-inspector.d.mts": "d9ce504552a850362d3e2a5536ebaad2b9c86c4f362a322adf96c20ee4816fd0",
+        "toolkits/spider-guard/program-inspector.mjs": "646fa18b3b9396fc0ffe5618c22dbaa405f5c036e446bf05c208f17a32ef9b3c"
+      },
+      "artifactsOutsideRepository": {
+        "outputs/SPIDER.html": {
+          "sha256": "220688a8af5cc6b881b5384ee4c05f45af957003a2514e06c8c9c84cc88f8157",
+          "bytes": 44584,
+          "tracked": false
+        },
+        "outputs/SPIDER-使い方.txt": {
+          "sha256": "cf838c408cd09c80811e05fb18b4f6497590824f4be9af6b8a7969366797c2c9",
+          "bytes": 1210,
+          "tracked": false
+        },
+        "outputs/SPIDER-preview.jpg": {
+          "sha256": "b4e18b53737394d713c97401d4ddb400de6a0212f265ed1991415f06a2954e47",
+          "bytes": 160753,
+          "tracked": false,
+          "scope": "Screenshot of final loopback HTTP preview, visually reviewed"
+        }
+      },
+      "validation": {
+        "node": {
+          "passed": 14,
+          "suites": {
+            "spider-program-inspector": 13,
+            "spider-inspector-artifact": 1
+          },
+          "scope": "Final module plus generated real Worker: metadata-only findings, source not executed, bounds, priority and truncation."
+        },
+        "nativeHost": {
+          "passed": 23,
+          "environment": "macOS host, Python 3.14.7",
+          "suites": {
+            "test_code_inspector": 9,
+            "test_os_security_guard_integration": 13,
+            "test_os_platform_install": 1
+          },
+          "scope": "Owner request validation, bounded static analysis, no input execution/import/network/persistence, unchanged guard counters and actual temporary install."
+        },
+        "nativeLinux": {
+          "status": "not_run_for_this_revision",
+          "reason": "Constrained local disk/memory; target Linux CI validation remains pending."
+        },
+        "browser": {
+          "status": "passed",
+          "surface": "Codex in-app browser, loopback HTTP serving the exact standalone HTML; file URL unsupported by this test surface",
+          "checks": [
+            "blank initial state",
+            "sample auto inspection: 1 secret, 1 personal, 2 code candidates",
+            "line jump selects the expected source line",
+            "editing to env lookup and textContent automatically yields zero candidates without a safety guarantee",
+            "stale results disable report export",
+            "downloaded JSON contains metadata only, not source secret or email",
+            "final regenerated HTML reload and sample auto inspection: four findings",
+            "final screenshot visually inspected: clear layout"
+          ],
+          "fileUrlAcceptance": false,
+          "reportDownload": "Actual downloaded spider-inspection-report.json was inspected: metadata fields and four findings, no original synthetic secret/email."
+        },
+        "fullVerify": {
+          "status": "failed_preexisting_baseline",
+          "command": "npm run verify",
+          "exitCode": 1,
+          "passedBeforeStop": [
+            "project:check",
+            "repository:check",
+            "version:check",
+            "schema:check",
+            "database:check",
+            "release:check",
+            "release:signing:check"
+          ],
+          "releaseSigningPublicFixtureTestsPassed": 64,
+          "stoppedAt": "scripts/check-product-baseline.mjs:1057",
+          "laterGates": "not run"
+        },
+        "mcpPackageCheck": "passed after toolkit README addition; generated package synchronized",
+        "documentChecks": "project, database, design and git diff checks passed"
+      },
+      "logDigests": {
+        "work/spider-code-inspector-node.log": {
+          "sha256": "ced86889fd9a86283a47553d90933610817bda7049abdeb2eb7402ee4436b65e",
+          "bytes": 1294,
+          "tracked": false
+        },
+        "work/code-inspector-host.log": {
+          "sha256": "64b76b2b22c30ebcd83cdab43e12aac62223fe841725dd29e04b0c5dea6c11b0",
+          "bytes": 1582,
+          "tracked": false
+        },
+        "work/code-inspector-integration-host.log": {
+          "sha256": "1420db457ad25804ace60e56a88d612a6790ae81c1dfd6d02167ad52168f8a7f",
+          "bytes": 2583,
+          "tracked": false
+        },
+        "work/code-inspector-install-host.log": {
+          "sha256": "e0e0c5944f1ccea4ad9bb0f0298f90d9d4b2e2162f363c4363fec74d32bc81b6",
+          "bytes": 278,
+          "tracked": false
+        },
+        "work/spider-code-inspector-verify.log": {
+          "sha256": "3da0e063da7b9108354167baf3cc455aa58aebed73c559098d60bb0482cc093b",
+          "bytes": 13922,
+          "tracked": false
+        }
+      },
+      "contract": "Explicit source only; 64KiB/2000lines, max100 returned findings ordered secret/personal/code. No code execution, upload, input persistence, original-file write or guard counter effects. Native owner UID1000 only.",
+      "priorEvidencePreserved": true,
+      "notVerified": [
+        "native Linux for this revision",
+        "same-SHA CI",
+        "OS image or boot",
+        "Pixel deployment",
+        "24-hour operation",
+        "running-program interception"
+      ]
+    }
   ]
 }

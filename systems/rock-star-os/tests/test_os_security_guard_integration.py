@@ -73,6 +73,27 @@ class PlatformSecurityTests(unittest.TestCase):
         self.assertNotIn('synthetic-guard-fixture', encoded)
         self.assertNotIn('guard-fixture@example.test', encoded)
 
+    def test_pasted_code_inspection_is_owner_only_local_and_does_not_count_as_egress(self):
+        platform = self.platform()
+        request = {'v': 1, 'op': 'security.inspectCode', 'source': 'eval(user_input)', 'language': 'python'}
+        for uid in (None, 0, 1001, 1002, 1003):
+            with self.subTest(uid=uid), self.assertRaises(PermissionError):
+                platform.dispatch(request, peer_uid=uid)
+        for invalid in ({**request, 'root': '/data/wallet'}, {**request, 'v': True},
+                        {**request, 'language': 'ruby'}, {**request, 'source': 1},
+                        {key: value for key, value in request.items() if key != 'source'}):
+            with self.subTest(field_count=len(invalid)), self.assertRaisesRegex(ValueError, '^CODE_INSPECTION_INVALID_INPUT$'):
+                platform.dispatch(invalid, peer_uid=service.UI_UID)
+        before = platform.security.status()
+        with patch.object(service, 'call', side_effect=AssertionError('network forbidden')) as network:
+            result = platform.dispatch(request, peer_uid=service.UI_UID)
+        network.assert_not_called()
+        self.assertEqual('needs_review', result['result']['state'])
+        self.assertEqual('dynamic_eval', result['result']['findings'][0]['rule'])
+        self.assertEqual(before, platform.security.status())
+        self.assertEqual(0, platform.security.status()['inspections'])
+        self.assertEqual(0, platform.security.status()['blocked'])
+
     def test_safe_mcp_wire_and_exact_consent_are_preserved(self):
         client = Mock()
         client.request.return_value = {'accepted_locally': True}

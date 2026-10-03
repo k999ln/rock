@@ -36,6 +36,7 @@ from blackberryrock.wallet import Wallet
 from registry_control import RegistryControl
 from runner_control import RunnerControl
 from sensitive_guard import SensitiveGuard, security_agent_summary
+from code_inspector import inspect_code
 from operations.device import DeviceActivation
 from wallet_view import WalletView
 from wallet_backend.client import READS as WALLET_READS
@@ -434,6 +435,11 @@ class Platform:
         if isinstance(op, str) and op.startswith('security.'):
             if peer_uid != UI_UID:
                 raise PermissionError('security status requires the OS owner channel')
+            if op == 'security.inspectCode':
+                if (set(request) != {'v', 'op', 'source', 'language'}
+                        or type(request.get('v')) is not int or request['v'] != 1):
+                    raise ValueError('CODE_INSPECTION_INVALID_INPUT')
+                return {'ok': True, 'result': inspect_code(request['source'], request['language'])}
             if (op != 'security.status' or set(request) != {'v', 'op'}
                     or type(request.get('v')) is not int or request['v'] != 1):
                 raise ValueError('security status accepts only its fixed read-only operation')

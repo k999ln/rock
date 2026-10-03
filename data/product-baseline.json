@@ -1598,6 +1598,53 @@
       "linuxNativeRendererPassed": true,
       "pinReadinessTestsPassed": 11,
       "pinSourceProfileTestsPassed": 1
+    },
+    "codeInspector": {
+      "requestedAt": "2026-10-02",
+      "status": "standalone_validated_native_linux_pending",
+      "intent": "Paste own source and inspect automatically after edits; spider visualizes actual findings.",
+      "deliverableOutsideRepository": "outputs/SPIDER.html",
+      "delivery": "offline standalone HTML",
+      "scope": "static analysis of explicitly supplied source",
+      "nativeOperation": "security.inspectCode",
+      "requiresSdk": false,
+      "requiresApiKey": false,
+      "executesInput": false,
+      "externalRequests": false,
+      "persistsInput": false,
+      "existingPlatformGuardChanged": false,
+      "runtimeInterceptionClaim": false,
+      "freshValidationRecorded": true,
+      "buildCommand": "node scripts/build-spider-inspector.mjs --output /absolute/path/SPIDER.html",
+      "source": "toolkits/spider-guard/inspector.html",
+      "detector": "toolkits/spider-guard/program-inspector.mjs",
+      "automaticDelayMs": 500,
+      "maxInputBytes": 65536,
+      "maxInputLines": 2000,
+      "maxFindings": 100,
+      "languages": [
+        "javascript",
+        "python",
+        "text"
+      ],
+      "reportExport": "optional metadata-only JSON, no source text",
+      "modifiesOriginalFiles": false,
+      "nativeModule": "systems/rock-star-os/os/platform/code_inspector.py",
+      "nativeOwnerUid": 1000,
+      "nativePythonAstNodeLimit": 20000,
+      "guardCountersChanged": false,
+      "helpOutsideRepository": "outputs/SPIDER-使い方.txt",
+      "findingPriority": [
+        "secret",
+        "personal",
+        "code"
+      ],
+      "countSemantics": "returned findings only; truncation marks coverageLimited",
+      "nodeTestsPassed": 14,
+      "nativeHostTestsPassed": 23,
+      "nativeLinuxValidationRecorded": false,
+      "browserValidation": "loopback HTTP serving generated HTML; direct file URL not tested",
+      "evidenceSection": "codeInspectorRevisions"
     }
   },
   "commercialPolicyRevision": {

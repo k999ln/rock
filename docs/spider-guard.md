@@ -12,6 +12,34 @@ OSへの同梱、boot時起動、再起動監督、native画面の実データ�
 
 2026-10-02、利用者は追加の映像参照に沿ったnativeアニメーション改善を進めるよう明示した。細い発光脚、青い足先の輪、pink／cyanの小さな四角いcoreを、実際の検出位置への移動と重点表示へ取り込む。このアニメーションのLinux source検証は記録済み。さらに利用者はクモに「セキュリティーエージェント」の役割を明示し、実際の監視・検査・拒否・報告と役割表示を接続し、追加のsource検証を記録した。現在の表示先はnative security panelであり、OS全体のoverlayは未選択。以下の旧source検証は保存commit `a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae`に対応し、変更後のrendererの合格証拠へ流用しない。
 
+## 自分のコードを貼って検査する
+
+2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。
+
+1. `SPIDER.html`を開き、コードを貼るか「ファイルを読み込む」で選ぶ。
+2. 言語を選ぶ。既定では編集が止まって500 ms後に再検査する。「コードを検査」で手動検査もできる。
+3. 指摘の行番号から該当箇所へ移動し、理由・修正案を確認する。「結果を保存」は本文を含まない検査metadataだけをJSONへ出力する。
+
+入力上限はUTF-8の64 KiB／2,000行、結果は最大100件。秘密→個人情報→コード候補の順に優先し、件数は返した候補だけを数える。JavaScript／TypeScriptの字句パターン、Python、テキスト・設定を選べる。共通の秘密・個人情報候補に加え、コードでは動的コード実行、shellを介した実行、HTML挿入、TLS検証の無効化の4種類を静的に確認する。完全な構文・型・依存関係解析ではなく、補間式や未完了の構文、候補上限などの制限を結果へ示す。
+
+検査はHTML内のWeb Workerで行い、CSPの`connect-src 'none'`で外部通信を禁止する。入力コードを実行・upload・永続保存せず、読み込んだ原fileも書き換えない。編集後は前の結果を古いものとして扱い、対応する最新結果だけを表示する。0件は安全保証ではなく、実行中programの監視・通信遮断・自動修正ではない。入力はページを閉じると失われる。
+
+開発者はrepository rootから次で単一ファイルを再生成できる。保存先は任意のpathへ変更できる。
+
+```sh
+node scripts/build-spider-inspector.mjs --output ../SPIDER.html
+```
+
+生成元は`toolkits/spider-guard/inspector.html`、`detector.mjs`、`program-inspector.mjs`。生成HTMLを開くためのnpm installは不要。native側には別にowner限定の`security.inspectCode`を追加し、明示入力のsourceを検査して値を含まない指摘を返す。既存Platformの固定範囲監視、送信前拒否、権限・承認は維持する。この追加のbuild・Node試験とloopback HTTPのブラウザ動作、nativeのhost Python境界試験を記録した。native LinuxとOS起動の受入は未実行で、前版の合格を転用しない。
+
+### OS側の明示入力API
+
+`systems/rock-star-os/os/platform/code_inspector.py`をPlatformへ同梱する。owner UI UID 1000だけが、余分なfieldのない`{v:1, op:'security.inspectCode', source, language}`を送れる。`language`は`javascript`／`python`／`text`。戻り値は`{ok:true, result}`で、resultは`schemaVersion:1`、言語、状態、最大100件の指摘、分類別件数、`coverageLimited`、制限の説明を持つ。指摘はrule・分類・重大度・行範囲・固定文の理由と修正案で、本文・値・snippetを返さない。
+
+Nativeも入力は64 KiB／2,000行に限定する。Pythonは最大20,000 AST nodeの限定解析、JavaScriptは字句検査、textは秘密・個人情報候補だけを検査する。ブラウザ版とnative版の解析方法は異なり、全結果の一致は保証しない。nativeも秘密→個人情報→コード候補の順で最大100件を返し、件数は返した候補だけを数える。100件を超える省略や解析不能は`coverageLimited`で示す。候補がある場合は不完全でも`needs_review`、候補なしで検査不能なら`incomplete`、空入力は`empty`、検出なしは`no_findings`とする。入力型・言語・field不正は`CODE_INSPECTION_INVALID_INPUT`、入力上限は`CODE_INSPECTION_TOO_LARGE`として拒否する。
+
+このAPIは渡されたsourceだけを検査し、外部呼出し・コード実行・保存を行わない。既存guardの`inspections`／`blocked`／最新拒否を増やさず、コード内の危険候補を実際の送信拒否として数えない。sourceを変更して再要求することで新しい結果を得る。今回のhost境界試験は別記録とし、Linux上の同じrevisionの受入を残す。
+
 ## 責任と範囲
 
 | 項目 | 内容 |
@@ -100,6 +128,14 @@ Platformの起動は`supervisor.py`を経由し、子processの異常終了後�
 - 継続監視はプロセスが稼働している間の対応範囲に限る。再起動後の起動、sleep中の扱い、service監視、障害復旧まで確認する前に「24時間保護」を宣言しない。
 
 ## 検証と引継ぎ
+
+### コード検査ファイルの検証
+
+起点`3598598e6310b75516aa0ff3f29808dafc76689f`上の未commit作業で、JS module 13件＋生成HTMLの実Worker 1件、計14/14が成功した。入力を実行せず、reportへ値を含めないこと、上限、秘密優先と省略を検査した。macOS hostのPython 3.14.7でnative検査9、owner境界統合13、実際の一時install 1、計23/23も成功。今回nativeのLinux検証は未実行で、CI側の確認を残す。過去のLinux guard試験を今回へ転用しない。
+
+ブラウザ検証は生成HTMLそのものをloopback HTTPで配信して行った。初期空状態、sampleの自動検査（秘密1・個人情報1・code 2）、行移動、編集後の0候補への更新、古い結果のreport保存無効化、元の秘密値を含まないJSON downloadを確認した。この検証surfaceはfile URL非対応のため、file URLで開く受入を実施済みとはしない。最終生成物の再読込でもsampleの4件を確認し、`outputs/SPIDER-preview.jpg`で読みやすい配置を目視した。
+
+HTML・使い方fileのhash、変更source 12件と短い試験logのdigestは[検証記録](evidence/spider-guard-source-validation.json)の`codeInspectorRevisions`へ追加した。過去の証拠は保持する。最終`npm run verify`は先行7check（signing公開fixture64件を含む）の成功後、以前から再現済みのbaseline visual期待値`check-product-baseline.mjs:1057`でexit 1となり、後続gateは未実行。project／database／designの個別整合とdiff checkは成功した。これはofflineコード検査の配布であり、実行中programのinterception、OS起動、Pixel、24時間運転の受入ではない。
 
 ### Security Agent役割の最終source検証
 

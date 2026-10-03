@@ -20,8 +20,9 @@ for module in __init__ state release onboarding device; do
 done
 cp "$repo/os/platform/wallet_view.py" "$dest/wallet_view.py"
 cp "$repo/os/platform/sensitive_guard.py" "$dest/sensitive_guard.py"
+cp "$repo/os/platform/code_inspector.py" "$dest/code_inspector.py"
 cp "$repo/os/platform/supervisor.py" "$dest/supervisor.py"
-chmod 0644 "$dest/sensitive_guard.py" "$dest/supervisor.py"
+chmod 0644 "$dest/sensitive_guard.py" "$dest/code_inspector.py" "$dest/supervisor.py"
 chmod 0644 "$dest/wallet_view.py"
 mkdir -p "$dest/mcp_broker"
 chmod 0755 "$dest/mcp_broker"

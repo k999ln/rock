@@ -15,6 +15,8 @@
 - `SYS15`でRockstarOS本体に常駐するSpider Guardへ着手。Platform UID 1002の固定範囲監視、Platform MCP／RunnerControl送信前の拒否、認証付き状態とnative画面、同梱・boot監督をROCKが担当する。Web／Connector送信前検査は補助である。同一image boot、Pixel実機、24時間運転は未受入で、root権限やOS全通信の保護は追加しない。[範囲と受入](../spider-guard.md)を正本とする。
 - `SYS15`のnative表示は追加映像を参照し、実findingへの移動・囲み、新しい実拒否counterへの反応、非稼働時の停止をLinux描画fixtureで検証した。続く利用者指定のSecurity Agent役割（監視・検査・拒否・報告）と最新の実拒否metadataは接続済みで、Linux backend 26件、native renderer、PIN readiness 11／profile 1と描画fixtureの追加検証が成功した。表示先は現在のsecurity panelを維持する。初期実装の保存版`a7cfca3`の129 Python／49 Node、アニメーション改訂、新しいAgent役割の証拠を分け、前の合格を後の変更へ転用しない。
 
+- `SYS15`へ利用者指定の貼り付けコード検査を追加した。offline単一HTMLとowner限定`security.inspectCode`で明示入力を静的検査し、編集後の実候補を可視化する。コード実行・外部送信・永続保存を追加せず、既存常駐guardの範囲を維持する。生成HTML／Node 14件とloopback HTTPのブラウザ動作、native host Python 23件が成功。今回native Linuxの検証は未実行で、既存guardのLinux結果を流用しない。
+
 主なtask: `SYS01`〜`SYS13`, `SYS15`, `LCH02`, `LCH03`, `OS05`。
 
 ## 次に進める順番
