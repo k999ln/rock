@@ -4494,7 +4494,447 @@
         "secretRotation": false
       },
       "publicationEvidence": {
-        "status": "pending; see PR52 after exact-SHA readback"
+        "commit": "1b116e4ae5a68530097edc85fec62f33a6aaa404",
+        "fullVerify": {
+          "run": 37157778741,
+          "conclusion": "success",
+          "targetedFontTestsExecutedOnceEach": 2
+        },
+        "regression": {
+          "run": 37157778764,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37157778784,
+          "conclusion": "success",
+          "pythonTests": 1790,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1887067467,
+          "pythonAnalysis": 1887068272,
+          "open": 30,
+          "fixed": 18,
+          "newlyFixed": [
+            43,
+            44
+          ],
+          "otherIndividualStatesAndLocationsUnchanged": 46,
+          "fixedInstanceCommitMeaning": "last detected at47a999b; current analysis SHA separately validated"
+        },
+        "history": {
+          "run": 37157778773,
+          "scanCompleted": true,
+          "commits": 678,
+          "candidates": 2369,
+          "conclusion": "failure",
+          "additionalCandidates": 0,
+          "comparisonLimit": "Only count unchanged; truncated first100 metadata cannot establish full candidate identity or validity."
+        },
+        "classification": "test-only mixed-case font-host detection improvement; no runtime vulnerability claim"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency"
+    },
+    {
+      "cycle": 22,
+      "baselineCommit": "1b116e4ae5a68530097edc85fec62f33a6aaa404",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "SDK malformed local authentication process crash repaired and SDK0.1.3 archive aligned; same-SHA publication checks pending",
+      "repairCount": 1,
+      "validationImprovementCount": 0,
+      "runtimeVulnerabilityFixed": true,
+      "reviewedAlerts": [
+        41
+      ],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "focusedFinding": "Authentication compares JavaScript string lengths before timingSafeEqual on UTF-8 buffers. Latin-1 non-ASCII header characters can have the expected string length but more UTF-8 bytes, causing timingSafeEqual to throw. This block is outside the async request callback try/catch, creating an unhandled rejection; default Node behavior can terminate the process.",
+      "baselineOpen": {
+        "codeql": 30,
+        "dependabot": 18,
+        "historyCandidates": 2369
+      },
+      "baselineFeedback": {
+        "collectedAt": "2026-10-03T23:06:31.343Z",
+        "targetHead": "1b116e4ae5a68530097edc85fec62f33a6aaa404",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 48,
+          "actionable": 35,
+          "review": 11,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 30,
+            "retrievedCount": 30,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "path": "work/spider-ci/cycle-22-feedback/report.json",
+        "sha256": "ebdb919161145a8d5ce32679659e6039347208f77be972b09ccbd298337dcc5a"
+      },
+      "reportedAlert": {
+        "number": 41,
+        "rule": "js/file-access-to-http",
+        "path": "tests/mcp-connector.test.mjs",
+        "line": 73,
+        "verdict": "NO_RUNTIME_EXFILTRATION_DEMONSTRATED_AT_REPORTED_TEST",
+        "disposition": "Keep original warning separate and open; no cosmetic fixture rewrite or suppression proposed"
+      },
+      "sourceFacts": [
+        {
+          "path": "tests/mcp-connector.test.mjs",
+          "lines": [
+            49,
+            51,
+            57,
+            68,
+            72,
+            73,
+            74
+          ],
+          "fact": "The test creates its own mkdtemp directory and starts the real SDK with an explicit localToolDirectory. It reads only the newly generated descriptor and uses its url for a fixed unauthenticated tools/list request expected to return 401. No descriptor secret or whole file content is sent in that request body or headers."
+        },
+        {
+          "path": "toolkits/sky-tool-sdk/src/index.mjs",
+          "lines": [
+            509,
+            512,
+            520,
+            525,
+            528,
+            668,
+            674,
+            681,
+            686,
+            692,
+            693,
+            706
+          ],
+          "fact": "The SDK defaults to 127.0.0.1, a dynamic port and a validated MCP path. It generates a per-start local secret, writes a private descriptor using a temporary file and rename, and normal close removes its matching descriptor. The test supplies no publicMcpUrl so startup registration and usage reporting are not activated."
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "lines": [
+            224,
+            235,
+            242,
+            255,
+            268
+          ],
+          "fact": "Runtime discovery independently checks private directory mode, bounded descriptor names, descriptor schema/identity, numeric PID and a credential-free 127.0.0.1 HTTP URL with explicit port and bounded path. This validation is separate from the trusted test direct-fetch negative case."
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/local-descriptor.mjs",
+          "lines": [
+            12,
+            19,
+            24,
+            37,
+            46
+          ],
+          "fact": "Runtime descriptor reads open once with nonzero O_NOFOLLOW/O_NONBLOCK, fstat the same handle for regular file, private mode and current-owner constraints, bound reads to 4096 bytes including growth, and close in finally."
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "lines": [
+            865,
+            867,
+            875,
+            888,
+            895,
+            927,
+            980
+          ],
+          "fact": "Connector browser requests require an allowlisted Origin, exact Host and per-Origin bearer token before discovery. The registered loopback listener and one-time exact tool approval are separate controls from descriptor discovery."
+        }
+      ],
+      "action": "Supplied header string becomes a Buffer (otherwise null); expected local secret becomes a Buffer. Reject missing or unequal byte lengths before timingSafeEqual receives those same equal-length Buffers. Existing constant 401 response and normal credentials are preserved.",
+      "attackerBoundary": "An unauthenticated client able to connect to the local SDK HTTP listener; no external network or browser exploit has been established by this review.",
+      "relatedConnectorDistinction": "Connector bearer comparison at 892 and approval comparison at 773 use the same length pattern, but enclosing request try/catch contains their exceptions. Do not equate generic failure handling there with this SDK fatal callback path or expand scope without separate evidence.",
+      "baselineReproduction": {
+        "schemaVersion": 1,
+        "sourceCommit": "1b116e4ae5a68530097edc85fec62f33a6aaa404",
+        "sourcePath": "toolkits/sky-tool-sdk/src/index.mjs",
+        "sourceSha256": "f79f381f26092fd253f78643beb254e6e1c98fe36150061b0f7ea24886d76108",
+        "node": "v26.0.0",
+        "platform": "darwin",
+        "scope": "isolated SDK child and owned loopback listener; no real credentials or external requests",
+        "syntheticHeader": {
+          "javascriptCharacters": 43,
+          "utf8Bytes": 86,
+          "rawWireBytes": 43
+        },
+        "directoryPrivate": true,
+        "descriptorPrivate": true,
+        "response": {
+          "httpStatus": null,
+          "requestError": true
+        },
+        "childExit": {
+          "code": 1,
+          "signal": null
+        },
+        "fatalLengthError": true,
+        "baselineReproduced": true,
+        "rawStderrPersisted": false,
+        "ownedDirectoryRemoved": true,
+        "preProofAttempts": [
+          {
+            "method": "same isolated child, sandboxed loopback listen",
+            "outcome": "EPERM before ready",
+            "classification": "sandbox restriction; no product-auth request executed",
+            "rawOutputPersisted": false
+          },
+          {
+            "method": "Node http.request string header",
+            "outcome": "HTTP 401, child remained alive; intended condition not reproduced",
+            "classification": "client encoding changes wire bytes; not a fatal path proof",
+            "rawOutputPersisted": false
+          }
+        ],
+        "credentialScope": "SDK generated one ephemeral private local descriptor credential; no real account or preexisting credential"
+      },
+      "oldSourceRegression": {
+        "schemaVersion": 1,
+        "command": [
+          "node",
+          "--test",
+          "--test-reporter=tap",
+          "--test-name-pattern=^malformed local authentication cannot terminate the SDK process$",
+          "tests/sky-tool-sdk.test.mjs"
+        ],
+        "sourceCommit": "1b116e4ae5a68530097edc85fec62f33a6aaa404",
+        "sourceSha256": {
+          "toolkits/sky-tool-sdk/src/index.mjs": "f79f381f26092fd253f78643beb254e6e1c98fe36150061b0f7ea24886d76108",
+          "tests/sky-tool-sdk.test.mjs": "e48d4d3fc2bee046c043f15d47627d159f032081bd694a2e5bb793a40e071c6f"
+        },
+        "exitCode": 1,
+        "counts": {
+          "tests": 1,
+          "pass": 0,
+          "fail": 1,
+          "skipped": 0
+        },
+        "baselineRegressionFailed": true,
+        "childOutputDiscarded": true,
+        "rawOutputPersisted": false
+      },
+      "hostChecks": {
+        "command": [
+          "node",
+          "--test",
+          "--test-reporter=tap",
+          "tests/sky-tool-sdk.test.mjs",
+          "tests/mcp-connector.test.mjs",
+          "tests/mcp-local-descriptor.test.mjs"
+        ],
+        "node": "v26.0.0",
+        "platform": "darwin",
+        "exitCode": 0,
+        "elapsedSeconds": 0.573,
+        "counts": {
+          "tests": 22,
+          "pass": 21,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 1,
+          "todo": 0
+        },
+        "scope": "One combined run: SDK 6 tests, Connector 6 tests, descriptor 10 tests; owned loopback processes and synthetic fixtures only",
+        "skipReason": "Unsupported-platform fallback test is skipped because this host supplies nonzero O_NOFOLLOW and O_NONBLOCK; POSIX descriptor tests execute.",
+        "childOutputDiscarded": true,
+        "rawOutputPersisted": false,
+        "network": "Owned loopback listeners only; no live provider or cloud delivery",
+        "regressionChecks": [
+          "Latin1 equal-character unequal-byte header returns 401",
+          "missing, short and wrong ASCII headers return 401",
+          "same child serves health and valid-secret tools/list and tools/call",
+          "graceful child exit 0 and descriptor directory empty"
+        ],
+        "limitations": [
+          "No assertion of zero handler side effects from denied tools/list requests",
+          "Host Node 26; exact-SHA GitHub validation remains separate"
+        ]
+      },
+      "distributionChecks": {
+        "command": [
+          "node",
+          "--test",
+          "--test-reporter=tap",
+          "tests/sky-studio-chat.test.mjs"
+        ],
+        "node": "v26.0.0",
+        "platform": "darwin",
+        "exitCode": 0,
+        "elapsedSeconds": 0.239,
+        "counts": {
+          "tests": 4,
+          "pass": 4,
+          "fail": 0,
+          "skipped": 0
+        },
+        "tests": [
+          "Rock Studio exposes copy-first SDK integration for an existing tool",
+          "Rock Studio does not upload source code from the browser",
+          "the SDK archive linked by Studio contains exactly the current package sources",
+          "the SDK starter requires the patched SDK release"
+        ],
+        "archive": {
+          "path": "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
+          "version": "0.1.3",
+          "bytes": 11569,
+          "sha256": "3e7cebce37fbd18695b833a7192a4cf1695fabc71c50a8d7f0144ce09951c4fc",
+          "members": [
+            {
+              "member": "package/README.md",
+              "bytes": 4814,
+              "sourceSha256": "b4623843edfa05aa6c3bd340ed28127a39e4e26c04651da61ed511e1bde9ba18",
+              "archiveMemberSha256": "b4623843edfa05aa6c3bd340ed28127a39e4e26c04651da61ed511e1bde9ba18",
+              "exactBytesMatch": true
+            },
+            {
+              "member": "package/bin/create-sky-tool.mjs",
+              "bytes": 4055,
+              "sourceSha256": "7eb4e2bfcd2c4cfd7c1b4c4c4b65949696cb0b012f130bc9207d9624844abd1c",
+              "archiveMemberSha256": "7eb4e2bfcd2c4cfd7c1b4c4c4b65949696cb0b012f130bc9207d9624844abd1c",
+              "exactBytesMatch": true
+            },
+            {
+              "member": "package/examples/minimal.mjs",
+              "bytes": 1546,
+              "sourceSha256": "6e4ab140a18c00b60694cde4fd003114ead4abf7273463bf829156955312b4ad",
+              "archiveMemberSha256": "6e4ab140a18c00b60694cde4fd003114ead4abf7273463bf829156955312b4ad",
+              "exactBytesMatch": true
+            },
+            {
+              "member": "package/package.json",
+              "bytes": 361,
+              "sourceSha256": "6c2359fc2670117f7fbdbe2606faa42910e5f1761a150640ff2a72ec840c7aa6",
+              "archiveMemberSha256": "6c2359fc2670117f7fbdbe2606faa42910e5f1761a150640ff2a72ec840c7aa6",
+              "exactBytesMatch": true
+            },
+            {
+              "member": "package/src/index.mjs",
+              "bytes": 25064,
+              "sourceSha256": "527b083621e6c60cd194b5a3499135e2369d9754cc6cb8ba5a139d747feb9848",
+              "archiveMemberSha256": "527b083621e6c60cd194b5a3499135e2369d9754cc6cb8ba5a139d747feb9848",
+              "exactBytesMatch": true
+            }
+          ],
+          "extraMembers": 0
+        },
+        "oldArchives": [
+          {
+            "path": "public/toolkits/rockstaros-sky-tool-sdk-0.1.0.tgz",
+            "sha256": "ddfafb42c93aea76a36bb8e8ebf6b8702da023c8f6edf01485c32f5383e4498b",
+            "unchangedFromHead": true
+          },
+          {
+            "path": "public/toolkits/rockstaros-sky-tool-sdk-0.1.2.tgz",
+            "sha256": "2f89865eeffac314fe78e458c9b2402ff8e0d19596310e3f0e0111a8c58688fb",
+            "unchangedFromHead": true
+          }
+        ],
+        "authSourceUnchangedAfterPassingSuite": true,
+        "packCommand": "npm pack --ignore-scripts --offline --cache ../../work/npm-sdk-pack-cache --pack-destination ../../public/toolkits --json (cwd toolkits/sky-tool-sdk)",
+        "dependencyInstallation": false,
+        "npmPublish": false,
+        "deployment": false,
+        "rawOutputPersisted": false,
+        "scope": "Studio existing tests plus five-member archive/source byte parity and actual CLI init into an owned temporary directory; no package installation or network",
+        "archiveSourceSync": "0.1.3 includes existing baseline random Event ID and same-event maximum-three-attempt usage reporting which predates this cycle; the only runtime source change in this cycle is the local authentication byte-length guard."
+      },
+      "hostTotals": {
+        "tests": 26,
+        "pass": 25,
+        "fail": 0,
+        "skipped": 1,
+        "newTests": 3
+      },
+      "testedSourceSha256": {
+        "toolkits/sky-tool-sdk/src/index.mjs": "527b083621e6c60cd194b5a3499135e2369d9754cc6cb8ba5a139d747feb9848",
+        "tests/sky-tool-sdk.test.mjs": "e48d4d3fc2bee046c043f15d47627d159f032081bd694a2e5bb793a40e071c6f",
+        "tests/mcp-connector.test.mjs": "50bdc4d41fe79037afcc912552edd53cda31464dbf418dba23b2c120d340d2c1",
+        "tests/mcp-local-descriptor.test.mjs": "95c5076c87d4c863d09ca0ec59c1c5505888528e318cbfc547aa65a0eb64a25b",
+        "toolkits/sky-tool-sdk/package.json": "6c2359fc2670117f7fbdbe2606faa42910e5f1761a150640ff2a72ec840c7aa6",
+        "toolkits/sky-tool-sdk/bin/create-sky-tool.mjs": "7eb4e2bfcd2c4cfd7c1b4c4c4b65949696cb0b012f130bc9207d9624844abd1c",
+        "toolkits/sky-tool-sdk/README.md": "b4623843edfa05aa6c3bd340ed28127a39e4e26c04651da61ed511e1bde9ba18",
+        "components/rock-studio.tsx": "1e509224c7199b1acc272066f9bcc68a0eacebe16c27f2934c481e442209458b",
+        "tests/sky-studio-chat.test.mjs": "8591932ae56b2bad21af7563afe91bfa5e91e925adee56cf66f6937eb6c82bcb",
+        "toolkits/sky-tool-sdk/examples/minimal.mjs": "6e4ab140a18c00b60694cde4fd003114ead4abf7273463bf829156955312b4ad",
+        "lib/sky-tool-events.ts": "28be25ff8497bc7493ecf6633a3668893e5ddd501877504ec9e63e5f0e37be23",
+        "app/api/sky/tool-events/route.ts": "2e387915127123d4510eebecf99877f400facf11371b2d11b57981206ecbb2ce",
+        "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz": "3e7cebce37fbd18695b833a7192a4cf1695fabc71c50a8d7f0144ce09951c4fc"
+      },
+      "independentReview": {
+        "evidencePath": "work/spider-ci/cycle-22-connector-review.json",
+        "sha256": "070b3b9542308ddf854b3ab275b034966a667a71a6e3bd6d90f15d26ab3d66de",
+        "verdict": "NO_BLOCKER",
+        "distributionVerdict": "NO_BLOCKER",
+        "reviewerDuplicatedSuites": false
+      },
+      "evidenceSha256": {
+        "cycle-22-sdk-baseline.json": "43d7b73beb47d0f9fc61a69492eba1899f194f0532ec2d0ccb508861058f6d65",
+        "cycle-22-sdk-regression-before.json": "3f1aa9fd889e126c9ebd6ce088807691c80ea99bd2672c7337df017870081877",
+        "cycle-22-sdk-after.json": "c8b572572218237224b0e26a0a425d922d090d7c16c5f11a4ccaf2cf302cc4df",
+        "cycle-22-sdk-package.json": "618165eb60adf59e449bfd244f618a711eb1803eb15d5b4cbd566b9e40e01c51",
+        "cycle-22-distribution-review.json": "cf644c83495c414fc7fc7f308e7cccca1255d69edd5213b09f5d09c2701bb793"
+      },
+      "ciAvailability": {
+        "workflow": ".github/workflows/ci.yml",
+        "route": "npm run verify -> npm test -> node --experimental-strip-types --test tests/*.test.mjs",
+        "newWorkflowRequired": false
+      },
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "a90fdc6c101bcb83dd53375f4d15522b3b297e68e6745d89b9cd60d0316d3e95"
+      },
+      "remaining": {
+        "codeql": "Original #41 remains separate; compare all48 IDs and individual instances at the same ref after publishing.",
+        "dependencies": "18 default-branch alerts; PR53-56 unchanged; no duplicate PR.",
+        "history": "2369 pattern candidates; seven historical entries individually matched public source digests; no broader reclassification."
+      },
+      "limits": [
+        "The original direct request is a private synthetic negative authentication test, not a production file-upload feature. The presence of a file-derived URL alone does not prove exfiltration.",
+        "The temporary checkout and same-UID process are trusted. A hostile local process that can alter code/descriptors is not isolated by this test. Normal cleanup is not guaranteed after process termination.",
+        "Production descriptor parent directories are a documented trust boundary; existing opened-handle checks are not a defense against a compromised same-UID process.",
+        "No real credential, external endpoint, browser, device, guest, deployment or permission change was used. No CodeQL alert was dismissed.",
+        "The child regression uses tools/list for malformed requests. Denial before parsing/handler dispatch follows from source order; no zero-handler-invocation measurement is claimed.",
+        "Host Node 26 results and one unsupported-platform skip do not substitute for same-SHA CI, deployed application/browser access or other Node/OS versions. Normal cleanup and parent forced cleanup are tested; arbitrary machine termination cleanup is not guaranteed.",
+        "Sibling Connector comparisons remain outside this patch: their enclosing request catch prevents the same uncaught callback path, and no broader claim of authentication completeness is made.",
+        "No assertion of zero handler side effects from denied tools/list requests",
+        "Host Node 26; exact-SHA GitHub validation remains separate",
+        "No Internet/browser reachability, real incident or credential disclosure established. SDK0.1.3 is a repository archive only; existing installed SDKs are not updated."
+      ],
+      "boundaries": {
+        "runtimeChanged": true,
+        "testChanged": true,
+        "sdkArchiveVersion": "0.1.3",
+        "scannerPolicyChanged": false,
+        "vendorChanged": false,
+        "dependencyInstallation": false,
+        "npmPublish": false,
+        "mainMerged": false,
+        "forcePush": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false
+      },
+      "publicationEvidence": {
+        "status": "pending"
       },
       "projectDatabaseDesignChecks": "passed before missing ai dependency"
     }

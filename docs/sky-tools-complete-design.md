@@ -97,6 +97,8 @@ Skyはapp storeだけではなく、発見から接続、実行場所、停止�
 
 PC内Toolの自動検出は[Sky MCP Connector](sky-mcp-connector.md)のowner専用descriptorを入力とする。検査と読取に同じfile handleを使い、symlink・非通常file・private権限違反・4 KiB超過を拒否する。壊れた候補は接続一覧へ加えず、SDKが正しい定義を再生成すれば次の検出で復旧する。検出によって権限や実行承認を追加せず、既存Passportと一回券を維持する。回帰では読取中のpath差し替え／file拡大と正常SDK接続・承認付き実行を検査する。同一UIDと親directoryの信頼境界は保持する。
 
+SDKのローカルMCP認証は、受信文字列と期待キーをUTF-8 byte列へ変換し、byte長一致を確認してから定時間比較する。JS文字数だけで比較へ進ませず、不正な非ASCII認証値も401へ固定してprocessを維持する。認証前のhandler実行や資格情報の応答・ログ出力を追加せず、既存loopback／descriptor／実行承認を保つ。隔離したchildの不正要求後に同じserverのhealth・正当な認証付きTool実行を確認する。実機やInternet到達は未検証で、責任範囲と詳細は[Sky Tool SDK](sky-tool-sdk.md)へ接続する。
+
 ### PC MR HTTP受信の期限（SYS15）
 
 目的は、未認証の接続が少量ずつ送り続けてもPCの逐次接続受付を無期限に占有させないこと。ROCKの `toolkits/mr/mcp_server.py` が、受付後のrequest-line・header・body共通で10秒のmonotonic絶対期限を持ち、socket読取ごとに残時間を適用する。無通信のたびに期限を延長しない。bodyの既存16,000,000 byte上限とOrigin／Host／bearerの認証条件を維持する。

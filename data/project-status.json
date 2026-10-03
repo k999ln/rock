@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-10-03",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
-  "nextAction": "SYS15第21cycleで外部フォント検査2か所をlowercase＋literal substring照合へ強化。対象10／全site19試験と合成26ケースで大文字host8見逃しの拒否・既存拒否を確認した。runtime修正と区別し、同一SHAの全検査とCodeQL #43／#44の個別状態を確認する。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
+  "nextAction": "SYS15第22cycleでSDK認証の文字数／byte長差によるprocess停止を修正。隔離childで旧sourceの1要求からexit1を再現、新1回帰と関連22試験（21 pass／1環境条件skip）で401拒否・同process継続・正当実行を確認した。SDK0.1.3の配布物・Studio・CLI版も同期し、5ファイルbyte一致と実CLIを含む追加4試験が成功。元CodeQL #41と分けて、同一SHAのCIと全alert stateを確認する。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
     {
       "id": "ORG01",

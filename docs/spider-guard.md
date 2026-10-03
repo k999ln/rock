@@ -333,3 +333,9 @@ CodeQL #37は`tests/mcp.test.mjs`の`filesFrom`にあるstat/read間の競合を
 CodeQL #43／#44の対象はbuilt HTML全体に対する禁止substring検査であり、URLを許可する処理ではない。両端アンカーを追加するとHTML途中の禁止参照を見逃すため、既存の部分一致拒否を維持する。そのうえで、大文字・小文字混在のGoogle Fontsホストが旧検査を通る別のテスト不足を、HTMLのlowercase化と2ホストのliteral照合で補う。
 
 変更は既存testの2つのassertion群だけで、route一覧、他の検査、製品source、checked-in配信物、依存、scanner policyを保持する。旧新callback全体への合成入力で見逃しの拒否と既存の拒否を比較し、既存site試験と同一SHAのCIを確認する。checked-in distに対する回帰検査であり、fresh Astro rebuildや配備の受入ではない。HTML entity・CSS escape・別asset内の全通信解析へ範囲を広げず、runtime脆弱性修正とも呼ばない。結果と残課題は[改善記録](evidence/spider-improvement-cycle.json)へ記録する。
+
+## 第22cycle: 不正なSDK認証ヘッダーによるprocess停止を防ぐ
+
+CodeQL #41はtest専用descriptorのURLへ固定の認証なし要求を送り、401を確認する箇所である。descriptor本文やキーを送信する経路ではなく、元alertの解消とは分ける。関連するSDKの認証処理では、JS文字数を比較してからUTF-8 byte列を定時間比較していたため、同じ文字数の非ASCII値で長さの例外が起きる。認証区間はasync HTTP callbackのtry外にあり、隔離childで1要求からprocess終了を再現した。
+
+string型を確認し、同じBufferのbyte長一致を確かめた場合だけ定時間比較する。不正入力は従来どおり401で拒否し、本文解析・handlerへ進めない。隔離child回帰で拒否後の同じprocessのhealthと正当な認証付きTool実行を確認する。loopbackへ接続できる未認証clientによる可用性の欠陥であり、Internet／browser到達や秘密漏洩を実証したものではない。Connectorの同型比較は別のtry内にあり、SDKのfatalと混同しない。配布用0.1.3は検証したrepository sourceを同梱し、Studioの導入URL・CLIの最小依存版を同期する。旧0.1.2 archiveは認証処理だけでなく、既にrepositoryへ存在する利用event ID／最大3回の送信処理も未反映だったため、今回のtgzと現sourceのbyte一致を検査する。新たな送信機能の実装修正ではなく、既存sourceの配布同期として分ける。旧archiveは保持し、npm公開・公開配備・既存Toolの更新は行わない。元#41のstateは同一refで別途追跡し、証拠は[改善記録](evidence/spider-improvement-cycle.json)へ保存する。

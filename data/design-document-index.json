@@ -198,6 +198,17 @@
     },
     {
       "id": "sky_zema_and_tools",
+      "localSdkAuthenticationBoundary": {
+        "document": "docs/sky-tool-sdk.md",
+        "implementation": "toolkits/sky-tool-sdk/src/index.mjs",
+        "distributionPackage": "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
+        "distributionBoundary": "versioned local package and Studio install link; source byte parity required, no registry publication",
+        "comparison": "UTF-8 byte length equality before timingSafeEqual on the same buffers",
+        "malformedCredentialOutcome": "401 before body parsing or handler; process remains available",
+        "trustBoundary": "local loopback client; descriptor and execution approval policies unchanged",
+        "regressions": "tests/sky-tool-sdk.test.mjs",
+        "acceptanceLimit": "isolated host source tests; real device and external reachability not established"
+      },
       "coverage": "DETAILED_WITH_PLATFORM_GAPS",
       "interfaceImplementation": ["components/tool-icon.tsx", "components/tool-character.tsx", "components/sky-chat-workspace.tsx", "components/sky-candidate-runner.tsx", "components/sky-workspace.tsx", "components/sky-workspace.module.css", "components/sky-tool-card.tsx", "components/sky-tool-card.module.css", "components/sky-marketplace.tsx", "components/sky-marketplace.module.css", "components/sky-tool-workspace.tsx", "components/sky-tool-workspace.module.css", "components/sky-tool-overview.tsx", "components/sky-tool-overview.module.css", "components/coconala-team-workspace.tsx", "components/coconala-team-workspace.module.css", "components/sky-surface.module.css", "components/fashion-brand-ops-runner.tsx", "components/fashion-brand-ops-runner.module.css", "components/sky-connection-center.tsx", "components/sky-connection-center.module.css", "components/sky-mcp-center.tsx", "components/sky-mcp-center.module.css", "components/sky-publisher-form.tsx", "components/sky-publisher-form.module.css", "lib/use-sky-tool-context.ts"],
       "documents": [

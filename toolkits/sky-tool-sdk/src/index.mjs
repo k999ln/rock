@@ -539,10 +539,12 @@ export function createSkyToolApp(rawConfig) {
           return json(res, 404, { error: 'not_found' });
         if (localSecret) {
           const supplied = req.headers['x-sky-local-secret'];
+          const suppliedBytes = typeof supplied === 'string' ? Buffer.from(supplied) : null;
+          const expectedBytes = Buffer.from(localSecret);
           if (
-            typeof supplied !== 'string' ||
-            supplied.length !== localSecret.length ||
-            !timingSafeEqual(Buffer.from(supplied), Buffer.from(localSecret))
+            !suppliedBytes ||
+            suppliedBytes.length !== expectedBytes.length ||
+            !timingSafeEqual(suppliedBytes, expectedBytes)
           ) return json(res, 401, { error: 'unauthorized' });
         }
         let message;

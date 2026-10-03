@@ -1,5 +1,13 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-03 — SPIDER第22cycle: SDKの不正認証でprocessが停止する欠陥を修正
+
+Security／ROCKのSYS15として基準 `1b116e4`のCodeQL #41を調べた。元のtest専用descriptor→loopbackの固定本文・401確認は秘密漏洩と認定せず、隣接SDK認証の可用性欠陥と分ける。JS文字数一致の後でUTF-8 Bufferを比較しており、43文字／86 byteになる未認証入力がtry外の例外を起こした。隔離したSDK childへLatin-1 43 byteのヘッダーを1件送ると応答なし・exit1を再現した。初回sandboxのlisten EPERMと、文字を変換するHTTP client経路の401は再現成功と別記した。
+
+SDKはstring型確認後の2つのBufferのbyte長を検査し、同じBufferを定時間比較する。新1回帰は旧sourceで失敗し、修正後は不正4形式を401で拒否して同じchildのhealthと正当なlist／Tool実行、正常終了・descriptor削除を確認した。SDK6＋Connector6＋descriptor10を一括1回実行し21 pass／0 fail／1環境条件skip。loopbackに接続できる未認証clientの可用性修正であり、Internet／browser到達や秘密漏洩の実証ではない。元#41を解消扱いせず、同一SHAの全検査・個別stateを公開後に確認する。
+
+配布用SDK0.1.3を作り、Studioの導入URLとCLIの最小依存版を同期した。旧archiveは保持し、新tgzの5ファイルが現sourceとbyte一致する検査と、実CLI生成物の版確認を追加した。配布関連4試験も成功し、合計26件中25 pass／1環境条件skip。旧0.1.2へ未反映だった既存Event ID／最大3回送信は配布同期として明記し、新しいruntime追加とは分ける。npm公開・配備・既存Tool更新は実行しない。 独立reviewは阻害要因なし。source／archive hashと検証証拠を保存し、project・database・design検査は成功。ローカル全体verifyは既存ai依存未導入で停止し、GitHub同一SHAでの結果を別途確認する。
+
 ## 2026-10-03 — SPIDER第21cycle: 外部フォント検査の大文字ホスト見逃しを防ぐ
 
 Security／ROCKのSYS15で基準 `47a999b`のCodeQL #43／#44を確認した。HTML全体の禁止substring検査で未アンカーは意図的であり、アンカーで拒否を弱めない。一方、大文字・小文字混在の同じGoogle Fontsホストを見逃すため、既存2か所をlowercaseとliteral照合へ変更した。既存10 testの順序・他assertionはbyte一致し、実装・配信物・scanner policyは不変。
@@ -1472,7 +1480,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: SYS15第21cycleで外部フォント検査2か所をlowercase＋literal substring照合へ強化。対象10／全site19試験と合成26ケースで大文字host8見逃しの拒否・既存拒否を確認した。runtime修正と区別し、同一SHAの全検査とCodeQL #43／#44の個別状態を確認する。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
+次の作業: SYS15第22cycleでSDK認証の文字数／byte長差によるprocess停止を修正。隔離childで旧sourceの1要求からexit1を再現、新1回帰と関連22試験（21 pass／1環境条件skip）で401拒否・同process継続・正当実行を確認した。SDK0.1.3の配布物・Studio・CLI版も同期し、5ファイルbyte一致と実CLIを含む追加4試験が成功。元CodeQL #41と分けて、同一SHAのCIと全alert stateを確認する。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
 <!-- project-status:end -->
 
 ## 次段階の設計
