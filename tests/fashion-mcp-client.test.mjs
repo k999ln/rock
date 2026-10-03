@@ -181,3 +181,65 @@ await test('producer client does not claim saved success when readback is missin
   assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM producer_runs').count, 1);
   assert.equal(runtime.store.get('SELECT COUNT(*) AS count FROM effect_runs').count, 0);
 });
+
+await test('an old unauthorized verification cannot erase the replacement session', async (t) => {
+  const h = await harness(t);
+  await h.client.connectFashionMcp();
+  const fetcher = globalThis.fetch;
+  let resolvePing;
+  const ping = new Promise((resolve) => { resolvePing = resolve; });
+  globalThis.fetch = (url, init) => JSON.parse(init.body).method === 'ping' ? ping : fetcher(url, init);
+  const oldVerification = assert.rejects(h.client.verifyFashionMcp(), /接続期限/);
+  await h.client.disconnectFashionMcp();
+  await h.client.connectFashionMcp();
+  resolvePing(Response.json({ error: 'expired' }, { status: 401 }));
+  await oldVerification;
+  assert.equal(h.client.fashionMcpConnected(), true);
+  assert.equal(h.storage.get('sky.fashion-mcp.session'), token);
+});
+
+for (const pendingMethod of ['ping', 'tools/list']) {
+  await test(`a stale successful ${pendingMethod} cannot verify a replacement Fashion session`, async (t) => {
+    const h = await harness(t);
+    await h.client.connectFashionMcp();
+    const fetcher = globalThis.fetch;
+    let resolvePending;
+    let resolveStarted;
+    const pending = new Promise((resolve) => { resolvePending = resolve; });
+    const started = new Promise((resolve) => { resolveStarted = resolve; });
+    let intercepted = false;
+    globalThis.fetch = (url, init) => {
+      if (!intercepted && JSON.parse(init.body).method === pendingMethod) {
+        intercepted = true;
+        resolveStarted();
+        return pending;
+      }
+      return fetcher(url, init);
+    };
+    const oldVerification = assert.rejects(h.client.verifyFashionMcp(), /PC接続が変更/);
+    await started;
+    await h.client.disconnectFashionMcp();
+    await h.client.connectFashionMcp();
+    const requestCount = h.requests.length;
+    resolvePending(Response.json({ result: pendingMethod === 'ping' ? {} : { tools } }));
+    await oldVerification;
+    assert.equal(h.requests.length, requestCount);
+    assert.equal(h.client.fashionMcpConnected(), true);
+    assert.equal(h.storage.get('sky.fashion-mcp.session'), token);
+  });
+}
+
+await test('a delayed disconnect cannot clear a newer Fashion connection', async (t) => {
+  const h = await harness(t);
+  await h.client.connectFashionMcp();
+  const fetcher = globalThis.fetch;
+  let resolveDisconnect;
+  const disconnected = new Promise((resolve) => { resolveDisconnect = resolve; });
+  globalThis.fetch = (url, init) => (typeof url === 'string' ? url : url instanceof URL ? url.href : url.url).endsWith('/disconnect') ? disconnected : fetcher(url, init);
+  const oldDisconnect = h.client.disconnectFashionMcp();
+  await h.client.connectFashionMcp();
+  resolveDisconnect(Response.json({ disconnected: true }));
+  await oldDisconnect;
+  assert.equal(h.client.fashionMcpConnected(), true);
+  assert.equal(h.storage.get('sky.fashion-mcp.protocol'), '2025-11-25');
+});

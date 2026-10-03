@@ -1,14 +1,14 @@
+import { isSkyToolId, skyZemaLimits } from '../public-release/rockstaros/packages/sky-zema-core/src/handoff.js';
 import { isTextModelProvider, type TextModelProviderId } from './llm-providers.ts';
 
 export const ZEMA_CHAT_SESSION_KEY = 'rockstaros.zema-chat-sessions.v1';
-export const ZEMA_CHAT_SESSION_TTL_MS = 10 * 60 * 1000;
+export const ZEMA_CHAT_SESSION_TTL_MS = skyZemaLimits.privateSessionTtlMs;
 
 const MAX_SESSIONS = 8;
-const MAX_MESSAGES = 24;
-const MAX_MESSAGE_LENGTH = 4_000;
+const MAX_MESSAGES = skyZemaLimits.messages;
+const MAX_MESSAGE_LENGTH = skyZemaLimits.message;
 const MAX_RESULT_LENGTH = 16_000;
 const ID = /^[0-9a-f-]{36}$/;
-const TOOL_ID = /^[a-z0-9][a-z0-9:.-]{0,119}$/;
 
 type SessionStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
@@ -48,10 +48,10 @@ function validMessage(value: unknown): value is ZemaChatMessage {
     typeof message.text === 'string' &&
     message.text.length <= MAX_MESSAGE_LENGTH &&
     (message.tool === undefined ||
-      (typeof message.tool === 'string' && TOOL_ID.test(message.tool))) &&
+      (typeof message.tool === 'string' && isSkyToolId(message.tool))) &&
     (message.suggestedTool === undefined ||
       (typeof message.suggestedTool === 'string' &&
-        TOOL_ID.test(message.suggestedTool)))
+        isSkyToolId(message.suggestedTool)))
   );
 }
 
@@ -65,10 +65,10 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
     typeof session.id === 'string' &&
     ID.test(session.id) &&
     typeof session.toolId === 'string' &&
-    TOOL_ID.test(session.toolId) &&
+    isSkyToolId(session.toolId) &&
     typeof session.createdAt === 'number' &&
     Number.isFinite(session.createdAt) &&
-    session.createdAt <= now + 30_000 &&
+    session.createdAt <= now + skyZemaLimits.futureToleranceMs &&
     now - session.createdAt <= ZEMA_CHAT_SESSION_TTL_MS &&
     Array.isArray(session.messages) &&
     session.messages.length <= MAX_MESSAGES &&
@@ -78,9 +78,9 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
         typeof request?.id === 'string' &&
         request.id.length <= 100 &&
         typeof request.text === 'string' &&
-        request.text.length <= 2_000 &&
+        request.text.length <= skyZemaLimits.request &&
         typeof request.toolId === 'string' &&
-        TOOL_ID.test(request.toolId) &&
+        isSkyToolId(request.toolId) &&
         (request.executionProvider === undefined || request.executionProvider === 'local-model') &&
         (request.plannerProvider === undefined || isTextModelProvider(request.plannerProvider)) &&
         (request.plannerModel === undefined ||
@@ -133,7 +133,7 @@ export function saveZemaChatSession(
     activeRequest: session.activeRequest
       ? {
           ...session.activeRequest,
-          text: session.activeRequest.text.slice(0, 2_000),
+          text: session.activeRequest.text.slice(0, skyZemaLimits.request),
         }
       : null,
     outcome: session.outcome

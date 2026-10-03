@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { catalog } from '../lib/catalog.ts';
-import { JOB_TOOLS } from '../lib/operations.ts';
+import { JOB_TOOLS, SKY_CONNECTION_TOOLS } from '../lib/operations.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -11,7 +11,6 @@ const requireValue = (ok, message) => {
 };
 
 const catalogSource = read('lib/catalog.ts');
-const operationsSource = read('lib/operations.ts');
 const readyCount = catalog.filter(({ status }) => status === 'ready').length;
 const candidateCount = catalog.filter(({ status }) => status === 'candidate').length;
 requireValue(
@@ -41,12 +40,6 @@ for (const marker of [
 const registry = resolve(root, 'systems/rock-star-os/examples/registry');
 const packages = readdirSync(registry).filter((name) =>
   name.endsWith('.rock.json'),
-);
-const connectionSource = operationsSource.slice(
-  Math.min(
-    operationsSource.indexOf('SKY_CANDIDATE_TOOLS'),
-    operationsSource.indexOf('SKY_CONNECTION_TOOLS'),
-  ),
 );
 const identities = packages.map((name) => {
   const value = JSON.parse(readFileSync(resolve(registry, name), 'utf8'));
@@ -179,6 +172,7 @@ for (const marker of [
   );
 
 const fashionClient = read('lib/fashion-mcp-client.ts');
+const sharedMcpClient = read('lib/mcp-client.ts');
 for (const marker of [
   'FASHION_MCP_TOOL_COUNT = 41',
   "'initialize'",
@@ -187,7 +181,7 @@ for (const marker of [
   "'/disconnect'",
 ])
   requireValue(
-    fashionClient.includes(marker),
+    (fashionClient + sharedMcpClient).includes(marker),
     `Fashion Brand Opsのワンクリック接続に「${marker}」がありません`,
   );
 requireValue(
@@ -311,7 +305,7 @@ for (const tool of [
     .map(({ id }) => id),
 ])
   requireValue(
-    connectionSource.includes(`'${tool}'`),
+    SKY_CONNECTION_TOOLS.includes(tool),
     `Zemaで使うready担当「${tool}」がSky接続許可リストにありません`,
   );
 

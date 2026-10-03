@@ -1,5 +1,13 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-02 — 重複実装と検証入口の統合（G04）
+
+利用者の「重複・似たプログラムを統合して」に従い、Git / CI / Operations（ROCK）を主担当として、main `b3e2676` から共通処理を集約する。PR #51 のCSV安全修正・既存検査整合、PR #39 のSite試験接続を履歴ごと取り込んだ。法務／特許AIの通信・引用、Jev通信、MCPのsession／RPC、Tool registry、owner／revision保存、Stripe低水準通信・署名、公開PreviewとWebのSky→Zema契約を対象にする。
+
+各Toolの認証、外部送信同意、owner分離、CAS競合、決済・在庫・本人承認は各adapterに残す。Android／Linuxの実行器、バックアップ形式、商品固有アルゴリズム、固定原本は独立した責務であり削除しない。未mergeのAI／Fund／Game等の新機能PRも重複とみなさず、今回の完了範囲に含めない。共通処理の実装とローカル全体検証は完了。GitHubの同一SHA CIとmain統合はPRの状態・merge commitで追跡する。公開配備、実決済、実機試験は本統合の検証に含まない。
+
+fresh `npm ci`後の`npm run verify` exit 0。root 485/485、Fashion 22/22、Site 18/18、公開Preview 21/21、Worker-D1 172項目、CSV-D1/R2 113項目、bundle 131、asset 114（欠落0）が合格。Mini fresh buildは13 route。配布ZIPと共通Stripeコピーをsourceへ同期し、Fashion単体ZIPもverify必須にした。後続のSite配布物一致試験1件も追加し、最終CIで再確認する。独立レビューの追加41試験とstrict型確認で未解決の指摘なし。[証拠](docs/evidence/common-foundation-integration.json)。このdoneはG04の共通実装範囲に限り、未mergeの新機能PR・native実行器・Provider・実機受入を完了に変えない。
+
 ## 2026-09-26 — avokadoホームの用途紹介を体験中心へ簡素化
 
 利用者の「説明すぎる」という指摘に従い、ホームの用途紹介から3コマ・矢印・役割表・長文を撤去。研究、制作、生活、ゲームを一場面ずつ示すコンセプト画像と短い見出しに置き換え、各カードからMini／Proの商品説明へ進めるようにした。既存の製品画像、価格、単体利用の説明、決済停止条件は維持。主担当ROCK、既存WEB19の表示改善。
@@ -1123,7 +1131,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-27 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 104/157件
+最終更新: 2026-10-02 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 105/158件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1284,6 +1292,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 | [記録](docs/sky-billing.md) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](tests/billing-worker.test.mjs) · [記録](docs/evidence/launch/sky-billing-fee-hold-20260924.json) · [記録](lib/sky-commerce.ts) · [記録](lib/sky-commerce-store.ts) · [記録](lib/sky-stripe.ts) · [記録](components/sky-commerce.tsx) · [記録](drizzle/0018_sky_commerce.sql) · [記録](tests/sky-commerce.test.mjs) · [記録](tests/sky-stripe.test.mjs) |
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
+| G04 | 重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化 | 完了 | [記録](docs/git-consolidation.md) · [記録](docs/evidence/common-foundation-integration.json) · [記録](tests/sky-zema-contract.test.mjs) · [記録](tests/shared-stripe.test.mjs) · [記録](tests/mcp-client.test.mjs) · [記録](tests/owner-revision-json-store.test.mjs) |
 
 段階ゲート（作業全体の完了とは別判定）
 

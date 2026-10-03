@@ -1,3 +1,4 @@
+import { stripeIdempotencyKey, stripeRequest } from '../shared/stripe.mjs';
 import { marketplaceCommissionMinor } from './sky-marketplace-policy.ts';
 
 export class SkyPaymentError extends Error {
@@ -88,7 +89,6 @@ export type SkyStripeOrder = {
 };
 
 export const SKY_STRIPE_API_VERSION = '2026-08-26.dahlia';
-const STRIPE_API_ORIGIN = 'https://api.stripe.com';
 const REQUEST_TIMEOUT_MS = 15_000;
 const CONFIG_ERROR = '決済の接続設定が完了していません。';
 const PROVIDER_ERROR = '決済サービスとの通信に失敗しました。時間をおいてもう一度お試しください。';
@@ -146,10 +146,11 @@ function validateStripeRedirect(value: unknown, hostname: string): string {
 }
 
 function validateIdempotencyKey(value: string): string {
-  if (typeof value !== 'string' || !/^[A-Za-z0-9._:-]{1,255}$/.test(value)) {
+  try {
+    return stripeIdempotencyKey(value);
+  } catch {
     throw new SkyPaymentError('決済リクエストを確認できません。', 400);
   }
-  return value;
 }
 
 /** Server-side only. The caller owns authentication, persisted orders and fulfillment. */
@@ -168,31 +169,15 @@ export function skyStripe(config: SkyStripeConfig, fetcher: typeof fetch = fetch
     parameters: Record<string, string> = {},
     idempotencyKey?: string,
   ): Promise<T> {
-    const fields = new URLSearchParams(parameters);
-    const url = new URL(path, STRIPE_API_ORIGIN);
-    if (method === 'GET') url.search = fields.toString();
-    const headers: Record<string, string> = {
-      Authorization: `Bearer ${validated.secretKey}`,
-      'Stripe-Version': SKY_STRIPE_API_VERSION,
-    };
-    if (idempotencyKey !== undefined) headers['Idempotency-Key'] = validateIdempotencyKey(idempotencyKey);
-    if (method === 'POST') headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    if (idempotencyKey !== undefined) validateIdempotencyKey(idempotencyKey);
     try {
-      const response = await fetcher(url.href, {
-        method,
-        headers,
-        body: method === 'POST' ? fields.toString() : undefined,
-        redirect: 'error',
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-      });
-      if (!response.ok) throw new SkyPaymentError(PROVIDER_ERROR, 502);
-      const result: unknown = await response.json();
-      if (!result || typeof result !== 'object' || Array.isArray(result)) {
-        throw new SkyPaymentError(PROVIDER_ERROR, 502);
-      }
-      return result as T;
+      return await stripeRequest({
+        path, method, parameters, idempotencyKey,
+        secretKey: validated.secretKey, apiVersion: SKY_STRIPE_API_VERSION,
+        fetchImpl: fetcher, timeoutMs: REQUEST_TIMEOUT_MS,
+      }) as T;
     } catch {
-      // Provider messages can include submitted data. Never return or log them.
+      // Preserve the product error contract without exposing provider data.
       throw new SkyPaymentError(PROVIDER_ERROR, 502);
     }
   }

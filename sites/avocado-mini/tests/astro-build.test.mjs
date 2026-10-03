@@ -28,8 +28,14 @@ test('Astro emits every public route and the Worker deployment contract', () => 
     assert.equal(existsSync(new URL(route, outputRoot)), true, `${route} must exist`);
   }
 
-  for (const artifact of ['server/index.js', 'server/wrangler.json', '.openai/hosting.json']) {
+  for (const artifact of ['server/index.js', 'server/shared/stripe.mjs', 'server/wrangler.json', '.openai/hosting.json']) {
     assert.equal(existsSync(new URL(artifact, outputRoot)), true, `${artifact} must exist`);
+  }
+});
+
+test('the deployed Worker includes the same executable sources and shared Stripe contract', () => {
+  for (const relative of ['index.js', 'shared/stripe.mjs']) {
+    assert.equal(built(`server/${relative}`), readFileSync(new URL(`../worker/${relative}`, import.meta.url), 'utf8'));
   }
 });
 

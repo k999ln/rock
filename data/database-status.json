@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-09-27",
+  "updatedAt": "2026-10-02",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
@@ -9,8 +9,8 @@
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 157,
-    "done": 104,
+    "total": 158,
+    "done": 105,
     "in_progress": 32,
     "planned": 20,
     "blocked": 1,
