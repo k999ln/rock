@@ -1614,3 +1614,5 @@ MR成果保存を短命のDOM外Blobクリックから通常のUTF-8 Markdownリ
 ## Sky Mac限定試験の接続候補
 
 公開v36を維持し、MR stdio 1件・4機能・既存Sky Origin・SDK発見なしのpilot modeを準備。初回発行から30分固定、期間延長なし、期限後のtoken/承認券無効化と待受/stdio停止を実装した。発行・再接続・実行・実時間失効試験は未実施。pure policyと未認証HTTP拒否5試験のみ合格。27件の未コミット正本参照を無差別にコピーせず、不足70件のhash照合receiptを保管。親task/公開gateは未受入。
+
+公開画面の既存配布導線を照合し、通常Connectorの許可Originに現行Skyを追加した。health取得200・未認証のservers取得401だけを検証し、キー発行や全Toolの本番受入は行っていない。承認待ちの4機能試験は通常modeを流用せず限定modeを使用する。

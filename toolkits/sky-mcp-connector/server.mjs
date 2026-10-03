@@ -34,6 +34,7 @@ const CALL_TIMEOUT_MS = 60_000;
 const APPROVAL_TTL_MS = 5 * 60_000;
 const MAX_APPROVALS = 10_000;
 const ORIGINS = new Set([
+  PILOT_ORIGIN,
   'https://rockstaros-kaiya.noellesugar1.chatgpt.site',
   'https://rock-star.kirin-999.chatgpt.site',
   'https://loop-automation-hub.kirin-999.chatgpt.site',

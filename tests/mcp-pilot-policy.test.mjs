@@ -61,3 +61,13 @@ void test('pilot HTTP rejects other origins and unauthenticated work without iss
   assert.equal(connector.hub.list()[0].state, 'available');
   assert.equal(connector.hub.list()[0].passport, null);
 });
+
+void test('the published Sky origin reaches ordinary Connector health but does not gain access', async (t) => {
+  const registryPath = new URL('../toolkits/sky-mcp-connector/registry.json', import.meta.url).pathname;
+  const connector = await createConnector({ registryPath, port: 0 });
+  t.after(() => new Promise(resolve => { connector.server.closeAllConnections(); connector.server.close(resolve); }));
+  const url = `http://127.0.0.1:${connector.port}`;
+  assert.equal((await fetch(url + '/health', { headers: { Origin: PILOT_ORIGIN } })).status, 200);
+  assert.equal((await fetch(url + '/servers', { headers: { Origin: PILOT_ORIGIN } })).status, 401);
+  assert.ok(connector.hub.list().every(server => server.passport === null));
+});
