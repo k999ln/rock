@@ -2185,8 +2185,341 @@
         "physicalDevice": "NOT_RUN",
         "continuous24Hours": "NOT_RUN"
       },
-      "publicationEvidence": "Post-push exact-SHA CI and per-ID same-ref alert comparison recorded in PR52 and external SPIDER artifact.",
+      "publicationEvidence": {
+        "commit": "d2640f049c94497b612cd11d59c62cbf3de3a3e8",
+        "fullVerify": {
+          "run": 37128985172,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37128985242,
+          "attempt": 1,
+          "conclusion": "success",
+          "pythonTests": 1789,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1886100101,
+          "pythonAnalysis": 1886101084,
+          "open": 38,
+          "fixed": 10,
+          "all48Unchanged": true
+        },
+        "history": {
+          "run": 37128985188,
+          "scanCompleted": true,
+          "commits": 670,
+          "candidates": 2367,
+          "conclusion": "failure"
+        },
+        "priorFailureCorrectionRetained": true
+      },
       "projectDatabaseDesignChecks": "passed"
+    },
+    {
+      "cycle": 14,
+      "baselineCommit": "d2640f049c94497b612cd11d59c62cbf3de3a3e8",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "verification repair tested locally; publication same-SHA CI and individual alert readback pending",
+      "repairCount": 0,
+      "validationImprovementCount": 1,
+      "runtimeVulnerabilityFixed": false,
+      "reviewedAlerts": [
+        33
+      ],
+      "focusedFinding": "Fixed sample-output includes check accepts unformatted input echo and unrelated documents. Validate the entire deterministic output instead.",
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabot": 18,
+        "historyCandidates": 2367
+      },
+      "baselineAnalysis": {
+        "javascript": 1886100101,
+        "python": 1886101084,
+        "sameCommit": "d2640f049c94497b612cd11d59c62cbf3de3a3e8",
+        "all48StatesRulesLocationsUnchanged": true
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-14-feedback/report.json",
+        "sha256": "033a624f8ecd194791e0668b1001e15c8b97d01d3fd96235dcfe347c0326999f",
+        "collectedAt": "2026-10-03T15:01:15.931Z",
+        "targetHead": "d2640f049c94497b612cd11d59c62cbf3de3a3e8",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 56,
+          "actionable": 36,
+          "review": 18,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 38,
+            "retrievedCount": 38,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "change": {
+        "verificationScript": "scripts/verify-mcp-flow.mjs",
+        "oldAssertionLine": 54,
+        "newAssertionLine": 54,
+        "comparison": "exact complete expected document",
+        "durableRegression": "MCP flow citation sample returns the complete formatted document",
+        "newRegressionFile": "tests/mcp.test.mjs",
+        "runtimeChanged": false,
+        "policyChanged": false
+      },
+      "baselineVerifierSha256": "4aea4dec17e4d3f803a02d6eb646301814c5fbd43a26996aadce0fd471d559a5",
+      "testedSourceSha256": {
+        "scripts/verify-mcp-flow.mjs": "797955ac568fd9cf2b9355aa857e6a40256e0ecd72dafeb0560ef64f75823b90",
+        "tests/mcp.test.mjs": "f48855ff28128225bbe59f01a4d46ad5ac75e468ca33012e4274d779db8f29e5",
+        "lib/device.ts": "ce6d73430553b0afdadd4d93b64161f375da48ef73c58fc0b3122c8b062c82d7",
+        "lib/operations-client.ts": "c509d35dc787d8a004933436ec9006bdebbd5b907a84bb1d4a49e3f233123f16",
+        "toolkits/mr/mcp_server.py": "643420c5bf4505b36b6b2435e34e39923f5fd1fb619692ee41ee631b4e787fb0",
+        "toolkits/mr/pc_citations.py": "1d81ba7c24e638ae72e5347b7d5ae3a42cab206bfc77325a578f25db21482edc",
+        "toolkits/mr/rock_star_tools.py": "671bc5d2f2b31926e579c1134b1815f21e8b825716c88e875cfb6ec9f30bb6ae",
+        "vendor/mr/citation-strip.py": "ed5c28225402c5885c1265c0648b5d4d227a2345ca71e387275a8f205b4ffd13",
+        "vendor/mr/provenance.json": "e782c0b741e9bcdcc3a591e2e6c3bcdaf5b03b51d08e77e4becf218b1e4cbd4f",
+        "work/spider-ci/cycle-14-url-probe.mjs": "9bdb13090d76609cd67ed52841e7b0a8fcdc72416c3710d7df58bc8909601a9a"
+      },
+      "hostChecks": {
+        "command": "node --experimental-strip-types --test tests/mr-tools.test.mjs tests/mcp.test.mjs",
+        "node": "v26.0.0",
+        "platform": "Darwin",
+        "testsRun": 18,
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "newRegressionTests": 1,
+        "logSha256": "694cb19db094561118643360961f63a6e01495d9ac5da419feaee733797ec289"
+      },
+      "mutationProbe": {
+        "assertionExtraction": {
+          "beforeFrom": "d2640f049c94497b612cd11d59c62cbf3de3a3e8:scripts/verify-mcp-flow.mjs",
+          "afterFrom": "scripts/verify-mcp-flow.mjs",
+          "beforeSourceSha256": "4aea4dec17e4d3f803a02d6eb646301814c5fbd43a26996aadce0fd471d559a5",
+          "afterSourceSha256": "797955ac568fd9cf2b9355aa857e6a40256e0ecd72dafeb0560ef64f75823b90",
+          "beforeAssertionSha256": "798431a672951acba05a6d8cf7c416481226dd7c935a3a1dd35fce3d58c8cf17",
+          "afterAssertionSha256": "342f3f8ade169da868ec0de9288d5cea6dfde5588d23c195d2de309b708cd39e",
+          "beforeLine": 54,
+          "afterLine": 54,
+          "executedOnlyExtractedAssertion": true
+        },
+        "execution": {
+          "command": "node work/spider-ci/cycle-14-url-probe.mjs",
+          "platform": "darwin",
+          "nodeVersion": "v26.0.0",
+          "mutationCases": 10,
+          "invalidCasesPreviouslyAccepted": 9,
+          "invalidCasesRejectedAfter": 9,
+          "canonicalOutputAcceptedBeforeAndAfter": true,
+          "cli": {
+            "exitCode": 0,
+            "diagnosticsEmpty": true,
+            "exactOutput": true,
+            "outputBytes": 62,
+            "outputSha256": "e59af83daa8b4dd3e9d088a4d253e83285819f178cad8ef53e645a2a4775c8b3"
+          },
+          "temporaryRemoved": true,
+          "networkRequests": 0
+        },
+        "mutations": [
+          {
+            "name": "canonical_formatted_document",
+            "beforeAccepted": true,
+            "afterAccepted": true,
+            "expectedValid": true
+          },
+          {
+            "name": "unchanged_input_echo",
+            "beforeAccepted": true,
+            "afterAccepted": false,
+            "expectedValid": false
+          },
+          {
+            "name": "url_only",
+            "beforeAccepted": true,
+            "afterAccepted": false,
+            "expectedValid": false
+          },
+          {
+            "name": "url_in_markdown_label_for_other_host",
+            "beforeAccepted": true,
+            "afterAccepted": false,
+            "expectedValid": false
+          },
+          {
+            "name": "userinfo_other_host_with_query_decoy",
+            "beforeAccepted": true,
+            "afterAccepted": false,
+            "expectedValid": false
+          },
+          {
+            "name": "other_host_path_contains_url",
+            "beforeAccepted": true,
+            "afterAccepted": false,
+            "expectedValid": false
+          },
+          {
+            "name": "other_host_query_contains_url",
+            "beforeAccepted": true,
+            "afterAccepted": false,
+            "expectedValid": false
+          },
+          {
+            "name": "unexpected_citation_path_suffix",
+            "beforeAccepted": true,
+            "afterAccepted": false,
+            "expectedValid": false
+          },
+          {
+            "name": "unexpected_extra_text",
+            "beforeAccepted": true,
+            "afterAccepted": false,
+            "expectedValid": false
+          },
+          {
+            "name": "array_instead_of_output_string",
+            "beforeAccepted": true,
+            "afterAccepted": false,
+            "expectedValid": false
+          }
+        ]
+      },
+      "sourceBoundaries": [
+        {
+          "source": "scripts/verify-mcp-flow.mjs:3",
+          "fact": "The integration verifier restricts its configured site to a loopback HTTP origin; line54 validates the returned synthetic citation output, not a request destination or authorization decision."
+        },
+        {
+          "source": "lib/device.ts:5",
+          "fact": "The runtime client uses fixed DEVICE_URL for its MCP requests. The citation-output assertion neither redirects it nor follows the output URL."
+        },
+        {
+          "source": "toolkits/mr/mcp_server.py:88",
+          "fact": "format_citations passes supplied text to the bounded local pc_citations adapter; it returns formatted text rather than fetching cited URLs."
+        },
+        {
+          "source": "toolkits/mr/rock_star_tools.py:51",
+          "fact": "protected_citations invokes the hash-checked pinned citation transformer. The controlled CLI probe used the actual adapter business CLI and a synthetic temporary input."
+        },
+        {
+          "source": "vendor/mr/citation-strip.py:66",
+          "fact": "The pinned transformer removes the inline citation and appends the exact final source block. Vendor source is unchanged."
+        }
+      ],
+      "independentReview": {
+        "schemaVersion": 1,
+        "cycle": 14,
+        "review": "independent source review",
+        "sourceCommit": "d2640f049c94497b612cd11d59c62cbf3de3a3e8",
+        "alert": {
+          "number": 33,
+          "rule": "js/incomplete-url-substring-sanitization",
+          "file": "scripts/verify-mcp-flow.mjs",
+          "originalLine": 54
+        },
+        "conclusion": "No actionable blocker found; exact whole-output comparison is a meaningful repair of a verification blind spot.",
+        "classification": "TEST_ASSERTION_QUALITY; no production runtime URL authorization or sanitization repair claimed",
+        "contract": [
+          "A fixed synthetic Markdown input is passed through runDevice(format_citations) and the real MR formatter returns deterministic structuredContent.output text.",
+          "Pinned citation-strip transform removes the inline citation and creates the final source block; protected_citations preserves code/non-link sources but does not change this fixed sample.",
+          "The expected complete output includes transformed body, source heading, link label and exact destination, and terminal newline.",
+          "Prior includes check accepted an unchanged echo or unrelated text containing the link; exact assert.equal also rejects arrays and non-string values."
+        ],
+        "preservation": {
+          "verifierChangedOnlyTargetAssertion": true,
+          "allOtherVerifierAssertionsUnchanged": true,
+          "allExistingMcpTestsByteForBytePreserved": true,
+          "productionRuntimeUnchanged": true,
+          "scanExclusionsAdded": false,
+          "vendorChanged": false,
+          "newHelperOrDependency": false
+        },
+        "ciAndPracticalRoute": {
+          "manualFlow": "node scripts/verify-mcp-flow.mjs http://127.0.0.1:3011 requires an actual local Sky server and MR HTTP server on 127.0.0.1:38479; not executed by this review.",
+          "manualFlowDirectlyInvokedByPackageOrCi": false,
+          "durableRegression": "node --test tests/mcp.test.mjs executes real Python MCP stdio/isolated citation adapter with the fixed sample.",
+          "existingCiCoverage": [
+            "npm run verify -> npm test -> tests/*.test.mjs",
+            ".github/workflows/spider-regressions.yml explicitly runs tests/mcp.test.mjs"
+          ],
+          "parentReportedHostTests": {
+            "command": "node --experimental-strip-types --test tests/mr-tools.test.mjs tests/mcp.test.mjs",
+            "passed": 18,
+            "skipped": 0,
+            "independentlyRerunByReviewer": false
+          }
+        },
+        "checksExecuted": [
+          "git diff --check",
+          "Exact source-preservation comparison: verifier differs only by replacement assertion; tests differ only by inserted test block.",
+          "git diff --quiet HEAD -- lib toolkits vendor .github/workflows package.json"
+        ],
+        "sourceSha256": {
+          "scripts/verify-mcp-flow.mjs": "797955ac568fd9cf2b9355aa857e6a40256e0ecd72dafeb0560ef64f75823b90",
+          "tests/mcp.test.mjs": "f48855ff28128225bbe59f01a4d46ad5ac75e468ca33012e4274d779db8f29e5",
+          "vendor/mr/citation-strip.py": "ed5c28225402c5885c1265c0648b5d4d227a2345ca71e387275a8f205b4ffd13",
+          "toolkits/mr/rock_star_tools.py": "671bc5d2f2b31926e579c1134b1815f21e8b825716c88e875cfb6ec9f30bb6ae",
+          "toolkits/mr/pc_citations.py": "1d81ba7c24e638ae72e5347b7d5ae3a42cab206bfc77325a578f25db21482edc",
+          "toolkits/mr/mcp_server.py": "643420c5bf4505b36b6b2435e34e39923f5fd1fb619692ee41ee631b4e787fb0",
+          "lib/device.ts": "ce6d73430553b0afdadd4d93b64161f375da48ef73c58fc0b3122c8b062c82d7",
+          "package.json": "5a498327a0f41bdac38c486fc684bd06035dbe8fcff44768cc42373a14d30414",
+          ".github/workflows/ci.yml": "c7f1f9aae26f3bea7b5a759b75c0f775f13447d200f4eb60d43c4d32bfb3d25d",
+          ".github/workflows/spider-regressions.yml": "fed247f403a4c7560fa37ed3d29d4c310052a72cd1c96d302685fda62db1aadb"
+        },
+        "limitations": [
+          "No full HTTP coordinator/MCP/D1 end-to-end flow was executed by this review.",
+          "No real credentials, external provider, user content, root service or VM were used.",
+          "A future intentional formatter contract change may require updating the small explicit expected-output fixture; this is normal contract maintenance, not overfitting.",
+          "CodeQL reanalysis outcome is not inferred from source review."
+        ]
+      },
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "17d584a5923bd2347149fd5b407264e1164c912aa785ec276fe55895505689e6"
+      },
+      "remaining": {
+        "codeql": "Same-ref #33 and all other IDs must be read after new analysis; no alert dismissed locally.",
+        "dependencies": "18 default-branch alerts; existing PR53-56 heads/checks unchanged; no duplicate PR.",
+        "history": "2367 pattern candidates remain unresolved; not a count of unique valid secrets."
+      },
+      "limits": [
+        "Only extracted assertions and real local formatter/stdio fixture were exercised locally.",
+        "Manual authenticated HTTP coordinator/Worker/D1/local-MCP flow was not run.",
+        "No production URL authorization, SSRF or credential-exposure fix claimed.",
+        "No OS boot, physical-device or continuous24h acceptance."
+      ],
+      "boundaries": {
+        "mainMerged": false,
+        "forcePush": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false,
+        "vendorChanged": false,
+        "scanExclusionsAdded": false
+      },
+      "publicationEvidence": {
+        "status": "pending; see PR52 after exact-SHA readback"
+      },
+      "projectDatabaseDesignChecks": "passed in required verify before missing ai dependency"
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."

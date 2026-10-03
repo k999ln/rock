@@ -6,6 +6,16 @@ import path from 'node:path';
 const root=path.resolve('toolkits/mr'),server=path.join(root,'mcp_server.py');
 function messages(input){const r=spawnSync('python3',[server],{input:input.map(x=>typeof x==='string'?x:JSON.stringify(x)).join('\n')+'\n',encoding:'utf8',maxBuffer:20e6,timeout:30000});assert.equal(r.status,0,r.stderr);assert.equal(r.stderr,'');return r.stdout.trim().split('\n').filter(Boolean).map(JSON.parse);}
 const call=(id,name,args)=>({jsonrpc:'2.0',id,method:'tools/call',params:{name,arguments:args}});
+void test('MCP flow citation sample returns the complete formatted document',()=>{
+  const response=messages([
+    call(1,'format_citations',{text:'本文（出典: [Python](https://docs.python.org/3/)）'}),
+  ])[0];
+  assert.equal(response.result.isError,false);
+  assert.equal(
+    response.result.structuredContent.output,
+    '本文\n---\n\n## 出典\n\n- [Python](https://docs.python.org/3/)\n',
+  );
+});
 void test('MCP lifecycle lists four tools and runs all four through stdio',()=>{
   const outputs=messages([
     {jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-11-25',capabilities:{},clientInfo:{name:'test',version:'1'}}},

@@ -277,3 +277,10 @@ PYTHONPATH=systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m un
 Web側の共通検証は `npm run typecheck`、`npm run lint:product`、対象試験、`npm run project:check`。OS設計同期は `npm run design:check`。統合前に `npm run verify` と対象native試験を実行し、既存失敗と本変更の失敗を分ける。OSの同梱・boot・再起動・障害復旧・24時間継続運転はそれぞれ証拠を追加するまで未受入とする。
 
 関連: [Security workstream](workstreams/04-security-identity-compliance.md) / [製品基準](product-baseline.md) / [責任分界](workstreams/00-responsibility-boundaries.md)
+
+
+## 第14cycle: MCPフロー検証の全文照合
+
+CodeQL #33の `scripts/verify-mcp-flow.mjs` は、固定の合成入力に対する手動loopback検証である。従来は返された文書中に期待URLがあれば合格し、未整形の入力を返す場合や余計な文書まで通した。返り値全体を固定の期待文書と照合するようにし、実stdio MCPに同じ入力を渡す回帰試験を追加した。認証、送信先、整形器、既存の状態／件数検証は変更しない。
+
+全文一致の失敗は検証失敗として停止する。出力仕様が意図的に変わる場合は、手動検証とstdio回帰の期待値をレビューして同時に更新する。関連host18試験、合成の不正出力に対する旧／新assertion比較、source hash、独立review、同一refの個別警告状態は[改善記録](evidence/spider-improvement-cycle.json)で追跡する。これは検証盲点の修正であり、runtimeのURL脆弱性やmanual HTTP／D1 flow、OS boot・実機受入の完了ではない。
