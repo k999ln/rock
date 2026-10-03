@@ -76,6 +76,10 @@ main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Researc
 
 第6cycleはnative CI再実行時の旧artifact誤選択を修正する。artifact名をattempt別にし、同run／headの最大attemptを各partitionから選んで明示IDで取得する。最新の失敗を古い成功へ戻さず、過去のartifactも削除しない。全job成功gateと、元ログhash・source inventory・全discoveryの厳格集計を維持。新規選択23・既存集計／stack15・freeze13のhost51試験が合格した。選択器自体の欠落・改変をfreezeでも拒否する。同一SHAのGitHub部分再実行は公開後に検証し、CodeQL警告の修正やOS bootとは別に記録する。[CI契約](native-os-validation.md#ci再実行の結果選択sys152026-10-03)。
 
+第6cycleの公開後検証: `94889b1`のnative run37105416471は初回とmain-1だけの部分再実行が成功し、新main-1 artifact11267816975と他4区分のattempt1を選択した。集計artifact11267503508のreport hashが選択元と一致し、source inventory720件・17 checks／1,776 test executionsを確認した。全体verify37105416401、修正回帰37105416441、同一refのCodeQL解析も成功した。履歴検査37105416450は663 commit完走・既存2,362候補で失敗を維持する。
+
+第7cycleは#12／#21／#22／#23のUnix socket権限を担当UID・親directory・serverとclient両側のpeer確認まで追跡した。0660／0750は正規IPCのための設定で、今回の範囲に具体的な越権欠陥は確認できなかった。警告を維持し、source／boot／client hashと限定検証を[機械可読記録](evidence/spider-improvement-cycle.json)へ保存する。runtime修正0、test変更0、dismiss0。配置やsource変更時は再評価し、この判定をOS全体や実機の安全保証へ広げない。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。

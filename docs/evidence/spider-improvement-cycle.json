@@ -893,7 +893,232 @@
         "deviceChanged": false,
         "secretsRotated": false
       },
-      "publicationEvidence": "After push, validate initial native run and a same-SHA single-partition rerun using selected artifact IDs and successful strict merge. Store readback in PR52 and the local deliverable without changing the implementation SHA."
+      "publicationEvidence": "After push, validate initial native run and a same-SHA single-partition rerun using selected artifact IDs and successful strict merge. Store readback in PR52 and the local deliverable without changing the implementation SHA.",
+      "publicationReadback": {
+        "commit": "94889b1fc91cb851865a36e026baf9cc58de2849",
+        "observedAt": "2026-10-03T07:20:43.041020+00:00",
+        "outcome": "CI stale artifact selection repaired; initial and same-SHA partial native rerun accepted",
+        "codeql": {
+          "conclusion": "success",
+          "pushRun": 37105414354,
+          "pullRequestRun": 37105416408,
+          "analysisIds": [
+            1885269341,
+            1885270467
+          ],
+          "ref": "refs/heads/codex/spider-guard",
+          "comparedAlertIds": 48,
+          "stateChanges": 0,
+          "missingIds": 0,
+          "newIds": 0,
+          "open": 38,
+          "fixed": 10
+        },
+        "fullVerify": {
+          "run": 37105416401,
+          "conclusion": "success"
+        },
+        "productionRegression": {
+          "run": 37105416441,
+          "conclusion": "success"
+        },
+        "releaseSigning": {
+          "run": 37105416411,
+          "conclusion": "success"
+        },
+        "historySecrets": {
+          "runID": 37105416450,
+          "artifactID": 11267652960,
+          "conclusion": "failure",
+          "scanCompleted": true,
+          "reachableCommits": 663,
+          "candidateMatches": 2362
+        },
+        "mainMerged": false,
+        "nativeSource": {
+          "run": 37105416471,
+          "initialAttempt": 1,
+          "partialRetryAttempt": 2,
+          "conclusion": "success",
+          "partialRetryPartition": "main-1",
+          "aggregateArtifact": 11267503508,
+          "selectedMain1Artifact": 11267816975,
+          "sourceInventoryFiles": 720,
+          "checks": 17,
+          "testExecutions": 1776,
+          "selectedIdsAndReportHashesVerified": true,
+          "sourceUnchangedByCycle7": true
+        }
+      }
+    },
+    {
+      "cycle": 7,
+      "baselineCommit": "94889b1fc91cb851865a36e026baf9cc58de2849",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "reviewed_without_verified_repair",
+      "repairCount": 0,
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabotDefaultBranch": 18
+      },
+      "baselineComparison": {
+        "comparedIds": 48,
+        "changed": 0,
+        "missing": 0,
+        "new": 0
+      },
+      "baselineAnalysisIds": [
+        1885270467,
+        1885269341
+      ],
+      "reviewedAlerts": [
+        {
+          "number": 12,
+          "path": "systems/rock-star-os/os/wallet_auth/daemon.py",
+          "line": 191,
+          "mode": "0660",
+          "object": "Unix socket",
+          "decision": "Intentional cross-UID socket access; no unauthorized signing or read path established.",
+          "scope": "Unix socket parent and peer authorization source dataflow; host synthetic checks only."
+        },
+        {
+          "number": 21,
+          "path": "systems/rock-star-os/os/system/power_service.py",
+          "line": 290,
+          "mode": "0750",
+          "object": "Unix socket parent directory",
+          "decision": "Platform group can traverse/read directory but cannot replace its entries; root remains sole directory writer.",
+          "scope": "Unix socket parent and peer authorization source dataflow; host synthetic checks only."
+        },
+        {
+          "number": 22,
+          "path": "systems/rock-star-os/os/system/power_service.py",
+          "line": 308,
+          "mode": "0660",
+          "object": "Unix socket",
+          "decision": "Intentional Platform-to-root IPC; group membership alone does not authorize power requests.",
+          "scope": "Unix socket parent and peer authorization source dataflow; host synthetic checks only."
+        },
+        {
+          "number": 23,
+          "path": "systems/rock-star-os/os/platform/service.py",
+          "line": 777,
+          "mode": "0660",
+          "object": "Platform or Wallet Unix socket",
+          "decision": "Intentional dedicated-service IPC, with receiving handler UID allowlist before body read and client-side server UID checks.",
+          "scope": "Unix socket parent and peer authorization source dataflow; host synthetic checks only."
+        }
+      ],
+      "bootContract": {
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S45rocksystem": "Creates root:1002 /run/rock-system mode0750 and root:root private /data/system mode0700.",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform": "Creates1002:1000 /run/rock-platform and1003:1002 /run/rock-wallet mode0750; private state0700 and dedicated service UIDs.",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator": "Rejects directory symlink aliases; creates1004:1000 runtime directory0750 and1004:1004 state0700.",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/users.txt": "Explicit UI1000, untrusted Tool1001, Platform1002, Wallet1003 and Authenticator1004 identities/supplementary groups."
+      },
+      "clientContract": [
+        {
+          "path": "systems/rock-star-os/os/ui/ipc.c",
+          "lines": [
+            107,
+            112
+          ],
+          "fact": "Native client checks SO_PEERCRED expected service UID before sending any frame."
+        },
+        {
+          "path": "systems/rock-star-os/os/ui/main.c",
+          "lines": [
+            51,
+            52
+          ],
+          "fact": "Native authenticator calls use dedicated authenticator socket and UID."
+        },
+        {
+          "path": "systems/rock-star-os/os/system/powerctl.py",
+          "lines": [
+            23,
+            25
+          ],
+          "fact": "Power client requires root peer UID before sending action."
+        }
+      ],
+      "sourceSha256": {
+        "systems/rock-star-os/os/wallet_auth/daemon.py": "83bf51eb2e400013989da04f1925e39c3f942ac32ef1d3809b285d230316e9e8",
+        "systems/rock-star-os/os/system/power_service.py": "280f138ce5dab54384a92909501c127aecc9e2f747b9d528c73635d9a33f3865",
+        "systems/rock-star-os/os/platform/service.py": "6d71cc3dbe48f1653b70b6ffdfa92de6d8c76eb312e4ef78641c2989f9410764",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S45rocksystem": "f2253397a553611ef607024095b2bb15d2304107a3424d411f3454cbdfed9ad6",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform": "b0adcdb7f5139298a45608369cfd2ed25dc15ee42de58bf3c71bbcc4c7ebd6a7",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator": "5ca12ec132fa72846fde578f96bda28d8c05afac451927e5de27cc9447ab42c1",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/users.txt": "f723afdd0e57bbca569428b0c2540d84b708d24eac64094751788c62de9221bf",
+        "systems/rock-star-os/os/ui/ipc.c": "79ed1b140dc361af3ea84fa37721e19b4183deafe51fcddcf51b612885c4348b",
+        "systems/rock-star-os/os/ui/main.c": "f1ec7aebd590a8c2ac8a61f3a4d0b0b4733106f9d3aa380b74ac1a67a9393619",
+        "systems/rock-star-os/os/system/powerctl.py": "6d974b7843760e48ee393dfa4848e7f2dcd6c9ae5a99b05f2fb86d89db5cec81",
+        "systems/rock-star-os/tests/test_wallet_auth_native.py": "f6887c65bbaaf7b24a7dfc1a7cf91187c55997369b4a1c04e71f223a43ae7714",
+        "systems/rock-star-os/os/system/tests/test_power.py": "84730ac252ce8377d3ffe0857eae2eb545806464e9ee13cd4d1352da142f4e79",
+        "systems/rock-star-os/tests/test_os_security_guard_integration.py": "74700e9c595e04bc90758135cd38f764765fec422342e82fdacf5cf566417862",
+        "systems/rock-star-os/os/platform/guest-test.py": "ef3b0fc5b3a5a99dcd3095d10477d389a41aaed7c6d2dd289ee08cd12e427742"
+      },
+      "hostChecks": [
+        {
+          "command": "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os:systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_wallet_auth_native.NativeAuthenticatorTests.test_only_native_owner_can_create_read_or_replay test_wallet_auth_native.NativeAuthenticatorTests.test_wire_duplicate_json_second_frame_oversize_and_unauthorized -v",
+          "passed": 2,
+          "failed": 0,
+          "skipped": 0,
+          "seconds": 0.041,
+          "hostSystem": "Darwin",
+          "pythonVersion": "3.14.7",
+          "scope": "Existing public software-fixture owner dispatch test and injected SO_PEERCRED wire seam; not an actual Linux UID/socket permission execution."
+        },
+        {
+          "command": "PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os:systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_os_security_guard_integration.PlatformSecurityTests.test_status_requires_real_owner_and_rejects_caller_scan_paths test_os_security_guard_integration.PlatformSecurityTests.test_pasted_code_inspection_is_owner_only_local_and_does_not_count_as_egress -v",
+          "passed": 2,
+          "failed": 0,
+          "skipped": 0,
+          "scope": "Existing owner-only status/code-inspection tests using isolated temporary state and direct dispatch."
+        }
+      ],
+      "existingLinuxRegression": {
+        "path": "systems/rock-star-os/os/system/tests/test_power.py",
+        "line": 211,
+        "test": "PowerTest.test_kernel_peer_authorization_survives_loosened_socket_permissions",
+        "executedThisReview": false,
+        "scope": "Existing test relaxes socket to0666, changes child UIDs and requires unauthorized callers denied; source inspected only.",
+        "command": "PYTHONPATH=systems/rock-star-os/os/system:systems/rock-star-os/os/system/tests python3 -B -W error::ResourceWarning -m unittest test_power.PowerTest.test_kernel_peer_authorization_survives_loosened_socket_permissions -v"
+      },
+      "limitations": [
+        "No Linux root or actual multi-UID kernel/socket test run in this review.",
+        "No OS boot, Pixel device, real credential, funds or all-security assurance.",
+        "Root or a compromised dedicated service UID is outside the demonstrated peer-auth boundary.",
+        "Changing0660 sockets to0600 would break intended cross-UID clients; chmod alone is not the authorization policy."
+      ],
+      "nextReview": "Any change to a listed source, boot configuration, group mapping, consumer or relevant test invalidates this unchanged-source triage and requires review. Prioritize unreviewed desktop logging alert6 and test-source findings, while keeping existing Dependabot PRs53-56.",
+      "boundaries": {
+        "runtimeSourceChanged": false,
+        "testSourceChanged": false,
+        "scannerOrAuthenticationWeakened": false,
+        "mainMerged": false,
+        "deployed": false,
+        "deviceChanged": false,
+        "secretsRotated": false
+      },
+      "publicationEvidence": "Documentation-only commit checks and per-alert comparison will be read back in PR52 and the local SPIDER artifact. No code repair or new OS acceptance is claimed.",
+      "localFullVerify": {
+        "status": "incomplete",
+        "passedThrough": "project/repository/version/schema/database/release/signing/baseline/avocado/design/composition",
+        "failure": "ai package not installed at llm:architecture:check",
+        "laterGates": "not run locally",
+        "databaseMetadata": "Regenerated after nextAction update, then database:check passed."
+      },
+      "independentReview": {
+        "decision": "no_confirmed_permission_defect",
+        "syntheticHandlerCases": 14,
+        "passed": 14,
+        "failed": 0,
+        "scope": "Injected SO_PEERCRED bytes; role allowlist tested before frame read; claimed UID in request does not override kernel UID; peer lookup failure rejects before read/dispatch. No actual Linux UID/DAC test or guest boot.",
+        "guestRegressionNotRun": "systems/rock-star-os/os/platform/guest-test.py:133",
+        "trackedSourceOrTestChanged": false
+      }
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."
