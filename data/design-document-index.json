@@ -122,6 +122,14 @@
     },
     {
       "id": "linux_qemu",
+      "nativeCiArtifactSelection": {
+        "document": "docs/native-os-validation.md",
+        "implementation": "scripts/select-native-artifacts.py",
+        "workflow": ".github/workflows/native-os.yml",
+        "regressions": "systems/rock-star-os/tests/test_native_artifacts.py",
+        "selection": "same-run/head maximum attempt per partition, explicit artifact IDs",
+        "preserves": ["prior failure artifacts", "all partition success gate", "source inventory", "original log hashes", "complete discovery"]
+      },
       "coverage": "DETAILED_DEVELOPER_PREVIEW",
       "documents": [
         "docs/native-os-integration.md",

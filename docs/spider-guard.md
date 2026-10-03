@@ -74,6 +74,8 @@ main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Researc
 
 第5cycleは基準 `ce8b0a2`のMR HTTP受信で、未認証の遅い送信が単一serverを占有し続ける問題を実通信で再現した。request-line／headers／body共通の10秒絶対受信期限を設け、完全受信・JSON解析後にも期限を確認し、期限切れ・不完全な本文でtoken発行／Tool実行に進まないようにした。通常の分割入力・先読みを維持し、応答には別の10秒write timeoutを設定する。新HTTP回帰11件・既存納品境界14件・MR連携Node18件（内部Python19）がmacOSで合格、MR／Sky MCP両ZIPを同期した。GitHub同一SHAの再検査は公開後に記録する。#10のheader注入は再現できず、今回の可用性修正をその警告の解消とは呼ばない。接続flood、Tool処理全体の期限、OS24時間運転は対象外。
 
+第6cycleはnative CI再実行時の旧artifact誤選択を修正する。artifact名をattempt別にし、同run／headの最大attemptを各partitionから選んで明示IDで取得する。最新の失敗を古い成功へ戻さず、過去のartifactも削除しない。全job成功gateと、元ログhash・source inventory・全discoveryの厳格集計を維持。新規選択23・既存集計／stack15・freeze13のhost51試験が合格した。選択器自体の欠落・改変をfreezeでも拒否する。同一SHAのGitHub部分再実行は公開後に検証し、CodeQL警告の修正やOS bootとは別に記録する。[CI契約](native-os-validation.md#ci再実行の結果選択sys152026-10-03)。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。

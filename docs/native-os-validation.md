@@ -1,5 +1,16 @@
 # Native OSのRock統合検証
 
+## CI再実行の結果選択（SYS15、2026-10-03）
+
+nativeのsource検査は4つのmain partitionとsupportに分割する。artifact名にGitHubのrun attemptを含め、`scripts/select-native-artifacts.py`が同じrun／headのAPI metadataから各partitionの最大attemptを選ぶ。IDや時刻、PASSの有無では選択しない。再実行されなかった区分は同じrunの以前のattemptを再利用する。
+
+収集は100件ずつ最大10ページ／1,000件に制限し、total_count・ID重複・run／head・attempt・全5区分を確認する。選択された最新artifactがexpiredなら古い結果へ戻さず拒否する。downloadは明示したartifact IDで行い、別々のdirectoryへ保存する。API取得・一覧・選択・downloadが不完全なら成功にしない。
+
+`needs.partitions.result == success`と、既存のsource inventory・PASS・元ログhash・全test discoveryの集計検証は維持する。これにより最新jobがupload前に失敗した場合や、一部IDがdownloadできなかった場合も拒否する。元の失敗結果はattempt別のartifactとしてretention期間内に保持する。集計artifactもattempt別にする。選択器自体を入力hashへ含める。freeze検証器も選択器を必須入力にし、欠落・archiveとの不一致・改変を拒否する。freezeの回帰はCI集計jobで直接実行する。
+
+前回 `258fa5d`のrun37102143646では、main-1の再実行PASS artifact11265968595が存在するのに、集計が旧FAIL11266067774を取得した。集計内reportのhash一致で原因を確認した。これは試験結果の選択修正であり、Wallet試験の期限延長、試験削除、OS boot／実機受入を含まない。今回の合格証拠は[SPIDER改善cycle記録](evidence/spider-improvement-cycle.json)と同じSHAのPR報告で追跡する。
+
+
 現在の統合後の結果は[OS稼働検証](os-operational-validation-20260909.md)。以下は元native取り込み時点の履歴であり、起動改善候補・backup検証器・全observerの後続修正は現在の記録を参照する。
 
 日付: 2026-09-09。取り込み前のRock: `5cec83478fe97bf272869298160a572ef7fcefee`。統合branch: `codex/integrate-native-os-20260909`。

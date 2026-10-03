@@ -179,6 +179,8 @@ R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates
 
 [Spider Guard](docs/spider-guard.md) is being integrated into **RockstarOS itself** (`SYS15`): the existing Platform service inspects its fixed application-data scope and checks supported MCP/Runner requests before sending. Native status uses authenticated, sanitized findings. Web and MCP Connector safeguards are secondary. Same-image boot, Pixel deployment, and 24-hour operation remain unverified; arbitrary OS traffic and other users' private storage are outside this scope.
 
+Native CI reruns retain earlier evidence and select the latest attempt for each partition by artifact ID. Missing, expired, ambiguous, or failed evidence keeps the check failed. [Selection and verification contract](docs/native-os-validation.md#ci再実行の結果選択sys152026-10-03).
+
 Its native security panel now has source-validated motion toward actual findings and reactions only to newly observed blocked requests. The panel also reports its Security Agent role, actual health, candidates and latest real refusal; the new backend, renderer and PIN profile checks passed in Linux fixtures. Earlier tests remain evidence for their recorded source revisions, including saved revision `a7cfca3`.
 
 A paste-and-edit code inspector is available as an offline single HTML file, `outputs/SPIDER.html` outside this repository. It checks source locally without running, uploading or persisting it, and needs no SDK or API key. Build and usage details are in [Spider Guard](docs/spider-guard.md#自分のコードを貼って検査する); its Node/loopback-browser checks and native host tests passed. Native Linux validation for this revision remains pending.

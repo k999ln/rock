@@ -459,3 +459,7 @@ APIは領域別に分ける。
 | `ui` | framebuffer native UI |
 
 各serviceを専用UIDと有限IPCで接続し、UIへdatabase socketやroot権限を渡さない。QEMUのservice配置をAndroidへpath単位で移植せず、契約とfixtureを比較してplatform固有実装へ写す。
+
+### native CIの再実行と証拠選択（SYS15）
+
+source検査の結果はrun／head／partition／attemptへ結び、再実行では各区分の最新attemptを明示IDで取得する。最新FAILを古いPASSへ戻さず、未取得・曖昧な重複・期限切れを成功にしない。元ログ・source inventory・全discoveryの照合と全job成功gateを維持し、過去の失敗artifactを削除しない。ROCKが同一SHAの部分再実行と集計で確認し、OS bootや実機合格とは区別する。[収集上限・拒否条件・復旧と受入](native-os-validation.md#ci再実行の結果選択sys152026-10-03)。

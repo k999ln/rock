@@ -761,7 +761,139 @@
         "deviceChanged": false,
         "secretsRotated": false
       },
-      "publicationEvidence": "Same-SHA GitHub results and per-alert comparison will be read back after publication; final document-commit evidence is kept separately in PR52 and the local deliverable."
+      "publicationEvidence": "Same-SHA GitHub results and per-alert comparison will be read back after publication; final document-commit evidence is kept separately in PR52 and the local deliverable.",
+      "publicationReadback": {
+        "commit": "258fa5d116da16a78f04b4c9f7c5055dc3a75caa",
+        "fullVerifyRun": 37102143633,
+        "repairRegressionRun": 37102143634,
+        "codeqlRun": 37102143653,
+        "fullVerifyAndRepairRegressionAndCodeql": "success",
+        "codeqlOpen": 38,
+        "newlyFixedAlerts": 0,
+        "nativeRun": 37102143646,
+        "nativeRunAttempt": 2,
+        "nativeWorkflow": "failure: old failed artifact selected; all partition jobs succeeded after partial retry",
+        "historyScanCompleted": true,
+        "reachableCommits": 662,
+        "historyCandidateMatches": 2362
+      }
+    },
+    {
+      "cycle": 6,
+      "baselineCommit": "258fa5d116da16a78f04b4c9f7c5055dc3a75caa",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "host_validated_awaiting_same_sha_initial_and_partial_rerun",
+      "repairCount": 1,
+      "repairKind": "CI evidence selection",
+      "runtimeVulnerabilitiesClaimedFixed": 0,
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabotDefaultBranch": 18
+      },
+      "baselineAnalysisIds": [
+        1885154950,
+        1885154709
+      ],
+      "baselineDefect": {
+        "run": 37102143646,
+        "attempt": 2,
+        "aggregateJob": 111144982766,
+        "staleFailedArtifact": 11266067774,
+        "successfulRerunArtifact": 11265968595,
+        "aggregateEmbeddedReportSha256": "a84173f5b61773e2ed8a11ce946cfa516a6495931e2bc872df059a06e93d7232",
+        "aggregateReportMatchesOldFailure": true,
+        "aggregateReportMatchesNewSuccess": false,
+        "allPartitionJobsSucceeded": true,
+        "nativeWorkflowSucceeded": false
+      },
+      "repair": {
+        "artifactNamesIncludeRunAttempt": true,
+        "selects": "maximum numeric attempt for each fixed partition, independent of status/ID/timestamp",
+        "download": "five explicit artifact IDs in separate directories",
+        "runAndHeadAndCurrentAttemptChecked": true,
+        "previousFailureEvidenceRetained": true,
+        "apiPagesMaximum": 10,
+        "apiArtifactsMaximum": 1000,
+        "perResponseBytesMaximum": 2097152,
+        "perRequestSecondsMaximum": 20,
+        "diagnostics": "fixed codes; no input or raw errors",
+        "failureRules": [
+          "incomplete metadata",
+          "duplicate IDs or partition-attempt",
+          "unknown partition name",
+          "future attempt",
+          "missing partition",
+          "selected latest expired",
+          "different run/head",
+          "failed API read"
+        ],
+        "allPartitionSuccessGatePreserved": true,
+        "mergerPassLogHashInventoryDiscoveryChecksPreserved": true,
+        "selectorIncludedInNativeAndFreezeInventories": true
+      },
+      "sourceSha256": {
+        ".github/workflows/native-os.yml": "6e86889463c3b5fc9abd282b17b81752882c603de269d05a4238977884137f82",
+        "scripts/select-native-artifacts.py": "10633629eb553173e42d440e6570c82e54ed6a646f4035fcfc0c9f92135acc7e",
+        "scripts/test-native.py": "868d676d2f563af1241f40a5a3e81a7ec9839d93b2578741eb7c07aa34e91515",
+        "scripts/freeze-native-build.py": "25170f1228b0c7d82b5060ebb1f6ace506810aec8cc5410a1071c30967a60312",
+        "systems/rock-star-os/tests/test_native_artifacts.py": "da42f886731251f16bec09b762444837b7dd7490d09810df6647833093af809d",
+        "scripts/tests/test-freeze-native-build.py": "37ea689e15a51fdb6c7ed103aea4bf3cfa2aadb7b941db90f8eeb70372eb1589"
+      },
+      "hostChecks": [
+        {
+          "command": "PYTHONPATH=systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_native_artifacts -v",
+          "passed": 23,
+          "failed": 0,
+          "scope": "synthetic metadata, injected API, actual local child-process bounds/cleanup, CLI errors; no external network"
+        },
+        {
+          "command": "PYTHONPATH=systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_native_partition test_native_stack_integrity test_native_stack_diagnostics -v",
+          "passed": 15,
+          "failed": 0
+        },
+        {
+          "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B -W error::ResourceWarning scripts/tests/test-freeze-native-build.py -v",
+          "passed": 13,
+          "failed": 0,
+          "newSelectorClosureCases": 4
+        }
+      ],
+      "independentReview": {
+        "blockingFindings": 0,
+        "independentlyExecutedSelectorTests": 23,
+        "independentlyExecutedFreezeTests": 13
+      },
+      "localFullVerify": {
+        "status": "incomplete",
+        "passedThrough": "project/repository/version/schema/database/release/signing/baseline/avocado/design/composition",
+        "failure": "ai package not installed at llm:architecture:check",
+        "laterGates": "not run locally"
+      },
+      "remaining": {
+        "codeqlOnTargetBranch": 38,
+        "dependabotOnDefaultBranch": 18,
+        "existingDependabotPullRequests": [
+          53,
+          54,
+          55,
+          56
+        ],
+        "historyCandidateMatches": 2362,
+        "baselineReachableCommits": 662,
+        "firstNativeWalletSetupTimeoutRootCause": "not established; did not reproduce on same-SHA retry"
+      },
+      "boundaries": {
+        "runtimeSourceChanged": false,
+        "scannerOrAuthenticationWeakened": false,
+        "vendorChanged": false,
+        "mainMerged": false,
+        "deployed": false,
+        "deviceChanged": false,
+        "secretsRotated": false
+      },
+      "publicationEvidence": "After push, validate initial native run and a same-SHA single-partition rerun using selected artifact IDs and successful strict merge. Store readback in PR52 and the local deliverable without changing the implementation SHA."
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."
