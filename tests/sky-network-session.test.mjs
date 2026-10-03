@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createNetworkSession } from '../lib/sky-network-session.ts';
+import { createNetworkSession, networkServiceHint } from '../lib/sky-network-session.ts';
 function fixture(){
  let online=true, token=false, calls=0, resolve, reject;
  const states=[];
@@ -30,6 +30,21 @@ await test('saved connection verification also cannot override offline',async()=
 });
 await test('missing token and offline state never attempt to connect automatically',async()=>{
  const f=fixture();await f.flow.check();assert.equal(f.last.status,'idle');f.offline();await f.flow.connect();assert.equal(f.calls,0);
+});
+await test('a sign-in response proves Sky reachability but never permits device checks',async()=>{
+ const signin=networkServiceHint('signin');assert.equal(signin.reachable,true);assert.equal(signin.mayCheckDevice,false);
+ const ready=networkServiceHint('ready');assert.equal(ready.reachable,true);assert.equal(ready.mayCheckDevice,true);
+ for(const state of ['checking','unavailable','unknown'])assert.equal(networkServiceHint(state).mayCheckDevice,false);
+});
+await test('pausing for an authentication recheck invalidates an in-flight success',async()=>{
+ const f=fixture(),p=f.flow.connect();f.flow.pause();assert.equal(f.last.status,'idle');assert.equal(f.last.pending,true);
+ await f.flow.connect();assert.equal(f.calls,1);f.resolve();await p;
+ assert.equal(f.last.pending,false);assert.equal(f.states.some(s=>s.status==='connected'),false);
+ const retry=f.flow.connect();f.resolve();await retry;assert.equal(f.last.status,'connected');
+});
+await test('pausing a verified view clears its connected presentation without another operation',async()=>{
+ const f=fixture(),p=f.flow.connect();f.resolve();await p;assert.equal(f.last.status,'connected');
+ f.flow.pause();assert.equal(f.last.status,'idle');assert.equal(f.last.pending,false);assert.equal(f.calls,1);
 });
 await test('production connectDevice stops at failed runtime startup and never requests a PC token',async()=>{
  const {build}=await import('esbuild');

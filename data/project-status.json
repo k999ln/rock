@@ -3525,5 +3525,11 @@
     "connectionIssuanceAccepted": false,
     "realPcAccepted": false,
     "expiryShutdownAccepted": false
+  },
+  "skyConnectionReachability": {
+    "stage": "candidate_pending_UI_verification",
+    "browserHintGrantsAccess": false,
+    "api401GrantsAccess": false,
+    "realPcAccepted": false
   }
 }

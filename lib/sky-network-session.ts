@@ -4,7 +4,16 @@ export type NetworkState = {
   message: string;
 };
 
-/** UI observation only; this controller never creates or restores device rights. */
+export function networkServiceHint(accessState: string) {
+  const reachable = accessState === 'ready' || accessState === 'signin';
+  return {
+    reachable,
+    mayCheckDevice: accessState === 'ready',
+    label: reachable ? 'Skyの応答あり' : accessState === 'checking' ? '通信を確認中' : '通信を要確認',
+  };
+}
+
+/** Explicit connect delegates to the caller; a check never invokes connect. */
 export function createNetworkSession(deps: {
   online: () => boolean;
   hasToken: () => boolean;
@@ -23,6 +32,10 @@ export function createNetworkSession(deps: {
   const offline = () => {
     generation++;
     publish({ status: 'offline', message: 'インターネット接続が切れました。接続を戻してから再試行してください。' });
+  };
+  const pause = () => {
+    generation++;
+    publish({ status: 'idle', message: '' });
   };
   async function run(kind: 'check' | 'connect') {
     if (disposed || state.pending) return;
@@ -50,6 +63,7 @@ export function createNetworkSession(deps: {
     check: () => run('check'),
     connect: () => run('connect'),
     offline,
+    pause,
     dispose: () => { disposed = true; generation++; },
   };
 }

@@ -865,5 +865,17 @@
     ],
     "actualIssuanceAccepted": false,
     "actualExpiryShutdownAccepted": false
+  },
+  "skyConnectionReachability": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "components/sky-network.tsx",
+      "components/execution-access.tsx",
+      "lib/sky-network-session.ts"
+    ],
+    "verification": [
+      "tests/sky-network-session.test.mjs"
+    ],
+    "realPcAccepted": false
   }
 }
