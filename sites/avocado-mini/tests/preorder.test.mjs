@@ -156,6 +156,48 @@ test('admin order access requires the configured bearer token', async () => {
   assert.deepEqual((await response.json()).orders, []);
 });
 
+test('uncertain checkout retries keep one reservation and the same Stripe idempotency key', async (t) => {
+  const db = database();
+  t.after(() => db.sqlite.close());
+  const originalFetch = globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  const calls = [];
+  globalThis.fetch = async (url, options) => {
+    calls.push({ url, options });
+    if (calls.length === 1) return new Response('provider-private-error', { status: 503 });
+    return Response.json({ id: 'cs_test_retry_fixture', url: 'https://checkout.stripe.com/c/pay/fixture' });
+  };
+  const response = await worker.fetch(checkoutRequest(), env(db));
+  assert.equal(response.status, 200);
+  assert.equal(calls.length, 2);
+  const order = db.sqlite.prepare('SELECT * FROM preorders').get();
+  for (const { url, options } of calls) {
+    assert.equal(url, 'https://api.stripe.com/v1/checkout/sessions');
+    assert.equal(options.headers['Idempotency-Key'], order.id);
+    assert.equal(options.redirect, 'error');
+    assert.ok(options.signal instanceof AbortSignal);
+  }
+  assert.equal(calls[0].options.body, calls[1].options.body);
+  assert.equal(db.sqlite.prepare('SELECT count(*) AS count FROM preorders').get().count, 1);
+  assert.equal(db.sqlite.prepare('SELECT reserved FROM preorder_stock').get().reserved, 1);
+  assert.equal(order.status, 'pending_payment');
+});
+
+test('Stripe client errors stop retries and preserve checkout_unknown for reconciliation', async (t) => {
+  const db = database();
+  t.after(() => db.sqlite.close());
+  const originalFetch = globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  let calls = 0;
+  globalThis.fetch = async () => { calls++; return new Response('private-provider-detail', { status: 400 }); };
+  const response = await worker.fetch(checkoutRequest(), env(db));
+  assert.equal(response.status, 503);
+  assert.equal(calls, 1);
+  assert.doesNotMatch(await response.text(), /private-provider-detail/);
+  assert.equal(db.sqlite.prepare('SELECT status FROM preorders').get().status, 'checkout_unknown');
+  assert.equal(db.sqlite.prepare('SELECT reserved FROM preorder_stock').get().reserved, 1);
+});
+
 test('expired checkout releases its capacity for another order', async () => {
   const db = database();
   const originalFetch = globalThis.fetch;

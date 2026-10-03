@@ -5,6 +5,18 @@
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
+## 共通基盤の統合（2026-10-02、G04）
+
+同じ処理への修正がToolごとにずれないよう、法務/特許の送信・HTTP失敗処理・公式HTTPS引用parserは`lib/research-ai.ts`、Jevの既存Gateway呼出しは`lib/jev-transport.ts`へ集約する。認証、外部送信の明示許可、4000/12000文字の入力上限、緊急停止、Tool固有prompt/rubricは呼出元が維持する。引用はHTTPS・userinfoなし・公式domainのみ、失敗時は各Tool既存のHTTP応答へ戻し、自動remote fallbackやAI結果による承認は加えない。
+
+PC/FashionのMCP session・RPC・handshakeは`lib/mcp-client.ts`を使い、世代が変わった接続結果は採用しない。両adapterのorigin/token/protocol条件、個別の変更承認は保持する。Tool IDはcatalogからJob/connection一覧を導出し、IP Studioは一回だけ登録する。Fashion件数はregistryから検査する。
+
+Workとココナラのowner別JSON/revision保存は`lib/owner-revision-json-store.ts`を共有し、本人ownerと期待revisionをSQL更新条件に維持する。Stripe低水準通信/署名は`shared/stripe.mjs`を共通sourceとし、SkyのConnect配分・Mini在庫・Fashion請求書は各adapterに残す。ネットワーク結果不明を成功にせず、既存の再送keyと照合を維持する。
+
+Sky→Zemaは公開Previewにも同梱する`handoff.js`の共通契約を使う。v1の`local`表記/省略は`local-model`へ正規化し、remoteを拒否する。WebはsessionStorageのUUID、10分TTL、Tool一致、一回消費を追加適用する。入力不正・期限切れは保存から除去、別Toolの依頼は保持、再作成で復旧する。本文をtelemetryへ送らない。既存key/versionは維持し、session作成は`ready`で実行承認ではない。
+
+合格条件は各adapterの既存回帰と共通helperの異常系、公開Preview/本体の互換試験、配布物一致、`npm run verify`の成功。実Provider/実機/本番受入は別gate。未mergeの新機能・native実行器の意味の違いは[統合記録](git-consolidation.md#2026-10-02-共通実装の統合g04)で区別する。残る統合の決定者はROCK、商品条件/外部作用は既存のOWNER/JOINT受入による。
+
 ## 1. SkyとZemaの役割
 
 ```text
@@ -176,6 +188,9 @@ catalogued → selected → connected → ready → running → review → compl
 - 入力: CSV一件、最大10 MB／50,000行／100列、変換指示。
 - 出力: 変換CSV、変更report、独立inspection JSON。
 - 保存: 暗号化private storage。受付から7日で取得拒否、または本人削除。
+- 受付衝突: 同owner・同入力/指示は同じ受付へ収束し、別owner/異なる入力は409。挿入試行ごとに一意なinput keyを保存rowへ結び、競合の敗者は自分の未採用objectだけを削除する。INSERT応答が不明なら保存rowを照合し、照合不能なら入力を削除しない。旧固定keyも保存rowで取得する。
+- 期限と復旧: initial processingとquality_failed retryのclaim前に期限を確認し、ownerの期限切れ受付/objectsを削除して410を返す。匿名/別ownerは削除へ進めない。期限内の正当なretryは維持する。
+- 合格条件: `scripts/check-csv-storage.mjs`で既存ID衝突・同時受付・private成果・永続restart・owner削除・expiry・正常retryを実Worker/D1/R2で検証する。本番owner/Cloud/Apple Pay受入は別。
 - 禁止: 値の推測、文字列の勝手な数値化、複数file結合、外部市場代理操作。
 - effect: 変換はTool内。buyer共有、販売、入金、返金は別adapter／承認。
 - 完了: 3成果のhashと検査合格。手入力入金をWallet収益にしない。

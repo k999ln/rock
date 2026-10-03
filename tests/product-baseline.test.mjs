@@ -247,3 +247,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
     /AGENTS/,
   );
 });
+
+void test('the visual baseline preserves the existing pale-blue Web appearance', () => {
+  assert.equal(source.visualSystem.accent, 'ice_blue');
+  const oldTheme = structuredClone(source);
+  oldTheme.visualSystem.accent = 'acid_green';
+  assert.throws(() => validateBaseline(oldTheme), /共通visual system/);
+});

@@ -23,11 +23,13 @@ export type Automation = {
   integration?: 'fashion-brand-ops';
   environment: string;
   cost: string;
-  steps: string[];
+  steps: readonly string[];
+  /** A built-in PC MCP operation; does not authorize execution. */
+  mcpTool?: string;
   note: string;
 };
 
-const mrHubCandidates: Automation[] = [
+const mrHubCandidates = ([
   ['coconala-proposal-draft', 'ココナラ提案文の下書き', '案件・納品支援', '案件条件から提案文と確認リストを作る既存の端末内処理。', '既存のローカル実行器をSky SDKへ接続する'],
   ['gig-workflow', '受託案件ワークフロー', '案件・納品支援', '応募・交渉・制作・納品・売上確認の既存処理を段階ごとに支援。', '所有者設定を移し、外部操作に個別承認を付ける'],
   ['coconala-inbox', 'ココナラの依頼・添付整理', '案件・納品支援', '本人の依頼文と添付を整理する既存処理。', '本人の接続と保存範囲を確認する'],
@@ -39,20 +41,20 @@ const mrHubCandidates: Automation[] = [
   ['calendar-coordination', '予定・カレンダー連携', '生活・予定', '既存Coreの予定解釈とカレンダー連携処理。', '本人のアカウント接続と権限確認を行う'],
   ['telegram-notifications', 'Telegram通知・承認', '通知・連絡', '既存Botの依頼受付、通知、進捗確認をSkyの仕事につなぐ処理。', '本人確認済みBotと送信範囲を接続する'],
   ['producthunt-discovery', '外部ツール候補の発見', '市場・商品設計', 'Product Hunt公式API向けの候補検索処理。', 'API利用条件と商用許諾を確認する'],
-].map(([id, name, category, description, next]) => ({
+] as const).map(([id, name, category, description, next]) => ({
   id, name, category, description,
   source: 'https://github.com/k999ln/Mr.',
   license: 'MIT',
   licenseUrl: 'https://github.com/k999ln/Mr./blob/main/LICENSE',
   color: 'blue',
-  status: 'candidate',
-  origin: 'mr',
+  status: 'candidate' as const,
+  origin: 'mr' as const,
   environment: '既存コード・設計あり / Sky実行器は未接続',
   cost: '接続先、モデル、外部サービスの実費を接続時に確認します。',
   steps: [next, 'Sky SDKでPackageとMCPを登録する', '接続先、権限、副作用、結果を確認して使う'],
   note: 'Mr.の旧Automation Hubの在庫から移した導入候補です。Skyからの実行と外部サービスへの接続は、実装・検証後に有効になります。',
 }));
-export const catalog = ([
+const catalogEntries = [
   {
     id: 'rockstar-csv-cleanup',
     name: 'CSV整形・検査・納品',
@@ -183,6 +185,7 @@ export const catalog = ([
   },
   {
     id: 'coconala',
+    mcpTool: 'coconala_check',
     name: 'ココナラ',
     category: '案件・納品支援',
     description:
@@ -208,6 +211,7 @@ export const catalog = ([
   },
   {
     id: 'mr-free-article',
+    mcpTool: 'make_free_article',
     name: '記事の無料版メーカー',
     category: '記事制作',
     description:
@@ -232,6 +236,7 @@ export const catalog = ([
   },
   {
     id: 'mr-citations',
+    mcpTool: 'format_citations',
     name: '出典整理ツール',
     category: '記事制作',
     description:
@@ -256,6 +261,7 @@ export const catalog = ([
   },
   {
     id: 'mr-delivery',
+    mcpTool: 'verify_delivery',
     name: '納品記録の照合',
     category: '案件・納品支援',
     description:
@@ -594,9 +600,26 @@ export const catalog = ([
     note: '個人端末、SIM、連絡先、写真、password、決済情報へ接続しません。demoは支払選択画面までで、予約完了の証明ではありません。',
   },
   ...mrHubCandidates,
-] as Automation[]).map(
-  (tool): Automation =>
+] as const satisfies readonly Automation[];
+
+export type CatalogToolId = (typeof catalogEntries)[number]['id'];
+type TrackedRunner = 'coconala' | 'free-article' | 'citations' | 'delivery-local';
+export type TrackedCatalogToolId = Extract<
+  (typeof catalogEntries)[number],
+  { status: 'candidate' } | { runner: TrackedRunner }
+>['id'];
+
+export const catalog: Automation[] = catalogEntries.map(
+  (tool) =>
     tool.status === 'candidate'
       ? { ...tool, runner: 'candidate-local' as const }
       : tool,
 );
+
+/** Derived admission lists share catalog identity, never its readiness as execution authority. */
+export const catalogConnectionTools = catalogEntries.map(({ id }) => id);
+export const catalogJobTools = catalog.filter(({ status, runner }) =>
+  status === 'candidate' ||
+  (runner !== undefined && ['coconala', 'free-article', 'citations', 'delivery-local'].includes(runner)),
+).map(({ id }) => id) as TrackedCatalogToolId[];
+export const coreMcpToolNames = catalog.flatMap(({ mcpTool }) => mcpTool ? [mcpTool] : []);

@@ -6,7 +6,7 @@
 
 ## できること
 
-Sky固有の自動化コードと個別MCPを直接結ばず、すべてを同じ接続契約へ変換する。現在の配布registryには「Sky 基本自動化」4機能と「受注型ブランド運営」40機能があり、SkyのMCP画面からそれぞれをワンタップで初期化・検出できる。
+Sky固有の自動化コードと個別MCPを直接結ばず、すべてを同じ接続契約へ変換する。現在の配布registryには「Sky 基本自動化」4機能と「受注型ブランド運営」41機能があり、SkyのMCP画面からそれぞれをワンタップで初期化・検出できる。
 
 ```text
 Sky / n8n / Make / Zapier / 独自workflow
@@ -19,7 +19,7 @@ Sky / n8n / Make / Zapier / 独自workflow
        stdio MCP  Streamable HTTP  将来のOAuth adapter
 ```
 
-自動化ツール側が使う操作は`servers`、`connect`、`prepare`、`execute`の4段階に固定する。MCP serverごとの機能名や個数は`tools/list`から動的に取得するため、4機能・40機能などの固定実装を持たない。
+自動化ツール側が使う操作は`servers`、`connect`、`prepare`、`execute`の4段階に固定する。MCP serverごとの機能名や個数は`tools/list`から動的に取得するため、4機能・41機能などの固定実装を持たない。
 
 ## Connection Passport
 
@@ -57,3 +57,12 @@ Passportは安全性の保証ではなく、接続時点で確認した相手と
 既存Skyの`/mcp`経路は、配布済み4機能向けの互換入口として残す。新しい自動化はserver IDを持つ汎用経路を使う。これにより既存コードを壊さず、機能数固定を段階的に廃止できる。
 
 公式MCP 2025-11-25のlifecycleとstdio / Streamable HTTPを基準にし、2025-06-18、2025-03-26、2024-11-05を接続時に互換確認する。実行送信後のtimeoutは自動再試行せず、結果不明として照合へ回す。
+
+
+## Web接続clientの共通化（2026-10-02）
+
+`lib/mcp-client.ts`が基本PC接続とFashionのJSON-RPC送信、MCP初期化、protocol照合、初期化通知、Tool一覧取得を共通処理にする。通信先は従来の各loopback URLのままで、redirectを拒否し、Tool呼出しは自動再送しない。sessionの保存と世代確認は各clientに残す。基本PCの4機能必須・追加機能許容と、Fashionのserver名・41機能・202応答必須は別の条件として維持する。接続の成功で本人承認・Provider承認を代替しない。
+
+Skyの接続IDとjob受付IDは`lib/catalog.ts`から導出する。job受付は従来の基本4 Toolとcandidateのローカル下書きに限定し、catalogの`ready`だけでは実行権を増やさない。基本PCのMCP操作名も同じcatalogの明示metadataを使う。公開registryや外部Packageの審査・認可は変更しない。
+
+検証: `tests/mcp-client.test.mjs`、`tests/device-lifecycle.test.mjs`、`tests/fashion-mcp-client.test.mjs`、`tests/operations.test.mjs`。世代の古い401応答や切断応答が再接続後のsessionを消さないこと、protocol/token/初期化通知の拒否、結果不明時の単回送信、登録IDと実行受付の境界を含む。外部Provider・本番配備・実機OSの合格ではない。

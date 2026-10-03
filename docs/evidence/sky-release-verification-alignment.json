@@ -1,0 +1,36 @@
+{
+  "schema": "sky-release-verification-alignment/1",
+  "base": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "testedSourceBeforeEvidenceUpdate": "defb9b737e4ade14cf108f51412740d59698e756",
+  "priorCsvCommit": "05f676338944f60e05552b22dddc6f50453e3be6",
+  "priorMainFailuresReproduced": true,
+  "scope": [
+    "preserve implemented pale-blue Web theme in machine-readable baseline",
+    "accept translated README manufacture/physical-test/progress-link assertions",
+    "keep migration union schema and saved values checks with committed 37-table schema",
+    "align Fashion action assertion with existing plan-save label",
+    "retain CSV collision and expiry regressions"
+  ],
+  "runtimeUiChangedByAlignment": false,
+  "productionDeploymentChanged": false,
+  "checks": {
+    "focusedTests": 18,
+    "fullVerifyExitCode": 0,
+    "nodeTests": 441,
+    "nodePassed": 441,
+    "nodeFailed": 0,
+    "fashionTests": 19,
+    "workerD1Assertions": 172,
+    "csvD1R2Assertions": 113,
+    "components": 131,
+    "assetReferences": 114,
+    "missingAssets": 0,
+    "nodeVersion": "26.0.0",
+    "dependencies": "shared local dependency tree; every installed base-locked package version matched; CI will use fresh npm ci"
+  },
+  "verifyLogSha256": "3c42de41d94c80f6510582e9e2031050583b13b47f734e44ddfc18cd24658eff",
+  "ciStatus": "pending",
+  "mainMerged": false,
+  "productionOwnerJourneyAccepted": false,
+  "completeLaunch": false
+}

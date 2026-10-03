@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-27",
+  "updatedAt": "2026-10-02",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
   "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
@@ -921,7 +921,10 @@
         "app/rockstaros/preview.module.css",
         "app/api/health/route.ts",
         "scripts/check-work-api.mjs",
-        "docs/workstreams/05-web-pwa-sites.md"
+        "docs/workstreams/05-web-pwa-sites.md",
+        "lib/csv-job-store.ts",
+        "scripts/check-csv-storage.mjs",
+        "docs/evidence/sky-csv-storage-hardening.json"
       ]
     },
     {
@@ -1069,7 +1072,9 @@
         "sites/avocado-mini/worker/index.js",
         "sites/avocado-mini/db/schema.ts",
         "sites/avocado-mini/tests/preorder.test.mjs",
-        "docs/workstreams/05-web-pwa-sites.md"
+        "docs/workstreams/05-web-pwa-sites.md",
+        "package.json",
+        "tests/verify-coverage.test.mjs"
       ]
     },
     {
@@ -2527,6 +2532,20 @@
         "lib/csv-job-store.ts",
         "components/csv-business-workspace.tsx"
       ]
+    },
+    {
+      "id": "G04",
+      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/git-consolidation.md",
+        "docs/evidence/common-foundation-integration.json",
+        "tests/sky-zema-contract.test.mjs",
+        "tests/shared-stripe.test.mjs",
+        "tests/mcp-client.test.mjs",
+        "tests/owner-revision-json-store.test.mjs"
+      ]
     }
   ],
   "phaseGates": [
@@ -2993,5 +3012,35 @@
     "recoverableBackupInstalledComponentAuthorityRestored": false,
     "recoverableBackupPhysicalKeystoreLossRestoreVerified": false
   },
-  "currentStateDocument": "docs/current-state-20260911.md"
+  "currentStateDocument": "docs/current-state-20260911.md",
+  "csvStorageHardening": {
+    "scope": "CSV storage/expiry fixes isolated from other in-progress Sky changes",
+    "evidence": "docs/evidence/sky-csv-storage-hardening.json",
+    "status": "CSV fixes and existing verification alignment pass combined local full verify; fresh same-head CI pending",
+    "productionOwnerJourneyAccepted": false
+  },
+  "repositoryVerificationAlignment": {
+    "status": "locally_verified_ci_pending",
+    "base": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "scope": "existing Web visual baseline, translated README assertions, committed migration table count",
+    "visualSourceChanged": false,
+    "productionDeploymentChanged": false,
+    "fullVerify": "combined_csv_and_alignment_passed",
+    "localNode": "26.0.0",
+    "localDependencies": "shared canonical installed tree; installed base package versions all match; fresh npm ci reserved for GitHub CI",
+    "fullVerifyLogSha256": "cef357d9c82304d10b35f0e1501058835891cea63ab104117db9e2b43742221a",
+    "existingFashionActionLabelAligned": true,
+    "evidence": "docs/evidence/sky-release-verification-alignment.json"
+  },
+  "commonFoundationIntegration": {
+    "status": "source_integrated_and_locally_verified",
+    "base": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "incorporatedPrs": [
+      39,
+      51
+    ],
+    "evidence": "docs/evidence/common-foundation-integration.json",
+    "mainMergeEvidence": "Integration PR merge state and commit ancestry; local verification is separate.",
+    "productionDeploymentChanged": false
+  }
 }

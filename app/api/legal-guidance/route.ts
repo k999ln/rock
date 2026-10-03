@@ -5,12 +5,12 @@ import {
   parseLegalAiResponse,
   validateLegalAiInput,
 } from '@/lib/legal-ai';
+import { authorizeRemoteAiRequest } from '@/lib/remote-ai-guard';
 import {
-  authorizeRemoteAiRequest,
-  RemoteAiGuardError,
-} from '@/lib/remote-ai-guard';
-
-const noStoreHeaders = { 'Cache-Control': 'no-store' };
+  requestResearchAi,
+  researchAiErrorResponse,
+  researchAiNoStoreHeaders as noStoreHeaders,
+} from '@/lib/research-ai';
 
 export async function POST(request: Request) {
   try {
@@ -50,52 +50,21 @@ export async function POST(request: Request) {
       );
 
     const searchedAt = new Date().toISOString();
-    const upstream = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${runtimeEnv.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(
-        buildLegalAiRequest(
-          input,
-          searchedAt.slice(0, 10),
-          runtimeEnv.OPENAI_LEGAL_MODEL,
-        ),
+    const payload = await requestResearchAi(
+      buildLegalAiRequest(
+        input,
+        searchedAt.slice(0, 10),
+        runtimeEnv.OPENAI_LEGAL_MODEL,
       ),
-    });
-    const payload = (await upstream.json()) as unknown;
-    if (!upstream.ok) {
-      console.error('legal guidance upstream failed', upstream.status);
-      return Response.json(
-        { error: '法令AIを利用できません。公的案内から確認してください。' },
-        { status: 502, headers: noStoreHeaders },
-      );
-    }
+      runtimeEnv.OPENAI_API_KEY,
+    );
     return Response.json(parseLegalAiResponse(payload, searchedAt), {
       headers: noStoreHeaders,
     });
   } catch (error) {
-    if (error instanceof RemoteAiGuardError)
-      return Response.json(
-        {
-          error:
-            error.code === 'RATE_LIMITED'
-              ? '利用上限に達しました。1分後に再試行してください。'
-              : error.code === 'ORIGIN'
-                ? 'このサイトから操作してください。'
-                : 'サインインしてください。',
-          code: error.code,
-        },
-        { status: error.status, headers: noStoreHeaders },
-      );
-    console.error(
-      'legal guidance failed',
-      error instanceof Error ? error.message : 'unknown',
-    );
-    return Response.json(
-      { error: '入力を確認して、もう一度お試しください。' },
-      { status: 400, headers: noStoreHeaders },
-    );
+    return researchAiErrorResponse(error, {
+      logLabel: 'legal guidance',
+      upstream: '法令AIを利用できません。公的案内から確認してください。',
+    });
   }
 }
