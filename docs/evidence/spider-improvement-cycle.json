@@ -1,0 +1,80 @@
+{
+  "schema": "rockstaros-spider-improvement-cycle/1",
+  "repository": "k999ln/rock",
+  "pullRequest": "https://github.com/k999ln/rock/pull/52",
+  "baselineCommit": "936c63215330adb0e510be178f4fc74ba1d20b28",
+  "firstRepairCommit": "a13c3f5599aa5bec61f0cf9c9391d9a6a8adffbd",
+  "latestValidatedCommit": "4c5d32ce3ff02823616274ef58b00b56f5ebc8e1",
+  "codeql": {
+    "ref": "refs/heads/codex/spider-guard",
+    "beforeOpen": 47,
+    "afterOpen": 44,
+    "newAlerts": 0,
+    "fixedAlerts": [
+      42,
+      31,
+      47
+    ],
+    "analysisIds": [
+      1884564041,
+      1884565838
+    ],
+    "run": "https://github.com/k999ln/rock/actions/runs/37085111878",
+    "conclusion": "success",
+    "note": "Each target branch instance is fixed. Its finding commit remains the last-seen baseline; fresh analysis IDs bind the new analysis to the validated commit."
+  },
+  "regressionAndWebMeasurement": {
+    "run": "https://github.com/k999ln/rock/actions/runs/37085111905",
+    "conclusion": "success",
+    "routes": 8,
+    "universalHeaders": 8,
+    "servedWorkerMatchesSource": true,
+    "evidence": "docs/evidence/launch/web-security-local-20260917.json",
+    "sitesDeploymentVerified": false
+  },
+  "hostTests": {
+    "collector": 10,
+    "serviceWorker": 8,
+    "codeqlWorkflow": 4,
+    "fashionToolkit": 22,
+    "passed": 44,
+    "failed": 0,
+    "packageMatchesSource": true
+  },
+  "projectDatabaseDesignChecks": "passed",
+  "fullVerify": {
+    "status": "failed",
+    "passedThrough": "release check and 64 public-fixture signing checks",
+    "failure": "existing visual baseline at scripts/check-product-baseline.mjs:1057",
+    "laterGates": "not run"
+  },
+  "unresolved": {
+    "codeql": 44,
+    "dependabotDefaultBranch": 18,
+    "historySecretCandidates": 2357,
+    "secretRun": "https://github.com/k999ln/rock/actions/runs/37084628781",
+    "reachableCommitsInThatRun": 640,
+    "note": "Historical repeated pattern matches are not unique or validated credentials. Findings remain failing; no blanket exclusions or dismissals added."
+  },
+  "cycle": {
+    "steps": [
+      "collect",
+      "inspect_source",
+      "repair",
+      "regression_test",
+      "rescan_same_commit",
+      "report_pr"
+    ],
+    "localCodexFollowUp": "configured hourly",
+    "requiresComputerAndAppRunning": true,
+    "autoMerge": false,
+    "reports": "meaningful new findings, verified repairs, failures or required user action"
+  },
+  "boundaries": {
+    "mainMerged": false,
+    "requiredChecksConfigured": false,
+    "sameImageOsBootAccepted": false,
+    "pixelAccepted": false,
+    "continuous24HourOperationAccepted": false
+  }
+}

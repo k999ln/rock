@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Read-only GitHub feedback. Alert prose, source, logs and secrets are never requested. */
+/** Read-only metadata projected inside gh. Log and secret-alert APIs are not called. */
 import { spawnSync } from 'node:child_process';
 import { constants, lstatSync, mkdirSync, openSync, closeSync, writeFileSync, renameSync, unlinkSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';

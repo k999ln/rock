@@ -38,7 +38,7 @@ source検証はscanner境界6件、実Gitleaks例外policy 6件、CodeQL設定�
 npm run spider:feedback -- --ref codex/spider-guard --output work/spider-feedback
 ```
 
-このcommandは認証済み`gh`で固定repo `k999ln/rock`を読み、`report.json`と`queue.md`を作る。CodeQLは指定ref、Dependabotはdefault branchの警告であり、両者のscopeを混同しない。取得前後のHEAD、各警告の番号・rule・安全なpath／行・解析commit、現HEADのworkflow状態を保持する。本文、snippet、secret-scanningの秘密値、Actions logは取得しない。ページ上限、取得失敗、HEAD移動、欠落したcheckは不完全として示す。exit 0は収集完了であって、警告解消や安全保証ではない。
+このcommandは認証済み`gh`で固定repo `k999ln/rock`を読み、`report.json`と`queue.md`を作る。CodeQLは指定ref、Dependabotはdefault branchの警告であり、両者のscopeを混同しない。取得前後のHEAD、各警告の番号・rule・安全なpath／行・解析commit、現HEADのworkflow状態を保持する。CodeQL／Dependabot応答はgh内で必要metadataだけに絞り、警告本文やsnippetを収集結果へ渡さない。secret-scanningの秘密値やActions logのAPIは呼ばない。ページ上限、取得失敗、HEAD移動、欠落したcheckは不完全として示す。exit 0は収集完了であって、警告解消や安全保証ではない。
 
 このチャットに1時間ごとのCodex follow-upを設定した。これはローカルPCとCodexアプリが起動している間に進む改善担当で、GitHub上の検査とは別である。sourceを確認して高優先度1件または同じ原因の小さな一組を修正し、既存PRへ追記する。依存関係はDependabotの既存修正PRを再利用する。test／vendor／文書内の指摘は文脈を確認し、件数を減らすための一括除外や自動dismissはしない。秘密の失効・本番deploy・main mergeはこのcycleで自動実行しない。
 
@@ -48,9 +48,11 @@ npm run spider:feedback -- --ref codex/spider-guard --output work/spider-feedbac
 
 `.github/workflows/spider-regressions.yml`は収集処理、SW更新境界、Fashion toolkit全体、配布ZIP一致を独立して検証する。collectorのread-only GETと静的scannerとは異なり、回帰jobはread-only権限・secret未設定のGitHub runnerで対象のテストコードを実行する。現在の実装・試験とGitHub再解析の結果はPR #52へ記録し、未解決警告を残したまま全体合格としない。
 
-初回修正のhost Node検証はcollector 10、SW 8、CodeQL設定4、Fashion toolkit 22の計44件が合格し、配布ZIP一致、project／database／design整合も成功した。途中のhost容量不足による試験失敗後、空き容量回復時の再実行で全44件を確認した。全体verifyはSW変更により既存Web security policyの測定input hashが古くなったためrelease gateで停止しており、測定更新とGitHub実行を別途確認する。
+初回修正のhost Node検証はcollector 10、SW 8、CodeQL設定4、Fashion toolkit 22の計44件が合格し、配布ZIP一致、project／database／design整合も成功した。途中のhost容量不足による試験失敗後、空き容量回復時の再実行で全44件を確認した。SW変更で古くなったWeb security policy測定を、commit `4c5d32c`の[実production build・応答検査](https://github.com/k999ln/rock/actions/runs/37085111905)で更新した。8経路／8headerと配信SWのsource byte一致が成功し、artifactのrun／SHA／入力hashを照合して既存測定記録へ反映した。最終verifyはrelease gateとsigning公開fixture64件まで成功し、その後の既存visual baseline1057で停止した。後続gateを成功扱いにしない。
 
 GitHubのcommit `a13c3f5599aa5bec61f0cf9c9391d9a6a8adffbd`に対する[回帰job](https://github.com/k999ln/rock/actions/runs/37084628784)と[CodeQL解析](https://github.com/k999ln/rock/actions/runs/37084628780)が成功した。対象branchの#42／#31／#47はそれぞれfixedで、新規番号の警告はなく、open CodeQLは47→44件となった。collectorでも44＋Dependabot 18＝62件を再取得した。[秘密検査](https://github.com/k999ln/rock/actions/runs/37084628781)は640コミットを完走し、未解決の2,357履歴候補で失敗を維持している。
+
+`4c5d32c`でも回帰・実測・CodeQLの成功と3件のfixedを再確認した。[初回cycleの機械可読記録](evidence/spider-improvement-cycle.json)に、検証commit・run・警告状態・未解決件数を保存する。初回成功は全警告の解消、main統合、端末の24時間保護を意味しない。
 
 ## 自分のコードを貼って検査する
 
