@@ -29,7 +29,8 @@ void test('scan job has minimal permissions and only pinned official actions', (
     'github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2',
   ]);
   assert.match(workflow, /^          persist-credentials: false$/m);
-  assert.doesNotMatch(workflow, /^\s+(?:ref|token):|secrets\./m);
+  assert.doesNotMatch(workflow, /^\s+(?:ref|token):/m);
+  assert.equal(workflow.includes("secrets."), false);
 });
 
 void test('analysis has no project execution and waits for actual result processing', () => {
