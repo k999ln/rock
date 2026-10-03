@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import { ArrowLeft, ArrowRight, CircleCheck, ExternalLink, Plus, RefreshCw } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
+import ZemaNavigation from '@/components/zema-navigation';
+import SkyLibrarySave from '@/components/sky-library-save';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { ToolIcon } from '@/components/tool-icon';
 import SkyToolOverview from '@/components/sky-tool-overview';
@@ -58,7 +60,8 @@ const fields: Field[] = [
   { key: 'workerTermsReference', label: '担当者へ発注条件を明示した記録', help: '送付した発注書・メッセージの参照など。' },
 ];
 
-export default function CoconalaTeamWorkspace() {
+export default function CoconalaTeamWorkspace({ workspace = false }: { workspace?: boolean }) {
+  const returnTo = workspace ? '/zema/tools/coconala' : '/sky/tools/coconala';
   const [view, setView] = useState<'management' | 'check'>('management');
   const [infoOpen, setInfoOpen] = useState(false);
   const [cases, setCases] = useState<TeamCase[]>([]);
@@ -176,14 +179,19 @@ export default function CoconalaTeamWorkspace() {
   const signinRecovery = <section className={styles.empty} aria-label="サインインの復帰">
     <h2>サインインして案件を管理</h2>
     <p>入力はこの画面に残ります。別タブでサインイン後、接続を確認してください。案件と報酬の記録はあなたのアカウントだけに保存されます。</p>
-    <Link href="/signin-with-chatgpt?return_to=%2Fsky%2Ftools%2Fcoconala" target="_blank" rel="noopener noreferrer">別タブでサインイン <ArrowRight size={15} /></Link>
+    <Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">別タブでサインイン <ArrowRight size={15} /></Link>
     <button type="button" className={styles.secondary} disabled={loading || busy} onClick={() => void refresh()}>{loading ? '確認中…' : 'サインイン後に接続を確認'}</button>
   </section>;
 
   return <WorkspaceShell title="ココナラ" tone="sky" contentClassName={styles.shell} hideTopActions>
     <div className={styles.root}>
+      <div className={styles.toolAccess} onClickCapture={(event) => {
+        if (busy && event.target instanceof Element && event.target.closest('a[href]')) event.preventDefault();
+      }}>
+        {workspace ? <ZemaNavigation active="library" /> : <SkyLibrarySave toolId="coconala" returnTo={returnTo} disabled={busy} />}
+      </div>
       <nav className={styles.skyNav} aria-label="ココナラの機能">
-        <Link href="/sky"><ArrowLeft size={15} />Skyへ戻る</Link>
+        <Link href={workspace ? '/zema/library' : '/sky'}><ArrowLeft size={15} />{workspace ? 'ライブラリへ戻る' : 'Skyへ戻る'}</Link>
         <button type="button" aria-current={view === 'management' ? 'page' : undefined} onClick={() => setView('management')}>案件管理</button>
         <button type="button" aria-current={view === 'check' ? 'page' : undefined} onClick={() => setView('check')}>応募前チェック</button>
       </nav>

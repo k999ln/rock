@@ -14,6 +14,8 @@ import {
   Upload,
 } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
+import ZemaNavigation from '@/components/zema-navigation';
+import SkyLibrarySave from '@/components/sky-library-save';
 import styles from './csv-business-workspace.module.css';
 
 type Job = {
@@ -57,7 +59,8 @@ const columns = (value: string) =>
     .map((item) => item.trim())
     .filter(Boolean);
 
-export default function CsvBusinessWorkspace() {
+export default function CsvBusinessWorkspace({ workspace = false }: { workspace?: boolean }) {
+  const returnTo = workspace ? '/zema/tools/rockstar-csv-cleanup' : '/csv';
   const [jobs, setJobs] = useState<Job[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [rename, setRename] = useState('');
@@ -279,8 +282,17 @@ export default function CsvBusinessWorkspace() {
     type: 'text/csv',
   });
   return (
-    <WorkspaceShell title="Sky · CSV仕事" hideTopActions>
+    <WorkspaceShell title={workspace ? 'Zema · CSV仕事' : 'Sky · CSV仕事'} hideTopActions>
       <div className={styles.page}>
+        <div className={styles.toolAccess} onClickCapture={(event) => {
+          if (busy && event.target instanceof Element && event.target.closest('a[href]')) event.preventDefault();
+        }}>
+          {workspace ? <ZemaNavigation active="library" /> : <nav aria-label="CSVの移動先">
+            <Link href="/sky">Skyへ戻る</Link>
+            <Link href="/zema/library">Zemaのライブラリ</Link>
+          </nav>}
+          {!workspace && <SkyLibrarySave toolId="rockstar-csv-cleanup" returnTo={returnTo} disabled={busy} />}
+        </div>
         <header className={styles.hero}>
           <div>
             <p className={styles.eyebrow}>最初の売れる仕事</p>
@@ -310,10 +322,11 @@ export default function CsvBusinessWorkspace() {
           <div className={styles.error} role="alert">
             {error}
             {needsSignin && (
-              <a href="/signin-with-chatgpt?return_to=/csv" target="_top">
-                サインイン
+              <a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">
+                別タブでサインイン
               </a>
             )}
+            {needsSignin && <><p>入力はこの画面に残ります。サインイン後に接続を確認してください。確認だけでは処理を実行しません。</p><button type="button" onClick={() => void refresh()} disabled={busy}>サインイン後に接続を確認</button></>}
           </div>
         )}
 

@@ -5,7 +5,7 @@ import { CommerceSignIn } from '@/components/sky-commerce';
 import { operationRequest } from '@/lib/operations-client';
 import styles from '@/components/sky-library.module.css';
 
-export default function SkyLibrarySave({ toolId }: { toolId: string }) {
+export default function SkyLibrarySave({ toolId, returnTo, disabled = false }: { toolId: string; returnTo?: string; disabled?: boolean }) {
   const [saved, setSaved] = useState<boolean | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -28,7 +28,7 @@ export default function SkyLibrarySave({ toolId }: { toolId: string }) {
     };
   }, [toolId, retry]);
   async function toggle() {
-    if (saved === null || submitting.current) return;
+    if (disabled || saved === null || submitting.current) return;
     submitting.current = true;
     setBusy(true);
     setError('');
@@ -51,7 +51,7 @@ export default function SkyLibrarySave({ toolId }: { toolId: string }) {
       <p>
         後で使いたいツールを、Zemaのライブラリに保存できます。実行許可や購入は行いません。
       </p>
-      <button disabled={saved === null || busy} onClick={() => void toggle()}>
+      <button disabled={disabled || saved === null || busy} onClick={() => void toggle()}>
         {busy ? '保存中…' : saved ? 'ライブラリから外す' : 'ライブラリに保存'}
       </button>
       {saved && <Link href="/zema/library">Zemaのライブラリを開く →</Link>}
@@ -59,7 +59,7 @@ export default function SkyLibrarySave({ toolId }: { toolId: string }) {
         <div role="alert">
           <p>{error}</p>
           <CommerceSignIn
-            returnTo={`/sky/tools/${encodeURIComponent(toolId)}`}
+            returnTo={returnTo ?? `/sky/tools/${encodeURIComponent(toolId)}`}
           />{' '}
           <button
             onClick={() => {

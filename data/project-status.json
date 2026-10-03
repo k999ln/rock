@@ -3498,5 +3498,17 @@
     "navigationCreatesDeviceRights": false,
     "realPcAccepted": false,
     "fullUxAccepted": false
+  },
+  "skyDedicatedToolLibraryPreparation": {
+    "stage": "local_candidate_checks_passed_public_owner_pending",
+    "baseline": "082d662595d868420a812fb9615a047fbe6d488d",
+    "tools": [
+      "rockstar-csv-cleanup",
+      "coconala"
+    ],
+    "sharedJobStore": true,
+    "librarySaveGrantsExecutionRights": false,
+    "publicOwnerAcceptance": false,
+    "loadingLayoutGuard": true
   }
 }

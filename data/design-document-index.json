@@ -837,5 +837,20 @@
     "navigationIssuesRights": false,
     "realPcAccepted": false,
     "fullUxAccepted": false
+  },
+  "skyDedicatedToolLibrary": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "components/sky-tool-workspace.tsx",
+      "components/csv-business-workspace.tsx",
+      "components/coconala-team-workspace.tsx",
+      "components/sky-library-save.tsx",
+      "components/sky-library.tsx"
+    ],
+    "verification": [
+      "scripts/check-csv-storage.mjs",
+      "tests/coconala-sky-entry.test.mjs"
+    ],
+    "publicOwnerAcceptance": false
   }
 }

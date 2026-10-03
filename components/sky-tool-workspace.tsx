@@ -22,6 +22,7 @@ import SkyToolOverview from '@/components/sky-tool-overview';
 import SkyLibrarySave from '@/components/sky-library-save';
 import ZemaNavigation from '@/components/zema-navigation';
 import CoconalaTeamWorkspace from '@/components/coconala-team-workspace';
+import CsvBusinessWorkspace from '@/components/csv-business-workspace';
 import {
   catalogHostMismatch,
   detectSkyHost,
@@ -40,7 +41,8 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
   const tool = catalog.find((item) => item.id === toolId);
   const host = useSyncExternalStore(subscribeHost, browserHost, serverHost);
 
-  if (toolId === 'coconala') return <CoconalaTeamWorkspace />;
+  if (toolId === 'coconala') return <CoconalaTeamWorkspace workspace={workspace} />;
+  if (toolId === 'rockstar-csv-cleanup') return <CsvBusinessWorkspace workspace={workspace} />;
 
   if (!tool) {
     return (

@@ -53,7 +53,8 @@ export default function SkyLibrary() {
     `${tool.name} ${tool.description}`
       .toLocaleLowerCase()
       .includes(query.trim().toLocaleLowerCase());
-  const included = catalog.filter(
+  const libraryLoading = connections === null && !error;
+  const included = libraryLoading ? [] : catalog.filter(
     (tool) =>
       tool.status === 'ready' &&
       !connections?.includes(tool.id) &&
@@ -181,12 +182,14 @@ export default function SkyLibrary() {
           </section>
           <section className={styles.section}>
             <h2>
-              標準ツール <small>{included.length}件</small>
+              標準ツール {!libraryLoading && <small>{included.length}件</small>}
             </h2>
             <p>
               標準搭載でも、外部API・業務サービスの費用や接続が必要な場合があります。
             </p>
-            {cards(included)}
+            {libraryLoading ? (
+              <output>ツールの一覧を確認しています…</output>
+            ) : cards(included)}
           </section>
         </div>
         <Dialog

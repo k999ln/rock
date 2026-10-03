@@ -104,6 +104,16 @@ try {
   for (let i=0;i<2;i++) await call('/api/sky/library', {method:'PUT',body:{tool:'mr-citations',saved:false}});
   check(await library(alice),[]);
 
+  for (const tool of ['rockstar-csv-cleanup','coconala']) {
+    check(await (await call('/api/sky/library',{method:'PUT',body:{tool,saved:true}})).json(),{tool,saved:true});
+    check((await library(alice)).map(item=>item.tool),[tool]);
+    check(await library(bob),[]);
+    check((await db.prepare('SELECT COUNT(*) AS count FROM devices').first()).count,0);
+    check(await (await call('/api/jobs')).json(),[]);
+    check(await (await call('/api/csv-jobs')).json().then(value=>value.jobs),[]);
+    await call('/api/sky/library',{method:'PUT',body:{tool,saved:false}});
+  }
+
   let first = await create(); const originalHash=await inputHash(first.id);
   check(first.quoteMinor,0);check(await create(first.id),first);
   await create(first.id,bob,content,409);check(await inputHash(first.id),originalHash);
