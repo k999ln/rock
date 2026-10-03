@@ -122,6 +122,19 @@
     },
     {
       "id": "linux_qemu",
+      "desktopCredentialHandoff": {
+        "document": "systems/rock-star-os/os/desktop/README.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/desktop/launcher.py",
+        "regressions": "systems/rock-star-os/tests/test_os_desktop_browser.py",
+        "input": "exact validated loopback viewer URL with current-session credential fragment",
+        "processArguments": "fixed osascript command only; credential supplied over stdin",
+        "temporaryFileOrEnvironmentCredential": false,
+        "openTimeoutSeconds": 10,
+        "failure": "fixed error; no credential-bearing argv fallback",
+        "noOpen": "no credential fetch or opener invocation",
+        "scope": "Mac host display launcher; guest SSH response and existing VNC auth unchanged"
+      },
       "nativeCiArtifactSelection": {
         "document": "docs/native-os-validation.md",
         "implementation": "scripts/select-native-artifacts.py",

@@ -1118,7 +1118,150 @@
         "scope": "Injected SO_PEERCRED bytes; role allowlist tested before frame read; claimed UID in request does not override kernel UID; peer lookup failure rejects before read/dispatch. No actual Linux UID/DAC test or guest boot.",
         "guestRegressionNotRun": "systems/rock-star-os/os/platform/guest-test.py:133",
         "trackedSourceOrTestChanged": false
+      },
+      "publicationReadback": {
+        "commit": "1896dc0384b6de640daf35c32f67bc4df1e4bcbd",
+        "fullVerifyRun": 37108528219,
+        "regressionRun": 37108528250,
+        "nativeRun": 37108528253,
+        "nativeAggregateArtifact": 11268877679,
+        "sourceAndRegressionChecks": "success",
+        "codeqlAnalysisIds": [
+          1885373801,
+          1885374575
+        ],
+        "comparedAlertIds": 48,
+        "stateChanges": 0,
+        "newIds": 0,
+        "missingIds": 0,
+        "open": 38,
+        "fixed": 10,
+        "historySecrets": {
+          "run": 37108528311,
+          "artifact": 11268673121,
+          "scanCompleted": true,
+          "reachableCommits": 664,
+          "candidateMatches": 2364,
+          "newHeadCandidates": 2,
+          "newHeadCandidateAttribution": "Both generic-api-key entries at evidence JSON1052/1057 exactly equal unchanged public source SHA256 values. No broad exemption or conclusion about the other2362 candidates."
+        }
       }
+    },
+    {
+      "cycle": 8,
+      "baselineCommit": "1896dc0384b6de640daf35c32f67bc4df1e4bcbd",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "repair_host_validated_publication_pending",
+      "repairCount": 1,
+      "repairKind": "browser session credential removed from opener process arguments",
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabotDefaultBranch": 18
+      },
+      "baselineAnalysisIds": [
+        1885374575,
+        1885373801
+      ],
+      "targetAlertReview": {
+        "number": 6,
+        "decision": "The reported guest stdout is a private SSH protocol response, captured by the launcher. No ordinary log exposure established; leave the alert open.",
+        "separateConfirmedDefect": "Downstream launcher passed the credential-bearing URL fragment to /usr/bin/open argv.",
+        "source": "systems/rock-star-os/os/desktop/launcher.py:495",
+        "baselineEvidence": {
+          "productionLaunchOpenerArgvContainsSyntheticCredential": true,
+          "productionLaunchReturnedReportContainsSyntheticCredential": false,
+          "productionLaunchPersistedStateContainsSyntheticCredential": false,
+          "sameUidHarmlessChildProcessListingContainsSyntheticArgv": true
+        },
+        "scope": [
+          "No real credential read/generated; no browser opened, no VM/device or root use, no socket listener started.",
+          "Production launch was exercised with synthetic subprocess/VM/socket collaborators.",
+          "Process-list probe uses only this UID; different-user observation was not executed.",
+          "The observed exposure is local process metadata, not HTTP query/path/server logs or a demonstrated remote exploit.",
+          "Session credential retains access while that VM display session remains active; fragment clearing does not clear prior process argv."
+        ]
+      },
+      "repair": {
+        "browserOpenerArguments": [
+          "/usr/bin/osascript",
+          "-l",
+          "AppleScript",
+          "-"
+        ],
+        "credentialChannel": "private stdin; exact validated loopback URL in open location statement",
+        "grammar": "IPv4 loopback/index.html, canonical ports1024..65535, distinct viewer/display ports,8ASCII password symbols",
+        "timeoutSeconds": 10,
+        "diagnostics": "discard stdout/stderr; fixed ValueError for OSError/SubprocessError; no fallback",
+        "unchanged": "private guest SSH response, session binding, viewer fragment removal, no-open, non-browser VNC opener"
+      },
+      "sourceSha256": {
+        "systems/rock-star-os/os/desktop/browser/viewer.js": "4624669507f1ba87f4709093a0b437f8cee40200624bca4526d59400ba936918",
+        "systems/rock-star-os/os/desktop/browser_server.py": "b67c966edd90799b317a1fb9a410ec0c815dc08cd59382dd64f755226d49a4b9",
+        "systems/rock-star-os/os/desktop/guest.py": "73467ad17e3ce26d4a17f031c835f2827523bad79b27d6b0c85cea62800fa287",
+        "systems/rock-star-os/os/desktop/launcher.py": "9b77844da99809c36701529222020e6dc89e66ac9d449c4b6ec199e23925d79e",
+        "systems/rock-star-os/tests/test_os_desktop_browser.py": "a0b9d6279e9989e4f2c4200be693175d0b031491ef066a0bc5af781d2d9de852",
+        "systems/rock-star-os/tests/test_os_desktop_launcher.py": "e80ed40af602378c4a5cfd1492d3231e327cd2d5413195d13da69e98a14ccd81"
+      },
+      "hostChecks": {
+        "command": "PYTHONPATH=systems/rock-star-os/tests:systems/rock-star-os/os/desktop python3 -B -W error::ResourceWarning -m unittest test_os_desktop_browser test_os_desktop_launcher test_os_desktop_launcher_v2 test_os_desktop_launcher_v3 -v",
+        "passed": 42,
+        "skipped": 0,
+        "failed": 0,
+        "seconds": 0.372,
+        "hostSystem": "Darwin",
+        "logSha256": "cecc7d32538f2bd142fdcb38beba92625c59030f661125156b0a0fb99b6e7886",
+        "initialSandboxResult": "40 passed; two existing localhost bind cases denied with EPERM; same42 passed with bind allowed",
+        "scope": "Synthetic host unit tests; no actual browser opener, VM, physical OS or real credentials"
+      },
+      "newRegressionTests": 4,
+      "independentReview": {
+        "decision": "no blocker",
+        "newTestsReexecuted": 4,
+        "includedInHost42": true,
+        "scope": "narrow source review and synthetic handoff only"
+      },
+      "macInterpreterProbe": {
+        "source": "production open_browser_display generated script",
+        "host": "macOS",
+        "nativeInterpreterExit": 0,
+        "statementParsedWithoutNavigation": true,
+        "openerArgvFixed": true,
+        "syntheticCredentialAbsentFromProcessArguments": true,
+        "stderrEmpty": true,
+        "realBrowserOpened": false,
+        "realCredentialUsed": false,
+        "otherUserReadbackTested": false,
+        "actualBrowserQemuHandoff": "NOT_RUN"
+      },
+      "localFullVerify": {
+        "status": "incomplete",
+        "passedThrough": "project/repository/version/schema/database/release/signing/baseline/avocado/design/composition",
+        "failure": "ai package not installed at llm:architecture:check",
+        "laterGates": "not run locally"
+      },
+      "remaining": {
+        "targetAlert6": "open pending same-ref readback; not claimed fixed by this downstream repair",
+        "dependabotDefaultBranch": 18,
+        "existingDependabotPullRequests": [
+          53,
+          54,
+          55,
+          56
+        ],
+        "historyCandidates": 2364,
+        "actualBrowserToQemu": "NOT_RUN",
+        "otherUidProcessObservation": "NOT_RUN"
+      },
+      "boundaries": {
+        "scannerOrAuthenticationWeakened": false,
+        "mainMerged": false,
+        "deployed": false,
+        "vmOrDeviceChanged": false,
+        "secretsRotated": false
+      },
+      "publicationEvidence": "Same-SHA GitHub checks, individual alert states and report readback are recorded after push in PR52 and the external SPIDER artifact."
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."

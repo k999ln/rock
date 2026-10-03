@@ -20,9 +20,30 @@ from the focused tests below.
   passed only in the viewer URL fragment, never in its HTTP path or query. The
   root-owned `browser_server.ensure_viewer(host_state, session)` returns
   `http://127.0.0.1:8899/index.html`; that viewer removes its fragment immediately.
+  The browser opener receives the strictly validated loopback URL only through
+  stdin of `/usr/bin/osascript -l AppleScript -`, using `open location`. Its argv
+  is constant; no credential is added to argv, environment variables or temporary
+  files. The opener discards stdout/stderr and uses a ten-second timeout. Failure
+  returns a fixed message while retaining the display and OS state; it never
+  falls back to a credential-bearing `/usr/bin/open` command. Retry the same
+  launcher after restoring the opener. The non-browser VNC path keeps its
+  existing credential-free opener.
   Launcher return values omit the fragment; `--no-open` never reads a credential.
 - VNC password authentication here protects a private SSH-forwarded development
   display. This is not a production public-network authentication claim.
+
+The accepted browser URL has the exact IPv4 loopback host, `/index.html`, valid
+viewer/WebSocket ports and an eight-character session password fragment. Script
+quotes, backslashes, line breaks, foreign origins and extra fields are refused
+before launching a child. The existing authenticated SSH response remains a
+private protocol response, not a diagnostic log. This protects the process
+argument boundary; it does not hide browser memory/AppleEvents from privileged
+observers or establish a real multi-user, browser-to-QEMU acceptance result.
+Synthetic source tests verify private stdin handoff, failure privacy, invalid
+URL refusal and no-open behavior. Source CI, Mac interpreter checks without
+navigation, actual browser display and OS boot are separate evidence scopes.
+Apple documents [open location](https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/reference/ASLR_cmds.html);
+the installed `osascript(1)` manual specifies script input over stdin.
 
 QEMU documents UNIX WebSockets, VNC `password-secret`, and secret objects in its
 [official user manual](https://www.qemu.org/docs/master/system/qemu-manpage.html).
