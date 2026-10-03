@@ -1,0 +1,22 @@
+{
+  "name": "@avokado/avocado-farm-sandbox",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/cli.mjs",
+    "rpc:check": "node src/cli.mjs --rpc-check",
+    "test": "node --test test/*.test.mjs",
+    "scan:live": "node src/live-scan.mjs",
+    "scan:paper": "node src/live-scan.mjs --paper-open",
+    "uniswap:verify": "node src/live-scan.mjs --verify-uniswap",
+    "uniswap:probe": "node src/uniswap-probe.mjs",
+    "backtest": "node src/backtest.mjs",
+    "backtest:sweep": "node src/backtest-sweep.mjs",
+    "backtest:walk": "node src/walk-forward.mjs",
+    "backtest:portfolio": "node src/portfolio-walk-forward.mjs"
+  }
+}
