@@ -89,7 +89,9 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   assert.equal((home.match(/class="home-tile /g) || []).length, 4);
   assert.match(home, /rel="canonical" href="https:\/\/avocado-mini\.kirin-999\.chatgpt\.site\/"/);
   assert.match(home, /property="og:title"/);
-  assert.doesNotMatch(home, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
+  for (const host of ['fonts.googleapis.com', 'fonts.gstatic.com']) {
+    assert.equal(home.toLowerCase().includes(host), false);
+  }
   assert.equal(existsSync(new URL('client/robots.txt', outputRoot)), true);
   assert.equal(existsSync(new URL('client/sitemap.xml', outputRoot)), true);
 });
@@ -190,6 +192,8 @@ test('built pages use bundled assets instead of retired source paths', () => {
     const html = built(route);
     assert.doesNotMatch(html, /(?:href|src)=["']\/src\//, `${route} must not load /src directly`);
     assert.doesNotMatch(html, /(?:href|src)=["']\/rocket-star\/(?:main\.js|design\.css)/, `${route} must use Astro assets`);
-    assert.doesNotMatch(html, /fonts\.googleapis\.com|fonts\.gstatic\.com/, `${route} must not request third-party fonts`);
+    for (const host of ['fonts.googleapis.com', 'fonts.gstatic.com']) {
+      assert.equal(html.toLowerCase().includes(host), false, `${route} must not request third-party fonts`);
+    }
   }
 });

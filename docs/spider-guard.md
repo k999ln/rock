@@ -327,3 +327,9 @@ CodeQL #37は`tests/mcp.test.mjs`の`filesFrom`にあるstat/read間の競合を
 このhelperを同時書換えに安全な汎用readerとは扱わない。checkoutや親を変更できる主体を信頼する試験の前提であり、source／callsite／fixture条件が変われば再評価する。実MCPの納品照合は渡されたbytesをprivate一時領域へ保存し、既存のdirectory handle基準・nofollow・サイズ制限・private snapshotを通じて固定verifierへ渡す。workspaceの祖先と同一UIDの信頼条件を維持し、一時点の全filesystem snapshotや同一UID侵害の隔離は保証しない。
 
 現範囲では製品の追加修正根拠を得ておらず、runtime・test・scanner policyを変更せず、警告をopenで保持する。既存のMCP／納品境界試験、source／fixture hash、独立reviewと同一SHAの確認を[改善記録](evidence/spider-improvement-cycle.json)へ残す。
+
+## 第21cycle: 外部フォント参照の大文字ホストも検出する
+
+CodeQL #43／#44の対象はbuilt HTML全体に対する禁止substring検査であり、URLを許可する処理ではない。両端アンカーを追加するとHTML途中の禁止参照を見逃すため、既存の部分一致拒否を維持する。そのうえで、大文字・小文字混在のGoogle Fontsホストが旧検査を通る別のテスト不足を、HTMLのlowercase化と2ホストのliteral照合で補う。
+
+変更は既存testの2つのassertion群だけで、route一覧、他の検査、製品source、checked-in配信物、依存、scanner policyを保持する。旧新callback全体への合成入力で見逃しの拒否と既存の拒否を比較し、既存site試験と同一SHAのCIを確認する。checked-in distに対する回帰検査であり、fresh Astro rebuildや配備の受入ではない。HTML entity・CSS escape・別asset内の全通信解析へ範囲を広げず、runtime脆弱性修正とも呼ばない。結果と残課題は[改善記録](evidence/spider-improvement-cycle.json)へ記録する。

@@ -4216,6 +4216,284 @@
         "secretRotation": false
       },
       "publicationEvidence": {
+        "commit": "47a999b465fadbc4d3ff858d5d9921df6dbd0d0b",
+        "fullVerify": {
+          "run": 37154413571,
+          "conclusion": "success"
+        },
+        "regression": {
+          "run": 37154413566,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37154413590,
+          "conclusion": "success",
+          "pythonTests": 1790,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1886953178,
+          "pythonAnalysis": 1886955344,
+          "open": 32,
+          "fixed": 16,
+          "individualStatesAndLocationsUnchanged": 48,
+          "reviewedAlertRemainsOpen": 37
+        },
+        "history": {
+          "run": 37154413608,
+          "scanCompleted": true,
+          "commits": 677,
+          "candidates": 2369,
+          "conclusion": "failure",
+          "additionalCandidates": 0,
+          "comparisonLimit": "Only candidate count unchanged; first100 metadata truncated, no assertion of full candidate identity or validity."
+        },
+        "classification": "bounded fixed-fixture source triage; no repair, test, or scanner-policy change"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency"
+    },
+    {
+      "cycle": 21,
+      "baselineCommit": "47a999b465fadbc4d3ff858d5d9921df6dbd0d0b",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "font-host case-insensitive substring regression checks strengthened; same-SHA publication checks pending",
+      "repairCount": 0,
+      "validationImprovementCount": 1,
+      "runtimeVulnerabilityFixed": false,
+      "reviewedAlerts": [
+        43,
+        44
+      ],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "focusedFinding": "Negative substring checks over built HTML intentionally lack anchors. Case-sensitive matching missed uppercase/mixed-case forms of the same Google Fonts hostnames; this is a test coverage gap, not a demonstrated runtime URL authorization vulnerability.",
+      "baselineOpen": {
+        "codeql": 32,
+        "dependabot": 18,
+        "historyCandidates": 2369
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-21-feedback/report.json",
+        "sha256": "7fffb47ae10eedc5f888e4632d16db6bd95e5b64b86c57346f8790a10719cf27",
+        "collectedAt": "2026-10-03T22:05:39.580Z",
+        "targetHead": "47a999b465fadbc4d3ff858d5d9921df6dbd0d0b",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 50,
+          "actionable": 35,
+          "review": 13,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 32,
+            "retrievedCount": 32,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "action": "Only the two negative font-host assertions now lowercase their HTML then check literal substring presence; prior lowercase substring rejection is retained without anchors or exclusions.",
+      "sourceFacts": [
+        {
+          "path": "sites/avocado-mini/tests/astro-build.test.mjs",
+          "lines": [
+            92,
+            195
+          ],
+          "fact": "Both original regular expressions are negative assertions over complete built HTML. Unanchored substring detection is intentional: adding anchors would reduce rejection coverage. Neither expression authorizes a runtime URL or sanitizes user input."
+        },
+        {
+          "path": "sites/avocado-mini/tests/astro-build.test.mjs",
+          "fact": "The new loops preserve each forbidden lowercase substring rejection while adding uppercase/mixed-case forms through String.toLowerCase. Every ASCII lowercase substring accepted by the old regex remains present after lowercasing, so this is a rejection superset for the old predicate."
+        },
+        {
+          "path": "sites/avocado-mini/astro.config.mjs",
+          "lines": [
+            4,
+            6,
+            7,
+            8
+          ],
+          "fact": "Astro output is static, generated under dist/client with a checked-in public directory and compressed HTML. The test reads build artifacts directly, not remote pages or visitor input."
+        },
+        {
+          "path": "sites/avocado-mini/src/pages",
+          "fact": "All 13 inspected checked-in Astro page sources import local style.css. The inspected CSS uses named/system font stacks and local image URLs; the bounded source review found no Google Fonts request or @font-face loading rule."
+        },
+        {
+          "path": "sites/avocado-mini/scripts/stage-worker.mjs",
+          "lines": [
+            15
+          ],
+          "fact": "Staging config supplies dist/client as Worker ASSETS. It does not add per-request font markup."
+        },
+        {
+          "path": "sites/avocado-mini/worker/index.js",
+          "lines": [
+            262,
+            278
+          ],
+          "fact": "The Worker handles defined API routes/redirect and otherwise delegates to ASSETS.fetch; no caller-derived font host is interpolated into these static pages in the reviewed path."
+        }
+      ],
+      "hostChecks": {
+        "environment": {
+          "node": "v26.0.0",
+          "platform": "darwin",
+          "freshBuild": false,
+          "dependencyInstall": false,
+          "siteAstroInstalled": false,
+          "lockedAstroVersion": "7.3.5",
+          "lockedAstroEngines": {
+            "node": ">=22.12.0",
+            "npm": ">=9.6.5",
+            "pnpm": ">=7.1.0"
+          }
+        },
+        "suites": [
+          {
+            "name": "target",
+            "command": "node --test sites/avocado-mini/tests/astro-build.test.mjs",
+            "exitCode": 0,
+            "summary": {
+              "tests": 10,
+              "pass": 10,
+              "fail": 0,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            },
+            "log": "work/spider-ci/cycle-21-target.log",
+            "logSha256": "ea3a163b3409fccc5c37d0b9701c7dfaf898a7605444137d6c7ecb4f8a93c1e7",
+            "executions": 1
+          },
+          {
+            "name": "whole_site",
+            "command": "node --test sites/avocado-mini/tests/astro-build.test.mjs sites/avocado-mini/tests/preorder.test.mjs",
+            "exitCode": 0,
+            "summary": {
+              "tests": 19,
+              "pass": 19,
+              "fail": 0,
+              "cancelled": 0,
+              "skipped": 0,
+              "todo": 0
+            },
+            "log": "work/spider-ci/cycle-21-whole_site.log",
+            "logSha256": "012e1eece1c63826508189c48c606f495748ff1186c95be100ae3fe5d1310999",
+            "executions": 1
+          }
+        ],
+        "uniqueTests": 19,
+        "testExecutions": 29,
+        "countingNote": "The target10 are included in whole-site19; both commands executed once."
+      },
+      "mutationChecks": {
+        "distinctMarkupCases": 13,
+        "affectedFullCallbacks": 2,
+        "scenarios": 26,
+        "beforeAfterEvaluations": 52,
+        "newlyRejectedRealHostCaseVariants": 8,
+        "preservedLowercaseRejections": 16,
+        "passingCurrentHtmlControls": 2,
+        "fullCallbacksFromActualSources": true,
+        "syntheticFsInjectionOnly": true,
+        "networkRequests": 0,
+        "details": "work/spider-ci/cycle-21-font-probe.json; content bound by probeEvidenceSha256"
+      },
+      "preservation": {
+        "otherSourceBytesIdentical": true,
+        "existingTestNamesAndOrderIdentical": true,
+        "existingTests": 10,
+        "runtimeAssetsDistDependenciesWorkflowsUnchanged": true,
+        "permanentNewTests": 0,
+        "scannerExceptionsAdded": 0
+      },
+      "testedSourceSha256": {
+        "sites/avocado-mini/tests/astro-build.test.mjs": "5999731722a4aef5b27585e55d682e796be2ba86f16e9356fc83b0cadfdf7dd0",
+        "sites/avocado-mini/astro.config.mjs": "9fac3cdcf74d017698c07bec846d4c8b3392b234cb16a94781b04101caa5eef3",
+        "sites/avocado-mini/src/style.css": "578f546efa280330fa4c8f617a4d0f1cb2d81cf108bff6fc5a7b2c21436800b5",
+        "sites/avocado-mini/src/r5.css": "881462768af79016d5265b5469413f665bf1382105dbbb21ebe29691d0eef181",
+        "sites/avocado-mini/public/avokado-brand.css": "68f4581a7185210dada33a8333a4fbb68a28ad7efeedc2f43fb70c02f97dbdcc",
+        "sites/avocado-mini/rocket-star/design.css": "f25ec99f8e2f97e2f8a9ba80ac5616569f2d50f5d1157962ffd79db8316ba796",
+        "sites/avocado-mini/worker/index.js": "80d780c579ee90bfa0ed5decc99678fcdf0918a814d1662128958310e3be16e5",
+        "sites/avocado-mini/scripts/stage-worker.mjs": "6a828b6140bfde2276326ec8a0c070cc1219641a0ba1e0a50f1c8c063b8afb1c",
+        "sites/avocado-mini/package.json": "89f2d79b501d3f4738b6ecc6b4916d360dc3e20ff4108020e8e5d41d83fa6373",
+        "package.json": "5a498327a0f41bdac38c486fc684bd06035dbe8fcff44768cc42373a14d30414",
+        "sites/avocado-mini/src/pages/crowdfunding/index.astro": "686b73fff62dd105e179174a5e9d2a63d97972570395983d67b17f18fa2e5186",
+        "sites/avocado-mini/src/pages/guide/index.astro": "fb9793c90556485b76530362f5fef096c5a658dcaf7f85f90061bfdc840b0e98",
+        "sites/avocado-mini/src/pages/index.astro": "cba808a9e874dabf27e7135b74445b7c35f52aa7ea0a741706c13c723bf34d0f",
+        "sites/avocado-mini/src/pages/install/index.astro": "8b20b06a22335397c810c26df573167a092ddc92f30d71d138a6ab535dc7cb57",
+        "sites/avocado-mini/src/pages/legal/index.astro": "18e0d0a1b99b17a81c22921ea91e3bead33add3e841acb425a2b94d46e8cce26",
+        "sites/avocado-mini/src/pages/mini/index.astro": "a8632a8c97e687105680802971dc49dcc71d3347702f8695f2d0f11a32163fdd",
+        "sites/avocado-mini/src/pages/preorder/complete/index.astro": "ff2ad5fb666f9bcb0771aa41bdc01e834d95219b872cefabdf558778f599a9d4",
+        "sites/avocado-mini/src/pages/preorder/confirm/index.astro": "186d14c7449c1a834ca35db69262b49854b61ef76471b2fbb8aabb3338f2da4b",
+        "sites/avocado-mini/src/pages/preorder/index.astro": "eb791052624e8d55a0d020afe5aa53b85dc92063c20081a8d71fe64016a1135e",
+        "sites/avocado-mini/src/pages/privacy/index.astro": "557bc9d9163f03b2f1d515541321f04817f862a2cc1527051166629ad39a5549",
+        "sites/avocado-mini/src/pages/pro/index.astro": "b6bc2b6a106773c69f02915f5a9f9097ed35e0a303c92c3088e9994fc1f78fe3",
+        "sites/avocado-mini/src/pages/rocket-star/index.astro": "17404f6f8eac197cfdfd1f75272b863c45a6b5c55853c4be28985c40a263931f",
+        "sites/avocado-mini/src/pages/rockstaros/index.astro": "2ec41ed4fb48b400238af4acc61b90d4b3aecd1c02fb7e42d872ae2d27c7b7cb"
+      },
+      "testedDistGitTree": "eb22ef35108255f22022deab513b63cd59a65fa2",
+      "independentReview": {
+        "evidencePath": "work/spider-ci/cycle-21-font-review.json",
+        "sha256": "3a5d0a714f1ab64541022d1332b695c3ddf28e9713b13420451db0c40d49d6fd",
+        "verdict": "NO_BLOCKER",
+        "reviewerDuplicatedSuites": false
+      },
+      "probeEvidenceSha256": "2e35fc542f33ad231639f01ff3451c4e8ecf1f47dd33863993ff536d1120ff88",
+      "probeScriptSha256": "ce86ebafc185ec9a2a86b1c8a54521055514964c05e01a5d3f1399575440f6ba",
+      "ciAvailability": {
+        "workflow": ".github/workflows/ci.yml",
+        "route": "npm run verify -> npm run test:avocado-mini-site -> node --test sites/avocado-mini/tests/*.test.mjs",
+        "newWorkflowRequired": false,
+        "checkedInDist": true
+      },
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "7a1a8d2ff5e277adcc66a4bc9826d3571e12f17d7c2a88b12202bb700adc7b53"
+      },
+      "remaining": {
+        "codeql": "Compare all48 IDs and individual #43/#44 instances at same ref after publishing; do not infer fixed state from local tests.",
+        "dependencies": "18 default-branch alerts; PR53-56 unchanged; no duplicate PR.",
+        "history": "2369 pattern candidates, seven historical entries individually matched public source digests; no broader reclassification."
+      },
+      "limits": [
+        "The literal substring contract deliberately continues rejecting lowercase host text in prefixes, suffixes and comments; this is not exact hostname authorization.",
+        "HTML character references, CSS escapes, separate stylesheet contents and dynamic JavaScript loading are outside this narrow assertion improvement.",
+        "The VM probe executes both complete affected callbacks while intercepting only the built homepage read; it never changes tracked HTML or performs a request.",
+        "No CodeQL reanalysis outcome is inferred.",
+        "Validation reads the existing tracked dist files. It does not perform a fresh Astro build, browser load, deployment, external request, or network font audit.",
+        "No runtime vulnerability, actual third-party request or data disclosure demonstrated. Tests operate on trusted repository artifacts, not malicious checkout inputs."
+      ],
+      "boundaries": {
+        "runtimeChanged": false,
+        "testChanged": true,
+        "scannerPolicyChanged": false,
+        "vendorChanged": false,
+        "dependencyChanged": false,
+        "mainMerged": false,
+        "forcePush": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false
+      },
+      "publicationEvidence": {
         "status": "pending; see PR52 after exact-SHA readback"
       },
       "projectDatabaseDesignChecks": "passed before missing ai dependency"
