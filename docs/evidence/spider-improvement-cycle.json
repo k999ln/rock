@@ -3955,6 +3955,267 @@
         "secretRotation": false
       },
       "publicationEvidence": {
+        "commit": "366fb5ad2995ac5aa762638458682baf0de6a414",
+        "fullVerify": {
+          "run": 37150937015,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37150936736,
+          "attempt": 1,
+          "conclusion": "success",
+          "pythonTests": 1790,
+          "sourceInventory": 720,
+          "newRegression": "test_mcp_http_deadline.MCPDeadlineTests.test_https_requires_nonempty_ca_before_network",
+          "selectedOnceInPartition": 3
+        },
+        "codeql": {
+          "javascriptAnalysis": 1886838063,
+          "pythonAnalysis": 1886837770,
+          "open": 32,
+          "fixed": 16,
+          "individualStatesAndLocationsUnchanged": 48,
+          "originalAlertsRemainOpen": [
+            8,
+            9
+          ]
+        },
+        "history": {
+          "run": 37150936800,
+          "scanCompleted": true,
+          "commits": 676,
+          "candidates": 2369,
+          "conclusion": "failure",
+          "additionalCandidates": 2,
+          "additionalCandidatesVerifiedAsPublicSourceDigestMatches": 2,
+          "otherCandidatesNotReclassified": 2367
+        },
+        "classification": "confirmed empty-CA HTTPS runtime repair, separate from unchanged original server-fixture CodeQL alerts"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency"
+    },
+    {
+      "cycle": 20,
+      "baselineCommit": "366fb5ad2995ac5aa762638458682baf0de6a414",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "fixed-fixture read trust boundary reviewed; no new runtime repair demonstrated; same-SHA publication checks pending",
+      "repairCount": 0,
+      "validationImprovementCount": 0,
+      "runtimeVulnerabilityFixed": false,
+      "reviewedAlerts": [
+        37
+      ],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "focusedFinding": "NO_RUNTIME_DEFECT_PROVEN_IN_BOUNDED_REVIEW",
+      "baselineOpen": {
+        "codeql": 32,
+        "dependabot": 18,
+        "historyCandidates": 2369
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-20-feedback/report.json",
+        "sha256": "34140662326395831b04e4d0fe47491c2ff480f463ee4cc262ad75dd11b7b5d2",
+        "collectedAt": "2026-10-03T21:05:33.596Z",
+        "targetHead": "366fb5ad2995ac5aa762638458682baf0de6a414",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 50,
+          "actionable": 35,
+          "review": 13,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 32,
+            "retrievedCount": 32,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "action": "No source, test, dependency, or scanner-policy change; alert remains open. No cosmetic repair proposed.",
+      "sourceFacts": [
+        "filesFrom is declared inside the Node test module and is not exported. Its only nonrecursive call reads path.join(root, examples/delivery); root is path.resolve(toolkits/mr) from the trusted test working directory.",
+        "The helper performs synchronous readdirSync, statSync classification, and readFileSync/base64 encoding. statSync and readFileSync follow filesystem names independently, so it is not race-safe against a concurrent writer of the fixture tree.",
+        "No caller-controlled HTTP/MCP argument, request field, CLI flag, environment variable, or arbitrary workspace is used as the helper root. Running the test from a different working directory is outside the checked repository invocation assumption.",
+        "The produced bytes are passed only to the local fixed Python MCP server over stdin. The test verifies the original fixed sample returns PASS and replacing draft bytes with a synthetic changed value returns BLOCKED.",
+        "Neither the MCP server nor the toolkit package imports this Node test helper. package-mr.py includes toolkits/mr and vendor/mr, not repository tests.",
+        "MCP verify_delivery accepts JSON bytes, not a caller-selected host workspace path. unpack_files rejects absolute/traversal/backslash/colon/NUL/duplicate paths and validates base64 within a 10MB aggregate bound while writing inside its newly owned TemporaryDirectory.",
+        "The production verify_delivery wrapper validates receipt IDs/artifact paths and opens the workspace and every referenced component relative to directory descriptors with O_NOFOLLOW. It reads only bounded regular files and stages specified artifacts plus contract and stored receipt into a private temporary snapshot.",
+        "The unchanged pinned vendor verifier receives this private snapshot, checks contract/receipt/content hashes and review fields, and retains PASS/REVISE/BLOCKED semantics. It is not asked to read the Node helper directory directly for supplied-byte MCP calls."
+      ],
+      "fixtureObservation": {
+        "root": "toolkits/mr/examples/delivery",
+        "trackedRegularFiles": 3,
+        "untrackedFiles": 0,
+        "observedSymlinks": 0,
+        "allRelevantParentsBelowRepositoryNonSymlink": true,
+        "allBytesMatchSourceCommit": true,
+        "entries": [
+          {
+            "path": "toolkits/mr/examples/delivery/artifacts/execution-receipts/sample-writer.json",
+            "gitMode": "100644",
+            "regularFile": true,
+            "symlink": false,
+            "bytes": 324,
+            "sha256": "e57f89a0a1022f0050de329b1c56618f1fc0b3b1645aac48e1ff3eb483ba611f",
+            "matchesCommit": true
+          },
+          {
+            "path": "toolkits/mr/examples/delivery/draft.md",
+            "gitMode": "100644",
+            "regularFile": true,
+            "symlink": false,
+            "bytes": 98,
+            "sha256": "0c3e2ab725ea8695032126bb279ef82d66d131f66ef76eb8552bd14816c29ba4",
+            "matchesCommit": true
+          },
+          {
+            "path": "toolkits/mr/examples/delivery/requirements/revisions/80db22fd828d52576b84bacafae79785158dd73dc1391c71bb04b4a0f8feb730.json",
+            "gitMode": "100644",
+            "regularFile": true,
+            "symlink": false,
+            "bytes": 88,
+            "sha256": "80db22fd828d52576b84bacafae79785158dd73dc1391c71bb04b4a0f8feb730",
+            "matchesCommit": true
+          }
+        ],
+        "scope": "One current checkout metadata snapshot, not concurrent-race immunity or atomic filesystem snapshot."
+      },
+      "hostChecks": {
+        "environment": {
+          "os": "Darwin",
+          "machine": "arm64",
+          "python": "3.14.7",
+          "node": "v26.0.0"
+        },
+        "tests": [
+          {
+            "command": "node --experimental-strip-types --test --test-reporter=tap tests/mcp.test.mjs",
+            "workingDirectory": "repository root",
+            "exitCode": 0,
+            "tests": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "cancelled": 0,
+            "runsThisCycle": 1,
+            "reportedDurationMilliseconds": 559.818833,
+            "scope": "Real local Python stdio MCP lifecycle, all four tools, complete citation output, delivery sample and changed bytes, invalid requests and path escapes."
+          },
+          {
+            "command": "python3 -B -W error::ResourceWarning -m unittest discover -s tests -p test_mr_delivery_boundary.py -v",
+            "workingDirectory": "repository root",
+            "exitCode": 0,
+            "tests": 14,
+            "passed": 14,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "runsThisCycle": 1,
+            "reportedDurationSeconds": 0.158,
+            "scope": "Existing synthetic temporary-file tests: normal/changed/self-review semantics, missing metadata, leaf and ancestor symlinks, inode replacements, bounded growth, FIFO, byte caps, duplicate paths, root spellings, descriptor and private snapshot cleanup, unsupported POSIX refusal and MCP sample."
+          }
+        ],
+        "totals": {
+          "tests": 20,
+          "passed": 20,
+          "failed": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "trackedSourceEditsByThisAgent": false,
+        "reviewedSourceAndFixturesMatchCommit": true,
+        "externalConnectionsOrDeviceTests": false,
+        "independentReview": {
+          "path": "work/spider-ci/cycle-20-fixture-review.json",
+          "sha256": "8c3d905002ddc3c113f736cce35ac8fdf76cf43dafd969bb6ae33bba519ce142",
+          "verdict": "No actionable runtime defect demonstrated; no blocker; independent source review only, suites not duplicated."
+        }
+      },
+      "testedSourceSha256": {
+        "tests/mcp.test.mjs": "a3341669dce0554da924cfb2e04f246e8f8d0f125d926798eec71059c9440e8a",
+        "tests/test_mr_delivery_boundary.py": "7aa86b845c4d8c242b1f0bb2f0750db50a83aa20c32afe7d4015dac327d87c04",
+        "toolkits/mr/mcp_server.py": "643420c5bf4505b36b6b2435e34e39923f5fd1fb619692ee41ee631b4e787fb0",
+        "toolkits/mr/rock_star_tools.py": "671bc5d2f2b31926e579c1134b1815f21e8b825716c88e875cfb6ec9f30bb6ae",
+        "vendor/mr/deliverable_verifier.py": "74b30ee9442467d96f6bfc488c0d70421e7624490068daa62ef6a62bf45830c3",
+        "vendor/mr/provenance.json": "e782c0b741e9bcdcc3a591e2e6c3bcdaf5b03b51d08e77e4becf218b1e4cbd4f",
+        "scripts/package-mr.py": "f309f9ffc0f334084d606302d42dd56219011e118a4ec95c95b6c85ff7836aaa",
+        ".github/workflows/spider-regressions.yml": "fed247f403a4c7560fa37ed3d29d4c310052a72cd1c96d302685fda62db1aadb",
+        "package.json": "5a498327a0f41bdac38c486fc684bd06035dbe8fcff44768cc42373a14d30414",
+        "toolkits/mr/examples/delivery-review.json": "4185a81496789b2a72b94f059d6d3b6dc4c688a16bc9a758c46021830a78e067",
+        "toolkits/mr/examples/delivery/artifacts/execution-receipts/sample-writer.json": "e57f89a0a1022f0050de329b1c56618f1fc0b3b1645aac48e1ff3eb483ba611f",
+        "toolkits/mr/examples/delivery/draft.md": "0c3e2ab725ea8695032126bb279ef82d66d131f66ef76eb8552bd14816c29ba4",
+        "toolkits/mr/examples/delivery/requirements/revisions/80db22fd828d52576b84bacafae79785158dd73dc1391c71bb04b4a0f8feb730.json": "80db22fd828d52576b84bacafae79785158dd73dc1391c71bb04b4a0f8feb730"
+      },
+      "independentReview": {
+        "conclusion": "No actionable runtime defect demonstrated at the reported test helper. Keep the alert open unless separately reviewed; no suppression or cosmetic hardening patch warranted by this bounded evidence.",
+        "classification": "BOUNDED_NO_REPAIR_TRIAGE; test-only trusted fixture reader, not a runtime file-authorization boundary",
+        "validation": {
+          "sourceCallsiteCount": 3,
+          "nonrecursiveFixedRootCallsiteCount": 1,
+          "recursiveCallsiteCount": 1,
+          "functionDeclarationCount": 1,
+          "helperExported": false,
+          "trackedCodeEdits": false,
+          "runtimeSuitesExecutedByReviewer": 0,
+          "networkRequestsByReviewer": 0,
+          "sourceAndFixtureWorktreeMatchCommit": true
+        },
+        "limitations": [
+          "A process able to alter the checkout/fixture root or its parents concurrently can redirect this test-only path reader. This triage does not certify it as a general secure file reader; such a hostile-checkout model also permits replacing the test/server source.",
+          "The wrapper trusts the workspace parent and same-UID process boundary as documented; descriptor-relative reads and private staging do not guarantee one simultaneous filesystem snapshot or defend a compromised same-UID process.",
+          "This review covers only the reported helper path and its supplied-byte verification call chain, not a broad MR or filesystem audit.",
+          "No external provider, real input/credential, guest, device, publication, or CodeQL alert state change is inferred from this source review."
+        ],
+        "evidenceSha256": "8c3d905002ddc3c113f736cce35ac8fdf76cf43dafd969bb6ae33bba519ce142"
+      },
+      "triageEvidenceSha256": "51940556d3ac001e576fb3d9a7e166b9f1b40ceeb05c6f6f36b0a51335a75c7b",
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "e12be614752de7fe9cd14a624125bbf34f4e867384312bead420ee6747dcf649"
+      },
+      "remaining": {
+        "codeql": "#37 stays open; re-evaluate if source, caller or fixture trust changes. Compare all IDs on the same ref after publishing.",
+        "dependencies": "18 default-branch alerts; PR53-56 unchanged; no duplicate PR.",
+        "history": "2369 pattern candidates; seven historical entries individually matched public source digests, with no broader reclassification."
+      },
+      "limits": [
+        "Source-only reachability analysis and one host run of the existing tests establish no runtime exploit from the reported helper; they do not prove all file readers secure.",
+        "The test helper itself is not race-safe against a process that can alter the trusted checkout or its ancestors; a hostile checkout can also replace the test or server. This is a test trust assumption, not a production authorization defense.",
+        "Production snapshots trust the selected root parent and same-UID boundary. Opened-inode reads do not guarantee a simultaneous multi-file snapshot under concurrent in-place mutation.",
+        "Local host POSIX behavior is not native guest, real device, external provider, privilege-boundary or Linux CI validation.",
+        "Only public repository fixtures and isolated temporary test files were used. No secret values, real user data, raw scanner reports or external logs were read or stored.",
+        "Changes to recorded source, fixture bytes, call sites, working-directory assumptions or trust boundaries invalidate this bounded review. No CodeQL alert was dismissed."
+      ],
+      "boundaries": {
+        "runtimeChanged": false,
+        "testChanged": false,
+        "scannerPolicyChanged": false,
+        "vendorChanged": false,
+        "dependencyChanged": false,
+        "mainMerged": false,
+        "forcePush": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false
+      },
+      "publicationEvidence": {
         "status": "pending; see PR52 after exact-SHA readback"
       },
       "projectDatabaseDesignChecks": "passed before missing ai dependency"

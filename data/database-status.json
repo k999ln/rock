@@ -15,7 +15,7 @@
     "planned": 20,
     "blocked": 1,
     "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
-    "nextAction": "SYS15第19cycleでHTTPSの空CAがTLSなしの送信へ進む欠陥を合成loopbackで再現し、接続前拒否へ修正した。新1testの6設定を含む関連host31試験成功。元CodeQL #8／#9のserver contextは変更せず、同警告の解消と区別する。同一SHAのLinux CIと全alert個別状態を確認する。外部設定の到達経路や実credential漏洩は未確認。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。"
+    "nextAction": "SYS15第20cycleでCodeQL #37の固定納品fixture helperと製品入力の境界を確認した。関連Node6／Python14のhost20件が成功し、製品の追加修正根拠は得られなかった。checkout／親の同時変更を信頼範囲として明記し、runtime・test・policyを変えずopen維持。同一SHA再検査と全alert状態を照合する。SYS15のofflineコード検査ファイルを配布し、今回のnative security.inspectCodeを同一SHAのLinux CIで確認する。生成物とsourceのhashを保存し、既存OS監視の受入とは分ける。SYS15のSecurity Agent役割・native表示・送信前拒否についてLinux source検証を保存し、同一SHAのCIと既存の受入gateへ接続する。アニメーション・役割追加・旧a7cfca3の証拠を分離し、表示先は現行security panelを維持する。RockstarOS本体のPlatform固定範囲監視とMCP／Runner送信前検査、native状態画面、boot監督を検証し、同一imageで起動・再起動・障害復旧・24時間運転を受け入れる。hostやWeb補助機能の成功をOS常駐受入へ換算しない。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。"
   },
   "webSchema": {
     "tableCount": 37,

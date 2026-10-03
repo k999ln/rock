@@ -319,3 +319,11 @@ CodeQL #46のstdio MCPテストと#45のConnector承認後テストは、応答�
 HTTPSでfalsey CAをconstructor時に拒否し、接続前に停止する。新1testは欠落・空文字・False・0・空list・空dictを確認し、旧sourceの1test内5 subtest失敗、修正後の関連31 host試験成功を区別して保存する。正当CAのTLS通信、HTTPの明示loopback例外、期限・例外・再送拒否は保持する。現runtimeは既存HTTP fixtureのみで、任意の外部設定からの到達や実credentialの漏洩は確証していない。
 
 元のserver context2件には今回修正根拠を得ておらず、警告をopenで維持する。hostのcontext metadataや独立reviewは他runtime全般の保証ではない。[通信境界と復旧・合格条件](rockstaros-complete-design.md#native-mcpのhttpsとca境界sys15)と[改善記録](evidence/spider-improvement-cycle.json)へsource、限定再現、試験、同一SHAの確認を保存する。
+
+## 第20cycle: 固定納品fixtureと実入力の境界
+
+CodeQL #37は`tests/mcp.test.mjs`の`filesFrom`にあるstat/read間の競合を指す。同helperは非exportで、唯一の非再帰callerがcheckout内の固定`toolkits/mr/examples/delivery`を渡す。現fixtureの3ファイルはGitと同じ通常ファイルでsymlinkなし。callerが与えるHTTP／MCP入力や任意workspaceをこのhelperが読む経路は確認できない。
+
+このhelperを同時書換えに安全な汎用readerとは扱わない。checkoutや親を変更できる主体を信頼する試験の前提であり、source／callsite／fixture条件が変われば再評価する。実MCPの納品照合は渡されたbytesをprivate一時領域へ保存し、既存のdirectory handle基準・nofollow・サイズ制限・private snapshotを通じて固定verifierへ渡す。workspaceの祖先と同一UIDの信頼条件を維持し、一時点の全filesystem snapshotや同一UID侵害の隔離は保証しない。
+
+現範囲では製品の追加修正根拠を得ておらず、runtime・test・scanner policyを変更せず、警告をopenで保持する。既存のMCP／納品境界試験、source／fixture hash、独立reviewと同一SHAの確認を[改善記録](evidence/spider-improvement-cycle.json)へ残す。
