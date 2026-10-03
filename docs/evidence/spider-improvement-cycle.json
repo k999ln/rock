@@ -3028,10 +3028,329 @@
         "secretRotation": false
       },
       "publicationEvidence": {
-        "status": "pending; see PR52 after exact-SHA readback"
+        "commit": "f0a59b19c828ad6de1e959c63979e8d40fc3011c",
+        "fullVerify": {
+          "run": 37139332413,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37139332420,
+          "attempt": 1,
+          "conclusion": "success",
+          "pythonTests": 1789,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1886445968,
+          "pythonAnalysis": 1886447440,
+          "open": 35,
+          "fixed": 13,
+          "all48StateRuleLocationUnchanged": true,
+          "reviewedAlert36": "open"
+        },
+        "history": {
+          "run": 37139332567,
+          "scanCompleted": true,
+          "commits": 673,
+          "candidates": 2367,
+          "conclusion": "failure"
+        },
+        "classification": "documentation-only source review; no repair or dismissal"
       },
       "projectDatabaseDesignChecks": "passed before missing ai dependency",
       "notificationDecision": "no new actionable defect, fix or owner action; remain quiet after successful publication checks"
+    },
+    {
+      "cycle": 17,
+      "baselineCommit": "f0a59b19c828ad6de1e959c63979e8d40fc3011c",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "HTML report regression strengthened; same-SHA publication checks pending",
+      "repairCount": 0,
+      "validationImprovementCount": 1,
+      "runtimeVulnerabilityFixed": false,
+      "reviewedAlerts": [
+        30
+      ],
+      "focusedFinding": "The old negative test checks only exact lowercase script tags and accepts five added markup variants. A static complete HTML oracle rejects those altered outputs.",
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 35,
+        "dependabot": 18,
+        "historyCandidates": 2367
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-17-feedback/report.json",
+        "sha256": "7fb7ef1591e92021825e7d603e08aecd6f1c8eb47555401c22473e1effbe7fd3",
+        "collectedAt": "2026-10-03T18:02:18.450Z",
+        "targetHead": "f0a59b19c828ad6de1e959c63979e8d40fc3011c",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 53,
+          "actionable": 35,
+          "review": 16,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 35,
+            "retrievedCount": 35,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "change": {
+        "testFile": "tests/csv-transform.test.mjs",
+        "staticFixture": "tests/fixtures/csv-report.html",
+        "existingTestsStrengthened": 1,
+        "existingCsvTestCount": 6,
+        "newTests": 0,
+        "productionRuntimeChanged": false,
+        "newDependencyOrParser": false,
+        "oldLowercaseCasePreserved": true,
+        "otherFiveTestsUnchanged": true
+      },
+      "hostChecks": {
+        "command": "node --experimental-strip-types --import ./work/spider-ci/cycle-17-iconv-hook.mjs --test tests/csv-transform.test.mjs tests/csv-fee-policy.test.mjs",
+        "node": "v26.0.0",
+        "platform": "Darwin",
+        "testsRun": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "newTests": 0,
+        "strengthenedRegressionTests": 1,
+        "fixedInputCases": 7,
+        "canonicalRendererChecksInStrengthenedTest": 15,
+        "dependencyResolution": "work-only bare iconv-lite import hook to an existing local0.7.3 installation matching the lock version; no install or dependency mutation; not npm-ci integrity proof",
+        "initialProbeAttempt": "missing iconv-lite import; test callbacks did not execute",
+        "logSha256": "fe0150b6e4d2add8fabd2caa780d288aecc134125258665bbb59f379048b6f5e"
+      },
+      "beforeAfterProbe": {
+        "cases": [
+          {
+            "name": "unmodified_actual_renderer",
+            "before": {
+              "accepted": true,
+              "rendererCalls": 1
+            },
+            "after": {
+              "accepted": true,
+              "rendererCalls": 15
+            }
+          },
+          {
+            "name": "mixed_case_script",
+            "before": {
+              "accepted": true,
+              "rendererCalls": 1
+            },
+            "after": {
+              "accepted": false,
+              "rendererCalls": 1
+            }
+          },
+          {
+            "name": "script_with_whitespace",
+            "before": {
+              "accepted": true,
+              "rendererCalls": 1
+            },
+            "after": {
+              "accepted": false,
+              "rendererCalls": 1
+            }
+          },
+          {
+            "name": "script_with_attribute",
+            "before": {
+              "accepted": true,
+              "rendererCalls": 1
+            },
+            "after": {
+              "accepted": false,
+              "rendererCalls": 1
+            }
+          },
+          {
+            "name": "image_event_attribute",
+            "before": {
+              "accepted": true,
+              "rendererCalls": 1
+            },
+            "after": {
+              "accepted": false,
+              "rendererCalls": 1
+            }
+          },
+          {
+            "name": "svg_event_attribute",
+            "before": {
+              "accepted": true,
+              "rendererCalls": 1
+            },
+            "after": {
+              "accepted": false,
+              "rendererCalls": 1
+            }
+          },
+          {
+            "name": "exact_lowercase_script_negative_control",
+            "before": {
+              "accepted": false,
+              "rendererCalls": 1
+            },
+            "after": {
+              "accepted": false,
+              "rendererCalls": 1
+            }
+          }
+        ],
+        "totalCases": 7,
+        "canonicalPassedBoth": true,
+        "unsafeMutationsAcceptedBeforeAndRejectedAfter": 5,
+        "lowercaseNegativeControlRejectedBoth": true,
+        "strengthenedCallbackCanonicalRenderCount": 15,
+        "originalOtherFiveTestsUnchanged": true,
+        "wholeCallbackInvocations": 14,
+        "goldenFixtureStaticAndTwoPlaceholdersUnique": true
+      },
+      "probeExecution": {
+        "command": "node --experimental-strip-types --import ./work/spider-ci/cycle-17-iconv-hook.mjs work/spider-ci/cycle-17-html-probe.mjs",
+        "platform": "darwin",
+        "nodeVersion": "v26.0.0",
+        "actualTransformAndRendererExecuted": true,
+        "existingExternalCodecVersion": "0.7.3",
+        "dependencyResolution": "Work-only import hook resolves only iconv-lite to an existing local 0.7.3 installation; no repository dependencies modified or installed. This is not npm-ci integrity proof.",
+        "networkRequests": 0,
+        "browserScriptExecution": false
+      },
+      "probeSourceBinding": {
+        "wholeOldAssertionGroupExtracted": true,
+        "wholeBeforeAndAfterCallbacksExecuted": true,
+        "currentTestBodySha256": "e150027dbd712de2c3c9fafd1fbe19f8ecc3ff72eb655906ee1a7d4217936e92",
+        "fixtureSha256": "7d727763afdcf29b8376bf9de04357525193f3f2e9cbc354f3dc8b6e02f9e778",
+        "importMetaHandling": "Only import.meta.url is bound to the real test module file URL so the unchanged fixture read resolves correctly in the isolated vm.",
+        "originalTestBodySha256": "14c749941e820025ed74128e5eda8d91da4cd86c89508c75733663d1dbc78ce1",
+        "assertionsSha256": "02e4e163e90bba3e150aa6b84a0e2f8203eccaa5d5e193e615dc87745b73a58e"
+      },
+      "workProbeSha256": "29ff94334a695e1c5cceaa7b82cf34cbc0f932955cd2446a75bd5ac9a74fc2e6",
+      "workProbeScope": "local diagnostic only; not a tracked runtime file",
+      "sourceFacts": [
+        "escapeHtml encodes all five HTML-sensitive characters in jobId, table text and warnings.",
+        "Current API constrains job IDs, uses generated warning text, and does not interpolate CSV cells into this report.",
+        "Artifact delivery retains user ownership checks, attachment/nosniff and restrictive CSP.",
+        "Injected jobId/warnings in this pure renderer test do not prove a reachable API XSS."
+      ],
+      "testedSourceSha256": {
+        "tests/csv-transform.test.mjs": "262a06553875b059299bf80511acbb42e7639812580c9427a65978047a8d6e41",
+        "tests/fixtures/csv-report.html": "7d727763afdcf29b8376bf9de04357525193f3f2e9cbc354f3dc8b6e02f9e778",
+        "lib/csv-transform.ts": "ce132ee136f0f79831604b9988d394f185953575b3510dfe17f7e3b69c1bbf0e",
+        "lib/csv-job-store.ts": "b6403af7504710555d23f443d4f813bc8041e1497a956db4090894fc4d59f00a",
+        "app/api/csv-jobs/[id]/artifact/[kind]/route.ts": "06a9114ca3ae464eb1f5b4aecfbbebdce460c46fd86ec8b850d381f3f5d1ea82",
+        "docs/csv-business-security.ja.md": "888f55e727abf61fbd73aa0df4dead708313f1677741806e20a3573f67dffa2c",
+        "package-lock.json": "e0b7a8a0f0babbf5ce70b6ceb86d606e7b85d422a5e443367cba3be983a495a3",
+        "package.json": "5a498327a0f41bdac38c486fc684bd06035dbe8fcff44768cc42373a14d30414"
+      },
+      "independentReview": {
+        "conclusion": "No actionable blocker found. Full static expected HTML with hardcoded escaped pairs strengthens the regression oracle without altering production escaping.",
+        "preservation": {
+          "firstFiveTestBodiesByteForByteUnchanged": true,
+          "allSixTestNamesAndOrderUnchanged": true,
+          "originalLowercaseSamplePreserved": true,
+          "runtimeDependenciesWorkflowScannerScriptsUnchanged": true,
+          "newDependency": false,
+          "productionExpectedOutputGeneration": false,
+          "retryOrSkipAdded": false
+        },
+        "goldenValidation": {
+          "markers": {
+            "__JOB_ID__": 1,
+            "__WARNING__": 1
+          },
+          "recognizedBenignStaticTags": [
+            "body",
+            "code",
+            "h1",
+            "h2",
+            "head",
+            "html",
+            "li",
+            "meta",
+            "p",
+            "style",
+            "table",
+            "td",
+            "th",
+            "title",
+            "tr",
+            "ul"
+          ],
+          "rawScriptOrEventAttributes": false,
+          "externalResourceOrImportDirectives": false,
+          "literalPairs": 7,
+          "fullOutputComparisons": 15,
+          "pairEncodingIndependentlyCheckedWithStdlibHtmlEscape": true
+        },
+        "validation": {
+          "reviewerChecks": [
+            "git diff --check",
+            "First-five-test byte preservation comparison and six unchanged test names/order.",
+            "Literal pair parsing without execution and independent standard-library entity validation.",
+            "Static HTML element/attribute inventory and unique marker checks.",
+            "git diff --quiet HEAD -- lib package.json package-lock.json .github/workflows scripts"
+          ],
+          "parentReportedTests": {
+            "selection": "csv-transform six tests and CSV fee two tests",
+            "passed": 8,
+            "skipped": 0,
+            "independentlyRerunByReviewer": false,
+            "dependencyRoute": "Work-only import hook to sibling-installed locked iconv-lite 0.7.3; no npm ci or dependency edits."
+          }
+        }
+      },
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "673bdaeb3f771bd82f9ab221a3cbac6fb81247dbb092510a3688df0995dd2a87"
+      },
+      "remaining": {
+        "codeql": "#30 state must be read from same-ref new analysis; no dismissal.",
+        "dependencies": "18 default-branch alerts; PR53-56 unchanged; no duplicate PR.",
+        "history": "2367 pattern candidates; not a count of unique valid secrets."
+      },
+      "limits": [
+        "Test quality improvement; no production XSS fix claimed.",
+        "No browser execution or manual HTTP/D1/OS/device acceptance performed.",
+        "Host codec import resolution differs from clean npm-ci CI."
+      ],
+      "boundaries": {
+        "runtimeChanged": false,
+        "testChanged": true,
+        "scannerPolicyChanged": false,
+        "mainMerged": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false
+      },
+      "publicationEvidence": {
+        "status": "pending; see PR52 after exact-SHA readback"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency"
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."

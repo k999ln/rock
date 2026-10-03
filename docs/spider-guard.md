@@ -298,3 +298,10 @@ CodeQL #34／#35は `tests/mr-tools.test.mjs` の通常記事とコードfence�
 CodeQL #36はFashion MCPのdefault Origin確認である。`loadConfig` の `split`／`trim`／`filter` が作る配列に対する `includes` は、各URL全体との一致であり文字列の部分一致ではない。通常HTTP起動はこのconfig生成経路を使用する。実requestのOrigin照合も同じ配列を使い、loopback bind・socket peer・Hostの条件を追加する。固定bearerとtenantの検証をOriginで代替しない。
 
 この範囲でruntime欠陥は確証できず、実装・試験・policy・警告状態を変更しない。既存試験、合成requestの境界確認、source hash、独立reviewを[改善記録](evidence/spider-improvement-cycle.json)に保存する。内部APIへの任意config注入や同一processの改変に対する隔離保証ではなく、config生成・HTTP入口・認証条件が変われば再評価する。
+
+
+## 第17cycle: HTML報告の静的期待値
+
+CodeQL #30のCSV報告テストは、小文字のscript tagだけを否定していた。HTML全体を静的fixtureと比較する形へ強化し、大小文字・空白・属性を変えたタグ、イベント属性、5特殊文字、通常のUnicodeを含む7入力をjob ID／warningへ個別に渡す。通常のwarningなし分岐も含む15renderを確認する。既存の5つのCSV変換testと元の小文字sampleは保持する。
+
+fixtureは実rendererから実行時に生成しない。文書レイアウトを変更する場合は、安全な静的markupと数値／encoding／text位置をレビューして期待値を更新する。productionのescape処理や認証・配信headerを変更せず、この結果を現APIのXSS修正やブラウザ実行試験とは扱わない。依存不足による初回未実行と、同版の既存依存を使う限定host試験を分け、source hash・誤出力比較・独立review・同一SHAの再検査を[改善記録](evidence/spider-improvement-cycle.json)へ保存する。
