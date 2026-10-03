@@ -15,6 +15,8 @@ import { homedir } from 'node:os';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { assertSafeOutbound } from '../spider-guard/detector.mjs';
+import { readPrivateLocalDescriptor } from './local-descriptor.mjs';
 
 export const PROTOCOL_VERSIONS = [
   '2025-11-25',
@@ -39,6 +41,33 @@ const ORIGINS = new Set([
   'http://localhost:3001',
 ]);
 const here = dirname(fileURLToPath(import.meta.url));
+const LOCAL_ONLY_MR_TOOLS = new Set([
+  'coconala_check',
+  'format_citations',
+  'make_free_article',
+  'verify_delivery',
+]);
+
+function isBundledLocalCall(spec, message) {
+  // Only these fixed first-party processors have no external side effects.
+  // A name, readOnlyHint, localhost address, or stdio transport proves no such
+  // boundary for another Tool, including an independently installed SDK Tool.
+  return (
+    spec.id === 'rock-star-mr' &&
+    spec.transport === 'stdio' &&
+    spec.command === 'python3' &&
+    spec.cwd === resolve(here, '..') &&
+    spec.args?.length === 1 &&
+    resolve(spec.cwd, spec.args[0]) === resolve(here, '../mr/mcp_server.py') &&
+    spec.envNames?.length === 0 &&
+    message?.method === 'tools/call' &&
+    LOCAL_ONLY_MR_TOOLS.has(message.params?.name)
+  );
+}
+
+function assertMcpOutbound(spec, message) {
+  if (!isBundledLocalCall(spec, message)) assertSafeOutbound(message);
+}
 
 function fail(message, status = 400, code = 'invalid_request') {
   const error = new Error(message);
@@ -235,9 +264,7 @@ async function discoverLocalTools(directory) {
   for (const file of files) {
     try {
       const path = join(directory, file);
-      const info = await lstat(path);
-      if (!info.isFile() || (info.mode & 0o077) || info.size > 4_096) continue;
-      const spec = validateLocalDescriptor(JSON.parse(await readFile(path, 'utf8')), file);
+      const spec = validateLocalDescriptor(await readPrivateLocalDescriptor(path), file);
       process.kill(spec.pid, 0);
       specs.push(spec);
     } catch { /* A damaged descriptor cannot become a connection. */ }
@@ -572,8 +599,13 @@ export class McpHub {
     return entry;
   }
   async rpc(id, method, params = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
-    const response = await this.entry(id).transport.request(
-      { jsonrpc: '2.0', id: this.nextId++, method, params },
+    const entry = this.entry(id);
+    const message = { jsonrpc: '2.0', id: this.nextId++, method, params };
+    // Check the complete message, including custom method parameters, before
+    // starting a process or opening an upstream connection.
+    assertMcpOutbound(entry.spec, message);
+    const response = await entry.transport.request(
+      message,
       timeoutMs,
     );
     if (
@@ -687,6 +719,9 @@ export class McpHub {
       fail('接続時に確認した機能ではありません。', 404, 'tool_not_found');
     if (!args || typeof args !== 'object' || Array.isArray(args))
       fail('tool引数を確認してください。');
+    assertMcpOutbound(entry.spec, {
+      method: 'tools/call', params: { name, arguments: args },
+    });
     const now = Date.now();
     for (const [nonce, approval] of this.approvals)
       if (approval.used || approval.expiresAt <= now)
@@ -747,6 +782,10 @@ export class McpHub {
     });
     if (payloadDigest !== approval.payloadDigest)
       fail('承認後に操作内容が変わりました。', 409, 'approval_mismatch');
+    // A previously issued exact approval cannot bypass the current data guard.
+    assertMcpOutbound(entry.spec, {
+      method: 'tools/call', params: { name, arguments: args },
+    });
     approval.used = true;
     try {
       return await this.rpc(
@@ -910,15 +949,15 @@ export async function createConnector({
         );
       }
       if (request.method === 'POST' && request.url === '/mcp') {
-        const input = await body(request),
-          result = await hub
-            .entry('rock-star-mr')
-            .transport.request(
-              input,
-              input.method === 'tools/call'
-                ? CALL_TIMEOUT_MS
-                : REQUEST_TIMEOUT_MS,
-            );
+        const input = await body(request);
+        const entry = hub.entry('rock-star-mr');
+        assertMcpOutbound(entry.spec, input);
+        const result = await entry.transport.request(
+          input,
+          input.method === 'tools/call'
+            ? CALL_TIMEOUT_MS
+            : REQUEST_TIMEOUT_MS,
+        );
         return send(response, result === null ? 202 : 200, result, origin);
       }
       return send(response, 404, { error: 'Not found' }, origin);

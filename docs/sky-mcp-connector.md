@@ -4,6 +4,10 @@
 
 2026-09-20更新: Sky Tool SDKで起動したPC内Toolを`~/.sky/mcp-tools`から自動検出する。接続定義は所有者専用権限、`127.0.0.1`のHTTP URL、一時キーだけを許可する。ConnectorはPC Toolを`local_http`として一覧に加え、同じPassportと一回承認を適用する。SDK停止後は一覧から外す。外部向け`streamable_http`のHTTPS/private network拒否規則は維持する。
 
+2026-10-02 SPIDER改善cycle: 接続定義をpathで確認してから開き直す競合を除く。symlinkをたどらずnonblockingで一度だけ開き、そのfile handleの通常file・所有者専用権限・sizeを検査し、同じhandleから最大4,097 byteだけ読む。4 KiB超過、非通常file、読取失敗は接続候補へ昇格させず、handleは必ず閉じる。開いた後にpathが差し替わっても、検証した元のfileを読み、差し替え先を開き直さない。SDKの正常なatomic renameと一回承認は維持する。defaultのowner専用directoryとその親を信頼するローカル境界であり、悪意ある同一UIDや親directoryの全面的な保護を主張しない。
+
+POSIXでは開いたfileの所有者も実効UIDと照合する。必要な`O_NOFOLLOW`／`O_NONBLOCK`を提供しない環境では、このlocal自動検出を安全側で拒否し、無保護な読取へfallbackしない。macOS／Linuxの回帰と、未対応platformを区別する。
+
 ## できること
 
 Sky固有の自動化コードと個別MCPを直接結ばず、すべてを同じ接続契約へ変換する。現在の配布registryには「Sky 基本自動化」4機能と「受注型ブランド運営」41機能があり、SkyのMCP画面からそれぞれをワンタップで初期化・検出できる。

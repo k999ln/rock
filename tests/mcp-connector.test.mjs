@@ -230,9 +230,11 @@ void test('tool execution requires an exact, single-use approval and blocks dire
     confirmed: true,
   });
   assert.equal(executed.status, 200);
-  assert.match(
-    JSON.stringify(await executed.json()),
-    /modelcontextprotocol\.io/,
+  const executedMessage = await executed.json();
+  assert.equal(executedMessage.result.isError, false);
+  assert.equal(
+    executedMessage.result.structuredContent.output,
+    '本文。\n---\n\n## 出典\n\n- [MCP](https://modelcontextprotocol.io/)\n',
   );
   const replay = await request('/servers/rock-star-mr/execute', {
     name: 'format_citations',

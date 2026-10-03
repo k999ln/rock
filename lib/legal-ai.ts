@@ -1,3 +1,4 @@
+import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import type {
   LegalIntakeInput,
   LegalAssessment,
@@ -115,6 +116,10 @@ export function buildLegalAiRequest(
   currentDate: string,
   model = LEGAL_AI_MODEL,
 ) {
+  assertSafeOutbound({
+    situationSummary: input.situationSummary,
+    desiredOutcome: input.desiredOutcome,
+  });
   const flags = [
     input.detainedOrArrested ? '逮捕・拘束・出頭要請あり' : '',
     input.receivedOfficialDocument ? '裁判所・警察・行政機関の書類あり' : '',

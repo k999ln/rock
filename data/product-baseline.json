@@ -1477,6 +1477,176 @@
       "task": "AI07"
     }
   },
+  "spiderGuard": {
+    "requestedAt": "2026-10-02",
+    "document": "docs/spider-guard.md",
+    "task": "SYS15",
+    "primaryOwner": "ROCK",
+    "status": "implementation_in_progress_acceptance_pending",
+    "requestedBehavior": "Run continuously inside RockstarOS itself, prioritize secrets and personal information within the fixed Platform scope, and connect native spider visualization to authenticated real findings and checks before supported outbound requests.",
+    "implementationScope": [
+      "native_platform_uid_1002_fixed_application_data_monitor",
+      "authenticated_sanitized_security_status_and_native_visualization",
+      "platform_mcp_prepare_and_submit_checks",
+      "runner_prepare_and_first_durable_send_claim_checks",
+      "os_package_boot_and_supervision_integration"
+    ],
+    "companionScope": [
+      "web_ai_guard",
+      "mcp_connector_guard"
+    ],
+    "deploymentTarget": "rockstaros_native_platform",
+    "platformUid": 1002,
+    "ownerUiUid": 1000,
+    "fixedStateRoot": "/data/platform",
+    "defaultInspectionIntervalSeconds": 30,
+    "rootPrivilegeAdded": false,
+    "sameImageBootVerified": false,
+    "pixelDeploymentVerified": false,
+    "sourceValidationEvidence": "docs/evidence/spider-guard-source-validation.json",
+    "linuxContainerUid": 1002,
+    "linuxNativeRegressionTestsPassed": 125,
+    "linuxSupervisorTestsPassed": 3,
+    "linuxInstallTestsPassed": 1,
+    "linuxPythonTestsPassed": 129,
+    "webGuardTestsPassed": 49,
+    "priorSourceValidationCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+    "nativeAnimationRevision": {
+      "requestedAt": "2026-10-02",
+      "status": "source_renderer_validated_os_acceptance_pending",
+      "baseCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+      "references": [
+        "https://www.instagram.com/reel/DdhYiKdz-6t/",
+        "https://www.instagram.com/reel/DdmGyhRRQGi/",
+        "https://www.instagram.com/p/Dd97sTPjEu6/?img_index=2"
+      ],
+      "visualIntent": "Thin luminous curved articulated legs, blue endpoint rings and a small pink/cyan square core moving toward actual findings and encircling the focused row.",
+      "eventResponse": "brief response only to a newly observed actual blocked counter increase",
+      "unhealthyState": "no motion on stale, dead, failed, missing or disconnected status",
+      "freshRendererTestsRecorded": true,
+      "priorTestCountsAreHistorical": true,
+      "protectionAuthorityChanged": false,
+      "currentSurface": "native security panel",
+      "globalOverlaySelected": false
+    },
+    "serviceInstalled": false,
+    "runtimeAcceptanceRecorded": false,
+    "productionDeploymentVerified": false,
+    "alwaysOnOperationVerified": false,
+    "osWideTrafficProtectionClaim": false,
+    "rawSensitiveValuesInDiagnosticsAllowed": false,
+    "existingRequirementsAndReleaseGatesPreserved": true,
+    "operatorDockAuthorityExpanded": false,
+    "securityAgentRole": {
+      "requestedAt": "2026-10-02",
+      "status": "source_validated_os_acceptance_pending",
+      "id": "spider",
+      "role": "security",
+      "stateSource": "actual worker liveness, freshness and findings",
+      "sensitiveFindingState": "sensitive_data_detected",
+      "lastActionSource": "sanitized metadata from actual latest blocked request",
+      "currentSurface": "native security panel",
+      "protectionAuthorityChanged": false,
+      "monitoringCadenceOrScopeChanged": false,
+      "freshValidationRecorded": true,
+      "scope": "platform-data",
+      "duties": [
+        "watch_platform_data",
+        "inspect_outbound",
+        "deny_sensitive_outbound",
+        "report_health"
+      ],
+      "states": [
+        "starting",
+        "stopped",
+        "unavailable",
+        "recent_block",
+        "sensitive_data_detected",
+        "watching"
+      ],
+      "recentBlockSeconds": 30,
+      "lastAction": {
+        "initial": null,
+        "action": "blocked",
+        "boundaries": [
+          "mcp.prepare",
+          "mcp.submit",
+          "remote.prepare",
+          "remote.send",
+          "unclassified"
+        ],
+        "countRange": [
+          0,
+          2001
+        ],
+        "kindAllowlist": [
+          "secret",
+          "personal"
+        ],
+        "maximumKinds": 2,
+        "time": "finite epoch seconds",
+        "retention": "in-memory until process restart; remains after 30 seconds and safe sends",
+        "limitDenialMayHaveNoCandidates": true,
+        "timeRange": [
+          0,
+          253402300799
+        ],
+        "countKindsConsistency": "count 0 requires kinds []; positive count requires one or two allowed kinds"
+      },
+      "monitoringCadenceOrOrderChanged": false,
+      "linuxBackendTestsPassed": 26,
+      "linuxNativeRendererPassed": true,
+      "pinReadinessTestsPassed": 11,
+      "pinSourceProfileTestsPassed": 1
+    },
+    "codeInspector": {
+      "requestedAt": "2026-10-02",
+      "status": "standalone_validated_native_linux_pending",
+      "intent": "Paste own source and inspect automatically after edits; spider visualizes actual findings.",
+      "deliverableOutsideRepository": "outputs/SPIDER.html",
+      "delivery": "offline standalone HTML",
+      "scope": "static analysis of explicitly supplied source",
+      "nativeOperation": "security.inspectCode",
+      "requiresSdk": false,
+      "requiresApiKey": false,
+      "executesInput": false,
+      "externalRequests": false,
+      "persistsInput": false,
+      "existingPlatformGuardChanged": false,
+      "runtimeInterceptionClaim": false,
+      "freshValidationRecorded": true,
+      "buildCommand": "node scripts/build-spider-inspector.mjs --output /absolute/path/SPIDER.html",
+      "source": "toolkits/spider-guard/inspector.html",
+      "detector": "toolkits/spider-guard/program-inspector.mjs",
+      "automaticDelayMs": 500,
+      "maxInputBytes": 65536,
+      "maxInputLines": 2000,
+      "maxFindings": 100,
+      "languages": [
+        "javascript",
+        "python",
+        "text"
+      ],
+      "reportExport": "optional metadata-only JSON, no source text",
+      "modifiesOriginalFiles": false,
+      "nativeModule": "systems/rock-star-os/os/platform/code_inspector.py",
+      "nativeOwnerUid": 1000,
+      "nativePythonAstNodeLimit": 20000,
+      "guardCountersChanged": false,
+      "helpOutsideRepository": "outputs/SPIDER-使い方.txt",
+      "findingPriority": [
+        "secret",
+        "personal",
+        "code"
+      ],
+      "countSemantics": "returned findings only; truncation marks coverageLimited",
+      "nodeTestsPassed": 14,
+      "nativeHostTestsPassed": 23,
+      "nativeLinuxValidationRecorded": false,
+      "browserValidation": "loopback HTTP serving generated HTML; direct file URL not tested",
+      "evidenceSection": "codeInspectorRevisions"
+    }
+  },
   "commercialPolicyRevision": {
     "requestedAt": "2026-09-17",
     "updatedAt": "2026-09-24",

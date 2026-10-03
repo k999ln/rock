@@ -1,3 +1,4 @@
+import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import type { PatentIntakeInput } from './patent-assistant';
 import {
   parseResearchAiResponse,
@@ -81,6 +82,15 @@ export function buildPatentAiRequest(
   currentDate: string,
   model = PATENT_AI_MODEL,
 ) {
+  assertSafeOutbound({
+    inventionTitle: input.inventionTitle,
+    problem: input.problem,
+    mechanism: input.mechanism,
+    architecture: input.architecture,
+    technicalEffect: input.technicalEffect,
+    differences: input.differences,
+    knownPriorArt: input.knownPriorArt,
+  });
   return {
     model,
     store: false,

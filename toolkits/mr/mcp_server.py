@@ -15,6 +15,7 @@ from pathlib import Path, PurePosixPath
 import secrets
 import sys
 import tempfile
+import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import rock_star_tools
 import pc_citations
@@ -147,12 +148,44 @@ def stdio():
         except (json.JSONDecodeError,UnicodeDecodeError,RecursionError):result={'jsonrpc':'2.0','id':None,'error':{'code':-32700,'message':'Parse error'}}
         if result is not None:print(json.dumps(result,ensure_ascii=False),flush=True)
 
+class _DeadlineReader(io.RawIOBase):
+    """One socket receive per raw read, bounded by a shared absolute deadline."""
+    def __init__(self, connection, deadline):
+        super().__init__()
+        self.connection=connection
+        self.deadline=deadline
+    def readable(self):return True
+    def readinto(self, buffer):
+        if self.closed:raise ValueError('I/O operation on closed stream')
+        remaining=self.deadline-time.monotonic()
+        if remaining<=0:raise TimeoutError('Request receive deadline exceeded')
+        self.connection.settimeout(remaining)
+        return self.connection.recv_into(buffer)
+
+
 class Bridge(BaseHTTPRequestHandler):
     tokens={}
     port=PORT
+    receive_timeout=10.0
+    response_timeout=10.0
     def setup(self):
+        self.receive_deadline=time.monotonic()+self.receive_timeout
         super().setup()
-        self.connection.settimeout(10)
+        original=self.rfile
+        try:self.rfile=io.BufferedReader(_DeadlineReader(self.connection,self.receive_deadline))
+        finally:original.close()
+    def check_receive_deadline(self):
+        if time.monotonic()>=self.receive_deadline:raise TimeoutError('Request receive deadline exceeded')
+    def parse_request(self):
+        parsed=super().parse_request()
+        self.check_receive_deadline()
+        return parsed
+    def handle(self):
+        try:super().handle()
+        except OSError:self.close_connection=True
+    def send_response(self, code, message=None):
+        self.connection.settimeout(self.response_timeout)
+        super().send_response(code,message)
     def log_message(self,*args):pass
     def allowed(self):
         return self.headers.get('Origin') in ORIGINS and self.headers.get('Host')==f'127.0.0.1:{self.port}'
@@ -179,8 +212,12 @@ class Bridge(BaseHTTPRequestHandler):
             expected=self.tokens.get(self.headers['Origin'])
             if not expected or not hmac.compare_digest(self.headers.get('Authorization',''),'Bearer '+expected):return self.respond(401)
             if self.headers.get('MCP-Protocol-Version',PROTOCOLS[0]) not in PROTOCOLS:return self.respond(400)
-        try:data=json.loads(self.rfile.read(length))
+        body=self.rfile.read(length)
+        self.check_receive_deadline()
+        if len(body)!=length:return self.respond(400)
+        try:data=json.loads(body)
         except (json.JSONDecodeError,UnicodeDecodeError,RecursionError):return self.respond(400)
+        self.check_receive_deadline()
         if self.path=='/connect':
             if data!={}:return self.respond(400)
             token=self.tokens.setdefault(self.headers['Origin'],secrets.token_urlsafe(32));return self.respond(200,{'token':token,'server':'rock-star-mr'})

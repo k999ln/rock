@@ -1,10 +1,12 @@
+import { SensitiveDataBlockedError } from '@/toolkits/spider-guard/detector.mjs';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
   generateText,
   isTextModelProvider,
+  isLoopbackLlmEndpoint,
+  isRemoteLlmRequest,
   LlmProviderError,
-  textModelProviderDefinition,
 } from '@/lib/llm-providers';
 import {
   authorizeRemoteAiRequest,
@@ -12,16 +14,6 @@ import {
 } from '@/lib/remote-ai-guard';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
-
-function isLoopbackEndpoint(value: string | undefined) {
-  if (!value) return false;
-  try {
-    const hostname = new URL(value).hostname.toLowerCase();
-    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
-  } catch {
-    return false;
-  }
-}
 
 export async function POST(request: Request) {
   try {
@@ -62,26 +54,24 @@ export async function POST(request: Request) {
       SKY_LOCAL_LLM_BASE_URL?: string;
       SKY_LOCAL_LLM_API_KEY?: string;
     };
-    const definition = textModelProviderDefinition(provider);
-    const requestedBaseUrl = typeof value.baseUrl === 'string'
-      ? value.baseUrl.trim()
-      : '';
-    if (requestedBaseUrl &&
-      (provider !== 'local-model' || !isLoopbackEndpoint(requestedBaseUrl) ||
-        !/^https?:$/i.test(new URL(requestedBaseUrl).protocol)))
+    const requestedBaseUrl =
+      typeof value.baseUrl === 'string' ? value.baseUrl.trim() : '';
+    if (
+      requestedBaseUrl &&
+      (provider !== 'local-model' ||
+        !isLoopbackLlmEndpoint(requestedBaseUrl) ||
+        !/^https?:$/i.test(new URL(requestedBaseUrl).protocol))
+    )
       throw new LlmProviderError('LOCAL_ENDPOINT_REQUIRED', 400);
-    const remote =
-      definition.locality === 'remote' ||
-      (provider === 'openai-compatible' &&
-        !isLoopbackEndpoint(runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL));
+    const requestEnv = requestedBaseUrl
+      ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
+      : runtimeEnv;
+    const remote = isRemoteLlmRequest(provider, requestEnv);
     if (remote && value.consent !== true)
       throw new LlmProviderError('EXPLICIT_REMOTE_CONSENT_REQUIRED', 403);
     if (remote && runtimeEnv.SKY_REMOTE_LLM_ENABLED !== 'true')
       throw new LlmProviderError('REMOTE_LLM_DISABLED', 503);
 
-    const requestEnv = requestedBaseUrl
-      ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
-      : runtimeEnv;
     const result = await generateText(
       {
         provider,
@@ -97,6 +87,17 @@ export async function POST(request: Request) {
     );
     return Response.json(result, { headers: noStoreHeaders });
   } catch (error) {
+    if (error instanceof SensitiveDataBlockedError)
+      return Response.json(
+        {
+          error:
+            'Spider Guardが機密情報の外部送信を止めました。内容を取り除いて再試行してください。',
+          code: error.code,
+          count: error.count,
+          kinds: error.kinds,
+        },
+        { status: error.status, headers: noStoreHeaders },
+      );
     if (error instanceof RemoteAiGuardError)
       return Response.json(
         {
@@ -111,7 +112,8 @@ export async function POST(request: Request) {
         { status: error.status, headers: noStoreHeaders },
       );
     const status = error instanceof LlmProviderError ? error.status : 400;
-    const code = error instanceof LlmProviderError ? error.code : 'INVALID_INPUT';
+    const code =
+      error instanceof LlmProviderError ? error.code : 'INVALID_INPUT';
     console.error('text llm failed', code);
     return Response.json(
       { error: '選択したLLMを利用できません。', code },

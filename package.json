@@ -19,6 +19,7 @@
     "mcp:connector": "node toolkits/sky-mcp-connector/server.mjs",
     "mcp:package": "python3 scripts/package-sky-mcp.py",
     "mcp:package:check": "python3 scripts/package-sky-mcp.py --check",
+    "spider:feedback": "node scripts/spider-feedback.mjs",
     "typecheck": "tsc --noEmit",
     "project:update": "node scripts/project-status.mjs",
     "project:check": "node scripts/project-status.mjs --check",
