@@ -1463,7 +1463,170 @@
         "physicalDevice": "NOT_RUN",
         "continuous24Hours": "NOT_RUN"
       },
-      "publicationEvidence": "Same-SHA CI and individual alert readback will be recorded after push in PR52 and the external SPIDER artifact."
+      "publicationEvidence": "Same-SHA CI and individual alert readback will be recorded after push in PR52 and the external SPIDER artifact.",
+      "publicationReadback": {
+        "commit": "061808ae72ea1fb8204b16161c36205d7bc32f53",
+        "fullVerifyRun": 37115079468,
+        "regressionRun": 37115079431,
+        "nativeRun": 37115079470,
+        "nativeAggregateArtifact": 11270829524,
+        "sourceAndRegressionChecks": "success",
+        "nativePythonTestExecutions": 1780,
+        "sourceInventoryEntries": 720,
+        "codeqlAnalysisIds": [
+          1885594987,
+          1885597604
+        ],
+        "comparedAlertIds": 48,
+        "stateChanges": 0,
+        "newIds": 0,
+        "missingIds": 0,
+        "open": 38,
+        "fixed": 10,
+        "reviewedAlertsRemainOpen": [
+          17,
+          18,
+          19,
+          20
+        ],
+        "historySecrets": {
+          "run": 37115079486,
+          "artifact": 11270479948,
+          "scanCompleted": true,
+          "reachableCommits": 666,
+          "candidateMatches": 2367,
+          "newHeadCandidates": 3,
+          "attribution": "The three evidence JSON1379/1380/1384 values exactly match unchanged public source SHA256 digests. No rule exemption or conclusion about other2362 unresolved historical candidates.",
+          "scope": "First100 metadata rows only; no complete per-candidate history comparison."
+        }
+      }
+    },
+    {
+      "cycle": 10,
+      "baselineCommit": "061808ae72ea1fb8204b16161c36205d7bc32f53",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "source_triage_no_verified_sensitive_storage_defect",
+      "repairCount": 0,
+      "reviewedAlerts": [
+        5
+      ],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "baselineOpen": {
+        "codeql": 38,
+        "dependabotDefaultBranch": 18
+      },
+      "baselineAnalysisIds": [
+        1885594987,
+        1885597604
+      ],
+      "review": {
+        "decision": "no_confirmed_sensitive_data_storage_defect",
+        "exactSink": "Line187 writes a synthetic Git commit hash plus fixed filename/rule/line as a Gitleaks ignore fingerprint, not the generated marker.",
+        "fixtureLifecycle": [
+          "Each test creates a caller-owned mode0700 TemporaryDirectory outside the real repository and registers cleanup immediately.",
+          "The optional real-scanner regression generates an unissued PAT-shaped random marker entirely in memory; it does not fetch or create an account token.",
+          "That marker is written into two files in a fresh temporary Git repository, committed, then removed from the current tree in a later commit.",
+          "The test expects detection in deleted history despite candidate config/ignore/inline allow and text/binary diff settings.",
+          "A synthetic diff helper must remain unexecuted, and published report/summary must omit the marker and synthetic author/email/message.",
+          "Registered unittest cleanup removes the entire temporary root, including temporary Git history and output reports; actual cleanup was observed for the two executed fake-scanner cases."
+        ],
+        "retainRegression": "Encrypting or removing synthetic marker bytes would weaken the real scanner deleted-history regression; no such change made."
+      },
+      "sourceSha256": {
+        "tests/test_spider_repository_scan.py": "dd78e25de080f1ee2ae82d0748ef5867b0fa9e257e3d922cc88b2008b4c03db6",
+        "scripts/spider-repository-scan.py": "d54fcf031956d8ca70d149f34599a8a3775277080f2f5c6673e8d0771dddfe72",
+        ".github/workflows/spider.yml": "62fb24101e1fb3b9013d5fea3e727a032c2d206b98f69016f399a40b0096cccd"
+      },
+      "changedInputInvalidatesReview": true,
+      "hostChecks": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 1,
+        "cases": [
+          "test_candidates_are_bounded_sanitized_and_historical_annotations_are_not_current_lines",
+          "test_error_and_inconsistent_reports_fail_closed_without_raw_logs",
+          "test_real_binary_scans_deleted_history_ignores_candidate_allowlists_and_never_runs_diff_helpers"
+        ],
+        "temporaryDirectoryObservations": [
+          {
+            "test": "test_candidates_are_bounded_sanitized_and_historical_annotations_are_not_current_lines",
+            "rootMode": "0700",
+            "rootOwnedByCaller": true,
+            "outsideReviewedRepository": true,
+            "temporaryRootRemovedAfterTest": true
+          },
+          {
+            "test": "test_error_and_inconsistent_reports_fail_closed_without_raw_logs",
+            "rootMode": "0700",
+            "rootOwnedByCaller": true,
+            "outsideReviewedRepository": true,
+            "temporaryRootRemovedAfterTest": true
+          }
+        ],
+        "realBinaryTest": "SKIPPED: optional caller-verified Gitleaks8.30.1 unavailable",
+        "hostSystem": "Darwin",
+        "pythonVersion": "3.14.7",
+        "helperSha256": "28fe38683a429826cbcb062284cd66561a9bb369e30a4473a4ba06b036ccd239"
+      },
+      "trustedScannerCi": {
+        "controlCommit": "b6ab19889fa245f6060e22b0c7a0b641395fc3b1",
+        "testAndRunnerMatchPinnedControl": {
+          "scripts/spider-repository-scan.py": true,
+          "tests/test_spider_repository_scan.py": true
+        },
+        "baselineRun": 37115079486,
+        "sourceConfiguredBinary": "Checksum-pinned Gitleaks8.30.1 Linux x64; absolute GITLEAKS_BINARY for fixture step",
+        "scope": "The prior run privacy-check step succeeded; local real-binary execution remains skipped. Same-SHA publication step status will be recorded after push."
+      },
+      "localFullVerify": {
+        "status": "incomplete",
+        "failure": "ai package missing at llm:architecture:check",
+        "laterGates": "not run locally"
+      },
+      "limitations": [
+        "Real Gitleaks deleted-history regression not executed in this cycle; only its source reviewed.",
+        "No real credential, project history scan, alert candidate API or raw scanner finding/log output read or saved.",
+        "TemporaryDirectory cleanup is ordinary unittest cleanup, not secure erasure or a guarantee after abrupt process/host termination.",
+        "The test deliberately needs plaintext synthetic marker bytes for secret-scanner regression; encrypting/removing them would weaken coverage.",
+        "No tracked edits, rule suppression or alert dismissal performed."
+      ],
+      "remaining": {
+        "codeqlOpen": 38,
+        "dependabotDefaultBranch": 18,
+        "historyCandidates": 2367,
+        "existingDependabotPullRequests": [
+          53,
+          54,
+          55,
+          56
+        ],
+        "nextReview": "Unreviewed validation-code alerts; dependency PRs need their own exact-lock inventory checks without duplicating bumps."
+      },
+      "boundaries": {
+        "runtimeChanged": false,
+        "testSourceChanged": false,
+        "scannerPolicyChanged": false,
+        "mainMerged": false,
+        "guestBoot": "NOT_RUN",
+        "physicalDevice": "NOT_RUN",
+        "continuous24Hours": "NOT_RUN"
+      },
+      "publicationEvidence": "Same-SHA CI and individual alert readback will be recorded after push in PR52 and the external SPIDER artifact.",
+      "existingDependencyPrTriage": {
+        "pullRequest": 53,
+        "head": "90ad790ced0b996aed58eaa94e9da47c30384ba8",
+        "parent": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+        "failingRun": 37081891873,
+        "npmCi": "success",
+        "failedGate": "release:check",
+        "cause": "package-lock hash differs from the license inventory snapshot after fast-uri3.1.7 ->3.1.8",
+        "codeOrTestDefectProven": false,
+        "currentPr52VerifyRun": 37115079468,
+        "currentPr52Verify": "success",
+        "remediation": "On existingPR53, regenerate and review inventory for its exact lock; preserve component scopes and NOT_CLEARED, then rerun unchanged fullverify. No validator bypass or duplicate bump.",
+        "dependencyBranchChanged": false
+      }
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."

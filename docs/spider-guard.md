@@ -84,6 +84,8 @@ main `31ef33a`とのPR競合を作業branchで解消し、上流の共通Researc
 
 第9cycleは#17〜#20の認証検証observerの一時権限を確認した。専用flag付きの使い捨てguestだけへ注入され、本文前のpeer UID拒否と別のprivate storageが維持される。製品の越権欠陥は確証できず、修正0・dismiss0。関連host2試験と全合成14ケースが成功した。通常失敗時の復元呼出しを確認したが、復元syscall失敗・強制終了・実UID／DACの検証とは区別する。9source hash、復元処理の制約、再確認条件を[第9cycleの記録](evidence/spider-improvement-cycle.json)へ保存する。
 
+第10cycleは#5の試験用保存を追跡した。指摘行の保存値は合成commit識別子によるignore fingerprintで、前段のPAT形状markerも未発行の合成値である。privateな一時Git履歴を使う検出回帰として維持し、修正0・dismiss0と記録。関連privacy2試験が成功したが、ローカル実Gitleaks1件はbinary不在でskip。通常cleanupと異常終了時の削除保証を区別し、固定control sourceとの同一性・公開後CI・個別alert状態を[第10cycleの記録](evidence/spider-improvement-cycle.json)で追跡する。
+
 ## 自分のコードを貼って検査する
 
 2026-10-02の追加指示により、利用者のコードを貼り付け、編集のたびに自動検査し、実際の候補をクモと一覧で示す機能を追加した。配布物はrepository外の`outputs/SPIDER.html`と簡単な説明`outputs/SPIDER-使い方.txt`。ブラウザで直接開けるoffline単一HTMLで、SDK、API key、登録、serverの起動は不要。
