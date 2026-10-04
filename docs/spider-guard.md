@@ -346,3 +346,11 @@ string型を確認し、同じBufferのbyte長一致を確かめた場合だけ�
 旧`/mcp`は一回券を要求しない既存PC caller向け例外である。接続IDだけで第三者定義や追加操作まで転送されないよう、同梱MRの正確な接続定義と4機能・既存lifecycleに限定し、対象外はtransport前に403で拒否する。新しい接続は汎用server IDの本人確認・一回券を使う。許可Origin／sessionと同一UIDの信頼前提を維持する防御境界の修正であり、無認証侵入を実証したものではない。
 
 旧sourceでは新2回帰が無作用stubへの転送を検出し失敗。修正後は拒否13形式・転送0、正規操作8形式、実MR4機能の互換と既存一回承認・データ検査を含む31試験が成功した。Connector ZIPを同期し、同一SHAのGitHub検査と未解決警告を別に記録する。[互換条件と復旧](sky-mcp-connector.md#互換性と移行)を参照。
+
+## 第24cycle: Undiciを修正版へ統一
+
+Dependabot #4／#8の対象であるrootのUndici 7.29.0を7.29.1へ更新する。`package.json`のoverrideは現在のroot lockにある全7.x経路を揃え、miniflareの旧exact pinにも適用する。既存PR56のCloudflare更新とは分け、同PRに残るwrangler配下の旧版も現在のbranchで対象にする。他の依存版と別site lockは維持する。将来の依存更新では必要majorとの互換を再評価し、overrideの永久固定や自動downgradeを前提にしない。
+
+`tests/undici-tls-options.test.mjs`は、実BalancedPool／Poolのconstructorでconnect・tls・connectorの関数が初期と追加のupstreamへ保持されることを確認する。旧版は3件失敗、修正版は3件成功。実通信は行わず、アプリの到達性や実TLS／WebSocketの受入試験とは分ける。license一覧とrelease評価日を同期し、公開gateと要審査47件を維持する。
+
+更新が互換性検査に失敗した場合は原因を調べ、脆弱な版へ戻して公開可としない。GitHubのclean install・全体verify・同一refの個別alertを[改善記録](evidence/spider-improvement-cycle.json)へ保存する。default branchのDependabot警告がopenの間は未解消として追跡する。

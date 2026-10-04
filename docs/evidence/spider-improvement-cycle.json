@@ -5209,9 +5209,326 @@
         "secretRotation": false
       },
       "publicationEvidence": {
-        "status": "pending"
+        "commit": "16bf94bd516184513673f5280309062b35be0bcc",
+        "fullVerify": {
+          "run": 37173975533,
+          "conclusion": "success",
+          "newLegacyAndClientTestsExecutedOnceEach": 5
+        },
+        "regression": {
+          "run": 37173975617,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37173975528,
+          "conclusion": "success",
+          "pythonTests": 1790,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1887638631,
+          "pythonAnalysis": 1887639594,
+          "open": 31,
+          "fixed": 18,
+          "all49IdsIndividuallyComparedAndUnchanged": true,
+          "newAlerts": [],
+          "newlyFixed": []
+        },
+        "history": {
+          "run": 37173975538,
+          "scanCompleted": true,
+          "commits": 680,
+          "candidates": 2369,
+          "conclusion": "failure"
+        },
+        "classification": "Legacy compatibility-policy repair verified; no unauthenticated attack or CodeQL resolution claim",
+        "preliminaryProbeStatus": {
+          "schemaVersion": 1,
+          "probeScript": "work/spider-ci/cycle-23-legacy-mcp-probe.mjs",
+          "probeScriptSha256": "65aa70b9fde4df9dac95dc965bd06dd3be92a464a45eda988f76ca8284b23959",
+          "command": "node work/spider-ci/cycle-23-legacy-mcp-probe.mjs",
+          "intendedBaselineCommit": "f7d110ca18fb8da275a6c49197167d8d05720c72",
+          "status": "INCOMPLETE_NOT_RETRIED",
+          "attempts": 1,
+          "completedObservations": {
+            "bundledMrLegacyHttpStatus": 200,
+            "bundledMrLegacyIsError": false,
+            "genericRouteStatus": 403,
+            "genericApprovalErrorMatched": true,
+            "genericRouteDidNotStartChild": true
+          },
+          "stoppingPoint": {
+            "classification": "synthetic formatter expected-output assertion failed",
+            "errorCode": "ERR_ASSERTION",
+            "scriptLine": 29,
+            "actualEqualityBoolean": false,
+            "expectedEqualityBoolean": true
+          },
+          "customReplacementBranchExecuted": false,
+          "cleanup": {
+            "connectorAndOwnedChildCleanupFinallyCompletedWithoutError": true,
+            "ownedTemporaryDirectoryRemovalFinallyCompletedWithoutError": true,
+            "postFinallyExistenceAssertionReached": false
+          },
+          "rawOutputOrCredentialPersisted": false,
+          "usedAsRepairProof": false,
+          "repairProofAttribution": "Parent independently verified the repair with two inert-transport regressions; this incomplete probe is not evidence of custom-replacement execution.",
+          "laterTaskRestriction": "Parent restricted subsequent work to GitHub CI metadata/artifact readback; no additional process probe, secret/raw log access, or tracked-source edits.",
+          "limitations": [
+            "No custom replacement execution observed.",
+            "No fixture response body, header value, token, or raw diagnostic preserved.",
+            "Failed probe did not reach its final result JSON write; this record describes only the partial observations and finally cleanup."
+          ]
+        }
       },
       "projectDatabaseDesignChecks": "passed before missing ai dependency"
+    },
+    {
+      "cycle": 24,
+      "baselineCommit": "16bf94bd516184513673f5280309062b35be0bcc",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "Undici 7.29.1 security patch selected for every root-lock Undici path; same-SHA clean install and CI pending",
+      "repairCount": 1,
+      "validationImprovementCount": 0,
+      "runtimeVulnerabilityFixed": false,
+      "vulnerableDependencyUpdated": true,
+      "reviewedDependabotAlerts": [
+        4,
+        8
+      ],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "focusedFinding": "Root package-lock resolved Undici 7.29.0 inside both high-severity advisory ranges. Application-specific reachability was not proven. A transitive override selects the patched 7.29.1 on the current branch.",
+      "advisories": [
+        {
+          "alert": 4,
+          "id": "GHSA-w293-vg96-wgc3",
+          "url": "https://github.com/nodejs/undici/security/advisories/GHSA-w293-vg96-wgc3",
+          "range": ">=7.24.1, <7.29.1",
+          "patched": "7.29.1",
+          "issue": "BalancedPool JSON option cloning drops function-valued TLS/connect verification options"
+        },
+        {
+          "alert": 8,
+          "id": "GHSA-rfgv-xxqx-mfg5",
+          "url": "https://github.com/nodejs/undici/security/advisories/GHSA-rfgv-xxqx-mfg5",
+          "range": ">=7.0.0, <7.29.1",
+          "patched": "7.29.1",
+          "issue": "Unsolicited WebSocket subprotocol accesses null request protocols; upstream early rejection source reviewed only"
+        }
+      ],
+      "baselineOpen": {
+        "codeql": 31,
+        "dependabot": 18,
+        "historyCandidates": 2369
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-24-feedback/report.json",
+        "sha256": "13b187c6ac2cd6205342ad685a4ccd6c2c30393fd0fb9b95989bea0b74d91a2e",
+        "collectedAt": "2026-10-04T04:12:26.901Z",
+        "targetHead": "16bf94bd516184513673f5280309062b35be0bcc",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 49,
+          "actionable": 35,
+          "review": 12,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 31,
+            "retrievedCount": 31,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "existingDependencyPullRequests": {
+        "53": "fast-uri only; root Undici remains 7.29.0",
+        "54": "ip-address only; root Undici remains 7.29.0",
+        "55": "brace-expansion only; root Undici remains 7.29.0",
+        "56": "Partly covers Undici via larger Cloudflare/miniflare update, but wrangler nested miniflare and Undici 7.29.0 remain. No duplicate dependency PR created or edited."
+      },
+      "change": {
+        "override": "undici = 7.29.1",
+        "lockEntriesChanged": [
+          "node_modules/undici"
+        ],
+        "redundantLockEntryRemoved": "node_modules/shadcn/node_modules/undici",
+        "otherPackageEntriesUnchanged": true,
+        "directDependencyVersionsUnchanged": true,
+        "siteLockUnchanged": true,
+        "isolatedLockOnlyResolution": "npm install --package-lock-only --ignore-scripts --no-audit --no-fund; no node_modules created",
+        "fullLocalInstall": "NOT_RUN; existing workspace lacks ai/esbuild and approximately 1.2 GiB free; clean install required on GitHub"
+      },
+      "packageProvenance": [
+        {
+          "version": "7.29.0",
+          "tarSha256": "ec2005d822734765fc08c3ee5d50b1f720bf1c3fc6235ab028e5cc61c85a3a70",
+          "integrityMatchesLock": true,
+          "integrityMatchesPackMetadata": true,
+          "fileCount": 210,
+          "extractedFileMismatches": []
+        },
+        {
+          "version": "7.29.1",
+          "tarSha256": "93b3abe22a9d2858938b5f3829a9fd8952392348ffed9057662ae846e2e46d54",
+          "integrityMatchesLock": true,
+          "integrityMatchesPackMetadata": true,
+          "fileCount": 210,
+          "extractedFileMismatches": []
+        }
+      ],
+      "regression": {
+        "schemaVersion": 1,
+        "results": [
+          {
+            "phase": "before",
+            "version": "7.29.0",
+            "counts": {
+              "tests": 3,
+              "pass": 0,
+              "fail": 3,
+              "cancelled": 0,
+              "skipped": 0
+            },
+            "logSha256": "34847581ade831cc9c76c8d9d8ddc2fd6fd647ca87f48faa13b4b24e1a267060"
+          },
+          {
+            "phase": "after",
+            "version": "7.29.1",
+            "counts": {
+              "tests": 3,
+              "pass": 3,
+              "fail": 0,
+              "cancelled": 0,
+              "skipped": 0
+            },
+            "logSha256": "e305622a5636c7035ad31d375290ca46375d5f6a5ea6a7956476106b2bf3fd84"
+          }
+        ],
+        "testSha256": "20b81072e1c6564854c8607fe834a791b2d0923cbfb6688ba3ec8bff9a1711af",
+        "scope": "Integrity-verified registry packages; actual BalancedPool and Pool constructors; no request dispatch and net/tls connections blocked",
+        "limitations": "Checks callback forwarding only, not a live TLS handshake or WebSocket peer, and does not prove application reachability"
+      },
+      "hostLicenseChecks": {
+        "command": "node --test --test-reporter=tap tests/release-readiness.test.mjs tests/web-bundle-inventory.test.mjs",
+        "counts": {
+          "tests": 35,
+          "pass": 35,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "logSha256": "cfe677408b09f4954c6bb0558d89ef240f37eb7236b8e151020c03211f6d2310",
+        "priorFailure": "New license audit observation was newer than the release evaluation; synchronized evaluation date only, preserving all gates and NOT_CLEARED.",
+        "exitCode": 0,
+        "expectedCountSync": "Exact inventory expectation changed 907/874 to 906/873 after Undici deduplication; 47 review components and every release gate unchanged"
+      },
+      "licenseInventory": {
+        "packageEntries": 906,
+        "uniqueComponents": 873,
+        "reviewRequired": 47,
+        "missingLicenseMetadata": 0,
+        "scopeAndOptionalityPreserved": true,
+        "reviewComponentsPreserved": true,
+        "publicClearance": "NOT_CLEARED_PRODUCT_LICENSE_AND_DISTRIBUTION_SCOPE_REVIEW_PENDING",
+        "releaseMatrixDateOnlySync": "2026-10-04",
+        "expectedTestCountsSync": "907/874 to 906/873; review47, ready0, blocked6 and chronology rejection retained",
+        "negativeRegenerationCasesRejected": 3
+      },
+      "previousAttempts": {
+        "offlineLockResolution": "ENOTCACHED; no node_modules created",
+        "firstLicenseSuite": "22 pass / 13 fail because release matrix predates refreshed audit; date field only corrected",
+        "secondLicenseSuite": "34 pass / 1 fail because exact expected inventory counts still 907/874; changed only two expected counts",
+        "finalLicenseSuite": "35 pass / 0 fail / 0 skip"
+      },
+      "independentReviews": [
+        {
+          "path": "work/spider-ci/cycle-24-undici-license-review.json",
+          "sha256": "76400cd52d2480a4983a6a916b9b48ff29562ab0bf9beaa530d1cea7b1aa973c",
+          "verdict": "NO_BLOCKER_FOR_NARROW_LOCK_AND_LICENSE_INVENTORY_CANDIDATE"
+        },
+        {
+          "path": "work/spider-ci/cycle-24-undici-final-review.json",
+          "sha256": "f10c10b2379972e2a26a2f7a675eb73a1e5737b0b4ca44c30e9734300138575a",
+          "verdict": "NO_ACTIONABLE_DEFECT_FOUND_IN_REVIEWED_CHANGE"
+        },
+        {
+          "path": "work/spider-ci/cycle-24-final-source-review.json",
+          "sha256": "2bcee4dcb5c8317f36f835cdd98ae784cef5f7ce03c90f57b93547d5cf6e913f",
+          "verdict": "NO_BLOCKER"
+        }
+      ],
+      "localFullVerify": {
+        "status": "failed",
+        "exitCode": 1,
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "0ffcbeae19a7875622944ecfeb41478e2b7a599b4c4e38c2bb02ce7aac9e89f6"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency",
+      "testedSourceSha256": {
+        "package.json": "5da72c313fdad540531b3661b41565f5819b331f52ce88b6b46f10baf829ea41",
+        "package-lock.json": "8092a8036189981720421e2b8a17fdb5d6243021240ba9c8c3ae9b6b825378b2",
+        "data/web-third-party-license-audit.json": "2a20875e86d2523fd9203dee5023da7f211c29ae928a600a5eba7af22f493182",
+        "data/release-readiness.json": "5ab0d58b9fd168c6dce5298e15a5104a6cfab87cc7b10f98d5aee0f8d39636ea",
+        "tests/release-readiness.test.mjs": "5da547dba6ba2463c1c296187aa2d179d6896af1db51e8e90fcbd7bf965ab777",
+        "tests/undici-tls-options.test.mjs": "20b81072e1c6564854c8607fe834a791b2d0923cbfb6688ba3ec8bff9a1711af"
+      },
+      "evidenceSha256": {
+        "cycle-24-baseline.json": "2e4c725b61651ed3e5f69f2f05b772b58913815fc309cede4fe75b716ba72372",
+        "cycle-24-undici-source-review.json": "066a3fb8ab9888ba48cdf7f61b07fe62a05e808b780c92d9ca767e0612309cf6",
+        "cycle-24-undici-metadata.json": "84251753fe2dc4478d8144703826c52b889a6f118705f1caf225817bccee0e3a",
+        "cycle-24-dependency-pr-coverage.json": "75c239c776248d35be05b103e5bd8f6f523930d88569ae32b6cf7f8cf4220deb",
+        "cycle-24-undici-advisory-metadata.json": "8710950322891b1540a95e2fded8ce31455214b27cd8a8a974f7d1fa985eb2fe",
+        "cycle-24-undici-regression.json": "c369fc3d48353a779090d69a724bf885b46665c8cbeeba792e7023610ab12316",
+        "cycle-24-license-candidate-report.json": "8ff8d03b439312cf3e8a88499993b9de9dc7fac9c222108782fb96164a999685",
+        "cycle-24-undici-license-review.json": "76400cd52d2480a4983a6a916b9b48ff29562ab0bf9beaa530d1cea7b1aa973c",
+        "cycle-24-undici-final-review.json": "f10c10b2379972e2a26a2f7a675eb73a1e5737b0b4ca44c30e9734300138575a",
+        "cycle-24-final-source-review.json": "2bcee4dcb5c8317f36f835cdd98ae784cef5f7ce03c90f57b93547d5cf6e913f",
+        "cycle-24-license-tests.json": "e707b14367bd5e5ecd98c111eefdbe16c9ae7c215e8386eccafb30a238e9a35e"
+      },
+      "remaining": {
+        "dependencies": "Default-branch #4 and #8 are still open before main integration. Do not equate branch lock remediation or count changes with closed GitHub alerts. Other 16 alerts and existing PR53-56 remain separately tracked.",
+        "codeql": "Compare all49 IDs and any new alerts on same ref and published SHA",
+        "history": "2369 prior pattern candidates; unchanged counts cannot classify unread or truncated findings",
+        "compatibility": "GitHub clean npm ci and complete verify required; future major dependency updates must re-evaluate narrow Undici pin"
+      },
+      "limits": [
+        "Regression checks callback identity forwarded by real constructors; no request dispatch, live TLS handshake, callback execution or WebSocket server",
+        "All package files integrity checked, but only targeted upstream security fixes reviewed in detail, not all 15 changed upstream files",
+        "No confirmed first-party advisory reachability or incident; update removes affected dependency version from current lock",
+        "No full local dependency install; isolated hook only selects verified old/new Undici packages for local test, not part of committed source or CI"
+      ],
+      "boundaries": {
+        "runtimeDependencyChanged": true,
+        "firstPartyRuntimeChanged": false,
+        "testChanged": true,
+        "scannerPolicyChanged": false,
+        "vendorChanged": false,
+        "mainMerged": false,
+        "forcePush": false,
+        "dependencyBranchChanged": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false
+      },
+      "publicationEvidence": {
+        "status": "pending"
+      }
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."
