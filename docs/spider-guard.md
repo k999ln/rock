@@ -339,3 +339,10 @@ CodeQL #43／#44の対象はbuilt HTML全体に対する禁止substring検査で
 CodeQL #41はtest専用descriptorのURLへ固定の認証なし要求を送り、401を確認する箇所である。descriptor本文やキーを送信する経路ではなく、元alertの解消とは分ける。関連するSDKの認証処理では、JS文字数を比較してからUTF-8 byte列を定時間比較していたため、同じ文字数の非ASCII値で長さの例外が起きる。認証区間はasync HTTP callbackのtry外にあり、隔離childで1要求からprocess終了を再現した。
 
 string型を確認し、同じBufferのbyte長一致を確かめた場合だけ定時間比較する。不正入力は従来どおり401で拒否し、本文解析・handlerへ進めない。隔離child回帰で拒否後の同じprocessのhealthと正当な認証付きTool実行を確認する。loopbackへ接続できる未認証clientによる可用性の欠陥であり、Internet／browser到達や秘密漏洩を実証したものではない。Connectorの同型比較は別のtry内にあり、SDKのfatalと混同しない。配布用0.1.3は検証したrepository sourceを同梱し、Studioの導入URL・CLIの最小依存版を同期する。旧0.1.2 archiveは認証処理だけでなく、既にrepositoryへ存在する利用event ID／最大3回の送信処理も未反映だったため、今回のtgzと現sourceのbyte一致を検査する。新たな送信機能の実装修正ではなく、既存sourceの配布同期として分ける。旧archiveは保持し、npm公開・公開配備・既存Toolの更新は行わない。元#41のstateは同一refで別途追跡し、証拠は[改善記録](evidence/spider-improvement-cycle.json)へ保存する。
+
+
+### 第23cycle: 旧MCP互換入口を同梱4機能へ限定
+
+旧`/mcp`は一回券を要求しない既存PC caller向け例外である。接続IDだけで第三者定義や追加操作まで転送されないよう、同梱MRの正確な接続定義と4機能・既存lifecycleに限定し、対象外はtransport前に403で拒否する。新しい接続は汎用server IDの本人確認・一回券を使う。許可Origin／sessionと同一UIDの信頼前提を維持する防御境界の修正であり、無認証侵入を実証したものではない。
+
+旧sourceでは新2回帰が無作用stubへの転送を検出し失敗。修正後は拒否13形式・転送0、正規操作8形式、実MR4機能の互換と既存一回承認・データ検査を含む31試験が成功した。Connector ZIPを同期し、同一SHAのGitHub検査と未解決警告を別に記録する。[互換条件と復旧](sky-mcp-connector.md#互換性と移行)を参照。

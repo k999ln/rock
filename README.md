@@ -334,7 +334,7 @@ After updating documents or progress, run the following checks. The final calcul
     npm run test:public-preview
     npm run test:avocado-mini-site
 
-Shared AI, MCP, storage, payments, and Sky/Zema contracts use one implementation per responsibility. Full verification also checks standalone copies and both PC download ZIPs. See the [integration record](docs/git-consolidation.md#2026-10-02-共通実装の統合g04).
+Shared AI, MCP, storage, payments, and Sky/Zema contracts use one implementation per responsibility. Full verification also checks standalone copies and both PC download ZIPs. The legacy PC `/mcp` endpoint is limited to the bundled MR processors; custom connections use the server-ID approval flow described in the [Connector guide](docs/sky-mcp-connector.md#互換性と移行). See the [integration record](docs/git-consolidation.md#2026-10-02-共通実装の統合g04).
     python3 scripts/verify-avocado-r5-package.py
     python3 docs/avocado-mini-r5/package/verify_calculations.py
 

@@ -48,7 +48,7 @@ const LOCAL_ONLY_MR_TOOLS = new Set([
   'verify_delivery',
 ]);
 
-function isBundledLocalCall(spec, message) {
+function isBundledMrSpec(spec) {
   // Only these fixed first-party processors have no external side effects.
   // A name, readOnlyHint, localhost address, or stdio transport proves no such
   // boundary for another Tool, including an independently installed SDK Tool.
@@ -59,10 +59,34 @@ function isBundledLocalCall(spec, message) {
     spec.cwd === resolve(here, '..') &&
     spec.args?.length === 1 &&
     resolve(spec.cwd, spec.args[0]) === resolve(here, '../mr/mcp_server.py') &&
-    spec.envNames?.length === 0 &&
+    spec.envNames?.length === 0
+  );
+}
+
+function isBundledLocalCall(spec, message) {
+  return (
+    isBundledMrSpec(spec) &&
     message?.method === 'tools/call' &&
     LOCAL_ONLY_MR_TOOLS.has(message.params?.name)
   );
+}
+
+const LEGACY_MR_METHODS = new Set([
+  'initialize', 'notifications/initialized', 'ping', 'tools/list',
+]);
+
+function assertLegacyMrRequest(spec, message) {
+  // The old PC client supports only the bundled processors. Registry identity
+  // alone must not extend this compatibility exception to another server.
+  if (
+    !isBundledMrSpec(spec) ||
+    !(LEGACY_MR_METHODS.has(message?.method) || isBundledLocalCall(spec, message))
+  )
+    fail(
+      'この操作はserver IDの接続・確認・一回承認を使ってください。',
+      403,
+      'legacy_mcp_not_supported',
+    );
 }
 
 function assertMcpOutbound(spec, message) {
@@ -951,6 +975,7 @@ export async function createConnector({
       if (request.method === 'POST' && request.url === '/mcp') {
         const input = await body(request);
         const entry = hub.entry('rock-star-mr');
+        assertLegacyMrRequest(entry.spec, input);
         assertMcpOutbound(entry.spec, input);
         const result = await entry.transport.request(
           input,

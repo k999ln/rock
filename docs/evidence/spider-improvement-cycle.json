@@ -4934,6 +4934,281 @@
         "secretRotation": false
       },
       "publicationEvidence": {
+        "commit": "f7d110ca18fb8da275a6c49197167d8d05720c72",
+        "fullVerify": {
+          "run": 37162235912,
+          "conclusion": "success",
+          "newSdkTestsExecutedOnceEach": 3
+        },
+        "regression": {
+          "run": 37162235913,
+          "conclusion": "success"
+        },
+        "native": {
+          "run": 37162235929,
+          "conclusion": "success",
+          "pythonTests": 1790,
+          "sourceInventory": 720
+        },
+        "codeql": {
+          "javascriptAnalysis": 1887217936,
+          "pythonAnalysis": 1887217888,
+          "open": 31,
+          "fixed": 18,
+          "existing49Note": "48 baseline IDs unchanged; new test alert #49 retained open and independently reviewed",
+          "newAlerts": [
+            49
+          ],
+          "newlyFixed": []
+        },
+        "history": {
+          "run": 37162235969,
+          "scanCompleted": true,
+          "commits": 679,
+          "candidates": 2369,
+          "conclusion": "failure"
+        },
+        "classification": "Local SDK availability repair and repository SDK0.1.3 archive; original #41 and new test #49 separate, no deployment"
+      },
+      "projectDatabaseDesignChecks": "passed before missing ai dependency"
+    },
+    {
+      "cycle": 23,
+      "baselineCommit": "f7d110ca18fb8da275a6c49197167d8d05720c72",
+      "ref": "refs/heads/codex/spider-guard",
+      "status": "Legacy MCP compatibility boundary restricted with existing four local processors preserved; same-SHA publication checks pending",
+      "repairCount": 1,
+      "validationImprovementCount": 0,
+      "runtimeVulnerabilityFixed": false,
+      "runtimePolicyBoundaryRepaired": true,
+      "reviewedAlerts": [],
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "focusedFinding": "Legacy /mcp forwarded by registry ID only, including changed connection definitions and additional operations, without the generic one-time approval gate. The documented exception covers only four bundled local processors. This is a compatibility-policy boundary repair, not demonstrated unauthenticated access.",
+      "baselineOpen": {
+        "codeql": 31,
+        "dependabot": 18,
+        "historyCandidates": 2369
+      },
+      "baselineFeedback": {
+        "path": "work/spider-ci/cycle-23-prepublish-feedback/report.json",
+        "sha256": "d44b398dcc35db09af4476beaed677cbc873ad2f34f659c28b72e40568fc1125",
+        "collectedAt": "2026-10-04T03:21:17.358Z",
+        "targetHead": "f7d110ca18fb8da275a6c49197167d8d05720c72",
+        "status": "complete",
+        "currentChecksComplete": false,
+        "counts": {
+          "total": 49,
+          "actionable": 35,
+          "review": 12,
+          "awaiting_upstream": 2
+        },
+        "sources": {
+          "codeql": {
+            "status": "complete",
+            "count": 31,
+            "retrievedCount": 31,
+            "pages": 1
+          },
+          "dependabot": {
+            "status": "complete",
+            "count": 18,
+            "retrievedCount": 18,
+            "pages": 1
+          }
+        },
+        "workflowCoverage": [
+          "spider.yml",
+          "spider-codeql.yml"
+        ]
+      },
+      "sourceFacts": [
+        {
+          "source": "toolkits/sky-mcp-connector/server.mjs:865",
+          "fact": "Both routes require an allowed browser Origin, exact bound loopback Host and Origin-bound bearer session. This is not an unauthenticated Internet execution finding."
+        },
+        {
+          "source": "toolkits/sky-mcp-connector/server.mjs:937",
+          "fact": "Server-specific /servers/:id/mcp rejects tools/call with approval_required. prepare and execute bind server, tool, arguments and tool digest, require explicit confirmation and consume a single-use expiring token."
+        },
+        {
+          "source": "toolkits/sky-mcp-connector/server.mjs:951",
+          "fact": "Legacy /mcp resolves the rock-star-mr entry, applies the sensitive-data guard, and directly calls its transport.request. It does not require a passport, prepare or execute token."
+        },
+        {
+          "source": "toolkits/sky-mcp-connector/server.mjs:297",
+          "fact": "Validated registry permits the rock-star-mr identifier to refer to a different stdio command/arguments/cwd/environment or HTTPS transport. Registry installation is a trusted owner action; it is not per-call approval."
+        },
+        {
+          "source": "toolkits/sky-mcp-connector/server.mjs:51",
+          "fact": "The existing sensitive-data exemption already checks the full bundled MR specification and four exact Tool names. That exemption is separate from approval and does not prevent non-sensitive requests reaching a replacement Tool."
+        },
+        {
+          "source": "toolkits/sky-mcp-connector/registry.json:1",
+          "fact": "The stock entry selects the fixed local Python MR implementation. Its four processors perform eligibility evaluation, citation formatting, free-article transformation and delivery-evidence verification; they do not submit posts, financial transactions, arbitrary shell commands or external fetches."
+        },
+        {
+          "source": "toolkits/mr/mcp_server.py:92",
+          "fact": "MR validates an exact Tool/schema allowlist, uses temporary storage for supplied files, and returns locally computed output. Its only supported request methods are initialize, ping, tools/list and tools/call; no-ID notifications are ignored."
+        },
+        {
+          "source": "lib/device.ts:185",
+          "fact": "The current basic PC UI runDevice invokes requestMcp tools/call; lib/mcp-client.ts sends it to /mcp. MR and delivery UI buttons use this path through executeTracked. The job tracking layer does not create the Connector one-time approval."
+        },
+        {
+          "source": "docs/sky-mcp-connector.md:61",
+          "fact": "The documented legacy route remains for the four distributed basic functions. Blanket denial of every legacy tools/call would break the supported current UI and the real browser-client flow script."
+        },
+        {
+          "source": "components/mcp-bot-runner.tsx:150",
+          "fact": "Generic bot UI separately calls prepare, displays confirmation, then uses executeApprovedMcpTool on the server-specific route."
+        },
+        {
+          "source": "tests/mcp-connector.test.mjs:190",
+          "fact": "The existing direct-bypass regression covers only the server-specific route. The existing legacy privacy regression changes the script path and verifies sensitive-input rejection, not approval of ordinary arguments."
+        }
+      ],
+      "action": "Share the exact bundled-MR identity predicate and apply it with a four-tool and lifecycle allowlist before legacy transport dispatch; retain Origin/session, outbound data guard and generic one-time approval.",
+      "oldSourceRegression": {
+        "sourceCommit": "f7d110ca18fb8da275a6c49197167d8d05720c72",
+        "command": "node --test --test-reporter=tap --test-name-pattern=^legacy MCP tests/mcp-connector.test.mjs",
+        "counts": {
+          "tests": 2,
+          "pass": 0,
+          "fail": 2,
+          "skipped": 0
+        },
+        "sourceSha256": {
+          "tests/mcp-connector.test.mjs": "44e9c679f4cc03348d4c1e1276bbe66a845798fdf88e0890db17447af3e3dc0a",
+          "toolkits/sky-mcp-connector/server.mjs": "30695057af1a71b6037fcb2d861f5a22cb868bd926abeb49fb86f26a45918c4b"
+        },
+        "logSha256": "b501c029180b4c6742d17dd1af03d978ace134952314e67755a1d5e2f34e6a8b",
+        "scope": "Owned loopback connector with in-memory transport stub only; no processor subprocess or external service in these two tests",
+        "sandboxAttempt": "listen EPERM before test requests; not a product proof",
+        "previousTestOrderAttempt": "Both failed; second first exercised null JSON (500). Final ordering first checks an additional Tool (200).",
+        "finalBaselineObservations": [
+          "Different spec id reached inert transport and returned 200 instead of 403",
+          "Additional Tool name reached inert transport and returned 200 instead of 403"
+        ]
+      },
+      "hostChecks": {
+        "command": "node --experimental-strip-types --test --test-reporter=tap tests/mcp-connector.test.mjs tests/mcp-spider-guard.test.mjs tests/mcp-client.test.mjs tests/mcp.test.mjs",
+        "counts": {
+          "tests": 31,
+          "pass": 31,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "node": "v26.0.0",
+        "logSha256": "dbca116a622b7f9b6f2c3228437b3dd7ac0da4aa9a80d49851b0e50b6619c044",
+        "scope": "New policy tests use inert transport stubs; compatibility regression invokes real bundled MR4 only with synthetic repository fixtures; no external service",
+        "previousCompatibilityAttempt": "Test incorrectly sent initialized notification with an id; actual MR responded HTTP200. Corrected test envelope to omit id, leaving production unchanged.",
+        "exitCode": 0
+      },
+      "newRegressionCoverage": {
+        "newTests": 3,
+        "rejectedDefinitionCases": 7,
+        "rejectedInputCases": 6,
+        "deniedTransportCalls": 0,
+        "allowedOperationCases": 8,
+        "genericDirectToolCallsStillDenied": 4,
+        "realBundledProcessorsPassed": 4,
+        "realBundledLifecyclePassed": true,
+        "oldSourceRejectedByNewTests": 2
+      },
+      "previousAttempts": {
+        "sandbox": "EPERM before listener ready; no product assertion",
+        "firstCombinedSuite": "24 completed tests passed; device-lifecycle suite could not load because existing esbuild dependency is absent",
+        "initialCompatibilityTest": "30 passed and 1 failed; test incorrectly supplied an ID for a notification. Fixed test envelope only; final31 pass.",
+        "agentProbe": "An agent turn hit a tool-side security restriction before completing its planned runtime probe. That probe is not treated as executed; reviewed inert-transport tests establish the dispatch boundary."
+      },
+      "distribution": {
+        "verdict": "NO_BLOCKER",
+        "artifact": "public/toolkits/sky-mcp-connector.zip",
+        "sha256": "bcecca49e5d88b7c3cc5ec8addc02d9883566514a0b259d82e2fbe306ba07909",
+        "memberCount": 66,
+        "allMembersByteMatchSource": true,
+        "changedDistributionScope": "Sky MCP ZIP contains Connector source and README and was regenerated; MR-only ZIP contains no Connector and remains byte-identical to baseline.",
+        "mrArchiveUnchanged": true,
+        "mrSourceAndPinnedVendorUnchanged": true,
+        "pcCitationsPinUpdateRequired": false,
+        "historicalEvidenceHashesRewritten": false,
+        "publicationClaim": "Local distribution-file synchronization only; no deployment or external installation claimed."
+      },
+      "testedSourceSha256": {
+        "toolkits/sky-mcp-connector/server.mjs": "7d557bdb1d41c11476e28592ab7778128a0002f0277f8318ea1978b582f84afc",
+        "tests/mcp-connector.test.mjs": "2afc7002eae26c4b28fd1c99357ae0955578024d19a79939aff84c0a16237552",
+        "tests/mcp-spider-guard.test.mjs": "d519be7144aadaff8c6c38bfc6af0379804fb3e255c4ca5a36edcf442ab47c85",
+        "tests/mcp-client.test.mjs": "507f8294a8d2d2c7fccdf427bd993795e118e5736bc8d320783485f16048bfb3",
+        "tests/mcp.test.mjs": "a3341669dce0554da924cfb2e04f246e8f8d0f125d926798eec71059c9440e8a",
+        "lib/device.ts": "ce6d73430553b0afdadd4d93b64161f375da48ef73c58fc0b3122c8b062c82d7",
+        "lib/mcp-client.ts": "224e3d032fd99d3707007535cd319a3e8006d0509c57b3e0e3497ab9708fac30",
+        "toolkits/mr/mcp_server.py": "643420c5bf4505b36b6b2435e34e39923f5fd1fb619692ee41ee631b4e787fb0",
+        "toolkits/sky-mcp-connector/registry.json": "23d0e9f2d2bda6a0860ca355a9d3f817f0d8179140a5a38a01300e40500aeeb4",
+        "toolkits/sky-mcp-connector/README.md": "97b9b779003e6cc7932fe3bc3c0049b6eb0898d131058bbe02af2a90be145066",
+        "docs/sky-mcp-connector.md": "681c35182d762d8c52bb74bb0fc91b7c82e3fb4a4a67db0f86a9e964d70e73d4",
+        "docs/sky-tools-complete-design.md": "2af767949479be9cf45252dc7a59e978ae9f6e60a9f353f161d037e9cdcff8ba",
+        "data/design-document-index.json": "057efb75e46809afb98078fffa3073c198d5afdd4811d4689dcc014773b41bba",
+        "scripts/package-sky-mcp.py": "b9cb26bdeeb1cc1df9547df825eee3759110895dc4b10504ba041cd45b275f93",
+        "scripts/package-mr.py": "f309f9ffc0f334084d606302d42dd56219011e118a4ec95c95b6c85ff7836aaa",
+        "toolkits/mr/pc_citations.py": "1d81ba7c24e638ae72e5347b7d5ae3a42cab206bfc77325a578f25db21482edc",
+        "public/toolkits/sky-mcp-connector.zip": "bcecca49e5d88b7c3cc5ec8addc02d9883566514a0b259d82e2fbe306ba07909",
+        "public/toolkits/mr-toolkit.zip": "a94c3330036c8ef326cb6140520ce761d924fff096311267ad35e954d8e84c21"
+      },
+      "independentReview": {
+        "path": "work/spider-ci/cycle-23-approval-final-review.json",
+        "sha256": "53a4d4e1f1cf91273799709182ad0e970b5d8a886cc4bd3c2b29d3d908b98032",
+        "verdict": "NO_BLOCKER",
+        "reviewerDuplicatedSuites": false
+      },
+      "evidenceSha256": {
+        "cycle-23-before.json": "0d48dd9d3041b06c891597371ccb2835732aad84bc0b10afccf8564d3ac888d4",
+        "cycle-23-after.json": "922f369045b81964c21899ed2ec6116f7405525d00ddf17e77fc2cf3837b3aef",
+        "cycle-23-compat-notification-failed.json": "84a981a884e1a5d5e117c8e440b2dea008221ae2dc63ca8758cc24c753f6a690",
+        "cycle-23-final-tests.json": "e9c526079276182f9bef290652de1ff31f32a90535e29be0b9720784592e5768",
+        "cycle-23-approval-review.json": "68f1e705fe713c60699f236ce33551e999e8b7eda6ea51a484478515aee90c7e",
+        "cycle-23-prepublish-baseline.json": "412bc42e81d1b82d83e9d2391436b632e8fb9577649837e7374ecf4321b92eb6"
+      },
+      "localFullVerify": {
+        "status": "failed",
+        "reason": "existing missing ai dependency at llm:architecture:check",
+        "precedingGates": "project through system:composition completed successfully",
+        "followingGates": "NOT_RUN locally",
+        "logSha256": "cf77638b96da1306e3c1e3e6ce6b504b20d274aa529a6fcd92b7f83247d421f9"
+      },
+      "remaining": {
+        "codeql": "Compare all49 IDs at the same ref after publishing. No current alert is claimed resolved by this policy repair.",
+        "dependencies": "18 default-branch alerts; existing PR53-56 unchanged; no duplicate PR or dependency branch changes.",
+        "history": "2369 pattern candidates; seven earlier public source digest matches individually classified. Do not infer other candidates are safe.",
+        "clientSuite": "device-lifecycle must be checked in exact-SHA CI with clean dependency installation."
+      },
+      "limits": [
+        "Source review only by this reviewer. Synthetic reproduction and regression execution are delegated to another agent and are not counted here.",
+        "Registry, installed source and interpreter/PATH are trusted local configuration. A path-identity check is not cryptographic attestation or a same-UID sandbox.",
+        "No live browser, external provider, native OS, VM, physical device, deployment or production approval was tested.",
+        "Final implementation review and test-evidence references will be added only after source freeze.",
+        "No external Tool/provider, hostile registry process, browser UI, native OS, real device or production deployment was executed by this reviewer.",
+        "Inert transport tests establish forwarding/refusal behavior, not actual destructive Tool effects.",
+        "The default four MR processors are deliberate local transformations/verification; their stock runtime was not identified as an external-action vulnerability.",
+        "Full real-dependency device-lifecycle and same-head GitHub CI results remain separate from the 31-test host command.",
+        "No CodeQL dismissal, scanner exception, or approval-policy removal is part of this review."
+      ],
+      "boundaries": {
+        "runtimeChanged": true,
+        "testChanged": true,
+        "scannerPolicyChanged": false,
+        "vendorChanged": false,
+        "mrPackageChanged": false,
+        "sdkPackageChanged": false,
+        "dependencyInstallation": false,
+        "mainMerged": false,
+        "forcePush": false,
+        "publicDeployment": false,
+        "deviceOperation": false,
+        "secretRotation": false
+      },
+      "publicationEvidence": {
         "status": "pending"
       },
       "projectDatabaseDesignChecks": "passed before missing ai dependency"

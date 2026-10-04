@@ -95,6 +95,8 @@ Skyはapp storeだけではなく、発見から接続、実行場所、停止�
 
 ## 2. 共通Tool契約
 
+PC Connectorの旧`/mcp`互換入口は、正確な同梱MR接続定義と4つのローカル機能・既存lifecycleへ限定する。対象外は送信前に403 `legacy_mcp_not_supported`で拒否し、汎用server IDの接続・prepare・本人確認・executeへ案内する。この互換4機能は一回券の限定例外であり、追加Toolへ自動的に拡張しない。Origin／session認証とデータ保護、設定を戻した場合の復旧を維持する。[Connector設計](sky-mcp-connector.md#互換性と移行)の入力・失敗・信頼範囲に従う。
+
 PC内Toolの自動検出は[Sky MCP Connector](sky-mcp-connector.md)のowner専用descriptorを入力とする。検査と読取に同じfile handleを使い、symlink・非通常file・private権限違反・4 KiB超過を拒否する。壊れた候補は接続一覧へ加えず、SDKが正しい定義を再生成すれば次の検出で復旧する。検出によって権限や実行承認を追加せず、既存Passportと一回券を維持する。回帰では読取中のpath差し替え／file拡大と正常SDK接続・承認付き実行を検査する。同一UIDと親directoryの信頼境界は保持する。
 
 SDKのローカルMCP認証は、受信文字列と期待キーをUTF-8 byte列へ変換し、byte長一致を確認してから定時間比較する。JS文字数だけで比較へ進ませず、不正な非ASCII認証値も401へ固定してprocessを維持する。認証前のhandler実行や資格情報の応答・ログ出力を追加せず、既存loopback／descriptor／実行承認を保つ。隔離したchildの不正要求後に同じserverのhealth・正当な認証付きTool実行を確認する。実機やInternet到達は未検証で、責任範囲と詳細は[Sky Tool SDK](sky-tool-sdk.md)へ接続する。

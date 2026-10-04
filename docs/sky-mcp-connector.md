@@ -60,6 +60,12 @@ Passportは安全性の保証ではなく、接続時点で確認した相手と
 
 既存Skyの`/mcp`経路は、配布済み4機能向けの互換入口として残す。新しい自動化はserver IDを持つ汎用経路を使う。これにより既存コードを壊さず、機能数固定を段階的に廃止できる。
 
+2026-10-04の互換境界: `/mcp`は同梱MRの正確な接続定義（ID、stdio、python3、同梱cwd／script、単一引数、追加環境変数なし）に限る。許可する操作はinitialize、initialized通知、ping、tools/listと、coconala_check／format_citations／make_free_article／verify_deliveryの4機能だけ。定義・操作が異なればtransportへ渡す前に403 `legacy_mcp_not_supported`で拒否し、定数メッセージでserver IDの接続→prepare→本人確認→executeへ案内する。拒否は設定・入力を保存せず、接続定義を戻すか汎用経路を使えば復旧できる。
+
+この4機能の互換経路は一回券を要求しない限定例外であり、全経路で一回承認を強制しているとは扱わない。許可Origin・session認証と送信前データ保護は維持する。同一ID、readOnlyHintやTool名だけで第三者実装へ例外を広げない。信頼済み配布source・PATH・PC所有者の設定が前提で、同一UIDによる改変への隔離や無認証侵入の修復を主張しない。
+
+回帰は何も実行しないtransport stubで定義7形式・操作6形式の拒否と転送0を確認し、同梱MRでは実際のlifecycle・基本4機能を合成入力で通す。汎用経路の一回承認・再利用拒否も維持する。
+
 公式MCP 2025-11-25のlifecycleとstdio / Streamable HTTPを基準にし、2025-06-18、2025-03-26、2024-11-05を接続時に互換確認する。実行送信後のtimeoutは自動再試行せず、結果不明として照合へ回す。
 
 

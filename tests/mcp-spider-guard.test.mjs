@@ -172,7 +172,10 @@ void test('legacy /mcp cannot grant a third-party script the bundled MR exemptio
     jsonrpc: '2.0', id: 1, method: 'tools/call',
     params: { name: 'format_citations', arguments: personalArgs },
   });
-  assert.equal(response.status, 422);
-  assert.deepEqual(await response.json(), { error: 'SENSITIVE_DATA_BLOCKED', message: 'SENSITIVE_DATA_BLOCKED' });
+  assert.equal(response.status, 403);
+  assert.deepEqual(await response.json(), {
+    error: 'legacy_mcp_not_supported',
+    message: 'この操作はserver IDの接続・確認・一回承認を使ってください。',
+  });
   assert.equal(calls.length, 0);
 });
