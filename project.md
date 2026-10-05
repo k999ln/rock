@@ -1,6 +1,6 @@
 ## 2026-10-05 GTA VIのプレイ入口実装
 
-Game / Market / FundのROCK担当、AI06の非金融接続サブ項目。利用者の「出来るようにして」に対してmain `592daeea322cd47aa189b67dd689e323662c0c67`を取り込み後、Mini game clientの診断と公式clientへの固定起動を実装。PC版未確認のPro経路は拒否する。7件のfixture/CLI試験は合格。PS5/Xbox選択待ち、MacのPS Remote Play未導入、console/GTA VI/Mini実機の受入は未実施。接続/入力/復旧は公式clientへ委譲し、起動要求成功をプレイ成功にしない。詳細: `docs/mini-game-client.md`。 全体`npm run verify` exit 0（Node1079 pass/1 skip、仕事API1069、CSV113）、対象lint、設計台帳も合格。依存7.29.0/指定7.29.1不一致と容量不足による中断を、同一lockfileの依存コピーで復旧して再検証した。証拠: `docs/evidence/mini-game-client-local.json`。次は機器選択→公式client→所有console接続→実タイトル/表示/操作/復旧の受入。
+Game / Market / FundのROCK担当、AI06の非金融接続サブ項目。利用者の「出来るようにして」に対してmain `592daeea322cd47aa189b67dd689e323662c0c67`を取り込み後、Mini game clientの診断と公式clientへの固定起動を実装。PC版未確認のPro経路は拒否する。7件のfixture/CLI試験は合格。PS5/Xbox選択待ち、MacのPS Remote Play未導入、console/GTA VI/Mini実機の受入は未実施。接続/入力/復旧は公式clientへ委譲し、起動要求成功をプレイ成功にしない。詳細: `docs/mini-game-client.md`。 全体`npm run verify` exit 0（Node1079 pass/1 skip、仕事API1069、CSV113）、対象lint、設計台帳も合格。依存7.29.0/指定7.29.1不一致と容量不足による中断を、同一lockfileの依存コピーで復旧して再検証した。証拠: `docs/evidence/mini-game-client-local.json`。 実装commit `96fedfc7904753bf2960570eb307d6db2d223347`をGitHub保存、draft PR #64更新。同SHAのCIは確認時check未表示で、成功とは扱わない。main統合・サイト配備なし。次は機器選択→公式client→所有console接続→実タイトル/表示/操作/復旧の受入。
 
 ## 2026-10-05 Mini本体SIMによる独立通信設計
 

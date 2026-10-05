@@ -4646,7 +4646,10 @@
     "nextAction": "Choose PS5 or Xbox Series X|S; install the official compatible client, sign in on owned console, then accept actual video/audio/controller and GTA VI when available.",
     "localVerify": "passed",
     "verificationEvidence": "docs/evidence/mini-game-client-local.json",
-    "githubSaved": false,
-    "mainMerged": false
+    "githubSaved": true,
+    "mainMerged": false,
+    "implementationCommit": "96fedfc7904753bf2960570eb307d6db2d223347",
+    "pullRequest": "https://github.com/k999ln/rock/pull/64",
+    "ciAtImplementationCommit": "no_checks_reported_at_last_check"
   }
 }
