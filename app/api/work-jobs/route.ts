@@ -1,9 +1,12 @@
+import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
 import { database, requestUser } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
 import {
   createWorkJob,
   applyWorkCommand,
   objectInput,
+  parseWorkCommand,
+  type WorkCommand,
   workId,
   WorkError,
 } from '@/lib/workflow';
@@ -98,7 +101,36 @@ export async function PATCH(request: Request) {
     if (!current) throw new WorkError('仕事が見つかりません。', 404);
     if (current.templateId === 'amc' || current.amcGoal)
       throw new WorkError('AMC画面から記録を更新してください。');
-    const next = applyWorkCommand(current, input.command, input.revision);
+    const command = parseWorkCommand(input.command);
+    if (current.templateId === 'cloud-agent') {
+      const reviewCommands = [
+        ...current.events.map(({ command: event }) => event),
+        command,
+      ].filter((event): event is Extract<WorkCommand, { action: 'record' }> => event.action === 'record');
+      const delegations = a2aDelegationStore(database());
+      for (const event of reviewCommands) {
+        if (!event.delegationId)
+          throw new WorkError('親jobのAgent手順に委任IDがありません。再読込して状態を確認してください。', 409);
+        const delegation = await delegations.get(user, event.delegationId);
+        if (!delegation || delegation.parentJobId !== current.id)
+          throw new WorkError('記録するAgent委任がこの親jobに属していません。', 409);
+        if (event.stepId === 'agent-brief') {
+          if (!delegation.priceQuote || !/^[a-f0-9]{64}$/i.test(delegation.priceQuoteDigest))
+            throw new WorkError('Agentの署名付き見積が保存されていないため、計画手順を通過できません。', 409);
+        } else if (event.stepId === 'agent-result') {
+          const [artifacts, receipt] = await Promise.all([
+            delegations.listArtifacts(user, delegation.id),
+            delegations.getUsageReceipt(user, delegation.id),
+          ]);
+          if (delegation.state !== 'remote_completed' || delegation.artifactsCaptured !== 1 ||
+            artifacts.length === 0 || !receipt || receipt.parentJobId !== current.id)
+            throw new WorkError('Agentの完了状態・保存成果・利用receiptを確認できないため、計画を進められません。', 409);
+        } else {
+          throw new WorkError('Cloud Agent計画の手順が不正です。', 409);
+        }
+      }
+    }
+    const next = applyWorkCommand(current, command, input.revision);
     if (next !== current && !(await store.update(user, next, current.revision)))
       throw new WorkError(
         '別の操作で更新されています。一覧を再読込してください。',

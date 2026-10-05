@@ -37,7 +37,11 @@ export default function AmcCommandCenter({
       t.scopeReviewRequired ||
       t.executionEligibility === 'authority_required',
   );
-  const intent = goal.skyBrief?.intent ?? goal.requestBrief?.intent;
+  const skyBrief = goal.skyBrief;
+  const skyIntent =
+    skyBrief && typeof skyBrief === 'object' && 'intent' in skyBrief &&
+    typeof skyBrief.intent === 'string' ? skyBrief.intent : undefined;
+  const intent = skyIntent ?? goal.requestBrief?.intent;
   function missions(tasks: AmcGoal['tasks'], empty: string) {
     return tasks.length ? (
       <ul>

@@ -241,6 +241,7 @@
       ],
       "implementationBoundary": {
         "storage": "existing_work_jobs_payload_with_authenticated_user_and_revision_cas",
+        "workPlanCompatibility": "schema_1_read_normalization_and_pre_execution_objective_edit; amc_event_and_goal_revision_preserved",
         "templateRoles": 4,
         "templateSteps": 7,
         "createdPlanState": "active",

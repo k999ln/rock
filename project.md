@@ -1,5 +1,12 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-05 — WorkPlanとAMC保存契約の局所復旧
+
+O5 / SKY10・SKY16（SKY-S7-WORKPLAN-RECONCILE-20261005-01）、ROCK。基点main 4a22eb25で欠落したWorkPlan schemaVersion 1・objective・固定approvalGates、旧jobの読取正規化、開始前edit_planを624124cfの既存契約から差分復旧。job revisionのCAS、現在のAMC amc_event/Goal expectedRevision、専用API境界は保持。重複listAmcを一本化し、本人別・最大100件・Goal本文を含めない一覧を維持。直接consumerの重複分岐とunknownなskyBriefの表示を修正。cloud-agent手順の復旧に必要な既存の所有者/親job/見積/成果/receipt照合もAPIへ戻す。新schema・価格・利用権・接続コード・端末権限は追加しない。
+
+通常の契約回帰：29件中28合格。残る1件は未変更catalogの現行URL /zema/amcに対して旧 /amcを期待する既存テスト。新規6件は実routeコード＋合成SQLite/D1 adapterで保存/編集/再送/競合/越境拒否、AMC二段revision、軽量一覧、非grantを確認。実HTTP/本番D1/本人認証/実PC/課金/実モデルworker・reviewerの受入ではない。対象型エラー15件解消、local-guideの既存1件が残る。Goal r46/maxParallel1・過去提出証拠・元dirty checkoutを保護し、今回は小さいローカルcommitで独立検収へ提出する。push・公開は行わない。project:check・mission:check・変更対象lintは合格。design:checkは既存catalog重複、verifyは既存database metadata不一致で停止し、以降のbuild/全API/全Node試験は未到達。
+
+
 ## 2026-10-05 — Skyライブラリ保存APIの復旧とmain反映準備
 
 O5 / SKY10・SKY16（SKY-S2-LIBRARY-RESTORE-20261005-01）、ROCK。既存0059 schemaとGET/PUT契約を使い、欠落した本人別一覧・保存・解除のoperationsを復旧。再保存は重複せず保存日時を維持し、他人の保存は変更しない。保存による購入権・実行同意・仕事作成はない。利用者の「mainにあげて」により、前回の商品詳細→Zema差分と合わせGitHub mainへ反映する。公開サイト配備は別。

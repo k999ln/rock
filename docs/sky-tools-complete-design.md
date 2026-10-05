@@ -155,6 +155,9 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 
 ### 保存・privacy・保持・削除・互換・復旧
 
+2026-10-05 契約復旧：既存ZemaのWorkPlanはschemaVersion 1、objective、templateから固定するapprovalGatesを持ち、更新競合はWorkJob revisionで判定する。planのない旧payloadは読取時に補い、読取だけではDBを書き換えない。通常jobのobjective編集は最初の実行記録前だけ許可し、利用者入力からgateを緩和できない。AMCのplanは互換表示用で、変更は引き続きamc_eventとGoal expectedRevisionの専用契約を通す。listAmcは認証user別の最大100件の要約のみ返し、Goal本文・手順・履歴を一覧へ展開しない。cloud-agentの記録には同一owner/親jobの既存委任と保存見積、結果には完了状態・保存成果・usage receiptを照合する。これは既存の保存契約の復旧で、外部実行・予算承認・権限付与ではない。再送は同一commandを返し、競合は409と最新読取で復旧する。合成DB/実routeコードの回帰はtests/workplan-reconcile.test.mjsで確認し、本番本人認証・公開受入は別とする。
+
+
 明示して保存した依頼本文、Goal、意図、手動進捗、証拠参照を既存`work_jobs.payload`へ保存する。レコードは認証userで取得・更新を絞り、更新前revisionのcompare-and-swapを通す。別userのIDを知っていてもそのGoalを取得・更新できない。新しいtableやDBを増やさない。
 
 これは本人のWebアカウント領域への保存で、端末内だけの保存とは異なる。秘密・資格情報・原稿・不要な個人情報を入力しない。Web保存・画面操作だけではLLM、model provider、外部executorへ本文を送信せず、新たな本文telemetryを追加しない。ローカルCodex CLIを明示実行した場合はGoal内容と関連repository文脈がCodexへ送られる。暗号化された成果物保管や署名済み監査をこのpayload保存だけで保証しない。

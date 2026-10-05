@@ -311,4 +311,6 @@ Images and GIFs are concept material for explaining the product. They are not pr
 
 <!-- sky-detail-handoff:start -->
 Skyの商品詳細では説明・料金・接続条件を確認し、ライブラリへ保存できます。「Zemaで開く」から同じ商品の入力・実行画面へ進みます。商品を開くことや保存することだけでは購入・実行を承認しません。出典整理はブラウザで処理でき、PC接続は必須ではありません。 保存した商品はZemaのライブラリから開けます。再保存は重複せず、解除は本人の保存だけに適用します。
+
+Zemaの通常の仕事では、最初の手順を始める前に計画の目的を編集できます。同時更新で競合した場合は再読込して最新の内容を確認します。AMCのGoalはAMC専用の承認・記録操作から更新します。
 <!-- sky-detail-handoff:end -->
