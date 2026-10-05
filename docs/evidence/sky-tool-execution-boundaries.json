@@ -393,14 +393,14 @@
       "fullVerify": "not_passed"
     }
   },
-  "sourceBaseCommit": "592daeea322cd47aa189b67dd689e323662c0c67",
+  "sourceBaseCommit": "a3951f52fa79ad4348f371c647dfe339de2e8eeb",
   "tests": {
     "status": "passed",
     "environment": "local canonical integration of Sky, AMC and SPIDER; synthetic only",
     "command": "npm run verify",
     "nodeTests": {
-      "total": 1147,
-      "passed": 1146,
+      "total": 1152,
+      "passed": 1151,
       "skipped": 1,
       "failed": 0
     },

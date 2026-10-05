@@ -1,8 +1,8 @@
 {
   "schema": "sky-github-main-integration/1",
-  "observedAt": "2026-10-05T08:08:39.323906+00:00",
+  "observedAt": "2026-10-05T08:17:12.374864+00:00",
   "sourceCandidate": "b896b2e17576c2ee5dcf52d3380540472a14697d",
-  "baseMain": "592daeea322cd47aa189b67dd689e323662c0c67",
+  "baseMain": "a3951f52fa79ad4348f371c647dfe339de2e8eeb",
   "branch": "codex/sky-main-integration-20261005",
   "scope": "canonical source integration; not production deployment",
   "localValidation": {
@@ -10,8 +10,8 @@
     "status": "passed",
     "nodeVersion": "v26.0.0",
     "nodeTests": {
-      "total": 1147,
-      "passed": 1146,
+      "total": 1152,
+      "passed": 1151,
       "skipped": 1,
       "failed": 0
     },
@@ -44,5 +44,25 @@
   "next": [
     "Confirm exact-head GitHub verification and production-response measurements before merging",
     "Reconcile deployment bindings, configure Cron and independently accept owner/physical/provider journeys before any production claim"
-  ]
+  ],
+  "pullRequest": "https://github.com/k999ln/rock/pull/68",
+  "previousHeadChecks": {
+    "head": "21e4537116448f65582b80a6e901c61890abb141",
+    "verify": "passed",
+    "verifyRun": 37281835450,
+    "spiderRepairAndWebMeasurement": "passed",
+    "spiderRun": 37281835457,
+    "codeqlAlert57": "removed redundant self-authentication of a stored grant; requester authentication and deadline retained; new-head CodeQL pending",
+    "secretsRun": 37281835582,
+    "secretsCandidates": 2867,
+    "visibleIncrease": {
+      "count": 8,
+      "files": [
+        "docs/evidence/amc-main-integration.json",
+        "docs/evidence/spider-improvement-cycle.json"
+      ],
+      "allBytesMatchMain592daeea": true,
+      "scope": "merge-parent repetition of unchanged evidence; truncated report cannot prove zero new secrets"
+    }
+  }
 }

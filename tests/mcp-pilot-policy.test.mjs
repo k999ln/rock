@@ -72,3 +72,37 @@ void test('the published Sky origin reaches ordinary Connector health but does n
   assert.equal((await fetch(url + '/servers', { headers: { Origin: PILOT_ORIGIN } })).status, 401);
   assert.ok(connector.hub.list().every(server => server.passport === null));
 });
+
+void test('isolated pilot reconnect reuses its grant without extending the deadline or bypassing requester authentication', async (t) => {
+  const startedAt = Date.parse('2026-10-05T12:00:00Z');
+  t.mock.timers.enable({ apis: ['Date'], now: startedAt });
+  const registryPath = fileURLToPath(new URL('../toolkits/sky-mcp-connector/registry.pilot.json', import.meta.url));
+  const connector = await createConnector({ registryPath, port: 0, pilot: true });
+  t.after(() => new Promise(resolve => { connector.server.closeAllConnections(); connector.server.close(resolve); }));
+  const base = `http://127.0.0.1:${connector.port}`;
+  const headers = { Origin: PILOT_ORIGIN, 'Content-Type': 'application/json' };
+  const connect = () => fetch(base + '/connect', { method: 'POST', headers, body: '{}' });
+  const list = (authorization) => fetch(base + '/servers', {
+    headers: { ...headers, ...(authorization ? { Authorization: authorization } : {}) },
+  });
+  // Only a disposable in-process grant is issued. No MCP server is initialized
+  // and no device record, actual PC connection, or Tool execution is created.
+  const firstResponse = await connect();
+  assert.equal(firstResponse.status, 200);
+  const first = await firstResponse.json();
+  assert.equal(first.expiresAt, new Date(startedAt + PILOT_TTL_MS).toISOString());
+  assert.equal((await list()).status, 401);
+  assert.equal((await list('Bearer wrong-fixture')).status, 401);
+  assert.equal((await list(`Bearer ${first.token}`)).status, 200);
+  assert.equal((await fetch(base + '/connect?route=servers', { method: 'POST', headers, body: '{}' })).status, 401);
+  t.mock.timers.setTime(startedAt + PILOT_TTL_MS - 1);
+  const repeated = await connect();
+  assert.equal(repeated.status, 200);
+  assert.deepEqual(await repeated.json(), first);
+  t.mock.timers.setTime(startedAt + PILOT_TTL_MS);
+  assert.equal((await list(`Bearer ${first.token}`)).status, 401);
+  const expired = await connect();
+  assert.equal(expired.status, 403);
+  assert.equal((await expired.json()).error, 'pilot_expired');
+  assert.ok(connector.hub.list().every(server => server.state === 'available' && server.passport === null));
+});

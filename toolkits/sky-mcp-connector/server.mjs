@@ -966,9 +966,14 @@ export async function createConnector({
           }, PILOT_TTL_MS);
           pilotTimer.unref();
         }
-        const existing = tokens.get(origin);
-        const grant = existing && connectorAuthorizationValid(`Bearer ${existing.token}`, existing)
-          ? existing : { token: randomBytes(32).toString('base64url'), expiresAt: pilotDeadline };
+        // These grants are issued and stored only by this Connector. The pilot
+        // deadline above controls their lifetime; ordinary grants do not expire.
+        // Reconnecting reuses that state, without authenticating a token against
+        // itself or extending the pilot. Requester authentication remains below.
+        const grant = tokens.get(origin) ?? {
+          token: randomBytes(32).toString('base64url'),
+          expiresAt: pilotDeadline,
+        };
         tokens.set(origin, grant);
         return send(
           response,
