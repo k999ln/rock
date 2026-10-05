@@ -189,4 +189,3 @@ Workbenchでbudget minor unitsを通貨別に表示し、Provider signed final u
 ## 開発実行プロンプト
 
 [決済とWalletの開発プロンプト](../prompts/sky-commerce-wallet-development.md)を使用する。設計差分の実装、Commerce管理者権限、監査、サポート、停止/復旧、監視、sandboxから限定liveまでの受入を含む。外部Stripe/Cloudflare/OSSの利用と、自社コードの担当を区別する。プロンプト保存は実装合格ではない。
-

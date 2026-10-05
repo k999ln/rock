@@ -84,7 +84,7 @@
     "docs/sky-billing.md": "a8de4a03f3463801529562065fed7abf79fc80314546773de738fa39aa931103",
     "docs/sky-commerce-design.md": "115600e80a49b3ef6ce7e47d7c0462df731244cbb59361e9198bdbae9c5ebeaf",
     "docs/wallet-commerce-design.md": "642f504814bcc27f75ce0bd743fe84fbbe37e35ce3e7ad565ec7af4dc646d049",
-    "docs/workstreams/03-wallet-billing-providers.md": "2549f0a0549cdc0ca04f04fc8e6625d1733c837585a1813bb96532ec5620db4e",
+    "docs/workstreams/03-wallet-billing-providers.md": "38be9f34fcfd854daa9e6f312a3c4a1a2606a306c970c590910184e5228c2574",
     "project.md": "ad06a56a7717be992b7453ee586f79fc44e42d38a21b4068327879385e3bb0da"
   },
   "sourceIdentityNote": "checkedWorktreeBase identifies the pre-finalization commit; inputSha256 identifies checked documentation and validation contents. The final Git commit and exact-SHA CI supply publication identity.",
