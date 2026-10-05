@@ -1393,7 +1393,32 @@
         "lib/sky-app-manifest.ts",
         "tests/sky-app-manifest.test.mjs",
         "docs/sky.md"
-      ]
+      ],
+      "amcMainIntegration": {
+        "date": "2026-10-05",
+        "status": "validated_ready_for_main",
+        "scope": "AMC only; current main WorkPlan and service access retained",
+        "evidence": [
+          "docs/amc-sky-launch-integration.md",
+          "toolkits/amc-agent/README.md",
+          "tests/amc-main-integration.test.mjs",
+          "docs/evidence/amc-main-integration.json"
+        ],
+        "runtime": "blocked_folder_trust_before_model_execution",
+        "webExecution": "not_connected",
+        "formalSkyAcceptance": "not_changed",
+        "validation": {
+          "command": "npm run verify",
+          "exitCode": 0,
+          "tests": 999,
+          "amcFocusedTests": 129,
+          "workerD1Assertions": 1069,
+          "csvWorkerD1R2Assertions": 113,
+          "build": "passed",
+          "assetClosureMissing": 0,
+          "logSha256": "cd7926aa1050013a1907eb85983bc319888be67f24af46a09ac5572b00ceeb32"
+        }
+      }
     },
     {
       "id": "BRD01",

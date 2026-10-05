@@ -87,7 +87,7 @@ void test('publisher can reuse owner-scoped details without an assumed free pric
 });
 
 void test('all catalog tools remain individually discoverable without claiming candidates are operational', () => {
-  assert.equal(catalog.length, 34);
+  assert.equal(catalog.length, 35);
   assert.equal(catalog.filter((tool) => tool.status === 'candidate').length, 22);
   assert.match(marketplace, /catalog\.filter/);
   assert.match(marketplace, /skyToolUiState\(tool, runtimeContext\)/);

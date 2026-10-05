@@ -1,3 +1,7 @@
+## 2026-10-05 — main の同時 AMC 更新を保持
+
+mainがさらに `11824636`（AMC command center）へ進んだため、そのruntime・型・試験・設定を保持してSPIDERへ取り込んだ。競合は進捗文書の追記だけで、両方の記録を残した。`a42e7535`の合格はSPIDER修正の証拠であり、この合流後SHAの全体合格へ転用しない。main統合後の同一SHAで全体・native・Web・security検査を確認する。
+
 ## 2026-10-05 — SPIDER 検証完了と同時更新された設計文書の保持
 
 `a42e7535` の full verify（37279549292）、native全5区分と集約（37279549189）、SPIDER回帰・production Web実測（37279549258）が同一SHAで成功した。Web実測は8経路・8共通header・worker bytes一致を確認。統合直前のmain `4928b64e` は決済・Wallet設計資料の追加であり、runtime差分はない。両系列の設計追記と進捗を保持して競合を解消し、既存の本人承認・料金・保存境界を維持する。統合後のmain SHAの再検査はGitHub Actionsで別途確認する。
@@ -11,6 +15,8 @@
 Web 応答測定は build に使う Cloudflare plugin の Wrangler 4.147.0／Workerd 2026-10-01 と、起動時に直接選んでいた root Wrangler 4.122.0／Workerd 2026-08-11 が不一致だった。plugin の ESM export から自身の Wrangler CLI を解決し、migration と起動の両方に使う。起動失敗時は固定のエラー分類と終了番号だけを出し、raw log や秘密値を公開しない。nested／dedup／ESM専用export／不正bin／診断の非漏洩と既存 security/feedback の20試験が合格。最初の局所試験は端末容量不足で3件停止したが、同じ試験の再実行で合格した。検査項目・policy・依存lock・compatibility dateは緩めていない。
 
 同一公開SHAで full verify、native source、production Web 測定を再確認してから統合する。履歴検査の未照合候補と CodeQL のテストfixture 2件は別の残課題として保持し、CI成功やmain統合を全警告解消・実機／公開配備の受入と呼ばない。
+
+2026-10-05 WEB04 / AMC main統合: 本人の指示で最新mainへAMCの画面・保存API・Goal基盤・CLI・3役・fixtureを統合する。mainのWorkPlan、Cloud Agent検収、Zema新規保存のservice entitlementを保持。Sky/Zema全体の旧ルート移行、CSV、ライブラリmigrationは含めない。実起動は2026-10-04にCLIフォルダ信頼確認で停止、実部隊/独立検収/並列受入/Web同期は未実施。検証と保存状況はWEB04.amcMainIntegrationに記録する。 最新main上のnpm run verifyは999テスト、Worker/D1 1069 assertions、CSV Worker/D1/R2 113 assertions、buildと配信asset検査を含め合格。
 
 ## 2026-10-05 — 決済・Wallet設計と英語開発プロンプトのmain保存
 

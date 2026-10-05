@@ -1,5 +1,6 @@
 import { env } from 'cloudflare:workers';
 import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
+import { skyWebCommand, requireSkyDraftImport } from '@/lib/amc-sky-web';
 import { database, requestUser } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
 import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
@@ -67,7 +68,7 @@ async function body(request: Request) {
 export async function GET(request: Request) {
   try {
     const user = await requestUser(request);
-    return json({ jobs: await workStore(database()).list(user) });
+    return json({ jobs: await workStore(database()).list(user, true) });
   } catch (error) {
     return rejected(request, error);
   }
@@ -83,6 +84,8 @@ export async function POST(request: Request) {
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
     ))) return missingRockstarServiceScope('Zema');
     const candidate = createWorkJob(await body(request));
+    requireSkyDraftImport(candidate.amcGoal);
+    if (candidate.templateId === 'amc') throw new WorkError('AMC画面から計画を保存してください。');
     const saved = await workStore(db).create(user, candidate);
     if (
       !saved ||
@@ -106,6 +109,7 @@ export async function PATCH(request: Request) {
     const store = workStore(database()),
       current = await store.get(user, workId(input.jobId));
     if (!current) throw new WorkError('仕事が見つかりません。', 404);
+    if (current.templateId === 'amc' || current.amcGoal) throw new WorkError('AMC画面から記録を更新してください。');
     const command = parseWorkCommand(input.command);
     if (current.templateId === 'cloud-agent') {
       const reviewCommands = [
@@ -135,7 +139,7 @@ export async function PATCH(request: Request) {
         }
       }
     }
-    const next = applyWorkCommand(current, command, input.revision);
+    const next = applyWorkCommand(current, current.amcGoal ? skyWebCommand(current.amcGoal, command, user) : command, input.revision);
     if (next !== current && !(await store.update(user, next, current.revision)))
       throw new WorkError(
         '別の操作で更新されています。一覧を再読込してください。',

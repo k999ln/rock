@@ -915,6 +915,39 @@
     {
       "id": "producthunt-discovery",
       "catalogStatus": "candidate"
+    },
+    {
+      "id": "rockstar-amc",
+      "catalogStatus": "ready",
+      "acceptedCandidateRevalidation": {
+        "event": "revalidate_task",
+        "design": "docs/amc-sky-launch-integration.md",
+        "test": "tests/amc-revalidation.test.mjs",
+        "status": "local_owner_transition_web_fail_closed"
+      },
+      "quickFormat": {
+        "design": "docs/amc-sky-launch-integration.md",
+        "component": "components/amc-quick-board.tsx",
+        "storage": "sessionStorage_tab_only",
+        "authority": "manual_checklist_not_execution_or_acceptance",
+        "placement": "auxiliary_collapsed"
+      },
+      "commandCenter": {
+        "design": "docs/amc-sky-launch-integration.md",
+        "component": "components/amc-command-center.tsx",
+        "runner": "scripts/amc-parallel.mjs",
+        "test": "tests/amc-parallel.test.mjs",
+        "status": "local_fixture_only_web_execution_not_connected"
+      },
+      "agentDefinition": {
+        "source": "data/amc/agent-definitions.json",
+        "launcher": "scripts/amc-agent.mjs",
+        "design": "docs/amc-sky-launch-integration.md",
+        "usage": "toolkits/amc-agent/README.md",
+        "tests": "tests/amc-agent.test.mjs",
+        "runtimeSource": "data/amc/agent-runtime-source.json",
+        "scope": "Codex_custom_agents_web_execution_not_connected"
+      }
     }
   ],
   "nativeToolFamilies": [

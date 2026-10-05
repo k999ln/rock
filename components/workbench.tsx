@@ -257,6 +257,7 @@ function a2aParentControllerNextAction(action: A2AParentControllerSnapshot['next
   return labels[action];
 }
 function eventDescription(job: WorkJob, command: WorkCommand) {
+  if (command.action === 'amc_event') return 'AMCのGoal記録を更新';
   if (command.action === 'edit_plan') return '依頼計画を更新';
   if (command.action === 'complete')
     return `本人が確認して完了: ${command.note}`;
