@@ -193,6 +193,8 @@ ownerはtagごとに:
 
 を実行できます。
 
+analytics削除はDELETE文そのものに現在のowner条件を付けます。削除要求の待機中に旧ownerがCampusを退会し、別ownerが同じtag IDを再登録しても、旧要求は新ownerのイベントを削除できず404になります。イベント0件の正しいownerによる再削除は成功として扱います。
+
 ## Safety / moderation / user controls
 
 Campusは人が作るコンテンツを含むので、最低限の制御をruntimeに置きます。
