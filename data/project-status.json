@@ -382,7 +382,8 @@
         "docs/avocado-mini-r5/README.md",
         "docs/avocado-mini-r5/package/package_manifest.json",
         "docs/avocado-mini-r5/verification.json",
-        "scripts/verify-avocado-r5-package.py"
+        "scripts/verify-avocado-r5-package.py",
+        "docs/avocado-mini-r5/research/immersive-gta/README.md"
       ]
     },
     {
@@ -4411,5 +4412,16 @@
     "referenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
     "referenceSourceBase": "5f3a3694",
     "correction": "Replace mistakenly selected SIM/eSIM home with live Mini/Pro site including publicly visible company information"
+  },
+  "immersiveGtaResearchArchive": {
+    "researchDate": "2026-09-30",
+    "archiveDate": "2026-10-05",
+    "status": "documentation_archived_not_runtime_or_hardware_acceptance",
+    "record": "docs/avocado-mini-r5/research/immersive-gta/README.md",
+    "researchSourceCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "gtaTested": false,
+    "physicalDisplayTested": false,
+    "hardwareTaskStatus": "MAT15_planned",
+    "conceptImageIsExperimentalEvidence": false
   }
 }
