@@ -3168,7 +3168,7 @@
     },
     {
       "id": "G04",
-      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化し、未統合PRの現行main互換を検証",
+      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約を共通化し、19 PRをmainへ統合、SPIDERの検証を継続",
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
