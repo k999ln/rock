@@ -1,3 +1,7 @@
+## 2026-10-05 GTA VIのプレイ対応要求
+
+利用者はGTA VIについて「出来るようにして」と明示した。既存AI06とMini MAT15へ[プレイ接続](mini-game-client.md)を追加する。PS5/Xbox公式clientへのhandoffとProの将来PC版を分け、接続先選択を待つ。製品方針のMini基本単体動作を維持し、GTA VI本体実行・全空間表示を未確認で保証しない。
+
 ## 2026-10-05 Mini単体の携帯回線
 
 利用者はSIMをMini本体へ入れ、ProなしでMini単体が通信する構成を選択した。[Mini cellular設計](avocado-mini-cellular.md)と機械可読仕様へ物理SIM、modem/antenna、接続/復旧と受入を追加。Miniの外部給電、offline基本動作、Pro任意を維持する。利用国/通信会社/採用部品は未定。SIM追加をGPU性能、空間表示、cloud gamingや実開通の合格としない。

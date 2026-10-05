@@ -631,7 +631,10 @@
       ],
       "evidence": [
         "docs/ai-native-os-architecture.md",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "docs/evidence/pr-consolidation-20261005.json",
+        "docs/mini-game-client.md",
+        "toolkits/mini-game-client/client.mjs",
+        "tests/mini-game-client.test.mjs"
       ]
     },
     {
@@ -4627,5 +4630,23 @@
     "runtimeChanged": false,
     "patentFiled": false,
     "nextAction": "初公開日・先行出願を確定し、R1の具体方式・比較実験と専門家による請求項検討を行う。9月30日以降のコード変更は本調査の対象外。"
+  },
+  "gameClientPreparation": {
+    "task": "AI06",
+    "relatedTask": "MAT15",
+    "targetTitle": "GTA VI",
+    "executionDevice": null,
+    "status": "desktop_handoff_prototype",
+    "primaryOwner": "ROCK",
+    "authority": "docs/mini-game-client.md",
+    "consoleConnected": false,
+    "gta6Played": false,
+    "miniHardwareAccepted": false,
+    "publicPageUpdated": false,
+    "nextAction": "Choose PS5 or Xbox Series X|S; install the official compatible client, sign in on owned console, then accept actual video/audio/controller and GTA VI when available.",
+    "localVerify": "passed",
+    "verificationEvidence": "docs/evidence/mini-game-client-local.json",
+    "githubSaved": false,
+    "mainMerged": false
   }
 }

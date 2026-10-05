@@ -43,3 +43,7 @@ AIネイティブOSの共通仕事・記憶・権限契約を、Game／IP制作�
 - `node --experimental-strip-types --test tests/everything-market.test.mjs tests/fund.test.mjs tests/markets-adapter.test.mjs`
 - `node --experimental-strip-types --test tests/game-sandbox.test.mjs`（GM01、`npm test`経由で`npm run verify`に含まれる）
 - nativeのGX00/GX01/DX01受入script
+
+## GTA VIプレイ入口（2026-10-05）
+
+[Mini game client](../mini-game-client.md)の診断/公式client起動をAI06サブ項目として追加。ROCKのdesktop試作であり、認証・映像・操作・復旧は公式clientへ委譲する。console、実タイトル、Miniの表示/入力はJOINTの未受入。ProのPC版対応は未確認のため起動を拒否。担当・入出力・状態・保存・失敗・受入・未決定事項は同設計を正本とする。

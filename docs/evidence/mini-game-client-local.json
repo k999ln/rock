@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-05",
+  "task": "AI06",
+  "relatedTask": "MAT15",
+  "baseSha": "592daeea322cd47aa189b67dd689e323662c0c67",
+  "scope": "desktop prerequisite diagnosis and official-client handoff only",
+  "artifactSha256": {
+    "toolkits/mini-game-client/client.mjs": "90b70b4ced91c607a3499776a1ad1cd4db297c2829ec7850f36c493515faa580",
+    "toolkits/mini-game-client/cli.mjs": "fb3d35327a21505096e1c59ecd2e436633b5e46c6bea5c1cc3ef9394fd87da59",
+    "toolkits/mini-game-client/README.md": "f1b3ee336dce66f19a4075c9e1170f13e40dfb65ae5c3c7c9b3337ffd724a576",
+    "tests/mini-game-client.test.mjs": "1461cea9e7df157cd237d597c1496587eed08b4adfb55e4d2fa84caae6504d73",
+    "docs/mini-game-client.md": "733db3d83e118a23b514992d8acf9be32e9a9a95c64bc61d17c70be13f789a46"
+  },
+  "verification": {
+    "focused": "node --test tests/mini-game-client.test.mjs",
+    "focusedPassed": 7,
+    "launcherSideEffects": "dependency-injected fixture, no real application launch",
+    "realCli": "node toolkits/mini-game-client/cli.mjs check",
+    "realCliExitCode": 0,
+    "realCliPlatform": "darwin",
+    "psRemotePlayAppPresent": false,
+    "repository": "npm run verify",
+    "repositoryExitCode": 0,
+    "nodePassed": 1079,
+    "nodeSkipped": 1,
+    "nodeFailed": 0,
+    "workApiAssertions": 1069,
+    "csvAssertions": 113,
+    "lint": "targeted oxlint passed",
+    "designCheck": "passed",
+    "environmentRecovery": "Installed undici was 7.29.0 vs lock 7.29.1; npm install interrupted during low disk space; restored dependencies by APFS copy from existing workspace with identical package-lock SHA256, then reran full verify successfully. No tracked lockfile change."
+  },
+  "acceptance": {
+    "actualClientLaunch": false,
+    "consoleConnection": false,
+    "gta6Played": false,
+    "miniVideoAudioInput": false,
+    "cellularStreaming": false,
+    "spatialDisplay": false,
+    "publicDeployment": false
+  },
+  "nextAction": "Await target PS5/Xbox/Pro selection; console/client/account and game availability must be confirmed before actual title acceptance."
+}

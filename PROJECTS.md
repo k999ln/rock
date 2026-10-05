@@ -123,7 +123,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 | --- | --- |
 | [Sky catalog](lib/catalog.ts) | 登録35件すべてを上に記載。ready 13件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
-| [`toolkits/`](toolkits/) | 10ディレクトリを下表で分類。Tool実装、SDK、connector、セキュリティ共通部品、PAPER/eSIM試作を区別 |
+| [`toolkits/`](toolkits/) | 各ディレクトリを下表で分類。Tool実装、SDK、connector、セキュリティ共通部品、PAPER/eSIM試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
 
 Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
@@ -142,6 +142,7 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 | **Web内の製品紹介・導入画面** | [`app/rockstaros/`](app/rockstaros/)には旧P0.2の外観・税込価格表示が残る。現行R5の画面実装・配備は未完了 | [`app/rockstaros/`](app/rockstaros/) | [現行R5設計](docs/avocado-mini-r5/README.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
 | **Operator Dock** | OS利用画面と分離した運営用の端末管理 | [`services/operator-dock/`](services/operator-dock/)・[`android/operator-agent/`](android/operator-agent/) | [Dock README](services/operator-dock/README.md)・[Security / Identity](docs/workstreams/04-security-identity-compliance.md) |
 | **Sky Billing** | 収益・費用の照合と請求Worker。Walletの実資金受入とは別 | [`services/sky-billing/`](services/sky-billing/) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md)・[請求設計](docs/sky-billing.md) |
+| **Mini game client** | 公式Remote Playへのdesktop handoffと不足条件診断。GTA VI実プレイ・Mini実機は未受入 | [`toolkits/mini-game-client/`](toolkits/mini-game-client/) | [使い方](toolkits/mini-game-client/README.md)・[Game接続設計](docs/mini-game-client.md) |
 | **AMC agent** | Codexの司令官・実行担当・独立検収とCLI入口。実稼働の受入は未完了 | [`toolkits/amc-agent/`](toolkits/amc-agent/) | [使い方](toolkits/amc-agent/README.md)・[AMC設計](docs/amc-sky-launch-integration.md) |
 | **Sky Tool SDK** | Tool作者向けのpackage、サンプル、契約 | [`toolkits/sky-tool-sdk/`](toolkits/sky-tool-sdk/) | [SDK README](toolkits/sky-tool-sdk/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
 | **Sky MCP Connector** | MCP接続先と権限を管理する独立connector | [`toolkits/sky-mcp-connector/`](toolkits/sky-mcp-connector/) | [Connector README](toolkits/sky-mcp-connector/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |

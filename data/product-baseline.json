@@ -1881,5 +1881,14 @@
     "externalPowerRequired": true,
     "authority": "docs/avocado-mini-cellular.md",
     "specification": "data/avocado-mini-cellular.json"
+  },
+  "gtaViPlayIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user instruction to enable GTA VI play after Mini/Pro discussion",
+    "authority": "docs/mini-game-client.md",
+    "targetTitle": "GTA VI",
+    "executionDevice": null,
+    "pcSupportConfirmed": false,
+    "gameAccepted": false
   }
 }

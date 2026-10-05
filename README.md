@@ -1,3 +1,7 @@
+## Mini game client prototype
+
+Run `node toolkits/mini-game-client/cli.mjs check` for read-only remote-play prerequisites. Explicit `setup`/`open` actions hand off to official PS5/Xbox clients; no GTA VI or Mini hardware acceptance is claimed. [Usage and remaining setup](toolkits/mini-game-client/README.md).
+
 ## Mini standalone cellular — design requirement
 
 Mini will carry its own physical SIM and cellular modem; Pro, a PC or phone tethering will not be required for cellular access. External power and offline basic operation remain part of the R5 design. [Hardware, connection and recovery plan](docs/avocado-mini-cellular.md). Country/carrier and modem are pending; no modem integration or real connection has been accepted.
