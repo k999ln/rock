@@ -38,6 +38,7 @@ sky.tool({
     properties: { characters: { type: 'integer' } },
   },
   sideEffects: ['none'],
+  price: { model: 'free', note: '端末内の文字数計算。実行ごとの追加料金なし。' },
   fundCategories: ['文章制作'],
   tags: ['text', 'offline-calculation'],
   handler: async ({ text }) => ({ characters: [...text].length }),

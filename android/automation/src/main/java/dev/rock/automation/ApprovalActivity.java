@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import dev.rock.core.platform.PlatformStore;
 import java.util.Map;
@@ -20,18 +21,28 @@ public final class ApprovalActivity extends Activity {
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
         approvalId = getIntent().getStringExtra(RockPlatformService.EXTRA_APPROVAL_ID);
-        owner = AndroidOwner.current(this);
+        String requestedOwner = getIntent().getStringExtra(RockPlatformService.EXTRA_APPROVAL_OWNER);
+        try {
+            if (requestedOwner == null) owner = AndroidOwner.current(this);
+            else {
+                owner = new AndroidRockstarDeviceSessionStore(this, BuildConfig.ROCKSTAR_SERVICE_ORIGIN).ownerUserId();
+                if (!requestedOwner.equals(owner)) { finish(); return; }
+            }
+        } catch (Exception unavailableOwner) { finish(); return; }
         Map<String,String> proposal;
         try { proposal = platform().approval(owner, approvalId); }
         catch (RuntimeException invalid) { finish(); return; }
 
+        ScrollView scroll = new ScrollView(this);
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
         int pad = Math.round(24 * getResources().getDisplayMetrics().density);
         content.setPadding(pad, pad, pad, pad);
         TextView title = new TextView(this); title.setText("RockstarOS の承認"); title.setTextSize(24);
         TextView details = new TextView(this);
-        details.setText("対象: " + proposal.get("component_id") + "\n操作: " + proposal.get("action") +
+        String approvalContext = getIntent().getStringExtra(RockPlatformService.EXTRA_APPROVAL_CONTEXT);
+        details.setText((approvalContext == null || approvalContext.isBlank() ? "" : approvalContext + "\n\n") +
+            "対象: " + proposal.get("component_id") + "\n操作: " + proposal.get("action") +
             "\n費用上限: " + proposal.get("max_cost_minor") + " (minor units)\n内容の指紋: " + proposal.get("payload_digest") +
             "\n有効期限: " + proposal.get("expires_at"));
         details.setTextIsSelectable(true); details.setPadding(0, pad, 0, pad);
@@ -40,7 +51,7 @@ public final class ApprovalActivity extends Activity {
         approve.setOnClickListener(this::authenticate);
         deny.setOnClickListener(view -> finish());
         content.addView(title); content.addView(details); content.addView(approve); content.addView(deny);
-        setContentView(content);
+        scroll.addView(content); setContentView(scroll);
     }
 
     private void authenticate(View ignored) {

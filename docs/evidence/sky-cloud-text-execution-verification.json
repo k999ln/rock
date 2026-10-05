@@ -1,0 +1,83 @@
+{
+  "schema": "sky-cloud-text-execution-verification/1",
+  "verifiedAt": "2026-10-02T03:36:24.231670+00:00",
+  "repository": "https://github.com/k999ln/rock.git",
+  "scope": "canonical uncommitted local code; SQLite and built Worker/D1; synthetic provider transport only",
+  "launchReady": false,
+  "published": false,
+  "providerSubmission": false,
+  "additionalPayment": false,
+  "pricingGateAccepted": false,
+  "fundedWalletConnected": false,
+  "providerInvoiceVerified": false,
+  "productionMigrationApplied": false,
+  "verification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": 656,
+    "fashionTests": 19,
+    "workerD1Assertions": 823,
+    "focusedStoreTests": 10,
+    "log": "/Users/kaiya/Documents/Codex/2026-10-01/https-github-com-k999ln-rock-git/work/sky-cloud-transport/verify-text-execution-accepted.log",
+    "logSha256": "349bab30c24e73836ec028c9d4bf6a80deab447dfdde481105df31f1f01d1bdd"
+  },
+  "sourceHashesCapturedAtVerificationCompletion": {
+    "lib/remote-ai-rate-card.ts": "e28725dc74544c2ffbb66acfa2a69702f92dd3ba6ae150bd233d5c82b99900ba",
+    "lib/remote-ai-rate-card-store.ts": "d803261c00d7a4442d06cdc4779017b26454495c2f91ac7f690df0e1a97f7d8d",
+    "lib/remote-ai-text-pricing.ts": "16d3e20dd9ad7c65cd54675ef2878b7767ff00822b9bde18d0fb94b3af6f1d1d",
+    "lib/remote-ai-text-request.ts": "49199092b8d43e69eb45887fec51be57b2573fd20f411865b60dea767c58c747",
+    "lib/remote-ai-text-rate.ts": "99b62f74cf598eb7e91722cb582eae90042503df9a806da4b361380f4e3952e4",
+    "lib/remote-ai-text-store.ts": "16b5416aacc6f6fa8c1363349cf9e9bcde8733f57f5efe59361b841ab512dc41",
+    "lib/remote-ai-text-execution.ts": "8766be4fa71ca913def5c4372c6de94e0bd111e373aff071c7ce890485888a5e",
+    "lib/remote-ai-text-http.ts": "bd5bce258c7868fc51ba400d91527509fbdda2a3247390a1bd9620f69a8e14b7",
+    "lib/llm-providers.ts": "da98aa9b5ca7a7e95ff0c1ba7516637644451946678704c575c716db6d42151b",
+    "lib/remote-ai-pricing-gate.ts": "2f0184347554dcc2b8e97d826cfa9c5700a973198041a956115896ea8d409910",
+    "app/api/llm/text/route.ts": "aaa48c6e610fd1ae526e01ca28dac7c536324644e74f899ebca0d959c1360be8",
+    "app/api/llm/quotes/route.ts": "6850094732b013dfa4c086615552d06c55028ddf834b030a25a9c77eb03e185c",
+    "app/api/llm/quotes/[id]/route.ts": "2ba50928ecdb65be0df0daf38468e60479f0d8be18f8904e24e1188ac546bf76",
+    "drizzle/0046_remote_ai_text_executions.sql": "022ad7625c7269874d195cc323a986c3ffb168c87237e84822e97e79a2adb219",
+    "drizzle/meta/0046_snapshot.json": "62f8928bd77e966c502f1d8444b7da8ef4aec82e642aab1fc0ce399caf1a1a31",
+    "db/schema.ts": "3ed9b003f933831522ece44a5bb12ce1be558ab73819c654a2d6eddc6445ff59",
+    "tests/remote-ai-text-store.test.mjs": "e96aeecf281498c660152cc9cdb15a7c1b91092e192b1568bee5708f4976594a",
+    "tests/remote-ai-rate-card.test.mjs": "69cccdc9d8a7c3621f88c9e6b445665bc0e115771bd217759968bc1085e809e5",
+    "tests/llm-providers.test.mjs": "95383d67614be934aaf1ec1bfcfe6dce195efd9883c9472acd74d38ea0eb165c",
+    "scripts/check-work-api.mjs": "f4130363c8f76d3393675df79e2479b6a2b0cefb9d5d3398503348ada1197a92",
+    "components/workbench.tsx": "8c9492aa86fdb3e1e85943cd2937302bebad30833ac6b574f8328b213ee7a8cb"
+  },
+  "verifiedBehaviors": [
+    "owner and Origin isolation",
+    "exact input and approval digest binding without storing input text",
+    "idempotent quote creation and approval",
+    "shared direct-text and A2A parent budget with atomic reservation",
+    "single send claim under concurrent execution",
+    "synthetic completion and four-category usage readback",
+    "unknown usage and timeout keep reservation; no automatic retry",
+    "repeated provider response cannot settle another request",
+    "opt-in result persistence and content deletion retaining usage audit",
+    "pre-send cancellation releases shared reservation once with D1 triggers"
+  ],
+  "fixes": [
+    "Cancellation confirms persisted owner record instead of expecting one D1 changed row when a budget trigger also updates a row.",
+    "Workbench recorder resolves the selected job inside its callback and retains its ID/revision validation. Agent-draft event handler is memoized with the actual state dependencies; React checks remain enabled."
+  ],
+  "publicSiteReadback": {
+    "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "latestVersion": 24,
+    "status": "active",
+    "access": "public",
+    "newImplementationDeployed": false
+  },
+  "remaining": [
+    "Customer UI integration and rendered quote/approval/history acceptance; Workbench panel source exists but is not browser-accepted.",
+    "Deploy the canonical runtime and migration to the existing Sky project after customer flow verification.",
+    "Configure owner-approved provider credential and trusted real rate cards.",
+    "Verify real provider response, latency, usage, uncertain outcome reconciliation and provider invoice; accept funded-Wallet integration without bypassing the pricing gate.",
+    "Complete owner-authenticated desktop and supported-device Apple Pay journeys; reuse the successful CSV payment rather than charge again."
+  ],
+  "references": [
+    "https://developers.cloudflare.com/d1/worker-api/d1-database/",
+    "https://developers.openai.com/api/reference/overview",
+    "https://developers.openai.com/api/docs/guides/prompt-caching"
+  ]
+}

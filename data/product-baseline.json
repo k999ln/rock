@@ -1,11 +1,11 @@
 {
-  "version": "1.94",
-  "decidedAt": "2026-09-24",
+  "version": "1.96",
+  "decidedAt": "2026-10-01",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/os-readiness-audit-20260909.md",
-  "nextPrompt": "docs/prompts/rock-current-next-20260911.md",
+  "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-sky-wallet-game-design.md",
   "productIdentity": {
@@ -68,7 +68,7 @@
     "mainMergeAuthorization": "user_explicitly_requested_this_design_update_only_2026-09-21"
   },
   "marketPositioning": {
-    "customerFacingFocus": "hardware_products",
+    "customerFacingFocus": "sim_esim_led_rockstaros_service_access",
     "leadHardwareConcept": "avocadoMini",
     "leadHardwareForm": "r5_200mm_autonomous_peer_minis_no_required_edge_hub",
     "previousLeadHardwareForm": "tower20_e3_four_fixed_height_towers_and_separate_edge_hub",
@@ -580,16 +580,17 @@
       "osSiteAccessStatus": "pending_owner_account_connection"
     },
     "route": "/rockstaros",
-    "role": "public_avocado_mini_product_home",
+    "role": "public_sim_esim_service_home",
     "osHomeRoute": "/",
     "installGuideRoute": "/rockstaros/guide",
     "directOsHomeLink": false,
-    "serviceDetailsLocation": "os_home_after_setup",
-    "primaryAction": "view_avocado_mini",
-    "secondaryAction": "developer_preview_install_guide",
-    "publicDownloadFallback": "/rockstaros/guide#install",
+    "serviceDetailsLocation": "public_service_home",
+    "primaryAction": "start_service_onboarding",
+    "secondaryAction": "view_sim_esim_plans",
+    "publicDownloadFallback": "/connect",
     "visualDirection": "light_product_showcase_with_scroll_tower",
-    "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable"
+    "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable",
+    "hardwareProgramRoute": "/avocado-mini"
   },
   "visualSystem": {
     "surfaces": [
@@ -1491,5 +1492,152 @@
     "profitDefinition": "pending",
     "collectionMethod": "pending",
     "runtimePolicy": "Production Sky Billing rejects new ToC Earning Receipts with SKY_FEE_POLICY_ON_HOLD. Historical 888-cent fixtures remain only for regression. CSV fee decisions return zero due while the revenue flow is pending. No live billing, automatic bank debit or developer payout is enabled. Publication does not specify an open-source license."
+  },
+  "esimProductIntent": {
+    "decidedAt": "2026-10-02",
+    "source": "2026-10-02 authoritative product requirements: physical SIM or eSIM purchase includes RockstarOS service access across multiple distribution channels; OS is installed through a supported device path",
+    "supersededSource": "製品はesimで完結させたいから、開発だけしたい",
+    "distribution": "physical_sim_and_esim",
+    "currentScope": "development_and_contract_preparation",
+    "physicalSimPurchase": true,
+    "liveServiceEnabled": false,
+    "implementation": "host_fixture_and_local_worker_d1",
+    "document": "docs/product-baseline.md",
+    "supersededBy": "serviceAccessModel"
+  },
+  "cloudContinuationIntent": {
+    "decidedAt": "2026-09-30",
+    "source": "クラウドのAIは、先に頼まれた仕事を続ける これいいじゃん、ちゃんと準備してね",
+    "document": "docs/sky-cloud-continuity.md",
+    "continueAcceptedJobsWhileDeviceOffline": true,
+    "explicitScopedApprovalRequired": true,
+    "cloudAcceptanceReceiptRequired": true,
+    "budgetAndDeadlineRequired": true,
+    "newApprovalCausesWait": true,
+    "offlineStopIsUnconfirmed": true,
+    "resumeByReconciliationNotResubmission": true,
+    "implementationStatus": "REQUIREMENTS_AND_ACCEPTANCE_PLAN_ONLY",
+    "cloudDeployed": false
+  },
+  "satelliteConnectivityIntent": {
+    "decidedAt": "2026-09-30",
+    "source": "衛星を飛ばしてどこでも繋がるようにする",
+    "ownSatelliteNetworkGoal": true,
+    "currentScope": "research_and_development_preparation",
+    "document": "docs/sky-cloud-continuity.md",
+    "globalAlwaysAvailableClaim": false,
+    "launchProcured": false,
+    "satelliteFieldTests": 0
+  },
+  "universalAdaptationIntent": {
+    "decidedAt": "2026-09-30",
+    "source": "みんなに適合できるシステムを作る、もちろんgtaにも",
+    "dimensions": [
+      "person",
+      "device",
+      "service",
+      "game"
+    ],
+    "architecture": "existing_core_and_capability_adapters",
+    "gtaExplicitlyIncluded": true,
+    "priorPartnershipStatementPreserved": true,
+    "gtaRuntimeVerified": false,
+    "document": "docs/sky-mcp-architecture.md",
+    "status": "REQUIREMENTS_ONLY"
+  },
+  "agentInterconnectionIntent": {
+    "decidedAt": "2026-09-30",
+    "source": "これから全てはaiエージェントになりうる、その際にaiエージェントとエージェントを繋ぐ役割がいる。",
+    "skyRole": "agent_discovery_marketplace_capability_registry_and_connection",
+    "zemaRole": "agent_orchestration_task_delegation_approval_progress_and_results",
+    "coreRole": "shared_identity_authorization_budget_policy_and_auditable_durable_state",
+    "protocolCandidates": [
+      "existing_MCP_for_tools",
+      "A2A_1.0.0_JSONRPC_adapter_for_agent_tasks"
+    ],
+    "document": "docs/sky-mcp-architecture.md",
+    "implementationStatus": "PARTIAL_A2A_ADAPTER_OWNER_APPROVAL_DURABLE_RECONCILIATION_ENCRYPTED_RESULTS_AND_OPERATOR_ORIGIN_ALLOWLIST",
+    "hostFixtureTests": 32,
+    "workerD1ApiAssertions": 235,
+    "delegationMigrations": [
+      "0019_sky_a2a_delegations.sql",
+      "0020_a2a_delegation_events.sql",
+      "0021_a2a_delegation_inputs.sql",
+      "0022_a2a_delegation_artifacts.sql",
+      "0023_a2a_sky_agent_connections.sql"
+    ],
+    "productionDispatchIntegrated": false,
+    "approvalGateIntegrated": true,
+    "externalAgentInteropTests": 0,
+    "encryptedApprovedInputStored": true,
+    "encryptedTextArtifactCaptureImplemented": true,
+    "ownerScopedArtifactReadApiImplemented": true,
+    "zemaDelegationReadAndResultReviewUiImplemented": true,
+    "zemaDelegationDraftAndConditionPreviewUiImplemented": true,
+    "zemaDelegationCreationAndApprovalUiImplemented": false,
+    "providerArtifactAcceptanceTests": 0,
+    "executionGateDefaultOff": true,
+    "executionGateEnablementRequiresBrokerWalletProviderAcceptance": true,
+    "automatedRetentionCleanupIntegrated": false,
+    "runtimeWorkerPath": "services/sky-agent-runtime/src/worker.ts",
+    "runtimeWorkerDryRunPassed": true,
+    "runtimeLocalScheduledWorkflowSmokePassed": true,
+    "runtimeUsesSharedProductionD1": false,
+    "runtimeProductionDispatchIntegrated": false,
+    "scheduledExpiredInputCleanupImplemented": true,
+    "automatedTerminalInputCleanupIntegrated": false,
+    "agentDirectoryStatus": "OWNER_SCOPED_CARD_DISCOVERY_SELF_DECLARED_UNREVIEWED",
+    "agentDirectoryApiImplemented": true,
+    "agentDirectoryOwnerScopedStorageImplemented": true,
+    "agentDirectoryCardDigestVersionTrackingImplemented": true,
+    "operatorOriginAllowlistImplemented": true,
+    "operatorOriginAllowlistConfigured": false,
+    "runtimeVPCBindingConfigured": false,
+    "productionEgressTested": false
+  },
+  "serviceAccessModel": {
+    "status": "authoritative_product_direction_design_and_local_onboarding_only",
+    "primaryEntry": "purchase_physical_sim_or_esim_including_rockstaros_service_access",
+    "distributionChannels": [
+      "rockstar_direct",
+      "mobile_carrier",
+      "device_retailer",
+      "online_retailer"
+    ],
+    "osBinaryStoredOnSim": false,
+    "deviceDelivery": [
+      "signed_native_os_only_for_exact_supported_device_and_recovery_path",
+      "existing_os_app_or_shell",
+      "browser_client"
+    ],
+    "unifiedIdentity": "one_rockstar_account_across_sky_zema_agents",
+    "primaryReasonsToChoose": [
+      "fast_simple_access_to_cloud_llms_and_agents",
+      "transparent_usage_based_pricing_and_cost_estimates",
+      "integrated_rockstaros_sky_zema_access_with_minimal_setup"
+    ],
+    "deviceMinimumExperience": [
+      "short_activation_to_service_onboarding",
+      "direct_sky_zema_agent_entry_from_home",
+      "single_rockstar_identity_without_per_service_registration",
+      "submit_tasks_track_progress_and_retrieve_results",
+      "accepted_cloud_tasks_continue_while_device_offline_and_reconcile_on_reconnect",
+      "show_provider_rates_and_estimate_before_paid_execution",
+      "distinguish_reserved_budget_from_live_usage_and_invoice_confirmed_amount",
+      "itemize_usage_after_completion",
+      "user_controlled_spending_limits_and_explicit_approval_to_raise_them"
+    ],
+    "cloudExecution": "usage_billed_with_preflight_quote_budget_approval_live_spend_and_itemized_receipt",
+    "dispatchPolicy": "fail_closed_until_quote_bound_reservation_provider_meter_invoice_reconciliation_and_funded_wallet_are_accepted",
+    "carrierAndAiChargesSeparated": true,
+    "purchaseEnabled": false,
+    "productionBillingAccepted": false,
+    "carrierActivationAccepted": false,
+    "deviceOsInstallationAccepted": false,
+    "supersedes": [
+      "2026-09-30_esim_only_distribution",
+      "esim_catalog_as_primary_product_entry",
+      "hardware_first_service_positioning"
+    ]
   }
 }

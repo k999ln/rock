@@ -1,0 +1,91 @@
+{
+  "schema": "rockstar-service-offer-profile-local-evidence/1",
+  "date": "2026-10-02",
+  "scope": "Local source, unit, Worker/D1 fixture, and web build verification for channel-neutral SIM/eSIM offer-specific initial Sky Agent pack resolution plus owner entitlement-aware Marketplace and Stripe checkout purchase suppression.",
+  "implemented": {
+    "configuration": "Optional ROCKSTAR_SERVICE_OFFER_PROFILES maps signed issuerId + offerId to profileId/version/label and exact Sky packageKey/manifestSha256 pins.",
+    "resolution": "Only uniquely registered packages with verified review state, installable status, exact package key, exact stored hash, and recomputed manifest hash are presented as ready.",
+    "owner_control": "Profile activation is owner_choice_required; claim redemption does not install packages, execute tools, or authorize paid work.",
+    "surfaces": [
+      "GET/POST /api/rockstar/entitlements",
+      "GET /api/rockstar/device-home",
+      "Web entitlement claim UI",
+      "Android Shell service entitlement display source",
+      "Offer-package deep link from the claim onboarding screen to the exact Sky Marketplace package detail",
+      "Fail-closed deep-link state when the package is absent from the current reviewed registry or the registry cannot be read",
+      "Owner-scoped active entitlement read suppresses duplicate standalone Marketplace purchase for an included package; lookup pending/unavailable blocks purchase",
+      "Included offer pricing is distinguished from standalone package price, and the CTA routes to Sky connection settings without claiming the selected agent is already runnable in Zema",
+      "Authenticated Stripe checkout API rechecks active owner claim, offer profile, and exact currently reviewed package before creating or reusing checkout state; included packages return 409, malformed mapping returns 503, expired/revoked claims do not suppress legitimate checkout"
+    ]
+  },
+  "verification": {
+    "tests": {
+      "command": "node --test tests/rockstar-service-offers.test.mjs tests/rockstar-service-package-access.test.mjs tests/sim-service-entry.test.mjs",
+      "passed": 6,
+      "failed": 0,
+      "coverage": "Offer-to-profile mapping, exact hash review checks, explicit owner choice, onboarding-to-exact-package deep-link source contract, fail-closed stale/unavailable registry behavior, and Marketplace purchase suppression only for active ready included profiles."
+    },
+    "workerD1": {
+      "command": "npm run test:api",
+      "assertions": 972,
+      "csvAssertions": 113,
+      "result": "passed"
+    },
+    "typecheck": "npm run typecheck passed",
+    "webBuild": "npm run build passed",
+    "fullProject": {
+      "command": "npm run verify",
+      "result": "passed",
+      "nodeTests": "724/724",
+      "workerD1Assertions": 972,
+      "csvAssertions": 113,
+      "includes": [
+        "typecheck",
+        "lint:product",
+        "schema:check",
+        "database:check",
+        "baseline:check",
+        "production web build",
+        "bundle and asset closure checks"
+      ]
+    },
+    "databaseCounts": {
+      "webTables": 69,
+      "migrations": 55,
+      "sourceTablesAcrossSixBoundaries": 124,
+      "productionReadbackBoundaries": 0,
+      "note": "Stale regression constants were updated to match current generated database status; production state remains unverified."
+    },
+    "focusedAfterDeepLinkChange": {
+      "lint": "npm run lint:product passed",
+      "typecheck": "npm run typecheck passed before removal of an unused local only",
+      "webBuild": "npm run build passed after all deep-link changes"
+    },
+    "focusedAfterEntitlementAwareMarketplace": {
+      "command": "node --test tests/sky-commerce.test.mjs tests/rockstar-service-package-access.test.mjs tests/rockstar-service-offers.test.mjs tests/sim-service-entry.test.mjs",
+      "result": "46/46 passed",
+      "typecheck": "npm run typecheck passed",
+      "lint": "npm run lint:product passed",
+      "webBuild": "npm run build passed"
+    }
+  },
+  "fixtureCoverage": [
+    "Different signed offers resolve to different versioned starter pack profiles.",
+    "Unreviewed fixture package remains unavailable while the underlying entitlement stays valid.",
+    "Exact reviewed synthetic package hash resolves as ready with owner choice required.",
+    "Stale hash, malformed configuration, and unconfigured offers fail closed.",
+    "Active included Package blocks direct API checkout before a Stripe session or order is created.",
+    "Expired and revoked service claims allow otherwise valid standalone purchase.",
+    "Malformed offer profile configuration fails closed before Stripe.",
+    "A ready exact Package remains protected from duplicate checkout when another package in its profile needs review."
+  ],
+  "not_proven": [
+    "Real Healthcare/Lifeline or Developer package availability, safety review, or suitability.",
+    "Production configuration, seller checkout, SIM/eSIM purchase, or carrier activation.",
+    "Package installation or tool execution on an Android device or RockstarOS image.",
+    "Package-specific runtime authorization or successful Zema execution from the Marketplace offer link.",
+    "Production cloud billing, provider usage, production D1, or user invoice.",
+    "Production seller checkout or Stripe charge, production carrier activation, provider runtime authorization, or package-to-Zema task handoff."
+  ],
+  "boundary": "Synthetic registry rows and local usage/test records are implementation evidence only; they are not production billing, carrier activation, or successful OS installation."
+}

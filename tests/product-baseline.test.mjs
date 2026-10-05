@@ -9,6 +9,21 @@ const source = JSON.parse(
 );
 void test('product baseline rejects lost requirements, stale-as-live claims and mismatched source evidence', () => {
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
+  const osOnSim = structuredClone(source);
+  osOnSim.serviceAccessModel.osBinaryStoredOnSim = true;
+  assert.throws(() => validateBaseline(osOnSim), /SIM\/eSIM offer/);
+  const esimOnly = structuredClone(source);
+  esimOnly.serviceAccessModel.distributionChannels = ['rockstar_direct'];
+  assert.throws(() => validateBaseline(esimOnly), /SIM\/eSIM offer/);
+  const offlineCloudLost = structuredClone(source);
+  offlineCloudLost.serviceAccessModel.deviceMinimumExperience =
+    offlineCloudLost.serviceAccessModel.deviceMinimumExperience.filter(
+      (item) => !item.startsWith('accepted_cloud_tasks_continue_while_device_offline'),
+    );
+  assert.throws(() => validateBaseline(offlineCloudLost), /SIM-led service value/);
+  const billingGateOpened = structuredClone(source);
+  billingGateOpened.serviceAccessModel.productionBillingAccepted = true;
+  assert.throws(() => validateBaseline(billingGateOpened), /SIM\/eSIM offer/);
   const missing = structuredClone(source);
   missing.requirements.pop();
   assert.throws(() => validateBaseline(missing), /RQ01〜RQ49/);

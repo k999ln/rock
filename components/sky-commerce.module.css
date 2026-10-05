@@ -67,6 +67,41 @@
 .purchaseConditions summary { padding: 9px 0; color: #abc9d9; font-size: 12px; cursor: pointer; }
 .purchaseConditions summary:focus-visible { outline: 2px solid #bce3fa; outline-offset: 3px; }
 .purchaseConditions[open] summary { margin-bottom: 8px; }
+.esimSetup { display: grid; gap: 12px; margin-top: 20px; padding: 18px; border: 1px solid #334a58; border-radius: 13px; background: #0f1921; }
+.esimSetupHeader { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; }
+.esimSetupHeader > div { min-width: 0; }
+.esimSetupHeader h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 5px; color: #e1edf3; font-size: 14px; font-weight: 650; }
+.esimSetupHeader p { margin: 0; color: #9eb1bd; font-size: 12px; line-height: 1.7; }
+.esimSetupHeader .secondary { min-height: 38px; padding: 8px 11px; }
+.esimState { display: flex; align-items: center; gap: 7px; margin: 0; color: #b8dbc9; font-size: 12px; }
+.esimMaterial { display: grid; gap: 12px; }
+.esimMaterial > .notice, .esimMaterial > .subtle, .esimSetup > .notice { margin: 0; }
+.esimLinks { display: flex; flex-wrap: wrap; gap: 10px; }
+.esimManual { border-top: 1px solid #2d414d; }
+.esimManual summary { padding: 9px 0; color: #abc9d9; font-size: 12px; cursor: pointer; }
+.esimManual dl { display: grid; gap: 9px; margin: 8px 0 0; }
+.esimManual dl > div { display: grid; gap: 3px; }
+.esimManual dt { color: #91a7b4; font-size: 11px; }
+.esimManual dd { margin: 0; color: #edf3f6; font: 12px/1.7 ui-monospace, monospace; overflow-wrap: anywhere; user-select: all; }
+.esimMaterial .success { margin: 0; }
+.esimCatalog { display: grid; gap: 18px; margin-top: 22px; padding: 24px; border: 1px solid #2d3c46; border-radius: 18px; background: #121b23; }
+.esimCatalogTitle h2 { display: flex; align-items: center; gap: 9px; margin: 0 0 7px; font-size: 18px; font-weight: 650; }
+.esimCatalogTitle p { margin: 0; color: #a0b1bc; font-size: 13px; line-height: 1.8; }
+.esimContractState { display: flex; align-items: center; gap: 9px; padding: 14px; border: 1px solid #4c5960; border-radius: 11px; color: #d9e4e9; background: #1a252c; font-size: 13px; line-height: 1.7; }
+.noEsimPlans { margin: 0; padding: 18px; border: 1px dashed #40515b; border-radius: 11px; color: #afc0c9; background: #10181e; font-size: 13px; line-height: 1.8; }
+.esimPlanList { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 14px; }
+.esimPlanCard { display: grid; align-content: start; gap: 13px; padding: 18px; border: 1px solid #354751; border-radius: 13px; background: #0e161d; }
+.esimPlanCard h3 { margin: 0; color: #e7f0f5; font-size: 16px; }
+.esimPlanCard > p { margin: 0; color: #9fb2bd; font-size: 12px; line-height: 1.7; }
+.esimPlanCard dl { display: grid; gap: 9px; margin: 0; }
+.esimPlanCard dl > div { display: grid; grid-template-columns: minmax(88px, .8fr) 1fr; gap: 12px; font-size: 12px; }
+.esimPlanCard dt { color: #90a6b2; }
+.esimPlanCard dd { margin: 0; color: #e0eaf0; text-align: right; overflow-wrap: anywhere; }
+.esimPlanCard strong { color: #b9cbd4; font-size: 12px; }
+.esimPlanCard ul { margin: 5px 0 0; padding-left: 20px; color: #a5b7c1; font-size: 12px; line-height: 1.7; }
+.esimPlanCard button { justify-self: start; cursor: not-allowed; }
+.esimDeviceNote { display: flex; align-items: flex-start; gap: 8px; margin: 0; color: #97aeb9; font-size: 12px; line-height: 1.7; }
+.esimDeviceNote svg { flex: 0 0 auto; margin-top: 2px; }
 .refundDialog { width: min(520px, calc(100% - 32px)); padding: 28px; border: 1px solid #4b6776; border-radius: 20px; color: #eaf3f7; background: #16232b; }
 .refundDialog h2 { font-size: 22px; }
 .refundDialog > p { margin: 12px 0 22px; color: #b1c5d1; font-size: 14px; line-height: 1.8; }
@@ -74,6 +109,7 @@
   .page { width: calc(100% - 32px); padding-top: 23px; }
   .header { margin-top: 26px; }
   .panel, .order { padding: 19px 16px; }
+  .esimSetup { padding: 15px 12px; }
   .orderHeading { flex-wrap: wrap; gap: 10px; }
   .orderName { flex-basis: calc(100% - 60px); }
   .orderHeading > .status { margin-left: 54px; }

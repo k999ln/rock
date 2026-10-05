@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
+import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import { ArrowLeft, ArrowRight, CircleCheck, ExternalLink, Plus, RefreshCw } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
 import { MrToolRunner } from '@/components/mr-tool-runner';
@@ -33,19 +34,7 @@ const statusNames: Record<TeamCase['status'], string> = {
 const coconalaTool = catalog.find((tool) => tool.id === 'coconala');
 
 async function request<T>(method = 'GET', value?: unknown): Promise<T> {
-  const options: RequestInit = { method, cache: 'no-store' };
-  if (value !== undefined && method !== 'GET') {
-    options.headers = { 'Content-Type': 'application/json' };
-    options.body = JSON.stringify(value);
-  }
-  const response = await fetch('/api/coconala-team', options);
-  const result = await response.json() as T & { error?: string };
-  if (!response.ok) {
-    const error = new Error(result.error ?? '保存できませんでした。');
-    Object.assign(error, { status: response.status });
-    throw error;
-  }
-  return result;
+  return operationRequest<T>('/api/coconala-team', method, value);
 }
 
 type Field = { key: keyof TeamTerms; label: string; kind?: 'date' | 'number' | 'textarea'; help?: string };
@@ -76,6 +65,7 @@ export default function CoconalaTeamWorkspace() {
   const [form, setForm] = useState<TeamTerms>(blank);
   const [editingId, setEditingId] = useState('');
   const [formOpen, setFormOpen] = useState(false);
+  const [deleteCaseId, setDeleteCaseId] = useState('');
   const [selectedId, setSelectedId] = useState('');
   const [note, setNote] = useState('');
   const [moneyKind, setMoneyKind] = useState<'record_customer_receipt' | 'record_refund' | 'record_worker_payment'>('record_customer_receipt');
@@ -95,7 +85,7 @@ export default function CoconalaTeamWorkspace() {
       setNeedsSignin(false);
       setError('');
     } catch (caught) {
-      if (caught instanceof Error && 'status' in caught && caught.status === 401)
+      if (caught instanceof OperationRequestError && caught.status === 401)
         setNeedsSignin(true);
       setError(caught instanceof Error ? caught.message : '案件を読み込めませんでした。');
     } finally { setLoading(false); }
@@ -107,6 +97,7 @@ export default function CoconalaTeamWorkspace() {
   }, [refresh]);
 
   const selected = cases.find((item) => item.id === selectedId) ?? cases[0] ?? null;
+  const deleteTarget = cases.find((item) => item.id === deleteCaseId);
   const estimate = useMemo(() => {
     const fee = Math.round(form.grossYen * form.estimatedPlatformFeePercent / 100);
     return { net: form.grossYen - fee, margin: form.grossYen - fee - form.workerFeeYen };
@@ -139,7 +130,10 @@ export default function CoconalaTeamWorkspace() {
         setNotice('案件を下書き保存しました。内容と証拠を確認してから担当開始を記録してください。');
       }
       setFormOpen(false); setEditingId(''); setForm(blank);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : '保存できませんでした。'); }
+    } catch (caught) {
+      if (caught instanceof OperationRequestError && caught.status === 401) setNeedsSignin(true);
+      setError(caught instanceof Error ? caught.message : '保存できませんでした。');
+    }
     finally { setBusy(false); }
   }
 
@@ -154,9 +148,37 @@ export default function CoconalaTeamWorkspace() {
       updateCase(result.caseFile);
       setNotice('記録を保存しました。外部サイトへの送信・銀行振込は行っていません。');
       setNote(''); setMoneyAmount(''); setMoneyReference('');
-    } catch (caught) { setError(caught instanceof Error ? caught.message : '保存できませんでした。'); }
+    } catch (caught) {
+      if (caught instanceof OperationRequestError && caught.status === 401) setNeedsSignin(true);
+      setError(caught instanceof Error ? caught.message : '保存できませんでした。');
+    }
     finally { setBusy(false); }
   }
+
+  async function deleteDraft() {
+    if (!deleteTarget || busy || needsSignin) return;
+    setBusy(true); setError(''); setNotice('');
+    try {
+      const result = await request<{ deletedCaseId: string }>('DELETE', {
+        caseId: deleteTarget.id, revision: deleteTarget.revision,
+      });
+      if (result.deletedCaseId !== deleteTarget.id) throw new Error('削除結果を確認できませんでした。案件を再読込してください。');
+      setCases((current) => current.filter((item) => item.id !== result.deletedCaseId));
+      setSelectedId((current) => current === result.deletedCaseId ? '' : current);
+      setDeleteCaseId('');
+      setNotice('下書きを削除しました。');
+    } catch (caught) {
+      if (caught instanceof OperationRequestError && caught.status === 401) setNeedsSignin(true);
+      setError(caught instanceof Error ? caught.message : '削除できませんでした。案件を再読込してください。');
+    } finally { setBusy(false); }
+  }
+
+  const signinRecovery = <section className={styles.empty} aria-label="サインインの復帰">
+    <h2>サインインして案件を管理</h2>
+    <p>入力はこの画面に残ります。別タブでサインイン後、接続を確認してください。案件と報酬の記録はあなたのアカウントだけに保存されます。</p>
+    <Link href="/signin-with-chatgpt?return_to=%2Fsky%2Ftools%2Fcoconala" target="_blank" rel="noopener noreferrer">別タブでサインイン <ArrowRight size={15} /></Link>
+    <button type="button" className={styles.secondary} disabled={loading || busy} onClick={() => void refresh()}>{loading ? '確認中…' : 'サインイン後に接続を確認'}</button>
+  </section>;
 
   return <WorkspaceShell title="ココナラ" tone="sky" contentClassName={styles.shell} hideTopActions>
     <div className={styles.root}>
@@ -202,9 +224,9 @@ export default function CoconalaTeamWorkspace() {
       </div>
       </details>
 
-      {error && !formOpen && <p className={styles.error} role="alert">{error}</p>}
+      {error && !formOpen && !deleteCaseId && <p className={styles.error} role="alert">{error}</p>}
       {notice && <output className={styles.notice}>{notice}</output>}
-      {needsSignin ? <section className={styles.empty}><h2>サインインして案件を管理</h2><p>案件と報酬の記録はあなたのアカウントだけに保存されます。</p><Link href="/signin-with-chatgpt?return_to=/coconala-team">サインイン <ArrowRight size={15} /></Link></section> :
+      {needsSignin ? signinRecovery :
         <div className={styles.layout}>
           <aside className={styles.list}>
             <div className={styles.listTitle}><strong>案件</strong><button aria-label="再読込" onClick={() => void refresh()}><RefreshCw size={15} /></button></div>
@@ -216,7 +238,10 @@ export default function CoconalaTeamWorkspace() {
 
           {selected && <section className={styles.detail}>
             <div className={styles.detailHead}><div><span className={styles.eyebrow}>{statusNames[selected.status]}</span><h2>{selected.terms.title}</h2><p>案件参照 {selected.terms.orderReference} · 顧客 {selected.terms.clientLabel} · 担当 {selected.terms.workerName}</p></div>
-              {selected.status === 'draft' && <button className={styles.secondary} onClick={() => { setForm(selected.terms); setEditingId(selected.id); setFormOpen(true); }}>条件を編集</button>}
+              {selected.status === 'draft' && <div className={styles.actionRow}>
+                <button className={styles.secondary} disabled={busy} onClick={() => { setForm(selected.terms); setEditingId(selected.id); setFormOpen(true); }}>条件を編集</button>
+                <button className={styles.secondary} disabled={busy} onClick={() => { setError(''); setDeleteCaseId(selected.id); }}>下書きを削除</button>
+              </div>}
             </div>
             <div className={styles.metrics}>
               <div><small>顧客受注額</small><strong>{yen(selected.terms.grossYen)}</strong></div>
@@ -253,8 +278,23 @@ export default function CoconalaTeamWorkspace() {
         <form onSubmit={(event) => void save(event)}><div className={styles.formGrid}>{fields.map((field) => <label key={field.key}><span>{field.label}</span>{field.kind === 'textarea' ? <textarea required value={String(form[field.key])} onChange={(e) => setForm((current) => ({ ...current, [field.key]: e.target.value }))} /> : <input required type={field.kind ?? 'text'} min={field.kind === 'number' ? '0' : undefined} max={field.key === 'estimatedPlatformFeePercent' ? '100' : undefined} step={field.key === 'estimatedPlatformFeePercent' ? '0.01' : field.kind === 'number' ? '1' : undefined} value={form[field.key]} onChange={(e) => setForm((current) => ({ ...current, [field.key]: field.kind === 'number' ? Number(e.target.value) : e.target.value }))} />}{field.help && <small>{field.help}</small>}</label>)}</div>
           <div className={styles.formEstimate}><span>手数料後見込 <b>{yen(estimate.net)}</b></span><span>運営の見込差額 <b>{yen(estimate.margin)}</b></span><button type="button" onClick={() => setForm((current) => { const net = current.grossYen - Math.round(current.grossYen * current.estimatedPlatformFeePercent / 100); return { ...current, workerFeeYen: Math.max(0, net - Math.round(net * .03)) }; })}>参考: 見込手取りの3%を残す</button></div>
           {error && <p className={styles.error} role="alert">{error}</p>}
-          <button className={styles.primary} disabled={busy}>{busy ? '保存中…' : '下書きとして保存'}</button></form>
+          {needsSignin && signinRecovery}
+          <button className={styles.primary} disabled={busy || needsSignin}>{busy ? '保存中…' : '下書きとして保存'}</button></form>
       </DialogContent></Dialog>
+      <Dialog open={Boolean(deleteCaseId)} onOpenChange={(open) => { if (!busy && !open) setDeleteCaseId(''); }}>
+        <DialogContent className={`${styles.modal} ${styles.deleteModal}`} showCloseButton={false}>
+          <DialogTitle>この下書きを削除しますか？</DialogTitle>
+          <DialogDescription>Skyに保存したこの下書きと変更履歴を削除します。取り消せません。ココナラの契約やメッセージは変更しません。</DialogDescription>
+          <p className={styles.deleteTitle}>{deleteTarget?.terms.title ?? '案件を再読込してください。'}</p>
+          {error && <p className={styles.error} role="alert">{error}</p>}
+          {needsSignin && signinRecovery}
+          <div className={styles.actionRow}>
+            <button className={styles.secondary} disabled={busy} onClick={() => setDeleteCaseId('')}>削除せず戻る</button>
+            {error && <button className={styles.secondary} disabled={busy} onClick={() => { setDeleteCaseId(''); void refresh(); }}>閉じて再読込</button>}
+            <button className={styles.primary} disabled={busy || needsSignin || !deleteTarget} onClick={() => void deleteDraft()}>{busy ? '削除中…' : 'この下書きを削除'}</button>
+          </div>
+        </DialogContent>
+      </Dialog>
       </>}
     </div>
     <Dialog open={infoOpen} onOpenChange={setInfoOpen}>

@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-10-02T19:00:53.394689+00:00",
+  "environment": "loopback built Site; synthetic owner; local Worker/D1",
+  "productionOwnerAcceptance": false,
+  "sourceBase": "5fcfe884d7038723e228156a54bfd78bfcabde89",
+  "checks": {
+    "401PreservesInputAndBlocksExecution": true,
+    "503BlocksExecution": true,
+    "invalidArrayBlocksExecution": true,
+    "networkBlocksExecution": true,
+    "timeoutBlocksExecution": true,
+    "readOnlyRecheckCreatesNoJob": true,
+    "manualCitationsExecutionCompleted": true,
+    "deviceResultSavedAndRetrievedAfterReload": true,
+    "noticeContrast": "rgb(23,35,43) on rgb(250,246,232)",
+    "lateAccessResponseDoesNotClearNewerSignin": "browser verified before connection load sequencing change; hook guard unchanged",
+    "articleInitial503BlocksExecution": true,
+    "articleRecoveryAndExplicitSampleExecution": true
+  },
+  "metadata": [
+    {
+      "id": "9f46fbfe-b919-4c86-a209-9ab1a897a1c4",
+      "user_id": "synthetic-browser-access-owner",
+      "tool": "mr-citations",
+      "transport": "browser",
+      "sample": 0,
+      "status": "completed",
+      "input_bytes": 109,
+      "output_bytes": 104,
+      "duration_ms": 1,
+      "error_code": null,
+      "device_id": null,
+      "created_at": 1790967340815,
+      "started_at": 1790967340826,
+      "finished_at": 1790967340833,
+      "deadline": 1790967460826
+    }
+  ],
+  "cloudProviderCalls": 0,
+  "paymentsCreated": 0,
+  "connectionCenterVerification": {
+    "401PreservesEditedFields": true,
+    "postSigninReadFailureBlocksSave": true,
+    "readOnlyRecoveryWrites": 0,
+    "recoveryPreservesEditedFields": true,
+    "explicitSaveAndReloadReturnsSameConfig": true,
+    "oauthExecuted": false
+  },
+  "publication": "v33 succeeded; see sky-access-publication-verification.json",
+  "validation": {
+    "canonicalFullVerify": {
+      "passed": true,
+      "nodeTests": 696,
+      "fashionTests": 19,
+      "workerD1Assertions": 959,
+      "csvD1R2Assertions": 113
+    },
+    "siteFocusedTests": {
+      "passed": true,
+      "tests": 38
+    },
+    "siteTypecheck": true,
+    "siteLint": true,
+    "siteBuild": true,
+    "siteCsvAssertions": 113,
+    "siteFullVerify": {
+      "passed": false,
+      "reason": "pre-existing partial Site checkout references missing repository evidence"
+    },
+    "siteLegacyWorkApiHarness": {
+      "passed": false,
+      "reason": "pre-schema check assumes diagnostic HTTP 200; current Site bootstrap correctly rejects uninitialized DB with 503"
+    },
+    "siteDesignCheck": {
+      "passed": false,
+      "reason": "pre-existing missing contracts/device-capability-snapshot.json"
+    }
+  }
+}

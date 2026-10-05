@@ -1,0 +1,66 @@
+{
+  "schema": "sky-focused-release-check/1",
+  "evaluatedAt": "2026-10-02",
+  "environment": "canonical source tests; v28 production observations are separate",
+  "previousGoalTurn": "progress: v28 source/runtime UI published, readback and attachment verified; no repeated charge",
+  "checks": {
+    "focusedGateTests": 7,
+    "canonicalVerify": {
+      "exitCode": 0,
+      "nodeTests": 692,
+      "fashionTests": 19,
+      "workerD1Assertions": 938
+    },
+    "requireFocusedStage": {
+      "exitCode": 1,
+      "meaning": "expected refusal because production requirements remain incomplete"
+    },
+    "liveErrorQuery": {
+      "sinceMinutes": 30,
+      "errorsOnly": true,
+      "returnedEvents": 0,
+      "provesProviderExecution": false
+    }
+  },
+  "sourceHashes": {
+    "scripts/check-sky-launch.mjs": "ddc61011e94ceeee197c35a2620c6e2e70515b4d420b243f9bb1cbf0caf7301a",
+    "scripts/lib/sky-launch-audit.mjs": "0f0e66c554713ef9e3503001e47b629df434f3ed9f1208b935c1b483562c7a25",
+    "tests/sky-launch-audit.test.mjs": "b17669a722ab93f820e8ddc34155f60eef3aaa4c9e3a746a41b1b87f314a4a7b",
+    "data/sky-service-launch.json": "9b1823fa7ec2799e3410c891bf3883da5d5ed07818d6b8af6deebef3fff2ffae",
+    "package.json": "9a3df4bbf2d8fcdddce8c00394b052bff05547441e78bf242d904d4419e4de00"
+  },
+  "scopeRetained": [
+    "basic owner/data/support/recovery acceptance",
+    "focused CSV/article/citations/one actual cloud provider and desktop/Pixel journey",
+    "full paid marketplace",
+    "OS/Mini/client acceptance"
+  ],
+  "focusedMissing": [
+    "authenticated-first-use",
+    "csv-private-delivery",
+    "service-policy-and-support",
+    "recovery-and-update",
+    "focused-cloud-ai",
+    "focused-customer-journey",
+    "focused-tool-inventory",
+    "focused-apple-pay"
+  ],
+  "liveVersion": 28,
+  "liveSource": "cb55411549649bd57429fa1afeb974139fc024da",
+  "liveRuntimeChangedThisTurn": false,
+  "providerCredentialConfigured": false,
+  "pricingGateAccepted": false,
+  "completeLaunchClaim": false,
+  "ownerActions": [
+    "Enable the OpenAI Developers plugin for secure server-only provider credential setup; no key in chat",
+    "Unlock the authorized Pixel and complete actual owner sign-in",
+    "Use a supported owner device for Apple Pay acceptance; no additional charge authorization inferred"
+  ],
+  "remainingEngineering": [
+    "Actual provider pricing/quote/usage/cost/failure acceptance on the public execution path",
+    "Same-version desktop and Pixel customer journey",
+    "Individual all-tool acceptance and classification evidence",
+    "Public owner isolation/file expiry/delete and staging recovery acceptance",
+    "Owner-approved support/policy and general marketplace/provider acceptance where applicable"
+  ]
+}

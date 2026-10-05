@@ -111,22 +111,33 @@ Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つ�
 - `npm run release:web-bundle:check`
 - `npm run release:web-assets:check`
 - `npm run test:api`
-- `npm run test:avocado-mini-site`（avocadoMini SiteのAstro配布物契約と予約・決済Worker試験。依存導入不要で`npm run verify`に含む）
+
+配備受入: 既存Sky v30/source 5bdb4ecc0a1f12eb7036163818c4bbb86e224e78、env rev2で公開成功。20候補の処理と保存サイズ照合、2入力反例、candidate/articleの別タブsignin復帰・503時停止・手動2回だけの記録を合成Worker/D1/UIで確認。公開未認証UIで新案内・別タブtarget・実行停止を読み戻した。正本verify692/19/948・exit0、Site type/lint/build/bundle/assets合格。Site全設計検査は元v28に欠けているeSIM設計参照で失敗し、全体greenに換算しない。旧50円completed/stripe_verified/attempt1/rev3を配備後も確認し、新規課金なし。実Cloudは0件/資格情報なし、Pixel 10は現時点Keyguard showing=true。owner desktop/Pixel、Apple Payと実Providerは未受入。GitHub mainはb3e2676、今回の正本変更は未pushでSitesソース保存と区別する。
 
 
+## 2026-10-02 — CSV受付衝突の保存保護と実公開認証境界
 
-## 2026-10-02 — CSV保存・期限切れ修正の独立反映
-
-WEB06/ROCK: main b3e2676からCSVの受付ID衝突・競合cleanupと期限切れretryだけを切り出した。入力objectを試行ごとのUUIDにし、owner照合とINSERTの保存状態照合を維持する。quality_failed retryも期限切れなら処理claim前にowner row/objectを削除して410を返す。回帰はscripts/check-csv-storage.mjsでmain自身の依存・migration・buildを使って確認する。公開Sky v32には同等修正が既にあるが、このbranchは公開版全体と同じsourceではなく、未反映のStripe/Cloud/SIM作業を混入しない。全体verifyはこのbranchでは未完了。本番owner・実Cloud・Apple Pay・運用受入の完了とはしない。証拠docs/evidence/sky-csv-storage-hardening.json。
-
-
-独立branch検証: mainのlockfileでtypecheck/対象lint/build/design、172 Worker API＋113 CSV-D1-R2項目が合格。`npm run verify`は既存visual-system baseline不整合でexit1。Node全体は440件中429 pass/11 failで、変更を退避して未変更mainを同じ環境で検査した結果も同じ11件だった。mainのCI/statusは同一SHAで0件を観測し、成功へ換算しない。今回の差分で既存R5/migration/baselineの不整合やデザインを変更せず、draftでレビューする。公開Sky v32の全体sourceと同じcommitではなく、同等CSV修正だけのGitHub反映候補であり、mainへの統合は未完了。
-
-上記CSV検証の失敗記録は修正前の履歴。以下の検証整合を加えて、同じbranch全体を再検査する。
+WEB04/ROCK: 旧v30の合成Worker/D1/R2で、別ownerが既存受付IDを指定するとHTTP500になり、先のownerのR2入力が消えることを再現した。全IDの衝突を409として拒否し、同時受付ごとの一意input keyを保存rowへ結ぶ。INSERT応答が不明な時は保存rowを照合し、勝者のinputを削除せず、DB照合不能なら入力を保持する。修正したbuildのCSV実API回帰95項目（同owner replay、別owner、同時受付、成果4種、再起動、削除、期限切れ）が合格。旧v28→v30→v28の更新・rollbackでも同一成果hashを保ったが、停止・バックアップ復元を含む本番復旧gateの合格にはしない。実公開v30で公開2件200、私有API6件と偽認証2件401を確認。非user platform credentialは本人signinの代替ではなく、匿名拒否をowner成功へ換算しない。Pixel 10はshowing/inputRestricted=true。追加課金・実Provider送信なし。証拠docs/evidence/sky-csv-storage-verification.json、docs/evidence/sky-production-auth-verification.json。Site公開と正本全体verifyはこの修正ではまだ未完了。
 
 
-2026-10-02 Sky公開前のGitHub検証整合: main b3e2676の既存エラーを分離branchで修正中。CSS/componentを変更せず、既存pale-blueのvisual baseline、英語READMEの製造保留/実機0/進捗リンク、既存marketplace migration後の37 tableへ検証を合わせる。履歴DBの全schema・保存値比較と製品の未受入境界は維持する。公開Site配備やmain mergeとは別に、full verifyと同一SHA CIを確認する。
+配備完了（CSV保存保護）: 既存Sky v31/source c89a651d9e2cd29011f2f6153201a93a82033643、deployment appgdep_6abf90330634819184f3095d248bc118、env rev2で公開成功。配布アーカイブのlocal永続D1/R2による138項目が合格し、旧固定input_keyの成果4種hashを更新後も保持した。旧v28へのrollbackは合成データの読み戻し試験だけであり、既知の衝突不具合を戻す本番復旧手順として使わない。全体verify exit0（692 Node/19 Fashion/948 Worker-D1＋95 CSV-D1-R2）、最後の検査コードlint修正は対象lintと95項目で再確認。公開v31では公開2経路200、私有6経路・偽認証2経路401。旧JPY50円CSVはcompleted/stripe_verified/attempt1/revision3、成果hash99fbb674…を公開D1で再確認した。デザイン・env設定維持、追加課金なし、Cloud実行0。本人の既存ブラウザーはreload後signin待ち、Pixelはロック中。実owner、実Provider資格情報/信頼料金/予算、Apple Pay、停止/backup復元、サポート条件の受入が残り、完全ローンチ未完了。正本変更は未push、Site保存とGitHub main統合を区別する。証拠docs/evidence/sky-csv-storage-verification.json、docs/evidence/sky-csv-storage-publication-verification.json。
 
-分離branchの`npm run verify`はexit 0。古いFashion Producerボタン名の判定も現行の「プランを作って保存」へ同期した。ローカルはNode 26と既存dependency treeを再利用し、base lockのインストール済みpackage版は全一致。GitHub Node 22・fresh npm ciの同一SHA CIは別途確認する。
 
-CSV修正との合成branchも`npm run verify` exit0: Node441/441、Fashion19/19、Worker-D1 172、CSV-D1/R2 113、bundle131、asset114/missing0。証拠`docs/evidence/sky-release-verification-alignment.json`。同一headのfresh CIとmain merge、本番owner・Cloud・Apple Pay受入はまだ別gate。
+## 2026-10-02 — 私有CSVの期限切れ再試行と対の保存復元
+
+WEB04/ROCK: 公開v31の実アーカイブで合成CSVをquality_failedにし、入力を復旧して期限切れへ変更したところ、retryがHTTP200/completed/attempt2になった。取得/初回acceptだけの期限確認では不十分なため、共通processCsvJobのclaim前にも期限を確認し、ownerのexpired rowとobjectsを削除して410を返す。匿名/別ownerは削除へ進めず、期限内の品質再試行は引き続き可能とする。修正build、API回帰、全体verify、公開はこの差分では未完了。
+
+別の合成stagingではv31 Workerを停止しD1/R2を対でsnapshot、保存領域を実際に喪失させ、整合manifestを確認して対で復元した。owner row、入力hash/metadata、成果4種hash、実行event、snapshot前の削除保持、復元済み期限切れの410・purge、別owner/匿名拒否、改変snapshot拒否の82項目が合格。復元観測349msはlocal fixtureだけであり本番RTOではない。snapshot後のowner書込は0。本番Sites backup/restore、offsite暗号化・保持期間、snapshot後の削除journal replay、停止操作の受入は残る。旧脆弱版へのproduction rollbackは使わない。証拠docs/evidence/sky-paired-storage-recovery-verification.json、docs/evidence/sky-csv-expiry-verification.json。追加課金・実Provider送信・本番データ喪失なし。
+
+
+配備完了（期限切れ再試行）: 既存Sky v32/source 5fcfe884d7038723e228156a54bfd78bfcabde89、deployment appgdep_6abf94008be08191953fc7c67e647eb0、env rev2で公開成功。正本verify exit0（692 Node/19 Fashion/948 Worker-D1＋113 CSV-D1-R2）。Site type/lint/build/bundle/assetsと113回帰が合格し、同じ配布アーカイブでexpired retry 410、対snapshotの実喪失/復元を84項目確認。旧JPY50円受付と成果hashを公開D1で再確認し、追加課金なし。環境keyは既存Stripe4件のみでOPENAI_API_KEYなし。本人desktop接続確認はsignin待ち、Pixel 10はshowing/inputRestricted=true。実Provider key/信頼料金/予算と両端末owner・Apple Pay・本番backup/削除journal・サポート条件は未受入。正本未pushとSite保存を区別し、完全ローンチは未完了。証拠docs/evidence/sky-csv-expiry-verification.json、docs/evidence/sky-csv-expiry-publication-verification.json。
+
+
+## 2026-10-02 — GitHubへのCSV修正の切り出し
+
+WEB06/ROCK: 正本main b3e2676から今回のCSV受付衝突/競合cleanupと期限切れprocessing/retryだけをbranch codex/sky-csv-storage-retentionへ切り出し、commit05f676338944f60e05552b22dddc6f50453e3be6とdraft PR https://github.com/k999ln/rock/pull/51 を保存した。main自体のlockfile・migrationでtype/lint/build/design、172 Worker API＋113 CSV-D1/R2が合格。全文verifyは既存visual-system baseline不整合でexit1。Node全体440中429pass/11failで、PR差分を退避した未変更main controlも同じ11失敗。GitHub同一HEADのCI run37002726882もNode22.23.3の同じbaseline assertionでfailure。署名制御CIはsuccessであり一般verifyの代わりにしない。デザインや未反映のStripe/Cloud/SIMをこの差分へ混ぜず、mainへのmergeは未完了。公開Skyはv32/source5fcfe884を維持し、PRは公開版の全sourceではなく同等CSV修正だけ。自分の合成runtimeとGitHub保存済み一時worktreeを整理し、正本・本番データを触らなかった。次は既存mainの検査/文書/migration不整合を既存デザインを維持して解消してからCI/mergeを判断し、owner desktop/Pixel・実Provider credential/rate/budget・Apple Pay・本番復旧/運営受入を続ける。証拠docs/evidence/sky-csv-github-sync-verification.json。完全ローンチ未完了。
+
+
+2026-10-02 Sky引継ぎ（GitHub検証復旧）: PR #51のhead `691fb279a3c4238ef46f956a76b558c987bac850`でfresh npm ci／Node22.23.3の全体CI `37004335830`とrelease-signing `37004335480`がsuccess。既存pale-blueにbaselineを合わせ、英語README、37-table migration union、Fashionの現行保存buttonを検証する。CSS/componentは変更せず、CSV保存衝突・期限切れretry修正は維持。CIはNode441、Fashion19、Worker-D1 172、CSV-D1/R2 113、bundle131・asset114/missing0と公開crypto fixture303/rejection142を通過した。証拠`docs/evidence/sky-release-verification-alignment.json`。canonical dirty treeの同名tests/migration-unionは別の67-table作業を含むため、37へ上書きしない。PRはdraft、mainはb3e2676で未merge。live Skyは同じprojectのpublic active v32をnative取得で確認し、env revision2はStripe用4キーだけ。初回publicationフィールドのv28とは別にcurrentRuntimeReadbackへ最新v32を明記した。desktopはサインイン待ち、Pixelはkeyguard表示。実Cloud/owner journey/Apple Pay/production復旧は未受入。次は不足するproviderの本人設定とowner実機・desktop受入、main統合判断、運用gateを進める。キーをchatへ貼らせず、owner操作を代行認証しない。
+
+- 2026-10-02 WEB04: 共通接続確認は成功配列応答だけで実行を許可し、503/切断/timeout/不正応答では入力保持・読取再確認・明示実行へ復旧する。接続設定は取得失敗中の保存を止め、復旧時に編集入力を上書きしない。[合成ブラウザ証拠](../evidence/sky-access-recovery-verification.json)と[Tool詳細設計](../sky-tools-complete-design.md)を参照。本人実機・実AI・本番公開の受入を別記する。

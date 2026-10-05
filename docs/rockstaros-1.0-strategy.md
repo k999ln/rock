@@ -1,20 +1,20 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
-2026-09-21更新: 最新の利用者指示では、商品の主な入口はavocadoMiniのゲーム機であり、生活全体を豊かにするOSへ段階拡張する。[ゲーム中心・生活・通信の設計](avocado-mini-mini200-e1/game-first-life-connectivity.md)を優先する。下記の引用整理・個人事業主という初期商品仮説は既存業務pilotの履歴で、ゲーム機より優先する確定要望ではない。共通Core、Pixel/QEMU受入、料金・実資金の既存gateは維持する。
+2026-10-02現行方針: 主商品は物理SIM/eSIM購入を入口にRockstarOS、Sky、Zema、cloud LLM/Agentへアクセスするサービス。これは本書の2026-09-21のhardware-first記述と2026-09-16のlocal-LLM-first市場positioningをsupersedeする。Cloud実行、透明な従量料金、短いservice onboardingを最初に提供する。端末内LLM、offline agent、Pixel/QEMU/native OSは共通基盤・対応端末向け能力および独立したengineering acceptance trackとして維持し、service利用の必須条件にしない。適用する製品要件は[現行製品ベース](product-baseline.md)、SIM/eSIM導線は[claim/onboarding設計](sim-service-entitlement-claims.md)を正本とする。
 
-2026-09-16現行優先: [製品目的](product-north-star-20260915.md)とRQ48を優先し、[AIネイティブOS共通設計](ai-native-os-architecture.md)を実装設計の正本とする。中核は交換可能な端末内LLM＋offline agentを持つOS。Sky/Zema、便利な自動化、Game/IP/動画/VR、Wallet/Fundは同じ基盤を使う応用系統とする。収益経路は重要だが、全応用の直列依存にはしない。
+2026-09-16時点の履歴: [製品目的](product-north-star-20260915.md)とRQ48はAI-native OS/Coreを市場の主商品として説明していた。2026-10-02以降はOS/Coreの技術設計を[AIネイティブOS共通設計](ai-native-os-architecture.md)、顧客向け主商品の位置付けを[現行製品ベース](product-baseline.md)で別々に参照する。
 
 状態: 設計。利用者が提示した8原則と「現段階を1.0のベースにし、継続改善する」を適用する。[確定要望RQ01〜RQ49](product-baseline.md)、[system構成](rockstaros-1.0-architecture.md)、[Material Invention Core](material-invention-core.md)、[実装承認範囲](execution-approval-20260909.md)を維持する。新しい市場・価格・所有権・実資金取引を確定した文書ではない。
 
-## 1. 製品の核と決定の区分
+## 1. 製品価値と共通基盤の区分
 
-**目指す体験: 自動化の仕事を、実行から結果・費用・復旧まで見失わない。**
+**目指す体験: SIM/eSIMからcloud LLM/Agent、Sky、Zemaへすぐ入り、仕事を依頼して料金・進捗・結果を一か所で追える。**
 
-OSが端末内LLM・記憶・仕事・権限・停止・復旧を担い、Skyが「何をどこで動かすか」、Zemaが「依頼・進捗・承認・成果」、Walletが「費用と確認済み資金」を扱う。tob側の商品と関心のあるGame/IP等を同じ契約で接続する。ジョブの成功、納品、売上、入金は別イベントとし、仕事完了だけで収益を記帳しない。
+SIM/eSIM offerはRockstarOS service accessを含む。RockstarOS/Coreはidentity・capability・approval・job recoveryを担い、Skyが「どのAgent/Toolを使うか」、Zemaが「依頼・進捗・承認・成果」、Walletが「費用・itemized usage・確認済み資金」を扱う。LLMとAgentはcloud-firstで、端末内inferenceは対応端末の任意能力として追加する。job success、納品、売上、入金は別eventとし、仕事完了だけで収益を記帳しない。
 
 | 区分 | この設計での扱い |
 | --- | --- |
-| 利用者の確定指示 | RockstarOS 1.0、交換可能なローカルLLMとoffline agentを中核に継続改善。Sky/Zema、便利な自動化、Game/IP/動画/VRを接続。最初の実機はPixel 10 GL066。ゲーム交換・作者SDK・既存料金は維持 |
+| 利用者の確定指示 | SIM/eSIM購入を入口としたRockstarOS/Sky/Zema/cloud LLM/Agent service access、透明なusage料金、短いonboarding。端末内LLMはoptional。RockstarOS Core、Pixel 10 GL066、Game/SDKは独立した技術・応用trackとして維持 |
 | 具体化した設計案 | 最初の実用検証を一つの業務に集中し、同じ商品の実行・成果・状態確認・復旧を通す。配布と販売の入口を開発と同時に設計する |
 | 検証する仮説 | 初期利用者は文章・記事・提案を納品する個人事業主/クリエイター。候補商品は既存の引用整理。結果と状態を探す負担の削減が選ばれる理由になる |
 | 未実証 | 需要、継続率、支払意思、競争優位、市場規模、独占、世界初、利益、実機対応、本番金融。設計への記載を実証に換算しない |

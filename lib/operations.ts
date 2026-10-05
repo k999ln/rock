@@ -9,10 +9,51 @@ import {
 } from './sky-connections.ts';
 
 // No runtime binding here: the same store is exercised against SQLite in tests.
-export const JOB_TOOLS = catalogJobTools;
-export type JobTool = TrackedCatalogToolId;
-export const SKY_CONNECTION_TOOLS = catalogConnectionTools;
-export type SkyConnectionTool = CatalogToolId;
+const CORE_JOB_TOOLS = [
+  'coconala',
+  'mr-free-article',
+  'mr-citations',
+  'mr-delivery',
+  'rockstar-legal-intake',
+  'rockstar-patent-assistant',
+] as const;
+const SKY_CANDIDATE_TOOLS = [
+  'rockstar-ip-studio',
+  'faster-whisper',
+  'transformers-js',
+  'playwright',
+  'jev-ultrafast',
+  'jev-trader',
+  'typesafe-computer-use',
+  'jev-review',
+  'jev-router',
+  'jev-browser',
+  'mobile-jev',
+  'coconala-proposal-draft',
+  'gig-workflow',
+  'coconala-inbox',
+  'youtube-script-writer',
+  'seo-blueprint',
+  'landing-page-sprint',
+  'sales-objection-reply-builder',
+  'user-interview-synthesizer',
+  'calendar-coordination',
+  'telegram-notifications',
+  'producthunt-discovery',
+] as const;
+export const JOB_TOOLS = [...CORE_JOB_TOOLS, ...SKY_CANDIDATE_TOOLS] as const;
+export type JobTool = (typeof JOB_TOOLS)[number];
+export const SKY_CONNECTION_TOOLS = [
+  ...JOB_TOOLS,
+  'rockstar-csv-cleanup',
+  'rockstar-markets-analysis',
+  'mercari-revenue',
+  'fashion-brand-ops',
+  'rockstar-ip-studio',
+  'rockstar-ledger',
+  'jev-evaluation',
+] as const;
+export type SkyConnectionTool = (typeof SKY_CONNECTION_TOOLS)[number];
 export type JobState =
   | 'queued'
   | 'running'

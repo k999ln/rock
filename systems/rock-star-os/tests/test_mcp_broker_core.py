@@ -2,6 +2,7 @@
 from contextlib import contextmanager, closing
 from pathlib import Path
 import json
+import hashlib
 import os
 import sqlite3
 import sys
@@ -15,6 +16,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'os'))
 from mcp_broker import Broker, Principal, AccessDenied, Conflict, Unavailable, MCPHttpClient, ToolPolicy
 from mcp_broker.fixture import FixtureServer, PUBLIC_TOKEN
 from mcp_broker.http import TransportError, VERSION, canonical, digest
+from mcp_broker.a2a_authorization import build_authorization_proof, signing_bytes
+from blackberryrock.spend import SpendError, ValueSpendRuntime
+from blackberryrock.wallet import Wallet
+
+
+class FixtureA2ASigner:
+    """Only signs deterministic public fixtures; not a production key adapter."""
+    def __init__(self): self.calls=[]
+    def key_id(self, principal):
+        return 'fixture-device-key'
+    def sign(self, principal, key_id, payload):
+        self.calls.append((principal, key_id, payload))
+        return b'F' * 64
 
 
 class FixturePrincipals:
@@ -95,6 +109,138 @@ class BrokerTests(unittest.TestCase):
         self.broker = Broker(self.directory / 'deny', routes={'fixture': self.client})
         with self.assertRaises(AccessDenied): self.connect()
         self.assertEqual(self.server.wire, [])
+
+    def test_a2a_authorization_proof_is_exact_owner_bound_and_durable(self):
+        signer = FixtureA2ASigner()
+        reservation_calls = []
+        def authorize_wallet_reservation(principal, proof, control_key):
+            reservation_calls.append((principal, proof['delegationId'], proof['authorizationSha256']))
+            return principal.subject == 'alice' and control_key == 'a2a-approval-1'
+        self.broker.close()
+        self.broker = self.make_broker(a2a_authorization_signer=signer,
+                                       a2a_authority_id='fixture-rockstaros',
+                                       a2a_wallet_reservation_authorizer=authorize_wallet_reservation)
+        intent = {
+            'id': '00000000-0000-4000-8000-000000000001',
+            'parentJobId': 'parent-job-1',
+            'messageId': 'message-1',
+            'targetOrigin': 'https://agent.example',
+            'targetAgentName': 'Research Agent',
+            'targetAgentVersion': '2.1.0',
+            'protocolVersion': '1.0',
+            'budgetCurrency': 'USD',
+            'budgetLimitMinor': 500,
+            'parentBudgetLimitMinor': 900,
+            'continueWhileDeviceOffline': True,
+            'deadlineAt': 1600000,
+            'message': 'Summarize public information.',
+        }
+        unsigned = build_authorization_proof('fixture-rockstaros', 'alice', 'device-a', intent,
+                                            1000000, 1300000, 'fixture-device-key')
+        consent = {'approved': True, 'digest': unsigned['authorizationSha256']}
+        proof = self.broker.authorize_a2a_delegation(intent, key='a2a-approval-1', consent=consent,
+                                                     auth='PUBLIC-ALICE')
+        self.assertEqual(proof['schema'], 'rock-a2a-broker-authorization/2')
+        self.assertEqual(proof['ownerUserId'], 'alice')
+        self.assertEqual(proof['deviceRef'], 'device-a')
+        self.assertEqual(proof['inputSha256'], unsigned['inputSha256'])
+        self.assertEqual(len(proof['signature']), 86)
+        self.assertEqual(proof['authorizationSha256'],
+                         'f129e9e5d58f2bcd2ef78ba49a84de6625165670e88c4e1d3e57af424312a57c')
+        self.assertEqual(hashlib.sha256(signer.calls[0][2]).hexdigest(),
+                         '6f9b4c2aac8ffdfba80ed7c5f05ded620134892f65bdd9e1bab08ff7fe17160e')
+        self.assertTrue(proof['continueWhileDeviceOffline'])
+        self.assertEqual(len(signer.calls), 1)
+        self.assertEqual(signer.calls[0][2], signing_bytes(unsigned))
+        self.assertEqual(len(reservation_calls), 1)
+        self.assertEqual(self.broker.authorize_a2a_delegation(intent, key='a2a-approval-1', consent=consent,
+                                                             auth='PUBLIC-ALICE'), proof)
+        self.assertEqual(len(signer.calls), 1)
+        with self.assertRaises(Conflict):
+            self.broker.authorize_a2a_delegation({**intent, 'budgetLimitMinor': 501}, key='a2a-approval-1',
+                                                 consent=consent, auth='PUBLIC-ALICE')
+        with self.assertRaises(Conflict):
+            self.broker.authorize_a2a_delegation({**intent, 'parentBudgetLimitMinor': 901}, key='a2a-approval-1',
+                                                 consent=consent, auth='PUBLIC-ALICE')
+        with self.assertRaises(ValueError):
+            build_authorization_proof('fixture-rockstaros', 'alice', 'device-a',
+                                      {**intent, 'continueWhileDeviceOffline': False},
+                                      1000000, 1300000, 'fixture-device-key')
+        with self.assertRaises(AccessDenied):
+            self.broker.authorize_a2a_delegation(intent, key='a2a-approval-bob', consent=consent,
+                                                 auth='PUBLIC-BOB')
+        self.broker.close()
+        self.broker = self.make_broker(a2a_authorization_signer=signer,
+                                       a2a_authority_id='fixture-rockstaros',
+                                       a2a_wallet_reservation_authorizer=authorize_wallet_reservation)
+        self.assertEqual(self.broker.authorize_a2a_delegation(intent, key='a2a-approval-1', consent=consent,
+                                                              auth='PUBLIC-ALICE'), proof)
+
+    def test_a2a_signer_requires_wallet_reservation_authorizer(self):
+        signer = FixtureA2ASigner()
+        self.broker.close()
+        with self.assertRaises(ValueError):
+            Broker(self.directory / 'missing-wallet-authorizer', routes={'fixture': self.client},
+                   principal_adapter=self.adapter, a2a_authorization_signer=signer,
+                   a2a_authority_id='fixture-rockstaros')
+
+    def test_a2a_wallet_reservation_failure_prevents_proof_signing(self):
+        signer = FixtureA2ASigner()
+        self.broker.close()
+        self.broker = self.make_broker(a2a_authorization_signer=signer,
+                                       a2a_authority_id='fixture-rockstaros',
+                                       a2a_wallet_reservation_authorizer=lambda principal, proof, key: False)
+        intent = {
+            'id': '00000000-0000-4000-8000-000000000001', 'parentJobId': 'parent-job-1',
+            'messageId': 'message-1', 'targetOrigin': 'https://agent.example',
+            'targetAgentName': 'Research Agent', 'targetAgentVersion': '2.1.0',
+            'protocolVersion': '1.0', 'budgetCurrency': 'USD', 'budgetLimitMinor': 500,
+            'parentBudgetLimitMinor': 900, 'continueWhileDeviceOffline': True, 'deadlineAt': 1600000,
+            'message': 'Summarize public information.',
+        }
+        unsigned = build_authorization_proof('fixture-rockstaros', 'alice', 'device-a', intent,
+                                            1000000, 1300000, 'fixture-device-key')
+        with self.assertRaises(AccessDenied):
+            self.broker.authorize_a2a_delegation(
+                intent, key='a2a-wallet-denied',
+                consent={'approved': True, 'digest': unsigned['authorizationSha256']},
+                auth='PUBLIC-ALICE')
+        self.assertEqual(signer.calls, [])
+
+    def test_native_wallet_reservation_is_bound_before_broker_signing(self):
+        signer = FixtureA2ASigner()
+        wallet = Wallet(self.directory / 'native-a2a-wallet.sqlite3')
+        sale = wallet.simulate_sale(2_000, 'native-a2a-fund')
+        wallet.settle_sale(sale['id'], 'native-a2a-fund-settle')
+        spend = ValueSpendRuntime(wallet, clock=lambda: self.now)
+        intent = {
+            'id': '00000000-0000-4000-8000-000000000001', 'parentJobId': 'parent-job-1',
+            'messageId': 'message-1', 'targetOrigin': 'https://agent.example',
+            'targetAgentName': 'Research Agent', 'targetAgentVersion': '2.1.0',
+            'protocolVersion': '1.0', 'budgetCurrency': 'USD', 'budgetLimitMinor': 500,
+            'parentBudgetLimitMinor': 900, 'continueWhileDeviceOffline': True, 'deadlineAt': 1600000,
+            'message': 'Summarize public information.',
+        }
+        unsigned = build_authorization_proof('fixture-rockstaros', 'alice', 'device-a', intent,
+                                            1000000, 1300000, 'fixture-device-key')
+        hold = spend.reserve_a2a_budget(
+            owner_id='alice', delegation_id=intent['id'], parent_job_id=intent['parentJobId'],
+            currency=intent['budgetCurrency'], budget_limit_minor=intent['budgetLimitMinor'],
+            approval_sha256=unsigned['authorizationSha256'], deadline_at=intent['deadlineAt'],
+            key='native-a2a-reserve')
+        self.assertEqual(hold['state'], 'HELD')
+        self.broker.close()
+        self.broker = self.make_broker(
+            a2a_authorization_signer=signer,
+            a2a_authority_id='fixture-rockstaros',
+            a2a_wallet_reservation_authorizer=spend.authorize_a2a_proof)
+        proof = self.broker.authorize_a2a_delegation(
+            intent, key='native-a2a-approval',
+            consent={'approved': True, 'digest': unsigned['authorizationSha256']},
+            auth='PUBLIC-ALICE')
+        self.assertEqual(proof['delegationId'], hold['delegation_id'])
+        with self.assertRaises(SpendError):
+            spend.release_a2a_budget(intent['id'], 'native-a2a-illegal-release')
 
     def test_owner_and_revoked_actor_cannot_read_or_replay(self):
         self.connect(); preview, _ = self.submit()

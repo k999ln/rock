@@ -1,0 +1,37 @@
+{
+  "schema": "rockstar-android-a2a-cloud-draft-bridge/1",
+  "date": "2026-10-02",
+  "status": "native_cloud_quote_and_wallet_approval_source_implemented_android_unverified_cloud_dispatch_disabled",
+  "scope": "Owner-scoped Agent/parent-job selection, signed-quote Cloud delegation draft, native Wallet approval/hold, Broker proof, explicit Cloud approval, and same-ID recovery; paid production dispatch disabled",
+  "implemented": [
+    "The authenticated Rockstar device-home response includes only the account owner's active/review Zema jobs, reduced to ID, title, status, revision, and update time, and only when Zema access is allowed.",
+    "Android Shell API v13 displays eligible parent jobs and requires a current verified quote, unchanged prompt, prompt-disclosure consent, and a parent budget at least as high as the quote cap before saving a draft.",
+    "The Broker re-fetches the owner's connected Agent directory, re-verifies the signed quote against the exact Agent identity and prompt, recomputes the quote-bound native authorization digest, and checks the Cloud response for matching delegation, parent job, idempotency key, message, quote and approval digest.",
+    "The Shell persists only parent job ID, idempotency key, and prompt hash before POST. If the result is uncertain, the UI offers a read-only GET using those same values and never repeats the create request.",
+    "The draft response must remain awaiting_approval. Saving a draft creates no Wallet hold, Broker execution proof, Agent dispatch, Provider execution or billing. Paid dispatch remains disabled.",
+    "AIDL v18 exposes distinct proposal and confirm calls for a native Wallet reservation. Device credential confirmation issues the exact approval; only the confirm call creates the local hold.",
+    "Native Broker rechecks the exact HELD hold and signed quote before signing/uploading a proof; this proof upload does not itself dispatch the task.",
+    "A different explicit user action approves Cloud execution only after exact hold, active proof and owner-scoped readback. Uncertain response is not replayed and fences the hold until same-ID readback.",
+    "The Cloud stable delegation UUID is used as the pre-dispatch local task ID and is bound to the provider remote task only by the signed usage receipt."
+  ],
+  "localVerification": {
+    "osSourceContracts": "PASS: node scripts/check-os-contracts.mjs",
+    "androidArchitectureSourceContracts": "PASS: npm run android:architecture:check (source contract only)",
+    "simServiceAndBrokerTests": "PASS: node --test tests/sim-service-entry.test.mjs tests/a2a-broker-authorization.test.mjs (6/6)",
+    "typecheck": "PASS: npm run typecheck",
+    "workerD1Api": "PASS: npm run test:api, 948 assertions; synthetic local users and local Worker/D1 only",
+    "parentJobListing": "PASS: authenticated synthetic Zema job appears in the linked owner's device-home list with only ID, revision, status, title and update time; no prompt is exposed",
+    "productionWebBuild": "PASS: npm run build; route was bundled; build reports existing chunk-size and CSS filename-conflict warnings",
+    "fullRepositoryVerify": "PASS on the previous full run before adding four API assertions; relevant API suite rerun after the assertions and passed at 948",
+    "progressRecords": "PASS: project-status is synchronized at 104/159 tasks complete; database status records production readback 0/6",
+    "diffCheck": "PASS: git diff --check",
+    "nativeA2AFlowSourceContract": "PASS: node --test tests/sim-service-entry.test.mjs, 2/2; source checks assert quote/intent validation and request-hold -> confirmed reservation -> held-only proof -> explicit Cloud approval order with no automatic retry."
+  },
+  "notVerified": [
+    "Android Java/AIDL compilation, APK install, instrumentation, device UI, process restart or offline/reconnect behavior; this host has no usable Java Runtime, Gradle wrapper/executable or Android SDK environment.",
+    "The Cloud final-approval route enabled-dispatch branch, actual connected Agent execution, provider usage, invoice, or funded Wallet; paid dispatch remains disabled.",
+    "Production billing, carrier activation, physical SIM/eSIM fulfillment, or successful OS/client installation on supported devices. Local tests and usage records do not prove these outcomes.",
+    "A real in-progress direct-LLM spend meter remains provider-dependent; the native UI reports current use as unreported and separates the authorized cap."
+  ],
+  "nextAction": "Run the current AIDL/Core/Shell path on a JDK-equipped Android CI host and complete device-credential/restart/reconnect instrumentation. Separately accept a real Provider rate/meter/invoice contract and funded Wallet before enabling paid Cloud dispatch."
+}

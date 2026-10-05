@@ -1,0 +1,29 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-02",
+  "scope": "Persisted owner-editable Zema plan v1 and Cloud Agent approval gates",
+  "implementation": {
+    "storage": "WorkJob JSON payload stores schemaVersion 1, an editable objective, and server-derived approvalGates; no database migration is required",
+    "editing": "Owner-authenticated, revision-checked plan edits are allowed only while active and before the first recorded step",
+    "cloudAgentGates": [
+      "provider signed quote + native Wallet reservation + explicit Cloud execution approval",
+      "terminal remote state + captured artifact + stored usage receipt before result review"
+    ],
+    "legacyCompatibility": "Old WorkJob payloads are hydrated with plan v1; client input cannot set gates and persisted mismatches are normalized to server template requirements",
+    "authorityBoundary": "Editing the parent objective does not modify the separate Agent request text and never carries forward execution approval"
+  },
+  "verification": {
+    "focusedTests": "PASS: tests/workflow.test.mjs and tests/sim-service-entry.test.mjs (10/10), including real in-memory SQLite persistence",
+    "typecheck": "PASS: npm run typecheck",
+    "productLint": "PASS: npm run lint:product",
+    "apiIntegration": "PASS: earlier npm run verify completed with Worker/D1 API 1,028 assertions and CSV Worker/D1/R2 113 assertions, synthetic local fixtures. A later direct test:api run passed the expanded Worker/D1 API suite at 1,048 assertions, including plan-edit authorization; the subsequent CSV Miniflare process could not start because the host volume returned SQLITE_IOERR_SHMSIZE with 171 MiB free.",
+    "build": "PASS: npm run build included in npm run verify",
+    "apiPlanMutationRegression": "PASS: included in the later 1,048-assertion local Worker/D1 API run. This is synthetic local behavior, not production D1 or billing acceptance.",
+    "csvStorageRerun": "BLOCKED: after the API suite passed, Miniflare's separate CSV Worker/D1/R2 process failed to initialize SQLite with SQLITE_IOERR_SHMSIZE; only 171 MiB was available on the host volume. Earlier full verification had passed this suite at 113 assertions."
+  },
+  "notProven": [
+    "Production D1 migration/readback or persisted plan behavior on a deployed service",
+    "Android UI acceptance, device runtime, or provider execution",
+    "Production cloud billing, invoice reconciliation, carrier activation, or OS installation"
+  ]
+}

@@ -23,6 +23,34 @@ const order = {
   accountId: 'acct_seller',
 };
 
+void test('provider diagnostics retain status and request ID without leaking provider content', async (t) => {
+  const logged = [];
+  t.mock.method(console, 'error', (...args) => logged.push(args));
+  const fetcher = async () => Response.json({ error: {
+    code: 'invalid_api_key', message: 'sk_live_private customer@example.com',
+    param: 'private submitted value',
+  } }, { status: 401, headers: { 'request-id': 'req_fixture123' } });
+  await assert.rejects(skyStripe(readSkyStripeConfig(env), fetcher).retrieveAccount('acct_seller'), { status: 502 });
+  assert.deepEqual(logged, [['[sky-stripe] provider_response', {
+    status: 401, operation: 'payment-api', code: 'invalid_api_key', requestId: 'req_fixture123',
+  }]]);
+  assert.doesNotMatch(JSON.stringify(logged), /sk_live|customer@|submitted/);
+});
+
+void test('untrusted diagnostic fields and transport messages are never logged', async (t) => {
+  const logged = [];
+  t.mock.method(console, 'error', (...args) => logged.push(args));
+  for (const fetcher of [
+    async () => Response.json({ error: { code: 'customer@example.com' } }, { status: 400, headers: { 'request-id': 'sk_live_private' } }),
+    async () => { throw new Error('sk_live_private customer@example.com'); },
+  ]) {
+    await assert.rejects(skyStripe(readSkyStripeConfig(env), fetcher).retrieveAccount('acct_seller'), { status: 502 });
+  }
+  assert.equal(logged[0][1].requestId, null);
+  assert.equal(logged[0][1].code, 'unclassified');
+  assert.doesNotMatch(JSON.stringify(logged), /sk_live|customer@/);
+});
+
 function mockedStripe(responses) {
   const calls = [];
   const client = skyStripe(readSkyStripeConfig(env), async (url, init) => {
@@ -63,7 +91,7 @@ void test('Checkout sends the stored amount, exact ten percent, seller destinati
   assert.equal(call.headers['Stripe-Version'], SKY_STRIPE_API_VERSION);
   assert.equal(call.headers['Idempotency-Key'], 'sky:checkout:order-123');
   assert.equal(call.headers.Authorization, 'Bearer sk_test_fixture');
-  assert.equal(call.redirect, 'error');
+  assert.equal(call.redirect, 'manual');
   assert.ok(call.signal instanceof AbortSignal);
   const expected = {
     mode: 'payment', 'payment_method_types[0]': 'card',
@@ -180,4 +208,16 @@ void test('network, provider, invalid JSON and malformed result errors never exp
       return true;
     });
   }
+});
+
+void test('redirect responses are rejected without a second credential-bearing request', async (t) => {
+  t.mock.method(console, 'error', () => {});
+  let calls = 0;
+  const client = skyStripe(readSkyStripeConfig(env), async (_url, init) => {
+    calls++;
+    assert.equal(init.redirect, 'manual');
+    return new Response(null, { status: 302, headers: { Location: 'https://evil.example' } });
+  });
+  await assert.rejects(client.retrieveAccount('acct_seller'), { status: 502 });
+  assert.equal(calls, 1);
 });

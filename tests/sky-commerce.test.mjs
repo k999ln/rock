@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createHmac } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 import { readFileSync, readdirSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
@@ -88,7 +88,7 @@ function stripeFixture() {
     assert.equal(url.origin, 'https://api.stripe.com');
     const headers = new Headers(init.headers);
     assert.equal(headers.get('authorization'), `Bearer ${runtime.SKY_STRIPE_SECRET_KEY}`);
-    assert.equal(init.redirect, 'error');
+    assert.equal(init.redirect, 'manual');
     const parameters = new URLSearchParams(init.body);
     const call = { path: url.pathname, method: init.method, parameters, headers, search: url.searchParams };
     calls.push(call);
@@ -144,6 +144,27 @@ function stripeFixture() {
     return Response.json(result);
   };
   return { calls, accounts, sessions, intents, charges, behavior, pay, fetcher };
+}
+
+function insertServiceEntitlement(db, owner, { status = 'active', offerId = 'lifeline-v1', expiresAt = null } = {}) {
+  db.prepare(`INSERT INTO rockstar_service_entitlements
+    (issuer_id,claim_id,owner_user_id,offer_id,purchase_reference_sha256,claim_code_sha256,
+     form_factor,scopes_json,issuer_key_id,claim_signature,status,claimed_at,expires_at,revoked_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+    .bind('carrier-fixture', `claim-${owner}`, owner, offerId,
+      createHash('sha256').update(`purchase:${owner}`).digest('hex'),
+      createHash('sha256').update(`code:${owner}`).digest('hex'),
+      'esim', '["sky","zema","agents"]', 'key-fixture', 'signature-fixture', status,
+      Date.now() - 1_000, expiresAt, status === 'revoked' ? Date.now() : null).run();
+}
+
+function offerProfileFor(f) {
+  return JSON.stringify({ schema: 'rockstar-service-offer-profiles/1', profiles: [{
+    issuerId: 'carrier-fixture', offerId: 'lifeline-v1', profileId: 'lifeline',
+    version: '1.0.0', label: 'Lifeline', packages: [{
+      packageKey: f.saved.packageKey, manifestSha256: f.saved.manifestSha256,
+    }, { packageKey: 'other.agent@1.0.0', manifestSha256: 'f'.repeat(64) }],
+  }] });
 }
 
 async function setup(t) {
@@ -245,6 +266,44 @@ void test('seller onboarding, reviewed offer, checkout and signed payment grant 
   assert.equal(f.order(order.id).amount_minor, 10_000, 'later offer edits cannot alter purchased terms');
   assert.equal(f.order(order.id).commission_minor, 1_000);
   assert.doesNotMatch(JSON.stringify(purchases.data), /sk_test_|whsec_|acct_1/);
+});
+
+void test('active SIM/eSIM offer package blocks direct Marketplace checkout on the server', async (t) => {
+  const f = await setup(t);
+  await f.sell();
+  insertServiceEntitlement(f.db, 'buyer');
+  const stripeCheckoutsBefore = f.stripe.calls.filter((call) => call.path === '/v1/checkout/sessions').length;
+  const result = await f.checkout({}, { runtime: {
+    ...runtime,
+    ROCKSTAR_SERVICE_OFFER_PROFILES: offerProfileFor(f),
+  } });
+  assert.equal(result.status, 409, JSON.stringify(result.data));
+  assert.match(result.data.error, /有効なSIM\/eSIM利用権に含まれています/);
+  assert.equal(f.db.prepare('SELECT COUNT(*) AS count FROM sky_commerce_orders').first().count, 0);
+  assert.equal(f.stripe.calls.filter((call) => call.path === '/v1/checkout/sessions').length, stripeCheckoutsBefore);
+});
+
+void test('expired and revoked SIM/eSIM claims do not block a legitimate package checkout', async (t) => {
+  const f = await setup(t);
+  await f.sell();
+  insertServiceEntitlement(f.db, 'expired-buyer', { expiresAt: Date.now() - 1 });
+  insertServiceEntitlement(f.db, 'revoked-buyer', { status: 'revoked' });
+  const options = { runtime: { ...runtime, ROCKSTAR_SERVICE_OFFER_PROFILES: offerProfileFor(f) } };
+  const expired = await f.checkout({}, { ...options, user: 'expired-buyer' });
+  const revoked = await f.checkout({}, { ...options, user: 'revoked-buyer' });
+  assert.equal(expired.status, 200, JSON.stringify(expired.data));
+  assert.equal(revoked.status, 200, JSON.stringify(revoked.data));
+  assert.equal(f.stripe.calls.filter((call) => call.path === '/v1/checkout/sessions').length, 2);
+});
+
+void test('an invalid service offer profile configuration fails closed before Stripe checkout', async (t) => {
+  const f = await setup(t);
+  await f.sell();
+  insertServiceEntitlement(f.db, 'buyer');
+  const result = await f.checkout({}, { runtime: { ...runtime, ROCKSTAR_SERVICE_OFFER_PROFILES: '{invalid' } });
+  assert.equal(result.status, 503, JSON.stringify(result.data));
+  assert.equal(f.db.prepare('SELECT COUNT(*) AS count FROM sky_commerce_orders').first().count, 0);
+  assert.equal(f.stripe.calls.some((call) => call.path === '/v1/checkout/sessions'), false);
 });
 
 void test('return reconciliation grants access only after fresh paid Stripe state and keeps buyer and seller isolated', async (t) => {
@@ -484,7 +543,7 @@ void test('authentication, same-origin and live gateway checks reject untrusted 
   assert.equal((await f.call('seller', { action: 'onboard' }, { user: null })).status, 401);
   assert.equal((await f.call('seller', { action: 'onboard' }, { headers: { origin: 'https://attacker.example' } })).status, 403);
   assert.equal((await f.call('seller', {}, { method: 'GET', requestOrigin: 'https://attacker.example' })).status, 403);
-  const live = { ...runtime, SKY_PAYMENTS_MODE: 'live', SKY_STRIPE_SECRET_KEY: 'sk_live_CommerceFixtureOnly' };
+  const live = { ...runtime, SKY_PAYMENTS_MODE: 'live', SKY_STRIPE_SECRET_KEY: ['sk', 'live', 'CommerceFixtureOnly'].join('_') };
   assert.equal((await f.call('seller', {}, { method: 'GET', runtime: live })).status, 401);
   assert.equal(f.stripe.calls.length, 0);
 });

@@ -1,10 +1,10 @@
 {
   "schema": "rockstaros-web-third-party-license-audit/1",
-  "evaluatedAt": "2026-09-20",
+  "evaluatedAt": "2026-10-01",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "e0b7a8a0f0babbf5ce70b6ceb86d606e7b85d422a5e443367cba3be983a495a3",
-  "packageEntries": 907,
-  "uniqueComponents": 874,
+  "packageLockSha256": "6deaff4c9810526cc425ea6fa2583343ffbfb0acd073245ac6b91f70b3f9e4ae",
+  "packageEntries": 948,
+  "uniqueComponents": 911,
   "missingLicenseMetadata": 0,
   "licenses": [
     {
@@ -19,7 +19,7 @@
     },
     {
       "expression": "Apache-2.0",
-      "uniqueComponents": 40,
+      "uniqueComponents": 47,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -59,7 +59,7 @@
     },
     {
       "expression": "ISC",
-      "uniqueComponents": 34,
+      "uniqueComponents": 35,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -69,7 +69,7 @@
     },
     {
       "expression": "MIT",
-      "uniqueComponents": 731,
+      "uniqueComponents": 758,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -79,7 +79,7 @@
     },
     {
       "expression": "MIT OR Apache-2.0",
-      "uniqueComponents": 4,
+      "uniqueComponents": 6,
       "reviewClass": "license-choice-review"
     },
     {
@@ -94,9 +94,9 @@
     }
   ],
   "reviewSummary": {
-    "standard-license-text-and-notice": 827,
+    "standard-license-text-and-notice": 862,
     "reciprocal-source-terms-review": 41,
-    "license-choice-review": 5,
+    "license-choice-review": 7,
     "attribution-review": 1
   },
   "reviewComponents": [
@@ -109,6 +109,13 @@
     },
     {
       "purl": "pkg:npm/%40cloudflare%2Funenv-preset@2.16.1",
+      "license": "MIT OR Apache-2.0",
+      "reviewClass": "license-choice-review",
+      "lockScope": "development-only",
+      "optional": false
+    },
+    {
+      "purl": "pkg:npm/%40cloudflare%2Funenv-preset@2.16.2",
       "license": "MIT OR Apache-2.0",
       "reviewClass": "license-choice-review",
       "lockScope": "development-only",
@@ -428,6 +435,13 @@
       "reviewClass": "license-choice-review",
       "lockScope": "development-only",
       "optional": false
+    },
+    {
+      "purl": "pkg:npm/wrangler@4.145.0",
+      "license": "MIT OR Apache-2.0",
+      "reviewClass": "license-choice-review",
+      "lockScope": "development-only",
+      "optional": false
     }
   ],
   "overallStatus": "NOT_CLEARED_PRODUCT_LICENSE_AND_DISTRIBUTION_SCOPE_REVIEW_PENDING",
@@ -435,7 +449,7 @@
   "reviewScopeSummary": {
     "production-reachable-required": 7,
     "production-reachable-optional": 11,
-    "development-only-required": 4,
+    "development-only-required": 6,
     "development-only-optional": 25
   }
 }

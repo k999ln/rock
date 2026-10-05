@@ -181,7 +181,7 @@ export function buildLocalLegalResult(
   const resources = getSelfHelpResources(input.issueType, input.location);
   const nextActions = assessment.nextActions.slice(0, 3);
   const answer = [
-    'これは端末内のローカルガイドです。通信せず、法的助言・期限計算・勝敗予測は行いません。',
+    'これは端末内のローカルガイドです。相談本文を通信せず、法的助言・期限計算・勝敗予測は行いません。',
     '',
     `相談分野: ${category?.label ?? input.issueType}`,
     `地域: ${input.location}`,

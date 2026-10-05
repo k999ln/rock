@@ -1,0 +1,84 @@
+{
+  "schema": "rockstaros-android-esim-gateway-contract-validation/1",
+  "date": "2026-10-01",
+  "command": "GRADLE_USER_HOME=/private/tmp/rock-gradle-user-home JAVA_HOME=/private/tmp/rock-temurin17/Contents/Home /private/tmp/rock-gradle-install/gradle-8.11.1/bin/gradle -p android :core:test -ProckBuildRoot=/private/tmp/rock-gradle-output --no-daemon --offline",
+  "result": {
+    "passed": 51,
+    "failed": 0
+  },
+  "focusedCoverage": [
+    "ES256 P-256 receipt creation uses exact owner/order/profile/challenge/install receipt/starter pack bindings",
+    "Java DER ECDSA signature is converted to WebCrypto P1363 and verified against the public key",
+    "Android Java and TypeScript signer produce identical domain-separated canonical bytes",
+    "missing, inactive, mismatched, expired install evidence and software/revoked/non-P256 keys fail before signing"
+  ],
+  "scope": "Android-independent Java Core JVM tests on Temurin 17; not an Android APK build, AndroidKeyStore key enrollment/attestation, Binder/AIDL integration, eUICC installation, provider sandbox, or physical-device acceptance.",
+  "related": [
+    "android/core/src/main/java/dev/rock/core/platform/EsimDeviceEntitlement.java",
+    "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
+    "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
+    "tests/esim-device-entitlement.test.mjs"
+  ],
+  "followup_20261001_keyRotationAndAndroidKeystore": {
+    "serverKeyRotation": {
+      "result": "passed",
+      "behavior": "Same authority/owner/device/keyId with replacement ES256 public key is revoked_or_stale; restoring the original pinned key restores active.",
+      "apiAssertions": 384,
+      "focusedNodeTests": 7,
+      "command": "npm run test:api; node --test tests/esim-device-entitlement.test.mjs"
+    },
+    "androidKeyStoreAdapter": {
+      "source": "android/automation/src/main/java/dev/rock/automation/EsimDeviceGatewayKeyStore.java",
+      "testSource": "android/automation/src/androidTest/java/dev/rock/automation/EsimDeviceGatewayKeyStoreTest.java",
+      "implemented": [
+        "P-256 AndroidKeyStore signing key",
+        "TEE/StrongBox security-level check",
+        "attestation-chain export",
+        "key retirement"
+      ],
+      "androidApkOrInstrumentationBuild": "not_run_android_sdk_platform_and_build_tools_unavailable",
+      "attestationValidation": "not_implemented_server_side",
+      "serverEnrollmentAndBrokerBinderWire": "not_implemented",
+      "installationEvidence": "synthetic_fixture_only"
+    },
+    "databaseMigration": "drizzle/0036_nostalgic_miek.sql adds the entitlement key algorithm and public-key fingerprint pin; database:check passes.",
+    "focusedVerification": {
+      "result": "passed",
+      "eSimTests": 24,
+      "apiAssertions": 384,
+      "databaseCheck": true,
+      "typecheck": true,
+      "productionBuild": true
+    }
+  },
+  "attestationVerifierResearch_20261001": {
+    "sources": [
+      "https://developer.android.com/privacy-and-security/security-key-attestation",
+      "https://github.com/android/keyattestation"
+    ],
+    "findings": [
+      "Verify the attestation chain on a trusted server, against trusted roots and current revocation status.",
+      "Check the exact fresh challenge and attestation application identity; require an approved hardware security level.",
+      "The attestation extension is not necessarily in the leaf certificate; use a maintained verifier rather than trust a local hardwareBacked boolean."
+    ],
+    "repositoryDecision": "Use a separately authenticated JVM verifier adapter based on the official Android verifier library; keep device self-enrollment rejected until verification succeeds.",
+    "implementationStatus": "design_recorded_runtime_verifier_not_implemented",
+    "upstreamReview": {
+      "repository": "https://github.com/android/keyattestation",
+      "reviewedCommit": "55c35040a1b5b72e6d63bfb150c5c68a175c1462",
+      "reviewedAt": "2026-10-01",
+      "license": "Apache-2.0",
+      "releaseState": "v0.1 is described upstream as a test release; default build version is 0.1-SNAPSHOT and its configured Maven publication defaults to a generated local repository, not a stable published dependency.",
+      "runtime": "Kotlin/JVM 2.2.0 with Java 21 toolchain",
+      "verificationInputs": [
+        "attestation certificate chain verified off-device against Google trust anchors",
+        "fresh Google revocation status list",
+        "exact one-time 32-byte challenge",
+        "strict expected attestation application ID and signing certificate digest",
+        "hardware security level and verified boot constraints"
+      ],
+      "integrationDecision": "Do not add the test-release library as an unpinned Android app dependency or run verification inside the Android app / Cloudflare Worker. Pin and package it as an isolated server-side JVM verifier, and authenticate its result to the Worker before registering any device key.",
+      "localBuildStatus": "not_built; repository environment has no Java 21 toolchain and the Android SDK is unavailable"
+    }
+  }
+}

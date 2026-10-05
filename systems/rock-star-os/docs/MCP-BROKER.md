@@ -16,7 +16,7 @@
 
 ## 認証と API
 
-`Broker(state_dir, *, routes, recovery_routes=(), principal_adapter=None, clock=...)`。
+`Broker(state_dir, *, routes, recovery_routes=(), principal_adapter=None, clock=...)`。A2A proofを有効化する場合は、さらに `a2a_authorization_signer`、`a2a_authority_id`、`a2a_wallet_reservation_authorizer(principal, proof, control_key)` を必須で注入する。
 
 `principal_adapter=None` は全て拒否する。組込先は `authenticate(opaque_auth)->Principal` と `guard(principal, action)` context manager を提供しなければならない。guard は拒否時に `PermissionError` を送出し、許可されるローカル受付の間は現在資格の更新と競合しない lock を保持する。全 read、同キー replay、worker の start/recover も現在資格を検査する。opaque auth/token は SQLite に保存しない。action は `connect/disconnect/prepare/submit/start/recover`。
 
@@ -34,6 +34,14 @@ lock 順序は **資格 authority の guard → Broker RLock → SQLite**。通�
 | `process_one()` / `start()` / `close()` | 独立 worker の制御。dead worker を再開し、active request が残る close は lock を保持してエラーを返す |
 
 control key と business key は別の名前空間。各名前空間では同じ主体/端末/key に異なる内容を使えない。新 key は新しい明示 intent を意味するため、上位 UI が不明応答を理由に勝手に作り直してはならない。
+
+## A2Aへの短命Broker承認証明
+
+`os/mcp_broker/a2a_authorization.py`と`Broker.authorize_a2a_delegation()`は、A2A 1.0委任条件をowner・device・入力hash・接続先Agent/version・予算・期限・`continueWhileDeviceOffline`へ固定し、`rock-a2a-broker-authorization/2` Ed25519 proofを作る。非同期Cloud A2Aはoffline継続が明示trueでないとproofを発行しない。入力本文はproofにもcontrol receiptにも書かず、SQLiteにはrequest digestと署名済みproofだけをappend-only `control_receipts`へ保存する。同じowner/device/control keyと完全一致intentの再要求は同じproofを返し、条件差替えやowner差替えは拒否する。proof有効期限は最大5分かつ親deadlineまで、明示`{'approved': true, 'digest': authorizationSha256}`を要求する。署名payloadはWeb側`lib/a2a-broker-authorization.ts`と同じ固定field順・domain prefixで、cross-language vectorを両方のテストで固定する。
+
+Brokerへ秘密鍵は実装しない。利用可能にするにはoperatorが`a2a_authorization_signer`と`a2a_authority_id`を一緒に注入し、signerが`key_id(principal)`および`sign(principal,key_id,payload)->64-byte signature`を提供する必要がある。さらに`a2a_wallet_reservation_authorizer(principal, proof, control_key)`を必須注入する。`ValueSpendRuntime.authorize_a2a_proof`はowner/device・delegation ID・parent job・通貨・上限額・承認digest・deadlineを同一SQLite transactionで検証し、proof期限まで予約解放をfenceする。同じproof/control keyだけが再試行可能で、別key・条件不一致・callback例外・未設定ではproof署名を拒否する。deadlineとproof期限はUnix milliseconds。公開fixtureではnative runtime callableをBrokerへ直接注入したcross-module試験まで確認したが、production process wiring、実署名鍵、secure element、Wallet/WebAuthn、key enrollment/revocation、device UIの本人presenceは未検証。Webにはowner-scoped proof受渡しAPI、operator-managed `A2A_TRUSTED_BROKER_KEYS` resolver、送信marker前と送信直前に再検証するruntime hookを接続した。本番鍵設定およびdevice Gateway wireは未実装。proofの検証だけでProvider実行成功・実精算を確定しない。
+
+`PYTHONPATH=src:os python3 -B -m unittest discover -s tests -p 'test_mcp_broker*.py' -v`で45件成功。Web proof verifier/trust inventoryは`node --experimental-strip-types --test tests/a2a-broker-authorization.test.mjs`で3件成功。両試験は同じfixed payload digest/signing bytes SHA-256を確認する。provider／Walletへの金融作用はない。
 
 ## MCP wire の正確な範囲
 

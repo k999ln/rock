@@ -56,7 +56,7 @@ export default function WorkspaceShell({
       <div className="rock-main-column rock-main-column-full">
         <header className="rock-topbar">
           <Link
-            href="/"
+            href={tone === 'sky' ? '/sky/marketplace' : '/'}
             className="rock-home-link"
             aria-label="ホームへ戻る"
             aria-disabled={running || undefined}
@@ -88,7 +88,7 @@ export default function WorkspaceShell({
               ) : (
                 <Link
                   className="rock-button rock-button-subtle"
-                  href="/rockstaros/guide"
+                  href={tone === 'sky' ? '/sky/help' : '/rockstaros/guide'}
                   aria-label="使い方を見る"
                   aria-disabled={running || undefined}
                 >
@@ -106,9 +106,9 @@ export default function WorkspaceShell({
           {children}
         </main>
         <div className="rock-bottom-note">
-          <span>{PRODUCT_RELEASE_NAME}</span>
+          <span>{tone === 'sky' ? 'Sky' : PRODUCT_RELEASE_NAME}</span>
           <Link
-            href="/rockstaros/guide#limits"
+            href={tone === 'sky' ? '/sky/help#limits' : '/rockstaros/guide#limits'}
             aria-disabled={running || undefined}
           >
             対応環境と既知の制限 <ArrowUpRight size={13} />

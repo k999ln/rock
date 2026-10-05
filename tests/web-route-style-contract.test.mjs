@@ -170,7 +170,7 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
   assert.match(catalog, /id: 'rockstar-csv-cleanup'/);
   assert.match(routing, /label: 'CSV自動化役'/);
   assert.match(chat, /href="\/chat\?view=work"/);
-  assert.match(chat, /<Workbench embedded \/>/);
+  assert.match(chat, /<Workbench embedded cloudDraft=\{cloudWorkDraft\} initialPackageKey=\{preferredPackage\} packageRuntimeServers=\{mcpServers\} \/>/);
   assert.match(chat, /<ChatLiveProgress/);
   assert.match(chat, /<h1>Zema<\/h1>/);
   assert.doesNotMatch(chat, /<h1>Chat<\/h1>/);
@@ -192,7 +192,9 @@ void test('Zema owns work management while Sky keeps CSV as a catalog Tool', () 
     resolve(root, 'components/csv-business-workspace.tsx'),
     'utf8',
   );
-  assert.match(csv, /router\.push\('\/chat\?tool=rockstar-csv-cleanup'\)/);
+  assert.doesNotMatch(csv, /router\.push\('\/chat\?tool=rockstar-csv-cleanup'\)/);
+  assert.match(csv, /needsSignin &&/);
+  assert.match(csv, /reason\.status === 401/);
   assert.match(workRoute, /redirect\('\/chat\?view=work'\)/);
   assert.match(activityRoute, /redirect\('\/chat\?view=work'\)/);
 });

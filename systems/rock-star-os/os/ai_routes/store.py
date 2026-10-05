@@ -15,8 +15,8 @@ import stat
 import threading
 import time
 
-from .policy import (Conflict, Denied, Unavailable, authority, canonical, digest,
-                     fields, ident, input_identity, integer, make_plan, route)
+from .policy import (Conflict, Denied, Unavailable, authority, canonical, capabilities,
+                     digest, fields, ident, input_identity, integer, make_plan, route)
 
 TERMINAL = ('SUCCEEDED', 'FAILED', 'CANCELED')
 
@@ -232,7 +232,9 @@ class ComputeBudgetStore:
         if row['device'] != principal['device_ref']: raise Denied('new execution belongs to original selected device')
         if now >= plan['expires_at']: raise Denied('plan expired; explicit new plan required')
         if model is None or digest(model) != plan['route_sha256']: raise Denied('provider/model/price policy changed; reconfirm required')
-        if digest(principal['capabilities']) != plan['capability_sha256']: raise Denied('device capabilities changed; reconfirm required')
+        current_capabilities = capabilities(principal['capabilities'], now)
+        if digest(current_capabilities) != plan['capability_sha256']:
+            raise Denied('device capabilities changed or were refreshed; reconfirm required')
         if self._balance(db, row['owner'])['paused']: raise Denied('compute admissions paused')
         return plan
 

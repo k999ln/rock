@@ -84,3 +84,28 @@ export async function PATCH(request: Request) {
     return failure(error);
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const user = await requestUser(request);
+    const value = await body(request);
+    if (!value || typeof value !== 'object' || Array.isArray(value))
+      throw new TeamCaseError('入力を確認してください。');
+    const input = value as Record<string, unknown>;
+    if (Object.keys(input).some((key) => !['caseId', 'revision'].includes(key)) ||
+        !Number.isSafeInteger(input.revision) || Number(input.revision) < 0)
+      throw new TeamCaseError('入力項目を確認してください。');
+    const id = teamId(input.caseId);
+    const store = coconalaTeamStore(database());
+    const current = await store.get(user, id);
+    if (!current) throw new TeamCaseError('案件が見つかりません。再読込してください。', 404);
+    if (current.status !== 'draft')
+      throw new TeamCaseError('担当開始後の案件は削除できません。', 409);
+    if (current.revision !== input.revision ||
+        !(await store.removeDraft(user, id, Number(input.revision))))
+      throw new TeamCaseError('別の操作で更新されています。再読込してください。', 409);
+    return json({ deletedCaseId: id });
+  } catch (error) {
+    return failure(error);
+  }
+}

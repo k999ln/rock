@@ -1,6 +1,8 @@
 # RockstarOS 1.0 — ベース構成と進化方針
 
-2026-09-18現行設計: RQ48に基づく中核は交換可能な端末内LLM＋offline agentを持つAIネイティブOS。層別責任、model/runtime更新、記憶、仕事、外部作用の照合、Sky app/OS能力交渉、Zema共通契約、便利機能、Material Invention／avocadoMini、Game/IPの縦断、Core/応用別受入は [AIネイティブOS共通設計](ai-native-os-architecture.md) を正本とする。空間発明systemの共有用正本は[完成設計書](rockstaros-avocado-mini-complete-design.md)。本書のLinux/QEMU資産一覧は再利用対象であり、スマホ版の全機能実装済みを意味しない。
+2026-10-02現行製品方向: 主商品は複数チャネルで購入する物理SIM/eSIM offerにRockstarOS service accessを含み、cloud LLM/Agent、Sky、Zemaを短い導線で提供するサービスである。通信activation、service claim、account identity、device install、cloud execution、AI billingは独立した状態として扱う。OS binaryをSIM/eUICCへ保存する前提は置かない。端末に適合する署名済みOS導入が正式に受け入れられた機種だけnative OSを案内し、他機種は既存OS上のapp/browser clientを使う。端末内LLM・offline agent・Pixel/QEMU/native OSは対応端末向け能力と独立したengineering acceptance trackとして維持する。cloud AIの選ばれる理由は高速で簡単な利用、透明な利用量課金、Sky/Zema統合である。有料Cloud taskは事前単価・見積・明示budget承認・task capを要求し、上限超過時は再承認まで停止する。Provider実費は運用者管理trust inventoryの署名receiptと照合する。Android trust-key build propertyの空既定はfail-closedで、未契約Providerを有料実行可能にしない。詳細なservice architectureとonboardingは[SIM/eSIM-led product architecture](sim-led-product-architecture.md)、製品要件は[現行製品ベース](product-baseline.md)、claim実装は[SIM/eSIM entitlement設計](sim-service-entitlement-claims.md)、OS共通設計は[AIネイティブOS共通設計](ai-native-os-architecture.md)を正本とする。
+
+本書のLinux/QEMU資産一覧は再利用対象であり、スマートフォンの全機能実装済み、契約済みservice access、物理SIM/eSIMの販売・開通、実機OS導入を意味しない。
 
 RockstarOS 1.0は、現在の検証済み範囲を最初の製品ベースとして発表し、互換性を保ちながら改善するための名称である。現在のスマホOS開発主軸はPixel 10／GL066／`frankel`で、QEMU Developer Previewは独立した配布候補として維持する。1.0という製品版番号を、実機対応・本番金融・一般公開の合格証明に使わない。
 

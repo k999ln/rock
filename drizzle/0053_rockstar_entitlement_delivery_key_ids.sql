@@ -1,0 +1,1 @@
+ALTER TABLE `rockstar_entitlement_issuer_deliveries` ADD `code_encryption_key_id` text DEFAULT 'legacy' NOT NULL;

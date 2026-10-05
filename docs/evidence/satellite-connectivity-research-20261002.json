@@ -1,0 +1,102 @@
+{
+  "schema": "rockstar-satellite-connectivity-research/2",
+  "researchedAt": "2026-10-02",
+  "supersedes": "docs/evidence/satellite-connectivity-research-20261001.json",
+  "scope": "Fresh review of official KDDI, Android, eSIM and A2A/Cloudflare primary sources for the contract-preparation objective. No provider contact, contract, booking, external app submission, carrier activation, or satellite field test was performed.",
+  "productDirection": "RockstarOS service access is sold with either a physical SIM or eSIM through multiple channels; satellite-capable access is a separate carrier/device capability and does not store or install RockstarOS on a SIM.",
+  "findings": [
+    {
+      "topic": "KDDI consumer satellite offer and constraints",
+      "sources": [
+        "https://www.au.com/mobile/service/starlink-direct/exclusive-plan-plus/",
+        "https://www.au.com/mobile/service/starlink-direct/"
+      ],
+      "confirmed": [
+        "UQ/povo/other-carrier customers may use the dedicated plan with a physical SIM or eSIM, subject to device and offer eligibility.",
+        "Current public page displays three free months from application, then JPY 1,650/month for other-carrier customers; terms may change and are not Rockstar wholesale/resale prices.",
+        "The plan describes a 1 GB/month terrestrial data allowance and says satellite usage is temporarily not counted against it.",
+        "Satellite access is limited to supported devices and selected app/data traffic; this is not evidence of arbitrary Internet or Rockstar API reachability.",
+        "Ordinary voice calling including 110/118/119 by voice is not supported over the satellite mode."
+      ],
+      "notProven": [
+        "Rockstar wholesale/resale rights, eSIM provisioning API, account/subscriber activation API or carrier billing integration.",
+        "RockstarOS or any Rockstar cloud endpoint being allowlisted or accepted by KDDI."
+      ]
+    },
+    {
+      "topic": "KDDI's separate SOS message-relay service",
+      "source": "https://www.au.com/mobile/service/starlink-direct/sos/",
+      "confirmed": [
+        "Eligible subscribers can send SOS information through approved apps and a messaging app to KDDI's SOS center, which relays reports to emergency-response agencies.",
+        "The relay is distinct from direct voice calling, is unavailable overseas, can be unavailable due to app/network conditions, and does not guarantee rescue."
+      ],
+      "notProven": [
+        "Any Rockstar integration, eligibility, operational responsibility, or emergency-response service."
+      ]
+    },
+    {
+      "topic": "KDDI developer portal and handset/app acceptance",
+      "source": "https://starlink-direct-support.au.com/TOP.html",
+      "confirmed": [
+        "The public developer portal lists Android 16+ and iOS 26+ for supported-app development and requires an eligible plan/SIM/eSIM plus supported handset.",
+        "The Android guide requires satellite-data manifest opt-in and advises satellite-aware UX; KDDI recommends clear connection, progress, retry and lightweight content behavior.",
+        "App-site listing is application-based. Published criteria include the app having been available for six months; the process describes separate coordination/agreement and may include NDA.",
+        "Pixel 10 is referenced in mock testing, while mock tests do not establish Rockstar field or RF acceptance."
+      ],
+      "notProven": [
+        "Pixel 10 GL066 exact SKU/service-plan eligibility and Rockstar field behavior.",
+        "Rockstar app approval, listing, arbitrary cloud API traffic or resale access."
+      ]
+    },
+    {
+      "topic": "Android constrained satellite network requirements",
+      "source": "https://developer.android.com/develop/connectivity/satellite/constrained-networks",
+      "confirmed": [
+        "Android apps do not use constrained satellite networks by default.",
+        "Apps must opt in and adapt data usage to constrained throughput/latency; satellite transport/network capabilities can be inspected on supported OS versions.",
+        "The app should reduce payloads, avoid large model/artifact downloads and handle queued/retried work clearly."
+      ],
+      "implementationDecision": "Keep satellite manifest opt-in disabled until Android 16 network detection, queue and retry caps, explicit status, small-result mode and device/network tests are implemented."
+    },
+    {
+      "topic": "Cloudflare container resources",
+      "source": "https://developers.cloudflare.com/containers/platform/limits/",
+      "confirmed": [
+        "As of the official page last updated 2026-09-30, standard-4 is limited to 4 vCPU, 12 GiB memory and 20 GB disk."
+      ],
+      "implementationDecision": "Continue to separate controller/orchestration from arbitrary agent or heavy/GPU inference runtime; do not assume the container tier is a GPU LLM worker."
+    },
+    {
+      "topic": "Current eSIM Go create-order semantics",
+      "source": "https://docs.esim-go.com/api/v2_5/operations/orders/post/",
+      "confirmed": [
+        "POST /orders transaction deducts the provider organization balance and returns an orderReference on the successful example; callers need to persist and reconcile that reference."
+      ],
+      "notProven": [
+        "Client idempotency or recovery of a transaction when the create response is lost and no orderReference was received."
+      ]
+    },
+    {
+      "topic": "A2A protocol source of truth",
+      "source": "https://a2a-protocol.org/v1.0.0/specification/",
+      "confirmed": [
+        "The versioned A2A specification, rather than the moving main branch, is the contract source for task lifecycle, artifacts, transports and authentication."
+      ],
+      "implementationDecision": "Keep protocol state interoperable but enforce authorization, budget, expiry and credential scope in the Rockstar Broker; A2A state transitions alone do not grant Rockstar authority."
+    }
+  ],
+  "implementationStatus": {
+    "carrierDirectToCellAdapter": "not implemented",
+    "satelliteNetworkDetection": "not implemented",
+    "androidSatelliteManifestOptIn": "off",
+    "KDDIApplicationOrResaleApproval": "not obtained",
+    "satelliteMockOrFieldAcceptance": "not performed",
+    "externalContactsOrContracts": "none"
+  },
+  "nextActions": [
+    "Keep terrestrial, constrained direct-to-cell, external-terminal and offline connectivity as separate capability states.",
+    "Implement small status/approval/cancel/result requests and bounded retry behavior before Android satellite opt-in.",
+    "Verify exact SKU, Android version, plan, app traffic permissions, carrier contract/billing and field acceptance separately.",
+    "Keep KDDI's retail plan price and SOS relay outside Rockstar pricing and lifeline claims unless explicit agreements and acceptance exist."
+  ]
+}

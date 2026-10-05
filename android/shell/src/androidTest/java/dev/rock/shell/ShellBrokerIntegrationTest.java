@@ -35,6 +35,10 @@ public final class ShellBrokerIntegrationTest {
         assertEquals(PackageManager.PERMISSION_DENIED,
             packages.checkPermission("android.permission.INTERNET", context.getPackageName()));
         assertEquals(PackageManager.PERMISSION_GRANTED,
+            packages.checkPermission("android.permission.INTERNET", ShellConnection.BROKER_PACKAGE));
+        assertEquals(PackageManager.PERMISSION_DENIED,
+            packages.checkPermission("android.permission.READ_PHONE_STATE", context.getPackageName()));
+        assertEquals(PackageManager.PERMISSION_GRANTED,
             packages.checkPermission("dev.rock.permission.USE_SHELL_API", context.getPackageName()));
         assertEquals(PackageManager.PERMISSION_DENIED,
             packages.checkPermission("dev.rock.permission.MANAGE_PLATFORM", context.getPackageName()));
@@ -42,11 +46,42 @@ public final class ShellBrokerIntegrationTest {
             packages.checkSignatures(context.getPackageName(), ShellConnection.BROKER_PACKAGE));
 
         ShellConnection broker = new ShellConnection(context);
-        assertEquals(4, ShellConnection.API_VERSION);
+        assertEquals(15, ShellConnection.API_VERSION);
+        JSONObject invalidEsimChallenge = new JSONObject(
+            broker.provisionEsimGatewayKey("{\"state\":\"challenge_issued\"}", false));
+        assertEquals("blocked", invalidEsimChallenge.getString("state"));
+        assertEquals("CHALLENGE_INVALID", invalidEsimChallenge.getString("error"));
         JSONObject before = new JSONObject(broker.snapshot());
         assertEquals(1, before.getInt("apiVersion"));
         assertTrue(before.has("totalWorkCount"));
         assertTrue(before.has("truncated"));
+        JSONObject capabilities = before.getJSONObject("deviceCapabilities");
+        assertEquals(2, capabilities.getInt("protocolVersion"));
+        assertEquals("local_observation", capabilities.getString("scope"));
+        JSONObject deviceProfile = capabilities.getJSONObject("deviceProfile");
+        assertEquals("android_public_api", deviceProfile.getString("source"));
+        assertEquals("android", deviceProfile.getString("platform"));
+        assertEquals("android_build_reported_not_hardware_attested", deviceProfile.getString("identityBasis"));
+        assertEquals("existing_os_client", deviceProfile.getString("deliveryMode"));
+        assertEquals("not_evaluated", deviceProfile.getString("localInferenceCompatibility"));
+        JSONObject localInference = deviceProfile.getJSONObject("localInferenceObservation");
+        assertTrue(java.util.Set.of("ready", "no_model", "loading", "busy", "error", "unknown")
+            .contains(localInference.getString("state")));
+        assertEquals("not_reported", localInference.getString("modelProfileIdentity"));
+        assertEquals("not_evaluated", deviceProfile.getString("nativeOsCompatibility"));
+        assertTrue(deviceProfile.getInt("apiLevel") > 0);
+        assertTrue(deviceProfile.getJSONObject("hardwareFeatures").has("connectivity.wifi"));
+        assertTrue(deviceProfile.getJSONObject("resources").has("availableAppStorageBytes"));
+        assertTrue(java.util.Set.of("supported", "unsupported", "unknown")
+            .contains(capabilities.getString("eUiccFeature")));
+        assertTrue(java.util.Set.of("enabled", "disabled", "not_supported", "unknown")
+            .contains(capabilities.getString("eUiccManagement")));
+        assertEquals("not_inspected", capabilities.getString("activeProfile"));
+        assertEquals("not_evaluated", capabilities.getString("planCompatibility"));
+        assertEquals("not_evaluated", capabilities.getString("rockstarOsCompatibility"));
+        assertTrue(capabilities.getLong("expiresAtElapsedMs") > capabilities.getLong("observedAtElapsedMs"));
+        assertFalse(capabilities.toString().contains("ICCID"));
+        assertFalse(capabilities.toString().contains("EID"));
         assertTrue(selectedArticleTool(broker).matches("[0-9a-f-]{36}"));
         JSONObject recovery = new JSONObject(broker.recoveryStatus());
         assertEquals("ok", recovery.getString("status"));
@@ -84,19 +119,18 @@ public final class ShellBrokerIntegrationTest {
         assertTrue(response.has("workId"));
         JSONObject after = new JSONObject(broker.snapshot());
         if ("ready".equals(localAiState)) {
-            assertEquals("queued", response.getString("status"));
-            String workId = response.getString("workId");
-            assertEquals(before + 1, after.getInt("totalWorkCount"));
-            assertTrue(after.toString().contains(workId));
-            System.out.println("ZEMA_RESULT=QUEUED");
-            broker.cancel(workId);
+            assertEquals("blocked", response.getString("status"));
+            assertEquals("MODEL_PROFILE_NOT_ACTIVE", response.getString("code"));
+            assertTrue(response.isNull("workId"));
+            assertEquals(before, after.getInt("totalWorkCount"));
+            System.out.println("ZEMA_RESULT=BLOCKED_WITHOUT_VERIFIED_PROFILE");
         } else {
             assertTrue(java.util.Set.of("no_model", "loading", "busy", "error")
                 .contains(localAiState));
             assertEquals("blocked", response.getString("status"));
             assertTrue(response.isNull("workId"));
             String code = response.getString("code");
-            assertEquals("LOCAL_AI_UNAVAILABLE", code);
+            assertEquals("LOCAL_AI_NOT_READY", code);
             assertEquals(before, after.getInt("totalWorkCount"));
             System.out.println("ZEMA_RESULT=BLOCKED_WITHOUT_PARTIAL_WORK:" + code);
         }

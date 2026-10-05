@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-02",
+  "scope": "SIM/eSIM-included Sky Package to Zema/A2A request-context handoff",
+  "implemented": [
+    "Sky Marketplace CTA passes the selected packageKey into the Zema Workbench route.",
+    "Workbench checks the authenticated owner's active SIM/eSIM entitlement and the current verified, installable registry manifest before preparing handoff context.",
+    "The A2A quote-bound message includes exact packageKey, manifest SHA-256 and summary, and says this is request context rather than proof that the selected Agent can execute the Package.",
+    "For local PC execution, a separate manual binding offers only connected owner-PC stdio MCP tools when the reviewed Package declares mcp_stdio/PC/free and both input and output JSON Schemas exactly match; it fixes the selected MCP tool in the existing per-run confirmation UI.",
+    "The PC MCP Connector retains a remote MCP tool's declared outputSchema in its connection passport so the compatibility check uses the same interface metadata observed at connect time.",
+    "The existing quote consent, verified quote, user-set cap, offline continuation consent and explicit approval paths remain required before execution.",
+    "The cloud-agent workflow has ordered request/quote and result-review steps. Result step requires a remote-completed delegation for the same parent job, captured artifact, signed usage receipt and owner confirmation.",
+    "Source-contract tests cover marketplace routing, entitlement/registry check, exact identity in the handoff, A2A workflow order, oversized/malformed handoff rejection, and local runtime matching/fail-closed exclusions."
+  ],
+  "local_verification": {
+    "command": "node --test tests/rockstar-package-handoff.test.mjs tests/workflow.test.mjs tests/sim-service-entry.test.mjs",
+    "result": "25 focused handoff/runtime tests passed; MCP Connector integration suite passed 7 tests including MCP outputSchema propagation",
+    "full_command": "npm run verify",
+    "full_result": "passed: 729 Node tests, project/repository/schema/database/release/design/system checks, typecheck, product lint, local Worker/D1 API (972 assertions), CSV regression (113 assertions), MCP Connector package parity and Web build",
+    "build_notes": "Local production build completed with existing bundle-size and duplicate CSS output-name warnings; warning-free asset graph and 136-reference asset closure checks passed."
+  },
+  "not_proven": [
+    "No direct binding to an A2A/cloud Agent has been implemented; the A2A Agent is separately selected and may not execute the Package.",
+    "No general Package install or arbitrary cloud runtime mapping is implemented; the local path covers only manually selected exact-schema PC stdio tools.",
+    "The local binding proves only declared input/output schema equality and selected local MCP operation; it does not prove implementation identity, source-code installation, semantic equivalence, or runtime acceptance on all PCs.",
+    "No production A2A provider execution, carrier activation, SIM/eSIM purchase claim, Stripe or carrier billing, production D1 readback, or physical device/OS installation acceptance is evidenced.",
+    "Source assertions and local fixtures do not establish end-to-end behavior on a production provider or device."
+  ]
+}

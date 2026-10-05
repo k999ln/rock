@@ -174,7 +174,7 @@ export async function inspectRemoteMcp(
       method: 'POST',
       headers: requestHeaders(protocolVersion, sessionId),
       body: JSON.stringify({ jsonrpc: '2.0', id, method, params }),
-      redirect: 'error',
+      redirect: 'manual',
       cache: 'no-store',
       signal: AbortSignal.timeout(8_000),
     });
@@ -231,7 +231,7 @@ export async function inspectRemoteMcp(
         jsonrpc: '2.0',
         method: 'notifications/initialized',
       }),
-      redirect: 'error',
+      redirect: 'manual',
       cache: 'no-store',
       signal: AbortSignal.timeout(8_000),
     });

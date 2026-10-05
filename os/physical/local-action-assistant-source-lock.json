@@ -27,12 +27,12 @@
   "integration": {
     "routeId": "local-action-assistant",
     "target": "local",
-    "osBridge": "PLAN_V2_NATIVE_COMPILED_EMULATOR_AND_PHYSICAL_BOUND",
-    "signedApk": "UNSIGNED_RELEASE_APK_REVIEWED",
+    "osBridge": "PROFILE_HASH_API_V4_READONLY_FD_HANDOFF_SOURCE_TESTED_NOT_NATIVE_BUILT",
+    "signedApk": "API_V2_UNSIGNED_RELEASE_APK_REVIEWED_V4_NOT_BUILT",
     "productPackage": "STAGING_READY_NOT_IMAGE_INTEGRATED"
   },
   "overlay": {
-    "status": "SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
+    "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT",
     "path": "os/physical/local-ai-overlay.patch",
     "sha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
     "extensions": [
@@ -40,11 +40,21 @@
         "path": "os/physical/local-ai-plan-v2.patch",
         "sha256": "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
         "purpose": "local_ai_api_v2_plan_only_json_schema"
+      },
+      {
+        "path": "os/physical/local-ai-profile-v3.patch",
+        "sha256": "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
+        "purpose": "bind_plan_request_to_verified_loaded_gguf_sha256_and_bytes_api_v3"
+      },
+      {
+        "path": "os/physical/local-ai-model-handoff-v4.patch",
+        "sha256": "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
+        "purpose": "authenticated_read_only_descriptor_model_copy_hash_recheck_and_profile_load_api_v4"
       }
     ]
   },
   "imageBuildVerified": false,
   "imageBootVerified": false,
   "deviceInferenceVerified": true,
-  "notes": "Pinned reviewed source plus hash-locked base and plan-v2 overlays. API v2 adds a JSON-Schema-constrained plan-only route with Tool calls disabled; the Broker still performs closed-field, selected-Tool and executable-input checks before creating work. Same-test-key copies passed Android 15 emulator fail-closed tests and Pixel 10 GL066 plan, selected Tool, result and history tests. This is not an OS-image integration, production-signed APK, bundled model, flash or boot result."
+  "notes": "Base, plan-v2 and profile-v3 overlays retain prior Pixel 10 GL066 evidence. The API v4 extension adds an authenticated read-only ParcelFileDescriptor model handoff: the runtime accepts regular files only, independently bounds size and disk reserve, copies into private no-backup storage, verifies exact length and SHA-256, atomically renames, loads through the local runtime, and reports the active profile ID with the loaded model digest. Pinned upstream source TypeScript/Jest/lint/manifest checks and clean overlay application pass. Android Gradle/AIDL build, API v4 Binder/device tests, OS-image integration and production signing have not been run. Prior physical inference evidence applies only to the reviewed API v2 artifact."
 }

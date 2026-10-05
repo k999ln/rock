@@ -62,7 +62,9 @@ export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
   const state = skyToolUiState(tool, runtimeContext);
   const isLocalCandidate = tool.runner === 'candidate-local';
   const isJevRouter = tool.id === 'jev-router';
+  const isPcApp = tool.id === 'rockstar-ip-studio';
   const hostMismatch = host ? catalogHostMismatch(tool, host) : null;
+  const pcAppUnavailable = isPcApp && (!host || host === 'unknown' || Boolean(hostMismatch));
   const routerHostMismatch = isJevRouter ? hostMismatch : null;
 
   return (
@@ -138,12 +140,23 @@ export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
                 公式の導入手順を見る <ArrowUpRight size={16} />
               </a>
             </section>
+          ) : pcAppUnavailable ? (
+            <section className={styles.openCard}>
+              <p className={styles.eyebrow}>PCの専用アプリ</p>
+              <h2>{host ? 'PCでIP Studioを開いてください' : '利用環境を確認中'}</h2>
+              <p>
+                IP Studioは、起動したPCのブラウザから利用します。
+                スマートフォンからPCのアプリへ接続する機能は準備中です。
+              </p>
+            </section>
           ) : tool.launchPath ? (
             <section className={styles.openCard}>
               <p className={styles.eyebrow}>専用アプリ</p>
               <h2>{tool.name}を開く</h2>
               <p>
-                このツールは共通チャットを経由せず、専用の入力画面で操作します。
+                {isPcApp
+                  ? 'このPCでIP Studioを起動してから開いてください。アプリの起動・接続状態は、この画面では確認できません。'
+                  : 'このツールは共通チャットを経由せず、専用の入力画面で操作します。'}
               </p>
               <Link className={styles.action} href={tool.launchPath}>
                 専用画面を開く <ArrowUpRight size={16} />
@@ -182,9 +195,13 @@ export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
           </ol>
           <p className={styles.license}>
             ライセンス：
-            <a href={tool.licenseUrl} target="_blank" rel="noopener noreferrer">
-              {tool.license} <ArrowUpRight size={13} />
-            </a>
+            {pcAppUnavailable ? (
+              <span>{tool.license}（PCの専用アプリ内で確認）</span>
+            ) : (
+              <a href={tool.licenseUrl} target="_blank" rel="noopener noreferrer">
+                {tool.license} <ArrowUpRight size={13} />
+              </a>
+            )}
           </p>
           <p className={styles.note}>{tool.note}</p>
         </details>

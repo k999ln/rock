@@ -6,6 +6,7 @@ import { join, resolve } from 'node:path';
 import { createSkyToolApp } from '../toolkits/sky-tool-sdk/src/index.mjs';
 import {
   createConnector,
+  McpHub,
   validateRemoteUrl,
   validateRegistry,
 } from '../toolkits/sky-mcp-connector/server.mjs';
@@ -58,6 +59,7 @@ void test('SDK tools appear in the PC hub and execute only after one-time approv
   sky.tool({
     name: 'count',
     description: '入力された文章に含まれるUnicode文字数を返します。',
+    price: { model: 'free', note: 'ローカルテスト用。実行ごとの追加料金なし。' },
     inputSchema: { type: 'object', required: ['text'], properties: { text: { type: 'string' } } },
     outputSchema: { type: 'object', required: ['characters'], properties: { characters: { type: 'integer' } } },
     handler: async ({ text }) => ({ characters: [...text].length }),
@@ -74,6 +76,7 @@ void test('SDK tools appear in the PC hub and execute only after one-time approv
   assert.equal(direct.status, 401);
   const connected = await (await request(`/servers/${runtime.localId}/connect`, {})).json();
   assert.equal(connected.passport.tools[0].name, 'count');
+  assert.deepEqual(connected.passport.tools[0].outputSchema.required, ['characters']);
   const args = { text: 'Sky' };
   const prepared = await (await request(`/servers/${runtime.localId}/prepare`, { name: 'count', arguments: args })).json();
   const executed = await (await request(`/servers/${runtime.localId}/execute`, { name: 'count', arguments: args, approvalToken: prepared.approvalToken, confirmed: true })).json();
@@ -180,11 +183,46 @@ void test('one connector negotiates the latest shared MCP protocol and arbitrary
   assert.equal(fashion.passport.protocolVersion, '2025-11-25');
   assert.equal(fashion.passport.tools.length, 41);
   assert.notEqual(fashion.passport.toolDigest, mr.passport.toolDigest);
+  assert.ok(fashion.passport.tools.every((tool) => tool.pricing.model === 'unknown'));
+  const blocked = await request('/servers/fashion-brand-ops/prepare', {
+    name: fashion.passport.tools[0].name,
+    arguments: {},
+  });
+  assert.equal(blocked.status, 409);
+  assert.equal((await blocked.json()).error, 'paid_execution_requires_priced_a2a');
 
   const reconnected = await (
     await request('/servers/rock-star-mr/connect', {})
   ).json();
   assert.equal(reconnected.passport.tools.length, 4);
+});
+
+void test('remote MCP self-declared free pricing cannot authorize direct execution', async () => {
+  const hub = new McpHub([{
+    id: 'remote-free', name: 'Remote service', description: 'test remote MCP',
+    transport: 'streamable_http', url: 'https://mcp.example.test/mcp', authEnv: null,
+  }]);
+  hub.entry('remote-free').transport = {
+    protocol: null,
+    reset() {},
+    async request(message) {
+      if (!('id' in message)) return null;
+      const result = message.method === 'initialize'
+        ? { protocolVersion: '2025-11-25', serverInfo: { name: 'fixture', version: '1' } }
+        : { tools: [{
+          name: 'summarize', description: 'Remote summary', inputSchema: { type: 'object' },
+          _meta: { 'rockstaros.dev/pricing': { model: 'free', note: 'Provider claim' } },
+        }] };
+      return { jsonrpc: '2.0', id: message.id, result };
+    },
+  };
+  const passport = await hub.connect('remote-free');
+  assert.equal(passport.tools[0].pricing.model, 'free');
+  assert.throws(
+    () => hub.prepare('remote-free', 'summarize', {}),
+    (error) => error.code === 'paid_execution_requires_priced_a2a' && error.message.includes('自己申告'),
+  );
+  hub.close();
 });
 
 void test('tool execution requires an exact, single-use approval and blocks direct bypass', async (t) => {

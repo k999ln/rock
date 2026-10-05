@@ -1,0 +1,71 @@
+{
+  "schema": "sky-cloud-ui-verification/1",
+  "recordedAt": "2026-10-02T04:10:55.122625+00:00",
+  "scope": "local synthetic browser and canonical Worker/D1; no real OAuth, provider call, invoice or payment",
+  "gitHubMain": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "canonicalChanges": "uncommitted local source",
+  "verification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": 663,
+    "fashionTests": 19,
+    "workerD1Assertions": 858,
+    "focusedTests": 15,
+    "log": "/Users/kaiya/Documents/Codex/2026-10-01/https-github-com-k999ln-rock-git/work/sky-cloud-ui/verify-accepted.log",
+    "logSha256": "147f86bddbb5d930e807833dfece05f4ddaf57e38863efb5f36c856a1e7b7dce"
+  },
+  "browser": {
+    "localOnly": true,
+    "latestSyntheticParentJobId": "2a849ec7-d0b5-444b-b9da-f9c757d6f019",
+    "syntheticPricesNotProduction": true,
+    "actions": [
+      "create-work",
+      "save-quote",
+      "reload-owned-work-and-history",
+      "expired-signin",
+      "recover-same-work",
+      "cancel-quote (previous same-source harness)",
+      "separate-parent-history (previous same-source harness)",
+      "checkbox-initial-off-and-aligned"
+    ],
+    "inputPersisted": false,
+    "screenshots": [
+      {
+        "file": "sky-cloud-ui-quote-local.jpg",
+        "sha256": "dc7b391cdf3dcf0dd4f23041ededa69fc50a784dab1b61473ca5fdf273b181bb"
+      },
+      {
+        "file": "sky-cloud-ui-expired-local.jpg",
+        "sha256": "7b54037537450e18bdccce20d25ca560733496aa7d6de0386416de488cf04218"
+      },
+      {
+        "file": "sky-cloud-ui-restored-local.jpg",
+        "sha256": "31fdc40d18c4f7e74459df3e4baf2db218a08e6e3660c295cedd2be6b24007eb"
+      }
+    ]
+  },
+  "productionOwnerSigninVerified": false,
+  "providerSubmission": false,
+  "additionalCharge": false,
+  "pricingGateAccepted": false,
+  "published": false,
+  "currentLiveVersion": 24,
+  "currentLiveUrl": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "fixes": [
+    "device API fixture creates its same-owner active parent job with a valid UUID before quote creation",
+    "quote listing scopes parent before limit and only releases expired unsubmitted holds",
+    "manual redirect and uncertain outcome never automatically resubmit execution"
+  ],
+  "sourceSha256": {
+    "components/workbench.tsx": "6ee59a7c6589bd51e362727646e6335b5a20b3a13cfc81a0d86c6dbb8667ee10",
+    "app/work/work.css": "5044ee50ac0cd718de63b0845cc5b6d1b74c41b6c75a73561983a449e71301d9",
+    "lib/remote-ai-text-client.ts": "d5f5d7d84542babbcb067c696fe15d6c75686ddbb3b95345781b3d72d5de54d4",
+    "lib/remote-ai-text-store.ts": "062bfe1f3e494a4694ce712326ba7c833d99ad9c71e37ccead0cc576777dd8e7",
+    "lib/remote-ai-text-http.ts": "973ed6db12b9a89f516deed0e9d5472e705d83a39e380fc95470f770619dab5f",
+    "app/api/llm/quotes/route.ts": "6ebdcd1da8d3a1aeccc6af8d329a60aef4a3a5d319755198a832c995bfd02cb7",
+    "app/api/llm/quotes/[id]/route.ts": "5a7c785a96959f6c9c0c782267f6bf50f36308d37f77894bdc6b3b0c70be4df3",
+    "tests/remote-ai-text-client.test.mjs": "5486f8be6a897395ffe93b85dd07125b75d063e0590a41268eeb0c1b5651d525",
+    "tests/remote-ai-text-store.test.mjs": "9e0e190a5cfac648d16fe0b7a3adebadb22d066a21956718d86fe67168446a24",
+    "scripts/check-work-api.mjs": "dabbb7e1bce4d7575f393918cbb84a9fac6691a77072bd1a6954382b90102333"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-02",
+  "scope": "Android Core plus current Shell/AIDL source for exact quote-bound A2A Wallet reservation and Broker authorization",
+  "implementation": {
+    "quoteBinding": "The reservation v2 approval digest commits request SHA-256, provider price-quote SHA-256, per-task cap, parent-job cap, owner, stable delegation/task ID, agent, currency, pricing version, creation time and deadline. It is persisted in the existing append-only reservation approval_digest field.",
+    "stableTaskMapping": "The pre-dispatch task ID is the already assigned delegation UUID. The signed Provider receipt carries both that delegation ID and its post-dispatch remote task ID; Core rejects any different delegation and accepts a remote task ID only through the exact signed receipt bound to the hold.",
+    "approvalGate": "PlatformStore.authorizeHeldA2ADelegation signs a Cloud-compatible Broker proof only while the owner reservation is HELD and its stored approval digest matches the exact request/quote/agent/budget intent.",
+    "javaSource": [
+      "android/core/src/main/java/dev/rock/core/platform/A2AUsageReceiptVerifier.java",
+      "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+      "android/core/src/main/java/dev/rock/core/platform/A2ABrokerAuthorization.java"
+    ],
+    "sharedFixtures": [
+      "android/core/src/test/resources/a2a-wallet-reservation-v2.json",
+      "android/core/src/test/resources/a2a-broker-authorization-v2.json"
+    ],
+    "shellWiring": "IShellApi v18 and RockShellService expose draft/quote review, separate device-credential Wallet approval, exact hold creation, Broker proof only from the HELD quote-bound row, explicit Cloud approval, and read-only same-ID recovery. The stable delegation UUID is the native pre-dispatch task/correlation ID."
+  },
+  "verification": {
+    "command": "node --experimental-strip-types --test tests/a2a-broker-authorization.test.mjs tests/a2a-wallet-reservation.test.mjs tests/a2a-price-quote.test.mjs",
+    "result": "PASS",
+    "nodeTests": "12/12",
+    "cloudVerifierInterop": "Cloud TypeScript verifier accepts the shared exact quote-bound Broker signature, authorization digest and canonical signing bytes",
+    "javaJunitSource": "Added Core JUnit assertions for Java proof byte-for-byte RFC Ed25519 fixture parity, reservation v2 digest, held-reservation-only proof signing, request/quote/parent-cap mismatch rejection, and stable delegation ID receipt settlement",
+    "shellSourceContract": "PASS: node --test tests/sim-service-entry.test.mjs (2/2), including source-order/fail-closed checks from Wallet approval proposal through held reservation, proof registration and Cloud approval."
+  },
+  "notProven": [
+    "The Android Core Java/JUnit source has not compiled or run; Java runtime and Gradle are unavailable on this host",
+    "Android AIDL generation, APK build, Shell/Broker instrumentation, device credentials, restart/offline/reconnect behavior remain unverified",
+    "No live Cloud A2A dispatch, provider contract, provider billing, invoice, customer-funded Wallet, SIM activation, or Android device behavior",
+    "No supported-SKU OS installation or production acceptance"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "environment": "loopback built Site Worker/D1, synthetic owner/rate/answer/provider transport only",
+  "implemented": [
+    "current chat input -> Workbench in component memory only; no automatic job creation or execution",
+    "saved answer readback and deletion confirmation/cancel",
+    "authenticated completed-answer Markdown attachment; no-store; owner checks",
+    "body-only DELETE retaining state, itemized usage, duration and budget ledger",
+    "shared budget label describes usage records before invoice reconciliation"
+  ],
+  "checks": {
+    "focusedTests": 17,
+    "siteTypecheck": true,
+    "siteProductLint": true,
+    "siteBuild": true,
+    "siteWorkerD1ResultsAssertions": 24,
+    "browserHandoffPromptMatched": true,
+    "browserReloadHistoryRestored": true,
+    "browserReloadDraftCleared": true,
+    "browserDeleteDialogAndCancel": true,
+    "browserDownloadFileContentMatched": true,
+    "handoffJobCount": 1,
+    "handoffQuoteCount": 1,
+    "syntheticProviderSubmissions": 1
+  },
+  "download": {
+    "bytes": 135,
+    "sha256": "d1e428bde1d9c99cb2f5388d0440772a2087be5f98215bcc245ee5687102fbca"
+  },
+  "published": true,
+  "productionProviderExecutionVerified": false,
+  "newPaymentPerformed": false,
+  "actualOwnerSignInVerified": false,
+  "canonicalFullVerify": {
+    "exitCode": 0,
+    "nodeTests": 681,
+    "fashionTests": 19,
+    "workerD1Assertions": 938
+  },
+  "screenshots": [
+    "sky-cloud-handoff-local.jpg",
+    "sky-cloud-saved-answer-local.jpg"
+  ],
+  "sourceCommit": "cb55411549649bd57429fa1afeb974139fc024da",
+  "version": 28,
+  "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "codeHashDriftAfterRecording": []
+}

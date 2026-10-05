@@ -1,0 +1,40 @@
+{
+  "schema": "rockstar-android-a2a-cloud-approval-recovery/1",
+  "date": "2026-10-02",
+  "status": "source_implemented_local_contracts_pass_android_unverified_cloud_dispatch_disabled",
+  "implemented": [
+    "Shell API v16 exposes separate final Cloud approval and read-only execution recovery for the same saved delegation ID.",
+    "The native screen presents a final confirmation with the exact Wallet cap and explicit notice that the Cloud task can continue while the device is offline.",
+    "Approval requires the existing exact quote-bound HELD reservation, active same-device broker proof, and owner-authenticated Cloud state readback before sending the explicit PATCH approval.",
+    "The Broker never automatically repeats an approval request. If its result may be unknown, it fences the local Wallet cap as INDETERMINATE and requires a same-ID readback.",
+    "Cloud readback can reconcile a still-HELD local reservation after an app restart when it proves approval was accepted; settlement sync performs this before requiring a dispatched reservation.",
+    "The Wallet cap can be released only after Cloud readback proves the task remains awaiting approval with expired proof, or ended before dispatch; accepted, active, or unknown Cloud states cannot be released.",
+    "The production Cloud A2A execution feature flag remains disabled by default; this implementation does not enable paid dispatch.",
+    "Android task detail now shows verified A2A progress events and bounded provider-signed usage lines for provisional live snapshots and the final receipt; mismatched line totals are suppressed.",
+    "Android direct-LLM task detail now shows final rate-card token categories and charges. During execution it truthfully labels provider current usage as not reported and displays the reserved maximum separately.",
+    "The foreground Cloud home polls active tasks only while visible, at a server-requested bounded interval (10–120 seconds); polling stops when the screen pauses and the existing validated-connectivity callback refreshes after reconnect.",
+    "The final Cloud confirmation displays both the Agent-task cap and the parent-job cap so parallel child work stays within the user-approved envelope."
+  ],
+  "localVerification": {
+    "osSourceContracts": "PASS: node scripts/check-os-contracts.mjs",
+    "simServiceEntryContracts": "PASS: node --test tests/sim-service-entry.test.mjs",
+    "androidArchitectureSourceContracts": "PASS: npm run android:architecture:check",
+    "typecheck": "PASS: npm run typecheck",
+    "productLint": "PASS: npm run lint:product",
+    "fullVerify": "PASS on the previous Cloud approval/recovery source state before this turn’s display-only Java update; current turn re-ran targeted source contracts, meter/receipt tests, typecheck and lint.",
+    "projectStatus": "PASS: 104/159 tasks complete; SIM01 remains in progress; production readback 0/6",
+    "diffCheck": "PASS: git diff --check",
+    "targetedMeterAndUiContracts": "PASS: npm run os:check; node --test tests/sim-service-entry.test.mjs tests/a2a-live-usage.test.mjs tests/a2a-usage-receipt.test.mjs (6/6)",
+    "postUiTypecheckLint": "PASS: npm run typecheck; npm run lint:product; git diff --check",
+    "latestTargeted": "PASS after bounded foreground polling, itemized-meter display and both-level cap display: npm run os:check; node --test tests/sim-service-entry.test.mjs; npm run typecheck; npm run lint:product; git diff --check",
+    "fullNodeTests": "PASS: npm test, 692/692 after usage itemization; latest polling and cap-display changes pass the focused Shell source-contract test.",
+    "androidToolchainCheck": "UNAVAILABLE: /usr/bin/java is a stub with no Java runtime; no Gradle executable/wrapper or Android SDK environment is configured. adb alone is present."
+  },
+  "notVerified": [
+    "Android Java/AIDL compilation, APK install, instrumentation, device UI, process restart or offline/reconnect behavior; the host does not have a usable Java/Gradle/Android SDK toolchain.",
+    "The Cloud final-approval route's enabled dispatch branch, actual connected Agent execution, provider usage or invoice.",
+    "Production billing, carrier activation, physical SIM/eSIM fulfillment, or successful OS/client installation on supported devices. Local tests and usage records do not prove these outcomes.",
+    "A live actual-spend meter during direct LLM execution is not available in the current Provider response path; the device displays the authorized reserved cap and marks current usage unreported until the final response. Provider support/contract and in-progress meter acceptance remain required."
+  ],
+  "nextAction": "Run Android JDK/SDK CI and supported-device acceptance; agree on and accept an in-progress direct-LLM usage meter with the Provider; keep execution disabled until Provider billing, invoice reconciliation and funded Wallet are accepted."
+}

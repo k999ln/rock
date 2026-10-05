@@ -22,11 +22,11 @@
 
 ## 今回の独立実装
 
-`os/ai_routes/policy.py` は、保護されたカタログと端末能力 adapter の観測を受けて、明示選択した一経路だけの plan を作る。入力は UTF-8 選択テキスト 1–65,536 bytes。永続化するのはその SHA-256 と byte 数で、本文は保存しない。
+`os/ai_routes/policy.py` は、保護されたカタログと端末能力 adapter の観測を受けて、明示選択した一経路だけの plan を作る。能力snapshot v1はtrusted source、platform、観測/失効時刻、online/PC状態、最大64個のtrue/false/unknown feature、memory/storage、導入済model revisionを持つ。30秒より古い、未来時刻、期間外snapshotは拒否する。route manifestは実行targetに必須なcapabilityを宣言し、required featureがfalseまたはunknownなら選べない。能力snapshotのdigest・evidence ID・expiryをplanへ束縛し、reserve/claim時にfreshnessと完全一致を再確認する。snapshot更新・期限切れは既存planを再承認なしに使わせず、automatic fallbackもしない。共通shapeは[`contracts/compute-device-capabilities.json`](../../contracts/compute-device-capabilities.json)を参照。入力は UTF-8 選択テキスト 1–65,536 bytes。永続化するのはその SHA-256 と byte 数で、本文は保存しない。
 
 plan は authority UUID、owner、元 device、要求 key、選択入力、local/cloud/pc_usb、provider ID、model ID と revision、price version、出力 token 上限、メモリ・保存容量要件、retention/cancellation policy、能力観測 digest、外送選択、内部予算上限、発行・期限を含む。これらの exact digest に `approved:true` を付けた別の明示同意が必要である。provider ID は論理識別子であり、未接続の実 provider URL・region の証明ではない。
 
-cloud は online と外送同意、PC は接続済み観測と外送同意、local は正確なモデル revision の存在と必要メモリ・保存容量を要求する。条件を満たさなければ拒否する。別 provider、別モデル、cloud への自動 fallback は行わない。現在の能力観測は公開ソフトウェア fixture であり、実ハードウェア計測を主張しない。
+cloud は `network.internet` とonline、PC は `compute.remote_pc`と接続済み観測、local は`compute.local_inference`・`storage.model_install`、正確なモデル revision、必要メモリ・保存容量を要求する。条件を満たさなければ拒否する。別 provider、別モデル、cloud への自動 fallback は行わない。現在の能力観測は公開ソフトウェア fixture であり、実ハードウェア計測を主張しない。このadapterはAndroid BrokerのeUICC-only snapshotやSky UIへ未接続であり、物理SIM/eSIMの挿入で端末能力を収集・判定する機能ではない。
 
 `ComputeBudgetStore` は次の限定 API を持つ。
 
@@ -79,6 +79,6 @@ Cloud Billing の alerts-only budget は支出を止める仕組みではない�
 
 ## 検証範囲
 
-新 `os/ai_routes/tests/test_policy_budget.py` は実 SQLite による 23 件の focused tests を持つ。明示経路・外送拒否、端末能力、strict 入力、同一 owner 二台の並列予約と一度だけの claim、ACK 喪失・再起動、取消・pause、provider HMAC/全識別項目、unknown/超過、期限と時計巻戻り、DB欠損・private権限・容量、claim receipt への実 SQLite trigger 故障を検査する。最後の故障は実 ENOSPC ではなく明示的な test trigger である。
+新 `os/ai_routes/tests/test_policy_budget.py` は実 SQLite による 26 件の focused tests を持つ。既存項目に加え、能力source/platform/freshnessの検査、expired/future snapshot拒否、targetごとの必須capability、unknown/false capability拒否、観測更新後のplan再承認を確認する。明示経路・外送拒否、strict入力、同一owner二台の並列予約と一度だけのclaim、ACK喪失・再起動、取消・pause、provider HMAC/全識別項目、unknown/超過、期限と時計巻戻り、DB欠損・private権限・容量、claim receiptへの実SQLite trigger故障も検査する。最後の故障は実ENOSPCではなく明示的なtest triggerである。
 
 実行方法は `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:os python3 -W error::ResourceWarning -m unittest discover -s os/ai_routes/tests -v`。本証拠は host module/SQLite の範囲。HTTP、実 LLM、provider 課金、native GUI、OS image への組込み、物理 BlackBerry、一般の provider cancellation はこの増分では **NOT_RUN / NOT_CONNECTED**。

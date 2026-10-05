@@ -82,4 +82,21 @@ void test('persists owner-isolated cases and enforces revision compare-and-swap'
   assert.equal(await store.update('owner-a', next, 0), true);
   assert.equal(await store.update('owner-a', next, 0), false);
   assert.equal((await store.get('owner-a', file.id))?.status, 'assigned');
+  assert.equal(await store.removeDraft('owner-a', file.id, 1), false);
+  assert.equal((await store.get('owner-a', file.id))?.status, 'assigned');
+
+  const draft = createTeamCase({ id: randomUUID(), terms });
+  await store.create('owner-a', draft);
+  assert.equal(await store.removeDraft('owner-b', draft.id, 0), false);
+  assert.equal((await store.get('owner-a', draft.id))?.revision, 0);
+  const edited = applyTeamAction(draft, command('update_terms', {
+    terms: { ...terms, title: '修正した下書き' },
+  }), 0);
+  assert.equal(await store.update('owner-a', edited, 0), true);
+  assert.equal(await store.removeDraft('owner-a', draft.id, 0), false);
+  assert.equal((await store.get('owner-a', draft.id))?.terms.title, '修正した下書き');
+  assert.equal(await store.removeDraft('owner-a', draft.id, 1), true);
+  assert.equal(await store.get('owner-a', draft.id), null);
+  assert.equal((await store.list('owner-a')).some((item) => item.id === draft.id), false);
+  assert.equal(await store.removeDraft('owner-a', draft.id, 1), false);
 });

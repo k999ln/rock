@@ -187,6 +187,70 @@
   -webkit-backdrop-filter: blur(30px) saturate(1.25);
 }
 
+.serviceSetupLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 14px 0 0;
+  padding: 10px 13px;
+  border: 1px solid rgba(190, 220, 230, 0.2);
+  border-radius: 12px;
+  color: #d7e8ed;
+  background: rgba(10, 16, 21, 0.56);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.primaryServiceLinks {
+  width: min(560px, 100%);
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.primaryServiceLinks a {
+  min-width: 0;
+  min-height: 66px;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: center;
+  align-items: center;
+  column-gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  color: #f5fbfc;
+  background: rgba(17, 20, 25, 0.72);
+  text-decoration: none;
+}
+
+.primaryServiceLinks a:hover,
+.primaryServiceLinks a:focus-visible {
+  border-color: rgba(190, 220, 230, 0.55);
+  background: rgba(33, 49, 59, 0.88);
+}
+
+.primaryServiceLinks strong { font-size: 13px; }
+.primaryServiceLinks span { grid-column: 2; color: #b7c4cb; font-size: 11px; }
+
+@media (max-width: 520px) {
+  .primaryServiceLinks { gap: 6px; }
+  .primaryServiceLinks a { padding: 9px 7px; column-gap: 5px; }
+  .primaryServiceLinks strong { font-size: 12px; }
+  .primaryServiceLinks span { font-size: 10px; }
+}
+
+.serviceSetupLink:hover,
+.serviceSetupLink:focus-visible {
+  border-color: rgba(190, 220, 230, 0.55);
+  background: rgba(33, 49, 59, 0.82);
+}
+
+.serviceSetupLink span { flex: 1; }
+
 .widgetMark {
   width: 48px;
   height: 48px;

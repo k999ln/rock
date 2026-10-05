@@ -2,11 +2,13 @@
 
 import {
   ChartNoAxesCombined,
+  Bot,
   Check,
   ChevronLeft,
   ChevronRight,
   Cloud,
   MessageCircle,
+  RadioTower,
   RotateCcw,
   Settings2,
   ShieldCheck,
@@ -259,6 +261,18 @@ export default function HomeScreen() {
             <span>Skyからツールを選び、専用画面で入力・実行できます</span>
           </span>
           <span className={styles.widgetAction}>Skyを開く</span>
+        </Link>
+
+        <nav className={styles.primaryServiceLinks} aria-label="RockstarOSの主要サービス">
+          <Link href="/sky"><Cloud size={16} /><strong>Sky</strong><span>Agentを探す</span></Link>
+          <Link href="/chat"><MessageCircle size={16} /><strong>Zema</strong><span>仕事を依頼</span></Link>
+          <Link href="/work"><Bot size={16} /><strong>Agent</strong><span>依頼・進捗・費用・成果</span></Link>
+        </nav>
+
+        <Link className={styles.serviceSetupLink} href="/connect">
+          <RadioTower size={16} />
+          <span>SIM / eSIMからRockstarOSをはじめる</span>
+          <ChevronRight size={16} />
         </Link>
 
         <div className={styles.appGrid} aria-label="ホームアプリ">

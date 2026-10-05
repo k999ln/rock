@@ -113,9 +113,22 @@ function addCountTool(app, handler = async ({ text }) => ({ characters: [...text
       additionalProperties: false,
       properties: { characters: { type: 'integer' } },
     },
+    price: { model: 'free', note: '検証Tool。実行ごとの追加料金なし。' },
     handler,
   });
 }
+
+void test('SDK refuses Tool definitions with missing or unsupported pricing', () => {
+  const { app } = sdk();
+  const base = {
+    name: 'unpriced',
+    description: '料金未定義Toolの登録拒否を検証します。',
+    inputSchema: { type: 'object', properties: {} },
+    handler: async () => ({}),
+  };
+  assert.throws(() => app.tool(base), { code: 'pricing_required' });
+  assert.throws(() => app.tool({ ...base, price: { model: 'mystery', note: '料金' } }), { code: 'pricing_required' });
+});
 
 async function rpc(runtime, id, method, params) {
   const response = await fetch(`http://${runtime.host}:${runtime.port}${runtime.path}`, {
@@ -204,6 +217,7 @@ void test('side-effect tools require an authorization callback', () => {
           properties: { amount: { type: 'integer' } },
         },
         sideEffects: ['financial'],
+        price: { model: 'usage', note: '外部料金はquote連携まで無効です。' },
         handler: async () => ({ status: 'prepared' }),
       }),
     /authorize callback/,
@@ -226,6 +240,7 @@ void test('handler results must match the declared output schema', async (t) => 
       required: ['count'],
       properties: { count: { type: 'integer' } },
     },
+    price: { model: 'free', note: 'ローカルSchema検証のみ。' },
     handler: async () => ({ count: 'not-an-integer' }),
   });
   const runtime = await app.start();

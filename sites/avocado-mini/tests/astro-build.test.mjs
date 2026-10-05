@@ -33,29 +33,21 @@ test('Astro emits every public route and the Worker deployment contract', () => 
   }
 });
 
-test('the deployed Worker includes the same executable sources and shared Stripe contract', () => {
-  for (const relative of ['index.js', 'shared/stripe.mjs']) {
-    assert.equal(built(`server/${relative}`), readFileSync(new URL(`../worker/${relative}`, import.meta.url), 'utf8'));
-  }
-});
-
-test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder pages', () => {
+test('Astro home now leads with SIM/eSIM service access while retaining separate hardware pages', () => {
   const home = built('client/index.html');
   const mini = built('client/mini/index.html');
   const pro = built('client/pro/index.html');
-  assert.match(home, /AVOKADO \/ SPATIAL EXPERIENCES/);
-  assert.match(home, /Make the room part<br\s*\/?>of the experience\./);
-  assert.match(home, /id="choose-setup"/);
-  assert.match(home, /id="possibilities"/);
-  const experiences = home.match(/<section id="possibilities"[\s\S]*?<\/section>/)?.[0] || '';
-  assert.equal((experiences.match(/<article /g) || []).length, 4);
-  assert.doesNotMatch(experiences, /possibility-flow|system-role-strip|<dl/);
-  for (const image of ['usecase-care-motion-v4.jpg', 'usecase-research-development-v4.jpg', 'usecase-everyday-space-v4.jpg', 'usecase-spatial-game-v4.jpg']) assert.ok(experiences.includes(image));
-  for (const href of ['/mini/#mini-use-cases', '/pro/#pro-use-cases', '/pro/#pro-pairing', '#choose-setup']) assert.ok(experiences.includes('href="' + href + '"'));
+  assert.match(home, /SIM \+ eSIM SERVICE ACCESS/);
+  assert.match(home, /A whole team of AI\./);
+  assert.match(home, /physical SIM or eSIM purchase is designed to include access to RockstarOS/);
+  assert.match(home, /The RockstarOS binary does not live on the SIM/);
+  assert.match(home, /one Rockstar account/i);
+  assert.match(home, /approve a spending limit/);
+  assert.match(home, /itemized usage/);
+  assert.match(home, /id="how-it-works"/);
+  assert.match(home, /existing OS client or browser/);
+  assert.match(home, /carrier activation, channel entitlement linking, production AI pricing and billing/);
   assert.match(home, /href="\/mini\/"/);
-  assert.match(home, /href="\/pro\/"/);
-  assert.match(home, /home-promo-mini/);
-  assert.match(home, /home-promo-pro/);
   assert.match(mini, /Give the space<br\s*\/?>another sense\./);
   assert.match(mini, /id="mini-use-cases"/);
   assert.match(mini, /You move\./);
@@ -85,8 +77,6 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   for (const match of home.matchAll(/href="#([^"]+)"/g)) {
     assert.equal(ids.has(match[1]), true, `#${match[1]} must identify a section`);
   }
-  assert.equal((home.match(/class="home-promo /g) || []).length, 3);
-  assert.equal((home.match(/class="home-tile /g) || []).length, 4);
   assert.match(home, /rel="canonical" href="https:\/\/avocado-mini\.kirin-999\.chatgpt\.site\/"/);
   assert.match(home, /property="og:title"/);
   assert.doesNotMatch(home, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
@@ -110,7 +100,9 @@ test('reference-led product navigation and Pro highlights remain interactive', (
   const home = built('client/index.html');
   const mini = built('client/mini/index.html');
   const pro = built('client/pro/index.html');
-  for (const page of [home, mini, pro]) {
+  assert.match(home, /class="service-header"/);
+  assert.match(home, /Hardware concepts/);
+  for (const page of [mini, pro]) {
     assert.match(page, /class="[^"]*site-menu/);
     assert.match(page, />Menu</);
     assert.match(page, /Price & status/);

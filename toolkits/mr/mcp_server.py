@@ -49,6 +49,10 @@ TOOLS = [
 ]
 for tool in TOOLS:
     tool['annotations'] = {'readOnlyHint':True,'destructiveHint':False,'idempotentHint':True,'openWorldHint':False}
+    tool['_meta'] = {'rockstaros.dev/pricing': {
+        'model': 'free',
+        'note': '固定ローカル処理。実行ごとの外部Provider料金はありません。',
+    }}
 
 def validate(name, args):
     tool=next((t for t in TOOLS if t['name']==name),None)

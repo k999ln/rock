@@ -50,6 +50,50 @@ export function validateBaseline(
       `${id}: 正本の見出しが一意ではありません`,
     );
   }
+  const serviceAccess = data.serviceAccessModel;
+  requireValue(
+    serviceAccess?.status ===
+      'authoritative_product_direction_design_and_local_onboarding_only' &&
+      serviceAccess?.primaryEntry ===
+        'purchase_physical_sim_or_esim_including_rockstaros_service_access' &&
+      JSON.stringify(serviceAccess?.distributionChannels) ===
+        JSON.stringify([
+          'rockstar_direct',
+          'mobile_carrier',
+          'device_retailer',
+          'online_retailer',
+        ]) &&
+      serviceAccess?.osBinaryStoredOnSim === false &&
+      serviceAccess?.purchaseEnabled === false &&
+      serviceAccess?.productionBillingAccepted === false &&
+      serviceAccess?.carrierActivationAccepted === false &&
+      serviceAccess?.deviceOsInstallationAccepted === false,
+    'SIM/eSIM offer, channel-neutral access, separate device delivery, and unaccepted production states must remain explicit',
+  );
+  requireValue(
+    JSON.stringify(serviceAccess?.primaryReasonsToChoose) ===
+      JSON.stringify([
+        'fast_simple_access_to_cloud_llms_and_agents',
+        'transparent_usage_based_pricing_and_cost_estimates',
+        'integrated_rockstaros_sky_zema_access_with_minimal_setup',
+      ]) &&
+      JSON.stringify(serviceAccess?.deviceMinimumExperience) ===
+        JSON.stringify([
+          'short_activation_to_service_onboarding',
+          'direct_sky_zema_agent_entry_from_home',
+          'single_rockstar_identity_without_per_service_registration',
+          'submit_tasks_track_progress_and_retrieve_results',
+          'accepted_cloud_tasks_continue_while_device_offline_and_reconcile_on_reconnect',
+          'show_provider_rates_and_estimate_before_paid_execution',
+          'distinguish_reserved_budget_from_live_usage_and_invoice_confirmed_amount',
+          'itemize_usage_after_completion',
+          'user_controlled_spending_limits_and_explicit_approval_to_raise_them',
+        ]) &&
+      serviceAccess?.carrierAndAiChargesSeparated === true &&
+      serviceAccess?.dispatchPolicy ===
+        'fail_closed_until_quote_bound_reservation_provider_meter_invoice_reconciliation_and_funded_wallet_are_accepted',
+    'SIM-led service value, offline Cloud continuity, spend approval, and fail-closed paid execution requirements must remain explicit',
+  );
   requireValue(
     data.productIdentity?.displayName === 'RockstarOS' &&
       data.productIdentity?.releaseName === 'RockstarOS 1.0' &&
@@ -958,15 +1002,17 @@ export function validateBaseline(
     'OS内の画面と公開製品ページの戻り先を分けてください',
   );
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
+  const hardwarePageSource = read(resolve(root, 'app/avocado-mini/page.tsx'));
   const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
-      data.launchPage?.role === 'public_avocado_mini_product_home' &&
+      data.launchPage?.role === 'public_sim_esim_service_home' &&
       data.launchPage?.osHomeRoute === '/' &&
       data.launchPage?.installGuideRoute === '/rockstaros/guide' &&
       data.launchPage?.directOsHomeLink === false &&
-      data.launchPage?.serviceDetailsLocation === 'os_home_after_setup' &&
-      data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
+      data.launchPage?.serviceDetailsLocation === 'public_service_home' &&
+      data.launchPage?.hardwareProgramRoute === '/avocado-mini' &&
+      data.marketPositioning?.customerFacingFocus === 'sim_esim_led_rockstaros_service_access' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
       data.marketPositioning?.leadHardwareForm ===
         'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
@@ -976,16 +1022,16 @@ export function validateBaseline(
         'historical_motion_tower_p0_kit_only' &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
-      data.launchPage?.primaryAction === 'view_avocado_mini' &&
-      data.launchPage?.secondaryAction === 'developer_preview_install_guide' &&
-      data.launchPage?.publicDownloadFallback === '/rockstaros/guide#install' &&
-      launchPageSource.includes('製品を見る') &&
-      launchPageSource.includes('実機の販売と一般向けOSインストーラーはまだ始まっていません') &&
-      launchPageSource.includes('OS導入ガイドを見る') &&
-      launchPageSource.includes('href="/rockstaros/guide"') &&
+      data.launchPage?.primaryAction === 'start_service_onboarding' &&
+      data.launchPage?.secondaryAction === 'view_sim_esim_plans' &&
+      data.launchPage?.publicDownloadFallback === '/connect' &&
+      launchPageSource.includes('SIM/eSIMをつないで、Sky・Zema・AI Agentへ') &&
+      launchPageSource.includes('RockstarOSはSIMカード内で動くOSではありません') &&
+      launchPageSource.includes('href="/connect"') &&
+      hardwarePageSource.includes('<AvocadoTurntable />') &&
+      hardwarePageSource.includes('href="/rockstaros"') &&
       !launchPageSource.includes('href="/"') &&
       !launchPageSource.includes('createSkyToolApp') &&
-      launchPageSource.includes('<AvocadoTurntable />') &&
       turntableSource.includes('turn * Math.PI * 2') &&
       turntableSource.includes('className={styles.designDetails}') &&
       turntableSource.includes('className={styles.osSection}') &&

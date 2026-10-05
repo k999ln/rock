@@ -1,0 +1,28 @@
+{
+  "evidenceId": "sim-service-usage-rates-local-20261002",
+  "stage": "local_source_and_fixture_validation",
+  "productDirection": "physical_sim_or_esim_purchase_includes_rockstaros_service_access",
+  "implemented": [
+    "The authenticated estimate endpoint returns per-million-token input and output rates from the active verified signed rate card.",
+    "Text-token rate cards additionally return cached-input and cache-write rates.",
+    "Zema Workbench displays those unit rates beside the request maximum estimate, model/pricing version, token bounds, and user-selected spend cap.",
+    "Currency conversion honors ISO 4217 minor-unit digits; unknown currencies retain an explicit minor-unit representation.",
+    "Paid direct-LLM provider submission remains disabled when the pricing acceptance gate is false."
+  ],
+  "validation": {
+    "focusedNodeTests": "14/14",
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "workerD1ApiAssertions": 865,
+    "fullVerify": "passed",
+    "fullVerifyNodeTests": "670/670",
+    "fashionTests": "19/19"
+  },
+  "notProven": [
+    "production provider rates or a contractual quote",
+    "provider dispatch, live direct-LLM meter, invoice reconciliation, funded Wallet debit, or production billing",
+    "carrier purchase, physical SIM fulfillment, or carrier activation",
+    "Android APK/device acceptance or exact-SKU RockstarOS installation"
+  ],
+  "note": "Synthetic rate cards, local API assertions, and local usage data are not production billing or carrier/device acceptance."
+}

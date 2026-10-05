@@ -1,6 +1,6 @@
-import { requestUser } from './request-auth.ts';
+import { requestRockstarUser } from './rockstar-device-link.ts';
 
-type Database = Pick<D1Database, 'prepare'>;
+type Database = Pick<D1Database, 'prepare' | 'batch'>;
 
 const WINDOW_MS = 60_000;
 const MAX_REQUESTS_PER_WINDOW = 20;
@@ -27,7 +27,7 @@ export async function authorizeRemoteAiRequest(
 ) {
   let userId: string;
   try {
-    userId = await requestUser(request);
+    userId = await requestRockstarUser(request, db);
   } catch (error) {
     const code = error instanceof Error ? error.message : 'UNAUTHORIZED';
     if (code === 'ORIGIN') throw new RemoteAiGuardError('ORIGIN', 403);

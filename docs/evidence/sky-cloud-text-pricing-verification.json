@@ -1,0 +1,62 @@
+{
+  "verifiedAt": "2026-10-02T02:49:44.803391+00:00",
+  "canonicalRepository": "https://github.com/k999ln/rock.git",
+  "githubMainReadback": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "sourceScope": "local uncommitted canonical source; not GitHub CI or production acceptance",
+  "launchReady": false,
+  "published": false,
+  "latestPreviouslyVerifiedSkyVersion": 24,
+  "liveUrl": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "verification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": 645,
+    "fashionTests": 19,
+    "workerD1Assertions": 727,
+    "focusedTests": 21,
+    "log": "/Users/kaiya/Documents/Codex/2026-10-01/https-github-com-k999ln-rock-git/work/sky-cloud-transport/verify-text-pricing-accepted.log",
+    "logSha256": "b2e1f3b7a9c6811dcd1b5d032ee00915e054760db7b67ac5a2a0d4a65e7c8565"
+  },
+  "implemented": [
+    "v1 signature compatibility",
+    "v2 signed text-only/default rate scope and four token category prices",
+    "ceiling at highest possible input-category rate",
+    "owner/request/normalized input/output cap/approved budget/pricing/expiry bound quote",
+    "exact itemized cost calculation with one final rounding",
+    "observed model/tier/completed status/response ID required",
+    "unknown usage or tools do not settle as zero"
+  ],
+  "unknownUsagePolicy": "unreconciled; runtime must retain reservation for reconciliation",
+  "financialClaims": {
+    "providerSubmission": false,
+    "additionalCharge": false,
+    "invoiceReconciliation": false,
+    "fundedWalletReservation": false
+  },
+  "productionAcceptance": {
+    "pricingGateAccepted": false,
+    "providerCredentialConnected": false,
+    "quotePersistenceConnected": false,
+    "atomicReservationConnected": false,
+    "itemizedLedgerConnected": false
+  },
+  "remaining": [
+    "Persist quotes under authenticated owner and exact request identity",
+    "Atomically reserve the approved shared parent budget and single-use request before provider submission",
+    "Keep indeterminate submissions held; never automatically submit a second billable request",
+    "Persist itemized usage exactly once and recover status/results after reload",
+    "Connect a dedicated provider credential and verify real response, latency, costs, timeouts and failure handling",
+    "Separately cover hosted search fees for legal/patent tools",
+    "Complete owner desktop/Apple Pay and catalog integration acceptance"
+  ],
+  "concurrentSourceRepair": "Synchronize AOSP automation manifest with existing Gradle INTERNET permission; signature permissions and cleartext prohibition preserved; no APK/Soong/device build claimed",
+  "sourceFileSha256": {
+    "lib/remote-ai-rate-card.ts": "e28725dc74544c2ffbb66acfa2a69702f92dd3ba6ae150bd233d5c82b99900ba",
+    "lib/remote-ai-text-pricing.ts": "bcbcc9a3f0db004323fb2337a5d0a9e0546ce04c3fabd1dc48f513522fb5d620",
+    "lib/llm-providers.ts": "c06de6fd0b0dc1502508ca9127bcc6734877c01e71b446f6f8d68a22e3a11d98",
+    "tests/remote-ai-rate-card.test.mjs": "a7653519872b1a8c496c24c383e299a69003265d441253680e84b0888cd1decc",
+    "tests/llm-providers.test.mjs": "a119a58b1ff68fe22fb0dea7c5051dd1ef01910c6be33ab645dfb5b1df46e643",
+    "scripts/check-work-api.mjs": "8aac82890ea33ea3bace57d7b25e6c46142b30859e0c53fe988380cf2d12af1a",
+    "android/automation/src/aosp/AndroidManifest.xml": "11b505880758d08791ab2626ef6dba4de0bfcd7eb8596a16a11a88bf42fd45c5"
+  }
+}

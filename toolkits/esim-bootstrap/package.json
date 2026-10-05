@@ -1,0 +1,10 @@
+{
+  "name": "rockstar-esim-bootstrap-preview",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "test": "node --test ../../tests/esim-bootstrap.test.mjs",
+    "demo": "node demo.mjs"
+  }
+}

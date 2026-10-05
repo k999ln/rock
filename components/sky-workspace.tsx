@@ -59,6 +59,7 @@ import { providerDefinition, requiredSkyProviders } from '@/lib/sky-connections'
 import { queueSkyZemaHandoff } from '@/lib/sky-zema-handoff';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 import { skyToolUiState } from '@/lib/sky-tool-ui';
+import { useSkyServiceStatus } from '@/lib/use-sky-service-status';
 import { catalogHostMismatch, detectSkyHost } from '@/lib/sky-tool-compatibility';
 
 const subscribeHost = () => () => undefined;
@@ -190,6 +191,7 @@ export default function SkyWorkspace({
   initialMcpOpen?: boolean;
   initialPublishOpen?: boolean;
 }) {
+  const service = useSkyServiceStatus();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<FeedFilter>('おすすめ');
   const [selected, setSelected] = useState<Automation | null>(null);
@@ -212,7 +214,7 @@ export default function SkyWorkspace({
   const [localServers, setLocalServers] = useState<McpConnection[]>([]);
   const [localBusy, setLocalBusy] = useState('');
   const [localError, setLocalError] = useState<{ id: string; message: string } | null>(null);
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
   const router = useRouter();
 
   useEffect(() => {
@@ -516,7 +518,7 @@ export default function SkyWorkspace({
             ))}
             {visibleTools.map((tool) => (
               <SkyToolCard key={tool.id} tool={tool}
-                state={skyToolUiState(tool, { fashionConnected, connectedTools, pcConnected: connected })}
+                state={skyToolUiState(tool, { fashionConnected, connectedTools, pcConnected: connected, service })}
                 expanded={selected?.id === tool.id}
                 onInspect={() => { setLastRequest(''); setConnectionError(''); setSelected(tool); }}
                 actionLabel={actionLabel(tool, connectedTools, connected)}
@@ -551,7 +553,7 @@ export default function SkyWorkspace({
       >
         {selected && <SkyToolOverview
           tool={selected}
-          state={skyToolUiState(selected, { fashionConnected, connectedTools, pcConnected: connected })}
+          state={skyToolUiState(selected, { fashionConnected, connectedTools, pcConnected: connected, service })}
           hostMismatch={host ? catalogHostMismatch(selected, host) : null}
           className={`rock-tool-dialog sky-tool-dialog sky-connect-dialog ${
             selected.runner === 'legal-intake' ||
@@ -605,8 +607,8 @@ export default function SkyWorkspace({
                     Skyへ登録すると、このツールの専用画面を開けます。ローカル確認器対応の候補は、外部サービスに接続せず下書き・接続確認を試せます。
                     <span>依頼はZemaへ引き継ぐ</span>
                   </div>
-                  {needsSignin ? (
-                    <ExecutionSignin />
+                  {executionBlocked ? (
+                    <ExecutionSignin state={accessState} />
                   ) : connectedTools.includes(selected.id) ? (
                     <div className="sky-connect-complete">
                       <CheckCircle2 size={22} />

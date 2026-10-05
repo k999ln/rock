@@ -1,0 +1,30 @@
+{
+  "schema": "rock-cross-runtime-wallet-handoff-evidence/1",
+  "date": "2026-10-01",
+  "status": "LOCAL_WORKER_D1_TO_ISOLATED_PYTHON_WALLET_FIXTURE_PASS",
+  "scope": "The Worker/D1 API fixture returns a signed provider usage receipt and exact native Wallet command; the same response is passed to an isolated RockstarOS Python Wallet using only synthetic funds.",
+  "validation": "node scripts/check-work-api.mjs",
+  "apiAssertionsPassed": 410,
+  "crossRuntime": {
+    "cloudHandoffSchema": "rock-a2a-wallet-settlement-handoff/1",
+    "pythonRuntime": "systems/rock-star-os/src/blackberryrock/spend.py::ValueSpendRuntime",
+    "walletRuntime": "systems/rock-star-os/src/blackberryrock/wallet.py::Wallet",
+    "providerSignature": "ephemeral local Ed25519 fixture key; independently verified by the Python Hub receipt verifier",
+    "syntheticStartingBalanceMinor": 1000,
+    "settledMinor": 37,
+    "releasedMinor": 213,
+    "repeatedIdempotencyKeyStable": true,
+    "liveSpendingEnabled": false
+  },
+  "evidenceFiles": [
+    "scripts/check-work-api.mjs",
+    "systems/rock-star-os/scripts/accept-cloud-wallet-handoff.py",
+    "app/api/sky/a2a-delegations/[id]/wallet-settlement/route.ts"
+  ],
+  "notProven": [
+    "Android Broker/Gateway fetching or applying the command",
+    "funded production Wallet or Cloud D1 reconciliation",
+    "contracted Provider sandbox or production signing-key custody",
+    "physical device, offline, or eSIM end-to-end acceptance"
+  ]
+}

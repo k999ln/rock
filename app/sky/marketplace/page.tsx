@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   description: 'SkyのAI・自動化ツールを探し、実行条件と接続状態を確認する。',
 };
 
-export default function SkyMarketplacePage() {
-  return <SkyMarketplace />;
+export default async function SkyMarketplacePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ package?: string | string[] }>;
+}) {
+  const params = await searchParams;
+  const value = Array.isArray(params.package) ? params.package[0] : params.package;
+  return <SkyMarketplace initialPackageKey={typeof value === 'string' ? value.slice(0, 256) : null} />;
 }

@@ -1,0 +1,38 @@
+{
+  "schema": "rockstaros-ai03-memory-store-validation/1",
+  "validatedAt": "2026-10-01",
+  "source": "systems/rock-star-os/src/blackberryrock/memory_store.py",
+  "test": "PYTHONPATH=systems/rock-star-os/src python3 -m unittest systems/rock-star-os/tests/test_memory_store.py -v",
+  "result": {
+    "passed": 9,
+    "failed": 0,
+    "cases": [
+      "owner and project isolation with opaque ciphertext storage",
+      "owner-confirmation-only canonical write",
+      "optimistic revision conflict and projection invalidation",
+      "model-profile-versioned projection rebuild",
+      "stale projection race rejection",
+      "canonical and projection deletion with tombstone",
+      "read-time expiry and bounded expiry cleanup",
+      "missing cipher and database symlink rejection",
+      "expiry and input bounds"
+    ]
+  },
+  "environment": "Host Python with temporary private SQLite directory and in-process RecordingCipher test double.",
+  "notProven": [
+    "cryptographic strength or OS-protected key implementation",
+    "Android Keystore, native rockd, Broker, Zema, or Tool-scope integration",
+    "schema migration, backup and restore, scheduled expiry, physical-device offline persistence",
+    "model inference or device-specific projection performance"
+  ],
+  "broaderRegression": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": "595/595",
+    "fashionTests": "19/19",
+    "workerD1Assertions": 424,
+    "productionBuild": "passed",
+    "webAssetClosure": "passed",
+    "note": "Loopback permission was required because the sandbox rejects test servers binding 127.0.0.1."
+  }
+}

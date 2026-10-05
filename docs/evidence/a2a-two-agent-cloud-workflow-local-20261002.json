@@ -1,0 +1,37 @@
+{
+  "schema": "rockstar-a2a-two-agent-cloud-workflow-local/1",
+  "date": "2026-10-02",
+  "scope": "Two separately approved sibling A2A delegations executed by the Cloudflare Worker/D1 Workflow fixture under one owner-scoped parent job and shared budget.",
+  "fixture": {
+    "firstAgent": { "origin": "https://a2a.example.com", "name": "vitest-a2a-agent", "version": "1.0.0" },
+    "secondAgent": { "origin": "https://python.a2a.example.com", "name": "vitest-python-review-agent", "version": "2.0.0" },
+    "currency": "USD",
+    "sharedParentCapMinor": 100,
+    "eachChildReservationMinor": 60,
+    "firstSignedUsageMinor": 31,
+    "secondSignedUsageMinor": 29,
+    "finalParentReservedMinor": 0,
+    "finalParentSettledMinor": 60
+  },
+  "verified": [
+    "Each endpoint returned a separate Agent Card and was bound to its own delegation target and signed usage receipt.",
+    "The first result was captured encrypted in D1, read back in the test, and composed using buildA2AResultHandoffPrompt as explicitly untrusted input for the separately approved second delegation.",
+    "The parent pool reflected the first settled usage plus the second held reservation and stayed within its shared cap.",
+    "Both child workflows reached remote_completed and settled their own signed receipt exactly once.",
+    "Restarting each completed durable Workflow returned not_dispatchable; total remote_send_claimed events remained exactly two, one per child."
+  ],
+  "verification": {
+    "command": "npm run sky:a2a:workflow:positive",
+    "result": "PASS: 13/13 Worker/D1/Workflow tests",
+    "additional": [
+      "npm run typecheck: PASS",
+      "node --test tests/a2a-result-handoff.test.mjs: PASS, 3/3",
+      "npm run lint:product: PASS"
+    ]
+  },
+  "notProven": [
+    "Both Agent endpoints and signed receipts are controlled local fixtures, not independent commercial Provider services or production interoperability.",
+    "The second child delegation is separately approved; the test does not implement a parent controller that autonomously requests or bypasses that new approval.",
+    "This does not prove production D1 deployment, invoice issuance, funded Wallet settlement, carrier activation, or OS installation on a device."
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-01",
+  "scope": "Android-independent Core verification of provider-signed A2A final usage receipts",
+  "environment": "Eclipse Temurin 17 and cached Gradle 8.11.1, offline JVM tests; no Android SDK, APK, Binder or physical device",
+  "implementation": {
+    "class": "android/core/src/main/java/dev/rock/core/platform/A2AUsageReceiptVerifier.java",
+    "signature": "Ed25519 with operator-supplied provider/key/origin trust inventory",
+    "binding": [
+      "owner and parent job",
+      "delegation and remote task",
+      "agent origin/name/version",
+      "currency and authorized cap",
+      "price version",
+      "receipt issuance window and reservation deadline",
+      "meter line total and exact canonical signature bytes"
+    ],
+    "sharedFixture": "systems/rock-star-os/tests/fixtures/a2a-usage-receipt-v1.json",
+    "sharedSigningBytesSha256": "d07b4129081a85123aa233c8b7639e9654986a4d0b204def4cad0dd6b833ac75"
+  },
+  "verification": {
+    "command": "GRADLE_USER_HOME=/private/tmp/rock-gradle-user-home JAVA_HOME=/private/tmp/rock-temurin17/Contents/Home /private/tmp/rock-gradle-install/gradle-8.11.1/bin/gradle -p android :core:test -ProckBuildRoot=/private/tmp/rock-gradle-output --no-daemon --offline",
+    "result": "PASS",
+    "coreJvmTests": 62,
+    "a2aReceiptVerifierTests": 2
+  },
+  "notProven": [
+    "Android Broker or Gateway fetches and applies the handoff",
+    "the verifier is connected to a persistent Android Wallet reservation or settlement ledger",
+    "production provider key custody or provider sandbox behavior",
+    "Android APK/AIDL build, Binder instrumentation, hardware-backed key enrollment, or device acceptance",
+    "funded Wallet balance, real payment, production billing, SIM activation or RockstarOS installation"
+  ]
+}

@@ -134,6 +134,279 @@
       "when": 1790565428184,
       "tag": "0018_sky_commerce",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1790799296996,
+      "tag": "0019_sky_a2a_delegations",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "6",
+      "when": 1790799807861,
+      "tag": "0020_a2a_delegation_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "6",
+      "when": 1790801777255,
+      "tag": "0021_a2a_delegation_inputs",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "6",
+      "when": 1790804790630,
+      "tag": "0022_a2a_delegation_artifacts",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1790806854802,
+      "tag": "0023_a2a_sky_agent_connections",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "6",
+      "when": 1790809677759,
+      "tag": "0024_a2a_broker_authorizations",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "6",
+      "when": 1790812844796,
+      "tag": "0025_a2a_shared_budget_reservations",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "6",
+      "when": 1790815143129,
+      "tag": "0026_a2a_usage_receipts",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "6",
+      "when": 1790819814859,
+      "tag": "0027_esim_provider_webhook_inbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "6",
+      "when": 1790819887999,
+      "tag": "0028_esim_provider_webhook_inbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "6",
+      "when": 1790820624327,
+      "tag": "0029_esim_profile_order_binding",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "6",
+      "when": 1790821536866,
+      "tag": "0030_esim_provider_order_once",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "6",
+      "when": 1790823205992,
+      "tag": "0031_esim_install_material_delivery",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "6",
+      "when": 1790823856278,
+      "tag": "0032_esim_order_pricing_snapshot",
+      "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "6",
+      "when": 1790842988280,
+      "tag": "0033_a2a_offline_continuation_consent",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "6",
+      "when": 1790861910275,
+      "tag": "0034_esim_install_receipts",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "6",
+      "when": 1790862990350,
+      "tag": "0035_esim_device_gateway_entitlements",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "6",
+      "when": 1790865855538,
+      "tag": "0036_nostalgic_miek",
+      "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "6",
+      "when": 1790866859235,
+      "tag": "0037_csv_trial_payments",
+      "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "6",
+      "when": 1790870253807,
+      "tag": "0038_android_attested_gateway_keys",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "6",
+      "when": 1790889646281,
+      "tag": "0039_rockstar_service_entitlements",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "6",
+      "when": 1790891376236,
+      "tag": "0040_rockstar_entitlement_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "6",
+      "when": 1790895000000,
+      "tag": "0041_a2a_price_quotes",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "6",
+      "when": 1790897937000,
+      "tag": "0042_remote_ai_rate_cards",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "6",
+      "when": 1790900000000,
+      "tag": "0043_a2a_delegation_fanout_limits",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "6",
+      "when": 1790901000000,
+      "tag": "0044_a2a_live_usage_snapshots",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "6",
+      "when": 1790907100775,
+      "tag": "0045_rockstar_device_sessions",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "6",
+      "when": 1790909593459,
+      "tag": "0046_remote_ai_text_executions",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "6",
+      "when": 1790914487215,
+      "tag": "0047_remote_ai_text_durable_inputs",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "6",
+      "when": 1790918426681,
+      "tag": "0048_rockstar_a2a_broker_enrollment",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "6",
+      "when": 1790933060510,
+      "tag": "0049_a2a_price_quote_consent_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "6",
+      "when": 1790942869625,
+      "tag": "0050_rockstar_entitlement_purchase_once",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "6",
+      "when": 1790960400000,
+      "tag": "0051_remote_ai_text_live_estimates",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "6",
+      "when": 1790969892962,
+      "tag": "0052_rockstar_entitlement_issuer_deliveries",
+      "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "6",
+      "when": 1790970172477,
+      "tag": "0053_rockstar_entitlement_delivery_key_ids",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "6",
+      "when": 1790971241910,
+      "tag": "0054_rockstar_entitlement_issuer_rate_limits",
+      "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "6",
+      "when": 1790979107010,
+      "tag": "0055_sky_package_runtime_bindings",
+      "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "6",
+      "when": 1790980457143,
+      "tag": "0056_a2a_package_runtime_binding_refs",
+      "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "6",
+      "when": 1790987332846,
+      "tag": "0057_a2a_parent_sequence",
+      "breakpoints": true
     }
   ]
 }
