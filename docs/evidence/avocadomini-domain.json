@@ -6,8 +6,8 @@
   "siteProjectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
   "hostname": "avocadomini.si",
   "domainId": "appgdom_6ac31bf83b508191b66ba4a7dd437f04",
-  "domainStatus": "pending",
-  "sslStatus": "pending_validation",
+  "domainStatus": "active",
+  "sslStatus": "active",
   "dnsObserved": {
     "nameservers": [
       "lunar.dns-parking.com",
@@ -23,18 +23,77 @@
   "validation": {
     "siteBuild": "passed_13_routes",
     "siteTests": "passed_18_of_18",
-    "repositoryVerify": "passed_exit_0",
-    "verifyLogSha256": "f1011be81908e2cd8dc90113c9f9ec03ca3b1dd12ac0baf2f19bc932d8711326",
+    "repositoryVerify": "passed_exit_0_after_correction",
+    "verifyLogSha256": "8a739b320ef315f1ec036b0c7452d3678ed672a06c0533536cfbcaf33933c9ad",
     "workApiAssertions": 1048,
     "csvApiAssertions": 113,
-    "postBaselineUpdateCheck": "passed",
-    "dependencies": "fresh npm ci; initial ENOSPC recovered by removing only this run incomplete dependencies and retrying"
+    "postBaselineUpdateCheck": "passed_before_final_dns_metadata_sync",
+    "dependencies": "fresh npm ci; initial ENOSPC recovered by removing only this run incomplete dependencies and retrying",
+    "referenceVisualComparison": "same 1280px hero, headings, imagery and menu; broken images 0, horizontal overflow false",
+    "focusedRegression": "3_of_3_pass_including_PC_adapter_retry",
+    "initialCorrectionVerify": "failed_legacy_SIM_home_assertion_and_PC_adapter_process_fixture; assertion aligned to explicit reference and focused_retry_passed"
   },
-  "siteSourceSha": "44aa41f9adf356bb8da6127ea6af03d322af672b",
-  "version": 3,
-  "versionId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2~appgver_b05a6dd9bcbc8191a2ad7d482eea80f8",
-  "deploymentId": "appgdep_6ac333352cfc819198c5084c32b4ec88",
-  "deployedUrl": "https://avocadomini.noellesugar1.chatgpt.site",
-  "archiveSha256": "fc8b6af529ccc71aaae1c1c12eb9a0f3d2ee9bf98b5d373698e22255a43a7839",
-  "githubBranch": "codex/avocadomini-domain"
+  "siteSourceSha": "79714855ad246d591d0a235d7da4bba68ddfb233",
+  "version": 4,
+  "versionId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2~appgver_aea12a69740c8191b0b65c1ba5aa2ba1",
+  "deploymentId": "appgdep_6ac33978c8a081918791852e93d128fe",
+  "deployedUrl": "https://avocadomini.si",
+  "archiveSha256": "255e4d599dd1c48749ca7b5bbd8616889bda530e116bcbe1f929927211b1d067",
+  "githubBranch": "codex/avocadomini-domain",
+  "previousDeployment": {
+    "version": 3,
+    "siteSourceSha": "44aa41f9adf356bb8da6127ea6af03d322af672b",
+    "reason": "Wrong presentation: selected latest Git main SIM/eSIM home before user clarified the live Mini/Pro reference."
+  },
+  "referenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
+  "referenceSourceBase": "5f3a3694",
+  "referenceHtmlParity": "13_of_13_normalized_match_excluding_origin_generated_css_filename_and_platform_injected_script",
+  "dnsManager": "Hostinger",
+  "dnsBeforeChange": [
+    {
+      "type": "CNAME",
+      "name": "www",
+      "content": "avocadomini.si",
+      "ttl": 300
+    },
+    {
+      "type": "A",
+      "name": "@",
+      "content": "2.57.91.91",
+      "ttl": 50
+    }
+  ],
+  "providerStatus": "active",
+  "domainCheckedAt": "2026-10-05T05:50:13Z",
+  "fallbackUrl": "https://avocadomini.noellesugar1.chatgpt.site",
+  "dnsAfterChange": [
+    {
+      "type": "A",
+      "name": "@",
+      "content": "162.159.143.30",
+      "ttl": 300
+    },
+    {
+      "type": "A",
+      "name": "@",
+      "content": "172.66.3.26",
+      "ttl": 300
+    },
+    {
+      "type": "TXT",
+      "name": "_openai-site-verification",
+      "content": "openai-site-verification=pUqZ8awumMyjCjWPI9MH8jvQitA2dIuY8MMrIIju5Xo",
+      "ttl": 300
+    },
+    {
+      "type": "CNAME",
+      "name": "www",
+      "content": "avocadomini.si",
+      "ttl": 300,
+      "changed": false
+    }
+  ],
+  "providerValidationNote": "A routing and OpenAI TXT completed validation. SSL became active without adding the previously returned _cf-custom-hostname TXT; the latest response no longer requires it.",
+  "httpsBrowserVerification": "https://avocadomini.si/ loaded avokado — Mini meets Pro with matching hero, product images, menu and company information",
+  "wwwSiteConfigured": false
 }
