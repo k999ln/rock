@@ -597,8 +597,8 @@
   "launchPage": {
     "domainSeparation": {
       "productSite": "separate_public_domain",
-      "productSiteUrl": "https://avocadomini.noellesugar1.chatgpt.site",
-      "productSiteDeployment": "public_sites_deployment_succeeded_custom_domain_pending",
+      "productSiteUrl": "https://avocadomini.si",
+      "productSiteDeployment": "public_reference_site_custom_domain_https_verified",
       "productSiteSource": "sites/avocado-mini",
       "productSiteRoutes": [
         "/",
@@ -609,8 +609,11 @@
       "osWebAudience": "owner_only",
       "osSiteAccessStatus": "pending_owner_account_connection",
       "requestedCustomDomain": "avocadomini.si",
-      "customDomainStatus": "pending_dns_and_tls_validation",
-      "previousProductSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site"
+      "customDomainStatus": "active_ssl_active",
+      "previousProductSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site",
+      "productSiteReferenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
+      "productSitePresentation": "user_selected_mini_pro_public_site",
+      "productSiteFallbackUrl": "https://avocadomini.noellesugar1.chatgpt.site"
     },
     "route": "/rockstaros",
     "role": "public_sim_esim_service_home",
