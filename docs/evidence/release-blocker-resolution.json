@@ -97,5 +97,32 @@
     ],
     "scope": "Recorded earlier runs prove their exact source; latest PR head results are not self-attested by this file."
   },
-  "integratedMain": "592daeea322cd47aa189b67dd689e323662c0c67"
+  "integratedMain": "592daeea322cd47aa189b67dd689e323662c0c67",
+  "nativeDeadlineRegression": {
+    "observedSource": "bdc56dd7c1b605a6d7c189f812517bfae81e85ed",
+    "failedRun": 37280934247,
+    "sameSourcePassedRun": 37280935358,
+    "failure": "Independent B/ATM sequence took 3.4549s against an incidental 2s aggregate threshold; real transport deadline and ledger assertions were separate.",
+    "fix": "Hold the worker at the actual TLS transport return boundary until independent B/ATM operations finish, and measure the original TLS call separately. Preserve 2.5-3.4s transport assertions and ledger recovery checks.",
+    "focusedTests": 7,
+    "delayedIndependentOperationSeconds": 3.1,
+    "delayedRegression": "PASS",
+    "runtimeChanged": false
+  },
+  "latestObservedChecks": {
+    "source": "bdc56dd7c1b605a6d7c189f812517bfae81e85ed",
+    "verifyRun": 37280935412,
+    "verify": "success",
+    "nativeRun": 37280935358,
+    "native": "success_with_separate_timing_failure_recorded_above",
+    "androidRun": 37280935387,
+    "android": "success",
+    "codeqlRun": 37280935431,
+    "codeqlWorkflow": "success_not_alert_clearance",
+    "securityHistoryRun": 37280935399,
+    "securityHistory": "failure",
+    "historyCommits": 978,
+    "historicalCandidateOccurrences": 2868,
+    "uniqueSecretCount": "NOT_ESTABLISHED"
+  }
 }

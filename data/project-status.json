@@ -4581,6 +4581,9 @@
     "mainIntegrated": false,
     "integratedMain": "592daeea322cd47aa189b67dd689e323662c0c67",
     "focusedTests": 40,
-    "finalVerification": "Read exact current head checks of PR 65; earlier CI evidence is scoped to its recorded source SHA"
+    "finalVerification": "Read exact current head checks of PR 65; earlier CI evidence is scoped to its recorded source SHA",
+    "deadlineFocusedTests": 7,
+    "deadlineDelayedRegression": "PASS_3.1_SECONDS",
+    "securityHistory": "UNRESOLVED_2868_HISTORICAL_CANDIDATE_OCCURRENCES_NOT_UNIQUE_SECRETS"
   }
 }

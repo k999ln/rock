@@ -1,4 +1,4 @@
-## 2026-10-05 — 未完了・停止条件の解消（G04、native修正済み・Local AI build継続）
+## 2026-10-05 — 未完了・停止条件の解消（G04、API v4 APK build・検査・配置成功）
 
 利用者の「全部問題解決して進めて」を受け、Git / CI / Operations（ROCK）を主担当とする。main `996b1955`を独立worktreeへ固定。Web最新CIと直前mainのAndroid CIは合格済み。native main-1の未close SQLite接続、実機OS build/署名/復旧、Provider受入を区別して調査する。既存checkoutで進行中のeSIM/決済変更は別作業として保護する。
 
@@ -7,6 +7,8 @@ nativeのSQLite接続3件を確実にcloseし、Linux CI 1,736試験と`npm run 
 Local AIの実Kotlin compileでtimeoutのInt/Long不一致を検出し、API v4なのにBinderが3を返す不一致とAPK検査のversionCode=1固定も修正した。旧patch/実機証拠は保持し、追加overlayとhashで追跡。APK lockをbase/順序付きextension hashへ結び、stage metadata改変を拒否する。関連38試験とOS contract/design検査は成功。v4 APKの再build・レビューと現行最終SHAの全体CIは継続中。
 
 更新: API v4 unsigned APK buildは`2ba33366`のCI `37279537731`で成功。26,416,892 bytesを取得し、CI/手元aapt2でABI・package version 3・権限を確認。actual APKのstage/再stage/verifyも同一。source lockの現在statusをphone準備が受理し、旧APK/overlay不一致とmetadata/symlink差替えを拒否する。関連40試験成功。main `4928b64e`までの並行更新を保持して競合を解消した。最新記録を含む同一HEADの全体CIは最終再実行し、物理端末接続・専用Linux/予算・正式署名・実Provider受入は未完了として残す。
+
+最終追跡: main `592daeea`統合後の`bdc56dd7`で全体verify、Android、native、Phone準備、CodeQL workflowは成功。ただし別native実行でGame/ATM独立処理の合計2秒assertionが3.4549秒となったため、TLSの実deadline検査を維持したまま、transport戻り値の境界をEventで保持して独立性を検査する方式へ修正。関連7試験と3.1秒の意図的遅延回帰が成功。runtimeは変更しない。履歴securityは978 commitの2,868候補出現で未合格（秘密値のユニーク件数ではない）。変更後の同一HEAD CIはPR #65を正本とする。
 
 ## 2026-10-05 — main の同時 AMC 更新を保持
 
