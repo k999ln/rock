@@ -4429,10 +4429,13 @@
     "task": "MAT16",
     "specification": "data/avokado-pro-pc.json",
     "designSaved": true,
-    "githubSaved": false,
+    "githubSaved": true,
     "mainMerged": false,
     "publicPageUpdated": false,
     "physicallyAssembled": false,
-    "verification": "repository_verify_passed_design_only"
+    "verification": "repository_verify_passed_design_only",
+    "designCommit": "33cea702c6c36a6bc973bedb966a7ef661514258",
+    "pullRequest": "https://github.com/k999ln/rock/pull/64",
+    "ciAtDesignCommit": "no_checks_reported_at_last_check"
   }
 }
