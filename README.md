@@ -1,6 +1,8 @@
 
 
 Public homepage: [avocadomini.si](https://avocadomini.si) — the user-selected Mini/Pro website, with DNS and HTTPS verified. See the [deployment and DNS record](docs/workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13).
+Payment and Wallet design: [integration design](docs/sky-commerce-design.md), [Wallet design](docs/wallet-commerce-design.md), and [English development prompt](docs/prompts/sky-commerce-wallet-development.md). The v2 additions are design proposals; [validation scope](docs/evidence/sky-commerce-main-integration-validation.json) separates local checks from external acceptance.
+
 <!-- sky-access-recovery:start -->
 Skyが接続を確認している間や、通信失敗・サインイン切れの間は実行を停止します。画面を開いたまま別タブでサインインし、戻って「接続を確認」してから改めて実行してください。再確認だけでは再実行や課金をしません。未保存入力は開いている画面に保持されますが、再読み込みでは消える場合があります。接続設定の復旧時も編集した入力を保持し、保存済み設定を読み直せない間は保存できません。
 <!-- sky-access-recovery:end -->
@@ -383,3 +385,11 @@ Open `/sky/marketplace` to use the same marketplace outside the OS home. Sky pag
 ## Skyサービスの利用とローンチ設計
 
 Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除・接続状態・対応環境は `/sky/help`。OS導入は必須ではありません。外部AIや購入/販売は必要な接続設定と本人の条件が揃ってから利用できます。[サービス設計と受入](docs/sky-launch-design.md)・[段階別の受入記録](data/sky-service-launch.json)・[運用と作者/決済の受入手順](docs/sky-launch-operations.md)を参照してください。設定あり・コード試験・本番合格は別の状態です。
+
+### avocadoMiniの没入型GTA調査
+
+[技術調査・将来構想・検証計画](docs/avocado-mini-r5/research/immersive-gta/README.md)。2026-09-30時点の記録。GTA接続・裸眼空間表示・実機完成の証拠ではありません。
+
+## Patent research
+
+[2026-09-30 research report](docs/research/rockstar-patent-research.html) · [Source registry](docs/research/rockstar-patent-sources.json). Historical research against commit `b3e2676a`; not a patent filing or a review of subsequent implementation changes. Download the HTML and open it in a browser to use the source filters.

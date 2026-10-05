@@ -382,7 +382,8 @@
         "docs/avocado-mini-r5/README.md",
         "docs/avocado-mini-r5/package/package_manifest.json",
         "docs/avocado-mini-r5/verification.json",
-        "scripts/verify-avocado-r5-package.py"
+        "scripts/verify-avocado-r5-package.py",
+        "docs/avocado-mini-r5/research/immersive-gta/README.md"
       ]
     },
     {
@@ -3134,7 +3135,18 @@
         "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
         "android/automation/src/androidTest/java/dev/rock/automation/DeviceCapabilitySnapshotTest.java",
         "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "tests/sky-marketplace.test.mjs"
+        "tests/sky-marketplace.test.mjs",
+        "docs/sky-commerce-design.md",
+        "docs/wallet-commerce-design.md",
+        "docs/contracts/sky-commerce-v2.ts",
+        "docs/contracts/sky-wallet-v2.ts",
+        "docs/contracts/sky-commerce-v2.sql",
+        "docs/evidence/sky-commerce-design-validation.json",
+        "docs/design-validation/README.md",
+        "docs/prompts/sky-commerce-wallet-development.md",
+        "docs/evidence/sky-commerce-development-prompt-context.json",
+        "docs/evidence/sky-commerce-main-integration-validation.json",
+        "docs/evidence/sky-commerce-sql-main-validation.json"
       ],
       "nextAction": "Provider order idempotency is now a contract gate: eSIM Go accepted-but-unanswered POST /orders cannot be safely matched if orderReference is lost; do not retry or enable debit without exact endpoint idempotency or persistent client-reference lookup. 1GLOBAL activation-order endpoint support must be confirmed despite general 24h Idempotency-Key docs. After contract, sandbox-test dropped responses, one provider debit, same-order recovery, then connect the Android Broker/AIDL flow and OEM/carrier install proof. Android Core JUnit/APK/instrumentation remain unrun because Java Runtime and Android platform/build-tools are unavailable. Keep BIL02 in progress and eSIM issue/debit disabled."
     },
@@ -3178,7 +3190,9 @@
         "tests/shared-stripe.test.mjs",
         "tests/mcp-client.test.mjs",
         "tests/owner-revision-json-store.test.mjs",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "docs/evidence/pr-consolidation-20261005.json",
+        "docs/research/rockstar-patent-research.html",
+        "docs/research/rockstar-patent-sources.json"
       ]
     }
   ],
@@ -4412,6 +4426,30 @@
     "referenceSourceBase": "5f3a3694",
     "correction": "Replace mistakenly selected SIM/eSIM home with live Mini/Pro site including publicly visible company information"
   },
+  "immersiveGtaResearchArchive": {
+    "researchDate": "2026-09-30",
+    "archiveDate": "2026-10-05",
+    "status": "documentation_archived_not_runtime_or_hardware_acceptance",
+    "record": "docs/avocado-mini-r5/research/immersive-gta/README.md",
+    "researchSourceCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "gtaTested": false,
+    "physicalDisplayTested": false,
+    "hardwareTaskStatus": "MAT15_planned",
+    "conceptImageIsExperimentalEvidence": false
+  },
+  "patentResearch": {
+    "researchDate": "2026-09-30",
+    "repositorySavedAt": "2026-10-05",
+    "report": "docs/research/rockstar-patent-research.html",
+    "sources": "docs/research/rockstar-patent-sources.json",
+    "reviewedSourceCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "status": "research_complete_not_filing_ready",
+    "publicationCount": 31,
+    "sourceCount": 74,
+    "runtimeChanged": false,
+    "patentFiled": false,
+    "nextAction": "初公開日・先行出願を確定し、R1の具体方式・比較実験と専門家による請求項検討を行う。9月30日以降のコード変更は本調査の対象外。"
+  },
   "releaseBlockerResolution": {
     "status": "native_fixed_local_ai_compile_and_version_repairs_under_verification",
     "primaryOwner": "ROCK",
@@ -4425,6 +4463,7 @@
     "wholeVerify": "PASS_AT_c79476e2",
     "localAiBuild": "SDK_PATH_PASSED_KOTLIN_AND_API_VERSION_REPAIRS_REBUILD_PENDING",
     "physicalDeviceConnected": false,
-    "mainIntegrated": false
+    "mainIntegrated": false,
+    "integratedMain": "4928b64e0a0aac80855b58953c8804eb39d4a8b4"
   }
 }
