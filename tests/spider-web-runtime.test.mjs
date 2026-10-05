@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { productionWrangler, startupFailureMetadata } from '../scripts/spider-web-runtime.mjs';
 
-test('production server uses the builder dependency even when the root runtime is older', () => {
+void test('production server uses the builder dependency even when the root runtime is older', () => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), 'spider-web-runtime-')));
   const packageAt = (path, manifest, files = ['index.js']) => {
     mkdirSync(path, { recursive: true });
@@ -42,7 +42,7 @@ test('production server uses the builder dependency even when the root runtime i
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test('startup diagnostics disclose only fixed classifications, never raw server values', () => {
+void test('startup diagnostics disclose only fixed classifications, never raw server values', () => {
   const marker = 'private-fixture-value-do-not-publish';
   const metadata = startupFailureMetadata(`ERR_RUNTIME_FAILURE: runtime failed to start; compatibility date is too far in the future\nTypeError: ${marker}\nURL=https://example.invalid/${marker}`);
   assert.deepEqual(metadata, {
