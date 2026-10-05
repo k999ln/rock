@@ -274,4 +274,8 @@ final class EsimDeviceGatewayKeyStore implements EsimDeviceEntitlement.Es256Devi
         return combined == 0;
     }
 
+    private static boolean safeId(String value) {
+        return value != null && value.matches("[A-Za-z0-9._:-]{1,160}");
+    }
+
 }
