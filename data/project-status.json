@@ -3168,7 +3168,7 @@
     },
     {
       "id": "G04",
-      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化し、未統合PRの現行main互換を検証",
+      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約を共通化し、19 PRをmainへ統合、SPIDERの検証を継続",
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
@@ -4413,17 +4413,20 @@
     "hostname": "avocadomini.si",
     "sourceMainSha": "aa7f2b41ce34a32c262500a83238bb713c003dee",
     "projectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
-    "status": "deployed_dns_pending",
-    "publicDeployment": "succeeded_version_3",
-    "customDomain": "pending_dns_validation",
-    "dnsManager": "not_confirmed",
+    "status": "reference_site_and_custom_domain_live",
+    "publicDeployment": "succeeded_version_4",
+    "customDomain": "active_ssl_active_https_verified",
+    "dnsManager": "Hostinger",
     "githubSave": "work_branch",
     "mainMerged": false,
-    "siteSourceSha": "44aa41f9adf356bb8da6127ea6af03d322af672b",
-    "deployedUrl": "https://avocadomini.noellesugar1.chatgpt.site",
+    "siteSourceSha": "79714855ad246d591d0a235d7da4bba68ddfb233",
+    "deployedUrl": "https://avocadomini.si",
     "evidence": "docs/evidence/avocadomini-domain.json",
     "githubBranch": "codex/avocadomini-domain",
-    "validation": "Site build 13 routes, Site tests 18/18, npm run verify exit 0, final baseline check passed"
+    "validation": "Reference HTML parity 13/13; Site tests 18/18; visual match; final npm run verify exit 0; Hostinger DNS readback and Sites/SSL active; HTTPS browser verified",
+    "referenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
+    "referenceSourceBase": "5f3a3694",
+    "correction": "Replace mistakenly selected SIM/eSIM home with live Mini/Pro site including publicly visible company information"
   },
   "avokadoProPc": {
     "task": "MAT16",

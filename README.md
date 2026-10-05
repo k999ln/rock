@@ -4,7 +4,7 @@ Pro is being specified as a standalone compact PC for AI and PC games, with a JP
 
 
 
-Custom domain: **avocadomini.si** is registered for the [deployed GitHub homepage](https://avocadomini.noellesugar1.chatgpt.site); DNS/TLS validation is pending. See the [deployment and DNS record](docs/workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13).
+Public homepage: [avocadomini.si](https://avocadomini.si) — the user-selected Mini/Pro website, with DNS and HTTPS verified. See the [deployment and DNS record](docs/workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13).
 <!-- sky-access-recovery:start -->
 Skyが接続を確認している間や、通信失敗・サインイン切れの間は実行を停止します。画面を開いたまま別タブでサインインし、戻って「接続を確認」してから改めて実行してください。再確認だけでは再実行や課金をしません。未保存入力は開いている画面に保持されますが、再読み込みでは消える場合があります。接続設定の復旧時も編集した入力を保持し、保存済み設定を読み直せない間は保存できません。
 <!-- sky-access-recovery:end -->

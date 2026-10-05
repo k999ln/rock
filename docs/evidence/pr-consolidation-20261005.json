@@ -104,7 +104,7 @@
     {
       "number": 52,
       "url": "https://github.com/k999ln/rock/pull/52",
-      "reason": "Full historical scan reproduced at a85a25e across 681 commits: 2369 occurrences, 135 distinct candidate values. 1550 occurrences / 33 values exactly match public source blob SHA-256 digests. Remaining 819 occurrences / 102 values are under source-context review. Two CodeQL findings independently confirmed as test-context false positives; GitHub dismissal requires explicit user approval after automatic review rejection. Keep #52 independent until triage is complete."
+      "reason": "SPIDER source repairs are saved in PR #52 at 4e7cf4ae and full verify/repair regressions pass. Its current historical secret scan and production web measurement remain failed. The original a85a25e scan had 2369 occurrences/135 values: 2348 occurrences/131 values have source-context explanations, while 21 occurrences/4 declared digest values lack original-byte proof. This old-head classification does not establish the current history as clean. CodeQL alerts #5/#49 were independently reviewed as test-context false positives; dismissal remains unapproved after automatic review rejection."
     }
   ],
   "localChecks": {
@@ -115,10 +115,34 @@
     "wholeVerify": "PASS at e96db05b plus only the Game workstream wording correction: TMPDIR=/private/tmp npm run verify exit 0; Node 870/870, Fashion 22/22, Mini site 18/18, public preview 21/21, Meme 7/7, Farm 25/25, Worker/D1 1048 assertions, CSV Worker/D1/R2 113 assertions, build and release checks. The prior interrupted install is recovered."
   },
   "ci": {
-    "verifiedSource": "e96db05bfdaf5d1f54bbc53ae563687260d88da7",
+    "verifiedSource": "1f3535248204931577d01f7d9e43b99aaa557562",
     "wholeVerify": "PASS",
-    "wholeVerifyUrl": "https://github.com/k999ln/rock/actions/runs/37270193534",
-    "android": "core 111 tests PASS; existing main automation compile errors repaired in follow-up, full Android run still pending"
+    "wholeVerifyUrl": "https://github.com/k999ln/rock/actions/runs/37274520239",
+    "android": "PASS: core 111, SDK 7, emulator instrumentation 32; physical-reboot-only cases 2 not run. APK collection passed with matching source HEAD, three artifact hashes, shared signer, Broker-only INTERNET and cleartext disabled. Physical device acceptance and release signing are not established.",
+    "androidUrl": "https://github.com/k999ln/rock/actions/runs/37274520223",
+    "farmUrl": "https://github.com/k999ln/rock/actions/runs/37274520248",
+    "allPullRequestChecks": "10/10 PASS"
   },
-  "mainIntegration": "PENDING"
+  "mainIntegration": "MERGED_19_ORIGINAL_HEADS",
+  "mainMerge": {
+    "pullRequest": 62,
+    "url": "https://github.com/k999ln/rock/pull/62",
+    "commit": "9f64aee3de9cc74e6b6e7eae34052780e000c296",
+    "mergedAt": "2026-10-05T06:56:08Z",
+    "history": "All 19 recorded heads are ancestors of main. Original draft PR #25 targeted an old bring-up branch, so it was closed after its main ancestry was confirmed."
+  },
+  "followUp": {
+    "number": 61,
+    "url": "https://github.com/k999ln/rock/pull/61",
+    "sourceHead": "e5e8318582328be386999d0922164909526a8f31",
+    "scope": "Subsequent Mini/Pro homepage and existing domain receipt update; SIM/eSIM service architecture and runtime authorization remain intact. Integration is tracked by the GitHub PR state.",
+    "sourceChecks": "13 routes built, site 18/18 and SIM entry 2/2 pass; generated assets match source, 41 local references present. Full verification runs on the complete CI checkout."
+  },
+  "laterPullRequests": [
+    {
+      "number": 63,
+      "url": "https://github.com/k999ln/rock/pull/63",
+      "scope": "Created after the original 20-PR inventory; not included in this consolidation."
+    }
+  ]
 }

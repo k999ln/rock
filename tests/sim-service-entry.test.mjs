@@ -6,7 +6,7 @@ import test from 'node:test';
 const root = process.cwd();
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
-void test('public RockstarOS entry offers SIM/eSIM-led service access without claiming current availability', () => {
+void test('RockstarOS service entry remains separate from the selected Mini/Pro product homepage', () => {
   const marketing = read('sites/avocado-mini/src/pages/index.astro');
   const onboarding = read('app/connect/page.tsx');
   const projectMap = read('PROJECTS.md');
@@ -53,17 +53,17 @@ void test('public RockstarOS entry offers SIM/eSIM-led service access without cl
   const rockApplication = read('android/automation/src/main/java/dev/rock/automation/RockApplication.java');
   const automationGradle = read('android/automation/build.gradle');
 
-  for (const source of [marketing, onboarding, launch]) {
+  for (const source of [onboarding, launch]) {
     assert.match(source, /SIM[ /]+eSIM|physical SIM|物理SIM/i);
     assert.match(source, /RockstarOS/);
     assert.match(source, /Sky/);
     assert.match(source, /Zema/);
   }
-  assert.match(marketing, /carriers, device retailers and online channels/);
-  assert.match(marketing, /physical SIM or eSIM/i);
-  assert.match(marketing, /binary does not live on the SIM/);
-  assert.match(marketing, /app or browser client/);
-  assert.match(marketing, /not available yet/);
+  assert.match(marketing, /AVOKADO \/ SPATIAL EXPERIENCES/);
+  assert.match(marketing, /Make the room part/);
+  assert.match(marketing, /href="\/mini\/"/);
+  assert.match(marketing, /href="\/pro\/"/);
+  assert.doesNotMatch(marketing, /SIM \+ eSIM SERVICE ACCESS/);
   assert.match(onboarding, /共通ログイン|同じアカウント/);
   assert.match(onboarding, /利用開始後の主な入口/);
   assert.match(onboarding, /Agent Workbench — 依頼・進捗・費用/);
