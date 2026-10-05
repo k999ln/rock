@@ -678,6 +678,13 @@ CLIはOS本人から承認されたGoalを使い、run claimに結び付けたex
 2026-09-30 AMC失敗復旧: ownerの最新観測付きresumeだけを期限切れ実行指示から分離する。failed/blocked→pendingで結果/独立review/停止理由を履歴保持し、旧指示全件を失効、新発行まで実行不可。最新spec・依存・競合・holdを確認し、不正owner/worker権限/旧revision/未検証・古い観測を拒否する。CLI/Webの既存認証境界は維持し、Web接続未完成を解除しない。
 
 
+#### AMC local fixture状態の安全な読取り（SYS15 / WEB04）
+
+local supervisorはstate、control、lock owner JSONを一度だけnofollow／nonblockingで開き、同じfdのregular file種別と5MB上限を確認する。開いた後のpathname差替えを別fileの読取りへ反映せず、検査後の拡大も上限+1 byte以内の読取りで拒否する。symlink・非regular file・不正JSON・過大状態・必要flagのないplatformでは停止し、成功／失敗ともfdを閉じる。JSON内容は診断へ出さない。
+
+外部通信や永続schemaは追加しない。既存のrevision CAS、lock guard、owner確認、停止・明示復旧を保持する。失敗時は本人が保存先と状態を確認して既存の復旧手順へ進み、自動lock削除や破損stateの受理はしない。親directory・同じinodeを変更できるlocal writerへの隔離や認証境界は提供しない。`tests/amc-autonomy-store-read.test.mjs`の同期した差替え・拡大・短いread・fd解放と既存autonomy／lock／fixture試験で検証し、実Codex起動・Web同期・本番受入とは分ける。
+
+
 ### CSV入力の並行作成と復旧補足
 
 `createCsvJob`はowner hashと試行UUIDを含む入力keyへ条件付きputを行い、DBのid一意制約で確定する。登録競合で負けた試行だけが自分のkeyを削除し、同じowner・bytes hash・正規化spec・名前・見積料金なら既存結果へ合流する。異なるpayload/ownerは情報を開示せず409。既存jobのinput_keyは変更せず、読出し・納品・期限削除との互換を保つ。schema変更はない。

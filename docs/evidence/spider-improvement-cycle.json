@@ -5529,6 +5529,50 @@
       "publicationEvidence": {
         "status": "pending"
       }
+    },
+    {
+      "cycle": 40,
+      "baselineCommit": "592daeea322cd47aa189b67dd689e323662c0c67",
+      "ref": "refs/heads/codex/spider-autonomy-state-read",
+      "targetAlerts": [
+        54
+      ],
+      "repairCount": 1,
+      "scope": "local fixture state/control/lock-owner reads; not a remote authentication boundary",
+      "before": {
+        "codeqlRun": 37281429343,
+        "workflowConclusion": "success",
+        "alertState": "open",
+        "analysisKey": ".github/workflows/spider-codeql.yml:analyze",
+        "category": "/spider/language:javascript-typescript"
+      },
+      "change": {
+        "source": "scripts/amc-autonomy-store.mjs",
+        "regression": "tests/amc-autonomy-store-read.test.mjs",
+        "singleDescriptorRead": true,
+        "noFollow": true,
+        "nonblocking": true,
+        "boundedBytes": 5000001,
+        "closeOnAllPaths": true,
+        "schemaOrAuthenticationChanged": false
+      },
+      "localValidation": {
+        "tests": 43,
+        "pass": 43,
+        "fail": 0,
+        "skip": 0,
+        "newTests": 6,
+        "previousSourceFailsNewTests": 6,
+        "independentSourceReview": "no blocking findings"
+      },
+      "status": "Local regression verified; same-SHA GitHub checks and same-ref alert comparison required after push",
+      "fixedAlerts": [],
+      "dismissedAlerts": [],
+      "limitations": [
+        "Trusted local fixture directory remains required; no new parent-directory or same-inode writer isolation.",
+        "Other alerts, historical secret candidates and two awaiting-upstream advisories remain.",
+        "No automatic main merge, deployment, device change, or credential rotation."
+      ]
     }
   ],
   "recordLayout": "Top-level validation describes cycle 1; followUpCycles records subsequent independent validations."

@@ -441,7 +441,9 @@
         "docs/sky-tools-complete-design.md",
         "docs/external-wallet-fund-provider-boundary-20260913.md",
         "docs/everything-market-and-autonomous-fund-20260913.md",
-        "docs/rock-wallet-production-rail-20260913.md", "docs/sky-commerce-design.md", "docs/wallet-commerce-design.md"
+        "docs/rock-wallet-production-rail-20260913.md",
+        "docs/sky-commerce-design.md",
+        "docs/wallet-commerce-design.md"
       ]
     },
     {
@@ -947,6 +949,13 @@
         "tests": "tests/amc-agent.test.mjs",
         "runtimeSource": "data/amc/agent-runtime-source.json",
         "scope": "Codex_custom_agents_web_execution_not_connected"
+      },
+      "localStateRead": {
+        "source": "scripts/amc-autonomy-store.mjs",
+        "test": "tests/amc-autonomy-store-read.test.mjs",
+        "design": "docs/sky-tools-complete-design.md",
+        "maximumBytes": 5000000,
+        "scope": "same_descriptor_local_fixture_read_not_authentication_boundary"
       }
     }
   ],

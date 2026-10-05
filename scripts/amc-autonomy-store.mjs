@@ -4,13 +4,14 @@ import { randomUUID } from 'node:crypto';
 import { hostname } from 'node:os';
 import {
   closeSync,
+  constants,
   existsSync,
+  fstatSync,
   fsyncSync,
   linkSync,
-  lstatSync,
   mkdirSync,
   openSync,
-  readFileSync,
+  readSync,
   realpathSync,
   renameSync,
   rmdirSync,
@@ -24,10 +25,39 @@ const MAX_BYTES = 5_000_000;
 const directoryOf = (directory) => realpathSync(resolve(directory));
 
 function readJson(file) {
-  const info = lstatSync(file);
-  if (!info.isFile() || info.isSymbolicLink() || info.size > MAX_BYTES)
-    throw new Error('Unsafe or oversized autonomy state file');
-  return JSON.parse(readFileSync(file, 'utf8'));
+  if (
+    !Number.isInteger(constants.O_NOFOLLOW) || constants.O_NOFOLLOW === 0 ||
+    !Number.isInteger(constants.O_NONBLOCK) || constants.O_NONBLOCK === 0
+  )
+    throw new Error('Secure autonomy state reads are unsupported on this platform');
+  // Validate and read one inode. A pathname replacement must not select a
+  // different file after validation, and a FIFO must not block at open.
+  const fd = openSync(file, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+  try {
+    const info = fstatSync(fd);
+    if (!info.isFile() || info.size > MAX_BYTES)
+      throw new Error('Unsafe or oversized autonomy state file');
+    // Size may grow after fstat. Reuse a small buffer and stop at one sentinel
+    // byte beyond the limit, rather than allocating the limit for every read.
+    const buffer = Buffer.alloc(64 * 1024);
+    const chunks = [];
+    let size = 0;
+    while (size <= MAX_BYTES) {
+      const bytesRead = readSync(fd, buffer, 0, Math.min(buffer.length, MAX_BYTES + 1 - size), size);
+      if (bytesRead === 0) break;
+      size += bytesRead;
+      if (size > MAX_BYTES)
+        throw new Error('Unsafe or oversized autonomy state file');
+      chunks.push(Buffer.from(buffer.subarray(0, bytesRead)));
+    }
+    try {
+      return JSON.parse(Buffer.concat(chunks, size).toString('utf8'));
+    } catch {
+      throw new Error('Invalid autonomy state JSON');
+    }
+  } finally {
+    closeSync(fd);
+  }
 }
 
 function durableWrite(file, value, flag = 'wx') {
