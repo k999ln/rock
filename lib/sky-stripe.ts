@@ -1,4 +1,3 @@
-import { stripeIdempotencyKey, stripeRequest } from '../shared/stripe.mjs';
 import { marketplaceCommissionMinor } from './sky-marketplace-policy.ts';
 
 export class SkyPaymentError extends Error {
@@ -92,6 +91,7 @@ export type SkyStripeOrder = {
 };
 
 export const SKY_STRIPE_API_VERSION = '2026-08-26.dahlia';
+const STRIPE_API_ORIGIN = 'https://api.stripe.com';
 const REQUEST_TIMEOUT_MS = 15_000;
 const CONFIG_ERROR = '決済の接続設定が完了していません。';
 const PROVIDER_ERROR =
@@ -168,11 +168,10 @@ function validateStripeRedirect(value: unknown, hostname: string): string {
 }
 
 function validateIdempotencyKey(value: string): string {
-  try {
-    return stripeIdempotencyKey(value);
-  } catch {
+  if (typeof value !== 'string' || !/^[A-Za-z0-9._:-]{1,255}$/.test(value)) {
     throw new SkyPaymentError('決済リクエストを確認できません。', 400);
   }
+  return value;
 }
 
 /** Server-side only. The caller owns authentication, persisted orders and fulfillment. */

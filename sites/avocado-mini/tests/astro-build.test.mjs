@@ -45,7 +45,7 @@ test('Astro home now leads with SIM/eSIM service access while retaining separate
   assert.match(home, /approve a spending limit/);
   assert.match(home, /itemized usage/);
   assert.match(home, /id="how-it-works"/);
-  assert.match(home, /existing OS client or browser/);
+  assert.match(home, /app or browser client on their existing OS/);
   assert.match(home, /carrier activation, channel entitlement linking, production AI pricing and billing/);
   assert.match(home, /href="\/mini\/"/);
   assert.match(mini, /Give the space<br\s*\/?>another sense\./);

@@ -6,7 +6,6 @@ import {
   parseLegalAiResponse,
   validateLegalAiInput,
 } from '@/lib/legal-ai';
-import { authorizeRemoteAiRequest } from '@/lib/remote-ai-guard';
 import {
   authorizeRemoteAiRequest,
   RemoteAiGuardError,

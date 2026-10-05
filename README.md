@@ -208,7 +208,7 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-02 / 159 tasks: 104 done, 37 in progress, 17 planned, 1 blocked
+Updated: 2026-10-02 / 160 tasks: 105 done, 37 in progress, 17 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)

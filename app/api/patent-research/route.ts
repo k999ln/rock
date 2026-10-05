@@ -6,7 +6,6 @@ import {
   parsePatentAiResponse,
   validatePatentAiInput,
 } from '@/lib/patent-ai';
-import { authorizeRemoteAiRequest } from '@/lib/remote-ai-guard';
 import {
   authorizeRemoteAiRequest,
   RemoteAiGuardError,

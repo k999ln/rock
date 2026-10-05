@@ -1,5 +1,4 @@
 import type { TeamCase } from './coconala-team';
-import { ownerRevisionJsonStore } from './owner-revision-json-store.ts';
 
 export function coconalaTeamStore(db: Pick<D1Database, 'prepare'>) {
   async function get(user: string, id: string): Promise<TeamCase | null> {

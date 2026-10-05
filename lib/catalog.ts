@@ -603,7 +603,13 @@ const catalogEntries = [
 ] as const satisfies readonly Automation[];
 
 export type CatalogToolId = (typeof catalogEntries)[number]['id'];
-type TrackedRunner = 'coconala' | 'free-article' | 'citations' | 'delivery-local';
+type TrackedRunner =
+  | 'coconala'
+  | 'free-article'
+  | 'citations'
+  | 'delivery-local'
+  | 'legal-intake'
+  | 'patent-assistant';
 export type TrackedCatalogToolId = Extract<
   (typeof catalogEntries)[number],
   { status: 'candidate' } | { runner: TrackedRunner }
@@ -620,6 +626,13 @@ export const catalog: Automation[] = catalogEntries.map(
 export const catalogConnectionTools = catalogEntries.map(({ id }) => id);
 export const catalogJobTools = catalog.filter(({ status, runner }) =>
   status === 'candidate' ||
-  (runner !== undefined && ['coconala', 'free-article', 'citations', 'delivery-local'].includes(runner)),
+  (runner !== undefined && [
+    'coconala',
+    'free-article',
+    'citations',
+    'delivery-local',
+    'legal-intake',
+    'patent-assistant',
+  ].includes(runner)),
 ).map(({ id }) => id) as TrackedCatalogToolId[];
 export const coreMcpToolNames = catalog.flatMap(({ mcpTool }) => mcpTool ? [mcpTool] : []);

@@ -19,6 +19,7 @@ await test('one catalog defines connection identity and preserves the restricted
   assert.deepEqual(new Set(JOB_TOOLS), new Set([
     ...catalog.filter(({ status }) => status === 'candidate').map(({ id }) => id),
     'coconala', 'mr-free-article', 'mr-citations', 'mr-delivery',
+    'rockstar-legal-intake', 'rockstar-patent-assistant',
   ]));
   assert.equal(JOB_TOOLS.includes('jev-evaluation'), false, 'catalog ready never grants tracked execution');
   assert.deepEqual(new Set(coreMcpToolNames), new Set(['coconala_check', 'make_free_article', 'format_citations', 'verify_delivery']));
