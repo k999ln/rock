@@ -13,8 +13,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky IP・SNS運用アシスタント',
     handle: '@sky_ip',
     initial: 'IP',
-    helper: 'IP・SNS運用の接続条件と公開前確認を整理します。公開や送信は行いません。',
-    placeholder: '対象IP・運用目的・確認したい公開前条件を入力',
+    helper: 'IP・SNS運用とLiveKitの音声・電話連携の接続条件を整理します。公開・音声送信・発信は行いません。',
+    placeholder: '対象IP・制作や音声会話の目的・接続したいサービスを入力',
   },
   'coconala-proposal-draft': {
     role: '提案文下書き役',
