@@ -1,16 +1,23 @@
 {
   "schema": "spider-work-plan-contract/1",
-  "cycle": 44,
-  "baseCommit": "4a22eb25502e858e22d3c5f0cddcdab58298a07a",
+  "cycle": 46,
+  "baseCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
   "referenceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
   "primarySquad": "O2",
   "taskId": "R03",
   "primaryOwner": "ROCK",
-  "status": "LOCAL_REGRESSIONS_PASS_REMOTE_PENDING",
-  "rootCause": "Merged older workflow and API files removed the plan/export and authoritative guards while current store/UI/tests retained their consumers. Duplicate listAmc overwrote the summary with no plan.",
+  "status": "INTEGRATED_MAIN_LOCAL_TESTS_PASS_NEW_SHA_REMOTE_PENDING",
+  "rootCause": "Latest main independently restored the WorkPlan/store/Agent evidence contract. Remaining API gaps: creation skipped configured Zema entitlement; historical evidence validation blocked owner cancellation.",
   "before": {
-    "command": "node --experimental-strip-types --test tests/workflow.test.mjs",
-    "result": "FAIL: normalizeWorkJob export missing"
+    "routeCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "command": "Existing work-plan-route tests with only route source supplied from latest main; real current workflow/stores unchanged",
+    "tests": 21,
+    "passed": 19,
+    "failed": 2,
+    "failures": [
+      "configured Zema entitlement missing at POST",
+      "local cancellation denied when historical quote is unavailable"
+    ]
   },
   "existingRegression": {
     "tests": 46,
@@ -27,9 +34,9 @@
     "dedicated AMC API rejection remains"
   ],
   "remote": {
-    "baselineCodeqlRun": 37367560369,
     "sameRef": "refs/heads/codex/spider-work-plan-contract",
-    "status": "pending"
+    "status": "new integrated SHA pending",
+    "previousValidatedHead": "59c07464d9444e88e49f236bbab1a6bab1003f81"
   },
   "remaining": [
     "PR73 dependency declarations not merged; normal install/build may remain blocked",
@@ -43,13 +50,31 @@
   "deployed": false,
   "scannerWeakened": false,
   "localRegression": {
-    "command": "node --experimental-strip-types --test tests/workflow.test.mjs tests/work-plan-route.test.mjs tests/amc-main-integration.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-parent-controller.test.mjs tests/a2a-result-handoff.test.mjs",
     "nodeVersion": "v26.0.0",
-    "tests": 67,
-    "passed": 67,
+    "tests": 73,
+    "passed": 73,
     "skipped": 0,
     "newRouteTests": 21,
-    "boundary": "Real route handlers and SQLite stores; synthetic auth/env and provider ingress evidence, not production auth or signature acceptance"
+    "boundary": "Real route handlers and SQLite stores; synthetic auth/env and provider ingress evidence, not production auth or signature acceptance",
+    "execution": "67 dependency-free tests plus 6 main reconciliation tests using verified TypeScript 5.9.3 loaded into memory; no full dependency install",
+    "lockedCompiler": {
+      "version": "5.9.3",
+      "source": "package-lock.json",
+      "integrityVerified": "sha512",
+      "filesInstalled": false
+    },
+    "dependencyFreeRegression": {
+      "command": "node --experimental-strip-types --test tests/workflow.test.mjs tests/work-plan-route.test.mjs tests/amc-main-integration.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-parent-controller.test.mjs tests/a2a-result-handoff.test.mjs",
+      "tests": 67,
+      "passed": 67
+    },
+    "mainReconciliationRegression": {
+      "standardCommand": "node --experimental-strip-types --test tests/workplan-reconcile.test.mjs",
+      "tests": 6,
+      "passed": 6,
+      "executedUsing": "Verified package-lock TypeScript 5.9.3 tarball SHA-512; compiler evaluated in a Node Module from stdin and provided through registerHooks to the real test import. In-memory loader used because dependency installation was unavailable.",
+      "compilerModule": "package/lib/typescript.js"
+    }
   },
   "baselineRouteOnlyRegression": {
     "routeCommit": "4a22eb25502e858e22d3c5f0cddcdab58298a07a",
@@ -70,10 +95,38 @@
     "design:check": "failed: preexisting duplicate catalog Tool IDs"
   },
   "sourceSha256": {
-    "lib/workflow.ts": "326a3c87adc365cfd63da6014a491615857f2fa18be76412ccdeecf9d68cc253",
+    "lib/workflow.ts": "3c998df31e342ccd08d91a35964ac04a1faa9f6fa4a0dda5a3cc1a6f316f5cf5",
     "lib/work-store.ts": "e7466f6014d5179bcd137a6bfc9c033f4179cbbb769d45f34cbda72d1f6897b9",
-    "app/api/work-jobs/route.ts": "1544d0b3ac68692f462b78af8e7f59c2d4363eb66a4f318c8fe8c7cdec076d28",
+    "app/api/work-jobs/route.ts": "8ac0fdfce7847c81b7ea2d5e491075ab7d72cd3d31f8fab028929e6839a89f89",
     "tests/work-plan-route.test.mjs": "10a8ee0bcfa9fb24a4333adecb65078d74f6a96c5e74f3e737f9fab08c2a29bb",
-    "tests/workflow.test.mjs": "6f2a5d99c7a412d6864a64cec3a46b9a1a8df7c3980470e310ef8082da237808"
-  }
+    "tests/workflow.test.mjs": "6f2a5d99c7a412d6864a64cec3a46b9a1a8df7c3980470e310ef8082da237808",
+    "tests/workplan-reconcile.test.mjs": "a6e9ee95cddea9a380037728f87abce243064603798fa37189f756e8dc5f2fb5"
+  },
+  "initialRepair": {
+    "cycle": 44,
+    "baseCommit": "4a22eb25502e858e22d3c5f0cddcdab58298a07a",
+    "head": "59c07464d9444e88e49f236bbab1a6bab1003f81",
+    "githubRegression": {
+      "tests": 67,
+      "passed": 67,
+      "failed": 0,
+      "skipped": 0,
+      "run": 37368541695,
+      "job": 111959577418
+    },
+    "sameRefCodeql": {
+      "beforeRun": 37367560369,
+      "afterRun": 37373847638,
+      "bothLanguagesSuccess": true,
+      "openBefore": 42,
+      "openAfter": 42,
+      "alertIdentityAdded": [],
+      "alertIdentityRemoved": []
+    }
+  },
+  "currentDelta": [
+    "POST enforces existing service-access policy and releases unread body on rejection",
+    "PATCH permits only local cancel without historical evidence; owner/revision/terminal checks remain",
+    "main added reconciliation tests use real service-access and synthetic Cloudflare env; all six retained"
+  ]
 }

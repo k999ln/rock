@@ -1,10 +1,23 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-05 — SPIDER cycle 46: mainの修復を保持し、利用権と取消の差分へ整理
+
+O2 / R03、ROCK、Web / PWA。main 0c90253cがWorkPlan・保存・Agent証跡の復旧とAMC表示修正を独立して統合したため、PR #74へ通常mergeで取り込む。mainそのものは変更しない。WorkPlan/storeはmainと同じにし、残る機能差分をZema作成時の利用権検査・否認body解放と、履歴証拠が欠けた仕事でもowner/revision条件を満たすローカル取消の2点へ絞った。
+
+mainの新6テストは実service-accessと合成envへ接続して保持し、既存67件と合わせ73件合格。6件はlockのSHA512で確認したTypeScript 5.9.3をメモリで読み込んで実行した（通常npm install/buildの合格ではない）。mainのAPIだけへ戻した同一回帰は19 pass /2 failで両退行を再現。旧head 59c07464はGitHub回帰67件合格・同一ref CodeQL両言語成功、42件のalert identityに増減なし。取り込み後の新SHAは別途再検査する。依存不一致（PR #73）・DB/catalog不整合・秘密候補は残り、main merge・配備・実機受入は行わない。[証拠](docs/evidence/spider-work-plan-contract.json)。
+
+
 ## 2026-10-05 — SPIDER cycle 44: 仕事計画とAgent進捗の安全な復旧
 
 O2 / R03、ROCK、Web / PWA。最新main `4a22eb25`を基点に、欠落したWorkPlan/normalizeWorkJob、同名AMC一覧定義の重複、仕事APIの利用権・委任/親job/見積/成果/receipt照合を修復する。最初の実行前だけ目的を編集でき、固定承認条件は変更させない。過去の証拠不足で本人のローカル取消を妨げず、ownerとrevisionの検査を維持する。最新mainのSky引継ぎ・ライブラリ保存を保持する。
 
-対象67件合格（新規実handler＋SQLiteの21件を含む）。修正前APIだけを同じ試験へ戻すと直接13件失敗し、弱い照合を再現した。同一refのCodeQL前後比較とGitHub検査は待機中。全体verifyは既存DB inventory不整合、design:checkは既存catalog ID重複で停止。依存install不一致のPR #73は独立した既存修正であり、今回重複しない。[検証記録](docs/evidence/spider-work-plan-contract.json)。task段階・料金保留・本番受入は変更しない。
+対象67件合格（新規実handler＋SQLiteの21件を含む）。修正前APIだけを同じ試験へ戻すと直接13件失敗し、弱い照合を再現した。この旧headのGitHub回帰67件と同一ref CodeQL両言語は成功、42件のalert identityに増減なし。現在の残差分はcycle 46を参照。全体verifyは既存DB inventory不整合、design:checkは既存catalog ID重複で停止。依存install不一致のPR #73は独立した既存修正であり、今回重複しない。[検証記録](docs/evidence/spider-work-plan-contract.json)。task段階・料金保留・本番受入は変更しない。
+
+## 2026-10-05 — WorkPlanとAMC保存契約の局所復旧
+
+O5 / SKY10・SKY16（SKY-S7-WORKPLAN-RECONCILE-20261005-01）、ROCK。基点main 4a22eb25で欠落したWorkPlan schemaVersion 1・objective・固定approvalGates、旧jobの読取正規化、開始前edit_planを624124cfの既存契約から差分復旧。job revisionのCAS、現在のAMC amc_event/Goal expectedRevision、専用API境界は保持。重複listAmcを一本化し、本人別・最大100件・Goal本文を含めない一覧を維持。直接consumerの重複分岐とunknownなskyBriefの表示を修正。cloud-agent手順の復旧に必要な既存の所有者/親job/見積/成果/receipt照合もAPIへ戻す。新schema・価格・利用権・接続コード・端末権限は追加しない。
+
+通常の契約回帰：29件中28合格。残る1件は未変更catalogの現行URL /zema/amcに対して旧 /amcを期待する既存テスト。新規6件は実routeコード＋合成SQLite/D1 adapterで保存/編集/再送/競合/越境拒否、AMC二段revision、軽量一覧、非grantを確認。実HTTP/本番D1/本人認証/実PC/課金/実モデルworker・reviewerの受入ではない。対象型エラー15件解消、local-guideの既存1件が残る。Goal r46/maxParallel1・過去提出証拠・元dirty checkoutを保護し、今回は小さいローカルcommitで独立検収へ提出する。push・公開は行わない。project:check・mission:check・変更対象lintは合格。design:checkは既存catalog重複、verifyは既存database metadata不一致で停止し、以降のbuild/全API/全Node試験は未到達。
 
 
 ## 2026-10-05 — Skyライブラリ保存APIの復旧とmain反映準備

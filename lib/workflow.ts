@@ -89,7 +89,7 @@ export type WorkCommand =
       sample: boolean;
       durationMs: number;
       delegationId?: string;
-    }
+  }
   | {
       id: string;
       action: 'edit_plan';

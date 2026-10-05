@@ -26,13 +26,15 @@ Zema側は既存の本人認証、service scope、WorkPlan、PC適合、IP Studi
 
 合格条件はSkyでrunnerと仕事作成POSTがなく、明示リンク後に同じ商品がZemaで開き、既存の利用条件下で動くこと。ローカル合成本人での検証と、本番認証・実PC・配備の受入は別とする。
 
-### 保存済みWorkPlanとクラウドAgentの進捗照合（SPIDER cycle 44）
+### Zemaの利用権とローカル計画の取消（SPIDER cycle 46）
 
-O2 / R03、ROCK。Zemaが既存の仕事を再開する際は`normalizeWorkJob`でschema 1の計画とテンプレート固定の承認条件を復元する。依頼目的だけを最初の実行記録より前に編集でき、利用者入力による承認条件の追加・解除や不明な版を拒否する。読込み時の補完はDBのrevision・成果・完了状態を進めない。AMC一覧は本人の概要と空の履歴だけを返し、Goal本文は詳細取得に分ける。
+O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承認条件、本人別保存とrevision、クラウドAgentの委任・見積・成果・利用receipt照合はmain 0c90253cの契約を保持する。
 
-クラウドAgentの進捗・最終確認ではAPIが履歴を含めて同じ本人と親jobの保存済み委任を照合する。見積手順には保存済み見積とdigest、結果手順にはremote完了・取得済み成果物・同じ親jobの利用receiptを必要とし、クライアントの`passed`申告だけで通過させない。dispatch時の本人承認・Wallet予約は既存A2A経路の責任で、この進捗APIは実行や送金を起動しない。利用権を必須とする環境では作成時のZema scopeを確認する。
+利用権を必須とする環境では、仕事作成の前に本人のZema scopeを保存済み台帳で確認する。不足時は403とSERVICE_ENTITLEMENT_REQUIREDを返し、未読bodyを解放してjobを書き込まない。previewで利用権必須を有効にしない既存動作は維持する。仕事の保存が利用権の発行・購入・送金・Agent起動を意味することはない。
 
-本人は過去の委任証拠が欠けても未終了のローカル計画を取り消せる。本人分離とrevision競合拒否を維持し、リモートAgentの停止成功は意味しない。証拠不足の進行は409で拒否し、再取得・照合してから再試行する。実SQLiteと実handlerの合成入力回帰、同一SHAのCI、本番認証・配備を別に記録する。[検証と未解決条件](evidence/spider-work-plan-contract.json)を参照する。実機・本番受入や料金保留の解除は含まない。
+本人は履歴の委任証拠が欠けても未終了のローカル計画を取り消せる。owner・revision・終了状態の検査を通し、リモートAgentの停止成功とは分ける。進行・完了では既存の証跡照合を省略せず、証拠不足は409として再取得・照合後に再試行する。mainのAMC専用イベントと2段revision、新しい表示修正を保持する。
+
+合格範囲は実handler/storeとSQLiteによる拒否・取消・競合回帰。合成認証と実requestUserを使う別fixtureを区別し、本番認証・配備・実機・料金保留解除は受入に含めない。[検証と未解決条件](evidence/spider-work-plan-contract.json)を参照する。
 
 ## 2. 共通Tool契約
 
@@ -162,6 +164,9 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 - WebがofflineならD1の新規保存・最新取得を保証しない。未保存を明示し、手動exportと既存standaloneの利用を区別する。両者の自動同期や競合自動mergeは行わない。
 
 ### 保存・privacy・保持・削除・互換・復旧
+
+2026-10-05 契約復旧：既存ZemaのWorkPlanはschemaVersion 1、objective、templateから固定するapprovalGatesを持ち、更新競合はWorkJob revisionで判定する。planのない旧payloadは読取時に補い、読取だけではDBを書き換えない。通常jobのobjective編集は最初の実行記録前だけ許可し、利用者入力からgateを緩和できない。AMCのplanは互換表示用で、変更は引き続きamc_eventとGoal expectedRevisionの専用契約を通す。listAmcは認証user別の最大100件の要約のみ返し、Goal本文・手順・履歴を一覧へ展開しない。cloud-agentの記録には同一owner/親jobの既存委任と保存見積、結果には完了状態・保存成果・usage receiptを照合する。これは既存の保存契約の復旧で、外部実行・予算承認・権限付与ではない。再送は同一commandを返し、競合は409と最新読取で復旧する。合成DB/実routeコードの回帰はtests/workplan-reconcile.test.mjsで確認し、本番本人認証・公開受入は別とする。
+
 
 明示して保存した依頼本文、Goal、意図、手動進捗、証拠参照を既存`work_jobs.payload`へ保存する。レコードは認証userで取得・更新を絞り、更新前revisionのcompare-and-swapを通す。別userのIDを知っていてもそのGoalを取得・更新できない。新しいtableやDBを増やさない。
 

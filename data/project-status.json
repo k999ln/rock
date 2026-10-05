@@ -4295,5 +4295,19 @@
     "validation": "focused 48/48。実候補dev API/D1の21 HTTP応答が合格。保存→再読込→Zemaライブラリ→同一商品→出典整理の実画面完了を確認。保存APIの型エラー2件は解消、既存16件・catalog重複・database metadata不一致でtypecheck/design:check/verifyは未合格。実認証・本番配備は未受入。",
     "libraryRestoreRequestId": "SKY-S2-LIBRARY-RESTORE-20261005-01",
     "mainIntegrationRequested": true
+  },
+  "skyWorkPlanReconciliation": {
+    "requestId": "SKY-S7-WORKPLAN-RECONCILE-20261005-01",
+    "primarySquad": "O5",
+    "existingTasks": [
+      "SKY10",
+      "SKY16"
+    ],
+    "baseMain": "4a22eb25502e858e22d3c5f0cddcdab58298a07a",
+    "status": "submitted_for_independent_review_with_base_failures",
+    "scope": "WorkPlan schemaVersion 1/読取/編集/CAS、AMC専用event/軽量一覧、既存cloud record証拠照合の復旧",
+    "accepted": false,
+    "deployed": false,
+    "validation": "通常契約回帰28/29、新規6/6。残りは既存AMC URL期待差。対象型エラー15件解消、local-guide既存1件。project/mission/lint合格。designは既存catalog重複、verifyは既存DB metadata不一致で停止。実認証/実PC/実HTTP/課金/モデル実行の受入は未実施。"
   }
 }

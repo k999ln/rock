@@ -8,8 +8,8 @@ import {
   applyWorkCommand,
   objectInput,
   parseWorkCommand,
-  workId,
   type WorkCommand,
+  workId,
   WorkError,
 } from '@/lib/workflow';
 
@@ -111,7 +111,8 @@ export async function PATCH(request: Request) {
     const store = workStore(database()),
       current = await store.get(user, workId(input.jobId));
     if (!current) throw new WorkError('仕事が見つかりません。', 404);
-    if (current.templateId === 'amc' || current.amcGoal) throw new WorkError('AMC画面から記録を更新してください。');
+    if (current.templateId === 'amc' || current.amcGoal)
+      throw new WorkError('AMC画面から記録を更新してください。');
     const command = parseWorkCommand(input.command);
     // Cancelling this local plan must remain possible when historical evidence is unavailable.
     // This does not send a remote cancellation or permit any progress/completion.
