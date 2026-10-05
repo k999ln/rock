@@ -49,10 +49,10 @@ void test('database status inventories every boundary and keeps production readb
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
       ['core', 12],
-      ['sky', 26],
+      ['sky', 32],
       ['marketplace', 7],
       ['csv', 5],
-      ['business', 26],
+      ['business', 20],
     ],
   );
   assert.equal(
