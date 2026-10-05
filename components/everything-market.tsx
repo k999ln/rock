@@ -1,6 +1,7 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Activity,
   ArrowRight,
@@ -20,6 +21,7 @@ import {
   type MarketSide,
 } from '@/lib/everything-market';
 import type { MarketProposal } from '@/lib/everything-market-store';
+import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 
 type Snapshot = {
   schema: string;
@@ -58,11 +60,8 @@ function operationId(prefix: string) {
   return `${prefix}:${crypto.randomUUID()}`;
 }
 
-async function readJson<T>(response: Response) {
-  const value = (await response.json()) as T & { error?: string };
-  if (!response.ok)
-    throw new Error(value.error || '市場を更新できませんでした。');
-  return value;
+async function marketRequest<T>(value?: unknown): Promise<T> {
+  return operationRequest<T>('/api/market', value === undefined ? 'GET' : 'POST', value);
 }
 
 export default function EverythingMarket() {
@@ -76,18 +75,20 @@ export default function EverythingMarket() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
+  const [needsSignin, setNeedsSignin] = useState(false);
   const [notice, setNotice] = useState('');
   const [creatorOpen, setCreatorOpen] = useState(false);
+  const activityRef = useRef<HTMLElement>(null);
 
   const refresh = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      const value = await readJson<Snapshot>(
-        await fetch('/api/market', { cache: 'no-store' }),
-      );
+      const value = await marketRequest<Snapshot>();
       setSnapshot(value);
       setError('');
+      setNeedsSignin(false);
     } catch (caught) {
+      setNeedsSignin(caught instanceof OperationRequestError && caught.status === 401);
       setError(
         caught instanceof Error ? caught.message : '市場を読み込めませんでした。',
       );
@@ -131,13 +132,7 @@ export default function EverythingMarket() {
     setError('');
     setNotice('');
     try {
-      const result = await readJson<{ proposal: MarketProposal }>(
-        await fetch('/api/market', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        }),
-      );
+      const result = await marketRequest<{ proposal: MarketProposal }>(payload);
       setNotice(
         result.proposal.status === 'PROPOSED'
           ? '提案を固定しました。内容とダイジェストを確認して承認してください。'
@@ -146,8 +141,13 @@ export default function EverythingMarket() {
             : 'PAPER取引を実行し、レシートとポジションを保存しました。',
       );
       await refresh(true);
-      if (result.proposal.status === 'EXECUTED') setSelected(null);
+      setSelected(null);
+      window.requestAnimationFrame(() => {
+        activityRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        activityRef.current?.focus({ preventScroll: true });
+      });
     } catch (caught) {
+      setNeedsSignin(caught instanceof OperationRequestError && caught.status === 401);
       setError(caught instanceof Error ? caught.message : '操作に失敗しました。');
     } finally {
       setBusy('');
@@ -225,6 +225,14 @@ export default function EverythingMarket() {
         {(error || notice) && (
           <div className={`market-message ${error ? 'is-error' : ''}`} role={error ? 'alert' : 'status'}>
             {error || notice}
+            {needsSignin && <div>
+              <a href="/signin-with-chatgpt?return_to=/market" target="_blank" rel="noreferrer" className="market-primary">
+                別タブでサインイン（入力を保持）
+              </a>
+              <button type="button" className="market-primary" onClick={() => void refresh()} disabled={loading}>
+                サインイン後に再読み込み
+              </button>
+            </div>}
           </div>
         )}
 
@@ -245,16 +253,14 @@ export default function EverythingMarket() {
                   <article key={asset.id} className="market-card">
                     <div className={`market-card-art tone-${index % 5}`}>
                       <span>{categoryLabels[asset.category]}</span>
-                      <b>{asset.source === 'user' ? 'USER LISTED' : 'ROCK VERIFIED'}</b>
+                      <b>{asset.source === 'user' ? '登録した対象' : 'PAPER サンプル'}</b>
                     </div>
                     <div className="market-card-body">
                       <h3>{asset.title}</h3>
                       <p>{asset.description}</p>
                       <div className="market-card-meta">
-                        <span>{asset.volume.toLocaleString()} volume</span>
-                        <b className={asset.changeBps >= 0 ? 'is-up' : 'is-down'}>
-                          {asset.changeBps >= 0 ? '+' : ''}{(asset.changeBps / 100).toFixed(1)}%
-                        </b>
+                        <span>{asset.source === 'user' ? '登録した参照価格' : '検証用のサンプル価格'}</span>
+                        <span>実売買の実績ではありません</span>
                       </div>
                       <div className="market-prices">
                         <button onClick={() => choose(asset, 'buy')}>
@@ -271,7 +277,7 @@ export default function EverythingMarket() {
             )}
           </main>
 
-          <aside className="market-activity">
+          <aside className="market-activity" ref={activityRef} tabIndex={-1} aria-label="PAPER取引フローと履歴">
             <div className="market-activity-head">
               <div>
                 <span>YOUR ACTIVITY</span>
@@ -293,6 +299,7 @@ export default function EverythingMarket() {
                   </div>
                   <strong>{money(proposal.notionalMinor)}</strong>
                   <p>{snapshot?.assets.find((asset) => asset.id === proposal.assetId)?.title ?? proposal.assetId}</p>
+                  <p>{proposal.side === 'buy' ? 'PAPER購入' : 'PAPER売却'} · 数量 {proposal.quantity} · 単価 {money(proposal.priceMinor)}</p>
                   {proposal.status === 'PROPOSED' ? (
                     <button
                       disabled={Boolean(busy)}
@@ -311,6 +318,17 @@ export default function EverythingMarket() {
                 </article>
               ))
             )}
+            <section aria-label="PAPER実行履歴">
+              <h3>PAPER実行履歴</h3>
+              {!snapshot?.proposals.some((proposal) => proposal.status === 'EXECUTED') ? <p>完了したPAPER取引はありません。</p> :
+                snapshot.proposals.filter((proposal) => proposal.status === 'EXECUTED').slice(0, 20).map((proposal) => <article key={proposal.id} className="market-proposal">
+                  <div><span>実行済み · PAPER</span><small>{proposal.digest.slice(0, 10)}…</small></div>
+                  <strong>{money(proposal.notionalMinor)}</strong>
+                  <p>{snapshot.assets.find((asset) => asset.id === proposal.assetId)?.title ?? proposal.assetId}</p>
+                  <p>{proposal.side === 'buy' ? '購入' : '売却'} · 数量 {proposal.quantity} · 単価 {money(proposal.priceMinor)}</p>
+                  <small style={{ display: 'block', overflowWrap: 'anywhere' }}>レシート {proposal.receiptId}</small>
+                </article>)}
+            </section>
             <div className="market-safety">
               <ShieldCheck size={18} />
               <p>
@@ -331,9 +349,9 @@ export default function EverythingMarket() {
               <button className={side === 'buy' ? 'is-active' : ''} onClick={() => { setSide('buy'); setPrice(selected.askMinor); }}>買う</button>
               <button className={side === 'sell' ? 'is-active' : ''} onClick={() => { setSide('sell'); setPrice(selected.bidMinor); }}>売る</button>
             </div>
-            <label>価格（USD）<input type="number" min=".01" max="100000" step=".01" value={(price / 100).toFixed(2)} onChange={(event) => setPrice(Math.round(Number(event.target.value) * 100))} /></label>
+            <label>PAPER価格（USD）<input type="number" min=".01" max="100000" step=".01" value={(price / 100).toFixed(2)} onChange={(event) => setPrice(Math.round(Number(event.target.value) * 100))} /></label>
             <label>数量<input type="number" min="1" max="10000" value={quantity} onChange={(event) => setQuantity(Math.max(1, Number(event.target.value) || 1))} /></label>
-            <div className="market-ticket-total"><span>合計</span><strong>{money(notional)}</strong></div>
+            <div className="market-ticket-total"><span>PAPER合計</span><strong>{money(notional)}</strong></div>
             <div className="market-ticket-steps">
               <span className="is-current">1 提案</span><ArrowRight size={14} /><span>2 承認</span><ArrowRight size={14} /><span>3 実行</span>
             </div>
@@ -366,14 +384,11 @@ export default function EverythingMarket() {
             setBusy('asset');
             setError('');
             try {
-              setSnapshot(await readJson<Snapshot>(await fetch('/api/market', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'create_asset', ...payload }),
-              })));
+              setSnapshot(await marketRequest<Snapshot>({ action: 'create_asset', ...payload }));
               setCreatorOpen(false);
               setNotice('新しい取引対象を市場へ登録しました。');
             } catch (caught) {
+              setNeedsSignin(caught instanceof OperationRequestError && caught.status === 401);
               setError(caught instanceof Error ? caught.message : '登録できませんでした。');
             } finally {
               setBusy('');

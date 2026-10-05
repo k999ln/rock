@@ -41,6 +41,7 @@ const registry = resolve(root, 'systems/rock-star-os/examples/registry');
 const packages = readdirSync(registry).filter((name) =>
   name.endsWith('.rock.json'),
 );
+const connectionTools = new Set(SKY_CONNECTION_TOOLS);
 const identities = packages.map((name) => {
   const value = JSON.parse(readFileSync(resolve(registry, name), 'utf8'));
   return `${value.manifest.id}@${value.manifest.version}`;
@@ -305,7 +306,7 @@ for (const tool of [
     .map(({ id }) => id),
 ])
   requireValue(
-    SKY_CONNECTION_TOOLS.includes(tool),
+    connectionTools.has(tool),
     `Zemaで使うready担当「${tool}」がSky接続許可リストにありません`,
   );
 

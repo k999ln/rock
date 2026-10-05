@@ -1,14 +1,24 @@
+import groovy.json.JsonOutput
 plugins { id 'com.android.application' }
+def rockstarServiceOrigin = providers.gradleProperty('rockstarServiceOrigin').getOrElse('')
+// Provider usage keys are public trust configuration, not credentials. Keep an empty
+// inventory as the default so receipt settlement remains fail-closed until operators
+// provision keys obtained and verified through the Provider contract.
+def a2aProviderUsageKeysJson = providers.gradleProperty('a2aProviderUsageKeysJson').getOrElse('[]')
 android {
     namespace 'dev.rock.automation'
     compileSdk 35
     defaultConfig {
         applicationId 'dev.rock.automation'; minSdk 35; targetSdk 35; versionCode 1; versionName '0.1.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        buildConfigField 'String', 'ROCKSTAR_SERVICE_ORIGIN', '"' + rockstarServiceOrigin.replace('\\', '\\\\').replace('"', '\\"') + '"'
+        buildConfigField 'String', 'A2A_PROVIDER_USAGE_KEYS_JSON', JsonOutput.toJson(a2aProviderUsageKeysJson)
     }
     compileOptions { sourceCompatibility JavaVersion.VERSION_11; targetCompatibility JavaVersion.VERSION_11 }
+    buildFeatures { buildConfig true }
 }
 dependencies {
+    implementation project(':core')
     implementation project(':tool-sdk')
     implementation project(':local-ai-api')
     implementation project(':shell-api')

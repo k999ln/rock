@@ -40,6 +40,7 @@ import {
 } from '@/lib/sky-ai-marketplace';
 import styles from '@/components/sky-marketplace.module.css';
 import { CommerceNavigation, MarketplacePurchase, commerceAmount, usePublicCommerceOffers } from '@/components/sky-commerce';
+import { includedRockstarServicePackageKeys } from '@/lib/rockstar-service-package-access';
 
 type RegistryItem = {
   packageKey: string;
@@ -50,6 +51,7 @@ type RegistryItem = {
 
 type View = 'all' | 'built-in' | 'candidate' | 'verified';
 type MarketKind = 'all' | 'automation' | 'llm';
+type InitialPackageState = 'none' | 'pending' | 'available' | 'missing' | 'lookup_failed';
 const views: { id: View; label: string }[] = [
   { id: 'all', label: 'すべて' },
   { id: 'built-in', label: 'Skyのツール' },
@@ -69,20 +71,23 @@ const getHostSnapshot = (): SkyHostEnvironment | null =>
   detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
 const getServerHostSnapshot = (): SkyHostEnvironment | null => null;
 
-export default function SkyMarketplace() {
+export default function SkyMarketplace({ initialPackageKey = null }: { initialPackageKey?: string | null }) {
   const runtimeContext = useSkyToolContext();
   const commerce = usePublicCommerceOffers();
-  const [query, setQuery] = useState('');
-  const [view, setView] = useState<View>('all');
+  const [query, setQuery] = useState(initialPackageKey ?? '');
+  const [view, setView] = useState<View>(initialPackageKey ? 'verified' : 'all');
   const [marketKind, setMarketKind] = useState<MarketKind>('all');
   const [category, setCategory] = useState('すべて');
   const [registry, setRegistry] = useState<RegistryItem[]>([]);
   const [registryState, setRegistryState] = useState<'loading' | 'ready' | 'unavailable'>('loading');
+  const [includedPackageKeys, setIncludedPackageKeys] = useState<Set<string>>(() => new Set());
+  const [entitlementReadState, setEntitlementReadState] = useState<'loading' | 'ready' | 'unavailable'>('loading');
   const [selected, setSelected] = useState<RegistryItem | null>(null);
   const [selectedCatalog, setSelectedCatalog] = useState<Automation | null>(null);
   const [selectedAi, setSelectedAi] = useState<SkyAiMarketplaceEntry | null>(null);
   const host = useSyncExternalStore(subscribeHost, getHostSnapshot, getServerHostSnapshot);
   const [showHostMismatches, setShowHostMismatches] = useState(false);
+  const [initialPackageDismissed, setInitialPackageDismissed] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -98,6 +103,27 @@ export default function SkyMarketplace() {
       .catch((error: unknown) => {
         if (error instanceof Error && error.name === 'AbortError') return;
         setRegistryState('unavailable');
+      });
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch('/api/rockstar/entitlements', { signal: controller.signal, cache: 'no-store' })
+      .then(async (response) => {
+        if (response.status === 401) {
+          setIncludedPackageKeys(new Set());
+          setEntitlementReadState('ready');
+          return;
+        }
+        if (!response.ok) throw new Error('Entitlements unavailable');
+        const payload: unknown = await response.json();
+        setIncludedPackageKeys(includedRockstarServicePackageKeys(payload));
+        setEntitlementReadState('ready');
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error && error.name === 'AbortError') return;
+        setEntitlementReadState('unavailable');
       });
     return () => controller.abort();
   }, []);
@@ -133,6 +159,7 @@ export default function SkyMarketplace() {
       item.manifest.name,
       item.manifest.summary,
       item.manifest.developer.displayName,
+      item.packageKey,
       ...item.manifest.fund.tags,
     ]);
   });
@@ -165,7 +192,20 @@ export default function SkyMarketplace() {
   });
   const hasMarketResults = hasResults || matchingAi.length > 0;
   const offersByPackage = new Map((commerce.data?.configured ? commerce.data.offers : []).map((offer) => [offer.packageKey, offer]));
-  const selectedOffer = selected ? offersByPackage.get(selected.packageKey) : undefined;
+  const initialPackageItem = initialPackageKey
+    ? registry.find((item) => item.packageKey === initialPackageKey) ?? null : null;
+  const initialPackageState: InitialPackageState = !initialPackageKey ? 'none'
+    : registryState === 'loading' ? 'pending'
+      : registryState === 'unavailable' ? 'lookup_failed'
+        : initialPackageItem ? 'available' : 'missing';
+  const activeSelection = selected ?? (!initialPackageDismissed ? initialPackageItem : null);
+  const activeOffer = activeSelection ? offersByPackage.get(activeSelection.packageKey) : undefined;
+  const activePackageIncluded = activeSelection !== null && includedPackageKeys.has(activeSelection.packageKey);
+  const activePackagePrice = entitlementReadState === 'loading' ? 'SIM/eSIMの利用権を確認中'
+    : entitlementReadState === 'unavailable' ? 'SIM/eSIMの利用権を確認できません'
+      : activePackageIncluded ? 'SIM/eSIMオファーに含まれるアクセス（Cloud実行等は別料金の場合あり）'
+        : activeOffer ? `${commerceAmount(activeOffer.amountMinor, activeOffer.currency)} · 買い切り`
+          : `${pricingLabel[activeSelection?.manifest.pricing.model ?? 'external_contract']} · ${activeSelection?.manifest.pricing.note ?? ''}`;
 
   return (
     <WorkspaceShell title="Sky Market" tone="sky" contentClassName={styles.shell} hideTopActions>
@@ -186,6 +226,17 @@ export default function SkyMarketplace() {
         </header>
 
         <CommerceNavigation />
+
+        {initialPackageState === 'missing' && (
+          <output className={styles.registryNote}>
+            この購入に含まれるPackageは現在の審査済みRegistryにありません。購入権は有効のままです。Skyで検索するか、販売元へ確認してください。
+          </output>
+        )}
+        {initialPackageState === 'lookup_failed' && (
+          <output className={styles.registryNote}>
+            Packageの現在の審査状態を確認できません。未確認の項目は開かず、購入権はそのままです。接続を確認して再読み込みしてください。
+          </output>
+        )}
 
         <section id="explore" className={styles.explore} aria-labelledby="explore-title">
           <h2 id="explore-title" className="sr-only">ツール一覧</h2>
@@ -374,23 +425,30 @@ export default function SkyMarketplace() {
         )}
       </Dialog>
 
-      <Dialog open={Boolean(selected)} onOpenChange={(open) => { if (!open) setSelected(null); }}>
-        {selected && (
+      <Dialog open={Boolean(activeSelection)} onOpenChange={(open) => {
+        if (!open) { setSelected(null); setInitialPackageDismissed(true); }
+      }}>
+        {activeSelection && (
           <DialogContent className={styles.modal}>
             <span className={styles.verifiedBadge}><ShieldCheck size={13} /> 審査済みPackage</span>
-            <DialogTitle>{selected.manifest.name}</DialogTitle>
-            <DialogDescription>{selected.manifest.summary}</DialogDescription>
+            <DialogTitle>{activeSelection.manifest.name}</DialogTitle>
+            <DialogDescription>{activeSelection.manifest.summary}</DialogDescription>
             <dl>
-              <div><dt>開発者</dt><dd>{selected.manifest.developer.displayName}</dd></div>
-              <div><dt>バージョン</dt><dd>{selected.manifest.version}</dd></div>
-              <div><dt>実行先</dt><dd>{selected.manifest.capabilities.executionTargets.join(' / ')}</dd></div>
-              <div><dt>料金</dt><dd>{selectedOffer ? `${commerceAmount(selectedOffer.amountMinor, selectedOffer.currency)} · 買い切り` : `${pricingLabel[selected.manifest.pricing.model]} · ${selected.manifest.pricing.note}`}</dd></div>
-              <div><dt>権限</dt><dd>{selected.manifest.capabilities.permissions.join(' / ') || '追加権限なし'}</dd></div>
+              <div><dt>開発者</dt><dd>{activeSelection.manifest.developer.displayName}</dd></div>
+              <div><dt>バージョン</dt><dd>{activeSelection.manifest.version}</dd></div>
+              <div><dt>実行先</dt><dd>{activeSelection.manifest.capabilities.executionTargets.join(' / ')}</dd></div>
+              <div><dt>料金</dt><dd>{activePackagePrice}</dd></div>
+              <div><dt>権限</dt><dd>{activeSelection.manifest.capabilities.permissions.join(' / ') || '追加権限なし'}</dd></div>
             </dl>
-            {host && registryHostMismatch(selected.manifest.capabilities.executionTargets, host) && (
-              <p className={styles.hostMismatch}>この端末では対象外 · {registryHostMismatch(selected.manifest.capabilities.executionTargets, host)}</p>
+            {host && registryHostMismatch(activeSelection.manifest.capabilities.executionTargets, host) && (
+              <p className={styles.hostMismatch}>この端末では対象外 · {registryHostMismatch(activeSelection.manifest.capabilities.executionTargets, host)}</p>
             )}
-            {selectedOffer ? <MarketplacePurchase key={selected.packageKey} offer={selectedOffer} mode={commerce.data?.mode ?? null} compatible={Boolean(host && !registryHostMismatch(selected.manifest.capabilities.executionTargets, host))} onOfferChanged={commerce.refresh} /> : <>
+            {entitlementReadState === 'loading' ? <p className={styles.modalNote}>SIM/eSIMに含まれる利用権を確認しています。確認が終わるまで別の購入は開始できません。</p>
+              : entitlementReadState === 'unavailable' ? <p className={styles.modalNote}>SIM/eSIMの利用権を確認できません。重複購入を避けるため購入を保留しました。接続を確認して再度開いてください。</p>
+                : activePackageIncluded ? <>
+                  <p className={styles.modalNote}>このPackageは購入済みSIM/eSIMのサービス構成に含まれています。Zemaへ依頼仕様として渡せます。実行先Agentは別途選び、Providerへ送る内容・見積・上限を確認してください。このPackage自体が選んだAgent上で実行できる保証はありません。</p>
+                  <Link className={styles.modalAction} href={`/chat?view=work&package=${encodeURIComponent(activeSelection.packageKey)}`}>Zemaでクラウド依頼を作る <ArrowRight size={17} /></Link>
+                </> : activeOffer ? <MarketplacePurchase key={activeSelection.packageKey} offer={activeOffer} mode={commerce.data?.mode ?? null} compatible={Boolean(host && !registryHostMismatch(activeSelection.manifest.capabilities.executionTargets, host))} onOfferChanged={commerce.refresh} /> : <>
               <p className={styles.modalNote}>{commerce.loading ? '販売情報を確認しています。' : commerce.error ? '販売情報を取得できませんでした。購入履歴を確認するか、再度開いてください。' : 'Skyでの販売設定はありません。料金と利用方法は提供元の案内を確認してください。'}審査済みは実行・購入・自動接続の完了を意味しません。</p>
               <Link className={styles.modalAction} href="/sky/network">Skyで接続先を確認 <ArrowRight size={17} /></Link>
             </>}

@@ -6,6 +6,7 @@
     <uses-permission android:name="dev.rock.permission.RUN_TOOL" />
     <uses-permission android:name="dev.rock.permission.USE_LOCAL_AI" />
     <uses-permission android:name="dev.rock.permission.MANAGE_PLATFORM" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <queries><package android:name="dev.rock.tools.article" /><package android:name="com.localactionassistant" /><package android:name="dev.rock.shell" /></queries>
     <application android:name=".RockApplication" android:label="RockstarOS Platform Broker" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@android:style/Theme.Material.Light.NoActionBar">

@@ -1,36 +1,74 @@
 {
-  "schema": "sky-release-verification-alignment/1",
+  "schema": "sky-release-verification-alignment/2",
+  "repository": "https://github.com/k999ln/rock.git",
   "base": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
-  "testedSourceBeforeEvidenceUpdate": "defb9b737e4ade14cf108f51412740d59698e756",
-  "priorCsvCommit": "05f676338944f60e05552b22dddc6f50453e3be6",
-  "priorMainFailuresReproduced": true,
-  "scope": [
-    "preserve implemented pale-blue Web theme in machine-readable baseline",
-    "accept translated README manufacture/physical-test/progress-link assertions",
-    "keep migration union schema and saved values checks with committed 37-table schema",
-    "align Fashion action assertion with existing plan-save label",
-    "retain CSV collision and expiry regressions"
+  "head": "691fb279a3c4238ef46f956a76b558c987bac850",
+  "pullRequest": "https://github.com/k999ln/rock/pull/51",
+  "draft": true,
+  "mainMerged": false,
+  "changes": [
+    "CSV collision and expired retry repairs retained",
+    "visual baseline aligned with existing pale-blue CSS; CSS/components unchanged",
+    "translated README acceptance statements checked",
+    "committed 37-table migration union still checks all schema and retained values",
+    "existing Fashion plan-save action label checked"
   ],
-  "runtimeUiChangedByAlignment": false,
-  "productionDeploymentChanged": false,
-  "checks": {
+  "local": {
     "focusedTests": 18,
-    "fullVerifyExitCode": 0,
+    "fullVerifyPassed": true,
     "nodeTests": 441,
-    "nodePassed": 441,
-    "nodeFailed": 0,
+    "fashionTests": 19,
+    "workerD1Assertions": 172,
+    "csvD1R2Assertions": 113,
+    "baseInstalledPackageVersionsMatch": true
+  },
+  "ci": {
+    "runId": 37004335830,
+    "url": "https://github.com/k999ln/rock/actions/runs/37004335830",
+    "status": "completed",
+    "conclusion": "success",
+    "head": "691fb279a3c4238ef46f956a76b558c987bac850",
+    "nodeVersion": "22.23.3",
+    "freshNpmCi": true,
+    "fullVerifyPassed": true,
+    "nodeTests": 441,
     "fashionTests": 19,
     "workerD1Assertions": 172,
     "csvD1R2Assertions": 113,
     "components": 131,
     "assetReferences": 114,
     "missingAssets": 0,
-    "nodeVersion": "26.0.0",
-    "dependencies": "shared local dependency tree; every installed base-locked package version matched; CI will use fresh npm ci"
+    "syntheticCryptoChecks": 303,
+    "syntheticCryptoRejections": 142,
+    "releaseSigningRun": {
+      "id": 37004335480,
+      "url": "https://github.com/k999ln/rock/actions/runs/37004335480",
+      "conclusion": "success"
+    }
   },
-  "verifyLogSha256": "3c42de41d94c80f6510582e9e2031050583b13b47f734e44ddfc18cd24658eff",
-  "ciStatus": "pending",
-  "mainMerged": false,
-  "productionOwnerJourneyAccepted": false,
-  "completeLaunch": false
+  "production": {
+    "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "version": 32,
+    "status": "active",
+    "accessMode": "public",
+    "changedThisTurn": false,
+    "runtimeEnvironment": {
+      "revision": 2,
+      "keys": [
+        "SKY_CSV_STRIPE_WEBHOOK_SECRET",
+        "SKY_PAYMENTS_MODE",
+        "SKY_PAYMENT_ORIGIN",
+        "SKY_STRIPE_SECRET_KEY"
+      ]
+    },
+    "ownerDesktop": "sign-in required; inputs and execution disabled",
+    "pixel": "authorized USB; showing keyguard and input restricted",
+    "ownerJourneyAccepted": false,
+    "cloudProviderCredentialConfigured": false,
+    "applePayAccepted": false
+  },
+  "completeLaunch": false,
+  "temporaryWorktreeRemoved": true,
+  "ciLogSha256": "a3320bc2baf232c87b34775fa8da8208f56fa09382e57375b0bf9d48a929c21a"
 }

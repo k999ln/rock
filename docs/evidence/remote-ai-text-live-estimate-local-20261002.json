@@ -1,0 +1,74 @@
+{
+  "schema": "rockstar-remote-ai-text-live-estimate-local/1",
+  "verifiedAt": "2026-10-02T19:26:00Z",
+  "repository": "https://github.com/k999ln/rock.git",
+  "baseRevision": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "sourceState": "uncommitted local worktree; no deployment",
+  "scope": "Synthetic OpenAI Responses SSE, SQLite migration guards, public owner-scoped records, Workbench and Android home UI source checks",
+  "implementation": [
+    "Direct cloud LLM execution streams bounded progress internally and persists only monotonic output-byte observations; response text is not copied into live-meter metadata.",
+    "The visible provisional estimate uses the signed quote's maximum input-token bound and observed output UTF-8 bytes divided by three, rounds up under the approved quote cap, and is explicitly marked as an estimate rather than provider meter or final charge.",
+    "The full provider-reported token usage from response.completed is the only source for final itemized calculated usage. An unresolved or over-cap result retains its budget reservation and remains unreconciled.",
+    "Owner-facing API, device home, Workbench and Android task surfaces distinguish provisional estimate from reserved maximum and final provider usage."
+  ],
+  "results": {
+    "focusedTests": {
+      "command": "node --experimental-strip-types --test tests/llm-providers.test.mjs tests/remote-ai-rate-card.test.mjs tests/remote-ai-text-store.test.mjs tests/remote-ai-text-public-record.test.mjs tests/sim-service-entry.test.mjs",
+      "exitCode": 0,
+      "tests": 42,
+      "passed": 42,
+      "failed": 0
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "exitCode": 0
+    },
+    "productLint": {
+      "command": "npm run lint:product",
+      "exitCode": 0
+    },
+    "databaseStatus": {
+      "command": "npm run database:status && npm run database:check",
+      "exitCode": 0,
+      "boundaries": 6,
+      "tables": 122,
+      "sourceReadback": "6/6",
+      "productionReadback": "0/6"
+    },
+    "patchWhitespace": {
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    "fullVerify": {
+      "command": "npm run verify",
+      "status": "incomplete_in_sandbox",
+      "detail": "Repository checks reached npm test. The independent Node/Python A2A HTTP interoperability test requires binding 127.0.0.1; the restricted runner returned EPERM. The full command was stopped after confirming this environment limit, so no full-verify pass is claimed. The standalone API integration harness also fails at local listener startup with the same EPERM before assertions; production build was independently successful."
+    },
+    "productionBuild": {
+      "command": "npm run build",
+      "exitCode": 0,
+      "note": "Vite/Vinext production build completed; existing chunk-size and emitted CSS filename-conflict warnings remain."
+    },
+    "apiIntegration": {
+      "command": "npm run test:api",
+      "status": "blocked_by_sandbox",
+      "detail": "The harness opens a local 127.0.0.1 HTTP listener and Node received EPERM before assertions could run."
+    }
+  },
+  "verifiedBoundaries": {
+    "externalProviderCalls": 0,
+    "providerBillingOrInvoice": false,
+    "productionDatabaseReadback": false,
+    "carrierActivation": false,
+    "deviceOsInstallation": false,
+    "providerFinalUsageInFixture": true,
+    "productionPricingAcceptance": false,
+    "paidExecutionEnabled": false
+  },
+  "next": [
+    "Run the full repository suite in a runner that allows loopback HTTP listener tests.",
+    "Run Worker/D1 API integration harness in a runner that permits local HTTP listeners.",
+    "Accept provider-supported live usage and reconcile final usage against provider invoice under an external sandbox/contract; keep the paid execution gate closed until then.",
+    "Continue seller/channel entitlement integration and Android CI/device acceptance as separate product gates."
+  ]
+}

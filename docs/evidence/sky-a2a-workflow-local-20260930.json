@@ -1,0 +1,257 @@
+{
+  "date": "2026-09-30",
+  "command": "npm run sky:a2a:workflow:test",
+  "runtime": "Wrangler local dev / local Workflows / temporary local D1",
+  "wranglerVersion": "4.122.0",
+  "result": "passed",
+  "cases": [
+    {
+      "case": "broker-proof-missing",
+      "workflowStep": "verify-native-broker-authorization-before-egress",
+      "stepOutput": false,
+      "delegationState": "remote_failed",
+      "remoteState": "PREFLIGHT_FAILED_BEFORE_SEND"
+    },
+    {
+      "case": "broker-proof-expired",
+      "workflowStep": "verify-native-broker-authorization-before-egress",
+      "stepOutput": false,
+      "delegationState": "remote_failed",
+      "remoteState": "PREFLIGHT_FAILED_BEFORE_SEND"
+    },
+    {
+      "case": "broker-key-revoked",
+      "workflowStep": "verify-native-broker-authorization-before-egress",
+      "stepOutput": false,
+      "delegationState": "remote_failed",
+      "remoteState": "PREFLIGHT_FAILED_BEFORE_SEND"
+    }
+  ],
+  "remoteSendClaims": 0,
+  "agentCardDiscoveryReached": false,
+  "fixtureKeys": "ephemeral per run",
+  "productionAcceptance": false,
+  "limitations": [
+    "Does not prove Cloudflare production Workflow durability or restart recovery.",
+    "Does not prove real Broker device enrollment, Wallet budget reservation, or provider interoperability.",
+    "The dedicated D1 database and keys are temporary test fixtures."
+  ],
+  "followup_20261001": {
+    "tests": [
+      {
+        "command": "node --experimental-strip-types --test tests/a2a-*.test.mjs tests/sky-result-library.test.mjs",
+        "result": "passed",
+        "passed": 46,
+        "failed": 0,
+        "scope": "host protocol/store/security fixtures; includes independent Node and Python HTTP agents"
+      },
+      {
+        "command": "node --test tests/esim-bootstrap.test.mjs tests/esim-plan-catalog.test.mjs tests/esimgo-webhook.test.mjs tests/esim-install-material.test.mjs tests/esim-reconciliation-worker.test.mjs",
+        "result": "passed",
+        "passed": 33,
+        "failed": 0,
+        "scope": "host/local-D1 fixtures only"
+      },
+      {
+        "command": "node --experimental-strip-types scripts/check-sky-a2a-workflow.mjs",
+        "result": "passed",
+        "cases": 3,
+        "remoteSendClaims": 0,
+        "scope": "Wrangler local Workflow/D1 proof rejection"
+      }
+    ],
+    "positiveWorkflowHarness": {
+      "result": "passed",
+      "supersedes": "earlier standalone Miniflare V4 startup attempt and earlier unverified status in this record",
+      "command": "npm run sky:a2a:workflow:positive",
+      "runtime": {
+        "vitest": "4.1.0",
+        "cloudflareVitestPlugin": "1.3.4",
+        "wrangler": "4.145.0",
+        "miniflare": "5.20260930.0-alpha"
+      },
+      "cases": 2,
+      "assertions": [
+        "actual Wrangler-configured Worker and Cloudflare Workflow started under Workers Vitest",
+        "local D1 migrations 0019-0026 applied and an owner-approved encrypted delegation seeded",
+        "Broker signature/proof checked before discovery and outbound send",
+        "Agent Card discovered and exact name/version checked",
+        "approved SendMessage reached the controlled HTTPS fixture exactly once",
+        "completed remote task receipt and Workflow event sequence persisted",
+        "result artifact stored encrypted and decrypted with owner/delegation/task context",
+        "Cloudflare Workflow instance restarted after completion and read terminal D1 state instead of redispatching",
+        "remote_send_claimed event count remained exactly one after restart",
+        "simulated remote 503 after the fixture accepted the approved message is stored as indeterminate",
+        "the 25 minor-unit child reservation remains held and unsettled through Workflow restart",
+        "restarted ambiguous dispatch returns not_dispatchable and does not claim or send again"
+      ],
+      "network": "test-only service binding to a controlled fixture; no external provider requests",
+      "productionEgressPolicyChanged": false,
+      "productionAcceptance": false,
+      "restartBehavior": {
+        "result": "passed",
+        "method": "Cloudflare WorkflowInstance.restart() in local Miniflare/Workers Vitest",
+        "postRestartOutput": {
+          "outcome": "not_dispatchable"
+        },
+        "remoteSendClaimsAfterRestart": 1,
+        "limitation": "This does not simulate a Cloudflare production deployment or process-level worker/controller loss; reconciliation of an in-flight/indeterminate remote task remains pending."
+      }
+    },
+    "runtimeCompatibilityFinding": {
+      "issue": "Cloudflare Workerd rejects Fetch redirect mode error before request dispatch",
+      "fix": "Use redirect manual and reject non-2xx responses; redirects are not followed.",
+      "regression": "tests/a2a-client.test.mjs and tests/a2a-agent-directory.test.mjs"
+    },
+    "additionalValidation": {
+      "typecheck": "passed",
+      "productLint": "passed",
+      "workflowProofRejection": {
+        "passed": 3,
+        "remoteSendClaims": 0,
+        "discoveryReached": false
+      },
+      "eSimFixtures": {
+        "passed": 33,
+        "failed": 0
+      }
+    },
+    "localWorkflowRestart": {
+      "result": "passed",
+      "assertion": "Restarted completed instance remained terminal in D1 and did not repeat Agent Card discovery or SendMessage.",
+      "note": "Workerd emits an engine-abort diagnostic when the test explicitly invokes restart; Vitest assertions and instance completion pass."
+    },
+    "ambiguousRemoteSendRecovery": {
+      "result": "passed",
+      "scenario": "Controlled agent records the SendMessage once and then returns HTTP 503.",
+      "beforeRestart": {
+        "delegationState": "indeterminate",
+        "remoteSendClaims": 1,
+        "reservedMinor": 25,
+        "settledMinor": null,
+        "reservationState": "held"
+      },
+      "afterRestart": {
+        "workflowOutput": {
+          "outcome": "not_dispatchable"
+        },
+        "remoteSendClaims": 1,
+        "reservedMinor": 25,
+        "settledMinor": null,
+        "reservationState": "held"
+      },
+      "limitation": "Does not resolve a real provider task identifier after a lost response; provider-side lookup and true Workerd process loss remain unaccepted."
+    },
+    "fullVerification": {
+      "command": "npm run verify",
+      "result": "passed",
+      "nodeTestFiles": 100,
+      "nodeTestsPassed": 520,
+      "failed": 0,
+      "releaseSigningTests": 64,
+      "webBuild": "passed",
+      "webBundleInventory": {
+        "components": 131,
+        "additionalReviewMatches": 0
+      },
+      "webAssetClosure": {
+        "references": 114,
+        "missing": 0
+      },
+      "apiAssertions": 265,
+      "loopback": "enabled for local-only Workers/Miniflare and HTTP fixture tests; no contracted external services contacted",
+      "productionAcceptance": false
+    },
+    "wranglerProcessRestart": {
+      "command": "npm run sky:a2a:workflow:test",
+      "result": "passed",
+      "runtime": "two separate Wrangler dev/Workerd processes using the same local --persist-to directory and local D1",
+      "bootOne": {
+        "executionGate": false,
+        "scheduledScan": true,
+        "preparedRowsAfterScan": 3,
+        "remoteSendClaims": 0
+      },
+      "processRestart": true,
+      "bootTwo": {
+        "executionGate": true,
+        "scheduledScan": true,
+        "deterministicWorkflowIds": true
+      },
+      "cases": [
+        {
+          "kind": "no-proof",
+          "state": "PREFLIGHT_FAILED_BEFORE_SEND"
+        },
+        {
+          "kind": "expired-proof",
+          "state": "PREFLIGHT_FAILED_BEFORE_SEND"
+        },
+        {
+          "kind": "revoked-proof",
+          "state": "PREFLIGHT_FAILED_BEFORE_SEND"
+        }
+      ],
+      "remoteSendClaims": 0,
+      "agentDiscoveryReached": false,
+      "productionAcceptance": false,
+      "limitations": [
+        "Cloudflare production state durability not tested.",
+        "Provider task lookup after an accepted-but-unanswered request is not tested.",
+        "No contracted provider, funded Wallet, device Gateway or real eSIM was used."
+      ]
+    },
+  "a2a10JsonRpcConformance": {
+      "result": "passed",
+      "finding": "The client declared A2A 1.0 but sent legacy lower-case JSON-RPC method names.",
+      "correction": "SendMessage, GetTask and CancelTask now match the A2A 1.0 JSON-RPC binding PascalCase method names.",
+      "officialSpecification": "https://a2a-protocol.org/v1.0.0/specification/",
+      "tests": {
+        "hostA2AClientAndIndependentNodePythonAgents": {
+          "passed": 10,
+          "failed": 0
+        },
+        "cloudflareLocalWorkflow": {
+          "passed": 2,
+          "failed": 0
+        }
+      },
+      "fullVerification": {
+        "command": "npm run verify",
+        "result": "passed"
+      },
+      "protocolBoundary": "A2A 1.0 only MAY deduplicate SendMessage by messageId, and the provider creates new task IDs. Standard GetTask therefore cannot recover a task when the SendMessage response is lost before the client learns its task ID. Provider sandbox request-reference lookup remains required.",
+      "productionAcceptance": false
+    }
+  },
+  "currentRevalidation_20261001": {
+    "positiveWorkflow": {
+      "command": "npm run sky:a2a:workflow:positive",
+      "result": "passed",
+      "testFiles": 1,
+      "testsPassed": 4,
+      "testNames": [
+        "discovers, authorizes, sends once, settles a signed usage receipt, and persists an encrypted completed result",
+        "reconciles a controlled A2A agent fixture from submitted through working to completed and settles only its signed final usage",
+        "does not start a cloud agent when offline continuation consent is missing",
+        "holds an ambiguous remote send and does not replay it after Workflow restart"
+      ],
+      "runtime": "Cloudflare Workers Vitest / local Miniflare Workflow and D1",
+      "network": "controlled test fixture only; no contracted external services contacted"
+    },
+    "workerdProcessRestart": {
+      "command": "npm run sky:a2a:workflow:test",
+      "result": "passed",
+      "runtime": "two separate Wrangler dev/Workerd processes using the same local persisted D1",
+      "preparedWorkSurvivedRestart": true,
+      "cases": ["missing proof", "expired proof", "revoked proof"],
+      "allCasesStoppedBeforeExternalSend": true,
+      "remoteSendClaims": 0
+    },
+    "productionAcceptance": false,
+    "remaining": [
+      "Cloudflare production durability and provider task reconciliation are not tested.",
+      "No contracted provider, funded Wallet, device Gateway, eSIM activation, or real disconnected-device test was used."
+    ]
+  }
+}

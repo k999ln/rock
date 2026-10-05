@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 final class ShellConnection {
     static final String BROKER_PACKAGE = "dev.rock.automation";
     static final String BROKER_SERVICE = BROKER_PACKAGE + ".RockShellService";
-    static final int API_VERSION = 4;
+    static final int API_VERSION = 18;
     private final Context context;
 
     ShellConnection(Context context) { this.context = context; }
@@ -48,6 +48,71 @@ final class ShellConnection {
     }
     String restoreRecoverableBackup(ParcelFileDescriptor source, String phrase) throws Exception {
         return withService(api -> api.restoreRecoverableBackup(source, phrase));
+    }
+    String provisionEsimGatewayKey(String challengeJson, boolean requireStrongBox) throws Exception {
+        return withService(api -> api.provisionEsimGatewayKey(challengeJson, requireStrongBox));
+    }
+    String beginRockstarDeviceLink() throws Exception { return withService(IShellApi::beginRockstarDeviceLink); }
+    String pollRockstarDeviceLink(String flowId) throws Exception {
+        return withService(api -> api.pollRockstarDeviceLink(flowId));
+    }
+    String rockstarDeviceLinkStatus() throws Exception { return withService(IShellApi::rockstarDeviceLinkStatus); }
+    String cloudServiceHome() throws Exception { return withService(IShellApi::cloudServiceHome); }
+    String claimRockstarServiceEntitlement(String packageJson) throws Exception {
+        return withService(api -> api.claimRockstarServiceEntitlement(packageJson));
+    }
+    String cloudTaskDetail(String kind, String taskId) throws Exception {
+        return withService(api -> api.cloudTaskDetail(kind, taskId));
+    }
+    String prepareCloudLlmQuote(String requestId, String prompt, long maximumBudgetMinor,
+            String currency, boolean saveResult) throws Exception {
+        return withService(api -> api.prepareCloudLlmQuote(requestId, prompt, maximumBudgetMinor, currency, saveResult));
+    }
+    String executeCloudLlmQuote(String prompt, String quoteId, String approvalDigest,
+            String model, int outputTokenLimit) throws Exception {
+        return withService(api -> api.executeCloudLlmQuote(prompt, quoteId, approvalDigest, model, outputTokenLimit));
+    }
+    String enrollA2ABrokerDevice(boolean requireStrongBox) throws Exception {
+        return withService(api -> api.enrollA2ABrokerDevice(requireStrongBox));
+    }
+    String revokeA2ABrokerDevice(String keyId) throws Exception {
+        return withService(api -> api.revokeA2ABrokerDevice(keyId));
+    }
+    String syncA2AWalletSettlement(String delegationId) throws Exception {
+        return withService(api -> api.syncA2AWalletSettlement(delegationId));
+    }
+    String cloudA2AAgents() throws Exception { return withService(IShellApi::cloudA2AAgents); }
+    String requestCloudA2APriceQuote(String agentId, String quoteRequestId, String message,
+            String currency, long maximumBudgetMinor, long expiresAt, boolean consent) throws Exception {
+        return withService(api -> api.requestCloudA2APriceQuote(agentId, quoteRequestId,
+            message, currency, maximumBudgetMinor, expiresAt, consent));
+    }
+    String prepareCloudA2ADelegation(String draftJson) throws Exception {
+        return withService(api -> api.prepareCloudA2ADelegation(draftJson));
+    }
+    String recoverCloudA2ADelegation(String parentJobId, String idempotencyKey, String inputSha256) throws Exception {
+        return withService(api -> api.recoverCloudA2ADelegation(parentJobId, idempotencyKey, inputSha256));
+    }
+    String requestCloudA2AWalletReservation(String draftJson) throws Exception {
+        return withService(api -> api.requestCloudA2AWalletReservation(draftJson));
+    }
+    String confirmCloudA2AWalletReservation(String draftJson, String approvalId) throws Exception {
+        return withService(api -> api.confirmCloudA2AWalletReservation(draftJson, approvalId));
+    }
+    String releaseCloudA2AWalletReservation(String delegationId) throws Exception {
+        return withService(api -> api.releaseCloudA2AWalletReservation(delegationId));
+    }
+    String registerCloudA2ABrokerAuthorization(String draftJson) throws Exception {
+        return withService(api -> api.registerCloudA2ABrokerAuthorization(draftJson));
+    }
+    String approveCloudA2ADelegation(String draftJson) throws Exception {
+        return withService(api -> api.approveCloudA2ADelegation(draftJson));
+    }
+    String recoverCloudA2AExecution(String draftJson) throws Exception {
+        return withService(api -> api.recoverCloudA2AExecution(draftJson));
+    }
+    String cancelCloudA2ADelegation(String delegationId) throws Exception {
+        return withService(api -> api.cancelCloudA2ADelegation(delegationId));
     }
 
     private <T> T withService(Call<T> call) throws Exception {

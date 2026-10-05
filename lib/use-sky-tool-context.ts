@@ -6,9 +6,11 @@ import { fashionMcpConnected } from '@/lib/fashion-mcp-client';
 import { operationRequest } from '@/lib/operations-client';
 import type { SkyConnection } from '@/lib/operations';
 import type { SkyToolUiContext } from '@/lib/sky-tool-ui';
+import { useSkyServiceStatus } from './use-sky-service-status';
 
 // Use the same runtime signals as Sky home; a registration is not a provider connection.
 export function useSkyToolContext(): SkyToolUiContext {
+  const service = useSkyServiceStatus();
   const [context, setContext] = useState<SkyToolUiContext>({});
   useEffect(() => {
     let active = true;
@@ -29,5 +31,5 @@ export function useSkyToolContext(): SkyToolUiContext {
       window.removeEventListener('sky-fashion-mcp', update);
     };
   }, []);
-  return context;
+  return { ...context, service };
 }

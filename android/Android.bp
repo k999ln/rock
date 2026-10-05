@@ -92,3 +92,17 @@ android_app {
     product_specific: true,
     optimize: { enabled: false },
 }
+
+// Optional and disabled by default. This app owns the only Android Jev network
+// permission; it is not a Broker, Shell, Local AI, Tool, or debug relay component.
+android_app {
+    name: "RockJevProvider",
+    manifest: "jev-provider/src/aosp/AndroidManifest.xml",
+    srcs: ["jev-provider/src/main/java/**/*.java"],
+    sdk_version: "current",
+    min_sdk_version: "35",
+    target_sdk_version: "35",
+    certificate: "testkey",
+    product_specific: true,
+    optimize: { enabled: false },
+}

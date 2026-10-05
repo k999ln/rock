@@ -211,6 +211,12 @@ function validateLocalDescriptor(raw, file) {
     fail('PC Toolの接続キーを確認してください。');
   if (!Number.isSafeInteger(raw.pid) || raw.pid < 1)
     fail('PC ToolのプロセスIDを確認してください。');
+  if (!Array.isArray(raw.toolPricing) || raw.toolPricing.length > 100 ||
+      raw.toolPricing.some((item) => !item || typeof item !== 'object' ||
+        typeof item.name !== 'string' || !/^[a-zA-Z0-9_.-]{1,128}$/.test(item.name) ||
+        !['free', 'subscription', 'usage', 'external_contract'].includes(item.model)) ||
+      new Set(raw.toolPricing.map((item) => item.name)).size !== raw.toolPricing.length)
+    fail('PC Toolの料金情報を確認してください。');
   return {
     id,
     name: cleanText(raw.name, '名称', 80),
@@ -220,6 +226,7 @@ function validateLocalDescriptor(raw, file) {
     url: url.toString(),
     secret: raw.secret,
     pid: raw.pid,
+    toolPricing: Object.fromEntries(raw.toolPricing.map((item) => [item.name, item.model])),
   };
 }
 
@@ -539,7 +546,8 @@ export class McpHub {
     for (const spec of specs) {
       const current = this.entries.get(spec.id);
       if (current && current.spec.transport !== 'local_http') continue;
-      if (current && current.spec.url === spec.url && current.spec.secret === spec.secret) continue;
+      if (current && current.spec.url === spec.url && current.spec.secret === spec.secret &&
+          JSON.stringify(current.spec.toolPricing) === JSON.stringify(spec.toolPricing)) continue;
       this.entries.set(spec.id, {
         spec,
         transport: new HttpTransport(spec),
@@ -636,6 +644,10 @@ export class McpHub {
           tool.inputSchema && typeof tool.inputSchema === 'object'
             ? tool.inputSchema
             : { type: 'object' },
+        ...(tool.outputSchema && typeof tool.outputSchema === 'object' && !Array.isArray(tool.outputSchema)
+          ? { outputSchema: tool.outputSchema }
+          : {}),
+        pricing: this.pricingFor(entry, tool),
         approval: 'required',
       }));
       entry.passport = {
@@ -665,6 +677,22 @@ export class McpHub {
       throw error;
     }
   }
+  pricingFor(entry, tool) {
+    const localModel = entry.spec.transport === 'local_http'
+      ? entry.spec.toolPricing?.[tool.name]
+      : undefined;
+    const metadata = tool?._meta?.['rockstaros.dev/pricing'];
+    const model = localModel ?? metadata?.model;
+    const note = typeof metadata?.note === 'string' && metadata.note.length <= 300
+      ? metadata.note
+      : '';
+    if (!['free', 'subscription', 'usage', 'external_contract'].includes(model))
+      return { model: 'unknown', note: '提供元の料金条件を確認できません。' };
+    return {
+      model,
+      note: note || (model === 'free' ? '提供元の申告では実行ごとの追加料金はありません。' : '実行前の料金見積が必要です。'),
+    };
+  }
   disconnect(id) {
     const entry = this.entry(id);
     entry.transport.reset();
@@ -685,6 +713,17 @@ export class McpHub {
     );
     if (!tool)
       fail('接続時に確認した機能ではありません。', 404, 'tool_not_found');
+    const remote = entry.spec.transport === 'streamable_http';
+    if (tool.pricing.model !== 'free' || remote)
+      fail(
+        remote && tool.pricing.model === 'free'
+          ? '遠隔MCPのfree申告は提供元の自己申告で、実行料金を独立確認できません。署名見積・予算予約が接続されるまで直接実行できません。'
+          : tool.pricing.model === 'unknown'
+          ? 'このMCP Toolの料金条件を確認できないため、実行を停止しました。料金付きAgentは署名見積に対応したA2A経路を使ってください。'
+          : '料金付きMCP Toolは、署名見積・予算予約・usage照合が接続されるまで直接実行できません。料金付きAgentはA2A経路を使ってください。',
+        409,
+        'paid_execution_requires_priced_a2a',
+      );
     if (!args || typeof args !== 'object' || Array.isArray(args))
       fail('tool引数を確認してください。');
     const now = Date.now();
@@ -717,6 +756,7 @@ export class McpHub {
       tool: tool.title || tool.name,
       toolId: tool.name,
       summary: `${entry.spec.name}の「${tool.title || tool.name}」を1回実行します。`,
+      pricing: { ...tool.pricing, declaration: 'provider_unverified' },
       approvalRequired: true,
     };
   }

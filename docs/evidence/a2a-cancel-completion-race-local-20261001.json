@@ -1,0 +1,27 @@
+{
+  "schema": "rock-a2a-cancel-completion-race-evidence/1",
+  "date": "2026-10-01",
+  "status": "LOCAL_CONTROLLED_FIXTURE_PASS",
+  "command": "npm run sky:a2a:workflow:positive",
+  "result": "6/6 Cloudflare Workers Vitest cases passed",
+  "scenario": {
+    "initialRemoteState": "TASK_STATE_WORKING",
+    "userAction": "Cancellation persisted as cancel_requested and issued one CancelTask request",
+    "providerResponse": "TASK_STATE_COMPLETED with encrypted-result artifact and signed usage receipt",
+    "finalState": "remote_completed, not remote_cancelled",
+    "artifactCaptured": "Completed while cancellation was pending.",
+    "usage": "Signed fixture usage of 9 minor units settled once from the 50-unit reservation",
+    "afterRestart": "Terminal completion returned not_dispatchable without another provider request"
+  },
+  "coverage": "Local Miniflare D1/Workflow with a controlled A2A service binding only; production cloud and contracted provider cancellation semantics are unverified.",
+  "notProven": [
+    "real provider cancellation-versus-completion race behavior",
+    "production cloud stop enforcement and wallet settlement",
+    "device UI for pending, unconfirmed, and completed cancellation outcomes"
+  ],
+  "source": [
+    "services/sky-agent-runtime/src/worker.ts",
+    "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
+    "services/sky-agent-runtime/vitest.config.ts"
+  ]
+}

@@ -10,12 +10,22 @@ import {
   authorizeRemoteAiRequest,
   RemoteAiGuardError,
 } from '@/lib/remote-ai-guard';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
+import { remoteAiPricingGateAccepted, remoteAiPricingUnavailable } from '@/lib/remote-ai-pricing-gate';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {
   try {
-    await authorizeRemoteAiRequest(request, 'jev-evaluation', database());
+    const db = database();
+    const owner = await authorizeRemoteAiRequest(request, 'jev-evaluation', db);
+    if (!(await rockstarServiceScopeAllowed(
+      db,
+      owner,
+      'sky',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+    ))) return missingRockstarServiceScope('Sky');
+    if (!remoteAiPricingGateAccepted()) return remoteAiPricingUnavailable();
     const raw = await request.text();
     if (raw.length > 8_000) throw new Error('INVALID_INPUT');
     const input = validateJevEvaluationInput(JSON.parse(raw));

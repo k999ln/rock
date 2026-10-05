@@ -1,0 +1,55 @@
+{
+  "schema": "rockstar-sim-service-issuer-delivery-store-local/1",
+  "verifiedAt": "2026-10-02T19:45:00Z",
+  "repository": "https://github.com/k999ln/rock.git",
+  "baseRevision": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "sourceState": "uncommitted local worktree; no deployment",
+  "scope": "SQLite execution of all web D1 migrations, synthetic Ed25519 seller key, synthetic AES-GCM code key, no external channel adapter",
+  "implementation": [
+    "Migration 0052 adds channel-neutral issuer delivery records with hashed idempotency key, exact request digest, signed claim JSON, encrypted claim code and explicit prepared/delivered state.",
+    "Migration 0053 records code-encryption key IDs so prepared deliveries remain recoverable across key rotation while old keys stay in the operator keyring.",
+    "Same seller key and request recover the exact claim/code; changed request under one key fails closed; concurrent same-key calls converge on one persisted package.",
+    "AES-GCM AAD binds issuer, idempotency digest, request digest, claim digest and encryption key ID. Plaintext claim code is never stored in D1.",
+    "Delivery timeout preserves the prepared ciphertext and retries the same package with the same delivery key. Confirmed delivery clears ciphertext and nonce while retaining non-secret claim/audit fields.",
+    "Key rotation can recover old prepared rows only while their recorded key ID remains available; the seller operator must retain previous keys until no prepared rows reference them."
+  ],
+  "results": {
+    "focusedTests": {
+      "command": "node --experimental-strip-types --test tests/rockstar-entitlement-issuer.test.mjs tests/rockstar-entitlement-issuer-store.test.mjs",
+      "exitCode": 0,
+      "tests": 13,
+      "passed": 13,
+      "includes": [
+        "same-request recovery, scope-order normalization and no plaintext code at rest",
+        "8 concurrent identical issuer requests converge to one record and one winning package",
+        "changed request and unavailable/wrong encryption keys fail closed",
+        "delivery timeout retains the encrypted package and callback retry receives byte-identical package/key",
+        "delivery acknowledgement clears secret ciphertext and is idempotent",
+        "key rotation recovers a prepared package with the previous key ID"
+      ]
+    },
+    "typecheck": { "command": "npm run typecheck", "exitCode": 0 },
+    "focusedLint": {
+      "command": "npx oxlint lib/rockstar-entitlement-issuer.ts lib/rockstar-entitlement-issuer-store.ts tests/rockstar-entitlement-issuer.test.mjs tests/rockstar-entitlement-issuer-store.test.mjs",
+      "exitCode": 0
+    },
+    "schema": { "command": "npm run schema:check", "exitCode": 0, "tables": 68 },
+    "database": { "command": "npm run database:status && npm run database:check", "exitCode": 0, "tables": 123, "boundaries": 6, "sourceReadback": "6/6", "productionReadback": "0/6" },
+    "patchWhitespace": { "command": "git diff --check", "exitCode": 0 }
+  },
+  "verifiedBoundaries": {
+    "sellerCheckoutApi": false,
+    "sellerNetworkDelivery": false,
+    "productionEncryptionKey": false,
+    "productionIssuerKeyCustody": false,
+    "sellerWebhookAcceptance": false,
+    "productionD1Deployment": false,
+    "actualPurchaseOrCarrierActivation": false,
+    "productionBilling": false
+  },
+  "next": [
+    "Add an authenticated channel-neutral issuer endpoint/adapter that enforces issuer registry, order ownership, rate limits, and safe delivery recovery using this D1 store.",
+    "Keep signing and wrapping key custody separate; run rotation/redaction and prepared-row recovery with operator-managed secrets before seller integration.",
+    "Connect seller checkout and refund/chargeback webhooks only after issuer contracts and external sandbox access are established."
+  ]
+}

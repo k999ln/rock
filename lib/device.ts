@@ -17,6 +17,7 @@ export type RunRecorder = (
   started: number,
   sample: boolean,
   outcome?: 'passed' | 'needs_review' | 'failed',
+  delegationId?: string,
 ) => Promise<void>;
 const TOKEN = 'loop.device.session';
 const DEVICE_ID = 'loop.device.id';

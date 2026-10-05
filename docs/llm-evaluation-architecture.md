@@ -93,6 +93,10 @@ Skyの文章生成は `lib/llm-providers.ts` のadapter registryを経由する�
 
 APIキーやendpointはブラウザ・D1へ保存せず、server environmentだけで設定する。`local-model`を使えない場合にcloudへ黙ってfallbackせず、`LOCAL_LLM_BRIDGE_REQUIRED`として停止する。remote providerはrequestごとの同意と `SKY_REMOTE_LLM_ENABLED=true` の両方が必要である。法務受付・特許アシスタントの標準経路は引き続き端末内の決定的ガイド／ドラフトであり、provider registryは将来の一般文章生成と明示的なremote経路に使う。
 
+文章モデルadapterはOpenAIのusage（入力・出力・合計・cache token）を妥当性確認して返し、処理時間を計測する。usage未提供はnullで、費用を推定しない。Provider資格情報のredirect転送を拒否し、timeout=504／transport・不正JSON・未完了応答=502を区別する。失敗時の自動再送は行わない。本文やAPIキーの新規保存なし。9件のfixtureは合格、実Provider接続と料金照合は未実施。
+
+[利用量契約の公式資料](https://developers.openai.com/api/reference/cli/resources/responses/methods/create)。このusageはAPI応答であり、D1履歴やProvider請求書との照合は未実装。
+
 ### OpenAI
 
 OpenAIへの接続は次の2 Toolの任意オンライン検索だけである。標準では呼び出さない。
@@ -200,3 +204,16 @@ Jevのroute、UI、catalog、rubric、receiptは実装済みである。ただ�
 - [Platform Core](platform-core.md)
 - [Local AI実機統合](local-ai-os-integration-20260915.md)
 - [Sky](sky.md)
+
+
+## Agent Control Plane — 2026-09-27 runtime slice
+
+The **Agent Control Plane** preserves an advisory software-engineering adapter and an authenticated deterministic preview without promoting any model to an authority role. As of the 2026-10-05 integration, its public route accepts `dryRun: true` only: pricing, durable owner budget reservations, idempotent dispatch and Provider usage receipts have not been integrated, so it does not construct a Jev or Cursor client. Environment flags and PR-only approval cannot enable remote execution.
+
+The implementation lives in `lib/agent-control-plane.ts` with the authenticated entry point `app/api/agent-control-plane/route.ts`. Injected adapter tests cover deterministic gates, optional Jev workflow advice and a bounded Cursor Cloud Agent request. Repository policy and owner approval remain authoritative; those tests are not live dispatch or billing acceptance.
+
+Jev is used only for public-class task metadata with explicit per-task decision consent. The state sent to Jev is minimized to title, risk/effect class, acceptance-criteria count, allowed-path count, and the pstack preference. The full task body, owner-private data, confidential data, secrets, credentials, wallet state, and production authority are not sent by this adapter. Jev remains `advisory-only`; its choice can be made stricter by deterministic policy and can never lower the required review level, grant permissions, merge code, deploy, move funds, rotate credentials, or approve destructive work.
+
+Cursor Cloud Agents are used only after the deterministic execution gate passes. Repository writes require explicit `repository-pr-only` approval, and the worker prompt requires an isolated branch/workspace, a pull request, repository tests, independent verification, no direct main push, no merge, no production deployment, no real-money operation, no credential mutation, and no destructive action. High-risk work is clamped to a security review and a maximum of two workers. Critical-risk, any non-public data class, production-deploy, financial-transaction, credential-change, and destructive-operation requests fail closed instead of launching a cloud coding agent.
+
+This slice does not mean that the whole Decision Fabric is runtime-complete. The generic Sky-wide `DecisionRouter` composition, Local Qwen Web/native bridge, live Cursor credential acceptance, pstack account installation, Grok Bot programmatic handoff, provider calibration, and production acceptance remain separate work. The existing `DESIGN_APPROVED_IMPLEMENTATION_PENDING` Decision Fabric status therefore remains unchanged.

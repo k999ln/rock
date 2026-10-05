@@ -5,6 +5,8 @@ import dev.rock.core.platform.EncryptedBackup;
 import dev.rock.core.platform.PlatformApi;
 import dev.rock.core.platform.PlatformStore;
 import dev.rock.core.platform.RecoveryPhrase;
+import dev.rock.core.platform.ModelProfileManifest;
+import dev.rock.core.platform.RuntimeManifest;
 import dev.rock.core.platform.UpdatePolicy;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -42,6 +44,19 @@ public final class PlatformStoreTest {
     private ComponentManifest provider() {
         return manifest(ComponentManifest.Kind.PROVIDER, "org.rockstar.provider.cash", "org.rockstar.provider.cash", 12002,
             1, 1, 1, List.of("provider.status", "wallet.receipt"));
+    }
+
+    private ComponentManifest localAiRuntime() {
+        return manifest(ComponentManifest.Kind.TOOL, "org.rockstar.runtime.localai", "org.rockstar.runtime.localai", 12003,
+            1, 1, 1, List.of("text.input", "text.output", "local-ai.inference"));
+    }
+
+    private ModelProfileManifest profile(long version, String weights) {
+        return new ModelProfileManifest("profile.lifeline.qwen", version, Engine.digest(weights),
+            Engine.digest("tokenizer-" + version), Engine.digest("template-" + version), "Apache-2.0",
+            "rock.fixture", "key.fixture", "A".repeat(86),
+            "org.rockstar.runtime.localai", 1, 1, 1, "GGUF", version == 1 ? "Q8_0" : "Q4_K_M",
+            4096, "article-preparation@1/input-v1", 1_000_000_000L, 2_000_000_000L);
     }
 
     private ComponentManifest manifest(ComponentManifest.Kind kind, String id, String packageName, int uid,
@@ -185,9 +200,9 @@ public final class PlatformStoreTest {
     }
 
     @Test public void platformSchemaMismatchFailsClosedWithoutReset() {
-        db.execute("UPDATE platform_meta SET version=3");
+        db.execute("UPDATE platform_meta SET version=5");
         assertThrows(IllegalStateException.class, () -> new PlatformStore(db));
-        assertEquals("3", db.query("SELECT version FROM platform_meta").get(0).get("version"));
+        assertEquals("5", db.query("SELECT version FROM platform_meta").get(0).get("version"));
     }
 
     @Test public void platformSchemaMigratesV1ApprovalRowsTransactionally() throws Exception {
@@ -200,11 +215,90 @@ public final class PlatformStoreTest {
                 "owner:alice", "legacy:approval", "org.rockstar.tool.clean", "clean.write", PAYLOAD,
                 10, 1000, "ISSUED", 1, null);
             new PlatformStore(legacy);
-            assertEquals("2", legacy.query("SELECT version FROM platform_meta").get(0).get("version"));
+            assertEquals("4", legacy.query("SELECT version FROM platform_meta").get(0).get("version"));
             assertTrue(legacy.query("PRAGMA table_info(platform_approvals)").stream()
                 .anyMatch(row -> "confirmed_at".equals(row.get("name"))));
             assertEquals("STOPPED", legacy.query("SELECT state FROM platform_approvals").get(0).get("state"));
         } finally { legacy.close(); }
+    }
+
+    @Test public void modelProfilesAreRuntimeBoundAndJobsKeepTheirOriginalPinAcrossSwitches() {
+        ComponentManifest runtimeComponent = localAiRuntime();
+        install("register:localai", runtimeComponent);
+        RuntimeManifest runtime = new RuntimeManifest(runtimeComponent.componentId, runtimeComponent.versionCode,
+            SIGNER, 1, 1, List.of("GGUF"), List.of("article-preparation@1/input-v1"));
+        assertEquals(runtime.digest(), store.registerRuntimeManifest(runtime));
+        assertEquals(runtime.digest(), store.registerRuntimeManifest(runtime));
+        ModelProfileManifest first = profile(1, "weights-one");
+        assertEquals(first.digest(), store.registerModelProfile(first));
+        assertThrows(SecurityException.class, () -> store.activateModelProfile(first.profileId, first.version,
+            candidate -> { throw new SecurityException("FIXTURE_HASH_MISMATCH"); }, 9));
+        assertThrows(IllegalStateException.class, () -> store.pinModelProfile("owner:alice", UUID.randomUUID().toString(),
+            Engine.digest("must wait for activation"), 9));
+        store.activateModelProfile(first.profileId, first.version,
+            candidate -> Engine.digest("fixture-verified-staging-receipt-" + candidate.version), 10);
+        String oldWork = UUID.randomUUID().toString();
+        String oldRequest = Engine.digest("job one");
+        assertEquals("1", store.pinModelProfile("owner:alice", oldWork, oldRequest, 11).get("profile_version"));
+
+        ModelProfileManifest second = profile(2, "weights-two");
+        store.registerModelProfile(second);
+        assertThrows(IllegalStateException.class, () -> store.activateModelProfile(second.profileId, second.version,
+            candidate -> { throw new AssertionError("must not replace a model while an old plan pin is live"); }, 12));
+        assertEquals("profile.lifeline.qwen", db.query("SELECT profile_id FROM model_profile_activation WHERE id=1")
+            .get(0).get("profile_id"));
+        assertThrows(IllegalStateException.class, () -> store.activateModelProfile(second.profileId, second.version,
+            candidate -> { throw new IllegalStateException("MODEL_RUNTIME_LOAD_FAILED"); }, 900_012));
+        assertEquals("profile.lifeline.qwen", db.query("SELECT profile_id FROM model_profile_activation WHERE id=1")
+            .get(0).get("profile_id"));
+        assertEquals("1", db.query("SELECT profile_version FROM model_profile_activation WHERE id=1")
+            .get(0).get("profile_version"));
+        assertEquals("ACTIVE", db.query("SELECT status FROM model_profiles WHERE profile_id=? AND version=1", first.profileId)
+            .get(0).get("status"));
+        assertEquals(2, store.activateModelProfile(second.profileId, second.version,
+            candidate -> Engine.digest("fixture-verified-stage-and-runtime-receipt-" + candidate.version), 900_013));
+        assertEquals("1", store.pinModelProfile("owner:alice", oldWork, oldRequest, 13).get("profile_version"));
+        assertEquals("1", store.modelProfilePin("owner:alice", oldWork).get("profile_version"));
+        var pinnedProfile = store.modelProfileForPin("owner:alice", oldWork);
+        assertEquals(first.digest(), pinnedProfile.get("manifest_digest"));
+        assertEquals(first.weightsSha256, pinnedProfile.get("weights_sha256"));
+        assertEquals(first.tokenizerSha256, pinnedProfile.get("tokenizer_sha256"));
+        assertEquals(first.templateSha256, pinnedProfile.get("template_sha256"));
+        assertEquals(runtime.digest(), pinnedProfile.get("runtime_manifest_digest"));
+        assertEquals(SIGNER, pinnedProfile.get("runtime_signing_digest"));
+        assertEquals("CACHED", pinnedProfile.get("profile_status"));
+        assertThrows(IllegalStateException.class, () -> store.modelProfileForPin("owner:bob", oldWork));
+        assertEquals("2", store.pinModelProfile("owner:alice", UUID.randomUUID().toString(),
+            Engine.digest("job two"), 14).get("profile_version"));
+        assertThrows(SecurityException.class, () -> store.pinModelProfile("owner:alice", oldWork,
+            Engine.digest("changed request"), 15));
+        assertThrows(IllegalStateException.class, () -> store.modelProfilePin("owner:bob", oldWork));
+        store.revokeModelProfile(first.profileId, first.version, 16);
+        assertThrows(SecurityException.class, () -> store.modelProfilePin("owner:alice", oldWork));
+    }
+
+    @Test public void runtimeAndProfileManifestRejectIdentityOrContractDrift() {
+        ComponentManifest runtimeComponent = localAiRuntime();
+        install("register:localai", runtimeComponent);
+        assertThrows(IllegalArgumentException.class, () -> new RuntimeManifest(runtimeComponent.componentId,
+            1, SIGNER, 1, 1, List.of("GGUF"), List.of("../input-v1")));
+        RuntimeManifest badSigner = new RuntimeManifest(runtimeComponent.componentId, 1, "b".repeat(64),
+            1, 1, List.of("GGUF"), List.of("article-preparation@1/input-v1"));
+        assertThrows(SecurityException.class, () -> store.registerRuntimeManifest(badSigner));
+        RuntimeManifest runtime = new RuntimeManifest(runtimeComponent.componentId, 1, SIGNER,
+            1, 1, List.of("GGUF"), List.of("article-preparation@1/input-v1"));
+        store.registerRuntimeManifest(runtime);
+        ModelProfileManifest incompatible = new ModelProfileManifest("profile.lifeline.qwen", 1,
+            Engine.digest("weights"), Engine.digest("tokenizer"), Engine.digest("template"), "Apache-2.0",
+            "rock.fixture", "key.fixture", "A".repeat(86),
+            runtimeComponent.componentId, 1, 1, 1, "ONNX", "Q8_0", 4096,
+            "article-preparation@1/input-v1", 1_000, 1_000);
+        assertThrows(SecurityException.class, () -> store.registerModelProfile(incompatible));
+        assertThrows(IllegalArgumentException.class, () -> new ModelProfileManifest("bad id", 1,
+            Engine.digest("weights"), Engine.digest("tokenizer"), Engine.digest("template"), "Apache-2.0",
+            "rock.fixture", "key.fixture", "A".repeat(86),
+            runtimeComponent.componentId, 1, 1, 1, "GGUF", "Q8_0", 4096,
+            "article-preparation@1/input-v1", 1_000, 1_000));
     }
 
     @Test public void encryptedBackupAuthenticatesFormatKeyAndCiphertext() throws Exception {

@@ -8,6 +8,7 @@ public final class PlatformApi {
     public static final String BACKUP_FORMAT = "rockstar-platform-backup/1";
     public static final String RECOVERABLE_BACKUP_FORMAT = "avocadoos-recoverable-backup/2";
     public static final String RECOVERABLE_STATE_FORMAT = "avocadoos-platform-state/2";
+    public static final String PLAN_SCHEMA_ID_PATTERN = "[a-z0-9][a-z0-9._-]{0,63}(?:@[1-9][0-9]{0,5}/[a-z0-9][a-z0-9._-]{0,31})?";
 
     private PlatformApi() {}
 

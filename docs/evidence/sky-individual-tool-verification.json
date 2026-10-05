@@ -1,0 +1,885 @@
+{
+  "schema": "sky-individual-tool-acceptance/1",
+  "checkedAt": "2026-10-02",
+  "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+  "liveUrl": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "liveVersionAtInspection": 28,
+  "liveSourceAtInspection": "cb55411549649bd57429fa1afeb974139fc024da",
+  "liveEnvironmentRevision": 2,
+  "providerKeyConfigured": false,
+  "productionCloudExecutions": 0,
+  "liveTrialPayment": {
+    "id": "6a969274-8d50-4a6f-8b54-1b2f143f6bdb",
+    "status": "completed",
+    "paymentStatus": "stripe_verified",
+    "amountYen": 50,
+    "attempt": 1,
+    "revision": 3,
+    "newCharge": false
+  },
+  "testEnvironment": "loopback synthetic owner / actual built Site Worker / D1 / R2",
+  "classificationScope": "Inventory of available functions; working_end_to_end refers to previous limited production acceptance, not a fresh v28 production customer journey. Local templates and PAPER are not external services or real revenue.",
+  "counts": {
+    "working_end_to_end": 3,
+    "working_locally": 14,
+    "connection_required": 16,
+    "unavailable": 1
+  },
+  "tools": [
+    {
+      "id": "faster-whisper",
+      "classification": "connection_required",
+      "scope": "connection-plan",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "faster-whisper",
+        "outputType": "connection-plan",
+        "jobId": "0acefcdf-a6b0-4e4f-abda-a9a0a2c5d156",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 96,
+        "outputBytes": 601,
+        "outputSha256": "380bc80e3f09ab43063d71f6a7ff68a303cf11149d41e9dbb484822dfe5998c3",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "transformers-js",
+      "classification": "connection_required",
+      "scope": "connection-plan",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "transformers-js",
+        "outputType": "connection-plan",
+        "jobId": "49970b27-bbd7-4c14-b867-026613c424e6",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 108,
+        "outputBytes": 565,
+        "outputSha256": "d4b13890c05a47a50800c1b899ba7f6daa93d55827db4e3894d3a377950a7906",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "playwright",
+      "classification": "connection_required",
+      "scope": "connection-plan",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "playwright",
+        "outputType": "connection-plan",
+        "jobId": "cb76aba4-d329-4837-887f-c181ca4b8c7b",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 105,
+        "outputBytes": 557,
+        "outputSha256": "ef7fe65be3607c12cad0637e63c4f6ca7d46dd5296fc10c59a77e88f415b751a",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "jev-ultrafast",
+      "classification": "connection_required",
+      "scope": "connection-plan",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "jev-ultrafast",
+        "outputType": "connection-plan",
+        "jobId": "0fced476-ee76-42a9-a0a3-716df3af6011",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 96,
+        "outputBytes": 529,
+        "outputSha256": "cb1a465650f1bad9592371d7673d98d2dad59282f89a33aa4cc51d879e5d2493",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "jev-trader",
+      "classification": "connection_required",
+      "scope": "connection-plan",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "jev-trader",
+        "outputType": "connection-plan",
+        "jobId": "7d387e90-fde8-4b3b-8e91-131372dee5bf",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 104,
+        "outputBytes": 528,
+        "outputSha256": "9933c0199d7c1543a9195002df1a4017c5f78073fb8189c510658beb80c4d649",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "typesafe-computer-use",
+      "classification": "connection_required",
+      "scope": "connection-plan",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "typesafe-computer-use",
+        "outputType": "connection-plan",
+        "jobId": "4fe3e498-2c48-4fa9-936b-973da14725e1",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 81,
+        "outputBytes": 511,
+        "outputSha256": "f4b7c96414a8a37c739b404b9a2a15c5bed39423c31103060fb3d1f253766e98",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "jev-review",
+      "classification": "connection_required",
+      "scope": "connection-plan",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "jev-review",
+        "outputType": "connection-plan",
+        "jobId": "a87fc889-5652-4f88-901a-7805f08d4454",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 84,
+        "outputBytes": 501,
+        "outputSha256": "21cbd0f02e6db600f7d3809db1fd4c45e2f9fe198a7b3bc5d2d693b2882133fa",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "jev-browser",
+      "classification": "connection_required",
+      "scope": "connection-plan",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "jev-browser",
+        "outputType": "connection-plan",
+        "jobId": "4e746a52-56d4-4ef0-bdcf-22bfbbfed486",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 99,
+        "outputBytes": 502,
+        "outputSha256": "e3d4bd0e0d8fbd195aafdab918ea3b166c33b40fa03bd722707a1cf4950264c1",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "mobile-jev",
+      "classification": "connection_required",
+      "scope": "connection-plan",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "mobile-jev",
+        "outputType": "connection-plan",
+        "jobId": "baf36c33-24a6-4d42-a5fb-a99b7f7faa6b",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 79,
+        "outputBytes": 506,
+        "outputSha256": "fba794f9fb38be072a4993560d2f5b5a699c73d160ebfc4946bc1934c575843c",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "coconala-proposal-draft",
+      "classification": "working_locally",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "coconala-proposal-draft",
+        "outputType": "local-template",
+        "jobId": "e01784aa-1e2f-4b04-9731-36209f1e2d86",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 114,
+        "outputBytes": 553,
+        "outputSha256": "6a59aeeba8c66f5d7c5ffa4747a9257e921aeec72b2cca8abb572ffc4a45f673",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "gig-workflow",
+      "classification": "working_locally",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "gig-workflow",
+        "outputType": "local-template",
+        "jobId": "32ab53db-7cee-4203-b1a1-b67e58df4c8e",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 102,
+        "outputBytes": 430,
+        "outputSha256": "f8ef8357f11ac20118fae0ab54db2a661cc0b81aa3d48ed8b7c7f207084b47f3",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "coconala-inbox",
+      "classification": "working_locally",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "coconala-inbox",
+        "outputType": "local-template",
+        "jobId": "3fbb51ff-9ed5-4a4a-b5f0-eab7184bf1e9",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 93,
+        "outputBytes": 361,
+        "outputSha256": "247bed5457e430681dc8752b295f6e206cfdaf60add99775d2676542afcedef6",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "youtube-script-writer",
+      "classification": "working_locally",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "youtube-script-writer",
+        "outputType": "local-template",
+        "jobId": "63079846-39c5-4884-955d-d8abd484c0f5",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 96,
+        "outputBytes": 602,
+        "outputSha256": "9e9286baaf086236b481611719308be38ce8cc7d05b33b5891cae97b449be896",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "seo-blueprint",
+      "classification": "working_locally",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "seo-blueprint",
+        "outputType": "local-template",
+        "jobId": "45353e02-8a3e-4efc-bca0-22433f48c576",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 109,
+        "outputBytes": 434,
+        "outputSha256": "38604cebb2e189711533957b8005ad575ab928ec139f232701a6e9993ef8dfd7",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "landing-page-sprint",
+      "classification": "working_locally",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "landing-page-sprint",
+        "outputType": "local-template",
+        "jobId": "8376d0e9-3044-46e4-ae00-a22843c20e0d",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 95,
+        "outputBytes": 467,
+        "outputSha256": "37533650fe827261d834d0c16923c17bab61729467d5c8ae4ac562aabb131bb1",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "sales-objection-reply-builder",
+      "classification": "working_locally",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "sales-objection-reply-builder",
+        "outputType": "local-template",
+        "jobId": "42768554-2d4a-4968-903d-c6b7860cb324",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 105,
+        "outputBytes": 475,
+        "outputSha256": "19ae8790d2eae8cce17538f4b106939fe492001a0c8f98cb0d153627259d5d06",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "user-interview-synthesizer",
+      "classification": "working_locally",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "user-interview-synthesizer",
+        "outputType": "local-template",
+        "jobId": "d812757c-40cc-4930-addc-4e2691611c02",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 80,
+        "outputBytes": 528,
+        "outputSha256": "25134c878f3028eea2a72d3e1821fe4c43dce9798705cf17861fc00812ffa405",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "calendar-coordination",
+      "classification": "connection_required",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "calendar-coordination",
+        "outputType": "local-template",
+        "jobId": "c88cc9b3-5ba5-4f42-a4bb-98eb066977d3",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 77,
+        "outputBytes": 360,
+        "outputSha256": "b1fe011f6574d6e23e014718a3c846b0d4a94c8dd1ec6bd5f148c8591a8e77ae",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "telegram-notifications",
+      "classification": "connection_required",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "telegram-notifications",
+        "outputType": "local-template",
+        "jobId": "724397ee-0a24-4ac4-9c5a-cdcd6d2fa575",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 86,
+        "outputBytes": 363,
+        "outputSha256": "02a0847bdd04cbbd35c647e4a7537b58aa8ef2b8150c80b7be0a28ddf99e8c4d",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "producthunt-discovery",
+      "classification": "connection_required",
+      "scope": "local-template",
+      "actualExternalExecution": false,
+      "runtimeCheck": {
+        "tool": "producthunt-discovery",
+        "outputType": "local-template",
+        "jobId": "85f3289a-27b8-4232-9744-da22446d74a8",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 103,
+        "outputBytes": 433,
+        "outputSha256": "1ef326d6d52516f96cc5d2b717410735eeb9e36bd5493556b49de2cef114424d",
+        "rawContentInJobRecord": false
+      },
+      "productionAcceptance": false
+    },
+    {
+      "id": "rockstar-csv-cleanup",
+      "classification": "working_end_to_end",
+      "scope": "Prior limited-live ¥50 trial retained; current loopback free CSV sample, independent inspection, result retrieval and reload.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": true,
+      "productionAcceptance": "prior limited-live evidence only"
+    },
+    {
+      "id": "mr-free-article",
+      "classification": "working_end_to_end",
+      "scope": "Prior Pixel production acceptance; current loopback article transformation, optional browser storage and reload.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": true,
+      "productionAcceptance": "prior limited-live evidence only"
+    },
+    {
+      "id": "mr-citations",
+      "classification": "working_end_to_end",
+      "scope": "Prior Pixel production acceptance; current loopback citation grouping, optional browser storage and reload.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": true,
+      "productionAcceptance": "prior limited-live evidence only"
+    },
+    {
+      "id": "rockstar-markets-analysis",
+      "classification": "working_locally",
+      "scope": "Synthetic PAPER proposal, explicit approval, execution, receipt and reload; no real transaction.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": true,
+      "productionAcceptance": false
+    },
+    {
+      "id": "mercari-revenue",
+      "classification": "working_locally",
+      "scope": "Synthetic listing draft and ¥400 estimate stored and reloaded; no Mercari listing/API execution.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": true,
+      "productionAcceptance": false
+    },
+    {
+      "id": "fashion-brand-ops",
+      "classification": "working_locally",
+      "scope": "Rule-based browser brand plan returned; no PC persistence, image generation, Instagram action or billing.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": true,
+      "productionAcceptance": false
+    },
+    {
+      "id": "coconala",
+      "classification": "working_locally",
+      "scope": "Owner-scoped synthetic case draft stored and reloaded; no application, external contract, message or transfer.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": true,
+      "productionAcceptance": false
+    },
+    {
+      "id": "rockstar-legal-intake",
+      "classification": "working_locally",
+      "scope": "Local standard guide returned without remote consent or telemetry opt-in; no online research or legal decision.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": true,
+      "productionAcceptance": false
+    },
+    {
+      "id": "rockstar-patent-assistant",
+      "classification": "working_locally",
+      "scope": "Local preliminary draft and missing-information checks returned; no prior-art research, signature or submission.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": true,
+      "productionAcceptance": false
+    },
+    {
+      "id": "rockstar-ip-studio",
+      "classification": "unavailable",
+      "scope": "Dedicated PC app link is present; this test environment does not run the required app. Mobile support remains unaccepted.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": false,
+      "productionAcceptance": false
+    },
+    {
+      "id": "jev-router",
+      "classification": "connection_required",
+      "scope": "Sky one-click connection is explicitly unimplemented; PC CLI instructions only.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": false,
+      "productionAcceptance": false
+    },
+    {
+      "id": "mr-delivery",
+      "classification": "connection_required",
+      "scope": "PC connector and selected work directory are required; no real delivery inspection executed.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": false,
+      "productionAcceptance": false
+    },
+    {
+      "id": "rockstar-ledger",
+      "classification": "connection_required",
+      "scope": "Local Ledger endpoint unavailable: UI displays connection failure; no ledger processing executed.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": false,
+      "productionAcceptance": false
+    },
+    {
+      "id": "jev-evaluation",
+      "classification": "connection_required",
+      "scope": "Gateway credential and accepted pricing unavailable; empty input stops locally. No actual evaluation returned.",
+      "actualExternalExecution": false,
+      "currentUiRendered": true,
+      "syntheticExecutionVerified": false,
+      "productionAcceptance": false
+    }
+  ],
+  "localPersistence": {
+    "environment": "loopback-synthetic-worker-d1-r2",
+    "sourceBeforeFix": "cb55411549649bd57429fa1afeb974139fc024da",
+    "candidateChecks": [
+      {
+        "tool": "faster-whisper",
+        "outputType": "connection-plan",
+        "jobId": "0acefcdf-a6b0-4e4f-abda-a9a0a2c5d156",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 96,
+        "outputBytes": 601,
+        "outputSha256": "380bc80e3f09ab43063d71f6a7ff68a303cf11149d41e9dbb484822dfe5998c3",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "transformers-js",
+        "outputType": "connection-plan",
+        "jobId": "49970b27-bbd7-4c14-b867-026613c424e6",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 108,
+        "outputBytes": 565,
+        "outputSha256": "d4b13890c05a47a50800c1b899ba7f6daa93d55827db4e3894d3a377950a7906",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "playwright",
+        "outputType": "connection-plan",
+        "jobId": "cb76aba4-d329-4837-887f-c181ca4b8c7b",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 105,
+        "outputBytes": 557,
+        "outputSha256": "ef7fe65be3607c12cad0637e63c4f6ca7d46dd5296fc10c59a77e88f415b751a",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "jev-ultrafast",
+        "outputType": "connection-plan",
+        "jobId": "0fced476-ee76-42a9-a0a3-716df3af6011",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 96,
+        "outputBytes": 529,
+        "outputSha256": "cb1a465650f1bad9592371d7673d98d2dad59282f89a33aa4cc51d879e5d2493",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "jev-trader",
+        "outputType": "connection-plan",
+        "jobId": "7d387e90-fde8-4b3b-8e91-131372dee5bf",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 104,
+        "outputBytes": 528,
+        "outputSha256": "9933c0199d7c1543a9195002df1a4017c5f78073fb8189c510658beb80c4d649",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "typesafe-computer-use",
+        "outputType": "connection-plan",
+        "jobId": "4fe3e498-2c48-4fa9-936b-973da14725e1",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 81,
+        "outputBytes": 511,
+        "outputSha256": "f4b7c96414a8a37c739b404b9a2a15c5bed39423c31103060fb3d1f253766e98",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "jev-review",
+        "outputType": "connection-plan",
+        "jobId": "a87fc889-5652-4f88-901a-7805f08d4454",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 84,
+        "outputBytes": 501,
+        "outputSha256": "21cbd0f02e6db600f7d3809db1fd4c45e2f9fe198a7b3bc5d2d693b2882133fa",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "jev-browser",
+        "outputType": "connection-plan",
+        "jobId": "4e746a52-56d4-4ef0-bdcf-22bfbbfed486",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 99,
+        "outputBytes": 502,
+        "outputSha256": "e3d4bd0e0d8fbd195aafdab918ea3b166c33b40fa03bd722707a1cf4950264c1",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "mobile-jev",
+        "outputType": "connection-plan",
+        "jobId": "baf36c33-24a6-4d42-a5fb-a99b7f7faa6b",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 79,
+        "outputBytes": 506,
+        "outputSha256": "fba794f9fb38be072a4993560d2f5b5a699c73d160ebfc4946bc1934c575843c",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "coconala-proposal-draft",
+        "outputType": "local-template",
+        "jobId": "e01784aa-1e2f-4b04-9731-36209f1e2d86",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 114,
+        "outputBytes": 553,
+        "outputSha256": "6a59aeeba8c66f5d7c5ffa4747a9257e921aeec72b2cca8abb572ffc4a45f673",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "gig-workflow",
+        "outputType": "local-template",
+        "jobId": "32ab53db-7cee-4203-b1a1-b67e58df4c8e",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 102,
+        "outputBytes": 430,
+        "outputSha256": "f8ef8357f11ac20118fae0ab54db2a661cc0b81aa3d48ed8b7c7f207084b47f3",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "coconala-inbox",
+        "outputType": "local-template",
+        "jobId": "3fbb51ff-9ed5-4a4a-b5f0-eab7184bf1e9",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 93,
+        "outputBytes": 361,
+        "outputSha256": "247bed5457e430681dc8752b295f6e206cfdaf60add99775d2676542afcedef6",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "youtube-script-writer",
+        "outputType": "local-template",
+        "jobId": "63079846-39c5-4884-955d-d8abd484c0f5",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 96,
+        "outputBytes": 602,
+        "outputSha256": "9e9286baaf086236b481611719308be38ce8cc7d05b33b5891cae97b449be896",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "seo-blueprint",
+        "outputType": "local-template",
+        "jobId": "45353e02-8a3e-4efc-bca0-22433f48c576",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 109,
+        "outputBytes": 434,
+        "outputSha256": "38604cebb2e189711533957b8005ad575ab928ec139f232701a6e9993ef8dfd7",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "landing-page-sprint",
+        "outputType": "local-template",
+        "jobId": "8376d0e9-3044-46e4-ae00-a22843c20e0d",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 95,
+        "outputBytes": 467,
+        "outputSha256": "37533650fe827261d834d0c16923c17bab61729467d5c8ae4ac562aabb131bb1",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "sales-objection-reply-builder",
+        "outputType": "local-template",
+        "jobId": "42768554-2d4a-4968-903d-c6b7860cb324",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 105,
+        "outputBytes": 475,
+        "outputSha256": "19ae8790d2eae8cce17538f4b106939fe492001a0c8f98cb0d153627259d5d06",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "user-interview-synthesizer",
+        "outputType": "local-template",
+        "jobId": "d812757c-40cc-4930-addc-4e2691611c02",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 80,
+        "outputBytes": 528,
+        "outputSha256": "25134c878f3028eea2a72d3e1821fe4c43dce9798705cf17861fc00812ffa405",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "calendar-coordination",
+        "outputType": "local-template",
+        "jobId": "c88cc9b3-5ba5-4f42-a4bb-98eb066977d3",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 77,
+        "outputBytes": 360,
+        "outputSha256": "b1fe011f6574d6e23e014718a3c846b0d4a94c8dd1ec6bd5f148c8591a8e77ae",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "telegram-notifications",
+        "outputType": "local-template",
+        "jobId": "724397ee-0a24-4ac4-9c5a-cdcd6d2fa575",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 86,
+        "outputBytes": 363,
+        "outputSha256": "02a0847bdd04cbbd35c647e4a7537b58aa8ef2b8150c80b7be0a28ddf99e8c4d",
+        "rawContentInJobRecord": false
+      },
+      {
+        "tool": "producthunt-discovery",
+        "outputType": "local-template",
+        "jobId": "85f3289a-27b8-4232-9744-da22446d74a8",
+        "sample": true,
+        "status": "completed",
+        "durationMs": 0,
+        "inputBytes": 103,
+        "outputBytes": 433,
+        "outputSha256": "1ef326d6d52516f96cc5d2b717410735eeb9e36bd5493556b49de2cef114424d",
+        "rawContentInJobRecord": false
+      }
+    ],
+    "completedJobCount": 24,
+    "csv": {
+      "id": "79f6ed0a-bab9-496f-a44f-397c86d0e0db",
+      "status": "completed",
+      "price": "free sample",
+      "resultBytes": 94,
+      "resultSha256": "99fbb674efae7dd441a9e358ef544b114ace70903e33ea9ae4f1f48bd06819fb"
+    },
+    "market": {
+      "mode": "PAPER",
+      "proposals": 1,
+      "status": "EXECUTED",
+      "paperBalanceMinor": 98800,
+      "actualMoneyMoved": false
+    },
+    "coconala": {
+      "savedDrafts": 1,
+      "externalContractOrMessageSent": false
+    },
+    "mercari": {
+      "savedDrafts": 1,
+      "externalListingCreated": false
+    },
+    "providerCredentialsConfigured": false,
+    "productionAcceptance": false
+  },
+  "defectsFound": [
+    {
+      "tool": "user-interview-synthesizer",
+      "cause": "Fixed themes and hypothesis unrelated to supplied interview.",
+      "fix": "Unverified-input template with explicit blank evidence/theme/hypothesis fields; AI analysis stays unconnected."
+    },
+    {
+      "tool": "calendar-coordination",
+      "cause": "Fixed weekday-afternoon/60-minute/online conditions override supplied Saturday-morning/30-minute/in-person request.",
+      "fix": "Preserve request and show unfilled condition fields; do not invent extracted dates or claim calendar execution."
+    }
+  ],
+  "patchedSourceHashes": {
+    "components/sky-candidate-runner.tsx": "d9cd7195ce6ce797aa40ad3055fd07da582ef8b51dc0e16e55b1ebd659c651de",
+    "lib/sky-tool-labels.ts": "dacc09924e301056d4e0146946c5daafca085ac3bfc6cf5ddcc3b2325edf5ec3",
+    "components/execution-access.tsx": "b2cfe7232388e3c4e30e017a2a0cb4680d5cc216df76d5900b6dd44d54a86d2d"
+  },
+  "patchBrowserAcceptance": {
+    "sourceCommit": "5cb248a0a69bbe3647b60508ffad0546519b1711",
+    "environment": "loopback synthetic Worker/D1",
+    "candidateRecordsMatched": 20,
+    "customInputRegressionsPassed": 2,
+    "sampleFlagsCorrect": true,
+    "resultBytesMatchPersistedMetadata": true,
+    "completedRecords": 22,
+    "noAiAnalysisOrExternalExecutionClaim": true,
+    "providerKeyConfigured": false,
+    "productionAcceptance": false
+  },
+  "releaseDecision": "Focused production release incomplete: actual cloud provider/pricing, owner desktop+Pixel recovery journey and Apple Pay not accepted.",
+  "signinRecovery": {
+    "source": "5bdb4ecc0a1f12eb7036163818c4bbb86e224e78",
+    "inputPreserved": true,
+    "separateTabSignin": true,
+    "access503KeepsExecutionBlocked": true,
+    "recheckDoesNotExecute": true,
+    "manualExecutionReturned": true,
+    "articleInputPreserved": true,
+    "articleManualResultReturned": true,
+    "persistence": {
+      "completedJobs": 2,
+      "tools": [
+        {
+          "tool": "mr-free-article",
+          "id": "cb329b54-e140-4833-8261-9f851557280b",
+          "status": "completed",
+          "inputBytes": 735,
+          "outputBytes": 586
+        },
+        {
+          "tool": "seo-blueprint",
+          "id": "e1d37846-45ab-4eba-a761-15e05c893118",
+          "status": "completed",
+          "inputBytes": 57,
+          "outputBytes": 520
+        }
+      ],
+      "signinAndRecheckCreatedJobs": 0,
+      "duplicateExecutions": 0
+    }
+  },
+  "publishedVersion": 30,
+  "publishedSource": "5bdb4ecc0a1f12eb7036163818c4bbb86e224e78",
+  "publicAnonymousUiVerified": {
+    "separateTabSignin": true,
+    "templateScopeVisible": true,
+    "executionDisabled": true
+  },
+  "checks": {
+    "canonicalFullVerify": {
+      "exitCode": 0,
+      "node": 692,
+      "fashion": 19,
+      "workerD1": 948
+    },
+    "siteTypeLintBuildBundleAssets": true,
+    "siteFullDesignCheck": "Preexisting v28 missing design/eSIM references; not green. Canonical design check passed."
+  }
+}

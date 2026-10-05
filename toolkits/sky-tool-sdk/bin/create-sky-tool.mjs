@@ -87,6 +87,7 @@ sky.tool({
     properties: {}
   },
   sideEffects: ['none'],
+  price: { model: 'external_contract', note: '実際のProvider料金条件を登録・審査するまで外部実行不可。' },
   fundCategories: ['未分類'],
   tags: ['starter'],
 

@@ -197,12 +197,31 @@ export type TextGenerationRequest = {
   system?: string;
   prompt: string;
   maxOutputTokens?: number;
+  clientRequestId?: string;
+};
+
+export type TextGenerationUsage = {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+  cachedInputTokens: number | null;
+  cacheWriteInputTokens: number | null;
 };
 
 export type TextGenerationResult = {
   provider: TextModelProviderId;
   model: string;
   text: string;
+  durationMs?: number;
+  usage?: TextGenerationUsage | null;
+  serviceTier?: string | null;
+  webSearchCalls?: number | null;
+  textOnlyOutput?: boolean;
+  reportedModel?: string | null;
+  responseStatus?: string | null;
+  providerResponseId?: string | null;
+  clientRequestId?: string | null;
+  providerRequestId?: string | null;
 };
 
 export type LlmRuntimeEnv = {
@@ -219,6 +238,7 @@ export type LlmRuntimeEnv = {
 export class LlmProviderError extends Error {
   readonly code: string;
   readonly status: number;
+  providerRequestId?: string;
 
   constructor(code: string, status = 502) {
     super(code);
@@ -262,9 +282,17 @@ function messagesFor(request: TextGenerationRequest) {
 }
 
 async function jsonResponse(response: Response) {
-  const payload = (await response.json().catch(() => null)) as unknown;
   if (!response.ok) throw new LlmProviderError('UPSTREAM_ERROR', 502);
-  return payload as Record<string, unknown> | null;
+  let payload: unknown;
+  try { payload = await response.json(); }
+  catch (error) {
+    if (error instanceof SyntaxError)
+      throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+    throw error;
+  }
+  const record = asRecord(payload);
+  if (!record) throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+  return record;
 }
 
 function textFromOpenAiResponse(payload: Record<string, unknown> | null) {
@@ -300,10 +328,229 @@ function textFromChatResponse(payload: Record<string, unknown> | null) {
   return text;
 }
 
+function openAiUsage(payload: Record<string, unknown>): TextGenerationUsage | null {
+  const usage = asRecord(payload.usage);
+  if (!usage) return null;
+  const input = usage.input_tokens;
+  const output = usage.output_tokens;
+  const total = usage.total_tokens;
+  const valid = (value: unknown): value is number =>
+    typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+  if (!valid(input) || !valid(output) || !valid(total) ||
+      !Number.isSafeInteger(input + output) || total !== input + output) return null;
+  const details = asRecord(usage.input_tokens_details);
+  const cached = details?.cached_tokens;
+  const written = details?.cache_write_tokens;
+  if ((valid(cached) && cached > input) || (valid(written) && written > input) ||
+      (valid(cached) && valid(written) && cached + written > input)) return null;
+  return {
+    inputTokens: input, outputTokens: output, totalTokens: total,
+    cachedInputTokens: valid(cached) ? cached : null,
+    cacheWriteInputTokens: valid(written) ? written : null,
+  };
+}
+
+export type OpenAiResponseResult = {
+  payload: Record<string, unknown>;
+  model: string;
+  durationMs: number;
+  usage: TextGenerationUsage | null;
+  webSearchCalls: number | null;
+  serviceTier: string | null;
+  textOnlyOutput: boolean;
+  reportedModel: string | null;
+  responseStatus: string | null;
+  providerResponseId: string | null;
+  clientRequestId: string | null;
+  providerRequestId: string | null;
+};
+
+export type OpenAiOutputProgress = (progress: { outputBytes: number; observedAt: number }) => Promise<void>;
+
+const MAX_STREAM_BYTES = 3_000_000;
+const MAX_STREAM_EVENT_BYTES = 1_200_000;
+
+async function streamedOpenAiResponse(response: Response, onProgress: OpenAiOutputProgress) {
+  if (!response.ok) {
+    await response.body?.cancel().catch(() => undefined);
+    throw new LlmProviderError('UPSTREAM_ERROR', 502);
+  }
+  const contentType = response.headers.get('content-type')?.split(';', 2)[0].trim().toLowerCase();
+  if (contentType !== 'text/event-stream' || !response.body) {
+    await response.body?.cancel().catch(() => undefined);
+    throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+  }
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let totalBytes = 0;
+  let outputBytes = 0;
+  let latestPayload: Record<string, unknown> | null = null;
+  let streamEnded = false;
+  let lastProgressAt = 0;
+  let lastProgressBytes = 0;
+  const encoder = new TextEncoder();
+
+  const consume = async (line: string) => {
+    if (!line.startsWith('data:')) return;
+    const data = line.slice(5).trimStart();
+    if (!data || data === '[DONE]') return;
+    if (encoder.encode(data).byteLength > MAX_STREAM_EVENT_BYTES)
+      throw new LlmProviderError('UPSTREAM_RESPONSE_TOO_LARGE', 502);
+    let event: unknown;
+    try { event = JSON.parse(data); }
+    catch { throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502); }
+    const record = asRecord(event);
+    if (!record || typeof record.type !== 'string')
+      throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+    if (record.type === 'response.output_text.delta' && typeof record.delta === 'string') {
+      outputBytes += encoder.encode(record.delta).byteLength;
+      if (!Number.isSafeInteger(outputBytes) || outputBytes > MAX_STREAM_BYTES)
+        throw new LlmProviderError('UPSTREAM_RESPONSE_TOO_LARGE', 502);
+      const now = Date.now();
+      if (now - lastProgressAt >= 1_000 || outputBytes - lastProgressBytes >= 512) {
+        await onProgress({ outputBytes, observedAt: now });
+        lastProgressAt = now;
+        lastProgressBytes = outputBytes;
+      }
+    }
+    if (record.type === 'response.completed') {
+      latestPayload = asRecord(record.response);
+      if (!latestPayload) throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+    } else if (record.type === 'response.failed' || record.type === 'error') {
+      throw new LlmProviderError('UPSTREAM_ERROR', 502);
+    }
+  };
+
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) { streamEnded = true; break; }
+      totalBytes += value.byteLength;
+      if (!Number.isSafeInteger(totalBytes) || totalBytes > MAX_STREAM_BYTES)
+        throw new LlmProviderError('UPSTREAM_RESPONSE_TOO_LARGE', 502);
+      buffer += decoder.decode(value, { stream: true });
+      if (buffer.length > MAX_STREAM_EVENT_BYTES && !buffer.includes('\n'))
+        throw new LlmProviderError('UPSTREAM_RESPONSE_TOO_LARGE', 502);
+      let newline = buffer.indexOf('\n');
+      while (newline >= 0) {
+        const line = buffer.slice(0, newline).replace(/\r$/, '');
+        buffer = buffer.slice(newline + 1);
+        await consume(line);
+        newline = buffer.indexOf('\n');
+      }
+    }
+    buffer += decoder.decode();
+    if (buffer) await consume(buffer.replace(/\r$/, ''));
+  } finally {
+    if (!streamEnded) await reader.cancel().catch(() => undefined);
+    reader.releaseLock();
+  }
+  if (!latestPayload) throw new LlmProviderError('UPSTREAM_INVALID_RESPONSE', 502);
+  return { payload: latestPayload, outputBytes };
+}
+
+/** Shared transport for text and cited research. Callers must authorize spending first. */
+export async function createOpenAiResponse(
+  body: Record<string, unknown>,
+  runtimeEnv: Pick<LlmRuntimeEnv, 'OPENAI_API_KEY'>,
+  fetchImpl: FetchLike = fetch,
+  clientRequestId?: string,
+  onProgress?: OpenAiOutputProgress,
+): Promise<OpenAiResponseResult> {
+  if (!runtimeEnv.OPENAI_API_KEY)
+    throw new LlmProviderError('MISSING_PROVIDER_CREDENTIAL', 503);
+  if (typeof body.model !== 'string' || !body.model.trim() || body.model.length > 120)
+    throw new LlmProviderError('INVALID_MODEL', 400);
+  if (clientRequestId !== undefined && !/^[A-Za-z0-9._:-]{1,128}$/.test(clientRequestId))
+    throw new LlmProviderError('INVALID_CLIENT_REQUEST_ID', 400);
+  const startedAt = Date.now();
+  let providerRequestId: string | null = null;
+  try {
+    const response = await fetchImpl('https://api.openai.com/v1/responses', {
+      method: 'POST',
+      redirect: 'manual',
+      headers: {
+        Authorization: `Bearer ${runtimeEnv.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+        ...(clientRequestId ? { 'X-Client-Request-Id': clientRequestId } : {}),
+      },
+      body: JSON.stringify({ ...body, ...(onProgress ? { stream: true } : {}), store: false }),
+      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
+    });
+    const requestHeader = response.headers?.get('x-request-id');
+    providerRequestId = requestHeader && /^req_[A-Za-z0-9_-]{1,200}$/.test(requestHeader) ? requestHeader : null;
+    const payload = onProgress
+      ? (await streamedOpenAiResponse(response, onProgress)).payload
+      : await jsonResponse(response);
+    if (payload.status !== undefined && payload.status !== 'completed')
+      throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
+    return {
+      payload,
+      model: typeof payload.model === 'string' && payload.model.length <= 120
+        ? payload.model : body.model,
+      durationMs: Math.max(0, Date.now() - startedAt),
+      usage: openAiUsage(payload),
+      clientRequestId: clientRequestId ?? null,
+      providerRequestId,
+      reportedModel: typeof payload.model === 'string' && /^[A-Za-z0-9._:-]{1,120}$/.test(payload.model)
+        ? payload.model : null,
+      responseStatus: typeof payload.status === 'string' ? payload.status : null,
+      providerResponseId: typeof payload.id === 'string' && /^resp_[A-Za-z0-9_-]{1,200}$/.test(payload.id)
+        ? payload.id : null,
+      serviceTier: typeof payload.service_tier === 'string' && /^[a-z_]{1,32}$/.test(payload.service_tier)
+        ? payload.service_tier : null,
+      textOnlyOutput: Array.isArray(payload.output) && payload.output.every((item) => {
+        const value = asRecord(item);
+        if (value?.type === 'reasoning') return true;
+        return value?.type === 'message' && Array.isArray(value.content) &&
+          value.content.every((content) => ['output_text', 'refusal'].includes(String(asRecord(content)?.type)));
+      }),
+      // These are observed output items, not a reconciled provider invoice.
+      webSearchCalls: Array.isArray(payload.output)
+        ? payload.output.filter((item) => asRecord(item)?.type === 'web_search_call').length : null,
+    };
+  } catch (error) {
+    if (error instanceof LlmProviderError) {
+      if (providerRequestId) error.providerRequestId = providerRequestId;
+      throw error;
+    }
+    const failure = error instanceof Error &&
+      (error.name === 'TimeoutError' || error.name === 'AbortError')
+      ? new LlmProviderError('UPSTREAM_TIMEOUT', 504)
+      : new LlmProviderError('UPSTREAM_UNAVAILABLE', 502);
+    if (providerRequestId) failure.providerRequestId = providerRequestId;
+    throw failure;
+  }
+}
+
 export async function generateText(
   request: TextGenerationRequest,
   runtimeEnv: LlmRuntimeEnv,
   fetchImpl: FetchLike = fetch,
+  onProgress?: OpenAiOutputProgress,
+): Promise<TextGenerationResult> {
+  const startedAt = Date.now();
+  // Edge Workers support manual redirects. Never forward provider credentials.
+  const guardedFetch: FetchLike = (input, init) =>
+    fetchImpl(input, { ...init, redirect: 'manual' });
+  try {
+    const result = await generateTextRequest(request, runtimeEnv, guardedFetch, onProgress);
+    return { ...result, durationMs: Math.max(0, Date.now() - startedAt) };
+  } catch (error) {
+    if (error instanceof LlmProviderError) throw error;
+    if (error instanceof Error &&
+        (error.name === 'TimeoutError' || error.name === 'AbortError'))
+      throw new LlmProviderError('UPSTREAM_TIMEOUT', 504);
+    throw new LlmProviderError('UPSTREAM_UNAVAILABLE', 502);
+  }
+}
+
+async function generateTextRequest(
+  request: TextGenerationRequest,
+  runtimeEnv: LlmRuntimeEnv,
+  fetchImpl: FetchLike = fetch,
+  onProgress?: OpenAiOutputProgress,
 ): Promise<TextGenerationResult> {
   if (!request.prompt.trim() || request.prompt.length > 24_000)
     throw new LlmProviderError('INVALID_PROMPT', 400);
@@ -361,26 +608,31 @@ export async function generateText(
   }
 
   if (request.provider === 'openai') {
-    if (!runtimeEnv.OPENAI_API_KEY)
-      throw new LlmProviderError('MISSING_PROVIDER_CREDENTIAL', 503);
-    const response = await fetchImpl('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${runtimeEnv.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const result = await createOpenAiResponse(
+      {
         model,
         input: messages,
         max_output_tokens: maxOutputTokens,
-        store: false,
-      }),
-      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
-    });
+        service_tier: 'default',
+      },
+      runtimeEnv,
+      fetchImpl,
+      request.clientRequestId,
+      onProgress,
+    );
     return {
       provider: request.provider,
-      model,
-      text: textFromOpenAiResponse(await jsonResponse(response)),
+      model: result.model,
+      text: textFromOpenAiResponse(result.payload),
+      usage: result.usage,
+      serviceTier: result.serviceTier,
+      webSearchCalls: result.webSearchCalls,
+      textOnlyOutput: result.textOnlyOutput,
+      reportedModel: result.reportedModel,
+      responseStatus: result.responseStatus,
+      providerResponseId: result.providerResponseId,
+      clientRequestId: result.clientRequestId,
+      providerRequestId: result.providerRequestId,
     };
   }
 

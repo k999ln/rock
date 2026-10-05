@@ -102,7 +102,7 @@ const connectionChecks: Record<string, { runtime: string; firstTest: string; sto
 function outputFor(tool: string, input: string) {
   const value = input.trim();
   if (!value) throw new Error('入力を1行以上入れてください。');
-  const header = (title: string) => `# ${title}\n\n入力:\n${value}\n`;
+  const header = (title: string) => `# ${title}\n\n> 端末内で入力を添えた定型テンプレートです。AIによる分析・外部サービスの実行はしていません。\n\n入力:\n${value}\n`;
   switch (tool) {
     case 'coconala-proposal-draft':
       return `${header('ココナラ提案文の下書き')}\n## 提案文\nご依頼内容を確認しました。要件・納期・納品形式を確認したうえで、対応範囲と進め方を整理してご提案します。\n\n## 送信前確認\n- 納期と成果物の形式\n- 修正回数と追加作業の扱い\n- 面談・外部連絡の要否\n- 送信前に本人が元ページの条件を確認\n\n※応募・送信は行っていません。`;
@@ -119,9 +119,9 @@ function outputFor(tool: string, input: string) {
     case 'sales-objection-reply-builder':
       return `${header('商談返信・見積り支援')}\n## 返信案\nご懸念の点を確認しました。作業範囲、納期、含まれる確認回数を整理したうえで、条件別に見積りをご提示します。\n\n## 見積り項目\n- 成果物\n- 納期\n- 修正回数\n- 外部費用\n- 追加作業\n\n価格提示・送信は本人確認後に行ってください。`;
     case 'user-interview-synthesizer':
-      return `${header('顧客インタビュー分析')}\n## 観察された発言\n${value}\n\n## テーマ\n- 時間短縮\n- 安心して任せる条件\n- 結果確認と修正\n\n## 仮説\n最初は小さな入力と検査可能な成果物から始めると導入障壁が下がる。\n\n## 次の検証\n誰が、いつ、何を使い、どの結果なら継続するかを追加確認する。`;
+      return `${header('顧客インタビュー整理の記入用テンプレート')}\n## 根拠の確認\n入力された発言を読み、話者・状況・引用範囲を本人が確認してください。テーマや仮説は自動抽出していません。\n\n## 整理欄\n- テーマ: 未記入\n- 根拠となる発言: 未記入\n- その発言から考える仮説: 未記入\n- 反対の根拠・不明点: 未記入\n- 次に確認する質問: 未記入\n\nAI分析と顧客への連絡は実行していません。`;
     case 'calendar-coordination':
-      return `${header('予定・カレンダー連携')}\n## 候補条件\n- 時間帯: 平日午後\n- 所要時間: 60分\n- 形式: オンライン\n\n## 接続境界\nカレンダーアカウントは未接続のため、候補整理までです。予定作成・変更は実行していません。`;
+      return `${header('予定調整の記入用テンプレート')}\n## 候補条件の確認欄\n依頼文から日時・所要時間・形式を自動抽出していません。上の入力を確認して記入してください。\n- 候補日・時間帯: 未記入\n- 所要時間: 未記入\n- 場所・形式: 未記入\n- 参加者・避けたい条件: 未記入\n\n## 接続境界\nカレンダーアカウントは未接続です。空き時間の照合、予定作成・変更、招待は実行していません。`;
     case 'telegram-notifications':
       return `${header('Telegram通知・承認')}\n## 通知下書き\nSkyの仕事が完了しました。結果を確認し、必要なら次の操作を本人が承認してください。\n\n## 接続境界\nBot接続と送信先の確認が済むまで、Telegramへは送信しません。`;
     case 'producthunt-discovery':
@@ -163,7 +163,7 @@ export function SkyCandidateRunner({
   const [sampleInput, setSampleInput] = useState(!initialInput?.trim());
   const [productHuntUrl, setProductHuntUrl] = useState('');
   const [productHuntError, setProductHuntError] = useState('');
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
 
   function openProductHuntImport() {
     const normalized = parseProductHuntUrl(productHuntUrl);
@@ -179,7 +179,7 @@ export function SkyCandidateRunner({
   }
 
   async function run() {
-    if (running || executionDisabled || needsSignin) return;
+    if (running || executionDisabled || executionBlocked) return;
     setRunning(true);
     onRunningChange?.(true);
     setError('');
@@ -239,14 +239,15 @@ export function SkyCandidateRunner({
 
   return (
     <section className="mr-workbench">
-      {needsSignin && <ExecutionSignin />}
-      <fieldset disabled={running || executionDisabled || needsSignin}>
+      {executionBlocked && <ExecutionSignin state={accessState} />}
+      <fieldset disabled={running || executionDisabled || executionBlocked}>
         <div className="bench-heading">
           <h3>{name}</h3>
           <span className="outline-tag">{isLocalDraft ? 'ローカル下書き' : '接続条件の確認'} · 外部接続なし</span>
         </div>
+        <p className="bench-helper">{isLocalDraft ? '定型の記入用テンプレートです。AIによる分析ではありません。' : '接続計画のひな形です。ツール本体は実行しません。'} 本文と結果はサーバーに保存せず、処理状態と入出力サイズを記録します。</p>
         <div className="bench-helper">
-          <span>{guide?.helper ?? '入力をSkyの共通ジョブ受付へ送り、結果と実行履歴を保存します。'}</span>
+          <span>{guide?.helper ?? '本文はこの端末で処理し、状態・所要時間・入出力サイズだけをSkyの実行履歴へ記録します。本文と結果はサーバーに保存しません。'}</span>
           <button
             className="text-link"
             onClick={() => {

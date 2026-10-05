@@ -26,6 +26,19 @@ async function pseudonymousEmailId(email: string) {
 }
 
 export async function requestUser(request: Request): Promise<string> {
+  const authorization = request.headers.get('authorization') ?? '';
+  if (authorization.startsWith('Bearer rock_session_')) {
+    const [runtime, sessions] = await Promise.all([
+      import('cloudflare:workers'),
+      import('./rockstar-device-link.ts'),
+    ]);
+    const db = (runtime.env as unknown as { DB?: D1Database }).DB;
+    if (!db) throw new Error('AUTH_UNAVAILABLE');
+    return sessions.rockstarDeviceLinkStore(db).authenticate(
+      authorization.slice('Bearer '.length),
+    );
+  }
+
   sameOrigin(request);
 
   const id = request.headers.get('oai-authenticated-user-id')?.trim();

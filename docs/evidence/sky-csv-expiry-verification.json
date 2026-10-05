@@ -1,0 +1,653 @@
+{
+  "schema": "sky-csv-expiry-verification/1",
+  "recordedAt": "2026-10-02T11:20:18.719676+00:00",
+  "beforeFix": {
+    "environment": "local staging disaster recovery, exact v31 archive and persistent Miniflare D1/R2",
+    "sourceExpected": "c89a651d9e2cd29011f2f6153201a93a82033643",
+    "productionRecoveryAccepted": false,
+    "staleBackupDeletionReplayAccepted": false,
+    "identity": "two synthetic loopback-only users; no production sign-in",
+    "realProviderCalls": 0,
+    "newPayments": 0,
+    "archives": {
+      "v31": "01a5abdfb15aa38e5458e03cd25f56b64c822df2274736156369bdc2b345c82f"
+    },
+    "checks": [
+      {
+        "name": "runtime schema bootstrap",
+        "version": "v31",
+        "pass": true
+      },
+      {
+        "name": "POST /api/csv-jobs status 201 (synthetic-durable-owner-a)",
+        "version": "v31",
+        "pass": true
+      }
+    ],
+    "allPassed": false,
+    "expiredRetry": {
+      "firstResponse": 500,
+      "firstState": "quality_failed",
+      "retryResponse": 200,
+      "returnedStatus": "completed",
+      "attempt": 2
+    },
+    "failure": "expired failed job must not execute again\n\n200 !== 410\n"
+  },
+  "repair": "Check expiry before processing claim for initial processing and retry. Owner expiry rejection deletes retained job objects/record, returns 410, never increments attempt.",
+  "status": "Published v32, source 5fcfe884d7038723e228156a54bfd78bfcabde89",
+  "newPayment": false,
+  "realProviderCall": false,
+  "productionOwnerAccepted": false,
+  "archivedCandidateAcceptance": {
+    "environment": "local staging disaster recovery, exact v32 archive and persistent Miniflare D1/R2",
+    "sourceExpected": "5fcfe884d7038723e228156a54bfd78bfcabde89",
+    "productionRecoveryAccepted": false,
+    "staleBackupDeletionReplayAccepted": false,
+    "identity": "two synthetic loopback-only users; no production sign-in",
+    "realProviderCalls": 0,
+    "newPayments": 0,
+    "archives": {
+      "v32": "a326eb0a561b6df3cb70368568da32f49757d3cbf0bade1d9c6cbdee690f40d6"
+    },
+    "checks": [
+      {
+        "name": "runtime schema bootstrap",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "POST /api/csv-jobs status 201 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "expired failed job must not execute again",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "POST /api/csv-jobs status 201 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "POST /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9 status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "completed owner record survives",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs status 200 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "other owner has empty history",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/result status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "private artifact cache header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact attachment header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact nosniff",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/result status 404 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/result status 401 (anonymous)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/spreadsheet-safe status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "private artifact cache header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact attachment header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact nosniff",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/spreadsheet-safe status 404 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/spreadsheet-safe status 401 (anonymous)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-json status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "private artifact cache header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact attachment header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact nosniff",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-json status 404 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-json status 401 (anonymous)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-html status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "private artifact cache header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact attachment header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact nosniff",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-html status 404 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-html status 401 (anonymous)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "POST /api/csv-jobs status 201 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "POST /api/csv-jobs/1ee9a68f-a79e-42c5-8a97-230d2a30779e status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "DELETE /api/csv-jobs/1ee9a68f-a79e-42c5-8a97-230d2a30779e status 204 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "deleted before backup absent from D1",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "deleted before backup absent from R2",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "POST /api/csv-jobs status 201 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "POST /api/csv-jobs/f488114d-606e-412a-9849-64826af826a9 status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "corrupt paired backup rejected before restore",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "runtime schema bootstrap",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "actual local D1 state lost",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "actual local R2 state lost",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/result status 404 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "runtime schema bootstrap",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/f488114d-606e-412a-9849-64826af826a9/artifact/result status 410 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "restored expired row removed",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "restored expired objects removed",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "completed owner record survives",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs status 200 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "other owner has empty history",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/result status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "private artifact cache header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact attachment header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact nosniff",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/result status 404 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/result status 401 (anonymous)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/spreadsheet-safe status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "private artifact cache header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact attachment header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact nosniff",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/spreadsheet-safe status 404 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/spreadsheet-safe status 401 (anonymous)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-json status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "private artifact cache header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact attachment header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact nosniff",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-json status 404 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-json status 401 (anonymous)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-html status 200 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "private artifact cache header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact attachment header",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "artifact nosniff",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-html status 404 (synthetic-durable-owner-b)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/aef34217-123a-47e9-acea-585c7b7c36c9/artifact/report-html status 401 (anonymous)",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "restored owner record and four artifact hashes match",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "restored input hash and metadata match",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "restored execution event metadata matches",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "deleted-before-backup owner record stays absent",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "deleted-before-backup R2 objects stay absent",
+        "version": "v32",
+        "pass": true
+      },
+      {
+        "name": "GET /api/csv-jobs/1ee9a68f-a79e-42c5-8a97-230d2a30779e/artifact/result status 404 (synthetic-durable-owner-a)",
+        "version": "v32",
+        "pass": true
+      }
+    ],
+    "allPassed": true,
+    "expiredRetry": {
+      "firstResponse": 500,
+      "firstState": "quality_failed",
+      "retryResponse": 410
+    },
+    "backup": {
+      "scope": "stopped local fixture only; paired D1/R2, no production files",
+      "files": 25,
+      "bytes": 2446616,
+      "manifestSha256": "0b93c7f0ce2706666e949770456625bf91dd84a4cf8feaa6fff7e67a1012d6ed",
+      "ownerWritesAfterSnapshot": 0
+    },
+    "localRestoreMs": 382,
+    "jobId": "aef34217-123a-47e9-acea-585c7b7c36c9",
+    "artifacts": {
+      "result": {
+        "bytes": 41,
+        "sha256": "1d74c6c16d92b460fe8006d1b65bf538ec374862e8f11e54df6e52efecdd4827"
+      },
+      "spreadsheet-safe": {
+        "bytes": 42,
+        "sha256": "3b997d6bb56b7d6b1f7cdb5ea650ef531abbdb896f83c14cbfd974b3fe161a3f"
+      },
+      "report-json": {
+        "bytes": 984,
+        "sha256": "1fb92a3a07f3c7f15f4b1dc19b0268a951742ebfb9f5e698ec485e77b29a3735"
+      },
+      "report-html": {
+        "bytes": 1062,
+        "sha256": "89d26e66c034242a4631acb3ad42d781b532ffba1a36d6a6bf8d810f20922f59"
+      }
+    },
+    "remaining": [
+      "Sites-managed production backup/restore access and acceptance",
+      "replicated deletion journal and stale-backup replay for deletions after snapshot",
+      "offsite backup encryption, retention, and operational stop procedure",
+      "safe patched rollback target; old vulnerable version must not be production fallback"
+    ]
+  },
+  "regression": {
+    "environment": "synthetic Worker/D1/R2",
+    "command": "node scripts/check-csv-storage.mjs",
+    "assertions": 113,
+    "exitCode": 0,
+    "includes": [
+      "valid quality retry succeeds",
+      "expired quality retry rejects with 410 and removes objects/record",
+      "anonymous and other owner cannot trigger purge"
+    ]
+  },
+  "fullVerification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "node": 692,
+    "fashion": 19,
+    "workerD1": 948,
+    "csvWorkerD1R2": 113,
+    "logSha256": "dc4285b7931db22a5a533cfa691d23849deb33f39837d9f4ba79aa43ecda72dd"
+  },
+  "sourceHashes": {
+    "lib/csv-job-store.ts": "88514fc45cbe3a0922a9941b780b29de192d19fceac07d99a7aed2c75156dd44",
+    "scripts/check-csv-storage.mjs": "03c540a547996ea8235939abdf48075b00b0380751100127337eadb948c188a1"
+  },
+  "publicationEvidence": "sky-csv-expiry-publication-verification.json",
+  "productionAuth": {
+    "environment": "production non-user platform service access",
+    "origin": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "sourceExpected": "5fcfe884d7038723e228156a54bfd78bfcabde89",
+    "recordedAt": "2026-10-02T11:25:06.110Z",
+    "ownerSigninVerified": false,
+    "serviceCredentialIsUserIdentity": false,
+    "requestsReadOnly": true,
+    "newPayment": false,
+    "checks": [
+      {
+        "name": "public-entry",
+        "path": "/sky",
+        "status": 200,
+        "pass": true,
+        "responseBytes": 41007,
+        "responseSha256": "3343520011615b4dbe910af0048b043e8dee309b33234dd7bfe0370346e3582c",
+        "contentType": "text/html; charset=utf-8",
+        "contentEncoding": null
+      },
+      {
+        "name": "public-health",
+        "path": "/api/health",
+        "status": 200,
+        "pass": true,
+        "responseBytes": 15,
+        "responseSha256": "a29ee2b15c494311c52521766e44af56a3ad2248e7a8ab465e5206463c13d288",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-jobs",
+        "path": "/api/jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-csv-history",
+        "path": "/api/csv-jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 103,
+        "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-paid-csv-result",
+        "path": "/api/csv-jobs/6a969274-8d50-4a6f-8b54-1b2f143f6bdb/artifact/result",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 103,
+        "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-paid-csv-report",
+        "path": "/api/csv-jobs/6a969274-8d50-4a6f-8b54-1b2f143f6bdb/artifact/report-json",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 103,
+        "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-coconala",
+        "path": "/api/coconala-team",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 66,
+        "responseSha256": "9333b5cf4d0432a406b05ec22b91b143a2c3453357eb57e7a2d628693a51ca10",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "anonymous-mercari",
+        "path": "/api/revenue/mercari",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "forged-user-id",
+        "path": "/api/jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      },
+      {
+        "name": "forged-email-dispatch",
+        "path": "/api/jobs",
+        "status": 401,
+        "pass": true,
+        "responseBytes": 48,
+        "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+        "contentType": "application/json",
+        "contentEncoding": null
+      }
+    ],
+    "allPassed": true
+  }
+}

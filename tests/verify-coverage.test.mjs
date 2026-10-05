@@ -53,7 +53,7 @@ void test('npm run verify reaches the test suite of every site and toolkit packa
   const uncovered = [...packages]
     .map(directory => relative(root, directory).split(sep).join('/'))
     .filter(path => !commands.includes(path))
-    .sort();
+    .sort((left, right) => left.localeCompare(right));
   assert.deepEqual(uncovered, [], `packages with tests not run by npm run verify: ${uncovered.join(', ')}`);
 });
 

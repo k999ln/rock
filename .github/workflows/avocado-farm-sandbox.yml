@@ -1,0 +1,125 @@
+name: Avocado Farm Sandbox
+
+on:
+  push:
+    branches:
+      - feature/avocado-farm-sandbox
+    paths:
+      - "toolkits/avocado-farm-sandbox/**"
+      - ".github/workflows/avocado-farm-sandbox.yml"
+  pull_request:
+    paths:
+      - "toolkits/avocado-farm-sandbox/**"
+      - ".github/workflows/avocado-farm-sandbox.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Unit tests
+        run: npm --prefix toolkits/avocado-farm-sandbox test
+
+  paper-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Live Robinhood Chain PAPER scan
+        env:
+          PAPER_CASH_USD: "10000"
+          PAPER_TICKET_USD: "1000"
+          MODEL_FEE_BPS: "30"
+          GECKO_PAGES: "1"
+        run: npm --prefix toolkits/avocado-farm-sandbox run scan:paper
+
+  historical-backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 30-day historical PAPER backtest
+        env:
+          BACKTEST_DAYS: "30"
+          PAPER_TICKET_USD: "1000"
+          RANGE_HALF_WIDTH_PCT: "12"
+          REBALANCE_SLIPPAGE_BPS: "25"
+          REBALANCE_GAS_USD: "0.35"
+        run: npm --prefix toolkits/avocado-farm-sandbox run backtest
+
+  range-sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Historical LP range sweep
+        env:
+          BACKTEST_DAYS: "30"
+          PAPER_TICKET_USD: "1000"
+          RANGE_SWEEP_PCT: "6,8,12,16,20,30,50"
+          REBALANCE_SLIPPAGE_BPS: "25"
+          REBALANCE_GAS_USD: "0.35"
+        run: npm --prefix toolkits/avocado-farm-sandbox run backtest:sweep
+
+  walk-forward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Walk-forward LP paper test
+        env:
+          BACKTEST_DAYS: "30"
+          PAPER_TICKET_USD: "1000"
+          WF_TRAIN_BARS: "48"
+          WF_TEST_BARS: "24"
+          RANGE_SWEEP_PCT: "6,8,12,16,20,30,50"
+          REBALANCE_SLIPPAGE_BPS: "25"
+          REBALANCE_GAS_USD: "0.35"
+        run: npm --prefix toolkits/avocado-farm-sandbox run backtest:walk
+
+  portfolio-walk-forward:
+    needs:
+      - test
+      - paper-scan
+      - historical-backtest
+      - range-sweep
+      - walk-forward
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Multi-pool walk-forward paper test
+        env:
+          BACKTEST_DAYS: "14"
+          PAPER_TICKET_USD: "1000"
+          PORTFOLIO_POOL_LIMIT: "3"
+          PORTFOLIO_DISCOVERY_SCAN_LIMIT: "8"
+          PORTFOLIO_MIN_TVL_USD: "250000"
+          GECKO_MIN_INTERVAL_MS: "6000"
+          GECKO_MAX_ATTEMPTS: "6"
+          WF_TRAIN_BARS: "48"
+          WF_TEST_BARS: "24"
+          RANGE_SWEEP_PCT: "8,12,20,30,50"
+          REBALANCE_SLIPPAGE_BPS: "25"
+          REBALANCE_GAS_USD: "0.35"
+          WF_POSITION_STOP_LOSS_PCT: "5"
+        run: npm --prefix toolkits/avocado-farm-sandbox run backtest:portfolio

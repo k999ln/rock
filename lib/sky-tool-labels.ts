@@ -77,7 +77,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky 顧客理解アシスタント',
     handle: '@sky_interview',
     initial: '顧',
-    helper: '顧客の発言を入れると、テーマ・仮説・次の検証を整理します。',
+    helper: '発言を添えて、テーマ・根拠・仮説の記入欄を作ります。AIによる分析は未接続です。',
     placeholder: '顧客の発言・困りごと・利用状況を入力',
   },
   'calendar-coordination': {
@@ -85,7 +85,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky 予定調整アシスタント',
     handle: '@sky_calendar',
     initial: '予',
-    helper: '候補条件を整理します。カレンダー変更や招待は本人確認後です。',
+    helper: '依頼文を残し、日時・所要時間・場所の記入欄を作ります。条件の自動抽出とカレンダー接続は未実装です。',
     placeholder: '候補日・時間帯・所要時間・参加者条件を入力',
   },
   'telegram-notifications': {

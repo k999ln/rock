@@ -210,3 +210,16 @@
 @media(max-width:800px){.market-top{grid-template-columns:1fr auto;padding:12px 16px}.market-search{grid-row:2;grid-column:1/-1}.market-categories{padding:9px 16px}.market-categories .market-create-button{margin-left:0}.market-hero{padding:30px 18px 25px}.market-layout{grid-template-columns:1fr;padding:0 18px 38px}.market-activity{position:static;grid-row:1}.market-message{margin:0 18px 18px}}
 @media(max-width:560px){.market-grid{grid-template-columns:1fr}.market-hero h1{font-size:40px}.market-runtime-card{grid-template-columns:auto 1fr}.market-runtime-card>b{grid-column:2}.market-section-heading{align-items:flex-start;flex-direction:column}}
 .market-ticket[open]{inset:auto;margin:0;border:0;color:#172235}.market-creator-form{display:contents}
+
+/* PAPER workspace: keep mobile search in the header grid, not over the balance. */
+@media (max-width: 800px) {
+  .everything-market .market-search {
+    position: static;
+    inset: auto;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
+}

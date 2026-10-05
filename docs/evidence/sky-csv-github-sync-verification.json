@@ -1,0 +1,68 @@
+{
+  "schema": "sky-csv-github-sync/1",
+  "repository": "https://github.com/k999ln/rock.git",
+  "base": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "branch": "codex/sky-csv-storage-retention",
+  "head": "05f676338944f60e05552b22dddc6f50453e3be6",
+  "pullRequest": "https://github.com/k999ln/rock/pull/51",
+  "draft": true,
+  "merged": false,
+  "scope": "isolated CSV storage collision and expired processing/retry repairs; tests and design/progress evidence",
+  "mainSourceMerged": false,
+  "sameFullSourceAsProduction": false,
+  "productionEquivalentFixes": {
+    "version": 32,
+    "source": "5fcfe884d7038723e228156a54bfd78bfcabde89"
+  },
+  "localChecks": {
+    "typecheck": true,
+    "lint": true,
+    "build": true,
+    "design": true,
+    "workerApiAssertions": 172,
+    "csvD1R2Assertions": 113,
+    "fullVerifyExitCode": 1,
+    "nodeTests": 440,
+    "nodePassed": 429,
+    "nodeFailed": 11,
+    "unchangedMainSameFailures": true
+  },
+  "ci": {
+    "workflow_runs": [
+      {
+        "id": 37002726898,
+        "name": "Release signing control tests",
+        "status": "completed",
+        "conclusion": "success",
+        "run_number": 102,
+        "jobs_url": "https://api.github.com/repos/k999ln/rock/actions/runs/37002726898/jobs",
+        "logs_url": "https://api.github.com/repos/k999ln/rock/actions/runs/37002726898/logs",
+        "workflow_id": 355277401
+      },
+      {
+        "id": 37002726882,
+        "name": "Rock star verification",
+        "status": "completed",
+        "conclusion": "failure",
+        "run_number": 440,
+        "jobs_url": "https://api.github.com/repos/k999ln/rock/actions/runs/37002726882/jobs",
+        "logs_url": "https://api.github.com/repos/k999ln/rock/actions/runs/37002726882/logs",
+        "workflow_id": 350971196
+      }
+    ]
+  },
+  "combinedStatuses": {
+    "statuses": []
+  },
+  "completeLaunch": false,
+  "ciVerifiedFailure": {
+    "runId": 37002726882,
+    "url": "https://github.com/k999ln/rock/actions/runs/37002726882",
+    "nodeVersion": "22.23.3",
+    "step": "baseline:check",
+    "reason": "Existing visual-system baseline assertion at scripts/check-product-baseline.mjs:1057",
+    "sameAsLocalVerify": true
+  },
+  "temporaryWorktreeRemoved": true,
+  "ownerDataTouched": false
+}

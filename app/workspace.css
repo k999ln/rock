@@ -3990,6 +3990,7 @@
   border: 1px solid #dacda8;
   border-radius: 9px;
   background: #faf6e8;
+  color: #17232b;
   padding: 24px;
   margin-bottom: 24px;
 }
@@ -11848,6 +11849,25 @@
 .sky-chat-page .zema-model-settings,
 .sky-chat-page .zema-remote-consent,
 .sky-chat-page .zema-composer-toolbar { color: #71767b; }
+.sky-chat-page .zema-remote-consent {
+  display: grid;
+  gap: 10px;
+  max-width: 720px;
+  margin: 10px 0;
+  padding: 12px 14px;
+  border: 1px solid #46505a;
+  border-radius: 10px;
+  background: #17191d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.sky-chat-page .zema-remote-consent p { margin: 0; }
+.sky-chat-page .zema-remote-consent dl { display: grid; gap: 5px; margin: 0; }
+.sky-chat-page .zema-remote-consent dl div { display: flex; justify-content: space-between; gap: 12px; }
+.sky-chat-page .zema-remote-consent dt { color: #9da5ad; }
+.sky-chat-page .zema-remote-consent dd { margin: 0; color: #f2f2f2; font-variant-numeric: tabular-nums; }
+.sky-chat-page .zema-remote-consent label { display: grid; gap: 5px; color: #e0e3e6; }
+.sky-chat-page .zema-remote-consent input { width: 100%; min-height: 38px; padding: 7px 9px; border: 1px solid #4d5964; border-radius: 6px; background: #202327; color: #f2f2f2; }
 .sky-chat-page .zema-tool-picker,
 .sky-chat-page .zema-add-tool { color: #b3b7bb; }
 

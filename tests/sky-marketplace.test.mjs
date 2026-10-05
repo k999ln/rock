@@ -11,7 +11,7 @@ import {
   registryHostMismatch,
 } from '../lib/sky-tool-compatibility.ts';
 
-const [page, marketplace, sky, registry, detail, publisher, overview, coconala, commerce, workspaceShell] = await Promise.all([
+const [page, marketplace, sky, registry, detail, publisher, overview, coconala, commerce, workspaceShell, esimPurchase] = await Promise.all([
   readFile(new URL('../app/sky/marketplace/page.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/sky-marketplace.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/sky-workspace.tsx', import.meta.url), 'utf8'),
@@ -22,7 +22,30 @@ const [page, marketplace, sky, registry, detail, publisher, overview, coconala, 
   readFile(new URL('../components/coconala-team-workspace.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/sky-commerce.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../components/workspace-shell.tsx', import.meta.url), 'utf8'),
+  readFile(new URL('../components/esim-purchase-setup.tsx', import.meta.url), 'utf8'),
 ]);
+
+void test('Sky paid-order eSIM setup is owner-driven, does not issue profiles, and protects install material', () => {
+  assert.match(commerce, /order\.status === 'paid' && <EsimPurchaseSetup/);
+  assert.match(esimPurchase, /body \? 'install-material' : 'status'/);
+  assert.match(esimPurchase, /action: 'fetch'/);
+  assert.match(esimPurchase, /action: 'acknowledge'/);
+  assert.match(esimPurchase, /sessionStorage/);
+  assert.match(esimPurchase, /esimsetup\.apple\.com/);
+  assert.match(esimPurchase, /esimsetup\.android\.com/);
+  assert.match(esimPurchase, /referrerPolicy="no-referrer"/);
+  assert.match(esimPurchase, /導入情報を表示/);
+  assert.match(esimPurchase, /サーバーから消去/);
+  assert.match(esimPurchase, /active_on_authenticated_device/);
+  assert.match(esimPurchase, /revoked_or_stale/);
+  assert.match(esimPurchase, /署名付き証明でeSIM導入を確認しました/);
+  assert.match(esimPurchase, /OSの追加確認が表示される場合があります/);
+  assert.match(esimPurchase, /無人で導入・有効化できるかは/);
+  assert.match(esimPurchase, /署名付き証明が届くまでは/);
+  assert.match(esimPurchase, /各Toolの権限・本人承認は別途必要です/);
+  assert.doesNotMatch(esimPurchase, /\/issue/);
+  assert.doesNotMatch(esimPurchase, /dangerouslySetInnerHTML/);
+});
 
 void test('commerce uses the workspace main landmark without nesting a second main', () => {
   assert.equal([...workspaceShell.matchAll(/<main(?:\s|>)/g)].length, 1);

@@ -1,9 +1,11 @@
 """Real loopback HTTP + signed package + worker + SQLite acceptance tests."""
 import copy
+import base64
 import http.client
 import json
 import shutil
 import sqlite3
+import subprocess
 import tempfile
 import threading
 import time
@@ -14,6 +16,8 @@ from unittest.mock import patch
 from blackberryrock import hub_server
 from blackberryrock.hub_server import HubServer, MAX_REQUEST
 from blackberryrock.packages import TEST_PUBLISHER, canonical, digest
+from blackberryrock.a2a_usage_receipt import signing_bytes
+from blackberryrock.sdk import RFC8032_PUBLIC_TEST_SEED
 
 
 REGISTRY = Path(__file__).resolve().parents[1] / "examples/registry"
@@ -261,6 +265,97 @@ class HubAPITest(unittest.TestCase):
         state = self.state()
         self.assertEqual(state["value_spend"]["modes"], {"SIMULATION":True,"PAPER":True,"LIVE":False})
         self.assertEqual(state["value_spend"]["spend_accounts"]["SPEND_COMMITTED"], 1000)
+
+    def test_a2a_cloud_budget_is_reserved_in_the_same_local_wallet_and_unknown_holds_remain(self):
+        self.login()
+        sale = self.post("/api/wallet/sale", {"amount_minor": 5_000, "key": "a2a-wallet-fund"})
+        self.post("/api/wallet/settle", {"id": sale["id"], "key": "a2a-wallet-settle-fund"})
+        reservation = self.post("/api/hub-mcp", {
+            "v": 1, "op": "a2a.budget.reserve", "key": "a2a-wallet-reserve",
+            "owner_id": "local-owner", "delegation_id": "delegation-1", "parent_job_id": "zema-job-1",
+            "currency": "USD", "budget_limit_minor": 1_250,
+            "approval_sha256": "a" * 64, "deadline_at": (int(time.time()) + 600) * 1000,
+        })
+        self.assertEqual(reservation["state"], "HELD")
+        self.assertEqual(self.state()["wallet"]["available_minor"], 3_750)
+        dispatched = self.post("/api/hub-mcp", {
+            "v": 1, "op": "a2a.budget.dispatch", "key": "a2a-wallet-dispatch",
+            "delegation_id": "delegation-1",
+        })
+        self.assertEqual(dispatched["state"], "DISPATCHED")
+        unknown = self.post("/api/hub-mcp", {
+            "v": 1, "op": "a2a.budget.indeterminate", "key": "a2a-wallet-unknown",
+            "delegation_id": "delegation-1",
+        })
+        self.assertEqual(unknown["state"], "INDETERMINATE")
+        self.assertEqual(unknown["held_minor"], 1_250)
+        self.assertEqual(self.state()["value_spend"]["spend_accounts"]["SPEND_HOLD"], 1_250)
+        self.assertEqual(self.state()["wallet"]["ledger_balance_minor"], 0)
+
+    def test_owner_local_hub_settles_cloud_style_signed_usage_receipt_to_wallet(self):
+        fixture = json.loads((Path(__file__).with_name('fixtures') / 'a2a-usage-receipt-v1.json').read_text())
+        trust = [{
+            'providerId': fixture['providerId'],
+            'keyId': fixture['keyId'],
+            'agentOrigin': fixture['agentOrigin'],
+            'publicKeyHex': fixture['fixturePublicKeyHex'],
+            'status': 'active',
+        }]
+        self.stop_server()
+        with patch.dict('os.environ', {'ROCKSTAR_A2A_TRUSTED_USAGE_KEYS': json.dumps(trust)}):
+            self.start_server()
+        self.login()
+
+        sale = self.post('/api/wallet/sale', {'amount_minor': 5_000, 'key': 'signed-a2a-wallet-fund'})
+        self.post('/api/wallet/settle', {'id': sale['id'], 'key': 'signed-a2a-wallet-fund-settle'})
+        now_ms = int(time.time() * 1000)
+        deadline_at = now_ms + 3_600_000
+        delegation_id = 'delegation-signed-settlement'
+        parent_job_id = 'zema-job-signed-settlement'
+        receipt = {
+            'schema': 'rock-a2a-provider-usage-receipt/1',
+            'providerId': 'provider-x', 'keyId': 'usage-key-1', 'receiptId': 'hub-receipt-1',
+            'ownerUserId': 'local-owner', 'parentJobId': parent_job_id,
+            'delegationId': delegation_id, 'taskId': 'remote-task-hub-1',
+            'agentOrigin': 'https://agent.example', 'agentName': 'Research Agent',
+            'agentVersion': '1.0.0', 'currency': 'USD', 'amountMinor': 650,
+            'pricingVersion': 'fixture-price-1', 'issuedAt': now_ms,
+            'usage': [{'meter': 'agent-operation', 'quantity': 1, 'unit': 'request', 'amountMinor': 650}],
+            'signature': '',
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'key.der').write_bytes(bytes.fromhex('302e020100300506032b657004220420' + RFC8032_PUBLIC_TEST_SEED))
+            (root / 'payload').write_bytes(signing_bytes(receipt))
+            signature = subprocess.run(
+                ['openssl', 'pkeyutl', '-sign', '-inkey', str(root / 'key.der'), '-keyform', 'DER',
+                 '-rawin', '-in', str(root / 'payload')], capture_output=True, timeout=5, check=True,
+            ).stdout
+        receipt['signature'] = base64.urlsafe_b64encode(signature).rstrip(b'=').decode('ascii')
+
+        reservation = self.post('/api/hub-mcp', {
+            'v': 1, 'op': 'a2a.budget.reserve', 'key': 'signed-a2a-reserve',
+            'owner_id': 'local-owner', 'delegation_id': delegation_id, 'parent_job_id': parent_job_id,
+            'currency': 'USD', 'budget_limit_minor': 2_000,
+            'approval_sha256': 'a' * 64, 'deadline_at': deadline_at,
+        })
+        self.assertEqual(reservation['state'], 'HELD')
+        self.post('/api/hub-mcp', {
+            'v': 1, 'op': 'a2a.budget.dispatch', 'key': 'signed-a2a-dispatch',
+            'delegation_id': delegation_id,
+        })
+        settled = self.post('/api/hub-mcp', {
+            'v': 1, 'op': 'a2a.budget.settle', 'key': 'signed-a2a-settle',
+            'delegation_id': delegation_id, 'receipt': receipt,
+        })
+        self.assertEqual(settled['state'], 'SETTLED')
+        self.assertEqual(settled['settled_minor'], 650)
+        self.assertEqual(settled['released_minor'], 1_350)
+        state = self.state()
+        self.assertEqual(state['value_spend']['simulation_only'], True)
+        self.assertEqual(state['wallet']['available_minor'], 4_350)
+        self.assertEqual(state['value_spend']['spend_accounts']['SPEND_COMMITTED'], 650)
+        self.assertEqual(state['value_spend']['spend_accounts']['SPEND_HOLD'], 0)
 
 
 class HubMainTest(unittest.TestCase):

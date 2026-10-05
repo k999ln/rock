@@ -208,6 +208,43 @@
   background: #eef8f2;
   border-color: #bddbca;
 }
+.work-plan {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.65rem;
+  background: #f8fafe;
+}
+.work-plan h3,
+.work-plan p { margin: 0; }
+.work-plan > p,
+.work-plan small { color: #536478; }
+.work-plan ol {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.4rem;
+}
+.work-plan li { padding-left: 0.2rem; }
+.work-plan li strong,
+.work-plan li small { display: block; }
+.work-plan label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.work-plan form { display: grid; gap: 0.65rem; }
+.work-plan textarea { width: 100%; font: inherit; }
+.work-plan form button {
+  justify-self: start;
+  border: 1px solid #c7d2e2;
+  border-radius: 0.45rem;
+  padding: 0.55rem 0.85rem;
+  background: white;
+}
 .work-runner {
   margin-top: 1.5rem;
   border-top: 1px solid #dbe2ed;
@@ -258,6 +295,154 @@
   font-size: 0.875rem;
   color: #596b82;
 }
+.work-delegations {
+  margin-top: 1.5rem;
+  border-top: 1px solid #dbe2ed;
+  padding-top: 1.25rem;
+}
+.work-delegation-create,
+.work-delegation-review {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.65rem;
+  padding: 1rem;
+  background: #f8fafe;
+}
+.work-delegation-create h3,
+.work-delegation-review h3 { font-size: 1rem; }
+.work-delegation-create > p,
+.work-delegation-review > p { margin: 0; color: #536478; }
+.work-delegation-create label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.work-delegation-create input,
+.work-delegation-create textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #c7d2e2;
+  border-radius: 0.45rem;
+  background: white;
+  padding: 0.65rem;
+  font: inherit;
+}
+.work-delegation-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.work-delegation-create label.work-offline-consent { display: flex; align-items: flex-start; gap: .65rem; padding: .8rem; border: 1px solid #a9bfd0; border-radius: .5rem; background: #f2f7fa; line-height: 1.55; }
+.work-delegation-create .work-offline-consent > input { flex: none; width: 1.1rem; height: 1.1rem; margin: .15rem 0 0; padding: 0; }
+.work-a2a-agent-list { display: grid; gap: 0.55rem; }
+.work-a2a-agent {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.7rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.5rem;
+  background: white;
+  overflow-wrap: anywhere;
+}
+.work-a2a-agent > div:first-child { display: grid; gap: 0.2rem; }
+.work-a2a-agent small,
+.work-a2a-agent span { color: #596b82; font-size: 0.82rem; }
+.work-delegation-create > button:not(.work-primary) {
+  justify-self: start;
+  border: 1px solid #c7d2e2;
+  border-radius: 0.45rem;
+  background: white;
+  padding: 0.55rem 0.75rem;
+}
+.work-delegation-review dl {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 0.5rem 0.75rem;
+  margin: 0;
+}
+.work-delegation-review dt { color: #596b82; }
+.work-delegation-review dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.work-delegation-review dd pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  margin: 0;
+}
+.work-delegation-review dd code { overflow-wrap: anywhere; }
+.work-delegation-gate {
+  border-left: 3px solid #bf8d36;
+  padding: 0.65rem 0.8rem;
+  background: #fff8e9;
+  color: #654b1b !important;
+}
+.work-delegation-price-note,
+.work-delegation-usage {
+  border-left: 3px solid #7b94ab;
+  padding: 0.65rem 0.8rem;
+  background: #f0f5f9;
+  color: #34475c;
+  overflow-wrap: anywhere;
+}
+.work-delegation-usage h4 { margin: 0 0 0.35rem; font-size: 0.95rem; }
+.work-delegation-usage p { margin: 0.35rem 0; }
+.work-delegation-usage ul { margin: 0.45rem 0; padding-left: 1.2rem; }
+.work-delegation-usage li { padding: 0.2rem 0; font-variant-numeric: tabular-nums; }
+.work-delegations-heading,
+.work-delegation-title,
+.work-delegation-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.work-delegations-heading { margin-bottom: 0.75rem; }
+.work-delegations-heading h3 { font-size: 1.1rem; }
+.work-delegations-heading p,
+.work-delegation > p { margin: 0.3rem 0; color: #536478; }
+.work-delegation-list { display: grid; gap: 0.75rem; }
+.work-delegation {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.9rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.6rem;
+  background: #f8fafe;
+  overflow-wrap: anywhere;
+}
+.work-delegation-title span,
+.work-delegation small { color: #596b82; font-size: 0.82rem; }
+.work-delegation-actions { justify-content: start; flex-wrap: wrap; }
+.work-delegation-actions a,
+.work-delegation-actions button,
+.work-delegations-heading button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid #c7d2e2;
+  border-radius: 0.45rem;
+  background: white;
+  padding: 0.45rem 0.65rem;
+}
+.work-delegation-actions button:disabled,
+.work-delegations-heading button:disabled { opacity: 0.5; }
+.work-delegation-artifact {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  background: #eef4fd;
+}
+.work-delegation-artifact pre {
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  margin: 0.4rem 0;
+}
+.work-delegation-error { color: #9a2f27; }
 .work-cancel {
   background: transparent;
   color: #775045;
@@ -293,7 +478,8 @@
 }
 .work-shell button:focus-visible,
 .work-shell a:focus-visible,
-.work-shell input:focus-visible {
+.work-shell input:focus-visible,
+.work-shell textarea:focus-visible {
   outline: 3px solid #2465c2;
   outline-offset: 3px;
 }
@@ -320,4 +506,21 @@
   .work-steps {
     grid-template-columns: 1fr;
   }
+  .work-delegation-fields {
+    grid-template-columns: 1fr;
+  }
+  .work-delegation-review dl {
+    grid-template-columns: 1fr;
+  }
+}
+
+.work-delegation-create .work-cloud-text-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.work-delegation-create .work-cloud-text-consent input[type="checkbox"] {
+  width: 16px;
+  flex: 0 0 16px;
+  margin: 3px 0 0;
 }

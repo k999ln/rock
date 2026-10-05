@@ -40,8 +40,8 @@ void test('game-first life design rejects satellite authority and unverified int
   const baseline = json('data/product-baseline.json');
   const vision = baseline.gameFirstLifeVision;
   assert.ok(existsSync(resolve(root, vision.document)));
-  assert.match(read('README.md'), /ゲームを入口に、生活全体をより豊かにする|From playing to making/i);
-  assert.match(read('README.md'), /01 — PLAY.*02 — MAKE.*03 — LIVE/);
+  assert.match(read('README.md'), /SIM\/eSIM-led access to RockstarOS services/);
+  assert.match(read('README.md'), /PLAY \/ MAKE \/ LIVE flow below describes the separate R5 hardware experience program/);
   assert.equal(
     baseline.marketPositioning.leadHardwareForm,
     'r5_200mm_autonomous_peer_minis_no_required_edge_hub',

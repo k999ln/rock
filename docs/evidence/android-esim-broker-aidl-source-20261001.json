@@ -1,0 +1,35 @@
+{
+  "schema": "rock-android-esim-broker-aidl-source-validation/1",
+  "date": "2026-10-01",
+  "scope": "source and Android-independent challenge validation only",
+  "implementation": {
+    "shellApiVersion": 5,
+    "aidlMethod": "provisionEsimGatewayKey",
+    "broker": "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+    "keystore": "android/automation/src/main/java/dev/rock/automation/EsimDeviceGatewayKeyStore.java",
+    "shell": "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+    "challengeValidator": "android/core/src/main/java/dev/rock/core/platform/EsimGatewayEnrollmentChallenge.java",
+    "invalidChallengeBinderAssertion": "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
+    "challengeRetry": "nonce-derived alias resumes the same AndroidKeyStore key",
+    "activationClaim": "pending_server_and_install_proof_verification"
+  },
+  "validation": {
+    "coreChallengeJUnit": "Core JVM suite 60/60 passed using Gradle 8.11.1 + JDK 17; focused enrollment challenge cases 3/3",
+    "osContractCheck": "passed",
+    "androidArchitectureCheck": "passed",
+    "fullRepositoryVerify": "passed: npm run verify (Node suite, Fashion 19/19, Worker/D1 API 424 assertions, typecheck/lint/production build/bundle/assets)"
+  },
+  "notAccepted": [
+    "Android SDK platform/build-tools and AIDL/APK compilation",
+    "Android instrumentation and physical device enrollment",
+    "automatic authenticated browser-to-app challenge/result handoff",
+    "device receipt submission through authenticated Worker route",
+    "carrier/OEM-signed local eUICC installation evidence",
+    "private TLS connection from Worker to deployed JVM verifier",
+    "Provider sandbox, live eSIM issuance, or billing"
+  ],
+  "buildEnvironment": {
+    "sdkRoot": "Only a cache directory exists under the configured Android SDK path; Android platform android.jar was not found",
+    "gradleAttempt": "Android Broker compile could not be run: Android platform/build-tools absent; initial Gradle daemon loopback was denied in sandbox. Android-independent :core:test passed after loopback-enabled verification execution."
+  }
+}

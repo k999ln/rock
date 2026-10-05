@@ -17,6 +17,7 @@ const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
   compatibility_flags: ['nodejs_compat'],
+  vars: { A2A_EGRESS_ALLOWED_ORIGINS: '' },
   d1_databases: d1
     ? [
         {
@@ -37,6 +38,19 @@ const localBindingConfig = {
     : [],
 };
 
+const clientCloudflareWorkersStub = {
+  name: 'rockstar-client-cloudflare-workers-stub',
+  enforce: 'pre' as const,
+  resolveId(this: { environment?: { name?: string } }, source: string) {
+    if (source === 'cloudflare:workers' && this.environment?.name === 'client')
+      return '\0rockstar:cloudflare-workers-client-stub';
+  },
+  load(id: string) {
+    if (id === '\0rockstar:cloudflare-workers-client-stub')
+      return 'export const env = Object.freeze({});';
+  },
+};
+
 export default defineConfig(async () => {
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
@@ -55,6 +69,7 @@ export default defineConfig(async () => {
     plugins: [
       createSkyLocalRuntimePlugin(),
       createWebBundleInventoryPlugin(),
+      clientCloudflareWorkersStub,
       vinext(),
       sites(),
       cloudflare({

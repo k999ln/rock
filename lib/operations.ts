@@ -9,7 +9,8 @@ import {
   type SkyProviderStatus,
 } from './sky-connections.ts';
 
-// No runtime binding here: the same store is exercised against SQLite in tests.
+// Keep the persisted connector identity and tracked-job admission aligned with
+// the shared catalog; readiness in that catalog never grants execution by itself.
 export const JOB_TOOLS = catalogJobTools;
 export type JobTool = TrackedCatalogToolId;
 export const SKY_CONNECTION_TOOLS = catalogConnectionTools;

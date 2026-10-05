@@ -1,5 +1,11 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
+import {
+  readSkyResults,
+  saveSkyResult,
+  deleteSkyResult,
+  type SkySavedResult,
+} from '@/lib/sky-result-library';
 import {
   ExecutionSignin,
   useExecutionAccess,
@@ -27,11 +33,21 @@ import {
   MAX_TEXT,
   type CoconalaResult,
 } from '@/lib/mr-tools';
-import { DeliveryRunner } from '@/components/delivery-runner';
-import { SubscriptionLedgerRunner } from '@/components/subscription-ledger-runner';
-import { LegalIntakeRunner } from '@/components/legal-intake-runner';
-import { PatentAssistantRunner } from '@/components/patent-assistant-runner';
-import { JevEvaluationRunner } from '@/components/jev-evaluation-runner';
+const DeliveryRunner = lazy(() =>
+  import('@/components/delivery-runner').then((module) => ({ default: module.DeliveryRunner })),
+);
+const SubscriptionLedgerRunner = lazy(() =>
+  import('@/components/subscription-ledger-runner').then((module) => ({ default: module.SubscriptionLedgerRunner })),
+);
+const LegalIntakeRunner = lazy(() =>
+  import('@/components/legal-intake-runner').then((module) => ({ default: module.LegalIntakeRunner })),
+);
+const PatentAssistantRunner = lazy(() =>
+  import('@/components/patent-assistant-runner').then((module) => ({ default: module.PatentAssistantRunner })),
+);
+const JevEvaluationRunner = lazy(() =>
+  import('@/components/jev-evaluation-runner').then((module) => ({ default: module.JevEvaluationRunner })),
+);
 import {
   executeTracked,
   processedBytes,
@@ -66,6 +82,57 @@ export function MrToolRunner({
   onFailure?: () => void;
   executionDisabled?: boolean;
 }) {
+  const [savedResults, setSavedResults] = useState<SkySavedResult[]>([]);
+  const [libraryNotice, setLibraryNotice] = useState('');
+  useEffect(() => {
+    const load = () => {
+      try {
+        setSavedResults(readSkyResults(window.localStorage));
+      } catch {
+        setLibraryNotice(
+          '保存した成果を読み込めません。ブラウザの保存設定を確認してください。',
+        );
+      }
+    };
+    load();
+    window.addEventListener('storage', load);
+    return () => window.removeEventListener('storage', load);
+  }, []);
+  function saveResult() {
+    try {
+      setSavedResults(
+        saveSkyResult(window.localStorage, {
+          id: crypto.randomUUID(),
+          tool,
+          title:
+            output
+              .split('\n')
+              .find((line) => line.trim())
+              ?.replace(/^#+\s*/, '')
+              .slice(0, 120) || '成果',
+          output,
+          createdAt: new Date().toISOString(),
+        }),
+      );
+      setLibraryNotice(
+        'この端末に保存しました。下の「保存した成果」から開けます。',
+      );
+    } catch (e) {
+      setLibraryNotice(
+        e instanceof Error
+          ? e.message
+          : '保存できません。ファイルで保存してください。',
+      );
+    }
+  }
+  function removeResult(id: string) {
+    try {
+      setSavedResults(deleteSkyResult(window.localStorage, id));
+      setLibraryNotice('削除しました。');
+    } catch {
+      setLibraryNotice('削除できませんでした。');
+    }
+  }
   const [text, setText] = useState(initialText),
     [proposal, setProposal] = useState(''),
     [bucket, setBucket] = useState('single'),
@@ -80,7 +147,7 @@ export function MrToolRunner({
     [error, setError] = useState(''),
     [copied, setCopied] = useState(false),
     [editing, setEditing] = useState(false);
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
   const [connected, setConnected] = useState(false),
     [running, setRunning] = useState(false),
     [sampleInput, setSampleInput] = useState(false);
@@ -266,7 +333,8 @@ export function MrToolRunner({
       }
       if (e instanceof OperationRequestError && e.status === 401)
         setNeedsSignin(true);
-      const message = e instanceof Error ? e.message : '入力を確認してください。';
+      const message =
+        e instanceof Error ? e.message : '入力を確認してください。';
       setError(message);
       onFailure?.();
       onOutcome?.({ ok: false, text: message });
@@ -295,8 +363,13 @@ export function MrToolRunner({
     a.click();
     setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
   }
+  const loadRunner = (runner: ReactNode) => (
+    <Suspense fallback={<output>ツールを読み込んでいます…</output>}>
+      {runner}
+    </Suspense>
+  );
   if (tool === 'delivery-local')
-    return (
+    return loadRunner(
       <DeliveryRunner
         onRecord={onRecord}
         onRunningChange={onRunningChange}
@@ -305,7 +378,7 @@ export function MrToolRunner({
       />
     );
   if (tool === 'subscription-ledger')
-    return (
+    return loadRunner(
       <SubscriptionLedgerRunner
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
@@ -313,7 +386,7 @@ export function MrToolRunner({
       />
     );
   if (tool === 'legal-intake')
-    return (
+    return loadRunner(
       <LegalIntakeRunner
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
@@ -321,7 +394,7 @@ export function MrToolRunner({
       />
     );
   if (tool === 'patent-assistant')
-    return (
+    return loadRunner(
       <PatentAssistantRunner
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
@@ -329,7 +402,7 @@ export function MrToolRunner({
       />
     );
   if (tool === 'jev-evaluation')
-    return (
+    return loadRunner(
       <JevEvaluationRunner
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
@@ -338,8 +411,8 @@ export function MrToolRunner({
     );
   return (
     <section className="mr-workbench">
-      {needsSignin && <ExecutionSignin />}
-      <fieldset disabled={running || executionDisabled || needsSignin}>
+      {executionBlocked && <ExecutionSignin state={accessState} />}
+      <fieldset disabled={running || executionDisabled || executionBlocked}>
         <div className="bench-heading">
           <h3>
             {tool === 'coconala'
@@ -520,6 +593,7 @@ export function MrToolRunner({
           <div className="bench-heading">
             <h3>{result ? result.summary : '結果ができました'}</h3>
             <div className="output-actions">
+              <button onClick={saveResult}>この端末に保存</button>
               <button onClick={copy} aria-label="結果をコピー">
                 {copied ? <Check size={17} /> : <Copy size={17} />}
               </button>
@@ -547,10 +621,43 @@ export function MrToolRunner({
           )}
           <Textarea aria-label="生成結果" readOnly rows={8} value={output} />
           <span className="subnote">
-            この結果はページを閉じると消えます。必要なら保存してください。
+            「この端末に保存」でSkyから開き直せます。別端末で使う場合はMarkdownファイルを保存してください。
           </span>
         </div>
       )}
+      <section aria-label="保存した成果">
+        <h3>保存した成果</h3>
+        <p className="subnote">
+          このブラウザに最大20件保存します。同じブラウザを使う人も閲覧できます。共有端末ではファイル保存を使ってください。
+        </p>
+        {libraryNotice && <output>{libraryNotice}</output>}
+        {savedResults.filter((item) => item.tool === tool).length === 0 && (
+          <p>保存した成果はありません。</p>
+        )}
+        {savedResults
+          .filter((item) => item.tool === tool)
+          .map((item) => (
+            <div key={item.id} className="bench-heading">
+              <button
+                onClick={() => {
+                  setOutput(item.output);
+                  setEditing(false);
+                  setResult(null);
+                  setError('');
+                }}
+              >
+                {item.title} ·{' '}
+                {new Date(item.createdAt).toLocaleDateString('ja-JP')}
+              </button>
+              <button
+                onClick={() => removeResult(item.id)}
+                aria-label={`${item.title}を削除`}
+              >
+                削除
+              </button>
+            </div>
+          ))}
+      </section>
     </section>
   );
 }

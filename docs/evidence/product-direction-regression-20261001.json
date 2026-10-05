@@ -1,0 +1,52 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-01",
+  "scope": "Regression audit of SIM/eSIM service onboarding, cloud continuation/usage, and MCP price disclosure after product-direction correction",
+  "environment": "local D1/Worker, local Node integration tests, and Cloudflare Workerd workflow fixtures",
+  "verification": {
+    "simServiceEntitlementAndEntry": {
+      "command": "node --test tests/sim-service-entry.test.mjs tests/rockstar-entitlement-claim.test.mjs",
+      "result": "PASS",
+      "tests": 4
+    },
+    "workerD1Api": {
+      "command": "npm run test:api",
+      "result": "PASS",
+      "assertions": 638
+    },
+    "cloudAgentContinuationAndUsage": {
+      "command": "npm run sky:a2a:workflow:positive",
+      "result": "PASS",
+      "tests": 9
+    },
+    "mcpPricingGate": {
+      "command": "node --test tests/mcp-connector.test.mjs tests/sky-tool-sdk.test.mjs",
+      "result": "PASS",
+      "tests": 12
+    },
+    "typecheck": "PASS",
+    "productLint": "PASS",
+    "productionBuild": "PASS",
+    "skyCheck": "PASS",
+    "designCheck": "PASS",
+    "projectStatusCheck": "PASS"
+  },
+  "scopeClassification": {
+    "implementedLocally": [
+      "multi-channel service-entitlement claim bound to one Rockstar account",
+      "cloud A2A asynchronous continuation, restart recovery, signed usage and itemized receipt reconciliation fixtures",
+      "MCP tool pricing disclosure and fail-closed unknown/paid direct execution gate"
+    ],
+    "notAccepted": [
+      "real SIM purchase/fulfillment or carrier activation",
+      "production provider quote, dispatch, billing or invoice reconciliation",
+      "funded production Wallet and Android Broker fetch/apply of settlement handoff",
+      "supported-device RockstarOS installation and end-to-end eSIM installation"
+    ]
+  },
+  "notes": [
+    "A local entitlement claim test is not proof of a commercial sale or carrier activation.",
+    "Worker/D1 and Workerd results use local fixtures and synthetic provider keys; they are not production billing evidence.",
+    "The Cloud D1 budget pool and device Wallet remain separate ledgers until an accepted funded handoff is wired end to end."
+  ]
+}

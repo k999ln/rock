@@ -1,0 +1,19 @@
+{
+  "schema": "rock-local-ai-profile-v3-validation/1",
+  "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "baseOverlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
+  "planV2PatchSha256": "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
+  "profileV3PatchSha256": "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
+  "results": {
+    "cleanOverlayApplication": "PASS",
+    "typescript": "PASS",
+    "jest": "PASS",
+    "jestTests": 20,
+    "eslint": "PASS",
+    "offlineManifestSourceCheck": "PASS",
+    "androidGradleBuild": "NOT_RUN_NO_JAVA_RUNTIME",
+    "apiV3DeviceTest": "NOT_RUN"
+  },
+  "testCommand": "npm run verify",
+  "testBoundary": "Pinned upstream source with RockstarOS overlays; source checks only, not Android APK compilation, Binder integration, model inference, or physical device acceptance."
+}

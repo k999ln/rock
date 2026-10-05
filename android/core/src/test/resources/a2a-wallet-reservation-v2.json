@@ -1,0 +1,19 @@
+{
+  "schema": "rockstaros-a2a-wallet-reservation/2",
+  "ownerUserId": "alice",
+  "parentJobId": "zema-job-1",
+  "delegationId": "a2a-job-1",
+  "stableTaskId": "a2a-job-1",
+  "agentOrigin": "https://agent.example",
+  "agentName": "Research Agent",
+  "agentVersion": "1.0.0",
+  "currency": "USD",
+  "pricingVersion": "fixture-price-1",
+  "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "priceQuoteDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "limitMinor": 700,
+  "parentBudgetLimitMinor": 900,
+  "createdAt": 1799000000000,
+  "deadlineAt": 1800000000000,
+  "payloadDigest": "394d03d764c77cab75eb2e368b7bac97e74bb882e493dcafd1507ae825461470"
+}

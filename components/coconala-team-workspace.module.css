@@ -569,6 +569,18 @@
 .modal form > .primary {
   justify-self: end;
 }
+.deleteModal.deleteModal {
+  width: min(560px, calc(100vw - 28px));
+}
+.deleteModal > p {
+  font-size: 14px;
+}
+.deleteTitle.deleteTitle {
+  color: #edf1f3;
+  font-size: 16px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
 @media (max-width: 850px) {
   .root {
     width: calc(100% - 28px);
@@ -685,4 +697,25 @@
 .guidance .sources {
   margin: 8px 16px 16px;
   gap: 10px 16px;
+}
+
+@media (max-width: 760px) {
+  .checkPanel :global(.bench-output .bench-heading) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .checkPanel :global(.output-actions) {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .checkPanel :global(.output-actions button) {
+    min-height: 44px;
+    flex: 0 1 auto;
+  }
+}
+
+.checkPanel :global(.bench-output textarea) {
+  background: #162228;
+  border-color: #50616a;
+  color: #edf3f5;
 }

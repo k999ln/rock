@@ -1,0 +1,47 @@
+{
+  "schema": "rock-android-key-attestation-verifier-validation/1",
+  "date": "2026-10-01",
+  "upstream": {
+    "repository": "https://github.com/android/keyattestation",
+    "commit": "55c35040a1b5b72e6d63bfb150c5c68a175c1462",
+    "license": "Apache-2.0"
+  },
+  "implementation": {
+    "path": "services/android-attestation-verifier",
+    "runtime": "JDK 21 isolated JVM HTTP service",
+    "policy": [
+      "production Google attestation roots and fresh online Google revocation status",
+      "exact allowlisted package, minimum version, and signing-certificate SHA-256",
+      "fresh 32-byte challenge and bounded DER chain",
+      "TEE or StrongBox, locked device, Verified Boot VERIFIED",
+      "P-256 attested public key only",
+      "loopback-only by default; authenticated private TLS ingress required for non-loopback"
+    ]
+  },
+  "validation": {
+    "serviceBuild": "passed",
+    "serviceUnitTests": "4/4 passed",
+    "pinnedUpstreamTests": "180/180 passed",
+    "workerVerifierClientTests": "4/4 passed",
+    "attestedKeyD1StoreTests": "5/5 passed against Workerd D1 and repository migrations; atomic enrollment, concurrent idempotent replay, and paid/unrefunded/install-proof/challenge gates",
+    "attestedActivationDomainIntegration": "2/2 passed against the production activation function and real Workerd D1 migrations: verified attestation response -> exact ES256 receipt verification -> atomic key/entitlement persistence; wrong signing key persists neither row and does not consume the challenge",
+    "workerHttpRouteIntegration": "passed in Miniflare Workerd/D1: authenticated eligible-order lookup, install proof, fresh challenge, service binding HTTP request to controlled verifier double, attestation/result/receipt validation, atomic key and entitlement persistence, and entitlement status readback",
+    "legacyWorkerD1ApiAssertions": "424 passed, including dynamic Android attestation route acceptance with a controlled service binding",
+    "integrationAttempt": "The first route attempt exposed unsupported redirect:error behavior in Workers Fetch. The client now uses redirect:manual and rejects all 3xx responses, keeping verifier credentials from following redirects. The controlled verifier double was invoked and the dynamic HTTP route completed through D1 persistence.",
+    "typecheck": "passed after shared activation extraction",
+    "lintProduct": "passed after shared activation extraction",
+    "fullNodeSuite": "595/595 passed after Worker route and D1 concurrency fixes",
+    "databaseCheck": "passed (109 tables)",
+    "repositoryVerify": "npm run verify passed after the dynamic route and D1 concurrency fixes: Node 595/595, Fashion 19/19, production build, bundle/assets checks, and Worker/D1 API 424 assertions.",
+    "commands": [
+      "JAVA_HOME=<JDK21> GRADLE_USER_HOME=<temporary> ./gradlew test --no-daemon (service)",
+      "JAVA_HOME=<JDK21> GRADLE_USER_HOME=<temporary> ./gradlew test --no-daemon (vendor/keyattestation)"
+    ]
+  },
+  "notAccepted": [
+    "Android Broker, AndroidKeyStore enrollment, and AIDL/Binder integration",
+    "production secrets, configured signing digest, TLS ingress, or deployment",
+    "Android SDK/APK/instrumentation build and physical device enrollment",
+    "carrier/OEM signed eUICC install evidence, provider sandbox, and live eSIM"
+  ]
+}

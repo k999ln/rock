@@ -1,6 +1,6 @@
 # RockstarOS — 製品目的から逆算した開発軸
 
-状態: 利用者が2026-09-15から2026-09-16に明示した製品目的の正本補助資料。**製品の中核は、高性能で交換可能なローカルLLMとoffline agent runtimeを備えたAIネイティブOS**である。Sky、Zema、便利さを増やすシステム、Wallet、ファンド、IP／動画、ゲーム、VRは、その中核を実用化・検証・拡張する接続システムとして扱う。
+状態: 2026-09-15から2026-09-16に記録した製品目的の履歴・補助資料。2026-10-02以降、製品の主商品は物理SIM/eSIM購入を入口にRockstarOS、Sky、Zema、クラウドLLM/Agentへアクセスするサービスであり、本書の「端末内LLM/OSを製品中核とする」記述は技術基盤の位置付けとしてのみ読む。製品・配布・onboardingの競合記載は[現行製品ベース](product-baseline.md)と[SIM/eSIM claim設計](sim-service-entitlement-claims.md)に従う。
 
 ## 1. 最上位目的
 

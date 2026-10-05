@@ -3,8 +3,9 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type SubmitEvent, type ReactNode } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, Check, Copy, CreditCard, ExternalLink, Package, RefreshCw, ShoppingBag, Store } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Copy, CreditCard, ExternalLink, Package, RefreshCw, ShoppingBag, Smartphone, Store } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
+import { EsimPurchaseSetup } from '@/components/esim-purchase-setup';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { marketplaceCommissionMinor } from '@/lib/sky-marketplace-policy';
 import styles from '@/components/sky-commerce.module.css';
@@ -139,7 +140,7 @@ function ErrorNotice({ error, returnTo }: { error: Error | null; returnTo: strin
 }
 
 export function CommerceNavigation() {
-  return <nav className={styles.navigation} aria-label="マーケットの管理"><Link href="/sky/purchases"><ShoppingBag size={16} /> 購入したツール</Link><Link href="/sky/sell"><Store size={16} /> 販売する</Link></nav>;
+  return <nav className={styles.navigation} aria-label="マーケットの管理"><Link href="/sky/esim"><Smartphone size={16} /> eSIMプラン</Link><Link href="/sky/purchases"><ShoppingBag size={16} /> 購入したツール</Link><Link href="/sky/sell"><Store size={16} /> 販売する</Link></nav>;
 }
 
 function TestMode({ mode }: { mode: CommerceStatus['mode'] }) {
@@ -232,6 +233,7 @@ function OrderCard({ order, seller = false, busy = false, onRefresh, onRefund }:
     {copyError && <p className={styles.error} role="alert">コピーできませんでした。接続先：<span className={styles.endpoint}>{order.endpointUrl}</span></p>}
     {!seller && order.status === 'paid' && !order.access && <p className={styles.notice}>購入済みですが、現在このツールの提供状況を確認しています。</p>}
     {!seller && order.access && <p className={styles.subtle}>{order.endpointUrl ? '購入済みです。対応環境と提供元の案内を確認して、AIとの接続設定へ進んでください。' : '購入済みです。導入方法は提供元の利用条件・案内をご確認ください。'}</p>}
+    {!seller && order.status === 'paid' && <EsimPurchaseSetup orderId={order.id} />}
     {!seller && <details className={styles.purchaseConditions}>
       <summary>購入時の販売・返金条件</summary>
       {terms && <a href={terms} target="_blank" rel="noreferrer" className={styles.textLink}>利用・販売条件を開く <ExternalLink size={13} /></a>}

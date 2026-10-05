@@ -1,0 +1,17 @@
+---
+description: Route substantial engineering work through the bounded Agent Control Plane and independent verification
+alwaysApply: true
+---
+
+# Agent Control Plane workflow
+
+- Treat `AGENTS.md`, repository contracts, tests, and deterministic policy as higher authority than model output.
+- For substantial work, identify dependencies and split only independent slices. Prefer the fewest workers that can avoid overlapping files; the initial concurrency cap is four.
+- Jev is an advisory workflow/routing signal only. It never grants capability, authorizes external side effects, weakens review, or overrides a deterministic block.
+- Never send secrets, credentials, wallet material, confidential owner data, or production-only state to remote decision models or cloud coding agents.
+- Repository-writing work stays branch/PR-only. Never push directly to `main`, merge, deploy production, rotate credentials, move real funds, or execute destructive operations.
+- For medium/high-risk changes, use an implementation worker and a distinct verifier. Authentication, permissions, secrets, finance, signing, and destructive boundaries require adversarial security review.
+- If pstack is already installed, use `/poteto-mode` for implementation discipline and `/interrogate` for final adversarial review. Do not install arbitrary plugins during an unattended run.
+- If pstack is unavailable, use the equivalent sequence: inspect existing implementation -> define acceptance -> make the smallest compatible change -> run narrow tests -> run repository-required verification -> independent review.
+- Do not call a model's self-report a verification result. Preserve concrete test, CI, diff, and PR evidence.
+- Stop and surface uncertainty when the task requires owner approval or when provider/runtime access is unavailable.

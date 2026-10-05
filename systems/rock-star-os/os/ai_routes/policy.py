@@ -12,6 +12,12 @@ import uuid
 MAX_INPUT = 65536
 MAX_UNITS = 10**12
 TTL = 120
+CAPABILITY_MAX_AGE = 30
+TARGET_REQUIREMENTS = {
+    'local': ('compute.local_inference', 'storage.model_install'),
+    'pc_usb': ('compute.remote_pc',),
+    'cloud': ('network.internet',),
+}
 
 
 class Denied(PermissionError): pass
@@ -61,7 +67,8 @@ def authority(value):
 def route(value):
     fields(value, ('route_id', 'target', 'provider_id', 'model_id', 'model_revision', 'price_version',
                    'max_cost_microusd', 'max_input_bytes', 'max_output_tokens', 'memory_mib',
-                   'storage_mib', 'retention_policy', 'cancellation_policy', 'simulation_only'))
+                   'storage_mib', 'retention_policy', 'cancellation_policy', 'simulation_only',
+                   'required_features'))
     for name in ('route_id', 'provider_id', 'model_id', 'model_revision', 'price_version',
                  'retention_policy', 'cancellation_policy'): ident(value[name])
     if value['target'] not in ('local', 'pc_usb', 'cloud') or value['simulation_only'] is not True:
@@ -71,14 +78,39 @@ def route(value):
     integer(value['memory_mib'], 0, 1048576); integer(value['storage_mib'], 0, 1048576)
     if value['target'] == 'local' and value['max_cost_microusd'] != 0:
         raise ValueError('local route has no external compute charge')
+    required = value['required_features']
+    if type(required) is not list or not 1 <= len(required) <= 16 or len(set(required)) != len(required):
+        raise ValueError('bounded required device capabilities required')
+    for feature in required: ident(feature)
+    if not set(TARGET_REQUIREMENTS[value['target']]).issubset(required):
+        raise ValueError('route omits mandatory execution capability')
     return json.loads(canonical(value))
 
 
-def capabilities(value):
-    fields(value, ('online', 'pc_connected', 'memory_mib', 'storage_mib', 'local_models', 'evidence_id'))
+def capabilities(value, now=None):
+    fields(value, ('schema_version', 'source', 'platform', 'observed_at', 'expires_at', 'online',
+                   'pc_connected', 'features', 'memory_mib', 'storage_mib', 'local_models', 'evidence_id'))
+    if type(value['schema_version']) is not int or value['schema_version'] != 1:
+        raise ValueError('unsupported capability snapshot version')
+    ident(value['source']); ident(value['evidence_id'])
+    if value['platform'] not in ('android', 'ios', 'ipados', 'linux', 'windows', 'macos', 'web', 'unknown'):
+        raise ValueError('unsupported device platform')
+    observed = integer(value['observed_at'], 1, 2**53 - 1)
+    expires = integer(value['expires_at'], 1, 2**53 - 1)
+    if expires <= observed or expires - observed > CAPABILITY_MAX_AGE:
+        raise ValueError('invalid capability observation lifetime')
+    if now is not None:
+        now = integer(now, 1, 2**53 - 1)
+        if observed > now or now >= expires: raise Denied('device capability observation is stale; recheck device')
     if type(value['online']) is not bool or type(value['pc_connected']) is not bool:
         raise ValueError('explicit connectivity state required')
     integer(value['memory_mib'], 0, 1048576); integer(value['storage_mib'], 0, 1048576); ident(value['evidence_id'])
+    features = value['features']
+    if type(features) is not dict or len(features) > 64: raise ValueError('bounded device capability set required')
+    for name, supported in features.items():
+        ident(name)
+        if supported is not True and supported is not False and supported is not None:
+            raise ValueError('capability state must be true, false, or unknown')
     models = value['local_models']
     if type(models) is not list or len(models) > 64 or len(set(models)) != len(models):
         raise ValueError('bounded installed model revisions required')
@@ -94,19 +126,22 @@ def make_plan(*, authority_id, owner_ref, device_ref, key, selected_text, select
     now = integer(now, 1, 2**53 - 1)
     if type(allow_external) is not bool: raise ValueError('explicit external-data choice required')
     integer(max_cost_microusd)
-    model = route(selected_route); caps = capabilities(capability_evidence); selected = input_identity(selected_text)
+    model = route(selected_route); caps = capabilities(capability_evidence, now); selected = input_identity(selected_text)
     if selected['bytes'] > model['max_input_bytes']: raise Denied('selected input exceeds model capability')
     target = model['target']
     if target != 'local' and not allow_external: raise Denied('external data consent absent; no automatic fallback')
     if target == 'cloud' and not caps['online']: raise Denied('cloud unavailable offline; no automatic fallback')
     if target == 'pc_usb' and not caps['pc_connected']: raise Denied('selected PC unavailable; no automatic fallback')
+    missing = [feature for feature in model['required_features'] if caps['features'].get(feature) is not True]
+    if missing: raise Denied('required device capability missing, false, or unknown: ' + ','.join(missing))
     if target == 'local' and (model['model_id'] + '@' + model['model_revision'] not in caps['local_models'] or
                             caps['memory_mib'] < model['memory_mib'] or caps['storage_mib'] < model['storage_mib']):
         raise Denied('selected local model capability unavailable; no automatic fallback')
     if model['max_cost_microusd'] > max_cost_microusd: raise Denied('quoted upper bound exceeds explicit cost cap')
     return {'schema_version': 1, 'authority_id': authority_id, 'owner_ref': owner_ref, 'device_ref': device_ref,
             'key': key, 'input': selected, 'route': model, 'route_sha256': digest(model),
-            'capability_sha256': digest(caps), 'external_data_approved': allow_external,
+        'capability_sha256': digest(caps), 'capability_evidence_id': caps['evidence_id'],
+        'capability_expires_at': caps['expires_at'], 'external_data_approved': allow_external,
             'user_cap_microusd': max_cost_microusd, 'reserved_microusd': model['max_cost_microusd'],
             'currency': 'USD', 'unit': 'micro-USD', 'issued_at': now, 'expires_at': now + TTL,
             'simulation_only': True, 'actual_model_execution': False}

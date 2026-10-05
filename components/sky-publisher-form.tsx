@@ -1,8 +1,9 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites sign-in is a top-level gateway route. */
 
 import { useEffect, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -42,6 +43,9 @@ export default function SkyPublisherForm({
   embedded?: boolean;
 }) {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const [access, setAccess] = useState<'checking' | 'ready' | 'signin' | 'unavailable'>('checking');
+  const [accessAttempt, setAccessAttempt] = useState(0);
   const importedProductUrl = parseProductHuntUrl(
     searchParams.get('productUrl') ?? '',
   );
@@ -75,27 +79,30 @@ export default function SkyPublisherForm({
   const [inspectionError, setInspectionError] = useState('');
 
   useEffect(() => {
-    let active = true;
-    void fetch('/api/sky/submissions', { cache: 'no-store' })
+    const controller = new AbortController();
+    void fetch('/api/sky/submissions', { cache: 'no-store', signal: controller.signal })
       .then(async (response) => {
-        if (!response.ok) return null;
-        return (await response.json()) as {
+        if (controller.signal.aborted) return;
+        if (response.status === 401) {
+          setAccess('signin');
+          return;
+        }
+        if (!response.ok) throw new Error('UNAVAILABLE');
+        const result = await response.json() as {
           submissions?: { providerName: string; supportUrl: string }[];
         };
+        if (controller.signal.aborted) return;
+        if (!Array.isArray(result.submissions)) throw new Error('UNAVAILABLE');
+        setAccess('ready');
+        const previous = result.submissions[0];
+        if (previous?.providerName && previous?.supportUrl)
+          setPreviousProvider({ providerName: previous.providerName, supportUrl: previous.supportUrl });
       })
-      .then((result) => {
-        const previous = result?.submissions?.[0];
-        if (active && previous?.providerName && previous?.supportUrl)
-          setPreviousProvider({
-            providerName: previous.providerName,
-            supportUrl: previous.supportUrl,
-          });
-      })
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, []);
+      .catch(() => {
+        if (!controller.signal.aborted) setAccess('unavailable');
+      });
+    return () => controller.abort();
+  }, [accessAttempt]);
 
   function toggle<T extends string>(items: T[], item: T, checked: boolean) {
     return checked ? [...items, item] : items.filter((value) => value !== item);
@@ -107,6 +114,7 @@ export default function SkyPublisherForm({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ endpointUrl: value }),
     });
+    if (response.status === 401) setAccess('signin');
     const result = (await response.json()) as McpInspection & {
       error?: string;
     };
@@ -118,6 +126,7 @@ export default function SkyPublisherForm({
   }
 
   async function checkConnection() {
+    if (access !== 'ready') return;
     setChecking(true);
     setInspectionError('');
     try {
@@ -138,7 +147,7 @@ export default function SkyPublisherForm({
 
   async function submit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (pending) return;
+    if (pending || access !== 'ready') return;
     const formElement = event.currentTarget;
     setPending(true);
     setMessage('');
@@ -171,6 +180,7 @@ export default function SkyPublisherForm({
           rightsConfirmed: form.get('rightsConfirmed') === 'on',
         }),
       });
+      if (response.status === 401) setAccess('signin');
       const result = (await response.json()) as {
         error?: string;
         mcpInspection?: McpInspection | null;
@@ -238,6 +248,18 @@ export default function SkyPublisherForm({
             <MonitorUp size={17} />
             PCのコード・GitHub・OpenAPIから登録する
           </Link>
+          {access !== 'ready' && (
+            <div className="rock-service-notice" aria-live="polite">
+              <strong>{access === 'signin' ? 'サインインしてから、掲載情報を入力してください。' : access === 'checking' ? '掲載申請の利用条件を確認しています。' : '掲載申請に接続できませんでした。'}</strong>
+              <p>申請内容は本人のアカウントに保存し、審査後に公開します。APIキーやパスワードは入力しないでください。</p>
+              {access === 'signin' && (
+                <a className="rock-button rock-button-dark" target="_top" href={`/signin-with-chatgpt?return_to=${encodeURIComponent(pathname + (searchParams.size ? '?' + searchParams.toString() : ''))}`}>サインインして申請する</a>
+              )}
+              {access === 'unavailable' && (
+                <button type="button" className="rock-button rock-button-subtle" onClick={() => { setAccess('checking'); setAccessAttempt((value) => value + 1); }}>接続を再確認</button>
+              )}
+            </div>
+          )}
           {previousProvider && (
             <div className="sky-publisher-reuse">
               <span>前回の提供者情報を再利用できます</span>
@@ -253,7 +275,7 @@ export default function SkyPublisherForm({
               </button>
             </div>
           )}
-          <fieldset disabled={pending}>
+          <fieldset disabled={pending || access !== 'ready'}>
             <legend>
               <span>1</span>何を提供するか
             </legend>
@@ -324,7 +346,7 @@ export default function SkyPublisherForm({
               </label>
             </div>
           </fieldset>
-          <fieldset disabled={pending}>
+          <fieldset disabled={pending || access !== 'ready'}>
             <legend>
               <span>2</span>どう接続するか
             </legend>
@@ -371,7 +393,7 @@ export default function SkyPublisherForm({
                 <button
                   type="button"
                   className="rock-button rock-button-subtle"
-                  disabled={checking || pending || !endpointUrl.trim()}
+                  disabled={checking || pending || access !== 'ready' || !endpointUrl.trim()}
                   onClick={() => void checkConnection()}
                 >
                   <ShieldCheck size={16} />
@@ -455,7 +477,7 @@ export default function SkyPublisherForm({
               {selectedPermissions.length === 0 && <small role="alert">必要な権限を1つ以上選んでください。</small>}
             </div>
           </fieldset>
-          <fieldset disabled={pending}>
+          <fieldset disabled={pending || access !== 'ready'}>
             <legend>
               <span>3</span>利用条件を伝える
             </legend>
@@ -528,6 +550,7 @@ export default function SkyPublisherForm({
             className="rock-button rock-button-dark"
             disabled={
               pending ||
+              access !== 'ready' ||
               selectedTargets.length === 0 ||
               selectedPermissions.length === 0
             }

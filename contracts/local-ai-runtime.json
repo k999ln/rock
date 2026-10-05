@@ -2,7 +2,8 @@
   "schemaVersion": 1,
   "routeId": "local-action-assistant",
   "executionTarget": "local",
-  "apiVersion": 2,
+  "apiVersion": 4,
+  "packageVersionCode": 3,
   "androidPackage": "com.localactionassistant",
   "androidService": "com.localactionassistant.RockLocalAiService",
   "androidPermission": "dev.rock.permission.USE_LOCAL_AI",
@@ -12,6 +13,19 @@
   "engineVersion": "0.12.9",
   "modelFormat": "GGUF",
   "modelBundled": false,
+  "modelHandoff": {
+    "operation": "installAndLoadModel",
+    "transport": "read_only_ParcelFileDescriptor",
+    "sourcePathAccepted": false,
+    "remoteUrlAccepted": false,
+    "expectedFields": ["profileId", "weightsSha256", "artifactBytes"],
+    "runtimeCopiesToPrivateStorage": true,
+    "runtimeRehashesBeforeLoad": true,
+    "runtimeReportsLoadedProfile": true,
+    "maxArtifactBytes": 4294967296,
+    "requiredFreeSpaceReserveBytes": 33554432,
+    "timeoutSeconds": 900
+  },
   "releaseNetwork": "none",
   "tools": [
     "get_current_datetime",
@@ -49,9 +63,11 @@
   "aospModule": "RockLocalActionAssistant",
   "aospStagingPath": "vendor/rockstaros-local-ai",
   "aospSigning": "testkey_then_release_key_mapping",
-  "sourceStatus": "pinned_overlay_extensions_native_apk_built",
-  "osBridgeStatus": "plan_v2_emulator_and_physical_pixel_verified",
-  "signedApkStatus": "unsigned_release_plan_v2_reviewed_test_signed_emulator_and_physical_pixel",
+  "sourceStatus": "pinned_v2_artifact_existing_v4_source_tested_not_native_built",
+  "osBridgeStatus": "model_profile_hash_bound_v4_fd_handoff_source_tested_not_native_compiled",
+  "signedApkStatus": "v4_source_changes_not_built_or_signed",
   "imageStatus": "not_built",
-  "deviceInferenceStatus": "physical_pixel_plan_tool_result_history_pass_not_os_image"
+  "deviceInferenceStatus": "physical_pixel_plan_tool_result_history_pass_api_v2_not_v3_not_os_image",
+  "profileV3Validation": "docs/evidence/local-ai-profile-v3-validation-20261001.json",
+  "modelHandoffV4Validation": "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json"
 }

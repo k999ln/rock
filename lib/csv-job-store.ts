@@ -1,4 +1,7 @@
+import { CsvRequestLimitError } from './csv-request-limit';
 import { env } from 'cloudflare:workers';
+import { CSV_TRIAL_SAMPLE } from './csv-trial-sample';
+import { SkyPaymentError } from './sky-stripe';
 import {
   CsvError,
   csvReportHtml,
@@ -194,11 +197,21 @@ export async function createCsvJob(
     bytes: Uint8Array;
     specification: unknown;
     sample: boolean;
+    trial?: boolean;
   },
 ) {
   const { db, bucket } = resources();
   if (!/^[0-9a-f-]{36}$/i.test(input.id))
     throw new CsvJobError(400, 'ID', '受付番号が不正です。');
+  if (
+    input.trial &&
+    (input.sample || new TextDecoder().decode(input.bytes) !== CSV_TRIAL_SAMPLE)
+  )
+    throw new CsvJobError(
+      400,
+      'TRIAL_SAMPLE',
+      '50円試験には指定のサンプルCSVを使ってください。',
+    );
   const name = input.name.trim().slice(0, 180) || 'input.csv';
   const specification = csvSpecification(input.specification);
   const decoded = decodeCsv(input.bytes);
@@ -251,7 +264,7 @@ export async function createCsvJob(
         hash,
         decoded.encoding,
         specificationJson,
-        input.sample ? 0 : 300000,
+        input.sample ? 0 : input.trial ? 5000 : 300000,
         now + RETENTION_MS,
         now,
         now,
@@ -409,7 +422,14 @@ export async function acceptCsvJob(
   const sample = row.payment_status === 'sample';
   const method = input.paymentMethod?.trim().slice(0, 40) ?? '';
   const reference = input.paymentReference?.trim().slice(0, 120) ?? '';
-  if (!sample && (!method || reference.length < 4))
+  const stripePaid = row.payment_status === 'stripe_verified';
+  if (!sample && row.quote_minor === 5000 && !stripePaid)
+    throw new CsvJobError(
+      402,
+      'PAYMENT_REQUIRED',
+      '50円試験は決済サービスで支払いを確認してから開始します。',
+    );
+  if (!sample && !stripePaid && (!method || reference.length < 4))
     throw new CsvJobError(
       400,
       'PAYMENT_EVIDENCE',
@@ -421,9 +441,9 @@ export async function acceptCsvJob(
       `UPDATE csv_jobs SET status = 'accepted', payment_status = ?, payment_method = ?, payment_reference = ?, accepted_at = COALESCE(accepted_at, ?), revision = revision + 1, updated_at = ? WHERE id = ? AND user_id = ? AND revision = ? AND status IN ('quoted', 'quality_failed')`,
     )
     .bind(
-      sample ? 'sample' : 'manual_verified',
-      sample ? null : method,
-      sample ? null : reference,
+      sample ? 'sample' : stripePaid ? 'stripe_verified' : 'manual_verified',
+      sample ? null : stripePaid ? 'Stripe' : method,
+      sample ? null : stripePaid ? row.payment_reference : reference,
       now,
       now,
       id,
@@ -505,6 +525,20 @@ export async function csvArtifact(user: string, id: string, kind: string) {
 }
 
 export function csvApiError(error: unknown) {
+  if (error instanceof CsvRequestLimitError)
+    return Response.json(
+      {
+        error: '操作が続いています。少し待って再試行してください。',
+        code: 'RATE_LIMITED',
+      },
+      {
+        status: 429,
+        headers: {
+          'Cache-Control': 'no-store',
+          'Retry-After': String(error.retryAfter),
+        },
+      },
+    );
   if (error instanceof Error && error.message === 'UNAUTHORIZED')
     return Response.json(
       {
@@ -517,6 +551,11 @@ export function csvApiError(error: unknown) {
     return Response.json(
       { error: 'このサイトから操作してください。', code: 'ORIGIN' },
       { status: 403, headers: { 'Cache-Control': 'no-store' } },
+    );
+  if (error instanceof SkyPaymentError)
+    return Response.json(
+      { error: error.message, code: 'PAYMENT' },
+      { status: error.status, headers: { 'Cache-Control': 'no-store' } },
     );
   if (error instanceof CsvJobError)
     return Response.json(
