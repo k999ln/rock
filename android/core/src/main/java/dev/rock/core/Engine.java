@@ -148,6 +148,9 @@ public final class Engine {
         return selected.toolId;
     }
 
+    /** Read-only list of the pinned Tool versions of RECIPE, for the Broker capability observation. */
+    public static List<String> toolIds() { return java.util.Collections.unmodifiableList(java.util.Arrays.asList(TOOLS.clone())); }
+
     public static String digest(String value) {
         try {
             byte[] bytes = MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8));
@@ -365,6 +368,19 @@ public final class Engine {
             if ("running".equals(r.get("state")) && ticket.token.equals(r.get("token"))) {
                 db.execute("UPDATE runs SET state=?,token=NULL,boot=NULL,deadline=NULL,error='INTERRUPTED' WHERE work_id=? AND step=?", ticket.attempt >= 3 ? "needs_review" : "queued", ticket.workId, ticket.step);
                 event(ticket.workId, ticket.step, "interrupted");
+            }
+            return null;
+        });
+    }
+
+    /** Broker stop for a claimed run whose prerequisite (for example its pinned model) is unusable. Never auto-retried. */
+    public void hold(Ticket ticket, String reason) {
+        if (reason == null || !reason.matches("[A-Z_]{1,40}")) throw new IllegalArgumentException("INVALID_HOLD_REASON");
+        db.transaction(() -> {
+            Map<String,String> r = run(ticket.workId, ticket.step);
+            if ("running".equals(r.get("state")) && ticket.token.equals(r.get("token"))) {
+                db.execute("UPDATE runs SET state='needs_review',token=NULL,boot=NULL,deadline=NULL,error=? WHERE work_id=? AND step=?", reason, ticket.workId, ticket.step);
+                event(ticket.workId, ticket.step, "held");
             }
             return null;
         });
