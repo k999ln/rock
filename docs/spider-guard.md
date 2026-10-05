@@ -34,6 +34,10 @@ GitHub と同じ PR head `a85a25e`、control commit `b6ab1988`、Gitleaks 8.30.1
 
 残る 4 種は `gx00-host-gate-independent-review.json` の artifact digest（4 出現）、`sky-csv-storage-hardening.json` の API log digest（5）、`hub-final-9abf78a/launch` の closed authenticator DB digest（8）、`hub-wallet/financial-game-ui-4e31554/evidence.json` の file digest（4）。元 artifact bytes を照合できていないため、自動で安全と確定しない。実 credential と確認できたもの、第三者 vendor の例示として確認したものはともに 0 だが、これを全履歴の安全宣言にしない。現在のファイル削除では祖先 commit の候補は消えない。包括除外、policy 更新、履歴改変、main 統合は行っていない。
 
+### MR 配布物の回帰修正（2026-10-05）
+
+`eb86040d` の [repair regressions job](https://github.com/k999ln/rock/actions/runs/37273780742/job/111646221291) は source 試験通過後、MR ZIP の再生成一致で停止した。ZIP 内の `mcp_server.py` が現行 source と異なっていたため、既存 `scripts/package-mr.py` で再生成した。全 19 member が source bytes と一致し、再生成を繰り返しても同じ bytes になり、生成 Git blob も当該 CI の再生成結果と一致する。MR 関連 19 テストは成功した。source の検査や CI 条件は変更していない。新 head の同一 SHA CI は再実行待ちであり、先行検証を新 head の合格として扱わない。
+
 ### CodeQL の二指摘の source review
 
 - Python `tests/test_spider_repository_scan.py:187` は `TemporaryDirectory` 内の Git fixture で、`git rev-parse HEAD` が返した公開 commit SHA と固定 `file:rule:line` metadata を `.gitleaksignore` fingerprint へ保存する。秘密風 fixture 本体をその行で保存しているのではなく、候補側の ignore で履歴走査を回避できないことを検証する。秘密漏えいとしては false positive と判断する。

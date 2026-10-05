@@ -1,3 +1,7 @@
+## 2026-10-05 — SPIDER 回帰 CI の MR 配布 ZIP 同期
+
+PR #52 の `eb86040d` に対する repair regressions は MR の source 試験を通過後、`public/toolkits/mr-toolkit.zip` の再生成一致検査で停止した。保存 ZIP 内の `mcp_server.py` だけが現行 source と異なっていたため、既存の `package-mr.py` で同期した。生成 blob は GitHub job の再生成結果と一致し、再生成の決定性、ZIP 全 19 member の source bytes、MR 関連 19 テストを確認した。検査の除外や閾値変更、security 設定変更は行っていない。新 head の GitHub CI 再実行は別途必要で、履歴 4 値/21 出現の元 bytes 未照合と CodeQL dismissal 未実施は維持する。
+
 ## 2026-10-05 — SPIDER 独立ブランチへ PR #62 の統合候補を同期
 
 main 未反映の PR #62 候補 `dee0ab70`（19 PR と Android compile 修正）を、SPIDER の独立ブランチへローカル merge した。最新の依存・undici override・license inventory 生成、Campus/AI schema、SIM/eSIM 製品方針を保持し、SPIDER の実装と履歴検査の残事項を併存させた。必要な追跡済み asset の bytes を復元し、進捗 104/161、DB 6 境界/148 tables、Web schema 76 tables を再生成・検査した。MCP ZIP と SDK 0.1.3 tgz を合流後の source へ同期し、typecheck、全 Node 942 件（941 pass / 1 skip）、project/database/schema/baseline/design/repository/version/release の source 整合が成功。公開条件 ready 0/6、実機未受入、SPIDER の未照合 4 値/21 出現と GitHub security check は未解決のまま維持する。push/main merge・security 設定変更は行っていない。
