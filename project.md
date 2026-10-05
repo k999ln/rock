@@ -2,7 +2,7 @@
 
 GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/repository-cleanup`へ分離。主担当Git / CI / Operations（ROCK）。Site配備コピー101件とBilling dry-run 2件、計69,153,906 bytesをGit対象外へ移した。元の作業木のeSIM・決済差分、設計原本・旧版、受入証拠、固定vendor、配布assetは保持。Siteはsource build後に試験し、CIでnested lockをinstallする。生成物再混入のindex検査、API sourceを隠さないignore、buildコピーに依存しないWEB05証拠リンク、崩れていたPROJECTSのAMC/CSV表を整備。[保存方針・再生成・復旧](docs/git-consolidation.md#repository-storage-policy)。
 
-`npm run repository:check`合格。旧indexの103生成物は拒否し、整理後indexとローカル再build出力の併存は合格。Site public素材76件は旧distとbyte一致、`npm run test:avocado-mini-site`は13 route再build・18/18合格。`python3 scripts/verify-rocketstar-archive.py --git`は14/14合格。`TMPDIR=/private/tmp npm run verify`はtypecheck前まで通過後、`TS5033 ENOSPC`（tsconfig.tsbuildinfoを書込不可）で停止し、全体合格とはしない。詳細logはGit管理外の`/private/tmp/rock-cleanup-verify.log`。GitHub上の同一PR headで全体CIを確認する。main統合と公開配備は本整理に含めない。
+`npm run repository:check`合格。旧indexの103生成物は拒否し、整理後indexとローカル再build出力の併存は合格。Site public素材76件は旧distとbyte一致、`npm run test:avocado-mini-site`は13 route再build・18/18合格。`python3 scripts/verify-rocketstar-archive.py --git`は14/14合格。`TMPDIR=/private/tmp npm run verify`はtypecheck前まで通過後、`TS5033 ENOSPC`（tsconfig.tsbuildinfoを書込不可）で停止し、全体合格とはしない。詳細logはGit管理外の`/private/tmp/rock-cleanup-verify.log`。GitHub作業branchへ整理commit `d2568fb703ee472f10c11a597e8ed3a155ec67ac`を保存済み。GitHub上の同一PR headで全体CIを確認する。main統合と公開配備は本整理に含めない。
 
 ## 2026-10-05 — main の同時 AMC 更新を保持
 

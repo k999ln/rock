@@ -4562,7 +4562,7 @@
     "stage": "focused_checks_passed_remote_full_verify_pending",
     "sourceMainSha": "592daeea322cd47aa189b67dd689e323662c0c67",
     "scope": "Remove reproducible Site builds and billing dry-run outputs; retain design archives, runtime, fixtures and evidence.",
-    "githubSaved": false,
+    "githubSaved": true,
     "mainIntegrated": false,
     "published": false,
     "nextAction": "Complete full verification on the exact PR head in GitHub; review and merge separately. No Site publication.",
@@ -4575,6 +4575,8 @@
       "archive": "verify-rocketstar-archive.py --git: 14/14 passed",
       "fullVerifyLocal": "Stopped at typecheck: TS5033 ENOSPC writing tsconfig.tsbuildinfo; preceding checks passed. Not a full verify pass.",
       "fullVerifyGitHub": "pending; verify current PR head after push"
-    }
+    },
+    "branch": "codex/repository-cleanup",
+    "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac"
   }
 }
