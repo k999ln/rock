@@ -3180,6 +3180,22 @@
         "tests/owner-revision-json-store.test.mjs",
         "docs/evidence/pr-consolidation-20261005.json"
       ]
+    },
+    {
+      "id": "MAT16",
+      "title": "avokadoProのNVIDIA搭載小型PC設計・調達・AI/PCゲーム/熱/復旧受入",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json",
+        "docs/evidence/avokado-pro-pc-design.json"
+      ],
+      "primaryOwner": "ROCK",
+      "rockDeliverable": "候補構成・調達BOM・組立/冷却/受入手順",
+      "externalDependency": "OEM/ODM供給、exact SKU QVL/driver/firmware、見積",
+      "ownerAction": "見積後の購入・製造・販売条件",
+      "acceptance": "同一Pro実機でAI/ゲーム/熱/保存復旧を独立受入。設計だけでは完了にしない"
     }
   ],
   "phaseGates": [
@@ -4408,5 +4424,15 @@
     "evidence": "docs/evidence/avocadomini-domain.json",
     "githubBranch": "codex/avocadomini-domain",
     "validation": "Site build 13 routes, Site tests 18/18, npm run verify exit 0, final baseline check passed"
+  },
+  "avokadoProPc": {
+    "task": "MAT16",
+    "specification": "data/avokado-pro-pc.json",
+    "designSaved": true,
+    "githubSaved": false,
+    "mainMerged": false,
+    "publicPageUpdated": false,
+    "physicallyAssembled": false,
+    "verification": "repository_verify_passed_design_only"
   }
 }

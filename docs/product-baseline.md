@@ -1,3 +1,7 @@
+## 2026-10-05 avokadoProの独立小型PC方針
+
+利用者指定により、ProはNVIDIA搭載のMac miniのような据え置き小型PCとして、AIとPCゲーム双方を重視する。販売目標は80万円/台（回答80の文脈解釈、税込/税別等未定）。[構成・組立設計](avokado-pro-pc-design.md)へ候補部品、OEM試作とODM販売筐体、冷却・互換性・受入を記録した。MiniはProなしの単体動作を目指す既存R5を維持する。新task MAT16はMini MAT15と別受入であり、購入・組立・生産・公開・受注済みではない。
+
 ## 2026-10-05 公開ホームページの独自ドメイン
 
 利用者は `avocadomini.si` に正本GitHub `k999ln/rock` のホームページを公開するよう明示した。最新mainの `sites/avocado-mini` を、既に同ドメインが登録された現アカウントのSiteへ配備し、既存のページ構成を維持する。Sites標準URL `https://avocadomini.noellesugar1.chatgpt.site` での配備成功と、独自ドメインのDNS・TLS認証待ちを区別する。旧kirin-999 Siteは現在の接続ではNOT_FOUNDであり変更しない。DNS実値・復旧・残る条件は[Web workstream](workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13)を参照する。

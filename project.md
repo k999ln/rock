@@ -1,3 +1,7 @@
+## 2026-10-05 avokadoProのNVIDIA小型PC構成・組立設計
+
+利用者指定: NVIDIA搭載、Mac miniのような据え置き小型PC、AIとPCゲーム両方、販売目標80万円/台（価格回答80の文脈解釈、税込/税別未定）。Material Invention / avocadoMiniを主担当とし、Mini MAT15から独立したMAT16を追加。main `9f64aee3de9cc74e6b6e7eae34052780e000c296`基点で、Core Ultra 9 / RTX 5080 Laptop 16GB / RAM128GB / SSD2TB×2の構成候補とOEM基準試作→ODM筐体の手順を保存した。確定BOM、見積、購入、物理組立、熱/AI/ゲーム受入、サイト公開は未実施。次は国内供給見積・メモリーQVL・ODM基板供給を確認。設計索引とbaseline/READMEを同期。`npm run verify` exit 0（Node 870、仕事API1048、CSV113）を確認。仕様数値とSVG XML検査、描画した外観図の目視確認が合格。物理受入は0件。証拠: `docs/evidence/avokado-pro-pc-design.json`。GitHub作業branch保存準備中、main統合・サイト公開なし。
+
 ## 2026-10-05 — 未統合PRのmain反映（作業中）
 
 利用者の「mainにあげて」により、最新main `aa7f2b41` を基点に未統合20 PRを照合する。G04／Git・CI／ROCK担当。SIM/eSIM中心の現行製品方針、署名付きモデル管理、共通MCP・決済・保存契約を保持し、旧PRは現行仕様へ合わせる。Farm/MemeはPAPER限定、fixture・実機・本番を区別する。依存5件、AI/Game/Decision Fabric8件、Campus/Farm/Meme/LiveKit/名称/domain6件の計19 PRを履歴ごとローカル統合した。Cloudflare peer型とlock・license inventoryの不整合、Campusのdevice認証/所属検証と所有者交代時の削除競合を修正。AI fixtureのmodel tableは現行の署名付きregistryと名前空間を分離し、旧Cloud agent APIは現行の見積・上限・receipt受入までdry-runのみとした。#52 SPIDERは履歴secret候補未分類とCodeQL警告のため分離する。local type/schema/design/source checksと対象試験は合格。容量回復後に依存をクリーンインストールし、e96db05bの全体verifyはGitHub・local双方で成功（Node870、Fashion22、Mini18、公開Preview21、Meme7、Farm25、Worker/D1 1048、CSV113）。Android Core111件合格後、既存mainのautomation compile不備を修正し全体Android CIを継続する。main反映はまだ未完了。根拠: docs/evidence/pr-consolidation-20261005.json。
@@ -1492,7 +1496,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-05 / SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入 / 完了 104/160件
+最終更新: 2026-10-05 / SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入 / 完了 104/161件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1656,6 +1660,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | BIL03 | メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加 | 完了 | [記録](docs/mercari-revenue-loop.md) · [記録](lib/mercari-revenue.ts) · [記録](app/api/revenue/mercari/route.ts) · [記録](components/mercari-revenue-starter.tsx) · [記録](tests/mercari-revenue.test.mjs) |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 | [記録](data/csv-business-tasks.json) · [記録](docs/csv-business-v1.ja.md) · [記録](lib/csv-transform.ts) · [記録](lib/csv-job-store.ts) · [記録](components/csv-business-workspace.tsx) |
 | G04 | 重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化し、未統合PRの現行main互換を検証 | 進行中 | [記録](docs/git-consolidation.md) · [記録](docs/evidence/common-foundation-integration.json) · [記録](tests/sky-zema-contract.test.mjs) · [記録](tests/shared-stripe.test.mjs) · [記録](tests/mcp-client.test.mjs) · [記録](tests/owner-revision-json-store.test.mjs) · [記録](docs/evidence/pr-consolidation-20261005.json) |
+| MAT16 | avokadoProのNVIDIA搭載小型PC設計・調達・AI/PCゲーム/熱/復旧受入 | 進行中 | [記録](docs/avokado-pro-pc-design.md) · [記録](data/avokado-pro-pc.json) · [記録](docs/evidence/avokado-pro-pc-design.json) |
 
 段階ゲート（作業全体の完了とは別判定）
 

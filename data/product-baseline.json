@@ -1686,5 +1686,17 @@
       "esim_catalog_as_primary_product_entry",
       "hardware_first_service_positioning"
     ]
+  },
+  "avokadoProPcIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user instruction: NVIDIA-based compact PC resembling Mac mini, AI and PC gaming, price answer 80 interpreted as JPY800000 sales target",
+    "nvidiaGpuRequired": true,
+    "standalonePc": true,
+    "miniDependency": false,
+    "salesPriceTargetJpy": 800000,
+    "priceTaxUndecided": true,
+    "candidateOnly": true,
+    "authority": "docs/avokado-pro-pc-design.md",
+    "specification": "data/avokado-pro-pc.json"
   }
 }

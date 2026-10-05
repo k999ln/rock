@@ -138,3 +138,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - `node --experimental-strip-types --test tests/material-invention.test.mjs tests/product-baseline.test.mjs tests/patent-assistant.test.mjs`
 - `npm run typecheck`
 - `npm run lint:product`
+
+## avokadoProのNVIDIA搭載小型PC（2026-10-05）
+
+[Proの構成・組立設計](../avokado-pro-pc-design.md)を追加。AIとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・AI・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
