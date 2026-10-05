@@ -1,3 +1,9 @@
+## 2026-10-05 — SPIDER と現行 main の独立統合検査
+
+PR #52（`a85a25e`）を現行 service access 基盤（`aa7f2b41`）へローカル統合し、SIM/eSIM・所有者認証・暗号化予約 store・利用量計測・remote MCP の料金ゲートを保持した。LLM は Workers の manual redirect と 3xx 拒否を維持し、機密情報拒否を一般 upstream error に変換しない。追加 fixture は現在の pricing 宣言と Stripe の文字列組立へ対応し、Gitleaks の完全一致例外と SHA 検査を変更していない。typecheck、対象 Node 122 件（121 pass / 1 skip）、MR deadline 11 件、native MCP deadline 9 件が成功。全体 verify と公開・実機受入を達成した記録ではない。
+
+この統合は main へ反映していない。GitHub の履歴検査は 681 commit / 2,369 候補を報告し、公開 source SHA-256 と機械一致した 7 件以外の 2,362 件は未分類。CodeQL 2 件は公開 commit fingerprint の test file 保存、所有 child の loopback 認証という経路を確認したが、GitHub check の未合格を変更していない。秘密値・候補本文の出力や保存、履歴改変、包括 allowlist は行わない。新 CI が未合格のため、他機能の main 統合から分離する。
+
 ## 2026-10-02 — 販売チャネル共通claim発行・暗号化配信store
 
 前回追加した取消ack gated replacement flowに、販売注文のexact retryを支えるchannel-neutral D1 storeを追加した。migrations `0052/0053`と`lib/rockstar-entitlement-issuer-store.ts`はseller idempotency key/request digest、signed claim、claim codeのAES-GCM ciphertext/nonce、encryption key ID、prepared/delivered状態を保持する。同じrequest keyとscope集合の順序違いは同一packageを復旧し、同じkeyで内容を変える要求、異なる署名済みpackageの再利用、復号key欠落/改変を拒否する。8並行の同一要求は一つのclaim/codeへ収束する。外部配送timeout時はprepared rowを保持し、retry callbackへ同じpackageとidempotency keyを渡す。delivery acknowledgement後にciphertext/nonceを消し、claim/audit fieldsを残す。`code_encryption_key_id`でkey rotation時の旧key選択を可能にし、未配信rowがある間はprevious keyを運用keyringへ保持する。issuer+store tests 13/13、typecheck、focused oxlint、schema 68 tables、database source 6/6/production readback 0/6、`git diff --check`が成功。 [Evidence](docs/evidence/sim-service-issuer-delivery-store-local-20261002.json). これはsynthetic local D1/keysのみで、seller endpoint/registry、production signing/wrapping key custody、実channel delivery、purchase/refund webhook、本番DB、carrier activation、billing、device/OS acceptanceではない。次はauthenticated issuer endpointとchannel adapterを実装する。
@@ -247,6 +253,189 @@ Site version 42／source 5e95d35ee64f3c5c40a7e95a054debbda1d66e04／deployment a
 ROCK／WEB04: Sky Market経由の出典整理・無料記事・応募前チェックの既存実行画面に「この端末に保存」、保存成果再表示・削除を追加。原稿は端末処理、成果は本人が選んだ同一ブラウザのlocalStorageへ全Tool合計20件、サーバーには本文を送らない。共有端末の閲覧可能性とMarkdown代替を明示。関連15試験・typecheck成功。独立作業コピーの全verifyは519 tests・265 API assertions・build等完走（既存database-status期待件数101→102の整合を含む）。実ブラウザでMarket検索→出典整理→保存→再読込→再表示、無料記事作成・保存を確認。稼働コピーは2026-10-01チャットのwork/sky-service。共有作業treeの以後の変更はこの合格へ算入しない。本番未配備。配備元7c79e43のSiteは一般公開設定で、以前のOS管理者限定要求との相違があるため公開範囲の回答待ち。アカウント別クラウド成果同期・実Provider接続の合格ではない。
 
 # RockstarOS — 事業・設計・進捗
+
+## 2026-10-04 — SPIDER第24cycle: Undiciの脆弱な依存版を更新
+
+Security／ROCKのSYS15としてDependabot #4／#8の公式advisoryと全依存経路を確認した。root lockのUndici 7.29.0が対象範囲にあり、既存PR56は一部を7.29.1へ上げるがwrangler下に7.29.0を残す。Cloudflareの追加更新や重複PRは作らず、既存PR52でUndiciだけを7.29.1へ統一するoverrideを追加した。他の依存版は保持する。
+
+実BalancedPool／Poolへの合成設定で、接続先へのTLS検証callback継承を3形式×3upstreamで確認した。同じ3回帰はintegrity確認済みの旧版で全件失敗、修正版で全件成功。接続を禁止してconstructorだけを検証し、実TLS handshake、WebSocket通信、製品からの脆弱経路到達は実証したものと扱わない。WebSocketの修正は公式advisoryとupstream sourceで確認した。
+
+lockの重複1件を除いたlicense一覧906件／unique873件を再生成し、要審査47件と公開未承認条件を維持。評価日を監査日に揃え、期待件数だけを更新し関連35試験成功。容量不足のため全依存のlocal installは行わず、隔離lock解決と限定回帰を実施した。独立reviewは阻害要因なし。required verifyはproject〜system構成まで成功し、既存ai未導入で停止した。GitHub同一SHAのclean install・全体試験・個別alertを別途確認する。Dependabotのdefault-branch警告はmain未統合の間openであり、件数だけで解消と呼ばない。第23cycleの同一SHA検査結果は改善記録へ同期する。
+
+## 2026-10-04 — SPIDER第23cycle: 旧MCP入口の互換範囲を固定
+
+Security／ROCKのSYS15として、基準`f7d110c`の同ref全49 CodeQL ID・Dependabot18件・既存PRに変化がないことを確認した。旧`/mcp`は基本4機能の現役互換callerが使う一回券の限定例外だが、IDだけで同名の別接続定義・追加操作を転送できる。許可Origin／sessionとPC所有者のregistry設定が前提であり、無認証侵入や現行4機能の外部副作用を実証したものではない。
+
+同梱MRの正確な接続定義と4機能・既存lifecycleへ限定し、対象外をtransportより前で403拒否する。汎用server IDのprepare／本人確認／execute、SPIDERデータ検査は維持する。新2回帰は旧sourceで200転送を検出し失敗し、修正後は定義7形式・入力6形式の拒否と転送0を確認。第3回帰で実同梱MRのlifecycle・4機能を合成入力で通し、関連31試験がfail／skip0で成功した。最初の互換試験は通知へidを付けたtest側誤りを訂正し、runtimeを変えず再検証した。PC画面側のdevice-lifecycle試験は既存esbuild未導入で読込失敗し、GitHub同一SHAで別途確認する。
+
+Connector ZIPだけをsourceと同期し、MR／vendor／SDK配布物は保持する。 独立reviewは阻害要因なし、ZIP66ファイルがsourceと完全一致。project／database／design検査は成功し、ローカル全体verifyは既存ai依存未導入で停止した。既存／新警告を解消扱いせず、公開後に同一SHAの全体verify・個別alert・SPIDER履歴・native source検査を確認する。実通信probeの担当turnはツール側のsecurity制限で未完了として扱い、代わりに無作用transport stubで転送境界を検証した。実credential、外部Provider、公開配備、main統合、実機操作はない。
+
+## 2026-10-03 — SPIDER第22cycle: SDKの不正認証でprocessが停止する欠陥を修正
+
+Security／ROCKのSYS15として基準 `1b116e4`のCodeQL #41を調べた。元のtest専用descriptor→loopbackの固定本文・401確認は秘密漏洩と認定せず、隣接SDK認証の可用性欠陥と分ける。JS文字数一致の後でUTF-8 Bufferを比較しており、43文字／86 byteになる未認証入力がtry外の例外を起こした。隔離したSDK childへLatin-1 43 byteのヘッダーを1件送ると応答なし・exit1を再現した。初回sandboxのlisten EPERMと、文字を変換するHTTP client経路の401は再現成功と別記した。
+
+SDKはstring型確認後の2つのBufferのbyte長を検査し、同じBufferを定時間比較する。新1回帰は旧sourceで失敗し、修正後は不正4形式を401で拒否して同じchildのhealthと正当なlist／Tool実行、正常終了・descriptor削除を確認した。SDK6＋Connector6＋descriptor10を一括1回実行し21 pass／0 fail／1環境条件skip。loopbackに接続できる未認証clientの可用性修正であり、Internet／browser到達や秘密漏洩の実証ではない。元#41を解消扱いせず、同一SHAの全検査・個別stateを公開後に確認する。
+
+配布用SDK0.1.3を作り、Studioの導入URLとCLIの最小依存版を同期した。旧archiveは保持し、新tgzの5ファイルが現sourceとbyte一致する検査と、実CLI生成物の版確認を追加した。配布関連4試験も成功し、合計26件中25 pass／1環境条件skip。旧0.1.2へ未反映だった既存Event ID／最大3回送信は配布同期として明記し、新しいruntime追加とは分ける。npm公開・配備・既存Tool更新は実行しない。 独立reviewは阻害要因なし。source／archive hashと検証証拠を保存し、project・database・design検査は成功。ローカル全体verifyは既存ai依存未導入で停止し、GitHub同一SHAでの結果を別途確認する。
+
+## 2026-10-03 — SPIDER第21cycle: 外部フォント検査の大文字ホスト見逃しを防ぐ
+
+Security／ROCKのSYS15で基準 `47a999b`のCodeQL #43／#44を確認した。HTML全体の禁止substring検査で未アンカーは意図的であり、アンカーで拒否を弱めない。一方、大文字・小文字混在の同じGoogle Fontsホストを見逃すため、既存2か所をlowercaseとliteral照合へ変更した。既存10 testの順序・他assertionはbyte一致し、実装・配信物・scanner policyは不変。
+
+対象10件と、それを含むサイト全体19件がそれぞれ1回成功（fail/skip0、19種類・29実行）。実callback全体2つの合成26ケース／旧新52評価で、旧が通したホスト表記8件を新が拒否、既存拒否16件と正常2件を維持した。checked-in distの検査であり、fresh Astro build・ブラウザ通信・配備・runtime脆弱性修正とは扱わない。独立reviewは阻害要因なし。source hashと検証記録を保存し、project／database／designは成功。ローカル全体verifyは既存ai依存未導入で停止した。同一SHAのGitHub検査・個別alert状態は公開後に記録する。
+
+## 2026-10-03 — SPIDER第20cycle: 納品fixtureの読取境界を確認
+
+Security／ROCKのSYS15で基準 `366fb5a`のCodeQL #37を調べる。固定checkout内fixtureを再帰読取するテストhelperと、実際のMCP入力・workspace読取の境界を区別する。基準の全48 CodeQL ID・Dependabot18件・PR53〜56は不変。非export helperの唯一の非再帰callerは固定rootで、現fixture3通常fileはGitとbyte一致しsymlink／untrackedなし。stat/readの競合自体はあるが、checkout／親を同時変更できる主体を信頼するテストの範囲であり、製品の追加修正根拠は得られなかった。実受信はbytesからprivate一時領域へ入り、既存のdirectory handle基準・nofollow・上限付き読取・private snapshotを通る。Node MCP6件とPython納品境界14件が成功（fail/skip0）。独立reviewも一致し、runtime・test・policyを変更せず#37をopenで保持する。project／database／designは成功し、ローカル全体verifyは既存ai依存未導入で停止した。公開後の同一SHA検査は別に記録する。
+
+## 2026-10-03 — SPIDER第19cycle: HTTPSの空CA設定を送信前に拒否
+
+Security／ROCKのSYS15で基準 `f4f0155`の全48 CodeQL ID・Dependabot18件・PR53〜56の不変を確認した。#8／#9のTLS試験serverから関連clientを調べ、HTTPSで空CAがNone-only検査を通り、TLS contextなしのsocketが`HTTPSConnection.sock`へ渡る別の欠陥を発見した。旧sourceの合成loopbackでは空文字／False／0の3件が平文でdiscoverと公開fixture認証headerを送り、応答を受理した。実資格情報や選択文章を使わず、値は保存せずbooleanと件数だけを記録した。
+
+HTTPSでfalsey CAを接続前に拒否する1条件の変更と、新1test・6種類の設定拒否を追加。新testは旧sourceで1test内5 subtest失敗を検出し、修正後は関連31 host試験が成功（fail/error/skip0）。正当PathのTLS通信・HTTP fixture・応答期限・不完全応答・再送しない境界は既存試験で保持した。現runtimeの接続先はローカルHTTP fixtureであり、空CAを渡す外部設定経路や実credential漏洩は確認していない。別実装HubClientは公開fixture資格と固定開発HTTPS範囲を維持。元の#8／#9のserver contextは変更せずopenを維持し、この実装修正を同警告の解消とは扱わない。独立reviewも阻害要因なし。project／database／designは成功し、ローカル全体verifyは既存ai依存未導入で停止した。同一SHAのGitHub clean検証を別に確認する。
+
+## 2026-10-03 — SPIDER第18cycle: MCP結果の検証を強化
+
+Security／ROCKのSYS15で基準 `08e77ff`から、同原因のCodeQL #45／#46を確認する。stdio MCPと承認後Connectorのテストにあるドメイン部分一致を、期待する出典文書と正しい結果欄の完全一致へ強化する。既存testと承認・変更拒否・再送拒否を保持し、runtime認可の修正とは扱わない。基準の全48 CodeQL ID・Dependabot18件・既存PR53〜56は不変。関連host12試験が一回で成功し、独立probeは17ケース×旧新34評価で旧判定が通す誤出力13件を新判定が拒否した。正常2ケース・既存拒否2ケースを維持。stdioは完全lifecycle callbackを合成collaboratorで、Connectorは変更対象assertion群だけを評価し、実HTTPの承認境界はhost suiteの証拠と分ける。独立reviewで他のassertion／test順序とproductionの不変を確認。project／database／designは成功し、ローカル全体verifyは既存のai依存未導入で停止した。公開後の同一SHAのclean CIを別に確認する。
+
+## 2026-10-03 — SPIDER第17cycle: HTML報告の完全な出力を回帰検証
+
+Security／ROCKのSYS15で基準 `f0a59b1`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。対象#30はHTML報告の負例テストで、小文字のscript tagだけを否定していた。productionは5特殊文字をエスケープし、現APIのjob ID制約／固定warningとartifact取得の認証・header境界も別に維持されるため、runtime XSS修正とは扱わない。
+
+静的な期待HTML fixtureを追加し、既存の小文字sampleを含む7入力をjob IDとwarningで個別に照合する。通常出力を含む15renderを既存test内で確認し、関連CSV6＋fee2のhost8件が成功。checkoutにiconv-liteがないため、lockと同じ0.7.3の既存sibling依存へbare importだけを向けるwork-only hookで実行した。依存・lockを変更せず、npm ci環境の証拠とは区別する。旧・新callback全体の合成比較では正規出力を両方が受理し、旧判定が通す5種の追加HTMLを新判定はすべて拒否した。小文字scriptの負例も両方で拒否。独立reviewで静的fixtureのmarkupとliteral期待値を確認した。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止し、公開後の同一SHA検査を別に確認する。
+
+## 2026-10-03 — SPIDER第16cycle: 許可Originの完全一致を確認
+
+Security／ROCKのSYS15で基準 `c2ccfdb`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。対象#36は `loadConfig({}).browserOrigins` の配列に対する完全な要素一致で、URL文字列の部分一致による認可ではない。通常HTTP入口は環境文字列のsplit／trim／filterで得る配列を使用し、request本文からconfig型を変更する経路は確認できなかった。loopback bind／peer、Host完全一致、設定済みbearer／tenant認証を分けて追跡する。修正が必要な欠陥は現範囲で確証できず、runtime・test・scanner policyは変更せず、警告をopenのまま維持する。 実sourceを抽出したOrigin境界10ケースと既存HTTP／認証関連10試験が成功（初回sandboxの4 listener拒否はEPERM、認可済みhost実行の10成功と分離）。独立reviewも一致し、11 source hashを基準commitと照合した。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止し、公開後の同一SHA検査を別に確認する。
+
+## 2026-10-03 — SPIDER第15cycle: 出典保持テストの誤受理を防ぐ
+
+Security／ROCKのSYS15で基準 `5f35b36`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。前回#33 fixedは維持され、今回の同原因groupは#34／#35の出典保持テストである。固定fixtureの出力全体を独立した期待値と照合し、URL文字列が出力の別の場所に残るだけで合格しないようにする。元の本文・有料範囲・footer・コードfence確認と全testを保持し、関連host18件が成功した。各test callback全体を抽出した合成比較では、正しい2出力を両方が受理し、旧判定の全assertionを通る24種の誤出力を新判定はすべて拒否した。独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止。公開後の同一SHA検査と個別alert状態を別に確認する。productionの認証・URL認可・formatterは変更せず、警告をdismissしない。
+
+## 2026-10-03 — SPIDER第14cycle: MCP検証の出力全文を照合
+
+Security／ROCKのSYS15で基準 `d2640f0`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。今回は#33の検証scriptを対象に、期待URLを含むだけで未整形の元入力や異なる文書が合格する盲点を修正する。固定sampleの出力全文との一致に強化し、実stdio MCPが同じ期待値を返す回帰1件を追加。host関連18件が成功した。runtimeのURL認可や認証の修正とは区別し、manual HTTP flowの再実行・OS／実機受入は行わない。旧／新sourceから抽出した実assertionの合成比較で、旧判定が受理する9種の不正出力を新判定がすべて拒否し、実CLIの正解62 bytesを保持した。独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止。公開後の同一SHA検査と個別alert状態を別に確認する。
+
+## 2026-10-03 — SPIDER第13cycle: 前回native失敗の状態遷移を再確認
+
+Security／ROCKのSYS15で基準 `813f8ee`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・PR53〜56の不変を確認した。前回native37125210005のattempt1失敗と同SHA attempt2成功を分けて保持し、合成Gameの復旧時残高照合を今回の1件として優先する。workerの戻り値は処理試行の有無であり、remoteの適用成功ではない。元artifact／report／logのhash一致で、実際の失敗は50行の保留残高0対期待103と確認した。旧抽出器が0対10を部分一致させた誤分類を訂正し、元記録は保持する。未適用stallを明示的に未適用で終え、UNKNOWNと元要求の遅延適用を別回帰へ追加した。元の21 assertionとwait/join5箇所・production3秒期限は維持。変更file7＋関連TLS2のhost9件と作業用parser4件が成功した。試験fixture／診断の改善であり、productionの脆弱性修正や元CIの通信履歴を完全に再現した主張はしない。 独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止し、同一SHAのGitHub clean検証を別に確認する。
+
+## 2026-10-03 — SPIDER第12cycle: 一時fixtureの権限拒否試験を確認
+
+Security／ROCKのSYS15で基準 `9e12c12`、PR52 open、main31ef33aと同一refのCodeQL全48 ID・Dependabot18件・既存PR53〜56の不変を確認した。対象は #24〜#28 のテスト用権限設定で、privateなBroker DBの不正mode拒否と、一時socketのDACを広げてもpeer UID認証が拒否する境界を調査する。前回の起動guard修正は同一SHAの全体verify・CodeQL・native1,787件が成功済み。今回の調査と前回の修正を区別する。 #24は私有一時DBの0644を拒否する既存host1試験が成功し、親0700・caller所有・fixtureへのHTTP要求0・通常削除を確認した。#25〜#28は使い捨て領域のUID拒否試験で製品へ未同梱、今回の実Linux root／UID試験は未実行、現在のnative CI対象外。runtime不備は確証できず、修正0・test変更0・dismiss0。通常cleanupと強制終了時の限界を分け、11 source hashと同一SHA公開後検査を記録する。 project／database／designは成功、ローカル全体verifyは既存のai依存未導入で停止し、GitHub clean環境の結果と分離する。
+
+## 2026-10-03 — SPIDER第11cycle: 検証guest処理の直接起動を制限
+
+Security／ROCKのSYS15で基準 `6e88d0b`のCodeQL #13〜#16を追跡した。PR52はopen、全48 alert ID・main31ef33a・Dependabot18件・既存PR53〜56は前回から不変。0755／0666はpeer UID拒否をDACから独立確認する意図的な試験である一方、通常imageにも入る `guest-test.py` 本体には明示起動flagの確認がなく、root／ARM64で直接呼ぶと未指定でもinventory・IPC・権限試験・Tool／simulator変更へ進むことをsourceで確認した。boot wrapperのflag確認だけに依存する起動上の不備として扱い、権限昇格やCodeQL4警告の解消とは呼ばない。
+
+スクリプト本体で副作用前に1個の正確なenable tokenを必須化し、従来のroot／ARM64・default local-full／明示game-isolation境界と、peer認証の負例試験を維持する。旧sourceの合成5ケースは最初のinventory直前まで進み、修正後は新規7・既存4・関連scope7のhost18試験が成功した。拒否時の無副作用・成功markerなしと正規入力の継続を確認し、同一SHA GitHub検査へ接続する。独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存の未導入ai packageでllm検査時に停止し、後続gateは未実行。実guest・VM・実機・既存imageの変更は行わない。
+
+## 2026-10-03 — SPIDER第10cycle: 履歴検査の合成fixture保存を確認
+
+Security／ROCKのSYS15で基準 `061808a`、PR52 open、main31ef33aと全48 CodeQL ID・既存Dependabot PR53〜56の状態不変を確認した。対象#5の187行は実credentialではなく、合成Git commitの識別子と固定path／rule／lineによるignore fingerprintである。前段のPAT形状markerもアカウントから取得・発行した値ではなく、検査中に生成する合成値で、削除済みGit履歴・candidate allowlist・diff helperに検査を回避されないためのfixtureである。
+
+既存privacy試験2件が成功し、一時directoryの0700／caller所有／本repo外と通常試験後の削除を確認した。確認済みGitleaks binaryがローカルにないため実binary回帰1件はskip。これは秘密の安全消去や異常終了後の削除保証ではない。製品の秘密保存欠陥は確証できず、修正0・test変更0・dismiss0。scannerとtestが固定control commitと同一byteであることを確認し、source hashと範囲を保存した。GitHubのchecksum固定binaryを使う検証stepと、同じ公開SHAの個別警告状態は別に確認する。
+
+依存修正PR53はnpm ci成功後、変更lockに対するlicense inventory hash不一致でrelease:checkが意図どおり停止している。既存修正を重複作成したり検証を弱めず、そのPRの正確なlockに一覧を再生成・レビューし、componentのscopeとNOT_CLEAREDを維持して残るgateを確認する必要がある。ローカル全体verifyは既存の未導入ai packageで停止した。main統合・dependency branch更新・実機・秘密の失効は行わない。
+
+## 2026-10-03 — SPIDER第9cycle: 認証検証用の一時権限を確認
+
+Security／ROCKのSYS15として基準 `bca17b6`のCodeQL #17〜#20を確認した。PR52はopen、mainと全48 alert ID、既存Dependabot PR53〜56は前回から不変。第8cycleの引数露出修正は同一SHAの全体verify37112042529、CodeQL、native37112042546で検証済みで、host42件とLinux1,780 Python実行を区別する。履歴検査37112042548は665 commit完走・2,364候補で失敗を維持する。
+
+#17〜#20の0755／0666は、固定imageのコピーへだけ注入する専用observerで、root・ARM64・明示boot flag・空のsimulator DB・事前所有者／mode確認の後に実行される。通常製品installには含まれず、新しいuserdataとnetworkなしの検証guestでUID拒否を独立確認するための一時的なDAC緩和である。daemonは本文前に所有者UIDを確認し、秘密のDBは別の0700／0600に保持する。今回の範囲で製品の認証回避や秘密の漏出は確証できず、runtime修正0・test変更0・dismiss0。source 9fileのhashと確認範囲を証拠JSONへ保存した。
+
+関連host2試験と完全合成のboundary7／entrypoint7ケースが成功。通常の失敗時の復元呼出しを確認したが、復元chmod自体の失敗や強制終了の復旧は未証明である。最初の復元失敗で親directoryの復元が飛ぶ制約を残し、失敗時に検証PASSを返さないことと使い捨てguestの範囲を区別する。実guest・UID／DAC・実機の試験は未実行。ローカル全体verifyは既存の未導入ai packageで停止したため、push後の同一SHA検査を別に記録する。
+
+## 2026-10-03 — SPIDER第8cycle: 仮想画面の秘密をプロセス引数から除く
+
+Security／ROCKのSYS15で基準 `1896dc0`、PR52 open、CodeQL38件・Dependabot18件を再確認した。#6のguest stdoutは認証済みSSHからlauncherがmemory内で読む専用応答で、通常ログへの漏出は確認できなかった。一方、後続のbrowser起動がsession passwordをURL fragment付きで `/usr/bin/open` のargvへ渡していた。実launcherの合成呼出しと、自分の合成childだけのprocess引数読戻しで露出面を確認した。別UIDでの取得・実credential・実OS接続は未試験である。
+
+browser起動を固定argvのosascriptへ変更し、厳密なloopback URLだけを標準入力のAppleScriptへ渡す。引数、環境変数、一時ファイルへ秘密を追加しない。10秒期限、出力破棄、固定error、no-open時の秘密未取得を維持し、失敗時に秘密付きopen argvへ戻さない。非browser VNCは既存の秘密を含まない起動を維持する。#6の解消とは区別し、変更後の回帰と同一SHA GitHub検証を記録する。
+
+
+新4件を含むhost42/42が成功、独立reviewも新4件を再実行して阻害要因なし。Macの実osascriptはブラウザを開かずproduction statementの構文を確認し、合成秘密がプロセス引数に現れないことを確認した。project／database／design整合は成功。ローカル全体verifyは既存の未導入ai packageで停止したため、同じSHAのGitHub検証を確認する。
+
+## 2026-10-03 — SPIDER第7cycle: Unix socketの権限境界を確認
+
+Security／ROCKのSYS15として `94889b1`の高優先度指摘#12／#21／#22／#23を確認した。0660は異なる専用UIDを接続するUnix socketで、親0750はgroup書込みを許さない。認証器はUID1000、powerは0／1002、Platformは0／1000、Walletは0／1002を本文読取前に確認し、各clientも送信前にserver UIDを検査する。今回の範囲で越権経路は確認できず、修正0・dismiss0としてsource／boot／client hashと限定試験を記録する。sourceや配置条件が変われば再評価する。既存host試験4件と合成Handler検証14ケースが成功し、独立reviewも同じ結論。実LinuxのUID／socket権限試験は未実行。ローカル全体verifyは既存の未導入ai packageで停止したため、同一SHAのGitHub検証を別に確認する。
+
+前回 `94889b1`のnative初回とmain-1のみの部分再実行は同一run37105416471で成功した。最大attemptの明示artifact IDと集計report hashが一致し、CodeQL48 IDも状態不変（open38／fixed10）。全体verifyと修正回帰は成功し、履歴秘密検査は既存2,362候補で失敗を維持する。これはsource検証で、OS起動／Pixel／24時間受入ではない。
+
+
+## 2026-10-03 — SPIDER第6cycle: native再実行の結果選択を修正
+
+Git／CIのROCK担当としてSYS15の改善cycleを継続する。基準 `258fa5d`のPR52はopen、CodeQL38件・Dependabot18件と個別警告状態は不変。前回のHTTP修正は同一SHAの全体verify・修正回帰・CodeQLが成功した一方、nativeは再実行で全5区分が成功しても、最終集計が同名の旧FAIL artifactを拾って失敗した。集計に入ったreportのhashが旧FAILと一致し、新PASSと異なることを実artifactで確認している。
+
+partitionと集計のartifact名をattempt別にし、同run／headで各partitionの最大attemptを選んだIDだけをdownloadする。最新の失敗を古い成功へ置き換えず、欠落・重複・期限切れ・不完全な一覧・取得失敗では拒否する。全partition成功gate、元ログhash・source inventory・discoveryの既存集計は維持し、旧失敗のartifactを削除しない。選択器をsource inventoryへ含め、合成境界試験と同じSHAの実GitHub部分再実行で確認する。Wallet試験の1秒期限や製品コードは変更しない。
+
+選択器の新規23、既存partition／stack15、freeze13の計51 host試験が合格した。独立reviewで選択器23を再実行し阻害要因なし。選択器をsource inventoryへ含める変更に合わせ、freeze検証器の必須入力も同期し、欠落・hash不一致・改変の拒否4試験を追加した。ローカル全体verifyは未導入ai packageで停止し、後続未実行。GitHubで同じSHAの初回と部分再実行を確認する。
+
+
+## 2026-10-03 — SPIDER第5cycle: PC HTTP受信の無期限占有を修正
+
+Security／ROCKのSYS15で基準 `ce8b0a2`、CodeQL38件・Dependabot18件とPR52の継続を確認した。前回の確認済み14 source hashは不変のため再修正しない。MR HTTPの#10周辺を調べ、固定Origin反射に注入は確認できなかった一方、未認証の遅い送信が逐次serverを無期限に占有する別の可用性問題を実通信の合成fixtureで再現した。試験用0.2秒inactivity timeoutへ0.05秒ごとに送信すると0.913秒保持され、別の正当なOPTIONSは0.65秒timeoutし、占有socketを閉じた後だけ0.001秒で復旧した。
+
+request-line／header／body共通の10秒絶対受信期限をsocket読取ごとに適用し、完全body・解析後もtoken発行／Tool処理前に期限を確認する。通常の分割受信とbuffer先読みを維持し、応答writeには別の有限期限を設定する。単一処理と既存Origin／Host／bearer条件を保持し、MR／Sky MCP両配布ZIPとCI回帰を同期する。loopbackの1接続による無期限占有が対象で、Internet直接到達・flood耐性・OS24時間受入を主張しない。CodeQL#10の解消とは別に実通信で検証する。
+
+macOS Python3.14.7で新しい実HTTP回帰11/11、既存納品境界14/14、MR／MCP／PC adapterのNode18/18（内部Python19）が合格した。独立reviewでも阻害要因なし。両ZIPを再生成し一致を確認。ローカル全体verifyは既存の未導入ai packageで停止し後続未実行のため、push後の同一SHA Linux CIを別途確認する。
+
+## 2026-10-03 — SPIDER第4cycle: source確認と修正不要の境界を記録
+
+Security／ROCKのSYS15として基準 `3cb15f1`のCodeQL38件・Dependabot18件、PR52と既存修正PR53〜56を再取得した。新しい指摘はなく、以前の修正は同一refのfixedを維持していた。今回は#11の端末ID応答header、#7の合成Wallet observer出力、#39／#40のnoVNC typed-array書込、#32の配布bundle内乱数変換をsourceで確認したが、修正が必要な脆弱性は確証できなかった。
+
+端末IDは登録済み制限付き識別子との完全一致・認証後に応答へ設定され、CRLF／LF／TAB／NULの合成4件は登録helperで拒否された。observerは認証付き合成状態から限定したmetadataだけを返し、既存の実SQLite回帰1件が合格。noVNCは固定長byte配列への範囲内NUL書込で、実encoding関数を使う4,102件の合成境界probeと既存desktop host6試験が合格した。bundleの乱数変換は上流の余分な乱数byteによる縮約であり、暗号処理の変更根拠は得られなかった。probeを実HTTP／RFB handshake／実機／乱数品質の受入へ換算しない。
+
+source hash・根拠・試験の限界を[第4cycleの記録](docs/evidence/spider-improvement-cycle.json)へ保存した。runtime・test・vendor・検査設定を変更せず、警告のdismissや広い除外も行わない。今回の修正件数は0、CodeQL38件・Dependabot18件・履歴候補は残る。ローカル全体verifyは既存の未導入ai依存で停止したため、文書反映後の同一SHA CIを別途確認する。次回は確認済みsource hashの変化と他の未確認指摘・既存依存修正PRを調べる。main統合・配備・実機・秘密失効・24時間運転受入は行わない。
+
+## 2026-10-02 — SPIDER第3cycle: 納品検証のworkspace境界
+
+Security／ROCKのSYS15で、基準 `3890f16`のCodeQL42件・Dependabot18件からMR納品照合のworkspace境界を修正した。親symlink経由で外部の契約／保存receiptを読み出す経路を合成fixtureで再現し、成果物とmetadataの実byteをdirectory handle基準で上限付き取得してprivate snapshotで照合する。固定vendorは変更せず、既存PASS／BLOCKED／REVISEを維持した。source pinとMR／Sky MCPの両配布ZIPも同期した。
+
+`a9b10fb`の全体verify、修正回帰、production計測、CodeQLが成功した。新規境界14試験、MR／MCP／PC adapterのNode18（内部Python19）、主546合格／1環境条件skip・失敗0、型検査・lint警告0／エラー0、build・APIまで確認した。実CLI／adapter／MCPの155 byte一致と独立レビューも成功。同一refの#1〜#4それぞれのfixedを確認し、openは42→38件、新規IDなし。各解析SHAとrunは[第3cycleの証拠](docs/evidence/spider-improvement-cycle.json)へ保存した。
+
+Dependabot18件と既存PR53〜56、履歴候補2,362件は残る。履歴検査は同じSHAで659 commitを完走し候補検出による失敗を維持する。初回CIのSky MCP ZIP更新漏れは再生成で修正した。ローカル全体verifyの未導入ai依存停止と容量不足はclean CI成功と分離して記録する。POSIXの安全な読取機能がない環境は拒否し、workspace祖先と同一UIDは信頼範囲とする。OS socket権限#12／#21／#22／#23はsource上の専用group／SO_PEERCRED設計を確認し、このcycleでは変更・dismissしない。main統合・配備・実機変更・秘密失効・24時間運転受入は行わず、SYS15をin_progressで継続する。
+
+## 2026-10-02 — SPIDER第2cycle: PC Tool定義の読取競合を修正
+
+主担当SecurityのROCK、既存SYS15でCodeQL #38を修正した。基準`65b4601`はCodeQL 44件／Dependabot 18件。`a4217bb`でdescriptorを一度開いたhandleに検証・読取を結び、4 KiB上限、所有者・権限・通常file判定、差し替え／肥大化／FIFO拒否を回帰した。main `31ef33a`を作業branchへ同期し、共通Research／Jev transportへ送信前拒否・redirect拒否・固定エラーを保持した。配布ZIP2種も更新済み。別候補#7はsourceで秘密値出力を確証できず、dismissしない。
+
+最終source/test commit `6fdea6f`の全体verify、production build・8経路／8header／配信SW一致の実測、CodeQLが成功した。実依存typecheck・lint（警告0／エラー0）・主テスト546合格／環境条件1skip・関連service／site／SDK試験・build／APIまで完走。#38／#42／#31／#47のbranch instanceはfixedを確認した。検査用テストの同一式が#29→#48として再識別されたため、禁止設定キーと秘密変数参照を等価な別条件に整理し、両IDのfixedも確認した。製品の新規脆弱性2件と数えない。検証run・SHA・hashは[第2cycleの証拠](docs/evidence/spider-improvement-cycle.json)に保存した。
+
+残るCodeQLは42件、default branch Dependabot18件。既存修正PR53〜56を再利用する。履歴検査は`202b5ea`で654 commit完走・2,362候補一致による失敗を確認した（重複を含むpattern一致で秘密の種類数ではない）。ローカルの容量不足と共有依存のworkerd欠落はclean CIの成功と区別して記録する。mainへのmerge、公開配備、秘密失効、OS同一image／Pixel／24時間運転の受入は実施していない。SYS15はin_progressのまま次の小さな修正へ進む。
+
+## 2026-10-02 — SPIDER検出からコード改善への反復を開始
+
+利用者の指示により既存SYS15で`検出 → 原因確認 → 修正 → 回帰テスト → 同一commit再検査 → PR報告`を実装する。metadata-only収集commandは基準commit `936c632`のCodeQL 47件とdefault branch Dependabot 18件を実取得した。1時間ごとのローカルCodex follow-upを設定し、PCとアプリ起動中に高優先度の小さな修正を進め、重要な変化だけ報告する。main merge・deploy・秘密失効・例外拡大は自動化しない。
+
+初回はFashion HTTPの固定bearer認証回避と内部エラー非表示、SW更新messageのorigin／window client境界を修正し、回帰と配布ZIPを更新する。独立Actions jobで回帰を実行し、CodeQLの対象#42／#31／#47を同じrefで再確認する。進捗・検査失敗・未解決候補は[改善サイクル](docs/spider-guard.md#検出からコード改善へ戻すサイクル)とPR #52へ記録する。OS同一image boot、Pixel、24時間運転の未受入と既存baseline gateは維持する。
+
+初回のhost44試験とGitHub回帰が成功し、commit `a13c3f5`のCodeQL再解析で対象3件のfixedを確認した。openは44件、Dependabotは18件。`4c5d32c`でも回帰・CodeQLが成功し、実production buildの8経路／8headerと配信SW一致を検証して測定記録を更新した。最終verifyはrelease／signing64件まで成功後、既存visual baseline1057で停止。後続gateは未実行。[初回cycleの証拠](docs/evidence/spider-improvement-cycle.json)を保存し、未解決候補と依存関係PRの確認を継続する。
+
+## 2026-10-02 — GitHub上の実リポジトリ保護へSPIDERを接続
+
+利用者は`k999ln/rock`自体の公開時のセキュリティ対策とGitHub上での表示を要求した。既存SYS15の範囲に、履歴内の秘密候補を検査する独立Actions check、JavaScript／TypeScript・PythonのCodeQL、metadata-only report、実workflow badgeを追加する。GitleaksとActionsを固定し、候補programは実行せず、scanner／policyはworkflow内の固定commitから読む。既存のsecret scanning／push protectionは有効と確認し、Dependabot vulnerability alertsとsecurity-fix PRを有効化・readbackした。GitHub mainは`b3e2676`でrequired checkなし。main merge、既存CI失敗の免除、実機保護／24時間運転の受入は行わない。最終実行結果と残る候補は[GitHub連携](docs/spider-guard.md#github上でrockを検査する)へ記録する。 scanner6／実policy6／CodeQL設定4件が合格し、637コミットのmerge差分を含む履歴検査は2,357候補でexit 1。候補数は有効秘密数ではない。project／database／designは成功、verifyは既存baseline1057で停止した。source hashと設定readbackはdocs/evidence/spider-github-source-validation.jsonへ保存する。
+
+
+## 2026-10-02 — コードを貼って自動検査するSpiderファイルを追加
+
+利用者は自分のコードを貼り付けて検査し、編集に追従するクモの表示をファイルとして使う機能を求めた。既存`SYS15`内でoffline単一HTML、共通静的検査module、native owner限定`security.inspectCode`へ接続する。配布先はrepository外の`outputs/SPIDER.html`。入力コードを実行・送信・永続保存せず、SDK／API key不要とする。既存Platformの常駐監視・送信前拒否は維持し、入力から検出した候補だけを表示する。静的分析0件をruntimeの保護成功にしない。[範囲と使い方](docs/spider-guard.md)へ集約し、追加実装はNode 14/14（module 13＋実Worker 1）、native host Python 23/23（検査9＋統合13＋install 1）が成功。ブラウザはexact HTMLをloopback HTTPで配信して編集・指摘・行移動・metadata保存を確認した。file URLの受入、今回native Linux・同一SHA CIは未実施。成果物と12 sourceのhash・試験logを既存証拠へ独立追記し、最終再読込でもsample 4件を確認し、preview画像を目視した。最終verifyは先行7check／signing64件の成功後に既存baseline visual期待値1057で停止し、後続は未実行。project／database／designの整合は成功した。OS同一image／Pixel／24時間運転の未受入を維持する。
+
+## 2026-10-02 — native Spiderの動作検証とSecurity Agent役割への接続
+
+利用者の参照映像と追加投稿に沿い、細い発光関節脚、青い足先の輪、pink／cyan coreを実findingへの移動・囲みへ接続した。新しい実`blocked` counter増加時だけ反応し、非稼働や不正healthでは停止する。Ubuntu 24.04 Linux aarch64のnetwork none・read-only source・UID 1002で通常native buildと全renderer/controller試験が成功。80枚／8秒／10fpsの合成描画fixtureを出力し、拒否反応と巡回を目視確認した。PIN profileは実際のWallet／ATM描画を再確認してsource hashだけ更新し、元のRGB／ROI／閾値を維持したままWallet 14枚、ATM 14枚、誤操作8件の拒否、PIN 11／profile 1試験が成功した。
+
+この段階のverifyは先行7check（signing公開fixture64件を含む）の後、以前から再現済みのbaseline visual期待値1057で停止した。後続gateは未実行。起点`a7cfca3`の129 Python／49 Nodeの旧証拠と、このアニメーションのsource hash・log digestは[機械可読記録](docs/evidence/spider-guard-source-validation.json)で分離する。GIFは描画fixtureのpreviewであり、OS起動や実際の検出ではない。
+
+続く利用者の「セキュリティーエージェント」指定を受け、実際の監視・検査・拒否・報告の役割、worker/findingに基づく状態、最新の実拒否metadataをPlatformとnative表示へ接続した。最終Linux backend 26/26、native build／全renderer suite、Wallet 14／ATM 14枚・誤操作8件拒否・PIN readiness 11／profile 1が成功し、役割表示と直近拒否の最終画像も目視確認した。最終source 14 fileとlog／previewのhashを前の証拠と分離して保存する。文書同期後の最終verifyも先行7check／signing64件の成功後に既存baseline visual期待値1057で停止し、後続は未実行。project／database／designの個別整合は成功した。現在はnative security panelを維持し、OS全体overlayは未選択。既存`SYS15`は`in_progress`、固定scope・UID・権限を維持し、同一image boot、QEMU、Pixel、24時間運転は未受入。[詳細設計](docs/spider-guard.md)、全体OS設計§19.1、設計台帳を同期する。
+
+## 2026-10-02 — Spider Guardの継続検査と送信前保護に着手
+
+利用者は秘密コード・個人情報をクモが優先して守る機能について、表示デモではなく`k999ln/rock`の実処理への接続と、常駐先をRockstarOS本体とすることを指定した。Security / Identity / ComplianceのROCK担当として`SYS15`を`in_progress`で管理する。Platform UID 1002による固定範囲監視、MCP prepare／submitとRunnerControl prepare／初回send claimの送信前拒否、認証付き状態とnative表示、同梱・boot監督が主対象。Web／Connector送信前検査は補助とする。[詳細設計](docs/spider-guard.md)、OS全体設計§19.1と既存security設計台帳を同期した。既存`SYS02`とRQ01〜RQ49、Operator Dock分離、Pixel/QEMU・署名・公開のgateは保持する。
+
+Linux container（Colima／Debian bookworm、Python 3.13、network none、UID/GID 1002）でnative回帰125、supervisor 3、install 1、計129/129 Python試験が成功（skipなし、ResourceWarningをerror扱い）。Web／MCPのNode試験49/49、typecheck、lint:product、MCP配布物一致も成功した。native Cは`-Werror`でbuildし既存UI suiteが合格。生存・monotonic鮮度の両方を稼働表示に必要とし、送信本文だけでなくmanifest・recipe・key／endpoint metadataを検査する。監督は同じUIDで再起動し、Linux subreaperでcrash後の孤児process groupを終了・reapする。[機械可読証拠](docs/evidence/spider-guard-source-validation.json)と[再現command](docs/spider-guard.md#検証と引継ぎ)を記録した。対象はbase HEAD `b3e2676abd8ae2a0b3f78f48483e067b429d9bc8`上の未commit作業木で、same-SHA CIやremote main反映ではない。
+
+全体`npm test`は455件中444成功・11失敗であり、全体合格とは記録しない。変更前HEADでもvisual baselineの同じエラーとREADMEの2つの期待文言欠落を確認した。D1試験もHEADの必要42fileだけで9件中2成功・7失敗（37対32の6子試験と親）を再現し、計11失敗が変更前から存在することを確認した。Spider描画fixtureとactive／staleの目視確認も成功した。最終`npm run verify`はproject／repository／version／schema／database／release／release:signing（公開fixture64件）まで成功し、HEADでも再現する`baseline:check`の既存visual期待値で停止した。後続gateをこの実行の成功へ換算しない。変更したproduction／test sourceのSHA-256を機械可読証拠へ保存した。同一image boot、QEMU、Pixel実機、24時間運転は未受入で、`SYS15`は`in_progress`を維持する。
+
 
 ## 2026-10-01 — Zemaのモデル版固定に必要なCore identityを公開
 
@@ -1582,6 +1771,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS11 | Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合 | 完了 | [記録](vite.config.ts) · [記録](scripts/web-bundle-inventory.mjs) · [記録](scripts/check-web-bundle-inventory.mjs) · [記録](tests/web-bundle-inventory.test.mjs) · [記録](package.json) · [記録](data/release-readiness.json) · [記録](docs/release-minimum-gates.md) · [記録](docs/validation.md) |
 | SYS12 | 運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定 | 完了 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](docs/product-baseline.md) · [記録](scripts/check-product-baseline.mjs) · [記録](tests/product-baseline.test.mjs) |
 | SYS13 | 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 | 進行中 | [記録](data/device-emergency-access-policy.json) · [記録](docs/security-incident-response.md) · [記録](services/operator-dock/public/index.html) · [記録](services/operator-dock/src/worker.ts) · [記録](services/operator-dock/src/access-auth.ts) · [記録](services/operator-dock/src/operator-control.ts) · [記録](services/operator-dock/src/device-channel.ts) · [記録](services/operator-dock/migrations/0001_operator_device_control.sql) · [記録](services/operator-dock/migrations/0002_signed_device_channel.sql) · [記録](android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java) · [記録](android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorAgentJobService.java) · [記録](tests/operator-control.test.mjs) · [記録](tests/operator-device-channel.test.mjs) · [記録](tests/operator-access-auth.test.mjs) · [記録](tests/operator-dock-isolation.test.mjs) · [記録](android/operator-agent/src/androidTest/java/dev/rock/operator/agent/OperatorAgentIntegrationTest.java) · [記録](android/operator-agent/src/main/res/values/overlayable.xml) · [記録](scripts/stage-operator-agent-overlay.py) · [記録](tests/test_stage_operator_agent_overlay.py) · [記録](os/physical/operator-agent-overlay/README.md) · [記録](docs/evidence/android-operator-agent-emulator-20260916.json) · [記録](docs/evidence/android-pixel-10-prefull-physical-20260916.json) · [記録](docs/evidence/android-operator-overlay-stager-20260916.json) |
+| SYS15 | Spider Security AgentのGitHub検査・コード検査・OS常駐監視・送信前拒否・native表示・boot監督を統合する（ROCK・同一image起動未受入） | 進行中 | [記録](docs/spider-guard.md) · [記録](docs/evidence/spider-guard-source-validation.json) · [記録](docs/workstreams/04-security-identity-compliance.md) · [記録](docs/product-baseline.md) · [記録](docs/rockstaros-complete-design.md) · [記録](data/design-document-index.json) · [記録](systems/rock-star-os/os/platform/sensitive_guard.py) · [記録](systems/rock-star-os/os/platform/supervisor.py) · [記録](systems/rock-star-os/os/platform/service.py) · [記録](systems/rock-star-os/os/platform/runner_control.py) · [記録](systems/rock-star-os/os/platform/install-target.sh) · [記録](systems/rock-star-os/os/ui/security-ui.inc) · [記録](systems/rock-star-os/os/ui/test_ui.c) · [記録](systems/rock-star-os/tests/test_sensitive_guard.py) · [記録](systems/rock-star-os/tests/test_os_security_guard_integration.py) · [記録](systems/rock-star-os/tests/test_os_runner_control.py) · [記録](systems/rock-star-os/os/ui/spider-motion.c) · [記録](systems/rock-star-os/os/ui/spider-motion.h) · [記録](systems/rock-star-os/os/ui/pin-readiness.json) · [記録](scripts/review-native-pin-source.py) · [記録](systems/rock-star-os/tests/test_ui_pin_source_profile.py) · [記録](scripts/build-spider-inspector.mjs) · [記録](toolkits/spider-guard/README.md) · [記録](toolkits/spider-guard/inspector.html) · [記録](toolkits/spider-guard/program-inspector.mjs) · [記録](toolkits/spider-guard/program-inspector.d.mts) · [記録](tests/spider-inspector-artifact.test.mjs) · [記録](tests/spider-program-inspector.test.mjs) · [記録](systems/rock-star-os/os/platform/code_inspector.py) · [記録](systems/rock-star-os/tests/test_code_inspector.py) · [記録](SECURITY.md) · [記録](.github/workflows/spider.yml) · [記録](.github/workflows/spider-codeql.yml) · [記録](.github/spider/gitleaks.toml) · [記録](scripts/spider-repository-scan.py) · [記録](tests/test_spider_repository_scan.py) · [記録](tests/test_spider_gitleaks_policy.py) · [記録](tests/spider-codeql-workflow.test.mjs) · [記録](docs/evidence/spider-github-source-validation.json) · [記録](scripts/spider-feedback.mjs) · [記録](tests/spider-feedback.test.mjs) · [記録](.github/workflows/spider-regressions.yml) · [記録](tests/service-worker-update.test.mjs) · [記録](toolkits/fashion-brand-ops/test/http-security.test.mjs) · [記録](docs/evidence/spider-improvement-cycle.json) · [記録](tests/mcp-local-descriptor.test.mjs) · [記録](tests/test_mr_delivery_boundary.py) · [記録](tests/test_mr_http_deadline.py) · [記録](scripts/select-native-artifacts.py) · [記録](systems/rock-star-os/tests/test_native_artifacts.py) · [記録](docs/native-os-validation.md) · [記録](systems/rock-star-os/os/desktop/launcher.py) · [記録](systems/rock-star-os/tests/test_os_desktop_browser.py) · [記録](systems/rock-star-os/os/desktop/README.md) · [記録](systems/rock-star-os/os/platform/guest-test.py) · [記録](systems/rock-star-os/tests/test_os_platform_isolation_proof.py) · [記録](systems/rock-star-os/tests/test_game_exchange_deadlines.py) · [記録](scripts/verify-mcp-flow.mjs) · [記録](tests/mcp.test.mjs) · [記録](tests/mr-tools.test.mjs) · [記録](tests/csv-transform.test.mjs) · [記録](tests/fixtures/csv-report.html) · [記録](tests/mcp-connector.test.mjs) · [記録](systems/rock-star-os/os/mcp_broker/http.py) · [記録](systems/rock-star-os/tests/test_mcp_http_deadline.py) · [記録](tests/undici-tls-options.test.mjs) · [記録](data/web-third-party-license-audit.json) |
 | SYS14 | 製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定 | 完了 | [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](scripts/check-system-composition.mjs) · [記録](tests/system-composition.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |

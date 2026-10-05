@@ -16,3 +16,7 @@
 rootの `scripts/test-native.py` と `.github/workflows/native-os.yml` はこの配置用の検証入口。正常hostのUI observerは元のMakefileと同じ `test_evidence.py` が対象。古いATM observerの認証fixture不整合とroot専用Wallet/power試験は、rootの `docs/native-os-validation.md` に残件として記録する。全ての `test_*evidence.py` が成功したと扱わない。
 
 検証は使い捨てLinux環境で行う。suite全体がtimeoutした場合は失敗を記録して停止する。直接のprocess groupは終了するが、試験が独立sessionにした子孫全ての終了は保証しない。その環境を自動再利用せず、所有を確認した後片付けまたは使い捨てrunnerの終了を行う。
+
+## 2026-10-03 — SPIDERのHTTPS CA境界
+
+`os/mcp_broker/http.py`のHTTPS設定では、空のCAがTLS contextなしの送信へ進む経路を拒否する。`tests/test_mcp_http_deadline.py`で設定拒否と既存TLS／期限の回帰を確認する。取得時のmanifest・public fixture証明書／鍵は変更しない。合成loopbackと同一SHAのsource CIの証拠は[改善記録](../../docs/evidence/spider-improvement-cycle.json)へ保存し、外部providerやOS起動の受入とは区別する。

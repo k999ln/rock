@@ -120,7 +120,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 | --- | --- |
 | [Sky catalog](lib/catalog.ts) | 登録34件すべてを上に記載。ready 12件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
-| [`toolkits/`](toolkits/) | 7ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
+| [`toolkits/`](toolkits/) | 8ディレクトリを下表で分類。Tool実装、SDK、connector、セキュリティ共通部品、PAPER/eSIM試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
 
 Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
@@ -141,6 +141,7 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 | **Sky Billing** | 収益・費用の照合と請求Worker。Walletの実資金受入とは別 | [`services/sky-billing/`](services/sky-billing/) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md)・[請求設計](docs/sky-billing.md) |
 | **Sky Tool SDK** | Tool作者向けのpackage、サンプル、契約 | [`toolkits/sky-tool-sdk/`](toolkits/sky-tool-sdk/) | [SDK README](toolkits/sky-tool-sdk/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
 | **Sky MCP Connector** | MCP接続先と権限を管理する独立connector | [`toolkits/sky-mcp-connector/`](toolkits/sky-mcp-connector/) | [Connector README](toolkits/sky-mcp-connector/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **SPIDER Guard** | 機密情報の検出、外部送信前の検査、端末内コード検査に使う共通部品。独立したcatalog Toolではない | [`toolkits/spider-guard/`](toolkits/spider-guard/) | [README](toolkits/spider-guard/README.md)・[保護範囲と検証](docs/spider-guard.md) |
 | **Fashion Brand Ops** | 受注型ブランド運営の独立MCPサービス | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/) | [README](toolkits/fashion-brand-ops/README.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **Game SDK / Sandbox** | 非金融ゲームの接続と、資産交換を分けた試験 | [`systems/rock-star-os/examples/game/`](systems/rock-star-os/examples/game/) | [Game API契約](docs/game-api-contract-draft.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Mr. Tool adapter** | `Mr.`の固定原本をSkyへ接続するRock側の実装 | [`toolkits/mr/`](toolkits/mr/) | [README](toolkits/mr/README.md)・[Mr.取り込み](docs/mr-integration.md) |
