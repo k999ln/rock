@@ -74,7 +74,9 @@ gradle -p android :tool-sdk:testDebugUnitTest
 # adb installは選択した仮想端末に試作Toolをインストールする。
 adb -s <エミュレーターのserial> install -r android/article-tool/build/outputs/apk/debug/article-tool-debug.apk
 # 他の端末を切り離したテスト環境で、BrokerとテストAPKを導入して実行する。
-gradle -p android :automation:connectedDebugAndroidTest
+gradle -p android :automation:connectedDebugAndroidTest \
+  -Pandroid.testInstrumentationRunnerArguments.rockAcceptanceTarget=emulator \
+  -Pandroid.testInstrumentationRunnerArguments.notClass=dev.rock.automation.LocalAiServiceIntegrationTest
 
 # 既存Web/PCの回帰検証は別に継続
 npm run verify
@@ -83,6 +85,8 @@ npm run verify
 macOS/外付けExFATではAppleDouble補助ファイルがGradleの生成物削除と衝突した。生成物だけをローカルAPFS等へ移す場合は `-ProckBuildRoot=/絶対パス/生成物専用ディレクトリ` を付け、`node --experimental-strip-types scripts/check-os-parity.mjs /同じディレクトリ/core/classes/java/main` を使う。ソース/履歴は移動しない。
 
 GitHubの `.github/workflows/android.yml` は共通コアテスト、Broker／Shell／Toolの3 APKのbuild/lint、言語間照合に加え、使い捨てのAndroid35エミュレーターで実Binder/SQLiteの接続試験を行う。標準Google APIsイメージであり、自前Rock OS/Cuttlefishの起動ではない。実機は操作しない。レポートを7日保存し、全試験成功時だけ署名とhashを照合した3 APKを[Pixel 10向けのP1アプリ試験](android-trial.md)の成果物として7日保存する。APKのストア公開や正式OS配布ではない。
+
+試験引数 `rockAcceptanceTarget` の既定値は `physical` で、backupの2つのhardware-backed鍵とeSIM/A2Aのhardware attestation受入を要求する。GitHubの使い捨て端末では `emulator` を明示し、Androidのhardware名が `ranchu` / `goldfish` の場合だけ、backupのsoftware Keystore観測と同期済み暗号化ファイルを検査する。同じprofileでeSIM/A2Aのhardware必須鍵の発行拒否・alias残留なしを検査し、実機合格へ換算しない。Shell・automation・operatorの3suiteは `--continue` で全て実行し、1件でも失敗した場合はCIを失敗にする。
 
 2026-09-05、commit `47043ad` の[Android CI](https://github.com/k999ln/rock/actions/runs/33982932964)でコア16・SDK4・端末接続2テスト、2APKのbuild/lint、Java↔TypeScriptの36項目照合が成功した。端末試験では実Tool APKのBinder呼出、Android SQLiteを閉じて開き直した後の次工程、成果物の保存、二重結果の拒否、本人確認を検証。もう1件は充電必須・永続周期ジョブの登録と権限設定を確認した。実際の周期発火・画面OFF・OS再起動・不正署名/UIDの拒否はまだ検証していない。
 
