@@ -1,0 +1,458 @@
+{
+  "checked_at": "2026-10-01T21:41:09.579046+00:00",
+  "client_design_date": "2026-10-01",
+  "evidence_level": "host_sqlite_design_validation_only",
+  "repository_baseline": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "ddl": "docs/contracts/sky-commerce-v2.sql",
+  "ddl_sha256": "6200543a810fdb5d39fa855cd88fd2ff5d9508e4c334539d25a2726e743f0912",
+  "validator_sha256": "38e47b2aabe5825712acb1130611165e87959236f9d064f834584f2e6abaa079",
+  "sqlite_version": "3.53.4",
+  "existing_migrations": [
+    "0000_previous_havok.sql",
+    "0001_wealthy_shinko_yamashiro.sql",
+    "0002_operations_backend.sql",
+    "0002_work_jobs.sql",
+    "0004_union_bridge.sql",
+    "0005_early_the_enforcers.sql",
+    "0006_married_scream.sql",
+    "0007_yielding_giant_man.sql",
+    "0008_wooden_avengers.sql",
+    "0009_sad_giant_girl.sql",
+    "0010_gray_fat_cobra.sql",
+    "0011_overrated_skaar.sql",
+    "0012_marketplace_relation_guards.sql",
+    "0013_sky_provider_connections.sql",
+    "0014_sparkling_chimera.sql",
+    "0015_oval_the_twelve.sql",
+    "0016_red_crusher_hogan.sql",
+    "0017_high_krista_starr.sql",
+    "0018_sky_commerce.sql"
+  ],
+  "counts": {
+    "total": 103,
+    "pass": 103,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "all_nineteen_existing_migrations_and_draft_apply",
+      "status": "pass"
+    },
+    {
+      "name": "foreign_keys_enabled",
+      "status": "pass"
+    },
+    {
+      "name": "existing_four_table_schemas_unchanged",
+      "status": "pass"
+    },
+    {
+      "name": "exactly_fourteen_sidecar_tables",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_has_one_seller_reservation",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_mode_must_match_seller",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_request_is_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_reservation_cannot_be_deleted",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_stale_fence_cas_is_noop",
+      "status": "pass"
+    },
+    {
+      "name": "unknown_account_creation_deadline_cannot_reset",
+      "status": "pass"
+    },
+    {
+      "name": "arbitrary_account_adoption_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_adopts_authenticated_matching_observation",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_cannot_adopt_second_account",
+      "status": "pass"
+    },
+    {
+      "name": "reject_duplicate_quote_id",
+      "status": "pass"
+    },
+    {
+      "name": "quote_terms_are_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "quote_delete_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "reject_mixed_mode_contract_quote",
+      "status": "pass"
+    },
+    {
+      "name": "reject_mixed_manifest_contract_quote",
+      "status": "pass"
+    },
+    {
+      "name": "reject_fractional_money",
+      "status": "pass"
+    },
+    {
+      "name": "reject_negative_money",
+      "status": "pass"
+    },
+    {
+      "name": "reject_wrong_commission",
+      "status": "pass"
+    },
+    {
+      "name": "reject_non_jpy_purchase",
+      "status": "pass"
+    },
+    {
+      "name": "reject_invalid_hash",
+      "status": "pass"
+    },
+    {
+      "name": "contract_identity_cannot_change_in_place",
+      "status": "pass"
+    },
+    {
+      "name": "subject_link_cannot_be_reassigned",
+      "status": "pass"
+    },
+    {
+      "name": "duplicate_entitlement_aggregate_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "entitlement_aggregate_delete_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "entitlement_revision_reset_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "operation_idempotency_collision_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "operation_request_digest_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "operation_wrong_account_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "operation_wrong_mode_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "checkout_amount_must_equal_order",
+      "status": "pass"
+    },
+    {
+      "name": "unknown_operation_keeps_original_deadline",
+      "status": "pass"
+    },
+    {
+      "name": "unknown_requires_submission_time",
+      "status": "pass"
+    },
+    {
+      "name": "over_20h_retry_deadline_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "refund_provider_id_duplicate_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "refund_has_independent_pending_state",
+      "status": "pass"
+    },
+    {
+      "name": "refund_failed_state_kept_without_recharge",
+      "status": "pass"
+    },
+    {
+      "name": "refund_wrong_operation_kind_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "refund_amount_above_order_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "refund_amount_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "unreviewed_refund_overallocation_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "payment_closure_without_evidence_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "verified_expired_session_preserves_unpaid_payment_fact",
+      "status": "pass"
+    },
+    {
+      "name": "duplicate_event_id_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "event_payload_hash_cannot_change",
+      "status": "pass"
+    },
+    {
+      "name": "event_cannot_bind_different_mode_order",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_account_scope_stale_lease_is_noop",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_account_observation_accepted_without_order",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_account_cannot_accept_other_accounts_balance",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_account_evidence_cannot_be_replayed_at_new_revision",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_unknown_zero_negative_are_distinct",
+      "status": "pass"
+    },
+    {
+      "name": "observation_is_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "observation_cannot_be_deleted",
+      "status": "pass"
+    },
+    {
+      "name": "unsafe_integer_balance_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "negative_charge_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "observation_json_must_parse",
+      "status": "pass"
+    },
+    {
+      "name": "nonce_unique_per_issuer_audience_mode",
+      "status": "pass"
+    },
+    {
+      "name": "nonce_expiry_not_extendable",
+      "status": "pass"
+    },
+    {
+      "name": "nonce_cas_second_consume_is_noop",
+      "status": "pass"
+    },
+    {
+      "name": "consumed_nonce_cannot_be_reset",
+      "status": "pass"
+    },
+    {
+      "name": "concrete_sql_example_has_five_statements",
+      "status": "pass"
+    },
+    {
+      "name": "stale_lease_cas_is_all_effect_noop",
+      "status": "pass"
+    },
+    {
+      "name": "expired_lease_cas_is_all_effect_noop",
+      "status": "pass"
+    },
+    {
+      "name": "entitlement_conflict_gates_first_cas",
+      "status": "pass"
+    },
+    {
+      "name": "stale_recovery_epoch_gates_first_cas",
+      "status": "pass"
+    },
+    {
+      "name": "order_domain_rejects_raw_provider_status",
+      "status": "pass"
+    },
+    {
+      "name": "order_domain_rejects_unknown_payment_fact",
+      "status": "pass"
+    },
+    {
+      "name": "no_audit_or_outbox_after_noop",
+      "status": "pass"
+    },
+    {
+      "name": "late_statement_error_rolls_back_both_aggregates",
+      "status": "pass"
+    },
+    {
+      "name": "matching_fence_and_revision_commit_all_effects",
+      "status": "pass"
+    },
+    {
+      "name": "state_audit_outbox_and_inbox_agree",
+      "status": "pass"
+    },
+    {
+      "name": "different_late_mutation_noops_after_commit",
+      "status": "pass"
+    },
+    {
+      "name": "audit_without_accepted_cas_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "accepted_audit_is_append_only",
+      "status": "pass"
+    },
+    {
+      "name": "lease_fence_cannot_move_backwards",
+      "status": "pass"
+    },
+    {
+      "name": "new_lease_token_requires_new_fence",
+      "status": "pass"
+    },
+    {
+      "name": "external_success_is_preserved_alongside_unknown_overlapping_reservation",
+      "status": "pass"
+    },
+    {
+      "name": "paid_ownership_does_not_require_buyer_oauth",
+      "status": "pass"
+    },
+    {
+      "name": "revoked_subject_link_rejects_old_grant_ack",
+      "status": "pass"
+    },
+    {
+      "name": "subject_state_change_requires_revision",
+      "status": "pass"
+    },
+    {
+      "name": "recovery_epoch_cannot_decrease_in_current_database",
+      "status": "pass"
+    },
+    {
+      "name": "refund_case_closure_does_not_restore_without_decision",
+      "status": "pass"
+    },
+    {
+      "name": "keep_revoked_disposition_blocks_grant_cas",
+      "status": "pass"
+    },
+    {
+      "name": "withdrawn_canceled_refund_with_explicit_restore_can_grant",
+      "status": "pass"
+    },
+    {
+      "name": "repurchase_keeps_aggregate_and_monotonic_revision",
+      "status": "pass"
+    },
+    {
+      "name": "old_grant_ack_after_repurchase_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "old_refund_does_not_rewrite_new_order",
+      "status": "pass"
+    },
+    {
+      "name": "refund_correction_requires_new_provider_evidence",
+      "status": "pass"
+    },
+    {
+      "name": "stale_refund_observation_cannot_replace_newer",
+      "status": "pass"
+    },
+    {
+      "name": "refund_success_can_be_corrected_to_failed",
+      "status": "pass"
+    },
+    {
+      "name": "old_refund_failure_preserves_repurchase_rights",
+      "status": "pass"
+    },
+    {
+      "name": "unresolved_refund_obligation_cannot_reactivate",
+      "status": "pass"
+    },
+    {
+      "name": "old_order_cannot_replace_current_pending_entitlement",
+      "status": "pass"
+    },
+    {
+      "name": "legacy_import_does_not_fabricate_quote_or_acceptance",
+      "status": "pass"
+    },
+    {
+      "name": "legacy_import_cannot_promote_without_provider_evidence",
+      "status": "pass"
+    },
+    {
+      "name": "new_quote_order_cannot_use_null_quote_bypass",
+      "status": "pass"
+    },
+    {
+      "name": "legacy_import_requires_historical_evidence_ref",
+      "status": "pass"
+    },
+    {
+      "name": "paid_access_contract_only_allows_server_introspection",
+      "status": "pass"
+    },
+    {
+      "name": "paid_access_positive_cache_is_fixed_at_60_seconds",
+      "status": "pass"
+    },
+    {
+      "name": "database_foreign_key_check_clean",
+      "status": "pass"
+    },
+    {
+      "name": "database_integrity_check_clean",
+      "status": "pass"
+    }
+  ],
+  "not_executed": [
+    "Cloudflare D1 deployment/runtime",
+    "Stripe sandbox",
+    "live payment",
+    "actual identity gateway",
+    "external MCP authorization",
+    "bank payout"
+  ]
+}
