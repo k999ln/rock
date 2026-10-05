@@ -4558,6 +4558,176 @@
     "patentFiled": false,
     "nextAction": "初公開日・先行出願を確定し、R1の具体方式・比較実験と専門家による請求項検討を行う。9月30日以降のコード変更は本調査の対象外。"
   },
+  "skyToolExecutionBoundaryPreparation": {
+    "stage": "local_tests_passed_ui_pending",
+    "runtimePublished": false,
+    "catalogCount": 35,
+    "classificationIsLiveAcceptance": false,
+    "productionOwnerAcceptance": false,
+    "evidence": "docs/evidence/sky-tool-execution-boundaries.json"
+  },
+  "skyIntegratedAcceptancePreparation": {
+    "stage": "local_validator_verified",
+    "runtimePublished": false,
+    "sameCandidateAcceptance": false,
+    "historicalPartialObservationsPreserved": 2,
+    "finalStages": [
+      "paid",
+      "clients"
+    ],
+    "evidence": "tests/sky-launch-validation.test.mjs"
+  },
+  "skyLibraryIntegrationPreparation": {
+    "stage": "local_worker_and_partial_ui_verified",
+    "runtimePublished": false,
+    "savedToolsGrantExecution": false,
+    "schemaVersion": 4,
+    "currentCandidateAccepted": false,
+    "evidence": [
+      "app/api/sky/library/route.ts",
+      "app/zema/library/page.tsx",
+      "scripts/check-csv-storage.mjs",
+      "tests/sky-hosting-schema.test.mjs"
+    ],
+    "unitTests": {
+      "passed": 51,
+      "failed": 0
+    },
+    "workerD1R2Assertions": {
+      "passed": 212,
+      "syntheticIdentity": true
+    },
+    "uiVerified": [
+      "Sky tool save",
+      "Zema saved list after reload",
+      "Zema citation tool launch",
+      "browser processing with actual Worker completed metadata",
+      "local result restoration after reload",
+      "anonymous save refusal and blank-tab sign-in link"
+    ],
+    "uiNotAccepted": [
+      "Markdown download (browser automation timeout)",
+      "clipboard contents (empty readback)",
+      "PC start/wait/failure/reconnect (auto-review rejection)",
+      "public owner authentication",
+      "physical Pixel"
+    ]
+  },
+  "skyResultExportPreparation": {
+    "stage": "local_payload_and_ui_verified",
+    "runtimePublished": false,
+    "unitTestsPassed": 9,
+    "workerAssertionsPassed": 212,
+    "metadataInputBytes": 200,
+    "metadataOutputBytes": 128,
+    "fileDownloadAccepted": false,
+    "clipboardAccepted": false,
+    "publicOwnerAccepted": false,
+    "evidence": [
+      "lib/sky-result-download.ts",
+      "tests/sky-result-download.test.mjs",
+      "docs/sky-launch-operations.md"
+    ]
+  },
+  "skyCsvRetentionPreparation": {
+    "stage": "local_failure_recovery_verified_public_pending",
+    "runtimePublished": false,
+    "workerTriggerConfigured": false,
+    "retentionDays": 7,
+    "physicalDeletionSlaAccepted": false,
+    "processingLeaseRecoveryAccepted": false,
+    "paymentSessionLedgerDeleted": false,
+    "productionAccepted": false,
+    "evidence": [
+      "lib/csv-retention.ts",
+      "web-worker.ts",
+      "scripts/check-csv-storage.mjs",
+      "tests/csv-retention.test.mjs",
+      "docs/sky-launch-operations.md"
+    ]
+  },
+  "skyConnectionEntryPreparation": {
+    "stage": "candidate_pending_public_verification",
+    "sourceBaseline": "58f4e2d247c69141c643ba23594b9aa601cb47e5",
+    "routes": [
+      "/sky",
+      "/sky/network"
+    ],
+    "changedEntrypoints": [
+      "market_header",
+      "pc_tool_management"
+    ],
+    "designPreserved": true,
+    "navigationCreatesDeviceRights": false,
+    "realPcAccepted": false,
+    "fullUxAccepted": false
+  },
+  "skyDedicatedToolLibraryPreparation": {
+    "stage": "local_candidate_checks_passed_public_owner_pending",
+    "baseline": "082d662595d868420a812fb9615a047fbe6d488d",
+    "tools": [
+      "rockstar-csv-cleanup",
+      "coconala"
+    ],
+    "sharedJobStore": true,
+    "librarySaveGrantsExecutionRights": false,
+    "publicOwnerAcceptance": false,
+    "loadingLayoutGuard": true
+  },
+  "skyConnectorPilotPreparation": {
+    "stage": "policy_and_denial_http_tested_issuance_held",
+    "origin": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "tools": [
+      "coconala_check",
+      "format_citations",
+      "make_free_article",
+      "verify_delivery"
+    ],
+    "ttlMinutes": 30,
+    "sdkDiscovery": false,
+    "connectionIssuanceAccepted": false,
+    "realPcAccepted": false,
+    "expiryShutdownAccepted": false
+  },
+  "skyConnectionReachability": {
+    "stage": "candidate_pending_UI_verification",
+    "browserHintGrantsAccess": false,
+    "api401GrantsAccess": false,
+    "realPcAccepted": false
+  },
+  "skyCsvHistoryRecovery": {
+    "stage": "candidate_pending_UI_verification",
+    "staleReadIgnored": true,
+    "recoveryReexecutes": false,
+    "actualPaymentAccepted": false
+  },
+  "skyGithubIntegration": {
+    "date": "2026-10-05",
+    "sourceCandidate": "b896b2e17576c2ee5dcf52d3380540472a14697d",
+    "sourceHistory": "dedicated Sites; selectively ported",
+    "baseMain": "a3951f52fa79ad4348f371c647dfe339de2e8eeb",
+    "status": "local_verification_passed_ci_pending",
+    "taskIds": [
+      "G04",
+      "WEB04"
+    ],
+    "publicVersionUnchanged": 39,
+    "productionAcceptance": false,
+    "unaccepted": [
+      "owner journey and physical download",
+      "real PC connection",
+      "new live payments and external AI",
+      "scheduled cleanup trigger",
+      "full production recovery"
+    ],
+    "preservedConcurrentMain": [
+      "AMC command center and service entitlement",
+      "SPIDER outbound and bundled-MR restrictions",
+      "Shared CSV validation and sort fixes"
+    ],
+    "validationEvidence": "docs/evidence/sky-github-main-integration.json",
+    "pullRequest": "https://github.com/k999ln/rock/pull/68"
+  },
   "amcMainIntegration": {
     "status": "in_progress",
     "updatedAt": "2026-10-05",
@@ -4605,7 +4775,7 @@
     },
     "branch": "codex/repository-cleanup",
     "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac",
-    "latestMainIntegrated": "a3951f52fa79ad4348f371c647dfe339de2e8eeb",
+    "latestMainIntegrated": "624124cf53848542538a94b9d309e24d3efbb1fe",
     "pullRequest": "https://github.com/k999ln/rock/pull/69"
   }
 }

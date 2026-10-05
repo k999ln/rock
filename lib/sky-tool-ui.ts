@@ -72,34 +72,82 @@ export function skyToolUiState(
   if (tool.runner === 'jev-evaluation')
     return {
       label: '料金見積・上限制御の接続待ち',
-      detail: 'provider設定があっても、価格・予算予約・usage receiptを接続するまで外部送信しません',
+      detail:
+        'provider設定があっても、価格・予算予約・usage receiptを接続するまで外部送信しません',
       className: 'is-connect',
     };
-  if (tool.id === 'rockstar-legal-intake' || tool.id === 'rockstar-patent-assistant') {
-    const configured = tool.id === 'rockstar-legal-intake' ? service?.legalAiConfigured : service?.patentAiConfigured;
+  if (
+    tool.id === 'rockstar-legal-intake' ||
+    tool.id === 'rockstar-patent-assistant'
+  ) {
+    const configured =
+      tool.id === 'rockstar-legal-intake'
+        ? service?.legalAiConfigured
+        : service?.patentAiConfigured;
     return {
-      label: configured ? 'Provider設定あり・価格制御未接続' : '標準ガイドのみ・価格確認待ち',
-      detail: '単価見積・利用者上限・最終usage照合を接続するまで外部AIへ送信しません',
+      label: configured
+        ? 'Provider設定あり・価格制御未接続'
+        : '標準ガイドのみ・価格確認待ち',
+      detail:
+        '単価見積・利用者上限・最終usage照合を接続するまで外部AIへ送信しません',
       className: 'is-connect',
     };
   }
-  if (['coconala', 'mr-free-article', 'mr-citations'].includes(tool.id) && service?.database === 'unavailable')
+  if (
+    [
+      'coconala',
+      'mr-free-article',
+      'mr-citations',
+      'rockstar-markets-analysis',
+      'mercari-revenue',
+    ].includes(tool.id) &&
+    service?.database === 'unavailable'
+  )
     return {
       label: '実行記録サービスを確認中',
-      detail: '記録サービスの復旧後に利用できます。入力を手元に保存してください',
+      detail:
+        '記録サービスの復旧後に利用できます。入力を手元に保存してください',
+      className: 'is-connect',
+    };
+  if (tool.id === 'rockstar-markets-analysis')
+    return {
+      label: 'PAPER検証のみ',
+      detail: 'Skyの仮想台帳で検証。実資金・外部注文には接続していません',
+      className: 'is-connect',
+    };
+  if (tool.id === 'mercari-revenue')
+    return {
+      label: '出品準備・本人操作が必要',
+      detail:
+        '原稿・費用・取引状態を管理。公式サービスへの出品や送信は行いません',
       className: 'is-connect',
     };
   if (tool.id === 'rockstar-amc') return { label: '計画・進捗管理が利用可能', detail: 'AIの自律実行は未接続', className: 'is-ready' };
   if (tool.id === 'rockstar-csv-cleanup')
     return {
-      label: service?.database === 'available' && service.csvStorageConfigured ? 'サインインして利用' : service ? 'ファイルサービス接続待ち' : '利用条件を確認',
-      detail: 'サインイン、実行記録、ファイル保存が必要。成果物の取得期限は7日です',
-      className: service?.database === 'available' && service.csvStorageConfigured ? 'is-ready' : 'is-connect',
+      label:
+        service?.database === 'available' && service.csvStorageConfigured
+          ? 'サインインして利用'
+          : service
+            ? 'ファイルサービス接続待ち'
+            : '利用条件を確認',
+      detail:
+        'サインイン、実行記録、ファイル保存が必要。成果物の取得期限は7日です',
+      className:
+        service?.database === 'available' && service.csvStorageConfigured
+          ? 'is-ready'
+          : 'is-connect',
+    };
+  if (['coconala', 'mr-free-article', 'mr-citations'].includes(tool.id))
+    return {
+      label: '今使える',
+      detail: 'ブラウザ内で実行',
+      className: 'is-ready',
     };
   return {
-    label: '今使える',
-    detail: 'ブラウザ内で実行',
-    className: 'is-ready',
+    label: '実行条件を確認',
+    detail: '実行器の準備・接続を確認してください',
+    className: 'is-connect',
   };
 }
 

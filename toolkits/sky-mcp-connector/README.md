@@ -47,3 +47,11 @@ stdio MCPは、`registry.json`へ実行ファイルと引数を別々に指定�
 - UIから任意commandを登録するAPIはありません。配布・審査済みregistryをPC所有者が導入します。
 
 詳しい共通契約は[`../../docs/sky-mcp-connector.md`](../../docs/sky-mcp-connector.md)を参照してください。
+
+## 承認待ちの限定Mac試験
+
+配布パックの `Sky 限定試験.command` は `registry.pilot.json` と `--pilot` を指定する。起動は接続キーを発行せず、Skyで接続する時点の本人承認が必要。通常起動のregistryや自動SDK発見をこの試験へ流用しない。限定modeは既存SkyのOriginだけを許可し、基本自動化4機能にMCP list/callを限定する。別server、SDK自動追加、resource/prompt/custom RPCを拒否する。初回キー発行から30分を期限とし、同じConnectorへの再接続で延長しない。期限後はキー・承認券を無効化し、待受とstdio子プロセスの停止を要求する。
+
+この準備では実PCの `/connect`、実再接続、Tool実行、30分の実時間停止試験を行っていない。純粋な検証関数・未認証HTTP拒否に加え、使い捨てのprocess内fixtureでgrant再利用・不正Bearer・模擬時計による期限拒否を検証した。MCP server初期化や実端末登録は行っていない。認証済み実接続・期限到来の受入は別に残る。承認後の試験でも最大30分で手動停止し、専用Connector終了、ブラウザの試験接続解除、発行した試験端末記録の片付けを確認する。汎用modeの利用権や全Tool対応へ合格を転用しない。
+
+公開画面の既存配布導線を照合し、通常Connectorの許可Originに現行Skyを追加した。health取得200・未認証のservers取得401だけを検証し、キー発行や全Toolの本番受入は行っていない。承認待ちの4機能試験は通常modeを流用せず限定modeを使用する。

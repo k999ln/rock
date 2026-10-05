@@ -178,10 +178,20 @@ OWNER: 本番サインイン操作、外部アカウント契約/本人確認、
 
 未決定事項は担当・条件・試験を持つ: 有料Tool1件は権利/提供者認証/価格/返金条件を満たす作者を選ぶ。クラウド成果保存の保持期間は利用者の扱うデータと削除/復元試験で決める。外部モデルの予算はjobあたり/日あたりの上限と超過停止を決める。私有問い合わせは運営者が読める宛先を設定して疎通する。これらを仮の値で一般契約へしない。
 
-運用担当が実行する手順と現在の在庫は [ローンチ運用・受入](sky-launch-operations.md) にまとめた。機械判定は `npm run sky:launch:check`。`--require-stage basic` 等を付けた判定は未合格で終了し、未受入の公開を完成扱いにしない。`completeLaunchClaim` の対象は単独Webの有料市場までで、OS/Mini/他アプリ共通利用は別stageで判定する。
+運用担当が実行する手順と現在の在庫は [ローンチ運用・受入](sky-launch-operations.md) にまとめた。機械判定は `npm run sky:launch:check`。`--require-stage basic` 等を付けた判定は必要な同一候補の受入が不足すると失敗し、未受入の公開を完成扱いにしない。既存の`completeLaunchClaim`はstandalone Webの`paid`段階に対する履歴判定として保持する。全体の最終判定は`--require-stage complete`で有料市場・OS/Mini/他アプリ共通利用・focused顧客導線の3段階を要求し、任意の`integratedLaunchClaim`もこの同一候補の判定と照合する。Webだけの初回公開判断は`basic`・`paid`で別途行い、全体完成へ転用しない。
 
 ## 14. 根拠
 
 コード: `lib/catalog.ts`, `lib/sky-tool-ui.ts`, `lib/operations.ts`, `lib/csv-job-store.ts`, `lib/request-auth.ts`, `lib/sky-tool-package-store.ts`, `lib/sky-tool-review.ts`, `lib/sky-commerce.ts`, `lib/sky-stripe.ts`, `lib/sky-result-library.ts`。設計: `docs/sky.md`, `docs/sky-mcp-architecture.md`, `docs/sky-billing.md`, `docs/sky-cloud-continuity.md`, `docs/workstreams/02-sky-mcp.md`。
 
 外部標準: [MCP Authorization](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization)、[Stripe API keysとtest/live](https://docs.stripe.com/keys)、[OWASP API Security Top 10](https://api-security.owasp.org/editions/2023/en/0x11-t10/)。これらは設計の基準であり、Skyが認証・決済・安全性の認定を受けた根拠ではない。
+
+## 同一候補の最終受入と履歴試験の分離
+
+既存の17 gate（基本・市場・有料・clientの12件とfocusedの5件）を保持し、`complete` stageは`paid`・`clients`・`focused`のすべてに依存する。既存の技術・初回公開判断の分割、未完了の親task、r46の22項目再評価は変更しない。`scripts/sky-launch-validation.mjs`は既存の履歴監査に加えて、gateの削除や依存削除による完成扱いを拒否する。
+
+現在の候補には本番受入用の`candidate`をまだ設定しない。過去の公開入口・runtime部分確認・限定CSV決済のstatusとevidenceは既存reportのまま保持し、移動・再分類しない。`acceptanceEvidence`で同一候補へ結び付いていないpassed記録は履歴のみとして表示し、候補の合格件数には含めない。通常の構造検査は未完了reportでも成功するが、`--require-stage`による受入要求は不足があれば失敗する。過去の合格証拠を捨てたり、現在の本人認証・実接続を推測したりしない。
+
+passedのgateを同一候補の合格へ算入するには、gateのevidenceに含まれるJSON実受入記録を`acceptanceEvidence`へ指定する。記録はschema `sky-launch-acceptance/1`、対象gateId、result `passed`、execution `actual`、実試験environment、observedAtを持ち、sourceCommit・buildSha256・deploymentId・siteVersionの4項目すべてがreportの`candidate`と一致する。mock/fixture、別環境、別gate、候補と異なるsource/build/deployment/versionは拒否する。文書や試験ソースの存在だけでは候補の合格にしない。この構造検査は実顧客導線を実行・認定するものではなく、宣言した候補が実際の配備対象であることと、記録が示す受入範囲の独立確認も必要である。
+
+保存済みR1の監査試験fixture修正は、実配備設定と記録済みの旧本人限定監査を混同しないため、テスト内だけへ限定統合する。現在のpackage-lockに対応する948/911/49の検査は保持。実設定を読むrelease CLI、validator、本番Sites identity、既存アクセス制御は変更しない。35単体試験の合格は本番readbackではなく、公開判定は引き続き未合格。

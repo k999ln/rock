@@ -20,8 +20,11 @@ import { useSkyToolContext } from '@/lib/use-sky-tool-context';
 import { ToolIcon } from '@/components/tool-icon';
 import { Dialog } from '@/components/ui/dialog';
 import SkyToolOverview from '@/components/sky-tool-overview';
+import SkyLibrarySave from '@/components/sky-library-save';
+import ZemaNavigation from '@/components/zema-navigation';
 import CoconalaTeamWorkspace from '@/components/coconala-team-workspace';
 import SkyConnectionCenter from '@/components/sky-connection-center';
+import CsvBusinessWorkspace from '@/components/csv-business-workspace';
 import {
   catalogHostMismatch,
   detectSkyHost,
@@ -34,7 +37,7 @@ const browserHost = (): SkyHostEnvironment =>
   detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
 const serverHost = (): null => null;
 
-export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
+export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId: string; workspace?: boolean }) {
   const runtimeContext = useSkyToolContext();
   const [infoOpen, setInfoOpen] = useState(false);
   const [voiceSetupOpen, setVoiceSetupOpen] = useState(false);
@@ -42,7 +45,8 @@ export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
   const host = useSyncExternalStore(subscribeHost, browserHost, serverHost);
 
   if (toolId === 'rockstar-amc') return <AmcWorkspace />;
-  if (toolId === 'coconala') return <CoconalaTeamWorkspace />;
+  if (toolId === 'coconala') return <CoconalaTeamWorkspace workspace={workspace} />;
+  if (toolId === 'rockstar-csv-cleanup') return <CsvBusinessWorkspace workspace={workspace} />;
 
   if (!tool) {
     return (
@@ -79,10 +83,11 @@ export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
       hideTopActions
     >
       <section className={styles.page} aria-labelledby="sky-tool-title">
+        {workspace && <ZemaNavigation active="library" />}
         <header className={styles.header}>
           <div className={styles.headerTop}>
-            <Link className={styles.back} href="/sky/marketplace">
-              <ArrowLeft size={16} /> マーケットへ戻る
+            <Link className={styles.back} href={workspace ? '/zema/library' : '/sky/marketplace'}>
+              <ArrowLeft size={16} /> {workspace ? 'ライブラリへ戻る' : 'マーケットへ戻る'}
             </Link>
             <Link className={styles.skyLink} href="/sky">
               Skyアプリ一覧 <ArrowUpRight size={15} />
@@ -117,6 +122,7 @@ export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
         </header>
 
         <div className={styles.body}>
+          {!workspace && <SkyLibrarySave key={tool.id} toolId={tool.id} />}
           {isJevRouter ? (
             <section className={styles.openCard}>
               <h2>

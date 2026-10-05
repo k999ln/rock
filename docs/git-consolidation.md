@@ -113,3 +113,10 @@ Stripeのstandalone配布コピーは生成物であり、共通sourceとの一�
 確認コマンド: `npm run repository:check`、`npm run test:avocado-mini-site`、`python3 scripts/verify-rocketstar-archive.py --git`、`npm run verify`。進捗・最終結果は`data/project-status.json`の`repositoryCleanup`と`project.md`に記録する。GitHub保存、main統合、Site公開はそれぞれ独立した状態として扱う。
 
 復旧は削除前commit `592daeea322cd47aa189b67dd689e323662c0c67`から各対象を取得できる。通常の利用では上記buildで再生成し、生成物を再びcommitしない。設計原本や配布assetまで削除範囲を広げる場合は、参照先と完全保存条件を別に確認する。
+
+
+## 2026-10-05 Sky配信候補の正本統合（G04/WEB04）
+
+G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
+
+統合後のローカル全体verifyは成功。AMC/SPIDERを含むNode1146合格・1skip、仕事API1069、CSV385 assertions。詳細は[検証記録](evidence/sky-github-main-integration.json)。既存mainの履歴scanner候補2859件は別の未解決事項として保持する。

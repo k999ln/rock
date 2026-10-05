@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
+import { removeCsvJobStorage, purgeExpiredCsvJobs, CSV_RETENTION_CRON } from '../lib/csv-retention.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const temporary = mkdtempSync(join(tmpdir(), 'sky-csv-storage-'));
@@ -66,13 +67,44 @@ async function artifacts(job, user=alice) {
 try {
   cpSync(join(root,'dist'),join(temporary,'dist'), {recursive:true,filter:p=>!p.split(/[\\/]/).at(-1).startsWith('._')});
   await start();
-  // Canonical builds use migrations; Sites builds also have an idempotent bootstrap.
-  for (const file of readdirSync(join(root,'drizzle')).filter(f=>f.endsWith('.sql')).sort())
+  // Canonical builds apply the append-only migration chain before admission.
+  for (const file of readdirSync(join(root,'drizzle')).filter(f=>f.endsWith('.sql') && !f.startsWith('._')).sort())
     for (const sql of readFileSync(join(root,'drizzle',file),'utf8').split('--> statement-breakpoint').filter(s=>s.trim()))
       await db.prepare(sql).run();
-  await db.prepare('CREATE TABLE IF NOT EXISTS sky_service_schema(version INTEGER PRIMARY KEY)').run();
   await call('/api/csv-jobs',{user:null,status:401});
   await call('/api/csv-jobs',{method:'POST',body:{},requestOrigin:'https://invalid.example',status:403});
+
+  // Library saves are owner-scoped bookmarks, not execution consent or purchases.
+  const library = async user => (await (await call('/api/sky/library', {user})).json());
+  check(await library(alice), []); check(await library(bob), []);
+  await call('/api/sky/library', {user:null,status:401});
+  await call('/api/sky/library', {method:'PUT',user:null,body:{tool:'mr-citations',saved:true},status:401});
+  await call('/api/sky/library', {method:'PUT',body:{tool:'mr-citations',saved:true},requestOrigin:'https://invalid.example',status:403});
+  for (const body of [{tool:'unknown',saved:true},{tool:'mr-citations',saved:'true'},{tool:'mr-citations',saved:true,grant:true}])
+    await call('/api/sky/library', {method:'PUT',body,status:400});
+  for (let i=0;i<2;i++) check(await (await call('/api/sky/library', {method:'PUT',body:{tool:'mr-citations',saved:true}})).json(), {tool:'mr-citations',saved:true});
+  const saved = await library(alice); check(saved.length,1); check(saved[0].tool,'mr-citations'); check(await library(bob),[]);
+  await call('/api/sky/library', {method:'PUT',user:bob,body:{tool:'mr-citations',saved:false}});
+  check((await library(alice)).length,1);
+  await call('/api/sky/library', {method:'PUT',user:bob,body:{tool:'mr-citations',saved:true}});
+  check((await library(bob)).map(item=>item.tool),['mr-citations']); check((await library(alice)).length,1);
+  await call('/api/sky/library', {method:'PUT',user:bob,body:{tool:'mr-citations',saved:false}});
+  check(await (await call('/api/sky/connections')).json(),[]);
+  check(await (await call('/api/jobs')).json(),[]);
+  check((await db.prepare('SELECT COUNT(*) AS count FROM devices').first()).count,0);
+  for (let i=0;i<2;i++) await call('/api/sky/library', {method:'PUT',body:{tool:'mr-citations',saved:false}});
+  check(await library(alice),[]);
+
+  for (const tool of ['rockstar-csv-cleanup','coconala']) {
+    check(await (await call('/api/sky/library',{method:'PUT',body:{tool,saved:true}})).json(),{tool,saved:true});
+    check((await library(alice)).map(item=>item.tool),[tool]);
+    check(await library(bob),[]);
+    check((await db.prepare('SELECT COUNT(*) AS count FROM devices').first()).count,0);
+    check(await (await call('/api/jobs')).json(),[]);
+    check(await (await call('/api/csv-jobs')).json().then(value=>value.jobs),[]);
+    await call('/api/sky/library',{method:'PUT',body:{tool,saved:false}});
+  }
+
   let first = await create(); const originalHash=await inputHash(first.id);
   check(first.quoteMinor,0);check(await create(first.id),first);
   await create(first.id,bob,content,409);check(await inputHash(first.id),originalHash);
@@ -93,7 +125,9 @@ try {
   check((await bucket.list({prefix:`csv/${collisionId}/`})).objects.length,1);
   first=await finish(first);check(first.status,'completed');check(first.validation.passed,true);
   const before=await artifacts(first);check(Object.keys(before).length,4);
+  await call('/api/sky/library',{method:'PUT',body:{tool:'mr-citations',saved:true}});
   await stop();await start();check(await artifacts(first),before);
+  check((await library(alice)).map(item=>item.tool),['mr-citations']); check(await library(bob),[]);
   await call('/api/csv-jobs/'+first.id,{method:'DELETE',user:bob,status:404});
   check(await artifacts(first),before);
   await call('/api/csv-jobs/'+first.id,{method:'DELETE',status:204});
@@ -123,5 +157,116 @@ try {
   check((await stored(expiredFailure.id)).attempt,1);
   await call('/api/csv-jobs/'+expiredFailure.id,{method:'POST',body:retryBody,status:410});
   check(await stored(expiredFailure.id),null);check((await bucket.list({prefix:`csv/${expiredFailure.id}/`})).objects.length,0);
+  // Retention uses the same compiled Worker, with only synthetic local storage.
+  const retentionUser=`csv-retention-${randomUUID()}`;
+  const live=await finish(await create(randomUUID(),retentionUser),retentionUser);
+  const liveArtifacts=await artifacts(live,retentionUser);
+  async function expiredClone(user=retentionUser, status='quoted') {
+    const id=randomUUID(), inputKey=`csv/${id}/input-${randomUUID()}.csv`, now=Date.now();
+    await bucket.put(inputKey,content);
+    await db.prepare("INSERT INTO csv_jobs (id,user_id,status,payment_status,input_name,input_key,input_bytes,input_sha256,input_encoding,specification_json,quote_minor,currency,attempt,revision,expires_at,created_at,updated_at) SELECT ?,?,?,payment_status,input_name,?,input_bytes,input_sha256,input_encoding,specification_json,quote_minor,currency,0,0,?,?,? FROM csv_jobs WHERE id=?")
+      .bind(id,user,status,inputKey,now-1000,now-2000,now-2000,live.id).run();
+    return stored(id);
+  }
+  const batch=[];
+  for(let i=0;i<21;i++) batch.push(await expiredClone());
+  const foreignExpired=await expiredClone(bob), processing=await expiredClone(retentionUser,'processing');
+  await bucket.put(`csv/${batch[0].id}/result.csv`,'partial unrecorded result');
+  const ledgerId=`retention-payment-${randomUUID()}`;
+  await db.prepare('INSERT INTO csv_trial_payments(id,job_id,mode,session_id,created_at) VALUES(?,?,?,?,?)').bind(ledgerId,batch[20].id,'test','synthetic-retention-session',Date.now()).run();
+  await call('/api/csv-jobs/'+processing.id,{method:'DELETE',user:retentionUser,status:409});
+  check((await bucket.list({prefix:`csv/${processing.id}/`})).objects.length,1);
+  const listed=(await (await call('/api/csv-jobs',{user:retentionUser})).json()).jobs;
+  check(listed.map(j=>j.id),[live.id]);
+  check((await db.prepare("SELECT count(*) AS count FROM csv_jobs WHERE user_id=? AND expires_at<=? AND status<>'processing'").bind(retentionUser,Date.now()).first()).count,1);
+  check((await bucket.list({prefix:`csv/${batch[0].id}/`})).objects.length,0);
+  check(Boolean(await stored(foreignExpired.id)),true);
+  check((await (await worker.getWorker()).scheduled({cron:'unrelated-cron'})).outcome,'ok');
+  check(Boolean(await stored(foreignExpired.id)),true);
+  check((await (await worker.getWorker()).scheduled({cron:CSV_RETENTION_CRON})).outcome,'ok');
+  for(const row of [...batch,foreignExpired]) {check(await stored(row.id),null);check((await bucket.list({prefix:`csv/${row.id}/`})).objects.length,0);}
+  check(Boolean(await stored(processing.id)),true);check(await artifacts(live,retentionUser),liveArtifacts);
+  check((await db.prepare('SELECT session_id FROM csv_trial_payments WHERE id=?').bind(ledgerId).first()).session_id,'synthetic-retention-session');
+
+  // Transactional DB deletion fails after R2 cleanup: events/row must survive.
+  const dbFailure=await expiredClone();
+  await db.prepare('INSERT INTO csv_job_events(job_id,user_id,event,detail_json,created_at) VALUES(?,?,?,?,?)').bind(dbFailure.id,retentionUser,'synthetic_cleanup','{}',Date.now()).run();
+  await db.prepare(`CREATE TRIGGER synthetic_cleanup_abort BEFORE DELETE ON csv_jobs WHEN OLD.id='${dbFailure.id}' BEGIN SELECT RAISE(ABORT,'synthetic retention DB failure'); END`).run();
+  check((await (await worker.getWorker()).scheduled({cron:CSV_RETENTION_CRON})).outcome,'exception');
+  check((await stored(dbFailure.id)).status,'cleanup_pending');
+  check((await db.prepare('SELECT count(*) AS count FROM csv_job_events WHERE job_id=?').bind(dbFailure.id).first()).count,1);
+  check((await bucket.list({prefix:`csv/${dbFailure.id}/`})).objects.length,0);
+  check((await (await call('/api/csv-jobs',{user:retentionUser})).json()).jobs.map(j=>j.id),[live.id]);
+  await db.prepare('DROP TRIGGER synthetic_cleanup_abort').run();
+  await stop();await start();
+  check((await (await worker.getWorker()).scheduled({cron:CSV_RETENTION_CRON})).outcome,'ok');
+  check(await stored(dbFailure.id),null);
+  check((await db.prepare('SELECT count(*) AS count FROM csv_job_events WHERE job_id=?').bind(dbFailure.id).first()).count,0);
+
+  // R2 fault injection is component-level on real local D1/R2, not a provider proof.
+  const r2Failure=await expiredClone();
+  await bucket.put(`csv/${r2Failure.id}/result.csv`,'partial unrecorded result');
+  await assert.rejects(removeCsvJobStorage(db,{delete:async keys=>{await bucket.delete(keys.slice(0,1));throw new Error('synthetic partial R2 failure');}},r2Failure,{expiredOnly:true})); assertions++;
+  check((await stored(r2Failure.id)).status,'cleanup_pending');
+  check((await bucket.list({prefix:`csv/${r2Failure.id}/`})).objects.length,1);
+  await stop();await start();
+  check((await (await worker.getWorker()).scheduled({cron:CSV_RETENTION_CRON})).outcome,'ok');
+  check(await stored(r2Failure.id),null);check((await bucket.list({prefix:`csv/${r2Failure.id}/`})).objects.length,0);
+
+  // Corrupt cross-job keys are quarantined; a bad row cannot block other work.
+  const invalid=await expiredClone(), valid=await expiredClone();
+  const protectedRow=await stored(live.id);
+  await db.prepare('UPDATE csv_jobs SET input_key=? WHERE id=?').bind(protectedRow.result_key,invalid.id).run();
+  await db.prepare('UPDATE csv_jobs SET updated_at=0 WHERE id=?').bind(invalid.id).run();
+  check(await purgeExpiredCsvJobs(db,bucket,{limit:1}),{scanned:1,deleted:0,failed:1,changed:0});
+  check(await purgeExpiredCsvJobs(db,bucket,{limit:1}),{scanned:1,deleted:1,failed:0,changed:0});
+  check((await (await worker.getWorker()).scheduled({cron:CSV_RETENTION_CRON})).outcome,'exception');
+  check((await stored(invalid.id)).status,'quoted'); check(await stored(valid.id),null);
+  check(await artifacts(live,retentionUser),liveArtifacts);
+  await db.prepare('UPDATE csv_jobs SET input_key=? WHERE id=?').bind(invalid.input_key,invalid.id).run();
+  check((await (await worker.getWorker()).scheduled({cron:CSV_RETENTION_CRON})).outcome,'ok');
+  check(await stored(invalid.id),null);check((await bucket.list({prefix:`csv/${invalid.id}/`})).objects.length,0);
+  check((await (await worker.getWorker()).scheduled({cron:CSV_RETENTION_CRON})).outcome,'ok');
+  check(Boolean(await stored(processing.id)),true);
+  // A delayed deletion from an earlier incarnation must not touch recreated
+  // input/results, even when the client reuses the ID and revision numbers.
+  const oldJob=await finish(await create(randomUUID(),retentionUser),retentionUser);
+  const oldRow=await stored(oldJob.id);
+  let signalEntered, releaseDeletion;
+  const entered=new Promise(resolve=>{signalEntered=resolve;});
+  const delayed=new Promise(resolve=>{releaseDeletion=resolve;});
+  const oldDeletion=removeCsvJobStorage(db,{delete:async keys=>{signalEntered();await delayed;await bucket.delete(keys);}},oldRow);
+  await entered;
+  check(await removeCsvJobStorage(db,bucket,await stored(oldJob.id)),'deleted');
+  const recreated=await finish(await create(oldJob.id,retentionUser),retentionUser);
+  const recreatedRow=await stored(recreated.id), recreatedArtifacts=await artifacts(recreated,retentionUser);
+  check(recreatedRow.input_key===oldRow.input_key,false);
+  check(recreatedRow.result_key===oldRow.result_key,false);
+  releaseDeletion();check(await oldDeletion,'changed');
+  check(await stored(recreated.id),recreatedRow);
+  check(await artifacts(recreated,retentionUser),recreatedArtifacts);
+  // Stale snapshots cannot claim a new incarnation with a matching revision.
+  check(await removeCsvJobStorage(db,{delete:async()=>assert.fail('stale incarnation must not delete')},{...oldRow,revision:recreatedRow.revision}),'changed');
+
+  // Exact ABA: both old/new deletion claims have revision 1. The old DB
+  // finalization must preserve the new pending row and its events as well.
+  const aba=await create(randomUUID(),retentionUser), abaRow=await stored(aba.id);
+  let enterOld, releaseOld;
+  const oldEntered=new Promise(resolve=>{enterOld=resolve;}), oldWait=new Promise(resolve=>{releaseOld=resolve;});
+  const pendingOld=removeCsvJobStorage(db,{delete:async keys=>{enterOld();await oldWait;await bucket.delete(keys);}},abaRow);
+  await oldEntered;
+  check(await removeCsvJobStorage(db,bucket,await stored(aba.id)),'deleted');
+  await create(aba.id,retentionUser);
+  let enterNew, releaseNew;
+  const newEntered=new Promise(resolve=>{enterNew=resolve;}), newWait=new Promise(resolve=>{releaseNew=resolve;});
+  const pendingNew=removeCsvJobStorage(db,{delete:async keys=>{enterNew();await newWait;await bucket.delete(keys);}},await stored(aba.id));
+  await newEntered;
+  const newPending=await stored(aba.id);
+  check(newPending.revision,abaRow.revision+1);
+  releaseOld();check(await pendingOld,'changed');
+  check(await stored(aba.id),newPending);
+  check((await db.prepare('SELECT count(*) AS count FROM csv_job_events WHERE job_id=?').bind(aba.id).first()).count,1);
+  check(Boolean(await bucket.get(newPending.input_key)),true);
+  releaseNew();check(await pendingNew,'deleted');check(await stored(aba.id),null);
   console.log(`CSV Worker/D1/R2 regression passed (${assertions} assertions; synthetic only).`);
 } finally { await stop(); rmSync(temporary,{recursive:true,force:true}); }

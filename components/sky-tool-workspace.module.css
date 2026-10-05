@@ -292,7 +292,8 @@
   background: #e3f3fb;
 }
 .body :global(.secondary-button),
-.body :global(.output-actions button) {
+.body :global(.output-actions button),
+.body :global(.output-actions a) {
   border-color: #49606e;
   color: var(--sky-accent);
   background: #20333f;

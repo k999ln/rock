@@ -40,7 +40,7 @@ type Purchase = {
 
 type CommerceStatus = { configured: boolean; mode: 'test' | 'live' | null };
 type PublicOffers = CommerceStatus & { offers: CommerceOffer[] };
-type Purchases = CommerceStatus & { purchases: Purchase[] };
+export type Purchases = CommerceStatus & { purchases: Purchase[] };
 type Seller = CommerceStatus & {
   seller: { connected: boolean; ready: boolean } | null;
   packages: { packageKey: string; name: string; installable: boolean; pricingModel: string }[];
@@ -67,7 +67,7 @@ async function commerceRequest<T>(path: string, body?: unknown, signal?: AbortSi
   return data;
 }
 
-function useCommerceResource<T>(path: string) {
+export function useCommerceResource<T>(path: string) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
@@ -396,4 +396,9 @@ export function SkySeller() {
       {refundOrder && <DialogContent className={styles.refundDialog}><DialogTitle>{refundOrder.status === 'refund_pending' ? '返金手続きを再確認' : '購入者へ返金する'}</DialogTitle><DialogDescription>{refundOrder.name} · 注文 {refundOrder.id.slice(0, 8)} の{refundOrder.refundedMinor > 0 ? '未返金額' : '購入代金'} {commerceAmount(refundRemainingMinor, refundOrder.currency)} を返金します。{refundOrder.status === 'refund_pending' ? '開始済みの返金を確認し、未完了なら同じ手続きを再開します。' : '返金すると、この注文の利用権も終了します。'}</DialogDescription><ErrorNotice error={actionError} returnTo="/sky/sell" /><div className={styles.actions}><button className={styles.secondary} type="button" disabled={pending} onClick={() => setRefundOrder(null)}>戻る</button><button className={styles.danger} type="button" disabled={pending} onClick={() => void refund()}>{pending ? '返金手続き中…' : refundOrder.status === 'refund_pending' ? '返金状況を確認して続ける' : `${commerceAmount(refundRemainingMinor, refundOrder.currency)}を返金する`}</button></div></DialogContent>}
     </Dialog>
   </CommercePage>;
+}
+
+// The library may be shown beside unsaved Tool input. Keep that tab in place.
+export function CommerceSignIn({ returnTo }: { returnTo: string }) {
+  return <a className={styles.primary} href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">別タブでサインイン <ArrowRight size={16} /></a>;
 }

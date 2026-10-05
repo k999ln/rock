@@ -4,6 +4,10 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 
 `npm run repository:check`合格。旧indexの103生成物は拒否し、整理後indexとローカル再build出力の併存は合格。Site public素材76件は旧distとbyte一致、`npm run test:avocado-mini-site`は13 route再build・18/18合格。`python3 scripts/verify-rocketstar-archive.py --git`は14/14合格。`TMPDIR=/private/tmp npm run verify`はtypecheck前まで通過後、`TS5033 ENOSPC`（tsconfig.tsbuildinfoを書込不可）で停止し、全体合格とはしない。詳細logはGit管理外の`/private/tmp/rock-cleanup-verify.log`。GitHub作業branchへ整理commit `d2568fb703ee472f10c11a597e8ed3a155ec67ac`を保存済み。GitHub上の同一PR headで全体CIを確認する。PR #69作成後のmain `a3951f52`（AMC/CSV）を保持して進捗の追記競合を解消した。初回CI `37282635930`でAMC固定snapshotへのリンク変更と旧「build不要」試験契約を検出。AMC snapshotは原byteへ戻し、現行進捗だけを更新する。Site試験契約はlock install→source build→検査へ同期した。整理branchのmain統合と公開配備は本整理に含めない。
 
+
+## 2026-10-05 — Skyの保存・接続復帰候補をGitHub mainへ統合
+
+G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分をmain4928b64eへ選択的に移植した後、同時更新されたmain592daeeaのAMC・SPIDER、後続a3951f52のCSV共通処理修正を保持して統合。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補のnpm run verifyは成功（Node1151合格・1環境依存skip、仕事API1069、CSV385 assertions、build・asset検査）。Drizzle追加生成0件、Connector ZIP一致。検証記録はdocs/evidence/sky-github-main-integration.json。旧head21e45371のGitHub verify・SPIDER回帰・本番用応答検査は成功。CodeQL57の保存済みgrant自己照合を整理し、再接続・期限・不正Bearer回帰を追加。最新headのCIはPR #68で確認してから統合する。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
 ## 2026-10-05 — AMC有限fixtureとCSV共通処理をmainへ統合する準備（G04）
 
 利用者の「mainにあげて」に従い、Git / CI / Operations、ROCKが最新main `996b1955`起点の独立作業木へ、AMC 7 scripts / 6 testsとCSV共通処理4修正・試験・合成成果生成だけを移植した。後続main `11824636`で管理画面・APIと同じ実行器が統合されたため、その実装と検証記録を保持し、PR #67の最終差分はCSV修正とfixture利用手順・検証記録へ絞る。[AMC設計・CLI](docs/amc-autonomy-fixture.md)は固定算術Goalの実行→別reviewerのファイル検査→次Task、保存・再開、重複防止、停止・取消、有界再試行・人への引継ぎを説明する。実worker/モデル/外部作用/Web同期は未接続、最後は本人検収待ち。fixtureのID・合成承認は本人認証ではなく、同期処理の強制中断もできない。
