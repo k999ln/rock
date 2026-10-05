@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:device-capability-snapshot:3",
+  "title": "RockstarOS local device capability observation",
+  "description": "Broker-produced, short-lived local Android device observation. Identity is OS-reported rather than hardware-attested; it contains no subscriber or profile identifier and does not prove carrier privilege, plan/profile, LPA, installation, local inference, or OS-image compatibility.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocolVersion",
+    "scope",
+    "deviceProfile",
+    "eUiccFeature",
+    "eUiccManagement",
+    "multipleEnabledProfiles",
+    "managedSubscriptionManagement",
+    "automaticProfileEnablement",
+    "organizationOwnedDevice",
+    "activeProfile",
+    "planCompatibility",
+    "rockstarOsCompatibility",
+    "observedAtElapsedMs",
+    "expiresAtElapsedMs"
+  ],
+  "properties": {
+    "protocolVersion": { "const": 3 },
+    "scope": { "const": "local_observation" },
+    "deviceProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "source", "platform", "apiLevel", "identityBasis", "reportedIdentity", "resources", "hardwareFeatures", "deliveryMode", "managedSubscriptionManagement", "automaticProfileEnablement", "organizationOwnedDevice", "localInferenceObservation", "localInferenceCompatibility", "nativeOsCompatibility"],
+      "properties": {
+        "version": { "const": 2 },
+        "source": { "const": "android_public_api" },
+        "platform": { "const": "android" },
+        "apiLevel": { "type": "integer", "minimum": 0 },
+        "identityBasis": { "const": "android_build_reported_not_hardware_attested" },
+        "reportedIdentity": {
+          "type": "object", "additionalProperties": false,
+          "required": ["manufacturer", "model", "device", "product"],
+          "properties": {
+            "manufacturer": { "type": ["string", "null"], "maxLength": 96 },
+            "model": { "type": ["string", "null"], "maxLength": 96 },
+            "device": { "type": ["string", "null"], "maxLength": 96 },
+            "product": { "type": ["string", "null"], "maxLength": 96 }
+          }
+        },
+        "resources": {
+          "type": "object", "additionalProperties": false,
+          "required": ["totalMemoryBytes", "availableMemoryBytes", "availableAppStorageBytes"],
+          "properties": {
+            "totalMemoryBytes": { "type": ["integer", "null"], "minimum": 0 },
+            "availableMemoryBytes": { "type": ["integer", "null"], "minimum": 0 },
+            "availableAppStorageBytes": { "type": ["integer", "null"], "minimum": 0 }
+          }
+        },
+        "hardwareFeatures": { "type": "object", "additionalProperties": { "enum": ["supported", "unsupported", "unknown"] } },
+        "deliveryMode": { "const": "existing_os_client" },
+        "managedSubscriptionManagement": { "enum": ["eligible", "not_eligible", "unsupported", "unknown"] },
+        "automaticProfileEnablement": { "enum": ["eligible", "not_eligible", "unsupported", "unknown"] },
+        "organizationOwnedDevice": { "enum": ["true", "false", "unknown"] },
+        "localInferenceObservation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["state", "modelLoaded", "runtime", "apiVersion", "trustBasis", "modelProfileIdentity"],
+          "properties": {
+            "state": { "enum": ["ready", "no_model", "loading", "busy", "error", "unknown"] },
+            "modelLoaded": { "type": ["boolean", "null"] },
+            "runtime": { "type": ["string", "null"], "enum": ["llama.rn", null] },
+            "apiVersion": { "type": "integer", "minimum": 0 },
+            "trustBasis": { "enum": ["approved_package_signature_and_binder_api", "unavailable"] },
+            "modelProfileIdentity": { "const": "not_reported" }
+          }
+        },
+        "localInferenceCompatibility": { "const": "not_evaluated" },
+        "nativeOsCompatibility": { "const": "not_evaluated" }
+      }
+    },
+    "eUiccFeature": { "enum": ["supported", "unsupported", "unknown"] },
+    "eUiccManagement": { "enum": ["enabled", "disabled", "not_supported", "unknown"] },
+    "multipleEnabledProfiles": { "enum": ["supported", "not_reported"] },
+    "managedSubscriptionManagement": { "enum": ["eligible", "not_eligible", "unsupported", "unknown"] },
+    "automaticProfileEnablement": { "enum": ["eligible", "not_eligible", "unsupported", "unknown"] },
+    "organizationOwnedDevice": { "enum": ["true", "false", "unknown"] },
+    "activeProfile": { "const": "not_inspected" },
+    "planCompatibility": { "const": "not_evaluated" },
+    "rockstarOsCompatibility": { "const": "not_evaluated" },
+    "observedAtElapsedMs": { "type": "integer", "minimum": 0 },
+    "expiresAtElapsedMs": { "type": "integer", "minimum": 0 }
+  },
+  "freshness": {
+    "clock": "android.os.SystemClock.elapsedRealtime",
+    "validityMs": 30000,
+    "consumerBehavior": "treat_unknown_version_or_expired_observation_as_unknown_and_requery"
+  },
+  "privacy": {
+    "readsIccid": false,
+    "readsEid": false,
+    "readsInstalledProfiles": false,
+    "readsLocalModelWeights": false,
+    "readsModelProfileIdentity": false,
+    "requiresReadPhoneState": false,
+    "persisted": false,
+    "sentToCloud": false,
+    "contactsCloud": false
+  }
+}

@@ -66,3 +66,34 @@ Gitは公開範囲が異なるため、物理的な1 repositoryにはしませ�
 - `vendor/mr`の固定原本やhashを書き換えて最新版扱いしない。
 - repository名が似ていることを理由に、稼働先、token、database、公開siteを切り替えない。
 - archive前の稼働参照監査を省略しない。
+
+
+## 2026-10-02 共通実装の統合（G04）
+
+主担当はGit / CI / Operations（ROCK）。利用者の統合指示に基づく実装範囲は次のとおり。名称が似ていても、実行権限や成果物の意味が違う処理まで一つの状態機械へ置き換えない。
+
+| 対象 | 共通の修正先 | 各adapterに残す責務 |
+| --- | --- | --- |
+| 法務・特許AI | `lib/research-ai.ts` | 認証、送信同意、入力上限、公式domain一覧、固有prompt・緊急停止 |
+| Jev評価・意思決定 | `lib/jev-transport.ts` | 評価rubric、決定境界、費用見積り、remote opt-in |
+| PC・Fashion MCP | `lib/mcp-client.ts` | origin、token長、protocol範囲、接続世代、変更系承認 |
+| Toolの一覧 | `lib/catalog.ts`、Connectorの既存registry | Job/connectionの型・一覧をcatalogから導出。IP Studio重複とFashion件数差を除去 |
+| Work・ココナラJSON保存 | `lib/owner-revision-json-store.ts` | 入力schema、認証owner、個別状態、競合時のHTTP応答。Mercariの件数制限・再送衝突規則は独立 |
+| Sky・Mini・Fashion決済 | `shared/stripe.mjs` | Connect配分、注文/在庫/規約、請求書、個別のidempotency key、各環境設定 |
+| Web・公開PreviewのSky→Zema | `public-release/rockstaros/packages/sky-zema-core/src/handoff.js` | WebのUUID・10分TTL・Tool一致・一回消費、公開v1の`local`表記と必須入力 |
+| 検証入口 | root `npm run verify` | PR #39 のSite試験と公開Preview全5 suiteを追加。#51のCSV安全修正と既存README/baseline整合を履歴ごと取り込む |
+
+公開Previewの`local`とWeb旧保存のprovider省略は、共通入口で`local-model`に正規化する。remote providerは拒否し、session作成は`ready`までで実行・承認・成功を付与しない。依頼2000文字・メッセージ4000文字/24件・private TTLの定義も共通化する。既存保存key/versionは維持する。
+
+Stripeのstandalone配布コピーは生成物であり、共通sourceとの一致を試験する。手修正の別実装を増やさず、生成後にSite WorkerとPC Connector ZIPを検査する。変更でcredential設定や販売停止gateを解除しない。
+
+以下は監査で似て見えたが、異なる責務として維持する範囲である。Android/Java・Linux/Python・Webの実行器は権限モデルが違い、既存Platform契約とparity fixtureを使う。Webのレビュー待ちとnativeの実行成功を同じ「完了」に変換しない。暗号化端末backup、Web設定export、QEMU diskは復旧対象が違う。記事処理の固定原本とOS移植は既存`contracts/article-fixtures.json`で一致を検証する。Fund、Game、Material等の商品アルゴリズム、未merge PR #25・#40〜#50・#52（#39/#51を除く）の固有機能は本共通化だけでは統合済みにならない。PR #41等にある同じSite試験/README修正は本統合へ収束し、残る固有機能だけを後続でrebaseする。設計archiveの同一blobは保存を要求された原本であり、削除しない。
+
+検証は関連unit/HTTP mock、owner/CAS・再送・署名、MCP切断/再接続、双方のhandoff契約、standalone生成物一致、全体`npm run verify`。Provider sandbox、実機OS、本番配備の成功とは分ける。結果と次の手順は`project.md`とG04へ記録する。rollbackは統合PRのrevertと既存保存schema/versionで行い、DB migrationは追加しない。
+
+
+## 2026-10-05 Sky配信候補の正本統合（G04/WEB04）
+
+G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
+
+統合後のローカル全体verifyは成功。AMC/SPIDERを含むNode1146合格・1skip、仕事API1069、CSV385 assertions。詳細は[検証記録](evidence/sky-github-main-integration.json)。既存mainの履歴scanner候補2859件は別の未解決事項として保持する。

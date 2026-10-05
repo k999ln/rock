@@ -1,13 +1,12 @@
-import type { WorkJob } from './workflow';
+import { normalizeWorkJob, type WorkJob } from './workflow.ts';
 
-// SQL stays here so production D1 and real SQLite tests exercise identical queries.
 export function workStore(db: Pick<D1Database, 'prepare'>) {
   async function get(user: string, id: string): Promise<WorkJob | null> {
     const row = await db
       .prepare('SELECT payload FROM work_jobs WHERE user_id = ? AND id = ?')
       .bind(user, id)
       .first<{ payload: string }>();
-    return row ? (JSON.parse(row.payload) as WorkJob) : null;
+    return row ? normalizeWorkJob(JSON.parse(row.payload) as WorkJob) : null;
   }
   return {
     get,
@@ -22,7 +21,33 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
         )
         .bind(user)
         .all<{ payload: string }>();
-      return rows.results.map((row) => JSON.parse(row.payload) as WorkJob);
+      return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
+    },
+    async listAmc(user: string) {
+      const rows = await db
+        .prepare(
+          `SELECT id, json_extract(payload, '$.title') AS title, revision,
+          json_extract(payload, '$.status') AS status,
+          json_extract(payload, '$.createdAt') AS createdAt, updated_at AS updatedAt
+          FROM work_jobs WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'amc'
+          ORDER BY updated_at DESC, id DESC LIMIT 100`,
+        )
+        .bind(user)
+        .all<
+          Pick<
+            WorkJob,
+            'id' | 'title' | 'revision' | 'status' | 'createdAt' | 'updatedAt'
+          >
+        >();
+      return rows.results.map(
+        (row): WorkJob => ({
+          ...row,
+          templateId: 'amc',
+          plan: { schemaVersion: 1, objective: row.title, approvalGates: [] },
+          steps: [],
+          events: [],
+        }),
+      );
     },
     async listAmc(user: string) {
       const rows = await db

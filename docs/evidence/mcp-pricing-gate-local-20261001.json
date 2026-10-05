@@ -1,0 +1,35 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-01",
+  "scope": "MCP tool pricing declaration, user disclosure, and fail-closed direct execution gate including remote free self-claims",
+  "environment": "local Node.js connector and SDK integration tests; no external MCP provider contacted",
+  "implementation": {
+    "sdkRequiresDeclaredPricing": true,
+    "passportPinsPricingDeclaration": true,
+    "unknownPricingBlocksPrepare": true,
+    "paidMcpDirectExecution": "blocked_until_signed_quote_budget_reservation_live_usage_and_receipt_reconciliation_are_integrated",
+    "freePricingDisclosure": "provider_declared_unverified_by_Rockstar",
+    "remoteFreeSelfClaimDirectExecution": "blocked_until_signed_quote_and_budget_reservation_are_integrated",
+    "localSdkFreeDeclaration": "allowed_after_local_user_approval_but_does_not_prove_zero_external_cost",
+    "paidCloudAgentRoute": "A2A quote-cap-usage path"
+  },
+  "verification": {
+    "focusedTests": {
+      "command": "node --test tests/mcp-connector.test.mjs tests/sky-tool-sdk.test.mjs",
+      "result": "PASS",
+      "tests": 13
+    },
+    "typecheck": "PASS",
+    "productLint": "PASS",
+    "productionBuild": "PASS",
+    "connectorPackageCheck": "PASS",
+    "fullRepositoryVerify": "PASS: npm run verify (Node 635, Worker/D1 API 667 assertions, Fashion 19, build and release bundle gates)"
+  },
+  "notProven": [
+    "truth or completeness of third-party MCP pricing declarations",
+    "absence of unreviewed paid egress in every background path outside the inspected routes",
+    "third-party MCP provider contract or sandbox acceptance",
+    "production billing, funded Wallet debit, or invoice reconciliation",
+    "carrier activation, physical SIM fulfillment, eSIM installation, or device OS installation"
+  ]
+}

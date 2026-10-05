@@ -9,6 +9,7 @@ export const SKY_PROVIDERS = [
   'stripe',
   'roblox',
   'gta',
+  'livekit',
 ] as const;
 
 export type SkyProvider = (typeof SKY_PROVIDERS)[number];
@@ -20,7 +21,9 @@ export type SkyProviderCapability =
   | 'text_generation'
   | 'workflow'
   | 'social_publish'
-  | 'game_delivery';
+  | 'game_delivery'
+  | 'realtime_voice'
+  | 'telephony';
 
 export type SkyProviderAdapter = {
   id: string;
@@ -30,6 +33,12 @@ export type SkyProviderAdapter = {
 };
 
 export const skyProviderAdapters: SkyProviderAdapter[] = [
+  {
+    id: 'livekit',
+    name: 'LiveKit Agents',
+    detail: 'IPキャラクターとの音声会話・電話連携（本体接続が必要）',
+    capabilities: ['realtime_voice', 'telephony'],
+  },
   {
     id: 'higgsfield',
     name: 'Higgsfield',
@@ -109,6 +118,7 @@ export type SkyProviderField = {
   label: string;
   placeholder: string;
   secret?: boolean;
+  optional?: boolean;
   type?: 'text' | 'select';
   options?: { value: string; label: string }[];
   suggestions?: { value: string; label: string }[];
@@ -119,6 +129,8 @@ export type SkyProviderDefinition = {
   name: string;
   detail: string;
   fields: SkyProviderField[];
+  setupSteps?: string[];
+  documentationUrl?: string;
 };
 
 export const skyProviderDefinitions: SkyProviderDefinition[] = [
@@ -198,6 +210,45 @@ export const skyProviderDefinitions: SkyProviderDefinition[] = [
           label: `${adapter.name} — ${adapter.detail}`,
         })),
       },
+      ...([
+        ['realtimeVoice', 'IPの音声会話', 'realtime_voice'],
+        ['telephony', 'IPの電話連携', 'telephony'],
+      ] as const).map(([id, label, capability]) => ({
+        id,
+        label,
+        placeholder: '',
+        optional: true,
+        type: 'select' as const,
+        options: adaptersForCapability(capability).map((adapter) => ({
+          value: adapter.id,
+          label: `${adapter.name} — ${adapter.detail}`,
+        })),
+      })),
+    ],
+  },
+  {
+    id: 'livekit',
+    name: 'LiveKit — IP音声・電話',
+    detail: 'IPキャラクターとの音声会話や電話対応に使う接続先を登録します。設定の保存だけでは会話・発着信は始まりません。',
+    documentationUrl: 'https://docs.livekit.io/agents/',
+    setupSteps: [
+      'LiveKit Cloud または自分のサーバーと、IPキャラクターを担当するAgentを用意します。',
+      '音声モデルの接続とAPIキーはAgent側で設定します。この画面に秘密情報は入力しません。',
+      '電話を使う場合は回線を用意し、発信用Trunkと着信用Dispatch Ruleを別々に設定します。番号取得・通話・モデルの費用は別途かかります。',
+      'IP Studio本体との接続・通話試験は未完了です。音声・電話の利用開始は、その接続後に行います。',
+    ],
+    fields: [
+      {
+        id: 'deployment', label: '利用する環境', placeholder: '', type: 'select',
+        options: [
+          { value: 'cloud', label: 'LiveKit Cloud' },
+          { value: 'self_hosted', label: '自分のサーバー' },
+        ],
+      },
+      { id: 'serverUrl', label: 'LiveKitサーバーURL', placeholder: 'wss://your-project.livekit.cloud' },
+      { id: 'agentName', label: 'Agent名', placeholder: 'ip-character' },
+      { id: 'sipTrunkId', label: '発信用SIP Trunk ID（電話を使う場合）', placeholder: 'ST_…', optional: true },
+      { id: 'sipDispatchRuleId', label: '着信用Dispatch Rule ID（電話を使う場合）', placeholder: 'SDR_…', optional: true },
     ],
   },
   {
@@ -266,7 +317,7 @@ export const skyProviderDefinitions: SkyProviderDefinition[] = [
 ];
 
 export const skyToolProviders: Record<string, SkyProvider[]> = {
-  'rockstar-ip-studio': ['routing', 'higgsfield', 'make', 'instagram', 'youtube', 'roblox', 'gta'],
+  'rockstar-ip-studio': ['routing', 'higgsfield', 'make', 'instagram', 'youtube', 'roblox', 'gta', 'livekit'],
   'fashion-brand-ops': ['instagram', 'make', 'stripe'],
   'mercari-revenue': ['stripe'],
 };
@@ -285,4 +336,31 @@ export function isSkyProvider(value: unknown): value is SkyProvider {
 
 export function isSensitiveConnectionKey(key: string) {
   return /(token|secret|password|apikey|api_key|authorization|private)/i.test(key);
+}
+
+// This validates saved setup metadata only. It does not contact LiveKit or grant
+// permission to join a room, send media, dispatch an agent, or place a call.
+export function liveKitConfigError(config: Record<string, string>): string | null {
+  const definition = providerDefinition('livekit');
+  if (Object.keys(config).some((key) => !definition.fields.some((field) => field.id === key)))
+    return 'LiveKitの接続先・Agent・SIP参照IDだけを保存してください。';
+  if (config.deployment && !['cloud', 'self_hosted'].includes(config.deployment))
+    return 'LiveKitの利用環境を選択してください。';
+  if (config.serverUrl) {
+    try {
+      const url = new URL(config.serverUrl);
+      const loopback = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+      const protocolAllowed = url.protocol === 'wss:' ||
+        (url.protocol === 'ws:' && loopback && config.deployment === 'self_hosted');
+      if (!protocolAllowed || !url.hostname || url.username || url.password || url.search || url.hash || url.pathname !== '/')
+        return '認証情報を含まないwss://のサーバーURLを入力してください。自分のPC上の検証だけws://を利用できます。';
+    } catch {
+      return 'LiveKitサーバーURLの形式を確認してください。';
+    }
+  }
+  for (const key of ['agentName', 'sipTrunkId', 'sipDispatchRuleId']) {
+    if (config[key] && !/^[a-zA-Z0-9_-]{1,128}$/.test(config[key]))
+      return 'Agent名とSIP参照IDは128文字以内の英数字・ハイフン・アンダースコアで入力してください。';
+  }
+  return null;
 }

@@ -1,11 +1,20 @@
-import { requestUser } from '@/lib/fund-store';
+import { env } from 'cloudflare:workers';
+import { database, requestUser } from '@/lib/fund-store';
 import { inspectRemoteMcp, McpInspectionError } from '@/lib/mcp-inspection';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 
 const headers = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {
   try {
-    await requestUser(request);
+    const owner = await requestUser(request);
+    const db = database();
+    if (!(await rockstarServiceScopeAllowed(
+      db,
+      owner,
+      'sky',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+    ))) return missingRockstarServiceScope('Sky');
     const raw = await request.text();
     if (new TextEncoder().encode(raw).length > 1_024)
       throw new McpInspectionError('接続確認の入力が大きすぎます。', 413);

@@ -1,4 +1,9 @@
+import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import type { PatentIntakeInput } from './patent-assistant';
+import {
+  parseResearchAiResponse,
+  type ResearchAiCitation,
+} from './research-ai.ts';
 
 export const PATENT_AI_MODEL = 'gpt-5.4-nano';
 
@@ -10,22 +15,11 @@ export const PATENT_AI_ALLOWED_DOMAINS = [
   'espacenet.com',
 ] as const;
 
-export type PatentAiCitation = { title: string; url: string };
+export type PatentAiCitation = ResearchAiCitation;
 export type PatentAiResult = {
   answer: string;
   citations: PatentAiCitation[];
   searchedAt: string;
-};
-
-type OpenAiResponse = {
-  output?: Array<{
-    type?: string;
-    content?: Array<{
-      type?: string;
-      text?: string;
-      annotations?: Array<{ type?: string; title?: string; url?: string }>;
-    }>;
-  }>;
 };
 
 const disclosureStatuses = new Set([
@@ -88,6 +82,15 @@ export function buildPatentAiRequest(
   currentDate: string,
   model = PATENT_AI_MODEL,
 ) {
+  assertSafeOutbound({
+    inventionTitle: input.inventionTitle,
+    problem: input.problem,
+    mechanism: input.mechanism,
+    architecture: input.architecture,
+    technicalEffect: input.technicalEffect,
+    differences: input.differences,
+    knownPriorArt: input.knownPriorArt,
+  });
   return {
     model,
     store: false,
@@ -123,44 +126,12 @@ export function buildPatentAiRequest(
   };
 }
 
-function isAllowedCitation(url: string) {
-  try {
-    const hostname = new URL(url).hostname.toLowerCase();
-    return PATENT_AI_ALLOWED_DOMAINS.some(
-      (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
-    );
-  } catch {
-    return false;
-  }
-}
-
 export function parsePatentAiResponse(
   value: unknown,
   searchedAt = new Date().toISOString(),
 ): PatentAiResult {
-  const response = value as OpenAiResponse;
-  const answer: string[] = [];
-  const citations = new Map<string, PatentAiCitation>();
-  for (const item of response.output ?? []) {
-    if (item.type !== 'message') continue;
-    for (const content of item.content ?? []) {
-      if (content.type !== 'output_text' || !content.text) continue;
-      answer.push(content.text);
-      for (const annotation of content.annotations ?? []) {
-        if (
-          annotation.type === 'url_citation' &&
-          annotation.url &&
-          isAllowedCitation(annotation.url)
-        ) {
-          citations.set(annotation.url, {
-            title: annotation.title?.trim() || new URL(annotation.url).hostname,
-            url: annotation.url,
-          });
-        }
-      }
-    }
-  }
-  const text = answer.join('\n\n').trim();
-  if (!text || citations.size === 0) throw new Error('UNCITED_RESPONSE');
-  return { answer: text, citations: [...citations.values()], searchedAt };
+  return {
+    ...parseResearchAiResponse(value, PATENT_AI_ALLOWED_DOMAINS),
+    searchedAt,
+  };
 }

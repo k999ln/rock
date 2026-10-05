@@ -176,5 +176,26 @@ export function skyToolPackageStore(db: Database) {
         }>();
       return rows.results.map(stored);
     },
+
+    async verifiedRegistryPackage(packageKey: string, manifestSha256: string): Promise<StoredSkyToolPackage | null> {
+      const row = await db.prepare(`SELECT package_key AS packageKey, manifest,
+          manifest_sha256 AS manifestSha256, status, created_at AS createdAt,
+          published_at AS publishedAt, 1 AS reviewValid
+        FROM sky_tool_packages
+        WHERE package_key = ? AND manifest_sha256 = ? AND status = 'verified'
+          AND EXISTS (
+            SELECT 1 FROM sky_tool_package_reviews r
+            WHERE r.package_key = sky_tool_packages.package_key
+              AND r.manifest_sha256 = sky_tool_packages.manifest_sha256
+              AND r.decision = 'verified' AND (r.expires_at IS NULL OR r.expires_at > ?)
+          ) LIMIT 1`)
+        .bind(packageKey, manifestSha256, Date.now())
+        .first<{
+          packageKey: string; manifest: string; manifestSha256: string;
+          status: SkyToolPackageStatus; createdAt: number; publishedAt: number | null;
+          reviewValid: number;
+        }>();
+      return row ? stored(row) : null;
+    },
   };
 }

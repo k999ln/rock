@@ -3,6 +3,7 @@ import { database } from '@/lib/fund-store';
 const requiredTables = [
   'jobs',
   'work_jobs',
+  'coconala_team_cases',
   'tool_runs',
   'book_records',
   'sky_tool_packages',

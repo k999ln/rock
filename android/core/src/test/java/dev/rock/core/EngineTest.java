@@ -1,9 +1,14 @@
 package dev.rock.core;
 
+import dev.rock.core.platform.ComponentManifest;
+import dev.rock.core.platform.ModelProfileManifest;
+import dev.rock.core.platform.PlatformStore;
+import dev.rock.core.platform.RuntimeManifest;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import static org.junit.Assert.*;
 import java.util.UUID;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class EngineTest {
@@ -116,15 +121,88 @@ public class EngineTest {
         assertTrue(db.query("SELECT 1 FROM runs WHERE state='running'").isEmpty());
     }
     @Test public void versionOneMigratesSkySelectionAndUnknownSchemaIsNotSilentlyReset() {
-        db.execute("DROP TABLE sky_selection"); db.execute("DROP TABLE rock_meta");
-        db.execute("CREATE TABLE rock_meta(version INTEGER NOT NULL CHECK(version=1))");
-        db.execute("INSERT INTO rock_meta VALUES(1)");
-        engine = new Engine(db);
-        assertEquals("2", db.query("SELECT version FROM rock_meta").get(0).get("version"));
-        assertNull(engine.skySelection());
-        db.execute("UPDATE rock_meta SET version=3");
-        assertThrows(IllegalStateException.class, () -> new Engine(db));
-        assertEquals("3", db.query("SELECT version FROM rock_meta").get(0).get("version"));
+        try (JdbcDatabase legacy = new JdbcDatabase(temp.newFile("engine-v1.db").getPath())) {
+            legacy.execute("CREATE TABLE rock_meta(version INTEGER NOT NULL CHECK(version=1))");
+            legacy.execute("INSERT INTO rock_meta VALUES(1)");
+            legacy.execute("CREATE TABLE works(id TEXT PRIMARY KEY,request_key TEXT NOT NULL UNIQUE,request_hash TEXT NOT NULL,state TEXT NOT NULL,sample INTEGER NOT NULL,review_note TEXT NOT NULL DEFAULT '')");
+            Engine migrated = new Engine(legacy);
+            assertEquals("3", legacy.query("SELECT version FROM rock_meta").get(0).get("version"));
+            assertNull(migrated.skySelection());
+            legacy.execute("UPDATE rock_meta SET version=4");
+            assertThrows(IllegalStateException.class, () -> new Engine(legacy));
+            assertEquals("4", legacy.query("SELECT version FROM rock_meta").get(0).get("version"));
+        } catch (Exception failure) { throw new AssertionError(failure); }
+    }
+
+    @Test public void jobsPersistThePreselectedModelProfileAcrossEngineRestart() throws Exception {
+        PlatformStore platform = new PlatformStore(db);
+        String signer = "a".repeat(64);
+        ComponentManifest component = new ComponentManifest(ComponentManifest.Kind.TOOL,
+            "org.rockstar.runtime.localai", "org.rockstar.runtime.localai", 1, 1, 1, 12003,
+            "rock_tool_app", signer, List.of("text.input", "text.output", "local-ai.inference"), 1, 1);
+        platform.register("register:runtime", component, 1);
+        platform.activate(component.componentId, component.versionCode, false, 2);
+        RuntimeManifest runtime = new RuntimeManifest(component.componentId, 1, signer, 1, 1,
+            List.of("GGUF"), List.of("article-preparation@1/input-v1"));
+        platform.registerRuntimeManifest(runtime);
+        ModelProfileManifest profile = new ModelProfileManifest("profile.lifeline.qwen", 1,
+            Engine.digest("weights"), Engine.digest("tokenizer"), Engine.digest("template"), "Apache-2.0",
+            "rock.fixture", "key.fixture", "A".repeat(86),
+            component.componentId, 1, 1, 1, "GGUF", "Q8_0", 4096,
+            "article-preparation@1/input-v1", 1_000_000_000L, 2_000_000_000L);
+        platform.registerModelProfile(profile);
+        platform.activateModelProfile(profile.profileId, profile.version,
+            candidate -> Engine.digest("fixture-verification"), 3);
+
+        String jobDigest = Engine.digest("prompt and context");
+        Engine.ModelProfilePin pin = engine.prepareModelProfilePin("owner:alice", "request-profile", jobDigest, 4);
+        assertEquals(profile.profileId, pin.profileId);
+        assertEquals(profile.digest(), pin.manifestDigest);
+        assertEquals(profile.weightsSha256, pin.weightsSha256);
+        assertEquals(profile.tokenizerSha256, pin.tokenizerSha256);
+        assertEquals(profile.templateSha256, pin.templateSha256);
+        assertEquals(component.componentId, pin.runtimeComponentId);
+        assertEquals(runtime.digest(), pin.runtimeManifestDigest);
+        assertEquals(signer, pin.runtimeSigningDigest);
+        assertEquals(1, pin.runtimeVersionCode);
+        assertEquals(1, pin.runtimeApiMin);
+        assertEquals(1, pin.runtimeApiMax);
+        assertEquals(1, pin.runtimeManifestApiMin);
+        assertEquals(1, pin.runtimeManifestApiMax);
+        assertEquals(profile.planSchemaId, pin.planSchemaId);
+        ModelProfileManifest nextProfile = new ModelProfileManifest("profile.lifeline.qwen-alt", 1,
+            Engine.digest("weights-next"), Engine.digest("tokenizer-next"), Engine.digest("template-next"), "Apache-2.0",
+            "rock.fixture", "key.fixture", "B".repeat(86),
+            component.componentId, 1, 1, 1, "GGUF", "Q4_K_M", 4096,
+            "article-preparation@1/input-v1", 800_000_000L, 1_500_000_000L);
+        platform.registerModelProfile(nextProfile);
+        assertThrows(IllegalStateException.class, () -> platform.activateModelProfile(nextProfile.profileId,
+            nextProfile.version, candidate -> { throw new AssertionError("must preserve an outstanding model reservation"); }, 5));
+        assertEquals(2, platform.activateModelProfile(nextProfile.profileId, nextProfile.version,
+            candidate -> Engine.digest("fixture-verification-next"), 900_005));
+        String workId = engine.submitPinned(pin, "request-profile", "pinned input", false, true);
+        assertEquals(workId, engine.existingPinnedWorkId("owner:alice", "request-profile", jobDigest));
+        assertThrows(SecurityException.class, () -> engine.existingPinnedWorkId(
+            "owner:bob", "request-profile", jobDigest));
+        assertThrows(SecurityException.class, () -> engine.existingPinnedWorkId(
+            "owner:alice", "request-profile", Engine.digest("different intent")));
+        Engine.Ticket ticket = engine.claim("boot-1", 1, true);
+        assertEquals(workId, ticket.workId);
+        assertEquals(profile.profileId, ticket.modelProfileId);
+        assertEquals(1, ticket.modelProfileVersion);
+        assertEquals(1, ticket.modelActivationGeneration);
+        assertEquals(workId, engine.submitPinned(engine.prepareModelProfilePin("owner:alice",
+            "request-profile", jobDigest, 5), "request-profile", "pinned input", false, true));
+
+        db.close(); db = new JdbcDatabase(file); engine = new Engine(db);
+        Engine.Ticket restored = engine.claim("boot-2", 1, true);
+        assertEquals(profile.profileId, restored.modelProfileId);
+        assertEquals(1, restored.modelProfileVersion);
+        assertEquals(workId, restored.workId);
+        new PlatformStore(db).revokeModelProfile(profile.profileId, profile.version, 2);
+        assertFalse(engine.finish(restored, "passed", "must not be adopted", "boot-2", 3));
+        assertEquals("review", engine.work(workId).get("state"));
+        assertEquals("needs_review", engine.runs(workId).get(0).get("state"));
     }
     @Test public void concurrentConnectionsCannotClaimTheSameWork() throws Exception {
         submit(); ExecutorService threads = Executors.newFixedThreadPool(2);

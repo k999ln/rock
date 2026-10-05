@@ -1,0 +1,88 @@
+/* Sky shares the Market palette; execution state colors remain semantic. */
+.frame { min-height: 100dvh; color-scheme: dark; background: #111110; }
+.frame :global(.rock-workspace) {
+  --sky-bg: #111110; --sky-panel: #191918; --sky-panel-soft: #20201e;
+  --sky-text: #edede8; --sky-muted: #a6a69b; --sky-line: #343431; --sky-accent: #edede8;
+  color: #edede8; background: #111110;
+}
+.frame :global(.rock-topbar), .frame :global(.rock-bottom-note) { border-color: #30302c; color: #96968e; background: #111110; }
+.frame :global(.rock-home-link), .frame :global(.rock-breadcrumb strong) { color: #deded8; }
+.navigation.navigation { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; min-width: 0; margin: 0; padding: 0; }
+.navigation.navigation a { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 40px; padding: 8px 12px; border: 1px solid transparent; border-radius: 999px; color: #a6a69b; background: transparent; text-decoration: none; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.navigation.navigation a:hover { color: #f1f1eb; background: #20201e; }
+.navigation.navigation a[aria-current='page'] { color: #edede8; border-color: #42423c; background: #2b2b27; }
+.navigation.navigation a:focus-visible { outline: 2px solid #edede8; outline-offset: 2px; }
+.navigation.navigation span { display: inline; }
+.chat.chat :global(.zema-grok-shell), .chat.chat :global(.sky-chat-messages) { background: #111110; }
+.chat.chat :global(.zema-sidebar) { border-color: #30302c; background: #191918; }
+.chat.chat :global(.zema-sidebar-top), .chat.chat :global(.zema-sidebar-bottom) { border-color: #343431; }
+.chat.chat :global(.zema-sidebar-brand) { color: #edede8; font-size: 27px; font-weight: 550; letter-spacing: -.05em; }
+.chat.chat :global(.zema-sidebar-identity strong), .chat.chat :global(.zema-sidebar-section-title),
+.chat.chat :global(.zema-bot-copy small), .chat.chat :global(.zema-history-empty) { color: #a6a69b; }
+.chat.chat :global(.zema-new-chat) { color: #181817; border-color: #edede8; background: #edede8; }
+.chat.chat :global(.zema-history-search input) { color: #edede8; border-color: #343431; background: #20201e; }
+.chat.chat :global(.zema-character-list) > div:hover,
+.chat.chat :global(.zema-character-list) > div:has([aria-current='true']),
+.chat.chat :global(.zema-history-list a.is-current) { background: #2b2b27; border-color: #42423c; }
+.chat.chat :global(.sky-chat-commandbar) { display: flex; flex-wrap: wrap; gap: 12px; padding-block: 15px; border-color: #30302c; background: #111110; }
+.chat.chat :global(.sky-chat-commandbar) .navigation { display: flex; flex-basis: 100%; margin: 0; }
+.chat.chat :global(.zema-room-heading h1) { color: #edede8; font-size: 22px; font-weight: 500; }
+.chat.chat :global(.zema-room-heading) > div > span { color: #99998f; font-weight: 500; }
+.chat.chat :global(.zema-active-bot), .chat.chat :global(.zema-auto-label) { margin-left: auto; border-color: #343431; color: #b5b5ae; background: #191918; }
+.chat.chat :global(.zema-empty) { margin: auto; }
+.chat.chat :global(.zema-empty h2) { color: #edede8; font-size: clamp(27px, 3.3vw, 43px); font-weight: 500; letter-spacing: -.05em; }
+.chat.chat :global(.zema-empty-kicker) { color: #99998f; font-weight: 500; letter-spacing: .22em; }
+.chat.chat :global(.zema-empty .zema-empty-lead) { color: #a6a69b; font-size: 14px; line-height: 1.8; }
+.chat.chat :global(.zema-empty-next) { border-color: #343431; background: #191918; }
+.chat.chat :global(.zema-starters button), .chat.chat :global(.zema-bot-show-all) { border-color: #343431; border-radius: 999px; color: #c4c4bb; background: #191918; }
+.chat.chat :global(.zema-starters button:hover) { border-color: #73736b; background: #2b2b27; }
+.chat.chat :global(.sky-chat-composer) { border-color: transparent; background: #111110; }
+.chat.chat :global(.sky-chat-composer-box) { border-color: #343431; border-radius: 24px; background: #20201e; }
+.chat.chat :global(.sky-chat-composer-box:focus-within) { border-color: #73736b; box-shadow: 0 0 0 3px #ffffff0f; }
+.chat.chat :global(.sky-chat-composer-box textarea) { color: #edede8; }
+.chat.chat :global(.sky-chat-composer-box textarea::placeholder) { color: #999990; }
+.chat.chat :global(.sky-chat-composer button) { color: #181817; background: #edede8; }
+.chat.chat :global(.sky-chat-composer button:disabled) { color: #888880; background: #343431; }
+.chat.chat :global(.zema-model-settings), .chat.chat :global(.zema-composer-toolbar), .chat.chat :global(.zema-remote-consent) { color: #a6a69b; }
+.chat.chat :global(.zema-add-tool), .chat.chat :global(.zema-tool-picker) { color: #c4c4bb; }
+.chat.chat :global(.sky-chat-bubble.is-me) { border-color: #42423c; background: #2b2b27; }
+.chat.chat :global(.sky-chat-work-center) { color: #edede8; background: #111110; }
+.chat.chat :global(.sky-chat-job-center), .chat.chat :global(.work-job) { border-color: #343431; background: #191918; box-shadow: none; }
+.chat.chat :global(.sky-chat-work-center) > header p,
+.chat.chat :global(.sky-chat-work-center) > header small,
+.chat.chat :global(.sky-chat-job-heading p), .chat.chat :global(.sky-chat-work-empty) { color: #a6a69b; }
+.chat.chat :is(a, button, input, select):focus-visible { outline: 2px solid #edede8; outline-offset: 3px; }
+@media (max-width: 767px) {
+  .chat.chat :global(.sky-chat-commandbar) { padding: 12px 16px; gap: 9px; }
+  .chat.chat :global(.zema-auto-label) { max-width: 60%; font-size: 10px; }
+  .navigation.navigation { gap: 2px; }
+  .navigation.navigation a { min-height: 40px; gap: 5px; padding: 7px 6px; font-size: 11px; }
+  .chat.chat :global(.zema-empty h2) { font-size: clamp(25px, 7vw, 34px); }
+}
+
+.home { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 50%; color: #a6a69b; }
+.home:hover { background: #20201e; color: #edede8; }
+.chat.chat :global(.work-shell), .chat.chat :global(.work-body) { color: #edede8; background: transparent; }
+.chat.chat :global(.work-create), .chat.chat :global(.work-list), .chat.chat :global(.work-detail),
+.chat.chat :global(.work-review), .chat.chat :global(.work-history), .chat.chat :global(.work-notice) { border-color: #343431; color: #edede8; background: #191918; box-shadow: none; }
+.chat.chat :global(.work-title) :is(h1, h2), .chat.chat :global(.work-list-heading h2),
+.chat.chat :global(.work-detail) :is(h2, h3), .chat.chat :global(.work-create label) { color: #edede8; }
+.chat.chat :global(.work-title) :is(h1, h2) { font-size: 24px; font-weight: 500; }
+.chat.chat :global(.work-title p), .chat.chat :global(.work-create p), .chat.chat :global(.work-empty p),
+.chat.chat :global(.work-footnote), .chat.chat :global(.work-history li) { color: #a6a69b; }
+.chat.chat :global(.work-create input), .chat.chat :global(.work-create [data-slot='select-trigger']),
+.chat.chat :global(.work-title button), .chat.chat :global(.work-list-heading button) { border-color: #42423c; color: #edede8; background: #20201e; }
+.chat.chat :global(.work-primary) { border-color: #edede8; color: #181817; background: #edede8; }
+.chat.chat :global(.work-primary:disabled) { border-color: #343431; color: #999990; background: #343431; }
+.chat.chat :global(.sky-chat-job-heading) > span { color: #c4c4bb; background: #2b2b27; }
+/* Override the legacy command bar's fixed-size icon links. */
+.chat.chat :global(.sky-chat-commandbar) .navigation a { width: auto; min-width: 0; height: auto; flex: 0 0 auto; padding: 8px 12px; }
+@media (max-width: 767px) {
+  .chat.chat :global(.sky-chat-commandbar) .navigation a { padding: 7px 6px; }
+}
+.chat.chat :global(.sky-chat-commandbar) { height: auto; flex-shrink: 0; }
+.chat.chat :global(.sky-chat-work-center) { flex: 1 1 0; }
+.chat.chat :global(.work-primary) { border-color: #edede8 !important; color: #181817 !important; background: #edede8 !important; }
+.chat.chat :global(.work-primary:disabled) { border-color: #343431 !important; color: #999990 !important; background: #343431 !important; }
+
+@media(max-width:767px) { .navigation.navigation { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; } .navigation.navigation a { flex: 0 0 auto; } }

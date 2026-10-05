@@ -288,10 +288,56 @@ class Wallet:
                                  'AVAILABLE', maximum))
             elif row['state'] != 'HELD':
                 raise WalletError('unknown spend reservation state')
+        cloud_rows = connection.execute('SELECT * FROM a2a_wallet_reservations').fetchall()
+        cloud_held = cloud_committed = 0
+        for row in cloud_rows:
+            maximum = row['budget_limit_minor']
+            if maximum != row['held_minor'] + row['settled_minor'] + row['released_minor']:
+                raise WalletError('A2A Wallet reservation amount conservation failed')
+            if row['state'] in ('HELD', 'DISPATCHED', 'INDETERMINATE'):
+                if row['settled_minor'] or row['released_minor']:
+                    raise WalletError('active A2A Wallet reservation has terminal postings')
+                cloud_held += row['held_minor']
+            elif row['state'] == 'SETTLED':
+                if row['held_minor'] or row['settled_minor'] > maximum:
+                    raise WalletError('settled A2A Wallet reservation has invalid amounts')
+                cloud_committed += row['settled_minor']
+            elif row['state'] == 'RELEASED':
+                if row['held_minor'] or row['settled_minor'] or row['released_minor'] != maximum:
+                    raise WalletError('released A2A Wallet reservation has invalid amounts')
+            else:
+                raise WalletError('unknown A2A Wallet reservation state')
+            expected.append(('a2a.reserve', row['delegation_id'], 'AVAILABLE', -maximum,
+                             'SPEND_HOLD', maximum))
+            if row['state'] == 'SETTLED':
+                if row['settled_minor']:
+                    expected.append(('a2a.settle', row['delegation_id'], 'SPEND_HOLD',
+                                     -row['settled_minor'], 'SPEND_COMMITTED', row['settled_minor']))
+                if row['released_minor']:
+                    expected.append(('a2a.release', row['delegation_id'], 'SPEND_HOLD',
+                                     -row['released_minor'], 'AVAILABLE', row['released_minor']))
+            elif row['state'] == 'RELEASED':
+                expected.append(('a2a.release', row['delegation_id'], 'SPEND_HOLD',
+                                 -maximum, 'AVAILABLE', maximum))
+        authorizations = []
+        if connection.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND "
+                              "name='a2a_wallet_authorizations'").fetchone():
+            authorizations = connection.execute('''SELECT a.*,r.owner_id AS reservation_owner,
+                r.approval_sha256 AS reservation_approval,r.deadline_at AS reservation_deadline
+                FROM a2a_wallet_authorizations a JOIN a2a_wallet_reservations r
+                USING(delegation_id)''').fetchall()
+        for authorization in authorizations:
+            if (authorization['owner_id'] != authorization['reservation_owner'] or
+                    authorization['authorization_sha256'] != authorization['reservation_approval'] or
+                    not authorization['control_key'] or
+                    authorization['proof_expires_at'] > authorization['reservation_deadline']):
+                raise WalletError('A2A Broker proof fence does not match its Wallet reservation')
+        held += cloud_held
+        committed += cloud_committed
         if (held, committed, fees, gas) != tuple(balances[name] for name in SPEND_ACCOUNTS):
             raise WalletError('spend records do not reconcile with asset accounts')
         actual = []
-        for journal in connection.execute("SELECT id,kind,reference_id FROM wallet_journals WHERE kind LIKE 'spend.%'"):
+        for journal in connection.execute("SELECT id,kind,reference_id FROM wallet_journals WHERE kind LIKE 'spend.%' OR kind LIKE 'a2a.%'"):
             postings = [tuple(row) for row in connection.execute(
                 'SELECT account,delta_minor FROM wallet_postings WHERE journal_id=? ORDER BY id', (journal['id'],)
             )]

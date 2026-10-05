@@ -26,6 +26,8 @@ import org.json.JSONObject;
 /** Signature-permission OS broker for the versioned RockstarOS Platform API. */
 public final class RockPlatformService extends Service {
     static final String EXTRA_APPROVAL_ID = "approvalId";
+    static final String EXTRA_APPROVAL_OWNER = "approvalOwner";
+    static final String EXTRA_APPROVAL_CONTEXT = "approvalContext";
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
 
     private final IPlatformApi.Stub binder = new IPlatformApi.Stub() {

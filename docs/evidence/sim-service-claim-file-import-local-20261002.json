@@ -1,0 +1,52 @@
+{
+  "evidenceId": "sim-service-claim-file-import-local-20261002",
+  "stage": "local_source_and_fixture_validation",
+  "implementation": {
+    "path": "/connect",
+    "acceptedPackage": "seller JSON containing claim and one-time claimCode",
+    "inputModes": [
+      "bounded JSON file import",
+      "manual paste"
+    ],
+    "maximumSizeBytes": 16384,
+    "trustBoundary": "browser validates only the package envelope; the server still validates issuer trust, Ed25519 signature, claim code digest, expiry, scopes, and atomic single-owner binding",
+    "singlePurchaseBinding": "Migration 0050 adds unique (issuer_id, purchase_reference_sha256); one sale line hash can bind to only one account even if a seller reissues a different claimId/code, while exact same package redemption by that owner is idempotent. Seller should hash an order-line reference, not a shared whole-order reference, when multiple entitlements are purchased.",
+    "sellerDeliveryApi": "A local internal seller API authenticates issuer-scoped bearer secrets, verifies signed packages, retains claim codes encrypted at rest under a stable idempotency key, supports read-after-timeout recovery, and clears the code only after explicit delivery acknowledgement."
+  },
+  "validation": {
+    "claimParserVerifierAndD1Tests": "5/5; includes pre-redemption signed cancellation tombstone, rejection of delayed old claim, same-purchase reissue redemption, and concurrent competing claim IDs (one winner)",
+    "issuerSdkTests": "4/4; signed physical-SIM/eSIM claim creation, valid cancellation/replacement signing, invalid offer/scope/expiry/key rejection; extractable private Ed25519 keys are refused",
+    "issuerSigningKeyBoundary": "The SDK accepts only non-extractable private Ed25519 CryptoKeys with sign usage; key material stays caller/KMS-managed and is not exported or persisted by the SDK.",
+    "claimLifecycleApiIntegration": "11 additional Worker/D1 API assertions; signed pre-redemption cancellation is accepted, the delayed old code returns 409, and a replacement claim for the same purchase hash redeems once",
+    "simServiceEntryContractTest": "1/1",
+    "typecheck": "passed",
+    "productLint": "passed",
+    "fullRepositoryVerify": {
+      "result": "passed after issuer SDK, pre-redemption cancellation tombstones, replacement claims, and replay/concurrency regressions",
+      "nodeTests": "696/696",
+      "fashionTests": "19/19",
+      "workerD1Assertions": 959,
+      "csvWorkerD1R2Assertions": 113,
+      "migrationConvergence": "9/9 fresh/release/sites across filename and Drizzle migrators",
+      "includes": [
+        "schema check",
+        "database status check",
+        "typecheck",
+        "product lint",
+        "production build",
+        "bundle/asset closure"
+      ],
+    "caveat": "all local fixtures/synthetic identities; no production D1 deployment, seller or carrier acceptance; test usage records are not proof of production billing, carrier activation, or successful OS installation"
+    },
+    "migrationConvergence": "tests/migration-union.test.mjs 9/9 across fresh/release/sites and filename/Drizzle histories; existing migration bytes preserved"
+  },
+  "notProven": [
+    "connection from seller checkout and its buyer-delivery channel to the local issuer/delivery APIs; no seller or carrier integration is configured",
+    "production acceptance of expiry, resend, recovery, refund and replacement flows through a contracted seller channel; their local signing/store/API paths are fixture-tested only",
+    "carrier activation or SIM/eSIM purchase",
+    "production account entitlement or real-user browser acceptance",
+    "production seller registry, webhook integration, and delivery-channel acknowledgement for revoke/replace lifecycle; the local signed-event API stores pre-redemption cancellation tombstones but has no seller contract or channel integration",
+    "existing production D1 duplicate-purchase preflight or migration deployment; apply only after a read-only duplicate query is reviewed"
+  ],
+  "note": "No claim data, claim code, or purchase reference is written to logs or stored by this file parser. Fixture validation is not seller or production acceptance. Migration 0050 is a local source migration and has not been deployed/read back from production D1. The event tombstone and reissue path are local D1 behavior only."
+}

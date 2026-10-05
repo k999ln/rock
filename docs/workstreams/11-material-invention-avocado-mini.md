@@ -117,6 +117,8 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 
 ## 関連資料
 
+- [没入型GTAの技術調査・将来構想・検証順序](../avocado-mini-r5/research/immersive-gta/README.md)（2026-09-30調査。全空間表示は未実証、MAT15はplanned）
+
 - [Mini200 E1 — ゲーム機・身体入力・日本語音声](../avocado-mini-mini200-e1/README.md)
 
 - [共有用完成設計書](../rockstaros-avocado-mini-complete-design.md)

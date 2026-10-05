@@ -1,6 +1,6 @@
 # RockstarOS Value/Spend Runtime
 
-日付: 2026-09-12。状態: host上のSIMULATION/PAPER vertical slice。LIVE、実USDC、Polymarket API、秘密鍵/API key、本番providerは未接続。
+更新: 2026-10-01。状態: host上のSIMULATION/PAPER vertical slice。LIVE、実USDC、Polymarket API、秘密鍵/API key、本番providerは未接続。
 
 ## 製品境界
 
@@ -48,13 +48,30 @@ adapterはWallet DB、秘密値、任意送金権限を受け取らない。予�
 | `spend.approve` | exact digestへUSER/POLICY decisionをappend |
 | `spend.execute` | hold、署名、adapter、commit/release/unknown |
 | `spend.reconcile` | 送信済み結果を照会し、同じreceiptだけで終端 |
+| `a2a.budget.reserve` / `a2a.budget.get` | A2A親job・委任・承認digest・Unix millisecond deadlineを結んだ合成Wallet hold |
+| `a2a.budget.dispatch` | 一度だけ送信開始状態へ進め、以後の取消解放を禁止 |
+| `a2a.budget.indeterminate` | 結果不明としてholdを保持し、自動再送・解放を禁止 |
+| `a2a.budget.release` | 未dispatchのholdだけをAVAILABLEへ戻す |
+| `a2a.budget.settle` | 注入済みtrusted receipt verifierが受け入れた実額を記録し、残額を返す |
 | `event.list` | 共通eventをprefixで参照 |
 | `position.mark` | asset別unrealized PnLを更新 |
 | `settlement.record` | 合成payoutとrealized PnLを記録 |
 | `risk.configure` / `risk.emergency_stop` | 上限と全新規支出停止 |
 | `strategy.set` | adapter単位のstrategy制御 |
 
-共通eventは`spend.* / trade.* / position.* / settlement.* / risk.* / pnl.*`。append-onlyの`value_events`がHub表示と将来の重要通知の同じ参照元になる。現時点では外部push通知は未接続。
+共通eventは`spend.* / a2a.* / trade.* / position.* / settlement.* / risk.* / pnl.*`。append-onlyの`value_events`がHub表示と将来の重要通知の同じ参照元になる。現時点では外部push通知は未接続。
+
+## A2A job Wallet予約とBroker proof fence（2026-10-01）
+
+`ValueSpendRuntime.authorize_a2a_proof(principal, proof, key)`はBrokerの`a2a_wallet_reservation_authorizer`へ直接注入できるcallable。schema/authority/owner/device/delegation/parent job/USD cap/approval digest/deadlineとproof lifetimeを検証し、同一SQLite transaction内で予約と照合してproof有効期限までのfenceを記録する。owner・device・control key・approval digestが同一の再試行だけを許し、異なるkey／条件は拒否する。fence中は通常releaseを拒否し、期限切れ後は未dispatch holdをreleaseできる。dispatch・indeterminate・settlementは別状態のままで、usage receiptの信頼設定がなければsettleしない。
+
+既存のRockstarOS synthetic Wallet／ValueSpend ledgerに`a2a_wallet_reservations`を加えた。親job・delegation ID・USD上限・owner承認digest・期限を一意に固定し、同じSQLite transactionで`AVAILABLE → SPEND_HOLD`へ移す。親・owner・金額・通貨・期限の差替えは同じdelegationへ適用できず、idempotency keyのpayload差替えも拒否する。
+
+状態は`HELD → DISPATCHED → INDETERMINATE → SETTLED`。明示的なpre-dispatch状態`HELD`からだけ解放できる。dispatch後は結果不明でもholdを維持し、provider/Walletの信頼済みusage verifierが設定されていない場合、receipt精算はfail-closedで拒否する。verified receiptの実額だけを`SPEND_COMMITTED`へ記帳し、未使用額は`AVAILABLE`へ戻す。Wallet verifierはDB transaction外で動き、精算時に予約の不変bindingを再照合する。
+
+Hub `/api/hub-mcp` の厳密command schemaから同じ機能を呼べる。host testはatomic hold、idempotency conflict、上限超過、dispatch後解放拒否、indeterminate hold保持、verifierなし拒否、trusted-verifier fixtureによる一回精算を検査する。
+
+**この追加は合成USD Wallet内の予約契約であり、A2A cloud D1のreservationとのwire/proof binding、実Wallet資金、実provider課金または署名鍵運用をつないだものではない。** Local DEVELOPMENT Hubは`ROCKSTAR_A2A_TRUSTED_USAGE_KEYS`が明示設定された場合のみEd25519 verifierを注入し、既定ではreceiptを確定できない。公開RFC test keyでHub経由のsigned-receipt settlementを検証するfixtureを追加した。本番execution gateと外部送信は引き続きdefault-off。
 
 ## Polymarket upstream監査
 

@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-02",
+  "scope": "provider-signed, exact-version Sky Package to A2A runtime binding verification contract",
+  "contract": {
+    "schema": "rockstar-sky-package-runtime-binding/1",
+    "signature": "Ed25519 with domain-separated signing bytes",
+    "trust": "active provider key pinned by key ID, HTTPS Agent origin and exact Package key plus manifest SHA-256",
+    "boundFields": [
+      "Agent Card name/version/SHA-256",
+      "Package key/manifest SHA-256",
+      "A2A operation ID and runtime protocol",
+      "input and output JSON Schema SHA-256",
+      "pricing version and required usage meters",
+      "issued/expiry timestamps"
+    ],
+    "limits": "maximum 30-day binding lifetime; malformed, expired, revoked, unpinned, mismatched or tampered bindings fail closed"
+  },
+  "localVerification": {
+    "command": "node --experimental-strip-types --test tests/sky-package-runtime-binding.test.mjs tests/sky-package-runtime.test.mjs && npm run typecheck && npx oxlint lib/sky-package-runtime-binding.ts lib/sky-package-runtime.ts tests/sky-package-runtime-binding.test.mjs",
+    "result": "6 focused tests passed; TypeScript typecheck passed; focused oxlint passed",
+    "fullCommand": "npm run verify",
+    "fullResult": "passed: full npm run verify completed after migration 0055 and the D1 management API were added. This covers repository/project/schema/database/release checks, typecheck, product lint, full Node suite, migration convergence, MCP package parity, billing/operator dry runs, production Web build, asset closure, and 994 local Worker/D1 plus 113 CSV API assertions. Local checks do not prove production operation.",
+    "apiIntegrationCommand": "node scripts/check-work-api.mjs",
+    "apiIntegrationResult": "passed: 994 local Worker/D1 assertions including authenticated binding registration, signature/schema rejection, idempotent persistence, revocation, and active lookup exclusion; synthetic signing keys and package review fixture only."
+  },
+  "implemented": [
+    "Strict schema parser and exact-field validation for a signed cloud Package/runtime binding.",
+    "Ed25519 signature verification with a domain-separated contract and exact Package-version/hash trust pins.",
+    "Quote compatibility helper that requires the signed pricing version and every signed usage meter/unit.",
+    "Cross-locale deterministic JSON Schema hashing for binding inputs and outputs.",
+    "D1 schema migration 0055 and an immutable binding store with idempotent registration, conflict detection, revocation, and active lookup.",
+    "Operator-authenticated POST/PATCH API that verifies provider signatures and requires the exact current reviewed Package manifest and both matching Schema hashes before persistence.",
+    "Worker/D1 integration tests for auth boundaries, provider signature tampering, schema mismatch, idempotent registration, revocation, and revoked binding exclusion."
+  ],
+  "not_implemented_or_proven": [
+    "No production quote, delegation dispatch, or cloud Agent executor invokes this verifier yet; a passing helper test is not cloud Package execution.",
+    "No live provider signature/key custody, production billing, carrier activation, production D1 readback, or device/OS acceptance is evidenced.",
+    "All checks use generated local signing keys and local fixtures; they do not establish production billing or successful OS installation.",
+    "The binding registry is not yet wired into end-user quote consent, delegation approval, or dispatch; no cloud Provider executor calls the Package operation.",
+    "Production D1 migration/readback, operational key custody/rotation, production billing, carrier activation, and physical device/OS acceptance are not proven."
+  ]
+}

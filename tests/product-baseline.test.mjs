@@ -9,6 +9,21 @@ const source = JSON.parse(
 );
 void test('product baseline rejects lost requirements, stale-as-live claims and mismatched source evidence', () => {
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
+  const osOnSim = structuredClone(source);
+  osOnSim.serviceAccessModel.osBinaryStoredOnSim = true;
+  assert.throws(() => validateBaseline(osOnSim), /SIM\/eSIM offer/);
+  const esimOnly = structuredClone(source);
+  esimOnly.serviceAccessModel.distributionChannels = ['rockstar_direct'];
+  assert.throws(() => validateBaseline(esimOnly), /SIM\/eSIM offer/);
+  const offlineCloudLost = structuredClone(source);
+  offlineCloudLost.serviceAccessModel.deviceMinimumExperience =
+    offlineCloudLost.serviceAccessModel.deviceMinimumExperience.filter(
+      (item) => !item.startsWith('accepted_cloud_tasks_continue_while_device_offline'),
+    );
+  assert.throws(() => validateBaseline(offlineCloudLost), /SIM-led service value/);
+  const billingGateOpened = structuredClone(source);
+  billingGateOpened.serviceAccessModel.productionBillingAccepted = true;
+  assert.throws(() => validateBaseline(billingGateOpened), /SIM\/eSIM offer/);
   const missing = structuredClone(source);
   missing.requirements.pop();
   assert.throws(() => validateBaseline(missing), /RQ01〜RQ49/);
@@ -176,6 +191,15 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const splitWebDelivery = structuredClone(source);
   splitWebDelivery.webDeliveryIntegrity.sourceAndPrivateSiteCommitMustMatch = false;
   assert.throws(() => validateBaseline(splitWebDelivery), /同一commit/);
+  const missingCampus = structuredClone(source);
+  delete missingCampus.campus;
+  assert.throws(() => validateBaseline(missingCampus), /Campusの大学別機能/);
+  const invasiveCampusAnalytics = structuredClone(source);
+  invasiveCampusAnalytics.campus.analyticsPrivacy = 'store_ip_and_user_agent';
+  assert.throws(
+    () => validateBaseline(invasiveCampusAnalytics),
+    /Campusの大学別機能/,
+  );
   const missingHome = structuredClone(source);
   delete missingHome.homeExperience;
   assert.throws(() => validateBaseline(missingHome), /ホームと設定アプリ/);
@@ -246,4 +270,11 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
       ),
     /AGENTS/,
   );
+});
+
+void test('the visual baseline preserves the existing pale-blue Web appearance', () => {
+  assert.equal(source.visualSystem.accent, 'ice_blue');
+  const oldTheme = structuredClone(source);
+  oldTheme.visualSystem.accent = 'acid_green';
+  assert.throws(() => validateBaseline(oldTheme), /共通visual system/);
 });

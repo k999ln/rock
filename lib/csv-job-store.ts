@@ -1,4 +1,8 @@
+import { csvOutputKeys, purgeExpiredCsvJobs, removeCsvJobStorage } from './csv-retention';
+import { CsvRequestLimitError } from './csv-request-limit';
 import { env } from 'cloudflare:workers';
+import { CSV_TRIAL_SAMPLE } from './csv-trial-sample';
+import { SkyPaymentError } from './sky-stripe';
 import {
   CsvError,
   csvReportHtml,
@@ -147,41 +151,14 @@ async function event(
     .run();
 }
 
-async function purgeExpired(db: D1Database, bucket: R2Bucket, user: string) {
-  const expired = await db
-    .prepare(
-      'SELECT * FROM csv_jobs WHERE user_id = ? AND expires_at <= ? LIMIT 20',
-    )
-    .bind(user, Date.now())
-    .all<CsvJobRow>();
-  for (const row of expired.results) {
-    const keys = [
-      row.input_key,
-      row.result_key,
-      row.safe_result_key,
-      row.report_json_key,
-      row.report_html_key,
-    ].filter(Boolean) as string[];
-    if (keys.length) await bucket.delete(keys);
-    await db
-      .prepare('DELETE FROM csv_job_events WHERE job_id = ? AND user_id = ?')
-      .bind(row.id, user)
-      .run();
-    await db
-      .prepare('DELETE FROM csv_jobs WHERE id = ? AND user_id = ?')
-      .bind(row.id, user)
-      .run();
-  }
-}
-
 export async function listCsvJobs(user: string) {
   const { db, bucket } = resources();
-  await purgeExpired(db, bucket, user);
+  await purgeExpiredCsvJobs(db, bucket, { user });
   const rows = await db
     .prepare(
-      'SELECT * FROM csv_jobs WHERE user_id = ? ORDER BY updated_at DESC LIMIT 50',
+      'SELECT * FROM csv_jobs WHERE user_id = ? AND expires_at > ? ORDER BY updated_at DESC LIMIT 50',
     )
-    .bind(user)
+    .bind(user, Date.now())
     .all<CsvJobRow>();
   return rows.results.map(view);
 }
@@ -194,11 +171,21 @@ export async function createCsvJob(
     bytes: Uint8Array;
     specification: unknown;
     sample: boolean;
+    trial?: boolean;
   },
 ) {
   const { db, bucket } = resources();
   if (!/^[0-9a-f-]{36}$/i.test(input.id))
     throw new CsvJobError(400, 'ID', '受付番号が不正です。');
+  if (
+    input.trial &&
+    (input.sample || new TextDecoder().decode(input.bytes) !== CSV_TRIAL_SAMPLE)
+  )
+    throw new CsvJobError(
+      400,
+      'TRIAL_SAMPLE',
+      '50円試験には指定のサンプルCSVを使ってください。',
+    );
   const name = input.name.trim().slice(0, 180) || 'input.csv';
   const specification = csvSpecification(input.specification);
   const decoded = decodeCsv(input.bytes);
@@ -207,23 +194,28 @@ export async function createCsvJob(
   await transformCsv(input.bytes, specification);
   const hash = await sha256(input.bytes);
   const now = Date.now();
-  const inputKey = `csv/${input.id}/input.csv`;
-  const existing = await db
-    .prepare('SELECT * FROM csv_jobs WHERE id = ? AND user_id = ?')
-    .bind(input.id, user)
-    .first<CsvJobRow>();
-  if (existing) {
+  const specificationJson = JSON.stringify(specification);
+  const replay = (row: CsvJobRow) => {
     if (
-      existing.input_sha256 !== hash ||
-      existing.specification_json !== JSON.stringify(specification)
+      row.user_id !== user ||
+      row.input_sha256 !== hash ||
+      row.specification_json !== specificationJson
     )
       throw new CsvJobError(
         409,
         'IDEMPOTENCY',
-        '同じ受付番号に異なる内容は保存できません。',
+        'この受付番号では保存できません。新しい受付として作成してください。',
       );
-    return view(existing);
-  }
+    return view(row);
+  };
+  const existing = await db
+    .prepare('SELECT * FROM csv_jobs WHERE id = ?')
+    .bind(input.id)
+    .first<CsvJobRow>();
+  if (existing) return replay(existing);
+  // Each insertion attempt owns its object. A losing concurrent request may
+  // remove only this key, never the input referenced by another saved row.
+  const inputKey = `csv/${input.id}/input-${crypto.randomUUID()}.csv`;
   await bucket.put(inputKey, input.bytes, {
     httpMetadata: { contentType: 'text/csv' },
     customMetadata: {
@@ -245,15 +237,22 @@ export async function createCsvJob(
         input.bytes.byteLength,
         hash,
         decoded.encoding,
-        JSON.stringify(specification),
-        input.sample ? 0 : 300000,
+        specificationJson,
+        input.sample ? 0 : input.trial ? 5000 : 300000,
         now + RETENTION_MS,
         now,
         now,
       )
       .run();
   } catch (error) {
-    await bucket.delete(inputKey);
+    // Reconcile before cleanup: an uncertain INSERT may already have committed.
+    // If D1 cannot be read, retain the object rather than risk deleting input.
+    const persisted = await db
+      .prepare('SELECT * FROM csv_jobs WHERE id = ?')
+      .bind(input.id)
+      .first<CsvJobRow>();
+    if (persisted?.input_key !== inputKey) await bucket.delete(inputKey);
+    if (persisted) return replay(persisted);
     throw error;
   }
   const row = await owned(db, user, input.id);
@@ -268,6 +267,10 @@ export async function createCsvJob(
 async function processCsvJob(row: CsvJobRow) {
   const { db, bucket } = resources();
   const now = Date.now();
+  if (row.expires_at <= now) {
+    await purgeExpiredCsvJobs(db, bucket, { user: row.user_id, id: row.id, limit: 1 });
+    throw new CsvJobError(410, 'EXPIRED', '取得期限を過ぎています。保存ファイルは順次削除されます。');
+  }
   if (row.attempt >= MAX_ATTEMPTS)
     throw new CsvJobError(409, 'ATTEMPTS', '自動再試行の上限に達しました。');
   const claim = await db
@@ -299,13 +302,8 @@ async function processCsvJob(row: CsvJobRow) {
       bytes,
       JSON.parse(row.specification_json),
     );
-    const base = `csv/${row.id}`;
-    const resultKey = `${base}/result.csv`,
-      reportJsonKey = `${base}/report.json`,
-      reportHtmlKey = `${base}/report.html`;
-    const safeResultKey = result.safeOutput
-      ? `${base}/spreadsheet-safe.csv`
-      : null;
+    const [resultKey, safeKey, reportJsonKey, reportHtmlKey] = csvOutputKeys(row);
+    const safeResultKey = result.safeOutput ? safeKey : null;
     await bucket.put(resultKey, result.output, {
       httpMetadata: { contentType: 'text/csv' },
       customMetadata: { sha256: result.outputSha256 },
@@ -345,12 +343,7 @@ async function processCsvJob(row: CsvJobRow) {
     });
     return view(row);
   } catch (error) {
-    await bucket.delete([
-      `csv/${row.id}/result.csv`,
-      `csv/${row.id}/spreadsheet-safe.csv`,
-      `csv/${row.id}/report.json`,
-      `csv/${row.id}/report.html`,
-    ]);
+    await bucket.delete(csvOutputKeys(row));
     const code =
       error instanceof CsvError || error instanceof CsvJobError
         ? error.code
@@ -379,8 +372,8 @@ export async function acceptCsvJob(
   const { db } = resources();
   let row = await owned(db, user, id);
   if (row.expires_at <= Date.now()) {
-    await deleteCsvJob(user, id);
-    throw new CsvJobError(410, 'EXPIRED', '保管期限を過ぎたため削除しました。');
+    await purgeExpiredCsvJobs(db, resources().bucket, { user, id, limit: 1 });
+    throw new CsvJobError(410, 'EXPIRED', '取得期限を過ぎています。保存ファイルは順次削除されます。');
   }
   if (row.status === 'completed') return view(row);
   if (row.status === 'processing') return view(row);
@@ -393,7 +386,14 @@ export async function acceptCsvJob(
   const sample = row.payment_status === 'sample';
   const method = input.paymentMethod?.trim().slice(0, 40) ?? '';
   const reference = input.paymentReference?.trim().slice(0, 120) ?? '';
-  if (!sample && (!method || reference.length < 4))
+  const stripePaid = row.payment_status === 'stripe_verified';
+  if (!sample && row.quote_minor === 5000 && !stripePaid)
+    throw new CsvJobError(
+      402,
+      'PAYMENT_REQUIRED',
+      '50円試験は決済サービスで支払いを確認してから開始します。',
+    );
+  if (!sample && !stripePaid && (!method || reference.length < 4))
     throw new CsvJobError(
       400,
       'PAYMENT_EVIDENCE',
@@ -405,9 +405,9 @@ export async function acceptCsvJob(
       `UPDATE csv_jobs SET status = 'accepted', payment_status = ?, payment_method = ?, payment_reference = ?, accepted_at = COALESCE(accepted_at, ?), revision = revision + 1, updated_at = ? WHERE id = ? AND user_id = ? AND revision = ? AND status IN ('quoted', 'quality_failed')`,
     )
     .bind(
-      sample ? 'sample' : 'manual_verified',
-      sample ? null : method,
-      sample ? null : reference,
+      sample ? 'sample' : stripePaid ? 'stripe_verified' : 'manual_verified',
+      sample ? null : stripePaid ? 'Stripe' : method,
+      sample ? null : stripePaid ? row.payment_reference : reference,
       now,
       now,
       id,
@@ -433,31 +433,20 @@ export async function retryCsvJob(user: string, id: string, revision: number) {
 export async function deleteCsvJob(user: string, id: string) {
   const { db, bucket } = resources();
   const row = await owned(db, user, id);
-  const keys = [
-    row.input_key,
-    row.result_key,
-    row.safe_result_key,
-    row.report_json_key,
-    row.report_html_key,
-  ].filter(Boolean) as string[];
-  if (keys.length) await bucket.delete(keys);
-  await db
-    .prepare('DELETE FROM csv_job_events WHERE job_id = ? AND user_id = ?')
-    .bind(id, user)
-    .run();
-  await db
-    .prepare('DELETE FROM csv_jobs WHERE id = ? AND user_id = ?')
-    .bind(id, user)
-    .run();
+  const result = await removeCsvJobStorage(db, bucket, row);
+  if (result !== 'deleted')
+    throw new CsvJobError(409, 'REMOVAL_BUSY', '処理中または更新されています。完了後に削除を再試行してください。');
 }
 
 export async function csvArtifact(user: string, id: string, kind: string) {
   const { db, bucket } = resources();
   const row = await owned(db, user, id);
   if (row.expires_at <= Date.now()) {
-    await deleteCsvJob(user, id);
-    throw new CsvJobError(410, 'EXPIRED', '保管期限を過ぎたため削除しました。');
+    await purgeExpiredCsvJobs(db, resources().bucket, { user, id, limit: 1 });
+    throw new CsvJobError(410, 'EXPIRED', '取得期限を過ぎています。保存ファイルは順次削除されます。');
   }
+  if (row.status === 'cleanup_pending')
+    throw new CsvJobError(410, 'REMOVAL_PENDING', '削除処理が完了するまで取得できません。');
   const map: Record<
     string,
     { key: string | null; name: string; type: string }
@@ -489,6 +478,20 @@ export async function csvArtifact(user: string, id: string, kind: string) {
 }
 
 export function csvApiError(error: unknown) {
+  if (error instanceof CsvRequestLimitError)
+    return Response.json(
+      {
+        error: '操作が続いています。少し待って再試行してください。',
+        code: 'RATE_LIMITED',
+      },
+      {
+        status: 429,
+        headers: {
+          'Cache-Control': 'no-store',
+          'Retry-After': String(error.retryAfter),
+        },
+      },
+    );
   if (error instanceof Error && error.message === 'UNAUTHORIZED')
     return Response.json(
       {
@@ -501,6 +504,11 @@ export function csvApiError(error: unknown) {
     return Response.json(
       { error: 'このサイトから操作してください。', code: 'ORIGIN' },
       { status: 403, headers: { 'Cache-Control': 'no-store' } },
+    );
+  if (error instanceof SkyPaymentError)
+    return Response.json(
+      { error: error.message, code: 'PAYMENT' },
+      { status: error.status, headers: { 'Cache-Control': 'no-store' } },
     );
   if (error instanceof CsvJobError)
     return Response.json(

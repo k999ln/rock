@@ -28,7 +28,7 @@ test('Astro emits every public route and the Worker deployment contract', () => 
     assert.equal(existsSync(new URL(route, outputRoot)), true, `${route} must exist`);
   }
 
-  for (const artifact of ['server/index.js', 'server/wrangler.json', '.openai/hosting.json']) {
+  for (const artifact of ['server/index.js', 'server/shared/stripe.mjs', 'server/wrangler.json', '.openai/hosting.json']) {
     assert.equal(existsSync(new URL(artifact, outputRoot)), true, `${artifact} must exist`);
   }
 });
@@ -41,14 +41,11 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   assert.match(home, /Make the room part<br\s*\/?>of the experience\./);
   assert.match(home, /id="choose-setup"/);
   assert.match(home, /id="possibilities"/);
-  assert.match(home, /Mini sees\./);
-  assert.match(home, /Pro runs\./);
-  assert.match(home, /RockstarOS connects\./);
-  assert.match(home, /Walk or balance/);
-  assert.match(home, /Raise a hand/);
-  assert.match(home, /Dodge or reach/);
-  for (const image of ['usecase-care-motion-v3.jpg', 'usecase-research-development-v3.jpg', 'usecase-everyday-space-v3.jpg', 'usecase-spatial-game-v3.jpg']) assert.match(home, new RegExp(image.replace('.', '\\.')));
-  for (const step of ['Take a step', 'Mini reads movement', 'Review motion', 'Move a prototype', 'Light turns on', 'Game responds']) assert.match(home, new RegExp(step));
+  const experiences = home.match(/<section id="possibilities"[\s\S]*?<\/section>/)?.[0] || '';
+  assert.equal((experiences.match(/<article /g) || []).length, 4);
+  assert.doesNotMatch(experiences, /possibility-flow|system-role-strip|<dl/);
+  for (const image of ['usecase-care-motion-v4.jpg', 'usecase-research-development-v4.jpg', 'usecase-everyday-space-v4.jpg', 'usecase-spatial-game-v4.jpg']) assert.ok(experiences.includes(image));
+  for (const href of ['/mini/#mini-use-cases', '/pro/#pro-use-cases', '/pro/#pro-pairing', '#choose-setup']) assert.ok(experiences.includes('href="' + href + '"'));
   assert.match(home, /href="\/mini\/"/);
   assert.match(home, /href="\/pro\/"/);
   assert.match(home, /home-promo-mini/);
@@ -84,9 +81,11 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   }
   assert.equal((home.match(/class="home-promo /g) || []).length, 3);
   assert.equal((home.match(/class="home-tile /g) || []).length, 4);
-  assert.match(home, /rel="canonical" href="https:\/\/avocado-mini\.kirin-999\.chatgpt\.site\/"/);
+  assert.match(home, /rel="canonical" href="https:\/\/avocadomini\.si\/"/);
   assert.match(home, /property="og:title"/);
-  assert.doesNotMatch(home, /fonts\.googleapis\.com|fonts\.gstatic\.com/);
+  for (const host of ['fonts.googleapis.com', 'fonts.gstatic.com']) {
+    assert.equal(home.toLowerCase().includes(host), false);
+  }
   assert.equal(existsSync(new URL('client/robots.txt', outputRoot)), true);
   assert.equal(existsSync(new URL('client/sitemap.xml', outputRoot)), true);
 });
@@ -187,6 +186,8 @@ test('built pages use bundled assets instead of retired source paths', () => {
     const html = built(route);
     assert.doesNotMatch(html, /(?:href|src)=["']\/src\//, `${route} must not load /src directly`);
     assert.doesNotMatch(html, /(?:href|src)=["']\/rocket-star\/(?:main\.js|design\.css)/, `${route} must use Astro assets`);
-    assert.doesNotMatch(html, /fonts\.googleapis\.com|fonts\.gstatic\.com/, `${route} must not request third-party fonts`);
+    for (const host of ['fonts.googleapis.com', 'fonts.gstatic.com']) {
+      assert.equal(html.toLowerCase().includes(host), false, `${route} must not request third-party fonts`);
+    }
   }
 });

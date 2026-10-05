@@ -1,0 +1,67 @@
+{
+  "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+  "version": 27,
+  "sourceCommit": "3e895271f4b01542109882fa6c7af521d8166f1b",
+  "savedVersion": {
+    "id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_c792fbc959748191b65d58fa293bc9ec",
+    "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "version_number": 27,
+    "source": {
+      "commit_sha": "3e895271f4b01542109882fa6c7af521d8166f1b"
+    },
+    "archive_storage": {
+      "archive_format": "tar",
+      "sediment_file_id": "file_00000000913481f7880c59f3c3f60786",
+      "content_hash": "sha256:ed773ba2e953a67625094b9ef1ecc9ea110e0c013b80dab9e196e4d2a1622d50",
+      "size_bytes": 14469120,
+      "file_count": 466
+    },
+    "screenshot_url": null,
+    "deployment_id": null
+  },
+  "deployment": {
+    "id": "appgdep_6abf32540bac819183e29bd2a3125007",
+    "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "title": "Sky — ツールとAIのマーケットプレイス",
+    "version_id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_c792fbc959748191b65d58fa293bc9ec",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6abdfad4c5648191bcae957913bd02fa",
+    "failure_message": null,
+    "env_set_revision": 2,
+    "updated_at": "2026-10-02T04:26:08.719107+00:00"
+  },
+  "runtimeEnvironment": {
+    "revision": 2,
+    "keys": [
+      "SKY_CSV_STRIPE_WEBHOOK_SECRET",
+      "SKY_PAYMENTS_MODE",
+      "SKY_PAYMENT_ORIGIN",
+      "SKY_STRIPE_SECRET_KEY"
+    ]
+  },
+  "schemaVersions": [
+    1,
+    2
+  ],
+  "existingPaidJob": {
+    "id": "6a969274-8d50-4a6f-8b54-1b2f143f6bdb",
+    "status": "completed",
+    "paymentStatus": "stripe_verified",
+    "quoteMinor": 5000,
+    "currency": "JPY",
+    "attempt": 1,
+    "revision": 3
+  },
+  "cloudQuoteReadback": {
+    "rowCount": 0,
+    "nextOffset": null
+  },
+  "ownerDesktopSigninVerified": false,
+  "pixelNewUiVerified": false,
+  "pixelBlockingCondition": "Physical device is locked; owner unlock requested. Chrome VIEW intent opened /work but screen acceptance not proven.",
+  "deploymentRecovery": "v25/v26 incomplete input SQLITE_ERROR; raw complex trigger migrations removed from automatic discovery, whole guarded statements retained in Worker schema bootstrap; rebuilt archive published as v27."
+}

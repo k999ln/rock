@@ -27,6 +27,10 @@ function webDomains(tables) {
     'book_records',
     'work_jobs',
     'remote_ai_rate_limits',
+    'remote_ai_rate_cards',
+    'remote_ai_text_executions',
+    'remote_ai_text_inputs',
+    'remote_ai_text_send_claims',
   ]);
   const definitions = [
     {
@@ -37,7 +41,7 @@ function webDomains(tables) {
     {
       id: 'sky',
       label: 'Sky接続・Tool管理',
-      matches: (name) => name.startsWith('sky_'),
+      matches: (name) => name.startsWith('sky_') || name === 'agent_delegations' || name.startsWith('agent_delegation_') || name === 'a2a_usage_receipts' || name === 'a2a_live_usage_snapshots' || name === 'a2a_price_quote_consent_events',
     },
     {
       id: 'marketplace',
@@ -47,9 +51,9 @@ function webDomains(tables) {
     { id: 'csv', label: 'CSV業務', matches: (name) => name.startsWith('csv_') },
     {
       id: 'business',
-      label: '自動化ファンド・事業補助',
+      label: '自動化ファンド・受託案件・事業補助',
       matches: (name) =>
-        name === 'mercari_revenue_plans' || name.startsWith('automation_'),
+        name === 'mercari_revenue_plans' || name === 'coconala_team_cases' || name.startsWith('automation_') || name.startsWith('esim_') || name.startsWith('rockstar_service_') || name.startsWith('rockstar_entitlement_') || name.startsWith('rockstar_device_') || name.startsWith('rockstar_a2a_broker_'),
     },
   ];
   const groups = definitions.map(({ id, label }) => ({
@@ -148,8 +152,20 @@ export function buildDatabaseStatus() {
       label: 'Android Work Engine SQLite',
       engine: 'SQLite',
       authority: 'Android work・artifact・run・event',
-      sources: ['android/core/src/main/resources/schema.sql'],
-      tables: collectTables(['android/core/src/main/resources/schema.sql']),
+      sources: [
+        'android/core/src/main/resources/schema.sql',
+        'android/core/src/main/java/dev/rock/core/ModelProfiles.java',
+        'android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java',
+        'android/core/src/main/java/dev/rock/core/BoundedMemory.java',
+        'android/core/src/main/java/dev/rock/core/SkyExecutor.java',
+      ],
+      tables: collectTables([
+        'android/core/src/main/resources/schema.sql',
+        'android/core/src/main/java/dev/rock/core/ModelProfiles.java',
+        'android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java',
+        'android/core/src/main/java/dev/rock/core/BoundedMemory.java',
+        'android/core/src/main/java/dev/rock/core/SkyExecutor.java',
+      ]),
       expectedAppliedThrough: null,
     },
     {

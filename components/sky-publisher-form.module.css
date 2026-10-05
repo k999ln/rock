@@ -1,0 +1,58 @@
+.content {
+  width: min(100%, 1160px);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 28px 24px 40px;
+  color: #edf3f7;
+  color-scheme: dark;
+}
+.embedded.embedded { padding: 0; }
+.content :global(.sky-publish-heading) { align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+.content :global(.sky-publish-heading h1) { margin: 8px 0 12px; color: #edf3f7; font-size: clamp(25px, 3vw, 34px); line-height: 1.4; letter-spacing: -.025em; }
+.content :global(.sky-publish-heading p:last-child) { color: #a0b1bc; font-size: 14px; line-height: 1.7; }
+.content :global(.rock-eyebrow) { color: #9cb4c4; font-size: 11px; }
+.content :global(.sky-publish-layout) { grid-template-columns: minmax(0, 1fr) minmax(230px, .45fr); gap: 24px; }
+.content :global(.sky-publish-form) { min-width: 0; gap: 20px; }
+.content :global(.sky-publish-form fieldset),
+.content :global(.sky-publish-review) { padding: 22px; border: 1px solid #2e3c47; border-radius: 14px; color: #d2e1eb; background: #141e27; }
+.content :global(.sky-publish-form legend) { color: #edf3f7; font-size: 15px; }
+.content :global(.sky-publish-form legend span) { color: #d2e8f4; background: #2a4151; }
+.content :global(.sky-publish-form label),
+.content :global(.sky-form-row > label) { color: #d3e0e9; font-size: 13px; }
+.content :global(.sky-publish-form input),
+.content :global(.sky-publish-form textarea),
+.content :global(.sky-publish-form select) { min-width: 0; border-color: #3b4b58; background: #0b1117; color: #edf3f7; font-size: 14px; accent-color: #c3e1f0; }
+.content :global(.sky-publish-form input::placeholder),
+.content :global(.sky-publish-form textarea::placeholder) { color: #8195a4; }
+.content :global(.sky-publish-form input:disabled) { color: #899ba8; background: #1b2630; }
+.content :global(.sky-publish-form small) { color: #a0b1bc; font-size: 12px; line-height: 1.6; }
+.content :global(.sky-publish-form fieldset:disabled) { opacity: .65; }
+.content :global(.sky-check-group label),
+.content :global(.sky-rights-check) { font-size: 12px !important; line-height: 1.6; }
+.content :global(.sky-check-group input),
+.content :global(.sky-rights-check input) { flex: 0 0 16px; padding: 0; }
+.content :global(.sky-check-group small) { width: 100%; color: #ffb9ab; }
+.content :global(.sky-publish-review) { position: static; background: #111a22; }
+.content :global(.sky-publish-review h2) { color: #edf3f7; line-height: 1.6; }
+.content :global(.sky-publish-review ol),
+.content :global(.sky-publish-review p) { color: #aebfcb; font-size: 12px; line-height: 1.75; }
+.content :global(.sky-publish-review p) { border-color: #2e3c47; }
+.content :global(.sky-publisher-reuse),
+.content :global(.sky-producthunt-import) { border: 1px solid #3b5261; color: #c3dce9; background: #192c39; }
+.content :global(.sky-form-success) { color: #b5dfd1; background: #18342e; }
+.content :global(.sky-form-error) { color: #ffc1b6; background: #39231f; }
+.content :global(.sky-form-success),
+.content :global(.sky-form-error) { margin: 0; overflow-wrap: anywhere; line-height: 1.65; }
+.content :global(.sky-form-success svg) { flex-shrink: 0; }
+.content :global(.rock-button) { min-height: 42px; height: auto; padding: 10px 14px; font-size: 13px; white-space: normal; text-align: center; line-height: 1.5; }
+.content :global(.rock-button svg) { flex-shrink: 0; }
+.content :global(.rock-button-subtle) { border-color: #3b4b58; color: #d6e5ee; background: #1b2934; }
+.content :global(.rock-button-dark) { border-color: #c3e1f0; color: #10202b; background: #c3e1f0; }
+.content :is(button, a, input, textarea, select):focus-visible { outline: 2px solid #c3e1f0; outline-offset: 3px; }
+@media (max-width: 760px) {
+  .content { padding: 24px 18px 32px; }
+  .content :global(.sky-publish-heading) { flex-direction: column; }
+  .content :global(.sky-publish-layout) { grid-template-columns: minmax(0, 1fr); }
+  .content :global(.sky-publish-form fieldset) { padding: 18px 16px; }
+  .content :global(.sky-form-row) { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}

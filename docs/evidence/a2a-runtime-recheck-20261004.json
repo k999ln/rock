@@ -1,0 +1,24 @@
+{
+  "schema": "rock-a2a-runtime-recheck-evidence/1",
+  "date": "2026-10-04",
+  "scope": "Local validation status for the SIM/eSIM-led RockstarOS service architecture; no production service acceptance.",
+  "verification": {
+    "workerWorkflowCommand": "npm run sky:a2a:workflow:positive",
+    "workerWorkflowResult": "passed; 13/13 local Cloudflare Worker/D1 tests",
+    "processRestartCommand": "npm run sky:a2a:workflow:test",
+    "processRestartResult": "passed; prepared D1 rows persisted across two local Wrangler/Workerd boots with execution disabled and zero remote-send claims",
+    "scheduledDispatch": "not verified; a local scheduled-route probe returned success while the prepared rows remained queued, so it is not counted as dispatch evidence",
+    "diffCheck": "git diff --check passed for the process-restart harness"
+  },
+  "implementedAndLocallyVerified": [
+    "Prepared delegation rows survive a local Worker process restart",
+    "Worker fixtures cover bounded local Workflow behavior and proof rejection",
+    "The process-restart harness reports persistence only and does not claim scheduled delivery"
+  ],
+  "notProven": [
+    "Production billing, invoices, funded settlement, or provider usage accuracy",
+    "Carrier activation or physical SIM fulfillment",
+    "RockstarOS installation or acceptance on any device SKU",
+    "Production scheduled dispatch or process-loss recovery"
+  ]
+}

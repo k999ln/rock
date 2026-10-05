@@ -1,7 +1,7 @@
 'use client';
 
 import { CheckCircle2, CircleDashed, KeyRound, Link2, Save, ShieldCheck } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { ExecutionSignin, useExecutionAccess } from '@/components/execution-access';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
@@ -38,45 +38,61 @@ function valuesFor(provider: SkyProvider, config: Record<string, string> | undef
 export default function SkyConnectionCenter({
   open,
   onOpenChange,
+  initialProvider = 'instagram',
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialProvider?: SkyProvider;
 }) {
   const [profiles, setProfiles] = useState<SkyProviderConnection[]>([]);
-  const [selected, setSelected] = useState<SkyProvider>('instagram');
+  const headingRef = useRef<HTMLElement>(null);
+  const [selected, setSelected] = useState<SkyProvider>(initialProvider);
   const [values, setValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [profilesAvailable, setProfilesAvailable] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const { needsSignin, setNeedsSignin } = useExecutionAccess();
+  const draftEdited = useRef(false);
+  const refreshVersion = useRef(0);
+  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
 
   const definition = useMemo(() => providerDefinition(selected), [selected]);
   const selectedProfile = profiles.find((profile) => profile.provider === selected);
 
   const refresh = useCallback(async () => {
+    const version = ++refreshVersion.current;
+    setProfilesAvailable(false);
     setLoading(true);
     setError('');
     try {
       const next = await operationRequest<SkyProviderConnection[]>('/api/sky/provider-connections');
+      if (version !== refreshVersion.current) return;
       setProfiles(next);
       const profile = next.find((item) => item.provider === selected);
-      setValues(valuesFor(selected, profile?.config));
+      if (!draftEdited.current) setValues(valuesFor(selected, profile?.config));
+      setProfilesAvailable(true);
     } catch (cause) {
+      if (version !== refreshVersion.current) return;
       if (cause instanceof OperationRequestError && cause.status === 401) setNeedsSignin(true);
       else setError(cause instanceof Error ? cause.message : '接続情報を読み込めませんでした。');
     } finally {
-      setLoading(false);
+      if (version === refreshVersion.current) setLoading(false);
     }
   }, [selected, setNeedsSignin]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || executionBlocked) return;
+    const refreshVersionRef = refreshVersion;
     const timeout = window.setTimeout(() => void refresh(), 0);
-    return () => window.clearTimeout(timeout);
-  }, [open, refresh]);
+    return () => {
+      window.clearTimeout(timeout);
+      refreshVersionRef.current++;
+    };
+  }, [open, refresh, executionBlocked]);
 
   function choose(provider: SkyProvider) {
+    draftEdited.current = false;
     setSelected(provider);
     setMessage('');
     setError('');
@@ -84,6 +100,7 @@ export default function SkyConnectionCenter({
   }
 
   async function save(status: 'setup_required' | 'ready') {
+    if (executionBlocked || loading || saving || !profilesAvailable) return;
     setSaving(true);
     setMessage('');
     setError('');
@@ -113,8 +130,8 @@ export default function SkyConnectionCenter({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={styles.dialog}>
-        <header className={styles.header}>
+      <DialogContent className={styles.dialog} initialFocus={headingRef}>
+        <header className={styles.header} ref={headingRef} tabIndex={-1}>
           <div className={styles.headerMark}><Link2 size={19} /></div>
           <div>
             <DialogTitle>Skyの接続管理</DialogTitle>
@@ -122,7 +139,7 @@ export default function SkyConnectionCenter({
           </div>
         </header>
 
-        {needsSignin && <ExecutionSignin />}
+        {executionBlocked && <ExecutionSignin state={accessState} />}
         <div className={styles.layout}>
           <nav className={styles.providers} aria-label="接続先">
             <p className={styles.eyebrow}>接続先</p>
@@ -132,6 +149,8 @@ export default function SkyConnectionCenter({
                 <button
                   key={provider.id}
                   className={`${styles.provider} ${provider.id === selected ? styles.selected : ''}`}
+                  aria-pressed={provider.id === selected}
+                  disabled={saving || loading || executionBlocked}
                   onClick={() => choose(provider.id)}
                 >
                   <span className={styles.providerIcon}>{profile?.status === 'ready' ? <CheckCircle2 size={16} /> : <CircleDashed size={16} />}</span>
@@ -149,11 +168,14 @@ export default function SkyConnectionCenter({
             <p className={styles.detail}>{definition.detail}</p>
             {loading ? <p className={styles.muted}>接続情報を確認中…</p> : definition.fields.map((field) => (
               <label key={field.id} className={styles.field}>
-                <span>{field.label}</span>
+                <span>{field.label}{field.optional ? '（任意）' : ''}</span>
                 {field.type === 'select' ? (
                   <select
                     value={values[field.id] ?? ''}
-                    onChange={(event) => setValues((current) => ({ ...current, [field.id]: event.target.value }))}
+                    onChange={(event) => {
+                      draftEdited.current = true;
+                      setValues((current) => ({ ...current, [field.id]: event.target.value }));
+                    }}
                   >
                     <option value="">選択してください</option>
                     {(field.options ?? []).map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
@@ -164,7 +186,10 @@ export default function SkyConnectionCenter({
                       value={values[field.id] ?? ''}
                       placeholder={field.placeholder}
                       list={field.suggestions?.length ? `suggestions-${field.id}` : undefined}
-                      onChange={(event) => setValues((current) => ({ ...current, [field.id]: event.target.value }))}
+                      onChange={(event) => {
+                      draftEdited.current = true;
+                      setValues((current) => ({ ...current, [field.id]: event.target.value }));
+                    }}
                     />
                     {field.suggestions?.length ? (
                       <datalist id={`suggestions-${field.id}`}>
@@ -179,16 +204,25 @@ export default function SkyConnectionCenter({
                 )}
               </label>
             ))}
+            {definition.setupSteps && (
+              <div className={styles.detail}>
+                <ol>{definition.setupSteps.map((step) => <li key={step}>{step}</li>)}</ol>
+                <a href={definition.documentationUrl} target="_blank" rel="noreferrer">LiveKitの公式導入ガイド</a>
+              </div>
+            )}
             <div className={styles.notice}>
               <ShieldCheck size={17} />
               <span>パスワード・APIキー・トークンはここへ保存しません。公式OAuthやOSの安全な接続画面で認証します。</span>
             </div>
             <div className={styles.actions}>
-              <button className={styles.secondary} onClick={() => void save('setup_required')} disabled={saving || loading}><Save size={16} /> あとで続ける</button>
-              <button className={styles.primary} onClick={() => void save('ready')} disabled={saving || loading}><KeyRound size={16} /> 設定を保存</button>
+              <button className={styles.secondary} onClick={() => void save('setup_required')} disabled={saving || loading || executionBlocked || !profilesAvailable}><Save size={16} /> あとで続ける</button>
+              <button className={styles.primary} onClick={() => void save('ready')} disabled={saving || loading || executionBlocked || !profilesAvailable}><KeyRound size={16} /> 設定を保存</button>
             </div>
             {message && <output className={styles.message}>{message}</output>}
             {error && <p className={styles.error} role="alert">{error}</p>}
+            {error && !profilesAvailable && !executionBlocked && (
+              <button className={styles.secondary} disabled={loading} onClick={() => void refresh()}>接続情報を再取得</button>
+            )}
           </section>
         </div>
       </DialogContent>

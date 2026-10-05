@@ -7,7 +7,8 @@
 - 「現段階の進捗からプロンプト作成」では docs/prompt-playbook.md に従い、npm run prompt:context または同等の読み取りでGitHubのmain・branch・PR・同一SHAのCIを確認する。対象コード/証拠を必ず読む。docs/progress-audit-20260909.mdは履歴snapshot。取得失敗を最新確認済みとしない。
 - 現在はGitHub mainと実在する対象作業branchの最新SHAを確認し、docs/design-implementation-alignment-20260909.md、statusのphaseGatesを読む。単一owner多端末を複数player基盤に、チェックなしをCI成功に、文書訂正をruntime修正に置き換えない。予測市場/ゲーム資産売買は検討のみ、実行許可ではない。
 - 指摘した相違を、原因・修正順・合格証拠・未解決条件付きで実行プロンプトへ反映する。mainのベースが実装branchに未反映なら、引継ぎ入口と優先順位の同期を最初に行う指示にする。文書保存・作業branch反映・mainへの統合を別々に記録する。
-- 主開発対象は、交換可能な高性能ローカルLLMとoffline agentを持つRockstarOS。Skyは多端末でTool・ファンドを選んで接続する入口、ZemaはAIチームの依頼・進捗・承認・停止・成果管理。Rockは共通Coreと第一者system、ToBは商品固有機能を開発する。仕事・生活を便利にする自動化、Game／IP／動画、Material Invention／avocadoMiniを共通契約へ接続し、実利用からCoreを改善する。収益ToolはSkyへまとめる。
+- 最新の明示製品方針（2026-10-02）: RockstarOSの主商品は、物理SIM/eSIM購入を入口にRockstarOS・Sky・Zema・統合Agentへの利用権を提供するサービス。選ばれる理由はCloud LLM/Agentへの速く簡単な導線、透明なusage料金、最小設定のservice access。SIM/eSIMへOS binaryを格納する前提にはしない。SIM購入にはservice accessを含め、Rockstar/キャリア/端末販売/online等の複数チャネルを想定する。正確な機種に署名済みOS・boot/復旧経路が受け入れられた時だけnative OS版を案内し、その他は既存OS clientまたはbrowser版へ分岐する。回線・SIM profile・本人/サービス利用権・OS/client導入状態を別々に追跡する。
+- RockstarOSはAI・agent実行、権限、本人性、端末適合、保存・復旧の共通runtime。SkyはAgent/Tool marketplaceと接続hub、Zemaは仕事の依頼・進捗・承認・停止・成果・使用額の管理。ローカルLLMは対応端末向け能力の一つで、全機種で必須ではない。cloud agentsは使用量ベースで透明化し、事前単価/見積・上限承認・実行中の費用/予約・itemized usageを提示して、許可済み予算を超えて実行しない。
 - LLMの現在地とJevの境界は `docs/llm-evaluation-architecture.md` と `data/llm-capabilities.json` を正本にする。端末内LLMはplan候補だけを返す非信頼planner、WebのOpenAI接続はSkyの法務・特許2 Tool、JevはSkyから明示利用するremote evaluatorである。いずれのmodel結果もBrokerの権限・本人承認・Tool成功へ昇格させない。`ready`、credential設定済み、実機合格、本番合格を区別する。
 - RQ12のQEMU開発OS受入は独立した既存系列として保持する。現在の最初の物理対象はPixel 10 GL066／frankel。同一imageの起動・権限・保存/再起動・復旧をdocs/templates/os-acceptance-report.mdへ記録し、単体APK、QEMU、合成データの合格を本番OSの受入へ転用しない。
 - RQ13のゲーム通貨交換はATMと別adapter/同意/試験。既存Walletの予約・台帳・照合を共有して二重使用を防ぐ。ゲーム/交換方向/レートは未確定のため本番無効。fixtureは進められるが実資金・外部ゲームの残高は動かさない。
@@ -15,7 +16,7 @@
 - RQ15の手数料0はATMでRockが徴収する手数料の話。ゲーム手数料0と読み替えず、ゲーム料金は未定、既存OS月額は維持。外部実費は別明示し、無断の実課金/無制限補填をしない。
 - nativeはdocs/native-os-integration.mdとdocs/native-os-validation.mdを読む。Linux/Buildroot/QEMU、Android単体APK、Pixel 10 GL066／frankel向けOS imageを分ける。BlackBerry-firstは現行計画から退役。mainにないnative機能を未実装と決めつけず、未マージ機能をmain反映済みと呼ばない。APK/PWA/QEMUだけで実機OS完成としない。
 - 端末の購入・初期化・bootloader解除・書込、OS署名鍵の生成/保管、公開やサービス契約は、設計依頼から実施許可を推測しない。機種適合・復旧・権限の境界を先に確認する。
-- 正本はこのリポジトリ (`k999ln/rock`)。製品中心はAIネイティブOS、Sky／Zemaは第一者system、Wallet／ファンド／Gameは共通契約へ接続する応用系統。旧ファンド/料金/分配試算と、検証済み収益から月最大888 cents・同一契約複数端末重複防止を維持する。商品料金/実費/OSS/BYOKを独立して扱う。既存Wallet/商品schema/SDKを調べず作り直さない。
+- 正本はこのリポジトリ (`k999ln/rock`)。製品中心はSIM/eSIMによるRockstarOSサービス利用開始と透明なcloud agent利用、OS runtime・Sky／Zemaはそれを支える第一者system、Wallet／Game/その他は共通契約へ接続する応用系統。旧ファンド/料金/分配試算と、検証済み収益から月最大888 cents・同一契約複数端末重複防止を維持する。商品料金/通信料/AI使用料/実費/OSS/BYOKを独立して扱う。既存Wallet/商品schema/SDKを調べず作り直さない。
 - 作業の着手・判断変更・検証完了時に project.md と進捗JSONを更新し、`npm run project:update` でREADMEにも反映する。利用方法の変更はREADME本文も同じcommitで更新する。
 - 次の担当が再開できるよう、次の作業、未完了事項、検証コマンドと結果を具体的に残す。証拠のない完了・収益・公開を記載しない。
 - OS componentまたはSky catalog Toolを追加・変更するときはdata/design-document-index.jsonと対応する全体／Tool詳細設計を同じ変更で更新し、`npm run design:check`を通す。項目名だけでなく、目的、利用体験、責任、入出力、状態、保存、失敗、復旧、承認、合格条件、未決定の決め方を記載する。

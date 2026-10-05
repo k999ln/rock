@@ -1,0 +1,68 @@
+{
+  "schema": "sky-csv-trial-payment-acceptance/1",
+  "evaluatedAt": "2026-10-01",
+  "amountYen": 50,
+  "liveMoneyAuthorized": true,
+  "completeLaunchClaim": false,
+  "publication": {
+    "status": "succeeded",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "version": 8,
+    "sourceCommit": "632ac3ebf0d293a8da0220a62c9da992cb2dacb8",
+    "versionId": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_80e54814b5f48191b69b64a2c64564c1",
+    "deploymentId": "appgdep_6abe785c89f88191a32e7d1a69cd52a4",
+    "environmentRevision": 0
+  },
+  "checks": {
+    "siteFocusedTests": 110,
+    "canonicalNodeTests": 580,
+    "canonicalFashionTests": 19,
+    "canonicalWorkerApiAssertions": 384,
+    "canonicalMigrationUpgrade": "passed",
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "productionStripePayment": "not_run",
+    "applePayDisplay": "not_run",
+    "productionWebhookDelivery": "not_run"
+  },
+  "pixel": {
+    "ownerSignin": "passed",
+    "csvSampleProcessing": "passed",
+    "independentValidationUi": "passed",
+    "serverRefreshRestoresJob": "passed",
+    "artifactDownload": "browser_reports_existing_result_csv_0.09_KB",
+    "downloadContentHash": "not_verified",
+    "ownerIsolationProduction": "not_run",
+    "samplePayment": "free_sample_only",
+    "screenshots": [
+      "sky-pixel-csv-trial.png",
+      "sky-pixel-sample-completed.png",
+      "sky-pixel-sample-reloaded.png",
+      "sky-pixel-csv-download-confirmed.png"
+    ]
+  },
+  "blockers": [
+    "Stripe live dashboard reports payments paused; security-measures declaration is required and identity-document task remains",
+    "Live API key and CSV-specific webhook signing secret are not configured"
+  ],
+  "recoveredFailures": [
+    {
+      "scope": "local_build_and_api",
+      "cause": "disk_full",
+      "resolution": "removed_reproducible_sky_cache_and_superseded_archives_then_rebuilt_and_reran_api"
+    },
+    {
+      "scope": "deployment_version_7",
+      "cause": "site_generation_included_preexisting_tables_in_additive_migration",
+      "resolution": "limited_site_migration_to_csv_trial_payments_and_verified_existing_quotes_survive_version_8_deployed"
+    }
+  ],
+  "stripeReadback": {
+    "mode": "live",
+    "payments": "paused",
+    "securityMeasuresDeclaration": "required",
+    "identityDocumentTask": "required",
+    "privateIdentifiersStored": false
+  }
+}

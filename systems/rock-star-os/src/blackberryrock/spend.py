@@ -277,6 +277,7 @@ class ValueSpendRuntime:
 
     def __init__(self, wallet: Wallet, *, adapters: tuple[SpendAdapter, ...] | None = None,
                  vault: SecretVault | None = None, signer: SigningService | None = None,
+                 a2a_usage_receipt_verifier=None,
                  clock: Callable[[], float] = time.time):
         self.wallet = wallet
         self.clock = clock
@@ -294,6 +295,7 @@ class ValueSpendRuntime:
             raise SpendError("bounded unique adapters required")
         self.vault = vault or SimulationSecretVault()
         self.signer = signer or SimulationSigningService()
+        self.a2a_usage_receipt_verifier = a2a_usage_receipt_verifier
         self._install()
 
     def _now(self) -> int:
@@ -346,6 +348,27 @@ class ValueSpendRuntime:
                     committed_minor INTEGER NOT NULL DEFAULT 0, released_minor INTEGER NOT NULL DEFAULT 0,
                     state TEXT NOT NULL CHECK(state IN ('HELD','COMMITTED','RELEASED')),
                     reserve_journal_id TEXT UNIQUE NOT NULL REFERENCES wallet_journals(id)
+                );
+                CREATE TABLE IF NOT EXISTS a2a_wallet_reservations (
+                    delegation_id TEXT PRIMARY KEY, owner_id TEXT NOT NULL,
+                    parent_job_id TEXT NOT NULL, currency TEXT NOT NULL CHECK(currency='USD'),
+                    budget_limit_minor INTEGER NOT NULL CHECK(budget_limit_minor > 0),
+                    approval_sha256 TEXT NOT NULL CHECK(length(approval_sha256)=64),
+                    deadline_at INTEGER NOT NULL, held_minor INTEGER NOT NULL,
+                    settled_minor INTEGER NOT NULL DEFAULT 0, released_minor INTEGER NOT NULL DEFAULT 0,
+                    state TEXT NOT NULL CHECK(state IN ('HELD','DISPATCHED','INDETERMINATE','SETTLED','RELEASED')),
+                    receipt_sha256 TEXT, reserve_journal_id TEXT UNIQUE NOT NULL REFERENCES wallet_journals(id),
+                    settle_journal_id TEXT UNIQUE REFERENCES wallet_journals(id),
+                    release_journal_id TEXT UNIQUE REFERENCES wallet_journals(id),
+                    created_at INTEGER NOT NULL, updated_at INTEGER NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS a2a_wallet_reservations_owner_job
+                    ON a2a_wallet_reservations(owner_id,parent_job_id,state);
+                CREATE TABLE IF NOT EXISTS a2a_wallet_authorizations (
+                    delegation_id TEXT PRIMARY KEY REFERENCES a2a_wallet_reservations(delegation_id),
+                    owner_id TEXT NOT NULL, control_key TEXT NOT NULL,
+                    authorization_sha256 TEXT NOT NULL CHECK(length(authorization_sha256)=64),
+                    proof_expires_at INTEGER NOT NULL, created_at INTEGER NOT NULL
                 );
                 CREATE TABLE IF NOT EXISTS spend_receipts (
                     proposal_id TEXT PRIMARY KEY REFERENCES spend_proposals(id), receipt_id TEXT UNIQUE NOT NULL,
@@ -481,7 +504,7 @@ class ValueSpendRuntime:
         return result
 
     def _event(self, db: sqlite3.Connection, name: str, aggregate_type: str, aggregate_id: str, payload: dict[str, Any]) -> None:
-        if not (name.startswith(("spend.", "trade.", "position.", "settlement.", "risk.", "pnl.", "asset."))):
+        if not (name.startswith(("spend.", "a2a.", "trade.", "position.", "settlement.", "risk.", "pnl.", "asset."))):
             raise SpendError("unsupported event namespace")
         if db.execute("SELECT COUNT(*) FROM value_events").fetchone()[0] >= MAX_ROWS * 16:
             raise SpendError("event capacity reached")
@@ -624,6 +647,301 @@ class ValueSpendRuntime:
                    (row["id"], request["amount_minor"], request["estimated_fee_minor"], request["estimated_gas_minor"], total, journal))
         db.execute("UPDATE spend_proposals SET status='EXECUTING',execution_key=?,updated_at=? WHERE id=?",
                    (execution_key, self._now(), row["id"]))
+
+    @staticmethod
+    def _a2a_projection(row: sqlite3.Row | None) -> dict[str, Any] | None:
+        if row is None:
+            return None
+        result = {name: row[name] for name in (
+            "delegation_id", "owner_id", "parent_job_id", "currency",
+            "budget_limit_minor", "approval_sha256", "deadline_at", "held_minor",
+            "settled_minor", "released_minor", "state", "receipt_sha256",
+            "created_at", "updated_at",
+        )}
+        result["simulation_only"] = True
+        return result
+
+    def reserve_a2a_budget(self, *, owner_id: str, delegation_id: str, parent_job_id: str,
+                           currency: str, budget_limit_minor: int, approval_sha256: str,
+                           deadline_at: int, key: str) -> dict[str, Any]:
+        """Atomically reserve this development Wallet's synthetic USD for one approved job."""
+        owner_id, delegation_id = _identifier(owner_id), _identifier(delegation_id)
+        parent_job_id, key = _identifier(parent_job_id), _identifier(key)
+        if currency != "USD":
+            raise SpendError("the local Wallet reservation ledger supports synthetic USD only")
+        budget_limit_minor = _minor(budget_limit_minor)
+        if not isinstance(approval_sha256, str) or not re.fullmatch(r"[0-9a-f]{64}", approval_sha256):
+            raise SpendError("an exact owner-approved A2A digest is required")
+        if type(deadline_at) is not int or deadline_at <= self._now() * 1000:
+            raise SpendError("A2A reservation deadline must be a future Unix millisecond timestamp")
+        payload = {"owner_id": owner_id, "delegation_id": delegation_id,
+                   "parent_job_id": parent_job_id, "currency": currency,
+                   "budget_limit_minor": budget_limit_minor,
+                   "approval_sha256": approval_sha256, "deadline_at": deadline_at}
+        with self.wallet._transaction() as db:
+            cached = self.wallet._cached(db, key, "a2a.reserve", payload)
+            if cached is not None:
+                return cached
+            existing = db.execute("SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?",
+                                  (delegation_id,)).fetchone()
+            if existing is not None:
+                if any(existing[name] != payload[name] for name in payload):
+                    raise SpendError("A2A delegation already has a different Wallet reservation")
+                return self.wallet._remember(db, key, "a2a.reserve", payload,
+                                             self._a2a_projection(existing))
+            if db.execute("SELECT COUNT(*) FROM a2a_wallet_reservations").fetchone()[0] >= MAX_ROWS:
+                raise SpendError("A2A Wallet reservation capacity reached")
+            if self.wallet._balances(db)["AVAILABLE"] < budget_limit_minor:
+                raise InsufficientFunds("insufficient available Wallet balance for A2A budget")
+            journal = self.wallet._post(db, "a2a.reserve", delegation_id,
+                                        "AVAILABLE", "SPEND_HOLD", budget_limit_minor)
+            now = self._now()
+            db.execute("""INSERT INTO a2a_wallet_reservations
+                (delegation_id,owner_id,parent_job_id,currency,budget_limit_minor,
+                 approval_sha256,deadline_at,held_minor,state,reserve_journal_id,created_at,updated_at)
+                VALUES (?,?,?,?,?,?,?,?,'HELD',?,?,?)""",
+                (delegation_id, owner_id, parent_job_id, currency, budget_limit_minor,
+                 approval_sha256, deadline_at, budget_limit_minor, journal, now, now))
+            self._event(db, "a2a.budget_reserved", "a2a_delegation", delegation_id,
+                        {"owner_id": owner_id, "parent_job_id": parent_job_id,
+                         "currency": currency, "budget_limit_minor": budget_limit_minor,
+                         "approval_sha256": approval_sha256})
+            row = db.execute("SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?",
+                             (delegation_id,)).fetchone()
+            return self.wallet._remember(db, key, "a2a.reserve", payload, self._a2a_projection(row))
+
+    def authorize_a2a_proof(self, principal, proof: dict[str, Any], key: str) -> bool:
+        """Fence an exact synthetic Wallet hold while its short-lived Broker proof can be used.
+
+        This is the callback expected by ``Broker``. A live proof prevents release
+        until it expires; dispatch can then be marked separately when the remote
+        runtime claims the task. No provider action or real-money movement occurs.
+        """
+        key = _identifier(key)
+        if type(proof) is not dict:
+            return False
+        expected_fields = {
+            "schema", "authorityId", "ownerUserId", "deviceRef", "delegationId",
+            "parentJobId", "messageId", "targetOrigin", "targetAgentName",
+            "targetAgentVersion", "protocolVersion", "inputSha256", "budgetCurrency",
+            "budgetLimitMinor", "continueWhileDeviceOffline", "deadlineAt", "authorizationSha256", "issuedAt",
+            "expiresAt", "keyId",
+        }
+        if (set(proof) != expected_fields or
+                proof.get("schema") != "rock-a2a-broker-authorization/2" or
+                proof.get("continueWhileDeviceOffline") is not True):
+            return False
+        owner_id = getattr(principal, "subject", None)
+        device_ref = getattr(principal, "device_ref", None)
+        expected = {
+            "ownerUserId": owner_id,
+            "deviceRef": device_ref,
+        }
+        for name, value in expected.items():
+            if type(proof.get(name)) is not str or proof.get(name) != value:
+                return False
+        binding = {
+            "delegation_id": proof.get("delegationId"),
+            "owner_id": owner_id,
+            "parent_job_id": proof.get("parentJobId"),
+            "currency": proof.get("budgetCurrency"),
+            "budget_limit_minor": proof.get("budgetLimitMinor"),
+            "approval_sha256": proof.get("authorizationSha256"),
+            "deadline_at": proof.get("deadlineAt"),
+        }
+        try:
+            _identifier(binding["delegation_id"])
+            _identifier(binding["parent_job_id"])
+            _minor(binding["budget_limit_minor"])
+        except SpendError:
+            return False
+        now_ms = self._now() * 1000
+        issued_at, expires_at, deadline_at = (
+            proof.get("issuedAt"), proof.get("expiresAt"), binding["deadline_at"]
+        )
+        if (binding["currency"] != "USD" or
+                not isinstance(binding["approval_sha256"], str) or
+                not re.fullmatch(r"[0-9a-f]{64}", binding["approval_sha256"]) or
+                type(issued_at) is not int or type(expires_at) is not int or
+                type(deadline_at) is not int or issued_at > now_ms + 30_000 or
+                expires_at <= now_ms or expires_at <= issued_at or
+                expires_at - issued_at > 5 * 60_000 or expires_at > deadline_at):
+            return False
+        with self.wallet._transaction() as db:
+            row = db.execute("SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?",
+                             (binding["delegation_id"],)).fetchone()
+            if (row is None or row["state"] != "HELD" or
+                    row["deadline_at"] != deadline_at or row["deadline_at"] <= now_ms or
+                    any(row[name] != value for name, value in binding.items())):
+                return False
+            old = db.execute("SELECT * FROM a2a_wallet_authorizations WHERE delegation_id=?",
+                             (binding["delegation_id"],)).fetchone()
+            if old is not None and old["proof_expires_at"] > now_ms:
+                return (old["owner_id"] == owner_id and
+                        old["control_key"] == key and
+                        old["authorization_sha256"] == binding["approval_sha256"])
+            payload = {"delegation_id": binding["delegation_id"],
+                       "owner_id": owner_id, "control_key": key,
+                       "authorization_sha256": binding["approval_sha256"],
+                       "proof_expires_at": expires_at}
+            db.execute("""INSERT INTO a2a_wallet_authorizations
+                (delegation_id,owner_id,control_key,authorization_sha256,proof_expires_at,created_at)
+                VALUES (?,?,?,?,?,?) ON CONFLICT(delegation_id) DO UPDATE SET
+                owner_id=excluded.owner_id, control_key=excluded.control_key,
+                authorization_sha256=excluded.authorization_sha256,
+                proof_expires_at=excluded.proof_expires_at, created_at=excluded.created_at""",
+                (binding["delegation_id"], owner_id, key, binding["approval_sha256"],
+                 expires_at, self._now()))
+            self._event(db, "a2a.proof_authorized", "a2a_delegation", binding["delegation_id"],
+                        {"authorization_sha256": binding["approval_sha256"],
+                         "proof_expires_at": expires_at, "simulation_only": True})
+            return True
+
+    def mark_a2a_dispatched(self, delegation_id: str, key: str) -> dict[str, Any]:
+        delegation_id, key = _identifier(delegation_id), _identifier(key)
+        payload = {"delegation_id": delegation_id}
+        with self.wallet._transaction() as db:
+            cached = self.wallet._cached(db, key, "a2a.dispatch", payload)
+            if cached is not None:
+                return cached
+            row = db.execute("SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?",
+                             (delegation_id,)).fetchone()
+            if row is None or row["state"] != "HELD" or row["deadline_at"] <= self._now() * 1000:
+                raise SpendError("only a live pre-dispatch A2A Wallet hold can be dispatched")
+            now = self._now()
+            db.execute("UPDATE a2a_wallet_reservations SET state='DISPATCHED',updated_at=? WHERE delegation_id=? AND state='HELD'",
+                       (now, delegation_id))
+            self._event(db, "a2a.dispatched", "a2a_delegation", delegation_id,
+                        {"budget_limit_minor": row["budget_limit_minor"], "deadline_at": row["deadline_at"]})
+            result = self._a2a_projection(db.execute(
+                "SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?", (delegation_id,)
+            ).fetchone())
+            return self.wallet._remember(db, key, "a2a.dispatch", payload, result)
+
+    def mark_a2a_indeterminate(self, delegation_id: str, key: str) -> dict[str, Any]:
+        delegation_id, key = _identifier(delegation_id), _identifier(key)
+        payload = {"delegation_id": delegation_id}
+        with self.wallet._transaction() as db:
+            cached = self.wallet._cached(db, key, "a2a.indeterminate", payload)
+            if cached is not None:
+                return cached
+            row = db.execute("SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?",
+                             (delegation_id,)).fetchone()
+            if row is None or row["state"] not in ("DISPATCHED", "INDETERMINATE"):
+                raise SpendError("only a dispatched A2A Wallet hold can become indeterminate")
+            if row["state"] == "DISPATCHED":
+                now = self._now()
+                db.execute("UPDATE a2a_wallet_reservations SET state='INDETERMINATE',updated_at=? WHERE delegation_id=? AND state='DISPATCHED'",
+                           (now, delegation_id))
+                self._event(db, "a2a.indeterminate", "a2a_delegation", delegation_id,
+                            {"budget_limit_minor": row["budget_limit_minor"]})
+            result = self._a2a_projection(db.execute(
+                "SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?", (delegation_id,)
+            ).fetchone())
+            return self.wallet._remember(db, key, "a2a.indeterminate", payload, result)
+
+    def release_a2a_budget(self, delegation_id: str, key: str) -> dict[str, Any]:
+        """Release only a reservation that was never marked for dispatch."""
+        delegation_id, key = _identifier(delegation_id), _identifier(key)
+        payload = {"delegation_id": delegation_id}
+        with self.wallet._transaction() as db:
+            cached = self.wallet._cached(db, key, "a2a.release", payload)
+            if cached is not None:
+                return cached
+            row = db.execute("SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?",
+                             (delegation_id,)).fetchone()
+            if row is None or row["state"] != "HELD":
+                raise SpendError("A2A Wallet funds can only be released before dispatch")
+            authorization = db.execute("SELECT proof_expires_at FROM a2a_wallet_authorizations WHERE delegation_id=?",
+                                       (delegation_id,)).fetchone()
+            if authorization is not None and authorization["proof_expires_at"] > self._now() * 1000:
+                raise SpendError("A2A Wallet hold is fenced by a live Broker proof")
+            journal = self.wallet._post(db, "a2a.release", delegation_id, "SPEND_HOLD",
+                                        "AVAILABLE", row["held_minor"])
+            now = self._now()
+            db.execute("""UPDATE a2a_wallet_reservations SET state='RELEASED',held_minor=0,
+                released_minor=budget_limit_minor,release_journal_id=?,updated_at=?
+                WHERE delegation_id=? AND state='HELD'""", (journal, now, delegation_id))
+            self._event(db, "a2a.budget_released", "a2a_delegation", delegation_id,
+                        {"released_minor": row["held_minor"]})
+            result = self._a2a_projection(db.execute(
+                "SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?", (delegation_id,)
+            ).fetchone())
+            return self.wallet._remember(db, key, "a2a.release", payload, result)
+
+    def settle_a2a_budget(self, delegation_id: str, receipt: dict[str, Any], key: str) -> dict[str, Any]:
+        """Settle only a trusted, terminal provider receipt; missing verifier keeps the hold."""
+        delegation_id, key = _identifier(delegation_id), _identifier(key)
+        if type(receipt) is not dict:
+            raise SpendError("signed A2A usage receipt is required")
+        receipt_json = _json(receipt)
+        if len(receipt_json.encode("utf-8")) > 24_000:
+            raise SpendError("A2A usage receipt exceeds the supported bound")
+        receipt_sha256 = hashlib.sha256(receipt_json.encode("utf-8")).hexdigest()
+        payload = {"delegation_id": delegation_id, "receipt_sha256": receipt_sha256}
+        with self.wallet._transaction() as db:
+            cached = self.wallet._cached(db, key, "a2a.settle", payload)
+            if cached is not None:
+                return cached
+        if self.a2a_usage_receipt_verifier is None:
+            raise SpendError("trusted A2A usage receipt verifier is unavailable")
+        with closing(self.wallet._connect()) as read_db:
+            observed = read_db.execute(
+                "SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?", (delegation_id,)
+            ).fetchone()
+            if observed is None or observed["state"] not in ("DISPATCHED", "INDETERMINATE"):
+                raise SpendError("only a dispatched A2A Wallet hold can be settled")
+            observed_binding = {name: observed[name] for name in (
+                "delegation_id", "owner_id", "parent_job_id", "currency",
+                "budget_limit_minor", "approval_sha256", "deadline_at")}
+        try:
+            accepted = self.a2a_usage_receipt_verifier(receipt, observed_binding)
+        except Exception as error:
+            raise SpendError("A2A usage receipt verification failed") from error
+        if accepted is not True:
+            raise SpendError("A2A usage receipt is not trusted for this Wallet hold")
+        # Keep the signed Cloud A2A extension field name unchanged.
+        amount = receipt.get("amountMinor")
+        if type(amount) is not int or not 0 <= amount <= observed_binding["budget_limit_minor"]:
+            raise SpendError("verified usage amount exceeds the A2A Wallet reservation")
+        with self.wallet._transaction() as db:
+            cached = self.wallet._cached(db, key, "a2a.settle", payload)
+            if cached is not None:
+                return cached
+            row = db.execute("SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?",
+                             (delegation_id,)).fetchone()
+            if row is None or row["state"] not in ("DISPATCHED", "INDETERMINATE"):
+                raise SpendError("only a dispatched A2A Wallet hold can be settled")
+            current_binding = {name: row[name] for name in observed_binding}
+            if current_binding != observed_binding:
+                raise SpendError("A2A Wallet reservation changed during receipt verification")
+            now = self._now()
+            settle_journal = release_journal = None
+            if amount:
+                settle_journal = self.wallet._post(db, "a2a.settle", delegation_id,
+                                                   "SPEND_HOLD", "SPEND_COMMITTED", amount)
+            released = row["budget_limit_minor"] - amount
+            if released:
+                release_journal = self.wallet._post(db, "a2a.release", delegation_id,
+                                                    "SPEND_HOLD", "AVAILABLE", released)
+            db.execute("""UPDATE a2a_wallet_reservations SET state='SETTLED',held_minor=0,
+                settled_minor=?,released_minor=?,receipt_sha256=?,settle_journal_id=?,
+                release_journal_id=?,updated_at=? WHERE delegation_id=? AND state IN ('DISPATCHED','INDETERMINATE')""",
+                (amount, released, receipt_sha256, settle_journal, release_journal, now, delegation_id))
+            self._event(db, "a2a.budget_settled", "a2a_delegation", delegation_id,
+                        {"settled_minor": amount, "released_minor": released,
+                         "receipt_sha256": receipt_sha256})
+            result = self._a2a_projection(db.execute(
+                "SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?", (delegation_id,)
+            ).fetchone())
+            return self.wallet._remember(db, key, "a2a.settle", payload, result)
+
+    def get_a2a_budget(self, delegation_id: str) -> dict[str, Any] | None:
+        delegation_id = _identifier(delegation_id)
+        with closing(self.wallet._connect()) as db:
+            return self._a2a_projection(db.execute(
+                "SELECT * FROM a2a_wallet_reservations WHERE delegation_id=?", (delegation_id,)
+            ).fetchone())
 
     def _release(self, db: sqlite3.Connection, proposal_id: str, status: str, reason: str) -> None:
         reservation = db.execute("SELECT * FROM spend_reservations WHERE proposal_id=?", (proposal_id,)).fetchone()
@@ -913,6 +1231,8 @@ class ValueSpendRuntime:
             strategies = [{"adapter_id":row["adapter_id"],"strategy_id":row["strategy_id"],"enabled":bool(row["enabled"])}
                           for row in db.execute("SELECT * FROM spend_strategies ORDER BY adapter_id,strategy_id")]
             proposals = [self._projection(db, row["id"]) for row in db.execute("SELECT id FROM spend_proposals ORDER BY created_at DESC LIMIT 100")]
+            a2a_reservations = [self._a2a_projection(row) for row in db.execute(
+                "SELECT * FROM a2a_wallet_reservations ORDER BY created_at DESC LIMIT 100")]
             return {
                 "schema":"rock-value-spend-state/1", "modes":{"SIMULATION":True,"PAPER":True,"LIVE":False},
                 "live_enabled":False, "assets":assets,
@@ -922,6 +1242,7 @@ class ValueSpendRuntime:
                 },
                 "spend_accounts":{name:balances[name] for name in SPEND_ACCOUNTS},
                 "policy":self._policy(db), "strategies":strategies, "proposals":proposals,
+                "a2a_wallet_reservations":a2a_reservations,
                 "positions":positions, "pnl_by_asset":pnl,
                 "fees_minor":balances["SPEND_FEES"], "gas_minor":balances["SPEND_GAS"],
                 "adapters":[{"adapter_id":item.adapter_id,"supported_modes":list(item.supported_modes),"upstream":item.upstream}
@@ -939,6 +1260,12 @@ class ValueSpendRuntime:
             "spend.approve":{"key","proposal_id","proposal_digest","approval_type","approver","decision"},
             "spend.execute":{"key","proposal_id"}, "spend.reconcile":{"key","proposal_id"},
             "spend.get":{"proposal_id"}, "event.list":{"prefix","limit"},
+            "a2a.budget.reserve":{"key","owner_id","delegation_id","parent_job_id","currency","budget_limit_minor","approval_sha256","deadline_at"},
+            "a2a.budget.dispatch":{"key","delegation_id"},
+            "a2a.budget.indeterminate":{"key","delegation_id"},
+            "a2a.budget.release":{"key","delegation_id"},
+            "a2a.budget.settle":{"key","delegation_id","receipt"},
+            "a2a.budget.get":{"delegation_id"},
             "position.mark":{"key","position_id","mark_price_micros"},
             "settlement.record":{"key","position_id","payout_price_micros"},
             "risk.configure":{"key","limits"}, "risk.emergency_stop":{"key","stopped"},
@@ -954,6 +1281,15 @@ class ValueSpendRuntime:
         if op == "spend.reconcile": return self.reconcile(request["proposal_id"],request["key"])
         if op == "spend.get":
             with closing(self.wallet._connect()) as db: return self._projection(db,request["proposal_id"])
+        if op == "a2a.budget.reserve":
+            return self.reserve_a2a_budget(**{name: request[name] for name in (
+                "owner_id","delegation_id","parent_job_id","currency","budget_limit_minor",
+                "approval_sha256","deadline_at","key")})
+        if op == "a2a.budget.dispatch": return self.mark_a2a_dispatched(request["delegation_id"],request["key"])
+        if op == "a2a.budget.indeterminate": return self.mark_a2a_indeterminate(request["delegation_id"],request["key"])
+        if op == "a2a.budget.release": return self.release_a2a_budget(request["delegation_id"],request["key"])
+        if op == "a2a.budget.settle": return self.settle_a2a_budget(request["delegation_id"],request["receipt"],request["key"])
+        if op == "a2a.budget.get": return self.get_a2a_budget(request["delegation_id"])
         if op == "event.list": return self.events(prefix=request["prefix"],limit=request["limit"])
         if op == "position.mark": return self.mark_position(request["position_id"],request["mark_price_micros"],request["key"])
         if op == "settlement.record": return self.settle_position(request["position_id"],request["payout_price_micros"],request["key"])

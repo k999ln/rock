@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hmac
 import json
+import os
 import secrets
 import signal
 import sqlite3
@@ -14,6 +15,7 @@ from urllib.parse import urlsplit
 
 from .hub import Hub
 from .packages import MAX_PACKAGE_BYTES, PUBLIC_TEST_KEY, TEST_PUBLISHER, PackageError, canonical, verify_package
+from .a2a_usage_receipt import create_a2a_usage_receipt_verifier
 from .spend import ValueSpendRuntime
 from .wallet import Wallet
 
@@ -31,7 +33,9 @@ class HubServer(ThreadingHTTPServer):
         self.session = secrets.token_urlsafe(32)
         self.hub = Hub(Path(state_dir) / 'hub.db', {TEST_PUBLISHER: PUBLIC_TEST_KEY})
         self.wallet = Wallet(Path(state_dir) / 'wallet-simulator.db')
-        self.spend = ValueSpendRuntime(self.wallet)
+        trust = os.environ.get('ROCKSTAR_A2A_TRUSTED_USAGE_KEYS')
+        verifier = create_a2a_usage_receipt_verifier(trust) if trust is not None else None
+        self.spend = ValueSpendRuntime(self.wallet, a2a_usage_receipt_verifier=verifier)
         self.registry = Path(registry)
         super().__init__(('127.0.0.1', port), HubHandler)
 

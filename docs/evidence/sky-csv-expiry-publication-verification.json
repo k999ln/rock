@@ -1,0 +1,49 @@
+{
+  "schema": "sky-csv-expiry-publication/1",
+  "source": "5fcfe884d7038723e228156a54bfd78bfcabde89",
+  "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+  "version": 32,
+  "savedVersionId": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_d461c5e1b2ac81919b3b9749acf564ea",
+  "deploymentId": "appgdep_6abf94008be08191953fc7c67e647eb0",
+  "status": "succeeded",
+  "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "publishedAt": "2026-10-02T11:22:50.519662+00:00",
+  "environmentRevision": 2,
+  "nativeArchive": {
+    "archive_format": "tar",
+    "sediment_file_id": "file_00000000f6a481f78528bffd2ed6d715",
+    "content_hash": "sha256:4d35ee31454d6848fcbd969802939a123a6be4ce015293616817144e7bc2b41a",
+    "size_bytes": 14489600,
+    "file_count": 466
+  },
+  "environment": {
+    "revision": 2,
+    "keys": [
+      "SKY_CSV_STRIPE_WEBHOOK_SECRET",
+      "SKY_PAYMENTS_MODE",
+      "SKY_PAYMENT_ORIGIN",
+      "SKY_STRIPE_SECRET_KEY"
+    ]
+  },
+  "paidTrial": {
+    "id": "6a969274-8d50-4a6f-8b54-1b2f143f6bdb",
+    "status": "completed",
+    "paymentStatus": "stripe_verified",
+    "quoteMinor": 5000,
+    "currency": "JPY",
+    "attempt": 1,
+    "revision": 3,
+    "outputSha256": "99fbb674efae7dd441a9e358ef544b114ace70903e33ea9ae4f1f48bd06819fb"
+  },
+  "ownerDesktopSigninRequired": true,
+  "pixel": {
+    "model": "Pixel 10",
+    "showing": true,
+    "inputRestricted": true
+  },
+  "newPayments": 0,
+  "realProviderCalls": 0,
+  "githubSourceChangesPushed": false,
+  "productionRecoveryAccepted": false,
+  "focusedReleaseComplete": false
+}

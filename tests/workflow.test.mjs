@@ -7,6 +7,7 @@ import {
   createWorkJob,
   applyWorkCommand,
   parseWorkCommand,
+  normalizeWorkJob,
 } from '../lib/workflow.ts';
 import { workStore } from '../lib/work-store.ts';
 
@@ -67,6 +68,63 @@ void test('workflows require ordered real runs, survive serialization, and need 
       ),
     );
   }
+});
+void test('cloud Agent work keeps A2A quote and result review as explicit ordered steps', () => {
+  const job = newJob('cloud-agent');
+  assert.deepEqual(job.steps.map((step) => step.id), ['agent-brief', 'agent-result']);
+  assert.equal(job.steps[0].passed, false);
+  assert.equal(job.steps[1].passed, false);
+  assert.throws(() => applyWorkCommand(job, {
+    id: randomUUID(), action: 'record', stepId: 'agent-brief', tool: 'sky-a2a-brief',
+    transport: 'browser', outcome: 'passed', sample: false, durationMs: 1,
+  }, job.revision), { status: 409 });
+  const first = applyWorkCommand(job, {
+    id: randomUUID(), action: 'record', stepId: 'agent-brief', tool: 'sky-a2a-brief',
+    transport: 'browser', outcome: 'passed', sample: false, durationMs: 1,
+    delegationId: randomUUID(),
+  }, job.revision);
+  assert.equal(first.steps[0].passed, true);
+  assert.match(first.events[0].command.delegationId, /^[0-9a-f-]{36}$/i);
+  assert.throws(() => applyWorkCommand(job, {
+    id: randomUUID(), action: 'record', stepId: 'agent-result', tool: 'sky-a2a-result',
+    transport: 'browser', outcome: 'passed', sample: false, durationMs: 1,
+  }, job.revision));
+});
+void test('versioned plan objective is editable only before work and gates cannot be relaxed', () => {
+  const job = newJob('cloud-agent');
+  assert.equal(job.plan.schemaVersion, 1);
+  assert.deepEqual(job.plan.approvalGates, [
+    { stepId: 'agent-brief', requirement: 'provider_quote_wallet_reservation_and_explicit_cloud_approval' },
+    { stepId: 'agent-result', requirement: 'terminal_result_captured_with_usage_receipt' },
+  ]);
+  const update = {
+    id: randomUUID(), action: 'edit_plan', schemaVersion: 1,
+    objective: '圏外でも続くAgent作業の成果と実測使用量を確認する',
+  };
+  const edited = applyWorkCommand(job, update, job.revision);
+  assert.equal(edited.plan.objective, update.objective);
+  assert.deepEqual(edited.plan.approvalGates, job.plan.approvalGates);
+  assert.equal(edited.events[0].command.action, 'edit_plan');
+  assert.throws(() => parseWorkCommand({ ...update, schemaVersion: 2 }));
+  assert.throws(() => parseWorkCommand({ ...update, approvalGates: [] }));
+  const started = applyWorkCommand(edited, {
+    ...run(edited), delegationId: randomUUID(),
+  }, edited.revision);
+  assert.throws(() => applyWorkCommand(started, {
+    ...update, id: randomUUID(), objective: '変更後の目的',
+  }, started.revision), { status: 409 });
+});
+void test('legacy persisted jobs hydrate the current plan schema and restore fixed gates', () => {
+  const job = newJob('cloud-agent');
+  const { plan: _oldPlan, ...legacy } = job;
+  const upgraded = normalizeWorkJob(legacy);
+  assert.equal(upgraded.plan.schemaVersion, 1);
+  assert.equal(upgraded.plan.objective, legacy.title);
+  const altered = normalizeWorkJob({
+    ...job,
+    plan: { ...job.plan, approvalGates: [{ stepId: 'agent-brief', requirement: 'none' }] },
+  });
+  assert.deepEqual(altered.plan.approvalGates, job.plan.approvalGates);
 });
 void test('sample, failed and needs-review results never advance a step', () => {
   let job = newJob('coconala');
@@ -182,5 +240,10 @@ void test('real SQLite persists jobs per user and prevents concurrent overwrites
     false,
   );
   assert.deepEqual(await store.get('alice', job.id), next);
-  assert.equal((await store.list('alice')).length, 1);
+  const legacy = { ...job, id: randomUUID() };
+  delete legacy.plan;
+  sqlite.prepare('INSERT INTO work_jobs (id, user_id, payload, revision, updated_at) VALUES (?, ?, ?, ?, ?)')
+    .run(legacy.id, 'alice', JSON.stringify(legacy), legacy.revision, legacy.updatedAt);
+  assert.equal((await store.get('alice', legacy.id)).plan.schemaVersion, 1);
+  assert.equal((await store.list('alice')).length, 2);
 });

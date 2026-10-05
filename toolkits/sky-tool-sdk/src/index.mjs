@@ -11,6 +11,7 @@ const PROTOCOL_VERSIONS = [
   '2024-11-05',
 ];
 const MAX_BODY_BYTES = 1_000_000;
+const PRICING_MODELS = new Set(['free', 'subscription', 'usage', 'external_contract']);
 const MAX_TOOLS = 100;
 
 function fail(message, code = 'invalid_config') {
@@ -203,6 +204,10 @@ function toolDefinition(value) {
     128,
   );
   const description = text(value.description, 'Tool説明', 20, 600);
+  if (!value.price || typeof value.price !== 'object' || Array.isArray(value.price) ||
+      !PRICING_MODELS.has(value.price.model))
+    fail(`${name}: 料金方式を明示してください。`, 'pricing_required');
+  const priceNote = text(value.price.note, '料金説明', 2, 300);
   const timeoutSeconds = value.timeoutSeconds ?? 60;
   if (!Number.isInteger(timeoutSeconds) || timeoutSeconds < 1 || timeoutSeconds > 3600)
     fail('timeoutSecondsを1〜3600の整数にしてください。');
@@ -235,13 +240,8 @@ function toolDefinition(value) {
       'network',
     ]),
     price: {
-      model: value.price?.model ?? 'free',
-      note: text(
-        value.price?.note ?? '無料。外部実費はありません。',
-        '料金説明',
-        2,
-        300,
-      ),
+      model: value.price.model,
+      note: priceNote,
     },
     timeoutSeconds,
     successCondition: text(
@@ -539,10 +539,12 @@ export function createSkyToolApp(rawConfig) {
           return json(res, 404, { error: 'not_found' });
         if (localSecret) {
           const supplied = req.headers['x-sky-local-secret'];
+          const suppliedBytes = typeof supplied === 'string' ? Buffer.from(supplied) : null;
+          const expectedBytes = Buffer.from(localSecret);
           if (
-            typeof supplied !== 'string' ||
-            supplied.length !== localSecret.length ||
-            !timingSafeEqual(Buffer.from(supplied), Buffer.from(localSecret))
+            !suppliedBytes ||
+            suppliedBytes.length !== expectedBytes.length ||
+            !timingSafeEqual(suppliedBytes, expectedBytes)
           ) return json(res, 401, { error: 'unauthorized' });
         }
         let message;
@@ -587,6 +589,9 @@ export function createSkyToolApp(rawConfig) {
                     idempotentHint: !tool.sideEffects.some((item) =>
                       ['external_write', 'financial'].includes(item),
                     ),
+                  },
+                  _meta: {
+                    'rockstaros.dev/pricing': tool.price,
                   },
                 })),
               },
@@ -681,6 +686,7 @@ export function createSkyToolApp(rawConfig) {
           url: `http://127.0.0.1:${address.port}${mcpPath}`,
           secret: localSecret,
           pid: process.pid,
+          toolPricing: [...tools.values()].map((tool) => ({ name: tool.name, model: tool.price.model })),
         };
         try {
           await mkdir(config.localToolDirectory, { recursive: true, mode: 0o700 });

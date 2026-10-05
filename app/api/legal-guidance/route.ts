@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers';
+import { createOpenAiResponse, LlmProviderError } from '@/lib/llm-providers';
 import { database } from '@/lib/fund-store';
 import {
   buildLegalAiRequest,
@@ -9,12 +10,22 @@ import {
   authorizeRemoteAiRequest,
   RemoteAiGuardError,
 } from '@/lib/remote-ai-guard';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
+import { remoteAiPricingGateAccepted, remoteAiPricingUnavailable } from '@/lib/remote-ai-pricing-gate';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {
   try {
-    await authorizeRemoteAiRequest(request, 'legal-guidance', database());
+    const db = database();
+    const owner = await authorizeRemoteAiRequest(request, 'legal-guidance', db);
+    if (!(await rockstarServiceScopeAllowed(
+      db,
+      owner,
+      'sky',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+    ))) return missingRockstarServiceScope('Sky');
+    if (!remoteAiPricingGateAccepted()) return remoteAiPricingUnavailable();
     const raw = await request.text();
     if (raw.length > 4_000) throw new Error('INVALID_INPUT');
     const input = validateLegalAiInput(JSON.parse(raw));
@@ -50,31 +61,20 @@ export async function POST(request: Request) {
       );
 
     const searchedAt = new Date().toISOString();
-    const upstream = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${runtimeEnv.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
+    const result = await createOpenAiResponse(
+      buildLegalAiRequest(input, searchedAt.slice(0, 10), runtimeEnv.OPENAI_LEGAL_MODEL),
+      runtimeEnv,
+    );
+    let guidance;
+    try { guidance = parseLegalAiResponse(result.payload, searchedAt); }
+    catch { throw new LlmProviderError('UPSTREAM_UNCITED_RESPONSE', 502); }
+    return Response.json({
+      ...guidance,
+      execution: {
+        provider: 'openai', model: result.model, durationMs: result.durationMs,
+        usage: result.usage, webSearchCalls: result.webSearchCalls,
       },
-      body: JSON.stringify(
-        buildLegalAiRequest(
-          input,
-          searchedAt.slice(0, 10),
-          runtimeEnv.OPENAI_LEGAL_MODEL,
-        ),
-      ),
-    });
-    const payload = (await upstream.json()) as unknown;
-    if (!upstream.ok) {
-      console.error('legal guidance upstream failed', upstream.status);
-      return Response.json(
-        { error: '法令AIを利用できません。公的案内から確認してください。' },
-        { status: 502, headers: noStoreHeaders },
-      );
-    }
-    return Response.json(parseLegalAiResponse(payload, searchedAt), {
-      headers: noStoreHeaders,
-    });
+    }, { headers: noStoreHeaders });
   } catch (error) {
     if (error instanceof RemoteAiGuardError)
       return Response.json(
@@ -85,6 +85,16 @@ export async function POST(request: Request) {
               : error.code === 'ORIGIN'
                 ? 'このサイトから操作してください。'
                 : 'サインインしてください。',
+          code: error.code,
+        },
+        { status: error.status, headers: noStoreHeaders },
+      );
+    if (error instanceof LlmProviderError)
+      return Response.json(
+        {
+          error: error.code === 'UPSTREAM_TIMEOUT'
+            ? 'オンライン処理が時間内に完了しませんでした。結果と使用額が未確認のため自動再送していません。端末内の結果はそのまま利用できます。'
+            : 'オンライン処理の結果を確認できません。端末内の結果と公式の情報源を利用してください。',
           code: error.code,
         },
         { status: error.status, headers: noStoreHeaders },

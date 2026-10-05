@@ -1,0 +1,4141 @@
+{
+  "schema": "amc-sky-task-specs/2",
+  "directiveId": "SKY-DIR-002",
+  "revision": 2,
+  "tasks": {
+    "S0-01": {
+      "revision": 3,
+      "userChange": "要求と対象版が混ざる→同じ候補を担当全員が参照する",
+      "readPaths": [
+        "data/product-baseline.json",
+        "data/project-status.json",
+        "docs/workstreams/00-responsibility-boundaries.md",
+        "docs/product-baseline.md",
+        "docs/rockstaros-1.0-architecture.md",
+        "data/design-document-index.json",
+        "data/amc/sky/sky-amc-plan.json",
+        "data/amc/sky/sky-amc-source.json",
+        "data/amc/sky/sky-amc-goal.json",
+        "docs/rockstaros-product-system-map.md",
+        "docs/workstreams/README.md"
+      ],
+      "writePaths": [
+        "docs/evidence/sky-launch/s0-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s0-01.json"
+      ],
+      "entryPoints": [],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S0-01-V2-1",
+          "action": "HEADと変更path/content hashを採取"
+        },
+        {
+          "id": "S0-01-V2-2",
+          "action": "現行要求をSKY-GOALと各部隊へ対応付ける"
+        },
+        {
+          "id": "S0-01-V2-3",
+          "action": "remote/CIの取得日時と失敗をunknownで保存"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S0-01-CASE-1",
+          "operationAndExpected": "要求を1件変更して差分に出る",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S0-01-CASE-2",
+          "operationAndExpected": "remote取得失敗を成功表示しない",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S0-01-CASE-3",
+          "operationAndExpected": "再取得後も前回観測を履歴に残す",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s0-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S0-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s0-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S0-02",
+          "S8-01",
+          "S10-01"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      },
+      "reviewRecovery": {
+        "reason": "S0-01-AC1 review rejected missing RQ01–49 and full dirty candidate observation",
+        "requirements": "Read all RQ01–49 bodies and later superseding policy in product-baseline.md. Map Sky relevance or other-product ownership with citations; no implementation scope expansion. Original plan/source/goal supply actual requirements, acceptance criteria and dependencies.",
+        "candidate": "Use supervisor candidate manifest for original HEAD/index/worktree/untracked content hashes and exclusions; isolated Git HEAD is not original source. Preserve prior observations and review history."
+      }
+    },
+    "S0-02": {
+      "revision": 2,
+      "userChange": "担当間でID解釈が異なる→共有契約を版付きで参照する",
+      "readPaths": [
+        "data/product-baseline.json",
+        "data/project-status.json",
+        "docs/workstreams/00-responsibility-boundaries.md"
+      ],
+      "writePaths": [
+        "docs/evidence/sky-launch/s0-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s0-02.json"
+      ],
+      "entryPoints": [],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": [
+          {
+            "id": "D1",
+            "owner": "製品責任者",
+            "decision": "初回公開の対象商品・実行先・利用者/地域",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "S0-02-V2-1",
+          "action": "catalog/commerce/identity/connection/handoff/API/deploymentの正本と型を列挙"
+        },
+        {
+          "id": "S0-02-V2-2",
+          "action": "各契約の利用taskを対応付ける"
+        },
+        {
+          "id": "S0-02-V2-3",
+          "action": "公開商品/地域/OS共有値の未決を該当受入工程にだけ割り当てる"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S0-02-CASE-1",
+          "operationAndExpected": "offerRevisionの型変更で利用taskを特定",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S0-02-CASE-2",
+          "operationAndExpected": "未決地域で本番受入不可",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S0-02-CASE-3",
+          "operationAndExpected": "決定後に該当契約だけ更新",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s0-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S0-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s0-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S0-03",
+          "S1-01",
+          "S2-01",
+          "S3-01",
+          "S4-01",
+          "S5-01",
+          "S6-01",
+          "S7-01",
+          "S9-01",
+          "S11-01"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S0-03": {
+      "revision": 2,
+      "userChange": "古い指示も実行できる→最新観測に一致する指示だけ着手する",
+      "readPaths": [
+        "data/product-baseline.json",
+        "data/project-status.json",
+        "docs/workstreams/00-responsibility-boundaries.md",
+        "scripts/amc-goal-engine.mjs",
+        "lib/amc-tool.ts",
+        "lib/workflow.ts",
+        "app/api/amc/route.ts",
+        "scripts/amc-codex.mjs"
+      ],
+      "writePaths": [
+        "scripts/amc-goal-engine.mjs",
+        "lib/amc-tool.ts",
+        "lib/workflow.ts",
+        "app/api/amc/route.ts",
+        "scripts/amc-codex.mjs",
+        "docs/evidence/sky-launch/s0-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s0-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "scripts/amc-goal-engine.mjs",
+          "symbol": "recommendSquads"
+        },
+        {
+          "path": "scripts/amc-goal-engine.mjs",
+          "symbol": "compileGoal"
+        },
+        {
+          "path": "scripts/amc-goal-engine.mjs",
+          "symbol": "validateGoal"
+        },
+        {
+          "path": "lib/amc-tool.ts",
+          "symbol": "validateAmcGoal"
+        },
+        {
+          "path": "lib/amc-tool.ts",
+          "symbol": "createAmcGoal"
+        },
+        {
+          "path": "lib/amc-tool.ts",
+          "symbol": "applyAmcEvent"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "objectInput"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "workId"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "createWorkJob"
+        },
+        {
+          "path": "app/api/amc/route.ts",
+          "symbol": "GET"
+        },
+        {
+          "path": "app/api/amc/route.ts",
+          "symbol": "POST"
+        },
+        {
+          "path": "app/api/amc/route.ts",
+          "symbol": "PATCH"
+        },
+        {
+          "path": "scripts/amc-codex.mjs",
+          "symbol": "runCodexGoal"
+        },
+        {
+          "path": "scripts/amc-codex.mjs",
+          "symbol": "status"
+        },
+        {
+          "path": "scripts/amc-codex.mjs",
+          "symbol": "main"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S0-03-V2-1",
+          "action": "発行/着手/提出に同じ照合器を接続"
+        },
+        {
+          "id": "S0-03-V2-2",
+          "action": "本人と担当とpath lockを照合しCASで保存"
+        },
+        {
+          "id": "S0-03-V2-3",
+          "action": "契約/依存証拠変更を失効理由と旧新指示対応へ記録"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S0-03-CASE-1",
+          "operationAndExpected": "関連契約変更でstale",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S0-03-CASE-2",
+          "operationAndExpected": "無関係進捗で継続",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S0-03-CASE-3",
+          "operationAndExpected": "担当の許可path変更を提出し独立検収まで未完了",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s0-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S0-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s0-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S1-01": {
+      "revision": 2,
+      "userChange": "料金と実行条件が曖昧→商品ごとに実費と権利を表示する",
+      "readPaths": [
+        "lib/catalog.ts",
+        "lib/sky-tool-package-store.ts",
+        "lib/sky-tool-review.ts",
+        "components/sky-publisher-form.tsx"
+      ],
+      "writePaths": [
+        "lib/catalog.ts",
+        "lib/sky-tool-package-store.ts",
+        "lib/sky-tool-review.ts",
+        "components/sky-publisher-form.tsx",
+        "docs/evidence/sky-launch/s1-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s1-01.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-tool-package-store.ts",
+          "symbol": "skyToolPackageStore"
+        },
+        {
+          "path": "lib/sky-tool-review.ts",
+          "symbol": "parseSkyToolReview"
+        },
+        {
+          "path": "lib/sky-tool-review.ts",
+          "symbol": "skyToolReviewStore"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S1-01-V2-1",
+          "action": "catalogとpackage manifestのID/作者/license/対応環境を照合"
+        },
+        {
+          "id": "S1-01-V2-2",
+          "action": "商品代金とAPI実費とSky10%手数料を分離"
+        },
+        {
+          "id": "S1-01-V2-3",
+          "action": "価格未確認商品を購入可能にしない"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S1-01-CASE-1",
+          "operationAndExpected": "無料商品の外部実費が見える",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S1-01-CASE-2",
+          "operationAndExpected": "offerなし購入を拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S1-01-CASE-3",
+          "operationAndExpected": "更新offerで旧価格を再同意",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s1-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S1-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s1-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S1-02",
+          "S4-01"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S1-02": {
+      "revision": 2,
+      "userChange": "審査と掲載停止が連動しない→停止商品を新規導入できない",
+      "readPaths": [
+        "lib/catalog.ts",
+        "lib/sky-tool-package-store.ts",
+        "lib/sky-tool-review.ts",
+        "components/sky-publisher-form.tsx"
+      ],
+      "writePaths": [
+        "lib/catalog.ts",
+        "lib/sky-tool-package-store.ts",
+        "lib/sky-tool-review.ts",
+        "components/sky-publisher-form.tsx",
+        "docs/evidence/sky-launch/s1-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s1-02.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-tool-package-store.ts",
+          "symbol": "skyToolPackageStore"
+        },
+        {
+          "path": "lib/sky-tool-review.ts",
+          "symbol": "parseSkyToolReview"
+        },
+        {
+          "path": "lib/sky-tool-review.ts",
+          "symbol": "skyToolReviewStore"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S1-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S1-02-V2-1",
+          "action": "parseSkyToolReviewで審査状態遷移を追う"
+        },
+        {
+          "id": "S1-02-V2-2",
+          "action": "掲載可否を商品画面と取得APIへ適用"
+        },
+        {
+          "id": "S1-02-V2-3",
+          "action": "失効時の既存購入者と再審査の扱いを記録"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S1-02-CASE-1",
+          "operationAndExpected": "承認商品を表示",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S1-02-CASE-2",
+          "operationAndExpected": "停止後の直接API導入を拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S1-02-CASE-3",
+          "operationAndExpected": "再審査完了後だけ再掲載",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s1-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S1-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s1-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S1-03",
+          "S11-01"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S1-03": {
+      "revision": 2,
+      "userChange": "掲載数しか分からない→公開対象商品の実接続結果が分かる",
+      "readPaths": [
+        "lib/catalog.ts",
+        "lib/sky-tool-package-store.ts",
+        "lib/sky-tool-review.ts",
+        "components/sky-publisher-form.tsx"
+      ],
+      "writePaths": [
+        "lib/catalog.ts",
+        "lib/sky-tool-package-store.ts",
+        "lib/sky-tool-review.ts",
+        "components/sky-publisher-form.tsx",
+        "docs/evidence/sky-launch/s1-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s1-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-tool-package-store.ts",
+          "symbol": "skyToolPackageStore"
+        },
+        {
+          "path": "lib/sky-tool-review.ts",
+          "symbol": "parseSkyToolReview"
+        },
+        {
+          "path": "lib/sky-tool-review.ts",
+          "symbol": "skyToolReviewStore"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S1-02",
+          "S3-03",
+          "S4-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": [
+          {
+            "id": "D1",
+            "owner": "製品責任者",
+            "decision": "初回公開の対象商品・実行先・利用者/地域",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "S1-03-V2-1",
+          "action": "確定した公開対象だけ代表利用者で導入"
+        },
+        {
+          "id": "S1-03-V2-2",
+          "action": "S3接続とS4支払の証拠を同一manifestに照合"
+        },
+        {
+          "id": "S1-03-V2-3",
+          "action": "商品ごとに受入環境と未対応を掲載"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S1-03-CASE-1",
+          "operationAndExpected": "無料/有料の導入成功を別記録",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S1-03-CASE-2",
+          "operationAndExpected": "未受入商品を本番対応扱いしない",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S1-03-CASE-3",
+          "operationAndExpected": "失効商品を除いた一覧へ復帰",
+          "stage": "provider_or_deployment_acceptance"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s1-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S1-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s1-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S10-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S2-01": {
+      "revision": 2,
+      "userChange": "Skyで仕事も行う→SkyからZemaへ一貫して移動する",
+      "readPaths": [
+        "components/sky-marketplace.tsx",
+        "components/sky-navigation.tsx",
+        "lib/sky-routes.ts",
+        "components/sky-commerce.tsx"
+      ],
+      "writePaths": [
+        "components/sky-marketplace.tsx",
+        "components/sky-navigation.tsx",
+        "lib/sky-routes.ts",
+        "components/sky-commerce.tsx",
+        "docs/evidence/sky-launch/s2-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s2-01.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-routes.ts",
+          "symbol": "zemaChatLocation"
+        },
+        {
+          "path": "lib/sky-routes.ts",
+          "symbol": "isLegacySkyConversation"
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "symbol": "useCommerceResource"
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "symbol": "usePublicCommerceOffers"
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "symbol": "commerceAmount"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S2-01-V2-1",
+          "action": "sky-routesの旧入口を確認"
+        },
+        {
+          "id": "S2-01-V2-2",
+          "action": "商品詳細から購入/接続へ進む導線を揃える"
+        },
+        {
+          "id": "S2-01-V2-3",
+          "action": "会話/ライブラリ/仕事のリンクをZemaへ統一"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S2-01-CASE-1",
+          "operationAndExpected": "商品からZemaへ遷移",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S2-01-CASE-2",
+          "operationAndExpected": "旧URLも同じ役割へ戻る",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S2-01-CASE-3",
+          "operationAndExpected": "ブラウザ戻るで選択商品を保持",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s2-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S2-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s2-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S2-02",
+          "S6-01"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S2-02": {
+      "revision": 2,
+      "userChange": "失敗と処理中の区別が薄い→次に取れる操作が分かる",
+      "readPaths": [
+        "components/sky-marketplace.tsx",
+        "components/sky-navigation.tsx",
+        "lib/sky-routes.ts",
+        "components/sky-commerce.tsx"
+      ],
+      "writePaths": [
+        "components/sky-marketplace.tsx",
+        "components/sky-navigation.tsx",
+        "lib/sky-routes.ts",
+        "components/sky-commerce.tsx",
+        "docs/evidence/sky-launch/s2-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s2-02.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-routes.ts",
+          "symbol": "zemaChatLocation"
+        },
+        {
+          "path": "lib/sky-routes.ts",
+          "symbol": "isLegacySkyConversation"
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "symbol": "useCommerceResource"
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "symbol": "usePublicCommerceOffers"
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "symbol": "commerceAmount"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S2-01",
+          "S7-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S2-02-V2-1",
+          "action": "sky-commerceの注文状態を読込/待機/失敗/再照合へ対応"
+        },
+        {
+          "id": "S2-02-V2-2",
+          "action": "未接続と未購入を別表示"
+        },
+        {
+          "id": "S2-02-V2-3",
+          "action": "再送時は同じ注文IDで照合"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S2-02-CASE-1",
+          "operationAndExpected": "待機中の二重購入なし",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S2-02-CASE-2",
+          "operationAndExpected": "通信断を支払成功にしない",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S2-02-CASE-3",
+          "operationAndExpected": "再読込で同じ注文を復元",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s2-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S2-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s2-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S2-03"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S2-03": {
+      "revision": 2,
+      "userChange": "見た目だけの確認→初見利用者が購入から復帰できる",
+      "readPaths": [
+        "components/sky-marketplace.tsx",
+        "components/sky-navigation.tsx",
+        "lib/sky-routes.ts",
+        "components/sky-commerce.tsx"
+      ],
+      "writePaths": [
+        "components/sky-marketplace.tsx",
+        "components/sky-navigation.tsx",
+        "lib/sky-routes.ts",
+        "components/sky-commerce.tsx",
+        "docs/evidence/sky-launch/s2-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s2-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-routes.ts",
+          "symbol": "zemaChatLocation"
+        },
+        {
+          "path": "lib/sky-routes.ts",
+          "symbol": "isLegacySkyConversation"
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "symbol": "useCommerceResource"
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "symbol": "usePublicCommerceOffers"
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "symbol": "commerceAmount"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S2-02",
+          "S4-02",
+          "S5-02",
+          "S6-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S2-03-V2-1",
+          "action": "スマホ/PCで検索から条件表示を操作"
+        },
+        {
+          "id": "S2-03-V2-2",
+          "action": "サインイン中断/戻る/再読込を含める"
+        },
+        {
+          "id": "S2-03-V2-3",
+          "action": "本人切替後の購入履歴とZema導線を確認"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S2-03-CASE-1",
+          "operationAndExpected": "購入者に履歴表示",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S2-03-CASE-2",
+          "operationAndExpected": "別利用者に非表示",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S2-03-CASE-3",
+          "operationAndExpected": "接続中断後に再購入せず再開",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s2-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S2-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s2-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S10-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S3-01": {
+      "revision": 2,
+      "userChange": "接続先と権限が不明→実行先と許可範囲を選べる",
+      "readPaths": [
+        "lib/mcp-hub.ts",
+        "lib/sky-connections.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "components/sky-mcp-center.tsx"
+      ],
+      "writePaths": [
+        "lib/mcp-hub.ts",
+        "lib/sky-connections.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "components/sky-mcp-center.tsx",
+        "docs/evidence/sky-launch/s3-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s3-01.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/mcp-hub.ts",
+          "symbol": "listMcpConnections"
+        },
+        {
+          "path": "lib/mcp-hub.ts",
+          "symbol": "connectMcp"
+        },
+        {
+          "path": "lib/mcp-hub.ts",
+          "symbol": "disconnectMcp"
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "symbol": "adaptersForCapability"
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "symbol": "providerDefinition"
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "symbol": "requiredSkyProviders"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRemoteUrl"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRegistry"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "createConnector"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S3-01-V2-1",
+          "action": "skyProviderAdaptersとMCP tool schemaを照合"
+        },
+        {
+          "id": "S3-01-V2-2",
+          "action": "Web/PC/Providerごとの認証と取消方法を記録"
+        },
+        {
+          "id": "S3-01-V2-3",
+          "action": "endpointとmanifest hashの対応を固定"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S3-01-CASE-1",
+          "operationAndExpected": "必要権限を提示",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S3-01-CASE-2",
+          "operationAndExpected": "未知Providerと過剰scopeを拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S3-01-CASE-3",
+          "operationAndExpected": "権限縮小後に再接続",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s3-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S3-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s3-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S3-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S3-02": {
+      "revision": 2,
+      "userChange": "切断後も操作できる→認証失効と停止が実行先へ届く",
+      "readPaths": [
+        "lib/mcp-hub.ts",
+        "lib/sky-connections.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "components/sky-mcp-center.tsx"
+      ],
+      "writePaths": [
+        "lib/mcp-hub.ts",
+        "lib/sky-connections.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "components/sky-mcp-center.tsx",
+        "docs/evidence/sky-launch/s3-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s3-02.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/mcp-hub.ts",
+          "symbol": "listMcpConnections"
+        },
+        {
+          "path": "lib/mcp-hub.ts",
+          "symbol": "connectMcp"
+        },
+        {
+          "path": "lib/mcp-hub.ts",
+          "symbol": "disconnectMcp"
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "symbol": "adaptersForCapability"
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "symbol": "providerDefinition"
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "symbol": "requiredSkyProviders"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRemoteUrl"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRegistry"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "createConnector"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S3-01",
+          "S8-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S3-02-V2-1",
+          "action": "接続資格情報の本人所有を確認"
+        },
+        {
+          "id": "S3-02-V2-2",
+          "action": "切断/取消/再認証を各adapterへ渡す"
+        },
+        {
+          "id": "S3-02-V2-3",
+          "action": "再接続で外部jobを勝手に再実行しない"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S3-02-CASE-1",
+          "operationAndExpected": "有効資格で接続",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S3-02-CASE-2",
+          "operationAndExpected": "失効資格のtool call拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S3-02-CASE-3",
+          "operationAndExpected": "再認証後に既存jobを照合",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s3-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S3-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s3-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S3-03",
+          "S5-02",
+          "S6-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S3-03": {
+      "revision": 2,
+      "userChange": "fixture接続のみ→実Providerの往復を証明する",
+      "readPaths": [
+        "lib/mcp-hub.ts",
+        "lib/sky-connections.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "components/sky-mcp-center.tsx"
+      ],
+      "writePaths": [
+        "lib/mcp-hub.ts",
+        "lib/sky-connections.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "components/sky-mcp-center.tsx",
+        "docs/evidence/sky-launch/s3-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s3-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/mcp-hub.ts",
+          "symbol": "listMcpConnections"
+        },
+        {
+          "path": "lib/mcp-hub.ts",
+          "symbol": "connectMcp"
+        },
+        {
+          "path": "lib/mcp-hub.ts",
+          "symbol": "disconnectMcp"
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "symbol": "adaptersForCapability"
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "symbol": "providerDefinition"
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "symbol": "requiredSkyProviders"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRemoteUrl"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRegistry"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "createConnector"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S3-02",
+          "S7-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S3-03-V2-1",
+          "action": "許可されたsandbox Providerに明示接続"
+        },
+        {
+          "id": "S3-03-V2-2",
+          "action": "成功/拒否/timeout/取消を同じ接続IDで採取"
+        },
+        {
+          "id": "S3-03-V2-3",
+          "action": "要求schemaと実receiptを比較"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S3-03-CASE-1",
+          "operationAndExpected": "実tool応答を記録",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S3-03-CASE-2",
+          "operationAndExpected": "権限拒否が利用者へ届く",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S3-03-CASE-3",
+          "operationAndExpected": "timeout後に実行済みか照合し重複なし",
+          "stage": "provider_or_deployment_acceptance"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s3-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S3-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s3-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S1-03",
+          "S8-03",
+          "S10-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S4-01": {
+      "revision": 2,
+      "userChange": "旧料金と新注文が混ざる→価格版と手数料が注文に固定される",
+      "readPaths": [
+        "lib/sky-commerce.ts",
+        "lib/sky-commerce-store.ts",
+        "lib/sky-stripe.ts",
+        "docs/sky-billing.md"
+      ],
+      "writePaths": [
+        "lib/sky-commerce.ts",
+        "lib/sky-commerce-store.ts",
+        "lib/sky-stripe.ts",
+        "docs/evidence/sky-launch/s4-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s4-01.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "skyCommerce"
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "handleSkyCommerce"
+        },
+        {
+          "path": "lib/sky-commerce-store.ts",
+          "symbol": "skyCommerceStore"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "readSkyStripeConfig"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "skyStripe"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02",
+          "S1-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S4-01-V2-1",
+          "action": "saveOfferとcheckoutのamountMinor/currency/offerRevisionを追う"
+        },
+        {
+          "id": "S4-01-V2-2",
+          "action": "packageKey/manifest hash/user/modeを注文へ結ぶ"
+        },
+        {
+          "id": "S4-01-V2-3",
+          "action": "10%と旧8.88 USD保留条件を区別"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S4-01-CASE-1",
+          "operationAndExpected": "整数minor単位で注文",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S4-01-CASE-2",
+          "operationAndExpected": "offer更新後の旧版購入を拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S4-01-CASE-3",
+          "operationAndExpected": "新条件同意後に新注文",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s4-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S4-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s4-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S4-02",
+          "S5-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S4-02": {
+      "revision": 2,
+      "userChange": "模擬支払のみ→Stripe sandboxの通知まで注文と一致する",
+      "readPaths": [
+        "lib/sky-commerce.ts",
+        "lib/sky-commerce-store.ts",
+        "lib/sky-stripe.ts",
+        "docs/sky-billing.md"
+      ],
+      "writePaths": [
+        "lib/sky-commerce.ts",
+        "lib/sky-commerce-store.ts",
+        "lib/sky-stripe.ts",
+        "docs/evidence/sky-launch/s4-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s4-02.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "skyCommerce"
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "handleSkyCommerce"
+        },
+        {
+          "path": "lib/sky-commerce-store.ts",
+          "symbol": "skyCommerceStore"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "readSkyStripeConfig"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "skyStripe"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S4-01",
+          "S7-02",
+          "S9-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": [
+          {
+            "id": "D3",
+            "owner": "アカウント/運用責任者",
+            "decision": "決済Provider設定・本番配備先・運用責任者",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "S4-02-V2-1",
+          "action": "readSkyStripeConfigのtest設定を確認"
+        },
+        {
+          "id": "S4-02-V2-2",
+          "action": "販売者登録/checkout/署名webhook/再照合/返金を実sandboxで操作"
+        },
+        {
+          "id": "S4-02-V2-3",
+          "action": "order/session/intent/eventを対応付ける"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S4-02-CASE-1",
+          "operationAndExpected": "正規署名でpaid",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S4-02-CASE-2",
+          "operationAndExpected": "改ざん/金額違い拒否",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S4-02-CASE-3",
+          "operationAndExpected": "同一通知再送が二重権利を作らない",
+          "stage": "provider_or_deployment_acceptance"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s4-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S4-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s4-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S1-03",
+          "S2-03",
+          "S4-03",
+          "S5-03",
+          "S10-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S4-03": {
+      "revision": 2,
+      "userChange": "注文成功を入金と混同→販売者受取と差額を照合する",
+      "readPaths": [
+        "lib/sky-commerce.ts",
+        "lib/sky-commerce-store.ts",
+        "lib/sky-stripe.ts",
+        "docs/sky-billing.md"
+      ],
+      "writePaths": [
+        "lib/sky-commerce.ts",
+        "lib/sky-commerce-store.ts",
+        "lib/sky-stripe.ts",
+        "docs/evidence/sky-launch/s4-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s4-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "skyCommerce"
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "handleSkyCommerce"
+        },
+        {
+          "path": "lib/sky-commerce-store.ts",
+          "symbol": "skyCommerceStore"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "readSkyStripeConfig"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "skyStripe"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S4-02",
+          "S9-03"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": [
+          {
+            "id": "D3",
+            "owner": "アカウント/運用責任者",
+            "decision": "決済Provider設定・本番配備先・運用責任者",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "S4-03-V2-1",
+          "action": "販売者のcharges/payouts/transfers状態を確認"
+        },
+        {
+          "id": "S4-03-V2-2",
+          "action": "売上/手数料/返金/紛争/銀行着金を分離"
+        },
+        {
+          "id": "S4-03-V2-3",
+          "action": "不一致時は再照合と担当への引継ぎを定義"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S4-03-CASE-1",
+          "operationAndExpected": "売上と着金を別結果",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S4-03-CASE-2",
+          "operationAndExpected": "不足/紛争を成功にしない",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S4-03-CASE-3",
+          "operationAndExpected": "再照合で同一台帳へ収束",
+          "stage": "provider_or_deployment_acceptance"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s4-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S4-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s4-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S11-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S5-01": {
+      "revision": 2,
+      "userChange": "1台1人固定→OSごとの複数プロフィール方針を表現する",
+      "readPaths": [
+        "lib/sky-os-policy.ts",
+        "lib/sky-activation.ts",
+        "lib/sky-commerce.ts",
+        "data/product-baseline.json"
+      ],
+      "writePaths": [
+        "lib/sky-os-policy.ts",
+        "lib/sky-activation.ts",
+        "lib/sky-commerce.ts",
+        "docs/evidence/sky-launch/s5-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s5-01.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-os-policy.ts",
+          "symbol": "resolveSkyOsPolicy"
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "symbol": "normalizeSkyActivationCode"
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "symbol": "isSkyActivationCode"
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "symbol": "skyActivationStore"
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "skyCommerce"
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "handleSkyCommerce"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S5-01-V2-1",
+          "action": "sky-os-policyの単独/切替利用と保存上限を読取"
+        },
+        {
+          "id": "S5-01-V2-2",
+          "action": "購入者限定/端末共有/商品別条件を対応"
+        },
+        {
+          "id": "S5-01-V2-3",
+          "action": "Miniの未確定人数を無制限と扱わない"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S5-01-CASE-1",
+          "operationAndExpected": "OS設定別表示",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S5-01-CASE-2",
+          "operationAndExpected": "未設定共有を拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S5-01-CASE-3",
+          "operationAndExpected": "設定変更時もセーブを混ぜない",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s5-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S5-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s5-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S5-02",
+          "S11-01"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S5-02": {
+      "revision": 2,
+      "userChange": "画面で隠すだけ→APIとProviderが利用権を強制する",
+      "readPaths": [
+        "lib/sky-os-policy.ts",
+        "lib/sky-activation.ts",
+        "lib/sky-commerce.ts",
+        "data/product-baseline.json"
+      ],
+      "writePaths": [
+        "lib/sky-os-policy.ts",
+        "lib/sky-activation.ts",
+        "lib/sky-commerce.ts",
+        "docs/evidence/sky-launch/s5-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s5-02.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-os-policy.ts",
+          "symbol": "resolveSkyOsPolicy"
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "symbol": "normalizeSkyActivationCode"
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "symbol": "isSkyActivationCode"
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "symbol": "skyActivationStore"
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "skyCommerce"
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "handleSkyCommerce"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S5-01",
+          "S3-02",
+          "S4-01",
+          "S7-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S5-02-V2-1",
+          "action": "購入権とactivationの本人/端末/プロフィールを照合"
+        },
+        {
+          "id": "S5-02-V2-2",
+          "action": "有料endpointの直接呼出をProviderで検査"
+        },
+        {
+          "id": "S5-02-V2-3",
+          "action": "失効/返金/移行の権利状態を適用"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S5-02-CASE-1",
+          "operationAndExpected": "正規利用権を許可",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S5-02-CASE-2",
+          "operationAndExpected": "URL直打ち/別人権利を拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S5-02-CASE-3",
+          "operationAndExpected": "移行後は旧端末を拒否",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s5-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S5-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s5-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S2-03",
+          "S5-03"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S5-03": {
+      "revision": 2,
+      "userChange": "共有と移行の動作が未証明→OS条件どおり権利が移る",
+      "readPaths": [
+        "lib/sky-os-policy.ts",
+        "lib/sky-activation.ts",
+        "lib/sky-commerce.ts",
+        "data/product-baseline.json"
+      ],
+      "writePaths": [
+        "lib/sky-os-policy.ts",
+        "lib/sky-activation.ts",
+        "lib/sky-commerce.ts",
+        "docs/evidence/sky-launch/s5-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s5-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-os-policy.ts",
+          "symbol": "resolveSkyOsPolicy"
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "symbol": "normalizeSkyActivationCode"
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "symbol": "isSkyActivationCode"
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "symbol": "skyActivationStore"
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "skyCommerce"
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "symbol": "handleSkyCommerce"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S5-02",
+          "S4-02",
+          "S6-03"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": [
+          {
+            "id": "D2",
+            "owner": "製品/OS責任者",
+            "decision": "購入移行・共有/保存上限のOSポリシー具体値",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "S5-03-V2-1",
+          "action": "確定したOS共有値で複数プロフィールを切替"
+        },
+        {
+          "id": "S5-03-V2-2",
+          "action": "機種変更と旧端末解除を試す"
+        },
+        {
+          "id": "S5-03-V2-3",
+          "action": "返金/取消後のAPIとProvider拒否を記録"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S5-03-CASE-1",
+          "operationAndExpected": "保存分離と許可共有を両立",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S5-03-CASE-2",
+          "operationAndExpected": "上限超過拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S5-03-CASE-3",
+          "operationAndExpected": "失敗移行から権利二重化なく復旧",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s5-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S5-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s5-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S8-03",
+          "S10-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S6-01": {
+      "revision": 2,
+      "userChange": "画面遷移で依頼が重複→商品と依頼を一度だけ渡す",
+      "readPaths": [
+        "lib/sky-zema-handoff.ts",
+        "lib/workflow.ts",
+        "components/sky-chat-workspace.tsx",
+        "lib/zema-chat-session.ts"
+      ],
+      "writePaths": [
+        "lib/sky-zema-handoff.ts",
+        "lib/workflow.ts",
+        "components/sky-chat-workspace.tsx",
+        "lib/zema-chat-session.ts",
+        "docs/evidence/sky-launch/s6-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s6-01.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "symbol": "queueSkyZemaHandoff"
+        },
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "symbol": "consumeSkyZemaHandoff"
+        },
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "symbol": "announceSkyZemaJob"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "objectInput"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "workId"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "createWorkJob"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "readZemaChatSessions"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "saveZemaChatSession"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02",
+          "S2-01",
+          "S7-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S6-01-V2-1",
+          "action": "queueSkyZemaHandoffのpayload/TTLを確認"
+        },
+        {
+          "id": "S6-01-V2-2",
+          "action": "consumeSkyZemaHandoffで本人とtoolを照合"
+        },
+        {
+          "id": "S6-01-V2-3",
+          "action": "handoff IDをjobの重複防止へ対応"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S6-01-CASE-1",
+          "operationAndExpected": "1回の引継ぎで1job",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S6-01-CASE-2",
+          "operationAndExpected": "期限切れ/別人payload拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S6-01-CASE-3",
+          "operationAndExpected": "再読込で同一jobへ戻る",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s6-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S6-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s6-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S6-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S6-02": {
+      "revision": 2,
+      "userChange": "表示進捗と実処理が別→job/receiptに基づき進捗を示す",
+      "readPaths": [
+        "lib/sky-zema-handoff.ts",
+        "lib/workflow.ts",
+        "components/sky-chat-workspace.tsx",
+        "lib/zema-chat-session.ts"
+      ],
+      "writePaths": [
+        "lib/sky-zema-handoff.ts",
+        "lib/workflow.ts",
+        "components/sky-chat-workspace.tsx",
+        "lib/zema-chat-session.ts",
+        "docs/evidence/sky-launch/s6-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s6-02.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "symbol": "queueSkyZemaHandoff"
+        },
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "symbol": "consumeSkyZemaHandoff"
+        },
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "symbol": "announceSkyZemaJob"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "objectInput"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "workId"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "createWorkJob"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "readZemaChatSessions"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "saveZemaChatSession"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S6-01",
+          "S3-02",
+          "S7-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S6-02-V2-1",
+          "action": "workflowの停止/提出/完了をProvider receiptへ結ぶ"
+        },
+        {
+          "id": "S6-02-V2-2",
+          "action": "order/job/receipt相関IDを保持"
+        },
+        {
+          "id": "S6-02-V2-3",
+          "action": "停止後の再送と遅延receiptを照合"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S6-02-CASE-1",
+          "operationAndExpected": "実receiptのみ成功",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S6-02-CASE-2",
+          "operationAndExpected": "停止中の再実行拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S6-02-CASE-3",
+          "operationAndExpected": "遅延応答を重複なく保存",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s6-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S6-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s6-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S2-03",
+          "S6-03",
+          "S9-03"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S6-03": {
+      "revision": 2,
+      "userChange": "同じタブで前の人の会話が残る→利用者別に会話と成果を分離する",
+      "readPaths": [
+        "lib/sky-zema-handoff.ts",
+        "lib/workflow.ts",
+        "components/sky-chat-workspace.tsx",
+        "lib/zema-chat-session.ts"
+      ],
+      "writePaths": [
+        "lib/sky-zema-handoff.ts",
+        "lib/workflow.ts",
+        "components/sky-chat-workspace.tsx",
+        "lib/zema-chat-session.ts",
+        "docs/evidence/sky-launch/s6-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s6-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "symbol": "queueSkyZemaHandoff"
+        },
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "symbol": "consumeSkyZemaHandoff"
+        },
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "symbol": "announceSkyZemaJob"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "objectInput"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "workId"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "createWorkJob"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "readZemaChatSessions"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "saveZemaChatSession"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S6-02",
+          "S8-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S6-03-V2-1",
+          "action": "zema-chat-sessionの保存keyと失効を追う"
+        },
+        {
+          "id": "S6-03-V2-2",
+          "action": "Aで会話/成果作成後にsignoutしBで再読込"
+        },
+        {
+          "id": "S6-03-V2-3",
+          "action": "接続情報と保留handoffも本人切替で確認"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S6-03-CASE-1",
+          "operationAndExpected": "AへだけA履歴",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S6-03-CASE-2",
+          "operationAndExpected": "Bにキャッシュ漏れなし",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S6-03-CASE-3",
+          "operationAndExpected": "Aへ戻ると正しい保存状態",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s6-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S6-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s6-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S5-03",
+          "S8-03",
+          "S10-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S7-01": {
+      "revision": 2,
+      "userChange": "APIとDBの責任が曖昧→所有者/版/状態を共通契約に固定する",
+      "readPaths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/workflow.ts",
+        "drizzle/0018_sky_commerce.sql",
+        "drizzle/0019_sky_library.sql"
+      ],
+      "writePaths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/workflow.ts",
+        "docs/evidence/sky-launch/s7-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s7-01.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "database"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "snapshot"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "apiError"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "objectInput"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "workId"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "createWorkJob"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S7-01-V2-1",
+          "action": "fund-store/databaseとdb/schemaを照合"
+        },
+        {
+          "id": "S7-01-V2-2",
+          "action": "0018 commerceと0019 libraryのWeb D1適用先を特定"
+        },
+        {
+          "id": "S7-01-V2-3",
+          "action": "APIごとにrequestUser/revision/idempotency条件を記録"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S7-01-CASE-1",
+          "operationAndExpected": "正規本人保存",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S7-01-CASE-2",
+          "operationAndExpected": "別人/古いrevision拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S7-01-CASE-3",
+          "operationAndExpected": "移行前後の読取互換を確認",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s7-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S7-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s7-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S2-02",
+          "S5-02",
+          "S6-01",
+          "S7-02",
+          "S8-02",
+          "S9-01"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S7-02": {
+      "revision": 2,
+      "userChange": "再送で結果が増える→同じ操作が一度だけ永続化される",
+      "readPaths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/workflow.ts",
+        "drizzle/0018_sky_commerce.sql",
+        "drizzle/0019_sky_library.sql"
+      ],
+      "writePaths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/workflow.ts",
+        "docs/evidence/sky-launch/s7-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s7-02.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "database"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "snapshot"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "apiError"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "objectInput"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "workId"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "createWorkJob"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S7-01",
+          "S8-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S7-02-V2-1",
+          "action": "同ID同内容/異内容の再送を比較"
+        },
+        {
+          "id": "S7-02-V2-2",
+          "action": "A/B所有者と同revision競合を同時実行"
+        },
+        {
+          "id": "S7-02-V2-3",
+          "action": "DB失敗後の再読込と再試行を検証"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S7-02-CASE-1",
+          "operationAndExpected": "同一再送は同じ結果",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S7-02-CASE-2",
+          "operationAndExpected": "異内容と競合を409",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S7-02-CASE-3",
+          "operationAndExpected": "保存失敗後に二重注文なし",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s7-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S7-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s7-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S3-03",
+          "S4-02",
+          "S6-02",
+          "S7-03"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S7-03": {
+      "revision": 2,
+      "userChange": "backupがあるだけ→本人と権利を分離したまま復元できる",
+      "readPaths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/workflow.ts",
+        "drizzle/0018_sky_commerce.sql",
+        "drizzle/0019_sky_library.sql"
+      ],
+      "writePaths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/workflow.ts",
+        "docs/evidence/sky-launch/s7-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s7-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "database"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "snapshot"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "apiError"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "objectInput"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "workId"
+        },
+        {
+          "path": "lib/workflow.ts",
+          "symbol": "createWorkJob"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S7-02",
+          "S9-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S7-03-V2-1",
+          "action": "隔離DB/R2でbackup対象と暗号/寿命を確認"
+        },
+        {
+          "id": "S7-03-V2-2",
+          "action": "破損/途中失敗を含むrestoreを実施"
+        },
+        {
+          "id": "S7-03-V2-3",
+          "action": "本人/注文/権利/jobを前後比較"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S7-03-CASE-1",
+          "operationAndExpected": "復元後同一所有者",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S7-03-CASE-2",
+          "operationAndExpected": "破損backup拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S7-03-CASE-3",
+          "operationAndExpected": "旧版互換で元環境へ戻る",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s7-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S7-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s7-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S9-02",
+          "S10-03"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S8-01": {
+      "revision": 2,
+      "userChange": "別監査の候補を断定→対象版で再現可否を確認する",
+      "readPaths": [
+        "app/api/csv-jobs/route.ts",
+        "lib/csv-job-store.ts",
+        "lib/zema-chat-session.ts",
+        "toolkits/sky-mcp-connector/server.mjs"
+      ],
+      "writePaths": [
+        "app/api/csv-jobs/route.ts",
+        "lib/csv-job-store.ts",
+        "lib/zema-chat-session.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "docs/evidence/sky-launch/s8-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s8-01.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/csv-job-store.ts",
+          "symbol": "listCsvJobs"
+        },
+        {
+          "path": "lib/csv-job-store.ts",
+          "symbol": "createCsvJob"
+        },
+        {
+          "path": "lib/csv-job-store.ts",
+          "symbol": "acceptCsvJob"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "readZemaChatSessions"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "saveZemaChatSession"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRemoteUrl"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRegistry"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "createConnector"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S8-01-V2-1",
+          "action": "監査候補をCSV所有権/同タブcache/MCP認証へ分ける"
+        },
+        {
+          "id": "S8-01-V2-2",
+          "action": "当該pathだけ現行差分を読む"
+        },
+        {
+          "id": "S8-01-V2-3",
+          "action": "最小再現と未検証理由を記録"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S8-01-CASE-1",
+          "operationAndExpected": "再現手順と期待差を保存",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S8-01-CASE-2",
+          "operationAndExpected": "未再現を修正済みにしない",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S8-01-CASE-3",
+          "operationAndExpected": "対象版変更後に再検査",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s8-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S8-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s8-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S3-02",
+          "S6-03",
+          "S7-02",
+          "S8-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S8-02": {
+      "revision": 2,
+      "userChange": "UIだけで本人分離→直接API/接続でも境界を守る",
+      "readPaths": [
+        "app/api/csv-jobs/route.ts",
+        "lib/csv-job-store.ts",
+        "lib/zema-chat-session.ts",
+        "toolkits/sky-mcp-connector/server.mjs"
+      ],
+      "writePaths": [
+        "app/api/csv-jobs/route.ts",
+        "lib/csv-job-store.ts",
+        "lib/zema-chat-session.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "docs/evidence/sky-launch/s8-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s8-02.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/csv-job-store.ts",
+          "symbol": "listCsvJobs"
+        },
+        {
+          "path": "lib/csv-job-store.ts",
+          "symbol": "createCsvJob"
+        },
+        {
+          "path": "lib/csv-job-store.ts",
+          "symbol": "acceptCsvJob"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "readZemaChatSessions"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "saveZemaChatSession"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRemoteUrl"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRegistry"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "createConnector"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S8-01",
+          "S7-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S8-02-V2-1",
+          "action": "CSV衝突IDと偽装headerを試す"
+        },
+        {
+          "id": "S8-02-V2-2",
+          "action": "MCPの別OSユーザー接続を隔離検査"
+        },
+        {
+          "id": "S8-02-V2-3",
+          "action": "signout後のセッションと成果URLを確認"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S8-02-CASE-1",
+          "operationAndExpected": "本人アクセス成功",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S8-02-CASE-2",
+          "operationAndExpected": "別人/偽装/期限切れ拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S8-02-CASE-3",
+          "operationAndExpected": "再認証後に本人データのみ復帰",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s8-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S8-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s8-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S8-03"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S8-03": {
+      "revision": 2,
+      "userChange": "実装者の自己申告→独立した確認者が残課題を判定する",
+      "readPaths": [
+        "app/api/csv-jobs/route.ts",
+        "lib/csv-job-store.ts",
+        "lib/zema-chat-session.ts",
+        "toolkits/sky-mcp-connector/server.mjs"
+      ],
+      "writePaths": [
+        "app/api/csv-jobs/route.ts",
+        "lib/csv-job-store.ts",
+        "lib/zema-chat-session.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "docs/evidence/sky-launch/s8-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s8-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/csv-job-store.ts",
+          "symbol": "listCsvJobs"
+        },
+        {
+          "path": "lib/csv-job-store.ts",
+          "symbol": "createCsvJob"
+        },
+        {
+          "path": "lib/csv-job-store.ts",
+          "symbol": "acceptCsvJob"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "readZemaChatSessions"
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "symbol": "saveZemaChatSession"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRemoteUrl"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "validateRegistry"
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "symbol": "createConnector"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S8-02",
+          "S3-03",
+          "S5-03",
+          "S6-03"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S8-03-V2-1",
+          "action": "別確認者へ対象hashと再現caseを渡す"
+        },
+        {
+          "id": "S8-03-V2-2",
+          "action": "S3/S5/S6の境界証拠を再実行"
+        },
+        {
+          "id": "S8-03-V2-3",
+          "action": "未解決候補の公開影響をS11へ渡す"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S8-03-CASE-1",
+          "operationAndExpected": "独立再検査を記録",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S8-03-CASE-2",
+          "operationAndExpected": "自己検収拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S8-03-CASE-3",
+          "operationAndExpected": "差替え証拠は再検収",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s8-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S8-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s8-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S11-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S9-01": {
+      "revision": 2,
+      "userChange": "ローカル設定を本番と混同→環境ごとの認証/保存/通知を実証する",
+      "readPaths": [
+        "docs/sky-billing.md",
+        "wrangler.local.jsonc",
+        "docs/owner-setup-20260911.md",
+        "package.json",
+        "docs/deployment-integration.md",
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/sky-stripe.ts",
+        "app/api/sky/commerce/[action]/route.ts",
+        "drizzle/0018_sky_commerce.sql"
+      ],
+      "writePaths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/sky-stripe.ts",
+        "app/api/sky/commerce/[action]/route.ts",
+        "docs/evidence/sky-launch/s9-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s9-01.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "database"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "snapshot"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "apiError"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "readSkyStripeConfig"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "skyStripe"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02",
+          "S7-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": [
+          {
+            "id": "D3",
+            "owner": "アカウント/運用責任者",
+            "decision": "決済Provider設定・本番配備先・運用責任者",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "S9-01-V2-1",
+          "action": "local/Provider sandbox/productionのorigin・Web D1・R2・migration・認証・webhook・mode・設定所有者・有無・観測日時を作成（秘密値禁止）"
+        },
+        {
+          "id": "S9-01-V2-2",
+          "action": "SKY_PAYMENTS_MODE/SKY_STRIPE_SECRET_KEY/SKY_STRIPE_WEBHOOK_SECRET/SKY_PAYMENT_ORIGINの組を検査し旧Billing設定と分離"
+        },
+        {
+          "id": "S9-01-V2-3",
+          "action": "本人APIを匿名/A/B/偽装header/直接originで試す"
+        },
+        {
+          "id": "S9-01-V2-4",
+          "action": "匿名webhookのraw bodyとStripe-Signatureが保持される経路を検査"
+        },
+        {
+          "id": "S9-01-V2-5",
+          "action": "bundle/エラー/ログの秘密漏れを検査"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S9-01-CASE-1",
+          "operationAndExpected": "不正mode/origin/未設定で拒否",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S9-01-CASE-2",
+          "operationAndExpected": "正当sandbox署名のみ処理し再送は同一",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S9-01-CASE-3",
+          "operationAndExpected": "本人認証を外さずwebhook経路だけ復旧",
+          "stage": "provider_or_deployment_acceptance"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s9-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S9-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s9-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S4-02",
+          "S7-03",
+          "S9-02",
+          "S9-03"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S9-02": {
+      "revision": 2,
+      "userChange": "配布成功だけ→途中失敗からデータ整合を保ち戻せる",
+      "readPaths": [
+        "docs/sky-billing.md",
+        "wrangler.local.jsonc",
+        "docs/owner-setup-20260911.md",
+        "package.json",
+        "docs/deployment-integration.md",
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/sky-stripe.ts",
+        "app/api/sky/commerce/[action]/route.ts",
+        "drizzle/0018_sky_commerce.sql"
+      ],
+      "writePaths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/sky-stripe.ts",
+        "app/api/sky/commerce/[action]/route.ts",
+        "docs/evidence/sky-launch/s9-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s9-02.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "database"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "snapshot"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "apiError"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "readSkyStripeConfig"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "skyStripe"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S9-01",
+          "S10-01",
+          "S7-03"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S9-02-V2-1",
+          "action": "build artifact hashと配信assetを照合"
+        },
+        {
+          "id": "S9-02-V2-2",
+          "action": "S7-03の復元証拠とmigration前後互換を確認"
+        },
+        {
+          "id": "S9-02-V2-3",
+          "action": "隔離環境で途中失敗を注入しhealth基準でrollback"
+        },
+        {
+          "id": "S9-02-V2-4",
+          "action": "戻し先へ復旧して本人/購入権/jobを再照合"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S9-02-CASE-1",
+          "operationAndExpected": "同じartifactが配信",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S9-02-CASE-2",
+          "operationAndExpected": "不整合healthで停止",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S9-02-CASE-3",
+          "operationAndExpected": "rollback後の注文とjobが重複なし",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s9-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S9-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s9-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S10-03",
+          "S11-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S9-03": {
+      "revision": 2,
+      "userChange": "障害が見えない→担当が検知して照合・復旧できる",
+      "readPaths": [
+        "docs/sky-billing.md",
+        "wrangler.local.jsonc",
+        "docs/owner-setup-20260911.md",
+        "package.json",
+        "docs/deployment-integration.md",
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/sky-stripe.ts",
+        "app/api/sky/commerce/[action]/route.ts",
+        "drizzle/0018_sky_commerce.sql"
+      ],
+      "writePaths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/sky-stripe.ts",
+        "app/api/sky/commerce/[action]/route.ts",
+        "docs/evidence/sky-launch/s9-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s9-03.json"
+      ],
+      "entryPoints": [
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "database"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "snapshot"
+        },
+        {
+          "path": "lib/fund-store.ts",
+          "symbol": "apiError"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "readSkyStripeConfig"
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "symbol": "skyStripe"
+        }
+      ],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S9-01",
+          "S6-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S9-03-V2-1",
+          "action": "webhook失敗/支払不一致/job停止/保存失敗/依存停止ごとに指標と閾値根拠を定義"
+        },
+        {
+          "id": "S9-03-V2-2",
+          "action": "通知先の設定状態と担当と再試行/停止/照合手順を記載"
+        },
+        {
+          "id": "S9-03-V2-3",
+          "action": "order/job/receiptの同じIDでダミー障害から復旧"
+        },
+        {
+          "id": "S9-03-V2-4",
+          "action": "未決の費用上限/当番/通知先は判断待ちに残す"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S9-03-CASE-1",
+          "operationAndExpected": "ダミー障害を検知",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S9-03-CASE-2",
+          "operationAndExpected": "未設定通知を送信済みにしない",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S9-03-CASE-3",
+          "operationAndExpected": "回復後の売上と銀行着金を分離",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s9-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S9-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s9-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S4-03",
+          "S11-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S10-01": {
+      "revision": 2,
+      "userChange": "個別合格だけ→同一候補で検証が完走する",
+      "readPaths": [
+        "tests/sky-commerce.test.mjs",
+        "tests/sky-zema-handoff.test.mjs",
+        "tests/sky-routes.test.mjs",
+        "tests/amc-sky-integration.test.mjs",
+        "package.json"
+      ],
+      "writePaths": [
+        "docs/evidence/sky-launch/s10-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s10-01.json"
+      ],
+      "entryPoints": [],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S10-01-V2-1",
+          "action": "対象AMC試験とtypecheckを先に実行"
+        },
+        {
+          "id": "S10-01-V2-2",
+          "action": "verifyの最初の失敗を正本要求と現行実装に対応"
+        },
+        {
+          "id": "S10-01-V2-3",
+          "action": "検査を削除せず原因を修正して全体verifyを再実行"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S10-01-CASE-1",
+          "operationAndExpected": "新否定caseが失敗を検出",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S10-01-CASE-2",
+          "operationAndExpected": "古い文字列検査は意味を保持して更新",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S10-01-CASE-3",
+          "operationAndExpected": "同一dirty fingerprintと全ログを記録",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s10-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S10-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s10-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S9-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S10-02": {
+      "revision": 2,
+      "userChange": "各部品だけ成功→代表商流をブラウザから完走する",
+      "readPaths": [
+        "tests/sky-commerce.test.mjs",
+        "tests/sky-zema-handoff.test.mjs",
+        "tests/sky-routes.test.mjs",
+        "tests/amc-sky-integration.test.mjs",
+        "package.json"
+      ],
+      "writePaths": [
+        "docs/evidence/sky-launch/s10-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s10-02.json"
+      ],
+      "entryPoints": [],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S1-03",
+          "S2-03",
+          "S3-03",
+          "S4-02",
+          "S5-03",
+          "S6-03"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S10-02-V2-1",
+          "action": "確定対象で検索/価格確認/購入/接続/Zema仕事/成果を操作"
+        },
+        {
+          "id": "S10-02-V2-2",
+          "action": "支払中断/Provider停止/返金も同じIDで追う"
+        },
+        {
+          "id": "S10-02-V2-3",
+          "action": "再読込と本人切替を含める"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S10-02-CASE-1",
+          "operationAndExpected": "実受領まで追跡",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S10-02-CASE-2",
+          "operationAndExpected": "中断を完了にしない",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S10-02-CASE-3",
+          "operationAndExpected": "再開後は既存jobを照合",
+          "stage": "provider_or_deployment_acceptance"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s10-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S10-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s10-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S10-03"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S10-03": {
+      "revision": 2,
+      "userChange": "対応宣言だけ→端末別の品質を測定する",
+      "readPaths": [
+        "tests/sky-commerce.test.mjs",
+        "tests/sky-zema-handoff.test.mjs",
+        "tests/sky-routes.test.mjs",
+        "tests/amc-sky-integration.test.mjs",
+        "package.json"
+      ],
+      "writePaths": [
+        "docs/evidence/sky-launch/s10-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s10-03.json"
+      ],
+      "entryPoints": [],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S10-02",
+          "S7-03",
+          "S9-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": [
+          {
+            "id": "D1",
+            "owner": "製品責任者",
+            "decision": "初回公開の対象商品・実行先・利用者/地域",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "S10-03-V2-1",
+          "action": "S10-02とS7-03とS9-02の同一候補を確認"
+        },
+        {
+          "id": "S10-03-V2-2",
+          "action": "対応端末/ブラウザごとに導入/成功/復旧時間を実測"
+        },
+        {
+          "id": "S10-03-V2-3",
+          "action": "未確定品質予算を責任者判断へ戻す"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S10-03-CASE-1",
+          "operationAndExpected": "測定条件と分布を表示",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S10-03-CASE-2",
+          "operationAndExpected": "未試験端末を対応済みにしない",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S10-03-CASE-3",
+          "operationAndExpected": "再試験で前後値を比較",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s10-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S10-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s10-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S11-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S11-01": {
+      "revision": 2,
+      "userChange": "画面と条件がずれる→実際の提供範囲を利用者に示す",
+      "readPaths": [
+        "docs/product-baseline.md",
+        "docs/sky-tool-sdk.md",
+        "docs/sky-billing.md",
+        "project.md"
+      ],
+      "writePaths": [
+        "docs/evidence/sky-launch/s11-01.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s11-01.json"
+      ],
+      "entryPoints": [],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S0-02",
+          "S1-02",
+          "S5-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S11-01-V2-1",
+          "action": "公開商品/実行先/地域/価格/権利/サポートの確定表を作成"
+        },
+        {
+          "id": "S11-01-V2-2",
+          "action": "画面と設計とコードを照合"
+        },
+        {
+          "id": "S11-01-V2-3",
+          "action": "未決を担当と解除条件へ対応"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S11-01-CASE-1",
+          "operationAndExpected": "確定対象だけ提供表示",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S11-01-CASE-2",
+          "operationAndExpected": "未決を全対応にしない",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S11-01-CASE-3",
+          "operationAndExpected": "条件更新を版付き反映",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s11-01.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S11-01 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s11-01.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S11-02"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S11-02": {
+      "revision": 2,
+      "userChange": "別版の証拠が混ざる→最終候補と全証拠を固定する",
+      "readPaths": [
+        "docs/product-baseline.md",
+        "docs/sky-tool-sdk.md",
+        "docs/sky-billing.md",
+        "project.md"
+      ],
+      "writePaths": [
+        "docs/evidence/sky-launch/s11-02.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s11-02.json"
+      ],
+      "entryPoints": [],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S4-03",
+          "S8-03",
+          "S9-02",
+          "S9-03",
+          "S10-03",
+          "S11-01"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": []
+      },
+      "steps": [
+        {
+          "id": "S11-02-V2-1",
+          "action": "S4/S8/S9/S10/S11の検収hashを収集"
+        },
+        {
+          "id": "S11-02-V2-2",
+          "action": "artifact/SHA/dirty fingerprintの同一性を確認"
+        },
+        {
+          "id": "S11-02-V2-3",
+          "action": "差替え/取消があれば該当依存を再検収"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S11-02-CASE-1",
+          "operationAndExpected": "同一候補の証拠一覧",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S11-02-CASE-2",
+          "operationAndExpected": "欠落/別版を拒否",
+          "stage": "local_fixture"
+        },
+        {
+          "id": "S11-02-CASE-3",
+          "operationAndExpected": "差分だけ再検証",
+          "stage": "local_fixture"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s11-02.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S11-02 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s11-02.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S11-03"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    },
+    "S11-03": {
+      "revision": 2,
+      "userChange": "準備をローンチ完了と呼ぶ→全Gateで公開可能を判定する",
+      "readPaths": [
+        "docs/product-baseline.md",
+        "docs/sky-tool-sdk.md",
+        "docs/sky-billing.md",
+        "project.md"
+      ],
+      "writePaths": [
+        "docs/evidence/sky-launch/s11-03.json"
+      ],
+      "newPaths": [
+        "docs/evidence/sky-launch/s11-03.json"
+      ],
+      "entryPoints": [],
+      "doNotChange": [
+        "受領原本 data/amc/sky/*",
+        "他担当の未コミット差分",
+        "実本番データ・資格情報・既存保存Goalのstatus/evidence/eventLog"
+      ],
+      "startConditions": {
+        "dependencies": [
+          "S11-02"
+        ],
+        "localWork": "依存契約が未検収でも読取・隔離試験は可能。実指示発行/着手は依存検収と最新観測一致後。",
+        "decisions": [
+          {
+            "id": "D1",
+            "owner": "製品責任者",
+            "decision": "初回公開の対象商品・実行先・利用者/地域",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          },
+          {
+            "id": "D2",
+            "owner": "製品/OS責任者",
+            "decision": "購入移行・共有/保存上限のOSポリシー具体値",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          },
+          {
+            "id": "D3",
+            "owner": "アカウント/運用責任者",
+            "decision": "決済Provider設定・本番配備先・運用責任者",
+            "blocksStage": "acceptance",
+            "releaseEvidence": "責任者が対象値と適用環境を版付きで確定した記録"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "id": "S11-03-V2-1",
+          "action": "S11-02の固定証拠を独立確認"
+        },
+        {
+          "id": "S11-03-V2-2",
+          "action": "未決公開条件と実Provider/運用の残件を確認"
+        },
+        {
+          "id": "S11-03-V2-3",
+          "action": "launch-ready判定を実公開記録と分けて署名者を残す"
+        }
+      ],
+      "testCases": [
+        {
+          "id": "S11-03-CASE-1",
+          "operationAndExpected": "全条件合格でready",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S11-03-CASE-2",
+          "operationAndExpected": "1件未達でnot-ready",
+          "stage": "provider_or_deployment_acceptance"
+        },
+        {
+          "id": "S11-03-CASE-3",
+          "operationAndExpected": "再判定は新しい版で履歴保持",
+          "stage": "provider_or_deployment_acceptance"
+        }
+      ],
+      "submission": {
+        "path": "docs/evidence/sky-launch/s11-03.json",
+        "newFile": true,
+        "requiredFields": [
+          "artifactHash",
+          "head",
+          "dirtyFingerprint",
+          "environment",
+          "caseId",
+          "operation",
+          "expected",
+          "actual",
+          "evidenceRefs",
+          "unresolved",
+          "owner",
+          "observedAt"
+        ]
+      },
+      "reviewerAction": "実行者以外が S11-03 の各CASEを対象環境で再実行し、docs/evidence/sky-launch/s11-03.json の結果/出典hashと原本ACを照合する。未検証段階は不合格のまま残す。",
+      "handoff": {
+        "toTaskIds": [
+          "S11-04"
+        ],
+        "payload": "検収revision・証拠hash・共有契約変更・未決条件。原本の親ACを満たすまでdoneにしない。"
+      }
+    }
+  }
+}

@@ -32,6 +32,9 @@ font = root / 'os/assets/NotoSansCJKjp-Regular.otf'
 digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
 paths = set(original['sources'])
 paths.update('os/ui/' + name for name in re.findall(r'^#include "([^"]+)"', (ui / 'ui.c').read_text(), re.M))
+# Motion is compiled separately from ui.c, so its implementation is not a
+# direct include. Keep the complete new render dependency source-bound too.
+paths.update({'os/ui/spider-motion.c', 'os/ui/spider-motion.h'})
 sources = {name: digest(root / name) for name in sorted(paths)}
 report = {'schema': 'rock-pin-source-review/1', 'status': 'RUNNING',
           'started_utc': datetime.now(timezone.utc).isoformat(),

@@ -1,4 +1,5 @@
-const TOOL_ID = /^[a-z0-9][a-z0-9:.-]{0,119}$/;
+import { createSkyZemaEnvelope, isSkyToolId, normalizeSkyZemaHandoff, skyZemaLimits } from "./handoff.js";
+export { normalizeSkyZemaHandoff, skyZemaLimits } from "./handoff.js";
 const PACKAGE_KEY =
   /^[a-z0-9]+(?:[.-][a-z0-9]+)+@[0-9]+\.[0-9]+\.[0-9]+$/;
 const INSTALLATION_ID = /^[a-zA-Z0-9_-]{8,128}$/;
@@ -31,7 +32,7 @@ export function createSkyCatalog(tools) {
   return freeze(
     tools.map((input) => {
       const id = required(input?.id, "tool.id", 120);
-      if (!TOOL_ID.test(id)) throw new TypeError("tool.id has an invalid format");
+      if (!isSkyToolId(id)) throw new TypeError("tool.id has an invalid format");
       if (ids.has(id)) throw new TypeError(`duplicate tool.id: ${id}`);
       ids.add(id);
       return freeze({
@@ -46,26 +47,25 @@ export function createSkyCatalog(tools) {
 
 export function createSkyZemaHandoff(input) {
   const toolId = required(input?.toolId, "toolId", 120);
-  if (!TOOL_ID.test(toolId)) throw new TypeError("toolId has an invalid format");
+  if (!isSkyToolId(toolId)) throw new TypeError("toolId has an invalid format");
   const id =
     input?.id ??
     globalThis.crypto?.randomUUID?.() ??
     `handoff-${Date.now().toString(36)}`;
   return freeze({
-    version: 1,
-    id: required(id, "id", 100),
-    source: "sky",
-    toolId,
-    request: required(input?.request, "request", 2_000),
+    ...createSkyZemaEnvelope({
+      id: required(id, "id", 100),
+      toolId,
+      request: required(input?.request, "request", skyZemaLimits.request),
+      createdAt: new Date(validDate(input?.at ?? Date.now())).valueOf(),
+    }),
+    // Preserve the public v1 spelling; hosts normalize it through the same contract.
     executionProvider: "local",
-    createdAt: new Date(input?.at ?? Date.now()).valueOf(),
   });
 }
 
 export function createZemaSession(handoff) {
-  if (handoff?.version !== 1 || handoff?.source !== "sky") {
-    throw new TypeError("A valid Sky handoff is required");
-  }
+  handoff = normalizeSkyZemaHandoff(handoff);
   return freeze({
     version: 1,
     id: handoff.id,
@@ -85,9 +85,9 @@ export function addZemaMessage(session, input) {
     ...session.messages,
     freeze({
       side: input.side,
-      text: required(input?.text, "message.text", 4_000),
+      text: required(input?.text, "message.text", skyZemaLimits.message),
     }),
-  ].slice(-24);
+  ].slice(-skyZemaLimits.messages);
   return freeze({ ...session, messages: freeze(messages) });
 }
 
@@ -134,7 +134,7 @@ export function createAnonymousToolEvent(input) {
   if (!PACKAGE_KEY.test(input.packageKey ?? "")) {
     throw new TypeError("packageKey has an invalid format");
   }
-  if (!TOOL_ID.test(input.toolName ?? "")) {
+  if (!isSkyToolId(input.toolName ?? "")) {
     throw new TypeError("toolName has an invalid format");
   }
   if (!INSTALLATION_ID.test(input.installationId ?? "")) {

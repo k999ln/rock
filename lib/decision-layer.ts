@@ -1,9 +1,6 @@
-import { experimental_evaluate as evaluate } from 'ai';
-import {
-  JEV_MODEL,
-  JEV_ROUTING_RUBRIC,
-  JEV_ROUTING_RUBRIC_ID,
-} from './jev-evaluation.ts';
+import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
+import { JEV_ROUTING_RUBRIC, JEV_ROUTING_RUBRIC_ID } from './jev-evaluation.ts';
+import { evaluateJev, type JevEvaluate } from './jev-transport.ts';
 
 export type DecisionIntent =
   | 'route'
@@ -181,14 +178,14 @@ type JevRouteAnswer = {
   probabilities?: Record<string, number>;
 };
 
-export type JevEvaluate = typeof evaluate;
+export type { JevEvaluate } from './jev-transport.ts';
 
 export class TypeSafeJevProvider implements DecisionProvider {
   readonly id = 'typesafe-jev' as const;
   private readonly apiKey: string;
-  private readonly evaluateFn: JevEvaluate;
+  private readonly evaluateFn?: JevEvaluate;
 
-  constructor(apiKey: string, evaluateFn: JevEvaluate = evaluate) {
+  constructor(apiKey: string, evaluateFn?: JevEvaluate) {
     this.apiKey = apiKey;
     this.evaluateFn = evaluateFn;
   }
@@ -198,15 +195,18 @@ export class TypeSafeJevProvider implements DecisionProvider {
   }
 
   async decide(request: DecisionRequest): Promise<DecisionResult> {
+    if (request.privacy !== 'remote-allowed')
+      throw new Error('REMOTE_CONSENT_REQUIRED');
+    assertSafeOutbound(request);
     if (!this.apiKey) throw new Error('TYPE_SAFE_JEV_UNAVAILABLE');
-    const evaluated = await this.evaluateFn({
-      model: JEV_MODEL,
-      state: JSON.stringify(request),
-      questions: JEV_ROUTING_RUBRIC,
-      maxRetries: 0,
-      headers: { Authorization: `Bearer ${this.apiKey}` },
-      providerOptions: { gateway: { zeroDataRetention: true } },
-    });
+    const evaluated = await evaluateJev(
+      {
+        apiKey: this.apiKey,
+        state: JSON.stringify(request),
+        questions: JEV_ROUTING_RUBRIC,
+      },
+      this.evaluateFn,
+    );
     const answer = evaluated.answers.destination as unknown as JevRouteAnswer;
     const allowed: DecisionDestination[] = [
       'code',

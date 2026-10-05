@@ -1,22 +1,32 @@
-import { experimental_evaluate as evaluate } from 'ai';
+import { SensitiveDataBlockedError } from '@/toolkits/spider-guard/detector.mjs';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
-  JEV_MODEL,
   JEV_RUBRICS,
   makeJevReceipt,
   validateJevEvaluationInput,
 } from '@/lib/jev-evaluation';
+import { evaluateJev } from '@/lib/jev-transport';
 import {
   authorizeRemoteAiRequest,
   RemoteAiGuardError,
 } from '@/lib/remote-ai-guard';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
+import { remoteAiPricingGateAccepted, remoteAiPricingUnavailable } from '@/lib/remote-ai-pricing-gate';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
 export async function POST(request: Request) {
   try {
-    await authorizeRemoteAiRequest(request, 'jev-evaluation', database());
+    const db = database();
+    const owner = await authorizeRemoteAiRequest(request, 'jev-evaluation', db);
+    if (!(await rockstarServiceScopeAllowed(
+      db,
+      owner,
+      'sky',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+    ))) return missingRockstarServiceScope('Sky');
+    if (!remoteAiPricingGateAccepted()) return remoteAiPricingUnavailable();
     const raw = await request.text();
     if (raw.length > 8_000) throw new Error('INVALID_INPUT');
     const input = validateJevEvaluationInput(JSON.parse(raw));
@@ -44,17 +54,25 @@ export async function POST(request: Request) {
       );
 
     const requestId = crypto.randomUUID();
-    const result = await evaluate({
-      model: JEV_MODEL,
+    const result = await evaluateJev({
+      apiKey: runtimeEnv.AI_GATEWAY_API_KEY,
       state: input.state,
       questions: JEV_RUBRICS[input.rubricId],
-      maxRetries: 0,
-      headers: { Authorization: `Bearer ${runtimeEnv.AI_GATEWAY_API_KEY}` },
-      providerOptions: { gateway: { zeroDataRetention: true } },
     });
     const receipt = await makeJevReceipt(requestId, input, result);
     return Response.json(receipt, { headers: noStoreHeaders });
   } catch (error) {
+    if (error instanceof SensitiveDataBlockedError)
+      return Response.json(
+        {
+          error:
+            'Spider Guardが機密情報の外部送信を止めました。内容を取り除いて再試行してください。',
+          code: error.code,
+          count: error.count,
+          kinds: error.kinds,
+        },
+        { status: error.status, headers: noStoreHeaders },
+      );
     if (error instanceof RemoteAiGuardError)
       return Response.json(
         {
@@ -68,10 +86,7 @@ export async function POST(request: Request) {
         },
         { status: error.status, headers: noStoreHeaders },
       );
-    console.error(
-      'jev evaluation failed',
-      error instanceof Error ? error.message : 'unknown',
-    );
+    console.error('jev evaluation failed', 'UPSTREAM_OR_INPUT_ERROR');
     return Response.json(
       {
         error:

@@ -48,6 +48,7 @@ jobs:
             packages/sky-zema-core/README.md \
             packages/sky-zema-core/package.json \
             packages/sky-zema-core/src/index.js \
+            packages/sky-zema-core/src/handoff.js \
             packages/sky-zema-core/test/index.test.js \
             packages/sky-sdk/README.md \
             packages/sky-sdk/package.json \
@@ -110,6 +111,7 @@ jobs:
           install -D public-release/rockstaros/packages/sky-zema-core/README.md public-repository/packages/sky-zema-core/README.md
           install -D public-release/rockstaros/packages/sky-zema-core/package.json public-repository/packages/sky-zema-core/package.json
           install -D public-release/rockstaros/packages/sky-zema-core/src/index.js public-repository/packages/sky-zema-core/src/index.js
+          install -D public-release/rockstaros/packages/sky-zema-core/src/handoff.js public-repository/packages/sky-zema-core/src/handoff.js
           install -D public-release/rockstaros/packages/sky-zema-core/test/index.test.js public-repository/packages/sky-zema-core/test/index.test.js
           install -D public-release/rockstaros/packages/sky-sdk/README.md public-repository/packages/sky-sdk/README.md
           install -D public-release/rockstaros/packages/sky-sdk/package.json public-repository/packages/sky-sdk/package.json

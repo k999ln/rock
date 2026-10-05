@@ -1,6 +1,8 @@
 # Sky Tool SDK / Rock Studio — 自動化をSky商品へする標準導線
 
-最終更新: 2026-09-15
+最終更新: 2026-10-03
+
+2026-10-03更新: SDK 0.1.3は、PC内MCPへ不正な非ASCII認証値が届いた際のprocess停止を防ぐ。Studioの導入URLとCLIが生成する依存の最小版を0.1.3へ揃え、配布tgzの5ファイルを同じrepository sourceと照合する。旧版archiveは保持する。今回のGit保存はnpm公開や稼働中Toolの自動更新ではない。
 
 2026-09-20更新: SDK 0.1.2ではPC内ToolがRockstarOSのSky一覧へ自動で現れ、カードからHubへ接続できる。`publicMcpUrl`を省くとSky URL・開発者キーなしでローカル専用起動できる。公開URLを設定した場合だけSky RegistryへのPackage登録と利用記録を試す。PCでの接続成功はnative OS、公開審査やCloud配備の合格を意味しない。
 
@@ -99,11 +101,13 @@ Sky Tool SDKは同じTool定義から次を生成する。
 
 SDKはNode.js内にMCP `initialize`、`notifications/initialized`、`tools/list`、`tools/call`、`/health`を提供する。入力とhandlerの出力を宣言Schemaへ照合し、timeoutを成功にしない。外部書込みまたは金融副作用があるToolは`authorize` callbackがなければ定義を拒否する。
 
+PC内MCPの`x-sky-local-secret`は、string型を確認した後、受信値と期待値をUTF-8 Bufferへ変換し、byte長が同じ場合だけ定時間比較する。不一致・欠落は本文やhandlerを実行せず401で拒否する。非ASCII値もprocessを終了させず、同じserverで後続の正当な認証要求を処理する。資格情報を応答・ログへ含めず、loopback、private descriptor、一回承認の境界を維持する。隔離childの実HTTP回帰で不正入力後のhealthと正当なTool実行を確認し、実機・外部到達・秘密漏洩の証拠とは分ける。
+
 SDK単体の`authorize`は承認UIではない。Sky Connectorから実行する場合は、引数に結び付いた一回限りのExecution Covenantをcallbackで検証する。送信後timeoutは`outcome_unknown`とし、自動再試行しない。SDKのhandlerは開発者プロセスで動くため、任意コードSandboxの代替ではない。
 
 ## Fundとの関係
 
-Toolは単独でもMCPとして利用できる。Fundは複数Toolを目的別に束ね、LLMが順序、停止条件、成果確認を計画する商品面である。`fund.categories`と`fund.tags`はFund候補を探す情報であり、権限を増やしたり承認を省略したりしない。有料Toolの対価はPackageの開発者受取人へ帰属し、ToBのSky登録料・基本利用料・Sky売上手数料は0の既存方針を維持する。決済・払出しProviderの本番受入までは実売上や送金を開始しない。
+Toolは単独でもMCPとして利用できる。Fundは複数Toolを目的別に束ね、LLMが順序、停止条件、成果確認を計画する商品面である。`fund.categories`と`fund.tags`はFund候補を探す情報であり、権限を増やしたり承認を省略したりしない。有料Toolの対価はPackageの開発者受取人へ帰属し、ToBのSky登録料・基本利用料は0円、売上発生時のSky手数料は10%とする。決済・払出しProviderの本番受入までは実売上や送金を開始しない。
 
 ## 完了条件
 

@@ -8,7 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from types import SimpleNamespace
 
 ROOT=Path(__file__).resolve().parents[1]/'os/desktop'
@@ -95,6 +95,80 @@ class BrowserCredentialGuards(unittest.TestCase):
         with patch.dict(sys.modules,{'browser_server':viewer}),patch.object(launcher,'remote',return_value=fixture):
             with self.assertRaisesRegex(ValueError,'current session'):
                 launcher.browser_display_url({}, {'session':'fixture-session'},self.state,True)
+
+    def test_browser_open_uses_private_stdin_and_fixed_arguments(self):
+        for viewer_port, display_port in ((8899,5909),(8900,5910),(1024,65535)):
+            url=f'http://127.0.0.1:{viewer_port}/index.html#port={display_port}&password=TEST_-12'
+            with self.subTest(viewer_port=viewer_port),patch.object(launcher.subprocess,'run') as run:
+                launcher.open_browser_display(url)
+            run.assert_called_once_with(['/usr/bin/osascript','-l','AppleScript','-'],
+                                        input='open location "'+url+'"\n',text=True,check=True,timeout=10,
+                                        stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            self.assertNotIn('TEST_-12',json.dumps(run.call_args.args))
+            self.assertNotIn('env',run.call_args.kwargs)
+            self.assertNotIn('shell',run.call_args.kwargs)
+
+    def test_browser_open_rejects_script_characters_and_non_generated_urls_before_spawn(self):
+        safe='http://127.0.0.1:8899/index.html#port=5909&password=TEST_-12'
+        invalid=(None,123,'',safe+'\n',safe+'\r',safe+'\0',safe+'"',safe+'\\',
+                 safe.replace('TEST_-12','TEST_-1"'),safe.replace('TEST_-12','TEST_-1\n'),
+                 safe+'\nopen location "https://example.test"',safe.replace('http:','https:'),
+                 safe.replace('127.0.0.1','localhost'),safe.replace('127.0.0.1','example.test'),
+                 safe.replace('/index.html','/other.html'),safe.replace('#port','?port'),
+                 safe.replace('8899','1023'),safe.replace('5909','65536'),safe.replace('5909','8899'),
+                 safe.replace('8899','08899'),safe.replace('TEST_-12','TEST_-123'),safe+'&extra=1')
+        with patch.object(launcher.subprocess,'run') as run:
+            for url in invalid:
+                with self.subTest(index=invalid.index(url)),self.assertRaises(ValueError) as error:
+                    launcher.open_browser_display(url)
+                self.assertEqual(str(error.exception),'画面を開けませんでした。接続とOSデータは保持されています。')
+            run.assert_not_called()
+
+    def test_browser_open_process_failures_are_sanitized_without_fallback(self):
+        url='http://127.0.0.1:8899/index.html#port=5909&password=TEST_-12'
+        failures=(subprocess.CalledProcessError(1,['synthetic',url],output=url,stderr=url),
+                  subprocess.TimeoutExpired(['synthetic',url],10,output=url,stderr=url),
+                  OSError(1,url,url))
+        for failure in failures:
+            with self.subTest(kind=type(failure).__name__),patch.object(launcher.subprocess,'run',side_effect=failure) as run:
+                with self.assertRaises(ValueError) as error: launcher.open_browser_display(url)
+            self.assertEqual(str(error.exception),'画面を開けませんでした。接続とOSデータは保持されています。')
+            self.assertIsNone(error.exception.__cause__)
+            self.assertTrue(error.exception.__suppress_context__)
+            self.assertEqual(run.call_count,1)
+
+    def test_launch_browser_handoff_is_private_and_no_open_skips_credential_read(self):
+        config={'host_state':str(self.root/'host'),'lima_home':'/unused','limactl':'unused','ssh_config':'/unused',
+                'port':5909,'device':{'name':'fixture','schema':'rock-desktop-device/3','viewer':'browser','network':'none'}}
+        device={'running':True,'session':'fixture-session','network':'none','viewer':'browser',
+                'vnc_socket':'/unused/vnc.sock','websocket_socket':'/unused/websocket.sock'}
+        viewer=SimpleNamespace(ensure_viewer=lambda state,session:'http://127.0.0.1:8899/index.html')
+        for open_window in (True,False):
+            with self.subTest(open_window=open_window):
+                responses=[SimpleNamespace(stdout='{"name":"rock","status":"Running"}'),
+                           SimpleNamespace(stdout='hostname 127.0.0.1\n'),SimpleNamespace(stdout='synthetic SSH')]
+                child=MagicMock(pid=123);child.poll.return_value=None
+                def remote(config,action,payload=None):
+                    if action=='status':return {'running':False}
+                    if action=='start':return device
+                    self.assertEqual(action,'display-secret')
+                    return {'session':device['session'],'password':'TEST_-12'}
+                with patch.dict(sys.modules,{'browser_server':viewer}),patch.object(launcher,'run',side_effect=responses), \
+                     patch.object(launcher,'remote',side_effect=remote) as guest_call, \
+                     patch.object(launcher,'tunnel_alive',return_value=False),patch.object(launcher.socket,'socket'), \
+                     patch.object(launcher.subprocess,'Popen',return_value=child), \
+                     patch.object(launcher,'websocket_ready',return_value=True),patch.object(launcher.subprocess,'run') as opener:
+                    result=launcher.launch(config,open_window)
+                self.assertEqual(opener.call_count,int(open_window))
+                self.assertEqual([call.args[1] for call in guest_call.call_args_list],
+                                 ['status','start']+(['display-secret'] if open_window else []))
+                if open_window:
+                    self.assertEqual(opener.call_args.args[0],['/usr/bin/osascript','-l','AppleScript','-'])
+                    self.assertIn('TEST_-12',opener.call_args.kwargs['input'])
+                    self.assertNotIn('TEST_-12',json.dumps(opener.call_args.args))
+                self.assertNotIn('TEST_-12',json.dumps(result))
+                self.assertFalse(any('TEST_-12' in path.read_text() for path in Path(config['host_state']).iterdir() if path.is_file()))
+                child.terminate.assert_not_called();child.kill.assert_not_called()
 
     def test_websocket_probe_checks_bounded_upgrade_response_and_challenge(self):
         import base64,hashlib

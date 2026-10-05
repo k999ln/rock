@@ -2,9 +2,10 @@
 
 import { useEffect, type ReactNode } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Cable, House } from 'lucide-react';
+import { ArrowUpRight, Cable, CircleHelp, House } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
 import { PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
+import skyStyles from '@/components/sky-surface.module.css';
 
 export default function WorkspaceShell({
   children,
@@ -13,6 +14,7 @@ export default function WorkspaceShell({
   onConnect,
   running = false,
   hideTopActions = false,
+  tone,
 }: {
   children: ReactNode;
   title: string;
@@ -20,6 +22,7 @@ export default function WorkspaceShell({
   onConnect?: () => void;
   running?: boolean;
   hideTopActions?: boolean;
+  tone?: 'sky';
 }) {
   useEffect(() => {
     void navigator.serviceWorker?.register('/sw.js').catch(() => {});
@@ -43,7 +46,7 @@ export default function WorkspaceShell({
         )
           event.preventDefault();
       }}
-      className="rock-workspace"
+      className={`rock-workspace${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
       data-running={running ? 'true' : 'false'}
       aria-busy={running}
     >
@@ -53,7 +56,7 @@ export default function WorkspaceShell({
       <div className="rock-main-column rock-main-column-full">
         <header className="rock-topbar">
           <Link
-            href="/"
+            href={tone === 'sky' ? '/sky/marketplace' : '/'}
             className="rock-home-link"
             aria-label="ホームへ戻る"
             aria-disabled={running || undefined}
@@ -85,10 +88,11 @@ export default function WorkspaceShell({
               ) : (
                 <Link
                   className="rock-button rock-button-subtle"
-                  href="/rockstaros/guide"
+                  href={tone === 'sky' ? '/sky/help' : '/rockstaros/guide'}
+                  aria-label="使い方を見る"
                   aria-disabled={running || undefined}
                 >
-                  使い方を見る
+                  <CircleHelp size={17} /> 使い方を見る
                 </Link>
               )}
             </div>
@@ -102,9 +106,9 @@ export default function WorkspaceShell({
           {children}
         </main>
         <div className="rock-bottom-note">
-          <span>{PRODUCT_RELEASE_NAME}</span>
+          <span>{tone === 'sky' ? 'Sky' : PRODUCT_RELEASE_NAME}</span>
           <Link
-            href="/rockstaros/guide#limits"
+            href={tone === 'sky' ? '/sky/help#limits' : '/rockstaros/guide#limits'}
             aria-disabled={running || undefined}
           >
             対応環境と既知の制限 <ArrowUpRight size={13} />

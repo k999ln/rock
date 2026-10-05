@@ -23,11 +23,13 @@ export type Automation = {
   integration?: 'fashion-brand-ops';
   environment: string;
   cost: string;
-  steps: string[];
+  steps: readonly string[];
+  /** A built-in PC MCP operation; does not authorize execution. */
+  mcpTool?: string;
   note: string;
 };
 
-const mrHubCandidates: Automation[] = [
+const mrHubCandidates = ([
   ['coconala-proposal-draft', 'ココナラ提案文の下書き', '案件・納品支援', '案件条件から提案文と確認リストを作る既存の端末内処理。', '既存のローカル実行器をSky SDKへ接続する'],
   ['gig-workflow', '受託案件ワークフロー', '案件・納品支援', '応募・交渉・制作・納品・売上確認の既存処理を段階ごとに支援。', '所有者設定を移し、外部操作に個別承認を付ける'],
   ['coconala-inbox', 'ココナラの依頼・添付整理', '案件・納品支援', '本人の依頼文と添付を整理する既存処理。', '本人の接続と保存範囲を確認する'],
@@ -39,20 +41,37 @@ const mrHubCandidates: Automation[] = [
   ['calendar-coordination', '予定・カレンダー連携', '生活・予定', '既存Coreの予定解釈とカレンダー連携処理。', '本人のアカウント接続と権限確認を行う'],
   ['telegram-notifications', 'Telegram通知・承認', '通知・連絡', '既存Botの依頼受付、通知、進捗確認をSkyの仕事につなぐ処理。', '本人確認済みBotと送信範囲を接続する'],
   ['producthunt-discovery', '外部ツール候補の発見', '市場・商品設計', 'Product Hunt公式API向けの候補検索処理。', 'API利用条件と商用許諾を確認する'],
-].map(([id, name, category, description, next]) => ({
+] as const).map(([id, name, category, description, next]) => ({
   id, name, category, description,
   source: 'https://github.com/k999ln/Mr.',
   license: 'MIT',
   licenseUrl: 'https://github.com/k999ln/Mr./blob/main/LICENSE',
   color: 'blue',
-  status: 'candidate',
-  origin: 'mr',
+  status: 'candidate' as const,
+  origin: 'mr' as const,
   environment: '既存コード・設計あり / Sky実行器は未接続',
   cost: '接続先、モデル、外部サービスの実費を接続時に確認します。',
   steps: [next, 'Sky SDKでPackageとMCPを登録する', '接続先、権限、副作用、結果を確認して使う'],
   note: 'Mr.の旧Automation Hubの在庫から移した導入候補です。Skyからの実行と外部サービスへの接続は、実装・検証後に有効になります。',
 }));
-export const catalog = ([
+const catalogEntries = [
+  {
+    id: 'rockstar-amc',
+    name: 'AMC · Goalと部隊の進捗',
+    category: '計画・進捗管理',
+    description: '作りたいものとGoal・意図から計画を準備し、部隊・作業・確認待ちをZemaで管理します。',
+    source: 'avocadoOS built-in',
+    launchPath: '/zema/amc',
+    environment: 'Sky / Zema / 保存・再開にはサインイン必須',
+    cost: '計画作成ではLLMや有料の外部実行を呼びません。工数はテンプレートによる参考値です。',
+    steps: ['依頼・Goal・意図を確認する', '計画を保存し、部隊と作業順を確認する', '作業の開始・提出・検収を記録する', '人の判断が必要な項目を確認し、Goalを受け入れる'],
+    note: '利用可能なのは計画作成と手動の進捗記録です。AIによる実装・自律実行・自動通知は未接続。OS・ハードウェアの32部隊は参照用で、依頼の計画と混同しません。',
+    color: 'green',
+    license: 'avocadoOS code',
+    licenseUrl: 'https://github.com/k999ln/rock',
+    status: 'ready',
+    origin: 'rockstaros',
+  },
   {
     id: 'rockstar-amc',
     name: 'AMC · Goalと部隊の進捗',
@@ -154,7 +173,7 @@ export const catalog = ([
       'https://github.com/k999ln/rock/tree/main/toolkits/fashion-brand-ops',
     integration: 'fashion-brand-ops',
     environment:
-      'PC / Node.js 22.13以上 / SkyへMCP接続後。外部Providerは任意接続',
+      '簡易プランはブラウザで利用可能。本格運用はPC / Node.js 22.13以上 / MCP接続が必要',
     cost: '初期状態はmockで外部費用なし。Higgsfield、Meta、Stripe等の外部料金は各契約に従い、実行前に確認します。',
     steps: [
       'ブランド方針と商品を登録し、数量・売上・粗利・期限・広告上限を目標にする',
@@ -173,25 +192,26 @@ export const catalog = ([
   },
   {
     id: 'rockstar-ip-studio',
-    name: 'IP Studio — SNS・ゲーム運用',
+    name: 'IP Studio — SNS・ゲーム・音声',
     category: 'IP・コンテンツ運用',
     description:
-      '参考画像と「何をしたいか」からキャラクター・スキンを制作し、Instagram・YouTube・Roblox・GTAなどへの導線を一つの運用フローで管理します。',
+      'キャラクター・スキンの制作からSNS・ゲーム展開を管理します。LiveKitによるIPキャラクターとの音声会話・電話対応の接続設定も用意しています（本体連携は未接続）。',
     source: 'avocadoOS built-in / Kaiya IP Studio',
     launchPath: 'http://127.0.0.1:18767/',
     environment:
       'このPCのIP Studio / Skyで接続状態と承認を管理',
     cost:
-      'ローカル利用は追加料金なし。Higgsfield、Make、各ゲーム・SNSの料金と契約は実行前に確認します。',
+      'ローカル利用は追加料金なし。生成・SNS・ゲームに加え、LiveKit、音声モデル、電話番号・通話回線の料金と契約は利用前に確認します。',
     steps: [
       '参考画像と「何をしたいか」を入力してIPの制作依頼を作る',
       'Higgsfieldで画像・動画を生成するか、完成素材を登録する',
       '権利・利用条件・ゲーム導入先を確認してゲーム版を記録する',
       'Instagram・YouTubeの投稿案を確認し、本人承認後にMakeへ送る',
       '投稿結果とゲームへの導線を同じIPの履歴へ戻す',
+      '音声会話・電話を使う場合はSkyの接続管理でLiveKitとAgentを登録する（本体との通話連携は未接続）',
     ],
     note:
-      'Skyは本人・接続・承認・停止状態を管理します。IP Studioは素材と生成・投稿案を扱います。APIキー、Cookie、SNSログイン情報はSkyの入力欄や仕事本文へ保存しません。投稿、広告、DM、ゲームへの提出は1回ごとの本人承認が必要です。',
+      'Skyは本人・接続・承認・停止状態を管理します。IP Studioは素材と生成・投稿案を扱います。APIキー、Cookie、SNSログイン情報はSkyの入力欄や仕事本文へ保存しません。投稿、広告、DM、ゲームへの提出は1回ごとの本人承認が必要です。音声送信・録音・電話発信の許可は別々に扱います。LiveKit設定を保存しても通話や番号取得は始まりません。',
     color: 'purple',
     license: 'avocadoOS / Kaiya IP Studio',
     licenseUrl: 'http://127.0.0.1:18767/',
@@ -200,22 +220,24 @@ export const catalog = ([
   },
   {
     id: 'coconala',
-    name: 'ココナラ案件チェック',
+    mcpTool: 'coconala_check',
+    name: 'ココナラ',
     category: '案件・納品支援',
     description:
-      '依頼文と提案文から、面談の必要性や役割の食い違いを確認。応募前の判断を助けます。',
+      '応募前の案件チェックから、代表受注・制作担当者への発注条件、納品、入金と支払いの管理まで。',
     source:
       'https://github.com/k999ln/Mr./blob/26a39d2c31ea5246cb78dbe42d86e333922db60c/skills/earn/gig/scripts/application_eligibility.py',
     runner: 'coconala',
-    environment: 'ブラウザ内 / Rockへのサインインが必要',
-    cost: '外部APIは使いません。サイト読込以外の追加通信はありません。',
+    launchPath: '/sky/tools/coconala',
+    environment: 'Skyの専用画面 / サインイン必須 / 本人別の非公開案件台帳',
+    cost: 'Sky Marketの売上手数料は10%。ココナラ手数料と担当者報酬は案件ごとに確認します。',
     steps: [
-      '依頼文と送信前の提案文を用意する',
-      '契約形態と発注率を元ページで確認する',
-      '案件チェックを実行し、理由を確認する',
-      '元ページの条件・規約を本人が確認して判断する',
+      '応募前に依頼文と提案文をチェックし、元ページの条件・規約を確認する',
+      '代表者の受注額と担当者の固定報酬・支払期日を事前登録する',
+      '規約・顧客説明・担当者への条件明示を記録し、納品と検収を管理する',
+      '顧客入金・返金と担当者への支払いを分けて記録する',
     ],
-    note: 'Mr.の単発・非同期案件向けルールを移植しました。ココナラの規約や受注可否を保証せず、自動応募・返信・入金確認は行いません。',
+    note: '応募前チェックはMr.の単発・非同期案件向けルールです。3%は見積りの参考値でSky手数料ではありません。ココナラの応募・契約・納品・入金照合、銀行振込は自動実行しません。手入力の入金は検証済み収益ではありません。',
     color: 'green',
     license: 'MIT',
     licenseUrl: '/toolkits/mr-LICENSE.txt',
@@ -224,6 +246,7 @@ export const catalog = ([
   },
   {
     id: 'mr-free-article',
+    mcpTool: 'make_free_article',
     name: '記事の無料版メーカー',
     category: '記事制作',
     description:
@@ -248,6 +271,7 @@ export const catalog = ([
   },
   {
     id: 'mr-citations',
+    mcpTool: 'format_citations',
     name: '出典整理ツール',
     category: '記事制作',
     description:
@@ -272,6 +296,7 @@ export const catalog = ([
   },
   {
     id: 'mr-delivery',
+    mcpTool: 'verify_delivery',
     name: '納品記録の照合',
     category: '案件・納品支援',
     description:
@@ -553,7 +578,7 @@ export const catalog = ([
       'Codex／Claude Codeの各turnを、速いmodelまたは強いmodelへ振り分ける候補。',
     source: 'https://github.com/gargpratyush/jev-router',
     license: 'MIT',
-    licenseUrl: 'https://github.com/gargpratyush/jev-router/blob/main/LICENSE',
+    licenseUrl: 'https://github.com/gargpratyush/jev-router/blob/master/LICENSE',
     color: 'orange',
     status: 'candidate',
     environment: '本人PC / Node.js 20.12以上・対応CLI・TypeSafe API',
@@ -610,9 +635,39 @@ export const catalog = ([
     note: '個人端末、SIM、連絡先、写真、password、決済情報へ接続しません。demoは支払選択画面までで、予約完了の証明ではありません。',
   },
   ...mrHubCandidates,
-] as Automation[]).map(
-  (tool): Automation =>
+] as const satisfies readonly Automation[];
+
+export type CatalogToolId = (typeof catalogEntries)[number]['id'];
+type TrackedRunner =
+  | 'coconala'
+  | 'free-article'
+  | 'citations'
+  | 'delivery-local'
+  | 'legal-intake'
+  | 'patent-assistant';
+export type TrackedCatalogToolId = Extract<
+  (typeof catalogEntries)[number],
+  { status: 'candidate' } | { runner: TrackedRunner }
+>['id'];
+
+export const catalog: Automation[] = catalogEntries.map(
+  (tool) =>
     tool.status === 'candidate'
       ? { ...tool, runner: 'candidate-local' as const }
       : tool,
 );
+
+/** Derived admission lists share catalog identity, never its readiness as execution authority. */
+export const catalogConnectionTools = catalogEntries.map(({ id }) => id);
+export const catalogJobTools = catalog.filter(({ status, runner }) =>
+  status === 'candidate' ||
+  (runner !== undefined && [
+    'coconala',
+    'free-article',
+    'citations',
+    'delivery-local',
+    'legal-intake',
+    'patent-assistant',
+  ].includes(runner)),
+).map(({ id }) => id) as TrackedCatalogToolId[];
+export const coreMcpToolNames = catalog.flatMap(({ mcpTool }) => mcpTool ? [mcpTool] : []);

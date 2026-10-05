@@ -26,7 +26,7 @@ import java.util.UUID;
 /** Runs in an ephemeral Android emulator against real Binder and Android SQLite, no UI/accounts. */
 @RunWith(AndroidJUnit4.class)
 public class DeviceIntegrationTest {
-    @Test public void zemaPlanRunsTheSelectedLocalToolToReview() throws Exception {
+    @Test public void zemaDoesNotCreateWorkWithoutAnActiveVerifiedModelProfile() throws Exception {
         Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
         String name = "zema-integration-" + UUID.randomUUID() + ".db";
         Context isolatedDatabase = new ContextWrapper(target) {
@@ -35,31 +35,11 @@ public class DeviceIntegrationTest {
         try (AndroidDatabase db = new AndroidDatabase(isolatedDatabase)) {
             Engine engine = new Engine(db);
             Engine.SkySelection selection = engine.selectSkyTool(Engine.RECIPE);
-            String state = new LocalAiConnection(target).status();
-            if (!"ready".equals(state)) {
-                assertTrue(java.util.Set.of("no_model", "loading", "busy", "error").contains(state));
-                assertThrows(IllegalStateException.class, () ->
-                    new ZemaOrchestrator(target, engine).submit("zema-no-model", selection.token,
-                        "検証用の記事原稿と要約を準備して", "[]", true));
-                assertTrue(engine.list().isEmpty());
-                return;
-            }
-            assertEquals("ready", state);
-            String id = new ZemaOrchestrator(target, engine).submit(
-                "zema-" + UUID.randomUUID(), selection.token,
-                "検証用の記事原稿と要約を準備して", "[]", true);
-            for (int step = 0; step < 2; step++) {
-                Engine.Ticket ticket = engine.claim("zema-test-boot", SystemClock.elapsedRealtime(), true);
-                assertNotNull(ticket);
-                assertEquals(step, ticket.step);
-                ToolConnection.Result result = new ToolConnection(target).execute(ticket);
-                assertEquals("passed", result.outcome);
-                assertTrue(engine.finish(ticket, result.outcome, result.output,
-                    "zema-test-boot", SystemClock.elapsedRealtime()));
-            }
-            assertEquals("review", engine.work(id).get("state"));
-            assertTrue(!engine.result(id).trim().isEmpty());
-            assertEquals(5, engine.events(id).size());
+            IllegalStateException unavailable = assertThrows(IllegalStateException.class, () ->
+                new ZemaOrchestrator(target, engine).submit("zema-no-profile", selection.token,
+                    "検証用の記事原稿と要約を準備して", "[]", true));
+            assertEquals("MODEL_PROFILE_NOT_ACTIVE", unavailable.getMessage());
+            assertTrue(engine.list().isEmpty());
         } finally { target.deleteDatabase(name); }
     }
 
@@ -73,8 +53,9 @@ public class DeviceIntegrationTest {
         try (AndroidDatabase db = new AndroidDatabase(isolatedDatabase)) {
             db.execute("CREATE TABLE rock_meta(version INTEGER NOT NULL CHECK(version=1))");
             db.execute("INSERT INTO rock_meta VALUES(1)");
+            db.execute("CREATE TABLE works(id TEXT PRIMARY KEY,request_key TEXT NOT NULL UNIQUE,request_hash TEXT NOT NULL,state TEXT NOT NULL,sample INTEGER NOT NULL,review_note TEXT NOT NULL DEFAULT '')");
             Engine engine = new Engine(db);
-            assertEquals("2", db.query("SELECT version FROM rock_meta").get(0).get("version"));
+            assertEquals("3", db.query("SELECT version FROM rock_meta").get(0).get("version"));
             token = engine.selectSkyTool(Engine.RECIPE).token;
             assertEquals(Engine.RECIPE, engine.requireSkySelection(token));
         }

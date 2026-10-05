@@ -1,0 +1,30 @@
+title = "Rock Spider: default rules with exact public test fixtures"
+
+[extend]
+useDefault = true
+
+# Public RFC 8032 section 7.1 test key, documented by os/registry/README.md
+# and rebuilt from the public test seed by os/registry/make_fixtures.py.
+# SHA-256 of the complete fixture file:
+# c4932a9b6b97423b249a53e58d706f820185467464699038ed7ca5b29815ba03
+# Exact path AND exact extracted key; replacing it or copying it is still reported.
+[[rules]]
+id = "private-key"
+[[rules.allowlists]]
+description = "Documented public RFC 8032 registry fixture only"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\Asystems/rock-star-os/os/registry/fixtures/PUBLIC-FIXTURE-KEY\.pem\z''']
+regexes = ['''\A-----BEGIN\ PRIVATE\ KEY-----\nMC4CAQAwBQYDK2VwBCIEIJ1hsZ3v/VpguoRK9JLsLMREScVpezJpGXA7rAMcrn9g\n-----END\ PRIVATE\ KEY-----\z''']
+
+# Both constants are used only with the local recording Stripe fetcher in
+# tests/sky-commerce.test.mjs; the live-prefixed value tests live-mode refusal.
+# This does not permit arbitrary test/live keys or all test files.
+[[rules]]
+id = "stripe-access-token"
+[[rules.allowlists]]
+description = "Two exact synthetic values used by the commerce recording fetcher"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\Atests/sky-commerce\.test\.mjs\z''']
+regexes = ['''\A(?:sk_test_CommerceFixtureOnly|sk_live_CommerceFixtureOnly)\z''']

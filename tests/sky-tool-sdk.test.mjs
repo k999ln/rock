@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { spawn } from 'node:child_process';
+import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
+import { connect } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createSkyToolApp } from '../toolkits/sky-tool-sdk/src/index.mjs';
@@ -38,6 +40,92 @@ void test('local SDK Tool starts without cloud credentials and protects direct c
     /公開登録にはSky URLと開発者キー/,
   );
 });
+
+void test('malformed local authentication cannot terminate the SDK process', async (t) => {
+  const localToolDirectory = await mkdtemp(join(tmpdir(), 'sky-sdk-auth-'));
+  const moduleUrl = new URL('../toolkits/sky-tool-sdk/src/index.mjs', import.meta.url);
+  const child = spawn(process.execPath, ['--input-type=module', '--eval', `
+    import { createSkyToolApp } from ${JSON.stringify(moduleUrl.href)};
+    const app = createSkyToolApp({
+      developer: { id: 'example-developer', name: 'Example Developer', supportUrl: 'https://example.com/support' },
+      app: { id: 'com.example.auth', name: 'Example Auth', version: '1.0.0', sourceUrl: 'https://github.com/example/auth', license: 'MIT' },
+      localToolDirectory: ${JSON.stringify(localToolDirectory)},
+      fetch: async () => { throw new Error('Unexpected external request'); },
+    });
+    (${addCountTool.toString()})(app);
+    const runtime = await app.start();
+    process.send({ port: runtime.port, localId: runtime.localId });
+    process.once('message', async () => {
+      await runtime.close();
+      process.disconnect();
+    });
+  `], { stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
+  const exited = new Promise((resolve) => child.once('close', (code, signal) => resolve({ code, signal })));
+  t.after(async () => {
+    if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+    try { await bounded(exited); }
+    finally { await rm(localToolDirectory, { recursive: true, force: true }); }
+  });
+  const runtime = await bounded(new Promise((resolve, reject) => {
+    child.once('message', resolve);
+    child.once('error', () => reject(new Error('SDK child could not start')));
+    child.once('exit', () => reject(new Error('SDK child exited before ready')));
+  }));
+  const descriptor = JSON.parse(await readFile(join(localToolDirectory, `${runtime.localId}.json`), 'utf8'));
+  const pid = child.pid;
+  assert.equal(descriptor.pid, pid);
+
+  // Write Latin-1 explicitly: some HTTP clients encode these header characters
+  // as UTF-8 on the wire, which would miss the same-character-count boundary.
+  for (const supplied of ['é'.repeat(43), null, 'short', '!'.repeat(43)]) {
+    const status = await new Promise((resolve, reject) => {
+      let response = '';
+      const socket = connect({ host: '127.0.0.1', port: runtime.port }, () => {
+        const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' });
+        const header = supplied === null ? '' : `x-sky-local-secret: ${supplied}\r\n`;
+        socket.write(Buffer.from(`POST /mcp HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: ${Buffer.byteLength(body)}\r\n${header}\r\n${body}`, 'latin1'));
+      });
+      socket.on('data', (chunk) => { response = (response + chunk.toString('latin1')).slice(0, 4096); });
+      socket.once('error', () => reject(new Error('SDK local request failed')));
+      socket.once('close', () => resolve(Number(/^HTTP\/1\.1 (\d{3})/.exec(response)?.[1]) || null));
+      socket.setTimeout(3000, () => socket.destroy(new Error('SDK local request timed out')));
+    });
+    assert.equal(status, 401);
+  }
+
+  const baseUrl = `http://127.0.0.1:${runtime.port}`;
+  const health = await fetch(`${baseUrl}/health`, { signal: AbortSignal.timeout(3000) });
+  assert.equal(health.status, 200);
+  assert.equal((await health.json()).ok, true);
+  for (const [id, method, params] of [
+    [2, 'tools/list', undefined],
+    [3, 'tools/call', { name: 'count_characters', arguments: { text: 'Sky' } }],
+  ]) {
+    const response = await fetch(`${baseUrl}/mcp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-sky-local-secret': descriptor.secret },
+      body: JSON.stringify({ jsonrpc: '2.0', id, method, params }),
+      signal: AbortSignal.timeout(3000),
+    });
+    assert.equal(response.status, 200);
+    const message = await response.json();
+    if (method === 'tools/list') assert.equal(message.result.tools[0].name, 'count_characters');
+    else assert.deepEqual(message.result.structuredContent, { characters: 3 });
+  }
+  assert.equal(child.pid, pid);
+  assert.equal(child.exitCode, null);
+  child.send('close');
+  assert.deepEqual(await bounded(exited), { code: 0, signal: null });
+  assert.deepEqual(await readdir(localToolDirectory), []);
+});
+
+function bounded(promise) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('SDK child deadline exceeded')), 5000); }),
+  ]).finally(() => clearTimeout(timer));
+}
 
 function sdk(overrides = {}) {
   const calls = [];
@@ -113,9 +201,22 @@ function addCountTool(app, handler = async ({ text }) => ({ characters: [...text
       additionalProperties: false,
       properties: { characters: { type: 'integer' } },
     },
+    price: { model: 'free', note: '検証Tool。実行ごとの追加料金なし。' },
     handler,
   });
 }
+
+void test('SDK refuses Tool definitions with missing or unsupported pricing', () => {
+  const { app } = sdk();
+  const base = {
+    name: 'unpriced',
+    description: '料金未定義Toolの登録拒否を検証します。',
+    inputSchema: { type: 'object', properties: {} },
+    handler: async () => ({}),
+  };
+  assert.throws(() => app.tool(base), { code: 'pricing_required' });
+  assert.throws(() => app.tool({ ...base, price: { model: 'mystery', note: '料金' } }), { code: 'pricing_required' });
+});
 
 async function rpc(runtime, id, method, params) {
   const response = await fetch(`http://${runtime.host}:${runtime.port}${runtime.path}`, {
@@ -204,6 +305,7 @@ void test('side-effect tools require an authorization callback', () => {
           properties: { amount: { type: 'integer' } },
         },
         sideEffects: ['financial'],
+        price: { model: 'usage', note: '外部料金はquote連携まで無効です。' },
         handler: async () => ({ status: 'prepared' }),
       }),
     /authorize callback/,
@@ -226,6 +328,7 @@ void test('handler results must match the declared output schema', async (t) => 
       required: ['count'],
       properties: { count: { type: 'integer' } },
     },
+    price: { model: 'free', note: 'ローカルSchema検証のみ。' },
     handler: async () => ({ count: 'not-an-integer' }),
   });
   const runtime = await app.start();

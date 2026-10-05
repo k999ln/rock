@@ -1,0 +1,117 @@
+.shell { padding: 0; min-height: calc(100dvh - 70px); color: #eef3f6; background: #090d12; }
+.page { width: min(960px, calc(100% - 48px)); margin: 0 auto; padding: 32px 0 90px; }
+.back, .textLink { display: inline-flex; align-items: center; gap: 7px; color: #b8cbd6; font-size: 13px; text-decoration: none; }
+.header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px; margin: 34px 0 28px; }
+.eyebrow { color: #9ebacc; font: 700 11px/1.3 ui-monospace, monospace; letter-spacing: .14em; }
+.header h1 { margin: 9px 0; font-size: clamp(28px, 4vw, 38px); font-weight: 650; line-height: 1.3; letter-spacing: -.04em; }
+.header p, .panelHeading p { margin: 0; color: #a0b1bc; font-size: 13px; line-height: 1.8; }
+.navigation { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 18px; }
+.navigation a { display: inline-flex; min-height: 42px; align-items: center; gap: 7px; padding: 0 12px; border: 1px solid #354552; border-radius: 11px; color: #c8d9e3; text-decoration: none; font-size: 12px; }
+.primary, .secondary, .danger { display: inline-flex; min-height: 44px; justify-content: center; align-items: center; gap: 8px; padding: 11px 16px; border: 1px solid transparent; border-radius: 11px; font: inherit; font-size: 13px; font-weight: 650; line-height: 1.5; text-decoration: none; cursor: pointer; }
+.primary { color: #10212b; background: #c3e1f0; }
+.secondary { color: #d0dde6; background: #15212b; border-color: #354552; }
+.danger { color: #fff; background: #924247; border-color: #bd6368; }
+.primary:hover { background: #e3f3fb; }
+.secondary:hover, .navigation a:hover { background: #21333f; }
+.primary:disabled, .secondary:disabled, .danger:disabled, .textButton:disabled { cursor: wait; opacity: .55; }
+.page :is(button, a, input, textarea, select):focus-visible, .purchaseBox :is(a, button):focus-visible { outline: 2px solid #bce3fa; outline-offset: 3px; }
+.panel { margin: 20px 0; padding: 26px; border: 1px solid #2d3c46; border-radius: 18px; background: #121b23; }
+.panelHeading { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 22px; }
+.panelHeading h2, .sectionTitle { margin: 0 0 7px; font-size: 19px; font-weight: 650; letter-spacing: -.025em; }
+.sectionTitle { margin-top: 32px; margin-bottom: 15px; }
+.feeBadge, .status { display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; border: 1px solid #405768; border-radius: 999px; color: #aecdde; background: #1c2b35; font-size: 11px; line-height: 1.5; white-space: nowrap; }
+.status[data-status='paid'] { color: #a5e2c7; border-color: #3f7768; background: #1c3b32; }
+.status[data-status='refunded'], .status[data-status='partially_refunded'], .status[data-status='expired'], .status[data-status='failed'] { color: #b0b8c0; background: #272c30; border-color: #414c54; }
+.status[data-status='disputed'], .status[data-status='refund_pending'] { color: #eed4aa; border-color: #766545; background: #30291e; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.notice { display: block; padding: 12px 15px; border: 1px solid #425364; border-radius: 11px; color: #bdd2e0; background: #182630; font-size: 12px; line-height: 1.8; }
+.error { margin: 14px 0; padding: 12px 15px; border: 1px solid #815057; border-radius: 11px; color: #f5c2c7; background: #342127; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+.error p { margin: 0; }
+.error a { margin-top: 12px; }
+.success { display: flex; gap: 7px; align-items: center; color: #a5e2c7; font-size: 13px; }
+.loading, .subtle { display: block; color: #9eb1bd; font-size: 12px; line-height: 1.8; }
+.empty { display: grid; justify-items: center; padding: 45px 24px; border: 1px dashed #344550; border-radius: 18px; color: #9eb4c3; text-align: center; }
+.empty h2 { margin: 16px 0 5px; color: #e9f0f5; font-size: 21px; font-weight: 650; }
+.empty p { margin: 0 0 22px; font-size: 13px; line-height: 1.8; }
+.selectLabel, .offerForm > label:not(.checkbox) { display: grid; gap: 9px; color: #d5e2ea; font-size: 13px; }
+.selectLabel { margin-bottom: 20px; }
+.offerForm { display: grid; gap: 18px; max-width: 600px; }
+.offerForm :is(input:not([type='checkbox']), textarea), .selectLabel select { width: 100%; min-width: 0; padding: 12px 14px; border: 1px solid #40535f; border-radius: 10px; color: #eef4f7; background: #0e161d; font: inherit; font-size: 14px; line-height: 1.5; }
+.offerForm input::placeholder, .offerForm textarea::placeholder { color: #708995; }
+.offerForm textarea { resize: vertical; }
+.offerForm .subtle, .offerForm .notice, .offerForm .success { margin: 0; }
+.checkbox { display: flex; align-items: center; gap: 10px; color: #d5e2ea; font-size: 13px; min-height: 35px; }
+.checkbox input { width: 18px; height: 18px; accent-color: #b8d9ec; }
+.feeBreakdown { display: grid; gap: 10px; padding: 16px; border: 1px solid #334951; border-radius: 12px; background: #17282c; }
+.feeBreakdown > div { display: flex; justify-content: space-between; gap: 16px; color: #b2c9cf; font-size: 13px; }
+.feeBreakdown strong { color: #e1f1eb; }
+.noTools p { color: #a0b1bc; font-size: 13px; line-height: 1.8; }
+.orderList { display: grid; gap: 15px; margin-top: 20px; }
+.order { padding: 23px; border: 1px solid #2d3c46; border-radius: 16px; background: #121b23; }
+.orderHeading { display: flex; align-items: start; gap: 13px; }
+.orderIcon { display: grid; flex: 0 0 auto; width: 44px; height: 44px; place-items: center; border: 1px solid #395363; border-radius: 12px; color: #c3deec; background: #203440; }
+.orderName { min-width: 0; flex: 1; }
+.orderName h3 { margin: 0 0 6px; color: #e8f1f5; font-size: 16px; font-weight: 650; overflow-wrap: anywhere; }
+.orderName p { margin: 0; color: #91a7b4; font-size: 11px; line-height: 1.7; }
+.orderAmount { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 18px; margin: 20px 0; }
+.orderAmount strong { font-size: 21px; font-weight: 600; }
+.orderAmount > span { color: #9eb1bd; font-size: 12px; }
+.textButton { display: inline-flex; min-height: 40px; align-items: center; gap: 7px; padding: 6px 0; border: 0; color: #abc9d9; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
+.endpoint { display: block; user-select: all; overflow-wrap: anywhere; }
+.purchaseBox { margin-top: 22px; padding-top: 23px; border-top: 1px solid #354751; }
+.price { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+.price strong { color: #eef4f7; font-size: 30px; font-weight: 650; letter-spacing: -.03em; }
+.price span { color: #aec2ce; font-size: 12px; }
+.refundPolicy { color: #b9ccd7; font-size: 12px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; }
+.purchaseConditions { margin-top: 16px; padding-top: 8px; border-top: 1px solid #2d3c46; }
+.purchaseConditions summary { padding: 9px 0; color: #abc9d9; font-size: 12px; cursor: pointer; }
+.purchaseConditions summary:focus-visible { outline: 2px solid #bce3fa; outline-offset: 3px; }
+.purchaseConditions[open] summary { margin-bottom: 8px; }
+.esimSetup { display: grid; gap: 12px; margin-top: 20px; padding: 18px; border: 1px solid #334a58; border-radius: 13px; background: #0f1921; }
+.esimSetupHeader { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; }
+.esimSetupHeader > div { min-width: 0; }
+.esimSetupHeader h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 5px; color: #e1edf3; font-size: 14px; font-weight: 650; }
+.esimSetupHeader p { margin: 0; color: #9eb1bd; font-size: 12px; line-height: 1.7; }
+.esimSetupHeader .secondary { min-height: 38px; padding: 8px 11px; }
+.esimState { display: flex; align-items: center; gap: 7px; margin: 0; color: #b8dbc9; font-size: 12px; }
+.esimMaterial { display: grid; gap: 12px; }
+.esimMaterial > .notice, .esimMaterial > .subtle, .esimSetup > .notice { margin: 0; }
+.esimLinks { display: flex; flex-wrap: wrap; gap: 10px; }
+.esimManual { border-top: 1px solid #2d414d; }
+.esimManual summary { padding: 9px 0; color: #abc9d9; font-size: 12px; cursor: pointer; }
+.esimManual dl { display: grid; gap: 9px; margin: 8px 0 0; }
+.esimManual dl > div { display: grid; gap: 3px; }
+.esimManual dt { color: #91a7b4; font-size: 11px; }
+.esimManual dd { margin: 0; color: #edf3f6; font: 12px/1.7 ui-monospace, monospace; overflow-wrap: anywhere; user-select: all; }
+.esimMaterial .success { margin: 0; }
+.esimCatalog { display: grid; gap: 18px; margin-top: 22px; padding: 24px; border: 1px solid #2d3c46; border-radius: 18px; background: #121b23; }
+.esimCatalogTitle h2 { display: flex; align-items: center; gap: 9px; margin: 0 0 7px; font-size: 18px; font-weight: 650; }
+.esimCatalogTitle p { margin: 0; color: #a0b1bc; font-size: 13px; line-height: 1.8; }
+.esimContractState { display: flex; align-items: center; gap: 9px; padding: 14px; border: 1px solid #4c5960; border-radius: 11px; color: #d9e4e9; background: #1a252c; font-size: 13px; line-height: 1.7; }
+.noEsimPlans { margin: 0; padding: 18px; border: 1px dashed #40515b; border-radius: 11px; color: #afc0c9; background: #10181e; font-size: 13px; line-height: 1.8; }
+.esimPlanList { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 14px; }
+.esimPlanCard { display: grid; align-content: start; gap: 13px; padding: 18px; border: 1px solid #354751; border-radius: 13px; background: #0e161d; }
+.esimPlanCard h3 { margin: 0; color: #e7f0f5; font-size: 16px; }
+.esimPlanCard > p { margin: 0; color: #9fb2bd; font-size: 12px; line-height: 1.7; }
+.esimPlanCard dl { display: grid; gap: 9px; margin: 0; }
+.esimPlanCard dl > div { display: grid; grid-template-columns: minmax(88px, .8fr) 1fr; gap: 12px; font-size: 12px; }
+.esimPlanCard dt { color: #90a6b2; }
+.esimPlanCard dd { margin: 0; color: #e0eaf0; text-align: right; overflow-wrap: anywhere; }
+.esimPlanCard strong { color: #b9cbd4; font-size: 12px; }
+.esimPlanCard ul { margin: 5px 0 0; padding-left: 20px; color: #a5b7c1; font-size: 12px; line-height: 1.7; }
+.esimPlanCard button { justify-self: start; cursor: not-allowed; }
+.esimDeviceNote { display: flex; align-items: flex-start; gap: 8px; margin: 0; color: #97aeb9; font-size: 12px; line-height: 1.7; }
+.esimDeviceNote svg { flex: 0 0 auto; margin-top: 2px; }
+.refundDialog { width: min(520px, calc(100% - 32px)); padding: 28px; border: 1px solid #4b6776; border-radius: 20px; color: #eaf3f7; background: #16232b; }
+.refundDialog h2 { font-size: 22px; }
+.refundDialog > p { margin: 12px 0 22px; color: #b1c5d1; font-size: 14px; line-height: 1.8; }
+@media (max-width: 620px) {
+  .page { width: calc(100% - 32px); padding-top: 23px; }
+  .header { margin-top: 26px; }
+  .panel, .order { padding: 19px 16px; }
+  .esimSetup { padding: 15px 12px; }
+  .orderHeading { flex-wrap: wrap; gap: 10px; }
+  .orderName { flex-basis: calc(100% - 60px); }
+  .orderHeading > .status { margin-left: 54px; }
+  .actions > .primary, .actions > .secondary { flex: 1 1 auto; }
+}

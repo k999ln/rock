@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:compute-device-capabilities:1",
+  "title": "RockstarOS bounded execution-device capability observation",
+  "description": "Trusted adapter input for selecting one explicit local, PC, or cloud route. Public fixture observations are synthetic and are not physical-hardware measurements.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source",
+    "platform",
+    "observed_at",
+    "expires_at",
+    "online",
+    "pc_connected",
+    "features",
+    "memory_mib",
+    "storage_mib",
+    "local_models",
+    "evidence_id"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "source": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "platform": { "enum": ["android", "ios", "ipados", "linux", "windows", "macos", "web", "unknown"] },
+    "observed_at": { "type": "integer", "minimum": 1 },
+    "expires_at": { "type": "integer", "minimum": 1 },
+    "online": { "type": "boolean" },
+    "pc_connected": { "type": "boolean" },
+    "features": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": { "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:@/-]{0,159}$" },
+      "additionalProperties": { "type": ["boolean", "null"] }
+    },
+    "memory_mib": { "type": "integer", "minimum": 0, "maximum": 1048576 },
+    "storage_mib": { "type": "integer", "minimum": 0, "maximum": 1048576 },
+    "local_models": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 160 }
+    },
+    "evidence_id": { "type": "string", "minLength": 1, "maxLength": 160 }
+  },
+  "freshness": {
+    "clock": "same trusted adapter clock used by admission controller",
+    "maximumValiditySeconds": 30,
+    "expiredOrFutureBehavior": "deny and request a fresh observation"
+  },
+  "selection": {
+    "targetRequirements": {
+      "local": ["compute.local_inference", "storage.model_install"],
+      "pc_usb": ["compute.remote_pc"],
+      "cloud": ["network.internet"]
+    },
+    "unknownOrFalseRequiredCapability": "deny",
+    "routeChange": "explicit owner choice and new plan required; no automatic fallback",
+    "execution": "recheck exact observation digest, platform/model revision, resource bounds, owner, device, consent and deadline before claim"
+  },
+  "trust": {
+    "ownerSuppliedObservation": false,
+    "toolOrModelSelfAttestation": false,
+    "publicFixtureIsHardwareEvidence": false
+  }
+}

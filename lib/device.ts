@@ -1,3 +1,7 @@
+import { coreMcpToolNames } from './catalog';
+import { ensureLocalRuntime } from './sky-local-runtime';
+import { connectMcpSession, McpClientError, mcpToolNames, requestMcp } from './mcp-client';
+
 export const DEVICE_URL = 'http://127.0.0.1:38479';
 export const DEVICE_PROTOCOLS = [
   '2025-11-25',
@@ -5,12 +9,7 @@ export const DEVICE_PROTOCOLS = [
   '2025-03-26',
   '2024-11-05',
 ] as const;
-export const REQUIRED_DEVICE_TOOLS = [
-  'coconala_check',
-  'format_citations',
-  'make_free_article',
-  'verify_delivery',
-] as const;
+export const REQUIRED_DEVICE_TOOLS = coreMcpToolNames;
 export type RunRecorder = (
   tool: string,
   transport: 'browser' | 'local-mcp',
@@ -18,6 +17,7 @@ export type RunRecorder = (
   started: number,
   sample: boolean,
   outcome?: 'passed' | 'needs_review' | 'failed',
+  delegationId?: string,
 ) => Promise<void>;
 const TOKEN = 'loop.device.session';
 const DEVICE_ID = 'loop.device.id';
@@ -81,27 +81,7 @@ export function verifyDevice(): Promise<void> {
   )
     return verifying.promise;
   const promise = (async () => {
-    const response = await fetch(DEVICE_URL + '/mcp', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-        'MCP-Protocol-Version': deviceProtocol(),
-        Accept: 'application/json, text/event-stream',
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: crypto.randomUUID(),
-        method: 'ping',
-      }),
-      signal: AbortSignal.timeout(5000),
-    });
-    const message = (await response.json()) as {
-      error?: unknown;
-      result?: unknown;
-    };
-    if (!response.ok || message.error || !message.result)
-      throw new Error('PCとの接続が切れました。');
+    await requestMcp(deviceRequest(token), 'ping');
     if (!currentSession(token, id, generation))
       throw new Error('PC接続が変更されました。もう一度実行してください。');
     await reportDevice('heartbeat', id);
@@ -148,6 +128,9 @@ export function deviceProtocol() {
     return DEVICE_PROTOCOLS[0];
   }
 }
+function deviceRequest(token: string) {
+  return { baseUrl: DEVICE_URL, token, protocolVersion: deviceProtocol(), accept: 'application/json, text/event-stream' };
+}
 export function disconnectDevice() {
   sessionGeneration++;
   if (deviceToken()) void reportDevice('disconnect').catch(() => {});
@@ -160,96 +143,37 @@ export function disconnectDevice() {
 }
 export async function connectDevice() {
   const generation = ++sessionGeneration;
-  const r = await fetch(DEVICE_URL + '/connect', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: '{}',
-    signal: AbortSignal.timeout(5000),
-  });
-  if (!r.ok) throw new Error('PCの接続アプリを起動してください。');
-  const data = (await r.json()) as { token: string };
-  if (typeof data.token !== 'string' || data.token.length < 32)
-    throw new Error('接続を確認できませんでした。');
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json, text/event-stream',
-    Authorization: 'Bearer ' + data.token,
-  };
-  const call = async (id: number, method: string, params: unknown = {}) => {
-    const response = await fetch(DEVICE_URL + '/mcp', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ jsonrpc: '2.0', id, method, params }),
-      signal: AbortSignal.timeout(5000),
-    });
-    const result = (await response.json()) as {
-      error?: unknown;
-      result: {
-        tools?: { name?: unknown }[];
-        protocolVersion?: string;
-      };
-    };
-    if (!response.ok || result.error)
-      throw new Error('MCPに接続できませんでした。');
-    return result.result;
-  };
-  const initialized = await call(1, 'initialize', {
-    protocolVersion: DEVICE_PROTOCOLS[0],
-    capabilities: {},
+  await ensureLocalRuntime('connector');
+  const session = await connectMcpSession({
+    baseUrl: DEVICE_URL,
+    accept: 'application/json, text/event-stream',
+    protocols: DEVICE_PROTOCOLS,
     clientInfo: { name: 'rock-star-site', version: '0.2.0' },
+    minimumTokenLength: 32,
+  }).catch((error: unknown) => {
+    if (error instanceof McpClientError) {
+      if (error.code === 'token') throw new Error('接続を確認できませんでした。');
+      if (error.code === 'protocol') throw new Error('対応するMCPバージョンを確認できませんでした。');
+      if (error.code === 'initialized') throw new Error('MCPの初期接続が完了しませんでした。');
+      if (error.phase === 'connect') throw new Error('PCの接続アプリを起動してください。');
+    }
+    throw new Error('MCPに接続できませんでした。');
   });
-  if (
-    !initialized.protocolVersion ||
-    !DEVICE_PROTOCOLS.includes(
-      initialized.protocolVersion as (typeof DEVICE_PROTOCOLS)[number],
-    )
-  )
-    throw new Error('対応するMCPバージョンを確認できませんでした。');
-  headers['MCP-Protocol-Version'] = initialized.protocolVersion;
-  const notification = await fetch(DEVICE_URL + '/mcp', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      method: 'notifications/initialized',
-    }),
-    signal: AbortSignal.timeout(5000),
-  });
-  if (!notification.ok) throw new Error('MCPの初期接続が完了しませんでした。');
-  const listed = await call(2, 'tools/list');
-  const requiredTools = [
-    'coconala_check',
-    'format_citations',
-    'make_free_article',
-    'verify_delivery',
-  ];
-  const availableTools = new Set(
-    Array.isArray(listed.tools)
-      ? listed.tools.flatMap((tool) =>
-          tool &&
-          typeof tool === 'object' &&
-          typeof (tool as { name?: unknown }).name === 'string'
-            ? [(tool as { name: string }).name]
-            : [],
-        )
-      : [],
-  );
-  if (!requiredTools.every((name) => availableTools.has(name)))
-    throw new Error(
-      'PC接続アプリを更新してください。必要なMCPツールが不足しています。',
-    );
+  const availableTools = mcpToolNames(session.tools);
+  if (!REQUIRED_DEVICE_TOOLS.every((name) => availableTools.has(name)))
+    throw new Error('PC接続アプリを更新してください。必要なMCPツールが不足しています。');
   if (generation !== sessionGeneration)
     throw new Error('接続確認は取り消されました。');
   const id = crypto.randomUUID();
   sessionStorage.setItem(DEVICE_ID, id);
-  sessionStorage.setItem(TOKEN, data.token);
-  sessionStorage.setItem(DEVICE_PROTOCOL, initialized.protocolVersion);
+  sessionStorage.setItem(TOKEN, session.token);
+  sessionStorage.setItem(DEVICE_PROTOCOL, session.protocolVersion);
   try {
     await reportDevice('connect', id);
-    if (!currentSession(data.token, id, generation))
+    if (!currentSession(session.token, id, generation))
       throw new Error('PC接続が変更されました。接続状態を確認してください。');
   } catch (error) {
-    if (currentSession(data.token, id, generation)) {
+    if (currentSession(session.token, id, generation)) {
       sessionStorage.removeItem(TOKEN);
       sessionStorage.removeItem(DEVICE_ID);
       sessionStorage.removeItem(DEVICE_PROTOCOL);
@@ -257,7 +181,7 @@ export async function connectDevice() {
     throw error;
   }
   window.dispatchEvent(new Event('loop-device'));
-  return { ...data, toolCount: availableTools.size };
+  return { token: session.token, toolCount: availableTools.size };
 }
 export async function runDevice(name: string, args: Record<string, unknown>) {
   const token = deviceToken();
@@ -266,46 +190,24 @@ export async function runDevice(name: string, args: Record<string, unknown>) {
   const generation = sessionGeneration;
   activeCalls++;
   try {
-    const r = await fetch(DEVICE_URL + '/mcp', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json, text/event-stream',
-        'MCP-Protocol-Version': deviceProtocol(),
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: crypto.randomUUID(),
-        method: 'tools/call',
-        params: { name, arguments: args },
-      }),
-      signal: AbortSignal.timeout(60000),
-    }).catch(() => {
-      if (currentSession(token, id, generation)) disconnectDevice();
-      throw new Error('PCとの接続が切れました。接続し直してください。');
-    });
-    if (!r.ok) {
-      if (currentSession(token, id, generation)) disconnectDevice();
-      throw new Error('PCとの接続が切れました。接続し直してください。');
-    }
-    const data = (await r.json()) as {
-      error?: { message: string };
-      result?: {
-        isError?: boolean;
-        content: { text?: string }[];
-        structuredContent: { output: string; status?: string };
-      };
-    };
-    if (data.error || data.result?.isError)
-      throw new Error(
-        data.error?.message ||
-          data.result?.content[0]?.text ||
-          '入力を確認してください。',
-      );
-    if (!data.result?.structuredContent)
+    const result = await requestMcp<{
+      isError?: boolean;
+      content?: { text?: string }[];
+      structuredContent?: { output: string; status?: string };
+    }>({ ...deviceRequest(token), timeoutMs: 60000 }, 'tools/call', { name, arguments: args })
+      .catch((error: unknown) => {
+        if (error instanceof McpClientError && (error.code === 'network' || error.code === 'http')) {
+          if (currentSession(token, id, generation)) disconnectDevice();
+          throw new Error('PCとの接続が切れました。接続し直してください。');
+        }
+        if (error instanceof McpClientError && error.code === 'rpc') throw new Error(error.message);
+        throw new Error('MCPの応答が不正です。');
+      });
+    if (result.isError)
+      throw new Error(result.content?.[0]?.text || '入力を確認してください。');
+    if (!result.structuredContent)
       throw new Error('MCPの応答が不正です。');
-    return data.result.structuredContent as { output: string; status?: string };
+    return result.structuredContent as { output: string; status?: string };
   } finally {
     activeCalls--;
   }

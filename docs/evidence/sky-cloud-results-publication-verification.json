@@ -1,0 +1,71 @@
+{
+  "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+  "sourceCommit": "cb55411549649bd57429fa1afeb974139fc024da",
+  "version": 28,
+  "savedVersionId": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_14d5c89011dc819194a5c43e61bf8484",
+  "deployment": {
+    "id": "appgdep_6abf7528155081918663611877c2332e",
+    "project_id": "appgprj_6abdfad4c5648191bcae957913bd02fa",
+    "title": "Sky — ツールとAIのマーケットプレイス",
+    "version_id": "appgprj_6abdfad4c5648191bcae957913bd02fa~appgver_14d5c89011dc819194a5c43e61bf8484",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6abdfad4c5648191bcae957913bd02fa",
+    "failure_message": null,
+    "env_set_revision": 2,
+    "updated_at": "2026-10-02T09:11:18.473899+00:00"
+  },
+  "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "nativeArchive": {
+    "archive_format": "tar",
+    "sediment_file_id": "file_0000000073f081f69b6f783f1c5b1e48",
+    "content_hash": "sha256:ba8fd7e5750aab6e49226a43a15556522f8220be573a171ff6147dc363358b09",
+    "size_bytes": 14489600,
+    "file_count": 466
+  },
+  "localArchive": {
+    "gzipSha256": "9871c9fa2ad3a98fb097fc2bd85d35220608ca4a1449834d97793ed82f8eaccf",
+    "tarSha256": "38bc851553b023af989d997b35f4cdfd85b03dc72b682fd7d68f6a25cbdabeca",
+    "regularFiles": 954,
+    "regularFilesExcludingAppleDouble": 466,
+    "appleDoubleFiles": 488,
+    "hashEqualityWithNative": false
+  },
+  "liveReadback": {
+    "payment": [
+      {
+        "id": "6a969274-8d50-4a6f-8b54-1b2f143f6bdb",
+        "status": "completed",
+        "paymentStatus": "stripe_verified",
+        "quoteMinor": 5000,
+        "currency": "JPY",
+        "attempt": 1,
+        "revision": 3
+      }
+    ],
+    "cloudExecutionCount": 0,
+    "envRevision": 2,
+    "providerKeyConfigured": false
+  },
+  "newChargePerformed": false,
+  "actualProductionAIResponseVerified": false,
+  "actualOwnerSigninForNewUiVerified": false,
+  "pixelNewUiVerified": false,
+  "pixelBlocker": "Authorized Pixel connected; KeyguardServiceDelegate showing=true.",
+  "releaseDecision": "Focused launch remains incomplete; v28 UI/source deployment succeeded.",
+  "checks": {
+    "canonicalFullVerify": {
+      "exitCode": 0,
+      "node": 681,
+      "fashion": 19,
+      "workerD1": 938
+    },
+    "siteResultWorkerD1Assertions": 24,
+    "siteBuildTypeLintBundleAssets": true,
+    "siteFullProjectCheck": "Fails on preexisting SKY20 missing evidence; not claimed green.",
+    "canonicalCodeHashDrift": false
+  }
+}

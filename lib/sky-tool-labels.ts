@@ -21,15 +21,16 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky IP・SNS運用アシスタント',
     handle: '@sky_ip',
     initial: 'IP',
-    helper: 'IP・SNS運用の接続条件と公開前確認を整理します。公開や送信は行いません。',
-    placeholder: '対象IP・運用目的・確認したい公開前条件を入力',
+    helper: 'IP・SNS運用とLiveKitの音声・電話連携の接続条件を整理します。公開・音声送信・発信は行いません。',
+    placeholder: '対象IP・制作や音声会話の目的・接続したいサービスを入力',
   },
   'coconala-proposal-draft': {
     role: '提案文下書き役',
     provider: 'Sky 提案文アシスタント',
     handle: '@sky_proposal',
     initial: '提',
-    helper: '案件の条件を入れると、送信前に確認できる提案文を作ります。',
+    helper:
+      '案件条件を添えた定型の提案文を作ります。AI生成や応募・送信は行いません。',
     placeholder: '案件内容・納期・経験・確認したい条件を入力',
   },
   'gig-workflow': {
@@ -37,7 +38,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky 案件ワークフロー',
     handle: '@sky_gig',
     initial: '進',
-    helper: '応募から納品・売上確認までを、承認ポイント付きで整理します。',
+    helper:
+      '入力を添えた案件進行の確認テンプレートを作ります。外部の進捗や入金は取得しません。',
     placeholder: '案件の状況と、整理したい作業の流れを入力',
   },
   'coconala-inbox': {
@@ -45,7 +47,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky 依頼整理アシスタント',
     handle: '@sky_inbox',
     initial: '整',
-    helper: '依頼文から納期・報酬・添付・確認事項を分けて見える化します。',
+    helper:
+      '依頼文を添えた納期・報酬・添付の確認欄を作ります。条件の自動抽出や添付取得は行いません。',
     placeholder: '依頼文や確認したい内容を貼り付け',
   },
   'youtube-script-writer': {
@@ -53,7 +56,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky YouTube台本アシスタント',
     handle: '@sky_youtube',
     initial: '動',
-    helper: 'テーマと動画尺を入れると、台本・構成・撮影キューを作ります。',
+    helper:
+      '入力を添えた台本構成のテンプレートを作ります。動画尺に合わせた生成や撮影は行いません。',
     placeholder: 'テーマ・動画尺・対象者・入れたい結論を入力',
   },
   'seo-blueprint': {
@@ -61,7 +65,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky SEO構成アシスタント',
     handle: '@sky_seo',
     initial: 'S',
-    helper: '記事テーマと読者を入れると、検索意図と記事構成を整理します。',
+    helper:
+      '記事テーマを添えた検索意図・記事構成の確認テンプレートを作ります。検索調査やAI分析は行いません。',
     placeholder: '記事テーマ・読者・狙いたい検索語を入力',
   },
   'landing-page-sprint': {
@@ -69,7 +74,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky LP制作アシスタント',
     handle: '@sky_lp',
     initial: 'L',
-    helper: '商品と対象者を入れると、販売ページの構成と確認項目を作ります。',
+    helper:
+      '商品条件を添えた販売ページ構成のテンプレートを作ります。サイト生成や公開は行いません。',
     placeholder: '商品・対象者・価格・伝えたい強みを入力',
   },
   'sales-objection-reply-builder': {
@@ -77,7 +83,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky 商談返信アシスタント',
     handle: '@sky_sales',
     initial: '商',
-    helper: '相手の懸念を入れると、条件確認付きの返信と見積り項目を作ります。',
+    helper:
+      '入力を添えた定型の返信と見積り確認欄を作ります。価格の自動算出や送信は行いません。',
     placeholder: '相手の発言・商品条件・返信の目的を入力',
   },
   'user-interview-synthesizer': {
@@ -85,7 +92,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky 顧客理解アシスタント',
     handle: '@sky_interview',
     initial: '顧',
-    helper: '顧客の発言を入れると、テーマ・仮説・次の検証を整理します。',
+    helper:
+      '発言を添えて、テーマ・根拠・仮説の記入欄を作ります。AIによる分析は未接続です。',
     placeholder: '顧客の発言・困りごと・利用状況を入力',
   },
   'calendar-coordination': {
@@ -93,7 +101,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky 予定調整アシスタント',
     handle: '@sky_calendar',
     initial: '予',
-    helper: '候補条件を整理します。カレンダー変更や招待は本人確認後です。',
+    helper:
+      '依頼文を残し、日時・所要時間・場所の記入欄を作ります。条件の自動抽出とカレンダー接続は未実装です。',
     placeholder: '候補日・時間帯・所要時間・参加者条件を入力',
   },
   'telegram-notifications': {
@@ -101,7 +110,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky 通知アシスタント',
     handle: '@sky_telegram',
     initial: '通',
-    helper: '通知文を作ります。Bot接続と送信先を確認するまで送信しません。',
+    helper:
+      '入力を添えた定型の通知文を作ります。TelegramのBot接続や送信は行いません。',
     placeholder: '完了した仕事・通知したい相手・確認事項を入力',
   },
   'producthunt-discovery': {
@@ -109,7 +119,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky ツール発見アシスタント',
     handle: '@sky_discovery',
     initial: '発',
-    helper: '探したい分野を入れると、公式URL・料金・権限などの調査条件を作ります。',
+    helper:
+      '入力を添えた公式URL・料金・権限の調査チェックリストを作ります。候補検索やAPI取得は行いません。',
     placeholder: '探したい分野・用途・避けたい条件を入力',
   },
   'faster-whisper': {
@@ -133,7 +144,8 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky ブラウザ検証',
     handle: '@sky_playwright',
     initial: '検',
-    helper: '所有・許可済みサイトの読み取りテスト条件を整理します。送信はしません。',
+    helper:
+      '所有・許可済みサイトの読み取りテスト条件を整理します。送信はしません。',
     placeholder: 'テスト対象・ログイン後に確認したい画面を入力',
   },
   'jev-ultrafast': {

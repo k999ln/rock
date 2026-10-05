@@ -1,0 +1,52 @@
+{
+  "schema": "rockstaros-common-foundation-integration/1",
+  "recordedAt": "2026-10-02",
+  "baseCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "scope": "G04 shared implementations; PR39 site verification and PR51 CSV safety/check alignment",
+  "incorporatedHeads": {
+    "39": "4604bc4",
+    "51": "691fb279a3c4238ef46f956a76b558c987bac850"
+  },
+  "environment": {
+    "node": "26.0.0",
+    "dependencies": "fresh npm ci from committed root and Mini lockfiles",
+    "provider": "local synthetic/mocked only"
+  },
+  "fullVerify": {
+    "exitCode": 0,
+    "rootTests": 485,
+    "fashionTests": 22,
+    "siteTests": 18,
+    "publicPreviewTests": 21,
+    "workerD1Assertions": 172,
+    "csvD1R2Assertions": 113,
+    "webBundleComponents": 131,
+    "webAssetReferences": 114,
+    "missingAssets": 0,
+    "logSha256": "e27cea660e39295e9ce9056e235df8061b0b796fdcd7a0ad7392e5a8ede12810"
+  },
+  "additionalValidation": {
+    "miniFreshBuildRoutes": 13,
+    "publicPackageStandaloneImport": true,
+    "publicPublishAllowlistAndCopyClosure": true,
+    "sharedStripeCopyClosure": true,
+    "fashionAndMcpZipSourceEquality": true,
+    "independentReview": "no remaining actionable findings; 41 focused tests and strict types passed"
+  },
+  "githubCi": "Check the integration PR head; this file records local verification before that run.",
+  "mainMergeEvidence": "Use the integration PR merge state and commit ancestry; not inferred from local tests.",
+  "notPerformed": [
+    "Sites deployment",
+    "provider sandbox/live payment",
+    "OS image build/flash",
+    "physical acceptance"
+  ],
+  "preserved": [
+    "authentication/owner boundaries",
+    "revision compare-and-swap",
+    "per-tool approval and remote opt-in",
+    "financial/stock/terms conditions",
+    "native workflow and backup formats",
+    "pinned vendor and historical design archives"
+  ]
+}

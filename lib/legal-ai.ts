@@ -1,3 +1,4 @@
+import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import type {
   LegalIntakeInput,
   LegalAssessment,
@@ -6,6 +7,10 @@ import type {
   LegalMatterStage,
 } from './legal-intake';
 import { getSelfHelpResources, legalIssueCategories } from './legal-intake.ts';
+import {
+  parseResearchAiResponse,
+  type ResearchAiCitation,
+} from './research-ai.ts';
 
 export const LEGAL_AI_MODEL = 'gpt-5.4-nano';
 
@@ -33,7 +38,7 @@ export const LEGAL_AI_ALLOWED_DOMAINS = [
   'ftc.gov',
 ] as const;
 
-export type LegalAiCitation = { title: string; url: string };
+export type LegalAiCitation = ResearchAiCitation;
 
 export type LegalAiResult = {
   answer: string;
@@ -68,28 +73,6 @@ const stageIds = new Set<LegalMatterStage>([
   'document_review',
   'court_or_agency',
 ]);
-
-type OpenAiAnnotation = {
-  type?: string;
-  title?: string;
-  url?: string;
-};
-
-type OpenAiContent = {
-  type?: string;
-  text?: string;
-  annotations?: OpenAiAnnotation[];
-};
-
-type OpenAiOutputItem = {
-  type?: string;
-  content?: OpenAiContent[];
-};
-
-type OpenAiResponse = {
-  output?: OpenAiOutputItem[];
-  error?: { message?: string };
-};
 
 export function validateLegalAiInput(value: unknown): LegalIntakeInput {
   if (!value || typeof value !== 'object') throw new Error('INVALID_INPUT');
@@ -133,6 +116,10 @@ export function buildLegalAiRequest(
   currentDate: string,
   model = LEGAL_AI_MODEL,
 ) {
+  assertSafeOutbound({
+    situationSummary: input.situationSummary,
+    desiredOutcome: input.desiredOutcome,
+  });
   const flags = [
     input.detainedOrArrested ? '逮捕・拘束・出頭要請あり' : '',
     input.receivedOfficialDocument ? '裁判所・警察・行政機関の書類あり' : '',
@@ -173,48 +160,12 @@ export function buildLegalAiRequest(
   };
 }
 
-function isAllowedCitation(url: string): boolean {
-  try {
-    const hostname = new URL(url).hostname.toLowerCase();
-    return LEGAL_AI_ALLOWED_DOMAINS.some(
-      (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
-    );
-  } catch {
-    return false;
-  }
-}
-
 export function parseLegalAiResponse(
   value: unknown,
   searchedAt = new Date().toISOString(),
 ): LegalAiResult {
-  const response = value as OpenAiResponse;
-  const answerParts: string[] = [];
-  const citations = new Map<string, LegalAiCitation>();
-  for (const item of response.output ?? []) {
-    if (item.type !== 'message') continue;
-    for (const content of item.content ?? []) {
-      if (content.type !== 'output_text' || !content.text) continue;
-      answerParts.push(content.text);
-      for (const annotation of content.annotations ?? []) {
-        if (
-          annotation.type === 'url_citation' &&
-          annotation.url &&
-          isAllowedCitation(annotation.url)
-        ) {
-          citations.set(annotation.url, {
-            title: annotation.title?.trim() || new URL(annotation.url).hostname,
-            url: annotation.url,
-          });
-        }
-      }
-    }
-  }
-  const answer = answerParts.join('\n\n').trim();
-  if (!answer || citations.size === 0) throw new Error('UNCITED_RESPONSE');
   return {
-    answer,
-    citations: [...citations.values()],
+    ...parseResearchAiResponse(value, LEGAL_AI_ALLOWED_DOMAINS),
     searchedAt,
     mode: 'remote-search',
   };
@@ -229,11 +180,13 @@ export function buildLocalLegalResult(
   input: LegalIntakeInput,
   assessment: LegalAssessment,
 ): LegalAiResult {
-  const category = legalIssueCategories.find((item) => item.id === input.issueType);
+  const category = legalIssueCategories.find(
+    (item) => item.id === input.issueType,
+  );
   const resources = getSelfHelpResources(input.issueType, input.location);
   const nextActions = assessment.nextActions.slice(0, 3);
   const answer = [
-    'これは端末内のローカルガイドです。通信せず、法的助言・期限計算・勝敗予測は行いません。',
+    'これは端末内のローカルガイドです。相談本文を通信せず、法的助言・期限計算・勝敗予測は行いません。',
     '',
     `相談分野: ${category?.label ?? input.issueType}`,
     `地域: ${input.location}`,

@@ -1,10 +1,20 @@
-# Sky MCP接続設計
+# Sky Agent Interconnection and MCP接続設計
 
-最終更新: 2026-09-21
+最終更新: 2026-10-01
 
 ## 目的
 
+あらゆる端末・アプリ・サービス・ゲーム・組織が将来agentとして振る舞いうる前提で、RockstarOSはそれらを発見し、利用者のidentity・権限・予算・同意を保ったまま接続する共通面を担う。接続役は単一の万能agentではなく、Skyのregistry／capability router、Zemaのjob・委任管理、Core/Brokerのpolicy enforcement、protocolごとの交換可能なadapterの組合せとする。MCPはTool接続、A2Aは独立agentへの非同期委任に使い分け、providerやprotocolが違っても同じowner・承認・費用・監査境界を維持する。
+
 Skyは、ToBが少ない入力で自動化ツールを掲載し、ToCがタイムラインから「使える状態」と条件を確認して接続する入口である。MCPは接続方式の一つであり、MCPサーバーを無審査で実行する仕組みにはしない。
+
+## MCP料金と直接実行の境界（2026-10-01）
+
+MCP標準の`tools/list`には実行ごとの署名見積もり、予算予約、利用量確定の共通契約がない。このためMCP Toolの`_meta['rockstaros.dev/pricing']`は提供元の料金申告をUIへ渡す情報として扱い、Rockstarが検証した料金表・見積もりとしては表示しない。料金条件が欠落・不正なら`unknown`とし、`prepare`で実行を拒否する。遠隔MCPが`free`と申告した場合も表示には残すが、提供元の自己申告にすぎないため署名見積・予算予約なしでは直接実行を拒否する。Rockstar管理PC上でユーザーが導入したlocal SDK Toolは、ローカル記述の料金申告と一回承認で使う別境界であり、外部サービス利用料がないことを独立証明するものではない。
+
+`subscription`、`usage`、`external_contract`、および価格が未検証の遠隔`free` Toolを直接MCP実行する経路は閉じる。将来開く条件は、本人が確認できる署名価格見積もり、上限つきWallet予約、実行中の利用量・停止、署名済み最終receiptの照合、明細表示が一つの承認digestへ結び付いていること。現状の料金付きagent委任はこの境界を実装しているA2A quote/cap/usage経路へ送る。MCPの提供元申告、ローカルテスト、アプリ内イベントだけを本番課金の証拠にしない。
+
+Sky Tool SDKは全Toolに明示的な料金方式を要求する。Rockstar PC ConnectorはローカルSDK descriptorの料金方式とremote MCPのprovider metadataをConnection Passportへ固定し、価格変更時に承認を無効化する。審査・独立検証がない第三者metadataは未検証として扱う。
 
 ```text
 ToB
@@ -78,6 +88,8 @@ IP Studio job + IP / rights / version
 Sky Capability Router
     ├─ image.generate  ──> Provider A / Provider B / local / manual
     ├─ video.generate  ──> Higgsfield / other generator / local
+    ├─ voice.session   ──> LiveKit Agents / accepted voice adapters
+    ├─ telephony.*     ──> accepted inbound / outbound phone adapters
     ├─ game.*          ──> Roblox / GTA-FiveM / engine / custom SDK
     ├─ social.publish  ──> YouTube / Instagram / other channel
     └─ analytics.read  ──> accepted platform adapters
@@ -87,6 +99,8 @@ Asset Registry ──> review / exact approval ──> publish or game delivery
     │
     └────────────────> receipt / result / revenue feedback
 ```
+
+音声・電話は[IP Studio詳細](sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)の追加契約に従う。LiveKitは設定候補で実接続未受入。音声送信、録音、発信、着信応対の権限を分け、IP／声の権利、費用、停止・結果不明時照会をsessionに結ぶ。
 
 ### Provider manifest
 
@@ -143,3 +157,29 @@ RockstarOSには既存native OS向けの固定fixtureとprivate device APIに加
 5. HTTP serverはTLS、Origin、OAuth resource binding、scope縮小、token passthrough禁止を検査する。
 6. timeout、切断、再試行で同じ仕事を重複送信せず、結果不明を成功にしない。
 7. 作者停止・版失効がTimeline、端末、PCへ反映され、過去の実行記録は改変されない。
+
+## 2026-09-30 人・端末・サービスへの適合とGTA
+
+利用者は「みんなに適合できるシステムを作る、もちろんgtaにも」と指定した。既存Sky Package／Capability Routerを共通契約とし、相手ごとのadapterを交換する。本人の目的・言語・入力・表示・予算・保存・許可をprofileで扱い、eSIM種別だけで機能を固定しない。端末能力と接続先が変われば、ローカル／cloud／利用不可を再判定する。新しい接続先をLLMが推測して登録・認可しない。
+
+自律動作は観測→計画→認可→実行→結果確認→記憶・復旧の共通契約へ接続する。ゲーム世界と現実の操作は別のcapabilityとして扱い、権限・owner・データを混同しない。既存Core、Zema、Package、作者SDK、IP Studio、Asset Registryを作り直さない。
+
+GTAは明示的な対象。既存の協議・合意に関する利用者説明を引き継ぎ、対象機能と技術interfaceは資料で具体化する。タイトル／版／プラットフォーム／実行先／接続口を固定し、GTA V、GTA Online、GTA VI、FiveM等を一括の対応済みにしない。起動・入力、ゲーム外AI支援、Asset制作・導入、ゲーム内agent／NPC、経済連携は別capabilityとし、最初の一件を実際に利用可能な接続口と本人の目的から選ぶ。現在は要件追記で、これらのadapter実装・GTA実動作を完了していない。
+
+LLMの動作とゲーム本体の動作、本体実行と外部ホスト実行を分ける。取得できないゲーム内部状態は不明と表示し、切断時に入力を解除する。復帰時に古い移動・射撃等を自動再送しない。assetや会話の共通管理を、ゲーム進行・通貨の任意移植と同一視しない。
+
+受入条件は、本人交代・端末能力変更・接続先の版変更・権限不足・追加承認・結果不明・切断復帰。共通fixtureと実ゲーム環境を別に検証する。関連：[既存ゲーム接続仕様](avocado-mini-conversation-2026-09-27/avocadoMini_game_platform_integration_2026-09-27.md)、[Sky全Tool設計](sky-tools-complete-design.md)、[cloud継続実行](sky-cloud-continuity.md)。
+
+## 2026-09-30 エージェント間の発見・接続・委任
+
+利用者は、あらゆる対象がAIエージェントを持つ将来に、エージェント同士をつなぐ役割が必要と示した。Skyは提供者・能力・条件の掲載、発見、比較、接続を担う。Zemaは親子の仕事、委任、進捗、承認、停止、成果を管理し、Core/Brokerがowner・権限・予算・保存を強制する。marketplaceはこの共通基盤への入口である。
+
+既存MCPのTool・データ接続を維持し、独立agentとの委任には[A2A](https://a2a-protocol.org/)等の公開仕様をadapterとして評価する（2026-09-30公式入口確認）。対応版と認証、status、取消、成果の意味を実装時に固定する。Agent Card等の自己申告は、本人認証、審査、能力試験、実行許可を代替しない。
+
+委任時にはowner、親job、子task、入力hash、納品条件、許可データ・操作、期限、費用上限、再委任範囲を固定する。子agentの権限・予算を親より広げず、深さ・回数・同時数を制限して循環と無限増殖を防ぐ。親子共通の予約台帳を用い、親集計と子の実費を二重計上しない。秘密は接続先別の認可で扱い、他agentへ包括的な認証情報を渡さない。
+
+発見、購入、受付、実行成功、成果検証、本人の完了確認、利用量確定、請求・払出しを分ける。結果不明の委任は照合し、別agentへの切替で同じ外部処理を二重実行しない。取消応答と実停止・費用確定を分ける。
+
+異なる二つのagent実装で発見から成果・記録まで通すことを受入条件とし、別owner、版変更、能力不一致、上限超過、循環、切断・復旧、停止と完了の競合を検証する。GTA、個人端末、業務agentは共通契約へ載せる対象だが、各接続口と許可を実証する。
+
+2026-09-30にA2A 1.0 JSON-RPC client、owner-scoped child task store／状態event log、Cloudflare Worker reconciliationと暗号化text artifact経路を追加した。さらに本人が指定した公開HTTPS originからAgent Cardを取得し、originとJSON-RPC版を検査、card digest・版・時刻をD1へowner別に保存するSky個人接続帳とZema候補選択UIを追加した。候補は自己申告・未審査として明示し、登録だけでは委任しない。native Brokerからの短命Ed25519 proof発行methodとWeb検証器を実装し、Broker 45 tests、proof verifier/trust 3 testsのcross-language固定vector、API/Worker/D1 251 assertionsが成功。Web承認前にowner-scoped Broker proofを登録し、Runtime WorkerはAgent Card取得前・send marker前・message/send直前に検証するfixture経路を追加した。実機signer、Wallet/WebAuthn、trusted device key lifecycle、device gateway、production key listとWorkflow実行受入は未完了。詳細と限定範囲は[Sky A2A Bridge](sky-a2a-bridge.md)と[native Broker](../systems/rock-star-os/docs/MCP-BROKER.md)。Sky全体の検索・提供者審査、本番egress経路の受入、Wallet連携・予約、異なる実装間の相互接続、実Provider／cloud継続／請求は未実装・未受入。fixtureや既存MCP試験を外部相互運用の合格へ転用しない。

@@ -23,7 +23,9 @@ const lock = read('package-lock.json');
 const androidAudit = read('data/android-physical-release-audit.json');
 const personalNumberAudit = read('data/personal-number-release-audit.json');
 const sitesAudit = read('data/sites-owner-preview-audit.json');
-const sitesHosting = read('.openai/hosting.json');
+// Validate the recorded audit independently of the developer's deployment.
+// The release CLI still reads the actual .openai/hosting.json.
+const sitesHosting = read('tests/fixtures/sites-owner-preview-hosting.json');
 const webSecurityPolicy = read('data/web-security-policy.json');
 const webLicenseAudit = read('data/web-third-party-license-audit.json');
 const qemuAudit = read('data/qemu-release-audit.json');
@@ -79,9 +81,9 @@ void test('current release matrix passes while preserving real blockers', () => 
   assert.equal(result.blockedTargets.length, 6);
   assert.equal(result.missingDependencyLicenses, 0);
   assert.deepEqual(result.webLicense, {
-    packageEntries: 907,
-    uniqueComponents: 874,
-    reviewRequired: 47,
+    packageEntries: 956,
+    uniqueComponents: 914,
+    reviewRequired: 50,
   });
   assert.equal(result.sites.status, 'OUTDATED');
   assert.deepEqual(result.webSecurity, { status: 'PASS_SOURCE_POLICY', headers: 8 });
@@ -177,6 +179,38 @@ void test('owner-private delivery rejects public or external access readback', (
     () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
     /本人1名限定/,
   );
+});
+
+void test('recorded Sites audit rejects missing or mismatched deployment identity', () => {
+  for (const hosting of [undefined, {}, { project_id: 'different-project' }]) {
+    assert.throws(
+      () => validateOwnerPrivateSitesAudit({ audit: sitesAudit, hosting, readiness, webSecurityPolicy }),
+      /本人1名限定/,
+    );
+  }
+  const changed = structuredClone(sitesAudit);
+  changed.site.projectId = 'different-project';
+  assert.throws(
+    () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
+    /本人1名限定/,
+  );
+});
+
+void test('recorded Sites audit rejects broader access even with matching identity', () => {
+  for (const fields of [
+    { accessMode: 'public' },
+    { currentUserRole: 'editor' },
+    { allowedUsers: 2 },
+    { allowedGroups: 1 },
+    { allowedEditors: 1 },
+  ]) {
+    const changed = structuredClone(sitesAudit);
+    Object.assign(changed.site, fields);
+    assert.throws(
+      () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
+      /本人1名限定/,
+    );
+  }
 });
 
 void test('cannot label a target ready while a required gate is blocked', () => {

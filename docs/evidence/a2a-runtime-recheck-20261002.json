@@ -1,0 +1,35 @@
+{
+  "schema": "rock-a2a-runtime-recheck-evidence/1",
+  "date": "2026-10-02",
+  "productDirection": "SIM/eSIM-led access to RockstarOS services; this evidence covers only local cloud-agent runtime behavior.",
+  "verification": {
+    "workerWorkflowCommand": "npm run sky:a2a:workflow:positive",
+    "workerWorkflowResult": "passed; 13/13 tests across local Worker/D1 fixtures, including two separately approved sibling delegations and proof rejection",
+    "processRestartCommand": "npm run sky:a2a:workflow:test",
+    "processRestartResult": "passed; prepared rows persisted across two local Wrangler/Workerd boots; zero remote-send claims",
+    "processRestartLimit": "does not establish scheduled scan dispatch or resumed Workflow creation; those behaviors are not inferred from local D1 persistence",
+    "independentProtocolClients": "node --test tests/a2a-client.test.mjs passed 10/10, including separate Node and Python HTTP implementations",
+    "canonicalVectors": "node --experimental-strip-types --test tests/a2a-broker-authorization.test.mjs tests/a2a-wallet-reservation.test.mjs tests/a2a-price-quote.test.mjs passed 12/12",
+    "typecheck": "npm run typecheck passed",
+    "productLint": "npm run lint:product passed after removing a stale test constant"
+  },
+  "implementationChange": "Scheduled dispatch no longer hides every Workflow.create error as a duplicate; it suppresses creation failure only when the deterministic instance can be retrieved, otherwise it rethrows the failure for runtime visibility.",
+  "reused": [
+    "Durable owner-scoped Cloudflare Worker/D1 job and recovery records",
+    "Signed quotes, user budget caps, consent, provider receipt verification and itemized usage records",
+    "Offline continuation consent and reconnect retrieval by stable delegation ID",
+    "SIM/eSIM channel-neutral entitlement and short onboarding documented in the SIM-led product architecture"
+  ],
+  "remainingAcceptance": [
+    "Production Cloudflare D1 migration and readback",
+    "Contracted Agent/LLM Provider sandbox, pricing and usage semantics, invoices, and funded Wallet settlement",
+    "Production scheduler and process-loss recovery acceptance",
+    "Seller checkout, physical SIM fulfillment and actual carrier/eSIM activation",
+    "Android/APK/device acceptance and RockstarOS installation for each exact supported hardware SKU"
+  ],
+  "notProven": [
+    "Local test rows and synthetic receipts are not production bills or invoices",
+    "A local Worker fixture is not a contracted Provider or external commercial interoperability acceptance",
+    "No result here proves actual carrier activation, physical SIM fulfillment, or successful OS installation"
+  ]
+}

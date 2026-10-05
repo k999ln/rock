@@ -45,7 +45,7 @@ const packageJson = {
   private: true,
   type: 'module',
   scripts: { start: 'node index.mjs' },
-  dependencies: { '@rockstaros/sky-tool-sdk': '^0.1.2' },
+  dependencies: { '@rockstaros/sky-tool-sdk': '^0.1.3' },
 };
 
 const index = `import { createSkyToolApp } from '@rockstaros/sky-tool-sdk';
@@ -87,6 +87,7 @@ sky.tool({
     properties: {}
   },
   sideEffects: ['none'],
+  price: { model: 'external_contract', note: '実際のProvider料金条件を登録・審査するまで外部実行不可。' },
   fundCategories: ['未分類'],
   tags: ['starter'],
 

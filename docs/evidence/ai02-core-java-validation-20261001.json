@@ -1,0 +1,71 @@
+{
+  "schema": "rockstaros-ai02-core-java-validation/1",
+  "runtime": {
+    "vendor": "Eclipse Temurin",
+    "version": "17.0.20.1+1",
+    "architecture": "macOS arm64",
+    "archiveSha256": "196d13ba5f10414bef7f6a05a9b3f00edacb18ebacef2b99485db9e2ee18f0e8",
+    "downloadSource": "https://api.adoptium.net/v3/assets/latest/17/hotspot?architecture=aarch64&image_type=jdk&os=mac&vendor=eclipse"
+  },
+  "buildTool": {
+    "version": "Gradle 8.11.1",
+    "archiveSha256": "f397b287023acdba1e9f6fc5ea72d22dd63669d59ed4a289a29b1a76eee151c6",
+    "distributionSource": "https://services.gradle.org/distributions/gradle-8.11.1-bin.zip"
+  },
+  "command": "gradle -p android :core:test -ProckBuildRoot=/private/tmp/rock-gradle-output --no-daemon",
+  "result": {
+    "compileJava": "PASS",
+    "compileTestJava": "PASS",
+    "junitTests": 46,
+    "junitFailures": 0
+  },
+  "scope": "Android-independent Java Core compilation and JVM unit tests, including Ed25519 model-publisher signature verification, publisher-before-staging pipeline order, Broker-private resumable artifact staging, and serialized preflight/load/commit model activation rules. The stager verifies exact HTTP range semantics and SHA-256, enforces byte/free-space limits, rejects symlink paths, resumes partial files, and promotes verified bytes atomically. Activation validates active runtime compatibility, requires stage and runtime-load receipts before changing the active pointer, blocks switching across active work or a recent unmatched plan reservation, and leaves the old pointer intact on loader failure. It stages only model weights; tokenizer/template assets, Android build, Binder/device integration and device inference are not covered.",
+  "defectsFoundAndFixed": [
+    "ModelProfile and RuntimeManifest rejected the actual Zema schema ID article-preparation@1/input-v1.",
+    "Engine.claim loaded the work row's profile pin but constructed Ticket from a runs-only row, dropping the model profile identity.",
+    "PlatformStore lacked the HashMap import required by model-profile and recoverable-state code.",
+    "Engine.submitPinned used a missing error-code overload for its single-row query.",
+    "Profile activation now waits for an exact loaded-runtime receipt and does not replace a runtime model used by an active or recently reserved Zema plan."
+  ],
+  "newModelTrustCoverage": {
+    "implementation": [
+      "TrustedModelPublisherVerifier binds Ed25519 public keys to exact publisher ID and key ID, enforces key revocation, and verifies canonical signed manifest bytes.",
+      "TrustedModelArtifactPipeline checks publisher signature before invoking the Broker-owned staged-artifact verifier and requires a digest receipt."
+    ],
+    "testCases": [
+      "valid publisher signature accepted",
+      "modified manifest, unknown publisher/key, revoked key and malformed public key rejected",
+      "invalid signature stops before staged artifact access",
+      "missing staged-artifact receipt rejected"
+    ],
+    "remaining": "No production publisher keyset is configured; actual artifact bytes/license/storage staging and Android installer wiring remain unimplemented."
+  },
+  "newArtifactStagingCoverage": {
+    "implementation": [
+      "ResumableModelArtifactStager downloads into Broker-private hash-addressed storage, resumes only from the exact partial offset, checks response ranges/content length and bounded byte counts, verifies the complete SHA-256, and atomically promotes the artifact.",
+      "Disk-space reserve and maximum artifact size are enforced; symlink paths and unsafe hash-derived paths are rejected; cached artifacts are reverified."
+    ],
+    "testCases": [
+      "interrupted transfer resumes and verified artifact is atomically promoted and reverified from cache",
+      "wrong digest removes partial data",
+      "incorrect range and response body overrun are rejected",
+      "insufficient disk space fails before contacting the source",
+      "symlink storage path is rejected"
+    ],
+    "remaining": "Only weights are modeled. The Android source coordinator now sequences publisher verification, staging, Local AI read-only descriptor handoff, load receipt/status validation, and active-pointer commit, with rollback attempt if a later commit fails. Production publisher trust, provider source, tokenizer/template staging, licensing receipts, API/catalog entry point, native Android build, and device inference remain unimplemented or unverified."
+  },
+  "newActivationCoverage": {
+    "implementation": [
+      "PlatformStore performs profile/runtime compatibility and conflicting-work preflight before external verification, then rechecks before atomically committing the active profile.",
+      "TrustedModelArtifactPipeline sequences publisher signature verification, verified staging, and runtime load; both staging and load receipts are required.",
+      "Broker ModelProfileActivationCoordinator hands the staged weight file to the separate Local AI service over a read-only ParcelFileDescriptor, checks the runtime load receipt/status, serializes activation against Zema inference, and attempts to reload the prior model if commit fails after runtime load."
+    ],
+    "testCases": [
+      "active old plan pin blocks model switch while its work runs or reservation remains fresh",
+      "expired orphan reservation allows activation",
+      "runtime load failure keeps old profile active",
+      "valid signature and staging receipt are required before runtime load"
+    ],
+    "remaining": "The coordinator is implemented as Android source but is not yet exposed through a user-facing model catalog or connected to production artifact transport and publisher trust configuration. Only weights are staged; tokenizer/template staging and license receipts are absent. Android APK/AIDL build, instrumentation, production trust keyset and source adapter, and device load/inference remain unverified."
+  }
+}

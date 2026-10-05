@@ -50,6 +50,50 @@ export function validateBaseline(
       `${id}: 正本の見出しが一意ではありません`,
     );
   }
+  const serviceAccess = data.serviceAccessModel;
+  requireValue(
+    serviceAccess?.status ===
+      'authoritative_product_direction_design_and_local_onboarding_only' &&
+      serviceAccess?.primaryEntry ===
+        'purchase_physical_sim_or_esim_including_rockstaros_service_access' &&
+      JSON.stringify(serviceAccess?.distributionChannels) ===
+        JSON.stringify([
+          'rockstar_direct',
+          'mobile_carrier',
+          'device_retailer',
+          'online_retailer',
+        ]) &&
+      serviceAccess?.osBinaryStoredOnSim === false &&
+      serviceAccess?.purchaseEnabled === false &&
+      serviceAccess?.productionBillingAccepted === false &&
+      serviceAccess?.carrierActivationAccepted === false &&
+      serviceAccess?.deviceOsInstallationAccepted === false,
+    'SIM/eSIM offer, channel-neutral access, separate device delivery, and unaccepted production states must remain explicit',
+  );
+  requireValue(
+    JSON.stringify(serviceAccess?.primaryReasonsToChoose) ===
+      JSON.stringify([
+        'fast_simple_access_to_cloud_llms_and_agents',
+        'transparent_usage_based_pricing_and_cost_estimates',
+        'integrated_rockstaros_sky_zema_access_with_minimal_setup',
+      ]) &&
+      JSON.stringify(serviceAccess?.deviceMinimumExperience) ===
+        JSON.stringify([
+          'short_activation_to_service_onboarding',
+          'direct_sky_zema_agent_entry_from_home',
+          'single_rockstar_identity_without_per_service_registration',
+          'submit_tasks_track_progress_and_retrieve_results',
+          'accepted_cloud_tasks_continue_while_device_offline_and_reconcile_on_reconnect',
+          'show_provider_rates_and_estimate_before_paid_execution',
+          'distinguish_reserved_budget_from_live_usage_and_invoice_confirmed_amount',
+          'itemize_usage_after_completion',
+          'user_controlled_spending_limits_and_explicit_approval_to_raise_them',
+        ]) &&
+      serviceAccess?.carrierAndAiChargesSeparated === true &&
+      serviceAccess?.dispatchPolicy ===
+        'fail_closed_until_quote_bound_reservation_provider_meter_invoice_reconciliation_and_funded_wallet_are_accepted',
+    'SIM-led service value, offline Cloud continuity, spend approval, and fail-closed paid execution requirements must remain explicit',
+  );
   requireValue(
     data.productIdentity?.displayName === 'RockstarOS' &&
       data.productIdentity?.releaseName === 'RockstarOS 1.0' &&
@@ -941,6 +985,29 @@ export function validateBaseline(
     'Web画面と配備assetを同一commitへ固定してください',
   );
   requireValue(
+    data.campus?.displayName === 'Campus' &&
+      data.campus?.route === '/campus' &&
+      data.campus?.status === 'web_runtime_implemented' &&
+      JSON.stringify(data.campus?.campuses) ===
+        JSON.stringify(['nyu', 'fit', 'columbia', 'fordham', 'johnjay']) &&
+      data.campus?.affiliationVerification ===
+        'authenticated_email_domain_match_without_email_storage' &&
+      data.campus?.publicClaimsBoundary ===
+        'community_posted_content_not_official_university_data_unless_external_source_states_otherwise' &&
+      data.campus?.physicalEntry ===
+        'registered_nfc_or_qr_tag_to_campus_mode_with_source_analytics' &&
+      data.campus?.analyticsPrivacy ===
+        'tag_source_and_timestamp_only_no_ip_email_precise_location_or_raw_user_agent' &&
+      data.campus?.dataControls?.includes('block_and_report') &&
+      data.campus?.dataControls?.includes('tag_analytics_delete') &&
+      data.campus?.dataControls?.includes('campus_data_delete') &&
+      data.baseApps?.some?.(
+        (app) => app.id === 'campus' && app.route === '/campus',
+      ) &&
+      data.visualSystem?.homePrimaryApps?.includes('campus'),
+    'Campusの大学別機能・物理入口・privacy境界を維持してください',
+  );
+  requireValue(
     data.homeExperience?.defaultRoute === '/' &&
       data.homeExperience?.skyRoute === '/sky' &&
       data.homeExperience?.systemUtility === 'settings' &&
@@ -958,15 +1025,17 @@ export function validateBaseline(
     'OS内の画面と公開製品ページの戻り先を分けてください',
   );
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
+  const hardwarePageSource = read(resolve(root, 'app/avocado-mini/page.tsx'));
   const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
-      data.launchPage?.role === 'public_avocado_mini_product_home' &&
+      data.launchPage?.role === 'public_sim_esim_service_home' &&
       data.launchPage?.osHomeRoute === '/' &&
       data.launchPage?.installGuideRoute === '/rockstaros/guide' &&
       data.launchPage?.directOsHomeLink === false &&
-      data.launchPage?.serviceDetailsLocation === 'os_home_after_setup' &&
-      data.marketPositioning?.customerFacingFocus === 'hardware_products' &&
+      data.launchPage?.serviceDetailsLocation === 'public_service_home' &&
+      data.launchPage?.hardwareProgramRoute === '/avocado-mini' &&
+      data.marketPositioning?.customerFacingFocus === 'sim_esim_led_rockstaros_service_access' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
       data.marketPositioning?.leadHardwareForm ===
         'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
@@ -976,16 +1045,16 @@ export function validateBaseline(
         'historical_motion_tower_p0_kit_only' &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
-      data.launchPage?.primaryAction === 'view_avocado_mini' &&
-      data.launchPage?.secondaryAction === 'developer_preview_install_guide' &&
-      data.launchPage?.publicDownloadFallback === '/rockstaros/guide#install' &&
-      launchPageSource.includes('製品を見る') &&
-      launchPageSource.includes('実機の販売と一般向けOSインストーラーはまだ始まっていません') &&
-      launchPageSource.includes('OS導入ガイドを見る') &&
-      launchPageSource.includes('href="/rockstaros/guide"') &&
+      data.launchPage?.primaryAction === 'start_service_onboarding' &&
+      data.launchPage?.secondaryAction === 'view_sim_esim_plans' &&
+      data.launchPage?.publicDownloadFallback === '/connect' &&
+      launchPageSource.includes('SIM/eSIMをつないで、Sky・Zema・AI Agentへ') &&
+      launchPageSource.includes('RockstarOSはSIMカード内で動くOSではありません') &&
+      launchPageSource.includes('href="/connect"') &&
+      hardwarePageSource.includes('<AvocadoTurntable />') &&
+      hardwarePageSource.includes('href="/rockstaros"') &&
       !launchPageSource.includes('href="/"') &&
       !launchPageSource.includes('createSkyToolApp') &&
-      launchPageSource.includes('<AvocadoTurntable />') &&
       turntableSource.includes('turn * Math.PI * 2') &&
       turntableSource.includes('className={styles.designDetails}') &&
       turntableSource.includes('className={styles.osSection}') &&
@@ -1059,7 +1128,7 @@ export function validateBaseline(
       data.visualSystem?.surfaces?.includes('/rockstaros') &&
       data.visualSystem?.surfaces?.includes('/studio') &&
       data.visualSystem?.surfaces?.includes('workspace_shell') &&
-      data.visualSystem?.accent === 'acid_green' &&
+      data.visualSystem?.accent === 'ice_blue' &&
       data.visualSystem?.productHomeAppearance === 'light_scroll_product_showcase' &&
       data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
       !data.visualSystem?.homePrimaryApps?.includes('work') &&
@@ -1093,7 +1162,7 @@ export function validateBaseline(
         'RockstarOS / Studio — shared dark launch system',
       ) &&
       workspaceStyles.includes('RockstarOS 1.0 — unified OS chrome') &&
-      workspaceStyles.includes('--studio-green: #c8ff2e'),
+      workspaceStyles.includes('--studio-green: #bedce6'),
     'RockstarOS全体の共通visual systemとフロント機能性改善を維持してください',
   );
   requireValue(
@@ -1176,8 +1245,8 @@ export function validateBaseline(
     '8.88 USD料金案は収益動線の確定まで保留してください',
   );
   requireValue(
-    data.skyNetworkEconomy?.tobSkySalesCommissionBps === 0,
-    'tob売上のSky手数料は0%です',
+    data.skyNetworkEconomy?.tobSkySalesCommissionBps === 1000,
+    'tob売上のSky手数料は10%です',
   );
   requireValue(
     data.skyNetworkEconomy?.tocMonthlyFeeCapMinor === 888 &&
@@ -1388,6 +1457,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ49、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Coreへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ49、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Coreへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

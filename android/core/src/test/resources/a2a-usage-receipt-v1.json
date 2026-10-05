@@ -1,0 +1,21 @@
+{
+  "schema": "rock-a2a-provider-usage-receipt/1",
+  "providerId": "provider-x",
+  "keyId": "usage-key-1",
+  "receiptId": "receipt-1",
+  "ownerUserId": "alice",
+  "parentJobId": "zema-job-1",
+  "delegationId": "a2a-job-1",
+  "taskId": "remote-task-1",
+  "agentOrigin": "https://agent.example",
+  "agentName": "Research Agent",
+  "agentVersion": "1.0.0",
+  "currency": "USD",
+  "amountMinor": 650,
+  "pricingVersion": "fixture-price-1",
+  "issuedAt": 1800000000000,
+  "usage": [
+    { "meter": "agent-operation", "quantity": 1, "unit": "request", "amountMinor": 650 }
+  ],
+  "signature": "odJ8MkXH15thYOWTrPMl5XURs2I6vxArEvNcs4nA5j7-DtKpYxjxq2HZVyg9_cdxjnXMUxmTM7xGDKqE97XlBQ"
+}

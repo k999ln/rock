@@ -1,0 +1,50 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-01",
+  "scope": "Direct remote LLM pricing and entitlement gates",
+  "environment": "local built Worker/D1 through Miniflare with synthetic users and bindings",
+  "routes": [
+    "/api/llm/text",
+    "/api/legal-guidance",
+    "/api/patent-research",
+    "/api/jev-evaluation"
+  ],
+  "behavior": {
+    "paidRemoteExecution": "fail_closed_until_provider_rate_or_quote_user_budget_reservation_and_usage_settlement_are_integrated",
+    "directLlmPriceGate": "REMOTE_AI_PRICING_GATE_UNAVAILABLE",
+    "skyScopeRequiredWhenEntitlementEnforcementEnabled": true,
+    "nonLoopbackOllamaEndpointClassifiedAsRemote": true,
+    "nonLoopbackLocalModelEndpointClassifiedAsRemote": true,
+    "nonLoopbackOpenAiCompatibleEndpointClassifiedAsRemote": true,
+    "providerEgressObserved": false,
+    "providerEgressEvidence": "Integration cases receive the pricing-gate response before generateText or direct provider fetch is reached; tests do not connect to a provider."
+  },
+  "verification": {
+    "workerD1Api": {
+      "command": "npm run test:api",
+      "result": "PASS",
+      "assertions": 540
+    },
+    "skyServiceStatus": {
+      "command": "node --experimental-strip-types --test tests/sky-service-status.test.mjs",
+      "result": "PASS",
+      "tests": 7
+    },
+    "typecheck": "PASS",
+    "productLint": "PASS",
+    "productionBuild": "PASS",
+    "baselineCheck": "PASS",
+    "designCheck": "PASS",
+    "schemaCheck": "PASS",
+    "databaseCheck": "PASS",
+    "migrationConvergence": "PASS_9_OF_9_INCLUDING_0041",
+    "workflowFixture": "PASS_9_OF_9"
+  },
+  "notProven": [
+    "provider pricing or quote acceptance",
+    "cloud LLM execution",
+    "live usage metering or production billing",
+    "carrier activation or SIM fulfillment",
+    "RockstarOS installation on a physical device"
+  ]
+}

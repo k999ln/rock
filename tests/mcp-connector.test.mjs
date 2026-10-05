@@ -6,6 +6,7 @@ import { join, resolve } from 'node:path';
 import { createSkyToolApp } from '../toolkits/sky-tool-sdk/src/index.mjs';
 import {
   createConnector,
+  McpHub,
   validateRemoteUrl,
   validateRegistry,
 } from '../toolkits/sky-mcp-connector/server.mjs';
@@ -42,7 +43,7 @@ async function harness(t, options = {}) {
       },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
-  return { request };
+  return { request, connector };
 }
 
 void test('SDK tools appear in the PC hub and execute only after one-time approval', async (t) => {
@@ -58,6 +59,7 @@ void test('SDK tools appear in the PC hub and execute only after one-time approv
   sky.tool({
     name: 'count',
     description: '入力された文章に含まれるUnicode文字数を返します。',
+    price: { model: 'free', note: 'ローカルテスト用。実行ごとの追加料金なし。' },
     inputSchema: { type: 'object', required: ['text'], properties: { text: { type: 'string' } } },
     outputSchema: { type: 'object', required: ['characters'], properties: { characters: { type: 'integer' } } },
     handler: async ({ text }) => ({ characters: [...text].length }),
@@ -74,6 +76,7 @@ void test('SDK tools appear in the PC hub and execute only after one-time approv
   assert.equal(direct.status, 401);
   const connected = await (await request(`/servers/${runtime.localId}/connect`, {})).json();
   assert.equal(connected.passport.tools[0].name, 'count');
+  assert.deepEqual(connected.passport.tools[0].outputSchema.required, ['characters']);
   const args = { text: 'Sky' };
   const prepared = await (await request(`/servers/${runtime.localId}/prepare`, { name: 'count', arguments: args })).json();
   const executed = await (await request(`/servers/${runtime.localId}/execute`, { name: 'count', arguments: args, approvalToken: prepared.approvalToken, confirmed: true })).json();
@@ -180,11 +183,46 @@ void test('one connector negotiates the latest shared MCP protocol and arbitrary
   assert.equal(fashion.passport.protocolVersion, '2025-11-25');
   assert.equal(fashion.passport.tools.length, 41);
   assert.notEqual(fashion.passport.toolDigest, mr.passport.toolDigest);
+  assert.ok(fashion.passport.tools.every((tool) => tool.pricing.model === 'unknown'));
+  const blocked = await request('/servers/fashion-brand-ops/prepare', {
+    name: fashion.passport.tools[0].name,
+    arguments: {},
+  });
+  assert.equal(blocked.status, 409);
+  assert.equal((await blocked.json()).error, 'paid_execution_requires_priced_a2a');
 
   const reconnected = await (
     await request('/servers/rock-star-mr/connect', {})
   ).json();
   assert.equal(reconnected.passport.tools.length, 4);
+});
+
+void test('remote MCP self-declared free pricing cannot authorize direct execution', async () => {
+  const hub = new McpHub([{
+    id: 'remote-free', name: 'Remote service', description: 'test remote MCP',
+    transport: 'streamable_http', url: 'https://mcp.example.test/mcp', authEnv: null,
+  }]);
+  hub.entry('remote-free').transport = {
+    protocol: null,
+    reset() {},
+    async request(message) {
+      if (!('id' in message)) return null;
+      const result = message.method === 'initialize'
+        ? { protocolVersion: '2025-11-25', serverInfo: { name: 'fixture', version: '1' } }
+        : { tools: [{
+          name: 'summarize', description: 'Remote summary', inputSchema: { type: 'object' },
+          _meta: { 'rockstaros.dev/pricing': { model: 'free', note: 'Provider claim' } },
+        }] };
+      return { jsonrpc: '2.0', id: message.id, result };
+    },
+  };
+  const passport = await hub.connect('remote-free');
+  assert.equal(passport.tools[0].pricing.model, 'free');
+  assert.throws(
+    () => hub.prepare('remote-free', 'summarize', {}),
+    (error) => error.code === 'paid_execution_requires_priced_a2a' && error.message.includes('自己申告'),
+  );
+  hub.close();
 });
 
 void test('tool execution requires an exact, single-use approval and blocks direct bypass', async (t) => {
@@ -230,9 +268,11 @@ void test('tool execution requires an exact, single-use approval and blocks dire
     confirmed: true,
   });
   assert.equal(executed.status, 200);
-  assert.match(
-    JSON.stringify(await executed.json()),
-    /modelcontextprotocol\.io/,
+  const executedMessage = await executed.json();
+  assert.equal(executedMessage.result.isError, false);
+  assert.equal(
+    executedMessage.result.structuredContent.output,
+    '本文。\n---\n\n## 出典\n\n- [MCP](https://modelcontextprotocol.io/)\n',
   );
   const replay = await request('/servers/rock-star-mr/execute', {
     name: 'format_citations',
@@ -281,4 +321,106 @@ void test('connector binds browser token to an allowlisted Origin', async (t) =>
     body: '{}',
   });
   assert.equal(response.status, 403);
+});
+
+void test('legacy MCP refuses changed processor identity before transport dispatch', async (t) => {
+  const { request, connector } = await harness(t);
+  const entry = connector.hub.entry('rock-star-mr');
+  const original = entry.spec;
+  let dispatched = 0;
+  entry.transport.request = async () => { dispatched++; return { result: {} }; };
+  const message = { jsonrpc: '2.0', id: 1, method: 'tools/list' };
+  for (const change of [
+    { id: 'example-tool' },
+    { transport: 'local_http' },
+    { command: 'node' },
+    { cwd: join(original.cwd, 'different') },
+    { args: ['different.py'] },
+    { args: [...original.args, '--extra'] },
+    { envNames: ['EXAMPLE_SETTING'] },
+  ]) {
+    entry.spec = { ...original, ...change };
+    const response = await request('/mcp', message);
+    assert.equal(response.status, 403);
+    assert.equal((await response.json()).error, 'legacy_mcp_not_supported');
+    assert.equal(dispatched, 0);
+  }
+  entry.spec = original;
+  const normal = await request('/mcp', message);
+  assert.equal(normal.status, 200);
+  assert.equal(dispatched, 1);
+});
+
+void test('legacy MCP limits dispatch to bundled operations and keeps the generic approval gate', async (t) => {
+  const { request, connector } = await harness(t);
+  const entry = connector.hub.entry('rock-star-mr');
+  const dispatched = [];
+  entry.transport.request = async (message) => {
+    dispatched.push(message);
+    return message.method === 'notifications/initialized' ? null : { jsonrpc: '2.0', id: message.id, result: {} };
+  };
+  for (const input of [
+    { method: 'tools/call', params: { name: 'additional_tool' } },
+    null, {}, [], { method: 'resources/read' }, { method: 'tools/call' },
+  ]) {
+    const response = await request('/mcp', input);
+    assert.equal(response.status, 403);
+    assert.equal((await response.json()).error, 'legacy_mcp_not_supported');
+    assert.equal(dispatched.length, 0);
+  }
+  for (const method of ['initialize', 'notifications/initialized', 'ping', 'tools/list']) {
+    const message = { jsonrpc: '2.0', id: 2, method };
+    const response = await request('/mcp', message);
+    assert.equal(response.status, method === 'notifications/initialized' ? 202 : 200);
+    assert.deepEqual(dispatched.at(-1), message);
+  }
+  for (const name of ['coconala_check', 'format_citations', 'make_free_article', 'verify_delivery']) {
+    const message = { jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name, arguments: {} } };
+    const response = await request('/mcp', message);
+    assert.equal(response.status, 200);
+    assert.deepEqual(dispatched.at(-1), message);
+    const direct = await request('/servers/rock-star-mr/mcp', message);
+    assert.equal(direct.status, 403);
+    assert.equal((await direct.json()).error, 'approval_required');
+  }
+  assert.equal(dispatched.length, 8);
+});
+
+void test('legacy MCP preserves the real bundled lifecycle and four local processors', async (t) => {
+  const { request } = await harness(t);
+  const rpc = async (method, params, id = 1) => {
+    const response = await request('/mcp', { jsonrpc: '2.0', id: method === 'notifications/initialized' ? undefined : id, method, params });
+    assert.equal(response.status, method === 'notifications/initialized' ? 202 : 200);
+    return response.status === 202 ? null : await response.json();
+  };
+  const initialized = await rpc('initialize', { protocolVersion: '2025-11-25' });
+  assert.equal(initialized.result.protocolVersion, '2025-11-25');
+  assert.equal(await rpc('notifications/initialized'), null);
+  assert.deepEqual((await rpc('ping')).result, {});
+  const listed = await rpc('tools/list');
+  assert.deepEqual(listed.result.tools.map((tool) => tool.name).sort(), [
+    'coconala_check', 'format_citations', 'make_free_article', 'verify_delivery',
+  ]);
+  const fixtures = new URL('../toolkits/mr/examples/', import.meta.url);
+  const inputs = [
+    ['coconala_check', JSON.parse(await readFile(new URL('coconala.json', fixtures), 'utf8'))],
+    ['format_citations', { text: '本文。（出典: [MCP](https://modelcontextprotocol.io/)）' }],
+    ['make_free_article', {
+      markdown: await readFile(new URL('article.md', fixtures), 'utf8'),
+      summary: await readFile(new URL('summary.md', fixtures), 'utf8'),
+      afterChars: 40, price: 500, paidContents: '作業手順', noteUrl: 'https://note.com/example/n/example',
+    }],
+    ['verify_delivery', { sample: true }],
+  ];
+  for (const [name, args] of inputs) {
+    const response = await rpc('tools/call', { name, arguments: args });
+    assert.equal(response.result.isError, false);
+    const result = response.result.structuredContent;
+    assert.equal(typeof result.output, 'string');
+    assert.ok(result.output.length > 0);
+    if (name === 'format_citations')
+      assert.equal(result.output, '本文。\n---\n\n## 出典\n\n- [MCP](https://modelcontextprotocol.io/)\n');
+    if (name === 'coconala_check' || name === 'verify_delivery')
+      assert.equal(result.status, 'PASS');
+  }
 });
