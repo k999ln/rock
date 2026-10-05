@@ -732,6 +732,14 @@ CSV履歴の再確認は10秒でタイムアウトし、失敗時は入力・既
 - 合格条件: snapshot hashと一意担当/依存・二重計上除外、Goal妥当性/状態/容量、本人別SQLite保存と競合、既存Workflow、Sky→Zema→AMC、部隊/フィルター/手順・証拠表示を検証する。進捗を更新する際は元の正本と根拠を確認してsnapshotを明示更新し、成熟段階を件数から自動計算しない。
 
 
+#### AMC作業場所のファイル読取り（SYS15 / WEB04）
+
+`workspaceSnapshot`は、本人が管理する原本と独立Git作業場所の追跡・非ignoreファイルを照合する。ファイル内容をhashへ変換する前に、pathで検査したfileと開いたfileのdevice/inodeを照合し、通常fileで一致したdescriptorだけを読む。nofollow／nonblockingで開き、成功・検査失敗・読取り失敗のすべてで閉じる。leafや親directoryの差替えで別inodeになった場合は、内容を読む前に拒否する。
+
+削除済みpathのENOENTは従来どおりnullとして記録する。dangling symlink、権限不足、非通常file、同一性不一致、必要なopen flagを使えないplatformは検査失敗とし、安全なsnapshotや受入へ昇格させない。開始前の失敗はwaveを開始せず、監視中は既存のpause／停止・保存状態照合へ戻る。本人が作業場所を確認してから最新Goalと原本を再照合する。検証は `tests/amc-workspace-snapshot.test.mjs` と既存の並列Goal回帰、記録は `docs/evidence/spider-workspace-snapshot-read.json`。
+
+保存形式・hash形式・Goal承認・独立検収は維持する。親directoryや同inodeを書き換えられるwriterの完全隔離、全fileを同時点で固定したsnapshot、remote認証、実Codex実行やWeb同期の受入を保証する変更ではない。新しい外部送信・課金・自動検収は追加しない。
+
 #### Sky完全ローンチ専用AMC（2026-09-29追加）
 
 `/zema/amc` の既定「Skyローンチ」で、受領した12部隊・36準備作業＋公開後確認1件を表示する。Goal、部隊、担当作業、依存リンク、要求ID、成果物、合格条件、Gate、未決事項を辿れる。原本は `data/amc/sky/` にSHA-256とともに保持し、全体32部隊snapshotや既存本人Goalへ合算しない。`scripts/amc-sky-plan.mjs` は要求・作業・依存・合格条件の一致を検査し、存在しない旧参照を現行コードへ補正する。本番設定の証拠としてローカル設定を使わない。

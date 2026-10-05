@@ -963,6 +963,14 @@
         "tests": "tests/amc-agent.test.mjs",
         "runtimeSource": "data/amc/agent-runtime-source.json",
         "scope": "Codex_custom_agents_web_execution_not_connected"
+      },
+      "workspaceSnapshotRead": {
+        "source": "scripts/amc-parallel.mjs",
+        "test": "tests/amc-workspace-snapshot.test.mjs",
+        "evidence": "docs/evidence/spider-workspace-snapshot-read.json",
+        "design": "docs/sky-tools-complete-design.md",
+        "scope": "local_owner_managed_workspace_identity_checked_descriptor_read",
+        "authority": "does_not_add_remote_auth_or_worker_acceptance"
       }
     }
   ],

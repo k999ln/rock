@@ -1392,7 +1392,10 @@
         "app/sky/manifest.webmanifest/route.ts",
         "lib/sky-app-manifest.ts",
         "tests/sky-app-manifest.test.mjs",
-        "docs/sky.md"
+        "docs/sky.md",
+        "scripts/amc-parallel.mjs",
+        "tests/amc-workspace-snapshot.test.mjs",
+        "docs/evidence/spider-workspace-snapshot-read.json"
       ],
       "amcMainIntegration": {
         "date": "2026-10-05",
@@ -2300,7 +2303,10 @@
         "tests/undici-tls-options.test.mjs",
         "data/web-third-party-license-audit.json",
         "scripts/spider-web-runtime.mjs",
-        "tests/spider-web-runtime.test.mjs"
+        "tests/spider-web-runtime.test.mjs",
+        "scripts/amc-parallel.mjs",
+        "tests/amc-workspace-snapshot.test.mjs",
+        "docs/evidence/spider-workspace-snapshot-read.json"
       ]
     },
     {
