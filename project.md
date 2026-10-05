@@ -1,5 +1,18 @@
 ## 2026-10-05 — 未統合PRのmain反映（19件統合済み、SPIDER別管理）
 
+## 2026-10-01 — 決済とWalletの開発実行プロンプト
+
+利用者の開発プロンプト作成依頼を受け、[実行プロンプト](docs/prompts/sky-commerce-wallet-development.md)を追加した。完全自社製・セキュリティ/運営全面合格という誤認を訂正し、自社アプリとStripe/Cloudflare/OSSの依存、ローカル合格と未受入を分離。管理者権限/MFA、case対応、監査、日次照合、監視、緊急停止、復元演習を具体的な実装・受入条件へ追加した。
+
+GitHub main b3e2676abd8ae2a0b3f78f48483e067b429d9bc8を再取得し、branch/PRメタデータと同SHAのcheck失敗を確認。[取得記録](docs/evidence/sky-commerce-development-prompt-context.json)を保存。これはプロンプト作成で、runtime実装・外部受入・運営合格・GitHubへのpushではない。BIL02はin_progressを維持する。
+
+## 2026-10-01 — Sky Market決済とWalletの統合詳細設計
+
+利用者の「既存repoの型に合う決済をまず50分設計」「旧月額8.88 USD案を無視」「Walletも設計」という指示を受け、BIL02の設計を深掘りした。既存JPY買い切り・Stripe Connect・10%・基本利用無料を維持し、型/DB/DTO境界、quote、永続inbox、operation、個別Refund、CAS/fence、購入権失効、Provider本人連携、Wallet残高/売上/返金/銀行受取/照合を定義した。旧月額案は今回の対象外。
+
+[決済統合設計](docs/sky-commerce-design.md)、[Wallet詳細設計](docs/wallet-commerce-design.md)、[型/DDL草案](docs/contracts/sky-commerce-v2.ts)、[検証記録](docs/evidence/sky-commerce-design-validation.json)に保存。草案はdocs配下にありruntimeやmigrationへ組み込んでいない。既存回帰・有限モデル・SQLite制約の検査はローカル設計証拠であり、実Stripe、外部MCP、本番gateway、実銀行受取の受入を示さない。全体verifyは既存visual baseline不一致で停止している。BIL02はin_progressを維持し、次に設計の第1段階から実装・sandbox縦断へ進む。
+
+
 利用者の「mainにあげて」により、main `aa7f2b41` を基点に元20 PRを照合した。G04／Git・CI／ROCK担当。依存5件、AI/Game/Decision Fabric8件、Campus/Farm/Meme/LiveKit/名称/domain6件の計19 PRを、全10チェック成功の `1f353524` からPR #62でmain `9f64aee3`へ統合した。元19 headはすべてmainの祖先。旧bring-up branch向けdraft #25はmainへの取り込み確認後にcloseした。SIM/eSIM中心の現行製品方針と本人承認・決済・保存契約を保持し、Farm/MemeはPAPER限定、旧Cloud agent入口は見積・上限・receipt受入までdry-runのみとした。
 
 Cloudflare peer型・lock・license inventory、Campusの所属認証と所有者交代競合、fixture model tableの衝突、既存Androidのcompile/Binder例外と古い試験・APK収集契約を修正。全verify成功（Node870、Fashion22、Mini18、公開Preview21、Meme7、Farm25、Worker/D1 1048、CSV113）。AndroidはCore111、SDK7、エミュレータ32件が成功し、実APKのsource SHA・hash・同一署名・Broker限定INTERNET・全APK cleartext禁止を確認。実機再起動専用2件は対象外、実機OS・正式署名・本番金融の受入へ換算しない。
