@@ -17,6 +17,15 @@ public final class A2ABrokerDeviceKeyStoreTest {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         byte[] challenge = new byte[32];
         new java.security.SecureRandom().nextBytes(challenge);
+        if (DeviceAcceptance.emulator()) {
+            DeviceAcceptance.assertHardwareProvisioningRejected("rock_a2a_broker_p256_attested_v1_",
+                "A2A_BROKER_KEY_NOT_HARDWARE_BACKED", () -> {
+                    A2ABrokerDeviceKeyStore unexpected = A2ABrokerDeviceKeyStore.provision(context, challenge, false);
+                    try { fail("software emulator must not enroll an A2A Broker key"); }
+                    finally { unexpected.retire(); }
+                });
+            return;
+        }
         A2ABrokerDeviceKeyStore key = A2ABrokerDeviceKeyStore.provision(context, challenge, false);
         try {
             assertTrue(key.hardwareBacked());
@@ -47,6 +56,14 @@ public final class A2ABrokerDeviceKeyStoreTest {
 
     @Test public void serverConfirmedRevocationCanIdempotentlyRetireOnlyMatchingLocalKey() throws Exception {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        if (DeviceAcceptance.emulator()) {
+            String absentKey = "0".repeat(64);
+            A2ABrokerDeviceKeyStore.retire(context, absentKey);
+            A2ABrokerDeviceKeyStore.retire(context, absentKey);
+            assertEquals("A2A_BROKER_KEY_NOT_PROVISIONED", assertThrows(IllegalStateException.class,
+                () -> A2ABrokerDeviceKeyStore.open(context, absentKey)).getMessage());
+            return;
+        }
         byte[] challenge = new byte[32]; new java.security.SecureRandom().nextBytes(challenge);
         A2ABrokerDeviceKeyStore key = A2ABrokerDeviceKeyStore.provision(context, challenge, false);
         String keyId = key.keyId();

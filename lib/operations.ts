@@ -3,6 +3,7 @@ import { defaultFund, distributeFund, validateFund } from './fund.ts';
 import {
   isSensitiveConnectionKey,
   isSkyProvider,
+  liveKitConfigError,
   providerDefinition,
   type SkyProvider,
   type SkyProviderStatus,
@@ -465,11 +466,19 @@ export function operations(
       for (const field of providerDefinition(provider).fields) {
         if (!config[field.id] && field.placeholder) config[field.id] = field.placeholder;
       }
+      for (const key of ['realtimeVoice', 'telephony']) {
+        if (config[key] && config[key] !== 'livekit')
+          throw new OperationError('音声・電話の接続候補を選択してください。');
+      }
+    }
+    if (provider === 'livekit') {
+      const error = liveKitConfigError(config);
+      if (error) throw new OperationError(error);
     }
     const status = v.status as SkyProviderStatus;
     if (
       status === 'ready' &&
-      providerDefinition(provider).fields.some((field) => !config[field.id])
+      providerDefinition(provider).fields.some((field) => !field.optional && !config[field.id])
     )
       throw new OperationError('必要な接続情報を入力してください。');
     const now = clock();

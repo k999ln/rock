@@ -71,7 +71,20 @@ public final class RockShellService extends Service {
         @Override public String localAiStatus() throws android.os.RemoteException {
             enforceShellCaller();
             try { return new LocalAiConnection(RockShellService.this).status(); }
-            catch (Exception error) { throw new android.os.RemoteException("LOCAL_AI_UNAVAILABLE"); }
+            catch (PackageManager.NameNotFoundException missingRuntime) { return "no_model"; }
+            catch (SecurityException untrustedRuntime) { throw new SecurityException("LOCAL_AI_UNTRUSTED"); }
+            catch (android.os.RemoteException disconnectedRuntime) { return "error"; }
+            catch (IllegalStateException unavailable) {
+                String reason = unavailable.getMessage();
+                if ("LOCAL_AI_UNAVAILABLE".equals(reason) || "LOCAL_AI_BIND_INTERRUPTED".equals(reason))
+                    return "error";
+                throw new IllegalStateException("LOCAL_AI_STATUS_FAILED");
+            }
+            catch (Exception invalidStatus) {
+                // RemoteException itself cannot be marshalled by the server-side Binder stub.
+                // Unsupported/malformed replies remain failures, with no raw exception details.
+                throw new IllegalStateException("LOCAL_AI_STATUS_FAILED");
+            }
         }
         @Override public String submitZema(String requestId, String selectionToken, String prompt,
                 String contextJson, boolean consent) {
@@ -447,9 +460,9 @@ public final class RockShellService extends Service {
                         return a2aBrokerFailure("WALLET_APPROVAL_NOT_ACTIVE");
                     String context = a2aWalletApprovalContext(draft);
                     Intent confirm = new Intent(RockShellService.this, ApprovalActivity.class)
-                        .putExtra(EXTRA_APPROVAL_ID, approvalId)
-                        .putExtra(EXTRA_APPROVAL_OWNER, draft.ownerUserId)
-                        .putExtra(EXTRA_APPROVAL_CONTEXT, context)
+                        .putExtra(RockPlatformService.EXTRA_APPROVAL_ID, approvalId)
+                        .putExtra(RockPlatformService.EXTRA_APPROVAL_OWNER, draft.ownerUserId)
+                        .putExtra(RockPlatformService.EXTRA_APPROVAL_CONTEXT, context)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(confirm);
                     response.put("state", "awaiting_owner_confirmation");
@@ -667,8 +680,8 @@ public final class RockShellService extends Service {
                 } catch (SecurityException denied) {
                     if (approvalRequestAttempted[0] && draftJson != null) {
                         try {
-                            JSONObject draft = new JSONObject(draftJson);
-                            String id = draft.optString("id");
+                            JSONObject rawDraft = new JSONObject(draftJson);
+                            String id = rawDraft.optString("id");
                             String owner = deviceSessionStore().ownerUserId();
                             if (owner != null && validCloudUuid(id))
                                 return fenceUnknownCloudA2AApproval(((RockApplication) getApplication()).platform(), owner, id,
@@ -679,8 +692,8 @@ public final class RockShellService extends Service {
                 } catch (Exception uncertain) {
                     if (approvalRequestAttempted[0] && draftJson != null) {
                         try {
-                            JSONObject draft = new JSONObject(draftJson);
-                            String id = draft.optString("id");
+                            JSONObject rawDraft = new JSONObject(draftJson);
+                            String id = rawDraft.optString("id");
                             String owner = deviceSessionStore().ownerUserId();
                             if (owner != null && validCloudUuid(id))
                                 return fenceUnknownCloudA2AApproval(((RockApplication) getApplication()).platform(), owner, id,

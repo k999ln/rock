@@ -500,6 +500,31 @@
     "legacyInternalName": "hub",
     "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
   },
+  "campus": {
+    "displayName": "Campus",
+    "route": "/campus",
+    "role": "university_context_people_projects_opportunities_events_communities_portfolio_resources_and_physical_entry",
+    "status": "web_runtime_implemented",
+    "campuses": [
+      "nyu",
+      "fit",
+      "columbia",
+      "fordham",
+      "johnjay"
+    ],
+    "affiliationVerification": "authenticated_email_domain_match_without_email_storage",
+    "publicClaimsBoundary": "community_posted_content_not_official_university_data_unless_external_source_states_otherwise",
+    "physicalEntry": "registered_nfc_or_qr_tag_to_campus_mode_with_source_analytics",
+    "analyticsPrivacy": "tag_source_and_timestamp_only_no_ip_email_precise_location_or_raw_user_agent",
+    "dataControls": [
+      "profile_visibility",
+      "block_and_report",
+      "post_archive",
+      "tag_activate_deactivate",
+      "tag_analytics_delete",
+      "campus_data_delete"
+    ]
+  },
   "baseApps": [
     {
       "id": "sky",
@@ -519,6 +544,11 @@
     {
       "id": "market",
       "role": "generic_paper_market_and_value_spend_runtime"
+    },
+    {
+      "id": "campus",
+      "route": "/campus",
+      "role": "university_context_social_and_project_network"
     }
   ],
   "homeExperience": {
@@ -567,8 +597,8 @@
   "launchPage": {
     "domainSeparation": {
       "productSite": "separate_public_domain",
-      "productSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site",
-      "productSiteDeployment": "public_live_verified",
+      "productSiteUrl": "https://avocadomini.noellesugar1.chatgpt.site",
+      "productSiteDeployment": "public_sites_deployment_succeeded_custom_domain_pending",
       "productSiteSource": "sites/avocado-mini",
       "productSiteRoutes": [
         "/",
@@ -577,7 +607,10 @@
       ],
       "osSite": "rockstaros-kaiya.noellesugar1.chatgpt.site",
       "osWebAudience": "owner_only",
-      "osSiteAccessStatus": "pending_owner_account_connection"
+      "osSiteAccessStatus": "pending_owner_account_connection",
+      "requestedCustomDomain": "avocadomini.si",
+      "customDomainStatus": "pending_dns_and_tls_validation",
+      "previousProductSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site"
     },
     "route": "/rockstaros",
     "role": "public_sim_esim_service_home",
@@ -609,6 +642,7 @@
     "homePrimaryApps": [
       "sky",
       "chat",
+      "campus",
       "wallet",
       "market",
       "settings"
@@ -1122,7 +1156,10 @@
       "game.experience.publish",
       "social.publish",
       "reward.grant",
-      "analytics.read"
+      "analytics.read",
+      "voice.session",
+      "telephony.inbound",
+      "telephony.outbound"
     ],
     "selectionModes": [
       "ask",
@@ -1155,10 +1192,20 @@
       "Roblox",
       "YouTube",
       "Instagram",
-      "GTA_FiveM"
+      "GTA_FiveM",
+      "LiveKit"
     ],
     "architecture": "docs/sky-mcp-architecture.md",
-    "toolDesign": "docs/sky-tools-complete-design.md"
+    "toolDesign": "docs/sky-tools-complete-design.md",
+    "ipVoiceTelephony": {
+      "requestedAt": "2026-10-04",
+      "providerCandidate": "livekit",
+      "status": "setup_metadata_implemented_runtime_not_connected",
+      "recordingDefault": "off",
+      "separateVoiceAndTelephonyOptIn": true,
+      "outboundRequiresExactApproval": true,
+      "manusCue": "reference_only_api_unverified"
+    }
   },
   "commercialPolicy": "Sky Market charges a 10% commission on verified ToB tool sales. Registration, connection, publication and base usage remain free; third-party API, model, payment and cloud costs are separate. Stripe Connect one-time JPY checkout, seller onboarding, order reconciliation and refunds are implemented but unconfigured; provider sandbox and live acceptance remain pending. The USD 8.88 ToC revenue fee proposal remains on hold and its 888-cent values are historical regression fixtures. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
   "skyMarketplacePayments": {

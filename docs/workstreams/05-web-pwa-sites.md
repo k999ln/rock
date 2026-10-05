@@ -1,5 +1,24 @@
 # Web / PWA / Sites
 
+## avocadomini.si（2026-10-05、WEB13）
+
+利用者は `k999ln/rock` のホームページを `avocadomini.si` で公開するよう指定した。担当はJOINT。ROCKはmain `aa7f2b41ce34a32c262500a83238bb713c003dee` の `sites/avocado-mini` と公開artifactを同期し、Sitesは配信とTLS、OWNERはDNS管理サービスの接続を担当する。現在のmainのSIM/eSIMホームとMini／Pro／Rocket Star等の既存ページを維持する。
+
+独自ドメインは既存Site `appgprj_6ac31ab12d3481919e9a5379fa0dfbd2` に登録済み。旧 `appgprj_6aaf6a375b908191b3b0c1845dc78291` は現在の接続ではNOT_FOUNDであり、旧Siteを変更したとは扱わない。新規Siteを重複作成しない。DNSは `lunar.dns-parking.com` と `solar.dns-parking.com`、apex Aは `2.57.91.91`、以下のTXTは未検出。登録・管理サービス名は未確認。
+
+Sitesが返した設定値（apex、wwwは今回の対象外）：
+
+| 種別 | ホスト | 値 |
+| --- | --- | --- |
+| A | @ | 162.159.143.30 |
+| A | @ | 172.66.3.26 |
+| TXT | _openai-site-verification | openai-site-verification=pUqZ8awumMyjCjWPI9MH8jvQitA2dIuY8MMrIIju5Xo |
+| TXT | _cf-custom-hostname | 36294e04-04f4-42aa-b81c-e96d235a04bb |
+
+DNS管理画面で既存apex Aを上記2件へ置き換え、TXTを追加する。メール用MXや他サービスのTXTは保持する。未確認のAAAAがあれば競合を確認してから切替える。Cloudflare経由の場合はSitesのvalidationに従いproxyの扱いを確認する。TLS追加validationが返った場合は、その実値を追加する。DNS変更の復旧は変更前のレコードを保存して戻す。Site内容の復旧は既存公開v2を選ぶ。
+
+合格条件は、`npm run build` と `npm test`（Site）、リポジトリの `npm run verify`、Sites deployment成功、独自ドメインの `status=active`／SSL有効化、同ドメインのHTTPSホーム表示を分けて記録すること。DNS設定後は `sites_refresh_custom_domain_status` を同一project IDとdomain ID `appgdom_6ac31bf83b508191b66ba4a7dd437f04` で再実行する。配信済みとDNS待ちを混同しない。[配備記録](../evidence/avocadomini-domain.json)。
+
 ## 目的
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。
@@ -141,3 +160,9 @@ WEB06/ROCK: 正本main b3e2676から今回のCSV受付衝突/競合cleanupと期
 2026-10-02 Sky引継ぎ（GitHub検証復旧）: PR #51のhead `691fb279a3c4238ef46f956a76b558c987bac850`でfresh npm ci／Node22.23.3の全体CI `37004335830`とrelease-signing `37004335480`がsuccess。既存pale-blueにbaselineを合わせ、英語README、37-table migration union、Fashionの現行保存buttonを検証する。CSS/componentは変更せず、CSV保存衝突・期限切れretry修正は維持。CIはNode441、Fashion19、Worker-D1 172、CSV-D1/R2 113、bundle131・asset114/missing0と公開crypto fixture303/rejection142を通過した。証拠`docs/evidence/sky-release-verification-alignment.json`。canonical dirty treeの同名tests/migration-unionは別の67-table作業を含むため、37へ上書きしない。PRはdraft、mainはb3e2676で未merge。live Skyは同じprojectのpublic active v32をnative取得で確認し、env revision2はStripe用4キーだけ。初回publicationフィールドのv28とは別にcurrentRuntimeReadbackへ最新v32を明記した。desktopはサインイン待ち、Pixelはkeyguard表示。実Cloud/owner journey/Apple Pay/production復旧は未受入。次は不足するproviderの本人設定とowner実機・desktop受入、main統合判断、運用gateを進める。キーをchatへ貼らせず、owner操作を代行認証しない。
 
 - 2026-10-02 WEB04: 共通接続確認は成功配列応答だけで実行を許可し、503/切断/timeout/不正応答では入力保持・読取再確認・明示実行へ復旧する。接続設定は取得失敗中の保存を止め、復旧時に編集入力を上書きしない。[合成ブラウザ証拠](../evidence/sky-access-recovery-verification.json)と[Tool詳細設計](../sky-tools-complete-design.md)を参照。本人実機・実AI・本番公開の受入を別記する。
+
+### 未統合の商品PRの取り込み（2026-10-05）
+
+PR #40（`0d2b758f`）は2026-09-24時点の日本語README、R5先行トップページ、`avokado mini`への表記統一とその生成物を扱う履歴である。現mainは `97d185ea` / `aa7f2b41` でSIM/eSIM-led service accessを主導線とする英語版ホーム、独立したMini / Proページ、現在の利用権・課金未受入表示へ更新済み。このため#40の履歴をmerge parentとして保存し、旧ページ本文・旧hero・旧生成CSSによる置換は採用しない。原本は同PRの履歴から取得でき、現行製品名・現mainのREADMEと公開サイトsourceを巻き戻さない。
+
+PR #61は独自ドメインのcanonical、sitemap、hosting参照と既存の配備記録を取り込む。混入していたSky Billing dry-run生成物は変更対象のsourceがなく、この統合では現main版を保持する。このローカル統合自体ではDNS変更、Site配備、外部回線・Providerへの操作を実施していない。

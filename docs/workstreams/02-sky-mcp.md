@@ -22,6 +22,8 @@
 
 ## 現在地
 
+- 2026-10-04 SKY07／SKY14（ROCK）: IP StudioへLiveKit音声・電話の接続設定・Zema候補選択・依頼振分けを追加。設定保存は実接続ではなく、別アプリ本体と音声・電話runtimeの受入は未完了。[契約と残る作業](../sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)。
+
 - 2026-09-27 SKY14 / ROCK（SKY15連携、全体進行中）: 全Sky／Zema／OS Tool実用化・サーバー管理不要・ローカルLLM優先の最初の実用milestoneを確認。ローカルViteの共通管理runtimeから同梱Connector／Fashionを自動起動・健康確認し、実ブラウザのFashion保存操作→ProducerのDB書込→`instagram.calendar.list`再読込一致を確認した。Sky接続操作から基本4機能の検出、Zema納品サンプルから自動接続→`verify_delivery`の実照合`PASS`も確認。`components/delivery-runner.tsx`の非実在接続導線と未接続時disabledを修正した。合成入力のみで外部納品なし。関連35試験（isolated Vite終了後の両port停止を含む）、API回帰172項目、最終build・型・対象lint・package一致・差分検査は合格。全体testは389件中378合格・11失敗（既存visual baseline、README文言、migration-union件数差）、全体verifyも既存baseline停止で未合格。34件の最小経路棚卸しはブラウザ6、Web API／DB3、PC2、外部AI1、候補22で、LLM起動だけで候補adapterは実装されない。FashionのProvider4件はmock、ページ再読込後の結果復元UIは未実装。推論runtime／モデル導入は本人回答待ちで未導入。Ledger、IP Studio、候補22件、native常駐・公開Web→本人PC relay・外部Providerの受入は残る。既存SKY14／SKY15の状態は過去の範囲のまま保持し、全34 Tool完成へ読み替えない。[実装根拠・実行分類・受入範囲](../sky-tools-complete-design.md#13-全toolの実行器棚卸しと管理runtime進行中)。
 
 - 2026-09-27: Sky Marketの各catalogカードと個別詳細に「アイコンを押して機能を見る」導線を追加。機能説明・現在の状態・利用環境・費用をダイアログで確認できる。カードの他の場所は詳細へ進むまま維持。Jev Routerの詳細は重複した情報欄を閉じた表示にしても、未接続・PC CLI条件と公式導入先を本文に残す。アイコン操作は接続・実行・認証を開始しない。対象9試験、typecheck、lint、Sky/設計チェック、buildに合格。Chromeのローカル画面で開閉・詳細遷移・Enter/Escape・console errorなしを確認。全体verifyは既存visual systemとavokado配色の不一致で`baseline:check`停止。

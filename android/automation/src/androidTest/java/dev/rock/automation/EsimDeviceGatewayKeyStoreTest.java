@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import dev.rock.core.platform.EsimDeviceEntitlement;
 import java.security.SecureRandom;
+import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -16,6 +17,15 @@ public final class EsimDeviceGatewayKeyStoreTest {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         byte[] attestationChallenge = new byte[32];
         new SecureRandom().nextBytes(attestationChallenge);
+        if (DeviceAcceptance.emulator()) {
+            DeviceAcceptance.assertHardwareProvisioningRejected("rock_esim_gateway_v1_",
+                "ESIM_GATEWAY_KEY_NOT_HARDWARE_BACKED", () -> {
+                    EsimDeviceGatewayKeyStore unexpected = EsimDeviceGatewayKeyStore.provision(context, attestationChallenge, false);
+                    try { fail("software emulator must not enroll an eSIM gateway key"); }
+                    finally { unexpected.retire(); }
+                });
+            return;
+        }
         EsimDeviceGatewayKeyStore key = EsimDeviceGatewayKeyStore.provision(
             context, attestationChallenge, false);
         try {

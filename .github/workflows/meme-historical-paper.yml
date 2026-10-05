@@ -1,0 +1,30 @@
+name: Meme historical PAPER replay
+on:
+  push:
+    branches:
+      - feature/meme-intelligence-sandbox
+    paths:
+      - "toolkits/meme-intelligence-sandbox/**"
+      - ".github/workflows/meme-historical-paper.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Historical PAPER replay
+        run: |
+          node toolkits/meme-intelligence-sandbox/run-historical-paper.mjs --bankroll 100 --output meme-historical-paper-report.json
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: meme-historical-paper-report
+          path: meme-historical-paper-report.json

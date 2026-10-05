@@ -10,7 +10,7 @@
 | **rocketstar** | ロケットR1.0、衛星・A-LINK・受信試作などの設計アーカイブ。Siteの構想ページと設計原本を分ける | [設計アーカイブ](docs/rocketstar-design/README.md)・[構想ページ](sites/avocado-mini/rocket-star/index.html) | [`docs/rocketstar-design/`](docs/rocketstar-design/)・[`sites/avocado-mini/rocket-star/`](sites/avocado-mini/rocket-star/) |
 | **RockstarOS** | AIネイティブOSの共通基盤と配布候補。完全版原本はR5専用Device Profileの実装済みを意味しない | [OS設計書完全版 v1.0](docs/rockstaros-complete-design-v1.0.pdf)・[OS全体詳細設計](docs/rockstaros-complete-design.md) | [`systems/rock-star-os/`](systems/rock-star-os/)・[`contracts/`](contracts/)・[`public-release/rockstaros/`](public-release/rockstaros/) |
 | **AI自動化チーム** | 作成中のToolを役割ごとに組み合わせ、利用者の仕事を進める | [Toolチーム設計](docs/sky-network-economy.md)・[役割エージェント仕様](docs/sky-role-agents-20260912.md) | [`lib/catalog.ts`](lib/catalog.ts)・[`lib/automation-fund-catalog.ts`](lib/automation-fund-catalog.ts)・[`app/sky/`](app/sky/)・[`app/work/`](app/work/) |
-| **Webアプリ** | Home、Sky、Zema、Wallet、設定、Sky Tool SDK用Rock Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
+| **Webアプリ** | Home、Sky、Zema、Campus、Wallet、設定、Sky Tool SDK用Rock Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
 
 rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページです。両段再使用・衛星搭載・A-LINK・RockstarOSからコロニーへつなぐ計画を説明します。[設計アーカイブ](docs/rocketstar-design/README.md)にはロケット、衛星・受信、A-LINK、OS付録と検証記録がありますが、製造・実機・飛行・資金受付の完了を示しません。avocadoMiniの[P0.2](docs/avocado-mini-hardware-design.md)、[Mini200 E1](docs/avocado-mini-mini200-e1/README.md)、[E2](docs/avocado-mini-mini200-e2/README.md)、[Tower20 E3](docs/avocado-mini-tower20-e3/README.md)は現行R5と区別した設計履歴です。AI自動化チームの仕事とToolはSkyの中で選び編成します。Zemaが依頼・進捗・承認・停止・成果を管理し、Walletが費用と確認済み収益を扱います。CSV、メルカリ、Material Inventionなどの仕事をWeb/OSの独立サービスとして数えません。
 
@@ -18,6 +18,7 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 | --- | --- | --- |
 | **Sky** — Toolの発見と接続 | [`app/sky/`](app/sky/)・[`app/api/sky/`](app/api/sky/) | [全Tool詳細設計](docs/sky-tools-complete-design.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
 | **Zema / Work / Activity** — 依頼、進捗、承認、停止、成果、履歴 | [`app/chat/`](app/chat/)・[`app/work/`](app/work/)・[`app/activity/`](app/activity/)・[`lib/zema-chat-session.ts`](lib/zema-chat-session.ts) | [Platform Core](docs/platform-core.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
+| **Campus** — 大学別のPeople / Project / Opportunity / Event / Community / Portfolio / ResourceとNFC/QR入口 | [`app/campus/`](app/campus/)・[`app/api/campus/`](app/api/campus/)・[`app/t/`](app/t/)・[`lib/campus.ts`](lib/campus.ts)・[`lib/campus-store.ts`](lib/campus-store.ts) | [Campus設計](docs/campus-layer.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
 | **Wallet** — 費用と確認済み収益 | [`app/wallet/`](app/wallet/)・[`lib/rock-wallet.ts`](lib/rock-wallet.ts) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 | **Home / Settings** — 入口と端末・接続設定 | [`app/page.tsx`](app/page.tsx)・[`app/settings/`](app/settings/) | [Product / UX](docs/workstreams/01-product-ux.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
 | **Rock Studio** — Sky Tool作者向けのコード・SDK入口 | [`app/studio/`](app/studio/)・[`app/sky/publish/`](app/sky/publish/) | [Sky Tool SDK](docs/sky-tool-sdk.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
@@ -32,7 +33,8 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 | **メルカリ収益ループ** — 出品から入金確認までの事業pilot | `mercari-revenue`としてcatalogにready登録。Skyから出品準備画面へ進める。入金の自動確認は未接続 | [`app/income/mercari/`](app/income/mercari/)・[メルカリ設計](docs/mercari-revenue-loop.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **Fashion Brand Ops** — 受注型ブランド運営の事業pilot | `fashion-brand-ops`としてcatalogにready登録。外部Providerの本番接続は別受入 | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/)・[統合設計](docs/fashion-brand-ops-integration.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **Material Invention Studio** — 発明候補の操作・比較 | Skyで組み合わせる発明チームの複合機能。単体のcatalog Toolではない。Coreのsandboxは実装済み、操作画面とSky接続は未実装 | [`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json)・[Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |
-| **Market / Polymarket** — 市場の検討とPAPER試験 | `rockstar-markets-analysis`はcatalogにready登録。`/polymarket`は`/market`への転送で、外部市場のPAPER試作は別のToolkit | [`app/market/`](app/market/)・[`app/polymarket/`](app/polymarket/)・[`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Market / Polymarket** — 市場の検討とPAPER試験 | `rockstar-markets-analysis`はcatalogにready登録。`/polymarket`は`/market`への転送。外部市場backtestとミームコイン候補評価はPAPER sandboxへ分離 | [`app/market/`](app/market/)・[`app/polymarket/`](app/polymarket/)・[`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/)・[`toolkits/meme-intelligence-sandbox/`](toolkits/meme-intelligence-sandbox/)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Avocado Farm Sandbox** — 集中流動性LPの候補評価・レンジ計画・リスク制御・PAPER実行 | 現在はRobinhood Chain Testnet向けのPAPER専用Toolkit。実トランザクション送信は未接続 | [`toolkits/avocado-farm-sandbox/`](toolkits/avocado-farm-sandbox/)・[`README`](toolkits/avocado-farm-sandbox/README.md) |
 | **Fund** — 検証済み実績に基づく構想と試算 | Skyから選ぶファンド構想。単体のcatalog Toolではない | [`app/fund/`](app/fund/)・[ファンド統合](docs/markets-fund-integration-20260913.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 
 `/studio`は[Sky Tool SDKの開発者向け画面](app/studio/page.tsx)であり、Material Invention Studioの実装画面ではありません。
@@ -120,7 +122,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 | --- | --- |
 | [Sky catalog](lib/catalog.ts) | 登録34件すべてを上に記載。ready 12件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
-| [`toolkits/`](toolkits/) | 7ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
+| [`toolkits/`](toolkits/) | 9ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
 
 Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
@@ -145,6 +147,7 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 | **Game SDK / Sandbox** | 非金融ゲームの接続と、資産交換を分けた試験 | [`systems/rock-star-os/examples/game/`](systems/rock-star-os/examples/game/) | [Game API契約](docs/game-api-contract-draft.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Mr. Tool adapter** | `Mr.`の固定原本をSkyへ接続するRock側の実装 | [`toolkits/mr/`](toolkits/mr/) | [README](toolkits/mr/README.md)・[Mr.取り込み](docs/mr-integration.md) |
 | **Polymarket Bot Sandbox** | 外部市場を動かさないPAPER試作 | [`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/) | [README](toolkits/polymarket-bot-sandbox/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Meme Intelligence Sandbox** | GMGN/on-chain、Social Sieve、Narrative/KOL/Caller/Wallet cluster、Jev境界を合成したPAPER候補評価 | [`toolkits/meme-intelligence-sandbox/`](toolkits/meme-intelligence-sandbox/) | [README](toolkits/meme-intelligence-sandbox/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Rockstar Ledger** | 台帳の個別Tool資料 | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) | [README](toolkits/rockstar-ledger/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 | **eSIM Bootstrap** | SIM/eSIM-led RockstarOS service offerのうち、eSIM provider接続を試すhost fixtureとadapter。物理SIMや複数販売チャネルを除外する製品境界ではない | [`toolkits/esim-bootstrap/`](toolkits/esim-bootstrap/)・[`app/api/esim/`](app/api/esim/) | [開発ガイド](toolkits/esim-bootstrap/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 

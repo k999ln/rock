@@ -82,7 +82,7 @@ final class AndroidA2AWalletHandoffSource
                 authorityId, ownerUserId, deviceRef, delegationId, UUID.randomUUID().toString(),
                 requestedAt, keyId, requestedAt, signer);
             requestBytes = new JSONObject(signed).toString().getBytes(StandardCharsets.UTF_8);
-        } catch (JSONException | RuntimeException invalid) {
+        } catch (RuntimeException invalid) {
             throw new IOException("A2A_WALLET_HANDOFF_REQUEST_INVALID", invalid);
         }
         if (requestBytes.length == 0 || requestBytes.length > MAX_REQUEST_BYTES) {

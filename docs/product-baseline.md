@@ -1,3 +1,11 @@
+## 2026-10-05 公開ホームページの独自ドメイン
+
+利用者は `avocadomini.si` に正本GitHub `k999ln/rock` のホームページを公開するよう明示した。最新mainの `sites/avocado-mini` を、既に同ドメインが登録された現アカウントのSiteへ配備し、既存のページ構成を維持する。Sites標準URL `https://avocadomini.noellesugar1.chatgpt.site` での配備成功と、独自ドメインのDNS・TLS認証待ちを区別する。旧kirin-999 Siteは現在の接続ではNOT_FOUNDであり変更しない。DNS実値・復旧・残る条件は[Web workstream](workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13)を参照する。
+
+## 2026-10-04 IP Studioの音声・電話連携
+
+利用者の明示指示により、RQ48のIP StudioへLiveKit Agentsの音声会話・電話対応を追加する。既存の交換可能Provider方針を維持し、音声会話と発着信、録音、外部Tool作用を別権限で扱う。今回の設定面追加を実通話の受入に換算しない。Manus Cueは体験の参考であり、未確認APIの接続済み表示はしない。[詳細と残る条件](sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)。
+
 ## 2026-10-02 現行製品方針: SIM/eSIMを入口にRockstarOSサービスへ接続
 
 この節はこれ以前の「eSIM専用」「eSIM商品をOS内で販売」「ハードウェア先行」「交換可能な端末内LLM/OS自体を利用者向け主商品とする」という競合方針より優先する。製品の主な提供価値は、物理SIMまたはeSIMの購入を通じてRockstarOSとSky、Zema、統合エージェントへ短い手順でアクセスできること。SIM/eSIM購入にはサービス利用権を含める。OSバイナリをSIM/eUICCへ格納する要件ではなく、通信サービスの購入・開通とOSの導入・利用権付与は別々の状態として扱う。購入先はRockstar直販に限らず、通信事業者、端末販売店、オンライン販売等の複数チャネルを想定する。販売・開通連携は契約前である。
@@ -47,6 +55,12 @@
 Sky Marketは自動化ToolとLLMを掲載対象にし、登録・接続・公開・基本利用料は0円とする。検証済みTool売上のSky Market手数料は10%。外部決済、API、AIモデル、cloud等の第三者実費は別表示する。Provider、本人確認、返金、照合の受入前は請求・回収・払出しを有効化しない。旧8.88 USD案と0%の記載は過去の判断履歴・回帰資料であり、この現行方針を上書きしない。
 
 同日追加「決済もできるようにして」: WebのSky MarketにStripe Connectの受取先登録、円の買い切り価格設定、Hosted Checkout、購入履歴、署名通知とProvider再照合、10%配分、返金を実装した。価格・作者・送金先はserverの注文snapshotを正本にし、審査有効な販売対象だけ購入できる。LLMも同じPackage条件で扱う。API・DBとProvider代替fixtureの合格は実Stripe sandboxや実資金受入ではない。現在は決済資格情報未設定で課金不可、公開配備・銀行着金も未確認。外部MCP側の有料access認可は提供者との別統合を要する。[決済実装と設定手順](sky-billing.md)。
+
+## 2026-09-27 Campusレイヤー
+
+RockstarOS Web/PWAのbase appに `Campus` を追加する。CampusはNYU / FIT / Columbia / Fordham / John Jayの文脈ごとにPeople、Projects、Opportunities、Events、Communities、Portfolio、Resourcesを提供し、registered NFC / QR tagからmode別に開ける。既存Sky / Zema / Walletを複製せず、発見・共同作業の入口として接続する。
+
+所属表示は認証済みemail domainとの一致だけを `domain_verified` とし、emailはCampus tableへ保存しない。これは在籍・肩書き・大学公式承認の証明ではない。求人、event、case、policy等は外部原典が明示されない限りcommunity-posted contentとして扱う。Tag analyticsはtag ID / source / timestampだけを保存し、IP・email・precise location・raw User-Agentを収集しない。profile visibility、block/report、post archive、tag停止、tag analytics削除、Campus単位の本人データ削除を持つ。設計とruntime境界は[Campus layer](campus-layer.md)を正本とする。
 
 ## 2026-09-24 収益料金の保留
 

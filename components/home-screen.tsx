@@ -7,6 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Cloud,
+  GraduationCap,
   MessageCircle,
   RadioTower,
   RotateCcw,
@@ -61,6 +62,14 @@ const apps: HomeApp[] = [
     href: '/chat',
     Icon: MessageCircle,
     color: 'chat',
+  },
+  {
+    id: 'campus',
+    name: 'Campus',
+    description: '大学の人・プロジェクト・機会をつなぐ',
+    href: '/campus',
+    Icon: GraduationCap,
+    color: 'campus',
   },
   {
     id: 'wallet',

@@ -1,5 +1,6 @@
 package dev.rock.core;
 
+import dev.rock.core.platform.A2ABrokerAuthorization;
 import dev.rock.core.platform.A2AUsageReceiptVerifier;
 import dev.rock.core.platform.A2AWalletSettlementSync;
 import dev.rock.core.platform.ComponentManifest;

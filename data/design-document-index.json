@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros-design-document-index/1",
   "version": "1.4",
-  "updatedAt": "2026-10-02",
+  "updatedAt": "2026-10-05",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/avocado-mini-r5/README.md",
@@ -181,7 +181,8 @@
         "docs/local-ai-os-integration-20260915.md",
         "contracts/local-ai-runtime.json",
         "contracts/decision-provider.json",
-        "data/decision-fabric-policy.json"
+        "data/decision-fabric-policy.json",
+        "docs/llm-evaluation-architecture.md"
       ]
     },
     {
@@ -247,7 +248,8 @@
         "docs/chat-mcp-control-room-20260913.md",
         "docs/sky-tool-sdk.md",
         "docs/sky-launch-design.md",
-        "docs/sky-launch-operations.md"
+        "docs/sky-launch-operations.md",
+        "docs/agent-control-plane.md"
       ],
       "implementation": [
         "scripts/check-sky-launch.mjs",
@@ -316,7 +318,8 @@
       "documents": [
         "docs/game-api-contract-draft.md",
         "docs/gx01-contract-implementation-plan.md",
-        "docs/gx01-reference-sdk-sandbox-20260910.md"
+        "docs/gx01-reference-sdk-sandbox-20260910.md",
+        "docs/workstreams/08-game-market-fund.md"
       ]
     },
     {
@@ -341,7 +344,8 @@
       "documents": [
         "docs/validation.md",
         "docs/database-status.md",
-        "data/project-status.json"
+        "data/project-status.json",
+        "docs/git-consolidation.md"
       ]
     }
   ],
@@ -425,6 +429,20 @@
         "mobileAndUnknownHostLoopbackLink": false,
         "runtimeAvailabilityVerifiedByLaunchLink": false,
         "design": "docs/sky-tools-complete-design.md#85-ip-studio--交換可能な制作配信ゲーム展開"
+      },
+      "voiceTelephony": {
+        "provider": "livekit",
+        "status": "setup_metadata_only",
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/sky-connections.ts",
+          "lib/operations.ts"
+        ],
+        "tests": [
+          "tests/operations.test.mjs",
+          "tests/sky-routing.test.mjs"
+        ],
+        "runtimeConnected": false
       }
     },
     {
