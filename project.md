@@ -1,3 +1,5 @@
+2026-10-05 WEB04 / AMC main統合: 本人の指示で最新mainへAMCの画面・保存API・Goal基盤・CLI・3役・fixtureを統合する。mainのWorkPlan、Cloud Agent検収、Zema新規保存のservice entitlementを保持。Sky/Zema全体の旧ルート移行、CSV、ライブラリmigrationは含めない。実起動は2026-10-04にCLIフォルダ信頼確認で停止、実部隊/独立検収/並列受入/Web同期は未実施。検証と保存状況はWEB04.amcMainIntegrationに記録する。 最新main上のnpm run verifyは999テスト、Worker/D1 1069 assertions、CSV Worker/D1/R2 113 assertions、buildと配信asset検査を含め合格。
+
 ## 2026-10-05 — 決済・Wallet設計と英語開発プロンプトのmain保存
 
 利用者の「mainにあげて」に基づき、2026-10-01の決済・Wallet設計、型/DDL草案、有限モデルと証拠を最新mainへ統合する差分を準備した。開発プロンプトは英語へ統一。SIM/eSIMのPackage重複購入拒否、端末session認証、署名runtime binding、CSV専用50円決済、共通Stripe処理、Cloud予算と資金の分離を保持する。旧月額8.88 USD案は対象外、BIL02はin_progressのまま。

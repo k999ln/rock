@@ -1,3 +1,4 @@
+import { prepareSkyGoal } from './amc-sky-plan.mjs';
 // Protocol checks only. Synthetic identity headers simulate the Sites gateway on
 // a loopback-only Worker; never send these headers to a deployed site.
 import assert from 'node:assert/strict';
@@ -281,7 +282,7 @@ async function call(method = 'GET', body, options = {}) {
       `${method} ${options.path ?? '/api/work-jobs'}: expected ${options.status ?? 200}, received ${response.status}: ${(await response.text()).slice(0, 2000)}${(options.path ?? '').includes('/device-entitlement') ? `; verifier requests=${attestationVerifierRequestCount}; verifier error=${attestationVerifierLastError || 'none'}` : ''}`,
     );
   check(response.status, options.status ?? 200);
-  check(response.headers.get('cache-control'), 'no-store');
+  check(response.headers.get('cache-control'), options.cache ?? 'no-store');
   return response.json();
 }
 async function createBrokerProof(delegation, message) {
@@ -2488,6 +2489,24 @@ try {
         : reject(new Error(`Operations API verification exited ${code}`)),
     );
   });
+  // Isolated proxy-header fixtures, not proof of a deployed sign-in gateway.
+  const skyDraft=prepareSkyGoal(JSON.parse(readFileSync(join(root,'data/amc/sky/sky-amc-plan.json'),'utf8')),JSON.parse(readFileSync(join(root,'data/amc/sky/sky-amc-goal.json'),'utf8')));
+  const amcOptions={path:'/api/amc',cache:'private, no-store'};
+  const amcId=randomUUID();
+  let amc=(await call('POST',{id:amcId,importGoal:skyDraft},{...amcOptions,status:201})).job;
+  await call('GET',undefined,{...amcOptions,path:`/api/amc?id=${amcId}`,user:bob,status:404});
+  await call('GET',undefined,{...amcOptions,user:null,status:401});
+  const approvalId=randomUUID();
+  amc=(await call('PATCH',{jobId:amc.id,revision:amc.revision,command:{id:approvalId,action:'amc_event',event:{id:approvalId,type:'approve_plan',actor:'forged-reviewer',role:'reviewer',expectedRevision:amc.amcGoal.revision,scopeConfirmed:true,coverageStatement:'Isolated HTTP fixture only',acceptanceCriteria:amc.amcGoal.overallAcceptance.criteria}}},amcOptions)).job;
+  check(amc.amcGoal.approval.actor,alice);
+  check(amc.amcGoal.approval.role,'owner');
+  const forged={jobId:amc.id,revision:amc.revision,command:{id:randomUUID(),action:'amc_event',event:{type:'start_task',actor:'forged',role:'worker',taskId:'S0-01',expectedRevision:amc.amcGoal.revision,matched:true,sourceHash:'pretend'}}};
+  await call('PATCH',forged,{...amcOptions,status:409});
+  const revalidation={...forged,command:{...forged.command,id:randomUUID(),event:{...forged.command.event,type:'revalidate_task',actor:alice,role:'owner',reason:'Forged current-candidate claim',evidence:['maintenance/forged.json'],affectedTaskIds:['S0-01']}}};
+  await call('PATCH',revalidation,{...amcOptions,status:409});
+  await call('PATCH',forged,{status:400});
+  await call('POST',{id:randomUUID(),importGoal:amc.amcGoal},{...amcOptions,status:409});
+  check((await call('GET',undefined,{...amcOptions,path:`/api/amc?id=${amcId}`})).job.amcGoal.tasks[0].status,'pending');
   console.log(
     `仕事API: ${assertions} assertions passed (認証境界・分離・競合・順序・再送・再起動後の保存)`,
   );

@@ -1,0 +1,360 @@
+.root {
+  max-width: 1000px;
+  margin: 44px auto 32px;
+  color: #edede8;
+}
+.root * {
+  box-sizing: border-box;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+.eyebrow {
+  color: #a6a69b;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  margin: 0 0 14px;
+}
+.root h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 550;
+  letter-spacing: -0.045em;
+  line-height: 1.25;
+  margin: 0;
+}
+.intro {
+  color: #a6a69b;
+  font-size: 14px;
+  margin: 14px 0 0;
+}
+.storage {
+  color: #b8c7a4;
+  font-size: 11px;
+  white-space: nowrap;
+  padding-top: 5px;
+}
+.storageNote,
+.footnote {
+  color: #a6a69b;
+  font-size: 11px;
+  line-height: 1.7;
+  margin: 20px 0;
+}
+.root button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #3a3a34;
+  border-radius: 9px;
+  min-height: 38px;
+  background: transparent;
+  padding: 8px 12px;
+  color: #deded8;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.root button:hover {
+  background: #292925;
+}
+.root button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.root :is(input, textarea, select) {
+  color: #edede8;
+  background: #20201d;
+  border: 1px solid #3a3a34;
+  border-radius: 8px;
+  padding: 10px;
+  font: inherit;
+  font-size: 13px;
+  min-width: 0;
+}
+.root :is(input, textarea)::placeholder {
+  color: #909086;
+}
+.root :is(button, input, textarea, select, summary):focus-visible,
+.advanced summary:focus-visible {
+  outline: 2px solid #c8d6a8;
+  outline-offset: 3px;
+}
+.composer {
+  border: 1px solid #373731;
+  background: #191918;
+  border-radius: 18px;
+  padding: 24px;
+  margin-top: 30px;
+}
+.composer label {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+.composer textarea {
+  width: 100%;
+  resize: vertical;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  line-height: 1.9;
+  font-size: 15px;
+}
+.formFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+.formFoot small {
+  font-size: 11px;
+  color: #a6a69b;
+}
+.root .primary {
+  background: #edede8;
+  color: #191918;
+  border-color: #edede8;
+  font-weight: 600;
+  padding-inline: 18px;
+}
+.root .primary:hover {
+  background: #d4d4cd;
+}
+.templates {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  border-top: 1px solid #30302c;
+  margin-top: 24px;
+  padding-top: 18px;
+}
+.templates > span {
+  color: #a6a69b;
+  font-size: 11px;
+}
+.boards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 26px 0 22px;
+}
+.boards button {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.boards button[aria-pressed='true'] {
+  color: #edede8;
+  background: #30302a;
+  border-color: #646455;
+}
+.board {
+  border: 1px solid #373731;
+  border-radius: 16px;
+  background: #191918;
+  padding: 24px;
+}
+.boardHeading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.boardHeading > input {
+  width: 100%;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+  font-weight: 550;
+}
+.boardHeading > button {
+  flex-shrink: 0;
+}
+.progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 20px 0 12px;
+  color: #a6a69b;
+  font-size: 11px;
+}
+.progress span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.progress span:first-child {
+  color: #c4d7aa;
+}
+.progressTrack {
+  display: block;
+  width: 100%;
+  height: 3px;
+  border: 0;
+  border-radius: 3px;
+  background: #33332c;
+  overflow: hidden;
+  appearance: none;
+}
+.progressTrack::-webkit-progress-bar {
+  background: #33332c;
+}
+.progressTrack::-webkit-progress-value {
+  background: #c4d7aa;
+}
+.progressTrack::-moz-progress-bar {
+  background: #c4d7aa;
+}
+.tasks {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.tasks > li {
+  display: grid;
+  grid-template-columns: 25px minmax(0, 1fr) 90px;
+  gap: 12px;
+  padding: 18px 0;
+  border-bottom: 1px solid #30302b;
+  align-items: start;
+}
+.number {
+  color: #7f7f74;
+  padding-top: 9px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.taskBody {
+  min-width: 0;
+}
+.root .taskTitle {
+  field-sizing: content;
+  resize: vertical;
+  line-height: 1.6;
+  width: 100%;
+  background: transparent;
+  border-color: transparent;
+  padding: 6px 0;
+  font-size: 14px;
+}
+.tasks li[data-status='done'] .taskTitle {
+  color: #969c8b;
+  text-decoration: line-through;
+}
+.tasks li[data-status='doing'] select {
+  border-color: #a69768;
+  color: #e0d2a8;
+}
+.tasks li[data-status='done'] select {
+  border-color: #60764e;
+  color: #c4d7aa;
+}
+.tasks select {
+  width: 100%;
+  font-size: 11px;
+  padding: 8px 5px;
+}
+.taskBody summary {
+  color: #a6a69b;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 5px 0;
+  width: fit-content;
+}
+.taskBody details label {
+  display: grid;
+  gap: 7px;
+  color: #a6a69b;
+  font-size: 11px;
+  margin-top: 12px;
+}
+.taskBody details textarea {
+  width: 100%;
+  resize: vertical;
+}
+.addTask {
+  display: flex;
+  gap: 10px;
+  padding-top: 20px;
+}
+.addTask input {
+  width: 100%;
+  background: transparent;
+}
+.addTask button {
+  flex-shrink: 0;
+}
+.footnote {
+  margin: 16px 0 0;
+}
+.error {
+  color: #f4c2a4;
+  border: 1px solid #855d45;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+.root .textButton {
+  margin-top: 12px;
+}
+.advanced {
+  max-width: 1000px;
+  margin: 32px auto;
+  border-top: 1px solid #343431;
+  padding-top: 18px;
+}
+.advanced > summary {
+  color: #a6a69b;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+@media (max-width: 600px) {
+  .root {
+    margin-top: 28px;
+  }
+  .header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .composer,
+  .board {
+    padding: 17px;
+  }
+  .formFoot {
+    flex-wrap: wrap;
+  }
+  .tasks > li {
+    grid-template-columns: 18px minmax(0, 1fr) 77px;
+    gap: 7px;
+  }
+  .boardHeading > input {
+    font-size: 19px;
+  }
+  .taskBody details {
+    margin-right: -84px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .progressTrack span {
+    transition: none;
+  }
+}
+
+.export {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+  font-size: 12px;
+}
+.export textarea {
+  width: 100%;
+  resize: vertical;
+}
+.export button {
+  justify-self: start;
+}
