@@ -308,3 +308,7 @@ After updating documents or progress, run the following checks. The final calcul
 Purpose-specific permission is designed for recording, external publication, appliance operation, purchasing, and payment. Information about housemates or visitors is not stored based only on the purchaser's consent. Medical decisions, emergency monitoring, and unattended operation of locks or heating appliances are not initial targets. RockstarOS 1.0 is a Developer Preview, and the reuse license for proprietary code has not been selected. Bundled open-source software, models, and external services each have their own terms. [Distribution requirements](docs/release-minimum-gates.md) / [Sources and licenses](docs/mr-integration.md)
 
 Images and GIFs are concept material for explaining the product. They are not product photographs or evidence of a working spatial display, manufacturing approval, or safety performance.
+
+<!-- sky-detail-handoff:start -->
+Skyの商品詳細では説明・料金・接続条件を確認し、ライブラリへ保存できます。「Zemaで開く」から同じ商品の入力・実行画面へ進みます。商品を開くことや保存することだけでは購入・実行を承認しません。出典整理はブラウザで処理でき、PC接続は必須ではありません。
+<!-- sky-detail-handoff:end -->

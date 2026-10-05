@@ -302,7 +302,8 @@
     "allReferencedDocumentsMustExist": true,
     "unknownsMayNotBeReportedAsImplemented": true,
     "environmentSpecificAcceptanceRequired": true,
-    "newSystemOrToolRequiresIndexUpdate": true
+    "newSystemOrToolRequiresIndexUpdate": true,
+    "skyDetailMustHandoffBeforeExecution": true
   },
   "archivalCollections": [
     {

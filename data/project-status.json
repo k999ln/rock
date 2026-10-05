@@ -4278,5 +4278,20 @@
     "recoverableBackupInstalledComponentAuthorityRestored": false,
     "recoverableBackupPhysicalKeystoreLossRestoreVerified": false
   },
-  "currentStateDocument": "docs/current-state-20260911.md"
+  "currentStateDocument": "docs/current-state-20260911.md",
+  "skyDetailHandoffPreparation": {
+    "requestId": "SKY-S2-DETAIL-HANDOFF-20261005-01",
+    "primarySquad": "O5",
+    "existingTasks": [
+      "SKY10",
+      "SKY16"
+    ],
+    "baseMain": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+    "status": "submitted_for_independent_review_with_base_failures",
+    "scope": "Sky商品詳細の説明・保存・Zemaへの明示リンク。既存runnerはZemaで維持。",
+    "accepted": false,
+    "deployed": false,
+    "runtimeAgentAcceptance": false,
+    "validation": "focused 44/44、実画面のSky→Zema→出典整理が合格。typecheck/design:check/verifyは基点mainの不整合で失敗。保存APIは503、保存からの全導線は未受入。"
+  }
 }
