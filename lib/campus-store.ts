@@ -613,18 +613,26 @@ export function campusStore(db: Db) {
   }
 
   async function clearTagAnalytics(user: string, tagId: string) {
-    const owned = await statement(
-      db,
-      'SELECT tag_id FROM sky_campus_tags WHERE tag_id = ? AND owner_user_id = ?',
-      tagId,
-      user,
-    ).first();
-    if (!owned) throw new CampusError('タグが見つかりません。', 404);
     const result = await statement(
       db,
-      'DELETE FROM sky_campus_tag_events WHERE tag_id = ?',
+      `DELETE FROM sky_campus_tag_events WHERE tag_id = ? AND EXISTS (
+        SELECT 1 FROM sky_campus_tags
+        WHERE tag_id = sky_campus_tag_events.tag_id AND owner_user_id = ?
+      )`,
       tagId,
+      user,
     ).run();
+    // Bind authorization to the write itself: a released tag ID may have been
+    // registered by another owner while this request was in flight.
+    if (result.meta.changes === 0) {
+      const owned = await statement(
+        db,
+        'SELECT tag_id FROM sky_campus_tags WHERE tag_id = ? AND owner_user_id = ?',
+        tagId,
+        user,
+      ).first();
+      if (!owned) throw new CampusError('タグが見つかりません。', 404);
+    }
     return { tagId, deletedEvents: result.meta.changes };
   }
 

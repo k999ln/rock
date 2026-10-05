@@ -5,7 +5,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { build } from 'esbuild';
 const built = await build({ entryPoints: ['lib/campus-store.ts'], bundle: true, write: false, format: 'esm', platform: 'node' });
 const { campusStore } = await import('data:text/javascript;base64,' + Buffer.from(built.outputFiles[0].text).toString('base64'));
-function fixture(t) {
+function fixture(t, beforeRun = async () => {}) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
   for (const name of readdirSync('drizzle').filter((name) => name.endsWith('.sql')).sort()) sqlite.exec(readFileSync('drizzle/' + name, 'utf8'));
@@ -14,7 +14,7 @@ function fixture(t) {
     return { bind(...values) { args = values; return this; },
       async first() { return statement.get(...args) ?? null; },
       async all() { return { success: true, results: statement.all(...args) }; },
-      async run() { return { success: true, results: [], meta: statement.run(...args) }; } };
+      async run() { await beforeRun(sql); return { success: true, results: [], meta: statement.run(...args) }; } };
   }, async batch(statements) {
     sqlite.exec('BEGIN');
     try { const results = []; for (const statement of statements) results.push(await statement.all()); sqlite.exec('COMMIT'); return results; }
@@ -61,4 +61,29 @@ test('Campus tag controls and analytics stay private to their owner', async (t) 
   assert.equal(await store.recordTagEvent(tag.tagId, 'qr'), false);
   await store.clearTagAnalytics('owner', tag.tagId);
   assert.equal((await store.tagAnalytics('owner', 'nyu'))[0].total, 0);
+  assert.equal((await store.clearTagAnalytics('owner', tag.tagId)).deletedEvents, 0);
+});
+
+test('an in-flight clear cannot delete analytics after its tag is registered by a new owner', async (t) => {
+  let beforeRun = async () => {};
+  const { store } = fixture(t, (sql) => beforeRun(sql));
+  const batch = { prefix: 'nyu-library', start: 1, count: 1, mode: 'campus', label: 'Library', placement: '' };
+  const [tag] = await store.registerTagBatch('old-owner', 'nyu', batch);
+  await store.recordTagEvent(tag.tagId, 'nfc');
+  let transferred = false;
+  beforeRun = async (sql) => {
+    if (!sql.startsWith('DELETE FROM sky_campus_tag_events')) return;
+    beforeRun = async () => {};
+    await store.leaveCampus('old-owner', 'nyu');
+    await store.registerTagBatch('new-owner', 'nyu', batch);
+    await store.recordTagEvent(tag.tagId, 'qr');
+    transferred = true;
+  };
+  await assert.rejects(store.clearTagAnalytics('old-owner', tag.tagId), (error) => error.status === 404);
+  assert.equal(transferred, true);
+  const analytics = await store.tagAnalytics('new-owner', 'nyu');
+  assert.equal(analytics[0].total, 1);
+  assert.equal(analytics[0].qr, 1);
+  assert.equal(analytics[0].nfc, 0);
+  assert.equal((await store.clearTagAnalytics('new-owner', tag.tagId)).deletedEvents, 1);
 });
