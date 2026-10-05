@@ -11,8 +11,8 @@
   "projectProgress": {
     "total": 161,
     "done": 104,
-    "in_progress": 41,
-    "planned": 15,
+    "in_progress": 42,
+    "planned": 14,
     "blocked": 1,
     "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入",
     "nextAction": "Canonical offer is physical SIM/eSIM-led RockstarOS service access across purchase channels; carrier activation, service entitlement, account, OS/client install, cloud execution and AI billing remain distinct states. The local signed claim issuer and encrypted/idempotent seller delivery API are implemented; the Android Shell quote→device-credential Wallet hold→Broker proof→explicit Cloud approval→same-ID recovery source flow is wired and locally contract-tested. Current repository verification passes: Node 757/757, Worker/D1 API 1,048 assertions, CSV Worker/D1/R2 113 assertions, Fashion 19/19, typecheck, product lint, production build and release checks. Next run Android Core/AIDL/APK/instrumentation on an equipped CI/device host; then connect contracted seller checkout/delivery, carrier, Provider rates/meters/invoices and funded settlement. Production D1 readback is 0/6; local fixtures are not production billing, carrier activation, or successful exact-SKU OS installation."

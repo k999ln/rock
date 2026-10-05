@@ -388,12 +388,14 @@
     {
       "id": "MAT15",
       "title": "R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "MAT14"
       ],
       "evidence": [
-        "docs/avocado-mini-r5/package/integrated_design.md"
+        "docs/avocado-mini-r5/package/integrated_design.md",
+        "docs/avocado-mini-cellular.md",
+        "data/avocado-mini-cellular.json"
       ]
     },
     {
@@ -4440,5 +4442,43 @@
     "designCommit": "33cea702c6c36a6bc973bedb966a7ef661514258",
     "pullRequest": "https://github.com/k999ln/rock/pull/64",
     "ciAtDesignCommit": "no_checks_reported_at_last_check"
+  },
+  "miniCellular": {
+    "schemaVersion": 1,
+    "updatedAt": "2026-10-05",
+    "product": "avocadoMini",
+    "task": "MAT15",
+    "relatedTask": "SIM01",
+    "status": "design_only_not_implemented",
+    "userDecision": "Miniに入れて、Mini単体で通信する",
+    "simLocation": "inside_mini",
+    "initialSimFormat": "physical_nano_sim_design_candidate",
+    "proRequired": false,
+    "phoneTetherRequired": false,
+    "pcRequired": false,
+    "externalPowerRequired": true,
+    "batteryAdopted": false,
+    "radioTarget": [
+      "4G LTE",
+      "5G Sub-6 candidate"
+    ],
+    "country": null,
+    "carrier": null,
+    "modemSku": null,
+    "esim": "optional_future_separate_acceptance",
+    "physicalSimProvidesGameCompute": false,
+    "localOfflineBehaviorPreserved": true,
+    "unapprovedCloudFallback": false,
+    "hardwarePurchased": false,
+    "modemIntegrated": false,
+    "carrierConnected": false,
+    "standaloneDataTested": false,
+    "productionReady": false,
+    "authority": "docs/avocado-mini-cellular.md",
+    "githubSaved": false,
+    "mainMerged": false,
+    "publicPageUpdated": false,
+    "verificationEvidence": "docs/evidence/avocado-mini-cellular-design.json",
+    "localVerify": "passed"
   }
 }

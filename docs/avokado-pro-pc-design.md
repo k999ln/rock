@@ -65,3 +65,7 @@ P0完了は同じ個体・版で、メモリー/SSD診断、AIのmodel別速度/
 ROCK: 本設計、RockstarOS接続境界、試験記録形式。EXTERNAL: NVIDIA/OEM/ODMの基板、driver、firmware、供給/保守。JOINT: 収納、熱、ゲーム、AIと出荷機の受入。OWNER: 販売条件、見積後の購入、製造契約、販売開始。
 
 次は**参照SKUの国内調達見積と128GBメモリーQVL、OEM/ODM基板供給可否**を確認し、P0候補1台と試験タイトルを決める。メール送信や発注は未実施。資料保存・GitHub branch・main統合・公開ページ・物理製造は個別に記録する。
+
+## Miniの回線選択（2026-10-05）
+
+利用者はSIMをMini本体へ入れて単体通信する構成を選んだ。[Mini cellular設計](avocado-mini-cellular.md)が正本。ProをMiniの携帯回線親機にせず、Proとの接続は任意のゲーム/compute拡張とする。

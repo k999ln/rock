@@ -1,3 +1,7 @@
+## 2026-10-05 Mini単体の携帯回線
+
+利用者はSIMをMini本体へ入れ、ProなしでMini単体が通信する構成を選択した。[Mini cellular設計](avocado-mini-cellular.md)と機械可読仕様へ物理SIM、modem/antenna、接続/復旧と受入を追加。Miniの外部給電、offline基本動作、Pro任意を維持する。利用国/通信会社/採用部品は未定。SIM追加をGPU性能、空間表示、cloud gamingや実開通の合格としない。
+
 ## 2026-10-05 avokadoProの独立小型PC方針
 
 利用者指定により、ProはNVIDIA搭載のMac miniのような据え置き小型PCとして、AIとPCゲーム双方を重視する。販売目標は80万円/台（回答80の文脈解釈、税込/税別等未定）。[構成・組立設計](avokado-pro-pc-design.md)へ候補部品、OEM試作とODM販売筐体、冷却・互換性・受入を記録した。MiniはProなしの単体動作を目指す既存R5を維持する。新task MAT16はMini MAT15と別受入であり、購入・組立・生産・公開・受注済みではない。

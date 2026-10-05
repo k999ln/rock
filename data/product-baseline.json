@@ -1701,5 +1701,15 @@
     "candidateOnly": true,
     "authority": "docs/avokado-pro-pc-design.md",
     "specification": "data/avokado-pro-pc.json"
+  },
+  "miniCellularIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user choice: SIM goes inside Mini for standalone cellular connectivity",
+    "simInsideMini": true,
+    "proRequired": false,
+    "phoneTetherRequired": false,
+    "externalPowerRequired": true,
+    "authority": "docs/avocado-mini-cellular.md",
+    "specification": "data/avocado-mini-cellular.json"
   }
 }
