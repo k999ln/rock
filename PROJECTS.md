@@ -32,7 +32,7 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 | **メルカリ収益ループ** — 出品から入金確認までの事業pilot | `mercari-revenue`としてcatalogにready登録。Skyから出品準備画面へ進める。入金の自動確認は未接続 | [`app/income/mercari/`](app/income/mercari/)・[メルカリ設計](docs/mercari-revenue-loop.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **Fashion Brand Ops** — 受注型ブランド運営の事業pilot | `fashion-brand-ops`としてcatalogにready登録。外部Providerの本番接続は別受入 | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/)・[統合設計](docs/fashion-brand-ops-integration.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **Material Invention Studio** — 発明候補の操作・比較 | Skyで組み合わせる発明チームの複合機能。単体のcatalog Toolではない。Coreのsandboxは実装済み、操作画面とSky接続は未実装 | [`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json)・[Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |
-| **Market / Polymarket** — 市場の検討とPAPER試験 | `rockstar-markets-analysis`はcatalogにready登録。`/polymarket`は`/market`への転送で、外部市場のPAPER試作は別のToolkit | [`app/market/`](app/market/)・[`app/polymarket/`](app/polymarket/)・[`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Market / Polymarket** — 市場の検討とPAPER試験 | `rockstar-markets-analysis`はcatalogにready登録。`/polymarket`は`/market`への転送。外部市場backtestとミームコイン候補評価はPAPER sandboxへ分離 | [`app/market/`](app/market/)・[`app/polymarket/`](app/polymarket/)・[`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/)・[`toolkits/meme-intelligence-sandbox/`](toolkits/meme-intelligence-sandbox/)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Avocado Farm Sandbox** — 集中流動性LPの候補評価・レンジ計画・リスク制御・PAPER実行 | 現在はRobinhood Chain Testnet向けのPAPER専用Toolkit。実トランザクション送信は未接続 | [`toolkits/avocado-farm-sandbox/`](toolkits/avocado-farm-sandbox/)・[`README`](toolkits/avocado-farm-sandbox/README.md) |
 | **Fund** — 検証済み実績に基づく構想と試算 | Skyから選ぶファンド構想。単体のcatalog Toolではない | [`app/fund/`](app/fund/)・[ファンド統合](docs/markets-fund-integration-20260913.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 
@@ -121,7 +121,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 | --- | --- |
 | [Sky catalog](lib/catalog.ts) | 登録34件すべてを上に記載。ready 12件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
-| [`toolkits/`](toolkits/) | 7ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
+| [`toolkits/`](toolkits/) | 9ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
 
 Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
@@ -146,6 +146,7 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 | **Game SDK / Sandbox** | 非金融ゲームの接続と、資産交換を分けた試験 | [`systems/rock-star-os/examples/game/`](systems/rock-star-os/examples/game/) | [Game API契約](docs/game-api-contract-draft.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Mr. Tool adapter** | `Mr.`の固定原本をSkyへ接続するRock側の実装 | [`toolkits/mr/`](toolkits/mr/) | [README](toolkits/mr/README.md)・[Mr.取り込み](docs/mr-integration.md) |
 | **Polymarket Bot Sandbox** | 外部市場を動かさないPAPER試作 | [`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/) | [README](toolkits/polymarket-bot-sandbox/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Meme Intelligence Sandbox** | GMGN/on-chain、Social Sieve、Narrative/KOL/Caller/Wallet cluster、Jev境界を合成したPAPER候補評価 | [`toolkits/meme-intelligence-sandbox/`](toolkits/meme-intelligence-sandbox/) | [README](toolkits/meme-intelligence-sandbox/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Rockstar Ledger** | 台帳の個別Tool資料 | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) | [README](toolkits/rockstar-ledger/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 | **eSIM Bootstrap** | SIM/eSIM-led RockstarOS service offerのうち、eSIM provider接続を試すhost fixtureとadapter。物理SIMや複数販売チャネルを除外する製品境界ではない | [`toolkits/esim-bootstrap/`](toolkits/esim-bootstrap/)・[`app/api/esim/`](app/api/esim/) | [開発ガイド](toolkits/esim-bootstrap/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 
