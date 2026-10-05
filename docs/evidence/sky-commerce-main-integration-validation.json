@@ -1,7 +1,7 @@
 {
   "schema": "sky-commerce-main-integration-validation/1",
   "clientDate": "2026-10-05",
-  "upstreamBase": "08a624b93bffa8ce81df2319f156ec1f284fdf04",
+  "upstreamBase": "80a662cc8dbd967ecc4f04e46bba086b54c4d725",
   "checkedWorktreeBase": "46aec2bc5b0ddd989c594f662877fc62890d987e",
   "scope": "Payment/Wallet design, English development prompt, design validation and documentation only; no runtime or production migration changes.",
   "historicalEvidence": "docs/evidence/sky-commerce-design-validation.json",
@@ -63,9 +63,9 @@
   ],
   "localEnvironment": "Dependencies installed from current lockfile with lifecycle scripts disabled. Regenerable installed dependency source maps removed to recover disk space; application source and lockfile unchanged. Installed dependencies were then removed to recover disk space for Git publication; npm ci is required before future local runtime checks.",
   "inputSha256": {
-    "README.md": "a04ea98d9d5645f31d40ed71cc4cb664b413f608cdf285852ebc47dc3fc5ccb0",
+    "README.md": "ba8560ee25855de5c74934d62b12c362b5cfb12e349c3f08c4d43fe46d06821e",
     "data/design-document-index.json": "5d5b35d8c772f008d78da9ada79997d70cc42d18771d7d8d6a429ef558136b67",
-    "data/project-status.json": "24deaaa40360a7d7991be1108a0c80b9964e79bc84faa4545a86d20377597488",
+    "data/project-status.json": "9cdbcb7dd7ee5ac8bc82de63f381eefc1c3508d1957c11b3d4c892193f52daff",
     "docs/contracts/sky-commerce-v2.sql": "6200543a810fdb5d39fa855cd88fd2ff5d9508e4c334539d25a2726e743f0912",
     "docs/contracts/sky-commerce-v2.ts": "8876a8c3eaafdc7e9ae1262c501b42cb7f30e9e2d6f62322f7f0ae9bcd428326",
     "docs/contracts/sky-wallet-v2.ts": "b8caf9b702abf36d254936b7a3c3f5a82d9f2d29add24fd9e04608732186b133",
@@ -85,7 +85,9 @@
     "docs/sky-commerce-design.md": "115600e80a49b3ef6ce7e47d7c0462df731244cbb59361e9198bdbae9c5ebeaf",
     "docs/wallet-commerce-design.md": "642f504814bcc27f75ce0bd743fe84fbbe37e35ce3e7ad565ec7af4dc646d049",
     "docs/workstreams/03-wallet-billing-providers.md": "2549f0a0549cdc0ca04f04fc8e6625d1733c837585a1813bb96532ec5620db4e",
-    "project.md": "f8d1c0046eb8f38f09045aa698855305b6084e6066634622000d805e39616357"
+    "project.md": "ad06a56a7717be992b7453ee586f79fc44e42d38a21b4068327879385e3bb0da"
   },
-  "sourceIdentityNote": "checkedWorktreeBase identifies the pre-finalization commit; inputSha256 identifies checked documentation and validation contents. The final Git commit and exact-SHA CI supply publication identity."
+  "sourceIdentityNote": "checkedWorktreeBase identifies the pre-finalization commit; inputSha256 identifies checked documentation and validation contents. The final Git commit and exact-SHA CI supply publication identity.",
+  "localRuntimeCheckedUpstreamBase": "08a624b93bffa8ce81df2319f156ec1f284fdf04",
+  "lateUpstreamSync": "Merged two documentation-only main commits (GTA and patent research) after local runtime checks; exact candidate GitHub CI remains the integration gate."
 }
