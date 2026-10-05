@@ -9,6 +9,12 @@ import {
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
+export const skyLibraryItems = sqliteTable('sky_library_items', {
+  userId: text('user_id').notNull(),
+  tool: text('tool').notNull(),
+  savedAt: integer('saved_at').notNull(),
+}, (table) => [uniqueIndex('idx_sky_library_owner_tool').on(table.userId, table.tool)]);
+
 export const skyCommerceSellers = sqliteTable('sky_commerce_sellers', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull(),

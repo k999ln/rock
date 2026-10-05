@@ -4,7 +4,11 @@ PR #52 の main 統合 `592daeea` 後、SYS15 / Security / ROCK として修正b
 
 一度だけnofollow／nonblockingで開き、同じfdをfstatして検査し、同じfdから64KiBずつ上限+1 byteまで読んで拡大を拒否する。成功・parse/read失敗のすべてでfdを閉じ、JSON解析診断に内容を含めない。既存schema・revision・lock・停止／復旧を維持。親directoryや同じinodeを変更できるlocal writerからの隔離を保証せず、保存先は本人が管理する。
 
-同時にmainへ入ったPR #67（`a3951f52`）のCSV修正とAMC利用手順を保持して取り込んだ。対象の状態readerには変更がなく、競合は進捗追記を両方残して解消した。旧版で差替え先の読取り・検査後の拡大を再現。新規6＋既存37＝43試験が合格、skipなし。独立source reviewでも退行なし。比較refは `refs/heads/codex/spider-autonomy-state-read`。修正前 `592daeea` のCodeQL run 37281429343は成功し、同refの#54はopen。push後の同じSHAのGitHub再検査と同refのalert結果をPRへ記録する。結果未取得を完了解消とせず、main merge・警告dismiss・検査緩和は行わない。
+同時にmainへ入ったPR #67（`a3951f52`）のCSV修正とAMC利用手順を保持して取り込んだ。さらにPR #68（`624124cf`）のSky統合を保持して再同期した。対象の状態readerには変更がなく、競合は進捗追記を両方残して解消した。旧版で差替え先の読取り・検査後の拡大を再現。新規6＋既存37＝43試験が合格、skipなし。独立source reviewでも退行なし。比較refは `refs/heads/codex/spider-autonomy-state-read`。修正前 `592daeea` のCodeQL run 37281429343は成功し、同refの#54はopen。push後の同じSHAのGitHub再検査と同refのalert結果をPRへ記録する。結果未取得を完了解消とせず、main merge・警告dismiss・検査緩和は行わない。
+
+## 2026-10-05 — Skyの保存・接続復帰候補をGitHub mainへ統合
+
+G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分をmain4928b64eへ選択的に移植した後、同時更新されたmain592daeeaのAMC・SPIDER、後続a3951f52のCSV共通処理修正を保持して統合。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補のnpm run verifyは成功（Node1151合格・1環境依存skip、仕事API1069、CSV385 assertions、build・asset検査）。Drizzle追加生成0件、Connector ZIP一致。検証記録はdocs/evidence/sky-github-main-integration.json。旧head21e45371のGitHub verify・SPIDER回帰・本番用応答検査は成功。CodeQL57の保存済みgrant自己照合を整理し、再接続・期限・不正Bearer回帰を追加。最新headのCIはPR #68で確認してから統合する。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
 
 ## 2026-10-05 — AMC有限fixtureとCSV共通処理をmainへ統合する準備（G04）
 

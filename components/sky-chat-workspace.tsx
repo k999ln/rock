@@ -1092,7 +1092,7 @@ export default function SkyChatWorkspace() {
               return <Link key={session.id} className={session.id === threadId ? 'is-current' : ''} href={`/chat?tool=${encodeURIComponent(session.toolId)}&thread=${encodeURIComponent(session.id)}`} onClick={closeSidebarOnSmallScreen}><MessageCircle size={15} /><span>{title}</span></Link>;
             })}
           </div>
-          <div className="zema-sidebar-bottom"><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>仕事</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link></div>
+          <div className="zema-sidebar-bottom"><Link href="/zema/library"><Grid2X2 size={16} /><span>ライブラリ</span></Link><Link href="/sky"><Grid2X2 size={16} /><span>Skyでツールを追加</span></Link><Link href="/chat?view=work"><ListChecks size={16} /><span>仕事</span></Link><Link href="/"><House size={16} /><span>ホーム</span></Link></div>
         </aside>
         {sidebarOpen && <button type="button" className="zema-sidebar-scrim" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)} />}
         <header className="sky-chat-commandbar">

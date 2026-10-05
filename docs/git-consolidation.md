@@ -90,3 +90,10 @@ Stripeのstandalone配布コピーは生成物であり、共通sourceとの一�
 以下は監査で似て見えたが、異なる責務として維持する範囲である。Android/Java・Linux/Python・Webの実行器は権限モデルが違い、既存Platform契約とparity fixtureを使う。Webのレビュー待ちとnativeの実行成功を同じ「完了」に変換しない。暗号化端末backup、Web設定export、QEMU diskは復旧対象が違う。記事処理の固定原本とOS移植は既存`contracts/article-fixtures.json`で一致を検証する。Fund、Game、Material等の商品アルゴリズム、未merge PR #25・#40〜#50・#52（#39/#51を除く）の固有機能は本共通化だけでは統合済みにならない。PR #41等にある同じSite試験/README修正は本統合へ収束し、残る固有機能だけを後続でrebaseする。設計archiveの同一blobは保存を要求された原本であり、削除しない。
 
 検証は関連unit/HTTP mock、owner/CAS・再送・署名、MCP切断/再接続、双方のhandoff契約、standalone生成物一致、全体`npm run verify`。Provider sandbox、実機OS、本番配備の成功とは分ける。結果と次の手順は`project.md`とG04へ記録する。rollbackは統合PRのrevertと既存保存schema/versionで行い、DB migrationは追加しない。
+
+
+## 2026-10-05 Sky配信候補の正本統合（G04/WEB04）
+
+G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
+
+統合後のローカル全体verifyは成功。AMC/SPIDERを含むNode1146合格・1skip、仕事API1069、CSV385 assertions。詳細は[検証記録](evidence/sky-github-main-integration.json)。既存mainの履歴scanner候補2859件は別の未解決事項として保持する。

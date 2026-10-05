@@ -1067,5 +1067,182 @@
     "contentStorageAdded": false,
     "localEvidence": "docs/evidence/sky-access-recovery-verification.json",
     "productionOwnerAcceptance": false
+  },
+  "networkConnectionRecovery": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "app/sky/network/page.tsx",
+      "components/sky-network.tsx",
+      "components/sky-network.module.css",
+      "components/sky-navigation.tsx",
+      "components/sky-application.module.css",
+      "lib/sky-network-device.ts",
+      "lib/sky-network-session.ts",
+      "components/device-connection.tsx",
+      "components/sky-mcp-center.tsx",
+      "components/execution-access.tsx"
+    ],
+    "states": [
+      "idle",
+      "checking",
+      "connecting",
+      "connected",
+      "failed",
+      "offline"
+    ],
+    "deviceHintIsAuthority": false,
+    "successRequires": "Existing connectDevice or verifyDevice completes; UI timer does not grant success",
+    "permissionBoundary": "No real /connect or reconnect acceptance until separately approved PC trial",
+    "providerConnectionDraftsAreExecution": false,
+    "deploymentAcceptance": false,
+    "signinGate": "Main and detailed network connection buttons are blocked until existing authenticated jobs-array check succeeds. Recheck is read-only.",
+    "runtimeSchemaRecovery": {
+      "canonicalSql": "drizzle/0037_csv_trial_payments.sql",
+      "worker": "web-worker.ts",
+      "test": "scripts/check-csv-storage.mjs",
+      "acceptance": "Combined canonical candidate requires schema and compiled Worker/D1/R2 checks",
+      "librarySql": "drizzle/0059_sky_library.sql",
+      "migrationPolicy": "canonical append-only drizzle migrations; dedicated Site schema version is independent"
+    }
+  },
+  "toolExecutionBoundaryVerification": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "lib/sky-tool-execution-scope.ts",
+      "lib/sky-candidate-output.ts",
+      "lib/sky-tool-ui.ts",
+      "lib/sky-tool-labels.ts",
+      "components/sky-candidate-runner.tsx",
+      "scripts/check-sky.mjs"
+    ],
+    "test": "tests/sky-tool-execution-scope.test.mjs",
+    "evidence": "docs/evidence/sky-tool-execution-boundaries.json",
+    "catalogCount": 35,
+    "classificationIsLiveAcceptance": false,
+    "deploymentAcceptance": false
+  },
+  "skyIntegratedAcceptance": {
+    "document": "docs/sky-launch-design.md",
+    "implementation": [
+      "scripts/sky-launch-validation.mjs",
+      "scripts/check-sky-launch.mjs"
+    ],
+    "test": "tests/sky-launch-validation.test.mjs",
+    "finalStages": [
+      "paid",
+      "clients",
+      "focused"
+    ],
+    "actualCustomerJourneyAccepted": false
+  },
+  "skyLibraryIntegration": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "app/api/sky/library/route.ts",
+      "app/zema/library/page.tsx",
+      "app/zema/tools/[toolId]/page.tsx",
+      "components/sky-library.tsx",
+      "components/sky-library-save.tsx",
+      "components/zema-navigation.tsx",
+      "lib/operations.ts"
+    ],
+    "sourceSql": "drizzle/0059_sky_library.sql",
+    "saveIsEntitlement": false,
+    "productionAccepted": false
+  },
+  "skyResultExport": {
+    "document": "docs/sky-tools-complete-design.md",
+    "operations": "docs/sky-launch-operations.md",
+    "implementation": [
+      "components/mr-tool-runner.tsx",
+      "lib/sky-result-download.ts"
+    ],
+    "verification": "tests/sky-result-download.test.mjs",
+    "contentUploadAdded": false,
+    "downloadAccepted": false,
+    "clipboardAccepted": false,
+    "productionAccepted": false
+  },
+  "skyCsvRetention": {
+    "document": "docs/sky-tools-complete-design.md",
+    "operations": "docs/sky-launch-operations.md",
+    "implementation": [
+      "lib/csv-retention.ts",
+      "lib/csv-job-store.ts",
+      "web-worker.ts",
+      "components/csv-business-workspace.tsx"
+    ],
+    "verification": [
+      "tests/csv-retention.test.mjs",
+      "scripts/check-csv-storage.mjs"
+    ],
+    "publicScheduledCleanupAccepted": false,
+    "processingLeaseRecoveryAccepted": false
+  },
+  "skyConnectionEntry": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "components/sky-workspace.tsx",
+      "components/sky-network.tsx",
+      "components/sky-navigation.tsx"
+    ],
+    "verification": [
+      "tests/sky-network-device.test.mjs",
+      "tests/sky-network-session.test.mjs"
+    ],
+    "navigationIssuesRights": false,
+    "realPcAccepted": false,
+    "fullUxAccepted": false
+  },
+  "skyDedicatedToolLibrary": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "components/sky-tool-workspace.tsx",
+      "components/csv-business-workspace.tsx",
+      "components/coconala-team-workspace.tsx",
+      "components/sky-library-save.tsx",
+      "components/sky-library.tsx"
+    ],
+    "verification": [
+      "scripts/check-csv-storage.mjs",
+      "tests/coconala-sky-entry.test.mjs"
+    ],
+    "publicOwnerAcceptance": false
+  },
+  "skyConnectorPilotPreparation": {
+    "document": "docs/sky-mcp-connector.md",
+    "implementation": [
+      "toolkits/sky-mcp-connector/server.mjs",
+      "toolkits/sky-mcp-connector/pilot-policy.mjs",
+      "toolkits/sky-mcp-connector/registry.pilot.json"
+    ],
+    "verification": [
+      "tests/mcp-pilot-policy.test.mjs"
+    ],
+    "actualIssuanceAccepted": false,
+    "actualExpiryShutdownAccepted": false
+  },
+  "skyConnectionReachability": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "components/sky-network.tsx",
+      "components/execution-access.tsx",
+      "lib/sky-network-session.ts"
+    ],
+    "verification": [
+      "tests/sky-network-session.test.mjs"
+    ],
+    "realPcAccepted": false
+  },
+  "skyCsvHistoryRecovery": {
+    "document": "docs/sky-tools-complete-design.md",
+    "implementation": [
+      "components/csv-business-workspace.tsx",
+      "lib/csv-history-request.ts"
+    ],
+    "tests": [
+      "tests/csv-history-request.test.mjs"
+    ],
+    "realPaymentAccepted": false
   }
 }

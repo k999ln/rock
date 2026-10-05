@@ -19,7 +19,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 148);
+  assert.equal(report.summary.tableCount, 149);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
@@ -30,8 +30,9 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 76);
-  assert.equal(report.webSchema.migrationCount, 59);
+  assert.equal(report.webSchema.tableCount, 77);
+  assert.equal(report.webSchema.migrationCount, 60);
+  assert.ok(report.webSchema.tables.includes('sky_library_items'));
   assert.ok(report.webSchema.tables.includes('rockstar_entitlement_events'));
   assert.ok(report.webSchema.tables.includes('remote_ai_rate_cards'));
   assert.ok(report.webSchema.tables.includes('remote_ai_text_executions'));
@@ -42,14 +43,14 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('sky_package_runtime_bindings'));
   assert.ok(report.webSchema.tables.includes('rockstar_device_authorizations'));
   assert.ok(report.webSchema.tables.includes('rockstar_device_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0058_campus_layer.sql');
+  assert.equal(report.webSchema.latestMigration, '0059_sky_library.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
   assert.deepEqual(
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
       ['core', 12],
-      ['sky', 32],
+      ['sky', 33],
       ['marketplace', 7],
       ['csv', 5],
       ['business', 20],

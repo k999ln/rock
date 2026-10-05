@@ -1,0 +1,413 @@
+{
+  "schema": "sky-tool-execution-boundaries-v1",
+  "sourceHashes": {
+    "lib/catalog.ts": "3d8afcd9543ff23580ae43df1f2570d4c58765753e4ec66dd55edc425229e4a6",
+    "lib/sky-candidate-output.ts": "66019eafcdd0a18f6cc4bf3c4a9df2c2d7ec3281ea4a35146f4d94e9d83d4fc4",
+    "lib/sky-tool-execution-scope.ts": "c13c8f6518775cfa06f01e496285ad63120be37740adf1b14961004fc8d05668",
+    "lib/sky-tool-ui.ts": "9b943fbf98439c0d3324d5c9acb3d15344740f9c0bcc23d83df1bb0ad59ee096",
+    "lib/sky-tool-labels.ts": "590eec51841807cc7133975db42c60f1c13b2279b372e28f16a331b6ab673635",
+    "components/sky-candidate-runner.tsx": "8262e2c62190ac65e1aeac36c8f1dc01553f6cf7edf074d7b2f0d1745ddbdafc",
+    "scripts/check-sky.mjs": "b17190f3d3f42066af178bb2d0485767b7a19ffb7128aadccea16af7a90fef26",
+    "tests/sky-tool-execution-scope.test.mjs": "2e5725776698a083802bcbd3f60b9fe3c9e358f185fa4a6ad8854cff74548db3"
+  },
+  "classificationIsLiveAcceptance": false,
+  "realExternalExecutionPerformed": false,
+  "devicePermissionsIssued": false,
+  "liveChargePerformed": false,
+  "deploymentPerformed": false,
+  "services": [
+    {
+      "id": "rockstar-csv-cleanup",
+      "catalogStatus": "ready",
+      "implementationScope": "cloud-processing",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "rockstar-markets-analysis",
+      "catalogStatus": "ready",
+      "implementationScope": "paper-simulation",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "mercari-revenue",
+      "catalogStatus": "ready",
+      "implementationScope": "assisted-preparation",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "fashion-brand-ops",
+      "catalogStatus": "ready",
+      "implementationScope": "local-planning",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "rockstar-ip-studio",
+      "catalogStatus": "candidate",
+      "implementationScope": "pc-app",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "coconala",
+      "catalogStatus": "ready",
+      "implementationScope": "browser-processing",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "mr-free-article",
+      "catalogStatus": "ready",
+      "implementationScope": "browser-processing",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "mr-citations",
+      "catalogStatus": "ready",
+      "implementationScope": "browser-processing",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "mr-delivery",
+      "catalogStatus": "ready",
+      "implementationScope": "pc-connector",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "rockstar-ledger",
+      "catalogStatus": "ready",
+      "implementationScope": "pc-service",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "jev-evaluation",
+      "catalogStatus": "ready",
+      "implementationScope": "connection-required",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "rockstar-legal-intake",
+      "catalogStatus": "ready",
+      "implementationScope": "local-guide",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "rockstar-patent-assistant",
+      "catalogStatus": "ready",
+      "implementationScope": "local-guide",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "faster-whisper",
+      "catalogStatus": "candidate",
+      "implementationScope": "connection-plan",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "transformers-js",
+      "catalogStatus": "candidate",
+      "implementationScope": "connection-plan",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "playwright",
+      "catalogStatus": "candidate",
+      "implementationScope": "connection-plan",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "jev-ultrafast",
+      "catalogStatus": "candidate",
+      "implementationScope": "connection-plan",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "jev-trader",
+      "catalogStatus": "candidate",
+      "implementationScope": "connection-plan",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "typesafe-computer-use",
+      "catalogStatus": "candidate",
+      "implementationScope": "connection-plan",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "jev-review",
+      "catalogStatus": "candidate",
+      "implementationScope": "connection-plan",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "jev-router",
+      "catalogStatus": "candidate",
+      "implementationScope": "pc-cli",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false,
+      "note": "Pure connection-plan helper tested; actual UI exposes PC CLI conditions only."
+    },
+    {
+      "id": "jev-browser",
+      "catalogStatus": "candidate",
+      "implementationScope": "connection-plan",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "mobile-jev",
+      "catalogStatus": "candidate",
+      "implementationScope": "connection-plan",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "coconala-proposal-draft",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "gig-workflow",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "coconala-inbox",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "youtube-script-writer",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "seo-blueprint",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "landing-page-sprint",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "sales-objection-reply-builder",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "user-interview-synthesizer",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "calendar-coordination",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "telegram-notifications",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "producthunt-discovery",
+      "catalogStatus": "candidate",
+      "implementationScope": "template",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": true,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false
+    },
+    {
+      "id": "rockstar-amc",
+      "catalogStatus": "ready",
+      "implementationScope": "assisted-preparation",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false,
+      "note": "Manual Goal and progress management; saving or starting a record is not autonomous Agent execution."
+    }
+  ],
+  "unverified": [
+    "Authenticated public owner flow",
+    "Physical Pixel on this candidate",
+    "Real PC grant, start and reconnect",
+    "Provider responses, billing and invoice reconciliation",
+    "Same-candidate deployment and restoration"
+  ],
+  "historicalSiteValidation": {
+    "sourceBaseCommit": "7b2aa1193058ac2000b86ce04ae589299c240c49",
+    "publicBaseVersion": 33,
+    "publicBaseCommit": "00109c6adccc7b1aa4ff3f72d740d18e1de8ec94",
+    "tests": {
+      "focused": {
+        "status": "passed",
+        "count": 44,
+        "command": "node --test tests/sky-tool-execution-scope.test.mjs tests/sky-tool-ui.test.mjs tests/mr-tools.test.mjs tests/markets-adapter.test.mjs"
+      },
+      "skyCheck": "passed",
+      "typecheck": "passed",
+      "targetLint": "passed",
+      "browser": "pending",
+      "fullVerify": "not_passed"
+    }
+  },
+  "sourceBaseCommit": "a3951f52fa79ad4348f371c647dfe339de2e8eeb",
+  "tests": {
+    "status": "passed",
+    "environment": "local canonical integration of Sky, AMC and SPIDER; synthetic only",
+    "command": "npm run verify",
+    "nodeTests": {
+      "total": 1152,
+      "passed": 1151,
+      "skipped": 1,
+      "failed": 0
+    },
+    "workApiAssertions": 1069,
+    "csvWorkerAssertions": 385,
+    "build": "passed",
+    "browser": "not_performed_on_canonical_candidate",
+    "production": "not_accepted"
+  }
+}
