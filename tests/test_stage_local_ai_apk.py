@@ -115,6 +115,13 @@ class LocalAiApkStagingTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "metadata differs"):
                     stager.verify_stage(self.tree)
 
+    def test_staged_apk_symlink_with_matching_bytes_is_rejected(self):
+        stager.stage_apk(self.tree, self.apk, self.aapt2)
+        apk = self.tree / stager.STAGE_PATH / stager.APK_NAME
+        apk.unlink(); apk.symlink_to(self.apk)
+        with self.assertRaisesRegex(ValueError, "not symlinks"):
+            stager.verify_stage(self.tree)
+
     def test_unbuilt_lock_fails_before_staging(self):
         self.write_lock("APK_NOT_BUILT")
         with self.assertRaisesRegex(ValueError, "not built and reviewed"):

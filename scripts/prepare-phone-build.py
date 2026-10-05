@@ -61,9 +61,13 @@ def local_ai_config(lock):
                 "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
                 "CLIENT_AND_SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
                 "PLAN_V2_NATIVE_COMPILED_EMULATOR_AND_PHYSICAL_BOUND",
+                "PROFILE_HASH_API_V4_READONLY_FD_HANDOFF_SOURCE_TESTED_NOT_NATIVE_BUILT",
+                "PROFILE_HASH_API_V4_READONLY_FD_HANDOFF_NATIVE_COMPILED_NOT_DEVICE_VERIFIED",
             }
             or integration.get("signedApk") not in {
                 "NOT_BUILT", "UNSIGNED_RELEASE_APK_REVIEWED",
+                "API_V2_UNSIGNED_RELEASE_APK_REVIEWED_V4_NOT_BUILT",
+                "API_V4_UNSIGNED_RELEASE_APK_REVIEWED_NOT_SIGNED",
             }
             or integration.get("productPackage") not in {
                 "STAGING_GENERATOR_DEFINED_NOT_BUILT",
@@ -263,7 +267,7 @@ def host_report(directory):
             "system": platform.system(), "architecture": platform.machine(),
             "memoryBytes": memory, "freeBytes": free, "checks": checks,
             "ready": all(checks.values()),
-            "recommendation": "Dedicated x86_64 Linux; 64 GiB RAM and 400 GB free before source sync. KVM is not required to compile phone images."}
+            "recommendation": "Dedicated x86_64 Linux; 64 GiB usable RAM and 400 GiB free before source sync. KVM is not required to compile phone images."}
 
 
 def patched_hook(content, expected_hash):

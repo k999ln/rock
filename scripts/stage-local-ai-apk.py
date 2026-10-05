@@ -209,6 +209,8 @@ def verify_stage(tree):
     if lock["stage"] != "APK_REVIEWED_NOT_IN_IMAGE":
         raise ValueError("local-AI APK is not reviewed")
     stage = safe_stage_directory(tree)
+    if any(path.is_symlink() or not path.is_file() for path in stage.iterdir()):
+        raise ValueError("local-AI staged files must be regular files, not symlinks")
     metadata = json.loads((stage / "artifact.json").read_text())
     if metadata != expected_metadata(lock):
         raise ValueError("staged local-AI metadata differs from the reviewed source and artifact lock")
