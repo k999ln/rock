@@ -4475,10 +4475,13 @@
     "standaloneDataTested": false,
     "productionReady": false,
     "authority": "docs/avocado-mini-cellular.md",
-    "githubSaved": false,
+    "githubSaved": true,
     "mainMerged": false,
     "publicPageUpdated": false,
     "verificationEvidence": "docs/evidence/avocado-mini-cellular-design.json",
-    "localVerify": "passed"
+    "localVerify": "passed",
+    "designCommit": "bf3e6ea1d15bc66abcee1bfff1d0c9ff76ef3cc0",
+    "pullRequest": "https://github.com/k999ln/rock/pull/64",
+    "ciAtDesignCommit": "in_progress_at_last_check"
   }
 }

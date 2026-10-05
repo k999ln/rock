@@ -1,6 +1,6 @@
 ## 2026-10-05 Mini本体SIMによる独立通信設計
 
-利用者の明示選択「Miniに入れて、Mini単体で通信する」をMAT15のcellularサブ項目として追加。Material Invention / avocadoMiniが主担当、SIM01はcarrier/service権の接続先。最新main `996b1955`を作業branchへ取り込み、公開ホーム/進捗を同期後に追記。物理SIM、modem/antenna、接続状態/再試行/保存復旧、Proなし・Wi-Fiなしの実通信試験条件を設計した。Proは任意、Miniの外部給電とoffline基本動作を維持。利用国・通信会社は質問中で、採用module/driver/アンテナ配置/製造図面・開通は未確定。次は地域/回線固定とmodule適合、bench→閉箱受入。設計保存のみで、実装/実機受入/新規公開なし。 `npm run verify`再実行 exit 0（Node870、仕事API1048、CSV113）。初回はSQLITE_FULLで停止し、自分の一時サイト依存/build整理後に失敗試験単独と全体を再検証した。証拠: `docs/evidence/avocado-mini-cellular-design.json`。
+利用者の明示選択「Miniに入れて、Mini単体で通信する」をMAT15のcellularサブ項目として追加。Material Invention / avocadoMiniが主担当、SIM01はcarrier/service権の接続先。最新main `996b1955`を作業branchへ取り込み、公開ホーム/進捗を同期後に追記。物理SIM、modem/antenna、接続状態/再試行/保存復旧、Proなし・Wi-Fiなしの実通信試験条件を設計した。Proは任意、Miniの外部給電とoffline基本動作を維持。利用国・通信会社は質問中で、採用module/driver/アンテナ配置/製造図面・開通は未確定。次は地域/回線固定とmodule適合、bench→閉箱受入。設計保存のみで、実装/実機受入/新規公開なし。 `npm run verify`再実行 exit 0（Node870、仕事API1048、CSV113）。初回はSQLITE_FULLで停止し、自分の一時サイト依存/build整理後に失敗試験単独と全体を再検証した。証拠: `docs/evidence/avocado-mini-cellular-design.json`。 設計commit `bf3e6ea1d15bc66abcee1bfff1d0c9ff76ef3cc0`をGitHub branchへ保存、draft PR #64更新済み。同SHAのCIは確認時in_progress。main統合・サイト更新は未実施。
 
 ## 2026-10-05 avokadoProのNVIDIA小型PC構成・組立設計
 
