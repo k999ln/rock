@@ -6,6 +6,8 @@
 
 ## 現在地
 
+- 2026-10-01: BIL02の[決済統合設計](../sky-commerce-design.md)と[Wallet詳細設計](../wallet-commerce-design.md)、型/DDL草案と再現用検証を追加。旧月額8.88 USD案は利用者指示で対象外。これは設計の完了範囲であり実Provider受入・runtime実装の完了ではない。
+
 - Sky Marketの商品購入はWeb D1の別経路として実装。`/sky/sell` のStripe Express受取先登録、審査済み `external_contract` Packageの円建て買い切り販売、10% application fee、Checkout、`/sky/purchases` の支払い照合、提供者返金を含む。LLM Packageも同じ条件を使う。
 - Web migration `0018_sky_commerce.sql` と四つのserver-only `SKY_*` 決済設定が必要。カード・銀行情報はStripeが保持する。全migrationを使うSQLiteとStripe HTTP mockのcommerce試験37件は成功したが、実資格情報、Stripe sandbox、live money、配備は未実施。
 - 購入記録だけでは第三者MCPへのアクセス制御を強制できない。提供者側の認証・利用権失効、および本番Sites gatewayと匿名署名Webhookの到達を共同受入する。
@@ -183,3 +185,7 @@ Workbenchでbudget minor unitsを通貨別に表示し、Provider signed final u
 ## 2026-10-02 Package runtime positive dispatch and SIM-led status
 
 `npm run sky:a2a:workflow:positive` passes 12/12. Added a Cloudflare Worker/D1/Workflow positive test that registers a Provider-signed Package runtime binding, pins it through approved delegation, confirms the Worker preserves Agent Card extension declaration across durable serialization, sends the bound operation and request digest to a controlled fixture service, captures the completed artifact encrypted, verifies a synthetic Provider-signed usage receipt, and settles the local logical reservation. The mock service binding is not a real Provider or production integration. This updates the previous checkpoint that the successful Package executor path was absent: a local executor fixture now exists, while real Provider implementation, external interoperability, real rates, invoice settlement, and funded Wallet reconciliation remain open. Full `npm run verify` passes after the code change (Node 737/737, API 994 assertions, CSV 113 assertions, Fashion 19/19, typecheck/lint/build and repository gates). Production D1 readback remains 0/6 and all OS/carrier/customer acceptance gates remain separate. See [correction evidence](../evidence/sim-led-product-correction-20261002.json).
+
+## 開発実行プロンプト
+
+[決済とWalletの開発プロンプト](../prompts/sky-commerce-wallet-development.md)を使用する。設計差分の実装、Commerce管理者権限、監査、サポート、停止/復旧、監視、sandboxから限定liveまでの受入を含む。外部Stripe/Cloudflare/OSSの利用と、自社コードの担当を区別する。プロンプト保存は実装合格ではない。

@@ -515,3 +515,7 @@ Mac launcherは、現在のlive sessionに結びつくVNC credentialを既存の
 ### Game復旧のsource検証（SYS15）
 
 Gameの通信結果が不明な場合、処理試行の戻り値を成功へ昇格させず、永続claimのoperation／resultと署名済みterminal receiptで復旧を確認する。source試験は未適用の停滞・statusのUNKNOWN・元要求の遅延適用を別々のprivate fixtureで制御し、照合前の保留維持と照合後の正確な解除、二重付与なしを確認する。期限・権限・金額を変更せず、予期しない状態は試験失敗として残す。入力、失敗、復旧、非対象は[OS検証](native-os-validation.md#gameの不確定応答からの復旧試験sys152026-10-03)へ集約し、実Provider・OS imageの受入とは分ける。
+
+## 2026-10-01 決済・Walletの追加設計
+
+Sky Marketの既存型・JPY買い切り・10%配分に合わせた[統合設計](sky-commerce-design.md)と[Wallet画面/台帳境界](wallet-commerce-design.md)を参照する。金銭事実・購入権・MCP実行権・銀行受取を分離し、旧月額8.88 USD案は今回の対象外。設計草案の検証と実Provider・実機の受入は分ける。

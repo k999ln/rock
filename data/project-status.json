@@ -3214,7 +3214,18 @@
         "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
         "android/automation/src/androidTest/java/dev/rock/automation/DeviceCapabilitySnapshotTest.java",
         "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "tests/sky-marketplace.test.mjs"
+        "tests/sky-marketplace.test.mjs",
+        "docs/sky-commerce-design.md",
+        "docs/wallet-commerce-design.md",
+        "docs/contracts/sky-commerce-v2.ts",
+        "docs/contracts/sky-wallet-v2.ts",
+        "docs/contracts/sky-commerce-v2.sql",
+        "docs/evidence/sky-commerce-design-validation.json",
+        "docs/design-validation/README.md",
+        "docs/prompts/sky-commerce-wallet-development.md",
+        "docs/evidence/sky-commerce-development-prompt-context.json",
+        "docs/evidence/sky-commerce-main-integration-validation.json",
+        "docs/evidence/sky-commerce-sql-main-validation.json"
       ],
       "nextAction": "Provider order idempotency is now a contract gate: eSIM Go accepted-but-unanswered POST /orders cannot be safely matched if orderReference is lost; do not retry or enable debit without exact endpoint idempotency or persistent client-reference lookup. 1GLOBAL activation-order endpoint support must be confirmed despite general 24h Idempotency-Key docs. After contract, sandbox-test dropped responses, one provider debit, same-order recovery, then connect the Android Broker/AIDL flow and OEM/carrier install proof. Android Core JUnit/APK/instrumentation remain unrun because Java Runtime and Android platform/build-tools are unavailable. Keep BIL02 in progress and eSIM issue/debit disabled."
     },
