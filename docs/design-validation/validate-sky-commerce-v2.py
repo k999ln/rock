@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import sqlite3
+import subprocess
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -13,6 +14,10 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 DDL = REPO / "docs/contracts/sky-commerce-v2.sql"
 RESULT = Path(os.environ.get("COMMERCE_SQL_RESULT", str(REPO / "work/design-validation/sky-commerce-v2-validation.json"))).resolve()
+CHECKED_SOURCE_SHA = subprocess.check_output(
+    ["git", "rev-parse", "HEAD"], cwd=REPO, text=True
+).strip()
+DESIGN_BASELINE_SHA = "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8"
 H = "a" * 64
 J = "b" * 64
 NOW = 100_000
@@ -164,12 +169,20 @@ with tempfile.TemporaryDirectory(prefix="sky-commerce-v2-") as temp:
     db = sqlite3.connect(Path(temp) / "design-validation.sqlite", isolation_level=None)
     db.execute("PRAGMA foreign_keys=ON")
     migrations = sorted(path for path in (REPO / "drizzle").glob("*.sql") if not path.name.startswith("._"))
+    migration_contents = {path: path.read_bytes() for path in migrations}
+    migration_journal = REPO / "drizzle/meta/_journal.json"
+    journal_contents = migration_journal.read_bytes()
+    journal_names = sorted(f"{entry['tag']}.sql" for entry in json.loads(journal_contents)["entries"])
+    check("complete_sorted_migration_inventory_matches_journal", lambda: eq(
+        [path.name for path in migrations], journal_names))
+    check("required_legacy_commerce_migration_is_present", lambda: eq(
+        "0018_sky_commerce.sql" in journal_names and
+        "0018_sky_commerce.sql" in [path.name for path in migrations], True))
     for migration in migrations:
-        db.executescript(migration.read_text())
+        db.executescript(migration_contents[migration].decode("utf-8"))
     base_tables = ["sky_commerce_sellers", "sky_commerce_offers", "sky_commerce_orders", "sky_commerce_events"]
     before_schema = {name: row(db, "SELECT sql FROM sqlite_master WHERE type='table' AND name=?", (name,))[0] for name in base_tables}
     db.executescript(ddl_text)
-    check("all_nineteen_existing_migrations_and_draft_apply", lambda: eq(len(migrations), 19))
     check("foreign_keys_enabled", lambda: eq(row(db, "PRAGMA foreign_keys"), (1,)))
     check("existing_four_table_schemas_unchanged", lambda: eq(before_schema,
         {name: row(db, "SELECT sql FROM sqlite_master WHERE type='table' AND name=?", (name,))[0] for name in base_tables}))
@@ -435,12 +448,17 @@ payload = {
     "checked_at": datetime.now(timezone.utc).isoformat(),
     "client_design_date": "2026-10-01",
     "evidence_level": "host_sqlite_design_validation_only",
-    "repository_baseline": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
-    "ddl": str(DDL),
+    "repository_baseline": CHECKED_SOURCE_SHA,
+    "original_design_baseline": DESIGN_BASELINE_SHA,
+    "source_scope": "checked-out worktree; HEAD identifies ancestry and input hashes identify tested contents",
+    "ddl": DDL.relative_to(REPO).as_posix(),
     "ddl_sha256": hashlib.sha256(DDL.read_bytes()).hexdigest(),
     "validator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
     "sqlite_version": sqlite3.sqlite_version,
     "existing_migrations": [p.name for p in migrations],
+    "migration_sha256": {p.relative_to(REPO).as_posix(): hashlib.sha256(migration_contents[p]).hexdigest() for p in migrations},
+    "migration_journal": migration_journal.relative_to(REPO).as_posix(),
+    "migration_journal_sha256": hashlib.sha256(journal_contents).hexdigest(),
     "counts": {"total":len(results), "pass":sum(r["status"]=="pass" for r in results), "fail":sum(r["status"]=="fail" for r in results)},
     "checks": results,
     "not_executed": ["Cloudflare D1 deployment/runtime", "Stripe sandbox", "live payment", "actual identity gateway", "external MCP authorization", "bank payout"],

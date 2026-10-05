@@ -25,7 +25,9 @@ COMMERCE_SQL_RESULT=docs/evidence/sky-commerce-sql-validation.json python3 docs/
 
 引継ぎ時のスナップショットは[有限モデルの結果](../evidence/sky-commerce-reference-model-results.json)（32/32成功）と[SQLiteの結果](../evidence/sky-commerce-sql-validation.json)（103/103成功）です。ソースSHA-256も結果へ記録しています。これはその時点の入力への結果であり、変更後の成功を保証しません。
 
-SQLite検証は既存の`drizzle/*.sql`を名前順に一時DBへ適用し、続けて`docs/contracts/sky-commerce-v2.sql`を適用します。検証対象のDDLを正式なmigrationフォルダへコピーしません。一時DBは終了時に破棄され、既存DBやソースファイルを変更しません。
+SQLite検証は既存の`drizzle/*.sql`を名前順に一時DBへ適用し、続けて`docs/contracts/sky-commerce-v2.sql`を適用します。migration inventoryとjournalを照合し、対象SHAと各migrationのhashを記録します。2026-10-01の19件という数を後続mainへ固定しません。検証対象のDDLを正式なmigrationフォルダへコピーしません。一時DBは終了時に破棄され、既存DBやソースファイルを変更しません。
+
+2026-10-01の証拠は履歴として保持し、2026-10-05のmain統合検証は `docs/evidence/sky-commerce-main-integration-validation.json` と `docs/evidence/sky-commerce-sql-main-validation.json` に分離します。過去の全体verify失敗や合格件数を現在の結果に置き換えません。
 
 ## 検証する内容
 

@@ -2,6 +2,8 @@
 
 2026-10-01 / Design 1.0 / 対象SHA `b3e2676abd8ae2a0b3f78f48483e067b429d9bc8`。[決済統合設計](sky-commerce-design.md)と一体の設計。ユーザーの「walletも一緒に設計して」を反映。追加の実装・実決済・本番設定は未実施。初版は外部Providerの口座と決済状況を統合するWalletを提案し、チャージ残高・暗号資産購入は希望確認後の別能力とする。
 
+2026-10-05統合補足: 最新mainとの接続条件は[決済設計の統合補足](sky-commerce-design.md#2026-10-05-main統合時の接続条件)を参照する。SIM/eSIMのservice entitlement、Marketplace購入権、A2A/直接LLMの利用予算と予約、Provider確認済み金銭を区別する。既存のdevice session本人境界と署名付きPackage runtime bindingを再利用し、別のownerや信頼系を作らない。以下の初版Walletはこの決済domainの読取りprojectionであり、最新mainの予算予約機能や他domainの履歴を削除する指定ではない。
+
 ## W1. Walletの役割と一貫した体験
 
 WalletはSkyでの購入、売上、返金、受取先、銀行への払出しを一つの場所で確認・照合できる画面とAPI。資金の移動はStripe等のProvider、購入と商品条件はCommerce、画面用集計はWallet projectionが担当する。

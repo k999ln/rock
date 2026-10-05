@@ -4,6 +4,16 @@
 
 対象ソース: `b3e2676abd8ae2a0b3f78f48483e067b429d9bc8`。本書は既存実装に対する設計差分であり、以下の新しい契約・状態・テーブルは、明記した既存部分を除き未実装である。主担当は Wallet / Billing / Providers、既存task `BIL02`。ROCKの設計・ローカル検証とJOINTのStripe sandbox受入を区別する。
 
+### 2026-10-05 main統合時の接続条件
+
+本書の既存コード監査と51/32/103件の結果は2026-10-01の上記SHAに対する履歴である。mainへの保存時は `08a624b93bffa8ce81df2319f156ec1f284fdf04` を基準に再照合し、[統合検証記録](evidence/sky-commerce-main-integration-validation.json)へ今回の結果を分離する。設計のv2 runtime・正式migrationは今回も追加しない。後続mainの実装を取り消したり、過去の全体verify失敗を現在の結果へ転用しない。
+
+- 現行のSIM/eSIM service entitlementに含まれるPackageへの重複購入拒否を、v2のquote発行・購入確定でも維持する。`lib/sky-commerce.ts` の `isIncludedInActiveServiceOffer` と `lib/rockstar-service-offers.ts` を再利用し、service accessと個別購入権を区別する。
+- `lib/request-auth.ts` の端末用 `Bearer rock_session_` はD1で期限・失効を検証して既存ownerへ解決する。新principalはこの検証済み本人への明示的な対応付けを維持し、ブラウザ用Origin検査だけへの置換や別ownerの自動生成をしない。
+- `rockstar-sky-package-runtime-binding/2` の署名検証、binding ID/digest、Package/manifest hash、Provider/key tupleへpaid-access sidecarを結び付ける。実行bindingの信頼と購入資格は別に検査し、並列の信頼台帳を作らない。
+- CSVの50円専用Checkout、`purpose=csv_trial_50`、専用Webhookは別経路。CSV内部の旧来 `quote_minor=5000` をJPYの5,000円として流用せず、Connectの10%やMarketplace返金処理へ混ぜない。限定CSV実決済の既存証拠を、本設計のConnect・Wallet受入へ転用しない。
+- Stripe transportの `redirect: 'manual'`、秘密を含まない診断、`shared/stripe.mjs` の共有署名検証と `shared:check` を保持する。A2A/直接LLMの内部予算・使用量・合成予約は入金済みWallet残高ではない。
+
 ## 1. 決定と対象
 
 既存の `SkyToolPackage`、`CommerceOrder`、Web D1、`/api/sky/commerce/[action]`、Stripe Checkout / Connectを拡張する。購入者はSkyで条件を確認し、Stripeでカード決済し、同じSkyアカウントの端末から購入Toolへ接続する。提供者は自分の審査済み商品を販売し、売上・返金・銀行払出しの状態を個別に確認する。
