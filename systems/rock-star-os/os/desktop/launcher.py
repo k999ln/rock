@@ -385,6 +385,23 @@ def browser_display_url(config, device, host_state, with_credentials):
     return url, url+'#'+urlencode({'port':config.get('port',5909),'password':credential['password']})
 
 
+def open_browser_display(url):
+    """Send the generated session URL through stdin, never process arguments."""
+    failure = '画面を開けませんでした。接続とOSデータは保持されています。'
+    match = re.fullmatch(r'http://127\.0\.0\.1:([1-9][0-9]{3,4})/index\.html'
+                         r'#port=([1-9][0-9]{3,4})&password=[A-Za-z0-9_-]{8}', url) if type(url) is str else None
+    require(match is not None and all(1024 <= int(port) <= 65535 for port in match.groups()) and
+            match[1] != match[2], failure)
+    # This exact URL alphabet excludes quotes, backslashes and control bytes;
+    # untrusted text cannot become an AppleScript statement. No shell or file.
+    try:
+        subprocess.run(['/usr/bin/osascript', '-l', 'AppleScript', '-'],
+                       input='open location "' + url + '"\n', text=True, check=True, timeout=10,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except (OSError, subprocess.SubprocessError):
+        raise ValueError(failure) from None
+
+
 def browser_port_preflight(config, state):
     if not explicit_profile(config): return
     from browser_server import healthy, fingerprint
@@ -489,12 +506,13 @@ def launch(config, open_window=True):
                     'browser display requires the explicit private port')
             display, opened_url = browser_display_url(config, device, state, open_window)
         if open_window:
-            # Do not surface a CalledProcessError containing its argv: browser
-            # open arguments briefly contain the session credential fragment.
             try:
-                subprocess.run(['/usr/bin/open', opened_url], check=True, timeout=10,
-                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            except subprocess.SubprocessError:
+                if browser:
+                    open_browser_display(opened_url)
+                else:
+                    subprocess.run(['/usr/bin/open', opened_url], check=True, timeout=10,
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            except (OSError, subprocess.SubprocessError):
                 raise ValueError('画面を開けませんでした。接続とOSデータは保持されています。') from None
             finally:
                 opened_url = None

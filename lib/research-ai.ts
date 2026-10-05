@@ -1,4 +1,8 @@
 import { RemoteAiGuardError } from './remote-ai-guard.ts';
+import {
+  assertSafeOutbound,
+  SensitiveDataBlockedError,
+} from '../toolkits/spider-guard/detector.mjs';
 
 export type ResearchAiCitation = { title: string; url: string };
 export const researchAiNoStoreHeaders = { 'Cache-Control': 'no-store' };
@@ -19,8 +23,10 @@ export async function requestResearchAi(
   apiKey: string,
   fetchImpl: typeof fetch = fetch,
 ): Promise<unknown> {
+  assertSafeOutbound(body);
   const upstream = await fetchImpl('https://api.openai.com/v1/responses', {
     method: 'POST',
+    redirect: 'error',
     headers: {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
@@ -116,6 +122,17 @@ export function researchAiErrorResponse(
   messages: { logLabel: string; upstream: string },
   logError: (...values: unknown[]) => void = console.error,
 ): Response {
+  if (error instanceof SensitiveDataBlockedError)
+    return Response.json(
+      {
+        error:
+          'Spider Guardが機密情報の外部送信を止めました。内容を取り除いて再試行してください。',
+        code: error.code,
+        count: error.count,
+        kinds: error.kinds,
+      },
+      { status: error.status, headers: researchAiNoStoreHeaders },
+    );
   if (error instanceof RemoteAiGuardError)
     return Response.json(
       {
@@ -138,7 +155,7 @@ export function researchAiErrorResponse(
   }
   logError(
     `${messages.logLabel} failed`,
-    error instanceof Error ? error.message : 'unknown',
+    'UPSTREAM_OR_INPUT_ERROR',
   );
   return Response.json(
     { error: '入力を確認して、もう一度お試しください。' },

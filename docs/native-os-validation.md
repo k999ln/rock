@@ -1,5 +1,34 @@
 # Native OSのRock統合検証
 
+## Gameの不確定応答からの復旧試験（SYS15、2026-10-03）
+
+`test_game_exchange_deadlines.py`はprivate fixtureの合成Game／Walletとloopback TLSを使うsource回帰である。`ExchangeWorker.once()`のTrueはclaimを処理した意味で、remote適用やNOT_FOUNDの証拠ではない。次へ進む前に永続claimのoperation／resultを確認し、保留金額・付与数・journal件数を別に照合する。
+
+停滞中も別GameとATMが進む既存試験は、解除後の最初の要求を意図的に未適用で終える。これでNOT_FOUND→元のapplyという前提を制御し、3秒の期限・全時間上限・既存残高照合を保持する。別の回帰では一度のstatus失敗からUNKNOWN→NOT_FOUND→TERMINAL、さらに結果不明後に元要求が遅れて適用される場合のstatus→TERMINALを確認する。未確認の結果で保留を解除せず、元要求だけを用い、二重付与しない。
+
+遅延適用は本物のauthority処理へ元要求を後から届ける制御fixtureで、過去CIの通信時系列を再現したとは扱わない。追加のretry loopやdeadline緩和はせず、予期しない状態は失敗として残す。ROCKの検証器改善でありproductionの権限・金額・timeout・Provider契約は変更しない。guest boot・実機・実資金・24時間運用は対象外である。
+
+## Platform検証guestの起動条件（SYS15、2026-10-03）
+
+`systems/rock-star-os/os/verify-platform.py`を、検証用artifactを用意したLinux環境から実行する既存入口を維持する。このhost入口は新規userdata、networkなし、読み取り専用rootfsで検証guestを起動し、kernel command lineへ `rock.platform.verify=1` を指定する。`--scope game-isolation`だけが追加scopeを指定する。既存imageの受入を新sourceへ流用しない。
+
+通常imageにも配置する `os/platform/guest-test.py` は、boot wrapperだけでなく本体でもroot・ARM64と1個の正確なenable tokenを必須にする。enable未指定、無効値、空値、重複・競合を拒否し、default local-full／単独のgame-isolation以外のscopeを拒否する。拒否はinventory子process、IPC、chmod、Tool操作、simulator操作、PASS出力より前に行う。rootで直接呼んでも通常bootでは検証処理へ進まない。これは誤った直接起動を防ぐ条件で、root権限保有者に対する隔離境界ではない。
+
+ROCKが検証器とそのhost回帰を管理する。入力はkernelの起動tokenと実行identityで、追加credentialや永続設定は保存しない。起動条件が満たされない場合は失敗を返し、flagを自動補完して継続しない。復旧は適合する検証artifactから既存host入口で専用guestを起動する。既存guestデータをこの拒否で変更しない。
+
+peer UIDをDACから独立検査する一時的な0755／0666と、通常復元の0660／0750、本文前のUID認証は保持する。復元syscall自体の失敗や強制終了への保証を追加したとは扱わない。host回帰は不正起動の無副作用と正規2scopeの継続を確認し、CodeQL #13〜#16の一時権限警告や、実guest／実機／24時間受入とは分離して記録する。
+
+## CI再実行の結果選択（SYS15、2026-10-03）
+
+nativeのsource検査は4つのmain partitionとsupportに分割する。artifact名にGitHubのrun attemptを含め、`scripts/select-native-artifacts.py`が同じrun／headのAPI metadataから各partitionの最大attemptを選ぶ。IDや時刻、PASSの有無では選択しない。再実行されなかった区分は同じrunの以前のattemptを再利用する。
+
+収集は100件ずつ最大10ページ／1,000件に制限し、total_count・ID重複・run／head・attempt・全5区分を確認する。選択された最新artifactがexpiredなら古い結果へ戻さず拒否する。downloadは明示したartifact IDで行い、別々のdirectoryへ保存する。API取得・一覧・選択・downloadが不完全なら成功にしない。
+
+`needs.partitions.result == success`と、既存のsource inventory・PASS・元ログhash・全test discoveryの集計検証は維持する。これにより最新jobがupload前に失敗した場合や、一部IDがdownloadできなかった場合も拒否する。元の失敗結果はattempt別のartifactとしてretention期間内に保持する。集計artifactもattempt別にする。選択器自体を入力hashへ含める。freeze検証器も選択器を必須入力にし、欠落・archiveとの不一致・改変を拒否する。freezeの回帰はCI集計jobで直接実行する。
+
+前回 `258fa5d`のrun37102143646では、main-1の再実行PASS artifact11265968595が存在するのに、集計が旧FAIL11266067774を取得した。集計内reportのhash一致で原因を確認した。これは試験結果の選択修正であり、Wallet試験の期限延長、試験削除、OS boot／実機受入を含まない。今回の合格証拠は[SPIDER改善cycle記録](evidence/spider-improvement-cycle.json)と同じSHAのPR報告で追跡する。
+
+
 現在の統合後の結果は[OS稼働検証](os-operational-validation-20260909.md)。以下は元native取り込み時点の履歴であり、起動改善候補・backup検証器・全observerの後続修正は現在の記録を参照する。
 
 日付: 2026-09-09。取り込み前のRock: `5cec83478fe97bf272869298160a572ef7fcefee`。統合branch: `codex/integrate-native-os-20260909`。

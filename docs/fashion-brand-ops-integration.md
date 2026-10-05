@@ -38,6 +38,8 @@ Instagram password、Cookie、raw tokenをDBへ保存しない。credentialは`e
 
 ## Skyワンクリック接続
 
+2026-10-02のSPIDER修正で、ワンクリックsessionを「固定bearer未設定かつloopback bind」の構成に限定した。実peerもloopbackであることを検査する。固定bearer設定時は`/connect`を拒否し、Origin headerを付けても`/mcp`のbearerとtenant検査を回避できない。HTTP例外は固定codeへ変換し、JSON入力断片、DB／Providerエラー、stackを応答に含めない。認証・tenant・署名・秘密fixture非表示は`test/http-security.test.mjs`で回帰検査する。
+
 Fashion Brand Ops v0.3.0は、許可済みSky originからPCの`127.0.0.1:8787`へ接続するbrowser sessionを追加した。Skyの商品カードを開く1回の操作で、短期session発行、MCP 2025-11-25 initialize、initialized通知、40件のtools/list検査を行い、カード表示を「接続済み」へ同期する。再表示時はpingとtools/listで再検証し、失効・停止・tool不足ならbrowser側credentialを破棄する。解除操作はserver sessionも失効させる。
 
 初回だけ配布ZIPの`RockstarOS Sky接続.command`を利用者が開く必要がある。ブラウザだけで未導入のPC processを起動することはしない。originとloopback Hostはexact allowlist、session tokenはrandomかつ12時間、raw credentialはsessionStorage以外へ渡さず、Meta token等のProvider secretとは分離する。これにより一度接続アプリが動けばワンクリックだが、OSインストール・Meta OAuth・実Provider接続まで無操作になるという意味ではない。

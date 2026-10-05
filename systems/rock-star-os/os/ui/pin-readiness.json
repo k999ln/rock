@@ -8,12 +8,15 @@
     "os/ui/auth-ui.inc": "37e9015e87cdf26e4d22df8beec9520bc40ff296ea7c67cea2ed8f1df6b2b16b",
     "os/ui/game-ui.inc": "d6bbef68e2d79deb7dfd27a1badf521f16b2daebd673e505ddd3668c0b1da256",
     "os/ui/ipc.h": "3e6ace92e6f1fcde6cc02cadc8899c51c58d9271caed08c124003db61914bdf4",
-    "os/ui/main.c": "5e3e3cf71fec19a9ea0b0b017e6739891403953504ef337e869c122de59bdfb7",
+    "os/ui/main.c": "f1ec7aebd590a8c2ac8a61f3a4d0b0b4733106f9d3aa380b74ac1a67a9393619",
     "os/ui/mcp-ui.inc": "bf90ea9c692a448d675eb8ce12b668f5b964fec98d2360b0c9d22812500f48f3",
     "os/ui/remote-ui.inc": "5b4736efec786c2cd7a01daa83671238a40a1c8e6873031de11e07165b987f5e",
+    "os/ui/security-ui.inc": "e5142f058d3f57433984905bc8018df8902e17bc374093b281aad8f1497531e3",
     "os/ui/service-ui.inc": "e33a1104b95df4bf6ce6eae678e464ab2fb5c0eb27e02fa10ba3f11896a8e78c",
-    "os/ui/ui.c": "902c53895c563d96956279ba3608e2a2cc2abe3f2d60f1ff0c9656f2d7694eb3",
-    "os/ui/ui.h": "318288d8866ec4d7e7a97ed3104a201b2e61eb3432256d5cf56682353a07bbc1"
+    "os/ui/spider-motion.c": "7cc9124378a56328ba28f0048302dd1a806cf45ce14cecddfa968dc726c15c1c",
+    "os/ui/spider-motion.h": "f300bcc7d325e04ff74cce747d910868e3a37c9352d6f0613046b60c5548a2ab",
+    "os/ui/ui.c": "68f76b4fd28bc5969a78ec22b4ea367f20600ead4575d66ca0494443aee19329",
+    "os/ui/ui.h": "ebb6086d64c296676b20547ca5db493374ba82edbe9b5130a4d5b7c46b28d4c0"
   },
   "profiles": {
     "enroll": {
