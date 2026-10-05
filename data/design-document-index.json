@@ -425,6 +425,20 @@
         "mobileAndUnknownHostLoopbackLink": false,
         "runtimeAvailabilityVerifiedByLaunchLink": false,
         "design": "docs/sky-tools-complete-design.md#85-ip-studio--交換可能な制作配信ゲーム展開"
+      },
+      "voiceTelephony": {
+        "provider": "livekit",
+        "status": "setup_metadata_only",
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/sky-connections.ts",
+          "lib/operations.ts"
+        ],
+        "tests": [
+          "tests/operations.test.mjs",
+          "tests/sky-routing.test.mjs"
+        ],
+        "runtimeConnected": false
       }
     },
     {

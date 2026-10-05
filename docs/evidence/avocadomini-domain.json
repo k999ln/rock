@@ -1,0 +1,40 @@
+{
+  "schema": "rock-site-domain-deployment/1",
+  "recordedOn": "2026-10-05",
+  "task": "WEB13",
+  "sourceMainSha": "aa7f2b41ce34a32c262500a83238bb713c003dee",
+  "siteProjectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+  "hostname": "avocadomini.si",
+  "domainId": "appgdom_6ac31bf83b508191b66ba4a7dd437f04",
+  "domainStatus": "pending",
+  "sslStatus": "pending_validation",
+  "dnsObserved": {
+    "nameservers": [
+      "lunar.dns-parking.com",
+      "solar.dns-parking.com"
+    ],
+    "apexA": [
+      "2.57.91.91"
+    ],
+    "verificationTxtPresent": false
+  },
+  "deployment": "succeeded",
+  "githubMainMerged": false,
+  "validation": {
+    "siteBuild": "passed_13_routes",
+    "siteTests": "passed_18_of_18",
+    "repositoryVerify": "passed_exit_0",
+    "verifyLogSha256": "f1011be81908e2cd8dc90113c9f9ec03ca3b1dd12ac0baf2f19bc932d8711326",
+    "workApiAssertions": 1048,
+    "csvApiAssertions": 113,
+    "postBaselineUpdateCheck": "passed",
+    "dependencies": "fresh npm ci; initial ENOSPC recovered by removing only this run incomplete dependencies and retrying"
+  },
+  "siteSourceSha": "44aa41f9adf356bb8da6127ea6af03d322af672b",
+  "version": 3,
+  "versionId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2~appgver_b05a6dd9bcbc8191a2ad7d482eea80f8",
+  "deploymentId": "appgdep_6ac333352cfc819198c5084c32b4ec88",
+  "deployedUrl": "https://avocadomini.noellesugar1.chatgpt.site",
+  "archiveSha256": "fc8b6af529ccc71aaae1c1c12eb9a0f3d2ee9bf98b5d373698e22255a43a7839",
+  "githubBranch": "codex/avocadomini-domain"
+}

@@ -191,6 +191,15 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const splitWebDelivery = structuredClone(source);
   splitWebDelivery.webDeliveryIntegrity.sourceAndPrivateSiteCommitMustMatch = false;
   assert.throws(() => validateBaseline(splitWebDelivery), /同一commit/);
+  const missingCampus = structuredClone(source);
+  delete missingCampus.campus;
+  assert.throws(() => validateBaseline(missingCampus), /Campusの大学別機能/);
+  const invasiveCampusAnalytics = structuredClone(source);
+  invasiveCampusAnalytics.campus.analyticsPrivacy = 'store_ip_and_user_agent';
+  assert.throws(
+    () => validateBaseline(invasiveCampusAnalytics),
+    /Campusの大学別機能/,
+  );
   const missingHome = structuredClone(source);
   delete missingHome.homeExperience;
   assert.throws(() => validateBaseline(missingHome), /ホームと設定アプリ/);

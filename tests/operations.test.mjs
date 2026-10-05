@@ -88,6 +88,66 @@ await test('legal and patent browser jobs persist owned metadata through the exi
   } finally { sqlite.close(); }
 });
 
+await test('LiveKit setup persists per owner without requiring or enabling telephony', async () => {
+  const { a, b, sqlite } = fixture();
+  const config = { deployment: 'cloud', serverUrl: 'wss://example.livekit.cloud', agentName: 'ip-character' };
+  const saved = await a.saveSkyProviderConnection({ provider: 'livekit', status: 'ready', config });
+  assert.deepEqual(saved.config, config);
+  assert.equal(saved.secretRef, null);
+  assert.equal((await a.listSkyProviderConnections())[0].config.agentName, 'ip-character');
+  assert.deepEqual(await b.listSkyProviderConnections(), []);
+  assert.deepEqual(await a.listSkyConnections(), []);
+  assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM jobs').get().n, 0);
+  await b.saveSkyProviderConnection({ provider: 'livekit', status: 'ready', config: { ...config, agentName: 'other-character' } });
+  assert.equal((await a.listSkyProviderConnections())[0].config.agentName, 'ip-character');
+  sqlite.close();
+});
+
+await test('LiveKit metadata rejects credentials, unsafe endpoints and unknown fields even in drafts', async () => {
+  const { a, sqlite } = fixture();
+  const config = { deployment: 'cloud', serverUrl: 'wss://example.livekit.cloud', agentName: 'ip-character' };
+  for (const change of [
+    { apiKey: 'test-only' }, { token: 'test-only' }, { arbitrary: 'value' },
+    { deployment: 'unknown' }, { agentName: 'bad/name' },
+    { serverUrl: 'https://example.livekit.cloud' },
+    { serverUrl: 'ws://example.livekit.cloud' },
+    { serverUrl: 'wss://user:password@example.livekit.cloud' },
+    { serverUrl: 'wss://example.livekit.cloud?access_token=test-only' },
+    { serverUrl: 'wss://example.livekit.cloud/#test-only' },
+    { serverUrl: 'wss://example.livekit.cloud/token/test-only' },
+    { serverUrl: 'not-a-url' }, { sipTrunkId: '+1234567890' },
+  ]) {
+    await rejects(() => a.saveSkyProviderConnection({ provider: 'livekit', status: 'setup_required', config: { ...config, ...change } }), 400);
+  }
+  assert.deepEqual(await a.listSkyProviderConnections(), []);
+  sqlite.close();
+});
+
+await test('LiveKit incomplete drafts and self-hosted loopback are distinct from complete setup', async () => {
+  const { a, sqlite } = fixture();
+  await a.saveSkyProviderConnection({ provider: 'livekit', status: 'setup_required', config: { agentName: 'ip-character' } });
+  await rejects(() => a.saveSkyProviderConnection({ provider: 'livekit', status: 'ready', config: { agentName: 'ip-character' } }), 400);
+  const config = { deployment: 'self_hosted', serverUrl: 'ws://127.0.0.1:7880', agentName: 'ip-character', sipTrunkId: 'ST_test', sipDispatchRuleId: 'SDR_test' };
+  await a.saveSkyProviderConnection({ provider: 'livekit', status: 'ready', config });
+  await rejects(() => a.saveSkyProviderConnection({ provider: 'livekit', status: 'ready', config: { ...config, deployment: 'cloud' } }), 400);
+  assert.deepEqual((await a.listSkyProviderConnections())[0].config, config);
+  sqlite.close();
+});
+
+await test('existing routing saves without voice; selecting and clearing LiveKit is explicit', async () => {
+  const { a, sqlite } = fixture();
+  const initial = await a.saveSkyProviderConnection({ provider: 'routing', status: 'ready', config: {} });
+  assert.equal(initial.config.realtimeVoice, undefined);
+  assert.equal(initial.config.telephony, undefined);
+  const selected = await a.saveSkyProviderConnection({ provider: 'routing', status: 'ready', config: { realtimeVoice: 'livekit', telephony: '' } });
+  assert.equal(selected.config.realtimeVoice, 'livekit');
+  assert.equal(selected.config.telephony, '');
+  await rejects(() => a.saveSkyProviderConnection({ provider: 'routing', status: 'ready', config: { telephony: 'unknown-provider' } }), 400);
+  const cleared = await a.saveSkyProviderConnection({ provider: 'routing', status: 'ready', config: { realtimeVoice: '', telephony: '' } });
+  assert.equal(cleared.config.realtimeVoice, '');
+  sqlite.close();
+});
+
 await test('job lifecycle records completion and history exactly once; terminal state is immutable', async () => {
   const { a, sqlite } = fixture(),
     input = job();

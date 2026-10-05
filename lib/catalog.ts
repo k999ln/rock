@@ -158,25 +158,26 @@ const catalogEntries = [
   },
   {
     id: 'rockstar-ip-studio',
-    name: 'IP Studio — SNS・ゲーム運用',
+    name: 'IP Studio — SNS・ゲーム・音声',
     category: 'IP・コンテンツ運用',
     description:
-      '参考画像と「何をしたいか」からキャラクター・スキンを制作し、Instagram・YouTube・Roblox・GTAなどへの導線を一つの運用フローで管理します。',
+      'キャラクター・スキンの制作からSNS・ゲーム展開を管理します。LiveKitによるIPキャラクターとの音声会話・電話対応の接続設定も用意しています（本体連携は未接続）。',
     source: 'avocadoOS built-in / Kaiya IP Studio',
     launchPath: 'http://127.0.0.1:18767/',
     environment:
       'このPCのIP Studio / Skyで接続状態と承認を管理',
     cost:
-      'ローカル利用は追加料金なし。Higgsfield、Make、各ゲーム・SNSの料金と契約は実行前に確認します。',
+      'ローカル利用は追加料金なし。生成・SNS・ゲームに加え、LiveKit、音声モデル、電話番号・通話回線の料金と契約は利用前に確認します。',
     steps: [
       '参考画像と「何をしたいか」を入力してIPの制作依頼を作る',
       'Higgsfieldで画像・動画を生成するか、完成素材を登録する',
       '権利・利用条件・ゲーム導入先を確認してゲーム版を記録する',
       'Instagram・YouTubeの投稿案を確認し、本人承認後にMakeへ送る',
       '投稿結果とゲームへの導線を同じIPの履歴へ戻す',
+      '音声会話・電話を使う場合はSkyの接続管理でLiveKitとAgentを登録する（本体との通話連携は未接続）',
     ],
     note:
-      'Skyは本人・接続・承認・停止状態を管理します。IP Studioは素材と生成・投稿案を扱います。APIキー、Cookie、SNSログイン情報はSkyの入力欄や仕事本文へ保存しません。投稿、広告、DM、ゲームへの提出は1回ごとの本人承認が必要です。',
+      'Skyは本人・接続・承認・停止状態を管理します。IP Studioは素材と生成・投稿案を扱います。APIキー、Cookie、SNSログイン情報はSkyの入力欄や仕事本文へ保存しません。投稿、広告、DM、ゲームへの提出は1回ごとの本人承認が必要です。音声送信・録音・電話発信の許可は別々に扱います。LiveKit設定を保存しても通話や番号取得は始まりません。',
     color: 'purple',
     license: 'avocadoOS / Kaiya IP Studio',
     licenseUrl: 'http://127.0.0.1:18767/',

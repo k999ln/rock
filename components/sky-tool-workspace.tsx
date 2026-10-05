@@ -20,6 +20,7 @@ import { ToolIcon } from '@/components/tool-icon';
 import { Dialog } from '@/components/ui/dialog';
 import SkyToolOverview from '@/components/sky-tool-overview';
 import CoconalaTeamWorkspace from '@/components/coconala-team-workspace';
+import SkyConnectionCenter from '@/components/sky-connection-center';
 import {
   catalogHostMismatch,
   detectSkyHost,
@@ -35,6 +36,7 @@ const serverHost = (): null => null;
 export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
   const runtimeContext = useSkyToolContext();
   const [infoOpen, setInfoOpen] = useState(false);
+  const [voiceSetupOpen, setVoiceSetupOpen] = useState(false);
   const tool = catalog.find((item) => item.id === toolId);
   const host = useSyncExternalStore(subscribeHost, browserHost, serverHost);
 
@@ -186,6 +188,15 @@ export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
             </section>
           )}
         </div>
+        {tool.id === 'rockstar-ip-studio' && (
+          <section className={styles.openCard} aria-label="IPの音声・電話連携">
+            <p className={styles.eyebrow}>LIVEKIT AGENTS</p>
+            <h2>キャラクターと話す</h2>
+            <p>作ったIPとの音声会話や電話対応に使う接続先を登録できます。音声会話だけでも設定でき、電話回線は必要な場合に追加します。</p>
+            <p>現在は設定の保存まで利用できます。IP Studio本体との音声・通話接続は準備中です。</p>
+            <button type="button" className={styles.action} onClick={() => setVoiceSetupOpen(true)}>音声・電話の接続設定</button>
+          </section>
+        )}
         <details className={styles.guide}>
           <summary>使い方・ライセンス</summary>
           <ol>
@@ -214,6 +225,9 @@ export default function SkyToolWorkspace({ toolId }: { toolId: string }) {
           hostMismatch={hostMismatch}
         />
       </Dialog>
+      {tool.id === 'rockstar-ip-studio' && voiceSetupOpen && (
+        <SkyConnectionCenter open={voiceSetupOpen} onOpenChange={setVoiceSetupOpen} initialProvider="livekit" />
+      )}
     </WorkspaceShell>
   );
 }
