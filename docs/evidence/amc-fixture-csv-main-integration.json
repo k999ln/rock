@@ -132,6 +132,12 @@
       "verifyRun": "https://github.com/k999ln/rock/actions/runs/37279966295",
       "signingControls": "success",
       "signingRun": "https://github.com/k999ln/rock/actions/runs/37279966265"
+    },
+    "latestMainSync": {
+      "baseCommit": "592daeea322cd47aa189b67dd689e323662c0c67",
+      "scope": "Preserve upstream SPIDER implementation and documentation; AMC runtime unchanged",
+      "latestVerificationSource": "https://github.com/k999ln/rock/pull/67/checks",
+      "priorFullVerifyScope": "The fullVerify record below is the local candidate based on 11824636; do not apply that count to later source without checking the linked exact-head CI"
     }
   },
   "independentReview": {
@@ -151,5 +157,5 @@
     "githubCi": "Read exact-head checks on the linked pull request; local verification is recorded separately",
     "pullRequest": "https://github.com/k999ln/rock/pull/67"
   },
-  "synchronizedMain": "11824636c44b539676320d41138bc35f10686216"
+  "synchronizedMain": "592daeea322cd47aa189b67dd689e323662c0c67"
 }

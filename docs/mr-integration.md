@@ -18,7 +18,8 @@
 - 無料版: 元の出典欄は区切り計算から分離して丸ごと再掲。出典しか残っていない状態を「有料本文あり」と扱わない。出典内の見出しを含むコードを途中で切らない。
 - 無料版: 正の価格・文字数・HTTPSのnote記事URLを検査。未閉鎖コードは拒否。原本の本文末尾を含む診断ログは転送しない。
 - 案件チェック: 欠けた発注率と発注率0%を区別。数値は0〜100%に制限。発注率40%以下は順位付けの参考であり、一律の拒否理由にしない。判定は受注許可や規約適合の保証ではない。
-- 納品照合: revisionとexecution IDを入力検査し、ワークスペース外の参照や大きすぎるファイル群を拒否。自分と同じ実行IDのレビューは元コードによりBLOCKEDになる。
+- 納品照合: revisionとexecution IDを入力検査。成果物だけでなく契約と保存receiptも、workspaceを起点に親を含めてsymlinkを追わず開き、同じhandleから上限付きで読む。固定verifierは本人専用の一時snapshotだけを照合する。成果物100件・合計10 MB、契約とreceipt各1 MB。自分と同じ実行IDのレビューは元コードによりBLOCKEDになる。macOS／Linuxの安全な相対openが利用できない場合は拒否する。[境界と受入](sky-tools-complete-design.md#pc納品照合の読取境界sys15)。
+- PC HTTP: request-line／header／bodyを共通の10秒絶対受信期限で読み、少量送信による逐次受付の無期限占有を防ぐ。完全受信・JSON解析後の期限も確認し、期限切れはtoken発行・Tool実行へ進めない。応答は別の10秒write timeout、Origin／Host／bearerとstdioは従来どおり。[境界と受入](sky-tools-complete-design.md#pc-mr-http受信の期限sys15)。
 - PC版: 指定入力だけを処理し、出力先が既存ファイルなら失敗。外部通信・OS常駐・アカウント登録・送信を行わない。
 
 ## 未採用の大きな実装
@@ -29,4 +30,4 @@ RSS収集（marketing-engine/intel）や記事公開も追加候補として調�
 
 ## PC出典整理の実プロセス接続（C-PC01/C-PC02）
 
-既存MCPの `format_citations` だけを `toolkits/mr/pc_citations.py` から固定CLIの別プロセスへ接続した。`rock_star_tools.py` と `vendor/mr` の原本・provenanceは変更しない。手順・資源制限・合成入力155バイト一致の受入は [PC実処理接続](pc-citations-adapter.md) に記録する。nativeの recipeと151バイト出力は別実装であり、このPC検証をnative HubやUSBの合格には換算しない。
+既存MCPの `format_citations` だけを `toolkits/mr/pc_citations.py` から固定CLIの別プロセスへ接続した。その接続時点では `rock_star_tools.py` を保持し、後続SYS15の納品境界修正でadapterのhash pinを更新する。`vendor/mr` の原本・provenanceは引き続き変更しない。手順・資源制限・合成入力155バイト一致の受入は [PC実処理接続](pc-citations-adapter.md) に記録する。nativeの recipeと151バイト出力は別実装であり、このPC検証をnative HubやUSBの合格には換算しない。

@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import iconv from 'iconv-lite';
 import {
   CsvError,
@@ -178,7 +179,28 @@ await test('malformed width, quotes, duplicate headers and unknown columns fail 
 
 await test('HTML report escapes job identifiers and never embeds executable script', async () => {
   const result = await transformCsv(bytes('id,value\n1,ok\n'), {});
-  const html = csvReportHtml(result.report, '<script>alert(1)</script>');
-  assert.doesNotMatch(html, /<script>/);
-  assert.match(html, /&lt;script&gt;/);
+  const template = readFileSync(
+    new URL('./fixtures/csv-report.html', import.meta.url), 'utf8',
+  ).trimEnd();
+  const expected = (jobId, warning) => template
+    .replace('__JOB_ID__', () => jobId)
+    .replace('__WARNING__', () => warning);
+  const noWarning = '追加の警告はありません。';
+  assert.equal(csvReportHtml(result.report, 'job-control'), expected('job-control', noWarning));
+  const cases = [
+    ['<script>alert(1)</script>', '&lt;script&gt;alert(1)&lt;/script&gt;'],
+    ['<ScRiPt src="x">x</ScRiPt>', '&lt;ScRiPt src=&quot;x&quot;&gt;x&lt;/ScRiPt&gt;'],
+    ['<script\nsrc=x>alert(1)</script>', '&lt;script\nsrc=x&gt;alert(1)&lt;/script&gt;'],
+    ['</code><img src=x onerror=alert(1)>', '&lt;/code&gt;&lt;img src=x onerror=alert(1)&gt;'],
+    ['<svg/onload=alert(1)>', '&lt;svg/onload=alert(1)&gt;'],
+    ['&<>"\'', '&amp;&lt;&gt;&quot;&#39;'],
+    ['安全な報告 📄', '安全な報告 📄'],
+  ];
+  for (const [input, escaped] of cases) {
+    assert.equal(csvReportHtml(result.report, input), expected(escaped, noWarning));
+    assert.equal(
+      csvReportHtml({ ...result.report, warnings: [input] }, 'job-control'),
+      expected('job-control', escaped),
+    );
+  }
 });
