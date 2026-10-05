@@ -1,3 +1,7 @@
+## 2026-10-05 — Skyの保存・接続復帰候補をGitHub mainへ統合
+
+G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
+
 ## 2026-10-05 — 決済・Wallet設計と英語開発プロンプトのmain保存
 
 利用者の「mainにあげて」に基づき、2026-10-01の決済・Wallet設計、型/DDL草案、有限モデルと証拠を最新mainへ統合する差分を準備した。開発プロンプトは英語へ統一。SIM/eSIMのPackage重複購入拒否、端末session認証、署名runtime binding、CSV専用50円決済、共通Stripe処理、Cloud予算と資金の分離を保持する。旧月額8.88 USD案は対象外、BIL02はin_progressのまま。

@@ -1,0 +1,151 @@
+.shell {
+  min-height: calc(100dvh - 70px);
+  padding: 0;
+  background: var(--sky-bg, #0b0f14);
+}
+.page {
+  width: min(1120px, calc(100% - 48px));
+  margin: auto;
+  padding: 20px 0 72px;
+  color: var(--sky-text, #edf3f7);
+}
+.header {
+  margin: 48px 0 32px;
+}
+.header > p:first-child {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+}
+.header h1 {
+  margin: 12px 0;
+  font-size: 36px;
+  font-weight: 500;
+}
+.header p,
+.section > p,
+.section > div > p,
+.purchase p {
+  color: var(--sky-muted, #a0b1bc);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.actions input {
+  flex: 1;
+  min-width: 180px;
+  padding: 16px 20px;
+  border: 1px solid var(--sky-line, #2e3c47);
+  border-radius: 18px;
+  background: var(--sky-panel, #151d25);
+  color: var(--sky-text, #edf3f7);
+}
+.page a {
+  color: var(--sky-text, #edf3f7);
+  font-size: 13px;
+}
+.section {
+  margin-top: 38px;
+  padding-top: 24px;
+  border-top: 1px solid var(--sky-line, #2e3c47);
+}
+.section h2 {
+  margin: 0 0 10px;
+  font-size: 21px;
+  font-weight: 500;
+}
+.section h2 small {
+  color: var(--sky-muted, #a0b1bc);
+  font-size: 12px;
+}
+.section > a {
+  display: inline-block;
+  margin-top: 12px;
+}
+.section button {
+  cursor: pointer;
+}
+.policy {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.policy div {
+  padding: 16px;
+  border: 1px solid var(--sky-line, #2e3c47);
+  border-radius: 14px;
+}
+.policy dt {
+  color: var(--sky-muted, #a0b1bc);
+  font-size: 12px;
+}
+.policy dd {
+  margin: 10px 0 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+.purchase {
+  padding: 20px;
+  margin-top: 12px;
+  border: 1px solid var(--sky-line, #2e3c47);
+  border-radius: 16px;
+  background: var(--sky-panel, #151d25);
+}
+.grid :global([data-sky-tool-card]) {
+  border-color: var(--sky-line, #2e3c47);
+  background: var(--sky-panel, #151d25);
+}
+.page :is(a, button, input):focus-visible {
+  outline: 2px solid var(--sky-text, #edf3f7);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .page {
+    width: calc(100% - 32px);
+  }
+  .header {
+    margin-top: 32px;
+  }
+}
+
+.save {
+  padding: 18px;
+  border: 1px solid var(--sky-line, #2e3c47);
+  border-radius: 16px;
+  background: var(--sky-panel, #151d25);
+  color: var(--sky-text, #edf3f7);
+}
+.save p {
+  color: var(--sky-muted, #a0b1bc);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.save button {
+  min-height: 42px;
+  margin: 12px 14px 0 0;
+  padding: 8px 15px;
+  border: 1px solid var(--sky-line, #2e3c47);
+  border-radius: 999px;
+  color: var(--sky-text, #edf3f7);
+  background: var(--sky-panel, #151d25);
+  cursor: pointer;
+}
+.save button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.save a {
+  color: var(--sky-text, #edf3f7);
+  font-size: 13px;
+}

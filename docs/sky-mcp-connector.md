@@ -66,3 +66,13 @@ Passportは安全性の保証ではなく、接続時点で確認した相手と
 Skyの接続IDとjob受付IDは`lib/catalog.ts`から導出する。job受付は従来の基本4 Toolとcandidateのローカル下書きに限定し、catalogの`ready`だけでは実行権を増やさない。基本PCのMCP操作名も同じcatalogの明示metadataを使う。公開registryや外部Packageの審査・認可は変更しない。
 
 検証: `tests/mcp-client.test.mjs`、`tests/device-lifecycle.test.mjs`、`tests/fashion-mcp-client.test.mjs`、`tests/operations.test.mjs`。世代の古い401応答や切断応答が再接続後のsessionを消さないこと、protocol/token/初期化通知の拒否、結果不明時の単回送信、登録IDと実行受付の境界を含む。外部Provider・本番配備・実機OSの合格ではない。
+
+## Sky限定試験の権限境界（受入前）
+
+目的は接続コード発行の前に、対象を既存SkyとMac内の基本自動化4機能へ限定できる候補を準備すること。`registry.pilot.json` + `--pilot` のstdio 1件、指定Sky Origin、SDK発見なし、固定4機能のlist/call照合を使用する。汎用MCP経路と互換 `/mcp` の両方で制限し、resource/prompt/custom RPCは拒否する。Skyフロントのinitialize→list→ping→明示Tool実行の契約は維持し、追加serverやremote Providerへ接続しない。
+
+初回キー発行から30分に固定し、refresh/reconnectで延長しない。期限到来でtoken/承認券を消去し、待受とstdioの停止を要求する。既存の通常modeには自動SDK発見を残す。キー・registry本文・入力を運用ログへ追加しない。失敗は403 scope拒否、401未認証/失効、MCP既存失敗コードとして返す。利用者の接続操作と具体的承認が必要で、自動審査の拒否をこのmodeで回避しない。
+
+合格条件は同一候補で4機能だけを発見・実行できること、期限後に旧キーを拒否して再接続で期間が延びないこと、終了時に子プロセス・試験接続を片付けること。現在はpure policyと未認証HTTP拒否のみ検証済みで、発行・再接続・実実行・実時間停止・本番端末記録の片付けは承認待ち。
+
+公開画面の既存配布導線を照合し、通常Connectorの許可Originに現行Skyを追加した。health取得200・未認証のservers取得401だけを検証し、キー発行や全Toolの本番受入は行っていない。承認待ちの4機能試験は通常modeを流用せず限定modeを使用する。

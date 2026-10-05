@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 148,
+    "tableCount": 149,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "Canonical offer is physical SIM/eSIM-led RockstarOS service access across purchase channels; carrier activation, service entitlement, account, OS/client install, cloud execution and AI billing remain distinct states. The local signed claim issuer and encrypted/idempotent seller delivery API are implemented; the Android Shell quote→device-credential Wallet hold→Broker proof→explicit Cloud approval→same-ID recovery source flow is wired and locally contract-tested. Current repository verification passes: Node 757/757, Worker/D1 API 1,048 assertions, CSV Worker/D1/R2 113 assertions, Fashion 19/19, typecheck, product lint, production build and release checks. Next run Android Core/AIDL/APK/instrumentation on an equipped CI/device host; then connect contracted seller checkout/delivery, carrier, Provider rates/meters/invoices and funded settlement. Production D1 readback is 0/6; local fixtures are not production billing, carrier activation, or successful exact-SKU OS installation."
   },
   "webSchema": {
-    "tableCount": 76,
+    "tableCount": 77,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -85,6 +85,7 @@
       "sky_commerce_sellers",
       "sky_connections",
       "sky_developer_tokens",
+      "sky_library_items",
       "sky_package_runtime_bindings",
       "sky_provider_connections",
       "sky_remote_ai_rate_limits",
@@ -97,8 +98,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 59,
-    "latestMigration": "0058_campus_layer.sql",
+    "migrationCount": 60,
+    "latestMigration": "0059_sky_library.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -152,6 +153,7 @@
           "sky_commerce_sellers",
           "sky_connections",
           "sky_developer_tokens",
+          "sky_library_items",
           "sky_package_runtime_bindings",
           "sky_provider_connections",
           "sky_remote_ai_rate_limits",
@@ -161,7 +163,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 32
+        "tableCount": 33
       },
       {
         "id": "marketplace",
@@ -294,6 +296,7 @@
         "sky_commerce_sellers",
         "sky_connections",
         "sky_developer_tokens",
+        "sky_library_items",
         "sky_package_runtime_bindings",
         "sky_provider_connections",
         "sky_remote_ai_rate_limits",
@@ -306,8 +309,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0058_campus_layer.sql",
-      "tableCount": 76,
+      "expectedAppliedThrough": "0059_sky_library.sql",
+      "tableCount": 77,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

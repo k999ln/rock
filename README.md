@@ -393,3 +393,10 @@ Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除
 ## Patent research
 
 [2026-09-30 research report](docs/research/rockstar-patent-research.html) · [Source registry](docs/research/rockstar-patent-sources.json). Historical research against commit `b3e2676a`; not a patent filing or a review of subsequent implementation changes. Download the HTML and open it in a browser to use the source filters.
+
+
+### Sky library and recovery integration
+
+Save a Sky tool to your owner-scoped Zema library, reopen its dedicated screen, and use an ordinary Markdown download link for local text results. Saving a tool does not grant an entitlement or start a paid, external, or PC execution. CSV history recovery ignores stale responses, while failed deletion remains retryable and cannot delete a recreated job's new-generation artifacts. The CSV scheduled handler still needs an explicitly configured production trigger; code integration is not production cleanup acceptance.
+
+Sky launch reports retain historical acceptance records. To accept the current release, each required gate needs a proof bound to the same source commit, build hash, deployment ID, and Site version. `npm run sky:launch:check -- --require-stage complete` requires the paid, clients, and focused stages together; an old successful run does not accept a new candidate.
