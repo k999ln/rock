@@ -204,3 +204,7 @@ Jevのroute、UI、catalog、rubric、receiptは実装済みである。ただ�
 - [Platform Core](platform-core.md)
 - [Local AI実機統合](local-ai-os-integration-20260915.md)
 - [Sky](sky.md)
+
+## avokado専用モデルの研究工程（2026-10-05）
+
+利用者指定により、ゼロから事前学習する自作モデルを端末内とcloudに使う研究工程を追加。追加費用0の小型host試作を実装した。既存Qwen実機受入とは別で、既存profileを置換していない。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](avokado-llm-pretraining.md)を参照。

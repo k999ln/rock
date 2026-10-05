@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-10-02
+更新日: 2026-10-05
 
 ## 全体
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Canonical offer is physical SIM/eSIM-led RockstarOS service access across purchase channels; carrier activation, service entitlement, account, OS/client install, cloud execution and AI billing remain distinct states. The local signed claim issuer and encrypted/idempotent seller delivery API are implemented; the Android Shell quote→device-credential Wallet hold→Broker proof→explicit Cloud approval→same-ID recovery source flow is wired and locally contract-tested. Current repository verification passes: Node 757/757, Worker/D1 API 1,048 assertions, CSV Worker/D1/R2 113 assertions, Fashion 19/19, typecheck, product lint, production build and release checks. Next run Android Core/AIDL/APK/instrumentation on an equipped CI/device host; then connect contracted seller checkout/delivery, carrier, Provider rates/meters/invoices and funded settlement. Production D1 readback is 0/6; local fixtures are not production billing, carrier activation, or successful exact-SKU OS installation.
+Canonical offer is physical SIM/eSIM-led RockstarOS service access across purchase channels; carrier activation, service entitlement, account, OS/client install, cloud execution and AI billing remain distinct states. The local signed claim issuer and encrypted/idempotent seller delivery API are implemented; the Android Shell quote→device-credential Wallet hold→Broker proof→explicit Cloud approval→same-ID recovery source flow is wired and locally contract-tested. Current repository verification passes: Node 757/757, Worker/D1 API 1,048 assertions, CSV Worker/D1/R2 113 assertions, Fashion 19/19, typecheck, product lint, production build and release checks. Next run Android Core/AIDL/APK/instrumentation on an equipped CI/device host; then connect contracted seller checkout/delivery, carrier, Provider rates/meters/invoices and funded settlement. Production D1 readback is 0/6; local fixtures are not production billing, carrier activation, or successful exact-SKU OS installation. Separate AI02 research: avokado random-init CPU prototype is host-tested; fix corpus rights/independent evaluation and Mini runtime/export next. Additional compute spend limit is zero; device/cloud/full pretraining not accepted.
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

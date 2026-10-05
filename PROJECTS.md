@@ -120,7 +120,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 | --- | --- |
 | [Sky catalog](lib/catalog.ts) | 登録34件すべてを上に記載。ready 12件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
-| [`toolkits/`](toolkits/) | 7ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM試作を区別 |
+| [`toolkits/`](toolkits/) | 8ディレクトリを下表で分類。Tool実装、SDK、connector、PAPER/eSIM/LLM試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
 
 Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
@@ -147,6 +147,7 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 | **Polymarket Bot Sandbox** | 外部市場を動かさないPAPER試作 | [`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/) | [README](toolkits/polymarket-bot-sandbox/README.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Rockstar Ledger** | 台帳の個別Tool資料 | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) | [README](toolkits/rockstar-ledger/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 | **eSIM Bootstrap** | SIM/eSIM-led RockstarOS service offerのうち、eSIM provider接続を試すhost fixtureとadapter。物理SIMや複数販売チャネルを除外する製品境界ではない | [`toolkits/esim-bootstrap/`](toolkits/esim-bootstrap/)・[`app/api/esim/`](app/api/esim/) | [開発ガイド](toolkits/esim-bootstrap/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
+| **avokado LLM research** | 既存AI02のrandom-init小型学習・再開・CPU推論試作。Sky catalog Toolや配備済みモデルではない | [`toolkits/avokado-llm/`](toolkits/avokado-llm/) | [再現手順](toolkits/avokado-llm/README.md)・[Local AI](docs/workstreams/07-android-device-local-ai.md) |
 
 ## 共有領域と正本
 
