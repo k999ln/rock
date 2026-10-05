@@ -57,7 +57,14 @@ void test('npm run verify reaches the test suite of every site and toolkit packa
   assert.deepEqual(uncovered, [], `packages with tests not run by npm run verify: ${uncovered.join(', ')}`);
 });
 
-void test('the avocadoMini site suite runs without installing site dependencies', () => {
-  assert.equal(scripts['test:avocado-mini-site'], 'node --test sites/avocado-mini/tests/*.test.mjs');
+void test('the avocadoMini site suite builds from locked source before testing', () => {
+  assert.equal(scripts['test:avocado-mini-site'], 'npm --prefix sites/avocado-mini test');
+  const site = JSON.parse(readFileSync(join(root, 'sites/avocado-mini/package.json'), 'utf8'));
+  assert.equal(site.scripts.pretest, 'npm run build');
+  assert.equal(site.scripts.test, 'node --test tests/*.test.mjs');
+  assert.match(site.scripts.build, /build:client.*stage-worker/);
+  const ci = readFileSync(join(root, '.github/workflows/ci.yml'), 'utf8');
+  assert.ok(ci.indexOf('npm ci --prefix sites/avocado-mini') >= 0);
+  assert.ok(ci.indexOf('npm ci --prefix sites/avocado-mini') < ci.indexOf('npm run verify'));
   assert.match(scripts.verify, /npm run test:avocado-mini-site(?: |$)/);
 });

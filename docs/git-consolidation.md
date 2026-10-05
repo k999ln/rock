@@ -108,7 +108,7 @@ Stripeのstandalone配布コピーは生成物であり、共通sourceとの一�
 
 除外対象はSite 101ファイル（68,281,525 bytes）とBilling 2ファイル（872,381 bytes）、合計103ファイル・69,153,906 bytes（65.95 MiB）。履歴の書換えは行わないため、これは現在のcheckoutと将来の差分の整理であり、既存Git履歴のダウンロード容量が同じ量だけ減る意味ではない。
 
-原因はSiteのignoreが`dist/server/.wrangler/`だけを対象にし、rootの`/dist/`が子Siteへ適用されなかったこと、およびignore追加前にBillingの出力が既に追跡されていたこと。`npm test`も古いdistを読むだけだった。Siteの`pretest`でbuildを必須化し、rootのSite試験をその入口へ統一、CIにSiteのlockfile installを追加する。新しい`repository:check`はGit index上の生成物を拒否し、ローカルで再生成したignored出力は許す。rootの広すぎる`**/build/`を除き、`app/api/sky/telegram/build/`のsourceを誤って無視しないようにする。Android buildの既存ignoreは維持する。WEB05の進捗リンクも削除するHTMLコピーから既存のbuild試験へ差し替え、clean checkoutの検査をbuild前に実行できるようにする。
+原因はSiteのignoreが`dist/server/.wrangler/`だけを対象にし、rootの`/dist/`が子Siteへ適用されなかったこと、およびignore追加前にBillingの出力が既に追跡されていたこと。`npm test`も古いdistを読むだけだった。Siteの`pretest`でbuildを必須化し、rootのSite試験をその入口へ統一、CIにSiteのlockfile installを追加する。新しい`repository:check`はGit index上の生成物を拒否し、ローカルで再生成したignored出力は許す。rootの広すぎる`**/build/`を除き、`app/api/sky/telegram/build/`のsourceを誤って無視しないようにする。Android buildの既存ignoreは維持する。WEB05の進捗リンクも削除するHTMLコピーから既存のbuild試験へ差し替え、clean checkoutの検査をbuild前に実行できるようにする。`data/amc/`はhash固定の読取専用snapshotなので、当時のdist参照を含め原byteを保持する。
 
 確認コマンド: `npm run repository:check`、`npm run test:avocado-mini-site`、`python3 scripts/verify-rocketstar-archive.py --git`、`npm run verify`。進捗・最終結果は`data/project-status.json`の`repositoryCleanup`と`project.md`に記録する。GitHub保存、main統合、Site公開はそれぞれ独立した状態として扱う。
 

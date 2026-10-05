@@ -2283,7 +2283,7 @@
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/src/tower-scene.js",
-        "sites/avocado-mini/tests/astro-build.test.mjs",
+        "sites/avocado-mini/dist/client/index.html",
         "sites/avocado-mini/public/images/avocado-mini-hero.png",
         "sites/avocado-mini/public/images/avocado-mini-detail.png",
         "sites/avocado-mini/public/images/motion-tower-satin-front-concept.png",

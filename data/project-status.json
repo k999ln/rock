@@ -4600,7 +4600,8 @@
       "siteBuildAndTests": "13 routes rebuilt; 18/18 passed",
       "archive": "verify-rocketstar-archive.py --git: 14/14 passed",
       "fullVerifyLocal": "Stopped at typecheck: TS5033 ENOSPC writing tsconfig.tsbuildinfo; preceding checks passed. Not a full verify pass.",
-      "fullVerifyGitHub": "pending; verify current PR head after push"
+      "fullVerifyGitHub": "pending; verify current PR head after push",
+      "firstGitHubRun": "37282635930: detected immutable AMC snapshot reference edit and obsolete prebuilt-only test expectation. Snapshot restored byte-for-byte; test now requires locked source build. Full CI rerun required."
     },
     "branch": "codex/repository-cleanup",
     "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac",
