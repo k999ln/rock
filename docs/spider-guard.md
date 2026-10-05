@@ -16,7 +16,30 @@ OSへの同梱、boot時起動、再起動監督、native画面の実データ�
 
 `aa7f2b41` と PR #52 の独立したローカル統合では、既存の SIM/eSIM service access、owner 認証、remote AI 予約 store、利用量計測、remote MCP の priced A2A 必須判定を保持する。機密入力の拒否は外部 dispatch より前に実施する。Node の関連 122 件（121 pass / 1 skip）、型検査、MR と native MCP の deadline 20 件が成功した。これらは host fixture の検査であり、OS image、端末、24 時間常駐、production dispatch の受入ではない。
 
-GitHub の履歴検査は PR head `a85a25e` の到達可能 681 commit で 2,369 候補を報告した。表示された 100 件のうち 7 件は対象 commit の公開 source bytes から計算した SHA-256 と一致した。残る 2,362 件は未分類で、現在のファイル削除では祖先 commit の候補は消えない。CodeQL の 2 指摘も未合格のまま保持する。main 統合、警告の包括除外、履歴改変は行わず、他機能の統合から分離して確認する。
+GitHub と同じ PR head `a85a25e`、control commit `b6ab1988`、Gitleaks 8.30.1、到達可能 681 commit で、履歴候補 2,369 件を再現した。値でまとめると 135 種、rule/file/value では 525 組、line も含めると 570 組。全件が `generic-api-key` で、異なる commit や merge 差分に同じ値が繰り返し現れる。値・候補値の hash・生 report を出力、保存、Git 追加せず、private pipe のメモリ上で比較した。
+
+| 分類根拠 | 履歴出現 | 値の種類 |
+| --- | ---: | ---: |
+| 到達可能な公開 Git blob の全 bytes から再計算した SHA-256 と完全一致 | 1,550 | 33 |
+| 公開 RFC/開発 fixture、合成 connection vector、test-local HMAC | 52 | 6 |
+| software-test device identifier、sessionStorage の名前 | 37 | 2 |
+| デモ・API 文書の request identifier | 21 | 3 |
+| 実装を追跡した job/wallet/device/power の冪等性 ID | 616 | 84 |
+| 生成関数を確認した snapshot/row digest（元 bytes の再照合とは別） | 72 | 3 |
+| artifact/log/DB hash と宣言されるが元 bytes 未照合 | 21 | 4 |
+
+公開 fixture は `blackberryrock/sdk.py` の `RFC8032_PUBLIC_TEST_SEED` と `packages.py` の `PUBLIC_TEST_KEY` が [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032.txt) の公式値と一致し、`os/registry/make_fixtures.py:main` の `PUBLIC_TOKEN` から `approved-authors.json` の digest を再計算できた。`test_game_connection_protocol.py` の公開 deterministic seed に対する literal vector と cursor の署名検証 3 件も成功した。`billing.test.mjs` の HMAC は test-local の入力、`SoftwareTestAuthenticator.__init__` の第 2 引数は `device_ref`、`SKY_ZEMA_HANDOFF_KEY` は sessionStorage の項目名であり、外部 service credential の読取りではない。
+
+冪等性 ID は `blackberryrock/hub.py:request/run`、`blackberryrock/wallet.py:_cached/_remember`、`os/entitlement/device.py:dispatch`、`os/system/power_service.py:accept` の既処理照会、同 key/異 payload 拒否、receipt 保存に使われる。認可は peer UID/owner/credential の別経路で行う。`os/ui/ipc.c:rock_request_key` が native request ID を作り、`os/desktop/business_contract.py:validate_hub` が job receipt の key 一致を検査して evidence へ写す。snapshot metadata は `os/game_exchange/sandbox.py:observe_stopped` が `credentials.json` の bytes を hash 化し、`os/desktop/game_cache_retention.py:observe` が binding の `intent_id` の canonical representation を hash 化する。
+
+残る 4 種は `gx00-host-gate-independent-review.json` の artifact digest（4 出現）、`sky-csv-storage-hardening.json` の API log digest（5）、`hub-final-9abf78a/launch` の closed authenticator DB digest（8）、`hub-wallet/financial-game-ui-4e31554/evidence.json` の file digest（4）。元 artifact bytes を照合できていないため、自動で安全と確定しない。実 credential と確認できたもの、第三者 vendor の例示として確認したものはともに 0 だが、これを全履歴の安全宣言にしない。現在のファイル削除では祖先 commit の候補は消えない。包括除外、policy 更新、履歴改変、main 統合は行っていない。
+
+### CodeQL の二指摘の source review
+
+- Python `tests/test_spider_repository_scan.py:187` は `TemporaryDirectory` 内の Git fixture で、`git rev-parse HEAD` が返した公開 commit SHA と固定 `file:rule:line` metadata を `.gitleaksignore` fingerprint へ保存する。秘密風 fixture 本体をその行で保存しているのではなく、候補側の ignore で履歴走査を回避できないことを検証する。秘密漏えいとしては false positive と判断する。
+- JavaScript `tests/sky-tool-sdk.test.mjs:106` は、試験が起動した child の PID と descriptor の PID を照合し、その child が `randomBytes` で生成して mode 0600 で保存したローカル認証値を、固定 `127.0.0.1` の同じ child へ送る。外部登録用設定はなく、SDK の外部 fetch は throw する fixture。malformed auth 後も同じ child が生存し、正常な認証付き call が成功する検査であり、外部への秘密流出としては false positive と判断する。
+
+これは source review の結論であり、GitHub alert の dismissal や check 合格ではない。指摘を隠すための source 書換え・除外は行わない。Gitleaks の実 binary を使う scanner/policy の 12 件、MCP ZIP の source 同一性検査も成功した。全体 release check は sparse checkout の画像 asset 不在で未完了、公開/実機/長時間常駐の受入は未実施のまま保持する。
 
 ## GitHub上でrockを検査する
 

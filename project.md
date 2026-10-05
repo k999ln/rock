@@ -2,7 +2,7 @@
 
 PR #52（`a85a25e`）を現行 service access 基盤（`aa7f2b41`）へローカル統合し、SIM/eSIM・所有者認証・暗号化予約 store・利用量計測・remote MCP の料金ゲートを保持した。LLM は Workers の manual redirect と 3xx 拒否を維持し、機密情報拒否を一般 upstream error に変換しない。追加 fixture は現在の pricing 宣言と Stripe の文字列組立へ対応し、Gitleaks の完全一致例外と SHA 検査を変更していない。typecheck、対象 Node 122 件（121 pass / 1 skip）、MR deadline 11 件、native MCP deadline 9 件が成功。全体 verify と公開・実機受入を達成した記録ではない。
 
-この統合は main へ反映していない。GitHub の履歴検査は 681 commit / 2,369 候補を報告し、公開 source SHA-256 と機械一致した 7 件以外の 2,362 件は未分類。CodeQL 2 件は公開 commit fingerprint の test file 保存、所有 child の loopback 認証という経路を確認したが、GitHub check の未合格を変更していない。秘密値・候補本文の出力や保存、履歴改変、包括 allowlist は行わない。新 CI が未合格のため、他機能の main 統合から分離する。
+この統合は main へ反映していない。GitHub と同じ 681 commit / 2,369 候補を再現し、135 種の値に集約した。1,550 出現/33 種は公開 blob SHA-256 の再計算と一致。798 出現/98 種は公開 fixture、識別子、冪等性 ID、生成された hash metadata と source 根拠で分類した。残る 21 出現/4 種は artifact digest と宣言されるが元 bytes 未照合。CodeQL 2 件は公開 commit fingerprint の test file 保存、所有 child の loopback 認証を追跡し false positive と判断したが、GitHub alert/check の未合格を変更していない。詳細は [SPIDER source review](docs/spider-guard.md) に記録した。実 Gitleaks scanner/policy 12 件、公開 deterministic vector 3 件、MCP ZIP の source 同一性も成功。秘密値・候補本文の出力や保存、履歴改変、包括 allowlist は行わない。新 CI が未合格のため、他機能の main 統合から分離する。
 
 ## 2026-10-02 — 販売チャネル共通claim発行・暗号化配信store
 
