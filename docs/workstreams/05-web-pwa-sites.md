@@ -1,5 +1,24 @@
 # Web / PWA / Sites
 
+## avocadomini.si（2026-10-05、WEB13）
+
+利用者は `k999ln/rock` のホームページを `avocadomini.si` で公開するよう指定した。担当はJOINT。ROCKはmain `aa7f2b41ce34a32c262500a83238bb713c003dee` の `sites/avocado-mini` と公開artifactを同期し、Sitesは配信とTLS、OWNERはDNS管理サービスの接続を担当する。現在のmainのSIM/eSIMホームとMini／Pro／Rocket Star等の既存ページを維持する。
+
+独自ドメインは既存Site `appgprj_6ac31ab12d3481919e9a5379fa0dfbd2` に登録済み。旧 `appgprj_6aaf6a375b908191b3b0c1845dc78291` は現在の接続ではNOT_FOUNDであり、旧Siteを変更したとは扱わない。新規Siteを重複作成しない。DNSは `lunar.dns-parking.com` と `solar.dns-parking.com`、apex Aは `2.57.91.91`、以下のTXTは未検出。登録・管理サービス名は未確認。
+
+Sitesが返した設定値（apex、wwwは今回の対象外）：
+
+| 種別 | ホスト | 値 |
+| --- | --- | --- |
+| A | @ | 162.159.143.30 |
+| A | @ | 172.66.3.26 |
+| TXT | _openai-site-verification | openai-site-verification=pUqZ8awumMyjCjWPI9MH8jvQitA2dIuY8MMrIIju5Xo |
+| TXT | _cf-custom-hostname | 36294e04-04f4-42aa-b81c-e96d235a04bb |
+
+DNS管理画面で既存apex Aを上記2件へ置き換え、TXTを追加する。メール用MXや他サービスのTXTは保持する。未確認のAAAAがあれば競合を確認してから切替える。Cloudflare経由の場合はSitesのvalidationに従いproxyの扱いを確認する。TLS追加validationが返った場合は、その実値を追加する。DNS変更の復旧は変更前のレコードを保存して戻す。Site内容の復旧は既存公開v2を選ぶ。
+
+合格条件は、`npm run build` と `npm test`（Site）、リポジトリの `npm run verify`、Sites deployment成功、独自ドメインの `status=active`／SSL有効化、同ドメインのHTTPSホーム表示を分けて記録すること。DNS設定後は `sites_refresh_custom_domain_status` を同一project IDとdomain ID `appgdom_6ac31bf83b508191b66ba4a7dd437f04` で再実行する。配信済みとDNS待ちを混同しない。[配備記録](../evidence/avocadomini-domain.json)。
+
 ## 目的
 
 Home、Sky、Chat、Wallet、Market、Settings、Studio、事業画面を一つのWeb/PWAとして提供し、GitHub source、build asset、D1 migration、Sites配信版を同じcommitへ固定する。

@@ -1,3 +1,7 @@
+## 2026-10-05 公開ホームページの独自ドメイン
+
+利用者は `avocadomini.si` に正本GitHub `k999ln/rock` のホームページを公開するよう明示した。最新mainの `sites/avocado-mini` を、既に同ドメインが登録された現アカウントのSiteへ配備し、既存のページ構成を維持する。Sites標準URL `https://avocadomini.noellesugar1.chatgpt.site` での配備成功と、独自ドメインのDNS・TLS認証待ちを区別する。旧kirin-999 Siteは現在の接続ではNOT_FOUNDであり変更しない。DNS実値・復旧・残る条件は[Web workstream](workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13)を参照する。
+
 ## 2026-10-02 現行製品方針: SIM/eSIMを入口にRockstarOSサービスへ接続
 
 この節はこれ以前の「eSIM専用」「eSIM商品をOS内で販売」「ハードウェア先行」「交換可能な端末内LLM/OS自体を利用者向け主商品とする」という競合方針より優先する。製品の主な提供価値は、物理SIMまたはeSIMの購入を通じてRockstarOSとSky、Zema、統合エージェントへ短い手順でアクセスできること。SIM/eSIM購入にはサービス利用権を含める。OSバイナリをSIM/eUICCへ格納する要件ではなく、通信サービスの購入・開通とOSの導入・利用権付与は別々の状態として扱う。購入先はRockstar直販に限らず、通信事業者、端末販売店、オンライン販売等の複数チャネルを想定する。販売・開通連携は契約前である。
