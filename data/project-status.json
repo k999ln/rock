@@ -2987,7 +2987,8 @@
       "evidence": [
         "scripts/project-status.mjs",
         ".github/workflows/ci.yml",
-        "docs/native-ci-partition-fix-20260910.md"
+        "docs/native-ci-partition-fix-20260910.md",
+        "docs/evidence/spider-locked-dependency-restore.json"
       ]
     },
     {

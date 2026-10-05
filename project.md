@@ -1,3 +1,9 @@
+## 2026-10-05 — SPIDER cycle 43: 失われた依存宣言と安全な固定版を復元
+
+H1 / R04、ROCK、主streamはGit / CI。main `ecb4b2af`でmanifestを旧merge親、lockを直前main `624124cf`から採った不一致を確認。Cloudflare/Vitestの5宣言と、既存修正版`undici@7.29.1`のoverrideを復元する。lockfile・解決済み依存・現在のscriptsを変更せず、既存Dependabot修正PRを重複しない。
+
+ローカル`npm ci --dry-run --offline --ignore-scripts --no-audit --no-fund`はexit 0、node_modulesは作成されていない。通常のGitHub `npm ci`と同一ref CodeQLの前後比較は検証中。[証拠](docs/evidence/spider-locked-dependency-restore.json)へ対象と限界を保存する。既存のdatabase生成資料、catalog、SIM/eSIM基準、AMC module契約、以前失われた検査範囲、PR #70/#71/#72統合は未解決で、全体CI・脆弱性の解消を宣言しない。main merge・配備・実機操作は実施しない。
+
 # RockstarOS — 事業・設計・進捗
 
 ## 2026-09-27 — AMCの一作業をローカルCodexへ明示起動する入口
@@ -1398,7 +1404,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
 | R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
-| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) |
+| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) · [記録](docs/evidence/spider-locked-dependency-restore.json) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
 | R07 | 本人限定のSitesへ公開・本番確認 | 完了 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) · [記録](docs/owner-setup-20260911.md) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
