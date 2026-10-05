@@ -4411,5 +4411,13 @@
     "referenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
     "referenceSourceBase": "5f3a3694",
     "correction": "Replace mistakenly selected SIM/eSIM home with live Mini/Pro site including publicly visible company information"
+  },
+  "releaseBlockerResolution": {
+    "status": "in_progress",
+    "primaryOwner": "ROCK",
+    "task": "G04",
+    "baseMain": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
+    "scope": "Native resource cleanup and current acceptance blockers; no production/physical acceptance inferred",
+    "startedAt": "2026-10-05"
   }
 }

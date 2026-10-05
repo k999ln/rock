@@ -1,3 +1,7 @@
+## 2026-10-05 — 未完了・停止条件の解消（G04、着手）
+
+利用者の「全部問題解決して進めて」を受け、Git / CI / Operations（ROCK）を主担当とする。main `996b1955`を独立worktreeへ固定。Web最新CIと直前mainのAndroid CIは合格済み。native main-1の未close SQLite接続、実機OS build/署名/復旧、Provider受入を区別して調査する。既存checkoutで進行中のeSIM/決済変更は別作業として保護する。
+
 ## 2026-10-05 — 未統合PRのmain反映（19件統合済み、SPIDER別管理）
 
 利用者の「mainにあげて」により、main `aa7f2b41` を基点に元20 PRを照合した。G04／Git・CI／ROCK担当。依存5件、AI/Game/Decision Fabric8件、Campus/Farm/Meme/LiveKit/名称/domain6件の計19 PRを、全10チェック成功の `1f353524` からPR #62でmain `9f64aee3`へ統合した。元19 headはすべてmainの祖先。旧bring-up branch向けdraft #25はmainへの取り込み確認後にcloseした。SIM/eSIM中心の現行製品方針と本人承認・決済・保存契約を保持し、Farm/MemeはPAPER限定、旧Cloud agent入口は見積・上限・receipt受入までdry-runのみとした。
