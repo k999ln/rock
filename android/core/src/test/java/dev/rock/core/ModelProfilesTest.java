@@ -85,7 +85,8 @@ public class ModelProfilesTest {
     @Test public void unknownIncompatibleAndConflictingProfilesAreRejected() {
         assertThrows(IllegalArgumentException.class, () -> models.activate("fixture-local-planner@9.9"));
         assertThrows(IllegalStateException.class, () -> models.submit("no-model", "x", false, true));
-        JSONObject api = copy(0); api.put("version", "2.0"); api.put("runtimeApiMin", 3); api.put("runtimeApiMax", 3);
+        int incompatibleApi = fixture.getJSONObject("runtimeAdapter").getInt("apiVersion") + 1;
+        JSONObject api = copy(0); api.put("version", "2.0"); api.put("runtimeApiMin", incompatibleApi); api.put("runtimeApiMax", incompatibleApi);
         JSONObject format = copy(0); format.put("version", "2.1"); format.put("format", "SAFETENSORS");
         JSONObject schema = copy(0); schema.put("version", "2.2"); schema.put("planSchema", "article-preparation@2/input-v1");
         for (JSONObject bad : new JSONObject[]{api, format, schema}) {
@@ -111,7 +112,8 @@ public class ModelProfilesTest {
 
     @Test public void compatibleUpdateRulesSwitchRollbackAndRetire() {
         ready(a); switchTo(a); ready(b);
-        assertTrue(b.compatibleWith(2, Set.of("GGUF"), "article-preparation@1/input-v1"));
+        assertTrue(b.compatibleWith(fixture.getJSONObject("runtimeAdapter").getInt("apiVersion"),
+            Set.of("GGUF"), fixture.getJSONObject("runtimeAdapter").getString("planSchema")));
         int generation = models.generation();
         models.activate(b.id());
         assertEquals("PENDING", models.health());
