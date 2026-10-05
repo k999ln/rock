@@ -71,7 +71,8 @@
     "sky:agent-runtime:check": "WRANGLER_WRITE_LOGS=false WRANGLER_LOG_PATH=work/wrangler-logs wrangler deploy --dry-run --config services/sky-agent-runtime/wrangler.jsonc --outdir work/sky-agent-runtime-dry-run",
     "sky:launch:check": "node scripts/check-sky-launch.mjs",
     "test:meme-intelligence": "npm --prefix toolkits/meme-intelligence-sandbox test",
-    "test:avocado-farm": "npm --prefix toolkits/avocado-farm-sandbox test"
+    "test:avocado-farm": "npm --prefix toolkits/avocado-farm-sandbox test",
+    "amc:autonomy:fixture": "node scripts/amc-autonomy-fixture.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

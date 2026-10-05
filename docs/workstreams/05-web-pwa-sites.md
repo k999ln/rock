@@ -1,5 +1,9 @@
 # Web / PWA / Sites
 
+## AMC fixtureのWeb境界（2026-10-05、G04）
+
+AMCの[有限fixture CLI](../amc-autonomy-fixture.md)は既存OSのNode.jsで試せるが、Sky/Zemaの画面から実行するAPIや成果同期を追加しない。主担当はGit / CI / Operations、ROCK。Web接続時は既存Workflow・owner認証・保存・revision・承認・料金gateを再利用し、依頼から検査済み成果の再取得まで同一候補で受け入れる。今回のmain統合とSites配備、実Provider受入を分け、公開版でAMCを利用可能とは表示しない。検証・統合状態は[証拠](../evidence/amc-main-integration.json)。
+
 ## avocadomini.si（2026-10-05、WEB13）
 
 利用者は `k999ln/rock` のホームページを `avocadomini.si` で公開するよう指定した。担当はJOINT。ROCKはmain `aa7f2b41ce34a32c262500a83238bb713c003dee` の `sites/avocado-mini` と公開artifactを同期し、Sitesは配信とTLS、OWNERはDNS管理サービスの接続を担当する。後続指示で、表示対象は `https://avocado-mini.kirin-999.chatgpt.site/` のMini／Proホームと確定した。v3のSIM/eSIMホーム選択は訂正し、Git `5f3a3694` の保存版と公開版に追加済みの会社情報を合わせ、既存画像・下層ページを維持する。

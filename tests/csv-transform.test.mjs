@@ -53,6 +53,92 @@ await test('report-only keeps duplicate rows and last-mode keeps the last input 
   assert.deepEqual(last.outputTable.rows, [['01', 'b']]);
 });
 
+await test('unknown nested transformation options fail closed instead of silently losing instructions', async () => {
+  for (const spec of [
+    { dedupe: { keys: ['id'], mode: 'first', keep: 'last' } },
+    { sort: [{ column: 'id', direction: 'asc', numeric: true }] },
+  ]) {
+    for (const rawSpec of [spec, JSON.stringify(spec)]) {
+      await assert.rejects(
+        () => transformCsv(bytes('id,value\n01,a\n01,b\n'), rawSpec),
+        (error) => error instanceof CsvError && error.code === 'SPEC',
+      );
+    }
+  }
+});
+
+await test('spreadsheetSafe accepts only a boolean and preserves the requested separate safe output', async () => {
+  const source = bytes('id,value\n01,=1+1\n');
+  for (const spreadsheetSafe of ['true', 'false', 1, 0, null, {}, []]) {
+    await assert.rejects(
+      () => transformCsv(source, { spreadsheetSafe }),
+      (error) => error instanceof CsvError && error.code === 'SPEC',
+    );
+  }
+  for (const spec of [{}, { spreadsheetSafe: false }]) {
+    const result = await transformCsv(source, spec);
+    assert.equal(result.safeOutput, null);
+    assert.deepEqual(result.outputTable.rows, [['01', '=1+1']]);
+  }
+  const safe = await transformCsv(source, {
+    spreadsheetSafe: true,
+    outputEncoding: 'utf8',
+  });
+  assert.equal(decodeCsv(safe.output).text, 'id,value\r\n01,=1+1\r\n');
+  assert.equal(decodeCsv(safe.safeOutput).text, "id,value\r\n01,'=1+1\r\n");
+});
+
+await test('unselected duplicate keys neither count nor remove rows in any duplicate mode', async () => {
+  const source = bytes('id,value\n01,a\n01,a\n02,b\n');
+  const specs = [
+    {},
+    ...['report_only', 'first', 'last'].map((mode) => ({
+      dedupe: { keys: [], mode },
+    })),
+  ];
+  for (const spec of specs) {
+    const result = await transformCsv(source, spec);
+    assert.equal(result.report.changes.duplicateRows, 0);
+    assert.equal(result.report.changes.removedRows, 0);
+    assert.deepEqual(result.outputTable.rows, [
+      ['01', 'a'],
+      ['01', 'a'],
+      ['02', 'b'],
+    ]);
+    assert.equal(result.report.validation.passed, true);
+  }
+});
+
+await test('sorting follows Unicode code points, preserves prefixes and stable equal keys', async () => {
+  const source = bytes(
+    'id,value\n1,\u{10000}\n2,\uE000\n3,\u{1F600}\n4,\uFFFF\n5,aa\n6,a\n7,\u{10000}\n8,\n',
+  );
+  for (const [direction, expectedIds] of [
+    ['asc', ['8', '6', '5', '2', '4', '1', '7', '3']],
+    ['desc', ['3', '1', '7', '4', '2', '5', '6', '8']],
+  ]) {
+    const result = await transformCsv(source, {
+      sort: [{ column: 'value', direction }],
+      outputEncoding: 'utf8',
+    });
+    assert.deepEqual(
+      result.outputTable.rows.map((row) => row[0]),
+      expectedIds,
+    );
+    assert.equal(result.report.validation.passed, true);
+  }
+  const secondary = await transformCsv(source, {
+    sort: [
+      { column: 'value', direction: 'asc' },
+      { column: 'id', direction: 'desc' },
+    ],
+  });
+  assert.deepEqual(
+    secondary.outputTable.rows.map((row) => row[0]),
+    ['8', '6', '5', '2', '4', '7', '1', '3'],
+  );
+});
+
 await test('CP932 is detected, transformed and emitted without mojibake', async () => {
   const input = new Uint8Array(
     iconv.encode('番号,名前\r\n001,髙橋\r\n', 'cp932'),

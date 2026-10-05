@@ -3178,7 +3178,9 @@
         "tests/shared-stripe.test.mjs",
         "tests/mcp-client.test.mjs",
         "tests/owner-revision-json-store.test.mjs",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "docs/evidence/pr-consolidation-20261005.json",
+        "docs/amc-autonomy-fixture.md",
+        "docs/evidence/amc-main-integration.json"
       ]
     }
   ],
@@ -4411,5 +4413,27 @@
     "referenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
     "referenceSourceBase": "5f3a3694",
     "correction": "Replace mistakenly selected SIM/eSIM home with live Mini/Pro site including publicly visible company information"
+  },
+  "amcMainIntegration": {
+    "status": "in_progress",
+    "updatedAt": "2026-10-05",
+    "task": "G04",
+    "primaryOwner": "ROCK",
+    "workstream": "docs/workstreams/10-git-ci-operations.md",
+    "baseMain": "996b1955",
+    "scope": [
+      "Bundled finite arithmetic fixture only: 7 scripts and 6 AMC tests",
+      "Four shared CSV transform contract fixes, regression tests and synthetic result fixture generator"
+    ],
+    "evidence": "docs/evidence/amc-main-integration.json",
+    "validation": "Focused AMC/CSV 82/82; full verify exit 0: Node 946, Fashion 22, Mini 18, Preview 21, Meme 7, Farm 25, Worker/D1 1048 and CSV/D1/R2 113. Fixed CLI completes three reviewed tasks then waits for owner acceptance, repeated run unchanged. Same-head CI and main readback remain pending.",
+    "constraints": [
+      "No real worker, model, network or Web synchronization through the AMC fixture CLI",
+      "Trusted fixture IDs and synthetic approval are not authentication or real owner consent",
+      "Cooperative cancellation cannot forcibly interrupt synchronous in-process work",
+      "CSV is a shared standard capability; no new standalone plugin, pricing or product catalog change",
+      "Local fixture acceptance is not customer delivery, production execution or Sites deployment"
+    ],
+    "nextAction": "Confirm same-head GitHub CI and merge readback; keep real-worker/Web integration and existing G04 security gates separate."
   }
 }

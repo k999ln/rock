@@ -1,5 +1,9 @@
 # Business Pilots
 
+## CSV共通処理の4修正（2026-10-05、G04）
+
+CSV変換・出力・検査・報告は共通標準機能として扱い、今回は[既存変換契約](../csv-business-v1.ja.md)の未知指定拒否、boolean型検査、未選択の重複キーの誤計数、code point順sortだけを修正する。主担当はGit / CI / Operations、ROCK。最新mainの受付・保存・復旧を保持し、料金・販売経路は変更しない。合成fixtureと4回帰試験は実顧客の受注・納品・検収・入金の証拠ではなく、P1/P2/P3やAMC完成へ換算しない。[統合証拠](../evidence/amc-main-integration.json)。
+
 ## 目的
 
 自動化を実際の仕事と収益へつなぎ、コード完成、販売開始、第三者取引、入金照合、継続利用を別々に測る。
