@@ -89,29 +89,26 @@ export function workspaceSnapshot(repo) {
     paths.map((path) => {
       const full = resolve(repo, path);
       must(inside(repo, full), 'Invalid Git path');
-      let expected;
+      let fd;
       try {
-        expected = lstatSync(full, { bigint: true });
+        fd = openSync(
+          full,
+          constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
+        );
       } catch (error) {
         if (error.code === 'ENOENT') return [path, null];
         throw error;
       }
-      must(
-        expected.isFile(),
-        'Parallel workspace requires regular files: ' + path,
-      );
-      must(
-        inside(realpathSync(repo), realpathSync(full)),
-        'Workspace path escapes repository',
-      );
-      const fd = openSync(
-        full,
-        constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
-      );
       try {
         const actual = fstatSync(fd, { bigint: true });
+        must(actual.isFile(), 'Parallel workspace requires regular files: ' + path);
         must(
-          actual.isFile() && actual.dev === expected.dev && actual.ino === expected.ino,
+          inside(realpathSync(repo), realpathSync(full)),
+          'Workspace path escapes repository',
+        );
+        const expected = lstatSync(full, { bigint: true });
+        must(
+          expected.isFile() && actual.dev === expected.dev && actual.ino === expected.ino,
           'Workspace file changed during snapshot: ' + path,
         );
         return [path, hash(readFileSync(fd))];

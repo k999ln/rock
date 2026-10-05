@@ -98,8 +98,9 @@ void test('rejects a final-component symlink installed after containment without
   scenario(`
     afterContainment(() => { fs.unlinkSync(file); fs.symlinkSync(outside, file); });
     install();
-    assert.throws(() => workspaceSnapshot(repo), { code: 'ELOOP' });
+    assert.throws(() => workspaceSnapshot(repo), /changed during snapshot/);
     assert.equal(targetReads, 0);
+    closed();
   `);
 });
 
@@ -145,11 +146,11 @@ void test('rejects a parent-directory symlink replacement after containment befo
   `);
 });
 
-void test('hashes the checked descriptor when its pathname changes after fstat', posix, () => {
+void test('hashes the checked descriptor when its pathname changes after the final identity check', posix, () => {
   scenario(`
-    fs.fstatSync = (fd, ...args) => {
-      const result = original.fstatSync(fd, ...args);
-      if (fd === targetFd) {
+    fs.lstatSync = (path, ...args) => {
+      const result = original.lstatSync(path, ...args);
+      if (path === file) {
         fs.renameSync(file, join(root, 'opened.bin'));
         fs.symlinkSync(outside, file);
       }
@@ -162,20 +163,20 @@ void test('hashes the checked descriptor when its pathname changes after fstat',
   `);
 });
 
-void test('rejects a FIFO installed after containment without blocking or reading', posix, () => {
+void test('rejects a FIFO installed immediately before open without blocking or reading', posix, () => {
   scenario(`
-    afterContainment(() => {
-      fs.unlinkSync(file);
-      execFileSync('mkfifo', [file]);
-    });
     let flags;
     fs.openSync = (path, ...args) => {
+      if (path === file) {
+        fs.unlinkSync(file);
+        execFileSync('mkfifo', [file]);
+      }
       const fd = original.openSync(path, ...args);
       if (path === file) { targetFd = fd; flags = args[0]; }
       return fd;
     };
     install();
-    assert.throws(() => workspaceSnapshot(repo), /changed during snapshot/);
+    assert.throws(() => workspaceSnapshot(repo), /requires regular files/);
     assert.equal(flags & fs.constants.O_NONBLOCK, fs.constants.O_NONBLOCK);
     assert.equal(flags & fs.constants.O_NOFOLLOW, fs.constants.O_NOFOLLOW);
     assert.equal(targetReads, 0);
@@ -203,11 +204,11 @@ void test('rejects an existing escaping parent symlink and existing leaf symlink
     fs.unlinkSync(file);
     fs.symlinkSync(outside, file);
     install();
-    assert.throws(() => workspaceSnapshot(repo), /requires regular files/);
+    assert.throws(() => workspaceSnapshot(repo), { code: 'ELOOP' });
     assert.equal(targetReads, 0);
     fs.unlinkSync(file);
     fs.symlinkSync(join(root, 'missing.bin'), file);
-    assert.throws(() => workspaceSnapshot(repo), /requires regular files/);
+    assert.throws(() => workspaceSnapshot(repo), { code: 'ELOOP' });
     fs.unlinkSync(file);
     fs.writeFileSync(file, input);
     const nested = join(repo, 'nested');

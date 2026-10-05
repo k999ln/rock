@@ -24,7 +24,7 @@
     "headSha": "624124cf53848542538a94b9d309e24d3efbb1fe"
   },
   "finding": "Workspace hash reopened a checked path, allowing leaf or ancestor replacement to select another file.",
-  "change": "Read a nofollow/nonblocking descriptor only after fstat confirms regular file and exact bigint device/inode identity with the checked path; always close it.",
+  "change": "Open once with nofollow/nonblocking; fstat regular file, validate repository containment and current lstat bigint device/inode identity before reading the same descriptor; always close. Only open ENOENT maps to null.",
   "tests": {
     "newTests": 9,
     "passed": 43,
@@ -32,8 +32,7 @@
     "skipped": 0,
     "scope": "synthetic local filesystem and existing AMC parallel executor fixtures; no Codex dispatch",
     "commands": [
-      "node --test tests/amc-workspace-snapshot.test.mjs",
-      "node --test tests/amc-parallel.test.mjs tests/amc-sky-directives.test.mjs tests/amc-sky-integration.test.mjs"
+      "node --test tests/amc-workspace-snapshot.test.mjs tests/amc-parallel.test.mjs tests/amc-sky-directives.test.mjs tests/amc-sky-integration.test.mjs"
     ]
   },
   "sameShaGithubValidation": "pending; exact published head and same-ref alert state will be recorded in the PR and ignored local readback",
@@ -45,7 +44,8 @@
   "limits": [
     "Owner-managed parent directories remain required; not a complete isolation boundary against coordinated directory ABA or same-inode writers.",
     "Not an atomic snapshot across every file; existing source-change observation remains required.",
-    "Unresolved main alerts and history secret candidates are separate; no rotations, broad exclusions or scanner weakening."
+    "Unresolved main alerts and history secret candidates are separate; no rotations, broad exclusions or scanner weakening.",
+    "Nonregular files may be opened before fstat rejects them; owner-managed source directories are required. No device-open isolation is claimed."
   ],
   "boundaries": {
     "mainMerged": false,
@@ -75,8 +75,28 @@
     "reason": "leaf and parent replacement were not rejected"
   },
   "sourceSha256": {
-    "scripts/amc-parallel.mjs": "f57d9bb8d96eff509649b3e53938a513ed2ef61e54e82449668bdf0ee06fe4b5",
-    "tests/amc-workspace-snapshot.test.mjs": "4d3ee8fb13ecfe850b0bb00e53662d68049735fabae49de8a6d467e1cf29f842"
+    "scripts/amc-parallel.mjs": "3d7eaa927b48992057a9456949b707cda85eb840527f1e9e58072e7cb96b04fb",
+    "tests/amc-workspace-snapshot.test.mjs": "f3f550d2549093ec565cf349895466fed26f537a1773c31b5702088299e29d6b"
   },
-  "independentReview": "No blocking source or regression findings; reviewer inspected code and execution records without independently rerunning tests."
+  "independentReview": "No blocking source or regression findings; reviewer inspected code and execution records without independently rerunning tests.",
+  "intermediateReadback": {
+    "commit": "446945e07ec0999c22db13757fc1a7ec21b565b4",
+    "run": 37288567250,
+    "sameRefStates": {
+      "55": "fixed",
+      "62": "open"
+    },
+    "result": "Not treated as full remediation; reordered open and validation while preserving descriptor identity and containment checks."
+  },
+  "mainIntegrationBlocker": {
+    "main": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+    "attempt": "aborted; main changes preserved remotely and validated repair branch restored clean",
+    "localProbe": "amc-parallel import fails: revalidationImpact export missing from amc-goal-engine",
+    "mainVerifyRun": 37288176072,
+    "mainVerify": "failure",
+    "mainWebRun": 37288176083,
+    "mainWeb": "failure",
+    "review": "Main also removes parallel Codex exports, abort handling and Sky authority/revalidation protections; broader integration recovery required before merge.",
+    "fullVerifyOnRepairHead": "not run; PR conflicts prevent automatic CI, ci.yml has no workflow_dispatch, local dependencies absent and disk full"
+  }
 }

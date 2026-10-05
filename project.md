@@ -4,6 +4,8 @@ Security / ROCK、SYS15を主担当、AMCのWEB04へ接続する。最新main `6
 
 新規9件と既存並列Goalを含む43試験が合格、skipなし。変更前の同ref CodeQL run `37287690315`は解析成功、#55 open。変更後の同一SHAの全体verify・SPIDER・CodeQLと同refのalert状態はPRへ別途記録し、未取得を解消済みと呼ばない。[検証記録](docs/evidence/spider-workspace-snapshot-read.json)。main merge、警告dismiss、検査緩和、実Codex送信、配備、実機・秘密rotationは行わない。
 
+再解析で旧#55はfixedになったが同じ処理のopenに#62が残ったため、open後にfile種別・containment・現在のpathとの同一性をすべて検査する順序へ修正し、43試験を再確認した。並行更新のmain `ecb4b2af` はAMC exportsと認可・停止処理に後退があり、module importとmainの全体verify/Web検査が失敗。取り込みを中止して検証済みbranchを保持し、PR #71を統合待ちのdraftとする。全体verify未実行を成功と扱わない。容量不足による一時保存失敗はタスク専用の再取得可能cacheのみ整理し、Gitの未完了mergeを解除して復旧した。
+
 ## 2026-10-05 — Skyの保存・接続復帰候補をGitHub mainへ統合
 
 G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分をmain4928b64eへ選択的に移植した後、同時更新されたmain592daeeaのAMC・SPIDER、後続a3951f52のCSV共通処理修正を保持して統合。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補のnpm run verifyは成功（Node1151合格・1環境依存skip、仕事API1069、CSV385 assertions、build・asset検査）。Drizzle追加生成0件、Connector ZIP一致。検証記録はdocs/evidence/sky-github-main-integration.json。旧head21e45371のGitHub verify・SPIDER回帰・本番用応答検査は成功。CodeQL57の保存済みgrant自己照合を整理し、再接続・期限・不正Bearer回帰を追加。最新headのCIはPR #68で確認してから統合する。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
