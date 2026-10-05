@@ -48,6 +48,12 @@ Sky Marketは自動化ToolとLLMを掲載対象にし、登録・接続・公開
 
 同日追加「決済もできるようにして」: WebのSky MarketにStripe Connectの受取先登録、円の買い切り価格設定、Hosted Checkout、購入履歴、署名通知とProvider再照合、10%配分、返金を実装した。価格・作者・送金先はserverの注文snapshotを正本にし、審査有効な販売対象だけ購入できる。LLMも同じPackage条件で扱う。API・DBとProvider代替fixtureの合格は実Stripe sandboxや実資金受入ではない。現在は決済資格情報未設定で課金不可、公開配備・銀行着金も未確認。外部MCP側の有料access認可は提供者との別統合を要する。[決済実装と設定手順](sky-billing.md)。
 
+## 2026-09-27 Campusレイヤー
+
+RockstarOS Web/PWAのbase appに `Campus` を追加する。CampusはNYU / FIT / Columbia / Fordham / John Jayの文脈ごとにPeople、Projects、Opportunities、Events、Communities、Portfolio、Resourcesを提供し、registered NFC / QR tagからmode別に開ける。既存Sky / Zema / Walletを複製せず、発見・共同作業の入口として接続する。
+
+所属表示は認証済みemail domainとの一致だけを `domain_verified` とし、emailはCampus tableへ保存しない。これは在籍・肩書き・大学公式承認の証明ではない。求人、event、case、policy等は外部原典が明示されない限りcommunity-posted contentとして扱う。Tag analyticsはtag ID / source / timestampだけを保存し、IP・email・precise location・raw User-Agentを収集しない。profile visibility、block/report、post archive、tag停止、tag analytics削除、Campus単位の本人データ削除を持つ。設計とruntime境界は[Campus layer](campus-layer.md)を正本とする。
+
 ## 2026-09-24 収益料金の保留
 
 利用者の明示指示により、8.88 USDの収益料金案は、収益を得る動線が確定するまで保留する。SkyのToC料金とCSV販売者向け料金を現行の請求条件として表示せず、新たな料金計上・請求・回収を行わない。旧888 centsの上限、計算式、試験結果は過去の設計・回帰検証の記録として保持する。対象となる利益、料率・上限、実費、返金、Provider、同意、開発者還元、回収の順序を別途決めた後に再設計・受入する。下記の古い料金判断は履歴であり、この保留方針を上書きしない。
