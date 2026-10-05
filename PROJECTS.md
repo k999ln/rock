@@ -29,8 +29,8 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 
 | Skyのチームが扱う仕事 | 現在のSkyとの接続 | 実装・設計の入口 |
 | --- | --- | --- |
-| **CSV業務** — データ整形の事業pilot | `rockstar-amc` | AMC · Goalと部隊の進捗 | ready | [`app/zema/amc/`](app/zema/amc/)・[設計](docs/amc-sky-launch-integration.md)。計画保存・手動記録のみ、Web自律実行は未接続 |
-| `rockstar-csv-cleanup`としてcatalogにready登録。Skyから専用画面へ進める | [`app/csv/`](app/csv/)・[CSV業務](docs/csv-business-v1.ja.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
+| **AMC** — Goalと部隊の進捗 | `rockstar-amc`。計画保存・手動記録のみ、Web自律実行は未接続 | [`app/zema/amc/`](app/zema/amc/)・[設計](docs/amc-sky-launch-integration.md) |
+| **CSV業務** — データ整形の事業pilot | `rockstar-csv-cleanup`としてcatalogにready登録。Skyから専用画面へ進める | [`app/csv/`](app/csv/)・[CSV業務](docs/csv-business-v1.ja.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **メルカリ収益ループ** — 出品から入金確認までの事業pilot | `mercari-revenue`としてcatalogにready登録。Skyから出品準備画面へ進める。入金の自動確認は未接続 | [`app/income/mercari/`](app/income/mercari/)・[メルカリ設計](docs/mercari-revenue-loop.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **Fashion Brand Ops** — 受注型ブランド運営の事業pilot | `fashion-brand-ops`としてcatalogにready登録。外部Providerの本番接続は別受入 | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/)・[統合設計](docs/fashion-brand-ops-integration.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **Material Invention Studio** — 発明候補の操作・比較 | Skyで組み合わせる発明チームの複合機能。単体のcatalog Toolではない。Coreのsandboxは実装済み、操作画面とSky接続は未実装 | [`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json)・[Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |

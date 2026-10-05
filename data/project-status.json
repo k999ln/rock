@@ -1455,7 +1455,7 @@
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/src/tower-scene.js",
-        "sites/avocado-mini/dist/client/index.html",
+        "sites/avocado-mini/tests/astro-build.test.mjs",
         "sites/avocado-mini/public/images/avocado-mini-hero.png",
         "sites/avocado-mini/public/images/avocado-mini-detail.png",
         "sites/avocado-mini/public/images/motion-tower-satin-front-concept.png",
@@ -4555,5 +4555,26 @@
     "runtimeChanged": false,
     "patentFiled": false,
     "nextAction": "初公開日・先行出願を確定し、R1の具体方式・比較実験と専門家による請求項検討を行う。9月30日以降のコード変更は本調査の対象外。"
+  },
+  "repositoryCleanup": {
+    "task": "G01",
+    "primaryOwner": "ROCK",
+    "stage": "focused_checks_passed_remote_full_verify_pending",
+    "sourceMainSha": "592daeea322cd47aa189b67dd689e323662c0c67",
+    "scope": "Remove reproducible Site builds and billing dry-run outputs; retain design archives, runtime, fixtures and evidence.",
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "published": false,
+    "nextAction": "Complete full verification on the exact PR head in GitHub; review and merge separately. No Site publication.",
+    "removedFiles": 103,
+    "removedBytes": 69153906,
+    "retainedPublicAssetCopiesVerified": 76,
+    "validation": {
+      "repositoryCheck": "passed; previous index with 103 generated files rejected; cleaned index with rebuilt ignored outputs accepted",
+      "siteBuildAndTests": "13 routes rebuilt; 18/18 passed",
+      "archive": "verify-rocketstar-archive.py --git: 14/14 passed",
+      "fullVerifyLocal": "Stopped at typecheck: TS5033 ENOSPC writing tsconfig.tsbuildinfo; preceding checks passed. Not a full verify pass.",
+      "fullVerifyGitHub": "pending; verify current PR head after push"
+    }
   }
 }

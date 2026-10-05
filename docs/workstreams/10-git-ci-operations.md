@@ -12,6 +12,10 @@
 
 G04では[重複実装の統合記録](../git-consolidation.md#2026-10-02-共通実装の統合g04)に従い、既存mainとPR #39/#51、AI/MCP/保存/決済/公開Previewの共通処理を一つの検証経路へまとめる。下記の「open PR 0」は2026-09-15時点の履歴であり現在値ではない。今回固有機能を持つ未merge PRを削除せず、共通処理の更新後に各branchをrebaseする。
 
+## 生成物の整理（G01、2026-10-05）
+
+主担当ROCK。再生成可能なSite出力とBilling dry-runをGit管理から除き、`repository:check`で再混入を拒否する。設計archive・同一artifactの受入証拠・固定vendor・配布素材は保持する。[保存区分と再生成手順](../git-consolidation.md#repository-storage-policy)を参照。GitHub保存、main統合、公開配備は別々に記録する。
+
 ## 現在地
 
 - 正本は `k999ln/rock`、originはGitHub、Sitesは配信用と定義済み。
