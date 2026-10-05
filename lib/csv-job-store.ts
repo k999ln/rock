@@ -1,3 +1,4 @@
+import { csvOutputKeys, purgeExpiredCsvJobs, removeCsvJobStorage } from './csv-retention';
 import { CsvRequestLimitError } from './csv-request-limit';
 import { env } from 'cloudflare:workers';
 import { CSV_TRIAL_SAMPLE } from './csv-trial-sample';
@@ -150,41 +151,14 @@ async function event(
     .run();
 }
 
-async function purgeExpired(db: D1Database, bucket: R2Bucket, user: string) {
-  const expired = await db
-    .prepare(
-      'SELECT * FROM csv_jobs WHERE user_id = ? AND expires_at <= ? LIMIT 20',
-    )
-    .bind(user, Date.now())
-    .all<CsvJobRow>();
-  for (const row of expired.results) {
-    const keys = [
-      row.input_key,
-      row.result_key,
-      row.safe_result_key,
-      row.report_json_key,
-      row.report_html_key,
-    ].filter(Boolean) as string[];
-    if (keys.length) await bucket.delete(keys);
-    await db
-      .prepare('DELETE FROM csv_job_events WHERE job_id = ? AND user_id = ?')
-      .bind(row.id, user)
-      .run();
-    await db
-      .prepare('DELETE FROM csv_jobs WHERE id = ? AND user_id = ?')
-      .bind(row.id, user)
-      .run();
-  }
-}
-
 export async function listCsvJobs(user: string) {
   const { db, bucket } = resources();
-  await purgeExpired(db, bucket, user);
+  await purgeExpiredCsvJobs(db, bucket, { user });
   const rows = await db
     .prepare(
-      'SELECT * FROM csv_jobs WHERE user_id = ? ORDER BY updated_at DESC LIMIT 50',
+      'SELECT * FROM csv_jobs WHERE user_id = ? AND expires_at > ? ORDER BY updated_at DESC LIMIT 50',
     )
-    .bind(user)
+    .bind(user, Date.now())
     .all<CsvJobRow>();
   return rows.results.map(view);
 }
@@ -294,8 +268,8 @@ async function processCsvJob(row: CsvJobRow) {
   const { db, bucket } = resources();
   const now = Date.now();
   if (row.expires_at <= now) {
-    await deleteCsvJob(row.user_id, row.id);
-    throw new CsvJobError(410, 'EXPIRED', '保管期限を過ぎたため削除しました。');
+    await purgeExpiredCsvJobs(db, bucket, { user: row.user_id, id: row.id, limit: 1 });
+    throw new CsvJobError(410, 'EXPIRED', '取得期限を過ぎています。保存ファイルは順次削除されます。');
   }
   if (row.attempt >= MAX_ATTEMPTS)
     throw new CsvJobError(409, 'ATTEMPTS', '自動再試行の上限に達しました。');
@@ -328,13 +302,8 @@ async function processCsvJob(row: CsvJobRow) {
       bytes,
       JSON.parse(row.specification_json),
     );
-    const base = `csv/${row.id}`;
-    const resultKey = `${base}/result.csv`,
-      reportJsonKey = `${base}/report.json`,
-      reportHtmlKey = `${base}/report.html`;
-    const safeResultKey = result.safeOutput
-      ? `${base}/spreadsheet-safe.csv`
-      : null;
+    const [resultKey, safeKey, reportJsonKey, reportHtmlKey] = csvOutputKeys(row);
+    const safeResultKey = result.safeOutput ? safeKey : null;
     await bucket.put(resultKey, result.output, {
       httpMetadata: { contentType: 'text/csv' },
       customMetadata: { sha256: result.outputSha256 },
@@ -374,12 +343,7 @@ async function processCsvJob(row: CsvJobRow) {
     });
     return view(row);
   } catch (error) {
-    await bucket.delete([
-      `csv/${row.id}/result.csv`,
-      `csv/${row.id}/spreadsheet-safe.csv`,
-      `csv/${row.id}/report.json`,
-      `csv/${row.id}/report.html`,
-    ]);
+    await bucket.delete(csvOutputKeys(row));
     const code =
       error instanceof CsvError || error instanceof CsvJobError
         ? error.code
@@ -408,8 +372,8 @@ export async function acceptCsvJob(
   const { db } = resources();
   let row = await owned(db, user, id);
   if (row.expires_at <= Date.now()) {
-    await deleteCsvJob(user, id);
-    throw new CsvJobError(410, 'EXPIRED', '保管期限を過ぎたため削除しました。');
+    await purgeExpiredCsvJobs(db, resources().bucket, { user, id, limit: 1 });
+    throw new CsvJobError(410, 'EXPIRED', '取得期限を過ぎています。保存ファイルは順次削除されます。');
   }
   if (row.status === 'completed') return view(row);
   if (row.status === 'processing') return view(row);
@@ -469,31 +433,20 @@ export async function retryCsvJob(user: string, id: string, revision: number) {
 export async function deleteCsvJob(user: string, id: string) {
   const { db, bucket } = resources();
   const row = await owned(db, user, id);
-  const keys = [
-    row.input_key,
-    row.result_key,
-    row.safe_result_key,
-    row.report_json_key,
-    row.report_html_key,
-  ].filter(Boolean) as string[];
-  if (keys.length) await bucket.delete(keys);
-  await db
-    .prepare('DELETE FROM csv_job_events WHERE job_id = ? AND user_id = ?')
-    .bind(id, user)
-    .run();
-  await db
-    .prepare('DELETE FROM csv_jobs WHERE id = ? AND user_id = ?')
-    .bind(id, user)
-    .run();
+  const result = await removeCsvJobStorage(db, bucket, row);
+  if (result !== 'deleted')
+    throw new CsvJobError(409, 'REMOVAL_BUSY', '処理中または更新されています。完了後に削除を再試行してください。');
 }
 
 export async function csvArtifact(user: string, id: string, kind: string) {
   const { db, bucket } = resources();
   const row = await owned(db, user, id);
   if (row.expires_at <= Date.now()) {
-    await deleteCsvJob(user, id);
-    throw new CsvJobError(410, 'EXPIRED', '保管期限を過ぎたため削除しました。');
+    await purgeExpiredCsvJobs(db, resources().bucket, { user, id, limit: 1 });
+    throw new CsvJobError(410, 'EXPIRED', '取得期限を過ぎています。保存ファイルは順次削除されます。');
   }
+  if (row.status === 'cleanup_pending')
+    throw new CsvJobError(410, 'REMOVAL_PENDING', '削除処理が完了するまで取得できません。');
   const map: Record<
     string,
     { key: string | null; name: string; type: string }

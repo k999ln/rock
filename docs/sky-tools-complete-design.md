@@ -39,6 +39,12 @@ ROCK／WEB04: Sky Market経由の出典整理・無料記事・応募前チェ�
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
+## AMCの有限fixtureと共通CSV処理の統合（2026-10-05、G04）
+
+[AMCの設計とCLI](amc-autonomy-fixture.md)は固定算術Goalのローカル試験入口で、カタログToolやWeb実行入口は追加しない。承認済みfixtureの目的・合格条件を固定し、子Taskの実行→ファイル再検査→次Task、保存・再開、重複防止、停止・取消、有界再試行と人への引継ぎを扱う。最終状態は本人の検収待ち。信頼済みfixtureのIDは本人認証ではなく、同期処理の強制停止、実worker、Cloud/Web連携は未実装である。
+
+CSV変換・出力・検査・報告は共通標準機能として扱う。今回の変更は既存`lib/csv-transform.ts`の未知のnested指定拒否、`spreadsheetSafe`のboolean検査、重複キー未指定時の誤計数修正、Unicode code point順sortの4件に限定する。既存の商品入口・料金・保存・決済・catalog件数を変更せず、CSVだけでAMCや全Toolの完成を宣言しない。[CSV契約](csv-business-v1.ja.md)と[統合証拠](evidence/amc-fixture-csv-main-integration.json)を参照する。
+
 ## 共通基盤の統合（2026-10-02、G04）
 
 同じ処理への修正がToolごとにずれないよう、法務/特許の送信・HTTP失敗処理・公式HTTPS引用parserは`lib/research-ai.ts`、Jevの既存Gateway呼出しは`lib/jev-transport.ts`へ集約する。認証、外部送信の明示許可、4000/12000文字の入力上限、緊急停止、Tool固有prompt/rubricは呼出元が維持する。引用はHTTPS・userinfoなし・公式domainのみ、失敗時は各Tool既存のHTTP応答へ戻し、自動remote fallbackやAI結果による承認は加えない。
@@ -106,7 +112,7 @@ Skyはapp storeだけではなく、発見から接続、実行場所、停止�
 | 候補・接続計画 | 10 | faster-whisper、Transformers.js、Playwright、Jev Ultrafast／Trader／Review／Router／Browser、TypeSafe Computer Use、Mobile Jev。本体adapter未接続 |
 | 候補・別アプリ入口 | 1 | IP Studio。18767のアプリを開く経路であり、Skyからの本体起動・実行成功を保証しない |
 
-合計34件。複数機能を持つToolは最小経路で一度だけ数えた。ココナラ案件台帳は案件チェックとは別にDBを要し、Fashionの実運用は簡易プランとは別のMCP、法務・特許のオンライン調査は別の外部AI経路である。根拠は`lib/catalog.ts`、各runner、`components/sky-candidate-runner.tsx`の`outputFor`。ローカルLLMを起動しても、候補22件の本体adapter、ブラウザ操作権限、予定や通知Providerは自動で実装・接続されない。
+合計34件。複数機能を持つToolは最小経路で一度だけ数えた。ココナラ案件台帳は案件チェックとは別にDBを要し、Fashionの実運用は簡易プランとは別のMCP、法務・特許のオンライン調査は別の外部AI経路である。根拠は`lib/catalog.ts`、各runner、`lib/sky-candidate-output.ts`の`outputFor`。ローカルLLMを起動しても、候補22件の本体adapter、ブラウザ操作権限、予定や通知Providerは自動で実装・接続されない。
 
 - 共通blocker: `lib/operations-client.ts`は記事・出典・ココナラチェックと候補下書きの計算前にジョブの作成・開始を保存する。ローカル処理でも本人認証とDB migrationが必要。CSVは`lib/csv-job-store.ts`のDB＋BUCKETを要する。モデルAPIも`app/api/llm/text/route.ts`で本人確認とDBの利用上限記録を通る。これらを無効にして「動いた」とは扱わない。
 - 最初の実用milestone: ローカルViteから同梱Connector／Fashionの起動・health・停止を共通runtimeで管理する実装を確認した。再利用するConnectorはstdioのMr.／FashionとSDK descriptorを扱う。管理対象の正確なローカルoriginを許可し、3107の接続拒否を解消したが、任意originや任意shellは許可しない。実装・試験根拠は`scripts/sky-local-runtime.mjs`、`lib/sky-local-runtime.ts`、`tests/sky-local-runtime.test.mjs`。Sky接続操作から手動サーバー起動なしで基本4機能を検出した。
@@ -645,6 +651,73 @@ PixelのPAPER実行履歴受入で、旧Market共通CSSの絶対配置により�
 - 合格条件: 通信切断/503/不正配列/timeout/401で実行停止、入力保持、再確認のwrite 0、復旧後の明示実行1件、metadata保存、結果の端末保存/再取得、接続設定の再取得と編集保持。秘密値/実ユーザー本文を障害fixtureへ入れず、合成ローカル受入を本人実機/本番へ換算しない。
 - 未決: 本人desktopとPixelの現行公開版での再受入、Apple Pay対応端末、実AI資格情報/信頼済み料金/予算。公開済みの判定はnative deployment結果を別に記録する。
 
+## Sky公開候補の端末接続・復帰
+
+目的はSkyで実行先を選び、接続状態と次の操作を同じ画面で確認すること。公開v33のsource 00109c6を基底に、保存済みr46の端末判定・接続状態制御を限定統合する。既存Skyのgraphite・silver・ice-blue変数を使い、Market・購入履歴・Zemaの既存導線へ戻れる。既存Zemaの /chat と /chat?view=work を保持し、後述の /zema/library と /zema/tools/<toolId> を追加する。GitHubへの統合と公開版の本人受入を分ける。
+
+UAとtouch数はMac/iPad等の案内だけに使う。端末ID、購入権、OS共有上限の権限根拠へ昇格させない。入力は既存の端末sessionと明示操作、出力は idle/checking/connecting/connected/failed/offline。表示用タイマーは待機理由のみを変え、接続成功を作らない。connectDevice/verifyDeviceの既存認証・保存確認を通った結果だけを表示する。PC操作は本人が開始し、外部providerの設定保存はOAuthや実実行の合格ではない。
+
+pendingは一操作だけ。offline・画面破棄後の古い応答は棄却し、オンライン復帰と明示再試行で回復する。6秒で待機理由を表示し、失敗時は実エラーと接続アプリ・ネットワーク確認、詳細設定への導線を示す。サインイン復帰は公開版の既存実装を保持し、外部作用の自動再送はしない。新しい本文・端末telemetry収集は追加しない。session保存・失効は既存device helperに委譲する。
+
+合格条件は型/lint、端末判定、offline競合・重複操作・破棄応答の試験と、同じビルドで待機/失敗/再試行を確認すること。失敗専用runtime fixtureは503を返し、Connector起動も token発行も行わない。実PCの権限発行・停止/再接続は別の具体的承認と後片付けが必要。公開配備、実利用権、復旧/運用、初回商品・対象の本人判断をこの部分試験へ換算しない。復旧は未配備候補の破棄、配備後は検証済み旧版へのrollbackを別途受入する。
+
+接続開始前に既存ExecutionAccessのchecking/signin/unavailableを確認し、authenticated jobs-array応答が得られるまで主操作と詳細画面の接続を無効にする。接続を再確認する操作はGETのみで、PCの権限発行を開始しない。他の旧接続入口も含む全体の権限受入は、この画面の部分試験と分ける。
+
+## GitHub正本の新規環境・復旧時の支払い台帳
+
+GitHub正本は既存の追記式 `drizzle/` migration chainを使用する。CSV支払い台帳は既存 `0037_csv_trial_payments.sql` を保持し、ライブラリは `0059_sky_library.sql` を追加する。既存の決済・remote AI・Campusを含む77 table／60 migrationを新規DBと既存履歴から照合し、所有者の保存データを維持する。Worker入口 `web-worker.ts` は標準のfetch handlerとCSV保持期限のscheduled handlerを接続する。
+
+専用Sites候補では独立したschema version 3/4、`drizzle-source/`、`sky-hosting-migrations/`、runtime bootstrapによる復旧試験が行われた。これらは専用Siteの履歴であり、この正本へbootstrapや旧journalを移植しない。当時の143 assertionsも現在の正本受入には換算しない。
+
+正本の受入は同じcompiled Worker・使い捨てD1/R2・合成ユーザーで、既存migrationの適用、支払いsessionの保持、CSV処理・保存・再起動後の成果物取得を確認する。本番D1への適用、公開配備、新規実Stripe/Apple Pay、Pixelの受入は別条件である。
+
+## 全35件の実行範囲と誤表示防止（GitHub統合候補）
+
+Skyの発見・利用条件表示から実行画面への境界を`lib/sky-tool-execution-scope.ts`へ定義する。これは現在の実装範囲であり、利用者の認証・利用権・実Provider・実PCの接続済み判定ではない。35件の内訳はブラウザ処理3、クラウドCSV1、PAPER市場1、本人操作を要する準備・手動管理2（出品準備、AMC）、簡易プラン1、標準ガイド2、PC納品照合1、PC専用台帳1、接続待ち評価1、定型テンプレート11、接続計画9、PC CLIのみ1、別PCアプリ入口1とする。Jev Routerは接続計画関数があっても画面ではCLI条件案内のため、計画9件と別に数える。
+
+ホーム・Marketの共通状態表示はPAPER市場を「PAPER検証のみ」、メルカリを「出品準備・本人操作が必要」とし、DB利用不可では両者も実行記録サービス待ちに止める。未知のready Toolを自動的に「今使える」としない。定型候補の説明は自動抽出・検索・AI分析・外部送信を約束しない。入力本文や結果の保存範囲、既存登録・認証・決済条件は変更しない。
+
+候補の出力関数を`lib/sky-candidate-output.ts`へ分離し、21関数の合成入力・空入力拒否・未接続表示を試験する。このうちRouterはUI実行として受け入れない。35件すべての分類と未知ID拒否は`tests/sky-tool-execution-scope.test.mjs`で確認する。接続許可検査は既存`SKY_CONNECTION_TOOLS`の展開後の集合を参照し、CORE_JOB_TOOLSを落とす文字列部分抽出を廃止する。許可項目の追加や利用権発行は行わない。
+
+証拠は`docs/evidence/sky-tool-execution-boundaries.json`に候補のsource hash、実行した試験、未検証を記録する。局所試験の合格を全体verify、実接続、本人公開受入へ転用しない。初回公開判断・公開gate・親taskは未完了。
+
+## Sky保存からZema実行への限定統合（未配備）
+
+保存済みR2のライブラリを、公開v33から保護した候補へ統合する。SkyのTool画面からZemaライブラリへ保存し、`/zema/library`の保存・登録一覧から`/zema/tools/<toolId>`で現在のrunnerを使う。既存`/chat`の会話・仕事入口とSky内での直接実行は保持し、会話sidebarにライブラリへのリンクを追加する。提出候補の旧配色は移植せず、現在のSky CSS変数と共通カードを使用する。
+
+`GET/PUT /api/sky/library`は既存の本人確認・同一origin・JSON上限・Tool allowlistを使う。`sky_library_items`はuser_id＋toolの一意indexとsaved_atだけを持ち、本文・結果・鍵・購入権限・実行同意を保存しない。重複保存は同じ行へ収束し、削除は同じ本人の行だけを対象にする。Sky登録の既存行はライブラリで別の登録記録として参照し、保存を本体接続と表示しない。
+
+正本は `drizzle/0059_sky_library.sql` でライブラリtable/indexを追加する。既存0058までのmigrationと支払い台帳・job/R2成果を保持し、snapshotも現在の全schemaへ同期する。専用Sitesのschema v4は別の配備履歴であり、正本へ静的bootstrapを追加しない。
+
+ライブラリは現在の本人の購入記録を既存のread-only hookで参照する。既存の決済開始・Stripe設定・購入権限処理は変更せず、共有signin表示だけを追加する。ライブラリからの再サインインは別タブとし、元の入力画面を保持する。OS利用ルールは保存済みの配置binding専用resolverを使用し、ブラウザ判定や申告で共有・購入権限を付与しない。Web既定は本人別、保存人数未設定は無制限を意味しない。
+
+対象の受入は合成localhostの保存→再読込→Zema起動→出典整理→成果取得と実Worker metadata照合。本人の公開認証、Pixel実機、実PC接続、実Provider、本番配備/復旧は未受入。r46親taskと公開gateを部分試験で昇格させない。
+
+専用Sites候補での過去の検証記録: R2限定統合の型・関連51試験・build、同じbuilt Worker/D1/R2の212 assertionsが合格。UIではSky保存→ライブラリ再読込→Zemaで出典整理→端末保存成果を再読込後に復元を確認。input162/output103 bytesがcompleted jobと一致し、Sky接続一覧は空のまま。Markdown downloadは10秒のbrowser event timeout、clipboardは空readbackであり取得成功としない。PC開始クリックは自動承認審査が拒否し、最新schema v4候補で待機/失敗/再接続へ進めない。既存の単体負例・過去候補の画面結果を今回の実接続受入へ換算しない。
+
+### MR成果保存のUTF-8リンク
+
+通常のdownloadリンクと手元のdata URLを使用し、本文をサーバーや別originへ送信しない。JavaScriptの不正なUTF-16 scalarはBlobのUTF-8変換と同じ置換文字へ正規化する。専用Sites候補での過去の検証では、画面の出典整理結果とdecodeしたリンクが128 bytesで一致し、実Workerの200 input/128 output completed metadataを照合した。関連9試験と同じbuilt Workerの212 assertionsが合格。これは生成するファイル内容と画面/APIの照合であり、実ファイルの受取成功ではない。IAB/Chromeのdownload通知timeout、virtual clipboardの制約、downloads記録画面のURL policy拒否を記録し、私有ブラウザ情報を別経路で調べない。本人の手動保存・Pixel・公開版での取得受入は未完了。通常リンクには従来と同じ配色・位置を適用し、既存コピー・端末保存の操作は保持する。
+
+### CSV成果の削除・再試行
+
+CSV7日の取得期限を保持する。削除は`cleanup_pending`のrevision claimでwriterを止め、R2のinput/固定成果を削除した後、本人job/eventをD1 transactionで削除する。失敗はkeyを持つ行に残し、再試行する。独立CSV試験支払いsessionは保持する。別job keyやprocessingへの削除は拒否する。UIは削除待ちを表示し、処理開始・取得を再開しない。期限切れ一覧は失敗や20件超のbacklogがあっても有効な仕事だけを表示する。期限切れprocessingのlease復旧は別条件。本番Cron未設定、配備/実削除/通知の運用受入は未完了。詳細と故障試験範囲は `docs/sky-launch-operations.md`。
+
+### 市場から接続画面への入口
+
+市場の上部「PCを接続」とPCツール管理の未接続案内は `/sky/network` へ進む。Skyが商品・接続を担当し、Mac等の表示判定・本人サインイン・接続開始/待機/失敗/再確認は既存network controllerを使う。ページ遷移は権限を発行しない。Zemaの会話・仕事へは同画面の既存リンクで戻る。実PC接続には専用承認と同一候補での実行証拠が必要。納品確認の個別dialogを含めた全UX受入は未完了。合格条件は市場のクリックで現行接続画面が開き、本人未認証やofflineで実行されないこと。
+
+### CSV・ココナラのライブラリ導線
+
+Skyの専用画面で既存 `/api/sky/library` を使いTool IDを保存する。Zemaの `/zema/tools/rockstar-csv-cleanup` と `/zema/tools/coconala` は同じ専用componentを開き、Zemaの会話・ライブラリ・仕事へ移れる。仕事は既存のCSV受付/ココナラ案件記録を読むため、別jobを複製しない。保存は購入・接続・実行権限を作らない。未認証は明示して別タブでサインインし、戻った画面で再確認する。CSVの再確認は条件入力を保持し、POST受付を自動開始しない。合格条件は本人別Tool保存、同一候補の専用画面表示、サインイン復帰で入力維持・自動処理なし、再読込で既存記録を取得できること。本番本人の受入は模擬認証の試験と分ける。
+
+ライブラリは保存一覧が確定するまで標準カードも読込表示にし、保存カードへの移動でクリック位置が変わるのを防ぐ。保存一覧の取得失敗時は失敗を表示し、標準ツールを利用できる。再読込中は再びカードを待機させる。保存の有無を未取得のまま推定しない。
+
+SkyのMac接続受入は `docs/sky-mcp-connector.md` の限定試験候補を使用する。対象4機能・Origin・30分・停止/片付けを承認時に照合する。純粋なpolicy試験と未認証HTTP拒否を、接続キー発行や実Toolの合格へ転用しない。
+
+Sky接続画面はブラウザのonLineを通信設定のhintとして扱い、Sky APIの応答と本人認証で接続可否を判定する。401応答はSkyへ到達した証拠だが、サインイン完了・PC接続・利用権の証拠ではない。認証待ち/再確認/取得失敗中は接続操作を停止し、再確認はGETだけ。認証再確認中の古い接続応答は成功へ昇格させない。外観と接続コード発行の承認境界は維持する。
+
+CSV履歴の再確認は10秒でタイムアウトし、失敗時は入力・既存成果の表示を保持して実行・決済・再試行・削除操作を止める。再確認成功後に解除する。古いGET応答は新しい認証状態や処理結果を上書きしない。受付・処理・決済確認・削除の間は履歴pollを停止し、開始前のGETは中止する。復帰はGETのみで処理・課金を再実行しない。制御回帰とStripe合成証拠は実決済・Apple Pay・本人受入とは分離する。
 
 ### AMC (`rockstar-amc`) — 部隊・Goal管理
 

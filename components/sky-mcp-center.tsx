@@ -66,11 +66,13 @@ const connectionTargets = [
 }[];
 
 export default function SkyMcpCenter({
+  showStatusRail = true,
   open,
   connected,
   onOpenChange,
   onOpenDevice,
 }: {
+  showStatusRail?: boolean;
   open: boolean;
   connected: boolean;
   onOpenChange: (open: boolean) => void;
@@ -192,7 +194,7 @@ export default function SkyMcpCenter({
 
   return (
     <>
-      <section className={styles.rail} aria-label="MCP接続状態">
+      {showStatusRail && <section className={styles.rail} aria-label="MCP接続状態">
         <div className={styles.railIcon} aria-hidden="true">
           <Network size={20} />
         </div>
@@ -219,7 +221,7 @@ export default function SkyMcpCenter({
           <PlugZap size={16} />
           {connected ? '接続・機能' : '導入する'}
         </button>
-      </section>
+      </section>}
 
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className={styles.dialog}>

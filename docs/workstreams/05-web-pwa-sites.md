@@ -1,5 +1,9 @@
 # Web / PWA / Sites
 
+## AMC fixtureのWeb境界（2026-10-05、G04）
+
+AMCの[有限fixture CLI](../amc-autonomy-fixture.md)は既存OSのNode.jsで試せるが、Sky/Zemaの画面から実行するAPIや成果同期を追加しない。主担当はGit / CI / Operations、ROCK。Web接続時は既存Workflow・owner認証・保存・revision・承認・料金gateを再利用し、依頼から検査済み成果の再取得まで同一候補で受け入れる。今回のmain統合とSites配備、実Provider受入を分け、公開版でAMCを利用可能とは表示しない。検証・統合状態は[証拠](../evidence/amc-fixture-csv-main-integration.json)。
+
 ## avocadomini.si（2026-10-05、WEB13）
 
 利用者は `k999ln/rock` のホームページを `avocadomini.si` で公開するよう指定した。担当はJOINT。ROCKはmain `aa7f2b41ce34a32c262500a83238bb713c003dee` の `sites/avocado-mini` と公開artifactを同期し、Sitesは配信とTLS、OWNERはDNS管理サービスの接続を担当する。後続指示で、表示対象は `https://avocado-mini.kirin-999.chatgpt.site/` のMini／Proホームと確定した。v3のSIM/eSIMホーム選択は訂正し、Git `5f3a3694` の保存版と公開版に追加済みの会社情報を合わせ、既存画像・下層ページを維持する。
@@ -165,3 +169,8 @@ WEB06/ROCK: 正本main b3e2676から今回のCSV受付衝突/競合cleanupと期
 PR #40（`0d2b758f`）は2026-09-24時点の日本語README、R5先行トップページ、`avokado mini`への表記統一とその生成物を扱う履歴である。現mainは `97d185ea` / `aa7f2b41` でSIM/eSIM-led service accessを主導線とする英語版ホーム、独立したMini / Proページ、現在の利用権・課金未受入表示へ更新済み。このため#40の履歴をmerge parentとして保存し、旧ページ本文・旧hero・旧生成CSSによる置換は採用しない。原本は同PRの履歴から取得でき、現行製品名・現mainのREADMEと公開サイトsourceを巻き戻さない。
 
 PR #61は独自ドメインのcanonical、sitemap、hosting参照と既存の配備記録を取り込む。混入していたSky Billing dry-run生成物は変更対象のsourceがなく、この統合では現main版を保持する。このローカル統合自体ではDNS変更、Site配備、外部回線・Providerへの操作を実施していない。
+
+
+## 2026-10-05 Skyの保存・復帰候補の正本統合（G04/WEB04）
+
+G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。

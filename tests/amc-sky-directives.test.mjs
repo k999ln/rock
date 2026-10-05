@@ -214,12 +214,18 @@ await test('recovery transaction refuses changed observations or lost CAS withou
  assert.equal(f.failed.tasks[0].status,'failed');
 });
 
-await test('unintegrated Sky inputs stay unavailable and cannot produce a trusted observation', async () => {
+await test('integrated Sky sources do not bypass missing inputs, trusted observation or owner acceptance', async () => {
  const root=new URL('..',import.meta.url).pathname;
+ for (const path of integration.integratedInputs) assert.ok(sourceFile(root,path), path);
  for (const path of integration.missingInputs) assert.equal(sourceFile(root,path), null, path);
  const f=await fixture();
+ const contracts=read('data/amc/sky-contracts-v1.json').contracts;
  for (const [taskId, spec] of Object.entries(specs.tasks)) {
-  if (!spec.readPaths.some(p=>integration.missingInputs.includes(p))) continue;
+  const inputs=[...spec.readPaths,...contracts.filter(c=>c.consumerTaskIds.includes(taskId)).flatMap(c=>c.paths)];
+  if (!inputs.some(p=>integration.missingInputs.includes(p))) continue;
   await assert.rejects(observeSkyTask({root,goal:f.goal,taskId,owner:owner.id,assignee:owner.id,reviewers:[reviewer.id]}), /Required source unavailable/);
  }
+ await assert.rejects(issueDirective(f.goal,f.request,{...f.context,observation:null}), /trusted_observation_required/);
+ assert.equal(f.goal.overallAcceptance.accepted,false);
+ assert.equal(original.overallAcceptance.accepted,false);
 });

@@ -49,7 +49,8 @@
     "focusedTests": 40,
     "successfulSourceSha": "2ba33366dc7f3d60b1cf2fb3a086261c33813172",
     "successfulRun": 37279537731,
-    "artifactEvidence": "docs/evidence/local-ai-apk-v4-build.json"
+    "artifactEvidence": "docs/evidence/local-ai-apk-v4-build.json",
+    "externalDependencyAudit": "Pinned upstream npm ci reported 46 high-severity package findings; not triaged or cleared by APK build success"
   },
   "buildHost": {
     "os": "Darwin",
@@ -58,7 +59,8 @@
     "ready": false,
     "required": "Dedicated x86_64 Linux with >=64 GiB RAM and >=400 GiB free",
     "cloudProvisioned": false,
-    "budgetApproved": false
+    "budgetApproved": false,
+    "existingAccountConfiguration": "Scaleway configuration recorded; spending limit and usable host capacity need confirmation"
   },
   "deviceReadiness": {
     "adbConnectedDevices": 0,
@@ -97,7 +99,7 @@
     ],
     "scope": "Recorded earlier runs prove their exact source; latest PR head results are not self-attested by this file."
   },
-  "integratedMain": "592daeea322cd47aa189b67dd689e323662c0c67",
+  "integratedMain": "624124cf53848542538a94b9d309e24d3efbb1fe",
   "nativeDeadlineRegression": {
     "observedSource": "bdc56dd7c1b605a6d7c189f812517bfae81e85ed",
     "failedRun": 37280934247,
@@ -124,5 +126,16 @@
     "historyCommits": 978,
     "historicalCandidateOccurrences": 2868,
     "uniqueSecretCount": "NOT_ESTABLISHED"
+  },
+  "preMergeValidatedSource": {
+    "sha": "1d7506cdd545695fd50f3f736e2d11ec0e5dcc6d",
+    "verify": 37281745117,
+    "native": 37281745009,
+    "android": 37281745111,
+    "apk": 37281745246,
+    "apkAttempt": 2,
+    "results": "SUCCESS",
+    "apkAttemptOneFailure": "External Kotlin compiler download HTTP 500; unchanged-source retry succeeded",
+    "securityHistory": "FAILURE_NOT_DISMISSED"
   }
 }

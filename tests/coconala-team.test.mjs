@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createTeamCase, applyTeamAction, teamMoney } from '../lib/coconala-team.ts';
 import { coconalaTeamStore } from '../lib/coconala-team-store.ts';
 
@@ -57,10 +57,16 @@ void test('rejects unsupported payout conditions and malformed terms', () => {
 void test('persists owner-isolated cases and enforces revision compare-and-swap', async (t) => {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
-  for (const file of readdirSync(new URL('../drizzle/', import.meta.url))
-    .filter((name) => name.endsWith('.sql') && !name.startsWith('._')).sort())
-    for (const statement of readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8')
-      .split('--> statement-breakpoint').filter((sql) => sql.trim())) sqlite.exec(statement);
+  const hostedSchema = new URL('../sky-schema-bootstrap.json', import.meta.url);
+  if (existsSync(hostedSchema)) {
+    // Native Sky initializes from this exact idempotent schema in the Worker.
+    for (const statement of JSON.parse(readFileSync(hostedSchema, 'utf8'))) sqlite.exec(statement);
+  } else {
+    for (const file of readdirSync(new URL('../drizzle/', import.meta.url))
+      .filter((name) => name.endsWith('.sql') && !name.startsWith('._')).sort())
+      for (const statement of readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8')
+        .split('--> statement-breakpoint').filter((sql) => sql.trim())) sqlite.exec(statement);
+  }
   const db = {
     prepare(sql) {
       const statement = sqlite.prepare(sql);
