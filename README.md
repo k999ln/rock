@@ -145,6 +145,8 @@ The catalog also includes Tools for checking Coconala opportunities, reconciling
 
 ### 8. External AI, IP, games, and destinations
 
+IP Studio now includes optional **LiveKit voice and telephone setup** in Sky connection settings and Zema routing. Save the LiveKit environment, server URL and agent name; SIP references are optional for voice-only use. This is setup metadata only: the separate IP Studio runtime, media sessions and inbound/outbound calls are not connected yet. [Scope and remaining integration](docs/sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04).
+
 The design does not lock creation or game destinations to a single service. Providers are selected by capability, destination, commercial terms, cost, region, and quality. Image, video, 3D, and audio generation; social publication; game submission; and reward assignment are separate effects. External transmission, publication, and purchases require owner approval that fixes the target, content, and spending limit. If the result is unknown, the system queries and stops.
 
 Higgsfield, Roblox, YouTube, and GTA are examples of possible destinations. **This is not a list of supported products, official partnerships, or guaranteed compatibility.** [IP Studio connection contract](docs/sky-tools-complete-design.md#85-ip-studio--%E4%BA%A4%E6%8F%9B%E5%8F%AF%E8%83%BD%E3%81%AA%E5%88%B6%E4%BD%9C%E9%85%8D%E4%BF%A1%E3%82%B2%E3%83%BC%E3%83%A0%E5%B1%95%E9%96%8B)
@@ -170,7 +172,7 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-02 / 158 tasks: 105 done, 32 in progress, 20 planned, 1 blocked
+Updated: 2026-10-04 / 158 tasks: 105 done, 32 in progress, 20 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)

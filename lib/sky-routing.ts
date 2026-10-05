@@ -36,7 +36,7 @@ export function routeSkyRequest(request: string): SkyRole | null {
   if (/csv|表計算|列名|列順|重複行|文字コード/.test(value)) return skyRoles[0];
   if (/メルカリ|出品|不用品|中古|販売収益|物販/.test(value)) return skyRoles[1];
   if (
-    /ip studio|ip制作|キャラクター|スキン|roblox|gta|ゲーム導入|higgsfield|make|参考画像|ゲーム版/.test(
+    /ip studio|ip制作|\bip\b.*(?:音声|電話|会話)|livekit|音声エージェント|キャラクター|スキン|roblox|gta|ゲーム導入|higgsfield|make|参考画像|ゲーム版/.test(
       value,
     )
   )

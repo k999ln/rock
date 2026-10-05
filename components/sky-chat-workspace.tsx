@@ -127,6 +127,8 @@ const providerRoutingDefaults: Record<string, string> = {
   workflow: 'make',
   socialPublish: 'make',
   gameDelivery: 'roblox',
+  realtimeVoice: '',
+  telephony: '',
 };
 
 const providerRoutingFields: Array<{
@@ -140,6 +142,8 @@ const providerRoutingFields: Array<{
   { id: 'workflow', label: 'ワークフロー', capability: 'workflow' },
   { id: 'socialPublish', label: 'SNS公開', capability: 'social_publish' },
   { id: 'gameDelivery', label: 'ゲーム導入', capability: 'game_delivery' },
+  { id: 'realtimeVoice', label: 'IPの音声会話', capability: 'realtime_voice' },
+  { id: 'telephony', label: 'IPの電話連携', capability: 'telephony' },
 ];
 
 function roleFor(tool: Automation) {
@@ -1264,6 +1268,7 @@ export default function SkyChatWorkspace() {
                               value={providerRouting[field.id] ?? ''}
                               onChange={(event) => changeProviderRoute(field.id, event.target.value)}
                             >
+                              {(field.capability === 'realtime_voice' || field.capability === 'telephony') && <option value="">利用しない・未選択</option>}
                               {adaptersForCapability(field.capability).map((adapter) => (
                                 <option key={adapter.id} value={adapter.id}>
                                   {adapter.name}

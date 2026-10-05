@@ -1,3 +1,7 @@
+## 2026-10-04 IP Studioの音声・電話連携
+
+利用者の明示指示により、RQ48のIP StudioへLiveKit Agentsの音声会話・電話対応を追加する。既存の交換可能Provider方針を維持し、音声会話と発着信、録音、外部Tool作用を別権限で扱う。今回の設定面追加を実通話の受入に換算しない。Manus Cueは体験の参考であり、未確認APIの接続済み表示はしない。[詳細と残る条件](sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)。
+
 ## 2026-10-02 既存Web外観と検証の整合
 
 READMEと既存workspace CSSに実装済みのgraphite・silver・pale-blue外観を維持し、機械可読visualSystemのaccentを`ice_blue`へ同期する。旧acid-greenを要求する検証だけを訂正し、CSS・component・公開Siteの見た目は変更しない。READMEの英語化と既存marketplace migrationを検証へ反映し、R5の製造保留・実機試験0と履歴DBのschema/保存値比較は維持する。これは新しい製品方針や本番受入の宣言ではない。

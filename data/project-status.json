@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-02",
+  "updatedAt": "2026-10-04",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
   "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
@@ -3042,5 +3042,27 @@
     "evidence": "docs/evidence/common-foundation-integration.json",
     "mainMergeEvidence": "Integration PR merge state and commit ancestry; local verification is separate.",
     "productionDeploymentChanged": false
+  },
+  "ipStudioVoiceTelephony": {
+    "task": "SKY07",
+    "relatedTask": "SKY14",
+    "primaryOwner": "ROCK",
+    "status": "setup_metadata_implemented_runtime_not_connected",
+    "document": "docs/sky-tools-complete-design.md",
+    "baseSha": "31ef33a64a63a25bf4031a6d4211b69583ca4ff5",
+    "branch": "codex/ip-studio-livekit",
+    "validation": {
+      "focusedTests": "17 passed",
+      "fullVerify": "passed: root 489/489; Fashion 22/22; Site 19/19; public preview 21/21; work API 172; CSV API 113",
+      "browser": "IP detail to LiveKit form; voice-only synthetic setup save and reload readback; test values cleared; initial focus at header verified",
+      "finalUiChecks": "typecheck, lint:product and build passed",
+      "liveProvider": "not run"
+    },
+    "remaining": [
+      "separate IP Studio runtime adapter",
+      "LiveKit Agent, voice model and consented media sessions",
+      "phone provider and inbound/outbound acceptance"
+    ],
+    "externalActionsPerformed": false
   }
 }

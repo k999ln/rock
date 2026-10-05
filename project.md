@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-04 — IP StudioへLiveKit音声・電話の設定を追加（本体未接続）
+
+利用者の「IPのやつに追加」に従い、Sky / MCP（ROCK、既存SKY07／SKY14）の設定面を拡張した。SkyのLiveKit設定、Zemaの独立した音声・電話選択、IP Studioの案内と依頼振分けを追加。設定をowner別に保存し、秘密情報・資格情報付きURL・未知fieldを拒否、旧routing保存と電話なしの設定に互換性を持たせる。作業開始時のmainは`31ef33a6`、作業branchは`codex/ip-studio-livekit`。
+
+対象17テスト、全体`npm run verify`（root 489/489、Fashion 22/22、Site 19/19、公開Preview 21/21、仕事API 172項目、CSV API 113項目）が合格。IP Studio詳細の接続ボタンからLiveKit設定へ進み、合成loopback設定を電話情報なしで保存、ページ再読込後の復元を実ブラウザで確認した。試験値は空の下書きへ戻した。画面確認で見つけた初期focusによる途中scrollを修正し、先頭表示を確認。最終の型・lint・buildも合格。次は本体adapterとLiveKit Agentを接続し、本人指定の環境・声・モデル・費用上限と電話回線を確定後、音声・発着信・停止・復旧を受入する。IP Studio本体sourceはこのrepositoryに含まれず、localhost:18767の別アプリ入口である。Manus Cueは参考のみ。実通話・録音・番号取得・課金・公開は未実施。GitHubは作業branch／ドラフトPRで追跡し、main統合は別とする。
+
 ## 2026-10-02 — 重複実装と検証入口の統合（G04）
 
 利用者の「重複・似たプログラムを統合して」に従い、Git / CI / Operations（ROCK）を主担当として、main `b3e2676` から共通処理を集約する。PR #51 のCSV安全修正・既存検査整合、PR #39 のSite試験接続を履歴ごと取り込んだ。法務／特許AIの通信・引用、Jev通信、MCPのsession／RPC、Tool registry、owner／revision保存、Stripe低水準通信・署名、公開PreviewとWebのSky→Zema契約を対象にする。
@@ -1131,7 +1137,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-02 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 105/158件
+最終更新: 2026-10-04 / Pixel 10 compile-only Developer Previewの初回full build準備 / 完了 105/158件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

@@ -1121,7 +1121,10 @@
       "game.experience.publish",
       "social.publish",
       "reward.grant",
-      "analytics.read"
+      "analytics.read",
+      "voice.session",
+      "telephony.inbound",
+      "telephony.outbound"
     ],
     "selectionModes": [
       "ask",
@@ -1154,10 +1157,20 @@
       "Roblox",
       "YouTube",
       "Instagram",
-      "GTA_FiveM"
+      "GTA_FiveM",
+      "LiveKit"
     ],
     "architecture": "docs/sky-mcp-architecture.md",
-    "toolDesign": "docs/sky-tools-complete-design.md"
+    "toolDesign": "docs/sky-tools-complete-design.md",
+    "ipVoiceTelephony": {
+      "requestedAt": "2026-10-04",
+      "providerCandidate": "livekit",
+      "status": "setup_metadata_implemented_runtime_not_connected",
+      "recordingDefault": "off",
+      "separateVoiceAndTelephonyOptIn": true,
+      "outboundRequiresExactApproval": true,
+      "manusCue": "reference_only_api_unverified"
+    }
   },
   "commercialPolicy": "Sky Market charges a 10% commission on verified ToB tool sales. Registration, connection, publication and base usage remain free; third-party API, model, payment and cloud costs are separate. Stripe Connect one-time JPY checkout, seller onboarding, order reconciliation and refunds are implemented but unconfigured; provider sandbox and live acceptance remain pending. The USD 8.88 ToC revenue fee proposal remains on hold and its 888-cent values are historical regression fixtures. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
   "skyMarketplacePayments": {

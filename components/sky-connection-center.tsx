@@ -1,7 +1,7 @@
 'use client';
 
 import { CheckCircle2, CircleDashed, KeyRound, Link2, Save, ShieldCheck } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { ExecutionSignin, useExecutionAccess } from '@/components/execution-access';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
@@ -38,12 +38,15 @@ function valuesFor(provider: SkyProvider, config: Record<string, string> | undef
 export default function SkyConnectionCenter({
   open,
   onOpenChange,
+  initialProvider = 'instagram',
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialProvider?: SkyProvider;
 }) {
   const [profiles, setProfiles] = useState<SkyProviderConnection[]>([]);
-  const [selected, setSelected] = useState<SkyProvider>('instagram');
+  const headingRef = useRef<HTMLElement>(null);
+  const [selected, setSelected] = useState<SkyProvider>(initialProvider);
   const [values, setValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -113,8 +116,8 @@ export default function SkyConnectionCenter({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={styles.dialog}>
-        <header className={styles.header}>
+      <DialogContent className={styles.dialog} initialFocus={headingRef}>
+        <header className={styles.header} ref={headingRef} tabIndex={-1}>
           <div className={styles.headerMark}><Link2 size={19} /></div>
           <div>
             <DialogTitle>Skyの接続管理</DialogTitle>
@@ -151,7 +154,7 @@ export default function SkyConnectionCenter({
             <p className={styles.detail}>{definition.detail}</p>
             {loading ? <p className={styles.muted}>接続情報を確認中…</p> : definition.fields.map((field) => (
               <label key={field.id} className={styles.field}>
-                <span>{field.label}</span>
+                <span>{field.label}{field.optional ? '（任意）' : ''}</span>
                 {field.type === 'select' ? (
                   <select
                     value={values[field.id] ?? ''}
@@ -181,6 +184,12 @@ export default function SkyConnectionCenter({
                 )}
               </label>
             ))}
+            {definition.setupSteps && (
+              <div className={styles.detail}>
+                <ol>{definition.setupSteps.map((step) => <li key={step}>{step}</li>)}</ol>
+                <a href={definition.documentationUrl} target="_blank" rel="noreferrer">LiveKitの公式導入ガイド</a>
+              </div>
+            )}
             <div className={styles.notice}>
               <ShieldCheck size={17} />
               <span>パスワード・APIキー・トークンはここへ保存しません。公式OAuthやOSの安全な接続画面で認証します。</span>
