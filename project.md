@@ -2,7 +2,7 @@
 
 H1 / ORG03、ROCK、主作業streamはSecurity。最新main `ecb4b2af462a55b9b3defa1e6426d0476194b2b4`を基点にCodeQL #58だけを扱う。部隊IDをHTMLへ連結する表示で、合成IDのタグがChromeで実行されることを再現した。DOMの本文・datasetと描画ごとのbutton Mapへ変更し、選択とフォーカスを保つ。公開requestから正本IDを変更できる経路を実証したものではない。
 
-対象53/53試験合格。Chromeで修正前は合成HTML実行あり・部隊button33個、修正後は実行なし・正しい32個・文字列保持・選択とfocus成功。同一ref基点CodeQLは#58 openを確認済み、修正SHAの再検査はPRで追跡する。[証拠](docs/evidence/spider-mission-squad-dom.json)にsource hashと試験条件を保存した。既存status／段階は維持し、全体完了へ昇格しない。基点で`npm run verify`は`database:check`の生成資料不整合により失敗済み。mainの依存manifest/lock不一致、catalog重複、SIM/eSIM基準の欠落、AMC module export欠落と既存PR #70/#71の統合も残る。main merge・配備・実機操作は行わない。
+中間SHA `a481833a`で#58 fixed、移動したtest抽出正規表現に#63が出たため、固定fixtureのscript区切りと一意性をassertする抽出へ変更した。対象53/53試験合格。Chromeで修正前は合成HTML実行あり・部隊button33個、修正後は実行なし・正しい32個・文字列保持・選択とfocus成功。同一ref基点CodeQLは#58 openを確認済み、修正SHAの再検査はPRで追跡する。[証拠](docs/evidence/spider-mission-squad-dom.json)にsource hashと試験条件を保存した。既存status／段階は維持し、全体完了へ昇格しない。基点で`npm run verify`は`database:check`の生成資料不整合により失敗済み。mainの依存manifest/lock不一致、catalog重複、SIM/eSIM基準の欠落、AMC module export欠落と既存PR #70/#71の統合も残る。main merge・配備・実機操作は行わない。
 
 # RockstarOS — 事業・設計・進捗
 

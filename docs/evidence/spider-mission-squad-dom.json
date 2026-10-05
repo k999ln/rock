@@ -87,7 +87,7 @@
   "browserMethod": "Isolated headless Chrome, actual renderVisualization output with synthetic renamed O1 and consistent references; compare injected sentinel, parsed nodes, literal ID, click selection, activeElement and aria-pressed. No external service or user profile.",
   "sourceSha256": {
     "scripts/templates/mission-control.html": "a9107d92d0b67ffa51b22470e98643469f108cb9fffffc00c5aec4ef39a0f0fa",
-    "tests/mission-control.test.mjs": "15b5c07df55bfd4f1075272b974fcc5d0aaddbabd4f08294f2bc0c7a9404e6d6",
+    "tests/mission-control.test.mjs": "0b12084237443390e09847befd8f39e14466d53c7a1d1e2f8a17dc477bcf1835",
     "tests/amc-goal-cli.test.mjs": "5e0514738a2bdf0ce6a52f50443599eb2260005b984db2a346832f029007731d"
   },
   "checks": {
@@ -109,5 +109,29 @@
   "independentReview": {
     "result": "no blockers",
     "scope": "source/test/workflow diff only; root tests and browser evidence separately recorded"
+  },
+  "intermediateReadback": {
+    "commit": "a481833a1eeb20830e0a5d481e1241c3bc3431a0",
+    "sameRefCodeqlRun": 37353985597,
+    "target58State": "fixed",
+    "testExtraction63State": "open",
+    "alert63Instances": [
+      {
+        "ref": "refs/heads/codex/spider-mission-squad-dom",
+        "state": "open",
+        "commit_sha": "a481833a1eeb20830e0a5d481e1241c3bc3431a0",
+        "analysis_key": ".github/workflows/spider-codeql.yml:analyze",
+        "category": "/spider/language:javascript-typescript"
+      }
+    ],
+    "repairRegressionRun": 37353978794,
+    "repairJob": "success",
+    "verifyAndWeb": "failure: inherited npm ci EUSAGE",
+    "secrets": {
+      "status": "findings",
+      "totalFindings": 2910,
+      "historyScanCompleted": true
+    },
+    "followup": "Replace the moved test-only script extraction regexp with asserted exact fixture delimiters. No sanitizer, scanner exception, or test removal; 53 tests pass again. Final GitHub readback remains pending on the new commit."
   }
 }

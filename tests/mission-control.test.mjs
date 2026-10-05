@@ -246,7 +246,12 @@ function visualization(mission, project) {
     getElementById: id => elements.get(id),
     createElement: tag => node(tag),
   };
-  runInNewContext(html.match(/<script>\s*([\s\S]*?)<\/script>/)[1], { document, window });
+  // Extract the one exact runtime block from our generated fixture, not arbitrary HTML.
+  const scriptStart = html.indexOf('<script>');
+  const scriptEnd = html.indexOf('</script>', scriptStart);
+  assert.ok(scriptStart >= 0 && scriptEnd > scriptStart);
+  assert.equal(html.indexOf('<script>', scriptStart + '<script>'.length), -1);
+  runInNewContext(html.slice(scriptStart + '<script>'.length, scriptEnd), { document, window });
   const descendants = element => element.children.flatMap(child => [child, ...descendants(child)]);
   const buttons = () => descendants(elements.get('amc-divisions')).filter(item => item.tagName === 'BUTTON');
   return { elements, dashboard, saves, events, descendants, buttons };
