@@ -387,3 +387,7 @@ Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除
 ### avocadoMiniの没入型GTA調査
 
 [技術調査・将来構想・検証計画](docs/avocado-mini-r5/research/immersive-gta/README.md)。2026-09-30時点の記録。GTA接続・裸眼空間表示・実機完成の証拠ではありません。
+
+## Patent research
+
+[2026-09-30 research report](docs/research/rockstar-patent-research.html) · [Source registry](docs/research/rockstar-patent-sources.json). Historical research against commit `b3e2676a`; not a patent filing or a review of subsequent implementation changes. Download the HTML and open it in a browser to use the source filters.

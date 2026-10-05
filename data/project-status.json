@@ -3179,7 +3179,9 @@
         "tests/shared-stripe.test.mjs",
         "tests/mcp-client.test.mjs",
         "tests/owner-revision-json-store.test.mjs",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "docs/evidence/pr-consolidation-20261005.json",
+        "docs/research/rockstar-patent-research.html",
+        "docs/research/rockstar-patent-sources.json"
       ]
     }
   ],
@@ -4423,5 +4425,18 @@
     "physicalDisplayTested": false,
     "hardwareTaskStatus": "MAT15_planned",
     "conceptImageIsExperimentalEvidence": false
+  },
+  "patentResearch": {
+    "researchDate": "2026-09-30",
+    "repositorySavedAt": "2026-10-05",
+    "report": "docs/research/rockstar-patent-research.html",
+    "sources": "docs/research/rockstar-patent-sources.json",
+    "reviewedSourceCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "status": "research_complete_not_filing_ready",
+    "publicationCount": 31,
+    "sourceCount": 74,
+    "runtimeChanged": false,
+    "patentFiled": false,
+    "nextAction": "初公開日・先行出願を確定し、R1の具体方式・比較実験と専門家による請求項検討を行う。9月30日以降のコード変更は本調査の対象外。"
   }
 }
