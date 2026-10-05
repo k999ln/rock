@@ -1,6 +1,6 @@
 ## 2026-10-05 — 未統合PRのmain反映（作業中）
 
-利用者の「mainにあげて」により、最新main `aa7f2b41` を基点に未統合20 PRを照合する。G04／Git・CI／ROCK担当。SIM/eSIM中心の現行製品方針、署名付きモデル管理、共通MCP・決済・保存契約を保持し、旧PRは現行仕様へ合わせる。Farm/MemeはPAPER限定、fixture・実機・本番を区別する。依存5件、AI/Game/Decision Fabric8件、Campus/Farm/Meme/LiveKit/名称/domain6件の計19 PRを履歴ごとローカル統合した。Cloudflare peer型とlock・license inventoryの不整合、Campusのdevice認証/所属検証と所有者交代時の削除競合を修正。AI fixtureのmodel tableは現行の署名付きregistryと名前空間を分離し、旧Cloud agent APIは現行の見積・上限・receipt受入までdry-runのみとした。#52 SPIDERは履歴secret候補未分類とCodeQL警告のため分離する。local type/schema/design/source checksと対象試験は合格。全体verifyはMacの容量不足によるworkerd binary不完全で未完走のため、GitHubの同一HEAD CIで再検証する。main反映はまだ未完了。根拠: docs/evidence/pr-consolidation-20261005.json。
+利用者の「mainにあげて」により、最新main `aa7f2b41` を基点に未統合20 PRを照合する。G04／Git・CI／ROCK担当。SIM/eSIM中心の現行製品方針、署名付きモデル管理、共通MCP・決済・保存契約を保持し、旧PRは現行仕様へ合わせる。Farm/MemeはPAPER限定、fixture・実機・本番を区別する。依存5件、AI/Game/Decision Fabric8件、Campus/Farm/Meme/LiveKit/名称/domain6件の計19 PRを履歴ごとローカル統合した。Cloudflare peer型とlock・license inventoryの不整合、Campusのdevice認証/所属検証と所有者交代時の削除競合を修正。AI fixtureのmodel tableは現行の署名付きregistryと名前空間を分離し、旧Cloud agent APIは現行の見積・上限・receipt受入までdry-runのみとした。#52 SPIDERは履歴secret候補未分類とCodeQL警告のため分離する。local type/schema/design/source checksと対象試験は合格。容量回復後に依存をクリーンインストールし、e96db05bの全体verifyはGitHub・local双方で成功（Node870、Fashion22、Mini18、公開Preview21、Meme7、Farm25、Worker/D1 1048、CSV113）。Android Core111件合格後、既存mainのautomation compile不備を修正し全体Android CIを継続する。main反映はまだ未完了。根拠: docs/evidence/pr-consolidation-20261005.json。
 
 ## 2026-10-02 — 販売チャネル共通claim発行・暗号化配信store
 

@@ -112,8 +112,13 @@
     "releaseInventory": "35 baseline/release tests passed; legal clearance remains pending",
     "products": "101 focused tests passed; Campus ownership race follow-up 11/11 passed",
     "core": "source/contract consistency passed; Android compile/emulator delegated to CI",
-    "wholeVerify": "Attempted; 779/791 Node tests passed. 12 workerd-dependent failures after local ENOSPC interrupted binary installation. This is not a full verification pass."
+    "wholeVerify": "PASS at e96db05b plus only the Game workstream wording correction: TMPDIR=/private/tmp npm run verify exit 0; Node 870/870, Fashion 22/22, Mini site 18/18, public preview 21/21, Meme 7/7, Farm 25/25, Worker/D1 1048 assertions, CSV Worker/D1/R2 113 assertions, build and release checks. The prior interrupted install is recovered."
   },
-  "ci": "PENDING exact integration HEAD",
+  "ci": {
+    "verifiedSource": "e96db05bfdaf5d1f54bbc53ae563687260d88da7",
+    "wholeVerify": "PASS",
+    "wholeVerifyUrl": "https://github.com/k999ln/rock/actions/runs/37270193534",
+    "android": "core 111 tests PASS; existing main automation compile errors repaired in follow-up, full Android run still pending"
+  },
   "mainIntegration": "PENDING"
 }
