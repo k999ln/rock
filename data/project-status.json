@@ -3298,7 +3298,9 @@
         "docs/research/rockstar-patent-research.html",
         "docs/research/rockstar-patent-sources.json",
         "scripts/spider-web-runtime.mjs",
-        "tests/spider-web-runtime.test.mjs"
+        "tests/spider-web-runtime.test.mjs",
+        "docs/amc-autonomy-fixture.md",
+        "docs/evidence/amc-fixture-csv-main-integration.json"
       ]
     }
   ],
@@ -4555,5 +4557,29 @@
     "runtimeChanged": false,
     "patentFiled": false,
     "nextAction": "初公開日・先行出願を確定し、R1の具体方式・比較実験と専門家による請求項検討を行う。9月30日以降のコード変更は本調査の対象外。"
+  },
+  "amcMainIntegration": {
+    "status": "in_progress",
+    "updatedAt": "2026-10-05",
+    "task": "G04",
+    "primaryOwner": "ROCK",
+    "workstream": "docs/workstreams/10-git-ci-operations.md",
+    "baseMain": "996b1955",
+    "scope": [
+      "Operating documentation for the bounded AMC fixture already integrated by main 11824636",
+      "Four shared CSV transform contract fixes, regression tests and synthetic result fixture generator"
+    ],
+    "evidence": "docs/evidence/amc-fixture-csv-main-integration.json",
+    "validation": "Local full verify on main 11824636 plus this change passed: Node 1003, Worker/D1 1069, CSV/D1/R2 113; other suites also passed. After preserving subsequent main SPIDER integration, use exact-head CI on PR #67 for the latest combined verification.",
+    "constraints": [
+      "No real worker, model, network or Web synchronization through the AMC fixture CLI",
+      "Trusted fixture IDs and synthetic approval are not authentication or real owner consent",
+      "Cooperative cancellation cannot forcibly interrupt synchronous in-process work",
+      "CSV is a shared standard capability; no new standalone plugin, pricing or product catalog change",
+      "Local fixture acceptance is not customer delivery, production execution or Sites deployment"
+    ],
+    "nextAction": "Use PR #67 for exact-head CI and main merge status; proceed separately with authenticated real-worker/Web integration while preserving existing G04 security gates.",
+    "synchronizedMain": "592daeea322cd47aa189b67dd689e323662c0c67",
+    "pullRequest": "https://github.com/k999ln/rock/pull/67"
   }
 }
