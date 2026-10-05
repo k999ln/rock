@@ -1,0 +1,79 @@
+{
+  "schema": "spider-work-plan-contract/1",
+  "cycle": 44,
+  "baseCommit": "4a22eb25502e858e22d3c5f0cddcdab58298a07a",
+  "referenceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+  "primarySquad": "O2",
+  "taskId": "R03",
+  "primaryOwner": "ROCK",
+  "status": "LOCAL_REGRESSIONS_PASS_REMOTE_PENDING",
+  "rootCause": "Merged older workflow and API files removed the plan/export and authoritative guards while current store/UI/tests retained their consumers. Duplicate listAmc overwrote the summary with no plan.",
+  "before": {
+    "command": "node --experimental-strip-types --test tests/workflow.test.mjs",
+    "result": "FAIL: normalizeWorkJob export missing"
+  },
+  "existingRegression": {
+    "tests": 46,
+    "passed": 46
+  },
+  "securityBoundaries": [
+    "same owner and parent job delegation lookup",
+    "fixed plan gates; objective edit before first record only",
+    "stored quote and digest for brief; completed remote result plus captured artifacts and parent-bound usage receipt for result",
+    "history rechecked before progress/final completion",
+    "local cancellation remains possible without evidence; owner/revision/terminal checks remain",
+    "no remote execution or cancellation triggered by work progress API",
+    "service entitlement POST; unread body released on denial",
+    "dedicated AMC API rejection remains"
+  ],
+  "remote": {
+    "baselineCodeqlRun": 37367560369,
+    "sameRef": "refs/heads/codex/spider-work-plan-contract",
+    "status": "pending"
+  },
+  "remaining": [
+    "PR73 dependency declarations not merged; normal install/build may remain blocked",
+    "Existing stale DB source inventory blocks full verify",
+    "Existing duplicate catalog IDs block design check",
+    "Existing AMC export contract regressions remain",
+    "Unmodified operations/sky-zema-contract neighboring tests fail; Sky Tool handoff suite requires unavailable local typescript",
+    "CodeQL42 and Dependabot2 main alerts remain; no alert closure claimed"
+  ],
+  "mainMerged": false,
+  "deployed": false,
+  "scannerWeakened": false,
+  "localRegression": {
+    "command": "node --experimental-strip-types --test tests/workflow.test.mjs tests/work-plan-route.test.mjs tests/amc-main-integration.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-parent-controller.test.mjs tests/a2a-result-handoff.test.mjs",
+    "nodeVersion": "v26.0.0",
+    "tests": 67,
+    "passed": 67,
+    "skipped": 0,
+    "newRouteTests": 21,
+    "boundary": "Real route handlers and SQLite stores; synthetic auth/env and provider ingress evidence, not production auth or signature acceptance"
+  },
+  "baselineRouteOnlyRegression": {
+    "routeCommit": "4a22eb25502e858e22d3c5f0cddcdab58298a07a",
+    "workflowAndStores": "repaired candidate unchanged",
+    "passed": 5,
+    "failed": 16,
+    "directFailures": 13,
+    "parentFailureCounts": 3,
+    "result": "Old API accepted missing/mismatched delegation and invalid result evidence and allowed unentitled creation"
+  },
+  "checks": {
+    "mission:update": "pass",
+    "mission:check": "pass",
+    "project:update": "pass",
+    "project:check": "pass",
+    "diff:check": "pass",
+    "verify": "failed: preexisting database inventory stale",
+    "design:check": "failed: preexisting duplicate catalog Tool IDs"
+  },
+  "sourceSha256": {
+    "lib/workflow.ts": "326a3c87adc365cfd63da6014a491615857f2fa18be76412ccdeecf9d68cc253",
+    "lib/work-store.ts": "e7466f6014d5179bcd137a6bfc9c033f4179cbbb769d45f34cbda72d1f6897b9",
+    "app/api/work-jobs/route.ts": "1544d0b3ac68692f462b78af8e7f59c2d4363eb66a4f318c8fe8c7cdec076d28",
+    "tests/work-plan-route.test.mjs": "10a8ee0bcfa9fb24a4333adecb65078d74f6a96c5e74f3e737f9fab08c2a29bb",
+    "tests/workflow.test.mjs": "6f2a5d99c7a412d6864a64cec3a46b9a1a8df7c3980470e310ef8082da237808"
+  }
+}

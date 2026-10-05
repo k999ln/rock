@@ -49,31 +49,6 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
         }),
       );
     },
-    async listAmc(user: string) {
-      const rows = await db
-        .prepare(
-          `SELECT id, json_extract(payload, '$.title') AS title, revision,
-          json_extract(payload, '$.status') AS status,
-          json_extract(payload, '$.createdAt') AS createdAt, updated_at AS updatedAt
-          FROM work_jobs WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'amc'
-          ORDER BY updated_at DESC, id DESC LIMIT 100`,
-        )
-        .bind(user)
-        .all<
-          Pick<
-            WorkJob,
-            'id' | 'title' | 'revision' | 'status' | 'createdAt' | 'updatedAt'
-          >
-        >();
-      return rows.results.map(
-        (row): WorkJob => ({
-          ...row,
-          templateId: 'amc',
-          steps: [],
-          events: [],
-        }),
-      );
-    },
     async create(user: string, job: WorkJob) {
       await db
         .prepare(

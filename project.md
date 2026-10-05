@@ -1,5 +1,12 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-05 — SPIDER cycle 44: 仕事計画とAgent進捗の安全な復旧
+
+O2 / R03、ROCK、Web / PWA。最新main `4a22eb25`を基点に、欠落したWorkPlan/normalizeWorkJob、同名AMC一覧定義の重複、仕事APIの利用権・委任/親job/見積/成果/receipt照合を修復する。最初の実行前だけ目的を編集でき、固定承認条件は変更させない。過去の証拠不足で本人のローカル取消を妨げず、ownerとrevisionの検査を維持する。最新mainのSky引継ぎ・ライブラリ保存を保持する。
+
+対象67件合格（新規実handler＋SQLiteの21件を含む）。修正前APIだけを同じ試験へ戻すと直接13件失敗し、弱い照合を再現した。同一refのCodeQL前後比較とGitHub検査は待機中。全体verifyは既存DB inventory不整合、design:checkは既存catalog ID重複で停止。依存install不一致のPR #73は独立した既存修正であり、今回重複しない。[検証記録](docs/evidence/spider-work-plan-contract.json)。task段階・料金保留・本番受入は変更しない。
+
+
 ## 2026-10-05 — Skyライブラリ保存APIの復旧とmain反映準備
 
 O5 / SKY10・SKY16（SKY-S2-LIBRARY-RESTORE-20261005-01）、ROCK。既存0059 schemaとGET/PUT契約を使い、欠落した本人別一覧・保存・解除のoperationsを復旧。再保存は重複せず保存日時を維持し、他人の保存は変更しない。保存による購入権・実行同意・仕事作成はない。利用者の「mainにあげて」により、前回の商品詳細→Zema差分と合わせGitHub mainへ反映する。公開サイト配備は別。
@@ -1409,7 +1416,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS14 | 製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定 | 完了 | [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](scripts/check-system-composition.mjs) · [記録](tests/system-composition.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
-| R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
+| R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) · [記録](docs/evidence/spider-work-plan-contract.json) |
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |

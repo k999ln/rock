@@ -174,3 +174,9 @@ PR #61は独自ドメインのcanonical、sitemap、hosting参照と既存の配
 ## 2026-10-05 Skyの保存・復帰候補の正本統合（G04/WEB04）
 
 G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
+
+## SPIDER cycle 44: WorkPlanとAgent進捗の照合復旧
+
+O2 / R03、主streamはWeb / PWA、ROCK。main `4a22eb25`で欠落した計画schema・保存時の復元・編集制限を、既存の本人別D1/CAS契約に戻す。cloud-agentの入口だけを戻さず、同時にAPIの利用権と保存済み委任・見積・成果物・receipt照合を復元する。AMC専用経路、Skyの商品詳細からZemaへの引継ぎ、本人別bookmarkは保持する。証拠不整合でもローカル取消はowner/revision条件で可能とし、遠隔停止とは分ける。
+
+`node --experimental-strip-types --test tests/workflow.test.mjs tests/work-plan-route.test.mjs tests/amc-main-integration.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-parent-controller.test.mjs tests/a2a-result-handoff.test.mjs`で保存・完了拒否・取消を確認する。依存不一致は既存PR #73、DB inventory・catalog・その他AMC export退行は別件。詳細は[証拠](../evidence/spider-work-plan-contract.json)。main mergeと配備はこの自動サイクルでは行わない。

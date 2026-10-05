@@ -28,6 +28,8 @@ jobs:
           node-version: '22'
       - name: Test feedback collection and update-message boundaries
         run: node --test tests/spider-feedback.test.mjs tests/service-worker-update.test.mjs tests/spider-web-runtime.test.mjs
+      - name: Test persisted work plans and authoritative Agent progress
+        run: node --experimental-strip-types --test tests/workflow.test.mjs tests/work-plan-route.test.mjs tests/amc-main-integration.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-parent-controller.test.mjs tests/a2a-result-handoff.test.mjs
       - name: Test local descriptor races and approved Connector execution
         run: node --test tests/mcp-local-descriptor.test.mjs tests/mcp-connector.test.mjs
       - name: Test delivery workspace isolation and existing MR tools

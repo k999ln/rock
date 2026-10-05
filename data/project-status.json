@@ -2977,7 +2977,7 @@
       "title": "仕事の作成・実行・確認・再開をAPIと画面で接続",
       "status": "done",
       "dependsOn": ["R01"],
-      "evidence": ["tests/workflow.test.mjs", "scripts/check-work-api.mjs"]
+      "evidence": ["tests/workflow.test.mjs", "scripts/check-work-api.mjs", "docs/evidence/spider-work-plan-contract.json"]
     },
     {
       "id": "R04",
