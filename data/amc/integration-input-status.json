@@ -1,0 +1,13 @@
+{
+  "schema": "amc-integration-input-status/1",
+  "scope": "AMC integration onto main; original Sky plan and directives preserved",
+  "status": "partial_source_integration_not_execution_ready",
+  "missingInputs": [
+    "drizzle/0019_sky_library.sql",
+    "components/sky-navigation.tsx",
+    "lib/sky-routes.ts",
+    "lib/sky-os-policy.ts",
+    "tests/sky-routes.test.mjs"
+  ],
+  "rule": "observeSkyTask must reject tasks requiring any missing input; do not substitute empty sources or claim all Sky inputs are available"
+}

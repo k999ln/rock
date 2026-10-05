@@ -9,9 +9,9 @@
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 161,
+    "total": 162,
     "done": 104,
-    "in_progress": 42,
+    "in_progress": 43,
     "planned": 14,
     "blocked": 1,
     "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入",

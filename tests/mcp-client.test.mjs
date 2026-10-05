@@ -12,7 +12,7 @@ const profile = {
 };
 
 await test('one catalog defines connection identity and preserves the restricted tracked-job boundary', () => {
-  assert.equal(catalog.length, 34);
+  assert.equal(catalog.length, 35);
   assert.equal(new Set(SKY_CONNECTION_TOOLS).size, SKY_CONNECTION_TOOLS.length);
   assert.deepEqual(new Set(SKY_CONNECTION_TOOLS), new Set(catalog.map(({ id }) => id)));
   assert.equal(SKY_CONNECTION_TOOLS.filter((id) => id === 'rockstar-ip-studio').length, 1);

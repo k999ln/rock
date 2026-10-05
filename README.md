@@ -8,7 +8,11 @@ Pro is being specified as a standalone compact PC for AI and PC games, with a JP
 
 
 
+AMCは [Goalと部隊の画面](app/zema/amc/page.tsx) と [Codex用3役・起動口](toolkits/amc-agent/README.md) を備えます。Webの自律実行・同期と実モデル完走は未受入です。
+
 Public homepage: [avocadomini.si](https://avocadomini.si) — the user-selected Mini/Pro website, with DNS and HTTPS verified. See the [deployment and DNS record](docs/workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13).
+Payment and Wallet design: [integration design](docs/sky-commerce-design.md), [Wallet design](docs/wallet-commerce-design.md), and [English development prompt](docs/prompts/sky-commerce-wallet-development.md). The v2 additions are design proposals; [validation scope](docs/evidence/sky-commerce-main-integration-validation.json) separates local checks from external acceptance.
+
 <!-- sky-access-recovery:start -->
 Skyが接続を確認している間や、通信失敗・サインイン切れの間は実行を停止します。画面を開いたまま別タブでサインインし、戻って「接続を確認」してから改めて実行してください。再確認だけでは再実行や課金をしません。未保存入力は開いている画面に保持されますが、再読み込みでは消える場合があります。接続設定の復旧時も編集した入力を保持し、保存済み設定を読み直せない間は保存できません。
 <!-- sky-access-recovery:end -->
@@ -41,6 +45,14 @@ Toolのサインイン切れでは、元の画面を開いたまま別タブで�
 <!-- sky-service-recovery:end -->
 
 <div align="center">
+
+[![SPIDER secrets](https://github.com/k999ln/rock/actions/workflows/spider.yml/badge.svg?branch=codex%2Fspider-guard)](https://github.com/k999ln/rock/actions/workflows/spider.yml?query=branch%3Acodex%2Fspider-guard)
+[![SPIDER code analysis](https://github.com/k999ln/rock/actions/workflows/spider-codeql.yml/badge.svg?branch=codex%2Fspider-guard)](https://github.com/k999ln/rock/actions/workflows/spider-codeql.yml?query=branch%3Acodex%2Fspider-guard)
+
+SPIDER inspects this repository's Git history for suspected secrets and runs CodeQL on JavaScript/TypeScript and Python. Open the badges for the actual checks, or [Security](https://github.com/k999ln/rock/security) for alerts. The badges currently follow the integration branch; default-branch scheduling and required merge checks are pending integration. See [security policy](SECURITY.md) for coverage, privacy and response steps.
+
+SPIDER's improvement cycle collects alerts, reviews the source, makes a focused repair, runs regression tests and rescans the same commit before reporting a fix in a PR. Run `npm run spider:feedback -- --ref codex/spider-guard --output work/spider-feedback` to refresh the metadata-only queue. The configured hourly Codex follow-up needs the local computer and app running; it does not merge PRs. See [cycle and reporting](docs/spider-guard.md#検出からコード改善へ戻すサイクル).
+
 
 <img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokado product concept: one slim silver avocadoMini R5 stands beside the words PLAY, MAKE, and LIVE with subtle animated lines" width="100%">
 
@@ -217,8 +229,20 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
+[Spider Guard](docs/spider-guard.md) is being integrated into **RockstarOS itself** (`SYS15`): the existing Platform service inspects its fixed application-data scope and checks supported MCP/Runner requests before sending. Native status uses authenticated, sanitized findings. Web and MCP Connector safeguards are secondary. Same-image boot, Pixel deployment, and 24-hour operation remain unverified; arbitrary OS traffic and other users' private storage are outside this scope.
+
+Native CI reruns retain earlier evidence and select the latest attempt for each partition by artifact ID. Missing, expired, ambiguous, or failed evidence keeps the check failed. [Selection and verification contract](docs/native-os-validation.md#ci再実行の結果選択sys152026-10-03).
+
+The Mac virtual-device launcher passes the browser session credential through private standard input to a fixed opener command. It rejects malformed viewer URLs and reports fixed errors; `--no-open` does not fetch a display credential. [Display handoff and acceptance scope](systems/rock-star-os/os/desktop/README.md).
+
+The platform guest verifier also requires an explicit verification boot when invoked directly as root. Use the existing `verify-platform.py` host entry; ordinary boots reject the verifier before it can change guest state. [Invocation contract and validation scope](docs/native-os-validation.md#platform検証guestの起動条件sys152026-10-03).
+
+Its native security panel now has source-validated motion toward actual findings and reactions only to newly observed blocked requests. The panel also reports its Security Agent role, actual health, candidates and latest real refusal; the new backend, renderer and PIN profile checks passed in Linux fixtures. Earlier tests remain evidence for their recorded source revisions, including saved revision `a7cfca3`.
+
+A paste-and-edit code inspector is available as an offline single HTML file, `outputs/SPIDER.html` outside this repository. It checks source locally without running, uploading or persisting it, and needs no SDK or API key. Build and usage details are in [Spider Guard](docs/spider-guard.md#自分のコードを貼って検査する); its Node/loopback-browser checks and native host tests passed. Native Linux validation for this revision remains pending.
+
 <!-- project-overview:start -->
-Updated: 2026-10-05 / 161 tasks: 104 done, 42 in progress, 14 planned, 1 blocked
+Updated: 2026-10-05 / 162 tasks: 104 done, 43 in progress, 14 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)
@@ -362,7 +386,7 @@ After updating documents or progress, run the following checks. The final calcul
     npm run test:public-preview
     npm run test:avocado-mini-site
 
-Shared AI, MCP, storage, payments, and Sky/Zema contracts use one implementation per responsibility. Full verification also checks standalone copies and both PC download ZIPs. See the [integration record](docs/git-consolidation.md#2026-10-02-共通実装の統合g04).
+Shared AI, MCP, storage, payments, and Sky/Zema contracts use one implementation per responsibility. Full verification also checks standalone copies and both PC download ZIPs. The legacy PC `/mcp` endpoint is limited to the bundled MR processors; custom connections use the server-ID approval flow described in the [Connector guide](docs/sky-mcp-connector.md#互換性と移行). See the [integration record](docs/git-consolidation.md#2026-10-02-共通実装の統合g04).
     python3 scripts/verify-avocado-r5-package.py
     python3 docs/avocado-mini-r5/package/verify_calculations.py
 
@@ -391,3 +415,11 @@ Open `/sky/marketplace` to use the same marketplace outside the OS home. Sky pag
 ## Skyサービスの利用とローンチ設計
 
 Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除・接続状態・対応環境は `/sky/help`。OS導入は必須ではありません。外部AIや購入/販売は必要な接続設定と本人の条件が揃ってから利用できます。[サービス設計と受入](docs/sky-launch-design.md)・[段階別の受入記録](data/sky-service-launch.json)・[運用と作者/決済の受入手順](docs/sky-launch-operations.md)を参照してください。設定あり・コード試験・本番合格は別の状態です。
+
+### avocadoMiniの没入型GTA調査
+
+[技術調査・将来構想・検証計画](docs/avocado-mini-r5/research/immersive-gta/README.md)。2026-09-30時点の記録。GTA接続・裸眼空間表示・実機完成の証拠ではありません。
+
+## Patent research
+
+[2026-09-30 research report](docs/research/rockstar-patent-research.html) · [Source registry](docs/research/rockstar-patent-sources.json). Historical research against commit `b3e2676a`; not a patent filing or a review of subsequent implementation changes. Download the HTML and open it in a browser to use the source filters.

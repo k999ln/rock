@@ -89,6 +89,7 @@ export function skyToolUiState(
       detail: '記録サービスの復旧後に利用できます。入力を手元に保存してください',
       className: 'is-connect',
     };
+  if (tool.id === 'rockstar-amc') return { label: '計画・進捗管理が利用可能', detail: 'AIの自律実行は未接続', className: 'is-ready' };
   if (tool.id === 'rockstar-csv-cleanup')
     return {
       label: service?.database === 'available' && service.csvStorageConfigured ? 'サインインして利用' : service ? 'ファイルサービス接続待ち' : '利用条件を確認',

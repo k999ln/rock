@@ -12,7 +12,8 @@ export type SkyRole = {
     | 'rockstar-ledger'
     | 'rockstar-legal-intake'
     | 'rockstar-patent-assistant'
-    | 'jev-evaluation';
+    | 'jev-evaluation'
+    | 'rockstar-amc';
 };
 
 export const skyRoles: readonly SkyRole[] = [
@@ -28,11 +29,13 @@ export const skyRoles: readonly SkyRole[] = [
   { label: '法務受付', toolId: 'rockstar-legal-intake' },
   { label: '特許アシスタント', toolId: 'rockstar-patent-assistant' },
   { label: '品質評価役', toolId: 'jev-evaluation' },
+  { label: 'Goal・部隊管理役', toolId: 'rockstar-amc' },
 ];
 
 export function routeSkyRequest(request: string): SkyRole | null {
   const value = request.trim().toLowerCase();
   if (!value) return null;
+  if (/\bamc\b|部隊|goal.*(?:管理|計画|進捗)|(?:管理|計画|進捗).*goal|タスク.*進捗/.test(value)) return skyRoles.find((role) => role.toolId === 'rockstar-amc') ?? null;
   if (/csv|表計算|列名|列順|重複行|文字コード/.test(value)) return skyRoles[0];
   if (/メルカリ|出品|不用品|中古|販売収益|物販/.test(value)) return skyRoles[1];
   if (

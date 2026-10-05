@@ -1,0 +1,140 @@
+.root {
+  margin: 22px 0;
+  padding: 24px;
+  border: 1px solid #47483e;
+  border-radius: 14px;
+  background: #191a16;
+  color: #edede8;
+}
+.root header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+}
+.label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: #c4cba7;
+}
+.source {
+  font-size: 11px;
+  color: #a6a69b;
+}
+.root h2 {
+  margin: 16px 0 10px;
+  max-width: 900px;
+  font-size: clamp(18px, 2.2vw, 25px);
+  line-height: 1.65;
+}
+.intent {
+  color: #b5b8a7;
+  font-size: 13px;
+}
+.chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  font-size: 12px;
+  color: #c2c5b7;
+}
+.chain b {
+  color: #747963;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 20px 0;
+  border-top: 1px solid #383b30;
+}
+.metrics div {
+  display: grid;
+  gap: 4px;
+}
+.metrics strong {
+  font-size: 24px;
+  font-weight: 500;
+}
+.metrics span {
+  color: #a6a69b;
+  font-size: 11px;
+}
+.runtime {
+  color: #dccca0;
+  border-left: 2px solid #a4905c;
+  padding-left: 12px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.columns > section {
+  padding: 16px;
+  border: 1px solid #35372f;
+  border-radius: 10px;
+  background: #131510;
+}
+.columns h3 {
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+.columns ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.columns button {
+  width: 100%;
+  text-align: left;
+  border-color: #373c2d;
+  background: #20231b;
+  font-size: 12px;
+  font-weight: 400;
+}
+.columns button span {
+  display: block;
+  color: #b3bf94;
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+.empty,
+.columns li p {
+  color: #a6a69b;
+  font-size: 12px;
+}
+.root summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: #c4cba7;
+  padding: 8px 0;
+}
+.root details {
+  border-top: 1px solid #383b30;
+  padding-top: 10px;
+}
+.root details li {
+  font-size: 12px;
+  color: #b9bcae;
+}
+.root :is(button, summary):focus-visible {
+  outline: 2px solid #c4cba7;
+  outline-offset: 3px;
+}
+@media (max-width: 650px) {
+  .root {
+    padding: 16px;
+  }
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}

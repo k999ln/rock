@@ -2,6 +2,33 @@
   "schema": "rockstaros-design-document-index/1",
   "version": "1.4",
   "updatedAt": "2026-10-05",
+  "commonFoundationIntegration": {
+    "task": "G04",
+    "document": "docs/git-consolidation.md",
+    "implementation": [
+      "lib/research-ai.ts",
+      "lib/jev-transport.ts",
+      "lib/mcp-client.ts",
+      "lib/catalog.ts",
+      "lib/owner-revision-json-store.ts",
+      "shared/stripe.mjs",
+      "public-release/rockstaros/packages/sky-zema-core/src/handoff.js"
+    ],
+    "tests": [
+      "tests/research-ai.test.mjs",
+      "tests/jev-transport.test.mjs",
+      "tests/mcp-client.test.mjs",
+      "tests/sky-zema-contract.test.mjs",
+      "tests/verify-coverage.test.mjs"
+    ],
+    "preservedBoundaries": [
+      "owner/revision",
+      "per-tool approval",
+      "remote opt-in",
+      "provider acceptance",
+      "native OS execution and recovery"
+    ]
+  },
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/avocado-mini-r5/README.md",
@@ -134,6 +161,57 @@
     },
     {
       "id": "linux_qemu",
+      "gameRecoveryFixtureValidation": {
+        "document": "docs/native-os-validation.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "regressions": "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+        "purpose": "verify unresolved transport outcomes through durable claim state and exact single grant",
+        "input": "private synthetic Game/Wallet, one controlled transport error or delayed original apply",
+        "success": "verified status/terminal evidence, exact hold release and one journal entry; once True alone is insufficient",
+        "failure": "unexpected claim outcome fails; no extra retry loop or deadline widening",
+        "recovery": "next bounded status reconciles the original signed result or retains the hold",
+        "scope": "test fixture behavior only; production deadlines and authorization unchanged; no guest or real funds"
+      },
+      "platformGuestVerificationEntry": {
+        "document": "docs/native-os-validation.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/platform/guest-test.py",
+        "regressions": "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
+        "input": "/proc/cmdline requires exactly one rock.platform.verify=1 token before any guest verification effect",
+        "authorization": "existing effective UID 0 and aarch64 requirements; does not protect against control of root",
+        "scope": "default local-full or one explicit game-isolation; peer authorization probes unchanged",
+        "failure": "missing, malformed, false, duplicate or conflicting enable tokens fail before PASS, subprocess, IPC, chmod or business mutation",
+        "recovery": "use os/verify-platform.py with fresh userdata, no NIC and read-only rootfs; no automatic enable fallback",
+        "storage": "no new credential, file or persistent setting",
+        "acceptance": "synthetic production-entry regression and Linux source CI; guest image boot remains separate"
+      },
+      "desktopCredentialHandoff": {
+        "document": "systems/rock-star-os/os/desktop/README.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/desktop/launcher.py",
+        "regressions": "systems/rock-star-os/tests/test_os_desktop_browser.py",
+        "input": "exact validated loopback viewer URL with current-session credential fragment",
+        "processArguments": "fixed osascript command only; credential supplied over stdin",
+        "temporaryFileOrEnvironmentCredential": false,
+        "openTimeoutSeconds": 10,
+        "failure": "fixed error; no credential-bearing argv fallback",
+        "noOpen": "no credential fetch or opener invocation",
+        "scope": "Mac host display launcher; guest SSH response and existing VNC auth unchanged"
+      },
+      "nativeCiArtifactSelection": {
+        "document": "docs/native-os-validation.md",
+        "implementation": "scripts/select-native-artifacts.py",
+        "workflow": ".github/workflows/native-os.yml",
+        "regressions": "systems/rock-star-os/tests/test_native_artifacts.py",
+        "selection": "same-run/head maximum attempt per partition, explicit artifact IDs",
+        "preserves": [
+          "prior failure artifacts",
+          "all partition success gate",
+          "source inventory",
+          "original log hashes",
+          "complete discovery"
+        ]
+      },
       "coverage": "DETAILED_DEVELOPER_PREVIEW",
       "documents": [
         "docs/native-os-integration.md",
@@ -191,6 +269,17 @@
     },
     {
       "id": "sky_zema_and_tools",
+      "localSdkAuthenticationBoundary": {
+        "document": "docs/sky-tool-sdk.md",
+        "implementation": "toolkits/sky-tool-sdk/src/index.mjs",
+        "distributionPackage": "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
+        "distributionBoundary": "versioned local package and Studio install link; source byte parity required, no registry publication",
+        "comparison": "UTF-8 byte length equality before timingSafeEqual on the same buffers",
+        "malformedCredentialOutcome": "401 before body parsing or handler; process remains available",
+        "trustBoundary": "local loopback client; descriptor and execution approval policies unchanged",
+        "regressions": "tests/sky-tool-sdk.test.mjs",
+        "acceptanceLimit": "isolated host source tests; real device and external reachability not established"
+      },
       "coverage": "DETAILED_WITH_PLATFORM_GAPS",
       "interfaceImplementation": [
         "components/tool-icon.tsx",
@@ -264,7 +353,60 @@
     },
     {
       "id": "mcp_and_providers",
+      "legacyMrCompatibilitySecurity": {
+        "document": "docs/sky-mcp-connector.md",
+        "implementation": "toolkits/sky-mcp-connector/server.mjs",
+        "scope": "exact bundled MR connection, four local processors and existing lifecycle only",
+        "approvalException": "legacy four local processors; generic server-ID path still requires one-time approval",
+        "rejection": "403 legacy_mcp_not_supported before transport dispatch",
+        "recovery": "restore bundled connection definition or use generic connect/prepare/confirm/execute",
+        "regressions": "tests/mcp-connector.test.mjs"
+      },
       "coverage": "DETAILED_REAL_PROVIDER_GAPS",
+      "nativeMcpHttpsCaBoundary": {
+        "document": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/mcp_broker/http.py",
+        "httpsRequiresExplicitNonemptyCa": true,
+        "emptyCaFailure": "reject construction before socket connection or credential transmission",
+        "httpException": "explicit allow_http_fixture true and exact 127.0.0.1 only",
+        "currentDeploymentScope": "existing local development fixture; external-provider acceptance pending",
+        "regressions": "systems/rock-star-os/tests/test_mcp_http_deadline.py"
+      },
+      "mrHttpReceiveSecurity": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "toolkits/mr/mcp_server.py",
+        "absoluteReceiveDeadlineSeconds": 10,
+        "deadlineCovers": [
+          "request-line",
+          "headers",
+          "body"
+        ],
+        "responseWriteTimeoutSeconds": 10,
+        "maximumBodyBytes": 16000000,
+        "executionModel": "existing sequential loopback server",
+        "expiryBeforeDispatch": "close without token creation or tool execution",
+        "regressions": "tests/test_mr_http_deadline.py"
+      },
+      "mrDeliverySecurity": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "toolkits/mr/rock_star_tools.py",
+        "readBoundary": "directory-handle-relative no-follow opens; bounded regular-file reads",
+        "verifierInput": "private snapshot of selected artifacts, contract and stored receipt",
+        "artifactMaximumBytes": 10000000,
+        "metadataMaximumBytes": 1000000,
+        "unsupportedPlatform": "fail closed",
+        "vendorSnapshotChanged": false,
+        "regressions": "tests/test_mr_delivery_boundary.py"
+      },
+      "localDescriptorSecurity": {
+        "document": "docs/sky-mcp-connector.md",
+        "implementation": "toolkits/sky-mcp-connector/local-descriptor.mjs",
+        "sameHandleValidationAndRead": true,
+        "maximumBytes": 4096,
+        "rejectSymlinksAndNonRegularFiles": true,
+        "parentDirectoryTrust": "existing owner-local boundary",
+        "regressions": "tests/mcp-local-descriptor.test.mjs"
+      },
       "implementation": [
         "scripts/sky-local-runtime.mjs",
         "lib/sky-local-runtime.ts",
@@ -303,13 +445,115 @@
         "docs/sky-tools-complete-design.md",
         "docs/external-wallet-fund-provider-boundary-20260913.md",
         "docs/everything-market-and-autonomous-fund-20260913.md",
-        "docs/rock-wallet-production-rail-20260913.md"
+        "docs/rock-wallet-production-rail-20260913.md", "docs/sky-commerce-design.md", "docs/wallet-commerce-design.md"
       ]
     },
     {
       "id": "security_operator_release",
+      "spiderImprovementCycle": {
+        "document": "docs/spider-guard.md",
+        "status": "FIRST_REPAIRS_RESCANNED_MAIN_INTEGRATION_PENDING",
+        "collector": "scripts/spider-feedback.mjs",
+        "regressions": ".github/workflows/spider-regressions.yml",
+        "cadence": "hourly local Codex follow-up; host and app must be running",
+        "autoMerge": false,
+        "firstRepairs": [
+          42,
+          31,
+          47
+        ],
+        "toolDesign": "docs/sky-tools-complete-design.md#8-instagram運用・受注型ブランド管理"
+      },
       "coverage": "DETAILED_PRODUCTION_ENROLLMENT_PENDING",
+      "spiderGuardStatus": "NATIVE_PLATFORM_INTEGRATION_IN_PROGRESS_SAME_IMAGE_BOOT_PENDING",
+      "spiderGuardAnimationRevision": {
+        "status": "SOURCE_RENDERER_VALIDATED_OS_ACCEPTANCE_PENDING",
+        "baseCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+        "document": "docs/spider-guard.md",
+        "evidence": "docs/evidence/spider-guard-source-validation.json",
+        "evidenceSection": "nativeAnimationRevisions",
+        "freshValidationRecorded": true,
+        "actualFindingsOnly": true,
+        "newActualBlockedCounterOnly": true,
+        "inactiveOnUnhealthyOrDisconnected": true,
+        "protectionAuthorityChanged": false,
+        "currentSurface": "native security panel",
+        "globalOverlaySelected": false
+      },
+      "spiderGuardAgentRole": {
+        "status": "SOURCE_VALIDATED_OS_ACCEPTANCE_PENDING",
+        "document": "docs/spider-guard.md",
+        "evidence": "docs/evidence/spider-guard-source-validation.json",
+        "evidenceSection": "nativeSecurityAgentRevisions",
+        "id": "spider",
+        "role": "security",
+        "scope": "platform-data",
+        "duties": [
+          "watch_platform_data",
+          "inspect_outbound",
+          "deny_sensitive_outbound",
+          "report_health"
+        ],
+        "stateSource": "actual worker liveness, freshness and findings",
+        "lastActionSource": "sanitized actual blocking metadata",
+        "currentSurface": "native security panel",
+        "freshValidationRecorded": true,
+        "protectionAuthorityChanged": false,
+        "monitoringCadenceOrScopeChanged": false
+      },
+      "spiderCodeInspector": {
+        "status": "STANDALONE_VALIDATED_NATIVE_LINUX_PENDING",
+        "document": "docs/spider-guard.md",
+        "completeDesignSection": "19.2",
+        "nativeOperation": "security.inspectCode",
+        "standaloneBuild": "scripts/build-spider-inspector.mjs",
+        "standaloneSource": "toolkits/spider-guard/inspector.html",
+        "deliverableOutsideRepository": "outputs/SPIDER.html",
+        "executesInput": false,
+        "externalRequests": false,
+        "persistsInput": false,
+        "freshValidationRecorded": true,
+        "inputMaxBytes": 65536,
+        "inputMaxLines": 2000,
+        "findingsMax": 100,
+        "reportExport": "optional metadata-only JSON",
+        "implementation": [
+          "scripts/build-spider-inspector.mjs",
+          "toolkits/spider-guard/README.md",
+          "toolkits/spider-guard/inspector.html",
+          "toolkits/spider-guard/program-inspector.mjs",
+          "toolkits/spider-guard/program-inspector.d.mts",
+          "tests/spider-inspector-artifact.test.mjs",
+          "tests/spider-program-inspector.test.mjs",
+          "systems/rock-star-os/os/platform/code_inspector.py",
+          "systems/rock-star-os/tests/test_code_inspector.py"
+        ],
+        "nativeOwnerUid": 1000,
+        "nativePythonAstNodeLimit": 20000,
+        "guardCountersChanged": false,
+        "evidence": "docs/evidence/spider-guard-source-validation.json",
+        "evidenceSection": "codeInspectorRevisions",
+        "nativeLinuxValidationRecorded": false
+      },
+      "spiderGuardImplementation": [
+        "systems/rock-star-os/os/platform/sensitive_guard.py",
+        "systems/rock-star-os/os/platform/supervisor.py",
+        "systems/rock-star-os/os/platform/service.py",
+        "systems/rock-star-os/os/platform/runner_control.py",
+        "systems/rock-star-os/os/platform/install-target.sh",
+        "systems/rock-star-os/os/buildroot/package/rock-platform/rock-platform.mk",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform",
+        "systems/rock-star-os/os/ui/security-ui.inc",
+        "systems/rock-star-os/os/ui/test_ui.c",
+        "systems/rock-star-os/os/ui/spider-motion.c",
+        "systems/rock-star-os/os/ui/spider-motion.h",
+        "systems/rock-star-os/os/ui/pin-readiness.json",
+        "scripts/review-native-pin-source.py",
+        "systems/rock-star-os/tests/test_ui_pin_source_profile.py"
+      ],
       "documents": [
+        "docs/spider-guard.md",
+        "docs/rockstaros-complete-design.md",
         "docs/security-incident-response.md",
         "docs/release-minimum-gates.md",
         "data/device-emergency-access-policy.json",
@@ -675,6 +919,39 @@
     {
       "id": "producthunt-discovery",
       "catalogStatus": "candidate"
+    },
+    {
+      "id": "rockstar-amc",
+      "catalogStatus": "ready",
+      "acceptedCandidateRevalidation": {
+        "event": "revalidate_task",
+        "design": "docs/amc-sky-launch-integration.md",
+        "test": "tests/amc-revalidation.test.mjs",
+        "status": "local_owner_transition_web_fail_closed"
+      },
+      "quickFormat": {
+        "design": "docs/amc-sky-launch-integration.md",
+        "component": "components/amc-quick-board.tsx",
+        "storage": "sessionStorage_tab_only",
+        "authority": "manual_checklist_not_execution_or_acceptance",
+        "placement": "auxiliary_collapsed"
+      },
+      "commandCenter": {
+        "design": "docs/amc-sky-launch-integration.md",
+        "component": "components/amc-command-center.tsx",
+        "runner": "scripts/amc-parallel.mjs",
+        "test": "tests/amc-parallel.test.mjs",
+        "status": "local_fixture_only_web_execution_not_connected"
+      },
+      "agentDefinition": {
+        "source": "data/amc/agent-definitions.json",
+        "launcher": "scripts/amc-agent.mjs",
+        "design": "docs/amc-sky-launch-integration.md",
+        "usage": "toolkits/amc-agent/README.md",
+        "tests": "tests/amc-agent.test.mjs",
+        "runtimeSource": "data/amc/agent-runtime-source.json",
+        "scope": "Codex_custom_agents_web_execution_not_connected"
+      }
     }
   ],
   "nativeToolFamilies": [

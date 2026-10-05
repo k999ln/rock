@@ -14,6 +14,19 @@
 
 利用者の明示指示により、RQ48のIP StudioへLiveKit Agentsの音声会話・電話対応を追加する。既存の交換可能Provider方針を維持し、音声会話と発着信、録音、外部Tool作用を別権限で扱う。今回の設定面追加を実通話の受入に換算しない。Manus Cueは体験の参考であり、未確認APIの接続済み表示はしない。[詳細と残る条件](sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)。
 
+## 2026-10-02 Spider Guardの実処理への接続
+
+利用者はクモが秘密コード・個人情報のある場所を優先して守る継続監視を求め、表示デモではなく正本repository `k999ln/rock` への実装と、常駐先をRockstarOS本体とすることを指定した。[Spider Guard](spider-guard.md)を新規 `SYS15` の範囲・責任・受入の正本とする。Platform UID 1002で固定範囲の平文application dataを継続検査し、MCP送信とRunnerControlのprepare／初回送信確定前に検査・拒否を接続する。native画面は認証付き`security.status`の実結果を表示する。Web／Connectorの送信前検査は補助である。
+
+主担当はSecurityのROCK。OS本体への同梱・起動監督まで実装対象とするが、変更後の同一image boot、Pixel実機、24時間連続運転は未受入。検出値を画面・記録へ出さず、未検査・停止・失敗を安全や稼働中と表示しない。任意アプリ・OS全体の通信の遮断、root権限、侵害防止の保証は追加しない。既存のRQ01〜RQ49、権限・本人承認、Operator Dock分離、Pixel/QEMU・署名・公開gateを維持する。
+
+同日の追加指示: 利用者が提示した[映像1](https://www.instagram.com/reel/DdhYiKdz-6t/)・[映像2](https://www.instagram.com/reel/DdmGyhRRQGi/)と[追加投稿](https://www.instagram.com/p/Dd97sTPjEu6/?img_index=2)を見た目だけの参照に、nativeのクモを細い発光関節脚、青い足先の輪、pink／cyanの小さなcoreで表現する改善を進める。実findingへの移動・囲みと、新しい実拒否counterへの短い反応を実装し、stale／dead／disconnected等では停止する。これは表示の改訂であり、検出実績・送信拒否・24時間運用の証拠を追加する指示ではない。前版`a7cfca3`の検証記録は保持し、改訂後の描画試験は別に記録する。
+
+同日の追加「セキュリティーエージェント」指定: クモに実際の監視・検査・拒否・報告の役割を割り当て、Platformの実worker状態、実finding、最新の実拒否に基づくAgent metadataとnative表示を接続する。役割付与は既存のUID・認証・固定範囲・対応送信経路を拡大せず、検出値を返さない。現在の表示先はnative security panelとし、OS全体のoverlayは未選択。役割追加のLinux source検証は直前のアニメーション検証と別記録し、OS boot・Pixel・24時間受入の未完了を維持する。
+
+同日のコード検査・ファイル指定: 自分のコードを貼り付けて編集すると自動検査し、実際の指摘をクモで可視化する。offline単一HTML `outputs/SPIDER.html`と、OS owner限定の`security.inspectCode`を実装範囲に加える。検査は明示入力したsourceの静的分析であり、コード実行、外部送信、入力の永続保存、SDK／API keyを要求しない。既存Platformの常駐監視と送信前拒否は維持し、HTMLの動作をOS boot・24時間運転の合格へ換算しない。新しい検証結果は別に記録する。
+
+
 ## 2026-10-02 現行製品方針: SIM/eSIMを入口にRockstarOSサービスへ接続
 
 この節はこれ以前の「eSIM専用」「eSIM商品をOS内で販売」「ハードウェア先行」「交換可能な端末内LLM/OS自体を利用者向け主商品とする」という競合方針より優先する。製品の主な提供価値は、物理SIMまたはeSIMの購入を通じてRockstarOSとSky、Zema、統合エージェントへ短い手順でアクセスできること。SIM/eSIM購入にはサービス利用権を含める。OSバイナリをSIM/eUICCへ格納する要件ではなく、通信サービスの購入・開通とOSの導入・利用権付与は別々の状態として扱う。購入先はRockstar直販に限らず、通信事業者、端末販売店、オンライン販売等の複数チャネルを想定する。販売・開通連携は契約前である。

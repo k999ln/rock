@@ -1,0 +1,93 @@
+{
+  "schema": "sky-commerce-main-integration-validation/1",
+  "clientDate": "2026-10-05",
+  "upstreamBase": "80a662cc8dbd967ecc4f04e46bba086b54c4d725",
+  "checkedWorktreeBase": "46aec2bc5b0ddd989c594f662877fc62890d987e",
+  "scope": "Payment/Wallet design, English development prompt, design validation and documentation only; no runtime or production migration changes.",
+  "historicalEvidence": "docs/evidence/sky-commerce-design-validation.json",
+  "sqlEvidence": "docs/evidence/sky-commerce-sql-main-validation.json",
+  "checks": {
+    "sqlDesign": {
+      "status": "PASS",
+      "passed": 104,
+      "migrations": 59
+    },
+    "referenceModel": {
+      "status": "PASS",
+      "passed": 32
+    },
+    "repositoryVerify": {
+      "status": "BLOCKED",
+      "command": "npm run verify",
+      "exitCode": 1,
+      "nodeReported": {
+        "tests": 859,
+        "pass": 829,
+        "fail": 30
+      },
+      "observedEnvironmentErrors": [
+        "EPERM binding fixture listeners on 127.0.0.1",
+        "ENOSPC creating temporary fixture files"
+      ],
+      "scope": "Full suite did not complete. These local results are not overall verification success; exact commit GitHub CI is the integration gate."
+    },
+    "commerceRegression": {
+      "status": "PASS",
+      "passed": 57,
+      "command": "node --experimental-strip-types --test tests/sky-commerce.test.mjs tests/sky-stripe.test.mjs tests/billing.test.mjs tests/billing-worker.test.mjs"
+    },
+    "typecheck": {
+      "status": "PASS"
+    },
+    "designCheck": {
+      "status": "PASS"
+    },
+    "sharedCheck": {
+      "status": "PASS"
+    },
+    "lintProduct": {
+      "status": "PASS"
+    },
+    "repositoryChecksThroughLint": {
+      "status": "PASS"
+    }
+  },
+  "externalAcceptance": "No new Stripe, gateway, external MCP, production payment, bank, deployment or operational acceptance executed by this publication task.",
+  "preservedBoundaries": [
+    "SIM/eSIM service entitlement and duplicate Package purchase protection",
+    "Validated device sessions and owner identity",
+    "Signed Package runtime binding and independent purchase eligibility",
+    "Separate CSV 50 JPY payment and historical internal amount units",
+    "Shared Stripe verification, manual redirects and sanitized diagnostics",
+    "A2A and direct LLM budgets are not funded Wallet balances"
+  ],
+  "localEnvironment": "Dependencies installed from current lockfile with lifecycle scripts disabled. Regenerable installed dependency source maps removed to recover disk space; application source and lockfile unchanged. Installed dependencies were then removed to recover disk space for Git publication; npm ci is required before future local runtime checks.",
+  "inputSha256": {
+    "README.md": "ba8560ee25855de5c74934d62b12c362b5cfb12e349c3f08c4d43fe46d06821e",
+    "data/design-document-index.json": "5d5b35d8c772f008d78da9ada79997d70cc42d18771d7d8d6a429ef558136b67",
+    "data/project-status.json": "9cdbcb7dd7ee5ac8bc82de63f381eefc1c3508d1957c11b3d4c892193f52daff",
+    "docs/contracts/sky-commerce-v2.sql": "6200543a810fdb5d39fa855cd88fd2ff5d9508e4c334539d25a2726e743f0912",
+    "docs/contracts/sky-commerce-v2.ts": "8876a8c3eaafdc7e9ae1262c501b42cb7f30e9e2d6f62322f7f0ae9bcd428326",
+    "docs/contracts/sky-wallet-v2.ts": "b8caf9b702abf36d254936b7a3c3f5a82d9f2d29add24fd9e04608732186b133",
+    "docs/design-validation/.gitignore": "0a1607e95da8e82dcd40c6b7c41373a0d374589dd86393fe402320c13b91da65",
+    "docs/design-validation/README.md": "4c66ed65536c5bddca8177190b9e2bc4e9c0264a452d092e9d1baee17fe350cb",
+    "docs/design-validation/commerce-state-model.mjs": "caa618a0bde05cfd9979e92c66ad312220a8b9d7b41a533b266ee3542ea38d89",
+    "docs/design-validation/commerce-state-model.test.mjs": "c43e86466c873c2425eec3bf3828b09f4ea47f6a4875946011c5a6f1fe59b9a9",
+    "docs/design-validation/validate-sky-commerce-v2.py": "cf4a849d674fc4017fd2452bb7fca84144c58a6697478d715a749f2caca24f9b",
+    "docs/evidence/sky-commerce-design-validation.json": "835a3697a0ae2f3fc0bd9990733b76206a656a79077bba7f2e836b3e8850deed",
+    "docs/evidence/sky-commerce-development-prompt-context.json": "995fc7b69bf2060d51561e348439da8bf67edbd5a6bce556d98961e09f6560fe",
+    "docs/evidence/sky-commerce-reference-model-results.json": "458eb691cc072af10f48fa80811d1076fee2cab2d88f999c678e25bff7fe9a8a",
+    "docs/evidence/sky-commerce-sql-main-validation.json": "eb3c904fbaefc319bf6c47a880f909404fb2b67a42b25a9ea0cb0410fc8bb3f7",
+    "docs/evidence/sky-commerce-sql-validation.json": "7348a786683764f5fb5bd291ee74488f55d68f8666d8f495b21eb0e6079bce9b",
+    "docs/prompts/sky-commerce-wallet-development.md": "5638ceb8a21cbbd7d3550fd52308a580cc44d074e7f58ced2b15c1fbf8024d05",
+    "docs/rockstaros-complete-design.md": "aa8192e29cb8513495188e7a67ed0da093d4edd61e78bbede91ef08a9b7cb877",
+    "docs/sky-billing.md": "a8de4a03f3463801529562065fed7abf79fc80314546773de738fa39aa931103",
+    "docs/sky-commerce-design.md": "115600e80a49b3ef6ce7e47d7c0462df731244cbb59361e9198bdbae9c5ebeaf",
+    "docs/wallet-commerce-design.md": "642f504814bcc27f75ce0bd743fe84fbbe37e35ce3e7ad565ec7af4dc646d049",
+    "docs/workstreams/03-wallet-billing-providers.md": "38be9f34fcfd854daa9e6f312a3c4a1a2606a306c970c590910184e5228c2574",
+    "project.md": "ad06a56a7717be992b7453ee586f79fc44e42d38a21b4068327879385e3bb0da"
+  },
+  "sourceIdentityNote": "checkedWorktreeBase identifies the pre-finalization commit; inputSha256 identifies checked documentation and validation contents. The final Git commit and exact-SHA CI supply publication identity.",
+  "localRuntimeCheckedUpstreamBase": "08a624b93bffa8ce81df2319f156ec1f284fdf04",
+  "lateUpstreamSync": "Merged two documentation-only main commits (GTA and patent research) after local runtime checks; exact candidate GitHub CI remains the integration gate."
+}

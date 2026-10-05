@@ -16,7 +16,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/'os'))
+sys.path[:0] = [str(ROOT/'os/platform'), str(ROOT/'os')]
 from blackberryrock.hub import Hub
 from blackberryrock.packages import PUBLIC_TEST_KEY, TEST_PUBLISHER, canonical
 from blackberryrock.sdk import sign_development, starter
@@ -118,6 +118,104 @@ class RunnerControlTests(unittest.TestCase):
         self.assertFalse(receipt['remote_accepted'])
         self.assertEqual(self.transport.ops,[])
         self.assertEqual(self.control.status('job')['state'],'queued')
+
+    def test_sensitive_prepare_never_persists_text_or_calls_remote(self):
+        for text in ('API_KEY="synthetic-guard-fixture"', 'guard-fixture@example.test'):
+            with self.subTest(kind='synthetic'), self.assertRaisesRegex(ValueError, '^SENSITIVE_DATA_BLOCKED$'):
+                self.prepare(text=text)
+        with closing(self.control.connect()) as db:
+            self.assertEqual(0, db.execute('SELECT COUNT(*) FROM remote_jobs').fetchone()[0])
+        self.assertEqual([], self.transport.ops)
+        self.assertNotIn(b'synthetic-guard-fixture', self.control.database.read_bytes())
+
+    def test_persisted_legacy_sensitive_input_rejected_before_first_send_claim(self):
+        text = 'API_KEY="synthetic-guard-fixture"'
+        # Emulate a prepared row produced by the old source version, preserving
+        # its exact signed package, input hash and explicit consent.
+        with patch.object(module, 'assert_safe_outbound'):
+            preview = self.prepare(text=text)
+        self.control.submit('job', preview['consent'])
+        self.assertTrue(self.step())
+        status = self.control.status('job')
+        self.assertEqual('rejected', status['state'])
+        self.assertFalse(status['send_claimed'])
+        self.assertEqual('SENSITIVE_DATA_BLOCKED', status['error'])
+        self.assertEqual([], self.transport.ops)
+        with closing(self.control.connect()) as db:
+            row = db.execute('SELECT input_text,package FROM remote_jobs WHERE key=?', ('job',)).fetchone()
+            self.assertEqual((None, None), tuple(row))
+        self.assertNotIn('synthetic-guard-fixture', json.dumps(self.control.snapshot()))
+
+    def test_signed_recipe_or_manifest_secret_cannot_enter_remote_queue(self):
+        for index, field in enumerate(('recipe', 'manifest'), 1):
+            package = copy.deepcopy(self.pkg)
+            package['manifest']['version'] = f'1.{index}.0'
+            if field == 'recipe':
+                package['recipe'] = [{'op': 'prefix_lines', 'value': 'API_KEY="synthetic-package-fixture"'}]
+            else:
+                package['manifest']['description'] = 'Private contact guard-fixture@example.test'
+            package = sign_development(package)
+            record = self.hub.install(package)
+            self.hub.enable(self.tool, record['hash'])
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, '^SENSITIVE_DATA_BLOCKED$'):
+                self.prepare(text='Public input')
+        with closing(self.control.connect()) as db:
+            self.assertEqual(0, db.execute('SELECT COUNT(*) FROM remote_jobs').fetchone()[0])
+        self.assertEqual([], self.transport.ops)
+        self.assertNotIn(b'synthetic-package-fixture', self.control.database.read_bytes())
+
+    def test_legacy_queued_recipe_secret_is_rechecked_without_first_network_call(self):
+        package = copy.deepcopy(self.pkg)
+        package['manifest']['version'] = '1.1.0'
+        package['recipe'] = [{'op': 'prefix_lines', 'value': 'API_KEY="synthetic-package-fixture"'}]
+        package = sign_development(package)
+        record = self.hub.install(package)
+        self.hub.enable(self.tool, record['hash'])
+        with patch.object(module, 'assert_safe_outbound'):
+            preview = self.prepare(text='Public input')
+        self.control.submit('job', preview['consent'])
+        self.assertTrue(self.step())
+        status = self.control.status('job')
+        self.assertEqual('rejected', status['state'])
+        self.assertFalse(status['send_claimed'])
+        self.assertEqual('SENSITIVE_DATA_BLOCKED', status['error'])
+        self.assertEqual([], self.transport.ops)
+        with closing(self.control.connect()) as db:
+            row = db.execute('SELECT input_text,package FROM remote_jobs WHERE key=?', ('job',)).fetchone()
+            self.assertEqual((None, None), tuple(row))
+
+    def test_sensitive_outbound_key_is_not_exempt_request_metadata(self):
+        with self.assertRaisesRegex(ValueError, '^SENSITIVE_DATA_BLOCKED$'):
+            self.prepare(key='ghp_' + 'A' * 36, text='Public input')
+        self.assertEqual([], self.transport.ops)
+        self.assertEqual([], self.control.snapshot()['history'])
+
+    def test_guard_changes_after_send_allow_only_reconciliation_not_resubmission(self):
+        text = 'API_KEY="synthetic-guard-fixture"'
+        with patch.object(module, 'assert_safe_outbound'):
+            preview = self.prepare(text=text)
+            self.control.submit('job', preview['consent'])
+            self.step()
+        self.assertEqual(1, self.transport.ops.count('submit'))
+        self.transport.ops.clear()
+        self.step()
+        self.assertNotIn('submit', self.transport.ops)
+        self.assertIn('status', self.transport.ops)
+        self.assertIn('cancel', self.transport.ops)
+        self.assertEqual('cancelled', self.control.status('job')['state'])
+
+    def test_platform_guard_inspection_runs_at_prepare_and_final_claim(self):
+        from sensitive_guard import SensitiveGuard
+        guard = SensitiveGuard(self.root)
+        self.control.sensitive_guard = guard
+        self.submit()
+        self.step()
+        self.assertGreaterEqual(guard.status()['inspections'], 2)
+        with self.assertRaisesRegex(ValueError, '^SENSITIVE_DATA_BLOCKED$'):
+            self.prepare('private', 'guard-fixture@example.test')
+        self.assertEqual(1, guard.status()['blocked'])
+        self.assertNotIn('guard-fixture@example.test', json.dumps(guard.status()))
+        guard.close()
 
     def test_actual_remote_state_separate_from_hub_jobs_and_input_erased(self):
         self.submit();self.finish()

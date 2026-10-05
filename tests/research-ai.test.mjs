@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseLegalAiResponse } from '../lib/legal-ai.ts';
-import { parsePatentAiResponse } from '../lib/patent-ai.ts';
+import { buildLegalAiRequest, parseLegalAiResponse } from '../lib/legal-ai.ts';
+import { buildPatentAiRequest, parsePatentAiResponse } from '../lib/patent-ai.ts';
 import { RemoteAiGuardError } from '../lib/remote-ai-guard.ts';
+import { SensitiveDataBlockedError } from '../toolkits/spider-guard/detector.mjs';
 import {
   ResearchAiUpstreamError,
   requestResearchAi,
@@ -164,6 +165,7 @@ void test('research transport sends the caller policy unchanged to one fixed end
       calls += 1;
       assert.equal(url, 'https://api.openai.com/v1/responses');
       assert.equal(init.method, 'POST');
+      assert.equal(init.redirect, 'error');
       assert.deepEqual(init.headers, {
         Authorization: 'Bearer fixture-key',
         'Content-Type': 'application/json',
@@ -249,5 +251,87 @@ void test('shared error handling preserves auth, origin and per-user rate-limit 
     assert.equal(result.status, status);
     assert.equal(result.headers.get('Cache-Control'), 'no-store');
     assert.deepEqual(await result.json(), { error: text, code });
+  }
+});
+
+void test('shared research transport blocks secrets and personal input before fetch and returns metadata only', async () => {
+  let calls = 0;
+  for (const [body, kind] of [
+    [{ input: 'Contact owner@example.test' }, 'personal'],
+    [{ input: [{ text: 'OPENAI_API_KEY="fixture_only"' }] }, 'secret'],
+  ]) {
+    let failure;
+    try {
+      await requestResearchAi(body, 'provider-credential', async () => {
+        calls++;
+        throw new Error('must_not_send');
+      });
+    } catch (error) {
+      failure = error;
+    }
+    assert.ok(failure instanceof SensitiveDataBlockedError);
+    const result = researchAiErrorResponse(failure, messages, () => {
+      assert.fail('blocked input must not be logged');
+    });
+    assert.equal(result.status, 422);
+    assert.equal(result.headers.get('Cache-Control'), 'no-store');
+    assert.deepEqual(await result.json(), {
+      error: 'Spider Guardが機密情報の外部送信を止めました。内容を取り除いて再試行してください。',
+      code: 'SENSITIVE_DATA_BLOCKED',
+      count: 1,
+      kinds: [kind],
+    });
+  }
+  assert.equal(calls, 0);
+});
+
+void test('both guarded builders remain compatible with the shared transport and block before dispatch', async () => {
+  const cases = [
+    {
+      build: buildLegalAiRequest,
+      input: { situationSummary: 'A generic public question.', desiredOutcome: 'Find public resources' },
+      field: 'situationSummary',
+    },
+    {
+      build: buildPatentAiRequest,
+      input: Object.fromEntries([
+        'inventionTitle', 'problem', 'mechanism', 'architecture',
+        'technicalEffect', 'differences', 'knownPriorArt',
+      ].map((field) => [field, 'General public technical description'])),
+      field: 'mechanism',
+    },
+  ];
+  for (const { build, input, field } of cases) {
+    let calls = 0;
+    const fetchImpl = async (_url, init) => {
+      calls++;
+      assert.equal(init.redirect, 'error');
+      assert.equal(init.headers.Authorization, 'Bearer provider-credential');
+      assert.equal(init.body.includes('provider-credential'), false);
+      return Response.json({ output: [] });
+    };
+    await requestResearchAi(build(input, '2026-10-03'), 'provider-credential', fetchImpl);
+    assert.equal(calls, 1);
+    for (const value of ['owner@example.test', 'API_KEY="fixture_only"']) {
+      await assert.rejects(async () => requestResearchAi(
+        build({ ...input, [field]: value }, '2026-10-03'),
+        'provider-credential',
+        fetchImpl,
+      ), SensitiveDataBlockedError);
+    }
+    assert.equal(calls, 1, 'blocked input must not reach the shared transport');
+  }
+});
+
+void test('generic research failure diagnostics never include exception text or input excerpts', async () => {
+  for (const failure of [
+    new Error('upstream echoed owner@example.test'),
+    new SyntaxError('unexpected request text: private-input-marker'),
+  ]) {
+    const logged = [];
+    const result = researchAiErrorResponse(failure, messages, (...values) => logged.push(values));
+    assert.equal(result.status, 400);
+    assert.deepEqual(logged, [['research fixture failed', 'UPSTREAM_OR_INPUT_ERROR']]);
+    assert.deepEqual(await result.json(), { error: '入力を確認して、もう一度お試しください。' });
   }
 });

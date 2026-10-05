@@ -20,13 +20,30 @@ void test('citation formatting preserves fenced code, inline code and non-link s
  assert.ok(out.includes(code));assert.ok(out.includes('`（出典: [inline](https://inline.test)）`'));assert.ok(out.includes('（出典: 社内メモ）'));assert.equal((out.match(/https:\/\/code.test/g)||[]).length,1);
 });
 void test('free edition retains sources and leaves substantive paid content',()=>{
- const out=makeFreeArticle(article);assert.ok(out.startsWith('# 仕事を小さく自動化する'));assert.ok(out.includes('## 出典'));assert.ok(out.includes('https://docs.python.org/3/'));assert.ok(!out.includes('記録を残すと'));assert.ok(out.trimEnd().endsWith(article.noteUrl));
+ const out=makeFreeArticle(article);assert.ok(out.startsWith('# 仕事を小さく自動化する'));assert.ok(out.includes('## 出典'));assert.equal(out, [
+  '# 仕事を小さく自動化する', '',
+  '繰り返している作業を書き出します。毎回同じ手順をひとつ選びます。まずは短い入力で試して、結果を自分で確かめましょう。', '',
+  '---', '', '## まとめ', '',
+  '- 繰り返しの作業を選ぶ', '- 短い入力で試す', '- 結果を自分で確認する', '',
+  '## 出典', '', '- [Python公式](https://docs.python.org/3/)', '',
+  '---', '',
+  'この記事は無料版です。完全版（note・500円買い切り）には、この続き（実践手順と記録方法）が入っています。', '',
+  'https://note.com/your_account/n/your_article', '',
+ ].join('\n'));assert.ok(!out.includes('記録を残すと'));assert.ok(out.trimEnd().endsWith(article.noteUrl));
 });
 void test('source section before paid text remains complete exactly once',()=>{
  const out=makeFreeArticle({...article,markdown:'# Title\n\n最初の文です。\n\n## 出典\n- [A](https://a.test)\n\n## 実践\n有料の手順を説明します。詳しい内容をここに残します。',afterChars:4});assert.equal((out.match(/^## 出典$/gm)||[]).length,1);assert.ok(out.includes('- [A](https://a.test)'));assert.ok(!out.includes('詳しい内容'));
 });
 void test('source code fences do not truncate the source section',()=>{
- const out=makeFreeArticle({...article,markdown:'# Title\n\n最初の説明です。続きに詳しい手順を書きます。さらに手順があります。\n\n## 出典\n```text\n# sample\n- example\n```\n- [A](https://a.test)',afterChars:4});assert.ok(out.includes('```text\n# sample\n- example\n```'));assert.ok(out.includes('https://a.test'));
+ const out=makeFreeArticle({...article,markdown:'# Title\n\n最初の説明です。続きに詳しい手順を書きます。さらに手順があります。\n\n## 出典\n```text\n# sample\n- example\n```\n- [A](https://a.test)',afterChars:4});assert.ok(out.includes('```text\n# sample\n- example\n```'));assert.equal(out, [
+  '# Title', '', '最初の説明です。', '',
+  '---', '', '## まとめ', '',
+  '- 繰り返しの作業を選ぶ', '- 短い入力で試す', '- 結果を自分で確認する', '',
+  '## 出典', '```text', '# sample', '- example', '```', '- [A](https://a.test)', '',
+  '---', '',
+  'この記事は無料版です。完全版（note・500円買い切り）には、この続き（実践手順と記録方法）が入っています。', '',
+  'https://note.com/your_account/n/your_article', '',
+ ].join('\n'));
 });
 void test('sources alone cannot count as paid remainder',()=>{
  assert.throws(()=>makeFreeArticle({...article,markdown:'# Title\n\n全文です。\n\n## 出典\n- [A](https://a.test)',afterChars:5}),/短く/);

@@ -1,0 +1,608 @@
+{
+  "schema": "sky-launch-intake-audit/1",
+  "observedAt": "2026-09-30T02:25:12.855042+00:00",
+  "scope": "local_source_and_existing_evidence_not_launch_acceptance",
+  "goal": "Skyを商品発見・決済・接続のマーケットプレイスとして完全ローンチできる状態にする。会話・ライブラリ・仕事はZemaが担当する。",
+  "launchReady": false,
+  "local": {
+    "head": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "branch": "main",
+    "dirty": true,
+    "uncommittedWorkIsNotRemote": true
+  },
+  "remote": {
+    "checkedAt": "2026-09-30T02:25:12.855042+00:00",
+    "main": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "branches": [
+      {
+        "name": "agent/jev-control-plane-20260927",
+        "sha": "6c3da397d1ec9a609c89bc15cb498d410e9744d4"
+      },
+      {
+        "name": "chore/ledger-sync-20260925",
+        "sha": "846f3950ec79b1029290c82605896e9ec98ead26"
+      },
+      {
+        "name": "ci/avocado-mini-site-tests-in-verify",
+        "sha": "4604bc4ad97287a20bd38dda58b19767d2e3268a"
+      },
+      {
+        "name": "codex/avocado-campus-layer",
+        "sha": "29202ae6a398dfcc257f9ddae6980f8a1f0e300e"
+      },
+      {
+        "name": "codex/jev-decision-layer-20260920",
+        "sha": "8978ca44a47bb01edeb12057fe7848959d28db0a"
+      },
+      {
+        "name": "codex/pixel10-compile-bringup-20260917",
+        "sha": "771770d08457f46f06a2d4db7c1098daeccdbc74"
+      },
+      {
+        "name": "docs/avokado-mini-product-name",
+        "sha": "0d2b758ffb068db256d0fb551517a4030bcac050"
+      },
+      {
+        "name": "feat/ai02-model-pinning-fixture",
+        "sha": "b37c52a6e813b9c76d87ef7aad37277c6375fb15"
+      },
+      {
+        "name": "feat/ai03-bounded-memory-fixture",
+        "sha": "829bf229d5c2f20fc8a92a008b85e0fc42fc9532"
+      },
+      {
+        "name": "feat/ai04-operation-key-fixture",
+        "sha": "504e43c6730806265caca5a1231eb5435d5f22b3"
+      },
+      {
+        "name": "feat/ai05-capability-single-executor-fixture",
+        "sha": "af38db8fa46fce20e6aa8563d7e427c327934f89"
+      },
+      {
+        "name": "feat/game-minimal-loop-fixture",
+        "sha": "78638565bd042defe9bec1ffb8d26c8b6cca48b6"
+      },
+      {
+        "name": "feature/avocado-farm-sandbox",
+        "sha": "0bac933377c57847151e5c440e3bc54db742edd5"
+      },
+      {
+        "name": "feature/meme-intelligence-sandbox",
+        "sha": "8b8ae899d1af5b534d76e2445186d85aea07dde0"
+      },
+      {
+        "name": "fix/readme-english-ci",
+        "sha": "b49bdf02ab3b953e91b4f5f4b3ff57634fbd81c9"
+      },
+      {
+        "name": "main",
+        "sha": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8"
+      }
+    ],
+    "openPulls": [
+      {
+        "number": 50,
+        "title": "Add PAPER-only Meme Intelligence sandbox",
+        "state": "open",
+        "head": "8b8ae899d1af5b534d76e2445186d85aea07dde0",
+        "base": "5f3a3694474180415d08cd814b6aad864694d10f",
+        "mergedAt": null
+      },
+      {
+        "number": 49,
+        "title": "Add Avocado Campus layer",
+        "state": "open",
+        "head": "29202ae6a398dfcc257f9ddae6980f8a1f0e300e",
+        "base": "5f3a3694474180415d08cd814b6aad864694d10f",
+        "mergedAt": null
+      },
+      {
+        "number": 48,
+        "title": "Add Avocado Farm mechanism-first LP farming sandbox",
+        "state": "open",
+        "head": "0bac933377c57847151e5c440e3bc54db742edd5",
+        "base": "5f3a3694474180415d08cd814b6aad864694d10f",
+        "mergedAt": null
+      },
+      {
+        "number": 47,
+        "title": "feat: add Jev-gated agent control plane",
+        "state": "open",
+        "head": "6c3da397d1ec9a609c89bc15cb498d410e9744d4",
+        "base": "5f3a3694474180415d08cd814b6aad864694d10f",
+        "mergedAt": null
+      },
+      {
+        "number": 46,
+        "title": "AI05 host/fixture: capability negotiation, single executor device, persistent selection and snapshot recovery (stacked on #45)",
+        "state": "open",
+        "head": "af38db8fa46fce20e6aa8563d7e427c327934f89",
+        "base": "829bf229d5c2f20fc8a92a008b85e0fc42fc9532",
+        "mergedAt": null
+      },
+      {
+        "number": 45,
+        "title": "AI03 host/fixture: model-independent bounded memory, project isolation, provenance, deletion (stacked on #44)",
+        "state": "open",
+        "head": "829bf229d5c2f20fc8a92a008b85e0fc42fc9532",
+        "base": "504e43c6730806265caca5a1231eb5435d5f22b3",
+        "mergedAt": null
+      },
+      {
+        "number": 44,
+        "title": "feat(core): AI04 host/fixture — external-write outboxのoperation key・結果不明照合・crash復旧（#42にstack）",
+        "state": "open",
+        "head": "504e43c6730806265caca5a1231eb5435d5f22b3",
+        "base": "b37c52a6e813b9c76d87ef7aad37277c6375fb15",
+        "mergedAt": null
+      },
+      {
+        "number": 43,
+        "title": "feat(game): R5 §03 GAME01の最小loopを2D粒子sandboxとしてhost／fixtureで実装（GM01、AI06から切り出し）",
+        "state": "open",
+        "head": "78638565bd042defe9bec1ffb8d26c8b6cca48b6",
+        "base": "beca12edead899f96ade79d3ed7c4246d9adf253",
+        "mergedAt": null
+      },
+      {
+        "number": 42,
+        "title": "feat(core): AI02 host/fixture — ModelProfile登録・仕事への版固定・モデル切替（AI09本人決定を記録、#41にstack）",
+        "state": "open",
+        "head": "b37c52a6e813b9c76d87ef7aad37277c6375fb15",
+        "base": "846f3950ec79b1029290c82605896e9ec98ead26",
+        "mergedAt": null
+      },
+      {
+        "number": 41,
+        "title": "chore: 台帳をmain 851bb04と公開Siteへ同期し、Mini/Pro参考価格の本人決定を記録（#39を置換）",
+        "state": "open",
+        "head": "846f3950ec79b1029290c82605896e9ec98ead26",
+        "base": "851bb0478a0e52a15e9e748f6f47198277c851c5",
+        "mergedAt": null
+      },
+      {
+        "number": 40,
+        "title": "docs: avokado miniの製品名とREADMEを統一",
+        "state": "open",
+        "head": "0d2b758ffb068db256d0fb551517a4030bcac050",
+        "base": "a21717ee798a25dc55d486561b4be4a5fd7a2c43",
+        "mergedAt": null
+      },
+      {
+        "number": 39,
+        "title": "ci: avocadoMini Site試験をnpm run verifyへ接続 / run avocadoMini site tests in verify",
+        "state": "open",
+        "head": "4604bc4ad97287a20bd38dda58b19767d2e3268a",
+        "base": "683917c3ee7a95a78fbffd2080ff1abb304433d5",
+        "mergedAt": null
+      },
+      {
+        "number": 25,
+        "title": "feat: Jev Decision Fabric and optional Android provider source",
+        "state": "open",
+        "head": "8978ca44a47bb01edeb12057fe7848959d28db0a",
+        "base": "771770d08457f46f06a2d4db7c1098daeccdbc74",
+        "mergedAt": null
+      }
+    ],
+    "closedPulls": [
+      {
+        "number": 38,
+        "title": "保留中の精算サービスを払出し設定なしで正常表示",
+        "state": "closed",
+        "head": "971c5abb758336449a1ff39948ab5a8f4f84a272",
+        "base": "6da229df60dcb6cc508037f6081f6b14abe79f25",
+        "mergedAt": "2026-09-25T00:59:06Z"
+      },
+      {
+        "number": 37,
+        "title": "8.88 USD収益料金を動線確定まで保留",
+        "state": "closed",
+        "head": "2676d6268980af69c3e16c92ed2f51cee21f1c63",
+        "base": "9e99828d8c3ac6e4521300b256f7be826bad0243",
+        "mergedAt": "2026-09-25T00:48:00Z"
+      },
+      {
+        "number": 36,
+        "title": "Sync database status after R5 deployment record",
+        "state": "closed",
+        "head": "3b63762eec5d1dee3db776fe21bfb23e2ec48c74",
+        "base": "cc8c4270115eb33ec6ea89394a1de103e8081e93",
+        "mergedAt": "2026-09-25T00:20:47Z"
+      },
+      {
+        "number": 35,
+        "title": "Refine avokado README product visuals",
+        "state": "closed",
+        "head": "ece5d741d12507586cae74aef9ea38a265a5bbca",
+        "base": "3eb9c66231b701d7c2c61dfa4188889b426f82da",
+        "mergedAt": "2026-09-25T00:15:40Z"
+      },
+      {
+        "number": 34,
+        "title": "docs: avokado READMEのビジュアルを整理",
+        "state": "closed",
+        "head": "9db425a817e8ff22b0547a3f8d7710b16eac8904",
+        "base": "120a594514dbeb4eb92463700062f9179221ea8a",
+        "mergedAt": "2026-09-24T23:55:28Z"
+      },
+      {
+        "number": 33,
+        "title": "docs: avokado READMEをR5製品画像とブランドGIFで刷新",
+        "state": "closed",
+        "head": "6bd56a92bd00f80de0dd08bec297945a07c8b3fc",
+        "base": "697f05feb090381ef649f78cbac4f76e5f6795cc",
+        "mergedAt": "2026-09-24T23:40:43Z"
+      },
+      {
+        "number": 32,
+        "title": "web: rocketstar完全設計書の全35章readerとPDF・付録を公開",
+        "state": "closed",
+        "head": "dc51450de681b2c955b2fdb59d4d28ae41373cf4",
+        "base": "af41cfafc72f4f88ebf7736b144e4f73fa69b921",
+        "mergedAt": "2026-09-24T22:09:05Z"
+      },
+      {
+        "number": 31,
+        "title": "web: rocketstarを両段再使用・衛星・OSのR1.0構想へ更新",
+        "state": "closed",
+        "head": "8bddcff5f295cd9b9830e0c13c839ccca5d6e2fd",
+        "base": "0325f0c5a1bbca6d549e996ee6afb431754c00b4",
+        "mergedAt": "2026-09-24T21:46:43Z"
+      },
+      {
+        "number": 30,
+        "title": "docs: rocketstar完全版・OS付録・設計作業一式を保存",
+        "state": "closed",
+        "head": "c414490c6201932dc2ac4930edcfb3d2388ff255",
+        "base": "261251871115c782790ec8cc752a3dd4077a2ec0",
+        "mergedAt": "2026-09-24T21:19:02Z"
+      },
+      {
+        "number": 29,
+        "title": "docs: add RockstarOS complete design v1.0",
+        "state": "closed",
+        "head": "dedad6cd6bab5bb1921519d6dadbdc7f294a042d",
+        "base": "0eb4fe48b1e7309e838b0441954d97e22272b4ca",
+        "mergedAt": "2026-09-24T20:51:50Z"
+      }
+    ],
+    "checks": [
+      {
+        "name": "collect",
+        "status": "completed",
+        "conclusion": "success",
+        "sha": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8"
+      },
+      {
+        "name": "prototype",
+        "status": "completed",
+        "conclusion": "failure",
+        "sha": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8"
+      },
+      {
+        "name": "verify",
+        "status": "completed",
+        "conclusion": "failure",
+        "sha": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8"
+      }
+    ],
+    "mainRecheck": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8"
+  },
+  "areas": [
+    {
+      "id": "boundary",
+      "title": "Sky/Zemaの役割分担",
+      "state": "implemented_local",
+      "sourcePaths": [
+        "app/sky/page.tsx",
+        "app/zema/page.tsx",
+        "lib/sky-routes.ts",
+        "components/sky-network.tsx"
+      ],
+      "relatedTaskIds": [
+        "WEB04",
+        "SKY10"
+      ],
+      "remainingAcceptance": [
+        "公開版の同一artifactで検索→商品→接続→Zemaを確認する"
+      ]
+    },
+    {
+      "id": "catalog",
+      "title": "商品収集・審査・掲載",
+      "state": "partial",
+      "sourcePaths": [
+        "lib/catalog.ts",
+        "lib/sky-tool-package.ts",
+        "lib/sky-tool-review.ts",
+        "data/sky-discovery-review.json"
+      ],
+      "relatedTaskIds": [
+        "SKY02",
+        "SKY15",
+        "SKY20"
+      ],
+      "remainingAcceptance": [
+        "収集候補のライセンス・価格・供給者・実動作を審査する",
+        "掲載停止・失効を利用画面とProvider側で確認する"
+      ]
+    },
+    {
+      "id": "commerce",
+      "title": "決済・購入・返金",
+      "state": "fixture_only",
+      "sourcePaths": [
+        "lib/sky-commerce.ts",
+        "lib/sky-stripe.ts",
+        "lib/sky-commerce-store.ts",
+        "drizzle/0018_sky_commerce.sql"
+      ],
+      "relatedTaskIds": [
+        "BIL02"
+      ],
+      "remainingAcceptance": [
+        "Stripe実sandboxで販売者登録・支払・Webhook・再照合・返金・紛争をE2E受入する",
+        "本番資格情報・販売条件・送金条件・運用責任を確定する"
+      ]
+    },
+    {
+      "id": "entitlement",
+      "title": "端末・OS別プロフィールと購入権",
+      "state": "configuration_only",
+      "sourcePaths": [
+        "lib/sky-os-policy.ts",
+        "app/api/sky/os-policy/route.ts",
+        "components/sky-os-policy.tsx"
+      ],
+      "relatedTaskIds": [
+        "AI05",
+        "BIL02"
+      ],
+      "remainingAcceptance": [
+        "OSが信頼する端末識別・プロフィール・保存上限に接続する",
+        "購入権の有効化・共有範囲・移行・失効をProviderで強制する"
+      ]
+    },
+    {
+      "id": "connection",
+      "title": "接続と実行先",
+      "state": "partial",
+      "sourcePaths": [
+        "lib/mcp-hub.ts",
+        "components/sky-mcp-center.tsx",
+        "components/sky-connection-center.tsx",
+        "app/api/sky/connections/route.ts"
+      ],
+      "relatedTaskIds": [
+        "SKY07",
+        "AI05"
+      ],
+      "remainingAcceptance": [
+        "Web/PC/Provider別に接続・取消・再接続・権限失効を受入する",
+        "有料endpointの表示制御だけで利用権を保証しない"
+      ]
+    },
+    {
+      "id": "identity",
+      "title": "本人別保存とデータ分離",
+      "state": "partial",
+      "sourcePaths": [
+        "lib/work-store.ts",
+        "lib/operations.ts",
+        "components/sky-chat-workspace.tsx",
+        "app/api/sky/library/route.ts"
+      ],
+      "relatedTaskIds": [
+        "WEB04",
+        "SKY10"
+      ],
+      "remainingAcceptance": [
+        "サインアウト・利用者切替時の会話キャッシュと接続情報を検証する",
+        "OSプロフィール別セーブ・認証情報を分離する"
+      ]
+    },
+    {
+      "id": "release",
+      "title": "配備・監視・復旧・出荷判定",
+      "state": "not_accepted",
+      "sourcePaths": [
+        "data/project-status.json",
+        "scripts/check-release-readiness.mjs",
+        "scripts/check-product-baseline.mjs",
+        "scripts/check-sky.mjs"
+      ],
+      "relatedTaskIds": [
+        "LCH04",
+        "RLS01",
+        "WEB04"
+      ],
+      "remainingAcceptance": [
+        "最新作業版の全体verifyと同一SHA CIを合格にする",
+        "本番認証・migration・backup/restore・失効/返金・監視・ロールバックを同一artifactで受入する"
+      ]
+    },
+    {
+      "id": "amc_alignment",
+      "title": "Sky専用計画と指示の整合確認",
+      "state": "integrated_draft_template",
+      "sourcePaths": [
+        "lib/amc-tool.ts",
+        "scripts/amc-goal-engine.mjs",
+        "app/api/amc/route.ts"
+      ],
+      "relatedTaskIds": [
+        "WEB04"
+      ],
+      "remainingAcceptance": [
+        "発行前と成果提出時の版/証拠照合・失効処理を実装し試験する"
+      ]
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "app/api/amc/route.ts",
+      "sha256": "e436387eecebd2653f96370358f43f2c1adfedafbe7551c95ae931f85173f9a0"
+    },
+    {
+      "path": "app/api/sky/connections/route.ts",
+      "sha256": "3c5bb70fe170b5bf354d6314addc8875828e4c64c1826a8bc1e8223215d7e3a9"
+    },
+    {
+      "path": "app/api/sky/library/route.ts",
+      "sha256": "81abdbb7426fb7a0fe77bbfa4aaba5c5effaf7c04034d8859e2c85bd0f627537"
+    },
+    {
+      "path": "app/api/sky/os-policy/route.ts",
+      "sha256": "10bfff31ac58ec756402acecdf86a6457a34f854db15ad6fd14cb9f446caa61d"
+    },
+    {
+      "path": "app/sky/page.tsx",
+      "sha256": "de320234a62a5b7a102ee4a71a29b280fe2b270f6a25007aa3396f2908d7ee53"
+    },
+    {
+      "path": "app/zema/page.tsx",
+      "sha256": "ffb72e6a3fcf7fc060cd04c5e6c923c0f444f9054f9400466f5b626581518670"
+    },
+    {
+      "path": "components/sky-chat-workspace.tsx",
+      "sha256": "bc1642ac0e58fd90aa3b21e3d21e78534bac39b67ba43b20763ffb2599b4a10e"
+    },
+    {
+      "path": "components/sky-connection-center.tsx",
+      "sha256": "58986bfc5d1d1a85bfa349931af008b449cfea68f56a8f6f9bdf7770a045c262"
+    },
+    {
+      "path": "components/sky-mcp-center.tsx",
+      "sha256": "291c3de42d0e5d5f174b4ac76d51cf8f35d39ea2b81bf607327c87968c38ad18"
+    },
+    {
+      "path": "components/sky-network.tsx",
+      "sha256": "69b4ae82b623405fa32cd87e9e00320ff6a3ee0caaeb5a84bffd8836d412ac25"
+    },
+    {
+      "path": "components/sky-os-policy.tsx",
+      "sha256": "7ecc62e64246f3bb491f308f3c5625db89c0c5de8f9e8e44737c8ba235722933"
+    },
+    {
+      "path": "data/project-status.json",
+      "sha256": "057b4d13ed6a937933751d4d07bf45a13d17374312c318c23d84fcdc12d3ab98"
+    },
+    {
+      "path": "data/sky-discovery-review.json",
+      "sha256": "c4ff4e88be562c3f8fd97227754adbb3c10c75fbc75c5243f073de23f319f0c6"
+    },
+    {
+      "path": "drizzle/0018_sky_commerce.sql",
+      "sha256": "b595e993c4982e575847195eaa5d8fe39053c487a0391ad372d08b8b13bdae26"
+    },
+    {
+      "path": "lib/amc-tool.ts",
+      "sha256": "5a2c7a8292f080d667ad07721b2404f6a8ad8490abe33d4c23700122860c6cb9"
+    },
+    {
+      "path": "lib/catalog.ts",
+      "sha256": "09ca5dcc95a73285bde087ea22adbfa14eadb77fa8b8fcc1529f38f12d516604"
+    },
+    {
+      "path": "lib/mcp-hub.ts",
+      "sha256": "2ef6adf224ed2cefdfc62e4e65f65a462a3028ff66bacd2d4bcba1316d8c6c45"
+    },
+    {
+      "path": "lib/operations.ts",
+      "sha256": "d020cf6cfb12ea824b2112cf38784495189bd0fe4587c8659e9751c7a1e8e127"
+    },
+    {
+      "path": "lib/sky-commerce-store.ts",
+      "sha256": "0daa9932cb277ddadb8ee2cbc5309774bf0f1e65087c032c9baeb61dfec273ce"
+    },
+    {
+      "path": "lib/sky-commerce.ts",
+      "sha256": "18945855aaf7dc47132cbda5562d752f798900dd2d3619c32a24a903790b69c9"
+    },
+    {
+      "path": "lib/sky-os-policy.ts",
+      "sha256": "057b8171f611fbcb30408bd2dbdc86cf51c752b58b4cc0fddf5d494656dd99ec"
+    },
+    {
+      "path": "lib/sky-routes.ts",
+      "sha256": "2636db873fb061edc7bbbd3bf849a8f79cacc058691e723dae13601f24e769c1"
+    },
+    {
+      "path": "lib/sky-stripe.ts",
+      "sha256": "9b0a211372e5834e1d12cfbb717cecc400524e3d25e10c3ffd1a92c60334aa1e"
+    },
+    {
+      "path": "lib/sky-tool-package.ts",
+      "sha256": "d4ec608d1136138a4d77b494632906ced6b2d3634455d744a8d3ae69b56ae124"
+    },
+    {
+      "path": "lib/sky-tool-review.ts",
+      "sha256": "14ac556de0a8ee38fa88feda079e3bf94c7f1d584f3f2d35e284d4c4e948e6ad"
+    },
+    {
+      "path": "lib/work-store.ts",
+      "sha256": "8e9bbb17bc26313231e5bdbb2e6988c57047e4e7c19e18090adc2e7aeb7ff1cc"
+    },
+    {
+      "path": "scripts/amc-goal-engine.mjs",
+      "sha256": "ebdbd3c9fdbe6ae149b309bfe825f10c37b0578a1abdb31b260d05ef2de8fe5f"
+    },
+    {
+      "path": "scripts/check-product-baseline.mjs",
+      "sha256": "4ab1e197367fb8a1126eef6498d42bb6c45c2618ecf448cbd9f2bc49fc601684"
+    },
+    {
+      "path": "scripts/check-release-readiness.mjs",
+      "sha256": "bbc9ff016fc438678233254f91e3aff366a145365a39455b2c10442b6501a760"
+    },
+    {
+      "path": "scripts/check-sky.mjs",
+      "sha256": "5e622f2c4e62905d390161c4213aeee3cd61d3c89062b4dcdd3f6685eddd2007"
+    }
+  ],
+  "existingValidation": {
+    "relatedTests": 158,
+    "scope": "prior local run; 101 AMC/routes/workflow + 57 persistence/commerce/Coconala/DB",
+    "build": "passed_local_prior_run",
+    "typecheck": "passed_local_prior_run",
+    "verify": "failed_baseline_visual_contract",
+    "skyCheck": "failed_fashion_label_contract",
+    "fullTestSuite": "incomplete_interrupted_after_R5_document_failures",
+    "providerSandbox": "not_accepted",
+    "production": "not_accepted"
+  },
+  "concurrency": {
+    "observedOtherTask": "Show 156 tasks by squad creates Sky-specific plan; repository code remains here",
+    "securityAudit": "Compare rock and security-audit-skil: same base SHA, read-only report, four unconfirmed candidates, no fixes; account-switch chat cache and CSV ownership need scoped validation",
+    "reviewBeforeInstructions": [
+      "PR46 AI05 capability and single executor",
+      "PR45 AI03 memory isolation",
+      "PR44 AI04 operation keys",
+      "PR47 Jev control plane",
+      "PR41 ledger and baseline",
+      "PR39 verification wiring"
+    ],
+    "remoteBranchesReviewed": "metadata_only; changed files and target commit evidence must be checked before task instructions are issued"
+  },
+  "intake": {
+    "status": "integrated_draft_template",
+    "genericFourRoleTemplateIsNotSkyPlan": true,
+    "runtimeAlignmentImplemented": false,
+    "noPublicationOrPaidExecution": true,
+    "planPath": "data/amc/sky/sky-amc-plan.json",
+    "squads": 12,
+    "readinessTasks": 36,
+    "postLaunchTasks": 1,
+    "acceptedTasks": 0,
+    "validation": {
+      "relatedTests": 64,
+      "build": "passed_local",
+      "typecheck": "passed_local",
+      "lint": "passed_local",
+      "designCheck": "passed_local",
+      "browser": "draft_save_reload_navigation_mobile_passed_local"
+    }
+  },
+  "sourceFilesSnapshotNote": "Hashes record the preparation snapshot at observedAt, before Sky-specific AMC integration; they do not identify the current working tree."
+}

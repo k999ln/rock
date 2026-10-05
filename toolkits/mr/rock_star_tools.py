@@ -7,9 +7,11 @@ import hashlib
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 import re
 import sys
+import stat
 import tempfile
 from urllib.parse import urlparse
 
@@ -161,6 +163,47 @@ def free_article(args):
     module.check_no_fullwidth_dash(result)
     return result
 
+def _delivery_flags():
+    names = ('O_DIRECTORY', 'O_NOFOLLOW', 'O_NONBLOCK')
+    if (os.name != 'posix' or not all(getattr(os, name, 0) for name in names)
+            or not _DELIVERY_DIR_FD):
+        raise ValueError('Protected delivery reads are unavailable')
+    return os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+
+_DELIVERY_DIR_FD = os.open in os.supports_dir_fd
+
+def _delivery_parts(raw):
+    if not isinstance(raw, str) or not raw or '\x00' in raw or len(raw.encode('utf-8')) > 4096:
+        raise ValueError('Invalid artifact path')
+    relative = Path(raw)
+    if relative.is_absolute() or '..' in relative.parts or not 1 <= len(relative.parts) <= 64:
+        raise ValueError('Artifact must stay within the workspace')
+    return relative.parts
+
+def _delivery_read(root_fd, parts, maximum, flags):
+    directory = os.dup(root_fd)
+    try:
+        for part in parts[:-1]:
+            child = os.open(part, flags | os.O_DIRECTORY, dir_fd=directory)
+            os.close(directory)
+            directory = child
+        descriptor = os.open(parts[-1], flags, dir_fd=directory)
+        try:
+            info = os.fstat(descriptor)
+            if not stat.S_ISREG(info.st_mode) or info.st_size > maximum:
+                raise ValueError('Delivery file is not regular or exceeds its limit')
+            content = bytearray()
+            while len(content) <= maximum:
+                chunk = os.read(descriptor, min(65536, maximum + 1 - len(content)))
+                if not chunk:
+                    return bytes(content)
+                content.extend(chunk)
+            raise ValueError('Delivery file exceeds its limit')
+        finally:
+            os.close(descriptor)
+    finally:
+        os.close(directory)
+
 def verify_delivery(args, data):
     if not isinstance(data, dict):
         raise ValueError('Review input must be a JSON object')
@@ -172,22 +215,49 @@ def verify_delivery(args, data):
     artifacts = receipt.get('artifacts')
     if not isinstance(artifacts, list) or not 1 <= len(artifacts) <= 100:
         raise ValueError('Provide 1 to 100 artifact records')
-    root = Path(args.workspace).resolve(strict=True)
-    total = 0
+    paths = []
     for artifact in artifacts:
-        if not isinstance(artifact, dict) or not isinstance(artifact.get('path'), str):
+        if not isinstance(artifact, dict):
             raise ValueError('Invalid artifact path')
-        relative = Path(artifact['path'])
-        if relative.is_absolute() or '..' in relative.parts:
-            raise ValueError('Artifact must stay within the workspace')
-        path = root / relative
-        path.resolve(strict=True).relative_to(root)
-        if path.is_symlink() or not path.is_file():
-            raise ValueError('Artifact must be a regular file')
-        total += path.stat().st_size
-        if total > 10_000_000:
-            raise ValueError('Artifact set exceeds 10 MB')
-    return load_module('deliverable_verifier').verify_deliverables(workspace=root, execution_receipt=receipt, reviewer_context_id=data.get('reviewer_context_id'), review=data.get('review'))
+        paths.append(_delivery_parts(artifact.get('path')))
+    flags = _delivery_flags()
+    try:
+        root_fd = os.open(Path(args.workspace), flags | os.O_DIRECTORY)
+        try:
+            # The pinned verifier sees only these bounded copies, never host paths.
+            with tempfile.TemporaryDirectory(prefix='rock-star-delivery-') as temporary:
+                snapshot = Path(temporary)
+                copied = {}
+                def stage(parts, maximum, optional=False):
+                    if parts in copied:
+                        if copied[parts] > maximum:
+                            raise ValueError('Delivery file exceeds its limit')
+                        return copied[parts]
+                    try:
+                        content = _delivery_read(root_fd, parts, maximum, flags)
+                    except FileNotFoundError:
+                        if optional:
+                            return 0  # Preserve the verifier's missing-record BLOCKED result.
+                        raise
+                    target = snapshot.joinpath(*parts)
+                    target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                    descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+                    with os.fdopen(descriptor, 'wb') as handle:
+                        handle.write(content)
+                    copied[parts] = len(content)
+                    return len(content)
+                total = 0
+                for parts in paths:
+                    total += stage(parts, 10_000_000 - total)
+                stage(('requirements', 'revisions', str(receipt['revision_sha256']) + '.json'), LIMIT, True)
+                stage(('artifacts', 'execution-receipts', str(receipt['execution_id']) + '.json'), LIMIT, True)
+                return load_module('deliverable_verifier').verify_deliverables(
+                    workspace=snapshot, execution_receipt=receipt,
+                    reviewer_context_id=data.get('reviewer_context_id'), review=data.get('review'))
+        finally:
+            os.close(root_fd)
+    except OSError:
+        raise ValueError('Delivery workspace could not be read safely') from None
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

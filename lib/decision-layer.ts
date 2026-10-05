@@ -1,3 +1,4 @@
+import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import { JEV_ROUTING_RUBRIC, JEV_ROUTING_RUBRIC_ID } from './jev-evaluation.ts';
 import { evaluateJev, type JevEvaluate } from './jev-transport.ts';
 
@@ -194,6 +195,9 @@ export class TypeSafeJevProvider implements DecisionProvider {
   }
 
   async decide(request: DecisionRequest): Promise<DecisionResult> {
+    if (request.privacy !== 'remote-allowed')
+      throw new Error('REMOTE_CONSENT_REQUIRED');
+    assertSafeOutbound(request);
     if (!this.apiKey) throw new Error('TYPE_SAFE_JEV_UNAVAILABLE');
     const evaluated = await evaluateJev(
       {

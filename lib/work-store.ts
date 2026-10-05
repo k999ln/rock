@@ -10,14 +10,44 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
   }
   return {
     get,
-    async list(user: string) {
+    async list(user: string, excludeAmc = false) {
       const rows = await db
         .prepare(
-          'SELECT payload FROM work_jobs WHERE user_id = ? ORDER BY updated_at DESC, id DESC LIMIT 100',
+          'SELECT payload FROM work_jobs WHERE user_id = ?' +
+            (excludeAmc
+              ? " AND json_extract(payload, '$.templateId') != 'amc'"
+              : '') +
+            ' ORDER BY updated_at DESC, id DESC LIMIT 100',
         )
         .bind(user)
         .all<{ payload: string }>();
       return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
+    },
+    async listAmc(user: string) {
+      const rows = await db
+        .prepare(
+          `SELECT id, json_extract(payload, '$.title') AS title, revision,
+          json_extract(payload, '$.status') AS status,
+          json_extract(payload, '$.createdAt') AS createdAt, updated_at AS updatedAt
+          FROM work_jobs WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'amc'
+          ORDER BY updated_at DESC, id DESC LIMIT 100`,
+        )
+        .bind(user)
+        .all<
+          Pick<
+            WorkJob,
+            'id' | 'title' | 'revision' | 'status' | 'createdAt' | 'updatedAt'
+          >
+        >();
+      return rows.results.map(
+        (row): WorkJob => ({
+          ...row,
+          templateId: 'amc',
+          plan: { schemaVersion: 1, objective: row.title, approvalGates: [] },
+          steps: [],
+          events: [],
+        }),
+      );
     },
     async create(user: string, job: WorkJob) {
       await db
