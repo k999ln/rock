@@ -6,10 +6,10 @@
 
 ## 全体
 
-- データ境界: 6、table: 131
+- データ境界: 6、table: 148
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 160 task中 104 done、38 in progress、17 planned、1 blocked
+- 作業進捗: 160 task中 104 done、40 in progress、15 planned、1 blocked
 - 現在milestone: SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入
 
 ## 保存境界と配備状態
@@ -20,7 +20,7 @@
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
 | Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 19 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
-| Android Work Engine SQLite | Android work・artifact・run・event | 7 | VERIFIED | EMULATOR_SCOPED | 未確認 | 未確認 |
+| Android Work Engine SQLite | Android work・artifact・run・event | 24 | VERIFIED | EMULATOR_SCOPED | 未確認 | 未確認 |
 | Android Platform Core SQLite | component登録・owner承認・OS側ledger | 11 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 
 ## Web D1
@@ -75,9 +75,9 @@
 
 </details>
 
-<details><summary>Android Work Engine SQLite: 7 table</summary>
+<details><summary>Android Work Engine SQLite: 24 table</summary>
 
-`artifacts`、`events`、`rock_meta`、`runs`、`settings`、`sky_selection`、`works`
+`artifacts`、`events`、`fixture_model_journal`、`fixture_model_meta`、`fixture_model_pins`、`fixture_model_pointer`、`fixture_model_profiles`、`memory_items`、`memory_meta`、`memory_projections`、`memory_tombstones`、`outbox_events`、`outbox_meta`、`outbox_operations`、`rock_meta`、`runs`、`settings`、`sky_capabilities`、`sky_executor`、`sky_executor_meta`、`sky_selection`、`sky_selection_v2`、`sky_work_bindings`、`works`
 
 次の確認: 対象端末を確定後、full buildと実機保存・復旧を受入する
 

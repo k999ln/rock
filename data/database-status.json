@@ -4,15 +4,15 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 131,
+    "tableCount": 148,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
     "total": 160,
     "done": 104,
-    "in_progress": 38,
-    "planned": 17,
+    "in_progress": 40,
+    "planned": 15,
     "blocked": 1,
     "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入",
     "nextAction": "Canonical offer is physical SIM/eSIM-led RockstarOS service access across purchase channels; carrier activation, service entitlement, account, OS/client install, cloud execution and AI billing remain distinct states. The local signed claim issuer and encrypted/idempotent seller delivery API are implemented; the Android Shell quote→device-credential Wallet hold→Broker proof→explicit Cloud approval→same-ID recovery source flow is wired and locally contract-tested. Current repository verification passes: Node 757/757, Worker/D1 API 1,048 assertions, CSV Worker/D1/R2 113 assertions, Fashion 19/19, typecheck, product lint, production build and release checks. Next run Android Core/AIDL/APK/instrumentation on an equipped CI/device host; then connect contracted seller checkout/delivery, carrier, Provider rates/meters/invoices and funded settlement. Production D1 readback is 0/6; local fixtures are not production billing, carrier activation, or successful exact-SKU OS installation."
@@ -439,19 +439,40 @@
       "engine": "SQLite",
       "authority": "Android work・artifact・run・event",
       "sources": [
-        "android/core/src/main/resources/schema.sql"
+        "android/core/src/main/resources/schema.sql",
+        "android/core/src/main/java/dev/rock/core/ModelProfiles.java",
+        "android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java",
+        "android/core/src/main/java/dev/rock/core/BoundedMemory.java",
+        "android/core/src/main/java/dev/rock/core/SkyExecutor.java"
       ],
       "tables": [
         "artifacts",
         "events",
+        "fixture_model_journal",
+        "fixture_model_meta",
+        "fixture_model_pins",
+        "fixture_model_pointer",
+        "fixture_model_profiles",
+        "memory_items",
+        "memory_meta",
+        "memory_projections",
+        "memory_tombstones",
+        "outbox_events",
+        "outbox_meta",
+        "outbox_operations",
         "rock_meta",
         "runs",
         "settings",
+        "sky_capabilities",
+        "sky_executor",
+        "sky_executor_meta",
         "sky_selection",
+        "sky_selection_v2",
+        "sky_work_bindings",
         "works"
       ],
       "expectedAppliedThrough": null,
-      "tableCount": 7,
+      "tableCount": 24,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Android Work Engine SQLite",

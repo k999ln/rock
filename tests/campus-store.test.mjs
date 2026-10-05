@@ -25,7 +25,7 @@ function fixture(t, beforeRun = async () => {}) {
 const profile = (handle) => ({ campusId: 'nyu', handle, displayName: handle, affiliation: 'student', headline: '', bio: '', skills: [], interests: [], lookingFor: [], links: [], isPublic: true });
 const post = { campusId: 'nyu', kind: 'project', title: 'Film project', summary: 'A student project', tags: [], details: {}, visibility: 'campus', startsAt: null, endsAt: null };
 
-test('Campus item writes are owner scoped and anonymous readers only see public posts', async (t) => {
+void test('Campus item writes are owner scoped and anonymous readers only see public posts', async (t) => {
   const { store } = fixture(t);
   const item = await store.createItem('owner', post);
   assert.equal((await store.listItems('nyu', undefined, null)).length, 0);
@@ -38,7 +38,7 @@ test('Campus item writes are owner scoped and anonymous readers only see public 
   assert.equal((await store.listItems('nyu', undefined, 'owner')).length, 0);
 });
 
-test('only the request recipient can accept a Campus collaboration and only its sender can remove it', async (t) => {
+void test('only the request recipient can accept a Campus collaboration and only its sender can remove it', async (t) => {
   const { store } = fixture(t);
   await store.upsertProfile('sender', profile('sender'), false);
   const recipient = await store.upsertProfile('recipient', profile('recipient'), false);
@@ -49,7 +49,7 @@ test('only the request recipient can accept a Campus collaboration and only its 
   await store.removeEdge('sender', edge.id);
 });
 
-test('Campus tag controls and analytics stay private to their owner', async (t) => {
+void test('Campus tag controls and analytics stay private to their owner', async (t) => {
   const { store } = fixture(t);
   const [tag] = await store.registerTagBatch('owner', 'nyu', { prefix: 'nyu-library', start: 1, count: 1, mode: 'campus', label: 'Library', placement: '' });
   await store.recordTagEvent(tag.tagId, 'qr');
@@ -64,7 +64,7 @@ test('Campus tag controls and analytics stay private to their owner', async (t) 
   assert.equal((await store.clearTagAnalytics('owner', tag.tagId)).deletedEvents, 0);
 });
 
-test('an in-flight clear cannot delete analytics after its tag is registered by a new owner', async (t) => {
+void test('an in-flight clear cannot delete analytics after its tag is registered by a new owner', async (t) => {
   let beforeRun = async () => {};
   const { store } = fixture(t, (sql) => beforeRun(sql));
   const batch = { prefix: 'nyu-library', start: 1, count: 1, mode: 'campus', label: 'Library', placement: '' };

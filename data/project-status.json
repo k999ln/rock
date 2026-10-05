@@ -555,7 +555,8 @@
         "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json",
         "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
         "android/automation/src/main/java/dev/rock/automation/ModelProfileOperationLock.java",
-        "scripts/check-os-contracts.mjs"
+        "scripts/check-os-contracts.mjs",
+        "docs/evidence/pr-consolidation-20261005.json"
       ],
       "nextAction": "API v3 profile planning and API v4 read-only descriptor handoff now have source overlays. Android source adds a Broker activation coordinator that sequences publisher signature verification, Broker-private weights staging, Local AI load/receipt/status verification, then active-profile commit; it attempts to reload the previous model if commit fails after a successful load. PlatformStore blocks a model switch during active work or a recent plan reservation, and Zema submission shares a process lock with activation. Core JVM tests pass 46/46; API v4 clean source overlay and 23 upstream Jest tests, lint/type checks pass. `npm run verify` passes 530 Node tests, 19 Fashion tests, 301 API assertions and build. Remaining: no user-facing model catalogue/activation endpoint or production artifact source, publisher trust keyset, tokenizer/template/licence pipeline; Android automation/AIDL source is uncompiled because Android SDK platform/build-tools are unavailable. Next implement a signed-catalog install entry only after defining the operator-controlled trust/source configuration, then compile and run Binder/profile-swap/offline inference on Android CI and Pixel 10."
     },
@@ -574,20 +575,22 @@
         "systems/rock-star-os/src/blackberryrock/memory_access.py",
         "systems/rock-star-os/tests/test_memory_store.py",
         "systems/rock-star-os/tests/test_memory_access.py",
-        "docs/evidence/ai03-canonical-memory-store-20261001.json"
+        "docs/evidence/ai03-canonical-memory-store-20261001.json",
+        "docs/evidence/pr-consolidation-20261005.json"
       ],
       "nextAction": "The host-side canonical store requires an injected OS cipher; BrokerMemoryService now derives owner scope from the authenticated Broker subject, keeps the principal guard active during each operation, and checks project action grants on every call. Focused tests use fixture principals, grants, and cipher only; they do not verify production cryptography or project authorization. Next connect the authoritative project-consent source and real OS-backed owner key adapter, expose the scoped API through the trusted OS/Binder entrypoint, add migration/encrypted backup/restore and expiry scheduling, then verify offline persistence and profile-switch projection rebuild on target hardware. Android model activation and offline inference remain separately uncompiled because this environment lacks Java/Gradle/Android SDK build tooling."
     },
     {
       "id": "AI04",
       "title": "1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
+        "docs/ai-native-os-architecture.md",
+        "docs/evidence/pr-consolidation-20261005.json"
       ]
     },
     {
@@ -609,21 +612,23 @@
         "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
         "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
         "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "systems/rock-star-os/os/ai_routes/tests/test_policy_budget.py"
+        "systems/rock-star-os/os/ai_routes/tests/test_policy_budget.py",
+        "docs/evidence/pr-consolidation-20261005.json"
       ],
       "nextAction": "Android Broker snapshot v2 reports public-API device/resource/eUICC observations and Local AI runtime load state; Zema checks ready/modelLoaded before and after planning. Device/API static checks and the repository build pass, but Android instrumentation is not run. Next bind authenticated owner/device identity and exact model profile to Sky discovery and submit/claim rechecks; add a documented refresh boundary after eSIM install or OS resume without reading ICCID/EID/profile inventory; then verify snapshot freshness and SKU/model fit on Android CI and a physical Pixel 10. Capability re-evaluation and hardware acceptance remain incomplete."
     },
     {
       "id": "AI06",
       "title": "非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存）",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "AI03",
         "AI05"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
+        "docs/ai-native-os-architecture.md",
+        "docs/evidence/pr-consolidation-20261005.json"
       ]
     },
     {
@@ -659,7 +664,8 @@
         "docs/ai-native-os-architecture.md",
         "docs/llm-evaluation-architecture.md",
         "data/llm-capabilities.json",
-        "scripts/check-llm-architecture.mjs"
+        "scripts/check-llm-architecture.mjs",
+        "docs/evidence/pr-consolidation-20261005.json"
       ]
     },
     {
@@ -3171,7 +3177,8 @@
         "tests/sky-zema-contract.test.mjs",
         "tests/shared-stripe.test.mjs",
         "tests/mcp-client.test.mjs",
-        "tests/owner-revision-json-store.test.mjs"
+        "tests/owner-revision-json-store.test.mjs",
+        "docs/evidence/pr-consolidation-20261005.json"
       ]
     }
   ],
