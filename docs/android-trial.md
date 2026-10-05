@@ -1,6 +1,8 @@
 # Rock Android P1 — Pixel 10でのアプリ試験
 
-Pixel 10にはGrapheneOSが入っているとの利用者回答を記録した。OSを入れ替えず、既存のAndroid P1を通常アプリとして試すための配布物を用意する。**この3 APK（Broker／Shell／Tool）はLinux native OS、Hub＋Wallet、ゲーム交換、MetaMask送受金を搭載しない。** できるのは合成原稿の保存、出典整理、無料版作成、結果の確認という既存P1の試験である。
+Pixel 10にはGrapheneOSが入っているとの利用者回答を記録した。OSを入れ替えず、既存のAndroid P1を通常アプリとして試すための配布物を用意する。**この3 APK（Broker／Shell／Tool）の試験はLinux native OSや本番金融機能の受入を示さない。** ここでは合成原稿の保存、出典整理、無料版作成、結果の確認という既存P1を試験する。
+
+現在のBrokerには認証済みRockstarOSサービス接続用の `INTERNET` 権限がある。ShellとToolには同権限を与えず、配布時にも3 APKそれぞれの権限境界とcleartext無効を検査してmanifestへ記録する。標準CIはサービスoriginを設定しないため、Cloud利用・課金の成立をこの試験で合格扱いにしない。これは既存OS上の通常アプリの通信契約であり、native/full OSのSELinuxネットワーク受入を示さない。
 
 GitHubのAndroid検証がすべて成功した場合だけ、同じ実行で作成した3 APKを `android-p1-trial-<run ID>` に保存する。実際のソースcommit、APKのSHA-256、3 APKの一致した試験署名証明書をmanifestへ記録する。検証が失敗したrunのAPKは試験配布物として保存しない。GitHub Actionsの成果物保存であり、アプリストア公開や正式リリースではない。
 
