@@ -1,3 +1,7 @@
+## 2026-10-05 公開ホームページの独自ドメイン
+
+利用者は `avocadomini.si` に正本GitHub `k999ln/rock` のホームページを公開するよう明示した。最新mainの `sites/avocado-mini` を、既に同ドメインが登録された現アカウントのSiteへ配備し、既存のページ構成を維持する。Sites標準URL `https://avocadomini.noellesugar1.chatgpt.site` での配備成功と、独自ドメインのDNS・TLS認証待ちを区別する。旧kirin-999 Siteは現在の接続ではNOT_FOUNDであり変更しない。DNS実値・復旧・残る条件は[Web workstream](workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13)を参照する。
+
 ## 2026-10-04 IP Studioの音声・電話連携
 
 利用者の明示指示により、RQ48のIP StudioへLiveKit Agentsの音声会話・電話対応を追加する。既存の交換可能Provider方針を維持し、音声会話と発着信、録音、外部Tool作用を別権限で扱う。今回の設定面追加を実通話の受入に換算しない。Manus Cueは体験の参考であり、未確認APIの接続済み表示はしない。[詳細と残る条件](sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)。

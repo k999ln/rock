@@ -1,6 +1,14 @@
 ## 2026-10-02 — 販売チャネル共通claim発行・暗号化配信store
 
+## 2026-10-05 — avocadomini.siへGitHubのホームページを配備（WEB13、サイト配備済み・DNS待ち）
+
+利用者が指定した独自ドメインと正本repositoryに従い、Web / PWA / Sites（JOINT、既存WEB13）を主担当とする。GitHub main `aa7f2b41ce34a32c262500a83238bb713c003dee` のSIM/eSIMホームと既存下層ページを、独自ドメイン登録済みのSites公開先へ反映する。旧kirin-999のSiteは現接続でNOT_FOUND、現在のnoellesugar1のavocadoMini Siteはpublic。DNSは別IPを向き、所有確認TXTが未設定のため、ソース配備と独自ドメイン開通を別々に検証する。
+
 前回追加した取消ack gated replacement flowに、販売注文のexact retryを支えるchannel-neutral D1 storeを追加した。migrations `0052/0053`と`lib/rockstar-entitlement-issuer-store.ts`はseller idempotency key/request digest、signed claim、claim codeのAES-GCM ciphertext/nonce、encryption key ID、prepared/delivered状態を保持する。同じrequest keyとscope集合の順序違いは同一packageを復旧し、同じkeyで内容を変える要求、異なる署名済みpackageの再利用、復号key欠落/改変を拒否する。8並行の同一要求は一つのclaim/codeへ収束する。外部配送timeout時はprepared rowを保持し、retry callbackへ同じpackageとidempotency keyを渡す。delivery acknowledgement後にciphertext/nonceを消し、claim/audit fieldsを残す。`code_encryption_key_id`でkey rotation時の旧key選択を可能にし、未配信rowがある間はprevious keyを運用keyringへ保持する。issuer+store tests 13/13、typecheck、focused oxlint、schema 68 tables、database source 6/6/production readback 0/6、`git diff --check`が成功。 [Evidence](docs/evidence/sim-service-issuer-delivery-store-local-20261002.json). これはsynthetic local D1/keysのみで、seller endpoint/registry、production signing/wrapping key custody、実channel delivery、purchase/refund webhook、本番DB、carrier activation、billing、device/OS acceptanceではない。次はauthenticated issuer endpointとchannel adapterを実装する。
+
+Site build 13 route・18/18テストが合格し、v3／source `44aa41f9adf356bb8da6127ea6af03d322af672b` の一般公開deployment成功を確認。公開先は https://avocadomini.noellesugar1.chatgpt.site 。独自ドメインはA/TXT設定とTLS認証待ちで未開通。必要な実値と復旧手順は[既存Web workstream](docs/workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13)、配備receiptは[証拠](docs/evidence/avocadomini-domain.json)へ記録する。
+
+全体 `npm run verify` exit 0（仕事API 1048項目、CSV API 113項目、asset欠落0）。最後の製品正本ドメイン追記後の `baseline:check` も合格。初回依存導入は容量不足で失敗したため今回作成分だけを除去し、fresh `npm ci` を再実行して成功した。GitHub保存は `codex/avocadomini-domain` branch、main統合は別。次はDNS管理サービスへ接続してA/TXTを設定し、同じdomain IDでSites／SSL activeとHTTPS表示を確認する。
 
 ## 2026-10-02 — 販売元replacement code配信を取消ackの後へ固定
 
@@ -1480,7 +1488,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-02 / SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入 / 完了 105/160件
+最終更新: 2026-10-05 / SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入 / 完了 105/160件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
