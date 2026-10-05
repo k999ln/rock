@@ -104,7 +104,7 @@
     {
       "number": 52,
       "url": "https://github.com/k999ln/rock/pull/52",
-      "reason": "Historical secret scan has 2369 candidates at a85a25e; 7 sampled public source digests verified false positives, 2362 unclassified. CodeQL test-context alerts remain open. Keep independent until evidence-backed triage is complete."
+      "reason": "Full historical scan reproduced at a85a25e across 681 commits: 2369 occurrences, 135 distinct candidate values. 1550 occurrences / 33 values exactly match public source blob SHA-256 digests. Remaining 819 occurrences / 102 values are under source-context review. Two CodeQL findings independently confirmed as test-context false positives; GitHub dismissal requires explicit user approval after automatic review rejection. Keep #52 independent until triage is complete."
     }
   ],
   "localChecks": {
