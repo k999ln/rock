@@ -4,7 +4,7 @@
   "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
   "moduleName": "RockLocalActionAssistant",
   "packageName": "com.localactionassistant",
-  "versionCode": 1,
+  "versionCode": 3,
   "requiredAbis": [
     "arm64-v8a"
   ],
@@ -12,12 +12,15 @@
   "wakeLockPermission": true,
   "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
   "aospCertificate": "testkey",
-  "apkSha256": "b748cd207fb65c43eacaea172b5d80d313a7e5ab3e976f4aaa8b5de161491f4c",
-  "apkSizeBytes": 26395708,
+  "apkSha256": "1fcb4f063bf998e13ccf515a338a9f4f4175c5b64527118f680a7e10bb71bd02",
+  "apkSizeBytes": 26416892,
   "imageIntegrated": false,
-  "notes": "Reproducible unsigned arm64 release APK built from the pinned source, response-sanitizing base overlay and plan-v2 extension on 2026-09-16. Package, version, ABI, Binder service, USE_LOCAL_AI, WAKE_LOCK and absence of INTERNET were inspected. A same-test-key copy passed 8 Broker tests and 3 Shell tests on Android 15 emulator, plus the same counts on Pixel 10 GL066 including plan-only JSON Schema, selected Tool execution, result and history. This is not production signing, OS-image integration, flash or boot evidence.",
+  "notes": "Unsigned API v4 / package version 3 arm64 APK built by GitHub Actions run 37279537731 at Rock source 2ba33366. Actual APK bytes, package/version, ABI, Binder permission, WAKE_LOCK and absence of INTERNET match the inspection and ordered overlay evidence. Historical API v2 physical results remain in the 2026-09-16 evidence; this v4 APK has not been signed, installed on a device, integrated in an OS image, or accepted for release.",
   "overlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
   "extensionSha256": [
-    "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69"
+    "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
+    "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
+    "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
+    "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c"
   ]
 }

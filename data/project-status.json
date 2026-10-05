@@ -3602,7 +3602,16 @@
       "physicalVerification": "PIXEL_10_GL066_ANDROID_17_6_OF_6_PLATFORM_INSTRUMENTATION_OFFLINE_REBOOT_2002_SECOND_THERMAL_AND_CLEAN_OK_NO_RAW_THINK_TAG_PASS",
       "contract": "contracts/local-ai-runtime.json",
       "record": "docs/local-ai-os-integration-20260915.md",
-      "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"
+      "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+      "currentUnsignedBuild": {
+        "apiVersion": 4,
+        "packageVersionCode": 3,
+        "status": "BUILT_INSPECTED_AND_STAGED_NOT_DEVICE_TESTED",
+        "evidence": "docs/evidence/local-ai-apk-v4-build.json",
+        "apkSha256": "1fcb4f063bf998e13ccf515a338a9f4f4175c5b64527118f680a7e10bb71bd02",
+        "deviceVerified": false,
+        "imageIntegrated": false
+      }
     }
   },
   "deviceSupportArchitecture": {
@@ -4451,7 +4460,7 @@
     "nextAction": "初公開日・先行出願を確定し、R1の具体方式・比較実験と専門家による請求項検討を行う。9月30日以降のコード変更は本調査の対象外。"
   },
   "releaseBlockerResolution": {
-    "status": "native_fixed_local_ai_compile_and_version_repairs_under_verification",
+    "status": "native_and_local_ai_build_repaired_final_ci_pending",
     "primaryOwner": "ROCK",
     "task": "G04",
     "baseMain": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
@@ -4461,9 +4470,10 @@
     "pullRequest": 65,
     "nativeTests": 1736,
     "wholeVerify": "PASS_AT_c79476e2",
-    "localAiBuild": "SDK_PATH_PASSED_KOTLIN_AND_API_VERSION_REPAIRS_REBUILD_PENDING",
+    "localAiBuild": "PASS_API_V4_UNSIGNED_APK_INSPECTION_AND_REAL_STAGE",
     "physicalDeviceConnected": false,
     "mainIntegrated": false,
-    "integratedMain": "4928b64e0a0aac80855b58953c8804eb39d4a8b4"
+    "integratedMain": "4928b64e0a0aac80855b58953c8804eb39d4a8b4",
+    "focusedTests": 40
   }
 }

@@ -27,12 +27,12 @@
   "integration": {
     "routeId": "local-action-assistant",
     "target": "local",
-    "osBridge": "PROFILE_HASH_API_V4_READONLY_FD_HANDOFF_SOURCE_TESTED_NOT_NATIVE_BUILT",
-    "signedApk": "API_V2_UNSIGNED_RELEASE_APK_REVIEWED_V4_NOT_BUILT",
+    "osBridge": "PROFILE_HASH_API_V4_READONLY_FD_HANDOFF_NATIVE_COMPILED_NOT_DEVICE_VERIFIED",
+    "signedApk": "API_V4_UNSIGNED_RELEASE_APK_REVIEWED_NOT_SIGNED",
     "productPackage": "STAGING_READY_NOT_IMAGE_INTEGRATED"
   },
   "overlay": {
-    "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT",
+    "status": "SERVER_NATIVE_COMPILED_NOT_DEVICE_VERIFIED",
     "path": "os/physical/local-ai-overlay.patch",
     "sha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
     "extensions": [

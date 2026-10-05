@@ -13,7 +13,7 @@ bash external/rockstaros/scripts/build-phone-bringup.sh --mode bringup \
 
 bringupでも、専用x86_64 Linux、64 GiB RAM、空き400 GiB、固定した上流source/tag、生成vendor inventory、現行overlayと一致するレビュー済みLocal AI APKが必要。Operator公開設定がなければ明示除外する。出力は試験用で、OS署名・flash・一般公開を許可しない。release用の入口は`--mode release`で、初回flashの4 gateも維持する。
 
-2026-10-05のこのMacの読取り診断はDarwin/arm64・16 GiB RAMで不適合。容量を回復してもCPU/OS/RAM条件は変わらない。クラウド予算・専用サーバーの確定は未完了であり、サーバー作成や全OS buildは今回実施していない。Local AI API v2の過去のAPK実機合格を、現在のv3/v4 overlayのbuild・実機合格へ流用しない。APK workflowの`sdkmanager`のPATH不足を再現して修正中。
+2026-10-05のこのMacの読取り診断はDarwin/arm64・16 GiB RAMで不適合。容量を回復してもCPU/OS/RAM条件は変わらない。クラウド予算・専用サーバーの確定は未完了であり、サーバー作成や全OS buildは今回実施していない。Local AI API v2の過去のAPK実機合格を、現在のv3/v4 overlayのbuild・実機合格へ流用しない。APK workflowの`sdkmanager` PATH不足、Kotlin timeout型、Binder API版、APK version検査の不整合を修正した。現行v4 unsigned APKはCI buildと実aapt2検査・stage/再検証が合格し、[同一artifactの証拠](evidence/local-ai-apk-v4-build.json)へ保存した。全OS buildとv4実機受入は未実施。
 
 
 ## 多機種対応の境界

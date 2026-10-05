@@ -6,6 +6,8 @@ nativeのSQLite接続3件を確実にcloseし、Linux CI 1,736試験と`npm run 
 
 Local AIの実Kotlin compileでtimeoutのInt/Long不一致を検出し、API v4なのにBinderが3を返す不一致とAPK検査のversionCode=1固定も修正した。旧patch/実機証拠は保持し、追加overlayとhashで追跡。APK lockをbase/順序付きextension hashへ結び、stage metadata改変を拒否する。関連38試験とOS contract/design検査は成功。v4 APKの再build・レビューと現行最終SHAの全体CIは継続中。
 
+更新: API v4 unsigned APK buildは`2ba33366`のCI `37279537731`で成功。26,416,892 bytesを取得し、CI/手元aapt2でABI・package version 3・権限を確認。actual APKのstage/再stage/verifyも同一。source lockの現在statusをphone準備が受理し、旧APK/overlay不一致とmetadata/symlink差替えを拒否する。関連40試験成功。main `4928b64e`までの並行更新を保持して競合を解消した。最新記録を含む同一HEADの全体CIは最終再実行し、物理端末接続・専用Linux/予算・正式署名・実Provider受入は未完了として残す。
+
 ## 2026-10-05 — 決済・Wallet設計と英語開発プロンプトのmain保存
 
 利用者の「mainにあげて」に基づき、2026-10-01の決済・Wallet設計、型/DDL草案、有限モデルと証拠を最新mainへ統合する差分を準備した。開発プロンプトは英語へ統一。SIM/eSIMのPackage重複購入拒否、端末session認証、署名runtime binding、CSV専用50円決済、共通Stripe処理、Cloud予算と資金の分離を保持する。旧月額8.88 USD案は対象外、BIL02はin_progressのまま。

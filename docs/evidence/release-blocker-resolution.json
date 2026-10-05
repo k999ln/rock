@@ -29,9 +29,9 @@
     "fixSourceSha": "9d82ac5a45fb8291aacf52f17097ef2cb7cf2b22",
     "fix": "Publish the detected Android cmdline-tools directory to GITHUB_PATH for subsequent steps",
     "retryRun": 37278285567,
-    "result": "kotlin_compile_failure_repaired_rebuild_pending",
+    "result": "PASS_UNSIGNED_API_V4_APK_INSPECTED_AND_STAGED",
     "currentOverlayApi": 4,
-    "artifactLockChanged": "Historical v2 overlay binding added; current v4 APK not yet reviewed",
+    "artifactLockChanged": "Current reviewed v4 APK with ordered overlay hashes; historical v2 evidence retained",
     "physicalTestPerformed": false,
     "kotlinFailure": "RockLocalAiService.kt:59 Int timeout passed to Long parameter",
     "sourceFindings": [
@@ -46,7 +46,10 @@
       "ordered source overlay hashes bound to artifact lock",
       "staged metadata compared to authoritative lock"
     ],
-    "focusedTests": 38
+    "focusedTests": 40,
+    "successfulSourceSha": "2ba33366dc7f3d60b1cf2fb3a086261c33813172",
+    "successfulRun": 37279537731,
+    "artifactEvidence": "docs/evidence/local-ai-apk-v4-build.json"
   },
   "buildHost": {
     "os": "Darwin",
@@ -83,5 +86,13 @@
   ],
   "remainingWorkstream": "docs/workstreams/10-git-ci-operations.md",
   "mainIntegrated": false,
-  "productionChanged": false
+  "productionChanged": false,
+  "finalVerification": {
+    "status": "pending_after_final_record_update",
+    "commands": [
+      "npm run verify",
+      "python3 scripts/test-native.py --diagnostic-stacks (Linux CI partitions)"
+    ]
+  },
+  "integratedMain": "4928b64e"
 }

@@ -18,7 +18,11 @@
     "transport": "read_only_ParcelFileDescriptor",
     "sourcePathAccepted": false,
     "remoteUrlAccepted": false,
-    "expectedFields": ["profileId", "weightsSha256", "artifactBytes"],
+    "expectedFields": [
+      "profileId",
+      "weightsSha256",
+      "artifactBytes"
+    ],
     "runtimeCopiesToPrivateStorage": true,
     "runtimeRehashesBeforeLoad": true,
     "runtimeReportsLoadedProfile": true,
@@ -63,11 +67,12 @@
   "aospModule": "RockLocalActionAssistant",
   "aospStagingPath": "vendor/rockstaros-local-ai",
   "aospSigning": "testkey_then_release_key_mapping",
-  "sourceStatus": "pinned_v2_artifact_existing_v4_source_tested_not_native_built",
-  "osBridgeStatus": "model_profile_hash_bound_v4_fd_handoff_source_tested_not_native_compiled",
-  "signedApkStatus": "v4_source_changes_not_built_or_signed",
+  "sourceStatus": "pinned_v4_unsigned_apk_built_not_device_verified",
+  "osBridgeStatus": "model_profile_hash_bound_v4_fd_handoff_native_compiled_not_device_verified",
+  "signedApkStatus": "v4_unsigned_release_apk_reviewed_not_signed",
   "imageStatus": "not_built",
   "deviceInferenceStatus": "physical_pixel_plan_tool_result_history_pass_api_v2_not_v3_not_os_image",
   "profileV3Validation": "docs/evidence/local-ai-profile-v3-validation-20261001.json",
-  "modelHandoffV4Validation": "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json"
+  "modelHandoffV4Validation": "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json",
+  "nativeBuildValidation": "docs/evidence/local-ai-apk-v4-build.json"
 }
