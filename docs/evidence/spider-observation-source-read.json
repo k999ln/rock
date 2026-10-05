@@ -1,0 +1,76 @@
+{
+  "schema": "spider-observation-source-read/1",
+  "cycle": 47,
+  "baseCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+  "primarySquad": "H1",
+  "taskId": "AMC02",
+  "primaryOwner": "ROCK",
+  "workstream": "Git / CI / Operations",
+  "target": {
+    "alert": 56,
+    "rule": "js/file-system-race",
+    "path": "scripts/amc-sky-observe.mjs"
+  },
+  "status": "LOCAL_REGRESSIONS_PASS_REMOTE_AFTER_PENDING",
+  "rootCause": "Pathname reopened after validation; sourceInputs/sourceSnapshot re-read between existence check and hash.",
+  "repair": [
+    "Open canonical contained target once with required O_NOFOLLOW and O_NONBLOCK",
+    "Validate descriptor regularity, current canonical path and BigInt dev/ino before reading the same descriptor",
+    "Always close opened descriptor; only initial missing resolution returns null",
+    "Hash the one captured source buffer"
+  ],
+  "baselineCodeql": {
+    "run": 37386479105,
+    "ref": "refs/heads/codex/spider-observation-source-read",
+    "sourceCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "languagesSuccessful": 2,
+    "openAlerts": 42,
+    "targetOpen": true
+  },
+  "remaining": [
+    "Existing AMC revalidationImpact export missing: full module import fails",
+    "Existing manifest/lock mismatch covered by PR73",
+    "Existing database inventory mismatch and duplicate catalog IDs",
+    "Same-inode concurrent writes and whole-workspace atomic snapshot not guaranteed"
+  ],
+  "boundaries": {
+    "nativeOrProductionAcceptance": false,
+    "mainMerged": false,
+    "deployed": false,
+    "scannerWeakened": false
+  },
+  "localRegression": {
+    "command": "node --test tests/amc-sky-observe.test.mjs",
+    "nodeVersion": "v26.0.0",
+    "tests": 18,
+    "passed": 18,
+    "failed": 0,
+    "skipped": 0,
+    "boundary": "Exact observation module with import/export boundary adapters; real temporary filesystem and deterministic synchronous race injection; full AMC dependency graph and Git/authorization acceptance excluded"
+  },
+  "negativeRegression": {
+    "sourceCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "method": "Same test source, baseline observation module supplied in memory",
+    "tests": 18,
+    "passed": 1,
+    "failed": 17,
+    "failuresIncludeParentFailure": true,
+    "concreteReproduction": "After validation the pathname is replaced with an outside synthetic file; old code returns outside bytes, repaired code returns the original validated descriptor buffer.",
+    "externalSyntheticBytesSha256": "66a6757151f8ee55db127716c7e3dce0be8074b64e20eda542e5c1e46ca9c41e"
+  },
+  "sourceSha256": {
+    "scripts/amc-sky-observe.mjs": "3f9bd795656e67012c7d9ec8442aca99b4f7055818b659a865170fd56a730096",
+    "tests/amc-sky-observe.test.mjs": "354c4a5f2ef9ea41633b4ffd397d5ee0211cf3156ff59125a88ef3ed24b96050"
+  },
+  "checks": {
+    "mission:update": "pass",
+    "mission:check": "pass",
+    "project:update": "pass",
+    "project:check": "pass",
+    "sourceSyntax": "pass",
+    "diff:check": "pass",
+    "design:check": "failed: preexisting duplicate Sky catalog Tool IDs",
+    "verify": "failed: preexisting stale database inventory; subsequent build and full test stages not reached"
+  },
+  "sameRefAfterComparison": "Pending at source commit; final exact-SHA readback is recorded in the PR and ignored work/spider-ci/cycle-47-readback.json"
+}

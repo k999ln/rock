@@ -1,5 +1,12 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-05 — SPIDER cycle 47: AMC観測元の差替え競合
+
+H1 / AMC02、ROCK、主stream Git / CI / Operations。最新main `0c90253c` 起点の独立branchでCodeQL #56をsource確認。canonicalなrepository内の対象をNOFOLLOW・NONBLOCKで一度開き、file種別・現在の位置・BigInt dev/inoを照合した同じFDから読む。path検査後の再openとhash時の二重取得を除去する。内部symlink、初期absent、既存の入力path制約は保持。本人承認・段階・H1次task AMC01・料金保留は変更しない。
+
+ローカル18/18合格。同じ試験へ旧sourceだけを入れると1 pass/17 failとなり、検証後のpath差替えで外側の合成bytesを読む退行を再現。修正前の同じbranch/SHAのCodeQLは両言語成功、#56を含む42件を保存。修正後のGitHub比較は未取得。通常AMC importは既存のrevalidationImpact export欠落で失敗し、全体受入は未完了。mission/project同期・check、diff/check、source syntaxは合格。design:checkは既存catalog重複、verifyは既存DB inventory不一致で停止。詳細は[要約証拠](docs/evidence/spider-observation-source-read.json)。main merge・公開配備・実機操作なし。
+
+
 ## 2026-10-05 — WorkPlanとAMC保存契約の局所復旧
 
 O5 / SKY10・SKY16（SKY-S7-WORKPLAN-RECONCILE-20261005-01）、ROCK。基点main 4a22eb25で欠落したWorkPlan schemaVersion 1・objective・固定approvalGates、旧jobの読取正規化、開始前edit_planを624124cfの既存契約から差分復旧。job revisionのCAS、現在のAMC amc_event/Goal expectedRevision、専用API境界は保持。重複listAmcを一本化し、本人別・最大100件・Goal本文を含めない一覧を維持。直接consumerの重複分岐とunknownなskyBriefの表示を修正。cloud-agent手順の復旧に必要な既存の所有者/親job/見積/成果/receipt照合もAPIへ戻す。新schema・価格・利用権・接続コード・端末権限は追加しない。
@@ -1123,7 +1130,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
-| AMC02 | AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外） | 完了 | [記録](docs/amc-goal-orchestrator.md) · [記録](scripts/amc-goal-engine.mjs) · [記録](scripts/amc-goal.mjs) · [記録](scripts/amc-codex.mjs) · [記録](scripts/amc-request-plan.mjs) · [記録](scripts/amc-effort.mjs) · [記録](lib/amc-tool.ts) · [記録](lib/workflow.ts) · [記録](app/api/amc/route.ts) · [記録](app/amc/page.tsx) · [記録](components/amc-tool-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](tests/amc-goal-engine.test.mjs) · [記録](tests/amc-goal-cli.test.mjs) · [記録](tests/amc-codex.test.mjs) · [記録](tests/amc-request-plan.test.mjs) · [記録](tests/amc-effort.test.mjs) · [記録](tests/amc-sky-integration.test.mjs) · [記録](docs/evidence/amc/goal-orchestrator-audit.json) · [記録](docs/evidence/amc/codex-local-smoke.json) |
+| AMC02 | AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外） | 完了 | [記録](docs/amc-goal-orchestrator.md) · [記録](scripts/amc-goal-engine.mjs) · [記録](scripts/amc-goal.mjs) · [記録](scripts/amc-codex.mjs) · [記録](scripts/amc-request-plan.mjs) · [記録](scripts/amc-effort.mjs) · [記録](lib/amc-tool.ts) · [記録](lib/workflow.ts) · [記録](app/api/amc/route.ts) · [記録](app/amc/page.tsx) · [記録](components/amc-tool-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](tests/amc-goal-engine.test.mjs) · [記録](tests/amc-goal-cli.test.mjs) · [記録](tests/amc-codex.test.mjs) · [記録](tests/amc-request-plan.test.mjs) · [記録](tests/amc-effort.test.mjs) · [記録](tests/amc-sky-integration.test.mjs) · [記録](docs/evidence/amc/goal-orchestrator-audit.json) · [記録](docs/evidence/amc/codex-local-smoke.json) · [記録](scripts/amc-sky-observe.mjs) · [記録](tests/amc-sky-observe.test.mjs) · [記録](docs/evidence/spider-observation-source-read.json) |
 | LCH07-01 | 子作業（LCH07）: 再受入する配布platform・候補SHA・archive hashを固定する | 未着手 | — |
 | LCH07-02 | 子作業（LCH07）: 同一候補のlicense・NOTICE・SBOMとOWNER未決を照合する | 未着手 | — |
 | LCH07-03 | 子作業（LCH07）: 候補のproduction署名・公開trust・失効/rotation証拠を結合する | 未着手 | — |

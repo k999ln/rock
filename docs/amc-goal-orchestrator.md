@@ -144,6 +144,14 @@ npm run mission:goal -- event --goal /absolute/path/goal-r0.json --event /absolu
 
 OpenAI側のagent制御と、ファイル・コマンドを扱う実行環境を分ける考え方は[公式Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture)を参照した。この第一版はそのAPIを呼んでおらず、アカウントの利用可否やScalewayへの接続を検証していない。
 
+## SPIDER: 観測元ファイルの安全な読取り
+
+H1 / AMC02、ROCK、主stream Git / CI / Operations。観測元はcanonical repository内に解決した通常ファイルだけとし、内部symlinkは維持する。対象をNOFOLLOW・NONBLOCKで一度開き、FDのfile種別と現在のpathのcanonical位置・BigInt dev/inoを照合してから同じFDを読む。検証後のpath差替えで別のファイルを再openしない。終了・失敗時にFDを閉じ、最初から無い入力だけをabsentとする。途中消失や照合失敗は観測失敗として再取得・レビューへ戻し、実行許可へ昇格させない。
+
+sourceInputsとsourceSnapshotの存在判定・hashは同じ一回の取得Bufferを使用する。同じinodeの同時書換、複数ファイル全体のatomic snapshot、あらゆる祖先差替えの排除は保証しない。入力名の既存.env拒否は保持するが、秘密情報全般の検出器ではない。
+
+検証: `node --test tests/amc-sky-observe.test.mjs`。実temporary filesystemに同期raceを差し込む単体試験で、directives/Git境界は明示したadapterを用いる。現mainのrevalidationImpact export欠落で通常module importは失敗するため、AMC全体の統合受入と区別する。要約証拠は[spider-observation-source-read.json](evidence/spider-observation-source-read.json)。同じbranchの修正前CodeQL #56と修正後をID・rule・path・stateで比較し、未取得を修正完了にしない。
+
 ## 検証
 
 ```sh

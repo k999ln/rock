@@ -178,7 +178,9 @@
         "data/mission-control.json",
         "PROJECTS.md",
         "docs/rockstaros-design-portal.md",
-        "data/project-status.json"
+        "data/project-status.json",
+        "docs/amc-goal-orchestrator.md",
+        "docs/evidence/spider-observation-source-read.json"
       ],
       "acceptanceGate": "全project taskにちょうど一つのprimary squadが明記され、各squadにGoal、対象範囲、証拠、次taskと合格条件がある。",
       "nextAction": "AMC01: Mini単体、Pro単体、任意連携、rocketstar地上支援の4利用構成に入出力と主担当を記す",

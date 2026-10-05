@@ -252,7 +252,8 @@
         "automaticModelInstallation": false,
         "externalActionsAuthorized": false,
         "browserAcceptance": "not_verified",
-        "productionDeploymentAccepted": false
+        "productionDeploymentAccepted": false,
+        "observationSourceRead": "single_descriptor_regular_file_with_canonical_containment_and_bigint_identity; source_buffer_hashed_once; full_AMC_import_not_accepted"
       }
     },
     { "id": "rockstar-csv-cleanup", "catalogStatus": "ready" },

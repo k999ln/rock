@@ -28,7 +28,10 @@
         "tests/amc-effort.test.mjs",
         "tests/amc-sky-integration.test.mjs",
         "docs/evidence/amc/goal-orchestrator-audit.json",
-        "docs/evidence/amc/codex-local-smoke.json"
+        "docs/evidence/amc/codex-local-smoke.json",
+        "scripts/amc-sky-observe.mjs",
+        "tests/amc-sky-observe.test.mjs",
+        "docs/evidence/spider-observation-source-read.json"
       ]
     },
     {
