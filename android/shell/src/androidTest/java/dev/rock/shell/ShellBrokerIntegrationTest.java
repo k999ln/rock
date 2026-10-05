@@ -58,9 +58,10 @@ public final class ShellBrokerIntegrationTest {
         assertTrue(before.has("totalWorkCount"));
         assertTrue(before.has("truncated"));
         JSONObject capabilities = before.getJSONObject("deviceCapabilities");
-        assertEquals(2, capabilities.getInt("protocolVersion"));
+        assertEquals(3, capabilities.getInt("protocolVersion"));
         assertEquals("local_observation", capabilities.getString("scope"));
         JSONObject deviceProfile = capabilities.getJSONObject("deviceProfile");
+        assertEquals(2, deviceProfile.getInt("version"));
         assertEquals("android_public_api", deviceProfile.getString("source"));
         assertEquals("android", deviceProfile.getString("platform"));
         assertEquals("android_build_reported_not_hardware_attested", deviceProfile.getString("identityBasis"));
