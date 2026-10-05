@@ -88,11 +88,14 @@
   "mainIntegrated": false,
   "productionChanged": false,
   "finalVerification": {
-    "status": "pending_after_final_record_update",
+    "status": "CURRENT_PR_HEAD_CHECKS_ARE_AUTHORITATIVE",
+    "pullRequest": "https://github.com/k999ln/rock/pull/65",
     "commands": [
       "npm run verify",
-      "python3 scripts/test-native.py --diagnostic-stacks (Linux CI partitions)"
-    ]
+      "Linux native source partitions",
+      "Phone source preparation"
+    ],
+    "scope": "Recorded earlier runs prove their exact source; latest PR head results are not self-attested by this file."
   },
-  "integratedMain": "4928b64e"
+  "integratedMain": "592daeea322cd47aa189b67dd689e323662c0c67"
 }

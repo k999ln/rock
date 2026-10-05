@@ -26,11 +26,11 @@ void test('Sky routes a plain-language request to each available role', () => {
   }
 });
 
-void test('Sky exposes twelve roles and does not guess an unrelated request', () => {
-  assert.equal(skyRoles.length, 12);
+void test('Sky exposes thirteen roles and does not guess an unrelated request', () => {
+  assert.equal(skyRoles.length, 13);
   assert.deepEqual(
     skyRoles.slice(9).map((role) => role.label),
-    ['法務受付', '特許アシスタント', '品質評価役'],
+    ['法務受付', '特許アシスタント', '品質評価役', 'Goal・部隊管理役'],
   );
   assert.equal(routeSkyRequest('今日の天気を教えて'), null);
   assert.equal(routeSkyRequest('  '), null);

@@ -79,7 +79,7 @@ Local AI unsigned APKの現行source buildを再開し、CI `37278057340`で`sdk
 | AI/非金融Game AI02–AI07 | ROCK/JOINT | main統合済みhost fixtureをnative runtimeへ接続し、2モデル切替・旧仕事復旧・限定記憶・単一実行端末・Game/IPを同一契約で受入。 |
 | Material/mini MAT03/MAT05/MAT15 | ROCK/JOINT | Core→UI/Sky adapter、合成scene/poseの実装と、別途R5の光学/3D入力/熱/電源/回路・実機試験。旧E1/E2/E3未完了を現行R5製造の必須手順へ自動継承しない。 |
 | IP Studio SKY07/SKY14 | JOINT | 別repositoryのIP Studio runtime、LiveKit Agent/声/モデル/接続先/費用上限、電話Providerを確定して音声・停止・再接続を受入。設定画面保存は実通話ではない。 |
-| Security PR #52 | ROCK/JOINT | history secret候補の元byte分類、production Web security測定、独立審査。未分類値や失敗をallowlist/警告dismissで消さない。 |
+| Security PR #52 | ROCK/JOINT | PR #52は並行作業でmainへ統合され、Web実測も合格。history secret候補の元byte分類とCodeQL fixture集約failureは未解決。未分類値や失敗をallowlist/警告dismissで消さない。 |
 | 依存監査 G04 | ROCK/EXTERNAL | GitHub alerts #17 `braces` と #18 `http-cache-semantics` は照合時に修正版未掲載。依存経路と外部入力到達性を調べ、修正版/除去後に検査。未解決のまま保持。 |
 
 再現コマンド: `PYTHONPATH=src:os:tests python3 -B -W error::ResourceWarning -m unittest test_memory_store -v`（native root）、`npm run verify`、Linuxで`python3 scripts/test-native.py --output <new-output-dir> --diagnostic-stacks`。状態確認は`node scripts/check-release-readiness.mjs`、`node scripts/check-android-first-flash-gate.mjs`、`node scripts/check-sky-launch.mjs --require-stage focused`。最後のfocused未合格exit 1は既知の受入不足で、試験失敗を隠す目的でgateを外さない。

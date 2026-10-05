@@ -1,0 +1,18 @@
+{
+  "sourceCheckout": "2026-09-26/https-github-com-k999ln-rock-git/work/repo",
+  "sourceHead": "81a370c3cf35c05c1ac5f52a2171c7a5138831d2",
+  "importedAt": "2026-09-29",
+  "scope": "read_only_snapshot_not_current_checkout_task_status",
+  "files": [
+    {
+      "source": "data/mission-control.json",
+      "snapshot": "data/amc/mission-control.json",
+      "sha256": "e5d7338a118ddeaff27e350f265e93f09a683c4e3e7acac132cc0fd061632496"
+    },
+    {
+      "source": "data/project-status.json",
+      "snapshot": "data/amc/project-status.json",
+      "sha256": "6a0a6a7e2954a95691d7cbc17ad5d8ae4cf402d029cf1a83408ad2f84ccba388"
+    }
+  ]
+}

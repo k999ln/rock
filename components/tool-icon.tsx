@@ -46,6 +46,7 @@ export const toolIcons: Record<string, LucideIcon> = {
   'calendar-coordination': CalendarDays,
   'telegram-notifications': Send,
   'producthunt-discovery': Radar,
+  'rockstar-amc': ListChecks,
 };
 
 export function ToolIcon({ id, size = 24, className }: { id: string; size?: number; className?: string }) {
