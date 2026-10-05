@@ -1,5 +1,12 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-05 — Skyライブラリ保存APIの復旧とmain反映準備
+
+O5 / SKY10・SKY16（SKY-S2-LIBRARY-RESTORE-20261005-01）、ROCK。既存0059 schemaとGET/PUT契約を使い、欠落した本人別一覧・保存・解除のoperationsを復旧。再保存は重複せず保存日時を維持し、他人の保存は変更しない。保存による購入権・実行同意・仕事作成はない。利用者の「mainにあげて」により、前回の商品詳細→Zema差分と合わせGitHub mainへ反映する。公開サイト配備は別。
+
+検証：ライブラリ3件＋既存migration/商品導線45件合格。実候補dev APIとローカルD1で合成A/Bの21 HTTP応答（401/403/400/413/415、保存/重複/解除/分離）、業務table不変を確認。実画面で保存→再読込→Zemaライブラリ→同一商品→出典整理完了、一時D1に完了jobを確認。合成端末セッションは試験後削除。独立した最小Workerの起動試験はruntime failureで不成立のため、dev APIの実応答を証拠とする。保存APIの型エラー2件は解消、基点main由来の型エラー16件・catalog重複・database metadata不一致は別課題。実認証・本番配備・独立検収は未受入。Goal r46・親Gate・料金保留は維持する。
+
+
 ## 2026-10-05 — Skyの商品確認とZemaの実行を分離
 
 O5 / SKY10・SKY16（SKY-S2-DETAIL-HANDOFF-20261005-01）、ROCK。Skyの商品詳細は説明・料金/接続条件・既存bookmark・「Zemaで開く」に限定し、AMC／ココナラ／CSVを含め仕事runnerをmountしない。Zemaの商品画面は既存runner・本人認証・接続条件を保持する。出典整理のブラウザ利用にPC接続を必須としない。保存は購入権や実行承認ではない。最新main `ecb4b2af` を基点とした局所修正で、Goal r46・料金保留・親Gateを変更しない。回帰44/44、変更前は同試験39件失敗。実画面でSkyでは仕事作成POSTなし、Zemaで合成テキストの出典整理完了と一時D1の完了記録を確認。基点main由来の型エラー、catalog重複、database metadata不一致でtypecheck/design:check/verifyは未合格。保存APIの関数欠落による503のため保存から始める導線は未受入。公開・実認証・実PC受入は未実施。

@@ -4292,6 +4292,8 @@
     "accepted": false,
     "deployed": false,
     "runtimeAgentAcceptance": false,
-    "validation": "focused 44/44、実画面のSky→Zema→出典整理が合格。typecheck/design:check/verifyは基点mainの不整合で失敗。保存APIは503、保存からの全導線は未受入。"
+    "validation": "focused 48/48。実候補dev API/D1の21 HTTP応答が合格。保存→再読込→Zemaライブラリ→同一商品→出典整理の実画面完了を確認。保存APIの型エラー2件は解消、既存16件・catalog重複・database metadata不一致でtypecheck/design:check/verifyは未合格。実認証・本番配備は未受入。",
+    "libraryRestoreRequestId": "SKY-S2-LIBRARY-RESTORE-20261005-01",
+    "mainIntegrationRequested": true
   }
 }

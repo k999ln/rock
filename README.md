@@ -310,5 +310,5 @@ Purpose-specific permission is designed for recording, external publication, app
 Images and GIFs are concept material for explaining the product. They are not product photographs or evidence of a working spatial display, manufacturing approval, or safety performance.
 
 <!-- sky-detail-handoff:start -->
-Skyの商品詳細では説明・料金・接続条件を確認し、ライブラリへ保存できます。「Zemaで開く」から同じ商品の入力・実行画面へ進みます。商品を開くことや保存することだけでは購入・実行を承認しません。出典整理はブラウザで処理でき、PC接続は必須ではありません。
+Skyの商品詳細では説明・料金・接続条件を確認し、ライブラリへ保存できます。「Zemaで開く」から同じ商品の入力・実行画面へ進みます。商品を開くことや保存することだけでは購入・実行を承認しません。出典整理はブラウザで処理でき、PC接続は必須ではありません。 保存した商品はZemaのライブラリから開けます。再保存は重複せず、解除は本人の保存だけに適用します。
 <!-- sky-detail-handoff:end -->
