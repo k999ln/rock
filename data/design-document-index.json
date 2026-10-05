@@ -172,7 +172,9 @@
       "coverage": "DETAILED_MODEL_RUNTIME_WITH_PARTIAL_MEMORY_STORE_IMPLEMENTATION",
       "interfaceImplementation": [
         "systems/rock-star-os/src/blackberryrock/memory_store.py",
-        "systems/rock-star-os/tests/test_memory_store.py"
+        "systems/rock-star-os/tests/test_memory_store.py",
+        "scripts/stage-local-ai-apk.py",
+        "tests/test_stage_local_ai_apk.py"
       ],
       "documents": [
         "docs/ai-native-os-architecture.md",

@@ -29,10 +29,24 @@
     "fixSourceSha": "9d82ac5a45fb8291aacf52f17097ef2cb7cf2b22",
     "fix": "Publish the detected Android cmdline-tools directory to GITHUB_PATH for subsequent steps",
     "retryRun": 37278285567,
-    "result": "in_progress",
+    "result": "kotlin_compile_failure_repaired_rebuild_pending",
     "currentOverlayApi": 4,
-    "artifactLockChanged": false,
-    "physicalTestPerformed": false
+    "artifactLockChanged": "Historical v2 overlay binding added; current v4 APK not yet reviewed",
+    "physicalTestPerformed": false,
+    "kotlinFailure": "RockLocalAiService.kt:59 Int timeout passed to Long parameter",
+    "sourceFindings": [
+      "API v4 service getApiVersion returned 3",
+      "APK inspector pinned to historical versionCode 1 despite current contract 3",
+      "artifact lock omitted overlay hashes",
+      "verify_stage trusted rewritten artifact metadata"
+    ],
+    "repairs": [
+      "Long timeout constants and API v4 handshake in additive source-locked patch",
+      "package version read from the runtime contract",
+      "ordered source overlay hashes bound to artifact lock",
+      "staged metadata compared to authoritative lock"
+    ],
+    "focusedTests": 38
   },
   "buildHost": {
     "os": "Darwin",

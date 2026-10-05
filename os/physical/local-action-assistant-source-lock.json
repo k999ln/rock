@@ -50,6 +50,11 @@
         "path": "os/physical/local-ai-model-handoff-v4.patch",
         "sha256": "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
         "purpose": "authenticated_read_only_descriptor_model_copy_hash_recheck_and_profile_load_api_v4"
+      },
+      {
+        "path": "os/physical/local-ai-build-v4.patch",
+        "sha256": "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
+        "purpose": "api_v4_binder_handshake_and_long_headless_timeout_build_fix"
       }
     ]
   },

@@ -4,6 +4,8 @@
 
 nativeのSQLite接続3件を確実にcloseし、Linux CI 1,736試験と`npm run verify`がcommit `c79476e2`で合格。Local AI現行v4のunsigned APK workflowを実行し、9月からの`sdkmanager` PATH不備を再現・修正、`9d82ac5a`で再build中。Web/native workflowへ手動再検証入口を追加し、古いphone手順を`--mode bringup`/`--mode release`へ整合させる。全OS用x86_64 Linux/予算、flash 4 gate、実Provider、Mini実機、未修正版依存2件は未完了。再生成可能なnpm/pip/未使用Lima/停止中Gradleの変換cacheだけを整理し、ソース・VMは保持。ADB接続端末0。PR #65へ保存し、main統合・公開は別。詳細は[停止条件](docs/workstreams/10-git-ci-operations.md)と[証拠](docs/evidence/release-blocker-resolution.json)。
 
+Local AIの実Kotlin compileでtimeoutのInt/Long不一致を検出し、API v4なのにBinderが3を返す不一致とAPK検査のversionCode=1固定も修正した。旧patch/実機証拠は保持し、追加overlayとhashで追跡。APK lockをbase/順序付きextension hashへ結び、stage metadata改変を拒否する。関連38試験とOS contract/design検査は成功。v4 APKの再build・レビューと現行最終SHAの全体CIは継続中。
+
 ## 2026-10-05 — 未統合PRのmain反映（19件統合済み、SPIDER別管理）
 
 利用者の「mainにあげて」により、main `aa7f2b41` を基点に元20 PRを照合した。G04／Git・CI／ROCK担当。依存5件、AI/Game/Decision Fabric8件、Campus/Farm/Meme/LiveKit/名称/domain6件の計19 PRを、全10チェック成功の `1f353524` からPR #62でmain `9f64aee3`へ統合した。元19 headはすべてmainの祖先。旧bring-up branch向けdraft #25はmainへの取り込み確認後にcloseした。SIM/eSIM中心の現行製品方針と本人承認・決済・保存契約を保持し、Farm/MemeはPAPER限定、旧Cloud agent入口は見積・上限・receipt受入までdry-runのみとした。

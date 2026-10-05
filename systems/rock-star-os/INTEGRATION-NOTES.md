@@ -16,3 +16,7 @@
 rootの `scripts/test-native.py` と `.github/workflows/native-os.yml` はこの配置用の検証入口。正常hostのUI observerは元のMakefileと同じ `test_evidence.py` が対象。古いATM observerの認証fixture不整合とroot専用Wallet/power試験は、rootの `docs/native-os-validation.md` に残件として記録する。全ての `test_*evidence.py` が成功したと扱わない。
 
 検証は使い捨てLinux環境で行う。suite全体がtimeoutした場合は失敗を記録して停止する。直接のprocess groupは終了するが、試験が独立sessionにした子孫全ての終了は保証しない。その環境を自動再利用せず、所有を確認した後片付けまたは使い捨てrunnerの終了を行う。
+
+## 2026-10-05 native検証の資源解放
+
+`tests/test_memory_store.py`の3か所でtransaction contextだけではSQLite接続が閉じない問題を修正し、`contextlib.closing`を追加した。runtime/IMPORT-MANIFESTは変更しない。Linux 1,736 Python試験、厳格ResourceWarning検査を維持して成功。証拠はrootの`docs/evidence/release-blocker-resolution.json`。

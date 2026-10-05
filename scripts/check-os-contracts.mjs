@@ -311,7 +311,7 @@ assert.equal(localAiLock.runtime.modelBundled, localAi.modelBundled);
 assert.equal(localAiLock.sourceLicense, 'MIT');
 assert.equal(createHash('sha256').update(readFileSync(new URL(`../${localAiLock.overlay.path}`, import.meta.url))).digest('hex'), localAiLock.overlay.sha256);
 assert.equal(localAiLock.overlay.status, 'SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT');
-assert.equal(localAiLock.overlay.extensions.length, 3);
+assert.equal(localAiLock.overlay.extensions.length, 4);
 for (const extension of localAiLock.overlay.extensions) {
   assert.match(extension.path, /^os\/physical\/.+\.patch$/);
   assert.equal(createHash('sha256').update(readFileSync(new URL(`../${extension.path}`, import.meta.url))).digest('hex'), extension.sha256);
@@ -319,6 +319,7 @@ for (const extension of localAiLock.overlay.extensions) {
 assert.equal(localAiLock.overlay.extensions[0].path, 'os/physical/local-ai-plan-v2.patch');
 assert.equal(localAiLock.overlay.extensions[1].path, 'os/physical/local-ai-profile-v3.patch');
 assert.equal(localAiLock.overlay.extensions[2].path, 'os/physical/local-ai-model-handoff-v4.patch');
+assert.equal(localAiLock.overlay.extensions[3].path, 'os/physical/local-ai-build-v4.patch');
 assert.equal(localAiLock.integration.osBridge, 'PROFILE_HASH_API_V4_READONLY_FD_HANDOFF_SOURCE_TESTED_NOT_NATIVE_BUILT');
 assert.equal(localAiLock.integration.signedApk, 'API_V2_UNSIGNED_RELEASE_APK_REVIEWED_V4_NOT_BUILT');
 assert.equal(localAiLock.integration.productPackage, 'STAGING_READY_NOT_IMAGE_INTEGRATED');
