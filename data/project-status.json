@@ -4410,6 +4410,15 @@
       "nodeTests": 802,
       "workApiAssertions": 1048,
       "csvAssertions": 113
+    },
+    "delivery": {
+      "branch": "codex/avokado-llm",
+      "implementationCommit": "573f9f2253fc7bbaccdb5f6c2893e24596671328",
+      "pullRequest": "https://github.com/k999ln/rock/pull/63",
+      "githubSaved": true,
+      "mainMerged": false,
+      "published": false,
+      "ciAtImplementationCommit": "in_progress_at_last_check"
     }
   }
 }

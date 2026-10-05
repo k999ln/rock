@@ -1,6 +1,6 @@
 ## 2026-10-05 avokado自作重みのhost試作検証
 
-AI02の別工程として124800 parametersをrandom-initから1000 steps学習。外部pretrained重みは不使用。CPUで合成80件（train 64 / validation 16）、1024000 byte tokensを処理。保存/再読込み・未来token遮断・bit-exact再開・CLI/loopback HTTP parity等6試験が合格。実測値とsource hashは`docs/evidence/avokado-llm-pretraining.json`。weightsはGit外に保存。合成テンプレートの損失低下を実用言語能力としない。次は権利確認済みデータ・独立評価・Mini RAM/熱/遅延とexport/runtime互換の確定。本学習・実機・cloud配備は未受入、追加有料compute上限0。検証: `python -m unittest discover -s toolkits/avokado-llm -p test_*.py -v` = 6/6。`npm run verify`はexit 0（Node 802、Worker/D1 API 1048、CSV 113）で合格。DB状態生成物・Toolkitガイド登録を修正後の結果。GitHub branchへの保存準備中、main統合・公開なし。
+AI02の別工程として124800 parametersをrandom-initから1000 steps学習。外部pretrained重みは不使用。CPUで合成80件（train 64 / validation 16）、1024000 byte tokensを処理。保存/再読込み・未来token遮断・bit-exact再開・CLI/loopback HTTP parity等6試験が合格。実測値とsource hashは`docs/evidence/avokado-llm-pretraining.json`。weightsはGit外に保存。合成テンプレートの損失低下を実用言語能力としない。次は権利確認済みデータ・独立評価・Mini RAM/熱/遅延とexport/runtime互換の確定。本学習・実機・cloud配備は未受入、追加有料compute上限0。検証: `python -m unittest discover -s toolkits/avokado-llm -p test_*.py -v` = 6/6。`npm run verify`はexit 0（Node 802、Worker/D1 API 1048、CSV 113）で合格。DB状態生成物・Toolkitガイド登録を修正後の結果。実装`573f9f2253fc7bbaccdb5f6c2893e24596671328`をGitHub `codex/avokado-llm`へ保存し、draft PR #63を作成。文書・実装は作業branch反映済み。main統合・公開なし。GitHub CIは確認時実行中で、local verify合格とは別。
 
 ## 2026-10-05 avokado専用モデルのゼロ事前学習試作を開始
 
