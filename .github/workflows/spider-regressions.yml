@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '22'
       - name: Test feedback collection and update-message boundaries
-        run: node --test tests/spider-feedback.test.mjs tests/service-worker-update.test.mjs
+        run: node --test tests/spider-feedback.test.mjs tests/service-worker-update.test.mjs tests/spider-web-runtime.test.mjs
       - name: Test local descriptor races and approved Connector execution
         run: node --test tests/mcp-local-descriptor.test.mjs tests/mcp-connector.test.mjs
       - name: Test delivery workspace isolation and existing MR tools
@@ -98,7 +98,7 @@ jobs:
           set -euo pipefail
           export WRANGLER_LOG_PATH="$RUNNER_TEMP/spider-web-logs"
           export MINIFLARE_REGISTRY_PATH="$RUNNER_TEMP/spider-web-registry"
-          wrangler=(node node_modules/wrangler/bin/wrangler.js)
+          wrangler=(node "$(node scripts/spider-web-runtime.mjs cli)")
           state="$RUNNER_TEMP/spider-web-state"
           "${wrangler[@]}" d1 migrations apply site-creator-d1 --local \
             --config dist/server/wrangler.json --persist-to "$state"
@@ -111,6 +111,10 @@ jobs:
           for attempt in {1..60}; do
             if ! kill -0 "$server_pid" 2>/dev/null; then
               echo 'Local production server exited before measurement' >&2
+              server_status=0
+              wait "$server_pid" || server_status=$?
+              echo "Local production server exit status: $server_status" >&2
+              node scripts/spider-web-runtime.mjs diagnose "$RUNNER_TEMP/spider-web-server.log" >&2
               exit 1
             fi
             if curl --fail --silent --max-time 2 http://127.0.0.1:8787/api/health -o /dev/null; then
@@ -121,6 +125,7 @@ jobs:
           done
           if [ "$ready" != true ]; then
             echo 'Local production server readiness timed out' >&2
+            node scripts/spider-web-runtime.mjs diagnose "$RUNNER_TEMP/spider-web-server.log" >&2
             exit 1
           fi
           node --input-type=module <<'NODE'

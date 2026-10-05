@@ -2273,7 +2273,9 @@
         "systems/rock-star-os/os/mcp_broker/http.py",
         "systems/rock-star-os/tests/test_mcp_http_deadline.py",
         "tests/undici-tls-options.test.mjs",
-        "data/web-third-party-license-audit.json"
+        "data/web-third-party-license-audit.json",
+        "scripts/spider-web-runtime.mjs",
+        "tests/spider-web-runtime.test.mjs"
       ]
     },
     {
@@ -3258,7 +3260,9 @@
         "tests/owner-revision-json-store.test.mjs",
         "docs/evidence/pr-consolidation-20261005.json",
         "docs/research/rockstar-patent-research.html",
-        "docs/research/rockstar-patent-sources.json"
+        "docs/research/rockstar-patent-sources.json",
+        "scripts/spider-web-runtime.mjs",
+        "tests/spider-web-runtime.test.mjs"
       ]
     }
   ],
