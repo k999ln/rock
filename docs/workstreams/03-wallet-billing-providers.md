@@ -57,3 +57,18 @@ Sky Market決済の主担当は `JOINT`。`ROCK` は商品・注文・手数料�
 - `npm run schema:check`、`npm run typecheck`、`npm run lint:product`
 - `npm run billing:check`
 - `node --experimental-strip-types --test tests/earning-bridge.test.mjs tests/billing-worker.test.mjs tests/settlement.test.mjs tests/wallet-backend.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs`
+
+## 2026-10-05 全体監査とクラウドOSへの優先順位
+
+今回の追加は対応可能なeSIM提供形態に限る。全体のnative/local/Web/appを一本化しない。詳細は[共通導入・従量課金契約](../sim-led-product-architecture.md#2026-10-05-cloud-os-business-direction)。ROCK主担当、既存BIZ01/SKY19/BIL02。本人別利用権・計測・予算/承認・保存/復旧と表示はROCK、実Provider実行/請求と販売/導入連携はEXTERNAL、縦断受入はJOINT、商品単価/利益配分/契約はOWNER。文書修正はruntime修正ではない。
+
+監査対象: GitHub main `aa7f2b41ce34a32c262500a83238bb713c003dee`とlocal `c9b806fe3b497a292f5f7a7c13e00d68060c0b17`を2026-10-05に照合。限定したソース/CI/ローカルUI/SQLite fixture監査であり、全行・全端末・本番サービスの完全検証ではない。
+
+1. **入口の版ずれ**: localはLiveKit branch、mainのSIM/Cloud追加2 commitが未統合。local Market承認欄の売買/数量欠落はUIで確認したがmainでは修正済み。main同期とLiveKit保持を最初に行い、同一SHA build/画面を照合する。
+2. **PAPER市場の同時実行制限破り（両版）**: `lib/everything-market-store.ts`のexecuteは残高/在庫をDB batchより前に照合し、書込時に再判定しない。実storeと2 migrationを一時SQLite fixtureに読み、write batchを直列化したうえで並行呼出しを再現。既存50000＋40000の買い2件が両方EXECUTED、exposedMinor=130000（上限100000）。在庫1から並行売り2件が両方EXECUTED、数量=-1。その後、一時Miniflare D1でも同じ2件を再現した。実資金は動かしていない。条件照合を原子的な予約/更新へ移し、独立提案の同時実行・取消/期限境界試験で上限と在庫非負を証明する。
+3. **最新mainのWeb CI失敗**: [verify](https://github.com/k999ln/rock/actions/runs/37265108941/job/111620156119)はnpm ciで`@cloudflare/workers-types@5.20261005.1`がlockに欠落して停止。package/lockを同じ依存解決へ同期しfresh npm ciと全verifyを受入する。
+4. **Android CI失敗**: [prototype](https://github.com/k999ln/rock/actions/runs/37265108935/job/111620156004)は`A2AWalletReservationTest.java:190,204`の`A2ABrokerAuthorization`参照でcompileTestJavaが失敗。テストのimport/依存を確認して修正し、Core testと実AIDL/APKを別々に受入。新SIM/Cloudの端末runtimeは23/23の旧APK証拠では証明できない。
+5. **native受入未完**: [source-tests系列](https://github.com/k999ln/rock/actions/runs/37265108899)のmain-1は322 executions、exit_code=0でもunclean_log=trueで失敗。失敗内容のartifact解析が未了で、322件すべてのassertion失敗とも成功とも言えない。原ログのResourceWarning等を特定しLinux同一候補で再検証する。native入口のBlackBerry-first表記は現行Pixel方針と矛盾し、履歴扱いを明確化する。
+6. **事業成立の未受入条件**: mainにはSIM導入/Cloud jobs/見積り/利用量のソースがあるが、実販売からサービス利用権、実Provider usageから請求/返金/資金までの同一候補受入は未了。既存readyやfixtureを本番利益へ換算しない。正規署名/rollback/純正復旧/全損backupのPixel gateも継続。
+
+検証: 最新mainの独立snapshotで`node audit-market-race.mjs`（Git管理外、一時SQLite/D1互換adapter）は上記2競合を再現。D1の既存3 testファイル実行とlocal `npm run verify`はsandbox下のNode試験が進まず中断、合格に数えない。再現scriptとログは`/private/tmp/rock-audit-20261005-9mnxof8r/`等の一時領域。最終の文書project/baseline/design/database検査とlocal `npm run verify`はexit 0。最新mainのCI失敗は別扱い。保存済み[再現script](../evidence/market-concurrency-audit.mjs)をrepo rootから`node docs/evidence/market-concurrency-audit.mjs`で実行すると、一時D1で2競合を確認できる。[同一SHAを区別した証拠](../evidence/cloud-os-direction-audit.json)を参照。実回線・実課金・実OS導入は未実行。

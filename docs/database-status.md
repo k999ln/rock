@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-10-04
+更新日: 2026-10-05
 
 ## 全体
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。
+avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。 今回追加のeSIM提供形態はBIZ01/SKY19/BIL02で扱い、全体のlocal/native/Web/appを一本化しない。関連実装前にmainのSIM/Cloud追加と作業branchの入口を同期する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

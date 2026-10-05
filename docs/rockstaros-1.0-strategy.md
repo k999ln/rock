@@ -1,5 +1,10 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
+## 2026-10-05 選択可能なeSIM提供形態の課金境界
+
+最新の明示方針は、対応可能な端末・提供形態で選べるeSIM経由のRockstarOSクラウドOSと、そこでのSkyエージェント利用に対する従量課金。製品全体をこの方式へ一本化せず、eSIM不要のWeb/app、native OSの端末内LLM/offline agent、local/cloud併用を維持する。通信量販売を中心にせず、本人別の利用権・見積り・上限・承認・実行・停止・保存/再開・利用量・請求照合を一体の体験にする。具体的な責任、入出力、保存、失敗、復旧、承認、合格条件、料金の未決定事項は[共通設計](sim-led-product-architecture.md#2026-10-05-cloud-os-business-direction)を参照する。既存Tool/SDK/Walletを再利用し、端末内LLMとPixel/QEMUの受入は独立して保持する。これは設計変更であり、本番実行・課金や実機対応の完了ではない。
+
+
 2026-09-21更新: 最新の利用者指示では、商品の主な入口はavocadoMiniのゲーム機であり、生活全体を豊かにするOSへ段階拡張する。[ゲーム中心・生活・通信の設計](avocado-mini-mini200-e1/game-first-life-connectivity.md)を優先する。下記の引用整理・個人事業主という初期商品仮説は既存業務pilotの履歴で、ゲーム機より優先する確定要望ではない。共通Core、Pixel/QEMU受入、料金・実資金の既存gateは維持する。
 
 2026-09-16現行優先: [製品目的](product-north-star-20260915.md)とRQ48を優先し、[AIネイティブOS共通設計](ai-native-os-architecture.md)を実装設計の正本とする。中核は交換可能な端末内LLM＋offline agentを持つOS。Sky/Zema、便利な自動化、Game/IP/動画/VR、Wallet/Fundは同じ基盤を使う応用系統とする。収益経路は重要だが、全応用の直列依存にはしない。

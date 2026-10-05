@@ -18,6 +18,10 @@ The fully recoverable and reusable small-satellite launch vehicle **rocketstar**
 
 **Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Complete design index](#design-library)
 
+### Optional eSIM access and cloud agent usage — clarified October 5, 2026
+
+On accepted compatible devices and channels, RockstarOS may offer an eSIM-led cloud service as one access pattern. This does not replace native OS/local LLM and offline agents, ordinary app/Web access without eSIM, or hybrid operation. Users choose Sky agents, approve a usage estimate and spending limit, run work in the cloud, and recover progress, results and itemized usage through one account. For this optional offering, the intended revenue model is metered Sky cloud-agent usage with a service margin. Connectivity supports access; the OS and LLM do not execute inside the eSIM. Pricing units, rates, cost allocation and margins are undecided, and real onboarding, provider billing and device acceptance remain separate gates. See the [service and revenue contract](docs/sim-led-product-architecture.md#2026-10-05-cloud-os-business-direction).
+
 ## The business avokado is building
 
 avokado aims to create a family of products that lets people choose their own experiences and AI teams, play, make things, and complete the work and everyday procedures they need. The business goal is **not to stop at selling a device or displaying an AI answer, but to make choosing, acting, saving, correcting, and resuming one coherent experience**.
@@ -172,7 +176,7 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-04 / 158 tasks: 105 done, 32 in progress, 20 planned, 1 blocked
+Updated: 2026-10-05 / 158 tasks: 105 done, 32 in progress, 20 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)

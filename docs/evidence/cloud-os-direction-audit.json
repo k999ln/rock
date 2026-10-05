@@ -1,0 +1,76 @@
+{
+  "schema": "rockstaros-direction-and-audit/1",
+  "date": "2026-10-05",
+  "scope": "optional eSIM access offering; native/local/app/Web modes remain",
+  "runtimeModified": false,
+  "remoteMain": "aa7f2b41ce34a32c262500a83238bb713c003dee",
+  "localHeadBeforeDocumentation": "c9b806fe3b497a292f5f7a7c13e00d68060c0b17",
+  "mainIntegrated": false,
+  "published": false,
+  "validation": {
+    "documentationChecks": [
+      "project:check",
+      "baseline:check",
+      "design:check",
+      "database:check",
+      "git diff --check"
+    ],
+    "localFullVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "scope": "current local branch plus documentation edits, not remote main or native/device acceptance",
+      "workApiAssertions": 172,
+      "csvApiAssertions": 113
+    },
+    "marketConcurrency": {
+      "source": "latest-main store and migrations; unchanged store in local branch",
+      "environment": "ephemeral Miniflare D1 on local host",
+      "command": "node docs/evidence/market-concurrency-audit.mjs",
+      "exitCode": 0,
+      "expectedSafetyPass": false,
+      "parallelBuy": {
+        "before": 50000,
+        "eachAdditionalBuy": 40000,
+        "limit": 100000,
+        "actualExposure": 130000,
+        "statuses": [
+          "EXECUTED",
+          "EXECUTED"
+        ]
+      },
+      "parallelSell": {
+        "beforeQuantity": 1,
+        "eachSaleQuantity": 1,
+        "actualQuantity": -1,
+        "statuses": [
+          "EXECUTED",
+          "EXECUTED"
+        ]
+      },
+      "realFundsMoved": false
+    }
+  },
+  "remoteMainCi": {
+    "verify": {
+      "conclusion": "failure",
+      "reason": "npm ci: @cloudflare/workers-types@5.20261005.1 missing from lockfile",
+      "url": "https://github.com/k999ln/rock/actions/runs/37265108941/job/111620156119"
+    },
+    "android": {
+      "conclusion": "failure",
+      "reason": "A2AWalletReservationTest.java:190,204 A2ABrokerAuthorization reference fails compileTestJava",
+      "url": "https://github.com/k999ln/rock/actions/runs/37265108935/job/111620156004"
+    },
+    "native": {
+      "conclusion": "failure",
+      "reason": "main-1 reports 322 executions, exit_code 0 and unclean_log true; exact log cause unresolved",
+      "url": "https://github.com/k999ln/rock/actions/runs/37265108899"
+    }
+  },
+  "notAccepted": [
+    "live eSIM/carrier/seller handoff",
+    "provider metering and invoice/customer billing reconciliation",
+    "native full-OS install and recovery",
+    "all-repository exhaustive security audit"
+  ]
+}

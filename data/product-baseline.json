@@ -1504,5 +1504,52 @@
     "profitDefinition": "pending",
     "collectionMethod": "pending",
     "runtimePolicy": "Production Sky Billing rejects new ToC Earning Receipts with SKY_FEE_POLICY_ON_HOLD. Historical 888-cent fixtures remain only for regression. CSV fee decisions return zero due while the revenue flow is pending. No live billing, automatic bank debit or developer payout is enabled. Publication does not specify an open-source license."
+  },
+  "cloudOsUsageBusinessIntent": {
+    "decidedAt": "2026-10-05",
+    "source": "explicit-user-instruction",
+    "userInstruction": "通信とかの部類じゃなくてesimからアクセスできるosでありクラウド上でskyのエージェント利用して従量課金で利益を取る形にしたい",
+    "product": "optional eSIM-accessible RockstarOS cloud service mode",
+    "entry": "eSIM-led service onboarding bound to Rockstar account entitlement",
+    "execution": "Sky agents execute in cloud under explicit scope, quote, budget cap and approval",
+    "primaryRevenue": "for this mode: metered Sky cloud-agent usage with a disclosed service margin",
+    "telecomResaleIsPrimaryBusiness": false,
+    "osBinaryRunsInsideEsim": false,
+    "esimGrantsExecutionPermission": false,
+    "meteredUsageIsInvoiceReconciledByDefault": false,
+    "productionBillingEnabledByThisDecision": false,
+    "pricingUndecided": [
+      "metering-unit",
+      "unit-price",
+      "currency",
+      "minimum-charge",
+      "provider-and-author-cost-allocation",
+      "margin",
+      "tax",
+      "refund-policy"
+    ],
+    "existingPoliciesPreserved": [
+      "verified-Tool-sale-10-percent",
+      "USD-8.88-fee-on-hold",
+      "separate-device-release-gates",
+      "local-ai-and-game-tracks"
+    ],
+    "document": "docs/sim-led-product-architecture.md",
+    "tasks": [
+      "BIZ01",
+      "SKY19",
+      "BIL02"
+    ],
+    "implementationScope": "design-clarification-only; latest-main integration and runtime acceptance pending",
+    "scope": "optional eSIM-led cloud service offering; not the whole RockstarOS product",
+    "clarification": "eSIMのパターンはね。別に全部がそれってわけじゃないけどそれが可能なものはそれでもいいよね",
+    "productWideCloudOnly": false,
+    "esimRequiredForAllUsers": false,
+    "alternativeModesPreserved": [
+      "native OS with local LLM/offline agents",
+      "existing-OS app",
+      "Web access without eSIM",
+      "hybrid local/cloud by capability and consent"
+    ]
   }
 }

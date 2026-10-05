@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-10-04",
+  "updatedAt": "2026-10-05",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
-  "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
+  "nextAction": "avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。 今回追加のeSIM提供形態はBIZ01/SKY19/BIL02で扱い、全体のlocal/native/Web/appを一本化しない。関連実装前にmainのSIM/Cloud追加と作業branchの入口を同期する。",
   "tasks": [
     {
       "id": "ORG01",
@@ -85,8 +85,10 @@
       ],
       "evidence": [
         "docs/sky-network-economy.md",
-        "docs/sky-billing.md"
-      ]
+        "docs/sky-billing.md",
+        "docs/sim-led-product-architecture.md"
+      ],
+      "nextAction": "最新mainのSIM/Cloud実装と現在branchを同期したうえで、対応可能なeSIM提供形態のSkyクラウド従量課金を受入。単位/単価/原価/利益配分/上限/返金は未決定。他のnative/local/Web/app方式と既存料金は独立に維持する。"
     },
     {
       "id": "DOC01",
@@ -1166,8 +1168,10 @@
         "README.md",
         "docs/product-baseline.md",
         "data/product-baseline.json",
-        "docs/sky-billing.md"
-      ]
+        "docs/sky-billing.md",
+        "docs/sim-led-product-architecture.md"
+      ],
+      "nextAction": "最新mainのSIM/Cloud実装と現在branchを同期したうえで、対応可能なeSIM提供形態のSkyクラウド従量課金を受入。単位/単価/原価/利益配分/上限/返金は未決定。他のnative/local/Web/app方式と既存料金は独立に維持する。"
     },
     {
       "id": "VER01",
@@ -2502,8 +2506,10 @@
         "components/sky-commerce.tsx",
         "drizzle/0018_sky_commerce.sql",
         "tests/sky-commerce.test.mjs",
-        "tests/sky-stripe.test.mjs"
-      ]
+        "tests/sky-stripe.test.mjs",
+        "docs/sim-led-product-architecture.md"
+      ],
+      "nextAction": "最新mainのSIM/Cloud実装と現在branchを同期したうえで、対応可能なeSIM提供形態のSkyクラウド従量課金を受入。単位/単価/原価/利益配分/上限/返金は未決定。他のnative/local/Web/app方式と既存料金は独立に維持する。"
     },
     {
       "id": "BIL03",
@@ -3064,5 +3070,22 @@
       "phone provider and inbound/outbound acceptance"
     ],
     "externalActionsPerformed": false
+  },
+  "cloudOsUsageDirection": {
+    "decidedAt": "2026-10-05",
+    "status": "design_recorded_runtime_not_accepted",
+    "document": "docs/sim-led-product-architecture.md",
+    "tasks": [
+      "BIZ01",
+      "SKY19",
+      "BIL02"
+    ],
+    "remoteMain": "aa7f2b41ce34a32c262500a83238bb713c003dee",
+    "reviewedLocalHead": "c9b806fe3b497a292f5f7a7c13e00d68060c0b17",
+    "mainIntegratedIntoWorkBranch": false,
+    "published": false,
+    "validation": "project/baseline/design/database checks and npm run verify exit 0 on local branch; latest-main CI failures and D1 PAPER race remain unresolved",
+    "scope": "optional-compatible-eSIM-offering; native/local/app/Web modes preserved",
+    "auditEvidence": "docs/evidence/cloud-os-direction-audit.json"
   }
 }

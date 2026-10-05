@@ -1,5 +1,14 @@
 # RockstarOS — AIネイティブOS開発の再開指示
 
+## 2026-10-05 優先更新 — 最新main同期と任意のeSIM提供形態
+
+今回のeSIM関連実装ではこの節を以下の旧優先順より先に適用する。eSIMは対応可能な端末/提供形態で選べる一方式であり、native/local/offline/Web/appを撤去せず、製品全体をcloud-onlyへ変更しない。利用者の明示方針は[eSIM入口のクラウドOSとSky利用量課金](../sim-led-product-architecture.md#2026-10-05-cloud-os-business-direction)。最初にGitHub mainと実在作業branchのSHA/同一SHA CIを再取得し、main `aa7f2b41`に既存のSIM/Cloud実装を現在branchへ統合してLiveKit差分と両側の文書を保存する。現在の古いcheckoutを見てSIM/Cloudを作り直さない。文書保存、branch統合、main merge、配備を別記録にする。
+
+修正順: (1) mainのpackage/lock不一致・Androidテストcompile・native unclean logを原因別に解消し同一SHA CIを受入、(2) Marketの残高/在庫照合と更新を一つの原子的DB操作へ結び並行上限超過/二重売却を拒否、(3) BIZ01の単位/単価/通貨/原価/利益配分/返金を実Provider計量に基づき確定、(4) SKY19/BIL02の本人利用権→agent選択→見積上限同意→durable cloud job→再接続/結果→usage→請求照合を縦断する。二重送信/計上、取消、失敗、上限、失効、別owner拒否を含む。未確定の料金と本番資格情報・契約・請求を勝手に有効化しない。実機OS導入は別gateであり、クラウド体験をその完成待ちにしない。
+
+監査範囲、再現値、合格証拠と未解決条件は[workstream](../workstreams/03-wallet-billing-providers.md#2026-10-05-全体監査とクラウドosへの優先順位)を参照。以下の8.88 USDと端末優先順の記載は履歴であり、現行の料金保留と今回の明示方向を優先する。
+
+
 2026-09-16更新の現在入口。`AGENTS.md`、`data/project-status.json`、`docs/product-baseline.md`、`docs/ai-native-os-architecture.md`、`docs/ai-native-os-design-audit.md`を読んで、未完了作業を進める。製品中核は高性能で交換可能なローカルLLMとoffline agentを持つOS。Sky／Zema、便利機能、Game／IP／動画／VRはこの共通Coreへ接続する。設計はAstra、監査はSolという利用者指定を保持する。
 
 作業対象のmainと関連branch、該当HEADのCIを必要範囲で確認する。`docs/current-state-20260911.md`、過去のPR #4／#7やlaunch-candidateに関する記述は履歴を含むため、現在のGitと証拠に照合する。取得できなかったCIを成功と表示しない。正本はこのrepositoryの現在のmain。
