@@ -338,13 +338,27 @@
         "docs/sky-tool-sdk.md",
         "docs/sky-launch-design.md",
         "docs/sky-launch-operations.md",
-        "docs/agent-control-plane.md"
+        "docs/agent-control-plane.md",
+        "docs/amc-autonomy-fixture.md"
       ],
       "implementation": [
         "scripts/check-sky-launch.mjs",
         "scripts/lib/sky-launch-audit.mjs",
         "data/sky-service-launch.json",
-        "tests/sky-launch-audit.test.mjs"
+        "tests/sky-launch-audit.test.mjs",
+        "scripts/amc-goal-engine.mjs",
+        "scripts/amc-effort.mjs",
+        "scripts/amc-request-plan.mjs",
+        "scripts/amc-sky-authority.mjs",
+        "scripts/amc-autonomy.mjs",
+        "scripts/amc-autonomy-store.mjs",
+        "scripts/amc-autonomy-fixture.mjs",
+        "tests/amc-goal-engine.test.mjs",
+        "tests/amc-effort.test.mjs",
+        "tests/amc-request-plan.test.mjs",
+        "tests/amc-autonomy.test.mjs",
+        "tests/amc-autonomy-lock.test.mjs",
+        "tests/amc-autonomy-fixture.test.mjs"
       ]
     },
     {
@@ -441,7 +455,9 @@
         "docs/sky-tools-complete-design.md",
         "docs/external-wallet-fund-provider-boundary-20260913.md",
         "docs/everything-market-and-autonomous-fund-20260913.md",
-        "docs/rock-wallet-production-rail-20260913.md", "docs/sky-commerce-design.md", "docs/wallet-commerce-design.md"
+        "docs/rock-wallet-production-rail-20260913.md",
+        "docs/sky-commerce-design.md",
+        "docs/wallet-commerce-design.md"
       ]
     },
     {

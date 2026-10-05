@@ -8,6 +8,10 @@ Payment and Wallet design: [integration design](docs/sky-commerce-design.md), [W
 <!-- sky-access-recovery:start -->
 Skyが接続を確認している間や、通信失敗・サインイン切れの間は実行を停止します。画面を開いたまま別タブでサインインし、戻って「接続を確認」してから改めて実行してください。再確認だけでは再実行や課金をしません。未保存入力は開いている画面に保持されますが、再読み込みでは消える場合があります。接続設定の復旧時も編集した入力を保持し、保存済み設定を読み直せない間は保存できません。
 <!-- sky-access-recovery:end -->
+## AMCの有限実行をローカルで試す
+
+AMCの開発用CLIは、OSの導入なしでNode.jsから実行できます。`npm run amc:autonomy:fixture -- help`で操作を表示します。新しい私有ディレクトリに固定の算術Goalを作り、子Taskの実行・ファイル検査・保存・再開・停止を試せます。[設計と実行手順](docs/amc-autonomy-fixture.md)を参照してください。実際の仕事、Codexや外部AI、Sky/ZemaのWeb画面へは未接続で、最後は本人の検収待ちになります。
+
 ## Skyの公開判定
 
 `npm run sky:launch:check`で不足を確認できます。`node scripts/check-sky-launch.mjs --require-stage focused`は、既存の本人隔離・復旧条件に加え、実クラウドAI、公開版の両端末試験、全Tool分類、Apple Payが未受入なら失敗します。CSVの既存50円決済成功は、これら全部の合格を意味しません。
