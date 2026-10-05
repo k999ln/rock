@@ -1,0 +1,124 @@
+{
+  "schema": "rockstaros-pr-consolidation/1",
+  "observedAt": "2026-10-05",
+  "baseMain": "aa7f2b41ce34a32c262500a83238bb713c003dee",
+  "scope": "SOURCE_INTEGRATION_NOT_DEPLOYMENT_OR_DEVICE_ACCEPTANCE",
+  "integratedHeads": [
+    {
+      "number": 61,
+      "sha": "182a310059e79991e9227ec463d1a0b43419fd5a",
+      "url": "https://github.com/k999ln/rock/pull/61"
+    },
+    {
+      "number": 60,
+      "sha": "d51eef8b60649cc2b376a8c8cd52da7174277d1c",
+      "url": "https://github.com/k999ln/rock/pull/60"
+    },
+    {
+      "number": 58,
+      "sha": "c9b806fe3b497a292f5f7a7c13e00d68060c0b17",
+      "url": "https://github.com/k999ln/rock/pull/58"
+    },
+    {
+      "number": 56,
+      "sha": "d62d34a4ae4ac7d2cace8b3726609a9930546f08",
+      "url": "https://github.com/k999ln/rock/pull/56"
+    },
+    {
+      "number": 55,
+      "sha": "4c35e172b21e263ac01774670cc34eca447bc547",
+      "url": "https://github.com/k999ln/rock/pull/55"
+    },
+    {
+      "number": 54,
+      "sha": "16347e752bd4a9f74f0b2e5afdcefd100eebd592",
+      "url": "https://github.com/k999ln/rock/pull/54"
+    },
+    {
+      "number": 53,
+      "sha": "90ad790ced0b996aed58eaa94e9da47c30384ba8",
+      "url": "https://github.com/k999ln/rock/pull/53"
+    },
+    {
+      "number": 50,
+      "sha": "8b8ae899d1af5b534d76e2445186d85aea07dde0",
+      "url": "https://github.com/k999ln/rock/pull/50"
+    },
+    {
+      "number": 49,
+      "sha": "29202ae6a398dfcc257f9ddae6980f8a1f0e300e",
+      "url": "https://github.com/k999ln/rock/pull/49"
+    },
+    {
+      "number": 48,
+      "sha": "0bac933377c57847151e5c440e3bc54db742edd5",
+      "url": "https://github.com/k999ln/rock/pull/48"
+    },
+    {
+      "number": 47,
+      "sha": "6c3da397d1ec9a609c89bc15cb498d410e9744d4",
+      "url": "https://github.com/k999ln/rock/pull/47"
+    },
+    {
+      "number": 46,
+      "sha": "af38db8fa46fce20e6aa8563d7e427c327934f89",
+      "url": "https://github.com/k999ln/rock/pull/46"
+    },
+    {
+      "number": 45,
+      "sha": "829bf229d5c2f20fc8a92a008b85e0fc42fc9532",
+      "url": "https://github.com/k999ln/rock/pull/45"
+    },
+    {
+      "number": 44,
+      "sha": "504e43c6730806265caca5a1231eb5435d5f22b3",
+      "url": "https://github.com/k999ln/rock/pull/44"
+    },
+    {
+      "number": 43,
+      "sha": "78638565bd042defe9bec1ffb8d26c8b6cca48b6",
+      "url": "https://github.com/k999ln/rock/pull/43"
+    },
+    {
+      "number": 42,
+      "sha": "b37c52a6e813b9c76d87ef7aad37277c6375fb15",
+      "url": "https://github.com/k999ln/rock/pull/42"
+    },
+    {
+      "number": 41,
+      "sha": "846f3950ec79b1029290c82605896e9ec98ead26",
+      "url": "https://github.com/k999ln/rock/pull/41"
+    },
+    {
+      "number": 40,
+      "sha": "0d2b758ffb068db256d0fb551517a4030bcac050",
+      "url": "https://github.com/k999ln/rock/pull/40"
+    },
+    {
+      "number": 25,
+      "sha": "8978ca44a47bb01edeb12057fe7848959d28db0a",
+      "url": "https://github.com/k999ln/rock/pull/25"
+    }
+  ],
+  "excluded": [
+    {
+      "number": 52,
+      "url": "https://github.com/k999ln/rock/pull/52",
+      "reason": "Full historical scan reproduced at a85a25e across 681 commits: 2369 occurrences, 135 distinct candidate values. 1550 occurrences / 33 values exactly match public source blob SHA-256 digests. Remaining 819 occurrences / 102 values are under source-context review. Two CodeQL findings independently confirmed as test-context false positives; GitHub dismissal requires explicit user approval after automatic review rejection. Keep #52 independent until triage is complete."
+    }
+  ],
+  "localChecks": {
+    "dependencyLock": "npm ci --dry-run passed after workers-types peer alignment and undici 7.29.1 override",
+    "releaseInventory": "35 baseline/release tests passed; legal clearance remains pending",
+    "products": "101 focused tests passed; Campus ownership race follow-up 11/11 passed",
+    "core": "source/contract consistency passed; Android compile/emulator delegated to CI",
+    "wholeVerify": "PASS at e96db05b plus only the Game workstream wording correction: TMPDIR=/private/tmp npm run verify exit 0; Node 870/870, Fashion 22/22, Mini site 18/18, public preview 21/21, Meme 7/7, Farm 25/25, Worker/D1 1048 assertions, CSV Worker/D1/R2 113 assertions, build and release checks. The prior interrupted install is recovered."
+  },
+  "ci": {
+    "verifiedSource": "e96db05bfdaf5d1f54bbc53ae563687260d88da7",
+    "wholeVerify": "PASS",
+    "wholeVerifyUrl": "https://github.com/k999ln/rock/actions/runs/37270193534",
+    "android": "core 111 tests PASS; existing main automation compile errors repaired in follow-up, full Android run still pending"
+  },
+  "mainIntegration": "PENDING"
+}

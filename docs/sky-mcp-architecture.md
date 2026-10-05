@@ -88,6 +88,8 @@ IP Studio job + IP / rights / version
 Sky Capability Router
     ├─ image.generate  ──> Provider A / Provider B / local / manual
     ├─ video.generate  ──> Higgsfield / other generator / local
+    ├─ voice.session   ──> LiveKit Agents / accepted voice adapters
+    ├─ telephony.*     ──> accepted inbound / outbound phone adapters
     ├─ game.*          ──> Roblox / GTA-FiveM / engine / custom SDK
     ├─ social.publish  ──> YouTube / Instagram / other channel
     └─ analytics.read  ──> accepted platform adapters
@@ -97,6 +99,8 @@ Asset Registry ──> review / exact approval ──> publish or game delivery
     │
     └────────────────> receipt / result / revenue feedback
 ```
+
+音声・電話は[IP Studio詳細](sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)の追加契約に従う。LiveKitは設定候補で実接続未受入。音声送信、録音、発信、着信応対の権限を分け、IP／声の権利、費用、停止・結果不明時照会をsessionに結ぶ。
 
 ### Provider manifest
 

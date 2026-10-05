@@ -203,7 +203,7 @@ catalogued → selected → connected → ready → running → review → compl
 | `rockstar-markets-analysis` | RockstarOS Market Scanner         | ready     | Web / offline backtest | remote-read＋PAPER記録                    |
 | `mercari-revenue`           | メルカリ収益スターター            | ready     | Web / 将来Connector    | draftはpure、出品等はexternal-write       |
 | `fashion-brand-ops`         | Instagram運用・受注型ブランド管理 | ready     | PC MCP                 | read／draft／external-writeを操作別に分離 |
-| `rockstar-ip-studio`        | IP Studio — SNS・ゲーム運用        | candidate | PC / Provider          | 生成・配信・ゲーム提出を別capability化   |
+| `rockstar-ip-studio`        | IP Studio — SNS・ゲーム・音声      | candidate | PC / Provider          | 生成・配信・ゲーム提出を別capability化   |
 | `coconala`                  | ココナラ                        | ready     | Web                    | 応募前チェック＋owner別の案件記録         |
 | `mr-free-article`           | 記事の無料版メーカー              | ready     | Web                    | local-pure                                |
 | `mr-citations`              | 出典整理ツール                    | ready     | Web / PC               | local-pure                                |
@@ -320,6 +320,21 @@ IP StudioはHiggsfield専用の生成画面でも、Roblox／GTA専用の投稿�
 - 失敗: timeoutや結果不明はProviderへ照会し、同じ外部作用を自動再送しない。Provider失効後も過去Assetのprovenanceとreceiptを保持する。
 
 接続契約の正本は[Sky MCP接続設計](sky-mcp-architecture.md)。現在のcatalog／接続画面は候補と設定面であり、Higgsfield、Roblox、YouTube、GTA等の本番成功を意味しない。
+
+### IPキャラクターの音声会話・電話連携（2026-10-04）
+
+利用者の「IPのやつに追加」により、RQ48のIP StudioへLiveKit Agentsを接続候補として追加した。制作した同じIPキャラクターと音声で話し、必要に応じて電話で応対することを目指す。主担当はSky / MCPのROCK、既存SKY07／SKY14に接続する。今回の実装は設定の保存・表示・依頼振分けであり、別アプリIP Studioの実行器、Agent配備、音声送受信、電話発着信は未実装・未受入。
+
+- 利用体験: SkyのIP Studio詳細→「音声・電話の接続設定」→「LiveKit — IP音声・電話」で環境、サーバーURL、Agent名を保存。ルーティングの「IPの音声会話」「IPの電話連携」は独立した任意選択で、初期値は未選択。SIP参照IDは電話利用時のみ必要。Zemaでも同じ候補を選べる。
+- 入出力と保存: owner別の既存`sky_provider_connections`へ環境、URL、Agent名、任意の発信用Trunk ID／着信用Dispatch Rule IDを保存。秘密情報、宛先番号、音声、会話本文は含めない。設定APIは未知field、資格情報やquery/hash/path入りURL、外部の平文WebSocketを拒否し、自己hostのloopback検証だけ`ws://`を許す。
+- 状態: `setup_required`は下書き、既存DBの`ready`は画面上「設定保存済み」。設定保存を実接続へ昇格させず、catalogは`candidate`を維持する。番号取得・回線契約・発信を実行するAPIは追加しない。
+- 後続runtime契約: IP／character IDと版、声の権利参照、言語、モデル、送信先、予算・時間上限をsessionへ固定する。`voice.session`、`telephony.inbound`、`telephony.outbound`を別capabilityとし、UIの`realtime_voice`／`telephony`は候補選択用の分類とする。本人・room限定の短命tokenをserverで発行し、AgentとMCPは既存Brokerの許可範囲内で実行する。発話や電話接続だけを外部Tool実行の承認にしない。
+- 権限: マイク、カメラ、外部音声送信、録音、文字起こし保存を分けて同意し、録音・会話保存は既定OFF。発信は宛先、対象IP、目的、時間・費用上限を固定した一回承認、着信は承認済み番号・IP・応対条件に限定する。投稿やゲーム提出と承認を流用しない。
+- 失敗・停止・復旧: 保存失敗は理由を表示して再編集する。後続runtimeは切断・失効・時間超過で送信を停止し、結果不明の発信を自動再送せずProvider session／call IDを照会する。再起動後は通話を自動再開せず、別Providerへ無断fallbackしない。
+- 完了条件: 今回は設定のowner分離、任意電話設定、秘密情報拒否、旧routing互換、Zema振分けを検証。実用受入は本体adapter、声・IPの権利、LiveKit環境、モデル、番号・回線と費用の確定後、日本語会話、割込み、停止、取消、再接続、発着信と費用receiptを別途検証する。
+- 外部依存と未決: LiveKit・Agent・音声モデル・電話回線はEXTERNAL、本体との縦断接続はJOINT。OWNERが利用先と契約・費用上限を決める。Manus Cueの投稿はクラウドPC／電話番号という体験の参考で、公式API・利用条件が未確認のため実行adapterや接続済みProviderには登録しない。
+
+実装: `lib/sky-connections.ts`、`lib/operations.ts`、`components/sky-connection-center.tsx`、`components/sky-chat-workspace.tsx`、`lib/sky-routing.ts`。検証: `tests/operations.test.mjs`、`tests/sky-routing.test.mjs`。公式資料: [LiveKit Agents](https://docs.livekit.io/agents/)、[電話連携](https://docs.livekit.io/telephony/)、[OSS](https://github.com/livekit/agents)。
 
 ## 9. ココナラ
 
@@ -526,7 +541,7 @@ Codex／Claude Codeの新しいturnをmodelへ振り分ける候補。既存CLI�
 
 ### Mobile Jev
 
-Mobilerun経由のAndroid操作候補。Rock所有のwipe可能な試験端末と許可appだけを使い、個人端末、SIM、連絡先、写真、password、決済、予約確定、権限変更を拒否する。
+Mobilerun経由のAndroid操作候補。Rock所有のwipe可能な試験端末と許可appだけを使い、個人端末、SIM、連絡先、写真、password、決済、予約確定、権限変更を拒否する。TypeSafeの意味判断を端末から使う実装候補として、`android/jev-provider`にpublic-only typed request、固定公式endpoint、bounded response、cost／timeout gate、advisory-only resultのsourceを追加した。ただしpackageは専用UID／network domainでmanifest-disabled、product既定除外であり、safe key provisioning、Mobile操作、Broker／Tool統合、実機受入は未実施である。既存の`android/jev-preview` loopback debug clientはMobile JevやOS componentの受入証拠に数えない。
 
 10件のJev ecosystem全体の役割分離、共通schema、Tool別権限、受入順は[Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)を正本とする。
 

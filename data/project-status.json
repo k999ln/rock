@@ -555,7 +555,8 @@
         "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json",
         "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
         "android/automation/src/main/java/dev/rock/automation/ModelProfileOperationLock.java",
-        "scripts/check-os-contracts.mjs"
+        "scripts/check-os-contracts.mjs",
+        "docs/evidence/pr-consolidation-20261005.json"
       ],
       "nextAction": "API v3 profile planning and API v4 read-only descriptor handoff now have source overlays. Android source adds a Broker activation coordinator that sequences publisher signature verification, Broker-private weights staging, Local AI load/receipt/status verification, then active-profile commit; it attempts to reload the previous model if commit fails after a successful load. PlatformStore blocks a model switch during active work or a recent plan reservation, and Zema submission shares a process lock with activation. Core JVM tests pass 46/46; API v4 clean source overlay and 23 upstream Jest tests, lint/type checks pass. `npm run verify` passes 530 Node tests, 19 Fashion tests, 301 API assertions and build. Remaining: no user-facing model catalogue/activation endpoint or production artifact source, publisher trust keyset, tokenizer/template/licence pipeline; Android automation/AIDL source is uncompiled because Android SDK platform/build-tools are unavailable. Next implement a signed-catalog install entry only after defining the operator-controlled trust/source configuration, then compile and run Binder/profile-swap/offline inference on Android CI and Pixel 10."
     },
@@ -574,20 +575,22 @@
         "systems/rock-star-os/src/blackberryrock/memory_access.py",
         "systems/rock-star-os/tests/test_memory_store.py",
         "systems/rock-star-os/tests/test_memory_access.py",
-        "docs/evidence/ai03-canonical-memory-store-20261001.json"
+        "docs/evidence/ai03-canonical-memory-store-20261001.json",
+        "docs/evidence/pr-consolidation-20261005.json"
       ],
       "nextAction": "The host-side canonical store requires an injected OS cipher; BrokerMemoryService now derives owner scope from the authenticated Broker subject, keeps the principal guard active during each operation, and checks project action grants on every call. Focused tests use fixture principals, grants, and cipher only; they do not verify production cryptography or project authorization. Next connect the authoritative project-consent source and real OS-backed owner key adapter, expose the scoped API through the trusted OS/Binder entrypoint, add migration/encrypted backup/restore and expiry scheduling, then verify offline persistence and profile-switch projection rebuild on target hardware. Android model activation and offline inference remain separately uncompiled because this environment lacks Java/Gradle/Android SDK build tooling."
     },
     {
       "id": "AI04",
       "title": "1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
+        "docs/ai-native-os-architecture.md",
+        "docs/evidence/pr-consolidation-20261005.json"
       ]
     },
     {
@@ -609,21 +612,23 @@
         "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
         "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
         "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "systems/rock-star-os/os/ai_routes/tests/test_policy_budget.py"
+        "systems/rock-star-os/os/ai_routes/tests/test_policy_budget.py",
+        "docs/evidence/pr-consolidation-20261005.json"
       ],
       "nextAction": "Android Broker snapshot v2 reports public-API device/resource/eUICC observations and Local AI runtime load state; Zema checks ready/modelLoaded before and after planning. Device/API static checks and the repository build pass, but Android instrumentation is not run. Next bind authenticated owner/device identity and exact model profile to Sky discovery and submit/claim rechecks; add a documented refresh boundary after eSIM install or OS resume without reading ICCID/EID/profile inventory; then verify snapshot freshness and SKU/model fit on Android CI and a physical Pixel 10. Capability re-evaluation and hardware acceptance remain incomplete."
     },
     {
       "id": "AI06",
       "title": "非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存）",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "AI03",
         "AI05"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
+        "docs/ai-native-os-architecture.md",
+        "docs/evidence/pr-consolidation-20261005.json"
       ]
     },
     {
@@ -659,7 +664,8 @@
         "docs/ai-native-os-architecture.md",
         "docs/llm-evaluation-architecture.md",
         "data/llm-capabilities.json",
-        "scripts/check-llm-architecture.mjs"
+        "scripts/check-llm-architecture.mjs",
+        "docs/evidence/pr-consolidation-20261005.json"
       ]
     },
     {
@@ -3239,8 +3245,8 @@
     },
     {
       "id": "G04",
-      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化",
-      "status": "done",
+      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化し、未統合PRの現行main互換を検証",
+      "status": "in_progress",
       "dependsOn": [],
       "evidence": [
         "docs/git-consolidation.md",
@@ -3248,7 +3254,8 @@
         "tests/sky-zema-contract.test.mjs",
         "tests/shared-stripe.test.mjs",
         "tests/mcp-client.test.mjs",
-        "tests/owner-revision-json-store.test.mjs"
+        "tests/owner-revision-json-store.test.mjs",
+        "docs/evidence/pr-consolidation-20261005.json"
       ]
     }
   ],
@@ -4460,5 +4467,23 @@
     "simLedProductCorrection20261002": "PASS: full npm run verify exit 0 after the signed Package runtime invocation extension URI and API fixture were aligned. This included the full Node test suite, typecheck, lint, repository/project/baseline/schema/database/release checks, migration convergence, Web production build, Worker/D1 API 994 assertions, CSV 113 assertions and Fashion Brand Ops 19/19. Separately, A2A client 10/10 and Sky Agent Runtime D1/Workflow 11/11 passed. Local fixtures only; production billing, carrier activation, production D1 readback, Provider execution receipt, funded settlement, Android/device and OS installation acceptance remain unproven.",
     "simLedServiceAuditFollowup20261002": "PASS: corrected product audit to recognize the already implemented local seller claim issuer and issuer-authenticated delivery API (encrypted-at-rest claim code, idempotent recovery, acknowledgement erasure, retry/reissue/replay tests). Repository-wide TMPDIR=/private/tmp npm run verify passed: all repository/project/baseline/schema/database/release/Android architecture checks, Node 757/757, Fashion 19/19, typecheck, product lint, production build, web bundle/assets, Worker/D1 API 1,048 assertions and CSV Worker/D1/R2 113 assertions. A prior default-TMP verify attempt failed migration convergence after free space fell to 144 MiB; explicit temporary placement allowed migration convergence 9/9 and the full rerun passed. All evidence is local fixtures only; seller checkout/channel delivery, carrier activation, production billing and device installation remain unaccepted. Android Java/AIDL/APK/instrumentation was not run because this host has no usable JVM/Gradle toolchain.",
     "simLedProductCorrectionFollowup20261002": "PASS: corrected the audit gap: Shell API v18 source already connects signed quote review, stable-ID draft, device-credential Wallet approval, exact quote-bound reservation, Broker proof, explicit Cloud approval and same-ID recovery; focused source-contract 2/2 and shared canonical quote/authorization vectors 12/12 pass. /connect now has a concise three-step SIM/eSIM-to-service flow; source-contract 2/2, typecheck, product lint, product baseline, Android architecture, device-support, schema, regenerated database snapshot/check (125 source tables; production readback 0/6), project-status sync/check, git diff --check and a fresh production build pass. The full repository verify result refers to the preceding tree, not these UI/docs-only follow-up edits. Build completed with existing large-chunk and duplicate CSS output warnings. Android Java/AIDL/APK/instrumentation remains unrun (no local toolchain); production billing/invoices, funded settlement, seller/carrier fulfillment, and exact-SKU install remain unaccepted."
+  },
+  "avocadoMiniCustomDomain": {
+    "task": "WEB13",
+    "primaryOwner": "JOINT",
+    "hostname": "avocadomini.si",
+    "sourceMainSha": "aa7f2b41ce34a32c262500a83238bb713c003dee",
+    "projectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
+    "status": "deployed_dns_pending",
+    "publicDeployment": "succeeded_version_3",
+    "customDomain": "pending_dns_validation",
+    "dnsManager": "not_confirmed",
+    "githubSave": "work_branch",
+    "mainMerged": false,
+    "siteSourceSha": "44aa41f9adf356bb8da6127ea6af03d322af672b",
+    "deployedUrl": "https://avocadomini.noellesugar1.chatgpt.site",
+    "evidence": "docs/evidence/avocadomini-domain.json",
+    "githubBranch": "codex/avocadomini-domain",
+    "validation": "Site build 13 routes, Site tests 18/18, npm run verify exit 0, final baseline check passed"
   }
 }

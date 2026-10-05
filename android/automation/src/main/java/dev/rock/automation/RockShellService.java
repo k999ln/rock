@@ -447,9 +447,9 @@ public final class RockShellService extends Service {
                         return a2aBrokerFailure("WALLET_APPROVAL_NOT_ACTIVE");
                     String context = a2aWalletApprovalContext(draft);
                     Intent confirm = new Intent(RockShellService.this, ApprovalActivity.class)
-                        .putExtra(EXTRA_APPROVAL_ID, approvalId)
-                        .putExtra(EXTRA_APPROVAL_OWNER, draft.ownerUserId)
-                        .putExtra(EXTRA_APPROVAL_CONTEXT, context)
+                        .putExtra(RockPlatformService.EXTRA_APPROVAL_ID, approvalId)
+                        .putExtra(RockPlatformService.EXTRA_APPROVAL_OWNER, draft.ownerUserId)
+                        .putExtra(RockPlatformService.EXTRA_APPROVAL_CONTEXT, context)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(confirm);
                     response.put("state", "awaiting_owner_confirmation");
@@ -667,8 +667,8 @@ public final class RockShellService extends Service {
                 } catch (SecurityException denied) {
                     if (approvalRequestAttempted[0] && draftJson != null) {
                         try {
-                            JSONObject draft = new JSONObject(draftJson);
-                            String id = draft.optString("id");
+                            JSONObject rawDraft = new JSONObject(draftJson);
+                            String id = rawDraft.optString("id");
                             String owner = deviceSessionStore().ownerUserId();
                             if (owner != null && validCloudUuid(id))
                                 return fenceUnknownCloudA2AApproval(((RockApplication) getApplication()).platform(), owner, id,
@@ -679,8 +679,8 @@ public final class RockShellService extends Service {
                 } catch (Exception uncertain) {
                     if (approvalRequestAttempted[0] && draftJson != null) {
                         try {
-                            JSONObject draft = new JSONObject(draftJson);
-                            String id = draft.optString("id");
+                            JSONObject rawDraft = new JSONObject(draftJson);
+                            String id = rawDraft.optString("id");
                             String owner = deviceSessionStore().ownerUserId();
                             if (owner != null && validCloudUuid(id))
                                 return fenceUnknownCloudA2AApproval(((RockApplication) getApplication()).platform(), owner, id,

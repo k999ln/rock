@@ -77,7 +77,7 @@ test('home fragment navigation, carousel controls, and metadata remain valid', (
   for (const match of home.matchAll(/href="#([^"]+)"/g)) {
     assert.equal(ids.has(match[1]), true, `#${match[1]} must identify a section`);
   }
-  assert.match(home, /rel="canonical" href="https:\/\/avocado-mini\.kirin-999\.chatgpt\.site\/"/);
+  assert.match(home, /rel="canonical" href="https:\/\/avocadomini\.si\/"/);
   assert.match(home, /property="og:title"/);
   for (const host of ['fonts.googleapis.com', 'fonts.gstatic.com']) {
     assert.equal(home.toLowerCase().includes(host), false);

@@ -985,6 +985,29 @@ export function validateBaseline(
     'Web画面と配備assetを同一commitへ固定してください',
   );
   requireValue(
+    data.campus?.displayName === 'Campus' &&
+      data.campus?.route === '/campus' &&
+      data.campus?.status === 'web_runtime_implemented' &&
+      JSON.stringify(data.campus?.campuses) ===
+        JSON.stringify(['nyu', 'fit', 'columbia', 'fordham', 'johnjay']) &&
+      data.campus?.affiliationVerification ===
+        'authenticated_email_domain_match_without_email_storage' &&
+      data.campus?.publicClaimsBoundary ===
+        'community_posted_content_not_official_university_data_unless_external_source_states_otherwise' &&
+      data.campus?.physicalEntry ===
+        'registered_nfc_or_qr_tag_to_campus_mode_with_source_analytics' &&
+      data.campus?.analyticsPrivacy ===
+        'tag_source_and_timestamp_only_no_ip_email_precise_location_or_raw_user_agent' &&
+      data.campus?.dataControls?.includes('block_and_report') &&
+      data.campus?.dataControls?.includes('tag_analytics_delete') &&
+      data.campus?.dataControls?.includes('campus_data_delete') &&
+      data.baseApps?.some?.(
+        (app) => app.id === 'campus' && app.route === '/campus',
+      ) &&
+      data.visualSystem?.homePrimaryApps?.includes('campus'),
+    'Campusの大学別機能・物理入口・privacy境界を維持してください',
+  );
+  requireValue(
     data.homeExperience?.defaultRoute === '/' &&
       data.homeExperience?.skyRoute === '/sky' &&
       data.homeExperience?.systemUtility === 'settings' &&

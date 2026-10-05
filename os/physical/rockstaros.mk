@@ -20,7 +20,21 @@ else
   ROCK_OPERATOR_AGENT_STAGE := configured
 endif
 
-PRODUCT_PACKAGES += RockAutomationPrototype RockShell RockArticleToolPrototype $(ROCK_OPERATOR_AGENT_PACKAGES)
+# TypeSafe Jev stays outside the initial image until an owner-reviewed runtime
+# key provisioning path exists. If staged for a later review, the APK remains
+# manifest-disabled and has no Broker/Shell/Tool/Local-AI authority.
+ifeq ($(ROCK_JEV_PROVIDER_MODE),optional)
+  ROCK_JEV_PROVIDER_PACKAGES := RockJevProvider
+  ROCK_JEV_PROVIDER_STAGE := disabled-no-key-provisioning
+else
+  ifneq ($(strip $(ROCK_JEV_PROVIDER_MODE)),)
+    $(error ROCK_JEV_PROVIDER_MODE must be empty or optional)
+  endif
+  ROCK_JEV_PROVIDER_PACKAGES :=
+  ROCK_JEV_PROVIDER_STAGE := excluded
+endif
+
+PRODUCT_PACKAGES += RockAutomationPrototype RockShell RockArticleToolPrototype $(ROCK_OPERATOR_AGENT_PACKAGES) $(ROCK_JEV_PROVIDER_PACKAGES)
 PRODUCT_PRIVATE_SEPOLICY_DIRS += external/rockstaros/android/sepolicy/private
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.rockstaros.stage=device-bringup \
@@ -29,5 +43,6 @@ PRODUCT_PRODUCT_PROPERTIES += \
     ro.rockstaros.local_ai.bridge=source-ready \
     ro.rockstaros.local_ai.package=com.localactionassistant \
     ro.rockstaros.operator_agent.stage=$(ROCK_OPERATOR_AGENT_STAGE) \
+    ro.rockstaros.jev_provider.stage=$(ROCK_JEV_PROVIDER_STAGE) \
     ro.rockstaros.release_flash_allowed=false \
     ro.rockstaros.financial_ready=false

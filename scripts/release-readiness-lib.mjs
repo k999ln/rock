@@ -405,7 +405,7 @@ function webLicenseReviewClass(expression) {
   return 'standard-license-text-and-notice';
 }
 
-export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness }) {
+export function createWebDependencyLicenseInventory(lock) {
   const label = 'Web第三者license監査';
   const dependencies = packageEntries(lock);
   const missing = dependencies.filter((entry) => !entry.license);
@@ -475,6 +475,14 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
       ).length,
     ]),
   );
+  return { packageEntries: dependencies.length, uniqueComponents: components.size,
+    missingLicenseMetadata: 0, licenses, reviewSummary, reviewComponents, reviewScopeSummary };
+}
+
+export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness }) {
+  const label = 'Web第三者license監査';
+  const inventory = createWebDependencyLicenseInventory(lock);
+  const { licenses, reviewSummary, reviewComponents, reviewScopeSummary } = inventory;
   if (audit?.schema !== 'rockstaros-web-third-party-license-audit/1') {
     fail(`${label}: schemaが不一致です`);
   }
@@ -488,8 +496,8 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
     fail(`${label}: package-lock hashとreview分類が不一致です`);
   }
   if (
-    audit.packageEntries !== dependencies.length ||
-    audit.uniqueComponents !== components.size ||
+    audit.packageEntries !== inventory.packageEntries ||
+    audit.uniqueComponents !== inventory.uniqueComponents ||
     audit.missingLicenseMetadata !== 0
   ) {
     fail(`${label}: component集計とreview分類が不一致です`);
@@ -529,8 +537,8 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
     fail(`${label}: 公開台帳の根拠が不足しています`);
   }
   return {
-    packageEntries: dependencies.length,
-    uniqueComponents: components.size,
+    packageEntries: inventory.packageEntries,
+    uniqueComponents: inventory.uniqueComponents,
     reviewRequired: reviewSummary['reciprocal-source-terms-review'] +
       reviewSummary['license-choice-review'] +
       reviewSummary['attribution-review'],

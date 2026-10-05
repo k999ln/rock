@@ -1,4 +1,6 @@
 
+
+Custom domain: **avocadomini.si** is registered for the [deployed GitHub homepage](https://avocadomini.noellesugar1.chatgpt.site); DNS/TLS validation is pending. See the [deployment and DNS record](docs/workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13).
 <!-- sky-access-recovery:start -->
 Skyが接続を確認している間や、通信失敗・サインイン切れの間は実行を停止します。画面を開いたまま別タブでサインインし、戻って「接続を確認」してから改めて実行してください。再確認だけでは再実行や課金をしません。未保存入力は開いている画面に保持されますが、再読み込みでは消える場合があります。接続設定の復旧時も編集した入力を保持し、保存済み設定を読み直せない間は保存できません。
 <!-- sky-access-recovery:end -->
@@ -228,7 +230,7 @@ Its native security panel now has source-validated motion toward actual findings
 A paste-and-edit code inspector is available as an offline single HTML file, `outputs/SPIDER.html` outside this repository. It checks source locally without running, uploading or persisting it, and needs no SDK or API key. Build and usage details are in [Spider Guard](docs/spider-guard.md#自分のコードを貼って検査する); its Node/loopback-browser checks and native host tests passed. Native Linux validation for this revision remains pending.
 
 <!-- project-overview:start -->
-Updated: 2026-10-02 / 160 tasks: 105 done, 37 in progress, 17 planned, 1 blocked
+Updated: 2026-10-05 / 161 tasks: 104 done, 41 in progress, 15 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)

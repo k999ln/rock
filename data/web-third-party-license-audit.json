@@ -2,9 +2,9 @@
   "schema": "rockstaros-web-third-party-license-audit/1",
   "evaluatedAt": "2026-10-01",
   "scope": "PACKAGE_LOCK_INVENTORY_NOT_RUNTIME_BUNDLE_OR_LEGAL_CLEARANCE",
-  "packageLockSha256": "6deaff4c9810526cc425ea6fa2583343ffbfb0acd073245ac6b91f70b3f9e4ae",
-  "packageEntries": 948,
-  "uniqueComponents": 911,
+  "packageLockSha256": "bd8fbed98bb9f24414f3bb1707c0f1a5afbe0ffc0e884ca84951408ab752f915",
+  "packageEntries": 956,
+  "uniqueComponents": 914,
   "missingLicenseMetadata": 0,
   "licenses": [
     {
@@ -19,7 +19,7 @@
     },
     {
       "expression": "Apache-2.0",
-      "uniqueComponents": 47,
+      "uniqueComponents": 53,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -69,7 +69,7 @@
     },
     {
       "expression": "MIT",
-      "uniqueComponents": 758,
+      "uniqueComponents": 754,
       "reviewClass": "standard-license-text-and-notice"
     },
     {
@@ -79,7 +79,7 @@
     },
     {
       "expression": "MIT OR Apache-2.0",
-      "uniqueComponents": 6,
+      "uniqueComponents": 7,
       "reviewClass": "license-choice-review"
     },
     {
@@ -94,9 +94,9 @@
     }
   ],
   "reviewSummary": {
-    "standard-license-text-and-notice": 862,
+    "standard-license-text-and-notice": 864,
     "reciprocal-source-terms-review": 41,
-    "license-choice-review": 7,
+    "license-choice-review": 8,
     "attribution-review": 1
   },
   "reviewComponents": [
@@ -122,7 +122,7 @@
       "optional": false
     },
     {
-      "purl": "pkg:npm/%40cloudflare%2Fworkers-types@5.20260811.1",
+      "purl": "pkg:npm/%40cloudflare%2Fworkers-types@5.20261005.1",
       "license": "MIT OR Apache-2.0",
       "reviewClass": "license-choice-review",
       "lockScope": "production-reachable",
@@ -442,6 +442,13 @@
       "reviewClass": "license-choice-review",
       "lockScope": "development-only",
       "optional": false
+    },
+    {
+      "purl": "pkg:npm/wrangler@4.147.0",
+      "license": "MIT OR Apache-2.0",
+      "reviewClass": "license-choice-review",
+      "lockScope": "development-only",
+      "optional": false
     }
   ],
   "overallStatus": "NOT_CLEARED_PRODUCT_LICENSE_AND_DISTRIBUTION_SCOPE_REVIEW_PENDING",
@@ -449,7 +456,7 @@
   "reviewScopeSummary": {
     "production-reachable-required": 7,
     "production-reachable-optional": 11,
-    "development-only-required": 6,
+    "development-only-required": 7,
     "development-only-optional": 25
   }
 }
