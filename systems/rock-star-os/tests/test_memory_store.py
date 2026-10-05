@@ -1,4 +1,5 @@
 """Canonical-memory store contract tests; RecordingCipher is an in-process test double only."""
+from contextlib import closing
 import json
 import sqlite3
 import tempfile
@@ -45,7 +46,7 @@ class CanonicalMemoryStoreTest(unittest.TestCase):
 
     def test_owner_confirmed_content_is_encrypted_at_rest_and_scope_isolated(self):
         self.put()
-        with sqlite3.connect(self.store.path) as db:
+        with closing(sqlite3.connect(self.store.path)) as db, db:
             raw = db.execute("SELECT content_ciphertext,provenance FROM memory_records").fetchone()
         self.assertNotIn(b"Japanese", raw[0])
         self.assertNotIn("Japanese", raw[1])
@@ -113,7 +114,7 @@ class CanonicalMemoryStoreTest(unittest.TestCase):
             builder=lambda content: content.encode())
         self.assertTrue(self.store.delete(owner_ref="owner:alice", project_ref="project:alpha",
                                           memory_id="memory-1", now=300))
-        with sqlite3.connect(self.store.path) as db:
+        with closing(sqlite3.connect(self.store.path)) as db, db:
             self.assertEqual(0, db.execute("SELECT COUNT(*) FROM memory_records").fetchone()[0])
             self.assertEqual(0, db.execute("SELECT COUNT(*) FROM memory_projections").fetchone()[0])
             self.assertEqual(1, db.execute("SELECT COUNT(*) FROM memory_tombstones").fetchone()[0])
@@ -130,7 +131,7 @@ class CanonicalMemoryStoreTest(unittest.TestCase):
         with self.assertRaises(MemoryNotFound):
             self.store.get(owner_ref="owner:alice", project_ref="project:alpha", memory_id="memory-1", now=250)
         self.assertEqual(1, self.store.expire_due(now=250, limit=10))
-        with sqlite3.connect(self.store.path) as db:
+        with closing(sqlite3.connect(self.store.path)) as db, db:
             self.assertEqual(0, db.execute("SELECT COUNT(*) FROM memory_records").fetchone()[0])
             self.assertEqual(0, db.execute("SELECT COUNT(*) FROM memory_projections").fetchone()[0])
         self.assertEqual(0, self.store.expire_due(now=251, limit=10))

@@ -46,6 +46,8 @@ G04では[重複実装の統合記録](../git-consolidation.md#2026-10-02-共通
 
 ## 関連資料
 
+- [RockstarOSの特許調査](../research/rockstar-patent-research.html)・[出典一覧](../research/rockstar-patent-sources.json) — 2026-09-30の調査snapshot、2026-10-05保存。出願・現在のmainの再評価ではない。
+
 - [rocketstar・衛星・OS・ボタンの完全保存アーカイブ](../rocketstar-design/README.md) — DOC03。利用者の保存指示により原本・生成元・旧版・QA画像を保持し、全ファイルのhashを検査する。現行R5要件とアーカイブ内E3前提は分ける。
 
 - [Git consolidation](../git-consolidation.md)

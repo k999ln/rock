@@ -382,7 +382,8 @@
         "docs/avocado-mini-r5/README.md",
         "docs/avocado-mini-r5/package/package_manifest.json",
         "docs/avocado-mini-r5/verification.json",
-        "scripts/verify-avocado-r5-package.py"
+        "scripts/verify-avocado-r5-package.py",
+        "docs/avocado-mini-r5/research/immersive-gta/README.md"
       ]
     },
     {
@@ -3179,6 +3180,8 @@
         "tests/mcp-client.test.mjs",
         "tests/owner-revision-json-store.test.mjs",
         "docs/evidence/pr-consolidation-20261005.json",
+        "docs/research/rockstar-patent-research.html",
+        "docs/research/rockstar-patent-sources.json",
         "docs/amc-autonomy-fixture.md",
         "docs/evidence/amc-main-integration.json"
       ]
@@ -4414,6 +4417,30 @@
     "referenceSourceBase": "5f3a3694",
     "correction": "Replace mistakenly selected SIM/eSIM home with live Mini/Pro site including publicly visible company information"
   },
+  "immersiveGtaResearchArchive": {
+    "researchDate": "2026-09-30",
+    "archiveDate": "2026-10-05",
+    "status": "documentation_archived_not_runtime_or_hardware_acceptance",
+    "record": "docs/avocado-mini-r5/research/immersive-gta/README.md",
+    "researchSourceCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "gtaTested": false,
+    "physicalDisplayTested": false,
+    "hardwareTaskStatus": "MAT15_planned",
+    "conceptImageIsExperimentalEvidence": false
+  },
+  "patentResearch": {
+    "researchDate": "2026-09-30",
+    "repositorySavedAt": "2026-10-05",
+    "report": "docs/research/rockstar-patent-research.html",
+    "sources": "docs/research/rockstar-patent-sources.json",
+    "reviewedSourceCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "status": "research_complete_not_filing_ready",
+    "publicationCount": 31,
+    "sourceCount": 74,
+    "runtimeChanged": false,
+    "patentFiled": false,
+    "nextAction": "初公開日・先行出願を確定し、R1の具体方式・比較実験と専門家による請求項検討を行う。9月30日以降のコード変更は本調査の対象外。"
+  },
   "amcMainIntegration": {
     "status": "in_progress",
     "updatedAt": "2026-10-05",
@@ -4426,7 +4453,7 @@
       "Four shared CSV transform contract fixes, regression tests and synthetic result fixture generator"
     ],
     "evidence": "docs/evidence/amc-main-integration.json",
-    "validation": "Focused AMC/CSV 82/82; full verify exit 0: Node 946, Fashion 22, Mini 18, Preview 21, Meme 7, Farm 25, Worker/D1 1048 and CSV/D1/R2 113. Fixed CLI completes three reviewed tasks then waits for owner acceptance, repeated run unchanged. Same-head CI and main readback remain pending.",
+    "validation": "Focused AMC/CSV 82/82; full verify exit 0: Node 946, Fashion 22, Mini 18, Preview 21, Meme 7, Farm 25, Worker/D1 1048 and CSV/D1/R2 113. Fixed CLI completes three reviewed tasks then waits for owner acceptance, repeated run unchanged. Validation repeated after synchronizing main 80a662cc; exact-head CI and merge SHA are recorded on PR #67.",
     "constraints": [
       "No real worker, model, network or Web synchronization through the AMC fixture CLI",
       "Trusted fixture IDs and synthetic approval are not authentication or real owner consent",
@@ -4434,6 +4461,8 @@
       "CSV is a shared standard capability; no new standalone plugin, pricing or product catalog change",
       "Local fixture acceptance is not customer delivery, production execution or Sites deployment"
     ],
-    "nextAction": "Confirm same-head GitHub CI and merge readback; keep real-worker/Web integration and existing G04 security gates separate."
+    "nextAction": "Use PR #67 for exact-head CI and main merge status; proceed separately with authenticated real-worker/Web integration while preserving existing G04 security gates.",
+    "synchronizedMain": "80a662cc8dbd967ecc4f04e46bba086b54c4d725",
+    "pullRequest": "https://github.com/k999ln/rock/pull/67"
   }
 }

@@ -59,7 +59,8 @@
       "passed": true,
       "inspectionSourceSha256": "92f20e5b514990cfab8ca6beca000aee7174a35a7414fb10a35c8317426c2b9e"
     },
-    "fullVerify": {
+    "environmentRecovery": "Initial log creation hit ENOSPC before tests started; removed only the previous task Vite dependency cache and completed verification.",
+    "fullVerifyBeforeMainSync": {
       "status": "passed",
       "exitCode": 0,
       "command": "WRANGLER_SEND_METRICS=false WRANGLER_LOG_PATH=work/wrangler-logs npm run verify",
@@ -79,11 +80,32 @@
       "logSha256": "96003b6233bbdac38018c972d3c0eec8190938d5d4ddb9dd5fae78e1fa4115dc",
       "verifiedAt": "2026-10-05T07:41:41.216739+00:00"
     },
-    "environmentRecovery": "Initial log creation hit ENOSPC before tests started; removed only the previous task Vite dependency cache and completed verification."
+    "fullVerify": {
+      "status": "passed",
+      "exitCode": 0,
+      "command": "WRANGLER_SEND_METRICS=false WRANGLER_LOG_PATH=work/wrangler-logs npm run verify",
+      "environment": "macOS Node v26.0.0; local Worker/D1/R2 and synthetic identities; no deployment or paid requests",
+      "productTests": 946,
+      "productFailures": 0,
+      "productSkipped": 0,
+      "fashionTests": 22,
+      "miniSiteTests": 18,
+      "publicPreviewTests": 21,
+      "memeTests": 7,
+      "farmTests": 25,
+      "workerD1Assertions": 1048,
+      "csvD1R2Assertions": 113,
+      "webAssetReferences": 146,
+      "missingWebAssets": 0,
+      "logSha256": "888715c71f8acd5c3b9d717838172c5497d5570efcd51707fc95427844d67244",
+      "verifiedAt": "2026-10-05T07:46:46.133325+00:00",
+      "synchronizedMain": "80a662cc8dbd967ecc4f04e46bba086b54c4d725"
+    }
   },
   "independentReview": {
     "blockingFindings": 0,
-    "scope": "Static review of seven AMC scripts and six tests; fixture boundaries unchanged"
+    "scope": "Static review of seven AMC scripts and six tests; fixture boundaries unchanged",
+    "mainSyncReview": "Other main records and ten upstream files are preserved byte-for-byte; only AMC fields and evidence links were appended."
   },
   "limitations": [
     "Trusted private local state directory only; IDs and fixture kind are not authentication or a sandbox",
@@ -92,8 +114,10 @@
     "CSV production validator independence and authenticated job-bound inspection remain incomplete"
   ],
   "publication": {
-    "mainIntegration": "Prepared for PR and same-head CI; not yet merged at this evidence snapshot",
+    "mainIntegration": "Track merge state and merge SHA in the linked GitHub pull request; this file records the pre-merge validation snapshot",
     "deploymentPerformed": false,
-    "githubCi": "pending"
-  }
+    "githubCi": "Read exact-head checks on the linked pull request; local verification is recorded separately",
+    "pullRequest": "https://github.com/k999ln/rock/pull/67"
+  },
+  "synchronizedMain": "80a662cc8dbd967ecc4f04e46bba086b54c4d725"
 }
