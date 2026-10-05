@@ -162,52 +162,106 @@ await test('AMC generated guide and snapshot use the same canonical tasks', () =
   assert.ok(!renderVisualization(mission, project).includes('<script>bad()'));
 });
 
-await test('AMC selection, prerequisite navigation and restored state render without runtime errors', () => {
-  const [mission, project] = fixture();
+// This fixture checks DOM data flow and navigation, not browser event execution.
+function visualization(mission, project) {
   const html = renderVisualization(mission, project);
   const elements = new Map();
-  for (const match of html.matchAll(/id="([a-z-]+)"/g)) {
-    elements.set(match[1], {
-      innerHTML: '',
-      textContent: '',
+  function node(tagName) {
+    let text = '';
+    let markup = '';
+    return {
+      tagName: tagName.toUpperCase(),
+      attributes: {},
+      dataset: {},
+      children: [],
+      parentElement: null,
       listeners: {},
+      focused: false,
+      get textContent() {
+        return text + this.children.map(child => child.textContent).join('');
+      },
+      set textContent(value) {
+        this.replaceChildren();
+        text = String(value);
+      },
+      get innerHTML() {
+        return markup;
+      },
+      set innerHTML(value) {
+        assert.notEqual(this, elements.get('amc-divisions'),
+          'Squad selection data must not reach the HTML parser');
+        this.replaceChildren();
+        markup = String(value);
+      },
+      setAttribute(name, value) {
+        this.attributes[name] = String(value);
+        if (name.startsWith('data-')) this.dataset[name.slice(5)] = String(value);
+      },
+      appendChild(child) {
+        if (child.parentElement) {
+          const siblings = child.parentElement.children;
+          siblings.splice(siblings.indexOf(child), 1);
+        }
+        child.parentElement = this;
+        this.children.push(child);
+        return child;
+      },
+      replaceChildren(...children) {
+        for (const child of this.children) child.parentElement = null;
+        this.children = [];
+        text = '';
+        markup = '';
+        for (const child of children) this.appendChild(child);
+      },
+      closest(selector) {
+        if (selector === '[data-squad]' && Object.hasOwn(this.dataset, 'squad')) return this;
+        return this.parentElement?.closest(selector) ?? null;
+      },
+      focus() {
+        this.focused = true;
+      },
       addEventListener(type, fn) {
         this.listeners[type] = fn;
       },
-    });
+    };
   }
+  for (const match of html.matchAll(/id="([a-z-]+)"/g)) elements.set(match[1], node('div'));
   elements.get('amc-mission-data').textContent = JSON.stringify(mission);
   elements.get('amc-project-data').textContent = JSON.stringify(project);
   const dashboard = elements.get('amc-task-dashboard');
-  dashboard.querySelector = (selector) => elements.get(selector.slice(1));
+  dashboard.querySelector = selector => {
+    assert.match(selector, /^#[a-z-]+$/, 'Only fixed element IDs may become selectors');
+    return elements.get(selector.slice(1));
+  };
   const saves = [];
   const events = {};
   const window = {
     openai: {
       widgetState: null,
-      setWidgetState: async (value) => {
-        saves.push(value);
-      },
+      setWidgetState: async value => { saves.push(value); },
     },
-    addEventListener: (name, fn) => {
-      events[name] = fn;
-    },
+    addEventListener: (name, fn) => { events[name] = fn; },
   };
-  const document = { getElementById: (id) => elements.get(id) };
-  runInNewContext(html.match(/<script>\s*([\s\S]*?)<\/script>/)[1], {
-    document,
-    window,
-  });
+  const document = {
+    getElementById: id => elements.get(id),
+    createElement: tag => node(tag),
+  };
+  runInNewContext(html.match(/<script>\s*([\s\S]*?)<\/script>/)[1], { document, window });
+  const descendants = element => element.children.flatMap(child => [child, ...descendants(child)]);
+  const buttons = () => descendants(elements.get('amc-divisions')).filter(item => item.tagName === 'BUTTON');
+  return { elements, dashboard, saves, events, descendants, buttons };
+}
+
+await test('AMC selection, prerequisite navigation and restored state render without runtime errors', () => {
+  const [mission, project] = fixture();
+  const { elements, dashboard, saves, events, buttons } = visualization(mission, project);
+  assert.equal(buttons().length, 32);
   assert.match(elements.get('amc-task').innerHTML, /PRO04/);
   assert.match(elements.get('amc-task').innerHTML, /着手前提待ち/);
   assert.equal(saves.length, 0, 'initial load must not save state');
   for (const squad of mission.squads) {
-    dashboard.listeners.click({
-      target: {
-        closest: (selector) =>
-          selector === '[data-squad]' ? { dataset: { squad: squad.id } } : null,
-      },
-    });
+    dashboard.listeners.click({ target: buttons().find(button => button.dataset.squad === squad.id) });
+    assert.equal(buttons().find(button => button.dataset.squad === squad.id).focused, true);
     assert.match(
       elements.get('amc-selected-line').textContent,
       new RegExp('^' + squad.id + ' '),
@@ -245,4 +299,63 @@ await test('AMC selection, prerequisite navigation and restored state render wit
     savedCount,
     'state restoration must not save state',
   );
+});
+
+
+await test('AMC squad IDs remain literal through selection, focus and repeated rendering', () => {
+  const ids = [
+    'unit" onpointerenter="globalThis.__amcSynthetic = true',
+    'unit</button><img src="synthetic" onerror="globalThis.__amcSynthetic = true">',
+    'unit&quot;&lt;svg/onload=synthetic&gt;',
+    'unit\"]#.:\\[雪\nnext',
+  ];
+  for (const id of ids) {
+    const [original, project, baseline] = fixture();
+    const oldId = original.squads.find(squad => !['P1', 'P4', 'O2'].includes(squad.id)).id;
+    // Keep every reference valid: this is hostile text, not malformed topology.
+    const mission = JSON.parse(JSON.stringify(original), (_key, value) => value === oldId ? id : value);
+    validateMissionControl(mission, project, baseline);
+    const squad = mission.squads.find(unit => unit.id === id);
+    const division = mission.divisions.find(item => item.id === squad.division);
+    division.name = 'Division <img src="synthetic" onerror="synthetic"> & "name"';
+    squad.name = 'Name <svg onload="synthetic"> & "label"';
+    const view = visualization(mission, project);
+    const verifyNodes = () => {
+      const buttons = view.buttons();
+      assert.equal(buttons.length, mission.squads.length);
+      assert.equal(new Set(buttons.map(button => button.dataset.squad)).size, mission.squads.length);
+      const button = buttons.find(item => item.dataset.squad === id);
+      assert.ok(button);
+      assert.equal(button.textContent, id);
+      assert.equal(button.attributes['data-squad'], id);
+      assert.equal(button.attributes.type, 'button');
+      assert.equal(button.className, 'btn viz-tile');
+      assert.equal(button.attributes['aria-label'], id + ' ' + squad.name + '、段階' + squad.currentStage + ' ' + mission.stagePolicy.stages[squad.currentStage].label);
+      const nodes = view.descendants(view.elements.get('amc-divisions'));
+      assert.ok(nodes.some(item => item.tagName === 'H3' && item.textContent === division.name));
+      assert.ok(nodes.every(item => ['SECTION', 'H3', 'DIV', 'BUTTON'].includes(item.tagName)));
+      assert.ok(nodes.every(item => Object.keys(item.attributes).every(name => !/^on/i.test(name))));
+      return button;
+    };
+    let button = verifyNodes();
+    assert.equal(button.attributes['aria-pressed'], 'false');
+    for (let iteration = 0; iteration < 2; iteration++) {
+      view.dashboard.listeners.click({ target: button });
+      const next = verifyNodes();
+      assert.notEqual(next, button, 'render replaces the nodes');
+      assert.equal(next.focused, true, 'focus follows the newly rendered button');
+      assert.equal(next.attributes['aria-pressed'], 'true');
+      assert.equal(view.saves.at(-1).modelContent.selectedUnit, id);
+      assert.equal(view.saves.at(-1).modelContent.selectedTask, squad.nextTaskIds[0]);
+      assert.ok(view.elements.get('amc-selected-line').textContent.startsWith(id + ' '));
+      assert.equal(view.buttons().filter(item => item.attributes['aria-pressed'] === 'true').length, 1);
+      button = next;
+    }
+    const savedCount = view.saves.length;
+    view.events['openai:set_globals']({ detail: { globals: { widgetState: { modelContent: {
+      selectedUnit: id, selectedTask: squad.nextTaskIds[0],
+    } } } } });
+    assert.equal(verifyNodes().attributes['aria-pressed'], 'true');
+    assert.equal(view.saves.length, savedCount, 'restore does not write selection');
+  }
 });

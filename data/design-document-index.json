@@ -239,6 +239,14 @@
         "json_and_prompt_export",
         "explicit_local_codex_single_task_runner"
       ],
+      "missionBoardRendering": {
+        "scope": "canonical_squad_board_only",
+        "text": "createElement_and_textContent",
+        "squadId": "dataset_value_not_HTML_or_CSS_selector",
+        "focus": "render_local_button_map",
+        "evidence": "docs/evidence/spider-mission-squad-dom.json",
+        "doesNotGrantExecutionAuthority": true
+      },
       "implementationBoundary": {
         "storage": "existing_work_jobs_payload_with_authenticated_user_and_revision_cas",
         "templateRoles": 4,
