@@ -9,7 +9,7 @@
 - データ境界: 6、table: 125
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 160 task中 105 done、37 in progress、17 planned、1 blocked
+- 作業進捗: 160 task中 104 done、38 in progress、17 planned、1 blocked
 - 現在milestone: SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入
 
 ## 保存境界と配備状態

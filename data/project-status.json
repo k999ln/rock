@@ -3162,8 +3162,8 @@
     },
     {
       "id": "G04",
-      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化",
-      "status": "done",
+      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約と検証入口を共通化し、未統合PRの現行main互換を検証",
+      "status": "in_progress",
       "dependsOn": [],
       "evidence": [
         "docs/git-consolidation.md",
