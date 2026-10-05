@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { OperationRequestError } from '@/lib/operations-client';
+import { createCsvHistoryRequest } from '@/lib/csv-history-request';
 import { CSV_TRIAL_SAMPLE } from '@/lib/csv-trial-sample';
 import {
   Download,
@@ -14,6 +15,8 @@ import {
   Upload,
 } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
+import ZemaNavigation from '@/components/zema-navigation';
+import SkyLibrarySave from '@/components/sky-library-save';
 import styles from './csv-business-workspace.module.css';
 
 type Job = {
@@ -41,6 +44,7 @@ const statusLabel: Record<string, string> = {
   quoted: '見積り確認待ち',
   accepted: '受付済み',
   processing: '処理中',
+  cleanup_pending: '削除待ち・再試行可能',
   completed: '検査合格・納品可能',
   quality_failed: '検査不合格・再試行待ち',
 };
@@ -56,7 +60,8 @@ const columns = (value: string) =>
     .map((item) => item.trim())
     .filter(Boolean);
 
-export default function CsvBusinessWorkspace() {
+export default function CsvBusinessWorkspace({ workspace = false }: { workspace?: boolean }) {
+  const returnTo = workspace ? '/zema/tools/rockstar-csv-cleanup' : '/csv';
   const [jobs, setJobs] = useState<Job[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [rename, setRename] = useState('');
@@ -75,6 +80,7 @@ export default function CsvBusinessWorkspace() {
   const [ready, setReady] = useState(false);
   const [needsSignin, setNeedsSignin] = useState(false);
   const [paymentReturn, setPaymentReturn] = useState<{ jobId: string; canceled: boolean } | null>(null);
+  const historyRequest = useRef(createCsvHistoryRequest());
   const restoredPaymentJob = useRef<string | null>(null);
   const reportError = useCallback((reason: unknown, fallback: string) => {
     if (reason instanceof OperationRequestError && reason.status === 401) {
@@ -124,35 +130,42 @@ export default function CsvBusinessWorkspace() {
   ]);
 
   const refresh = useCallback(async () => {
+    const request = historyRequest.current.begin();
+    if (!request) return;
     try {
       const data = await json<{
         jobs: Job[];
         trialPayment?: { available: boolean; mode: string | null };
-      }>(await fetch('/api/csv-jobs', { cache: 'no-store' }));
+      }>(await fetch('/api/csv-jobs', { cache: 'no-store', signal: AbortSignal.any([request.signal, AbortSignal.timeout(10000)]) }));
+      if (!request.current()) return;
       setJobs(data.jobs);
       if (data.trialPayment) setTrialPayment(data.trialPayment);
       setReady(true);
       setNeedsSignin(false);
       setError('');
     } catch (reason) {
+      if (!request.current()) return;
+      setReady(false);
+      setTrialPayment({ available: false, mode: null });
       reportError(reason, '履歴を読み込めませんでした。');
     }
   }, [reportError]);
 
   useEffect(() => {
+    const requests = historyRequest.current;
     const timer = window.setTimeout(() => void refresh(), 0);
-    return () => window.clearTimeout(timer);
+    return () => { window.clearTimeout(timer); requests.invalidate(); };
   }, [refresh]);
   useEffect(() => {
     if (
-      !jobs.some(
+      busy || !ready || !jobs.some(
         (job) => job.status === 'processing' || job.status === 'accepted',
       )
     )
       return;
     const timer = window.setInterval(() => void refresh(), 3000);
     return () => window.clearInterval(timer);
-  }, [jobs, refresh]);
+  }, [jobs, refresh, busy, ready]);
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
@@ -177,6 +190,8 @@ export default function CsvBusinessWorkspace() {
   }, [ready, returnedJob]);
 
   async function quote(selected: File, sample: boolean, trial = false) {
+    if (!ready) return;
+    const finishMutation = historyRequest.current.mutate();
     setBusy(true);
     setError('');
     try {
@@ -194,15 +209,23 @@ export default function CsvBusinessWorkspace() {
         }),
       );
       setJobs((items) => [job, ...items.filter((item) => item.id !== job.id)]);
-      if (sample) await accept(job, true);
+      if (sample) {
+        // The quote has settled. Hand the mutation fence to acceptance so its
+        // failure handler can refresh an uncertain server result immediately.
+        finishMutation();
+        await accept(job, true);
+      }
     } catch (reason) {
       reportError(reason, '見積りを作成できませんでした。');
     } finally {
+      finishMutation();
       setBusy(false);
     }
   }
 
   async function accept(job: Job, sample = false) {
+    if (!ready) return;
+    const finishMutation = historyRequest.current.mutate();
     setBusy(true);
     setError('');
     try {
@@ -224,14 +247,18 @@ export default function CsvBusinessWorkspace() {
         ...items.filter((item) => item.id !== updated.id),
       ]);
     } catch (reason) {
+      finishMutation();
       await refresh();
       reportError(reason, '開始できませんでした。入力は保存されています。');
     } finally {
+      finishMutation();
       setBusy(false);
     }
   }
 
   async function payment(job: Job, action: 'checkout' | 'confirm') {
+    if (!ready) return;
+    const finishMutation = historyRequest.current.mutate();
     setBusy(true);
     setError('');
     try {
@@ -252,12 +279,15 @@ export default function CsvBusinessWorkspace() {
     } catch (reason) {
       reportError(reason, '支払いを確認できませんでした。');
     } finally {
+      finishMutation();
       setBusy(false);
     }
   }
 
   async function remove(job: Job) {
+    if (!ready) return;
     if (!window.confirm(`「${job.inputName}」と成果物を削除しますか？`)) return;
+    const finishMutation = historyRequest.current.mutate();
     setBusy(true);
     setError('');
     try {
@@ -267,8 +297,11 @@ export default function CsvBusinessWorkspace() {
       if (!response.ok) await json(response);
       setJobs((items) => items.filter((item) => item.id !== job.id));
     } catch (reason) {
+      finishMutation();
+      await refresh();
       reportError(reason, '削除できませんでした。');
     } finally {
+      finishMutation();
       setBusy(false);
     }
   }
@@ -277,8 +310,17 @@ export default function CsvBusinessWorkspace() {
     type: 'text/csv',
   });
   return (
-    <WorkspaceShell title="Sky · CSV仕事" hideTopActions>
+    <WorkspaceShell title={workspace ? 'Zema · CSV仕事' : 'Sky · CSV仕事'} hideTopActions>
       <div className={styles.page}>
+        <div className={styles.toolAccess} onClickCapture={(event) => {
+          if (busy && event.target instanceof Element && event.target.closest('a[href]')) event.preventDefault();
+        }}>
+          {workspace ? <ZemaNavigation active="library" /> : <nav aria-label="CSVの移動先">
+            <Link href="/sky">Skyへ戻る</Link>
+            <Link href="/zema/library">Zemaのライブラリ</Link>
+          </nav>}
+          {!workspace && <SkyLibrarySave toolId="rockstar-csv-cleanup" returnTo={returnTo} disabled={busy} />}
+        </div>
         <header className={styles.hero}>
           <div>
             <p className={styles.eyebrow}>最初の売れる仕事</p>
@@ -308,10 +350,11 @@ export default function CsvBusinessWorkspace() {
           <div className={styles.error} role="alert">
             {error}
             {needsSignin && (
-              <a href="/signin-with-chatgpt?return_to=/csv" target="_top">
-                サインイン
+              <a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">
+                別タブでサインイン
               </a>
             )}
+            <p>入力はこの画面に残ります。{needsSignin ? 'サインイン後に接続を確認してください。' : '通信を確認して、履歴を再確認してください。'}確認だけでは処理を実行しません。</p><button type="button" onClick={() => void refresh()} disabled={busy}>{needsSignin ? 'サインイン後に接続を確認' : '履歴を再確認'}</button>
           </div>
         )}
 
@@ -564,7 +607,7 @@ export default function CsvBusinessWorkspace() {
                 {job.quoteMinor === 5000 && job.status === 'quoted' && (
                   <div className={styles.actions}>
                     <button
-                      disabled={busy || !trialPayment.available}
+                      disabled={busy || !ready || !trialPayment.available}
                       onClick={() => void payment(job, 'checkout')}
                     >
                       {trialPayment.mode === 'test'
@@ -572,7 +615,7 @@ export default function CsvBusinessWorkspace() {
                         : '50円を支払う'}
                     </button>
                     <button
-                      disabled={busy || !trialPayment.available}
+                      disabled={busy || !ready || !trialPayment.available}
                       onClick={() => void payment(job, 'confirm')}
                     >
                       支払いを確認して開始
@@ -584,7 +627,7 @@ export default function CsvBusinessWorkspace() {
                   job.quoteMinor !== 5000 && (
                     <button
                       className={styles.primary}
-                      disabled={busy || paymentReference.trim().length < 4}
+                      disabled={busy || !ready || paymentReference.trim().length < 4}
                       onClick={() => void accept(job)}
                     >
                       入金確認済みとして開始
@@ -592,7 +635,7 @@ export default function CsvBusinessWorkspace() {
                   )}
                 {job.status === 'quality_failed' && (
                   <button
-                    disabled={busy || job.attempt >= 3}
+                    disabled={busy || !ready || job.attempt >= 3}
                     onClick={() =>
                       void accept(job, job.paymentStatus === 'sample')
                     }
@@ -622,7 +665,8 @@ export default function CsvBusinessWorkspace() {
                 )}
                 <button
                   className={styles.delete}
-                  disabled={busy}
+                  disabled={busy || !ready || job.status === 'processing'}
+                  title={job.status === 'processing' ? '処理の完了後に削除できます。' : undefined}
                   onClick={() => void remove(job)}
                 >
                   <Trash2 size={15} />

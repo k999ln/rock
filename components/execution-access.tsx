@@ -5,6 +5,9 @@ import { usePathname } from 'next/navigation';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 
 const accessCheckEvent = 'sky-execution-access-check';
+export function requestExecutionAccessCheck() {
+  window.dispatchEvent(new Event(accessCheckEvent));
+}
 
 export type ExecutionAccessState = 'checking' | 'ready' | 'signin' | 'unavailable';
 
@@ -69,7 +72,7 @@ export function ExecutionSignin({ state = 'signin' }: { state?: ExecutionAccessS
         type="button"
         className="rock-button"
         disabled={state === 'checking'}
-        onClick={() => window.dispatchEvent(new Event(accessCheckEvent))}
+        onClick={requestExecutionAccessCheck}
       >
         {state === 'checking' ? '接続を確認中…' : '接続を再確認'}
       </button>
@@ -92,7 +95,7 @@ export function ExecutionSignin({ state = 'signin' }: { state?: ExecutionAccessS
       <button
         type="button"
         className="rock-button"
-        onClick={() => window.dispatchEvent(new Event(accessCheckEvent))}
+        onClick={requestExecutionAccessCheck}
       >
         サインイン後に接続を確認
       </button>

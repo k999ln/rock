@@ -377,6 +377,24 @@ export function operations(
     ).results;
   }
 
+  async function listSkyLibrary() {
+    const rows = await statement('SELECT tool, saved_at AS savedAt FROM sky_library_items WHERE user_id = ? ORDER BY saved_at DESC, tool', user).all<{ tool: string; savedAt: number }>();
+    return rows.results;
+  }
+
+  async function saveSkyLibrary(value: unknown) {
+    const v = object(value, ['tool', 'saved']);
+    const tool = skyConnectionToolName(v.tool);
+    if (typeof v.saved !== 'boolean') throw new OperationError('保存状態を指定してください。');
+    if (v.saved) {
+      await statement('INSERT INTO sky_library_items (user_id,tool,saved_at) VALUES (?,?,?) ON CONFLICT(user_id,tool) DO NOTHING', user, tool, clock()).run();
+    } else {
+      await statement('DELETE FROM sky_library_items WHERE user_id = ? AND tool = ?', user, tool).run();
+    }
+    // Saving an item never creates an execution consent or an entitlement.
+    return { tool, saved: v.saved };
+  }
+
   async function connectSky(value: unknown) {
     const v = object(value, ['tool']),
       tool = skyConnectionToolName(v.tool),
@@ -777,6 +795,8 @@ export function operations(
     },
     control,
     listSkyConnections,
+    listSkyLibrary,
+    saveSkyLibrary,
     connectSky,
     listSkyProviderConnections,
     saveSkyProviderConnection,

@@ -1,0 +1,16 @@
+{
+  "$schema": "./registry.schema.json",
+  "schema": "rockstaros-mcp-registry/1",
+  "servers": [
+    {
+      "id": "rock-star-mr",
+      "name": "Sky 基本自動化の限定試験",
+      "description": "案件チェック・出典整理・無料版記事・納品照合の4機能",
+      "transport": "stdio",
+      "command": "python3",
+      "args": ["mr/mcp_server.py"],
+      "cwd": "..",
+      "required": true
+    }
+  ]
+}

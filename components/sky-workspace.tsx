@@ -454,7 +454,7 @@ export default function SkyWorkspace({
       title="Sky"
       tone="sky"
       contentClassName={styles.shell}
-      onConnect={() => setDeviceOpen(true)}
+      onConnect={() => router.push('/sky/network')}
     >
       <div className={styles.page}>
         <header className={styles.heading}>
@@ -538,7 +538,7 @@ export default function SkyWorkspace({
           <button onClick={() => setMcpOpen(true)}><Network size={17} /> PCのツール</button>
           <button onClick={() => setPublishOpen(true)}><PackagePlus size={17} /> ツールを登録</button>
         </nav>
-        <SkyMcpCenter open={mcpOpen} connected={connected} onOpenChange={setMcpOpen} onOpenDevice={() => setDeviceOpen(true)} />
+        <SkyMcpCenter open={mcpOpen} connected={connected} onOpenChange={setMcpOpen} onOpenDevice={() => router.push('/sky/network')} />
         <details className={styles.telegram}>
           <summary><Send size={16} /> Telegramから使う</summary>
           <SkyActivationPanel />

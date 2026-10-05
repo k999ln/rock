@@ -15,6 +15,10 @@ import { homedir } from 'node:os';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import {
+  PILOT_ORIGIN, PILOT_TTL_MS, connectorAuthorizationValid,
+  pilotToolList, validatePilotRegistry, validatePilotRpc,
+} from './pilot-policy.mjs';
 import { assertSafeOutbound } from '../spider-guard/detector.mjs';
 import { readPrivateLocalDescriptor } from './local-descriptor.mjs';
 
@@ -32,6 +36,7 @@ const CALL_TIMEOUT_MS = 60_000;
 const APPROVAL_TTL_MS = 5 * 60_000;
 const MAX_APPROVALS = 10_000;
 const ORIGINS = new Set([
+  PILOT_ORIGIN,
   'https://rockstaros-kaiya.noellesugar1.chatgpt.site',
   'https://rock-star.kirin-999.chatgpt.site',
   'https://loop-automation-hub.kirin-999.chatgpt.site',
@@ -632,6 +637,7 @@ export class McpHub {
   }
   async rpc(id, method, params = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
     const entry = this.entry(id);
+    if (entry.spec.pilot) validatePilotRpc({ method, params });
     const message = { jsonrpc: '2.0', id: this.nextId++, method, params };
     // Check the complete message, including custom method parameters, before
     // starting a process or opening an upstream connection.
@@ -651,7 +657,8 @@ export class McpHub {
         502,
         'mcp_error',
       );
-    return response.result;
+    return this.entry(id).spec.pilot && method === 'tools/list'
+      ? pilotToolList(response.result) : response.result;
   }
   async connect(id) {
     const entry = this.entry(id);
@@ -913,11 +920,17 @@ export async function createConnector({
   port = DEFAULT_PORT,
   allowedOrigins = ORIGINS,
   localToolDirectory = process.env.SKY_LOCAL_TOOL_DIR ?? join(homedir(), '.sky', 'mcp-tools'),
+  pilot = false,
 } = {}) {
   const specs = validateRegistry(
     JSON.parse(await readFile(registryPath, 'utf8')),
     registryPath,
   );
+  if (pilot) {
+    validatePilotRegistry(specs);
+    specs[0].pilot = true;
+    allowedOrigins = new Set([PILOT_ORIGIN]);
+  }
   for (const spec of specs.filter(
     (item) => item.transport === 'streamable_http',
   ))
@@ -925,6 +938,8 @@ export async function createConnector({
   const hub = new McpHub(specs),
     tokens = new Map();
   let boundPort = port;
+  let pilotDeadline = null;
+  let pilotTimer;
   const server = createServer(async (request, response) => {
     const origin = request.headers.origin;
     const allowed =
@@ -938,25 +953,44 @@ export async function createConnector({
       if (request.method === 'POST' && request.url === '/connect') {
         if (canonical(await body(request)) !== '{}')
           fail('接続requestを確認してください。');
-        const token =
-          tokens.get(origin) ?? randomBytes(32).toString('base64url');
-        tokens.set(origin, token);
+        if (pilot && pilotDeadline !== null && Date.now() >= pilotDeadline)
+          fail('限定試験は終了しました。Connectorを停止してください。', 403, 'pilot_expired');
+        if (pilot && pilotDeadline === null) {
+          pilotDeadline = Date.now() + PILOT_TTL_MS;
+          pilotTimer = setTimeout(() => {
+            tokens.clear();
+            hub.approvals.clear();
+            hub.close();
+            server.closeAllConnections();
+            server.close();
+          }, PILOT_TTL_MS);
+          pilotTimer.unref();
+        }
+        // These grants are issued and stored only by this Connector. The pilot
+        // deadline above controls their lifetime; ordinary grants do not expire.
+        // Reconnecting reuses that state, without authenticating a token against
+        // itself or extending the pilot. Requester authentication remains below.
+        const grant = tokens.get(origin) ?? {
+          token: randomBytes(32).toString('base64url'),
+          expiresAt: pilotDeadline,
+        };
+        tokens.set(origin, grant);
         return send(
           response,
           200,
-          { token, connector: 'rockstaros-sky-mcp', serverCount: specs.length },
+          { token: grant.token, expiresAt: grant.expiresAt === null ? null : new Date(grant.expiresAt).toISOString(), connector: 'rockstaros-sky-mcp', serverCount: specs.length },
           origin,
         );
       }
       const authorization = request.headers.authorization ?? '';
-      const expected = tokens.get(origin) ? `Bearer ${tokens.get(origin)}` : '';
-      if (
-        !expected ||
-        authorization.length !== expected.length ||
-        !timingSafeEqual(Buffer.from(authorization), Buffer.from(expected))
-      )
+      const grant = tokens.get(origin);
+      if (grant?.expiresAt !== null && grant?.expiresAt <= Date.now()) {
+        tokens.delete(origin);
+        hub.approvals.clear();
+      }
+      if (!connectorAuthorizationValid(authorization, grant))
         return send(response, 401, { error: 'Unauthorized' }, origin);
-      hub.syncLocal(await discoverLocalTools(localToolDirectory));
+      if (!pilot) hub.syncLocal(await discoverLocalTools(localToolDirectory));
       if (request.method === 'GET' && request.url === '/servers')
         return send(response, 200, { servers: hub.list() }, origin);
       const match = request.url?.match(
@@ -1014,6 +1048,7 @@ export async function createConnector({
       }
       if (request.method === 'POST' && request.url === '/mcp') {
         const input = await body(request);
+        if (pilot) validatePilotRpc(input);
         const entry = hub.entry('rock-star-mr');
         assertLegacyMrRequest(entry.spec, input);
         assertMcpOutbound(entry.spec, input);
@@ -1023,7 +1058,9 @@ export async function createConnector({
             ? CALL_TIMEOUT_MS
             : REQUEST_TIMEOUT_MS,
         );
-        return send(response, result === null ? 202 : 200, result, origin);
+        const scopedResult = pilot && input.method === 'tools/list' && result?.result
+          ? { ...result, result: pilotToolList(result.result) } : result;
+        return send(response, result === null ? 202 : 200, scopedResult, origin);
       }
       return send(response, 404, { error: 'Not found' }, origin);
     } catch (error) {
@@ -1045,7 +1082,7 @@ export async function createConnector({
     server.listen(port, '127.0.0.1', resolvePromise);
   });
   boundPort = server.address().port;
-  server.on('close', () => hub.close());
+  server.on('close', () => { clearTimeout(pilotTimer); tokens.clear(); hub.approvals.clear(); hub.close(); });
   return { server, hub, port: boundPort };
 }
 
@@ -1065,7 +1102,7 @@ if (
     portIndex >= 0 ? Number(process.argv[portIndex + 1]) : DEFAULT_PORT;
   if (!Number.isInteger(port) || port < 1 || port > 65535)
     fail('portを確認してください。');
-  const { server } = await createConnector({ registryPath, port });
+  const { server } = await createConnector({ registryPath, port, pilot: process.argv.includes('--pilot') });
   console.error(
     `Sky MCP Connector: http://127.0.0.1:${port} (${registryPath})`,
   );
