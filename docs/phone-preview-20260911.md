@@ -1,5 +1,21 @@
 # スマホへ書き込むRockstarOSの開発
 
+## 現行のcompileとflashの分離（2026-10-05）
+
+`COMPILE_BRINGUP`と`RELEASE_FLASH`は別gate。`python3 scripts/prepare-phone-build.py build-config --mode bringup`は現行lockから`frankel-cur-userdebug`、`target-files-package,otatools-package`を返す。下記の古い手順にある正式署名・Google復旧artifact・本番Operator入力はrelease用で、compile-onlyの前提へ戻さない。実行入口は必ず`--mode`を指定する。
+
+```sh
+ROCK_LOCAL_AI_APK=/absolute/path/to/reviewed-unsigned.apk \
+ROCK_ANDROID_AAPT2=/absolute/path/to/aapt2 \
+bash external/rockstaros/scripts/build-phone-bringup.sh --mode bringup \
+  /absolute/path/to/os-tree /absolute/path/to/grapheneos_allowed_signers
+```
+
+bringupでも、専用x86_64 Linux、64 GiB RAM、空き400 GiB、固定した上流source/tag、生成vendor inventory、現行overlayと一致するレビュー済みLocal AI APKが必要。Operator公開設定がなければ明示除外する。出力は試験用で、OS署名・flash・一般公開を許可しない。release用の入口は`--mode release`で、初回flashの4 gateも維持する。
+
+2026-10-05のこのMacの読取り診断はDarwin/arm64・16 GiB RAMで不適合。容量を回復してもCPU/OS/RAM条件は変わらない。クラウド予算・専用サーバーの確定は未完了であり、サーバー作成や全OS buildは今回実施していない。Local AI API v2の過去のAPK実機合格を、現在のv3/v4 overlayのbuild・実機合格へ流用しない。APK workflowの`sdkmanager`のPATH不足を再現して修正中。
+
+
 ## 多機種対応の境界
 
 実装方式は[共通Core＋機種別Device Support Package](device-support-architecture.md)。端末ごとにboot chain、kernel、vendor、firmware、partition、AVB／OTA／復旧が異なるため、一つのimageをBlackBerry、Pixel、iPhoneへ共通に書き込む方式にはしない。Android GSIは互換性調査用で、電話・カメラ・暗号化・更新・復旧が通るまで完全対応とは表示しない。iPhone／iPadはOS置換対象ではなく、App Store等で動くclient側を設計対象とする。現在の機械可読状態は[対応台帳](../data/device-support-matrix.json)を正本とする。

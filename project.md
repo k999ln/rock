@@ -1,6 +1,8 @@
-## 2026-10-05 — 未完了・停止条件の解消（G04、着手）
+## 2026-10-05 — 未完了・停止条件の解消（G04、native修正済み・Local AI build継続）
 
 利用者の「全部問題解決して進めて」を受け、Git / CI / Operations（ROCK）を主担当とする。main `996b1955`を独立worktreeへ固定。Web最新CIと直前mainのAndroid CIは合格済み。native main-1の未close SQLite接続、実機OS build/署名/復旧、Provider受入を区別して調査する。既存checkoutで進行中のeSIM/決済変更は別作業として保護する。
+
+nativeのSQLite接続3件を確実にcloseし、Linux CI 1,736試験と`npm run verify`がcommit `c79476e2`で合格。Local AI現行v4のunsigned APK workflowを実行し、9月からの`sdkmanager` PATH不備を再現・修正、`9d82ac5a`で再build中。Web/native workflowへ手動再検証入口を追加し、古いphone手順を`--mode bringup`/`--mode release`へ整合させる。全OS用x86_64 Linux/予算、flash 4 gate、実Provider、Mini実機、未修正版依存2件は未完了。再生成可能なnpm/pip/未使用Lima/停止中Gradleの変換cacheだけを整理し、ソース・VMは保持。ADB接続端末0。PR #65へ保存し、main統合・公開は別。詳細は[停止条件](docs/workstreams/10-git-ci-operations.md)と[証拠](docs/evidence/release-blocker-resolution.json)。
 
 ## 2026-10-05 — 未統合PRのmain反映（19件統合済み、SPIDER別管理）
 
