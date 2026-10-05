@@ -2,126 +2,114 @@
   "schema": "amc-main-integration/1",
   "date": "2026-10-05",
   "baseCommit": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
-  "scope": "Bounded local arithmetic fixture, prerequisite pure planning modules and shared CSV correctness fixes; no Web worker or real provider integration",
-  "sourceFiles": {
-    "scripts/amc-autonomy.mjs": "bf42cb7772c35074bf2d25633ac5e54ae978e34fa8d2598943c053e43e0fefc5",
-    "scripts/amc-autonomy-store.mjs": "0022a6f7b368a7d4653ff72e77a81aba07979573ebf679ab60aa47ce63171d5c",
+  "scope": "AMC command center, owner-scoped Goal persistence, Codex roles and local fixture/parallel runners",
+  "preservedMainContracts": [
+    "WorkPlan schema and legacy hydration",
+    "Cloud Agent quote/result review",
+    "Zema service entitlement on new AMC storage"
+  ],
+  "verification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "tests": 999,
+    "amcFocusedTests": 129,
+    "workerD1Assertions": 1069,
+    "csvWorkerD1R2Assertions": 113,
+    "build": "passed",
+    "assetClosureMissing": 0,
+    "logSha256": "cd7926aa1050013a1907eb85983bc319888be67f24af46a09ac5572b00ceeb32"
+  },
+  "sourceHashes": {
+    ".codex/agents/amc-reviewer.toml": "8cc020725d255438813460b36b8e262384ba5b381a1fe67d3df2017856640ee1",
+    ".codex/agents/amc-worker.toml": "b77d3eb5175a1987cab03273e29e0cb80c00c26a768173b395fc910263a4b588",
+    ".codex/agents/amc.toml": "459f4628efe99b8814c9025bb040ebf841e791c7dfb4018ae3ffb83541411b21",
+    "app/amc/page.tsx": "fd15b179cc732a47b323a58fa8162e0b0ebca9777e0dca18f2712d23f804c08b",
+    "app/api/amc/route.ts": "2778ff81b99c3a9759c128cd7c767066cab540c68028c32e6a57841c66e1caab",
+    "app/api/work-jobs/route.ts": "15cc770fe18876e162fff774d390ef8eefe9f26d7cd475c8c3065d59ec73774f",
+    "app/zema/amc/page.tsx": "4dd3295ce6604fb5b194d01f2dca8eb788c9c9d4304f910e971034ae4f075b26",
+    "components/amc-command-center.module.css": "5f44e7db6b9387b974c5e04c1cf7727fa6d80086c578a494e17ff4e71ff6e388",
+    "components/amc-command-center.tsx": "a76530548f762cda3046be9df27a9ec463a4eed59916221a9a0a11d8a9945485",
+    "components/amc-quick-board.module.css": "a18257da79a4a225f7c0b09b3093afb35e697ddf834ceed088cc71770b17be1d",
+    "components/amc-quick-board.tsx": "a3a5d60a53843fab5d1af99d7b0fe1485e90d124cb00c622f2bed3d3fa0f2709",
+    "components/amc-sky-launch.tsx": "8245a360b3869258d52764e5ea4788e2d0b9b94d5222054501916da3691e234d",
+    "components/amc-tool-runner.module.css": "45f9d35ed22de2e2c281aba21145c34a5294cff61fb1d8c9b7b56c0d531fbbe4",
+    "components/amc-tool-runner.tsx": "da2c6cc2482cba57fa95a42a95efaf936386b8cd432478fa0011fa3494b0e36a",
+    "components/amc-workspace.tsx": "ad9e7c73fc9ee7ee0a8584377b88f9c9e92b9a8ebaca03734d40608c8b95a180",
+    "components/sky-application.module.css": "f45197e6f55a487994abfce9a906f87ad05eef2717e598301c4938aabde17b13",
+    "components/sky-library.module.css": "14274c2c7c1d73b8e211ffa3fea7eea1dd1c9133aa4244738d403ae4b672c5da",
+    "components/sky-tool-workspace.tsx": "fae019f2f360b64637998e9e6823b274441ae6c380f7a0700d10ae7e05452c76",
+    "components/tool-icon.tsx": "dcee1748cd4bd94c9b08d518844f0f7fd0d0c92395e4e0003d366e8889697119",
+    "components/workbench.tsx": "5c0db72a25be26360cf4e2d5ebb12c129e3eb77ef53d1aeccbdd3a5fcad1f82c",
+    "data/amc/agent-definitions.json": "5b5f656c819af505261a58faae871132d08ccd320f38d6afb84e88a2c7032dfb",
+    "data/amc/agent-runtime-source.json": "ba8f23be13b14f56c771bcc71c718a1db752e48fc0066ff7c08ece52f2827656",
+    "data/amc/integration-input-status.json": "f77fa65d40e756d8f73d9b491c8693f4e9d3c4922cbcb62e49cf6969b3d1c476",
+    "data/amc/mission-control.json": "e5d7338a118ddeaff27e350f265e93f09a683c4e3e7acac132cc0fd061632496",
+    "data/amc/project-status.json": "6a0a6a7e2954a95691d7cbc17ad5d8ae4cf402d029cf1a83408ad2f84ccba388",
+    "data/amc/provenance.json": "f7cfe153d83df7d14f6ae471f0f38bb0cacc787afecccbdfc05cfbcf5184dd65",
+    "data/amc/sky-contracts-v1.json": "c79cfb8e1de01b8dc8897506b57673c1876f93dc2255a476b6050ab501dde9da",
+    "data/amc/sky-directives-v2.json": "a39f2a5743330a031ce6af36ee21eabfd127ce32d8fea0c4d08b893bc66b5555",
+    "data/amc/sky-launch-audit.json": "341e4e2aa07ea9ae29b1e35a056baab3725c83dcef3c73041ac98c46173ae281",
+    "data/amc/sky-quick-checklist.json": "890abf4aab588a664b25c1677f842bdbca138955df223b9ae81a4beb13abb33f",
+    "data/amc/sky/provenance.json": "9741340a6fab62bffebbaf8d0cd41d4e8f19b1cdee3b9c856e1fd92264c5e09f",
+    "data/amc/sky/sky-amc-goal.json": "0fe39f4153d3ef3eb0f43d039abb3940db5d115436fcaa6d8884bd30928bd289",
+    "data/amc/sky/sky-amc-plan.json": "d3ba883e760d2e3e358aec728109b3557946dd0036b173286d3b7d5b9d6fe574",
+    "data/amc/sky/sky-amc-source.json": "1d83acd0c4d463036a3ff1357543a5714879c98a5c14d4ec817dd805da6d495e",
+    "lib/amc-sky-web.ts": "4be4b7cf972620e8136cac63ad17d0c17b6fcef8fd36edc26bbffa450b9e5e91",
+    "lib/amc-tool.ts": "30fd651b2bbb0267768046c20db6fa20b689f332e36e4b3dc6d1344073e901e3",
+    "lib/catalog.ts": "3d8afcd9543ff23580ae43df1f2570d4c58765753e4ec66dd55edc425229e4a6",
+    "lib/sky-routing.ts": "5642be64cfbb7f66818065d9f62d465e2883003fb63a99ed40fa980092f5e9b6",
+    "lib/sky-tool-labels.ts": "f15dec71443f3ececf6eddf2f9351d1757e7d26c23ec4da71c68fcca5f68058b",
+    "lib/sky-tool-ui.ts": "0971fde94fa94dfc2c43b9864fdeec6af0c3f5260f53cf6d4d4ffd7862ab02de",
+    "lib/work-store.ts": "e7466f6014d5179bcd137a6bfc9c033f4179cbbb769d45f34cbda72d1f6897b9",
+    "lib/workflow.ts": "3c998df31e342ccd08d91a35964ac04a1faa9f6fa4a0dda5a3cc1a6f316f5cf5",
+    "scripts/amc-agent.mjs": "f8555b4320f5ff52900171d5ca3029c7e2802a90717f92d08c22fd8e6e25c2c9",
     "scripts/amc-autonomy-fixture.mjs": "b7ecfd5f2cf93ccd80968df16c5feb619b4bdaf0eae8403c91eb2bead5455f82",
-    "scripts/amc-goal-engine.mjs": "c1aac8438c3d066f6f3cf5194c800ba212114111abcdd286b008602670a91702",
-    "scripts/amc-sky-authority.mjs": "8d017daa360701f4a057a538d7df64f6980624161dcd89e2176ca827697e7248",
-    "scripts/amc-request-plan.mjs": "10cb45d524f6d70b2245987637f4c29db2efa7c15fd6a0651dcaebdd23000b2f",
+    "scripts/amc-autonomy-store.mjs": "0022a6f7b368a7d4653ff72e77a81aba07979573ebf679ab60aa47ce63171d5c",
+    "scripts/amc-autonomy.mjs": "bf42cb7772c35074bf2d25633ac5e54ae978e34fa8d2598943c053e43e0fefc5",
+    "scripts/amc-codex.mjs": "d5d95e987e811b87810b14bc7ce11705fc8cf8c3e09791af95cc3646da83647d",
     "scripts/amc-effort.mjs": "4f74f0df81a0f48a6ecc3051c7bfdee8ac303e60181259ce091050f4d1e46ac4",
-    "scripts/csv-result-fixture.mjs": "1e8b8c830b2e01913be276ab9ecb3049ecf66daeef9a139738c4fdeb4fe98290",
-    "tests/amc-autonomy.test.mjs": "0d480c91625c5e0125ed3e6dc24ae0e98b3b704c15b02cedc04151ff612571d2",
+    "scripts/amc-goal-engine.mjs": "c1aac8438c3d066f6f3cf5194c800ba212114111abcdd286b008602670a91702",
+    "scripts/amc-parallel.mjs": "67506ee1c45312a758a9fbd29914fe8a6417445c8a702b831b03c23ed968d611",
+    "scripts/amc-request-plan.mjs": "10cb45d524f6d70b2245987637f4c29db2efa7c15fd6a0651dcaebdd23000b2f",
+    "scripts/amc-sky-authority.mjs": "8d017daa360701f4a057a538d7df64f6980624161dcd89e2176ca827697e7248",
+    "scripts/amc-sky-directives.mjs": "b056c03e5642238012b230ccc6ce85a8cbe883b427cc712c95743877de5d7c4c",
+    "scripts/amc-sky-observe.mjs": "4b0a9a654bc92ff642b2206d7041b7166599153c36fdde0661191776d1358b78",
+    "scripts/amc-sky-plan.mjs": "728e833a5715ad1e3565cf3540901b76848f06d6278e1ce97e6e70e1aa673198",
+    "scripts/check-design-document-index.mjs": "9439855e869b87ecab615ffabae8b33293ed05009ed4ecafc7a19d1549b4e9ca",
+    "scripts/check-llm-architecture.mjs": "3cfee64ea8d5a2762d49eb02b8911316aaff367d708bc49fbaad9b30eade7334",
+    "scripts/check-sky.mjs": "f48bef426e7ffe51b8f65b2949cf9cc5c4724566165665c6a4fa5251baa06359",
+    "scripts/check-work-api.mjs": "20db789ba21490c6fb55783847acf8434f87d5448b98b625cd867f6f85395e32",
+    "tests/amc-agent.test.mjs": "2218c084a4321ca9a4fb6f1ef01d9aaf32789c50dbfb9ae5ad40389ce9e3ad99",
     "tests/amc-autonomy-fixture.test.mjs": "4bf780ecbcd0b46b878212a038fa20268a2b9272c2e4a57541167d7b6480cfb8",
     "tests/amc-autonomy-lock.test.mjs": "2d66d99228f8474f0d6c7e67d6b3e19adf1a7bfe0ce0a0b073bd314c3271e879",
-    "tests/amc-goal-engine.test.mjs": "5a14f1253e5e57f1a6bb2a5a080fb79306c90de04e8fd7a199e77315f7e9c62f",
-    "tests/amc-request-plan.test.mjs": "9cb3ee3051877dff67a48949215da2091232521d50b8290acb79c036bf977f8d",
+    "tests/amc-autonomy.test.mjs": "0d480c91625c5e0125ed3e6dc24ae0e98b3b704c15b02cedc04151ff612571d2",
+    "tests/amc-codex.test.mjs": "352fb84db7f2250ea25aeac562b9b3e672c075dda682c08c76669759420b59a5",
     "tests/amc-effort.test.mjs": "c51687dd02b4ef52b57315eb166f350ff112c1bff7f1552f2d9608ca68158494",
-    "tests/csv-transform.test.mjs": "0e369735505d4b8b7e6f199cb2bab88e2a16e132adacf850c6519f875bff3b08",
-    "lib/csv-transform.ts": "92f20e5b514990cfab8ca6beca000aee7174a35a7414fb10a35c8317426c2b9e"
+    "tests/amc-goal-engine.test.mjs": "5a14f1253e5e57f1a6bb2a5a080fb79306c90de04e8fd7a199e77315f7e9c62f",
+    "tests/amc-main-integration.test.mjs": "ed72786c85ea9ade9fe6b7b2b1399e11c27aafab69e27bf5f6b74d7160a497b3",
+    "tests/amc-parallel.test.mjs": "aa6d64148a9212e0b13365b7b14af8d665a4d9675f4c757663b0070d5a51e154",
+    "tests/amc-request-plan.test.mjs": "9cb3ee3051877dff67a48949215da2091232521d50b8290acb79c036bf977f8d",
+    "tests/amc-revalidation.test.mjs": "f93bd0fc59d7ccc43ea44bd329ba53915b368a23d20a6937a6c57fcb3865c604",
+    "tests/amc-sky-directives.test.mjs": "d6da9bb67b244b1a28d62282b75512d449f1a28612e33a35f4e017635162a2a8",
+    "tests/amc-sky-integration.test.mjs": "190944ac975c7f97de4af57223362edf25ccd50ea332e1b382e1f596b193a9db",
+    "tests/amc-sky-launch.test.mjs": "40d5ccd0cd5460ca63ccd4acf1ac5f893ed257e1b6ffac61f3bd6175c0c2267c",
+    "tests/amc-snapshot.test.mjs": "f29551ec87277562b82946a87b24a3779c1c74acca69893c454c2679f5cb4e91",
+    "tests/mcp-client.test.mjs": "26c6af7dbc938cc799c4bb71c2cfdd7f23373bd2a048aea781e8c3fab057a1c5",
+    "tests/sky-marketplace.test.mjs": "062c4fc4398e6ff9654eaef23f47682d60420ba6c1bf76dbc31ebe1bbbaa6c58",
+    "tests/sky-routing.test.mjs": "00c075624417739d49062f044ad83691a9b5813f573a78117f329c81b3b108ed"
   },
-  "verification": {
-    "focusedTests": {
-      "passed": 82,
-      "failed": 0,
-      "command": "node --experimental-strip-types --test tests/amc-*.test.mjs tests/csv-transform.test.mjs"
-    },
-    "fixture": {
-      "summary": {
-        "mode": "fixture",
-        "phase": "awaiting_owner_acceptance",
-        "reason": "All tasks reviewed; explicit owner Goal acceptance remains required",
-        "revision": 14,
-        "totalAttempts": 3,
-        "currentOperation": null,
-        "tasks": [
-          {
-            "id": "REPORT",
-            "status": "done"
-          },
-          {
-            "id": "ADD",
-            "status": "done"
-          },
-          {
-            "id": "MULTIPLY",
-            "status": "done"
-          }
-        ],
-        "overallAccepted": false,
-        "serviceSync": "not_connected",
-        "productionExecution": "unsupported"
-      },
-      "repeatedRunUnchanged": true
-    },
-    "csvFixture": {
-      "passed": true,
-      "inspectionSourceSha256": "92f20e5b514990cfab8ca6beca000aee7174a35a7414fb10a35c8317426c2b9e"
-    },
-    "environmentRecovery": "Initial log creation hit ENOSPC before tests started; removed only the previous task Vite dependency cache and completed verification.",
-    "fullVerifyBeforeMainSync": {
-      "status": "passed",
-      "exitCode": 0,
-      "command": "WRANGLER_SEND_METRICS=false WRANGLER_LOG_PATH=work/wrangler-logs npm run verify",
-      "environment": "macOS Node v26.0.0; local Worker/D1/R2 and synthetic identities; no deployment or paid requests",
-      "productTests": 946,
-      "productFailures": 0,
-      "productSkipped": 0,
-      "fashionTests": 22,
-      "miniSiteTests": 18,
-      "publicPreviewTests": 21,
-      "memeTests": 7,
-      "farmTests": 25,
-      "workerD1Assertions": 1048,
-      "csvD1R2Assertions": 113,
-      "webAssetReferences": 146,
-      "missingWebAssets": 0,
-      "logSha256": "96003b6233bbdac38018c972d3c0eec8190938d5d4ddb9dd5fae78e1fa4115dc",
-      "verifiedAt": "2026-10-05T07:41:41.216739+00:00"
-    },
-    "fullVerify": {
-      "status": "passed",
-      "exitCode": 0,
-      "command": "WRANGLER_SEND_METRICS=false WRANGLER_LOG_PATH=work/wrangler-logs npm run verify",
-      "environment": "macOS Node v26.0.0; local Worker/D1/R2 and synthetic identities; no deployment or paid requests",
-      "productTests": 946,
-      "productFailures": 0,
-      "productSkipped": 0,
-      "fashionTests": 22,
-      "miniSiteTests": 18,
-      "publicPreviewTests": 21,
-      "memeTests": 7,
-      "farmTests": 25,
-      "workerD1Assertions": 1048,
-      "csvD1R2Assertions": 113,
-      "webAssetReferences": 146,
-      "missingWebAssets": 0,
-      "logSha256": "888715c71f8acd5c3b9d717838172c5497d5570efcd51707fc95427844d67244",
-      "verifiedAt": "2026-10-05T07:46:46.133325+00:00",
-      "synchronizedMain": "80a662cc8dbd967ecc4f04e46bba086b54c4d725"
-    },
-    "subsequentMainSync": {
-      "scope": "Payment/Wallet design-only updates; preserved both documentation entries",
-      "checks": "project:check, design:check, typecheck, same-head CI"
-    }
+  "runtimeAcceptance": {
+    "realModelWorker": "not_started_folder_trust_required",
+    "independentRuntimeReview": "not_started",
+    "parallelRealModels": "not_verified",
+    "webExecutionSync": "not_connected",
+    "formalSkyAcceptance": "not_changed"
   },
-  "independentReview": {
-    "blockingFindings": 0,
-    "scope": "Static review of seven AMC scripts and six tests; fixture boundaries unchanged",
-    "mainSyncReview": "Other main records and ten upstream files are preserved byte-for-byte; only AMC fields and evidence links were appended."
-  },
-  "limitations": [
-    "Trusted private local state directory only; IDs and fixture kind are not authentication or a sandbox",
-    "No real Goal import, cloud/paid model, external worker, Web UI/API, customer delivery or deployment",
-    "Synchronous work cannot be forcibly preempted; different state directories do not share resource locks",
-    "CSV production validator independence and authenticated job-bound inspection remain incomplete"
-  ],
-  "publication": {
-    "mainIntegration": "Track merge state and merge SHA in the linked GitHub pull request; this file records the pre-merge validation snapshot",
-    "deploymentPerformed": false,
-    "githubCi": "Read exact-head checks on the linked pull request; local verification is recorded separately",
-    "pullRequest": "https://github.com/k999ln/rock/pull/67"
-  },
-  "synchronizedMain": "4928b64e0a0aac80855b58953c8804eb39d4a8b4"
+  "skyPlanInputs": "data/amc/integration-input-status.json",
+  "publicationMeaning": "Git main integration only; not a deployed site or completed Sky launch",
+  "subsequentMainSync": {
+    "baseCommit": "4928b64e0a0aac80855b58953c8804eb39d4a8b4",
+    "changes": "design documents, evidence and unrelated Python memory test; all 77 verified AMC source hashes unchanged",
+    "validation": "project/design/baseline/typecheck passed"
+  }
 }

@@ -1,0 +1,155 @@
+{
+  "schema": "amc-main-integration/1",
+  "date": "2026-10-05",
+  "baseCommit": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
+  "scope": "Shared CSV contract fixes and standalone operating documentation for the bounded AMC fixture already present on main",
+  "sourceFiles": {
+    "scripts/amc-autonomy.mjs": "bf42cb7772c35074bf2d25633ac5e54ae978e34fa8d2598943c053e43e0fefc5",
+    "scripts/amc-autonomy-store.mjs": "0022a6f7b368a7d4653ff72e77a81aba07979573ebf679ab60aa47ce63171d5c",
+    "scripts/amc-autonomy-fixture.mjs": "b7ecfd5f2cf93ccd80968df16c5feb619b4bdaf0eae8403c91eb2bead5455f82",
+    "scripts/amc-goal-engine.mjs": "c1aac8438c3d066f6f3cf5194c800ba212114111abcdd286b008602670a91702",
+    "scripts/amc-sky-authority.mjs": "8d017daa360701f4a057a538d7df64f6980624161dcd89e2176ca827697e7248",
+    "scripts/amc-request-plan.mjs": "10cb45d524f6d70b2245987637f4c29db2efa7c15fd6a0651dcaebdd23000b2f",
+    "scripts/amc-effort.mjs": "4f74f0df81a0f48a6ecc3051c7bfdee8ac303e60181259ce091050f4d1e46ac4",
+    "scripts/csv-result-fixture.mjs": "1e8b8c830b2e01913be276ab9ecb3049ecf66daeef9a139738c4fdeb4fe98290",
+    "tests/amc-autonomy.test.mjs": "0d480c91625c5e0125ed3e6dc24ae0e98b3b704c15b02cedc04151ff612571d2",
+    "tests/amc-autonomy-fixture.test.mjs": "4bf780ecbcd0b46b878212a038fa20268a2b9272c2e4a57541167d7b6480cfb8",
+    "tests/amc-autonomy-lock.test.mjs": "2d66d99228f8474f0d6c7e67d6b3e19adf1a7bfe0ce0a0b073bd314c3271e879",
+    "tests/amc-goal-engine.test.mjs": "5a14f1253e5e57f1a6bb2a5a080fb79306c90de04e8fd7a199e77315f7e9c62f",
+    "tests/amc-request-plan.test.mjs": "9cb3ee3051877dff67a48949215da2091232521d50b8290acb79c036bf977f8d",
+    "tests/amc-effort.test.mjs": "c51687dd02b4ef52b57315eb166f350ff112c1bff7f1552f2d9608ca68158494",
+    "tests/csv-transform.test.mjs": "0e369735505d4b8b7e6f199cb2bab88e2a16e132adacf850c6519f875bff3b08",
+    "lib/csv-transform.ts": "92f20e5b514990cfab8ca6beca000aee7174a35a7414fb10a35c8317426c2b9e"
+  },
+  "verification": {
+    "focusedTests": {
+      "passed": 82,
+      "failed": 0,
+      "command": "node --experimental-strip-types --test tests/amc-*.test.mjs tests/csv-transform.test.mjs"
+    },
+    "fixture": {
+      "summary": {
+        "mode": "fixture",
+        "phase": "awaiting_owner_acceptance",
+        "reason": "All tasks reviewed; explicit owner Goal acceptance remains required",
+        "revision": 14,
+        "totalAttempts": 3,
+        "currentOperation": null,
+        "tasks": [
+          {
+            "id": "REPORT",
+            "status": "done"
+          },
+          {
+            "id": "ADD",
+            "status": "done"
+          },
+          {
+            "id": "MULTIPLY",
+            "status": "done"
+          }
+        ],
+        "overallAccepted": false,
+        "serviceSync": "not_connected",
+        "productionExecution": "unsupported"
+      },
+      "repeatedRunUnchanged": true
+    },
+    "csvFixture": {
+      "passed": true,
+      "inspectionSourceSha256": "92f20e5b514990cfab8ca6beca000aee7174a35a7414fb10a35c8317426c2b9e"
+    },
+    "environmentRecovery": "Initial log creation hit ENOSPC before tests started; removed only the previous task Vite dependency cache and completed verification.",
+    "fullVerifyBeforeMainSync": {
+      "status": "passed",
+      "exitCode": 0,
+      "command": "WRANGLER_SEND_METRICS=false WRANGLER_LOG_PATH=work/wrangler-logs npm run verify",
+      "environment": "macOS Node v26.0.0; local Worker/D1/R2 and synthetic identities; no deployment or paid requests",
+      "productTests": 946,
+      "productFailures": 0,
+      "productSkipped": 0,
+      "fashionTests": 22,
+      "miniSiteTests": 18,
+      "publicPreviewTests": 21,
+      "memeTests": 7,
+      "farmTests": 25,
+      "workerD1Assertions": 1048,
+      "csvD1R2Assertions": 113,
+      "webAssetReferences": 146,
+      "missingWebAssets": 0,
+      "logSha256": "96003b6233bbdac38018c972d3c0eec8190938d5d4ddb9dd5fae78e1fa4115dc",
+      "verifiedAt": "2026-10-05T07:41:41.216739+00:00"
+    },
+    "subsequentMainSync": {
+      "scope": "Payment/Wallet design-only updates; preserved both documentation entries",
+      "checks": "project:check, design:check, typecheck, same-head CI"
+    },
+    "fullVerifyBeforeAmcMainSync": {
+      "status": "passed",
+      "exitCode": 0,
+      "command": "WRANGLER_SEND_METRICS=false WRANGLER_LOG_PATH=work/wrangler-logs npm run verify",
+      "environment": "macOS Node v26.0.0; local Worker/D1/R2 and synthetic identities; no deployment or paid requests",
+      "productTests": 946,
+      "productFailures": 0,
+      "productSkipped": 0,
+      "fashionTests": 22,
+      "miniSiteTests": 18,
+      "publicPreviewTests": 21,
+      "memeTests": 7,
+      "farmTests": 25,
+      "workerD1Assertions": 1048,
+      "csvD1R2Assertions": 113,
+      "webAssetReferences": 146,
+      "missingWebAssets": 0,
+      "logSha256": "888715c71f8acd5c3b9d717838172c5497d5570efcd51707fc95427844d67244",
+      "verifiedAt": "2026-10-05T07:46:46.133325+00:00",
+      "synchronizedMain": "80a662cc8dbd967ecc4f04e46bba086b54c4d725"
+    },
+    "fullVerify": {
+      "status": "passed",
+      "exitCode": 0,
+      "command": "WRANGLER_SEND_METRICS=false WRANGLER_LOG_PATH=work/wrangler-logs npm run verify",
+      "environment": "macOS Node v26.0.0; local Worker/D1/R2 and synthetic identities; no deployment or paid requests",
+      "productTests": 1003,
+      "productFailures": 0,
+      "productSkipped": 0,
+      "fashionTests": 22,
+      "miniSiteTests": 18,
+      "publicPreviewTests": 21,
+      "memeTests": 7,
+      "farmTests": 25,
+      "workerD1Assertions": 1069,
+      "csvD1R2Assertions": 113,
+      "webAssetReferences": 149,
+      "missingWebAssets": 0,
+      "logSha256": "2062bc81c67798699307ab6f7b8b8e3e303c93601f5c38acb27707381c2b4a14",
+      "verifiedAt": "2026-10-05T07:57:22.852763+00:00",
+      "synchronizedMain": "11824636c44b539676320d41138bc35f10686216"
+    },
+    "previousHeadCi": {
+      "head": "55685fdd397141abfafa8a28e3338ec7df2471f7",
+      "verify": "success",
+      "verifyRun": "https://github.com/k999ln/rock/actions/runs/37279966295",
+      "signingControls": "success",
+      "signingRun": "https://github.com/k999ln/rock/actions/runs/37279966265"
+    }
+  },
+  "independentReview": {
+    "blockingFindings": 0,
+    "scope": "Static review of seven AMC scripts and six tests; fixture boundaries unchanged",
+    "mainSyncReview": "104 upstream files including 61 AMC files preserved byte-for-byte. Upstream AMC integration evidence, package.json and WEB04 metadata unchanged; fixture/CSV evidence uses its own path."
+  },
+  "limitations": [
+    "Trusted private local state directory only; IDs and fixture kind are not authentication or a sandbox",
+    "No real Goal import, cloud/paid model, external worker, Web UI/API, customer delivery or deployment",
+    "Synchronous work cannot be forcibly preempted; different state directories do not share resource locks",
+    "CSV production validator independence and authenticated job-bound inspection remain incomplete"
+  ],
+  "publication": {
+    "mainIntegration": "Track merge state and merge SHA in the linked GitHub pull request; this file records the pre-merge validation snapshot",
+    "deploymentPerformed": false,
+    "githubCi": "Read exact-head checks on the linked pull request; local verification is recorded separately",
+    "pullRequest": "https://github.com/k999ln/rock/pull/67"
+  },
+  "synchronizedMain": "11824636c44b539676320d41138bc35f10686216"
+}

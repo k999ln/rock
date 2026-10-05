@@ -2,7 +2,7 @@
 
 ## AMC fixtureのWeb境界（2026-10-05、G04）
 
-AMCの[有限fixture CLI](../amc-autonomy-fixture.md)は既存OSのNode.jsで試せるが、Sky/Zemaの画面から実行するAPIや成果同期を追加しない。主担当はGit / CI / Operations、ROCK。Web接続時は既存Workflow・owner認証・保存・revision・承認・料金gateを再利用し、依頼から検査済み成果の再取得まで同一候補で受け入れる。今回のmain統合とSites配備、実Provider受入を分け、公開版でAMCを利用可能とは表示しない。検証・統合状態は[証拠](../evidence/amc-main-integration.json)。
+AMCの[有限fixture CLI](../amc-autonomy-fixture.md)は既存OSのNode.jsで試せるが、Sky/Zemaの画面から実行するAPIや成果同期を追加しない。主担当はGit / CI / Operations、ROCK。Web接続時は既存Workflow・owner認証・保存・revision・承認・料金gateを再利用し、依頼から検査済み成果の再取得まで同一候補で受け入れる。今回のmain統合とSites配備、実Provider受入を分け、公開版でAMCを利用可能とは表示しない。検証・統合状態は[証拠](../evidence/amc-fixture-csv-main-integration.json)。
 
 ## avocadomini.si（2026-10-05、WEB13）
 

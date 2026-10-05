@@ -1393,7 +1393,32 @@
         "lib/sky-app-manifest.ts",
         "tests/sky-app-manifest.test.mjs",
         "docs/sky.md"
-      ]
+      ],
+      "amcMainIntegration": {
+        "date": "2026-10-05",
+        "status": "validated_ready_for_main",
+        "scope": "AMC only; current main WorkPlan and service access retained",
+        "evidence": [
+          "docs/amc-sky-launch-integration.md",
+          "toolkits/amc-agent/README.md",
+          "tests/amc-main-integration.test.mjs",
+          "docs/evidence/amc-main-integration.json"
+        ],
+        "runtime": "blocked_folder_trust_before_model_execution",
+        "webExecution": "not_connected",
+        "formalSkyAcceptance": "not_changed",
+        "validation": {
+          "command": "npm run verify",
+          "exitCode": 0,
+          "tests": 999,
+          "amcFocusedTests": 129,
+          "workerD1Assertions": 1069,
+          "csvWorkerD1R2Assertions": 113,
+          "build": "passed",
+          "assetClosureMissing": 0,
+          "logSha256": "cd7926aa1050013a1907eb85983bc319888be67f24af46a09ac5572b00ceeb32"
+        }
+      }
     },
     {
       "id": "BRD01",
@@ -3194,7 +3219,7 @@
         "docs/research/rockstar-patent-research.html",
         "docs/research/rockstar-patent-sources.json",
         "docs/amc-autonomy-fixture.md",
-        "docs/evidence/amc-main-integration.json"
+        "docs/evidence/amc-fixture-csv-main-integration.json"
       ]
     }
   ],
@@ -4460,11 +4485,11 @@
     "workstream": "docs/workstreams/10-git-ci-operations.md",
     "baseMain": "996b1955",
     "scope": [
-      "Bundled finite arithmetic fixture only: 7 scripts and 6 AMC tests",
+      "Operating documentation for the bounded AMC fixture already integrated by main 11824636",
       "Four shared CSV transform contract fixes, regression tests and synthetic result fixture generator"
     ],
-    "evidence": "docs/evidence/amc-main-integration.json",
-    "validation": "Focused AMC/CSV 82/82; full verify exit 0: Node 946, Fashion 22, Mini 18, Preview 21, Meme 7, Farm 25, Worker/D1 1048 and CSV/D1/R2 113. Fixed CLI completes three reviewed tasks then waits for owner acceptance, repeated run unchanged. Validation repeated after synchronizing main 80a662cc; exact-head CI and merge SHA are recorded on PR #67.",
+    "evidence": "docs/evidence/amc-fixture-csv-main-integration.json",
+    "validation": "Final main-integrated full verify exit 0: Node 1003, Fashion 22, Mini 18, Preview 21, Meme 7, Farm 25, Worker/D1 1069 and CSV/D1/R2 113. Focused AMC/CSV 82/82 and arithmetic fixture reviewed/repeated safely. Exact-head CI and merge status are tracked on PR #67.",
     "constraints": [
       "No real worker, model, network or Web synchronization through the AMC fixture CLI",
       "Trusted fixture IDs and synthetic approval are not authentication or real owner consent",
@@ -4473,7 +4498,7 @@
       "Local fixture acceptance is not customer delivery, production execution or Sites deployment"
     ],
     "nextAction": "Use PR #67 for exact-head CI and main merge status; proceed separately with authenticated real-worker/Web integration while preserving existing G04 security gates.",
-    "synchronizedMain": "4928b64e0a0aac80855b58953c8804eb39d4a8b4",
+    "synchronizedMain": "11824636c44b539676320d41138bc35f10686216",
     "pullRequest": "https://github.com/k999ln/rock/pull/67"
   }
 }

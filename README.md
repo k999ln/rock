@@ -1,5 +1,7 @@
 
 
+AMCは [Goalと部隊の画面](app/zema/amc/page.tsx) と [Codex用3役・起動口](toolkits/amc-agent/README.md) を備えます。Webの自律実行・同期と実モデル完走は未受入です。
+
 Public homepage: [avocadomini.si](https://avocadomini.si) — the user-selected Mini/Pro website, with DNS and HTTPS verified. See the [deployment and DNS record](docs/workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13).
 Payment and Wallet design: [integration design](docs/sky-commerce-design.md), [Wallet design](docs/wallet-commerce-design.md), and [English development prompt](docs/prompts/sky-commerce-wallet-development.md). The v2 additions are design proposals; [validation scope](docs/evidence/sky-commerce-main-integration-validation.json) separates local checks from external acceptance.
 

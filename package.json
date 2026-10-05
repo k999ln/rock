@@ -72,6 +72,9 @@
     "sky:launch:check": "node scripts/check-sky-launch.mjs",
     "test:meme-intelligence": "npm --prefix toolkits/meme-intelligence-sandbox test",
     "test:avocado-farm": "npm --prefix toolkits/avocado-farm-sandbox test",
+    "amc:codex": "node scripts/amc-codex.mjs",
+    "amc:parallel": "node scripts/amc-parallel.mjs",
+    "amc:agent": "node scripts/amc-agent.mjs",
     "amc:autonomy:fixture": "node scripts/amc-autonomy-fixture.mjs"
   },
   "dependencies": {

@@ -43,7 +43,7 @@ ROCK／WEB04: Sky Market経由の出典整理・無料記事・応募前チェ�
 
 [AMCの設計とCLI](amc-autonomy-fixture.md)は固定算術Goalのローカル試験入口で、カタログToolやWeb実行入口は追加しない。承認済みfixtureの目的・合格条件を固定し、子Taskの実行→ファイル再検査→次Task、保存・再開、重複防止、停止・取消、有界再試行と人への引継ぎを扱う。最終状態は本人の検収待ち。信頼済みfixtureのIDは本人認証ではなく、同期処理の強制停止、実worker、Cloud/Web連携は未実装である。
 
-CSV変換・出力・検査・報告は共通標準機能として扱う。今回の変更は既存`lib/csv-transform.ts`の未知のnested指定拒否、`spreadsheetSafe`のboolean検査、重複キー未指定時の誤計数修正、Unicode code point順sortの4件に限定する。既存の商品入口・料金・保存・決済・catalog件数を変更せず、CSVだけでAMCや全Toolの完成を宣言しない。[CSV契約](csv-business-v1.ja.md)と[統合証拠](evidence/amc-main-integration.json)を参照する。
+CSV変換・出力・検査・報告は共通標準機能として扱う。今回の変更は既存`lib/csv-transform.ts`の未知のnested指定拒否、`spreadsheetSafe`のboolean検査、重複キー未指定時の誤計数修正、Unicode code point順sortの4件に限定する。既存の商品入口・料金・保存・決済・catalog件数を変更せず、CSVだけでAMCや全Toolの完成を宣言しない。[CSV契約](csv-business-v1.ja.md)と[統合証拠](evidence/amc-fixture-csv-main-integration.json)を参照する。
 
 ## 共通基盤の統合（2026-10-02、G04）
 
@@ -624,3 +624,53 @@ PixelのPAPER実行履歴受入で、旧Market共通CSSの絶対配置により�
 - 接続設定は認証復旧後に本人別一覧を再取得する。編集済み入力を取得応答で上書きしない。取得失敗中は設定保存を止め、読取専用の再取得を提供する。設定保存をOAuth/外部実行成功と表示しない。
 - 合格条件: 通信切断/503/不正配列/timeout/401で実行停止、入力保持、再確認のwrite 0、復旧後の明示実行1件、metadata保存、結果の端末保存/再取得、接続設定の再取得と編集保持。秘密値/実ユーザー本文を障害fixtureへ入れず、合成ローカル受入を本人実機/本番へ換算しない。
 - 未決: 本人desktopとPixelの現行公開版での再受入、Apple Pay対応端末、実AI資格情報/信頼済み料金/予算。公開済みの判定はnative deployment結果を別に記録する。
+
+
+### AMC (`rockstar-amc`) — 部隊・Goal管理
+
+- 目的/入口: Skyの検索・商品詳細からZemaの`/zema/amc`または`/zema/tools/rockstar-amc`へ進む。Zemaのライブラリと仕事画面からも開ける。旧`/amc`は転送する。Skyでは商品説明、Zemaで部隊ボード・入力・保存・再開・検収を扱う。
+- 再利用: 2026-09-26作業コピーのAMC UI、Goal compiler/reducer、本人別work_jobs保存API、Codex一件実行CLIを移植。元コピーは変更しない。会話からAMCを選んでもLLM送信やGoal作成を起こさず専用画面へ案内する。
+- データ: `data/amc/mission-control.json`と`data/amc/project-status.json`は元コピー2026-09-27時点の参照snapshot。出典HEAD/ファイルhashは`data/amc/provenance.json`。現在の`data/project-status.json`へ376レコードを混ぜず、現在の製品進捗と称さない。32部隊、376登録、親32を除く344実行単位、224詳細計画を表示する。
+- 部隊ボード: H1、O1〜O7、M1〜M7、P1〜P7、R1〜R10。初期M6。Goal、成果、対象限定の成熟段階・根拠・残課題、主担当/関連、タスク状態フィルター、親子/依存/後続、手順、次Gate、条件/証拠を確認できる。関連・旧版・公開説明は主担当の現行完了へ加算しない。ゼロ件フィルターは別状態のタスクを表示しない。
+- 本人保存: `/api/amc` GET/POST/PATCHで既存work_jobsへ保存。本人認証・同一origin、2 MBのbody、1.5 MBのGoal、1.9 MBの履歴込み保存上限を適用。idempotent createとrevision CASを保持。未保存/競合/不明な結果は明示して、同じ記録の再試行と最新状態読込で回復する。別利用者からは取得/更新できない。
+- 状態: draft/active/paused/accepted、taskはpending/running/submitted/done/blocked/failed。保存・着手は手動記録でありAI起動ではない。親/子の受入、依存、成果物競合、独立検収と全体条件を既存reducerで維持。一般仕事のcomplete/cancel/recordでAMCの検収を迂回できない。
+- Codex: UIはGoal JSONのexport/importまで。`npm run amc:codex -- status --goal <file>`は状態確認、`run`は本人の明示操作と`--allow-codex-upload`で一件だけ実行する既存CLI。ブラウザから起動しない。結果はsubmittedとして戻し、自動検収・自動完了にしない。今回の検証は注入executorによるfixtureで、新しいCodex実行/外部送信は行わない。
+- 境界/復旧: 実製品Goalや外部課金を開始していない。snapshotと本人Goalは別で、Web保存は元の正本を更新しない。機能を巻き戻してもwork_jobsや元JSONを削除しない。既存Goal JSONの妥当性確認・import/exportを維持する。実機/本番/自律Agentは受入対象外。
+- 合格条件: snapshot hashと一意担当/依存・二重計上除外、Goal妥当性/状態/容量、本人別SQLite保存と競合、既存Workflow、Sky→Zema→AMC、部隊/フィルター/手順・証拠表示を検証する。進捗を更新する際は元の正本と根拠を確認してsnapshotを明示更新し、成熟段階を件数から自動計算しない。
+
+
+#### Sky完全ローンチ専用AMC（2026-09-29追加）
+
+`/zema/amc` の既定「Skyローンチ」で、受領した12部隊・36準備作業＋公開後確認1件を表示する。Goal、部隊、担当作業、依存リンク、要求ID、成果物、合格条件、Gate、未決事項を辿れる。原本は `data/amc/sky/` にSHA-256とともに保持し、全体32部隊snapshotや既存本人Goalへ合算しない。`scripts/amc-sky-plan.mjs` は要求・作業・依存・合格条件の一致を検査し、存在しない旧参照を現行コードへ補正する。本番設定の証拠としてローカル設定を使わない。
+
+保存ボタンは既存AMC APIへ未承認draftを取り込む。`skyBrief` は専用schemaを検査し、汎用7工程のrequestBriefを流用しない。本人が範囲を確認して承認すると管理状態へ進むが、全Gateと全taskは未検収のまま。承認時に元のローンチGateを削除・置換できない。保存失敗・結果不明は既存の同一操作再送とCASで復旧し、サインイン前の保存は不可。JSONの自己申告記録は独立した実測証拠ではない。
+
+指示案には方向性と版照合手順を含める。共有API/schema/料金・依存検収・他担当の最新状態の自動取得と、旧指示の自動失効は未接続でS0-03の対象。現在は手動照合であることを画面/指示へ表示する。Goal保存や着手記録は外部AIを動かさない。公開後確認は36件の準備Goalから分離する。取り込み詳細は `docs/amc-sky-launch-integration.md`。
+
+#### SKY-DIR-002/003 — 指示と実行の境界
+
+受領原本は維持し、`sky-directives-v2.json` に36件の前後差・read/write範囲・実在関数・具体手順・3ケース・提出/検収/引渡し、`sky-contracts-v1.json` に7共有契約の型/状態/正本/担当/利用taskを保存した。未決公開条件は受入段階を止め、無関係のローカル作業は止めない。
+
+`amc-sky-directives.mjs` は指示ID/仕様hash/契約/依存検収/ソース/担当/期限を結び、関連変更をstaleとして保持する。担当の許可範囲の変更は提出差分と提案契約として保持し、独立検収前にdoneへ進めない。純粋照合の入力は認証ではない。信頼できるadapterだけが取得する必要があり、HTTPのactor/matched/hashを信用しない。共有Goal reducerの実行イベントはプロセス内capabilityを要求する。AMC HTTPは現状observer_unavailableで実行・検収を拒否し、本人の計画保存と閲覧だけ可能。Work APIのAMC迂回も拒否する。既存保存Goalは初期化せず、実行済みJSONの新規インポートは信頼できる移行経路が整うまで拒否する。
+
+CLIはOS本人から承認されたGoalを使い、run claimに結び付けたexecutor IDを発行して実Codexを起動する。各runにプロセス起動・観測・Goal・結果・秘密やraw promptを含まないprogress.jsonを保存する。Webとrun履歴の自動同期、継続checkpoint、横断的なpath lease、配備先の信頼できる観測adapterは未完成であり、ローカル照合試験をWeb実行統合や本番受入と呼ばない。初回S0-01は実プロセスが起動したが、外側sandboxによるCodex状態DBの書込拒否で終了。失敗履歴を残して正式な再開イベントを記録し、再試行は依頼元タスクへ実行担当を移した。
+
+2026-09-30 AMC失敗復旧: ownerの最新観測付きresumeだけを期限切れ実行指示から分離する。failed/blocked→pendingで結果/独立review/停止理由を履歴保持し、旧指示全件を失効、新発行まで実行不可。最新spec・依存・競合・holdを確認し、不正owner/worker権限/旧revision/未検証・古い観測を拒否する。CLI/Webの既存認証境界は維持し、Web接続未完成を解除しない。
+
+
+### CSV入力の並行作成と復旧補足
+
+`createCsvJob`はowner hashと試行UUIDを含む入力keyへ条件付きputを行い、DBのid一意制約で確定する。登録競合で負けた試行だけが自分のkeyを削除し、同じowner・bytes hash・正規化spec・名前・見積料金なら既存結果へ合流する。異なるpayload/ownerは情報を開示せず409。既存jobのinput_keyは変更せず、読出し・納品・期限削除との互換を保つ。schema変更はない。
+
+DB応答例外時はidを再読取し、ownerとinput_keyの一致でcommit済みを確認できる場合だけ復旧する。行なし/読戻し失敗はrollbackの証拠ではないため入力を削除せず503で再送を案内する。条件付きputがnullならDBへ進まない。putの曖昧失敗やcleanup失敗で未参照objectが残り得る。既存の7日期限削除はrowに属するkeyのみを対象とし、孤立objectの自動回収は未実装。将来の回収は時刻・DB参照・遅延commitとの競合を確認する必要がある。event保存失敗後の既存job再送で監査eventが欠け得る点も別途残る。
+
+回帰: `tests/csv-job-store.test.mjs`が相対パスの子試験22件を通常npm testから実行。別owner衝突・同時再送・異payload・put/DB/cleanup障害・commit後応答喪失・旧key処理/期限削除を検証。`tests/csv-r2-conditional.test.mjs`はlocal workerd内でobject/Headers形式の条件付きputを確認する。SQLite/memoryとlocal workerdは実D1/R2・API/auth・本番受入を代替しない。適用後全体verifyの結果は`outputs/sky-amc-execution/csv-remediation-applied/verify-final/result.json`を参照し、旧S10候補の合格を転用しない。
+
+
+### 明示的な検収更新（revalidate_task）
+
+候補更新後の過去合格を現行合格として残さないため、active Sky Goalのdone taskを認証済みownerが再検証へ戻す。revalidationImpactで逆依存の全影響taskを算出し、その完全なaffectedTaskIds、reason、実在するevidenceを明示する。targetとdone下流それぞれに最新spec・要求参照・source hash・契約・依存検収・lockの信頼観測を必須とする。対象依存が現在done/独立検収済みでない場合は拒否する。
+
+全影響先にrunning/submittedがあれば、操作全体を拒否し実行/history/lockを保持する。done先は旧result/review/evidence/acceptanceCriteriaをattemptsへ保存してpendingにし、criterionをnot_verifiedへ戻す。その他の下流状態やholdは保持してrevalidation.requiredを付ける。閉包の全旧指示をstale化し、新規指示→worker提出→独立検収を必須とする。新検収が合格したtaskのみrequiredからsatisfiedへ進む。無関係taskは変更しない。再検証操作自体にaccepted/outcome/criterionResultsを付けて成功を付与することはできない。
+
+権限はJSON内の自己申告ではなく、process-local trusted adapterからのprincipal/observationを使う。transactDirectiveはexclusive transaction内の二度の観測、二度目の鮮度、全下流観測materialの一致、revision CASを必須とする。Webのtrusted observerは未接続のため、HTTP経由は409を維持する。実Goal30はrootの独立確認後に別途操作する。全体accepted Goalの再開や自動cascade停止は対象外。操作例と新しいS10隔離入力はoutputs/sky-amc-execution/maintenance-revalidation/に保存し、以前のS8/S10原本証拠を上書きしない。

@@ -53,6 +53,6 @@ CLIの固定policyは1Taskあたり2試行、合計6試行、worker/reviewer各�
 
 実装は`scripts/amc-autonomy.mjs`、`scripts/amc-autonomy-store.mjs`、`scripts/amc-autonomy-fixture.mjs`。Goal編成は`scripts/amc-goal-engine.mjs`、`scripts/amc-effort.mjs`、`scripts/amc-request-plan.mjs`、`scripts/amc-sky-authority.mjs`にある。6つのAMC試験は契約固定、依存順、検査、保存競合、停止、再試行、結果不明時の引継ぎを対象にする。
 
-今回の統合候補ではAMC 6 filesとCSV変換器の対象試験が82/82成功し、実fixture CLIで3Taskの検収、最終本人検収待ち、再run時の保存状態不変を確認した。これはローカル合成受入である。全体verify、同一SHAのGitHub CIとmain統合状態は[今回の証拠](evidence/amc-main-integration.json)を正本とする。過去の作業コピーでの試験数を今回の全体成功へ転記しない。
+今回の統合候補ではAMC 6 filesとCSV変換器の対象試験が82/82成功し、実fixture CLIで3Taskの検収、最終本人検収待ち、再run時の保存状態不変を確認した。これはローカル合成受入である。全体verify、同一SHAのGitHub CIとmain統合状態は[今回の証拠](evidence/amc-fixture-csv-main-integration.json)を正本とする。過去の作業コピーでの試験数を今回の全体成功へ転記しない。
 
 次の段階は、認証された本人のGoal承認と実workerを既存`lib/workflow.ts`、owner別保存、revision競合、Sky/Broker/料金gateへ接続し、具体的な成果物をWebから取り出せる一件を別途受け入れること。必要な外部送信・費用・配備・権限の承認をfixtureの合成承認で代用しない。G04全体とAMCのWeb/実業務接続は`in_progress`を維持する。

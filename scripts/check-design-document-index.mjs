@@ -115,8 +115,8 @@ fail(
   'Sky catalogの全ready／candidate Toolを設計台帳へ同期してください',
 );
 fail(
-  catalog.filter(({ status }) => status === 'ready').length === 12,
-  'ready Tool 12件を保持してください',
+  catalog.filter(({ status }) => status === 'ready').length === 13,
+  'ready Tool 13件を保持してください',
 );
 fail(
   catalog.filter(({ status }) => status === 'candidate').length === 22,

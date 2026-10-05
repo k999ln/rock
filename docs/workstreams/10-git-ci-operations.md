@@ -2,7 +2,7 @@
 
 ## AMCとCSVの限定統合（2026-10-05、G04）
 
-今回の「mainにあげて」は、既存のAMC有限fixture 7 scripts / 6 testsとCSV共通処理4修正を最新main `996b1955`起点で統合する承認として扱う。旧ローカルtree全体、別作業のカタログ/UI/配備差分は持ち込まない。主担当ROCK、G04はin_progress。対象試験、固定Goal CLI、全体verify、同一SHA CI、main反映を[今回の証拠](../evidence/amc-main-integration.json)で分けて記録する。[AMC設計](../amc-autonomy-fixture.md)の実worker・Web未接続と[CSV契約](../csv-business-v1.ja.md)の共通処理範囲を保持する。GitHub統合はSites公開や実AI/課金開始を意味しない。
+今回の「mainにあげて」は、既存のAMC有限fixture 7 scripts / 6 testsとCSV共通処理4修正を最新main `996b1955`起点で統合する承認として扱う。旧ローカルtree全体、別作業のカタログ/UI/配備差分は持ち込まない。主担当ROCK、G04はin_progress。対象試験、固定Goal CLI、全体verify、同一SHA CI、main反映を[今回の証拠](../evidence/amc-fixture-csv-main-integration.json)で分けて記録する。[AMC設計](../amc-autonomy-fixture.md)の実worker・Web未接続と[CSV契約](../csv-business-v1.ja.md)の共通処理範囲を保持する。GitHub統合はSites公開や実AI/課金開始を意味しない。
 
 ## 目的
 

@@ -14,8 +14,8 @@ const catalogSource = read('lib/catalog.ts');
 const readyCount = catalog.filter(({ status }) => status === 'ready').length;
 const candidateCount = catalog.filter(({ status }) => status === 'candidate').length;
 requireValue(
-  readyCount === 12,
-  `Web/PC readyは12件です（実際: ${readyCount}）`,
+  readyCount === 13,
+  `Web/PC readyは13件です（実際: ${readyCount}）`,
 );
 requireValue(
   candidateCount === 22,
