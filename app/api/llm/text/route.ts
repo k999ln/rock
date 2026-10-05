@@ -1,10 +1,13 @@
+import { SensitiveDataBlockedError } from '@/toolkits/spider-guard/detector.mjs';
 import { env } from 'cloudflare:workers';
 import { database } from '@/lib/fund-store';
 import {
   generateText,
   isTextModelProvider,
-  LlmProviderError,
   textModelProviderDefinition,
+  isLoopbackLlmEndpoint,
+  isRemoteLlmRequest,
+  LlmProviderError,
 } from '@/lib/llm-providers';
 import {
   authorizeRemoteAiRequest,
@@ -19,16 +22,6 @@ import { loadVerifiedRemoteAiTextRate } from '@/lib/remote-ai-text-rate';
 import { remoteAiTextPublicRecord, remoteAiTextHttpError } from '@/lib/remote-ai-text-http';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
-
-function isLoopbackEndpoint(value: string | undefined) {
-  if (!value) return false;
-  try {
-    const hostname = new URL(value).hostname.toLowerCase();
-    return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
-  } catch {
-    return false;
-  }
-}
 
 export async function POST(request: Request) {
   try {
@@ -79,23 +72,19 @@ export async function POST(request: Request) {
       REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY?: string;
     };
     const definition = textModelProviderDefinition(provider);
-    const requestedBaseUrl = typeof value.baseUrl === 'string'
-      ? value.baseUrl.trim()
-      : '';
-    if (requestedBaseUrl &&
-      (provider !== 'local-model' || !isLoopbackEndpoint(requestedBaseUrl) ||
-        !/^https?:$/i.test(new URL(requestedBaseUrl).protocol)))
+    const requestedBaseUrl =
+      typeof value.baseUrl === 'string' ? value.baseUrl.trim() : '';
+    if (
+      requestedBaseUrl &&
+      (provider !== 'local-model' ||
+        !isLoopbackLlmEndpoint(requestedBaseUrl) ||
+        !/^https?:$/i.test(new URL(requestedBaseUrl).protocol))
+    )
       throw new LlmProviderError('LOCAL_ENDPOINT_REQUIRED', 400);
-    const configuredEndpoint = provider === 'local-model'
-      ? requestedBaseUrl || runtimeEnv.SKY_LOCAL_LLM_BASE_URL
-      : provider === 'ollama'
-        ? runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434'
-        : provider === 'openai-compatible'
-          ? runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL
-          : undefined;
-    const remote =
-      definition.locality === 'remote' ||
-      Boolean(configuredEndpoint && !isLoopbackEndpoint(configuredEndpoint));
+    const requestEnv = requestedBaseUrl
+      ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
+      : runtimeEnv;
+    const remote = isRemoteLlmRequest(provider, requestEnv);
     if (remote && value.consent !== true)
       throw new LlmProviderError('EXPLICIT_REMOTE_CONSENT_REQUIRED', 403);
     if (remote && runtimeEnv.SKY_REMOTE_LLM_ENABLED !== 'true')
@@ -141,9 +130,6 @@ export async function POST(request: Request) {
       }, { status: 202, headers: noStoreHeaders });
     }
 
-    const requestEnv = requestedBaseUrl
-      ? { ...runtimeEnv, SKY_LOCAL_LLM_BASE_URL: requestedBaseUrl }
-      : runtimeEnv;
     const result = await generateText(
       {
         provider,
@@ -160,6 +146,17 @@ export async function POST(request: Request) {
     return Response.json(result, { headers: noStoreHeaders });
   } catch (error) {
     if (error instanceof RemoteAiTextStoreError) return remoteAiTextHttpError(error);
+    if (error instanceof SensitiveDataBlockedError)
+      return Response.json(
+        {
+          error:
+            'Spider Guardが機密情報の外部送信を止めました。内容を取り除いて再試行してください。',
+          code: error.code,
+          count: error.count,
+          kinds: error.kinds,
+        },
+        { status: error.status, headers: noStoreHeaders },
+      );
     if (error instanceof RemoteAiGuardError)
       return Response.json(
         {
@@ -174,7 +171,8 @@ export async function POST(request: Request) {
         { status: error.status, headers: noStoreHeaders },
       );
     const status = error instanceof LlmProviderError ? error.status : 400;
-    const code = error instanceof LlmProviderError ? error.code : 'INVALID_INPUT';
+    const code =
+      error instanceof LlmProviderError ? error.code : 'INVALID_INPUT';
     console.error('text llm failed', code);
     return Response.json(
       {

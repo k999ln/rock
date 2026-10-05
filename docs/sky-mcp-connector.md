@@ -4,6 +4,10 @@
 
 2026-09-20更新: Sky Tool SDKで起動したPC内Toolを`~/.sky/mcp-tools`から自動検出する。接続定義は所有者専用権限、`127.0.0.1`のHTTP URL、一時キーだけを許可する。ConnectorはPC Toolを`local_http`として一覧に加え、同じPassportと一回承認を適用する。SDK停止後は一覧から外す。外部向け`streamable_http`のHTTPS/private network拒否規則は維持する。
 
+2026-10-02 SPIDER改善cycle: 接続定義をpathで確認してから開き直す競合を除く。symlinkをたどらずnonblockingで一度だけ開き、そのfile handleの通常file・所有者専用権限・sizeを検査し、同じhandleから最大4,097 byteだけ読む。4 KiB超過、非通常file、読取失敗は接続候補へ昇格させず、handleは必ず閉じる。開いた後にpathが差し替わっても、検証した元のfileを読み、差し替え先を開き直さない。SDKの正常なatomic renameと一回承認は維持する。defaultのowner専用directoryとその親を信頼するローカル境界であり、悪意ある同一UIDや親directoryの全面的な保護を主張しない。
+
+POSIXでは開いたfileの所有者も実効UIDと照合する。必要な`O_NOFOLLOW`／`O_NONBLOCK`を提供しない環境では、このlocal自動検出を安全側で拒否し、無保護な読取へfallbackしない。macOS／Linuxの回帰と、未対応platformを区別する。
+
 ## できること
 
 Sky固有の自動化コードと個別MCPを直接結ばず、すべてを同じ接続契約へ変換する。現在の配布registryには「Sky 基本自動化」4機能と「受注型ブランド運営」41機能があり、SkyのMCP画面からそれぞれをワンタップで初期化・検出できる。
@@ -55,6 +59,12 @@ Passportは安全性の保証ではなく、接続時点で確認した相手と
 ## 互換性と移行
 
 既存Skyの`/mcp`経路は、配布済み4機能向けの互換入口として残す。新しい自動化はserver IDを持つ汎用経路を使う。これにより既存コードを壊さず、機能数固定を段階的に廃止できる。
+
+2026-10-04の互換境界: `/mcp`は同梱MRの正確な接続定義（ID、stdio、python3、同梱cwd／script、単一引数、追加環境変数なし）に限る。許可する操作はinitialize、initialized通知、ping、tools/listと、coconala_check／format_citations／make_free_article／verify_deliveryの4機能だけ。定義・操作が異なればtransportへ渡す前に403 `legacy_mcp_not_supported`で拒否し、定数メッセージでserver IDの接続→prepare→本人確認→executeへ案内する。拒否は設定・入力を保存せず、接続定義を戻すか汎用経路を使えば復旧できる。
+
+この4機能の互換経路は一回券を要求しない限定例外であり、全経路で一回承認を強制しているとは扱わない。許可Origin・session認証と送信前データ保護は維持する。同一ID、readOnlyHintやTool名だけで第三者実装へ例外を広げない。信頼済み配布source・PATH・PC所有者の設定が前提で、同一UIDによる改変への隔離や無認証侵入の修復を主張しない。
+
+回帰は何も実行しないtransport stubで定義7形式・操作6形式の拒否と転送0を確認し、同梱MRでは実際のlifecycle・基本4機能を合成入力で通す。汎用経路の一回承認・再利用拒否も維持する。
 
 公式MCP 2025-11-25のlifecycleとstdio / Streamable HTTPを基準にし、2025-06-18、2025-03-26、2024-11-05を接続時に互換確認する。実行送信後のtimeoutは自動再試行せず、結果不明として照合へ回す。
 

@@ -1,3 +1,5 @@
+import { assertSafeOutbound, SensitiveDataBlockedError } from '../toolkits/spider-guard/detector.mjs';
+
 export type TextModelProviderId =
   | 'local-model'
   | 'ollama'
@@ -57,7 +59,8 @@ export const textModelProviders: readonly TextModelProviderDefinition[] = [
   {
     id: 'openai-compatible',
     name: 'OpenAI互換エンドポイント',
-    detail: 'LM Studio・vLLM・llama.cppなど、Chat Completions互換の接続先です。',
+    detail:
+      'LM Studio・vLLM・llama.cppなど、Chat Completions互換の接続先です。',
     defaultModel: 'local-model',
     locality: 'local',
     credentialEnv: 'SKY_LLM_COMPATIBLE_API_KEY',
@@ -251,6 +254,39 @@ export class LlmProviderError extends Error {
 type FetchLike = typeof fetch;
 
 const PROVIDER_TIMEOUT_MS = 20_000;
+
+export function isLoopbackLlmEndpoint(value: string | undefined): boolean {
+  if (!value) return false;
+  try {
+    const url = new URL(value);
+    return (
+      !url.username &&
+      !url.password &&
+      (url.protocol === 'http:' || url.protocol === 'https:') &&
+      ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname.toLowerCase())
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function isRemoteLlmRequest(
+  provider: TextModelProviderId,
+  runtimeEnv: LlmRuntimeEnv,
+): boolean {
+  if (provider === 'local-model')
+    return (
+      Boolean(runtimeEnv.SKY_LOCAL_LLM_BASE_URL) &&
+      !isLoopbackLlmEndpoint(runtimeEnv.SKY_LOCAL_LLM_BASE_URL)
+    );
+  if (provider === 'ollama')
+    return !isLoopbackLlmEndpoint(
+      runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434',
+    );
+  if (provider === 'openai-compatible')
+    return !isLoopbackLlmEndpoint(runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL);
+  return true;
+}
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
@@ -538,7 +574,7 @@ export async function generateText(
     const result = await generateTextRequest(request, runtimeEnv, guardedFetch, onProgress);
     return { ...result, durationMs: Math.max(0, Date.now() - startedAt) };
   } catch (error) {
-    if (error instanceof LlmProviderError) throw error;
+    if (error instanceof LlmProviderError || error instanceof SensitiveDataBlockedError) throw error;
     if (error instanceof Error &&
         (error.name === 'TimeoutError' || error.name === 'AbortError'))
       throw new LlmProviderError('UPSTREAM_TIMEOUT', 504);
@@ -554,6 +590,11 @@ async function generateTextRequest(
 ): Promise<TextGenerationResult> {
   if (!request.prompt.trim() || request.prompt.length > 24_000)
     throw new LlmProviderError('INVALID_PROMPT', 400);
+  assertSafeOutbound({
+    prompt: request.prompt,
+    system: request.system,
+    model: request.model,
+  });
   const model = modelFor(request);
   const maxOutputTokens = limitFor(request);
   const messages = messagesFor(request);
@@ -565,11 +606,14 @@ async function generateTextRequest(
     const endpoint = normalized.endsWith('/chat/completions')
       ? normalized
       : `${normalized.replace(/\/v1$/, '')}/v1/chat/completions`;
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
     if (runtimeEnv.SKY_LOCAL_LLM_API_KEY)
       headers.Authorization = `Bearer ${runtimeEnv.SKY_LOCAL_LLM_API_KEY}`;
     const response = await fetchImpl(endpoint, {
       method: 'POST',
+      redirect: 'error',
       headers,
       body: JSON.stringify({
         model,
@@ -587,12 +631,12 @@ async function generateTextRequest(
   }
 
   if (request.provider === 'ollama') {
-    const base = (runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(
-      /\/+$/,
-      '',
-    );
+    const base = (
+      runtimeEnv.SKY_OLLAMA_BASE_URL || 'http://127.0.0.1:11434'
+    ).replace(/\/+$/, '');
     const response = await fetchImpl(`${base}/api/chat`, {
       method: 'POST',
+      redirect: 'error',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model, messages, stream: false }),
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
@@ -641,6 +685,7 @@ async function generateTextRequest(
       throw new LlmProviderError('MISSING_PROVIDER_CREDENTIAL', 503);
     const response = await fetchImpl('https://api.anthropic.com/v1/messages', {
       method: 'POST',
+      redirect: 'error',
       headers: {
         'x-api-key': runtimeEnv.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',
@@ -659,7 +704,9 @@ async function generateTextRequest(
       ? payload.content
           .filter((item) => asRecord(item)?.type === 'text')
           .map((item) => asRecord(item)?.text)
-          .filter((value: unknown): value is string => typeof value === 'string')
+          .filter(
+            (value: unknown): value is string => typeof value === 'string',
+          )
           .join('\n')
           .trim()
       : '';
@@ -674,6 +721,7 @@ async function generateTextRequest(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(runtimeEnv.GOOGLE_GENERATIVE_AI_API_KEY)}`,
       {
         method: 'POST',
+        redirect: 'error',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [
@@ -701,7 +749,9 @@ async function generateTextRequest(
             return Array.isArray(content?.parts) ? content.parts : [];
           })
           .map((part) => asRecord(part)?.text)
-          .filter((value: unknown): value is string => typeof value === 'string')
+          .filter(
+            (value: unknown): value is string => typeof value === 'string',
+          )
           .join('\n')
           .trim()
       : '';
@@ -712,11 +762,14 @@ async function generateTextRequest(
   const base = runtimeEnv.SKY_LLM_COMPATIBLE_BASE_URL?.trim();
   if (!base) throw new LlmProviderError('MISSING_PROVIDER_ENDPOINT', 503);
   const endpoint = `${base.replace(/\/+$/, '').replace(/\/v1$/, '')}/v1/chat/completions`;
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
   if (runtimeEnv.SKY_LLM_COMPATIBLE_API_KEY)
     headers.Authorization = `Bearer ${runtimeEnv.SKY_LLM_COMPATIBLE_API_KEY}`;
   const response = await fetchImpl(endpoint, {
     method: 'POST',
+    redirect: 'error',
     headers,
     body: JSON.stringify({
       model,

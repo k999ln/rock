@@ -1,0 +1,14 @@
+{
+  "schema": "amc-agent-runtime-source/1",
+  "sourceThread": "01a0fe25-2ce9-73ad-99c2-1c8864d7a035",
+  "sourceRoot": "/Users/kaiya/Documents/Codex/2026-10-02/task/work/rock",
+  "files": {
+    "scripts/amc-autonomy.mjs": "bf42cb7772c35074bf2d25633ac5e54ae978e34fa8d2598943c053e43e0fefc5",
+    "scripts/amc-autonomy-store.mjs": "0022a6f7b368a7d4653ff72e77a81aba07979573ebf679ab60aa47ce63171d5c",
+    "scripts/amc-autonomy-fixture.mjs": "b7ecfd5f2cf93ccd80968df16c5feb619b4bdaf0eae8403c91eb2bead5455f82",
+    "tests/amc-autonomy.test.mjs": "0d480c91625c5e0125ed3e6dc24ae0e98b3b704c15b02cedc04151ff612571d2",
+    "tests/amc-autonomy-fixture.test.mjs": "4bf780ecbcd0b46b878212a038fa20268a2b9272c2e4a57541167d7b6480cfb8",
+    "tests/amc-autonomy-lock.test.mjs": "2d66d99228f8474f0d6c7e67d6b3e19adf1a7bfe0ce0a0b073bd314c3271e879"
+  },
+  "scope": "copied exact finite fixture runtime and tests; real worker support not implied"
+}

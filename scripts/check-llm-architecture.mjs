@@ -113,11 +113,11 @@ const roleCount = (
   []
 ).length;
 requireValue(
-  roleCount === 12,
-  `Sky routing roles must be 12, found ${roleCount}`,
+  roleCount === 13,
+  `Sky routing roles must be 13, found ${roleCount}`,
 );
 requireValue(
-  read('docs/sky-assistant-and-memory.md').includes('現在は次の12役'),
+  read('docs/sky-assistant-and-memory.md').includes('現在は次の13役'),
   'Sky assistant document role count is stale',
 );
 

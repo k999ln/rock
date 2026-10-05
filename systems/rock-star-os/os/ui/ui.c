@@ -1155,6 +1155,8 @@ static int power_operation(const char *operation)
     return !strcmp(operation, "device.poweroff") || !strcmp(operation, "device.reboot");
 }
 
+#include "security-ui.inc"
+
 static void draw_system(struct rock_ui *ui)
 {
     double y = ui->content_top + 6 - ui->scroll;
@@ -1187,6 +1189,7 @@ static void draw_system(struct rock_ui *ui)
     y += 85;
     y += wrapped(ui, 35, y, 645, 16, 28, COLOR_MUTED,
                  "実行中の道具は停止します。保存していない入力は失われます。", 3) + 24;
+    y = draw_spider_guard(ui, y);
     ui->content_height = y + ui->scroll - ui->content_top;
 }
 
@@ -1266,6 +1269,7 @@ static int amount_minor(const char *value, int64_t *minor);
 
 int rock_ui_refresh_interval(struct rock_ui *ui)
 {
+    if (ui->page == PAGE_SYSTEM) return 3000;
     if (activation_pending(ui)) return ui->startup_retry_ms ? ui->startup_retry_ms : 1000;
     if (!ui->connected || ui->queued_request || ui->retry_request || ui->page == PAGE_ACTIVATION)
         return 1000;

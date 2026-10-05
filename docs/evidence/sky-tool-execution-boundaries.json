@@ -1,14 +1,14 @@
 {
   "schema": "sky-tool-execution-boundaries-v1",
   "sourceHashes": {
-    "lib/catalog.ts": "1add6564ce58821cb805bc4d2e88d24064bc6cb004bae812d32f4ba3653d55c9",
+    "lib/catalog.ts": "3d8afcd9543ff23580ae43df1f2570d4c58765753e4ec66dd55edc425229e4a6",
     "lib/sky-candidate-output.ts": "66019eafcdd0a18f6cc4bf3c4a9df2c2d7ec3281ea4a35146f4d94e9d83d4fc4",
-    "lib/sky-tool-execution-scope.ts": "65a4b6588cd73832dcba29005c8ff580b84d58186aa38d3c4a10ed19f3630499",
-    "lib/sky-tool-ui.ts": "3b7ab3a9db536f5094b4f7be49728d56fda6ae9da6aca08f9784deccdc930f95",
-    "lib/sky-tool-labels.ts": "d468f813bcec68fcee2720d66e7193f48b25681c7ff4c8fb7b1572477fde07f4",
+    "lib/sky-tool-execution-scope.ts": "c13c8f6518775cfa06f01e496285ad63120be37740adf1b14961004fc8d05668",
+    "lib/sky-tool-ui.ts": "9b943fbf98439c0d3324d5c9acb3d15344740f9c0bcc23d83df1bb0ad59ee096",
+    "lib/sky-tool-labels.ts": "590eec51841807cc7133975db42c60f1c13b2279b372e28f16a331b6ab673635",
     "components/sky-candidate-runner.tsx": "8262e2c62190ac65e1aeac36c8f1dc01553f6cf7edf074d7b2f0d1745ddbdafc",
-    "scripts/check-sky.mjs": "b02196b2a7ed9208cea8b1bb30ac7805c00686835beedb4c8e509fc8fcc55406",
-    "tests/sky-tool-execution-scope.test.mjs": "18c38494395c19826e35e849a5abefe3d6fad567624e7c2745d0650b79e60e50"
+    "scripts/check-sky.mjs": "b17190f3d3f42066af178bb2d0485767b7a19ffb7128aadccea16af7a90fef26",
+    "tests/sky-tool-execution-scope.test.mjs": "2e5725776698a083802bcbd3f60b9fe3c9e358f185fa4a6ad8854cff74548db3"
   },
   "classificationIsLiveAcceptance": false,
   "realExternalExecutionPerformed": false,
@@ -356,6 +356,17 @@
       "browserInvocationAccepted": false,
       "currentCandidateLiveOwnerJourneyAccepted": false,
       "externalExecutionAccepted": false
+    },
+    {
+      "id": "rockstar-amc",
+      "catalogStatus": "ready",
+      "implementationScope": "assisted-preparation",
+      "codeBoundaryReviewed": true,
+      "pureOutputTested": false,
+      "browserInvocationAccepted": false,
+      "currentCandidateLiveOwnerJourneyAccepted": false,
+      "externalExecutionAccepted": false,
+      "note": "Manual Goal and progress management; saving or starting a record is not autonomous Agent execution."
     }
   ],
   "unverified": [
@@ -363,8 +374,7 @@
     "Physical Pixel on this candidate",
     "Real PC grant, start and reconnect",
     "Provider responses, billing and invoice reconciliation",
-    "Same-candidate deployment and restoration",
-    "Full repository acceptance"
+    "Same-candidate deployment and restoration"
   ],
   "historicalSiteValidation": {
     "sourceBaseCommit": "7b2aa1193058ac2000b86ce04ae589299c240c49",
@@ -383,9 +393,21 @@
       "fullVerify": "not_passed"
     }
   },
-  "sourceBaseCommit": "4928b64e0a0aac80855b58953c8804eb39d4a8b4",
+  "sourceBaseCommit": "592daeea322cd47aa189b67dd689e323662c0c67",
   "tests": {
-    "status": "pending",
-    "environment": "canonical integration candidate; prior Site counts are historical"
+    "status": "passed",
+    "environment": "local canonical integration of Sky, AMC and SPIDER; synthetic only",
+    "command": "npm run verify",
+    "nodeTests": {
+      "total": 1147,
+      "passed": 1146,
+      "skipped": 1,
+      "failed": 0
+    },
+    "workApiAssertions": 1069,
+    "csvWorkerAssertions": 385,
+    "build": "passed",
+    "browser": "not_performed_on_canonical_candidate",
+    "production": "not_accepted"
   }
 }

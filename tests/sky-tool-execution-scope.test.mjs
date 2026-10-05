@@ -7,7 +7,7 @@ import { skyToolUiState } from '../lib/sky-tool-ui.ts';
 
 void test('every advertised service has an explicit implementation boundary', () => {
   const scopes = catalog.map((tool) => [tool.id, skyToolExecutionScope(tool)]);
-  assert.equal(scopes.length, 34);
+  assert.equal(scopes.length, 35);
   assert.equal(scopes.filter(([, scope]) => scope === 'unavailable').length, 0);
   assert.equal(scopes.filter(([, scope]) => scope === 'template').length, 11);
   assert.equal(
@@ -22,6 +22,16 @@ void test('every advertised service has an explicit implementation boundary', ()
     skyToolExecutionScope({ id: 'new-unimplemented-tool', status: 'ready' }),
     'unavailable',
   );
+});
+
+void test('AMC exposes assisted planning and progress tracking without claiming autonomous execution', () => {
+  const tool = catalog.find((tool) => tool.id === 'rockstar-amc');
+  assert.ok(tool);
+  assert.equal(skyToolExecutionScope(tool), 'assisted-preparation');
+  assert.equal(candidateOutputKind(tool.id), undefined);
+  const status = skyToolUiState(tool);
+  assert.equal(status.label, '計画・進捗管理が利用可能');
+  assert.equal(status.detail, 'AIの自律実行は未接続');
 });
 
 for (const tool of catalog.filter((tool) => candidateOutputKind(tool.id))) {

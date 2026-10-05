@@ -122,6 +122,7 @@ export function skyToolUiState(
         '原稿・費用・取引状態を管理。公式サービスへの出品や送信は行いません',
       className: 'is-connect',
     };
+  if (tool.id === 'rockstar-amc') return { label: '計画・進捗管理が利用可能', detail: 'AIの自律実行は未接続', className: 'is-ready' };
   if (tool.id === 'rockstar-csv-cleanup')
     return {
       label:

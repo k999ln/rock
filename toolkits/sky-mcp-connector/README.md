@@ -36,11 +36,14 @@ stdio MCPは、`registry.json`へ実行ファイルと引数を別々に指定�
 
 ## 安全境界
 
+- PC内の接続定義はsymlinkをたどらず一度だけ開き、同じfile handleで種類・private権限・sizeを確認して読みます。読取中に増えた場合も4 KiBを超えれば拒否し、不正・非通常fileを接続候補にしません。既定の所有者専用directoryとその親は信頼する境界です。
+- POSIXでは接続定義の所有者が実効UIDと一致する必要があります。必要な安全なopen flagがない環境ではlocal自動検出を拒否します。
 - 接続時にprotocol version、server identity、capabilities、tool schemaを取得し、SHA-256 digest付きConnection Passportを作ります。
 - tool annotationsは第三者入力として扱い、全toolを既定で承認必須にします。
 - 実行前の`prepare`でserver・tool・引数・tool digestに結び付いた5分有効の一回券を発行します。
 - `execute`は同じ内容と明示確認がある時だけ通します。券の再利用や承認後の引数変更は拒否します。
 - `tools/call`は自動再送しません。送信後timeoutは`outcome_unknown`として、人またはprovider固有status APIで照合します。
+- 旧`/mcp`は正確な同梱MR接続定義と基本4機能・lifecycleだけの互換例外です。一回券は要求しませんが、Originとsession認証を維持します。同名の別接続定義や追加操作は転送前に403 `legacy_mcp_not_supported`で拒否します。追加Toolはserver IDの接続→prepare→本人確認→executeを使ってください。
 - UIから任意commandを登録するAPIはありません。配布・審査済みregistryをPC所有者が導入します。
 
 詳しい共通契約は[`../../docs/sky-mcp-connector.md`](../../docs/sky-mcp-connector.md)を参照してください。

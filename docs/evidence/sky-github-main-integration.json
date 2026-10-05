@@ -1,0 +1,48 @@
+{
+  "schema": "sky-github-main-integration/1",
+  "observedAt": "2026-10-05T08:08:39.323906+00:00",
+  "sourceCandidate": "b896b2e17576c2ee5dcf52d3380540472a14697d",
+  "baseMain": "592daeea322cd47aa189b67dd689e323662c0c67",
+  "branch": "codex/sky-main-integration-20261005",
+  "scope": "canonical source integration; not production deployment",
+  "localValidation": {
+    "command": "npm run verify",
+    "status": "passed",
+    "nodeVersion": "v26.0.0",
+    "nodeTests": {
+      "total": 1147,
+      "passed": 1146,
+      "skipped": 1,
+      "failed": 0
+    },
+    "workApiAssertions": 1069,
+    "csvWorkerAssertions": 385,
+    "build": "passed",
+    "webAssetReferences": 168,
+    "webAssetMissing": 0,
+    "schema": {
+      "tables": 77,
+      "migrations": 60,
+      "generatedMigrationStatements": 0
+    },
+    "connectorPackageMatchesSource": true
+  },
+  "githubChecks": "exact-head results must be checked on linked pull request before merge",
+  "existingMainSecurityReport": {
+    "runId": 37280350694,
+    "status": "findings",
+    "totalFindings": 2859,
+    "reachableCommits": 970,
+    "metadataRows": 100,
+    "truncated": true,
+    "scannerVersion": "8.30.1",
+    "note": "Historical candidates are unresolved; neither local verification nor this integration claims security clearance."
+  },
+  "deploymentPerformed": false,
+  "productionAcceptance": false,
+  "publicSiteVersionUnchanged": 39,
+  "next": [
+    "Confirm exact-head GitHub verification and production-response measurements before merging",
+    "Reconcile deployment bindings, configure Cron and independently accept owner/physical/provider journeys before any production claim"
+  ]
+}

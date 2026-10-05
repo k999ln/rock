@@ -27,7 +27,7 @@ MAX_DIAGNOSTIC = 8192
 WALL_SECONDS = 3
 CLEANUP_SECONDS = 2
 _SOURCE_HASHES = {
-    'rock_star_tools.py': '42f138200a472a0351f9b61d5ba7a0b487b0cabff4d9b4e9b96312b55fbff40f',
+    'rock_star_tools.py': '671bc5d2f2b31926e579c1134b1815f21e8b825716c88e875cfb6ec9f30bb6ae',
     'pc_citations_worker.py': 'cca361ad08c2c37259877157b892ec092b6a8693f82efb140c46e0984239ae33',
     'vendor/mr/provenance.json': 'e782c0b741e9bcdcc3a591e2e6c3bcdaf5b03b51d08e77e4becf218b1e4cbd4f',
     'vendor/mr/citation-strip.py': 'ed5c28225402c5885c1265c0648b5d4d227a2345ca71e387275a8f205b4ffd13',

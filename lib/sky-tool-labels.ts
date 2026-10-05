@@ -8,6 +8,14 @@ export type SkyToolLabel = {
 };
 
 export const skyToolLabels: Record<string, SkyToolLabel> = {
+  'rockstar-amc': {
+    role: 'Goal・部隊管理役',
+    provider: 'Sky AMC',
+    handle: '@sky_amc',
+    initial: 'A',
+    helper: 'Goalと意図を確認し、計画と部隊の進捗を記録します。AIの自律実行は未接続です。',
+    placeholder: '作りたいもの・完成したらできることを入力',
+  },
   'rockstar-ip-studio': {
     role: 'IP・SNS運用役',
     provider: 'Sky IP・SNS運用アシスタント',

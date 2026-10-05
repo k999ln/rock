@@ -1,4 +1,5 @@
 'use client';
+import AmcWorkspace from '@/components/amc-workspace';
 
 import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
@@ -43,6 +44,7 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
   const tool = catalog.find((item) => item.id === toolId);
   const host = useSyncExternalStore(subscribeHost, browserHost, serverHost);
 
+  if (toolId === 'rockstar-amc') return <AmcWorkspace />;
   if (toolId === 'coconala') return <CoconalaTeamWorkspace workspace={workspace} />;
   if (toolId === 'rockstar-csv-cleanup') return <CsvBusinessWorkspace workspace={workspace} />;
 

@@ -1393,7 +1393,32 @@
         "lib/sky-app-manifest.ts",
         "tests/sky-app-manifest.test.mjs",
         "docs/sky.md"
-      ]
+      ],
+      "amcMainIntegration": {
+        "date": "2026-10-05",
+        "status": "validated_ready_for_main",
+        "scope": "AMC only; current main WorkPlan and service access retained",
+        "evidence": [
+          "docs/amc-sky-launch-integration.md",
+          "toolkits/amc-agent/README.md",
+          "tests/amc-main-integration.test.mjs",
+          "docs/evidence/amc-main-integration.json"
+        ],
+        "runtime": "blocked_folder_trust_before_model_execution",
+        "webExecution": "not_connected",
+        "formalSkyAcceptance": "not_changed",
+        "validation": {
+          "command": "npm run verify",
+          "exitCode": 0,
+          "tests": 999,
+          "amcFocusedTests": 129,
+          "workerD1Assertions": 1069,
+          "csvWorkerD1R2Assertions": 113,
+          "build": "passed",
+          "assetClosureMissing": 0,
+          "logSha256": "cd7926aa1050013a1907eb85983bc319888be67f24af46a09ac5572b00ceeb32"
+        }
+      }
     },
     {
       "id": "BRD01",
@@ -2197,6 +2222,85 @@
         "docs/evidence/android-operator-agent-emulator-20260916.json",
         "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
         "docs/evidence/android-operator-overlay-stager-20260916.json"
+      ]
+    },
+    {
+      "id": "SYS15",
+      "title": "Spider Security AgentのGitHub検査・コード検査・OS常駐監視・送信前拒否・native表示・boot監督を統合する（ROCK・同一image起動未受入）",
+      "status": "in_progress",
+      "dependsOn": [
+        "SYS02"
+      ],
+      "evidence": [
+        "docs/spider-guard.md",
+        "docs/evidence/spider-guard-source-validation.json",
+        "docs/workstreams/04-security-identity-compliance.md",
+        "docs/product-baseline.md",
+        "docs/rockstaros-complete-design.md",
+        "data/design-document-index.json",
+        "systems/rock-star-os/os/platform/sensitive_guard.py",
+        "systems/rock-star-os/os/platform/supervisor.py",
+        "systems/rock-star-os/os/platform/service.py",
+        "systems/rock-star-os/os/platform/runner_control.py",
+        "systems/rock-star-os/os/platform/install-target.sh",
+        "systems/rock-star-os/os/ui/security-ui.inc",
+        "systems/rock-star-os/os/ui/test_ui.c",
+        "systems/rock-star-os/tests/test_sensitive_guard.py",
+        "systems/rock-star-os/tests/test_os_security_guard_integration.py",
+        "systems/rock-star-os/tests/test_os_runner_control.py",
+        "systems/rock-star-os/os/ui/spider-motion.c",
+        "systems/rock-star-os/os/ui/spider-motion.h",
+        "systems/rock-star-os/os/ui/pin-readiness.json",
+        "scripts/review-native-pin-source.py",
+        "systems/rock-star-os/tests/test_ui_pin_source_profile.py",
+        "scripts/build-spider-inspector.mjs",
+        "toolkits/spider-guard/README.md",
+        "toolkits/spider-guard/inspector.html",
+        "toolkits/spider-guard/program-inspector.mjs",
+        "toolkits/spider-guard/program-inspector.d.mts",
+        "tests/spider-inspector-artifact.test.mjs",
+        "tests/spider-program-inspector.test.mjs",
+        "systems/rock-star-os/os/platform/code_inspector.py",
+        "systems/rock-star-os/tests/test_code_inspector.py",
+        "SECURITY.md",
+        ".github/workflows/spider.yml",
+        ".github/workflows/spider-codeql.yml",
+        ".github/spider/gitleaks.toml",
+        "scripts/spider-repository-scan.py",
+        "tests/test_spider_repository_scan.py",
+        "tests/test_spider_gitleaks_policy.py",
+        "tests/spider-codeql-workflow.test.mjs",
+        "docs/evidence/spider-github-source-validation.json",
+        "scripts/spider-feedback.mjs",
+        "tests/spider-feedback.test.mjs",
+        ".github/workflows/spider-regressions.yml",
+        "tests/service-worker-update.test.mjs",
+        "toolkits/fashion-brand-ops/test/http-security.test.mjs",
+        "docs/evidence/spider-improvement-cycle.json",
+        "tests/mcp-local-descriptor.test.mjs",
+        "tests/test_mr_delivery_boundary.py",
+        "tests/test_mr_http_deadline.py",
+        "scripts/select-native-artifacts.py",
+        "systems/rock-star-os/tests/test_native_artifacts.py",
+        "docs/native-os-validation.md",
+        "systems/rock-star-os/os/desktop/launcher.py",
+        "systems/rock-star-os/tests/test_os_desktop_browser.py",
+        "systems/rock-star-os/os/desktop/README.md",
+        "systems/rock-star-os/os/platform/guest-test.py",
+        "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
+        "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+        "scripts/verify-mcp-flow.mjs",
+        "tests/mcp.test.mjs",
+        "tests/mr-tools.test.mjs",
+        "tests/csv-transform.test.mjs",
+        "tests/fixtures/csv-report.html",
+        "tests/mcp-connector.test.mjs",
+        "systems/rock-star-os/os/mcp_broker/http.py",
+        "systems/rock-star-os/tests/test_mcp_http_deadline.py",
+        "tests/undici-tls-options.test.mjs",
+        "data/web-third-party-license-audit.json",
+        "scripts/spider-web-runtime.mjs",
+        "tests/spider-web-runtime.test.mjs"
       ]
     },
     {
@@ -3192,7 +3296,9 @@
         "tests/owner-revision-json-store.test.mjs",
         "docs/evidence/pr-consolidation-20261005.json",
         "docs/research/rockstar-patent-research.html",
-        "docs/research/rockstar-patent-sources.json"
+        "docs/research/rockstar-patent-sources.json",
+        "scripts/spider-web-runtime.mjs",
+        "tests/spider-web-runtime.test.mjs"
       ]
     }
   ],
@@ -4453,7 +4559,7 @@
   "skyToolExecutionBoundaryPreparation": {
     "stage": "local_tests_passed_ui_pending",
     "runtimePublished": false,
-    "catalogCount": 34,
+    "catalogCount": 35,
     "classificationIsLiveAcceptance": false,
     "productionOwnerAcceptance": false,
     "evidence": "docs/evidence/sky-tool-execution-boundaries.json"
@@ -4597,8 +4703,8 @@
     "date": "2026-10-05",
     "sourceCandidate": "b896b2e17576c2ee5dcf52d3380540472a14697d",
     "sourceHistory": "dedicated Sites; selectively ported",
-    "baseMain": "4928b64e0a0aac80855b58953c8804eb39d4a8b4",
-    "status": "validation_pending",
+    "baseMain": "592daeea322cd47aa189b67dd689e323662c0c67",
+    "status": "local_verification_passed_ci_pending",
     "taskIds": [
       "G04",
       "WEB04"
@@ -4611,6 +4717,11 @@
       "new live payments and external AI",
       "scheduled cleanup trigger",
       "full production recovery"
-    ]
+    ],
+    "preservedConcurrentMain": [
+      "AMC command center and service entitlement",
+      "SPIDER outbound and bundled-MR restrictions"
+    ],
+    "validationEvidence": "docs/evidence/sky-github-main-integration.json"
   }
 }

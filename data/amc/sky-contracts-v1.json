@@ -1,0 +1,287 @@
+{
+  "schema": "amc-sky-contracts/1",
+  "revision": 1,
+  "contracts": [
+    {
+      "id": "catalog-offer",
+      "version": 1,
+      "owner": "S1",
+      "paths": [
+        "lib/catalog.ts",
+        "lib/sky-tool-package.ts",
+        "lib/sky-tool-review.ts",
+        "lib/sky-commerce-store.ts"
+      ],
+      "inputOutputTypes": {
+        "packageKey": "string; package ownership key, not UI catalog id",
+        "manifestSha256": "64 lowercase hex",
+        "offerRevision": "safe integer > 0",
+        "amountMinor": "safe integer >= 0",
+        "currency": "lowercase ISO currency string"
+      },
+      "stateTransitions": "draft → reviewed/verified → installable; withdrawn/expired review denies new installs",
+      "consumerTaskIds": [
+        "S1-01",
+        "S1-02",
+        "S1-03",
+        "S2-01",
+        "S2-02",
+        "S2-03",
+        "S4-01",
+        "S4-02",
+        "S4-03",
+        "S11-01",
+        "S11-02",
+        "S11-03"
+      ],
+      "baselineHash": "a799e975d0437663351c39f8c1484edc8a2d020801633a3889058664cc6e7332"
+    },
+    {
+      "id": "commerce",
+      "version": 1,
+      "owner": "S4",
+      "paths": [
+        "lib/sky-commerce.ts",
+        "lib/sky-commerce-store.ts",
+        "lib/sky-stripe.ts"
+      ],
+      "inputOutputTypes": {
+        "orderId": "string (UUID)",
+        "buyerUserId": "authenticated user string",
+        "sellerUserId": "authenticated user string",
+        "mode": "test | live",
+        "packageKey": "string",
+        "manifestSha256": "64 lowercase hex",
+        "offerRevision": "safe integer",
+        "sessionId": "cs_* | null",
+        "paymentIntentId": "pi_* | null"
+      },
+      "stateTransitions": "pending → paid | expired | failed; paid → refund_pending → partially_refunded | refunded; disputed tracked separately; bank payout is not order success",
+      "consumerTaskIds": [
+        "S1-01",
+        "S1-02",
+        "S1-03",
+        "S2-01",
+        "S2-02",
+        "S2-03",
+        "S4-01",
+        "S4-02",
+        "S4-03",
+        "S5-01",
+        "S5-02",
+        "S5-03",
+        "S9-01",
+        "S9-02",
+        "S9-03",
+        "S10-01",
+        "S10-02",
+        "S10-03",
+        "S11-01",
+        "S11-02",
+        "S11-03"
+      ],
+      "baselineHash": "2af955e0d4213e294ae5590ef345587ccbe46d3b0280abbf8d8f8bee066cbe8b"
+    },
+    {
+      "id": "identity-entitlement",
+      "version": 1,
+      "owner": "S5",
+      "paths": [
+        "lib/request-auth.ts",
+        "lib/sky-os-policy.ts",
+        "lib/sky-activation.ts"
+      ],
+      "inputOutputTypes": {
+        "user": "trusted requestUser result",
+        "deviceId": "OS authenticated device identity; web self-report is not authority",
+        "profileId": "OS authenticated profile ID",
+        "savedProfileLimit": "positive integer configured by OS; unknown denies acceptance"
+      },
+      "stateTransitions": "purchase → activate → revoke/transfer; OS-specific sharing must be authorized by provider, no URL-only enforcement",
+      "consumerTaskIds": [
+        "S3-01",
+        "S3-02",
+        "S3-03",
+        "S5-01",
+        "S5-02",
+        "S5-03",
+        "S6-01",
+        "S6-02",
+        "S6-03",
+        "S7-01",
+        "S7-02",
+        "S7-03",
+        "S8-01",
+        "S8-02",
+        "S8-03",
+        "S9-01",
+        "S9-02",
+        "S9-03",
+        "S10-01",
+        "S10-02",
+        "S10-03"
+      ],
+      "baselineHash": "225198938b4cf1edc244d259059831de3e8fb83160879ece775461526d4d46eb"
+    },
+    {
+      "id": "connection",
+      "version": 1,
+      "owner": "S3",
+      "paths": [
+        "lib/sky-connections.ts",
+        "lib/mcp-hub.ts",
+        "toolkits/sky-mcp-connector/server.mjs"
+      ],
+      "inputOutputTypes": {
+        "provider": "SkyProvider union",
+        "status": "setup_required | ready | reauth_required",
+        "manifestSha256": "64 lowercase hex",
+        "user": "authenticated user string"
+      },
+      "stateTransitions": "setup_required → ready → reauth_required; revoke denies further calls; reconnect reconciles old jobs",
+      "consumerTaskIds": [
+        "S1-01",
+        "S1-02",
+        "S1-03",
+        "S3-01",
+        "S3-02",
+        "S3-03",
+        "S5-01",
+        "S5-02",
+        "S5-03",
+        "S6-01",
+        "S6-02",
+        "S6-03",
+        "S8-01",
+        "S8-02",
+        "S8-03",
+        "S10-01",
+        "S10-02",
+        "S10-03"
+      ],
+      "baselineHash": "9417f070b95b8412000cbeec7ca479ff679c2792f994669b3e46d01bd6646ab1"
+    },
+    {
+      "id": "zema-handoff",
+      "version": 1,
+      "owner": "S6",
+      "paths": [
+        "lib/sky-zema-handoff.ts",
+        "lib/zema-chat-session.ts",
+        "lib/workflow.ts"
+      ],
+      "inputOutputTypes": {
+        "handoffId": "string UUID",
+        "jobId": "string UUID",
+        "receiptId": "provider receipt string",
+        "toolId": "catalog Tool ID",
+        "user": "authenticated owner"
+      },
+      "stateTransitions": "queue → consume exactly once → job → submitted receipt → verified; timeout/reconnect never auto-replays external action",
+      "consumerTaskIds": [
+        "S2-01",
+        "S2-02",
+        "S2-03",
+        "S5-01",
+        "S5-02",
+        "S5-03",
+        "S6-01",
+        "S6-02",
+        "S6-03",
+        "S9-01",
+        "S9-02",
+        "S9-03",
+        "S10-01",
+        "S10-02",
+        "S10-03"
+      ],
+      "baselineHash": "8139d81360aa84f59653031669170ff2ed21263bd9faa3b50ad0de340a4250a3"
+    },
+    {
+      "id": "api-schema",
+      "version": 1,
+      "owner": "S7",
+      "paths": [
+        "lib/fund-store.ts",
+        "db/schema.ts",
+        "lib/workflow.ts",
+        "drizzle/0018_sky_commerce.sql",
+        "drizzle/0019_sky_library.sql"
+      ],
+      "inputOutputTypes": {
+        "revision": "safe integer >= 0 CAS",
+        "idempotencyKey": "UUID; same key different body rejects",
+        "jobId": "string UUID",
+        "owner": "trusted identity"
+      },
+      "stateTransitions": "read current → validate owner/revision → CAS update; duplicate identical returns existing result",
+      "consumerTaskIds": [
+        "S0-01",
+        "S0-02",
+        "S0-03",
+        "S2-01",
+        "S2-02",
+        "S2-03",
+        "S4-01",
+        "S4-02",
+        "S4-03",
+        "S5-01",
+        "S5-02",
+        "S5-03",
+        "S6-01",
+        "S6-02",
+        "S6-03",
+        "S7-01",
+        "S7-02",
+        "S7-03",
+        "S8-01",
+        "S8-02",
+        "S8-03",
+        "S9-01",
+        "S9-02",
+        "S9-03",
+        "S10-01",
+        "S10-02",
+        "S10-03"
+      ],
+      "baselineHash": "6270302b0642ab9b636fc4ad4e383416d2ed44a4071791daf0959cb0b90c26fa"
+    },
+    {
+      "id": "deployment",
+      "version": 1,
+      "owner": "S9",
+      "paths": [
+        "docs/deployment-integration.md",
+        "docs/sky-billing.md",
+        "wrangler.local.jsonc",
+        "package.json"
+      ],
+      "inputOutputTypes": {
+        "environment": "local | provider_sandbox | production",
+        "artifactHash": "SHA256",
+        "origin": "configured HTTPS URL except isolated localhost",
+        "mode": "test | live",
+        "migrationVersion": "Web D1 migration filename"
+      },
+      "stateTransitions": "local config → isolated sandbox proof → production candidate acceptance → separate publication; no production settings proven by local file",
+      "consumerTaskIds": [
+        "S4-01",
+        "S4-02",
+        "S4-03",
+        "S7-01",
+        "S7-02",
+        "S7-03",
+        "S9-01",
+        "S9-02",
+        "S9-03",
+        "S10-01",
+        "S10-02",
+        "S10-03",
+        "S11-01",
+        "S11-02",
+        "S11-03"
+      ],
+      "baselineHash": "9776a936e60d51d84894c1d951c230fba90dc93fd29832d88738650861333faa"
+    }
+  ]
+}

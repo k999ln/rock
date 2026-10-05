@@ -17,8 +17,8 @@ const candidateCount = catalog.filter(
   ({ status }) => status === 'candidate',
 ).length;
 requireValue(
-  readyCount === 12,
-  `Web/PC readyは12件です（実際: ${readyCount}）`,
+  readyCount === 13,
+  `Web/PC readyは13件です（実際: ${readyCount}）`,
 );
 requireValue(
   candidateCount === 22,
@@ -31,6 +31,11 @@ for (const tool of catalog)
     skyToolExecutionScope(tool) !== 'unavailable',
     `実装範囲の判定がありません: ${tool.id}`,
   );
+const amcTool = catalog.find(({ id }) => id === 'rockstar-amc');
+requireValue(
+  amcTool && skyToolExecutionScope(amcTool) === 'assisted-preparation',
+  'AMCの実装範囲は計画作成と手動の進捗記録です',
+);
 for (const tool of catalog.filter(({ status }) => status === 'candidate'))
   requireValue(
     jobTools.has(tool.id),
@@ -328,6 +333,7 @@ for (const marker of [
     `ZemaのMCP bot管理に「${marker}」がありません`,
   );
 for (const tool of [
+  'rockstar-amc',
   'rockstar-csv-cleanup',
   'rockstar-markets-analysis',
   'mercari-revenue',

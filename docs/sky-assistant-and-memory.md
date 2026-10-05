@@ -4,7 +4,7 @@
 
 ## 利用者に見せる一つの入口
 
-Skyはアプリ一覧ではなく、仕事を受け付ける窓口にする。利用者は「Instagramの広告からDM受注まで進めて」のように依頼し、Skyが実行可能な役へ振り分ける。現在は次の12役を `lib/sky-routing.ts` の固定規則で選び、知らない依頼を勝手に実行しない。
+Skyはアプリ一覧ではなく、仕事を受け付ける窓口にする。利用者は「Instagramの広告からDM受注まで進めて」のように依頼し、Skyが実行可能な役へ振り分ける。現在は次の13役を `lib/sky-routing.ts` の固定規則で選び、知らない依頼を勝手に実行しない。
 
 ```text
 利用者の依頼
@@ -72,3 +72,5 @@ Sky Memory
 ## 完了と呼ばない範囲
 
 Sky Memoryの永続保存、Sky Cloud・提供者OAuth、自由会話型planner、複数役の自動連鎖はまだ実装していない。現在の画面で動くのは12役への決定的な入口、既存ブラウザツール、PC上のSky MCP ConnectorとFashion Brand Opsへの接続までである。job、履歴、設定の保存をcanonical Sky Memory実装済みと扱わない。Fashion Brand Opsの実Provider接続・実投稿・実請求には別途credentialと個別承認が必要になる。
+
+AMCのGoal・部隊管理役は計画保存と手動記録を担当します。WebからのAI自律実行は未接続です。
