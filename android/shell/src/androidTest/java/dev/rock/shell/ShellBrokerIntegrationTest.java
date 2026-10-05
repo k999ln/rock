@@ -1,9 +1,11 @@
 package dev.rock.shell;
 
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
+import dev.rock.shellapi.IShellApi;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,7 +48,7 @@ public final class ShellBrokerIntegrationTest {
             packages.checkSignatures(context.getPackageName(), ShellConnection.BROKER_PACKAGE));
 
         ShellConnection broker = new ShellConnection(context);
-        assertEquals(15, ShellConnection.API_VERSION);
+        assertEquals(IShellApi.API_VERSION, ShellConnection.API_VERSION);
         JSONObject invalidEsimChallenge = new JSONObject(
             broker.provisionEsimGatewayKey("{\"state\":\"challenge_issued\"}", false));
         assertEquals("blocked", invalidEsimChallenge.getString("state"));
@@ -118,22 +120,14 @@ public final class ShellBrokerIntegrationTest {
         assertTrue(response.has("code"));
         assertTrue(response.has("workId"));
         JSONObject after = new JSONObject(broker.snapshot());
-        if ("ready".equals(localAiState)) {
-            assertEquals("blocked", response.getString("status"));
-            assertEquals("MODEL_PROFILE_NOT_ACTIVE", response.getString("code"));
-            assertTrue(response.isNull("workId"));
-            assertEquals(before, after.getInt("totalWorkCount"));
-            System.out.println("ZEMA_RESULT=BLOCKED_WITHOUT_VERIFIED_PROFILE");
-        } else {
-            assertTrue(java.util.Set.of("no_model", "loading", "busy", "error")
-                .contains(localAiState));
-            assertEquals("blocked", response.getString("status"));
-            assertTrue(response.isNull("workId"));
-            String code = response.getString("code");
-            assertEquals("LOCAL_AI_NOT_READY", code);
-            assertEquals(before, after.getInt("totalWorkCount"));
-            System.out.println("ZEMA_RESULT=BLOCKED_WITHOUT_PARTIAL_WORK:" + code);
-        }
+        assertNotNull("Binder must return a bounded runtime state, never a null parcel", localAiState);
+        assertTrue(java.util.Set.of("ready", "no_model", "loading", "busy", "error").contains(localAiState));
+        // No signed profile was activated in this test. Profile validation precedes runtime contact.
+        assertEquals("blocked", response.getString("status"));
+        assertEquals("MODEL_PROFILE_NOT_ACTIVE", response.getString("code"));
+        assertTrue(response.isNull("workId"));
+        assertEquals(before, after.getInt("totalWorkCount"));
+        System.out.println("ZEMA_RESULT=BLOCKED_WITHOUT_VERIFIED_PROFILE");
     }
 
     @Test public void zemaRequiresConsentBeforeCallingLocalAiOrCreatingWork() throws Exception {
@@ -205,8 +199,19 @@ public final class ShellBrokerIntegrationTest {
         assertTrue(exported.getBoolean("storageSyncConfirmed"));
         boolean deviceWrapHardwareBacked = exported.getBoolean("hardwareBacked");
         boolean storageSyncConfirmed = exported.getBoolean("storageSyncConfirmed");
-        assertTrue(recoverySecretHardwareBacked);
-        assertTrue(deviceWrapHardwareBacked);
+        String acceptanceTarget = InstrumentationRegistry.getArguments().getString("rockAcceptanceTarget", "physical");
+        if ("emulator".equals(acceptanceTarget)) {
+            assertTrue("emulator profile requires an actual Android emulator",
+                java.util.Set.of("ranchu", "goldfish").contains(Build.HARDWARE));
+            assertFalse("emulator evidence cannot claim a physical recovery key", recoverySecretHardwareBacked);
+            assertFalse("emulator evidence cannot claim a physical device-wrap key", deviceWrapHardwareBacked);
+            System.out.println("BACKUP_ACCEPTANCE_TARGET=EMULATOR_SOFTWARE_KEYSTORE");
+        } else {
+            assertEquals("physical", acceptanceTarget);
+            assertTrue(recoverySecretHardwareBacked);
+            assertTrue(deviceWrapHardwareBacked);
+            System.out.println("BACKUP_ACCEPTANCE_TARGET=PHYSICAL_HARDWARE_KEYSTORE");
+        }
         assertEquals("avocadoos-recoverable-backup/2",
             new JSONObject(broker.recoveryStatus()).getString("format"));
         System.out.println("AVOCADO_BACKUP_V2=EXPORTED");

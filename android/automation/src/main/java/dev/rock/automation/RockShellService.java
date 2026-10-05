@@ -71,7 +71,20 @@ public final class RockShellService extends Service {
         @Override public String localAiStatus() throws android.os.RemoteException {
             enforceShellCaller();
             try { return new LocalAiConnection(RockShellService.this).status(); }
-            catch (Exception error) { throw new android.os.RemoteException("LOCAL_AI_UNAVAILABLE"); }
+            catch (PackageManager.NameNotFoundException missingRuntime) { return "no_model"; }
+            catch (SecurityException untrustedRuntime) { throw new SecurityException("LOCAL_AI_UNTRUSTED"); }
+            catch (android.os.RemoteException disconnectedRuntime) { return "error"; }
+            catch (IllegalStateException unavailable) {
+                String reason = unavailable.getMessage();
+                if ("LOCAL_AI_UNAVAILABLE".equals(reason) || "LOCAL_AI_BIND_INTERRUPTED".equals(reason))
+                    return "error";
+                throw new IllegalStateException("LOCAL_AI_STATUS_FAILED");
+            }
+            catch (Exception invalidStatus) {
+                // RemoteException itself cannot be marshalled by the server-side Binder stub.
+                // Unsupported/malformed replies remain failures, with no raw exception details.
+                throw new IllegalStateException("LOCAL_AI_STATUS_FAILED");
+            }
         }
         @Override public String submitZema(String requestId, String selectionToken, String prompt,
                 String contextJson, boolean consent) {

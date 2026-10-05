@@ -61,14 +61,13 @@ jobs:
           script: |
             adb install -r android/article-tool/build/outputs/apk/debug/article-tool-debug.apk
             adb install -r android/automation/build/outputs/apk/debug/automation-debug.apk
-            gradle -p android :shell:connectedDebugAndroidTest --no-daemon
             # Local-AI instrumentation needs its separately built, same-test-signed APK.
             # This workflow keeps the Broker/SQLite/Tool suite deterministic; Local AI
             # has its own pinned-source workflow and separately recorded device run.
-            gradle -p android :automation:connectedDebugAndroidTest \
+            gradle -p android :shell:connectedDebugAndroidTest :automation:connectedDebugAndroidTest :operator-agent:connectedDebugAndroidTest \
               -Pandroid.testInstrumentationRunnerArguments.notClass=dev.rock.automation.LocalAiServiceIntegrationTest \
-              --no-daemon
-            gradle -p android :operator-agent:connectedDebugAndroidTest --no-daemon
+              -Pandroid.testInstrumentationRunnerArguments.rockAcceptanceTarget=emulator \
+              --no-daemon --continue
       - name: Verify and collect the successful Android P1 trial set
         env:
           ROCK_REQUESTED_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
