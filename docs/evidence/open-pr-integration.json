@@ -256,5 +256,34 @@
     "validation": "35 host tests passed; final same-candidate CodeQL check passed with no open PR findings",
     "policySuppression": false
   },
-  "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
+  "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102",
+  "dependencyFollowup": {
+    "pullRequests": [
+      79,
+      80,
+      81
+    ],
+    "status": "local_verified_github_pending",
+    "versions": {
+      "proxy-addr": "2.0.8",
+      "tinypool": "2.2.0",
+      "oxfmt": "0.72.0",
+      "source-map-js": "1.2.2 in root and sites/avocado-mini"
+    },
+    "rootLockSha256": "c8bc84504845cb458f6c01c302bd61bb18d5b0ed9de9014d337566d4e65c2f01",
+    "siteLockSha256": "5e9470355477df527335c973ec0f422e54dca0bc57866080ce8edf35e2db86bc",
+    "licenses": "Updated packages retain MIT or BSD-3-Clause metadata; lock-derived audit synchronized, legal clearance unchanged.",
+    "validation": {
+      "npm ci": "passed root and site",
+      "npm run verify": "exit 0",
+      "nodePassed": 1353,
+      "nodeSkipped": 1,
+      "workApiAssertions": 1192,
+      "csvApiAssertions": 385
+    },
+    "remainingAdvisories": [
+      "http-cache-semantics and braces: no patched version recorded by GitHub at inspection; unchanged by these PRs."
+    ],
+    "publicDeployment": false
+  }
 }
