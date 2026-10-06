@@ -33,7 +33,10 @@
         "docs/evidence/amc/codex-local-smoke.json",
         "scripts/amc-sky-observe.mjs",
         "tests/amc-sky-observe.test.mjs",
-        "docs/evidence/spider-observation-source-read.json"
+        "docs/evidence/spider-observation-source-read.json",
+        "scripts/amc-agent.mjs",
+        "tests/amc-agent-preflight.test.mjs",
+        "docs/evidence/spider-agent-preflight-read.json"
       ]
     },
     {

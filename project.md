@@ -1140,7 +1140,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
-| AMC02 | AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外） | 完了 | [記録](docs/amc-goal-orchestrator.md) · [記録](scripts/amc-goal-engine.mjs) · [記録](scripts/amc-goal.mjs) · [記録](scripts/amc-codex.mjs) · [記録](scripts/amc-request-plan.mjs) · [記録](scripts/amc-effort.mjs) · [記録](lib/amc-tool.ts) · [記録](lib/workflow.ts) · [記録](app/api/amc/route.ts) · [記録](app/amc/page.tsx) · [記録](components/amc-tool-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](tests/amc-goal-engine.test.mjs) · [記録](tests/amc-goal-cli.test.mjs) · [記録](tests/amc-codex.test.mjs) · [記録](tests/amc-request-plan.test.mjs) · [記録](tests/amc-effort.test.mjs) · [記録](tests/amc-sky-integration.test.mjs) · [記録](docs/evidence/amc/goal-orchestrator-audit.json) · [記録](docs/evidence/amc/codex-local-smoke.json) · [記録](scripts/amc-sky-observe.mjs) · [記録](tests/amc-sky-observe.test.mjs) · [記録](docs/evidence/spider-observation-source-read.json) |
+| AMC02 | AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外） | 完了 | [記録](docs/amc-goal-orchestrator.md) · [記録](scripts/amc-goal-engine.mjs) · [記録](scripts/amc-goal.mjs) · [記録](scripts/amc-codex.mjs) · [記録](scripts/amc-request-plan.mjs) · [記録](scripts/amc-effort.mjs) · [記録](lib/amc-tool.ts) · [記録](lib/workflow.ts) · [記録](app/api/amc/route.ts) · [記録](app/amc/page.tsx) · [記録](components/amc-tool-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](tests/amc-goal-engine.test.mjs) · [記録](tests/amc-goal-cli.test.mjs) · [記録](tests/amc-codex.test.mjs) · [記録](tests/amc-request-plan.test.mjs) · [記録](tests/amc-effort.test.mjs) · [記録](tests/amc-sky-integration.test.mjs) · [記録](docs/evidence/amc/goal-orchestrator-audit.json) · [記録](docs/evidence/amc/codex-local-smoke.json) · [記録](scripts/amc-sky-observe.mjs) · [記録](tests/amc-sky-observe.test.mjs) · [記録](docs/evidence/spider-observation-source-read.json) · [記録](scripts/amc-agent.mjs) · [記録](tests/amc-agent-preflight.test.mjs) · [記録](docs/evidence/spider-agent-preflight-read.json) |
 | LCH07-01 | 子作業（LCH07）: 再受入する配布platform・候補SHA・archive hashを固定する | 未着手 | — |
 | LCH07-02 | 子作業（LCH07）: 同一候補のlicense・NOTICE・SBOMとOWNER未決を照合する | 未着手 | — |
 | LCH07-03 | 子作業（LCH07）: 候補のproduction署名・公開trust・失効/rotation証拠を結合する | 未着手 | — |
@@ -1591,3 +1591,11 @@ mainの新6テストは実service-accessと合成envへ接続して保持し、�
 O2 / R03、ROCK、Web / PWA。最新main `4a22eb25`を基点に、欠落したWorkPlan/normalizeWorkJob、同名AMC一覧定義の重複、仕事APIの利用権・委任/親job/見積/成果/receipt照合を修復する。最初の実行前だけ目的を編集でき、固定承認条件は変更させない。過去の証拠不足で本人のローカル取消を妨げず、ownerとrevisionの検査を維持する。最新mainのSky引継ぎ・ライブラリ保存を保持する。
 
 対象67件合格（新規実handler＋SQLiteの21件を含む）。修正前APIだけを同じ試験へ戻すと直接13件失敗し、弱い照合を再現した。この旧headのGitHub回帰67件と同一ref CodeQL両言語は成功、42件のalert identityに増減なし。現在の残差分はcycle 46を参照。全体verifyは既存DB inventory不整合、design:checkは既存catalog ID重複で停止。依存install不一致のPR #73は独立した既存修正であり、今回重複しない。[検証記録](docs/evidence/spider-work-plan-contract.json)。task段階・料金保留・本番受入は変更しない。
+
+
+## 2026-10-06 — SPIDER cycle 48: 既存エージェント定義の読取り
+
+H1 / AMC02、ROCK、主stream Git / CI / Operations。最新main `0c90253c` 起点で、既存宛先の確認後にpathを再openするCodeQL #52を修復。安全に開いた通常fileのFDと現在のcanonical位置・BigInt identityを照合し、期待UTF-8 bytes＋1以内で同じFDから比較する。全宛先の事前検査、custom保持、wx新規作成、launcher設定を維持。#53の作成側競合、親pathの完全固定、全体atomic性は別課題として残す。
+
+新規20件と直接module importの既存4件、計24/24合格。新規試験に旧sourceだけを入れると2 pass/18 fail（親2件含む）で、同サイズの外側合成bytesを読む退行を再現。修正前同一ref CodeQLは両言語成功、#52/#53を含む42件を保存。mission/project同期・check、source syntax、diff/check合格。designは既存catalog ID重複、verifyは既存DB inventory不一致で停止。修正後GitHub結果は未取得で、[要約証拠](docs/evidence/spider-agent-preflight-read.json)とPRへ区別して記録する。H1次task AMC01・受入段階・料金保留は変更しない。main merge・配備・実機操作・実Codex設定変更なし。前回cycle47の容量不足で未保存だった最終記録は、空き容量回復後に保存を完了した。
+

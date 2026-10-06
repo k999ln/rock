@@ -273,7 +273,8 @@
         "externalActionsAuthorized": false,
         "browserAcceptance": "not_verified",
         "productionDeploymentAccepted": false,
-        "observationSourceRead": "single_descriptor_regular_file_with_canonical_containment_and_bigint_identity; source_buffer_hashed_once; full_AMC_import_not_accepted"
+        "observationSourceRead": "single_descriptor_regular_file_with_canonical_containment_and_bigint_identity; source_buffer_hashed_once; full_AMC_import_not_accepted",
+        "agentDefinitionPreflight": "pinned_descriptor_bounded_utf8_comparison; creation_path_race_not_covered"
       },
       "localStateRead": {
         "source": "scripts/amc-autonomy-store.mjs",

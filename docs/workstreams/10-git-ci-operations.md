@@ -61,3 +61,8 @@ H1 / R04、ROCK。main `ecb4b2af`は古いmanifestと新しいlockを別のmerge
 ## AMC観測元のファイル読取り
 
 H1 / AMC02、ROCK。SPIDER cycle 47は観測元のpath差替え競合だけを扱う。[既存AMC設計](../amc-goal-orchestrator.md#spider-観測元ファイルの安全な読取り)と[証拠](../evidence/spider-observation-source-read.json)へ集約する。検証は `node --test tests/amc-sky-observe.test.mjs`、同じbranch/SHAのCodeQL。通常AMC importの既存export欠落、全体CI・配備の未合格を別に残す。
+
+
+## AMCエージェント定義の事前確認
+
+H1 / AMC02、ROCK。SPIDER cycle 48は既存定義の読取り競合（#52）を扱い、新規作成側（#53）は別の未解決として残す。[既存AMC設計](../amc-goal-orchestrator.md#spider-既存エージェント定義の読取り確認)と[証拠](../evidence/spider-agent-preflight-read.json)へ集約。実Codex設定を変更せず、`node --test tests/amc-agent.test.mjs tests/amc-agent-preflight.test.mjs`で合成projectを検証する。

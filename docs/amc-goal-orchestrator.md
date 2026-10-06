@@ -163,3 +163,10 @@ npm run verify
 ```
 
 standalone画面の操作契約はmock DOMで確認する。Web統合では本人分離、認証・Origin、size、CAS、再送、draft保持、Sky/Zemaと保存結果の分離も確認する。実ブラウザの描画・操作、AI送信、executor常駐、実機受入とは区別する。過去の検証結果は[AMC検証記録](evidence/amc/goal-orchestrator-audit.json)にあり、今回の未完了検証の合格証拠へ転用しない。
+
+## SPIDER: 既存エージェント定義の読取り確認
+
+H1 / AMC02、ROCK、主stream Git / CI / Operations。installAgentsの既存宛先確認はNOFOLLOW・NONBLOCKで開いたFDを使い、通常ファイル・期待UTF-8 byte長、config/agentsの通常dir、canonical位置、named fileとFDのBigInt dev/inoを照合する。同じFDから期待byte長＋1までだけ読み、内容一致後に閉じる。open時のENOENTのみ未作成として扱い、open後の消失・不一致・例外は拒否してFDを閉じる。既存customがある場合は全宛先の作成前に停止する。
+
+これは読取りpreflightの修復であり、親pathをFDで固定した新規作成ではない。CodeQL #53の作成側競合、任意の祖先置換・複数ABA・install全体のatomic性は未解決。呼出しには信頼できる安定したparentが必要で、launcherのmodel・承認・sandbox継承、既存config、実Codex設定は変更しない。検証は `node --test tests/amc-agent.test.mjs tests/amc-agent-preflight.test.mjs`。[要約証拠](evidence/spider-agent-preflight-read.json)で同じrefのCodeQL #52を前後比較し、件数だけで解消としない。
+

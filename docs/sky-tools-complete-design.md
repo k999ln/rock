@@ -502,3 +502,6 @@ open時の削除済みpathのENOENTだけを従来どおりnullとして記録�
 
 保存形式・hash形式・Goal承認・独立検収は維持する。親directoryや同inodeを書き換えられるwriterの完全隔離、全fileを同時点で固定したsnapshot、remote認証、実Codex実行やWeb同期の受入を保証する変更ではない。非通常fileもopen後にfstatで拒否するため、任意deviceをopenする副作用の隔離は保証しない。新しい外部送信・課金・自動検収は追加しない。
 
+
+
+SPIDER cycle 48: 既存エージェント定義は安全にopenした同じFDの通常file・byte長・canonical位置・BigInt identityを確認し、期待UTF-8 bytes＋1以内で比較する。custom設定がある場合は作成前に停止する。読取りpreflightに限定し、新規作成pathの競合やinstall全体のatomic性は未解決。詳細は[AMC設計](amc-goal-orchestrator.md#spider-既存エージェント定義の読取り確認)と[証拠](evidence/spider-agent-preflight-read.json)。

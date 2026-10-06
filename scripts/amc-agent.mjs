@@ -1,6 +1,11 @@
 import { spawn } from 'node:child_process';
 import {
   existsSync,
+  openSync,
+  fstatSync,
+  readSync,
+  closeSync,
+  constants,
   lstatSync,
   mkdirSync,
   readFileSync,
@@ -69,6 +74,45 @@ function regularDirectory(path) {
   )
     throw new Error('Refusing unsafe agent directory: ' + path);
 }
+// Validate existing definitions without reopening a pathname after checking it.
+// This is a read preflight; creation below still requires a trusted, stable parent.
+function inspectExistingAgent(entry, config, directory) {
+  const refuse = () => new Error(
+    '既存のエージェント定義を保持します。差分を確認してください: ' + entry.path,
+  );
+  if (!Number.isInteger(constants.O_NOFOLLOW) || constants.O_NOFOLLOW <= 0 ||
+      !Number.isInteger(constants.O_NONBLOCK) || constants.O_NONBLOCK <= 0)
+    throw new Error('Safe agent definition reads are unavailable');
+  let fd;
+  try {
+    fd = openSync(entry.path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+  } catch (error) {
+    if (error.code === 'ENOENT') return;
+    throw error;
+  }
+  try {
+    const opened = fstatSync(fd, { bigint: true });
+    const expected = Buffer.from(entry.text, 'utf8');
+    if (!opened.isFile() || opened.size !== BigInt(expected.length)) throw refuse();
+    regularDirectory(config);
+    regularDirectory(directory);
+    if (realpathSync(directory) !== directory) throw refuse();
+    const named = lstatSync(entry.path, { bigint: true });
+    if (!named.isFile() || named.dev !== opened.dev || named.ino !== opened.ino)
+      throw refuse();
+    // One extra byte detects growth while keeping arbitrary existing files bounded.
+    const bytes = Buffer.alloc(expected.length + 1);
+    let count = 0;
+    while (count < bytes.length) {
+      const size = readSync(fd, bytes, count, bytes.length - count, null);
+      if (size === 0) break;
+      count += size;
+    }
+    if (count !== expected.length || !bytes.subarray(0, count).equals(expected)) throw refuse();
+  } finally {
+    closeSync(fd);
+  }
+}
 export function installAgents(project = root) {
   const target = realpathSync(project);
   const config = join(target, '.codex'),
@@ -80,18 +124,7 @@ export function installAgents(project = root) {
     text: renderAgent(a),
   }));
   // Inspect every destination before writing any; preserve unrelated/custom files.
-  for (const entry of entries)
-    if (existsSync(entry.path)) {
-      if (
-        !lstatSync(entry.path).isFile() ||
-        lstatSync(entry.path).isSymbolicLink() ||
-        readFileSync(entry.path, 'utf8') !== entry.text
-      )
-        throw new Error(
-          '既存のエージェント定義を保持します。差分を確認してください: ' +
-            entry.path,
-        );
-    }
+  for (const entry of entries) inspectExistingAgent(entry, config, directory);
   mkdirSync(directory, { recursive: true });
   for (const entry of entries)
     if (!existsSync(entry.path))
