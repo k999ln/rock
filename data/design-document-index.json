@@ -73,7 +73,10 @@
     {
       "id": "product_requirements",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
-      "documents": ["docs/product-baseline.md", "data/product-baseline.json"]
+      "documents": [
+        "docs/product-baseline.md",
+        "data/product-baseline.json"
+      ]
     },
     {
       "id": "whole_os",
@@ -93,17 +96,25 @@
     {
       "id": "product_service_system_relations",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
-      "documents": ["docs/rockstaros-product-system-map.md"]
+      "documents": [
+        "docs/rockstaros-product-system-map.md"
+      ]
     },
     {
       "id": "platform_core_and_jobs",
       "coverage": "DETAILED_WITH_OPEN_IMPLEMENTATION_GAPS",
-      "documents": ["docs/platform-core.md", "contracts/platform-api.json"]
+      "documents": [
+        "docs/platform-core.md",
+        "contracts/platform-api.json"
+      ]
     },
     {
       "id": "web_pc",
       "coverage": "DETAILED_IMPLEMENTED_PARTIAL_PRODUCTION",
-      "documents": ["docs/architecture.md", "docs/backend-design.md"]
+      "documents": [
+        "docs/architecture.md",
+        "docs/backend-design.md"
+      ]
     },
     {
       "id": "linux_qemu",
@@ -253,42 +264,151 @@
         "externalActionsAuthorized": false,
         "browserAcceptance": "not_verified",
         "productionDeploymentAccepted": false
+      },
+      "localStateRead": {
+        "source": "scripts/amc-autonomy-store.mjs",
+        "test": "tests/amc-autonomy-store-read.test.mjs",
+        "design": "docs/sky-tools-complete-design.md",
+        "maximumBytes": 5000000,
+        "scope": "same_descriptor_local_fixture_read_not_authentication_boundary"
       }
     },
-    { "id": "rockstar-csv-cleanup", "catalogStatus": "ready" },
-    { "id": "rockstar-markets-analysis", "catalogStatus": "ready" },
-    { "id": "mercari-revenue", "catalogStatus": "ready" },
-    { "id": "fashion-brand-ops", "catalogStatus": "ready" },
-    { "id": "rockstar-ip-studio", "catalogStatus": "candidate" },
-    { "id": "coconala", "catalogStatus": "ready" },
-    { "id": "mr-free-article", "catalogStatus": "ready" },
-    { "id": "mr-citations", "catalogStatus": "ready" },
-    { "id": "mr-delivery", "catalogStatus": "ready" },
-    { "id": "rockstar-ledger", "catalogStatus": "ready" },
-    { "id": "jev-evaluation", "catalogStatus": "ready" },
-    { "id": "rockstar-legal-intake", "catalogStatus": "ready" },
-    { "id": "rockstar-patent-assistant", "catalogStatus": "ready" },
-    { "id": "faster-whisper", "catalogStatus": "candidate" },
-    { "id": "transformers-js", "catalogStatus": "candidate" },
-    { "id": "playwright", "catalogStatus": "candidate" },
-    { "id": "jev-ultrafast", "catalogStatus": "candidate" },
-    { "id": "jev-trader", "catalogStatus": "candidate" },
-    { "id": "typesafe-computer-use", "catalogStatus": "candidate" },
-    { "id": "jev-review", "catalogStatus": "candidate" },
-    { "id": "jev-router", "catalogStatus": "candidate" },
-    { "id": "jev-browser", "catalogStatus": "candidate" },
-    { "id": "mobile-jev", "catalogStatus": "candidate" },
-    { "id": "coconala-proposal-draft", "catalogStatus": "candidate" },
-    { "id": "gig-workflow", "catalogStatus": "candidate" },
-    { "id": "coconala-inbox", "catalogStatus": "candidate" },
-    { "id": "youtube-script-writer", "catalogStatus": "candidate" },
-    { "id": "seo-blueprint", "catalogStatus": "candidate" },
-    { "id": "landing-page-sprint", "catalogStatus": "candidate" },
-    { "id": "sales-objection-reply-builder", "catalogStatus": "candidate" },
-    { "id": "user-interview-synthesizer", "catalogStatus": "candidate" },
-    { "id": "calendar-coordination", "catalogStatus": "candidate" },
-    { "id": "telegram-notifications", "catalogStatus": "candidate" },
-    { "id": "producthunt-discovery", "catalogStatus": "candidate" }
+    {
+      "id": "rockstar-csv-cleanup",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-markets-analysis",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mercari-revenue",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "fashion-brand-ops",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-ip-studio",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "coconala",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mr-free-article",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mr-citations",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mr-delivery",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-ledger",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "jev-evaluation",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-legal-intake",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-patent-assistant",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "faster-whisper",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "transformers-js",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "playwright",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-ultrafast",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-trader",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "typesafe-computer-use",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-review",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-router",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-browser",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "mobile-jev",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "coconala-proposal-draft",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "gig-workflow",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "coconala-inbox",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "youtube-script-writer",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "seo-blueprint",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "landing-page-sprint",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "sales-objection-reply-builder",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "user-interview-synthesizer",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "calendar-coordination",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "telegram-notifications",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "producthunt-discovery",
+      "catalogStatus": "candidate"
+    }
   ],
   "nativeToolFamilies": [
     "shared_checklist",
