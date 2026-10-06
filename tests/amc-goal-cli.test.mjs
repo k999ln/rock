@@ -20,6 +20,7 @@ function browser({
   clipboardFails = false,
   confirm = true,
 } = {}) {
+  let authorizeSky;
   const html = renderGoalWorkbench(sources);
   const elements = new Map();
   const downloads = [];
@@ -361,8 +362,9 @@ function browser({
   };
   for (const script of scripts)
     if (!/\btype=["']application\/json["']/i.test(script[1]))
-      runInNewContext(script[2], sandbox);
+      runInNewContext(script[2].replace('function requireSkyAuthority(', 'captureAuthority(requireSkyAuthority); function requireSkyAuthority('), { ...sandbox, captureAuthority: (guard) => { authorizeSky = guard; } });
   return {
+    authorizeSky,
     elements,
     boxes: documentRoot.querySelectorAll('[data-goal-squad]'),
     copied,
@@ -1806,4 +1808,15 @@ await test('New request from the board protects unfinished request and brief fie
       }
     }
   }
+});
+
+await test('offline workbench refuses Sky execution and acceptance even for imported records', () => {
+  const page = browser();
+  for (const type of ['start_task', 'submit_result', 'verify_task', 'accept_goal', 'resume_task', 'revalidate_task']) {
+    page.authorizeSky({}, { type });
+  }
+  for (const type of ['start_task', 'submit_result', 'verify_task', 'accept_goal', 'resume_task', 'revalidate_task']) {
+    assert.throws(() => page.authorizeSky({ skyBrief: { request: 'fixture' } }, { type }), /cannot authorize/);
+  }
+  assert.doesNotMatch(renderGoalWorkbench(sources), /function grantSkyTransition/);
 });

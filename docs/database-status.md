@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-G04: PR #63–65 / #69–76を最新main 0c90253cへ統合中。依存・catalog・AMC認可/停止/再検収と欠落API試験を復旧し、同一候補の全体verify・native/Android CIを検証してからmainへ反映する。実機・本番・秘密候補の未受入を分離。
+G04: PR #63–65 / #69–76の統合候補は全体verify成功（Node 1352 pass / 1 skip、API1192、CSV385）。同一commitのGitHub native/Android/Phone/CodeQLと履歴secret scanを照合してからmainへ統合。実機・本番・公開は別gate。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。
