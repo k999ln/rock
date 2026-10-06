@@ -185,7 +185,13 @@
         "docs/release-minimum-gates.md",
         "data/device-emergency-access-policy.json",
         "data/release-readiness.json"
-      ]
+      ],
+      "observerReportBoundary": {
+        "design": "docs/rockstaros-complete-design.md",
+        "evidence": "docs/evidence/spider-observer-output-schema.json",
+        "scope": "existing simulation observer scalar report validation",
+        "guestAcceptance": false
+      }
     },
     {
       "id": "game_ip",

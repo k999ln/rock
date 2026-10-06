@@ -28,6 +28,13 @@ jobs:
           node-version: '22'
       - name: Test feedback collection and update-message boundaries
         run: node --test tests/spider-feedback.test.mjs tests/service-worker-update.test.mjs tests/spider-web-runtime.test.mjs
+      - name: Test observer privacy and existing Wallet read contracts
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+          PYTHONPATH: systems/rock-star-os/src:systems/rock-star-os/os
+        run: |
+          python3 -B -W error::ResourceWarning systems/rock-star-os/os/entitlement/tests/test_guest_observer_privacy.py
+          python3 -B -W error::ResourceWarning -m unittest discover -s systems/rock-star-os/os/entitlement/tests -p test_device_wallet.py -v
       - name: Test local descriptor races and approved Connector execution
         run: node --test tests/mcp-local-descriptor.test.mjs tests/mcp-connector.test.mjs
       - name: Test delivery workspace isolation and existing MR tools

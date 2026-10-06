@@ -20,3 +20,7 @@ rootの `scripts/test-native.py` と `.github/workflows/native-os.yml` はこの
 ## 2026-10-03 — SPIDERのHTTPS CA境界
 
 `os/mcp_broker/http.py`のHTTPS設定では、空のCAがTLS contextなしの送信へ進む経路を拒否する。`tests/test_mcp_http_deadline.py`で設定拒否と既存TLS／期限の回帰を確認する。取得時のmanifest・public fixture証明書／鍵は変更しない。合成loopbackと同一SHAのsource CIの証拠は[改善記録](../../docs/evidence/spider-improvement-cycle.json)へ保存し、外部providerやOS起動の受入とは区別する。
+
+## 2026-10-06 — SPIDER observer出力の検証
+
+os/entitlement/guest_observer.pyの既存報告fieldをscalar schemaで検証し、不正応答とread例外のprivate内容を出さずに停止する。IMPORT-MANIFESTとfixture料金・認証・Wallet操作は維持。[範囲と証拠](../../docs/evidence/spider-observer-output-schema.json)。host合格は新imageのboot受入ではない。

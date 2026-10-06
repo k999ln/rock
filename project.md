@@ -1,5 +1,11 @@
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-06 — SPIDER cycle 50: native診断の出力境界
+
+O1 / SYS02、ROCK、主stream Security / Identity / Compliance。最新main 0c90253cから開始。entitlement observerの3fieldが不正なnested値をそのまま報告できることを合成データで再現し、既存enum・bool・非負intを検証する。read例外は固定メッセージで停止し、レポート／PASSを出さない。旧sourceで新規13 method中8 methodが失敗／error。修正後hostは新規13＋既存Wallet22、計35/35合格。独立reviewも13/13合格、blockerなし。mission/project・diff検査は合格、designは既存catalog ID重複、verifyは既存DB inventory不一致で停止。GitHubの修正後結果は未取得で、[証拠](docs/evidence/spider-observer-output-schema.json)とPRへ別々に記録する。実serviceの秘密漏洩を観測したという主張ではない。
+
+SYS02の元status、O1次task SYS13・段階・料金保留を維持。main merge・配備・guest／実機・実資金操作なし。前回の容量不足後、git fetchと秘密値なしのSPIDER作業一覧保存が復旧した。
+
 ## 2026-10-05 — WorkPlanとAMC保存契約の局所復旧
 
 O5 / SKY10・SKY16（SKY-S7-WORKPLAN-RECONCILE-20261005-01）、ROCK。基点main 4a22eb25で欠落したWorkPlan schemaVersion 1・objective・固定approvalGates、旧jobの読取正規化、開始前edit_planを624124cfの既存契約から差分復旧。job revisionのCAS、現在のAMC amc_event/Goal expectedRevision、専用API境界は保持。重複listAmcを一本化し、本人別・最大100件・Goal本文を含めない一覧を維持。直接consumerの重複分岐とunknownなskyBriefの表示を修正。cloud-agent手順の復旧に必要な既存の所有者/親job/見積/成果/receipt照合もAPIへ戻す。新schema・価格・利用権・接続コード・端末権限は追加しない。
@@ -1401,7 +1407,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
 | HOME02 | Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止 | 完了 | [記録](components/workspace-shell.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-maintenance.tsx) · [記録](app/fund/page.tsx) · [記録](app/fund/legacy/page.tsx) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/product-baseline.md) |
 | SYS01 | 端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装 | 完了 | [記録](app/settings/system/page.tsx) · [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
-| SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
+| SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) · [記録](docs/evidence/spider-observer-output-schema.json) |
 | SYS03 | 公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合 | 完了 | [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](components/system-maintenance.tsx) |
 | SYS04 | QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否 | 完了 | [記録](data/qemu-release-audit.json) · [記録](data/qemu-rc2-legal-info/manifest.csv) · [記録](data/qemu-rc2-legal-info/host-manifest.csv) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/qemu-release-completion-audit-20260912.md) · [記録](components/system-maintenance.tsx) |
 | SYS05 | 候補準備・法務承認・保護署名・本人署名の64拒否境界試験を全体verifyへ統合 | 完了 | [記録](scripts/check-release-signing.mjs) · [記録](scripts/release_signing.py) · [記録](scripts/release_signing_owner.py) · [記録](scripts/prepare_release_candidate.py) · [記録](scripts/verify_owner_legal_approval.py) · [記録](tests/test_release_signing.py) · [記録](tests/test_release_signing_owner.py) · [記録](tests/test_prepare_release_candidate.py) · [記録](tests/test_owner_legal_approval.py) · [記録](docs/release-signing-operations.md) |
