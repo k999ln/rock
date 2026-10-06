@@ -2,7 +2,9 @@
 
 利用者の「os完成させようよ」に基づき、Android / Device / Local AI、ROCKを主担当に全OS compileから同一artifact受入へ進める。最新main e12d880cから隔離branchを開始。署名付き上流安定版の再確認と、生成target-files/otatoolsの内容・hash・build identityを照合する工程を先行する。既存Scaleway案はアカウント設定済み記録があるが予算未確定。全OS buildには専用x86_64 Linuxが必要で、現在のMacは不適合、ADB接続端末0台。クラウド支出上限の回答を待つ間はROCKの準備実装を進める。鍵生成、端末初期化/書込、正式署名、実機合格は未実施。
 
-署名済みsource `2026100200`へmanifest／adevtool／kernelを同期し、履歴の実機readbackは保持した。build runnerに実行固有BUILD_NUMBER、専用dist／証拠directory、失敗時の状態更新を追加。生成ZIPの機種・番号・Rock APK・image／OTA entryとhash、入力manifest／vendor／Local AIのhashを検査する。host/fixture: phone tests 40件、shell構文、device-support、baseline、design checks合格。ローカル全体verifyは既知のnode_modules未配置（ai package欠落）で停止し、同一branchのGitHub CIで検証する。全OS build、正式署名、flash、復旧は未実施。次は専用Linux／予算確定後にDevice Preview記載のbringup入口を実行し、同一artifactを受け入れる。
+署名済みsource `2026100200`へmanifest／adevtool／kernelを同期し、履歴の実機readbackは保持した。build runnerに実行固有BUILD_NUMBER、専用dist／証拠directory、失敗時の状態更新を追加。生成ZIPの機種・番号・Rock APK・image／OTA entryとhash、入力manifest／vendor／Local AIのhashを検査する。host/fixture: phone tests 41件、shell構文、device-support、baseline、design checks合格。ローカル全体verifyは既知のnode_modules未配置（ai package欠落）で停止し、同一branchのGitHub CIで検証する。全OS build、正式署名、flash、復旧は未実施。次は専用Linux／予算確定後にDevice Preview記載のbringup入口を実行し、同一artifactを受け入れる。
+
+GitHub初回SHA d448c56cの全体verify合格。新規source証拠中の公開GrapheneOS署名指紋がsecret候補になったため、上流公開signersと一致する1値・1pathだけの分類を追加した。実Gitleaksの9 policy回帰合格（値変更・別path・scanner失敗の検出を維持）。最終SHAの全CIは再確認する。
 
 ## 2026-10-06 — 全PRのCI合格と残存依存脆弱性の修正（SYS15 / G04）
 

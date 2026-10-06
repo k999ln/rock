@@ -5486,8 +5486,8 @@
       "sourceTag": "2026100200",
       "sourceVerification": "docs/evidence/phone-source-verification.json",
       "artifactVerifier": "scripts/verify-phone-artifacts.py",
-      "localValidation": "40 phone tests passed; shell syntax, device-support, baseline and design checks passed",
-      "githubValidation": "PENDING"
+      "localValidation": "41 phone tests passed; shell syntax, device-support, baseline and design checks passed",
+      "githubValidation": "Full verify passed at d448c56c; public signer fingerprint classification added; final SHA checks pending"
     }
   },
   "deviceSupportArchitecture": {
