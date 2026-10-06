@@ -1652,3 +1652,5 @@ Local AIの実Kotlin compileでtimeoutのInt/Long不一致を検出し、API v4�
 ## 未完了PR統合候補のローカル受入
 
 G04 / ROCK。11 PRの履歴を保持し、main 0c90253cのSky/AMC更新と認可・停止・予算・再検収・API試験の欠落を復旧。npm run verify exit 0、Node 1352 pass / 1 platform skip、Worker/D1 1192、CSV API 385 assertions。自作LLM host 6件、APK staging 15件、phone準備19件も合格。履歴secret候補・Linux/Androidの同一候補CIは別途追跡する。実機OS/Provider/本番/公開は未受入。証拠: docs/evidence/open-pr-integration.json。次: GitHubへ保存し、同一SHAのCIを確認してmainへ統合。
+
+統合PR #77のc650466eでGitHub総合verify・CodeQL両言語・native全5分割・SPIDER回帰が合格。local browserでSky説明→Zema AMC→合成Goal保存→再読込の保存一覧を確認。AMC本文の配置と、記録保存を実作業完了にしない表示を修正し、最終CIへ進む。履歴scanはmain2910→候補2942出現、160→161値。増加したrule/path/valueは証拠内のソースSHA-256だけと照合済み。既存160値の包括分類は未完了で、検査設定・警告は変更しない。実機・本番・外部秘密rotationは行っていない。

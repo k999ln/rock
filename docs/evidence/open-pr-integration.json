@@ -32,19 +32,81 @@
       "stageTests": 15,
       "phonePreparationTests": 19
     },
-    "github": "pending on committed candidate"
+    "github": {
+      "sourceCommit": "c650466e",
+      "verification": "https://github.com/k999ln/rock/actions/runs/37403252132",
+      "verificationStatus": "passed",
+      "nativePartitions": "passed; aggregate pending",
+      "androidAndApk": "pending; final UI commit will be checked separately"
+    },
+    "offlineWorkbench": {
+      "passed": 43,
+      "scope": "Includes refusal of six protected Sky transitions in generated offline workbench"
+    },
+    "browser": {
+      "origin": "http://localhost:4199",
+      "scope": "local synthetic data and local D1",
+      "passed": [
+        "Sky tool overview opens without execution",
+        "AMC opens inside Zema through handoff",
+        "8,000-character AMC composer limit displayed",
+        "Synthetic Goal and intent saved with seven unstarted tasks",
+        "Reload lists the saved Goal",
+        "AMC form renders in workflow body, outside heading",
+        "AMC record badge explicitly separates records from work completion"
+      ],
+      "notClaimed": [
+        "physical OS",
+        "provider execution",
+        "paid cloud execution"
+      ]
+    }
   },
   "limits": [
     "No physical OS acceptance, signing, flashing, provider acceptance or production deployment.",
     "Historical secret-scan candidates remain under investigation; no all-security-clear claim."
   ],
-  "sourceHashes": {
-    "components/sky-chat-workspace.tsx": "73b5c7a3f036cb90ccd769bc829d85b81a022cf14ced7ef523e21532756be34b",
-    "components/sky-workspace.tsx": "fa1c7e93396f98342126d19faafeee55b1feb7c7917c5904644f0fba3761b14d",
-    "scripts/amc-codex.mjs": "d5d95e987e811b87810b14bc7ce11705fc8cf8c3e09791af95cc3646da83647d",
-    "scripts/amc-goal-engine.mjs": "c1aac8438c3d066f6f3cf5194c800ba212114111abcdd286b008602670a91702",
-    "scripts/amc-goal.mjs": "ff48f34756e68417789ccdad0d2ba2ea8642be40b4cd19728423671aa6de3da9",
-    "scripts/check-work-api.mjs": "f1f552199ee51a17983865b1711cfd95152854081c67e930ef314c0c21b7a973",
-    "lib/sky-zema-handoff.ts": "8b311b0ca87659524f9ddf0690a265e4bedbc61d45cbeaa43f496202bf9718c3"
+  "sourceHashes": [
+    {
+      "path": "components/sky-chat-workspace.tsx",
+      "sha256": "e81e5b1d471cbfff2bab6e3ed1ab00ce5a1515d5cbc578e1e234bc39ea97fbc7"
+    },
+    {
+      "path": "components/sky-workspace.tsx",
+      "sha256": "fa1c7e93396f98342126d19faafeee55b1feb7c7917c5904644f0fba3761b14d"
+    },
+    {
+      "path": "scripts/amc-codex.mjs",
+      "sha256": "d5d95e987e811b87810b14bc7ce11705fc8cf8c3e09791af95cc3646da83647d"
+    },
+    {
+      "path": "scripts/amc-goal-engine.mjs",
+      "sha256": "c1aac8438c3d066f6f3cf5194c800ba212114111abcdd286b008602670a91702"
+    },
+    {
+      "path": "scripts/amc-goal.mjs",
+      "sha256": "ff48f34756e68417789ccdad0d2ba2ea8642be40b4cd19728423671aa6de3da9"
+    },
+    {
+      "path": "scripts/check-work-api.mjs",
+      "sha256": "f1f552199ee51a17983865b1711cfd95152854081c67e930ef314c0c21b7a973"
+    },
+    {
+      "path": "lib/sky-zema-handoff.ts",
+      "sha256": "8b311b0ca87659524f9ddf0690a265e4bedbc61d45cbeaa43f496202bf9718c3"
+    }
+  ],
+  "securityComparison": {
+    "scanner": "Gitleaks 8.30.1, same full-history merge-aware options and unchanged pinned policy as CI",
+    "baseMain": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "candidate": "82d2f213825ca10dccacb57a154567a27a8d68eb",
+    "baseOccurrences": 2910,
+    "candidateOccurrences": 2942,
+    "baseDistinctValues": 160,
+    "candidateDistinctValues": 161,
+    "newRuleFileValueTuples": 1,
+    "newCandidateClassification": "SHA-256 of scripts/check-work-api.mjs recorded in this evidence file; verified against source bytes. No additional unmatched secret candidate tuples. Existing 160 values are not comprehensively classified or declared safe.",
+    "policyChanged": false,
+    "historicalFindingsRemain": true
   }
 }

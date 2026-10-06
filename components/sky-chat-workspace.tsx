@@ -679,9 +679,9 @@ export default function SkyChatWorkspace() {
   function recordOutcome(next: { ok: boolean; text: string }, toolId: string) {
     setOutcome(next);
     if (toolId !== 'jev-evaluation')
-      setWorkflowStatus(next.ok ? 'completed' : 'failed');
+      setWorkflowStatus(next.ok ? toolId === 'rockstar-amc' ? 'ready' : 'completed' : 'failed');
     const tool = catalog.find((item) => item.id === toolId);
-    const outcomeLabel = tool?.status === 'candidate'
+    const outcomeLabel = toolId === 'rockstar-amc' ? '計画・進捗の記録を保存しました' : tool?.status === 'candidate'
       ? tool.origin === 'mr' ? '下書きができました' : '接続条件を整理しました'
       : '結果ができました';
     setMessages((current) => [...current, {
@@ -1361,21 +1361,13 @@ export default function SkyChatWorkspace() {
                     <div>
                       <small>{activeTool ? roleFor(activeTool) : '接続中のBot'}</small>
                       <h2 id={`workflow-${activeRequest.id}`}>
-                        {activeTool?.id === 'rockstar-amc' ? (
-                      <AmcToolRunner
-                        key={activeRequest.id}
-                        initialText={activeRequest.text}
-                        onOutcome={(next) => recordOutcome(next, 'rockstar-amc')}
-                        onRunningChange={setRunning}
-                        onDirtyChange={(dirty) => { amcDirtyRef.current = dirty; }}
-                      />
-                    ) : activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local'
+                        {activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local'
                           ? '実行器の接続待ち'
                           : 'この依頼を進める'}
                       </h2>
                     </div>
                     <span className={`is-${workflowStatus}`}>
-                      {activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local'
+                      {activeTool?.id === 'rockstar-amc' && outcome?.ok ? '記録あり・実作業の完了とは別' : activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local'
                         ? '実行器待ち'
                         : workflowStatus === 'running'
                           ? '処理中'
@@ -1391,13 +1383,13 @@ export default function SkyChatWorkspace() {
                     </span>
                   </header>
                   <p className="sky-chat-local-llm-note">
-                    {activeTool?.runner === 'candidate-local'
+                    {activeTool?.id === 'rockstar-amc' ? 'Goalと意図を確認して計画を保存します。実作業・検収は個別に記録します。' : activeTool?.runner === 'candidate-local'
                       ? activeTool.origin === 'mr'
                         ? 'ローカル下書きのみ利用できます。元サービスへの接続、応募、送信、予定登録は行いません。'
                         : '実行器の接続条件のみ確認できます。ツール本体や外部サービスは実行しません。'
                       : '入力を確認して実行してください。結果はこの会話に表示されます。'}
                   </p>
-                  {activeTool && (
+                  {activeTool && activeTool.id !== 'rockstar-amc' && (
                     <details className="sky-chat-provider-routing">
                       <summary>ツールの接続設定</summary>
                       <p>この設定はZemaの会話・案内に適用されます。候補ツールのローカル確認・下書き処理は外部Providerを呼びません。</p>
@@ -1475,7 +1467,15 @@ export default function SkyChatWorkspace() {
                     </li>
                   </ol></details>}
                   <div className="sky-chat-workflow-body">
-                    {activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local' ? (
+                    {activeTool?.id === 'rockstar-amc' ? (
+                      <AmcToolRunner
+                        key={activeRequest.id}
+                        initialText={activeRequest.text}
+                        onOutcome={(next) => recordOutcome(next, 'rockstar-amc')}
+                        onRunningChange={setRunning}
+                        onDirtyChange={(dirty) => { amcDirtyRef.current = dirty; }}
+                      />
+                    ) :activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local' ? (
                       <div className="sky-chat-launch-tool">
                         <div>
                           <strong>{activeTool.name}</strong>
