@@ -30,6 +30,7 @@ class LocalAiApkStagingTest(unittest.TestCase):
         self.source_lock = self.root / "source.json"
         self.source_lock.write_text(json.dumps({
             "commit": "1" * 40,
+            "overlay": {"sha256": "2" * 64, "extensions": [{"sha256": "3" * 64}, {"sha256": "4" * 64}]},
         }))
         self.artifact_lock = self.root / "artifact.json"
         self.write_lock("APK_REVIEWED_NOT_IN_IMAGE")
@@ -46,7 +47,7 @@ class LocalAiApkStagingTest(unittest.TestCase):
             "uses-permission: name='dev.rock.permission.USE_LOCAL_AI'\n"
             if binder_permission else "",
         ]
-        self.aapt2.write_text("#!/bin/sh\nprintf \"package: name='com.localactionassistant' versionCode='1' versionName='1.0'\\n"
+        self.aapt2.write_text("#!/bin/sh\nprintf \"package: name='com.localactionassistant' versionCode='3' versionName='1.0'\\n"
                               + "".join(permissions) + "\"\n")
         self.aapt2.chmod(0o755)
 
@@ -55,7 +56,7 @@ class LocalAiApkStagingTest(unittest.TestCase):
         self.artifact_lock.write_text(json.dumps({
             "schema": "rock-local-ai-apk/1", "stage": stage,
             "sourceCommit": "1" * 40, "moduleName": "RockLocalActionAssistant",
-            "packageName": "com.localactionassistant", "versionCode": 1,
+            "packageName": "com.localactionassistant", "versionCode": 3,
             "requiredAbis": ["arm64-v8a"], "internetPermission": False,
             "wakeLockPermission": True,
             "binderPermission": "dev.rock.permission.USE_LOCAL_AI",
@@ -63,6 +64,7 @@ class LocalAiApkStagingTest(unittest.TestCase):
             "apkSha256": digest if stage != "APK_NOT_BUILT" else None,
             "apkSizeBytes": self.apk.stat().st_size if stage != "APK_NOT_BUILT" else None,
             "imageIntegrated": False,
+            "overlaySha256": "2" * 64, "extensionSha256": ["3" * 64, "4" * 64],
         }))
 
     def test_reviewed_apk_is_staged_idempotently_for_aosp_signing(self):
@@ -75,10 +77,60 @@ class LocalAiApkStagingTest(unittest.TestCase):
         self.assertIn('certificate: "testkey"', (stage / "Android.bp").read_text())
         self.assertEqual(stager.verify_stage(self.tree)["sha256"], first["sha256"])
 
+    def test_changed_overlay_with_same_upstream_and_apk_is_rejected(self):
+        source = json.loads(self.source_lock.read_text())
+        source["overlay"]["extensions"].append({"sha256": "5" * 64})
+        self.source_lock.write_text(json.dumps(source))
+        with self.assertRaisesRegex(ValueError, "APK overlay differs"):
+            stager.stage_apk(self.tree, self.apk, self.aapt2)
+        self.assertFalse((self.tree / stager.STAGE_PATH).exists())
+
+    def test_missing_or_reordered_overlay_review_is_rejected(self):
+        original = json.loads(self.artifact_lock.read_text())
+        for key, value in (("overlaySha256", None), ("extensionSha256", None),
+                           ("extensionSha256", ["4" * 64, "3" * 64])):
+            with self.subTest(key=key, value=value):
+                lock = dict(original); lock[key] = value
+                self.artifact_lock.write_text(json.dumps(lock))
+                with self.assertRaisesRegex(ValueError, "APK overlay differs"):
+                    stager.stage_apk(self.tree, self.apk, self.aapt2)
+
+    def test_source_change_after_staging_is_rejected_on_recheck(self):
+        stager.stage_apk(self.tree, self.apk, self.aapt2)
+        source = json.loads(self.source_lock.read_text())
+        source["overlay"]["sha256"] = "5" * 64
+        self.source_lock.write_text(json.dumps(source))
+        with self.assertRaisesRegex(ValueError, "APK overlay differs"):
+            stager.verify_stage(self.tree)
+
+    def test_staged_metadata_cannot_relabel_unchanged_apk(self):
+        stager.stage_apk(self.tree, self.apk, self.aapt2)
+        path = self.tree / stager.STAGE_PATH / "artifact.json"
+        original = json.loads(path.read_text())
+        for key, value in (("sourceCommit", "9" * 40), ("internetPermission", True),
+                           ("extensionSha256", []), ("aospCertificate", "platform")):
+            with self.subTest(key=key):
+                metadata = dict(original); metadata[key] = value
+                path.write_text(json.dumps(metadata))
+                with self.assertRaisesRegex(ValueError, "metadata differs"):
+                    stager.verify_stage(self.tree)
+
+    def test_staged_apk_symlink_with_matching_bytes_is_rejected(self):
+        stager.stage_apk(self.tree, self.apk, self.aapt2)
+        apk = self.tree / stager.STAGE_PATH / stager.APK_NAME
+        apk.unlink(); apk.symlink_to(self.apk)
+        with self.assertRaisesRegex(ValueError, "not symlinks"):
+            stager.verify_stage(self.tree)
+
     def test_unbuilt_lock_fails_before_staging(self):
         self.write_lock("APK_NOT_BUILT")
         with self.assertRaisesRegex(ValueError, "not built and reviewed"):
             stager.stage_apk(self.tree, self.apk, self.aapt2)
+
+    def test_old_package_version_is_rejected_by_current_runtime_contract(self):
+        self.aapt2.write_text(self.aapt2.read_text().replace("versionCode='3'", "versionCode='1'"))
+        with self.assertRaisesRegex(ValueError, "package/version differs"):
+            stager.inspect_apk(self.apk, self.aapt2)
 
     def test_internet_permission_is_rejected(self):
         self.write_aapt2(True)

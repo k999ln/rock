@@ -36,7 +36,11 @@ jobs:
       - name: Check build inputs
         run: |
           java -version
-          test -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" || command -v sdkmanager
+          if test -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"; then
+            echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          else
+            command -v sdkmanager
+          fi
           bash -n scripts/build-local-ai-apk.sh
           node scripts/check-os-contracts.mjs
           python3 -m unittest tests.test_prepare_local_ai_runtime tests.test_stage_local_ai_apk -v

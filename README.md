@@ -108,6 +108,8 @@ Short interactions learned through games are extended gradually to next/back ste
 
 ### 6. RockstarOS / Local AI
 
+The current API v4 unsigned arm64 APK now builds and is pinned to the reviewed source patches. APK inspection and OS staging passed; physical-device acceptance still applies only to the older API v2 build. [Current APK evidence](docs/evidence/local-ai-apk-v4-build.json).
+
 ![R5 functional stack; this is a logical design, not a claim of implementation](docs/avocado-mini-r5/package/drawings/R5-M02-functional-stack.png)
 
 RockstarOS centralizes user and component authentication, capabilities, approvals, work, receipts, storage, and recovery in the Platform Core and Broker. The on-device LLM is an **untrusted planner that returns plan candidates**; it does not decide whether a Tool may run. An Agent advances only through finite procedures allowed by the Broker and handles stopping, awaiting confirmation, and safe recovery after a restart. Models and runtimes are designed to be replaceable in the future, but general replacement is not complete.

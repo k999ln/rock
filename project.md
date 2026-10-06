@@ -1632,3 +1632,18 @@ Game / Market / FundのROCK担当、AI06の非金融接続サブ項目。利用�
 
 利用者指定: NVIDIA搭載、Mac miniのような据え置き小型PC、AIとPCゲーム両方、販売目標80万円/台（価格回答80の文脈解釈、税込/税別未定）。Material Invention / avocadoMiniを主担当とし、Mini MAT15から独立したMAT16を追加。main `9f64aee3de9cc74e6b6e7eae34052780e000c296`基点で、Core Ultra 9 / RTX 5080 Laptop 16GB / RAM128GB / SSD2TB×2の構成候補とOEM基準試作→ODM筐体の手順を保存した。確定BOM、見積、購入、物理組立、熱/AI/ゲーム受入、サイト公開は未実施。次は国内供給見積・メモリーQVL・ODM基板供給を確認。設計索引とbaseline/READMEを同期。`npm run verify` exit 0（Node 870、仕事API1048、CSV113）を確認。仕様数値とSVG XML検査、描画した外観図の目視確認が合格。物理受入は0件。証拠: `docs/evidence/avokado-pro-pc-design.json`。設計commit `33cea702c6c36a6bc973bedb966a7ef661514258`をGitHub `codex/avokado-pro-pc`へ保存、draft PR #64作成済み。main統合・サイト公開なし。GitHub CIは確認時check未表示で、local verify合格とは別。
 
+
+## 2026-10-05 — 未完了・停止条件の解消（G04、API v4 APK build・検査・配置成功）
+
+利用者の「全部問題解決して進めて」を受け、Git / CI / Operations（ROCK）を主担当とする。main `996b1955`を独立worktreeへ固定。Web最新CIと直前mainのAndroid CIは合格済み。native main-1の未close SQLite接続、実機OS build/署名/復旧、Provider受入を区別して調査する。既存checkoutで進行中のeSIM/決済変更は別作業として保護する。
+
+nativeのSQLite接続3件を確実にcloseし、Linux CI 1,736試験と`npm run verify`がcommit `c79476e2`で合格。Local AI現行v4のunsigned APK workflowを実行し、9月からの`sdkmanager` PATH不備を再現・修正、`9d82ac5a`で再build中。Web/native workflowへ手動再検証入口を追加し、古いphone手順を`--mode bringup`/`--mode release`へ整合させる。全OS用x86_64 Linux/予算、flash 4 gate、実Provider、Mini実機、未修正版依存2件は未完了。再生成可能なnpm/pip/未使用Lima/停止中Gradleの変換cacheだけを整理し、ソース・VMは保持。ADB接続端末0。PR #65へ保存し、main統合・公開は別。詳細は[停止条件](docs/workstreams/10-git-ci-operations.md)と[証拠](docs/evidence/release-blocker-resolution.json)。
+
+Local AIの実Kotlin compileでtimeoutのInt/Long不一致を検出し、API v4なのにBinderが3を返す不一致とAPK検査のversionCode=1固定も修正した。旧patch/実機証拠は保持し、追加overlayとhashで追跡。APK lockをbase/順序付きextension hashへ結び、stage metadata改変を拒否する。関連38試験とOS contract/design検査は成功。v4 APKの再build・レビューと現行最終SHAの全体CIは継続中。
+
+更新: API v4 unsigned APK buildは`2ba33366`のCI `37279537731`で成功。26,416,892 bytesを取得し、CI/手元aapt2でABI・package version 3・権限を確認。actual APKのstage/再stage/verifyも同一。source lockの現在statusをphone準備が受理し、旧APK/overlay不一致とmetadata/symlink差替えを拒否する。関連40試験成功。main `4928b64e`までの並行更新を保持して競合を解消した。最新記録を含む同一HEADの全体CIは最終再実行し、物理端末接続・専用Linux/予算・正式署名・実Provider受入は未完了として残す。
+
+最終追跡: main `592daeea`統合後の`bdc56dd7`で全体verify、Android、native、Phone準備、CodeQL workflowは成功。ただし別native実行でGame/ATM独立処理の合計2秒assertionが3.4549秒となったため、TLSの実deadline検査を維持したまま、transport戻り値の境界をEventで保持して独立性を検査する方式へ修正。関連7試験と3.1秒の意図的遅延回帰が成功。runtimeは変更しない。履歴securityは978 commitの2,868候補出現で未合格（秘密値のユニーク件数ではない）。変更後の同一HEAD CIはPR #65を正本とする。
+
+`1d7506cd`で総合・native・Android・Phone準備・CodeQL・SPIDER回帰とAPK buildが成功。APK再実行1回目の外部Kotlin取得HTTP 500も保持し、2回目で成功した。最終照合中にmainが`624124cf`へ進んだため、Sky library・CSV・AMC更新を保持して統合し、進捗追記の競合を両方残して解消する。APK overlay/lockは変更しない。統合後の最新CIはPRで追跡する。Scalewayのアカウント設定記録は存在し、追加費用上限は未確定。
+

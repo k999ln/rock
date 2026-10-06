@@ -26,15 +26,26 @@ class IndependentGameDeadlines(unittest.TestCase):
         a=self.case.connect('a');b=self.case.connect('b');self.case.purchase('a',a);self.case.purchase('b',b)
         worker=self.case.workers['a'];grant=self.f.grants['a'];original=grant.dispatch
         entered=threading.Event();release=threading.Event();finished=threading.Event();results=[];errors=[]
+        transport_done=threading.Event();allow_return=threading.Event();transport_times=[]
+        transport=worker.peer.transport;original_exchange=transport.exchange
+        def observed_exchange(request,*,deadline):
+            before=time.monotonic()
+            try:return original_exchange(request,deadline=deadline)
+            finally:
+                transport_times.append(time.monotonic()-before);transport_done.set()
+                # Keep the worker at the I/O boundary even if CI scheduling
+                # lets its real TLS deadline expire before B/ATM finish. A
+                # Wallet/C lock retained across exchange still blocks them.
+                if not allow_return.wait(15):errors.append(AssertionError('independent actions never released transport'))
         def stall(request,*,deadline):
             entered.set()
             try:
-                if not release.wait(4):raise TimeoutError('test stalled TLS peer deadline')
+                if not release.wait(15):raise TimeoutError('test stalled TLS peer deadline')
                 # This case proves the unapplied recovery path. A released
                 # server may still have budget after its client's deadline.
                 raise TimeoutError('test stalled TLS request remains unapplied')
             finally:finished.set()
-        grant.dispatch=stall
+        grant.dispatch=stall;transport.exchange=observed_exchange
         def run():
             before=time.monotonic()
             try:results.append((worker.once(),time.monotonic()-before))
@@ -42,22 +53,25 @@ class IndependentGameDeadlines(unittest.TestCase):
         thread=threading.Thread(target=run);thread.start()
         try:
             self.assertTrue(entered.wait(2))
-            started=time.monotonic();self.assertTrue(self.case.workers['b'].once())
+            self.assertTrue(self.case.workers['b'].once())
             issued=support.support.gx.GameConnectionsTLS.issue(self.f,support.A1,1000,key='atm-during-stall')
             snapshot=self.f.call(support.A1,'snapshot')
             self.assertEqual(snapshot['held_minor'],1000)
             self.f.call(support.A1,'wallet.atm.cancel',key='cancel-during-stall',withdrawal_id=issued['withdrawal_id'])
-            self.assertLess(time.monotonic()-started,2)
+            self.assertTrue(thread.is_alive(),'Game A must remain at the transport boundary')
             self.assertFalse(finished.is_set(),'independent actions must finish while Game A remains stalled')
             self.assertEqual(self.f.grants['b'].balance('alice'),10)
             self.assertEqual(self.f.balances()['GAME_HOLD'],103)
-            thread.join(3.5);self.assertFalse(thread.is_alive());self.assertEqual(errors,[])
-            self.assertTrue(results[0][0]);self.assertGreaterEqual(results[0][1],2.5);self.assertLess(results[0][1],3.4)
+            self.assertTrue(transport_done.wait(3.5),'actual TLS transport must respect its deadline')
+            self.assertGreaterEqual(transport_times[0],2.5);self.assertLess(transport_times[0],3.4)
+            allow_return.set();thread.join(3.5);self.assertFalse(thread.is_alive());self.assertEqual(errors,[])
+            self.assertTrue(results[0][0])
             state=self.case.sdk.dispatch('public-game-a',{'v':1,'op':'game.exchange.status','connection_id':a,'exchange_id':'same-external'})['result']
             self.assertEqual((state['state'],state['held_minor'],state['released_minor']),('CONFIRMING',103,0))
             self.assertEqual(self.f.balances()['AVAILABLE'],4794) # exactly two 103 holds/settlements; ATM fee zero
         finally:
-            release.set();thread.join(4);self.assertFalse(thread.is_alive());self.assertTrue(finished.wait(2));grant.dispatch=original
+            allow_return.set();release.set();thread.join(4);self.assertFalse(thread.is_alive());self.assertTrue(finished.wait(2))
+            grant.dispatch=original;transport.exchange=original_exchange
         self.f.now+=5
         self.assertTrue(worker.once()) # real NOT_FOUND keeps hold
         self.assertEqual(self.last_claim_result(worker),('status','NOT_FOUND'))

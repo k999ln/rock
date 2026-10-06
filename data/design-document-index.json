@@ -150,6 +150,12 @@
         "contracts/decision-provider.json",
         "data/decision-fabric-policy.json",
         "docs/avokado-llm-pretraining.md"
+      ],
+      "interfaceImplementation": [
+        "systems/rock-star-os/src/blackberryrock/memory_store.py",
+        "systems/rock-star-os/tests/test_memory_store.py",
+        "scripts/stage-local-ai-apk.py",
+        "tests/test_stage_local_ai_apk.py"
       ]
     },
     {

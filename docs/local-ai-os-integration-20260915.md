@@ -1,5 +1,16 @@
 # Local Action AssistantのRockstarOS導入
 
+
+## APKとoverlay版の一致（2026-10-05）
+
+現行API v4 / package version 3のunsigned arm64 APKをCI `37279537731`で生成した。実ファイルは26,416,892 bytes、SHA-256 `1fcb4f063bf998e13ccf515a338a9f4f4175c5b64527118f680a7e10bb71bd02`。CIと手元のaapt2でpackage/ABI/権限を照合し、実APKのstage・再実行・verifyが一致した。[build証拠](evidence/local-ai-apk-v4-build.json)。署名・実機・全OS imageは未受入で、以下の9月の実機結果は旧v2 artifactに限る。
+
+上流の同じcommitからv2/v3/v4の異なるAPKを作れるため、upstream commitとAPK hashだけでは現在のBroker契約との一致を証明できない。OS組込みの目的は、レビューした同じ差分と同じAPKだけをstageすること。ROCKのbuild担当が`rockstaros-overlay.json`の`sourceCommit`、`overlaySha256`、適用順の`extensionSha256`とAPK検査結果を照合し、artifact lockへ保存する。利用者のモデル・Tool権限はこの検査で増えない。
+
+`stage-local-ai-apk.py stage`と`verify`はartifact lockのoverlay列を現行source lockと比較し、追加/削除/並替え/欠落/変更があればAPK保存前またはbuild前に拒否する。stageの`artifact.json`もAPKのpackage/version/ABI/permission、source、overlay、署名用途と一致させ、metadataだけの貼替えを拒否する。旧v2の合格記録は履歴として維持し、v4に書換えない。
+
+不一致からの復旧は、固定sourceに現行overlayを適用→unsigned arm64 APKを再build→ABI/permission/hashとoverlay証拠をレビュー→lock更新→stage/verify再実行。hashだけを手で現在版へ付け替えて進めない。合格条件はこの一致とstagingの回帰試験で、正式署名・Soong全OS・実機import/offline inference/再起動は独立した受入として残す。未決定の物理受入は接続可能な対象Pixelで同じAPKを使って決定する。
+
 導入段階は`PHYSICAL_STANDALONE_ACCEPTED_NOT_IN_IMAGE`。`local-action-assistant`をRockstarOSのローカルLLM実装として固定し、arm64 release APKのnative build、Android emulatorのBinder結合、所有Pixel 10 GL066上のGGUFオフライン推論・再起動復元・33分22秒の熱試験まで確認した。これは正式署名、Soong／OS image搭載、SELinux、OTA、rollback、復旧の完了を意味しない。
 
 ## 今回接続した範囲

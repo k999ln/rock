@@ -5463,7 +5463,16 @@
       "physicalVerification": "PIXEL_10_GL066_ANDROID_17_6_OF_6_PLATFORM_INSTRUMENTATION_OFFLINE_REBOOT_2002_SECOND_THERMAL_AND_CLEAN_OK_NO_RAW_THINK_TAG_PASS",
       "contract": "contracts/local-ai-runtime.json",
       "record": "docs/local-ai-os-integration-20260915.md",
-      "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"
+      "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+      "currentUnsignedBuild": {
+        "apiVersion": 4,
+        "packageVersionCode": 3,
+        "status": "BUILT_INSPECTED_AND_STAGED_NOT_DEVICE_TESTED",
+        "evidence": "docs/evidence/local-ai-apk-v4-build.json",
+        "apkSha256": "1fcb4f063bf998e13ccf515a338a9f4f4175c5b64527118f680a7e10bb71bd02",
+        "deviceVerified": false,
+        "imageIntegrated": false
+      }
     }
   },
   "deviceSupportArchitecture": {
@@ -5664,5 +5673,26 @@
     "implementationCommit": "96fedfc7904753bf2960570eb307d6db2d223347",
     "pullRequest": "https://github.com/k999ln/rock/pull/64",
     "ciAtImplementationCommit": "no_checks_reported_at_last_check"
+  },
+  "releaseBlockerResolution": {
+    "status": "source_and_apk_repairs_verified_current_head_ci_on_pr",
+    "primaryOwner": "ROCK",
+    "task": "G04",
+    "baseMain": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
+    "scope": "Native resource cleanup and current acceptance blockers; no production/physical acceptance inferred",
+    "startedAt": "2026-10-05",
+    "evidence": "docs/evidence/release-blocker-resolution.json",
+    "pullRequest": 65,
+    "nativeTests": 1736,
+    "wholeVerify": "PASS_AT_c79476e2",
+    "localAiBuild": "PASS_API_V4_UNSIGNED_APK_INSPECTION_AND_REAL_STAGE",
+    "physicalDeviceConnected": false,
+    "mainIntegrated": false,
+    "integratedMain": "624124cf53848542538a94b9d309e24d3efbb1fe",
+    "focusedTests": 40,
+    "finalVerification": "Read exact current head checks of PR 65; earlier CI evidence is scoped to its recorded source SHA",
+    "deadlineFocusedTests": 7,
+    "deadlineDelayedRegression": "PASS_3.1_SECONDS",
+    "securityHistory": "UNRESOLVED_2868_HISTORICAL_CANDIDATE_OCCURRENCES_NOT_UNIQUE_SECRETS"
   }
 }

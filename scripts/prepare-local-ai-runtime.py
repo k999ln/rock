@@ -69,6 +69,7 @@ def config():
             or overlay.get("status") not in {
                 "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT",
                 "SERVER_NATIVE_COMPILED_EMULATOR_BOUND",
+                "SERVER_NATIVE_COMPILED_NOT_DEVICE_VERIFIED",
             }
             or overlay.get("path") != "os/physical/local-ai-overlay.patch"
             or not isinstance(overlay.get("sha256"), str)):
