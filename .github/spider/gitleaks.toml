@@ -1159,3 +1159,24 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:docs/evidence/launch/backend\-rc3\-local\-20260912\.json|docs/evidence/os\-base/hub\-faults\-b8287bc\.json|docs/evidence/os\-local\-final/final\-hub\-continuation\-report\.json|docs/evidence/os\-local\-final/final\-local\-os\-handoff\-report\.json|docs/evidence/rls01/final\-9abf78a/plan\.json|docs/evidence/rls01/final\-9abf78a/summary\.json|docs/evidence/rls01/sdk\-final\-9abf78a/fresh\-probe\.py|systems/rock\-star\-os/os/platform/hub_fault_fixture\.py)\z''']
 regexes = ['''\A06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest b14ac262a429"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/esim\-main\-integration\.json)\z''']
+regexes = ['''\A1955d0817c8c29c72c5cf8b042550d2cc3acb4021f16f0b83a616a7109205350\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest fd8d4da46508"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/esim\-main\-integration\.json)\z''']
+regexes = ['''\Aa004d21ce22497bd7cd618540a0001cdd317773ea564331c4373d6b9f14d4946\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest c032871f0530"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/esim\-main\-integration\.json)\z''']
+regexes = ['''\A502ae8861ba3decf5b2dfe0a6ed8d3566de2b643caa497262b653749033b305e\z''']

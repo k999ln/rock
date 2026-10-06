@@ -2,6 +2,8 @@
 
 利用者の全体進行依頼を受け、GitHub main e12d880cの同一SHA verify・security成功を確認。元作業木37c06cecの未保存変更は保持し、最新mainの独立worktreeでeSIMキー実装を統合する。378登録task/32部隊をAMCの正本とし、旧160件集計やtask件数を製品完成率にしない。0059_sky_libraryを保持しeSIM migrationは0060へ変更。認証拒否時のbody解放とAMC cache境界を保持する。最終sourceは対象19試験とNode1369件が合格。型検査は受信量制限の最終追補前に合格し、最終sourceはCIで再確認する。全体verifyはAstro依存未導入で停止し、追加npm ciはENOSPC。今回の依存物だけ削除し、GitHub同一SHA CIで続行する。証拠はdocs/evidence/esim-main-integration.json。GitHub保存・main統合・公開反映は別記する。料金executionHolds、外部契約、署名、flash、実機、本番受入は解除しない。
 
+PR #85のCIでDB一覧のnextAction再生成漏れを修正。SPIDERが検出した3件は実装ファイルのSHA-256とbytes照合済みで、既存policyへ完全一致のpath/値/生成元だけを追加する。検査の無効化や履歴書換えは行わない。AMC画面は今回のmain確認日と過去の部隊段階評価日を別表示にして、再受入済みとの誤認を防ぐ。
+
 ## 2026-10-06 — 全PRのCI合格と残存依存脆弱性の修正（SYS15 / G04）
 
 利用者の「全部通さないと」に対応。Security / Identity / Compliance、ROCK。PR #83の同一SHA `4e702fc296beb1a39b9a0826798cf8e764fa373f`で全8チェック（履歴secrets、CodeQL両言語・PR判定、全体verify、repair回帰、Web security実測、署名control）が成功し、通常merge `cb5955a29438e752ec3253ba8aa9aa2ebb056152`でmainへ統合した。履歴2942候補・161種類は公開生成元/用途を個別照合し、正確な値とpathだけを分類。161種類の別値・別path検出とscanner失敗/秘密値非出力を維持する。

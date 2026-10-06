@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。
+最新mainと未統合差分を同一SHAで検証する。最初のeSIM cloud key統合はLCH06/O7・SKY19/O5で作業PRへ保存し、CI→main統合→Sites配備→本人操作を別々に記録する。続いて元作業木の共通決済と仕事compositionを現行契約へ照合する。AMC32部隊のtaskPlansと受入条件を維持し、Provider契約、料金保留、正式署名、Pixel flash、Mini/Pro実機は個別条件待ち。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

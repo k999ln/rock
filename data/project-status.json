@@ -5762,6 +5762,7 @@
     ],
     "evidence": "docs/evidence/esim-main-integration.json",
     "localValidation": "19 focused tests and 1369 Node tests passed; full verify stopped at missing Astro and ENOSPC during nested dependency installation.",
-    "previousNextAction": "SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。"
+    "previousNextAction": "SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。",
+    "ciFollowup": "PR85: regenerate DB nextAction; verify three reported source digests and add exact literal provenance; distinguish current source observation from historical stage assessment."
   }
 }
