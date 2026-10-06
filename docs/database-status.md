@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-G04: PR #63–65 / #69–76の統合候補は全体verify成功（Node 1352 pass / 1 skip、API1192、CSV385）。同一commitのGitHub native/Android/Phone/CodeQLと履歴secret scanを照合してからmainへ統合。実機・本番・公開は別gate。
+G04: PR #63–65 / #69–76 / #78の12本を統合。前候補c650466eは総合verify・native・Android CI成功。最終候補の同一SHA検証後にmainへ統合する。履歴secret候補160値は未解決として維持し、検査緩和・実機・本番公開はしない。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

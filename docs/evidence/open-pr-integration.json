@@ -13,7 +13,8 @@
     73,
     74,
     75,
-    76
+    76,
+    78
   ],
   "validation": {
     "npm run verify": {
@@ -22,7 +23,8 @@
       "nodeSkip": 1,
       "nodeFail": 0,
       "workApiAssertions": 1192,
-      "csvApiAssertions": 385
+      "csvApiAssertions": 385,
+      "sourceCommit": "82d2f213825ca10dccacb57a154567a27a8d68eb"
     },
     "avokadoLlm": {
       "passed": 6,
@@ -60,6 +62,15 @@
         "provider execution",
         "paid cloud execution"
       ]
+    },
+    "finalLocal": {
+      "fullVerify": "Passed through build and web asset closure; API startup interrupted by host SQLite IOERR_SHMSIZE with only 247 MiB free",
+      "recovery": "Stopped task-owned dev server and removed task-owned temporary torch environment; test:api then passed Work API 1192 and CSV 385; mission:check passed",
+      "nodePass": 1353,
+      "nodeSkip": 1,
+      "nodeFail": 0,
+      "observerPrivacyAndWallet": 35,
+      "finalGithub": "pending"
     }
   },
   "limits": [
