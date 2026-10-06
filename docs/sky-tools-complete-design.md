@@ -113,6 +113,8 @@ catalogued → selected → connected → ready → running → review → compl
 
 ## 4.5 AMC — Goal・部隊・進捗
 
+SPIDER cycle 48: 既存エージェント定義は安全にopenした同じFDの通常file・byte長・canonical位置・BigInt identityを確認し、期待UTF-8 bytes＋1以内で比較する。custom設定がある場合は作成前に停止する。読取りpreflightに限定し、新規作成pathの競合やinstall全体のatomic性は未解決。詳細は[AMC設計](amc-goal-orchestrator.md#spider-既存エージェント定義の読取り確認)と[証拠](evidence/spider-agent-preflight-read.json)。
+
 ### 目的・利用者・一周の体験
 
 依頼をGoalと意図へ整理し、担当、工程、成果物、合格条件、進捗を本人が一つの台帳で扱う第一者Tool。Tool IDは`rockstar-amc`、主担当はROCK / H1、継続作業はAMC02の限定Web統合である。任意の文章を理解して実行するAI、全製品の自律開発、実機制御Toolとしては扱わない。

@@ -252,7 +252,8 @@
         "automaticModelInstallation": false,
         "externalActionsAuthorized": false,
         "browserAcceptance": "not_verified",
-        "productionDeploymentAccepted": false
+        "productionDeploymentAccepted": false,
+        "agentDefinitionPreflight": "pinned_descriptor_bounded_utf8_comparison; creation_path_race_not_covered"
       }
     },
     { "id": "rockstar-csv-cleanup", "catalogStatus": "ready" },

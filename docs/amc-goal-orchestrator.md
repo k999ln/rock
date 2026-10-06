@@ -144,6 +144,12 @@ npm run mission:goal -- event --goal /absolute/path/goal-r0.json --event /absolu
 
 OpenAI側のagent制御と、ファイル・コマンドを扱う実行環境を分ける考え方は[公式Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture)を参照した。この第一版はそのAPIを呼んでおらず、アカウントの利用可否やScalewayへの接続を検証していない。
 
+## SPIDER: 既存エージェント定義の読取り確認
+
+H1 / AMC02、ROCK、主stream Git / CI / Operations。installAgentsの既存宛先確認はNOFOLLOW・NONBLOCKで開いたFDを使い、通常ファイル・期待UTF-8 byte長、config/agentsの通常dir、canonical位置、named fileとFDのBigInt dev/inoを照合する。同じFDから期待byte長＋1までだけ読み、内容一致後に閉じる。open時のENOENTのみ未作成として扱い、open後の消失・不一致・例外は拒否してFDを閉じる。既存customがある場合は全宛先の作成前に停止する。
+
+これは読取りpreflightの修復であり、親pathをFDで固定した新規作成ではない。CodeQL #53の作成側競合、任意の祖先置換・複数ABA・install全体のatomic性は未解決。呼出しには信頼できる安定したparentが必要で、launcherのmodel・承認・sandbox継承、既存config、実Codex設定は変更しない。検証は `node --test tests/amc-agent.test.mjs tests/amc-agent-preflight.test.mjs`。[要約証拠](evidence/spider-agent-preflight-read.json)で同じrefのCodeQL #52を前後比較し、件数だけで解消としない。
+
 ## 検証
 
 ```sh

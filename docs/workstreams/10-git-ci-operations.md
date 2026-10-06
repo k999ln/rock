@@ -52,3 +52,7 @@
 - `npm run repository:check`
 - `npm run database:check`
 - `npm run verify`
+
+## AMCエージェント定義の事前確認
+
+H1 / AMC02、ROCK。SPIDER cycle 48は既存定義の読取り競合（#52）を扱い、新規作成側（#53）は別の未解決として残す。[既存AMC設計](../amc-goal-orchestrator.md#spider-既存エージェント定義の読取り確認)と[証拠](../evidence/spider-agent-preflight-read.json)へ集約。実Codex設定を変更せず、`node --test tests/amc-agent.test.mjs tests/amc-agent-preflight.test.mjs`で合成projectを検証する。
