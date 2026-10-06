@@ -1,6 +1,10 @@
-## 2026-10-06 — 全CI合格への残存修正（SYS15 / G04、作業中）
+## 2026-10-06 — 全PRのCI合格と残存依存脆弱性の修正（SYS15 / G04）
 
-利用者の「全部通さないと」に基づき、Security / Identity / Compliance、ROCKを主担当として履歴secret候補の生成元照合と依存脆弱性2件の修正を進める。main 822150c3から隔離branchで開始。検査の無効化・広域除外・履歴書換えをせず、同一SHAの全CIと依存監査を合格条件とする。実機・署名・公開gateは別。
+利用者の「全部通さないと」に対応。Security / Identity / Compliance、ROCK。PR #83の同一SHA `4e702fc296beb1a39b9a0826798cf8e764fa373f`で全8チェック（履歴secrets、CodeQL両言語・PR判定、全体verify、repair回帰、Web security実測、署名control）が成功し、通常merge `cb5955a29438e752ec3253ba8aa9aa2ebb056152`でmainへ統合した。履歴2942候補・161種類は公開生成元/用途を個別照合し、正確な値とpathだけを分類。161種類の別値・別path検出とscanner失敗/秘密値非出力を維持する。
+
+braces再帰DoS、http-cache-semanticsの4.3.0にも残ったmax-stale漏洩、CodeQLのConnection header正規表現DoSを修正。原本MIT・固定出所・変更hashを保持するlocal forkを使用する。局所回帰は旧版4/8 fail→修正版9/9 pass。GitHub全体Node 1362 pass / 0 fail / 1既定のunsupported-platform skip、root/site監査とも0 vulnerabilities。Dependabot #17/#18はdismissせず自動fixed、未処理PRは0。最終mainの再検査結果はGitHubの同一SHAを参照する。
+
+ローカル全体verifyは容量不足で依存再構築が中断し、ai package欠落で停止した。全体合格の根拠はGitHub run `37415979013`。この作業の一時依存だけを除去し、元checkoutの未保存eSIM/決済作業は保持。実機・正式署名・Provider・公開/実課金の個別gateは未解決のまま。[検証と保守条件](docs/evidence/security-gate-completion.json)。
 
 ## 2026-10-05 — 残る全PRの開発・統合（G04、作業中）
 
@@ -1558,7 +1562,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: SYS15 / G04: 履歴secret候補の個別分類と残存依存脆弱性を修正し、同一SHAの全CIを確認する。現時点は作業中、全合格未達。
+次の作業: SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。
 <!-- project-status:end -->
 
 ## 次段階の設計

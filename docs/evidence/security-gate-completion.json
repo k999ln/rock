@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "in_progress",
+  "status": "main_integrated",
   "baseCommit": "822150c3928ad288c4d314a24195f373bd967eea",
   "workstream": "Security / Identity / Compliance",
   "responsibility": "ROCK",
@@ -12,10 +12,11 @@
     "regressionTests": {
       "originalUpstream": {
         "pass": 4,
-        "fail": 4
+        "fail": 4,
+        "testedCases": 8
       },
       "patched": {
-        "pass": 8,
+        "pass": 9,
         "fail": 0
       }
     },
@@ -30,6 +31,11 @@
       "upstreamStillReproduces": true,
       "reason": "Prevent max-stale and stale-while-revalidate from reviving security-zeroed responses",
       "additionalCodeQLFix": "js/polynomial-redos: literal comma split + per-token trim; one-million-space regression"
+    },
+    "audits": {
+      "root": "0 vulnerabilities",
+      "avocadoMiniSite": "0 vulnerabilities",
+      "sourceRunId": 37415979013
     }
   },
   "historyScan": {
@@ -53,16 +59,91 @@
         "findings": 0,
         "reachableCommits": 1053,
         "head": "822150c3928ad288c4d314a24195f373bd967eea"
+      },
+      "candidateGitHubScan": {
+        "status": "success",
+        "headSha": "4e702fc296beb1a39b9a0826798cf8e764fa373f",
+        "runId": 37415979029
       }
     }
   },
   "localFullVerify": "Executed; stopped at llm:architecture:check because npm ci could not finish after disk exhaustion (missing ai package). Full npm ci + verify required in GitHub CI.",
-  "githubSameShaChecks": "pending",
-  "mainIntegration": "pending",
+  "githubSameShaChecks": {
+    "headSha": "4e702fc296beb1a39b9a0826798cf8e764fa373f",
+    "checks": [
+      {
+        "link": "https://github.com/k999ln/rock/runs/112115015235",
+        "name": "CodeQL",
+        "state": "SUCCESS"
+      },
+      {
+        "link": "https://github.com/k999ln/rock/actions/runs/37415979003/job/112114560483",
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "state": "SUCCESS"
+      },
+      {
+        "link": "https://github.com/k999ln/rock/actions/runs/37415979129/job/112114561388",
+        "name": "SPIDER / production web security measurement",
+        "state": "SUCCESS"
+      },
+      {
+        "link": "https://github.com/k999ln/rock/actions/runs/37415979066/job/112114560710",
+        "name": "public-fixture-tests",
+        "state": "SUCCESS"
+      },
+      {
+        "link": "https://github.com/k999ln/rock/actions/runs/37415979013/job/112114560806",
+        "name": "verify",
+        "state": "SUCCESS"
+      },
+      {
+        "link": "https://github.com/k999ln/rock/actions/runs/37415979129/job/112114561551",
+        "name": "SPIDER / repair regressions",
+        "state": "SUCCESS"
+      },
+      {
+        "link": "https://github.com/k999ln/rock/actions/runs/37415979029/job/112114560881",
+        "name": "SPIDER / secrets",
+        "state": "SUCCESS"
+      },
+      {
+        "link": "https://github.com/k999ln/rock/actions/runs/37415979003/job/112114560742",
+        "name": "SPIDER CodeQL (python)",
+        "state": "SUCCESS"
+      }
+    ]
+  },
+  "mainIntegration": {
+    "pullRequest": 83,
+    "commit": "cb5955a29438e752ec3253ba8aa9aa2ebb056152",
+    "state": "merged"
+  },
   "boundaries": [
     "No history rewrite",
     "No blanket allowlist or disabled scanner rules",
     "No Dependabot alert dismissal",
     "No physical-device, production-signing, spending or deployment acceptance"
-  ]
+  ],
+  "dependencyAlerts": {
+    "open": 0,
+    "fixed": [
+      17,
+      18
+    ],
+    "dismissed": []
+  },
+  "nodeTests": {
+    "total": 1363,
+    "passed": 1362,
+    "failed": 0,
+    "skipped": 1,
+    "skipReason": "Unsupported-platform-only test is inapplicable on supported Linux; guard remains enabled"
+  },
+  "fullVerify": {
+    "conclusion": "success",
+    "headSha": "4e702fc296beb1a39b9a0826798cf8e764fa373f",
+    "runId": 37415979013,
+    "url": "https://github.com/k999ln/rock/actions/runs/37415979013"
+  },
+  "mainPostMergeChecks": "Pending readback after completion documentation; PR candidate all eight checks successful"
 }
