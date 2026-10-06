@@ -271,6 +271,14 @@
         "design": "docs/sky-tools-complete-design.md",
         "maximumBytes": 5000000,
         "scope": "same_descriptor_local_fixture_read_not_authentication_boundary"
+      },
+      "workspaceSnapshotRead": {
+        "source": "scripts/amc-parallel.mjs",
+        "test": "tests/amc-workspace-snapshot.test.mjs",
+        "evidence": "docs/evidence/spider-workspace-snapshot-read.json",
+        "design": "docs/sky-tools-complete-design.md",
+        "scope": "local_owner_managed_workspace_identity_checked_descriptor_read",
+        "authority": "does_not_add_remote_auth_or_worker_acceptance"
       }
     },
     {

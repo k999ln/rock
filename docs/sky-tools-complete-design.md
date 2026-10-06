@@ -473,3 +473,12 @@ local supervisorはstate、control、lock owner JSONを一度だけnofollow／no
 外部通信や永続schemaは追加しない。既存のrevision CAS、lock guard、owner確認、停止・明示復旧を保持する。失敗時は本人が保存先と状態を確認して既存の復旧手順へ進み、自動lock削除や破損stateの受理はしない。親directory・同じinodeを変更できるlocal writerへの隔離や認証境界は提供しない。`tests/amc-autonomy-store-read.test.mjs`の同期した差替え・拡大・短いread・fd解放と既存autonomy／lock／fixture試験で検証し、実Codex起動・Web同期・本番受入とは分ける。
 
 
+
+#### AMC作業場所のファイル読取り（SYS15 / WEB04）
+
+`workspaceSnapshot`は、本人が管理する原本と独立Git作業場所の追跡・非ignoreファイルを照合する。ファイル内容をhashへ変換する前に、一度開いたfileの通常file判定とrepository内のpathを照合し、現在のpathとdevice/inodeが一致したdescriptorだけを読む。nofollow／nonblockingで開き、成功・検査失敗・読取り失敗のすべてで閉じる。leafや親directoryの差替えで別inodeになった場合は、内容を読む前に拒否する。
+
+open時の削除済みpathのENOENTだけを従来どおりnullとして記録し、open後の消失や検査失敗は拒否する。dangling symlink、権限不足、非通常file、同一性不一致、必要なopen flagを使えないplatformは検査失敗とし、安全なsnapshotや受入へ昇格させない。開始前の失敗はwaveを開始せず、監視中は既存のpause／停止・保存状態照合へ戻る。本人が作業場所を確認してから最新Goalと原本を再照合する。検証は `tests/amc-workspace-snapshot.test.mjs` と既存の並列Goal回帰、記録は `docs/evidence/spider-workspace-snapshot-read.json`。
+
+保存形式・hash形式・Goal承認・独立検収は維持する。親directoryや同inodeを書き換えられるwriterの完全隔離、全fileを同時点で固定したsnapshot、remote認証、実Codex実行やWeb同期の受入を保証する変更ではない。非通常fileもopen後にfstatで拒否するため、任意deviceをopenする副作用の隔離は保証しない。新しい外部送信・課金・自動検収は追加しない。
+

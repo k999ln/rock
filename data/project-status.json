@@ -3017,7 +3017,10 @@
         "docs/frontend-usability-audit-20260915.md",
         "docs/product-baseline.md",
         "scripts/amc-autonomy-store.mjs",
-        "tests/amc-autonomy-store-read.test.mjs"
+        "tests/amc-autonomy-store-read.test.mjs",
+        "scripts/amc-parallel.mjs",
+        "tests/amc-workspace-snapshot.test.mjs",
+        "docs/evidence/spider-workspace-snapshot-read.json"
       ]
     },
     {
@@ -4985,7 +4988,10 @@
         "scripts/spider-web-runtime.mjs",
         "tests/spider-web-runtime.test.mjs",
         "scripts/amc-autonomy-store.mjs",
-        "tests/amc-autonomy-store-read.test.mjs"
+        "tests/amc-autonomy-store-read.test.mjs",
+        "scripts/amc-parallel.mjs",
+        "tests/amc-workspace-snapshot.test.mjs",
+        "docs/evidence/spider-workspace-snapshot-read.json"
       ]
     }
   ],
