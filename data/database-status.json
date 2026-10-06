@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 149,
+    "tableCount": 150,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -15,10 +15,10 @@
     "planned": 236,
     "blocked": 1,
     "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-    "nextAction": "SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。"
+    "nextAction": "最新mainと未統合差分を同一SHAで検証する。最初のeSIM cloud key統合はLCH06/O7・SKY19/O5で作業PRへ保存し、CI→main統合→Sites配備→本人操作を別々に記録する。続いて元作業木の共通決済と仕事compositionを現行契約へ照合する。AMC32部隊のtaskPlansと受入条件を維持し、Provider契約、料金保留、正式署名、Pixel flash、Mini/Pro実機は個別条件待ち。"
   },
   "webSchema": {
-    "tableCount": 77,
+    "tableCount": 78,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -40,6 +40,7 @@
       "csv_monthly_fees",
       "csv_trial_payments",
       "devices",
+      "esim_cloud_access_keys",
       "esim_device_entitlements",
       "esim_device_gateway_challenges",
       "esim_device_gateway_keys",
@@ -98,8 +99,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 60,
-    "latestMigration": "0059_sky_library.sql",
+    "migrationCount": 61,
+    "latestMigration": "0060_esim_cloud_access_keys.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -198,6 +199,7 @@
           "automation_fund_memberships",
           "automation_funds",
           "coconala_team_cases",
+          "esim_cloud_access_keys",
           "esim_device_entitlements",
           "esim_device_gateway_challenges",
           "esim_device_gateway_keys",
@@ -216,7 +218,7 @@
           "rockstar_entitlement_issuer_rate_limits",
           "rockstar_service_entitlements"
         ],
-        "tableCount": 20
+        "tableCount": 21
       }
     ]
   },
@@ -251,6 +253,7 @@
         "csv_monthly_fees",
         "csv_trial_payments",
         "devices",
+        "esim_cloud_access_keys",
         "esim_device_entitlements",
         "esim_device_gateway_challenges",
         "esim_device_gateway_keys",
@@ -309,8 +312,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0059_sky_library.sql",
-      "tableCount": 77,
+      "expectedAppliedThrough": "0060_esim_cloud_access_keys.sql",
+      "tableCount": 78,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

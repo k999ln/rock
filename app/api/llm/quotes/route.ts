@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const db = database();
     const owner = await authorizeRemoteAiRequest(request, 'llm-quote-read', db);
     const runtime = env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string; SKY_REMOTE_LLM_ENABLED?: string; OPENAI_API_KEY?: string; REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY?: string };
-    if (!await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED))
+    if (!await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request))
       return missingRockstarServiceScope('RockstarOS');
     const parentJobId = new URL(request.url).searchParams.get('parentJobId') ?? undefined;
     if (parentJobId !== undefined && !/^[A-Za-z0-9._:-]{1,128}$/.test(parentJobId))
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     const db = database();
     const owner = await authorizeRemoteAiRequest(request, 'llm-quote-create', db);
     const runtime = env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string; REMOTE_AI_TRUSTED_RATE_KEYS?: string; SKY_REMOTE_LLM_ENABLED?: string; OPENAI_API_KEY?: string; REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY?: string };
-    if (!await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED))
+    if (!await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request))
       return missingRockstarServiceScope('RockstarOS');
     const input = parseRemoteAiTextQuoteInput(await readRemoteAiTextInput(request));
     const verified = await loadVerifiedRemoteAiTextRate(db, runtime.REMOTE_AI_TRUSTED_RATE_KEYS, input.model, input.currency);

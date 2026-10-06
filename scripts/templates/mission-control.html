@@ -93,7 +93,9 @@
     const own = squad.taskIds.map(id => tasks.get(id));
     const current = own.filter(t => !childGroups.has(t.id) && !['historical', 'presentation'].includes(assignments.get(t.id).classification));
     const excluded = own.filter(t => ['historical', 'presentation'].includes(assignments.get(t.id).classification));
-    el('amc-snapshot').textContent = mission.updatedAt + ' · ローカル作業版 ' + mission.audit.localBaseSha.slice(0, 7) + '＋ローカル変更 · 手動更新・自動同期なし';
+    const integration = project.repositoryProgressIntegration;
+    const repository = integration ? 'GitHub main確認 ' + integration.recordedOn + ' / ' + integration.baseMainSha.slice(0, 7) + '（統合作業の起点） · ' : '';
+    el('amc-snapshot').textContent = repository + 'task台帳 ' + project.updatedAt + ' · 部隊段階の評価記録 ' + mission.updatedAt + ' / ' + mission.audit.localBaseSha.slice(0, 7) + ' · 保存時点の一覧・手動更新・自動同期なし';
     el('amc-counts').textContent = project.tasks.length + '登録レコード ／ 親' + childGroups.size + '・子' + project.tasks.filter(t => t.parentTaskId).length + '・独立' + project.tasks.filter(t => !t.parentTaskId && !childGroups.has(t.id)).length + ' ／ 実行単位は親を除外';
     el('amc-selected-line').textContent = squad.id + ' ' + squad.name + ' ／ 段階 ' + squad.currentStage + ' ' + mission.stagePolicy.stages[squad.currentStage].label;
     squadButtons.clear();

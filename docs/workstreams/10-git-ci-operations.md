@@ -103,3 +103,9 @@ Local AI unsigned APKの現行source buildを再開し、CI `37278057340`で`sdk
 ROCK担当。#63–65 / #69–76をmain 0c90253cへ統合する。ecb4b2afで失われた依存宣言・SIM利用権正本・AMC認可/再検収/強制停止・catalog接続契約・API検証範囲を復旧する。現在のWorkPlan保存とSky library、AMC手動入力UIは保持する。生成物の整理・LLM host研究・Mini launcher・Local AI APKはそれぞれの受入境界を維持する。対象回帰→npm run verify→同一SHA CIが合格条件。秘密情報履歴の候補は未分類で、検査の無効化や広い除外をしない。
 
 依存更新PR #79–81: lock変更時はMIT/BSD等のmetadata差分を確認し、`node scripts/sync-web-license-inventory.mjs --write`で台帳を同期する。root/site双方のsource-map-jsとproxy-addr/tinypool/oxfmtを検証。詳細は `docs/evidence/open-pr-integration.json` のdependencyFollowup。法的clearance・未修正advisory・履歴secret・本番gateは独立。
+
+## 全体進行と未統合差分の回収（2026-10-06）
+
+LCH06/O7が主担当、SKY19/O5が機能担当。最新main e12d880cの同一SHA verify/security合格を確認し、旧作業木の未保存差分を保持した独立branchでeSIMキーを統合する。共通決済・仕事composition・AWS準備の未保存差分は混入させず、各契約と最新mainとの差を確認して次の統合候補とする。優先順は同一source検証→GitHub保存/CI→main統合→配信source同期→Provider/端末受入。外部契約/価格/鍵/flashは個別gateを保持する。全体進捗はAMC32部隊と既存taskPlansを使い、別のtask台帳を新設しない。検証: focused eSIM tests、typecheck、database/project/mission/design checks、npm run verify。
+
+PR #85のsource `f9c85870`はGitHub全7チェック成功。全体verify内のNode1368 pass/1既定skip・仕事API1305・CSV385を確認。main mergeは責任分界のOWNER操作として残し、配備・Provider・実機へ結果を転用しない。元作業木の共通決済/composition/AWS検討は未保存状態を維持している。

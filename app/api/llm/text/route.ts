@@ -32,6 +32,7 @@ export async function POST(request: Request) {
       owner,
       'rockstaros_access',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('RockstarOS');
 
     const raw = await request.text();

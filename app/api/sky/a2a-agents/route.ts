@@ -72,6 +72,7 @@ export async function GET(request: Request) {
       owner,
       'sky',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Sky');
     return json({ agents: await a2aAgentDirectory(db).list(owner) });
   } catch (error) {
@@ -88,6 +89,7 @@ export async function POST(request: Request) {
       owner,
       'sky',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Sky');
     const origin = await readOrigin(request);
     const allowedOrigins = (env as unknown as { A2A_EGRESS_ALLOWED_ORIGINS?: string })

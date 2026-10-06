@@ -25,6 +25,7 @@ export async function POST(request: Request) {
       owner,
       'sky',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Sky');
     if (!remoteAiPricingGateAccepted()) return remoteAiPricingUnavailable();
     const raw = await request.text();

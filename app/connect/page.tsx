@@ -6,7 +6,7 @@ import { RockstarEntitlementClaim } from '@/components/rockstar-entitlement-clai
 
 export const metadata: Metadata = {
   title: 'RockstarOSをはじめる',
-  description: 'SIM/eSIMの購入からRockstarOS、Sky、Zemaの利用開始までを案内します。',
+  description: '通常のWeb・アプリ接続と、対象eSIMから専用クラウドへ接続する方法を案内します。',
 };
 
 const steps = [
@@ -21,8 +21,8 @@ export default function ConnectPage() {
       <Link href="/" className={styles.back}>RockstarOS Homeへ戻る</Link>
       <header className={styles.header}>
         <div><span className={styles.eyebrow}>ROCKSTAROS SERVICE ACCESS</span>
-          <h1>SIM/eSIMから、RockstarOSをはじめる</h1>
-          <p>購入したSIM/eSIMのサービス利用権をRockstar IDへ登録して、Sky・Zema・Agentへ進みます。</p>
+          <h1>RockstarOSへの接続をはじめる</h1>
+          <p>Web・アプリから利用できます。対象eSIMを追加して、専用クラウドのアクセスキーを受け取る接続方法も選べます。</p>
         </div>
       </header>
       <section className={styles.esimCatalog} aria-labelledby="service-reasons">
@@ -42,6 +42,14 @@ export default function ConnectPage() {
         <ol>{steps.map(([title, description], index) => <li key={title}>
           <strong>{index + 1}. {title}</strong><p>{description}</p>
         </li>)}</ol>
+      </section>
+      <section className={styles.esimCatalog} aria-labelledby="esim-cloud-entry">
+        <div className={styles.esimCatalogTitle}>
+          <h2 id="esim-cloud-entry">eSIMの追加から、専用クラウドへ</h2>
+          <p>対象商品の購入履歴でeSIMを追加し、導入確認後に「クラウドアクセスを開始」を選びます。キーの期限、再発行、停止も同じ画面で管理できます。</p>
+          <p>提供元の接続と対象プランの設定が必要です。eSIMにOSを保存する機能ではなく、通常のWeb・アプリ接続と併用できる入口です。</p>
+        </div>
+        <Link className={styles.esimPlanCard} href="/sky/purchases"><strong>購入履歴でeSIMとアクセスキーを確認</strong><span>導入・クラウド接続・キー管理 <ArrowRight size={15} /></span></Link>
       </section>
       <RockstarEntitlementClaim />
       <section className={styles.esimCatalog} aria-labelledby="device-account-link">

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "reviewedHead": "822150c3928ad288c4d314a24195f373bd967eea",
-  "occurrences": 2942,
-  "distinctValues": 161,
+  "occurrences": 2945,
+  "distinctValues": 164,
   "classifications": {
     "idempotency-fixture": 87,
-    "public-artifact-digest": 55,
+    "public-artifact-digest": 58,
     "public-rfc8032-seed": 1,
     "public-webauthn-authenticator-data": 1,
     "synthetic-rejection-test": 1,
@@ -1655,6 +1655,20 @@
       "exactPathCount": 1
     },
     {
+      "candidateSha256": "b14ac262a42934982764bf5028f2e8aa56f6c3e21902dff09cb69a7209fb0b94",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 recomputed from repository source bytes: lib/esim-cloud-access.ts",
+      "source": {
+        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+        "path": "docs/evidence/esim-main-integration.json",
+        "line": 37,
+        "field": [
+          "/sourceHashes/lib/esim-cloud-access.ts"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
       "candidateSha256": "b1e4d746555ac024b70c78c979c9103941b4dc95351cb439860d581b58236e39",
       "classification": "public-artifact-digest",
       "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/mcp_broker/service_access.py",
@@ -1791,6 +1805,20 @@
         ]
       },
       "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "c032871f0530db5014e56d8fc5d4b249c0949abbde2eb202fdc9383b260cca56",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 recomputed from repository source bytes: tests/esim-cloud-access.test.mjs",
+      "source": {
+        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+        "path": "docs/evidence/esim-main-integration.json",
+        "line": 41,
+        "field": [
+          "/sourceHashes/tests/esim-cloud-access.test.mjs"
+        ]
+      },
+      "exactPathCount": 1
     },
     {
       "candidateSha256": "c10d77a8ead4b81458402f46d378671cd1d95683726158cb04542b4519c5cb35",
@@ -2267,6 +2295,28 @@
         ]
       },
       "exactPathCount": 8
+    },
+    {
+      "candidateSha256": "fd8d4da4650880b8e72f266b8036b2647bf7b258e3cd19d92a487cf38b4b8d60",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 recomputed from repository source bytes: drizzle/0060_esim_cloud_access_keys.sql",
+      "source": {
+        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+        "path": "docs/evidence/esim-main-integration.json",
+        "line": 40,
+        "field": [
+          "/sourceHashes/drizzle/0060_esim_cloud_access_keys.sql"
+        ]
+      },
+      "exactPathCount": 1
+    }
+  ],
+  "supplementalReviews": [
+    {
+      "head": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+      "recordedOn": "2026-10-06",
+      "addedDistinctValues": 3,
+      "basis": "Recomputed source SHA-256 values; exact path and exact value only."
     }
   ]
 }

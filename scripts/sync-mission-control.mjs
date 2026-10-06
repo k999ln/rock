@@ -41,7 +41,7 @@ export function renderVisualization(mission, project) {
   return template
     .replace('__AMC_MISSION_JSON__', () => safeJSON(mission))
     .replace('__AMC_PROJECT_JSON__', () =>
-      safeJSON({ updatedAt: project.updatedAt, tasks: project.tasks }),
+      safeJSON({ updatedAt: project.updatedAt, tasks: project.tasks, repositoryProgressIntegration: project.repositoryProgressIntegration }),
     );
 }
 

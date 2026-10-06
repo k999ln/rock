@@ -36,6 +36,7 @@ import {
 } from '../lib/a2a-usage-receipt.ts';
 import { a2aLiveUsageSigningBytes } from '../lib/a2a-live-usage.ts';
 import { encryptEsimInstallMaterial } from '../lib/esim-install-material.ts';
+import { esimCloudAccessStore } from '../lib/esim-cloud-access.ts';
 import { createEsimPricingSnapshot, parseEsimServerPlanCatalog } from '../lib/esim-plan-catalog.ts';
 import {
   a2aBrokerAuthorizationSigningBytes,
@@ -283,6 +284,7 @@ async function call(method = 'GET', body, options = {}) {
     );
   check(response.status, options.status ?? 200);
   check(response.headers.get('cache-control'), options.cache ?? (options.path?.startsWith('/api/amc') ? 'private, no-store' : 'no-store'));
+  options.inspectResponse?.(response);
   return response.json();
 }
 async function createBrokerProof(delegation, message) {
@@ -391,6 +393,10 @@ async function start() {
           keyId: 'api-check-key-1',
           publicKeyHex: Buffer.from(esimIssuerPublicKey).toString('hex'),
           status: esimIssuerKeyStatus,
+        }]),
+        ESIM_CLOUD_ACCESS_POLICIES_JSON: JSON.stringify([{
+          packageKey: 'api-check-esim', manifestSha256: esimPackageHash,
+          accessDurationDays: 60, scopes: ['rockstaros_access', 'sky', 'zema', 'agents'],
         }]),
         ESIM_DEVICE_GATEWAY_KEYS: JSON.stringify([{
           authorityId: 'api-check-oem',
@@ -1246,6 +1252,13 @@ try {
     path: `/api/esim/orders/${esimOrderId}/status`,
   });
   check(esimStatus.state, 'paid_waiting_for_esim_issuance');
+  const cloudAccessPath = `/api/esim/orders/${esimOrderId}/cloud-access`;
+  await call('POST', 'x'.repeat(1025), { path: cloudAccessPath, raw: true, status: 413 });
+  check((await call('GET', undefined, { path: cloudAccessPath })).available, false);
+  await call('POST', { action: 'issue' }, { path: cloudAccessPath, status: 409 });
+  await call('GET', undefined, { path: cloudAccessPath, user: bob, status: 404 });
+  await call('GET', undefined, { path: cloudAccessPath, user: null, status: 401 });
+  await call('POST', { action: 'issue' }, { path: cloudAccessPath, origin: 'https://elsewhere.invalid', status: 403 });
   await call('GET', undefined, {
     path: `/api/esim/orders/${esimOrderId}/status`, user: bob, status: 404,
   });
@@ -1529,6 +1542,90 @@ try {
   check(activeEntitlementStatus.starterPackActivationState, 'active_on_authenticated_device');
   check(typeof activeEntitlementStatus.starterPackActivatedAt, 'number');
 
+  // Worker+D1 fixture only: no carrier request or billable cloud execution.
+  let cloudCookie;
+  const captureCloudCookie = (response) => {
+    const cookie = response.headers.get('set-cookie');
+    check(cookie.includes('HttpOnly; SameSite=Strict'), true);
+    check(cookie.includes('Path=/api'), true);
+    cloudCookie = cookie.split(';')[0];
+  };
+  const cloudIssued = await call('POST', { action: 'issue' }, {
+    path: cloudAccessPath, status: 201, inspectResponse: captureCloudCookie,
+  });
+  check(cloudIssued.state, 'active');
+  const cloudEntitlements = await call('GET', undefined, { path: '/api/rockstar/entitlements', user: null, headers: { Cookie: cloudCookie } });
+  check(cloudEntitlements.esimAccess[0].starterAgentPack.packages[0].packageKey, esimStarterPackageKey);
+  check(JSON.stringify(cloudIssued).includes('rock_esim_'), false);
+  const originalCloudCookie = cloudCookie;
+  const cloudToken = () => cloudCookie.slice(cloudCookie.indexOf('=') + 1);
+  const cloudHome = await call('GET', undefined, { path: '/api/rockstar/device-home', user: null, headers: { Cookie: cloudCookie } });
+  check(cloudHome.access, { rockstaros: true, sky: true, zema: true, agents: true });
+  await call('GET', undefined, { user: null, headers: { Cookie: cloudCookie } });
+  await call('PATCH', { action: 'unknown' }, { path: `/api/sky/a2a-delegations/${randomUUID()}`, user: null, headers: { Cookie: cloudCookie }, status: 400 });
+  await database.prepare('UPDATE esim_cloud_access_keys SET scopes_json=? WHERE id=?').bind(JSON.stringify(['rockstaros_access']), cloudIssued.key.id).run();
+  const limitedHome = await call('GET', undefined, { path: '/api/rockstar/device-home', user: null,
+    headers: { Cookie: cloudCookie, 'oai-authenticated-user-email': 'untrusted@example.invalid' } });
+  check(limitedHome.access, { rockstaros: true, sky: false, zema: false, agents: false });
+  await call('GET', undefined, { user: null, headers: { Cookie: cloudCookie }, status: 401 });
+  await database.prepare('UPDATE esim_cloud_access_keys SET scopes_json=? WHERE id=?').bind(JSON.stringify(['rockstaros_access', 'sky', 'zema', 'agents']), cloudIssued.key.id).run();
+  await call('GET', undefined, { path: cloudAccessPath, user: null, headers: { Cookie: cloudCookie }, status: 401 });
+  await call('POST', { action: 'rotate', expectedKeyId: cloudIssued.key.id }, {
+    path: cloudAccessPath, user: null, headers: { Authorization: `Bearer ${cloudToken()}` }, status: 401,
+  });
+  await call('POST', {}, { user: null, headers: { Cookie: cloudCookie }, origin: 'https://elsewhere.invalid', status: 403 });
+  await call('POST', { action: 'issue' }, { path: cloudAccessPath, status: 409 });
+  await call('POST', { action: 'rotate', expectedKeyId: randomUUID() }, { path: cloudAccessPath, status: 409 });
+  const rotations = await Promise.all([0, 1].map(() => fetch(`${base}${cloudAccessPath}`, {
+    method: 'POST', headers: { 'oai-authenticated-user-id': alice, Origin: base, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'rotate', expectedKeyId: cloudIssued.key.id }),
+  })));
+  check(rotations.map((r) => r.status).sort((a, b) => a - b), [201, 409]);
+  const winningRotation = rotations.find((r) => r.status === 201);
+  captureCloudCookie(winningRotation);
+  const rotatedCloud = await winningRotation.json();
+  check(rotatedCloud.accessExpiresAt, cloudIssued.accessExpiresAt);
+  check(rotatedCloud.key.id === cloudIssued.key.id, false);
+  await call('GET', undefined, { path: '/api/rockstar/device-home', user: null, headers: { Cookie: originalCloudCookie }, status: 401 });
+  const storedCloudKeys = await database.prepare('SELECT token_sha256,revoked_at FROM esim_cloud_access_keys WHERE sky_order_id=?').bind(esimOrderId).all();
+  check(storedCloudKeys.results.length, 2);
+  check(storedCloudKeys.results.every((row) => /^[a-f0-9]{64}$/.test(row.token_sha256) && !row.token_sha256.includes(cloudToken())), true);
+  await database.prepare('UPDATE sky_commerce_orders SET refunded_minor=1 WHERE id=?').bind(esimOrderId).run();
+  check((await call('GET', undefined, { path: cloudAccessPath })).state, 'suspended');
+  await call('GET', undefined, { path: '/api/rockstar/device-home', user: null, headers: { Cookie: cloudCookie }, status: 401 });
+  await database.prepare('UPDATE sky_commerce_orders SET refunded_minor=0 WHERE id=?').bind(esimOrderId).run();
+  await database.prepare('UPDATE esim_cloud_access_keys SET expires_at=created_at+1 WHERE id=?').bind(rotatedCloud.key.id).run();
+  check((await call('GET', undefined, { path: cloudAccessPath })).state, 'expired');
+  await call('GET', undefined, { path: '/api/rockstar/device-home', user: null, headers: { Cookie: cloudCookie }, status: 401 });
+  await call('POST', { action: 'rotate', expectedKeyId: rotatedCloud.key.id }, { path: cloudAccessPath, status: 201, inspectResponse: captureCloudCookie });
+
+  const cloudFixtureConfig = {
+    ESIM_CLOUD_ACCESS_POLICIES_JSON: JSON.stringify([{ packageKey: 'api-check-esim', manifestSha256: esimPackageHash,
+      accessDurationDays: 60, scopes: ['rockstaros_access', 'sky', 'zema', 'agents'] }]),
+    ESIMGO_PLAN_CATALOG_JSON: JSON.stringify({ version: 'fixture', plans: [apiInstallPricing.plan] }),
+    ESIM_INSTALL_RECEIPT_KEYS: JSON.stringify([{ issuerId: 'api-check-carrier', keyId: 'api-check-key-1',
+      publicKeyHex: Buffer.from(esimIssuerPublicKey).toString('hex'), status: 'active' }]),
+    ESIM_DEVICE_GATEWAY_KEYS: JSON.stringify([{ authorityId: 'api-check-oem', ownerUserId: alice,
+      deviceRef: 'api-check-device', keyId: 'api-check-device-key-1', algorithm: 'ES256',
+      publicKeyHex: Buffer.from(esimDeviceGatewayPublicKey).toString('hex'), status: 'active' }]),
+  };
+  // Simulate an order refund or explicit revocation after the preflight and before D1's atomic batch.
+  for (const race of ['refund', 'revoke']) {
+    const beforeRace = await call('GET', undefined, { path: cloudAccessPath });
+    const raceDb = { prepare: (sql) => database.prepare(sql), async batch(statements) {
+      if (race === 'refund') await database.prepare('UPDATE sky_commerce_orders SET refunded_minor=1 WHERE id=?').bind(esimOrderId).run();
+      else await esimCloudAccessStore(database, cloudFixtureConfig).revoke(alice, esimOrderId, beforeRace.key.id);
+      return database.batch(statements);
+    } };
+    await assert.rejects(esimCloudAccessStore(raceDb, cloudFixtureConfig).issue(alice, esimOrderId, beforeRace.key.id), /CLOUD_ACCESS_CONFLICT/);
+    assertions++;
+    const failedReplacement = await call('GET', undefined, { path: cloudAccessPath });
+    check(failedReplacement.state, 'revoked');
+    check(failedReplacement.key.id, beforeRace.key.id);
+    await database.prepare('UPDATE sky_commerce_orders SET refunded_minor=0 WHERE id=?').bind(esimOrderId).run();
+    await call('POST', { action: 'rotate', expectedKeyId: beforeRace.key.id }, { path: cloudAccessPath, status: 201, inspectResponse: captureCloudCookie });
+  }
+
   const rotatedGatewayJwk = rotatedEsimDeviceGatewayKeyPair.publicKey.export({ format: 'jwk' });
   esimDeviceGatewayPublicKey = Buffer.concat([
     Buffer.from([4]), Buffer.from(rotatedGatewayJwk.x, 'base64url'),
@@ -1540,6 +1637,8 @@ try {
     path: `/api/esim/orders/${esimOrderId}/status`,
   });
   check(rotatedGatewayStatus.esimDeviceEntitlementState, 'revoked_or_stale');
+  check((await call('GET', undefined, { path: cloudAccessPath })).state, 'suspended');
+  await call('GET', undefined, { path: '/api/rockstar/device-home', user: null, headers: { Cookie: cloudCookie }, status: 401 });
   await call('POST', { action: 'challenge' }, {
     path: deviceEntitlementPath, status: 409,
   });
@@ -1568,6 +1667,8 @@ try {
     path: `/api/esim/orders/${esimOrderId}/status`,
   });
   check(revokedInstallIssuerStatus.deviceInstallState, 'unverified');
+  check((await call('GET', undefined, { path: cloudAccessPath })).state, 'suspended');
+  await call('GET', undefined, { path: '/api/rockstar/device-home', user: null, headers: { Cookie: cloudCookie }, status: 401 });
   check(revokedInstallIssuerStatus.esimDeviceEntitlementState, 'revoked_or_stale');
   esimIssuerKeyStatus = 'active';
   await stop();
@@ -1576,6 +1677,13 @@ try {
     path: `/api/esim/orders/${esimOrderId}/status`,
   });
   check(restoredEntitlementStatus.esimDeviceEntitlementState, 'active');
+  const activeCloud = await call('GET', undefined, { path: cloudAccessPath });
+  check(activeCloud.state, 'active');
+  const revokedCloud = await call('POST', { action: 'revoke', expectedKeyId: activeCloud.key.id }, { path: cloudAccessPath });
+  check(revokedCloud.state, 'revoked');
+  await call('GET', undefined, { path: '/api/rockstar/device-home', user: null, headers: { Cookie: cloudCookie }, status: 401 });
+  await call('POST', { action: 'rotate', expectedKeyId: activeCloud.key.id }, { path: cloudAccessPath, status: 201, inspectResponse: captureCloudCookie });
+  await call('GET', undefined, { path: '/api/rockstar/device-home', user: null, headers: { Authorization: `Bearer ${cloudToken()}` } });
 
   const attestedEsimOrderId = randomUUID();
   const attestedProfileDigest = 'd'.repeat(64);

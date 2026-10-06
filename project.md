@@ -1,3 +1,11 @@
+## 2026-10-06 — 全体進行の再開とeSIM未統合差分の回収（LCH06/O7、SKY19/O5）
+
+利用者の全体進行依頼を受け、GitHub main e12d880cの同一SHA verify・security成功を確認。元作業木37c06cecの未保存変更は保持し、最新mainの独立worktreeでeSIMキー実装を統合する。378登録task/32部隊をAMCの正本とし、旧160件集計やtask件数を製品完成率にしない。0059_sky_libraryを保持しeSIM migrationは0060へ変更。認証拒否時のbody解放とAMC cache境界を保持する。最終sourceは対象19試験とNode1369件が合格。型検査は受信量制限の最終追補前に合格し、最終sourceはCIで再確認する。全体verifyはAstro依存未導入で停止し、追加npm ciはENOSPC。今回の依存物だけ削除し、GitHub同一SHA CIで続行する。証拠はdocs/evidence/esim-main-integration.json。GitHub保存・main統合・公開反映は別記する。料金executionHolds、外部契約、署名、flash、実機、本番受入は解除しない。
+
+PR #85のCIでDB一覧のnextAction再生成漏れを修正。SPIDERが検出した3件は実装ファイルのSHA-256とbytes照合済みで、既存policyへ完全一致のpath/値/生成元だけを追加する。検査の無効化や履歴書換えは行わない。AMC画面は今回のmain確認日と過去の部隊段階評価日を別表示にして、再受入済みとの誤認を防ぐ。
+
+検証完了: PR #85のsource `f9c85870`でGitHub全7チェック成功。`npm run verify`は型・lint・build・Node1368 pass/0 fail/1既定skip、仕事API1305 assertions、CSV385 assertionsを含め完走した（run 37505939314）。main統合・Sites配備・Provider実接続・実機は未実施。進捗ボードは静的記録であり、32部隊の自動実行画面ではない。今回の記録更新後のCIはPRの新HEADで確認する。
+
 ## 2026-10-06 — 全PRのCI合格と残存依存脆弱性の修正（SYS15 / G04）
 
 利用者の「全部通さないと」に対応。Security / Identity / Compliance、ROCK。PR #83の同一SHA `4e702fc296beb1a39b9a0826798cf8e764fa373f`で全8チェック（履歴secrets、CodeQL両言語・PR判定、全体verify、repair回帰、Web security実測、署名control）が成功し、通常merge `cb5955a29438e752ec3253ba8aa9aa2ebb056152`でmainへ統合した。履歴2942候補・161種類は公開生成元/用途を個別照合し、正確な値とpathだけを分類。161種類の別値・別path検出とscanner失敗/秘密値非出力を維持する。
@@ -1562,7 +1570,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。
+次の作業: 最新mainと未統合差分を同一SHAで検証する。最初のeSIM cloud key統合はLCH06/O7・SKY19/O5で作業PRへ保存し、CI→main統合→Sites配備→本人操作を別々に記録する。続いて元作業木の共通決済と仕事compositionを現行契約へ照合する。AMC32部隊のtaskPlansと受入条件を維持し、Provider契約、料金保留、正式署名、Pixel flash、Mini/Pro実機は個別条件待ち。
 <!-- project-status:end -->
 
 ## 次段階の設計

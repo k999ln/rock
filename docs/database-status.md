@@ -6,7 +6,7 @@
 
 ## 全体
 
-- データ境界: 6、table: 149
+- データ境界: 6、table: 150
 - source inventory: 6/6確認済み
 - current production readback: 0/6
 - 作業進捗: 378 task中 107 done、34 in progress、236 planned、1 blocked
@@ -16,7 +16,7 @@
 
 | 境界 | 責任 | table | source | 配備状態 | 本番適用済み | current readback |
 | --- | --- | ---: | --- | --- | --- | --- |
-| Web D1 | Webサービス状態 | 77 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
+| Web D1 | Webサービス状態 | 78 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
 | Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
 | Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
 | OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 19 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
@@ -25,8 +25,8 @@
 
 ## Web D1
 
-- expected latest migration: 0059_sky_library.sql
-- migration files: 60
+- expected latest migration: 0060_esim_cloud_access_keys.sql
+- migration files: 61
 - accidental duplicate: 0
 - published convergence definitions: 6
 - Marketplace relation guards: 8
@@ -37,13 +37,13 @@
 | Sky接続・Tool管理 | 33 | a2a_live_usage_snapshots, a2a_price_quote_consent_events, a2a_usage_receipts, agent_delegation_artifacts, agent_delegation_broker_authorizations, agent_delegation_budget_pools, agent_delegation_budget_reservations, agent_delegation_events, agent_delegation_inputs, agent_delegations, sky_a2a_agent_connections, sky_activation_codes, sky_campus_edges, sky_campus_items, sky_campus_profiles, sky_campus_reports, sky_campus_tag_events, sky_campus_tags, sky_commerce_events, sky_commerce_offers, sky_commerce_orders, sky_commerce_sellers, sky_connections, sky_developer_tokens, sky_library_items, sky_package_runtime_bindings, sky_provider_connections, sky_remote_ai_rate_limits, sky_tool_events, sky_tool_grants, sky_tool_package_reviews, sky_tool_packages, sky_tool_submissions |
 | Marketplace | 7 | marketplace_approvals, marketplace_assets, marketplace_events, marketplace_positions, marketplace_proposals, marketplace_receipts, marketplace_reservations |
 | CSV業務 | 5 | csv_billing_accounts, csv_job_events, csv_jobs, csv_monthly_fees, csv_trial_payments |
-| 自動化ファンド・受託案件・事業補助 | 20 | automation_fund_memberships, automation_funds, coconala_team_cases, esim_device_entitlements, esim_device_gateway_challenges, esim_device_gateway_keys, esim_device_install_challenges, esim_device_install_receipts, esim_provider_orders, esim_provider_profile_bindings, esim_provider_webhook_inbox, mercari_revenue_plans, rockstar_a2a_broker_devices, rockstar_a2a_broker_enrollment_challenges, rockstar_device_authorizations, rockstar_device_sessions, rockstar_entitlement_events, rockstar_entitlement_issuer_deliveries, rockstar_entitlement_issuer_rate_limits, rockstar_service_entitlements |
+| 自動化ファンド・受託案件・事業補助 | 21 | automation_fund_memberships, automation_funds, coconala_team_cases, esim_cloud_access_keys, esim_device_entitlements, esim_device_gateway_challenges, esim_device_gateway_keys, esim_device_install_challenges, esim_device_install_receipts, esim_provider_orders, esim_provider_profile_bindings, esim_provider_webhook_inbox, mercari_revenue_plans, rockstar_a2a_broker_devices, rockstar_a2a_broker_enrollment_challenges, rockstar_device_authorizations, rockstar_device_sessions, rockstar_entitlement_events, rockstar_entitlement_issuer_deliveries, rockstar_entitlement_issuer_rate_limits, rockstar_service_entitlements |
 
 ## 境界別の全table
 
-<details><summary>Web D1: 77 table</summary>
+<details><summary>Web D1: 78 table</summary>
 
-`a2a_live_usage_snapshots`、`a2a_price_quote_consent_events`、`a2a_usage_receipts`、`agent_delegation_artifacts`、`agent_delegation_broker_authorizations`、`agent_delegation_budget_pools`、`agent_delegation_budget_reservations`、`agent_delegation_events`、`agent_delegation_inputs`、`agent_delegations`、`automation_fund_memberships`、`automation_funds`、`book_records`、`coconala_team_cases`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`csv_trial_payments`、`devices`、`esim_device_entitlements`、`esim_device_gateway_challenges`、`esim_device_gateway_keys`、`esim_device_install_challenges`、`esim_device_install_receipts`、`esim_provider_orders`、`esim_provider_profile_bindings`、`esim_provider_webhook_inbox`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`remote_ai_rate_cards`、`remote_ai_text_executions`、`remote_ai_text_inputs`、`remote_ai_text_send_claims`、`rockstar_a2a_broker_devices`、`rockstar_a2a_broker_enrollment_challenges`、`rockstar_device_authorizations`、`rockstar_device_sessions`、`rockstar_entitlement_events`、`rockstar_entitlement_issuer_deliveries`、`rockstar_entitlement_issuer_rate_limits`、`rockstar_service_entitlements`、`sky_a2a_agent_connections`、`sky_activation_codes`、`sky_campus_edges`、`sky_campus_items`、`sky_campus_profiles`、`sky_campus_reports`、`sky_campus_tag_events`、`sky_campus_tags`、`sky_commerce_events`、`sky_commerce_offers`、`sky_commerce_orders`、`sky_commerce_sellers`、`sky_connections`、`sky_developer_tokens`、`sky_library_items`、`sky_package_runtime_bindings`、`sky_provider_connections`、`sky_remote_ai_rate_limits`、`sky_tool_events`、`sky_tool_grants`、`sky_tool_package_reviews`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
+`a2a_live_usage_snapshots`、`a2a_price_quote_consent_events`、`a2a_usage_receipts`、`agent_delegation_artifacts`、`agent_delegation_broker_authorizations`、`agent_delegation_budget_pools`、`agent_delegation_budget_reservations`、`agent_delegation_events`、`agent_delegation_inputs`、`agent_delegations`、`automation_fund_memberships`、`automation_funds`、`book_records`、`coconala_team_cases`、`csv_billing_accounts`、`csv_job_events`、`csv_jobs`、`csv_monthly_fees`、`csv_trial_payments`、`devices`、`esim_cloud_access_keys`、`esim_device_entitlements`、`esim_device_gateway_challenges`、`esim_device_gateway_keys`、`esim_device_install_challenges`、`esim_device_install_receipts`、`esim_provider_orders`、`esim_provider_profile_bindings`、`esim_provider_webhook_inbox`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`remote_ai_rate_cards`、`remote_ai_text_executions`、`remote_ai_text_inputs`、`remote_ai_text_send_claims`、`rockstar_a2a_broker_devices`、`rockstar_a2a_broker_enrollment_challenges`、`rockstar_device_authorizations`、`rockstar_device_sessions`、`rockstar_entitlement_events`、`rockstar_entitlement_issuer_deliveries`、`rockstar_entitlement_issuer_rate_limits`、`rockstar_service_entitlements`、`sky_a2a_agent_connections`、`sky_activation_codes`、`sky_campus_edges`、`sky_campus_items`、`sky_campus_profiles`、`sky_campus_reports`、`sky_campus_tag_events`、`sky_campus_tags`、`sky_commerce_events`、`sky_commerce_offers`、`sky_commerce_orders`、`sky_commerce_sellers`、`sky_connections`、`sky_developer_tokens`、`sky_library_items`、`sky_package_runtime_bindings`、`sky_provider_connections`、`sky_remote_ai_rate_limits`、`sky_tool_events`、`sky_tool_grants`、`sky_tool_package_reviews`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
 
 次の確認: 既存Sitesの所有workspaceへ接続し、検証済み最新mainを同じSiteへ配備。公開設定変更後に匿名health、本人別API、migration、件数、孤立関係、backup状態をreadbackする
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。
+最新mainと未統合差分を同一SHAで検証する。最初のeSIM cloud key統合はLCH06/O7・SKY19/O5で作業PRへ保存し、CI→main統合→Sites配備→本人操作を別々に記録する。続いて元作業木の共通決済と仕事compositionを現行契約へ照合する。AMC32部隊のtaskPlansと受入条件を維持し、Provider契約、料金保留、正式署名、Pixel flash、Mini/Pro実機は個別条件待ち。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

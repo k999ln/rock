@@ -421,6 +421,13 @@
       "when": 1791244800000,
       "tag": "0059_sky_library",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "6",
+      "when": 1791331200000,
+      "tag": "0060_esim_cloud_access_keys",
+      "breakpoints": true
     }
   ]
 }

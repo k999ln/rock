@@ -25,10 +25,10 @@ export async function GET(request: Request) {
     const entitlementRequired = runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED;
     const entitlements = await rockstarEntitlementStore(db).list(owner);
     const [llmAllowed, skyAllowed, zemaAllowed, agentsAllowed] = await Promise.all([
-      rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', entitlementRequired),
-      rockstarServiceScopeAllowed(db, owner, 'sky', entitlementRequired),
-      rockstarServiceScopeAllowed(db, owner, 'zema', entitlementRequired),
-      rockstarServiceScopeAllowed(db, owner, 'agents', entitlementRequired),
+      rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', entitlementRequired, env, request),
+      rockstarServiceScopeAllowed(db, owner, 'sky', entitlementRequired, env, request),
+      rockstarServiceScopeAllowed(db, owner, 'zema', entitlementRequired, env, request),
+      rockstarServiceScopeAllowed(db, owner, 'agents', entitlementRequired, env, request),
     ]);
     const llmStore = new RemoteAiTextStore(db);
     const llm = llmAllowed ? await llmStore.list(owner) : [];
