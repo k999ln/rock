@@ -51,7 +51,7 @@
       "pass": 3,
       "fail": 10,
       "skipped": 0,
-      "testSha256": "39208882b82481723e047fb28ec2572832d7f809459830621ffc5d8dc850aba2"
+      "testSha256": "1ded31168ab149d7dc1afdd8f980d201410793f5be961ae4c9e108d50e0ed11e"
     },
     "patched": {
       "sourceSha256": "324afc5b862048a3d80b6ae53cc7aeb0a0a6d6baf4121a4f52ea44893ac25f91",
@@ -67,7 +67,7 @@
       "skipped": 0,
       "blockers": 0
     },
-    "testSha256": "3a099790beb4c622d63f33101ca3314e201c18061d80fb858518643c69134180",
+    "testSha256": "1ded31168ab149d7dc1afdd8f980d201410793f5be961ae4c9e108d50e0ed11e",
     "coverage": [
       "HTTP500/502/503/504",
       "missing responses",
@@ -101,6 +101,25 @@
       "stage": "lint:product",
       "reason": "Test registration promises require explicit void; assertions and runner-managed test execution remain unchanged.",
       "followUp": "Explicitly mark node:test registration promises, then recheck the new commit."
+    },
+    "negativeControlRepeatedAfterTestRefactor": {
+      "tests": 13,
+      "pass": 3,
+      "fail": 10,
+      "skipped": 0,
+      "source": "origin/main:sites/avocado-mini/vendor/http-cache-semantics/index.js",
+      "isolatedTemporaryLayout": true
+    },
+    "testFixtureTyping": {
+      "reason": "Use explicit named records to prevent label inference as string/object unions; retain all assertions and cases.",
+      "failedHead": "baa5b7abea8fdf9a0b4c94dafd6df0b57ebdaddb",
+      "failedRun": 37484859198,
+      "failedStage": "lint:product",
+      "patchedRetest": {
+        "pass": 13,
+        "fail": 0,
+        "skipped": 0
+      }
     }
   },
   "sameRefBaseline": {
