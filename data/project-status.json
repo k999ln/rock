@@ -5752,17 +5752,43 @@
       "SKY19"
     ],
     "primarySquad": "O7",
-    "status": "focused_verified_full_ci_pending",
+    "status": "source_ci_verified_main_and_deployment_pending",
     "scope": "Recover the previously local eSIM access implementation onto current main; retain the canonical 32-squad progress and release gates.",
     "remaining": [
-      "Fresh integrated verify",
-      "Branch save and same-SHA CI",
-      "Explicit main integration and separate deployment",
-      "Provider/device/production acceptance"
+      "OWNER main merge",
+      "Separate deployment and authenticated readback",
+      "Provider/device/production acceptance",
+      "Review remaining original-checkout payment/composition changes"
     ],
     "evidence": "docs/evidence/esim-main-integration.json",
     "localValidation": "19 focused tests and 1369 Node tests passed; full verify stopped at missing Astro and ENOSPC during nested dependency installation.",
     "previousNextAction": "SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。",
-    "ciFollowup": "PR85: regenerate DB nextAction; verify three reported source digests and add exact literal provenance; distinguish current source observation from historical stage assessment."
+    "ciFollowup": "PR85: regenerate DB nextAction; verify three reported source digests and add exact literal provenance; distinguish current source observation from historical stage assessment.",
+    "githubValidation": {
+      "head": "f9c858706601e43ad5da526d94e408fb3daf0c31",
+      "verifyRun": 37505939314,
+      "verifyUrl": "https://github.com/k999ln/rock/actions/runs/37505939314",
+      "conclusion": "success",
+      "checksPassed": 7,
+      "node": {
+        "pass": 1368,
+        "fail": 0,
+        "skip": 1
+      },
+      "workApiAssertions": 1305,
+      "csvAssertions": 385,
+      "coverage": [
+        "typecheck",
+        "lint",
+        "build",
+        "D1 migrations",
+        "Worker API",
+        "project/baseline/design/mission checks"
+      ],
+      "provider": "not_run",
+      "physicalDevice": "not_run",
+      "productionBilling": "not_run"
+    },
+    "pullRequest": "https://github.com/k999ln/rock/pull/85"
   }
 }

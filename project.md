@@ -4,6 +4,8 @@
 
 PR #85のCIでDB一覧のnextAction再生成漏れを修正。SPIDERが検出した3件は実装ファイルのSHA-256とbytes照合済みで、既存policyへ完全一致のpath/値/生成元だけを追加する。検査の無効化や履歴書換えは行わない。AMC画面は今回のmain確認日と過去の部隊段階評価日を別表示にして、再受入済みとの誤認を防ぐ。
 
+検証完了: PR #85のsource `f9c85870`でGitHub全7チェック成功。`npm run verify`は型・lint・build・Node1368 pass/0 fail/1既定skip、仕事API1305 assertions、CSV385 assertionsを含め完走した（run 37505939314）。main統合・Sites配備・Provider実接続・実機は未実施。進捗ボードは静的記録であり、32部隊の自動実行画面ではない。今回の記録更新後のCIはPRの新HEADで確認する。
+
 ## 2026-10-06 — 全PRのCI合格と残存依存脆弱性の修正（SYS15 / G04）
 
 利用者の「全部通さないと」に対応。Security / Identity / Compliance、ROCK。PR #83の同一SHA `4e702fc296beb1a39b9a0826798cf8e764fa373f`で全8チェック（履歴secrets、CodeQL両言語・PR判定、全体verify、repair回帰、Web security実測、署名control）が成功し、通常merge `cb5955a29438e752ec3253ba8aa9aa2ebb056152`でmainへ統合した。履歴2942候補・161種類は公開生成元/用途を個別照合し、正確な値とpathだけを分類。161種類の別値・別path検出とscanner失敗/秘密値非出力を維持する。
