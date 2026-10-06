@@ -4907,7 +4907,8 @@
         "scripts/check-mission-control.mjs",
         "scripts/sync-mission-control.mjs",
         "tests/mission-control.test.mjs",
-        "docs/evidence/amc/task-precision-audit.json"
+        "docs/evidence/amc/task-precision-audit.json",
+        "docs/evidence/spider-mission-squad-dom.json"
       ]
     },
     {

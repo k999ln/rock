@@ -179,6 +179,22 @@ function browser({
       querySelector(selector) {
         return this.querySelectorAll(selector)[0] ?? null;
       },
+      appendChild(child) {
+        if (child.parentElement) {
+          const siblings = child.parentElement.children;
+          siblings.splice(siblings.indexOf(child), 1);
+        }
+        child.parentElement = this;
+        this.children.push(child);
+        return child;
+      },
+      replaceChildren(...children) {
+        for (const child of this.children) child.parentElement = null;
+        this.children = [];
+        inner = '';
+        content = '';
+        for (const child of children) this.appendChild(child);
+      },
       addEventListener(type, listener) {
         this.listeners[type] = listener;
       },

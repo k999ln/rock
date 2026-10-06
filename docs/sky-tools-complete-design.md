@@ -176,6 +176,14 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 
 正本: [AMC Goal Orchestrator](amc-goal-orchestrator.md)、[AMC部隊と進捗](mission-control.md)、`scripts/amc-request-plan.mjs`、`scripts/amc-goal-engine.mjs`、`scripts/amc-codex.mjs`、`lib/amc-tool.ts`、`lib/workflow.ts`、`app/api/amc/route.ts`。
 
+### 部隊ボードの文字列表示境界（SPIDER cycle 42）
+
+読み取り専用の部隊ボードは、正本snapshotのdivision名・squad名・IDを表示データとして扱う。JSON埋込みのscript終端対策に加え、部隊一覧はDOM要素を生成して本文を`textContent`、IDを`dataset.squad`へ設定し、HTMLへ連結しない。選択後のフォーカスはその描画で生成したbuttonのMapから戻し、IDをCSS selectorへ連結しない。
+
+引用符・タグ・event属性・CSS記号を含む合成IDでも文字として表示し、32部隊の選択、`aria-pressed`、保存済み選択の復元とフォーカスを維持する。変更する保存は従来の表示用選択状態だけで、Goal・project台帳の変更、外部通信、実行権限を追加しない。描画の失敗はGoal完了に換算せず、正本と対応版テンプレートからsnapshotを再生成する。既存の書き出し済みHTMLは自動更新されない。
+
+[検証記録](evidence/spider-mission-squad-dom.json)は部隊表示に限定する。mainで既に確認したAMC export契約や生成資料の不整合、他のCodeQL／依存／秘密候補は別途修正し、今回の表示試験を全体受入へ転用しない。
+
 ## 5. CSV整形・検査・納品
 
 ### 目的と一周

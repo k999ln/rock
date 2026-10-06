@@ -40,6 +40,7 @@
   const mission = JSON.parse(document.getElementById('amc-mission-data').textContent);
   const project = JSON.parse(document.getElementById('amc-project-data').textContent);
   const squads = new Map(mission.squads.map(s => [s.id, s]));
+  const squadButtons = new Map();
   const tasks = new Map(project.tasks.map(t => [t.id, t]));
   const assignments = new Map(mission.taskAssignments.map(a => [a.taskId, a]));
   const plans = new Map(mission.taskPlans.map(p => [p.taskId, p]));
@@ -95,8 +96,29 @@
     el('amc-snapshot').textContent = mission.updatedAt + ' · ローカル作業版 ' + mission.audit.localBaseSha.slice(0, 7) + '＋ローカル変更 · 手動更新・自動同期なし';
     el('amc-counts').textContent = project.tasks.length + '登録レコード ／ 親' + childGroups.size + '・子' + project.tasks.filter(t => t.parentTaskId).length + '・独立' + project.tasks.filter(t => !t.parentTaskId && !childGroups.has(t.id)).length + ' ／ 実行単位は親を除外';
     el('amc-selected-line').textContent = squad.id + ' ' + squad.name + ' ／ 段階 ' + squad.currentStage + ' ' + mission.stagePolicy.stages[squad.currentStage].label;
-    el('amc-divisions').innerHTML = mission.divisions.map(division => '<section><h3>' + esc(division.name) + '</h3><div class="amc-cells">' +
-      mission.squads.filter(s => s.division === division.id).map(s => '<button type="button" class="btn viz-tile" aria-pressed="' + (s.id === squad.id) + '" aria-label="' + esc(s.id + ' ' + s.name + '、段階' + s.currentStage + ' ' + mission.stagePolicy.stages[s.currentStage].label) + '" data-squad="' + s.id + '">' + s.id + '</button>').join('') + '</div></section>').join('');
+    squadButtons.clear();
+    const sections = mission.divisions.map(division => {
+      const section = document.createElement('section');
+      const heading = document.createElement('h3');
+      heading.textContent = division.name;
+      const cells = document.createElement('div');
+      cells.className = 'amc-cells';
+      for (const unit of mission.squads.filter(s => s.division === division.id)) {
+        const button = document.createElement('button');
+        button.setAttribute('type', 'button');
+        button.className = 'btn viz-tile';
+        button.setAttribute('aria-pressed', String(unit.id === squad.id));
+        button.setAttribute('aria-label', unit.id + ' ' + unit.name + '、段階' + unit.currentStage + ' ' + mission.stagePolicy.stages[unit.currentStage].label);
+        button.setAttribute('data-squad', unit.id);
+        button.textContent = unit.id;
+        cells.appendChild(button);
+        squadButtons.set(unit.id, button);
+      }
+      section.appendChild(heading);
+      section.appendChild(cells);
+      return section;
+    });
+    el('amc-divisions').replaceChildren(...sections);
     el('amc-unit').innerHTML = facts([
       ['Goal', esc(squad.goal)],
       ['もたらす結果', esc(squad.outcome)],
@@ -159,7 +181,7 @@
       state.selectedTask = squads.get(state.selectedUnit).nextTaskIds[0];
       render();
       saveState();
-      root.querySelector('[data-squad="' + state.selectedUnit + '"]')?.focus?.();
+      squadButtons.get(state.selectedUnit)?.focus();
       return;
     }
     const task = event.target.closest('[data-task]');

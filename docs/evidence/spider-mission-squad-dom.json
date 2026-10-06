@@ -1,0 +1,137 @@
+{
+  "schema": "spider-mission-squad-dom/1",
+  "cycle": 42,
+  "baselineCommit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+  "primarySquad": "H1",
+  "task": "ORG03",
+  "responsibility": "ROCK",
+  "alert": {
+    "number": 58,
+    "rule": "js/xss-through-dom",
+    "severity": "high",
+    "path": "scripts/templates/mission-control.html"
+  },
+  "status": "LOCAL_REGRESSION_PASS_GITHUB_CANDIDATE_PENDING",
+  "scope": "canonical squad snapshot rendering; not an external-request-to-ID exploit claim",
+  "baselineBrowser": {
+    "injected": true,
+    "scriptErrors": 0,
+    "buttonCount": 33,
+    "noInjectedElements": false,
+    "noEventAttributes": false,
+    "literalText": false,
+    "literalAttribute": false,
+    "selection": false,
+    "focus": false,
+    "pressed": false,
+    "scriptErrorsAfterClick": 0
+  },
+  "baselineFullVerify": {
+    "passed": false,
+    "firstFailure": "database:check generated data/database-status.json and docs/database-status.md stale"
+  },
+  "limits": [
+    "Existing exported HTML requires regeneration.",
+    "Unrelated main AMC module contracts and existing PR70/71 integration remain unresolved.",
+    "No main merge, deployment, device changes, secret rotation, or alert dismissal.",
+    "No complete repository or production security acceptance."
+  ],
+  "sameRefBaseline": {
+    "cycle": 42,
+    "observedAt": "2026-10-05T18:09:39.524219+00:00",
+    "ref": "refs/heads/codex/spider-mission-squad-dom",
+    "sourceCommit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+    "run": {
+      "id": 37352999892,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "alert58Instances": [
+      {
+        "ref": "refs/heads/codex/spider-mission-squad-dom",
+        "state": "open",
+        "commit_sha": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "analysis_key": ".github/workflows/spider-codeql.yml:analyze",
+        "category": "/spider/language:javascript-typescript"
+      }
+    ]
+  },
+  "localTests": {
+    "command": "node --test tests/mission-control.test.mjs tests/amc-goal-cli.test.mjs",
+    "tests": 53,
+    "pass": 53,
+    "fail": 0,
+    "skip": 0,
+    "baselineExistingTests": 52,
+    "newRegressionAgainstOldTemplate": "failed as expected after canonical topology validation",
+    "adversarialIds": [
+      "quote and event attribute",
+      "closing button tag and image event",
+      "HTML entities",
+      "CSS punctuation, newline and Unicode"
+    ]
+  },
+  "afterBrowser": {
+    "injected": false,
+    "scriptErrors": 0,
+    "buttonCount": 32,
+    "noInjectedElements": true,
+    "noEventAttributes": true,
+    "literalText": true,
+    "literalAttribute": true,
+    "selection": true,
+    "focus": true,
+    "pressed": true,
+    "scriptErrorsAfterClick": 0
+  },
+  "browserMethod": "Isolated headless Chrome, actual renderVisualization output with synthetic renamed O1 and consistent references; compare injected sentinel, parsed nodes, literal ID, click selection, activeElement and aria-pressed. No external service or user profile.",
+  "sourceSha256": {
+    "scripts/templates/mission-control.html": "a9107d92d0b67ffa51b22470e98643469f108cb9fffffc00c5aec4ef39a0f0fa",
+    "tests/mission-control.test.mjs": "0b12084237443390e09847befd8f39e14466d53c7a1d1e2f8a17dc477bcf1835",
+    "tests/amc-goal-cli.test.mjs": "5e0514738a2bdf0ce6a52f50443599eb2260005b984db2a346832f029007731d"
+  },
+  "checks": {
+    "project:check": "PASS",
+    "mission:check": "PASS",
+    "design:check": "FAIL: pre-existing duplicate Tool IDs in unchanged lib/catalog.ts",
+    "baseline:check": "FAIL: pre-existing missing serviceAccessModel in unchanged product baseline",
+    "git diff --check": "PASS",
+    "npm run verify": "FAIL: pre-existing database:check stale generated data"
+  },
+  "inheritedMainBlockers": {
+    "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+    "verifyRun": 37288176072,
+    "webRun": 37288176083,
+    "githubFirstFailure": "npm ci EUSAGE manifest/lock mismatch: @cloudflare/vite-plugin, @cloudflare/workers-types, miniflare; missing undici@7.29.0",
+    "amcImports": "amc-goal-engine missing revalidationImpact export; amc-codex helpers no longer exported",
+    "notFixedByThisChange": true
+  },
+  "independentReview": {
+    "result": "no blockers",
+    "scope": "source/test/workflow diff only; root tests and browser evidence separately recorded"
+  },
+  "intermediateReadback": {
+    "commit": "a481833a1eeb20830e0a5d481e1241c3bc3431a0",
+    "sameRefCodeqlRun": 37353985597,
+    "target58State": "fixed",
+    "testExtraction63State": "open",
+    "alert63Instances": [
+      {
+        "ref": "refs/heads/codex/spider-mission-squad-dom",
+        "state": "open",
+        "commit_sha": "a481833a1eeb20830e0a5d481e1241c3bc3431a0",
+        "analysis_key": ".github/workflows/spider-codeql.yml:analyze",
+        "category": "/spider/language:javascript-typescript"
+      }
+    ],
+    "repairRegressionRun": 37353978794,
+    "repairJob": "success",
+    "verifyAndWeb": "failure: inherited npm ci EUSAGE",
+    "secrets": {
+      "status": "findings",
+      "totalFindings": 2910,
+      "historyScanCompleted": true
+    },
+    "followup": "Replace the moved test-only script extraction regexp with asserted exact fixture delimiters. No sanitizer, scanner exception, or test removal; 53 tests pass again. Final GitHub readback remains pending on the new commit."
+  }
+}
