@@ -152,3 +152,7 @@ eSIM chipの検出は、OS全体・通信plan・特定provider・LLM・端末内
 ## Mini本体SIMによる独立通信（2026-10-05）
 
 利用者指定により[Mini cellular設計](../avocado-mini-cellular.md)を追加。MAT15の通信サブ項目としてmodem/antenna/物理SIM、電源/熱、接続・保存復旧、Pro/PC/phone不要の実通信受入を追跡し、SIM01のcarrier/service権と区別する。R5のoffline基本動作、使用時200mm、外部給電を維持する。地域・回線未定、部品選定・内蔵・driver・実通信・cloud gamingは未受入。元R5配布原本は変更せず追加要求として読む。
+
+### OS11 / RLS02: 同一build成果物の検査
+
+2026-10-06、ROCKはPixel 10向け署名sourceを`2026100200`へ更新し、compile出力の機種・番号・必須アプリ・SHA-256検査を実装した。実行入口と検証コマンドは[Device Preview](../phone-preview-20260911.md#全os-compile成果物の検査os11--rls02)。OWNERの専用Linux／支出上限指定待ち。全OS compile、正式署名、実機flashと復旧は未実施。

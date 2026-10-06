@@ -73,6 +73,10 @@ Buildroot、read-only rootfs、書込みdata disk、専用UID、local IPC、署�
 
 `dev.rock.shell`を利用者UI、`dev.rock.automation`をheadless Broker、Local AI、Tool、Operator Agentを別APK／別UIDにする。現在は既存Android上の試験署名APK受入までで、Pixel向けRockstarOS full imageは未完成。
 
+#### 全OS buildと同一成果物の受入
+
+Pixel 10のcompile元は署名検証済み`2026100200`へ固定する。ROCKのbuild runnerは実行固有番号をOS propertyへ埋め、target-files／otatoolsを生成して、機種・variant・必須アプリ・release禁止flagを検査する。成果物と入力manifestの証拠は実行単位で保存し、失敗時は古い成功表示を残さず再buildする。ZIP hashを実機受入へ引き継ぐが、compile／構造検査だけでは正式署名・boot・復旧・flashを許可しない。入出力、状態、保存、失敗復旧、OWNER予算と未確定条件は[Device Previewの全OS compile成果物検査](phone-preview-20260911.md#全os-compile成果物の検査os11--rls02)を正本とする。
+
 #### eSIM device entitlement gateway
 
 端末はeSIMチップ内でRockstarOSを実行せず、Sky注文で指定された初期Agent Packの利用権を、検証済みprofile導入証拠と注文ownerに結び付ける。Workerの5分challengeにはowner、order、profile digest、device ref、install receipt hash、starter pack ID/version/manifest hashをまとめた`receiptContext`を含める。Android Coreの`EsimDeviceEntitlement`はそのchallengeと、privileged installer adapterから受けた同一profileの`verified + installedEnabled`証拠を照合し、hardware-backed P-256鍵だけでdomain-separated ES256 receiptを署名する。署名はAndroid JCAのDERからWebCryptoの64-byte P1363へ変換し、server canonical field orderで送る。profile secret、ICCID、EID、SIM状態一覧を読む処理は含まず、`READ_PHONE_STATE`も要求しない。

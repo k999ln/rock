@@ -231,6 +231,8 @@ The attached **rocketstar_Complete_Design_R1_0.pdf** has the same SHA-256 as the
 
 The [complete design portal](docs/rockstaros-design-portal.md) covers 17 domains, and the [machine-readable design index](data/design-document-index.json) lists their documents. Because the complete OS source includes the historical E3 device layout, **R5 takes precedence for avocadoMini's envelope, unit count, and hub requirements**.
 
+Pixel 10 compile bringup: run the explicit `--mode bringup` entry in [Device Preview](docs/phone-preview-20260911.md). Each run now isolates its target-files/otatools and checks the embedded build number, Rock applications and archive hashes; this does not permit production signing or flash.
+
 | Domain | Designs, contracts, and records |
 | --- | --- |
 | Product requirements and business | [Product baseline](docs/product-baseline.md) / [Requirements JSON](data/product-baseline.json) / [Product north star](docs/product-north-star-20260915.md) / [Business strategy](docs/rockstaros-1.0-strategy.md) / [Product/service/system map](docs/rockstaros-product-system-map.md) |

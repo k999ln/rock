@@ -43,15 +43,47 @@ cd -- "$rock_phone_tree"
 # treats an absolute --config_repo_dir as a repository label and fails to load
 # its generated main.star with the pinned Android 17 toolchain.
 export OUT_DIR=out
+# A unique build number is embedded in product properties. Each invocation gets
+# its own dist/evidence paths; an older ZIP cannot satisfy this invocation.
+export BUILD_NUMBER="rock.$(git -C "$rock_phone_root" rev-parse --short=12 HEAD).$(python3 -c 'import uuid; print(uuid.uuid4().hex[:12])')"
+export DIST_DIR="$OUT_DIR/rockstaros-builds/$BUILD_NUMBER"
+rock_phone_evidence="$OUT_DIR/rockstaros-evidence/$BUILD_NUMBER"
 mkdir -p "$OUT_DIR/rockstaros-evidence"
+mkdir "$rock_phone_evidence"
+mkdir -p "$DIST_DIR"
+export ROCK_PHONE_BUILD_MODE="$rock_phone_mode"
+export ROCK_PHONE_EVIDENCE="$rock_phone_evidence"
+python3 - <<'PY_INIT'
+import json, os, pathlib
+path = pathlib.Path(os.environ["OUT_DIR"], "rockstaros-evidence", "build-manifest.json")
+path.write_text(json.dumps({"schema": "avocadoos-developer-preview-build/2",
+    "status": "RUNNING", "buildNumber": os.environ["BUILD_NUMBER"],
+    "mode": os.environ["ROCK_PHONE_BUILD_MODE"], "signing": "test/development",
+    "operatorAgent": os.environ["ROCK_OPERATOR_AGENT_MODE"],
+    "evidenceDirectory": os.environ["ROCK_PHONE_EVIDENCE"], "distDirectory": os.environ["DIST_DIR"],
+    "releaseFlashAllowed": False, "productionSigned": False,
+    "hardwareFlashPerformed": False}, indent=2) + "\n")
+PY_INIT
+rock_phone_finish() {
+  local rock_phone_exit_code="$1"
+  ROCK_PHONE_EXIT_CODE="$rock_phone_exit_code" python3 - <<'PY_FINISH'
+import json, os, pathlib
+path = pathlib.Path(os.environ["OUT_DIR"], "rockstaros-evidence", "build-manifest.json")
+value = json.loads(path.read_text())
+value["exitCode"] = int(os.environ["ROCK_PHONE_EXIT_CODE"])
+value["status"] = "COMPILE_AND_ARTIFACT_CHECKS_PASSED" if value["exitCode"] == 0 else "FAILED"
+path.write_text(json.dumps(value, indent=2) + "\n")
+PY_FINISH
+}
+trap 'rock_phone_finish "$?"' EXIT
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" host "$OUT_DIR"
 
 if [[ $rock_phone_mode == release ]]; then
   python3 "$rock_phone_root/scripts/freeze-phone-build-inputs.py" recovery \
     "$ROCK_GOOGLE_FACTORY_IMAGE" "$ROCK_GOOGLE_FULL_OTA" "$ROCK_GOOGLE_TERMS_RECORD" \
-    --output "$OUT_DIR/rockstaros-evidence/google-stock-recovery.json"
+    --output "$rock_phone_evidence/google-stock-recovery.json"
   python3 "$rock_phone_root/scripts/freeze-phone-build-inputs.py" signing-plan \
-    --output "$OUT_DIR/rockstaros-evidence/production-signing-plan.json"
+    --output "$rock_phone_evidence/production-signing-plan.json"
 fi
 
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" prepare "$rock_phone_tree" \
@@ -61,7 +93,7 @@ if [[ $ROCK_OPERATOR_AGENT_MODE == configured ]]; then
   python3 "$rock_phone_root/scripts/stage-operator-agent-overlay.py" stage "$rock_phone_tree" "$ROCK_OPERATOR_AGENT_CONFIG"
 fi
 python3 "$rock_phone_root/scripts/freeze-phone-build-inputs.py" vendor "$rock_phone_tree" \
-  --output "$OUT_DIR/rockstaros-evidence/vendor-inventory.json"
+  --output "$rock_phone_evidence/vendor-inventory.json"
 rock_phone_hook_state="$(python3 "$rock_phone_root/scripts/prepare-phone-build.py" verify-hook "$rock_phone_tree" --mode "$rock_phone_mode")"
 IFS=$'\t' read -r rock_phone_hook_repo_path rock_phone_hook_sha256 <<< "$rock_phone_hook_state"
 if [[ -z $rock_phone_hook_repo_path || -z $rock_phone_hook_sha256 ]]; then
@@ -80,16 +112,20 @@ if [[ $ROCK_OPERATOR_AGENT_MODE == configured ]]; then
   python3 "$rock_phone_root/scripts/stage-operator-agent-overlay.py" verify "$rock_phone_tree"
 fi
 python3 "$rock_phone_root/scripts/freeze-phone-build-inputs.py" verify-vendor "$rock_phone_tree" \
-  "$OUT_DIR/rockstaros-evidence/vendor-inventory.json" >/dev/null
+  "$rock_phone_evidence/vendor-inventory.json" >/dev/null
 python3 "$rock_phone_root/scripts/prepare-phone-build.py" verify-hook "$rock_phone_tree" --mode "$rock_phone_mode"
 source build/envsetup.sh
 lunch "$rock_phone_lunch"
-repo manifest -r -o "$OUT_DIR/rockstaros-evidence/source-manifest.xml"
-git -C external/rockstaros rev-parse HEAD > "$OUT_DIR/rockstaros-evidence/rock-commit.txt"
-git -C vendor/adevtool diff -- "${rock_phone_hook#vendor/adevtool/}" > "$OUT_DIR/rockstaros-evidence/device-integration.patch"
+repo manifest -r -o "$rock_phone_evidence/source-manifest.xml"
+git -C external/rockstaros rev-parse HEAD > "$rock_phone_evidence/rock-commit.txt"
+git -C vendor/adevtool diff -- "${rock_phone_hook#vendor/adevtool/}" > "$rock_phone_evidence/device-integration.patch"
 if [[ $ROCK_OPERATOR_AGENT_MODE == configured ]]; then
-  cp vendor/avocado-operator-agent/artifact.json "$OUT_DIR/rockstaros-evidence/operator-agent-overlay.json"
+  cp vendor/avocado-operator-agent/artifact.json "$rock_phone_evidence/operator-agent-overlay.json"
 fi
-ROCK_PHONE_BUILD_MODE="$rock_phone_mode" python3 -c 'import json,os,pathlib; pathlib.Path(os.environ["OUT_DIR"],"rockstaros-evidence","build-manifest.json").write_text(json.dumps({"schema":"avocadoos-developer-preview-build/1","mode":os.environ["ROCK_PHONE_BUILD_MODE"],"signing":"test/development","operatorAgent":os.environ["ROCK_OPERATOR_AGENT_MODE"],"releaseFlashAllowed":False,"productionSigned":False,"hardwareFlashPerformed":False},indent=2)+"\n")'
-m "${rock_phone_build_targets[@]}"
-echo "RockstarOS Developer Preview $rock_phone_mode build finished. Test/development signing only; release flash is not allowed."
+cp "$rock_phone_root/os/physical/frankel-source-lock.json" "$rock_phone_evidence/source-lock.json"
+cp vendor/rockstaros-local-ai/artifact.json "$rock_phone_evidence/local-ai-artifact.json"
+m "${rock_phone_build_targets[@]}" dist
+python3 "$rock_phone_root/scripts/verify-phone-artifacts.py" --dist "$DIST_DIR" \
+  --build-number "$BUILD_NUMBER" --operator "$ROCK_OPERATOR_AGENT_MODE" \
+  --evidence-dir "$rock_phone_evidence" --output "$rock_phone_evidence/artifacts.json"
+echo "RockstarOS Developer Preview $rock_phone_mode compile and artifact checks passed: $rock_phone_evidence. Test/development signing only; release flash is not allowed."
