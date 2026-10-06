@@ -220,6 +220,7 @@
 .nfcClose { position: absolute; top: 15px; right: 15px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: #fff; background: rgba(255,255,255,.1); }
 .nfcInstallButton { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 43px; margin-top: 14px; padding: 10px 16px; border-radius: 12px; color: #111713; background: var(--home-accent); font-weight: 800; }
 .nfcInstall .nfcSteps { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.09); line-height: 1.8; }
+.nfcDownloadLink { display: inline-flex; align-items: center; gap: 6px; min-height: 42px; margin-top: 8px; color: var(--home-accent); font-size: 12px; font-weight: 750; }
 .nfcInstall .nfcBoundary { margin-top: 11px; color: rgba(255,255,255,.56); font-size: 11px; }
 
 .editorBackdrop {

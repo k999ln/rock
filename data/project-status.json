@@ -1,7 +1,7 @@
 {
   "updatedAt": "2026-10-06",
-  "milestone": "RockstarOS WebホームへのNFC入口とPWA追加案内、タグ用URL/NDEFを準備。端末OS書換えではない（公開・実機試験は別記録）",
-  "nextAction": "NFC01の配備と実HTTP/端末読取を確認する。続いてB05独立Queue、実スマホ、公式市場buyer納品経路、実顧客/Provider入金・返金、月額条件test請求、production operator allowlist/Secretsを別gateで進める。",
+  "milestone": "NFC入口からWebホームと実OS版の配布状況へ進む導線を準備。タグにOS本体を格納せず、未承認のDraft配布物を一般ダウンロード扱いにしない",
+  "nextAction": "NFC02の公開版ブラウザ表示と実タグ読取を確認する。Mac仮想OSの製品ライセンス・正式署名・同一候補受入・公開承認後だけ公開ダウンロードURLを設定する。スマホ実機OSは対象機種/SKUの別受入が必要。",
   "tasks": [
     {
       "id": "SKY01",
@@ -389,6 +389,20 @@
         "docs/nfc/rockstaros-url.txt",
         "docs/nfc/rockstaros-uri.ndef",
         "scripts/create-nfc-payload.mjs",
+        "tests/nfc-entry.test.mjs"
+      ]
+    },
+    {
+      "id": "NFC02",
+      "title": "NFC初回案内から実OS版の配布状況へ接続し、未公開候補の直接ダウンロードを防ぐ",
+      "status": "done",
+      "dependsOn": ["NFC01"],
+      "evidence": [
+        "components/home-screen.tsx",
+        "components/home-screen.module.css",
+        "components/preview-download.tsx",
+        "data/rockstaros-preview.json",
+        "docs/nfc/README.md",
         "tests/nfc-entry.test.mjs"
       ]
     },

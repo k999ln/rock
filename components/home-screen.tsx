@@ -363,6 +363,9 @@ export default function HomeScreen() {
           ) : (
             <p className={styles.nfcSteps}>iPhone: Safariの共有 →「ホーム画面に追加」<br />Android: Chromeのメニュー →「アプリをインストール」</p>
           )}
+          <Link className={styles.nfcDownloadLink} href="/rockstaros#start">
+            実OS版の配布状況を見る <span aria-hidden="true">↗</span>
+          </Link>
           <p className={styles.nfcBoundary}>追加されるのはWeb版です。NFCタグやこの操作でスマホ本体のOSは書き換わりません。</p>
         </aside>
       )}

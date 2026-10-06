@@ -2,7 +2,7 @@
 
 現在のWeb/Skyローンチ候補、起動・設定・監視・復旧手順は[OSバックエンド・ローンチ手順](docs/backend-launch-20260912.md)を参照してください。
 
-NFCタグからWeb版を直接開く場合は、[タグ用URLと書込み手順](docs/nfc/README.md)を使います。`/?nfc=1`は同じRockstarOSホームを表示し、未追加時だけPWA追加を案内します。タグにOS imageは入らず、iPhone/AndroidのOSは置換されません。
+NFCタグからWeb版を直接開く場合は、[タグ用URLと書込み手順](docs/nfc/README.md)を使います。`/?nfc=1`は同じRockstarOSホームを表示し、未追加時だけPWA追加と[実OS版の配布状況](https://rockstaros-kaiya.noellesugar1.chatgpt.site/rockstaros#start)を案内します。タグにOS imageは入らず、iPhone/AndroidのOSは置換されません。Mac仮想端末向け実OSは公開前のDraft候補で、現在は一般ダウンロードできません。
 
 多機種対応は、**共通RockstarOS Core＋機種／SKU別Device Support Package**で進めます。提供区分は完全なOS image、Android GSI実験版、既存OS上のclient、非対応を混同しません。Pixel候補は未確定、BlackBerryは機種別調査、iPhone／iPadはOS置換ではなくclientです。[多機種対応設計](docs/device-support-architecture.md)／[機械可読の対応台帳](data/device-support-matrix.json)。
 
@@ -55,7 +55,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-06 / RockstarOS WebホームへのNFC入口とPWA追加案内、タグ用URL/NDEFを準備。端末OS書換えではない（公開・実機試験は別記録） / 完了 66/92件
+最終更新: 2026-10-06 / NFC入口からWebホームと実OS版の配布状況へ進む導線を準備。タグにOS本体を格納せず、未承認のDraft配布物を一般ダウンロード扱いにしない / 完了 67/93件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -87,6 +87,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
 | HOME02 | Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止 | 完了 | [記録](components/workspace-shell.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-maintenance.tsx) · [記録](app/fund/page.tsx) · [記録](app/fund/legacy/page.tsx) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/product-baseline.md) |
 | NFC01 | NFC URLからWebホームを直接開き、PWA追加を案内するタグ用データを用意 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](docs/nfc/README.md) · [記録](docs/nfc/rockstaros-url.txt) · [記録](docs/nfc/rockstaros-uri.ndef) · [記録](scripts/create-nfc-payload.mjs) · [記録](tests/nfc-entry.test.mjs) |
+| NFC02 | NFC初回案内から実OS版の配布状況へ接続し、未公開候補の直接ダウンロードを防ぐ | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/preview-download.tsx) · [記録](data/rockstaros-preview.json) · [記録](docs/nfc/README.md) · [記録](tests/nfc-entry.test.mjs) |
 | SYS01 | 端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装 | 完了 | [記録](app/settings/system/page.tsx) · [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
 | SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
 | SYS03 | 公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合 | 完了 | [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](components/system-maintenance.tsx) |
@@ -170,7 +171,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: NFC01の配備と実HTTP/端末読取を確認する。続いてB05独立Queue、実スマホ、公式市場buyer納品経路、実顧客/Provider入金・返金、月額条件test請求、production operator allowlist/Secretsを別gateで進める。
+次の作業: NFC02の公開版ブラウザ表示と実タグ読取を確認する。Mac仮想OSの製品ライセンス・正式署名・同一候補受入・公開承認後だけ公開ダウンロードURLを設定する。スマホ実機OSは対象機種/SKUの別受入が必要。
 <!-- project-status:end -->
 
 進捗の正本は `data/project-status.json`。作業ごとに更新し、`npm run project:update` でREADMEとproject.mdを同期します。`npm run project:check` は更新漏れを検出します。

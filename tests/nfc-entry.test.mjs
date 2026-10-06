@@ -33,5 +33,7 @@ void test('NFC arrival shows a dismissible Web-install guide, not an OS-install 
   assert.match(source, /get\('nfc'\) === '1'/);
   assert.match(source, /nfcEntry && !installed && !installDismissed/);
   assert.match(source, /Safariの共有/);
+  assert.match(source, /href="\/rockstaros#start"/);
+  assert.match(source, /実OS版の配布状況を見る/);
   assert.match(source, /スマホ本体のOSは書き換わりません/);
 });
