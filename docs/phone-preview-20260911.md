@@ -16,6 +16,21 @@ bringupでも、専用x86_64 Linux、64 GiB RAM、空き400 GiB、固定した�
 2026-10-05のこのMacの読取り診断はDarwin/arm64・16 GiB RAMで不適合。容量を回復してもCPU/OS/RAM条件は変わらない。クラウド予算・専用サーバーの確定は未完了であり、サーバー作成や全OS buildは今回実施していない。Local AI API v2の過去のAPK実機合格を、現在のv3/v4 overlayのbuild・実機合格へ流用しない。APK workflowの`sdkmanager` PATH不足、Kotlin timeout型、Binder API版、APK version検査の不整合を修正した。現行v4 unsigned APKはCI buildと実aapt2検査・stage/再検証が合格し、[同一artifactの証拠](evidence/local-ai-apk-v4-build.json)へ保存した。全OS buildとv4実機受入は未実施。
 
 
+## 全OS compile成果物の検査（OS11 / RLS02）
+
+2026-10-06の「OS完成」指示に基づき、compile元を署名検証済み安定版`2026100200`へ更新した。[現在の署名証拠](evidence/phone-source-verification.json)と[source lock](../os/physical/frankel-source-lock.json)を照合する。2026-09-16の実機source/layout記録は過去の観測として保持し、新しい版の実機合格へ書き換えない。
+
+ROCKが担当する`scripts/build-phone-bringup.sh`は、呼出しごとにRock commitと乱数を含む`BUILD_NUMBER`を生成し、`m target-files-package otatools-package dist`を実行する。利用者はLinux上の既存のbringupコマンドを使う。成果物は`out/rockstaros-builds/<BUILD_NUMBER>/`、固定manifest、vendor inventory、hook差分と検査結果は`out/rockstaros-evidence/<BUILD_NUMBER>/`へ保存する。再実行時は新しい出力先を使う。
+
+`scripts/verify-phone-artifacts.py`はZIPを展開・実行せず、frankel/userdebug/同一build number、Rockのrelease禁止property、A/B・AVB metadata、boot/system/product等のimage entry、Broker/Shell/記事Tool/Local AIのAPK、OTAツールの存在を検査する。Operatorはconfiguredなら必須、excludedなら混入を拒否する。APKの実byte hashとZIP全体のサイズ・SHA-256を記録し、入力manifest／source lock／Rock commit／vendor inventory／Local AI artifactのhashにも結び付ける。Android上流の`PRODUCT/etc/build.prop`と旧`PRODUCT/build.prop`に対応する。重複／危険path、必須項目のsymlink・空entry、複数target-files候補、不一致は停止する。
+
+状態は`RUNNING`→`COMPILE_AND_ARTIFACT_CHECKS_PASSED`または`FAILED`。強制終了で`RUNNING`が残っても成功ではない。検査だけの再実行も前回成功receiptを先に`VALIDATION_PENDING`へ無効化する。原因を修正して同じ入口から再実行し、古いZIPを新しいbuildへ流用しない。合格条件はcompile成功と同じbuild numberの構造／hash検査であり、image内部の動作・本番署名・実機boot・復旧の合格を含まない。後続は同じZIP hashを[実機受入雛形](templates/os-acceptance-report.md)へ引き継ぐ。
+
+専用Linuxの利用先／予算はOWNERの指定待ち。既存Scaleway案の`approvedBudget`は未設定で、新規課金は発生していない。cloud費用、署名鍵、端末初期化／flashはこの検査機能で許可しない。未確定の実image配置は上流の固定ソースと最初のcompileで確認し、不一致をfixtureで成功扱いにせず修正する。
+
+検証: `python3 -B -m unittest discover -s tests -p 'test_*phone*.py'`、`bash -n scripts/build-phone-bringup.sh`、`npm run device-support:check`、`npm run design:check`。これらはhost/fixture受入であり、全OS buildは未実施。
+
+
 ## 多機種対応の境界
 
 実装方式は[共通Core＋機種別Device Support Package](device-support-architecture.md)。端末ごとにboot chain、kernel、vendor、firmware、partition、AVB／OTA／復旧が異なるため、一つのimageをBlackBerry、Pixel、iPhoneへ共通に書き込む方式にはしない。Android GSIは互換性調査用で、電話・カメラ・暗号化・更新・復旧が通るまで完全対応とは表示しない。iPhone／iPadはOS置換対象ではなく、App Store等で動くclient側を設計対象とする。現在の機械可読状態は[対応台帳](../data/device-support-matrix.json)を正本とする。

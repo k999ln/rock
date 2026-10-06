@@ -1159,3 +1159,10 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:docs/evidence/launch/backend\-rc3\-local\-20260912\.json|docs/evidence/os\-base/hub\-faults\-b8287bc\.json|docs/evidence/os\-local\-final/final\-hub\-continuation\-report\.json|docs/evidence/os\-local\-final/final\-local\-os\-handoff\-report\.json|docs/evidence/rls01/final\-9abf78a/plan\.json|docs/evidence/rls01/final\-9abf78a/summary\.json|docs/evidence/rls01/sdk\-final\-9abf78a/fresh\-probe\.py|systems/rock\-star\-os/os/platform/hub_fault_fixture\.py)\z''']
 regexes = ['''\A06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9\z''']
+
+[[rules.allowlists]]
+description = "public-upstream-signer-fingerprint 4afdc542ed96"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/phone\-source\-verification\.json)\z''']
+regexes = ['''\AAhgHif0mei\+9aNyKLfMZBh2yptHdw/aN7Tlh/j2eFwM\z''']

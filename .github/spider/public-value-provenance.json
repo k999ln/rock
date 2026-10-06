@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "reviewedHead": "822150c3928ad288c4d314a24195f373bd967eea",
-  "occurrences": 2942,
-  "distinctValues": 161,
+  "reviewedHead": "d448c56cae43ad8ac7c087741ee139f86cf0cb52",
+  "occurrences": 2943,
+  "distinctValues": 162,
   "classifications": {
     "idempotency-fixture": 87,
     "public-artifact-digest": 55,
@@ -17,7 +17,8 @@
     "synthetic-authenticator-fixture": 1,
     "ordinary-text": 2,
     "public-signed-cursor-fixture": 2,
-    "public-fixture-digest": 1
+    "public-fixture-digest": 1,
+    "public-upstream-signer-fingerprint": 1
   },
   "values": [
     {
@@ -2267,6 +2268,20 @@
         ]
       },
       "exactPathCount": 8
+    },
+    {
+      "candidateSha256": "4afdc542ed96cc1ef2ad2f1d0741570decd558bb2e4df4a1f9126969dc6865ba",
+      "classification": "public-upstream-signer-fingerprint",
+      "evidence": "GrapheneOS official allowed_signers (https://grapheneos.org/allowed_signers) and successful git verify-tag 2026100200. This is the public ED25519 signer fingerprint already pinned in os/physical/frankel-source-lock.json, not private key material.",
+      "source": {
+        "commit": "d448c56cae43ad8ac7c087741ee139f86cf0cb52",
+        "path": "docs/evidence/phone-source-verification.json",
+        "line": 32,
+        "field": [
+          "/signatureResult"
+        ]
+      },
+      "exactPathCount": 1
     }
   ]
 }

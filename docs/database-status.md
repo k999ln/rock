@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。
+OS11 / RLS02: Pixel 10 GL066向け全OS compileと同一artifact検証を進める。署名付き最新source・成果物検査を先行し、専用Linux環境/クラウド支出上限の指定を待つ。初回flash 4 gateは未解除。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

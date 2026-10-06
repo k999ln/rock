@@ -137,6 +137,12 @@
         "docs/phone-preview-20260911.md",
         "docs/device-support-architecture.md",
         "data/android-release-architecture-policy.json"
+      ],
+      "interfaceImplementation": [
+        "scripts/build-phone-bringup.sh",
+        "scripts/verify-phone-artifacts.py",
+        "tests/test_phone_artifacts.py",
+        "tests/test_phone_build_runner.py"
       ]
     },
     {
