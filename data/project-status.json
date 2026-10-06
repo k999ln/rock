@@ -35,7 +35,7 @@
   },
   "updatedAt": "2026-10-05",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "G04: 当初12 PRはmain統合・main verify成功。自動追加の依存PR #79–81も修正し全体verify成功、同一候補GitHub CI後に統合。source-map-jsはroot/site双方を修正。既存履歴secret候補と未修正版依存、実機/本番release gateを別管理。",
+  "nextAction": "G04: 当初12 PRと自動追加の依存3 PR、計15本は#77/#82経由でmain統合・同一候補全体verify成功。次は既存履歴secret候補の分類、未修正版braces/http-cache-semanticsの追跡、全OS build/署名/復旧・Provider・Mini/Pro実機の個別gate。公開/課金/実機受入は別。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5729,7 +5729,10 @@
       80,
       81
     ],
-    "status": "local_verified_github_pending",
-    "evidence": "docs/evidence/open-pr-integration.json"
+    "status": "main_integrated",
+    "evidence": "docs/evidence/open-pr-integration.json",
+    "integrationPullRequest": "https://github.com/k999ln/rock/pull/82",
+    "candidateCommit": "1628d2a8e53c18bcf7ba4b4b4a4b794f56d635f2",
+    "mainIntegrationCommit": "eafdc4f1f5eff49401c32e39984534a6629e7f69"
   }
 }

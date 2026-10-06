@@ -1554,7 +1554,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: G04: 当初12 PRはmain統合・main verify成功。自動追加の依存PR #79–81も修正し全体verify成功、同一候補GitHub CI後に統合。source-map-jsはroot/site双方を修正。既存履歴secret候補と未修正版依存、実機/本番release gateを別管理。
+次の作業: G04: 当初12 PRと自動追加の依存3 PR、計15本は#77/#82経由でmain統合・同一候補全体verify成功。次は既存履歴secret候補の分類、未修正版braces/http-cache-semanticsの追跡、全OS build/署名/復旧・Provider・Mini/Pro実機の個別gate。公開/課金/実機受入は別。
 <!-- project-status:end -->
 
 ## 次段階の設計
@@ -1673,3 +1673,7 @@ G04 / ROCK。PR #63–65、#69–76、#78は統合PR #77でmainへ通常mergeし
 ## 自動追加の依存PR #79–81
 
 G04 / ROCK。当初12 PRの統合直後にDependabotが3本追加。proxy-addr 2.0.8、tinypool 2.2.0、oxfmt 0.72.0、site側source-map-js 1.2.2を統合し、同じHigh指摘が残ったrootのsource-map-jsも1.2.2へ更新。正常install、全体verify exit 0（Node1353 pass/1 skip、API1192、CSV385）。変更packageのMIT/BSD-3-Clauseは維持され、lock由来license台帳を同期してrelease:check不整合を解消。法的clearanceや公開の承認は変更しない。次は同一候補CIとmain統合。既存secret候補・未修正版braces/http-cache-semanticsは残す。
+
+## 追加依存3 PRのmain統合完了
+
+PR #79–81を#82経由でmainへ通常merge。統合commit `eafdc4f1f5eff49401c32e39984534a6629e7f69`、検証候補 `1628d2a8e53c18bcf7ba4b4b4a4b794f56d635f2`。同一候補の総合verify、CodeQL両言語/PR check、署名fixture、SPIDER回帰/公開Web測定が成功。source-map-jsはroot/site双方の修正版へ揃えた。これで当初12本と追加3本の計15 PRを実装・修復・検証・main統合済み。履歴secret警告、修正版未提供のbraces/http-cache-semantics、実機・本番release gateは未解決のまま区別する。証拠とrun URL: docs/evidence/open-pr-integration.json。文書追記後も生成資料とmain verifyを再確認する。

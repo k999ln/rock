@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-G04: 当初12 PRはmain統合・main verify成功。自動追加の依存PR #79–81も修正し全体verify成功、同一候補GitHub CI後に統合。source-map-jsはroot/site双方を修正。既存履歴secret候補と未修正版依存、実機/本番release gateを別管理。
+G04: 当初12 PRと自動追加の依存3 PR、計15本は#77/#82経由でmain統合・同一候補全体verify成功。次は既存履歴secret候補の分類、未修正版braces/http-cache-semanticsの追跡、全OS build/署名/復旧・Provider・Mini/Pro実機の個別gate。公開/課金/実機受入は別。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

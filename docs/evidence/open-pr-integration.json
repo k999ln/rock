@@ -263,7 +263,7 @@
       80,
       81
     ],
-    "status": "local_verified_github_pending",
+    "status": "main_integrated_functional_ci_verified_historical_secret_candidates_open",
     "versions": {
       "proxy-addr": "2.0.8",
       "tinypool": "2.2.0",
@@ -284,6 +284,61 @@
     "remainingAdvisories": [
       "http-cache-semantics and braces: no patched version recorded by GitHub at inspection; unchanged by these PRs."
     ],
-    "publicDeployment": false
+    "publicDeployment": false,
+    "integrationPullRequest": "https://github.com/k999ln/rock/pull/82",
+    "mainIntegrationCommit": "eafdc4f1f5eff49401c32e39984534a6629e7f69",
+    "githubChecks": {
+      "checks": [
+        {
+          "conclusion": "FAILURE",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37405692326/job/112082642487",
+          "name": "SPIDER / secrets",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37405692317/job/112082642473",
+          "name": "public-fixture-tests",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37405692456/job/112082642831",
+          "name": "verify",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37405692309/job/112082642707",
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37405692352/job/112082642701",
+          "name": "SPIDER / repair regressions",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37405692309/job/112082642805",
+          "name": "SPIDER CodeQL (python)",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37405692352/job/112082642774",
+          "name": "SPIDER / production web security measurement",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/runs/112083095340",
+          "name": "CodeQL",
+          "status": "COMPLETED"
+        }
+      ],
+      "headRefOid": "1628d2a8e53c18bcf7ba4b4b4a4b794f56d635f2"
+    }
   }
 }
