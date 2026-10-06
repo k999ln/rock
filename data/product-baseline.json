@@ -1357,7 +1357,7 @@
       "sourceLock": "os/physical/frankel-source-lock.json",
       "dspSourceAndLayoutEvidence": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json"
     },
-    "sourceTag": "2026091000",
+    "sourceTag": "2026100200",
     "sourceTagSignatureVerified": true,
     "deviceLayoutReadOnlyVerified": true,
     "recoveryArtifactsHashed": false,

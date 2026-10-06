@@ -129,29 +129,29 @@ requireValue(
 requireValue(
   sourceLock.manifestUrl ===
       'https://github.com/GrapheneOS/platform_manifest.git' &&
-    sourceLock.manifestTag === '2026091000' &&
+    sourceLock.manifestTag === '2026100200' &&
     sourceLock.manifestTagObject ===
-      '6c939d124f3ea8dd545c1e4045f26359f501d80e' &&
+      '94691f0fc2ebfd9cf70d58d9091e52a895e515c9' &&
     sourceLock.manifestCommit ===
-      'ac9f2fdf0badebea2f6ac6c3e93b125aba02116a' &&
+      '58467adfb0c9f8a944f55e817e225ed862213c78' &&
     sourceLock.manifestDefaultXmlSha256 ===
-      'f5969292b4b68b5718e158d344e7e99b044814738889fef70311de1210d21f7f' &&
+      'c4c71c9b4eac78ac0c261114c32e53fda4af6f208309cce301eb4ac784619d2e' &&
     sourceLock.allowedSignersSha256 ===
       '344f59c6f058699e63fea68e35953b341c14e3bf1fbc1256f6baa84aa2aca1d0' &&
     sourceLock.adevtoolCommit ===
-      '117ef1de94510854f3fc25154c8246819e56f049' &&
+      '649267e954063263d53799d3cc53e382ab242893' &&
     sourceLock.hookSha256 ===
       '3a24ad3ad1f68ca806b181f192d4cd8468c8a57316b2152b953939966c766a2d',
-  '署名検証済み2026091000 source chainが固定値と一致しません',
+  '署名検証済み2026100200 source chainが固定値と一致しません',
 );
 requireValue(
   sourceLock.kernel?.platform === 'laguna' &&
     sourceLock.kernel?.codename === 'muzel' &&
     sourceLock.kernel?.version === '6.6' &&
     sourceLock.kernel?.prebuiltCommit ===
-      'e10186c8b757f4658dc38973a37c0034b05fc0b6' &&
+      '097a148308ab088692bbc8ef3d206dab07b28ee7' &&
     sourceLock.kernel?.artifactTree ===
-      '1c1a65e54c92adb11979a73fcc9acea9cc8183b1' &&
+      'bb38415fc888b6c491601116a38943884a1a6c69' &&
     sourceLock.kernel?.genericGkiPrebuiltCommit ===
       '350899556b7cae26d5981c7055759428aef7598d',
   'laguna／muzel 6.6 kernel入力が固定値と一致しません',
@@ -261,7 +261,7 @@ requireValue(
     sourceAudit.stage === sourceLock.stage &&
     sourceAudit.device?.serialStored === false &&
     sourceAudit.device?.deviceWritten === false &&
-    sourceAudit.source?.manifestCommit === sourceLock.manifestCommit &&
+    sourceAudit.source?.manifestCommit === 'ac9f2fdf0badebea2f6ac6c3e93b125aba02116a' &&
     sourceAudit.source?.tagSignatureVerified === true &&
     sourceAudit.deviceLayoutReadback?.dynamicPartitions === true &&
     sourceAudit.deviceLayoutReadback?.virtualAb === true &&
@@ -269,6 +269,19 @@ requireValue(
     sourceAudit.deviceLayoutReadback?.partitionNames?.includes('vbmeta_a') &&
     sourceAudit.recovery?.factoryRestoreTested === false,
   'source／device layout監査証拠がlockと一致しません',
+);
+const currentSource = JSON.parse(readFileSync(resolve(root, sourceLock.sourceVerificationEvidence), 'utf8'));
+requireValue(
+  currentSource.schema === 'rock-phone-source-verification/1' &&
+    currentSource.tagSignatureVerified === true &&
+    currentSource.fullRepoSyncCompleted === false &&
+    currentSource.soongBuildCompleted === false &&
+    currentSource.hardwareFlashPerformed === false &&
+    ['manifestUrl', 'manifestTag', 'manifestTagObject', 'manifestCommit',
+      'manifestDefaultXmlSha256', 'allowedSignersSha256', 'verifiedSigner',
+      'adevtoolCommit', 'hook', 'hookSha256', 'kernel'].every(
+        (key) => JSON.stringify(currentSource.source?.[key]) === JSON.stringify(sourceLock[key])),
+  '現在の署名source検証とlockが一致しません（過去の端末readbackとは別証拠）',
 );
 const sourceAuditDigest = createHash('sha256')
   .update(sourceAuditBytes)

@@ -1397,7 +1397,7 @@ export function validateBaseline(
     '最初の物理端末readbackが確定値と一致しません',
   );
   requireValue(
-    devicePolicy.sourceTag === '2026091000' &&
+    devicePolicy.sourceTag === '2026100200' &&
       devicePolicy.sourceTagSignatureVerified === true &&
       devicePolicy.deviceLayoutReadOnlyVerified === true &&
       devicePolicy.recoveryArtifactsHashed === false &&
