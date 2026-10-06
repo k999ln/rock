@@ -67,7 +67,11 @@
       "documents": [
         "docs/avocado-mini-r5/README.md",
         "docs/avocado-mini-r5/package/integrated_design.md",
-        "docs/avocado-mini-r5/verification.json"
+        "docs/avocado-mini-r5/verification.json",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json",
+        "docs/avocado-mini-cellular.md",
+        "data/avocado-mini-cellular.json"
       ]
     },
     {
@@ -206,7 +210,8 @@
       "documents": [
         "docs/game-api-contract-draft.md",
         "docs/gx01-contract-implementation-plan.md",
-        "docs/gx01-reference-sdk-sandbox-20260910.md"
+        "docs/gx01-reference-sdk-sandbox-20260910.md",
+        "docs/mini-game-client.md"
       ]
     },
     {

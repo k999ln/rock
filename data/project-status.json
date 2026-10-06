@@ -2283,12 +2283,14 @@
     {
       "id": "MAT15",
       "title": "R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "MAT14"
       ],
       "evidence": [
-        "docs/avocado-mini-r5/package/integrated_design.md"
+        "docs/avocado-mini-r5/package/integrated_design.md",
+        "docs/avocado-mini-cellular.md",
+        "data/avocado-mini-cellular.json"
       ]
     },
     {
@@ -2478,7 +2480,10 @@
         "AI05"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
+        "docs/ai-native-os-architecture.md",
+        "docs/mini-game-client.md",
+        "toolkits/mini-game-client/client.mjs",
+        "tests/mini-game-client.test.mjs"
       ]
     },
     {
@@ -5038,6 +5043,22 @@
         "tests/amc-workspace-snapshot.test.mjs",
         "docs/evidence/spider-workspace-snapshot-read.json"
       ]
+    },
+    {
+      "id": "MAT16",
+      "title": "avokadoProのNVIDIA搭載小型PC設計・調達・AI/PCゲーム/熱/復旧受入",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json",
+        "docs/evidence/avokado-pro-pc-design.json"
+      ],
+      "primaryOwner": "ROCK",
+      "rockDeliverable": "候補構成・調達BOM・組立/冷却/受入手順",
+      "externalDependency": "OEM/ODM供給、exact SKU QVL/driver/firmware、見積",
+      "ownerAction": "見積後の購入・製造・販売条件",
+      "acceptance": "同一Pro実機でAI/ゲーム/熱/保存復旧を独立受入。設計だけでは完了にしない"
     }
   ],
   "phaseGates": [
@@ -5568,5 +5589,80 @@
       "published": false,
       "ciAtImplementationCommit": "in_progress_at_last_check"
     }
+  },
+  "avokadoProPc": {
+    "task": "MAT16",
+    "specification": "data/avokado-pro-pc.json",
+    "designSaved": true,
+    "githubSaved": true,
+    "mainMerged": false,
+    "publicPageUpdated": false,
+    "physicallyAssembled": false,
+    "verification": "repository_verify_passed_design_only",
+    "designCommit": "33cea702c6c36a6bc973bedb966a7ef661514258",
+    "pullRequest": "https://github.com/k999ln/rock/pull/64",
+    "ciAtDesignCommit": "no_checks_reported_at_last_check"
+  },
+  "miniCellular": {
+    "schemaVersion": 1,
+    "updatedAt": "2026-10-05",
+    "product": "avocadoMini",
+    "task": "MAT15",
+    "relatedTask": "SIM01",
+    "status": "design_only_not_implemented",
+    "userDecision": "Miniに入れて、Mini単体で通信する",
+    "simLocation": "inside_mini",
+    "initialSimFormat": "physical_nano_sim_design_candidate",
+    "proRequired": false,
+    "phoneTetherRequired": false,
+    "pcRequired": false,
+    "externalPowerRequired": true,
+    "batteryAdopted": false,
+    "radioTarget": [
+      "4G LTE",
+      "5G Sub-6 candidate"
+    ],
+    "country": null,
+    "carrier": null,
+    "modemSku": null,
+    "esim": "optional_future_separate_acceptance",
+    "physicalSimProvidesGameCompute": false,
+    "localOfflineBehaviorPreserved": true,
+    "unapprovedCloudFallback": false,
+    "hardwarePurchased": false,
+    "modemIntegrated": false,
+    "carrierConnected": false,
+    "standaloneDataTested": false,
+    "productionReady": false,
+    "authority": "docs/avocado-mini-cellular.md",
+    "githubSaved": true,
+    "mainMerged": false,
+    "publicPageUpdated": false,
+    "verificationEvidence": "docs/evidence/avocado-mini-cellular-design.json",
+    "localVerify": "passed",
+    "designCommit": "bf3e6ea1d15bc66abcee1bfff1d0c9ff76ef3cc0",
+    "pullRequest": "https://github.com/k999ln/rock/pull/64",
+    "ciAtDesignCommit": "in_progress_at_last_check"
+  },
+  "gameClientPreparation": {
+    "task": "AI06",
+    "relatedTask": "MAT15",
+    "targetTitle": "GTA VI",
+    "executionDevice": null,
+    "status": "desktop_handoff_prototype",
+    "primaryOwner": "ROCK",
+    "authority": "docs/mini-game-client.md",
+    "consoleConnected": false,
+    "gta6Played": false,
+    "miniHardwareAccepted": false,
+    "publicPageUpdated": false,
+    "nextAction": "Choose PS5 or Xbox Series X|S; install the official compatible client, sign in on owned console, then accept actual video/audio/controller and GTA VI when available.",
+    "localVerify": "passed",
+    "verificationEvidence": "docs/evidence/mini-game-client-local.json",
+    "githubSaved": true,
+    "mainMerged": false,
+    "implementationCommit": "96fedfc7904753bf2960570eb307d6db2d223347",
+    "pullRequest": "https://github.com/k999ln/rock/pull/64",
+    "ciAtImplementationCommit": "no_checks_reported_at_last_check"
   }
 }

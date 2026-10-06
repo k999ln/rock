@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+<title id="title">avokadoPro compact NVIDIA PC concept</title><desc id="desc">An original silver desktop enclosure concept with front USB ports, side intake and rear exhaust. Target 220 by 220 by 95 millimeters. RTX 5080 Laptop GPU, 128 GB system RAM and two 2 TB SSDs are candidates. This is not production CAD or a working prototype.</desc>
+<defs><linearGradient id="top" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fcfdff"/><stop offset=".5" stop-color="#b6bec9"/><stop offset="1" stop-color="#e2e7ee"/></linearGradient><linearGradient id="front" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b7c0cb"/><stop offset="1" stop-color="#707c8b"/></linearGradient><linearGradient id="side" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8d98a6"/><stop offset="1" stop-color="#3b4653"/></linearGradient><radialGradient id="halo"><stop stop-color="#577586" stop-opacity=".32"/><stop offset="1" stop-color="#11171e" stop-opacity="0"/></radialGradient></defs>
+<rect width="1440" height="900" fill="#10151b"/><ellipse cx="440" cy="440" rx="490" ry="370" fill="url(#halo)"/>
+<g font-family="Arial, Helvetica, sans-serif"><text x="76" y="72" fill="#9faebb" font-size="15" letter-spacing="4">AVOKADO / PRODUCT DESIGN STUDY 01</text><text x="76" y="151" fill="#f3f6fa" font-size="62" font-weight="700">avokadoPro</text><text x="79" y="195" fill="#9dafbc" font-size="23">AI. Games. A place on your desk.</text>
+<ellipse cx="453" cy="664" rx="344" ry="46" fill="#000" opacity=".35"/>
+<path d="M129 392 Q127 376 147 367 L435 276 Q451 271 471 279 L764 395 Q782 403 782 421 L782 573 Q783 590 764 596 L453 704 Q438 709 422 701 L141 586 Q127 580 129 562Z" fill="#626f7c"/>
+<path d="M129 392 L443 514 L443 704 L141 586 Q127 580 129 562Z" fill="url(#front)"/>
+<path d="M443 514 L782 407 L782 573 Q783 590 764 596 L453 704 L443 704Z" fill="url(#side)"/>
+<path d="M147 367 L435 276 Q451 271 471 279 L764 395 Q786 405 762 413 L463 515 Q446 521 428 514 L143 402 Q121 390 147 367Z" fill="url(#top)"/>
+<path d="M146 404 L427 518 Q445 526 466 517 L763 417" fill="none" stroke="#eef4fa" opacity=".6" stroke-width="2"/>
+<text x="371" y="391" transform="rotate(20 371 391)" fill="#687685" font-size="24" letter-spacing="2">avokado</text>
+<path d="M173 494 L207 507 L207 520 L173 507Z" fill="#222e39"/><path d="M233 518 L267 531 L267 544 L233 531Z" fill="#222e39"/><path d="M293 541 L316 550 Q321 553 317 559 L293 550 Q289 547 293 541Z" fill="#1f2c37"/><circle cx="380" cy="583" r="4" fill="#c8eef1"/>
+<g stroke="#23313d" stroke-width="5" opacity=".85"><path d="M510 554 L717 485"/><path d="M510 567 L717 498"/><path d="M510 580 L717 511"/><path d="M510 593 L717 524"/><path d="M510 606 L717 537"/><path d="M510 619 L717 550"/></g>
+<path d="M218 735 L441 821 L753 713" stroke="#577586" fill="none" stroke-width="1"/><text x="130" y="785" fill="#9dafbc" font-size="15">Original enclosure concept</text>
+<line x1="879" y1="280" x2="879" y2="749" stroke="#34414d"/>
+<text x="930" y="308" fill="#adcfcc" font-size="14" letter-spacing="3">CANDIDATE CONFIGURATION</text>
+<text x="930" y="358" fill="#f2f5f8" font-size="29" font-weight="700">NVIDIA GeForce</text><text x="930" y="398" fill="#f2f5f8" font-size="26" font-weight="700">RTX 5080 Laptop GPU</text><text x="930" y="431" fill="#9dafbc" font-size="18">16 GB dedicated GPU memory</text>
+<line x1="930" y1="461" x2="1360" y2="461" stroke="#34414d"/>
+<text x="930" y="502" fill="#e3e9f0" font-size="21">Intel Core Ultra 9</text><text x="930" y="548" fill="#e3e9f0" font-size="21">128 GB system RAM</text><text x="930" y="594" fill="#e3e9f0" font-size="21">2 TB + 2 TB NVMe storage</text><text x="930" y="640" fill="#e3e9f0" font-size="21">Mini pairing is optional</text>
+<text x="930" y="708" fill="#adcfcc" font-size="27">JPY 800,000 target</text><text x="930" y="737" fill="#9dafbc" font-size="15">Tax, shipping and final configuration TBD</text>
+<line x1="76" y1="838" x2="1360" y2="838" stroke="#34414d"/><text x="76" y="865" fill="#9dafbc" font-size="14">220 × 220 × 95 mm design target · Board fit and thermal design unvalidated · Not production CAD · Not yet assembled</text>
+</g></svg>

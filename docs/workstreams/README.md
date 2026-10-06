@@ -23,7 +23,7 @@
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
 <!-- project-overview:start -->
-現在の機械可読進捗は377登録task（親32、子192、独立153。実行単位は親を除く345件）中107 done、32 in progress、237 planned、1 blocked。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は378登録task（親32、子192、独立154。実行単位は親を除く346件）中107 done、34 in progress、236 planned、1 blocked。件数は作業量や製品完成率を表さない。
 <!-- project-overview:end -->
 
 ## 作業ストリーム
@@ -60,3 +60,4 @@
 4. 配布候補または統合前は `npm run verify` と必要なOS固有試験を実行する。
 5. `npm run project:update` で進捗文書を同期する。
 6. 同じSHAのCI、配備、実機、provider受入を必要に応じて別々に確認する。
+

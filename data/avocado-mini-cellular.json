@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-05",
+  "product": "avocadoMini",
+  "task": "MAT15",
+  "relatedTask": "SIM01",
+  "status": "design_only_not_implemented",
+  "userDecision": "Miniに入れて、Mini単体で通信する",
+  "simLocation": "inside_mini",
+  "initialSimFormat": "physical_nano_sim_design_candidate",
+  "proRequired": false,
+  "phoneTetherRequired": false,
+  "pcRequired": false,
+  "externalPowerRequired": true,
+  "batteryAdopted": false,
+  "radioTarget": [
+    "4G LTE",
+    "5G Sub-6 candidate"
+  ],
+  "country": null,
+  "carrier": null,
+  "modemSku": null,
+  "esim": "optional_future_separate_acceptance",
+  "physicalSimProvidesGameCompute": false,
+  "localOfflineBehaviorPreserved": true,
+  "unapprovedCloudFallback": false,
+  "hardwarePurchased": false,
+  "modemIntegrated": false,
+  "carrierConnected": false,
+  "standaloneDataTested": false,
+  "productionReady": false,
+  "authority": "docs/avocado-mini-cellular.md"
+}

@@ -13,7 +13,15 @@
     "authority": "docs/amc-goal-orchestrator.md",
     "ownerSquad": "H1",
     "implementationTask": "AMC02",
-    "requestedWorkflow": ["instruction", "squad_assignment", "problem_decomposition", "process_and_goal", "all_progress", "ai_goal_handoff", "verified_completion"],
+    "requestedWorkflow": [
+      "instruction",
+      "squad_assignment",
+      "problem_decomposition",
+      "process_and_goal",
+      "all_progress",
+      "ai_goal_handoff",
+      "verified_completion"
+    ],
     "localImplementation": "candidate_backlog_compiler_progress_ledger_and_prompt_export",
     "arbitraryInstructionAiPlanner": "not_connected",
     "externalAiExecutor": "not_connected",
@@ -47,8 +55,17 @@
       }
     ],
     "sharedOperatingSystem": "RockstarOS",
-    "developmentTargetsAreNotProducts": ["web_pc", "linux_qemu", "pixel_10"],
-    "historicalMiniProfilesAreNotCurrentProducts": ["p0_2", "mini200_e1", "mini200_e2", "tower20_e3"]
+    "developmentTargetsAreNotProducts": [
+      "web_pc",
+      "linux_qemu",
+      "pixel_10"
+    ],
+    "historicalMiniProfilesAreNotCurrentProducts": [
+      "p0_2",
+      "mini200_e1",
+      "mini200_e2",
+      "tower20_e3"
+    ]
   },
   "productIdentity": {
     "authority": "data/product-identity.json",
@@ -1528,5 +1545,36 @@
     "profitDefinition": "pending",
     "collectionMethod": "pending",
     "runtimePolicy": "Production Sky Billing rejects new ToC Earning Receipts with SKY_FEE_POLICY_ON_HOLD. Historical 888-cent fixtures remain only for regression. CSV fee decisions return zero due while the revenue flow is pending. No live billing, automatic bank debit or developer payout is enabled. Publication does not specify an open-source license."
+  },
+  "avokadoProPcIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user instruction: NVIDIA-based compact PC resembling Mac mini, AI and PC gaming, price answer 80 interpreted as JPY800000 sales target",
+    "nvidiaGpuRequired": true,
+    "standalonePc": true,
+    "miniDependency": false,
+    "salesPriceTargetJpy": 800000,
+    "priceTaxUndecided": true,
+    "candidateOnly": true,
+    "authority": "docs/avokado-pro-pc-design.md",
+    "specification": "data/avokado-pro-pc.json"
+  },
+  "miniCellularIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user choice: SIM goes inside Mini for standalone cellular connectivity",
+    "simInsideMini": true,
+    "proRequired": false,
+    "phoneTetherRequired": false,
+    "externalPowerRequired": true,
+    "authority": "docs/avocado-mini-cellular.md",
+    "specification": "data/avocado-mini-cellular.json"
+  },
+  "gtaViPlayIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user instruction to enable GTA VI play after Mini/Pro discussion",
+    "authority": "docs/mini-game-client.md",
+    "targetTitle": "GTA VI",
+    "executionDevice": null,
+    "pcSupportConfirmed": false,
+    "gameAccepted": false
   }
 }

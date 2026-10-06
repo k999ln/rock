@@ -157,7 +157,7 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-09-27 / 377 task records (32 parents, 192 children, 153 standalone; 345 execution units excluding parents): 107 done, 32 in progress, 237 planned, 1 blocked
+Updated: 2026-09-27 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)
@@ -322,4 +322,17 @@ Zemaの通常の仕事では、最初の手順を始める前に計画の目的�
 ## avokado専用モデルのゼロ事前学習試作
 
 追加費用なしで小型モデルをランダム初期化から学習し、保存・再開・CPU推論を試せます。[実行手順](toolkits/avokado-llm/README.md)。実用LLM、Mini実機、クラウド配備は未完成です。既存のQwen profileとeSIMサービス経路は維持します。
+
+
+## Mini game client prototype
+
+Run `node toolkits/mini-game-client/cli.mjs check` for read-only remote-play prerequisites. Explicit `setup`/`open` actions hand off to official PS5/Xbox clients; no GTA VI or Mini hardware acceptance is claimed. [Usage and remaining setup](toolkits/mini-game-client/README.md).
+
+## Mini standalone cellular — design requirement
+
+Mini will carry its own physical SIM and cellular modem; Pro, a PC or phone tethering will not be required for cellular access. External power and offline basic operation remain part of the R5 design. [Hardware, connection and recovery plan](docs/avocado-mini-cellular.md). Country/carrier and modem are pending; no modem integration or real connection has been accepted.
+
+## avokadoPro NVIDIA desktop — design candidate
+
+Pro is being specified as a standalone compact PC for AI and PC games, with a JPY800,000 sales target (tax/shipping undecided). The candidate combines an x86 CPU with an NVIDIA GeForce RTX 5080 **Laptop** GPU, 128GB RAM and two 2TB SSDs. [Configuration, assembly and acceptance plan](docs/avokado-pro-pc-design.md). Mini does not require Pro. No hardware has been purchased or assembled, and no production or game/AI acceptance is claimed.
 
