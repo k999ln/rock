@@ -312,7 +312,8 @@
       "evidence": [
         "docs/platform-core.md",
         "contracts/platform-api.json",
-        "docs/data-storage-boundaries.md"
+        "docs/data-storage-boundaries.md",
+        "docs/evidence/spider-work-plan-contract.json"
       ],
       "acceptanceGate": "Web、QEMU、Androidで同一fixtureのcrash、競合、重複、復旧を通す。",
       "nextAction": "AI04: OS10の保存契約とoperation key・結果照会の対応を確認する",
@@ -334,7 +335,8 @@
         "references": [
           "docs/platform-core.md",
           "contracts/platform-api.json",
-          "docs/data-storage-boundaries.md"
+          "docs/data-storage-boundaries.md",
+          "docs/evidence/spider-work-plan-contract.json"
         ],
         "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
       }

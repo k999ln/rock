@@ -26,6 +26,16 @@ Zema側は既存の本人認証、service scope、WorkPlan、PC適合、IP Studi
 
 合格条件はSkyでrunnerと仕事作成POSTがなく、明示リンク後に同じ商品がZemaで開き、既存の利用条件下で動くこと。ローカル合成本人での検証と、本番認証・実PC・配備の受入は別とする。
 
+### Zemaの利用権とローカル計画の取消（SPIDER cycle 46）
+
+O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承認条件、本人別保存とrevision、クラウドAgentの委任・見積・成果・利用receipt照合はmain 0c90253cの契約を保持する。
+
+利用権を必須とする環境では、仕事作成の前に本人のZema scopeを保存済み台帳で確認する。不足時は403とSERVICE_ENTITLEMENT_REQUIREDを返し、未読bodyを解放してjobを書き込まない。previewで利用権必須を有効にしない既存動作は維持する。仕事の保存が利用権の発行・購入・送金・Agent起動を意味することはない。
+
+本人は履歴の委任証拠が欠けても未終了のローカル計画を取り消せる。owner・revision・終了状態の検査を通し、リモートAgentの停止成功とは分ける。進行・完了では既存の証跡照合を省略せず、証拠不足は409として再取得・照合後に再試行する。mainのAMC専用イベントと2段revision、新しい表示修正を保持する。
+
+合格範囲は実handler/storeとSQLiteによる拒否・取消・競合回帰。合成認証と実requestUserを使う別fixtureを区別し、本番認証・配備・実機・料金保留解除は受入に含めない。[検証と未解決条件](evidence/spider-work-plan-contract.json)を参照する。
+
 ## 2. 共通Tool契約
 
 ### Toolが必ず宣言するもの

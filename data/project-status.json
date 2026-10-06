@@ -3862,7 +3862,8 @@
       ],
       "evidence": [
         "tests/workflow.test.mjs",
-        "scripts/check-work-api.mjs"
+        "scripts/check-work-api.mjs",
+        "docs/evidence/spider-work-plan-contract.json"
       ]
     },
     {

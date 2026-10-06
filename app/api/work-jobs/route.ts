@@ -1,6 +1,8 @@
+import { env } from 'cloudflare:workers';
 import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
 import { database, requestUser } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import {
   createWorkJob,
   applyWorkCommand,
@@ -72,11 +74,21 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
   try {
-    const user = await requestUser(request),
-      candidate = createWorkJob(await body(request));
-    if (candidate.templateId === 'amc')
-      throw new WorkError('AMC画面から計画を保存してください。');
-    const saved = await workStore(database()).create(user, candidate);
+    const user = await requestUser(request);
+    const db = database();
+    if (!(await rockstarServiceScopeAllowed(
+      db,
+      user,
+      'zema',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+    ))) {
+      if (request.body && !request.bodyUsed && !request.body.locked)
+        void request.body.cancel().catch(() => {});
+      return missingRockstarServiceScope('Zema');
+    }
+    const candidate = createWorkJob(await body(request));
+    if (candidate.templateId === 'amc') throw new WorkError('AMC画面から計画を保存してください。');
+    const saved = await workStore(db).create(user, candidate);
     if (
       !saved ||
       saved.title !== candidate.title ||
@@ -102,7 +114,9 @@ export async function PATCH(request: Request) {
     if (current.templateId === 'amc' || current.amcGoal)
       throw new WorkError('AMC画面から記録を更新してください。');
     const command = parseWorkCommand(input.command);
-    if (current.templateId === 'cloud-agent') {
+    // Cancelling this local plan must remain possible when historical evidence is unavailable.
+    // This does not send a remote cancellation or permit any progress/completion.
+    if (current.templateId === 'cloud-agent' && command.action !== 'cancel') {
       const reviewCommands = [
         ...current.events.map(({ command: event }) => event),
         command,

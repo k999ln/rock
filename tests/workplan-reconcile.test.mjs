@@ -9,9 +9,11 @@ import * as workflow from '../lib/workflow.ts';
 import { workStore } from '../lib/work-store.ts';
 import { requestUser } from '../lib/request-auth.ts';
 import { a2aDelegationStore } from '../lib/a2a-delegation-store.ts';
+import { rockstarServiceScopeAllowed, missingRockstarServiceScope } from '../lib/rockstar-service-access.ts';
 
-// Real route exports, authentication, reducers and stores. Only the Cloudflare
-// DB binding is replaced with an in-memory SQLite D1 adapter. No success mocks.
+// Real route exports, authentication, reducers, stores and service access.
+// Cloudflare bindings use an in-memory SQLite D1 adapter and a synthetic preview
+// entitlement setting. No success mocks.
 function fixture(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
@@ -35,6 +37,8 @@ function fixture(t) {
       '@/lib/fund-store': { database: () => db, requestUser },
       '@/lib/work-store': { workStore }, '@/lib/workflow': workflow,
       '@/lib/a2a-delegation-store': { a2aDelegationStore },
+      '@/lib/rockstar-service-access': { rockstarServiceScopeAllowed, missingRockstarServiceScope },
+      'cloudflare:workers': { env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false' } },
     };
     runInNewContext(code, { exports, Response, Error, SyntaxError, TextEncoder, TextDecoder, crypto: webcrypto,
       require: (id) => { assert.ok(Object.hasOwn(modules, id), id); return modules[id]; },

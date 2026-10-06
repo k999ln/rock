@@ -1426,7 +1426,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS14 | 製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定 | 完了 | [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](scripts/check-system-composition.mjs) · [記録](tests/system-composition.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
-| R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
+| R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) · [記録](docs/evidence/spider-work-plan-contract.json) |
 | R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) · [記録](docs/evidence/spider-locked-dependency-restore.json) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
@@ -1570,3 +1570,17 @@ H1 / ORG03、ROCK、主作業streamはSecurity。最新main `ecb4b2af462a55b9b3d
 
 中間SHA `a481833a`で#58 fixed、移動したtest抽出正規表現に#63が出たため、固定fixtureのscript区切りと一意性をassertする抽出へ変更した。対象53/53試験合格。Chromeで修正前は合成HTML実行あり・部隊button33個、修正後は実行なし・正しい32個・文字列保持・選択とfocus成功。同一ref基点CodeQLは#58 openを確認済み、修正SHAの再検査はPRで追跡する。[証拠](docs/evidence/spider-mission-squad-dom.json)にsource hashと試験条件を保存した。既存status／段階は維持し、全体完了へ昇格しない。基点で`npm run verify`は`database:check`の生成資料不整合により失敗済み。mainの依存manifest/lock不一致、catalog重複、SIM/eSIM基準の欠落、AMC module export欠落と既存PR #70/#71の統合も残る。main merge・配備・実機操作は行わない。
 
+
+
+## 2026-10-05 — SPIDER cycle 46: mainの修復を保持し、利用権と取消の差分へ整理
+
+O2 / R03、ROCK、Web / PWA。main 0c90253cがWorkPlan・保存・Agent証跡の復旧とAMC表示修正を独立して統合したため、PR #74へ通常mergeで取り込む。mainそのものは変更しない。WorkPlan/storeはmainと同じにし、残る機能差分をZema作成時の利用権検査・否認body解放と、履歴証拠が欠けた仕事でもowner/revision条件を満たすローカル取消の2点へ絞った。
+
+mainの新6テストは実service-accessと合成envへ接続して保持し、既存67件と合わせ73件合格。6件はlockのSHA512で確認したTypeScript 5.9.3をメモリで読み込んで実行した（通常npm install/buildの合格ではない）。mainのAPIだけへ戻した同一回帰は19 pass /2 failで両退行を再現。旧head 59c07464はGitHub回帰67件合格・同一ref CodeQL両言語成功、42件のalert identityに増減なし。取り込み後の新SHAは別途再検査する。依存不一致（PR #73）・DB/catalog不整合・秘密候補は残り、main merge・配備・実機受入は行わない。[証拠](docs/evidence/spider-work-plan-contract.json)。
+
+
+## 2026-10-05 — SPIDER cycle 44: 仕事計画とAgent進捗の安全な復旧
+
+O2 / R03、ROCK、Web / PWA。最新main `4a22eb25`を基点に、欠落したWorkPlan/normalizeWorkJob、同名AMC一覧定義の重複、仕事APIの利用権・委任/親job/見積/成果/receipt照合を修復する。最初の実行前だけ目的を編集でき、固定承認条件は変更させない。過去の証拠不足で本人のローカル取消を妨げず、ownerとrevisionの検査を維持する。最新mainのSky引継ぎ・ライブラリ保存を保持する。
+
+対象67件合格（新規実handler＋SQLiteの21件を含む）。修正前APIだけを同じ試験へ戻すと直接13件失敗し、弱い照合を再現した。この旧headのGitHub回帰67件と同一ref CodeQL両言語は成功、42件のalert identityに増減なし。現在の残差分はcycle 46を参照。全体verifyは既存DB inventory不整合、design:checkは既存catalog ID重複で停止。依存install不一致のPR #73は独立した既存修正であり、今回重複しない。[検証記録](docs/evidence/spider-work-plan-contract.json)。task段階・料金保留・本番受入は変更しない。
