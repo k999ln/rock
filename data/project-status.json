@@ -5752,10 +5752,12 @@
       "SKY16"
     ],
     "baseMain": "e12d880c788e90a7aa684a82106f14024a2c3c36",
-    "status": "local_candidate_submitted_for_independent_review",
+    "status": "main_integration_ci_pending",
     "scope": "接続手順を展開しても案内ダイアログを画面内に収め、スクロールして閉じられる表示修正。接続APIと権限は変更しない。",
     "accepted": false,
     "deployed": false,
-    "validation": "試験用route/configを含まない配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019のUIコードと依存60322ファイル・59 symlinkのhash一致を照合し、1280×720・390×844の表示/閉じる証拠を引継いだ。実PC grant、Provider、課金、公開は未受入。"
+    "validation": "試験用route/configを含まない配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019のUIコードと依存60322ファイル・59 symlinkのhash一致を照合し、1280×720・390×844の表示/閉じる証拠を引継いだ。実PC grant、Provider、課金、公開は未受入。",
+    "pullRequest": "https://github.com/k999ln/rock/pull/87",
+    "integrationNote": "PR #87の初回全体CIでDB状態表の更新日だけが未同期と判明。database:statusで2行を同期し、同一候補の全体CIを再確認する。"
   }
 }
