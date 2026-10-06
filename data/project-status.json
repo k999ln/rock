@@ -35,7 +35,7 @@
   },
   "updatedAt": "2026-10-05",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "OS11 / RLS02: Pixel 10 GL066向け全OS compileと同一artifact検証を進める。署名付き最新source・成果物検査を先行し、専用Linux環境/クラウド支出上限の指定を待つ。初回flash 4 gateは未解除。",
+  "nextAction": "OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5487,7 +5487,14 @@
       "sourceVerification": "docs/evidence/phone-source-verification.json",
       "artifactVerifier": "scripts/verify-phone-artifacts.py",
       "localValidation": "41 phone tests passed; shell syntax, device-support, baseline and design checks passed",
-      "githubValidation": "Full verify passed at d448c56c; public signer fingerprint classification added; final SHA checks pending"
+      "githubValidation": {
+        "status": "PASS",
+        "testedCommit": "fd4108e943cd7d58426039d6c6fd897a12650b47",
+        "checksPassed": 10,
+        "checksTotal": 10,
+        "evidence": "docs/evidence/phone-build-preparation.json"
+      },
+      "mainMergeCommit": "1d8af61528683f4f13b720c2eeb3e387635da80a"
     }
   },
   "deviceSupportArchitecture": {

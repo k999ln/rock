@@ -6,6 +6,8 @@
 
 GitHub初回SHA d448c56cの全体verify合格。新規source証拠中の公開GrapheneOS署名指紋がsecret候補になったため、上流公開signersと一致する1値・1pathだけの分類を追加した。実Gitleaksの9 policy回帰合格（値変更・別path・scanner失敗の検出を維持）。最終SHAの全CIは再確認する。
 
+PR #86は同一SHA `fd4108e943cd7d58426039d6c6fd897a12650b47`の全10チェック合格後、通常merge `1d8af61528683f4f13b720c2eeb3e387635da80a`でmain統合した。Android APK build／実エミュレーターBinder・SQLiteと全体verifyを含む。[検証証拠](docs/evidence/phone-build-preparation.json)。クラウド未作成、全OS build／正式署名／実機flash／全損復旧は未実施。次はOWNERの専用Linuxまたは支出上限を受け、固定sourceでcompileする。
+
 ## 2026-10-06 — 全PRのCI合格と残存依存脆弱性の修正（SYS15 / G04）
 
 利用者の「全部通さないと」に対応。Security / Identity / Compliance、ROCK。PR #83の同一SHA `4e702fc296beb1a39b9a0826798cf8e764fa373f`で全8チェック（履歴secrets、CodeQL両言語・PR判定、全体verify、repair回帰、Web security実測、署名control）が成功し、通常merge `cb5955a29438e752ec3253ba8aa9aa2ebb056152`でmainへ統合した。履歴2942候補・161種類は公開生成元/用途を個別照合し、正確な値とpathだけを分類。161種類の別値・別path検出とscanner失敗/秘密値非出力を維持する。
@@ -1570,7 +1572,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: OS11 / RLS02: Pixel 10 GL066向け全OS compileと同一artifact検証を進める。署名付き最新source・成果物検査を先行し、専用Linux環境/クラウド支出上限の指定を待つ。初回flash 4 gateは未解除。
+次の作業: OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。
 <!-- project-status:end -->
 
 ## 次段階の設計
