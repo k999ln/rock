@@ -91,6 +91,29 @@ Stripeのstandalone配布コピーは生成物であり、共通sourceとの一�
 
 検証は関連unit/HTTP mock、owner/CAS・再送・署名、MCP切断/再接続、双方のhandoff契約、standalone生成物一致、全体`npm run verify`。Provider sandbox、実機OS、本番配備の成功とは分ける。結果と次の手順は`project.md`とG04へ記録する。rollbackは統合PRのrevertと既存保存schema/versionで行い、DB migrationは追加しない。
 
+<a id="repository-storage-policy"></a>
+## Gitに保存するものと再生成するもの（G01、2026-10-05）
+
+利用者のリポジトリ整理指示に基づき、主担当Git / CI / Operations（ROCK）でmain `592daeea322cd47aa189b67dd689e323662c0c67`から整理した。元の作業木の未保存eSIM・決済変更は取り込まない。G04の未統合PR整理とは別の、生成物管理の修正である。
+
+| 区分 | 保存先・扱い | 根拠・再生成 |
+| --- | --- | --- |
+| Web、Worker、OS、SDKのsource、設定、lock、migration | Gitに保持 | 機能・導入・再現の入力。名前が似ていても別runtimeを削除しない |
+| avocadoMini Siteの配備bundle | `sites/avocado-mini/dist/`をGit対象外 | `npm ci --prefix sites/avocado-mini` → `npm --prefix sites/avocado-mini run build`。Astroがclientを生成し、stage-workerがWorker・migration・hosting設定を複製する |
+| Billing等のdry-run bundleとmap | `services/*/work/`をGit対象外 | `npm run billing:check`、`npm run operator-dock:check`、`npm run sky:agent-runtime:check` |
+| サイト画像・PDF・公開配布ZIP | `sites/avocado-mini/public/`、`public/toolkits/`等を保持 | 利用者がダウンロードする入力・配布物。Siteのpublic素材76件は削除前のdistコピーと全byte一致 |
+| 設計の原本・旧版・QA・package | `docs/rocketstar-design/`、R5等を保持 | 明示された完全保存とhash検査の対象。archive内の`work/`・`outputs/`を機械的に消さない |
+| 要約証拠・過去の受入記録 | `docs/evidence/`を保持 | 元artifactとSHAの証拠。新しい実行の長いlogはGit対象外の`work/`等へ |
+| 固定vendor・native Tool fixture | `vendor/mr/`、`systems/rock-star-os/os/tools/dist/`を保持 | 固定hashと開発用fixtureは単なる一時buildではない |
+
+除外対象はSite 101ファイル（68,281,525 bytes）とBilling 2ファイル（872,381 bytes）、合計103ファイル・69,153,906 bytes（65.95 MiB）。履歴の書換えは行わないため、これは現在のcheckoutと将来の差分の整理であり、既存Git履歴のダウンロード容量が同じ量だけ減る意味ではない。
+
+原因はSiteのignoreが`dist/server/.wrangler/`だけを対象にし、rootの`/dist/`が子Siteへ適用されなかったこと、およびignore追加前にBillingの出力が既に追跡されていたこと。`npm test`も古いdistを読むだけだった。Siteの`pretest`でbuildを必須化し、rootのSite試験をその入口へ統一、CIにSiteのlockfile installを追加する。新しい`repository:check`はGit index上の生成物を拒否し、ローカルで再生成したignored出力は許す。rootの広すぎる`**/build/`を除き、`app/api/sky/telegram/build/`のsourceを誤って無視しないようにする。Android buildの既存ignoreは維持する。WEB05の進捗リンクも削除するHTMLコピーから既存のbuild試験へ差し替え、clean checkoutの検査をbuild前に実行できるようにする。`data/amc/`はhash固定の読取専用snapshotなので、当時のdist参照を含め原byteを保持する。
+
+確認コマンド: `npm run repository:check`、`npm run test:avocado-mini-site`、`python3 scripts/verify-rocketstar-archive.py --git`、`npm run verify`。進捗・最終結果は`data/project-status.json`の`repositoryCleanup`と`project.md`に記録する。GitHub保存、main統合、Site公開はそれぞれ独立した状態として扱う。
+
+復旧は削除前commit `592daeea322cd47aa189b67dd689e323662c0c67`から各対象を取得できる。通常の利用では上記buildで再生成し、生成物を再びcommitしない。設計原本や配布assetまで削除範囲を広げる場合は、参照先と完全保存条件を別に確認する。
+
 
 ## 2026-10-05 Sky配信候補の正本統合（G04/WEB04）
 

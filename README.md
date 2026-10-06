@@ -294,6 +294,10 @@ The public avocadoMini site is built with Astro; its reservation and payment API
     npm test
     npm run build
 
+The site’s `npm test` rebuilds the client and Worker from source before checking them. Generated `sites/avocado-mini/dist/` and service dry-run bundles stay outside Git. For the root verification suite, first run `npm ci --prefix sites/avocado-mini` in addition to the root `npm ci`.
+
+[Repository storage policy](docs/git-consolidation.md#repository-storage-policy) explains what belongs in Git and how to regenerate outputs.
+
 After updating documents or progress, run the following checks. The final calculation command regenerates JSON; it does not represent physical-device acceptance.
 
     npm run project:update

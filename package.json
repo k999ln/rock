@@ -21,7 +21,7 @@
     "typecheck": "tsc --noEmit",
     "project:update": "node scripts/project-status.mjs",
     "project:check": "node scripts/project-status.mjs --check",
-    "repository:check": "node scripts/check-repository-map.mjs",
+    "repository:check": "node scripts/check-repository-map.mjs && node scripts/check-repository-hygiene.mjs",
     "version:check": "node scripts/check-version-boundaries.mjs",
     "schema:check": "node scripts/check-web-schema.mjs",
     "database:status": "node scripts/database-status.mjs",
@@ -38,7 +38,7 @@
     "sky:check": "node scripts/check-sky.mjs",
     "prompt:context": "node scripts/prompt-context.mjs",
     "db:generate": "node scripts/generate-migration.mjs",
-    "verify": "npm run project:check && npm run repository:check && npm run version:check && npm run schema:check && npm run database:check && npm run release:check && npm run release:signing:check && npm run baseline:check && npm run avocado:r5:check && npm run design:check && npm run mission:check && npm run system:composition:check && npm run llm:architecture:check && npm run csv:check && npm run sky:check && npm run android:architecture:check && npm run device-support:check && npm run android:first-flash:check && npm run typecheck && npm run lint:product && npm run mcp:package:check && npm run billing:check && npm run operator-dock:check && npm run build && npm run release:web-bundle:check && npm run release:web-assets:check && npm run test:api && npm test && npm run test:fashion-brand-ops",
+    "verify": "npm run project:check && npm run repository:check && npm run version:check && npm run schema:check && npm run database:check && npm run release:check && npm run release:signing:check && npm run baseline:check && npm run avocado:r5:check && npm run design:check && npm run mission:check && npm run system:composition:check && npm run llm:architecture:check && npm run csv:check && npm run sky:check && npm run android:architecture:check && npm run device-support:check && npm run android:first-flash:check && npm run typecheck && npm run lint:product && npm run mcp:package:check && npm run billing:check && npm run operator-dock:check && npm run build && npm run release:web-bundle:check && npm run release:web-assets:check && npm run test:api && npm test && npm run test:fashion-brand-ops && npm run test:avocado-mini-site",
     "discover": "node scripts/discover.mjs",
     "discover:watch": "node scripts/discover.mjs --watch",
     "os:check": "node scripts/check-os-contracts.mjs",
@@ -61,7 +61,8 @@
     "operator-dock:dev": "wrangler dev --config services/operator-dock/wrangler.jsonc",
     "operator-dock:check": "WRANGLER_WRITE_LOGS=false WRANGLER_LOG_PATH=work/wrangler-logs wrangler deploy --dry-run --config services/operator-dock/wrangler.jsonc --outdir work/operator-dock-dry-run",
     "operator-dock:migrate:local": "wrangler d1 migrations apply avocado-operator-dock --local --config services/operator-dock/wrangler.jsonc",
-    "avocado:r5:check": "python3 scripts/verify-avocado-r5-package.py"
+    "avocado:r5:check": "python3 scripts/verify-avocado-r5-package.py",
+    "test:avocado-mini-site": "npm --prefix sites/avocado-mini test"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

@@ -1,4 +1,37 @@
 {
+  "repositoryCleanup": {
+    "task": "G01",
+    "primaryOwner": "ROCK",
+    "stage": "cleanup_verified_latest_main_baseline_blocked",
+    "sourceMainSha": "592daeea322cd47aa189b67dd689e323662c0c67",
+    "scope": "Remove reproducible Site builds and billing dry-run outputs; retain design archives, runtime, fixtures and evidence.",
+    "githubSaved": true,
+    "mainIntegrated": false,
+    "published": false,
+    "nextAction": "Review cleanup PR #69. Latest main database metadata and downstream acceptance require separate correction; earlier cleanup SHA 154f2cfc passed full CI. Re-run full verification after baseline repair before merge.",
+    "removedFiles": 103,
+    "removedBytes": 69153906,
+    "retainedPublicAssetCopiesVerified": 76,
+    "validation": {
+      "repositoryCheck": "passed; previous index with 103 generated files rejected; cleaned index with rebuilt ignored outputs accepted",
+      "siteBuildAndTests": "13 routes rebuilt; 18/18 passed",
+      "archive": "verify-rocketstar-archive.py --git: 14/14 passed",
+      "fullVerifyLocal": "Stopped at typecheck: TS5033 ENOSPC writing tsconfig.tsbuildinfo; preceding checks passed. Not a full verify pass.",
+      "fullVerifyGitHub": {
+        "status": "passed_for_recorded_sha",
+        "sourceSha": "154f2cfc036d954436c3ee9003b6707e5d2c7fa7",
+        "run": "https://github.com/k999ln/rock/actions/runs/37284888719",
+        "scope": "Before subsequent main integration; newer main acceptance must be checked separately."
+      },
+      "firstGitHubRun": "37282635930: detected immutable AMC snapshot reference edit and obsolete prebuilt-only test expectation. Snapshot restored byte-for-byte; test now requires locked source build. Full CI rerun required.",
+      "security": "SPIDER secrets failed on recorded SHA and earlier base; CodeQL, repair regressions and production web measurement passed. No all-security-clear claim.",
+      "latestIntegratedVerify": "0c90253c main integrated: project/repository/version/schema passed; database:check failed because data/database-status.json and docs/database-status.md are stale. Both files and the checker/schema match origin/main unchanged."
+    },
+    "branch": "codex/repository-cleanup",
+    "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac",
+    "latestMainIntegrated": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "pullRequest": "https://github.com/k999ln/rock/pull/69"
+  },
   "updatedAt": "2026-09-27",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
   "nextAction": "AMCのWeb計画・手動台帳からGoal JSONを保存し、明示コマンドでローカルCodexへ着手可能な一件を渡す入口を追加。隔離した試験Goalの一件が実Codexで成果物を作り、AMCでは検収待ちまで記録された。元のWeb記録へは自動同期しない。次は同一Web記録への安全な結果同期、停止・復旧と本人通知、使いやすさ確認。公開する場合はGitHub同期と同一候補の配備readbackを別に行う。自律的な連続実行・自動通知・model導入・課金・公開・実売買は未接続／未実行。正本5師団32部隊は参照専用。",
@@ -3064,7 +3097,7 @@
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/src/tower-scene.js",
-        "sites/avocado-mini/dist/client/index.html",
+        "sites/avocado-mini/tests/astro-build.test.mjs",
         "sites/avocado-mini/public/images/avocado-mini-hero.png",
         "sites/avocado-mini/public/images/avocado-mini-detail.png",
         "sites/avocado-mini/public/images/motion-tower-satin-front-concept.png",

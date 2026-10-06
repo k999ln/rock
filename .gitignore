@@ -51,7 +51,6 @@ next-env.d.ts
 /android/local.properties
 /android/.idea/
 **/.gradle/
-**/build/
 services/**/work/
 *.jks
 *.keystore

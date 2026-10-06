@@ -66,3 +66,8 @@ H1 / AMC02、ROCK。SPIDER cycle 47は観測元のpath差替え競合だけを�
 ## AMCエージェント定義の事前確認
 
 H1 / AMC02、ROCK。SPIDER cycle 48は既存定義の読取り競合（#52）を扱い、新規作成側（#53）は別の未解決として残す。[既存AMC設計](../amc-goal-orchestrator.md#spider-既存エージェント定義の読取り確認)と[証拠](../evidence/spider-agent-preflight-read.json)へ集約。実Codex設定を変更せず、`node --test tests/amc-agent.test.mjs tests/amc-agent-preflight.test.mjs`で合成projectを検証する。
+
+
+## 生成物の整理（G01、2026-10-05）
+
+主担当ROCK。再生成可能なSite出力とBilling dry-runをGit管理から除き、`repository:check`で再混入を拒否する。設計archive・同一artifactの受入証拠・固定vendor・配布素材は保持する。[保存区分と再生成手順](../git-consolidation.md#repository-storage-policy)を参照。GitHub保存、main統合、公開配備は別々に記録する。
