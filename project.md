@@ -5,6 +5,10 @@
 
 # Rock star — 事業・設計・進捗
 
+## 2026-10-06 — NFCからWebホームへ直接開く入口
+
+NFCタグにはRockstarOS公開Siteの`/?nfc=1`を単一HTTPS URIレコードとして書く。ホーム画面を先に開き、未追加時だけPWA追加案内を重ねる。Androidの対応ブラウザでは本人タップによるinstall prompt、iPhoneではSafari共有からの手動追加を案内する。NDEFデータと読戻し手順は[タグ用パケット](docs/nfc/README.md)にまとめた。NFCの読取、OS置換、PWA自動インストール、インストール済みPWAへの直接再起動は保証しない。公開配備・実端末でのタグ読取は別途確認する。
+
 ## 2026-09-15 — CSV buyer納品・決済台帳・運営操作をローカル統合
 
 CSV仕事へ、D1確定後の`waitUntil`登録、lease期限後の認証poll再開、attempt別成果物、二重完了防止を追加した。buyer用の期限・失効付きbearer capability URL（本人確認ではない）、納品revision、1回修正、明示検収を実装。顧客の自己申告だけでは入金済みにせず、JPY 3,000の厳密照合、署名時刻付きHMAC webhook、注文返金・争議/取消とpayout adjustmentの分離、Provider event冪等性、逆順返金、manual_verified分離を合成APIで検証した。署名済みrefundのcurrency/job/type不一致は挿入前に拒否し、不正なイベントIDをactive ledgerへ残さず、正しい同ID再送・注文accept・月次reconcileが続くことも回帰試験した。運営manual paymentは別操作で使用済みの(actor,idempotency key)を拒否し、payment/audit/outboxが部分保存されないことを確認。運営retryの初回/replay形状を一致させ、本人JSON exportには直接費・納品revision・共有リンク状態/期限を追加（bearer secretとtoken hashは除外）。月次判定は同じbilling accountの複数seller/providerを合算してJST月ごと一行へ保存し、$30閾値／$8.88を判定する。FX/根拠不明はnullの要確認とし、直接費は記録のみで判定未控除。運営者hash allowlist、全体/利用者/売主ごとの新規受付pause/resume、翌月解約、既存job継続、介入・納期・直接費dashboard、D1 batch監査/outbox/idempotencyも実装した。
@@ -457,7 +461,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-10-01 / Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理） / 完了 65/91件
+最終更新: 2026-10-06 / RockstarOS WebホームへのNFC入口とPWA追加案内、タグ用URL/NDEFを準備。端末OS書換えではない（公開・実機試験は別記録） / 完了 66/92件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -488,6 +492,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | WEB01 | 主要画面のstyle契約と配備asset closureを検査し、GitHubと本人限定Sitesを同一commitへ固定 | 進行中 | [記録](tests/web-route-style-contract.test.mjs) · [記録](scripts/check-web-asset-closure.mjs) · [記録](tests/web-asset-closure.test.mjs) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
 | HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
 | HOME02 | Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止 | 完了 | [記録](components/workspace-shell.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-maintenance.tsx) · [記録](app/fund/page.tsx) · [記録](app/fund/legacy/page.tsx) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/product-baseline.md) |
+| NFC01 | NFC URLからWebホームを直接開き、PWA追加を案内するタグ用データを用意 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](docs/nfc/README.md) · [記録](docs/nfc/rockstaros-url.txt) · [記録](docs/nfc/rockstaros-uri.ndef) · [記録](scripts/create-nfc-payload.mjs) · [記録](tests/nfc-entry.test.mjs) |
 | SYS01 | 端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装 | 完了 | [記録](app/settings/system/page.tsx) · [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
 | SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
 | SYS03 | 公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合 | 完了 | [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](components/system-maintenance.tsx) |
@@ -571,7 +576,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
 | DEVICE-INSTALL | RLS02 | 対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL | [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) |
 
-次の作業: B05独立Queue配置と実スマホを閉じた後の完了、公式市場が許すbuyer納品経路、実顧客・Provider入金/返金、直接費を含む月額条件のtest請求とrefund/SCA、production operator allowlist/Secrets、外部公開は未実施。
+次の作業: NFC01の配備と実HTTP/端末読取を確認する。続いてB05独立Queue、実スマホ、公式市場buyer納品経路、実顧客/Provider入金・返金、月額条件test請求、production operator allowlist/Secretsを別gateで進める。
 <!-- project-status:end -->
 
 ## 次段階の設計

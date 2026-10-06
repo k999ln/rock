@@ -199,6 +199,29 @@
 }
 .homeIndicator span { width: min(132px, 34vw); height: 5px; border-radius: 999px; background: rgba(255,255,255,.84); }
 
+.nfcInstall {
+  position: fixed;
+  z-index: 12;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  width: min(390px, calc(100vw - 32px));
+  padding: 21px 22px 18px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 25px;
+  color: #fff;
+  background: rgba(15, 22, 37, .94);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, .4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nfcEyebrow { color: var(--home-accent); font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+.nfcInstall h2 { margin: 5px 24px 8px 0; font-size: 21px; letter-spacing: -.035em; }
+.nfcInstall p { font-size: 12px; line-height: 1.6; color: rgba(255,255,255,.8); }
+.nfcClose { position: absolute; top: 15px; right: 15px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: #fff; background: rgba(255,255,255,.1); }
+.nfcInstallButton { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 43px; margin-top: 14px; padding: 10px 16px; border-radius: 12px; color: #111713; background: var(--home-accent); font-weight: 800; }
+.nfcInstall .nfcSteps { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.09); line-height: 1.8; }
+.nfcInstall .nfcBoundary { margin-top: 11px; color: rgba(255,255,255,.56); font-size: 11px; }
+
 .editorBackdrop {
   position: fixed;
   inset: 0;
@@ -277,6 +300,7 @@
   .editor { max-height: calc(100dvh - 16px); padding: 18px; border-radius: 27px; }
   .wallpaperChoices { gap: 7px; }
   .wallpaperChoices button > span { height: 54px; }
+  .nfcInstall { left: 16px; right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); width: auto; margin: 0 auto; }
 }
 
 @media (max-width: 390px) {

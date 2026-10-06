@@ -20,6 +20,7 @@
     "mcp:package:check": "python3 scripts/package-sky-mcp.py --check",
     "typecheck": "tsc --noEmit",
     "project:update": "node scripts/project-status.mjs",
+    "nfc:payload": "node scripts/create-nfc-payload.mjs",
     "project:check": "node scripts/project-status.mjs --check",
     "repository:check": "node scripts/check-repository-map.mjs",
     "baseline:check": "node scripts/check-product-baseline.mjs",

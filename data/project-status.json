@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-10-01",
-  "milestone": "Rock StudioのSky SDK導線を維持し、CSVの厳密な購入照合・月次判定・運営/解約/データ出力をローカル合成試験まで実装（外部gateは別管理）",
-  "nextAction": "B05独立Queue配置と実スマホを閉じた後の完了、公式市場が許すbuyer納品経路、実顧客・Provider入金/返金、直接費を含む月額条件のtest請求とrefund/SCA、production operator allowlist/Secrets、外部公開は未実施。",
+  "updatedAt": "2026-10-06",
+  "milestone": "RockstarOS WebホームへのNFC入口とPWA追加案内、タグ用URL/NDEFを準備。端末OS書換えではない（公開・実機試験は別記録）",
+  "nextAction": "NFC01の配備と実HTTP/端末読取を確認する。続いてB05独立Queue、実スマホ、公式市場buyer納品経路、実顧客/Provider入金・返金、月額条件test請求、production operator allowlist/Secretsを別gateで進める。",
   "tasks": [
     {
       "id": "SKY01",
@@ -375,6 +375,21 @@
         "app/rockstaros/guide/page.tsx",
         "tests/web-route-style-contract.test.mjs",
         "docs/product-baseline.md"
+      ]
+    },
+    {
+      "id": "NFC01",
+      "title": "NFC URLからWebホームを直接開き、PWA追加を案内するタグ用データを用意",
+      "status": "done",
+      "dependsOn": ["HOME01"],
+      "evidence": [
+        "components/home-screen.tsx",
+        "components/home-screen.module.css",
+        "docs/nfc/README.md",
+        "docs/nfc/rockstaros-url.txt",
+        "docs/nfc/rockstaros-uri.ndef",
+        "scripts/create-nfc-payload.mjs",
+        "tests/nfc-entry.test.mjs"
       ]
     },
     {
