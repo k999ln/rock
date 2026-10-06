@@ -1,6 +1,6 @@
 {
   "task": "G04",
-  "status": "local_verified_github_pending",
+  "status": "main_integrated_functional_ci_verified_historical_secret_candidates_open",
   "baseMain": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
   "mergedPullRequests": [
     63,
@@ -71,7 +71,130 @@
       "nodeFail": 0,
       "observerPrivacyAndWallet": 35,
       "finalGithub": "pending"
-    }
+    },
+    "finalGithub": {
+      "sourceCommit": "9dc7ab40e04bb3fe61765578f471ebd184e08df2",
+      "checks": [
+        {
+          "conclusion": "FAILURE",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165136/job/112077873318",
+          "name": "SPIDER / secrets",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165171/job/112078174819",
+          "name": "unsigned-arm64-apk",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165148/job/112077872958",
+          "name": "source-preparation",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165161/job/112077873196",
+          "name": "public-fixture-tests",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165142/job/112077937269",
+          "name": "prototype",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165155/job/112077873509",
+          "name": "partitions (main-0)",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165220/job/112077873743",
+          "name": "verify",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165129/job/112077873085",
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165131/job/112077873032",
+          "name": "SPIDER / repair regressions",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165155/job/112077873649",
+          "name": "partitions (main-1)",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165129/job/112077872909",
+          "name": "SPIDER CodeQL (python)",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165155/job/112077873639",
+          "name": "partitions (main-2)",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165155/job/112077873591",
+          "name": "partitions (main-3)",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165155/job/112077873561",
+          "name": "partitions (support)",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165155/job/112078540865",
+          "name": "source-tests",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/actions/runs/37404165131/job/112077873182",
+          "name": "SPIDER / production web security measurement",
+          "status": "COMPLETED"
+        },
+        {
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/k999ln/rock/runs/112078317307",
+          "name": "CodeQL",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    "finalApkArtifacts": [
+      {
+        "digest": "sha256:926adaa1b35a1c2cb3ed755882bc698011c2ef7971c548d5a5a069b9e70b8010",
+        "expired": false,
+        "id": 11386618687,
+        "name": "local-ai-unsigned-arm64-37404165171",
+        "size_in_bytes": 12924828,
+        "workflow_run": {
+          "head_branch": "codex/complete-open-prs",
+          "head_repository_id": 1358246961,
+          "head_sha": "9dc7ab40e04bb3fe61765578f471ebd184e08df2",
+          "id": 37404165171,
+          "repository_id": 1358246961
+        }
+      }
+    ]
   },
   "limits": [
     "No physical OS acceptance, signing, flashing, provider acceptance or production deployment.",
@@ -105,6 +228,10 @@
     {
       "path": "lib/sky-zema-handoff.ts",
       "sha256": "8b311b0ca87659524f9ddf0690a265e4bedbc61d45cbeaa43f496202bf9718c3"
+    },
+    {
+      "path": "systems/rock-star-os/os/entitlement/guest_observer.py",
+      "sha256": "1266b648b24b80f16f42eff36dcca77494a5596efec26b456ad68856c35a954f"
     }
   ],
   "securityComparison": {
@@ -118,12 +245,16 @@
     "newRuleFileValueTuples": 1,
     "newCandidateClassification": "SHA-256 of scripts/check-work-api.mjs recorded in this evidence file; verified against source bytes. No additional unmatched secret candidate tuples. Existing 160 values are not comprehensively classified or declared safe.",
     "policyChanged": false,
-    "historicalFindingsRemain": true
+    "historicalFindingsRemain": true,
+    "finalCandidate": "9dc7ab40e04bb3fe61765578f471ebd184e08df2",
+    "finalOccurrences": 2942,
+    "finalDistinctValues": 161
   },
   "observerFollowup": {
     "reason": "PR #78 left CodeQL #7 paths through worker_alive and history period strings",
     "fix": "Validate unchanged schema then reconstruct literal boolean and canonical year/month from integers before output",
-    "validation": "35 host tests; same-candidate CodeQL pending",
+    "validation": "35 host tests passed; final same-candidate CodeQL check passed with no open PR findings",
     "policySuppression": false
-  }
+  },
+  "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
 }

@@ -2,13 +2,13 @@
   "repositoryCleanup": {
     "task": "G01",
     "primaryOwner": "ROCK",
-    "stage": "cleanup_verified_latest_main_baseline_blocked",
+    "stage": "cleanup_integrated_functional_ci_verified",
     "sourceMainSha": "592daeea322cd47aa189b67dd689e323662c0c67",
     "scope": "Remove reproducible Site builds and billing dry-run outputs; retain design archives, runtime, fixtures and evidence.",
     "githubSaved": true,
-    "mainIntegrated": false,
+    "mainIntegrated": true,
     "published": false,
-    "nextAction": "Review cleanup PR #69. Latest main database metadata and downstream acceptance require separate correction; earlier cleanup SHA 154f2cfc passed full CI. Re-run full verification after baseline repair before merge.",
+    "nextAction": "Cleanup merged through #77. Keep reproducible build output outside Git; historical secret findings and release acceptance are separate.",
     "removedFiles": 103,
     "removedBytes": 69153906,
     "retainedPublicAssetCopiesVerified": 76,
@@ -25,16 +25,17 @@
       },
       "firstGitHubRun": "37282635930: detected immutable AMC snapshot reference edit and obsolete prebuilt-only test expectation. Snapshot restored byte-for-byte; test now requires locked source build. Full CI rerun required.",
       "security": "SPIDER secrets failed on recorded SHA and earlier base; CodeQL, repair regressions and production web measurement passed. No all-security-clear claim.",
-      "latestIntegratedVerify": "0c90253c main integrated: project/repository/version/schema passed; database:check failed because data/database-status.json and docs/database-status.md are stale. Both files and the checker/schema match origin/main unchanged."
+      "latestIntegratedVerify": "Final integrated candidate 9dc7ab40e04bb3fe61765578f471ebd184e08df2 passed full GitHub verify; see docs/evidence/open-pr-integration.json."
     },
     "branch": "codex/repository-cleanup",
     "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac",
     "latestMainIntegrated": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
-    "pullRequest": "https://github.com/k999ln/rock/pull/69"
+    "pullRequest": "https://github.com/k999ln/rock/pull/69",
+    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
   },
   "updatedAt": "2026-10-05",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "G04: PR #63–65 / #69–76 / #78の12本を統合。前候補c650466eは総合verify・native・Android CI成功。最終候補の同一SHA検証後にmainへ統合する。履歴secret候補160値は未解決として維持し、検査緩和・実機・本番公開はしない。",
+  "nextAction": "G04: 12 PRは#77経由でmain統合済み。総合verify・native・Android・unsigned APK・Phone準備・CodeQL・回帰は同一候補で成功。次は既存secret候補160値の分類と個別release gate（専用Linux全OS build、署名/復旧、Provider、Mini/Pro実機）。公開・課金・実機受入は未完了。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5595,7 +5596,7 @@
       "implementationCommit": "573f9f2253fc7bbaccdb5f6c2893e24596671328",
       "pullRequest": "https://github.com/k999ln/rock/pull/63",
       "githubSaved": true,
-      "mainMerged": false,
+      "mainMerged": true,
       "published": false,
       "ciAtImplementationCommit": "in_progress_at_last_check"
     }
@@ -5605,13 +5606,14 @@
     "specification": "data/avokado-pro-pc.json",
     "designSaved": true,
     "githubSaved": true,
-    "mainMerged": false,
+    "mainMerged": true,
     "publicPageUpdated": false,
     "physicallyAssembled": false,
     "verification": "repository_verify_passed_design_only",
     "designCommit": "33cea702c6c36a6bc973bedb966a7ef661514258",
     "pullRequest": "https://github.com/k999ln/rock/pull/64",
-    "ciAtDesignCommit": "no_checks_reported_at_last_check"
+    "ciAtDesignCommit": "no_checks_reported_at_last_check",
+    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
   },
   "miniCellular": {
     "schemaVersion": 1,
@@ -5646,13 +5648,14 @@
     "productionReady": false,
     "authority": "docs/avocado-mini-cellular.md",
     "githubSaved": true,
-    "mainMerged": false,
+    "mainMerged": true,
     "publicPageUpdated": false,
     "verificationEvidence": "docs/evidence/avocado-mini-cellular-design.json",
     "localVerify": "passed",
     "designCommit": "bf3e6ea1d15bc66abcee1bfff1d0c9ff76ef3cc0",
     "pullRequest": "https://github.com/k999ln/rock/pull/64",
-    "ciAtDesignCommit": "in_progress_at_last_check"
+    "ciAtDesignCommit": "in_progress_at_last_check",
+    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
   },
   "gameClientPreparation": {
     "task": "AI06",
@@ -5670,13 +5673,14 @@
     "localVerify": "passed",
     "verificationEvidence": "docs/evidence/mini-game-client-local.json",
     "githubSaved": true,
-    "mainMerged": false,
+    "mainMerged": true,
     "implementationCommit": "96fedfc7904753bf2960570eb307d6db2d223347",
     "pullRequest": "https://github.com/k999ln/rock/pull/64",
-    "ciAtImplementationCommit": "no_checks_reported_at_last_check"
+    "ciAtImplementationCommit": "no_checks_reported_at_last_check",
+    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
   },
   "releaseBlockerResolution": {
-    "status": "source_and_apk_repairs_verified_current_head_ci_on_pr",
+    "status": "source_and_apk_repairs_integrated_external_acceptance_pending",
     "primaryOwner": "ROCK",
     "task": "G04",
     "baseMain": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
@@ -5688,12 +5692,35 @@
     "wholeVerify": "PASS_AT_c79476e2",
     "localAiBuild": "PASS_API_V4_UNSIGNED_APK_INSPECTION_AND_REAL_STAGE",
     "physicalDeviceConnected": false,
-    "mainIntegrated": false,
+    "mainIntegrated": true,
     "integratedMain": "624124cf53848542538a94b9d309e24d3efbb1fe",
     "focusedTests": 40,
     "finalVerification": "Read exact current head checks of PR 65; earlier CI evidence is scoped to its recorded source SHA",
     "deadlineFocusedTests": 7,
     "deadlineDelayedRegression": "PASS_3.1_SECONDS",
-    "securityHistory": "UNRESOLVED_2868_HISTORICAL_CANDIDATE_OCCURRENCES_NOT_UNIQUE_SECRETS"
+    "securityHistory": "UNRESOLVED_2868_HISTORICAL_CANDIDATE_OCCURRENCES_NOT_UNIQUE_SECRETS",
+    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
+  },
+  "prIntegration": {
+    "pullRequest": "https://github.com/k999ln/rock/pull/77",
+    "includedPullRequests": [
+      63,
+      64,
+      65,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      78
+    ],
+    "candidateCommit": "9dc7ab40e04bb3fe61765578f471ebd184e08df2",
+    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102",
+    "status": "main_integrated_functional_ci_verified_historical_secret_candidates_open",
+    "evidence": "docs/evidence/open-pr-integration.json",
+    "published": false
   }
 }

@@ -1554,7 +1554,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: G04: PR #63–65 / #69–76 / #78の12本を統合。前候補c650466eは総合verify・native・Android CI成功。最終候補の同一SHA検証後にmainへ統合する。履歴secret候補160値は未解決として維持し、検査緩和・実機・本番公開はしない。
+次の作業: G04: 12 PRは#77経由でmain統合済み。総合verify・native・Android・unsigned APK・Phone準備・CodeQL・回帰は同一候補で成功。次は既存secret候補160値の分類と個別release gate（専用Linux全OS build、署名/復旧、Provider、Mini/Pro実機）。公開・課金・実機受入は未完了。
 <!-- project-status:end -->
 
 ## 次段階の設計
@@ -1663,3 +1663,9 @@ G04 / ROCK。11 PRの履歴を保持し、main 0c90253cのSky/AMC更新と認可
 PR #78（simulation observerの出力schema）も統合し、対象は12本。privacy13と既存DeviceWallet22の35試験合格。最終local全体試験はNode1353 pass/1 skip、build/asset closureまで成功した後、空き247 MiBでAPI起動がSQLite IOERR_SHMSIZE。専用dev server停止・自分の一時torch環境削除後、API1192/CSV385とmission整合を再試験し成功。失敗と回復を別記録する。最終GitHub同一候補のCIがmain統合条件。前候補c650466eの総合/native/Androidは成功。
 
 追加PR #78の同一候補CodeQLで#7のworker_alive/年月文字列から出力への経路が残った。厳密schemaに加え、固定booleanと年/月整数からの年月表現へ再構成する。正常出力と既存Wallet境界は維持し、例外化・dismissはしない。privacy13＋Wallet22を再実行し、同一SHAの再解析を統合前に確認する。
+
+## 12 PRのmain統合完了
+
+G04 / ROCK。PR #63–65、#69–76、#78は統合PR #77でmainへ通常mergeした。統合commit `f84a3c4c9109ff1f641bd068a3849f8d43a4c102`、検証候補 `9dc7ab40e04bb3fe61765578f471ebd184e08df2`。同一候補で総合verify、native全分割/集約、Android、unsigned arm64 APK、Phone source preparation、署名fixture、CodeQL両言語とPR check、SPIDER回帰/公開Web測定が成功。既存履歴secret scanは2942出現/161値で未合格（main既存160値＋証拠内ソースhash1値）。検査緩和・dismiss・履歴書換なし。詳細とrun URLは `docs/evidence/open-pr-integration.json`。
+
+文書保存・GitHub branch保存・main統合は完了。公開、正式署名、flash、実Provider、Mini/Pro実機、LLM本学習は実行・受入していない。次は履歴secret候補の分類と各release gate。元checkoutの未コミット変更は保持。完了記録ではproject/database生成物を同期し、project/database/design/diff checkを行う。実装の同一候補CIと文書追記後CIは別SHAとして追跡する。

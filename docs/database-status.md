@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-G04: PR #63–65 / #69–76 / #78の12本を統合。前候補c650466eは総合verify・native・Android CI成功。最終候補の同一SHA検証後にmainへ統合する。履歴secret候補160値は未解決として維持し、検査緩和・実機・本番公開はしない。
+G04: 12 PRは#77経由でmain統合済み。総合verify・native・Android・unsigned APK・Phone準備・CodeQL・回帰は同一候補で成功。次は既存secret候補160値の分類と個別release gate（専用Linux全OS build、署名/復旧、Provider、Mini/Pro実機）。公開・課金・実機受入は未完了。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。
