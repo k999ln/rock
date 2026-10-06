@@ -249,7 +249,8 @@
       "evidence": [
         "docs/security-incident-response.md",
         "data/device-emergency-access-policy.json",
-        "tests/operator-access-auth.test.mjs"
+        "tests/operator-access-auth.test.mjs",
+        "docs/evidence/spider-observer-output-schema.json"
       ],
       "acceptanceGate": "Pixel実機で侵入、失効、再起動、production署名、rollbackを同一候補で受け入れる。",
       "nextAction": "SYS13: OS11、RLS02、LCH03の依存と既存証拠を同一候補ごとに照合する",

@@ -16,6 +16,11 @@ H1 / AMC02、ROCK、主stream Git / CI / Operations。最新main `0c90253c` 起�
 
 ローカル18/18合格。同じ試験へ旧sourceだけを入れると1 pass/17 failとなり、検証後のpath差替えで外側の合成bytesを読む退行を再現。修正前の同じbranch/SHAのCodeQLは両言語成功、#56を含む42件を保存。修正後のGitHub比較は未取得。通常AMC importは既存のrevalidationImpact export欠落で失敗し、全体受入は未完了。mission/project同期・check、diff/check、source syntaxは合格。design:checkは既存catalog重複、verifyは既存DB inventory不一致で停止。詳細は[要約証拠](docs/evidence/spider-observation-source-read.json)。main merge・公開配備・実機操作なし。
 
+## 2026-10-06 — SPIDER cycle 50: native診断の出力境界
+
+O1 / SYS02、ROCK、主stream Security / Identity / Compliance。最新main 0c90253cから開始。entitlement observerの3fieldが不正なnested値をそのまま報告できることを合成データで再現し、既存enum・bool・非負intを検証する。read例外は固定メッセージで停止し、レポート／PASSを出さない。旧sourceで新規13 method中8 methodが失敗／error。修正後hostは新規13＋既存Wallet22、計35/35合格。独立reviewも13/13合格、blockerなし。mission/project・diff検査は合格、designは既存catalog ID重複、verifyは既存DB inventory不一致で停止。GitHubの修正後結果は未取得で、[証拠](docs/evidence/spider-observer-output-schema.json)とPRへ別々に記録する。実serviceの秘密漏洩を観測したという主張ではない。
+
+SYS02の元status、O1次task SYS13・段階・料金保留を維持。main merge・配備・guest／実機・実資金操作なし。前回の容量不足後、git fetchと秘密値なしのSPIDER作業一覧保存が復旧した。
 
 ## 2026-10-05 — WorkPlanとAMC保存契約の局所復旧
 
@@ -1429,7 +1434,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
 | HOME02 | Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止 | 完了 | [記録](components/workspace-shell.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-maintenance.tsx) · [記録](app/fund/page.tsx) · [記録](app/fund/legacy/page.tsx) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/product-baseline.md) |
 | SYS01 | 端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装 | 完了 | [記録](app/settings/system/page.tsx) · [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
-| SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
+| SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) · [記録](docs/evidence/spider-observer-output-schema.json) |
 | SYS03 | 公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合 | 完了 | [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](components/system-maintenance.tsx) |
 | SYS04 | QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否 | 完了 | [記録](data/qemu-release-audit.json) · [記録](data/qemu-rc2-legal-info/manifest.csv) · [記録](data/qemu-rc2-legal-info/host-manifest.csv) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/qemu-release-completion-audit-20260912.md) · [記録](components/system-maintenance.tsx) |
 | SYS05 | 候補準備・法務承認・保護署名・本人署名の64拒否境界試験を全体verifyへ統合 | 完了 | [記録](scripts/check-release-signing.mjs) · [記録](scripts/release_signing.py) · [記録](scripts/release_signing_owner.py) · [記録](scripts/prepare_release_candidate.py) · [記録](scripts/verify_owner_legal_approval.py) · [記録](tests/test_release_signing.py) · [記録](tests/test_release_signing_owner.py) · [記録](tests/test_prepare_release_candidate.py) · [記録](tests/test_owner_legal_approval.py) · [記録](docs/release-signing-operations.md) |

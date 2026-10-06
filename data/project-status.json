@@ -3657,7 +3657,8 @@
         "components/system-maintenance.module.css",
         "lib/system-backup.ts",
         "tests/system-backup.test.mjs",
-        "docs/product-baseline.md"
+        "docs/product-baseline.md",
+        "docs/evidence/spider-observer-output-schema.json"
       ]
     },
     {

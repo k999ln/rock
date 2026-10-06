@@ -75,3 +75,7 @@ nativeのsource検査は4つのmain partitionとsupportに分割する。artifac
 `experiments/startup-health/changes.patch` は21ファイルのWIP。適用前検査だけ成功し、通常sourceには適用していない。C healthテストは未compile/未実行、Pythonのstartup-healthテストは未作成、新OS起動も未実行。今回1031件の成功はこのWIPの動作検証ではない。
 
 既存の9点の封印済み成果物と、稼働中の仮想OSプレビューのデータ・設定は今回のGit統合で変更していない。
+
+## SPIDER cycle 50: entitlement observerの出力境界
+
+既存serviceの応答から3つの報告fieldを型と許可値で検査し、想定外のnested値とread例外を診断へ出さない。[全体設計](rockstaros-complete-design.md#spider-simulation-observerの診断出力)と[証拠](evidence/spider-observer-output-schema.json)に範囲を記録する。hostの新規privacy試験と既存SQLite DeviceWallet試験を用い、guest・実機は実行しない。
