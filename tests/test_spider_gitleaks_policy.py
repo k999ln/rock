@@ -43,6 +43,28 @@ def reviewed_stripe_values():
     return values
 
 
+def reviewed_public_entries():
+    policy = tomllib.loads(POLICY.read_text())
+    rule = next(r for r in policy["rules"] if r["id"] == "generic-api-key")
+    entries = []
+    def literal(expression):
+        value = re.sub(r"\\(.)", r"\1", expression)
+        if re.escape(value) != expression:
+            raise ValueError("Only exact escaped literals are permitted")
+        return value
+    for allowed in rule["allowlists"]:
+        [expression] = allowed["regexes"]
+        if not (expression.startswith(r"\A") and expression.endswith(r"\z")):
+            raise ValueError("Full value anchors required")
+        value = literal(expression[2:-2])
+        [path_expression] = allowed["paths"]
+        if not (path_expression.startswith(r"\A(?:") and path_expression.endswith(r")\z")):
+            raise ValueError("Full path anchors required")
+        paths = [literal(p) for p in path_expression[5:-3].split("|")]
+        entries.append((value, paths))
+    return entries
+
+
 class PolicyStructureTests(unittest.TestCase):
     def test_only_exact_rule_scoped_allowlists_inherit_defaults(self):
         policy = tomllib.loads(POLICY.read_text())
@@ -50,18 +72,33 @@ class PolicyStructureTests(unittest.TestCase):
         self.assertNotIn("allowlists", policy)
         self.assertNotIn("allowlist", policy)
         self.assertEqual({r["id"] for r in policy["rules"]},
-                         {"private-key", "stripe-access-token"})
+                         {"private-key", "stripe-access-token", "generic-api-key"})
         for rule in policy["rules"]:
             self.assertEqual(set(rule), {"id", "allowlists"})
-            self.assertEqual(len(rule["allowlists"]), 1)
-            allowed = rule["allowlists"][0]
-            self.assertEqual(allowed["condition"], "AND")
-            self.assertEqual(allowed["regexTarget"], "secret")
-            self.assertEqual(len(allowed["paths"]), 1)
-            self.assertTrue(allowed["paths"][0].startswith(r"\A"))
-            self.assertTrue(allowed["paths"][0].endswith(r"\z"))
-            self.assertNotIn("commits", allowed)
-            self.assertNotIn("stopwords", allowed)
+            if rule["id"] != "generic-api-key":
+                self.assertEqual(len(rule["allowlists"]), 1)
+            for allowed in rule["allowlists"]:
+                self.assertEqual(set(allowed), {"description", "condition", "regexTarget", "paths", "regexes"})
+                self.assertEqual(allowed["condition"], "AND")
+                self.assertEqual(allowed["regexTarget"], "secret")
+                self.assertEqual(len(allowed["paths"]), 1)
+                self.assertTrue(allowed["paths"][0].startswith(r"\A"))
+                self.assertTrue(allowed["paths"][0].endswith(r"\z"))
+                self.assertNotIn("commits", allowed)
+                self.assertNotIn("stopwords", allowed)
+
+    def test_public_value_provenance_matches_exact_literal_exceptions(self):
+        provenance = json.loads((POLICY.parent / "public-value-provenance.json").read_text())
+        entries = reviewed_public_entries()
+        self.assertEqual(len(entries), provenance["distinctValues"])
+        records = {v["candidateSha256"]: v for v in provenance["values"]}
+        self.assertEqual(len(records), len(entries))
+        for value, paths in entries:
+            record = records[hashlib.sha256(value.encode()).hexdigest()]
+            self.assertEqual(len(paths), record["exactPathCount"])
+            self.assertIn(record["source"]["path"], paths)
+            self.assertTrue(record["classification"])
+            self.assertTrue(record["evidence"])
 
     def test_reviewed_public_fixture_bytes_have_not_changed(self):
         self.assertEqual(hashlib.sha256((ROOT / PEM_PATH).read_bytes()).hexdigest(),
@@ -80,13 +117,15 @@ class RealScannerPolicyTests(unittest.TestCase):
     def setUpClass(cls):
         cls.binary = str(Path(BINARY).resolve())
 
-    def scan(self, path, content, *, policy=True):
+    def scan(self, path, content, *, policy=True, return_locations=False):
         with tempfile.TemporaryDirectory(prefix="spider-policy-") as directory:
             base = Path(directory)
             source = base / "source"
-            target = source / path
-            target.parent.mkdir(parents=True)
-            target.write_text(content)
+            files = path if isinstance(path, dict) else {path: content}
+            for relative, body in files.items():
+                target = source / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(body)
             report = base / "report.json"
             empty_ignore = base / "empty.ignore"
             empty_ignore.write_text("")
@@ -106,7 +145,33 @@ class RealScannerPolicyTests(unittest.TestCase):
             findings = json.loads(report.read_text())
             self.assertEqual(process.returncode, 23 if findings else 0)
             self.assertTrue(all(f.get("Secret") == "REDACTED" for f in findings))
+            if return_locations:
+                return {(f["File"].removeprefix("./"), f["StartLine"]) for f in findings}
             return {f["RuleID"] for f in findings}
+
+    def test_every_reviewed_value_is_detected_by_defaults_and_only_exact_pairs_pass(self):
+        files = {}
+        for value, paths in reviewed_public_entries():
+            for path in paths:
+                files[path] = files.get(path, "") + "api_key = " + json.dumps(value) + "\n"
+        self.assertIn("generic-api-key", self.scan(files, "", policy=False))
+        self.assertEqual(self.scan(files, ""), set())
+
+    def test_every_reviewed_value_mutation_and_path_copy_is_still_detected(self):
+        # Batch scans retain per-file assertions, so a finding cannot mask another bypass.
+        copies = {}
+        mutations = {}
+        expected_mutations = set()
+        for index, (value, paths) in enumerate(reviewed_public_entries()):
+            # Replace the public value with a new high-entropy synthetic credential.
+            # A one-character edit can fall below the upstream entropy detector.
+            changed = "spider-canary-" + hashlib.sha256(("replacement:" + value).encode()).hexdigest()
+            copies[f"unreviewed/{index}.txt"] = "api_key = " + json.dumps(value)
+            body = mutations.get(paths[0], "")
+            expected_mutations.add((paths[0], body.count("\n") + 1))
+            mutations[paths[0]] = body + "api_key = " + json.dumps(changed) + "\n"
+        self.assertEqual(self.scan(copies, "", return_locations=True), {(p, 1) for p in copies})
+        self.assertEqual(self.scan(mutations, "", return_locations=True), expected_mutations)
 
     def test_public_pem_is_detected_by_defaults_and_only_exact_path_is_allowed(self):
         source = (ROOT / PEM_PATH).read_text()

@@ -338,3 +338,7 @@ Mini will carry its own physical SIM and cellular modem; Pro, a PC or phone teth
 
 Pro is being specified as a standalone compact PC for AI and PC games, with a JPY800,000 sales target (tax/shipping undecided). The candidate combines an x86 CPU with an NVIDIA GeForce RTX 5080 **Laptop** GPU, 128GB RAM and two 2TB SSDs. [Configuration, assembly and acceptance plan](docs/avokado-pro-pc-design.md). Mini does not require Pro. No hardware has been purchased or assembled, and no production or game/AI acceptance is claimed.
 
+
+### Dependency security maintenance
+
+The lockfiles use explicit repository-local MIT security forks for `braces` and `http-cache-semantics`; `npm ci` installs them without a post-install patch. Keep the vendor source with the lockfiles. Run `node --test tests/dependency-security.test.mjs` and the existing `npm run verify` when changing them. Provenance and upstream replacement conditions are in [Security workstream](docs/workstreams/04-security-identity-compliance.md).

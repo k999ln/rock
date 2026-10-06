@@ -58,3 +58,9 @@
 ## Native診断の出力境界
 
 O1 / SYS02の診断共有の安全条件として、entitlement observerの登録状態・稼働状態・金額を既存のscalar契約に制限する。想定外のサービス応答は報告前に拒否し、raw例外を表示しない。[設計](../rockstaros-complete-design.md#spider-simulation-observerの診断出力)／[証拠](../evidence/spider-observer-output-schema.json)。本番漏洩の観測・料金保留解除・実guest受入ではない。
+
+## 全CI合格への残存修正（SYS15 / G04）
+
+履歴secret検査の2942出現・161種類を元のfield・公開fixture生成元へ照合する。公開値の分類は値と履歴pathの完全一致に限定し、差替え・別path・新規provider credentialを実Gitleaksで拒否する。全履歴、既定rule、pinned control、metadata-only出力は維持する。根拠は[公開値の個別記録](../../.github/spider/public-value-provenance.json)。
+
+未修正版bracesと、4.3.0でもmax-stale漏洩が再現したhttp-cache-semanticsは、MIT原本・出所・差分hashを保持するrepository内の明示forkで修正する。全依存先をoverrideし、元code 4 fail / 修正版8 passの回帰試験を保持する。上流修正版への復帰は同じ攻撃再現・互換性・全体verifyの合格後。詳細は[検証記録](../evidence/security-gate-completion.json)、[braces保守](../../vendor/braces/ROCKSTAR-PATCH.md)、[HTTP cache保守](../../sites/avocado-mini/vendor/http-cache-semantics/ROCKSTAR-PATCH.md)。実機・鍵・公開gateは変更しない。

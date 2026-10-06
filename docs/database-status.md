@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-G04: 当初12 PRと自動追加の依存3 PR、計15本は#77/#82経由でmain統合・同一候補全体verify成功。次は既存履歴secret候補の分類、未修正版braces/http-cache-semanticsの追跡、全OS build/署名/復旧・Provider・Mini/Pro実機の個別gate。公開/課金/実機受入は別。
+SYS15 / G04: 履歴secret候補の個別分類と残存依存脆弱性を修正し、同一SHAの全CIを確認する。現時点は作業中、全合格未達。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

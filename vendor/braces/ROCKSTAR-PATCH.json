@@ -1,0 +1,67 @@
+{
+  "upstream": {
+    "name": "braces",
+    "version": "3.0.3",
+    "source": "https://github.com/micromatch/braces/commit/74b2db2938fad48a2ea54a9c8bf27a37a62c350d",
+    "license": "MIT"
+  },
+  "localVersion": "3.0.3-rock.1",
+  "advisory": "GHSA-vfj7-8cjw-p6xm",
+  "files": [
+    {
+      "path": "LICENSE",
+      "upstreamSha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2",
+      "patchedSha256": "35bdd8a44339719441900fb50fbefc5e2dca1ca662cbaed7a687de842c8b70f2"
+    },
+    {
+      "path": "README.md",
+      "upstreamSha256": "947b0fc3cc12eaaa070207126213fbdf9ab2bf8cd13dcc6e4007b36b79309866",
+      "patchedSha256": "947b0fc3cc12eaaa070207126213fbdf9ab2bf8cd13dcc6e4007b36b79309866"
+    },
+    {
+      "path": "index.js",
+      "upstreamSha256": "332ea07c7b006361aad12aa994ca75dc1db8e8382b884909e2f38f10b85c88a4",
+      "patchedSha256": "332ea07c7b006361aad12aa994ca75dc1db8e8382b884909e2f38f10b85c88a4"
+    },
+    {
+      "path": "lib/compile.js",
+      "upstreamSha256": "dc98f22eee3d511785d92a00758d5f0d48efed5f5813bdecc2de430c529b5c9f",
+      "patchedSha256": "8dcbbef669a27a50f36e416495f6b4391682f52fab068b1d081c89b6113f9fc8"
+    },
+    {
+      "path": "lib/constants.js",
+      "upstreamSha256": "c18ac5adb57308f1ce42a28552da3a31f5d83709743ebd9a636336813a744d4b",
+      "patchedSha256": "c18ac5adb57308f1ce42a28552da3a31f5d83709743ebd9a636336813a744d4b"
+    },
+    {
+      "path": "lib/depth.js",
+      "upstreamSha256": null,
+      "patchedSha256": "ac2c815129ae58c34388dc3d4e2fad9ca4814d3f04ecbfe7cd1292f9057fce11"
+    },
+    {
+      "path": "lib/expand.js",
+      "upstreamSha256": "41ccc196ebfa7b7781a634e721eb744e4e7bcb54cba427a7e3d6806a1b9e58f7",
+      "patchedSha256": "6a202d4f2cb1c23a67a3cb77e31895705dcb2d94929abecf5d9b2dda1374fbea"
+    },
+    {
+      "path": "lib/parse.js",
+      "upstreamSha256": "e572166565f15fa6ad9865ae49d678218e32aabfd1b3720f6d0d43d39800d310",
+      "patchedSha256": "55dad3249179f0c361c2d9793e6963329d9fe844b9e7a6456a1baa88e87d2e21"
+    },
+    {
+      "path": "lib/stringify.js",
+      "upstreamSha256": "379f22d77bfa1478341ccd49c5e4267464aabcbba03558bab332aac23fc6f23a",
+      "patchedSha256": "6723c01dd5fda29702b257758c6145f213d4cda0ab41d87eebfc3ab7782a1443"
+    },
+    {
+      "path": "lib/utils.js",
+      "upstreamSha256": "b5a7596aa67730412b3c029ef09e84e6b67b8e445cffd35d1d295549c89066c7",
+      "patchedSha256": "b5a7596aa67730412b3c029ef09e84e6b67b8e445cffd35d1d295549c89066c7"
+    },
+    {
+      "path": "package.json",
+      "upstreamSha256": "56f08b888a4f30dc7cf8a7dbb36ffe92b737912ba36abe9d069d32167c957ac7",
+      "patchedSha256": "0f707375ca3b7625497b70acdfa03c2d0872ab70535f80f81e9118ce5c649e6b"
+    }
+  ]
+}

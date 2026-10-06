@@ -28,3 +28,1134 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\Atests/sky-commerce\.test\.mjs\z''']
 regexes = ['''\A(?:sk_test_CommerceFixtureOnly|sk_live_CommerceFixtureOnly)\z''']
+
+# Individually reviewed historical public values. No path-only or digest-pattern exclusions.
+# Provenance: public-value-provenance.json. Changing a value or copying it remains detectable.
+[[rules]]
+id = "generic-api-key"
+[[rules.allowlists]]
+description = "idempotency-fixture 0280f7ac68cc"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/backup\-restore\-b8287bc\.json|docs/evidence/os\-base/business\-lifecycle\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2cefa686b6b8edd8da51d37038634206\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 03ff1b2d0d2c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/gx00/current\-copy\-foundations\-root\.json)\z''']
+regexes = ['''\A7498f32da3270352143098cf59783f61fd8b90e9fa6873e49232fec46c92dabf\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 06aa32d71d3a"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|systems/rock\-star\-os/os/desktop/browser\-intake/intake\.json)\z''']
+regexes = ['''\A9a1ce4393e1aa4ace5dcdcf7e032f4a1c03a9cb964b4e0e7b7fcffd3a982eb84\z''']
+
+[[rules.allowlists]]
+description = "public-rfc8032-seed 099da475a54a"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/core/src/test/resources/a2a\-wallet\-handoff\-request\-v1\.json)\z''']
+regexes = ['''\A9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 09d6b8043c91"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/43\-soak\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-587d6cfa9c0cdae34eaf641df51db27e\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 0a3a40a424a6"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/core/src/test/resources/model\-profiles\-fixture\.json)\z''']
+regexes = ['''\A98b893741b3c30022bb25b1a5293f0418cb110235f2b449ee36f9a0508b76336\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 0ba192ce34a7"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-38bbae32dffc31dc577f26cac3d7cf01\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 0edeb8338fd7"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2da90f083af9b870d663fe6f4daa1a92\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 11c8b2a1277c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|docs/evidence/spider\-improvement\-cycle\.json)\z''']
+regexes = ['''\Af6887c65bbaaf7b24a7dfc1a7cf91187c55997369b4a1c04e71f223a43ae7714\z''']
+
+[[rules.allowlists]]
+description = "public-webauthn-authenticator-data 11f498a9884f"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json|systems/rock\-star\-os/os/game_exchange/fixtures/connection\-v1\-prefixed\-account\-vectors\.json|systems/rock\-star\-os/os/game_exchange/fixtures/connection\-v1\-vectors\.json)\z''']
+regexes = ['''\AGt7IW6sNuZndeC1yiJjz6vv5V1dO_kBU4J2E98N6FpkFAAAAAQ\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 165d11227d27"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2824050a0b2def089e1b818d92aa355c\z''']
+
+[[rules.allowlists]]
+description = "synthetic-rejection-test 16a649e08a97"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:tests/decision\-provider\.test\.mjs)\z''']
+regexes = ['''\Afixture\-key\-12345678\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 17bc3cac268e"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-ee01be2e9130d4864b6e81460b6a2e21\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 1806fceb640b"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2c68d93d19ae3103d666bbb508a280e1\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 1975cc1db3c3"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/gx00/current\-copy\-foundations\-root\.json)\z''']
+regexes = ['''\Afe94e94ff279bfff80ed90ba2efc94e9b8666d2178d6533ff177c5e16ab6827e\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 1ce694370b7d"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/sky\-commerce\-sql\-main\-validation\.json)\z''']
+regexes = ['''\Acbeb908044b2eb4b6f506d2927367173897e5618b3eb7f6816025907646730a7\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 1e26994d40f3"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-local\-final/final\-d2\-lifecycle\-report\.json)\z''']
+regexes = ['''\Aui\-2c3d85d7ce78ae3489b5406043589362\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 1e66cb6362bf"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-74489828bb60203b72649f074c8c7793\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 1e8949450280"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-470a79eb699c62a51a153808c451aa75\z''']
+
+[[rules.allowlists]]
+description = "browser-storage-name 201bf419d490"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:lib/sky\-zema\-handoff\.ts)\z''']
+regexes = ['''\Arockstaros\.sky\-zema\-handoff\.v1\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 20add98a81c6"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/soak42\-ocr\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-1ec3f0c565222cc34e95f80eb7944111\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 21217f0565df"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-659d35620edb4f17fb0d760467a1abb5\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 225201d6bb08"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/business\-wallet\-preparation\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-d164f523076d448d0228ee1cbb35c3c8\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 225f884d047e"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-bf8c8847549d693c55a6db31128cc15f\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 23e755e18603"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-c4b972214dd0e73ad1de396c75cb9922\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 23fc5f43c011"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-efb8a82faf22793b6edd34940afa16ec\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 29d0370bba23"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-74786fda455152cea1b99137e752e85a\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 2f742967ad94"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-local\-final/final\-d2\-lifecycle\-report\.json)\z''']
+regexes = ['''\Aui\-432afd54ae8bffd9d83f7e6e06acc230\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 2fa312b780b9"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/amc\-main\-integration\.json)\z''']
+regexes = ['''\A20db789ba21490c6fb55783847acf8434f87d5448b98b625cd867f6f85395e32\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 34d04aa0f8ac"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\A6808d9039f6387f3ad479d45f9f18d6ffac06eaa8b93e3ab86c3d94b9ce54c3f\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 38dddea32433"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/remote\-ai\-cloud\-workflow\-local\-20261002\.json)\z''']
+regexes = ['''\Aa9f29eac0997eca57b398921213ae38bd557666b4a2a6bf3b37c22dda89949e8\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 39b91a2fcedd"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-eab7ac2015a1f37398c43508abef10ff\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 39bed7c65ae9"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/backup\-restore\-b8287bc\.json|docs/evidence/os\-base/business\-lifecycle\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2305161a87785fc94a785f6e248fe8dd\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 39d97e4303a1"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json)\z''']
+regexes = ['''\A4f1e62241f3155a084afa9e785732898cc3689ccb0b2cc64d5ee8a15c525dee3\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 39ffb19fb8cf"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/android\-a2a\-p256\-broker\-key\-20261002\.json)\z''']
+regexes = ['''\A77d8695a596b314950bfda8613d3ad155aeb885ba1289b0b8311d2d9951a791c\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 3bf1190831c2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/freeze\-b8287bc\.json)\z''']
+regexes = ['''\Acc97ffd153e48c2a5a2df3d23d18bfe55f8abaeee284ba03c964d1c6acf81df2\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 3dad3cfcad3f"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\Af639c446d20e526a5c09f38905a5f01b67fd51bb24f8d0741d7a71d3b9c87274\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 40165800db53"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/android\-a2a\-p256\-broker\-key\-20261002\.json)\z''']
+regexes = ['''\A433dbab044c9c72e9e829b1f1574173bd7bdec242637f82a703661749f55e6f6\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 412bbb530497"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-3aad7c14af6da09cd6a1bbf414e959d8\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 461e4c902622"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/business\-wallet\-preparation\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-79aad320aaee40ada6d96b68704ee6e4\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 472048841dfc"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-10de4a27c70835418c961aeb1336a68b\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 493122f28e3d"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-7435c20bb291363b909b5a605d7864eb\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 49cf9b93b464"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/hub\-final\-9abf78a/launch/citation\-equivocation\-closed\-boundary\.json|docs/evidence/hub\-final\-9abf78a/launch/citation\-update\-closed\-boundary\.json)\z''']
+regexes = ['''\Aad21e195a1c6974e9b596018241aa20af5e55f8a722cfbfc9145d88b8f284480\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 4a3a7a590360"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/business\-wallet\-preparation\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-98fc2fedb9732b99ee9a9e820f9a3477\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 4aaf3a03b8e4"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/43\-soak\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-7fe6c0c95d9e2941daca5800aad8d530\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 4b7d31e53c47"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/gx00/gx00\-host\-gate\-independent\-review\.json)\z''']
+regexes = ['''\A6a292433f7660eb046f377ab6ef5aaaff71bffdca290cc9dc13247bcbd1bdb54\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 4c69e470852e"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\Ad7e69a77b1bb916c0bb5f07084bfc407ddda3b96f70357c1de368898bae2e58e\z''']
+
+[[rules.allowlists]]
+description = "public-rfc8032-key 4ebbe859de72"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:systems/rock\-star\-os/os/update/rock_update\.py|systems/rock\-star\-os/src/blackberryrock/packages\.py)\z''']
+regexes = ['''\Ad75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 4f4edf1634d2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-00311f077719335395b1ee17aa82e1e6\z''']
+
+[[rules.allowlists]]
+description = "idempotency-example 4fbb2c8fb2bc"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:systems/rock\-star\-os/os/system/README\.md)\z''']
+regexes = ['''\Aui\-0123456789abcdef\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 503cb7c38745"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/43\-soak\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-c980a4906d90fc83e5e2e18b0f3f8ab8\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 51036bef4a02"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\A274fe35f10a8489e1e3a71cc9ab5605a24af2a4b0d7478b942ffa64ade7f60e0\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 52302c1d6643"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/sky\-cloud\-text\-execution\-verification\.json)\z''']
+regexes = ['''\Af4130363c8f76d3393675df79e2479b6a2b0cefb9d5d3398503348ada1197a92\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 53665b65ca85"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/auth\-health\-b8287bc\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/data\-abi\-b8287bc\.json|docs/evidence/os\-base/data\-abi\-serial\-failed\-b8287bc\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-base/ui\-startup\-b8287bc\.json|docs/evidence/os\-d4\-probe\-20260910/continuation\-plan\.json|docs/evidence/os\-d4\-probe\-20260910/original\-ui\-startup\-report\.json|docs/evidence/os\-d4\-probe\-20260910/overlay\-proof\.json|docs/evidence/os\-final\-build/execution\-amendment\.json|docs/evidence/os\-local\-final/final\-d4\-continuation\-plan\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\A8c7661b50fd1bbbbf6f17a6b43f0912c0cd0bca924acbe23e25084d0aaa9a0c1\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 53ca992f1117"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/43\-soak\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-d272d40cfeb1e758682fb6e0f72f040b\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 53cab1fd885c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/core/src/test/resources/model\-profiles\-fixture\.json)\z''']
+regexes = ['''\A40a114d7be417ea407c164b322265142e61701b1326a658353914da2b6aa022a\z''']
+
+[[rules.allowlists]]
+description = "browser-storage-name 5aa1da6766fb"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:lib/sky\-result\-library\.ts)\z''']
+regexes = ['''\Arockstaros\.sky\.saved\-results\.v1\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 5d43f94659e5"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-a091caa6dce480c35d5a00d578a008f6\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 5fa00650bf06"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/sky\-cloud\-ui\-verification\.json)\z''']
+regexes = ['''\Adabbb7e1bce4d7575f393918cbb84a9fac6691a77072bd1a6954382b90102333\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 6058664371bf"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-a782bbd4421cef451603ff82cf8044bc\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 60c368be99d2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/rocketstar\-design/outputs/RockstarOS_Colony_C0_1/evidence/demo\.json|docs/rocketstar\-design/outputs/RockstarOS_Complete_Design_v1_0/reference_c0_1/evidence/demo\.json|docs/rocketstar\-design/work/colony_v1/qa/demo/demo\.json|docs/rocketstar\-design/work/colony_v1/qa/demo/supervisor\.sqlite)\z''']
+regexes = ['''\A82bb9d2f\-de3a\-4b9a\-8c5e\-2d31a4455215\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 60d41680c12c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/business\-wallet\-preparation\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-152ad2e766d2775c9182126919cd0150\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 6168ff4feeb9"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-7179619539daf2f3251f93cf42148e53\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 64e7b650532f"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-9752eca803ae5a572bb497f92ce7ee9d\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 6651815b6c46"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2018ab195fdd3be2949c6b74e32bf160\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 66b3b04d3698"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/hub\-wallet/financial\-game\-ui\-4e31554/evidence\.json)\z''']
+regexes = ['''\Af08a8d0827258d7bfd1e0b9289ba6e382bbf04fabb5e640cb475a3d12e5b3440\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 6b62e0b30b63"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/gx00/current\-copy\-foundations\-root\.json)\z''']
+regexes = ['''\Ace9da58f251f7930a9872c3971e7b0f353a74125cd89ad0f878d0c751067c531\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 6df0c85542b2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-ad8b8dadfcfda86a7a7de153255febc2\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 7156d3f710e6"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-6a047550ffdbb014cb7ad2d198e5ab8d\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 7353ca263e52"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-e5e1672d8a62fb5c137bdee930cb1513\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 74c2aeba5327"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/power\-ui\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-cffa8b42cf0d1a07f9073812098d5737\z''']
+
+[[rules.allowlists]]
+description = "public-attestation-root 75532e04f52f"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:services/android\-attestation\-verifier/vendor/keyattestation/testdata/walleye/sdk27/TEE_EC_NONE\.json)\z''']
+regexes = ['''\AnBLP3ATHRYTXh6w9I3chMsGFJLx6so3sQhm4/FtCX3A=\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 76117d629273"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-dff65be5c047d07aa862b2745f554938\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 7958627c5cec"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-6995361b3476853fb657eb0c7308037e\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 797adad484ba"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/43\-soak\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-cc9e241f7e8749028381160b104ee1fa\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 7aa632f641c2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/soak42\-ocr\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-300fbdc705cd6ddebf479cd29ee3e26d\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 7b186b288a0e"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-eda438cabb59b64898d713c7f52c7e78\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 7d5a72edd142"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|systems/rock\-star\-os/os/desktop/browser\-intake/intake\.json)\z''']
+regexes = ['''\A4ddf0e21f07328358974d91aa2d7f839ba2116688b28e43d3f6f4e2eae8c45cf\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 7efd294d64a4"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-b28d680d879db6314c2a97924d1e0117\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 7f04602037bf"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/soak42\-ocr\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2d409a1f6ee34376e866082bd8ea34cc\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 7f9b4fe2d4d4"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\Ac3ae928231fcef9ddf7c5eb57ed4209f67210e1a9a03a64a2019ed47c3742ef0\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 7fdb5c7bcda0"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|systems/rock\-star\-os/os/desktop/browser\-intake/intake\.json)\z''']
+regexes = ['''\A5eb985e1a412d1be6b606ba0d7e912fc0842d873d252bd7ec8a363670dfc800c\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 80f4fbc58324"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/rls01/final\-9abf78a/business\-readback\.json)\z''']
+regexes = ['''\A7c338ee03f46c6a1fb287a9d2e576f417d66cb6bb93973b91f8056837ccd57f3\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 81914f1a92ea"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/game\-profile\-observer\-20260910\.json|docs/evidence/rls01/final\-9abf78a/authority\-after\-recovered\-boot\.json|docs/evidence/rls01/final\-9abf78a/authority\-after\-restart\.json|docs/evidence/rls01/final\-9abf78a/authority\-before\-recovered\-boot\.json|docs/evidence/rls01/final\-9abf78a/authority\-before\-restart\.json|docs/evidence/rls01/final\-9abf78a/initial\-empty\-authority\.json|docs/evidence/rls01/game\-intermediate\-8bd2b26/authority\-after\-restart\.json|docs/evidence/rls01/game\-intermediate\-8bd2b26/authority\-after\-restored\-ui\.json|docs/evidence/rls01/game\-intermediate\-8bd2b26/authority\-before\-restart\.json|docs/evidence/rls01/game\-intermediate\-8bd2b26/authority\-before\-restored\-ui\.json|docs/evidence/rls01/game\-sandbox\-snapshot\-20260910\.json|docs/evidence/rls01/github\-direct\-install\-9abf78a/authority\-after\.json|docs/evidence/rls01/github\-direct\-install\-9abf78a/authority\-before\.json|docs/evidence/rls01/sdk\-fresh\-aee3d61/independent\-stopped\.json)\z''']
+regexes = ['''\A006f4ead8dd98707d72d9dfbcba091ed4dd535ed663f6ae35a820dc218fde460\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 81e0414c085e"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/sky\-cloud\-text\-pricing\-verification\.json)\z''']
+regexes = ['''\A8aac82890ea33ea3bace57d7b25e6c46142b30859e0c53fe988380cf2d12af1a\z''']
+
+[[rules.allowlists]]
+description = "public-attestation-root 825cfc8ea461"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:services/android\-attestation\-verifier/vendor/keyattestation/testdata/tegu/sdk36/SB_EC_2026_ROOT\.json|services/android\-attestation\-verifier/vendor/keyattestation/testdata/tegu/sdk36/TEE_EC_2026_ROOT\.json)\z''']
+regexes = ['''\AMyevYthKuJevJSOhbctYAeYMXVuX9ByhvQmcR4T3t0M=\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 839198212879"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\Abd52409955e8768f7183ef09d9b8733197657388c6992b9eb22dec20774f6680\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 8402832ad17a"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-041ef013ce90ef63fcf6142072895094\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 840b26883bf2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/43\-soak\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-d6d070505868c09ce0ed64f2f815d297\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 842e088e99a1"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-3db955a4c6816209dfb8e4f44abae7fc\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 86e7bbf55a85"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-06824a9839a71606eab6aa12290f7450\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 8a889499e161"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-441e6310b6ca5af5dfc272828ff36658\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 8e70b93ad6d3"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-1cc8ee22ed921f9893b2325061c34a20\z''']
+
+[[rules.allowlists]]
+description = "synthetic-signature-test 8e960cea1d6e"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:tests/billing\.test\.mjs)\z''']
+regexes = ['''\Areceipt\-ingest\-secret\-with\-at\-least\-32\-bytes\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 8f08de0d709c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-7b7dd312445eb7d48c3746aefecee17e\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 8fb868511974"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-84783246de1f60e968d1a2ee684a4bba\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 8fcfeff55ba5"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-d5fe391c3eabac91e92fb079009f7452\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 9210682107ee"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/soak42\-ocr\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-3e2826977a6c388295f6499205c0b0d8\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 9369fb4f6502"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\A3d84eebe278f5363d74f097671c93fa62cb128a1a5d7c76d0aa4553510f15844\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 944c69e91a91"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|docs/evidence/spider\-improvement\-cycle\.json)\z''']
+regexes = ['''\A73bbe877f3c8fb283a219af0eee091ad745e1bfdf967216c95aefd63013a2ac1\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 95ffd752197b"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-b8ea28e57b93e29aa72f73edac7c51fe\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 97cbc764d251"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2c475a98ae64434e951c2f3e5890d250\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 993b9bb6041c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-275f94645bf1d09355a86ebe8fb533f5\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 9a55e1197c65"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/gx00/current\-copy\-foundations\-root\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\A0ff087234a79ddcb8cae3f827fe850a8f83c70a381d07c85e338dd675ba2008c\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 9b7836ee2df9"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/auth\-health\-b8287bc\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/data\-abi\-b8287bc\.json|docs/evidence/os\-base/data\-abi\-serial\-failed\-b8287bc\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-base/ui\-startup\-b8287bc\.json|docs/evidence/os\-d4\-probe\-20260910/original\-ui\-startup\-report\.json|docs/evidence/os\-d4\-probe\-20260910/overlay\-proof\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|docs/evidence/spider\-improvement\-cycle\.json)\z''']
+regexes = ['''\A5ca12ec132fa72846fde578f96bda28d8c05afac451927e5de27cc9447ab42c1\z''']
+
+[[rules.allowlists]]
+description = "synthetic-authenticator-fixture 9ba9971aefe8"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:systems/rock\-star\-os/os/desktop/check\-wallet\-ocr\.py|systems/rock\-star\-os/os/ui/test_atm_evidence\.py|systems/rock\-star\-os/os/ui/test_wallet_backup_evidence\.py|systems/rock\-star\-os/os/ui/test_wallet_evidence\.py|systems/rock\-star\-os/os/ui/test_wallet_replay\.py|systems/rock\-star\-os/os/ui/verify\-auth\.py|systems/rock\-star\-os/tests/test_adopt_legacy\.py|systems/rock\-star\-os/tests/test_os_desktop_backup_verify\.py)\z''']
+regexes = ['''\Afixture\-rock\-arm64\-001\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture 9d54ecbde93d"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:systems/rock\-star\-os/tests/test_hub_server\.py)\z''']
+regexes = ['''\Asigned\-a2a\-wallet\-fund\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture a268e896ff26"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-c6c81e846968fb86e36467e7ddfea624\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest a48699b0c83c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\Af4bdc6839fe80f503889e202c3c67ffe9e08898adde6931e188ea2966ce758e6\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest a54892ee830f"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/android\-a2a\-p256\-broker\-key\-20261002\.json)\z''']
+regexes = ['''\A87941ddf06a266af3082551a2a30fb54b087c524d6de39dd6cdc8143833b0573\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture a558aea21ca2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2b53f45bef27da6ab58009be52e6700c\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest a77281b2f151"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\Ada9654743c23644401a9c17193965ea39d39f4b2fd80aa3840e1e01447d78cc7\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture a959531a624b"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/power\-ui\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-d4fde2b0bca437cd913f3a4870af48eb\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest aa51a21f2caf"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/open\-pr\-integration\.json)\z''']
+regexes = ['''\Af1f552199ee51a17983865b1711cfd95152854081c67e930ef314c0c21b7a973\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture abb68fd4fd87"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-2f1142203fa769f81b9113c8d38484bf\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture abcfdefc53a4"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-9d32524b67ed81f32b5b4aa11b715bf1\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture af728d173676"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-ef8f1ece403d92fd880ea5f34d1a304f\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest b1e4d746555a"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\A44e1171e4aae4b0c312d67bcf91cfd2125813d12309d79df9fefcb041eca5a5a\z''']
+
+[[rules.allowlists]]
+description = "ordinary-text b5c025000e35"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/core/src/main/java/dev/rock/core/platform/PlatformStore\.java)\z''']
+regexes = ['''\AINVALID_A2A_HANDOFF_KEY\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest b695fca9fa79"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\A58ee651cb3cdb6e678725a93ed38476c390d9db2e0ca341496d30dad9bdc545f\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture b753fb3b2b1c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-de7099a0c6afc5ffe811640bfcccbbad\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture b7f4227751ab"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-local\-final/final\-d2\-lifecycle\-report\.json)\z''']
+regexes = ['''\Aui\-31aa248e291207340847ea2ee3f54962\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest b8c6e5aafabf"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/native\-pin\-readiness\-20260910/review\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|systems/rock\-star\-os/os/ui/pin\-readiness\.json)\z''']
+regexes = ['''\A37e9015e87cdf26e4d22df8beec9520bc40ff296ea7c67cea2ed8f1df6b2b16b\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture b8f2fd3d7326"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:systems/rock\-star\-os/tests/test_hub_server\.py)\z''']
+regexes = ['''\Asigned\-a2a\-wallet\-fund\-settle\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest bd222a8a7a25"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/android\-device\-owner\-session\-20261002\.json)\z''']
+regexes = ['''\A9abc6f08cbc7d37edb130fc45e12eeaf38106db86f146f897d7090486d241eb4\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture bdf6c66cb52a"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-165cf67c6490adb3bb6d593d2747eee5\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture bf0f413cc76e"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/registry\-negative\-b8287bc\.json|docs/evidence/os\-base/registry\-negative\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Anegative\-v2\-approved\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture c10d77a8ead4"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/backup\-restore\-b8287bc\.json|docs/evidence/os\-base/business\-lifecycle\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-1480713dfba3fc4fa1fd4fcb40817bf8\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest c1e332d0ddcd"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|docs/evidence/spider\-improvement\-cycle\.json)\z''']
+regexes = ['''\Ac4932a9b6b97423b249a53e58d706f820185467464699038ed7ca5b29815ba03\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest c2ab913bcd97"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|systems/rock\-star\-os/os/desktop/browser\-intake/intake\.json)\z''']
+regexes = ['''\A6bb21b0a2d5f5d7ad73e75b80ddc1d844ac770c4426b312d5740f2443455f0c0\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest c32c642c37ee"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json)\z''']
+regexes = ['''\Af2a4942e941db4f0530b907777f5f0a61afb5c28ef99f1d83bc4b07183ff235e\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest c401e38746cb"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|docs/evidence/spider\-improvement\-cycle\.json)\z''']
+regexes = ['''\A83c0d153e9ab3a77c6428fff58b3db659d978878aac4dfb9dd3abcb3b080a060\z''']
+
+[[rules.allowlists]]
+description = "public-signed-cursor-fixture c6877ed6a426"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:systems/rock\-star\-os/os/game_exchange/fixtures/connection\-v1\-vectors\.json)\z''']
+regexes = ['''\AeyJhZnRlcl9pZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAxZiIsImFsZ29yaXRobSI6IkVkMjU1MTkiLCJjcmVkZW50aWFsX2lkIjoiY3Vyc29yLWEiLCJjcmVkZW50aWFsX3JldmlzaW9uIjoxLCJlbnZpcm9ubWVudCI6InN5bnRoZXRpYyIsImV4cGlyZXNfYXQiOjE3ODkwMDAxMjAsImlzc3VlZF9hdCI6MTc4OTAwMDAwMCwiaXNzdWVyIjoiMDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAxIiwic2NoZW1hIjoicm9jay1nYW1lLWNvbm5lY3Rpb24tY3Vyc29yLzEiLCJzY29wZV9zaGEyNTYiOiI3MzUxN2IwYWFlODlhNjcxMGQ3MDMwNzQxZWQzYTg3MTUyYTBiMGEyMTYzZTNiMWZlMzNmOWFjNWJlOTIzMzU4Iiwic2lnbmF0dXJlIjoidzljSVBXT1ZzUkhCUjZQbHRrMFBObGg3eFZ0NjF5YnBFTUdVRW53Z0REYmdfYndZWE11TUVzZzcxY1lQQy1YRUZ4NXM3UE50TDVnNmEzVUtRdW1nQlEifQ\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture c888d2daf35b"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/backup\-restore\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-7d438b0cd55564e34ab96815389b3918\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture c8d61293ca83"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/soak42\-ocr\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-69d4d81295c81e331cb7ee15d9fbf463\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture c99e9cce0f03"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-09ea5745c94f252a4a57bb464ed0a07f\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest ca4032ab53ec"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/sky\-csv\-storage\-hardening\.json)\z''']
+regexes = ['''\A77188e329f8e161cc5104efdb566662593d6171f75d8ec3e34367a9b145f53ef\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture ca816db3273a"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-e30dd2363e16a0fbf2f47fdd227a94dd\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest cc3502b5bad3"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/rls01/game\-intermediate\-8bd2b26/supplemental\-business\-compare\.json)\z''']
+regexes = ['''\Ab35d70eaf8c82146ac0be3afe0e4914cee11ea346ed60726f10d9b9ced060de3\z''']
+
+[[rules.allowlists]]
+description = "public-signed-cursor-fixture ce0df51f5c80"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:systems/rock\-star\-os/os/game_exchange/fixtures/connection\-v1\-prefixed\-account\-vectors\.json)\z''']
+regexes = ['''\AeyJhZnRlcl9pZCI6IjAwMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAxZiIsImFsZ29yaXRobSI6IkVkMjU1MTkiLCJjcmVkZW50aWFsX2lkIjoiY3Vyc29yLWEiLCJjcmVkZW50aWFsX3JldmlzaW9uIjoxLCJlbnZpcm9ubWVudCI6InN5bnRoZXRpYyIsImV4cGlyZXNfYXQiOjE3ODkwMDAxMjAsImlzc3VlZF9hdCI6MTc4OTAwMDAwMCwiaXNzdWVyIjoiMDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAxIiwic2NoZW1hIjoicm9jay1nYW1lLWNvbm5lY3Rpb24tY3Vyc29yLzEiLCJzY29wZV9zaGEyNTYiOiIwZWFlYzY5MDhjYmVkYjA1MWQ4MjNhNzg0NDIzN2JmMDVjZjk4MzBjMjdjMmJkYjJlMGRiMjBlNWNmNWU4ZjlmIiwic2lnbmF0dXJlIjoic2xVUXVZaGlxR0hTekY1VXM3emJDNXVEQjlvcU9QeGl2RXJHYV91NElFU25XRGxod3Y2dDdqZS1HV3pqVUI4SmRBTkpWZ2Z1dUpwV3ZoZ3c5a1l0QlEifQ\z''']
+
+[[rules.allowlists]]
+description = "public-fixture-digest cff80a09d989"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:systems/rock\-star\-os/os/registry/fixtures/approved\-authors\.json)\z''']
+regexes = ['''\A26977ddd0dcea68032f6e24403370c3680cb6974d49e3a6b83f5494da8ee07ed\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture d4d948319d16"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-282927aee35f51f0de90bd668ba79c70\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest d90286dbdf65"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/native\-integration\-20260909\.json|docs/evidence/os\-base/ci\-057ea98\-native\.json|docs/evidence/os\-base/ci\-1809046\-native\.json|docs/evidence/os\-base/ci\-851081a\-native\.json|docs/evidence/os\-base/ci\-a02401b\-native\.json|docs/evidence/os\-base/ci\-a219277\-native\.json|docs/evidence/os\-base/ci\-b325767\-native\.json|docs/evidence/os\-base/ci\-d16ba2d\-native\.json|docs/evidence/os\-base/freeze\-b8287bc\.json|docs/evidence/os\-base/host\-c7b29a9\.json|docs/evidence/os\-base/runtime\-b8287bc\.json|docs/evidence/os\-base/runtime\-d5fd1d5\.json|docs/evidence/os\-base/runtime\-f3ec843\.json|docs/evidence/os\-native\-repeat\-20260910/native\-report\.json|systems/rock\-star\-os/os/desktop/browser\-intake/intake\.json)\z''']
+regexes = ['''\A76f338d45fb73b7decb7d8b4ef6e95edf7ce9583722c5220642a9be85fc2cc89\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest da4531d632f8"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/gx00/current\-copy\-foundations\-root\.json)\z''']
+regexes = ['''\Af9ff0470ca2f974de033d0661e2f328e40d8cc87aae8c7fc76193bd4eb221b96\z''']
+
+[[rules.allowlists]]
+description = "idempotency-example dc4ff8231f43"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/game\-api\-contract\-draft\.md)\z''']
+regexes = ['''\Aapproval\-begin\-01\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest de59dbc63f7d"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/sky\-individual\-tool\-verification\.json)\z''']
+regexes = ['''\Ab2cfe7232388e3c4e30e017a2a0cb4680d5cc216df76d5900b6dd44d54a86d2d\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture dec02157fca3"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-63f0087055ce8c6116cfae7ff7146b5b\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture e44523ec7e4c"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/atm\-ui\-proof\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-25fca6632f17f334eef121cbd45a3509\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture e6776c9f5cf8"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-6bcfc0a76ffc5533ea9721a01ceeacf3\z''']
+
+[[rules.allowlists]]
+description = "public-attestation-root e6cecd082f12"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:services/android\-attestation\-verifier/vendor/keyattestation/testdata/sony\-xperia10\-iii/sdk33/TEE_EC\.json)\z''']
+regexes = ['''\AgdG7IUVTlNoNf2DCV7dUWYDtUt/XyKiBbM88pwdDb54=\z''']
+
+[[rules.allowlists]]
+description = "public-attestation-root e73f953c191f"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:services/android\-attestation\-verifier/vendor/keyattestation/testdata/frankel/sdk37/TEE_EC_2026\.json)\z''']
+regexes = ['''\AdXxiaiqR/oUlNlRgSNfKP1DfbHRcAm25/4nMRwPFlIE=\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture e8e9b763fcda"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-67897daf35270b29e09b09ebdc7db974\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture ed8353b02af1"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/43\-closed\-inspection\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-d854f165c5a72247c01b3863861498c4\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture ef396506ae18"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/backup\-restore\-b8287bc\.json|docs/evidence/os\-base/business\-lifecycle\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-b295387a5cd3becc6fee8ca388eb3d00\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest f0ca7aa34ec8"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/android\-a2a\-p256\-broker\-key\-20261002\.json)\z''']
+regexes = ['''\A2db57cf45a5f1196fcc3dcaeeb6aef03baa8c8bf7370f6979def9c14554b11ac\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest f17d96a305b7"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/gx00/gx00\-host\-gate\-independent\-review\.json)\z''']
+regexes = ['''\A2cf7a82985a162366ec70f6114f980ec4a7482ef18569ee8d05d7ab2ba4687c1\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture f28803469bc2"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/backup\-restore\-b8287bc\.json|docs/evidence/os\-base/business\-lifecycle\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-d2373d4240fbe86396d64700d1947884\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture f2b18441f478"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-local\-final/final\-d2\-lifecycle\-report\.json)\z''']
+regexes = ['''\Aui\-77f02dbb35e9e352d7d872aa19c885f0\z''']
+
+[[rules.allowlists]]
+description = "idempotency-fixture f838d711cfa8"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/os\-base/soak42\-closed\-inspection\-b8287bc\.json|docs/evidence/os\-base/soak42\-ocr\-failed\-b8287bc\.json)\z''']
+regexes = ['''\Aui\-f75cf60f868df175b1ca5bc92c19e7bd\z''']
+
+[[rules.allowlists]]
+description = "ordinary-text fa8498c5ced6"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:tests/decision\-provider\.test\.mjs)\z''']
+regexes = ['''\Aconsent/privacy\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest fd4620305984"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/launch/backend\-rc3\-local\-20260912\.json|docs/evidence/os\-base/hub\-faults\-b8287bc\.json|docs/evidence/os\-local\-final/final\-hub\-continuation\-report\.json|docs/evidence/os\-local\-final/final\-local\-os\-handoff\-report\.json|docs/evidence/rls01/final\-9abf78a/plan\.json|docs/evidence/rls01/final\-9abf78a/summary\.json|docs/evidence/rls01/sdk\-final\-9abf78a/fresh\-probe\.py|systems/rock\-star\-os/os/platform/hub_fault_fixture\.py)\z''']
+regexes = ['''\A06e3fd8fda29bb60ab59557de61edb0aecdb231134be30e75b455f8e1b792fa9\z''']
