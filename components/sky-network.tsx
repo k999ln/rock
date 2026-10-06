@@ -96,6 +96,6 @@ export default function SkyNetwork() {
     </div>
     <SkyMcpCenter showStatusRail={false} open={mcpOpen} connected={connected} onOpenChange={setMcpOpen} onOpenDevice={()=>{setMcpOpen(false);setDeviceOpen(true);}}/>
     <SkyConnectionCenter open={providerOpen} onOpenChange={setProviderOpen}/>
-    <Dialog open={deviceOpen} onOpenChange={setDeviceOpen}><DialogContent><DialogTitle>PCの接続を設定</DialogTitle><DialogDescription>接続できない場合の手順と詳細設定です。</DialogDescription><DeviceConnection connectionBlocked={access.executionBlocked}/></DialogContent></Dialog>
+    <Dialog open={deviceOpen} onOpenChange={setDeviceOpen}><DialogContent className={styles.deviceDialog}><DialogTitle>PCの接続を設定</DialogTitle><DialogDescription>接続できない場合の手順と詳細設定です。</DialogDescription><DeviceConnection connectionBlocked={access.executionBlocked}/></DialogContent></Dialog>
   </WorkspaceShell></div>;
 }

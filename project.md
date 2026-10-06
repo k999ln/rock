@@ -2,7 +2,13 @@
 
 Security / ROCK。AMCのSYS15主担当は既存taskAssignmentsのH1（coordination）を維持する。main e12d880cのPR83受入を確認した後、stale-if-errorが保護対象responseや別requestのcacheを復活させる残存経路を独立検証で確認。専用branchで共通の再利用禁止とrequest照合を修正。回帰13試験は修正前3 pass /10 failから修正後13 pass /0 fail /0 skip。同一SHA CIは後続確認。main統合、公開、実機、警告dismissは行わない。検証結果は[証拠](docs/evidence/spider-cache-error-revalidation.json)へ追記する。
 
-2026-10-06 SPIDER cycle57: PR #84の旧head `de3a446b`は同一SHAの7検査が成功。main `1f864be0`のPixel build準備を作業branchへ取り込み、進捗本文は両方を保持し、共通nextActionは最新mainのOS11 / RLS02を維持する。cache sourceと13回帰試験は変更しない。取り込み後候補の検査は別途確認し、旧SHAの合格を転用しない。mainのCodeQL34件はidentity・rule・path・状態に変化なし。新たなDependabot #26/#27/#28は既存更新PRとの重複を確認して分離し、今回のcache修正で解消済みとはしない。
+2026-10-06 SPIDER cycle57: PR #84の旧head `de3a446b`は同一SHAの7検査が成功。main `1f864be0`のPixel build準備と、並行して統合された`e22b4a69`のSky接続案内修正を作業branchへ取り込み、進捗本文と各status fieldを両方保持し、共通nextActionは最新mainを維持する。cache sourceと13回帰試験は変更しない。取り込み後候補の検査は別途確認し、旧SHAの合格を転用しない。mainのCodeQL34件はidentity・rule・path・状態に変化なし。新たなDependabot #26/#27/#28は既存更新PRとの重複を確認して分離し、今回のcache修正で解消済みとはしない。
+
+## 2026-10-06 — Sky接続案内の画面内スクロール（SKY10 / O5）
+
+main `e12d880c`から隔離した配布候補へ、接続手順を展開した際に案内ダイアログが画面外へはみ出す表示修正だけを取り込む。高さを画面内へ制限して縦スクロールを許可し、閉じる操作を保つ。O5 / SKY10が主担当、SKY16は関連、接続APIのO4契約は変更しない。019の実画面で1280×720・390×844を確認済み。試験用route/config・DB・cacheはcommitから除外。配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019とUIコードおよび依存60322ファイル・59 symlinkのhashが一致し、既存画面証拠を対応付けた。
+
+利用者のmain反映指示を受け、PR #87で統合を進める。初回全体CIはDB状態表2ファイルの日付未同期で停止したため、既存生成コマンドで同期し、全体CIを再確認する。実接続grant、Provider、課金、公開・配備の受入は未完了のまま。待機・失敗・iPhone分岐はfixture表示試験であり実接続成功ではない。019のローカルDBに空Instagram設定1件を保存した事実を保持する。
 
 ## 2026-10-06 — Pixel 10向けOS完成作業を開始（OS11 / RLS02）
 
@@ -1176,7 +1182,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-05 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
+最終更新: 2026-10-06 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

@@ -144,7 +144,7 @@
   ],
   "mainRefresh": {
     "cycle": 57,
-    "baseCommit": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+    "baseCommit": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
     "priorVerifiedHead": "de3a446bad36db49ff1e5a39b8cae74bc6862618",
     "priorChecksPassed": 7,
     "conflicts": [
@@ -193,6 +193,11 @@
         "reason": "Existing local installation lacks ai; GitHub full install and verification still required."
       }
     },
-    "mainMerged": false
+    "mainMerged": false,
+    "firstIntegratedMain": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+    "preservedUpstreamWork": [
+      "Pixel build preparation from PR86",
+      "Sky connection dialog from PR87"
+    ]
   }
 }
