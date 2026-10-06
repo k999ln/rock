@@ -1,0 +1,32 @@
+{
+  "upstream": {
+    "name": "http-cache-semantics",
+    "version": "4.3.0",
+    "source": "https://github.com/kornelski/http-cache-semantics/commit/b1d4bd682fbab0252985de45219f4e7497c0067c",
+    "license": "MIT"
+  },
+  "localVersion": "4.3.0-rock.1",
+  "advisory": "GHSA-ch52-4w7c-c8xp",
+  "files": [
+    {
+      "path": "LICENSE",
+      "upstreamSha256": "ab868ad5a2ef5068560d9cd3b2180ec63c140bb4c5cae1ba779d300a0ac74fa3",
+      "patchedSha256": "ab868ad5a2ef5068560d9cd3b2180ec63c140bb4c5cae1ba779d300a0ac74fa3"
+    },
+    {
+      "path": "README.md",
+      "upstreamSha256": "be77466544e7060ad859664e779d84db4440f6dcca28da0975d0bcd97000c9fa",
+      "patchedSha256": "be77466544e7060ad859664e779d84db4440f6dcca28da0975d0bcd97000c9fa"
+    },
+    {
+      "path": "index.js",
+      "upstreamSha256": "ede1cc404a492fa348eb9d97a3007a0d72aa717bd22cd86a56bd0824c19729ca",
+      "patchedSha256": "6fe495bcec13fa420265dd864a717fa4da96b6554bc52e35f3d36d68072ef636"
+    },
+    {
+      "path": "package.json",
+      "upstreamSha256": "dbe99941ed2092d43257294405cfb389a476ef54a029488b51125e6f3a777fde",
+      "patchedSha256": "9af2a92025be8010064d969dfe21c25bbb890c75c449543cbe60a8c089e0b976"
+    }
+  ]
+}

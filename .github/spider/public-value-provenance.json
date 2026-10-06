@@ -1,0 +1,2272 @@
+{
+  "schemaVersion": 1,
+  "reviewedHead": "822150c3928ad288c4d314a24195f373bd967eea",
+  "occurrences": 2942,
+  "distinctValues": 161,
+  "classifications": {
+    "idempotency-fixture": 87,
+    "public-artifact-digest": 55,
+    "public-rfc8032-seed": 1,
+    "public-webauthn-authenticator-data": 1,
+    "synthetic-rejection-test": 1,
+    "browser-storage-name": 2,
+    "public-rfc8032-key": 1,
+    "idempotency-example": 2,
+    "public-attestation-root": 4,
+    "synthetic-signature-test": 1,
+    "synthetic-authenticator-fixture": 1,
+    "ordinary-text": 2,
+    "public-signed-cursor-fixture": 2,
+    "public-fixture-digest": 1
+  },
+  "values": [
+    {
+      "candidateSha256": "0280f7ac68cce3d3e6d4bfdab784727498beda5e023f480927170edd1857e143",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/backup-restore-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/preserved_receipts/completed_jobs/2/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "03ff1b2d0d2ce214941f36921bbf468589dbb89ac8122b892837fad8f00db343",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /logs/current-restore-api-root.log",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/gx00/current-copy-foundations-root.json",
+        "line": 17,
+        "field": [
+          "/logs/current-restore-api-root.log"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "06aa32d71d3a960ddc223290aa4a019401b8797677b38a751b327e305f3359e6",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/vkeys.js",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 397,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/vkeys.js"
+        ]
+      },
+      "exactPathCount": 15
+    },
+    {
+      "candidateSha256": "099da475a54aacbacabde231639eed7b00b0a9359cddd2598004bd8b8ad23237",
+      "classification": "public-rfc8032-seed",
+      "evidence": "systems/rock-star-os/src/blackberryrock/sdk.py: RFC8032_PUBLIC_TEST_SEED; RFC 8032 section 7.1",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "android/core/src/test/resources/a2a-wallet-handoff-request-v1.json",
+        "line": 13,
+        "field": [
+          "/testPrivateKeySeedHex"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "09d6b8043c9174642811eddb1df6276c6bdac32985a928bf305f154be08ebc20",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 57,
+        "field": [
+          "/business/jobs/4/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "0a3a40a424a67033d0d80f397bc041a18d9f8adf970beaf6a59ad2a3b05aa64d",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /profiles/0/tokenizerSha256",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "android/core/src/test/resources/model-profiles-fixture.json",
+        "line": 17,
+        "field": [
+          "/profiles/0/tokenizerSha256"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "0ba192ce34a776f7d7eba84cd5ade510ff63c3346c78a3a2edd20225e4e5daa4",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 267,
+        "field": [
+          "/business/jobs/25/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "0edeb8338fd723ccc944437e6d1bf0666c4cb210a7a1d7c80bcdc0c7c4fbc439",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 167,
+        "field": [
+          "/business/jobs/15/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "11c8b2a1277cc3c603509b052154a708a99105d4edcccf2d32c48e8513b4e123",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /followUpCycles/5/sourceSha256/systems/rock-star-os/tests/test_wallet_auth_native.py",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "docs/evidence/spider-improvement-cycle.json",
+        "line": 1057,
+        "field": [
+          "/followUpCycles/5/sourceSha256/systems/rock-star-os/tests/test_wallet_auth_native.py"
+        ]
+      },
+      "exactPathCount": 15
+    },
+    {
+      "candidateSha256": "11f498a9884fc393657f207108bfa341d675ea16dd8b66a11bb114fe5cce0748",
+      "classification": "public-webauthn-authenticator-data",
+      "evidence": "os/game_exchange/fixtures/connection-v1-vectors.json: authenticatorData is RP ID hash, flags and counter, not signing key",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 487,
+        "field": [
+          "/database/wallet_idempotency/6/input/request/credential/response/authenticatorData",
+          "/receipts/ledger/2/input/request/credential/response/authenticatorData"
+        ]
+      },
+      "exactPathCount": 3
+    },
+    {
+      "candidateSha256": "165d11227d2749a3454f77faa21371a39781dd57a97e9d699aa43940223d5c26",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 227,
+        "field": [
+          "/business/jobs/21/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "16a649e08a9755b911544173889fc15a255da15ef2c14e4cad3bacc73e793973",
+      "classification": "synthetic-rejection-test",
+      "evidence": "tests/decision-provider.test.mjs: fixture instruction rejected before mocked fetch",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "tests/decision-provider.test.mjs",
+        "line": 153,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "17bc3cac268e9549f2b99eb2211c29c6d055d8557b556367c8a0b2ef7e826aa3",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/8/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "1806fceb640b07aea71ec3d24a6006d4b78f722c8b1ca57253cb96b9f6de0b1f",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 147,
+        "field": [
+          "/business/jobs/13/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "1975cc1db3c34abe1ba9af8caeb40e56bf376987e04a2d4296a2aaf8665c8bb0",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /logs/current-restore-api-final-14.log",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/gx00/current-copy-foundations-root.json",
+        "line": 19,
+        "field": [
+          "/logs/current-restore-api-final-14.log"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "1ce694370b7dd15159437b80bf89296a7e276297750abc5d0d7ce4a017b75d23",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /migration_sha256/drizzle/0038_android_attested_gateway_keys.sql",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "docs/evidence/sky-commerce-sql-main-validation.json",
+        "line": 112,
+        "field": [
+          "/migration_sha256/drizzle/0038_android_attested_gateway_keys.sql"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "1e26994d40f3073ba6da0bbf20e247aa60399cb48f652ca9c9d46ff93fea6900",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-local-final/final-d2-lifecycle-report.json",
+        "line": 1,
+        "field": [
+          "/cycles/1/business/jobs/4/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "1e66cb6362bfe206ff586b551c6190ed92417d9fa628a27c7fe24b38cbb2c64f",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 367,
+        "field": [
+          "/business/jobs/35/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "1e89494502807ce94ffcecb4acef760c03f14d0d60449deea946ce957c751440",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 417,
+        "field": [
+          "/business/jobs/40/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "201bf419d4905b964931f84e207b3d66e3dc21d27d9f65a65321fd79c6fc4101",
+      "classification": "browser-storage-name",
+      "evidence": "lib/sky-zema-handoff.ts: public localStorage identifier",
+      "source": {
+        "commit": "e5306b5d0496f40f434d4a264546ec56180d7fd7",
+        "path": "lib/sky-zema-handoff.ts",
+        "line": 3,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "20add98a81c6b16b5d7d110e4b024b2524f3e498d99fd12914fd3ba7c4cad857",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/0/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "21217f0565dfb73b72bf771b7fe3f86823ee49f4f9944d44b21c64a37f322c02",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/10/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "225201d6bb0862cd8b0c6c52fdfc0ef88f3f76c66b9a1bee5d072ceed59209ed",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/business-wallet-preparation-failed-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/cycles/1/business/jobs/2/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "225f884d047eab57802b243c62b6df3530a7a4ef3296afdacbca750ecabe23e5",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 97,
+        "field": [
+          "/business/jobs/8/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "23e755e186035e84101fc042b7d091288b6116c7e67fa461660f89b881b570fe",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 327,
+        "field": [
+          "/business/jobs/31/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "23fc5f43c0118c4985ec7538102aad3c3e8ba5ebb0cf653550c98d39f92cb8cc",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 390,
+        "field": [
+          "/database/wallet_idempotency/3/key",
+          "/receipts/ledger/0/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "29d0370bba23632fb6c89569314cc3ad955ccc89e12b7e5c935c10e3632e9432",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 207,
+        "field": [
+          "/business/jobs/19/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "2f742967ad94e0d58e66b97e10ef7b1b738d768952759d528dfb7b2f278ef2e5",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-local-final/final-d2-lifecycle-report.json",
+        "line": 1,
+        "field": [
+          "/cycles/1/business/jobs/3/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "2fa312b780b9d460dc28c96422550a46c972afc04a762e57a23d324ea1951f67",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sourceHashes/scripts/check-work-api.mjs",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "docs/evidence/amc-main-integration.json",
+        "line": 81,
+        "field": [
+          "/sourceHashes/scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "34d04aa0f8ac6cead710dc959ffaf9b19eac06252701fe81f0aa7bff0d667c7d",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_wallet_auth_backend.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 756,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/tests/test_wallet_auth_backend.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "38dddea32433380e0b925c0917963ae4e62faf3b6eda620dadf14f39ef45081c",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sourceSha256/scripts/check-work-api.mjs",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/remote-ai-cloud-workflow-local-20261002.json",
+        "line": 82,
+        "field": [
+          "/sourceSha256/scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "39b91a2fceddb8e588f0f7686c82b5a16544f20e1a48a5eadad59c42c22c2d9b",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 362,
+        "field": [
+          "/database/wallet_idempotency/2/input/request/key",
+          "/database/wallet_idempotency/2/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "39bed7c65ae97c138afacf3febc3f76f612814afda745a2675903772fda2c584",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/backup-restore-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/preserved_receipts/completed_jobs/4/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "39d97e4303a155d357088abb6f901eeadc593231b1d69ddb6345f5b6355e6dea",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/update/verify-auth-health.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 644,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/os/update/verify-auth-health.py"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "39ffb19fb8cf21bd8a01e532d308e47c303d086a6ce133306f3f8003d289fc59",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sha256/android/automation/src/androidTest/java/dev/rock/automation/A2ABrokerDeviceKeyStoreTest.java",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/android-a2a-p256-broker-key-20261002.json",
+        "line": 33,
+        "field": [
+          "/sha256/android/automation/src/androidTest/java/dev/rock/automation/A2ABrokerDeviceKeyStoreTest.java"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "3bf1190831c2f18c6e97b08c7fd67408441686e67a77612cb469b94f3545686e",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /source_files_sha256/scripts/check-work-api.mjs",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/freeze-b8287bc.json",
+        "line": 213,
+        "field": [
+          "/source_files_sha256/scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "3dad3cfcad3f09d125e65d33c6d7f75cc644ef9d85f9c4c395f52498c009fccd",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_mcp_service_access.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 712,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/tests/test_mcp_service_access.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "40165800db5328e474ddc99f7e2d580ed79706f473ddc095991ca752edcf099c",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sha256/android/automation/src/main/java/dev/rock/automation/A2ABrokerDeviceKeyStore.java",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/android-a2a-p256-broker-key-20261002.json",
+        "line": 32,
+        "field": [
+          "/sha256/android/automation/src/main/java/dev/rock/automation/A2ABrokerDeviceKeyStore.java"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "412bbb530497c0bfa984ee72ee9619cb45a2936c5dd90f0fe05f453fbc91aabf",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 397,
+        "field": [
+          "/business/jobs/38/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "461e4c90262204d7b3cfbfc1a4975f97b91796f070e1b4baeee401c4a73e12fb",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/business-wallet-preparation-failed-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/cycles/1/business/jobs/4/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "472048841dfca39d1e936ee82d5267a62f8cd8d992a15a99da1ad820ae38cb07",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 467,
+        "field": [
+          "/business/jobs/45/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "493122f28e3d46346035beb4ad4f84300ca0f119964231d9dece8f559b040275",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 265,
+        "field": [
+          "/database/wallet_idempotency/0/input/request/key",
+          "/database/wallet_idempotency/0/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "49cf9b93b46429c84c0321bbda1fff5b5dbc0b245bcf05e22db301ad6596ed83",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /closed_files_sha256/authenticator.sqlite3",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/hub-final-9abf78a/launch/citation-update-closed-boundary.json",
+        "line": 32,
+        "field": [
+          "/closed_files_sha256/authenticator.sqlite3"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "4a3a7a590360be66af7ce8a7c7f7917019b1765b292fd2dff18e5ae22b17515c",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/business-wallet-preparation-failed-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/cycles/1/business/jobs/1/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "4aaf3a03b8e48c254220bebe531dcc178998fcfddd2553124d1c01bcd763c081",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 37,
+        "field": [
+          "/business/jobs/2/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "4b7d31e53c47e954b7f270c13a398ea7fab4e01c3ff13674850727d2e27930b3",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /artifact_sha256/gx00-cross-game-keys-independent.log",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/gx00/gx00-host-gate-independent-review.json",
+        "line": 187,
+        "field": [
+          "/artifact_sha256/gx00-cross-game-keys-independent.log"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "4c69e470852eae77ef12ae7c3d3e305acca135bcc8827534be78eb0922fedddb",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_registry_runner.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 752,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_registry_runner.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "4ebbe859de728e527bf2c053d3d7dabc7745b6c0c95cdf9dd7952317c3000b1f",
+      "classification": "public-rfc8032-key",
+      "evidence": "os/update/rock_update.py and src/blackberryrock/packages.py: PUBLIC_TEST_KEY verification public key",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "systems/rock-star-os/os/update/rock_update.py",
+        "line": 31,
+        "field": []
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "4f4edf1634d2be5f17a507f6b98fef488daefe070219e1a29d8fdaa605d125b5",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/11/key",
+          "/last_submitted_job/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "4fbb2c8fb2bc428b501f9d6a686b6b88054383d5c4bdfbde6aee3f0aa7018e34",
+      "classification": "idempotency-example",
+      "evidence": "os/system/README.md: poweroff request key",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "systems/rock-star-os/os/system/README.md",
+        "line": 31,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "503cb7c387451d58c972b84e5324fbd506bd57455586bddb5775577aa3315b05",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 67,
+        "field": [
+          "/business/jobs/5/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "51036bef4a0247873a34d97f364fd0856bd567c7aae76b72d9f2405791efb7ac",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_os_wallet_auth.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 739,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/tests/test_os_wallet_auth.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "52302c1d664386fca95befdb257bbd92cbd77287186bf8edf0bfe65f0d359408",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sourceHashesCapturedAtVerificationCompletion/scripts/check-work-api.mjs",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/sky-cloud-text-execution-verification.json",
+        "line": 44,
+        "field": [
+          "/sourceHashesCapturedAtVerificationCompletion/scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "53665b65ca857b43e4ff73a77f47fa14035b51f1d3ecc9e170ba53dcd2ce4c1e",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /source_sha256/os/update/verify-auth-health.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/auth-health-b8287bc.json",
+        "line": 211,
+        "field": [
+          "/source_sha256/os/update/verify-auth-health.py"
+        ]
+      },
+      "exactPathCount": 22
+    },
+    {
+      "candidateSha256": "53ca992f111707654f602cba5690b90acd87fae9b2456f2e435fe9c353c85b5d",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 47,
+        "field": [
+          "/business/jobs/3/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "53cab1fd885ca62bf59da0e17ff816d1682ad7cf55f20cfaf0730d0134a1581f",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /profiles/1/tokenizerSha256",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "android/core/src/test/resources/model-profiles-fixture.json",
+        "line": 35,
+        "field": [
+          "/profiles/1/tokenizerSha256"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "5aa1da6766fb80a173ab8fd89def3fe7a2392ef1d2522457a51ea9fd29b92eff",
+      "classification": "browser-storage-name",
+      "evidence": "lib/sky-result-library.ts: public localStorage identifier",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "lib/sky-result-library.ts",
+        "line": 2,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "5d43f94659e5b328013d5259433b87395e83ac9eced8124f3cedb9fa35e55f8a",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 297,
+        "field": [
+          "/business/jobs/28/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "5fa00650bf069b0209214612c328c66e85ca320486c67248bbc0c421bbc04209",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sourceSha256/scripts/check-work-api.mjs",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/sky-cloud-ui-verification.json",
+        "line": 69,
+        "field": [
+          "/sourceSha256/scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "6058664371bf5a3d6b1b7f1a3da503999293fbe289d6b4fcfad7015b6ebcd983",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 317,
+        "field": [
+          "/business/jobs/30/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "60c368be99d276728442e7419b89f534f9473fe26fdc86c163f5090fe5962426",
+      "classification": "idempotency-fixture",
+      "evidence": "rocketstar colony C0.1 demo commandId reused as idempotencyKey; no credential",
+      "source": {
+        "commit": "ea2728ec636caf1e966a6827f6ed163092373735",
+        "path": "docs/rocketstar-design/outputs/RockstarOS_Colony_C0_1/evidence/demo.json",
+        "line": 26,
+        "field": [
+          "/records/0/command/commandId",
+          "/records/0/command/idempotencyKey"
+        ]
+      },
+      "exactPathCount": 4
+    },
+    {
+      "candidateSha256": "60d41680c12c522bab8630ebda87d1893ea69c9705bce48e8bfcf8c112177609",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/business-wallet-preparation-failed-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/cycles/1/business/jobs/3/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "6168ff4feeb9ce95f2059fccad058d29ea764d7b3ef42b7be33ae404ad4f9cfa",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 217,
+        "field": [
+          "/business/jobs/20/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "64e7b650532f5ca94850619a2776b8daff340b279bfe16669f5afe6a5a0e9936",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 197,
+        "field": [
+          "/business/jobs/18/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "6651815b6c46ca2113acd80980997180f149e1fd7b55a7418cef6a17c43fa79e",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 405,
+        "field": [
+          "/database/wallet_idempotency/4/key",
+          "/receipts/ledger/1/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "66b3b04d36987b941799e8ec5bebcc08ed2f210b1e05d4010dae3e9b2763f183",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /file_sha256/1/0018-public-authenticator-pin.png",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/hub-wallet/financial-game-ui-4e31554/evidence.json",
+        "line": 168,
+        "field": [
+          "/file_sha256/1/0018-public-authenticator-pin.png"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "6b62e0b30b63d3fe5b7cccdd552483d3f523324094e453c5ad2f8a45c6d8b9cb",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /logs/current-restore-api-wal-before.log, /preserved_failure/public_copy/public_sha256",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/gx00/current-copy-foundations-root.json",
+        "line": 20,
+        "field": [
+          "/logs/current-restore-api-wal-before.log",
+          "/preserved_failure/public_copy/public_sha256"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "6df0c85542b2615577e193e3273bbbb4e047e6276d96066e1e08a95ec7e62718",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 437,
+        "field": [
+          "/business/jobs/42/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "7156d3f710e6ae074c8746a7e08226bc2d8c62e7d3479485936ba5878c62b4e1",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 87,
+        "field": [
+          "/business/jobs/7/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "7353ca263e52ca13b9ef78ed2661c23dae2f6667ee5553483a81f84d71e9254d",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 127,
+        "field": [
+          "/business/jobs/11/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "74c2aeba53277f87c048c0f0b289cd4ac27374ebd48a6491f10863ef51d5df7a",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/power-ui-b8287bc.json",
+        "line": 275,
+        "field": [
+          "/power_records/0/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "75532e04f52f20e07db648f7efbac187cf8fc569c8ecfcc8d0f8289fd2a2fe73",
+      "classification": "public-attestation-root",
+      "evidence": "vendor/keyattestation public certificate fixtures: verifiedBootKey is public boot verification key digest",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "services/android-attestation-verifier/vendor/keyattestation/testdata/walleye/sdk27/TEE_EC_NONE.json",
+        "line": 26,
+        "field": [
+          "/hardwareEnforced/rootOfTrust/verifiedBootKey"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "76117d6292737fbab7da5af56016e6de1689d355a617521350bbf380cf282a7e",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 77,
+        "field": [
+          "/business/jobs/6/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "7958627c5ceccc637816d23ad4eb3973d2a513e0142bda19b7cce205bab3f9d0",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 337,
+        "field": [
+          "/business/jobs/32/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "797adad484ba26e4c514ab78a0c6e164440f3d24ad7fc8961eb6ff12025055f0",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 17,
+        "field": [
+          "/business/jobs/0/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "7aa632f641c24f0822978de50fb945764b5bb74881166a65b650cd1d1e93d4e2",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/3/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "7b186b288a0e025ee7f34bef9647ca3f654559d4630e8418c8e87f4bb2e87f6b",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 426,
+        "field": [
+          "/database/wallet_idempotency/5/input/request/key",
+          "/database/wallet_idempotency/5/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "7d5a72edd142ecfd556e7e94e3022d551d9273114bb4ee6c5038022b8a0ceb07",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/keysym.js",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 394,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/keysym.js"
+        ]
+      },
+      "exactPathCount": 15
+    },
+    {
+      "candidateSha256": "7efd294d64a46d1b153ee69d931282d47c0d073f4d951304efe1dee7d4eb723e",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 307,
+        "field": [
+          "/business/jobs/29/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "7f04602037bfa158182f3c2f89be50f0150750e9342d3a280b69396ee213eb3c",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/4/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "7f9b4fe2d4d407dd89392659975b1e81c7f667ba6d2ee0e3385e88343b297efe",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_os_client.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 750,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_os_client.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "7fdb5c7bcda0a0b66985fdbb909a4f4e1367c6195e7ef2aa977450934e3b9ff8",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/domkeytable.js",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 390,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/domkeytable.js"
+        ]
+      },
+      "exactPathCount": 15
+    },
+    {
+      "candidateSha256": "80f4fbc583247b5ee5efce73d1a87e5ac4dd5d0feefd1878160dd72c90912889",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /before/game_connection_a/game_read_sync/bindings/0/key_sha256, /after/game_connection_a/game_read_sync/bindings/0/key_sha256",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/rls01/final-9abf78a/business-readback.json",
+        "line": 366,
+        "field": [
+          "/before/game_connection_a/game_read_sync/bindings/0/key_sha256",
+          "/after/game_connection_a/game_read_sync/bindings/0/key_sha256"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "81914f1a92eacdb98e7602ef87aaa9e153188e9ffaf84bb4bc83abfd6056b4d5",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /stopped_snapshot/identities/credentials.json",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/game-profile-observer-20260910.json",
+        "line": 647,
+        "field": [
+          "/stopped_snapshot/identities/credentials.json"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "81e0414c085ef3cb93ee084e12a4619b4f11070ab19d3dd74494cca4f8363d73",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sourceFileSha256/scripts/check-work-api.mjs",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/sky-cloud-text-pricing-verification.json",
+        "line": 59,
+        "field": [
+          "/sourceFileSha256/scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "825cfc8ea4611cd78ac54dc3d0de05d8f531d2e5f9c8745b70b912c25ea4f403",
+      "classification": "public-attestation-root",
+      "evidence": "vendor/keyattestation public certificate fixtures: verifiedBootKey is public boot verification key digest",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "services/android-attestation-verifier/vendor/keyattestation/testdata/tegu/sdk36/TEE_EC_2026_ROOT.json",
+        "line": 28,
+        "field": []
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "8391982128793b76e68a6d541c3cf3ae5177819a252441611045df63caea5093",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/ui/test_auth.inc",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 603,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/os/ui/test_auth.inc"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "8402832ad17ac2f397a7d54e3b138c2675b2d7ebe1210737779ac0cd587c7de5",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 247,
+        "field": [
+          "/business/jobs/23/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "840b26883bf2f6c4de7a69ad23aec5803080b5db5af85328a2f4adb40e4a1709",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 27,
+        "field": [
+          "/business/jobs/1/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "842e088e99a12a5ee3f329888c451cfa6bda81101c4509cd5a58775f9f23346f",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 387,
+        "field": [
+          "/business/jobs/37/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "86e7bbf55a857cbfc2defdf64cfe7a25103646d667b077985505d0b3105f65de",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 427,
+        "field": [
+          "/business/jobs/41/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "8a889499e161ee6d62660304613275f57036d0a0702d51fd8df7317d3dcb4248",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 257,
+        "field": [
+          "/business/jobs/24/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "8e70b93ad6d3b096800b68b4cf385b3d8cae173840a0922dde083253fbba51a8",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 357,
+        "field": [
+          "/business/jobs/34/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "8e960cea1d6e7caad7e4fb70123a4ee88c9d7b4d9281b2f64ae011763dcafca1",
+      "classification": "synthetic-signature-test",
+      "evidence": "tests/billing.test.mjs: local HMAC fixture, synthetic timestamp and body; no provider request",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "tests/billing.test.mjs",
+        "line": 36,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "8f08de0d709cf1c84d4c817069aa9da11605a9bcf3e030c434cffbd553a580e0",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 136,
+        "field": [
+          "/database/authentication/wallet_auth_quotes/0/issue_key",
+          "/database/authentication/wallet_auth_quotes/0/quote/issue_key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "8fb868511974c912cfcde7583d332a38e4281341c6c17625220a0182ca9e8def",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 447,
+        "field": [
+          "/business/jobs/43/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "8fcfeff55ba51af4c68eb281c5388ea04877f6b26cef851e0723f965436ff4a1",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 237,
+        "field": [
+          "/business/jobs/22/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "9210682107ee6ab398db8a1f74325d75909440a828811dab0d84b05e665caccd",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/1/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "9369fb4f6502a22ea129bc190231f394950bec129d6b5b28be225d56ba40bb73",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /input_sha256/systems/rock-star-os/os/ui/wallet-evidence-auth.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/ci-a219277-native.json",
+        "line": 654,
+        "field": [
+          "/input_sha256/systems/rock-star-os/os/ui/wallet-evidence-auth.py"
+        ]
+      },
+      "exactPathCount": 12
+    },
+    {
+      "candidateSha256": "944c69e91a91a88675a2539fb522c84134b0d9f71b900ebc23e428ce0fec8b6a",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /followUpCycles/7/sourceSha256/systems/rock-star-os/os/ui/verify-auth.py",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "docs/evidence/spider-improvement-cycle.json",
+        "line": 1380,
+        "field": [
+          "/followUpCycles/7/sourceSha256/systems/rock-star-os/os/ui/verify-auth.py"
+        ]
+      },
+      "exactPathCount": 15
+    },
+    {
+      "candidateSha256": "95ffd752197bc382180446829d94b6130afd4571c75ab146c240f94fd2e0f068",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 377,
+        "field": [
+          "/business/jobs/36/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "97cbc764d2510c112a85df222fb4dc71673970fcf48d2c913837e635edd3c13e",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 287,
+        "field": [
+          "/business/jobs/27/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "993b9bb6041ce2504747bf2096ddb6a69e66a91beaf5d39e21455978cd03e54e",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 331,
+        "field": [
+          "/database/wallet_idempotency/1/input/request/key",
+          "/database/wallet_idempotency/1/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "9a55e1197c65a4db9097173b78ecb0342aa7dbe5108384b6e422ee1addf0ae39",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /files/systems/rock-star-os/tests/test_current_restore_api.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/gx00/current-copy-foundations-root.json",
+        "line": 12,
+        "field": [
+          "/files/systems/rock-star-os/tests/test_current_restore_api.py"
+        ]
+      },
+      "exactPathCount": 3
+    },
+    {
+      "candidateSha256": "9b7836ee2df9cb69014c3958298d3d39887752ec2b4b8ae10e38329c48641e5c",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /followUpCycles/5/sourceSha256/systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator, /followUpCycles/7/sourceSha256/systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "docs/evidence/spider-improvement-cycle.json",
+        "line": 1052,
+        "field": [
+          "/followUpCycles/5/sourceSha256/systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator",
+          "/followUpCycles/7/sourceSha256/systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S55rockauthenticator"
+        ]
+      },
+      "exactPathCount": 21
+    },
+    {
+      "candidateSha256": "9ba9971aefe833c7e29b251455f4bcbb6cb4d207806564c3bc594e6c1fe69426",
+      "classification": "synthetic-authenticator-fixture",
+      "evidence": "os/ui/test_atm_evidence.py and test_wallet_evidence.py: TemporaryDirectory authenticator test fixture",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "systems/rock-star-os/os/desktop/check-wallet-ocr.py",
+        "line": 142,
+        "field": []
+      },
+      "exactPathCount": 8
+    },
+    {
+      "candidateSha256": "9d54ecbde93d7da5a125a964768469354c608d81b2964b1c7b57d27aad4097ea",
+      "classification": "idempotency-fixture",
+      "evidence": "tests/test_hub_server.py: synthetic wallet sale request identifier",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "systems/rock-star-os/tests/test_hub_server.py",
+        "line": 309,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "a268e896ff265e585be2cea9cfe27883b3a75677c7785667b87793e7918caeec",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/6/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "a48699b0c83c737dd0d8a413f09ca10e8ac22fb880ad121bb78fa9029cd8fe96",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_status.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 753,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_status.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "a54892ee830f980c66d87944dafd3c443f34c809d1434e9a51226055c9b53638",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sha256/lib/a2a-wallet-handoff-auth.ts",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/android-a2a-p256-broker-key-20261002.json",
+        "line": 35,
+        "field": [
+          "/sha256/lib/a2a-wallet-handoff-auth.ts"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "a558aea21ca2c99760128902fc4b48840227b6c28e333880bf717216eb171e44",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 277,
+        "field": [
+          "/business/jobs/26/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "a77281b2f151388c8a068b58e9369461a166a187dfc431906e356653c160fc2b",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_profile.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 751,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_profile.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "a959531a624bea8d6e3214fb58323cb72ce6d0e80b8e32c6e7fe5a968c02deb6",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/power-ui-b8287bc.json",
+        "line": 289,
+        "field": [
+          "/power_records/1/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "aa51a21f2caf9fbfe2f8cb63ec67157b1cc35ce0660662b187d3d9cb4e473bad",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sourceHashes/scripts/check-work-api.mjs",
+      "source": {
+        "commit": "82d2f213825ca10dccacb57a154567a27a8d68eb",
+        "path": "docs/evidence/open-pr-integration.json",
+        "line": 47,
+        "field": [
+          "/sourceHashes/scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "abb68fd4fd87db95b8144bd336aa4e871c2e7c2aded036caf09a67186828d6e9",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 157,
+        "field": [
+          "/business/jobs/14/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "abcfdefc53a48f14c11d7c115489b184be8404b6dea02d9a8f3ad9cdbb88749b",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 530,
+        "field": [
+          "/database/wallet_idempotency/7/key",
+          "/receipts/ledger/3/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "af728d1736768ed1d5be71a7a0a2e65e0e6983f2fc5465b35a89da577f628dd5",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 407,
+        "field": [
+          "/business/jobs/39/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b1e4d746555ac024b70c78c979c9103941b4dc95351cb439860d581b58236e39",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/mcp_broker/service_access.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 463,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/os/mcp_broker/service_access.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "b5c025000e359554ff2754813ba11711b140e16c4f1adc1dcdef3322421e4f00",
+      "classification": "ordinary-text",
+      "evidence": "PlatformStore.java: validation field label passed to key()",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+        "line": 510,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b695fca9fa7953e45e40e6972840f100b0aef69cbbb56c6736f6db8e2d6a78e8",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_wallet_auth_billing_recovery.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 757,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/tests/test_wallet_auth_billing_recovery.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "b753fb3b2b1c639e4d22f6bd0673f2ca1083eade9bf20e94aaf60d2c4292cfb9",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/9/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b7f4227751abc481e3188d184c2dbba3a72aa40ac97ef96e2fc2c1a7da0303ec",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-local-final/final-d2-lifecycle-report.json",
+        "line": 1,
+        "field": [
+          "/cycles/1/business/jobs/2/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b8c6e5aafabf9fef58988dbb2f137c89ce4294064733b94289474a462cac9e0c",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /original_sources/os/ui/auth-ui.inc, /candidate_sources/os/ui/auth-ui.inc",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-pin-readiness-20260910/review.json",
+        "line": 9,
+        "field": [
+          "/original_sources/os/ui/auth-ui.inc",
+          "/candidate_sources/os/ui/auth-ui.inc"
+        ]
+      },
+      "exactPathCount": 16
+    },
+    {
+      "candidateSha256": "b8f2fd3d73268b6dcefe3e8b6e5c90267aabfece1a956279554489f10c97c5d2",
+      "classification": "idempotency-fixture",
+      "evidence": "tests/test_hub_server.py: synthetic wallet settle request identifier",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "systems/rock-star-os/tests/test_hub_server.py",
+        "line": 310,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "bd222a8a7a25f23a7a6043c97b6599202008ada912fa3ad17d580ec27db45381",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sha256/scripts/check-work-api.mjs",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/android-device-owner-session-20261002.json",
+        "line": 31,
+        "field": [
+          "/sha256/scripts/check-work-api.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "bdf6c66cb52adaafd1393884739fa41a3a4c9261091be753fe4c85bddaf1502c",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 187,
+        "field": [
+          "/business/jobs/17/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "bf0f413cc76ed35b38e4ed9c1adf3b3ec0c67e771645f75787ef88a60388bac4",
+      "classification": "idempotency-fixture",
+      "evidence": "registry-negative evidence: hub jobs/requests key, rejection fixture",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/registry-negative-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/closed_database/hub/jobs/3/key",
+          "/closed_database/hub/requests/9/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "c10d77a8ead4b81458402f46d378671cd1d95683726158cb04542b4519c5cb35",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/backup-restore-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/preserved_receipts/completed_jobs/1/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "c1e332d0ddcda7e9e61b58e6076dcebc57688084207d83307c0095d0eec05808",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /followUpCycles/17/baselineSourceSha256/systems/rock-star-os/os/registry/fixtures/PUBLIC-FIXTURE-KEY.pem, /followUpCycles/17/testedSourceSha256/systems/rock-star-os/os/registry/fixtures/PUBLIC-FIXTURE-KEY.pem",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "docs/evidence/spider-improvement-cycle.json",
+        "line": 3864,
+        "field": [
+          "/followUpCycles/17/baselineSourceSha256/systems/rock-star-os/os/registry/fixtures/PUBLIC-FIXTURE-KEY.pem",
+          "/followUpCycles/17/testedSourceSha256/systems/rock-star-os/os/registry/fixtures/PUBLIC-FIXTURE-KEY.pem"
+        ]
+      },
+      "exactPathCount": 15
+    },
+    {
+      "candidateSha256": "c2ab913bcd97547a4d6a7ba3462ee43d97971d7d2ea656f44a52f9c9e60da446",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/fixedkeys.js",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 391,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/fixedkeys.js"
+        ]
+      },
+      "exactPathCount": 15
+    },
+    {
+      "candidateSha256": "c32c642c37eec3bd7f0d50cd783364057ba5f7810aa0c854e0fac129e9eed207",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_desktop.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 749,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/tests/test_service_access_desktop.py"
+        ]
+      },
+      "exactPathCount": 14
+    },
+    {
+      "candidateSha256": "c401e38746cb8e89ea7d0dc73ef60c52adc8c6a17b78e4858b9c6c84a1f0e210",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /followUpCycles/7/sourceSha256/systems/rock-star-os/os/ui/guest-ui-auth-evidence.py",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "docs/evidence/spider-improvement-cycle.json",
+        "line": 1379,
+        "field": [
+          "/followUpCycles/7/sourceSha256/systems/rock-star-os/os/ui/guest-ui-auth-evidence.py"
+        ]
+      },
+      "exactPathCount": 15
+    },
+    {
+      "candidateSha256": "c6877ed6a42662cac95ad40bc568b398f61ac4d9dc6ab113d5d11ea04bd6265a",
+      "classification": "public-signed-cursor-fixture",
+      "evidence": "os/game_exchange/fixture.py: PublicReceiptSigner fixed public seed; protocol vector",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "systems/rock-star-os/os/game_exchange/fixtures/connection-v1-vectors.json",
+        "line": 19,
+        "field": [
+          "/cursor_token"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "c888d2daf35bb77e4fee38bd3f5ec2be204d37728b2fb1453aaed78182527ec5",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/backup-restore-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/boot_transition/new_native_power_key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "c8d61293ca83d4741df15cf71e5465720885ff7f7f9964b4f0f06784c0843713",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/5/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "c99e9cce0f03005b7fb70a3f31b666ecab97e5bb7153b0fa183a4ccf2472ea9b",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 107,
+        "field": [
+          "/business/jobs/9/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "ca4032ab53ecf940a84da14e9d1ec07e0197e40da2f3a633b482eaaeb4251f36",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /verification/logSha256/pr-csv-api.log",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/sky-csv-storage-hardening.json",
+        "line": 39,
+        "field": [
+          "/verification/logSha256/pr-csv-api.log"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "ca816db3273abb531dbf460a3dd53dab32ba063f58a3f31fa2952cc9c28acb4c",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 137,
+        "field": [
+          "/business/jobs/12/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "cc3502b5bad30d92cb9d8bb3f91a858e594019b8631102060d422e62b8a6d18d",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /before/game_connection_a/game_read_sync/bindings/0/key_sha256, /after/game_connection_a/game_read_sync/bindings/0/key_sha256",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/rls01/game-intermediate-8bd2b26/supplemental-business-compare.json",
+        "line": 236,
+        "field": [
+          "/before/game_connection_a/game_read_sync/bindings/0/key_sha256",
+          "/after/game_connection_a/game_read_sync/bindings/0/key_sha256"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "ce0df51f5c800f53d7053b18655beaea20bae92ddc5f0c25eab7626740fc83fd",
+      "classification": "public-signed-cursor-fixture",
+      "evidence": "os/game_exchange/fixture.py: PublicReceiptSigner fixed public seed; prefixed-account protocol vector",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "systems/rock-star-os/os/game_exchange/fixtures/connection-v1-prefixed-account-vectors.json",
+        "line": 1,
+        "field": [
+          "/cursor_token"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "cff80a09d989e21ce6bda8efb77fc02981212e3cc2db85cead37ea6af815f4da",
+      "classification": "public-fixture-digest",
+      "evidence": "os/registry/make_fixtures.py: SHA-256 of PUBLIC-DEVELOPMENT-REGISTRY-TOKEN-NOT-SECRET-2026",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "systems/rock-star-os/os/registry/fixtures/approved-authors.json",
+        "line": 4,
+        "field": [
+          "/authors/development-author/token_sha256"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "d4d948319d160b3dfa146412d4b6a9ccf7409cd192105bda7e4e8ec46c362ef5",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 477,
+        "field": [
+          "/business/jobs/46/key",
+          "/last_submitted_job/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "d90286dbdf6545a612b8b6c5086ae519513561aa989d658b6b9c90eb788506ca",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/keysymdef.js",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/native-integration-20260909.json",
+        "line": 395,
+        "field": [
+          "/native_source_regressions/input_sha256/systems/rock-star-os/os/desktop/browser/novnc/core/input/keysymdef.js"
+        ]
+      },
+      "exactPathCount": 15
+    },
+    {
+      "candidateSha256": "da4531d632f81e167451dab9109a9ae73defeedefb548a8aae898b85fcb77759",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /logs/current-restore-api-regression.log",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/gx00/current-copy-foundations-root.json",
+        "line": 18,
+        "field": [
+          "/logs/current-restore-api-regression.log"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "dc4ff8231f43a98a48fc0ee88d5a06e72496f52204075b79e07bade4d8cfc8be",
+      "classification": "idempotency-example",
+      "evidence": "docs/game-api-contract-draft.md: game.exchange.approval.begin request key",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/game-api-contract-draft.md",
+        "line": 143,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "de59dbc63f7d624f78a7045f13d31249db5fab098a3b161c48b03e8212f56cfb",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /patchedSourceHashes/components/execution-access.tsx",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/sky-individual-tool-verification.json",
+        "line": 822,
+        "field": [
+          "/patchedSourceHashes/components/execution-access.tsx"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "dec02157fca31e7c01e157d5f0633c182cb7b80205899b29d63a632e96c0c0ab",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 457,
+        "field": [
+          "/business/jobs/44/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "e44523ec7e4c5cc2fa542ef147acc73c06c37575d5b4ef9dfe8cb108945e8aa1",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/atm-ui-proof-b8287bc.json",
+        "line": 225,
+        "field": [
+          "/database/device_api_receipts/0/key",
+          "/database/device_api_receipts/0/request/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "e6776c9f5cf8744782be9996594ffb0fe8d1eaad55263a8e2e17e0570fe3985e",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/7/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "e6cecd082f129dcc0104f326d6c091679804f75cece8a6f8e714168bb0ea4f1d",
+      "classification": "public-attestation-root",
+      "evidence": "vendor/keyattestation public certificate fixtures: verifiedBootKey is public boot verification key digest",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "services/android-attestation-verifier/vendor/keyattestation/testdata/sony-xperia10-iii/sdk33/TEE_EC.json",
+        "line": 24,
+        "field": [
+          "/hardwareEnforced/rootOfTrust/verifiedBootKey"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "e73f953c191f4573a435d32fb4b23e6ca7c53cb09ab8e27ea97a83a09117b30c",
+      "classification": "public-attestation-root",
+      "evidence": "vendor/keyattestation public certificate fixtures: verifiedBootKey is public boot verification key digest",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "services/android-attestation-verifier/vendor/keyattestation/testdata/frankel/sdk37/TEE_EC_2026.json",
+        "line": 27,
+        "field": [
+          "/hardwareEnforced/rootOfTrust/verifiedBootKey"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "e8e9b763fcdaa4f7f1a0c6a53bcb8841f3f430aef31cf9b9094988ca5c142b24",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 177,
+        "field": [
+          "/business/jobs/16/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "ed8353b02af1f220bc7733f32c204866edb8bf0328200cc1dea975031b39bd11",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/43-closed-inspection-b8287bc.json",
+        "line": 347,
+        "field": [
+          "/business/jobs/33/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "ef396506ae180f43eaf12417c385ec9e94ec70690cab0fd1cf014513d9d32985",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/backup-restore-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/preserved_receipts/completed_jobs/3/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "f0ca7aa34ec8b88a4e159eb6c27d6d0d55c3e88be45981ee341e50254a9add1f",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /sha256/tests/a2a-wallet-handoff-auth.test.mjs",
+      "source": {
+        "commit": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+        "path": "docs/evidence/android-a2a-p256-broker-key-20261002.json",
+        "line": 38,
+        "field": [
+          "/sha256/tests/a2a-wallet-handoff-auth.test.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "f17d96a305b752ef1208cbd276480e662962fee262ea7a8342cdace34545d357",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /artifact_sha256/review-gx00-cross-game-keys.py",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/gx00/gx00-host-gate-independent-review.json",
+        "line": 186,
+        "field": [
+          "/artifact_sha256/review-gx00-cross-game-keys.py"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "f28803469bc2da9e7db7ff0f7dd7b93dcb9cf48d2422a46d254f3198d9a32d18",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/backup-restore-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/preserved_receipts/completed_jobs/0/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "f2b18441f478c8d866d144dfb65163895e8bfaa5b184f7278787452ae362f07a",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-local-final/final-d2-lifecycle-report.json",
+        "line": 1,
+        "field": [
+          "/cycles/1/business/jobs/1/key"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "f838d711cfa8bba99b54909f5e952682d3926fea3f24aa2180f70832f2c3fe1d",
+      "classification": "idempotency-fixture",
+      "evidence": "os/ui/test_atm_evidence.py: ui- + uuid.uuid4().hex request/issue keys; evidence records synthetic operations",
+      "source": {
+        "commit": "8f561228fc00761ff1f369a27ad499d63152b089",
+        "path": "docs/evidence/os-base/soak42-closed-inspection-b8287bc.json",
+        "line": 1,
+        "field": [
+          "/business/jobs/2/key"
+        ]
+      },
+      "exactPathCount": 2
+    },
+    {
+      "candidateSha256": "fa8498c5ced67f57cae679891957dbbfc352b1ef2fe9f08e9eff94e821be8bd8",
+      "classification": "ordinary-text",
+      "evidence": "tests/decision-provider.test.mjs: test title consent/privacy",
+      "source": {
+        "commit": "dba8f320d0873138be9fb12fc8213e0df41283d5",
+        "path": "tests/decision-provider.test.mjs",
+        "line": 345,
+        "field": []
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "fd462030598474820e393c8f7593f0c4cad4cbf4d753e2d2348004affe1df57a",
+      "classification": "public-artifact-digest",
+      "evidence": "Historical artifact/source checksum field /candidate/keySha256",
+      "source": {
+        "commit": "f2dcee429246066c25ccce5f7f0ef6aebdb77db8",
+        "path": "docs/evidence/launch/backend-rc3-local-20260912.json",
+        "line": 39,
+        "field": [
+          "/candidate/keySha256"
+        ]
+      },
+      "exactPathCount": 8
+    }
+  ]
+}

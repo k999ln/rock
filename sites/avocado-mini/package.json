@@ -12,6 +12,10 @@
     "pretest": "npm run build"
   },
   "dependencies": {
-    "astro": "7.3.5"
+    "astro": "7.3.5",
+    "http-cache-semantics": "file:vendor/http-cache-semantics"
+  },
+  "overrides": {
+    "http-cache-semantics": "$http-cache-semantics"
   }
 }

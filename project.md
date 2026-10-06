@@ -1,3 +1,7 @@
+## 2026-10-06 — 全CI合格への残存修正（SYS15 / G04、作業中）
+
+利用者の「全部通さないと」に基づき、Security / Identity / Compliance、ROCKを主担当として履歴secret候補の生成元照合と依存脆弱性2件の修正を進める。main 822150c3から隔離branchで開始。検査の無効化・広域除外・履歴書換えをせず、同一SHAの全CIと依存監査を合格条件とする。実機・署名・公開gateは別。
+
 ## 2026-10-05 — 残る全PRの開発・統合（G04、作業中）
 
 利用者の「pr全部開発しきって」により、Git / CI / Operations、ROCKが最新main 0c90253cからPR #63–65 / #69–76を統合・検証する。既存の未保存eSIM・決済作業は元checkoutへ保持する。依存、AMCの認可/停止/保存契約、設計・DB正本の整合を回復し、同一SHAの検査で判定する。PR固有のfixtureと実機・本番受入を分ける。現在は統合作業中、main反映・公開未実施。
@@ -1554,7 +1558,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: G04: 当初12 PRと自動追加の依存3 PR、計15本は#77/#82経由でmain統合・同一候補全体verify成功。次は既存履歴secret候補の分類、未修正版braces/http-cache-semanticsの追跡、全OS build/署名/復旧・Provider・Mini/Pro実機の個別gate。公開/課金/実機受入は別。
+次の作業: SYS15 / G04: 履歴secret候補の個別分類と残存依存脆弱性を修正し、同一SHAの全CIを確認する。現時点は作業中、全合格未達。
 <!-- project-status:end -->
 
 ## 次段階の設計
