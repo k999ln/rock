@@ -33,7 +33,7 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/69",
     "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
   },
-  "updatedAt": "2026-10-05",
+  "updatedAt": "2026-10-06",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
   "nextAction": "SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。",
   "tasks": [
@@ -5743,5 +5743,19 @@
     "successfulChecks": 8,
     "openDependencyAlerts": 0,
     "evidence": "docs/evidence/security-gate-completion.json"
+  },
+  "skyConnectionDialogFix": {
+    "requestId": "SKY-S2-CONNECTION-FIX-INTEGRATE-20261006-01",
+    "primarySquad": "O5",
+    "existingTasks": [
+      "SKY10",
+      "SKY16"
+    ],
+    "baseMain": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+    "status": "local_candidate_submitted_for_independent_review",
+    "scope": "接続手順を展開しても案内ダイアログを画面内に収め、スクロールして閉じられる表示修正。接続APIと権限は変更しない。",
+    "accepted": false,
+    "deployed": false,
+    "validation": "試験用route/configを含まない配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019のUIコードと依存60322ファイル・59 symlinkのhash一致を照合し、1280×720・390×844の表示/閉じる証拠を引継いだ。実PC grant、Provider、課金、公開は未受入。"
   }
 }

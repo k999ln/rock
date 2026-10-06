@@ -1,3 +1,9 @@
+## 2026-10-06 — Sky接続案内の画面内スクロール（SKY10 / O5）
+
+main `e12d880c`から隔離した配布候補へ、接続手順を展開した際に案内ダイアログが画面外へはみ出す表示修正だけを取り込む。高さを画面内へ制限して縦スクロールを許可し、閉じる操作を保つ。O5 / SKY10が主担当、SKY16は関連、接続APIのO4契約は変更しない。019の実画面で1280×720・390×844を確認済み。試験用route/config・DB・cacheはcommitから除外。配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019とUIコードおよび依存60322ファイル・59 symlinkのhashが一致し、既存画面証拠を対応付けた。
+
+次はローカル候補の独立検収とmain統合判断。実接続grant、Provider、課金、公開・配備の受入は未完了のまま。待機・失敗・iPhone分岐はfixture表示試験であり実接続成功ではない。019のローカルDBに空Instagram設定1件を保存した事実を保持する。
+
 ## 2026-10-06 — 全PRのCI合格と残存依存脆弱性の修正（SYS15 / G04）
 
 利用者の「全部通さないと」に対応。Security / Identity / Compliance、ROCK。PR #83の同一SHA `4e702fc296beb1a39b9a0826798cf8e764fa373f`で全8チェック（履歴secrets、CodeQL両言語・PR判定、全体verify、repair回帰、Web security実測、署名control）が成功し、通常merge `cb5955a29438e752ec3253ba8aa9aa2ebb056152`でmainへ統合した。履歴2942候補・161種類は公開生成元/用途を個別照合し、正確な値とpathだけを分類。161種類の別値・別path検出とscanner失敗/秘密値非出力を維持する。
@@ -1160,7 +1166,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-05 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
+最終更新: 2026-10-06 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
