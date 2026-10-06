@@ -41,7 +41,7 @@ function assertNoFallback(cache, incoming, status, context) {
 }
 
 for (const [name, headers] of unsafeSharedHeaders) {
-  test(`stale-if-error cannot revive ${name} responses`, () => {
+  void test(`stale-if-error cannot revive ${name} responses`, () => {
     for (const [version, cache] of versions(makePolicy(headers))) {
       assert.equal(cache.storable(), true, name);
       for (const status of errorStatuses) {
@@ -51,7 +51,7 @@ for (const [name, headers] of unsafeSharedHeaders) {
   });
 }
 
-test('non-storable responses cannot reappear through origin-error fallback', () => {
+void test('non-storable responses cannot reappear through origin-error fallback', () => {
   const cases = [
     ['no-store', { 'cache-control': 'no-store, max-age=0, stale-if-error=3600' }, request],
     ['shared-private', { 'cache-control': 'private, max-age=0, stale-if-error=3600' }, request],
@@ -70,7 +70,7 @@ test('non-storable responses cannot reappear through origin-error fallback', () 
   }
 });
 
-test('missing origin responses cannot revive prohibited cache entries', () => {
+void test('missing origin responses cannot revive prohibited cache entries', () => {
   const cases = [
     ...unsafeSharedHeaders,
     ['no-store', { 'cache-control': 'no-store, max-age=0, stale-if-error=3600' }],
@@ -86,7 +86,7 @@ test('missing origin responses cannot revive prohibited cache entries', () => {
   }
 });
 
-test('origin-error fallback cannot bypass URI, host, method or Vary matching', () => {
+void test('origin-error fallback cannot bypass URI, host, method or Vary matching', () => {
   const headers = {
     'cache-control': 'public, max-age=0, stale-if-error=3600',
     vary: 'accept-language',
@@ -111,7 +111,7 @@ test('origin-error fallback cannot bypass URI, host, method or Vary matching', (
   }
 });
 
-test('matching public, private-cache and fresh s-maxage error reuse remains available', () => {
+void test('matching public, private-cache and fresh s-maxage error reuse remains available', () => {
   const cases = [
     ['public', { 'cache-control': 'public, max-age=0, stale-if-error=3600' }],
     ['ordinary-stale', { 'cache-control': 'max-age=0, stale-if-error=3600' }],
@@ -137,7 +137,7 @@ test('matching public, private-cache and fresh s-maxage error reuse remains avai
   }
 });
 
-test('expired stale-if-error window no longer reuses the cached body', () => {
+void test('expired stale-if-error window no longer reuses the cached body', () => {
   for (const [version, cache] of versions(makePolicy({
     'cache-control': 'public, max-age=0, stale-if-error=1',
   }))) {
@@ -149,7 +149,7 @@ test('expired stale-if-error window no longer reuses the cached body', () => {
   }
 });
 
-test('successful matching 304 revalidation retains and refreshes the body', () => {
+void test('successful matching 304 revalidation retains and refreshes the body', () => {
   for (const [version, cache] of versions(makePolicy({
     'cache-control': 'public, max-age=0, stale-if-error=3600',
     etag: '"synthetic-version"',
@@ -166,7 +166,7 @@ test('successful matching 304 revalidation retains and refreshes the body', () =
   }
 });
 
-test('client no-cache directives require successful validation even during origin errors', () => {
+void test('client no-cache directives require successful validation even during origin errors', () => {
   const cases = [
     ['cache-control', { ...request, headers: { ...request.headers, 'cache-control': 'no-cache' } }],
     ['pragma', { ...request, headers: { ...request.headers, pragma: 'no-cache' } }],
@@ -184,7 +184,7 @@ test('client no-cache directives require successful validation even during origi
   }
 });
 
-test('direct stale-while-revalidate queries honor response prohibitions and Vary wildcard', () => {
+void test('direct stale-while-revalidate queries honor response prohibitions and Vary wildcard', () => {
   const cases = [
     ...unsafeSharedHeaders,
     ['no-store', { 'cache-control': 'no-store, max-age=0, stale-if-error=3600' }],

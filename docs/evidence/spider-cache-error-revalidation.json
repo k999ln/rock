@@ -50,7 +50,8 @@
       "tests": 13,
       "pass": 3,
       "fail": 10,
-      "skipped": 0
+      "skipped": 0,
+      "testSha256": "39208882b82481723e047fb28ec2572832d7f809459830621ffc5d8dc850aba2"
     },
     "patched": {
       "sourceSha256": "324afc5b862048a3d80b6ae53cc7aeb0a0a6d6baf4121a4f52ea44893ac25f91",
@@ -66,7 +67,7 @@
       "skipped": 0,
       "blockers": 0
     },
-    "testSha256": "39208882b82481723e047fb28ec2572832d7f809459830621ffc5d8dc850aba2",
+    "testSha256": "3a099790beb4c622d63f33101ca3314e201c18061d80fb858518643c69134180",
     "coverage": [
       "HTTP500/502/503/504",
       "missing responses",
@@ -92,7 +93,15 @@
       "project:check",
       "database:status",
       "verify stages through system:composition:check"
-    ]
+    ],
+    "initialCi": {
+      "head": "f7c088943ff63e10e76ab5c7f6efa7f587f29a0c",
+      "run": 37483672154,
+      "conclusion": "failure",
+      "stage": "lint:product",
+      "reason": "Test registration promises require explicit void; assertions and runner-managed test execution remain unchanged.",
+      "followUp": "Explicitly mark node:test registration promises, then recheck the new commit."
+    }
   },
   "sameRefBaseline": {
     "ref": "refs/heads/main",
