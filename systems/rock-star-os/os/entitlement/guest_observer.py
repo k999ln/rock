@@ -57,11 +57,14 @@ def observe(read):
             raise ValueError('paid schedule does not have an existing Wallet bill')
     if type(wallet.get('ledger_balance_minor')) is not int or wallet['ledger_balance_minor'] != 0:
         raise ValueError('existing Wallet ledger is not balanced')
+    # Emit canonical public primitives, never service-owned report values.
+    public_periods = [f'{int(period[:4]):04d}-{int(period[5:]):02d}' for period in periods]
+    public_worker_alive = True if worker_alive is True else False
     return {'observed_utc': datetime.now(timezone.utc).isoformat(), 'simulation_only': True,
             'read_operations': ['wallet.membership', 'wallet.billing.status', 'snapshot'],
             'registration_status': registration_status,
-            'monthly_periods_observed': periods, 'wallet_billed_minor': billed_minor,
-            'worker_alive': worker_alive, 'new_money_or_identity_actions': False}
+            'monthly_periods_observed': public_periods, 'wallet_billed_minor': billed_minor,
+            'worker_alive': public_worker_alive, 'new_money_or_identity_actions': False}
 
 
 def main():

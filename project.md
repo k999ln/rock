@@ -1661,3 +1661,5 @@ G04 / ROCK。11 PRの履歴を保持し、main 0c90253cのSky/AMC更新と認可
 統合PR #77のc650466eでGitHub総合verify・CodeQL両言語・native全5分割・SPIDER回帰が合格。local browserでSky説明→Zema AMC→合成Goal保存→再読込の保存一覧を確認。AMC本文の配置と、記録保存を実作業完了にしない表示を修正し、最終CIへ進む。履歴scanはmain2910→候補2942出現、160→161値。増加したrule/path/valueは証拠内のソースSHA-256だけと照合済み。既存160値の包括分類は未完了で、検査設定・警告は変更しない。実機・本番・外部秘密rotationは行っていない。
 
 PR #78（simulation observerの出力schema）も統合し、対象は12本。privacy13と既存DeviceWallet22の35試験合格。最終local全体試験はNode1353 pass/1 skip、build/asset closureまで成功した後、空き247 MiBでAPI起動がSQLite IOERR_SHMSIZE。専用dev server停止・自分の一時torch環境削除後、API1192/CSV385とmission整合を再試験し成功。失敗と回復を別記録する。最終GitHub同一候補のCIがmain統合条件。前候補c650466eの総合/native/Androidは成功。
+
+追加PR #78の同一候補CodeQLで#7のworker_alive/年月文字列から出力への経路が残った。厳密schemaに加え、固定booleanと年/月整数からの年月表現へ再構成する。正常出力と既存Wallet境界は維持し、例外化・dismissはしない。privacy13＋Wallet22を再実行し、同一SHAの再解析を統合前に確認する。

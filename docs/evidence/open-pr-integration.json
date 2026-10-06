@@ -119,5 +119,11 @@
     "newCandidateClassification": "SHA-256 of scripts/check-work-api.mjs recorded in this evidence file; verified against source bytes. No additional unmatched secret candidate tuples. Existing 160 values are not comprehensively classified or declared safe.",
     "policyChanged": false,
     "historicalFindingsRemain": true
+  },
+  "observerFollowup": {
+    "reason": "PR #78 left CodeQL #7 paths through worker_alive and history period strings",
+    "fix": "Validate unchanged schema then reconstruct literal boolean and canonical year/month from integers before output",
+    "validation": "35 host tests; same-candidate CodeQL pending",
+    "policySuppression": false
   }
 }

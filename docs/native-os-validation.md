@@ -79,3 +79,5 @@ nativeのsource検査は4つのmain partitionとsupportに分割する。artifac
 ## SPIDER cycle 50: entitlement observerの出力境界
 
 既存serviceの応答から3つの報告fieldを型と許可値で検査し、想定外のnested値とread例外を診断へ出さない。[全体設計](rockstaros-complete-design.md#spider-simulation-observerの診断出力)と[証拠](evidence/spider-observer-output-schema.json)に範囲を記録する。hostの新規privacy試験と既存SQLite DeviceWallet試験を用い、guest・実機は実行しない。
+
+統合受入補足: observerの年月は検証後の年/月整数からYYYY-MMへ再構成し、worker_aliveは固定booleanへ変換して出力する。応答object/文字列を直接診断へ転送しない。既存13 privacy＋22 Wallet host試験と同一候補CodeQLを再確認する。実guest受入とは別。

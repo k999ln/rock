@@ -213,7 +213,8 @@
         "design": "docs/rockstaros-complete-design.md",
         "evidence": "docs/evidence/spider-observer-output-schema.json",
         "scope": "existing simulation observer scalar report validation",
-        "guestAcceptance": false
+        "guestAcceptance": false,
+        "outputReconstruction": "After strict validation, emit canonical YYYY-MM periods from integers and literal boolean worker state; do not forward service-owned strings/objects."
       }
     },
     {
