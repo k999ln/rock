@@ -43,9 +43,9 @@ void test('R5 prices remain unconfirmed and earlier commercial figures stay hist
 void test('the concise landing page links to complete progress and explicitly withholds manufacture', () => {
   const readme = read('README.md');
   assert.match(readme, /docs\/avocado-mini-r5\/README\.md/);
-  assert.match(readme, /製造承認は保留|manufacturing approval is on hold/i);
-  assert.match(readme, /実機試験は0件|zero physical-device tests have been completed/i);
-  assert.match(readme, /project\.md#(?:全taskの作業進捗|%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97)/i);
+  assert.match(readme, /manufacturing approval is \*\*on hold\*\*/i);
+  assert.match(readme, /zero physical-device tests have been completed/i);
+  assert.match(readme, /\[All task progress\]\(project\.md#/);
   assert.doesNotMatch(readme, /<!-- project-status:start -->/);
   assert.match(read('project.md'), /## 全taskの作業進捗\s+<!-- project-status:start -->/);
 });

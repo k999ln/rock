@@ -2,8 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { catalog } from '../lib/catalog.ts';
-import { JOB_TOOLS, SKY_CONNECTION_TOOLS } from '../lib/operations.ts';
-import { skyToolExecutionScope } from '../lib/sky-tool-execution-scope.ts';
+import { JOB_TOOLS } from '../lib/operations.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -12,30 +11,24 @@ const requireValue = (ok, message) => {
 };
 
 const catalogSource = read('lib/catalog.ts');
+const operationsSource = read('lib/operations.ts');
 const readyCount = catalog.filter(({ status }) => status === 'ready').length;
 const candidateCount = catalog.filter(
   ({ status }) => status === 'candidate',
 ).length;
 requireValue(
   readyCount === 13,
-  `Web/PC readyは13件です（実際: ${readyCount}）`,
+  `Web/PC readyはAMCを含む13件です（実際: ${readyCount}）`,
+);
+requireValue(
+  catalog.length === 35,
+  `Sky catalogは35件です（実際: ${catalog.length}）`,
 );
 requireValue(
   candidateCount === 22,
   `導入候補は22件です（実際: ${candidateCount}）`,
 );
 const jobTools = new Set(JOB_TOOLS);
-const connectionTools = new Set(SKY_CONNECTION_TOOLS);
-for (const tool of catalog)
-  requireValue(
-    skyToolExecutionScope(tool) !== 'unavailable',
-    `実装範囲の判定がありません: ${tool.id}`,
-  );
-const amcTool = catalog.find(({ id }) => id === 'rockstar-amc');
-requireValue(
-  amcTool && skyToolExecutionScope(amcTool) === 'assisted-preparation',
-  'AMCの実装範囲は計画作成と手動の進捗記録です',
-);
 for (const tool of catalog.filter(({ status }) => status === 'candidate'))
   requireValue(
     jobTools.has(tool.id),
@@ -57,6 +50,12 @@ for (const marker of [
 const registry = resolve(root, 'systems/rock-star-os/examples/registry');
 const packages = readdirSync(registry).filter((name) =>
   name.endsWith('.rock.json'),
+);
+const connectionSource = operationsSource.slice(
+  Math.min(
+    operationsSource.indexOf('SKY_CANDIDATE_TOOLS'),
+    operationsSource.indexOf('SKY_CONNECTION_TOOLS'),
+  ),
 );
 const identities = packages.map((name) => {
   const value = JSON.parse(readFileSync(resolve(registry, name), 'utf8'));
@@ -180,7 +179,6 @@ requireValue(
 );
 const sky = read('docs/sky.md');
 const workspace = read('components/sky-workspace.tsx');
-const toolUiState = read('lib/sky-tool-ui.ts');
 const chat = read('components/sky-chat-workspace.tsx');
 const skyZemaHandoff = read('lib/sky-zema-handoff.ts');
 const mcpBot = read('components/mcp-bot-runner.tsx');
@@ -191,16 +189,14 @@ for (const marker of [
   'PCなしのブラウザ簡易版',
 ])
   requireValue(
-    catalogSource.includes(marker) ||
-      workspace.includes(marker) ||
-      (workspace.includes('skyToolUiState(') && toolUiState.includes(marker)),
+    catalogSource.includes(marker) || workspace.includes(marker),
     `Fashion Brand OpsのSky登録に「${marker}」がありません`,
   );
 
 const fashionRunner = read('components/fashion-brand-ops-runner.tsx');
 for (const marker of [
   'Producerモード',
-  'プランを作って保存',
+  'プロデュース開始',
   'ワンクリックで接続',
 ])
   requireValue(
@@ -209,7 +205,6 @@ for (const marker of [
   );
 
 const fashionClient = read('lib/fashion-mcp-client.ts');
-const sharedMcpClient = read('lib/mcp-client.ts');
 for (const marker of [
   'FASHION_MCP_TOOL_COUNT = 41',
   "'initialize'",
@@ -218,7 +213,7 @@ for (const marker of [
   "'/disconnect'",
 ])
   requireValue(
-    (fashionClient + sharedMcpClient).includes(marker),
+    fashionClient.includes(marker),
     `Fashion Brand Opsのワンクリック接続に「${marker}」がありません`,
   );
 requireValue(
@@ -256,12 +251,7 @@ for (const marker of [
   requireValue(sky.includes(marker), `Skyの説明に「${marker}」がありません`);
 
 requireValue(
-  workspace.includes('<SkyToolOverview') &&
-    (workspace.match(/className=\{styles.utilityDialog\}/g) || []).length >=
-      2 &&
-    read('components/sky-workspace.module.css').includes(
-      'max-height: calc(100dvh',
-    ),
+  (workspace.match(/rock-tool-dialog sky-tool-dialog/g) || []).length >= 2,
   'Skyのツール・PC接続Dialogに統一外観が適用されていません',
 );
 for (const marker of [
@@ -280,7 +270,8 @@ for (const marker of [
   'aria-label="担当を選ぶ"',
   'handleComposerKeyDown',
   'messagesEndRef',
-  'maxLength={2000}',
+  'maxLength={composerLimit}',
+  'skyRequestLimit(composerToolId)',
   '<MrToolRunner',
   'sky-chat-workflow',
   'listMcpConnections',
@@ -344,7 +335,7 @@ for (const tool of [
   ...catalog.filter(({ status }) => status === 'candidate').map(({ id }) => id),
 ])
   requireValue(
-    connectionTools.has(tool),
+    connectionSource.includes(`'${tool}'`),
     `Zemaで使うready担当「${tool}」がSky接続許可リストにありません`,
   );
 

@@ -397,3 +397,50 @@ await test('history failure rolls back completion so a report can safely be retr
   await a.changeJob(input.id, finish);
   assert.equal((await a.getJob(input.id)).status, 'completed');
 });
+
+await test('Sky library persists bookmarks idempotently and scopes reads and removal to the owner', async () => {
+  const { a, b, db, sqlite, advance } = fixture();
+  try {
+    assert.deepEqual(await a.listSkyLibrary(), []);
+    assert.deepEqual(await a.saveSkyLibrary({ tool: 'mr-citations', saved: true }), { tool: 'mr-citations', saved: true });
+    const first = await a.listSkyLibrary();
+    advance(1000);
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: true });
+    assert.deepEqual(await a.listSkyLibrary(), first);
+    assert.deepEqual(await operations(db, 'a').listSkyLibrary(), first);
+    assert.deepEqual(await b.listSkyLibrary(), []);
+    await b.saveSkyLibrary({ tool: 'mr-citations', saved: true });
+    const other = await b.listSkyLibrary();
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: false });
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: false });
+    assert.deepEqual(await a.listSkyLibrary(), []);
+    assert.deepEqual(await b.listSkyLibrary(), other);
+  } finally { sqlite.close(); }
+});
+
+await test('Sky library rejects invalid tools, save states and owner spoofing without writes', async () => {
+  const { a, sqlite } = fixture();
+  try {
+    for (const input of [null, [], {}, { tool: 'unknown', saved: true },
+      { tool: 'mr-citations', saved: 'true' }, { tool: 'mr-citations', saved: 1 },
+      { tool: 'mr-citations', saved: true, user: 'b' },
+      { tool: 'mr-citations', saved: true, user_id: 'b' }]) {
+      await rejects(() => a.saveSkyLibrary(input), 400);
+    }
+    assert.deepEqual(await a.listSkyLibrary(), []);
+  } finally { sqlite.close(); }
+});
+
+await test('Sky library bookmarks never grant consent, entitlements or create work', async () => {
+  const { a, sqlite } = fixture();
+  try {
+    const tables = sqlite.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name <> 'sky_library_items'").all().map((row) => row.name);
+    const counts = () => tables.map((table) => [table, sqlite.prepare(`SELECT COUNT(*) AS n FROM "${table}"`).get().n]);
+    const before = counts();
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: true });
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: true });
+    assert.deepEqual(counts(), before);
+    await a.saveSkyLibrary({ tool: 'mr-citations', saved: false });
+    assert.deepEqual(counts(), before);
+  } finally { sqlite.close(); }
+});

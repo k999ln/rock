@@ -839,7 +839,7 @@ export function validateBaseline(
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(
     !relative(root, skyInventory).startsWith('..') &&
-      read(skyInventory).includes('Web / PCで現在使える12件'),
+      read(skyInventory).includes('Web / PCで現在使える13件'),
     'Skyの役割と収録ツールの正本が必要です',
   );
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');

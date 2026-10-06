@@ -1,362 +1,2237 @@
 {
-  "updatedAt": "2026-10-05",
-  "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と料金透明化を実装・受入",
-  "nextAction": "Canonical offer is physical SIM/eSIM-led RockstarOS service access across purchase channels; carrier activation, service entitlement, account, OS/client install, cloud execution and AI billing remain distinct states. The local signed claim issuer and encrypted/idempotent seller delivery API are implemented; the Android Shell quote→device-credential Wallet hold→Broker proof→explicit Cloud approval→same-ID recovery source flow is wired and locally contract-tested. Current repository verification passes: Node 757/757, Worker/D1 API 1,048 assertions, CSV Worker/D1/R2 113 assertions, Fashion 19/19, typecheck, product lint, production build and release checks. Next run Android Core/AIDL/APK/instrumentation on an equipped CI/device host; then connect contracted seller checkout/delivery, carrier, Provider rates/meters/invoices and funded settlement. Production D1 readback is 0/6; local fixtures are not production billing, carrier activation, or successful exact-SKU OS installation.",
+  "repositoryCleanup": {
+    "task": "G01",
+    "primaryOwner": "ROCK",
+    "stage": "cleanup_verified_latest_main_baseline_blocked",
+    "sourceMainSha": "592daeea322cd47aa189b67dd689e323662c0c67",
+    "scope": "Remove reproducible Site builds and billing dry-run outputs; retain design archives, runtime, fixtures and evidence.",
+    "githubSaved": true,
+    "mainIntegrated": false,
+    "published": false,
+    "nextAction": "Review cleanup PR #69. Latest main database metadata and downstream acceptance require separate correction; earlier cleanup SHA 154f2cfc passed full CI. Re-run full verification after baseline repair before merge.",
+    "removedFiles": 103,
+    "removedBytes": 69153906,
+    "retainedPublicAssetCopiesVerified": 76,
+    "validation": {
+      "repositoryCheck": "passed; previous index with 103 generated files rejected; cleaned index with rebuilt ignored outputs accepted",
+      "siteBuildAndTests": "13 routes rebuilt; 18/18 passed",
+      "archive": "verify-rocketstar-archive.py --git: 14/14 passed",
+      "fullVerifyLocal": "Stopped at typecheck: TS5033 ENOSPC writing tsconfig.tsbuildinfo; preceding checks passed. Not a full verify pass.",
+      "fullVerifyGitHub": {
+        "status": "passed_for_recorded_sha",
+        "sourceSha": "154f2cfc036d954436c3ee9003b6707e5d2c7fa7",
+        "run": "https://github.com/k999ln/rock/actions/runs/37284888719",
+        "scope": "Before subsequent main integration; newer main acceptance must be checked separately."
+      },
+      "firstGitHubRun": "37282635930: detected immutable AMC snapshot reference edit and obsolete prebuilt-only test expectation. Snapshot restored byte-for-byte; test now requires locked source build. Full CI rerun required.",
+      "security": "SPIDER secrets failed on recorded SHA and earlier base; CodeQL, repair regressions and production web measurement passed. No all-security-clear claim.",
+      "latestIntegratedVerify": "0c90253c main integrated: project/repository/version/schema passed; database:check failed because data/database-status.json and docs/database-status.md are stale. Both files and the checker/schema match origin/main unchanged."
+    },
+    "branch": "codex/repository-cleanup",
+    "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac",
+    "latestMainIntegrated": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "pullRequest": "https://github.com/k999ln/rock/pull/69"
+  },
+  "updatedAt": "2026-09-27",
+  "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
+  "nextAction": "AMCのWeb計画・手動台帳からGoal JSONを保存し、明示コマンドでローカルCodexへ着手可能な一件を渡す入口を追加。隔離した試験Goalの一件が実Codexで成果物を作り、AMCでは検収待ちまで記録された。元のWeb記録へは自動同期しない。次は同一Web記録への安全な結果同期、停止・復旧と本人通知、使いやすさ確認。公開する場合はGitHub同期と同一候補の配備readbackを別に行う。自律的な連続実行・自動通知・model導入・課金・公開・実売買は未接続／未実行。正本5師団32部隊は参照専用。",
   "tasks": [
     {
-      "id": "SIM01",
-      "title": "物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す",
-      "status": "in_progress",
+      "id": "AMC02",
+      "title": "AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外）",
+      "status": "done",
       "dependsOn": [
-        "SKY07",
-        "SKY21"
+        "ORG03"
       ],
       "evidence": [
-        "docs/product-baseline.md",
-        "docs/rockstaros-complete-design.md",
-        "docs/os-development-design.md",
-        "toolkits/esim-bootstrap/README.md",
-        "docs/workstreams/07-android-device-local-ai.md",
-        "app/connect/page.tsx",
-        "components/home-screen.tsx",
-        "data/product-baseline.json",
-        "AGENTS.md",
-        "sites/avocado-mini/src/pages/index.astro",
-        "sites/avocado-mini/src/service-home.css",
-        "sites/avocado-mini/tests/astro-build.test.mjs",
-        "tests/sim-service-entry.test.mjs",
-        "docs/prompts/rock-current-next-20261001.md",
-        "docs/sim-service-entitlement-claims.md",
-        "lib/rockstar-entitlement-claim.ts",
-        "app/api/rockstar/entitlements/route.ts",
-        "lib/rockstar-entitlement-event.ts",
-        "app/api/rockstar/entitlements/events/route.ts",
-        "db/schema.ts",
-        "drizzle/0039_rockstar_service_entitlements.sql",
-        "drizzle/0040_rockstar_entitlement_events.sql",
-        "tests/rockstar-entitlement-claim.test.mjs",
-        "components/rockstar-entitlement-claim.tsx",
-        "scripts/check-work-api.mjs",
-        "app/api/sky/a2a-delegations/route.ts",
-        "app/api/sky/a2a-delegations/[id]/route.ts",
-        "services/sky-agent-runtime/src/worker.ts",
-        "services/sky-agent-runtime/vitest.config.ts",
-        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
-        "docs/a2a-pricing-extension.md",
-        "lib/currency-format.ts",
-        "tests/currency-format.test.mjs",
-        "components/workbench.tsx",
-        "app/work/work.css",
-        "lib/a2a-price-quote.ts",
-        "tests/a2a-price-quote.test.mjs",
-        "app/api/sky/a2a-delegations/[id]/broker-authorization/route.ts",
-        "lib/remote-ai-pricing-gate.ts",
-        "lib/remote-ai-rate-card.ts",
-        "lib/remote-ai-rate-card-registry.ts",
-        "tests/remote-ai-rate-card.test.mjs",
-        "tests/remote-ai-rate-card-registry.test.mjs",
-        "app/api/llm/estimate/route.ts",
-        "components/sky-chat-workspace.tsx",
-        "docs/evidence/remote-ai-estimate-api-20261001.json",
-        "drizzle/0042_remote_ai_rate_cards.sql",
-        "lib/remote-ai-rate-card-store.ts",
-        "lib/remote-ai-rate-card-operator.ts",
-        "app/api/internal/remote-ai/rate-cards/route.ts",
-        "drizzle/0043_a2a_delegation_fanout_limits.sql",
-        "lib/a2a-delegation-store.ts",
-        "tests/a2a-client.test.mjs",
-        "services/sky-agent-runtime/vitest.config.ts",
-        "app/api/llm/text/route.ts",
-        "app/api/legal-guidance/route.ts",
-        "app/api/patent-research/route.ts",
-        "app/api/jev-evaluation/route.ts",
-        "lib/sky-service-status.ts",
-        "tests/sky-service-status.test.mjs",
-        "docs/evidence/remote-ai-price-gate-20261001.json",
-        "drizzle/0044_a2a_live_usage_snapshots.sql",
-        "lib/a2a-live-usage.ts",
-        "app/api/sky/a2a-delegations/[id]/usage-snapshots/route.ts",
-        "tests/a2a-live-usage.test.mjs",
-        "docs/evidence/a2a-live-usage-local-20261001.json",
-        "docs/evidence/mcp-pricing-gate-local-20261001.json",
-        "docs/evidence/product-direction-regression-20261001.json",
-        "docs/evidence/android-a2a-usage-verifier-20261001.json",
-        "docs/evidence/android-a2a-wallet-reservation-20261001.json",
-        "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
-        "android/core/src/test/java/dev/rock/core/A2AWalletReservationTest.java",
-        "docs/workstreams/03-wallet-billing-providers.md",
-        "docs/provider-contract-readiness-20260930.md",
-        "toolkits/sky-mcp-connector/server.mjs",
-        "tests/mcp-connector.test.mjs",
-        "public/toolkits/sky-mcp-connector.zip",
-        "docs/workstreams/02-sky-mcp.md",
-        "android/core/src/main/java/dev/rock/core/platform/A2AWalletSettlementSync.java",
-        "android/core/src/main/java/dev/rock/core/platform/A2AWalletHandoffRequest.java",
-        "android/core/src/test/java/dev/rock/core/A2AWalletHandoffRequestTest.java",
-        "android/core/src/test/resources/a2a-wallet-handoff-request-v1.json",
-        "tests/a2a-wallet-handoff-auth.test.mjs",
-        "android/automation/src/main/java/dev/rock/automation/A2ABrokerDeviceKeyStore.java",
-        "android/automation/src/androidTest/java/dev/rock/automation/A2ABrokerDeviceKeyStoreTest.java",
-        "docs/rockstar-device-link.md",
-        "docs/evidence/rockstar-device-link-local-20261001.json",
-        "lib/rockstar-device-link.ts",
-        "lib/request-auth.ts",
-        "app/api/rockstar/device-authorizations/route.ts",
-        "app/api/rockstar/device-authorizations/approve/route.ts",
-        "app/api/rockstar/device-sessions/route.ts",
-        "app/connect/device/page.tsx",
-        "components/rockstar-device-authorization.tsx",
-        "android/core/src/main/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlow.java",
-        "android/core/src/test/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlowTest.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceAuthorizationTransport.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceSessionStore.java",
-        "android/automation/src/androidTest/java/dev/rock/automation/RockstarDeviceAccountLinkTest.java",
-        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
-        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "android/shell/src/main/java/dev/rock/shell/ShellConnection.java",
-        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerEnrollment.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java",
-        "app/api/sky/a2a-delegations/[id]/route.ts",
-        "android/automation/src/main/AndroidManifest.xml",
-        "android/automation/build.gradle",
-        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
-        "drizzle/0045_rockstar_device_sessions.sql",
-        "drizzle/0046_remote_ai_text_executions.sql",
-        "lib/remote-ai-text-store.ts",
-        "app/api/rockstar/device-home/route.ts",
-        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java",
-        "scripts/check-os-contracts.mjs",
-        "app/api/llm/quotes/route.ts",
-        "app/api/llm/quotes/[id]/route.ts",
-        "lib/remote-ai-text-http.ts",
-        "tests/remote-ai-pricing-gate.test.mjs",
-        "tests/remote-ai-text-public-record.test.mjs",
-        "docs/sky-cloud-continuity.md",
-        "lib/remote-ai-text-input.ts",
-        "lib/remote-ai-text-execution.ts",
-        "services/sky-agent-runtime/wrangler.jsonc",
-        "drizzle/0047_remote_ai_text_durable_inputs.sql",
-        "tests/remote-ai-text-input.test.mjs",
-        "drizzle/meta/0047_snapshot.json",
-        "tests/remote-ai-text-store.test.mjs",
-        "scripts/database-status.mjs",
-        "tests/database-status.test.mjs",
-        "docs/database-status.md",
-        "docs/evidence/remote-ai-cloud-workflow-local-20261002.json",
-        "docs/ai-native-os-architecture.md",
-        "docs/rockstaros-1.0-strategy.md",
-        "AGENTS.md",
-        "docs/rockstaros-product-system-map.md",
-        "docs/product-north-star-20260915.md",
-        "docs/workstreams/01-product-ux.md",
-        "app/connect/page.tsx",
-        "components/home-screen.tsx",
-        "components/home-screen.module.css",
-        "tests/sim-service-entry.test.mjs",
-        "tests/web-route-style-contract.test.mjs",
-        "tests/migration-union.test.mjs",
-        "tests/database-status.test.mjs",
-        "docs/evidence/sim-service-entry-local-20261002.json",
-        "app/api/llm/estimate/route.ts",
-        "components/workbench.tsx",
-        "lib/currency-format.ts",
-        "tests/currency-format.test.mjs",
-        "scripts/check-work-api.mjs",
-        "docs/workstreams/01-product-ux.md",
-        "docs/sky-cloud-continuity.md",
-        "docs/evidence/sim-service-usage-rates-local-20261002.json",
-        "docs/evidence/sim-service-claim-file-import-local-20261002.json",
-        "android/shell/src/main/java/dev/rock/shell/UsageCurrencyFormatter.java",
-        "docs/evidence/sim-service-android-usage-status-local-20261002.json",
-        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "android/shell/src/main/AndroidManifest.xml",
-        "docs/evidence/sim-led-product-direction-audit-20261002.json",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerDeviceRefStore.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerDeviceTransport.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerEnrollment.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2AUsageTrustConfig.java",
-        "android/automation/src/androidTest/java/dev/rock/automation/AndroidA2AUsageTrustConfigTest.java",
-        "android/automation/src/main/java/dev/rock/automation/RockApplication.java",
-        "android/core/src/main/java/dev/rock/core/platform/A2AUsageReceiptVerifier.java",
-        "docs/rockstaros-1.0-architecture.md",
-        "android/core/src/test/java/dev/rock/core/platform/A2AUsageReceiptVerifierTest.java",
-        "android/core/src/test/resources/a2a-price-quote-v1.json",
-        "docs/evidence/android-a2a-price-quote-verifier-20261002.json",
-        "docs/evidence/android-a2a-reservation-bridge-audit-20261002.json",
-        "android/core/src/main/java/dev/rock/core/platform/A2ABrokerAuthorization.java",
-        "android/core/src/test/java/dev/rock/core/platform/A2ABrokerAuthorizationTest.java",
-        "android/core/src/test/resources/a2a-wallet-reservation-v2.json",
-        "android/core/src/test/resources/a2a-broker-authorization-v2.json",
-        "tests/a2a-wallet-reservation.test.mjs",
-        "tests/a2a-broker-authorization.test.mjs",
-        "docs/evidence/android-a2a-native-reservation-core-20261002.json",
-        "docs/evidence/a2a-price-quote-acquisition-local-20261002.json",
-        "app/api/sky/a2a-price-quotes/route.ts",
-        "lib/a2a-price-quote-acquisition.ts",
-        "tests/a2a-price-quote-acquisition.test.mjs",
-        "lib/a2a-usage-receipt.ts",
-        "tests/a2a-usage-receipt.test.mjs",
-        "lib/a2a-price-quote-consent-store.ts",
-        "drizzle/0049_a2a_price_quote_consent_events.sql",
-        "tests/a2a-price-quote-consent-store.test.mjs",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2AJson.java",
-        "docs/evidence/android-a2a-quote-review-source-20261002.json",
-        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
-        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
-        "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
-        "android/core/src/test/java/dev/rock/core/A2AWalletReservationTest.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java",
-        "app/api/rockstar/device-home/route.ts",
-        "scripts/check-os-contracts.mjs",
-        "tests/sim-service-entry.test.mjs",
-        "docs/evidence/android-a2a-cloud-draft-bridge-20261002.json",
-        "docs/evidence/android-a2a-cloud-approval-recovery-20261002.json",
-        "docs/evidence/android-a2a-native-cancel-20261002.json",
-        "docs/evidence/android-a2a-detail-recovery-20261002.json",
-        "android/core/src/main/java/dev/rock/core/platform/A2ARecoveryBinding.java",
-        "android/core/src/test/java/dev/rock/core/platform/A2ARecoveryBindingTest.java",
-        "drizzle/0050_rockstar_entitlement_purchase_once.sql",
-        "docs/evidence/sim-service-claim-file-import-local-20261002.json",
-        "lib/rockstar-entitlement-issuer.ts",
-        "tests/rockstar-entitlement-issuer.test.mjs",
-        "docs/evidence/remote-ai-text-live-estimate-local-20261002.json",
-        "lib/llm-providers.ts",
-        "lib/remote-ai-text-pricing.ts",
-        "drizzle/0051_remote_ai_text_live_estimates.sql",
-        "drizzle/meta/0051_snapshot.json",
-        "tests/llm-providers.test.mjs",
-        "docs/evidence/sim-service-replacement-ack-local-20261002.json",
-        "docs/evidence/sim-service-issuer-delivery-store-local-20261002.json",
-        "docs/evidence/sim-service-issuer-delivery-api-local-20261002.json",
-        "docs/evidence/sim-service-issuer-rate-limit-local-20261002.json",
-        "drizzle/0054_rockstar_entitlement_issuer_rate_limits.sql",
-        "tests/rockstar-entitlement-delivery-http.test.mjs",
-        "lib/rockstar-entitlement-issuer-store.ts",
-        "drizzle/0052_rockstar_entitlement_issuer_deliveries.sql",
-        "drizzle/0053_rockstar_entitlement_delivery_key_ids.sql",
-        "drizzle/meta/0052_snapshot.json",
-        "drizzle/meta/0053_snapshot.json",
-        "tests/rockstar-entitlement-issuer-store.test.mjs",
-        "docs/evidence/sim-service-android-native-claim-local-20261002.json",
-        "lib/rockstar-service-offers.ts",
-        "tests/rockstar-service-offers.test.mjs",
-        "docs/evidence/rockstar-service-offer-profiles-local-20261002.json",
-        "components/sky-marketplace.tsx",
-        "components/sky-chat-workspace.tsx",
-        "components/workbench.tsx",
+        "docs/amc-goal-orchestrator.md",
+        "scripts/amc-goal-engine.mjs",
+        "scripts/amc-goal.mjs",
+        "scripts/amc-codex.mjs",
+        "scripts/amc-request-plan.mjs",
+        "scripts/amc-effort.mjs",
+        "lib/amc-tool.ts",
         "lib/workflow.ts",
-        "lib/rockstar-package-handoff.ts",
-        "lib/sky-package-runtime.ts",
-        "lib/mcp-hub.ts",
-        "components/mcp-bot-runner.tsx",
-        "tests/sky-package-runtime.test.mjs",
-        "tests/mcp-connector.test.mjs",
-        "tests/rockstar-package-handoff.test.mjs",
-        "tests/workflow.test.mjs",
-        "docs/evidence/zema-versioned-plan-local-20261002.json",
-        "docs/evidence/rockstar-package-zema-handoff-local-20261002.json",
-        "docs/sim-service-entitlement-claims.md",
-        "lib/rockstar-service-package-access.ts",
-        "tests/rockstar-service-package-access.test.mjs",
-        "lib/sky-commerce.ts",
-        "tests/sky-commerce.test.mjs",
-        "lib/sky-package-runtime-binding.ts",
-        "tests/sky-package-runtime-binding.test.mjs",
-        "docs/evidence/sky-package-runtime-binding-local-20261002.json",
-        "drizzle/0055_sky_package_runtime_bindings.sql",
-        "lib/sky-package-runtime-binding-store.ts",
-        "lib/sky-tool-package-store.ts",
-        "app/api/internal/sky-package-runtime-bindings/route.ts",
-        "docs/evidence/sky-package-runtime-binding-quote-delegation-local-20261002.json",
-        "docs/sim-led-product-architecture.md",
-        "docs/sky-a2a-bridge.md",
-        "docs/evidence/sim-led-product-correction-20261002.json",
-        "docs/evidence/a2a-two-agent-handoff-local-20261002.json",
-        "lib/a2a-result-handoff.ts",
-        "tests/a2a-result-handoff.test.mjs",
-        "docs/evidence/a2a-zema-result-handoff-local-20261002.json",
-        "docs/evidence/a2a-two-agent-cloud-workflow-local-20261002.json",
-        "lib/esim-device-install-store.ts",
-        "docs/evidence/esim-install-proof-concurrency-local-20261002.json",
-        "lib/a2a-parent-controller.ts",
-        "tests/a2a-parent-controller.test.mjs",
-        "docs/evidence/a2a-parent-controller-local-20261002.json",
-        "tests/a2a-delegation-store.test.mjs",
-        "docs/evidence/a2a-deadline-sweep-local-20261002.json",
-        "drizzle/0057_a2a_parent_sequence.sql",
-        "drizzle/meta/_journal.json",
-        "lib/a2a-delegation-recovery.ts",
-        "tests/a2a-delegation-recovery.test.mjs",
-        "docs/evidence/a2a-persisted-handoff-link-local-20261002.json",
-        "docs/sky-cloud-operations-runbook.md",
-        "lib/rockstar-entitlement-delivery-http.ts",
-        "app/api/internal/rockstar/entitlement-deliveries/route.ts",
-        "docs/evidence/sim-led-product-correction-followup-20261002.json",
-        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl"
-      ],
-      "nextAction": "The current Android Shell source already wires signed quote review, stable-ID Cloud draft, separate device-credential Wallet approval, exact quote-bound hold, Broker proof, explicit Cloud approval and same-ID recovery; source-contract/shared canonical-vector tests pass. The earlier missing-handoff audit is superseded. Run Android Core/AIDL/APK and credential/restart/reconnect instrumentation on equipped CI/device hardware; this host has no usable Java/Gradle/Android SDK toolchain. In parallel, seller checkout/buyer delivery, physical fulfillment, carrier activation, Provider contract/rates/meters/invoices, funded settlement and exact-SKU install remain external acceptance gates. Never count local claims or usage as production proof.",
-      "files": [
-        "lib/a2a-client.ts",
-        "lib/a2a-price-quote-acquisition.ts",
-        "app/api/sky/a2a-price-quotes/route.ts",
-        "components/workbench.tsx",
-        "lib/a2a-delegation-store.ts",
-        "lib/a2a-authorization.ts",
-        "app/api/sky/a2a-delegations/route.ts",
-        "app/api/sky/a2a-delegations/[id]/route.ts",
-        "app/api/sky/a2a-delegations/[id]/broker-authorization/route.ts",
-        "services/sky-agent-runtime/src/worker.ts",
-        "drizzle/0056_a2a_package_runtime_binding_refs.sql",
-        "db/schema.ts",
-        "lib/a2a-agent-directory.ts",
-        "lib/sky-package-runtime-binding-dispatch.ts",
-        "services/sky-agent-runtime/vitest.config.ts",
-        "tests/sky-package-runtime-binding-dispatch.test.mjs",
-        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
-        "tests/a2a-client.test.mjs",
-        "app/api/internal/sky-package-runtime-bindings/route.ts",
-        "docs/evidence/sim-led-product-correction-20261002.json",
-        "scripts/check-work-api.mjs",
-        "lib/rockstar-entitlement-issuer.ts",
-        "lib/rockstar-entitlement-issuer-store.ts",
-        "lib/rockstar-entitlement-delivery-http.ts",
-        "app/api/internal/rockstar/entitlement-deliveries/route.ts",
-        "tests/rockstar-entitlement-delivery-http.test.mjs",
-        "tests/rockstar-entitlement-issuer-store.test.mjs",
-        "tests/rockstar-entitlement-issuer.test.mjs",
-        "docs/evidence/sim-service-claim-file-import-local-20261002.json"
+        "app/api/amc/route.ts",
+        "app/amc/page.tsx",
+        "components/amc-tool-runner.tsx",
+        "docs/sky-tools-complete-design.md",
+        "tests/amc-goal-engine.test.mjs",
+        "tests/amc-goal-cli.test.mjs",
+        "tests/amc-codex.test.mjs",
+        "tests/amc-request-plan.test.mjs",
+        "tests/amc-effort.test.mjs",
+        "tests/amc-sky-integration.test.mjs",
+        "docs/evidence/amc/goal-orchestrator-audit.json",
+        "docs/evidence/amc/codex-local-smoke.json"
       ]
     },
     {
-      "id": "SKY21",
-      "title": "Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる",
-      "status": "in_progress",
+      "id": "LCH07-01",
+      "parentTaskId": "LCH07",
+      "title": "再受入する配布platform・候補SHA・archive hashを固定する",
+      "status": "planned",
+      "dependsOn": [],
+      "evidence": []
+    },
+    {
+      "id": "LCH07-02",
+      "parentTaskId": "LCH07",
+      "title": "同一候補のlicense・NOTICE・SBOMとOWNER未決を照合する",
+      "status": "planned",
       "dependsOn": [
-        "SKY07",
-        "SKY20"
+        "LCH07-01"
       ],
-      "evidence": [
-        "docs/sky-launch-design.md",
-        "data/sky-service-launch.json",
-        "lib/sky-service-status.ts",
-        "app/api/sky/service-status/route.ts",
-        "app/sky/help/page.tsx",
-        "tests/sky-service-status.test.mjs",
-        "docs/sky-launch-operations.md",
-        "components/sky-publisher-form.tsx",
-        "docs/evidence/sky-pixel-service-acceptance.json",
-        "lib/operations.ts",
-        "lib/local-guide-history.ts",
-        "components/local-guide-history-consent.tsx",
-        "components/legal-intake-runner.tsx",
-        "components/patent-assistant-runner.tsx",
-        "tests/local-guide-history.test.mjs",
-        "tests/operations.test.mjs"
+      "evidence": []
+    },
+    {
+      "id": "LCH07-03",
+      "parentTaskId": "LCH07",
+      "title": "候補のproduction署名・公開trust・失効/rotation証拠を結合する",
+      "status": "planned",
+      "dependsOn": [
+        "LCH07-01",
+        "LCH07-02"
       ],
-      "nextAction": "Sky v20公開。Pixel PAPER提案承認実行・D12件ずつ・レシート再取得・次操作導線・スマホheader受入。全34 Toolの分類JSONで未確認4件を保持。市場修正後のfull verify631/19/API622合格、以後の並行0044 a2a_live_usage_snapshots schema差分は別gateとして未整合。Mercari/Coconala台帳/候補3件のUI受入とPC接続を進める。Cloud AI専用credentialとApple Pay対応端末が必要。"
+      "evidence": []
+    },
+    {
+      "id": "LCH07-04",
+      "parentTaskId": "LCH07",
+      "title": "署名済み同一候補をfresh環境へ導入し起動・保存を再受入する",
+      "status": "planned",
+      "dependsOn": [
+        "LCH07-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "LCH07-05",
+      "parentTaskId": "LCH07",
+      "title": "同一候補の更新・rollback・backup/restore・中断復旧を受入する",
+      "status": "planned",
+      "dependsOn": [
+        "LCH07-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "LCH07-06",
+      "parentTaskId": "LCH07",
+      "title": "配布物readbackと同一候補の全受入を監査し公開可否を分離する",
+      "status": "planned",
+      "dependsOn": [
+        "LCH07-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "OS02-01",
+      "parentTaskId": "OS02",
+      "title": "Pixel 10 GL066/frankelとsource lockの対象を再照合する",
+      "status": "planned",
+      "dependsOn": [
+        "OS01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "OS02-02",
+      "parentTaskId": "OS02",
+      "title": "source署名・vendor inventory・純正復旧artifactの入力matrixを作る",
+      "status": "planned",
+      "dependsOn": [
+        "OS01",
+        "OS02-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "OS02-03",
+      "parentTaskId": "OS02",
+      "title": "専用x86_64 LinuxのCPU・RAM・空き容量・依存を適合判定する",
+      "status": "planned",
+      "dependsOn": [
+        "OS01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "OS02-04",
+      "parentTaskId": "OS02",
+      "title": "build前freezeの不足入力と準備検査のfail-closedを検証する",
+      "status": "planned",
+      "dependsOn": [
+        "OS01",
+        "OS02-02",
+        "OS02-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "OS02-05",
+      "parentTaskId": "OS02",
+      "title": "適合済みLinux向けcompile-only再現手順とartifact保全条件を固定する",
+      "status": "planned",
+      "dependsOn": [
+        "OS01",
+        "OS02-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "OS02-06",
+      "parentTaskId": "OS02",
+      "title": "OS02適合確認の全条件とfull build・first-flashの別gateをレビューする",
+      "status": "planned",
+      "dependsOn": [
+        "OS01",
+        "OS02-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY19-01",
+      "parentTaskId": "SKY19",
+      "title": "ToC料金保留と旧888 cents契約の適用差分を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "SKY16"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY19-02",
+      "parentTaskId": "SKY19",
+      "title": "SkyのToolチーム入口と利益発生から決済までの利用者動線を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "SKY16",
+        "SKY19-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY19-03",
+      "parentTaskId": "SKY19",
+      "title": "対象利益・料率・上限・実費・返金・還元の決定表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "SKY16",
+        "SKY19-01",
+        "SKY19-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY19-04",
+      "parentTaskId": "SKY19",
+      "title": "保留中に新規料金計上・請求・回収をしない回帰試験を固定する",
+      "status": "planned",
+      "dependsOn": [
+        "SKY16",
+        "SKY19-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY19-05",
+      "parentTaskId": "SKY19",
+      "title": "OWNERの料金判断を記録し新契約の受入条件を版固定する",
+      "status": "planned",
+      "dependsOn": [
+        "SKY16",
+        "SKY19-03",
+        "SKY19-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY19-06",
+      "parentTaskId": "SKY19",
+      "title": "Toolチーム入口・Wallet決済・開発者還元の設計全体をレビューする",
+      "status": "planned",
+      "dependsOn": [
+        "SKY16",
+        "SKY19-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY07-01",
+      "parentTaskId": "SKY07",
+      "title": "MCPごとのPC・Sky Cloud・提供者接続対応表をmanifestへ結ぶ",
+      "status": "planned",
+      "dependsOn": [
+        "SKY06"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY07-02",
+      "parentTaskId": "SKY07",
+      "title": "接続先選択・未対応表示・ワンタップ初期化のUI契約を検証する",
+      "status": "planned",
+      "dependsOn": [
+        "SKY06",
+        "SKY07-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY07-03",
+      "parentTaskId": "SKY07",
+      "title": "Passport・scope・一回承認と未信頼schemaの境界を検証する",
+      "status": "planned",
+      "dependsOn": [
+        "SKY06",
+        "SKY07-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY07-04",
+      "parentTaskId": "SKY07",
+      "title": "代表Provider sandboxで接続から実行receipt照合まで通す",
+      "status": "planned",
+      "dependsOn": [
+        "SKY06",
+        "SKY07-02",
+        "SKY07-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY07-05",
+      "parentTaskId": "SKY07",
+      "title": "sandboxでtimeout・失効・再接続・同一実行の再送を受入する",
+      "status": "planned",
+      "dependsOn": [
+        "SKY06",
+        "SKY07-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SKY07-06",
+      "parentTaskId": "SKY07",
+      "title": "対応先別の証拠・未対応範囲とSKY07全体受入を公開前に確定する",
+      "status": "planned",
+      "dependsOn": [
+        "SKY06",
+        "SKY07-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI02-01",
+      "parentTaskId": "AI02",
+      "title": "ModelProfileとRuntimeManifestのidentity・hash・互換条件を固定する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI02-02",
+      "parentTaskId": "AI02",
+      "title": "hash・license・容量・互換検査で非active model stagingを保護する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI02-03",
+      "parentTaskId": "AI02",
+      "title": "仕事へのmodel/runtime版固定と旧job再開判定を実装する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI02-04",
+      "parentTaskId": "AI02",
+      "title": "Brokerによるatomic切替・health判定・crash rollbackを実装する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-02",
+        "AI02-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI02-05",
+      "parentTaskId": "AI02",
+      "title": "承認済み評価環境で2 model候補の交換・旧job再開・失敗復旧を実測する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI02-06",
+      "parentTaskId": "AI02",
+      "title": "権限非昇格の回帰とAI02の全体完了条件を照合する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI04-01",
+      "parentTaskId": "AI04",
+      "title": "OS10保存契約と外部作用outboxの状態・永続fieldを対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI04-02",
+      "parentTaskId": "AI04",
+      "title": "結果不明・重複・取消・crashの決定的fixtureを固定する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI04-03",
+      "parentTaskId": "AI04",
+      "title": "dispatch前のoutbox保存・権限再検査・operation key固定を実装する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI04-04",
+      "parentTaskId": "AI04",
+      "title": "provider照会とreceiptの署名・内容・金額・finality照合を実装する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI04-05",
+      "parentTaskId": "AI04",
+      "title": "再起動後の承認・receipt回収と取消競合を故障注入試験する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AI04-06",
+      "parentTaskId": "AI04",
+      "title": "AI01・OS10の依存とAI04全体の復旧証拠を同一版で受入する",
+      "status": "planned",
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SYS13-01",
+      "parentTaskId": "SYS13",
+      "title": "緊急accessの既存APK証拠とfull OS不足を同一候補ごとに分ける",
+      "status": "planned",
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SYS13-02",
+      "parentTaskId": "SYS13",
+      "title": "hardware credential登録・失効・再登録の契約と公開設定を検査する",
+      "status": "planned",
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SYS13-03",
+      "parentTaskId": "SYS13",
+      "title": "Android serviceの限定command・期限・replay拒否・監査を実装検証する",
+      "status": "planned",
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-01",
+        "SYS13-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SYS13-04",
+      "parentTaskId": "SYS13",
+      "title": "候補imageのprivapp・SELinux分離と緊急復旧導線を受入表へ固定する",
+      "status": "planned",
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-02",
+        "SYS13-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SYS13-05",
+      "parentTaskId": "SYS13",
+      "title": "承認済みPixel候補で不正操作・失効・隔離の侵入試験を行う",
+      "status": "planned",
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "SYS13-06",
+      "parentTaskId": "SYS13",
+      "title": "同一Pixel候補で切断・再起動・失効後の復旧を検証しSYS13全条件を照合する",
+      "status": "planned",
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AMC01-01",
+      "parentTaskId": "AMC01",
+      "title": "Mini単体・Pro単体・任意連携・rocketstar地上支援の入出力表を作る",
+      "status": "planned",
+      "dependsOn": [],
+      "evidence": []
+    },
+    {
+      "id": "AMC01-02",
+      "parentTaskId": "AMC01",
+      "title": "各Interfaceの主担当・受渡し先・安全境界を一意に割り当てる",
+      "status": "planned",
+      "dependsOn": [
+        "AMC01-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AMC01-03",
+      "parentTaskId": "AMC01",
+      "title": "公開説明・R5・Pro定義・rocketstar保存資料の相違台帳を作る",
+      "status": "planned",
+      "dependsOn": [
+        "AMC01-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AMC01-04",
+      "parentTaskId": "AMC01",
+      "title": "未決事項へ決定者・必要入力・影響先・次の作業を付ける",
+      "status": "planned",
+      "dependsOn": [
+        "AMC01-02",
+        "AMC01-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AMC01-05",
+      "parentTaskId": "AMC01",
+      "title": "責任表と未決台帳を32部隊・親子タスクへ相互リンクする",
+      "status": "planned",
+      "dependsOn": [
+        "AMC01-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "AMC01-06",
+      "parentTaskId": "AMC01",
+      "title": "関係部隊の責任表レビューを記録し残る未決を引き継ぐ",
+      "status": "planned",
+      "dependsOn": [
+        "AMC01-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT10-01",
+      "parentTaskId": "RKT10",
+      "title": "要求・BOM・供給元・inspectionの識別関係を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT10-02",
+      "parentTaskId": "RKT10",
+      "title": "不適合と構成変更の記録・影響判定を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT10-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT10-03",
+      "parentTaskId": "RKT10",
+      "title": "設計reviewと製造引渡しの証拠Gateを分ける",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT10-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT10-04",
+      "parentTaskId": "RKT10",
+      "title": "地上・飛行・再使用の証拠Gateを分ける",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT10-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT10-05",
+      "parentTaskId": "RKT10",
+      "title": "証拠提出者と独立確認者の役割をGateへ割り当てる",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT10-03",
+        "RKT10-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT10-06",
+      "parentTaskId": "RKT10",
+      "title": "版変更時に再評価する合格範囲をmatrixへまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT10-02",
+        "RKT10-04",
+        "RKT10-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT09-01",
+      "parentTaskId": "RKT09",
+      "title": "機番・構成版・部品識別の台帳schemaを定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT09-02",
+      "parentTaskId": "RKT09",
+      "title": "部品寿命・回収履歴の記録項目を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT09-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT09-03",
+      "parentTaskId": "RKT09",
+      "title": "点検・交換・不適合の判定経路を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT09-01",
+        "RKT09-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT09-04",
+      "parentTaskId": "RKT09",
+      "title": "再飛行可否に必要な証拠と判定責任を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT09-02",
+        "RKT09-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT09-05",
+      "parentTaskId": "RKT09",
+      "title": "不足証拠・版混在を拒否するsynthetic履歴を設計する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT09-01",
+        "RKT09-03",
+        "RKT09-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT09-06",
+      "parentTaskId": "RKT09",
+      "title": "synthetic判定と同一機番の実再使用証拠を分離する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT09-04",
+        "RKT09-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT08-01",
+      "parentTaskId": "RKT08",
+      "title": "輸送・設置・発射準備・回収の設備要求を索引化する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT08-02",
+      "parentTaskId": "RKT08",
+      "title": "運用段階ごとの実行者・確認者・中止権限を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT08-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT08-03",
+      "parentTaskId": "RKT08",
+      "title": "要求と結果の照合・go/no-go・holdの記録形式を作る",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT08-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT08-04",
+      "parentTaskId": "RKT08",
+      "title": "abort時の通知・確認・記録の机上ケースを定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT08-02",
+        "RKT08-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT08-05",
+      "parentTaskId": "RKT08",
+      "title": "地域・施設・運用資格の未決と確認先を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT08-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT08-06",
+      "parentTaskId": "RKT08",
+      "title": "机上rehearsalの入力と期待記録をGateへまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT08-03",
+        "RKT08-04",
+        "RKT08-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT07-01",
+      "parentTaskId": "RKT07",
+      "title": "R1.0の電源・記録・時刻・通信要求を対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT07-02",
+      "parentTaskId": "RKT07",
+      "title": "A-LINK v0.4受信試作の適用範囲を切り出す",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT07-03",
+      "parentTaskId": "RKT07",
+      "title": "現行要求と旧試作を一致・差分・未確認へ分類する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT07-01",
+        "RKT07-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT07-04",
+      "parentTaskId": "RKT07",
+      "title": "link別の容量・可視条件・電力・時刻の未決を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT07-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT07-05",
+      "parentTaskId": "RKT07",
+      "title": "切断・遅延・順序・再送のlink simulatorケースを定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT07-03",
+        "RKT07-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT07-06",
+      "parentTaskId": "RKT07",
+      "title": "受信試作・simulator・実電波・機体統合の受入を分ける",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT07-03",
+        "RKT07-04",
+        "RKT07-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT06-01",
+      "parentTaskId": "RKT06",
+      "title": "Payloadの包絡・質量・接続の必要入力を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT06-02",
+      "parentTaskId": "RKT06",
+      "title": "Payloadと機体のInterface責任を対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT06-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT06-03",
+      "parentTaskId": "RKT06",
+      "title": "保持・扉・分離要求の状態を分ける",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT06-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT06-04",
+      "parentTaskId": "RKT06",
+      "title": "分離結果・残留・不明の状態確認を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT06-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT06-05",
+      "parentTaskId": "RKT06",
+      "title": "emulator異常入力と表示・記録の期待値を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT06-03",
+        "RKT06-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT06-06",
+      "parentTaskId": "RKT06",
+      "title": "emulatorと実機分離の証拠を分けた受入表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT06-01",
+        "RKT06-02",
+        "RKT06-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT05-01",
+      "parentTaskId": "RKT05",
+      "title": "飛行核と地上支援OSのauthority境界を図示する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT05-02",
+      "parentTaskId": "RKT05",
+      "title": "正常状態の入出力と独立判定役割を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT05-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT05-03",
+      "parentTaskId": "RKT05",
+      "title": "中止・通信断・再起動の状態遷移を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT05-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT05-04",
+      "parentTaskId": "RKT05",
+      "title": "SILの入力・期待結果・trace記録形式を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT05-02",
+        "RKT05-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT05-05",
+      "parentTaskId": "RKT05",
+      "title": "禁止遷移と権限越境を照合するレビュー表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT05-01",
+        "RKT05-03",
+        "RKT05-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT05-06",
+      "parentTaskId": "RKT05",
+      "title": "SIL計画・SIL結果・HIL・実機・飛行認定を分離する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT05-04",
+        "RKT05-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT04-01",
+      "parentTaskId": "RKT04",
+      "title": "飛行領域・熱・扉・構造の要求対応表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT04-02",
+      "parentTaskId": "RKT04",
+      "title": "解析caseのMission版と構成版を揃える規則を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT04-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT04-03",
+      "parentTaskId": "RKT04",
+      "title": "境界条件・材料・不確かさの不足入力を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT04-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT04-04",
+      "parentTaskId": "RKT04",
+      "title": "空力・熱・構造の受渡入力と解消順を可視化する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT04-01",
+        "RKT04-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT04-05",
+      "parentTaskId": "RKT04",
+      "title": "解析と独立検証を照合する記録要件を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT04-02",
+        "RKT04-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT04-06",
+      "parentTaskId": "RKT04",
+      "title": "解析計画と実環境受入の証拠境界をまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT04-04",
+        "RKT04-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT03-01",
+      "parentTaskId": "RKT03",
+      "title": "推進要求と機体側Interfaceの出典台帳を作る",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT03-02",
+      "parentTaskId": "RKT03",
+      "title": "停止要求・状態通知の責任と確認記録を分ける",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT03-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT03-03",
+      "parentTaskId": "RKT03",
+      "title": "方式・型式・個数・寿命の未決台帳を作る",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT03-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT03-04",
+      "parentTaskId": "RKT03",
+      "title": "比較性能と採用値を分ける記録様式を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT03-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT03-05",
+      "parentTaskId": "RKT03",
+      "title": "専門設計レビューへ提出する項目と責任をまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT03-02",
+        "RKT03-03",
+        "RKT03-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT03-06",
+      "parentTaskId": "RKT03",
+      "title": "設計レビューから地上実証までの証拠Gateを整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT03-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT02-01",
+      "parentTaskId": "RKT02",
+      "title": "構造・tank・取付部の要求とInterfaceを索引化する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT02-02",
+      "parentTaskId": "RKT02",
+      "title": "材料候補と材料証拠の未決入力を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT02-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT02-03",
+      "parentTaskId": "RKT02",
+      "title": "荷重caseの出典・構成版・不足入力を対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT02-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT02-04",
+      "parentTaskId": "RKT02",
+      "title": "製造方法・取付条件の未決と専門レビュー役割を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT02-01",
+        "RKT02-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT02-05",
+      "parentTaskId": "RKT02",
+      "title": "材料試験・解析・構造試験の証拠順を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT02-02",
+        "RKT02-03",
+        "RKT02-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT02-06",
+      "parentTaskId": "RKT02",
+      "title": "製造リリースへ渡せない未確定条件を一覧化する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01",
+        "RKT02-04",
+        "RKT02-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT01-01",
+      "parentTaskId": "RKT01",
+      "title": "射場・回収・投入・搭載・環境のMission入力台帳を作る",
+      "status": "planned",
+      "dependsOn": [
+        "DOC03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT01-02",
+      "parentTaskId": "RKT01",
+      "title": "R1.0の60要求へ根拠と必要証拠を対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "DOC03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT01-03",
+      "parentTaskId": "RKT01",
+      "title": "18 Interfaceの入出力とR1〜R10の責任を対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "DOC03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT01-04",
+      "parentTaskId": "RKT01",
+      "title": "要求と未決事項の主担当・閉じ方をR1〜R10へ割り当てる",
+      "status": "planned",
+      "dependsOn": [
+        "DOC03",
+        "RKT01-01",
+        "RKT01-02",
+        "RKT01-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT01-05",
+      "parentTaskId": "RKT01",
+      "title": "不足Mission入力の決定順と影響先を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "DOC03",
+        "RKT01-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT01-06",
+      "parentTaskId": "RKT01",
+      "title": "W1要求整理とW2統合成立性のGateを分ける",
+      "status": "planned",
+      "dependsOn": [
+        "DOC03",
+        "RKT01-04",
+        "RKT01-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO07-01",
+      "parentTaskId": "PRO07",
+      "title": "基板・冷却・storage・I/Oの筐体包絡入力を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO07-02",
+      "parentTaskId": "PRO07",
+      "title": "動作モード別の電力予算と未選定条件を分ける",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO07-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO07-03",
+      "parentTaskId": "PRO07",
+      "title": "最大同時負荷と通風阻害の熱評価条件を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO07-01",
+        "PRO07-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO07-04",
+      "parentTaskId": "PRO07",
+      "title": "電源断・中断更新・復旧失敗の受入入力を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO07-05",
+      "parentTaskId": "PRO07",
+      "title": "署名・個体鍵・譲渡消去のOSとProの責任を分ける",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO07-06",
+      "parentTaskId": "PRO07",
+      "title": "筐体・熱・更新復旧の計画受入と完成品受入を分離する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO07-03",
+        "PRO07-04",
+        "PRO07-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO06-01",
+      "parentTaskId": "PRO06",
+      "title": "pairingと能力交渉の機器認証条件を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO06-02",
+      "parentTaskId": "PRO06",
+      "title": "Pose eventのschema版・座標・単位・時刻を共通化する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO06-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO06-03",
+      "parentTaskId": "PRO06",
+      "title": "Poseの順序・鮮度・重複・時計ずれの判定を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO06-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO06-04",
+      "parentTaskId": "PRO06",
+      "title": "切断・古いepoch・再接続の状態遷移を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO06-01",
+        "PRO06-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO06-05",
+      "parentTaskId": "PRO06",
+      "title": "未知機器と異常Poseのsynthetic fixtureを設計する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO06-03",
+        "PRO06-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO06-06",
+      "parentTaskId": "PRO06",
+      "title": "1・2・4 Mini追加profileと単独動作の境界をまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO06-01",
+        "PRO06-02",
+        "PRO06-04",
+        "PRO06-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO05-01",
+      "parentTaskId": "PRO05",
+      "title": "映像・音声・controllerの用途と最小接続構成を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO05-02",
+      "parentTaskId": "PRO05",
+      "title": "端子・規格候補とdriverの対応表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO05-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO05-03",
+      "parentTaskId": "PRO05",
+      "title": "I/Oの帯域・電力を演算基板候補の制約へ対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO05-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO05-04",
+      "parentTaskId": "PRO05",
+      "title": "起動前未接続と機器認識失敗の期待挙動を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO05-01",
+        "PRO05-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO05-05",
+      "parentTaskId": "PRO05",
+      "title": "抜去・再接続の操作継続と音映像復帰ケースを定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO05-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO05-06",
+      "parentTaskId": "PRO05",
+      "title": "最小I/O表の未決と選定前受入条件をまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO05-03",
+        "PRO05-04",
+        "PRO05-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO04-01",
+      "parentTaskId": "PRO04",
+      "title": "session・game・作品・秘密参照・ログの保存分類表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO04-02",
+      "parentTaskId": "PRO04",
+      "title": "利用者分離と別owner読取拒否のfixtureを設計する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO04-03",
+      "parentTaskId": "PRO04",
+      "title": "容量不足・並行更新・中断時の保存契約を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO04-04",
+      "parentTaskId": "PRO04",
+      "title": "暗号鍵の責任とcrash・鍵喪失時の復旧境界を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01",
+        "PRO04-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO04-05",
+      "parentTaskId": "PRO04",
+      "title": "backup・restoreとschema版更新のfixtureを設計する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01",
+        "PRO04-03",
+        "PRO04-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO04-06",
+      "parentTaskId": "PRO04",
+      "title": "export・deleteと削除後の再アクセスのfixtureを設計する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01",
+        "PRO04-02",
+        "PRO04-04",
+        "PRO04-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO03-01",
+      "parentTaskId": "PRO03",
+      "title": "DX01共通契約とPro固有profileの差分を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO03-02",
+      "parentTaskId": "PRO03",
+      "title": "controllerの操作を意味操作へ対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO03-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO03-03",
+      "parentTaskId": "PRO03",
+      "title": "任意Mini入力を同じ意味操作へ変換する差分を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO03-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO03-04",
+      "parentTaskId": "PRO03",
+      "title": "sampleの版・導入・playの再現手順を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO03-01",
+        "PRO03-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO03-05",
+      "parentTaskId": "PRO03",
+      "title": "中断・保存・再開の形式と期待状態を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO03-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO03-06",
+      "parentTaskId": "PRO03",
+      "title": "削除まで含めた非金融gameの受入ケース表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO03-03",
+        "PRO03-04",
+        "PRO03-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO02-01",
+      "parentTaskId": "PRO02",
+      "title": "ゲーム単独とゲーム＋音声の再現負荷を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO02-02",
+      "parentTaskId": "PRO02",
+      "title": "サービス＋保存とローカルAI併用の再現負荷を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO02-03",
+      "parentTaskId": "PRO02",
+      "title": "解像度・FPS・p95遅延・RAM・I/Oの計測欄を統一する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO02-01",
+        "PRO02-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO02-04",
+      "parentTaskId": "PRO02",
+      "title": "電力・温度・継続負荷の比較条件を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO02-01",
+        "PRO02-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO02-05",
+      "parentTaskId": "PRO02",
+      "title": "CPU・GPU・NPU候補のdriver・OS・供給条件を比較表へ揃える",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO02-06",
+      "parentTaskId": "PRO02",
+      "title": "同条件比較から候補を選ぶ判定手順と保留条件を作る",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01",
+        "PRO02-03",
+        "PRO02-04",
+        "PRO02-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO01-01",
+      "parentTaskId": "PRO01",
+      "title": "games・services・compute・storage・audioの要求候補を抽出する",
+      "status": "planned",
+      "dependsOn": [],
+      "evidence": []
+    },
+    {
+      "id": "PRO01-02",
+      "parentTaskId": "PRO01",
+      "title": "Pro単独利用の利用者・入出力・成功条件を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO01-03",
+      "parentTaskId": "PRO01",
+      "title": "任意Mini連携の追加機能と切断時の境界を分ける",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO01-04",
+      "parentTaskId": "PRO01",
+      "title": "Pro要求の主担当と受入方法をP2〜P7へ割り当てる",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01-01",
+        "PRO01-02",
+        "PRO01-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO01-05",
+      "parentTaskId": "PRO01",
+      "title": "性能・端子・価格・筐体の未決台帳を作る",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO01-06",
+      "parentTaskId": "PRO01",
+      "title": "v0.1要求整理からv1.0統合設計へ渡す不足をまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01-04",
+        "PRO01-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI07-01",
+      "parentTaskId": "MINI07",
+      "title": "校正失敗・過熱・通信喪失・OS停止・更新停電を危険台帳へ登録する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI07-02",
+      "parentTaskId": "MINI07",
+      "title": "危険ごとの検出・独立停止・復帰条件を対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI07-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI07-03",
+      "parentTaskId": "MINI07",
+      "title": "来客の物理停止と校正失敗時の受入ケースを作る",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI07-01",
+        "MINI07-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI07-04",
+      "parentTaskId": "MINI07",
+      "title": "原データ保存・送信の既定OFFと許可取消を確認表へ落とす",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI07-05",
+      "parentTaskId": "MINI07",
+      "title": "M2〜M6の評価計画から安全側へ渡す条件を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI07-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI07-06",
+      "parentTaskId": "MINI07",
+      "title": "未決をHOLDにする安全受入表とレビュー担当をまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI07-02",
+        "MINI07-03",
+        "MINI07-04",
+        "MINI07-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI06-01",
+      "parentTaskId": "MINI06",
+      "title": "部品・動作モード・起動ピークの電力予算表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI06-02",
+      "parentTaskId": "MINI06",
+      "title": "表示方式未決の電力を独立した条件欄へ分離する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI06-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI06-03",
+      "parentTaskId": "MINI06",
+      "title": "周囲条件・吸気閉塞・同時負荷の熱評価条件を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI06-01",
+        "MINI06-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI06-04",
+      "parentTaskId": "MINI06",
+      "title": "1台時の時刻・順序・再接続の通信評価入力を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI06-05",
+      "parentTaskId": "MINI06",
+      "title": "2台中1台喪失時の共同確定停止ケースを定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI06-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI06-06",
+      "parentTaskId": "MINI06",
+      "title": "4台の過半数・少数側停止と再接続のケースを定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI06-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI05-01",
+      "parentTaskId": "MINI05",
+      "title": "単独nodeのSensor・World・Input・Gameの責任を割り当てる",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI05-02",
+      "parentTaskId": "MINI05",
+      "title": "Display・保存・停止までの単独利用シーケンスを定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI05-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI05-03",
+      "parentTaskId": "MINI05",
+      "title": "候補基板と必要ドライバーの対応・不足を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI05-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI05-04",
+      "parentTaskId": "MINI05",
+      "title": "再現buildと起動失敗・保存復旧の記録要件を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI05-02",
+        "MINI05-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI05-05",
+      "parentTaskId": "MINI05",
+      "title": "OS停止と独立Safety MCU遮断の経路を分ける",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI05-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI05-06",
+      "parentTaskId": "MINI05",
+      "title": "stub・実Sensor・R5実基板を分けた最小boot受入表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI05-02",
+        "MINI05-03",
+        "MINI05-04",
+        "MINI05-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI04-01",
+      "parentTaskId": "MINI04",
+      "title": "裸眼・通常室内・周囲空間の要求を評価項目へ対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI04-02",
+      "parentTaskId": "MINI04",
+      "title": "表示媒体・視域・光路の方式比較欄を作る",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI04-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI04-03",
+      "parentTaskId": "MINI04",
+      "title": "表示電力と200mm収納の必要入力を機構側へ渡す表にする",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI04-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI04-04",
+      "parentTaskId": "MINI04",
+      "title": "有効領域・明るさ・視域の測定方法を指定する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI04-01",
+        "MINI04-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI04-05",
+      "parentTaskId": "MINI04",
+      "title": "光学試験の専門レビュー・開始条件・中止条件を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI04-02",
+        "MINI04-03",
+        "MINI04-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI04-06",
+      "parentTaskId": "MINI04",
+      "title": "2D fallbackと裸眼表示受入を別の証拠欄に分ける",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI04-01",
+        "MINI04-04",
+        "MINI04-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI03-01",
+      "parentTaskId": "MINI03",
+      "title": "単体深度方式と候補センサーの観測範囲を比較する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI03-02",
+      "parentTaskId": "MINI03",
+      "title": "床置き・台上・着座の入力評価シーンを定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI03-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI03-03",
+      "parentTaskId": "MINI03",
+      "title": "遮蔽・交差・複数人の欠落ケースを定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI03-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI03-04",
+      "parentTaskId": "MINI03",
+      "title": "基準器・時刻・座標と誤差計算の記録形式を決める",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI03-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI03-05",
+      "parentTaskId": "MINI03",
+      "title": "精度目標の未決値と決定に必要な入力を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI03-02",
+        "MINI03-03",
+        "MINI03-04"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI03-06",
+      "parentTaskId": "MINI03",
+      "title": "R5単体測定と旧pose fixtureを分離した受入表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI03-02",
+        "MINI03-03",
+        "MINI03-04",
+        "MINI03-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI02-01",
+      "parentTaskId": "MINI02",
+      "title": "候補部品の寸法・出典・未選定範囲を包絡表へ整理する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI02-02",
+      "parentTaskId": "MINI02",
+      "title": "脚・配線・工具空間の共通座標と干渉確認区画を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI02-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI02-03",
+      "parentTaskId": "MINI02",
+      "title": "全使用姿勢で200mmを判定する寸法鎖と測定図を指定する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI02-02"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI02-04",
+      "parentTaskId": "MINI02",
+      "title": "重心・滑り・転倒の評価条件と判定者を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI02-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI02-05",
+      "parentTaskId": "MINI02",
+      "title": "未選定光学方式が外径・台座へ与える制約を切り出す",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI02-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI02-06",
+      "parentTaskId": "MINI02",
+      "title": "分解保守の確認項目と加工図へ移行できない条件をまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01",
+        "MINI02-02",
+        "MINI02-03",
+        "MINI02-04",
+        "MINI02-05"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI01-01",
+      "parentTaskId": "MINI01",
+      "title": "R5のREQ01〜12と根拠章を要求台帳へ転記する",
+      "status": "planned",
+      "dependsOn": [
+        "MAT14"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI01-02",
+      "parentTaskId": "MINI01",
+      "title": "OPEN01〜08の必要入力と閉じ方を分ける",
+      "status": "planned",
+      "dependsOn": [
+        "MAT14"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI01-03",
+      "parentTaskId": "MINI01",
+      "title": "R5要求と受入試験IDを対応付ける",
+      "status": "planned",
+      "dependsOn": [
+        "MAT14",
+        "MINI01-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI01-04",
+      "parentTaskId": "MINI01",
+      "title": "要求・未決・試験の主担当をM1〜M7とOSへ割り当てる",
+      "status": "planned",
+      "dependsOn": [
+        "MAT14",
+        "MINI01-01",
+        "MINI01-02",
+        "MINI01-03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI01-05",
+      "parentTaskId": "MINI01",
+      "title": "1本自律・200mm・同型増設・Pro任意の境界を照合する",
+      "status": "planned",
+      "dependsOn": [
+        "MAT14",
+        "MINI01-01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI01-06",
+      "parentTaskId": "MINI01",
+      "title": "要求追跡の欠落とMAT15全体受入との差分をまとめる",
+      "status": "planned",
+      "dependsOn": [
+        "MAT14",
+        "MINI01-04",
+        "MINI01-05"
+      ],
+      "evidence": []
     },
     {
       "id": "ORG01",
@@ -372,6 +2247,20 @@
       ]
     },
     {
+      "id": "ORG02",
+      "title": "avokado Mission ControlでRockstarOS・Mini・Pro・rocketstarを32部隊へ分け、Goal・進捗段階・rule・依存・証拠・次の作業を正本化",
+      "status": "done",
+      "dependsOn": [
+        "ORG01"
+      ],
+      "evidence": [
+        "docs/mission-control.md",
+        "data/mission-control.json",
+        "scripts/check-mission-control.mjs",
+        "PROJECTS.md"
+      ]
+    },
+    {
       "id": "MAT14",
       "title": "R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留）",
       "status": "done",
@@ -382,8 +2271,7 @@
         "docs/avocado-mini-r5/README.md",
         "docs/avocado-mini-r5/package/package_manifest.json",
         "docs/avocado-mini-r5/verification.json",
-        "scripts/verify-avocado-r5-package.py",
-        "docs/avocado-mini-r5/research/immersive-gta/README.md"
+        "scripts/verify-avocado-r5-package.py"
       ]
     },
     {
@@ -403,8 +2291,6 @@
       "status": "done",
       "dependsOn": [],
       "evidence": [
-        "components/tool-icon.tsx",
-        "tests/sky-tool-icons.test.mjs",
         "components/tool-character.tsx",
         "components/tool-character.module.css",
         "docs/workstreams/01-product-ux.md"
@@ -527,109 +2413,62 @@
     {
       "id": "AI02",
       "title": "モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入",
-      "status": "in_progress",
+      "status": "planned",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md",
-        "android/core/src/main/java/dev/rock/core/platform/RuntimeManifest.java",
-        "android/core/src/main/java/dev/rock/core/platform/ModelProfileManifest.java",
-        "android/core/src/main/java/dev/rock/core/platform/TrustedModelPublisherVerifier.java",
-        "android/core/src/main/java/dev/rock/core/platform/TrustedModelArtifactPipeline.java",
-        "android/core/src/main/java/dev/rock/core/platform/ResumableModelArtifactStager.java",
-        "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
-        "android/core/src/main/java/dev/rock/core/Engine.java",
-        "android/core/src/test/java/dev/rock/core/PlatformStoreTest.java",
-        "android/core/src/test/java/dev/rock/core/EngineTest.java",
-        "android/core/src/test/java/dev/rock/core/platform/TrustedModelPublisherVerifierTest.java",
-        "android/core/src/test/java/dev/rock/core/platform/ResumableModelArtifactStagerTest.java",
-        "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
-        "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
-        "contracts/local-ai-runtime.json",
-        "os/physical/local-ai-profile-v3.patch",
-        "docs/evidence/local-ai-profile-v3-validation-20261001.json",
-        "docs/evidence/ai02-core-java-validation-20261001.json",
-        "android/local-ai-api/src/main/aidl/dev/rock/localai/ILocalAiService.aidl",
-        "os/physical/local-ai-model-handoff-v4.patch",
-        "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json",
-        "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
-        "android/automation/src/main/java/dev/rock/automation/ModelProfileOperationLock.java",
-        "scripts/check-os-contracts.mjs",
-        "docs/evidence/pr-consolidation-20261005.json"
-      ],
-      "nextAction": "API v3 profile planning and API v4 read-only descriptor handoff now have source overlays. Android source adds a Broker activation coordinator that sequences publisher signature verification, Broker-private weights staging, Local AI load/receipt/status verification, then active-profile commit; it attempts to reload the previous model if commit fails after a successful load. PlatformStore blocks a model switch during active work or a recent plan reservation, and Zema submission shares a process lock with activation. Core JVM tests pass 46/46; API v4 clean source overlay and 23 upstream Jest tests, lint/type checks pass. `npm run verify` passes 530 Node tests, 19 Fashion tests, 301 API assertions and build. Remaining: no user-facing model catalogue/activation endpoint or production artifact source, publisher trust keyset, tokenizer/template/licence pipeline; Android automation/AIDL source is uncompiled because Android SDK platform/build-tools are unavailable. Next implement a signed-catalog install entry only after defining the operator-controlled trust/source configuration, then compile and run Binder/profile-swap/offline inference on Android CI and Pixel 10."
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI03",
       "title": "モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入",
-      "status": "in_progress",
+      "status": "planned",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md",
-        "docs/ai-memory-architecture.md",
-        "systems/rock-star-os/src/blackberryrock/memory_store.py",
-        "systems/rock-star-os/src/blackberryrock/memory_access.py",
-        "systems/rock-star-os/tests/test_memory_store.py",
-        "systems/rock-star-os/tests/test_memory_access.py",
-        "docs/evidence/ai03-canonical-memory-store-20261001.json",
-        "docs/evidence/pr-consolidation-20261005.json"
-      ],
-      "nextAction": "The host-side canonical store requires an injected OS cipher; BrokerMemoryService now derives owner scope from the authenticated Broker subject, keeps the principal guard active during each operation, and checks project action grants on every call. Focused tests use fixture principals, grants, and cipher only; they do not verify production cryptography or project authorization. Next connect the authoritative project-consent source and real OS-backed owner key adapter, expose the scoped API through the trusted OS/Binder entrypoint, add migration/encrypted backup/restore and expiry scheduling, then verify offline persistence and profile-switch projection rebuild on target hardware. Android model activation and offline inference remain separately uncompiled because this environment lacks Java/Gradle/Android SDK build tooling."
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI04",
       "title": "1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装",
-      "status": "in_progress",
+      "status": "planned",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "docs/ai-native-os-architecture.md"
       ]
     },
     {
       "id": "AI05",
       "title": "Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入",
-      "status": "in_progress",
+      "status": "planned",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md",
-        "contracts/compute-device-capabilities.json",
-        "systems/rock-star-os/os/ai_routes/policy.py",
-        "systems/rock-star-os/os/ai_routes/store.py",
-        "contracts/device-capability-snapshot.json",
-        "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
-        "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
-        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
-        "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
-        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "systems/rock-star-os/os/ai_routes/tests/test_policy_budget.py",
-        "docs/evidence/pr-consolidation-20261005.json"
-      ],
-      "nextAction": "Android Broker snapshot v2 reports public-API device/resource/eUICC observations and Local AI runtime load state; Zema checks ready/modelLoaded before and after planning. Device/API static checks and the repository build pass, but Android instrumentation is not run. Next bind authenticated owner/device identity and exact model profile to Sky discovery and submit/claim rechecks; add a documented refresh boundary after eSIM install or OS resume without reading ICCID/EID/profile inventory; then verify snapshot freshness and SKU/model fit on Android CI and a physical Pixel 10. Capability re-evaluation and hardware acceptance remain incomplete."
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI06",
       "title": "非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存）",
-      "status": "in_progress",
+      "status": "planned",
       "dependsOn": [
         "AI01",
         "AI03",
         "AI05"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "docs/ai-native-os-architecture.md"
       ]
     },
     {
@@ -665,8 +2504,7 @@
         "docs/ai-native-os-architecture.md",
         "docs/llm-evaluation-architecture.md",
         "data/llm-capabilities.json",
-        "scripts/check-llm-architecture.mjs",
-        "docs/evidence/pr-consolidation-20261005.json"
+        "scripts/check-llm-architecture.mjs"
       ]
     },
     {
@@ -892,20 +2730,7 @@
         "app/sky/publish/page.tsx",
         "components/sky-publisher-form.tsx",
         "app/api/sky/submissions/route.ts",
-        "tests/sky-submission.test.mjs",
-        "app/sky/marketplace/page.tsx",
-        "app/sky/register/page.tsx",
-        "components/sky-marketplace.tsx",
-        "components/sky-marketplace.module.css",
-        "lib/sky-marketplace-policy.ts",
-        "lib/sky-ai-marketplace.ts",
-        "components/sky-tool-workspace.tsx",
-        "lib/sky-tool-compatibility.ts",
-        "app/workspace.css",
-        "components/sky-tool-workspace.module.css",
-        "tests/sky-marketplace.test.mjs",
-        "tests/jev-router-availability.test.mjs",
-        "docs/sky-network-economy.md"
+        "tests/sky-submission.test.mjs"
       ]
     },
     {
@@ -985,137 +2810,8 @@
         "docs/sky-mcp-connector.md",
         "tests/mcp-connector.test.mjs",
         "tests/sky-mcp-onboarding.test.mjs",
-        "docs/product-baseline.md",
-        "docs/sky-cloud-continuity.md",
-        "docs/cloud-agent-provider-comparison-20261001.md",
-        "lib/a2a-client.ts",
-        "tests/a2a-client.test.mjs",
-        "lib/a2a-authorization.ts",
-        "tests/a2a-authorization.test.mjs",
-        "docs/sky-a2a-bridge.md",
-        "lib/a2a-delegation-store.ts",
-        "drizzle/0019_sky_a2a_delegations.sql",
-        "tests/a2a-delegation-store.test.mjs",
-        "drizzle/0020_a2a_delegation_events.sql",
-        "app/api/sky/a2a-delegations/route.ts",
-        "app/api/sky/a2a-delegations/[id]/route.ts",
-        "scripts/check-work-api.mjs",
-        "tests/database-status.test.mjs",
-        "lib/a2a-input-crypto.ts",
-        "tests/a2a-input-crypto.test.mjs",
-        "drizzle/0021_a2a_delegation_inputs.sql",
-        "drizzle/0022_a2a_delegation_artifacts.sql",
-        "lib/a2a-artifacts.ts",
-        "tests/a2a-artifacts.test.mjs",
-        "app/api/sky/a2a-delegations/[id]/artifacts/route.ts",
-        "app/api/sky/a2a-delegations/[id]/wallet-settlement/route.ts",
-        "components/workbench.tsx",
-        "app/work/work.css",
-        "services/sky-agent-runtime/src/worker.ts",
-        "services/sky-agent-runtime/wrangler.jsonc",
-        "package.json",
-        "lib/a2a-agent-directory.ts",
-        "tests/a2a-agent-directory.test.mjs",
-        "drizzle/0023_a2a_sky_agent_connections.sql",
-        "app/api/sky/a2a-agents/route.ts",
-        "app/api/sky/a2a-agents/[id]/route.ts",
-        "lib/a2a-broker-trust.ts",
-        "tests/a2a-broker-authorization.test.mjs",
-        "drizzle/0024_a2a_broker_authorizations.sql",
-        "app/api/sky/a2a-delegations/[id]/broker-authorization/route.ts",
-        "tests/fixtures/a2a/python_agent.py",
-        "services/sky-agent-runtime/vitest.config.ts",
-        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
-        "docs/evidence/sky-a2a-workflow-local-20260930.json",
-        "drizzle/0033_a2a_offline_continuation_consent.sql",
-        "systems/rock-star-os/os/mcp_broker/a2a_authorization.py",
-        "systems/rock-star-os/src/blackberryrock/spend.py",
-        "systems/rock-star-os/tests/test_spend_runtime.py",
-        "lib/a2a-delegation-recovery.ts",
-        "tests/a2a-delegation-recovery.test.mjs",
-        "systems/rock-star-os/scripts/accept-cloud-wallet-handoff.py",
-        "docs/evidence/a2a-cloud-python-wallet-handoff-20261001.json",
-        "docs/evidence/android-device-owner-session-20261002.json",
-        "android/core/src/main/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlow.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceSessionStore.java",
-        "lib/rockstar-device-link.ts",
-        "docs/evidence/android-a2a-p256-broker-key-20261002.json",
-        "android/automation/src/main/java/dev/rock/automation/A2ABrokerDeviceKeyStore.java",
-        "lib/a2a-broker-authorization.ts",
-        "lib/a2a-wallet-handoff-auth.ts",
-        "lib/a2a-broker-trust.ts",
-        "tests/a2a-broker-authorization.test.mjs",
-        "tests/a2a-wallet-handoff-auth.test.mjs",
-        "app/api/rockstar/broker-devices/route.ts",
-        "lib/a2a-broker-device-store.ts",
-        "scripts/check-work-api.mjs",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerDeviceRefStore.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerDeviceTransport.java",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerEnrollment.java",
-        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
-        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
-        "android/shell/src/main/java/dev/rock/shell/ShellConnection.java",
-        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "tests/sim-service-entry.test.mjs",
-        "scripts/check-os-contracts.mjs",
-        "android/automation/src/androidTest/java/dev/rock/automation/A2ABrokerDeviceKeyStoreTest.java",
-        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
-        "android/automation/build.gradle",
-        "android/automation/src/main/java/dev/rock/automation/AndroidA2AUsageTrustConfig.java",
-        "android/automation/src/androidTest/java/dev/rock/automation/AndroidA2AUsageTrustConfigTest.java",
-        "android/automation/src/main/java/dev/rock/automation/RockApplication.java",
-        "android/core/src/main/java/dev/rock/core/platform/A2AUsageReceiptVerifier.java",
-        "docs/workstreams/03-wallet-billing-providers.md",
-        "docs/workstreams/07-android-device-local-ai.md",
-        "docs/sim-service-entitlement-claims.md",
-        "docs/rockstaros-1.0-architecture.md",
-        "docs/evidence/sim-led-product-direction-audit-20261002.json",
-        "android/core/src/test/java/dev/rock/core/platform/A2AUsageReceiptVerifierTest.java",
-        "android/core/src/test/resources/a2a-price-quote-v1.json",
-        "tests/a2a-price-quote.test.mjs",
-        "docs/evidence/android-a2a-price-quote-verifier-20261002.json",
-        "docs/evidence/android-a2a-reservation-bridge-audit-20261002.json",
-        "android/core/src/main/java/dev/rock/core/platform/A2ABrokerAuthorization.java",
-        "android/core/src/test/java/dev/rock/core/platform/A2ABrokerAuthorizationTest.java",
-        "android/core/src/test/resources/a2a-wallet-reservation-v2.json",
-        "android/core/src/test/resources/a2a-broker-authorization-v2.json",
-        "tests/a2a-wallet-reservation.test.mjs",
-        "docs/evidence/android-a2a-native-reservation-core-20261002.json",
-        "docs/evidence/a2a-price-quote-acquisition-local-20261002.json",
-        "app/api/sky/a2a-price-quotes/route.ts",
-        "lib/a2a-price-quote-acquisition.ts",
-        "tests/a2a-price-quote-acquisition.test.mjs",
-        "lib/a2a-usage-receipt.ts",
-        "tests/a2a-usage-receipt.test.mjs",
-        "lib/a2a-price-quote-consent-store.ts",
-        "drizzle/0049_a2a_price_quote_consent_events.sql",
-        "tests/a2a-price-quote-consent-store.test.mjs",
-        "docs/evidence/a2a-two-agent-handoff-local-20261002.json",
-        "lib/a2a-result-handoff.ts",
-        "tests/a2a-result-handoff.test.mjs",
-        "docs/evidence/a2a-zema-result-handoff-local-20261002.json",
-        "docs/evidence/a2a-two-agent-cloud-workflow-local-20261002.json",
-        "lib/esim-device-install-store.ts",
-        "docs/evidence/esim-install-proof-concurrency-local-20261002.json",
-        "lib/a2a-parent-controller.ts",
-        "tests/a2a-parent-controller.test.mjs",
-        "docs/evidence/a2a-parent-controller-local-20261002.json",
-        "docs/workstreams/02-sky-mcp.md",
-        "docs/sim-led-product-architecture.md",
-        "docs/evidence/a2a-deadline-sweep-local-20261002.json",
-        "db/schema.ts",
-        "drizzle/0057_a2a_parent_sequence.sql",
-        "drizzle/meta/_journal.json",
-        "docs/evidence/a2a-persisted-handoff-link-local-20261002.json",
-        "docs/evidence/a2a-parent-plan-binding-local-20261002.json",
-        "lib/workflow.ts",
-        "lib/work-store.ts",
-        "app/api/work-jobs/route.ts",
-        "tests/workflow.test.mjs",
-        "docs/evidence/a2a-runtime-recheck-20261002.json"
-      ],
-      "nextAction": "The SIM-led service direction and two-step user-mediated A2A handoff, parent progress snapshot, deadline sweep, signed pricing, budget reservation, receipt verification and offline-continuation records are implemented in source. Local Worker/D1 positive Workflow tests pass 13/13; independent Node/Python A2A 1.0 client tests pass 10/10; typecheck and product lint pass. Wrangler process restart proves only prepared D1 rows survive restart with zero remote-send claims; it does not prove scheduled dispatch/recovery. Next validate on an equipped Android CI/device host and prepare production Cloudflare/Provider acceptance: migration/readback, contracted quote/execution/usage/invoice semantics, funded Wallet settlement, and exact hardware SKU installation. Local fixtures are not production billing, carrier activation, or OS installation.",
-      "next": "Prioritize implementable client-side acceptance evidence for Home → Sky/Zema/Agents, quote/estimate/cap/approval, progress, reconnect results and itemized usage; verify account/session paths and short purchase-to-service onboarding. Keep all production and exact-device gates explicit. First close the test gap for local scheduled dispatch/recovery without representing persistence-only checks as scheduler acceptance. Production D1 readback remains 0/6; real seller, carrier, provider and device acceptance are outstanding."
+        "docs/product-baseline.md"
+      ]
     },
     {
       "id": "SKY08",
@@ -1234,12 +2930,6 @@
         "lib/mcp-hub.ts",
         "toolkits/sky-mcp-connector/server.mjs",
         "tests/mcp-connector.test.mjs",
-        "scripts/sky-local-runtime.mjs",
-        "lib/sky-local-runtime.ts",
-        "tests/sky-local-runtime.test.mjs",
-        "components/delivery-runner.tsx",
-        "docs/sky-tools-complete-design.md",
-        "docs/workstreams/02-sky-mcp.md",
         "docs/chat-mcp-control-room-20260913.md"
       ]
     },
@@ -1268,7 +2958,6 @@
         "SKY14"
       ],
       "evidence": [
-        "components/sky-candidate-runner.tsx",
         "lib/sky-zema-handoff.ts",
         "lib/operations-client.ts",
         "components/sky-workspace.tsx",
@@ -1354,71 +3043,13 @@
       "evidence": [
         "components/home-screen.tsx",
         "components/home-screen.module.css",
-        "components/system-settings.module.css",
-        "components/csv-business-workspace.module.css",
         "components/workspace-shell.tsx",
-        "components/sky-surface.module.css",
-        "components/sky-workspace.tsx",
-        "components/sky-workspace.module.css",
-        "components/sky-tool-card.tsx",
-        "components/sky-tool-card.module.css",
-        "components/sky-marketplace.tsx",
-        "components/sky-marketplace.module.css",
-        "components/sky-tool-workspace.tsx",
-        "components/sky-tool-workspace.module.css",
-        "components/fashion-brand-ops-runner.tsx",
-        "components/fashion-brand-ops-runner.module.css",
-        "components/sky-connection-center.tsx",
-        "components/sky-connection-center.module.css",
-        "components/sky-mcp-center.tsx",
-        "components/sky-mcp-center.module.css",
-        "components/sky-publisher-form.tsx",
-        "components/sky-publisher-form.module.css",
-        "lib/use-sky-tool-context.ts",
-        "components/rock-studio.tsx",
-        "components/coconala-team-workspace.tsx",
-        "components/coconala-team-workspace.module.css",
         "app/workspace.css",
-        "components/sky-chat-workspace.tsx",
         "tsconfig.json",
         "tests/web-route-style-contract.test.mjs",
-        "docs/workstreams/01-product-ux.md",
-        "docs/rockstaros-complete-design.md",
         "docs/frontend-usability-audit-20260915.md",
-        "docs/product-baseline.md",
-        "lib/sky-result-library.ts",
-        "tests/sky-result-library.test.mjs",
-        "app/sky/layout.tsx",
-        "app/sky/manifest.webmanifest/route.ts",
-        "lib/sky-app-manifest.ts",
-        "tests/sky-app-manifest.test.mjs",
-        "docs/sky.md"
-      ],
-      "amcMainIntegration": {
-        "date": "2026-10-05",
-        "status": "validated_ready_for_main",
-        "scope": "AMC only; current main WorkPlan and service access retained",
-        "evidence": [
-          "docs/amc-sky-launch-integration.md",
-          "toolkits/amc-agent/README.md",
-          "tests/amc-main-integration.test.mjs",
-          "docs/evidence/amc-main-integration.json"
-        ],
-        "runtime": "blocked_folder_trust_before_model_execution",
-        "webExecution": "not_connected",
-        "formalSkyAcceptance": "not_changed",
-        "validation": {
-          "command": "npm run verify",
-          "exitCode": 0,
-          "tests": 999,
-          "amcFocusedTests": 129,
-          "workerD1Assertions": 1069,
-          "csvWorkerD1R2Assertions": 113,
-          "build": "passed",
-          "assetClosureMissing": 0,
-          "logSha256": "cd7926aa1050013a1907eb85983bc319888be67f24af46a09ac5572b00ceeb32"
-        }
-      }
+        "docs/product-baseline.md"
+      ]
     },
     {
       "id": "BRD01",
@@ -1486,10 +3117,7 @@
         "app/rockstaros/preview.module.css",
         "app/api/health/route.ts",
         "scripts/check-work-api.mjs",
-        "docs/workstreams/05-web-pwa-sites.md",
-        "lib/csv-job-store.ts",
-        "scripts/check-csv-storage.mjs",
-        "docs/evidence/sky-csv-storage-hardening.json"
+        "docs/workstreams/05-web-pwa-sites.md"
       ]
     },
     {
@@ -1637,9 +3265,7 @@
         "sites/avocado-mini/worker/index.js",
         "sites/avocado-mini/db/schema.ts",
         "sites/avocado-mini/tests/preorder.test.mjs",
-        "docs/workstreams/05-web-pwa-sites.md",
-        "package.json",
-        "tests/verify-coverage.test.mjs"
+        "docs/workstreams/05-web-pwa-sites.md"
       ]
     },
     {
@@ -1711,7 +3337,6 @@
         "WEB17"
       ],
       "evidence": [
-        "sites/avocado-mini/docs/experience-images-v4.md",
         "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
@@ -2225,85 +3850,6 @@
       ]
     },
     {
-      "id": "SYS15",
-      "title": "Spider Security AgentのGitHub検査・コード検査・OS常駐監視・送信前拒否・native表示・boot監督を統合する（ROCK・同一image起動未受入）",
-      "status": "in_progress",
-      "dependsOn": [
-        "SYS02"
-      ],
-      "evidence": [
-        "docs/spider-guard.md",
-        "docs/evidence/spider-guard-source-validation.json",
-        "docs/workstreams/04-security-identity-compliance.md",
-        "docs/product-baseline.md",
-        "docs/rockstaros-complete-design.md",
-        "data/design-document-index.json",
-        "systems/rock-star-os/os/platform/sensitive_guard.py",
-        "systems/rock-star-os/os/platform/supervisor.py",
-        "systems/rock-star-os/os/platform/service.py",
-        "systems/rock-star-os/os/platform/runner_control.py",
-        "systems/rock-star-os/os/platform/install-target.sh",
-        "systems/rock-star-os/os/ui/security-ui.inc",
-        "systems/rock-star-os/os/ui/test_ui.c",
-        "systems/rock-star-os/tests/test_sensitive_guard.py",
-        "systems/rock-star-os/tests/test_os_security_guard_integration.py",
-        "systems/rock-star-os/tests/test_os_runner_control.py",
-        "systems/rock-star-os/os/ui/spider-motion.c",
-        "systems/rock-star-os/os/ui/spider-motion.h",
-        "systems/rock-star-os/os/ui/pin-readiness.json",
-        "scripts/review-native-pin-source.py",
-        "systems/rock-star-os/tests/test_ui_pin_source_profile.py",
-        "scripts/build-spider-inspector.mjs",
-        "toolkits/spider-guard/README.md",
-        "toolkits/spider-guard/inspector.html",
-        "toolkits/spider-guard/program-inspector.mjs",
-        "toolkits/spider-guard/program-inspector.d.mts",
-        "tests/spider-inspector-artifact.test.mjs",
-        "tests/spider-program-inspector.test.mjs",
-        "systems/rock-star-os/os/platform/code_inspector.py",
-        "systems/rock-star-os/tests/test_code_inspector.py",
-        "SECURITY.md",
-        ".github/workflows/spider.yml",
-        ".github/workflows/spider-codeql.yml",
-        ".github/spider/gitleaks.toml",
-        "scripts/spider-repository-scan.py",
-        "tests/test_spider_repository_scan.py",
-        "tests/test_spider_gitleaks_policy.py",
-        "tests/spider-codeql-workflow.test.mjs",
-        "docs/evidence/spider-github-source-validation.json",
-        "scripts/spider-feedback.mjs",
-        "tests/spider-feedback.test.mjs",
-        ".github/workflows/spider-regressions.yml",
-        "tests/service-worker-update.test.mjs",
-        "toolkits/fashion-brand-ops/test/http-security.test.mjs",
-        "docs/evidence/spider-improvement-cycle.json",
-        "tests/mcp-local-descriptor.test.mjs",
-        "tests/test_mr_delivery_boundary.py",
-        "tests/test_mr_http_deadline.py",
-        "scripts/select-native-artifacts.py",
-        "systems/rock-star-os/tests/test_native_artifacts.py",
-        "docs/native-os-validation.md",
-        "systems/rock-star-os/os/desktop/launcher.py",
-        "systems/rock-star-os/tests/test_os_desktop_browser.py",
-        "systems/rock-star-os/os/desktop/README.md",
-        "systems/rock-star-os/os/platform/guest-test.py",
-        "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
-        "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
-        "scripts/verify-mcp-flow.mjs",
-        "tests/mcp.test.mjs",
-        "tests/mr-tools.test.mjs",
-        "tests/csv-transform.test.mjs",
-        "tests/fixtures/csv-report.html",
-        "tests/mcp-connector.test.mjs",
-        "systems/rock-star-os/os/mcp_broker/http.py",
-        "systems/rock-star-os/tests/test_mcp_http_deadline.py",
-        "tests/undici-tls-options.test.mjs",
-        "data/web-third-party-license-audit.json",
-        "scripts/spider-web-runtime.mjs",
-        "tests/spider-web-runtime.test.mjs"
-      ]
-    },
-    {
       "id": "SYS14",
       "title": "製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定",
       "status": "done",
@@ -2569,15 +4115,8 @@
         "docs/evidence/android-zema-selected-tool-20260916.json",
         "docs/evidence/android-local-ai-plan-v2-20260916.json",
         "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
-        "android/sepolicy/private/rockstar_platform.te",
-        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
-        "android/automation/src/androidTest/java/dev/rock/automation/DeviceCapabilitySnapshotTest.java",
-        "contracts/device-capability-snapshot.json",
-        "docs/workstreams/07-android-device-local-ai.md",
-        "scripts/check-os-contracts.mjs"
-      ],
-      "nextAction": "Run :shell:connectedDebugAndroidTest and :shell:lintDebug on the JDK-equipped Android CI/device host; verify eUICC supported/disabled/unknown status on representative emulator and Pixel hardware. Then extend the Broker Capability API with provenance and expiry before using capability results to select or execute tools. Current host has no Java runtime/Gradle, so the Android changes remain authored but uncompiled and unexecuted."
+        "android/sepolicy/private/rockstar_platform.te"
+      ]
     },
     {
       "id": "OS11",
@@ -2720,22 +4259,6 @@
         "docs/prompts/hub-wallet-next.md",
         "docs/hub-wallet-pc-comparison-20260909.md",
         "docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json"
-      ]
-    },
-    {
-      "id": "B06",
-      "title": "ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理",
-      "status": "in_progress",
-      "dependsOn": [],
-      "evidence": [
-        "docs/sky-tools-complete-design.md",
-        "docs/workstreams/09-business-pilots.md",
-        "app/sky/tools/[toolId]/page.tsx",
-        "components/coconala-team-workspace.tsx",
-        "app/api/coconala-team/route.ts",
-        "lib/coconala-team.ts",
-        "tests/coconala-team.test.mjs",
-        "tests/coconala-sky-entry.test.mjs"
       ]
     },
     {
@@ -3146,113 +4669,8 @@
         "docs/sky-billing.md",
         "docs/workstreams/03-wallet-billing-providers.md",
         "tests/billing-worker.test.mjs",
-        "docs/evidence/launch/sky-billing-fee-hold-20260924.json",
-        "lib/sky-commerce.ts",
-        "lib/sky-commerce-store.ts",
-        "lib/sky-stripe.ts",
-        "components/sky-commerce.tsx",
-        "drizzle/0018_sky_commerce.sql",
-        "tests/sky-commerce.test.mjs",
-        "tests/sky-stripe.test.mjs",
-        "toolkits/esim-bootstrap/README.md",
-        "toolkits/esim-bootstrap/core.mjs",
-        "tests/esim-bootstrap.test.mjs",
-        "lib/esimgo-webhook.ts",
-        "app/api/esim/webhooks/esim-go/route.ts",
-        "drizzle/0029_esim_profile_order_binding.sql",
-        "tests/esimgo-webhook.test.mjs",
-        "docs/provider-contract-readiness-20260930.md",
-        "docs/evidence/esim-provider-idempotency-research-20261001.json",
-        "lib/esimgo-provider.ts",
-        "drizzle/0030_esim_provider_order_once.sql",
-        "lib/esim-plan-catalog.ts",
-        "lib/esim-public-catalog.ts",
-        "app/api/esim/catalog/route.ts",
-        "app/sky/esim/page.tsx",
-        "components/esim-catalog.tsx",
-        "components/sky-commerce.tsx",
-        "components/sky-commerce.module.css",
-        "tests/esim-public-catalog.test.mjs",
-        "app/api/esim/orders/[orderId]/issue/route.ts",
-        "app/api/esim/orders/[orderId]/status/route.ts",
-        "app/api/esim/orders/[orderId]/reconcile/route.ts",
-        "tests/esim-plan-catalog.test.mjs",
-        "scripts/check-work-api.mjs",
-        "lib/esim-install-material.ts",
-        "app/api/esim/orders/[orderId]/install-material/route.ts",
-        "components/esim-purchase-setup.tsx",
-        "drizzle/0031_esim_install_material_delivery.sql",
-        "tests/esim-install-material.test.mjs",
-        "scripts/check-work-api.mjs",
-        "drizzle/0032_esim_order_pricing_snapshot.sql",
-        "lib/esim-reconciliation-worker.ts",
-        "tests/esim-reconciliation-worker.test.mjs",
-        "systems/rock-star-os/os/mcp_broker/broker.py",
-        "systems/rock-star-os/tests/test_mcp_broker_core.py",
-        "systems/rock-star-os/docs/MCP-BROKER.md",
-        "systems/rock-star-os/src/blackberryrock/spend.py",
-        "systems/rock-star-os/src/blackberryrock/wallet.py",
-        "systems/rock-star-os/tests/test_spend_runtime.py",
-        "systems/rock-star-os/tests/test_hub_server.py",
-        "docs/value-spend-runtime.md",
-        "scripts/check-sky-a2a-workflow.mjs",
-        "tests/a2a-broker-authorization.test.mjs",
-        "tests/a2a-client.test.mjs",
-        "tests/a2a-delegation-store.test.mjs",
-        "tests/a2a-usage-receipt.test.mjs",
-        "services/sky-agent-runtime/vitest.config.ts",
-        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
-        "docs/evidence/sky-a2a-workflow-local-20260930.json",
-        "docs/workstreams/07-android-device-local-ai.md",
-        "docs/evidence/esim-host-validation-20261001.json",
-        "lib/esim-device-entitlement.ts",
-        "lib/esim-device-entitlement-store.ts",
-        "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
-        "android/core/src/main/java/dev/rock/core/platform/EsimDeviceEntitlement.java",
-        "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
-        "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
-        "docs/evidence/android-esim-gateway-contract-20261001.json",
-        "drizzle/0035_esim_device_gateway_entitlements.sql",
-        "tests/esim-device-entitlement.test.mjs",
-        "components/esim-purchase-setup.tsx",
-        "android/automation/build.gradle",
-        "android/automation/src/main/java/dev/rock/automation/EsimDeviceGatewayKeyStore.java",
-        "android/automation/src/androidTest/java/dev/rock/automation/EsimDeviceGatewayKeyStoreTest.java",
-        "drizzle/0036_nostalgic_miek.sql",
-        "app/api/sky/a2a-delegations/[id]/wallet-settlement/route.ts",
-        "systems/rock-star-os/scripts/accept-cloud-wallet-handoff.py",
-        "docs/evidence/a2a-cloud-python-wallet-handoff-20261001.json",
-        "services/android-attestation-verifier/README.md",
-        "services/android-attestation-verifier/UPSTREAM.json",
-        "services/android-attestation-verifier/src/main/kotlin/dev/rock/attestation/AttestationVerification.kt",
-        "services/android-attestation-verifier/src/main/kotlin/dev/rock/attestation/Main.kt",
-        "services/android-attestation-verifier/src/test/kotlin/dev/rock/attestation/AttestationVerificationTest.kt",
-        "docs/evidence/android-key-attestation-verifier-20261001.json",
-        "lib/android-key-attestation-client.ts",
-        "tests/android-key-attestation-client.test.mjs",
-        "drizzle/0038_android_attested_gateway_keys.sql",
-        "docs/evidence/android-key-attestation-verifier-20261001.json",
-        "tests/esim-device-entitlement-store.test.mjs",
-        "contracts/device-capability-snapshot.json",
-        "android/core/src/main/java/dev/rock/core/platform/EsimProvisioningCompatibility.java",
-        "android/core/src/test/java/dev/rock/core/platform/EsimProvisioningCompatibilityTest.java",
-        "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
-        "android/automation/src/androidTest/java/dev/rock/automation/DeviceCapabilitySnapshotTest.java",
-        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "tests/sky-marketplace.test.mjs",
-        "docs/sky-commerce-design.md",
-        "docs/wallet-commerce-design.md",
-        "docs/contracts/sky-commerce-v2.ts",
-        "docs/contracts/sky-wallet-v2.ts",
-        "docs/contracts/sky-commerce-v2.sql",
-        "docs/evidence/sky-commerce-design-validation.json",
-        "docs/design-validation/README.md",
-        "docs/prompts/sky-commerce-wallet-development.md",
-        "docs/evidence/sky-commerce-development-prompt-context.json",
-        "docs/evidence/sky-commerce-main-integration-validation.json",
-        "docs/evidence/sky-commerce-sql-main-validation.json"
-      ],
-      "nextAction": "Provider order idempotency is now a contract gate: eSIM Go accepted-but-unanswered POST /orders cannot be safely matched if orderReference is lost; do not retry or enable debit without exact endpoint idempotency or persistent client-reference lookup. 1GLOBAL activation-order endpoint support must be confirmed despite general 24h Idempotency-Key docs. After contract, sandbox-test dropped responses, one provider debit, same-order recovery, then connect the Android Broker/AIDL flow and OEM/carrier install proof. Android Core JUnit/APK/instrumentation remain unrun because Java Runtime and Android platform/build-tools are unavailable. Keep BIL02 in progress and eSIM issue/debit disabled."
+        "docs/evidence/launch/sky-billing-fee-hold-20260924.json"
+      ]
     },
     {
       "id": "BIL03",
@@ -3283,24 +4701,240 @@
       ]
     },
     {
-      "id": "G04",
-      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約を共通化し、19 PRをmainへ統合、SPIDERの検証を継続",
-      "status": "in_progress",
+      "id": "AMC01",
+      "title": "現行3製品とOSの責任表・未決事項台帳をレビューする",
+      "status": "planned",
       "dependsOn": [],
+      "evidence": []
+    },
+    {
+      "id": "MINI01",
+      "title": "R5要求・OPEN01〜08と部隊別試験の追跡表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "MAT14"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI02",
+      "title": "R5の200mm収納と部品干渉を確認する機構評価計画を作る",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI03",
+      "title": "R5単体3D入力の方式比較と測定計画を作る",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI04",
+      "title": "R5裸眼表示の成立条件・方式比較・試験開始条件を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI05",
+      "title": "Mini単独boot・入力・game・保存・停止の最小実装仕様を作る",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI06",
+      "title": "R5電源・熱・1/2/4台通信の評価条件を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "MINI07",
+      "title": "R5校正・停止・privacy・復旧の危険分析と受入表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "MINI01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO01",
+      "title": "Pro v0.1の製品要求と単独利用・任意Mini連携の境界を定義する",
+      "status": "planned",
+      "dependsOn": [],
+      "evidence": []
+    },
+    {
+      "id": "PRO02",
+      "title": "Proの代表負荷・性能予算と演算基板候補の比較条件を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO03",
+      "title": "Pro非金融ゲームのsample・保存再開・入力SDKの差分仕様を作る",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO04",
+      "title": "Proの利用者別保存・容量・backup・復旧契約を定義する",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO05",
+      "title": "Proの映像・音声・controller・端子の最小I/O表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO06",
+      "title": "任意Mini–Pro接続の認証・時刻・Pose契約v0を作る",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "PRO07",
+      "title": "Pro筐体・熱・電源・更新復旧の制約と評価計画を作る",
+      "status": "planned",
+      "dependsOn": [
+        "PRO01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT01",
+      "title": "rocketstar R1.0のMission入力・未決台帳と要求追跡を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "DOC03"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT02",
+      "title": "構造・tank・取付Interfaceの解析入力と検証計画を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT03",
+      "title": "推進系の要求・機体Interface・検証段階を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT04",
+      "title": "空力・熱・構造の結合条件と検証入力を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT05",
+      "title": "Flight SWの独立性・状態・SIL試験要件を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT06",
+      "title": "Payload・扉・分離のInterfaceと異常確認計画を整理する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT07",
+      "title": "R1.0の電源・data・時刻とA-LINK旧試作の差分表を作る",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT08",
+      "title": "地上設備・運用役割とgo/no-go・abortの机上確認計画を作る",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT09",
+      "title": "帰還・回収・整備・同一機番再使用の証拠台帳を設計する",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "RKT10",
+      "title": "製造・品質・安全の構成管理と段階別証拠matrixを作る",
+      "status": "planned",
+      "dependsOn": [
+        "RKT01"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "ORG03",
+      "title": "AMCの担当・旧版混入・受入条件を精査し、部隊ごとの実行可能taskと検査を同期",
+      "status": "done",
+      "dependsOn": [
+        "ORG02"
+      ],
       "evidence": [
-        "docs/git-consolidation.md",
-        "docs/evidence/common-foundation-integration.json",
-        "tests/sky-zema-contract.test.mjs",
-        "tests/shared-stripe.test.mjs",
-        "tests/mcp-client.test.mjs",
-        "tests/owner-revision-json-store.test.mjs",
-        "docs/evidence/pr-consolidation-20261005.json",
-        "docs/research/rockstar-patent-research.html",
-        "docs/research/rockstar-patent-sources.json",
-        "scripts/spider-web-runtime.mjs",
-        "tests/spider-web-runtime.test.mjs",
-        "docs/amc-autonomy-fixture.md",
-        "docs/evidence/amc-fixture-csv-main-integration.json"
+        "docs/mission-control.md",
+        "data/mission-control.json",
+        "scripts/check-mission-control.mjs",
+        "scripts/sync-mission-control.mjs",
+        "tests/mission-control.test.mjs",
+        "docs/evidence/amc/task-precision-audit.json"
       ]
     }
   ],
@@ -3358,11 +4992,7 @@
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
-        "docs/evidence/tool-earning-wallet-bridge-20260915.json",
-        "docs/value-spend-runtime.md",
-        "systems/rock-star-os/src/blackberryrock/spend.py",
-        "systems/rock-star-os/tests/test_spend_runtime.py",
-        "systems/rock-star-os/tests/test_hub_server.py"
+        "docs/evidence/tool-earning-wallet-bridge-20260915.json"
       ]
     },
     {
@@ -3773,1009 +5403,35 @@
     "recoverableBackupPhysicalKeystoreLossRestoreVerified": false
   },
   "currentStateDocument": "docs/current-state-20260911.md",
-  "esimDevelopment": {
-    "status": "HOST_FIXTURE_TESTED_INTEGRATION_PENDING",
-    "productForm": "physical_sim_and_esim",
-    "physicalSimRequired": false,
-    "providerConnected": false,
-    "deviceInstalled": false,
-    "cloudAgentConnected": false,
-    "liveBillingEnabled": false,
-    "document": "toolkits/esim-bootstrap/README.md",
-    "testsPassed": 15,
-    "validation": "node --test tests/esim-bootstrap.test.mjs",
-    "integrationTestSweep": {
-      "status": "HOST_FIXTURE_ONLY_PASS",
-      "testsPassed": 59,
-      "validation": "node --experimental-strip-types --test tests/esim*.test.mjs",
-      "lastRunAt": "2026-10-01",
-      "providerSandbox": false,
-      "deviceInstall": false
-    },
-    "statusApiIntegration": {
-      "status": "LOCAL_WORKER_D1_FIXTURE_PASS",
-      "assertionsPassed": 499,
-      "validation": "npm run test:api",
-      "lastRunAt": "2026-10-01",
-      "esimOrderReportsIssuancePending": true,
-      "ordinaryPaidSkyOrderRejectedAsEsim": true,
-      "ownerScopedInstallMaterialAndQuickLinks": true,
-      "installMaterialDeliveryApiTested": true,
-      "directInstallUi": true,
-      "providerProfileBindingSeparatedFromDeviceInstall": true,
-      "deviceInstallState": "fixture_verified_after_signed_carrier_receipt; production_unverified",
-      "esimDeviceEntitlementState": "fixture_active_only_after_signed_gateway_receipt; physical_device_not_connected",
-      "installProof": "SIGNED_CARRIER_OR_OEM_RECEIPT_REQUIRED",
-      "deviceGatewayEntitlement": "ED25519_ES256_TRUSTED_KEY_PINNED_LOCAL_WORKER_D1_FIXTURE_PASS",
-      "deviceGatewayTrustKeysProvisioned": false,
-      "androidGatewayWire": false,
-      "purchaseSetupUi": "IMPLEMENTED_BROWSER_ACCEPTANCE_PENDING",
-      "providerSandbox": false,
-      "deviceInstall": false,
-      "androidKeyStoreAdapter": {
-        "source": "android/automation/src/main/java/dev/rock/automation/EsimDeviceGatewayKeyStore.java",
-        "includes": [
-          "AndroidKeyStore P-256",
-          "TEE/StrongBox security-level check",
-          "attestation-chain export",
-          "local key retirement"
-        ],
-        "instrumentationTest": "android/automation/src/androidTest/java/dev/rock/automation/EsimDeviceGatewayKeyStoreTest.java",
-        "result": "NOT_RUN_ANDROID_SDK_UNAVAILABLE",
-        "authenticatedEnrollmentChallengeWiring": false,
-        "serverAttestationVerification": true,
-        "brokerAidlWiring": true,
-        "serverVerificationScope": "isolated JVM verifier and authenticated Worker HTTP route; currently tested with a controlled verifier double, not live deployment",
-        "brokerAidlSource": "Shell API v5 manual challenge JSON handoff; not Android-build or authenticated browser-app acceptance",
-        "shellDevelopmentUi": true,
-        "sourceBuild": "UNVERIFIED_ANDROID_SDK_MISSING_AND_GRADLE_DAEMON_LOOPBACK_DENIED",
-        "coreChallengeJunit": "3/3_PASS_DIRECT_JDK17_JUNIT"
-      },
-      "nextAction": "Integrate Android Broker/AIDL enrollment against the challenge API and validate Android SDK/instrumentation. Prepare private TLS JVM deployment and provider/OEM sandbox acceptance; keep live eSIM, production billing, and provider debits disabled.",
-      "attestedRouteIntegration": "Miniflare Workerd/D1 HTTP route -> controlled verifier binding double -> signed receipt validation -> atomic key/entitlement persistence and status readback",
-      "androidKeyAttestationAdapter": "JVM verifier source integrated and route tested with double; live JVM deployment not connected"
-    },
-    "nextAction": "Integrate the existing issuer and encrypted/idempotent seller delivery/recovery API with actual checkout and seller-to-buyer fulfillment after contracts and credentials are available. Keep physical SIM fulfillment, eSIM carrier activation, Android SDK/device acceptance, production billing, and supported-SKU OS installation as separate unaccepted gates.",
-    "repositoryVerification": "PASS_NPM_VERIFY_2026-10-01_NODE_595_API_424_EXIT_0",
-    "fullTestSuite": "PASS_NPM_VERIFY_2026-10-01_NODE_595_FASHION_19_API_424_EXIT_0",
-    "attestationVerifierUpstreamReview": {
-      "commit": "55c35040a1b5b72e6d63bfb150c5c68a175c1462",
-      "license": "Apache-2.0",
-      "release": "v0.1 test release; 0.1-SNAPSHOT local repository default",
-      "runtime": "Kotlin/JVM 2.2; Java 21",
-      "localBuild": "isolated pinned JVM service tests passed using prepared JDK 21 toolchain; Android SDK and physical device enrollment not available",
-      "evidence": "docs/evidence/android-esim-gateway-contract-20261001.json"
-    },
-    "latestFocusedVerification": {
-      "date": "2026-10-01",
-      "currencyFormatterTests": "2/2 passed",
-      "signedQuoteVerifierTests": "4/4 passed",
-      "workerD1ApiAssertions": 638,
-      "cloudflareWorkflowPositive": "9/9 passed (Cloudflare local fixtures)",
-      "migrationConvergence": "9/9 passed including migration 0044",
-      "typecheck": "passed",
-      "productLint": "passed",
-      "productionBuild": "passed with live usage callback route",
-      "productionBilling": false,
-      "carrierActivation": false,
-      "physicalDeviceOsInstallation": false,
-      "liveUsageSnapshotVerifierTests": "1/1 passed",
-      "providerMeterSandbox": false,
-      "fundedWalletSettlement": false
-    },
-    "supportedForms": [
-      "physical_sim",
-      "esim"
+  "skyDetailHandoffPreparation": {
+    "requestId": "SKY-S2-DETAIL-HANDOFF-20261005-01",
+    "primarySquad": "O5",
+    "existingTasks": [
+      "SKY10",
+      "SKY16"
     ],
-    "multipleDistributionChannels": true,
-    "productDescription": "SIM/eSIM purchase includes RockstarOS and integrated service access; operating-system binaries are delivered through a supported device installation or existing-OS client path, never assumed to reside on the SIM.",
-    "pricingTransparency": {
-      "currencyAwareBudgetDisplay": {
-        "implemented": true,
-        "localTests": "tests/currency-format.test.mjs 2/2",
-        "verification": "typecheck, lint:product, production build passed"
-      },
-      "providerRateCards": true,
-      "preExecutionQuote": "signed provider quote is validated and immutable through approval/dispatch; signed remote-AI rate-card estimates are displayed, but actual Provider quote acquisition remains unaccepted",
-      "liveUsageMeter": true,
-      "signedFinalUsageReceiptUi": "implemented locally; backed only by existing fixture/local API evidence",
-      "productionBilling": false,
-      "sourceOfDesign": "docs/a2a-pricing-extension.md",
-      "providerSignedQuoteVerifier": {
-        "implemented": true,
-        "integratedIntoDispatch": true,
-        "tests": "tests/a2a-price-quote.test.mjs 4/4; API suite includes quote persistence, single-use replay rejection and approval binding",
-        "productionProviderAcceptance": false
-      },
-      "providerRateCardScope": "operator-authenticated signed D1 catalog and estimate-only UI; no Provider quote API acceptance and no paid execution",
-      "liveUsageMeterScope": "signed cumulative snapshot contract and Zema provisional display verified by local API/D1 fixtures; real Provider callback and live charge are unaccepted"
-    },
-    "physicalSimOffered": true,
-    "physicalSimFulfillmentConnected": false
+    "baseMain": "ecb4b2af462a55b9b3defa1e6426d0476194b2b4",
+    "status": "submitted_for_independent_review_with_base_failures",
+    "scope": "Sky商品詳細の説明・保存・Zemaへの明示リンク。既存runnerはZemaで維持。",
+    "accepted": false,
+    "deployed": false,
+    "runtimeAgentAcceptance": false,
+    "validation": "focused 48/48。実候補dev API/D1の21 HTTP応答が合格。保存→再読込→Zemaライブラリ→同一商品→出典整理の実画面完了を確認。保存APIの型エラー2件は解消、既存16件・catalog重複・database metadata不一致でtypecheck/design:check/verifyは未合格。実認証・本番配備は未受入。",
+    "libraryRestoreRequestId": "SKY-S2-LIBRARY-RESTORE-20261005-01",
+    "mainIntegrationRequested": true
   },
-  "cloudContinuationPreparation": {
-    "status": "OFFLINE_CONSENT_PATH_IMPLEMENTED_LOCAL_FIXTURES_PASS; FULL_12_SCENARIO_ACCEPTANCE_PENDING",
-    "document": "docs/sky-cloud-continuity.md",
-    "providerComparison": "docs/cloud-agent-provider-comparison-20261001.md",
-    "providerComparisonResearchDate": "2026-10-02",
-    "providerSelection": "candidate_cloudflare_control_plane; no_production_contract_or_acceptance",
-    "relatedTask": "SKY07",
-    "primaryOwner": "ROCK",
-    "acceptanceScenarios": 12,
-    "acceptanceScenariosExecuted": 0,
-    "localEvidenceMatrix": "docs/sky-cloud-continuity.md#ローカル証拠の対応表全体受け入れ数には算入しない",
-    "localEvidenceMapping": {
-      "scope": "host/local-D1/local-Workflow component evidence only",
-      "partiallyCoveredScenarios": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        11,
-        12
-      ],
-      "noVerticalEvidenceScenario": [
-        10
-      ],
-      "countsTowardFullAcceptance": false
-    },
-    "cloudDeployed": false,
-    "llmExecuted": false,
-    "nextAction": "Contract and configure shared production D1/Secrets, then connect funded Wallet reservation and native Broker device-presence gateway; run the 12 cloud-continuity acceptance scenarios on a contracted sandbox and representative offline device.",
-    "consentAuthorization": {
-      "field": "continueWhileDeviceOffline",
-      "default": false,
-      "persistedIn": "agent_delegations.continue_while_device_offline",
-      "brokerProofSchema": "rock-a2a-broker-authorization/2",
-      "falseConsentSendClaims": 0,
-      "productionAcceptance": false
-    }
-  },
-  "satelliteConnectivityPreparation": {
-    "status": "OFFICIAL_SOURCES_RECHECKED; CARRIER_APP_TRAFFIC_PHYSICAL_OR_ESIM_OFFER_AND_SEPARATE_SOS_RELAY_CONFIRMED; WHOLESALE_ENDPOINT_DEVICE_AND_FIELD_ACCEPTANCE_PENDING",
-    "ownConstellationIncluded": true,
-    "spectrumAndCoverageUnresolved": true,
-    "hardwareAndLaunchUnresolved": true,
-    "mvpPath": "Evaluate existing mobile-network direct-to-cell integration before own constellation; Japan candidate KDDI au Starlink Direct",
-    "primaryDataEsimIsSeparate": true,
-    "publicPlanIsWholesaleOrResaleAuthorization": false,
-    "exactPixel10Gl066Acceptance": false,
-    "contractsSigned": false,
-    "fieldTests": 0,
-    "researchUpdatedAt": "2026-10-02",
-    "evidence": [
-      "docs/evidence/satellite-connectivity-research-20261002.json",
-      "https://www.au.com/mobile/service/starlink-direct/exclusive-plan-plus/",
-      "https://starlink-direct-support.au.com/TOP.html",
-      "https://www.itu.int/en/ITU-R/space/support/nonGSO/Pages/default.aspx"
+  "skyWorkPlanReconciliation": {
+    "requestId": "SKY-S7-WORKPLAN-RECONCILE-20261005-01",
+    "primarySquad": "O5",
+    "existingTasks": [
+      "SKY10",
+      "SKY16"
     ],
-    "nextAction": "Keep satellite transport as a gated capability. Before manifest opt-in, implement Android 16+ constrained-network detection, low-bandwidth bounded status/approval/cancel/result flows and queue/retry semantics; then contractually verify Rockstar hostname/app traffic permission, exact SKU/plan, billing, listing criteria and field-test process. Do not treat retail plan prices or SOS relay as Rockstar wholesale or emergency capability.",
-    "document": "docs/sky-cloud-continuity.md",
-    "physicalSimOrEsimOfferConfirmed": true,
-    "ordinaryVoiceAndEmergencyVoiceUnsupported": true,
-    "separateSOSMessageRelay": true,
-    "rockstarCloudEndpointReachability": false,
-    "androidSatelliteManifestOptIn": "off_until_low_bandwidth_queue_and_device_tests"
-  },
-  "universalAdaptationPreparation": {
-    "status": "REQUIREMENTS_RECORDED_IMPLEMENTATION_PENDING",
-    "primaryOwner": "ROCK",
-    "relatedTasks": [
-      "SKY07",
-      "SKY15",
-      "DX01"
-    ],
-    "document": "docs/sky-mcp-architecture.md",
-    "gtaExplicitlyIncluded": true,
-    "gtaIntegrationTested": false
-  },
-  "agentInterconnectionPreparation": {
-    "status": "LOCAL_WORKING_TASK_DURABLE_WORKFLOW_RESTART_AND_AMBIGUOUS_SEND_NO_REPLAY_PASS; EXPLICIT_OFFLINE_CONSENT_GATE_PASS; CONTRACT_SANDBOX_TASK_RECONCILIATION_FUNDED_WALLET_AND_NATIVE_GATEWAY_PENDING",
-    "document": "docs/sky-mcp-architecture.md",
-    "relatedTasks": [
-      "SKY07",
-      "SKY15"
-    ],
-    "externalAgentInteropTests": 0,
-    "nextAction": "After provider contract, run the submitted/working/completed and accepted-but-unanswered reconciliation cases against the contracted provider sandbox, including its exact GetTask/CancelTask/idempotency and signed-usage semantics; then wire production trust-key custody and D1-to-native Gateway delivery, reconcile a funded Wallet debit, and verify supported hardware. Keep production sends and real billing disabled until acceptance passes.",
-    "evidence": [
-      "docs/sky-a2a-bridge.md",
-      "lib/a2a-usage-receipt.ts",
-      "tests/a2a-usage-receipt.test.mjs",
-      "drizzle/0026_a2a_usage_receipts.sql",
-      "services/sky-agent-runtime/src/worker.ts",
-      "docs/evidence/sky-a2a-workflow-local-20260930.json",
-      "services/sky-agent-runtime/vitest.config.ts",
-      "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
-      "drizzle/0033_a2a_offline_continuation_consent.sql",
-      "systems/rock-star-os/tests/test_spend_runtime.py",
-      "systems/rock-star-os/src/blackberryrock/a2a_usage_receipt.py",
-      "systems/rock-star-os/tests/test_a2a_usage_receipt.py",
-      "systems/rock-star-os/tests/fixtures/a2a-usage-receipt-v1.json",
-      "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
-      "systems/rock-star-os/scripts/accept-cloud-wallet-handoff.py",
-      "docs/evidence/a2a-cloud-python-wallet-handoff-20261001.json",
-      "docs/evidence/a2a-active-task-workflow-restart-20261001.json",
-      "docs/evidence/a2a-cloud-recovery-recheck-20261001.json"
-    ],
-    "localAcceptance": {
-      "positiveWorkflowCases": 4,
-      "workerUsageReceiptSettlement": "LOCAL_ED25519_RECEIPT_AND_SYNTHETIC_D1_POOL_PASS",
-      "nativeWalletSettlementHandoff": false,
-      "proofRejectionCases": 4,
-      "a2aHostTests": 46,
-      "eSimFixtureTests": 33,
-      "repositoryVerification": "Latest npm run verify on 2026-10-01 exited 0: Node tests 639/639, Fashion 19/19, Worker/D1 API 711 assertions, typecheck, product lint, production build, bundle/assets checks; release readiness 0/6 public targets ready and Pixel first-flash 0/4. Android-independent Core JVM suite also passes 72/72, including the device account-link protocol; Android SDK/APK/device gates remain unrun. Cloudflare Workers positive workflow passes 4/4, including same-remote-task recovery after the durable Workflow restarts from working; two-Workerd-process prepared-job recovery also passes and fails closed before agent discovery. Local fixtures only; no production/provider/device acceptance.",
-      "productionProviderSandbox": false,
-      "cloudflareProduction": false,
-      "nativeDeviceGateway": false,
-      "pythonBrokerTests": 33,
-      "walletSpendTests": 17,
-      "apiAssertions": 410,
-      "nativeWalletSyntheticReceiptSettlement": true,
-      "hubReceiptTests": 10,
-      "asynchronousRemoteTaskWorkflow": "SUBMITTED_TO_WORKING_TO_COMPLETED_LOCAL_WORKER_D1_FIXTURE_PASS",
-      "activeTaskRestartRecovery": "WORKING_STATE_DURABLE_WORKFLOW_RESTART_RECONCILES_SAME_REMOTE_TASK_AND_SETTLES_ONCE_LOCAL_FIXTURE_PASS",
-      "activeTaskRestartEvidence": "docs/evidence/a2a-active-task-workflow-restart-20261001.json",
-      "cloudRecoveryRecheckEvidence": "docs/evidence/a2a-cloud-recovery-recheck-20261001.json",
-      "asyncWorkflowTests": 4,
-      "independentAgentInteropTests": 7,
-      "crossRuntimePythonWalletHandoff": "ACTUAL_WORKER_D1_RESPONSE_TO_ISOLATED_SYNTHETIC_PYTHON_WALLET_PASS",
-      "crossRuntimeEvidence": "docs/evidence/a2a-cloud-python-wallet-handoff-20261001.json",
-      "crossRuntimeRuntime": "isolated Python ValueSpendRuntime and Wallet; not Android/device Wallet"
-    },
-    "processRestartHarness": "PASS_LOCAL_TWO_WRANGLER_WORKER_PROCESSES_SHARED_D1_PREPARED_JOB_RECOVERY_AND_FAIL_CLOSED_PROOF_CHECK"
-  },
-  "skyStandalonePublication": {
-    "stage": "public_live_signin_required",
-    "projectId": "appgprj_6abdfad4c5648191bcae957913bd02fa",
-    "version": 28,
-    "sourceCommit": "cb55411549649bd57429fa1afeb974139fc024da",
-    "deploymentStatus": "succeeded",
-    "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
-    "audience": "public",
-    "authenticatedProductionExecutionVerified": true,
-    "productSiteLinkAdded": false,
-    "releaseVerification": {
-      "evaluatedAt": "2026-10-01",
-      "completeLaunchClaim": false,
-      "pixelBrowserTools": [
-        "rockstar-csv-cleanup",
-        "mr-free-article",
-        "mr-citations"
-      ],
-      "livePayment": "JPY_50_paid_stripe_verified_webhook_200_completed_pixel_download_reload_sha256_match",
-      "cloudAI": "Live credential absent; pricing estimates, budget enforcement and actual provider response/usage acceptance also pending",
-      "externalOAuth": "not_verified",
-      "nextAction": "Accept owner sign-in and the v28 journey on an unlocked Pixel; provision actual cloud AI credentials and accepted pricing/usage/invoice/funding. Apple Pay, external OAuth and product-site entry remain unverified. Do not repeat successful ¥50 trial.",
-      "paymentCancellation": "Pixel_cancel_return_quoted_unpaid_attempt_0",
-      "merchantBranding": "avokado_Sky_verified_new_checkout",
-      "verify": "692_node_19_fashion_938_API_pass_local_snapshot",
-      "checkoutDisplay": "avokado_Sky_JPY_50_only_Pixel_verified",
-      "paymentReturn": "paid_completed_or_cancelled_unpaid_owner_job_focused",
-      "latestDeployment": {
-        "id": "appgdep_6abf7528155081918663611877c2332e",
-        "sourceCommit": "cb55411549649bd57429fa1afeb974139fc024da",
-        "status": "succeeded",
-        "version": 28,
-        "updatedAt": "2026-10-02T09:11:18.473899+00:00"
-      },
-      "latestSchemaCheck": {
-        "success": true,
-        "webTables": 61,
-        "databaseBoundaryTables": 116,
-        "latestMigration": "0046_remote_ai_text_executions.sql",
-        "scope": "Canonical source/fixtures. New device-session migration is not included in Site v24."
-      },
-      "mercariAcceptance": {
-        "planId": "2d197297-260b-4ea3-a60a-9ed70847316a",
-        "syntheticFixture": true,
-        "title": "TEST-SKY-001",
-        "priceJPY": 1500,
-        "feeJPY": 150,
-        "shippingJPY": 250,
-        "costJPY": 100,
-        "otherJPY": 50,
-        "expectedNetJPY": 950,
-        "createVerified": true,
-        "uncheckedConfirmationRejected": true,
-        "newPageRestored": true,
-        "d1Readback": true,
-        "finalStatus": "cancelled",
-        "finalRevision": 1,
-        "externalListingPerformed": false,
-        "realSaleVerified": false,
-        "settlementPerformed": false,
-        "screenshots": [
-          "outputs/sky-pixel-mercari-draft.png",
-          "outputs/sky-pixel-mercari-restored.png"
-        ]
-      },
-      "gigWorkflowAcceptance": {
-        "jobId": "00a2eb72-68f8-4845-99c8-0ab5e23552fe",
-        "status": "completed",
-        "transport": "browser",
-        "sample": true,
-        "inputBytes": 102,
-        "outputBytes": 430,
-        "durationMs": 3,
-        "visibleOutputVerified": true,
-        "downloadVerified": true,
-        "downloadSHA256": "f8ef8357f11ac20118fae0ab54db2a661cc0b81aa3d48ed8b7c7f207084b47f3",
-        "serverStores": "Operational metadata only; draft retrieved from explicit browser download",
-        "externalExecutionVerified": false,
-        "screenshot": "outputs/sky-pixel-gig-workflow-draft.png"
-      },
-      "ipStudioAcceptance": {
-        "pixelPcRequirementVisible": true,
-        "pixelLoopbackLaunchLinkAbsent": true,
-        "desktopLaunchConditionVisible": true,
-        "desktopLaunchLinkPreserved": true,
-        "localServiceListening": false,
-        "localPort": 18767,
-        "runtimeExecutionVerified": false,
-        "screenshots": [
-          "outputs/sky-pixel-ip-studio-boundary.png",
-          "outputs/sky-ip-studio-desktop.jpg"
-        ]
-      },
-      "jevRouterAcceptance": {
-        "pixelPcRequirementVisible": true,
-        "skyExecutionImplemented": false,
-        "externalExecutionVerified": false,
-        "screenshot": "outputs/sky-pixel-jev-router-boundary.png"
-      },
-      "coconalaCaseDraftAcceptance": {
-        "verifiedAt": "2026-10-02 01:17:36 UTC",
-        "sourceVersion": 21,
-        "sourceCommit": "659bb8667dc8d18afe4facb90859d9cb79f6576d",
-        "caseId": "1313b4f4-84e6-45d2-9e2f-bf7c3c469871",
-        "syntheticFixture": true,
-        "caseCount": 1,
-        "initialRevision": 0,
-        "finalRevision": 1,
-        "finalStatus": "draft",
-        "createVerified": true,
-        "initialReloadRestored": true,
-        "editVerified": true,
-        "editedReloadRestored": true,
-        "d1Readback": true,
-        "sameCaseUpdated": true,
-        "onlyTitleChanged": [
-          "title"
-        ],
-        "finalTitle": "TEST-ONLY-SKY-CASE-001-EDITED",
-        "inputFieldCount": 17,
-        "deliveryDate": "2026-10-15",
-        "inspectionDate": "2026-10-16",
-        "workerPaymentDate": "2026-10-30",
-        "grossYen": 10000,
-        "estimatedFeeYen": 2200,
-        "estimatedNetYen": 7800,
-        "workerFeeYen": 7566,
-        "estimatedOperatorMarginYen": 234,
-        "caseContentStoredInD1": true,
-        "moneyEntries": 0,
-        "events": [
-          "update_terms"
-        ],
-        "externalApplicationPerformed": false,
-        "externalContractPerformed": false,
-        "externalMessageSent": false,
-        "realPaymentPerformed": false,
-        "cloudAiExecuted": false,
-        "unverifiedProductionActions": [
-          "assign",
-          "deliver",
-          "accept",
-          "manual_customer_receipt",
-          "manual_refund",
-          "manual_worker_payment"
-        ],
-        "scope": "Sky internal synthetic draft create, reload, edit and reload only. This does not prove a real Coconala order or external execution.",
-        "screenshots": [
-          "sky-pixel-coconala-case-restored.png",
-          "sky-pixel-coconala-case-edited.png"
-        ],
-        "testFixtureCleanup": {
-          "removedInVersion": 22,
-          "d1FixtureAbsent": true
-        }
-      },
-      "coconalaDraftDeletion": {
-        "stage": "published_pixel_verified",
-        "productionVerified": true,
-        "evidence": {
-          "verifiedAt": "2026-10-02 01:44:10 UTC",
-          "sourceVersion": 22,
-          "sourceCommit": "456b549886c531de9b8aff27b0ecd6baf18ffc09",
-          "caseId": "1313b4f4-84e6-45d2-9e2f-bf7c3c469871",
-          "syntheticFixture": true,
-          "confirmationVerified": true,
-          "cancellationRetainedSameRevision": true,
-          "revisionBeforeDelete": 1,
-          "explicitDeleteVerified": true,
-          "reloadDidNotRestoreDeletedCase": true,
-          "d1Readback": true,
-          "d1RowsAfterDelete": 0,
-          "d1FixtureAbsent": true,
-          "ownerIsolationAndOriginFixturesPassed": true,
-          "staleRevisionAndAssignedStateFixturesPassed": true,
-          "refreshDoesNotMutate": true,
-          "activeCaseRetentionAccepted": false,
-          "externalContractChanged": false,
-          "externalMessageSent": false,
-          "realPaymentPerformed": false,
-          "screenshots": [
-            "sky-pixel-coconala-delete-confirm.png",
-            "sky-pixel-coconala-delete-complete.png",
-            "sky-pixel-coconala-delete-reloaded.png"
-          ],
-          "scope": "Production Pixel acceptance deletes only the owned synthetic pre-assignment draft and its D1 content row. The API fixtures cover owner/origin/revision/state restrictions; this does not prove real Coconala transactions or active-case retention policy."
-        }
-      },
-      "latestFullVerify": {
-        "exitCode": 0,
-        "nodeTests": 639,
-        "nodePassed": 639,
-        "fashionTests": 19,
-        "fashionPassed": 19,
-        "workerD1ApiAssertions": 711,
-        "typecheck": true,
-        "lint": true,
-        "build": true,
-        "log": "work/sky-cloud-transport/verify-accepted.log",
-        "scope": "Current canonical local source, including concurrent device-session work. Not proof of all catalog external integrations or every production DB table."
-      },
-      "cloudTransportPreparation": {
-        "design": "docs/sky-tools-complete-design.md",
-        "implementation": [
-          "lib/llm-providers.ts",
-          "lib/remote-ai-pricing-gate.ts"
-        ],
-        "tests": [
-          "tests/llm-providers.test.mjs",
-          "scripts/check-work-api.mjs"
-        ],
-        "timeoutMs": 20000,
-        "automaticRetry": false,
-        "redirects": "manual",
-        "responseStore": false,
-        "usage": "validated-provider-counts-or-null",
-        "observedSearchCalls": "not-invoice-proof",
-        "pricingGateAccepted": false,
-        "productionProviderExecutionVerified": false,
-        "persistence": "response-metadata-only; no usage-ledger settlement yet",
-        "stage": "published_fixture_verified",
-        "focusedTests": 29,
-        "publicationVerified": true,
-        "ownerAction": "Enable OpenAI Developers to provision a dedicated server-side provider credential.",
-        "finalSiteTests": 18
-      },
-      "paymentStatusSeparation": {
-        "stage": "published_pixel_verified",
-        "csvAndMarketplaceSeparate": true,
-        "additionalCharge": false,
-        "liveStatusVerified": true,
-        "publicStatus": {
-          "version": 1,
-          "database": "available",
-          "csvStorageConfigured": true,
-          "legalAiConfigured": false,
-          "patentAiConfigured": false,
-          "jevConfigured": false,
-          "payments": "unconfigured",
-          "csvPayments": "live"
-        },
-        "existingPaidJobReadback": {
-          "jobId": "6a969274-8d50-4a6f-8b54-1b2f143f6bdb",
-          "status": "completed",
-          "paymentStatus": "stripe_verified",
-          "quoteMinor": 5000,
-          "currency": "JPY",
-          "attempt": 1,
-          "revision": 3
-        }
-      },
-      "cloudTextPricingPreparation": {
-        "stage": "quote_history_ui_deployed_v27; production_owner_and_provider_acceptance_open",
-        "published": true,
-        "design": "docs/sky-tools-complete-design.md",
-        "implementation": [
-          "lib/remote-ai-rate-card.ts",
-          "lib/remote-ai-text-request.ts",
-          "lib/remote-ai-text-pricing.ts",
-          "lib/remote-ai-text-store.ts",
-          "lib/remote-ai-text-execution.ts",
-          "lib/remote-ai-text-http.ts",
-          "app/api/llm/quotes/route.ts",
-          "app/api/llm/quotes/[id]/route.ts",
-          "app/api/llm/text/route.ts",
-          "components/workbench.tsx",
-          "drizzle/0046_remote_ai_text_executions.sql",
-          "lib/llm-providers.ts"
-        ],
-        "tests": [
-          "tests/remote-ai-rate-card.test.mjs",
-          "tests/remote-ai-text-store.test.mjs",
-          "tests/llm-providers.test.mjs",
-          "scripts/check-work-api.mjs"
-        ],
-        "targetedTests": 23,
-        "typecheck": true,
-        "rateCardSchema": "rockstar-remote-ai-rate-card/2",
-        "legacySignaturePreserved": true,
-        "categories": [
-          "ordinary-input",
-          "cached-input",
-          "cache-write",
-          "output"
-        ],
-        "quoteBinding": [
-          "owner",
-          "requestId",
-          "exactRequestDigest",
-          "outputLimit",
-          "approvedCap",
-          "rateCardDigest",
-          "expiry"
-        ],
-        "pricingGateAccepted": false,
-        "providerSubmission": false,
-        "additionalCharge": false,
-        "nextAction": "Publish the selectively synchronized quote/history/sign-in flow to the same Sky Site with execution disabled; verify owner production sign-in and retained CSV payment. Connect saved-result management and chat composer handoff, then production provider credentials, accepted rates/usage/invoice and funded Wallet. Device session API/Android acceptance remains separate.",
-        "latestLocalValidation": {
-          "typecheck": true,
-          "workbenchLint": "passed in full product lint",
-          "targetedNodeTests": "23_passed (currency, canonical request digest, signed rate card, quote store)",
-          "fullVerify": "663/19/858 passed for the UI verification snapshot; later concurrent encrypted-input queue changes are not covered by this result.",
-          "apiIntegration": "858 assertions passed; synthetic only",
-          "productionBuild": "passed in full verify",
-          "productionGate": false
-        },
-        "verification": {
-          "command": "npm run verify",
-          "exitCode": 0,
-          "nodeTests": 645,
-          "fashionTests": 19,
-          "workerD1Assertions": 727,
-          "focusedTests": 21,
-          "log": "/Users/kaiya/Documents/Codex/2026-10-01/https-github-com-k999ln-rock-git/work/sky-cloud-transport/verify-text-pricing-accepted.log",
-          "logSha256": "b2e1f3b7a9c6811dcd1b5d032ee00915e054760db7b67ac5a2a0d4a65e7c8565"
-        },
-        "evidence": "docs/evidence/sky-cloud-text-pricing-verification.json",
-        "observedResponseIdentityRequired": true,
-        "androidManifestRepair": "source-only; no APK/device acceptance",
-        "quotePersistenceLocallyVerified": true,
-        "sharedParentBudgetLocallyVerified": true,
-        "productionQuotePersistence": false,
-        "productionBudgetReservationConnected": false,
-        "conversationUiConnected": false,
-        "fundedWalletConnected": false,
-        "runtimeEvidence": "docs/evidence/sky-cloud-text-execution-verification.json",
-        "runtimeVerification": {
-          "command": "npm run verify",
-          "exitCode": 0,
-          "nodeTests": 656,
-          "fashionTests": 19,
-          "workerD1Assertions": 823,
-          "focusedStoreTests": 10,
-          "log": "/Users/kaiya/Documents/Codex/2026-10-01/https-github-com-k999ln-rock-git/work/sky-cloud-transport/verify-text-execution-accepted.log",
-          "logSha256": "349bab30c24e73836ec028c9d4bf6a80deab447dfdde481105df31f1f01d1bdd",
-          "providerTransport": "synthetic",
-          "providerSubmission": false,
-          "published": false
-        },
-        "workbenchUiConnected": true,
-        "workbenchQuoteHistoryAndSyntheticSigninLocallyVerified": true,
-        "conversationComposerConnected": false,
-        "productionOwnerSigninVerified": false,
-        "uiEvidence": "docs/evidence/sky-cloud-ui-verification.json",
-        "uiVerification": {
-          "stage": "local_full_verify_passed; deployed_v27",
-          "focusedTests": 15,
-          "syntheticBrowserVerified": [
-            "create-work",
-            "save-quote",
-            "reload-owned-work-and-history",
-            "expired-signin",
-            "recover-same-work",
-            "cancel-quote",
-            "separate-parent-history"
-          ],
-          "productionOwnerSigninVerified": false,
-          "published": true,
-          "command": "npm run verify",
-          "exitCode": 0,
-          "nodeTests": 663,
-          "fashionTests": 19,
-          "workerD1Assertions": 858,
-          "log": "/Users/kaiya/Documents/Codex/2026-10-01/https-github-com-k999ln-rock-git/work/sky-cloud-ui/verify-accepted.log",
-          "logSha256": "147f86bddbb5d930e807833dfece05f4ddaf57e38863efb5f36c856a1e7b7dce"
-        },
-        "publicationEvidence": "docs/evidence/sky-cloud-ui-publication-verification.json",
-        "canonicalChangesAfterUiVerification": {
-          "paths": [
-            "lib/remote-ai-text-store.ts",
-            "lib/remote-ai-text-http.ts",
-            "app/api/llm/quotes/route.ts",
-            "app/api/llm/quotes/[id]/route.ts",
-            "tests/remote-ai-text-store.test.mjs"
-          ],
-          "scope": "Concurrent direct-text encrypted-input/queue work after the verified UI snapshot; not included in Site v27 and not covered by its 663/19/858 verification. Preserve without publishing unverified new queue."
-        }
-      },
-      "cloudTextUiPublicationEvidence": "docs/evidence/sky-cloud-ui-publication-verification.json",
-      "resultManagement": "Synthetic Worker/D1 and browser acceptance; deployed code. Actual owner production UI acceptance pending.",
-      "focusedLaunch": "Production-focused stage now audited independently; live CSV trial verified, cloud provider/owner desktop+Pixel/Apple Pay/full per-tool acceptance incomplete. Existing basic and paid-marketplace conditions retained.",
-      "focusedGateEvidence": "docs/evidence/sky-focused-release-check.json"
-    },
-    "individualToolInventory": {
-      "evidence": "docs/evidence/sky-individual-tool-verification.json",
-      "sourceInspected": "cb55411549649bd57429fa1afeb974139fc024da",
-      "counts": {
-        "working_end_to_end": 3,
-        "working_locally": 14,
-        "connection_required": 16,
-        "unavailable": 1
-      },
-      "syntheticCandidateRecordsMatched": 20,
-      "status": "Source v30 published; 20 synthetic candidate records matched, input-fidelity regressions and candidate/article signin recovery passed. Public anonymous UI read back. Actual production cloud and owner journey unaccepted.",
-      "sourcePublished": "5bdb4ecc0a1f12eb7036163818c4bbb86e224e78",
-      "versionPublished": 30,
-      "canonicalFullVerify": {
-        "exitCode": 0,
-        "node": 692,
-        "fashion": 19,
-        "workerD1": 948
-      }
-    },
-    "csvStorageIsolation": {
-      "status": "Published v31; archived Worker/D1/R2 138 checks, CSV API regression 95, production auth 10 checks passed. Owner journey remains unaccepted.",
-      "evidence": "docs/evidence/sky-csv-storage-verification.json",
-      "productionAuthEvidence": "docs/evidence/sky-production-auth-verification.json",
-      "productionOwnerAccepted": false,
-      "sourcePublished": "c89a651d9e2cd29011f2f6153201a93a82033643",
-      "versionPublished": 31,
-      "canonicalFullVerify": {
-        "exitCode": 0,
-        "node": 692,
-        "fashion": 19,
-        "workerD1": 948,
-        "csvWorkerD1R2": 95
-      },
-      "publicationEvidence": "docs/evidence/sky-csv-storage-publication-verification.json"
-    },
-    "csvExpiryAndRecovery": {
-      "status": "Published v32; expiry repair passed 113 CSV assertions and exact archive expiry plus paired recovery 84 checks. Owner production acceptance remains pending.",
-      "evidence": "docs/evidence/sky-csv-expiry-verification.json",
-      "pairedRecoveryEvidence": "docs/evidence/sky-paired-storage-recovery-verification.json",
-      "localRecoveryAssertions": 82,
-      "productionRecoveryAccepted": false,
-      "productionOwnerAccepted": false,
-      "sourcePublished": "5fcfe884d7038723e228156a54bfd78bfcabde89",
-      "versionPublished": 32,
-      "archiveAcceptanceChecks": 84,
-      "canonicalFullVerify": {
-        "exitCode": 0,
-        "node": 692,
-        "fashion": 19,
-        "workerD1": 948,
-        "csvWorkerD1R2": 113
-      },
-      "publicationEvidence": "docs/evidence/sky-csv-expiry-publication-verification.json",
-      "githubSubsetReview": {
-        "pullRequest": "https://github.com/k999ln/rock/pull/51",
-        "head": "05f676338944f60e05552b22dddc6f50453e3be6",
-        "base": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
-        "draft": true,
-        "merged": false,
-        "ci": "failed on pre-existing visual-system baseline assertion",
-        "scope": "CSV collision/expiry fixes only, not full Site source",
-        "evidence": "docs/evidence/sky-csv-github-sync-verification.json"
-      },
-      "githubReleaseVerification": {
-        "pullRequest": "https://github.com/k999ln/rock/pull/51",
-        "head": "691fb279a3c4238ef46f956a76b558c987bac850",
-        "draft": true,
-        "merged": false,
-        "ci": "full_verify_and_release_signing_passed",
-        "evidence": "docs/evidence/sky-release-verification-alignment.json"
-      }
-    },
-    "currentRuntimeReadback": {
-      "version": 33,
-      "status": "active",
-      "accessMode": "public",
-      "url": "https://sky-marketplace.noellesugar1.chatgpt.site",
-      "evidence": "docs/evidence/sky-access-publication-verification.json",
-      "initialPublicationVersion": 28
-    }
-  },
-  "skyAccessRecoveryPreparation": {
-    "stage": "public_v33_owner_journey_pending",
-    "runtimePublished": true,
-    "componentMemoryOnly": true,
-    "automaticResubmission": false,
-    "productionOwnerAcceptance": false,
-    "evidence": "docs/evidence/sky-access-recovery-verification.json",
-    "version": 33,
-    "sourceCommit": "00109c6adccc7b1aa4ff3f72d740d18e1de8ec94",
-    "publicationEvidence": "docs/evidence/sky-access-publication-verification.json"
-  },
-  "localVerification": {
-    "simLedProductCorrection20261002": "PASS: full npm run verify exit 0 after the signed Package runtime invocation extension URI and API fixture were aligned. This included the full Node test suite, typecheck, lint, repository/project/baseline/schema/database/release checks, migration convergence, Web production build, Worker/D1 API 994 assertions, CSV 113 assertions and Fashion Brand Ops 19/19. Separately, A2A client 10/10 and Sky Agent Runtime D1/Workflow 11/11 passed. Local fixtures only; production billing, carrier activation, production D1 readback, Provider execution receipt, funded settlement, Android/device and OS installation acceptance remain unproven.",
-    "simLedServiceAuditFollowup20261002": "PASS: corrected product audit to recognize the already implemented local seller claim issuer and issuer-authenticated delivery API (encrypted-at-rest claim code, idempotent recovery, acknowledgement erasure, retry/reissue/replay tests). Repository-wide TMPDIR=/private/tmp npm run verify passed: all repository/project/baseline/schema/database/release/Android architecture checks, Node 757/757, Fashion 19/19, typecheck, product lint, production build, web bundle/assets, Worker/D1 API 1,048 assertions and CSV Worker/D1/R2 113 assertions. A prior default-TMP verify attempt failed migration convergence after free space fell to 144 MiB; explicit temporary placement allowed migration convergence 9/9 and the full rerun passed. All evidence is local fixtures only; seller checkout/channel delivery, carrier activation, production billing and device installation remain unaccepted. Android Java/AIDL/APK/instrumentation was not run because this host has no usable JVM/Gradle toolchain.",
-    "simLedProductCorrectionFollowup20261002": "PASS: corrected the audit gap: Shell API v18 source already connects signed quote review, stable-ID draft, device-credential Wallet approval, exact quote-bound reservation, Broker proof, explicit Cloud approval and same-ID recovery; focused source-contract 2/2 and shared canonical quote/authorization vectors 12/12 pass. /connect now has a concise three-step SIM/eSIM-to-service flow; source-contract 2/2, typecheck, product lint, product baseline, Android architecture, device-support, schema, regenerated database snapshot/check (125 source tables; production readback 0/6), project-status sync/check, git diff --check and a fresh production build pass. The full repository verify result refers to the preceding tree, not these UI/docs-only follow-up edits. Build completed with existing large-chunk and duplicate CSS output warnings. Android Java/AIDL/APK/instrumentation remains unrun (no local toolchain); production billing/invoices, funded settlement, seller/carrier fulfillment, and exact-SKU install remain unaccepted."
-  },
-  "avocadoMiniCustomDomain": {
-    "task": "WEB13",
-    "primaryOwner": "JOINT",
-    "hostname": "avocadomini.si",
-    "sourceMainSha": "aa7f2b41ce34a32c262500a83238bb713c003dee",
-    "projectId": "appgprj_6ac31ab12d3481919e9a5379fa0dfbd2",
-    "status": "reference_site_and_custom_domain_live",
-    "publicDeployment": "succeeded_version_4",
-    "customDomain": "active_ssl_active_https_verified",
-    "dnsManager": "Hostinger",
-    "githubSave": "work_branch",
-    "mainMerged": false,
-    "siteSourceSha": "79714855ad246d591d0a235d7da4bba68ddfb233",
-    "deployedUrl": "https://avocadomini.si",
-    "evidence": "docs/evidence/avocadomini-domain.json",
-    "githubBranch": "codex/avocadomini-domain",
-    "validation": "Reference HTML parity 13/13; Site tests 18/18; visual match; final npm run verify exit 0; Hostinger DNS readback and Sites/SSL active; HTTPS browser verified",
-    "referenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
-    "referenceSourceBase": "5f3a3694",
-    "correction": "Replace mistakenly selected SIM/eSIM home with live Mini/Pro site including publicly visible company information"
-  },
-  "immersiveGtaResearchArchive": {
-    "researchDate": "2026-09-30",
-    "archiveDate": "2026-10-05",
-    "status": "documentation_archived_not_runtime_or_hardware_acceptance",
-    "record": "docs/avocado-mini-r5/research/immersive-gta/README.md",
-    "researchSourceCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
-    "gtaTested": false,
-    "physicalDisplayTested": false,
-    "hardwareTaskStatus": "MAT15_planned",
-    "conceptImageIsExperimentalEvidence": false
-  },
-  "patentResearch": {
-    "researchDate": "2026-09-30",
-    "repositorySavedAt": "2026-10-05",
-    "report": "docs/research/rockstar-patent-research.html",
-    "sources": "docs/research/rockstar-patent-sources.json",
-    "reviewedSourceCommit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
-    "status": "research_complete_not_filing_ready",
-    "publicationCount": 31,
-    "sourceCount": 74,
-    "runtimeChanged": false,
-    "patentFiled": false,
-    "nextAction": "初公開日・先行出願を確定し、R1の具体方式・比較実験と専門家による請求項検討を行う。9月30日以降のコード変更は本調査の対象外。"
-  },
-  "skyToolExecutionBoundaryPreparation": {
-    "stage": "local_tests_passed_ui_pending",
-    "runtimePublished": false,
-    "catalogCount": 35,
-    "classificationIsLiveAcceptance": false,
-    "productionOwnerAcceptance": false,
-    "evidence": "docs/evidence/sky-tool-execution-boundaries.json"
-  },
-  "skyIntegratedAcceptancePreparation": {
-    "stage": "local_validator_verified",
-    "runtimePublished": false,
-    "sameCandidateAcceptance": false,
-    "historicalPartialObservationsPreserved": 2,
-    "finalStages": [
-      "paid",
-      "clients"
-    ],
-    "evidence": "tests/sky-launch-validation.test.mjs"
-  },
-  "skyLibraryIntegrationPreparation": {
-    "stage": "local_worker_and_partial_ui_verified",
-    "runtimePublished": false,
-    "savedToolsGrantExecution": false,
-    "schemaVersion": 4,
-    "currentCandidateAccepted": false,
-    "evidence": [
-      "app/api/sky/library/route.ts",
-      "app/zema/library/page.tsx",
-      "scripts/check-csv-storage.mjs",
-      "tests/sky-hosting-schema.test.mjs"
-    ],
-    "unitTests": {
-      "passed": 51,
-      "failed": 0
-    },
-    "workerD1R2Assertions": {
-      "passed": 212,
-      "syntheticIdentity": true
-    },
-    "uiVerified": [
-      "Sky tool save",
-      "Zema saved list after reload",
-      "Zema citation tool launch",
-      "browser processing with actual Worker completed metadata",
-      "local result restoration after reload",
-      "anonymous save refusal and blank-tab sign-in link"
-    ],
-    "uiNotAccepted": [
-      "Markdown download (browser automation timeout)",
-      "clipboard contents (empty readback)",
-      "PC start/wait/failure/reconnect (auto-review rejection)",
-      "public owner authentication",
-      "physical Pixel"
-    ]
-  },
-  "skyResultExportPreparation": {
-    "stage": "local_payload_and_ui_verified",
-    "runtimePublished": false,
-    "unitTestsPassed": 9,
-    "workerAssertionsPassed": 212,
-    "metadataInputBytes": 200,
-    "metadataOutputBytes": 128,
-    "fileDownloadAccepted": false,
-    "clipboardAccepted": false,
-    "publicOwnerAccepted": false,
-    "evidence": [
-      "lib/sky-result-download.ts",
-      "tests/sky-result-download.test.mjs",
-      "docs/sky-launch-operations.md"
-    ]
-  },
-  "skyCsvRetentionPreparation": {
-    "stage": "local_failure_recovery_verified_public_pending",
-    "runtimePublished": false,
-    "workerTriggerConfigured": false,
-    "retentionDays": 7,
-    "physicalDeletionSlaAccepted": false,
-    "processingLeaseRecoveryAccepted": false,
-    "paymentSessionLedgerDeleted": false,
-    "productionAccepted": false,
-    "evidence": [
-      "lib/csv-retention.ts",
-      "web-worker.ts",
-      "scripts/check-csv-storage.mjs",
-      "tests/csv-retention.test.mjs",
-      "docs/sky-launch-operations.md"
-    ]
-  },
-  "skyConnectionEntryPreparation": {
-    "stage": "candidate_pending_public_verification",
-    "sourceBaseline": "58f4e2d247c69141c643ba23594b9aa601cb47e5",
-    "routes": [
-      "/sky",
-      "/sky/network"
-    ],
-    "changedEntrypoints": [
-      "market_header",
-      "pc_tool_management"
-    ],
-    "designPreserved": true,
-    "navigationCreatesDeviceRights": false,
-    "realPcAccepted": false,
-    "fullUxAccepted": false
-  },
-  "skyDedicatedToolLibraryPreparation": {
-    "stage": "local_candidate_checks_passed_public_owner_pending",
-    "baseline": "082d662595d868420a812fb9615a047fbe6d488d",
-    "tools": [
-      "rockstar-csv-cleanup",
-      "coconala"
-    ],
-    "sharedJobStore": true,
-    "librarySaveGrantsExecutionRights": false,
-    "publicOwnerAcceptance": false,
-    "loadingLayoutGuard": true
-  },
-  "skyConnectorPilotPreparation": {
-    "stage": "policy_and_denial_http_tested_issuance_held",
-    "origin": "https://sky-marketplace.noellesugar1.chatgpt.site",
-    "tools": [
-      "coconala_check",
-      "format_citations",
-      "make_free_article",
-      "verify_delivery"
-    ],
-    "ttlMinutes": 30,
-    "sdkDiscovery": false,
-    "connectionIssuanceAccepted": false,
-    "realPcAccepted": false,
-    "expiryShutdownAccepted": false
-  },
-  "skyConnectionReachability": {
-    "stage": "candidate_pending_UI_verification",
-    "browserHintGrantsAccess": false,
-    "api401GrantsAccess": false,
-    "realPcAccepted": false
-  },
-  "skyCsvHistoryRecovery": {
-    "stage": "candidate_pending_UI_verification",
-    "staleReadIgnored": true,
-    "recoveryReexecutes": false,
-    "actualPaymentAccepted": false
-  },
-  "skyGithubIntegration": {
-    "date": "2026-10-05",
-    "sourceCandidate": "b896b2e17576c2ee5dcf52d3380540472a14697d",
-    "sourceHistory": "dedicated Sites; selectively ported",
-    "baseMain": "a3951f52fa79ad4348f371c647dfe339de2e8eeb",
-    "status": "local_verification_passed_ci_pending",
-    "taskIds": [
-      "G04",
-      "WEB04"
-    ],
-    "publicVersionUnchanged": 39,
-    "productionAcceptance": false,
-    "unaccepted": [
-      "owner journey and physical download",
-      "real PC connection",
-      "new live payments and external AI",
-      "scheduled cleanup trigger",
-      "full production recovery"
-    ],
-    "preservedConcurrentMain": [
-      "AMC command center and service entitlement",
-      "SPIDER outbound and bundled-MR restrictions",
-      "Shared CSV validation and sort fixes"
-    ],
-    "validationEvidence": "docs/evidence/sky-github-main-integration.json",
-    "pullRequest": "https://github.com/k999ln/rock/pull/68"
-  },
-  "amcMainIntegration": {
-    "status": "in_progress",
-    "updatedAt": "2026-10-05",
-    "task": "G04",
-    "primaryOwner": "ROCK",
-    "workstream": "docs/workstreams/10-git-ci-operations.md",
-    "baseMain": "996b1955",
-    "scope": [
-      "Operating documentation for the bounded AMC fixture already integrated by main 11824636",
-      "Four shared CSV transform contract fixes, regression tests and synthetic result fixture generator"
-    ],
-    "evidence": "docs/evidence/amc-fixture-csv-main-integration.json",
-    "validation": "Local full verify on main 11824636 plus this change passed: Node 1003, Worker/D1 1069, CSV/D1/R2 113; other suites also passed. After preserving subsequent main SPIDER integration, use exact-head CI on PR #67 for the latest combined verification.",
-    "constraints": [
-      "No real worker, model, network or Web synchronization through the AMC fixture CLI",
-      "Trusted fixture IDs and synthetic approval are not authentication or real owner consent",
-      "Cooperative cancellation cannot forcibly interrupt synchronous in-process work",
-      "CSV is a shared standard capability; no new standalone plugin, pricing or product catalog change",
-      "Local fixture acceptance is not customer delivery, production execution or Sites deployment"
-    ],
-    "nextAction": "Use PR #67 for exact-head CI and main merge status; proceed separately with authenticated real-worker/Web integration while preserving existing G04 security gates.",
-    "synchronizedMain": "592daeea322cd47aa189b67dd689e323662c0c67",
-    "pullRequest": "https://github.com/k999ln/rock/pull/67"
-  },
-  "repositoryCleanup": {
-    "task": "G01",
-    "primaryOwner": "ROCK",
-    "stage": "focused_checks_passed_remote_full_verify_pending",
-    "sourceMainSha": "592daeea322cd47aa189b67dd689e323662c0c67",
-    "scope": "Remove reproducible Site builds and billing dry-run outputs; retain design archives, runtime, fixtures and evidence.",
-    "githubSaved": true,
-    "mainIntegrated": false,
-    "published": false,
-    "nextAction": "Complete full verification on the exact PR head in GitHub; review and merge separately. No Site publication.",
-    "removedFiles": 103,
-    "removedBytes": 69153906,
-    "retainedPublicAssetCopiesVerified": 76,
-    "validation": {
-      "repositoryCheck": "passed; previous index with 103 generated files rejected; cleaned index with rebuilt ignored outputs accepted",
-      "siteBuildAndTests": "13 routes rebuilt; 18/18 passed",
-      "archive": "verify-rocketstar-archive.py --git: 14/14 passed",
-      "fullVerifyLocal": "Stopped at typecheck: TS5033 ENOSPC writing tsconfig.tsbuildinfo; preceding checks passed. Not a full verify pass.",
-      "fullVerifyGitHub": "pending; verify current PR head after push",
-      "firstGitHubRun": "37282635930: detected immutable AMC snapshot reference edit and obsolete prebuilt-only test expectation. Snapshot restored byte-for-byte; test now requires locked source build. Full CI rerun required."
-    },
-    "branch": "codex/repository-cleanup",
-    "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac",
-    "latestMainIntegrated": "624124cf53848542538a94b9d309e24d3efbb1fe",
-    "pullRequest": "https://github.com/k999ln/rock/pull/69"
+    "baseMain": "4a22eb25502e858e22d3c5f0cddcdab58298a07a",
+    "status": "submitted_for_independent_review_with_base_failures",
+    "scope": "WorkPlan schemaVersion 1/読取/編集/CAS、AMC専用event/軽量一覧、既存cloud record証拠照合の復旧",
+    "accepted": false,
+    "deployed": false,
+    "validation": "通常契約回帰28/29、新規6/6。残りは既存AMC URL期待差。対象型エラー15件解消、local-guide既存1件。project/mission/lint合格。designは既存catalog重複、verifyは既存DB metadata不一致で停止。実認証/実PC/実HTTP/課金/モデル実行の受入は未実施。"
   }
 }

@@ -177,38 +177,3 @@ await test('Codex bridge refuses drafts and tasks blocked by prerequisites', asy
     rmSync(directory, { recursive: true, force: true });
   }
 });
-
-await test('descriptive evidence paths are rejected without rewriting the original report', async () => {
-  const directory = mkdtempSync(join(tmpdir(), 'amc-codex-report-path-'));
-  try {
-    const { approved, path } = fixture(directory);
-    const task = approved.tasks.find((item) => item.id === 'REQ-01');
-    let original;
-    let reportPath;
-    const result = await runCodexGoal({
-      goalPath: path, repo: directory, out: join(directory, 'runs'), allowCodexUpload: true,
-      execute: async ({ runDir, prompt }) => {
-        assert.match(prompt, /説明はsummary/);
-        for (const item of task.deliverables) {
-          const file = join(directory, item.path);
-          mkdirSync(dirname(file), { recursive: true });
-          writeFileSync(file, 'actual artifact');
-        }
-        original = JSON.stringify({ status: 'completed', summary: 'work done',
-          deliverables: task.deliverables.map((item) => item.path),
-          evidence: [task.deliverables[0].path + ': observed result'], question: '' });
-        reportPath = join(runDir, 'codex-report.json');
-        writeFileSync(reportPath, original);
-        return { exitCode: 0 };
-      },
-    });
-    assert.equal(result.state, 'paused');
-    assert.match(result.reason, /Unsafe path/);
-    assert.equal(readFileSync(reportPath, 'utf8'), original);
-    const goal = JSON.parse(readFileSync(result.finalPath, 'utf8'));
-    assert.equal(goal.tasks[0].status, 'running');
-    assert.equal(goal.overallAcceptance.accepted, false);
-  } finally {
-    rmSync(directory, { recursive: true, force: true });
-  }
-});

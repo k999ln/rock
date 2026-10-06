@@ -1,6 +1,3 @@
-import { userInfo } from 'node:os';
-import { observeSkyTask } from './amc-sky-observe.mjs';
-import { issueDirective, applyDirectiveEvent, inspectDirective } from './amc-sky-directives.mjs';
 import { spawn } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import {
@@ -14,7 +11,6 @@ import {
   statSync,
   realpathSync,
   writeFileSync,
-  renameSync,
 } from 'node:fs';
 import {
   delimiter,
@@ -35,15 +31,15 @@ import {
 } from './amc-goal-engine.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-export const reportSchema = {
+const reportSchema = {
   type: 'object',
   additionalProperties: false,
   required: ['status', 'summary', 'deliverables', 'evidence', 'question'],
   properties: {
     status: { type: 'string', enum: ['completed', 'needs_user', 'failed'] },
-    summary: { type: 'string', description: 'Describe the work and evidence here; keep explanations out of path arrays.' },
-    deliverables: { type: 'array', description: 'Existing repository-relative file paths only. No descriptions, URLs, fragments, or path: explanation strings.', items: { type: 'string' } },
-    evidence: { type: 'array', description: 'Existing repository-relative file paths only. Put explanations in summary.', items: { type: 'string' } },
+    summary: { type: 'string' },
+    deliverables: { type: 'array', items: { type: 'string' } },
+    evidence: { type: 'array', items: { type: 'string' } },
     question: { type: 'string' },
   },
 };
@@ -111,15 +107,15 @@ function event(goal, type, extras) {
   });
 }
 
-export function repoPath(repo, path) {
+function repoPath(repo, path) {
   if (
     typeof path !== 'string' ||
-    !path.trim() || path !== path.trim() || /[:#\r\n]/.test(path) ||
+    !path.trim() ||
     isAbsolute(path) ||
     path.includes('\\')
   )
     throw new Error(`Unsafe path in Codex report: ${String(path)}`);
-  const resolved = resolve(repo, path);
+  const resolved = resolve(repo, path.split('#')[0]);
   const inside = relative(repo, resolved);
   if (!inside || inside === '..' || inside.startsWith(`..${sep}`))
     throw new Error(`Path leaves repository: ${path}`);
@@ -131,7 +127,7 @@ export function repoPath(repo, path) {
   return resolved;
 }
 
-export function resultOf(file) {
+function resultOf(file) {
   const value = JSON.parse(readFileSync(file, 'utf8'));
   if (
     !value ||
@@ -148,14 +144,14 @@ export function resultOf(file) {
   return value;
 }
 
-export function promptFor(goal, task) {
+function promptFor(goal, task) {
   return [
     `AMCで承認済みの作業 ${task.id}「${task.title}」だけを、このローカルrepositoryで進めてください。`,
     '元のGoal・意図と既存の範囲を守り、新しい目的やtaskを勝手に追加しないでください。',
     'この呼出しでCodexへGoal内容を送ることだけは利用者が明示承認しています。それ以外の外部送信・公開、課金、契約、実機操作、実売買・送金、外部サービスへの変更は行わないでください。必要なら needs_user で止め、具体的に質問してください。',
     '既存の未保存変更はユーザーのものです。上書き・破棄しないでください。commitやpushもしないでください。',
     'このtaskに必要な調査・編集・検査を行い、実際に確認した証拠だけを報告してください。',
-    'deliverables/evidenceは実在するrepository相対ファイルパスだけの配列にしてください。説明はsummaryに記載し、「path: 説明」、URL、#見出し、行番号をパスへ付けないでください。作成できなかった成果物を列挙しないでください。',
+    '成果物と証拠はrepository相対pathで返してください。作成できなかった成果物を列挙しないでください。',
     '回答は指定JSON schemaに従い、完了した場合もAMC上では独立検収待ちです。',
     'このローカル作業でshell/file操作が使えない場合、UI操作へ切り替えず needs_user で理由を報告してください。',
     `対象task: ${task.id}\n予定成果物: ${task.deliverables.map((item) => item.path).join(', ')}`,
@@ -180,15 +176,7 @@ function codexBinary() {
   );
 }
 
-function updateRunProgress(runDir, changes) {
-  const path=join(runDir,'progress.json');
-  const previous=existsSync(path)?JSON.parse(readFileSync(path,'utf8')):{};
-  const value={...previous,...changes,observedAt:new Date().toISOString(),serviceSync:'not_connected'};
-  const temporary=path+'.tmp';writeFileSync(temporary,JSON.stringify(value,null,2)+'\n',{mode:0o600});renameSync(temporary,path);
-  const latest=join(dirname(runDir),'progress.json');writeFileSync(latest+'.tmp',JSON.stringify(value,null,2)+'\n',{mode:0o600});renameSync(latest+'.tmp',latest);
-}
-export async function codexExec({ repo, runDir, prompt, signal: abortSignal }) {
-  abortSignal?.throwIfAborted();
+async function codexExec({ repo, runDir, prompt }) {
   const args = [
     '--disable',
     'browser_use',
@@ -213,7 +201,6 @@ export async function codexExec({ repo, runDir, prompt, signal: abortSignal }) {
       cwd: repo,
       stdio: ['pipe', 'pipe', 'pipe'],
     });
-    child.once('spawn',()=>{const started={pid:child.pid,startedAt:new Date().toISOString(),executor:'codex',repo};writeNew(join(runDir,'process-start.json'),JSON.stringify(started,null,2)+'\n');updateRunProgress(runDir,{stage:'runner_started',processId:child.pid,startedAt:started.startedAt,currentStep:'Codexプロセス起動。作業結果は未提出。'});});
     const stdout = createWriteStream(join(runDir, 'codex-events.jsonl'), {
       flags: 'wx',
       mode: 0o600,
@@ -228,16 +215,11 @@ export async function codexExec({ repo, runDir, prompt, signal: abortSignal }) {
     let timedOut = false;
     let outputExceeded = false;
     let outputBytes = 0;
-    let killTimer;
-    const stop = () => {
-      child.kill('SIGTERM');
-      killTimer ??= setTimeout(() => child.kill('SIGKILL'), 5000);
-    };
     const countOutput = (chunk) => {
       outputBytes += chunk.byteLength;
       if (outputBytes > 50_000_000 && !outputExceeded) {
         outputExceeded = true;
-        stop();
+        child.kill('SIGTERM');
       }
     };
     child.stdout.on('data', countOutput);
@@ -245,29 +227,23 @@ export async function codexExec({ repo, runDir, prompt, signal: abortSignal }) {
     child.stdin.on('error', () => {});
     const onInterrupt = () => {
       interrupted = true;
-      stop();
+      child.kill('SIGTERM');
     };
     process.once('SIGINT', onInterrupt);
-    abortSignal?.addEventListener('abort', onInterrupt, { once: true });
-    if (abortSignal?.aborted) onInterrupt();
     const timer = setTimeout(
       () => {
         timedOut = true;
-        stop();
+        child.kill('SIGTERM');
       },
       30 * 60 * 1000,
     );
     child.on('error', (error) => {
       clearTimeout(timer);
-      clearTimeout(killTimer);
-      abortSignal?.removeEventListener('abort', onInterrupt);
       process.off('SIGINT', onInterrupt);
       reject(error);
     });
     child.on('close', async (code, signal) => {
       clearTimeout(timer);
-      clearTimeout(killTimer);
-      abortSignal?.removeEventListener('abort', onInterrupt);
       process.off('SIGINT', onInterrupt);
       try {
         await Promise.all([finished(stdout), finished(stderr)]);
@@ -297,7 +273,7 @@ export async function runCodexGoal({
 }) {
   if (!allowCodexUpload)
     throw new Error('CodexへのGoal内容送信を明示承認してください。');
-  let goal = readGoal(goalPath);
+  const goal = readGoal(goalPath);
   const summary = summarizeGoal(goal);
   const selected = taskId || summary.readyTaskIds[0];
   if (!selected)
@@ -332,31 +308,13 @@ export async function runCodexGoal({
     claimPath,
     `${JSON.stringify({ goalId: goal.id, revision: goal.revision, taskId: selected, runDir }, null, 2)}\n`,
   );
-  let skyContext;
-  let skyDirectiveId;
-  let worker;
-  if (goal.skyBrief) {
-    // This is a supervisor-assigned executor identity tied to this exclusive run
-    // claim, not a browser-supplied actor or invented account.
-    worker = {id:`codex-run:${claimKey}`,roles:['worker']};
-    const owner = {id:`os-user:${userInfo().uid}:${userInfo().username}`,roles:['owner']};
-    const observed = await observeSkyTask({root:repoDir,goal,taskId:selected,owner:owner.id,assignee:worker.id,reviewers:[owner.id]});
-    skyContext = {...observed,principal:owner};
-    skyDirectiveId = `directive-${claimKey}`;
-    goal = await issueDirective(goal,{type:'issue_directive',directiveId:skyDirectiveId,taskId:selected,expectedRevision:goal.revision},skyContext);
-    writeNew(join(runDir,'sky-observation.json'),JSON.stringify(observed,null,2)+'\n');
-  }
-  const detail = skyContext ? `\n--- SKY-DIR-002 個別指示 ---\n${JSON.stringify(skyContext.spec,null,2)}\nこの実行は隔離したローカル成果物のみです。外部作用・公開・送信は開始せず、必要ならneeds_userで報告してください。` : '';
-  const prompt = promptFor(goal, task) + detail;
+  const prompt = promptFor(goal, task);
   writeNew(join(runDir, 'prompt.md'), prompt);
   writeNew(
     join(runDir, 'report.schema.json'),
     `${JSON.stringify(reportSchema, null, 2)}\n`,
   );
-  const started = skyContext
-    ? await applyDirectiveEvent(goal,{id:randomUUID(),type:'start_task',taskId:selected,directiveId:skyDirectiveId,actor:worker.id,role:'worker',expectedRevision:goal.revision},{...skyContext,principal:worker})
-    : event(goal, 'start_task', { taskId: selected });
-  updateRunProgress(runDir,{goalId:goal.id,taskId:selected,goalRevision:started.revision,runId:claimKey,stage:'instruction_issued',currentStep:'実行指示を保存。プロセス起動待ち。',acceptedTasks:started.tasks.filter(t=>t.status==='done').length,totalTasks:started.tasks.length,nextReadyTaskIds:summarizeGoal(started).readyTaskIds});
+  const started = event(goal, 'start_task', { taskId: selected });
   const startedPath = join(runDir, `goal-r${started.revision}-running.json`);
   saveGoal(startedPath, started);
   let run;
@@ -387,30 +345,20 @@ export async function runCodexGoal({
   } catch (error) {
     reason = error instanceof Error ? error.message : String(error);
   }
-  let submitContext;
-  if(skyContext && report?.status==='completed' && !reason) {
-    try {
-      submitContext = await observeSkyTask({root:repoDir,goal:started,taskId:selected,owner:skyContext.observation.owner,assignee:worker.id,reviewers:skyContext.observation.reviewers,previous:started.skyDirectives.at(-1),evidencePaths:report.evidence});
-      const drift=inspectDirective(started,started.skyDirectives.at(-1),submitContext.observation,'submit');
-      if(drift.length) reason=drift.join('; ');
-    }catch(error){reason=String(error);}
-  }
-  const submit = async (extras) => skyContext
-    ? applyDirectiveEvent(started,{id:randomUUID(),type:'submit_result',taskId:selected,directiveId:skyDirectiveId,actor:worker.id,role:'worker',expectedRevision:started.revision,...extras},{...submitContext,principal:worker})
-    : event(started,'submit_result',{taskId:selected,...extras});
   let next;
   let state;
   if (report?.status === 'completed' && !reason) {
-    next = await submit({
+    next = event(started, 'submit_result', {
+      taskId: selected,
       outcome: 'succeeded',
       summary: report.summary,
       deliverables: report.deliverables,
       evidence: [
-        ...new Set([...report.evidence, ...(skyContext ? [] : [join(runDir, 'codex-report.json')])]),
+        ...new Set([...report.evidence, join(runDir, 'codex-report.json')]),
       ],
     });
     state = 'submitted';
-  } else if (!skyContext && report?.status === 'failed' && !reason) {
+  } else if (report?.status === 'failed' && !reason) {
     next = event(started, 'submit_result', {
       taskId: selected,
       outcome: 'failed',
@@ -428,7 +376,6 @@ export async function runCodexGoal({
     });
     state = 'paused';
   }
-  updateRunProgress(runDir,{stage:state,goalRevision:next.revision,currentStep:state==='submitted'?'成果提出済み。独立検収待ち。':'実行停止。理由と結果を確認してください。',waitReason:reason || null,releaseCondition:reason?'失敗理由を解消し、最新Goalと既存claimを確認して再開する':'実行者以外が対象証拠を照合する',latestDeliverables:report?.deliverables??[],acceptedTasks:next.tasks.filter(t=>t.status==='done').length,nextReadyTaskIds:summarizeGoal(next).readyTaskIds});
   const finalPath = join(runDir, `goal-r${next.revision}-${state}.json`);
   saveGoal(finalPath, next);
   writeNew(

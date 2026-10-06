@@ -1,87 +1,22 @@
-## 2026-10-05 公開ホームページの独自ドメイン
+## 2026-09-27 指示から部隊・過程・Goalを束ねる管理ツール（v1.96）
 
-利用者は `avocadomini.si` に正本GitHub `k999ln/rock` のホームページを公開するよう明示した。後続指示で対象は `https://avocado-mini.kirin-999.chatgpt.site/` のMini／Proホームと確定した。前回の最新main SIM/eSIMホーム配備を訂正し、指定公開版の画像・内容・会社情報・下層ページを、既に同ドメインが登録された現アカウントのSiteへ移行する。訂正版をSites v4へ公開後、利用者指定のHostingerでA 2件と所有確認TXTを設定し、`https://avocadomini.si` のDNS・Sites・SSL activeとHTTPS実表示を確認した。Sites標準URL `https://avocadomini.noellesugar1.chatgpt.site` も継続する。旧kirin-999 Siteは現在の接続ではNOT_FOUNDであり変更しない。DNS実値・復旧・残る条件は[Web workstream](workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13)を参照する。
+利用者は、指示をまず部隊へ分けて問題を細分化し、全進捗と作業過程・Goalを把握し、その計画をGPT等の目標へ一括で渡して完成へ進めるツールを指定した。[AMC Goal Orchestrator](amc-goal-orchestrator.md)を開発管理の入口とする。H1 / AMC02がローカルの計画・指示文出力・検収台帳を担当する。任意指示のAI分解、AIへの自動送信、常時運転は別の未接続段階であり、管理画面だけで完成済みとしない。
 
-## 2026-10-04 IP Studioの音声・電話連携
+Goalは達成条件と証拠で受け入れ、未承認の課金・外部操作・実機・飛行の権限を増やさない。Mini単独・Pro任意、rocketstarの独立安全系、料金保留、既存RQ01〜RQ49を変更しない。
 
-利用者の明示指示により、RQ48のIP StudioへLiveKit Agentsの音声会話・電話対応を追加する。既存の交換可能Provider方針を維持し、音声会話と発着信、録音、外部Tool作用を別権限で扱う。今回の設定面追加を実通話の受入に換算しない。Manus Cueは体験の参考であり、未確認APIの接続済み表示はしない。[詳細と残る条件](sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)。
+## 2026-09-26 現行ハードウェア製品群とMission Control（v1.95）
 
-## 2026-10-02 Spider Guardの実処理への接続
+利用者は、現行のハードウェア製品設計を`avocadoMini`、`avokadoPro`、`rocketstar`の三つとして整理し、RockstarOSを三製品へ共通するOSと明示した。PC／Web、Linux／QEMU、Pixel 10は開発・検証環境であり、独立した販売製品として数えない。P0.2、Mini200 E1、E2、Tower20 E3はMini／Proへ至る設計履歴であり、現行製品を増やすものではない。A-LINK、衛星、地上設備、回収はrocketstar内部systemとして扱う。
 
-利用者はクモが秘密コード・個人情報のある場所を優先して守る継続監視を求め、表示デモではなく正本repository `k999ln/rock` への実装と、常駐先をRockstarOS本体とすることを指定した。[Spider Guard](spider-guard.md)を新規 `SYS15` の範囲・責任・受入の正本とする。Platform UID 1002で固定範囲の平文application dataを継続検査し、MCP送信とRunnerControlのprepare／初回送信確定前に検査・拒否を接続する。native画面は認証付き`security.status`の実結果を表示する。Web／Connectorの送信前検査は補助である。
+三製品とOSをさらに責任単位へ分け、Goal、進捗段階、rule、依存、証拠、次の作業を管理する[`avokado Mission Control`](mission-control.md)を正本化した。機械可読正本は[`data/mission-control.json`](../data/mission-control.json)。2026-09-27の精査で、0 要件整理、1 基本設計あり、2 試作済み、3 一部統合、4 実機受入、5 本番受入へ表示を明確化した。段階は部隊ごとの対象範囲と残課題を併記し、task件数や設計書件数を製品完成率へ換算しない。
 
-主担当はSecurityのROCK。OS本体への同梱・起動監督まで実装対象とするが、変更後の同一image boot、Pixel実機、24時間連続運転は未受入。検出値を画面・記録へ出さず、未検査・停止・失敗を安全や稼働中と表示しない。任意アプリ・OS全体の通信の遮断、root権限、侵害防止の保証は追加しない。既存のRQ01〜RQ49、権限・本人承認、Operator Dock分離、Pixel/QEMU・署名・公開gateを維持する。
-
-同日の追加指示: 利用者が提示した[映像1](https://www.instagram.com/reel/DdhYiKdz-6t/)・[映像2](https://www.instagram.com/reel/DdmGyhRRQGi/)と[追加投稿](https://www.instagram.com/p/Dd97sTPjEu6/?img_index=2)を見た目だけの参照に、nativeのクモを細い発光関節脚、青い足先の輪、pink／cyanの小さなcoreで表現する改善を進める。実findingへの移動・囲みと、新しい実拒否counterへの短い反応を実装し、stale／dead／disconnected等では停止する。これは表示の改訂であり、検出実績・送信拒否・24時間運用の証拠を追加する指示ではない。前版`a7cfca3`の検証記録は保持し、改訂後の描画試験は別に記録する。
-
-同日の追加「セキュリティーエージェント」指定: クモに実際の監視・検査・拒否・報告の役割を割り当て、Platformの実worker状態、実finding、最新の実拒否に基づくAgent metadataとnative表示を接続する。役割付与は既存のUID・認証・固定範囲・対応送信経路を拡大せず、検出値を返さない。現在の表示先はnative security panelとし、OS全体のoverlayは未選択。役割追加のLinux source検証は直前のアニメーション検証と別記録し、OS boot・Pixel・24時間受入の未完了を維持する。
-
-同日のコード検査・ファイル指定: 自分のコードを貼り付けて編集すると自動検査し、実際の指摘をクモで可視化する。offline単一HTML `outputs/SPIDER.html`と、OS owner限定の`security.inspectCode`を実装範囲に加える。検査は明示入力したsourceの静的分析であり、コード実行、外部送信、入力の永続保存、SDK／API keyを要求しない。既存Platformの常駐監視と送信前拒否は維持し、HTMLの動作をOS boot・24時間運転の合格へ換算しない。新しい検証結果は別に記録する。
-
-
-## 2026-10-02 現行製品方針: SIM/eSIMを入口にRockstarOSサービスへ接続
-
-この節はこれ以前の「eSIM専用」「eSIM商品をOS内で販売」「ハードウェア先行」「交換可能な端末内LLM/OS自体を利用者向け主商品とする」という競合方針より優先する。製品の主な提供価値は、物理SIMまたはeSIMの購入を通じてRockstarOSとSky、Zema、統合エージェントへ短い手順でアクセスできること。SIM/eSIM購入にはサービス利用権を含める。OSバイナリをSIM/eUICCへ格納する要件ではなく、通信サービスの購入・開通とOSの導入・利用権付与は別々の状態として扱う。購入先はRockstar直販に限らず、通信事業者、端末販売店、オンライン販売等の複数チャネルを想定する。販売・開通連携は契約前である。
-
-選ばれる理由は (1) クラウドLLM・エージェントへすばやく簡単にアクセス、(2) 料金と使用量が透明、(3) RockstarOSのSky/Zemaを最小設定で使い始められること。クラウドAI実行は利用量ベースで請求する設計とする。利用者は実行前に単価と見積範囲、実行中の予約額／照合済み額、完了後の項目別usage receiptを確認できる。支出上限を設定し、明示承認のない予算超過を拒否する。通信プラン料金とAI/agent/compute費用は別項目として表示する。料金見積のためProviderへ依頼文を共有する同意は、有料実行のbudget承認と別に取得し、policy versionと依頼digestだけを監査保存する。依頼本文を同意監査行へ保存せず、同じ要求IDを再利用して二重送信しない。
-
-利用開始の標準フローと端末/Cloud境界の詳細は[SIM/eSIM-led service architecture](sim-led-product-architecture.md)を正本とする。短い導線は、物理SIM/eSIM offerと対応状況を確認し、必要なら通信会社の回線開通を明示操作で完了し、Rockstar accountへ一度だけsign-inして購入claimをredeemし、適合端末に署名済みRockstarOS installが受入済みなら利用者承認のinstallへ、それ以外は既存OS app/browserへ進む。利用者はHomeからSky、Zema、Agentを直接開き、各サービスへ再登録しない。料金・見積・上限・明示承認後にcloud taskを送信し、圏外中も同じjobをcloudで継続、再接続時に進捗・結果・項目別usageを受け取る。SIM購入、carrier activation、service entitlement、OS/client install、cloud execution、AI billingは別状態で確認し、claimだけでcarrier開通、OS書込み、Agent実行を代行しない。
-
-販売claimは`issuerId + purchaseReferenceSha256`単位で一度だけアカウントへ結合する。販売者は注文全体ではなく各購入明細を一意に表すreferenceをhash化する。同一purchase hashに対する複数のclaim IDや同時redeemはD1のunique constraintで一件に制限し、完全に同じclaim packageを同じアカウントから再送する操作のみ冪等とする。channel-neutral issuer helperは署名claim/code、取消event、置換packageを生成し、未redeem取消tombstoneは旧claimを拒否する。販売元ごとのregistry/注文連携、取消webhook、key custodyとreplacement deliveryのproduction接続は未実装・未受入。
-
-端末の共通認証は、Rockstar IDへブラウザで一度サインインし、端末名を確認して一時コードを承認するDevice Authorization方式で実装する。端末ごとに90日有効の失効可能なBearer sessionを発行し、Sky/Zema/APIへ同じowner identityを渡す。tokenはD1へSHA-256 hashだけを保存する。SIM購入や通信activationはこのログインを自動承認せず、購入権のclaimも別操作として残す。Android Broker/Shellのコード開始・polling、AndroidKeyStore暗号化session、owner-scoped read-only service-home API接続はsource実装済み。SDKなしでAIDL/APK/Binder/device runtimeは未検証。
-
-### 現行実装の監査
-
-| 要件 | 再利用できるもの | 変更が必要なもの | 不足・現在の証拠の限界 |
-|---|---|---|---|
-| cloud agentsとoffline継続 | A2A directory/delegation、永続Workflow、同一job recovery、暗号化artifact、owner auth | SIM/eSIMを契約・サービス入口として説明し、接続経路の変化がjob owner/権限/課金を変えないよう統合 | local Worker/D1/Workflow fixtureでqueue・復旧・曖昧応答を検証。直接LLMは保存済み見積・承認・queue sourceまであるが送信gateは閉じている。production cloud/Provider接続は未受入 |
-| 料金透明性・支出上限 | 直接LLMは署名rate-card、request-bound quote、D1 store、原子的な共有予算予約、send claim、結果不明hold、itemized usage pricingを再利用し、Workbenchに単価・最大見積・本人指定cap・予約/確定額・明細を表示する。A2AはProvider署名quote/live meter/usage receipt用のprotocol・verifier・quote-bound Core hold/proof、Android native Wallet予約、Broker証明、Cloud最終承認と同じ委任IDの復旧経路をsource実装した。| 見積前のprompt共有同意と有料実行・圏外継続への明示同意を分離する。Shell API v17は同一端末・quote・Wallet holdに結合したCloud最終承認と取消を実装する。端末再起動後もtask詳細からowner-scoped Cloud状態と永続Wallet reservationを、同一ID・owner・親job・agent・価格版・上限・期限・入力hash・quote hashから再計算したWallet reservation digestで照合する。条件不一致はholdを保持して再送しない。Cloudの有料dispatch gateはfalseのまま。| consent event、quote、Cloud状態、署名receipt、local spend rowは同一でない。合成Worker/D1/local usage recordはproduction請求証拠でない。Android SDK/APK/device、Provider sandbox meter/credential、production Wallet予約・決済、invoice照合は未受入。テストやusage recordはproduction billingの証明ではない |
-| SIM購入からservice access | eSIM plan catalog/provider adapter、channel-neutral signed entitlement claim、Rockstar owner account link、端末能力snapshot、attested gateway enrollment | 物理/eSIM双方を購入チャネルとして扱い、キャリア回線状態とサービス利用権を別々に示す。SIM専用store画面ではなく、購入後の短いRockstarOS service onboardingを最初に案内 | issuerと販売注文の連携、物理SIM fulfillment、carrier activation readback、production service entitlement、real purchase remain unaccepted |
-| SIM/eSIM offerに含む初期Agent構成 | 署名claimの`issuerId + offerId`をSkyの固定package key/manifest hashへ対応させるresolverとreview済みregistry | Web/Androidの利用開始画面でready/review状態を案内し、owner選択後にだけinstall/executeへ進む。追加AgentはSky Marketplaceから選べる | synthetic packageでWorker/D1・unit testのみ検証。Healthcare/Lifeline実package、issuer offer設定、device install/executeは未受入 |
-| OS導入・複数端末 | Android device capabilitiesと機種別adapter設計、Pixel 10試験APK/限定offline inference evidence | full OS installと既存OS上clientを端末適合で分岐。OS install判定をSIM/eSIM対応から推測しない | Pixel OS image/flash/full acceptanceなし。iOS/PC/他Androidのclient acceptanceなし |
-| 統合Home/auth | HomeにSky/Zema/Agent入口、共通device session、owner-scoped API、Android service-home APIのaccess/entitlement/最近のAgent・LLM状態と保存済み結果snippet | SIM entitlementを一回のRockstar identityへ結び、サービス間で認証状態を継承し、Agent/Jobs/usageをHomeから見せる。端末画面へAgent artifactとLLM itemized resultをドリルダウンする | Android Shellは登録済み利用権のoffer、物理SIM/eSIM/サービス専用の別、status、適用scopeを同じowner sessionで表示し、未登録なら`/connect`での登録先を示すsource実装済み。Agent詳細から同じ委任IDのCloud/端末Wallet readbackと明示的な未実行予約解除を開始できる。Worker/D1統合fixtureは検証対象、Android AIDL/APK/Binder/device acceptanceは未受入 |
-
-### 開発順
-
-1. SIM購入からRockstarOS accessへ渡すchannel-neutral claim、issuer signing helper、redeem前取消tombstone/置換用package生成は実装済み。redeemはissuer・購入明細reference単位で一回のみ許す。複数販売チャネルのpost-purchase handoff/registry、取消webhookと返金event契約、carrier activation readbackを接続し、service entitlementとOS/client installを別々に受け入れる。
-2. 共通HomeのSky/Zema/Agent入口、unified device session、task一覧・進捗・成果・利用明細はsource実装済み。Android Shellでは登録済み利用権とservice scopeも表示し、未登録時の`/connect`導線を示す。Androidはvalidated network復帰でread-only同期を開始するsourceを追加した。次はAndroid CIでcompile/instrumentationし、同一job復帰、結果取得、Wallet receipt handoffの権限と冪等性を受け入れる。
-3. 料金前の単価・見積・ユーザー指定上限、実行中の予約/署名meter、完了後のitemized usage receiptを段階別に示す。予算を超える操作は再見積と明示承認を要求する。Provider契約、live meter/invoice、funded Walletが揃うまでpaid dispatch gateを閉じる。
-4. Android full OS / supported app / browser fallbackをexact SKUと地域ごとに分け、回線対応からOS install可否を推測しない。OEM権限や実profile発行を要する経路は、準備コードだけで合格扱いにしない。
-
-単体テスト、host fixture、local D1/Workerの合格は、本番請求、実キャリア開通、販売、端末へのOS導入またはRockstarOS対応機種数を示さない。
-
-## 2026-09-30 人・端末・サービス・ゲームへの適合
-
-利用者はGTAを含め、みんなに適合するシステムを指定した。既存CoreとSkyのcapability adapterを用い、本人の目的・設定、端末能力、接続先仕様へ適合する。[共通接続設計](sky-mcp-architecture.md)に要件を記録し、eSIM種別で機能を固定しない。GTAは明示的な対象だが、タイトル・版・接続口・対象機能を固定して受け入れる。既存の協議・合意に関する利用者説明を維持し、未提供interfaceや未実施の動作を合格扱いにしない。
-
-## 2026-09-30 端末圏外中のクラウド継続実行
-
-利用者は、クラウドAIが先に頼まれた仕事を続ける方針を採用し、準備を明示した。[継続実行契約](sky-cloud-continuity.md)を追加する。受付確認済み・事前承認済みの仕事を予算と期限の範囲で続け、追加承認時は待機する。圏外中の停止要求を停止済みと表示せず、再接続で同じjobを照合する。現在は要件と受入計画で、実クラウド実行・本番課金の受入ではない。
-
-## 過去のeSIM限定方針（2026-10-02 superseded）
-
-以前の「eSIMのみを製品配布形態にし、物理SIMを扱わない」という方向は撤回済み。現在は物理SIM/eSIM双方を複数販売チャネルから購入でき、購入にRockstarOS service accessを含むことを正本とする。`toolkits/esim-bootstrap`はeSIM provider integrationの試験fixtureとしてのみ残り、製品形態や販売チャネルを限定しない。
-
-## 2026-09-27 Sky Marketの現行手数料
-
-Sky Marketは自動化ToolとLLMを掲載対象にし、登録・接続・公開・基本利用料は0円とする。検証済みTool売上のSky Market手数料は10%。外部決済、API、AIモデル、cloud等の第三者実費は別表示する。Provider、本人確認、返金、照合の受入前は請求・回収・払出しを有効化しない。旧8.88 USD案と0%の記載は過去の判断履歴・回帰資料であり、この現行方針を上書きしない。
-
-同日追加「決済もできるようにして」: WebのSky MarketにStripe Connectの受取先登録、円の買い切り価格設定、Hosted Checkout、購入履歴、署名通知とProvider再照合、10%配分、返金を実装した。価格・作者・送金先はserverの注文snapshotを正本にし、審査有効な販売対象だけ購入できる。LLMも同じPackage条件で扱う。API・DBとProvider代替fixtureの合格は実Stripe sandboxや実資金受入ではない。現在は決済資格情報未設定で課金不可、公開配備・銀行着金も未確認。外部MCP側の有料access認可は提供者との別統合を要する。[決済実装と設定手順](sky-billing.md)。
-
-## 2026-09-27 Campusレイヤー
-
-RockstarOS Web/PWAのbase appに `Campus` を追加する。CampusはNYU / FIT / Columbia / Fordham / John Jayの文脈ごとにPeople、Projects、Opportunities、Events、Communities、Portfolio、Resourcesを提供し、registered NFC / QR tagからmode別に開ける。既存Sky / Zema / Walletを複製せず、発見・共同作業の入口として接続する。
-
-所属表示は認証済みemail domainとの一致だけを `domain_verified` とし、emailはCampus tableへ保存しない。これは在籍・肩書き・大学公式承認の証明ではない。求人、event、case、policy等は外部原典が明示されない限りcommunity-posted contentとして扱う。Tag analyticsはtag ID / source / timestampだけを保存し、IP・email・precise location・raw User-Agentを収集しない。profile visibility、block/report、post archive、tag停止、tag analytics削除、Campus単位の本人データ削除を持つ。設計とruntime境界は[Campus layer](campus-layer.md)を正本とする。
+avokadoProは公開製品Siteで、単体でgame、service、compute、storage、audioを扱い、任意でMiniと接続する製品として定義されている。一方、Mini R5やrocketstar R1.0と同等の専用統合設計・BOM・ICD・受入matrixは未作成である。AMCのP1〜P7にはPRO01〜07を登録し、段階0「要件整理」を維持する。公開説明やtask登録を実装・実機完成の証拠にはしない。Mini R5も単独game・保存・停止が必要であり、Pro接続を必須にしない。rocketstarでの共有OSの役割は地上支援であり、飛行制御の独立安全系とは分ける。
 
 ## 2026-09-24 収益料金の保留
 
 利用者の明示指示により、8.88 USDの収益料金案は、収益を得る動線が確定するまで保留する。SkyのToC料金とCSV販売者向け料金を現行の請求条件として表示せず、新たな料金計上・請求・回収を行わない。旧888 centsの上限、計算式、試験結果は過去の設計・回帰検証の記録として保持する。対象となる利益、料率・上限、実費、返金、Provider、同意、開発者還元、回収の順序を別途決めた後に再設計・受入する。下記の古い料金判断は履歴であり、この保留方針を上書きしない。
 
-# 2026-09-24 ハードウェア設計基準 — avocadoMini R5（統合版v1.94）
-
-注記: R5は別のハードウェア設計programとして維持する。2026-10-02のSIM/eSIM主導サービス方針により、R5や他の専用hardwareはRockstarOSサービスの主商品・利用開始条件ではない。
+# 2026-09-24 現行製品基準 — avocadoMini R5（統合版v1.94）
 
 利用者は、使用時全高200mm以内の銀色円筒mini、1本での自律動作、別Edge Hub不要、同型mini増設、眼鏡なしで周囲空間に粒子が舞う表示、身体・手・日本語音声、ゲームから生活支援への展開を指定し、R5設計書の作成とGitHubへの漏れない保存を依頼した。[R5統合基本設計](avocado-mini-r5/README.md)を現行製品要求の入口とする。
 
@@ -678,11 +613,11 @@ RockstarOSの最上位の社会的目的は、利用者が自分専用のAI自�
 
 Walletは収益・費用・receipt・払出し状態に加え、合法的な税務準備の記録、分類候補、期間集計、export、専門家確認を支援する。脱税、架空経費、法域未確認の自動申告を行わない。改善データはcategoryごとに目的、送信先、保存期間、第三者提供、削除、同意撤回を示し、仕事本文、私的会話、写真、秘密鍵、seed phrase、認証情報、正確な位置を既定収集しない。ゲームは公式に許可された接続先へ同じ権限・receipt・Wallet基盤を派生させ、1.0の中核収益loopを止める依存にしない。詳細は [製品目的から逆算した開発軸](product-north-star-20260915.md)を正本補助資料とする。
 
-## RQ48 RockstarOS CoreでSky・便利機能・ゲームを接続して発展させる
+## RQ48 AIネイティブOSを中核にSky・便利機能・ゲームを接続して発展させる
 
 共通Core、Sky appとOSの能力差、Zema仕事契約、モデル・記憶更新、通信断時の外部作用照合、便利機能とGame／IPの実装順は[AIネイティブOS詳細設計](ai-native-os-architecture.md)を正本とする。[Sol設計監査](ai-native-os-design-audit.md)で設計上の解消と実装・受入待ちを分ける。
 
-RockstarOS Coreは、高性能で交換可能なローカルLLMを必須条件にせず、cloud/local runtime、権限、記憶、仕事、停止・再開、Tool、receipt、更新、rollback、復旧を共通化する技術基盤である。利用者向け主商品は上記のSIM/eSIM主導service accessであり、cloud LLM/Agentの簡単な利用、透明な従量料金、Sky/Zemaの最小設定利用を提供する。端末内LLMは対応端末向けの追加能力で、専用端末所有は利用条件ではない。
+RockstarOSの製品中核は、高性能で交換可能なローカルLLM、offline agent runtime、権限、記憶、仕事、停止・再開、Tool、receipt、更新、rollback、復旧を共通化したAIネイティブOSである。社会的目的はこのCoreを所有する利用者の仕事と生活を便利にし、成果と検証可能な収益機会を広げ、より豊かにすることである。「OSが製品中核であること」と「OSを作る作業自体を社会的目的にしないこと」を両立させる。
 
 SkyはTool・ファンド・接続先を選ぶ第一者system、ZemaはAIチームへの依頼、役割、進捗、承認、停止、結果、履歴を管理する第一者systemとし、最初の実用経路としてCoreを継続検証する。仕事や生活を便利にするsystemを優先して追加し、ゲーム、IP／動画生成、VRは利用者の関心に基づく優先的な応用開発系統として関連付ける。特定のTool、ゲーム、生成Provider、金融ProviderをOS imageへ直書きせず、署名、version、capability、本人同意、費用、停止、receiptを持つadapterとして独立更新できるようにする。
 
@@ -845,7 +780,3 @@ avocadoMiniの操作履歴は、人の直接操作、AI提案、simulation、文
 2026-09-20 製品サイト配色の改訂: 利用者は全体の青い配色より前の冒頭デザインを好み、下の章を黒い製品写真の表現へ寄せるよう指定した。黒、銀色の製品、白い文字と操作を基調とし、青はセンサー発光に限定する。回転演出、性能説明、一周後の価格、OS導入の順序は保つ。
 
 2026-09-20 回転ツアーの再配置: 利用者は回転区間も冒頭の黒い製品写真のデザインへ合わせ、必要なら製品と説明の配置を組み直すよう指定した。製品と説明が各角度で重ならないことを優先し、デスクトップとスマートフォンで領域を分ける。一周の回転、センサー正面の光、各機能の説明、完了後の価格を維持する。
-
-2026-09-30 agent間接続の実装進捗: Sky／Zema／Core-Brokerの責任分界を維持し、A2A Protocol 1.0.0 JSON-RPC client、owner-scoped D1 delegation store／append-only events、Cloudflare Worker status reconciliationを追加。text artifactは制限付きで正規化・暗号化保存し、owner-scoped取得APIを実装。A2A関連fixture 35件、Worker/D1 API 251 assertionsが成功。native Brokerは短命proofを外部signer interface経由で発行し、control receiptに永続化するfixture pathを持ち、Broker 45 testsを通過。WebとPythonで共通signing bytes vectorを検証。owner-scoped proof受渡しAPI、operator-managed trust resolver、Runtime Worker proof hookを追加し、Web承認前、Agent Card取得前、送信直前にproofを検証する。ただしWorkflow end-to-endはMiniflare binding RPC起動停止により未検証。実Wallet／WebAuthn signer、owner/device key登録・失効、device gateway、本番trust key設定、Wallet予約は未接続。Sky全体の提供者審査、本番egress経路、production dispatch、実Provider、異なる実装間の相互接続は未実装・未受入。
-
-2026-10-02 SIM/eSIM-led product correction and acceptance: physical SIM/eSIM offers are the access and distribution product and include RockstarOS service access; the OS binary is delivered through a supported device route, not stored on the SIM. The architecture separates purchase entitlement, carrier activation, account identity, device installation, cloud work, and usage billing. Reused signed entitlement, shared identity, device capability/attestation, durable cloud execution/recovery, and signed metering. Cloudflare Worker/D1/Workflow A2A suite now passes 12/12 including a controlled local Package-runtime invocation and synthetic signed usage settlement. This is local fixture proof only: seller/carrier activation, real Provider execution/rates/invoices, production Wallet settlement, and exact-device OS installation remain unaccepted. See [SIM-led architecture](sim-led-product-architecture.md), [A2A bridge](sky-a2a-bridge.md), and [local evidence](evidence/sim-led-product-correction-20261002.json).

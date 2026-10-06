@@ -77,7 +77,7 @@ await test('AMC is a first-party connected Sky Tool and an explicit Zema routing
   assert.ok(tool);
   assert.equal(tool.status, 'ready');
   assert.equal(tool.origin, 'rockstaros');
-  assert.equal(tool.launchPath, '/zema/amc');
+  assert.equal(tool.launchPath, '/amc');
   assert.ok(SKY_CONNECTION_TOOLS.includes(tool.id));
   assert.ok(skyRoles.some((role) => role.toolId === tool.id));
   assert.equal(
@@ -86,22 +86,45 @@ await test('AMC is a first-party connected Sky Tool and an explicit Zema routing
   );
 });
 
-await test('Zema owns the AMC runner while Sky retains product discovery', () => {
-  const component = readFileSync(new URL('../components/amc-tool-runner.tsx', import.meta.url), 'utf8');
-  const page = readFileSync(new URL('../components/amc-workspace.tsx', import.meta.url), 'utf8');
-  assert.match(component, /data\/amc\/mission-control/);
-  assert.match(component, /data\/amc\/project-status/);
+await test('Zema source contract embeds AMC before the generic launch link and uses the canonical board separately', () => {
+  const chat = readFileSync(
+    new URL('../components/sky-chat-workspace.tsx', import.meta.url),
+    'utf8',
+  );
+  const component = readFileSync(
+    new URL('../components/amc-tool-runner.tsx', import.meta.url),
+    'utf8',
+  );
+  const page = readFileSync(
+    new URL('../app/amc/page.tsx', import.meta.url),
+    'utf8',
+  );
+  const runnerPosition = chat.indexOf('<AmcToolRunner');
+  assert.ok(runnerPosition >= 0);
+  assert.ok(runnerPosition < chat.indexOf('activeTool?.launchPath'));
+  assert.match(
+    chat.slice(runnerPosition, runnerPosition + 800),
+    /initialText=\{activeRequest\.text\}/,
+  );
+  assert.match(
+    component,
+    /import missionData from '@\/data\/mission-control\.json'/,
+  );
+  assert.match(
+    component,
+    /import projectData from '@\/data\/project-status\.json'/,
+  );
   assert.match(component, /<MissionBoard\s*\/>/);
   assert.match(component, /fetch\('\/api\/amc'/);
-  assert.doesNotMatch(component, /executeTracked|fetch\(['"]\/api\/(?:llm|jobs)/);
+  assert.doesNotMatch(
+    component,
+    /executeTracked|fetch\(['"]\/api\/(?:llm|jobs)/,
+  );
   assert.match(page, /<AmcToolRunner\s*\/>/);
-  assert.match(page, /aria-label="Zemaナビゲーション"/);
-  assert.match(page, /href="\/chat"/);
-  assert.match(page, /href="\/zema\/amc"/);
 });
 
 await test('AMC work keeps the exact brief and saves an approved pending plan, not a claimed AI run', () => {
-  const source = new URL('../data/amc/mission-control.json', import.meta.url);
+  const source = new URL('../data/mission-control.json', import.meta.url);
   const canonicalBefore = readFileSync(source, 'utf8');
   const job = create();
   assert.equal(job.templateId, 'amc');
@@ -447,13 +470,13 @@ await test('AMC validated imports preserve prior recorded state without claiming
 await test('all 32 existing squads remain a distinct importable canonical plan with approval and holds intact', () => {
   const mission = JSON.parse(
     readFileSync(
-      new URL('../data/amc/mission-control.json', import.meta.url),
+      new URL('../data/mission-control.json', import.meta.url),
       'utf8',
     ),
   );
   const project = JSON.parse(
     readFileSync(
-      new URL('../data/amc/project-status.json', import.meta.url),
+      new URL('../data/project-status.json', import.meta.url),
       'utf8',
     ),
   );

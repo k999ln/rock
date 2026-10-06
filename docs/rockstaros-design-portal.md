@@ -4,7 +4,7 @@
 
 avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README.md)。使用時200mm以内・1本自律・別Hub不要を目指す基本設計で、全空間裸眼表示・最終ハードウェアは未成立/未確定。以下のE1/E2/E3、四方向発明台の資料は履歴または別研究profileとして読み、既存OS実装の受入と混同しない。
 
-このページは、RockstarOS本体、画面、AI、Tool、Wallet、運用、avocadoMiniまで、全設計へ入る唯一の入口である。設計書が多いことを完成とは呼ばない。各systemについて、目的、利用者の操作、責任、入力、出力、状態、権限、保存、失敗、復旧、受入、現在地を説明できることを設計記載の最低条件とする。
+このページは、RockstarOS本体、画面、AI、Tool、Wallet、運用、avocadoMini、avokadoPro、rocketstarまで、全設計へ入る唯一の入口である。部隊別のGoal、進捗、rule、依存、証拠、次の作業は[avokado Mission Control](mission-control.md)を正本とする。設計書が多いことを完成とは呼ばない。各systemについて、目的、利用者の操作、責任、入力、出力、状態、権限、保存、失敗、復旧、受入、現在地を説明できることを設計記載の最低条件とする。
 
 ## rocketstar 設計書完全版 R1.0と全履歴の保存
 
@@ -27,7 +27,7 @@ avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README
 1. [RockstarOS 設計書完全版 v1.0](rockstaros-complete-design-v1.0.pdf) — rocketstar、A-LINK、avokado、colonyを含む2026-09-24統合基準。
 2. [製品・サービス・システム関係図](rockstaros-product-system-map.md) — 製品、サービス、内部システム、`Mr.`、MR、収益の関係を一枚で確認する。
 3. [RockstarOS全体詳細設計](rockstaros-complete-design.md) — repository実装と既存詳細資料への入口。
-4. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、12件をどう使い、どこで止めるか。
+4. [Sky／Zema／全Tool詳細設計](sky-tools-complete-design.md) — Toolをどう追加し、AMCを含む13件をどう使い、どこで止めるか。
 5. [avocadoMini R5 ハードウェア・OS統合基本設計](avocado-mini-r5/README.md) — 現行製品要求、51ページ、図面、計算、受入計画。既存[Material Invention研究仕様](rockstaros-avocado-mini-complete-design.md)は別profileとして保持する。
 6. [製品ベース](product-baseline.md) — 利用者が確定したRQ01〜RQ49と、その後のTool追加判断。
 7. [Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md) — code、Jev、Local Qwen、Cloud LLM、Codex、RAG、Market、Walletを一つの安全境界へ統合する設計。
@@ -76,7 +76,7 @@ RockstarOS Platform Core
 
 | 環境              | 役割                                                          | 現在の到達点                               | 完成と呼ばないもの                         |
 | ----------------- | ------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
-| Web / PC          | 現在の製品画面、D1 API、PC Tool、MCP接続                      | 12 ready Toolと主要画面がある              | スマホOS、native sandbox、本番Provider     |
+| Web / PC          | 現在の製品画面、D1 API、PC Tool、MCP接続                      | AMCを含む13 ready Toolと主要画面がある     | スマホOS、native sandbox、本番Provider     |
 | Linux / QEMU      | native OS契約、署名Tool、更新・復旧、Wallet／Game fixture     | Developer Preview候補の限定受入            | Pixel対応、一般配布、本番鍵                |
 | Android APK       | Broker、Shell、固定Tool、Local AI、backup、Operatorの事前検証 | emulatorと所有Pixelの試験署名APKで限定合格 | RockstarOS image、SELinux最終形、正式署名  |
 | Pixel 10 OS image | 最初の物理RockstarOS対象                                      | sourceとbuild gateを設計・準備             | full build、flash、CTS/VTS、OTA、純正復旧  |

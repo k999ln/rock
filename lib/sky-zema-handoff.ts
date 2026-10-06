@@ -1,15 +1,45 @@
 import type { Job } from './operations';
-import { createSkyZemaEnvelope, isSkyToolId, normalizeSkyZemaHandoff, skyZemaLimits } from '../public-release/rockstaros/packages/sky-zema-core/src/handoff.js';
 
 export const SKY_ZEMA_HANDOFF_KEY = 'rockstaros.sky-zema-handoff.v1';
 export const SKY_ZEMA_JOB_EVENT = 'rockstaros:sky-zema-job';
-export const SKY_ZEMA_HANDOFF_TTL_MS = skyZemaLimits.privateSessionTtlMs;
+export const SKY_ZEMA_HANDOFF_TTL_MS = 10 * 60 * 1000;
 
-const MAX_REQUEST_LENGTH = skyZemaLimits.request;
+const MAX_REQUEST_LENGTH = 2000;
+export function skyRequestLimit(toolId?: string) {
+  return toolId === 'rockstar-amc' ? 8000 : MAX_REQUEST_LENGTH;
+}
+const TOOL_ID = /^[a-z0-9][a-z0-9:.-]{0,119}$/;
 
 type HandoffStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
-export type SkyZemaHandoff = ReturnType<typeof createSkyZemaEnvelope>;
+export type SkyZemaHandoff = {
+  version: 1;
+  id: string;
+  source: 'sky';
+  toolId: string;
+  request: string;
+  executionProvider: 'local-model';
+  createdAt: number;
+};
+
+function validHandoff(value: unknown): value is SkyZemaHandoff {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const handoff = value as Partial<SkyZemaHandoff>;
+  return (
+    handoff.version === 1 &&
+    handoff.source === 'sky' &&
+    typeof handoff.id === 'string' &&
+    /^[0-9a-f-]{36}$/.test(handoff.id) &&
+    typeof handoff.toolId === 'string' &&
+    TOOL_ID.test(handoff.toolId) &&
+    typeof handoff.request === 'string' &&
+    handoff.request.length <= skyRequestLimit(handoff.toolId) &&
+    (handoff.executionProvider === undefined ||
+      handoff.executionProvider === 'local-model') &&
+    typeof handoff.createdAt === 'number' &&
+    Number.isFinite(handoff.createdAt)
+  );
+}
 
 export function queueSkyZemaHandoff(
   toolId: string,
@@ -17,14 +47,22 @@ export function queueSkyZemaHandoff(
   storage: HandoffStorage = window.sessionStorage,
   now = Date.now(),
 ): SkyZemaHandoff {
-  if (!isSkyToolId(toolId))
+  if (!TOOL_ID.test(toolId))
     throw new Error('引き継ぐToolを確認してください。');
-  const handoff: SkyZemaHandoff = createSkyZemaEnvelope({
+  if (
+    toolId === 'rockstar-amc' &&
+    request.trim().length > skyRequestLimit(toolId)
+  )
+    throw new Error('AMCへの依頼は8,000文字以内にしてください。');
+  const handoff: SkyZemaHandoff = {
+    version: 1,
     id: crypto.randomUUID(),
+    source: 'sky',
     toolId,
-    request: request.trim().slice(0, MAX_REQUEST_LENGTH),
+    request: request.trim().slice(0, skyRequestLimit(toolId)),
+    executionProvider: 'local-model',
     createdAt: now,
-  });
+  };
   storage.setItem(SKY_ZEMA_HANDOFF_KEY, JSON.stringify(handoff));
   return handoff;
 }
@@ -36,16 +74,16 @@ export function consumeSkyZemaHandoff(
 ): SkyZemaHandoff | null {
   const raw = storage.getItem(SKY_ZEMA_HANDOFF_KEY);
   if (!raw) return null;
-  let value: SkyZemaHandoff;
+  let value: unknown;
   try {
-    value = normalizeSkyZemaHandoff(JSON.parse(raw));
+    value = JSON.parse(raw);
   } catch {
     storage.removeItem(SKY_ZEMA_HANDOFF_KEY);
     return null;
   }
   if (
-    !/^[0-9a-f-]{36}$/.test(value.id) ||
-    value.createdAt > now + skyZemaLimits.futureToleranceMs ||
+    !validHandoff(value) ||
+    value.createdAt > now + 30_000 ||
     now - value.createdAt > SKY_ZEMA_HANDOFF_TTL_MS
   ) {
     storage.removeItem(SKY_ZEMA_HANDOFF_KEY);

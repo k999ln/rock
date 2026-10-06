@@ -9,8 +9,8 @@ import {
   useState,
   type SubmitEvent,
 } from 'react';
-import missionData from '@/data/amc/mission-control.json';
-import projectData from '@/data/amc/project-status.json';
+import missionData from '@/data/mission-control.json';
+import projectData from '@/data/project-status.json';
 import {
   amcEffort,
   amcPrompt,
@@ -23,8 +23,6 @@ import {
 } from '@/lib/amc-tool';
 import type { WorkJob } from '@/lib/workflow';
 import styles from './amc-tool-runner.module.css';
-import AmcSkyLaunch, { skyStarterGoal } from './amc-sky-launch';
-import AmcCommandCenter from './amc-command-center';
 
 type Props = {
   initialText?: string;
@@ -71,7 +69,6 @@ class SaveError extends Error {
   }
 }
 type RecordAction =
-  | 'approve_plan'
   | 'start_task'
   | 'submit_result'
   | 'verify_task'
@@ -108,7 +105,6 @@ const statusLabels: Record<string, string> = {
   cancelled: '停止の記録あり',
 };
 const actionLabels: Record<RecordAction, string> = {
-  approve_plan: '範囲を確認して計画を承認',
   start_task: '着手を記録',
   submit_result: '成果を提出',
   verify_task: '別担当の検収を記録',
@@ -141,22 +137,19 @@ function TextList({ values }: { values: string[] }) {
 }
 
 function MissionBoard() {
-  const [squadId, setSquadId] = useState('M6');
-  const [taskId, setTaskId] = useState('MINI06');
+  const [squadId, setSquadId] = useState('O2');
+  const [taskId, setTaskId] = useState('AI04');
   const inputId = useId();
-  const [statusFilter, setStatusFilter] = useState('all');
   const squad =
     missionData.squads.find((item) => item.id === squadId) ??
     missionData.squads[0];
+  const task = taskIndex.get(taskId);
+  const plan = plans.get(taskId);
   const ownTasks = squad.taskIds.flatMap((id) => taskIndex.get(id) ?? []);
-  const visibleTasks = ownTasks.filter((item) => statusFilter === 'all' || item.status === statusFilter);
-  const visibleId = visibleTasks.some((item) => item.id === taskId) ? taskId : visibleTasks[0]?.id;
-  const task = visibleId ? taskIndex.get(visibleId) : undefined;
-  const plan = visibleId ? plans.get(visibleId) : undefined;
-  const children = tasks.filter((item) => item.parentTaskId === visibleId);
+  const children = tasks.filter((item) => item.parentTaskId === taskId);
   const holds = missionData.executionHolds.filter(
     (hold) =>
-      (!!visibleId && hold.taskIds.includes(visibleId)) ||
+      hold.taskIds.includes(taskId) ||
       (!!task?.parentTaskId && hold.taskIds.includes(task.parentTaskId)),
   );
   const currentTasks = ownTasks.filter(
@@ -169,7 +162,6 @@ function MissionBoard() {
   function chooseTask(id: string) {
     const assignment = assignments.get(id);
     if (!assignment || !taskIndex.has(id)) return;
-    setStatusFilter('all');
     setSquadId(assignment.primarySquad);
     setTaskId(id);
   }
@@ -187,7 +179,7 @@ function MissionBoard() {
     );
   }
   return (
-    <section aria-label="参照データの32部隊ボード">
+    <section aria-label="正本の32部隊ボード">
       <div className={styles.sectionHeading}>
         <div>
           <p className={styles.eyebrow}>MISSION CONTROL</p>
@@ -196,10 +188,9 @@ function MissionBoard() {
         <span className={styles.badge}>5師団・32部隊</span>
       </div>
       <p className={styles.muted}>
-        {missionData.updatedAt} 保存時点の元作業コピーから取り込んだ参照データ ·
+        {missionData.updatedAt} 保存時点の正本 ·
         読み取り専用・自動同期なし。本人のGoal記録とは別です。
       </p>
-      <p className={styles.muted}>{tasks.length}登録レコード / {tasks.filter((item) => !tasks.some((child) => child.parentTaskId === item.id)).length}実行単位 / {plans.size}詳細計画。親子の二重計上を除いています。</p>
       <div className={styles.divisions}>
         {missionData.divisions.map((division) => (
           <section key={division.id}>
@@ -251,8 +242,6 @@ function MissionBoard() {
             {currentTasks.filter((item) => item.status === 'done').length}
             件に完了記録。親・旧版・公開説明を除外。製品完成率ではありません。
           </dd>
-          <dt>主担当</dt><dd>{squad.primaryOwner}</dd>
-          <dt>次のGate</dt><dd>{squad.acceptanceGate}</dd>
           <dt>次の仕事</dt>
           <dd>{taskLinks(squad.nextTaskIds)}</dd>
         </dl>
@@ -277,22 +266,15 @@ function MissionBoard() {
         </details>
       </section>
       <section className={styles.boardDetail}>
-        <label className={styles.label} htmlFor={`${inputId}-status`}>タスク状態で絞り込む</label>
-        <select id={`${inputId}-status`} value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-          <option value="all">すべての状態</option><option value="planned">未着手</option><option value="in_progress">進行中</option><option value="blocked">明示停止</option><option value="done">完了記録あり</option>
-        </select>
-        <p className={styles.muted}>{visibleTasks.length}件 / 主担当{ownTasks.length}件。状態と成熟段階は別です。</p>
         <label className={styles.label} htmlFor={inputId}>
           担当タスク
         </label>
         <select
           id={inputId}
-          value={visibleId ?? ''}
-          disabled={!visibleTasks.length}
-          onChange={(event) => setTaskId(event.target.value)}
+          value={taskId}
+          onChange={(event) => chooseTask(event.target.value)}
         >
-          {!visibleTasks.length && <option value="">この状態のタスクはありません</option>}
-          {visibleTasks.map((item) => (
+          {ownTasks.map((item) => (
             <option key={item.id} value={item.id}>
               {item.id} · {statusLabels[item.status]} · {item.title}
             </option>
@@ -416,9 +398,6 @@ function MissionBoard() {
           </div>
         )}
       </section>
-      <details><summary>関連・参考タスク（主担当の集計には含めない）</summary>
-        {squad.relatedTasks.length ? <ul>{squad.relatedTasks.map((item) => <li key={item.taskId}>{taskLinks([item.taskId])}<p>{item.relation}</p></li>)}</ul> : <p>なし</p>}
-      </details>
     </section>
   );
 }
@@ -558,11 +537,10 @@ function ManualRecord({
   const task = goal.tasks.find((item) => item.id === taskId);
   const summary = amcSummary(goal);
   const actions: RecordAction[] = [];
-  if (goal.state === 'draft' && goal.skyBrief) actions.push('approve_plan');
   if (task && goal.state !== 'accepted' && goal.state !== 'draft') {
-    if (!goal.skyBrief && summary.readyTaskIds.includes(task.id)) actions.push('start_task');
-    if (!goal.skyBrief && task.status === 'running') actions.push('submit_result');
-    if (!goal.skyBrief && task.status === 'submitted') actions.push('verify_task');
+    if (summary.readyTaskIds.includes(task.id)) actions.push('start_task');
+    if (task.status === 'running') actions.push('submit_result');
+    if (task.status === 'submitted') actions.push('verify_task');
     if (['pending', 'failed'].includes(task.status)) actions.push('block_task');
     if (
       goal.state === 'active' &&
@@ -623,7 +601,6 @@ function ManualRecord({
     'accept_goal',
   ].includes(action);
   const needsNote = [
-    'approve_plan',
     'submit_result',
     'block_task',
     'resume_task',
@@ -682,12 +659,6 @@ function ManualRecord({
     if (action === 'submit_result') {
       record.outcome = outcome === 'succeeded' ? 'succeeded' : 'failed';
       record.deliverables = lines(deliverables);
-    }
-    if (action === 'approve_plan') {
-      if (!goalConfirmed) { setError('計画の範囲と未検収の条件を確認してください。'); return; }
-      record.scopeConfirmed = true;
-      record.coverageStatement = note.trim();
-      record.acceptanceCriteria = goal.overallAcceptance.criteria;
     }
     if (reviewing) {
       record.accepted = accepted;
@@ -882,10 +853,6 @@ function ManualRecord({
               )}
             </>
           )}
-          {action === 'approve_plan' && <label className={styles.check}>
-            <input type="checkbox" required checked={goalConfirmed} onChange={(event) => setGoalConfirmed(event.target.checked)} />
-            36作業・依存・未決事項・Goal全体の条件を確認しました。計画の承認であり、作業の合格・公開・課金の承認ではありません。
-          </label>}
           {action === 'pause' && (
             <p className={styles.warning}>
               これは管理上の停止です。外部で動いているAIや作業は停止できません。
@@ -912,14 +879,13 @@ export function AmcToolRunner({
   onDirtyChange,
   executionDisabled = false,
 }: Props) {
-  const [surface, setSurface] = useState<'sky' | 'board' | 'goals'>(
-    initialText.trim() ? 'goals' : 'sky',
+  const [surface, setSurface] = useState<'board' | 'goals'>(
+    initialText.trim() ? 'goals' : 'board',
   );
   const [mode, setMode] = useState<'request' | 'review' | 'saved'>(
     initialText.trim() ? 'review' : 'request',
   );
   const [request, setRequest] = useState(initialText);
-  const [skyFocus, setSkyFocus] = useState({ id: 'S0-01', revision: 0 });
   const [goalText, setGoalText] = useState(initialText);
   const [intent, setIntent] = useState('');
   const [jobs, setJobs] = useState<WorkJob[]>([]);
@@ -969,7 +935,6 @@ export function AmcToolRunner({
         };
         if (controller.signal.aborted) return;
         setNeedsSignin(response.status === 401);
-        if (!response.ok) { setSelectedRecord(null); setJobs([]); }
         if (!response.ok)
           throw new Error(
             payload.error ||
@@ -991,16 +956,6 @@ export function AmcToolRunner({
     return () => controller.abort();
   }, [refresh]);
   useEffect(() => {
-    const invalidate = () => {
-      if (document.visibilityState === 'hidden') return;
-      setSelectedRecord(null); setJobs([]); setLoading(true);
-      setRefresh(value=>value+1);
-    };
-    window.addEventListener('focus',invalidate);
-    document.addEventListener('visibilitychange',invalidate);
-    return ()=>{window.removeEventListener('focus',invalidate);document.removeEventListener('visibilitychange',invalidate);};
-  }, []);
-  useEffect(() => {
     if (!selectedId) return;
     const controller = new AbortController();
     void (async () => {
@@ -1019,7 +974,6 @@ export function AmcToolRunner({
         };
         if (controller.signal.aborted) return;
         if (response.status === 401) setNeedsSignin(true);
-        if (!response.ok || !payload.job?.amcGoal) setSelectedRecord(null);
         if (!response.ok || !payload.job?.amcGoal)
           throw new Error(payload.error || 'このGoalを読み込めませんでした。');
         const saved = {
@@ -1257,36 +1211,23 @@ export function AmcToolRunner({
     <div className={styles.root}>
       <header className={styles.header}>
         <div>
-          <p className={styles.eyebrow}>ZEMA / AMC</p>
+          <p className={styles.eyebrow}>SKY TOOL</p>
           <h1>
-            AMC <span>Goalを達成する、部隊の司令部</span>
+            AMC <span>部隊とGoalの管理</span>
           </h1>
         </div>
         <button type="button" onClick={beginNew} disabled={busy}>
           新しい依頼
         </button>
       </header>
-      <AmcCommandCenter
-        goal={surface === 'sky' ? (!needsSignin && !detailLoading && goal?.skyBrief ? goal : skyStarterGoal) : surface === 'goals' ? (mode === 'saved' && !needsSignin && !detailLoading ? goal : preview ?? undefined) : undefined}
-        saved={Boolean(!needsSignin && !detailLoading && goal && (surface === 'sky' ? goal.skyBrief : surface === 'goals' && mode === 'saved'))}
-        onTask={(id) => {
-          if (goal && !needsSignin && !detailLoading) { setTaskId(id); setSurface('goals'); setMode('saved'); }
-          else {
-            setSkyFocus(previous => ({ id, revision: previous.revision + 1 }));
-            setSurface('sky');
-            requestAnimationFrame(() => document.getElementById(`${uid}-sky-plan`)?.scrollIntoView({ block: 'start' }));
-          }
-        }}
-      />
-      <details className={styles.manual}><summary>接続と実行の状態</summary><p className={styles.boundary}>{boundary}</p></details>
+      <p className={styles.boundary}>{boundary}</p>
       <nav className={styles.tabs} aria-label="AMCの画面">
-        <button type="button" aria-pressed={surface === 'sky'} onClick={() => setSurface('sky')}>Skyローンチ</button>
         <button
           type="button"
           aria-pressed={surface === 'board'}
           onClick={() => setSurface('board')}
         >
-          全体32部隊（参考）
+          部隊・進捗
         </button>
         <button
           type="button"
@@ -1326,7 +1267,7 @@ export function AmcToolRunner({
       )}
       {needsSignin && (
         <p className={styles.warning}>
-          <a href="/signin-with-chatgpt?return_to=/zema/amc" target="_top">
+          <a href="/signin-with-chatgpt?return_to=/amc" target="_top">
             本人用のGoal管理にサインイン
           </a>
           {dirty &&
@@ -1344,12 +1285,6 @@ export function AmcToolRunner({
           現在は保存・記録を変更できません。部隊の閲覧と書き出しは利用できます。
         </p>
       )}
-      <div hidden={surface !== 'sky'} id={`${uid}-sky-plan`}>
-        <AmcSkyLaunch key={skyFocus.revision} initialTaskId={skyFocus.id} savedGoal={!needsSignin && !detailLoading ? selectedJob?.amcGoal : undefined} disabled={disabled || needsSignin} onSave={(starter) => {
-          if (dirty && !window.confirm('未保存の入力を破棄して、Sky専用Goalを保存しますか？')) return;
-          void perform({ method: 'POST', body: { id: crypto.randomUUID(), importGoal: starter } });
-        }} />
-      </div>
       <div hidden={surface !== 'board'}>
         <MissionBoard />
       </div>
@@ -1513,7 +1448,6 @@ export function AmcToolRunner({
               </div>
             </div>
             {goal.requestBrief && <p>{goal.requestBrief.intent}</p>}
-            {goal.skyBrief && <><p>{goal.skyBrief.intent}</p><p className={styles.warning}>Sky専用計画 v{goal.skyBrief.planRevision ?? '原資料参照'}。共有仕様と他担当との照合は手動です。自動監視・指示失効は未接続。保存・承認はローンチ合格ではありません。</p></>}
             <div className={styles.metrics}>
               <div>
                 <strong>
@@ -1575,7 +1509,7 @@ export function AmcToolRunner({
                 <li>
                   このプロジェクトのターミナルで、保存したファイルを指定して実行します。
                   <pre className={styles.code}>
-                    npm run amc:codex -- run --goal &lt;保存したGoal
+                    npm run mission:codex -- run --goal &lt;保存したGoal
                     JSONのパス&gt; --allow-codex-upload
                   </pre>
                 </li>

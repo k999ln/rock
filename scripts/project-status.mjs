@@ -66,17 +66,27 @@ const inProgress = status.tasks.filter(
   (task) => task.status === 'in_progress',
 ).length;
 const blocked = status.tasks.filter((task) => task.status === 'blocked').length;
-const overview = `${status.tasks.length} task中${done} done・${inProgress} in progress・${planned} planned${blocked ? `・${blocked} blocked` : ''}`;
-const overviewEnglish = `${status.tasks.length} tasks: ${done} done, ${inProgress} in progress, ${planned} planned${blocked ? `, ${blocked} blocked` : ''}`;
+const parentIds = new Set(
+  status.tasks
+    .filter((task) => task.parentTaskId)
+    .map((task) => task.parentTaskId),
+);
+const childCount = status.tasks.filter((task) => task.parentTaskId).length;
+const leafCount = status.tasks.length - parentIds.size;
+const hierarchy = parentIds.size
+  ? `（親${parentIds.size}・子${childCount}・独立${leafCount - childCount}。実行単位は親を除く${leafCount}件）`
+  : '';
+const overview = `${status.tasks.length}登録task${hierarchy}中${done} done・${inProgress} in progress・${planned} planned${blocked ? `・${blocked} blocked` : ''}`;
+const overviewEnglish = `${status.tasks.length} task records${parentIds.size ? ` (${parentIds.size} parents, ${childCount} children, ${leafCount - childCount} standalone; ${leafCount} execution units excluding parents)` : ''}: ${done} done, ${inProgress} in progress, ${planned} planned${blocked ? `, ${blocked} blocked` : ''}`;
 const block = [
   '<!-- project-status:start -->',
-  `最終更新: ${status.updatedAt} / ${status.milestone} / 完了 ${done}/${status.tasks.length}件`,
+  `最終更新: ${status.updatedAt} / ${status.milestone} / 完了記録 ${done}/${status.tasks.length}件${hierarchy}`,
   '',
   '| ID | 作業 | 状態 | 根拠 |',
   '| --- | --- | --- | --- |',
   ...status.tasks.map(
     (task) =>
-      `| ${task.id} | ${cell(task.title)} | ${labels[task.status]}${task.reason ? `: ${cell(task.reason)}` : ''} | ${task.evidence.map((file) => `[記録](${file})`).join(' · ') || '—'} |`,
+      `| ${task.id} | ${task.parentTaskId ? `子作業（${task.parentTaskId}）: ` : parentIds.has(task.id) ? '親タスク: ' : ''}${cell(task.title)} | ${labels[task.status]}${task.reason ? `: ${cell(task.reason)}` : ''} | ${task.evidence.map((file) => `[記録](${file})`).join(' · ') || '—'} |`,
   ),
   '',
   ...renderPhaseGates(phaseGates),

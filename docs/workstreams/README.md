@@ -2,7 +2,7 @@
 
 更新日: 2026-09-19
 
-このディレクトリは、既存の設計書を移動せず、作業分野ごとの入口を提供する。確定要望の正本は [製品ベース](../product-baseline.md)、進捗の正本は [data/project-status.json](../../data/project-status.json) であり、ここでは内容を置き換えない。
+このディレクトリは、既存の設計書を移動せず、作業分野ごとの入口を提供する。確定要望の正本は [製品ベース](../product-baseline.md)、task進捗の正本は [data/project-status.json](../../data/project-status.json)、部隊のGoal・段階・ルール・依存・次行動の正本は [avokado Mission Control](../mission-control.md) と [data/mission-control.json](../../data/mission-control.json) であり、ここでは内容を置き換えない。
 
 製品や配備単位から探す場合は[プロジェクト別ガイド](../../PROJECTS.md)を開く。
 
@@ -10,9 +10,10 @@
 
 1. `git status --short --branch` でbranch、競合、未保存差分を確認する。
 2. [現在の開発状態](../current-state-20260911.md) と [製品ベース](../product-baseline.md) を読む。
-3. [進捗JSON](../../data/project-status.json) から担当するtask IDと依存gateを選ぶ。
-4. 下表の作業ストリームを一つ開き、対象、非対象、完了条件、検証コマンドを確認する。
-5. 完了時に `data/project-status.json`、`project.md`、必要な設計書と証拠を同期する。
+3. [Mission Control](../mission-control.md) のtaskAssignmentsで一意の担当を確認し、対象範囲・残課題とtaskPlansの入力、手順、成果物、合格条件を読む。参考・旧版taskを担当実績に加算しない。
+4. [進捗JSON](../../data/project-status.json) から対応するtask IDと依存gateを選ぶ。
+5. 下表の作業ストリームを一つ開き、対象、非対象、完了条件、検証コマンドを確認する。
+6. 完了時に `data/mission-control.json`、`data/project-status.json`、`project.md`、必要な設計書と証拠を同期する。
 
 ## 状態の読み方
 
@@ -22,7 +23,7 @@
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
 <!-- project-overview:start -->
-現在の機械可読進捗は161 task中104 done、41 in progress、15 planned、1 blocked。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は376登録task（親32、子192、独立152。実行単位は親を除く344件）中107 done、31 in progress、237 planned、1 blocked。件数は作業量や製品完成率を表さない。
 <!-- project-overview:end -->
 
 ## 作業ストリーム

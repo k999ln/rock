@@ -248,20 +248,6 @@
   border-radius: 6px;
   font-variant-numeric: tabular-nums;
 }
-.cells.skyCells {
-  grid-template-columns: 1fr;
-  max-width: none;
-}
-.skyCells button {
-  padding: 10px;
-  white-space: normal;
-  text-align: left;
-}
-.skyCells button span {
-  display: inline-block;
-  min-width: 30px;
-  opacity: 0.65;
-}
 .cells button[aria-pressed='true'],
 .taskList button[aria-pressed='true'] {
   border-color: var(--amc-green);
@@ -573,13 +559,3 @@
     border-color: #80534b;
   }
 }
-
-/* AMC follows the Sky/Zema neutral dark palette in both OS color modes. */
-.root {
-  --amc-bg: #111110; --amc-soft: #191918; --amc-text: #edede8;
-  --amc-muted: #a6a69b; --amc-line: #343431; --amc-green: #d3d3c8;
-  --amc-selected: #30302b; --amc-warn-bg: #30291e; --amc-warn-text: #e7c987;
-  margin-top: 24px; color-scheme: dark;
-}
-.root .primary { color: #171715; }
-.error { background: #3b2422; color: #f2b1a6; border-color: #80534b; }

@@ -1,14 +1,18 @@
-import { isSkyToolId, skyZemaLimits } from '../public-release/rockstaros/packages/sky-zema-core/src/handoff.js';
-import { isTextModelProvider, type TextModelProviderId } from './llm-providers.ts';
+import {
+  isTextModelProvider,
+  type TextModelProviderId,
+} from './llm-providers.ts';
+import { skyRequestLimit } from './sky-zema-handoff.ts';
 
 export const ZEMA_CHAT_SESSION_KEY = 'rockstaros.zema-chat-sessions.v1';
-export const ZEMA_CHAT_SESSION_TTL_MS = skyZemaLimits.privateSessionTtlMs;
+export const ZEMA_CHAT_SESSION_TTL_MS = 10 * 60 * 1000;
 
 const MAX_SESSIONS = 8;
-const MAX_MESSAGES = skyZemaLimits.messages;
-const MAX_MESSAGE_LENGTH = skyZemaLimits.message;
+const MAX_MESSAGES = 24;
+const MAX_MESSAGE_LENGTH = 4_000;
 const MAX_RESULT_LENGTH = 16_000;
 const ID = /^[0-9a-f-]{36}$/;
+const TOOL_ID = /^[a-z0-9][a-z0-9:.-]{0,119}$/;
 
 type SessionStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
@@ -46,12 +50,13 @@ function validMessage(value: unknown): value is ZemaChatMessage {
     message.id.length <= 100 &&
     (message.side === 'me' || message.side === 'sky') &&
     typeof message.text === 'string' &&
-    message.text.length <= MAX_MESSAGE_LENGTH &&
+    message.text.length <=
+      (message.tool === 'rockstar-amc' ? 8000 : MAX_MESSAGE_LENGTH) &&
     (message.tool === undefined ||
-      (typeof message.tool === 'string' && isSkyToolId(message.tool))) &&
+      (typeof message.tool === 'string' && TOOL_ID.test(message.tool))) &&
     (message.suggestedTool === undefined ||
       (typeof message.suggestedTool === 'string' &&
-        isSkyToolId(message.suggestedTool)))
+        TOOL_ID.test(message.suggestedTool)))
   );
 }
 
@@ -65,10 +70,10 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
     typeof session.id === 'string' &&
     ID.test(session.id) &&
     typeof session.toolId === 'string' &&
-    isSkyToolId(session.toolId) &&
+    TOOL_ID.test(session.toolId) &&
     typeof session.createdAt === 'number' &&
     Number.isFinite(session.createdAt) &&
-    session.createdAt <= now + skyZemaLimits.futureToleranceMs &&
+    session.createdAt <= now + 30_000 &&
     now - session.createdAt <= ZEMA_CHAT_SESSION_TTL_MS &&
     Array.isArray(session.messages) &&
     session.messages.length <= MAX_MESSAGES &&
@@ -78,13 +83,16 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
         typeof request?.id === 'string' &&
         request.id.length <= 100 &&
         typeof request.text === 'string' &&
-        request.text.length <= skyZemaLimits.request &&
+        request.text.length <= skyRequestLimit(request.toolId) &&
         typeof request.toolId === 'string' &&
-        isSkyToolId(request.toolId) &&
-        (request.executionProvider === undefined || request.executionProvider === 'local-model') &&
-        (request.plannerProvider === undefined || isTextModelProvider(request.plannerProvider)) &&
+        TOOL_ID.test(request.toolId) &&
+        (request.executionProvider === undefined ||
+          request.executionProvider === 'local-model') &&
+        (request.plannerProvider === undefined ||
+          isTextModelProvider(request.plannerProvider)) &&
         (request.plannerModel === undefined ||
-          (typeof request.plannerModel === 'string' && request.plannerModel.length <= 120)))) &&
+          (typeof request.plannerModel === 'string' &&
+            request.plannerModel.length <= 120)))) &&
     (session.workflowStatus === 'ready' ||
       session.workflowStatus === 'running' ||
       session.workflowStatus === 'completed' ||
@@ -124,27 +132,43 @@ export function saveZemaChatSession(
   storage: SessionStorage = window.sessionStorage,
   now = Date.now(),
 ): ZemaChatSession[] {
+  if (
+    session.activeRequest?.toolId === 'rockstar-amc' &&
+    session.activeRequest.text.length > 8000
+  )
+    throw new Error('AMCへの依頼は8,000文字以内にしてください。');
   const bounded: ZemaChatSession = {
     ...session,
     messages: session.messages.slice(-MAX_MESSAGES).map((message) => ({
       ...message,
-      text: message.text.slice(0, MAX_MESSAGE_LENGTH),
+      text: message.text.slice(
+        0,
+        message.tool === 'rockstar-amc' ? 8000 : MAX_MESSAGE_LENGTH,
+      ),
     })),
     activeRequest: session.activeRequest
       ? {
           ...session.activeRequest,
-          text: session.activeRequest.text.slice(0, skyZemaLimits.request),
+          text: session.activeRequest.text.slice(
+            0,
+            skyRequestLimit(session.activeRequest.toolId),
+          ),
         }
       : null,
     outcome: session.outcome
-      ? { ...session.outcome, text: session.outcome.text.slice(0, MAX_RESULT_LENGTH) }
+      ? {
+          ...session.outcome,
+          text: session.outcome.text.slice(0, MAX_RESULT_LENGTH),
+        }
       : null,
   };
   if (!validSession(bounded, now))
     throw new Error('Zemaのチャット状態を確認してください。');
   const sessions = [
     bounded,
-    ...readZemaChatSessions(storage, now).filter((item) => item.id !== bounded.id),
+    ...readZemaChatSessions(storage, now).filter(
+      (item) => item.id !== bounded.id,
+    ),
   ].slice(0, MAX_SESSIONS);
   storage.setItem(ZEMA_CHAT_SESSION_KEY, JSON.stringify(sessions));
   return sessions;

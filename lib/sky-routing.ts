@@ -35,11 +35,16 @@ export const skyRoles: readonly SkyRole[] = [
 export function routeSkyRequest(request: string): SkyRole | null {
   const value = request.trim().toLowerCase();
   if (!value) return null;
-  if (/\bamc\b|部隊|goal.*(?:管理|計画|進捗)|(?:管理|計画|進捗).*goal|タスク.*進捗/.test(value)) return skyRoles.find((role) => role.toolId === 'rockstar-amc') ?? null;
+  if (
+    /\bamc\b|部隊|goal.*(?:管理|計画|進捗)|(?:管理|計画|進捗).*goal|タスク.*進捗/.test(
+      value,
+    )
+  )
+    return skyRoles[12];
   if (/csv|表計算|列名|列順|重複行|文字コード/.test(value)) return skyRoles[0];
   if (/メルカリ|出品|不用品|中古|販売収益|物販/.test(value)) return skyRoles[1];
   if (
-    /ip studio|ip制作|\bip\b.*(?:音声|電話|会話)|livekit|音声エージェント|キャラクター|スキン|roblox|gta|ゲーム導入|higgsfield|make|参考画像|ゲーム版/.test(
+    /ip studio|ip制作|キャラクター|スキン|roblox|gta|ゲーム導入|higgsfield|make|参考画像|ゲーム版/.test(
       value,
     )
   )
@@ -59,6 +64,7 @@ export function routeSkyRequest(request: string): SkyRole | null {
   if (/納品|成果物|レビュー/.test(value)) return skyRoles[7];
   if (/案件|応募|ココナラ|提案/.test(value)) return skyRoles[4];
   if (/出典|引用|url|リンク/.test(value)) return skyRoles[6];
-  if (/記事|無料版|note|原稿|文章|テキスト|執筆/.test(value)) return skyRoles[5];
+  if (/記事|無料版|note|原稿|文章|テキスト|執筆/.test(value))
+    return skyRoles[5];
   return null;
 }

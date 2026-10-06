@@ -13,7 +13,7 @@
 
 # Sky — 自動化を選び、許可し、動かし、止め、結果を受け取る場所
 
-最終更新: 2026-09-19
+最終更新: 2026-09-27
 
 ## Skyとは
 
@@ -41,13 +41,15 @@ flowchart LR
 
 ## Zemaとの連携
 
-SkyはToolを探して接続する場所、Zemaは選択後の依頼、実行、進捗、結果、履歴を扱う場所とする。Skyの自然文受付で担当が決まると、Tool IDと依頼をZemaへ引き継ぐ。依頼本文はURLやD1へ保存せず、同一tabのsession storageへ最大2,000文字・10分だけ置き、Zemaが対象Toolとして一度受け取ると削除する。これにより法務、特許、原稿等の依頼本文を新しいserver保存対象へ広げない。
+SkyはToolを探して接続する場所、Zemaは選択後の依頼、実行、進捗、結果、履歴を扱う場所とする。Skyの自然文受付で担当が決まると、Tool IDと依頼をZemaへ引き継ぐ。引継ぎだけでは依頼本文をURLやD1へ保存せず、同一tabのsession storageへ最大2,000文字（AMCだけ8,000文字）・10分だけ置き、Zemaが対象Toolとして一度受け取ると削除する。これにより法務、特許、原稿等の依頼本文を新しいserver保存対象へ広げない。AMCではその後、本人がGoal・意図を確認して保存した場合だけ、依頼原文を含むGoalを本人別D1のWorkJobへ保存する。
 
 Zema内で実行したjobは、受付、開始、完了、失敗をbrowser eventで即時表示し、本人別D1を3秒または15秒で再照合する。browser eventだけを完了証拠にはしない。CSV、Mercari、Market等の専用画面を持つToolはZemaに担当カードを表示し、専用画面で入力・確認した後、保存済みjob／receiptの進捗をZemaへ戻して確認する。
 
+AMCは専用画面`/amc`に加えてZemaのカード内でも直接使う。32部隊の正本snapshotは読み取り専用、依頼から作るGoalは別の本人用記録である。AMCは会話LLMを呼ばず、計画の保存や着手記録をAIの起動・仕事完成と表示しない。
+
 ## 現在Skyにあるツール
 
-### Web / PCで現在使える12件
+### Web / PCで現在使える13件
 
 | ツール                            | 実行場所                                        | 現在できること                                                                           | 明示的な限界                                                                                               |
 | --------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -62,10 +64,12 @@ Zema内で実行したjobは、受付、開始、完了、失敗をbrowser event
 | 納品記録の照合                    | PC / Python                                     | 契約・成果物・制作記録・別レビューの不一致を探す                                         | 品質や秘密情報の不在を保証しない                                                                           |
 | 法務受付                          | Webブラウザ                                     | 相談内容を整理し、公式情報と無料窓口を案内                                               | 法的助言・期限・受任を保証せず、自動連絡しない                                                             |
 | 特許出願アシスタント              | Webブラウザ                                     | 発明情報から調査候補と出願書類ドラフトを作る                                             | 特許性・登録を保証せず、提出・支払を自動化しない                                                           |
+| Jev品質評価                       | Sky Cloud / 明示同意後のremote evaluator         | 閉じた評価基準に対するEvaluation Receiptを作る                                          | provider設定が必要。評価は助言であり、権限・Tool成功・仕事完了を決めない                                    |
+| AMC — 部隊とGoalの管理             | Webブラウザ / 本人別D1                           | 32部隊を閲覧し、依頼・Goal・意図から共通計画を作り、承認・進捗・検収を手動記録する       | LLM・AI実作業・自動送信は未接続。正本32部隊と本人用Goalを別管理し、自己申告を外部実証にしない              |
 
-この12件は `lib/catalog.ts` で `ready` とされる。ここでの`ready`はSkyの商品UIと安全な縮退経路が利用可能というcatalog状態であり、外部credential設定済み、provider接続確認済み、実機OS合格、本番合格を意味しない。法務受付と特許出願アシスタントはOpenAI未設定時に503を返し、決定論的な案内・draft部分だけを継続する。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは互換商品名として残る公開ライブ市場の読取専用Toolで、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。Jev品質評価は明示同意後のremote evaluatorとして評価Receiptを返すが、権限判定や仕事完了を決めない。
+この13件は `lib/catalog.ts` で `ready` とされる。導入候補22件と合わせてcatalogは35件である。ここでの`ready`はSkyの商品UIと安全な縮退経路が利用可能というcatalog状態であり、外部credential設定済み、provider接続確認済み、実機OS合格、本番合格を意味しない。法務受付と特許出願アシスタントはOpenAI未設定時に503を返し、決定論的な案内・draft部分だけを継続する。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは互換商品名として残る公開ライブ市場の読取専用Toolで、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。Jev品質評価は明示同意後のremote evaluatorとして評価Receiptを返すが、権限判定や仕事完了を決めない。
 
-Jev ecosystemの他候補はroute、同意UI、rubric、receipt、credential、provider受入が揃うまで、この12件と`ready`件数には含めない。
+Jev ecosystemの他候補はroute、同意UI、rubric、receipt、credential、provider受入が揃うまで、この13件と`ready`件数には含めない。
 
 ### Skyに表示する導入候補22件
 

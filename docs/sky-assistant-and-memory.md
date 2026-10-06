@@ -1,20 +1,21 @@
 # Sky Assistant / Sky Memory設計
 
-最終更新: 2026-09-19
+最終更新: 2026-09-27
 
 ## 利用者に見せる一つの入口
 
-Skyはアプリ一覧ではなく、仕事を受け付ける窓口にする。利用者は「Instagramの広告からDM受注まで進めて」のように依頼し、Skyが実行可能な役へ振り分ける。現在は次の13役を `lib/sky-routing.ts` の固定規則で選び、知らない依頼を勝手に実行しない。
+Skyはアプリ一覧ではなく、仕事を受け付ける窓口にする。利用者は「Instagramの広告からDM受注まで進めて」のように依頼し、Skyが対応する役へ振り分ける。現在は既存12会話役と、LLMを呼ばないAMC計画管理1役の計13役を `lib/sky-routing.ts` の固定規則で選び、知らない依頼を勝手に実行しない。会話役はToolの実行権限を意味せず、接続待ちの役も実行済みとは扱わない。
 
 ```text
 利用者の依頼
     │
     ▼
-Sky受付 ── 判断できない ──> 12役から本人が選択
+Sky受付 ── 判断できない ──> 13役から本人が選択
     │
     ├─ CSV自動化役 ──> CSV整形・検査・納品（Sky Cloud）
     ├─ 販売収益化役 ──> メルカリ収益スターター（ブラウザ）
     ├─ ブランド運営役 ──> Fashion Brand Ops（PC / MCP、38操作）
+    ├─ IP・SNS運用役 ──> IP Studio（候補・本体の接続待ち）
     ├─ 案件判断役 ──> ココナラ案件チェック（ブラウザ）
     ├─ 記事編集役 ──> 記事の無料版メーカー（ブラウザ）
     ├─ 出典整理役 ──> 出典整理ツール（ブラウザ）
@@ -22,10 +23,13 @@ Sky受付 ── 判断できない ──> 12役から本人が選択
     ├─ 契約管理役 ──> Rockstar Ledger（接続したPC）
     ├─ 法務受付 ──> 公式案内・任意のOpenAI接続（ブラウザ）
     ├─ 特許出願担当 ──> draft・明示同意後のOpenAI接続（ブラウザ）
-    └─ 品質評価役 ──> 明示同意後のJev評価（Sky Cloud）
+    ├─ 品質評価役 ──> 明示同意後のJev評価（Sky Cloud）
+    └─ Goal・部隊管理役 ──> AMC（計画・手動記録、LLMを呼ばない）
 ```
 
 現在の受付はLLMエージェントではなく、説明可能なキーワード振り分けである。ただしブランド運営役の内部では、目標からCampaign Autopilot、Sales Concierge、Production Cockpitを組み立てる。自由会話型の複数役plannerは未実装であり、LLMを追加する場合も、実行権限・送信先・料金の確定は決定的なPolicy Brokerとapproval gateへ残す。
+
+AMCはZemaの会話カード内で32部隊の保存時点の記録を読み、依頼・Goal・意図から共通の4役割7工程を準備する。本人の確認後だけ、既存WorkJobの認証・ユーザー別D1・revision競合判定を通してGoalを保存する。手動の着手・成果・検収記録はAI実行や外部検証の証明ではなく、元の32部隊の正本も書き換えない。AMCへの依頼は8,000文字まで保持し、会話LLMへの送信・自動実行はしない。他の役の2,000文字の依頼上限と、外部送信時の同意境界は維持する。
 
 ## アプリを毎回入れない仕組み
 
@@ -64,13 +68,11 @@ Sky Memory
 
 ## 実装順
 
-1. 現在: X型Timeline、Sky受付、12役への決定的な振り分け、送信または役ボタンから既存の実行画面を開く接続。ブランド運営役は41 MCP操作とapproval gateへ接続する。
+1. 現在: X型Timeline、Sky受付、13役への決定的な振り分け、送信または役ボタンから既存の実行画面を開く接続。既存12会話役にAMC計画管理役を加え、AMCはZema内で計画・手動記録を扱う。ブランド運営役は41 MCP操作とapproval gateへ接続する。
 2. 次: `sky_profiles`と`sky_context_grants`、プロフィール編集、roleごとの共有確認、削除・export。
 3. 次: OAuth接続保管庫、MCP preflight、tool capabilityとContext Envelopeの照合。
 4. 次: 会話履歴から複数役を組み立てるplanner。ただし外部送信・購入・公開・納品は本人確認を維持。
 
 ## 完了と呼ばない範囲
 
-Sky Memoryの永続保存、Sky Cloud・提供者OAuth、自由会話型planner、複数役の自動連鎖はまだ実装していない。現在の画面で動くのは12役への決定的な入口、既存ブラウザツール、PC上のSky MCP ConnectorとFashion Brand Opsへの接続までである。job、履歴、設定の保存をcanonical Sky Memory実装済みと扱わない。Fashion Brand Opsの実Provider接続・実投稿・実請求には別途credentialと個別承認が必要になる。
-
-AMCのGoal・部隊管理役は計画保存と手動記録を担当します。WebからのAI自律実行は未接続です。
+Sky Memoryの永続保存、Sky Cloud・提供者OAuth、自由会話型planner、複数役の自動連鎖はまだ実装していない。現在の画面で動くのは13役への決定的な入口、既存ブラウザツール、PC上のSky MCP ConnectorとFashion Brand Opsへの接続、AMCの計画・手動記録までである。AMCのGoal保存をAIによる作業完成へ、job、履歴、設定の保存をcanonical Sky Memory実装済みへ置き換えない。Fashion Brand Opsの実Provider接続・実投稿・実請求には別途credentialと個別承認が必要になる。

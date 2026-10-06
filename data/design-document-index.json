@@ -1,34 +1,7 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.4",
-  "updatedAt": "2026-10-05",
-  "commonFoundationIntegration": {
-    "task": "G04",
-    "document": "docs/git-consolidation.md",
-    "implementation": [
-      "lib/research-ai.ts",
-      "lib/jev-transport.ts",
-      "lib/mcp-client.ts",
-      "lib/catalog.ts",
-      "lib/owner-revision-json-store.ts",
-      "shared/stripe.mjs",
-      "public-release/rockstaros/packages/sky-zema-core/src/handoff.js"
-    ],
-    "tests": [
-      "tests/research-ai.test.mjs",
-      "tests/jev-transport.test.mjs",
-      "tests/mcp-client.test.mjs",
-      "tests/sky-zema-contract.test.mjs",
-      "tests/verify-coverage.test.mjs"
-    ],
-    "preservedBoundaries": [
-      "owner/revision",
-      "per-tool approval",
-      "remote opt-in",
-      "provider acceptance",
-      "native OS execution and recovery"
-    ]
-  },
+  "version": "1.5",
+  "updatedAt": "2026-09-27",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/avocado-mini-r5/README.md",
@@ -39,7 +12,9 @@
     "docs/sky-tools-complete-design.md",
     "docs/rockstaros-avocado-mini-complete-design.md",
     "docs/jev-local-qwen-decision-fabric-design.md",
-    "docs/product-baseline.md"
+    "docs/product-baseline.md",
+    "docs/mission-control.md",
+    "docs/amc-goal-orchestrator.md"
   ],
   "sourceArtifacts": [
     {
@@ -76,6 +51,17 @@
   ],
   "systemDomains": [
     {
+      "id": "mission_control_and_squad_progress",
+      "coverage": "DETAILED_WEB_INTEGRATION_WITH_BROWSER_ACCEPTANCE_PENDING",
+      "documents": [
+        "docs/mission-control.md",
+        "docs/amc-goal-orchestrator.md",
+        "docs/sky-tools-complete-design.md",
+        "data/mission-control.json",
+        "data/project-status.json"
+      ]
+    },
+    {
       "id": "avocado_mini_r5",
       "coverage": "BASIC_DESIGN_WITH_OPEN_ENGINEERING_DECISIONS",
       "documents": [
@@ -87,10 +73,7 @@
     {
       "id": "product_requirements",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
-      "documents": [
-        "docs/product-baseline.md",
-        "data/product-baseline.json"
-      ]
+      "documents": ["docs/product-baseline.md", "data/product-baseline.json"]
     },
     {
       "id": "whole_os",
@@ -110,104 +93,20 @@
     {
       "id": "product_service_system_relations",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
-      "documents": [
-        "docs/rockstaros-product-system-map.md"
-      ]
+      "documents": ["docs/rockstaros-product-system-map.md"]
     },
     {
       "id": "platform_core_and_jobs",
       "coverage": "DETAILED_WITH_OPEN_IMPLEMENTATION_GAPS",
-      "documents": [
-        "docs/platform-core.md",
-        "contracts/device-capability-snapshot.json",
-        "contracts/platform-api.json",
-        "docs/rockstaros-complete-design.md",
-        "docs/workstreams/03-wallet-billing-providers.md",
-        "docs/workstreams/07-android-device-local-ai.md",
-        "docs/provider-contract-readiness-20260930.md"
-      ],
-      "interfaceImplementation": [
-        "android/core/src/main/java/dev/rock/core/platform/EsimDeviceEntitlement.java",
-        "android/core/src/main/java/dev/rock/core/platform/EsimProvisioningCompatibility.java",
-        "android/core/src/test/java/dev/rock/core/platform/EsimProvisioningCompatibilityTest.java",
-        "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
-        "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
-        "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
-        "tests/esim-device-entitlement.test.mjs"
-      ]
+      "documents": ["docs/platform-core.md", "contracts/platform-api.json"]
     },
     {
       "id": "web_pc",
       "coverage": "DETAILED_IMPLEMENTED_PARTIAL_PRODUCTION",
-      "interfaceImplementation": [
-        "components/home-screen.tsx",
-        "components/home-screen.module.css",
-        "components/workspace-shell.tsx",
-        "components/sky-surface.module.css",
-        "app/workspace.css",
-        "components/system-settings.module.css",
-        "components/csv-business-workspace.module.css",
-        "components/rock-studio.tsx"
-      ],
-      "documents": [
-        "docs/architecture.md",
-        "docs/backend-design.md",
-        "docs/rockstaros-complete-design.md"
-      ]
+      "documents": ["docs/architecture.md", "docs/backend-design.md"]
     },
     {
       "id": "linux_qemu",
-      "gameRecoveryFixtureValidation": {
-        "document": "docs/native-os-validation.md",
-        "completeDesign": "docs/rockstaros-complete-design.md",
-        "regressions": "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
-        "purpose": "verify unresolved transport outcomes through durable claim state and exact single grant",
-        "input": "private synthetic Game/Wallet, one controlled transport error or delayed original apply",
-        "success": "verified status/terminal evidence, exact hold release and one journal entry; once True alone is insufficient",
-        "failure": "unexpected claim outcome fails; no extra retry loop or deadline widening",
-        "recovery": "next bounded status reconciles the original signed result or retains the hold",
-        "scope": "test fixture behavior only; production deadlines and authorization unchanged; no guest or real funds"
-      },
-      "platformGuestVerificationEntry": {
-        "document": "docs/native-os-validation.md",
-        "completeDesign": "docs/rockstaros-complete-design.md",
-        "implementation": "systems/rock-star-os/os/platform/guest-test.py",
-        "regressions": "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
-        "input": "/proc/cmdline requires exactly one rock.platform.verify=1 token before any guest verification effect",
-        "authorization": "existing effective UID 0 and aarch64 requirements; does not protect against control of root",
-        "scope": "default local-full or one explicit game-isolation; peer authorization probes unchanged",
-        "failure": "missing, malformed, false, duplicate or conflicting enable tokens fail before PASS, subprocess, IPC, chmod or business mutation",
-        "recovery": "use os/verify-platform.py with fresh userdata, no NIC and read-only rootfs; no automatic enable fallback",
-        "storage": "no new credential, file or persistent setting",
-        "acceptance": "synthetic production-entry regression and Linux source CI; guest image boot remains separate"
-      },
-      "desktopCredentialHandoff": {
-        "document": "systems/rock-star-os/os/desktop/README.md",
-        "completeDesign": "docs/rockstaros-complete-design.md",
-        "implementation": "systems/rock-star-os/os/desktop/launcher.py",
-        "regressions": "systems/rock-star-os/tests/test_os_desktop_browser.py",
-        "input": "exact validated loopback viewer URL with current-session credential fragment",
-        "processArguments": "fixed osascript command only; credential supplied over stdin",
-        "temporaryFileOrEnvironmentCredential": false,
-        "openTimeoutSeconds": 10,
-        "failure": "fixed error; no credential-bearing argv fallback",
-        "noOpen": "no credential fetch or opener invocation",
-        "scope": "Mac host display launcher; guest SSH response and existing VNC auth unchanged"
-      },
-      "nativeCiArtifactSelection": {
-        "document": "docs/native-os-validation.md",
-        "implementation": "scripts/select-native-artifacts.py",
-        "workflow": ".github/workflows/native-os.yml",
-        "regressions": "systems/rock-star-os/tests/test_native_artifacts.py",
-        "selection": "same-run/head maximum attempt per partition, explicit artifact IDs",
-        "preserves": [
-          "prior failure artifacts",
-          "all partition success gate",
-          "source inventory",
-          "original log hashes",
-          "complete discovery"
-        ]
-      },
       "coverage": "DETAILED_DEVELOPER_PREVIEW",
       "documents": [
         "docs/native-os-integration.md",
@@ -218,211 +117,42 @@
     {
       "id": "android_pixel",
       "coverage": "DETAILED_BUILD_AND_PHYSICAL_ACCEPTANCE_PENDING",
-      "interfaceImplementation": [
-        "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
-        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
-        "android/automation/src/main/java/dev/rock/automation/EsimDeviceGatewayKeyStore.java",
-        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
-        "android/shell/src/main/java/dev/rock/shell/ShellConnection.java",
-        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
-        "contracts/device-capability-snapshot.json",
-        "scripts/check-os-contracts.mjs",
-        "android/automation/src/androidTest/java/dev/rock/automation/DeviceCapabilitySnapshotTest.java",
-        "android/automation/src/androidTest/java/dev/rock/automation/EsimDeviceGatewayKeyStoreTest.java",
-        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
-        "android/core/src/main/java/dev/rock/core/platform/EsimDeviceEntitlement.java",
-        "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
-        "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
-        "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
-        "tests/esim-device-entitlement.test.mjs"
-      ],
       "documents": [
         "docs/android-production-architecture.md",
         "docs/phone-preview-20260911.md",
         "docs/device-support-architecture.md",
-        "data/android-release-architecture-policy.json",
-        "docs/workstreams/07-android-device-local-ai.md",
-        "docs/provider-contract-readiness-20260930.md"
+        "data/android-release-architecture-policy.json"
       ]
     },
     {
       "id": "local_ai_and_memory",
-      "coverage": "DETAILED_MODEL_RUNTIME_WITH_PARTIAL_MEMORY_STORE_IMPLEMENTATION",
-      "interfaceImplementation": [
-        "systems/rock-star-os/src/blackberryrock/memory_store.py",
-        "systems/rock-star-os/tests/test_memory_store.py"
-      ],
+      "coverage": "DETAILED_GENERAL_RUNTIME_AND_MEMORY_PENDING",
       "documents": [
         "docs/ai-native-os-architecture.md",
-        "docs/ai-memory-architecture.md",
         "docs/jev-local-qwen-decision-fabric-design.md",
         "docs/local-ai-os-integration-20260915.md",
         "contracts/local-ai-runtime.json",
         "contracts/decision-provider.json",
-        "data/decision-fabric-policy.json",
-        "docs/llm-evaluation-architecture.md"
+        "data/decision-fabric-policy.json"
       ]
     },
     {
       "id": "sky_zema_and_tools",
-      "localSdkAuthenticationBoundary": {
-        "document": "docs/sky-tool-sdk.md",
-        "implementation": "toolkits/sky-tool-sdk/src/index.mjs",
-        "distributionPackage": "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
-        "distributionBoundary": "versioned local package and Studio install link; source byte parity required, no registry publication",
-        "comparison": "UTF-8 byte length equality before timingSafeEqual on the same buffers",
-        "malformedCredentialOutcome": "401 before body parsing or handler; process remains available",
-        "trustBoundary": "local loopback client; descriptor and execution approval policies unchanged",
-        "regressions": "tests/sky-tool-sdk.test.mjs",
-        "acceptanceLimit": "isolated host source tests; real device and external reachability not established"
-      },
       "coverage": "DETAILED_WITH_PLATFORM_GAPS",
-      "interfaceImplementation": [
-        "components/tool-icon.tsx",
-        "components/tool-character.tsx",
-        "components/sky-chat-workspace.tsx",
-        "components/sky-candidate-runner.tsx",
-        "components/sky-workspace.tsx",
-        "components/sky-workspace.module.css",
-        "components/workbench.tsx",
-        "app/work/work.css",
-        "app/api/sky/a2a-delegations/route.ts",
-        "app/api/sky/a2a-delegations/[id]/route.ts",
-        "lib/a2a-delegation-store.ts",
-        "lib/a2a-authorization.ts",
-        "lib/a2a-broker-authorization.ts",
-        "systems/rock-star-os/os/mcp_broker/a2a_authorization.py",
-        "systems/rock-star-os/src/blackberryrock/spend.py",
-        "services/sky-agent-runtime/src/worker.ts",
-        "drizzle/0033_a2a_offline_continuation_consent.sql",
-        "tests/a2a-delegation-store.test.mjs",
-        "tests/a2a-broker-authorization.test.mjs",
-        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
-        "components/sky-tool-card.tsx",
-        "components/sky-tool-card.module.css",
-        "components/sky-marketplace.tsx",
-        "components/sky-marketplace.module.css",
-        "components/sky-tool-workspace.tsx",
-        "components/sky-tool-workspace.module.css",
-        "components/sky-tool-overview.tsx",
-        "components/sky-tool-overview.module.css",
-        "components/coconala-team-workspace.tsx",
-        "components/coconala-team-workspace.module.css",
-        "components/sky-surface.module.css",
-        "components/fashion-brand-ops-runner.tsx",
-        "components/fashion-brand-ops-runner.module.css",
-        "components/sky-connection-center.tsx",
-        "components/sky-connection-center.module.css",
-        "components/sky-mcp-center.tsx",
-        "components/sky-mcp-center.module.css",
-        "components/sky-publisher-form.tsx",
-        "components/sky-publisher-form.module.css",
-        "lib/use-sky-tool-context.ts",
-        "components/sky-service-help.tsx",
-        "lib/sky-service-status.ts",
-        "app/api/sky/service-status/route.ts",
-        "lib/sky-tool-labels.ts",
-        "components/execution-access.tsx"
-      ],
       "documents": [
         "docs/sky-tools-complete-design.md",
-        "docs/sky-cloud-continuity.md",
-        "docs/cloud-agent-provider-comparison-20261001.md",
-        "docs/sky-a2a-bridge.md",
-        "docs/sky-mcp-architecture.md",
         "docs/jev-local-qwen-decision-fabric-design.md",
         "docs/jev-ultrafast-integration-design.md",
         "docs/jev-ecosystem-integration-design.md",
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
         "docs/sky-tool-sdk.md",
-        "docs/sky-launch-design.md",
-        "docs/sky-launch-operations.md",
-        "docs/agent-control-plane.md",
-        "docs/amc-autonomy-fixture.md"
-      ],
-      "implementation": [
-        "scripts/check-sky-launch.mjs",
-        "scripts/lib/sky-launch-audit.mjs",
-        "data/sky-service-launch.json",
-        "tests/sky-launch-audit.test.mjs",
-        "scripts/amc-goal-engine.mjs",
-        "scripts/amc-effort.mjs",
-        "scripts/amc-request-plan.mjs",
-        "scripts/amc-sky-authority.mjs",
-        "scripts/amc-autonomy.mjs",
-        "scripts/amc-autonomy-store.mjs",
-        "scripts/amc-autonomy-fixture.mjs",
-        "tests/amc-goal-engine.test.mjs",
-        "tests/amc-effort.test.mjs",
-        "tests/amc-request-plan.test.mjs",
-        "tests/amc-autonomy.test.mjs",
-        "tests/amc-autonomy-lock.test.mjs",
-        "tests/amc-autonomy-fixture.test.mjs"
+        "docs/amc-goal-orchestrator.md"
       ]
     },
     {
       "id": "mcp_and_providers",
-      "legacyMrCompatibilitySecurity": {
-        "document": "docs/sky-mcp-connector.md",
-        "implementation": "toolkits/sky-mcp-connector/server.mjs",
-        "scope": "exact bundled MR connection, four local processors and existing lifecycle only",
-        "approvalException": "legacy four local processors; generic server-ID path still requires one-time approval",
-        "rejection": "403 legacy_mcp_not_supported before transport dispatch",
-        "recovery": "restore bundled connection definition or use generic connect/prepare/confirm/execute",
-        "regressions": "tests/mcp-connector.test.mjs"
-      },
       "coverage": "DETAILED_REAL_PROVIDER_GAPS",
-      "nativeMcpHttpsCaBoundary": {
-        "document": "docs/rockstaros-complete-design.md",
-        "implementation": "systems/rock-star-os/os/mcp_broker/http.py",
-        "httpsRequiresExplicitNonemptyCa": true,
-        "emptyCaFailure": "reject construction before socket connection or credential transmission",
-        "httpException": "explicit allow_http_fixture true and exact 127.0.0.1 only",
-        "currentDeploymentScope": "existing local development fixture; external-provider acceptance pending",
-        "regressions": "systems/rock-star-os/tests/test_mcp_http_deadline.py"
-      },
-      "mrHttpReceiveSecurity": {
-        "document": "docs/sky-tools-complete-design.md",
-        "implementation": "toolkits/mr/mcp_server.py",
-        "absoluteReceiveDeadlineSeconds": 10,
-        "deadlineCovers": [
-          "request-line",
-          "headers",
-          "body"
-        ],
-        "responseWriteTimeoutSeconds": 10,
-        "maximumBodyBytes": 16000000,
-        "executionModel": "existing sequential loopback server",
-        "expiryBeforeDispatch": "close without token creation or tool execution",
-        "regressions": "tests/test_mr_http_deadline.py"
-      },
-      "mrDeliverySecurity": {
-        "document": "docs/sky-tools-complete-design.md",
-        "implementation": "toolkits/mr/rock_star_tools.py",
-        "readBoundary": "directory-handle-relative no-follow opens; bounded regular-file reads",
-        "verifierInput": "private snapshot of selected artifacts, contract and stored receipt",
-        "artifactMaximumBytes": 10000000,
-        "metadataMaximumBytes": 1000000,
-        "unsupportedPlatform": "fail closed",
-        "vendorSnapshotChanged": false,
-        "regressions": "tests/test_mr_delivery_boundary.py"
-      },
-      "localDescriptorSecurity": {
-        "document": "docs/sky-mcp-connector.md",
-        "implementation": "toolkits/sky-mcp-connector/local-descriptor.mjs",
-        "sameHandleValidationAndRead": true,
-        "maximumBytes": 4096,
-        "rejectSymlinksAndNonRegularFiles": true,
-        "parentDirectoryTrust": "existing owner-local boundary",
-        "regressions": "tests/mcp-local-descriptor.test.mjs"
-      },
-      "implementation": [
-        "scripts/sky-local-runtime.mjs",
-        "lib/sky-local-runtime.ts",
-        "tests/sky-local-runtime.test.mjs",
-        "components/delivery-runner.tsx"
-      ],
       "documents": [
         "docs/sky-mcp-connector.md",
         "docs/sky-mcp-architecture.md",
@@ -442,130 +172,15 @@
       "id": "wallet_market_and_fund",
       "coverage": "DETAILED_LIVE_PROVIDER_PENDING",
       "documents": [
-        "docs/sky-billing.md",
-        "docs/workstreams/03-wallet-billing-providers.md",
-        "docs/provider-contract-readiness-20260930.md",
-        "lib/esim-public-catalog.ts",
-        "app/api/esim/catalog/route.ts",
-        "app/sky/esim/page.tsx",
-        "components/esim-catalog.tsx",
-        "components/sky-commerce.tsx",
-        "components/sky-commerce.module.css",
-        "tests/esim-public-catalog.test.mjs",
-        "docs/sky-tools-complete-design.md",
         "docs/external-wallet-fund-provider-boundary-20260913.md",
         "docs/everything-market-and-autonomous-fund-20260913.md",
-        "docs/rock-wallet-production-rail-20260913.md",
-        "docs/sky-commerce-design.md",
-        "docs/wallet-commerce-design.md"
+        "docs/rock-wallet-production-rail-20260913.md"
       ]
     },
     {
       "id": "security_operator_release",
-      "spiderImprovementCycle": {
-        "document": "docs/spider-guard.md",
-        "status": "FIRST_REPAIRS_RESCANNED_MAIN_INTEGRATION_PENDING",
-        "collector": "scripts/spider-feedback.mjs",
-        "regressions": ".github/workflows/spider-regressions.yml",
-        "cadence": "hourly local Codex follow-up; host and app must be running",
-        "autoMerge": false,
-        "firstRepairs": [
-          42,
-          31,
-          47
-        ],
-        "toolDesign": "docs/sky-tools-complete-design.md#8-instagram運用・受注型ブランド管理"
-      },
       "coverage": "DETAILED_PRODUCTION_ENROLLMENT_PENDING",
-      "spiderGuardStatus": "NATIVE_PLATFORM_INTEGRATION_IN_PROGRESS_SAME_IMAGE_BOOT_PENDING",
-      "spiderGuardAnimationRevision": {
-        "status": "SOURCE_RENDERER_VALIDATED_OS_ACCEPTANCE_PENDING",
-        "baseCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
-        "document": "docs/spider-guard.md",
-        "evidence": "docs/evidence/spider-guard-source-validation.json",
-        "evidenceSection": "nativeAnimationRevisions",
-        "freshValidationRecorded": true,
-        "actualFindingsOnly": true,
-        "newActualBlockedCounterOnly": true,
-        "inactiveOnUnhealthyOrDisconnected": true,
-        "protectionAuthorityChanged": false,
-        "currentSurface": "native security panel",
-        "globalOverlaySelected": false
-      },
-      "spiderGuardAgentRole": {
-        "status": "SOURCE_VALIDATED_OS_ACCEPTANCE_PENDING",
-        "document": "docs/spider-guard.md",
-        "evidence": "docs/evidence/spider-guard-source-validation.json",
-        "evidenceSection": "nativeSecurityAgentRevisions",
-        "id": "spider",
-        "role": "security",
-        "scope": "platform-data",
-        "duties": [
-          "watch_platform_data",
-          "inspect_outbound",
-          "deny_sensitive_outbound",
-          "report_health"
-        ],
-        "stateSource": "actual worker liveness, freshness and findings",
-        "lastActionSource": "sanitized actual blocking metadata",
-        "currentSurface": "native security panel",
-        "freshValidationRecorded": true,
-        "protectionAuthorityChanged": false,
-        "monitoringCadenceOrScopeChanged": false
-      },
-      "spiderCodeInspector": {
-        "status": "STANDALONE_VALIDATED_NATIVE_LINUX_PENDING",
-        "document": "docs/spider-guard.md",
-        "completeDesignSection": "19.2",
-        "nativeOperation": "security.inspectCode",
-        "standaloneBuild": "scripts/build-spider-inspector.mjs",
-        "standaloneSource": "toolkits/spider-guard/inspector.html",
-        "deliverableOutsideRepository": "outputs/SPIDER.html",
-        "executesInput": false,
-        "externalRequests": false,
-        "persistsInput": false,
-        "freshValidationRecorded": true,
-        "inputMaxBytes": 65536,
-        "inputMaxLines": 2000,
-        "findingsMax": 100,
-        "reportExport": "optional metadata-only JSON",
-        "implementation": [
-          "scripts/build-spider-inspector.mjs",
-          "toolkits/spider-guard/README.md",
-          "toolkits/spider-guard/inspector.html",
-          "toolkits/spider-guard/program-inspector.mjs",
-          "toolkits/spider-guard/program-inspector.d.mts",
-          "tests/spider-inspector-artifact.test.mjs",
-          "tests/spider-program-inspector.test.mjs",
-          "systems/rock-star-os/os/platform/code_inspector.py",
-          "systems/rock-star-os/tests/test_code_inspector.py"
-        ],
-        "nativeOwnerUid": 1000,
-        "nativePythonAstNodeLimit": 20000,
-        "guardCountersChanged": false,
-        "evidence": "docs/evidence/spider-guard-source-validation.json",
-        "evidenceSection": "codeInspectorRevisions",
-        "nativeLinuxValidationRecorded": false
-      },
-      "spiderGuardImplementation": [
-        "systems/rock-star-os/os/platform/sensitive_guard.py",
-        "systems/rock-star-os/os/platform/supervisor.py",
-        "systems/rock-star-os/os/platform/service.py",
-        "systems/rock-star-os/os/platform/runner_control.py",
-        "systems/rock-star-os/os/platform/install-target.sh",
-        "systems/rock-star-os/os/buildroot/package/rock-platform/rock-platform.mk",
-        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform",
-        "systems/rock-star-os/os/ui/security-ui.inc",
-        "systems/rock-star-os/os/ui/test_ui.c",
-        "systems/rock-star-os/os/ui/spider-motion.c",
-        "systems/rock-star-os/os/ui/spider-motion.h",
-        "systems/rock-star-os/os/ui/pin-readiness.json",
-        "scripts/review-native-pin-source.py",
-        "systems/rock-star-os/tests/test_ui_pin_source_profile.py"
-      ],
       "documents": [
-        "docs/spider-guard.md",
-        "docs/rockstaros-complete-design.md",
         "docs/security-incident-response.md",
         "docs/release-minimum-gates.md",
         "data/device-emergency-access-policy.json",
@@ -578,8 +193,7 @@
       "documents": [
         "docs/game-api-contract-draft.md",
         "docs/gx01-contract-implementation-plan.md",
-        "docs/gx01-reference-sdk-sandbox-20260910.md",
-        "docs/workstreams/08-game-market-fund.md"
+        "docs/gx01-reference-sdk-sandbox-20260910.md"
       ]
     },
     {
@@ -604,367 +218,77 @@
       "documents": [
         "docs/validation.md",
         "docs/database-status.md",
-        "data/project-status.json",
-        "docs/git-consolidation.md"
+        "data/project-status.json"
       ]
     }
   ],
   "catalogTools": [
     {
-      "id": "rockstar-csv-cleanup",
-      "catalogStatus": "ready",
-      "releaseAcceptance": {
-        "document": "docs/sky-tools-complete-design.md#5-csv整形検査納品",
-        "checks": [
-          "JPY_50_without_currency_conversion",
-          "owner_scoped_checkout_return",
-          "server_verified_payment_and_completed_artifacts",
-          "unpaid_cancel_without_execution",
-          "reload_and_output_hash",
-          "Apple_Pay_requires_supported_device_acceptance"
-        ]
-      },
-      "paymentStatusContract": {
-        "implementation": [
-          "lib/sky-service-status.ts",
-          "components/sky-service-help.tsx"
-        ],
-        "tests": [
-          "tests/sky-service-status.test.mjs",
-          "scripts/check-work-api.mjs"
-        ],
-        "csvPayments": "dedicated CSV webhook plus valid mode/key/origin and available DB/R2",
-        "payments": "marketplace configuration only; not CSV trial availability",
-        "configuredIsPaymentProof": false
-      },
-      "storageIsolationContract": {
-        "implementation": [
-          "lib/csv-job-store.ts"
-        ],
-        "tests": [
-          "scripts/check-csv-storage.mjs"
-        ],
-        "evidence": [
-          "docs/evidence/sky-csv-storage-verification.json",
-          "docs/evidence/sky-production-auth-verification.json",
-          "docs/evidence/sky-csv-expiry-verification.json"
-        ],
-        "insertion": "attempt-specific R2 input key; owner-scoped replay; reconcile uncertain commit before cleanup",
-        "productionOwnerAcceptance": false,
-        "expiry": "processing and retry reject before claim after expiry; unauthorized requests do not purge another owner"
-      }
-    },
-    {
-      "id": "rockstar-markets-analysis",
-      "catalogStatus": "ready",
-      "signinRecoveryAcceptance": {
-        "design": "docs/sky-tools-complete-design.md",
-        "implementation": "components/everything-market.tsx",
-        "trigger": "HTTP401",
-        "recovery": "separate-tab-signin-and-refresh"
-      },
-      "paperAcceptance": {
-        "samplesNotVerifiedServices": true,
-        "samplePriceNotPerformance": true,
-        "completedHistoryInWorkspace": true,
-        "receiptReadbackAfterReload": true,
-        "successClosesTicketAndFocusesActivity": true,
-        "jsonTimeoutMs": 10000,
-        "mobileSearchInHeaderGrid": true
-      }
-    },
-    {
-      "id": "mercari-revenue",
-      "catalogStatus": "ready"
-    },
-    {
-      "id": "fashion-brand-ops",
-      "catalogStatus": "ready"
-    },
-    {
-      "id": "rockstar-ip-studio",
-      "catalogStatus": "candidate",
-      "launchRecovery": {
-        "desktopOnly": true,
-        "mobileAndUnknownHostLoopbackLink": false,
-        "runtimeAvailabilityVerifiedByLaunchLink": false,
-        "design": "docs/sky-tools-complete-design.md#85-ip-studio--交換可能な制作配信ゲーム展開"
-      },
-      "voiceTelephony": {
-        "provider": "livekit",
-        "status": "setup_metadata_only",
-        "document": "docs/sky-tools-complete-design.md",
-        "implementation": [
-          "lib/sky-connections.ts",
-          "lib/operations.ts"
-        ],
-        "tests": [
-          "tests/operations.test.mjs",
-          "tests/sky-routing.test.mjs"
-        ],
-        "runtimeConnected": false
-      }
-    },
-    {
-      "id": "coconala",
-      "catalogStatus": "ready",
-      "signinRecovery": {
-        "inputPreservedInOpenDialog": true,
-        "separateTab": true,
-        "returnPath": "/sky/tools/coconala",
-        "recheckDoesNotSubmitDraft": true,
-        "requestTimeoutMs": 10000
-      },
-      "mobileResultActions": {
-        "stackHeadingBelow760px": true,
-        "wrapButtons": true,
-        "minimumButtonHeightPx": 44,
-        "restoredOutputDarkContrast": true
-      },
-      "draftDeletion": {
-        "confirmationRequired": true,
-        "ownerScoped": true,
-        "sameOriginRequired": true,
-        "expectedRevisionRequired": true,
-        "draftOnly": true,
-        "atomicStateAndRevisionCheck": true,
-        "deletesCaseContentAndHistory": true,
-        "refreshDoesNotDelete": true,
-        "externalTransactionUnchanged": true,
-        "activeCaseRetentionAccepted": false
-      }
-    },
-    {
-      "id": "mr-free-article",
-      "catalogStatus": "ready"
-    },
-    {
-      "id": "mr-citations",
-      "catalogStatus": "ready"
-    },
-    {
-      "id": "mr-delivery",
-      "catalogStatus": "ready"
-    },
-    {
-      "id": "rockstar-ledger",
-      "catalogStatus": "ready"
-    },
-    {
-      "id": "jev-evaluation",
-      "catalogStatus": "ready"
-    },
-    {
-      "id": "rockstar-legal-intake",
-      "catalogStatus": "ready",
-      "localHistoryAcceptance": {
-        "design": "docs/sky-tools-complete-design.md",
-        "implementation": [
-          "lib/local-guide-history.ts",
-          "components/local-guide-history-consent.tsx",
-          "lib/operations-client.ts"
-        ],
-        "tests": [
-          "tests/local-guide-history.test.mjs",
-          "tests/operations.test.mjs"
-        ],
-        "consent": "optional-default-off",
-        "contentStored": false,
-        "remoteExecutionVerified": false,
-        "diagnosticCodes": [
-          "HTTP_STATUS",
-          "TIMEOUT",
-          "NETWORK",
-          "INVALID_RESPONSE",
-          "CLIENT_ERROR"
-        ],
-        "calculationFailureRetry": false
-      },
-      "cloudTransportAcceptance": {
-        "design": "docs/sky-tools-complete-design.md",
-        "implementation": [
-          "lib/llm-providers.ts",
-          "lib/remote-ai-pricing-gate.ts"
-        ],
-        "tests": [
-          "tests/llm-providers.test.mjs",
-          "scripts/check-work-api.mjs"
-        ],
-        "timeoutMs": 20000,
-        "automaticRetry": false,
-        "redirects": "manual",
-        "responseStore": false,
-        "usage": "validated-provider-counts-or-null",
-        "observedSearchCalls": "not-invoice-proof",
-        "pricingGateAccepted": false,
-        "productionProviderExecutionVerified": false,
-        "persistence": "response-metadata-only; no usage-ledger settlement yet"
-      }
-    },
-    {
-      "id": "rockstar-patent-assistant",
-      "catalogStatus": "ready",
-      "localHistoryAcceptance": {
-        "design": "docs/sky-tools-complete-design.md",
-        "implementation": [
-          "lib/local-guide-history.ts",
-          "components/local-guide-history-consent.tsx",
-          "lib/operations-client.ts"
-        ],
-        "tests": [
-          "tests/local-guide-history.test.mjs",
-          "tests/operations.test.mjs"
-        ],
-        "consent": "optional-default-off",
-        "contentStored": false,
-        "remoteExecutionVerified": false,
-        "diagnosticCodes": [
-          "HTTP_STATUS",
-          "TIMEOUT",
-          "NETWORK",
-          "INVALID_RESPONSE",
-          "CLIENT_ERROR"
-        ],
-        "calculationFailureRetry": false
-      },
-      "cloudTransportAcceptance": {
-        "design": "docs/sky-tools-complete-design.md",
-        "implementation": [
-          "lib/llm-providers.ts",
-          "lib/remote-ai-pricing-gate.ts"
-        ],
-        "tests": [
-          "tests/llm-providers.test.mjs",
-          "scripts/check-work-api.mjs"
-        ],
-        "timeoutMs": 20000,
-        "automaticRetry": false,
-        "redirects": "manual",
-        "responseStore": false,
-        "usage": "validated-provider-counts-or-null",
-        "observedSearchCalls": "not-invoice-proof",
-        "pricingGateAccepted": false,
-        "productionProviderExecutionVerified": false,
-        "persistence": "response-metadata-only; no usage-ledger settlement yet"
-      }
-    },
-    {
-      "id": "faster-whisper",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "transformers-js",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "playwright",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "jev-ultrafast",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "jev-trader",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "typesafe-computer-use",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "jev-review",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "jev-router",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "jev-browser",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "mobile-jev",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "coconala-proposal-draft",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "gig-workflow",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "coconala-inbox",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "youtube-script-writer",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "seo-blueprint",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "landing-page-sprint",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "sales-objection-reply-builder",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "user-interview-synthesizer",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "calendar-coordination",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "telegram-notifications",
-      "catalogStatus": "candidate"
-    },
-    {
-      "id": "producthunt-discovery",
-      "catalogStatus": "candidate"
-    },
-    {
       "id": "rockstar-amc",
       "catalogStatus": "ready",
-      "acceptedCandidateRevalidation": {
-        "event": "revalidate_task",
-        "design": "docs/amc-sky-launch-integration.md",
-        "test": "tests/amc-revalidation.test.mjs",
-        "status": "local_owner_transition_web_fail_closed"
-      },
-      "quickFormat": {
-        "design": "docs/amc-sky-launch-integration.md",
-        "component": "components/amc-quick-board.tsx",
-        "storage": "sessionStorage_tab_only",
-        "authority": "manual_checklist_not_execution_or_acceptance",
-        "placement": "auxiliary_collapsed"
-      },
-      "commandCenter": {
-        "design": "docs/amc-sky-launch-integration.md",
-        "component": "components/amc-command-center.tsx",
-        "runner": "scripts/amc-parallel.mjs",
-        "test": "tests/amc-parallel.test.mjs",
-        "status": "local_fixture_only_web_execution_not_connected"
-      },
-      "agentDefinition": {
-        "source": "data/amc/agent-definitions.json",
-        "launcher": "scripts/amc-agent.mjs",
-        "design": "docs/amc-sky-launch-integration.md",
-        "usage": "toolkits/amc-agent/README.md",
-        "tests": "tests/amc-agent.test.mjs",
-        "runtimeSource": "data/amc/agent-runtime-source.json",
-        "scope": "Codex_custom_agents_web_execution_not_connected"
+      "displayName": "AMC · Goalと部隊の進捗",
+      "designDocument": "docs/sky-tools-complete-design.md",
+      "designSection": "4.5 AMC — Goal・部隊・進捗",
+      "primaryOwner": "ROCK",
+      "ownerSquad": "H1",
+      "implementationTask": "AMC02",
+      "readyScope": [
+        "request_goal_intent_preparation_template",
+        "read_only_canonical_squad_board",
+        "owner_scoped_manual_goal_ledger",
+        "json_and_prompt_export",
+        "explicit_local_codex_single_task_runner"
+      ],
+      "implementationBoundary": {
+        "storage": "existing_work_jobs_payload_with_authenticated_user_and_revision_cas",
+        "workPlanCompatibility": "schema_1_read_normalization_and_pre_execution_objective_edit; amc_event_and_goal_revision_preserved",
+        "templateRoles": 4,
+        "templateSteps": 7,
+        "createdPlanState": "active",
+        "createdTaskState": "pending",
+        "canonicalMissionDataMutable": false,
+        "aiPlannerConnected": false,
+        "remoteExecutorConnected": false,
+        "automaticModelInstallation": false,
+        "externalActionsAuthorized": false,
+        "browserAcceptance": "not_verified",
+        "productionDeploymentAccepted": false
       }
-    }
+    },
+    { "id": "rockstar-csv-cleanup", "catalogStatus": "ready" },
+    { "id": "rockstar-markets-analysis", "catalogStatus": "ready" },
+    { "id": "mercari-revenue", "catalogStatus": "ready" },
+    { "id": "fashion-brand-ops", "catalogStatus": "ready" },
+    { "id": "rockstar-ip-studio", "catalogStatus": "candidate" },
+    { "id": "coconala", "catalogStatus": "ready" },
+    { "id": "mr-free-article", "catalogStatus": "ready" },
+    { "id": "mr-citations", "catalogStatus": "ready" },
+    { "id": "mr-delivery", "catalogStatus": "ready" },
+    { "id": "rockstar-ledger", "catalogStatus": "ready" },
+    { "id": "jev-evaluation", "catalogStatus": "ready" },
+    { "id": "rockstar-legal-intake", "catalogStatus": "ready" },
+    { "id": "rockstar-patent-assistant", "catalogStatus": "ready" },
+    { "id": "faster-whisper", "catalogStatus": "candidate" },
+    { "id": "transformers-js", "catalogStatus": "candidate" },
+    { "id": "playwright", "catalogStatus": "candidate" },
+    { "id": "jev-ultrafast", "catalogStatus": "candidate" },
+    { "id": "jev-trader", "catalogStatus": "candidate" },
+    { "id": "typesafe-computer-use", "catalogStatus": "candidate" },
+    { "id": "jev-review", "catalogStatus": "candidate" },
+    { "id": "jev-router", "catalogStatus": "candidate" },
+    { "id": "jev-browser", "catalogStatus": "candidate" },
+    { "id": "mobile-jev", "catalogStatus": "candidate" },
+    { "id": "coconala-proposal-draft", "catalogStatus": "candidate" },
+    { "id": "gig-workflow", "catalogStatus": "candidate" },
+    { "id": "coconala-inbox", "catalogStatus": "candidate" },
+    { "id": "youtube-script-writer", "catalogStatus": "candidate" },
+    { "id": "seo-blueprint", "catalogStatus": "candidate" },
+    { "id": "landing-page-sprint", "catalogStatus": "candidate" },
+    { "id": "sales-objection-reply-builder", "catalogStatus": "candidate" },
+    { "id": "user-interview-synthesizer", "catalogStatus": "candidate" },
+    { "id": "calendar-coordination", "catalogStatus": "candidate" },
+    { "id": "telegram-notifications", "catalogStatus": "candidate" },
+    { "id": "producthunt-discovery", "catalogStatus": "candidate" }
   ],
   "nativeToolFamilies": [
     "shared_checklist",
@@ -979,7 +303,8 @@
     "allReferencedDocumentsMustExist": true,
     "unknownsMayNotBeReportedAsImplemented": true,
     "environmentSpecificAcceptanceRequired": true,
-    "newSystemOrToolRequiresIndexUpdate": true
+    "newSystemOrToolRequiresIndexUpdate": true,
+    "skyDetailMustHandoffBeforeExecution": true
   },
   "archivalCollections": [
     {
@@ -992,250 +317,5 @@
       "runtimeImported": false,
       "r5RequirementsChanged": false
     }
-  ],
-  "remoteAiTextPricingPreparation": {
-    "design": "docs/sky-tools-complete-design.md",
-    "implementation": [
-      "lib/remote-ai-rate-card.ts",
-      "lib/remote-ai-text-pricing.ts",
-      "lib/llm-providers.ts",
-      "lib/remote-ai-text-store.ts",
-      "lib/remote-ai-text-execution.ts",
-      "lib/remote-ai-text-rate.ts",
-      "lib/remote-ai-text-http.ts",
-      "app/api/llm/quotes/route.ts",
-      "app/api/llm/quotes/[id]/route.ts",
-      "app/api/llm/text/route.ts",
-      "drizzle/0046_remote_ai_text_executions.sql",
-      "lib/remote-ai-text-request.ts",
-      "lib/remote-ai-text-client.ts",
-      "components/workbench.tsx"
-    ],
-    "tests": [
-      "tests/remote-ai-rate-card.test.mjs",
-      "tests/llm-providers.test.mjs",
-      "scripts/check-work-api.mjs",
-      "tests/remote-ai-text-store.test.mjs",
-      "tests/remote-ai-text-client.test.mjs"
-    ],
-    "scope": "OpenAI standard text-only; cache read/write priced separately; no hosted-tool fee coverage",
-    "quotePersistence": true,
-    "budgetReservationConnected": true,
-    "pricingGateAccepted": false,
-    "productionProviderExecutionVerified": false,
-    "verificationEnvironment": "local SQLite and Worker/D1 with synthetic provider transport",
-    "productionQuotePersistence": false,
-    "productionBudgetReservationConnected": false,
-    "fundedWalletConnected": false,
-    "conversationUiConnected": true,
-    "runtimeEvidence": "docs/evidence/sky-cloud-text-execution-verification.json",
-    "workbenchUiConnected": true,
-    "workbenchQuoteHistoryAndSyntheticSigninLocallyVerified": true,
-    "productionOwnerSigninVerified": false,
-    "conversationComposerConnected": true,
-    "uiEvidence": "docs/evidence/sky-cloud-ui-verification.json",
-    "deployedBrowserQuoteHistoryCode": true,
-    "publicationEvidence": "docs/evidence/sky-cloud-ui-publication-verification.json",
-    "savedResultManagementUiConnected": true,
-    "resultUiLocalEvidence": "docs/evidence/sky-cloud-results-verification.json",
-    "resultUiProductionOwnerVerified": false,
-    "deployedConversationComposerHandoffCode": true,
-    "deployedSavedResultManagementCode": true,
-    "resultUiPublicationEvidence": "docs/evidence/sky-cloud-results-publication-verification.json"
-  },
-  "executionAccessRecovery": {
-    "document": "docs/sky-tools-complete-design.md",
-    "implementation": [
-      "components/execution-access.tsx",
-      "components/sky-connection-center.tsx"
-    ],
-    "states": [
-      "checking",
-      "ready",
-      "signin",
-      "unavailable"
-    ],
-    "gate": "only authenticated array response enables execution",
-    "recovery": "read-only recheck; preserve current component draft; explicit execution only",
-    "contentStorageAdded": false,
-    "localEvidence": "docs/evidence/sky-access-recovery-verification.json",
-    "productionOwnerAcceptance": false
-  },
-  "networkConnectionRecovery": {
-    "document": "docs/sky-tools-complete-design.md",
-    "implementation": [
-      "app/sky/network/page.tsx",
-      "components/sky-network.tsx",
-      "components/sky-network.module.css",
-      "components/sky-navigation.tsx",
-      "components/sky-application.module.css",
-      "lib/sky-network-device.ts",
-      "lib/sky-network-session.ts",
-      "components/device-connection.tsx",
-      "components/sky-mcp-center.tsx",
-      "components/execution-access.tsx"
-    ],
-    "states": [
-      "idle",
-      "checking",
-      "connecting",
-      "connected",
-      "failed",
-      "offline"
-    ],
-    "deviceHintIsAuthority": false,
-    "successRequires": "Existing connectDevice or verifyDevice completes; UI timer does not grant success",
-    "permissionBoundary": "No real /connect or reconnect acceptance until separately approved PC trial",
-    "providerConnectionDraftsAreExecution": false,
-    "deploymentAcceptance": false,
-    "signinGate": "Main and detailed network connection buttons are blocked until existing authenticated jobs-array check succeeds. Recheck is read-only.",
-    "runtimeSchemaRecovery": {
-      "canonicalSql": "drizzle/0037_csv_trial_payments.sql",
-      "worker": "web-worker.ts",
-      "test": "scripts/check-csv-storage.mjs",
-      "acceptance": "Combined canonical candidate requires schema and compiled Worker/D1/R2 checks",
-      "librarySql": "drizzle/0059_sky_library.sql",
-      "migrationPolicy": "canonical append-only drizzle migrations; dedicated Site schema version is independent"
-    }
-  },
-  "toolExecutionBoundaryVerification": {
-    "document": "docs/sky-tools-complete-design.md",
-    "implementation": [
-      "lib/sky-tool-execution-scope.ts",
-      "lib/sky-candidate-output.ts",
-      "lib/sky-tool-ui.ts",
-      "lib/sky-tool-labels.ts",
-      "components/sky-candidate-runner.tsx",
-      "scripts/check-sky.mjs"
-    ],
-    "test": "tests/sky-tool-execution-scope.test.mjs",
-    "evidence": "docs/evidence/sky-tool-execution-boundaries.json",
-    "catalogCount": 35,
-    "classificationIsLiveAcceptance": false,
-    "deploymentAcceptance": false
-  },
-  "skyIntegratedAcceptance": {
-    "document": "docs/sky-launch-design.md",
-    "implementation": [
-      "scripts/sky-launch-validation.mjs",
-      "scripts/check-sky-launch.mjs"
-    ],
-    "test": "tests/sky-launch-validation.test.mjs",
-    "finalStages": [
-      "paid",
-      "clients",
-      "focused"
-    ],
-    "actualCustomerJourneyAccepted": false
-  },
-  "skyLibraryIntegration": {
-    "document": "docs/sky-tools-complete-design.md",
-    "implementation": [
-      "app/api/sky/library/route.ts",
-      "app/zema/library/page.tsx",
-      "app/zema/tools/[toolId]/page.tsx",
-      "components/sky-library.tsx",
-      "components/sky-library-save.tsx",
-      "components/zema-navigation.tsx",
-      "lib/operations.ts"
-    ],
-    "sourceSql": "drizzle/0059_sky_library.sql",
-    "saveIsEntitlement": false,
-    "productionAccepted": false
-  },
-  "skyResultExport": {
-    "document": "docs/sky-tools-complete-design.md",
-    "operations": "docs/sky-launch-operations.md",
-    "implementation": [
-      "components/mr-tool-runner.tsx",
-      "lib/sky-result-download.ts"
-    ],
-    "verification": "tests/sky-result-download.test.mjs",
-    "contentUploadAdded": false,
-    "downloadAccepted": false,
-    "clipboardAccepted": false,
-    "productionAccepted": false
-  },
-  "skyCsvRetention": {
-    "document": "docs/sky-tools-complete-design.md",
-    "operations": "docs/sky-launch-operations.md",
-    "implementation": [
-      "lib/csv-retention.ts",
-      "lib/csv-job-store.ts",
-      "web-worker.ts",
-      "components/csv-business-workspace.tsx"
-    ],
-    "verification": [
-      "tests/csv-retention.test.mjs",
-      "scripts/check-csv-storage.mjs"
-    ],
-    "publicScheduledCleanupAccepted": false,
-    "processingLeaseRecoveryAccepted": false
-  },
-  "skyConnectionEntry": {
-    "document": "docs/sky-tools-complete-design.md",
-    "implementation": [
-      "components/sky-workspace.tsx",
-      "components/sky-network.tsx",
-      "components/sky-navigation.tsx"
-    ],
-    "verification": [
-      "tests/sky-network-device.test.mjs",
-      "tests/sky-network-session.test.mjs"
-    ],
-    "navigationIssuesRights": false,
-    "realPcAccepted": false,
-    "fullUxAccepted": false
-  },
-  "skyDedicatedToolLibrary": {
-    "document": "docs/sky-tools-complete-design.md",
-    "implementation": [
-      "components/sky-tool-workspace.tsx",
-      "components/csv-business-workspace.tsx",
-      "components/coconala-team-workspace.tsx",
-      "components/sky-library-save.tsx",
-      "components/sky-library.tsx"
-    ],
-    "verification": [
-      "scripts/check-csv-storage.mjs",
-      "tests/coconala-sky-entry.test.mjs"
-    ],
-    "publicOwnerAcceptance": false
-  },
-  "skyConnectorPilotPreparation": {
-    "document": "docs/sky-mcp-connector.md",
-    "implementation": [
-      "toolkits/sky-mcp-connector/server.mjs",
-      "toolkits/sky-mcp-connector/pilot-policy.mjs",
-      "toolkits/sky-mcp-connector/registry.pilot.json"
-    ],
-    "verification": [
-      "tests/mcp-pilot-policy.test.mjs"
-    ],
-    "actualIssuanceAccepted": false,
-    "actualExpiryShutdownAccepted": false
-  },
-  "skyConnectionReachability": {
-    "document": "docs/sky-tools-complete-design.md",
-    "implementation": [
-      "components/sky-network.tsx",
-      "components/execution-access.tsx",
-      "lib/sky-network-session.ts"
-    ],
-    "verification": [
-      "tests/sky-network-session.test.mjs"
-    ],
-    "realPcAccepted": false
-  },
-  "skyCsvHistoryRecovery": {
-    "document": "docs/sky-tools-complete-design.md",
-    "implementation": [
-      "components/csv-business-workspace.tsx",
-      "lib/csv-history-request.ts"
-    ],
-    "tests": [
-      "tests/csv-history-request.test.mjs"
-    ],
-    "realPaymentAccepted": false
-  }
+  ]
 }

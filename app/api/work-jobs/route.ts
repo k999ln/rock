@@ -1,16 +1,13 @@
-import { env } from 'cloudflare:workers';
 import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
-import { skyWebCommand, requireSkyDraftImport } from '@/lib/amc-sky-web';
 import { database, requestUser } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
-import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import {
   createWorkJob,
   applyWorkCommand,
   objectInput,
   parseWorkCommand,
-  workId,
   type WorkCommand,
+  workId,
   WorkError,
 } from '@/lib/workflow';
 
@@ -75,18 +72,11 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
   try {
-    const user = await requestUser(request);
-    const db = database();
-    if (!(await rockstarServiceScopeAllowed(
-      db,
-      user,
-      'zema',
-      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
-    ))) return missingRockstarServiceScope('Zema');
-    const candidate = createWorkJob(await body(request));
-    requireSkyDraftImport(candidate.amcGoal);
-    if (candidate.templateId === 'amc') throw new WorkError('AMC画面から計画を保存してください。');
-    const saved = await workStore(db).create(user, candidate);
+    const user = await requestUser(request),
+      candidate = createWorkJob(await body(request));
+    if (candidate.templateId === 'amc')
+      throw new WorkError('AMC画面から計画を保存してください。');
+    const saved = await workStore(database()).create(user, candidate);
     if (
       !saved ||
       saved.title !== candidate.title ||
@@ -109,7 +99,8 @@ export async function PATCH(request: Request) {
     const store = workStore(database()),
       current = await store.get(user, workId(input.jobId));
     if (!current) throw new WorkError('仕事が見つかりません。', 404);
-    if (current.templateId === 'amc' || current.amcGoal) throw new WorkError('AMC画面から記録を更新してください。');
+    if (current.templateId === 'amc' || current.amcGoal)
+      throw new WorkError('AMC画面から記録を更新してください。');
     const command = parseWorkCommand(input.command);
     if (current.templateId === 'cloud-agent') {
       const reviewCommands = [
@@ -139,7 +130,7 @@ export async function PATCH(request: Request) {
         }
       }
     }
-    const next = applyWorkCommand(current, current.amcGoal ? skyWebCommand(current.amcGoal, command, user) : command, input.revision);
+    const next = applyWorkCommand(current, command, input.revision);
     if (next !== current && !(await store.update(user, next, current.revision)))
       throw new WorkError(
         '別の操作で更新されています。一覧を再読込してください。',
