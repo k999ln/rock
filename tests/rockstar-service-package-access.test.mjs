@@ -2,6 +2,15 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { includedRockstarServicePackageKeys } from '../lib/rockstar-service-package-access.ts';
 
+void test('active eSIM grants include their Starter Pack without a separate purchase claim', () => {
+  const packageKey = 'dev.agent@1.0.0';
+  assert.deepEqual([...includedRockstarServicePackageKeys({ entitlements: [], esimAccess: [
+    { state: 'active', starterAgentPack: { packages: [{ packageKey }] } },
+    { state: 'suspended', starterAgentPack: { packages: [{ packageKey: 'dev.revoked@1.0.0' }] } },
+    { state: 'active', starterAgentPack: { packages: [{ packageKey: 'invalid' }] } },
+  ] })], [packageKey]);
+});
+
 void test('only ready packages from active included profiles suppress a separate purchase', () => {
   const packageKey = 'health.local-guide@1.2.3';
   const keys = includedRockstarServicePackageKeys({ entitlements: [

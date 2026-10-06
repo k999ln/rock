@@ -342,3 +342,7 @@ Pro is being specified as a standalone compact PC for AI and PC games, with a JP
 ### Dependency security maintenance
 
 The lockfiles use explicit repository-local MIT security forks for `braces` and `http-cache-semantics`; `npm ci` installs them without a post-install patch. Keep the vendor source with the lockfiles. Run `node --test tests/dependency-security.test.mjs` and the existing `npm run verify` when changing them. Provenance and upstream replacement conditions are in [Security workstream](docs/workstreams/04-security-identity-compliance.md).
+
+### Optional eSIM cloud access
+
+After a real order has trusted installation and device proof, `/sky/purchases` can issue, rotate or revoke an expiring cloud key. Configure the explicitly contracted `ESIM_CLOUD_ACCESS_POLICIES_JSON` package/hash, duration and scopes; unset configuration stays disabled. This does not enable carrier issuance, paid execution or billing. See [the access contract](docs/sim-led-product-architecture.md#optional-esim-cloud-access-implementation). Current progress and per-squad next steps remain in [Mission Control](docs/mission-control.md).

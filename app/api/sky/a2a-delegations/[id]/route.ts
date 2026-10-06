@@ -150,6 +150,7 @@ export async function PATCH(request: Request, context: Context) {
         owner,
         'agents',
         (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+        env, request,
       ))) return missingRockstarServiceScope('Agent');
       const executionEnabled = a2aDelegationExecutionEnabled(
         (env as unknown as { A2A_DELEGATION_EXECUTION_ENABLED?: string })

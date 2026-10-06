@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string;
       REMOTE_AI_TRUSTED_RATE_KEYS?: string;
     };
-    if (!(await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED)))
+    if (!(await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request)))
       return missingRockstarServiceScope('RockstarOS');
 
     const raw = await request.text();

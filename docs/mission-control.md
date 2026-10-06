@@ -1,5 +1,7 @@
 # avokado Mission Control
 
+2026-10-06照合: GitHub main `e12d880c`では378登録task。以下の版履歴にある376件はその時点の記録であり、現在の実績件数ではない。段階は各部隊の対象範囲で読み、実装・実機・本番を区別する。今回のeSIM統合と残作業は[進行記録](workstreams/10-git-ci-operations.md#全体進行と未統合差分の回収2026-10-06)を参照。
+
 版: 3.0 / 2026-09-27
 
 AMCは3製品と共有OSを5師団32部隊へ分け、責任、成果、作業、証拠を管理する。部隊・担当・実行計画の正本は[data/mission-control.json](../data/mission-control.json)、task状態の正本は[data/project-status.json](../data/project-status.json)。

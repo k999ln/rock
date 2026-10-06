@@ -509,3 +509,7 @@ SPIDER cycle 48: 既存エージェント定義は安全にopenした同じFDの
 ### PR統合時の共通契約復旧（G04 / H1、2026-10-05）
 
 Skyの詳細表示は同じcatalogの料金・環境・接続状態を読むだけで、接続・実行を開始しない。Jev Routerは登録済みでも未接続と表示する。商品からの依頼はZemaへ同じTool IDで引き継ぎ、既存のlocal aliasを正規化する。AMCのみ8,000字、通常は2,000字、UUID・期限・一回消費を維持する。Zemaのcloud単価・見積・利用者上限・接続待ちの表示を復旧し、AMC手動計画はremote LLMへ送信しない。未保存のAMC入力は確認してから置き換え、保存済みGoalを勝手に削除しない。AMC APIはZema利用権とSky専用計画の不信入力を検査し、汎用仕事APIはAMC操作を拒否する。offline HTMLには認可capability発行器を組み込まず、Sky実行/検収を拒否する。合格条件は所有者/改訂/費用境界、入力保存、読取専用詳細、既存WorkPlanとAMC APIの回帰と同一SHA CI。実機・Provider・公開受入は別である。
+
+## eSIM導入確認後のクラウド利用権（2026-10-06統合）
+
+既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。

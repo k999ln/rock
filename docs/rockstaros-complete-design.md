@@ -551,3 +551,7 @@ O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Ide
 合成値を使ったhost試験と既存SQLite Wallet回帰を合格条件とし、通常応答の互換性、想定外のprivate文字列／objectの拒否、無出力の失敗、追加fieldの非転送を確認する。同一SHAのCodeQL再解析は別証拠であり、host成功をguest boot・実機・24時間・本番受入へ転用しない。実serviceによる秘密漏洩を観測したとは主張しない。[検証記録](evidence/spider-observer-output-schema.json)とPRの再解析結果を参照する。
 
 統合受入補足: observerの年月は検証後の年/月整数からYYYY-MMへ再構成し、worker_aliveは固定booleanへ変換して出力する。応答object/文字列を直接診断へ転送しない。既存13 privacy＋22 Wallet host試験と同一候補CodeQLを再確認する。実guest受入とは別。
+
+## eSIM導入確認後のクラウド利用権（2026-10-06統合）
+
+既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
