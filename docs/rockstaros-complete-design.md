@@ -519,3 +519,8 @@ Gameの通信結果が不明な場合、処理試行の戻り値を成功へ昇�
 ## 2026-10-01 決済・Walletの追加設計
 
 Sky Marketの既存型・JPY買い切り・10%配分に合わせた[統合設計](sky-commerce-design.md)と[Wallet画面/台帳境界](wallet-commerce-design.md)を参照する。金銭事実・購入権・MCP実行権・銀行受取を分離し、旧月額8.88 USD案は今回の対象外。設計草案の検証と実Provider・実機の受入は分ける。
+
+
+## 専用モデルの追加工程（2026-10-05）
+
+Local AI / AI02にrandom-initの学習・保存・再開・CPU推論の研究toolkitを追加。OSの権限境界や既存model profileは変更せず、Mini実機・cloud配備は未受入。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](avokado-llm-pretraining.md)を参照。

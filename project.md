@@ -1355,7 +1355,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | DOC03 | rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定） | 完了 | [記録](docs/rocketstar-design/README.md) · [記録](docs/rocketstar-design/inventory.json) · [記録](docs/rocketstar-design/verification.json) · [記録](scripts/verify-rocketstar-archive.py) · [記録](data/design-document-index.json) |
 | DOC04 | avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新 | 完了 | [記録](README.md) · [記録](docs/brand/avokado/avokado-r5-editorial-hero.png) · [記録](docs/brand/avokado/avokado-motion-v2.gif) · [記録](docs/brand/avokado/avokado-system-map.svg) · [記録](data/design-document-index.json) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
-| AI02 | 親タスク: モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI02 | 親タスク: モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) · [記録](docs/avokado-llm-pretraining.md) · [記録](docs/evidence/avokado-llm-pretraining.json) · [記録](toolkits/avokado-llm/train.py) · [記録](toolkits/avokado-llm/test_pretraining.py) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI04 | 親タスク: 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
@@ -1608,4 +1608,13 @@ O2 / R03、ROCK、Web / PWA。最新main `4a22eb25`を基点に、欠落したWo
 H1 / AMC02、ROCK、主stream Git / CI / Operations。最新main `0c90253c` 起点で、既存宛先の確認後にpathを再openするCodeQL #52を修復。安全に開いた通常fileのFDと現在のcanonical位置・BigInt identityを照合し、期待UTF-8 bytes＋1以内で同じFDから比較する。全宛先の事前検査、custom保持、wx新規作成、launcher設定を維持。#53の作成側競合、親pathの完全固定、全体atomic性は別課題として残す。
 
 新規20件と直接module importの既存4件、計24/24合格。新規試験に旧sourceだけを入れると2 pass/18 fail（親2件含む）で、同サイズの外側合成bytesを読む退行を再現。修正前同一ref CodeQLは両言語成功、#52/#53を含む42件を保存。mission/project同期・check、source syntax、diff/check合格。designは既存catalog ID重複、verifyは既存DB inventory不一致で停止。修正後GitHub結果は未取得で、[要約証拠](docs/evidence/spider-agent-preflight-read.json)とPRへ区別して記録する。H1次task AMC01・受入段階・料金保留は変更しない。main merge・配備・実機操作・実Codex設定変更なし。前回cycle47の容量不足で未保存だった最終記録は、空き容量回復後に保存を完了した。
+
+
+## 2026-10-05 avokado自作重みのhost試作検証
+
+AI02の別工程として124800 parametersをrandom-initから1000 steps学習。外部pretrained重みは不使用。CPUで合成80件（train 64 / validation 16）、1024000 byte tokensを処理。保存/再読込み・未来token遮断・bit-exact再開・CLI/loopback HTTP parity等6試験が合格。実測値とsource hashは`docs/evidence/avokado-llm-pretraining.json`。weightsはGit外に保存。合成テンプレートの損失低下を実用言語能力としない。次は権利確認済みデータ・独立評価・Mini RAM/熱/遅延とexport/runtime互換の確定。本学習・実機・cloud配備は未受入、追加有料compute上限0。検証: `python -m unittest discover -s toolkits/avokado-llm -p test_*.py -v` = 6/6。`npm run verify`はexit 0（Node 802、Worker/D1 API 1048、CSV 113）で合格。DB状態生成物・Toolkitガイド登録を修正後の結果。実装`573f9f2253fc7bbaccdb5f6c2893e24596671328`をGitHub `codex/avokado-llm`へ保存し、draft PR #63を作成。文書・実装は作業branch反映済み。main統合・公開なし。GitHub CIは確認時実行中で、local verify合格とは別。
+
+## 2026-10-05 avokado専用モデルのゼロ事前学習試作を開始
+
+利用者がゼロからの事前学習、端末内とクラウドの両方、追加費用なしの試作を明示指定。AI02 / Android・Device・Local AIを主担当とし、無償のhost CPUでrandom-initの小型学習・評価・保存・再開・推論を先に検証する。Mini実機、cloud deployment、実用会話、本学習は未受入。既存Qwen/Broker/料金gateを置換しない。
 

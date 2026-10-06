@@ -144,7 +144,8 @@
         "docs/local-ai-os-integration-20260915.md",
         "contracts/local-ai-runtime.json",
         "contracts/decision-provider.json",
-        "data/decision-fabric-policy.json"
+        "data/decision-fabric-policy.json",
+        "docs/avokado-llm-pretraining.md"
       ]
     },
     {

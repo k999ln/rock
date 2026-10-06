@@ -1500,6 +1500,18 @@
       "authority": "advisory_only",
       "status": "designed_not_implemented",
       "task": "AI07"
+    },
+    "avokadoPretraining": {
+      "decisionDate": "2026-10-05",
+      "reason": "Explicit user request: from-scratch pretraining, device and cloud, zero additional spending for prototype",
+      "initialization": "random_no_pretrained_weights",
+      "targets": [
+        "device",
+        "cloud"
+      ],
+      "additionalSpendLimit": 0,
+      "design": "docs/avokado-llm-pretraining.md",
+      "task": "AI02"
     }
   },
   "commercialPolicyRevision": {

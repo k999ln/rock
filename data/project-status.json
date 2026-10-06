@@ -2425,7 +2425,11 @@
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
+        "docs/ai-native-os-architecture.md",
+        "docs/avokado-llm-pretraining.md",
+        "docs/evidence/avokado-llm-pretraining.json",
+        "toolkits/avokado-llm/train.py",
+        "toolkits/avokado-llm/test_pretraining.py"
       ]
     },
     {
@@ -5531,5 +5535,38 @@
     "accepted": false,
     "deployed": false,
     "validation": "通常契約回帰28/29、新規6/6。残りは既存AMC URL期待差。対象型エラー15件解消、local-guide既存1件。project/mission/lint合格。designは既存catalog重複、verifyは既存DB metadata不一致で停止。実認証/実PC/実HTTP/課金/モデル実行の受入は未実施。"
+  },
+  "avokadoPretraining": {
+    "status": "host_synthetic_prototype",
+    "task": "AI02",
+    "primaryOwner": "ROCK",
+    "initialization": "random_no_pretrained_weights",
+    "targets": [
+      "device",
+      "cloud"
+    ],
+    "additionalSpendLimit": 0,
+    "deviceAccepted": false,
+    "cloudDeployed": false,
+    "productionReady": false,
+    "evidence": "docs/evidence/avokado-llm-pretraining.json",
+    "parameters": 124800,
+    "steps": 1000,
+    "verification": {
+      "pythonTestsPassed": 6,
+      "repositoryVerify": "passed",
+      "nodeTests": 802,
+      "workApiAssertions": 1048,
+      "csvAssertions": 113
+    },
+    "delivery": {
+      "branch": "codex/avokado-llm",
+      "implementationCommit": "573f9f2253fc7bbaccdb5f6c2893e24596671328",
+      "pullRequest": "https://github.com/k999ln/rock/pull/63",
+      "githubSaved": true,
+      "mainMerged": false,
+      "published": false,
+      "ciAtImplementationCommit": "in_progress_at_last_check"
+    }
   }
 }
