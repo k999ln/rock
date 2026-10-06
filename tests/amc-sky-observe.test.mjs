@@ -235,11 +235,9 @@ void test('sourceFile refuses unavailable safe-open flags before opening or read
 void test('sourceFile closes its descriptor when fstat, named lstat or reading fails', async (t) => {
   for (const operation of ['fstat', 'lstat', 'read']) await t.test(operation, (t) => {
     const f = fixture(t), failure = new Error('Synthetic I/O failure');
-    const io = instrument(t, {
-      ...(operation === 'fstat' ? { beforeFstat() { throw failure; } }
+    const io = instrument(t, (operation === 'fstat' ? { beforeFstat() { throw failure; } }
         : operation === 'lstat' ? { afterLstat() { throw failure; } }
-          : { beforeRead() { throw failure; } }),
-    });
+          : { beforeRead() { throw failure; } }));
     assert.throws(() => loadObserve(io.api).sourceFile(f.root, 'source.bin'), (error) => error === failure);
     assert.equal(io.opened.length, 1);
     assert.deepEqual(io.closed, io.opened);

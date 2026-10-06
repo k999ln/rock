@@ -261,11 +261,9 @@ void test('bounded descriptor reads handle short chunks and compare UTF-8 bytes 
 void test('fstat, named lstat and read failures all close the opened descriptor without writes', async (t) => {
   for (const operation of ['fstat', 'lstat', 'read']) await t.test(operation, (t) => {
     const f = fixture(t), failure = new Error('Synthetic preflight I/O failure');
-    const io = instrument(t, {
-      ...(operation === 'fstat' ? { beforeFstat() { throw failure; } }
+    const io = instrument(t, (operation === 'fstat' ? { beforeFstat() { throw failure; } }
         : operation === 'lstat' ? { beforeLstat(file) { if (file === f.first.path) throw failure; } }
-          : { beforeRead() { throw failure; } }),
-    });
+          : { beforeRead() { throw failure; } }));
     assert.throws(() => loadAgent(io.api).installAgents(f.project), (error) => error === failure);
     assert.equal(io.opened.length, 1);
     noWrites(io); closed(io);

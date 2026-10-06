@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { protectedSkyEvents } from './amc-sky-authority.mjs';
 import { renderVisualization } from './sync-mission-control.mjs';
 import {
   compileGoal,
@@ -37,6 +38,12 @@ export function renderGoalWorkbench(sources = loadGoalSources()) {
   const engine = readFileSync(
     resolve(root, 'scripts/amc-goal-engine.mjs'),
     'utf8',
+  ).replace(
+    "import { requireSkyAuthority } from './amc-sky-authority.mjs';",
+    `function requireSkyAuthority(goal, event) {
+      if (goal.skyBrief && ${JSON.stringify([...protectedSkyEvents])}.includes(event.type))
+        throw new Error('Offline workbench cannot authorize Sky execution or acceptance');
+    }`,
   ).replace(/^export (?=(?:function|const|class)\s)/gm, '');
   if (/^import\s|^export\s/m.test(engine))
     throw new Error(

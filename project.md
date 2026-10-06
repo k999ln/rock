@@ -1133,7 +1133,6 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
-## 全taskの作業進捗
 
 ## 2026-10-05 — リポジトリ生成物の整理（G01、対象検証済み）
 
@@ -1145,8 +1144,10 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 
 整理commit `154f2cfc`のGitHub全体verify（run 37284888719）は合格。CodeQL・repair regressions・Web measurementも合格、既存SPIDER secrets検査は未解決。その後のmain `0c90253c`更新を保持して競合を解消し、旧SHAの合格を新しい統合候補へ転用しない。最新統合後の`npm run verify`はproject/repository/version/schema合格後、main由来のDB状態文書の不一致で停止。`scripts/database-status.mjs`・`db/schema.ts`・`data/database-status.json`・`docs/database-status.md`はorigin/mainと差分なし。main側のmetadata・後続検証を修正後に全体verifyを再実行する。
 
+## 全taskの作業進捗
+
 <!-- project-status:start -->
-最終更新: 2026-09-27 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
+最終更新: 2026-10-05 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -1548,7 +1549,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: AMCのWeb計画・手動台帳からGoal JSONを保存し、明示コマンドでローカルCodexへ着手可能な一件を渡す入口を追加。隔離した試験Goalの一件が実Codexで成果物を作り、AMCでは検収待ちまで記録された。元のWeb記録へは自動同期しない。次は同一Web記録への安全な結果同期、停止・復旧と本人通知、使いやすさ確認。公開する場合はGitHub同期と同一候補の配備readbackを別に行う。自律的な連続実行・自動通知・model導入・課金・公開・実売買は未接続／未実行。正本5師団32部隊は参照専用。
+次の作業: G04: PR #63–65 / #69–76の統合候補は全体verify成功（Node 1352 pass / 1 skip、API1192、CSV385）。同一commitのGitHub native/Android/Phone/CodeQLと履歴secret scanを照合してからmainへ統合。実機・本番・公開は別gate。
 <!-- project-status:end -->
 
 ## 次段階の設計
@@ -1647,3 +1648,7 @@ Local AIの実Kotlin compileでtimeoutのInt/Long不一致を検出し、API v4�
 
 `1d7506cd`で総合・native・Android・Phone準備・CodeQL・SPIDER回帰とAPK buildが成功。APK再実行1回目の外部Kotlin取得HTTP 500も保持し、2回目で成功した。最終照合中にmainが`624124cf`へ進んだため、Sky library・CSV・AMC更新を保持して統合し、進捗追記の競合を両方残して解消する。APK overlay/lockは変更しない。統合後の最新CIはPRで追跡する。Scalewayのアカウント設定記録は存在し、追加費用上限は未確定。
 
+
+## 未完了PR統合候補のローカル受入
+
+G04 / ROCK。11 PRの履歴を保持し、main 0c90253cのSky/AMC更新と認可・停止・予算・再検収・API試験の欠落を復旧。npm run verify exit 0、Node 1352 pass / 1 platform skip、Worker/D1 1192、CSV API 385 assertions。自作LLM host 6件、APK staging 15件、phone準備19件も合格。履歴secret候補・Linux/Androidの同一候補CIは別途追跡する。実機OS/Provider/本番/公開は未受入。証拠: docs/evidence/open-pr-integration.json。次: GitHubへ保存し、同一SHAのCIを確認してmainへ統合。

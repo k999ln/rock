@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-09-27
+更新日: 2026-10-05
 
 ## 全体
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-AMCのWeb計画・手動台帳からGoal JSONを保存し、明示コマンドでローカルCodexへ着手可能な一件を渡す入口を追加。隔離した試験Goalの一件が実Codexで成果物を作り、AMCでは検収待ちまで記録された。元のWeb記録へは自動同期しない。次は同一Web記録への安全な結果同期、停止・復旧と本人通知、使いやすさ確認。公開する場合はGitHub同期と同一候補の配備readbackを別に行う。自律的な連続実行・自動通知・model導入・課金・公開・実売買は未接続／未実行。正本5師団32部隊は参照専用。
+G04: PR #63–65 / #69–76を最新main 0c90253cへ統合中。依存・catalog・AMC認可/停止/再検収と欠落API試験を復旧し、同一候補の全体verify・native/Android CIを検証してからmainへ反映する。実機・本番・秘密候補の未受入を分離。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

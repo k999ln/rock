@@ -30,7 +30,7 @@ void test('Jev Router remains an unconnected candidate rather than an active Sky
 void test('Sky home never presents Jev Router registration as a working connection', () => {
   assert.match(home, /if \(tool\.id === 'jev-router'\) return '導入条件を見る'/);
   assert.match(home, /if \(tool\.id === 'jev-router'\) \{\s*setSelected\(null\);\s*router\.push\('\/sky\/tools\/jev-router'\)/);
-  assert.match(home, /skyToolUiState\(tool, \{ fashionConnected, connectedTools, pcConnected: connected, service \}\)/);
+  assert.match(home, /skyToolUiState\(tool, \{ fashionConnected, connectedTools, pcConnected, service \}\)/);
   assert.match(home, /selected\.id === 'jev-router' \? \(/);
   assert.match(home, /本体はSkyに未接続です/);
 });

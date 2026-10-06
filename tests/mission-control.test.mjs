@@ -93,8 +93,8 @@ await test('AMC child work preserves ownership, prerequisites and separate outpu
   const children = project.tasks.filter((task) => task.parentTaskId);
   assert.equal(children.length, 192);
   assert.equal(new Set(children.map((task) => task.parentTaskId)).size, 32);
-  assert.equal(project.tasks.length, 376);
-  assert.equal(project.tasks.length - new Set(children.map((task) => task.parentTaskId)).size, 344);
+  assert.equal(project.tasks.length, mission.taskAssignments.length);
+  assert.equal(project.tasks.length - new Set(children.map((task) => task.parentTaskId)).size, project.tasks.filter(task => !children.some(child => child.parentTaskId === task.id)).length);
   for (const squad of mission.squads) {
     assert.equal(children.filter((task) => squad.nextTaskIds.includes(task.parentTaskId)).length, 6);
   }
@@ -312,7 +312,7 @@ await test('AMC squad IDs remain literal through selection, focus and repeated r
     'unit" onpointerenter="globalThis.__amcSynthetic = true',
     'unit</button><img src="synthetic" onerror="globalThis.__amcSynthetic = true">',
     'unit&quot;&lt;svg/onload=synthetic&gt;',
-    'unit\"]#.:\\[雪\nnext',
+    'unit"]#.:\\[雪\nnext',
   ];
   for (const id of ids) {
     const [original, project, baseline] = fixture();

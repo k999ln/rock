@@ -85,6 +85,7 @@ export type AmcGoal = {
   maxParallel: number;
   createdAt: string | null;
   requestBrief?: AmcBrief & { schema: string; templateId: string };
+  skyBrief?: AmcBrief & { schema: string; templateId: string; planId?: string; planRevision?: number };
   scopeWarning: string;
   selectedSquadIds: string[];
   tasks: AmcTask[];

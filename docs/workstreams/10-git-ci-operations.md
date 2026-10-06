@@ -97,3 +97,7 @@ Local AI unsigned APKの現行source buildを再開し、CI `37278057340`で`sdk
 再現コマンド: `PYTHONPATH=src:os:tests python3 -B -W error::ResourceWarning -m unittest test_memory_store -v`（native root）、`npm run verify`、Linuxで`python3 scripts/test-native.py --output <new-output-dir> --diagnostic-stacks`。状態確認は`node scripts/check-release-readiness.mjs`、`node scripts/check-android-first-flash-gate.mjs`、`node scripts/check-sky-launch.mjs --require-stage focused`。最後のfocused未合格exit 1は既知の受入不足で、試験失敗を隠す目的でgateを外さない。
 
 後続native CIでGame B/ATMの合計処理時間だけが2秒を超えたため、transportをEvent境界で保持して独立性を検査し、実TLS deadlineは従来の範囲で別計測する。関連7試験・独立処理3.1秒遅延の再現が合格。失敗runと同一sourceでの成功runも証拠JSONに保持した。
+
+## 残PRの開発・契約復旧（G04、2026-10-05）
+
+ROCK担当。#63–65 / #69–76をmain 0c90253cへ統合する。ecb4b2afで失われた依存宣言・SIM利用権正本・AMC認可/再検収/強制停止・catalog接続契約・API検証範囲を復旧する。現在のWorkPlan保存とSky library、AMC手動入力UIは保持する。生成物の整理・LLM host研究・Mini launcher・Local AI APKはそれぞれの受入境界を維持する。対象回帰→npm run verify→同一SHA CIが合格条件。秘密情報履歴の候補は未分類で、検査の無効化や広い除外をしない。

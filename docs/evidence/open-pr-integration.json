@@ -1,0 +1,50 @@
+{
+  "task": "G04",
+  "status": "local_verified_github_pending",
+  "baseMain": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+  "mergedPullRequests": [
+    63,
+    64,
+    65,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76
+  ],
+  "validation": {
+    "npm run verify": {
+      "exitCode": 0,
+      "nodePass": 1352,
+      "nodeSkip": 1,
+      "nodeFail": 0,
+      "workApiAssertions": 1192,
+      "csvApiAssertions": 385
+    },
+    "avokadoLlm": {
+      "passed": 6,
+      "scope": "host CPU synthetic fixtures"
+    },
+    "localAiStaging": {
+      "stageTests": 15,
+      "phonePreparationTests": 19
+    },
+    "github": "pending on committed candidate"
+  },
+  "limits": [
+    "No physical OS acceptance, signing, flashing, provider acceptance or production deployment.",
+    "Historical secret-scan candidates remain under investigation; no all-security-clear claim."
+  ],
+  "sourceHashes": {
+    "components/sky-chat-workspace.tsx": "73b5c7a3f036cb90ccd769bc829d85b81a022cf14ced7ef523e21532756be34b",
+    "components/sky-workspace.tsx": "fa1c7e93396f98342126d19faafeee55b1feb7c7917c5904644f0fba3761b14d",
+    "scripts/amc-codex.mjs": "d5d95e987e811b87810b14bc7ce11705fc8cf8c3e09791af95cc3646da83647d",
+    "scripts/amc-goal-engine.mjs": "c1aac8438c3d066f6f3cf5194c800ba212114111abcdd286b008602670a91702",
+    "scripts/amc-goal.mjs": "ff48f34756e68417789ccdad0d2ba2ea8642be40b4cd19728423671aa6de3da9",
+    "scripts/check-work-api.mjs": "f1f552199ee51a17983865b1711cfd95152854081c67e930ef314c0c21b7a973",
+    "lib/sky-zema-handoff.ts": "8b311b0ca87659524f9ddf0690a265e4bedbc61d45cbeaa43f496202bf9718c3"
+  }
+}

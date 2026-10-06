@@ -77,7 +77,7 @@ await test('AMC is a first-party connected Sky Tool and an explicit Zema routing
   assert.ok(tool);
   assert.equal(tool.status, 'ready');
   assert.equal(tool.origin, 'rockstaros');
-  assert.equal(tool.launchPath, '/amc');
+  assert.equal(tool.launchPath, '/zema/amc');
   assert.ok(SKY_CONNECTION_TOOLS.includes(tool.id));
   assert.ok(skyRoles.some((role) => role.toolId === tool.id));
   assert.equal(

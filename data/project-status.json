@@ -32,9 +32,9 @@
     "latestMainIntegrated": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
     "pullRequest": "https://github.com/k999ln/rock/pull/69"
   },
-  "updatedAt": "2026-09-27",
+  "updatedAt": "2026-10-05",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "AMCのWeb計画・手動台帳からGoal JSONを保存し、明示コマンドでローカルCodexへ着手可能な一件を渡す入口を追加。隔離した試験Goalの一件が実Codexで成果物を作り、AMCでは検収待ちまで記録された。元のWeb記録へは自動同期しない。次は同一Web記録への安全な結果同期、停止・復旧と本人通知、使いやすさ確認。公開する場合はGitHub同期と同一候補の配備readbackを別に行う。自律的な連続実行・自動通知・model導入・課金・公開・実売買は未接続／未実行。正本5師団32部隊は参照専用。",
+  "nextAction": "G04: PR #63–65 / #69–76の統合候補は全体verify成功（Node 1352 pass / 1 skip、API1192、CSV385）。同一commitのGitHub native/Android/Phone/CodeQLと履歴secret scanを照合してからmainへ統合。実機・本番・公開は別gate。",
   "tasks": [
     {
       "id": "AMC02",

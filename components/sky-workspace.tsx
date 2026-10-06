@@ -7,6 +7,10 @@ import {
   type CSSProperties,
   type SyntheticEvent,
 } from 'react';
+import Link from 'next/link';
+import SkyToolOverview from '@/components/sky-tool-overview';
+import { skyToolUiState, type SkyToolUiContext } from '@/lib/sky-tool-ui';
+import { useSkyServiceStatus } from '@/lib/use-sky-service-status';
 import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
@@ -48,9 +52,7 @@ import SkyActivationPanel from '@/components/sky-activation-panel';
 import SkyConnectionCenter from '@/components/sky-connection-center';
 import SkyPublisherForm from '@/components/sky-publisher-form';
 import WorkspaceShell from '@/components/workspace-shell';
-import ToolCharacterDetails, {
-  ToolCharacter,
-} from '@/components/tool-character';
+import { ToolCharacter } from '@/components/tool-character';
 import {
   ExecutionSignin,
   useExecutionAccess,
@@ -162,75 +164,8 @@ function providerFor(tool: Automation) {
     }
   );
 }
-function statusFor(
-  tool: Automation,
-  fashionConnected = false,
-  connectedTools: string[] = [],
-  pcConnected = false,
-) {
-  if (
-    tool.status === 'candidate' &&
-    tool.runner === 'candidate-local' &&
-    connectedTools.includes(tool.id)
-  )
-    return {
-      label: '導入候補・下書きのみ',
-      detail: '本体は未接続／下書きと接続条件だけ確認できます',
-      className: 'is-candidate',
-    };
-  if (tool.status === 'candidate' && connectedTools.includes(tool.id))
-    return {
-      label: 'Sky登録済み',
-      detail: '専用画面で接続状態と実行器を確認',
-      className: 'is-connect',
-    };
-  if (tool.status === 'candidate')
-    return {
-      label: '導入候補',
-      detail: 'Skyへ登録して実行器を接続できます',
-      className: 'is-candidate',
-    };
-  if (tool.runner === 'delivery-local')
-    return {
-      label: pcConnected ? 'PC接続中' : 'PC接続後',
-      detail: pcConnected ? 'このPCで納品記録を照合' : '利用者のPCで実行',
-      className: pcConnected ? 'is-ready' : 'is-connect',
-    };
-  if (tool.integration === 'fashion-brand-ops')
-    return {
-      label: fashionConnected ? '接続済み' : 'PCなしのブラウザ簡易版',
-      detail: fashionConnected ? '41操作を利用可能' : '必要ならPCのMCPへ接続',
-      className: fashionConnected ? 'is-ready' : 'is-connect',
-    };
-  if (tool.runner === 'subscription-ledger')
-    return {
-      label: 'PC / MCP',
-      detail: 'SkyからPC上の専用システムへ接続',
-      className: 'is-connect',
-    };
-  if (tool.runner === 'jev-evaluation')
-    return {
-      label: '外部AI接続が必要',
-      detail: '利用同意とProvider設定後に評価',
-      className: 'is-connect',
-    };
-  if (tool.id === 'rockstar-csv-cleanup')
-    return {
-      label: '今使える',
-      detail: 'Skyの自動化Toolとして実行',
-      className: 'is-ready',
-    };
-  if (tool.id === 'rockstar-amc')
-    return {
-      label: '計画・記録が使える',
-      detail: 'ZemaでGoalと進捗を管理 · ローカルCodexは明示操作',
-      className: 'is-ready',
-    };
-  return {
-    label: '今使える',
-    detail: 'ブラウザ内で実行',
-    className: 'is-ready',
-  };
+function statusFor(tool: Automation, fashionConnected = false, connectedTools: string[] = [], pcConnected = false, service?: SkyToolUiContext['service']) {
+  return skyToolUiState(tool, { fashionConnected, connectedTools, pcConnected, service });
 }
 
 function roleFor(tool: Automation) {
@@ -246,6 +181,7 @@ function actionLabel(
   connectedTools: string[],
   pcConnected: boolean,
 ) {
+  if (tool.id === 'jev-router') return '導入条件を見る';
   if (tool.status === 'candidate') {
     if (!connectedTools.includes(tool.id)) return '登録して次へ';
     return tool.runner === 'candidate-local'
@@ -266,6 +202,8 @@ export default function SkyWorkspace({
   initialMcpOpen?: boolean;
   initialPublishOpen?: boolean;
 }) {
+  const [inspected, setInspected] = useState<Automation | null>(null);
+  const service = useSkyServiceStatus();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<FeedFilter>('おすすめ');
   const [selected, setSelected] = useState<Automation | null>(null);
@@ -439,6 +377,11 @@ export default function SkyWorkspace({
   }
 
   function primaryAction(tool: Automation, request = '') {
+    if (tool.id === 'jev-router') {
+      setSelected(null);
+      router.push('/sky/tools/jev-router');
+      return;
+    }
     if (tool.status === 'candidate' && connectedTools.includes(tool.id)) {
       openConnectedTool(tool, request);
       return;
@@ -536,6 +479,7 @@ export default function SkyWorkspace({
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
+      <Link href="/sky/marketplace">AI・自動化マーケットプレイス</Link>
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
           <section
@@ -762,6 +706,7 @@ export default function SkyWorkspace({
                 fashionConnected,
                 connectedTools,
                 connected,
+                service,
               );
               return (
                 <article
@@ -774,14 +719,9 @@ export default function SkyWorkspace({
                   }
                 >
                   <div className="sky-timeline-node">
-                    <ToolCharacterDetails
-                      id={tool.id}
-                      name={tool.name}
-                      description={tool.description}
-                      status={`${status.label} · ${status.detail}`}
-                      result="結果はZemaの会話から確認できます。"
-                      next="詳細を閉じ、カードのボタンから接続・入力を確認してください。"
-                    />
+                    <button type="button" aria-label={`${tool.name}の機能と利用方法を見る`} aria-haspopup="dialog" onClick={() => setInspected(tool)}>
+                      <ToolCharacter id={tool.id} />
+                    </button>
                   </div>
                   <div className="sky-post-body">
                     <div className="sky-post-meta-row">
@@ -852,6 +792,13 @@ export default function SkyWorkspace({
         </section>
       </div>
 
+      <Dialog open={inspected !== null} onOpenChange={(open) => { if (!open) setInspected(null); }}>
+        {inspected && <SkyToolOverview tool={inspected} state={skyToolUiState(inspected, { fashionConnected, connectedTools, pcConnected: connected, service })}>
+          <ol>{inspected.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+          <p>{inspected.note}</p>
+          <Link href={`/sky/tools/${encodeURIComponent(inspected.id)}`}>手順・提供元を詳しく見る</Link>
+        </SkyToolOverview>}
+      </Dialog>
       <Dialog
         open={selected !== null}
         onOpenChange={(open) => {
@@ -891,7 +838,9 @@ export default function SkyWorkspace({
                 </div>
               </div>
 
-              {selected.status === 'candidate' ? (
+              {selected.id === 'jev-router' ? (
+                <div className="sky-candidate-state"><p>本体はSkyに未接続です。登録は実行や接続の完了ではありません。</p><Link href="/sky/tools/jev-router">導入条件を見る</Link></div>
+              ) : selected.status === 'candidate' ? (
                 <>
                   <DialogDescription className="rock-dialog-description">
                     {selected.description}

@@ -505,3 +505,7 @@ open時の削除済みpathのENOENTだけを従来どおりnullとして記録�
 
 
 SPIDER cycle 48: 既存エージェント定義は安全にopenした同じFDの通常file・byte長・canonical位置・BigInt identityを確認し、期待UTF-8 bytes＋1以内で比較する。custom設定がある場合は作成前に停止する。読取りpreflightに限定し、新規作成pathの競合やinstall全体のatomic性は未解決。詳細は[AMC設計](amc-goal-orchestrator.md#spider-既存エージェント定義の読取り確認)と[証拠](evidence/spider-agent-preflight-read.json)。
+
+### PR統合時の共通契約復旧（G04 / H1、2026-10-05）
+
+Skyの詳細表示は同じcatalogの料金・環境・接続状態を読むだけで、接続・実行を開始しない。Jev Routerは登録済みでも未接続と表示する。商品からの依頼はZemaへ同じTool IDで引き継ぎ、既存のlocal aliasを正規化する。AMCのみ8,000字、通常は2,000字、UUID・期限・一回消費を維持する。Zemaのcloud単価・見積・利用者上限・接続待ちの表示を復旧し、AMC手動計画はremote LLMへ送信しない。未保存のAMC入力は確認してから置き換え、保存済みGoalを勝手に削除しない。AMC APIはZema利用権とSky専用計画の不信入力を検査し、汎用仕事APIはAMC操作を拒否する。offline HTMLには認可capability発行器を組み込まず、Sky実行/検収を拒否する。合格条件は所有者/改訂/費用境界、入力保存、読取専用詳細、既存WorkPlanとAMC APIの回帰と同一SHA CI。実機・Provider・公開受入は別である。
