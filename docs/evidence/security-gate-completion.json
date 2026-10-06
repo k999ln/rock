@@ -28,7 +28,8 @@
       "upstream": "4.3.0",
       "patched": "@rockstar/http-cache-semantics@4.3.0-rock.1",
       "upstreamStillReproduces": true,
-      "reason": "Prevent max-stale and stale-while-revalidate from reviving security-zeroed responses"
+      "reason": "Prevent max-stale and stale-while-revalidate from reviving security-zeroed responses",
+      "additionalCodeQLFix": "js/polynomial-redos: literal comma split + per-token trim; one-million-space regression"
     }
   },
   "historyScan": {
@@ -55,7 +56,7 @@
       }
     }
   },
-  "localFullVerify": "Executed; stopped at design:check because npm ci could not finish after disk exhaustion (missing dependency). Full npm ci + verify required in GitHub CI.",
+  "localFullVerify": "Executed; stopped at llm:architecture:check because npm ci could not finish after disk exhaustion (missing ai package). Full npm ci + verify required in GitHub CI.",
   "githubSameShaChecks": "pending",
   "mainIntegration": "pending",
   "boundaries": [

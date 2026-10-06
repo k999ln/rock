@@ -21,7 +21,7 @@
     {
       "path": "index.js",
       "upstreamSha256": "ede1cc404a492fa348eb9d97a3007a0d72aa717bd22cd86a56bd0824c19729ca",
-      "patchedSha256": "6fe495bcec13fa420265dd864a717fa4da96b6554bc52e35f3d36d68072ef636"
+      "patchedSha256": "0951c9d26471af18a8e21988829ce08f8ccf01e267740eab4c601345b964d34a"
     },
     {
       "path": "package.json",

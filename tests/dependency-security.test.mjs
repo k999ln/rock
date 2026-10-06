@@ -85,3 +85,14 @@ void test('lockfiles retain explicit local fork identities without vulnerable re
     }
   }
 });
+
+void test('connection header tokenization is linear and preserves hop-by-hop removal', () => {
+  const cache = policy({ 'cache-control': 'public, max-age=3600' });
+  const headers = cache._copyWithoutHopByHopHeaders({
+    connection: ' \tx-remove' + ' '.repeat(1_000_000) + ',\t x-remove-too  ',
+    'x-remove': 'private', 'x-remove-too': 'private', 'x-keep': 'public',
+  });
+  assert.equal(headers['x-remove'], undefined);
+  assert.equal(headers['x-remove-too'], undefined);
+  assert.equal(headers['x-keep'], 'public');
+});

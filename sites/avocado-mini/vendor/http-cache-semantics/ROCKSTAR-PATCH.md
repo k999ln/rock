@@ -7,3 +7,5 @@ The 4.3.0 registry release still reproduces the reported max-stale disclosure de
 Validation: `node --test tests/dependency-security.test.mjs` from the repository root. Original code fails four of eight regression tests; patched code passes all eight. Full build/CI acceptance is tracked separately in docs/evidence/security-gate-completion.json. ROCKSTAR-PATCH.json records original and patched file digests.
 
 Maintenance: Security / SYS15 owns these temporary forks. Recheck the actual exploit when upstream publishes a fix; do not rely only on its advisory version range. Remove the local override only after the same regression tests and full verify pass with the upstream package. Do not modify vendor/mr.
+
+CodeQL additionally identified polynomial whitespace backtracking in Connection header splitting. Split on the literal comma and trim each token to preserve behavior with linear work; the regression includes one million spaces.
