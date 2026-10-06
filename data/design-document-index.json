@@ -67,13 +67,20 @@
       "documents": [
         "docs/avocado-mini-r5/README.md",
         "docs/avocado-mini-r5/package/integrated_design.md",
-        "docs/avocado-mini-r5/verification.json"
+        "docs/avocado-mini-r5/verification.json",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json",
+        "docs/avocado-mini-cellular.md",
+        "data/avocado-mini-cellular.json"
       ]
     },
     {
       "id": "product_requirements",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
-      "documents": ["docs/product-baseline.md", "data/product-baseline.json"]
+      "documents": [
+        "docs/product-baseline.md",
+        "data/product-baseline.json"
+      ]
     },
     {
       "id": "whole_os",
@@ -93,17 +100,25 @@
     {
       "id": "product_service_system_relations",
       "coverage": "DETAILED_WITH_OPEN_DECISIONS",
-      "documents": ["docs/rockstaros-product-system-map.md"]
+      "documents": [
+        "docs/rockstaros-product-system-map.md"
+      ]
     },
     {
       "id": "platform_core_and_jobs",
       "coverage": "DETAILED_WITH_OPEN_IMPLEMENTATION_GAPS",
-      "documents": ["docs/platform-core.md", "contracts/platform-api.json"]
+      "documents": [
+        "docs/platform-core.md",
+        "contracts/platform-api.json"
+      ]
     },
     {
       "id": "web_pc",
       "coverage": "DETAILED_IMPLEMENTED_PARTIAL_PRODUCTION",
-      "documents": ["docs/architecture.md", "docs/backend-design.md"]
+      "documents": [
+        "docs/architecture.md",
+        "docs/backend-design.md"
+      ]
     },
     {
       "id": "linux_qemu",
@@ -133,7 +148,14 @@
         "docs/local-ai-os-integration-20260915.md",
         "contracts/local-ai-runtime.json",
         "contracts/decision-provider.json",
-        "data/decision-fabric-policy.json"
+        "data/decision-fabric-policy.json",
+        "docs/avokado-llm-pretraining.md"
+      ],
+      "interfaceImplementation": [
+        "systems/rock-star-os/src/blackberryrock/memory_store.py",
+        "systems/rock-star-os/tests/test_memory_store.py",
+        "scripts/stage-local-ai-apk.py",
+        "tests/test_stage_local_ai_apk.py"
       ]
     },
     {
@@ -147,7 +169,8 @@
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
         "docs/sky-tool-sdk.md",
-        "docs/amc-goal-orchestrator.md"
+        "docs/amc-goal-orchestrator.md",
+        "docs/workstreams/05-web-pwa-sites.md"
       ]
     },
     {
@@ -185,7 +208,14 @@
         "docs/release-minimum-gates.md",
         "data/device-emergency-access-policy.json",
         "data/release-readiness.json"
-      ]
+      ],
+      "observerReportBoundary": {
+        "design": "docs/rockstaros-complete-design.md",
+        "evidence": "docs/evidence/spider-observer-output-schema.json",
+        "scope": "existing simulation observer scalar report validation",
+        "guestAcceptance": false,
+        "outputReconstruction": "After strict validation, emit canonical YYYY-MM periods from integers and literal boolean worker state; do not forward service-owned strings/objects."
+      }
     },
     {
       "id": "game_ip",
@@ -193,7 +223,8 @@
       "documents": [
         "docs/game-api-contract-draft.md",
         "docs/gx01-contract-implementation-plan.md",
-        "docs/gx01-reference-sdk-sandbox-20260910.md"
+        "docs/gx01-reference-sdk-sandbox-20260910.md",
+        "docs/mini-game-client.md"
       ]
     },
     {
@@ -239,6 +270,14 @@
         "json_and_prompt_export",
         "explicit_local_codex_single_task_runner"
       ],
+      "missionBoardRendering": {
+        "scope": "canonical_squad_board_only",
+        "text": "createElement_and_textContent",
+        "squadId": "dataset_value_not_HTML_or_CSS_selector",
+        "focus": "render_local_button_map",
+        "evidence": "docs/evidence/spider-mission-squad-dom.json",
+        "doesNotGrantExecutionAuthority": true
+      },
       "implementationBoundary": {
         "storage": "existing_work_jobs_payload_with_authenticated_user_and_revision_cas",
         "workPlanCompatibility": "schema_1_read_normalization_and_pre_execution_objective_edit; amc_event_and_goal_revision_preserved",
@@ -252,43 +291,162 @@
         "automaticModelInstallation": false,
         "externalActionsAuthorized": false,
         "browserAcceptance": "not_verified",
-        "productionDeploymentAccepted": false
+        "productionDeploymentAccepted": false,
+        "observationSourceRead": "single_descriptor_regular_file_with_canonical_containment_and_bigint_identity; source_buffer_hashed_once; full_AMC_import_not_accepted",
+        "agentDefinitionPreflight": "pinned_descriptor_bounded_utf8_comparison; creation_path_race_not_covered"
+      },
+      "localStateRead": {
+        "source": "scripts/amc-autonomy-store.mjs",
+        "test": "tests/amc-autonomy-store-read.test.mjs",
+        "design": "docs/sky-tools-complete-design.md",
+        "maximumBytes": 5000000,
+        "scope": "same_descriptor_local_fixture_read_not_authentication_boundary"
+      },
+      "workspaceSnapshotRead": {
+        "source": "scripts/amc-parallel.mjs",
+        "test": "tests/amc-workspace-snapshot.test.mjs",
+        "evidence": "docs/evidence/spider-workspace-snapshot-read.json",
+        "design": "docs/sky-tools-complete-design.md",
+        "scope": "local_owner_managed_workspace_identity_checked_descriptor_read",
+        "authority": "does_not_add_remote_auth_or_worker_acceptance"
       }
     },
-    { "id": "rockstar-csv-cleanup", "catalogStatus": "ready" },
-    { "id": "rockstar-markets-analysis", "catalogStatus": "ready" },
-    { "id": "mercari-revenue", "catalogStatus": "ready" },
-    { "id": "fashion-brand-ops", "catalogStatus": "ready" },
-    { "id": "rockstar-ip-studio", "catalogStatus": "candidate" },
-    { "id": "coconala", "catalogStatus": "ready" },
-    { "id": "mr-free-article", "catalogStatus": "ready" },
-    { "id": "mr-citations", "catalogStatus": "ready" },
-    { "id": "mr-delivery", "catalogStatus": "ready" },
-    { "id": "rockstar-ledger", "catalogStatus": "ready" },
-    { "id": "jev-evaluation", "catalogStatus": "ready" },
-    { "id": "rockstar-legal-intake", "catalogStatus": "ready" },
-    { "id": "rockstar-patent-assistant", "catalogStatus": "ready" },
-    { "id": "faster-whisper", "catalogStatus": "candidate" },
-    { "id": "transformers-js", "catalogStatus": "candidate" },
-    { "id": "playwright", "catalogStatus": "candidate" },
-    { "id": "jev-ultrafast", "catalogStatus": "candidate" },
-    { "id": "jev-trader", "catalogStatus": "candidate" },
-    { "id": "typesafe-computer-use", "catalogStatus": "candidate" },
-    { "id": "jev-review", "catalogStatus": "candidate" },
-    { "id": "jev-router", "catalogStatus": "candidate" },
-    { "id": "jev-browser", "catalogStatus": "candidate" },
-    { "id": "mobile-jev", "catalogStatus": "candidate" },
-    { "id": "coconala-proposal-draft", "catalogStatus": "candidate" },
-    { "id": "gig-workflow", "catalogStatus": "candidate" },
-    { "id": "coconala-inbox", "catalogStatus": "candidate" },
-    { "id": "youtube-script-writer", "catalogStatus": "candidate" },
-    { "id": "seo-blueprint", "catalogStatus": "candidate" },
-    { "id": "landing-page-sprint", "catalogStatus": "candidate" },
-    { "id": "sales-objection-reply-builder", "catalogStatus": "candidate" },
-    { "id": "user-interview-synthesizer", "catalogStatus": "candidate" },
-    { "id": "calendar-coordination", "catalogStatus": "candidate" },
-    { "id": "telegram-notifications", "catalogStatus": "candidate" },
-    { "id": "producthunt-discovery", "catalogStatus": "candidate" }
+    {
+      "id": "rockstar-csv-cleanup",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-markets-analysis",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mercari-revenue",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "fashion-brand-ops",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-ip-studio",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "coconala",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mr-free-article",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mr-citations",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mr-delivery",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-ledger",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "jev-evaluation",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-legal-intake",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-patent-assistant",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "faster-whisper",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "transformers-js",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "playwright",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-ultrafast",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-trader",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "typesafe-computer-use",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-review",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-router",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-browser",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "mobile-jev",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "coconala-proposal-draft",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "gig-workflow",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "coconala-inbox",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "youtube-script-writer",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "seo-blueprint",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "landing-page-sprint",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "sales-objection-reply-builder",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "user-interview-synthesizer",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "calendar-coordination",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "telegram-notifications",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "producthunt-discovery",
+      "catalogStatus": "candidate"
+    }
   ],
   "nativeToolFamilies": [
     "shared_checklist",

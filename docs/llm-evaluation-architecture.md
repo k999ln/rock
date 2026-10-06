@@ -221,3 +221,8 @@ Cursor Cloud Agents are used only after the deterministic execution gate passes.
 This slice does not mean that the whole Decision Fabric is runtime-complete. The generic Sky-wide `DecisionRouter` composition, Local Qwen Web/native bridge, live Cursor credential acceptance, pstack account installation, Grok Bot programmatic handoff, provider calibration, and production acceptance remain separate work. The existing `DESIGN_APPROVED_IMPLEMENTATION_PENDING` Decision Fabric status therefore remains unchanged.
 
 Sky/Zemaの決定的routingはAMCのGoal・部隊管理役を加えた13役。AMCの指示照合はモデルの出力を権限とせず、信頼できる観測と担当認証が必要。Web観測adapter未接続時は着手・検収を拒否する。
+
+
+## avokado専用モデルの研究工程（2026-10-05）
+
+利用者指定により、ゼロから事前学習する自作モデルを端末内とcloudに使う研究工程を追加。追加費用0の小型host試作を実装した。既存Qwen実機受入とは別で、既存profileを置換していない。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](avokado-llm-pretraining.md)を参照。

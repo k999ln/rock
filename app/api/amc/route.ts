@@ -1,3 +1,6 @@
+import { env } from 'cloudflare:workers';
+import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
+import { skyWebCommand, requireSkyDraftImport } from '@/lib/amc-sky-web';
 import { database, requestUser } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
 import {
@@ -108,12 +111,19 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const user = await requestUser(request);
+    if (!(await rockstarServiceScopeAllowed(database(), user, 'zema',
+      (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+    ))) {
+      await request.body?.cancel().catch(() => {});
+      return missingRockstarServiceScope('Zema');
+    }
     const input = objectInput(await body(request), [
       'id',
       'brief',
       'importGoal',
     ]);
     const candidate = createWorkJob({ ...input, templateId: 'amc' });
+    requireSkyDraftImport(candidate.amcGoal);
     candidate.amcCreationDigest = await digest(input);
     checkRecordSize(candidate);
     const saved = await workStore(database()).create(user, candidate);
@@ -143,7 +153,7 @@ export async function PATCH(request: Request) {
     const current = await store.get(user, workId(input.jobId));
     if (!current?.amcGoal || current.templateId !== 'amc')
       throw new WorkError('AMCの計画が見つかりません。', 404);
-    const next = applyWorkCommand(current, input.command, input.revision);
+    const next = applyWorkCommand(current, current.amcGoal ? skyWebCommand(current.amcGoal, input.command, user) : input.command, input.revision);
     checkRecordSize(next);
     if (next !== current && !(await store.update(user, next, current.revision)))
       throw new WorkError(

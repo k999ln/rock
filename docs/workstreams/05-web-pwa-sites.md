@@ -174,3 +174,11 @@ PR #61は独自ドメインのcanonical、sitemap、hosting参照と既存の配
 ## 2026-10-05 Skyの保存・復帰候補の正本統合（G04/WEB04）
 
 G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
+
+## SPIDER cycle 46: Zema利用権とローカル取消の残差分
+
+O2 / R03、主streamはWeb / PWA、ROCK。main 0c90253cのWorkPlan/AMC/Agent証跡修復を保持し、PR #74は作成時のZema利用権・未読body解放と、証拠不足でも可能な本人のローカル取消へ絞る。進行・完了の証跡検査、owner・revision、遠隔停止との区別を維持する。
+
+通常の対象コマンドは以下。main追加6件は既存typescript devDependencyを必要とする。ローカルではlock検証済みcompilerをメモリ読み込みし6件、依存不要の既存67件を別実行して全て合格。main APIで2件の負例を確認した。通常install不一致はPR #73、DB inventory・catalog・AMC export退行は別件。[証拠](../evidence/spider-work-plan-contract.json)。main mergeと配備は自動サイクルでは行わない。
+
+    node --experimental-strip-types --test tests/workflow.test.mjs tests/work-plan-route.test.mjs tests/workplan-reconcile.test.mjs tests/amc-main-integration.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-parent-controller.test.mjs tests/a2a-result-handoff.test.mjs

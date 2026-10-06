@@ -1,0 +1,52 @@
+{
+  "schema": "rock-local-ai-native-build/1",
+  "recordedAt": "2026-10-05",
+  "status": "PASS_UNSIGNED_APK_NOT_DEVICE_ACCEPTANCE",
+  "buildSourceSha": "2ba33366dc7f3d60b1cf2fb3a086261c33813172",
+  "ciRun": 37279537731,
+  "ciUrl": "https://github.com/k999ln/rock/actions/runs/37279537731",
+  "artifactName": "local-ai-unsigned-arm64-37279537731",
+  "upstreamSourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "overlay": {
+    "schema": "rock-local-ai-overlay/1",
+    "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+    "overlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
+    "extensionSha256": [
+      "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
+      "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
+      "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
+      "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c"
+    ],
+    "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT"
+  },
+  "inspection": {
+    "packageName": "com.localactionassistant",
+    "versionCode": 3,
+    "sha256": "1fcb4f063bf998e13ccf515a338a9f4f4175c5b64527118f680a7e10bb71bd02",
+    "sizeBytes": 26416892,
+    "requiredAbis": [
+      "arm64-v8a"
+    ],
+    "internetPermission": false,
+    "wakeLockPermission": true,
+    "binderPermission": "dev.rock.permission.USE_LOCAL_AI"
+  },
+  "downloadedBytesVerified": true,
+  "deviceTested": false,
+  "osImageBuilt": false,
+  "productionSigned": false,
+  "historicalDeviceEvidence": "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
+  "limitations": [
+    "Build and AAPT inspection do not prove API v4 Binder execution or GGUF inference on a physical device.",
+    "API v2 physical acceptance remains scoped to the earlier signed APK.",
+    "No cloud infrastructure, OS signing, bootloader operation or flash occurred."
+  ],
+  "localReadback": {
+    "aapt2": "8.12.0-13700139 macOS cached official artifact",
+    "inspectionMatchesCi": true,
+    "actualApkStage": "PASS",
+    "idempotentRestage": "PASS",
+    "verifyStage": "PASS",
+    "focusedTests": 40
+  }
+}

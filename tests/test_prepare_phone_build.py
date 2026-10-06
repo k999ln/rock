@@ -17,6 +17,16 @@ SPEC.loader.exec_module(phone)
 PROJECT_CHECK = Path(__file__).resolve().parents[1] / "scripts/check-phone-project.sh"
 
 
+class CurrentLocalAiLockTest(unittest.TestCase):
+    def test_current_repository_source_can_enter_phone_preparation(self):
+        lock = json.loads((Path(__file__).resolve().parents[1] /
+                           "os/physical/local-action-assistant-source-lock.json").read_text())
+        self.assertEqual(phone.local_ai_config(lock)["commit"], lock["commit"])
+        lock["integration"]["signedApk"] = "PRODUCTION_APPROVED_WITHOUT_EVIDENCE"
+        with self.assertRaisesRegex(ValueError, "invalid local-AI source lock"):
+            phone.local_ai_config(lock)
+
+
 class PhonePreparationTest(unittest.TestCase):
     def command(self, cwd, *args):
         return subprocess.check_output(args, cwd=cwd, stderr=subprocess.PIPE).decode().strip()

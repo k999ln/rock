@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-05",
+  "product": "avokadoPro",
+  "stage": "component_selection_and_industrial_design_target",
+  "userIntent": {
+    "nvidiaCompute": true,
+    "formFactor": "Mac-mini-like compact standalone desktop",
+    "workloads": [
+      "local AI",
+      "PC games"
+    ],
+    "salesPriceTargetJpy": 800000,
+    "priceInterpretation": "user answered 80 after options expressed in ten-thousands of JPY",
+    "taxTreatment": "undecided"
+  },
+  "task": "MAT16",
+  "miniRequired": false,
+  "proRequiredForMini": false,
+  "candidate": {
+    "referenceSystem": "ASUS ROG NUC 16",
+    "referenceSku": "1NUC16JNK9X285A2",
+    "cpu": "Intel Core Ultra 9 290HX Plus",
+    "gpu": "NVIDIA GeForce RTX 5080 Laptop GPU",
+    "gpuVramGb": 16,
+    "systemRamGb": 128,
+    "ramModules": 2,
+    "ramGbPerModule": 64,
+    "ramExactPartAndQvl": "unconfirmed",
+    "ssdCount": 2,
+    "ssdTbEach": 2,
+    "ssdExactPart": "unconfirmed",
+    "referencePowerAdapterW": 380,
+    "referenceDimensionsMm": [
+      282.5,
+      189.5,
+      56.5
+    ],
+    "referenceSpec": "https://rog.asus.com/me-en/desktops/mini-pc/rog-nuc-16/spec/"
+  },
+  "industrialDesignTarget": {
+    "dimensionsMm": [
+      220,
+      220,
+      95
+    ],
+    "volumeLiters": 4.598,
+    "referenceSystemFitsThisTarget": false,
+    "requiresOdmBoardLayout": true,
+    "thermalVerified": false,
+    "productionCadComplete": false
+  },
+  "bomQuoted": false,
+  "hardwarePurchased": false,
+  "physicallyAssembled": false,
+  "aiAccepted": false,
+  "gameAccepted": false,
+  "productionReady": false,
+  "publicPageUpdated": false,
+  "design": "docs/avokado-pro-pc-design.md"
+}

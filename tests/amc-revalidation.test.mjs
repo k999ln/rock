@@ -122,7 +122,8 @@ await test('Web, WorkJob and direct engine cannot manufacture revalidation autho
  assert.throws(()=>skyWebCommand(f.g,command,owner.id),e=>e.status===409);
  assert.throws(()=>applyGoalEvent(f.g,f.request,{trusted:true,owner:owner.id}),/最新観測/);
  const job=createWorkJob({id:randomUUID(),templateId:'amc',importGoal:f.g});assert.throws(()=>applyWorkCommand(job,command,job.revision));
- for(const path of ['app/api/amc/route.ts','app/api/work-jobs/route.ts'])assert.match(readFileSync(new URL('../'+path,import.meta.url),'utf8'),/skyWebCommand\(current.amcGoal/);
+ assert.match(readFileSync(new URL('../app/api/amc/route.ts',import.meta.url),'utf8'),/skyWebCommand\(current.amcGoal/);
+ assert.match(readFileSync(new URL('../app/api/work-jobs/route.ts',import.meta.url),'utf8'),/if \(current.templateId === 'amc' \|\| current.amcGoal\)\s*throw new WorkError/);
 });
 
 await test('transaction checks downstream material twice, fresh second observation and CAS before persistence',async()=>{

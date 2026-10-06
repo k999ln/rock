@@ -13,10 +13,11 @@ void test('Sky exposes one Coconala Tool with both the order workflow and pre-ap
   assert.equal(coconala[0].runner, 'coconala');
 
   const sky = source('components/sky-workspace.tsx');
-  assert.match(sky, /if \(tool\.id === 'coconala'\) \{[\s\S]*?router\.push\('\/sky\/tools\/coconala'\)/);
+  assert.match(sky, /queueSkyZemaHandoff\(tool\.id, request\)/);
+  assert.match(sky, /`\/chat\?tool=\$\{encodeURIComponent\(tool\.id\)\}/);
 
   const toolPage = source('components/sky-tool-workspace.tsx');
-  assert.match(toolPage, /if \(toolId === 'coconala'\) return <CoconalaTeamWorkspace/);
+  assert.match(toolPage, /if \(workspace && toolId === 'coconala'\) return <CoconalaTeamWorkspace workspace=\{workspace\}/);
 
   const workspace = source('components/coconala-team-workspace.tsx');
   assert.match(workspace, /案件管理/);

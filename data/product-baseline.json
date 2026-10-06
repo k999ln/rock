@@ -1,11 +1,11 @@
 {
   "version": "1.96",
-  "decidedAt": "2026-09-27",
+  "decidedAt": "2026-10-01",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/os-readiness-audit-20260909.md",
-  "nextPrompt": "docs/prompts/rock-current-next-20260911.md",
+  "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-sky-wallet-game-design.md",
   "amcGoalOrchestration": {
@@ -13,7 +13,15 @@
     "authority": "docs/amc-goal-orchestrator.md",
     "ownerSquad": "H1",
     "implementationTask": "AMC02",
-    "requestedWorkflow": ["instruction", "squad_assignment", "problem_decomposition", "process_and_goal", "all_progress", "ai_goal_handoff", "verified_completion"],
+    "requestedWorkflow": [
+      "instruction",
+      "squad_assignment",
+      "problem_decomposition",
+      "process_and_goal",
+      "all_progress",
+      "ai_goal_handoff",
+      "verified_completion"
+    ],
     "localImplementation": "candidate_backlog_compiler_progress_ledger_and_prompt_export",
     "arbitraryInstructionAiPlanner": "not_connected",
     "externalAiExecutor": "not_connected",
@@ -47,8 +55,17 @@
       }
     ],
     "sharedOperatingSystem": "RockstarOS",
-    "developmentTargetsAreNotProducts": ["web_pc", "linux_qemu", "pixel_10"],
-    "historicalMiniProfilesAreNotCurrentProducts": ["p0_2", "mini200_e1", "mini200_e2", "tower20_e3"]
+    "developmentTargetsAreNotProducts": [
+      "web_pc",
+      "linux_qemu",
+      "pixel_10"
+    ],
+    "historicalMiniProfilesAreNotCurrentProducts": [
+      "p0_2",
+      "mini200_e1",
+      "mini200_e2",
+      "tower20_e3"
+    ]
   },
   "productIdentity": {
     "authority": "data/product-identity.json",
@@ -110,7 +127,7 @@
     "mainMergeAuthorization": "user_explicitly_requested_this_design_update_only_2026-09-21"
   },
   "marketPositioning": {
-    "customerFacingFocus": "hardware_products",
+    "customerFacingFocus": "sim_esim_led_rockstaros_service_access",
     "leadHardwareConcept": "avocadoMini",
     "leadHardwareForm": "r5_200mm_autonomous_peer_minis_no_required_edge_hub",
     "previousLeadHardwareForm": "tower20_e3_four_fixed_height_towers_and_separate_edge_hub",
@@ -561,6 +578,11 @@
     {
       "id": "market",
       "role": "generic_paper_market_and_value_spend_runtime"
+    },
+    {
+      "id": "campus",
+      "route": "/campus",
+      "role": "university_context_social_and_project_network"
     }
   ],
   "homeExperience": {
@@ -609,8 +631,8 @@
   "launchPage": {
     "domainSeparation": {
       "productSite": "separate_public_domain",
-      "productSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site",
-      "productSiteDeployment": "public_live_verified",
+      "productSiteUrl": "https://avocadomini.si",
+      "productSiteDeployment": "public_reference_site_custom_domain_https_verified",
       "productSiteSource": "sites/avocado-mini",
       "productSiteRoutes": [
         "/",
@@ -619,19 +641,26 @@
       ],
       "osSite": "rockstaros-kaiya.noellesugar1.chatgpt.site",
       "osWebAudience": "owner_only",
-      "osSiteAccessStatus": "pending_owner_account_connection"
+      "osSiteAccessStatus": "pending_owner_account_connection",
+      "requestedCustomDomain": "avocadomini.si",
+      "customDomainStatus": "active_ssl_active",
+      "previousProductSiteUrl": "https://avocado-mini.kirin-999.chatgpt.site",
+      "productSiteReferenceUrl": "https://avocado-mini.kirin-999.chatgpt.site/",
+      "productSitePresentation": "user_selected_mini_pro_public_site",
+      "productSiteFallbackUrl": "https://avocadomini.noellesugar1.chatgpt.site"
     },
     "route": "/rockstaros",
-    "role": "public_avocado_mini_product_home",
+    "role": "public_sim_esim_service_home",
     "osHomeRoute": "/",
     "installGuideRoute": "/rockstaros/guide",
     "directOsHomeLink": false,
-    "serviceDetailsLocation": "os_home_after_setup",
-    "primaryAction": "view_avocado_mini",
-    "secondaryAction": "developer_preview_install_guide",
-    "publicDownloadFallback": "/rockstaros/guide#install",
+    "serviceDetailsLocation": "public_service_home",
+    "primaryAction": "start_service_onboarding",
+    "secondaryAction": "view_sim_esim_plans",
+    "publicDownloadFallback": "/connect",
     "visualDirection": "light_product_showcase_with_scroll_tower",
-    "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable"
+    "publicationBoundary": "show_pre_release_and_supported_environment_without_claiming_unsigned_candidate_is_installable",
+    "hardwareProgramRoute": "/avocado-mini"
   },
   "visualSystem": {
     "surfaces": [
@@ -642,7 +671,7 @@
     ],
     "background": "near_black",
     "productHomeAppearance": "light_scroll_product_showcase",
-    "accent": "acid_green",
+    "accent": "ice_blue",
     "headline": "heavy_display_latin",
     "metadata": "monospace_uppercase",
     "primaryControl": "rounded_high_contrast",
@@ -650,6 +679,7 @@
     "homePrimaryApps": [
       "sky",
       "chat",
+      "campus",
       "wallet",
       "market",
       "settings"
@@ -1163,7 +1193,10 @@
       "game.experience.publish",
       "social.publish",
       "reward.grant",
-      "analytics.read"
+      "analytics.read",
+      "voice.session",
+      "telephony.inbound",
+      "telephony.outbound"
     ],
     "selectionModes": [
       "ask",
@@ -1196,15 +1229,25 @@
       "Roblox",
       "YouTube",
       "Instagram",
-      "GTA_FiveM"
+      "GTA_FiveM",
+      "LiveKit"
     ],
     "architecture": "docs/sky-mcp-architecture.md",
-    "toolDesign": "docs/sky-tools-complete-design.md"
+    "toolDesign": "docs/sky-tools-complete-design.md",
+    "ipVoiceTelephony": {
+      "requestedAt": "2026-10-04",
+      "providerCandidate": "livekit",
+      "status": "setup_metadata_implemented_runtime_not_connected",
+      "recordingDefault": "off",
+      "separateVoiceAndTelephonyOptIn": true,
+      "outboundRequiresExactApproval": true,
+      "manusCue": "reference_only_api_unverified"
+    }
   },
-  "commercialPolicy": "The USD 8.88 ToC revenue fee proposal is on hold until the revenue flow and collection terms are decided. No new ToC fee assessment, invoice, collection or payout is authorized. The 888-cent values below are historical design and regression fixtures, not current pricing. Sky charges ToB no registration, connection, publication or base usage fee and takes zero Sky commission from ToB tool sales. Third-party costs remain separate. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
+  "commercialPolicy": "Sky Market charges a 10% commission on verified ToB tool sales. Registration, connection, publication and base usage remain free; third-party API, model, payment and cloud costs are separate. Stripe Connect one-time JPY checkout, seller onboarding, order reconciliation and refunds are implemented but unconfigured; provider sandbox and live acceptance remain pending. The USD 8.88 ToC revenue fee proposal remains on hold and its 888-cent values are historical regression fixtures. Rock ATM fee remains zero per RQ15; game fees are unspecified.",
   "skyNetworkEconomy": {
     "tobSkyFeeMinor": 0,
-    "tobSkySalesCommissionBps": 0,
+    "tobSkySalesCommissionBps": 1000,
     "tocMonthlyFeeCapMinor": 888,
     "tocMonthlyFeeCapCurrency": "USD",
     "tocUpfrontCharge": false,
@@ -1500,6 +1543,18 @@
       "authority": "advisory_only",
       "status": "designed_not_implemented",
       "task": "AI07"
+    },
+    "avokadoPretraining": {
+      "decisionDate": "2026-10-05",
+      "reason": "Explicit user request: from-scratch pretraining, device and cloud, zero additional spending for prototype",
+      "initialization": "random_no_pretrained_weights",
+      "targets": [
+        "device",
+        "cloud"
+      ],
+      "additionalSpendLimit": 0,
+      "design": "docs/avokado-llm-pretraining.md",
+      "task": "AI02"
     }
   },
   "commercialPolicyRevision": {
@@ -1516,5 +1571,395 @@
     "profitDefinition": "pending",
     "collectionMethod": "pending",
     "runtimePolicy": "Production Sky Billing rejects new ToC Earning Receipts with SKY_FEE_POLICY_ON_HOLD. Historical 888-cent fixtures remain only for regression. CSV fee decisions return zero due while the revenue flow is pending. No live billing, automatic bank debit or developer payout is enabled. Publication does not specify an open-source license."
+  },
+  "avokadoProPcIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user instruction: NVIDIA-based compact PC resembling Mac mini, AI and PC gaming, price answer 80 interpreted as JPY800000 sales target",
+    "nvidiaGpuRequired": true,
+    "standalonePc": true,
+    "miniDependency": false,
+    "salesPriceTargetJpy": 800000,
+    "priceTaxUndecided": true,
+    "candidateOnly": true,
+    "authority": "docs/avokado-pro-pc-design.md",
+    "specification": "data/avokado-pro-pc.json"
+  },
+  "miniCellularIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user choice: SIM goes inside Mini for standalone cellular connectivity",
+    "simInsideMini": true,
+    "proRequired": false,
+    "phoneTetherRequired": false,
+    "externalPowerRequired": true,
+    "authority": "docs/avocado-mini-cellular.md",
+    "specification": "data/avocado-mini-cellular.json"
+  },
+  "gtaViPlayIntent": {
+    "decisionDate": "2026-10-05",
+    "reason": "Explicit user instruction to enable GTA VI play after Mini/Pro discussion",
+    "authority": "docs/mini-game-client.md",
+    "targetTitle": "GTA VI",
+    "executionDevice": null,
+    "pcSupportConfirmed": false,
+    "gameAccepted": false
+  },
+  "campus": {
+    "displayName": "Campus",
+    "route": "/campus",
+    "role": "university_context_people_projects_opportunities_events_communities_portfolio_resources_and_physical_entry",
+    "status": "web_runtime_implemented",
+    "campuses": [
+      "nyu",
+      "fit",
+      "columbia",
+      "fordham",
+      "johnjay"
+    ],
+    "affiliationVerification": "authenticated_email_domain_match_without_email_storage",
+    "publicClaimsBoundary": "community_posted_content_not_official_university_data_unless_external_source_states_otherwise",
+    "physicalEntry": "registered_nfc_or_qr_tag_to_campus_mode_with_source_analytics",
+    "analyticsPrivacy": "tag_source_and_timestamp_only_no_ip_email_precise_location_or_raw_user_agent",
+    "dataControls": [
+      "profile_visibility",
+      "block_and_report",
+      "post_archive",
+      "tag_activate_deactivate",
+      "tag_analytics_delete",
+      "campus_data_delete"
+    ]
+  },
+  "skyMarketplacePayments": {
+    "status": "implemented_unconfigured_provider_acceptance_pending",
+    "provider": "stripe_connect_destination_charges",
+    "commissionBps": 1000,
+    "currency": "JPY",
+    "billing": "one_time_only",
+    "eligiblePackages": "verified_installable_external_contract_with_owner_offer",
+    "includesLlmPackages": true,
+    "buyerRoute": "/sky/purchases",
+    "sellerRoute": "/sky/sell",
+    "apiRoute": "/api/sky/commerce/[action]",
+    "providerSandboxVerified": false,
+    "livePaymentsVerified": false,
+    "bankPayoutVerified": false,
+    "externalMcpAccessEnforcement": "provider_responsibility_not_implemented_by_purchase_record",
+    "document": "docs/sky-billing.md"
+  },
+  "spiderGuard": {
+    "requestedAt": "2026-10-02",
+    "document": "docs/spider-guard.md",
+    "task": "SYS15",
+    "primaryOwner": "ROCK",
+    "status": "implementation_in_progress_acceptance_pending",
+    "requestedBehavior": "Run continuously inside RockstarOS itself, prioritize secrets and personal information within the fixed Platform scope, and connect native spider visualization to authenticated real findings and checks before supported outbound requests.",
+    "implementationScope": [
+      "native_platform_uid_1002_fixed_application_data_monitor",
+      "authenticated_sanitized_security_status_and_native_visualization",
+      "platform_mcp_prepare_and_submit_checks",
+      "runner_prepare_and_first_durable_send_claim_checks",
+      "os_package_boot_and_supervision_integration"
+    ],
+    "companionScope": [
+      "web_ai_guard",
+      "mcp_connector_guard"
+    ],
+    "deploymentTarget": "rockstaros_native_platform",
+    "platformUid": 1002,
+    "ownerUiUid": 1000,
+    "fixedStateRoot": "/data/platform",
+    "defaultInspectionIntervalSeconds": 30,
+    "rootPrivilegeAdded": false,
+    "sameImageBootVerified": false,
+    "pixelDeploymentVerified": false,
+    "sourceValidationEvidence": "docs/evidence/spider-guard-source-validation.json",
+    "linuxContainerUid": 1002,
+    "linuxNativeRegressionTestsPassed": 125,
+    "linuxSupervisorTestsPassed": 3,
+    "linuxInstallTestsPassed": 1,
+    "linuxPythonTestsPassed": 129,
+    "webGuardTestsPassed": 49,
+    "priorSourceValidationCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+    "nativeAnimationRevision": {
+      "requestedAt": "2026-10-02",
+      "status": "source_renderer_validated_os_acceptance_pending",
+      "baseCommit": "a7cfca3a7fb78439ae9af8c6b832c02c2d9d70ae",
+      "references": [
+        "https://www.instagram.com/reel/DdhYiKdz-6t/",
+        "https://www.instagram.com/reel/DdmGyhRRQGi/",
+        "https://www.instagram.com/p/Dd97sTPjEu6/?img_index=2"
+      ],
+      "visualIntent": "Thin luminous curved articulated legs, blue endpoint rings and a small pink/cyan square core moving toward actual findings and encircling the focused row.",
+      "eventResponse": "brief response only to a newly observed actual blocked counter increase",
+      "unhealthyState": "no motion on stale, dead, failed, missing or disconnected status",
+      "freshRendererTestsRecorded": true,
+      "priorTestCountsAreHistorical": true,
+      "protectionAuthorityChanged": false,
+      "currentSurface": "native security panel",
+      "globalOverlaySelected": false
+    },
+    "serviceInstalled": false,
+    "runtimeAcceptanceRecorded": false,
+    "productionDeploymentVerified": false,
+    "alwaysOnOperationVerified": false,
+    "osWideTrafficProtectionClaim": false,
+    "rawSensitiveValuesInDiagnosticsAllowed": false,
+    "existingRequirementsAndReleaseGatesPreserved": true,
+    "operatorDockAuthorityExpanded": false,
+    "securityAgentRole": {
+      "requestedAt": "2026-10-02",
+      "status": "source_validated_os_acceptance_pending",
+      "id": "spider",
+      "role": "security",
+      "stateSource": "actual worker liveness, freshness and findings",
+      "sensitiveFindingState": "sensitive_data_detected",
+      "lastActionSource": "sanitized metadata from actual latest blocked request",
+      "currentSurface": "native security panel",
+      "protectionAuthorityChanged": false,
+      "monitoringCadenceOrScopeChanged": false,
+      "freshValidationRecorded": true,
+      "scope": "platform-data",
+      "duties": [
+        "watch_platform_data",
+        "inspect_outbound",
+        "deny_sensitive_outbound",
+        "report_health"
+      ],
+      "states": [
+        "starting",
+        "stopped",
+        "unavailable",
+        "recent_block",
+        "sensitive_data_detected",
+        "watching"
+      ],
+      "recentBlockSeconds": 30,
+      "lastAction": {
+        "initial": null,
+        "action": "blocked",
+        "boundaries": [
+          "mcp.prepare",
+          "mcp.submit",
+          "remote.prepare",
+          "remote.send",
+          "unclassified"
+        ],
+        "countRange": [
+          0,
+          2001
+        ],
+        "kindAllowlist": [
+          "secret",
+          "personal"
+        ],
+        "maximumKinds": 2,
+        "time": "finite epoch seconds",
+        "retention": "in-memory until process restart; remains after 30 seconds and safe sends",
+        "limitDenialMayHaveNoCandidates": true,
+        "timeRange": [
+          0,
+          253402300799
+        ],
+        "countKindsConsistency": "count 0 requires kinds []; positive count requires one or two allowed kinds"
+      },
+      "monitoringCadenceOrOrderChanged": false,
+      "linuxBackendTestsPassed": 26,
+      "linuxNativeRendererPassed": true,
+      "pinReadinessTestsPassed": 11,
+      "pinSourceProfileTestsPassed": 1
+    },
+    "codeInspector": {
+      "requestedAt": "2026-10-02",
+      "status": "standalone_validated_native_linux_pending",
+      "intent": "Paste own source and inspect automatically after edits; spider visualizes actual findings.",
+      "deliverableOutsideRepository": "outputs/SPIDER.html",
+      "delivery": "offline standalone HTML",
+      "scope": "static analysis of explicitly supplied source",
+      "nativeOperation": "security.inspectCode",
+      "requiresSdk": false,
+      "requiresApiKey": false,
+      "executesInput": false,
+      "externalRequests": false,
+      "persistsInput": false,
+      "existingPlatformGuardChanged": false,
+      "runtimeInterceptionClaim": false,
+      "freshValidationRecorded": true,
+      "buildCommand": "node scripts/build-spider-inspector.mjs --output /absolute/path/SPIDER.html",
+      "source": "toolkits/spider-guard/inspector.html",
+      "detector": "toolkits/spider-guard/program-inspector.mjs",
+      "automaticDelayMs": 500,
+      "maxInputBytes": 65536,
+      "maxInputLines": 2000,
+      "maxFindings": 100,
+      "languages": [
+        "javascript",
+        "python",
+        "text"
+      ],
+      "reportExport": "optional metadata-only JSON, no source text",
+      "modifiesOriginalFiles": false,
+      "nativeModule": "systems/rock-star-os/os/platform/code_inspector.py",
+      "nativeOwnerUid": 1000,
+      "nativePythonAstNodeLimit": 20000,
+      "guardCountersChanged": false,
+      "helpOutsideRepository": "outputs/SPIDER-使い方.txt",
+      "findingPriority": [
+        "secret",
+        "personal",
+        "code"
+      ],
+      "countSemantics": "returned findings only; truncation marks coverageLimited",
+      "nodeTestsPassed": 14,
+      "nativeHostTestsPassed": 23,
+      "nativeLinuxValidationRecorded": false,
+      "browserValidation": "loopback HTTP serving generated HTML; direct file URL not tested",
+      "evidenceSection": "codeInspectorRevisions"
+    }
+  },
+  "esimProductIntent": {
+    "decidedAt": "2026-10-02",
+    "source": "2026-10-02 authoritative product requirements: physical SIM or eSIM purchase includes RockstarOS service access across multiple distribution channels; OS is installed through a supported device path",
+    "supersededSource": "製品はesimで完結させたいから、開発だけしたい",
+    "distribution": "physical_sim_and_esim",
+    "currentScope": "development_and_contract_preparation",
+    "physicalSimPurchase": true,
+    "liveServiceEnabled": false,
+    "implementation": "host_fixture_and_local_worker_d1",
+    "document": "docs/product-baseline.md",
+    "supersededBy": "serviceAccessModel"
+  },
+  "cloudContinuationIntent": {
+    "decidedAt": "2026-09-30",
+    "source": "クラウドのAIは、先に頼まれた仕事を続ける これいいじゃん、ちゃんと準備してね",
+    "document": "docs/sky-cloud-continuity.md",
+    "continueAcceptedJobsWhileDeviceOffline": true,
+    "explicitScopedApprovalRequired": true,
+    "cloudAcceptanceReceiptRequired": true,
+    "budgetAndDeadlineRequired": true,
+    "newApprovalCausesWait": true,
+    "offlineStopIsUnconfirmed": true,
+    "resumeByReconciliationNotResubmission": true,
+    "implementationStatus": "REQUIREMENTS_AND_ACCEPTANCE_PLAN_ONLY",
+    "cloudDeployed": false
+  },
+  "satelliteConnectivityIntent": {
+    "decidedAt": "2026-09-30",
+    "source": "衛星を飛ばしてどこでも繋がるようにする",
+    "ownSatelliteNetworkGoal": true,
+    "currentScope": "research_and_development_preparation",
+    "document": "docs/sky-cloud-continuity.md",
+    "globalAlwaysAvailableClaim": false,
+    "launchProcured": false,
+    "satelliteFieldTests": 0
+  },
+  "universalAdaptationIntent": {
+    "decidedAt": "2026-09-30",
+    "source": "みんなに適合できるシステムを作る、もちろんgtaにも",
+    "dimensions": [
+      "person",
+      "device",
+      "service",
+      "game"
+    ],
+    "architecture": "existing_core_and_capability_adapters",
+    "gtaExplicitlyIncluded": true,
+    "priorPartnershipStatementPreserved": true,
+    "gtaRuntimeVerified": false,
+    "document": "docs/sky-mcp-architecture.md",
+    "status": "REQUIREMENTS_ONLY"
+  },
+  "agentInterconnectionIntent": {
+    "decidedAt": "2026-09-30",
+    "source": "これから全てはaiエージェントになりうる、その際にaiエージェントとエージェントを繋ぐ役割がいる。",
+    "skyRole": "agent_discovery_marketplace_capability_registry_and_connection",
+    "zemaRole": "agent_orchestration_task_delegation_approval_progress_and_results",
+    "coreRole": "shared_identity_authorization_budget_policy_and_auditable_durable_state",
+    "protocolCandidates": [
+      "existing_MCP_for_tools",
+      "A2A_1.0.0_JSONRPC_adapter_for_agent_tasks"
+    ],
+    "document": "docs/sky-mcp-architecture.md",
+    "implementationStatus": "PARTIAL_A2A_ADAPTER_OWNER_APPROVAL_DURABLE_RECONCILIATION_ENCRYPTED_RESULTS_AND_OPERATOR_ORIGIN_ALLOWLIST",
+    "hostFixtureTests": 32,
+    "workerD1ApiAssertions": 235,
+    "delegationMigrations": [
+      "0019_sky_a2a_delegations.sql",
+      "0020_a2a_delegation_events.sql",
+      "0021_a2a_delegation_inputs.sql",
+      "0022_a2a_delegation_artifacts.sql",
+      "0023_a2a_sky_agent_connections.sql"
+    ],
+    "productionDispatchIntegrated": false,
+    "approvalGateIntegrated": true,
+    "externalAgentInteropTests": 0,
+    "encryptedApprovedInputStored": true,
+    "encryptedTextArtifactCaptureImplemented": true,
+    "ownerScopedArtifactReadApiImplemented": true,
+    "zemaDelegationReadAndResultReviewUiImplemented": true,
+    "zemaDelegationDraftAndConditionPreviewUiImplemented": true,
+    "zemaDelegationCreationAndApprovalUiImplemented": false,
+    "providerArtifactAcceptanceTests": 0,
+    "executionGateDefaultOff": true,
+    "executionGateEnablementRequiresBrokerWalletProviderAcceptance": true,
+    "automatedRetentionCleanupIntegrated": false,
+    "runtimeWorkerPath": "services/sky-agent-runtime/src/worker.ts",
+    "runtimeWorkerDryRunPassed": true,
+    "runtimeLocalScheduledWorkflowSmokePassed": true,
+    "runtimeUsesSharedProductionD1": false,
+    "runtimeProductionDispatchIntegrated": false,
+    "scheduledExpiredInputCleanupImplemented": true,
+    "automatedTerminalInputCleanupIntegrated": false,
+    "agentDirectoryStatus": "OWNER_SCOPED_CARD_DISCOVERY_SELF_DECLARED_UNREVIEWED",
+    "agentDirectoryApiImplemented": true,
+    "agentDirectoryOwnerScopedStorageImplemented": true,
+    "agentDirectoryCardDigestVersionTrackingImplemented": true,
+    "operatorOriginAllowlistImplemented": true,
+    "operatorOriginAllowlistConfigured": false,
+    "runtimeVPCBindingConfigured": false,
+    "productionEgressTested": false
+  },
+  "serviceAccessModel": {
+    "status": "authoritative_product_direction_design_and_local_onboarding_only",
+    "primaryEntry": "purchase_physical_sim_or_esim_including_rockstaros_service_access",
+    "distributionChannels": [
+      "rockstar_direct",
+      "mobile_carrier",
+      "device_retailer",
+      "online_retailer"
+    ],
+    "osBinaryStoredOnSim": false,
+    "deviceDelivery": [
+      "signed_native_os_only_for_exact_supported_device_and_recovery_path",
+      "existing_os_app_or_shell",
+      "browser_client"
+    ],
+    "unifiedIdentity": "one_rockstar_account_across_sky_zema_agents",
+    "primaryReasonsToChoose": [
+      "fast_simple_access_to_cloud_llms_and_agents",
+      "transparent_usage_based_pricing_and_cost_estimates",
+      "integrated_rockstaros_sky_zema_access_with_minimal_setup"
+    ],
+    "deviceMinimumExperience": [
+      "short_activation_to_service_onboarding",
+      "direct_sky_zema_agent_entry_from_home",
+      "single_rockstar_identity_without_per_service_registration",
+      "submit_tasks_track_progress_and_retrieve_results",
+      "accepted_cloud_tasks_continue_while_device_offline_and_reconcile_on_reconnect",
+      "show_provider_rates_and_estimate_before_paid_execution",
+      "distinguish_reserved_budget_from_live_usage_and_invoice_confirmed_amount",
+      "itemize_usage_after_completion",
+      "user_controlled_spending_limits_and_explicit_approval_to_raise_them"
+    ],
+    "cloudExecution": "usage_billed_with_preflight_quote_budget_approval_live_spend_and_itemized_receipt",
+    "dispatchPolicy": "fail_closed_until_quote_bound_reservation_provider_meter_invoice_reconciliation_and_funded_wallet_are_accepted",
+    "carrierAndAiChargesSeparated": true,
+    "purchaseEnabled": false,
+    "productionBillingAccepted": false,
+    "carrierActivationAccepted": false,
+    "deviceOsInstallationAccepted": false,
+    "supersedes": [
+      "2026-09-30_esim_only_distribution",
+      "esim_catalog_as_primary_product_entry",
+      "hardware_first_service_positioning"
+    ]
   }
 }

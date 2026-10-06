@@ -435,7 +435,7 @@ await test('Sky library bookmarks never grant consent, entitlements or create wo
   const { a, sqlite } = fixture();
   try {
     const tables = sqlite.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name <> 'sky_library_items'").all().map((row) => row.name);
-    const counts = () => tables.map((table) => [table, sqlite.prepare(`SELECT COUNT(*) AS n FROM "${table}"`).get().n]);
+    const counts = () => tables.map((table) => [table, sqlite.prepare(`SELECT COUNT(*) AS n FROM "${String(table)}"`).get().n]);
     const before = counts();
     await a.saveSkyLibrary({ tool: 'mr-citations', saved: true });
     await a.saveSkyLibrary({ tool: 'mr-citations', saved: true });

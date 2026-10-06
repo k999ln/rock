@@ -143,3 +143,12 @@ eSIM chipの検出は、OS全体・通信plan・特定provider・LLM・端末内
 - `gradle -p android :core:test :shell-api:assembleDebug :automation:assembleDebug :shell:assembleDebug :article-tool:assembleDebug :automation:lintDebug :shell:lintDebug :article-tool:lintDebug --no-daemon`
 - 同一debug signerのLocal AI／Broker／Tool／Shellを導入したAndroid 15 emulatorでBroker 11 non-skipped testとShell 5 testを実行し、モデルなし0件停止、schema migration、選択復元、不正token拒否、phrase確認、v2 export、新Keystore再bindingを確認する。stock Pixelはseed後に実再起動し、別processのrecover phaseでlease回収、2 Tool、結果、7履歴eventまで確認する。物理wipe復元は純正復旧artifactを揃えた別の管理試験にする。従来のplan受入は[証拠](../evidence/android-local-ai-plan-v2-20260916.json)、backup emulator受入は[証拠](../evidence/android-backup-v2-emulator-20260916.json)。
 - 対象端末のflash／boot／OTA／rollback／stock recovery受入
+
+## AI02: avokadoゼロ事前学習試作（2026-10-05）
+
+主担当ROCK。既存AI02のmodel交換/版固定とは分けた研究工程。hostのrandom-init学習、再開一致、推論APIを検証し、Mini実機・export・cloud・本学習はJOINT/OWNER条件待ち。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](../avokado-llm-pretraining.md)を参照。
+
+
+## Mini本体SIMによる独立通信（2026-10-05）
+
+利用者指定により[Mini cellular設計](../avocado-mini-cellular.md)を追加。MAT15の通信サブ項目としてmodem/antenna/物理SIM、電源/熱、接続・保存復旧、Pro/PC/phone不要の実通信受入を追跡し、SIM01のcarrier/service権と区別する。R5のoffline基本動作、使用時200mm、外部給電を維持する。地域・回線未定、部品選定・内蔵・driver・実通信・cloud gamingは未受入。元R5配布原本は変更せず追加要求として読む。

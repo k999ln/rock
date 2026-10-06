@@ -1,13 +1,48 @@
 {
-  "updatedAt": "2026-09-27",
+  "repositoryCleanup": {
+    "task": "G01",
+    "primaryOwner": "ROCK",
+    "stage": "cleanup_verified_latest_main_baseline_blocked",
+    "sourceMainSha": "592daeea322cd47aa189b67dd689e323662c0c67",
+    "scope": "Remove reproducible Site builds and billing dry-run outputs; retain design archives, runtime, fixtures and evidence.",
+    "githubSaved": true,
+    "mainIntegrated": false,
+    "published": false,
+    "nextAction": "Review cleanup PR #69. Latest main database metadata and downstream acceptance require separate correction; earlier cleanup SHA 154f2cfc passed full CI. Re-run full verification after baseline repair before merge.",
+    "removedFiles": 103,
+    "removedBytes": 69153906,
+    "retainedPublicAssetCopiesVerified": 76,
+    "validation": {
+      "repositoryCheck": "passed; previous index with 103 generated files rejected; cleaned index with rebuilt ignored outputs accepted",
+      "siteBuildAndTests": "13 routes rebuilt; 18/18 passed",
+      "archive": "verify-rocketstar-archive.py --git: 14/14 passed",
+      "fullVerifyLocal": "Stopped at typecheck: TS5033 ENOSPC writing tsconfig.tsbuildinfo; preceding checks passed. Not a full verify pass.",
+      "fullVerifyGitHub": {
+        "status": "passed_for_recorded_sha",
+        "sourceSha": "154f2cfc036d954436c3ee9003b6707e5d2c7fa7",
+        "run": "https://github.com/k999ln/rock/actions/runs/37284888719",
+        "scope": "Before subsequent main integration; newer main acceptance must be checked separately."
+      },
+      "firstGitHubRun": "37282635930: detected immutable AMC snapshot reference edit and obsolete prebuilt-only test expectation. Snapshot restored byte-for-byte; test now requires locked source build. Full CI rerun required.",
+      "security": "SPIDER secrets failed on recorded SHA and earlier base; CodeQL, repair regressions and production web measurement passed. No all-security-clear claim.",
+      "latestIntegratedVerify": "0c90253c main integrated: project/repository/version/schema passed; database:check failed because data/database-status.json and docs/database-status.md are stale. Both files and the checker/schema match origin/main unchanged."
+    },
+    "branch": "codex/repository-cleanup",
+    "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac",
+    "latestMainIntegrated": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "pullRequest": "https://github.com/k999ln/rock/pull/69"
+  },
+  "updatedAt": "2026-10-05",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "AMCのWeb計画・手動台帳からGoal JSONを保存し、明示コマンドでローカルCodexへ着手可能な一件を渡す入口を追加。隔離した試験Goalの一件が実Codexで成果物を作り、AMCでは検収待ちまで記録された。元のWeb記録へは自動同期しない。次は同一Web記録への安全な結果同期、停止・復旧と本人通知、使いやすさ確認。公開する場合はGitHub同期と同一候補の配備readbackを別に行う。自律的な連続実行・自動通知・model導入・課金・公開・実売買は未接続／未実行。正本5師団32部隊は参照専用。",
+  "nextAction": "G04: PR #63–65 / #69–76 / #78の12本を統合。前候補c650466eは総合verify・native・Android CI成功。最終候補の同一SHA検証後にmainへ統合する。履歴secret候補160値は未解決として維持し、検査緩和・実機・本番公開はしない。",
   "tasks": [
     {
       "id": "AMC02",
       "title": "AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外）",
       "status": "done",
-      "dependsOn": ["ORG03"],
+      "dependsOn": [
+        "ORG03"
+      ],
       "evidence": [
         "docs/amc-goal-orchestrator.md",
         "scripts/amc-goal-engine.mjs",
@@ -28,7 +63,13 @@
         "tests/amc-effort.test.mjs",
         "tests/amc-sky-integration.test.mjs",
         "docs/evidence/amc/goal-orchestrator-audit.json",
-        "docs/evidence/amc/codex-local-smoke.json"
+        "docs/evidence/amc/codex-local-smoke.json",
+        "scripts/amc-sky-observe.mjs",
+        "tests/amc-sky-observe.test.mjs",
+        "docs/evidence/spider-observation-source-read.json",
+        "scripts/amc-agent.mjs",
+        "tests/amc-agent-preflight.test.mjs",
+        "docs/evidence/spider-agent-preflight-read.json"
       ]
     },
     {
@@ -44,7 +85,9 @@
       "parentTaskId": "LCH07",
       "title": "同一候補のlicense・NOTICE・SBOMとOWNER未決を照合する",
       "status": "planned",
-      "dependsOn": ["LCH07-01"],
+      "dependsOn": [
+        "LCH07-01"
+      ],
       "evidence": []
     },
     {
@@ -52,7 +95,10 @@
       "parentTaskId": "LCH07",
       "title": "候補のproduction署名・公開trust・失効/rotation証拠を結合する",
       "status": "planned",
-      "dependsOn": ["LCH07-01", "LCH07-02"],
+      "dependsOn": [
+        "LCH07-01",
+        "LCH07-02"
+      ],
       "evidence": []
     },
     {
@@ -60,7 +106,9 @@
       "parentTaskId": "LCH07",
       "title": "署名済み同一候補をfresh環境へ導入し起動・保存を再受入する",
       "status": "planned",
-      "dependsOn": ["LCH07-03"],
+      "dependsOn": [
+        "LCH07-03"
+      ],
       "evidence": []
     },
     {
@@ -68,7 +116,9 @@
       "parentTaskId": "LCH07",
       "title": "同一候補の更新・rollback・backup/restore・中断復旧を受入する",
       "status": "planned",
-      "dependsOn": ["LCH07-04"],
+      "dependsOn": [
+        "LCH07-04"
+      ],
       "evidence": []
     },
     {
@@ -76,7 +126,9 @@
       "parentTaskId": "LCH07",
       "title": "配布物readbackと同一候補の全受入を監査し公開可否を分離する",
       "status": "planned",
-      "dependsOn": ["LCH07-05"],
+      "dependsOn": [
+        "LCH07-05"
+      ],
       "evidence": []
     },
     {
@@ -84,7 +136,9 @@
       "parentTaskId": "OS02",
       "title": "Pixel 10 GL066/frankelとsource lockの対象を再照合する",
       "status": "planned",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": []
     },
     {
@@ -92,7 +146,10 @@
       "parentTaskId": "OS02",
       "title": "source署名・vendor inventory・純正復旧artifactの入力matrixを作る",
       "status": "planned",
-      "dependsOn": ["OS01", "OS02-01"],
+      "dependsOn": [
+        "OS01",
+        "OS02-01"
+      ],
       "evidence": []
     },
     {
@@ -100,7 +157,9 @@
       "parentTaskId": "OS02",
       "title": "専用x86_64 LinuxのCPU・RAM・空き容量・依存を適合判定する",
       "status": "planned",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": []
     },
     {
@@ -108,7 +167,11 @@
       "parentTaskId": "OS02",
       "title": "build前freezeの不足入力と準備検査のfail-closedを検証する",
       "status": "planned",
-      "dependsOn": ["OS01", "OS02-02", "OS02-03"],
+      "dependsOn": [
+        "OS01",
+        "OS02-02",
+        "OS02-03"
+      ],
       "evidence": []
     },
     {
@@ -116,7 +179,10 @@
       "parentTaskId": "OS02",
       "title": "適合済みLinux向けcompile-only再現手順とartifact保全条件を固定する",
       "status": "planned",
-      "dependsOn": ["OS01", "OS02-04"],
+      "dependsOn": [
+        "OS01",
+        "OS02-04"
+      ],
       "evidence": []
     },
     {
@@ -124,7 +190,10 @@
       "parentTaskId": "OS02",
       "title": "OS02適合確認の全条件とfull build・first-flashの別gateをレビューする",
       "status": "planned",
-      "dependsOn": ["OS01", "OS02-05"],
+      "dependsOn": [
+        "OS01",
+        "OS02-05"
+      ],
       "evidence": []
     },
     {
@@ -132,7 +201,9 @@
       "parentTaskId": "SKY19",
       "title": "ToC料金保留と旧888 cents契約の適用差分を整理する",
       "status": "planned",
-      "dependsOn": ["SKY16"],
+      "dependsOn": [
+        "SKY16"
+      ],
       "evidence": []
     },
     {
@@ -140,7 +211,10 @@
       "parentTaskId": "SKY19",
       "title": "SkyのToolチーム入口と利益発生から決済までの利用者動線を定義する",
       "status": "planned",
-      "dependsOn": ["SKY16", "SKY19-01"],
+      "dependsOn": [
+        "SKY16",
+        "SKY19-01"
+      ],
       "evidence": []
     },
     {
@@ -148,7 +222,11 @@
       "parentTaskId": "SKY19",
       "title": "対象利益・料率・上限・実費・返金・還元の決定表を作る",
       "status": "planned",
-      "dependsOn": ["SKY16", "SKY19-01", "SKY19-02"],
+      "dependsOn": [
+        "SKY16",
+        "SKY19-01",
+        "SKY19-02"
+      ],
       "evidence": []
     },
     {
@@ -156,7 +234,10 @@
       "parentTaskId": "SKY19",
       "title": "保留中に新規料金計上・請求・回収をしない回帰試験を固定する",
       "status": "planned",
-      "dependsOn": ["SKY16", "SKY19-01"],
+      "dependsOn": [
+        "SKY16",
+        "SKY19-01"
+      ],
       "evidence": []
     },
     {
@@ -164,7 +245,11 @@
       "parentTaskId": "SKY19",
       "title": "OWNERの料金判断を記録し新契約の受入条件を版固定する",
       "status": "planned",
-      "dependsOn": ["SKY16", "SKY19-03", "SKY19-04"],
+      "dependsOn": [
+        "SKY16",
+        "SKY19-03",
+        "SKY19-04"
+      ],
       "evidence": []
     },
     {
@@ -172,7 +257,10 @@
       "parentTaskId": "SKY19",
       "title": "Toolチーム入口・Wallet決済・開発者還元の設計全体をレビューする",
       "status": "planned",
-      "dependsOn": ["SKY16", "SKY19-05"],
+      "dependsOn": [
+        "SKY16",
+        "SKY19-05"
+      ],
       "evidence": []
     },
     {
@@ -180,7 +268,9 @@
       "parentTaskId": "SKY07",
       "title": "MCPごとのPC・Sky Cloud・提供者接続対応表をmanifestへ結ぶ",
       "status": "planned",
-      "dependsOn": ["SKY06"],
+      "dependsOn": [
+        "SKY06"
+      ],
       "evidence": []
     },
     {
@@ -188,7 +278,10 @@
       "parentTaskId": "SKY07",
       "title": "接続先選択・未対応表示・ワンタップ初期化のUI契約を検証する",
       "status": "planned",
-      "dependsOn": ["SKY06", "SKY07-01"],
+      "dependsOn": [
+        "SKY06",
+        "SKY07-01"
+      ],
       "evidence": []
     },
     {
@@ -196,7 +289,10 @@
       "parentTaskId": "SKY07",
       "title": "Passport・scope・一回承認と未信頼schemaの境界を検証する",
       "status": "planned",
-      "dependsOn": ["SKY06", "SKY07-01"],
+      "dependsOn": [
+        "SKY06",
+        "SKY07-01"
+      ],
       "evidence": []
     },
     {
@@ -204,7 +300,11 @@
       "parentTaskId": "SKY07",
       "title": "代表Provider sandboxで接続から実行receipt照合まで通す",
       "status": "planned",
-      "dependsOn": ["SKY06", "SKY07-02", "SKY07-03"],
+      "dependsOn": [
+        "SKY06",
+        "SKY07-02",
+        "SKY07-03"
+      ],
       "evidence": []
     },
     {
@@ -212,7 +312,10 @@
       "parentTaskId": "SKY07",
       "title": "sandboxでtimeout・失効・再接続・同一実行の再送を受入する",
       "status": "planned",
-      "dependsOn": ["SKY06", "SKY07-04"],
+      "dependsOn": [
+        "SKY06",
+        "SKY07-04"
+      ],
       "evidence": []
     },
     {
@@ -220,7 +323,10 @@
       "parentTaskId": "SKY07",
       "title": "対応先別の証拠・未対応範囲とSKY07全体受入を公開前に確定する",
       "status": "planned",
-      "dependsOn": ["SKY06", "SKY07-05"],
+      "dependsOn": [
+        "SKY06",
+        "SKY07-05"
+      ],
       "evidence": []
     },
     {
@@ -228,7 +334,10 @@
       "parentTaskId": "AI02",
       "title": "ModelProfileとRuntimeManifestのidentity・hash・互換条件を固定する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
       "evidence": []
     },
     {
@@ -236,7 +345,11 @@
       "parentTaskId": "AI02",
       "title": "hash・license・容量・互換検査で非active model stagingを保護する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI02-01"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-01"
+      ],
       "evidence": []
     },
     {
@@ -244,7 +357,11 @@
       "parentTaskId": "AI02",
       "title": "仕事へのmodel/runtime版固定と旧job再開判定を実装する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI02-01"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-01"
+      ],
       "evidence": []
     },
     {
@@ -252,7 +369,12 @@
       "parentTaskId": "AI02",
       "title": "Brokerによるatomic切替・health判定・crash rollbackを実装する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI02-02", "AI02-03"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-02",
+        "AI02-03"
+      ],
       "evidence": []
     },
     {
@@ -260,7 +382,11 @@
       "parentTaskId": "AI02",
       "title": "承認済み評価環境で2 model候補の交換・旧job再開・失敗復旧を実測する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI02-04"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-04"
+      ],
       "evidence": []
     },
     {
@@ -268,7 +394,11 @@
       "parentTaskId": "AI02",
       "title": "権限非昇格の回帰とAI02の全体完了条件を照合する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI02-05"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI02-05"
+      ],
       "evidence": []
     },
     {
@@ -276,7 +406,10 @@
       "parentTaskId": "AI04",
       "title": "OS10保存契約と外部作用outboxの状態・永続fieldを対応付ける",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
       "evidence": []
     },
     {
@@ -284,7 +417,11 @@
       "parentTaskId": "AI04",
       "title": "結果不明・重複・取消・crashの決定的fixtureを固定する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI04-01"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-01"
+      ],
       "evidence": []
     },
     {
@@ -292,7 +429,11 @@
       "parentTaskId": "AI04",
       "title": "dispatch前のoutbox保存・権限再検査・operation key固定を実装する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI04-02"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-02"
+      ],
       "evidence": []
     },
     {
@@ -300,7 +441,11 @@
       "parentTaskId": "AI04",
       "title": "provider照会とreceiptの署名・内容・金額・finality照合を実装する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI04-03"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-03"
+      ],
       "evidence": []
     },
     {
@@ -308,7 +453,11 @@
       "parentTaskId": "AI04",
       "title": "再起動後の承認・receipt回収と取消競合を故障注入試験する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI04-04"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-04"
+      ],
       "evidence": []
     },
     {
@@ -316,7 +465,11 @@
       "parentTaskId": "AI04",
       "title": "AI01・OS10の依存とAI04全体の復旧証拠を同一版で受入する",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10", "AI04-05"],
+      "dependsOn": [
+        "AI01",
+        "OS10",
+        "AI04-05"
+      ],
       "evidence": []
     },
     {
@@ -324,7 +477,11 @@
       "parentTaskId": "SYS13",
       "title": "緊急accessの既存APK証拠とfull OS不足を同一候補ごとに分ける",
       "status": "planned",
-      "dependsOn": ["SYS12", "OS11", "RLS02"],
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02"
+      ],
       "evidence": []
     },
     {
@@ -332,7 +489,12 @@
       "parentTaskId": "SYS13",
       "title": "hardware credential登録・失効・再登録の契約と公開設定を検査する",
       "status": "planned",
-      "dependsOn": ["SYS12", "OS11", "RLS02", "SYS13-01"],
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-01"
+      ],
       "evidence": []
     },
     {
@@ -340,7 +502,13 @@
       "parentTaskId": "SYS13",
       "title": "Android serviceの限定command・期限・replay拒否・監査を実装検証する",
       "status": "planned",
-      "dependsOn": ["SYS12", "OS11", "RLS02", "SYS13-01", "SYS13-02"],
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-01",
+        "SYS13-02"
+      ],
       "evidence": []
     },
     {
@@ -348,7 +516,13 @@
       "parentTaskId": "SYS13",
       "title": "候補imageのprivapp・SELinux分離と緊急復旧導線を受入表へ固定する",
       "status": "planned",
-      "dependsOn": ["SYS12", "OS11", "RLS02", "SYS13-02", "SYS13-03"],
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-02",
+        "SYS13-03"
+      ],
       "evidence": []
     },
     {
@@ -356,7 +530,12 @@
       "parentTaskId": "SYS13",
       "title": "承認済みPixel候補で不正操作・失効・隔離の侵入試験を行う",
       "status": "planned",
-      "dependsOn": ["SYS12", "OS11", "RLS02", "SYS13-04"],
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-04"
+      ],
       "evidence": []
     },
     {
@@ -364,7 +543,12 @@
       "parentTaskId": "SYS13",
       "title": "同一Pixel候補で切断・再起動・失効後の復旧を検証しSYS13全条件を照合する",
       "status": "planned",
-      "dependsOn": ["SYS12", "OS11", "RLS02", "SYS13-05"],
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02",
+        "SYS13-05"
+      ],
       "evidence": []
     },
     {
@@ -380,7 +564,9 @@
       "parentTaskId": "AMC01",
       "title": "各Interfaceの主担当・受渡し先・安全境界を一意に割り当てる",
       "status": "planned",
-      "dependsOn": ["AMC01-01"],
+      "dependsOn": [
+        "AMC01-01"
+      ],
       "evidence": []
     },
     {
@@ -388,7 +574,9 @@
       "parentTaskId": "AMC01",
       "title": "公開説明・R5・Pro定義・rocketstar保存資料の相違台帳を作る",
       "status": "planned",
-      "dependsOn": ["AMC01-01"],
+      "dependsOn": [
+        "AMC01-01"
+      ],
       "evidence": []
     },
     {
@@ -396,7 +584,10 @@
       "parentTaskId": "AMC01",
       "title": "未決事項へ決定者・必要入力・影響先・次の作業を付ける",
       "status": "planned",
-      "dependsOn": ["AMC01-02", "AMC01-03"],
+      "dependsOn": [
+        "AMC01-02",
+        "AMC01-03"
+      ],
       "evidence": []
     },
     {
@@ -404,7 +595,9 @@
       "parentTaskId": "AMC01",
       "title": "責任表と未決台帳を32部隊・親子タスクへ相互リンクする",
       "status": "planned",
-      "dependsOn": ["AMC01-04"],
+      "dependsOn": [
+        "AMC01-04"
+      ],
       "evidence": []
     },
     {
@@ -412,7 +605,9 @@
       "parentTaskId": "AMC01",
       "title": "関係部隊の責任表レビューを記録し残る未決を引き継ぐ",
       "status": "planned",
-      "dependsOn": ["AMC01-05"],
+      "dependsOn": [
+        "AMC01-05"
+      ],
       "evidence": []
     },
     {
@@ -420,7 +615,9 @@
       "parentTaskId": "RKT10",
       "title": "要求・BOM・供給元・inspectionの識別関係を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -428,7 +625,10 @@
       "parentTaskId": "RKT10",
       "title": "不適合と構成変更の記録・影響判定を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT10-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT10-01"
+      ],
       "evidence": []
     },
     {
@@ -436,7 +636,10 @@
       "parentTaskId": "RKT10",
       "title": "設計reviewと製造引渡しの証拠Gateを分ける",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT10-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT10-01"
+      ],
       "evidence": []
     },
     {
@@ -444,7 +647,10 @@
       "parentTaskId": "RKT10",
       "title": "地上・飛行・再使用の証拠Gateを分ける",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT10-03"],
+      "dependsOn": [
+        "RKT01",
+        "RKT10-03"
+      ],
       "evidence": []
     },
     {
@@ -452,7 +658,11 @@
       "parentTaskId": "RKT10",
       "title": "証拠提出者と独立確認者の役割をGateへ割り当てる",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT10-03", "RKT10-04"],
+      "dependsOn": [
+        "RKT01",
+        "RKT10-03",
+        "RKT10-04"
+      ],
       "evidence": []
     },
     {
@@ -460,7 +670,12 @@
       "parentTaskId": "RKT10",
       "title": "版変更時に再評価する合格範囲をmatrixへまとめる",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT10-02", "RKT10-04", "RKT10-05"],
+      "dependsOn": [
+        "RKT01",
+        "RKT10-02",
+        "RKT10-04",
+        "RKT10-05"
+      ],
       "evidence": []
     },
     {
@@ -468,7 +683,9 @@
       "parentTaskId": "RKT09",
       "title": "機番・構成版・部品識別の台帳schemaを定義する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -476,7 +693,10 @@
       "parentTaskId": "RKT09",
       "title": "部品寿命・回収履歴の記録項目を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT09-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT09-01"
+      ],
       "evidence": []
     },
     {
@@ -484,7 +704,11 @@
       "parentTaskId": "RKT09",
       "title": "点検・交換・不適合の判定経路を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT09-01", "RKT09-02"],
+      "dependsOn": [
+        "RKT01",
+        "RKT09-01",
+        "RKT09-02"
+      ],
       "evidence": []
     },
     {
@@ -492,7 +716,11 @@
       "parentTaskId": "RKT09",
       "title": "再飛行可否に必要な証拠と判定責任を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT09-02", "RKT09-03"],
+      "dependsOn": [
+        "RKT01",
+        "RKT09-02",
+        "RKT09-03"
+      ],
       "evidence": []
     },
     {
@@ -500,7 +728,12 @@
       "parentTaskId": "RKT09",
       "title": "不足証拠・版混在を拒否するsynthetic履歴を設計する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT09-01", "RKT09-03", "RKT09-04"],
+      "dependsOn": [
+        "RKT01",
+        "RKT09-01",
+        "RKT09-03",
+        "RKT09-04"
+      ],
       "evidence": []
     },
     {
@@ -508,7 +741,11 @@
       "parentTaskId": "RKT09",
       "title": "synthetic判定と同一機番の実再使用証拠を分離する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT09-04", "RKT09-05"],
+      "dependsOn": [
+        "RKT01",
+        "RKT09-04",
+        "RKT09-05"
+      ],
       "evidence": []
     },
     {
@@ -516,7 +753,9 @@
       "parentTaskId": "RKT08",
       "title": "輸送・設置・発射準備・回収の設備要求を索引化する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -524,7 +763,10 @@
       "parentTaskId": "RKT08",
       "title": "運用段階ごとの実行者・確認者・中止権限を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT08-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT08-01"
+      ],
       "evidence": []
     },
     {
@@ -532,7 +774,10 @@
       "parentTaskId": "RKT08",
       "title": "要求と結果の照合・go/no-go・holdの記録形式を作る",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT08-02"],
+      "dependsOn": [
+        "RKT01",
+        "RKT08-02"
+      ],
       "evidence": []
     },
     {
@@ -540,7 +785,11 @@
       "parentTaskId": "RKT08",
       "title": "abort時の通知・確認・記録の机上ケースを定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT08-02", "RKT08-03"],
+      "dependsOn": [
+        "RKT01",
+        "RKT08-02",
+        "RKT08-03"
+      ],
       "evidence": []
     },
     {
@@ -548,7 +797,10 @@
       "parentTaskId": "RKT08",
       "title": "地域・施設・運用資格の未決と確認先を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT08-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT08-01"
+      ],
       "evidence": []
     },
     {
@@ -556,7 +808,12 @@
       "parentTaskId": "RKT08",
       "title": "机上rehearsalの入力と期待記録をGateへまとめる",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT08-03", "RKT08-04", "RKT08-05"],
+      "dependsOn": [
+        "RKT01",
+        "RKT08-03",
+        "RKT08-04",
+        "RKT08-05"
+      ],
       "evidence": []
     },
     {
@@ -564,7 +821,9 @@
       "parentTaskId": "RKT07",
       "title": "R1.0の電源・記録・時刻・通信要求を対応付ける",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -572,7 +831,9 @@
       "parentTaskId": "RKT07",
       "title": "A-LINK v0.4受信試作の適用範囲を切り出す",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -580,7 +841,11 @@
       "parentTaskId": "RKT07",
       "title": "現行要求と旧試作を一致・差分・未確認へ分類する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT07-01", "RKT07-02"],
+      "dependsOn": [
+        "RKT01",
+        "RKT07-01",
+        "RKT07-02"
+      ],
       "evidence": []
     },
     {
@@ -588,7 +853,10 @@
       "parentTaskId": "RKT07",
       "title": "link別の容量・可視条件・電力・時刻の未決を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT07-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT07-01"
+      ],
       "evidence": []
     },
     {
@@ -596,7 +864,11 @@
       "parentTaskId": "RKT07",
       "title": "切断・遅延・順序・再送のlink simulatorケースを定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT07-03", "RKT07-04"],
+      "dependsOn": [
+        "RKT01",
+        "RKT07-03",
+        "RKT07-04"
+      ],
       "evidence": []
     },
     {
@@ -604,7 +876,12 @@
       "parentTaskId": "RKT07",
       "title": "受信試作・simulator・実電波・機体統合の受入を分ける",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT07-03", "RKT07-04", "RKT07-05"],
+      "dependsOn": [
+        "RKT01",
+        "RKT07-03",
+        "RKT07-04",
+        "RKT07-05"
+      ],
       "evidence": []
     },
     {
@@ -612,7 +889,9 @@
       "parentTaskId": "RKT06",
       "title": "Payloadの包絡・質量・接続の必要入力を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -620,7 +899,10 @@
       "parentTaskId": "RKT06",
       "title": "Payloadと機体のInterface責任を対応付ける",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT06-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT06-01"
+      ],
       "evidence": []
     },
     {
@@ -628,7 +910,10 @@
       "parentTaskId": "RKT06",
       "title": "保持・扉・分離要求の状態を分ける",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT06-02"],
+      "dependsOn": [
+        "RKT01",
+        "RKT06-02"
+      ],
       "evidence": []
     },
     {
@@ -636,7 +921,10 @@
       "parentTaskId": "RKT06",
       "title": "分離結果・残留・不明の状態確認を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT06-03"],
+      "dependsOn": [
+        "RKT01",
+        "RKT06-03"
+      ],
       "evidence": []
     },
     {
@@ -644,7 +932,11 @@
       "parentTaskId": "RKT06",
       "title": "emulator異常入力と表示・記録の期待値を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT06-03", "RKT06-04"],
+      "dependsOn": [
+        "RKT01",
+        "RKT06-03",
+        "RKT06-04"
+      ],
       "evidence": []
     },
     {
@@ -652,7 +944,12 @@
       "parentTaskId": "RKT06",
       "title": "emulatorと実機分離の証拠を分けた受入表を作る",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT06-01", "RKT06-02", "RKT06-05"],
+      "dependsOn": [
+        "RKT01",
+        "RKT06-01",
+        "RKT06-02",
+        "RKT06-05"
+      ],
       "evidence": []
     },
     {
@@ -660,7 +957,9 @@
       "parentTaskId": "RKT05",
       "title": "飛行核と地上支援OSのauthority境界を図示する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -668,7 +967,10 @@
       "parentTaskId": "RKT05",
       "title": "正常状態の入出力と独立判定役割を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT05-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT05-01"
+      ],
       "evidence": []
     },
     {
@@ -676,7 +978,10 @@
       "parentTaskId": "RKT05",
       "title": "中止・通信断・再起動の状態遷移を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT05-02"],
+      "dependsOn": [
+        "RKT01",
+        "RKT05-02"
+      ],
       "evidence": []
     },
     {
@@ -684,7 +989,11 @@
       "parentTaskId": "RKT05",
       "title": "SILの入力・期待結果・trace記録形式を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT05-02", "RKT05-03"],
+      "dependsOn": [
+        "RKT01",
+        "RKT05-02",
+        "RKT05-03"
+      ],
       "evidence": []
     },
     {
@@ -692,7 +1001,12 @@
       "parentTaskId": "RKT05",
       "title": "禁止遷移と権限越境を照合するレビュー表を作る",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT05-01", "RKT05-03", "RKT05-04"],
+      "dependsOn": [
+        "RKT01",
+        "RKT05-01",
+        "RKT05-03",
+        "RKT05-04"
+      ],
       "evidence": []
     },
     {
@@ -700,7 +1014,11 @@
       "parentTaskId": "RKT05",
       "title": "SIL計画・SIL結果・HIL・実機・飛行認定を分離する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT05-04", "RKT05-05"],
+      "dependsOn": [
+        "RKT01",
+        "RKT05-04",
+        "RKT05-05"
+      ],
       "evidence": []
     },
     {
@@ -708,7 +1026,9 @@
       "parentTaskId": "RKT04",
       "title": "飛行領域・熱・扉・構造の要求対応表を作る",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -716,7 +1036,10 @@
       "parentTaskId": "RKT04",
       "title": "解析caseのMission版と構成版を揃える規則を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT04-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT04-01"
+      ],
       "evidence": []
     },
     {
@@ -724,7 +1047,10 @@
       "parentTaskId": "RKT04",
       "title": "境界条件・材料・不確かさの不足入力を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT04-02"],
+      "dependsOn": [
+        "RKT01",
+        "RKT04-02"
+      ],
       "evidence": []
     },
     {
@@ -732,7 +1058,11 @@
       "parentTaskId": "RKT04",
       "title": "空力・熱・構造の受渡入力と解消順を可視化する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT04-01", "RKT04-03"],
+      "dependsOn": [
+        "RKT01",
+        "RKT04-01",
+        "RKT04-03"
+      ],
       "evidence": []
     },
     {
@@ -740,7 +1070,11 @@
       "parentTaskId": "RKT04",
       "title": "解析と独立検証を照合する記録要件を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT04-02", "RKT04-03"],
+      "dependsOn": [
+        "RKT01",
+        "RKT04-02",
+        "RKT04-03"
+      ],
       "evidence": []
     },
     {
@@ -748,7 +1082,11 @@
       "parentTaskId": "RKT04",
       "title": "解析計画と実環境受入の証拠境界をまとめる",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT04-04", "RKT04-05"],
+      "dependsOn": [
+        "RKT01",
+        "RKT04-04",
+        "RKT04-05"
+      ],
       "evidence": []
     },
     {
@@ -756,7 +1094,9 @@
       "parentTaskId": "RKT03",
       "title": "推進要求と機体側Interfaceの出典台帳を作る",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -764,7 +1104,10 @@
       "parentTaskId": "RKT03",
       "title": "停止要求・状態通知の責任と確認記録を分ける",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT03-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT03-01"
+      ],
       "evidence": []
     },
     {
@@ -772,7 +1115,10 @@
       "parentTaskId": "RKT03",
       "title": "方式・型式・個数・寿命の未決台帳を作る",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT03-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT03-01"
+      ],
       "evidence": []
     },
     {
@@ -780,7 +1126,10 @@
       "parentTaskId": "RKT03",
       "title": "比較性能と採用値を分ける記録様式を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT03-03"],
+      "dependsOn": [
+        "RKT01",
+        "RKT03-03"
+      ],
       "evidence": []
     },
     {
@@ -788,7 +1137,12 @@
       "parentTaskId": "RKT03",
       "title": "専門設計レビューへ提出する項目と責任をまとめる",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT03-02", "RKT03-03", "RKT03-04"],
+      "dependsOn": [
+        "RKT01",
+        "RKT03-02",
+        "RKT03-03",
+        "RKT03-04"
+      ],
       "evidence": []
     },
     {
@@ -796,7 +1150,10 @@
       "parentTaskId": "RKT03",
       "title": "設計レビューから地上実証までの証拠Gateを整理する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT03-05"],
+      "dependsOn": [
+        "RKT01",
+        "RKT03-05"
+      ],
       "evidence": []
     },
     {
@@ -804,7 +1161,9 @@
       "parentTaskId": "RKT02",
       "title": "構造・tank・取付部の要求とInterfaceを索引化する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
@@ -812,7 +1171,10 @@
       "parentTaskId": "RKT02",
       "title": "材料候補と材料証拠の未決入力を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT02-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT02-01"
+      ],
       "evidence": []
     },
     {
@@ -820,7 +1182,10 @@
       "parentTaskId": "RKT02",
       "title": "荷重caseの出典・構成版・不足入力を対応付ける",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT02-01"],
+      "dependsOn": [
+        "RKT01",
+        "RKT02-01"
+      ],
       "evidence": []
     },
     {
@@ -828,7 +1193,11 @@
       "parentTaskId": "RKT02",
       "title": "製造方法・取付条件の未決と専門レビュー役割を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT02-01", "RKT02-02"],
+      "dependsOn": [
+        "RKT01",
+        "RKT02-01",
+        "RKT02-02"
+      ],
       "evidence": []
     },
     {
@@ -836,7 +1205,12 @@
       "parentTaskId": "RKT02",
       "title": "材料試験・解析・構造試験の証拠順を定義する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT02-02", "RKT02-03", "RKT02-04"],
+      "dependsOn": [
+        "RKT01",
+        "RKT02-02",
+        "RKT02-03",
+        "RKT02-04"
+      ],
       "evidence": []
     },
     {
@@ -844,7 +1218,11 @@
       "parentTaskId": "RKT02",
       "title": "製造リリースへ渡せない未確定条件を一覧化する",
       "status": "planned",
-      "dependsOn": ["RKT01", "RKT02-04", "RKT02-05"],
+      "dependsOn": [
+        "RKT01",
+        "RKT02-04",
+        "RKT02-05"
+      ],
       "evidence": []
     },
     {
@@ -852,7 +1230,9 @@
       "parentTaskId": "RKT01",
       "title": "射場・回収・投入・搭載・環境のMission入力台帳を作る",
       "status": "planned",
-      "dependsOn": ["DOC03"],
+      "dependsOn": [
+        "DOC03"
+      ],
       "evidence": []
     },
     {
@@ -860,7 +1240,9 @@
       "parentTaskId": "RKT01",
       "title": "R1.0の60要求へ根拠と必要証拠を対応付ける",
       "status": "planned",
-      "dependsOn": ["DOC03"],
+      "dependsOn": [
+        "DOC03"
+      ],
       "evidence": []
     },
     {
@@ -868,7 +1250,9 @@
       "parentTaskId": "RKT01",
       "title": "18 Interfaceの入出力とR1〜R10の責任を対応付ける",
       "status": "planned",
-      "dependsOn": ["DOC03"],
+      "dependsOn": [
+        "DOC03"
+      ],
       "evidence": []
     },
     {
@@ -876,7 +1260,12 @@
       "parentTaskId": "RKT01",
       "title": "要求と未決事項の主担当・閉じ方をR1〜R10へ割り当てる",
       "status": "planned",
-      "dependsOn": ["DOC03", "RKT01-01", "RKT01-02", "RKT01-03"],
+      "dependsOn": [
+        "DOC03",
+        "RKT01-01",
+        "RKT01-02",
+        "RKT01-03"
+      ],
       "evidence": []
     },
     {
@@ -884,7 +1273,10 @@
       "parentTaskId": "RKT01",
       "title": "不足Mission入力の決定順と影響先を整理する",
       "status": "planned",
-      "dependsOn": ["DOC03", "RKT01-04"],
+      "dependsOn": [
+        "DOC03",
+        "RKT01-04"
+      ],
       "evidence": []
     },
     {
@@ -892,7 +1284,11 @@
       "parentTaskId": "RKT01",
       "title": "W1要求整理とW2統合成立性のGateを分ける",
       "status": "planned",
-      "dependsOn": ["DOC03", "RKT01-04", "RKT01-05"],
+      "dependsOn": [
+        "DOC03",
+        "RKT01-04",
+        "RKT01-05"
+      ],
       "evidence": []
     },
     {
@@ -900,7 +1296,9 @@
       "parentTaskId": "PRO07",
       "title": "基板・冷却・storage・I/Oの筐体包絡入力を整理する",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -908,7 +1306,10 @@
       "parentTaskId": "PRO07",
       "title": "動作モード別の電力予算と未選定条件を分ける",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO07-01"],
+      "dependsOn": [
+        "PRO01",
+        "PRO07-01"
+      ],
       "evidence": []
     },
     {
@@ -916,7 +1317,11 @@
       "parentTaskId": "PRO07",
       "title": "最大同時負荷と通風阻害の熱評価条件を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO07-01", "PRO07-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO07-01",
+        "PRO07-02"
+      ],
       "evidence": []
     },
     {
@@ -924,7 +1329,9 @@
       "parentTaskId": "PRO07",
       "title": "電源断・中断更新・復旧失敗の受入入力を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -932,7 +1339,9 @@
       "parentTaskId": "PRO07",
       "title": "署名・個体鍵・譲渡消去のOSとProの責任を分ける",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -940,7 +1349,12 @@
       "parentTaskId": "PRO07",
       "title": "筐体・熱・更新復旧の計画受入と完成品受入を分離する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO07-03", "PRO07-04", "PRO07-05"],
+      "dependsOn": [
+        "PRO01",
+        "PRO07-03",
+        "PRO07-04",
+        "PRO07-05"
+      ],
       "evidence": []
     },
     {
@@ -948,7 +1362,9 @@
       "parentTaskId": "PRO06",
       "title": "pairingと能力交渉の機器認証条件を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -956,7 +1372,10 @@
       "parentTaskId": "PRO06",
       "title": "Pose eventのschema版・座標・単位・時刻を共通化する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO06-01"],
+      "dependsOn": [
+        "PRO01",
+        "PRO06-01"
+      ],
       "evidence": []
     },
     {
@@ -964,7 +1383,10 @@
       "parentTaskId": "PRO06",
       "title": "Poseの順序・鮮度・重複・時計ずれの判定を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO06-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO06-02"
+      ],
       "evidence": []
     },
     {
@@ -972,7 +1394,11 @@
       "parentTaskId": "PRO06",
       "title": "切断・古いepoch・再接続の状態遷移を整理する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO06-01", "PRO06-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO06-01",
+        "PRO06-02"
+      ],
       "evidence": []
     },
     {
@@ -980,7 +1406,11 @@
       "parentTaskId": "PRO06",
       "title": "未知機器と異常Poseのsynthetic fixtureを設計する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO06-03", "PRO06-04"],
+      "dependsOn": [
+        "PRO01",
+        "PRO06-03",
+        "PRO06-04"
+      ],
       "evidence": []
     },
     {
@@ -988,7 +1418,13 @@
       "parentTaskId": "PRO06",
       "title": "1・2・4 Mini追加profileと単独動作の境界をまとめる",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO06-01", "PRO06-02", "PRO06-04", "PRO06-05"],
+      "dependsOn": [
+        "PRO01",
+        "PRO06-01",
+        "PRO06-02",
+        "PRO06-04",
+        "PRO06-05"
+      ],
       "evidence": []
     },
     {
@@ -996,7 +1432,9 @@
       "parentTaskId": "PRO05",
       "title": "映像・音声・controllerの用途と最小接続構成を整理する",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -1004,7 +1442,10 @@
       "parentTaskId": "PRO05",
       "title": "端子・規格候補とdriverの対応表を作る",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO05-01"],
+      "dependsOn": [
+        "PRO01",
+        "PRO05-01"
+      ],
       "evidence": []
     },
     {
@@ -1012,7 +1453,10 @@
       "parentTaskId": "PRO05",
       "title": "I/Oの帯域・電力を演算基板候補の制約へ対応付ける",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO05-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO05-02"
+      ],
       "evidence": []
     },
     {
@@ -1020,7 +1464,11 @@
       "parentTaskId": "PRO05",
       "title": "起動前未接続と機器認識失敗の期待挙動を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO05-01", "PRO05-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO05-01",
+        "PRO05-02"
+      ],
       "evidence": []
     },
     {
@@ -1028,7 +1476,10 @@
       "parentTaskId": "PRO05",
       "title": "抜去・再接続の操作継続と音映像復帰ケースを定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO05-04"],
+      "dependsOn": [
+        "PRO01",
+        "PRO05-04"
+      ],
       "evidence": []
     },
     {
@@ -1036,7 +1487,12 @@
       "parentTaskId": "PRO05",
       "title": "最小I/O表の未決と選定前受入条件をまとめる",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO05-03", "PRO05-04", "PRO05-05"],
+      "dependsOn": [
+        "PRO01",
+        "PRO05-03",
+        "PRO05-04",
+        "PRO05-05"
+      ],
       "evidence": []
     },
     {
@@ -1044,7 +1500,9 @@
       "parentTaskId": "PRO04",
       "title": "session・game・作品・秘密参照・ログの保存分類表を作る",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -1052,7 +1510,10 @@
       "parentTaskId": "PRO04",
       "title": "利用者分離と別owner読取拒否のfixtureを設計する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO04-01"],
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01"
+      ],
       "evidence": []
     },
     {
@@ -1060,7 +1521,10 @@
       "parentTaskId": "PRO04",
       "title": "容量不足・並行更新・中断時の保存契約を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO04-01"],
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01"
+      ],
       "evidence": []
     },
     {
@@ -1068,7 +1532,11 @@
       "parentTaskId": "PRO04",
       "title": "暗号鍵の責任とcrash・鍵喪失時の復旧境界を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO04-01", "PRO04-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01",
+        "PRO04-02"
+      ],
       "evidence": []
     },
     {
@@ -1076,7 +1544,12 @@
       "parentTaskId": "PRO04",
       "title": "backup・restoreとschema版更新のfixtureを設計する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO04-01", "PRO04-03", "PRO04-04"],
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01",
+        "PRO04-03",
+        "PRO04-04"
+      ],
       "evidence": []
     },
     {
@@ -1084,7 +1557,13 @@
       "parentTaskId": "PRO04",
       "title": "export・deleteと削除後の再アクセスのfixtureを設計する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO04-01", "PRO04-02", "PRO04-04", "PRO04-05"],
+      "dependsOn": [
+        "PRO01",
+        "PRO04-01",
+        "PRO04-02",
+        "PRO04-04",
+        "PRO04-05"
+      ],
       "evidence": []
     },
     {
@@ -1092,7 +1571,9 @@
       "parentTaskId": "PRO03",
       "title": "DX01共通契約とPro固有profileの差分を整理する",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -1100,7 +1581,10 @@
       "parentTaskId": "PRO03",
       "title": "controllerの操作を意味操作へ対応付ける",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO03-01"],
+      "dependsOn": [
+        "PRO01",
+        "PRO03-01"
+      ],
       "evidence": []
     },
     {
@@ -1108,7 +1592,10 @@
       "parentTaskId": "PRO03",
       "title": "任意Mini入力を同じ意味操作へ変換する差分を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO03-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO03-02"
+      ],
       "evidence": []
     },
     {
@@ -1116,7 +1603,11 @@
       "parentTaskId": "PRO03",
       "title": "sampleの版・導入・playの再現手順を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO03-01", "PRO03-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO03-01",
+        "PRO03-02"
+      ],
       "evidence": []
     },
     {
@@ -1124,7 +1615,10 @@
       "parentTaskId": "PRO03",
       "title": "中断・保存・再開の形式と期待状態を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO03-04"],
+      "dependsOn": [
+        "PRO01",
+        "PRO03-04"
+      ],
       "evidence": []
     },
     {
@@ -1132,7 +1626,12 @@
       "parentTaskId": "PRO03",
       "title": "削除まで含めた非金融gameの受入ケース表を作る",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO03-03", "PRO03-04", "PRO03-05"],
+      "dependsOn": [
+        "PRO01",
+        "PRO03-03",
+        "PRO03-04",
+        "PRO03-05"
+      ],
       "evidence": []
     },
     {
@@ -1140,7 +1639,9 @@
       "parentTaskId": "PRO02",
       "title": "ゲーム単独とゲーム＋音声の再現負荷を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -1148,7 +1649,9 @@
       "parentTaskId": "PRO02",
       "title": "サービス＋保存とローカルAI併用の再現負荷を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -1156,7 +1659,11 @@
       "parentTaskId": "PRO02",
       "title": "解像度・FPS・p95遅延・RAM・I/Oの計測欄を統一する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO02-01", "PRO02-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO02-01",
+        "PRO02-02"
+      ],
       "evidence": []
     },
     {
@@ -1164,7 +1671,11 @@
       "parentTaskId": "PRO02",
       "title": "電力・温度・継続負荷の比較条件を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO02-01", "PRO02-02"],
+      "dependsOn": [
+        "PRO01",
+        "PRO02-01",
+        "PRO02-02"
+      ],
       "evidence": []
     },
     {
@@ -1172,7 +1683,9 @@
       "parentTaskId": "PRO02",
       "title": "CPU・GPU・NPU候補のdriver・OS・供給条件を比較表へ揃える",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
@@ -1180,7 +1693,12 @@
       "parentTaskId": "PRO02",
       "title": "同条件比較から候補を選ぶ判定手順と保留条件を作る",
       "status": "planned",
-      "dependsOn": ["PRO01", "PRO02-03", "PRO02-04", "PRO02-05"],
+      "dependsOn": [
+        "PRO01",
+        "PRO02-03",
+        "PRO02-04",
+        "PRO02-05"
+      ],
       "evidence": []
     },
     {
@@ -1196,7 +1714,9 @@
       "parentTaskId": "PRO01",
       "title": "Pro単独利用の利用者・入出力・成功条件を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01-01"],
+      "dependsOn": [
+        "PRO01-01"
+      ],
       "evidence": []
     },
     {
@@ -1204,7 +1724,9 @@
       "parentTaskId": "PRO01",
       "title": "任意Mini連携の追加機能と切断時の境界を分ける",
       "status": "planned",
-      "dependsOn": ["PRO01-02"],
+      "dependsOn": [
+        "PRO01-02"
+      ],
       "evidence": []
     },
     {
@@ -1212,7 +1734,11 @@
       "parentTaskId": "PRO01",
       "title": "Pro要求の主担当と受入方法をP2〜P7へ割り当てる",
       "status": "planned",
-      "dependsOn": ["PRO01-01", "PRO01-02", "PRO01-03"],
+      "dependsOn": [
+        "PRO01-01",
+        "PRO01-02",
+        "PRO01-03"
+      ],
       "evidence": []
     },
     {
@@ -1220,7 +1746,9 @@
       "parentTaskId": "PRO01",
       "title": "性能・端子・価格・筐体の未決台帳を作る",
       "status": "planned",
-      "dependsOn": ["PRO01-01"],
+      "dependsOn": [
+        "PRO01-01"
+      ],
       "evidence": []
     },
     {
@@ -1228,7 +1756,10 @@
       "parentTaskId": "PRO01",
       "title": "v0.1要求整理からv1.0統合設計へ渡す不足をまとめる",
       "status": "planned",
-      "dependsOn": ["PRO01-04", "PRO01-05"],
+      "dependsOn": [
+        "PRO01-04",
+        "PRO01-05"
+      ],
       "evidence": []
     },
     {
@@ -1236,7 +1767,9 @@
       "parentTaskId": "MINI07",
       "title": "校正失敗・過熱・通信喪失・OS停止・更新停電を危険台帳へ登録する",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
@@ -1244,7 +1777,10 @@
       "parentTaskId": "MINI07",
       "title": "危険ごとの検出・独立停止・復帰条件を対応付ける",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI07-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI07-01"
+      ],
       "evidence": []
     },
     {
@@ -1252,7 +1788,11 @@
       "parentTaskId": "MINI07",
       "title": "来客の物理停止と校正失敗時の受入ケースを作る",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI07-01", "MINI07-02"],
+      "dependsOn": [
+        "MINI01",
+        "MINI07-01",
+        "MINI07-02"
+      ],
       "evidence": []
     },
     {
@@ -1260,7 +1800,9 @@
       "parentTaskId": "MINI07",
       "title": "原データ保存・送信の既定OFFと許可取消を確認表へ落とす",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
@@ -1268,7 +1810,10 @@
       "parentTaskId": "MINI07",
       "title": "M2〜M6の評価計画から安全側へ渡す条件を整理する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI07-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI07-01"
+      ],
       "evidence": []
     },
     {
@@ -1290,7 +1835,9 @@
       "parentTaskId": "MINI06",
       "title": "部品・動作モード・起動ピークの電力予算表を作る",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
@@ -1298,7 +1845,10 @@
       "parentTaskId": "MINI06",
       "title": "表示方式未決の電力を独立した条件欄へ分離する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI06-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI06-01"
+      ],
       "evidence": []
     },
     {
@@ -1306,7 +1856,11 @@
       "parentTaskId": "MINI06",
       "title": "周囲条件・吸気閉塞・同時負荷の熱評価条件を定義する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI06-01", "MINI06-02"],
+      "dependsOn": [
+        "MINI01",
+        "MINI06-01",
+        "MINI06-02"
+      ],
       "evidence": []
     },
     {
@@ -1314,7 +1868,9 @@
       "parentTaskId": "MINI06",
       "title": "1台時の時刻・順序・再接続の通信評価入力を定義する",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
@@ -1322,7 +1878,10 @@
       "parentTaskId": "MINI06",
       "title": "2台中1台喪失時の共同確定停止ケースを定義する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI06-04"],
+      "dependsOn": [
+        "MINI01",
+        "MINI06-04"
+      ],
       "evidence": []
     },
     {
@@ -1330,7 +1889,10 @@
       "parentTaskId": "MINI06",
       "title": "4台の過半数・少数側停止と再接続のケースを定義する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI06-04"],
+      "dependsOn": [
+        "MINI01",
+        "MINI06-04"
+      ],
       "evidence": []
     },
     {
@@ -1338,7 +1900,9 @@
       "parentTaskId": "MINI05",
       "title": "単独nodeのSensor・World・Input・Gameの責任を割り当てる",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
@@ -1346,7 +1910,10 @@
       "parentTaskId": "MINI05",
       "title": "Display・保存・停止までの単独利用シーケンスを定義する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI05-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI05-01"
+      ],
       "evidence": []
     },
     {
@@ -1354,7 +1921,10 @@
       "parentTaskId": "MINI05",
       "title": "候補基板と必要ドライバーの対応・不足を整理する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI05-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI05-01"
+      ],
       "evidence": []
     },
     {
@@ -1362,7 +1932,11 @@
       "parentTaskId": "MINI05",
       "title": "再現buildと起動失敗・保存復旧の記録要件を定義する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI05-02", "MINI05-03"],
+      "dependsOn": [
+        "MINI01",
+        "MINI05-02",
+        "MINI05-03"
+      ],
       "evidence": []
     },
     {
@@ -1370,7 +1944,10 @@
       "parentTaskId": "MINI05",
       "title": "OS停止と独立Safety MCU遮断の経路を分ける",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI05-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI05-01"
+      ],
       "evidence": []
     },
     {
@@ -1392,7 +1969,9 @@
       "parentTaskId": "MINI04",
       "title": "裸眼・通常室内・周囲空間の要求を評価項目へ対応付ける",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
@@ -1400,7 +1979,10 @@
       "parentTaskId": "MINI04",
       "title": "表示媒体・視域・光路の方式比較欄を作る",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI04-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI04-01"
+      ],
       "evidence": []
     },
     {
@@ -1408,7 +1990,10 @@
       "parentTaskId": "MINI04",
       "title": "表示電力と200mm収納の必要入力を機構側へ渡す表にする",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI04-02"],
+      "dependsOn": [
+        "MINI01",
+        "MINI04-02"
+      ],
       "evidence": []
     },
     {
@@ -1416,7 +2001,11 @@
       "parentTaskId": "MINI04",
       "title": "有効領域・明るさ・視域の測定方法を指定する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI04-01", "MINI04-02"],
+      "dependsOn": [
+        "MINI01",
+        "MINI04-01",
+        "MINI04-02"
+      ],
       "evidence": []
     },
     {
@@ -1424,7 +2013,12 @@
       "parentTaskId": "MINI04",
       "title": "光学試験の専門レビュー・開始条件・中止条件を整理する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI04-02", "MINI04-03", "MINI04-04"],
+      "dependsOn": [
+        "MINI01",
+        "MINI04-02",
+        "MINI04-03",
+        "MINI04-04"
+      ],
       "evidence": []
     },
     {
@@ -1432,7 +2026,12 @@
       "parentTaskId": "MINI04",
       "title": "2D fallbackと裸眼表示受入を別の証拠欄に分ける",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI04-01", "MINI04-04", "MINI04-05"],
+      "dependsOn": [
+        "MINI01",
+        "MINI04-01",
+        "MINI04-04",
+        "MINI04-05"
+      ],
       "evidence": []
     },
     {
@@ -1440,7 +2039,9 @@
       "parentTaskId": "MINI03",
       "title": "単体深度方式と候補センサーの観測範囲を比較する",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
@@ -1448,7 +2049,10 @@
       "parentTaskId": "MINI03",
       "title": "床置き・台上・着座の入力評価シーンを定義する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI03-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI03-01"
+      ],
       "evidence": []
     },
     {
@@ -1456,7 +2060,10 @@
       "parentTaskId": "MINI03",
       "title": "遮蔽・交差・複数人の欠落ケースを定義する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI03-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI03-01"
+      ],
       "evidence": []
     },
     {
@@ -1464,7 +2071,10 @@
       "parentTaskId": "MINI03",
       "title": "基準器・時刻・座標と誤差計算の記録形式を決める",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI03-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI03-01"
+      ],
       "evidence": []
     },
     {
@@ -1472,7 +2082,12 @@
       "parentTaskId": "MINI03",
       "title": "精度目標の未決値と決定に必要な入力を整理する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI03-02", "MINI03-03", "MINI03-04"],
+      "dependsOn": [
+        "MINI01",
+        "MINI03-02",
+        "MINI03-03",
+        "MINI03-04"
+      ],
       "evidence": []
     },
     {
@@ -1494,7 +2109,9 @@
       "parentTaskId": "MINI02",
       "title": "候補部品の寸法・出典・未選定範囲を包絡表へ整理する",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
@@ -1502,7 +2119,10 @@
       "parentTaskId": "MINI02",
       "title": "脚・配線・工具空間の共通座標と干渉確認区画を定義する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI02-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI02-01"
+      ],
       "evidence": []
     },
     {
@@ -1510,7 +2130,10 @@
       "parentTaskId": "MINI02",
       "title": "全使用姿勢で200mmを判定する寸法鎖と測定図を指定する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI02-02"],
+      "dependsOn": [
+        "MINI01",
+        "MINI02-02"
+      ],
       "evidence": []
     },
     {
@@ -1518,7 +2141,10 @@
       "parentTaskId": "MINI02",
       "title": "重心・滑り・転倒の評価条件と判定者を整理する",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI02-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI02-01"
+      ],
       "evidence": []
     },
     {
@@ -1526,7 +2152,10 @@
       "parentTaskId": "MINI02",
       "title": "未選定光学方式が外径・台座へ与える制約を切り出す",
       "status": "planned",
-      "dependsOn": ["MINI01", "MINI02-01"],
+      "dependsOn": [
+        "MINI01",
+        "MINI02-01"
+      ],
       "evidence": []
     },
     {
@@ -1548,7 +2177,9 @@
       "parentTaskId": "MINI01",
       "title": "R5のREQ01〜12と根拠章を要求台帳へ転記する",
       "status": "planned",
-      "dependsOn": ["MAT14"],
+      "dependsOn": [
+        "MAT14"
+      ],
       "evidence": []
     },
     {
@@ -1556,7 +2187,9 @@
       "parentTaskId": "MINI01",
       "title": "OPEN01〜08の必要入力と閉じ方を分ける",
       "status": "planned",
-      "dependsOn": ["MAT14"],
+      "dependsOn": [
+        "MAT14"
+      ],
       "evidence": []
     },
     {
@@ -1564,7 +2197,10 @@
       "parentTaskId": "MINI01",
       "title": "R5要求と受入試験IDを対応付ける",
       "status": "planned",
-      "dependsOn": ["MAT14", "MINI01-01"],
+      "dependsOn": [
+        "MAT14",
+        "MINI01-01"
+      ],
       "evidence": []
     },
     {
@@ -1572,7 +2208,12 @@
       "parentTaskId": "MINI01",
       "title": "要求・未決・試験の主担当をM1〜M7とOSへ割り当てる",
       "status": "planned",
-      "dependsOn": ["MAT14", "MINI01-01", "MINI01-02", "MINI01-03"],
+      "dependsOn": [
+        "MAT14",
+        "MINI01-01",
+        "MINI01-02",
+        "MINI01-03"
+      ],
       "evidence": []
     },
     {
@@ -1580,7 +2221,10 @@
       "parentTaskId": "MINI01",
       "title": "1本自律・200mm・同型増設・Pro任意の境界を照合する",
       "status": "planned",
-      "dependsOn": ["MAT14", "MINI01-01"],
+      "dependsOn": [
+        "MAT14",
+        "MINI01-01"
+      ],
       "evidence": []
     },
     {
@@ -1588,7 +2232,11 @@
       "parentTaskId": "MINI01",
       "title": "要求追跡の欠落とMAT15全体受入との差分をまとめる",
       "status": "planned",
-      "dependsOn": ["MAT14", "MINI01-04", "MINI01-05"],
+      "dependsOn": [
+        "MAT14",
+        "MINI01-04",
+        "MINI01-05"
+      ],
       "evidence": []
     },
     {
@@ -1608,7 +2256,9 @@
       "id": "ORG02",
       "title": "avokado Mission ControlでRockstarOS・Mini・Pro・rocketstarを32部隊へ分け、Goal・進捗段階・rule・依存・証拠・次の作業を正本化",
       "status": "done",
-      "dependsOn": ["ORG01"],
+      "dependsOn": [
+        "ORG01"
+      ],
       "evidence": [
         "docs/mission-control.md",
         "data/mission-control.json",
@@ -1620,7 +2270,9 @@
       "id": "MAT14",
       "title": "R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留）",
       "status": "done",
-      "dependsOn": ["MAT12"],
+      "dependsOn": [
+        "MAT12"
+      ],
       "evidence": [
         "docs/avocado-mini-r5/README.md",
         "docs/avocado-mini-r5/package/package_manifest.json",
@@ -1631,9 +2283,15 @@
     {
       "id": "MAT15",
       "title": "R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる",
-      "status": "planned",
-      "dependsOn": ["MAT14"],
-      "evidence": ["docs/avocado-mini-r5/package/integrated_design.md"]
+      "status": "in_progress",
+      "dependsOn": [
+        "MAT14"
+      ],
+      "evidence": [
+        "docs/avocado-mini-r5/package/integrated_design.md",
+        "docs/avocado-mini-cellular.md",
+        "data/avocado-mini-cellular.json"
+      ]
     },
     {
       "id": "UXCHAR01",
@@ -1650,7 +2308,9 @@
       "id": "SKY20",
       "title": "Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる",
       "status": "in_progress",
-      "dependsOn": ["SKY15"],
+      "dependsOn": [
+        "SKY15"
+      ],
       "evidence": [
         "drizzle/0016_red_crusher_hogan.sql",
         "lib/sky-tool-review.ts",
@@ -1670,14 +2330,23 @@
       "id": "SKY19",
       "title": "SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装）",
       "status": "in_progress",
-      "dependsOn": ["SKY16"],
-      "evidence": ["docs/sky-network-economy.md", "docs/sky-billing.md"]
+      "dependsOn": [
+        "SKY16"
+      ],
+      "evidence": [
+        "docs/sky-network-economy.md",
+        "docs/sky-billing.md"
+      ]
     },
     {
       "id": "DOC01",
       "title": "RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化",
       "status": "done",
-      "dependsOn": ["B01", "AI01", "MAT07"],
+      "dependsOn": [
+        "B01",
+        "AI01",
+        "MAT07"
+      ],
       "evidence": [
         "docs/rockstaros-design-portal.md",
         "docs/rockstaros-complete-design.md",
@@ -1690,7 +2359,9 @@
       "id": "DOC02",
       "title": "RockstarOS設計書完全版v1.0の原本PDF・全文抽出・完全性記録・設計索引をGit正本へ保存",
       "status": "done",
-      "dependsOn": ["DOC01"],
+      "dependsOn": [
+        "DOC01"
+      ],
       "evidence": [
         "docs/rockstaros-complete-design-v1.0.pdf",
         "docs/rockstaros-complete-design-v1.0.txt",
@@ -1704,7 +2375,9 @@
       "id": "DOC03",
       "title": "rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定）",
       "status": "done",
-      "dependsOn": ["DOC02"],
+      "dependsOn": [
+        "DOC02"
+      ],
       "evidence": [
         "docs/rocketstar-design/README.md",
         "docs/rocketstar-design/inventory.json",
@@ -1717,7 +2390,9 @@
       "id": "DOC04",
       "title": "avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新",
       "status": "done",
-      "dependsOn": ["MAT14"],
+      "dependsOn": [
+        "MAT14"
+      ],
       "evidence": [
         "README.md",
         "docs/brand/avokado/avokado-r5-editorial-hero.png",
@@ -1733,7 +2408,10 @@
       "id": "AI01",
       "title": "RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない）",
       "status": "done",
-      "dependsOn": ["B01", "SYS14"],
+      "dependsOn": [
+        "B01",
+        "SYS14"
+      ],
       "evidence": [
         "docs/product-baseline.md",
         "docs/ai-native-os-architecture.md",
@@ -1744,42 +2422,78 @@
       "id": "AI02",
       "title": "モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md",
+        "docs/avokado-llm-pretraining.md",
+        "docs/evidence/avokado-llm-pretraining.json",
+        "toolkits/avokado-llm/train.py",
+        "toolkits/avokado-llm/test_pretraining.py"
+      ]
     },
     {
       "id": "AI03",
       "title": "モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI04",
       "title": "1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI05",
       "title": "Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入",
       "status": "planned",
-      "dependsOn": ["AI01", "OS10"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "OS10"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md"
+      ]
     },
     {
       "id": "AI06",
       "title": "非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存）",
       "status": "planned",
-      "dependsOn": ["AI01", "AI03", "AI05"],
-      "evidence": ["docs/ai-native-os-architecture.md"]
+      "dependsOn": [
+        "AI01",
+        "AI03",
+        "AI05"
+      ],
+      "evidence": [
+        "docs/ai-native-os-architecture.md",
+        "docs/mini-game-client.md",
+        "toolkits/mini-game-client/client.mjs",
+        "tests/mini-game-client.test.mjs"
+      ]
     },
     {
       "id": "AI08",
       "title": "Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定",
       "status": "done",
-      "dependsOn": ["AI01", "SKY18"],
+      "dependsOn": [
+        "AI01",
+        "SKY18"
+      ],
       "evidence": [
         "docs/jev-local-qwen-decision-fabric-design.md",
         "contracts/decision-provider.json",
@@ -1790,7 +2504,12 @@
       "id": "AI07",
       "title": "JevのSky明示利用を設計し、DecisionProviderとRouter／Harnessへの統合を受け入れる",
       "status": "in_progress",
-      "dependsOn": ["AI02", "AI08", "AI01", "SKY01"],
+      "dependsOn": [
+        "AI02",
+        "AI08",
+        "AI01",
+        "SKY01"
+      ],
       "evidence": [
         "docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md",
         "docs/jev-local-qwen-decision-fabric-design.md",
@@ -1807,7 +2526,9 @@
       "id": "MAT01",
       "title": "RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定",
       "status": "done",
-      "dependsOn": ["AI01"],
+      "dependsOn": [
+        "AI01"
+      ],
       "evidence": [
         "docs/product-baseline.md",
         "data/product-baseline.json",
@@ -1818,7 +2539,9 @@
       "id": "MAT02",
       "title": "二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装",
       "status": "done",
-      "dependsOn": ["MAT01"],
+      "dependsOn": [
+        "MAT01"
+      ],
       "evidence": [
         "contracts/material-invention.json",
         "contracts/material-invention-fixture.json",
@@ -1832,14 +2555,23 @@
       "id": "MAT03",
       "title": "Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入",
       "status": "planned",
-      "dependsOn": ["MAT02", "AI02", "AI03"],
-      "evidence": ["docs/material-invention-core.md"]
+      "dependsOn": [
+        "MAT02",
+        "AI02",
+        "AI03"
+      ],
+      "evidence": [
+        "docs/material-invention-core.md"
+      ]
     },
     {
       "id": "MAT04",
       "title": "Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定",
       "status": "done",
-      "dependsOn": ["MAT01", "MAT02"],
+      "dependsOn": [
+        "MAT01",
+        "MAT02"
+      ],
       "evidence": [
         "docs/material-invention-xr.md",
         "docs/avocado-mini-spatial-invention.md",
@@ -1869,21 +2601,32 @@
       "id": "MAT05",
       "title": "Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装",
       "status": "planned",
-      "dependsOn": ["MAT04"],
-      "evidence": ["docs/avocado-mini-spatial-invention.md"]
+      "dependsOn": [
+        "MAT04"
+      ],
+      "evidence": [
+        "docs/avocado-mini-spatial-invention.md"
+      ]
     },
     {
       "id": "MAT06",
       "title": "avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入",
       "status": "planned",
-      "dependsOn": ["MAT03", "MAT05"],
-      "evidence": ["docs/avocado-mini-spatial-invention.md"]
+      "dependsOn": [
+        "MAT03",
+        "MAT05"
+      ],
+      "evidence": [
+        "docs/avocado-mini-spatial-invention.md"
+      ]
     },
     {
       "id": "MAT07",
       "title": "誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化",
       "status": "done",
-      "dependsOn": ["MAT04"],
+      "dependsOn": [
+        "MAT04"
+      ],
       "evidence": [
         "docs/rockstaros-avocado-mini-complete-design.md",
         "docs/workstreams/11-material-invention-avocado-mini.md",
@@ -1897,7 +2640,9 @@
       "id": "MAT08",
       "title": "Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入）",
       "status": "done",
-      "dependsOn": ["MAT07"],
+      "dependsOn": [
+        "MAT07"
+      ],
       "evidence": [
         "docs/avocado-mini-mini200-e1/README.md",
         "docs/avocado-mini-mini200-e1/design.md",
@@ -1910,7 +2655,9 @@
       "id": "MAT09",
       "title": "Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入",
       "status": "planned",
-      "dependsOn": ["MAT08"],
+      "dependsOn": [
+        "MAT08"
+      ],
       "evidence": [
         "docs/avocado-mini-mini200-e1/README.md",
         "docs/avocado-mini-mini200-e1/game-first-life-connectivity.md"
@@ -1920,7 +2667,9 @@
       "id": "MAT10",
       "title": "Mini200 E2資料と利用者確定の4本＋中央Core外観をGit正本と公開製品Siteへ同期（実機未受入）",
       "status": "done",
-      "dependsOn": ["MAT08"],
+      "dependsOn": [
+        "MAT08"
+      ],
       "evidence": [
         "docs/avocado-mini-mini200-e2/README.md",
         "docs/product-baseline.md",
@@ -1931,14 +2680,21 @@
       "id": "MAT11",
       "title": "4本のMotion Towerと中央Mini200 E2 Coreの統合engineering package・prototype・実機受入",
       "status": "planned",
-      "dependsOn": ["MAT10", "MAT09"],
-      "evidence": ["docs/avocado-mini-mini200-e2/README.md"]
+      "dependsOn": [
+        "MAT10",
+        "MAT09"
+      ],
+      "evidence": [
+        "docs/avocado-mini-mini200-e2/README.md"
+      ]
     },
     {
       "id": "MAT12",
       "title": "Tower20 E3資料を現行avocadoMini基準へ固定し、4本の固定200mm塔＋別筐体Edge HubをGit正本と公開Siteへ同期（実機未受入）",
       "status": "done",
-      "dependsOn": ["MAT10"],
+      "dependsOn": [
+        "MAT10"
+      ],
       "evidence": [
         "docs/avocado-mini-tower20-e3/README.md",
         "docs/product-baseline.md",
@@ -1958,14 +2714,20 @@
       "id": "MAT13",
       "title": "Tower20 E3の確定CAD・配線・4camera同期・光学・転倒／滑り・熱・電源・音響・OS image・復旧を同一試作機で受入",
       "status": "planned",
-      "dependsOn": ["MAT12"],
-      "evidence": ["docs/avocado-mini-tower20-e3/README.md"]
+      "dependsOn": [
+        "MAT12"
+      ],
+      "evidence": [
+        "docs/avocado-mini-tower20-e3/README.md"
+      ]
     },
     {
       "id": "SKY01",
       "title": "旧名称をSkyへ全面改称し、選択・許可・実行先・停止・結果を一つにする価値と収録ツールを可視化",
       "status": "done",
-      "dependsOn": ["B01"],
+      "dependsOn": [
+        "B01"
+      ],
       "evidence": [
         "docs/sky.md",
         "components/sky-workspace.tsx",
@@ -1976,7 +2738,9 @@
       "id": "SKY02",
       "title": "ToB向け簡易掲載フォーム・審査キューとToC向けSky Timelineを実装",
       "status": "done",
-      "dependsOn": ["SKY01"],
+      "dependsOn": [
+        "SKY01"
+      ],
       "evidence": [
         "app/sky/publish/page.tsx",
         "components/sky-publisher-form.tsx",
@@ -1988,7 +2752,9 @@
       "id": "SKY03",
       "title": "MCP接続・周辺先行技術を調査し、特許出願可能性を高める技術設計を保存",
       "status": "done",
-      "dependsOn": ["SKY01"],
+      "dependsOn": [
+        "SKY01"
+      ],
       "evidence": [
         "docs/sky-mcp-architecture.md",
         "systems/rock-star-os/docs/MCP-HUB-INTEGRATION.md"
@@ -1998,7 +2764,10 @@
       "id": "SKY04",
       "title": "tob無料のConnection Passport・実行契約・ToB/ToC貢献分配を一画面で説明するSky Networkフロント",
       "status": "done",
-      "dependsOn": ["SKY02", "SKY03"],
+      "dependsOn": [
+        "SKY02",
+        "SKY03"
+      ],
       "evidence": [
         "app/sky/network/page.tsx",
         "components/sky-network.tsx",
@@ -2012,7 +2781,9 @@
       "id": "SKY05",
       "title": "Sky画面のsidebarを廃止し、MCP接続・管理とToB掲載をSky本体の操作面へ統合",
       "status": "done",
-      "dependsOn": ["SKY04"],
+      "dependsOn": [
+        "SKY04"
+      ],
       "evidence": [
         "components/sky-workspace.tsx",
         "components/sky-mcp-center.tsx",
@@ -2027,7 +2798,9 @@
       "id": "SKY06",
       "title": "Sky内MCPを実在するPC接続・既存4自動化・3ステップ導入画面へ統合",
       "status": "done",
-      "dependsOn": ["SKY05"],
+      "dependsOn": [
+        "SKY05"
+      ],
       "evidence": [
         "components/sky-mcp-center.tsx",
         "components/device-connection.tsx",
@@ -2039,7 +2812,9 @@
       "id": "SKY07",
       "title": "MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する",
       "status": "in_progress",
-      "dependsOn": ["SKY06"],
+      "dependsOn": [
+        "SKY06"
+      ],
       "evidence": [
         "components/sky-mcp-center.tsx",
         "components/sky-mcp-center.module.css",
@@ -2057,7 +2832,10 @@
       "id": "SKY08",
       "title": "黒基調の改善版SkyへFashion Brand Opsを統合し、スマホDialogの画面外ずれを修正",
       "status": "done",
-      "dependsOn": ["SKY05", "FB01"],
+      "dependsOn": [
+        "SKY05",
+        "FB01"
+      ],
       "evidence": [
         "app/sky/network/page.tsx",
         "components/sky-network.tsx",
@@ -2078,7 +2856,10 @@
       "id": "SKY09",
       "title": "Skyの商品カード1回でFashion Brand Ops MCPを初期化し、38操作と接続状態を同期",
       "status": "done",
-      "dependsOn": ["SKY08", "FB01"],
+      "dependsOn": [
+        "SKY08",
+        "FB01"
+      ],
       "evidence": [
         "components/sky-workspace.tsx",
         "app/api/sky/connections/route.ts",
@@ -2089,7 +2870,9 @@
       "id": "SKY10",
       "title": "Skyをアプリ選択と接続へ絞り、Chatを依頼・状況・結果の受取画面として分離",
       "status": "done",
-      "dependsOn": ["SKY08"],
+      "dependsOn": [
+        "SKY08"
+      ],
       "evidence": [
         "components/sky-workspace.tsx",
         "components/sky-chat-workspace.tsx",
@@ -2104,7 +2887,10 @@
       "id": "SKY11",
       "title": "MCP掲載前診断とPC接続の互換性・初回導線を改善",
       "status": "done",
-      "dependsOn": ["SKY02", "SKY10"],
+      "dependsOn": [
+        "SKY02",
+        "SKY10"
+      ],
       "evidence": [
         "lib/mcp-inspection.ts",
         "app/api/sky/mcp/inspect/route.ts",
@@ -2119,7 +2905,9 @@
       "id": "SKY12",
       "title": "ChatをSky Auto既定の一画面へ整理し、事前のアプリ選択を任意化",
       "status": "done",
-      "dependsOn": ["SKY10"],
+      "dependsOn": [
+        "SKY10"
+      ],
       "evidence": [
         "components/sky-chat-workspace.tsx",
         "app/workspace.css",
@@ -2130,7 +2918,9 @@
       "id": "SKY13",
       "title": "GrokをモチーフにChatの表示・入力を改善し、依頼から実行・結果までを会話内へ統合",
       "status": "done",
-      "dependsOn": ["SKY12"],
+      "dependsOn": [
+        "SKY12"
+      ],
       "evidence": [
         "components/sky-chat-workspace.tsx",
         "components/mr-tool-runner.tsx",
@@ -2146,7 +2936,9 @@
       "id": "SKY14",
       "title": "接続済みready商品と任意MCPをChatのbotとして表示し、方向修正・承認実行・結果・停止を一元管理",
       "status": "done",
-      "dependsOn": ["SKY13"],
+      "dependsOn": [
+        "SKY13"
+      ],
       "evidence": [
         "components/sky-chat-workspace.tsx",
         "components/mcp-bot-runner.tsx",
@@ -2160,7 +2952,9 @@
       "id": "SKY15",
       "title": "Sky SDKコードを既存ツールへ追加し、起動時にPackage登録・MCP公開・利用記録まで行うStudioを実装",
       "status": "done",
-      "dependsOn": ["SKY14"],
+      "dependsOn": [
+        "SKY14"
+      ],
       "evidence": [
         "components/rock-studio.tsx",
         "toolkits/sky-tool-sdk/src/index.mjs",
@@ -2175,7 +2969,9 @@
       "id": "SKY16",
       "title": "SkyのTool選択と自然文依頼をZemaへ一回引き継ぎ、job状態を即時同期",
       "status": "done",
-      "dependsOn": ["SKY14"],
+      "dependsOn": [
+        "SKY14"
+      ],
       "evidence": [
         "lib/sky-zema-handoff.ts",
         "lib/operations-client.ts",
@@ -2191,7 +2987,10 @@
       "id": "SKY17",
       "title": "Jev Ultrafastを権限制御されたbrowser agent候補としてSky catalogと全Tool設計へ追加",
       "status": "done",
-      "dependsOn": ["SKY16", "DOC01"],
+      "dependsOn": [
+        "SKY16",
+        "DOC01"
+      ],
       "evidence": [
         "lib/catalog.ts",
         "docs/jev-ultrafast-integration-design.md",
@@ -2204,7 +3003,11 @@
       "id": "SKY18",
       "title": "Jev ecosystem 10 repositoryを判断・browser・PC・mobile・review・routing・PAPER市場・referenceへ分離して候補登録",
       "status": "done",
-      "dependsOn": ["SKY17", "DOC01", "MKT01"],
+      "dependsOn": [
+        "SKY17",
+        "DOC01",
+        "MKT01"
+      ],
       "evidence": [
         "lib/catalog.ts",
         "docs/jev-ecosystem-integration-design.md",
@@ -2219,7 +3022,10 @@
       "id": "WEB02",
       "title": "Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計",
       "status": "done",
-      "dependsOn": ["SKY15", "RLS01"],
+      "dependsOn": [
+        "SKY15",
+        "RLS01"
+      ],
       "evidence": [
         "app/rockstaros/page.tsx",
         "app/rockstaros/preview.module.css",
@@ -2230,7 +3036,10 @@
       "id": "WEB03",
       "title": "Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一",
       "status": "done",
-      "dependsOn": ["WEB02", "SKY15"],
+      "dependsOn": [
+        "WEB02",
+        "SKY15"
+      ],
       "evidence": [
         "app/rockstaros/page.tsx",
         "components/rock-studio.tsx",
@@ -2242,7 +3051,10 @@
       "id": "WEB04",
       "title": "RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善",
       "status": "done",
-      "dependsOn": ["WEB03", "SKY15"],
+      "dependsOn": [
+        "WEB03",
+        "SKY15"
+      ],
       "evidence": [
         "components/home-screen.tsx",
         "components/home-screen.module.css",
@@ -2251,14 +3063,21 @@
         "tsconfig.json",
         "tests/web-route-style-contract.test.mjs",
         "docs/frontend-usability-audit-20260915.md",
-        "docs/product-baseline.md"
+        "docs/product-baseline.md",
+        "scripts/amc-autonomy-store.mjs",
+        "tests/amc-autonomy-store-read.test.mjs",
+        "scripts/amc-parallel.mjs",
+        "tests/amc-workspace-snapshot.test.mjs",
+        "docs/evidence/spider-workspace-snapshot-read.json"
       ]
     },
     {
       "id": "BRD01",
       "title": "正式製品名をRockstarOS、内部識別子をdev.rockで固定",
       "status": "done",
-      "dependsOn": ["WEB04"],
+      "dependsOn": [
+        "WEB04"
+      ],
       "evidence": [
         "data/product-baseline.json",
         "docs/product-baseline.md",
@@ -2273,7 +3092,11 @@
       "id": "WEB05",
       "title": "avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一",
       "status": "done",
-      "dependsOn": ["MAT04", "WEB02", "BRD01"],
+      "dependsOn": [
+        "MAT04",
+        "WEB02",
+        "BRD01"
+      ],
       "evidence": [
         "README.md",
         "docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png",
@@ -2283,7 +3106,7 @@
         "sites/avocado-mini/src/main.js",
         "sites/avocado-mini/src/style.css",
         "sites/avocado-mini/src/tower-scene.js",
-        "sites/avocado-mini/dist/client/index.html",
+        "sites/avocado-mini/tests/astro-build.test.mjs",
         "sites/avocado-mini/public/images/avocado-mini-hero.png",
         "sites/avocado-mini/public/images/avocado-mini-detail.png",
         "sites/avocado-mini/public/images/motion-tower-satin-front-concept.png",
@@ -2305,7 +3128,9 @@
       "id": "WEB06",
       "title": "GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する",
       "status": "in_progress",
-      "dependsOn": ["WEB05"],
+      "dependsOn": [
+        "WEB05"
+      ],
       "evidence": [
         "README.md",
         "app/rockstaros/page.tsx",
@@ -2319,7 +3144,9 @@
       "id": "WEB07",
       "title": "利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂",
       "status": "done",
-      "dependsOn": ["WEB05"],
+      "dependsOn": [
+        "WEB05"
+      ],
       "evidence": [
         "README.md",
         "docs/assets/rockstaros-intro.gif",
@@ -2338,7 +3165,10 @@
       "id": "WEB09",
       "title": "avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する",
       "status": "in_progress",
-      "dependsOn": ["WEB05", "MAT06"],
+      "dependsOn": [
+        "WEB05",
+        "MAT06"
+      ],
       "evidence": [
         "README.md",
         "docs/avocado-mini-crowdfunding.md",
@@ -2350,7 +3180,10 @@
       "id": "WEB10",
       "title": "製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加",
       "status": "done",
-      "dependsOn": ["WEB05", "WEB07"],
+      "dependsOn": [
+        "WEB05",
+        "WEB07"
+      ],
       "evidence": [
         "app/rockstaros/page.tsx",
         "app/rockstaros/preview.module.css",
@@ -2364,7 +3197,10 @@
       "id": "WEB11",
       "title": "製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ",
       "status": "done",
-      "dependsOn": ["WEB05", "WEB10"],
+      "dependsOn": [
+        "WEB05",
+        "WEB10"
+      ],
       "evidence": [
         "components/avocado-turntable.tsx",
         "components/avocado-turntable.module.css",
@@ -2376,7 +3212,9 @@
       "id": "WEB12",
       "title": "利用者提供の伸縮式センサータワーを製品サイトとGitHubの主役にする",
       "status": "done",
-      "dependsOn": ["WEB11"],
+      "dependsOn": [
+        "WEB11"
+      ],
       "evidence": [
         "public/rockstaros/avocado-mini-tower-concept.png",
         "components/avocado-turntable.tsx",
@@ -2390,7 +3228,9 @@
       "id": "WEB13",
       "title": "旧URLをavocadoMini公開商品Siteへ転用し、OS操作画面を管理者限定の別Siteへ移す",
       "status": "in_progress",
-      "dependsOn": ["WEB12"],
+      "dependsOn": [
+        "WEB12"
+      ],
       "evidence": [
         "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/src/pages/guide/index.astro",
@@ -2421,7 +3261,9 @@
       "id": "WEB14",
       "title": "RockstarOS導入入口を製品ページへ置き、Pixel 10向け実インストーラーを配布・安全ゲート合格後に接続する",
       "status": "in_progress",
-      "dependsOn": ["WEB13"],
+      "dependsOn": [
+        "WEB13"
+      ],
       "evidence": [
         "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/src/style.css",
@@ -2435,7 +3277,9 @@
       "id": "WEB15",
       "title": "avocadoMiniの予約販売画面と決済バックエンドを用意し、販売条件確定後に全額決済を有効化する",
       "status": "in_progress",
-      "dependsOn": ["WEB13"],
+      "dependsOn": [
+        "WEB13"
+      ],
       "evidence": [
         "sites/avocado-mini/src/pages/preorder/index.astro",
         "sites/avocado-mini/worker/index.js",
@@ -2448,7 +3292,9 @@
       "id": "WEB16",
       "title": "公開avocadoMini Siteを現行R5へ同期し、旧E3商品構成・価格を販売導線から撤去する",
       "status": "done",
-      "dependsOn": ["MAT14"],
+      "dependsOn": [
+        "MAT14"
+      ],
       "evidence": [
         "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/src/style.css",
@@ -2465,7 +3311,9 @@
       "id": "WEB17",
       "title": "公開avocadoMini SiteをAstroへ移行し、承認済みデザイン・全route・Worker配布契約を維持する",
       "status": "done",
-      "dependsOn": ["WEB16"],
+      "dependsOn": [
+        "WEB16"
+      ],
       "evidence": [
         "sites/avocado-mini/package.json",
         "sites/avocado-mini/astro.config.mjs",
@@ -2484,7 +3332,9 @@
       "id": "WEB18",
       "title": "公開avocadoMini Siteの画像原本を保護し、表示・導線・アクセシビリティ・SEOの不具合を解消する",
       "status": "done",
-      "dependsOn": ["WEB17"],
+      "dependsOn": [
+        "WEB17"
+      ],
       "evidence": [
         "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/src/main.js",
@@ -2503,7 +3353,9 @@
       "id": "WEB19",
       "title": "利用者指定のTower20 E3公開Siteを承認済み画像・英語UI・180度演出ごとAstroで復元して本番配備する",
       "status": "done",
-      "dependsOn": ["WEB17"],
+      "dependsOn": [
+        "WEB17"
+      ],
       "evidence": [
         "sites/avocado-mini/src/pages/index.astro",
         "sites/avocado-mini/src/main.js",
@@ -2517,7 +3369,9 @@
       "id": "BIZ01",
       "title": "無料配布の対象とOS従量課金の計量単位・単価・上限を確定する",
       "status": "in_progress",
-      "dependsOn": ["BRD01"],
+      "dependsOn": [
+        "BRD01"
+      ],
       "evidence": [
         "README.md",
         "docs/product-baseline.md",
@@ -2529,7 +3383,9 @@
       "id": "VER01",
       "title": "RockstarOS 1.0と将来の1.5／2.0版更新規則を一元管理",
       "status": "done",
-      "dependsOn": ["BRD01"],
+      "dependsOn": [
+        "BRD01"
+      ],
       "evidence": [
         "data/product-identity.json",
         "lib/product-identity.ts",
@@ -2545,7 +3401,9 @@
       "id": "WLT01",
       "title": "Walletの受取予定・収益内訳・Receipt・精算ルールを一画面で確認できるフロントを実装",
       "status": "done",
-      "dependsOn": ["BIL01"],
+      "dependsOn": [
+        "BIL01"
+      ],
       "evidence": [
         "docs/wallet-front-design.md",
         "components/sky-billing.tsx",
@@ -2557,7 +3415,9 @@
       "id": "WLT02",
       "title": "本人別の残高・売上・経費・取消履歴をD1へ保存するWallet専用APIと操作画面を実装",
       "status": "done",
-      "dependsOn": ["WLT01"],
+      "dependsOn": [
+        "WLT01"
+      ],
       "evidence": [
         "app/api/wallet/route.ts",
         "components/wallet-workspace.tsx",
@@ -2569,7 +3429,10 @@
       "id": "WLT03",
       "title": "Wallet／ファンド会社を交換可能な外部Providerとして受ける責任境界とadapter契約を固定",
       "status": "done",
-      "dependsOn": ["WLT02", "FND01"],
+      "dependsOn": [
+        "WLT02",
+        "FND01"
+      ],
       "evidence": [
         "docs/external-wallet-fund-provider-boundary-20260913.md",
         "docs/product-baseline.md",
@@ -2583,7 +3446,10 @@
       "id": "WLT04",
       "title": "Rock Settlement Walletを最初のProviderとして自社利用料のsandbox回収契約を実装",
       "status": "done",
-      "dependsOn": ["WLT03", "BIL01"],
+      "dependsOn": [
+        "WLT03",
+        "BIL01"
+      ],
       "evidence": [
         "lib/financial-provider.ts",
         "tests/financial-provider.test.mjs",
@@ -2598,7 +3464,10 @@
       "id": "WLT05",
       "title": "Base Mainnet USDCの所有確認付き受取先とfinalized着金照合を本番Wallet・Workerへ接続",
       "status": "done",
-      "dependsOn": ["WLT04", "BIL01"],
+      "dependsOn": [
+        "WLT04",
+        "BIL01"
+      ],
       "evidence": [
         "components/rock-settlement-wallet.tsx",
         "lib/rock-wallet.ts",
@@ -2613,14 +3482,21 @@
       "id": "WLT06",
       "title": "owner受取Walletを本人署名で登録し、最初の実USDC回収をEarning Receiptへ照合",
       "status": "in_progress",
-      "dependsOn": ["WLT05", "BIL02"],
-      "evidence": ["docs/rock-wallet-production-rail-20260913.md"]
+      "dependsOn": [
+        "WLT05",
+        "BIL02"
+      ],
+      "evidence": [
+        "docs/rock-wallet-production-rail-20260913.md"
+      ]
     },
     {
       "id": "MKT01",
       "title": "あらゆる型付き価値を扱うPAPER市場とexact approval・risk・receipt・position台帳を実装",
       "status": "done",
-      "dependsOn": ["WLT02"],
+      "dependsOn": [
+        "WLT02"
+      ],
       "evidence": [
         "app/market/page.tsx",
         "app/api/market/route.ts",
@@ -2636,7 +3512,9 @@
       "id": "MKT02",
       "title": "Web PAPER市場のapproval・reservation・receipt・position関係をD1で強制",
       "status": "done",
-      "dependsOn": ["MKT01"],
+      "dependsOn": [
+        "MKT01"
+      ],
       "evidence": [
         "drizzle/0012_marketplace_relation_guards.sql",
         "tests/everything-market.test.mjs",
@@ -2649,7 +3527,9 @@
       "id": "DB01",
       "title": "全データ境界・table・migration・本番readback状態を一つの監査レポートへ統合",
       "status": "done",
-      "dependsOn": ["MKT02"],
+      "dependsOn": [
+        "MKT02"
+      ],
       "evidence": [
         "scripts/database-status.mjs",
         "data/database-deployments.json",
@@ -2662,7 +3542,10 @@
       "id": "SPN01",
       "title": "native Walletへsimulation/PAPER限定のValue/Spend台帳・exact approval・再照合を統合",
       "status": "done",
-      "dependsOn": ["WLT02", "MKT01"],
+      "dependsOn": [
+        "WLT02",
+        "MKT01"
+      ],
       "evidence": [
         "systems/rock-star-os/src/blackberryrock/spend.py",
         "systems/rock-star-os/src/blackberryrock/wallet.py",
@@ -2676,7 +3559,10 @@
       "id": "FND01",
       "title": "ツールの検証済み純収益・実費・receipt・失敗から構成と観測利回りを30秒ごとに再計算",
       "status": "done",
-      "dependsOn": ["WLT02", "MKT01"],
+      "dependsOn": [
+        "WLT02",
+        "MKT01"
+      ],
       "evidence": [
         "lib/automation-fund.ts",
         "lib/automation-fund-store.ts",
@@ -2691,7 +3577,11 @@
       "title": "主要画面のstyle契約と配備asset closureを検査し、GitHubと既存Sitesを同一commitへ固定",
       "status": "blocked",
       "reason": "一般公開の意思は確認済み。既存Sitesは現在の接続アカウントでAccess Denied／project_not_foundとなり、所有workspaceの接続なしでは公開設定変更、同一SHA配備とD1本番readbackを実行できない。",
-      "dependsOn": ["SKY14", "WLT02", "HOME01"],
+      "dependsOn": [
+        "SKY14",
+        "WLT02",
+        "HOME01"
+      ],
       "evidence": [
         "tests/web-route-style-contract.test.mjs",
         "scripts/check-web-asset-closure.mjs",
@@ -2705,7 +3595,9 @@
       "id": "HOME01",
       "title": "iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装",
       "status": "done",
-      "dependsOn": ["SKY10"],
+      "dependsOn": [
+        "SKY10"
+      ],
       "evidence": [
         "app/page.tsx",
         "app/sky/page.tsx",
@@ -2721,7 +3613,9 @@
       "id": "HOME02",
       "title": "Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止",
       "status": "done",
-      "dependsOn": ["HOME01"],
+      "dependsOn": [
+        "HOME01"
+      ],
       "evidence": [
         "components/workspace-shell.tsx",
         "components/sky-chat-workspace.tsx",
@@ -2739,7 +3633,9 @@
       "id": "SYS01",
       "title": "端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装",
       "status": "done",
-      "dependsOn": ["HOME01"],
+      "dependsOn": [
+        "HOME01"
+      ],
       "evidence": [
         "app/settings/system/page.tsx",
         "components/system-maintenance.tsx",
@@ -2753,20 +3649,25 @@
       "id": "SYS02",
       "title": "通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装",
       "status": "done",
-      "dependsOn": ["SYS01"],
+      "dependsOn": [
+        "SYS01"
+      ],
       "evidence": [
         "components/system-maintenance.tsx",
         "components/system-maintenance.module.css",
         "lib/system-backup.ts",
         "tests/system-backup.test.mjs",
-        "docs/product-baseline.md"
+        "docs/product-baseline.md",
+        "docs/evidence/spider-observer-output-schema.json"
       ]
     },
     {
       "id": "SYS03",
       "title": "公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合",
       "status": "done",
-      "dependsOn": ["SYS02"],
+      "dependsOn": [
+        "SYS02"
+      ],
       "evidence": [
         "data/release-readiness.json",
         "scripts/check-release-readiness.mjs",
@@ -2780,7 +3681,9 @@
       "id": "SYS04",
       "title": "QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否",
       "status": "done",
-      "dependsOn": ["SYS03"],
+      "dependsOn": [
+        "SYS03"
+      ],
       "evidence": [
         "data/qemu-release-audit.json",
         "data/qemu-rc2-legal-info/manifest.csv",
@@ -2797,7 +3700,9 @@
       "id": "SYS05",
       "title": "候補準備・法務承認・保護署名・本人署名の64拒否境界試験を全体verifyへ統合",
       "status": "done",
-      "dependsOn": ["SYS04"],
+      "dependsOn": [
+        "SYS04"
+      ],
       "evidence": [
         "scripts/check-release-signing.mjs",
         "scripts/release_signing.py",
@@ -2815,7 +3720,9 @@
       "id": "SYS06",
       "title": "Android物理端末とマイナンバー連携を独立監査し、証拠なしの互換・GMS・販売・個人番号有効化を拒否",
       "status": "done",
-      "dependsOn": ["SYS03"],
+      "dependsOn": [
+        "SYS03"
+      ],
       "evidence": [
         "data/android-physical-release-audit.json",
         "data/personal-number-release-audit.json",
@@ -2831,7 +3738,9 @@
       "id": "SYS07",
       "title": "Web/PWAのHTTP防御を正本化し、Worker・static asset両経路の実responseを検査",
       "status": "done",
-      "dependsOn": ["SYS03"],
+      "dependsOn": [
+        "SYS03"
+      ],
       "evidence": [
         "data/web-security-policy.json",
         "next.config.ts",
@@ -2846,7 +3755,9 @@
       "id": "SYS08",
       "title": "PWA新版の自動即時切替を廃止し、本人確認後の適用・旧cache整理・再読込へ変更",
       "status": "done",
-      "dependsOn": ["SYS07"],
+      "dependsOn": [
+        "SYS07"
+      ],
       "evidence": [
         "public/sw.js",
         "components/system-maintenance.tsx",
@@ -2859,7 +3770,10 @@
       "id": "SYS09",
       "title": "PWAの同一性・scope・iPhone/Android向けinstall iconを固定し、実HTTP manifestを検査",
       "status": "done",
-      "dependsOn": ["SYS07", "SYS08"],
+      "dependsOn": [
+        "SYS07",
+        "SYS08"
+      ],
       "evidence": [
         "app/manifest.ts",
         "public/rock-icon-192.png",
@@ -2875,7 +3789,9 @@
       "id": "SYS10",
       "title": "Web第三者依存のlock hash・47要review componentのPURL一覧を公開gateへ固定",
       "status": "done",
-      "dependsOn": ["SYS03"],
+      "dependsOn": [
+        "SYS03"
+      ],
       "evidence": [
         "package-lock.json",
         "data/web-third-party-license-audit.json",
@@ -2890,7 +3806,9 @@
       "id": "SYS11",
       "title": "Vite生成chunkのnpm componentをbuild時に記録しlicense監査へ照合",
       "status": "done",
-      "dependsOn": ["SYS10"],
+      "dependsOn": [
+        "SYS10"
+      ],
       "evidence": [
         "vite.config.ts",
         "scripts/web-bundle-inventory.mjs",
@@ -2906,7 +3824,9 @@
       "id": "SYS12",
       "title": "運営1名で開始できる緊急保護・限定保守accessの脅威モデルと端末側制御契約を固定",
       "status": "done",
-      "dependsOn": ["SYS05"],
+      "dependsOn": [
+        "SYS05"
+      ],
       "evidence": [
         "data/device-emergency-access-policy.json",
         "docs/security-incident-response.md",
@@ -2919,7 +3839,11 @@
       "id": "SYS13",
       "title": "緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験",
       "status": "in_progress",
-      "dependsOn": ["SYS12", "OS11", "RLS02"],
+      "dependsOn": [
+        "SYS12",
+        "OS11",
+        "RLS02"
+      ],
       "evidence": [
         "data/device-emergency-access-policy.json",
         "docs/security-incident-response.md",
@@ -2950,7 +3874,9 @@
       "id": "SYS14",
       "title": "製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定",
       "status": "done",
-      "dependsOn": ["R01"],
+      "dependsOn": [
+        "R01"
+      ],
       "evidence": [
         "docs/system-composition.md",
         "data/system-composition-audit.json",
@@ -2963,21 +3889,31 @@
       "title": "4参照元の採用判断と事業方針の固定",
       "status": "done",
       "dependsOn": [],
-      "evidence": ["docs/reference-repositories.md"]
+      "evidence": [
+        "docs/reference-repositories.md"
+      ]
     },
     {
       "id": "R02",
       "title": "ggをGitHub rockへ紐付け、既存変更と履歴を保全",
       "status": "done",
       "dependsOn": [],
-      "evidence": ["project.md"]
+      "evidence": [
+        "project.md"
+      ]
     },
     {
       "id": "R03",
       "title": "仕事の作成・実行・確認・再開をAPIと画面で接続",
       "status": "done",
-      "dependsOn": ["R01"],
-      "evidence": ["tests/workflow.test.mjs", "scripts/check-work-api.mjs"]
+      "dependsOn": [
+        "R01"
+      ],
+      "evidence": [
+        "tests/workflow.test.mjs",
+        "scripts/check-work-api.mjs",
+        "docs/evidence/spider-work-plan-contract.json"
+      ]
     },
     {
       "id": "R04",
@@ -2987,28 +3923,41 @@
       "evidence": [
         "scripts/project-status.mjs",
         ".github/workflows/ci.yml",
-        "docs/native-ci-partition-fix-20260910.md"
+        "docs/native-ci-partition-fix-20260910.md",
+        "docs/evidence/spider-locked-dependency-restore.json"
       ]
     },
     {
       "id": "R05",
       "title": "回帰検証・移行確認・GitHub保存",
       "status": "done",
-      "dependsOn": ["R02", "R03", "R04"],
-      "evidence": ["docs/validation.md"]
+      "dependsOn": [
+        "R02",
+        "R03",
+        "R04"
+      ],
+      "evidence": [
+        "docs/validation.md"
+      ]
     },
     {
       "id": "R06",
       "title": "ブラウザで仕事の一連の操作を確認",
       "status": "done",
-      "dependsOn": ["R05"],
-      "evidence": ["docs/validation.md"]
+      "dependsOn": [
+        "R05"
+      ],
+      "evidence": [
+        "docs/validation.md"
+      ]
     },
     {
       "id": "R07",
       "title": "本人限定のSitesへ公開・本番確認",
       "status": "done",
-      "dependsOn": ["R06"],
+      "dependsOn": [
+        "R06"
+      ],
       "evidence": [
         "docs/deployment-integration.md",
         "docs/release-followup-20260910.md",
@@ -3020,7 +3969,9 @@
       "id": "R08",
       "title": "検証結果・公開停止理由と再開設計の文書化",
       "status": "done",
-      "dependsOn": ["R06"],
+      "dependsOn": [
+        "R06"
+      ],
       "evidence": [
         "project.md",
         "docs/validation.md",
@@ -3031,14 +3982,21 @@
       "id": "OS01",
       "title": "既存設計の要件追跡と自動化OS開発設計",
       "status": "done",
-      "dependsOn": ["R01", "R03"],
-      "evidence": ["docs/os-development-design.md"]
+      "dependsOn": [
+        "R01",
+        "R03"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
     },
     {
       "id": "DSP01",
       "title": "共通Core・機種別Device Support Package・4提供区分の設計と検査",
       "status": "done",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/device-support-architecture.md",
         "data/device-support-matrix.json",
@@ -3049,7 +4007,9 @@
       "id": "OS02",
       "title": "【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認",
       "status": "in_progress",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/os-development-design.md",
         "docs/phone-preview-20260911.md",
@@ -3061,28 +4021,42 @@
       "id": "OS03",
       "title": "【Android/AOSP別トラック】CuttlefishでOS起動と自律実行の最小縦断試作",
       "status": "planned",
-      "dependsOn": ["OS02"],
-      "evidence": ["docs/os-development-design.md"]
+      "dependsOn": [
+        "OS02"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
     },
     {
       "id": "OS04",
       "title": "【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証",
       "status": "planned",
-      "dependsOn": ["OS03"],
-      "evidence": ["docs/os-development-design.md"]
+      "dependsOn": [
+        "OS03"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
     },
     {
       "id": "OS05",
       "title": "【Android/AOSP別トラック】第三者SDK・審査・インストール・失効の閉鎖テスト",
       "status": "planned",
-      "dependsOn": ["OS04"],
-      "evidence": ["docs/os-development-design.md"]
+      "dependsOn": [
+        "OS04"
+      ],
+      "evidence": [
+        "docs/os-development-design.md"
+      ]
     },
     {
       "id": "OS06",
       "title": "OS共通実行コア・端末DB・Android統合の検証可能な試作",
       "status": "done",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/os-prototype.md",
         "docs/validation.md",
@@ -3093,7 +4067,9 @@
       "id": "OS07",
       "title": "Local Action Assistantの固定source・オフラインLLM契約・署名限定Binder client/server・APK staging gateを実装",
       "status": "done",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/local-ai-os-integration-20260915.md",
         "contracts/local-ai-runtime.json",
@@ -3105,7 +4081,9 @@
       "id": "OS08",
       "title": "Local Action AssistantのKotlin・arm64 APKをnative buildし、artifact lockとSoong OS imageへ接続",
       "status": "in_progress",
-      "dependsOn": ["OS07"],
+      "dependsOn": [
+        "OS07"
+      ],
       "evidence": [
         "docs/local-ai-os-integration-20260915.md",
         ".github/workflows/local-ai-apk.yml",
@@ -3120,7 +4098,9 @@
       "id": "OS09",
       "title": "確定した対象端末でGGUF import・機内モード推論・変更確認・30分連続温度試験を完走",
       "status": "in_progress",
-      "dependsOn": ["OS08"],
+      "dependsOn": [
+        "OS08"
+      ],
       "evidence": [
         "docs/local-ai-os-integration-20260915.md",
         "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
@@ -3132,7 +4112,9 @@
       "id": "OS10",
       "title": "Tool／MCP／Provider共通APIとnative Zema選択Tool経路、本人承認、Wallet台帳、暗号化backup、署名更新gateを実装",
       "status": "in_progress",
-      "dependsOn": ["OS06"],
+      "dependsOn": [
+        "OS06"
+      ],
       "evidence": [
         "docs/platform-core.md",
         "docs/os-prototype.md",
@@ -3163,7 +4145,12 @@
       "id": "OS11",
       "title": "Platform CoreをAOSPでbuildしSELinux enforcing boot、production署名更新、OTA rollbackを実機検証",
       "status": "planned",
-      "dependsOn": ["OS10", "OS04", "OS08", "OS09"],
+      "dependsOn": [
+        "OS10",
+        "OS04",
+        "OS08",
+        "OS09"
+      ],
       "evidence": [
         "docs/platform-core.md",
         "docs/phone-preview-20260911.md",
@@ -3179,7 +4166,9 @@
       "id": "G01",
       "title": "GitHubリポジトリの役割・重複監査と正本境界の固定",
       "status": "done",
-      "dependsOn": ["R02"],
+      "dependsOn": [
+        "R02"
+      ],
       "evidence": [
         "docs/git-consolidation.md",
         "data/repository-map.json",
@@ -3191,14 +4180,20 @@
       "id": "G02",
       "title": "vvvvの稼働参照監査と安全なarchive判定",
       "status": "planned",
-      "dependsOn": ["G01"],
-      "evidence": ["docs/git-consolidation.md"]
+      "dependsOn": [
+        "G01"
+      ],
+      "evidence": [
+        "docs/git-consolidation.md"
+      ]
     },
     {
       "id": "G03",
       "title": "Web DBの保存境界・互換migration・重複防止checkを整理",
       "status": "done",
-      "dependsOn": ["G01"],
+      "dependsOn": [
+        "G01"
+      ],
       "evidence": [
         "docs/data-storage-boundaries.md",
         "scripts/check-web-schema.mjs",
@@ -3209,7 +4204,9 @@
       "id": "B01",
       "title": "Sky＋Walletの製品ベース・branch監査・プロンプト規約を保存",
       "status": "done",
-      "dependsOn": ["G01"],
+      "dependsOn": [
+        "G01"
+      ],
       "evidence": [
         "docs/product-baseline.md",
         "docs/product-north-star-20260915.md",
@@ -3223,7 +4220,10 @@
       "id": "B04",
       "title": "main/native/設計reviewのベース・引継ぎ入口を分離作業branchへ統合",
       "status": "done",
-      "dependsOn": ["B01", "D01"],
+      "dependsOn": [
+        "B01",
+        "D01"
+      ],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
         "docs/prompts/os-operational-base-next.md",
@@ -3234,7 +4234,9 @@
       "id": "B02",
       "title": "既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張",
       "status": "in_progress",
-      "dependsOn": ["B04"],
+      "dependsOn": [
+        "B04"
+      ],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/pc-citations-adapter.md",
@@ -3255,7 +4257,9 @@
       "id": "B03",
       "title": "実行費用・認証済み収益を既存Walletへ接続し縦断検証",
       "status": "in_progress",
-      "dependsOn": ["B02"],
+      "dependsOn": [
+        "B02"
+      ],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
@@ -3271,7 +4275,9 @@
       "id": "B05",
       "title": "Wallet連携基礎を使ったSky縦断再試験・PC比較と未実証の端末価値を記録",
       "status": "in_progress",
-      "dependsOn": ["B02"],
+      "dependsOn": [
+        "B02"
+      ],
       "evidence": [
         "docs/prompts/hub-wallet-next.md",
         "docs/hub-wallet-pc-comparison-20260909.md",
@@ -3282,7 +4288,9 @@
       "id": "D01",
       "title": "RQ12〜15・OS受入雛形・ゲーム作者向け実行プロンプトを保存",
       "status": "done",
-      "dependsOn": ["B01"],
+      "dependsOn": [
+        "B01"
+      ],
       "evidence": [
         "docs/product-baseline.md",
         "docs/os-readiness-audit-20260909.md",
@@ -3295,7 +4303,9 @@
       "id": "V01",
       "title": "旧9abf78a候補のQEMU開発OSをbuildしD0〜D6の稼働/復旧受入を通す（現rc2へ転用しない）",
       "status": "done",
-      "dependsOn": ["B04"],
+      "dependsOn": [
+        "B04"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/templates/os-acceptance-report.md",
@@ -3317,7 +4327,9 @@
       "id": "GX00",
       "title": "共通Walletの複数owner/player分離・本人接続・既存台帳互換を設計検証",
       "status": "done",
-      "dependsOn": ["B04"],
+      "dependsOn": [
+        "B04"
+      ],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
         "docs/prompts/os-operational-base-next.md",
@@ -3343,7 +4355,9 @@
       "id": "GX01",
       "title": "ATMから独立したゲーム交換契約・両台帳fixture・異常系を実装検証",
       "status": "done",
-      "dependsOn": ["GX00"],
+      "dependsOn": [
+        "GX00"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-contract-implementation-plan.md",
@@ -3358,14 +4372,20 @@
       "id": "GX02",
       "title": "指定された実ゲームの正式sandbox接続と交換条件を検証",
       "status": "planned",
-      "dependsOn": ["GX01"],
-      "evidence": ["docs/prompts/os-operational-base-next.md"]
+      "dependsOn": [
+        "GX01"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
     },
     {
       "id": "DX01",
       "title": "ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証",
       "status": "done",
-      "dependsOn": ["GX00"],
+      "dependsOn": [
+        "GX00"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
@@ -3378,7 +4398,9 @@
       "id": "N01",
       "title": "Linux native OS基準版の公開ソース統合・既存資産の回帰検証",
       "status": "done",
-      "dependsOn": ["G01"],
+      "dependsOn": [
+        "G01"
+      ],
       "evidence": [
         "docs/native-os-integration.md",
         "docs/native-os-validation.md"
@@ -3388,14 +4410,20 @@
       "id": "N02",
       "title": "起動応答確認と自動再読込WIPの検証・採用判断",
       "status": "in_progress",
-      "dependsOn": ["N01"],
-      "evidence": ["docs/native-os-integration.md"]
+      "dependsOn": [
+        "N01"
+      ],
+      "evidence": [
+        "docs/native-os-integration.md"
+      ]
     },
     {
       "id": "N03",
       "title": "実機候補1機種の型番/SKU・boot/BSP・更新/復旧の適合確認",
       "status": "in_progress",
-      "dependsOn": ["OS01"],
+      "dependsOn": [
+        "OS01"
+      ],
       "evidence": [
         "docs/native-os-integration.md",
         "docs/phone-preview-20260911.md",
@@ -3411,7 +4439,10 @@
       "id": "N04",
       "title": "Pixel 10受入後だけ二機種目のDevice Support Package候補を再評価",
       "status": "planned",
-      "dependsOn": ["N01", "N03"],
+      "dependsOn": [
+        "N01",
+        "N03"
+      ],
       "evidence": [
         "docs/device-support-architecture.md",
         "data/device-support-matrix.json"
@@ -3421,14 +4452,20 @@
       "id": "N05",
       "title": "実USB・外部MCP/AI・金融provider・ToB精算と運営pilot",
       "status": "planned",
-      "dependsOn": ["N01"],
-      "evidence": ["docs/native-os-integration.md"]
+      "dependsOn": [
+        "N01"
+      ],
+      "evidence": [
+        "docs/native-os-integration.md"
+      ]
     },
     {
       "id": "RLS01",
       "title": "fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証",
       "status": "done",
-      "dependsOn": ["V01"],
+      "dependsOn": [
+        "V01"
+      ],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/rockstaros-1.0-architecture.md",
@@ -3442,7 +4479,10 @@
       "id": "RLS02",
       "title": "正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証",
       "status": "in_progress",
-      "dependsOn": ["RLS01", "N03"],
+      "dependsOn": [
+        "RLS01",
+        "N03"
+      ],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/phone-preview-20260911.md",
@@ -3466,7 +4506,9 @@
       "title": "TLS／累積timeoutの原因と最終CIの照合",
       "status": "in_progress",
       "dependsOn": [],
-      "evidence": ["docs/launch-readiness-20260910.md"]
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
     },
     {
       "id": "LCH02",
@@ -3530,7 +4572,9 @@
       "title": "同一最終候補の再現配布・導入・復旧リハーサル",
       "status": "in_progress",
       "dependsOn": [],
-      "evidence": ["docs/launch-readiness-20260910.md"]
+      "evidence": [
+        "docs/launch-readiness-20260910.md"
+      ]
     },
     {
       "id": "LCH08",
@@ -3550,13 +4594,17 @@
       "title": "Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合",
       "status": "done",
       "dependsOn": [],
-      "evidence": ["docs/fashion-brand-ops-integration.md"]
+      "evidence": [
+        "docs/fashion-brand-ops-integration.md"
+      ]
     },
     {
       "id": "FB02",
       "title": "売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成",
       "status": "done",
-      "dependsOn": ["FB01"],
+      "dependsOn": [
+        "FB01"
+      ],
       "evidence": [
         "toolkits/fashion-brand-ops/src/service.mjs",
         "toolkits/fashion-brand-ops/test/service.test.mjs"
@@ -3566,7 +4614,9 @@
       "id": "FB03",
       "title": "DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成",
       "status": "done",
-      "dependsOn": ["FB01"],
+      "dependsOn": [
+        "FB01"
+      ],
       "evidence": [
         "toolkits/fashion-brand-ops/src/service.mjs",
         "toolkits/fashion-brand-ops/test/service.test.mjs"
@@ -3576,7 +4626,9 @@
       "id": "FB04",
       "title": "入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理",
       "status": "done",
-      "dependsOn": ["FB01"],
+      "dependsOn": [
+        "FB01"
+      ],
       "evidence": [
         "toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql",
         "toolkits/fashion-brand-ops/test/service.test.mjs"
@@ -3586,7 +4638,12 @@
       "id": "FB05",
       "title": "改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合",
       "status": "done",
-      "dependsOn": ["FB01", "FB02", "FB03", "FB04"],
+      "dependsOn": [
+        "FB01",
+        "FB02",
+        "FB03",
+        "FB04"
+      ],
       "evidence": [
         "components/sky-workspace.tsx",
         "lib/sky-routing.ts",
@@ -3598,7 +4655,10 @@
       "id": "FB06",
       "title": "Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める",
       "status": "done",
-      "dependsOn": ["FB01", "FB05"],
+      "dependsOn": [
+        "FB01",
+        "FB05"
+      ],
       "evidence": [
         "docs/instagram-photo-onboarding-20260912.md",
         "toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql",
@@ -3625,7 +4685,9 @@
       "id": "BIL02",
       "title": "有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入",
       "status": "in_progress",
-      "dependsOn": ["BIL01"],
+      "dependsOn": [
+        "BIL01"
+      ],
       "evidence": [
         "docs/sky-billing.md",
         "docs/workstreams/03-wallet-billing-providers.md",
@@ -3637,7 +4699,9 @@
       "id": "BIL03",
       "title": "メルカリを最初の収益経路として出品準備・費用計算・承認・未照合売上の安全な状態管理をSkyへ追加",
       "status": "done",
-      "dependsOn": ["BIL01"],
+      "dependsOn": [
+        "BIL01"
+      ],
       "evidence": [
         "docs/mercari-revenue-loop.md",
         "lib/mercari-revenue.ts",
@@ -3670,49 +4734,63 @@
       "id": "MINI01",
       "title": "R5要求・OPEN01〜08と部隊別試験の追跡表を作る",
       "status": "planned",
-      "dependsOn": ["MAT14"],
+      "dependsOn": [
+        "MAT14"
+      ],
       "evidence": []
     },
     {
       "id": "MINI02",
       "title": "R5の200mm収納と部品干渉を確認する機構評価計画を作る",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
       "id": "MINI03",
       "title": "R5単体3D入力の方式比較と測定計画を作る",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
       "id": "MINI04",
       "title": "R5裸眼表示の成立条件・方式比較・試験開始条件を整理する",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
       "id": "MINI05",
       "title": "Mini単独boot・入力・game・保存・停止の最小実装仕様を作る",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
       "id": "MINI06",
       "title": "R5電源・熱・1/2/4台通信の評価条件を定義する",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
       "id": "MINI07",
       "title": "R5校正・停止・privacy・復旧の危険分析と受入表を作る",
       "status": "planned",
-      "dependsOn": ["MINI01"],
+      "dependsOn": [
+        "MINI01"
+      ],
       "evidence": []
     },
     {
@@ -3726,127 +4804,262 @@
       "id": "PRO02",
       "title": "Proの代表負荷・性能予算と演算基板候補の比較条件を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
       "id": "PRO03",
       "title": "Pro非金融ゲームのsample・保存再開・入力SDKの差分仕様を作る",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
       "id": "PRO04",
       "title": "Proの利用者別保存・容量・backup・復旧契約を定義する",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
       "id": "PRO05",
       "title": "Proの映像・音声・controller・端子の最小I/O表を作る",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
       "id": "PRO06",
       "title": "任意Mini–Pro接続の認証・時刻・Pose契約v0を作る",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
       "id": "PRO07",
       "title": "Pro筐体・熱・電源・更新復旧の制約と評価計画を作る",
       "status": "planned",
-      "dependsOn": ["PRO01"],
+      "dependsOn": [
+        "PRO01"
+      ],
       "evidence": []
     },
     {
       "id": "RKT01",
       "title": "rocketstar R1.0のMission入力・未決台帳と要求追跡を整理する",
       "status": "planned",
-      "dependsOn": ["DOC03"],
+      "dependsOn": [
+        "DOC03"
+      ],
       "evidence": []
     },
     {
       "id": "RKT02",
       "title": "構造・tank・取付Interfaceの解析入力と検証計画を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
       "id": "RKT03",
       "title": "推進系の要求・機体Interface・検証段階を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
       "id": "RKT04",
       "title": "空力・熱・構造の結合条件と検証入力を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
       "id": "RKT05",
       "title": "Flight SWの独立性・状態・SIL試験要件を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
       "id": "RKT06",
       "title": "Payload・扉・分離のInterfaceと異常確認計画を整理する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
       "id": "RKT07",
       "title": "R1.0の電源・data・時刻とA-LINK旧試作の差分表を作る",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
       "id": "RKT08",
       "title": "地上設備・運用役割とgo/no-go・abortの机上確認計画を作る",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
       "id": "RKT09",
       "title": "帰還・回収・整備・同一機番再使用の証拠台帳を設計する",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
       "id": "RKT10",
       "title": "製造・品質・安全の構成管理と段階別証拠matrixを作る",
       "status": "planned",
-      "dependsOn": ["RKT01"],
+      "dependsOn": [
+        "RKT01"
+      ],
       "evidence": []
     },
     {
       "id": "ORG03",
       "title": "AMCの担当・旧版混入・受入条件を精査し、部隊ごとの実行可能taskと検査を同期",
       "status": "done",
-      "dependsOn": ["ORG02"],
+      "dependsOn": [
+        "ORG02"
+      ],
       "evidence": [
         "docs/mission-control.md",
         "data/mission-control.json",
         "scripts/check-mission-control.mjs",
         "scripts/sync-mission-control.mjs",
         "tests/mission-control.test.mjs",
-        "docs/evidence/amc/task-precision-audit.json"
+        "docs/evidence/amc/task-precision-audit.json",
+        "docs/evidence/spider-mission-squad-dom.json"
       ]
+    },
+    {
+      "id": "SYS15",
+      "title": "Spider Security AgentのGitHub検査・コード検査・OS常駐監視・送信前拒否・native表示・boot監督を統合する（ROCK・同一image起動未受入）",
+      "status": "in_progress",
+      "dependsOn": [
+        "SYS02"
+      ],
+      "evidence": [
+        "docs/spider-guard.md",
+        "docs/evidence/spider-guard-source-validation.json",
+        "docs/workstreams/04-security-identity-compliance.md",
+        "docs/product-baseline.md",
+        "docs/rockstaros-complete-design.md",
+        "data/design-document-index.json",
+        "systems/rock-star-os/os/platform/sensitive_guard.py",
+        "systems/rock-star-os/os/platform/supervisor.py",
+        "systems/rock-star-os/os/platform/service.py",
+        "systems/rock-star-os/os/platform/runner_control.py",
+        "systems/rock-star-os/os/platform/install-target.sh",
+        "systems/rock-star-os/os/ui/security-ui.inc",
+        "systems/rock-star-os/os/ui/test_ui.c",
+        "systems/rock-star-os/tests/test_sensitive_guard.py",
+        "systems/rock-star-os/tests/test_os_security_guard_integration.py",
+        "systems/rock-star-os/tests/test_os_runner_control.py",
+        "systems/rock-star-os/os/ui/spider-motion.c",
+        "systems/rock-star-os/os/ui/spider-motion.h",
+        "systems/rock-star-os/os/ui/pin-readiness.json",
+        "scripts/review-native-pin-source.py",
+        "systems/rock-star-os/tests/test_ui_pin_source_profile.py",
+        "scripts/build-spider-inspector.mjs",
+        "toolkits/spider-guard/README.md",
+        "toolkits/spider-guard/inspector.html",
+        "toolkits/spider-guard/program-inspector.mjs",
+        "toolkits/spider-guard/program-inspector.d.mts",
+        "tests/spider-inspector-artifact.test.mjs",
+        "tests/spider-program-inspector.test.mjs",
+        "systems/rock-star-os/os/platform/code_inspector.py",
+        "systems/rock-star-os/tests/test_code_inspector.py",
+        "SECURITY.md",
+        ".github/workflows/spider.yml",
+        ".github/workflows/spider-codeql.yml",
+        ".github/spider/gitleaks.toml",
+        "scripts/spider-repository-scan.py",
+        "tests/test_spider_repository_scan.py",
+        "tests/test_spider_gitleaks_policy.py",
+        "tests/spider-codeql-workflow.test.mjs",
+        "docs/evidence/spider-github-source-validation.json",
+        "scripts/spider-feedback.mjs",
+        "tests/spider-feedback.test.mjs",
+        ".github/workflows/spider-regressions.yml",
+        "tests/service-worker-update.test.mjs",
+        "toolkits/fashion-brand-ops/test/http-security.test.mjs",
+        "docs/evidence/spider-improvement-cycle.json",
+        "tests/mcp-local-descriptor.test.mjs",
+        "tests/test_mr_delivery_boundary.py",
+        "tests/test_mr_http_deadline.py",
+        "scripts/select-native-artifacts.py",
+        "systems/rock-star-os/tests/test_native_artifacts.py",
+        "docs/native-os-validation.md",
+        "systems/rock-star-os/os/desktop/launcher.py",
+        "systems/rock-star-os/tests/test_os_desktop_browser.py",
+        "systems/rock-star-os/os/desktop/README.md",
+        "systems/rock-star-os/os/platform/guest-test.py",
+        "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
+        "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+        "scripts/verify-mcp-flow.mjs",
+        "tests/mcp.test.mjs",
+        "tests/mr-tools.test.mjs",
+        "tests/csv-transform.test.mjs",
+        "tests/fixtures/csv-report.html",
+        "tests/mcp-connector.test.mjs",
+        "systems/rock-star-os/os/mcp_broker/http.py",
+        "systems/rock-star-os/tests/test_mcp_http_deadline.py",
+        "tests/undici-tls-options.test.mjs",
+        "data/web-third-party-license-audit.json",
+        "scripts/spider-web-runtime.mjs",
+        "tests/spider-web-runtime.test.mjs",
+        "scripts/amc-autonomy-store.mjs",
+        "tests/amc-autonomy-store-read.test.mjs",
+        "scripts/amc-parallel.mjs",
+        "tests/amc-workspace-snapshot.test.mjs",
+        "docs/evidence/spider-workspace-snapshot-read.json"
+      ]
+    },
+    {
+      "id": "MAT16",
+      "title": "avokadoProのNVIDIA搭載小型PC設計・調達・AI/PCゲーム/熱/復旧受入",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json",
+        "docs/evidence/avokado-pro-pc-design.json"
+      ],
+      "primaryOwner": "ROCK",
+      "rockDeliverable": "候補構成・調達BOM・組立/冷却/受入手順",
+      "externalDependency": "OEM/ODM供給、exact SKU QVL/driver/firmware、見積",
+      "ownerAction": "見積後の購入・製造・販売条件",
+      "acceptance": "同一Pro実機でAI/ゲーム/熱/保存復旧を独立受入。設計だけでは完了にしない"
     }
   ],
   "phaseGates": [
@@ -3866,7 +5079,9 @@
       "task": "V01",
       "title": "旧b8287bc候補のOS起動・安全基礎（現rc2の全体合格ではない）",
       "status": "done",
-      "dependsOn": ["B04-INTEGRATED"],
+      "dependsOn": [
+        "B04-INTEGRATED"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/freeze-b8287bc.json",
@@ -3880,7 +5095,9 @@
       "task": "B02",
       "title": "既存native商品1件をSkyで実処理・保存",
       "status": "done",
-      "dependsOn": ["V01-BOOT"],
+      "dependsOn": [
+        "V01-BOOT"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
@@ -3892,7 +5109,9 @@
       "task": "B03",
       "title": "単一ownerの合成Wallet・商品/費用/売上状態の基礎",
       "status": "done",
-      "dependsOn": ["B02-NATIVE"],
+      "dependsOn": [
+        "B02-NATIVE"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
@@ -3905,7 +5124,11 @@
       "task": "V01",
       "title": "旧9abf78a候補でD0〜D6縦断合格（現rc2へ転用しない）",
       "status": "done",
-      "dependsOn": ["V01-BOOT", "B02-NATIVE", "B03-FIXTURE"],
+      "dependsOn": [
+        "V01-BOOT",
+        "B02-NATIVE",
+        "B03-FIXTURE"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/os-acceptance-9abf78a-20260910.md",
@@ -3918,23 +5141,34 @@
       "task": "B03",
       "title": "実provider/認証済み収益（別の権限・条件が必要）",
       "status": "planned",
-      "dependsOn": ["B03-FIXTURE"],
-      "evidence": ["docs/prompts/os-operational-base-next.md"]
+      "dependsOn": [
+        "B03-FIXTURE"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
     },
     {
       "id": "B05-COMPARE",
       "task": "B05",
       "title": "Wallet基礎後のPC比較/再試験。実機価値は別判定",
       "status": "planned",
-      "dependsOn": ["B02-NATIVE", "B03-FIXTURE"],
-      "evidence": ["docs/prompts/os-operational-base-next.md"]
+      "dependsOn": [
+        "B02-NATIVE",
+        "B03-FIXTURE"
+      ],
+      "evidence": [
+        "docs/prompts/os-operational-base-next.md"
+      ]
     },
     {
       "id": "GX00-ISOLATION",
       "task": "GX00",
       "title": "ADR・複数owner分離/本人接続・互換/復旧の合成検証",
       "status": "done",
-      "dependsOn": ["B03-FIXTURE"],
+      "dependsOn": [
+        "B03-FIXTURE"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/evidence/gx00/integration.json",
@@ -3946,7 +5180,9 @@
       "task": "GX01",
       "title": "複数owner/gameの交換契約と両台帳fixture",
       "status": "done",
-      "dependsOn": ["GX00-ISOLATION"],
+      "dependsOn": [
+        "GX00-ISOLATION"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-native-ui-20260910.md",
@@ -3962,7 +5198,10 @@
       "task": "GX01",
       "title": "OS上の交換操作と台帳変更後D4/D5再検証",
       "status": "done",
-      "dependsOn": ["GX01-CONTRACT", "V01-BOOT"],
+      "dependsOn": [
+        "GX01-CONTRACT",
+        "V01-BOOT"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-native-ui-20260910.md",
@@ -3977,7 +5216,9 @@
       "task": "DX01",
       "title": "共通SDK・2作者/2game/2owner・fresh導入測定",
       "status": "done",
-      "dependsOn": ["GX01-CONTRACT"],
+      "dependsOn": [
+        "GX01-CONTRACT"
+      ],
       "evidence": [
         "docs/prompts/os-operational-base-next.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
@@ -3991,7 +5232,9 @@
       "task": "RLS01",
       "title": "旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない）",
       "status": "done",
-      "dependsOn": ["V01-ACCEPT"],
+      "dependsOn": [
+        "V01-ACCEPT"
+      ],
       "evidence": [
         "docs/release-installation-plan-20260909.md",
         "docs/evidence/rls01/final-9abf78a/summary.json",
@@ -4003,7 +5246,9 @@
       "task": "OS11",
       "title": "有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze",
       "status": "planned",
-      "dependsOn": ["PREVIEW-INSTALL"],
+      "dependsOn": [
+        "PREVIEW-INSTALL"
+      ],
       "evidence": [
         "docs/phone-preview-20260911.md",
         "docs/product-baseline.md",
@@ -4023,7 +5268,10 @@
       "task": "RLS02",
       "title": "初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走",
       "status": "planned",
-      "dependsOn": ["PREVIEW-INSTALL", "ANDROID-PREFULL"],
+      "dependsOn": [
+        "PREVIEW-INSTALL",
+        "ANDROID-PREFULL"
+      ],
       "evidence": [
         "docs/android-first-flash-gate-20260916.md",
         "data/android-first-flash-gate.json",
@@ -4216,7 +5464,16 @@
       "physicalVerification": "PIXEL_10_GL066_ANDROID_17_6_OF_6_PLATFORM_INSTRUMENTATION_OFFLINE_REBOOT_2002_SECOND_THERMAL_AND_CLEAN_OK_NO_RAW_THINK_TAG_PASS",
       "contract": "contracts/local-ai-runtime.json",
       "record": "docs/local-ai-os-integration-20260915.md",
-      "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json"
+      "evidence": "docs/evidence/android-pixel-10-gl066-local-ai-20260916.json",
+      "currentUnsignedBuild": {
+        "apiVersion": 4,
+        "packageVersionCode": 3,
+        "status": "BUILT_INSPECTED_AND_STAGED_NOT_DEVICE_TESTED",
+        "evidence": "docs/evidence/local-ai-apk-v4-build.json",
+        "apkSha256": "1fcb4f063bf998e13ccf515a338a9f4f4175c5b64527118f680a7e10bb71bd02",
+        "deviceVerified": false,
+        "imageIntegrated": false
+      }
     }
   },
   "deviceSupportArchitecture": {
@@ -4309,5 +5566,134 @@
     "accepted": false,
     "deployed": false,
     "validation": "通常契約回帰28/29、新規6/6。残りは既存AMC URL期待差。対象型エラー15件解消、local-guide既存1件。project/mission/lint合格。designは既存catalog重複、verifyは既存DB metadata不一致で停止。実認証/実PC/実HTTP/課金/モデル実行の受入は未実施。"
+  },
+  "avokadoPretraining": {
+    "status": "host_synthetic_prototype",
+    "task": "AI02",
+    "primaryOwner": "ROCK",
+    "initialization": "random_no_pretrained_weights",
+    "targets": [
+      "device",
+      "cloud"
+    ],
+    "additionalSpendLimit": 0,
+    "deviceAccepted": false,
+    "cloudDeployed": false,
+    "productionReady": false,
+    "evidence": "docs/evidence/avokado-llm-pretraining.json",
+    "parameters": 124800,
+    "steps": 1000,
+    "verification": {
+      "pythonTestsPassed": 6,
+      "repositoryVerify": "passed",
+      "nodeTests": 802,
+      "workApiAssertions": 1048,
+      "csvAssertions": 113
+    },
+    "delivery": {
+      "branch": "codex/avokado-llm",
+      "implementationCommit": "573f9f2253fc7bbaccdb5f6c2893e24596671328",
+      "pullRequest": "https://github.com/k999ln/rock/pull/63",
+      "githubSaved": true,
+      "mainMerged": false,
+      "published": false,
+      "ciAtImplementationCommit": "in_progress_at_last_check"
+    }
+  },
+  "avokadoProPc": {
+    "task": "MAT16",
+    "specification": "data/avokado-pro-pc.json",
+    "designSaved": true,
+    "githubSaved": true,
+    "mainMerged": false,
+    "publicPageUpdated": false,
+    "physicallyAssembled": false,
+    "verification": "repository_verify_passed_design_only",
+    "designCommit": "33cea702c6c36a6bc973bedb966a7ef661514258",
+    "pullRequest": "https://github.com/k999ln/rock/pull/64",
+    "ciAtDesignCommit": "no_checks_reported_at_last_check"
+  },
+  "miniCellular": {
+    "schemaVersion": 1,
+    "updatedAt": "2026-10-05",
+    "product": "avocadoMini",
+    "task": "MAT15",
+    "relatedTask": "SIM01",
+    "status": "design_only_not_implemented",
+    "userDecision": "Miniに入れて、Mini単体で通信する",
+    "simLocation": "inside_mini",
+    "initialSimFormat": "physical_nano_sim_design_candidate",
+    "proRequired": false,
+    "phoneTetherRequired": false,
+    "pcRequired": false,
+    "externalPowerRequired": true,
+    "batteryAdopted": false,
+    "radioTarget": [
+      "4G LTE",
+      "5G Sub-6 candidate"
+    ],
+    "country": null,
+    "carrier": null,
+    "modemSku": null,
+    "esim": "optional_future_separate_acceptance",
+    "physicalSimProvidesGameCompute": false,
+    "localOfflineBehaviorPreserved": true,
+    "unapprovedCloudFallback": false,
+    "hardwarePurchased": false,
+    "modemIntegrated": false,
+    "carrierConnected": false,
+    "standaloneDataTested": false,
+    "productionReady": false,
+    "authority": "docs/avocado-mini-cellular.md",
+    "githubSaved": true,
+    "mainMerged": false,
+    "publicPageUpdated": false,
+    "verificationEvidence": "docs/evidence/avocado-mini-cellular-design.json",
+    "localVerify": "passed",
+    "designCommit": "bf3e6ea1d15bc66abcee1bfff1d0c9ff76ef3cc0",
+    "pullRequest": "https://github.com/k999ln/rock/pull/64",
+    "ciAtDesignCommit": "in_progress_at_last_check"
+  },
+  "gameClientPreparation": {
+    "task": "AI06",
+    "relatedTask": "MAT15",
+    "targetTitle": "GTA VI",
+    "executionDevice": null,
+    "status": "desktop_handoff_prototype",
+    "primaryOwner": "ROCK",
+    "authority": "docs/mini-game-client.md",
+    "consoleConnected": false,
+    "gta6Played": false,
+    "miniHardwareAccepted": false,
+    "publicPageUpdated": false,
+    "nextAction": "Choose PS5 or Xbox Series X|S; install the official compatible client, sign in on owned console, then accept actual video/audio/controller and GTA VI when available.",
+    "localVerify": "passed",
+    "verificationEvidence": "docs/evidence/mini-game-client-local.json",
+    "githubSaved": true,
+    "mainMerged": false,
+    "implementationCommit": "96fedfc7904753bf2960570eb307d6db2d223347",
+    "pullRequest": "https://github.com/k999ln/rock/pull/64",
+    "ciAtImplementationCommit": "no_checks_reported_at_last_check"
+  },
+  "releaseBlockerResolution": {
+    "status": "source_and_apk_repairs_verified_current_head_ci_on_pr",
+    "primaryOwner": "ROCK",
+    "task": "G04",
+    "baseMain": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
+    "scope": "Native resource cleanup and current acceptance blockers; no production/physical acceptance inferred",
+    "startedAt": "2026-10-05",
+    "evidence": "docs/evidence/release-blocker-resolution.json",
+    "pullRequest": 65,
+    "nativeTests": 1736,
+    "wholeVerify": "PASS_AT_c79476e2",
+    "localAiBuild": "PASS_API_V4_UNSIGNED_APK_INSPECTION_AND_REAL_STAGE",
+    "physicalDeviceConnected": false,
+    "mainIntegrated": false,
+    "integratedMain": "624124cf53848542538a94b9d309e24d3efbb1fe",
+    "focusedTests": 40,
+    "finalVerification": "Read exact current head checks of PR 65; earlier CI evidence is scoped to its recorded source SHA",
+    "deadlineFocusedTests": 7,
+    "deadlineDelayedRegression": "PASS_3.1_SECONDS",
+    "securityHistory": "UNRESOLVED_2868_HISTORICAL_CANDIDATE_OCCURRENCES_NOT_UNIQUE_SECRETS"
   }
 }

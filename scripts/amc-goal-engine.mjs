@@ -1,3 +1,4 @@
+import { requireSkyAuthority } from './amc-sky-authority.mjs';
 // Provider-neutral, browser-compatible planning/state logic. No network, file
 // access, agent launch, identity verification or evidence-content verification.
 const SCHEMA = 'amc-goal/1';
@@ -464,6 +465,16 @@ export function validateGoal(goal) {
     );
   }
   check(GOAL_STATES.includes(goal.state), 'Unknown goal state');
+  if (goal.skyBrief !== undefined) {
+    const brief = goal.skyBrief;
+    check(object(brief) && brief.schema === 'amc-sky-brief/1' &&
+      brief.templateId === 'sky-specific-launch-v1' &&
+      ['request', 'goal', 'intent'].every((key) => text(brief[key]) && brief[key].length <= 8000) &&
+      brief.goal === goal.instruction && goal.requestBrief === undefined &&
+      (brief.planId === undefined || text(brief.planId)) &&
+      (brief.planRevision === undefined || (Number.isSafeInteger(brief.planRevision) && brief.planRevision > 0)),
+    'Invalid Sky-specific brief');
+  }
   check(
     optionalString(goal.createdAt) && optionalString(goal.pauseReason),
     'Goal timestamps/reason must be primitive strings',
@@ -1020,9 +1031,32 @@ function reviewCriteria(items, results, accepted) {
   });
 }
 
+/** Read-only impact preview. Child acceptance is already part of dependsOn. */
+export function revalidationImpact(goal, taskId) {
+  ensure(goal.tasks.some(task => task.id === taskId), `Unknown task: ${taskId}`);
+  const affected = new Set([taskId]);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const task of goal.tasks) {
+      if (!affected.has(task.id) && task.dependsOn.some(id => affected.has(id))) {
+        affected.add(task.id);
+        changed = true;
+      }
+    }
+  }
+  const tasks = goal.tasks.filter(task => affected.has(task.id));
+  return {
+    affectedTaskIds: tasks.map(task => task.id).sort(),
+    acceptedTaskIds: tasks.filter(task => task.status === 'done').map(task => task.id).sort(),
+    activeTaskIds: tasks.filter(task => ['running', 'submitted'].includes(task.status)).map(task => task.id).sort(),
+  };
+}
+
 /** Immutable event reducer. Actors/roles and references are claims to be checked
  * by the caller's real auth/evidence boundary, not authenticated by this engine. */
-export function applyGoalEvent(goal, event) {
+export function applyGoalEvent(goal, event, skyAuthority) {
+  requireSkyAuthority(goal, event, skyAuthority);
   const initial = validateGoal(goal);
   ensure(initial.ok, initial.errors.join('; '));
   ensure(
@@ -1065,6 +1099,11 @@ export function applyGoalEvent(goal, event) {
     ensure(
       validCriteria(event.acceptanceCriteria),
       'Explicit overall acceptanceCriteria required',
+    );
+    if (next.skyBrief) ensure(
+      stable(event.acceptanceCriteria.map(({ id, criterion }) => ({ id, criterion }))) ===
+      stable(next.overallAcceptance.criteria.map(({ id, criterion }) => ({ id, criterion }))),
+      'Sky launch gates cannot be removed or replaced during approval',
     );
     const reviews = index(
       event.taskPlanReviews || [],
@@ -1198,6 +1237,13 @@ export function applyGoalEvent(goal, event) {
       at: event.at || null,
     };
     task.status = event.accepted ? 'done' : 'failed';
+    if (event.accepted && task.revalidation?.status === 'required') {
+      task.revalidation = {
+        ...task.revalidation, status: 'satisfied',
+        satisfiedBy: event.actor, satisfiedAt: event.at || null,
+        acceptedRevision: next.revision + 1,
+      };
+    }
   } else if (event.type === 'block_task') {
     needTask();
     ensure(
@@ -1242,6 +1288,42 @@ export function applyGoalEvent(goal, event) {
       status: 'not_verified',
       evidence: [],
     }));
+  } else if (event.type === 'revalidate_task') {
+    needTask();
+    ensure(next.skyBrief && next.state === 'active' && task.status === 'done' && task.review?.accepted,
+      'Accepted task in active Sky goal required');
+    ensure(event.role === 'owner' && text(event.reason) && refs(event.evidence),
+      'Owner revalidation reason/evidence required');
+    ensure(event.accepted === undefined && event.outcome === undefined && event.criterionResults === undefined,
+      'Revalidation cannot grant acceptance');
+    const impact = revalidationImpact(next, task.id);
+    ensure(Array.isArray(event.affectedTaskIds) &&
+      stable(event.affectedTaskIds) === stable(impact.affectedTaskIds),
+    'Explicit revalidation impact acknowledgement required');
+    ensure(impact.activeTaskIds.length === 0,
+      `Active downstream work prevents revalidation: ${impact.activeTaskIds.join(', ')}`);
+    for (const item of next.tasks.filter(item => impact.affectedTaskIds.includes(item.id))) {
+      const revalidation = {
+        status: 'required', eventId: event.id, originTaskId: task.id,
+        reason: event.reason, evidence: clone(event.evidence),
+        actor: event.actor, at: event.at || null, revision: next.revision + 1,
+      };
+      if (item.status === 'done') {
+        item.attempts.push({
+          status: item.status, startedBy: item.startedBy, result: item.result,
+          review: item.review, evidence: clone(item.evidence),
+          acceptanceCriteria: clone(item.acceptanceCriteria), blockReason: item.blockReason,
+          previousRevalidation: item.revalidation ? clone(item.revalidation) : null,
+          revalidation: clone(revalidation),
+        });
+        item.status = 'pending'; item.startedBy = null;
+        item.result = null; item.review = null; item.evidence = []; item.blockReason = null;
+        item.acceptanceCriteria = item.acceptanceCriteria.map(criterion => ({
+          ...criterion, status: 'not_verified', evidence: [],
+        }));
+      }
+      item.revalidation = revalidation;
+    }
   } else if (event.type === 'pause') {
     ensure(
       next.state === 'active' && text(event.reason),
@@ -1307,6 +1389,12 @@ export function renderGoalPrompt(goal, { squadId } = {}) {
     `# AMC Goal ${goal.id}${squadId ? ` / ${squadId}` : ''}`,
     `状態: ${goal.state} / revision: ${goal.revision} / 同時実行設定: ${goal.maxParallel}`,
     `利用者の全体指示: ${goal.instruction}`,
+    ...(goal.skyBrief ? [
+      `Sky専用計画: ${goal.skyBrief.templateId} / 版 ${goal.skyBrief.planRevision ?? '原資料参照'}`,
+      `守る意図: ${goal.skyBrief.intent}`,
+      'Sky=商品発見・決済・接続。Zema=会話・ライブラリ・仕事。これは汎用4役割7工程ではなくSky専用の受入計画です。',
+      '指示案・手動照合が必要。発行前と成果提出時に最新の要求・API/schema・料金・依存検収・他担当・対象ソースと証拠の版を照合し、不一致の旧指示は失効して更新する。自動同期・自動失効は未接続。',
+    ] : []),
     ...(goal.requestBrief
       ? [
           `元の依頼（作業範囲の基準）: ${goal.requestBrief.request}`,
@@ -1343,6 +1431,7 @@ export function renderGoalPrompt(goal, { squadId } = {}) {
       [
         `### ${task.id}: ${task.title}`,
         `主担当 ${task.squadId} / 元状態 ${task.sourceStatus} / Goal実行状態 ${task.status} / ${task.executionMode}`,
+        ...(Array.isArray(task.requirementIds) ? [`対応要求: ${task.requirementIds.join(', ')}`] : []),
         task.executionMode === 'review_existing_evidence'
           ? '既存成果の再実装ではなく、対象・版・条件の一致と証拠の再利用可否を独立reviewする。'
           : `作業範囲: ${task.scope}`,

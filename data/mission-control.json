@@ -123,6 +123,13 @@
       "outcome": "全作業が一つの製品目的と受入条件へ結び付き、重複と責任不明を防ぐ。",
       "dependsOnSquads": [],
       "taskIds": [
+        "AMC02",
+        "AMC01-01",
+        "AMC01-02",
+        "AMC01-03",
+        "AMC01-04",
+        "AMC01-05",
+        "AMC01-06",
         "ORG01",
         "ORG02",
         "DOC01",
@@ -154,13 +161,7 @@
         "LCH05",
         "AMC01",
         "ORG03",
-        "AMC01-01",
-        "AMC01-02",
-        "AMC01-03",
-        "AMC01-04",
-        "AMC01-05",
-        "AMC01-06",
-        "AMC02"
+        "SYS15"
       ],
       "rules": [
         "製品名と現行profileを一意にする",
@@ -178,7 +179,12 @@
         "data/mission-control.json",
         "PROJECTS.md",
         "docs/rockstaros-design-portal.md",
-        "data/project-status.json"
+        "data/project-status.json",
+        "docs/evidence/spider-locked-dependency-restore.json",
+        "docs/evidence/spider-mission-squad-dom.json",
+        "docs/amc-goal-orchestrator.md",
+        "docs/evidence/spider-observation-source-read.json",
+        "docs/evidence/spider-agent-preflight-read.json"
       ],
       "acceptanceGate": "全project taskにちょうど一つのprimary squadが明記され、各squadにGoal、対象範囲、証拠、次taskと合格条件がある。",
       "nextAction": "AMC01: Mini単体、Pro単体、任意連携、rocketstar地上支援の4利用構成に入出力と主担当を記す",
@@ -214,19 +220,19 @@
         "H1"
       ],
       "taskIds": [
+        "SYS13-01",
+        "SYS13-02",
+        "SYS13-03",
+        "SYS13-04",
+        "SYS13-05",
+        "SYS13-06",
         "SYS02",
         "SYS05",
         "SYS06",
         "SYS07",
         "SYS12",
         "SYS13",
-        "LCH03",
-        "SYS13-01",
-        "SYS13-02",
-        "SYS13-03",
-        "SYS13-04",
-        "SYS13-05",
-        "SYS13-06"
+        "LCH03"
       ],
       "rules": [
         "default deny",
@@ -243,7 +249,8 @@
       "evidence": [
         "docs/security-incident-response.md",
         "data/device-emergency-access-policy.json",
-        "tests/operator-access-auth.test.mjs"
+        "tests/operator-access-auth.test.mjs",
+        "docs/evidence/spider-observer-output-schema.json"
       ],
       "acceptanceGate": "Pixel実機で侵入、失効、再起動、production署名、rollbackを同一候補で受け入れる。",
       "nextAction": "SYS13: OS11、RLS02、LCH03の依存と既存証拠を同一候補ごとに照合する",
@@ -283,18 +290,18 @@
         "O1"
       ],
       "taskIds": [
-        "AI04",
-        "DB01",
-        "SYS01",
-        "R03",
-        "G03",
-        "LCH08",
         "AI04-01",
         "AI04-02",
         "AI04-03",
         "AI04-04",
         "AI04-05",
-        "AI04-06"
+        "AI04-06",
+        "AI04",
+        "DB01",
+        "SYS01",
+        "R03",
+        "G03",
+        "LCH08"
       ],
       "rules": [
         "idempotencyを必須にする",
@@ -310,7 +317,8 @@
       "evidence": [
         "docs/platform-core.md",
         "contracts/platform-api.json",
-        "docs/data-storage-boundaries.md"
+        "docs/data-storage-boundaries.md",
+        "docs/evidence/spider-work-plan-contract.json"
       ],
       "acceptanceGate": "Web、QEMU、Androidで同一fixtureのcrash、競合、重複、復旧を通す。",
       "nextAction": "AI04: OS10の保存契約とoperation key・結果照会の対応を確認する",
@@ -332,7 +340,8 @@
         "references": [
           "docs/platform-core.md",
           "contracts/platform-api.json",
-          "docs/data-storage-boundaries.md"
+          "docs/data-storage-boundaries.md",
+          "docs/evidence/spider-work-plan-contract.json"
         ],
         "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
       }
@@ -350,6 +359,12 @@
         "O2"
       ],
       "taskIds": [
+        "AI02-01",
+        "AI02-02",
+        "AI02-03",
+        "AI02-04",
+        "AI02-05",
+        "AI02-06",
         "AI01",
         "AI02",
         "AI03",
@@ -359,13 +374,7 @@
         "SKY18",
         "OS07",
         "OS08",
-        "OS09",
-        "AI02-01",
-        "AI02-02",
-        "AI02-03",
-        "AI02-04",
-        "AI02-05",
-        "AI02-06"
+        "OS09"
       ],
       "rules": [
         "model結果はauthorityではない",
@@ -417,6 +426,12 @@
         "O3"
       ],
       "taskIds": [
+        "SKY07-01",
+        "SKY07-02",
+        "SKY07-03",
+        "SKY07-04",
+        "SKY07-05",
+        "SKY07-06",
         "SKY20",
         "SKY02",
         "SKY03",
@@ -425,13 +440,7 @@
         "SKY09",
         "SKY11",
         "SKY15",
-        "OS05",
-        "SKY07-01",
-        "SKY07-02",
-        "SKY07-03",
-        "SKY07-04",
-        "SKY07-05",
-        "SKY07-06"
+        "OS05"
       ],
       "rules": [
         "作者署名を安全保証と呼ばない",
@@ -489,6 +498,12 @@
         "O4"
       ],
       "taskIds": [
+        "SKY19-01",
+        "SKY19-02",
+        "SKY19-03",
+        "SKY19-04",
+        "SKY19-05",
+        "SKY19-06",
         "UXCHAR01",
         "SKY19",
         "AI06",
@@ -535,13 +550,7 @@
         "BIL01",
         "BIL02",
         "BIL03",
-        "CSV00",
-        "SKY19-01",
-        "SKY19-02",
-        "SKY19-03",
-        "SKY19-04",
-        "SKY19-05",
-        "SKY19-06"
+        "CSV00"
       ],
       "rules": [
         "Tool完了を売上と呼ばない",
@@ -593,6 +602,12 @@
         "O2"
       ],
       "taskIds": [
+        "OS02-01",
+        "OS02-02",
+        "OS02-03",
+        "OS02-04",
+        "OS02-05",
+        "OS02-06",
         "AI05",
         "OS01",
         "DSP01",
@@ -606,13 +621,7 @@
         "N02",
         "N03",
         "N04",
-        "N05",
-        "OS02-01",
-        "OS02-02",
-        "OS02-03",
-        "OS02-04",
-        "OS02-05",
-        "OS02-06"
+        "N05"
       ],
       "rules": [
         "hardware固有処理をCoreへ埋め込まない",
@@ -670,6 +679,12 @@
         "O6"
       ],
       "taskIds": [
+        "LCH07-01",
+        "LCH07-02",
+        "LCH07-03",
+        "LCH07-04",
+        "LCH07-05",
+        "LCH07-06",
         "WEB02",
         "WEB06",
         "WEB13",
@@ -692,13 +707,7 @@
         "LCH02",
         "LCH04",
         "LCH06",
-        "LCH07",
-        "LCH07-01",
-        "LCH07-02",
-        "LCH07-03",
-        "LCH07-04",
-        "LCH07-05",
-        "LCH07-06"
+        "LCH07"
       ],
       "rules": [
         "同一SHAのbuildと配布物を照合する",
@@ -755,6 +764,12 @@
         "O6"
       ],
       "taskIds": [
+        "MINI01-01",
+        "MINI01-02",
+        "MINI01-03",
+        "MINI01-04",
+        "MINI01-05",
+        "MINI01-06",
         "MAT14",
         "MAT15",
         "MAT04",
@@ -765,13 +780,7 @@
         "MAT11",
         "MAT12",
         "MAT13",
-        "MINI01",
-        "MINI01-01",
-        "MINI01-02",
-        "MINI01-03",
-        "MINI01-04",
-        "MINI01-05",
-        "MINI01-06"
+        "MINI01"
       ],
       "rules": [
         "現行profileはR5",
@@ -820,13 +829,13 @@
         "M1"
       ],
       "taskIds": [
-        "MINI02",
         "MINI02-01",
         "MINI02-02",
         "MINI02-03",
         "MINI02-04",
         "MINI02-05",
-        "MINI02-06"
+        "MINI02-06",
+        "MINI02"
       ],
       "rules": [
         "外観CGを加工図と扱わない",
@@ -878,14 +887,14 @@
         "M2"
       ],
       "taskIds": [
-        "MAT05",
-        "MINI03",
         "MINI03-01",
         "MINI03-02",
         "MINI03-03",
         "MINI03-04",
         "MINI03-05",
-        "MINI03-06"
+        "MINI03-06",
+        "MAT05",
+        "MINI03"
       ],
       "rules": [
         "予測値と実測を分離する",
@@ -939,13 +948,13 @@
         "M2"
       ],
       "taskIds": [
-        "MINI04",
         "MINI04-01",
         "MINI04-02",
         "MINI04-03",
         "MINI04-04",
         "MINI04-05",
-        "MINI04-06"
+        "MINI04-06",
+        "MINI04"
       ],
       "rules": [
         "裸眼表示の未成立を隠さない",
@@ -1008,13 +1017,13 @@
         "O6"
       ],
       "taskIds": [
-        "MINI05",
         "MINI05-01",
         "MINI05-02",
         "MINI05-03",
         "MINI05-04",
         "MINI05-05",
-        "MINI05-06"
+        "MINI05-06",
+        "MINI05"
       ],
       "rules": [
         "OS共通Coreとfirmware責任を分ける",
@@ -1077,13 +1086,13 @@
         "M5"
       ],
       "taskIds": [
-        "MINI06",
         "MINI06-01",
         "MINI06-02",
         "MINI06-03",
         "MINI06-04",
         "MINI06-05",
-        "MINI06-06"
+        "MINI06-06",
+        "MINI06"
       ],
       "rules": [
         "計算budgetを実測と呼ばない",
@@ -1148,14 +1157,14 @@
         "O1"
       ],
       "taskIds": [
-        "MAT06",
-        "MINI07",
         "MINI07-01",
         "MINI07-02",
         "MINI07-03",
         "MINI07-04",
         "MINI07-05",
-        "MINI07-06"
+        "MINI07-06",
+        "MAT06",
+        "MINI07"
       ],
       "rules": [
         "gestureを物理承認にしない",
@@ -1209,13 +1218,13 @@
         "O6"
       ],
       "taskIds": [
-        "PRO01",
         "PRO01-01",
         "PRO01-02",
         "PRO01-03",
         "PRO01-04",
         "PRO01-05",
-        "PRO01-06"
+        "PRO01-06",
+        "PRO01"
       ],
       "rules": [
         "公開サイトの文言を実装証拠にしない",
@@ -1261,13 +1270,14 @@
         "P1"
       ],
       "taskIds": [
-        "PRO02",
         "PRO02-01",
         "PRO02-02",
         "PRO02-03",
         "PRO02-04",
         "PRO02-05",
-        "PRO02-06"
+        "PRO02-06",
+        "PRO02",
+        "MAT16"
       ],
       "rules": [
         "候補SoCの公称値を製品性能と呼ばない",
@@ -1314,13 +1324,13 @@
         "O4"
       ],
       "taskIds": [
-        "PRO03",
         "PRO03-01",
         "PRO03-02",
         "PRO03-03",
         "PRO03-04",
         "PRO03-05",
-        "PRO03-06"
+        "PRO03-06",
+        "PRO03"
       ],
       "rules": [
         "共通Game SDK完成をPro受入へ加算しない",
@@ -1379,13 +1389,13 @@
         "O2"
       ],
       "taskIds": [
-        "PRO04",
         "PRO04-01",
         "PRO04-02",
         "PRO04-03",
         "PRO04-04",
         "PRO04-05",
-        "PRO04-06"
+        "PRO04-06",
+        "PRO04"
       ],
       "rules": [
         "利用者間でdataを共有しない",
@@ -1433,13 +1443,13 @@
         "P2"
       ],
       "taskIds": [
-        "PRO05",
         "PRO05-01",
         "PRO05-02",
         "PRO05-03",
         "PRO05-04",
         "PRO05-05",
-        "PRO05-06"
+        "PRO05-06",
+        "PRO05"
       ],
       "rules": [
         "接続規格と実装済みportを区別する",
@@ -1488,13 +1498,13 @@
         "M6"
       ],
       "taskIds": [
-        "PRO06",
         "PRO06-01",
         "PRO06-02",
         "PRO06-03",
         "PRO06-04",
         "PRO06-05",
-        "PRO06-06"
+        "PRO06-06",
+        "PRO06"
       ],
       "rules": [
         "1台と複数台を別caseで受け入れる",
@@ -1548,13 +1558,13 @@
         "O7"
       ],
       "taskIds": [
-        "PRO07",
         "PRO07-01",
         "PRO07-02",
         "PRO07-03",
         "PRO07-04",
         "PRO07-05",
-        "PRO07-06"
+        "PRO07-06",
+        "PRO07"
       ],
       "rules": [
         "参考価格を製造原価と呼ばない",
@@ -1600,13 +1610,13 @@
         "H1"
       ],
       "taskIds": [
-        "RKT01",
         "RKT01-01",
         "RKT01-02",
         "RKT01-03",
         "RKT01-04",
         "RKT01-05",
-        "RKT01-06"
+        "RKT01-06",
+        "RKT01"
       ],
       "rules": [
         "理想計算を飛行性能と呼ばない",
@@ -1656,13 +1666,13 @@
         "R1"
       ],
       "taskIds": [
-        "RKT02",
         "RKT02-01",
         "RKT02-02",
         "RKT02-03",
         "RKT02-04",
         "RKT02-05",
-        "RKT02-06"
+        "RKT02-06",
+        "RKT02"
       ],
       "rules": [
         "材料公称値だけで合格しない",
@@ -1713,13 +1723,13 @@
         "R2"
       ],
       "taskIds": [
-        "RKT03",
         "RKT03-01",
         "RKT03-02",
         "RKT03-03",
         "RKT03-04",
         "RKT03-05",
-        "RKT03-06"
+        "RKT03-06",
+        "RKT03"
       ],
       "rules": [
         "計算推力を燃焼試験結果と呼ばない",
@@ -1771,13 +1781,13 @@
         "R3"
       ],
       "taskIds": [
-        "RKT04",
         "RKT04-01",
         "RKT04-02",
         "RKT04-03",
         "RKT04-04",
         "RKT04-05",
-        "RKT04-06"
+        "RKT04-06",
+        "RKT04"
       ],
       "rules": [
         "CFDを飛行証拠にしない",
@@ -1829,13 +1839,13 @@
         "O1"
       ],
       "taskIds": [
-        "RKT05",
         "RKT05-01",
         "RKT05-02",
         "RKT05-03",
         "RKT05-04",
         "RKT05-05",
-        "RKT05-06"
+        "RKT05-06",
+        "RKT05"
       ],
       "rules": [
         "一般RockstarOSやLLMへ飛行actuation権限を与えない",
@@ -1888,13 +1898,13 @@
         "R5"
       ],
       "taskIds": [
-        "RKT06",
         "RKT06-01",
         "RKT06-02",
         "RKT06-03",
         "RKT06-04",
         "RKT06-05",
-        "RKT06-06"
+        "RKT06-06",
+        "RKT06"
       ],
       "rules": [
         "放出commandと分離確認を別eventにする",
@@ -1946,13 +1956,13 @@
         "O6"
       ],
       "taskIds": [
-        "RKT07",
         "RKT07-01",
         "RKT07-02",
         "RKT07-03",
         "RKT07-04",
         "RKT07-05",
-        "RKT07-06"
+        "RKT07-06",
+        "RKT07"
       ],
       "rules": [
         "通信回復を実行承認とみなさない",
@@ -2008,13 +2018,13 @@
         "R7"
       ],
       "taskIds": [
-        "RKT08",
         "RKT08-01",
         "RKT08-02",
         "RKT08-03",
         "RKT08-04",
         "RKT08-05",
-        "RKT08-06"
+        "RKT08-06",
+        "RKT08"
       ],
       "rules": [
         "AI判断だけでlaunchしない",
@@ -2069,13 +2079,13 @@
         "R8"
       ],
       "taskIds": [
-        "RKT09",
         "RKT09-01",
         "RKT09-02",
         "RKT09-03",
         "RKT09-04",
         "RKT09-05",
-        "RKT09-06"
+        "RKT09-06",
+        "RKT09"
       ],
       "rules": [
         "回収成功を再飛行可能と同一視しない",
@@ -2134,13 +2144,13 @@
         "R9"
       ],
       "taskIds": [
-        "RKT10",
         "RKT10-01",
         "RKT10-02",
         "RKT10-03",
         "RKT10-04",
         "RKT10-05",
-        "RKT10-06"
+        "RKT10-06",
+        "RKT10"
       ],
       "rules": [
         "文書保存を製造releaseと呼ばない",
@@ -14383,6 +14393,16 @@
       "taskId": "ORG03",
       "primarySquad": "H1",
       "classification": "coordination"
+    },
+    {
+      "taskId": "SYS15",
+      "primarySquad": "H1",
+      "classification": "coordination"
+    },
+    {
+      "taskId": "MAT16",
+      "primarySquad": "P2",
+      "classification": "current_product"
     }
   ],
   "executionHolds": [

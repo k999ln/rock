@@ -17,6 +17,15 @@ rootの `scripts/test-native.py` と `.github/workflows/native-os.yml` はこの
 
 検証は使い捨てLinux環境で行う。suite全体がtimeoutした場合は失敗を記録して停止する。直接のprocess groupは終了するが、試験が独立sessionにした子孫全ての終了は保証しない。その環境を自動再利用せず、所有を確認した後片付けまたは使い捨てrunnerの終了を行う。
 
+## 2026-10-05 native検証の資源解放
+
+`tests/test_memory_store.py`の3か所でtransaction contextだけではSQLite接続が閉じない問題を修正し、`contextlib.closing`を追加した。runtime/IMPORT-MANIFESTは変更しない。Linux 1,736 Python試験、厳格ResourceWarning検査を維持して成功。証拠はrootの`docs/evidence/release-blocker-resolution.json`。
+
 ## 2026-10-03 — SPIDERのHTTPS CA境界
 
 `os/mcp_broker/http.py`のHTTPS設定では、空のCAがTLS contextなしの送信へ進む経路を拒否する。`tests/test_mcp_http_deadline.py`で設定拒否と既存TLS／期限の回帰を確認する。取得時のmanifest・public fixture証明書／鍵は変更しない。合成loopbackと同一SHAのsource CIの証拠は[改善記録](../../docs/evidence/spider-improvement-cycle.json)へ保存し、外部providerやOS起動の受入とは区別する。
+
+2026-10-05後続: Game/ATM独立性試験の合計2秒というCI scheduling依存を、実TLS transport戻り値境界のEvent保持へ変更した。元のTLS期限とhold/照合assertionを維持し、関連7件と3.1秒遅延回帰が合格。runtime変更はない。
+## 2026-10-06 — SPIDER observer出力の検証
+
+os/entitlement/guest_observer.pyの既存報告fieldをscalar schemaで検証し、不正応答とread例外のprivate内容を出さずに停止する。IMPORT-MANIFESTとfixture料金・認証・Wallet操作は維持。[範囲と証拠](../../docs/evidence/spider-observer-output-schema.json)。host合格は新imageのboot受入ではない。

@@ -1,59 +1,20 @@
+import { catalogConnectionTools, catalogJobTools, type CatalogToolId, type TrackedCatalogToolId } from './catalog.ts';
 import { defaultFund, distributeFund, validateFund } from './fund.ts';
 import {
   isSensitiveConnectionKey,
   isSkyProvider,
+  liveKitConfigError,
   providerDefinition,
   type SkyProvider,
   type SkyProviderStatus,
 } from './sky-connections.ts';
 
-// No runtime binding here: the same store is exercised against SQLite in tests.
-const CORE_JOB_TOOLS = [
-  'coconala',
-  'mr-free-article',
-  'mr-citations',
-  'mr-delivery',
-] as const;
-const SKY_CANDIDATE_TOOLS = [
-  'rockstar-ip-studio',
-  'faster-whisper',
-  'transformers-js',
-  'playwright',
-  'jev-ultrafast',
-  'jev-trader',
-  'typesafe-computer-use',
-  'jev-review',
-  'jev-router',
-  'jev-browser',
-  'mobile-jev',
-  'coconala-proposal-draft',
-  'gig-workflow',
-  'coconala-inbox',
-  'youtube-script-writer',
-  'seo-blueprint',
-  'landing-page-sprint',
-  'sales-objection-reply-builder',
-  'user-interview-synthesizer',
-  'calendar-coordination',
-  'telegram-notifications',
-  'producthunt-discovery',
-] as const;
-export const JOB_TOOLS = [...CORE_JOB_TOOLS, ...SKY_CANDIDATE_TOOLS] as const;
-export type JobTool = (typeof JOB_TOOLS)[number];
-export const SKY_CONNECTION_TOOLS = [
-  ...JOB_TOOLS,
-  'rockstar-amc',
-  'rockstar-csv-cleanup',
-  'rockstar-markets-analysis',
-  'mercari-revenue',
-  'fashion-brand-ops',
-  'rockstar-ip-studio',
-  'rockstar-ledger',
-  'rockstar-legal-intake',
-  'rockstar-patent-assistant',
-  'jev-evaluation',
-] as const;
-export type SkyConnectionTool = (typeof SKY_CONNECTION_TOOLS)[number];
+// Keep the persisted connector identity and tracked-job admission aligned with
+// the shared catalog; readiness in that catalog never grants execution by itself.
+export const JOB_TOOLS = catalogJobTools;
+export type JobTool = TrackedCatalogToolId;
+export const SKY_CONNECTION_TOOLS = catalogConnectionTools;
+export type SkyConnectionTool = CatalogToolId;
 export type JobState =
   | 'queued'
   | 'running'
@@ -533,11 +494,19 @@ export function operations(
       for (const field of providerDefinition(provider).fields) {
         if (!config[field.id] && field.placeholder) config[field.id] = field.placeholder;
       }
+      for (const key of ['realtimeVoice', 'telephony']) {
+        if (config[key] && config[key] !== 'livekit')
+          throw new OperationError('音声・電話の接続候補を選択してください。');
+      }
+    }
+    if (provider === 'livekit') {
+      const error = liveKitConfigError(config);
+      if (error) throw new OperationError(error);
     }
     const status = v.status as SkyProviderStatus;
     if (
       status === 'ready' &&
-      providerDefinition(provider).fields.some((field) => !config[field.id])
+      providerDefinition(provider).fields.some((field) => !field.optional && !config[field.id])
     )
       throw new OperationError('必要な接続情報を入力してください。');
     const now = clock();

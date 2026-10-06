@@ -122,3 +122,7 @@ AMC01とMINI01〜07・PRO01〜07・RKT01〜10の25親taskは「要求・仕様�
 会話の進捗表示は手動更新のsnapshot。正本更新時は<code>npm run mission:update -- --visualization &lt;既存表示HTMLの絶対path&gt;</code>で同じデータから再生成する。ネットワークやGitHubとの自動同期ではなく、表示時点を明示する。テンプレートは[scripts/templates/mission-control.html](../scripts/templates/mission-control.html)。
 
 検査は担当の欠落・重複、参照混入、task/部隊の依存循環、親子の担当・分類・責任区分の不一致、親前提の解除、親を前提にした子、成果物sectionの重複、親範囲外の子成果物、入力の欠落、証拠なしの合格、未完了の子を持つ親の完了、実機証拠なしの段階昇格、生成一覧のずれを拒否する。
+
+## 部隊表示の安全性（SPIDER cycle 42）
+
+H1 / ORG03、ROCK。部隊IDと表示名はHTMLやCSS selectorとして解釈せず、DOMの本文・datasetとして設定する。部隊の選択とフォーカスを維持し、正本の担当・段階・実行保留は変更しない。既存の書き出し済みHTMLは、修正版で`mission:update -- --visualization <出力path>`を実行して再生成する。試験の対象と残課題は[部隊表示の検証記録](evidence/spider-mission-squad-dom.json)を参照する。

@@ -246,4 +246,34 @@ void test('real SQLite persists jobs per user and prevents concurrent overwrites
     .run(legacy.id, 'alice', JSON.stringify(legacy), legacy.revision, legacy.updatedAt);
   assert.equal((await store.get('alice', legacy.id)).plan.schemaVersion, 1);
   assert.equal((await store.list('alice')).length, 2);
+
+  const alteredCloud = newJob('cloud-agent');
+  const requiredGates = structuredClone(alteredCloud.plan.approvalGates);
+  alteredCloud.plan.approvalGates = [];
+  alteredCloud.plan.objective = '保存済みの目的を維持する';
+  sqlite.prepare('INSERT INTO work_jobs (id, user_id, payload, revision, updated_at) VALUES (?, ?, ?, ?, ?)')
+    .run(alteredCloud.id, 'alice', JSON.stringify(alteredCloud), 0, alteredCloud.updatedAt);
+  for (const restored of [await store.get('alice', alteredCloud.id),
+    (await store.list('alice')).find((item) => item.id === alteredCloud.id)]) {
+    assert.deepEqual(restored.plan.approvalGates, requiredGates);
+    assert.equal(restored.plan.objective, alteredCloud.plan.objective);
+    assert.equal(restored.revision, 0);
+    assert.equal(restored.steps.some((step) => step.passed), false);
+  }
+  assert.equal(await store.get('bob', alteredCloud.id), null);
+
+  const amc = createWorkJob({ id: randomUUID(), templateId: 'amc', brief: {
+    request: '計画一覧を確認するWebアプリを作る', goal: '本人だけに概要を表示する', intent: 'Goal本文は詳細画面で読む',
+  } });
+  await store.create('alice', amc);
+  const summaries = await store.listAmc('alice');
+  assert.equal(summaries.length, 1);
+  assert.equal(summaries[0].id, amc.id);
+  assert.deepEqual(summaries[0].plan, {
+    schemaVersion: 1, objective: amc.title, approvalGates: [],
+  });
+  assert.equal(Object.hasOwn(summaries[0], 'amcGoal'), false);
+  assert.deepEqual(summaries[0].events, []);
+  assert.deepEqual(await store.listAmc('bob'), []);
+  assert.equal((await store.list('alice', true)).some((item) => item.id === amc.id), false);
 });

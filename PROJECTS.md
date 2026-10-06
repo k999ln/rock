@@ -169,3 +169,13 @@ Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog�
 1. 上の表から対象プロジェクトの入口を開く。
 2. [workstream案内](docs/workstreams/README.md)から主担当を一つ選び、[進捗JSON](data/project-status.json)の既存task ID、完了条件、証拠を確認する。
 3. 変更後は対象の小さい検証を実行し、配布・統合候補では`npm run verify`と対象OS固有の受入を実施する。結果は`project.md`と進捗JSONへ記録する。
+
+
+
+| **Market / Polymarket** — 市場の検討とPAPER試験 | `rockstar-markets-analysis`はcatalogにready登録。`/polymarket`は`/market`への転送。外部市場backtestとミームコイン候補評価はPAPER sandboxへ分離 | [`app/market/`](app/market/)・[`app/polymarket/`](app/polymarket/)・[`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/)・[`toolkits/meme-intelligence-sandbox/`](toolkits/meme-intelligence-sandbox/)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Avocado Farm Sandbox** — 集中流動性LPの候補評価・レンジ計画・リスク制御・PAPER実行 | 現在はRobinhood Chain Testnet向けのPAPER専用Toolkit。実トランザクション送信は未接続 | [`toolkits/avocado-farm-sandbox/`](toolkits/avocado-farm-sandbox/)・[`README`](toolkits/avocado-farm-sandbox/README.md) |
+| **AMC agent** | Codexの司令官・実行担当・独立検収とCLI入口。実稼働の受入は未完了 | [`toolkits/amc-agent/`](toolkits/amc-agent/) | [使い方](toolkits/amc-agent/README.md)・[AMC設計](docs/amc-sky-launch-integration.md) |
+| **SPIDER Guard** | 機密情報の検出、外部送信前の検査、端末内コード検査に使う共通部品。独立したcatalog Toolではない | [`toolkits/spider-guard/`](toolkits/spider-guard/) | [README](toolkits/spider-guard/README.md)・[保護範囲と検証](docs/spider-guard.md) |
+| **eSIM Bootstrap** | SIM/eSIM-led RockstarOS service offerのうち、eSIM provider接続を試すhost fixtureとadapter。物理SIMや複数販売チャネルを除外する製品境界ではない | [`toolkits/esim-bootstrap/`](toolkits/esim-bootstrap/)・[`app/api/esim/`](app/api/esim/) | [開発ガイド](toolkits/esim-bootstrap/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
+| **avokado-llm** | random-init CPU学習・保存・再開のhost試作。製品モデルの品質・端末・cloud未受入 | [README](toolkits/avokado-llm/README.md) |
+| **mini-game-client** | 本人の明示操作で公式Remote Playへ渡す診断launcher。実game/console未受入 | [README](toolkits/mini-game-client/README.md) |

@@ -176,6 +176,9 @@ pending → queued → running → succeeded
 
 ## 9. Local AIとmodel
 
+OSへ組み込むLocal AI APKは、上流commitに加えてbase overlayと順序付きextensionのSHA-256をartifact lockへ結合する。stageとbuild直前のverifyで現行sourceと一致しないAPK、版・権限・署名用途を貼り替えたstage metadataを拒否し、同一sourceからの再build・検査・レビューで復旧する。旧v2実機受入はv4の受入に流用しない。入出力・保存・承認・合格条件は[APK/overlay一致契約](local-ai-os-integration-20260915.md#apkとoverlay版の一致2026-10-05)を参照する。
+
+
 `ModelProfile`はmodel ID、版、weight・tokenizer・template hash、license、形式、context、plan schema、RAM／storage、測定条件、品質結果を一組にする。仕事開始時にprofileを固定し、途中でmodelを差し替えない。
 
 更新順は`download → hash/license/容量/API検査 → 隔離試験 → 待機時切替 → health確認`。失敗時は互換性を確認した旧profileへ戻す。失効modelへは戻さず仕事を停止し、新modelでのreplanを新revisionにする。
@@ -519,3 +522,32 @@ Gameの通信結果が不明な場合、処理試行の戻り値を成功へ昇�
 ## 2026-10-01 決済・Walletの追加設計
 
 Sky Marketの既存型・JPY買い切り・10%配分に合わせた[統合設計](sky-commerce-design.md)と[Wallet画面/台帳境界](wallet-commerce-design.md)を参照する。金銭事実・購入権・MCP実行権・銀行受取を分離し、旧月額8.88 USD案は今回の対象外。設計草案の検証と実Provider・実機の受入は分ける。
+
+
+## 専用モデルの追加工程（2026-10-05）
+
+Local AI / AI02にrandom-initの学習・保存・再開・CPU推論の研究toolkitを追加。OSの権限境界や既存model profileは変更せず、Mini実機・cloud配備は未受入。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](avokado-llm-pretraining.md)を参照。
+
+## avokadoProのNVIDIA搭載小型PC（2026-10-05）
+
+[Proの構成・組立設計](avokado-pro-pc-design.md)を追加。AIとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・AI・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
+
+## Mini本体SIMによる独立通信（2026-10-05）
+
+利用者指定により[Mini cellular設計](avocado-mini-cellular.md)を追加。MAT15の通信サブ項目としてmodem/antenna/物理SIM、電源/熱、接続・保存復旧、Pro/PC/phone不要の実通信受入を追跡し、SIM01のcarrier/service権と区別する。R5のoffline基本動作、使用時200mm、外部給電を維持する。地域・回線未定、部品選定・内蔵・driver・実通信・cloud gamingは未受入。元R5配布原本は変更せず追加要求として読む。
+
+
+## GTA VIプレイ入口（2026-10-05）
+
+[Mini game client](mini-game-client.md)の診断/公式client起動をAI06サブ項目として追加。ROCKのdesktop試作であり、認証・映像・操作・復旧は公式clientへ委譲する。console、実タイトル、Miniの表示/入力はJOINTの未受入。ProのPC版対応は未確認のため起動を拒否。担当・入出力・状態・保存・失敗・受入・未決定事項は同設計を正本とする。
+## SPIDER: simulation observerの診断出力
+
+O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Identity / Compliance。既存ARM64開発guestのentitlement observerは、認証済みWallet socketからmembership・billing status・snapshotの3読取りだけを行う。simulation-only・USD 888 minorの歴史的fixtureを検査する診断であり、現行料金の請求・同意・利用権付与・実資金操作を行わない。
+
+出力は既存の固定fieldを維持する。registration_statusはHANDOFF_REQUIRED／REGISTRATION_REQUIRED／REGISTEREDの3値、worker_aliveは厳密なboolean、wallet_billed_minorはbooleanを除く非負整数に限定する。応答container・history row・年月形式を検査し、historyは既存上限12を維持する。未知の追加fieldは診断へ含めず、想定外の値を文字列化して救済しない。
+
+不正な応答やread中の例外ではレポートとPASS markerを出す前に停止し、mainは固定の失敗メッセージだけを返す。恒久的な保存先、追加credential、再送・自動修復を増やさない。復旧は既存serviceのschemaと正常応答を確認して同じ読取りを再実行する。認証・fee・identity・paid bill・ledger照合は維持する。VNCの認証プロトコルは対象外。
+
+合成値を使ったhost試験と既存SQLite Wallet回帰を合格条件とし、通常応答の互換性、想定外のprivate文字列／objectの拒否、無出力の失敗、追加fieldの非転送を確認する。同一SHAのCodeQL再解析は別証拠であり、host成功をguest boot・実機・24時間・本番受入へ転用しない。実serviceによる秘密漏洩を観測したとは主張しない。[検証記録](evidence/spider-observer-output-schema.json)とPRの再解析結果を参照する。
+
+統合受入補足: observerの年月は検証後の年/月整数からYYYY-MMへ再構成し、worker_aliveは固定booleanへ変換して出力する。応答object/文字列を直接診断へ転送しない。既存13 privacy＋22 Wallet host試験と同一候補CodeQLを再確認する。実guest受入とは別。

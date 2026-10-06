@@ -1,4 +1,5 @@
 import test from 'node:test';
+import * as amcSkyWeb from '../lib/amc-sky-web.ts';
 import assert from 'node:assert/strict';
 import { randomUUID, webcrypto } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
@@ -9,9 +10,11 @@ import * as workflow from '../lib/workflow.ts';
 import { workStore } from '../lib/work-store.ts';
 import { requestUser } from '../lib/request-auth.ts';
 import { a2aDelegationStore } from '../lib/a2a-delegation-store.ts';
+import { rockstarServiceScopeAllowed, missingRockstarServiceScope } from '../lib/rockstar-service-access.ts';
 
-// Real route exports, authentication, reducers and stores. Only the Cloudflare
-// DB binding is replaced with an in-memory SQLite D1 adapter. No success mocks.
+// Real route exports, authentication, reducers, stores and service access.
+// Cloudflare bindings use an in-memory SQLite D1 adapter and a synthetic preview
+// entitlement setting. No success mocks.
 function fixture(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
@@ -29,12 +32,15 @@ function fixture(t) {
     };
   } };
   function route(name) {
-    const source = readFileSync(new URL(`../app/api/${name}/route.ts`, import.meta.url), 'utf8');
+    const source = readFileSync(new URL(`../app/api/${String(name)}/route.ts`, import.meta.url), 'utf8');
     const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
     const exports = {}, modules = {
       '@/lib/fund-store': { database: () => db, requestUser },
+      '@/lib/amc-sky-web': amcSkyWeb,
       '@/lib/work-store': { workStore }, '@/lib/workflow': workflow,
       '@/lib/a2a-delegation-store': { a2aDelegationStore },
+      '@/lib/rockstar-service-access': { rockstarServiceScopeAllowed, missingRockstarServiceScope },
+      'cloudflare:workers': { env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'false' } },
     };
     runInNewContext(code, { exports, Response, Error, SyntaxError, TextEncoder, TextDecoder, crypto: webcrypto,
       require: (id) => { assert.ok(Object.hasOwn(modules, id), id); return modules[id]; },
@@ -52,7 +58,7 @@ function fixture(t) {
     return data;
   }
   const snapshot = () => Object.fromEntries(sqlite.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name != 'work_jobs'").all()
-    .map(({ name }) => [name, JSON.stringify(sqlite.prepare(`SELECT * FROM "${name}"`).all())]));
+    .map(({ name }) => [name, JSON.stringify(sqlite.prepare(`SELECT * FROM "${String(name)}"`).all())]));
   return { sqlite, store: workStore(db), queries, call, snapshot };
 }
 const input = (templateId = 'article') => ({ id: randomUUID(), templateId, title: '合成の計画' });
@@ -60,7 +66,7 @@ const edit = (objective = '更新後の目的') => ({ id: randomUUID(), action: 
 const amcInput = () => ({ id: randomUUID(), templateId: 'amc', brief: { request: '仕事の進捗を管理するWebアプリを作る', goal: '変更を保存して読み直せる', intent: '既存の記録を維持する' } });
 const pause = (job) => ({ id: randomUUID(), action: 'amc_event', event: { type: 'pause', expectedRevision: job.amcGoal.revision, actor: 'alice', role: 'owner', reason: '合成試験で一時停止' } });
 
-test('WorkPlan API creation/edit/replay rejects stale or foreign writes without data loss or grants', async (t) => {
+await test('WorkPlan API creation/edit/replay rejects stale or foreign writes without data loss or grants', async (t) => {
   const f = fixture(t), before = f.snapshot();
   await f.call('work', 'GET', undefined, { user: null, status: 401 });
   await f.call('work', 'POST', input(), { origin: 'https://wrong.test', status: 403 });
@@ -83,7 +89,7 @@ test('WorkPlan API creation/edit/replay rejects stale or foreign writes without 
   assert.deepEqual(f.snapshot(), before);
 });
 
-test('legacy stored plans normalize without rewriting payload, then preserve the first compare-and-swap edit', async (t) => {
+await test('legacy stored plans normalize without rewriting payload, then preserve the first compare-and-swap edit', async (t) => {
   const f = fixture(t), legacy = workflow.createWorkJob(input('cloud-agent'));
   delete legacy.plan;
   const raw = JSON.stringify(legacy);
@@ -100,7 +106,7 @@ test('legacy stored plans normalize without rewriting payload, then preserve the
   assert.deepEqual(winner.plan.approvalGates, loaded.plan.approvalGates);
 });
 
-test('AMC and ordinary jobs retain separate events and both Goal/WorkJob revision boundaries', async (t) => {
+await test('AMC and ordinary jobs retain separate events and both Goal/WorkJob revision boundaries', async (t) => {
   const f = fixture(t), before = f.snapshot();
   const { templateId: _templateId, ...request } = amcInput();
   const { job: amc } = await f.call('amc', 'POST', request);
@@ -122,7 +128,7 @@ test('AMC and ordinary jobs retain separate events and both Goal/WorkJob revisio
   assert.deepEqual(f.snapshot(), before);
 });
 
-test('AMC list stays scoped and lightweight with one query and at most 100 summaries', async (t) => {
+await test('AMC list stays scoped and lightweight with one query and at most 100 summaries', async (t) => {
   const f = fixture(t), job = workflow.createWorkJob(amcInput());
   for (let i = 0; i < 101; i++) await f.store.create('alice', { ...job, id: randomUUID() });
   await f.store.create('bob', { ...job, id: randomUUID() });
@@ -142,7 +148,7 @@ test('AMC list stays scoped and lightweight with one query and at most 100 summa
   assert.deepEqual(await f.store.listAmc('charlie'), []);
 });
 
-test('cloud plan rejects unverified delegation records without creating connections, reservations or grants', async (t) => {
+await test('cloud plan rejects unverified delegation records without creating connections, reservations or grants', async (t) => {
   const f = fixture(t), before = f.snapshot();
   const { job } = await f.call('work', 'POST', input('cloud-agent'));
   const command = { id: randomUUID(), action: 'record', stepId: 'agent-brief', tool: 'sky-a2a-brief', transport: 'browser', outcome: 'passed', sample: false, durationMs: 1 };
@@ -153,7 +159,7 @@ test('cloud plan rejects unverified delegation records without creating connecti
   assert.deepEqual(f.snapshot(), before);
 });
 
-test('cloud review binds stored evidence to the same owner and parent and requires terminal artifacts and receipt', async (t) => {
+await test('cloud review binds stored evidence to the same owner and parent and requires terminal artifacts and receipt', async (t) => {
   const f = fixture(t);
   const { job } = await f.call('work', 'POST', input('cloud-agent'));
   function delegation(owner, parent) {

@@ -3,9 +3,13 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import {
+  closeSync,
+  constants,
   existsSync,
+  fstatSync,
   lstatSync,
   mkdirSync,
+  openSync,
   readFileSync,
   realpathSync,
   renameSync,
@@ -51,8 +55,16 @@ const json = (path, value) =>
   });
 
 // Include tracked and non-ignored files, including dirty/untracked source. Ignore
-// caches according to Git, not an invented list. Never read symlink targets.
+// caches according to Git, not an invented list. Bind each read to the checked
+// regular-file inode and refuse final-component symlinks. This is not an atomic
+// directory snapshot: concurrent same-inode writes and ancestor ABA changes are
+// outside this local supervisor's guarantees.
 export function workspaceSnapshot(repo) {
+  must(
+    Number.isInteger(constants.O_NOFOLLOW) && constants.O_NOFOLLOW !== 0 &&
+      Number.isInteger(constants.O_NONBLOCK) && constants.O_NONBLOCK !== 0,
+    'Safe workspace snapshot flags are unavailable',
+  );
   must(
     realpathSync(
       execFileSync('git', ['rev-parse', '--show-toplevel'], {
@@ -77,16 +89,32 @@ export function workspaceSnapshot(repo) {
     paths.map((path) => {
       const full = resolve(repo, path);
       must(inside(repo, full), 'Invalid Git path');
-      if (!existsSync(full)) return [path, null];
-      must(
-        lstatSync(full).isFile() && !lstatSync(full).isSymbolicLink(),
-        'Parallel workspace requires regular files: ' + path,
-      );
-      must(
-        inside(realpathSync(repo), realpathSync(full)),
-        'Workspace path escapes repository',
-      );
-      return [path, hash(readFileSync(full))];
+      let fd;
+      try {
+        fd = openSync(
+          full,
+          constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
+        );
+      } catch (error) {
+        if (error.code === 'ENOENT') return [path, null];
+        throw error;
+      }
+      try {
+        const actual = fstatSync(fd, { bigint: true });
+        must(actual.isFile(), 'Parallel workspace requires regular files: ' + path);
+        must(
+          inside(realpathSync(repo), realpathSync(full)),
+          'Workspace path escapes repository',
+        );
+        const expected = lstatSync(full, { bigint: true });
+        must(
+          expected.isFile() && actual.dev === expected.dev && actual.ino === expected.ino,
+          'Workspace file changed during snapshot: ' + path,
+        );
+        return [path, hash(readFileSync(fd))];
+      } finally {
+        closeSync(fd);
+      }
     }),
   );
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-19",
+  "updatedAt": "2026-10-05",
   "product": {
     "displayName": "avocadoOS",
     "internalId": "dev.rock",
@@ -154,5 +154,20 @@
     "installedVersion": "7.0.107",
     "experimentalEvaluateExportPresent": true,
     "decision": "Sky route and consent-gated runner use AI SDK experimental_evaluate; AI_GATEWAY_API_KEY, provider terms, budget and live acceptance remain configuration gates."
+  },
+  "researchPretraining": {
+    "id": "avokado-byte-lm-v1",
+    "task": "AI02",
+    "status": "host_synthetic_prototype",
+    "authority": "none",
+    "initialization": "random",
+    "pretrainedWeightsUsed": false,
+    "automaticFallback": false,
+    "deviceAccepted": false,
+    "cloudDeployed": false,
+    "productionReady": false,
+    "design": "docs/avokado-llm-pretraining.md",
+    "source": "toolkits/avokado-llm/",
+    "evidence": "docs/evidence/avokado-llm-pretraining.json"
   }
 }

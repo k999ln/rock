@@ -26,6 +26,16 @@ Zema側は既存の本人認証、service scope、WorkPlan、PC適合、IP Studi
 
 合格条件はSkyでrunnerと仕事作成POSTがなく、明示リンク後に同じ商品がZemaで開き、既存の利用条件下で動くこと。ローカル合成本人での検証と、本番認証・実PC・配備の受入は別とする。
 
+### Zemaの利用権とローカル計画の取消（SPIDER cycle 46）
+
+O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承認条件、本人別保存とrevision、クラウドAgentの委任・見積・成果・利用receipt照合はmain 0c90253cの契約を保持する。
+
+利用権を必須とする環境では、仕事作成の前に本人のZema scopeを保存済み台帳で確認する。不足時は403とSERVICE_ENTITLEMENT_REQUIREDを返し、未読bodyを解放してjobを書き込まない。previewで利用権必須を有効にしない既存動作は維持する。仕事の保存が利用権の発行・購入・送金・Agent起動を意味することはない。
+
+本人は履歴の委任証拠が欠けても未終了のローカル計画を取り消せる。owner・revision・終了状態の検査を通し、リモートAgentの停止成功とは分ける。進行・完了では既存の証跡照合を省略せず、証拠不足は409として再取得・照合後に再試行する。mainのAMC専用イベントと2段revision、新しい表示修正を保持する。
+
+合格範囲は実handler/storeとSQLiteによる拒否・取消・競合回帰。合成認証と実requestUserを使う別fixtureを区別し、本番認証・配備・実機・料金保留解除は受入に含めない。[検証と未解決条件](evidence/spider-work-plan-contract.json)を参照する。
+
 ## 2. 共通Tool契約
 
 ### Toolが必ず宣言するもの
@@ -113,6 +123,8 @@ catalogued → selected → connected → ready → running → review → compl
 
 ## 4.5 AMC — Goal・部隊・進捗
 
+SPIDER cycle 47: 観測元はcanonical repository内の通常ファイルを一度だけ安全にopenし、位置・BigInt file identityを確認した同じFDから読み、失敗時にも閉じる。内部symlinkと初期absentは維持し、途中消失・不一致は観測失敗へ戻す。hashは取得済みBufferを使い、本人承認やtask受入へ自動昇格させない。詳細・試験境界は[AMC観測読取り設計](amc-goal-orchestrator.md#spider-観測元ファイルの安全な読取り)と[証拠](evidence/spider-observation-source-read.json)。
+
 ### 目的・利用者・一周の体験
 
 依頼をGoalと意図へ整理し、担当、工程、成果物、合格条件、進捗を本人が一つの台帳で扱う第一者Tool。Tool IDは`rockstar-amc`、主担当はROCK / H1、継続作業はAMC02の限定Web統合である。任意の文章を理解して実行するAI、全製品の自律開発、実機制御Toolとしては扱わない。
@@ -175,6 +187,14 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 未決は、保持・完全削除（OWNER方針＋ROCKの消去／復元試験）、認証済み別担当の検収（ROCKのrole／actor設計）、LLM・実行先接続（OWNERの対象／費用／送信同意＋個別adapter受入）、実ブラウザ／配備（同一候補の導線と本人分離のreadback）で閉じる。これらがない段階では新しいmodelやcloud環境を契約・導入せず、既存準備計画と手動台帳の範囲に留める。
 
 正本: [AMC Goal Orchestrator](amc-goal-orchestrator.md)、[AMC部隊と進捗](mission-control.md)、`scripts/amc-request-plan.mjs`、`scripts/amc-goal-engine.mjs`、`scripts/amc-codex.mjs`、`lib/amc-tool.ts`、`lib/workflow.ts`、`app/api/amc/route.ts`。
+
+### 部隊ボードの文字列表示境界（SPIDER cycle 42）
+
+読み取り専用の部隊ボードは、正本snapshotのdivision名・squad名・IDを表示データとして扱う。JSON埋込みのscript終端対策に加え、部隊一覧はDOM要素を生成して本文を`textContent`、IDを`dataset.squad`へ設定し、HTMLへ連結しない。選択後のフォーカスはその描画で生成したbuttonのMapから戻し、IDをCSS selectorへ連結しない。
+
+引用符・タグ・event属性・CSS記号を含む合成IDでも文字として表示し、32部隊の選択、`aria-pressed`、保存済み選択の復元とフォーカスを維持する。変更する保存は従来の表示用選択状態だけで、Goal・project台帳の変更、外部通信、実行権限を追加しない。描画の失敗はGoal完了に換算せず、正本と対応版テンプレートからsnapshotを再生成する。既存の書き出し済みHTMLは自動更新されない。
+
+[検証記録](evidence/spider-mission-squad-dom.json)は部隊表示に限定する。mainで既に確認したAMC export契約や生成資料の不整合、他のCodeQL／依存／秘密候補は別途修正し、今回の表示試験を全体受入へ転用しない。
 
 ## 5. CSV整形・検査・納品
 
@@ -465,3 +485,27 @@ Material Invention／avocadoMiniは、Core、sensor、XR、Safety、Simulation�
 - candidate 13件の採否と具体的Tool schema。Jev ecosystem 10件は統合schemaを設計済みだがruntime未実装。
 
 これらを未決定のまま「全Tool platform完成」と表示しない。
+
+#### AMC local fixture状態の安全な読取り（SYS15 / WEB04）
+
+local supervisorはstate、control、lock owner JSONを一度だけnofollow／nonblockingで開き、同じfdのregular file種別と5MB上限を確認する。開いた後のpathname差替えを別fileの読取りへ反映せず、検査後の拡大も上限+1 byte以内の読取りで拒否する。symlink・非regular file・不正JSON・過大状態・必要flagのないplatformでは停止し、成功／失敗ともfdを閉じる。JSON内容は診断へ出さない。
+
+外部通信や永続schemaは追加しない。既存のrevision CAS、lock guard、owner確認、停止・明示復旧を保持する。失敗時は本人が保存先と状態を確認して既存の復旧手順へ進み、自動lock削除や破損stateの受理はしない。親directory・同じinodeを変更できるlocal writerへの隔離や認証境界は提供しない。`tests/amc-autonomy-store-read.test.mjs`の同期した差替え・拡大・短いread・fd解放と既存autonomy／lock／fixture試験で検証し、実Codex起動・Web同期・本番受入とは分ける。
+
+
+
+#### AMC作業場所のファイル読取り（SYS15 / WEB04）
+
+`workspaceSnapshot`は、本人が管理する原本と独立Git作業場所の追跡・非ignoreファイルを照合する。ファイル内容をhashへ変換する前に、一度開いたfileの通常file判定とrepository内のpathを照合し、現在のpathとdevice/inodeが一致したdescriptorだけを読む。nofollow／nonblockingで開き、成功・検査失敗・読取り失敗のすべてで閉じる。leafや親directoryの差替えで別inodeになった場合は、内容を読む前に拒否する。
+
+open時の削除済みpathのENOENTだけを従来どおりnullとして記録し、open後の消失や検査失敗は拒否する。dangling symlink、権限不足、非通常file、同一性不一致、必要なopen flagを使えないplatformは検査失敗とし、安全なsnapshotや受入へ昇格させない。開始前の失敗はwaveを開始せず、監視中は既存のpause／停止・保存状態照合へ戻る。本人が作業場所を確認してから最新Goalと原本を再照合する。検証は `tests/amc-workspace-snapshot.test.mjs` と既存の並列Goal回帰、記録は `docs/evidence/spider-workspace-snapshot-read.json`。
+
+保存形式・hash形式・Goal承認・独立検収は維持する。親directoryや同inodeを書き換えられるwriterの完全隔離、全fileを同時点で固定したsnapshot、remote認証、実Codex実行やWeb同期の受入を保証する変更ではない。非通常fileもopen後にfstatで拒否するため、任意deviceをopenする副作用の隔離は保証しない。新しい外部送信・課金・自動検収は追加しない。
+
+
+
+SPIDER cycle 48: 既存エージェント定義は安全にopenした同じFDの通常file・byte長・canonical位置・BigInt identityを確認し、期待UTF-8 bytes＋1以内で比較する。custom設定がある場合は作成前に停止する。読取りpreflightに限定し、新規作成pathの競合やinstall全体のatomic性は未解決。詳細は[AMC設計](amc-goal-orchestrator.md#spider-既存エージェント定義の読取り確認)と[証拠](evidence/spider-agent-preflight-read.json)。
+
+### PR統合時の共通契約復旧（G04 / H1、2026-10-05）
+
+Skyの詳細表示は同じcatalogの料金・環境・接続状態を読むだけで、接続・実行を開始しない。Jev Routerは登録済みでも未接続と表示する。商品からの依頼はZemaへ同じTool IDで引き継ぎ、既存のlocal aliasを正規化する。AMCのみ8,000字、通常は2,000字、UUID・期限・一回消費を維持する。Zemaのcloud単価・見積・利用者上限・接続待ちの表示を復旧し、AMC手動計画はremote LLMへ送信しない。未保存のAMC入力は確認してから置き換え、保存済みGoalを勝手に削除しない。AMC APIはZema利用権とSky専用計画の不信入力を検査し、汎用仕事APIはAMC操作を拒否する。offline HTMLには認可capability発行器を組み込まず、Sky実行/検収を拒否する。合格条件は所有者/改訂/費用境界、入力保存、読取専用詳細、既存WorkPlanとAMC APIの回帰と同一SHA CI。実機・Provider・公開受入は別である。

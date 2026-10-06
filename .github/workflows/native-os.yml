@@ -1,5 +1,6 @@
 name: Rock star native OS source
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths: ['systems/rock-star-os/**', 'scripts/test-native.py', 'scripts/select-native-artifacts.py', 'scripts/freeze-native-build.py', 'scripts/tests/test-freeze-native-build.py', '.github/workflows/native-os.yml']

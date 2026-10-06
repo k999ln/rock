@@ -144,6 +144,14 @@ npm run mission:goal -- event --goal /absolute/path/goal-r0.json --event /absolu
 
 OpenAI側のagent制御と、ファイル・コマンドを扱う実行環境を分ける考え方は[公式Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture)を参照した。この第一版はそのAPIを呼んでおらず、アカウントの利用可否やScalewayへの接続を検証していない。
 
+## SPIDER: 観測元ファイルの安全な読取り
+
+H1 / AMC02、ROCK、主stream Git / CI / Operations。観測元はcanonical repository内に解決した通常ファイルだけとし、内部symlinkは維持する。対象をNOFOLLOW・NONBLOCKで一度開き、FDのfile種別と現在のpathのcanonical位置・BigInt dev/inoを照合してから同じFDを読む。検証後のpath差替えで別のファイルを再openしない。終了・失敗時にFDを閉じ、最初から無い入力だけをabsentとする。途中消失や照合失敗は観測失敗として再取得・レビューへ戻し、実行許可へ昇格させない。
+
+sourceInputsとsourceSnapshotの存在判定・hashは同じ一回の取得Bufferを使用する。同じinodeの同時書換、複数ファイル全体のatomic snapshot、あらゆる祖先差替えの排除は保証しない。入力名の既存.env拒否は保持するが、秘密情報全般の検出器ではない。
+
+検証: `node --test tests/amc-sky-observe.test.mjs`。実temporary filesystemに同期raceを差し込む単体試験で、directives/Git境界は明示したadapterを用いる。現mainのrevalidationImpact export欠落で通常module importは失敗するため、AMC全体の統合受入と区別する。要約証拠は[spider-observation-source-read.json](evidence/spider-observation-source-read.json)。同じbranchの修正前CodeQL #56と修正後をID・rule・path・stateで比較し、未取得を修正完了にしない。
+
 ## 検証
 
 ```sh
@@ -155,3 +163,10 @@ npm run verify
 ```
 
 standalone画面の操作契約はmock DOMで確認する。Web統合では本人分離、認証・Origin、size、CAS、再送、draft保持、Sky/Zemaと保存結果の分離も確認する。実ブラウザの描画・操作、AI送信、executor常駐、実機受入とは区別する。過去の検証結果は[AMC検証記録](evidence/amc/goal-orchestrator-audit.json)にあり、今回の未完了検証の合格証拠へ転用しない。
+
+## SPIDER: 既存エージェント定義の読取り確認
+
+H1 / AMC02、ROCK、主stream Git / CI / Operations。installAgentsの既存宛先確認はNOFOLLOW・NONBLOCKで開いたFDを使い、通常ファイル・期待UTF-8 byte長、config/agentsの通常dir、canonical位置、named fileとFDのBigInt dev/inoを照合する。同じFDから期待byte長＋1までだけ読み、内容一致後に閉じる。open時のENOENTのみ未作成として扱い、open後の消失・不一致・例外は拒否してFDを閉じる。既存customがある場合は全宛先の作成前に停止する。
+
+これは読取りpreflightの修復であり、親pathをFDで固定した新規作成ではない。CodeQL #53の作成側競合、任意の祖先置換・複数ABA・install全体のatomic性は未解決。呼出しには信頼できる安定したparentが必要で、launcherのmodel・承認・sandbox継承、既存config、実Codex設定は変更しない。検証は `node --test tests/amc-agent.test.mjs tests/amc-agent-preflight.test.mjs`。[要約証拠](evidence/spider-agent-preflight-read.json)で同じrefのCodeQL #52を前後比較し、件数だけで解消としない。
+

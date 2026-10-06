@@ -1,4 +1,5 @@
 import type { Job } from './operations';
+import { normalizeSkyZemaHandoff } from '../public-release/rockstaros/packages/sky-zema-core/src/handoff.js';
 
 export const SKY_ZEMA_HANDOFF_KEY = 'rockstaros.sky-zema-handoff.v1';
 export const SKY_ZEMA_JOB_EVENT = 'rockstaros:sky-zema-job';
@@ -76,7 +77,8 @@ export function consumeSkyZemaHandoff(
   if (!raw) return null;
   let value: unknown;
   try {
-    value = JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    value = parsed?.toolId === 'rockstar-amc' ? parsed : normalizeSkyZemaHandoff(parsed);
   } catch {
     storage.removeItem(SKY_ZEMA_HANDOFF_KEY);
     return null;

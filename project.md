@@ -1,4 +1,26 @@
+## 2026-10-05 — 残る全PRの開発・統合（G04、作業中）
+
+利用者の「pr全部開発しきって」により、Git / CI / Operations、ROCKが最新main 0c90253cからPR #63–65 / #69–76を統合・検証する。既存の未保存eSIM・決済作業は元checkoutへ保持する。依存、AMCの認可/停止/保存契約、設計・DB正本の整合を回復し、同一SHAの検査で判定する。PR固有のfixtureと実機・本番受入を分ける。現在は統合作業中、main反映・公開未実施。
+
+## 2026-10-05 — SPIDER cycle 43: 失われた依存宣言と安全な固定版を復元
+
+H1 / R04、ROCK、主streamはGit / CI。main `ecb4b2af`でmanifestを旧merge親、lockを直前main `624124cf`から採った不一致を確認。Cloudflare/Vitestの5宣言と、既存修正版`undici@7.29.1`のoverrideを復元する。lockfile・解決済み依存・現在のscriptsを変更せず、既存Dependabot修正PRを重複しない。
+
+ローカル`npm ci --dry-run --offline --ignore-scripts --no-audit --no-fund`はexit 0、node_modulesは作成されていない。通常のGitHub `npm ci`と同一ref CodeQLの前後比較は検証中。[証拠](docs/evidence/spider-locked-dependency-restore.json)へ対象と限界を保存する。既存のdatabase生成資料、catalog、SIM/eSIM基準、AMC module契約、以前失われた検査範囲、PR #70/#71/#72統合は未解決で、全体CI・脆弱性の解消を宣言しない。main merge・配備・実機操作は実施しない。
+
 # RockstarOS — 事業・設計・進捗
+
+## 2026-10-05 — SPIDER cycle 47: AMC観測元の差替え競合
+
+H1 / AMC02、ROCK、主stream Git / CI / Operations。最新main `0c90253c` 起点の独立branchでCodeQL #56をsource確認。canonicalなrepository内の対象をNOFOLLOW・NONBLOCKで一度開き、file種別・現在の位置・BigInt dev/inoを照合した同じFDから読む。path検査後の再openとhash時の二重取得を除去する。内部symlink、初期absent、既存の入力path制約は保持。本人承認・段階・H1次task AMC01・料金保留は変更しない。
+
+ローカル18/18合格。同じ試験へ旧sourceだけを入れると1 pass/17 failとなり、検証後のpath差替えで外側の合成bytesを読む退行を再現。修正前の同じbranch/SHAのCodeQLは両言語成功、#56を含む42件を保存。修正後のGitHub比較は未取得。通常AMC importは既存のrevalidationImpact export欠落で失敗し、全体受入は未完了。mission/project同期・check、diff/check、source syntaxは合格。design:checkは既存catalog重複、verifyは既存DB inventory不一致で停止。詳細は[要約証拠](docs/evidence/spider-observation-source-read.json)。main merge・公開配備・実機操作なし。
+
+## 2026-10-06 — SPIDER cycle 50: native診断の出力境界
+
+O1 / SYS02、ROCK、主stream Security / Identity / Compliance。最新main 0c90253cから開始。entitlement observerの3fieldが不正なnested値をそのまま報告できることを合成データで再現し、既存enum・bool・非負intを検証する。read例外は固定メッセージで停止し、レポート／PASSを出さない。旧sourceで新規13 method中8 methodが失敗／error。修正後hostは新規13＋既存Wallet22、計35/35合格。独立reviewも13/13合格、blockerなし。mission/project・diff検査は合格、designは既存catalog ID重複、verifyは既存DB inventory不一致で停止。GitHubの修正後結果は未取得で、[証拠](docs/evidence/spider-observer-output-schema.json)とPRへ別々に記録する。実serviceの秘密漏洩を観測したという主張ではない。
+
+SYS02の元status、O1次task SYS13・段階・料金保留を維持。main merge・配備・guest／実機・実資金操作なし。前回の容量不足後、git fetchと秘密値なしのSPIDER作業一覧保存が復旧した。
 
 ## 2026-10-05 — WorkPlanとAMC保存契約の局所復旧
 
@@ -1116,14 +1138,25 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
+
+## 2026-10-05 — リポジトリ生成物の整理（G01、対象検証済み）
+
+GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/repository-cleanup`へ分離。主担当Git / CI / Operations（ROCK）。Site配備コピー101件とBilling dry-run 2件、計69,153,906 bytesをGit対象外へ移した。元の作業木のeSIM・決済差分、設計原本・旧版、受入証拠、固定vendor、配布assetは保持。Siteはsource build後に試験し、CIでnested lockをinstallする。生成物再混入のindex検査、API sourceを隠さないignore、buildコピーに依存しないWEB05証拠リンク、崩れていたPROJECTSのAMC/CSV表を整備。[保存方針・再生成・復旧](docs/git-consolidation.md#repository-storage-policy)。
+
+`npm run repository:check`合格。旧indexの103生成物は拒否し、整理後indexとローカル再build出力の併存は合格。Site public素材76件は旧distとbyte一致、`npm run test:avocado-mini-site`は13 route再build・18/18合格。`python3 scripts/verify-rocketstar-archive.py --git`は14/14合格。`TMPDIR=/private/tmp npm run verify`はtypecheck前まで通過後、`TS5033 ENOSPC`（tsconfig.tsbuildinfoを書込不可）で停止し、全体合格とはしない。詳細logはGit管理外の`/private/tmp/rock-cleanup-verify.log`。GitHub作業branchへ整理commit `d2568fb703ee472f10c11a597e8ed3a155ec67ac`を保存済み。GitHub上の同一PR headで全体CIを確認する。PR #69作成後のmain `a3951f52`（AMC/CSV）を保持して進捗の追記競合を解消した。初回CI `37282635930`でAMC固定snapshotへのリンク変更と旧「build不要」試験契約を検出。AMC snapshotは原byteへ戻し、現行進捗だけを更新する。Site試験契約はlock install→source build→検査へ同期した。整理branchのmain統合と公開配備は本整理に含めない。
+
+
+
+整理commit `154f2cfc`のGitHub全体verify（run 37284888719）は合格。CodeQL・repair regressions・Web measurementも合格、既存SPIDER secrets検査は未解決。その後のmain `0c90253c`更新を保持して競合を解消し、旧SHAの合格を新しい統合候補へ転用しない。最新統合後の`npm run verify`はproject/repository/version/schema合格後、main由来のDB状態文書の不一致で停止。`scripts/database-status.mjs`・`db/schema.ts`・`data/database-status.json`・`docs/database-status.md`はorigin/mainと差分なし。main側のmetadata・後続検証を修正後に全体verifyを再実行する。
+
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-09-27 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/376件（親32・子192・独立152。実行単位は親を除く344件）
+最終更新: 2026-10-05 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
-| AMC02 | AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外） | 完了 | [記録](docs/amc-goal-orchestrator.md) · [記録](scripts/amc-goal-engine.mjs) · [記録](scripts/amc-goal.mjs) · [記録](scripts/amc-codex.mjs) · [記録](scripts/amc-request-plan.mjs) · [記録](scripts/amc-effort.mjs) · [記録](lib/amc-tool.ts) · [記録](lib/workflow.ts) · [記録](app/api/amc/route.ts) · [記録](app/amc/page.tsx) · [記録](components/amc-tool-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](tests/amc-goal-engine.test.mjs) · [記録](tests/amc-goal-cli.test.mjs) · [記録](tests/amc-codex.test.mjs) · [記録](tests/amc-request-plan.test.mjs) · [記録](tests/amc-effort.test.mjs) · [記録](tests/amc-sky-integration.test.mjs) · [記録](docs/evidence/amc/goal-orchestrator-audit.json) · [記録](docs/evidence/amc/codex-local-smoke.json) |
+| AMC02 | AMC Goal Orchestratorの計画・Sky／Zema本人別Web台帳と明示起動のローカルCodex一件実行入口を整える（Web直接起動・連続自律実行は対象外） | 完了 | [記録](docs/amc-goal-orchestrator.md) · [記録](scripts/amc-goal-engine.mjs) · [記録](scripts/amc-goal.mjs) · [記録](scripts/amc-codex.mjs) · [記録](scripts/amc-request-plan.mjs) · [記録](scripts/amc-effort.mjs) · [記録](lib/amc-tool.ts) · [記録](lib/workflow.ts) · [記録](app/api/amc/route.ts) · [記録](app/amc/page.tsx) · [記録](components/amc-tool-runner.tsx) · [記録](docs/sky-tools-complete-design.md) · [記録](tests/amc-goal-engine.test.mjs) · [記録](tests/amc-goal-cli.test.mjs) · [記録](tests/amc-codex.test.mjs) · [記録](tests/amc-request-plan.test.mjs) · [記録](tests/amc-effort.test.mjs) · [記録](tests/amc-sky-integration.test.mjs) · [記録](docs/evidence/amc/goal-orchestrator-audit.json) · [記録](docs/evidence/amc/codex-local-smoke.json) · [記録](scripts/amc-sky-observe.mjs) · [記録](tests/amc-sky-observe.test.mjs) · [記録](docs/evidence/spider-observation-source-read.json) · [記録](scripts/amc-agent.mjs) · [記録](tests/amc-agent-preflight.test.mjs) · [記録](docs/evidence/spider-agent-preflight-read.json) |
 | LCH07-01 | 子作業（LCH07）: 再受入する配布platform・候補SHA・archive hashを固定する | 未着手 | — |
 | LCH07-02 | 子作業（LCH07）: 同一候補のlicense・NOTICE・SBOMとOWNER未決を照合する | 未着手 | — |
 | LCH07-03 | 子作業（LCH07）: 候補のproduction署名・公開trust・失効/rotation証拠を結合する | 未着手 | — |
@@ -1319,7 +1352,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ORG01 | 製品・SkyのAI自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/rockstaros-product-system-map.md) · [記録](docs/workstreams/README.md) · [記録](scripts/check-sky.mjs) |
 | ORG02 | avokado Mission ControlでRockstarOS・Mini・Pro・rocketstarを32部隊へ分け、Goal・進捗段階・rule・依存・証拠・次の作業を正本化 | 完了 | [記録](docs/mission-control.md) · [記録](data/mission-control.json) · [記録](scripts/check-mission-control.mjs) · [記録](PROJECTS.md) |
 | MAT14 | R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留） | 完了 | [記録](docs/avocado-mini-r5/README.md) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/avocado-mini-r5/verification.json) · [記録](scripts/verify-avocado-r5-package.py) |
-| MAT15 | R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる | 未着手 | [記録](docs/avocado-mini-r5/package/integrated_design.md) |
+| MAT15 | R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる | 進行中 | [記録](docs/avocado-mini-r5/package/integrated_design.md) · [記録](docs/avocado-mini-cellular.md) · [記録](data/avocado-mini-cellular.json) |
 | UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) |
 | SKY19 | 親タスク: SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
@@ -1328,11 +1361,11 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | DOC03 | rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定） | 完了 | [記録](docs/rocketstar-design/README.md) · [記録](docs/rocketstar-design/inventory.json) · [記録](docs/rocketstar-design/verification.json) · [記録](scripts/verify-rocketstar-archive.py) · [記録](data/design-document-index.json) |
 | DOC04 | avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新 | 完了 | [記録](README.md) · [記録](docs/brand/avokado/avokado-r5-editorial-hero.png) · [記録](docs/brand/avokado/avokado-motion-v2.gif) · [記録](docs/brand/avokado/avokado-system-map.svg) · [記録](data/design-document-index.json) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
-| AI02 | 親タスク: モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI02 | 親タスク: モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) · [記録](docs/avokado-llm-pretraining.md) · [記録](docs/evidence/avokado-llm-pretraining.json) · [記録](toolkits/avokado-llm/train.py) · [記録](toolkits/avokado-llm/test_pretraining.py) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI04 | 親タスク: 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
 | AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 | [記録](docs/ai-native-os-architecture.md) |
-| AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) |
+| AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 | [記録](docs/ai-native-os-architecture.md) · [記録](docs/mini-game-client.md) · [記録](toolkits/mini-game-client/client.mjs) · [記録](tests/mini-game-client.test.mjs) |
 | AI08 | Jev／TypeSafe・Local Qwen・Cloud LLMをcode主導で統合するDecision Fabric全体詳細設計と機械可読安全契約を固定 | 完了 | [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) |
 | AI07 | JevのSky明示利用を設計し、DecisionProviderとRouter／Harnessへの統合を受け入れる | 進行中 | [記録](docs/prompts/jev-typesafe-local-qwen-handoff-20260918.md) · [記録](docs/jev-local-qwen-decision-fabric-design.md) · [記録](contracts/decision-provider.json) · [記録](data/decision-fabric-policy.json) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/llm-evaluation-architecture.md) · [記録](data/llm-capabilities.json) · [記録](scripts/check-llm-architecture.mjs) |
 | MAT01 | RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定 | 完了 | [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/material-invention-core.md) |
@@ -1368,9 +1401,9 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SKY18 | Jev ecosystem 10 repositoryを判断・browser・PC・mobile・review・routing・PAPER市場・referenceへ分離して候補登録 | 完了 | [記録](lib/catalog.ts) · [記録](docs/jev-ecosystem-integration-design.md) · [記録](docs/jev-ultrafast-integration-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) · [記録](scripts/check-sky.mjs) |
 | WEB02 | Developer Preview紹介をOSインストールとSky開発者コード中心の一画面へ再設計 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) |
 | WEB03 | Developer Preview紹介とRock Studioを共通の黒・黄緑visual systemへ統一 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](components/rock-studio.tsx) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
-| WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) |
+| WEB04 | RockstarOS全体のvisual systemを統一し、主要フロントの機能性を改善 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/workspace-shell.tsx) · [記録](app/workspace.css) · [記録](tsconfig.json) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/frontend-usability-audit-20260915.md) · [記録](docs/product-baseline.md) · [記録](scripts/amc-autonomy-store.mjs) · [記録](tests/amc-autonomy-store-read.test.mjs) · [記録](scripts/amc-parallel.mjs) · [記録](tests/amc-workspace-snapshot.test.mjs) · [記録](docs/evidence/spider-workspace-snapshot-read.json) |
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
-| WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/guide/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/dist/client/index.html) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
+| WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/guide/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
@@ -1401,7 +1434,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
 | HOME02 | Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止 | 完了 | [記録](components/workspace-shell.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-maintenance.tsx) · [記録](app/fund/page.tsx) · [記録](app/fund/legacy/page.tsx) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/product-baseline.md) |
 | SYS01 | 端末診断・暗号化設定バックアップ・復元・Web更新確認を設定へ実装 | 完了 | [記録](app/settings/system/page.tsx) · [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
-| SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) |
+| SYS02 | 通知・保存保護・診断共有・安全な初期化と公開審査gateを設定へ実装 | 完了 | [記録](components/system-maintenance.tsx) · [記録](components/system-maintenance.module.css) · [記録](lib/system-backup.ts) · [記録](tests/system-backup.test.mjs) · [記録](docs/product-baseline.md) · [記録](docs/evidence/spider-observer-output-schema.json) |
 | SYS03 | 公開方法別の最低条件を機械判定し、Web/npm SBOMと設定画面へ統合 | 完了 | [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/release-minimum-gates.md) · [記録](components/system-maintenance.tsx) |
 | SYS04 | QEMU rc2を同一候補10要件へ固定し、rc2固有native SBOMを生成して旧inventoryの誤転用を拒否 | 完了 | [記録](data/qemu-release-audit.json) · [記録](data/qemu-rc2-legal-info/manifest.csv) · [記録](data/qemu-rc2-legal-info/host-manifest.csv) · [記録](data/release-readiness.json) · [記録](scripts/check-release-readiness.mjs) · [記録](scripts/release-readiness-lib.mjs) · [記録](tests/release-readiness.test.mjs) · [記録](docs/qemu-release-completion-audit-20260912.md) · [記録](components/system-maintenance.tsx) |
 | SYS05 | 候補準備・法務承認・保護署名・本人署名の64拒否境界試験を全体verifyへ統合 | 完了 | [記録](scripts/check-release-signing.mjs) · [記録](scripts/release_signing.py) · [記録](scripts/release_signing_owner.py) · [記録](scripts/prepare_release_candidate.py) · [記録](scripts/verify_owner_legal_approval.py) · [記録](tests/test_release_signing.py) · [記録](tests/test_release_signing_owner.py) · [記録](tests/test_prepare_release_candidate.py) · [記録](tests/test_owner_legal_approval.py) · [記録](docs/release-signing-operations.md) |
@@ -1416,8 +1449,8 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SYS14 | 製品目的から全層の選択・接続・実証状態を一つの構成監査へ固定 | 完了 | [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](scripts/check-system-composition.mjs) · [記録](tests/system-composition.test.mjs) |
 | R01 | 4参照元の採用判断と事業方針の固定 | 完了 | [記録](docs/reference-repositories.md) |
 | R02 | ggをGitHub rockへ紐付け、既存変更と履歴を保全 | 完了 | [記録](project.md) |
-| R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) |
-| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) |
+| R03 | 仕事の作成・実行・確認・再開をAPIと画面で接続 | 完了 | [記録](tests/workflow.test.mjs) · [記録](scripts/check-work-api.mjs) · [記録](docs/evidence/spider-work-plan-contract.json) |
+| R04 | README・設計進捗の同期とCI検証 | 完了 | [記録](scripts/project-status.mjs) · [記録](.github/workflows/ci.yml) · [記録](docs/native-ci-partition-fix-20260910.md) · [記録](docs/evidence/spider-locked-dependency-restore.json) |
 | R05 | 回帰検証・移行確認・GitHub保存 | 完了 | [記録](docs/validation.md) |
 | R06 | ブラウザで仕事の一連の操作を確認 | 完了 | [記録](docs/validation.md) |
 | R07 | 本人限定のSitesへ公開・本番確認 | 完了 | [記録](docs/deployment-integration.md) · [記録](docs/release-followup-20260910.md) · [記録](docs/owner-setup-20260911.md) · [記録](docs/evidence/launch/backend-owner-validation-20260912.json) |
@@ -1498,7 +1531,9 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | RKT08 | 親タスク: 地上設備・運用役割とgo/no-go・abortの机上確認計画を作る | 未着手 | — |
 | RKT09 | 親タスク: 帰還・回収・整備・同一機番再使用の証拠台帳を設計する | 未着手 | — |
 | RKT10 | 親タスク: 製造・品質・安全の構成管理と段階別証拠matrixを作る | 未着手 | — |
-| ORG03 | AMCの担当・旧版混入・受入条件を精査し、部隊ごとの実行可能taskと検査を同期 | 完了 | [記録](docs/mission-control.md) · [記録](data/mission-control.json) · [記録](scripts/check-mission-control.mjs) · [記録](scripts/sync-mission-control.mjs) · [記録](tests/mission-control.test.mjs) · [記録](docs/evidence/amc/task-precision-audit.json) |
+| ORG03 | AMCの担当・旧版混入・受入条件を精査し、部隊ごとの実行可能taskと検査を同期 | 完了 | [記録](docs/mission-control.md) · [記録](data/mission-control.json) · [記録](scripts/check-mission-control.mjs) · [記録](scripts/sync-mission-control.mjs) · [記録](tests/mission-control.test.mjs) · [記録](docs/evidence/amc/task-precision-audit.json) · [記録](docs/evidence/spider-mission-squad-dom.json) |
+| SYS15 | Spider Security AgentのGitHub検査・コード検査・OS常駐監視・送信前拒否・native表示・boot監督を統合する（ROCK・同一image起動未受入） | 進行中 | [記録](docs/spider-guard.md) · [記録](docs/evidence/spider-guard-source-validation.json) · [記録](docs/workstreams/04-security-identity-compliance.md) · [記録](docs/product-baseline.md) · [記録](docs/rockstaros-complete-design.md) · [記録](data/design-document-index.json) · [記録](systems/rock-star-os/os/platform/sensitive_guard.py) · [記録](systems/rock-star-os/os/platform/supervisor.py) · [記録](systems/rock-star-os/os/platform/service.py) · [記録](systems/rock-star-os/os/platform/runner_control.py) · [記録](systems/rock-star-os/os/platform/install-target.sh) · [記録](systems/rock-star-os/os/ui/security-ui.inc) · [記録](systems/rock-star-os/os/ui/test_ui.c) · [記録](systems/rock-star-os/tests/test_sensitive_guard.py) · [記録](systems/rock-star-os/tests/test_os_security_guard_integration.py) · [記録](systems/rock-star-os/tests/test_os_runner_control.py) · [記録](systems/rock-star-os/os/ui/spider-motion.c) · [記録](systems/rock-star-os/os/ui/spider-motion.h) · [記録](systems/rock-star-os/os/ui/pin-readiness.json) · [記録](scripts/review-native-pin-source.py) · [記録](systems/rock-star-os/tests/test_ui_pin_source_profile.py) · [記録](scripts/build-spider-inspector.mjs) · [記録](toolkits/spider-guard/README.md) · [記録](toolkits/spider-guard/inspector.html) · [記録](toolkits/spider-guard/program-inspector.mjs) · [記録](toolkits/spider-guard/program-inspector.d.mts) · [記録](tests/spider-inspector-artifact.test.mjs) · [記録](tests/spider-program-inspector.test.mjs) · [記録](systems/rock-star-os/os/platform/code_inspector.py) · [記録](systems/rock-star-os/tests/test_code_inspector.py) · [記録](SECURITY.md) · [記録](.github/workflows/spider.yml) · [記録](.github/workflows/spider-codeql.yml) · [記録](.github/spider/gitleaks.toml) · [記録](scripts/spider-repository-scan.py) · [記録](tests/test_spider_repository_scan.py) · [記録](tests/test_spider_gitleaks_policy.py) · [記録](tests/spider-codeql-workflow.test.mjs) · [記録](docs/evidence/spider-github-source-validation.json) · [記録](scripts/spider-feedback.mjs) · [記録](tests/spider-feedback.test.mjs) · [記録](.github/workflows/spider-regressions.yml) · [記録](tests/service-worker-update.test.mjs) · [記録](toolkits/fashion-brand-ops/test/http-security.test.mjs) · [記録](docs/evidence/spider-improvement-cycle.json) · [記録](tests/mcp-local-descriptor.test.mjs) · [記録](tests/test_mr_delivery_boundary.py) · [記録](tests/test_mr_http_deadline.py) · [記録](scripts/select-native-artifacts.py) · [記録](systems/rock-star-os/tests/test_native_artifacts.py) · [記録](docs/native-os-validation.md) · [記録](systems/rock-star-os/os/desktop/launcher.py) · [記録](systems/rock-star-os/tests/test_os_desktop_browser.py) · [記録](systems/rock-star-os/os/desktop/README.md) · [記録](systems/rock-star-os/os/platform/guest-test.py) · [記録](systems/rock-star-os/tests/test_os_platform_isolation_proof.py) · [記録](systems/rock-star-os/tests/test_game_exchange_deadlines.py) · [記録](scripts/verify-mcp-flow.mjs) · [記録](tests/mcp.test.mjs) · [記録](tests/mr-tools.test.mjs) · [記録](tests/csv-transform.test.mjs) · [記録](tests/fixtures/csv-report.html) · [記録](tests/mcp-connector.test.mjs) · [記録](systems/rock-star-os/os/mcp_broker/http.py) · [記録](systems/rock-star-os/tests/test_mcp_http_deadline.py) · [記録](tests/undici-tls-options.test.mjs) · [記録](data/web-third-party-license-audit.json) · [記録](scripts/spider-web-runtime.mjs) · [記録](tests/spider-web-runtime.test.mjs) · [記録](scripts/amc-autonomy-store.mjs) · [記録](tests/amc-autonomy-store-read.test.mjs) · [記録](scripts/amc-parallel.mjs) · [記録](tests/amc-workspace-snapshot.test.mjs) · [記録](docs/evidence/spider-workspace-snapshot-read.json) |
+| MAT16 | avokadoProのNVIDIA搭載小型PC設計・調達・AI/PCゲーム/熱/復旧受入 | 進行中 | [記録](docs/avokado-pro-pc-design.md) · [記録](data/avokado-pro-pc.json) · [記録](docs/evidence/avokado-pro-pc-design.json) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -1519,7 +1554,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: AMCのWeb計画・手動台帳からGoal JSONを保存し、明示コマンドでローカルCodexへ着手可能な一件を渡す入口を追加。隔離した試験Goalの一件が実Codexで成果物を作り、AMCでは検収待ちまで記録された。元のWeb記録へは自動同期しない。次は同一Web記録への安全な結果同期、停止・復旧と本人通知、使いやすさ確認。公開する場合はGitHub同期と同一候補の配備readbackを別に行う。自律的な連続実行・自動通知・model導入・課金・公開・実売買は未接続／未実行。正本5師団32部隊は参照専用。
+次の作業: G04: PR #63–65 / #69–76 / #78の12本を統合。前候補c650466eは総合verify・native・Android CI成功。最終候補の同一SHA検証後にmainへ統合する。履歴secret候補160値は未解決として維持し、検査緩和・実機・本番公開はしない。
 <!-- project-status:end -->
 
 ## 次段階の設計
@@ -1543,3 +1578,88 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 - Matched the avocadoMini visual language with black studio space, oversized white type, satin metal, cyan sensor light, soft blur transitions, a compact progress rail, and responsive mobile composition.
 - Funding stays display-only and fail closed. The call to action remains disabled and explicitly states that payments are not open.
 - Published as avocadoMini Site v34 from source `1a78977a0b9272310dfc7e2a062c2ff8bafd7b2e`; the public route and desktop/mobile layouts were verified before release.
+
+## 2026-10-05 — SPIDER cycle 41: AMC作業場所の読取り競合
+
+Security / ROCK、SYS15を主担当、AMCのWEB04へ接続する。最新main `624124cf`から小さい修正branchを作成。未統合の既存PR #70は別PRとして維持し、今回の#55とは重複させない。`workspaceSnapshot`の検査後にpathを開き直す競合を合成fixtureで再現し、nofollow／nonblockingで開いたfdの通常file・device/inode一致を検査してから同じfdでhashを計算する。成功・失敗時ともfdを閉じ、既存の削除済みfileのnull、Goal承認・独立検収・pauseを保持する。親directoryや同inode writerの全面隔離・複数fileの同時点固定とはしない。
+
+新規9件と既存並列Goalを含む43試験が合格、skipなし。変更前の同ref CodeQL run `37287690315`は解析成功、#55 open。変更後の同一SHAの全体verify・SPIDER・CodeQLと同refのalert状態はPRへ別途記録し、未取得を解消済みと呼ばない。[検証記録](docs/evidence/spider-workspace-snapshot-read.json)。main merge、警告dismiss、検査緩和、実Codex送信、配備、実機・秘密rotationは行わない。
+
+再解析で旧#55はfixedになったが同じ処理のopenに#62が残ったため、open後にfile種別・containment・現在のpathとの同一性をすべて検査する順序へ修正し、43試験を再確認した。並行更新のmain `ecb4b2af` はAMC exportsと認可・停止処理に後退があり、module importとmainの全体verify/Web検査が失敗。取り込みを中止して検証済みbranchを保持し、PR #71を統合待ちのdraftとする。全体verify未実行を成功と扱わない。容量不足による一時保存失敗はタスク専用の再取得可能cacheのみ整理し、Gitの未完了mergeを解除して復旧した。
+
+
+## 2026-10-05 — SPIDER cycle 42: AMC部隊IDのDOM表示境界
+
+H1 / ORG03、ROCK、主作業streamはSecurity。最新main `ecb4b2af462a55b9b3defa1e6426d0476194b2b4`を基点にCodeQL #58だけを扱う。部隊IDをHTMLへ連結する表示で、合成IDのタグがChromeで実行されることを再現した。DOMの本文・datasetと描画ごとのbutton Mapへ変更し、選択とフォーカスを保つ。公開requestから正本IDを変更できる経路を実証したものではない。
+
+中間SHA `a481833a`で#58 fixed、移動したtest抽出正規表現に#63が出たため、固定fixtureのscript区切りと一意性をassertする抽出へ変更した。対象53/53試験合格。Chromeで修正前は合成HTML実行あり・部隊button33個、修正後は実行なし・正しい32個・文字列保持・選択とfocus成功。同一ref基点CodeQLは#58 openを確認済み、修正SHAの再検査はPRで追跡する。[証拠](docs/evidence/spider-mission-squad-dom.json)にsource hashと試験条件を保存した。既存status／段階は維持し、全体完了へ昇格しない。基点で`npm run verify`は`database:check`の生成資料不整合により失敗済み。mainの依存manifest/lock不一致、catalog重複、SIM/eSIM基準の欠落、AMC module export欠落と既存PR #70/#71の統合も残る。main merge・配備・実機操作は行わない。
+
+
+
+## 2026-10-05 — SPIDER cycle 46: mainの修復を保持し、利用権と取消の差分へ整理
+
+O2 / R03、ROCK、Web / PWA。main 0c90253cがWorkPlan・保存・Agent証跡の復旧とAMC表示修正を独立して統合したため、PR #74へ通常mergeで取り込む。mainそのものは変更しない。WorkPlan/storeはmainと同じにし、残る機能差分をZema作成時の利用権検査・否認body解放と、履歴証拠が欠けた仕事でもowner/revision条件を満たすローカル取消の2点へ絞った。
+
+mainの新6テストは実service-accessと合成envへ接続して保持し、既存67件と合わせ73件合格。6件はlockのSHA512で確認したTypeScript 5.9.3をメモリで読み込んで実行した（通常npm install/buildの合格ではない）。mainのAPIだけへ戻した同一回帰は19 pass /2 failで両退行を再現。旧head 59c07464はGitHub回帰67件合格・同一ref CodeQL両言語成功、42件のalert identityに増減なし。取り込み後の新SHAは別途再検査する。依存不一致（PR #73）・DB/catalog不整合・秘密候補は残り、main merge・配備・実機受入は行わない。[証拠](docs/evidence/spider-work-plan-contract.json)。
+
+
+## 2026-10-05 — SPIDER cycle 44: 仕事計画とAgent進捗の安全な復旧
+
+O2 / R03、ROCK、Web / PWA。最新main `4a22eb25`を基点に、欠落したWorkPlan/normalizeWorkJob、同名AMC一覧定義の重複、仕事APIの利用権・委任/親job/見積/成果/receipt照合を修復する。最初の実行前だけ目的を編集でき、固定承認条件は変更させない。過去の証拠不足で本人のローカル取消を妨げず、ownerとrevisionの検査を維持する。最新mainのSky引継ぎ・ライブラリ保存を保持する。
+
+対象67件合格（新規実handler＋SQLiteの21件を含む）。修正前APIだけを同じ試験へ戻すと直接13件失敗し、弱い照合を再現した。この旧headのGitHub回帰67件と同一ref CodeQL両言語は成功、42件のalert identityに増減なし。現在の残差分はcycle 46を参照。全体verifyは既存DB inventory不整合、design:checkは既存catalog ID重複で停止。依存install不一致のPR #73は独立した既存修正であり、今回重複しない。[検証記録](docs/evidence/spider-work-plan-contract.json)。task段階・料金保留・本番受入は変更しない。
+
+
+## 2026-10-06 — SPIDER cycle 48: 既存エージェント定義の読取り
+
+H1 / AMC02、ROCK、主stream Git / CI / Operations。最新main `0c90253c` 起点で、既存宛先の確認後にpathを再openするCodeQL #52を修復。安全に開いた通常fileのFDと現在のcanonical位置・BigInt identityを照合し、期待UTF-8 bytes＋1以内で同じFDから比較する。全宛先の事前検査、custom保持、wx新規作成、launcher設定を維持。#53の作成側競合、親pathの完全固定、全体atomic性は別課題として残す。
+
+新規20件と直接module importの既存4件、計24/24合格。新規試験に旧sourceだけを入れると2 pass/18 fail（親2件含む）で、同サイズの外側合成bytesを読む退行を再現。修正前同一ref CodeQLは両言語成功、#52/#53を含む42件を保存。mission/project同期・check、source syntax、diff/check合格。designは既存catalog ID重複、verifyは既存DB inventory不一致で停止。修正後GitHub結果は未取得で、[要約証拠](docs/evidence/spider-agent-preflight-read.json)とPRへ区別して記録する。H1次task AMC01・受入段階・料金保留は変更しない。main merge・配備・実機操作・実Codex設定変更なし。前回cycle47の容量不足で未保存だった最終記録は、空き容量回復後に保存を完了した。
+
+
+## 2026-10-05 avokado自作重みのhost試作検証
+
+AI02の別工程として124800 parametersをrandom-initから1000 steps学習。外部pretrained重みは不使用。CPUで合成80件（train 64 / validation 16）、1024000 byte tokensを処理。保存/再読込み・未来token遮断・bit-exact再開・CLI/loopback HTTP parity等6試験が合格。実測値とsource hashは`docs/evidence/avokado-llm-pretraining.json`。weightsはGit外に保存。合成テンプレートの損失低下を実用言語能力としない。次は権利確認済みデータ・独立評価・Mini RAM/熱/遅延とexport/runtime互換の確定。本学習・実機・cloud配備は未受入、追加有料compute上限0。検証: `python -m unittest discover -s toolkits/avokado-llm -p test_*.py -v` = 6/6。`npm run verify`はexit 0（Node 802、Worker/D1 API 1048、CSV 113）で合格。DB状態生成物・Toolkitガイド登録を修正後の結果。実装`573f9f2253fc7bbaccdb5f6c2893e24596671328`をGitHub `codex/avokado-llm`へ保存し、draft PR #63を作成。文書・実装は作業branch反映済み。main統合・公開なし。GitHub CIは確認時実行中で、local verify合格とは別。
+
+## 2026-10-05 avokado専用モデルのゼロ事前学習試作を開始
+
+利用者がゼロからの事前学習、端末内とクラウドの両方、追加費用なしの試作を明示指定。AI02 / Android・Device・Local AIを主担当とし、無償のhost CPUでrandom-initの小型学習・評価・保存・再開・推論を先に検証する。Mini実機、cloud deployment、実用会話、本学習は未受入。既存Qwen/Broker/料金gateを置換しない。
+
+
+## 2026-10-05 GTA VIのプレイ入口実装
+
+Game / Market / FundのROCK担当、AI06の非金融接続サブ項目。利用者の「出来るようにして」に対してmain `592daeea322cd47aa189b67dd689e323662c0c67`を取り込み後、Mini game clientの診断と公式clientへの固定起動を実装。PC版未確認のPro経路は拒否する。7件のfixture/CLI試験は合格。PS5/Xbox選択待ち、MacのPS Remote Play未導入、console/GTA VI/Mini実機の受入は未実施。接続/入力/復旧は公式clientへ委譲し、起動要求成功をプレイ成功にしない。詳細: `docs/mini-game-client.md`。 全体`npm run verify` exit 0（Node1079 pass/1 skip、仕事API1069、CSV113）、対象lint、設計台帳も合格。依存7.29.0/指定7.29.1不一致と容量不足による中断を、同一lockfileの依存コピーで復旧して再検証した。証拠: `docs/evidence/mini-game-client-local.json`。 実装commit `96fedfc7904753bf2960570eb307d6db2d223347`をGitHub保存、draft PR #64更新。同SHAのCIは確認時check未表示で、成功とは扱わない。main統合・サイト配備なし。次は機器選択→公式client→所有console接続→実タイトル/表示/操作/復旧の受入。
+
+## 2026-10-05 Mini本体SIMによる独立通信設計
+
+利用者の明示選択「Miniに入れて、Mini単体で通信する」をMAT15のcellularサブ項目として追加。Material Invention / avocadoMiniが主担当、SIM01はcarrier/service権の接続先。最新main `996b1955`を作業branchへ取り込み、公開ホーム/進捗を同期後に追記。物理SIM、modem/antenna、接続状態/再試行/保存復旧、Proなし・Wi-Fiなしの実通信試験条件を設計した。Proは任意、Miniの外部給電とoffline基本動作を維持。利用国・通信会社は質問中で、採用module/driver/アンテナ配置/製造図面・開通は未確定。次は地域/回線固定とmodule適合、bench→閉箱受入。設計保存のみで、実装/実機受入/新規公開なし。 `npm run verify`再実行 exit 0（Node870、仕事API1048、CSV113）。初回はSQLITE_FULLで停止し、自分の一時サイト依存/build整理後に失敗試験単独と全体を再検証した。証拠: `docs/evidence/avocado-mini-cellular-design.json`。 設計commit `bf3e6ea1d15bc66abcee1bfff1d0c9ff76ef3cc0`をGitHub branchへ保存、draft PR #64更新済み。同SHAのCIは確認時in_progress。main統合・サイト更新は未実施。
+
+## 2026-10-05 avokadoProのNVIDIA小型PC構成・組立設計
+
+利用者指定: NVIDIA搭載、Mac miniのような据え置き小型PC、AIとPCゲーム両方、販売目標80万円/台（価格回答80の文脈解釈、税込/税別未定）。Material Invention / avocadoMiniを主担当とし、Mini MAT15から独立したMAT16を追加。main `9f64aee3de9cc74e6b6e7eae34052780e000c296`基点で、Core Ultra 9 / RTX 5080 Laptop 16GB / RAM128GB / SSD2TB×2の構成候補とOEM基準試作→ODM筐体の手順を保存した。確定BOM、見積、購入、物理組立、熱/AI/ゲーム受入、サイト公開は未実施。次は国内供給見積・メモリーQVL・ODM基板供給を確認。設計索引とbaseline/READMEを同期。`npm run verify` exit 0（Node 870、仕事API1048、CSV113）を確認。仕様数値とSVG XML検査、描画した外観図の目視確認が合格。物理受入は0件。証拠: `docs/evidence/avokado-pro-pc-design.json`。設計commit `33cea702c6c36a6bc973bedb966a7ef661514258`をGitHub `codex/avokado-pro-pc`へ保存、draft PR #64作成済み。main統合・サイト公開なし。GitHub CIは確認時check未表示で、local verify合格とは別。
+
+
+## 2026-10-05 — 未完了・停止条件の解消（G04、API v4 APK build・検査・配置成功）
+
+利用者の「全部問題解決して進めて」を受け、Git / CI / Operations（ROCK）を主担当とする。main `996b1955`を独立worktreeへ固定。Web最新CIと直前mainのAndroid CIは合格済み。native main-1の未close SQLite接続、実機OS build/署名/復旧、Provider受入を区別して調査する。既存checkoutで進行中のeSIM/決済変更は別作業として保護する。
+
+nativeのSQLite接続3件を確実にcloseし、Linux CI 1,736試験と`npm run verify`がcommit `c79476e2`で合格。Local AI現行v4のunsigned APK workflowを実行し、9月からの`sdkmanager` PATH不備を再現・修正、`9d82ac5a`で再build中。Web/native workflowへ手動再検証入口を追加し、古いphone手順を`--mode bringup`/`--mode release`へ整合させる。全OS用x86_64 Linux/予算、flash 4 gate、実Provider、Mini実機、未修正版依存2件は未完了。再生成可能なnpm/pip/未使用Lima/停止中Gradleの変換cacheだけを整理し、ソース・VMは保持。ADB接続端末0。PR #65へ保存し、main統合・公開は別。詳細は[停止条件](docs/workstreams/10-git-ci-operations.md)と[証拠](docs/evidence/release-blocker-resolution.json)。
+
+Local AIの実Kotlin compileでtimeoutのInt/Long不一致を検出し、API v4なのにBinderが3を返す不一致とAPK検査のversionCode=1固定も修正した。旧patch/実機証拠は保持し、追加overlayとhashで追跡。APK lockをbase/順序付きextension hashへ結び、stage metadata改変を拒否する。関連38試験とOS contract/design検査は成功。v4 APKの再build・レビューと現行最終SHAの全体CIは継続中。
+
+更新: API v4 unsigned APK buildは`2ba33366`のCI `37279537731`で成功。26,416,892 bytesを取得し、CI/手元aapt2でABI・package version 3・権限を確認。actual APKのstage/再stage/verifyも同一。source lockの現在statusをphone準備が受理し、旧APK/overlay不一致とmetadata/symlink差替えを拒否する。関連40試験成功。main `4928b64e`までの並行更新を保持して競合を解消した。最新記録を含む同一HEADの全体CIは最終再実行し、物理端末接続・専用Linux/予算・正式署名・実Provider受入は未完了として残す。
+
+最終追跡: main `592daeea`統合後の`bdc56dd7`で全体verify、Android、native、Phone準備、CodeQL workflowは成功。ただし別native実行でGame/ATM独立処理の合計2秒assertionが3.4549秒となったため、TLSの実deadline検査を維持したまま、transport戻り値の境界をEventで保持して独立性を検査する方式へ修正。関連7試験と3.1秒の意図的遅延回帰が成功。runtimeは変更しない。履歴securityは978 commitの2,868候補出現で未合格（秘密値のユニーク件数ではない）。変更後の同一HEAD CIはPR #65を正本とする。
+
+`1d7506cd`で総合・native・Android・Phone準備・CodeQL・SPIDER回帰とAPK buildが成功。APK再実行1回目の外部Kotlin取得HTTP 500も保持し、2回目で成功した。最終照合中にmainが`624124cf`へ進んだため、Sky library・CSV・AMC更新を保持して統合し、進捗追記の競合を両方残して解消する。APK overlay/lockは変更しない。統合後の最新CIはPRで追跡する。Scalewayのアカウント設定記録は存在し、追加費用上限は未確定。
+
+
+## 未完了PR統合候補のローカル受入
+
+G04 / ROCK。11 PRの履歴を保持し、main 0c90253cのSky/AMC更新と認可・停止・予算・再検収・API試験の欠落を復旧。npm run verify exit 0、Node 1352 pass / 1 platform skip、Worker/D1 1192、CSV API 385 assertions。自作LLM host 6件、APK staging 15件、phone準備19件も合格。履歴secret候補・Linux/Androidの同一候補CIは別途追跡する。実機OS/Provider/本番/公開は未受入。証拠: docs/evidence/open-pr-integration.json。次: GitHubへ保存し、同一SHAのCIを確認してmainへ統合。
+
+統合PR #77のc650466eでGitHub総合verify・CodeQL両言語・native全5分割・SPIDER回帰が合格。local browserでSky説明→Zema AMC→合成Goal保存→再読込の保存一覧を確認。AMC本文の配置と、記録保存を実作業完了にしない表示を修正し、最終CIへ進む。履歴scanはmain2910→候補2942出現、160→161値。増加したrule/path/valueは証拠内のソースSHA-256だけと照合済み。既存160値の包括分類は未完了で、検査設定・警告は変更しない。実機・本番・外部秘密rotationは行っていない。
+
+PR #78（simulation observerの出力schema）も統合し、対象は12本。privacy13と既存DeviceWallet22の35試験合格。最終local全体試験はNode1353 pass/1 skip、build/asset closureまで成功した後、空き247 MiBでAPI起動がSQLite IOERR_SHMSIZE。専用dev server停止・自分の一時torch環境削除後、API1192/CSV385とmission整合を再試験し成功。失敗と回復を別記録する。最終GitHub同一候補のCIがmain統合条件。前候補c650466eの総合/native/Androidは成功。
+
+追加PR #78の同一候補CodeQLで#7のworker_alive/年月文字列から出力への経路が残った。厳密schemaに加え、固定booleanと年/月整数からの年月表現へ再構成する。正常出力と既存Wallet境界は維持し、例外化・dismissはしない。privacy13＋Wallet22を再実行し、同一SHAの再解析を統合前に確認する。

@@ -27,12 +27,12 @@
   "integration": {
     "routeId": "local-action-assistant",
     "target": "local",
-    "osBridge": "PROFILE_HASH_API_V4_READONLY_FD_HANDOFF_SOURCE_TESTED_NOT_NATIVE_BUILT",
-    "signedApk": "API_V2_UNSIGNED_RELEASE_APK_REVIEWED_V4_NOT_BUILT",
+    "osBridge": "PROFILE_HASH_API_V4_READONLY_FD_HANDOFF_NATIVE_COMPILED_NOT_DEVICE_VERIFIED",
+    "signedApk": "API_V4_UNSIGNED_RELEASE_APK_REVIEWED_NOT_SIGNED",
     "productPackage": "STAGING_READY_NOT_IMAGE_INTEGRATED"
   },
   "overlay": {
-    "status": "SERVER_SOURCE_IMPLEMENTED_NOT_NATIVE_BUILT",
+    "status": "SERVER_NATIVE_COMPILED_NOT_DEVICE_VERIFIED",
     "path": "os/physical/local-ai-overlay.patch",
     "sha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
     "extensions": [
@@ -50,6 +50,11 @@
         "path": "os/physical/local-ai-model-handoff-v4.patch",
         "sha256": "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
         "purpose": "authenticated_read_only_descriptor_model_copy_hash_recheck_and_profile_load_api_v4"
+      },
+      {
+        "path": "os/physical/local-ai-build-v4.patch",
+        "sha256": "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
+        "purpose": "api_v4_binder_handshake_and_long_headless_timeout_build_fix"
       }
     ]
   },

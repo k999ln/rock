@@ -77,7 +77,8 @@ await test('HTTP paths and the shared WorkJob reducer cannot bypass trusted exec
  assert.doesNotThrow(()=>requireSkyDraftImport(prepareSkyGoal(plan,original)));
  const approve=skyWebCommand(f.goal,{id:randomUUID(),action:'amc_event',event:{type:'approve_plan',actor:'pretend',role:'reviewer'}},'authenticated');
  assert.equal(approve.event.actor,'authenticated');assert.equal(approve.event.role,'owner');
- for(const file of ['app/api/amc/route.ts','app/api/work-jobs/route.ts'])assert.match(readFileSync(new URL('../'+file,import.meta.url),'utf8'),/skyWebCommand\(current.amcGoal/);
+ assert.match(readFileSync(new URL('../app/api/amc/route.ts',import.meta.url),'utf8'),/skyWebCommand\(current.amcGoal/);
+ assert.match(readFileSync(new URL('../app/api/work-jobs/route.ts',import.meta.url),'utf8'),/if \(current.templateId === 'amc' \|\| current.amcGoal\)\s*throw new WorkError/);
 });
 
 await test('transaction rejects A/B ownership, concurrent Goal revisions and changed observation between validation and CAS',async()=>{
