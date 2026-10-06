@@ -35,7 +35,7 @@
   },
   "updatedAt": "2026-10-05",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。",
+  "nextAction": "SYS15 / Security: http-cache-semanticsのorigin error経路で再利用禁止を迂回する残存不具合を修正・回帰検証し、同一SHA CIを確認する。PR83の既存合格と今回の受入を分離。CodeQL34件、全OS/正式署名/Provider/実機gateは継続する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5043,7 +5043,9 @@
         "tests/amc-autonomy-store-read.test.mjs",
         "scripts/amc-parallel.mjs",
         "tests/amc-workspace-snapshot.test.mjs",
-        "docs/evidence/spider-workspace-snapshot-read.json"
+        "docs/evidence/spider-workspace-snapshot-read.json",
+        "tests/dependency-cache-revalidation-security.test.mjs",
+        "docs/evidence/spider-cache-error-revalidation.json"
       ]
     },
     {
@@ -5743,5 +5745,16 @@
     "successfulChecks": 8,
     "openDependencyAlerts": 0,
     "evidence": "docs/evidence/security-gate-completion.json"
+  },
+  "spiderCacheErrorRevalidation": {
+    "status": "host_regressions_pass_ci_pending",
+    "baseCommit": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "workstream": "Security / Identity / Compliance",
+    "responsibility": "ROCK",
+    "finding": "Origin-error reuse bypasses cached-response prohibitions and request matching in the local http-cache-semantics fork.",
+    "evidence": "docs/evidence/spider-cache-error-revalidation.json",
+    "mainIntegrated": false
   }
 }

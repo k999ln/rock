@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "cycle": 53,
+  "status": "host_regressions_pass_ci_pending",
+  "baseCommit": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+  "workstream": "Security / Identity / Compliance",
+  "responsibility": "ROCK",
+  "taskId": "SYS15",
+  "primarySquad": "H1",
+  "assignmentClassification": "coordination",
+  "finding": {
+    "component": "sites/avocado-mini/vendor/http-cache-semantics/index.js",
+    "cause": "revalidatedPolicy origin-error shortcut bypassed cached-response prohibitions and request matching",
+    "reproducer": "Storable shared response with Set-Cookie and stale-if-error=3600 is denied by evaluateRequest but reused on HTTP500, before the patch.",
+    "productionExposureObserved": false,
+    "knownAdvisoryState": "Dependabot17 and18 fixed on main; this residual path was independently reproduced, not a new or dismissed GitHub alert."
+  },
+  "change": {
+    "sharedGuard": [
+      "storable",
+      "response no-cache and must-revalidate",
+      "shared proxy-revalidate",
+      "expired shared s-maxage",
+      "shared cookies without public or immutable",
+      "wildcard Vary"
+    ],
+    "appliedAt": [
+      "evaluateRequest",
+      "_useStaleIfError",
+      "useStaleWhileRevalidate"
+    ],
+    "errorFallbackRequestChecks": [
+      "URI",
+      "host",
+      "method with existing HEAD allowance",
+      "Vary",
+      "Cache-Control no-cache",
+      "Pragma no-cache"
+    ],
+    "retained": [
+      "successful304 validation",
+      "permitted public/private-cache stale reuse",
+      "TTL as retention hint"
+    ]
+  },
+  "validation": {
+    "command": "node --test tests/dependency-cache-revalidation-security.test.mjs",
+    "baseline": {
+      "sourceSha256": "0951c9d26471af18a8e21988829ce08f8ccf01e267740eab4c601345b964d34a",
+      "tests": 13,
+      "pass": 3,
+      "fail": 10,
+      "skipped": 0
+    },
+    "patched": {
+      "sourceSha256": "324afc5b862048a3d80b6ae53cc7aeb0a0a6d6baf4121a4f52ea44893ac25f91",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "skipped": 0
+    },
+    "independentReview": {
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "skipped": 0,
+      "blockers": 0
+    },
+    "testSha256": "39208882b82481723e047fb28ec2572832d7f809459830621ffc5d8dc850aba2",
+    "coverage": [
+      "HTTP500/502/503/504",
+      "missing responses",
+      "serialized policies",
+      "nonstorable responses",
+      "response/request prohibitions",
+      "URI/host/method/Vary mismatch",
+      "expiredwindow",
+      "positive public/private/immutable/HEAD/freshsmaxage/304"
+    ],
+    "githubSameSha": "pending; GitHub PR checks will validate the committed source",
+    "localFullVerify": {
+      "command": "npm run verify",
+      "exitCode": 1,
+      "stage": "llm:architecture:check",
+      "reason": "Existing local dependency installation lacks ai (ERR_MODULE_NOT_FOUND); full GitHub npm ci + verify required.",
+      "log": "work/spider-ci/cycle-53-local-verify.log"
+    },
+    "metadataChecks": [
+      "mission:update",
+      "mission:check",
+      "project:update",
+      "project:check",
+      "database:status",
+      "verify stages through system:composition:check"
+    ]
+  },
+  "sameRefBaseline": {
+    "ref": "refs/heads/main",
+    "head": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+    "codeqlOpen": 34,
+    "dependabotOpen": 0,
+    "targetedNewGitHubAlert": null,
+    "alertClosureClaim": false
+  },
+  "licenseMetadataCorrection": "Preserved upstream LICENSE and package declare BSD-2-Clause; only mistaken patch-document MIT label corrected.",
+  "standards": [
+    "https://www.rfc-editor.org/rfc/rfc9111.html#section-4.2.4",
+    "https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.1.4",
+    "https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.10"
+  ],
+  "boundaries": [
+    "No claim of complete RFC conformance or production exploit observation",
+    "No scanner suppression, alert dismissal, history rewrite or secret rotation",
+    "No main merge, public deployment or physical-device acceptance",
+    "34 CodeQL alerts and directory-ancestor race remain separate work"
+  ]
+}

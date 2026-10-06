@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。
+SYS15 / Security: http-cache-semanticsのorigin error経路で再利用禁止を迂回する残存不具合を修正・回帰検証し、同一SHA CIを確認する。PR83の既存合格と今回の受入を分離。CodeQL34件、全OS/正式署名/Provider/実機gateは継続する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。
