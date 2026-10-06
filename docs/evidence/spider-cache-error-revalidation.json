@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "cycle": 53,
-  "status": "host_regressions_pass_ci_pending",
+  "status": "main_refresh_host_pass_ci_pending",
   "baseCommit": "e12d880c788e90a7aa684a82106f14024a2c3c36",
   "workstream": "Security / Identity / Compliance",
   "responsibility": "ROCK",
@@ -141,5 +141,58 @@
     "No scanner suppression, alert dismissal, history rewrite or secret rotation",
     "No main merge, public deployment or physical-device acceptance",
     "34 CodeQL alerts and directory-ancestor race remain separate work"
-  ]
+  ],
+  "mainRefresh": {
+    "cycle": 57,
+    "baseCommit": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+    "priorVerifiedHead": "de3a446bad36db49ff1e5a39b8cae74bc6862618",
+    "priorChecksPassed": 7,
+    "conflicts": [
+      "data/project-status.json:nextAction",
+      "data/database-status.json:nextAction",
+      "docs/database-status.md:nextAction",
+      "project.md:progress sections and nextAction"
+    ],
+    "resolution": "Keep upstream OS nextAction and Pixel preparation records, preserve SPIDER progress and cache fix. No runtime or test change.",
+    "priorSourceAndTestsUnchanged": true,
+    "newGitHubValidation": "pending",
+    "sameRefMainAlerts": {
+      "beforeHead": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+      "afterHead": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+      "codeql": 34,
+      "codeqlIdentityRulePathStatusUnchanged": true,
+      "dependabot": 3,
+      "newDependabotIds": [
+        26,
+        27,
+        28
+      ],
+      "existingDependencyPullRequests": [
+        88,
+        89
+      ]
+    },
+    "localValidation": {
+      "cacheRegression": {
+        "pass": 13,
+        "fail": 0,
+        "skipped": 0
+      },
+      "metadataChecks": [
+        "mission:update",
+        "mission:check",
+        "project:update",
+        "project:check",
+        "database:status",
+        "database:check",
+        "git diff --check"
+      ],
+      "fullVerify": {
+        "exitCode": 1,
+        "stage": "llm:architecture:check",
+        "reason": "Existing local installation lacks ai; GitHub full install and verification still required."
+      }
+    },
+    "mainMerged": false
+  }
 }

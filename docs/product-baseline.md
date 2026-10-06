@@ -1,5 +1,7 @@
 ## 2026-10-05 公開ホームページの独自ドメイン
 
+2026-10-06: 利用者の「OS完成」指示により、Pixel 10のcompile用sourceを署名検証済み安定版`2026100200`へ更新した。RQ01〜RQ49と物理対象は変更せず、過去の`2026091000`端末readbackも保持する。[現在のsource証拠](evidence/phone-source-verification.json)を追加し、compileと署名／実機flashの受入を分離する。専用Linuxの予算と全OS build、初回flash 4 gateは未完了。
+
 利用者は `avocadomini.si` に正本GitHub `k999ln/rock` のホームページを公開するよう明示した。後続指示で対象は `https://avocado-mini.kirin-999.chatgpt.site/` のMini／Proホームと確定した。前回の最新main SIM/eSIMホーム配備を訂正し、指定公開版の画像・内容・会社情報・下層ページを、既に同ドメインが登録された現アカウントのSiteへ移行する。訂正版をSites v4へ公開後、利用者指定のHostingerでA 2件と所有確認TXTを設定し、`https://avocadomini.si` のDNS・Sites・SSL activeとHTTPS実表示を確認した。Sites標準URL `https://avocadomini.noellesugar1.chatgpt.site` も継続する。旧kirin-999 Siteは現在の接続ではNOT_FOUNDであり変更しない。DNS実値・復旧・残る条件は[Web workstream](workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13)を参照する。
 
 ## 2026-10-04 IP Studioの音声・電話連携

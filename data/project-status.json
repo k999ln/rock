@@ -35,7 +35,7 @@
   },
   "updatedAt": "2026-10-05",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "SYS15 / Security: http-cache-semanticsのorigin error経路で再利用禁止を迂回する残存不具合を修正・回帰検証し、同一SHA CIを確認する。PR83の既存合格と今回の受入を分離。CodeQL34件、全OS/正式署名/Provider/実機gateは継続する。",
+  "nextAction": "OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5477,6 +5477,26 @@
         "deviceVerified": false,
         "imageIntegrated": false
       }
+    },
+    "completionWork": {
+      "status": "implementation_ready_full_build_environment_pending",
+      "primaryOwner": "ROCK",
+      "fullBuild": "NOT_RUN",
+      "deviceAttached": false,
+      "cloudBudgetAnswer": "pending",
+      "scope": "Signed upstream refresh and build artifact verification before dedicated Linux compile",
+      "sourceTag": "2026100200",
+      "sourceVerification": "docs/evidence/phone-source-verification.json",
+      "artifactVerifier": "scripts/verify-phone-artifacts.py",
+      "localValidation": "41 phone tests passed; shell syntax, device-support, baseline and design checks passed",
+      "githubValidation": {
+        "status": "PASS",
+        "testedCommit": "fd4108e943cd7d58426039d6c6fd897a12650b47",
+        "checksPassed": 10,
+        "checksTotal": 10,
+        "evidence": "docs/evidence/phone-build-preparation.json"
+      },
+      "mainMergeCommit": "1d8af61528683f4f13b720c2eeb3e387635da80a"
     }
   },
   "deviceSupportArchitecture": {
@@ -5747,7 +5767,7 @@
     "evidence": "docs/evidence/security-gate-completion.json"
   },
   "spiderCacheErrorRevalidation": {
-    "status": "host_regressions_pass_ci_pending",
+    "status": "main_refresh_host_pass_ci_pending",
     "baseCommit": "e12d880c788e90a7aa684a82106f14024a2c3c36",
     "taskId": "SYS15",
     "primarySquad": "H1",
@@ -5755,6 +5775,35 @@
     "responsibility": "ROCK",
     "finding": "Origin-error reuse bypasses cached-response prohibitions and request matching in the local http-cache-semantics fork.",
     "evidence": "docs/evidence/spider-cache-error-revalidation.json",
-    "mainIntegrated": false
+    "mainIntegrated": false,
+    "mainRefresh": {
+      "cycle": 57,
+      "baseCommit": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+      "priorVerifiedHead": "de3a446bad36db49ff1e5a39b8cae74bc6862618",
+      "priorChecksPassed": 7,
+      "validation": "pending for refreshed candidate",
+      "mainIntegrated": false,
+      "localValidation": {
+        "cacheRegression": {
+          "pass": 13,
+          "fail": 0,
+          "skipped": 0
+        },
+        "metadataChecks": [
+          "mission:update",
+          "mission:check",
+          "project:update",
+          "project:check",
+          "database:status",
+          "database:check",
+          "git diff --check"
+        ],
+        "fullVerify": {
+          "exitCode": 1,
+          "stage": "llm:architecture:check",
+          "reason": "Existing local installation lacks ai; GitHub full install and verification still required."
+        }
+      }
+    }
   }
 }

@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-SYS15 / Security: http-cache-semanticsのorigin error経路で再利用禁止を迂回する残存不具合を修正・回帰検証し、同一SHA CIを確認する。PR83の既存合格と今回の受入を分離。CodeQL34件、全OS/正式署名/Provider/実機gateは継続する。
+OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。
