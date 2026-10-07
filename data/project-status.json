@@ -5822,6 +5822,52 @@
       "metadataChecks": "mission/project/database/release/license inventory passed",
       "independentReview": "No blockers; upstream feature paths and progress preserved, sharp source/test/lock unchanged",
       "localVerify": "Stopped at llm:architecture:check: ERR_MODULE_NOT_FOUND for ai; no ENOSPC in this invocation; exact merge SHA Linux CI required"
+    },
+    "latestMainRefresh": {
+      "cycle": 78,
+      "incorporatedMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+      "previousValidatedHead": "90f8df72030a33aab4f507dbbf7c6c776a1a80a4",
+      "previousVerifiedRuns": {
+        "verify": 37569023537,
+        "branchCodeql": 37569039855,
+        "registeredChecks": 8,
+        "allSuccessful": true
+      },
+      "scope": "Resolve project.md conflict after PR92 documentation reorganization; preserve both history sections and unchanged sharp lock/audit/native tests",
+      "status": "local_release_and_metadata_checks_pass_exact_sha_ci_pending",
+      "localValidation": "pending",
+      "githubSameSha": "pending",
+      "sameRefCodeqlComparison": "pending",
+      "mainMerged": false,
+      "localReleaseTests": {
+        "tests": 35,
+        "pass": 35,
+        "fail": 0,
+        "skip": 0
+      },
+      "releaseCheck": "pass;ready0/6,blocked6 unchanged",
+      "inventoryCheck": "pass;956entries,914components,50review;legal clearance unchanged",
+      "metadataChecks": "mission/project/database update/check passed",
+      "localFullVerify": {
+        "exitCode": 1,
+        "stoppedAt": "llm:architecture:check",
+        "reason": "ai dependency missing; ERR_MODULE_NOT_FOUND",
+        "enospc": false
+      },
+      "localNativeTests": {
+        "status": "not_run",
+        "reason": "installed root sharp module unavailable (MODULE_NOT_FOUND); exact-SHA Linux CI must install locked native dependency and run all3 tests"
+      },
+      "independentReview": {
+        "blockers": 0,
+        "mainDocumentationFiles": 30,
+        "mainFilesByteIdenticalExceptProject": 29,
+        "upstreamProjectHeadingsPreserved": 410,
+        "sharpManifestLockAuditNativeTestsByteIdentical": true,
+        "globalNextActionPreserved": true,
+        "duplicateJsonKeys": 0,
+        "conflictMarkers": 0
+      }
     }
   }
 }

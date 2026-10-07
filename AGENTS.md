@@ -18,6 +18,8 @@
 - 端末の購入・初期化・bootloader解除・書込、OS署名鍵の生成/保管、公開やサービス契約は、設計依頼から実施許可を推測しない。機種適合・復旧・権限の境界を先に確認する。
 - 正本はこのリポジトリ (`k999ln/rock`)。製品中心はSIM/eSIMによるRockstarOSサービス利用開始と透明なcloud agent利用、OS runtime・Sky／Zemaはそれを支える第一者system、Wallet／Game/その他は共通契約へ接続する応用系統。旧ファンド/料金/分配試算と、検証済み収益から月最大888 cents・同一契約複数端末重複防止を維持する。商品料金/通信料/AI使用料/実費/OSS/BYOKを独立して扱う。既存Wallet/商品schema/SDKを調べず作り直さない。
 - 作業の着手・判断変更・検証完了時に project.md と進捗JSONを更新し、`npm run project:update` でREADMEにも反映する。利用方法の変更はREADME本文も同じcommitで更新する。
+- 人が読むための入口は README.md →  docs/README.md（文書の地図）の順。仕様を変えたら docs/product-baseline.md に加えて docs/spec-history.md（仕様変遷）の該当日・テーマ表・現行仕様表へ追記し、Sky catalog Tool・役割エージェント・部隊を変えたら docs/agents-and-tools.md（エージェント・Tool総覧）へ反映する。docs/ 直下へ文書を足したら docs/README.md の該当分野に種類（正本／設計／手順／監査／記録／履歴）付きで1行足す。新しい情報は関係する節へ入れ、README・PROJECTS.md・各文書の末尾や題名の上へ追記しない。docs/ の文書は進捗台帳・設計台帳・証拠からpathとhashで参照されるため移動・改名しない。
+- 統合（merge）で文書や台帳が競合したら、片側の内容で丸ごと解決しない。追記型の文書（project.md、docs/workstreams/、docs/product-baseline.md、各設計書の日付付きの節）は両側の節を残し、README.md・PROJECTS.md・data/*.json は新しい側を土台にして古い側の差分だけを足す。古いbranchへmainを取り込む前に `git diff <共通の祖先> origin/main --stat` でmain側の変更量を確認する。2026-10-05の統合で文書と台帳が古い内容へ戻った経緯と残る判断は docs/merge-loss-audit-20261007.md。
 - 次の担当が再開できるよう、次の作業、未完了事項、検証コマンドと結果を具体的に残す。証拠のない完了・収益・公開を記載しない。
 - OS componentまたはSky catalog Toolを追加・変更するときはdata/design-document-index.jsonと対応する全体／Tool詳細設計を同じ変更で更新し、`npm run design:check`を通す。項目名だけでなく、目的、利用体験、責任、入出力、状態、保存、失敗、復旧、承認、合格条件、未決定の決め方を記載する。
 - 既存Webの新しい仕事機能は lib/workflow.ts の状態遷移を通す。OSへの移植では同じ業務契約とfixtureの一致を検証する。本人確認・ユーザー別保存・revision競合判定を維持する。

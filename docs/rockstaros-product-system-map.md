@@ -1,26 +1,26 @@
 # RockstarOS 製品・サービス・システム関係図
 
-版: 1.0 / 2026-09-19
+版: 1.1 / 2026-10-02
 
 状態: **正本補助設計**。製品、サービス、内部システム、`Mr.` 由来Tool、MR（Mixed Reality）端末の関係を一つの図で確認するための文書。各コンポーネントのfield単位の契約は表中のリンク先を正本とする。
 
-対外的な製品紹介ではavocadoMiniを主役にし、RockstarOSとLLMを製品を動かす技術基盤として示す。avocadoMiniは設計段階で、実機試作と販売は未実施である。
+対外的な主商品は、物理SIM/eSIMの購入を入口にRockstarOS、Sky、Zema、cloud LLMとAgentへアクセスするサービスである。SIM購入にはサービス利用権を含める設計だが、OS binary自体はSIM/eUICCへ保存しない。avocadoMiniは別のhardware programで、実機試作と販売は未実施であり、サービス利用の必須端末ではない。
 
-利用者への入口は、製品紹介とOS導入を兼ねるホームページ、Webアプリ、OS本体の三つ。SkyなどはアプリとOSの中で使うサービスであり、独立した最上位製品入口として並べない。
+入口は、購入チャネルでのSIM/eSIM offer、Rockstar service onboarding、既存OS client/browser、そして対応機種に限るnative OS導入である。通信開通、利用権claim、アカウント認証、端末へのOS/client導入を別々に確認する。
 
 | 入口 | 現在のURL・状態 | 内側にあるもの |
 | --- | --- | --- |
-| 製品・導入ホームページ | `/rockstaros`。avocadoMiniとRockstarOSの紹介、OS導入案内への導線 | 製品構想、対応環境、導入情報 |
-| Webアプリ | `/`。本人限定Siteで作業画面を提供中、一般公開と最新版同期は未反映 | App Home、Sky、Zema、Wallet、Sky Tool SDK用Rock Studioなど |
-| OS本体 | `/rockstaros/guide`でDeveloper Previewの導入条件を案内。完成スマートフォンOSは未配布 | App Homeと同じ役割のサービスをOS契約で接続する計画 |
+| SIM/eSIMサービス案内 | `/connect`、`/rockstaros`。offer/activation、利用権、端末別導入経路を説明。販売契約・回線開通は未接続 | channel-neutral entitlement claim、account link、サービス利用開始 |
+| Web/client | `/`、Sky `/sky`、Zema `/chat`、仕事 `/work`。本人限定環境で一部を検証中 | 共通アカウント、Agent依頼、job status/result/usage UI |
+| Native OS | `/rockstaros/guide`でDeveloper Preview条件を案内。完成スマートフォンOSは未配布 | 署名済みimage、機種適合・boot/復旧gateを満たす端末向け |
 
-avocadoMiniは「考える時間を、つくる時間に」を製品メッセージとし、希望参考価格41万円のハードウェア構想。高性能LLMを搭載するRockstarOSは製品目標で、現行の実機検証は固定モデルのDeveloper Preview段階である。41万円は確定販売価格でもOS従量料金でもない。
+eSIM/物理SIMの回線料金、RockstarOS service access、Cloud LLM/Agent usage、端末代は別契約・別明細として扱う。料金表・provider settlement・carrier activationはproduction acceptance待ちである。
 
 この文書を読めば、次の三つを混同しない。
 
-- RockstarOSは、AIを使うためのOSと共通基盤。
+- RockstarOSは、SIM/eSIMを入口にSky、Zema、cloud LLM/Agentへアクセスするサービスと、その本人性・権限・仕事・復旧を支える共通OS/Core。
 - SkyはAI自動化チームの仕事とToolを選ぶ入口、Zemaは仕事の管理、Walletは費用と確認済み収益を扱う。CSVとメルカリはSky登録済みのチーム担当。Material Invention StudioはSkyで組み合わせる発明チームの複合機能で、単体のcatalog Toolではない。
-- avocadoMiniはMaterial Invention Studioを手で扱う専用デバイス。OSそのものではない。
+- avocadoMiniはMaterial Invention Studioを手で扱う別programの専用device。OSそのものでもサービス開始の前提でもない。
 
 ## 1. 会社が提供するもの
 
@@ -37,6 +37,9 @@ flowchart TB
     WALLET[Wallet\n費用と確認済み収益を見る]
     AM[avocadoMini\nMR空間発明デバイス]
   end
+
+  SIM[物理SIM / eSIM offer\n回線契約 + RockstarOS service entitlement]
+  CLIENT[既存OS client / browser\nまたは適合機種のnative OS]
 
   subgraph SKY_TEAM[Skyで編成するAI自動化チーム]
     CSV[CSV業務\n整形・検査・納品]
@@ -63,11 +66,11 @@ flowchart TB
     PATENT[Patent AI Bridge]
   end
 
-  U --> OS
-  U --> AM
+  U --> SIM --> CLIENT --> OS
   D --> SDK
   P --> CONNECT
   OS --> SKY & ZEMA & WALLET
+  SIM -. 購入・回線開通・利用権は独立状態 .-> AUTH
   AM --> MIS
   MODELS --> RUNTIME
   TOOLS --> SKY
@@ -93,6 +96,7 @@ flowchart TB
 | 起点 | 接続先 | 関係 | 接続を担当する正本 | 現在地 |
 | --- | --- | --- | --- | --- |
 | RockstarOS | Sky / Zema / Wallet | OSが共通の画面、権限、仕事、保存を提供 | [OS全体詳細設計](rockstaros-complete-design.md) | Web / APKの限定検証 |
+| 物理SIM / eSIM | RockstarOS service access | 購入offerがservice entitlementを含む。carrier activation、claim、OS/client導入は別状態 | [SIM/eSIM claim設計](sim-service-entitlement-claims.md) | signed claimとlocal owner bindingは実装済み。carrier、distribution、production billingは未受入 |
 | Sky | Tool / MCP | Toolの発見、作者・版・権限・実行先の確認、接続 | [全Tool詳細設計](sky-tools-complete-design.md) | AMCを含むready Tool 13件、provider接続は段階導入 |
 | Sky | CSV業務 / メルカリ収益ループ | `rockstar-csv-cleanup`と`mercari-revenue`をチーム担当として選び、専用画面へ進む | [全Tool詳細設計](sky-tools-complete-design.md) / [Business Pilots](workstreams/09-business-pilots.md) | catalogはready。外部市場の操作とProvider入金照合は別受入 |
 | Sky | Material Invention Studio | Core、simulation、Patent AIなどを発明チームとして組み合わせる構想。Studio自体は単体Toolに数えない | [Material Core](material-invention-core.md) / [空間発明設計](rockstaros-avocado-mini-complete-design.md) | Core sandboxのみ実装。操作画面とSky接続は未実装 |
