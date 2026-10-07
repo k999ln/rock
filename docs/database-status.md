@@ -2,7 +2,7 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-10-05
+更新日: 2026-10-06
 
 ## 全体
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-OS11 / RLS02: Pixel 10 GL066向け全OS compileと同一artifact検証を進める。署名付き最新source・成果物検査を先行し、専用Linux環境/クラウド支出上限の指定を待つ。初回flash 4 gateは未解除。
+追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

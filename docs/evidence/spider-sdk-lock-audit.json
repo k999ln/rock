@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "cycle": 61,
+  "taskId": "SYS15",
+  "primarySquad": "H1",
+  "responsibility": "ROCK",
+  "workstream": "Security / Identity / Compliance",
+  "status": "local_release_regressions_pass_exact_sha_ci_pending",
+  "existingPullRequest": 89,
+  "baselinePrHead": "0cc41ceca7a8b9b6624a7f9aa06a802891252ca2",
+  "incorporatedMain": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+  "targetAlert": 27,
+  "advisory": "GHSA-6qxp-vccf-f47h",
+  "dependency": {
+    "package": "@modelcontextprotocol/sdk",
+    "before": "1.30.0",
+    "after": "1.32.1",
+    "firstPatchedV1": "1.31.0",
+    "consumer": "shadcn 4.18.0",
+    "scope": "production-classified transitive dependency in root lock; no tracked SDK OAuth API import found"
+  },
+  "finding": "Existing Dependabot PR updates SDK to an upstream OAuth credential issuer-binding fix, but the lock-bound license inventory still names the prior complete lock hash, stopping release:check.",
+  "sourceEvidence": [
+    "https://github.com/modelcontextprotocol/typescript-sdk/security/advisories/GHSA-6qxp-vccf-f47h",
+    "https://github.com/modelcontextprotocol/typescript-sdk/commit/51ad4f03190dc5c84ab8b1a25f9b78b277be0dc7",
+    "https://github.com/modelcontextprotocol/typescript-sdk/blob/ff07b001194fe60ee9deb2121cf119057565796d/src/client/auth.ts"
+  ],
+  "change": {
+    "existingSdkLockDelta": "Only version, resolved tarball and integrity for one SDK entry; unchanged from original PR89",
+    "auditChangedFields": [
+      "packageLockSha256"
+    ],
+    "beforeAuditHash": "018e8aa4ad469eebbc2439010924eaf8f2d7bde020a05ef4aea75f0a750be86e",
+    "afterAuditHash": "3d2f42e726644eebb890669d7c937d0721ad6120d7b586c49ca7c3032f53a747",
+    "licenseCountsClassesAndReviewComponentsUnchanged": true,
+    "overallStatus": "NOT_CLEARED_PRODUCT_LICENSE_AND_DISTRIBUTION_SCOPE_REVIEW_PENDING"
+  },
+  "validation": {
+    "before": {
+      "releaseCheckExit": 1,
+      "exactLockHashMismatchConfirmed": true,
+      "inventoryGeneratorCheckExit": 1
+    },
+    "after": {
+      "releaseCheckExit": 0,
+      "inventoryGeneratorCheckExit": 0,
+      "existingReleaseReadinessTests": {
+        "tests": 35,
+        "pass": 35,
+        "fail": 0,
+        "skip": 0
+      },
+      "readyTargets": 0,
+      "blockedTargets": 6,
+      "packageEntries": 956,
+      "uniqueComponents": 914,
+      "reviewRequired": 50
+    },
+    "fullVerify": {
+      "localExit": 1,
+      "localStoppedAt": "llm:architecture:check",
+      "reason": "Missing installed ai package (ERR_MODULE_NOT_FOUND); no ENOSPC in this invocation",
+      "githubSameSha": "pending"
+    },
+    "sameShaGitHub": "pending",
+    "metadataChecks": "mission/project/database checks passed",
+    "independentReview": {
+      "blockers": 0,
+      "upstreamRuntimeAndProgressPreserved": true,
+      "sdkLockUnchangedFromOriginalPr": true,
+      "licenseClearanceUnchanged": true,
+      "duplicateJsonKeys": 0
+    }
+  },
+  "limitations": [
+    "This cycle repairs the existing PR verification gate; it adds no SDK auth integration and performs no exploit reproduction.",
+    "Upstream issuer-binding protection requires issuer association; legacy persisted credentials without issuer and providers without expectedIssuer have first-use caveats. No credential migration or real credential test was performed.",
+    "The main default-branch alert remains open until integration and reanalysis; candidate CI success is not default-branch alert closure.",
+    "No duplicate Dependabot PR, main merge, deployment, device action, secret rotation, scanner exclusion or release-gate weakening."
+  ],
+  "sameRefCodeqlBaseline": {
+    "ref": "refs/heads/dependabot/npm_and_yarn/modelcontextprotocol/sdk-1.32.1",
+    "commit": "0cc41ceca7a8b9b6624a7f9aa06a802891252ca2",
+    "run": 37569747566,
+    "status": "success",
+    "open": 34,
+    "bothLanguagesAnalyzed": true
+  }
+}

@@ -14,6 +14,13 @@ The fully recoverable and reusable small-satellite launch vehicle **rocketstar**
 
 </div>
 
+## Add Sky, data collection, and LLM access
+
+Open Home → **追加** (`/add`). Sky is included; select **ホームに追加** for data collection or LLM. The LLM shortcut opens existing Zema and still requires a configured connection and the existing quote/budget approval. This does not install a local model or replace the device OS.
+
+At `/add/data`, choose up to 20 files (including Sky/LLM results you already downloaded), optionally add a note, and export an encrypted `.rockdata` file with a passphrase of at least 10 characters. The total limit is 2 MiB. To recover, select that archive and enter the same passphrase; verified files and notes can be downloaded separately. Contents stay in browser memory until explicitly exported and disappear on reload. Keep the archive and passphrase separately; neither is uploaded by this utility. Whole-device and automatic external-service collection are not included.
+
+
 > **About the image** — The R5 visual above is concept art based on the intended industrial design. The animated lines are a brand treatment, not a photograph of working hardware or proof of a spatial display.
 
 **Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [avokadoPro product definition](sites/avocado-mini/src/pages/pro/index.astro) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Mission Control](docs/mission-control.md) · [Complete design index](#design-library)
@@ -159,7 +166,7 @@ Wallet treats cost estimation, reservation, and finalization; signed Earning Rec
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-05 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
+Updated: 2026-10-06 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)

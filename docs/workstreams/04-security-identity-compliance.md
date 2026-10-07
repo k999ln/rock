@@ -66,3 +66,7 @@ O1 / SYS02の診断共有の安全条件として、entitlement observerの登�
 未修正版bracesと、4.3.0でもmax-stale漏洩が再現したhttp-cache-semanticsは、MIT原本・出所・差分hashを保持するrepository内の明示forkで修正する。全依存先をoverrideし、元code 4 fail / 修正版8 passの回帰試験を保持する。上流修正版への復帰は同じ攻撃再現・互換性・全体verifyの合格後。詳細は[検証記録](../evidence/security-gate-completion.json)、[braces保守](../../vendor/braces/ROCKSTAR-PATCH.md)、[HTTP cache保守](../../sites/avocado-mini/vendor/http-cache-semantics/ROCKSTAR-PATCH.md)。実機・鍵・公開gateは変更しない。
 
 受入更新: PR #83、`4e702fc2`の全8 CI成功後、`cb5955a2`でmain統合。GitHub verify Node 1362 pass / 0 fail / 1環境条件skip、依存監査0件、#17/#18は自動fixed。上流コードの追加regex DoSも線形処理へ修正。公開・物理OS受入とは分離する。
+
+## SDK依存の監査同期（SYS15）
+
+SDKのOAuth issuer結合修正は既存Dependabot PR #89を継続する。lock hashに束縛した監査を同期し、法的clearanceと公開gateを保持して既存release回帰・全体CIを確認する。実credential移行やOAuth連携の実運用受入は別であり、main alertの状態も分けて記録する。[証拠](../evidence/spider-sdk-lock-audit.json)。

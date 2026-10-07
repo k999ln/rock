@@ -33,9 +33,9 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/69",
     "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
   },
-  "updatedAt": "2026-10-05",
+  "updatedAt": "2026-10-06",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "OS11 / RLS02: Pixel 10 GL066向け全OS compileと同一artifact検証を進める。署名付き最新source・成果物検査を先行し、専用Linux環境/クラウド支出上限の指定を待つ。初回flash 4 gateは未解除。",
+  "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5043,7 +5043,9 @@
         "tests/amc-autonomy-store-read.test.mjs",
         "scripts/amc-parallel.mjs",
         "tests/amc-workspace-snapshot.test.mjs",
-        "docs/evidence/spider-workspace-snapshot-read.json"
+        "docs/evidence/spider-workspace-snapshot-read.json",
+        "tests/release-readiness.test.mjs",
+        "docs/evidence/spider-sdk-lock-audit.json"
       ]
     },
     {
@@ -5487,7 +5489,14 @@
       "sourceVerification": "docs/evidence/phone-source-verification.json",
       "artifactVerifier": "scripts/verify-phone-artifacts.py",
       "localValidation": "41 phone tests passed; shell syntax, device-support, baseline and design checks passed",
-      "githubValidation": "Full verify passed at d448c56c; public signer fingerprint classification added; final SHA checks pending"
+      "githubValidation": {
+        "status": "PASS",
+        "testedCommit": "fd4108e943cd7d58426039d6c6fd897a12650b47",
+        "checksPassed": 10,
+        "checksTotal": 10,
+        "evidence": "docs/evidence/phone-build-preparation.json"
+      },
+      "mainMergeCommit": "1d8af61528683f4f13b720c2eeb3e387635da80a"
     }
   },
   "deviceSupportArchitecture": {
@@ -5756,5 +5765,49 @@
     "successfulChecks": 8,
     "openDependencyAlerts": 0,
     "evidence": "docs/evidence/security-gate-completion.json"
+  },
+  "skyConnectionDialogFix": {
+    "requestId": "SKY-S2-CONNECTION-FIX-INTEGRATE-20261006-01",
+    "primarySquad": "O5",
+    "existingTasks": [
+      "SKY10",
+      "SKY16"
+    ],
+    "baseMain": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+    "status": "main_integration_ci_pending",
+    "scope": "接続手順を展開しても案内ダイアログを画面内に収め、スクロールして閉じられる表示修正。接続APIと権限は変更しない。",
+    "accepted": false,
+    "deployed": false,
+    "validation": "試験用route/configを含まない配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019のUIコードと依存60322ファイル・59 symlinkのhash一致を照合し、1280×720・390×844の表示/閉じる証拠を引継いだ。実PC grant、Provider、課金、公開は未受入。",
+    "pullRequest": "https://github.com/k999ln/rock/pull/87",
+    "integrationNote": "PR #87の初回全体CIでDB状態表の更新日だけが未同期と判明。database:statusで2行を同期し、同一候補の全体CIを再確認する。"
+  },
+  "portableAddons": {
+    "status": "source_verified_ui_partial",
+    "primaryOwner": "ROCK",
+    "scope": "Sky and existing quoted LLM entry; opt-in browser file collection with encrypted export/restore",
+    "physicalEsimAccepted": false,
+    "nativeOsInstalled": false,
+    "tests": "13/13 host; design/baseline/typecheck/targeted lint passed",
+    "ui": "browser add data/llm and Home visibility passed; export/restore UI and mobile not accepted after ENOSPC",
+    "fullVerify": "blocked locally at release signing temporary-directory creation (ENOSPC); CI pending",
+    "next": "Finish UI export/restore and mobile acceptance after disk recovery; confirm collection sources. GitHub PR 91 holds latest source; isolated worktree needs sync.",
+    "verifiedSourceSha": "92bb9f2ff87cffcf72aa370105cff26def693939",
+    "ci": "7/7 checks passed; npm run verify including build/API/full regression passed",
+    "ciRun": "https://github.com/k999ln/rock/actions/runs/37555780451"
+  },
+  "spiderSdkSecurityDependencyUpdate": {
+    "status": "local_release_regressions_pass_exact_sha_ci_pending",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "responsibility": "ROCK",
+    "pullRequest": "https://github.com/k999ln/rock/pull/89",
+    "targetAlert": 27,
+    "advisory": "GHSA-6qxp-vccf-f47h",
+    "scope": "Repair exact lock hash binding for the existing SDK1.32.1 dependency update; legal clearance and runtime integration unchanged",
+    "localReleaseReadiness": "35/35 regressions pass; release check and inventory synchronization pass",
+    "mainIntegrated": false,
+    "evidence": "docs/evidence/spider-sdk-lock-audit.json",
+    "localFullVerify": "Stopped at llm:architecture:check because installed ai is missing; exact-SHA GitHub verify pending"
   }
 }

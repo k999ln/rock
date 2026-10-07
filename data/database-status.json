@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-05",
+  "updatedAt": "2026-10-06",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
@@ -15,7 +15,7 @@
     "planned": 236,
     "blocked": 1,
     "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-    "nextAction": "OS11 / RLS02: Pixel 10 GL066向け全OS compileと同一artifact検証を進める。署名付き最新source・成果物検査を先行し、専用Linux環境/クラウド支出上限の指定を待つ。初回flash 4 gateは未解除。"
+    "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。"
   },
   "webSchema": {
     "tableCount": 77,
