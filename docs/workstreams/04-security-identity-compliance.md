@@ -66,3 +66,9 @@ O1 / SYS02の診断共有の安全条件として、entitlement observerの登�
 未修正版bracesと、4.3.0でもmax-stale漏洩が再現したhttp-cache-semanticsは、MIT原本・出所・差分hashを保持するrepository内の明示forkで修正する。全依存先をoverrideし、元code 4 fail / 修正版8 passの回帰試験を保持する。上流修正版への復帰は同じ攻撃再現・互換性・全体verifyの合格後。詳細は[検証記録](../evidence/security-gate-completion.json)、[braces保守](../../vendor/braces/ROCKSTAR-PATCH.md)、[HTTP cache保守](../../sites/avocado-mini/vendor/http-cache-semantics/ROCKSTAR-PATCH.md)。実機・鍵・公開gateは変更しない。
 
 受入更新: PR #83、`4e702fc2`の全8 CI成功後、`cb5955a2`でmain統合。GitHub verify Node 1362 pass / 0 fail / 1環境条件skip、依存監査0件、#17/#18は自動fixed。上流コードの追加regex DoSも線形処理へ修正。公開・物理OS受入とは分離する。
+
+## root画像処理依存の更新（SYS15）
+
+Dependabot #26のsharp／librsvg修正はrootのminiflare overrideと同梱native lockを対象にする。実際にロードされた修正版librsvg、SVG描画とPNG互換性、同一SHAの全体verifyを受入条件とし、版番号更新だけを脆弱性再現試験としない。site側は既存PR #88、SDKは既存PR #89で扱う。license inventoryと未clearanceを維持し、main統合前のalert状態を別に記録する。[証拠](../evidence/spider-root-sharp-update.json)。
+
+2026-10-07 cycle78: main `0455499d` の文書整理を既存PR #90へ同期し、project.mdの双方の記録を保持して競合解消。sharp修正・lock・監査一覧・native試験は変更しない。変更SHAの検証結果は同じ証拠のlatestMainRefreshとPR欄へ記録する。

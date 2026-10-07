@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "cycle": 58,
+  "status": "host_native_acceptance_pass_ci_pending",
+  "taskId": "SYS15",
+  "primarySquad": "H1",
+  "workstream": "Security / Identity / Compliance",
+  "responsibility": "ROCK",
+  "baseCommit": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+  "targetAlert": 26,
+  "advisory": "GHSA-wq5f-xc86-pv6w",
+  "finding": "librsvg duplicate entity declarations during nested XInclude can free an entity still referenced by libxml2. Root miniflare override pinned sharp0.35.4 and affected native library.",
+  "scope": "Development image-processing dependency, not observed production exploitation.",
+  "change": {
+    "override": "miniflare.sharp=0.35.5",
+    "sharpPackages": "0.35.4 to0.35.5",
+    "sharpLibvipsPackages": "1.3.3 to1.3.4",
+    "updatedLockEntries": 27,
+    "otherLockEntriesUnchanged": true,
+    "siteLockUnchanged": true,
+    "sdkVersionUnchanged": true,
+    "licenseClassesAndClearanceUnchanged": true
+  },
+  "sourceEvidence": [
+    "https://github.com/lovell/sharp/security/advisories/GHSA-wq5f-xc86-pv6w",
+    "https://github.com/lovell/sharp/commit/96de105d9d36ab04c76c2b78b97255171630d236",
+    "https://github.com/GNOME/librsvg/commit/8a1b0cd319e9af2d1e9cf878081dd77f227a0504",
+    "https://github.com/lovell/sharp-libvips/releases/tag/v1.3.4"
+  ],
+  "locks": {
+    "beforeSha256": "018e8aa4ad469eebbc2439010924eaf8f2d7bde020a05ef4aea75f0a750be86e",
+    "afterSha256": "4be2273ff0a3a4d30a605927cd749b0e4c780771139324ddafb32783de6f997c"
+  },
+  "advisoryComparison": {
+    "method": "npm audit --package-lock-only --ignore-scripts before and after against registry advisories",
+    "beforeSharpAdvisory": true,
+    "afterSharpAdvisory": false,
+    "remainingSdkAdvisory": "GHSA-6qxp-vccf-f47h",
+    "aggregatePackageCountsAreNotUniqueVulnerabilities": true,
+    "githubAlert26StillOpenOnMain": true
+  },
+  "validation": {
+    "nativeRuntime": {
+      "platform": "darwin",
+      "versions": {
+        "sharp": "0.35.5",
+        "vips": "8.18.7",
+        "rsvg": "2.63.2"
+      },
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "conditions": "Isolated sharp-only install; 10s child timeout, 64KiB output cap and tiny in-memory SVG/PNG fixtures.",
+      "oldNativeComparison": "NOT_RUN: two old-version install attempts failed ENOSPC; only this cycle temporary cache and failed install were removed.",
+      "upstreamMemoryCorruptionReproduced": false
+    },
+    "fullVerify": {
+      "local": {
+        "exitCode": 1,
+        "stages": [
+          "verify",
+          "project:check",
+          "repository:check",
+          "version:check",
+          "schema:check",
+          "database:check",
+          "release:check",
+          "release:signing:check"
+        ],
+        "missingAi": false,
+        "failureStage": "release:signing:check / owner legal approval fixture",
+        "reason": "ENOSPC creating a temporary fixture; local full verify did not complete. No check weakened; Linux CI required."
+      },
+      "githubSameSha": "pending"
+    },
+    "sameShaGitHub": "pending",
+    "exploitReproduced": false,
+    "testSha256": "6daaa29b763c37298e9a39d7ce5aad4fedf6ff9873e518da98a720db9565d98b",
+    "independentReview": {
+      "blockers": 0,
+      "lockClosureValidated": true,
+      "licenseClassesPreserved": true,
+      "upstreamStatusPreserved": true,
+      "nativeTestScope": "version floors and image compatibility, not upstream memory-corruption reproduction"
+    }
+  },
+  "sameRefBaseline": {
+    "ref": "refs/heads/main",
+    "head": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+    "codeqlOpen": 34,
+    "dependabotOpen": 3,
+    "alert26State": "open"
+  },
+  "existingDependencyPullRequests": {
+    "siteSharp": 88,
+    "sdk": 89
+  },
+  "boundaries": [
+    "No duplicate Dependabot PR",
+    "No changes to scanner rules, alert dismissal, authentication, tests or release gates to suppress failures",
+    "No main merge, deployment, device action, secret rotation, or claim of full OS security",
+    "Native version/rasterization acceptance is not reproduction of upstream memory corruption"
+  ],
+  "latestMainRefresh": {
+    "cycle": 78,
+    "incorporatedMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "previousValidatedHead": "90f8df72030a33aab4f507dbbf7c6c776a1a80a4",
+    "previousVerifiedRuns": {
+      "verify": 37569023537,
+      "branchCodeql": 37569039855,
+      "registeredChecks": 8,
+      "allSuccessful": true
+    },
+    "scope": "Resolve project.md conflict after PR92 documentation reorganization; preserve both history sections and unchanged sharp lock/audit/native tests",
+    "status": "local_release_and_metadata_checks_pass_exact_sha_ci_pending",
+    "localValidation": "pending",
+    "githubSameSha": "pending",
+    "sameRefCodeqlComparison": "pending",
+    "mainMerged": false,
+    "localReleaseTests": {
+      "tests": 35,
+      "pass": 35,
+      "fail": 0,
+      "skip": 0
+    },
+    "releaseCheck": "pass;ready0/6,blocked6 unchanged",
+    "inventoryCheck": "pass;956entries,914components,50review;legal clearance unchanged",
+    "metadataChecks": "mission/project/database update/check passed",
+    "localFullVerify": {
+      "exitCode": 1,
+      "stoppedAt": "llm:architecture:check",
+      "reason": "ai dependency missing; ERR_MODULE_NOT_FOUND",
+      "enospc": false
+    },
+    "localNativeTests": {
+      "status": "not_run",
+      "reason": "installed root sharp module unavailable (MODULE_NOT_FOUND); exact-SHA Linux CI must install locked native dependency and run all3 tests"
+    },
+    "independentReview": {
+      "blockers": 0,
+      "mainDocumentationFiles": 30,
+      "mainFilesByteIdenticalExceptProject": 29,
+      "upstreamProjectHeadingsPreserved": 410,
+      "sharpManifestLockAuditNativeTestsByteIdentical": true,
+      "globalNextActionPreserved": true,
+      "duplicateJsonKeys": 0,
+      "conflictMarkers": 0
+    }
+  }
+}
