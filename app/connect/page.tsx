@@ -43,6 +43,10 @@ export default function ConnectPage() {
           <strong>{index + 1}. {title}</strong><p>{description}</p>
         </li>)}</ol>
       </section>
+      <section className={styles.esimCatalog} aria-labelledby="addon-entry">
+        <div className={styles.esimCatalogTitle}><h2 id="addon-entry">いまの端末に機能を追加する</h2><p>Sky・データ回収・LLMを、対応ブラウザーのホームから利用できます。</p></div>
+        <Link className={styles.esimPlanCard} href="/add"><strong>追加する機能を選ぶ</strong><span>Sky・データ回収・LLM →</span></Link>
+      </section>
       <RockstarEntitlementClaim />
       <section className={styles.esimCatalog} aria-labelledby="device-account-link">
         <div className={styles.esimCatalogTitle}>

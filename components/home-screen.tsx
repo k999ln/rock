@@ -2,6 +2,8 @@
 
 import {
   ChartNoAxesCombined,
+  Plus,
+  FolderArchive,
   Bot,
   Check,
   ChevronLeft,
@@ -26,6 +28,7 @@ import {
   type CSSProperties,
 } from 'react';
 import styles from './home-screen.module.css';
+import { ADDONS_CHANGED_EVENT, readAddons, type AddonId } from '@/lib/rockstar-addons';
 
 type Wallpaper = 'aurora' | 'sky' | 'night' | 'ember';
 type IconSize = 'small' | 'medium' | 'large';
@@ -47,6 +50,9 @@ type HomeApp = {
 
 const STORAGE_KEY = 'rockstaros.home.preferences.v1';
 const apps: HomeApp[] = [
+  { id: 'add', name: '機能を追加', description: 'Sky・データ回収・LLMを追加', href: '/add', Icon: Plus, color: 'settings' },
+  { id: 'data', name: 'データ回収', description: '選んだデータを暗号化して持ち運ぶ', href: '/add/data', Icon: FolderArchive, color: 'sky' },
+  { id: 'llm', name: 'LLM', description: '接続先を選んでZemaで相談', href: '/chat', Icon: Bot, color: 'chat' },
   {
     id: 'sky',
     name: 'Sky',
@@ -149,6 +155,7 @@ export default function HomeScreen() {
   const [now, setNow] = useState<Date | null>(null);
   const [editing, setEditing] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [addons, setAddons] = useState<AddonId[]>([]);
   const [preferences, setPreferences] = useState(defaults);
   const closeEditorButton = useRef<HTMLButtonElement>(null);
 
@@ -192,20 +199,31 @@ export default function HomeScreen() {
     return () => window.removeEventListener('keydown', closeOnEscape);
   }, [editing]);
 
+  useEffect(() => {
+    const read = () => { try { setAddons(readAddons(localStorage)); } catch { setAddons([]); } };
+    const timer = window.setTimeout(read, 0);
+    window.addEventListener(ADDONS_CHANGED_EVENT, read);
+    window.addEventListener('storage', read);
+    return () => { window.clearTimeout(timer); window.removeEventListener(ADDONS_CHANGED_EVENT, read); window.removeEventListener('storage', read); };
+  }, []);
+
   const orderedApps = useMemo(
     () =>
       preferences.appOrder
         .map((id) => apps.find((app) => app.id === id))
-        .filter((app): app is HomeApp => Boolean(app)),
-    [preferences.appOrder],
+        .filter((app): app is HomeApp => Boolean(app))
+        .filter(app => !['data', 'llm'].includes(app.id) || addons.includes(app.id as AddonId)),
+    [preferences.appOrder, addons],
   );
 
   function moveApp(id: string, direction: -1 | 1) {
     setPreferences((current) => {
       const order = [...current.appOrder];
       const from = order.indexOf(id);
-      const to = from + direction;
-      if (from < 0 || to < 0 || to >= order.length) return current;
+      const visible = order.filter(key => !['data', 'llm'].includes(key) || addons.includes(key as AddonId));
+      const neighbor = visible[visible.indexOf(id) + direction];
+      const to = order.indexOf(neighbor);
+      if (from < 0 || to < 0) return current;
       [order[from], order[to]] = [order[to], order[from]];
       return { ...current, appOrder: order };
     });
@@ -307,14 +325,14 @@ export default function HomeScreen() {
                 >
                   <button
                     onClick={() => moveApp(id, -1)}
-                    disabled={preferences.appOrder[0] === id}
+                    disabled={orderedApps[0]?.id === id}
                     aria-label={`${name}を前へ`}
                   >
                     <ChevronLeft size={15} />
                   </button>
                   <button
                     onClick={() => moveApp(id, 1)}
-                    disabled={preferences.appOrder.at(-1) === id}
+                    disabled={orderedApps.at(-1)?.id === id}
                     aria-label={`${name}を後ろへ`}
                   >
                     <ChevronRight size={15} />

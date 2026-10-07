@@ -117,7 +117,18 @@
       "coverage": "DETAILED_IMPLEMENTED_PARTIAL_PRODUCTION",
       "documents": [
         "docs/architecture.md",
-        "docs/backend-design.md"
+        "docs/backend-design.md",
+        "docs/sim-led-product-architecture.md",
+        "docs/rockstaros-complete-design.md"
+      ],
+      "interfaceImplementation": [
+        "app/add/page.tsx",
+        "app/add/data/page.tsx",
+        "components/rockstar-addons.tsx",
+        "components/data-collection-workspace.tsx",
+        "lib/rockstar-addons.ts",
+        "lib/data-collection.ts",
+        "lib/backup-crypto.ts"
       ]
     },
     {
