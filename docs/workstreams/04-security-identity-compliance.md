@@ -70,3 +70,5 @@ O1 / SYS02の診断共有の安全条件として、entitlement observerの登�
 ## SDK依存の監査同期（SYS15）
 
 SDKのOAuth issuer結合修正は既存Dependabot PR #89を継続する。lock hashに束縛した監査を同期し、法的clearanceと公開gateを保持して既存release回帰・全体CIを確認する。実credential移行やOAuth連携の実運用受入は別であり、main alertの状態も分けて記録する。[証拠](../evidence/spider-sdk-lock-audit.json)。
+
+2026-10-07 cycle77: PR #89へmain `0455499d` の文書整理を反映し、project.mdの競合を両側の記録を残して解消。SDK lockと監査一覧の既存修正は同一byte、release回帰35/35とrelease／inventory checkが合格。新しいSHAの全体CI・SPIDERは後続確認。詳細は同じ検証記録のlatestMainRefreshへ保存する。
