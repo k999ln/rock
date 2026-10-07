@@ -1,5 +1,7 @@
 # RockstarOS SIM/eSIM-led service: current implementation prompt (2026-10-02)
 
+2026-10-06 add-on request: `/add` reuses Sky and the existing Zema LLM flow; `/add/data` collects only explicitly selected files and notes into a portable encrypted archive. Continue from the Web workstream acceptance record. Do not treat a Home shortcut as a local model installation, entitlement grant, native OS install, or Provider acceptance. Confirm the user's intended collection sources before extending to automatic service imports or whole-device backup.
+
 Treat `docs/product-baseline.md`'s 2026-10-02 product direction and this prompt as authoritative over older OS-first or eSIM-store copy. The product is physical-SIM/eSIM-led access to RockstarOS services, not an eSIM store inside an OS. A purchased SIM/eSIM offer includes RockstarOS, Sky, Zema, and integrated-agent access; the OS binary is delivered separately through an accepted device route.
 
 Historical audit anchors retained by `data/product-baseline.json` (not claims about this checkout's current HEAD): main `7cdbb5fedc86ee3978ed329d9312147d137c9199`, native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`, design `de5b102d3525daccf604efd5685bdf8c14ad5d50`. Confirm current refs independently before a merge or release.

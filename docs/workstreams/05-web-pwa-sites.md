@@ -1,5 +1,22 @@
 # Web / PWA / Sites
 
+## 既存端末への機能追加（2026-10-06、HOME01 / SYS01 / WEB14）
+
+利用者の追加指示に基づき、Sky・データ回収・LLMを既存OS上のWeb/PWAから選んで使う。目的は端末交換やOS書込を要求せず同じ入口を提供すること。主担当はWeb / PWA / Sites、ROCK。SIM/eSIMの通信・利用権と、機能の表示設定は独立し、追加操作だけで権限・課金・Provider接続を成立させない。
+
+- 利用体験: Homeの「追加」から `/add` を開く。Skyは標準機能、データ回収とLLMは明示操作でHomeへ追加／解除する。LLMは既存Zema `/chat` の接続・見積・予算・承認を利用し、モデルbinaryを新規導入する操作ではない。
+- 入出力と保存: `/add/data` は本人が選択した最大20ファイルとメモ（合計2 MiB、メモ64 KiB以内）だけを読み、AES-256-GCM／PBKDF2-SHA256（310000回）の `.rockdata` を端末へ書き出す。Sky・LLM成果は各画面で取得済みのファイルを手動選択する。自動履歴取得・端末走査・LLMへの自動送信はしない。
+- 状態: 機能IDだけを `rockstaros.addons.v1` に保存し、既存の暗号化設定バックアップにも含める。データ本文・パスフレーズはブラウザーのメモリ内だけで処理し、再読込／明示消去で表示を破棄する。追加設定はブラウザー単位でありaccount entitlementではない。
+- 失敗と復旧: 保存失敗時は追加表示を成功へ更新しない。容量／形式／名前／重複ID／SHA-256／GCM認証に失敗したarchiveは取り出さない。復元は同じパスフレーズで検証後、ファイル・メモを個別取得する。処理中の消去や画面離脱では遅延結果を表示・ダウンロードしない。パスフレーズ再発行はできない。既存設定backupのv1形式は維持する。
+- 承認: ファイル選択・書出し・復元は本人操作。外部送信・有料LLM・Provider権限は既存Workflowの個別承認を維持する。このutilityは新しい仕事実行APIを作らない。
+- 合格条件: 追加／解除・再読込・Home反映、暗号化round-trip、誤password／改竄／別形式／容量超過拒否、既存設定backup互換を検証する。全体 `npm run verify` と画面操作は検証記録で区別する。実端末・native OS・local model・production Providerの受入は別gate。
+- 未決定: 「回収」の対象を本人へ確認中。外部サービスの自動取得や端末全体backupが必要なら、対象／同意／owner／保存先を確定して既存adapterへ追加する。現段階でその機能を実装済みとはしない。
+
+
+検証記録: 実装は `/add` と `/add/data`、既存Home／Zema／暗号化設定backupの再利用。対象13試験、設計／baseline、型検査（`npx tsc --noEmit --incremental false`）、対象lint合格。実ブラウザーで2機能の追加とHome反映を確認。暗号化の画面書出し確認中にMacの容量不足でbrowser kernelが停止し、UI復元・スマートフォン表示は未受入。暗号化／復元自体はhost試験で合格。`npm run verify` はrelease signing試験の一時directory作成不可で停止（ENOSPC）；GitHubの同一候補CIを次に確認する。Sky/LLMのProvider実行、localモデル導入、native OS／実eSIM、公開配備は行っていない。
+
+GitHub PR #91のruntime候補 `92bb9f2ff87cffcf72aa370105cff26def693939` は全7チェック成功。`npm run verify`（build・API・全体回帰を含む）は [run 37555780451](https://github.com/k999ln/rock/actions/runs/37555780451) で合格した。初回CIの新規テスト登録Promise 10件は明示voidへ修正済み。2 MiB上限の暗号化round-tripもhostで合格。MacのENOSPCによりGit tree/commit APIでソースを保存し、ローカルとの差分25ファイルのblob hash一致を初回保存時に確認した。後続テスト修正・この記録はGitHub側が最新で、隔離worktreeは空き容量回復後に同期する。元checkoutの作業は変更していない。画面上のexport/restore、mobile、Provider、実機、本番配備は未受入。
+
 ## AMC fixtureのWeb境界（2026-10-05、G04）
 
 AMCの[有限fixture CLI](../amc-autonomy-fixture.md)は既存OSのNode.jsで試せるが、Sky/Zemaの画面から実行するAPIや成果同期を追加しない。主担当はGit / CI / Operations、ROCK。Web接続時は既存Workflow・owner認証・保存・revision・承認・料金gateを再利用し、依頼から検査済み成果の再取得まで同一候補で受け入れる。今回のmain統合とSites配備、実Provider受入を分け、公開版でAMCを利用可能とは表示しない。検証・統合状態は[証拠](../evidence/amc-fixture-csv-main-integration.json)。
