@@ -15,6 +15,8 @@
 
 検証記録: 実装は `/add` と `/add/data`、既存Home／Zema／暗号化設定backupの再利用。対象13試験、設計／baseline、型検査（`npx tsc --noEmit --incremental false`）、対象lint合格。実ブラウザーで2機能の追加とHome反映を確認。暗号化の画面書出し確認中にMacの容量不足でbrowser kernelが停止し、UI復元・スマートフォン表示は未受入。暗号化／復元自体はhost試験で合格。`npm run verify` はrelease signing試験の一時directory作成不可で停止（ENOSPC）；GitHubの同一候補CIを次に確認する。Sky/LLMのProvider実行、localモデル導入、native OS／実eSIM、公開配備は行っていない。
 
+GitHub PR #91のruntime候補 `92bb9f2ff87cffcf72aa370105cff26def693939` は全7チェック成功。`npm run verify`（build・API・全体回帰を含む）は [run 37555780451](https://github.com/k999ln/rock/actions/runs/37555780451) で合格した。初回CIの新規テスト登録Promise 10件は明示voidへ修正済み。2 MiB上限の暗号化round-tripもhostで合格。MacのENOSPCによりGit tree/commit APIでソースを保存し、ローカルとの差分25ファイルのblob hash一致を初回保存時に確認した。後続テスト修正・この記録はGitHub側が最新で、隔離worktreeは空き容量回復後に同期する。元checkoutの作業は変更していない。画面上のexport/restore、mobile、Provider、実機、本番配備は未受入。
+
 ## AMC fixtureのWeb境界（2026-10-05、G04）
 
 AMCの[有限fixture CLI](../amc-autonomy-fixture.md)は既存OSのNode.jsで試せるが、Sky/Zemaの画面から実行するAPIや成果同期を追加しない。主担当はGit / CI / Operations、ROCK。Web接続時は既存Workflow・owner認証・保存・revision・承認・料金gateを再利用し、依頼から検査済み成果の再取得まで同一候補で受け入れる。今回のmain統合とSites配備、実Provider受入を分け、公開版でAMCを利用可能とは表示しない。検証・統合状態は[証拠](../evidence/amc-fixture-csv-main-integration.json)。

@@ -5781,7 +5781,7 @@
     "integrationNote": "PR #87の初回全体CIでDB状態表の更新日だけが未同期と判明。database:statusで2行を同期し、同一候補の全体CIを再確認する。"
   },
   "portableAddons": {
-    "status": "implemented_ci_pending",
+    "status": "source_verified_ui_partial",
     "primaryOwner": "ROCK",
     "scope": "Sky and existing quoted LLM entry; opt-in browser file collection with encrypted export/restore",
     "physicalEsimAccepted": false,
@@ -5789,6 +5789,9 @@
     "tests": "13/13 host; design/baseline/typecheck/targeted lint passed",
     "ui": "browser add data/llm and Home visibility passed; export/restore UI and mobile not accepted after ENOSPC",
     "fullVerify": "blocked locally at release signing temporary-directory creation (ENOSPC); CI pending",
-    "next": "Verify identical candidate in GitHub CI; finish UI export/restore and device browser acceptance; confirm collection sources"
+    "next": "Finish UI export/restore and mobile acceptance after disk recovery; confirm collection sources. GitHub PR 91 holds latest source; isolated worktree needs sync.",
+    "verifiedSourceSha": "92bb9f2ff87cffcf72aa370105cff26def693939",
+    "ci": "7/7 checks passed; npm run verify including build/API/full regression passed",
+    "ciRun": "https://github.com/k999ln/rock/actions/runs/37555780451"
   }
 }

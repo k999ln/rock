@@ -4,6 +4,8 @@
 
 実装は `/add` と `/add/data`、既存Home／Zema／暗号化設定backupの再利用。対象13試験、設計／baseline、型検査（`npx tsc --noEmit --incremental false`）、対象lint合格。実ブラウザーで2機能の追加とHome反映を確認。暗号化の画面書出し確認中にMacの容量不足でbrowser kernelが停止し、UI復元・スマートフォン表示は未受入。暗号化／復元自体はhost試験で合格。`npm run verify` はrelease signing試験の一時directory作成不可で停止（ENOSPC）；GitHubの同一候補CIを次に確認する。Sky/LLMのProvider実行、localモデル導入、native OS／実eSIM、公開配備は行っていない。
 
+GitHub PR #91のruntime候補 `92bb9f2ff87cffcf72aa370105cff26def693939` は全7チェック成功。`npm run verify`（build・API・全体回帰を含む）は [run 37555780451](https://github.com/k999ln/rock/actions/runs/37555780451) で合格した。初回CIの新規テスト登録Promise 10件は明示voidへ修正済み。2 MiB上限の暗号化round-tripもhostで合格。MacのENOSPCによりGit tree/commit APIでソースを保存し、ローカルとの差分25ファイルのblob hash一致を初回保存時に確認した。後続テスト修正・この記録はGitHub側が最新で、隔離worktreeは空き容量回復後に同期する。元checkoutの作業は変更していない。画面上のexport/restore、mobile、Provider、実機、本番配備は未受入。
+
 ## 2026-10-06 — Sky接続案内の画面内スクロール（SKY10 / O5）
 
 main `e12d880c`から隔離した配布候補へ、接続手順を展開した際に案内ダイアログが画面外へはみ出す表示修正だけを取り込む。高さを画面内へ制限して縦スクロールを許可し、閉じる操作を保つ。O5 / SKY10が主担当、SKY16は関連、接続APIのO4契約は変更しない。019の実画面で1280×720・390×844を確認済み。試験用route/config・DB・cacheはcommitから除外。配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019とUIコードおよび依存60322ファイル・59 symlinkのhashが一致し、既存画面証拠を対応付けた。
