@@ -1,11 +1,11 @@
 {
-  "version": "1.96",
-  "decidedAt": "2026-10-01",
+  "version": "1.97",
+  "decidedAt": "2026-10-06",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
   "audit": "docs/os-readiness-audit-20260909.md",
-  "nextPrompt": "docs/prompts/rock-current-next-20261002.md",
+  "nextPrompt": "docs/prompts/rockstaros-completion/README.md",
   "acceptanceTemplate": "docs/templates/os-acceptance-report.md",
   "designReview": "docs/os-sky-wallet-game-design.md",
   "amcGoalOrchestration": {
@@ -1961,5 +1961,15 @@
       "esim_catalog_as_primary_product_entry",
       "hardware_first_service_positioning"
     ]
+  },
+  "osCompletionPromptPlan": {
+    "date": "2026-10-06",
+    "authority": "user_design_first_then_module_completion_then_integration",
+    "entry": "docs/prompts/rockstaros-completion/README.md",
+    "promptFiles": 11,
+    "designAccepted": false,
+    "runtimeChanged": false,
+    "completedModuleIntegrationAuthorized": true,
+    "operationalGatesPreserved": true
   }
 }

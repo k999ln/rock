@@ -344,3 +344,7 @@ Pro is being specified as a standalone compact PC for AI and PC games, with a JP
 ### Dependency security maintenance
 
 The lockfiles use explicit repository-local MIT security forks for `braces` and `http-cache-semantics`; `npm ci` installs them without a post-install patch. Keep the vendor source with the lockfiles. Run `node --test tests/dependency-security.test.mjs` and the existing `npm run verify` when changing them. Provenance and upstream replacement conditions are in [Security workstream](docs/workstreams/04-security-identity-compliance.md).
+
+## Design-first completion prompts
+
+Use the [complete prompt pack](docs/prompts/rockstaros-completion/README.md): agree the shared design and contracts, design each module, implement and accept the agreed scope, then integrate and validate the system. Each module prompt is self-contained. Opening a prompt does not start agents or establish OS/device readiness.

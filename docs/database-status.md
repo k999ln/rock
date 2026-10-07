@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。
+DOC01/H1: 完全版00で全体設計と共通契約を確認し、01〜08の担当設計・合意後に09で個別実装/受入、10で統合する。PR86/87はmain統合済み、eSIM PR85は未統合。OS11/RLS02のLinux/予算、署名・flash・復旧の個別条件は維持。今回はプロンプト作成のみ。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

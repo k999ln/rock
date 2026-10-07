@@ -68,3 +68,7 @@ UXCHAR01受入（2026-09-21）: `npm run verify`全合格（型、lint、既存�
 - `npm run system:composition:check`
 - `node --experimental-strip-types --test tests/web-route-style-contract.test.mjs tests/sky-studio-chat.test.mjs`
 - 主要画面の実ブラウザ操作
+
+## 設計先行の担当別プロンプト（2026-10-06 / DOC01 / H1）
+
+[完全版11本](../prompts/rockstaros-completion/README.md)を最新入口とする。全体設計、Core、Web、eSIM、Pixel、QEMU/PC、Mini、Pro、compute、実装、統合に分け、契約版・証拠・残条件を渡す。指示文作成のみで、設計・runtime受入は未実施。既存task/phaseGates/executionHoldsは保持する。

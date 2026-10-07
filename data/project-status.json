@@ -35,7 +35,7 @@
   },
   "updatedAt": "2026-10-06",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。",
+  "nextAction": "DOC01/H1: 完全版00で全体設計と共通契約を確認し、01〜08の担当設計・合意後に09で個別実装/受入、10で統合する。PR86/87はmain統合済み、eSIM PR85は未統合。OS11/RLS02のLinux/予算、署名・flash・復旧の個別条件は維持。今回はプロンプト作成のみ。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5779,5 +5779,20 @@
     "validation": "試験用route/configを含まない配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019のUIコードと依存60322ファイル・59 symlinkのhash一致を照合し、1280×720・390×844の表示/閉じる証拠を引継いだ。実PC grant、Provider、課金、公開は未受入。",
     "pullRequest": "https://github.com/k999ln/rock/pull/87",
     "integrationNote": "PR #87の初回全体CIでDB状態表の更新日だけが未同期と判明。database:statusで2行を同期し、同一候補の全体CIを再確認する。"
+  },
+  "osCompletionPromptPack": {
+    "date": "2026-10-06",
+    "taskId": "DOC01",
+    "primarySquad": "H1",
+    "status": "prompt_authored_design_and_runtime_not_started",
+    "entry": "docs/prompts/rockstaros-completion/README.md",
+    "count": 11,
+    "baseMainSha": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+    "previousNextAction": "OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。",
+    "validation": {
+      "documents": "baseline/design/project/mission checks and 12-file relative-link/standalone-field validation passed",
+      "fullVerify": "attempted; release:signing:check temporary fixture failed with ENOSPC",
+      "runtimeChanged": false
+    }
   }
 }

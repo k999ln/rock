@@ -1,3 +1,7 @@
+## 2026-10-06 — 設計先行・担当別完成・統合の完全版プロンプト（DOC01/H1）
+
+最新main e22b4a69から全体設計1本、担当別8本、個別実装1本、統合1本の計11本を作成。PR86/87統合済み・PR85未統合を更新し、各ファイルへ共通制約・対象・成果物・受入・引き渡しを含めた。最新入口はdocs/prompts/rockstaros-completion/README.md。共通契約→担当設計→合意範囲の実装/個別受入→統合を指示する。今回は文書のみでruntime・image・Siteを変更していない。次は全体設計00の実施と設計差分の提示。指示文作成を設計合格や自動実行に数えない。検証: baseline/design/project/missionと12ファイルのリンク・単独引き渡し項目チェックは合格。npm run verifyはrelease:signing:check内の一時fixture作成がENOSPCで停止。runtime変更なし、全体verify成功とはしない。
+
 ## 2026-10-06 — Sky接続案内の画面内スクロール（SKY10 / O5）
 
 main `e12d880c`から隔離した配布候補へ、接続手順を展開した際に案内ダイアログが画面外へはみ出す表示修正だけを取り込む。高さを画面内へ制限して縦スクロールを許可し、閉じる操作を保つ。O5 / SKY10が主担当、SKY16は関連、接続APIのO4契約は変更しない。019の実画面で1280×720・390×844を確認済み。試験用route/config・DB・cacheはcommitから除外。配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019とUIコードおよび依存60322ファイル・59 symlinkのhashが一致し、既存画面証拠を対応付けた。
@@ -1578,7 +1582,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。
+次の作業: DOC01/H1: 完全版00で全体設計と共通契約を確認し、01〜08の担当設計・合意後に09で個別実装/受入、10で統合する。PR86/87はmain統合済み、eSIM PR85は未統合。OS11/RLS02のLinux/予算、署名・flash・復旧の個別条件は維持。今回はプロンプト作成のみ。
 <!-- project-status:end -->
 
 ## 次段階の設計
