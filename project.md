@@ -2,6 +2,16 @@
 
 Security / ROCK、AMCのSYS15主担当H1を維持する。main `e22b4a69`から独立branchを作り、Dependabot #26のroot開発依存を対象にする。sharpの同梱librsvgでnested XInclude中の重複entity宣言によるuse-after-freeが上流で修正されたため、miniflare向けoverrideをsharp 0.35.5へ上げ、native配布物を含むlockの27項目とlicense inventoryだけを同期する。対象外の依存・法的clearance・release gateは維持。既存PR #88のsite sharp、#89のMCP SDKは重複修正しない。更新前後のnpm advisory検査で対象sharp advisoryの有無を照合し、実際にロードするlibrsvgとSVG／PNG処理を回帰検証する。Macで実ロードされたsharp 0.35.5／libvips 8.18.7／librsvg 2.63.2を確認し、bounded childのSVG pixel・PNG round-tripを含む3/3試験が合格。旧版のnative比較は容量不足で未実行であり、CVEの攻撃再現合格とはしない。ローカル全体verifyはrelease:signing:checkの一時fixture作成でENOSPCとなり未完了。Linuxの同一SHA GitHub検査は後続確認。main上のalertは未統合のためopenであり、件数だけで修正完了としない。[検証記録](docs/evidence/spider-root-sharp-update.json)。
 
+2026-10-07の統合同期: PR #90の元候補 `0e87b9a8` はLinuxのnative 3試験を含む全8検査に合格済み（[verify](https://github.com/k999ln/rock/actions/runs/37554875390)）。main `0fbf688b` の追加機能とglobal nextActionを保持して進捗2ファイルの競合を解消する。sharp依存・lock・license inventory・native回帰試験は元候補から変更せず、統合commitで全体CIとSPIDERを再確認する。元候補の成功を新しいSHAへ転用せず、main上のDependabot #26は未統合のためopen。mission／project／database／release／license inventoryの整合検査と独立レビューは合格。今回のローカル全体verifyはllm:architecture:checkで未導入のai依存によるERR_MODULE_NOT_FOUNDとなり、ENOSPCは発生していない。Linuxの同一SHA CIへ検証を引き継ぐ。
+
+## 2026-10-06 — Sky・データ回収・LLMの追加機能（HOME01 / SYS01 / WEB14、実装・検証）
+
+利用者は本体OSの置換ではなく機能追加としてSky・データ回収・LLMを求めた。Web / PWA / Sites、ROCKが主担当。既存Sky、見積／承認付きLLM、暗号化バックアップを再利用し、ブラウザーHomeへ機能を選んで追加する。回収対象は本人が選ぶファイル・入力を初期範囲とし、広い端末走査や外部送信を追加しない。データ範囲の回答待ち。実eSIM搭載・native OS導入・localモデル配備・Provider契約／有料実行は別受入。
+
+実装は `/add` と `/add/data`、既存Home／Zema／暗号化設定backupの再利用。対象13試験、設計／baseline、型検査（`npx tsc --noEmit --incremental false`）、対象lint合格。実ブラウザーで2機能の追加とHome反映を確認。暗号化の画面書出し確認中にMacの容量不足でbrowser kernelが停止し、UI復元・スマートフォン表示は未受入。暗号化／復元自体はhost試験で合格。`npm run verify` はrelease signing試験の一時directory作成不可で停止（ENOSPC）；GitHubの同一候補CIを次に確認する。Sky/LLMのProvider実行、localモデル導入、native OS／実eSIM、公開配備は行っていない。
+
+GitHub PR #91のruntime候補 `92bb9f2ff87cffcf72aa370105cff26def693939` は全7チェック成功。`npm run verify`（build・API・全体回帰を含む）は [run 37555780451](https://github.com/k999ln/rock/actions/runs/37555780451) で合格した。初回CIの新規テスト登録Promise 10件は明示voidへ修正済み。2 MiB上限の暗号化round-tripもhostで合格。MacのENOSPCによりGit tree/commit APIでソースを保存し、ローカルとの差分25ファイルのblob hash一致を初回保存時に確認した。後続テスト修正・この記録はGitHub側が最新で、隔離worktreeは空き容量回復後に同期する。元checkoutの作業は変更していない。画面上のexport/restore、mobile、Provider、実機、本番配備は未受入。
+
 ## 2026-10-06 — Sky接続案内の画面内スクロール（SKY10 / O5）
 
 main `e12d880c`から隔離した配布候補へ、接続手順を展開した際に案内ダイアログが画面外へはみ出す表示修正だけを取り込む。高さを画面内へ制限して縦スクロールを許可し、閉じる操作を保つ。O5 / SKY10が主担当、SKY16は関連、接続APIのO4契約は変更しない。019の実画面で1280×720・390×844を確認済み。試験用route/config・DB・cacheはcommitから除外。配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019とUIコードおよび依存60322ファイル・59 symlinkのhashが一致し、既存画面証拠を対応付けた。
@@ -1582,7 +1592,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。
+次の作業: 追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。
 <!-- project-status:end -->
 
 ## 次段階の設計
