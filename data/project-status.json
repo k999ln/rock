@@ -5043,7 +5043,9 @@
         "tests/amc-autonomy-store-read.test.mjs",
         "scripts/amc-parallel.mjs",
         "tests/amc-workspace-snapshot.test.mjs",
-        "docs/evidence/spider-workspace-snapshot-read.json"
+        "docs/evidence/spider-workspace-snapshot-read.json",
+        "tests/dependency-cache-revalidation-security.test.mjs",
+        "docs/evidence/spider-cache-error-revalidation.json"
       ]
     },
     {
@@ -5763,6 +5765,123 @@
     "successfulChecks": 8,
     "openDependencyAlerts": 0,
     "evidence": "docs/evidence/security-gate-completion.json"
+  },
+  "spiderCacheErrorRevalidation": {
+    "status": "main_refresh_host_pass_ci_pending",
+    "baseCommit": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "workstream": "Security / Identity / Compliance",
+    "responsibility": "ROCK",
+    "finding": "Origin-error reuse bypasses cached-response prohibitions and request matching in the local http-cache-semantics fork.",
+    "evidence": "docs/evidence/spider-cache-error-revalidation.json",
+    "mainIntegrated": false,
+    "mainRefresh": {
+      "cycle": 57,
+      "baseCommit": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+      "priorVerifiedHead": "de3a446bad36db49ff1e5a39b8cae74bc6862618",
+      "priorChecksPassed": 7,
+      "validation": "pending for refreshed candidate",
+      "mainIntegrated": false,
+      "localValidation": {
+        "cacheRegression": {
+          "pass": 13,
+          "fail": 0,
+          "skipped": 0
+        },
+        "metadataChecks": [
+          "mission:update",
+          "mission:check",
+          "project:update",
+          "project:check",
+          "database:status",
+          "database:check",
+          "git diff --check"
+        ],
+        "fullVerify": {
+          "exitCode": 1,
+          "stage": "llm:architecture:check",
+          "reason": "Existing local installation lacks ai; GitHub full install and verification still required."
+        }
+      },
+      "firstIntegratedMain": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+      "preservedUpstreamWork": [
+        "Pixel build preparation from PR86",
+        "Sky connection dialog from PR87"
+      ]
+    },
+    "latestMainRefresh": {
+      "cycle": 62,
+      "baseCommit": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+      "priorVerifiedHead": "819422c49f8b78b2b9b5fff8696240335d02a83e",
+      "priorChecksPassed": 8,
+      "priorVerifyRun": 37512489543,
+      "conflicts": [
+        "project.md"
+      ],
+      "resolution": "Retain both progress sections; preserve all upstream runtime/features, portableAddons and main nextAction",
+      "cacheSourceTestsWorkflowAndLicenseUnchanged": true,
+      "validation": "local_cache_and_metadata_pass_exact_sha_ci_pending",
+      "mainIntegrated": false,
+      "existingDependencyFixPrs": [
+        88,
+        89,
+        90
+      ],
+      "localValidation": {
+        "cacheRegression": {
+          "tests": 13,
+          "pass": 13,
+          "fail": 0,
+          "skip": 0
+        },
+        "metadataChecks": "mission/project/database update/check and git diff --check passed",
+        "independentReview": {
+          "blockers": 0,
+          "mainFeaturesAndProgressPreserved": true,
+          "cacheRuntimeTestsWorkflowAndLicenseUnchanged": true
+        },
+        "fullVerify": {
+          "exitCode": 1,
+          "stage": "llm:architecture:check",
+          "reason": "Installed dependency tree lacks ai (ERR_MODULE_NOT_FOUND); GitHub full install and exact-SHA verification required",
+          "enospc": false
+        }
+      }
+    },
+    "documentationMainRefresh": {
+      "cycle": 79,
+      "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+      "priorVerifiedHead": "1a5a7079350e2742d65abdd1a9aaddaf0e87c6f0",
+      "priorChecksPassed": 7,
+      "priorVerifyRun": 37574887322,
+      "conflicts": [
+        "project.md"
+      ],
+      "resolution": "Preserve main reading guide, title, all restored history and ordered sections plus the complete existing cache progress section. Global nextAction and unrelated status unchanged.",
+      "cacheSourceTestsWorkflowAndLicenseUnchanged": true,
+      "validation": "local_cache_release_and_metadata_pass_exact_sha_ci_pending",
+      "mainIntegrated": false,
+      "existingDependencyFixPrs": [
+        88,
+        89,
+        90
+      ],
+      "localValidation": {
+        "cacheAndReleaseTests": {
+          "exitCode": 0,
+          "command": "node --test tests/dependency-cache-revalidation-security.test.mjs tests/release-readiness.test.mjs"
+        },
+        "releaseCheck": "pass; ready0/6 blocked6",
+        "metadataChecks": "mission/project/database update/check passed",
+        "fullVerify": {
+          "exitCode": 1,
+          "stage": "llm:architecture:check",
+          "reason": "Installed dependency tree lacks ai (ERR_MODULE_NOT_FOUND); exact-SHA GitHub full install and verification required",
+          "enospc": false
+        }
+      }
+    }
   },
   "skyConnectionDialogFix": {
     "requestId": "SKY-S2-CONNECTION-FIX-INTEGRATE-20261006-01",

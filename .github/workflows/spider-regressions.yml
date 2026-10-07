@@ -28,6 +28,8 @@ jobs:
           node-version: '22'
       - name: Test feedback collection and update-message boundaries
         run: node --test tests/spider-feedback.test.mjs tests/service-worker-update.test.mjs tests/spider-web-runtime.test.mjs
+      - name: Test cache origin-error revalidation boundaries
+        run: node --test tests/dependency-cache-revalidation-security.test.mjs
       - name: Test AMC squad text rendering and offline navigation
         run: node --test tests/mission-control.test.mjs tests/amc-goal-cli.test.mjs
       - name: Test persisted work plans and authoritative Agent progress

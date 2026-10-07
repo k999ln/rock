@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 1,
+  "cycle": 53,
+  "status": "main_refresh_host_pass_ci_pending",
+  "baseCommit": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+  "workstream": "Security / Identity / Compliance",
+  "responsibility": "ROCK",
+  "taskId": "SYS15",
+  "primarySquad": "H1",
+  "assignmentClassification": "coordination",
+  "finding": {
+    "component": "sites/avocado-mini/vendor/http-cache-semantics/index.js",
+    "cause": "revalidatedPolicy origin-error shortcut bypassed cached-response prohibitions and request matching",
+    "reproducer": "Storable shared response with Set-Cookie and stale-if-error=3600 is denied by evaluateRequest but reused on HTTP500, before the patch.",
+    "productionExposureObserved": false,
+    "knownAdvisoryState": "Dependabot17 and18 fixed on main; this residual path was independently reproduced, not a new or dismissed GitHub alert."
+  },
+  "change": {
+    "sharedGuard": [
+      "storable",
+      "response no-cache and must-revalidate",
+      "shared proxy-revalidate",
+      "expired shared s-maxage",
+      "shared cookies without public or immutable",
+      "wildcard Vary"
+    ],
+    "appliedAt": [
+      "evaluateRequest",
+      "_useStaleIfError",
+      "useStaleWhileRevalidate"
+    ],
+    "errorFallbackRequestChecks": [
+      "URI",
+      "host",
+      "method with existing HEAD allowance",
+      "Vary",
+      "Cache-Control no-cache",
+      "Pragma no-cache"
+    ],
+    "retained": [
+      "successful304 validation",
+      "permitted public/private-cache stale reuse",
+      "TTL as retention hint"
+    ]
+  },
+  "validation": {
+    "command": "node --test tests/dependency-cache-revalidation-security.test.mjs",
+    "baseline": {
+      "sourceSha256": "0951c9d26471af18a8e21988829ce08f8ccf01e267740eab4c601345b964d34a",
+      "tests": 13,
+      "pass": 3,
+      "fail": 10,
+      "skipped": 0,
+      "testSha256": "1ded31168ab149d7dc1afdd8f980d201410793f5be961ae4c9e108d50e0ed11e"
+    },
+    "patched": {
+      "sourceSha256": "324afc5b862048a3d80b6ae53cc7aeb0a0a6d6baf4121a4f52ea44893ac25f91",
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "skipped": 0
+    },
+    "independentReview": {
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "skipped": 0,
+      "blockers": 0
+    },
+    "testSha256": "1ded31168ab149d7dc1afdd8f980d201410793f5be961ae4c9e108d50e0ed11e",
+    "coverage": [
+      "HTTP500/502/503/504",
+      "missing responses",
+      "serialized policies",
+      "nonstorable responses",
+      "response/request prohibitions",
+      "URI/host/method/Vary mismatch",
+      "expiredwindow",
+      "positive public/private/immutable/HEAD/freshsmaxage/304"
+    ],
+    "githubSameSha": "pending; GitHub PR checks will validate the committed source",
+    "localFullVerify": {
+      "command": "npm run verify",
+      "exitCode": 1,
+      "stage": "llm:architecture:check",
+      "reason": "Existing local dependency installation lacks ai (ERR_MODULE_NOT_FOUND); full GitHub npm ci + verify required.",
+      "log": "work/spider-ci/cycle-53-local-verify.log"
+    },
+    "metadataChecks": [
+      "mission:update",
+      "mission:check",
+      "project:update",
+      "project:check",
+      "database:status",
+      "verify stages through system:composition:check"
+    ],
+    "initialCi": {
+      "head": "f7c088943ff63e10e76ab5c7f6efa7f587f29a0c",
+      "run": 37483672154,
+      "conclusion": "failure",
+      "stage": "lint:product",
+      "reason": "Test registration promises require explicit void; assertions and runner-managed test execution remain unchanged.",
+      "followUp": "Explicitly mark node:test registration promises, then recheck the new commit."
+    },
+    "negativeControlRepeatedAfterTestRefactor": {
+      "tests": 13,
+      "pass": 3,
+      "fail": 10,
+      "skipped": 0,
+      "source": "origin/main:sites/avocado-mini/vendor/http-cache-semantics/index.js",
+      "isolatedTemporaryLayout": true
+    },
+    "testFixtureTyping": {
+      "reason": "Use explicit named records to prevent label inference as string/object unions; retain all assertions and cases.",
+      "failedHead": "baa5b7abea8fdf9a0b4c94dafd6df0b57ebdaddb",
+      "failedRun": 37484859198,
+      "failedStage": "lint:product",
+      "patchedRetest": {
+        "pass": 13,
+        "fail": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "sameRefBaseline": {
+    "ref": "refs/heads/main",
+    "head": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+    "codeqlOpen": 34,
+    "dependabotOpen": 0,
+    "targetedNewGitHubAlert": null,
+    "alertClosureClaim": false
+  },
+  "licenseMetadataCorrection": "Preserved upstream LICENSE and package declare BSD-2-Clause; only mistaken patch-document MIT label corrected.",
+  "standards": [
+    "https://www.rfc-editor.org/rfc/rfc9111.html#section-4.2.4",
+    "https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.1.4",
+    "https://www.rfc-editor.org/rfc/rfc9111.html#section-5.2.2.10"
+  ],
+  "boundaries": [
+    "No claim of complete RFC conformance or production exploit observation",
+    "No scanner suppression, alert dismissal, history rewrite or secret rotation",
+    "No main merge, public deployment or physical-device acceptance",
+    "34 CodeQL alerts and directory-ancestor race remain separate work"
+  ],
+  "mainRefresh": {
+    "cycle": 57,
+    "baseCommit": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+    "priorVerifiedHead": "de3a446bad36db49ff1e5a39b8cae74bc6862618",
+    "priorChecksPassed": 7,
+    "conflicts": [
+      "data/project-status.json:nextAction",
+      "data/database-status.json:nextAction",
+      "docs/database-status.md:nextAction",
+      "project.md:progress sections and nextAction"
+    ],
+    "resolution": "Keep upstream OS nextAction and Pixel preparation records, preserve SPIDER progress and cache fix. No runtime or test change.",
+    "priorSourceAndTestsUnchanged": true,
+    "newGitHubValidation": "pending",
+    "sameRefMainAlerts": {
+      "beforeHead": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+      "afterHead": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+      "codeql": 34,
+      "codeqlIdentityRulePathStatusUnchanged": true,
+      "dependabot": 3,
+      "newDependabotIds": [
+        26,
+        27,
+        28
+      ],
+      "existingDependencyPullRequests": [
+        88,
+        89
+      ]
+    },
+    "localValidation": {
+      "cacheRegression": {
+        "pass": 13,
+        "fail": 0,
+        "skipped": 0
+      },
+      "metadataChecks": [
+        "mission:update",
+        "mission:check",
+        "project:update",
+        "project:check",
+        "database:status",
+        "database:check",
+        "git diff --check"
+      ],
+      "fullVerify": {
+        "exitCode": 1,
+        "stage": "llm:architecture:check",
+        "reason": "Existing local installation lacks ai; GitHub full install and verification still required."
+      }
+    },
+    "mainMerged": false,
+    "firstIntegratedMain": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+    "preservedUpstreamWork": [
+      "Pixel build preparation from PR86",
+      "Sky connection dialog from PR87"
+    ]
+  },
+  "latestMainRefresh": {
+    "cycle": 62,
+    "baseCommit": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "priorVerifiedHead": "819422c49f8b78b2b9b5fff8696240335d02a83e",
+    "priorChecksPassed": 8,
+    "priorVerifyRun": 37512489543,
+    "conflicts": [
+      "project.md"
+    ],
+    "resolution": "Retain both progress sections; preserve all upstream runtime/features, portableAddons and main nextAction",
+    "cacheSourceTestsWorkflowAndLicenseUnchanged": true,
+    "validation": "local_cache_and_metadata_pass_exact_sha_ci_pending",
+    "mainIntegrated": false,
+    "existingDependencyFixPrs": [
+      88,
+      89,
+      90
+    ],
+    "localValidation": {
+      "cacheRegression": {
+        "tests": 13,
+        "pass": 13,
+        "fail": 0,
+        "skip": 0
+      },
+      "metadataChecks": "mission/project/database update/check and git diff --check passed",
+      "independentReview": {
+        "blockers": 0,
+        "mainFeaturesAndProgressPreserved": true,
+        "cacheRuntimeTestsWorkflowAndLicenseUnchanged": true
+      },
+      "fullVerify": {
+        "exitCode": 1,
+        "stage": "llm:architecture:check",
+        "reason": "Installed dependency tree lacks ai (ERR_MODULE_NOT_FOUND); GitHub full install and exact-SHA verification required",
+        "enospc": false
+      }
+    }
+  },
+  "documentationMainRefresh": {
+    "cycle": 79,
+    "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "priorVerifiedHead": "1a5a7079350e2742d65abdd1a9aaddaf0e87c6f0",
+    "priorChecksPassed": 7,
+    "priorVerifyRun": 37574887322,
+    "conflicts": [
+      "project.md"
+    ],
+    "resolution": "Preserve main reading guide, title, all restored history and ordered sections plus the complete existing cache progress section. Global nextAction and unrelated status unchanged.",
+    "cacheSourceTestsWorkflowAndLicenseUnchanged": true,
+    "validation": "local_cache_release_and_metadata_pass_exact_sha_ci_pending",
+    "mainIntegrated": false,
+    "existingDependencyFixPrs": [
+      88,
+      89,
+      90
+    ],
+    "localValidation": {
+      "cacheAndReleaseTests": {
+        "exitCode": 0,
+        "command": "node --test tests/dependency-cache-revalidation-security.test.mjs tests/release-readiness.test.mjs"
+      },
+      "releaseCheck": "pass; ready0/6 blocked6",
+      "metadataChecks": "mission/project/database update/check passed",
+      "fullVerify": {
+        "exitCode": 1,
+        "stage": "llm:architecture:check",
+        "reason": "Installed dependency tree lacks ai (ERR_MODULE_NOT_FOUND); exact-SHA GitHub full install and verification required",
+        "enospc": false
+      }
+    }
+  }
+}

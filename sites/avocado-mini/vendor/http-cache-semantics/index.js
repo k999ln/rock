@@ -395,16 +395,7 @@ module.exports = class CachePolicy {
     evaluateRequest(req) {
         this._assertRequestHasHeaders(req);
 
-        // Security prohibitions are not ordinary expiry: max-stale and
-        // stale-while-revalidate must never revive these shared responses.
-        if (!this.storable() || this._rescc['no-cache'] ||
-            (this._isShared && (this._rescc['proxy-revalidate'] ||
-                (this._resHeaders['set-cookie'] && !this._rescc.public && !this._rescc.immutable)))) {
-            return this._evaluateRequestMissResult(req);
-        }
-
-        // In all circumstances, a cache MUST NOT ignore the must-revalidate directive
-        if (this._rescc['must-revalidate']) {
+        if (!this._allowsReuseWithoutRevalidation()) {
             return this._evaluateRequestMissResult(req);
         }
 
@@ -711,10 +702,28 @@ module.exports = class CachePolicy {
     }
 
     /**
+     * Security prohibitions are not ordinary expiry. Every stale-reuse entry
+     * point must respect them, including failed revalidation and direct SWR.
+     * @returns {boolean} Whether reuse without successful origin validation is permitted.
+     */
+    _allowsReuseWithoutRevalidation() {
+        return !!(this.storable() &&
+            !this._rescc['no-cache'] &&
+            !this._rescc['must-revalidate'] &&
+            !(this._resHeaders.vary || '').split(',').some(name => name.trim() === '*') &&
+            !(this._isShared && (
+                this._rescc['proxy-revalidate'] ||
+                ('s-maxage' in this._rescc && this.stale()) ||
+                (this._resHeaders['set-cookie'] && !this._rescc.public && !this._rescc.immutable)
+            )));
+    }
+
+    /**
      * @returns {boolean} `true` if `stale-if-error` condition allows use of a stale response.
      */
     _useStaleIfError() {
-        return this.maxAge() + toNumberOrZero(this._rescc['stale-if-error']) > this.age();
+        return this._allowsReuseWithoutRevalidation() &&
+            this.maxAge() + toNumberOrZero(this._rescc['stale-if-error']) > this.age();
     }
 
     /** See `evaluateRequest()` for a more complete solution
@@ -722,7 +731,8 @@ module.exports = class CachePolicy {
      */
     useStaleWhileRevalidate() {
         const swr = toNumberOrZero(this._rescc['stale-while-revalidate']);
-        return swr > 0 && this.maxAge() + swr > this.age();
+        return this._allowsReuseWithoutRevalidation() &&
+            swr > 0 && this.maxAge() + swr > this.age();
     }
 
     /**
@@ -863,7 +873,10 @@ module.exports = class CachePolicy {
     revalidatedPolicy(request, response) {
         this._assertRequestHasHeaders(request);
 
-        if (this._useStaleIfError() && isErrorResponse(response)) {
+        const requestCC = parseCacheControl(request.headers['cache-control']);
+        if (this._useStaleIfError() && isErrorResponse(response) &&
+            this._requestMatches(request, true) &&
+            !requestCC['no-cache'] && !/no-cache/.test(request.headers.pragma)) {
           return {
               policy: this,
               modified: false,
