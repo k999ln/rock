@@ -1,3 +1,5 @@
+> **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。新しい記録を上へ足しています（一部は順不同）。題名「RockstarOS — 事業・設計・進捗」より上の節は2026-10-05〜06の記録です。全taskの表は [全taskの作業進捗](#全taskの作業進捗) にあり、[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成されます。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
+
 ## 2026-10-06 — Sky・データ回収・LLMの追加機能（HOME01 / SYS01 / WEB14、実装・検証）
 
 利用者は本体OSの置換ではなく機能追加としてSky・データ回収・LLMを求めた。Web / PWA / Sites、ROCKが主担当。既存Sky、見積／承認付きLLM、暗号化バックアップを再利用し、ブラウザーHomeへ機能を選んで追加する。回収対象は本人が選ぶファイル・入力を初期範囲とし、広い端末走査や外部送信を追加しない。データ範囲の回答待ち。実eSIM搭載・native OS導入・localモデル配備・Provider契約／有料実行は別受入。

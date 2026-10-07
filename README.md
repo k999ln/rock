@@ -10,28 +10,69 @@ A product concept that begins with games and connects creation, learning, and ev
 We are designing the compact autonomous spatial-input, display, and game device **avocadoMini R5**, the standalone game-and-services computer **avokadoPro**, and **RockstarOS v1.0**, the common operating-system design that connects approved hardware, work, AI, creative assets, and permissions.
 The fully recoverable and reusable small-satellite launch vehicle **rocketstar** is a separate, active design program.
 
-[Product experience](#product-experience) · [Feature details](#feature-details) · [Current status](#current-status) · [Design library](#design-library) · [Still image](docs/brand/avokado/avokado-r5-editorial-hero.png)
+[What this is](#what-this-repository-is) · [At a glance](#at-a-glance) · [Product experience](#product-experience) · [Feature details](#feature-details) · [Current status](#current-status) · [Design library](#design-library) · [Find a document](docs/README.md) · [Still image](docs/brand/avokado/avokado-r5-editorial-hero.png)
 
 </div>
 
-## Add Sky, data collection, and LLM access
-
-Open Home → **追加** (`/add`). Sky is included; select **ホームに追加** for data collection or LLM. The LLM shortcut opens existing Zema and still requires a configured connection and the existing quote/budget approval. This does not install a local model or replace the device OS.
-
-At `/add/data`, choose up to 20 files (including Sky/LLM results you already downloaded), optionally add a note, and export an encrypted `.rockdata` file with a passphrase of at least 10 characters. The total limit is 2 MiB. To recover, select that archive and enter the same passphrase; verified files and notes can be downloaded separately. Contents stay in browser memory until explicitly exported and disappear on reload. Keep the archive and passphrase separately; neither is uploaded by this utility. Whole-device and automatic external-service collection are not included.
-
-
 > **About the image** — The R5 visual above is concept art based on the intended industrial design. The animated lines are a brand treatment, not a photograph of working hardware or proof of a spatial display.
+
+## What this repository is
+
+**avokado** is one business with three layers. This repository (`k999ln/rock`) is the single source of truth for all of them: requirements, designs, source code, and test evidence.
+
+| Layer | What it is | Where it stands |
+| --- | --- | --- |
+| **1. The service** | Buy a physical SIM or an eSIM and get access to RockstarOS, Sky, Zema, and built-in AI agents. Cloud AI work is billed by usage, and the price is shown before anything runs. **This is the current main product direction, decided on 2026-10-02.** | Source code and local tests exist. There is no carrier contract, real purchase, or live billing yet. |
+| **2. RockstarOS** | The shared operating layer for AI and agents: identity, permissions, work, storage, and recovery. On top of it, **Sky** finds and connects tools, **Zema** runs and tracks work, and **Wallet** shows costs and confirmed earnings. | A web app, a Linux/QEMU Developer Preview, and a test-signed app on a Pixel 10. No full OS image has been flashed to a phone. |
+| **3. The hardware** | **avocadoMini R5**, a 200 mm stand-alone spatial-input, display, and game device, and **avokadoPro**, a compact NVIDIA desktop for AI and PC games. **rocketstar**, a reusable small-satellite launch vehicle, is a separate design program. | Design documents only. Nothing has been built, approved for manufacturing, or put on sale. |
+
+Most design documents are written in Japanese. This README is the English entry point.
 
 **Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [avokadoPro product definition](sites/avocado-mini/src/pages/pro/index.astro) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Mission Control](docs/mission-control.md) · [Complete design index](#design-library)
 
-[AMC task plans](docs/mission-control.md) give each of 32 squads one explicit next task, inputs, steps, deliverables, and evidence-based acceptance criteria. Shared systems, historical profiles, and product-specific acceptance are tracked separately; task counts are not product completion percentages.
+## At a glance
 
-[AMC Goal Orchestrator](docs/amc-goal-orchestrator.md) opens with the canonical five-division, 32-squad progress board. Selecting a squad shows its Goal, outcome, scoped stage, gaps and next tasks; task links navigate prerequisites, children and downstream owners. This is an embedded snapshot, not live AI progress. The separate request/Goal view retains request → Goal and intent confirmation, chat, evidence ledger and backups. Software requests still use four proposed roles, seven preparation steps and uncalibrated human-effort ranges, not semantic AI decomposition or measured estimates; they do not modify the canonical squads. Generate the offline screen with `npm run mission:goal -- build --out /absolute/path/new-workbench.html`. AI execution, automatic progress collection and notification delivery are not connected. Confirmation does not authorize spending, publication or hardware actions.
+### How the direction changed
 
-AMC is also integrated as the first-party Sky Tool `rockstar-amc`: open `/amc` in the Web app or use its embedded card in Zema. Sign in to save and reopen your own Goals through `/api/amc`, using the existing `work_jobs` store with revision-conflict checks. Confirm the request, Goal and intent to save a four-role, seven-step software-preparation template; every task is still pending. The Web start, submission and independent-review controls record work performed elsewhere—they do not launch an AI. For an explicit one-task local Codex run, export the Goal JSON and run `npm run mission:codex -- run --goal <saved-goal.json> --allow-codex-upload` in this repository. The flag confirms that Codex receives Goal content and relevant repository context. The runner records Codex's result as submitted for independent review or pauses on uncertainty; it never marks the Goal accepted. Its output can be imported as a separate Web record, not synchronized with the original. The canonical 32-squad board is read-only and separate from your saved Goals. A successful save/update notice in Zema is not Goal completion. The local browser flow from Sky to Zema, saving/reopening a Goal and protecting unsaved input was checked; deployed acceptance and owner usability acceptance remain separate. The offline HTML remains a separate, non-synchronized option.
+The center of the product moved five times in about a month. Older documents describe older centers, so check the date before relying on one.
 
-The local request gate also accepts bot/BOT, Japanese ボット, full-width spellings, scripts and automation requests; normalization is for matching only and preserves the original request. Acceptance of a request does not connect a provider or authorize trading/transfers.
+| Period (2026) | Center of the product | In short |
+| --- | --- | --- |
+| Sep 4 – 8 | **LOOP / Rock star** — a web hub for automation tools | Began as a web app for finding and running AI automation tools. An Android-based automation OS was proposed on day two. |
+| Sep 9 – 11 | **Rock star OS → RockstarOS 1.0** — an OS for automation tools | Requirements RQ01–RQ17 were fixed. A native OS ran in QEMU, with a Hub, a Wallet, and a Developer Preview aimed at a product announcement. |
+| Sep 12 – 16 | **Sky / Zema / Wallet** — an OS for owning an AI automation team | The Hub became Sky and Chat became Zema. MCP connections, earnings-based fees, and the first business tools arrived. Pixel 10 became the first phone target. The name was briefly avocadoOS. |
+| Sep 17 – 26 | **avocadoMini** — hardware as the public face | The name returned to RockstarOS. Material Invention and avocadoMini appeared; the device went through eight shapes in seven days and settled on R5. The line-up became three hardware products on one shared OS. |
+| Sep 27 – Oct 6 | **A SIM/eSIM-led service** (current) | Sky Market with a 10% fee, cloud agents that keep working while the device is offline, and, on Oct 2, the SIM/eSIM purchase as the way into RockstarOS services. |
+
+The full record, day by day and theme by theme, is in the [specification history](docs/spec-history.md) (Japanese). It also lists [what is in force today](docs/spec-history.md#2-いま有効な仕様2026-10-06時点) and [what was withdrawn](docs/spec-history.md#5-撤回上書きされた仕様の一覧).
+
+### Agents and tools
+
+“Agent” means five different things in this project. The [agent and tool overview](docs/agents-and-tools.md) (Japanese) lists every one with its function.
+
+| Kind | Count | What it is |
+| --- | --- | --- |
+| Sky tools | 35 — 13 ready, 22 candidates | Automations listed in Sky, such as CSV clean-up, the Mercari revenue starter, Fashion Brand Ops, legal intake, and the patent assistant. Candidates cannot run yet. |
+| Role agents | 7 — 3 implemented | Agents with a role that work through conversation and may use only their permitted tools: subscription advisor, legal intake, and patent filing. |
+| On-device agents | 4 | The local LLM planner, the agent runtime and Broker, the Spider security agent, and the operator agent. |
+| Cloud agents | — | Remote workers that continue approved work while the device is offline, including delegation to outside agents (A2A). |
+| Development squads (AMC) | 32 squads in 5 divisions, plus 3 Codex agents | The organization that builds this project. It is not a user-facing feature. |
+| Native developer tools | 6 families, 9 versions | Small text tools bundled with the Linux/QEMU image. |
+| Toolkits and services | 13 and 5 | SDKs, connectors, sandboxes, and separately deployed workers. |
+
+### Find anything
+
+| I want to… | Open |
+| --- | --- |
+| understand the current product direction | [What is in force today](docs/spec-history.md#2-いま有効な仕様2026-10-06時点) / [SIM/eSIM-led architecture](docs/sim-led-product-architecture.md) |
+| see what changed, and on which day | [Specification history](docs/spec-history.md) |
+| read the confirmed requirements, RQ01–RQ49 | [Product baseline](docs/product-baseline.md) |
+| see every tool and agent and what each one does | [Agent and tool overview](docs/agents-and-tools.md) |
+| find any document in `docs/` | [Document map](docs/README.md) — all 184 documents, classified |
+| read a design | [Design library](#design-library) below / [Design portal](docs/rockstaros-design-portal.md) |
+| find the source code for a product | [Project guide](PROJECTS.md) |
+| see progress and who owns what | [Current status](#current-status) / [All tasks](project.md) / [Mission Control](docs/mission-control.md) |
+| start developing | [Start developing](#start-developing) / [Rules for AI coding agents](AGENTS.md) |
 
 ## The business avokado is building
 
@@ -51,7 +92,7 @@ avokado aims to create a family of products that lets people choose their own ex
 ### Revenue and participation
 
 - First, we measure whether useful games, creation tasks, and work actually complete. Tool completion, delivery, revenue, and provider-confirmed payment are separate events.
-- Sky is designed to charge developers and businesses neither a base fee for registering Tools nor a Sky fee on product revenue. External payment, model, cloud, and other pass-through costs are shown separately.
+- Registering, connecting, and publishing a Tool in Sky is free, and there is no base fee. **Sky Market takes 10% of verified Tool sales** (current policy, 2026-09-27). External payment, model, cloud, and other pass-through costs are shown separately. Billing, collection, and payouts stay disabled until the payment provider, identity checks, refunds, and reconciliation are accepted. An earlier design (2026-09-12) charged no Sky fee on product revenue; that is now a historical record.
 - **The proposed USD 8.88 user revenue fee is on hold.** No new fee will be accrued or billed until the revenue path, fee basis, calculation, cap, collection method, and consent are defined. Earlier USD 8.88 calculations are historical design and test records, not current pricing. Live billing and live payouts have not started.
 - The R5 hardware price, release date, and reservation terms are undecided. Pricing from the older Tower20 E3 design does not carry over to R5.
 
@@ -81,6 +122,14 @@ This is the **planned order of experience development**. It does not mean that a
 
 The [51-page integrated R5 basic design](docs/avocado-mini-r5/README.md) ([PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [Word](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.docx) · [complete ZIP](docs/avocado-mini-r5/avocadoMini_R5_Integrated_Design_Package.zip)) contains requirements, candidate components, comparative calculations, drawings, and assembly and acceptance plans. Fourteen automated checks reproduce arithmetic and decision conditions; **zero physical-device tests have been completed, and manufacturing approval is on hold**. The “four units plus a separate hub” Tower20 E3 material still visible on the public product site is classified as a [historical design](docs/avocado-mini-tower20-e3/README.md).
 
+### Mini standalone cellular — design requirement
+
+Mini will carry its own physical SIM and cellular modem; Pro, a PC or phone tethering will not be required for cellular access. External power and offline basic operation remain part of the R5 design. [Hardware, connection and recovery plan](docs/avocado-mini-cellular.md). Country/carrier and modem are pending; no modem integration or real connection has been accepted.
+
+### avokadoPro NVIDIA desktop — design candidate
+
+Pro is being specified as a standalone compact PC for AI and PC games, with a JPY800,000 sales target (tax/shipping undecided). The candidate combines an x86 CPU with an NVIDIA GeForce RTX 5080 **Laptop** GPU, 128GB RAM and two 2TB SSDs. [Configuration, assembly and acceptance plan](docs/avokado-pro-pc-design.md). Mini does not require Pro. No hardware has been purchased or assembled, and no production or game/AI acceptance is claimed.
+
 ## Feature details
 
 ### 1. Input, Japanese voice, and accessibility
@@ -98,6 +147,8 @@ The design translates hand and body position, short Japanese commands, and physi
 The default particle sandbox uses the smallest loop of “select → move → release → collide/combine/separate → undo → save/resume.” It preserves rules, random seeds, and work versions so a state can be reproduced. Shared use accounts for clock and coordinate drift, disconnection, and one participant stopping. The author SDK receives semantic operations so a game does not automatically gain raw-image or payment authority.
 
 **Commercial-game support is evaluated title by title.** This input design alone does not mean that games such as GTA run, can be modified, or have official integration. [Game features and acceptance conditions](docs/avocado-mini-r5/package/integrated_design.md#03-%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%A8%E5%88%B6%E4%BD%9C%E3%81%AE%E5%9F%BA%E6%9C%AC%E6%A9%9F%E8%83%BD) / [Game and Wallet workstream](docs/workstreams/08-game-market-fund.md)
+
+**Mini game client prototype.** Run `node toolkits/mini-game-client/cli.mjs check` for read-only remote-play prerequisites. Explicit `setup`/`open` actions hand off to official PS5/Xbox clients; no GTA VI or Mini hardware acceptance is claimed. [Usage and remaining setup](toolkits/mini-game-client/README.md).
 
 ### 3. Creation, learning, and asset management
 
@@ -123,6 +174,8 @@ RockstarOS centralizes user and component authentication, capabilities, approval
 
 [Current OS v1.0 source and appendices](#rockstaros-v10--current-os-design) / [Complete OS design](docs/rockstaros-complete-design.md) / [Shared AI-native OS architecture](docs/ai-native-os-architecture.md) / [LLM implementation and open work](docs/llm-evaluation-architecture.md)
 
+**avokado model — from-scratch pretraining prototype.** You can train a small model from random initialization at no additional cost and try saving, resuming, and CPU inference. [How to run it](toolkits/avokado-llm/README.md). A practical LLM, Mini hardware, and cloud deployment are not complete. The existing Qwen profile and the eSIM service path are kept.
+
 ### 7. Sky, Zema, and Tools
 
 **Sky** is the entry point for discovering Tools and AI teams and comparing their author, version, permissions, execution location, and cost before connecting. **Zema** takes a request and manages input confirmation, planning, progress, stopping, user approval, deliverables, and history as one unit of work. Chat text and AI answers are not themselves approvals.
@@ -138,6 +191,30 @@ RockstarOS centralizes user and component authentication, capabilities, approval
 | Market Scanner / Fund | Estimate prices and demand, record PAPER activity, and compare configurations against evidence | Live orders, returns, and live-fund operation require separate acceptance |
 
 The catalog also includes Tools for checking Coconala opportunities, reconciling delivery records, and subscription advisory work. A candidate Tool is not considered operational merely because it is listed. [Complete Tool inputs, outputs, storage, and failure behavior](docs/sky-tools-complete-design.md) / [Project guide](PROJECTS.md)
+
+#### Add Sky, data collection, and LLM access
+
+Open Home → **追加** (`/add`). Sky is included; select **ホームに追加** for data collection or LLM. The LLM shortcut opens existing Zema and still requires a configured connection and the existing quote/budget approval. This does not install a local model or replace the device OS.
+
+At `/add/data`, choose up to 20 files (including Sky/LLM results you already downloaded), optionally add a note, and export an encrypted `.rockdata` file with a passphrase of at least 10 characters. The total limit is 2 MiB. To recover, select that archive and enter the same passphrase; verified files and notes can be downloaded separately. Contents stay in browser memory until explicitly exported and disappear on reload. Keep the archive and passphrase separately; neither is uploaded by this utility. Whole-device and automatic external-service collection are not included.
+
+#### From a Sky product page to Zema
+
+<!-- sky-detail-handoff:start -->
+A Sky product page lets you check the description, pricing, and connection requirements, and save the product to your library. **Open in Zema** takes you to the input and run screen for the same product. Opening or saving a product does not approve a purchase or a run. Citation organizing can run in the browser, so a PC connection is not required. Saved products open from the Zema library. Saving again does not create a duplicate, and removing applies only to your own saved item.
+
+For ordinary work in Zema, you can edit the objective of a plan before the first step starts. If a concurrent update conflicts, reload to see the latest content. An AMC Goal is updated only through AMC's own approval and record operations.
+<!-- sky-detail-handoff:end -->
+
+#### AMC — goals and squads
+
+[AMC task plans](docs/mission-control.md) give each of 32 squads one explicit next task, inputs, steps, deliverables, and evidence-based acceptance criteria. Shared systems, historical profiles, and product-specific acceptance are tracked separately; task counts are not product completion percentages.
+
+[AMC Goal Orchestrator](docs/amc-goal-orchestrator.md) opens with the canonical five-division, 32-squad progress board. Selecting a squad shows its Goal, outcome, scoped stage, gaps and next tasks; task links navigate prerequisites, children and downstream owners. This is an embedded snapshot, not live AI progress. The separate request/Goal view retains request → Goal and intent confirmation, chat, evidence ledger and backups. Software requests still use four proposed roles, seven preparation steps and uncalibrated human-effort ranges, not semantic AI decomposition or measured estimates; they do not modify the canonical squads. Generate the offline screen with `npm run mission:goal -- build --out /absolute/path/new-workbench.html`. AI execution, automatic progress collection and notification delivery are not connected. Confirmation does not authorize spending, publication or hardware actions.
+
+AMC is also integrated as the first-party Sky Tool `rockstar-amc`: open `/amc` in the Web app or use its embedded card in Zema. Sign in to save and reopen your own Goals through `/api/amc`, using the existing `work_jobs` store with revision-conflict checks. Confirm the request, Goal and intent to save a four-role, seven-step software-preparation template; every task is still pending. The Web start, submission and independent-review controls record work performed elsewhere—they do not launch an AI. For an explicit one-task local Codex run, export the Goal JSON and run `npm run mission:codex -- run --goal <saved-goal.json> --allow-codex-upload` in this repository. The flag confirms that Codex receives Goal content and relevant repository context. The runner records Codex's result as submitted for independent review or pauses on uncertainty; it never marks the Goal accepted. Its output can be imported as a separate Web record, not synchronized with the original. The canonical 32-squad board is read-only and separate from your saved Goals. A successful save/update notice in Zema is not Goal completion. The local browser flow from Sky to Zema, saving/reopening a Goal and protecting unsaved input was checked; deployed acceptance and owner usability acceptance remain separate. The offline HTML remains a separate, non-synchronized option.
+
+The local request gate also accepts bot/BOT, Japanese ボット, full-width spellings, scripts and automation requests; normalization is for matching only and preserves the original request. Acceptance of a request does not connect a provider or authorize trading/transfers.
 
 ### 8. External AI, IP, games, and destinations
 
@@ -274,6 +351,7 @@ Historical designs remain available to preserve the design history. They do not 
 
 | Goal | Entry point |
 | --- | --- |
+| Find any document, the specification history, or the agent and tool list | [Document map](docs/README.md) / [Specification history](docs/spec-history.md) / [Agent and tool overview](docs/agents-and-tools.md) |
 | Read business and product decisions | [Product baseline](docs/product-baseline.md) / [Product north star](docs/product-north-star-20260915.md) / [System map](docs/rockstaros-product-system-map.md) |
 | Read avokado hardware and OS material | [Complete R5 design](docs/avocado-mini-r5/README.md) / [Searchable text](docs/avocado-mini-r5/package/integrated_design.md) / [Drawings](docs/avocado-mini-r5/package/drawings/) |
 | Read the complete RockstarOS design | [Design portal](docs/rockstaros-design-portal.md) / [Complete v1.0 source PDF](docs/rockstaros-complete-design-v1.0.pdf) / [Implementation mapping](docs/rockstaros-complete-design.md) |
@@ -318,36 +396,12 @@ After updating documents or progress, run the following checks. The final calcul
 
 [Linux/QEMU](docs/workstreams/06-native-qemu-release.md) / [Android/Pixel](docs/workstreams/07-android-device-local-ai.md) / [avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md)
 
+### Dependency security maintenance
+
+The lockfiles use explicit repository-local MIT security forks for `braces` and `http-cache-semantics`; `npm ci` installs them without a post-install patch. Keep the vendor source with the lockfiles. Run `node --test tests/dependency-security.test.mjs` and the existing `npm run verify` when changing them. Provenance and upstream replacement conditions are in [Security workstream](docs/workstreams/04-security-identity-compliance.md).
+
 ## Safety, rights, and images
 
 Purpose-specific permission is designed for recording, external publication, appliance operation, purchasing, and payment. Information about housemates or visitors is not stored based only on the purchaser's consent. Medical decisions, emergency monitoring, and unattended operation of locks or heating appliances are not initial targets. RockstarOS 1.0 is a Developer Preview, and the reuse license for proprietary code has not been selected. Bundled open-source software, models, and external services each have their own terms. [Distribution requirements](docs/release-minimum-gates.md) / [Sources and licenses](docs/mr-integration.md)
 
 Images and GIFs are concept material for explaining the product. They are not product photographs or evidence of a working spatial display, manufacturing approval, or safety performance.
-
-<!-- sky-detail-handoff:start -->
-Skyの商品詳細では説明・料金・接続条件を確認し、ライブラリへ保存できます。「Zemaで開く」から同じ商品の入力・実行画面へ進みます。商品を開くことや保存することだけでは購入・実行を承認しません。出典整理はブラウザで処理でき、PC接続は必須ではありません。 保存した商品はZemaのライブラリから開けます。再保存は重複せず、解除は本人の保存だけに適用します。
-
-Zemaの通常の仕事では、最初の手順を始める前に計画の目的を編集できます。同時更新で競合した場合は再読込して最新の内容を確認します。AMCのGoalはAMC専用の承認・記録操作から更新します。
-<!-- sky-detail-handoff:end -->
-
-## avokado専用モデルのゼロ事前学習試作
-
-追加費用なしで小型モデルをランダム初期化から学習し、保存・再開・CPU推論を試せます。[実行手順](toolkits/avokado-llm/README.md)。実用LLM、Mini実機、クラウド配備は未完成です。既存のQwen profileとeSIMサービス経路は維持します。
-
-
-## Mini game client prototype
-
-Run `node toolkits/mini-game-client/cli.mjs check` for read-only remote-play prerequisites. Explicit `setup`/`open` actions hand off to official PS5/Xbox clients; no GTA VI or Mini hardware acceptance is claimed. [Usage and remaining setup](toolkits/mini-game-client/README.md).
-
-## Mini standalone cellular — design requirement
-
-Mini will carry its own physical SIM and cellular modem; Pro, a PC or phone tethering will not be required for cellular access. External power and offline basic operation remain part of the R5 design. [Hardware, connection and recovery plan](docs/avocado-mini-cellular.md). Country/carrier and modem are pending; no modem integration or real connection has been accepted.
-
-## avokadoPro NVIDIA desktop — design candidate
-
-Pro is being specified as a standalone compact PC for AI and PC games, with a JPY800,000 sales target (tax/shipping undecided). The candidate combines an x86 CPU with an NVIDIA GeForce RTX 5080 **Laptop** GPU, 128GB RAM and two 2TB SSDs. [Configuration, assembly and acceptance plan](docs/avokado-pro-pc-design.md). Mini does not require Pro. No hardware has been purchased or assembled, and no production or game/AI acceptance is claimed.
-
-
-### Dependency security maintenance
-
-The lockfiles use explicit repository-local MIT security forks for `braces` and `http-cache-semantics`; `npm ci` installs them without a post-install patch. Keep the vendor source with the lockfiles. Run `node --test tests/dependency-security.test.mjs` and the existing `npm run verify` when changing them. Provenance and upstream replacement conditions are in [Security workstream](docs/workstreams/04-security-identity-compliance.md).

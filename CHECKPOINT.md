@@ -1,5 +1,7 @@
 # ローンチ準備の現在入口
 
+> **この文書の役割（2026-10-07追記）** — これは **2026-09-09〜09-12のローンチ準備の作業履歴** です。題名と本文の「現在」「次」は当時のままで、09-12以降は更新されていません。いまの入口は [README](README.md) と [文書の地図](docs/README.md)、いまの進捗は [project.md](project.md) と [Mission Control](docs/mission-control.md)、その後の方針の変化は [仕様変遷](docs/spec-history.md) を見てください。当時の製品名（Rock star OS）、BlackBerry優先、月888 cents固定などは、のちに上書きされています。
+
 ## 2026-09-12 — 現進捗の再監査
 
 [現在の開発状態の2026-09-12節](docs/current-state-20260911.md#2026-09-12--github実装実機版ビルド環境の再監査)を最初に読む。Draft PR #4の`c182a5b`は同HEAD 12 check成功だが、スマホ版はsource準備でOS bootではない。Pixel 7／`panther`の相談と既存Pixel 10／`frankel`設定が不一致のため、実機確認前に全OS buildを開始しない。クラウド候補と20〜30 USDの安全側計画枠は未承認。runtime、Site、端末、mainは変更していない。
