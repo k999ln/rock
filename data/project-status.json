@@ -5848,6 +5848,39 @@
           "enospc": false
         }
       }
+    },
+    "documentationMainRefresh": {
+      "cycle": 79,
+      "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+      "priorVerifiedHead": "1a5a7079350e2742d65abdd1a9aaddaf0e87c6f0",
+      "priorChecksPassed": 7,
+      "priorVerifyRun": 37574887322,
+      "conflicts": [
+        "project.md"
+      ],
+      "resolution": "Preserve main reading guide, title, all restored history and ordered sections plus the complete existing cache progress section. Global nextAction and unrelated status unchanged.",
+      "cacheSourceTestsWorkflowAndLicenseUnchanged": true,
+      "validation": "local_cache_release_and_metadata_pass_exact_sha_ci_pending",
+      "mainIntegrated": false,
+      "existingDependencyFixPrs": [
+        88,
+        89,
+        90
+      ],
+      "localValidation": {
+        "cacheAndReleaseTests": {
+          "exitCode": 0,
+          "command": "node --test tests/dependency-cache-revalidation-security.test.mjs tests/release-readiness.test.mjs"
+        },
+        "releaseCheck": "pass; ready0/6 blocked6",
+        "metadataChecks": "mission/project/database update/check passed",
+        "fullVerify": {
+          "exitCode": 1,
+          "stage": "llm:architecture:check",
+          "reason": "Installed dependency tree lacks ai (ERR_MODULE_NOT_FOUND); exact-SHA GitHub full install and verification required",
+          "enospc": false
+        }
+      }
     }
   },
   "skyConnectionDialogFix": {
