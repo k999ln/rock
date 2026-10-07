@@ -1,3 +1,7 @@
+## 2026-10-06 既存OSへの機能追加
+
+利用者は「機能追加としてSky・データ回収・LLMをadd」と明示した。RQ01〜RQ49とSIM/eSIMサービス方針を維持し、既存OS上のWeb/PWAへ追加入口を実装する。回収は本人が選んだファイル・メモを初期範囲とし、LLMは既存Zemaの見積・承認付き入口を再利用する。端末内モデル導入やeSIM内OS実行と同一視しない。[状態・保存・復旧・合格条件](sim-led-product-architecture.md#既存端末への機能追加2026-10-06home01--sys01--web14)。
+
 ## 2026-10-05 公開ホームページの独自ドメイン
 
 2026-10-06: 利用者の「OS完成」指示により、Pixel 10のcompile用sourceを署名検証済み安定版`2026100200`へ更新した。RQ01〜RQ49と物理対象は変更せず、過去の`2026091000`端末readbackも保持する。[現在のsource証拠](evidence/phone-source-verification.json)を追加し、compileと署名／実機flashの受入を分離する。専用Linuxの予算と全OS build、初回flash 4 gateは未完了。

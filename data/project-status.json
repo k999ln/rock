@@ -35,7 +35,7 @@
   },
   "updatedAt": "2026-10-06",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "OS11 / RLS02: PR #86は10/10 CI合格でmain統合済み。OWNERの専用x86_64 Linuxまたはクラウド支出上限の指定後、Device Previewのbringup入口で全OSをcompileし同一artifactを検査する。正式署名・初回flash・復旧の4 gateは未解除。",
+  "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5779,5 +5779,16 @@
     "validation": "試験用route/configを含まない配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019のUIコードと依存60322ファイル・59 symlinkのhash一致を照合し、1280×720・390×844の表示/閉じる証拠を引継いだ。実PC grant、Provider、課金、公開は未受入。",
     "pullRequest": "https://github.com/k999ln/rock/pull/87",
     "integrationNote": "PR #87の初回全体CIでDB状態表の更新日だけが未同期と判明。database:statusで2行を同期し、同一候補の全体CIを再確認する。"
+  },
+  "portableAddons": {
+    "status": "implemented_ci_pending",
+    "primaryOwner": "ROCK",
+    "scope": "Sky and existing quoted LLM entry; opt-in browser file collection with encrypted export/restore",
+    "physicalEsimAccepted": false,
+    "nativeOsInstalled": false,
+    "tests": "13/13 host; design/baseline/typecheck/targeted lint passed",
+    "ui": "browser add data/llm and Home visibility passed; export/restore UI and mobile not accepted after ENOSPC",
+    "fullVerify": "blocked locally at release signing temporary-directory creation (ENOSPC); CI pending",
+    "next": "Verify identical candidate in GitHub CI; finish UI export/restore and device browser acceptance; confirm collection sources"
   }
 }

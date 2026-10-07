@@ -1961,5 +1961,24 @@
       "esim_catalog_as_primary_product_entry",
       "hardware_first_service_positioning"
     ]
+  },
+  "portableAddons": {
+    "requestedAt": "2026-10-06",
+    "authority": "docs/sim-led-product-architecture.md",
+    "tasks": [
+      "HOME01",
+      "SYS01",
+      "WEB14"
+    ],
+    "entry": "/add",
+    "modules": [
+      "sky",
+      "data",
+      "llm"
+    ],
+    "dataScope": "explicitly_selected_files_and_note",
+    "llmEntry": "existing_zema_with_quote_and_approval",
+    "esimChipOs": false,
+    "newLocalModelInstalled": false
   }
 }
