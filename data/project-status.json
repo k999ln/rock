@@ -5043,7 +5043,9 @@
         "tests/amc-autonomy-store-read.test.mjs",
         "scripts/amc-parallel.mjs",
         "tests/amc-workspace-snapshot.test.mjs",
-        "docs/evidence/spider-workspace-snapshot-read.json"
+        "docs/evidence/spider-workspace-snapshot-read.json",
+        "tests/release-readiness.test.mjs",
+        "docs/evidence/spider-sdk-lock-audit.json"
       ]
     },
     {
@@ -5793,5 +5795,65 @@
     "verifiedSourceSha": "92bb9f2ff87cffcf72aa370105cff26def693939",
     "ci": "7/7 checks passed; npm run verify including build/API/full regression passed",
     "ciRun": "https://github.com/k999ln/rock/actions/runs/37555780451"
+  },
+  "spiderSdkSecurityDependencyUpdate": {
+    "status": "local_release_regressions_pass_exact_sha_ci_pending",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "responsibility": "ROCK",
+    "pullRequest": "https://github.com/k999ln/rock/pull/89",
+    "targetAlert": 27,
+    "advisory": "GHSA-6qxp-vccf-f47h",
+    "scope": "Repair exact lock hash binding for the existing SDK1.32.1 dependency update; legal clearance and runtime integration unchanged",
+    "localReleaseReadiness": "35/35 regressions pass; release check and inventory synchronization pass",
+    "mainIntegrated": false,
+    "evidence": "docs/evidence/spider-sdk-lock-audit.json",
+    "localFullVerify": "Stopped at llm:architecture:check because installed ai is missing; exact-SHA GitHub verify pending",
+    "latestMainRefresh": {
+      "cycle": 77,
+      "incorporatedMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+      "previousValidatedHead": "1da02922e994e93d4e515936db1de414e9af4faa",
+      "scope": "Resolve only project.md integration conflict after PR92 documentation reorganization; preserve restored main documentation, SDK lock delta, inventory and existing gate behavior",
+      "status": "local_release_and_metadata_checks_pass_exact_sha_ci_pending",
+      "localReleaseTests": {
+        "tests": 35,
+        "pass": 35,
+        "fail": 0,
+        "skip": 0
+      },
+      "releaseCheck": "pass; ready0/6, blocked6 unchanged",
+      "inventoryCheck": "pass;956 entries,914 components,50 review; legal clearance unchanged",
+      "sameRefCodeqlComparison": "pending after branch analysis",
+      "githubSameSha": "pending",
+      "mainMerged": false,
+      "metadataChecks": "mission/project/database update and checks passed",
+      "localFullVerify": {
+        "exitCode": 1,
+        "stoppedAt": "llm:architecture:check",
+        "reason": "installed ai dependency missing (ERR_MODULE_NOT_FOUND); no ENOSPC",
+        "sameAsPriorLocalLimitation": true
+      },
+      "preservation": {
+        "sdkLockAuditAndReleaseTestsByteIdenticalToPreviousValidatedHead": true,
+        "mainDocumentationExceptScopedProjectAdditionsUnchanged": true
+      },
+      "previousExactShaValidation": {
+        "head": "1da02922e994e93d4e515936db1de414e9af4faa",
+        "verifyRun": 37570079750,
+        "branchCodeqlRun": 37570101735,
+        "registeredChecks": 7,
+        "allSuccessful": true
+      },
+      "independentReview": {
+        "blockers": 0,
+        "mainDocumentationFiles": 30,
+        "mainFilesByteIdenticalExceptProject": 29,
+        "upstreamProjectHeadingsPreserved": 410,
+        "sdkManifestLockAuditByteIdentical": true,
+        "globalNextActionPreserved": true,
+        "duplicateJsonKeys": 0,
+        "conflictMarkers": 0
+      }
+    }
   }
 }
