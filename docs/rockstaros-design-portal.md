@@ -4,6 +4,8 @@
 
 avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README.md)。使用時200mm以内・1本自律・別Hub不要を目指す基本設計で、全空間裸眼表示・最終ハードウェアは未成立/未確定。以下のE1/E2/E3、四方向発明台の資料は履歴または別研究profileとして読み、既存OS実装の受入と混同しない。
 
+> **この文書の役割** — **設計書の入口** です。`docs/` 全体の地図は [docs/README.md](README.md)、仕様がいつどう変わったかは [仕様変遷](spec-history.md)、全Toolとエージェントの機能は [エージェント・Tool総覧](agents-and-tools.md) にあります。
+
 このページは、RockstarOS本体、画面、AI、Tool、Wallet、運用、avocadoMini、avokadoPro、rocketstarまで、全設計へ入る唯一の入口である。部隊別のGoal、進捗、rule、依存、証拠、次の作業は[avokado Mission Control](mission-control.md)を正本とする。設計書が多いことを完成とは呼ばない。各systemについて、目的、利用者の操作、責任、入力、出力、状態、権限、保存、失敗、復旧、受入、現在地を説明できることを設計記載の最低条件とする。
 
 ## rocketstar 設計書完全版 R1.0と全履歴の保存

@@ -1,5 +1,7 @@
 # RockstarOS — 現在の開発状態と再開条件
 
+> **履歴（2026-10-07追記）** — これは **2026-09-11〜09-17時点** の「現在の状態」です。題名は当時のままで、その後は更新されていません。いまの進捗は [project.md](../project.md) と [Mission Control](mission-control.md)、その後の方針の変化（avocadoMini R5、SIM/eSIM主導のサービスなど）は [仕様変遷](spec-history.md) を見てください。
+
 ## 2026-09-16 — RQ48に沿ったAIネイティブOS詳細設計
 
 製品の中心は高性能・交換可能なローカルLLMとoffline agentを持つRockstarOS。現行設計入口は[AIネイティブOS詳細設計](ai-native-os-architecture.md)、監査は[Sol設計監査](ai-native-os-design-audit.md)、次の実装は進捗JSONのAI02〜AI06。Sky／Zemaを第一者systemとし、便利機能と非金融Game／IPを同じCoreへ接続する。Game開発をFund収益の完成待ちにしない。設計担当はAstra、監査担当はSol。下記の日付付き履歴は当時の状態であり、最新正本と証拠を優先する。

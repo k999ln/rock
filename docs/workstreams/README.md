@@ -4,7 +4,7 @@
 
 このディレクトリは、既存の設計書を移動せず、作業分野ごとの入口を提供する。確定要望の正本は [製品ベース](../product-baseline.md)、task進捗の正本は [data/project-status.json](../../data/project-status.json)、部隊のGoal・段階・ルール・依存・次行動の正本は [avokado Mission Control](../mission-control.md) と [data/mission-control.json](../../data/mission-control.json) であり、ここでは内容を置き換えない。
 
-製品や配備単位から探す場合は[プロジェクト別ガイド](../../PROJECTS.md)を開く。
+製品や配備単位から探す場合は[プロジェクト別ガイド](../../PROJECTS.md)を開く。`docs/` 全体の地図は[docs/README.md](../README.md)、仕様の変遷は[仕様変遷](../spec-history.md)、全Toolとエージェントの機能は[エージェント・Tool総覧](../agents-and-tools.md)にある。
 
 ## 最初に確認するもの
 
