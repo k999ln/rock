@@ -1,4 +1,4 @@
-> **この文書の読み方（2026-10-07追記）** — 利用者が確定した要望と方針判断の **正本** です。新しい判断を上へ足してきたため、並びは日付順ではありません。上から順に、①2026-09-24以降の方針判断（新しい順。RQ48の本文もここにあります）、②「2026-09-24 現行製品基準 — avocadoMini R5」と「過去の判断履歴」（09-20〜09-22）、③「RockstarOS — 確定した製品ベース」（09-09〜09-21の追記が新しい順に並び、そのあとに RQ01〜RQ47・RQ49 の本文）、④「現時点の未決事項」と「変更記録」、⑤末尾に2026-10-05の追加指示4件、です。**日付順・テーマ別に読みたいときは [仕様変遷](spec-history.md) を使ってください。** 食い違ったときは、この文書と [`data/product-baseline.json`](../data/product-baseline.json) が優先です。
+> **この文書の読み方（2026-10-07追記）** — 利用者が確定した要望と方針判断の **正本** です。新しい判断を上へ足してきたため、並びは日付順ではありません。上から順に、①2026-09-24以降の方針判断（新しい順。RQ48の本文もここにあります）、②「2026-09-24 ハードウェア設計基準 — avocadoMini R5」と「過去の判断履歴」（09-20〜09-22）、③「RockstarOS — 確定した製品ベース」（09-09〜09-21の追記が新しい順に並び、そのあとに RQ01〜RQ47・RQ49 の本文）、④「現時点の未決事項」と「変更記録」、⑤末尾に2026-10-05の追加指示4件、です。**日付順・テーマ別に読みたいときは [仕様変遷](spec-history.md) を使ってください。** 食い違ったときは、この文書と [`data/product-baseline.json`](../data/product-baseline.json) が優先です。
 
 ## 2026-10-06 既存OSへの機能追加
 
@@ -113,17 +113,39 @@ Goalは達成条件と証拠で受け入れ、未承認の課金・外部操作�
 
 avokadoProは公開製品Siteで、単体でgame、service、compute、storage、audioを扱い、任意でMiniと接続する製品として定義されている。一方、Mini R5やrocketstar R1.0と同等の専用統合設計・BOM・ICD・受入matrixは未作成である。AMCのP1〜P7にはPRO01〜07を登録し、段階0「要件整理」を維持する。公開説明やtask登録を実装・実機完成の証拠にはしない。Mini R5も単独game・保存・停止が必要であり、Pro接続を必須にしない。rocketstarでの共有OSの役割は地上支援であり、飛行制御の独立安全系とは分ける。
 
+## 2026-09-25 公開製品ラインと参考価格の正式化（v1.95・OWNER判断済み）
+
+> **復元（2026-10-07）** — この節は branch `846f3950`（2026-09-25）に記録され、2026-10-05のmerge `6bf43c23` で本文から落ちていたものを、文言を変えずに戻したものです。対になる機械可読の記録（`marketPositioning.publicProductLine`）は現在の `data/product-baseline.json` にはありません。その後の2026-10-05の指定（avokadoProの販売目標80万円／台）との関係は未整理です。[merge欠落の監査](merge-loss-audit-20261007.md) を参照。
+
+決定者は本人（OWNER）、決定日時は2026-09-25 00:49 ET。根拠は、本人がチャットで出した指示（開発統括Bot経由で受領）。公開Siteで表示中のavocadoMini／avokadoProの構成と参考価格を正式とし、表記は公開SiteのSite source（`sites/avocado-mini/src/pages/`、commit `851bb04`）と完全一致させる。機械可読の正本は[`data/product-baseline.json`](../data/product-baseline.json)の`marketPositioning.publicProductLine`とする。
+
+| 製品・構成（Site表記） | 参考価格（Site表記） | USD表示（Site表記） | 注記（Site表記） |
+|---|---|---|---|
+| 1 × avocadoMini · standalone | ¥160,000 | US$1,050（Approx. US$1,050） | Reference price · tax and shipping excluded |
+| 4 × avocadoMini · avokadoPro sold separately | ¥410,000 | US$2,700（Approx. US$2,700） | Reference Mini package price · tax and shipping excluded |
+| avokadoPro · standalone Hub | From ¥880,000 | From US$5,800（Approx. US$5,800） | Reference price · tax and shipping excluded |
+
+ホームの表記は「Standalone spatial input from ¥160,000.」「Four-Mini reference package ¥410,000.」「Standalone game and services Hub from ¥880,000.」である。この決定でSiteの表示は変更しない。
+
+この決定で変えないこと: 参考価格は税・送料別で、決済金額ではない。予約・決済は開始しない（WEB15は停止のまま）。実機試験0件、製造は未承認のまま。
+
+引き続きOWNER判断待ちとして残すこと: R5とMini/Pro製品ラインの関係、R5要求とMAT15の見直し、予約・決済の有効化、製品名（PR #40 の「avokado mini」への改名）、8.88 USD収益料金の後継条件、RQ20の期待値、優先系列、AI系fixtureの先行可否（このうちAI系fixtureの先行可否は、2026-09-25 01:26 ETに本人が決定済み: host／fixture段階はOS10完了前に先行可、emulator・実機・OS統合の合格には転用しない。AI09として記録）。
+
+既存記述との関係: 下記の「E3の4本＋別Hub必須、旧価格…はR5へ自動継承しない」と、`marketPositioning.r5.priceStatus`（R5価格は未確定、E3価格を引き継がない）は削除せず維持する。今回正式化した¥160,000／¥410,000は、2026-09-22のE3資料にある「1本16万円＋税、4本＋Edge Hub 41万円＋税」と同じ金額だが、**avocadoMini／avokadoPro製品ラインの参考価格**として確定したものである。R5をこの製品ラインの価格・構成で扱うかどうかは判断待ちで、この決定からR5の価格を導かない。
+
 ## 2026-09-24 収益料金の保留
 
 利用者の明示指示により、8.88 USDの収益料金案は、収益を得る動線が確定するまで保留する。SkyのToC料金とCSV販売者向け料金を現行の請求条件として表示せず、新たな料金計上・請求・回収を行わない。旧888 centsの上限、計算式、試験結果は過去の設計・回帰検証の記録として保持する。対象となる利益、料率・上限、実費、返金、Provider、同意、開発者還元、回収の順序を別途決めた後に再設計・受入する。下記の古い料金判断は履歴であり、この保留方針を上書きしない。
 
-# 2026-09-24 現行製品基準 — avocadoMini R5（統合版v1.94）
+# 2026-09-24 ハードウェア設計基準 — avocadoMini R5（統合版v1.94）
+
+注記: R5は別のハードウェア設計programとして維持する。2026-10-02のSIM/eSIM主導サービス方針により、R5や他の専用hardwareはRockstarOSサービスの主商品・利用開始条件ではない。
 
 利用者は、使用時全高200mm以内の銀色円筒mini、1本での自律動作、別Edge Hub不要、同型mini増設、眼鏡なしで周囲空間に粒子が舞う表示、身体・手・日本語音声、ゲームから生活支援への展開を指定し、R5設計書の作成とGitHubへの漏れない保存を依頼した。[R5統合基本設計](avocado-mini-r5/README.md)を現行製品要求の入口とする。
 
 R5は51ページ・設計検討図8点・候補型番・比較計算・OS契約・組立/受入計画を含む基本設計。全空間裸眼表示、単体の精密3D入力、最終収納・熱・電源・専用NPU、確定回路・加工図は未決を含み、製造承認保留、実機試験0件。14件の自動チェックを実機合格へ換算しない。
 
-E3の4本＋別Hub必須、旧価格、寸法・性能候補はR5へ自動継承しない。外部給電は必要で電池未採用。Pixel/QEMU、既存Material研究契約、権限・Walletの証拠と安全条件を維持する。Git保存と公開サイト配備は別である。2026-09-24に公開SiteをR5へ同期し、提供済みの製品画像を変更せずに表示・導線・アクセシビリティ・SEOの不具合を修正したが、OS image、runtime統合、実機・製造・販売の受入状態は変更していない。
+E3の4本＋別Hub必須、旧価格、寸法・性能候補はR5へ自動継承しない。（2026-09-25注記: 同じ金額¥160,000／¥410,000は、本書冒頭のv1.95でavocadoMini／avokadoPro製品ラインの参考価格として正式化した。R5での扱いはOWNER判断待ちで、この一文は変更しない。）外部給電は必要で電池未採用。Pixel/QEMU、既存Material研究契約、権限・Walletの証拠と安全条件を維持する。Git保存と公開サイト配備は別である。2026-09-24に公開SiteをR5へ同期し、提供済みの製品画像を変更せずに表示・導線・アクセシビリティ・SEOの不具合を修正したが、OS image、runtime統合、実機・製造・販売の受入状態は変更していない。
 
 2026-09-24 設計保存追記（v1.94）: 利用者は、rocketstar完全版の作成後に正本repository `k999ln/rock`へ「漏れなく更新保存」と明示した。[rocketstar設計アーカイブ](rocketstar-design/README.md)に、44ページ・35章のR1.0、60要求、18システムinterface、継承C3資料、A-LINK、受信試作、OS完全版付録、コロニー、端末ボタン、旧版、生成元、計算・検証記録を保存する。元成果物のバイト列を保持し、全ファイルは[保存台帳](rocketstar-design/inventory.json)で追跡する。OS付録のPDFは既存原本と同一SHA-256であり、当初未受領だったschema・DDL等の付属原本を今回受領した。これは設計資料の保存であり、現行runtimeへの導入、製造・飛行承認、サイト公開ではない。アーカイブ中のE3・別Hub・ボタン前提をR5へ自動適用せず、現行の1本自律・別Hub不要要求を維持する。確定要望RQ01〜RQ49、Pixel/QEMU、Material、権限・Walletの境界は変更しない。
 
@@ -750,6 +772,10 @@ avocadoMiniの操作履歴は、人の直接操作、AI提案、simulation、文
 - 先払いStripe定期購読APIは停止し、署名済みEarning Receipt、月888 cents上限、追記型台帳、払出し指図の収益精算経路へ置換した。main merge、実機書込み、一般公開、販売・決済・払出しProvider接続、実入金・実回収・実送金は、必要な外部設定と受入が終わるまで未実施とする。
 
 ## 変更記録
+
+2026-10-02 SIM/eSIM-led product correction and acceptance: physical SIM/eSIM offers are the access and distribution product and include RockstarOS service access; the OS binary is delivered through a supported device route, not stored on the SIM. The architecture separates purchase entitlement, carrier activation, account identity, device installation, cloud work, and usage billing. Reused signed entitlement, shared identity, device capability/attestation, durable cloud execution/recovery, and signed metering. Cloudflare Worker/D1/Workflow A2A suite now passes 12/12 including a controlled local Package-runtime invocation and synthetic signed usage settlement. This is local fixture proof only: seller/carrier activation, real Provider execution/rates/invoices, production Wallet settlement, and exact-device OS installation remain unaccepted. See [SIM-led architecture](sim-led-product-architecture.md), [A2A bridge](sky-a2a-bridge.md), and [local evidence](evidence/sim-led-product-correction-20261002.json).
+
+2026-09-30 agent間接続の実装進捗: Sky／Zema／Core-Brokerの責任分界を維持し、A2A Protocol 1.0.0 JSON-RPC client、owner-scoped D1 delegation store／append-only events、Cloudflare Worker status reconciliationを追加。text artifactは制限付きで正規化・暗号化保存し、owner-scoped取得APIを実装。A2A関連fixture 35件、Worker/D1 API 251 assertionsが成功。native Brokerは短命proofを外部signer interface経由で発行し、control receiptに永続化するfixture pathを持ち、Broker 45 testsを通過。WebとPythonで共通signing bytes vectorを検証。owner-scoped proof受渡しAPI、operator-managed trust resolver、Runtime Worker proof hookを追加し、Web承認前、Agent Card取得前、送信直前にproofを検証する。ただしWorkflow end-to-endはMiniflare binding RPC起動停止により未検証。実Wallet／WebAuthn signer、owner/device key登録・失効、device gateway、本番trust key設定、Wallet予約は未接続。Sky全体の提供者審査、本番egress経路、production dispatch、実Provider、異なる実装間の相互接続は未実装・未受入。
 
 2026-09-16 v1.71: Astra設計・Sol監査によりRQ48の共通Core契約と各応用の独立受入を具体化。現行入口のHub＋Wallet中心、BlackBerry-first、GameのFund完成待ちを同期し、Pixel非破壊23/23受入を現在の構成状態へ反映する。新しい汎用機能は設計段階として追跡する。
 

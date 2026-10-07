@@ -1,6 +1,6 @@
 # docs/ の地図 — どこに何があるか
 
-作成: 2026-10-07 ／ 対象: `docs/` 直下の184文書と15フォルダ
+作成: 2026-10-07 ／ 対象: `docs/` 直下の185文書と16フォルダ
 
 `docs/` には設計書・記録・証拠が約2,100ファイルあります。このページは **その全部を分類した地図** です。直下の文書は1つ残らず下の表のどこか1か所に載っています。
 
@@ -110,7 +110,7 @@ README.md ─────────────── これは何か（表玄
 | **正本** | いま有効な内容。他の文書と食い違ったらこちらが優先 | 26 |
 | **設計** | 設計書。内容は有効だが、実装・受入が済んでいるとは限らない | 56 |
 | **手順** | 操作手順・運用手順・規約 | 13 |
-| **監査** | ある時点で設計・実装・証拠を照合した結果 | 9 |
+| **監査** | ある時点で設計・実装・証拠を照合した結果 | 10 |
 | **記録** | その日の作業・試験・判断の記録。書かれた時点の事実で、いまの状態ではない | 62 |
 | **履歴** | 上書きされた古い方針・古い「現在地」。経緯を知るために残している | 14 |
 | **原本** | 受け取った成果物そのもの（PDFなど）。内容を変えない | 2 |
@@ -136,7 +136,7 @@ README.md ─────────────── これは何か（表玄
 
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
-| [`product-baseline.md`](product-baseline.md) | 正本 | 確定要望 RQ01〜RQ49 と、日付付きの方針判断・変更記録。仕様の最終的なよりどころ | 10-06 |
+| [`product-baseline.md`](product-baseline.md) | 正本 | 確定要望 RQ01〜RQ49 と、日付付きの方針判断・変更記録。仕様の最終的なよりどころ | 10-07 |
 | [`spec-history.md`](spec-history.md) | 索引 | 仕様変遷。いつ・何が・何から何へ変わったかを日付順とテーマ別に並べ直したもの | 10-07 |
 | [`sim-led-product-architecture.md`](sim-led-product-architecture.md) | 正本 | 現行の主商品（SIM/eSIMを入口にしたサービス）の定義、利用開始の流れ、実行と料金の契約 | 10-06 |
 | [`sim-service-entitlement-claims.md`](sim-service-entitlement-claims.md) | 設計 | SIM/eSIMの購入をRockstarアカウントの利用権へ結び付ける署名付きclaimの仕様 | 10-05 |
@@ -144,7 +144,7 @@ README.md ─────────────── これは何か（表玄
 | [`product-north-star-20260915.md`](product-north-star-20260915.md) | 正本 | 最上位目的（AI自動化チームの所有と効率化）から逆算した開発軸。RQ47の補助資料 | 10-05 |
 | [`rockstaros-1.0-strategy.md`](rockstaros-1.0-strategy.md) | 設計 | 8原則を適用した製品・事業・開発設計。対象市場や代表商品は検証仮説 | 10-05 |
 | [`rockstaros-1.0-architecture.md`](rockstaros-1.0-architecture.md) | 設計 | RockstarOS 1.0 のベース構成と、各systemの現在地・進化方針 | 10-05 |
-| [`rockstaros-product-system-map.md`](rockstaros-product-system-map.md) | 設計 | 製品・サービス・内部システム・`Mr.`・MRの関係図（2026-09-19時点。主商品の説明は10-02の方針より古い） | 09-29 |
+| [`rockstaros-product-system-map.md`](rockstaros-product-system-map.md) | 設計 | 製品・サービス・内部システム・`Mr.`・MRの関係図。v1.1（2026-10-02）でSIM/eSIM起点の主商品に合わせてある | 10-07 |
 | [`execution-approval-20260909.md`](execution-approval-20260909.md) | 記録 | 設計v1.1の実装承認と、条件付きの公開・実機・実資金の了承範囲 | 09-09 |
 | [`product.md`](product.md) | 履歴 | Rock star の初期仕様（2026-09-04） | 09-12 |
 | [`market-exploration-20260909.md`](market-exploration-20260909.md) | 記録 | ゲーム資産市場・予測市場の検討メモ（未承認の検討事項） | 09-09 |
@@ -157,7 +157,7 @@ RockstarOS本体の設計。全設計ポータルが設計書の入口。
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
 | [`rockstaros-design-portal.md`](rockstaros-design-portal.md) | 正本 | 全設計ポータル。領域ごとの設計書と機械可読の正本への入口、「詳細設計済み」の11条件 | 09-29 |
-| [`rockstaros-complete-design.md`](rockstaros-complete-design.md) | 正本 | OS全体詳細設計。repositoryの実装と既存の詳細資料への対応 | 10-06 |
+| [`rockstaros-complete-design.md`](rockstaros-complete-design.md) | 正本 | OS全体詳細設計。repositoryの実装と既存の詳細資料への対応 | 10-07 |
 | [`rockstaros-complete-design-v1.0.pdf`](rockstaros-complete-design-v1.0.pdf) | 原本 | RockstarOS 設計書完全版 v1.0（41ページ・32章）の原本PDF | 09-24 |
 | [`rockstaros-complete-design-v1.0.txt`](rockstaros-complete-design-v1.0.txt) | 原本 | 同PDFの全文検索用の抽出テキスト | 09-24 |
 | [`ai-native-os-architecture.md`](ai-native-os-architecture.md) | 正本 | AIネイティブOSの共通設計。交換可能なLLM、記憶、仕事、offlineと外部作用の境界（RQ48） | 10-05 |
@@ -182,7 +182,7 @@ RockstarOS本体の設計。全設計ポータルが設計書の入口。
 | --- | --- | --- | --- |
 | [`agents-and-tools.md`](agents-and-tools.md) | 索引 | エージェント・Tool総覧。Skyの35 Tool、役割エージェント、OS内・クラウドのAgent、AMCの32部隊を機能つきで一覧 | 10-07 |
 | [`llm-evaluation-architecture.md`](llm-evaluation-architecture.md) | 正本 | LLMと評価モデルの現在地。local planner／OpenAIの2 Tool／Jevの境界 | 10-05 |
-| [`jev-local-qwen-decision-fabric-design.md`](jev-local-qwen-decision-fabric-design.md) | 設計 | Decision Fabric完成設計。code・Jev・Local Qwen・Cloud LLM・RAG・Market・Walletを一つの判断基盤へ | 09-19 |
+| [`jev-local-qwen-decision-fabric-design.md`](jev-local-qwen-decision-fabric-design.md) | 設計 | Decision Fabric完成設計。code・Jev・Local Qwen・Cloud LLM・RAG・Market・Walletを一つの判断基盤へ | 10-07 |
 | [`jev-ecosystem-integration-design.md`](jev-ecosystem-integration-design.md) | 設計 | Jev ecosystem 10件を役割別にSkyへ入れる全体詳細設計 | 09-19 |
 | [`jev-ultrafast-integration-design.md`](jev-ultrafast-integration-design.md) | 設計 | Jev Ultrafast（選択型browser agent）の統合設計 | 09-19 |
 | [`local-ai-os-integration-20260915.md`](local-ai-os-integration-20260915.md) | 設計 | Local Action Assistantを物理Android版のローカルLLMとして導入する設計と証拠（RQ41） | 10-05 |
@@ -198,8 +198,8 @@ Toolを探す・つなぐ・動かす側の設計。
 
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
-| [`sky.md`](sky.md) | 正本 | Skyとは何か。役割、Zemaとの連携、現在のTool、優位性 | 10-05 |
-| [`sky-tools-complete-design.md`](sky-tools-complete-design.md) | 正本 | Sky／Zema／全Tool詳細設計。共通Tool契約と各Toolの入出力・保存・禁止・完了条件 | 10-05 |
+| [`sky.md`](sky.md) | 正本 | Skyとは何か。役割、提供形態、Zemaとの連携、接続情報の登録、現在のTool（ready 13・候補22のID付き表）、Telegramからの有効化、利用時の注意と復旧 | 10-07 |
+| [`sky-tools-complete-design.md`](sky-tools-complete-design.md) | 正本 | Sky／Zema／全Tool詳細設計。共通Tool契約と各Toolの入出力・保存・禁止・完了条件 | 10-07 |
 | [`sky-tool-sdk.md`](sky-tool-sdk.md) | 設計 | Sky Tool SDK／Rock Studio。既存ツールにコードを足してSkyの商品にする導線（RQ37） | 10-03 |
 | [`sky-mcp-architecture.md`](sky-mcp-architecture.md) | 設計 | Agent間接続とMCP接続設計。Capability Router、料金と直接実行の境界、適合とGTA | 10-05 |
 | [`sky-mcp-connector.md`](sky-mcp-connector.md) | 設計 | MCP Connector共通基盤。`servers → connect → prepare → execute`（RQ25） | 10-05 |
@@ -367,7 +367,7 @@ QEMUで動くDeveloper Previewの統合と受入。多くは2026-09-09〜11の�
 | [`release-verification-20260911.md`](release-verification-20260911.md) | 記録 | 新候補の導入・サイト復旧 | 09-11 |
 | [`rc2-remaining-acceptance-20260911.md`](rc2-remaining-acceptance-20260911.md) | 記録 | rc2の追加受入 | 09-11 |
 | [`qemu-release-completion-audit-20260912.md`](qemu-release-completion-audit-20260912.md) | 監査 | QEMU Developer Preview配布完了監査（10 gate、RQ31） | 09-12 |
-| [`backend-launch-20260912.md`](backend-launch-20260912.md) | 監査 | OSバックエンド最小ローンチ監査 | 09-15 |
+| [`backend-launch-20260912.md`](backend-launch-20260912.md) | 監査 | OSバックエンド最小ローンチ監査。付録に同日の「ローンチ手順」（起動・設定・監視・復旧） | 10-07 |
 
 ### L. セキュリティ・運営
 
@@ -410,6 +410,7 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`amc-sky-launch-integration.md`](amc-sky-launch-integration.md) | 記録 | Sky専用AMCの取り込みとローンチ判定 | 10-05 |
 | [`amc-autonomy-fixture.md`](amc-autonomy-fixture.md) | 記録 | AMCの有限fixture実行 | 10-05 |
 | [`git-consolidation.md`](git-consolidation.md) | 正本 | Gitプロジェクト統合方針とRepository storage policy（Gitに入れるもの・入れないもの） | 10-05 |
+| [`merge-loss-audit-20261007.md`](merge-loss-audit-20261007.md) | 監査 | 統合（merge）で失われた情報の監査。何が消え、何を戻し、何を戻していないか。ownerの判断が必要な項目（task台帳・設計台帳・READMEの見出しなど） | 10-07 |
 | [`reference-repositories.md`](reference-repositories.md) | 記録 | 参照元リポジトリと採用判断 | 09-07 |
 | [`prompt-playbook.md`](prompt-playbook.md) | 手順 | 最新進捗から実行プロンプトを作る規約（RQ10） | 09-19 |
 | [`validation.md`](validation.md) | 記録 | 検証記録（2026-09-04〜09-20の累積） | 09-20 |
@@ -451,6 +452,7 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`research/`](research/) | 2 | RockstarOSの特許調査と出典台帳 |
 | [`assets/`](assets/) | 24 | 設計図・製品カバーなどの画像 |
 | [`brand/`](brand/) | 3 | avokadoのブランド素材（README冒頭のGIF、関係図） |
+| [`merge-loss-audit-20261007/`](merge-loss-audit-20261007.md) | 2 | [統合で失われた情報の監査](merge-loss-audit-20261007.md)の添付。どの文書にも残っていない行の原文と、台帳から消えた記録の控え |
 ---
 
 ## 7. 文書を足すとき・直すときのルール

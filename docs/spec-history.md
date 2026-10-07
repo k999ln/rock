@@ -7,6 +7,7 @@
 - **正本ではありません。** 確定要望の正本は [製品ベース](product-baseline.md)（RQ01〜RQ49と日付付きの判断）、機械可読の正本は [`data/product-baseline.json`](../data/product-baseline.json) です。ここは、その内容とGitの履歴（1,068 commit）を日付順に引き直した **読むための索引** です。
 - 各項目の `v1.xx` は製品ベースの版番号です。全文を読みたいときは、製品ベースをその番号か日付で検索してください。
 - 「決めた」と「作った」と「動いた」は別です。この文書の「仕様の決定」は利用者（owner）が指示した内容、「この日に作ったもの」はGitに入った成果です。実機・本番・実資金で合格したかどうかは [現在地](#2-いま有効な仕様2026-10-06時点) と各設計書を見てください。
+- **2026-09-24〜10-05の一部は、統合（merge）で消えていた記録を戻したうえで書いています。** `main` の作業記録と一部の決定は2026-10-05の統合で文書から落ちていました。何が落ち、何を戻したかは [統合で失われた情報の監査](merge-loss-audit-20261007.md) にあります。この文書で戻した記録に基づく項目には「〔復元した記録〕」と付けています。
 
 **目次**
 
@@ -55,6 +56,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 | --- | --- | --- | --- |
 | 主商品 | 物理SIMまたはeSIMの購入を入口に、RockstarOS・Sky・Zema・統合Agentの利用権を提供するサービス。OSのbinaryをSIMへ入れる前提にはしない | 10-02 | [製品ベース冒頭](product-baseline.md) / [SIM/eSIM-led architecture](sim-led-product-architecture.md) |
 | 選ばれる理由 | ①クラウドLLM・Agentへ速く簡単に ②料金と使用量が透明 ③Sky/Zemaを最小設定で | 10-02 | 同上 |
+| Skyの提供形態 | OSの導入を必須としない独立サービスとしても提供する。OS内と単独Web（`/sky/marketplace`）で同じcatalog・本人認証・履歴・実行条件を共有 | 10-01 | [Sky](sky.md#単独アプリとos内の共通マーケットプレイス) / [Skyローンチ設計](sky-launch-design.md) |
 | 最上位の目的 | 利用者が自分専用のAI自動化チームを持ち、その効率を上げて便利さと検証可能な収益機会を増やす（RQ47） | 09-15 | [製品北極星](product-north-star-20260915.md) |
 | 製品名 | 表示は **RockstarOS**（共通版は `RockstarOS 1.0 Developer Preview`）。内部識別子は `dev.rock`。ブランドは avokado | 09-17 | 製品ベース RQ43・RQ44 |
 | OSの位置づけ | AI・Agent実行、権限、本人性、端末適合、保存・復旧の共通runtime。ローカルLLMは対応端末向けの追加能力で、必須ではない（RQ48） | 09-16 / 10-02 | [AIネイティブOS設計](ai-native-os-architecture.md) |
@@ -65,6 +67,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 | クラウドAIの料金 | 使用量ベース。実行前に単価と見積、実行中に予約額、完了後に項目別の利用明細。上限を超える実行はしない。通信料とは別表示 | 10-02 | 製品ベース冒頭 |
 | Sky Marketの手数料 | 登録・接続・公開・基本利用料は0円。検証済みTool売上の手数料は **10%**。第三者実費は別表示 | 09-27 | [Sky経済設計](sky-network-economy.md) / [決済](sky-billing.md) |
 | 8.88 USDの収益料金 | **保留**。収益を得る動線が確定するまで計上・請求・回収しない | 09-24 | 製品ベース「収益料金の保留」 |
+| 公開製品ラインの参考価格 | avocadoMini 1本 ¥160,000、4本 ¥410,000、avokadoPro From ¥880,000（税・送料別、公開Siteの表記どおり）。販売・決済は停止のまま。**R5の価格は未確定**で、R5とこの製品ラインの関係はowner判断待ち。Proは10-05の「販売目標80万円／台」と並んでいて、どちらが現行かは未整理 | 09-25 | [製品ベース 2026-09-25の節](product-baseline.md) |
 | Miniゲームの分配 | クリエイター80%：Mini運営20%（比率のみ確定。何を分けるかは未決） | 09-27 | [会話仕様アーカイブ](avocado-mini-conversation-2026-09-27/README.md) |
 | ATM | Rockが徴収するATM手数料は0（RQ15）。ゲーム料金とは別 | 09-09 | 製品ベース RQ15 |
 | クラウド実行 | 受付・承認済みの仕事は、端末が圏外でも予算と期限の範囲でクラウドが続ける | 09-30 | [継続実行契約](sky-cloud-continuity.md) |
@@ -92,6 +95,8 @@ Tool入口 Hub（Automation Hub）───────────────�
 | 09-19 | 表の主役はハードウェア。最初の製品構想はavocadoMini。OS・LLM・Sky/Zemaは支える技術基盤 | v1.83 |
 | 09-21 | ゲーム機を入口に、生活全体を豊かにするOSへ | v1.89 |
 | 09-26 | ハードウェアは avocadoMini・avokadoPro・rocketstar の3製品。RockstarOSは3製品共通のOS | v1.95 |
+| 09-30 | 製品をeSIMで完結させる（eSIM専用）。この段階は開発だけ行い、物理SIM・回線契約・課金は扱わない | owner指示〔復元した記録〕 |
+| 10-01 | 物理SIM／eSIMの購入にRockstarOS・Sky・Zema・Agentの利用権を含めるサービスを主製品に。eSIMのみ・OS内のeSIM store・ハードウェア先行の前提を退ける | owner指示〔復元した記録〕。翌日に製品ベースへ |
 | **10-02** | **SIM/eSIMの購入を入口に、RockstarOS・Sky・Zema・Agentへの利用権を提供するサービス**。ハードウェア先行・端末内LLM主商品より優先 | 現行方針 |
 
 ### 3.2 基本アプリと画面
@@ -131,10 +136,11 @@ Tool入口 Hub（Automation Hub）───────────────�
 | 09-19 | 理念として「無料配布」と「OSは従量課金」。単価・計量単位は未確定 | v1.84 |
 | 09-20 | avocadoMiniの予約価格：1本16万円、4本41万円（税別） | 予約販売価格の新指定 |
 | 09-24 | **8.88 USDの収益料金案を保留**。請求・回収・新規計上を止める | 収益料金の保留 |
+| 09-25 | 公開Siteの製品ラインと参考価格を正式化：avocadoMini 1本 ¥160,000／4本 ¥410,000、avokadoPro From ¥880,000（US$5,800）。税・送料別。販売は停止のまま、R5の価格は未確定 | 本人決定 2026-09-25 00:49〔復元した記録〕 |
 | 09-27 | **Sky Marketの手数料は10%**。登録・接続・公開・基本利用料は0円。Stripe Connectの決済を実装 | 現行手数料 |
 | 09-27 | Mini対応ゲームの分配はクリエイター80%：運営20% | 会話仕様アーカイブ |
 | **10-02** | **クラウドAI・Agentは使用量ベースで課金**。事前見積・上限・項目別明細。通信料とは別項目 | 現行方針 |
-| 10-05 | avokadoProの販売目標は80万円／台（税・送料は未定） | Pro方針 |
+| 10-05 | avokadoProの販売目標は80万円／台（税・送料は未定）。09-25の参考価格 From ¥880,000 を上書きするのかは記録がなく、要確認 | Pro方針 |
 
 ### 3.4 対象端末
 
@@ -164,6 +170,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 | 09-21 | **Mini200 E2** | 銀色の伸縮式タワー4本＋低い中央ユニット | 41万円＋税 | [E2](avocado-mini-mini200-e2/README.md) |
 | 09-22 | **Tower20 E3** | 200mm以下の固定式タワー4本＋別筐体Edge Hub | 1本16万円＋税、4本＋Hub 41万円＋税 | [E3](avocado-mini-tower20-e3/README.md) |
 | **09-24** | **R5（現行）** | **200mm以内の銀色円筒1本で自律動作。別Edge Hub不要。同型miniを増設可能。外部給電、電池なし** | **未定**（E3の価格は引き継がない） | [R5](avocado-mini-r5/README.md) |
+| 09-25 | 公開製品ライン（Mini／Pro） | 公開Siteの構成：avocadoMini単体、Mini 4本、avokadoPro（別売）。形はSiteの表記どおりで、R5と同一か・後継か・別系列かは未決（owner判断待ち） | Mini 1本 ¥160,000、4本 ¥410,000（参考価格、税・送料別）。R5の価格は未確定のまま | [製品ベース 2026-09-25の節](product-baseline.md)〔復元した記録〕 |
 | 09-27 | R5追補 | Mini単体で独立。本体形状と背面下部の洋梨形ボタン・蔦の意匠を固定 | — | [会話仕様](avocado-mini-conversation-2026-09-27/README.md) |
 | 10-05 | R5追補 | **Mini本体に物理SIMとmodem**。ProなしでMini単体が通信する | — | [Mini cellular](avocado-mini-cellular.md) |
 
@@ -174,9 +181,9 @@ Tool入口 Hub（Automation Hub）───────────────�
 | 09-21 | avokado Proの「compute server」構想を追加 → 同日revert |
 | 09-21 | Rocket Starのミッション紹介ページを追加 |
 | 09-24 | rocketstar 設計書完全版 R1.0（44ページ・35章）と全付録を保存。RockstarOS 設計書完全版 v1.0（41ページ・32章）も保存 |
-| 09-25 | 公開SiteでMiniとProの製品ページを分離 |
+| 09-25 | 公開SiteでMiniとProの製品ページを分離。avokadoProの参考価格 From ¥880,000（US$5,800、税・送料別）を公開Siteどおり正式化〔復元した記録〕 |
 | 09-26 | Proを「単体でgame・service・compute・storage・audioを扱い、任意でMiniと接続する製品」と定義。専用設計は未作成（段階0） |
-| **10-05** | **Proは「NVIDIA搭載のMac miniのような据え置き小型PC」**。AIとPCゲームを重視、販売目標80万円／台 |
+| **10-05** | **Proは「NVIDIA搭載のMac miniのような据え置き小型PC」**。AIとPCゲームを重視、販売目標80万円／台（09-25の From ¥880,000 との関係は要確認） |
 
 ### 3.7 AI・LLM・Agent
 
@@ -496,6 +503,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 - **v1.94**：**avocadoMini R5** を現行製品基準に。200mm以内の銀色円筒、1本で自律、別Edge Hub不要、同型mini増設、眼鏡なしで周囲に粒子が舞う表示、身体・手・日本語音声、ゲームから生活支援へ。E3の4本＋別Hub必須・旧価格は引き継がない
 - **v1.94**：**rocketstar 設計書完全版 R1.0**（44ページ・35章）と全履歴を「漏れなく」保存
 - **収益料金の保留**：8.88 USDの収益料金案は、収益を得る動線が確定するまで保留
+- **端末の対外表示名を「avokado mini」に**〔復元した記録〕：ownerの訂正で、事業ブランド「avokado」と製品「avokado mini」を区別する変更がPR #40で作られた。`main` へは入らず、10-05に「現行のSIM起点の製品ページで上書き済み」として記録だけ統合された。現行表記は avocadoMini／avokadoPro のままで、**製品名はowner判断待ち**
 
 **この日に作ったもの**
 - プロジェクト別ガイド（`PROJECTS.md`）を新設し、全ToolをAIチームとして整理
@@ -504,7 +512,12 @@ Tool入口 Hub（Automation Hub）───────────────�
 
 くわしく: [R5統合基本設計](avocado-mini-r5/README.md) / [OS設計書完全版 v1.0（PDF）](rockstaros-complete-design-v1.0.pdf) / [rocketstar設計アーカイブ](rocketstar-design/README.md) / [プロジェクト別ガイド](../PROJECTS.md)
 
-#### 2026-09-25（32 commit）
+#### 2026-09-25（32 commit）— 参考価格の正式化
+
+**仕様の決定**〔復元した記録〕
+- **00:49 公開製品ラインと参考価格の正式化**：公開中のavocadoMini／avokadoProの構成と参考価格（1本 ¥160,000、4本 ¥410,000、Pro From ¥880,000／US$5,800、税・送料別）を正式とする。販売・決済は開かない。実機0件、R5の価格未確定は維持
+- **01:26 先行開発の許可**：Coreのoffline仕事loopとGame最小loopを、OS統合（OS10）の完了前にhost／fixture段階で先に進めてよい。emulator・実機・OS統合の合格には転用しない
+- **owner判断待ちとして残した項目**：R5とMini／Pro製品ラインの関係（MAT16）、外部製品名「avokado mini」（WEB21）、保留中の8.88 USDの後継条件（BIL04）、優先系列の一本化（ORG02）
 
 **この日に作ったもの**
 - READMEを英語へ翻訳（`2cd7c96b`）
@@ -517,6 +530,8 @@ Tool入口 Hub（Automation Hub）───────────────�
 - **v1.95**：現行のハードウェア製品は **avocadoMini・avokadoPro・rocketstar** の3つ。RockstarOSは3製品に共通するOS。PC/Web・QEMU・Pixelは開発・検証環境
 - P0.2・E1・E2・E3はMini／Proへ至る設計履歴であり、現行製品を増やさない
 - 3製品とOSを責任単位へ分け、**avokado Mission Control**（AMC）で管理
+- **ココナラをSkyの1つのToolへ統合**〔復元した記録〕：独立した「受託チーム」アプリをやめ、Skyの `coconala` の中で「応募前チェック」と「案件管理」（代表者が受注し、制作担当者へ個別に発注する記録）を切り替える
+- OS全体の画面をavokadoのトーン（graphite・silver・pale blue）へ揃える〔復元した記録〕
 
 くわしく: [Mission Control](mission-control.md)
 
@@ -544,14 +559,37 @@ Tool入口 Hub（Automation Hub）───────────────�
 - avocado Miniの会話仕様をアーカイブ
 - Skyの自動化マーケットプレイスと決済、AMCのGoal orchestrationとCodex bridgeをmainへ
 
-#### 2026-09-30 〜 10-01（mainへのcommitなし。作業はbranchで進行し10-05に統合）
+#### 2026-09-30（mainへのcommitなし。作業はbranchで進行し10-05に統合）— eSIMとクラウド継続
+
+この日と翌日の記録は、統合で `project.md` から落ちていたものを戻して書いています〔復元した記録〕。
 
 **仕様の決定**
-- **09-30 人・端末・サービス・ゲームへの適合**：GTAを含め「みんなに適合するシステム」。eSIMの種別で機能を固定しない
-- **09-30 端末圏外中のクラウド継続実行**：クラウドAIが先に頼まれた仕事を続ける
-- **10-01**：SIM/eSIMサービス主導の明示要件（翌日の現行方針の元）。MCPの料金と直接実行の境界、委任の深さ・fan-out・同時実行の上限
+- **eSIM専用製品の開発着手**：製品をeSIMで完結させ、この段階では開発だけ行う。物理SIM購入・回線契約・課金は行わない（**10-02に撤回**）
+- **端末圏外中のクラウド継続実行を必須要件へ**：受付・承認済みの仕事は、端末が圏外でもクラウドが続ける。受付receipt、親子共通の予算と期限、追加承認待ち、停止未確認、再接続時の照合
+- **人・端末・サービス・ゲームへの適合**：GTAを含め「みんなに適合するシステム」。共通Coreとadapter、個人profile・端末能力・接続先仕様を分ける。eSIMの種別で機能を固定しない
+- **エージェント間接続の要件**：Skyが能力の発見・比較・接続、Zemaが委任と成果管理、Core／Brokerが権限と共通予算。MCPを維持し、A2Aを公開仕様の候補にする
+- **自社衛星網の構想**：衛星を飛ばして通信範囲を広げる方針を記録。長期の調査対象で、地域・速度・端末・周波数・費用・契約は未確定
 
-くわしく: [Sky Cloud継続実行](sky-cloud-continuity.md) / [A2A Bridge](sky-a2a-bridge.md) / [供給元の契約準備](provider-contract-readiness-20260930.md) / [クラウドAgent供給元の比較](cloud-agent-provider-comparison-20261001.md)
+**この日に作ったもの**
+- eSIM発行・利用権連携のhost fixture（`toolkits/esim-bootstrap`）、A2A委任adapterと本人承認API、Brokerの承認証明
+- eSIM・クラウド契約候補の公式APIと公開価格の比較
+
+くわしく: [Sky Cloud継続実行](sky-cloud-continuity.md) / [A2A Bridge](sky-a2a-bridge.md) / [接続設計](sky-mcp-architecture.md) / [供給元の契約準備](provider-contract-readiness-20260930.md)
+
+#### 2026-10-01（mainへのcommitなし。作業はbranchで進行し10-05に統合）— SIM/eSIMを入口に、Skyを独立サービスに
+
+**仕様の決定**〔復元した記録〕
+- **SIM/eSIMをRockstarOSサービスの入口とする製品方針**：物理SIM／eSIMの購入にRockstarOS・Sky・Zema・Agentの利用権を含めるサービスを主製品にする。OS binaryをSIMへ格納する想定、eSIMのみ、OS内のeSIM store、ハードウェア先行の前提を退ける（翌10-02に製品ベースの「現行製品方針」になる）
+- **SkyをOS導入なしの独立サービスとしても提供**：OS内と単独アプリで同じマーケットプレイスを共有。同日、Sky専用サービスを一般公開
+- **衛星接続のMVP経路**：自社衛星網を初期製品の前提にせず、既存携帯網のdirect-to-cell連携を先に調べる
+- MCPの料金と直接実行の境界（価格不明・従量課金のToolは実行しない）、A2A委任の深さ・fan-out・同時実行の上限
+
+**この日に作ったもの**
+- 販売チャネル共通の利用権claim、SIM利用権の返金・失効、料金見積APIとZemaの見積表示、A2Aの価格quote・署名meter・Wallet hold
+- Skyの `/sky/esim` ページ（購入は無効のまま）、Sky Market決済とWalletの統合詳細設計、Skyサービスのローンチ設計
+- Local AIの記憶store、モデルprofileのZema接続
+
+くわしく: [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [購入とサービス利用権](sim-service-entitlement-claims.md) / [クラウドAgent供給元の比較](cloud-agent-provider-comparison-20261001.md) / [Skyローンチ設計](sky-launch-design.md) / [Sky Market決済・Wallet統合設計](sky-commerce-design.md)
 
 #### 2026-10-02（25 commit）— 現行方針の日
 
@@ -588,6 +626,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 - **Mini単体の携帯回線**：SIMをMini本体へ入れ、ProなしでMini単体が通信する
 - **avokadoProの独立小型PC方針**：NVIDIA搭載のMac miniのような据え置き小型PC。AIとPCゲームを重視、販売目標80万円／台
 - 「pr全部開発しきって」→ 残る全PR（15件）を統合
+- **この日の統合で記録の一部が消えた**：05:09の統合（`ecb4b2af`）で、README・進捗ログ・全Tool設計などが09-29時点の内容へ戻り、09-25〜10-05の追記が落ちた。2026-10-07に文書を復元（[監査](merge-loss-audit-20261007.md)）。task台帳と設計台帳は戻していない
 
 **この日に作ったもの**
 - SIM/eSIM-led RockstarOS accessをmainへ（`97d185ea`）
@@ -637,10 +676,12 @@ Tool入口 Hub（Automation Hub）───────────────�
 | Mini200 E1（20cm単体筐体） | 09-21 | 09-21 | 外観部分はE2で上書き。設計履歴 |
 | Mini200 E2（4本＋中央ユニット） | 09-21 | 09-22 | 設計履歴 |
 | Tower20 E3（4本＋別Edge Hub必須、旧価格） | 09-22 | 09-24 | 設計履歴。R5へ自動継承しない |
+| 端末の対外表示名「avokado mini」（PR #40） | 09-24 | —（`main` へ入らず。10-05に上書き済みと記録） | 現行表記は avocadoMini／avokadoPro。製品名はowner判断待ち |
+| 並行ブランチで付けた要望番号（RQ18、RQ26、RQ27、RQ32〜RQ34の別版） | 09-12〜09-15 | 09-12〜09-15の統合 | 番号は現在のRQと対応しない。内容は現行RQ19・RQ25・RQ33・RQ37などへ。全文は[監査の添付](merge-loss-audit-20261007/dropped-text.md#並行ブランチで書かれ番号が重なって落ちた要望全文) |
 | 表の主役はハードウェア（avocadoMini） | 09-19 | 10-02 | SIM/eSIM主導のサービスが主商品。Miniは製品群の一つ |
 | 交換可能な端末内LLM／OS自体が主商品 | 09-16 | 10-02 | ローカルLLMは対応端末向けの追加能力 |
-| eSIMのみを配布形態にし、物理SIMを扱わない | 記録なし（10-02より前） | 10-02 | 物理SIM・eSIMの両方、複数チャネル |
-| eSIM商品をOS内で販売する | 記録なし（10-02より前） | 10-02 | SIM購入は入口。OS内のstoreを主商品にしない |
+| eSIMのみを配布形態にし、物理SIMを扱わない | 09-30 | 10-01〜10-02 | 物理SIM・eSIMの両方、複数チャネル |
+| eSIM商品をOS内で販売する | 09-30〜10-01（Skyに `/sky/esim` を用意） | 10-01〜10-02 | SIM購入は入口。OS内のstoreを主商品にしない |
 | avokadoProはMiniの入力を体験へ変える接続先 | 09-26 | 10-05 | 単独で動くNVIDIA搭載の小型PC |
 | Skyの商品詳細画面でそのまま実行 | 〜10-05 | 10-05 | 詳細は確認だけ、実行は「Zemaで開く」から |
 

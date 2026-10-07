@@ -62,6 +62,8 @@ Skyに登録されているToolは **35件** です。使い始められる `rea
 | ready | 13 | Rock側で作成 9件（AMCを含む）＋ `Mr.` 由来 4件 |
 | candidate | 22 | Rock構想 1件 ＋ `Mr.` 由来 11件 ＋ 第三者 10件 |
 
+Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外部サービスの[接続情報の登録とProviderの差し替え](sky.md#接続情報の登録と再利用)、[Telegramから自作Toolを有効化するコード](sky.md#telegramからの有効化)、[サインイン切れや公開判定などの利用時の注意](sky.md#利用時の注意と復旧readmeに置かれていた案内)。
+
 ### 2.1 使い始められる13件（ready）
 
 | # | Sky ID | 表示名 | 分類 | 由来 | 一言でいうと |
@@ -195,7 +197,7 @@ Skyに登録されているToolは **35件** です。使い始められる `rea
 - **PC MCPの操作名**：`coconala_check`
 - **元になったもの**：<https://github.com/k999ln/Mr./blob/26a39d2c31ea5246cb78dbe42d86e333922db60c/skills/earn/gig/scripts/application_eligibility.py>（license: MIT）
 - **実装**：[`vendor/mr/application_eligibility.py`](../vendor/mr/application_eligibility.py)・[`toolkits/mr/`](../toolkits/mr/)
-- **詳細設計**：[全Tool詳細設計の該当節](sky-tools-complete-design.md#9-ココナラ案件チェック)
+- **詳細設計**：[全Tool詳細設計の該当節](sky-tools-complete-design.md#9-ココナラ)
 
 <a id="mr-free-article"></a>
 #### 7. 記事の無料版メーカー — `mr-free-article`
@@ -864,7 +866,11 @@ Webアプリ本体とは別に配備する単位です。
 | 2 | [`lib/catalog.ts`](../lib/catalog.ts) | `rockstar-markets-analysis` の表示名が「avocadoOS Market Scanner」、複数のToolで `source` が「avocadoOS built-in」、`license` が「avocadoOS code」。製品名は09-17にRockstarOSへ戻っている（RQ43） |
 | 3 | [`data/llm-capabilities.json`](../data/llm-capabilities.json)・[LLM・評価モデル設計](llm-evaluation-architecture.md) | `product.displayName` と文書の題名が「avocadoOS」のまま |
 | 4 | [全Tool詳細設計 §21](sky-tools-complete-design.md#21-現在の共通未完成点) | 「candidate 13件の採否」とあるが、現在の候補は22件 |
-| 5 | [`sky.md`](sky.md) の題名より上 | H1より前に3つのH2（10-02と日付なしの追記）が置かれている。[製品ベース](product-baseline.md) と [進捗ログ](../project.md) も同じ形 |
+| 5 | [製品ベース](product-baseline.md) の並び | 新しい判断を上へ足してきたため、H1が2つあり、日付順でもない。検査（`npm run baseline:check`）が本文と結び付いているので並べ替えず、冒頭に読み方の案内だけ足した。[`sky.md`](sky.md) と [進捗ログ](../project.md) にあった「題名より上の追記」は2026-10-07に本文へ移した |
+| 6 | [`sky.md`](sky.md)「Skyに表示する導入候補22件」 | 見出しは22件だが、従来の表は13行で、catalogにない資料・研究用の3件を含み、`Mr.` 由来11件とIP Studioが無かった。2026-10-07に、統合で落ちていたID付きの22行の表を復元して並べた。従来の表は残してある |
+| 7 | 復元した2026-10-01〜10-05の記述 | [全Tool詳細設計 §1.3](sky-tools-complete-design.md#13-全toolの実行器棚卸しと管理runtime進行中) やREADMEの復元箇所には「全34件」「built-in 12件」とある。AMC（`rockstar-amc`）が13件目のreadyとして入る前の数で、現在は35件・ready 13件 |
+| 8 | avokadoProの価格 | 2026-09-25の本人決定と公開Siteは「From ¥880,000」、2026-10-05の[Pro PC設計](avokado-pro-pc-design.md)とREADMEは「販売目標80万円／台」。どちらが現行かの記録がない |
+| 9 | task台帳と設計台帳 | [`data/project-status.json`](../data/project-status.json) にSIM/eSIMを題名に持つtaskが無い（`main` にあった `SIM01` などが2026-10-05の統合で消えた）。[`data/design-document-index.json`](../data/design-document-index.json) もToolごとの実装・試験の対応が大きく減っている。詳細は[統合で失われた情報の監査](merge-loss-audit-20261007.md) |
 
 ---
 
