@@ -5043,7 +5043,9 @@
         "tests/amc-autonomy-store-read.test.mjs",
         "scripts/amc-parallel.mjs",
         "tests/amc-workspace-snapshot.test.mjs",
-        "docs/evidence/spider-workspace-snapshot-read.json"
+        "docs/evidence/spider-workspace-snapshot-read.json",
+        "tests/sharp-native-security.test.mjs",
+        "docs/evidence/spider-root-sharp-update.json"
       ]
     },
     {
@@ -5779,5 +5781,23 @@
     "validation": "試験用route/configを含まない配布treeで局所回帰14/14、typecheck、対象lint、design、project/mission整合が合格。019のUIコードと依存60322ファイル・59 symlinkのhash一致を照合し、1280×720・390×844の表示/閉じる証拠を引継いだ。実PC grant、Provider、課金、公開は未受入。",
     "pullRequest": "https://github.com/k999ln/rock/pull/87",
     "integrationNote": "PR #87の初回全体CIでDB状態表の更新日だけが未同期と判明。database:statusで2行を同期し、同一候補の全体CIを再確認する。"
+  },
+  "spiderRootSharpSecurityUpdate": {
+    "status": "host_native_acceptance_pass_ci_pending",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "responsibility": "ROCK",
+    "baseCommit": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+    "targetAlert": 26,
+    "advisory": "GHSA-wq5f-xc86-pv6w",
+    "scope": "Root development dependency: all miniflare consumers resolve patched sharp and bundled librsvg. Site update remains existing PR88.",
+    "versions": {
+      "sharp": "0.35.5",
+      "sharpLibvips": "1.3.4",
+      "librsvg": "2.63.2",
+      "vips": "8.18.7"
+    },
+    "evidence": "docs/evidence/spider-root-sharp-update.json",
+    "mainIntegrated": false
   }
 }
