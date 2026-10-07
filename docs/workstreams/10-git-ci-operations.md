@@ -39,6 +39,7 @@
 
 - [rocketstar・衛星・OS・ボタンの完全保存アーカイブ](../rocketstar-design/README.md) — DOC03。利用者の保存指示により原本・生成元・旧版・QA画像を保持し、全ファイルのhashを検査する。現行R5要件とアーカイブ内E3前提は分ける。
 
+- [統合で失われた情報の監査（2026-10-07）](../merge-loss-audit-20261007.md) — 2026-10-05の `ecb4b2af` ほかで文書と台帳が古い内容へ戻った経緯、復元した範囲、owner判断待ちの項目。次の担当は[文書整理の引き継ぎ](../prompts/docs-reorg-handoff-20261007.md)から始める。
 - [Git consolidation](../git-consolidation.md)
 - [Prompt playbook](../prompt-playbook.md)
 - [Design/implementation alignment](../design-implementation-alignment-20260909.md)

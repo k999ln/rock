@@ -421,7 +421,7 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`progress-audit-20260909.md`](progress-audit-20260909.md) | 履歴 | 進捗と確定要望の相違の監査（2026-09-09） | 09-09 |
 | [`progress-audit-20260909-followup.md`](progress-audit-20260909-followup.md) | 履歴 | 同監査の追補 | 09-09 |
 
-関連フォルダ：[`workstreams/`](workstreams/)（13ファイル）／[`prompts/`](prompts/)（9ファイル）／[`templates/`](templates/)（4ファイル）
+関連フォルダ：[`workstreams/`](workstreams/)（13ファイル）／[`prompts/`](prompts/)（10ファイル）／[`templates/`](templates/)（4ファイル）
 ### P. 証拠・素材
 
 | フォルダ | 何が入っているか |
@@ -445,7 +445,7 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`avocado-mini-conversation-2026-09-27/`](avocado-mini-conversation-2026-09-27/README.md) | 29 | 2026-09-27の会話仕様アーカイブ（原文のまま）。個人認証、GTA、クリエイター収益分配80:20 |
 | [`rocketstar-design/`](rocketstar-design/README.md) | 936 | rocketstar 設計アーカイブ。R1.0完全版、A-LINK、受信試作、OS完全版の付録、コロニー、計算・検証記録 |
 | [`evidence/`](evidence/) | 841 | 受入証拠（JSONとログ要約）。文書から参照される試験結果の正本 |
-| [`prompts/`](prompts/) | 9 | 実行プロンプトの保存（再開指示、引継ぎ原文） |
+| [`prompts/`](prompts/) | 10 | 実行プロンプトの保存（再開指示、引継ぎ原文）。2026-10-07の文書整理の引き継ぎは [`docs-reorg-handoff-20261007.md`](prompts/docs-reorg-handoff-20261007.md) |
 | [`templates/`](templates/) | 4 | 受入報告などの雛形 |
 | [`contracts/`](contracts/) | 3 | Sky commerce v2の契約案（SQL・TypeScript） |
 | [`design-validation/`](design-validation/README.md) | 5 | 設計の状態モデル検証（commerce state model） |

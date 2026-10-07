@@ -1,8 +1,22 @@
-> **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-06 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
+> **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-07 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 >
 > **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
 
 # RockstarOS — 事業・設計・進捗
+
+## 2026-10-07 — 文書の情報設計の整理と、統合で失われた記録の復元（Git / CI / Operations、未push）
+
+利用者の「分かりにくすぎるからgithub整理できる？情報量一切削らないで」を受け、Git / CI / Operations、ROCKを主担当に文書だけを整理した。コード、`data/*.json` の台帳、`vendor/`、証拠は変更していない。ファイルの移動・改名・削除は0件。作業branchは `docs/repo-information-architecture`、基点はmain `0fbf688b`。
+
+追加した入口は、[文書の地図](docs/README.md)（`docs/` 直下の185文書を分野と種類で1回ずつ分類）、[仕様変遷](docs/spec-history.md)（日付順・テーマ別・現行仕様・撤回一覧・未確定の案）、[エージェント・Tool総覧](docs/agents-and-tools.md)（Skyの35 Tool、役割エージェント、OS内・クラウドのAgent、AMCの32部隊）、`data/`・`scripts/`・`services/`・`toolkits/` のフォルダ案内。READMEは冒頭に「これは何か」「方針の変遷」「探し方」を置き、末尾に追記されていた節を該当の章へ移した。
+
+整理の途中で、統合（merge）で文書の中身が消えていたことを確認した。最大の原因は2026-10-05 05:09 ETの `ecb4b2af` で、main側で更新されていた47ファイルのうち39ファイルが2026-09-29時点のローカル側の内容になっていた。統合で落ちてmainに無かった2,043行のうち1,205行を元の文書へ戻し、353行は書き直されて現存、485行は原文のまま保管した。この `project.md` には作業記録199節を戻し、日付付きの節を新しい順に並べ直した。経緯、戻したもの、戻していないものは[統合で失われた情報の監査](docs/merge-loss-audit-20261007.md)にある。
+
+検証: 変更した既存19ファイルについて、main `0fbf688b` にあった4,256行すべてが作業ツリーのどこかに原文で残ることを照合（同じファイルに4,207行、新しい版へ書き換えた49行は保管庫に原文）。変更した文書のリンク切れ0件。`project:check`、`repository:check`、`version:check`、`schema:check`、`database:check`、`release:check`、`release:signing:check`、`baseline:check`、`design:check`、`mission:check`、`system:composition:check`、`llm:architecture:check`、`csv:check`、`sky:check`、`os:check`、`android:architecture:check`、`device-support:check`、`android:first-flash:check`、`sky:launch:check`、`avocado:r5:check`、`mcp:package:check`、`fashion:package:check`、`shared:check` は変更前後とも合格。`os:parity` と `npm test` の5件（674、678、712、713、751）は、この作業環境では変更前から失敗しており、変更後も同じ結果。`npm run verify` 全体と同一SHAのCIは未実行。
+
+未完了: GitHubへのpushとPR作成。作業したセッションには `k999ln/rock` への書き込み権限がなく、pushが拒否された。次の担当は[引き継ぎ手順](docs/prompts/docs-reorg-handoff-20261007.md)に従い、bundleを取り込んでpushし、PRを作る。taskは追加していない（task台帳の復元がowner判断待ちのため）。
+
+owner判断待ち（開発側で決めない）: ①task台帳から消えた `SIM01`・`SKY21`・`B06`・`G04` と `AI02`〜`AI06` の状態を戻すか、②`data/design-document-index.json` をmainの内容へ戻すか、③PR側だけにあった `WEB20`・`AI09`・`WEB21`・`BIL04` を台帳へ入れるか、④READMEの最初の見出し、⑤統合で古い側になったままのコード9件の確認、⑥avokadoProの価格（From ¥880,000 と 80万円）。あわせて、理念そのものについてownerへ質問を出しており、回答待ちである。無料配布の範囲、手数料、解約ロック、「OSをSIMに入れる」の意味、最初の入口は、回答が出るまで文書・実装で確定させない。
 
 ## 2026-10-06 — Sky・データ回収・LLMの追加機能（HOME01 / SYS01 / WEB14、実装・検証）
 
