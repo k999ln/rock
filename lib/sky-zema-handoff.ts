@@ -1,7 +1,8 @@
 import type { Job } from './operations';
 import { normalizeSkyZemaHandoff } from '../public-release/rockstaros/packages/sky-zema-core/src/handoff.js';
 
-export const SKY_ZEMA_HANDOFF_KEY = 'rockstaros.sky-zema-handoff.v1';
+import { SKY_ZEMA_HANDOFF_KEY, openZemaPrivateStorage } from './zema-private-storage.ts';
+export { SKY_ZEMA_HANDOFF_KEY } from './zema-private-storage.ts';
 export const SKY_ZEMA_JOB_EVENT = 'rockstaros:sky-zema-job';
 export const SKY_ZEMA_HANDOFF_TTL_MS = 10 * 60 * 1000;
 
@@ -45,9 +46,11 @@ function validHandoff(value: unknown): value is SkyZemaHandoff {
 export function queueSkyZemaHandoff(
   toolId: string,
   request: string,
-  storage: HandoffStorage = window.sessionStorage,
+  providedStorage?: HandoffStorage,
   now = Date.now(),
 ): SkyZemaHandoff {
+  const storage = openZemaPrivateStorage(providedStorage);
+  if (!storage) throw new Error('会話の保存領域を確認してから、もう一度Zemaで開いてください。');
   if (!TOOL_ID.test(toolId))
     throw new Error('引き継ぐToolを確認してください。');
   if (
@@ -70,9 +73,11 @@ export function queueSkyZemaHandoff(
 
 export function consumeSkyZemaHandoff(
   expectedToolId: string,
-  storage: HandoffStorage = window.sessionStorage,
+  providedStorage?: HandoffStorage,
   now = Date.now(),
 ): SkyZemaHandoff | null {
+  const storage = openZemaPrivateStorage(providedStorage);
+  if (!storage) return null;
   const raw = storage.getItem(SKY_ZEMA_HANDOFF_KEY);
   if (!raw) return null;
   let value: unknown;

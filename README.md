@@ -1,5 +1,7 @@
 <div align="center">
 
+Provider設定は読み取った版を指定して保存します。競合時は入力を残し、最新設定を確認して再保存してください。Zemaの自動保存も競合後は明示保存になります。旧クライアントの更新と追加migrationの協調反映が必要です。[保存契約](docs/sky-tools-complete-design.md)。候補030は独立検収待ちで、実接続・本番移行・公開は未実施です。
+
 <img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokado product concept: one slim silver avocadoMini R5 stands beside the words PLAY, MAKE, and LIVE with subtle animated lines" width="100%">
 
 # avokado
@@ -268,6 +270,18 @@ The catalog also includes Tools for checking Coconala opportunities, reconciling
 Open Home → **追加** (`/add`). Sky is included; select **ホームに追加** for data collection or LLM. The LLM shortcut opens existing Zema and still requires a configured connection and the existing quote/budget approval. This does not install a local model or replace the device OS.
 
 At `/add/data`, choose up to 20 files (including Sky/LLM results you already downloaded), optionally add a note, and export an encrypted `.rockdata` file with a passphrase of at least 10 characters. The total limit is 2 MiB. To recover, select that archive and enter the same passphrase; verified files and notes can be downloaded separately. Contents stay in browser memory until explicitly exported and disappear on reload. Keep the archive and passphrase separately; neither is uploaded by this utility. Whole-device and automatic external-service collection are not included.
+
+#### Zema storage recovery (031 repair)
+
+If storage cannot be accessed or old private data cannot be removed after sign-in expires, Zema blocks conversation/handoff restoration and shows **保存領域の消去を再試行**. Restore storage access and retry; both records must be confirmed absent before the workspace opens. A non-sensitive tab quarantine flag preserves this boundary across same-origin reloads. Saved server-side work is not deleted. Ordinary connectivity retries preserve unsent input. This isolated repair awaits synthetic UI review; real authentication and release gates remain separate.
+
+#### Zema session recovery
+
+When sign-in expires, Zema clears this tab’s conversations, pending handoff, and unsent input before another account resumes. Saved server-side work is read again after authentication. Provider conflicts retain edits until you fetch, review and explicitly save; saved settings are not proof of a live provider connection. Candidate031 has synthetic UI acceptance only; real authentication and production acceptance remain pending.
+
+#### Sky seller updates
+
+At `/sky/sell`, conflicting saves keep your draft. Fetch and review the latest price and terms, confirm them, then explicitly save again. Offer API clients must send `expectedRevision` (0 to create, the previously read revision to update); old clients must reload/update. This isolated change is pending integration and browser recovery acceptance. See [commerce contract](docs/sky-billing.md).
 
 #### From a Sky product page to Zema
 

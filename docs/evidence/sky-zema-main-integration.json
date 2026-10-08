@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "scope": "Accepted Sky/Zema recovery, CAS persistence and bundle fixes integrated for main review",
+  "userAuthorization": "mainにあげて",
+  "baseMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "sourceManifestSha256": "3d5b7329f5cde1b34881b9ff3eac7b4b49ca25bd049371da1c1fece8427d4e0a",
+  "productPatchSha256": "7bbfcddd0cd24b9788a7a7f78c45504f27295d2da104b3bb19378b6cbd45ccb4",
+  "localEvidence": {
+    "034": {
+      "resultSha256": "b3bcffcede8a02eea6906019c1f1a1cd9579f732f6c276836a791a2a9b881cad",
+      "independentReview": "bounded_local_integration_accepted",
+      "targetTestsPassed": 31,
+      "typecheck": "passed",
+      "targetLint": "passed",
+      "productionBuild": "passed"
+    },
+    "035": {
+      "resultSha256": "b3ea82094d1272207420f8a5bfea04117aa1970065a48fa44c68600c133c9f85",
+      "independentReview": "bounded_local_integrated_journey_accepted",
+      "crossEvidenceChecks": 60,
+      "sourceFilesMatched": 4577,
+      "applicationTablesCompared": 77,
+      "scope": "Synthetic local identities and isolated D1; actual production router UI; bookmark-only writes"
+    }
+  },
+  "ci": "Pending on this integration commit; GitHub PR checks are authoritative",
+  "remaining": [
+    "Three adjacent Agent/Cloud AI display paths",
+    "Generic AMC actor provenance",
+    "Real identity/provider/payment/device and operational acceptance",
+    "License clearance and public launch gates"
+  ],
+  "deployed": false,
+  "publicLaunchAccepted": false
+}

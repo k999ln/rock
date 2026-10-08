@@ -1,55 +1,204 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, realpathSync, renameSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, relative, resolve, sep } from 'node:path';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  realpathSync,
+  renameSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const sha256 = (value) => createHash('sha256').update(value).digest('hex');
 
 const cleanModuleId = (id) => {
   let cleaned = id;
   while (cleaned.charCodeAt(0) === 0) cleaned = cleaned.slice(1);
-  return cleaned.split('?')[0].split('#')[0];
+  cleaned = cleaned.split('?')[0].split('#')[0];
+  if (cleaned.startsWith('file:')) {
+    try {
+      return fileURLToPath(cleaned);
+    } catch {
+      return '';
+    }
+  }
+  return cleaned;
 };
 
 const unresolvedPackageName = (id) => {
-  const suffix = cleanModuleId(id).split(`${sep}node_modules${sep}`).at(-1) || '';
+  const suffix =
+    cleanModuleId(id).split(`${sep}node_modules${sep}`).at(-1) || '';
   const segments = suffix.split(sep);
-  return segments[0]?.startsWith('@') ? segments.slice(0, 2).join('/') : segments[0];
+  return segments[0]?.startsWith('@')
+    ? segments.slice(0, 2).join('/')
+    : segments[0];
 };
 
-export function packageLockPathForModule({ root, moduleId, lock, nodeModulesRoot = resolve(root, 'node_modules') }) {
-  const cleaned = cleanModuleId(moduleId);
-  let relativePath = relative(root, cleaned).split(sep).join('/');
-  if (!relativePath || relativePath.startsWith('../') || relativePath === '..') {
-    const dependencyPath = relative(nodeModulesRoot, cleaned).split(sep).join('/');
-    if (!dependencyPath || dependencyPath.startsWith('../') || dependencyPath === '..') return null;
-    relativePath = `node_modules/${dependencyPath}`;
+const within = (parent, child) => {
+  const path = relative(parent, child);
+  return (
+    path === '' ||
+    (!isAbsolute(path) && path !== '..' && !path.startsWith(`..${sep}`))
+  );
+};
+
+// Index exact installed roots from lock paths, not package names. Package-level
+// symlinks and nested versions can point outside the build's node_modules root.
+export function createPackageLockModuleResolver({
+  root,
+  lock,
+  nodeModulesRoot = resolve(root, 'node_modules'),
+}) {
+  root = resolve(root);
+  const packagesByRealRoot = new Map();
+  for (const [lockPath, entry] of Object.entries(lock.packages || {})) {
+    if (!lockPath || !entry?.version || !within(root, resolve(root, lockPath)))
+      continue;
+    const installedRoot = lockPath.startsWith('node_modules/')
+      ? resolve(nodeModulesRoot, lockPath.slice('node_modules/'.length))
+      : resolve(root, lockPath);
+    try {
+      const realPackageRoot = realpathSync(installedRoot);
+      const packageJsonBytes = readFileSync(
+        resolve(realPackageRoot, 'package.json'),
+      );
+      const installed = JSON.parse(packageJsonBytes);
+      const record = {
+        lockPath,
+        entry,
+        installed,
+        packageJsonSha256: sha256(packageJsonBytes),
+      };
+      const records = packagesByRealRoot.get(realPackageRoot) || [];
+      records.push(record);
+      packagesByRealRoot.set(realPackageRoot, records);
+    } catch {
+      // Optional/platform packages may not be installed. A bundled file without
+      // a verified installed record remains unresolved, never guessed by name.
+    }
   }
-  const segments = relativePath.split('/');
-  let match = null;
-  for (let index = 0; index < segments.length; index += 1) {
-    if (segments[index] !== 'node_modules') continue;
-    const scoped = segments[index + 1]?.startsWith('@');
-    const length = scoped ? index + 3 : index + 2;
-    const candidate = segments.slice(0, length).join('/');
-    if (lock.packages?.[candidate]?.version) match = candidate;
-  }
-  return match;
+  const cache = new Map();
+  return (moduleId) => {
+    if (cache.has(moduleId)) return cache.get(moduleId);
+    const cleaned = cleanModuleId(moduleId);
+    const evidence = { moduleId, cleanedModuleId: cleaned };
+    const finish = (status, extra = {}) => {
+      const result = { status, ...evidence, ...extra };
+      cache.set(moduleId, result);
+      return result;
+    };
+    const dependencyId = cleaned.includes(`${sep}node_modules${sep}`);
+    if (!isAbsolute(cleaned))
+      return finish(dependencyId ? 'unresolved' : 'local', {
+        reason: 'non-file-module-id',
+      });
+    try {
+      if (!statSync(cleaned).isFile()) throw new Error('not a file');
+      evidence.realModulePath = realpathSync(cleaned);
+      evidence.moduleSha256 = sha256(readFileSync(evidence.realModulePath));
+    } catch {
+      return finish(
+        dependencyId || !within(root, cleaned) ? 'unresolved' : 'local',
+        { reason: 'module-file-unavailable' },
+      );
+    }
+    let packageRoot = dirname(evidence.realModulePath);
+    while (true) {
+      const manifestPath = resolve(packageRoot, 'package.json');
+      if (existsSync(manifestPath)) {
+        let installed, bytes;
+        try {
+          bytes = readFileSync(manifestPath);
+          installed = JSON.parse(bytes);
+        } catch {
+          return finish('unresolved', {
+            reason: 'invalid-package-manifest',
+            realPackageRoot: packageRoot,
+          });
+        }
+        // A type-only manifest in dist/esm is not a separate npm package.
+        if (
+          installed.name ||
+          installed.version ||
+          packagesByRealRoot.has(packageRoot)
+        ) {
+          evidence.realPackageRoot = packageRoot;
+          evidence.packageJsonSha256 = sha256(bytes);
+          evidence.installedName = installed.name || null;
+          evidence.installedVersion = installed.version || null;
+          evidence.installedLicense = installed.license || null;
+          const records = packagesByRealRoot.get(packageRoot) || [];
+          if (!records.length)
+            return finish(
+              dependencyId || !within(root, cleaned) ? 'unresolved' : 'local',
+              { reason: 'package-root-not-in-lock' },
+            );
+          if (
+            relative(packageRoot, evidence.realModulePath)
+              .split(sep)
+              .includes('node_modules')
+          ) {
+            return finish('unresolved', { reason: 'untracked-nested-package' });
+          }
+          if (records.length !== 1)
+            return finish('unresolved', {
+              reason: 'ambiguous-physical-package',
+              candidateLockPaths: records.map((r) => r.lockPath).sort(),
+            });
+          const { lockPath, entry, packageJsonSha256 } = records[0];
+          evidence.lockPath = lockPath;
+          evidence.lockEntrySha256 = sha256(JSON.stringify(entry));
+          if (evidence.packageJsonSha256 !== packageJsonSha256)
+            return finish('unresolved', {
+              reason: 'package-changed-during-build',
+            });
+          const name = entry.name || lockPath.split('node_modules/').at(-1);
+          if (installed.name !== name || installed.version !== entry.version)
+            return finish('unresolved', {
+              reason: 'installed-lock-identity-mismatch',
+            });
+          if (
+            typeof entry.license !== 'string' ||
+            !entry.license ||
+            typeof installed.license !== 'string' ||
+            !installed.license
+          )
+            return finish('unresolved', { reason: 'license-metadata-missing' });
+          if (entry.license !== installed.license)
+            return finish('unresolved', {
+              reason: 'installed-lock-license-mismatch',
+            });
+          return finish('resolved', {
+            component: {
+              purl: `pkg:npm/${encodeURIComponent(name)}@${entry.version}`,
+              name,
+              version: entry.version,
+              license: entry.license,
+            },
+          });
+        }
+      }
+      const parent = dirname(packageRoot);
+      if (parent === packageRoot)
+        return finish(
+          dependencyId || !within(root, cleaned) ? 'unresolved' : 'local',
+          { reason: 'package-manifest-unavailable' },
+        );
+      packageRoot = parent;
+    }
+  };
 }
 
-const componentForModule = ({ root, moduleId, lock, nodeModulesRoot }) => {
-  const path = packageLockPathForModule({ root, moduleId, lock, nodeModulesRoot });
-  if (!path) return null;
-  const entry = lock.packages[path];
-  const name = entry.name || path.split('node_modules/').at(-1);
-  return {
-    purl: `pkg:npm/${encodeURIComponent(name)}@${entry.version}`,
-    name,
-    version: entry.version,
-    license: entry.license || null,
-  };
-};
+export function packageLockPathForModule(options) {
+  const result = createPackageLockModuleResolver(options)(options.moduleId);
+  return result.status === 'resolved' ? result.lockPath : null;
+}
 
-const sorted = (values) => [...values].sort((left, right) => left.localeCompare(right));
+const sorted = (values) =>
+  [...values].sort((left, right) => left.localeCompare(right));
 
 const serialize = ({ state, packageLockSha256 }) => ({
   schema: 'rockstaros-web-bundle-inventory/1',
@@ -67,6 +216,12 @@ const serialize = ({ state, packageLockSha256 }) => ({
             left.purl.localeCompare(right.purl),
           ),
           unresolvedNodeModules: sorted(environment.unresolvedNodeModules),
+          moduleEvidence: [...environment.moduleEvidence.values()]
+            .map(({ chunks, ...evidence }) => ({
+              ...evidence,
+              chunks: sorted(chunks),
+            }))
+            .sort((a, b) => a.moduleId.localeCompare(b.moduleId)),
         },
       ]),
   ),
@@ -79,6 +234,11 @@ export function createWebBundleInventoryPlugin({
   const lockBytes = readFileSync(resolve(root, 'package-lock.json'));
   const lock = JSON.parse(lockBytes);
   const nodeModulesRoot = realpathSync(resolve(root, 'node_modules'));
+  const resolveModule = createPackageLockModuleResolver({
+    root,
+    lock,
+    nodeModulesRoot,
+  });
   const packageLockSha256 = sha256(lockBytes);
   const state = new Map();
   let initialized = false;
@@ -98,16 +258,30 @@ export function createWebBundleInventoryPlugin({
         localModules: new Set(),
         components: new Map(),
         unresolvedNodeModules: new Set(),
+        moduleEvidence: new Map(),
       };
       for (const output of Object.values(bundle)) {
         if (output.type !== 'chunk') continue;
         environment.chunks.add(output.fileName);
         for (const moduleId of Object.keys(output.modules || {})) {
-          const component = componentForModule({ root, moduleId, lock, nodeModulesRoot });
-          if (component) {
+          const resolution = resolveModule(moduleId);
+          if (resolution.status !== 'local') {
+            const evidence = environment.moduleEvidence.get(moduleId) || {
+              ...resolution,
+              chunks: new Set(),
+            };
+            evidence.chunks.add(output.fileName);
+            environment.moduleEvidence.set(moduleId, evidence);
+          }
+          if (resolution.status === 'resolved') {
+            const { component } = resolution;
             environment.components.set(component.purl, component);
-          } else if (cleanModuleId(moduleId).includes(`${sep}node_modules${sep}`)) {
-            environment.unresolvedNodeModules.add(unresolvedPackageName(moduleId));
+          } else if (resolution.status === 'unresolved') {
+            environment.unresolvedNodeModules.add(
+              resolution.installedName ||
+                unresolvedPackageName(moduleId) ||
+                moduleId,
+            );
           } else {
             environment.localModules.add(cleanModuleId(moduleId));
           }
@@ -117,7 +291,9 @@ export function createWebBundleInventoryPlugin({
       const report = serialize({ state, packageLockSha256 });
       mkdirSync(dirname(outputPath), { recursive: true });
       const temporaryPath = `${outputPath}.${process.pid}.tmp`;
-      writeFileSync(temporaryPath, `${JSON.stringify(report, null, 2)}\n`, { mode: 0o600 });
+      writeFileSync(temporaryPath, `${JSON.stringify(report, null, 2)}\n`, {
+        mode: 0o600,
+      });
       renameSync(temporaryPath, outputPath);
     },
   };

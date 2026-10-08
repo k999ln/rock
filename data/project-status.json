@@ -5793,5 +5793,139 @@
     "verifiedSourceSha": "92bb9f2ff87cffcf72aa370105cff26def693939",
     "ci": "7/7 checks passed; npm run verify including build/API/full regression passed",
     "ciRun": "https://github.com/k999ln/rock/actions/runs/37555780451"
+  },
+  "skyOfferCasCandidate": {
+    "requestId": "SKY-S7-OFFER-CAS-20261007-01",
+    "baseMainSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "primaryOwner": "S7/O2",
+    "stage": "isolated_candidate_pending_independent_review",
+    "scope": "Offer save CAS and seller conflict recovery only",
+    "schemaMigration": false,
+    "compatibility": "expectedRevision required: create 0; update the reviewed revision; old clients receive 400 and need reload/update",
+    "evidence": [
+      "lib/sky-commerce-store.ts",
+      "lib/sky-commerce.ts",
+      "components/sky-commerce.tsx",
+      "tests/sky-commerce.test.mjs",
+      "docs/sky-billing.md"
+    ],
+    "validation": {
+      "commerceTests": 45,
+      "marketplaceTests": 14,
+      "uiComponentContractAssertions": 18,
+      "browserRecovery": "not accepted: local listen EPERM; browser environment unavailable",
+      "realStripe": false,
+      "fullVerify": false
+    },
+    "nextAction": "Independent offer-CAS review and browser recovery check; then coordinated API/UI integration. Provider/AMC/adjacent APIs and public gates remain pending.",
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyProviderCasCandidate": {
+    "requestId": "SKY-S7-PROVIDER-CAS-20261007-01",
+    "baseMainSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "primaryOwner": "S7/O2; shared Provider boundary S3/O4",
+    "stage": "isolated_candidate_pending_independent_review",
+    "migration": "0060_sky_provider_revision; legacy rows default1; existing DB not migrated",
+    "compatibility": "GET revision; PUT expectedRevision mandatory; create0/update read revision; old clients400; stale409",
+    "callers": [
+      "SkyConnectionCenter",
+      "SkyChatWorkspace routing autosave via shared ProviderDraft"
+    ],
+    "validation": {
+      "targetedTests": 25,
+      "actualD1Checks": 52,
+      "browser": "actual connection center/shared routing hook + real handler/D1; fixture dialog/auth only",
+      "realProvider": false,
+      "fullVerify": false
+    },
+    "nextAction": "Independent review, coordinated schema/API/UI integration and same-candidate S0 acceptance; AMC/adjacent API/real PC and public gates pending",
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyZemaProviderUiCandidate": {
+    "requestId": "SKY-S7-ZEMA-PROVIDER-UI-20261007-01",
+    "base": "frozen030",
+    "primaryOwner": "S7/O2 ROCK",
+    "stage": "isolated_candidate_pending_independent_review",
+    "knownAuthLossFix": "Unmount private workspace; clear tab chat/handoff; reload owner reads on reauthentication",
+    "validation": {
+      "targetedTests": 11,
+      "actualUi": "SkyChatWorkspace chat/work; synthetic Alice/Bob; real handler/native D1; framework navigation adapter",
+      "typecheck": true,
+      "targetedLint": true,
+      "fullVerify": false,
+      "productionBuildRerun": false,
+      "realProvider": false
+    },
+    "nextAction": "Independent031 review; library inventory and17 adjacent APIs; same candidate S0 and real PC021 separately",
+    "goalRevision": 48,
+    "S7Overall": "pending",
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyZemaProviderStorageRepair": {
+    "requestId": "SKY-S7-ZEMA-PROVIDER-UI-20261007-01",
+    "ledger": "031 repair",
+    "base": "frozen initial031",
+    "stage": "isolated_candidate_pending_independent_review",
+    "scope": "sessionStorage getter/removal failures; verified cleanup barrier; chat/handoff consumer gates and retry UI",
+    "validation": "See isolated repair result; no automatic carryforward of audit/full acceptance",
+    "S7Overall": "pending",
+    "goalRevision": 48,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyBundleInventoryCandidate": {
+    "requestId": "SKY-S10-BUNDLE-INVENTORY-20261007-01",
+    "ledger": "033",
+    "taskId": "S10-01",
+    "base": "032 accepted limited local production runtime candidate",
+    "stage": "isolated_candidate_pending_independent_review",
+    "scope": "Physical module to installed package/version/license and exact lock entry; generated chunk source evidence",
+    "unresolvedBefore": {
+      "client": 8,
+      "rsc": 4,
+      "ssr": 8
+    },
+    "unresolvedAfter": {
+      "client": 0,
+      "rsc": 0,
+      "ssr": 0
+    },
+    "legalClearance": false,
+    "wholeS10Accepted": false,
+    "goalRevision": 48,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyLocalIntegration034": {
+    "recordedAt": "2026-10-07",
+    "ledger": "034",
+    "stage": "local_candidate_pending_independent_review",
+    "baseMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "scope": "Accepted cumulative027/030/031/032/033 product changes; both main/product document histories retained; build isolation excluded from product",
+    "mainIntegrated": false,
+    "published": false,
+    "fullVerifyPassed": false,
+    "runtimeAcceptanceInherited": false,
+    "nextAction": "Read034 same-candidate build, patch-apply and protection evidence, then independent review; all parent/public gates remain pending",
+    "validation": {
+      "targetTestsPassed": 31,
+      "typecheck": "passed",
+      "targetLint": "0 warnings / 0 errors",
+      "projectMissionSchemaDatabaseBaselineDesign": "passed",
+      "buildEvidence": "Recorded separately in034 result after isolated build; no inherited pass",
+      "fullVerify": "held_classified_scope",
+      "newRuntimeUiD1Acceptance": false
+    }
+  },
+  "skyZemaMainIntegration": {
+    "status": "prepared_for_main",
+    "baseMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "evidence": "docs/evidence/sky-zema-main-integration.json",
+    "localReview": "034/035 bounded acceptance",
+    "sameCommitCi": "pending",
+    "publicLaunchAccepted": false
   }
 }
