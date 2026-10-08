@@ -31,5 +31,9 @@
     "License clearance and public launch gates"
   ],
   "deployed": false,
-  "publicLaunchAccepted": false
+  "publicLaunchAccepted": false,
+  "integrationFixes": [
+    "check-sky verifies shared private-storage helper plus consumer imports after the refactor",
+    "Extend existing exact public storage identifier exception to its new declaration and cleanup test; preserve all default rules, history scanning and unrelated detections"
+  ]
 }
