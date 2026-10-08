@@ -34,6 +34,15 @@
   "publicLaunchAccepted": false,
   "integrationFixes": [
     "check-sky verifies shared private-storage helper plus consumer imports after the refactor",
-    "Extend existing exact public storage identifier exception to its new declaration and cleanup test; preserve all default rules, history scanning and unrelated detections"
-  ]
+    "Extend existing exact public storage identifier exception to its new declaration and cleanup test; preserve all default rules, history scanning and unrelated detections",
+    "Mark four Node test registration promises with void to satisfy full-product typed lint",
+    "Update database inventory expectations to 61 migrations and 0060 provider revision; table counts unchanged"
+  ],
+  "securityControlUpdate": {
+    "status": "approval_required",
+    "currentPinnedCommit": "291805e85a52201176b65eec4c01bbba8e958d6c",
+    "proposedReviewedPolicyCommit": "c3e2ce59669455643c3c78c4737a3ed0406b659e",
+    "reason": "Automatic approval review rejected changing the independent scanner control without exact owner authorization",
+    "executed": false
+  }
 }
