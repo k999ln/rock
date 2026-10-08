@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: k999ln/rock
-          ref: 291805e85a52201176b65eec4c01bbba8e958d6c
+          ref: b4c9000e2f265723d29b90c5f37c7f34b1a18362
           path: control
           persist-credentials: false
           sparse-checkout-cone-mode: false
