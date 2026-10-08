@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "cycle": 83,
-  "status": "local_regressions_pass_control_pin_and_ci_pending",
+  "status": "reviewed_control_pinned_local_validation_pass_ci_pending",
   "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
   "taskId": "SYS15",
   "primarySquad": "H1",
@@ -45,7 +45,7 @@
     "unchangedRulesAndOtherExceptions": true,
     "defaultRulesEnabled": true,
     "priorControlCommit": "291805e85a52201176b65eec4c01bbba8e958d6c",
-    "reviewedControlCommit": null,
+    "reviewedControlCommit": "b4c9000e2f265723d29b90c5f37c7f34b1a18362",
     "controlActivation": "Pin a reviewed immutable commit after recording the tested policy and regression; never read policy from untrusted candidate HEAD."
   },
   "validation": {

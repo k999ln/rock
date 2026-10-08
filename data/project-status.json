@@ -5796,7 +5796,7 @@
     "ciRun": "https://github.com/k999ln/rock/actions/runs/37555780451"
   },
   "spiderZemaStoragePolicyRefresh": {
-    "status": "local_regressions_pass_control_pin_and_ci_pending",
+    "status": "reviewed_control_pinned_local_validation_pass_ci_pending",
     "taskId": "SYS15",
     "primarySquad": "H1",
     "workstream": "Security / Identity / Compliance",
@@ -5805,6 +5805,6 @@
     "finding": "PR93 relocated public storage identifier is absent from pinned policy exact paths",
     "evidence": "docs/evidence/spider-zema-storage-policy.json",
     "mainIntegrated": false,
-    "reviewedControlCommit": null
+    "reviewedControlCommit": "b4c9000e2f265723d29b90c5f37c7f34b1a18362"
   }
 }

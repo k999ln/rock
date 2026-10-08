@@ -6,7 +6,7 @@
 
 ## 2026-10-08 — SPIDER: 公開保存キーの移動に伴う固定検査設定の同期（SYS15）
 
-Security / ROCK、SYS15主担当H1。PR #93の秘密検査2件をsourceで確認し、同じ公開storage item名の移動先2 pathが固定controlの設定にないことを確認した。既存の値完全一致とpath完全一致・AND条件を維持して2 pathだけを追加し、公開値の出所記録を保持する。実Gitleaks 8.30.1で修正前の回帰1件失敗を確認し、修正後はpolicy 10件・scanner境界6件が合格。各pathの別秘密値と未承認pathへのコピーを拒否する。同一PR #93 candidateの履歴1,075件を実検査し、旧設定2件／修正設定0件・走査完了を確認。mission／project／database整合は合格、ローカル全体verifyは未導入ai依存で停止。独立レビューで例外の限定と各pathの拒否を確認した。レビュー済みcontrol commitへの固定・同一SHA CIは後続確認。main統合、公開、実機、秘密rotationは行わない。[検証記録](docs/evidence/spider-zema-storage-policy.json)。
+Security / ROCK、SYS15主担当H1。PR #93の秘密検査2件をsourceで確認し、同じ公開storage item名の移動先2 pathが固定controlの設定にないことを確認した。既存の値完全一致とpath完全一致・AND条件を維持して2 pathだけを追加し、公開値の出所記録を保持する。実Gitleaks 8.30.1で修正前の回帰1件失敗を確認し、修正後はpolicy 10件・scanner境界6件が合格。各pathの別秘密値と未承認pathへのコピーを拒否する。同一PR #93 candidateの履歴1,075件を実検査し、旧設定2件／修正設定0件・走査完了を確認。mission／project／database整合は合格、ローカル全体verifyは未導入ai依存で停止。独立レビューで例外の限定と各pathの拒否を確認した。レビュー済みcontrol `b4c9000e` へworkflowを固定した。同一SHA CIは後続確認。main統合、公開、実機、秘密rotationは行わない。[検証記録](docs/evidence/spider-zema-storage-policy.json)。
 
 ## 2026-10-07 — 文書の情報設計の整理と、統合で失われた記録の復元（Git / CI / Operations、未push）
 
