@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "cycle": 83,
+  "status": "local_regressions_pass_control_pin_and_ci_pending",
+  "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "taskId": "SYS15",
+  "primarySquad": "H1",
+  "workstream": "Security / Identity / Compliance",
+  "responsibility": "ROCK",
+  "finding": {
+    "pullRequest": 93,
+    "candidateHead": "22e8320706d46658f22f2a89890ab6fa6ce60c5f",
+    "runId": 37714959180,
+    "artifactId": 11523142898,
+    "status": "findings",
+    "historyScanCompleted": true,
+    "reachableCommitCount": 1075,
+    "totalFindings": 2,
+    "classification": "public browser storage identifier; no credential or production leak observed",
+    "locations": [
+      {
+        "rule": "generic-api-key",
+        "file": "tests/zema-chat-session.test.mjs",
+        "line": 199,
+        "commit": "fa4cab60e10292309c5dc8509ab443c5aac70ad9"
+      },
+      {
+        "rule": "generic-api-key",
+        "file": "lib/zema-private-storage.ts",
+        "line": 2,
+        "commit": "fa4cab60e10292309c5dc8509ab443c5aac70ad9"
+      }
+    ],
+    "cause": "CI reads the immutable control policy, so the reviewed candidate-only relocation policy cannot affect its own scan."
+  },
+  "change": {
+    "policySource": "Reviewed exact policy/provenance diff in PR93",
+    "unchangedLiteralCount": 1,
+    "newExactPaths": [
+      "lib/zema-private-storage.ts",
+      "tests/zema-chat-session.test.mjs"
+    ],
+    "retainedOriginalPath": "lib/sky-zema-handoff.ts",
+    "match": "rule-scoped generic-api-key; AND; regexTarget=secret; full literal and full path anchors",
+    "unchangedRulesAndOtherExceptions": true,
+    "defaultRulesEnabled": true,
+    "priorControlCommit": "291805e85a52201176b65eec4c01bbba8e958d6c",
+    "reviewedControlCommit": null,
+    "controlActivation": "Pin a reviewed immutable commit after recording the tested policy and regression; never read policy from untrusted candidate HEAD."
+  },
+  "validation": {
+    "negativeControl": {
+      "policy": "prior control",
+      "tests": 1,
+      "fail": 1,
+      "expectedFailure": true
+    },
+    "realGitleaksVersion": "8.30.1",
+    "darwinArchiveSha256": "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5",
+    "policyTests": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "skip": 0
+    },
+    "scannerPrivacyTests": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    "newRegression": "All three exact paths: default detection, reviewed literal allowed, replacement credentials detected, unreviewed path copies detected; each location asserted separately.",
+    "sameCandidateFullHistoryComparison": {
+      "candidateHead": "22e8320706d46658f22f2a89890ab6fa6ce60c5f",
+      "reachableCommitCount": 1075,
+      "bothHistoryScansCompleted": true,
+      "sameHeadAndHistory": true,
+      "scannerSha256": "d54fcf031956d8ca70d149f34599a8a3775277080f2f5c6673e8d0771dddfe72",
+      "before": {
+        "configSha256": "b13727a896cb4dddfa9d142e983d536c7ff0002aa53979d9d815e23f85b7d96e",
+        "status": "findings",
+        "exitCode": 1,
+        "totalFindings": 2,
+        "findingsTruncated": false
+      },
+      "after": {
+        "configSha256": "943d2d9adf3692edbace5028153cf86c28527bfee88e9232723955cc8124e93c",
+        "status": "clean",
+        "exitCode": 0,
+        "totalFindings": 0,
+        "findingsTruncated": false
+      },
+      "rawFindingsOutput": false
+    },
+    "githubExactSha": "pending",
+    "localMetadataChecks": "mission/project/database update/check passed",
+    "localFullVerify": {
+      "exitCode": 1,
+      "stage": "llm:architecture:check",
+      "reason": "Installed ai dependency is missing; exact-SHA GitHub install/verify required",
+      "enospc": false
+    },
+    "independentReview": {
+      "blockers": 0,
+      "onlyOneReviewedLiteralPathSetExtended": true,
+      "perPathRealScannerAssertions": true,
+      "noWeakenedScannerOrSkip": true
+    }
+  },
+  "sameRefMainBaseline": {
+    "ref": "main",
+    "head": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "codeqlOpen": 34,
+    "dependabotOpen": 3,
+    "identitiesRulesPathsStatesUnchangedFromPriorCycle": true
+  },
+  "boundaries": [
+    "The existing PR93 check stays failed until its workflow includes the reviewed control update and reruns on its own exact SHA.",
+    "No claim of a credential leak or secret rotation.",
+    "No main merge, public deployment, device change, registry audit, alert dismissal, broad path exclusion, or history rewrite.",
+    "CodeQL53 and the existing dependency fix PR84/88/89/90 remain separate work."
+  ]
+}

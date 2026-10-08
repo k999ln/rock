@@ -66,3 +66,7 @@ O1 / SYS02の診断共有の安全条件として、entitlement observerの登�
 未修正版bracesと、4.3.0でもmax-stale漏洩が再現したhttp-cache-semanticsは、MIT原本・出所・差分hashを保持するrepository内の明示forkで修正する。全依存先をoverrideし、元code 4 fail / 修正版8 passの回帰試験を保持する。上流修正版への復帰は同じ攻撃再現・互換性・全体verifyの合格後。詳細は[検証記録](../evidence/security-gate-completion.json)、[braces保守](../../vendor/braces/ROCKSTAR-PATCH.md)、[HTTP cache保守](../../sites/avocado-mini/vendor/http-cache-semantics/ROCKSTAR-PATCH.md)。実機・鍵・公開gateは変更しない。
 
 受入更新: PR #83、`4e702fc2`の全8 CI成功後、`cb5955a2`でmain統合。GitHub verify Node 1362 pass / 0 fail / 1環境条件skip、依存監査0件、#17/#18は自動fixed。上流コードの追加regex DoSも線形処理へ修正。公開・物理OS受入とは分離する。
+
+### 公開保存キーの移動と固定control
+
+PR #93の公開storage item名は、移動後も同じ値のまま2つのsource／回帰test pathへ現れる。候補側の設定では固定controlの検査結果は変わらないため、source確認済みの値・path完全一致だけをcontrolへ同期する。実Gitleaksで各pathの差替え秘密値と未承認pathコピーを検出し、全履歴・既定rule・固定control・metadata-only出力を維持する。[範囲と試験](../evidence/spider-zema-storage-policy.json)。PR側で新しい固定controlを使った同一SHA再検査が成功するまで、旧失敗を解消済みにしない。
