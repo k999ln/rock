@@ -1,10 +1,10 @@
 'use client';
 
 import { CheckCircle2, CircleDashed, KeyRound, Link2, Save, ShieldCheck } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { ExecutionSignin, useExecutionAccess } from '@/components/execution-access';
-import { operationRequest, OperationRequestError } from '@/lib/operations-client';
+import { ProviderDraftFeedback, useProviderDraft } from '@/components/provider-draft';
 import {
   providerDefinition,
   skyProviderDefinitions,
@@ -30,10 +30,7 @@ const routingDefaults: Record<string, string> = {
   gameDelivery: 'roblox',
 };
 
-function valuesFor(provider: SkyProvider, config: Record<string, string> | undefined) {
-  if (provider === 'routing') return { ...routingDefaults, ...config };
-  return config ?? {};
-}
+const emptyDefaults: Record<string, string> = {};
 
 export default function SkyConnectionCenter({
   open,
@@ -44,92 +41,30 @@ export default function SkyConnectionCenter({
   onOpenChange: (open: boolean) => void;
   initialProvider?: SkyProvider;
 }) {
-  const [profiles, setProfiles] = useState<SkyProviderConnection[]>([]);
   const headingRef = useRef<HTMLElement>(null);
   const [selected, setSelected] = useState<SkyProvider>(initialProvider);
-  const [values, setValues] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [profilesAvailable, setProfilesAvailable] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  const draftEdited = useRef(false);
-  const refreshVersion = useRef(0);
   const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
-
+  const { session, state, disabled } = useProviderDraft(selected, selected === 'routing' ? routingDefaults : emptyDefaults, open && !executionBlocked);
+  const { profiles, config: values, loading, saving } = state;
   const definition = useMemo(() => providerDefinition(selected), [selected]);
   const selectedProfile = profiles.find((profile) => profile.provider === selected);
-
-  const refresh = useCallback(async () => {
-    const version = ++refreshVersion.current;
-    setProfilesAvailable(false);
-    setLoading(true);
-    setError('');
-    try {
-      const next = await operationRequest<SkyProviderConnection[]>('/api/sky/provider-connections');
-      if (version !== refreshVersion.current) return;
-      setProfiles(next);
-      const profile = next.find((item) => item.provider === selected);
-      if (!draftEdited.current) setValues(valuesFor(selected, profile?.config));
-      setProfilesAvailable(true);
-    } catch (cause) {
-      if (version !== refreshVersion.current) return;
-      if (cause instanceof OperationRequestError && cause.status === 401) setNeedsSignin(true);
-      else setError(cause instanceof Error ? cause.message : '接続情報を読み込めませんでした。');
-    } finally {
-      if (version === refreshVersion.current) setLoading(false);
-    }
-  }, [selected, setNeedsSignin]);
-
-  useEffect(() => {
-    if (!open || executionBlocked) return;
-    const refreshVersionRef = refreshVersion;
-    const timeout = window.setTimeout(() => void refresh(), 0);
-    return () => {
-      window.clearTimeout(timeout);
-      refreshVersionRef.current++;
-    };
-  }, [open, refresh, executionBlocked]);
+  useEffect(() => { if (state.unauthorized) setNeedsSignin(true); }, [state.unauthorized, setNeedsSignin]);
 
   function choose(provider: SkyProvider) {
-    draftEdited.current = false;
+    if (provider === selected) return;
+    session.deactivate();
     setSelected(provider);
-    setMessage('');
-    setError('');
-    setValues(valuesFor(provider, profiles.find((profile) => profile.provider === provider)?.config));
   }
-
   async function save(status: 'setup_required' | 'ready') {
-    if (executionBlocked || loading || saving || !profilesAvailable) return;
-    setSaving(true);
-    setMessage('');
-    setError('');
-    try {
-      const saved = await operationRequest<SkyProviderConnection>('/api/sky/provider-connections', 'PUT', {
-        provider: selected,
-        status,
-        config: values,
-      });
-      setProfiles((current) => [saved, ...current.filter((profile) => profile.provider !== selected)]);
-      if (selected === 'routing') {
-        window.localStorage.setItem('sky-provider-routing', JSON.stringify(saved.config));
-        window.dispatchEvent(new Event('sky-provider-routing'));
-      }
-      setMessage(
-        status === 'ready'
-          ? '設定を保存しました。外部サービスのOAuth・実接続はまだ行っていません。'
-          : '途中まで保存しました。',
-      );
-    } catch (cause) {
-      if (cause instanceof OperationRequestError && cause.status === 401) setNeedsSignin(true);
-      else setError(cause instanceof Error ? cause.message : '接続情報を保存できませんでした。');
-    } finally {
-      setSaving(false);
+    const saved = await session.save(status);
+    if (saved?.provider === 'routing') {
+      window.localStorage.setItem('sky-provider-routing', JSON.stringify(saved.config));
+      window.dispatchEvent(new Event('sky-provider-routing'));
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(next) => { if (!next) session.deactivate(); onOpenChange(next); }}>
       <DialogContent className={styles.dialog} initialFocus={headingRef}>
         <header className={styles.header} ref={headingRef} tabIndex={-1}>
           <div className={styles.headerMark}><Link2 size={19} /></div>
@@ -140,7 +75,7 @@ export default function SkyConnectionCenter({
         </header>
 
         {executionBlocked && <ExecutionSignin state={accessState} />}
-        <div className={styles.layout}>
+        {!executionBlocked && <div className={styles.layout}>
           <nav className={styles.providers} aria-label="接続先">
             <p className={styles.eyebrow}>接続先</p>
             {skyProviderDefinitions.map((provider) => {
@@ -150,7 +85,7 @@ export default function SkyConnectionCenter({
                   key={provider.id}
                   className={`${styles.provider} ${provider.id === selected ? styles.selected : ''}`}
                   aria-pressed={provider.id === selected}
-                  disabled={saving || loading || executionBlocked}
+                  disabled={saving || executionBlocked}
                   onClick={() => choose(provider.id)}
                 >
                   <span className={styles.providerIcon}>{profile?.status === 'ready' ? <CheckCircle2 size={16} /> : <CircleDashed size={16} />}</span>
@@ -171,10 +106,10 @@ export default function SkyConnectionCenter({
                 <span>{field.label}{field.optional ? '（任意）' : ''}</span>
                 {field.type === 'select' ? (
                   <select
+                    disabled={disabled}
                     value={values[field.id] ?? ''}
                     onChange={(event) => {
-                      draftEdited.current = true;
-                      setValues((current) => ({ ...current, [field.id]: event.target.value }));
+                      session.edit({ ...values, [field.id]: event.target.value });
                     }}
                   >
                     <option value="">選択してください</option>
@@ -183,12 +118,12 @@ export default function SkyConnectionCenter({
                 ) : (
                   <>
                     <input
-                      value={values[field.id] ?? ''}
+                      disabled={disabled}
+                    value={values[field.id] ?? ''}
                       placeholder={field.placeholder}
                       list={field.suggestions?.length ? `suggestions-${field.id}` : undefined}
                       onChange={(event) => {
-                      draftEdited.current = true;
-                      setValues((current) => ({ ...current, [field.id]: event.target.value }));
+                      session.edit({ ...values, [field.id]: event.target.value });
                     }}
                     />
                     {field.suggestions?.length ? (
@@ -215,16 +150,12 @@ export default function SkyConnectionCenter({
               <span>パスワード・APIキー・トークンはここへ保存しません。公式OAuthやOSの安全な接続画面で認証します。</span>
             </div>
             <div className={styles.actions}>
-              <button className={styles.secondary} onClick={() => void save('setup_required')} disabled={saving || loading || executionBlocked || !profilesAvailable}><Save size={16} /> あとで続ける</button>
-              <button className={styles.primary} onClick={() => void save('ready')} disabled={saving || loading || executionBlocked || !profilesAvailable}><KeyRound size={16} /> 設定を保存</button>
+              <button className={styles.secondary} onClick={() => void save('setup_required')} disabled={disabled || state.conflict}><Save size={16} /> あとで続ける</button>
+              <button className={styles.primary} onClick={() => void save('ready')} disabled={disabled || state.conflict}><KeyRound size={16} /> 設定を保存</button>
             </div>
-            {message && <output className={styles.message}>{message}</output>}
-            {error && <p className={styles.error} role="alert">{error}</p>}
-            {error && !profilesAvailable && !executionBlocked && (
-              <button className={styles.secondary} disabled={loading} onClick={() => void refresh()}>接続情報を再取得</button>
-            )}
+            <ProviderDraftFeedback session={session} />
           </section>
-        </div>
+        </div>}
       </DialogContent>
     </Dialog>
   );

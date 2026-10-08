@@ -68,17 +68,23 @@ export function skyCommerceStore(db: Database) {
         .bind(...(userId ? [mode, userId] : [mode])).all<CommerceOffer>();
       return rows.results;
     },
-    async saveOffer(input: Omit<CommerceOffer, 'revision'>) {
-      await db.prepare(`INSERT INTO sky_commerce_offers
-        (package_key,seller_user_id,mode,manifest_sha256,amount_minor,currency,revision,active,terms_url,refund_policy,updated_at)
-        VALUES (?,?,?,?,?,?,1,?,?,?,?)
-        ON CONFLICT(package_key,mode) DO UPDATE SET manifest_sha256=excluded.manifest_sha256,
-        amount_minor=excluded.amount_minor,currency=excluded.currency,revision=sky_commerce_offers.revision+1,
-        active=excluded.active,terms_url=excluded.terms_url,refund_policy=excluded.refund_policy,updated_at=excluded.updated_at
-        WHERE sky_commerce_offers.seller_user_id=excluded.seller_user_id`)
-        .bind(input.packageKey, input.sellerUserId, input.mode, input.manifestSha256, input.amountMinor,
-          input.currency, input.active, input.termsUrl, input.refundPolicy, Date.now()).run();
-      return this.offer(input.packageKey, input.mode);
+    async saveOffer(input: Omit<CommerceOffer, 'revision'>, expectedRevision: number): Promise<CommerceOffer | null> {
+      if (!Number.isSafeInteger(expectedRevision) || expectedRevision < 0 || expectedRevision >= Number.MAX_SAFE_INTEGER)
+        throw new RangeError('Invalid expected offer revision');
+      // Each write is one CAS statement. RETURNING belongs to this write, never a later read.
+      if (expectedRevision === 0) {
+        return db.prepare(`INSERT INTO sky_commerce_offers
+          (package_key,seller_user_id,mode,manifest_sha256,amount_minor,currency,revision,active,terms_url,refund_policy,updated_at)
+          VALUES (?,?,?,?,?,?,1,?,?,?,?) ON CONFLICT(package_key,mode) DO NOTHING
+          RETURNING ${offerColumns}`)
+          .bind(input.packageKey, input.sellerUserId, input.mode, input.manifestSha256, input.amountMinor,
+            input.currency, input.active, input.termsUrl, input.refundPolicy, Date.now()).first<CommerceOffer>();
+      }
+      return db.prepare(`UPDATE sky_commerce_offers SET manifest_sha256=?,amount_minor=?,currency=?,
+        revision=revision+1,active=?,terms_url=?,refund_policy=?,updated_at=?
+        WHERE package_key=? AND seller_user_id=? AND mode=? AND revision=? RETURNING ${offerColumns}`)
+        .bind(input.manifestSha256, input.amountMinor, input.currency, input.active, input.termsUrl, input.refundPolicy,
+          Date.now(), input.packageKey, input.sellerUserId, input.mode, expectedRevision).first<CommerceOffer>();
     },
     async order(id: string) {
       return db.prepare(`SELECT ${orderColumns} FROM sky_commerce_orders WHERE id = ?`).bind(id).first<CommerceOrder>();

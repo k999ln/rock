@@ -4,7 +4,8 @@ import {
 } from './llm-providers.ts';
 import { skyRequestLimit } from './sky-zema-handoff.ts';
 
-export const ZEMA_CHAT_SESSION_KEY = 'rockstaros.zema-chat-sessions.v1';
+import { ZEMA_CHAT_SESSION_KEY, openZemaPrivateStorage } from './zema-private-storage.ts';
+export { ZEMA_CHAT_SESSION_KEY, clearZemaPrivateSession } from './zema-private-storage.ts';
 export const ZEMA_CHAT_SESSION_TTL_MS = 10 * 60 * 1000;
 
 const MAX_SESSIONS = 8;
@@ -106,9 +107,11 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
 }
 
 export function readZemaChatSessions(
-  storage: SessionStorage = window.sessionStorage,
+  providedStorage?: SessionStorage,
   now = Date.now(),
 ): ZemaChatSession[] {
+  const storage = openZemaPrivateStorage(providedStorage);
+  if (!storage) return [];
   const raw = storage.getItem(ZEMA_CHAT_SESSION_KEY);
   if (!raw) return [];
   try {
@@ -129,9 +132,11 @@ export function readZemaChatSessions(
 
 export function saveZemaChatSession(
   session: ZemaChatSession,
-  storage: SessionStorage = window.sessionStorage,
+  providedStorage?: SessionStorage,
   now = Date.now(),
 ): ZemaChatSession[] {
+  const storage = openZemaPrivateStorage(providedStorage);
+  if (!storage) throw new Error('会話の保存領域を確認してください。消去の再試行が必要な場合があります。');
   if (
     session.activeRequest?.toolId === 'rockstar-amc' &&
     session.activeRequest.text.length > 8000

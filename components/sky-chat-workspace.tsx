@@ -1,10 +1,14 @@
 'use client';
 
+import { zemaPrivateStorageBlocked, subscribeZemaPrivateStorage } from '@/lib/zema-private-storage';
+import { ProviderDraftFeedback, useProviderDraft } from '@/components/provider-draft';
+
 import {
   useEffect,
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type KeyboardEvent,
   type SyntheticEvent,
 } from 'react';
@@ -58,7 +62,7 @@ import type {
   Job,
   JobTool,
   SkyConnection,
-  SkyProviderConnection,
+
 } from '@/lib/operations';
 import { deviceToken } from '@/lib/device';
 import { listMcpConnections, type McpConnection } from '@/lib/mcp-hub';
@@ -74,6 +78,7 @@ import {
   SKY_ZEMA_JOB_EVENT,
 } from '@/lib/sky-zema-handoff';
 import {
+  clearZemaPrivateSession,
   readZemaChatSessions,
   saveZemaChatSession,
   type ZemaChatSession,
@@ -248,6 +253,31 @@ function readableChatResult(markdown: string) {
 }
 
 export default function SkyChatWorkspace() {
+  const access = useExecutionAccess();
+  const [admitted, setAdmitted] = useState(false);
+  const storageBlocked = useSyncExternalStore(subscribeZemaPrivateStorage, zemaPrivateStorageBlocked, () => false);
+  // Keep drafts through temporary connectivity checks, but never across a known sign-out.
+  if (access.accessState === 'ready' && !storageBlocked && !admitted) setAdmitted(true);
+  if (access.accessState === 'signin' && admitted) setAdmitted(false);
+  useEffect(() => {
+    if (access.accessState === 'signin') clearZemaPrivateSession();
+  }, [access.accessState]);
+  return <>
+    {!storageBlocked && (admitted || access.accessState === 'ready') && access.accessState !== 'signin' &&
+      <div hidden={access.executionBlocked}><AuthenticatedSkyChatWorkspace {...access} /></div>}
+    {(access.executionBlocked || storageBlocked) && <WorkspaceShell title="Zema">
+      <ExecutionSignin state={access.accessState} />
+      {storageBlocked && <section role="alert" aria-label="会話の保存領域を確認">
+        <p>前の会話と引き継ぎデータを消去できませんでした。古い内容の読み込みを止めています。</p>
+        <p>このサイトの保存領域を利用できる状態に戻し、消去を再試行してください。消去を確認するまで会話と仕事を開きません。</p>
+        <button type="button" className="rock-button" onClick={() => { clearZemaPrivateSession(); }}>保存領域の消去を再試行</button>
+      </section>}
+      {access.accessState === 'signin' && !storageBlocked && <p>利用者の切り替えに備え、このタブの会話と未送信入力を消去しました。保存済みの仕事はサインイン後に読み直します。</p>}
+    </WorkspaceShell>}
+  </>;
+}
+
+function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeedsSignin }: ReturnType<typeof useExecutionAccess>) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const preferredTool = searchParams.get('tool') ?? '';
@@ -256,11 +286,6 @@ export default function SkyChatWorkspace() {
   const preferredFund = searchParams.get('fund') ?? '';
   const workView = searchParams.get('view') === 'work';
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
-  const [providerRouting, setProviderRouting] = useState<Record<string, string>>(
-    providerRoutingDefaults,
-  );
-  const providerRoutingRef = useRef(providerRoutingDefaults);
-  const providerSaveTimerRef = useRef<number | null>(null);
   const [fashionConnected, setFashionConnected] = useState(false);
   const [mcpServers, setMcpServers] = useState<McpConnection[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -294,7 +319,10 @@ export default function SkyChatWorkspace() {
   const [remoteBudgetInput, setRemoteBudgetInput] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
+  const routingDraft = useProviderDraft('routing', providerRoutingDefaults, !executionBlocked, true);
+  const providerRouting = routingDraft.state.config;
+  useEffect(() => { if (routingDraft.state.unauthorized) setNeedsSignin(true); }, [routingDraft.state.unauthorized, setNeedsSignin]);
+
   const amcDirtyRef = useRef(false);
   const [amcReplacement, setAmcReplacement] = useState<{ resume: () => void } | null>(null);
   const composerRef = useRef<HTMLTextAreaElement>(null);
@@ -325,19 +353,14 @@ export default function SkyChatWorkspace() {
     void Promise.all([
       operationRequest<SkyConnection[]>('/api/sky/connections'),
       operationRequest<Job[]>('/api/jobs'),
-      operationRequest<SkyProviderConnection[]>('/api/sky/provider-connections'),
     ])
-      .then(([connections, recentJobs, providerConnections]) => {
+      .then(([connections, recentJobs]) => {
         if (!active) return;
         const ids = new Set<string>(connections.map(({ tool }) => tool));
         const preferred = catalog.find((tool) => tool.id === preferredTool)?.id
           ?? (preferredTool.startsWith(MCP_PREFIX) ? preferredTool : null);
         setConnectedTools([...ids]);
         setJobs(recentJobs);
-        const routing = providerConnections.find((item) => item.provider === 'routing');
-        const nextRouting = { ...providerRoutingDefaults, ...routing?.config };
-        providerRoutingRef.current = nextRouting;
-        setProviderRouting(nextRouting);
         setSelectedToolId(preferred ?? AUTO_MODE);
       })
       .catch((reason) => {
@@ -667,10 +690,6 @@ export default function SkyChatWorkspace() {
     } catch { /* Keep the current conversation usable without tab storage. */ }
   }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome]);
 
-  useEffect(() => () => {
-    if (providerSaveTimerRef.current !== null)
-      window.clearTimeout(providerSaveTimerRef.current);
-  }, []);
 
   function recordWorkflowStatus(status: WorkflowStatus) {
     setWorkflowStatus(status);
@@ -747,30 +766,13 @@ export default function SkyChatWorkspace() {
   }
 
   function changeProviderRoute(field: string, value: string) {
-    const next = { ...providerRoutingRef.current, [field]: value };
+    const next = { ...routingDraft.state.config, [field]: value };
     setRemoteEstimate(null);
     setRemoteCurrency('');
     setRemoteBudgetInput('');
     if (field === 'textGeneration' && isTextModelProvider(value))
       next.textGenerationModel = textModelProviderDefinition(value).defaultModel;
-    providerRoutingRef.current = next;
-    setProviderRouting(next);
-    setError('');
-    if (providerSaveTimerRef.current !== null)
-      window.clearTimeout(providerSaveTimerRef.current);
-    providerSaveTimerRef.current = window.setTimeout(() => {
-      void operationRequest('/api/sky/provider-connections', 'PUT', {
-        provider: 'routing',
-        status: 'ready',
-        config: next,
-      }).catch((reason) => {
-        setError(
-          reason instanceof Error
-            ? reason.message
-            : 'Provider設定を保存できませんでした。',
-        );
-      });
-    }, 250);
+    routingDraft.session.edit(next);
   }
 
   function refreshConnectedMcp() {
@@ -1399,7 +1401,7 @@ export default function SkyChatWorkspace() {
                             <span>{field.label}</span>
                             <select
                               value={providerRouting[field.id] ?? ''}
-                              onChange={(event) => changeProviderRoute(field.id, event.target.value)}
+                              disabled={routingDraft.disabled} onChange={(event) => changeProviderRoute(field.id, event.target.value)}
                             >
                               {(field.capability === 'realtime_voice' || field.capability === 'telephony') && <option value="">利用しない・未選択</option>}
                               {adaptersForCapability(field.capability).map((adapter) => (
@@ -1417,7 +1419,7 @@ export default function SkyChatWorkspace() {
                           value={providerRouting.textGenerationModel ?? ''}
                           list="zema-local-model-presets"
                           placeholder="例: qwen3:8b"
-                          onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)}
+                          disabled={routingDraft.disabled} onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)}
                         />
                         <datalist id="zema-local-model-presets">
                           {localModelPresets.map((model) => (
@@ -1425,6 +1427,8 @@ export default function SkyChatWorkspace() {
                           ))}
                         </datalist>
                       </label>
+                      <ProviderDraftFeedback session={routingDraft.session} />
+                      {routingDraft.state.manualSave && <button type="button" disabled={routingDraft.disabled || routingDraft.state.conflict} onClick={() => void routingDraft.session.save('ready')}>設定を再保存</button>}
                     </details>
                   )}
                   {activeTool?.id !== 'rockstar-amc' && !(activeTool?.status === 'candidate' && activeTool.runner !== 'candidate-local') && <details className="zema-workflow-details"><summary>進行状況を見る</summary><ol
@@ -1654,16 +1658,18 @@ export default function SkyChatWorkspace() {
                 <summary>会話モデル: {textProviderDefinition.name}</summary>
                 <div>
                   <label>接続先
-                    <select value={textProvider} onChange={(event) => changeProviderRoute('textGeneration', event.target.value)}>
+                    <select value={textProvider} disabled={routingDraft.disabled} onChange={(event) => changeProviderRoute('textGeneration', event.target.value)}>
                       {textModelProviders.map((provider) => <option key={provider.id} value={provider.id}>{provider.name}</option>)}
                     </select>
                   </label>
                   <label>モデルID
-                    <input value={providerRouting.textGenerationModel ?? ''} onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)} list="zema-chat-model-presets" />
+                    <input value={providerRouting.textGenerationModel ?? ''} disabled={routingDraft.disabled} onChange={(event) => changeProviderRoute('textGenerationModel', event.target.value)} list="zema-chat-model-presets" />
                     <datalist id="zema-chat-model-presets">{localModelPresets.map((model) => <option key={model.value} value={model.value}>{model.label}</option>)}</datalist>
                   </label>
                 </div>
                 <p>{textProviderDefinition.detail}</p>
+                <ProviderDraftFeedback session={routingDraft.session} />
+                      {routingDraft.state.manualSave && <button type="button" disabled={routingDraft.disabled || routingDraft.state.conflict} onClick={() => void routingDraft.session.save('ready')}>設定を再保存</button>}
               </details>
               <div className="zema-composer-toolbar" id="sky-chat-composer-help">
                 <label className="zema-tool-picker">

@@ -492,5 +492,12 @@
       "runtimeImported": false,
       "r5RequirementsChanged": false
     }
-  ]
+  ],
+  "zemaProviderSessionAcceptance": {
+    "document": "docs/sky-tools-complete-design.md",
+    "candidate": "031",
+    "scope": "Provider autosave/conflict and known authentication-loss session boundary",
+    "acceptance": "synthetic actual UI/native D1; real auth/provider and public gates pending",
+    "storageRepair": "031修正: getter/remove failure quarantine, verified both-key cleanup, explicit retry and same-origin tab reload"
+  }
 }

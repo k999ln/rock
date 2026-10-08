@@ -98,8 +98,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 60,
-    "latestMigration": "0059_sky_library.sql",
+    "migrationCount": 61,
+    "latestMigration": "0060_sky_provider_revision.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -309,7 +309,7 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0059_sky_library.sql",
+      "expectedAppliedThrough": "0060_sky_provider_revision.sql",
       "tableCount": 77,
       "sourceStatus": "VERIFIED",
       "deployment": {

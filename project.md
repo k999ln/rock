@@ -4,6 +4,58 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## Sky／Zema検証済み修正のmain反映（2026-10-08 UTC、G04）
+
+利用者の「mainにあげて」により、main `0455499d` を基準に限定検収済み034の製品31ファイルを統合する。設定・販売条件の同時保存競合、Zemaの認証失効時の会話消去と保存領域エラー復旧、Worker互換とbundle依存元照合を含む。035では同じ製品sourceの実routerで商品検索→保存→Zemaと合成本人切替を確認した。既存の作業木、未完了036、合成DB、実行時の認証fixture、build専用設定は含めない。
+
+統合CIで旧Sky検査が共通化前の保存APIを要求する点と、既知の公開保存キー名の移動先2pathが誤検知される点を確認した。検査を共通保存境界と呼出元に合わせ、既存の完全一致・path限定規則だけを2pathへ広げる。全履歴走査・既定規則・秘密の非出力・固定controlを維持する。
+
+対象31試験・型・対象lint・production buildと限定UI受入は合格済み。同一commitのGitHub CIを確認してmainへ統合する。[検証範囲と残課題](docs/evidence/sky-zema-main-integration.json)を正本とし、Agent／Cloud AIの表示3経路、実認証・実決済・実接続・実機・公開受入は未完了のまま保持する。GitHub保存はSites配備やローンチの完了を意味しない。
+
+## 2026-10-07 — 保存済みSky修正と最新mainのローカル統合（034、独立検収候補）
+
+S10/O2、ROCK。main `0455499d` と受入範囲を限定した027/030/031/032/033の製品差分を専用候補へ統合。README・全Tool設計・本記録の競合は両側の記述を保持した。032のCommonJS互換修正を製品へ含め、共有依存を使うためのbuild隔離設定は別patchとする。既存checkout・凍結証拠・Goal r48は変更しない。
+
+検査は実行前に分類し、保存競合・会話復旧・依存元照合・型・対象lint・台帳整合・隔離buildを対象にする。権限／接続code／再接続／実決済を含む全体test・verify、既知の監査再実行は行わない。旧候補のUI/D1受入を034の合格へ転用しない。17隣接API、AMC actor provenance、実PC021、実認証／実機／運用、全体公開gateは残る。mainへのpush/merge・deployは未実施。対象31試験・型・対象lint・project/mission/schema/database/baseline/design整合はこの候補で合格。buildと最新mainからのpatch再適用・保全照合は同じ034提出artifactへ結果を記録し、独立検収する。
+
+## 2026-10-07 — 候補031の保存領域エラー修正
+
+031初回を凍結し、sessionStorage getterのSecurityErrorと、削除失敗後の旧会話再復元を修正する隔離overlay。S7/O2、ROCK。認証失効で会話・handoffを隔離し、両キーの削除と不存在のreadbackを確認するまで読込・保存・再入場を止める。片方の失敗でも他方の削除を試み、画面に明示再試行を表示する。保存領域が復旧しただけでは隔離を解除しない。
+
+隔離中はタブのwindow.nameへ非機密フラグを付け、同一タブ・同一originのreload後も旧stashを復元しない。元のnameは両キー消去確認後に復元する。通常の通信checking/unavailableでは会話や未送信文を破棄しない。サーバー本人識別API、schema、料金、権利は変更しない。旧031の通常動作証拠は保持し、storage失敗と修正consumerを追加検証する。型・対象試験・実Zema合成UIの結果は同候補の提出resultに記録する。既存CAS/schema/監査の受入を再宣言しない。
+
+同一タブの保存領域エラー復旧の検収候補であり、実認証、401を観測しないidentity変更、異なるorigin・新しいタブ、実Provider、実機、公開の受入ではない。Goal r48、S7全体、公開Gateはpending。独立検収後にlibrary inventory/17隣接APIへ引き継ぐ。main0455499の文書更新は未統合で、後日双方の文書を保持した競合解消が必要。push/merge/deployは行わない。
+
+### 033 — 本番bundleの依存元照合（S10-01、検収候補）
+
+限定ローカル検収済み032を保持した専用コピーで、build inventoryの未解決moduleを修正。package単位symlinkの実path、installed package.jsonの名前・版・license、正確なlock pathを照合する。名前だけで候補を選ばず、同名異版・lock外・曖昧な実体・metadata不一致は未解決に残す。生成chunkごとにmodule、実ファイルhash、package metadata hash、lock entry hashを保存する。
+
+再生成ではclient 8→0、rsc 4→0、ssr 8→0。対象resolver試験と技術的bundle/license metadata検査の結果は033提出artifactへ記録する。package/lock、既存license reviewRequired、UI/API/schema、価格・権利は変更しない。利用許諾・notice・source offerの承認、S10全体、全17隣接API、実PC021、公開Gateは未完了。033は独立検収待ち、main統合・配備なし。Goal r48を変更せず、今後のmain統合時は双方の文書を保持する。
+
+## 2026-10-07 — Zema実画面のProvider保存と認証復帰（候補031）
+
+S7/O2、ROCK。凍結030候補を基準に、実SkyChatWorkspace・仕事画面・実Provider APIと新規の合成D1で、自動保存、reload、409の明示復帰、再競合、GET/PUT失敗、待機中の移動・閉じる・再開、遅延応答を検証した。認証失効後に旧会話・入力が別の合成利用者へ再表示される問題を再現し、認証確認後の画面生成、401時の私的画面破棄とタブ内会話・引継ぎ消去、再認証後の本人別仕事の再取得へ修正した。一時的な接続確認中は画面を隠し、既知の失効時だけ破棄する。
+
+会話保存とProvider draftの対象11試験、型検査・対象lint合格。実画面では合成Alice/Bobの保存済み仕事を読み取り、ジョブの新規実行・grant発行・外部LLMは行わない。Nextのnavigation/dynamicと認証を試験用に置き換え、既存global CSSを使用した限定受入。実認証、実接続、SSR、production build、全体verify・監査の再実行は範囲外。設定readyはOAuth/実接続成功を意味しない。
+
+次は031の独立検収、library inventory/17隣接APIへの引継ぎ。同一候補S0の受入と実PC承認021、実機/本番Gateは別。Goal r48・既存成果は保持し、S7全体・公開はpending。push/merge/deployは行っていない。認証失効が観測されないアカウント変更の検出はこの修正の受入外。
+
+## 2026-10-07 — Provider設定の競合保存防止（S7-01 / O2、候補030）
+
+027のoffer修正を保持した隔離候補で、Provider設定に正整数revision、旧行1の追加migration、単一SQL CAS/RETURNINGを追加。Sky接続管理とZema自動保存の既知呼出元を同期し、409で入力保持・最新表示・明示確認・別操作の再保存を実装した。共有schema/APIはS3/O4境界と既存秘密参照を保持。料金・権限を追加しない。
+
+対象25試験、実workerd/D1の52確認、実UIと実handler/D1による競合・取得失敗・再競合・待機中操作抑止・遅延GETとProvider切替・自動保存の明示復帰・401消去を確認。UIのDialog外枠とpathname、認証のみ合成境界。Zema全画面の導線、実認証、実Provider、本番移行は未受入。型/対象lint/生成metadata/production buildは同候補の提出証拠で確認する。全体verifyの既知grant/監査は再実行しない。
+
+次は候補030の独立検収とmigration/API/UIの協調統合、同一候補S0の再受入。027/028/029成果・既存DB・Goal r48は不変。AMC actor provenance、17隣接API、実PC承認021、実機/本番Gateは残る。push/merge/deployは未実施。
+
+## 2026-10-07 — Sky販売条件の競合保存防止（S7-01 / O2、候補027）
+
+base main `0fbf688` の隔離候補でoffer保存に期待revisionを必須化。作成0は未存在時のみ、更新はowner/package/mode/revisionの単一SQL CAS、成功行はRETURNING。UIは入力と基準版を保持し、409後に最新版の表示・確認・明示再保存を行う。再取得失敗時にも認証エラー以外ではseller draftを保持する。価格50〜99,999,999円、手数料10%、基本0円・第三者実費別、既存購入の固定条件は維持。
+
+commerce 45試験、marketplace 14試験、実UIコンポーネントと実handler/storeを組み合わせた通信なし18チェックが合格。後者はテスト用React hook dispatcherでありブラウザーDOMの受入ではない。型検査・対象lint・project整合も合格。ローカルUI fixtureは作成したがlisten EPERMとブラウザー環境制約のため実画面復帰は未受入。全体verify・実Stripe・配備は未実行。旧クライアントは400となるためAPI/UIを同じ候補で反映する必要がある。
+
+次は独立レビューと許可されたローカルブラウザーでの409復帰確認。Providerの保存競合、AMC actorの出所、17隣接API、実機・本番Gateは残る。S7-01／親／公開を完了扱いにせず、正本Goal r48は変更しない。
+
 ## 2026-10-07 — 文書の情報設計の整理と、統合で失われた記録の復元（Git / CI / Operations、未push）
 
 利用者の「分かりにくすぎるからgithub整理できる？情報量一切削らないで」を受け、Git / CI / Operations、ROCKを主担当に文書だけを整理した。コード、`data/*.json` の台帳、`vendor/`、証拠は変更していない。ファイルの移動・改名・削除は0件。作業branchは `docs/repo-information-architecture`、基点はmain `0fbf688b`。

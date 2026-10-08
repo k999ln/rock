@@ -25,12 +25,16 @@ Skyは注文額の `floor(amountMinor × 1000 / 10000)` をStripeの `applicatio
 | `GET /api/sky/commerce/offers` | 公開販売価格・条件・revisionを取得。現行reviewが失効した商品を除外 |
 | `GET /api/sky/commerce/seller` | 本人の受取先状態、Package、販売設定、売上を取得 |
 | `POST /api/sky/commerce/seller` | `{ "action": "onboard" }` で本人の受取先登録URLを作成 |
-| `POST /api/sky/commerce/offers` | 本人の `packageKey`、`amountMinor`、`currency: "jpy"`、`active`、`termsUrl`、`refundPolicy` を保存 |
+| `POST /api/sky/commerce/offers` | 本人の `packageKey`、`expectedRevision`、`amountMinor`、`currency: "jpy"`、`active`、`termsUrl`、`refundPolicy` を保存 |
 | `POST /api/sky/commerce/checkout` | `packageKey` と閲覧済みの `offerRevision` から注文・Checkout URLを作成 |
 | `GET /api/sky/commerce/purchases` | 本人の注文、返金額、購入アクセス状態を取得 |
 | `POST /api/sky/commerce/reconcile` | 本人の `orderId` をStripeへ再照合 |
 | `POST /api/sky/commerce/refund` | 提供者本人の `orderId` の未返金残額を返金 |
 | `POST /api/sky/commerce/webhook` | Stripeのraw body署名を検証し、最新の決済情報を照合 |
+
+販売条件の保存は `expectedRevision` 必須。新規は0（未登録）、更新は編集開始時に取得した正整数を送る。欠落・不正値（負数・小数・文字列・MAX_SAFE_INTEGER以上）は400、既存版との競合は409で書き込まない。旧クライアントは再読込・更新が必要で、自動的な最新版への置換はしない。DBは作成をcreate-if-absent、更新をowner/package/mode/revisionの単一SQL CASで実行し、RETURNINGでその操作の保存値を返す。schema migrationは不要。
+
+画面は入力と基準revisionを保持し、背景再取得で基準だけを進めない。409後は入力を保ったまま最新の価格・状態・販売条件・返金条件を取得・表示し、「確認した」の後に別の再保存操作を行う。再保存までに別更新があれば再び409となる。保存・最新版取得中は入力を無効化する。
 
 価格、手数料、受取先、購入者IDを購入リクエストから採用しない。注文は販売条件とmanifest hashを固定し、後の価格変更で書き換えない。同じ購入者・Package・環境の進行中注文は一つに制限し、Stripeのidempotency keyも注文IDへ固定する。イベントと注文状態はD1 batchで保存する。
 

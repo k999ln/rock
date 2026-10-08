@@ -424,6 +424,7 @@ export const skyProviderConnections = sqliteTable(
   {
     userId: text('user_id').notNull(),
     provider: text('provider').notNull(),
+    revision: integer('revision').notNull().default(1),
     status: text('status').notNull().default('setup_required'),
     config: text('config').notNull().default('{}'),
     secretRef: text('secret_ref'),
@@ -431,6 +432,7 @@ export const skyProviderConnections = sqliteTable(
     updatedAt: integer('updated_at').notNull(),
   },
   (table) => [
+    check('sky_provider_revision_positive', sql`typeof(${table.revision}) = 'integer' AND ${table.revision} >= 1`),
     uniqueIndex('idx_sky_provider_connections_user_provider').on(
       table.userId,
       table.provider,

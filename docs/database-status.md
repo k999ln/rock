@@ -25,8 +25,8 @@
 
 ## Web D1
 
-- expected latest migration: 0059_sky_library.sql
-- migration files: 60
+- expected latest migration: 0060_sky_provider_revision.sql
+- migration files: 61
 - accidental duplicate: 0
 - published convergence definitions: 6
 - Marketplace relation guards: 8

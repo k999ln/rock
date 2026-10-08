@@ -169,6 +169,9 @@ export function skyCommerce(
       return stripe.createAccountLink(attached.accountId!);
     },
     async saveOffer(userId: string, input: Record<string, unknown>) {
+      if (!Number.isSafeInteger(input.expectedRevision) || (input.expectedRevision as number) < 0 ||
+        (input.expectedRevision as number) >= Number.MAX_SAFE_INTEGER)
+        throw new SkyPaymentError('販売条件の版が必要です。画面を再読み込みして確認してください。', 400);
       const packageKey = string(input.packageKey);
       const item = await validPackage(packageKey);
       if (item.userId !== userId) throw new SkyPaymentError('自分のツールだけ販売設定できます。', 403);
@@ -182,8 +185,10 @@ export function skyCommerce(
       const seller = await store.seller(userId, config.mode);
       if (!seller?.accountId || !ready(await stripe.retrieveAccount(seller.accountId)))
         throw new SkyPaymentError('先に売上の受取先登録を完了してください。', 409);
-      return store.saveOffer({ packageKey, sellerUserId: userId, mode: config.mode, manifestSha256: item.manifestSha256,
-        amountMinor: input.amountMinor as number, currency: 'jpy', active: input.active ? 1 : 0, termsUrl, refundPolicy });
+      const offer = await store.saveOffer({ packageKey, sellerUserId: userId, mode: config.mode, manifestSha256: item.manifestSha256,
+        amountMinor: input.amountMinor as number, currency: 'jpy', active: input.active ? 1 : 0, termsUrl, refundPolicy }, input.expectedRevision as number);
+      if (!offer) throw new SkyPaymentError('販売条件が更新されています。最新版を確認してから再保存してください。', 409);
+      return offer;
     },
     async checkout(userId: string, input: Record<string, unknown>) {
       const packageKey = string(input.packageKey);
