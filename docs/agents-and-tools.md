@@ -35,7 +35,7 @@
 | **役割エージェント**（担当） | 「サブスク顧問」「法務受付」のように、役割を持って会話で仕事を進める担当。許可されたToolだけを使う | 7（実装3＋構成案4） | 見える。Sky／Zemaで話す | [第3章](#3-skyの役割エージェント担当) |
 | **OS内のAgent** | 端末の中で計画・実行・監視をする仕組み（ローカルLLMのplanner、Agent runtime、Security Agentのクモ、Operator Agent） | 4 | 一部見える | [第5章](#5-osに入っているaiとagent) |
 | **クラウドのAgent** | 端末が圏外でも仕事を続ける、クラウド側の実行者。外部のAgentへ委任する経路（A2A）を含む | — | 見える。見積と承認のあとに動く | [第6章](#6-クラウドのagent) |
-| **部隊**（AMC） | このプロジェクト自体を開発する体制。3製品＋OSを5師団32部隊に分けたもの。Codexの司令官・実行担当・検収担当を含む | 32部隊＋3エージェント | 開発者向け | [第8章](#8-開発を進めるエージェントamc) |
+| **部隊**（AMC） | このプロジェクト自体を開発する体制。3製品＋OSを5師団32部隊に分けたもの。Codexの司令官・実行担当・検収担当を含む | 32部隊＋3エージェント＋10担当Bot | 開発者向け | [第8章](#8-開発を進めるエージェントamc) |
 
 もう一つの原則として、**LLM・Agent・Toolは別物** です。LLMは「案を出す」、Agentは「許可された手順を進める」、Toolは「個別の処理をする」。権限を決めるのはどれでもなく、OSのBroker（Platform Core）です。
 
@@ -772,6 +772,10 @@ AMCをCodexから使うための役割定義です。正本は [`data/amc/agent-
 | `amc-reviewer`（独立検収担当） | 実行者の自己申告ではなく、合格条件と現物を照合する | 読み取りと非破壊の検査（設定はread-only）。pass／needs_changes／blocked を条件ごとの根拠つきで返す | 実装を変更しない。passはレビュー所見で、Skyの認証済み検収や本人の最終受入の代わりにならない |
 
 起動は `npm run amc:agent -- run --goal '…'`。Zema Webからの起動、自動同期、無人の常時稼働は未接続です。
+
+#### プロジェクト別の10担当Bot
+
+正本は [`data/amc/project-bots.json`](../data/amc/project-bots.json)。Sky、Zema、Wallet、RockstarOS、Game、Security、avocadoMini、avokadoPro、rocketstar、Operationsを依頼窓口とし、32部隊のtaskAssignmentsを維持する。`npm run bot -- run sky --goal '…'` はGitHubと担当コードの履歴・task資料を収集してからCodexを起動する。Botが対象コードを読み、既存taskを選択／新規taskを具体化し、既存engineのAMC計画→任務遂行→別担当の検収→Git commit／PR→AMC結果記録を進める。計画作成だけで稼働・検収済みにはしない。[利用・復旧・検証](../toolkits/amc-agent/README.md#プロジェクト別bot)。開発用の入口で、Sky catalog Toolの実行権限やWeb保存先は変更しない。
 
 ### 8.4 新しい依頼に使う4役割・7工程
 

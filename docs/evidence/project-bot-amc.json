@@ -1,0 +1,45 @@
+{
+  "taskId": "AMC04",
+  "date": "2026-10-09",
+  "scope": "git_collection_amc_draft_and_native_bot_handoff",
+  "branch": "codex/feature-workspaces",
+  "pullRequest": "https://github.com/k999ln/rock/pull/95",
+  "localChecks": {
+    "command": "node --test tests/project-bot-context.test.mjs tests/project-bots.test.mjs tests/workspaces.test.mjs",
+    "passed": 23,
+    "failed": 0
+  },
+  "liveReadOnlyPreparation": {
+    "command": "node scripts/project-bots.mjs prepare sky --task SKY07-01 --goal 'Skyの既存MCP契約と試験をGitから調べ、このtaskのAMC計画を作成する'",
+    "mainSha": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "localHead": "c65cb8ed4fc967cdc64cacadc1c9a79ac744d759",
+    "liveMetadataVerified": true,
+    "codeIndexFiles": 186,
+    "scopedTaskCount": 68,
+    "goalSchema": "amc-goal/1",
+    "goalState": "draft",
+    "rootTaskIds": [
+      "SKY07-01"
+    ],
+    "dependencyClosureTaskCount": 16,
+    "approval": null,
+    "sourceReviewComplete": false,
+    "botStarted": false
+  },
+  "githubCI": {
+    "status": "pending"
+  },
+  "acceptance": {
+    "liveDevelopmentTaskAccepted": false,
+    "independentReview": false,
+    "webSynced": false,
+    "mainIntegrated": false,
+    "alwaysRunning": false
+  },
+  "localFullVerify": {
+    "status": "blocked_environment",
+    "command": "npm run verify",
+    "stage": "llm:architecture:check",
+    "reason": "ai package is not installed in the isolated worktree; prior static checks passed"
+  }
+}

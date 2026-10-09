@@ -14,6 +14,12 @@ import {
 } from '../scripts/project-bots.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const prepare = async () => ({
+  directory: '/fixture/run',
+  contextPath: '/fixture/run/context.json',
+  goalPath: '/fixture/run/amc-goal-r0.json',
+  amcState: 'draft',
+});
 
 void test('project profiles cover existing squads, reference real paths and match native Codex definitions', () => {
   const bots = syncBots({ check: true });
@@ -107,10 +113,13 @@ void test('real launch interface uses argv, no shell; process exit does not cert
     { id: 'sky', goal: '接続表示' },
     {
       interactive: true,
+      prepare,
       launch: (command, args, options) => {
         calls++;
         assert.equal(command, 'codex');
         assert.equal(args[0], '--cd');
+        assert.match(args[4], /Git調査資料: \/fixture\/run\/context.json/);
+        assert.match(args[4], /AMC候補: \/fixture\/run\/amc-goal-r0.json/);
         assert.deepEqual(options, { stdio: 'inherit', shell: false });
         const child = new EventEmitter();
         queueMicrotask(() => child.emit('exit', 7, null));
@@ -130,13 +139,14 @@ void test('missing CLI and termination are propagated without success claims', a
     return child;
   };
   await assert.rejects(
-    runBot({ id: 'sky', goal: '表示' }, { interactive: true, launch }),
+    runBot({ id: 'sky', goal: '表示' }, { interactive: true, prepare, launch }),
     /ENOENT/,
   );
   const result = await runBot(
     { id: 'sky', goal: '表示' },
     {
       interactive: true,
+      prepare,
       launch: () => {
         const child = new EventEmitter();
         queueMicrotask(() => child.emit('exit', null, 'SIGTERM'));
@@ -167,4 +177,20 @@ void test('invalid requests cannot add CLI permission overrides or select unknow
   for (const goal of ['', '   ', 'x'.repeat(16001)])
     assert.throws(() => buildBotLaunch({ id: 'sky', goal }), /16000/);
   assert.ok(projectBots().some((bot) => bot.id === 'sky'));
+});
+
+void test('Git collection failure never starts a worker', async () => {
+  await assert.rejects(
+    runBot(
+      { id: 'sky', goal: '接続表示' },
+      {
+        interactive: true,
+        prepare: async () => {
+          throw new Error('Git lookup failed');
+        },
+        launch: () => assert.fail('must not spawn'),
+      },
+    ),
+    /Git lookup failed/,
+  );
 });

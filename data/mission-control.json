@@ -163,7 +163,8 @@
         "ORG03",
         "SYS15",
         "ORG04",
-        "AMC03"
+        "AMC03",
+        "AMC04"
       ],
       "rules": [
         "製品名と現行profileを一意にする",
@@ -14413,6 +14414,11 @@
     },
     {
       "taskId": "AMC03",
+      "primarySquad": "H1",
+      "classification": "coordination"
+    },
+    {
+      "taskId": "AMC04",
       "primarySquad": "H1",
       "classification": "coordination"
     }

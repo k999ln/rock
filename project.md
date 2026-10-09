@@ -1,5 +1,13 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-07 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
+## 2026-10-09 — BotがGitを調べてAMCを作成・遂行する流れ（AMC04、着手）
+
+利用者の「botはGitから情報を集め、AMCを作成して作業を進める」という明示指示を記録。H1 / ROCK、Git / CI / Operations。既存prompt:contextとAMC Goal engineを再利用し、調査資料→担当Botのtask具体化→AMC作成→実行／検収→Git成果という入口へ接続する。添付amc-goal-r1.jsonは形式の参考であり、過去のGoal・意図・local-owner承認・active状態を新規任務へコピーしない。
+
+main `0455499d`、PR #95 head `c65cb8ed` と同SHAの8 CI成功を確認し、同じ専用branchで続行。元のdirty checkoutは保持する。対象は開発Botのワークフローで、Web Toolの起動機能、無人常駐、main統合、公開、実機・実資金のgateは変更しない。検証結果と実Botによる一件完走は分けて記録する。
+
+対象23試験合格。実GitHubのmain/branch/PR/CI、Sky担当186 fileと68 taskを取得し、SKY07-01をrootとするAMC draft（依存含む16 task、承認なし）を作成した。実Codexの起動は行っておらず、実装・検収・Git提出の完走とは区別する。[検証証拠](docs/evidence/project-bot-amc.json)。ローカル全体verifyは既知のai依存未配置で停止。同期・baseline・design等は合格。同一SHAのGitHub CIで全体を確認する。
+
 ## 2026-10-09 — 機能別BotからGitへ成果を提出する入口（AMC03、設定・起動入口の検証完了）
 
 利用者の「プロジェクトごとにBotを作り、SkyならSkyの作業をして、出力をGitにする」という明示要望を記録。Git / CI / Operations、H1 / ROCK。既存AMCの担当・保留・Goal状態を再利用し、開発用10担当のCodex定義と対話CLI入口を追加する。既存PR #95のbranchで続行し、未保存差分のある元checkoutを保持する。今回の範囲は依頼時の起動設定・実装／検証／commit／PRの作業契約。GitHub App名義、Web起動、定期実行、実Botの一件完走は未受入。SkyカタログToolや製品runtimeの変更ではない。
@@ -2542,7 +2550,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 109/380件（親32・子192・独立156。実行単位は親を除く348件）
+最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 109/381件（親32・子192・独立157。実行単位は親を除く349件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -2926,6 +2934,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | MAT16 | avokadoProのNVIDIA搭載小型PC設計・調達・AI/PCゲーム/熱/復旧受入 | 進行中 | [記録](docs/avokado-pro-pc-design.md) · [記録](data/avokado-pro-pc.json) · [記録](docs/evidence/avokado-pro-pc-design.json) |
 | ORG04 | 既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する | 完了 | [記録](workspaces/README.md) · [記録](workspaces/IDEAS.md) · [記録](data/workspaces.json) · [記録](scripts/workspaces.mjs) · [記録](tests/workspaces.test.mjs) · [記録](docs/evidence/workspace-organization.json) |
 | AMC03 | 機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する | 完了 | [記録](data/amc/project-bots.json) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bots.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bots.json) |
+| AMC04 | 担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する | 進行中 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-amc.json) |
 
 段階ゲート（作業全体の完了とは別判定）
 

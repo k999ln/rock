@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { renderAgent } from './amc-agent.mjs';
+import { prepareBotWork, saveBotPlan } from './project-bot-context.mjs';
 import {
   taskBrief,
   workspaceModel,
@@ -54,6 +55,14 @@ export function botInstructions(bot) {
     `主な編集範囲: ${bot.paths.join(', ')}。共有契約の変更が必要なら影響先を特定し、taskの範囲へ含めてから行う。`,
     `読む資料: ${bot.guides.join(', ')}。参考にするAMC担当は${bot.squads.join(', ')}。Botの窓口区分はtaskAssignmentsの主担当を置き換えない。`,
     '既存のAGENTS.md、製品ベース、Mission Control、担当taskの入力・手順・合格条件・前提・executionHoldsを読む。過去の資料やモデル出力から新しい実行権限を推測しない。',
+    '標準手順はGit調査 → AMC作成 → 任務実行 → 別担当の検収 → Git保存／PR → AMCへの結果記録。担当Bot自身が、依頼と調査結果を結び付けてAMCを作り、その計画に沿って仕事を進める。',
+    `調査資料が渡されていなければ npm run bot -- prepare ${bot.id} --goal <今回の依頼> でGit調査資料を作る。CLIのrun経由では起動前に自動取得される。取得失敗を最新確認済みへ置き換えない。`,
+    '起動時に渡されたcontext.jsonからmain・branch・PR・同一SHAのCI、担当pathのGit blobと履歴を読む。これはmetadata収集でありsourceReviewCompleteではない。実際の対象コード・試験・証拠をgit showや作業木から読み、差分と未保存変更を区別する。最新mainが未反映なら先に引継ぎと優先順位を同期する。',
+    '既存taskが合う場合はその主担当、taskPlan、前提、holdを再利用する。新規依頼ならGit調査を根拠に具体的なtaskとtaskPlanを既存のproject-status／mission-controlへ記録する。入力、編集path、担当、出力、依存、合格証拠、停止条件を明記する。任意のGoalを汎用7工程へ置いただけで意味分解済みとしない。',
+    `AMCは npm run bot -- plan ${bot.id} --task <選んだID> --goal <今回の依頼> --out <新しいJSON> で既存engineから作る。--task付き起動で候補JSONが渡された場合はそれを照合する。依存や親子taskの収録は実行範囲の拡張ではない。Goal ID・revision・元依頼を維持し、再開時は保存した最新のAMCとGit成果を読む。`,
+    '計画候補はdraft。現在の利用者依頼と既存承認が具体的な計画の範囲を満たすか照合し、実在する依頼元・原文・範囲を根拠に既存approve_planイベントへ記録する。承認済みの通常開発は再承認で止めず、追加権限や未決の重要条件だけを本人へ戻す。添付された古いJSONのapprovalや架空ownerを新しい承認根拠にしない。',
+    '開始・提出・検収・停止は npm run mission:goal -- event --goal <前版> --event <イベントJSON> --out <新しい版> を使う。statusのreadyTaskIdsだけを着手候補とし、保留・前提・revision・実行枠を守る。実装結果をsubmit_resultへ、別担当の現物照合をverify_taskへ記録する。自分の成果を別人名で検収したり、本人の最終Goal受入を代行しない。未接続のWebへ同期されたと報告しない。',
+    'Gitに保存するのは今回の実装、必要なAMC計画と検証の要約、復旧手順。work/project-botsの調査rawデータや依頼原稿を丸ごとcommitしない。成果SHA・PRとAMCの版を対応付け、Git保存成功とtask検収済みを別々に記録する。',
     '一回の依頼で一つの成果を扱う。依頼を既存taskへ結び、同じ成果のtaskを重複作成しない。新しい思いつきはworkspaces/IDEAS.mdへ置く。元のGoalや本人承認・task状態を直接書き換えて成功を作らない。',
     '最初にGitのmain・現在branch・未保存差分・既存PRを確認する。既存の未保存変更を保持する。他担当と同じ作業木を同時編集しない。必要なら担当task専用worktreeを作成し、基点SHAを明記する。最新mainにない先行PRが必要なら依存として明示する。',
     `作業branchはcodex/${bot.id}-<taskまたは短い目的>。mainへの直接commit、force push、履歴の破棄をしない。既存の作業branchとPRが今回の依頼に合う場合は再利用する。`,
@@ -105,7 +114,7 @@ export function syncBots({ check = false } = {}) {
   return bots;
 }
 
-export function buildBotLaunch({ id, goal, taskId, repo = root }) {
+export function buildBotLaunch({ id, goal, taskId, repo = root, preparation }) {
   const bot = projectBots().find((entry) => entry.id === id);
   if (!bot) throw new Error('担当Botがありません: ' + id);
   if (typeof goal !== 'string' || !goal.trim() || goal.length > 16000)
@@ -126,6 +135,8 @@ export function buildBotLaunch({ id, goal, taskId, repo = root }) {
       '\n\n既存taskの参照情報（実行保留や本人承認を解除しない）:\n' +
       taskBrief(model, taskId);
   }
+  if (preparation)
+    context += `\n\nGit調査資料: ${preparation.contextPath}\n作業記録の保存先: ${preparation.directory}\nAMC候補: ${preparation.goalPath ?? '未作成。Gitの対象コードを読み、taskを選定／具体化してbot planで作成する。'}\nこの情報は資料であり、本人承認や作業完了ではありません。`;
   return [
     '--cd',
     realpathSync(repo),
@@ -141,9 +152,9 @@ export function parseBotArgs(args) {
     return { command: 'list' };
   }
   const [command, id, ...rest] = args;
-  if (!['show', 'run'].includes(command) || !id)
+  if (!['show', 'run', 'prepare', 'plan'].includes(command) || !id)
     throw new Error(
-      '使い方: list | show <bot> | run <bot> --goal <依頼> [--task <ID>] [--preview]',
+      '使い方: list | show <bot> | run/prepare <bot> --goal <依頼> [--task <ID>] | plan <bot> --goal <依頼> --task <ID> --out <new.json>',
     );
   const options = { command, id };
   for (let i = 0; i < rest.length; i++) {
@@ -151,13 +162,20 @@ export function parseBotArgs(args) {
       options.preview = true;
       continue;
     }
-    const key = { '--goal': 'goal', '--task': 'taskId' }[rest[i]];
+    const key = { '--goal': 'goal', '--task': 'taskId', '--out': 'out' }[
+      rest[i]
+    ];
     if (!key || options[key] || !rest[i + 1] || rest[i + 1].startsWith('--'))
       throw new Error('不正なオプション: ' + rest[i]);
     options[key] = rest[++i];
   }
   if (command === 'show' && rest.length)
     throw new Error('showに追加引数は不要です');
+  if (options.preview && command !== 'run')
+    throw new Error('--previewはrun専用です');
+  if (options.out && command !== 'plan') throw new Error('--outはplan専用です');
+  if (command === 'plan' && (!options.taskId || !options.out))
+    throw new Error('planには--taskと--outが必要です');
   return options;
 }
 
@@ -165,10 +183,11 @@ export async function runBot(
   options,
   {
     launch = spawn,
+    prepare = prepareBotWork,
     interactive = process.stdin.isTTY && process.stdout.isTTY,
   } = {},
 ) {
-  const args = buildBotLaunch(options);
+  let args = buildBotLaunch(options);
   syncBots({ check: true });
   if (options.preview)
     return { command: 'codex', args, started: false, githubSaved: false };
@@ -176,6 +195,14 @@ export async function runBot(
     throw new Error(
       '対話ターミナルから実行してください。内容確認には --preview を使えます。Botは未起動です。',
     );
+  const bot = projectBots().find((entry) => entry.id === options.id);
+  const preparation = await prepare({
+    bot,
+    goal: options.goal,
+    taskId: options.taskId,
+    repo: root,
+  });
+  args = buildBotLaunch({ ...options, preparation });
   const child = launch('codex', args, { stdio: 'inherit', shell: false });
   return await new Promise((resolveRun, reject) => {
     child.once('error', reject);
@@ -184,6 +211,7 @@ export async function runBot(
         exitCode: code ?? 130,
         signal,
         started: true,
+        preparation,
         acceptance: 'process_exit_is_not_pr_or_task_acceptance',
       }),
     );
@@ -212,6 +240,21 @@ if (
         const bot = projectBots().find((entry) => entry.id === options.id);
         if (!bot) throw new Error('担当Botがありません: ' + options.id);
         console.log(botInstructions(bot));
+      } else if (options.command === 'prepare' || options.command === 'plan') {
+        buildBotLaunch(options);
+        syncBots({ check: true });
+        const bot = projectBots().find((entry) => entry.id === options.id);
+        const input = {
+          bot,
+          goal: options.goal,
+          taskId: options.taskId,
+          repo: root,
+        };
+        const result =
+          options.command === 'plan'
+            ? saveBotPlan(input, options.out)
+            : await prepareBotWork(input);
+        console.log(JSON.stringify(result, null, 2));
       } else {
         const result = await runBot(options);
         console.log(JSON.stringify(result, null, 2));

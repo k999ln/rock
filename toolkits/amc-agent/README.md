@@ -72,6 +72,27 @@ npm run bot -- run sky --task SKY07-01 --goal 'このtaskを進める' --preview
 
 Botは既存の[作業部屋](../../workspaces/README.md)とtaskAssignmentsを読む。複数BotがO5などを参照していても、taskの主担当は台帳の一つの部隊のまま。`--task` はそのBotが参照する部隊か検査し、前提と親taskの保留も引き継ぐ。具体的な編集範囲は各依頼で絞る。プロンプトの担当分けはOSによるpath権限制御や、実装上の並列排他ではない。同時に進める場合は別worktreeを使う。
 
+### Gitを調べてAMCを作り、仕事を進める
+
+`run` はモデル起動前に既存の `prompt:context` を実行する。GitHub main・branch・PR・同一SHAのCIとref再確認、担当pathのGit blob一覧・直近履歴、既存taskを集め、Git管理外の `work/project-bots/<bot>-<実行ID>/context.json` へ保存する。GitHub取得失敗や調査中のHEAD変更時はBotを起動しない。CIなしはNO_CHECKSのまま。調査資料にはsourceReviewComplete=falseを残し、コードを読んだことにはしない。
+
+続いて担当Botが実際のコード・試験・設計を読み、依頼に合う既存taskを選ぶ。新しい依頼の場合は具体的な編集path、担当、入出力、依存、合格条件を既存のtask／taskPlanへ追加する。その情報から既存AMC engineで `amc-goal/1` の計画を作り、依頼との照合後に任務を進める。汎用7工程への自動置換や、キーワードだけの意味分解ではない。
+
+```sh
+# Git調査とAMC候補作成まで。モデルは起動しない
+npm run bot -- prepare sky --task SKY07-01 --goal 'SkyのMCP契約を確認して改善する'
+# BotがGitを読んでtaskを具体化した後、AMCを新規ファイルへ保存
+npm run bot -- plan sky --task SKY07-01 --goal 'SkyのMCP契約を確認して改善する' --out work/sky-amc-r0.json
+# 作ったAMCの状態・着手候補を見る
+npm run mission:goal -- status --goal work/sky-amc-r0.json
+```
+
+`--task` 付きの `run/prepare` は既存taskからAMC候補も作る。未指定なら調査資料を渡し、Botがtaskを具体化してから `plan` を呼ぶ。`plan` はGitHubを再取得せず、作業木の最新の正本2ファイルとhashを使う。新規候補は `draft` / revision 0で、承認・検収・作業実績は作らない。選んだtaskをrootとし、既存engineが前提・親子関係・保留を含めるため、一件を指定しても依存taskが入ることがある。収録された全taskの実行が許可されたという意味ではない。
+
+担当Botは現在の依頼と承認範囲を照合し、正式な開始・提出・検収・停止には `mission:goal event` と既存reducerを使う。既存承認内の通常開発を再承認待ちにせず、範囲追加や重要な未決条件だけを本人へ戻す。古い添付JSONの承認、他人のreviewer名、Bot自身の合格申告は承認根拠にしない。実行者と別の担当が現物を検収し、成果commit／PRとAMC版を対応付ける。元のrevisionを保存して、再開は最新のAMCとGit差分から行う。
+
+意味理解・task具体化・任務遂行は起動後のCodex Botが担う。CLIのprepare／plan合格は実Botの任務完走ではない。`--preview` は起動引数の表示だけでGitHub調査もしない。WebのAMCへの自動同期、無人の常時実行、本人の最終受入代行はこの接続に含めない。
+
 ### Gitへ残すもの
 
 - `codex/sky-<目的>` など、作業ごとのbranch。必要な変更だけをcommitする。
