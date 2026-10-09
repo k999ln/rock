@@ -47,12 +47,13 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 
 ### AI自動化チームのTool
 
-Web/PC版Skyの登録正本は[`lib/catalog.ts`](lib/catalog.ts)です。現在はready 13件（AMCを含むRock側で作成9件、`Mr.`由来4件）とcandidate 22件（Rock側の構想1件、`Mr.`由来11件、第三者候補10件）の計35件。Rock側と`Mr.`由来のToolはチームの実装・導入対象、第三者候補は将来の接続候補です。`ready`はSky catalog上の状態であり、外部Providerや本番決済まで接続済みという意味ではありません。`candidate`を稼働中の担当として数えません。[全Tool詳細設計](docs/sky-tools-complete-design.md)に権限・入出力・停止条件があります。
+Web/PC版Skyの登録正本は[`lib/catalog.ts`](lib/catalog.ts)です。現在はready 14件（AMC・SPIDERを含むRock側で作成10件、`Mr.`由来4件）とcandidate 22件（Rock側の構想1件、`Mr.`由来11件、第三者候補10件）の計36件。Rock側と`Mr.`由来のToolはチームの実装・導入対象、第三者候補は将来の接続候補です。`ready`はSky catalog上の状態であり、外部Providerや本番決済まで接続済みという意味ではありません。`candidate`を稼働中の担当として数えません。[全Tool詳細設計](docs/sky-tools-complete-design.md)に権限・入出力・停止条件があります。
 
 ### Rock側で作成・登録したTool
 
 | Sky ID | Tool | catalog状態 | 主な実装・入口 |
 | --- | --- | --- | --- |
+| `rockstar-spider` | SPIDER — ブラウザ内セキュリティ検査 | ready | [`components/spider-workspace.tsx`](components/spider-workspace.tsx)・[`toolkits/spider-guard/`](toolkits/spider-guard/) |
 | `rockstar-amc` | AMC — 部隊とGoalの管理 | ready | [`app/amc/`](app/amc/)・[`app/api/amc/`](app/api/amc/)・[`lib/amc-tool.ts`](lib/amc-tool.ts) |
 | `rockstar-csv-cleanup` | CSV整形・検査・納品 | ready | [`app/csv/`](app/csv/)・[`lib/csv-transform.ts`](lib/csv-transform.ts) |
 | `rockstar-markets-analysis` | Market Scanner | ready | [`app/market/`](app/market/)・[`lib/markets-adapter.ts`](lib/markets-adapter.ts) |
@@ -127,7 +128,7 @@ Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-cita
 
 | 正本・実装 | このガイドでの扱い |
 | --- | --- |
-| [Sky catalog](lib/catalog.ts) | 登録35件すべてを上に記載。ready 13件とcandidate 22件を分離 |
+| [Sky catalog](lib/catalog.ts) | 登録36件すべてを上に記載。ready 14件とcandidate 22件を分離 |
 | [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
 | [`toolkits/`](toolkits/) | 13ディレクトリを下表で分類。Tool実装、SDK、connector、エージェント定義、試験fixture、PAPER試作を区別 |
 | [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |

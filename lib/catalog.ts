@@ -56,6 +56,23 @@ const mrHubCandidates = ([
 }));
 const catalogEntries = [
   {
+    id: 'rockstar-spider',
+    name: 'SPIDER · セキュリティ検査',
+    category: 'セキュリティ',
+    description: 'コードやテキストの秘密情報・個人情報・危険な処理の候補を、ブラウザ内で検査。該当行と対処方法を確認できます。',
+    source: 'https://github.com/k999ln/rock/tree/main/toolkits/spider-guard',
+    launchPath: '/zema/tools/rockstar-spider',
+    environment: 'ブラウザ内の明示入力のみ / OS・PC接続・外部AI不要',
+    cost: 'ブラウザ内の検査は基本利用無料。外部APIや有料処理は呼びません。',
+    steps: ['検査するコード・テキストを入力し、言語を選ぶ', '検査を実行し、候補の行・理由・対処方法を確認する', '必要な修正後に再検査する', '必要なら値を含まないレポートをダウンロードする'],
+    note: '入力と結果は画面内だけで保持し、原文・ファイル名・検出値を送信・保存しません。検出ゼロは安全の保証ではありません。端末全体の常駐監視・全通信の遮断はこのToolの対象外です。',
+    color: 'blue',
+    license: 'RockstarOS code',
+    licenseUrl: 'https://github.com/k999ln/rock',
+    status: 'ready',
+    origin: 'rockstaros',
+  },
+  {
     id: 'rockstar-amc',
     name: 'AMC · Goalと部隊の進捗',
     category: '計画・進捗管理',

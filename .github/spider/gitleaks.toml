@@ -1166,3 +1166,10 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:docs/evidence/phone\-source\-verification\.json)\z''']
 regexes = ['''\AAhgHif0mei\+9aNyKLfMZBh2yptHdw/aN7Tlh/j2eFwM\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest 833a2a5ea7f7"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/sky\-code\-timeline\.json)\z''']
+regexes = ['''\Aac6b8e8bff4f233d82a56a46b96b947d683083cb1942a6a33a7bd8c53988b82e\z''']

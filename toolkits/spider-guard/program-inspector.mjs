@@ -47,7 +47,7 @@ function maskNonCode(source, language) {
   let incomplete = false, interpolation = false;
   const blank = (start, end) => {
     for (let index = start; index < end; index++)
-      if (source[index] !== '\n' && source[index] !== '\r') output[index] = ' ';
+      if (source[index] !== '\n' && source[index] !== '\r') output[Number(index)] = ' ';
   };
   for (let index = 0; index < source.length;) {
     const start = index, char = source[index];

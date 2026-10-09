@@ -1,3 +1,7 @@
+## タイムラインでコードを共有する
+
+Skyの「コード」から、エージェントのコードとlicenseを明示公開する。更新は新しいコミットになり、全文・履歴・差分を確認できる。標準のSPIDERは所有者がSecret Checkへ変更、または取り外し可能。各版の保護範囲を表示し、コード公開を実行許可や審査済みToolとして扱わない。[保存・復旧・権限の契約](sky-tools-complete-design.md#skyタイムラインのエージェントコードと交換可能な保護)。
+
 # Sky — 自動化を選び、許可し、動かし、止め、結果を受け取る場所
 
 最終更新: 2026-09-27
@@ -71,7 +75,9 @@ SkyからZemaへ渡る仕事の既定実行器はOS内のローカルLLM（Local
 
 ## 現在Skyにあるツール
 
-### Web / PCで現在使える13件
+### Web / PCで現在使える14件
+
+- `rockstar-spider`: SPIDER。Skyで選び、Zema内でコード／テキストをローカル静的検査する。外部送信・保存なし。
 
 | ツール                            | 実行場所                                        | 現在できること                                                                           | 明示的な限界                                                                                               |
 | --------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -89,9 +95,9 @@ SkyからZemaへ渡る仕事の既定実行器はOS内のローカルLLM（Local
 | Jev品質評価                       | Sky Cloud / 明示同意後のremote evaluator         | 閉じた評価基準に対するEvaluation Receiptを作る                                          | provider設定が必要。評価は助言であり、権限・Tool成功・仕事完了を決めない                                    |
 | AMC — 部隊とGoalの管理             | Webブラウザ / 本人別D1                           | 32部隊を閲覧し、依頼・Goal・意図から共通計画を作り、承認・進捗・検収を手動記録する       | LLM・AI実作業・自動送信は未接続。正本32部隊と本人用Goalを別管理し、自己申告を外部実証にしない              |
 
-この13件は `lib/catalog.ts` で `ready` とされる。導入候補22件と合わせてcatalogは35件である。ここでの`ready`はSkyの商品UIと安全な縮退経路が利用可能というcatalog状態であり、外部credential設定済み、provider接続確認済み、実機OS合格、本番合格を意味しない。法務受付と特許出願アシスタントはOpenAI未設定時に503を返し、決定論的な案内・draft部分だけを継続する。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは互換商品名として残る公開ライブ市場の読取専用Toolで、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。Jev品質評価は明示同意後のremote evaluatorとして評価Receiptを返すが、権限判定や仕事完了を決めない。
+この14件は `lib/catalog.ts` で `ready` とされる。導入候補22件と合わせてcatalogは36件である。ここでの`ready`はSkyの商品UIと安全な縮退経路が利用可能というcatalog状態であり、外部credential設定済み、provider接続確認済み、実機OS合格、本番合格を意味しない。法務受付と特許出願アシスタントはOpenAI未設定時に503を返し、決定論的な案内・draft部分だけを継続する。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは互換商品名として残る公開ライブ市場の読取専用Toolで、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。Jev品質評価は明示同意後のremote evaluatorとして評価Receiptを返すが、権限判定や仕事完了を決めない。
 
-Jev ecosystemの他候補はroute、同意UI、rubric、receipt、credential、provider受入が揃うまで、この13件と`ready`件数には含めない。
+Jev ecosystemの他候補はroute、同意UI、rubric、receipt、credential、provider受入が揃うまで、この14件と`ready`件数には含めない。
 
 ### Skyに表示する導入候補22件
 

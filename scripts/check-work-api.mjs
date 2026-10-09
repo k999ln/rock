@@ -2774,6 +2774,24 @@ try {
     amcJob,
   );
 
+  // Agent code publication: real bundled API and D1, synthetic owner/input only.
+  const codePath = '/api/sky/code';
+  const codeDraft = { id: randomUUID(), repoId: randomUUID(), expectedRevision: 0,
+    title: 'Fixture greeting', author: 'Fixture author', description: 'Returns a greeting.',
+    message: 'Initial version', license: 'MIT', files: [{ path: 'agent.js', source: 'export function run() { return "hello"; }' }], publishConfirmed: true };
+  await call('POST', codeDraft, {path:codePath,user:null,status:401});
+  await call('POST', {...codeDraft, files:[{path:'agent.js',source:'eval(input);'}]}, {path:codePath,status:422});
+  const codeFirst = (await call('POST',codeDraft,{path:codePath,status:201})).commit;
+  check(codeFirst.inspection.provider,'spider'); check(codeFirst.workflow.status,'completed');
+  check((await call('POST',codeDraft,{path:codePath,status:201})).commit.id,codeFirst.id);
+  await call('POST',{...codeDraft,id:randomUUID(),expectedRevision:1},{path:codePath,user:bob,status:409});
+  const codeSecond = (await call('POST',{...codeDraft,id:randomUUID(),expectedRevision:1,message:'Update greeting',protector:'secret-check',protectionChangeConfirmed:true},{path:codePath,status:201})).commit;
+  check(codeSecond.parentId,codeFirst.id); check(codeSecond.inspection.provider,'secret-check');
+  check((await call('GET',undefined,{path:`${codePath}?repo=${codeDraft.repoId}&revision=1`,user:null})).commit.id,codeFirst.id);
+  await call('PATCH',{action:'hide',repoId:codeDraft.repoId,expectedRevision:2},{path:codePath});
+  await call('GET',undefined,{path:`${codePath}?repo=${codeDraft.repoId}`,user:null,status:404});
+  check((await call('GET',undefined,{path:`${codePath}?repo=${codeDraft.repoId}`})).history.length,2);
+
   // Isolated proxy-header fixtures, not proof of a deployed sign-in gateway.
   const skyDraft=prepareSkyGoal(JSON.parse(readFileSync(join(root,'data/amc/sky/sky-amc-plan.json'),'utf8')),JSON.parse(readFileSync(join(root,'data/amc/sky/sky-amc-goal.json'),'utf8')));
   const amcOptions={path:'/api/amc',cache:'private, no-store'};

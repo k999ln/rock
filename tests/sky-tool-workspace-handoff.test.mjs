@@ -39,6 +39,7 @@ function render(toolId, workspace = false, { tools = catalog, hostMismatch = nul
     '@/components/zema-navigation': inert('zema-nav'),
     '@/components/sky-library-save': inert('bookmark'),
     '@/components/amc-workspace': inert('amc'),
+    '@/components/spider-workspace': inert('spider'),
     '@/components/coconala-team-workspace': inert('coconala'),
     '@/components/csv-business-workspace': inert('csv'),
     '@/components/mr-tool-runner': { MrToolRunner: inert('mr') },
@@ -61,7 +62,7 @@ function render(toolId, workspace = false, { tools = catalog, hostMismatch = nul
   return { html, mounts };
 }
 
-const runnerNames = new Set(['amc', 'coconala', 'csv', 'mr', 'candidate', 'fashion', 'voice-connection']);
+const runnerNames = new Set(['amc', 'spider', 'coconala', 'csv', 'mr', 'candidate', 'fashion', 'voice-connection']);
 for (const tool of catalog) {
   void test(`Sky detail for ${tool.id} only describes, bookmarks and links to Zema`, () => {
     const { html, mounts } = render(tool.id);
@@ -84,6 +85,15 @@ void test('browser citations does not require a PC and preserves its existing Ze
   assert.deepEqual(zema.mounts.filter((item) => item.name === 'mr').map((item) => item.tool), ['citations']);
   assert.ok(!zema.mounts.some((item) => item.name === 'bookmark'));
   assert.ok(zema.html.includes('href="/zema/library"'));
+});
+
+void test('SPIDER is discoverable in Sky and mounts its local inspector only in Zema', () => {
+  const sky = render('rockstar-spider');
+  assert.ok(sky.html.includes('PC接続は必須ではありません'));
+  assert.ok(!sky.mounts.some((item) => item.name === 'spider'));
+  const zema = render('rockstar-spider', true);
+  assert.equal(zema.mounts.filter((item) => item.name === 'spider').length, 1);
+  assert.ok(!zema.mounts.some((item) => item.name === 'mr' || item.name === 'bookmark'));
 });
 
 for (const [toolId, name] of [['rockstar-amc', 'amc'], ['coconala', 'coconala'], ['rockstar-csv-cleanup', 'csv']]) {

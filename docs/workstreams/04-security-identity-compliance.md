@@ -1,3 +1,7 @@
+## 2026-10-09 SYS15連携 — Skyコード公開時の標準保護
+
+SKY20／ROCKのコード公開にSPIDERを既定で適用。本人がSecret Checkへの交換／取り外しを選べる。選択とexact content hashを各commitへ束ね、検査失敗／未登録検査器は公開を停止する。認証・所有権・revision・Broker承認は別境界として維持。[詳細](../sky-tools-complete-design.md#skyタイムラインのエージェントコードと交換可能な保護)。
+
 # Security / Identity / Compliance
 
 ## 目的
@@ -20,6 +24,10 @@
 - `SYS15`へGitHub repository検査を追加する。秘密検査・JS/TS/Python CodeQLを既存verifyから独立させ、実際のcheck／Security結果へ接続する。Dependabot通知・修正PRを有効化済み。main統合・required check・定時稼働は未実施として分ける。[GitHub連携](../spider-guard.md#github上でrockを検査する)と[security policy](../../SECURITY.md)を参照。
 
 主なtask: `SYS01`〜`SYS13`, `SYS15`, `LCH02`, `LCH03`, `OS05`。
+
+## SkyのSPIDER（2026-10-09 / SYS15 / ROCK）
+
+Sky掲載→Zemaの明示入力検査へ既存検出器を接続する。AMCの一意の主担当は既存taskAssignmentsのH1を維持。ローカルWorker・入力上限・停止・旧結果失効・値を含まないreportを対象とし、原文保存と外部送信は追加しない。主な検証: `node --experimental-strip-types --test tests/spider-sky.test.mjs tests/spider-program-inspector.test.mjs tests/sky-tool-execution-scope.test.mjs`、`npm run design:check`、`npm run verify`、Sky→Zemaの実画面。検証結果はproject.mdとdata/project-status.jsonのspiderSky、[追加検証証拠](../evidence/spider-sky-continuation.json)へ記録した。2026-10-09のローカル全体verifyと実画面が合格、公開・実機は別受入。[全契約](../sky-tools-complete-design.md#spider--skyのセキュリティ検査)。
 
 ## 次に進める順番
 

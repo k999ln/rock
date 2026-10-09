@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "updatedAt": "2026-10-06",
+  "updatedAt": "2026-10-09",
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 149,
+    "tableCount": 151,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。"
   },
   "webSchema": {
-    "tableCount": 77,
+    "tableCount": 79,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -79,6 +79,8 @@
       "sky_campus_reports",
       "sky_campus_tag_events",
       "sky_campus_tags",
+      "sky_code_commits",
+      "sky_code_repositories",
       "sky_commerce_events",
       "sky_commerce_offers",
       "sky_commerce_orders",
@@ -98,8 +100,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 60,
-    "latestMigration": "0059_sky_library.sql",
+    "migrationCount": 61,
+    "latestMigration": "0060_sky_code_timeline.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -147,6 +149,8 @@
           "sky_campus_reports",
           "sky_campus_tag_events",
           "sky_campus_tags",
+          "sky_code_commits",
+          "sky_code_repositories",
           "sky_commerce_events",
           "sky_commerce_offers",
           "sky_commerce_orders",
@@ -163,7 +167,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 33
+        "tableCount": 35
       },
       {
         "id": "marketplace",
@@ -290,6 +294,8 @@
         "sky_campus_reports",
         "sky_campus_tag_events",
         "sky_campus_tags",
+        "sky_code_commits",
+        "sky_code_repositories",
         "sky_commerce_events",
         "sky_commerce_offers",
         "sky_commerce_orders",
@@ -309,8 +315,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0059_sky_library.sql",
-      "tableCount": 77,
+      "expectedAppliedThrough": "0060_sky_code_timeline.sql",
+      "tableCount": 79,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

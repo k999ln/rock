@@ -1,5 +1,8 @@
 <div align="center">
 
+Skyのタイムラインにエージェントコードの公開入口を追加しました（作業branch、未公開）。「コード」→「コードを公開」で、ファイル・作者名・license・変更メッセージを入力し、一般公開を確認して投稿します。SPIDERが標準で検査し、指摘時は公開を停止。公開前の保護はSecret Check（秘密／個人情報のみ）へ交換、または取り外しできます。各版の全文・親との差分・検査範囲を確認でき、所有者は更新・全履歴の非公開・再公開が可能です。Gitのclone/pushやコード実行は未対応。保存にはD1 migration `0060`が必要です。単体SPIDERの入力は引き続きブラウザmemoryだけです。
+
+
 <img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokado product concept: one slim silver avocadoMini R5 stands beside the words PLAY, MAKE, and LIVE with subtle animated lines" width="100%">
 
 # avokado
@@ -56,7 +59,7 @@ The full record, day by day and theme by theme, is in the [specification history
 
 | Kind | Count | What it is |
 | --- | --- | --- |
-| Sky tools | 35 — 13 ready, 22 candidates | Automations listed in Sky, such as CSV clean-up, the Mercari revenue starter, Fashion Brand Ops, legal intake, and the patent assistant. Candidates cannot run yet. |
+| Sky tools | 36 — 14 ready, 22 candidates | Automations listed in Sky, such as CSV clean-up, the Mercari revenue starter, Fashion Brand Ops, legal intake, and the patent assistant. Candidates cannot run yet. |
 | Role agents | 7 — 3 implemented | Agents with a role that work through conversation and may use only their permitted tools: subscription advisor, legal intake, and patent filing. |
 | On-device agents | 4 | The local LLM planner, the agent runtime and Broker, the Spider security agent, and the operator agent. |
 | Cloud agents | — | Remote workers that continue approved work while the device is offline, including delegation to outside agents (A2A). |
@@ -318,12 +321,14 @@ Payment and Wallet design: [integration design](docs/sky-commerce-design.md), [W
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-06 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
+Updated: 2026-10-09 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)
 
 ### Security: SPIDER and Spider Guard
+
+SPIDER is available in the Sky catalog as `rockstar-spider`. Open **Sky → SPIDER → Open in Zema**, paste code or select a UTF-8 text file, and run the browser-local inspection. Review the flagged lines and remediation, edit and rerun, or download a value-free JSON report. Inputs, filenames and findings are not uploaded or persisted; inspection state exists only in this tab. Limits: 64 KiB, 2,000 lines, 100 findings. This Tool does not enable device-wide monitoring or block other applications’ traffic.
 
 [![SPIDER secrets](https://github.com/k999ln/rock/actions/workflows/spider.yml/badge.svg?branch=codex%2Fspider-guard)](https://github.com/k999ln/rock/actions/workflows/spider.yml?query=branch%3Acodex%2Fspider-guard)
 [![SPIDER code analysis](https://github.com/k999ln/rock/actions/workflows/spider-codeql.yml/badge.svg?branch=codex%2Fspider-guard)](https://github.com/k999ln/rock/actions/workflows/spider-codeql.yml?query=branch%3Acodex%2Fspider-guard)

@@ -1,5 +1,6 @@
 'use client';
 import AmcWorkspace from '@/components/amc-workspace';
+import SpiderWorkspace from '@/components/spider-workspace';
 
 import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
@@ -150,6 +151,8 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
                 Zemaで開く <ArrowUpRight size={16} />
               </Link>
             </section>
+          ) : tool.id === 'rockstar-spider' ? (
+            <SpiderWorkspace />
           ) : isJevRouter ? (
             <section className={styles.openCard}>
               <h2>

@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros-design-document-index/1",
   "version": "1.5",
-  "updatedAt": "2026-09-27",
+  "updatedAt": "2026-10-09",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/avocado-mini-r5/README.md",
@@ -463,6 +463,44 @@
     {
       "id": "producthunt-discovery",
       "catalogStatus": "candidate"
+    },
+    {
+      "id": "rockstar-spider",
+      "catalogStatus": "ready",
+      "displayName": "SPIDER · セキュリティ検査",
+      "designDocument": "docs/sky-tools-complete-design.md",
+      "designSection": "SPIDER — Skyのセキュリティ検査",
+      "primaryOwner": "ROCK",
+      "ownerSquad": "H1",
+      "implementationTask": "SYS15",
+      "readyScope": [
+        "browser_local_explicit_input_static_inspection",
+        "metadata_only_report_download"
+      ],
+      "implementationBoundary": {
+        "stateContract": "lib/workflow.ts; ephemeral memory only; no work API writes",
+        "inputLimitBytes": 65536,
+        "lineLimit": 2000,
+        "findingLimit": 100,
+        "workerTimeoutMs": 4000,
+        "inputOrFilenameUploaded": false,
+        "inputOrReportPersisted": false,
+        "osWideMonitoring": false,
+        "externalSendAuthorization": false,
+        "productionDeploymentAccepted": false,
+        "workerInputValidation": "private dedicated-worker trusted event; empty origin/null source; nonnegative safe integer id; source string; language allowlist",
+        "scope": "standalone_browser_inspector_only; timeline publication uses separate explicit upload contract"
+      },
+      "timelineProtection": {
+        "task": "SKY20",
+        "default": "spider",
+        "replaceable": true,
+        "removable": true,
+        "storage": "owner-scoped D1 repositories and immutable commits; explicit publication only",
+        "workflow": "sky-code-publication",
+        "designSection": "Skyタイムラインのエージェントコードと交換可能な保護",
+        "productionAccepted": false
+      }
     }
   ],
   "nativeToolFamilies": [

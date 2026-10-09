@@ -1,3 +1,7 @@
+## 2026-10-09 SKY20／ROCK — コードのタイムライン公開
+
+明示指示に基づきコード本文・commit・履歴・差分・複製・非公開／再公開を実装。SYS15のSPIDERを既定のserver検査へ接続し、交換・取り外しを版ごとに記録する。主担当ROCK、外部検査器は未接続、OWNERは公開権限／licenseと保護変更の確認を担当する。Package審査／実行／料金とは独立。合格条件は本人別保存・CAS競合・再送・検査迂回拒否・実画面。検証入口: `node --experimental-strip-types --test tests/sky-code-timeline.test.mjs`、`npm run verify`。[詳細](../sky-tools-complete-design.md#skyタイムラインのエージェントコードと交換可能な保護)。本番配備は未実施。
+
 ## 2026-10-01 SKY21 / JOINT — Pixelのサービス受入
 
 [実機受入記録](../evidence/sky-pixel-service-acceptance.json): USB承認済みPixel 10／GL066／frankel、Android17を限定propertyで確認。Rock3アプリは0.1.0。Web27・CSV8・端末reader3試験合格、全体verifyはNode550・Fashion19・合成API376合格。PixelのSky画面操作は本人から明示許可済み。Vanadiumで公開Marketの表示、Android向け絞り込み、CSV検索1件、詳細からCSV専用画面への移動と未ログイン時のサインイン案内を実機確認した。本人ログイン、受付・処理・保存・再表示・ダウンロード、本番利用者の分離は未受入。スクリーンショットと結果を受入JSONへ記録した。本人の実機・本番サインインと、fixtureの成功を分離する。

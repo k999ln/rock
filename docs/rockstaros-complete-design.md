@@ -1,3 +1,7 @@
+## Skyコード公開の共通境界（2026-10-09）
+
+Skyのタイムラインへ公開ソースの版付き保存を追加する。SPIDER標準／交換／取り外しはコード公開時の検査設定であり、Core/Brokerの本人性・権限・料金・実行承認を変更しない。単体SPIDERのmemory-only検査と明示的な一般公開送信を分離する。[詳細契約](sky-tools-complete-design.md#skyタイムラインのエージェントコードと交換可能な保護)。
+
 # RockstarOS 全体詳細設計
 
 ## 既存端末への機能追加（2026-10-06、HOME01 / SYS01 / WEB14）
@@ -340,6 +344,8 @@ Web AI送信前検査とMCP Connectorは補助系統として保持する。こ�
 同日Security Agent役割追加: 利用者の明示により、認証済み`security`状態へ`agent`（id `spider`、role `security`、scope `platform-data`、duties `watch_platform_data`／`inspect_outbound`／`deny_sensitive_outbound`／`report_health`）を接続する。状態は実workerの生存・鮮度とfinding、`lastAction`は最新の実拒否の値を含まないmetadataから導く。healthを優先し、健全時は実拒否後30秒の`recent_block`、候補があれば`sensitive_data_detected`、なければ`watching`。最新拒否はallowlist化した境界・件数・分類・時刻だけをmemory内で保持し、再起動でresetする。走査周期・順序は変えない。native security panelに役割と監視状態・検出候補・直近の送信拒否を示す。固定scope、UID、owner認証、送信前検査と原本非変更は維持する。再起動後に過去の行動を生成せず、stale／dead／errorは稼働成功と表示しない。役割追加のLinux Python 26件、native build・描画、PIN readiness 11／source profile 1とWallet／ATM描画fixtureは成功し、前段階と別のsource hash・証拠へ記録した。OS全体overlayへの表示拡大は未選択であり、現在のsecurity panelを維持する。
 
 ### 19.2 Spiderの明示入力コード検査
+
+2026-10-09: 同じ検出器をSky catalogの`rockstar-spider`からZemaへ接続する。Web Workerで明示入力だけを静的検査し、原文／ファイル名／検出値は送信・保存しない。入力変更時に古い結果を破棄し、停止・失敗は未完了として表示する。仕事状態は既存workflowの画面内契約を再利用し、owner保存・nativeの権限／常駐範囲を変更しない。[入出力・状態・復旧・合格条件](sky-tools-complete-design.md#spider--skyのセキュリティ検査)。
 
 追加の利用者指定により、編集したsourceを自動検査するoffline HTMLと、native owner限定`security.inspectCode`を既存Security領域へ接続する。catalog Toolや実行権限は追加しない。詳細と配布物の使い方は[Spider Guard](spider-guard.md#自分のコードを貼って検査する)。
 

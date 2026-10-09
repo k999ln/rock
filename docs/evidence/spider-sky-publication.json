@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-09",
+  "taskId": "SYS15",
+  "relatedTaskId": "SKY20",
+  "userDirection": "Publish SPIDER in the existing public Sky, following the user request to finish the work.",
+  "canonicalBranch": "codex/spider-sky",
+  "mainIntegrated": false,
+  "productionDeployed": false,
+  "securityPolicy": {
+    "classified": "One exact recomputed public source digest at its single evidence path; two historical occurrences.",
+    "policyCommit": "b51181022a417f4c6564be74ebfbe783f5dc1423",
+    "realScannerPolicyTests": 9,
+    "changedValuesAndPathsStillDetected": true
+  },
+  "site": {
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "audience": "public",
+    "baseVersion": 48,
+    "baseCommit": "cc61f7057301113d82994a1c2d7fb1c4c30acd31",
+    "checkout": "/private/tmp/sky-code-site",
+    "preserved": "Existing Home/navigation, public audience, existing migration bytes and code timeline candidate.",
+    "added": "Standalone SPIDER catalog entry and Zema inspection page using the canonical component, Worker and detector.",
+    "focusedInspectionTests": 22,
+    "fullVerify": "pending"
+  },
+  "remaining": [
+    "same-SHA PR checks and main integration",
+    "Site candidate verification and deployment",
+    "public route/Worker/API readback"
+  ]
+}

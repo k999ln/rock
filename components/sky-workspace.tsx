@@ -8,6 +8,7 @@ import {
   type SyntheticEvent,
 } from 'react';
 import Link from 'next/link';
+import SkyCodeTimeline from '@/components/sky-code-timeline';
 import SkyToolOverview from '@/components/sky-tool-overview';
 import { skyToolUiState, type SkyToolUiContext } from '@/lib/sky-tool-ui';
 import { useSkyServiceStatus } from '@/lib/use-sky-service-status';
@@ -69,9 +70,9 @@ import {
 import { queueSkyZemaHandoff, skyRequestLimit } from '@/lib/sky-zema-handoff';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 
-type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
+type FeedFilter = 'おすすめ' | '今使える' | '導入候補' | 'コード';
 
-const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補'];
+const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補', 'コード'];
 const recommendedToolIds = new Set([
   'rockstar-amc',
   'rockstar-csv-cleanup',
@@ -641,7 +642,8 @@ export default function SkyWorkspace({
             </div>
           )}
 
-          <div className="sky-feed" aria-live="polite">
+          {(filter === 'おすすめ' || filter === 'コード') && <SkyCodeTimeline />}
+          {filter !== 'コード' && <div className="sky-feed" aria-live="polite">
             {visibleLocalServers.map((server, index) => (
               <article
                 className="sky-feed-post"
@@ -781,7 +783,7 @@ export default function SkyWorkspace({
                 </button>
               </div>
             )}
-          </div>
+          </div>}
           <SkyMcpCenter
             open={mcpOpen}
             connected={connected}

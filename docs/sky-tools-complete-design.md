@@ -1,9 +1,46 @@
 # Sky／Zema／全Tool詳細設計
 
 版: 1.2 / 2026-09-27
-対象: Skyにある13件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
+対象: Skyにある14件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
+
+## SPIDER — Skyのセキュリティ検査
+
+2026-10-09、利用者の「skyでしたい」を受けて `rockstar-spider` を追加。既存SYS15 / H1の割当とROCK責任を継続する。`ready`は以下のブラウザ内機能の実装範囲で、公開配備・全端末保護の受入ではない。
+
+| 必須項目 | 契約 |
+| --- | --- |
+| 目的・利用者 | Sky利用者が送信や共有の前にコード・テキスト内の秘密／個人情報／危険処理の候補を確認する。 |
+| 利用体験 | SkyでSPIDERを検索→商品説明→Zemaで開く→入力／UTF-8ファイル選択→明示検査→該当行・理由・対処→編集・再検査→任意のmetadata JSONダウンロード。クモは検査中に動き、候補があれば色を変える。 |
+| 責任・禁止権限 | 既存 `toolkits/spider-guard/program-inspector.mjs` と検出器を再利用。入力を実行しない。root、全端末走査、他アプリ通信遮断、任意URL取得、外部修復権限を持たない。既存native guardは別機能として保持。 |
+| 入出力・版・上限 | `javascript` / `python` / `text`、64 KiB、2,000行、最大100 finding。report schemaVersion 1。専用Web Workerへ渡し4秒で停止。Workerはprivate dedicated channelのtrusted event（empty origin/null source）と非負safe integer ID・文字列source・3言語allowlistを検証し、不正messageを反射しない。検出器のmask書込は数値添字に限定する。UTF-8不正・NULを持つfileは読み込まず元入力を保持。CRLF／CRはtextareaと同じLFへ正規化し、findingの行番号と選択位置を一致させる。出力はrule／kind／severity／line／理由／対処／件数／coverage。原文・filename・検出値を出力しない。 |
+| 状態・失敗 | UIのidle/checking/ready/stopped/errorと `lib/workflow.ts` のspider-securityを使用。完了した静的検査だけactive→review、本人の結果確認でcompleted。passedは検査実行の完了であり安全認定ではない。sample・coverage不足・空入力はcompletedにしない。編集／言語変更／file変更で結果とdownloadを失効。停止・timeout後の旧revision結果を拒否。 |
+| 保存・保持・削除・backup | 入力・report・WorkJobは当該画面のmemoryだけ。原文、filename、検出値をfetch、localStorage、DB、consoleへ書かない。消去／画面を閉じると破棄。明示downloadは値を含まないreportのみ。Sky libraryのTool保存は既存の本人別保存を再利用し、検査入力とは別。 |
+| Offline・再送・不明 | 検査は外部API不要。画面／Worker assetの初回読込は必要で、完全offline配布を新たに保証しない。失敗は未完了表示し、本人操作で再試行。同じ結果を新入力へ転用せずWorkerを破棄する。 |
+| 更新・互換・復旧 | 同じcatalog ID／Zema routeと共通検出器を使用。新Toolを停止する場合はcatalog掲載とUIを同じ版で戻す。既存native／単一HTMLの検査契約と保存物を変更しない。 |
+| 安全・privacy・承認 | 検出ゼロを安全保証、権限、本人承認、Tool成功へ昇格させない。候補文字列をHTMLとして描画しない。ローカル検査に新たなcredentialは不要。新しい仕事DB保存を作らず、既存owner認証・ユーザー別library・revision競合を変更しない。 |
+| 受入環境・証拠 | catalog→Zema、実Worker検査、秘密値非出力、sample・不完全結果、停止、古い結果の失効、download、desktop/mobileを検証する。対象host試験・typecheck・design:check・verifyを別記。Provider・OS image・Pixel・24時間監視・本番配備は本変更の受入外。 |
+| 未決定・決定方法 | 継続監視、入力範囲拡大、Skyの全送信への組込みは追加設計。明示的なコード一般公開とその永続履歴は次節の別契約。本人の対象指定と権限・誤検出・復旧試験により決める。新しい有料料金・自動外部修復は設定しない。 |
+
+## Skyタイムラインのエージェントコードと交換可能な保護
+
+2026-10-09の明示指示「タイムラインでgitみたいにエージェントのコードを出す」「SPIDERがデフォで守り、取り外し・他のセキュリティーへ変更できる」による追加。主担当はSKY20／ROCK、検査はSYS15と連携。ブラウザ内だけの単体SPIDERとは別に、本人が一般公開すると確定したコードをSkyのサーバーへ送信・保存する。既存Package／SDKの登録・審査・料金・配布権限は再利用対象として残し、このコードフィードをverified Registryへ自動登録しない。
+
+| 項目 | 実装契約 |
+| --- | --- |
+| 目的・体験 | `/sky`のおすすめ／コードタブ。コード全文・作者表示名・license・変更メッセージを一般公開。更新は親コミット付きの新しい版、各版の内容SHA-256・履歴・親との差分・JSON export・複製と`/sky/code/:id?revision=N`の共有URLを提供。Git wire protocol、git clone/push、branch mergeは本版に含まない。 |
+| 入力 | 1〜8ファイル、合計64 KiB、各2,000行。JS/TS/Python/JSON/Markdown/txt。相対pathの重複・traversal・NULを拒否し、改行をLFへ正規化。コード・公開metadata・filenameを検査し、所有権／licenseと一般公開を本人が確認する。未投稿の入力は画面memoryのみ。 |
+| SPIDER標準 | 新規・複製はSPIDERを既定にする。既存の`program-inspector.mjs`をserver側で実行。秘密／個人情報、JS/TS/Pythonの限定的な危険パターンを検出。JSON/Markdown/txtは秘密／個人情報検査だけ。指摘・不完全・検査失敗時は保存／公開せず、metadataだけ返す。入力を実行しない。 |
+| 交換・取り外し | `secret-check`は同じ機密検出器を使う別の狭い保護設定（Secret Check）。コード動作を検査しないことを表示。`none`は検査なし。交換と取り外しには検査範囲の確認を要求し、各コミットへその時のprovider／version／scope／statusを保存する。認証・所有者・競合判定・容量制限は独立して維持。 |
+| 追加検査器 | `lib/sky-code-security.ts`の`CodeSecurityAdapter`にid／label／version／scope／inspectを実装してサーバーに登録する。codeSecurityRegistryは予約ID上書き・重複・未登録選択を拒否し、結果のprovider／version／exact source hash／statusを検証する。ブラウザから任意URLや検査済み結果は登録できない。第三者製品は未接続。外部送信・credential・料金を伴うadapterは送信先・契約・同意と失敗時の期限を追加受入してから組み込む。 |
+| 状態・保存 | `lib/workflow.ts`のsky-code-publicationを通して公開条件確認→review→completedのreceiptを生成。D1の`sky_code_repositories`と追記専用`sky_code_commits`へ本文・hash・検査receipt・WorkJobを同じbatchで保存。completedを返すのはbatch成功時だけ。1所有者20コード、各100コミット。 |
+| 本人性・競合 | 既存requestUserの信頼gateway／device sessionを使用。本人IDを公開応答に含めない。公開履歴は匿名閲覧、更新／非公開は所有者のみ。repository revisionとownerをINSERT／UPDATE条件に含めて競合を拒否し、過去版を更新／削除しない。 |
+| 失敗・復旧 | 同じコミットIDと同じ内容の再送は同じreceipt。異なる内容の同IDは拒否。通信不明時は画面入力を保持し、履歴との照合後に再試行。古いrevisionは最新を開き直す。全履歴の非公開は可逆で、所有者は履歴閲覧・新しいコミットで再公開できる。取得済みの他者の複製を回収したとは表示しない。DB backup／復元は両tableを同一snapshotで扱う。 |
+| 移行・停止 | migration `0060_sky_code_timeline.sql`をWebと同時配備し、未適用の503を成功扱いにしない。巻戻し時はUI/APIを旧版へ戻して追加tableを保存し、履歴を削除しない。既存単体SPIDERは入力非送信・非保存を維持。 |
+| 境界 | コード公開／検査成功は、安全証明、作者の本人認定、Tool実行許可、インストール、課金、OS／Pixel受入ではない。server上でコードを評価・実行しない。第三者が公開した文字列はReact textとして表示する。 |
+| 合格条件・検証 | 所有者分離、匿名閲覧、直接APIの検査迂回拒否、変更後再検査、保護交換／解除と履歴、競合、失敗／再送、非公開と再公開、差分・実画面を受入。`node --experimental-strip-types --test tests/sky-code-timeline.test.mjs`、`npm run verify`（Worker/D1 APIを含む）。production migration／公開gatewayは別readback。 |
+| 未決定 | 大規模repo、Git transport、共同編集／PR、公開コード通報・モデレーション、追加の外部検査製品。実利用量・提供元条件を確認して次の版で決定。未実装を利用可能と表示しない。 |
 
 ## 1. SkyとZemaの役割
 
@@ -769,13 +806,13 @@ GitHub正本は既存の追記式 `drizzle/` migration chainを使用する。CS
 
 正本の受入は同じcompiled Worker・使い捨てD1/R2・合成ユーザーで、既存migrationの適用、支払いsessionの保持、CSV処理・保存・再起動後の成果物取得を確認する。本番D1への適用、公開配備、新規実Stripe/Apple Pay、Pixelの受入は別条件である。
 
-## 全35件の実行範囲と誤表示防止（GitHub統合候補）
+## 全36件の実行範囲と誤表示防止（GitHub統合候補）
 
-Skyの発見・利用条件表示から実行画面への境界を`lib/sky-tool-execution-scope.ts`へ定義する。これは現在の実装範囲であり、利用者の認証・利用権・実Provider・実PCの接続済み判定ではない。35件の内訳はブラウザ処理3、クラウドCSV1、PAPER市場1、本人操作を要する準備・手動管理2（出品準備、AMC）、簡易プラン1、標準ガイド2、PC納品照合1、PC専用台帳1、接続待ち評価1、定型テンプレート11、接続計画9、PC CLIのみ1、別PCアプリ入口1とする。Jev Routerは接続計画関数があっても画面ではCLI条件案内のため、計画9件と別に数える。
+Skyの発見・利用条件表示から実行画面への境界を`lib/sky-tool-execution-scope.ts`へ定義する。これは現在の実装範囲であり、利用者の認証・利用権・実Provider・実PCの接続済み判定ではない。36件の内訳はブラウザ処理4（SPIDERを含む）、クラウドCSV1、PAPER市場1、本人操作を要する準備・手動管理2（出品準備、AMC）、簡易プラン1、標準ガイド2、PC納品照合1、PC専用台帳1、接続待ち評価1、定型テンプレート11、接続計画9、PC CLIのみ1、別PCアプリ入口1とする。Jev Routerは接続計画関数があっても画面ではCLI条件案内のため、計画9件と別に数える。
 
 ホーム・Marketの共通状態表示はPAPER市場を「PAPER検証のみ」、メルカリを「出品準備・本人操作が必要」とし、DB利用不可では両者も実行記録サービス待ちに止める。未知のready Toolを自動的に「今使える」としない。定型候補の説明は自動抽出・検索・AI分析・外部送信を約束しない。入力本文や結果の保存範囲、既存登録・認証・決済条件は変更しない。
 
-候補の出力関数を`lib/sky-candidate-output.ts`へ分離し、21関数の合成入力・空入力拒否・未接続表示を試験する。このうちRouterはUI実行として受け入れない。35件すべての分類と未知ID拒否は`tests/sky-tool-execution-scope.test.mjs`で確認する。接続許可検査は既存`SKY_CONNECTION_TOOLS`の展開後の集合を参照し、CORE_JOB_TOOLSを落とす文字列部分抽出を廃止する。許可項目の追加や利用権発行は行わない。
+候補の出力関数を`lib/sky-candidate-output.ts`へ分離し、21関数の合成入力・空入力拒否・未接続表示を試験する。このうちRouterはUI実行として受け入れない。36件すべての分類と未知ID拒否は`tests/sky-tool-execution-scope.test.mjs`で確認する。接続許可検査は既存`SKY_CONNECTION_TOOLS`の展開後の集合を参照し、CORE_JOB_TOOLSを落とす文字列部分抽出を廃止する。許可項目の追加や利用権発行は行わない。
 
 証拠は`docs/evidence/sky-tool-execution-boundaries.json`に候補のsource hash、実行した試験、未検証を記録する。局所試験の合格を全体verify、実接続、本人公開受入へ転用しない。初回公開判断・公開gate・親taskは未完了。
 

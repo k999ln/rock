@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "reviewedHead": "d448c56cae43ad8ac7c087741ee139f86cf0cb52",
-  "occurrences": 2943,
-  "distinctValues": 162,
+  "reviewedHead": "c7b20bcbdd6dfbea7ada9779c545cef57c22e0d2",
+  "occurrences": 2945,
+  "distinctValues": 163,
   "classifications": {
     "idempotency-fixture": 87,
-    "public-artifact-digest": 55,
+    "public-artifact-digest": 56,
     "public-rfc8032-seed": 1,
     "public-webauthn-authenticator-data": 1,
     "synthetic-rejection-test": 1,
@@ -2279,6 +2279,21 @@
         "line": 32,
         "field": [
           "/signatureResult"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "833a2a5ea7f7806f58baae3dd637069c231c408738c9385993e42628b5754658",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 of tracked lib/sky-code-api.ts, recomputed from its exact source bytes; duplicated in canonical and Sites source inventories, not a credential.",
+      "source": {
+        "commit": "8a81e58046bbaaa043e26fbffc1920c71f1729e7",
+        "path": "docs/evidence/sky-code-timeline.json",
+        "line": 15,
+        "field": [
+          "/canonical/sourceSha256/lib~1sky-code-api.ts",
+          "/siteCandidate/sharedImplementationHashes/lib~1sky-code-api.ts"
         ]
       },
       "exactPathCount": 1
