@@ -2,7 +2,7 @@
 
 # RockstarOS — 事業・設計・進捗
 
-## 2026-10-09 — AMCの固定計画を可変のCodex提案へ接続（AMC06、着手）
+## 2026-10-09 — AMCの固定計画を可変のCodex提案へ接続（AMC06、ローカル計画・見直しの検証完了）
 
 利用者の「AMCが固定されて能力を感じない」という指摘を記録。指定のローカルHTMLは2026-09-27の保存物で、実装は依頼を4部隊7工程へ埋め込むローカルテンプレート、通信なしである。H1 / ROCK、Git / CI / Operationsを主担当として、既存AMC engine・Git調査・Codex認証を再利用したローカル計画画面を実装する。担当Bot・依頼・意図・追加指示から可変の作業と依存を提案し、既存Goalと成果を残して候補を見直せるようにする。
 
@@ -13,6 +13,8 @@ GitHub main `0455499d`、PR #95 head `dd31cc01`を確認。元dirty checkout・�
 実装SHA `9f3d950c` の初回CIはtypecheck通過後、lintの制御文字regexと新規20試験の未await登録で停止。制御文字の拒否条件を文字コード比較へ保ち、既存試験と同じawait登録へ修正して再検証する。実Codexの追加指示は2作業のdraftを返し、既存CLI非変更条件を保持した。
 
 修正SHA `0a3306d9` は全8 check-runs成功。採用後の「この計画を見直す」を追加し、原依頼・意図・Bot・累積指示を復元する。独立検収で旧Sky／requestBriefの原依頼と意図の欠落を再現したため、形式ごとの復元と回帰を追加した。最終対象136試験・独立UI検収58試験合格。実ブラウザでdraft復元・条件の再入力・自動送信なし・旧チャットを閉じた表示を確認した。追補後の同一SHA CIを確認する。
+
+最終実装SHA `083f00f82ffad17e4b724442900c84b4be58c0e4` の全体verify・CodeQL等8 checksがsuccess。AMC06はローカルのGit調査・可変計画・追加指示・旧Goal保持・見直しの範囲でdone。[検証証拠](docs/evidence/amc/adaptive-planner.json)に実モデル、UI、fixture、独立検収、Git SHAを区別して保存した。PR #95へGitHub保存済み、main未統合。次は具体的なGoalの実装・独立検収・Git成果を担当Botで照合する。公開Sky/Zemaのモデル接続、無人常駐、提案した任務の完走は今回の合格に含めない。
 
 ## 2026-10-09 — 既存AMC JSONを担当Botへ直接渡す（AMC05、入力接続の検証完了）
 
@@ -2577,7 +2579,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 111/383件（親32・子192・独立159。実行単位は親を除く351件）
+最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 112/383件（親32・子192・独立159。実行単位は親を除く351件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -2963,7 +2965,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | AMC03 | 機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する | 完了 | [記録](data/amc/project-bots.json) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bots.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bots.json) |
 | AMC04 | 担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する | 完了 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-amc.json) |
 | AMC05 | 既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ | 完了 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-goal-input.json) |
-| AMC06 | 固定テンプレートを補助へ分け、Gitを読むCodexの可変計画と追加指示による見直しをAMCへ接続する | 進行中 | [記録](scripts/amc-planner.mjs) · [記録](scripts/templates/amc-goal-workbench.html) · [記録](scripts/templates/amc-goal-workbench.js) · [記録](scripts/amc-goal-engine.mjs) · [記録](tests/amc-adaptive-brief.test.mjs) · [記録](docs/amc-goal-orchestrator.md) |
+| AMC06 | 固定テンプレートを補助へ分け、Gitを読むCodexの可変計画と追加指示による見直しをAMCへ接続する | 完了 | [記録](scripts/amc-planner.mjs) · [記録](scripts/templates/amc-goal-workbench.html) · [記録](scripts/templates/amc-goal-workbench.js) · [記録](scripts/amc-goal-engine.mjs) · [記録](tests/amc-adaptive-brief.test.mjs) · [記録](docs/amc-goal-orchestrator.md) · [記録](docs/evidence/amc/adaptive-planner.json) |
 
 段階ゲート（作業全体の完了とは別判定）
 

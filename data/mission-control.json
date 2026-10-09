@@ -12565,22 +12565,33 @@
           "id": "AMC06-AC1",
           "criterion": "異なる依頼に異なる具体task・担当・依存・成果・検証を提案し、固定7工程へ置換しない",
           "verification": "可変件数の試験と実Codex計画出力",
-          "status": "not_verified",
-          "evidence": []
+          "status": "passed",
+          "evidence": [
+            "docs/evidence/amc/adaptive-planner.json",
+            "tests/amc-planner.test.mjs"
+          ]
         },
         {
           "id": "AMC06-AC2",
           "criterion": "既存Goalを保持し、提案の生成や採用で承認・実行・検収を捏造しない",
           "verification": "状態・原本・再計画・遅延応答の試験",
-          "status": "not_verified",
-          "evidence": []
+          "status": "passed",
+          "evidence": [
+            "docs/evidence/amc/adaptive-planner.json",
+            "tests/amc-adaptive-brief.test.mjs",
+            "tests/amc-goal-cli.test.mjs"
+          ]
         },
         {
           "id": "AMC06-AC3",
           "criterion": "localhost/token/Origin/同意/容量/停止を検証し、失敗を固定案成功へ置換しない",
           "verification": "HTTP/起動stub、UI、独立検収",
-          "status": "not_verified",
-          "evidence": []
+          "status": "passed",
+          "evidence": [
+            "docs/evidence/amc/adaptive-planner.json",
+            "tests/amc-planner.test.mjs",
+            "tests/amc-goal-cli.test.mjs"
+          ]
         }
       ],
       "primaryOwner": "ROCK",

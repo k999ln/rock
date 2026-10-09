@@ -5131,7 +5131,7 @@
     {
       "id": "AMC06",
       "title": "固定テンプレートを補助へ分け、Gitを読むCodexの可変計画と追加指示による見直しをAMCへ接続する",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "AMC05"
       ],
@@ -5141,9 +5141,10 @@
         "scripts/templates/amc-goal-workbench.js",
         "scripts/amc-goal-engine.mjs",
         "tests/amc-adaptive-brief.test.mjs",
-        "docs/amc-goal-orchestrator.md"
+        "docs/amc-goal-orchestrator.md",
+        "docs/evidence/amc/adaptive-planner.json"
       ],
-      "nextAction": "可変計画・UI・旧Goal保持の対象132試験と独立検収pass。実CodexによるGit調査と3作業のdraft生成を確認。追加指示での実再計画と同一実装SHAのCIを照合する。"
+      "nextAction": "ローカルの可変計画・追加指示・旧Goal保持・見直し導線を検証済み。対象136試験、実Codexの3→2作業再計画、独立検収、実装SHA 083f00f8の全体verify／CodeQL等8 checks成功。PR #95へ保存。次は具体的なGoalを担当Botへ渡し実装・独立検収・Git成果を照合する。公開Sky/Zema接続・main統合・無人常駐は別受入。"
     }
   ],
   "phaseGates": [

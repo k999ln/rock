@@ -14,6 +14,8 @@ H1 / AMC02。依頼からGoalと意図を確認し、部隊案・準備工程・
 
 合格条件: 異なる作業数・分岐依存、参照とholdの維持、同意前未起動、接続元拒否、停止・失敗、旧Goalと履歴の保持、遅延応答による置換の拒否、実Codexでの具体的提案を照合する。計画の質と実装成果の完走は別に検証する。`node --test tests/amc-planner.test.mjs tests/amc-adaptive-brief.test.mjs tests/amc-goal-cli.test.mjs` と `npm run verify` を使う。
 
+検証結果: 対象136試験、実Codexの3作業生成→追加指示で2作業へ見直し、ブラウザでdraft採用・復元・再見直し、独立検収、実装SHA `083f00f8` の全8 CIを確認。[要約証拠](evidence/amc/adaptive-planner.json)。
+
 ## Sky／Zema統合版の使い方
 
 Tool IDは`rockstar-amc`。SkyでAMCの「今すぐ使う」を押すとZemaを開く。依頼を書いて送ると、専用の埋込みカードへ原文を引き継ぎ、そのままGoalと意図を確認できる。独立画面はWebアプリの`/amc`からも開ける。iframeで古いHTMLを表示するのではなく、既存のWeb仕事契約へ接続した画面である。独立画面の初期の「部隊・進捗」では正本5師団32部隊のGoal・段階・残課題・手順・条件を参照する。ここから正本の進捗を変更することはない。
