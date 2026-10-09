@@ -30,7 +30,28 @@ export function loadGoalSources() {
   };
 }
 
-export function renderGoalWorkbench(sources = loadGoalSources()) {
+export function renderGoalWorkbench(
+  sources = loadGoalSources(),
+  { plannerSession = null } = {},
+) {
+  if (
+    plannerSession &&
+    (plannerSession.endpoint !== '/api/plan' ||
+      typeof plannerSession.token !== 'string' ||
+      !/^[A-Za-z0-9_-]{24,256}$/.test(plannerSession.token))
+  )
+    throw new Error(
+      'Planner session requires a same-origin endpoint and a session token',
+    );
+  const planner = plannerSession
+    ? {
+        endpoint: plannerSession.endpoint,
+        token: plannerSession.token,
+        bots: readJSON(resolve(root, 'data/amc/project-bots.json')).bots.map(
+          ({ id, name, purpose }) => ({ id, name, purpose }),
+        ),
+      }
+    : null;
   const template = readFileSync(
     resolve(root, 'scripts/templates/amc-goal-workbench.html'),
     'utf8',
@@ -38,13 +59,15 @@ export function renderGoalWorkbench(sources = loadGoalSources()) {
   const engine = readFileSync(
     resolve(root, 'scripts/amc-goal-engine.mjs'),
     'utf8',
-  ).replace(
-    "import { requireSkyAuthority } from './amc-sky-authority.mjs';",
-    `function requireSkyAuthority(goal, event) {
+  )
+    .replace(
+      "import { requireSkyAuthority } from './amc-sky-authority.mjs';",
+      `function requireSkyAuthority(goal, event) {
       if (goal.skyBrief && ${JSON.stringify([...protectedSkyEvents])}.includes(event.type))
         throw new Error('Offline workbench cannot authorize Sky execution or acceptance');
     }`,
-  ).replace(/^export (?=(?:function|const|class)\s)/gm, '');
+    )
+    .replace(/^export (?=(?:function|const|class)\s)/gm, '');
   if (/^import\s|^export\s/m.test(engine))
     throw new Error(
       'Goal engine must remain standalone and browser-compatible',
@@ -64,11 +87,15 @@ export function renderGoalWorkbench(sources = loadGoalSources()) {
       return code;
     })
     .join('\n');
-  const json = JSON.stringify(sources)
+  const json = JSON.stringify({ ...sources, plannerSession: planner })
     .replaceAll('<', '\\u003c')
     .replaceAll('\u2028', '\\u2028')
     .replaceAll('\u2029', '\\u2029');
   return template
+    .replace(
+      "connect-src 'none'",
+      planner ? "connect-src 'self'" : "connect-src 'none'",
+    )
     .replace('__AMC_BOARD__', () =>
       renderVisualization(sources.mission, sources.project).replace(
         '<div id="amc-task-dashboard">',

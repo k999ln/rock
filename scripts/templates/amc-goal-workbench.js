@@ -1,6 +1,7 @@
 const wbSources = JSON.parse(
   document.getElementById('goal-sources').textContent,
 );
+const wbPlannerSession = wbSources.plannerSession ?? null;
 const wbEl = (id) => document.getElementById(id);
 const wbEscape = (value) =>
   String(value ?? '').replace(
@@ -34,7 +35,11 @@ let wbChatComposing = false;
 let wbSimpleMode = null;
 let wbSimpleRequest = '';
 let wbSimpleComposing = false;
-let wbSurface = 'board';
+let wbSurface = wbPlannerSession ? 'request' : 'board';
+let wbPlannerCandidate = null;
+let wbPlannerPending = null;
+let wbPlannerBackupRaw = null;
+let wbPlannerLastRequest = null;
 const wbNames = {
   draft: '計画案・レビュー待ち',
   active: '計画承認済み',
@@ -1252,6 +1257,7 @@ for (const view of ['request', 'plan', 'progress'])
   wbOn('nav-' + view, 'click', () => wbShowView(view));
 wbOn('new-goal', 'click', () => {
   const hasBriefDraft =
+    Boolean(wbPlannerCandidate || wbPlannerPending) ||
     wbSimpleMode === 'review' ||
     ((!wbGoal || wbSimpleMode === 'home') &&
       Boolean(wbEl('simple-request').value.trim()));
@@ -1265,6 +1271,13 @@ wbOn('new-goal', 'click', () => {
     )
   )
     return;
+  wbCancelPlanner();
+  wbPlannerCandidate = null;
+  wbPlannerLastRequest = null;
+  wbPlannerBackupRaw = null;
+  wbEl('planner-feedback').value = '';
+  wbEl('planner-intent').value = '';
+  wbRenderPlanner();
   wbEl('instruction').value = '';
   wbChoose([]);
   wbEl('team-picker').hidden = true;
@@ -1641,9 +1654,11 @@ function wbRenderSimple() {
   const effort = estimateGoalEffort(wbGoal);
   const allTasksDone = wbGoal.tasks.every((task) => task.status === 'done');
   wbEl('simple-goal-title').textContent = wbGoal.instruction;
-  wbEl('simple-intent-label').textContent = wbGoal.requestBrief
-    ? '意図：' + wbGoal.requestBrief.intent
-    : '既存の計画を表示しています。範囲と条件は詳細から確認できます。';
+  wbEl('simple-intent-label').textContent = wbGoal.adaptiveBrief
+    ? '意図：' + wbGoal.adaptiveBrief.intent
+    : wbGoal.requestBrief
+      ? '意図：' + wbGoal.requestBrief.intent
+      : '既存の計画を表示しています。範囲と条件は詳細から確認できます。';
   const state =
     wbGoal.state === 'accepted'
       ? 'Goal検収済み（保存された記録）'
@@ -1783,6 +1798,10 @@ wbOn('simple-example', 'click', () => {
 function wbSimpleRequestSubmit(event) {
   event.preventDefault();
   if (event.isComposing || wbSimpleComposing) return;
+  if (wbPlannerSession) return wbPlanRequest(false);
+  return wbOpenTemplate();
+}
+function wbOpenTemplate() {
   const request = wbEl('simple-request').value.trim();
   const error = requestPlanSupport(request);
   if (error) throw new Error(error);
@@ -1812,7 +1831,7 @@ wbOn('simple-request', 'keydown', (event) => {
   ) {
     event.preventDefault();
     if (!event.isComposing && event.keyCode !== 229 && !wbSimpleComposing)
-      wbSimpleRequestSubmit(event);
+      return wbSimpleRequestSubmit(event);
   }
 });
 for (const id of ['simple-goal', 'simple-intent'])
@@ -1908,6 +1927,400 @@ wbOn('simple-handoff', 'click', () => {
 wbOn('simple-details', 'click', () => {
   wbShowView(wbGoal?.state === 'draft' ? 'plan' : 'progress');
 });
+// Planning starts only after the user selects the disclosed sharing option.
+// Responses remain separate drafts; this client cannot execute work.
+function wbPlannerSnapshot() {
+  return JSON.stringify({
+    goal: wbGoal,
+    unreadable: wbUnreadableRaw,
+    stored: wbStoredRaw,
+  });
+}
+function wbPlannerInput() {
+  return {
+    request: wbEl('simple-request').value.trim(),
+    intent: wbEl('planner-intent').value.trim(),
+    botId: wbEl('planner-bot').value,
+  };
+}
+function wbPlannerSameInput(input) {
+  return JSON.stringify(input) === JSON.stringify(wbPlannerInput());
+}
+function wbPlannerText(value) {
+  return typeof value === 'string'
+    ? value
+    : (value?.question ?? value?.text ?? value?.title ?? '');
+}
+function wbRenderPlanner() {
+  if (!wbPlannerSession) return;
+  const pending = Boolean(wbPlannerPending);
+  for (const id of [
+    'simple-request',
+    'planner-intent',
+    'planner-bot',
+    'planner-share',
+    'simple-request-submit',
+    'planner-feedback',
+    'planner-revise',
+    'planner-fallback',
+  ])
+    wbEl(id).disabled = pending;
+  wbEl('simple-request-form').setAttribute('aria-busy', String(pending));
+  wbEl('planner-cancel').hidden = !pending;
+  wbEl('planner-retry').hidden = pending || !wbPlannerLastRequest;
+  wbEl('planner-candidate').hidden = !wbPlannerCandidate;
+  wbEl('planner-backup').hidden =
+    !wbPlannerCandidate?.goal || !(wbGoal || wbUnreadableRaw);
+  wbEl('planner-adopt').disabled =
+    pending ||
+    !wbPlannerCandidate?.goal ||
+    wbPlannerCandidate.base !== wbPlannerSnapshot() ||
+    !wbPlannerSameInput(wbPlannerCandidate.input);
+  if (!wbPlannerCandidate) return;
+  const { goal, proposal, context } = wbPlannerCandidate;
+  wbEl('planner-candidate-title').textContent = goal
+    ? goal.tasks.length + '件の作業を提案'
+    : '計画する前に確認したいこと';
+  wbEl('planner-summary').textContent =
+    proposal.summary ?? goal?.instruction ?? '';
+  wbEl('planner-context').textContent =
+    'Git基準: main ' +
+    (context.mainSha ?? '未確認') +
+    ' / local ' +
+    (context.localHead ?? '未確認') +
+    ' · ' +
+    (context.collectedAt ?? '') +
+    ' · ' +
+    context.botId +
+    '。候補は未承認です。';
+  const questions = proposal.questions ?? [],
+    assumptions = proposal.assumptions ?? [];
+  wbEl('planner-questions').innerHTML = questions.length
+    ? '<h3>確認したいこと</h3>' + wbList(questions.map(wbPlannerText))
+    : '';
+  wbEl('planner-assumptions').innerHTML = assumptions.length
+    ? '<h3>この案の前提</h3>' + wbList(assumptions.map(wbPlannerText))
+    : '';
+  wbEl('planner-tasks').innerHTML = (goal?.tasks ?? [])
+    .map(
+      (task) =>
+        '<article><h3>' +
+        wbEscape(task.id + ' · ' + task.title) +
+        '</h3><p class="small">担当: ' +
+        wbEscape(
+          goal.squads.find((squad) => squad.id === task.squadId)?.name ??
+            task.squadId,
+        ) +
+        '<br>' +
+        wbEscape(
+          task.dependsOn.length
+            ? '先に必要: ' + task.dependsOn.join(', ')
+            : '依存作業なし',
+        ) +
+        '</p><h4>進め方</h4>' +
+        wbList(task.steps.map((step) => step.action)) +
+        '<h4>成果物</h4>' +
+        wbList(
+          task.deliverables.map((item) => item.path + ' — ' + item.description),
+        ) +
+        '<h4>合格条件</h4>' +
+        wbList(
+          task.acceptanceCriteria.map(
+            (item) =>
+              item.criterion +
+              (item.verification ? ' / 確認: ' + item.verification : ''),
+          ),
+        ) +
+        '</article>',
+    )
+    .join('');
+}
+function wbCancelPlanner() {
+  if (!wbPlannerPending) return;
+  const pending = wbPlannerPending;
+  wbPlannerPending = null;
+  pending.controller.abort();
+  wbRenderPlanner();
+  wbEl('planner-status').textContent =
+    '計画の取得を中止しました。保存中のGoalは変更していません。';
+}
+function wbPlannerInputChanged() {
+  if (
+    !wbPlannerSession ||
+    !wbPlannerCandidate ||
+    wbPlannerSameInput(wbPlannerCandidate.input)
+  )
+    return;
+  wbCancelPlanner();
+  wbPlannerCandidate = null;
+  wbPlannerLastRequest = null;
+  wbPlannerBackupRaw = null;
+  wbEl('planner-feedback').value = '';
+  wbEl('planner-status').textContent =
+    '依頼・意図・担当が変わりました。最新の入力から計画し直してください。';
+  wbRenderPlanner();
+}
+async function wbPlanRequest(revise) {
+  if (!wbPlannerSession || wbPlannerPending) return;
+  if (
+    globalThis.location?.protocol !== 'http:' ||
+    globalThis.location?.hostname !== '127.0.0.1' ||
+    wbPlannerSession.endpoint !== '/api/plan'
+  )
+    throw new Error('この端末で起動したAMC接続版から操作してください。');
+  if (!wbEl('planner-share').checked)
+    throw new Error('モデルへ渡す内容を確認し、共有の項目を選択してください。');
+  const input = wbPlannerInput();
+  if (
+    !input.request ||
+    input.request.length > 8000 ||
+    input.intent.length > 2000
+  )
+    throw new Error('依頼を8000字以内、意図を2000字以内で入力してください。');
+  if (!wbPlannerSession.bots.some((bot) => bot.id === input.botId))
+    throw new Error('担当Botを選んでください。');
+  let feedback =
+    wbPlannerCandidate && wbPlannerSameInput(wbPlannerCandidate.input)
+      ? wbPlannerCandidate.feedback
+      : '';
+  if (revise) {
+    if (!wbPlannerCandidate || !wbPlannerSameInput(wbPlannerCandidate.input))
+      throw new Error('変更後の依頼から新しい計画候補を作成してください。');
+    const addition = wbEl('planner-feedback').value.trim();
+    if (!addition)
+      throw new Error('変更したい点や質問への回答を入力してください。');
+    feedback = [wbPlannerCandidate.feedback, addition]
+      .filter(Boolean)
+      .join('\n\n追加の指示:\n');
+    if (!wbPlannerCandidate.goal)
+      feedback +=
+        '\n\n前の計画案: ' +
+        wbPlannerCandidate.proposal.summary +
+        '\n確認事項: ' +
+        (wbPlannerCandidate.proposal.questions ?? [])
+          .map(wbPlannerText)
+          .join('\n');
+    if (feedback.length > 8000)
+      throw new Error(
+        'これまでの追加指示が8000字を超えます。条件を整理して新しい依頼へまとめてください。',
+      );
+  }
+  wbCheckConcurrentSave();
+  const previous =
+    (wbPlannerCandidate && wbPlannerSameInput(wbPlannerCandidate.input)
+      ? wbPlannerCandidate.goal
+      : null) ?? wbGoal;
+  const body = {
+    ...input,
+    feedback,
+    allowCodexUpload: true,
+    previousGoal: previous
+      ? {
+          id: previous.id,
+          revision: previous.revision,
+          instruction: previous.instruction,
+          tasks: previous.tasks.map(({ id, title, status, dependsOn }) => ({
+            id,
+            title,
+            status,
+            dependsOn,
+          })),
+        }
+      : null,
+  };
+  const pending = {
+    controller: new AbortController(),
+    base: wbPlannerSnapshot(),
+    input,
+  };
+  wbPlannerPending = pending;
+  wbPlannerLastRequest = { revise };
+  wbRenderPlanner();
+  wbEl('planner-status').textContent =
+    'Gitの現状と対象ファイルを調べ、依頼に合う作業を考えています…';
+  wbEl('error').textContent = '';
+  try {
+    const response = await fetch(wbPlannerSession.endpoint, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-amc-session': wbPlannerSession.token,
+      },
+      body: JSON.stringify(body),
+      signal: pending.controller.signal,
+      credentials: 'same-origin',
+    });
+    const result = await response.json();
+    if (wbPlannerPending !== pending) return;
+    if (!response.ok)
+      throw new Error(
+        typeof result.error === 'string'
+          ? result.error
+          : (result.error?.message ??
+              '計画を取得できませんでした。接続を確認して再試行してください。'),
+      );
+    wbCheckConcurrentSave();
+    if (pending.base !== wbPlannerSnapshot() || !wbPlannerSameInput(input))
+      throw new Error(
+        '取得中にGoalまたは依頼が変わったため、この応答は適用しません。最新の状態で再計画してください。',
+      );
+    if (
+      !result.proposal ||
+      typeof result.proposal.summary !== 'string' ||
+      !Array.isArray(result.proposal.questions) ||
+      !Array.isArray(result.proposal.assumptions) ||
+      !result.context ||
+      result.context.botId !== input.botId
+    )
+      throw new Error(
+        '計画応答の形式が不正です。保存中のGoalは変更していません。',
+      );
+    if (result.goal !== null) {
+      wbValidate(result.goal);
+      if (
+        result.goal.state !== 'draft' ||
+        result.goal.revision !== 0 ||
+        result.goal.approval ||
+        result.goal.eventLog.length ||
+        result.goal.tasks.some(
+          (task) =>
+            task.status !== 'pending' ||
+            task.execution ||
+            task.review ||
+            task.result ||
+            task.startedBy ||
+            task.evidence.length ||
+            task.attempts.length,
+        ) ||
+        result.goal.id === wbGoal?.id
+      )
+        throw new Error('応答は独立した未承認の計画案である必要があります。');
+    }
+    wbPlannerCandidate = { ...result, base: pending.base, input, feedback };
+    wbPlannerLastRequest = null;
+    wbPlannerBackupRaw = null;
+    wbEl('planner-feedback').value = '';
+    wbEl('planner-status').textContent = result.goal
+      ? '依頼に合わせた計画候補ができました。内容を直すか、未承認の計画案として採用できます。'
+      : '回答が必要な点があります。下の欄で答えると、計画を続けます。';
+    wbEl('planner-candidate-title').focus();
+  } catch (error) {
+    if (wbPlannerPending !== pending) return;
+    wbEl('planner-status').textContent =
+      error?.name === 'AbortError'
+        ? '計画の取得を中止しました。'
+        : '計画を取得できませんでした。' + (error?.message ?? String(error));
+  } finally {
+    if (wbPlannerPending === pending) {
+      wbPlannerPending = null;
+      wbRenderPlanner();
+    }
+  }
+}
+wbOn('planner-cancel', 'click', wbCancelPlanner);
+wbOn('planner-retry', 'click', () =>
+  wbPlanRequest(wbPlannerLastRequest?.revise ?? false),
+);
+wbOn('planner-revise', 'click', () => wbPlanRequest(true));
+wbOn('planner-fallback', 'click', wbOpenTemplate);
+for (const id of ['simple-request', 'planner-intent', 'planner-bot'])
+  wbOn(id, id === 'planner-bot' ? 'change' : 'input', wbPlannerInputChanged);
+wbOn('planner-backup', 'click', () => {
+  wbCheckConcurrentSave();
+  if (wbGoal) wbSaveGoal();
+  else if (wbUnreadableRaw)
+    wbDownload(
+      wbUnreadableRaw,
+      'amc-goal-unreadable-backup.txt',
+      'text/plain;charset=utf-8',
+    );
+  wbPlannerBackupRaw = wbPlannerSnapshot();
+  wbNotice(
+    '現在のGoalのバックアップを要求しました。保存されたファイルを確認してから候補を採用してください。',
+  );
+});
+wbOn('planner-adopt', 'click', () => {
+  const candidate = wbPlannerCandidate;
+  if (!candidate?.goal || wbPlannerPending) return;
+  wbCheckConcurrentSave();
+  if (
+    candidate.base !== wbPlannerSnapshot() ||
+    !wbPlannerSameInput(candidate.input)
+  )
+    throw new Error(
+      '候補の作成後にGoalまたは依頼が変わりました。最新の状態で再計画してください。',
+    );
+  if (wbGoal || wbUnreadableRaw) {
+    if (wbPlannerBackupRaw !== wbPlannerSnapshot())
+      throw new Error(
+        '保存中のGoalを先にバックアップしてください。候補と既存の成果は別に保持されています。',
+      );
+    if (
+      !window.confirm(
+        'バックアップが保存されたことを確認しましたか？現在のGoal表示をこの未承認の計画案へ切り替えます。以前の成果は候補へ移しません。',
+      )
+    )
+      return;
+  }
+  wbCheckConcurrentSave();
+  wbGoal = wbValidate(JSON.parse(JSON.stringify(candidate.goal)));
+  wbUnreadableRaw = null;
+  wbEl('save-unreadable').hidden = true;
+  wbSelectedTask = '';
+  wbSimpleMode = null;
+  wbSurface = 'request';
+  wbView = 'plan';
+  wbEl('instruction').value = wbGoal.instruction;
+  wbEl('coverage').value =
+    wbGoal.adaptiveBrief?.proposalSummary ?? wbGoal.coverageStatement ?? '';
+  wbEl('goal-criteria').value = (wbGoal.overallAcceptance.criteria ?? [])
+    .map((item) => item.criterion)
+    .join('\n');
+  wbEl('parallel').value = String(wbGoal.maxParallel);
+  wbEl('task-filter').value = 'all';
+  wbEl('record-section').open = false;
+  wbClearResultForm();
+  wbPersist();
+  wbPlannerCandidate = null;
+  wbPlannerBackupRaw = null;
+  wbRenderPlanner();
+  wbRender();
+  wbChat = wbChatFresh();
+  wbChatAdd(
+    'guide',
+    'Git調査に基づく未承認の計画案を採用しました。対象範囲と合格条件を確認してから計画を承認してください。',
+  );
+  wbChatCommit();
+  wbShowView('plan');
+  wbNotice(
+    '計画案として保存しました。承認・作業の開始・成果の検収は行っていません。',
+  );
+});
+if (wbPlannerSession) {
+  wbEl('edition-label').textContent = 'Codex接続版';
+  wbEl('request-heading').textContent = 'やりたいことから、仕事を組み立てる。';
+  wbEl('request-subheading').textContent =
+    '担当BotがGitを読み、必要な部隊・作業・順番を考えます。途中で考えが変わっても、ここから計画を直せます。';
+  wbEl('planner-options').hidden = false;
+  wbEl('planner-workspace').hidden = false;
+  wbEl('planner-bot').innerHTML = wbPlannerSession.bots
+    .map(
+      (bot) =>
+        '<option value="' +
+        wbEscape(bot.id) +
+        '"' +
+        (bot.id === 'operations' ? ' selected' : '') +
+        '>' +
+        wbEscape(bot.name + ' — ' + bot.purpose) +
+        '</option>',
+    )
+    .join('');
+  wbEl('simple-request-submit').textContent = 'Gitを調べて計画する';
+  wbEl('simple-request-help').textContent =
+    '依頼・意図・追加指示・現在のGoalの作業要約・対象Git情報を、この端末のCodex CLIで設定されたモデルへ渡して調べます。秘密は入力しないでください。ここでは計画だけを作り、実装・公開は開始しません。';
+  wbRenderPlanner();
+}
+
 try {
   const raw = localStorage.getItem(wbStorageKey);
   wbStoredRaw = raw;

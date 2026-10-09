@@ -326,6 +326,17 @@
         "design": "docs/sky-tools-complete-design.md",
         "scope": "local_owner_managed_workspace_identity_checked_descriptor_read",
         "authority": "does_not_add_remote_auth_or_worker_acceptance"
+      },
+      "localAdaptivePlanner": {
+        "taskId": "AMC06",
+        "scope": "explicit_loopback_developer_workbench_only_not_hosted_Sky_Zema",
+        "source": "scripts/amc-planner.mjs",
+        "design": "docs/sky-tools-complete-design.md",
+        "state": "implementation_in_progress",
+        "model": "existing_Codex_auth_and_config_read_only",
+        "result": "unapproved_variable_task_draft_with_Git_provenance",
+        "feedback": "separate_candidate_preserving_previous_Goal",
+        "executionAuthority": "none_from_planner_output"
       }
     },
     {

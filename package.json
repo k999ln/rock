@@ -86,7 +86,8 @@
     "work:check": "node scripts/workspaces.mjs --check",
     "bot": "node scripts/project-bots.mjs",
     "bot:update": "node scripts/project-bots.mjs --write",
-    "bot:check": "node scripts/project-bots.mjs --check"
+    "bot:check": "node scripts/project-bots.mjs --check",
+    "amc:workbench": "node scripts/amc-planner.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

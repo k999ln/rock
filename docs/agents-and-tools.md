@@ -777,7 +777,11 @@ AMCをCodexから使うための役割定義です。正本は [`data/amc/agent-
 
 正本は [`data/amc/project-bots.json`](../data/amc/project-bots.json)。Sky、Zema、Wallet、RockstarOS、Game、Security、avocadoMini、avokadoPro、rocketstar、Operationsを依頼窓口とし、32部隊のtaskAssignmentsを維持する。`npm run bot -- run sky --goal '…'` はGitHubと担当コードの履歴・task資料を収集してからCodexを起動する。Botが対象コードを読み、既存taskを選択／新規taskを具体化し、既存engineのAMC計画→任務遂行→別担当の検収→Git commit／PR→AMC結果記録を進める。計画作成だけで稼働・検収済みにはしない。`run/prepare <bot> --goal-file <AMC JSON>` は既存Goalを保持したコピーとengine生成の指示書を渡す。入力state・承認記録を新しい実行実績や権限へ変換しない。[利用・復旧・検証](../toolkits/amc-agent/README.md#プロジェクト別bot)。開発用の入口で、Sky catalog Toolの実行権限やWeb保存先は変更しない。
 
-### 8.4 新しい依頼に使う4役割・7工程
+#### Gitを読むローカル計画画面
+
+`npm run amc:workbench`で開くCodex接続版では、担当Bot・依頼・意図と最新Gitから作業数、依存、成果物、検証方法を提案する。追加指示で候補を組み直し、元Goalの履歴を残して未承認draftとして採用する。ローカルの計画生成までを接続し、実装は既存Bot入口へGoal JSONを渡す。[使い方](../toolkits/amc-agent/README.md#gitを読んで計画を組み立てる画面)。
+
+### 8.4 Sky／Zemaの共通準備テンプレート
 
 SkyのTool `rockstar-amc` で新規の依頼を保存すると、**設計・実装・検証・統括** の4役割と7工程の共通テンプレートに置かれます。保存しても7工程はすべて `pending` で、AIや作業processは動きません。これは依頼の意味を理解して分解した結果ではなく、共通の準備計画です。
 

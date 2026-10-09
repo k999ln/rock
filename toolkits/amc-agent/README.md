@@ -16,6 +16,18 @@ CLI起動は既存のCodex CLIの認証・モデル・権限・承認設定を�
 
 実行前の確認だけなら `--preview` を付ける。`npm run amc:agent -- describe` は役割を表示し、モデルを呼ばない。
 
+## Gitを読んで計画を組み立てる画面
+
+```sh
+npm run amc:workbench
+```
+
+表示されたURLをこのPCのブラウザで開く。担当Bot、依頼、任意の意図を入力し、モデルへ渡す範囲を確認して「Gitを調べて計画する」を押す。既存のCodex CLIとGitHub認証を使う。依頼とGitの現状から作業数・担当・依存・成果物・検証を提案し、「先にSkyだけ」「2作業にまとめて」などの追加指示で考え直せる。
+
+候補を採用すると未承認のGoalになる。進行中のGoalを置き換える時は元の記録をバックアップし、採用と承認を分ける。保存したGoal JSONは下記の`--goal-file`で担当Botへ渡せる。計画画面の停止は起動したターミナルでCtrl+C。再起動時は新しく表示されるURLを使う。単体HTMLのオフライン版と公開Sky/Zema版には、このローカルモデル接続は含まれない。
+
+調査はread-only、記録はGit管理外の`work/amc-planner/`。計画結果だけで実装済み・検収済みにはしない。[入力・保存・失敗・復旧の詳細](../../docs/amc-goal-orchestrator.md#ローカルamcで依頼に合わせて計画するamc06)。
+
 ## 定義とインストール
 
 正本は `data/amc/agent-definitions.json`。`npm run amc:agent -- install` で当該repositoryの `.codex/agents/` に3個のTOMLを生成する。別のワークスペースに置く場合は `--project /absolute/workspace` を明示する。既存の異なる定義やsymlinkは上書きしない。モデル、global config、認証情報、利用者の他エージェントは変更しない。

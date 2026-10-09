@@ -2,6 +2,18 @@
 
 H1 / AMC02。依頼からGoalと意図を確認し、部隊案・準備工程・仮工数・Goal用指示文・進捗台帳を作る。既存standalone HTML／CLIを保持し、Skyの第一者ToolとZema内の専用画面にも接続する。Web版は本人認証と既存D1を使い、WebからAIを直接起動しない。ローカルCodex CLIの明示的な一件実行は別入口で、新しいWorker・DB・model・常駐executorは追加しない。
 
+## ローカルAMCで依頼に合わせて計画する（AMC06）
+
+`npm run amc:workbench` を実行すると、そのプロセスだけが127.0.0.1の画面を提供する。表示されたURLで担当Botと依頼を選び、送信する内容を確認して「Gitを調べて計画する」を押す。既存Codexの認証・モデル設定を使い、GitHub main／作業branch／PR／CIと担当コードを読んで、作業数・担当・依存・成果物・検証方法を具体化する。追加指示で候補を見直す。旧4部隊7工程は通信しない補助テンプレートとして残す。
+
+入出力: 依頼、任意の意図、累積した追加指示、担当Bot、既存Goalの要約と最新Git資料を使う。出力は専用proposal schemaを検査し、既存compileGoalから作る未承認draft、質問、仮定、Git基準。未知の参照・循環・不正path・完了や承認を偽る出力は拒否する。モデルはread-onlyで調査し、計画生成から実装・公開・課金へ進まない。
+
+保存・復旧: 元Goalと進捗を候補で上書きしない。修正案は別IDのdraftで、adaptiveBriefに元の依頼・意図・追加指示・Git SHA・再計画元ID/版を持つ。採用と既存の計画承認は別操作。生成物と失敗の記録はGit管理外のwork/amc-plannerに残す。再起動は新しいsessionで行い、失敗・停止の要求を自動再送しない。原稿・GoalのrawデータはGitへ入れない。
+
+責任・境界: ROCKは入力検証、同一origin/token/Host、上限と停止、Goal変換を担当。Codex/GitHubの認証・モデル利用は既存環境、送信と計画採用は本人の明示操作。localhost画面は公開Sky/Zemaとは別で、CSPのoffline版は通信なしのまま。常駐サービス・自動実装・元Goalの正式受入は追加しない。未決の具体的な依頼には質問を返し、失敗時に固定テンプレートをAI結果と偽らない。
+
+合格条件: 異なる作業数・分岐依存、参照とholdの維持、同意前未起動、接続元拒否、停止・失敗、旧Goalと履歴の保持、遅延応答による置換の拒否、実Codexでの具体的提案を照合する。計画の質と実装成果の完走は別に検証する。`node --test tests/amc-planner.test.mjs tests/amc-adaptive-brief.test.mjs tests/amc-goal-cli.test.mjs` と `npm run verify` を使う。
+
 ## Sky／Zema統合版の使い方
 
 Tool IDは`rockstar-amc`。SkyでAMCの「今すぐ使う」を押すとZemaを開く。依頼を書いて送ると、専用の埋込みカードへ原文を引き継ぎ、そのままGoalと意図を確認できる。独立画面はWebアプリの`/amc`からも開ける。iframeで古いHTMLを表示するのではなく、既存のWeb仕事契約へ接続した画面である。独立画面の初期の「部隊・進捗」では正本5師団32部隊のGoal・段階・残課題・手順・条件を参照する。ここから正本の進捗を変更することはない。
@@ -95,7 +107,7 @@ AMC正本は[data/mission-control.json](../data/mission-control.json)と[data/pr
 - 実装済み：同じ成果物pathへの並列着手防止。検収待ちもlockを保持。親子を実行件数へ二重加算しない。
 - 今回追加：Sky Tool `rockstar-amc`、`/amc`とZemaの専用カード、認証済み本人別のD1保存・再開、手動記録、競合拒否、Goal JSON import/export。全体回帰・実ブラウザ受入の結果は上記の今回状態と区別する。
 - 今回追加：ローカルCodex CLIでAMCの着手可能task一件を実行し、報告をAMCの`submitted`または停止・失敗のGoal JSONへ保存する入口。mockで正常・不確実結果を検査する。Webの元記録への自動同期や独立検収は含めない。
-- 未実装：任意の新規指示をLLMで意味分解するplanner、WebからのCodex直接起動・同一記録同期、executorのサーバー常駐、再起動時の実process復旧、独立reviewerの本人認証・署名・監査ログの耐改ざん保護。
+- 公開Sky/Zemaでは未実装：任意の新規指示をLLMで意味分解するplanner、WebからのCodex直接起動・同一記録同期、executorのサーバー常駐、再起動時の実process復旧、独立reviewerの本人認証・署名・監査ログの耐改ざん保護。
 - Goal内の担当名・role・証拠参照は自己申告であり、別担当本人の認証や証拠内容の真正性を保証しない。Web保存ownerの本人認証とは別の問題である。JSONの検査は構造・遷移・参照整合の検査で、実物の成果を検収した代わりにはならない。
 - 料金・公開・契約・実機・飛行・資産移動は別承認。計画承認から権限を増やさない。物理・外部・build・未分類の新規leaf作業はこの第一版では着手不可とし、実行先・権限・資源の接続を待つ。
 - `executionHolds`は子へ継承して安全側に全停止する。現行SKY19の保留では設計整理が許されるが、この第一版では設計子作業も停止する。許可された準備作業と実行禁止範囲を分けるadapterは未実装。

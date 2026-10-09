@@ -229,13 +229,15 @@
     @media(max-width:850px) { #mission-board-view #amc-task-dashboard #amc-divisions { grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px 20px; } #mission-board-view #amc-task-dashboard .viz-tile { min-height:38px; } }
     @media(max-width:620px) { .workspace-tabs { margin:18px 2px 21px; } .workspace-tabs button { min-height:37px; padding:8px 16px; font-size:12px; } #mission-board-view { padding:0 3px; } .board-caption { font-size:11px; margin-bottom:17px; } #mission-board-view #amc-task-dashboard>h2 { font-size:21px; } #mission-board-view #amc-task-dashboard #amc-divisions { gap:13px 16px; } #mission-board-view #amc-task-dashboard #amc-selected-line { font-size:12px; } #mission-board-view #amc-task-dashboard .amc-facts { grid-template-columns:84px minmax(0,1fr); gap:8px 12px; font-size:12px; } #mission-board-view #amc-task-dashboard #amc-unit>.amc-facts>dd:first-of-type { font-size:14px; } #mission-board-view #amc-task-dashboard .form-select { font-size:16px; } #mission-board-view #amc-task-dashboard #amc-task>h3 { font-size:16px; } }
     @media(max-width:420px) { #mission-board-view #amc-task-dashboard .amc-facts { grid-template-columns:1fr; gap:4px; } #mission-board-view #amc-task-dashboard .amc-facts dt { margin-top:7px; font-size:11px; } #mission-board-view #amc-task-dashboard .amc-facts dd { margin:0 0 6px; } }
+    #planner-workspace { margin-top:24px; } #planner-status { margin:15px 0; color:var(--muted); }
+    #planner-tasks { display:grid; gap:12px; margin-top:20px; } #planner-tasks article { padding:18px; border:1px solid var(--line); border-radius:10px; background:var(--soft); } #planner-tasks h3 { margin:0 0 7px; } #planner-tasks h4 { margin:12px 0 4px; font-size:13px; } #planner-tasks ul { margin:5px 0; padding-left:20px; font-size:13px; } #planner-context { overflow-wrap:anywhere; }
     @media(prefers-reduced-motion:no-preference) { button { transition:background-color .15s,border-color .15s; } }
   </style>
 </head>
 <body>
 <main id="goal-app" class="app-shell">
   <header class="app-header">
-    <div class="brand" aria-label="AMC Mission Control"><span class="brand-mark" aria-hidden="true">a</span><div class="brand-name">AMC</div><span class="edition">ローカル版</span></div>
+    <div class="brand" aria-label="AMC Mission Control"><span class="brand-mark" aria-hidden="true">a</span><div class="brand-name">AMC</div><span id="edition-label" class="edition">オフライン版</span></div>
     <div class="header-tools">
       <button id="save-json-top" type="button" class="quiet compact" hidden>記録を保存</button>
       <button id="new-goal" type="button" class="quiet compact">新しい依頼</button>
@@ -253,17 +255,34 @@ __AMC_BOARD__
   </section>
 
   <section id="simple-home" class="simple-view" hidden aria-label="作りたいものを伝える">
-    <div class="simple-heading"><h1>つくりたい、と伝えるだけ。</h1><p>Goalと意図を決めたら、部隊分けと作業の準備はAMCへ。</p></div>
+    <div class="simple-heading"><h1 id="request-heading">依頼を、計画にする。</h1><p id="request-subheading">オフラインでは共通テンプレートを下書きできます。依頼に合わせたGit調査と計画はCodex接続版で行います。</p></div>
     <form id="simple-request-form" class="simple-request-card">
       <label for="simple-request">何を作りたいですか？</label>
       <textarea id="simple-request" rows="5" maxlength="8000" required placeholder="例：AMCを、指示するだけで部隊が動くツールにしたい" aria-describedby="simple-request-help"></textarea>
-      <div class="simple-request-actions"><button id="simple-example" type="button">例を入れてみる</button><button id="simple-request-submit" type="submit" class="primary">計画をつくる <span aria-hidden="true">→</span></button></div>
+      <div id="planner-options" hidden>
+        <label for="planner-bot">担当Bot</label><select id="planner-bot"></select>
+        <label><input id="planner-share" type="checkbox"> 依頼・意図・Goalの要約・対象Gitコードを、この端末のCodexで設定したモデルへ共有して計画する</label>
+        <label for="planner-intent">意図・大切にしたいこと <span class="muted">任意</span></label><textarea id="planner-intent" rows="2" maxlength="2000" placeholder="誰のために、何を変えたい？"></textarea>
+      </div>
+      <div class="simple-request-actions"><button id="simple-example" type="button">例を入れてみる</button><button id="simple-request-submit" type="submit" class="primary">共通テンプレートで下書き <span aria-hidden="true">→</span></button></div>
     </form>
+    <section id="planner-workspace" hidden aria-label="Git調査と計画候補">
+      <div class="actions"><button id="planner-cancel" type="button" hidden>計画の取得を中止</button><button id="planner-retry" type="button" hidden>もう一度調べる</button></div>
+      <p id="planner-status" role="status" aria-live="polite"></p>
+      <section id="planner-candidate" class="simple-review-card" hidden aria-label="未承認の計画候補">
+        <h2 id="planner-candidate-title" tabindex="-1">計画候補</h2><p id="planner-summary"></p><p id="planner-context" class="small"></p>
+        <div id="planner-questions"></div><div id="planner-assumptions"></div><div id="planner-tasks"></div>
+        <label for="planner-feedback">変更したい点・質問への回答</label><textarea id="planner-feedback" rows="3" maxlength="6000" placeholder="例：最初はSkyの検索だけ。決済は次に回して"></textarea>
+        <div class="actions"><button id="planner-revise" type="button">この内容で考え直す</button><button id="planner-backup" type="button" hidden>保存中のGoalをバックアップ</button><button id="planner-adopt" type="button" class="primary" disabled>この候補を計画案として採用</button></div>
+        <p class="small">候補の採用では作業を開始しません。計画の承認と成果の独立検収は、既存のGoal管理で行います。</p>
+      </section>
+      <details class="simple-preview"><summary>オフラインの共通テンプレートを使う</summary><p class="small">固定の4役・7工程を置く補助機能です。Git調査やAIによる推論は行いません。</p><button id="planner-fallback" type="button">入力から共通テンプレートを開く</button></details>
+    </section>
     <p id="simple-request-help" class="simple-note">アプリ・bot・自動化・Webなど、作りたいものを普段の言葉で書いてください。既存OS・ハードウェア計画は詳細から。<br>秘密情報やパスワードは入力しないでください。ここでは計画を準備し、実売買や送金は行いません。</p>
   </section>
 
   <section id="simple-review" class="simple-view" hidden aria-label="Goalと意図を確認する">
-    <div class="simple-heading"><h1>このGoalで、進めますか？</h1><p>確認するのは、この2つだけ。違うところがあれば、そのまま書き直せます。</p></div>
+    <div class="simple-heading"><h1>共通テンプレートの下書き</h1><p>固定の4役・7工程です。実際の仕事に合う範囲と条件を確認してください。</p></div>
     <div class="simple-review-card">
       <div class="simple-review-field"><label for="simple-goal">Goal<span>何ができたら、完成ですか？</span></label><textarea id="simple-goal" rows="2" maxlength="8000" required placeholder="完成させたいもの・できるようにしたいこと"></textarea></div>
       <div class="simple-review-field"><label for="simple-intent">意図<span>何のために作る？ 大切にしたいことは？</span></label><textarea id="simple-intent" rows="3" maxlength="2000" required placeholder="実現したいこと・守りたいこと"></textarea></div>

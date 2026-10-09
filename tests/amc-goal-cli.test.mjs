@@ -6,7 +6,11 @@ import { join, resolve } from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { runInNewContext } from 'node:vm';
 import { loadGoalSources, renderGoalWorkbench } from '../scripts/amc-goal.mjs';
-import { applyGoalEvent, summarizeGoal } from '../scripts/amc-goal-engine.mjs';
+import {
+  applyGoalEvent,
+  summarizeGoal,
+  compileGoal,
+} from '../scripts/amc-goal-engine.mjs';
 
 const root = resolve(import.meta.dirname, '..');
 const cli = resolve(root, 'scripts/amc-goal.mjs');
@@ -19,9 +23,12 @@ function browser({
   selectionStored = null,
   clipboardFails = false,
   confirm = true,
+  plannerSession = null,
+  fetchImpl = null,
+  location = { protocol: 'http:', hostname: '127.0.0.1' },
 } = {}) {
   let authorizeSky;
-  const html = renderGoalWorkbench(sources);
+  const html = renderGoalWorkbench(sources, { plannerSession });
   const elements = new Map();
   const downloads = [];
   const copied = [];
@@ -346,8 +353,11 @@ function browser({
     },
     fetch: async (...args) => {
       networkCalls.push(args);
+      if (fetchImpl) return fetchImpl(...args);
       throw new Error('Unexpected network operation in the offline workbench');
     },
+    location,
+    AbortController,
     crypto: { randomUUID: () => 'test-' + idSequence++ },
     setTimeout: (callback) => callback(),
     Blob,
@@ -362,7 +372,18 @@ function browser({
   };
   for (const script of scripts)
     if (!/\btype=["']application\/json["']/i.test(script[1]))
-      runInNewContext(script[2].replace('function requireSkyAuthority(', 'captureAuthority(requireSkyAuthority); function requireSkyAuthority('), { ...sandbox, captureAuthority: (guard) => { authorizeSky = guard; } });
+      runInNewContext(
+        script[2].replace(
+          'function requireSkyAuthority(',
+          'captureAuthority(requireSkyAuthority); function requireSkyAuthority(',
+        ),
+        {
+          ...sandbox,
+          captureAuthority: (guard) => {
+            authorizeSky = guard;
+          },
+        },
+      );
   return {
     authorizeSky,
     elements,
@@ -1812,11 +1833,465 @@ await test('New request from the board protects unfinished request and brief fie
 
 await test('offline workbench refuses Sky execution and acceptance even for imported records', () => {
   const page = browser();
-  for (const type of ['start_task', 'submit_result', 'verify_task', 'accept_goal', 'resume_task', 'revalidate_task']) {
+  for (const type of [
+    'start_task',
+    'submit_result',
+    'verify_task',
+    'accept_goal',
+    'resume_task',
+    'revalidate_task',
+  ]) {
     page.authorizeSky({}, { type });
   }
-  for (const type of ['start_task', 'submit_result', 'verify_task', 'accept_goal', 'resume_task', 'revalidate_task']) {
-    assert.throws(() => page.authorizeSky({ skyBrief: { request: 'fixture' } }, { type }), /cannot authorize/);
+  for (const type of [
+    'start_task',
+    'submit_result',
+    'verify_task',
+    'accept_goal',
+    'resume_task',
+    'revalidate_task',
+  ]) {
+    assert.throws(
+      () => page.authorizeSky({ skyBrief: { request: 'fixture' } }, { type }),
+      /cannot authorize/,
+    );
   }
-  assert.doesNotMatch(renderGoalWorkbench(sources), /function grantSkyTransition/);
+  assert.doesNotMatch(
+    renderGoalWorkbench(sources),
+    /function grantSkyTransition/,
+  );
+});
+
+const plannerSession = {
+  endpoint: '/api/plan',
+  token: 'fixture-session-token-0123456789',
+};
+function planningReply(count = 2, suffix = 'one') {
+  const tasks = Array.from({ length: count }, (_, index) => ({
+    id: 'PLAN-' + (index + 1),
+    title: index
+      ? '試験と結果の確認'
+      : '検索を具体化する <img src=x onerror=bad()>',
+    status: 'planned',
+    dependsOn: index ? ['PLAN-' + index] : [],
+    evidence: [],
+  }));
+  const mission = {
+    updatedAt: '2026-10-09',
+    squads: [
+      {
+        id: 'H1',
+        name: '調査担当',
+        goal: '依頼から必要な変更を特定する',
+        rules: [],
+        acceptanceGate: '成果物を独立検収する',
+        nextTaskIds: tasks.map((task) => task.id),
+      },
+    ],
+    taskAssignments: tasks.map((task) => ({
+      taskId: task.id,
+      primarySquad: 'H1',
+      classification: 'coordination',
+    })),
+    taskPlans: tasks.map((task) => ({
+      taskId: task.id,
+      scope: task.title,
+      workloadClass: 'document',
+      inputs: [],
+      steps: [
+        { id: task.id + '-S1', action: '既存検索の境界をコードで確認する' },
+      ],
+      deliverables: [
+        {
+          path: 'work/fixture-' + task.id + '.md',
+          description: '調査と合格の証拠',
+        },
+      ],
+      acceptanceCriteria: [
+        {
+          criterion: '検索条件の変更と回帰結果が一致する',
+          verification: '対象試験の結果を照合',
+        },
+      ],
+    })),
+  };
+  return {
+    goal: compileGoal({
+      instruction: 'Skyの検索を改善する',
+      squadIds: ['H1'],
+      mission,
+      project: { tasks },
+      goalId: 'adaptive-fixture-' + suffix,
+      createdAt: '2026-10-09T12:00:00.000Z',
+      maxParallel: 1,
+    }),
+    proposal: {
+      summary: '既存検索を調べ、必要な変更と確認を提案します。',
+      questions: [],
+      assumptions: ['公開APIの範囲を維持する'],
+      intent: '必要な商品を見つけやすくする',
+    },
+    context: {
+      mainSha: 'a'.repeat(40),
+      localHead: 'b'.repeat(40),
+      collectedAt: '2026-10-09T12:00:00.000Z',
+      botId: 'operations',
+    },
+  };
+}
+const plannerResponse = (result, ok = true) => ({
+  ok,
+  json: async () => structuredClone(result),
+});
+function deferredPlan() {
+  let complete;
+  const promise = new Promise((resolve) => {
+    complete = resolve;
+  });
+  return { promise, complete };
+}
+function fillPlanningRequest(ui) {
+  ui.elements.get('simple-request').value = 'Skyの検索を改善する';
+  ui.elements.get('planner-intent').value = '必要な商品を見つけやすくする';
+  ui.elements.get('planner-share').checked = true;
+}
+
+await test('connected renderer allows only the local planning route and preserves offline CSP', () => {
+  const html = renderGoalWorkbench(sources, { plannerSession });
+  assert.match(html, /connect-src 'self'/);
+  assert.match(html, /planner-session|plannerSession/);
+  for (const endpoint of [
+    'https://outside.invalid/api/plan',
+    '//outside.invalid/api/plan',
+    '/api/execute',
+  ])
+    assert.throws(
+      () =>
+        renderGoalWorkbench(sources, {
+          plannerSession: { ...plannerSession, endpoint },
+        }),
+      /same-origin/,
+    );
+  assert.throws(
+    () =>
+      renderGoalWorkbench(sources, {
+        plannerSession: { ...plannerSession, token: '</script><script>bad()' },
+      }),
+    /session token/,
+  );
+  assert.match(renderGoalWorkbench(sources), /connect-src 'none'/);
+});
+
+await test('connected planner requires sharing selection and a loopback origin before any request', async () => {
+  const ui = browser({ plannerSession });
+  assert.equal(ui.elements.get('simple-home').hidden, false);
+  assert.equal(ui.elements.get('mission-board-view').hidden, true);
+  assert.equal(
+    ui.elements.get('planner-bot').querySelectorAll('option').length,
+    10,
+  );
+  ui.elements.get('simple-request').value = 'Skyを改善';
+  await ui.event('simple-request-form', 'submit');
+  assert.match(ui.elements.get('error').textContent, /共有/);
+  assert.equal(ui.networkCalls.length, 0);
+  const wrongOrigin = browser({
+    plannerSession,
+    location: { protocol: 'https:', hostname: 'outside.invalid' },
+  });
+  fillPlanningRequest(wrongOrigin);
+  await wrongOrigin.event('simple-request-form', 'submit');
+  assert.match(wrongOrigin.elements.get('error').textContent, /この端末/);
+  assert.equal(wrongOrigin.networkCalls.length, 0);
+});
+
+await test('connected plan shows variable work, dependencies, evidence and Git context without approval', async () => {
+  const pending = deferredPlan();
+  const ui = browser({ plannerSession, fetchImpl: () => pending.promise });
+  fillPlanningRequest(ui);
+  const request = ui.event('simple-request-form', 'submit');
+  assert.equal(ui.networkCalls.length, 1);
+  assert.equal(ui.elements.get('simple-request-submit').disabled, true);
+  assert.equal(ui.elements.get('planner-cancel').hidden, false);
+  assert.equal(ui.read(), null);
+  const [endpoint, options] = ui.networkCalls[0];
+  assert.equal(endpoint, '/api/plan');
+  assert.equal(options.headers['x-amc-session'], plannerSession.token);
+  assert.equal(options.credentials, 'same-origin');
+  assert.deepEqual(JSON.parse(options.body), {
+    request: 'Skyの検索を改善する',
+    intent: '必要な商品を見つけやすくする',
+    botId: 'operations',
+    feedback: '',
+    allowCodexUpload: true,
+    previousGoal: null,
+  });
+  pending.complete(plannerResponse(planningReply(3)));
+  await request;
+  assert.equal(
+    ui.elements.get('planner-candidate-title').textContent,
+    '3件の作業を提案',
+  );
+  assert.equal(
+    ui.elements.get('planner-tasks').querySelectorAll('article').length,
+    3,
+  );
+  assert.match(
+    ui.elements.get('planner-tasks').textContent,
+    /先に必要: PLAN-1/,
+  );
+  assert.match(ui.elements.get('planner-tasks').textContent, /合格条件/);
+  assert.match(ui.elements.get('planner-context').textContent, /aaaaaaaa/);
+  assert.equal(
+    ui.elements.get('planner-tasks').querySelectorAll('img').length,
+    0,
+  );
+  assert.equal(ui.read(), null);
+  await ui.event('planner-adopt');
+  assert.equal(ui.read().tasks.length, 3);
+  assert.equal(ui.read().state, 'draft');
+  assert.equal(ui.read().revision, 0);
+  assert.equal(ui.read().eventLog.length, 0);
+  assert.equal(ui.read().approval, null);
+  assert.equal(ui.elements.get('plan-view').hidden, false);
+  assert.equal(ui.writes(), 1);
+});
+
+await test('planner errors expose retry and do not create or overwrite a Goal', async () => {
+  let attempts = 0;
+  const ui = browser({
+    plannerSession,
+    fetchImpl: async () =>
+      ++attempts === 1
+        ? plannerResponse(
+            {
+              error: {
+                code: 'codex_unavailable',
+                message: 'Codexを起動できません。',
+              },
+            },
+            false,
+          )
+        : plannerResponse(planningReply()),
+  });
+  fillPlanningRequest(ui);
+  await ui.event('simple-request-form', 'submit');
+  assert.match(
+    ui.elements.get('planner-status').textContent,
+    /Codexを起動できません/,
+  );
+  assert.equal(ui.elements.get('planner-retry').hidden, false);
+  assert.equal(ui.elements.get('simple-request-submit').disabled, false);
+  assert.equal(ui.writes(), 0);
+  await ui.event('planner-retry');
+  assert.equal(attempts, 2);
+  assert.equal(ui.elements.get('planner-candidate').hidden, false);
+  assert.equal(ui.writes(), 0);
+});
+
+await test('cancelled planner responses cannot replace a later candidate', async () => {
+  const first = deferredPlan(),
+    second = deferredPlan();
+  let calls = 0;
+  const ui = browser({
+    plannerSession,
+    fetchImpl: () => (++calls === 1 ? first.promise : second.promise),
+  });
+  fillPlanningRequest(ui);
+  const request1 = ui.event('simple-request-form', 'submit');
+  await ui.event('planner-cancel');
+  assert.equal(ui.networkCalls[0][1].signal.aborted, true);
+  const request2 = ui.event('simple-request-form', 'submit');
+  second.complete(plannerResponse(planningReply(1, 'later')));
+  await request2;
+  first.complete(plannerResponse(planningReply(4, 'cancelled')));
+  await request1;
+  assert.equal(
+    ui.elements.get('planner-candidate-title').textContent,
+    '1件の作業を提案',
+  );
+  await ui.event('planner-adopt');
+  assert.equal(ui.read().id, 'adaptive-fixture-later');
+});
+
+await test('import and same-revision cross-tab edits invalidate in-flight planning', async () => {
+  for (const mutate of ['import', 'storage']) {
+    const pending = deferredPlan();
+    const ui = browser({ plannerSession, fetchImpl: () => pending.promise });
+    fillPlanningRequest(ui);
+    const request = ui.event('simple-request-form', 'submit');
+    const replacement = JSON.stringify(planningReply(1, 'restored').goal);
+    if (mutate === 'import')
+      await ui.event('import-file', 'change', {
+        target: {
+          files: [{ size: replacement.length, text: async () => replacement }],
+        },
+      });
+    else ui.setStored(replacement);
+    pending.complete(plannerResponse(planningReply(2, 'obsolete')));
+    await request;
+    assert.equal(ui.raw('amc-goal-workbench-v1'), replacement);
+    assert.equal(ui.elements.get('planner-candidate').hidden, true);
+    assert.match(
+      ui.elements.get('planner-status').textContent,
+      /変わ|別の画面/,
+    );
+  }
+});
+
+await test('existing Goal survives proposing and requires backup plus confirmation before adoption', async () => {
+  const initial = browser();
+  await createH1(initial);
+  await approveH1(initial);
+  const saved = JSON.stringify(initial.read());
+  const ui = browser({
+    plannerSession,
+    stored: saved,
+    fetchImpl: async () => plannerResponse(planningReply(2, 'replacement')),
+  });
+  assert.equal(
+    ui.elements.get('simple-progress').hidden,
+    false,
+    'saved Goal restoration takes priority',
+  );
+  await ui.event('new-goal');
+  fillPlanningRequest(ui);
+  await ui.event('simple-request-form', 'submit');
+  assert.equal(ui.raw('amc-goal-workbench-v1'), saved);
+  const previous = JSON.parse(ui.networkCalls[0][1].body).previousGoal;
+  assert.equal(previous.id, initial.read().id);
+  assert.equal(previous.revision, 1);
+  await ui.event('planner-adopt');
+  assert.match(ui.elements.get('error').textContent, /バックアップ/);
+  assert.equal(ui.raw('amc-goal-workbench-v1'), saved);
+  await ui.event('planner-backup');
+  assert.equal(
+    JSON.parse(await ui.downloads.at(-1).blob.text()).id,
+    initial.read().id,
+  );
+  await ui.event('planner-adopt');
+  assert.equal(ui.read().id, 'adaptive-fixture-replacement');
+  assert.equal(ui.read().state, 'draft');
+  assert.ok(
+    ui.confirmations.some((text) => text.includes('バックアップが保存')),
+  );
+});
+
+await test('feedback remains cumulative, keeps the original intent, and resets when Bot changes', async () => {
+  let sequence = 0;
+  const ui = browser({
+    plannerSession,
+    fetchImpl: async () =>
+      plannerResponse(planningReply(2, String(++sequence))),
+  });
+  fillPlanningRequest(ui);
+  await ui.event('simple-request-form', 'submit');
+  ui.elements.get('planner-feedback').value = 'Skyの検索だけに限定する';
+  await ui.event('planner-revise');
+  ui.elements.get('planner-feedback').value = '試験を最初に調べる';
+  await ui.event('planner-revise');
+  const third = JSON.parse(ui.networkCalls[2][1].body);
+  assert.match(third.feedback, /Skyの検索だけ/);
+  assert.match(third.feedback, /試験を最初/);
+  assert.equal(third.request, 'Skyの検索を改善する');
+  assert.equal(third.intent, '必要な商品を見つけやすくする');
+  assert.equal(third.previousGoal.id, 'adaptive-fixture-2');
+  ui.elements.get('planner-bot').value = 'sky';
+  await ui.event('planner-bot', 'change');
+  assert.equal(ui.elements.get('planner-candidate').hidden, true);
+  assert.equal(ui.elements.get('planner-feedback').value, '');
+  assert.equal(ui.elements.get('planner-adopt').disabled, true);
+});
+
+await test('clarifying questions remain separate from a Goal and answers preserve question context', async () => {
+  const question = {
+    ...planningReply(),
+    goal: null,
+    proposal: {
+      summary: '対象Toolの選定が必要です',
+      questions: ['検索対象はどのTool？ <script>bad()</script>'],
+      assumptions: [],
+    },
+  };
+  let calls = 0;
+  const ui = browser({
+    plannerSession,
+    fetchImpl: async () =>
+      plannerResponse(++calls === 1 ? question : planningReply(1)),
+  });
+  fillPlanningRequest(ui);
+  await ui.event('simple-request-form', 'submit');
+  assert.equal(ui.read(), null);
+  assert.equal(ui.elements.get('planner-adopt').disabled, true);
+  assert.match(ui.elements.get('planner-questions').textContent, /どのTool/);
+  assert.equal(
+    ui.elements.get('planner-questions').querySelectorAll('script').length,
+    0,
+  );
+  ui.elements.get('planner-feedback').value = '商品検索Toolだけ';
+  await ui.event('planner-revise');
+  const body = JSON.parse(ui.networkCalls[1][1].body);
+  assert.match(body.feedback, /商品検索Toolだけ/);
+  assert.match(body.feedback, /対象Toolの選定/);
+  assert.match(body.feedback, /どのTool/);
+  assert.equal(body.previousGoal, null);
+});
+
+await test('excess cumulative feedback is rejected without dropping earlier requirements', async () => {
+  const ui = browser({
+    plannerSession,
+    fetchImpl: async () => plannerResponse(planningReply()),
+  });
+  fillPlanningRequest(ui);
+  await ui.event('simple-request-form', 'submit');
+  ui.elements.get('planner-feedback').value = '前'.repeat(5000);
+  await ui.event('planner-revise');
+  ui.elements.get('planner-feedback').value = '後'.repeat(4000);
+  await ui.event('planner-revise');
+  assert.equal(ui.networkCalls.length, 2);
+  assert.match(ui.elements.get('error').textContent, /8000字/);
+  assert.equal(ui.elements.get('planner-feedback').value.length, 4000);
+  assert.equal(ui.read(), null);
+});
+
+await test('planner refuses approval-bearing responses and preserves the current Goal on cancelled adoption', async () => {
+  const approved = planningReply(1, 'approved');
+  approved.goal = applyGoalEvent(approved.goal, {
+    type: 'approve_plan',
+    id: 'approval-fixture',
+    expectedRevision: 0,
+    actor: 'fixture-owner',
+    role: 'owner',
+    at: '2026-10-09T12:01:00.000Z',
+    scopeConfirmed: true,
+    coverageStatement: 'Fixtureの検索範囲を確認する',
+    acceptanceCriteria: [
+      { id: 'GOAL-AC1', criterion: '検索条件と試験結果を照合する' },
+    ],
+  });
+  const rejected = browser({
+    plannerSession,
+    fetchImpl: async () => plannerResponse(approved),
+  });
+  fillPlanningRequest(rejected);
+  await rejected.event('simple-request-form', 'submit');
+  assert.equal(rejected.read(), null);
+  assert.match(
+    rejected.elements.get('planner-status').textContent,
+    /未承認の計画案/,
+  );
+  const saved = JSON.stringify(planningReply(1, 'saved').goal);
+  const ui = browser({
+    plannerSession,
+    stored: saved,
+    confirm: false,
+    fetchImpl: async () => plannerResponse(planningReply(2, 'candidate')),
+  });
+  await ui.event('new-goal');
+  fillPlanningRequest(ui);
+  await ui.event('simple-request-form', 'submit');
+  await ui.event('planner-backup');
+  await ui.event('planner-adopt');
+  assert.equal(ui.raw('amc-goal-workbench-v1'), saved);
+  assert.equal(ui.writes(), 0);
+  assert.equal(ui.elements.get('planner-candidate').hidden, false);
 });

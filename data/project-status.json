@@ -5127,6 +5127,23 @@
         "docs/evidence/project-bot-goal-input.json"
       ],
       "nextAction": "既存AMC JSONの直接入力・Git調査・指示書保存・起動引渡しは検証済み。具体的な任務の実Bot完走と成果PRは別途照合し、元Goalの最終受入を代行しない。"
+    },
+    {
+      "id": "AMC06",
+      "title": "固定テンプレートを補助へ分け、Gitを読むCodexの可変計画と追加指示による見直しをAMCへ接続する",
+      "status": "in_progress",
+      "dependsOn": [
+        "AMC05"
+      ],
+      "evidence": [
+        "scripts/amc-planner.mjs",
+        "scripts/templates/amc-goal-workbench.html",
+        "scripts/templates/amc-goal-workbench.js",
+        "scripts/amc-goal-engine.mjs",
+        "tests/amc-adaptive-brief.test.mjs",
+        "docs/amc-goal-orchestrator.md"
+      ],
+      "nextAction": "可変計画・UI・旧Goal保持の対象132試験と独立検収pass。実CodexによるGit調査と3作業のdraft生成を確認。追加指示での実再計画と同一実装SHAのCIを照合する。"
     }
   ],
   "phaseGates": [
