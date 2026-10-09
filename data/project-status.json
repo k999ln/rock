@@ -5801,12 +5801,12 @@
   },
   "spiderSky": {
     "taskId": "SYS15",
-    "status": "local_implemented_ci_validation",
+    "status": "verified_in_pull_request_not_published",
     "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
     "scope": "Sky catalog and Zema browser-only explicit-input security inspection",
     "sourceAndFindingsPersisted": false,
     "sourceUploaded": false,
-    "validation": "Initial full verify passed (1384 Node, 1192 API, 385 CSV). Hardened Worker revision: 1388 Node pass / 1 skip, targeted 28 and actual Worker UI pass; full local build stopped by ENOSPC. Final same-SHA CI is on PR 96.",
+    "validation": "PASS: source commit 631f9420, all 7 GitHub checks successful, including full verify and CodeQL. Local revised Node 1388 pass / 1 skip and real browser acceptance. Local full build ENOSPC is retained separately.",
     "mainIntegrated": false,
     "productionDeployed": false,
     "latestMainObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
@@ -5816,9 +5816,20 @@
       "evidence": "docs/evidence/spider-sky-continuation.json",
       "focusedTestsPassed": 115,
       "knownIssueFixed": "CRLF and CR file finding selections were offset from textarea positions",
-      "workerBoundary": "28 targeted pass and browser pass; Node 1388 pass / 1 skip; local build ENOSPC; GitHub verify and CodeQL required."
+      "workerBoundary": "28 targeted tests, browser Worker, and all 7 same-source GitHub checks passed"
     },
-    "nextAction": "Check final PR 96 head verify/CodeQL before review; main integration, publication and native acceptance remain separate.",
-    "pullRequest": "https://github.com/k999ln/rock/pull/96"
+    "nextAction": "Review PR #96 and authorize main integration/deployment separately; native/Pixel/always-on acceptance remains independent.",
+    "pullRequest": "https://github.com/k999ln/rock/pull/96",
+    "githubCI": {
+      "sourceCommit": "631f94209363b175c6770cea8afb34f7d6ed8c52",
+      "allSuccessful": true,
+      "checkCount": 7,
+      "verify": "https://github.com/k999ln/rock/actions/runs/37976637785",
+      "codeql": "https://github.com/k999ln/rock/actions/runs/37976637686",
+      "repairAndWebSecurity": "https://github.com/k999ln/rock/actions/runs/37976637751",
+      "secrets": "https://github.com/k999ln/rock/actions/runs/37976637713",
+      "aggregateCodeql": "https://github.com/k999ln/rock/runs/113977064918",
+      "scope": "Same source commit; subsequent completion record is documentation only. No main merge or deployment."
+    }
   }
 }

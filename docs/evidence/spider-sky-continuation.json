@@ -82,6 +82,17 @@
         "logSha256": "c4838c129bf496f9834ff38bfeb6c4d0a8e2f202923521a9dcf398fcc85238d8",
         "nextValidation": "same-SHA GitHub verify and CodeQL on PR 96"
       }
+    },
+    "githubCI": {
+      "sourceCommit": "631f94209363b175c6770cea8afb34f7d6ed8c52",
+      "allSuccessful": true,
+      "checkCount": 7,
+      "verify": "https://github.com/k999ln/rock/actions/runs/37976637785",
+      "codeql": "https://github.com/k999ln/rock/actions/runs/37976637686",
+      "repairAndWebSecurity": "https://github.com/k999ln/rock/actions/runs/37976637751",
+      "secrets": "https://github.com/k999ln/rock/actions/runs/37976637713",
+      "aggregateCodeql": "https://github.com/k999ln/rock/runs/113977064918",
+      "scope": "Same source commit; subsequent completion record is documentation only. No main merge or deployment."
     }
   },
   "sourceHashes": {
@@ -96,14 +107,15 @@
   "productionDeployed": false,
   "fileChooserUiAcceptance": "PASS: synthetic CRLF Python file loaded through native chooser, language auto-selected, actual Worker finding line 3 selected exact eval(user_input)",
   "unresolved": [
-    "Current revision same-SHA CI (see PR checks)",
-    "Main integration and production publication",
+    "Owner review and main integration",
+    "Production publication",
     "Native/physical guard acceptance remains separate"
   ],
   "github": {
     "branch": "codex/spider-sky",
     "pullRequest": "https://github.com/k999ln/rock/pull/96",
     "savedBaseCommit": "e79d6b9d14d1286619c37e9d48c14b8b072ddc52",
-    "sameHeadCi": "Read live checks on the PR; execution success is not absence of alerts"
+    "sameHeadCi": "Read live checks on the PR; execution success is not absence of alerts",
+    "validatedSourceCommit": "631f94209363b175c6770cea8afb34f7d6ed8c52"
   }
 }
