@@ -34,7 +34,6 @@ import {
 } from 'react';
 import type { WorkJob } from '@/lib/workflow';
 import { writeHomeIntent, HOME_INTENT_MAX_LENGTH } from '@/lib/home-intent';
-import HomeField from './home-field';
 import styles from './home-screen.module.css';
 
 type InstallPrompt = Event & {
@@ -84,17 +83,17 @@ const intentions = [
   {
     label: 'つくる',
     example: '伝えたいアイデアを、読みやすい記事にしたい',
-    placeholder: 'まだ形になっていないアイデアも、そのまま。',
+    placeholder: '作りたいものや、伝えたい内容を入力',
   },
   {
     label: '調べる',
     example: 'このアイデアに関連する特許を調べたい',
-    placeholder: '気になることを、問いにしてみよう。',
+    placeholder: '調べたいテーマや条件を入力',
   },
   {
     label: '整える',
     example: '記事の出典を整理して、確かめたい',
-    placeholder: '散らばった情報から、次の一歩を。',
+    placeholder: '整理したい内容や目的を入力',
   },
 ];
 const filters = [
@@ -306,13 +305,11 @@ export default function HomeScreen() {
         <Link href="/" className={styles.brand} aria-label="RockstarOS ホーム">
           <Asterisk size={29} strokeWidth={1.7} />
           <span>
-            rockstar<span className={styles.brandOs}>os</span>
+            Rockstar<span className={styles.brandOs}>OS</span>
           </span>
           <span className={styles.version}>1.0</span>
         </Link>
-        <div className={styles.headerCenter}>
-          <span className={styles.headerDot} /> YOUR PERSONAL SPACE
-        </div>
+        <div className={styles.headerCenter}>ホーム</div>
         <button
           className={styles.launcher}
           onClick={() => {
@@ -368,20 +365,21 @@ export default function HomeScreen() {
         </aside>
       )}
 
+      <nav className={styles.dock} aria-label="RockstarOSのツール">
+        {apps.map(({ name, href, Icon }) => (
+          <Link key={href} href={href}>
+            <Icon size={21} strokeWidth={1.6} />
+            <span>{name}</span>
+          </Link>
+        ))}
+      </nav>
+
       <section className={styles.hero} aria-labelledby="home-title">
         <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>
-            <span className={styles.shortLine} /> FROM INTENT TO REALITY
-          </p>
-          <h1 id="home-title">
-            次に、何を
-            <br />
-            <span>動かそう。</span>
-          </h1>
+          <p className={styles.eyebrow}>Zemaに依頼</p>
+          <h1 id="home-title">何を進めますか。</h1>
           <p className={styles.intro}>
-            ひとつの意図から、道具と仕事がつながる。
-            <br />
-            ここが、あなたの新しい起点。
+            作成・調査・整理したいことを、Zemaに伝えられます。
           </p>
           <div className={styles.intentModes} aria-label="依頼のヒント">
             {intentions.map((item, index) => (
@@ -454,22 +452,20 @@ export default function HomeScreen() {
             <ArrowUpRight size={13} />
           </button>
         </div>
-        {!focus && <HomeField mode={mode} />}
         <button
           className={styles.focusToggle}
           aria-pressed={focus}
           onClick={toggleFocus}
         >
           <SlidersHorizontal size={13} />
-          {focus ? '空間をひらく' : '入力に集中'}
+          {focus ? '通常表示に戻す' : '入力に集中'}
         </button>
       </section>
 
       <section className={styles.activity} aria-labelledby="activity-title">
         <div className={styles.activityHeading}>
           <div>
-            <span className={styles.sectionNumber}>01 / YOUR FLOW</span>
-            <h2 id="activity-title">つづきは、ここから。</h2>
+            <h2 id="activity-title">最近の仕事</h2>
           </div>
           <button
             className={styles.refresh}
@@ -513,7 +509,7 @@ export default function HomeScreen() {
               </span>
               <div>
                 <strong>あなたの仕事を読み込んでいます</strong>
-                <p>保存した場所から、もう一度。</p>
+                <p>保存済みの進捗を取得しています。</p>
               </div>
             </div>
           )}
@@ -523,7 +519,7 @@ export default function HomeScreen() {
                 <Asterisk size={28} strokeWidth={1} />
               </span>
               <div>
-                <strong>あなただけの続きが、ここに。</strong>
+                <strong>保存した仕事を確認</strong>
                 <p>
                   サインインすると、保存した仕事をひとつの場所で確認できます。
                 </p>
@@ -562,7 +558,7 @@ export default function HomeScreen() {
               <div>
                 <strong>
                   {filter === 'all'
-                    ? '最初のひとつから、始めよう。'
+                    ? 'まだ仕事はありません。'
                     : `${filters.find((item) => item.id === filter)?.label}の仕事はまだありません。`}
                 </strong>
                 <p>上の入力欄から依頼すると、Zemaへ引き継げます。</p>
@@ -571,7 +567,7 @@ export default function HomeScreen() {
                 className={styles.emptyAction}
                 onClick={() => input.current?.focus()}
               >
-                アイデアを書く <ArrowUpRight size={16} />
+                依頼を書く <ArrowUpRight size={16} />
               </button>
             </div>
           )}
@@ -610,23 +606,6 @@ export default function HomeScreen() {
           {date} <span className={styles.footerDivider}>/</span> WEB
         </span>
       </footer>
-      <nav className={styles.dock} aria-label="RockstarOSのツール">
-        <Link
-          href="/"
-          className={styles.dockHome}
-          aria-label="ホーム"
-          aria-current="page"
-        >
-          <Asterisk size={23} />
-        </Link>
-        <span className={styles.dockSeparator} />
-        {apps.map(({ name, href, Icon }) => (
-          <Link key={href} href={href}>
-            <Icon size={17} strokeWidth={1.6} />
-            <span>{name}</span>
-          </Link>
-        ))}
-      </nav>
 
       <dialog
         ref={dialog}
@@ -636,7 +615,7 @@ export default function HomeScreen() {
       >
         <div className={styles.paletteInner}>
           <header>
-            <h2 id="palette-title">必要な道具へ。</h2>
+            <h2 id="palette-title">アプリを開く</h2>
             <button
               onClick={() => setPaletteOpen(false)}
               aria-label="ツール一覧を閉じる"

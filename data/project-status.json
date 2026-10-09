@@ -409,7 +409,7 @@
     },
     {
       "id": "HOME01",
-      "title": "依頼と本人の仕事を中心とするHome、集中表示、OS設定入口を実装",
+      "title": "中性的なHomeへ調整し、アプリ導線・依頼・本人の仕事・集中表示を保持",
       "status": "done",
       "dependsOn": [
         "SKY10"
@@ -423,11 +423,16 @@
         "components/system-settings.tsx",
         "components/system-settings.module.css",
         "docs/product-baseline.md",
-        "components/home-field.tsx",
         "lib/home-intent.ts",
         "tests/home-intent.test.mjs",
         "docs/evidence/home-intent-refresh.json"
-      ]
+      ],
+      "neutralRevision": {
+        "date": "2026-10-09",
+        "status": "verified_pending_deploy",
+        "scope": "presentation_only",
+        "evidence": "docs/evidence/home-intent-refresh.json"
+      }
     },
     {
       "id": "HOME02",

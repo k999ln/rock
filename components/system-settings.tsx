@@ -112,7 +112,7 @@ export default function SystemSettings() {
         </section>
 
         <SettingsGroup title="自分のOS">
-          <SettingLink href="/?focus=1#home-intent" icon={<Palette />} tone="purple" title="ホーム画面と外観" detail="入力に集中・空間表示の切り替え" />
+          <SettingLink href="/?focus=1#home-intent" icon={<Palette />} tone="purple" title="ホーム画面と外観" detail="アプリ一覧・説明・入力例の表示切り替え" />
           <SettingButton icon={<Download />} tone="blue" title="ホーム画面に追加" detail={standalone ? 'アプリとして起動中' : 'iPhone / PCへ追加する手順'} onClick={() => setInstallOpen((open) => !open)} />
           {installOpen && (
             <div className={styles.inlineHelp}>

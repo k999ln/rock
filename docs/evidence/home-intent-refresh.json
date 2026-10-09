@@ -53,5 +53,47 @@
     "Native OS/physical device/production Provider/billing acceptance not changed",
     "GitHub main not merged",
     "Public source is older than canonical repository; existing APIs and audience preserved"
-  ]
+  ],
+  "neutralRevision": {
+    "date": "2026-10-09",
+    "reason": "explicit user correction: Home must fit other apps or become neutral",
+    "changes": [
+      "removed sculpture and lime tint",
+      "smaller headings and neutral graphite/silver palette",
+      "replaced floating dock with top app shortcuts",
+      "focus mode hides shortcuts, intro and example"
+    ],
+    "sourceVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "unitTests": 285,
+      "fashionTests": 19,
+      "workerD1Assertions": 495,
+      "missingAssets": 0
+    },
+    "canonicalFocused": {
+      "tests": 20,
+      "typecheck": "pass",
+      "designCheck": "pass",
+      "fullVerify": "in_progress"
+    },
+    "browser": {
+      "viewports": [
+        1280,
+        390,
+        320
+      ],
+      "horizontalOverflowAt320": false,
+      "sculptureCount": 0,
+      "checked": [
+        "app links",
+        "search dialog and Escape",
+        "focus preference survives reload",
+        "Zema draft handoff without auto-send",
+        "existing local job rendered"
+      ]
+    },
+    "deployment": "pending",
+    "githubMainMerged": false
+  }
 }
