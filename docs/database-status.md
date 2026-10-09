@@ -9,7 +9,7 @@
 - データ境界: 6、table: 149
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 379 task中 107 done、35 in progress、236 planned、1 blocked
+- 作業進捗: 379 task中 108 done、34 in progress、236 planned、1 blocked
 - 現在milestone: AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口
 
 ## 保存境界と配備状態

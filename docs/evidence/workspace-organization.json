@@ -57,7 +57,15 @@
       "result": "success",
       "url": "https://github.com/k999ln/rock/actions/runs/37971989383"
     },
-    "codeqlFollowup": "CI identified a check/write race in generated-page replacement. Use exclusive temporary creation, descriptor write, atomic rename and cleanup; preserve a swapped symlink target. Same-head follow-up CI pending."
+    "codeqlFollowup": "Exclusive temporary creation, descriptor write, atomic rename and cleanup verified by 8 focused tests and all 8 check-runs on cbebc979. No new CodeQL alerts.",
+    "verifiedImplementationHead": {
+      "sha": "cbebc979e634d0af5f6eb60c475d178f3b98b996",
+      "checkRuns": 8,
+      "success": 8,
+      "fullVerify": "https://github.com/k999ln/rock/actions/runs/37973663366",
+      "codeql": "https://github.com/k999ln/rock/runs/113966995412",
+      "scope": "Exact implementation head; subsequent change records verification and synchronizes generated progress only."
+    }
   },
   "mainIntegrated": false,
   "runtimePublished": false,
@@ -66,5 +74,6 @@
     "scripts/workspaces.mjs": "ed147825e04e10164b141f5f19337ce9139e7711cf33a1975c49c307f16461cb",
     "tests/workspaces.test.mjs": "a1534ae488985e72fdba3edc262c65149fb45b2f7bd09c90ac08bfe57fdad863",
     "data/workspaces.json": "74c26a7f3eab604d929935b6da2c1e53131a5a01ff9922fe5aa2da5a81286e0d"
-  }
+  },
+  "pullRequest": "https://github.com/k999ln/rock/pull/95"
 }

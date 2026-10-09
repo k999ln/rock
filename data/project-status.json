@@ -5065,7 +5065,7 @@
     {
       "id": "ORG04",
       "title": "既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "ORG03"
       ],
@@ -5077,7 +5077,7 @@
         "tests/workspaces.test.mjs",
         "docs/evidence/workspace-organization.json"
       ],
-      "nextAction": "32分野の入口と一件の手順・アイデア置き場は実装済み、対象6試験とNode1378合格。ローカル全体verifyはAstro依存不足／ディスク枯渇で未完走。PR同一SHAの全体CIを確認し、main統合と元dirty treeの回収を別管理する。"
+      "nextAction": "32分野・379taskの作業入口、224taskPlanの読取CLI、アイデア置き場を実装・検証。PR #95の実装SHA cbebc979で全体verify・CodeQLを含む8 checks success。main統合と元dirty treeの回収は別作業。"
     }
   ],
   "phaseGates": [
@@ -5813,13 +5813,17 @@
   },
   "workspaceOrganization": {
     "taskId": "ORG04",
-    "status": "implemented_ci_pending",
+    "status": "verified_on_work_branch",
     "primarySquad": "H1",
     "entry": "workspaces/README.md",
     "ideas": "workspaces/IDEAS.md",
     "workspaces": 32,
     "branch": "codex/feature-workspaces",
     "evidence": "docs/evidence/workspace-organization.json",
-    "mainIntegrated": false
+    "mainIntegrated": false,
+    "pullRequest": "https://github.com/k999ln/rock/pull/95",
+    "verifiedImplementationSha": "cbebc979e634d0af5f6eb60c475d178f3b98b996",
+    "checkRunsPassed": 8,
+    "githubSaved": true
   }
 }
