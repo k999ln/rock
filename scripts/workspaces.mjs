@@ -1,4 +1,14 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+  openSync,
+  closeSync,
+  renameSync,
+  rmSync,
+} from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateMissionControl } from './check-mission-control.mjs';
@@ -291,6 +301,21 @@ export function renderWorkspaces(model) {
   return output;
 }
 
+export function writeGeneratedPage(target, content) {
+  const temporary = `${target}.${randomUUID()}.tmp`;
+  const descriptor = openSync(temporary, 'wx', 0o644);
+  try {
+    try {
+      writeFileSync(descriptor, content);
+    } finally {
+      closeSync(descriptor);
+    }
+    renameSync(temporary, target);
+  } finally {
+    rmSync(temporary, { force: true });
+  }
+}
+
 export function syncWorkspaces({ check = false } = {}) {
   const mission = read('data/mission-control.json');
   const project = read('data/project-status.json');
@@ -313,14 +338,19 @@ export function syncWorkspaces({ check = false } = {}) {
   }
   for (const [path, content] of renderWorkspaces(model)) {
     const target = resolve(root, path);
-    if (existsSync(target) && readFileSync(target, 'utf8') === content)
-      continue;
+    let previous;
+    try {
+      previous = readFileSync(target, 'utf8');
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
+    if (previous === content) continue;
     if (check)
       throw new Error(
         '作業部屋が未同期です: ' + path + ' / npm run work:update',
       );
     mkdirSync(dirname(target), { recursive: true });
-    writeFileSync(target, content);
+    writeGeneratedPage(target, content);
   }
   return model;
 }

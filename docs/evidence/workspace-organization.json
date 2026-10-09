@@ -19,7 +19,7 @@
   "validation": {
     "focused": {
       "command": "node --test tests/workspaces.test.mjs",
-      "passed": 6,
+      "passed": 8,
       "failed": 0
     },
     "integrity": "project:check, mission:check, work:check, all generated local links and git diff --check passed",
@@ -51,14 +51,20 @@
         }
       ],
       "next": "Run full npm run verify in GitHub CI with both root and site npm ci on the PR head; do not promote the base-main checks."
-    }
+    },
+    "priorHeadFullVerify": {
+      "sha": "68a4dcfbe5fecefdd786c6d6c15cc7fd68829024",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/37971989383"
+    },
+    "codeqlFollowup": "CI identified a check/write race in generated-page replacement. Use exclusive temporary creation, descriptor write, atomic rename and cleanup; preserve a swapped symlink target. Same-head follow-up CI pending."
   },
   "mainIntegrated": false,
   "runtimePublished": false,
   "originalDirtyWorktreesModified": false,
   "sourceHashes": {
-    "scripts/workspaces.mjs": "e0c3e92c9a7327024f7ae912d80cf4b417fb70ad26ad25217ed28c416d77ed21",
-    "tests/workspaces.test.mjs": "f6e81dccf640d6da13bea6571544f2b7640b12f510a75a248ce7c4a5f582c75a",
+    "scripts/workspaces.mjs": "ed147825e04e10164b141f5f19337ce9139e7711cf33a1975c49c307f16461cb",
+    "tests/workspaces.test.mjs": "a1534ae488985e72fdba3edc262c65149fb45b2f7bd09c90ac08bfe57fdad863",
     "data/workspaces.json": "74c26a7f3eab604d929935b6da2c1e53131a5a01ff9922fe5aa2da5a81286e0d"
   }
 }

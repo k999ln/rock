@@ -1,5 +1,15 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import {
+  existsSync,
+  readFileSync,
+  mkdtempSync,
+  writeFileSync,
+  symlinkSync,
+  readdirSync,
+  rmSync,
+  mkdirSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync, spawnSync } from 'node:child_process';
@@ -8,6 +18,7 @@ import {
   renderWorkspaces,
   taskBrief,
   workspaceModel,
+  writeGeneratedPage,
 } from '../scripts/workspaces.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -126,4 +137,34 @@ void test('CLI searches without writes and rejects an unknown task', () => {
     'workspaces/IDEAS.md',
   ].map((p) => readFileSync(resolve(root, p), 'utf8'));
   assert.deepEqual(after, before);
+});
+
+void test('atomic page replacement does not write through a swapped destination symlink', () => {
+  const dir = mkdtempSync(resolve(tmpdir(), 'rock-workspace-write-'));
+  try {
+    const victim = resolve(dir, 'user-file');
+    const page = resolve(dir, 'README.md');
+    writeFileSync(victim, 'keep user content');
+    symlinkSync(victim, page);
+    writeGeneratedPage(page, 'generated page');
+    assert.equal(readFileSync(victim, 'utf8'), 'keep user content');
+    assert.equal(readFileSync(page, 'utf8'), 'generated page');
+    writeGeneratedPage(page, 'updated page');
+    assert.equal(readFileSync(page, 'utf8'), 'updated page');
+    assert.deepEqual(readdirSync(dir).sort(), ['README.md', 'user-file']);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+void test('failed replacement cleans up its temporary file without removing the destination', () => {
+  const dir = mkdtempSync(resolve(tmpdir(), 'rock-workspace-write-failure-'));
+  try {
+    const page = resolve(dir, 'README.md');
+    mkdirSync(page);
+    assert.throws(() => writeGeneratedPage(page, 'generated page'));
+    assert.deepEqual(readdirSync(dir), ['README.md']);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

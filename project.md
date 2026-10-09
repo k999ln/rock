@@ -10,6 +10,8 @@
 
 32作業部屋、379taskの一意な表示、224taskPlanの読取CLI、アイデア置き場、生成物同期を実装。対象6試験・全リンク・project/mission/work/diff整合合格。typecheck/lintと全体Node1378合格・失敗0・既定skip1、Fashion25合格。全体verifyは専用siteのAstro依存不足で後段未実行。依存復旧中にディスク枯渇となり、今回作った依存コピーだけを削除。全体成功には換算せず、GitHub同一head CIを次の検証とする。実装と証拠は docs/evidence/workspace-organization.json。main統合・公開なし。
 
+PR #95へ保存。初回head 68a4dcfbのGitHub全体verifyは成功。CodeQLが生成ページの存在確認後の書込み競合を指摘したため、排他的な一時ファイル作成・descriptor書込み・atomic renameへ修正した。symlink差替え先の内容保護と更新失敗時の一時ファイル掃除の回帰を追加。修正後headの全体CI・CodeQLを再確認する。
+
 ## 2026-10-07 — 文書の情報設計の整理と、統合で失われた記録の復元（Git / CI / Operations、未push）
 
 利用者の「分かりにくすぎるからgithub整理できる？情報量一切削らないで」を受け、Git / CI / Operations、ROCKを主担当に文書だけを整理した。コード、`data/*.json` の台帳、`vendor/`、証拠は変更していない。ファイルの移動・改名・削除は0件。作業branchは `docs/repo-information-architecture`、基点はmain `0fbf688b`。
