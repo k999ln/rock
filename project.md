@@ -4,7 +4,7 @@
 
 追加15、関連28試験、型/lint、全verify exit0（Node1403成功/1skip・Worker/D1 1219・CSV385）を確認。実画面で検査停止→修正投稿→交換→取り外し→SPIDER復帰の4コミット、履歴・差分・再読込・共有URL・390px表示を確認。本文は合成入力。証拠はdocs/evidence/sky-code-timeline.json。
 
-公開Siteはv48/source cc61f705で独立した旧source系列だったため、/private/tmp/sky-code-siteへ最新sourceを取得し、今回の機能だけを差分統合した。Home・共通デザイン・出力テストを保持。Site候補そのものの全verifyもexit0（Node306・Fashion19・Worker/D1 522・asset96/欠落0）。migrationはSite0016／GitHub0060であり全系列を置換しない。サイト公開は自動承認審査がsource push／archivePath付き公開準備を拒否し、具体的なpayloadと配備影響の明示承認待ち。source未push、本番v48未変更、main未統合。
+公開Siteはv48/source cc61f705で独立した旧source系列だったため、/private/tmp/sky-code-siteへ最新sourceを取得し、今回の機能だけを差分統合した。Home・共通デザイン・出力テストを保持。Site候補そのものの全verifyもexit0（Node306・Fashion19・Worker/D1 522・asset96/欠落0）。migrationはSite0016／GitHub0060であり全系列を置換しない。サイト公開は自動承認審査がsource push／archivePath付き公開準備を拒否し、具体的なpayloadと配備影響の明示承認待ち。Sites source未push、本番v48未変更、main未統合。実装commit 8a81e580はGitHub作業branchとPR #96へ保存済み。
 
 次は本人の公開承認後、同Siteのcredentialと最新source headを再確認し、Sites helperで既存opening resultから保存・梱包→saved versionの配備→公開UI/API readback。第三者検査製品・Git clone/push・共同branch mergeは未実装。生ログ・画像・build出力はGit外に保持。
 

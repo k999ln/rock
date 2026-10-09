@@ -5848,6 +5848,9 @@
     "nextAction": "After explicit owner approval, refresh same-site write credential; rerun site-workflow with prior opening result, commands [] and archivePath /private/tmp/sky-code-site.tar.gz; save exact returned source commit and archive, deploy saved version, and read back /sky plus code API. If remote source moved, reopen/reconcile without overwriting it.",
     "evidence": "docs/evidence/sky-code-timeline.json",
     "canonicalVerifyExitCode": 0,
-    "siteCandidateVerifyExitCode": 0
+    "siteCandidateVerifyExitCode": 0,
+    "githubSaved": true,
+    "implementationCommit": "8a81e58046bbaaa043e26fbffc1920c71f1729e7",
+    "pullRequest": "https://github.com/k999ln/rock/pull/96"
   }
 }
