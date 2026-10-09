@@ -69,7 +69,8 @@ const id = (v) =>
   typeof v === 'string' && /^[A-Za-z][A-Za-z0-9_-]{0,99}$/.test(v);
 const safePath = (v) =>
   str(v, 500) &&
-  !/[\\:#\x00-\x1f]/.test(v) &&
+  !/[\\:#]/.test(v) &&
+  ![...v].some((character) => character.charCodeAt(0) < 32) &&
   !v.startsWith('/') &&
   v.split('/').every((p) => p && p !== '.' && p !== '..');
 

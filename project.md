@@ -10,6 +10,8 @@ GitHub main `0455499d`、PR #95 head `dd31cc01`を確認。元dirty checkout・�
 
 可変計画API・Codex接続画面・追加指示の累積・旧Goal保持を実装。対象132試験合格、独立検収pass。実CodexがGitと対象コードを調査し、README改善の依頼へ固定7工程ではない3作業のdraftを返した。ブラウザから共有確認前の未起動、実候補表示を確認。追加指示での実再計画を検証中。全体verifyは既知のai依存未配置でllm:architecture:check停止、同期／baseline／design等は合格。同一実装SHAのGitHub CIを別途確認する。
 
+実装SHA `9f3d950c` の初回CIはtypecheck通過後、lintの制御文字regexと新規20試験の未await登録で停止。制御文字の拒否条件を文字コード比較へ保ち、既存試験と同じawait登録へ修正して再検証する。実Codexの追加指示は2作業のdraftを返し、既存CLI非変更条件を保持した。
+
 ## 2026-10-09 — 既存AMC JSONを担当Botへ直接渡す（AMC05、入力接続の検証完了）
 
 利用者の「このシステムでできる」に対応し、既存AMCのJSON読込み・指示生成を担当Botの入口へ接続する。H1 / ROCK、Git / CI / Operations。添付Goalを別の任務へ置き換えず、ID・revision・意図・task・履歴を保持したローカルコピーを渡す。読み込みを新しい本人認証・検収・実行実績にしない。元Downloadsファイルと元dirty checkoutは変更しない。

@@ -79,7 +79,7 @@ function fixture() {
   return goal;
 }
 
-test('adaptive planning brief preserves intent and source references without granting approval', () => {
+await test('adaptive planning brief preserves intent and source references without granting approval', () => {
   const goal = fixture();
   assert.deepEqual(validateGoal(goal), { ok: true, errors: [] });
   assert.equal(goal.state, 'draft');
@@ -107,7 +107,7 @@ test('adaptive planning brief preserves intent and source references without gra
   );
 });
 
-test('malformed or authority-bearing adaptive metadata cannot be imported as a valid Goal', () => {
+await test('malformed or authority-bearing adaptive metadata cannot be imported as a valid Goal', () => {
   for (const mutate of [
     (g) => {
       g.adaptiveBrief = null;
@@ -172,7 +172,7 @@ test('malformed or authority-bearing adaptive metadata cannot be imported as a v
   }
 });
 
-test('normal owner plan approval preserves adaptive provenance and does not accept any task', () => {
+await test('normal owner plan approval preserves adaptive provenance and does not accept any task', () => {
   const goal = fixture();
   const next = applyGoalEvent(goal, {
     id: 'approve-fixture',

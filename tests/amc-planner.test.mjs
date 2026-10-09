@@ -211,7 +211,7 @@ function call(
   });
 }
 
-test('variable concrete task counts use existing AMC engine and preserve canonical holds', () => {
+await test('variable concrete task counts use existing AMC engine and preserve canonical holds', () => {
   const source = sources(),
     before = JSON.stringify(source);
   for (const count of [1, 3, 9, 24]) {
@@ -243,7 +243,7 @@ test('variable concrete task counts use existing AMC engine and preserve canonic
   assert.equal(JSON.stringify(source), before);
 });
 
-test('feedback creates a new draft with original Goal reference without changing previous data', () => {
+await test('feedback creates a new draft with original Goal reference without changing previous data', () => {
   const previousGoal = {
     id: 'original',
     revision: 4,
@@ -270,7 +270,7 @@ test('feedback creates a new draft with original Goal reference without changing
   assert.ok(goal.tasks.every((t) => t.status === 'pending'));
 });
 
-test('important missing input returns questions and no invented Goal', () => {
+await test('important missing input returns questions and no invented Goal', () => {
   const p = {
     ...proposal(),
     status: 'needs_input',
@@ -291,7 +291,7 @@ test('important missing input returns questions and no invented Goal', () => {
   );
 });
 
-test('proposal validates strict schema, safe paths, owners, references and cycles', () => {
+await test('proposal validates strict schema, safe paths, owners, references and cycles', () => {
   const mutations = [
     (p) => {
       p.approval = true;
@@ -341,7 +341,7 @@ test('proposal validates strict schema, safe paths, owners, references and cycle
   assert.equal(schema.properties.tasks.items.additionalProperties, false);
 });
 
-test('request rejects extra authority data, bad lengths, unknown bot and invalid old task graph', () => {
+await test('request rejects extra authority data, bad lengths, unknown bot and invalid old task graph', () => {
   assert.deepEqual(validatePlannerRequest(request, bots), request);
   for (const input of [
     { ...request, allowCodexUpload: false },
@@ -365,7 +365,7 @@ test('request rejects extra authority data, bad lengths, unknown bot and invalid
     assert.throws(() => validatePlannerRequest(input, bots));
 });
 
-test('native Codex receives stdin, read-only sandbox, inherited auth/model and no bypass', async (t) => {
+await test('native Codex receives stdin, read-only sandbox, inherited auth/model and no bypass', async (t) => {
   const { repo } = fixture(t),
     runDir = join(repo, 'run');
   mkdirSync(runDir);
@@ -412,7 +412,7 @@ test('native Codex receives stdin, read-only sandbox, inherited auth/model and n
   assert.equal(statSync(join(runDir, 'codex-stderr.txt')).mode & 0o777, 0o600);
 });
 
-test('native process stops on cancellation and caps private log output', async (t) => {
+await test('native process stops on cancellation and caps private log output', async (t) => {
   for (const scenario of ['abort', 'output']) {
     const { repo } = fixture(t),
       runDir = join(repo, 'run');
@@ -451,7 +451,7 @@ test('native process stops on cancellation and caps private log output', async (
   }
 });
 
-test('local UI is fresh and startup never invokes the model', async (t) => {
+await test('local UI is fresh and startup never invokes the model', async (t) => {
   let modelCalls = 0,
     loads = 0;
   const { app, url } = await live(t, {
@@ -486,7 +486,7 @@ test('local UI is fresh and startup never invokes the model', async (t) => {
   );
 });
 
-test('localhost Host, exact Origin and session token must all match', async (t) => {
+await test('localhost Host, exact Origin and session token must all match', async (t) => {
   let modelCalls = 0;
   const { app, url } = await live(t, {
     execute: async () => {
@@ -509,7 +509,7 @@ test('localhost Host, exact Origin and session token must all match', async (t) 
   assert.equal(modelCalls, 0);
 });
 
-test('authorized planning returns draft, Git provenance and private artifacts', async (t) => {
+await test('authorized planning returns draft, Git provenance and private artifacts', async (t) => {
   const { app, url, repo } = await live(t);
   const result = await call(app, url);
   assert.equal(result.status, 200);
@@ -528,7 +528,7 @@ test('authorized planning returns draft, Git provenance and private artifacts', 
   );
 });
 
-test('HTTP malformed and oversized requests never reach context/model', async (t) => {
+await test('HTTP malformed and oversized requests never reach context/model', async (t) => {
   let calls = 0;
   const { app, url } = await live(t, {
     collectContext: async () => {
@@ -548,7 +548,7 @@ test('HTTP malformed and oversized requests never reach context/model', async (t
   assert.equal(calls, 0);
 });
 
-test('Git failure and invalid model output have no template fallback or raw error leak', async (t) => {
+await test('Git failure and invalid model output have no template fallback or raw error leak', async (t) => {
   for (const overrides of [
     {
       collectContext: async () => {
@@ -576,7 +576,7 @@ test('Git failure and invalid model output have no template fallback or raw erro
   }
 });
 
-test('single flight blocks concurrent requests; client cancellation aborts model', async (t) => {
+await test('single flight blocks concurrent requests; client cancellation aborts model', async (t) => {
   let started;
   const ready = new Promise((r) => {
     started = r;
@@ -607,7 +607,7 @@ test('single flight blocks concurrent requests; client cancellation aborts model
   assert.equal(aborted, true);
 });
 
-test('timeout does not release single-flight lock before actual worker settles', async (t) => {
+await test('timeout does not release single-flight lock before actual worker settles', async (t) => {
   let finish, started;
   const ready = new Promise((r) => {
     started = r;
@@ -632,7 +632,7 @@ test('timeout does not release single-flight lock before actual worker settles',
   await delay(20);
 });
 
-test('native model result rejects oversized files and symlinks', async (t) => {
+await test('native model result rejects oversized files and symlinks', async (t) => {
   for (const scenario of ['oversize', 'symlink']) {
     const { repo } = fixture(t),
       runDir = join(repo, 'run');
@@ -667,7 +667,7 @@ test('native model result rejects oversized files and symlinks', async (t) => {
   }
 });
 
-test('whitespace normalization keeps the exact raw request artifact and valid engine brief', async (t) => {
+await test('whitespace normalization keeps the exact raw request artifact and valid engine brief', async (t) => {
   const { app, url, repo } = await live(t);
   const input = { ...request, request: '  ' + request.request + '\n' };
   const result = await call(app, url, { body: input });
@@ -684,7 +684,7 @@ test('whitespace normalization keeps the exact raw request artifact and valid en
   );
 });
 
-test('disconnect during Git collection aborts collection and never starts model', async (t) => {
+await test('disconnect during Git collection aborts collection and never starts model', async (t) => {
   let started;
   const ready = new Promise((r) => {
     started = r;
