@@ -6,7 +6,7 @@
 
 main `0455499d` と作業branch `ad6c3472` を確認、後者の8 CI成功を確認した上で着手。今回の変更後の試験・全体verify・GitHub保存は別記録する。main統合・公開は未実施。
 
-10担当のnative Codex TOML、一覧／担当表示／依頼時の対話CLI、task主担当と保留の引継ぎ、Git／PR提出の作業契約を実装。対象16試験・TOML10件・生成同期・mission/project/diff合格。全体verifyはDB進捗件数を同期後、開発依存ai未配置で停止。GitHub同一head CIを確認する。検証証拠は[担当Bot](docs/evidence/project-bots.json)。実モデル呼出し・PR提出完走の受入、独立検収、GitHub App作成は未実施。
+10担当のnative Codex TOML、一覧／担当表示／依頼時の対話CLI、task主担当と保留の引継ぎ、Git／PR提出の作業契約を実装。対象16試験・TOML10件・生成同期・mission/project/diff合格。全体verifyはDB進捗件数を同期後、開発依存ai未配置で停止。GitHub同一head CIを確認する。検証証拠は[担当Bot](docs/evidence/project-bots.json)。 初回CI dcf2616dは追加試験のsort比較関数を要求するlintで停止。文字列比較を明示して再検査する。CodeQL等の取得済み他7 checksはsuccess。実モデル呼出し・PR提出完走の受入、独立検収、GitHub App作成は未実施。
 >
 > **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
 

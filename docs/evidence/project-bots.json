@@ -23,7 +23,10 @@
     "fullVerify": "blocked at llm:architecture:check: ai package not installed in isolated worktree; earlier DB progress inventory drift was synchronized"
   },
   "githubCI": {
-    "status": "pending"
+    "status": "pending_recheck",
+    "previousSha": "dcf2616d42ce8e32dac9389046e1c2c7a2364bbd",
+    "previousVerify": "failed: test sort requires explicit comparator; fixed",
+    "previousOtherChecks": "7 success including CodeQL"
   },
   "acceptance": {
     "liveBotTaskAccepted": false,

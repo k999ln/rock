@@ -22,8 +22,8 @@ void test('project profiles cover existing squads, reference real paths and matc
   );
   const covered = new Set(bots.flatMap((bot) => bot.squads));
   assert.deepEqual(
-    [...covered].sort(),
-    mission.squads.map((squad) => squad.id).sort(),
+    [...covered].sort((a, b) => a.localeCompare(b)),
+    mission.squads.map((squad) => squad.id).sort((a, b) => a.localeCompare(b)),
   );
   for (const bot of bots) {
     const config = readFileSync(
