@@ -27,19 +27,33 @@
     "compatibilityRule": "Keep existing API fields, database tables and saved records using hub readable; never show Hub as the current product name."
   },
   "baseApps": [
-    { "id": "sky", "role": "discover_connect_and_manage_automation_apps" },
-    { "id": "chat", "role": "request_clarify_status_and_result_inbox" },
-    { "id": "wallet", "role": "automation_income_cost_and_funds" },
-    { "id": "market", "role": "generic_paper_market_and_value_spend_runtime" }
+    {
+      "id": "sky",
+      "role": "discover_connect_and_manage_automation_apps"
+    },
+    {
+      "id": "chat",
+      "role": "request_clarify_status_and_result_inbox"
+    },
+    {
+      "id": "wallet",
+      "role": "automation_income_cost_and_funds"
+    },
+    {
+      "id": "market",
+      "role": "generic_paper_market_and_value_spend_runtime"
+    }
   ],
   "homeExperience": {
     "defaultRoute": "/",
     "skyRoute": "/sky",
     "returnPolicy": "every_non_home_route_has_a_direct_home_affordance",
-    "visualBasis": "iphone_inspired_app_launcher",
+    "visualBasis": "intent_first_personal_space",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
-    "customizable": ["wallpaper", "accent", "icon_size", "labels", "app_order"],
+    "customizable": [
+      "focus_mode"
+    ],
     "settingsFunctions": [
       "appearance",
       "account_state",
@@ -56,7 +70,20 @@
       "sanitized_diagnostic_export",
       "allowlisted_device_reset",
       "release_readiness"
-    ]
+    ],
+    "legacyPreferences": "wallpaper/accent/icon_size/labels/app_order remain stored but are not used by the redesigned Home",
+    "intentHandoff": {
+      "storage": "sessionStorage",
+      "ttlSeconds": 600,
+      "oneShot": true,
+      "urlContainsRequestText": false,
+      "autoExecute": false
+    },
+    "latestDirection": {
+      "date": "2026-10-09",
+      "reason": "利用者が公開ホームへの批判を受け、既存概念を壊す先端的な刷新を明示依頼",
+      "scope": "Home presentation and existing Zema/Work entry; no backend authority changes"
+    }
   },
   "systemMaintenance": {
     "route": "/settings/system",
@@ -453,7 +480,10 @@
   "autonomousFundRuntime": {
     "status": "observed_performance_recommender_implemented",
     "refreshIntervalSeconds": 30,
-    "sources": ["signed_billing_earning_receipts", "owned_tool_run_receipts"],
+    "sources": [
+      "signed_billing_earning_receipts",
+      "owned_tool_run_receipts"
+    ],
     "composition": "recomputed_from_ready_tools_strategy_affinity_verified_net_receipts_and_failures",
     "unverifiedYield": null,
     "automaticCapitalMovement": false,
@@ -463,7 +493,10 @@
     "status": "approved_design_provider_adapters_not_connected",
     "osRole": "capability_discovery_consent_instruction_status_receipt_reconciliation",
     "providerRole": "custody_operations_execution_valuation_payout_kyc_aml_jurisdiction_tax_records",
-    "providerTypes": ["wallet", "fund"],
+    "providerTypes": [
+      "wallet",
+      "fund"
+    ],
     "capabilities": [
       "custody",
       "receive",
@@ -491,7 +524,10 @@
     "purpose": "collect_verified_allocated_sky_fee_only",
     "mode": "SANDBOX",
     "status": "contract_fixture_verified",
-    "capabilities": ["collect_platform_fee", "reporting"],
+    "capabilities": [
+      "collect_platform_fee",
+      "reporting"
+    ],
     "monthlyFeeCapMinor": 888,
     "currency": "usd",
     "userFundsCustodied": false,

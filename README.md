@@ -1,3 +1,6 @@
+<!-- home-intent-refresh -->
+ホームで依頼を入力し、矢印でZemaへ引き継いで内容を確認します。「つづきは、ここから。」で保存した仕事を確認できます。ツール一覧は上部ボタンまたは⌘/Ctrl K、表示は「入力に集中」で切り替えます。下書きは同じタブで一度だけ引き継ぎ、自動送信しません。
+
 # Rock star OS — SkyとWallet
 
 現在のWeb/Skyローンチ候補、起動・設定・監視・復旧手順は[OSバックエンド・ローンチ手順](docs/backend-launch-20260912.md)を参照してください。
@@ -55,7 +58,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 ## このbranchの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-06 / NFC入口からWebホームと実OS版の配布状況へ進む導線を準備。タグにOS本体を格納せず、未承認のDraft配布物を一般ダウンロード扱いにしない / 完了 67/93件
+最終更新: 2026-10-09 / NFC入口からWebホームと実OS版の配布状況へ進む導線を準備。タグにOS本体を格納せず、未承認のDraft配布物を一般ダウンロード扱いにしない / 完了 67/93件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -84,7 +87,7 @@ Developer Previewの[導入・初回実行・復旧ガイド](docs/preview-insta
 | SPN01 | native Walletへsimulation/PAPER限定のValue/Spend台帳・exact approval・再照合を統合 | 完了 | [記録](systems/rock-star-os/src/blackberryrock/spend.py) · [記録](systems/rock-star-os/src/blackberryrock/wallet.py) · [記録](systems/rock-star-os/src/blackberryrock/hub_server.py) · [記録](systems/rock-star-os/tests/test_spend_runtime.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) · [記録](docs/value-spend-runtime.md) |
 | FND01 | ツールの検証済み純収益・実費・receipt・失敗から構成と観測利回りを30秒ごとに再計算 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](tests/automation-fund.test.mjs) · [記録](docs/everything-market-and-autonomous-fund-20260913.md) |
 | WEB01 | 主要画面のstyle契約と配備asset closureを検査し、GitHubと本人限定Sitesを同一commitへ固定 | 進行中 | [記録](tests/web-route-style-contract.test.mjs) · [記録](scripts/check-web-asset-closure.mjs) · [記録](tests/web-asset-closure.test.mjs) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
-| HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
+| HOME01 | 依頼と本人の仕事を中心とするHome、集中表示、OS設定入口を実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) · [記録](components/home-field.tsx) · [記録](lib/home-intent.ts) · [記録](tests/home-intent.test.mjs) · [記録](docs/evidence/home-intent-refresh.json) |
 | HOME02 | Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止 | 完了 | [記録](components/workspace-shell.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-maintenance.tsx) · [記録](app/fund/page.tsx) · [記録](app/fund/legacy/page.tsx) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/product-baseline.md) |
 | NFC01 | NFC URLからWebホームを直接開き、PWA追加を案内するタグ用データを用意 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](docs/nfc/README.md) · [記録](docs/nfc/rockstaros-url.txt) · [記録](docs/nfc/rockstaros-uri.ndef) · [記録](scripts/create-nfc-payload.mjs) · [記録](tests/nfc-entry.test.mjs) |
 | NFC02 | NFC初回案内から実OS版の配布状況へ接続し、未公開候補の直接ダウンロードを防ぐ | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/preview-download.tsx) · [記録](data/rockstaros-preview.json) · [記録](docs/nfc/README.md) · [記録](tests/nfc-entry.test.mjs) |

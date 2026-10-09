@@ -102,6 +102,8 @@ export default function Workbench() {
       .then((data) => {
         if (active) {
           setJobs(data.jobs);
+          const requested = new URL(window.location.href).searchParams.get('workJob');
+          if (requested && data.jobs.some((job) => job.id === requested)) setSelectedId(requested);
           setReady(true);
         }
       })

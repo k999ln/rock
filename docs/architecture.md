@@ -46,3 +46,15 @@ Mr.の案件チェック・出典整理・無料版作成・納品記録照合�
 ## Mr.の実行面
 
 `lib/mr-tools.ts` がブラウザ向けの独立処理、`components/mr-tool-runner.tsx` が入力/結果/保存。入力原稿は永続化・外部送信しない。`toolkits/mr/rock_star_tools.py` は固定ハッシュを検証した原本をローカルに読み込む。保存済みツールを維持しつつ、新しい手順に合わせココナラの旧チェック項目だけをリセットしてv2へ移行する。
+
+## Home: 意図から仕事へ（2026-10-09）
+
+- 目的・体験: Homeで依頼を入力し、Zemaへ引継ぎ確認。本人の仕事を状態別に見て再開する。道具は下部navと検索可能dialogから開く。
+- 責任: Web / PWA / Sites、ROCK、HOME01 / WEB01。Homeは表示と下書き引継ぎを担い、認証・workflow・予算承認を代行しない。
+- 入出力: 1〜2000文字の依頼をsessionStorageへ保存し、Zemaの編集欄へ一回だけ読み出す。GET /api/work-jobsの本人jobを一覧・絞込み・詳細リンクへ表示する。
+- 状態: loading / ready / signin / errorと、active / review / completed / cancelledを区別。activeはworkflow状態でありAgent実行中の捏造ではない。
+- 保存: 下書きは同じタブ、10分で失効、読出時消去。URL・localStorage・新規serverへ本文を保存しない。集中表示のbooleanだけをlocalStorageへ保存。旧外観設定値を削除しない。
+- 失敗・復旧: 保存拒否なら入力を残してコピーとZemaへの直接導線を提示。401は履歴を消してサインイン、読取失敗は空件数を捏造せず再読込。中断・古い応答は破棄する。
+- 承認: HomeはGETだけ。下書き引継ぎでTool実行・外部送信・支払は開始しない。実行は既存画面の承認に従う。
+- 合格条件: handoff一回/期限/不正値/保存失敗試験、typecheck、既存回帰、PC/mobileで入力→Zema・検索dialog・集中表示・仕事導線を確認。motion低減とkeyboard/focusを保持する。
+- 未決定: provider本番受入・native移植は既存gateへ残す。別Site移行は今回のUI刷新へ混ぜず、指定されたpublic Siteのaudienceを保持する。

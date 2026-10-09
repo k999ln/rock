@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-09",
+  "taskIds": [
+    "HOME01",
+    "WEB01"
+  ],
+  "primaryOwner": "ROCK",
+  "sourceBase": "b2d6d95927168fd345674bdce0db8d9a82fe85f6",
+  "githubMainRead": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "site": {
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+    "audience": "public",
+    "deployment": "pending"
+  },
+  "validation": {
+    "publishedSourceVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "unitTests": 285,
+      "fashionTests": 19,
+      "workerD1Assertions": 495,
+      "assetReferences": 94,
+      "missingAssets": 0
+    },
+    "canonical": {
+      "typecheck": "pass",
+      "designCheck": "pass",
+      "focusedTests": 22,
+      "fullVerify": "blocked_by_preexisting_database_status_mismatch"
+    },
+    "browser": {
+      "viewports": [
+        1280,
+        390,
+        320
+      ],
+      "checked": [
+        "intent preset to Zema editable draft without auto-send",
+        "native dialog search and Escape focus restoration",
+        "focus mode preserved after reload",
+        "local WorkJob creation displayed on Home",
+        "completed/active filtering",
+        "same job restored through workJob link",
+        "NFC entry guide and dismissal",
+        "320px document width equals viewport"
+      ],
+      "localDataOnly": true,
+      "screenshots": "work/home-redesign-qa/"
+    }
+  },
+  "limitations": [
+    "Native OS/physical device/production Provider/billing acceptance not changed",
+    "GitHub main not merged",
+    "Public source is older than canonical repository; existing APIs and audience preserved"
+  ]
+}

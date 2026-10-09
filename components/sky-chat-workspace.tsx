@@ -10,6 +10,7 @@ import {
 } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { takeHomeIntent } from '@/lib/home-intent';
 import {
   Ban,
   Bot,
@@ -128,6 +129,15 @@ export default function SkyChatWorkspace() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
   const [draft, setDraft] = useState('');
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+    try {
+      const intent = takeHomeIntent(window.sessionStorage);
+      if (intent) setDraft(intent);
+    } catch { /* Unavailable tab storage leaves the composer editable. */ }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
   const [messages, setMessages] = useState<ChatEntry[]>([]);
   const [activeRequest, setActiveRequest] = useState<ActiveRequest | null>(
     null,
@@ -356,17 +366,17 @@ export default function SkyChatWorkspace() {
 
   return (
     <WorkspaceShell
-      title="Chat"
+      title="Zema"
       contentClassName="sky-chat-page"
       running={running}
     >
-      <section className="sky-chat-simple" aria-label="Chatスレッド">
+      <section className="sky-chat-simple" aria-label="Zemaスレッド">
         <header className="sky-chat-commandbar">
           <div>
             <span>RockstarOS</span>
-            <h1>Chat</h1>
+            <h1>Zema</h1>
           </div>
-          <nav aria-label="Chatナビゲーション">
+          <nav aria-label="Zemaナビゲーション">
             <Link href="/" aria-label="ホームへ戻る">
               <House size={18} />
               <span>ホーム</span>

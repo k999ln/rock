@@ -232,7 +232,7 @@ export function validateBaseline(
       data.homeExperience?.skyRoute === '/sky' &&
       data.homeExperience?.systemUtility === 'settings' &&
       data.homeExperience?.preferencesStorage === 'device_local' &&
-      data.homeExperience?.customizable?.includes('app_order') &&
+      data.homeExperience?.customizable?.includes('focus_mode') &&
       data.homeExperience?.settingsFunctions?.includes('pc_connector') &&
       data.homeExperience?.settingsFunctions?.includes(
         'install_recovery_guidance',

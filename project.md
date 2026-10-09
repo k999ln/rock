@@ -1,3 +1,11 @@
+## 2026-10-09 — Home刷新の検証完了・公開準備
+
+公開sourceの全体 `npm run verify` exit0（Node285/285、Fashion19/19、Worker/D1 API495項目、Web asset94参照/欠落0）。PC1280、スマホ390/320で依頼例→Zema編集欄（自動送信なし）、検索dialog/Escape、集中表示の再読込保持、ローカル仕事作成→Home一覧→filter→同一仕事詳細、NFC導入案内を確認。正本側はtypecheck・design:check・対象22試験合格。正本全体verifyは既存のdatabase-status不一致で停止したため成功へ換算しない。証拠はdocs/evidence/home-intent-refresh.json。次は指定public Siteへ配備し、version/sourceと公開画面を記録。mainは未反映。
+
+## 2026-10-09 — 意図から仕事へつなぐHome刷新（HOME01、実装・検証中）
+
+明示依頼により旧launcherを置き換え。公開v44 source b2d6d959の業務機能を保持し、依頼の一回限り引継ぎ・仕事一覧・ツール検索・集中表示を実装。全体設計と最新要望の正本はGitHub k999ln/rock。検証はtests/home-intent.test.mjs、typecheck、npm run verify、PC/mobileブラウザ。公開は検証後。
+
 
 ## 2026-10-01 — Sky文章ツールの利用入口と成果保存
 
@@ -463,7 +471,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 `done` はそのタスクの成果物と検証が完了した場合だけ使用。設計タスクの完了は実装完了を意味しません。`blocked` は理由を記録し、予定を完了数へ含めません。継続的な無人開発や毎時同期が稼働しているという意味ではありません。
 
 <!-- project-status:start -->
-最終更新: 2026-10-06 / NFC入口からWebホームと実OS版の配布状況へ進む導線を準備。タグにOS本体を格納せず、未承認のDraft配布物を一般ダウンロード扱いにしない / 完了 67/93件
+最終更新: 2026-10-09 / NFC入口からWebホームと実OS版の配布状況へ進む導線を準備。タグにOS本体を格納せず、未承認のDraft配布物を一般ダウンロード扱いにしない / 完了 67/93件
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -492,7 +500,7 @@ R1実装は `b460ccf`、追加の検証改善は `7103e55` としてrockのmain�
 | SPN01 | native Walletへsimulation/PAPER限定のValue/Spend台帳・exact approval・再照合を統合 | 完了 | [記録](systems/rock-star-os/src/blackberryrock/spend.py) · [記録](systems/rock-star-os/src/blackberryrock/wallet.py) · [記録](systems/rock-star-os/src/blackberryrock/hub_server.py) · [記録](systems/rock-star-os/tests/test_spend_runtime.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) · [記録](docs/value-spend-runtime.md) |
 | FND01 | ツールの検証済み純収益・実費・receipt・失敗から構成と観測利回りを30秒ごとに再計算 | 完了 | [記録](lib/automation-fund.ts) · [記録](lib/automation-fund-store.ts) · [記録](app/api/automation-funds/route.ts) · [記録](components/autonomous-fund-market.tsx) · [記録](tests/automation-fund.test.mjs) · [記録](docs/everything-market-and-autonomous-fund-20260913.md) |
 | WEB01 | 主要画面のstyle契約と配備asset closureを検査し、GitHubと本人限定Sitesを同一commitへ固定 | 進行中 | [記録](tests/web-route-style-contract.test.mjs) · [記録](scripts/check-web-asset-closure.mjs) · [記録](tests/web-asset-closure.test.mjs) · [記録](app/workspace.css) · [記録](docs/product-baseline.md) |
-| HOME01 | iPhone着想のホーム、端末内カスタマイズ、OS運用設定アプリを実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) |
+| HOME01 | 依頼と本人の仕事を中心とするHome、集中表示、OS設定入口を実装 | 完了 | [記録](app/page.tsx) · [記録](app/sky/page.tsx) · [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](app/settings/page.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-settings.module.css) · [記録](docs/product-baseline.md) · [記録](components/home-field.tsx) · [記録](lib/home-intent.ts) · [記録](tests/home-intent.test.mjs) · [記録](docs/evidence/home-intent-refresh.json) |
 | HOME02 | Home以外の全画面へ直接Homeへ戻る導線を常設し、共通・独自レイアウトの回帰を防止 | 完了 | [記録](components/workspace-shell.tsx) · [記録](components/sky-chat-workspace.tsx) · [記録](components/system-settings.tsx) · [記録](components/system-maintenance.tsx) · [記録](app/fund/page.tsx) · [記録](app/fund/legacy/page.tsx) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/guide/page.tsx) · [記録](tests/web-route-style-contract.test.mjs) · [記録](docs/product-baseline.md) |
 | NFC01 | NFC URLからWebホームを直接開き、PWA追加を案内するタグ用データを用意 | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](docs/nfc/README.md) · [記録](docs/nfc/rockstaros-url.txt) · [記録](docs/nfc/rockstaros-uri.ndef) · [記録](scripts/create-nfc-payload.mjs) · [記録](tests/nfc-entry.test.mjs) |
 | NFC02 | NFC初回案内から実OS版の配布状況へ接続し、未公開候補の直接ダウンロードを防ぐ | 完了 | [記録](components/home-screen.tsx) · [記録](components/home-screen.module.css) · [記録](components/preview-download.tsx) · [記録](data/rockstaros-preview.json) · [記録](docs/nfc/README.md) · [記録](tests/nfc-entry.test.mjs) |
