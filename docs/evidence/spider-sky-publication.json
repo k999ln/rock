@@ -4,13 +4,14 @@
   "relatedTaskId": "SKY20",
   "userDirection": "Publish SPIDER in the existing public Sky, following the user request to finish the work.",
   "canonicalBranch": "codex/spider-sky",
-  "mainIntegrated": false,
-  "productionDeployed": false,
+  "mainIntegrated": true,
+  "productionDeployed": true,
   "securityPolicy": {
     "classified": "One exact recomputed public source digest at its single evidence path; two historical occurrences.",
     "policyCommit": "b51181022a417f4c6564be74ebfbe783f5dc1423",
     "realScannerPolicyTests": 9,
-    "changedValuesAndPathsStillDetected": true
+    "changedValuesAndPathsStillDetected": true,
+    "reachableHistoryCandidates": 0
   },
   "site": {
     "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
@@ -21,11 +22,51 @@
     "preserved": "Existing Home/navigation, public audience, existing migration bytes and code timeline candidate.",
     "added": "Standalone SPIDER catalog entry and Zema inspection page using the canonical component, Worker and detector.",
     "focusedInspectionTests": 22,
-    "fullVerify": "pending"
+    "fullVerify": {
+      "exitCode": 0,
+      "nodePass": 328,
+      "fashionPass": 19,
+      "workerD1Assertions": 522,
+      "assetReferences": 99,
+      "missingAssets": 0,
+      "logSha256": "1b252771a96bb768234b8fcccef72aceef7d75bb29a760ea088090b111746d75"
+    },
+    "sourcePushed": true
   },
   "remaining": [
-    "same-SHA PR checks and main integration",
-    "Site candidate verification and deployment",
-    "public route/Worker/API readback"
-  ]
+    "Real-owner code publication not performed on production; authenticated writes were tested with local synthetic users.",
+    "Third-party scanner products, Git transport and native/Pixel/always-on guard acceptance remain separate."
+  ],
+  "mergeCommit": "f84f9fbe14472ac0547e54443334269461d52a0f",
+  "githubCI": {
+    "sourceCommit": "46db5cbbaaeb9d2645bc39676a94357caa158827",
+    "allSuccessful": true,
+    "checkCount": 7,
+    "verify": "https://github.com/k999ln/rock/actions/runs/37991804875",
+    "secrets": "https://github.com/k999ln/rock/actions/runs/37991804825",
+    "codeql": "https://github.com/k999ln/rock/actions/runs/37991804847",
+    "repairAndWebSecurity": "https://github.com/k999ln/rock/actions/runs/37991804882"
+  },
+  "deployment": {
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "version": 49,
+    "versionId": "appgprj_6aa444b6e6508191a19f16405d0be927~appgver_41626c2c350881919208854239ca928b",
+    "sourceCommit": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc",
+    "deploymentId": "appgdep_6ac958e266cc8191bb460b1b86204a3e",
+    "status": "succeeded",
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+    "audience": "public",
+    "deployedAt": "2026-10-09T21:13:17.969665+00:00"
+  },
+  "publicReadback": {
+    "skyEntry": "pass",
+    "standaloneWorker": "sample secret 1, code 1; input remains local",
+    "codeListApi": "HTTP 200; no public test commits; providers spider/secret-check/none",
+    "migrationTables": [
+      "sky_code_commits",
+      "sky_code_repositories"
+    ],
+    "screenshot": "/Users/kaiya/.codex-work/visualizations/2026/10/09/01a12186-39d5-7bc0-ac9b-5e3c899e9d34/spider-live.png"
+  },
+  "recovery": "Redeploy the previous saved Site version through Sites if required. Preserve added D1 tables and immutable history; do not drop user records."
 }

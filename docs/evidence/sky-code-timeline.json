@@ -3,13 +3,13 @@
   "task": "SKY20",
   "primaryOwner": "ROCK",
   "securityTask": "SYS15",
-  "status": "implemented_verified_deployment_approval_required",
+  "status": "published",
   "request": "Sky timeline agent source publication with Git-like commits/history/diff; default SPIDER protection removable and replaceable",
   "canonical": {
     "repository": "k999ln/rock",
     "branch": "codex/spider-sky",
     "mainObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
-    "mainIntegrated": false,
+    "mainIntegrated": true,
     "sourceSha256": {
       "lib/sky-code.ts": "368a6680b4e7146430ef7d8774767be6a8119259cc3d3fdc8da421e894e501d4",
       "lib/sky-code-api.ts": "ac6b8e8bff4f233d82a56a46b96b947d683083cb1942a6a33a7bd8c53988b82e",
@@ -26,7 +26,8 @@
     },
     "implementationCommit": "8a81e58046bbaaa043e26fbffc1920c71f1729e7",
     "githubSaved": true,
-    "pullRequest": "https://github.com/k999ln/rock/pull/96"
+    "pullRequest": "https://github.com/k999ln/rock/pull/96",
+    "mergeCommit": "f84f9fbe14472ac0547e54443334269461d52a0f"
   },
   "verification": {
     "featureTests": 15,
@@ -87,9 +88,9 @@
     "baseVersion": 48,
     "baseCommit": "cc61f7057301113d82994a1c2d7fb1c4c30acd31",
     "checkout": "/private/tmp/sky-code-site",
-    "preparedOnly": true,
-    "sourcePushed": false,
-    "productionDeployed": false,
+    "preparedOnly": false,
+    "sourcePushed": true,
+    "productionDeployed": true,
     "migration": "0016_sky_code_timeline.sql",
     "canonicalMigration": "0060_sky_code_timeline.sql",
     "preserved": [
@@ -109,9 +110,10 @@
     "approvalBlock": {
       "action": "Sites source workflow with archivePath (source push and publication preparation)",
       "reason": "Automatic approval reviewer requires explicit approval of concrete deployment payload and side effects",
-      "impactIfApproved": "publish code-sharing UI/API and add two D1 tables; existing audience and existing pages preserved; no test source auto-published"
+      "impactIfApproved": "publish code-sharing UI/API and add two D1 tables; existing audience and existing pages preserved; no test source auto-published",
+      "resolved": "User requested completing the public Sky reflection in the original chat; standard source/save/deploy operations succeeded on 2026-10-09."
     },
-    "nextAction": "After explicit owner approval, refresh same-site write credential; rerun site-workflow with prior opening result, commands [] and archivePath /private/tmp/sky-code-site.tar.gz; save exact returned source commit and archive, deploy saved version, and read back /sky plus code API. If remote source moved, reopen/reconcile without overwriting it.",
+    "nextAction": "Use the published Sky code timeline. Production owner writes were not fabricated.",
     "sharedImplementationHashes": {
       "lib/sky-code.ts": "368a6680b4e7146430ef7d8774767be6a8119259cc3d3fdc8da421e894e501d4",
       "lib/sky-code-api.ts": "ac6b8e8bff4f233d82a56a46b96b947d683083cb1942a6a33a7bd8c53988b82e",
@@ -119,14 +121,22 @@
       "lib/sky-code-security.ts": "f41cc4f609a9c4ca3b1cab487f19c46a581bea4c804ebe82485d1f301c7cc3dc",
       "components/sky-code-timeline.tsx": "2570e6f9cb72c797f06b5f3b594a9942da6c82b6e7619c5c29bb3c7a95e5e1d5",
       "components/sky-code-timeline.module.css": "41b25bf04ee69a1e054f24a1b76530db9144ecebf16ba444b7a9cf31623bb2ee"
+    },
+    "publication": {
+      "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+      "version": 49,
+      "versionId": "appgprj_6aa444b6e6508191a19f16405d0be927~appgver_41626c2c350881919208854239ca928b",
+      "sourceCommit": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc",
+      "deploymentId": "appgdep_6ac958e266cc8191bb460b1b86204a3e",
+      "status": "succeeded",
+      "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+      "audience": "public",
+      "deployedAt": "2026-10-09T21:13:17.969665+00:00"
     }
   },
   "remaining": [
-    "Sites source push/save/deployment approval",
-    "production migration/API/UI readback",
-    "real owner-authenticated publication acceptance",
-    "third-party security products not connected",
-    "Git transport/branch merging not implemented",
-    "main integration remains separate"
+    "Real owner-authenticated code publication acceptance",
+    "Third-party security products not connected",
+    "Git transport/branch merging not implemented"
   ]
 }

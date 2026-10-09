@@ -2949,7 +2949,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 
 # 2026-09-21 — Rocket Star orbital communication access page
 
-## 2026-10-09 — SkyへのSPIDER公開反映を再開（SYS15／SKY20）
+## 2026-10-09 — SkyへのSPIDER公開反映完了（SYS15／SKY20）
 
 利用者の「やんないと」を公開反映の指示として受け、PR #96の検証・main統合・既存public Siteへの反映・実画面確認まで進める。最新mainは0455499d。現PRのverify／CodeQL等は成功、secretsの残る2候補は同じlib/sky-code-api.tsの公開SHA-256と再計算して一致したため、値と証拠pathの組だけ分類する。新値・別pathの検出を維持する。配布候補はv48からの既存差分を引き継ぎ、単独検査Toolの入口も現行Siteに接続する。配備前の状態であり、main統合・本番反映をまだ完了としない。
 
@@ -2967,6 +2967,8 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 - Matched the avocadoMini visual language with black studio space, oversized white type, satin metal, cyan sensor light, soft blur transitions, a compact progress rail, and responsive mobile composition.
 - Funding stays display-only and fail closed. The call to action remains disabled and explicitly states that payments are not open.
 - Published as avocadoMini Site v34 from source `1a78977a0b9272310dfc7e2a062c2ff8bafd7b2e`; the public route and desktop/mobile layouts were verified before release.
+
+検証完了: 46db5cbbのGitHub全7チェック成功後、PR #96を通常merge f84f9fbeでmainへ統合。Site候補の全verifyはNode328・Fashion19・Worker/D1 522・assets99/欠落0。既存v48に必要な差分だけを適用したsource e95e63a1をSites v49として公開し、公開SkyからSPIDER起動・実Worker検出を確認。コード一覧APIは200、SPIDER／Secret Check／noneの3選択肢、公開test commit 0件、追加2表を確認した。原文を扱う単独検査と、本人が公開するコード履歴を分離。証拠: [公開反映](docs/evidence/spider-sky-publication.json)。次は利用者の実コード利用。第三者検査器・Git transport・native実機常駐保護は別受入。
 
 ## 未完了PR統合候補のローカル受入
 

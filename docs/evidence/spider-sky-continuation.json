@@ -103,13 +103,11 @@
     "tests/spider-inspector-worker.test.mjs": "46e4b6c6cba7c393117f8098a208121986652f695de98fe58077a3a16ae27253",
     "public/toolkits/sky-mcp-connector.zip": "37175a409f6937fa6997cb365b7055b938d4e014edba3d56cccb79145a2d08d9"
   },
-  "mainIntegrated": false,
-  "productionDeployed": false,
+  "mainIntegrated": true,
+  "productionDeployed": true,
   "fileChooserUiAcceptance": "PASS: synthetic CRLF Python file loaded through native chooser, language auto-selected, actual Worker finding line 3 selected exact eval(user_input)",
   "unresolved": [
-    "Owner review and main integration",
-    "Production publication",
-    "Native/physical guard acceptance remains separate"
+    "Native/physical/always-on acceptance remains separate"
   ],
   "github": {
     "branch": "codex/spider-sky",
@@ -117,5 +115,6 @@
     "savedBaseCommit": "e79d6b9d14d1286619c37e9d48c14b8b072ddc52",
     "sameHeadCi": "Read live checks on the PR; execution success is not absence of alerts",
     "validatedSourceCommit": "631f94209363b175c6770cea8afb34f7d6ed8c52"
-  }
+  },
+  "publicationEvidence": "docs/evidence/spider-sky-publication.json"
 }
