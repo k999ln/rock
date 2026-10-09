@@ -35,6 +35,7 @@ import {
 import type { WorkJob } from '@/lib/workflow';
 import { writeHomeIntent, HOME_INTENT_MAX_LENGTH } from '@/lib/home-intent';
 import styles from './home-screen.module.css';
+import OSHeader from './os-header';
 
 type InstallPrompt = Event & {
   prompt: () => Promise<void>;
@@ -301,15 +302,7 @@ export default function HomeScreen() {
       <a href="#home-intent" className={styles.skip}>
         依頼を入力する
       </a>
-      <header className={styles.header}>
-        <Link href="/" className={styles.brand} aria-label="RockstarOS ホーム">
-          <Asterisk size={29} strokeWidth={1.7} />
-          <span>
-            Rockstar<span className={styles.brandOs}>OS</span>
-          </span>
-          <span className={styles.version}>1.0</span>
-        </Link>
-        <div className={styles.headerCenter}>ホーム</div>
+      <OSHeader title="ホーム">
         <button
           className={styles.launcher}
           onClick={() => {
@@ -323,7 +316,7 @@ export default function HomeScreen() {
             <Command size={11} /> K
           </kbd>
         </button>
-      </header>
+      </OSHeader>
 
       {nfcEntry && !installed && !installDismissed && (
         <aside
@@ -364,15 +357,6 @@ export default function HomeScreen() {
           </p>
         </aside>
       )}
-
-      <nav className={styles.dock} aria-label="RockstarOSのツール">
-        {apps.map(({ name, href, Icon }) => (
-          <Link key={href} href={href}>
-            <Icon size={21} strokeWidth={1.6} />
-            <span>{name}</span>
-          </Link>
-        ))}
-      </nav>
 
       <section className={styles.hero} aria-labelledby="home-title">
         <div className={styles.heroCopy}>

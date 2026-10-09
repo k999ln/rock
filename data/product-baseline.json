@@ -48,7 +48,7 @@
     "defaultRoute": "/",
     "skyRoute": "/sky",
     "returnPolicy": "every_non_home_route_has_a_direct_home_affordance",
-    "visualBasis": "neutral_app_aligned_home",
+    "visualBasis": "shared_os_design_tokens_and_header",
     "systemUtility": "settings",
     "preferencesStorage": "device_local",
     "customizable": [
@@ -81,10 +81,10 @@
     },
     "latestDirection": {
       "date": "2026-10-09",
-      "reason": "利用者がHomeと他アプリの不一致を指摘し、全体統一またはHomeの中性化を明示。Homeの彫刻・ライム・大きなコピーを撤去して既存アプリのトーンへ調整",
-      "scope": "Home presentation and existing Zema/Work entry; no backend authority changes"
+      "reason": "利用者がデザイン未統一を再指摘し、HomeだけでなくWeb主要アプリ共通の外観・導線へ修正",
+      "scope": "Home/Sky/Zema/Wallet/Market/Settings shared appearance and navigation; existing authority unchanged"
     },
-    "focusMode": "hide_app_shortcuts_intro_and_examples"
+    "focusMode": "hide_intro_and_examples_keep_global_navigation"
   },
   "systemMaintenance": {
     "route": "/settings/system",
@@ -572,5 +572,21 @@
     "followup": "docs/release-followup-20260910.md"
   },
   "latestProgressAudit": "docs/evidence/launch/progress-audit-20260912.json",
-  "currentStateDocument": "docs/current-state-20260911.md"
+  "currentStateDocument": "docs/current-state-20260911.md",
+  "webDesignSystem": {
+    "tokens": "app/os-design-tokens.css",
+    "header": "components/os-header.tsx",
+    "appearance": "app/os-appearance.css",
+    "routes": [
+      "/",
+      "/sky",
+      "/chat",
+      "/wallet",
+      "/market",
+      "/settings"
+    ],
+    "theme": "graphite_silver",
+    "stateColors": "semantic_with_labels",
+    "minimumTouchTargetPx": 44
+  }
 }

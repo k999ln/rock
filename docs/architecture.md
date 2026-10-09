@@ -59,3 +59,13 @@ Mr.の案件チェック・出典整理・無料版作成・納品記録照合�
 - 承認: HomeはGETだけ。下書き引継ぎでTool実行・外部送信・支払は開始しない。実行は既存画面の承認に従う。
 - 合格条件: handoff一回/期限/不正値/保存失敗試験、typecheck、既存回帰、PC/mobileで入力→Zema・検索dialog・集中表示・仕事導線を確認。motion低減とkeyboard/focusを保持する。
 - 未決定: provider本番受入・native移植は既存gateへ残す。別Site移行は今回のUI刷新へ混ぜず、指定されたpublic Siteのaudienceを保持する。
+
+## Web共通デザイン（2026-10-09修正）
+
+- 目的・体験: Home・Sky・Zema・Wallet・Market・設定を、同じ製品のアプリとして行き来する。全画面で同じRockstarOSヘッダー、主要6アプリのナビゲーション、選択表示、コンテンツ幅を使う。Home単独の中性化では不十分という利用者の明示指示に基づく。
+- 共通定義: `app/os-design-tokens.css`を背景・面・文字・罫線・focus・意味色の正本にする。`components/os-header.tsx`と`app/os-appearance.css`を共通操作部にする。背景#0b0d10、面#15181d、文字#f4f6f8、選択・主操作は銀色。入力focusは淡い青、成功・注意・失敗は意味色とラベルを併用する。
+- 責任・入出力: Web / PWA / Sites、ROCK、WEB04 / HOME01。既存routeとpathname、実行中状態を入力に表示する。API・owner認証・仕事状態・料金・権限を変更しない。
+- 状態・保存: loading、未認証、失敗、workflow状態をそのまま表示する。共通ナビに現在地をaria-currentで示す。新規サーバー保存なし。Home集中表示は説明と入力例だけを畳み、共通ナビを残す。
+- 失敗・承認・復旧: running時は共通ナビも既存の離脱防止に従う。表示の変更で接続・送信・支払を実行しない。Sitesの前版v46を保存し、必要なら同版へ戻せる。
+- 合格条件: PC1280・スマホ390/320で全6routeのヘッダー・背景・選択・横はみ出し・入力・検索を確認。共通文字/面のcontrast、既存style contract、typecheck、design:check、npm run verify、配信version/sourceを記録する。
+- 未決定: native OS受入、provider本番・課金gateは既存契約へ残す。public製品紹介・OS配布案内はアプリ画面とは役割が異なり、一般利用可能という表示へ変更しない。

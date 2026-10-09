@@ -454,14 +454,7 @@ export default function SkyWorkspace({
               >
                 <MessageCircle size={19} />
               </Link>
-              <button
-                className="sky-header-action"
-                aria-label="MCP接続・管理"
-                onClick={() => setMcpOpen(true)}
-              >
-                <Network size={19} />
-                <span>MCP</span>
-              </button>
+
               <button
                 className="sky-header-action"
                 aria-label="MCP接続・管理"

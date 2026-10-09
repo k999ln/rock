@@ -1,10 +1,10 @@
 .home {
-  --home-accent: #e5e7eb;
-  --ink: #f4f6f8;
-  --muted: #939ba6;
-  --line: #2b3037;
+  --home-accent: var(--os-accent);
+  --ink: var(--os-text);
+  --muted: var(--os-muted);
+  --line: var(--os-line);
   min-height: 100dvh;
-  background: #0b0d10;
+  background: var(--os-bg);
   color: var(--ink);
   position: relative;
   isolation: isolate;
@@ -38,7 +38,7 @@
 .home a:focus-visible,
 .home textarea:focus-visible,
 .home input:focus-visible {
-  outline: 2px solid #b9d8f2;
+  outline: 2px solid var(--os-focus);
   outline-offset: 4px;
 }
 .home button:disabled {
@@ -50,7 +50,7 @@
   top: -80px;
   z-index: 10;
   background: var(--home-accent);
-  color: #111 !important;
+  color: var(--os-text) !important;
   padding: 16px;
 }
 .skip:focus {
@@ -78,7 +78,7 @@
 .brand > svg {
   width: 24px;
   height: 24px;
-  color: #e5e7eb;
+  color: var(--os-text);
 }
 .brandOs {
   color: inherit;
@@ -103,7 +103,7 @@
   gap: 14px;
   background: none;
   border: 0;
-  color: #c6cbd2;
+  color: var(--os-muted);
   font-size: 12px !important;
   min-height: 44px;
 }
@@ -111,7 +111,7 @@
   display: flex;
   align-items: center;
   gap: 3px;
-  border: 1px solid #353b43;
+  border: 1px solid var(--os-line);
   padding: 3px 5px;
   border-radius: 4px;
   color: var(--muted);
@@ -133,16 +133,16 @@
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: #15181d;
-  color: #dce0e5;
+  background: var(--os-bg);
+  color: var(--os-text);
   font-size: 13px;
   transition:
     background 0.15s,
     border-color 0.15s;
 }
 .dock a:hover {
-  background: #20252c;
-  border-color: #535c68;
+  background: var(--os-bg);
+  border-color: var(--os-line);
 }
 .hero {
   max-width: 800px;
@@ -203,19 +203,19 @@
 }
 .composer {
   padding: 18px 18px 12px;
-  border: 1px solid #3c434d;
+  border: 1px solid var(--os-line);
   border-radius: 12px;
-  background: #15181d;
+  background: var(--os-bg);
   transition: border-color 0.15s;
 }
 .composer:focus-within {
-  border-color: #8eabbf;
+  border-color: var(--os-line);
 }
 .composerLabel {
   display: block;
   margin-bottom: 10px;
   font-size: 12px;
-  color: #dce0e5;
+  color: var(--os-text);
 }
 .composer textarea {
   display: block;
@@ -232,7 +232,7 @@
   line-height: 1.7;
 }
 .composer textarea::placeholder {
-  color: #939ba6;
+  color: var(--os-muted);
   opacity: 1;
 }
 .composerBottom {
@@ -246,7 +246,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #c6cbd2;
+  color: var(--os-muted);
   font-size: 11px;
 }
 .tinyStar {
@@ -265,10 +265,10 @@
   border: 0;
   border-radius: 50%;
   background: var(--home-accent);
-  color: #20252c;
+  color: var(--os-accent-ink);
 }
 .composerBottom button:not(:disabled):hover {
-  background: #fff;
+  background: var(--os-accent);
 }
 .example {
   display: flex;
@@ -290,7 +290,7 @@
   color: var(--ink);
 }
 .intentError {
-  color: #f3bb99;
+  color: var(--os-muted);
   font-size: 12px;
   line-height: 1.8;
 }
@@ -345,7 +345,7 @@
   background: none;
   border: 1px solid var(--line);
   border-radius: 50%;
-  color: #c6cbd2;
+  color: var(--os-muted);
 }
 .activityBar {
   display: flex;
@@ -386,7 +386,7 @@
   min-height: 44px;
   padding-bottom: 8px;
   font-size: 11px;
-  color: #c6cbd2 !important;
+  color: var(--os-muted) !important;
 }
 .empty {
   display: flex;
@@ -425,7 +425,7 @@
   white-space: nowrap;
   background: none;
   border: 0;
-  color: #dce0e5 !important;
+  color: var(--os-text) !important;
   font-size: 12px !important;
 }
 .loadingDot {
@@ -448,7 +448,7 @@
   border-bottom: 1px solid var(--line);
 }
 .job:hover {
-  background: #ffffff04;
+  background: color-mix(in srgb, var(--os-panel) 2%, transparent);
 }
 .jobIndex {
   font: 10px monospace;
@@ -477,7 +477,7 @@
   gap: 7px;
   margin-left: auto;
   font-size: 11px;
-  color: #c6cbd2;
+  color: var(--os-muted);
   white-space: nowrap;
 }
 .jobStatus > span {
@@ -487,10 +487,10 @@
   background: currentColor;
 }
 .jobStatus[data-status='review'] {
-  color: #e4c18b;
+  color: var(--os-warning);
 }
 .jobStatus[data-status='completed'] {
-  color: #a8d4c0;
+  color: var(--os-success);
 }
 .jobStatus[data-status='cancelled'] {
   color: var(--muted);
@@ -516,7 +516,7 @@
 }
 .footerDivider {
   margin: 0 6px;
-  color: #646c78;
+  color: var(--os-muted);
 }
 .footer > a {
   display: inline-flex;
@@ -530,14 +530,14 @@
   margin: auto;
   width: min(520px, calc(100% - 28px));
   max-height: 85dvh;
-  border: 1px solid #454d58;
+  border: 1px solid var(--os-line);
   border-radius: 14px;
-  background: #15181d;
+  background: var(--os-bg);
   color: var(--ink);
-  box-shadow: 0 24px 100px #0008;
+  box-shadow: none;
 }
 .palette::backdrop {
-  background: #0009;
+  background: color-mix(in srgb, var(--os-bg) 60%, transparent);
 }
 .paletteInner {
   padding: 22px;
@@ -559,7 +559,7 @@
   height: 44px;
   background: none;
   border: 0;
-  color: #c6cbd2;
+  color: var(--os-muted);
 }
 .paletteSearch {
   display: flex;
@@ -567,9 +567,9 @@
   gap: 10px;
   padding: 12px;
   margin-top: 14px;
-  border: 1px solid #454d58;
+  border: 1px solid var(--os-line);
   border-radius: 8px;
-  color: #c6cbd2;
+  color: var(--os-muted);
 }
 .paletteSearch input {
   width: 100%;
@@ -580,7 +580,7 @@
   outline: none;
 }
 .paletteSearch:focus-within {
-  outline: 2px solid #b9d8f2;
+  outline: 2px solid var(--os-focus);
   outline-offset: 3px;
 }
 .paletteResults {
@@ -594,7 +594,7 @@
   border-radius: 8px;
 }
 .paletteResults a:hover {
-  background: #ffffff08;
+  background: color-mix(in srgb, var(--os-panel) 3%, transparent);
 }
 .paletteResults a > span {
   display: flex;
@@ -615,7 +615,7 @@
   padding: 12px;
 }
 .paletteResults a > svg {
-  color: #c6cbd2;
+  color: var(--os-muted);
 }
 .palette footer {
   display: flex;
@@ -635,9 +635,9 @@
   max-width: 800px;
   margin: 24px auto 0;
   padding: 22px;
-  border: 1px solid #454d58;
+  border: 1px solid var(--os-line);
   border-radius: 12px;
-  background: #15181d;
+  background: var(--os-bg);
 }
 .nfcClose {
   position: absolute;
@@ -647,12 +647,12 @@
   height: 44px;
   display: grid;
   place-items: center;
-  color: #c6cbd2;
+  color: var(--os-muted);
   border: 0;
   background: none;
 }
 .nfcEyebrow {
-  color: #c6cbd2;
+  color: var(--os-muted);
   font-size: 11px;
 }
 .nfcInstall h2 {
@@ -664,7 +664,7 @@
   font-size: 12px;
   line-height: 1.8;
   margin: 12px 0;
-  color: #c6cbd2;
+  color: var(--os-muted);
 }
 .nfcInstallButton {
   display: flex;
@@ -675,7 +675,7 @@
   background: var(--home-accent);
   border: 0;
   border-radius: 8px;
-  color: #20252c;
+  color: var(--os-text);
   font-size: 12px;
 }
 .nfcDownloadLink {
@@ -810,3 +810,10 @@
     transition: none !important;
   }
 }
+
+/* The same header and content edges as every first-party app. */
+.home { padding: 0 0 calc(28px + env(safe-area-inset-bottom)); color-scheme: dark; }
+.hero, .activity, .footer, .nfcInstall { width: calc(100% - 48px); max-width: calc(var(--os-content) - 48px); }
+.hero { padding-top: 30px; }
+.composerBottom button { border-radius: 8px; }
+@media (max-width: 650px) { .hero, .activity, .footer, .nfcInstall { width: calc(100% - 32px); } }

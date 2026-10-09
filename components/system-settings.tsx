@@ -9,7 +9,6 @@ import {
   Cloud,
   Download,
   HardDrive,
-  House,
   LockKeyhole,
   Palette,
   RefreshCw,
@@ -30,6 +29,7 @@ import {
 } from '@/components/ui/dialog';
 import { deviceToken } from '@/lib/device';
 import styles from './system-settings.module.css';
+import OSHeader from './os-header';
 
 type AccountState = 'checking' | 'signed-in' | 'signed-out' | 'unavailable';
 
@@ -87,13 +87,7 @@ export default function SystemSettings() {
 
   return (
     <main className={styles.page}>
-      <header className={styles.topbar}>
-        <Link href="/" aria-label="ホームへ戻る">
-          <House size={20} />
-        </Link>
-        <strong>設定</strong>
-        <span>1.0</span>
-      </header>
+      <OSHeader title="設定" />
 
       <div className={styles.content}>
         <section className={styles.hero}>
@@ -112,7 +106,7 @@ export default function SystemSettings() {
         </section>
 
         <SettingsGroup title="自分のOS">
-          <SettingLink href="/?focus=1#home-intent" icon={<Palette />} tone="purple" title="ホーム画面と外観" detail="アプリ一覧・説明・入力例の表示切り替え" />
+          <SettingLink href="/?focus=1#home-intent" icon={<Palette />} tone="purple" title="ホーム画面と外観" detail="説明・入力例の表示切り替え" />
           <SettingButton icon={<Download />} tone="blue" title="ホーム画面に追加" detail={standalone ? 'アプリとして起動中' : 'iPhone / PCへ追加する手順'} onClick={() => setInstallOpen((open) => !open)} />
           {installOpen && (
             <div className={styles.inlineHelp}>

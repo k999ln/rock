@@ -1,7 +1,7 @@
 .revenue-wallet {
   width: min(100%, 1080px);
   margin: 0 auto 2.5rem;
-  color: #1d251f;
+  color: var(--os-text);
 }
 
 .revenue-wallet-hero {
@@ -12,13 +12,8 @@
   overflow: hidden;
   border-radius: 1.25rem;
   background:
-    radial-gradient(
-      circle at 82% 18%,
-      rgba(186, 235, 112, 0.2),
-      transparent 28%
-    ),
-    linear-gradient(135deg, #111713 0%, #202a23 100%);
-  color: #fff;
+    var(--os-panel);
+  color: var(--os-text);
 }
 
 .revenue-wallet-hero::after {
@@ -27,11 +22,10 @@
   bottom: -8rem;
   width: 22rem;
   height: 22rem;
-  border: 1px solid rgba(187, 234, 114, 0.18);
+  border: 1px solid color-mix(in srgb, var(--os-line) 18%, transparent);
   border-radius: 50%;
   box-shadow:
-    0 0 0 3.5rem rgba(187, 234, 114, 0.03),
-    0 0 0 7rem rgba(187, 234, 114, 0.02);
+    none;
   content: '';
   pointer-events: none;
 }
@@ -51,14 +45,14 @@
 
 .revenue-wallet-hero-copy > p {
   margin-bottom: 2.25rem;
-  color: #b9e970;
+  color: var(--os-muted);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.16em;
 }
 
 .revenue-wallet-hero-copy > span {
-  color: #b6c0b9;
+  color: var(--os-muted);
   font-size: 0.95rem;
   font-weight: 650;
 }
@@ -76,7 +70,7 @@
   align-items: center;
   gap: 0.55rem;
   margin-top: 1.4rem;
-  color: #aeb8b1;
+  color: var(--os-muted);
   font-size: 0.82rem;
 }
 
@@ -84,23 +78,23 @@
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: #d9b75f;
-  box-shadow: 0 0 0 0.25rem rgba(217, 183, 95, 0.12);
+  background: var(--os-raised);
+  box-shadow: none;
 }
 
 .revenue-wallet-hero-side {
   align-self: end;
   margin: 2rem;
   padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid color-mix(in srgb, var(--os-line) 12%, transparent);
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.07);
+  background: color-mix(in srgb, var(--os-panel) 7%, transparent);
   backdrop-filter: blur(14px);
 }
 
 .revenue-wallet-hero-side > p {
   max-width: 26rem;
-  color: #d6ddd8;
+  color: var(--os-muted);
   font-size: 0.95rem;
   line-height: 1.65;
 }
@@ -118,17 +112,17 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.7rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid color-mix(in srgb, var(--os-line) 18%, transparent);
   border-radius: 0.65rem;
-  color: #fff;
+  color: var(--os-text);
   font-size: 0.88rem;
   font-weight: 750;
 }
 
 .revenue-wallet-hero-side a:first-child {
-  border-color: #b9e970;
-  background: #b9e970;
-  color: #172016;
+  border-color: var(--os-line);
+  background: var(--os-raised);
+  color: var(--os-text);
 }
 
 .revenue-wallet-tabs {
@@ -139,19 +133,19 @@
   width: 100%;
   justify-content: flex-start;
   gap: 1.75rem;
-  border-bottom: 1px solid #dce3dd;
+  border-bottom: 1px solid var(--os-line);
 }
 
 .revenue-wallet-tabs [data-slot='tabs-trigger'] {
   min-height: 2.8rem;
   flex: none;
   padding: 0 0.1rem;
-  color: #727c75;
+  color: var(--os-muted);
   font-size: 0.92rem;
 }
 
 .revenue-wallet-tabs [data-slot='tabs-trigger'][data-active] {
-  color: #182019;
+  color: var(--os-text);
 }
 
 .revenue-wallet-tabs [data-slot='tabs-content'] {
@@ -171,9 +165,9 @@
   align-content: center;
   gap: 0.9rem;
   padding: 1.4rem;
-  border: 1px solid #dce3dd;
+  border: 1px solid var(--os-line);
   border-radius: 0.9rem;
-  background: #fff;
+  background: var(--os-panel);
 }
 
 .revenue-wallet-stats article > span {
@@ -182,18 +176,18 @@
   display: grid;
   place-items: center;
   border-radius: 0.75rem;
-  background: #edf6df;
-  color: #3e5d2b;
+  background: var(--os-panel);
+  color: var(--os-text);
 }
 
 .revenue-wallet-stats article:nth-child(2) > span {
-  background: #edf0ff;
-  color: #4f5c8a;
+  background: var(--os-panel);
+  color: var(--os-muted);
 }
 
 .revenue-wallet-stats article:nth-child(3) > span {
-  background: #f3efeb;
-  color: #6d5b4b;
+  background: var(--os-panel);
+  color: var(--os-muted);
 }
 
 .revenue-wallet-stats article > div {
@@ -201,7 +195,7 @@
 }
 
 .revenue-wallet-stats p {
-  color: #737d76;
+  color: var(--os-muted);
   font-size: 0.82rem;
   font-weight: 650;
 }
@@ -209,7 +203,7 @@
 .revenue-wallet-stats strong {
   display: block;
   margin-top: 0.2rem;
-  color: #232c25;
+  color: var(--os-text);
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -218,7 +212,7 @@
 .revenue-wallet-stats small {
   display: block;
   margin-top: 0.35rem;
-  color: #818b84;
+  color: var(--os-muted);
   font-size: 0.76rem;
   line-height: 1.45;
 }
@@ -226,9 +220,9 @@
 .revenue-wallet-flow {
   margin-top: 0.75rem;
   padding: 1.8rem;
-  border: 1px solid #dce3dd;
+  border: 1px solid var(--os-line);
   border-radius: 1rem;
-  background: #fff;
+  background: var(--os-panel);
 }
 
 .revenue-wallet-flow > header {
@@ -239,7 +233,7 @@
 }
 
 .revenue-wallet-flow > header p {
-  color: #7e8881;
+  color: var(--os-muted);
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.13em;
@@ -252,7 +246,7 @@
 }
 
 .revenue-wallet-flow > header svg {
-  color: #61823f;
+  color: var(--os-muted);
 }
 
 .revenue-wallet-flow ol {
@@ -275,7 +269,7 @@
   right: 0.45rem;
   width: 1rem;
   height: 1px;
-  background: #cad3cc;
+  background: var(--os-raised);
   content: '';
 }
 
@@ -285,8 +279,8 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #1d251f;
-  color: #fff;
+  background: var(--os-bg);
+  color: var(--os-text);
   font-size: 0.78rem;
   font-weight: 800;
 }
@@ -301,7 +295,7 @@
 }
 
 .revenue-wallet-flow li small {
-  color: #7a847d;
+  color: var(--os-muted);
   font-size: 0.76rem;
   line-height: 1.45;
 }
@@ -313,9 +307,9 @@
   gap: 1.4rem;
   margin-top: 0.75rem;
   padding: 1.6rem 1.8rem;
-  border: 1px solid #d7dfd8;
+  border: 1px solid var(--os-line);
   border-radius: 1rem;
-  background: #f7faf4;
+  background: var(--os-panel);
 }
 
 .revenue-wallet-fund > div:first-child {
@@ -331,12 +325,12 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 0.8rem;
-  background: #1d251f;
-  color: #b9e970;
+  background: var(--os-bg);
+  color: var(--os-muted);
 }
 
 .revenue-wallet-fund p {
-  color: #758078;
+  color: var(--os-muted);
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -351,7 +345,7 @@
   display: block;
   max-width: 35rem;
   margin-top: 0.3rem;
-  color: #758078;
+  color: var(--os-muted);
   font-size: 0.76rem;
   line-height: 1.45;
 }
@@ -368,7 +362,7 @@
 }
 
 .revenue-wallet-fund dt {
-  color: #758078;
+  color: var(--os-muted);
   font-size: 0.78rem;
 }
 
@@ -385,9 +379,9 @@
   justify-content: center;
   gap: 0.45rem;
   padding: 0.65rem 0.85rem;
-  border: 1px solid #ccd5ce;
+  border: 1px solid var(--os-line);
   border-radius: 0.6rem;
-  background: #fff;
+  background: var(--os-panel);
   font-size: 0.82rem;
   font-weight: 720;
   white-space: nowrap;
@@ -399,9 +393,9 @@
   align-items: center;
   gap: 1.4rem;
   padding: 1.7rem 1.8rem;
-  border: 1px solid #dce3dd;
+  border: 1px solid var(--os-line);
   border-radius: 1rem;
-  background: #fff;
+  background: var(--os-panel);
 }
 
 .revenue-wallet-ledger-summary > div:first-child {
@@ -411,7 +405,7 @@
 
 .revenue-wallet-ledger-summary p,
 .revenue-wallet-ledger-summary dt {
-  color: #758078;
+  color: var(--os-muted);
   font-size: 0.82rem;
 }
 
@@ -422,7 +416,7 @@
 }
 
 .revenue-wallet-ledger-summary small {
-  color: #858f88;
+  color: var(--os-muted);
   font-size: 0.76rem;
 }
 
@@ -436,7 +430,7 @@
   display: grid;
   gap: 0.2rem;
   padding-left: 1rem;
-  border-left: 1px solid #e2e7e3;
+  border-left: 1px solid var(--os-line);
 }
 
 .revenue-wallet-ledger-summary dd {
@@ -457,23 +451,23 @@
   justify-content: center;
   gap: 0.45rem;
   padding: 0.6rem 0.85rem;
-  border: 1px solid #d5ddd6;
+  border: 1px solid var(--os-line);
   border-radius: 0.6rem;
-  background: #fff;
-  color: #273028;
+  background: var(--os-panel);
+  color: var(--os-text);
   font-size: 0.82rem;
   font-weight: 720;
 }
 
 .revenue-wallet-ledger-actions button:first-child {
-  border-color: #1d251f;
-  background: #1d251f;
-  color: #fff;
+  border-color: var(--os-line);
+  background: var(--os-bg);
+  color: var(--os-text);
 }
 
 .revenue-wallet-footnote {
   margin: 0.9rem 0.2rem 0;
-  color: #7d8780;
+  color: var(--os-muted);
   font-size: 0.78rem;
   line-height: 1.6;
 }
@@ -581,7 +575,7 @@
 
   .revenue-wallet-ledger-summary dl > div {
     padding: 0.65rem 0 0;
-    border-top: 1px solid #e2e7e3;
+    border-top: 1px solid var(--os-line);
     border-left: 0;
   }
 }

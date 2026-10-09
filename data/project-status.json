@@ -425,13 +425,24 @@
         "docs/product-baseline.md",
         "lib/home-intent.ts",
         "tests/home-intent.test.mjs",
-        "docs/evidence/home-intent-refresh.json"
+        "docs/evidence/home-intent-refresh.json",
+        "components/os-header.tsx",
+        "app/os-design-tokens.css",
+        "app/os-appearance.css",
+        "docs/evidence/web-unified-design.json"
       ],
       "neutralRevision": {
         "date": "2026-10-09",
         "status": "verified_pending_deploy",
         "scope": "presentation_only",
         "evidence": "docs/evidence/home-intent-refresh.json"
+      },
+      "unifiedDesignRevision": {
+        "date": "2026-10-09",
+        "status": "verified_pending_deploy",
+        "owner": "ROCK",
+        "scope": "shared Web appearance and navigation",
+        "evidence": "docs/evidence/web-unified-design.json"
       }
     },
     {

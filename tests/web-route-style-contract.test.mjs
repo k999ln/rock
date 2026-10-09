@@ -46,10 +46,10 @@ void test('module-styled home and settings keep their stylesheet bindings', () =
 
 void test('every non-home route family keeps a direct home affordance', () => {
   const contracts = [
-    ['workspace shell', 'components/workspace-shell.tsx', /<Link href="\/" className="rock-home-link"/],
+    ['workspace shell', 'components/workspace-shell.tsx', /<OSHeader title=\{title\} running=\{running\}/],
     ['mobile chat command bar', 'components/sky-chat-workspace.tsx', /<Link href="\/" aria-label="ホームへ戻る"/],
-    ['settings', 'components/system-settings.tsx', /<Link href="\/" aria-label="ホームへ戻る"/],
-    ['system maintenance', 'components/system-maintenance.tsx', /<Link href="\/" aria-label="ホームへ戻る"/],
+    ['settings', 'components/system-settings.tsx', /<OSHeader title="設定"/],
+    ['system maintenance', 'components/system-maintenance.tsx', /<OSHeader title="システム"/],
     ['automation fund', 'app/fund/page.tsx', /<Link href="\/">⌂ ホーム<\/Link>/],
     ['legacy fund', 'app/fund/legacy/page.tsx', /<Link href="\/">⌂ ホーム<\/Link>/],
     ['developer preview', 'app/rockstaros/page.tsx', /<Link href="\/" className=\{styles\.brand\} aria-label="ホームへ戻る"/],

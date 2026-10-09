@@ -1,0 +1,166 @@
+/* RockstarOS shared appearance. Surfaces reference these tokens; states retain meaning. */
+:root {
+  --os-bg: #0b0d10;
+  --os-panel: #15181d;
+  --os-raised: #20252c;
+  --os-line: #343b45;
+  --os-text: #f4f6f8;
+  --os-muted: #a0a8b3;
+  --os-subtle: #798390;
+  --os-accent: #e5e7eb;
+  --os-accent-ink: #15181d;
+  --os-focus: #b9d8f2;
+  --os-success: #a8d4c0;
+  --os-success-bg: #182a23;
+  --os-warning: #edc795;
+  --os-warning-bg: #30271b;
+  --os-error: #f0aaa5;
+  --os-error-bg: #321f21;
+  --os-font: Arial, 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  --os-radius: 12px;
+  --os-content: 1000px;
+}
+.os-header {
+  width: 100%;
+  color: var(--os-text);
+  background: var(--os-bg);
+  border-bottom: 1px solid var(--os-line);
+  font-family: var(--os-font);
+  position: relative;
+  z-index: 30;
+  line-height: 1.5;
+}
+.os-header *,
+.os-header *::before,
+.os-header *::after {
+  box-sizing: border-box;
+}
+.os-header-inner {
+  max-width: var(--os-content);
+  padding: env(safe-area-inset-top) 24px 0;
+  margin: 0 auto;
+}
+.os-header-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 62px;
+}
+.os-header .os-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--os-text);
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.os-header .os-brand:hover {
+  opacity: 1;
+}
+.os-current-app {
+  border-left: 1px solid var(--os-line);
+  padding-left: 18px;
+  color: var(--os-muted);
+  font-size: 12px;
+}
+.os-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.os-header-actions button,
+.os-header-actions a {
+  min-height: 40px;
+  font-size: 12px;
+}
+.os-app-navigation {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 0 12px;
+  scrollbar-width: none;
+}
+.os-app-navigation::-webkit-scrollbar {
+  display: none;
+}
+.os-header .os-app-navigation a {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 17px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--os-muted);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.os-header .os-app-navigation a:hover {
+  opacity: 1;
+  color: var(--os-text);
+  background: var(--os-panel);
+}
+.os-header .os-app-navigation a[aria-current='page'] {
+  color: var(--os-text);
+  background: var(--os-raised);
+  border-color: var(--os-line);
+}
+.os-header a:focus-visible,
+.os-header button:focus-visible {
+  outline: 2px solid var(--os-focus);
+  outline-offset: 2px;
+}
+.os-header [aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.os-running {
+  display: block;
+  padding-bottom: 12px;
+  font-size: 12px;
+  color: var(--os-warning);
+}
+@media (max-width: 650px) {
+  .os-header-inner {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .os-header-row {
+    min-height: 58px;
+    gap: 10px;
+  }
+  .os-header .os-brand {
+    font-size: 16px;
+  }
+  .os-current-app {
+    padding-left: 10px;
+    font-size: 11px;
+  }
+  .os-header-actions .rock-web-label {
+    display: none;
+  }
+  .os-header-actions .rock-button {
+    padding: 0 10px;
+    font-size: 11px;
+  }
+  .os-app-navigation {
+    gap: 4px;
+    padding-bottom: 10px;
+  }
+  .os-header .os-app-navigation a {
+    flex: 1 0 42px;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 48px;
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+}

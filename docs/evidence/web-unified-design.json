@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-09",
+  "tasks": [
+    "WEB04",
+    "HOME01"
+  ],
+  "owner": "ROCK",
+  "sourceBase": "6d0e5f6137615f765022f3ac7212dee9786fbfb5",
+  "githubMainRead": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "stage": "verified_pending_deploy",
+  "routes": [
+    "/",
+    "/sky",
+    "/chat",
+    "/wallet",
+    "/market",
+    "/settings"
+  ],
+  "deployment": "pending",
+  "githubMainMerged": false,
+  "verification": {
+    "publicSource": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "nodeTests": 285,
+      "fashionTests": 19,
+      "apiAssertions": 495,
+      "missingAssets": 0
+    },
+    "canonical": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodeTests": 900,
+      "apiAssertions": 1178,
+      "csvAssertions": 113,
+      "missingAssets": 0,
+      "scope": "local working tree including concurrent changes"
+    },
+    "browser": {
+      "target": "public-source localhost preview",
+      "widths": [
+        1280,
+        390,
+        320
+      ],
+      "routes": [
+        "/",
+        "/sky",
+        "/chat",
+        "/wallet",
+        "/market",
+        "/settings"
+      ],
+      "sharedHeaderCount": 1,
+      "navigationItems": 6,
+      "background": "rgb(11, 13, 16)",
+      "horizontalOverflow": false,
+      "screenshots": "work/unified-design-qa/",
+      "checks": "work/unified-design-qa/browser-checks.json"
+    },
+    "contrastRatios": {
+      "textOnBackground": 17.96,
+      "textOnPanel": 16.42,
+      "mutedOnPanel": 7.41,
+      "primaryButton": 14.37,
+      "warning": 9.22,
+      "error": 8.13
+    }
+  },
+  "remaining": [
+    "Publish final built source to existing public site",
+    "Read back all six public routes",
+    "GitHub main integration remains separate"
+  ]
+}
