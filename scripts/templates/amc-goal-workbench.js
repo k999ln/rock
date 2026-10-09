@@ -40,6 +40,7 @@ let wbPlannerCandidate = null;
 let wbPlannerPending = null;
 let wbPlannerBackupRaw = null;
 let wbPlannerLastRequest = null;
+let wbPlannerReplan = null;
 const wbNames = {
   draft: '計画案・レビュー待ち',
   active: '計画承認済み',
@@ -1274,6 +1275,8 @@ wbOn('new-goal', 'click', () => {
   wbCancelPlanner();
   wbPlannerCandidate = null;
   wbPlannerLastRequest = null;
+  wbPlannerReplan = null;
+  wbEl('planner-replan-feedback').value = '';
   wbPlannerBackupRaw = null;
   wbEl('planner-feedback').value = '';
   wbEl('planner-intent').value = '';
@@ -1640,6 +1643,7 @@ function wbSimplePreview() {
     wbList(definition.acceptanceCriteria.map((item) => item.criterion));
 }
 function wbRenderSimple() {
+  wbEl('planner-review-goal').hidden = !wbPlannerSession || !wbGoal;
   const board = wbSurface === 'board';
   wbEl('mission-board-view').hidden = !board;
   wbEl('advanced-workbench').hidden = board;
@@ -1961,6 +1965,7 @@ function wbRenderPlanner() {
     'planner-share',
     'simple-request-submit',
     'planner-feedback',
+    'planner-replan-feedback',
     'planner-revise',
     'planner-fallback',
   ])
@@ -1968,6 +1973,7 @@ function wbRenderPlanner() {
   wbEl('simple-request-form').setAttribute('aria-busy', String(pending));
   wbEl('planner-cancel').hidden = !pending;
   wbEl('planner-retry').hidden = pending || !wbPlannerLastRequest;
+  wbEl('planner-replan-fields').hidden = !wbPlannerReplan;
   wbEl('planner-candidate').hidden = !wbPlannerCandidate;
   wbEl('planner-backup').hidden =
     !wbPlannerCandidate?.goal || !(wbGoal || wbUnreadableRaw);
@@ -2045,6 +2051,11 @@ function wbCancelPlanner() {
     '計画の取得を中止しました。保存中のGoalは変更していません。';
 }
 function wbPlannerInputChanged() {
+  if (wbPlannerReplan && wbPlannerReplan.botId !== wbEl('planner-bot').value) {
+    wbPlannerReplan = null;
+    wbEl('planner-replan-feedback').value = '';
+    wbRenderPlanner();
+  }
   if (
     !wbPlannerSession ||
     !wbPlannerCandidate ||
@@ -2082,7 +2093,9 @@ async function wbPlanRequest(revise) {
   let feedback =
     wbPlannerCandidate && wbPlannerSameInput(wbPlannerCandidate.input)
       ? wbPlannerCandidate.feedback
-      : '';
+      : wbPlannerReplan && wbPlannerReplan.goalId === wbGoal?.id
+        ? wbEl('planner-replan-feedback').value.trim()
+        : '';
   if (revise) {
     if (!wbPlannerCandidate || !wbPlannerSameInput(wbPlannerCandidate.input))
       throw new Error('変更後の依頼から新しい計画候補を作成してください。');
@@ -2100,11 +2113,11 @@ async function wbPlanRequest(revise) {
         (wbPlannerCandidate.proposal.questions ?? [])
           .map(wbPlannerText)
           .join('\n');
-    if (feedback.length > 8000)
-      throw new Error(
-        'これまでの追加指示が8000字を超えます。条件を整理して新しい依頼へまとめてください。',
-      );
   }
+  if (feedback.length > 8000)
+    throw new Error(
+      'これまでの追加指示が8000字を超えます。条件を整理して新しい依頼へまとめてください。',
+    );
   wbCheckConcurrentSave();
   const previous =
     (wbPlannerCandidate && wbPlannerSameInput(wbPlannerCandidate.input)
@@ -2197,6 +2210,7 @@ async function wbPlanRequest(revise) {
         throw new Error('応答は独立した未承認の計画案である必要があります。');
     }
     wbPlannerCandidate = { ...result, base: pending.base, input, feedback };
+    wbPlannerReplan = null;
     wbPlannerLastRequest = null;
     wbPlannerBackupRaw = null;
     wbEl('planner-feedback').value = '';
@@ -2217,6 +2231,34 @@ async function wbPlanRequest(revise) {
     }
   }
 }
+wbOn('planner-review-goal', 'click', () => {
+  if (!wbPlannerSession || !wbGoal) return;
+  wbCheckConcurrentSave();
+  wbCancelPlanner();
+  wbPlannerCandidate = null;
+  wbPlannerLastRequest = null;
+  wbPlannerBackupRaw = null;
+  const brief = wbGoal.adaptiveBrief ?? wbGoal.requestBrief ?? wbGoal.skyBrief;
+  const botId = wbPlannerSession.bots.some((bot) => bot.id === brief?.botId)
+    ? brief.botId
+    : wbGoal.skyBrief
+      ? 'sky'
+      : 'operations';
+  wbEl('simple-request').value = brief?.request ?? wbGoal.instruction;
+  wbEl('planner-intent').value = brief?.intent ?? '';
+  wbEl('planner-bot').value = botId;
+  wbEl('planner-feedback').value = '';
+  wbEl('planner-replan-feedback').value = wbGoal.adaptiveBrief?.feedback ?? '';
+  wbPlannerReplan = { goalId: wbGoal.id, botId };
+  wbSimpleMode = 'home';
+  wbSurface = 'request';
+  wbEl('advanced-workbench').open = false;
+  wbRenderPlanner();
+  wbRenderSimple();
+  wbEl('planner-status').textContent =
+    '元のGoal・承認・進捗は保持しています。変更点を入力し、ボタンで計画を作り直せます。';
+  wbEl('planner-replan-feedback').focus();
+});
 wbOn('planner-cancel', 'click', wbCancelPlanner);
 wbOn('planner-retry', 'click', () =>
   wbPlanRequest(wbPlannerLastRequest?.revise ?? false),
@@ -2291,7 +2333,8 @@ wbOn('planner-adopt', 'click', () => {
     'Git調査に基づく未承認の計画案を採用しました。対象範囲と合格条件を確認してから計画を承認してください。',
   );
   wbChatCommit();
-  wbShowView('plan');
+  wbEl('advanced-workbench').open = false;
+  wbEl('simple-goal-title').focus();
   wbNotice(
     '計画案として保存しました。承認・作業の開始・成果の検収は行っていません。',
   );

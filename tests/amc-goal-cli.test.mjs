@@ -2295,3 +2295,159 @@ await test('planner refuses approval-bearing responses and preserves the current
   assert.equal(ui.writes(), 0);
   assert.equal(ui.elements.get('planner-candidate').hidden, false);
 });
+
+await test('connected saved plans reopen adaptive planning with intent, Bot and accumulated changes without sending', async () => {
+  const reply = planningReply(2, 'revisit');
+  reply.goal.adaptiveBrief = {
+    schema: 'amc-adaptive-brief/1',
+    request: reply.goal.instruction,
+    intent: '検索対象を早く見つけたい',
+    feedback: 'Skyの検索だけに限定する',
+    planningMethod: 'codex_read_only',
+    proposalSummary: reply.proposal.summary,
+    questions: [],
+    assumptions: [],
+    botId: 'sky',
+    context: {
+      mainSha: reply.context.mainSha,
+      localHead: reply.context.localHead,
+      collectedAt: reply.context.collectedAt,
+    },
+    previousGoal: null,
+    taskSources: reply.goal.tasks.map((task) => ({
+      taskId: task.id,
+      sourceTaskIds: [],
+    })),
+  };
+  reply.goal = applyGoalEvent(reply.goal, {
+    type: 'approve_plan',
+    id: 'revisit-approval',
+    expectedRevision: 0,
+    actor: 'fixture-owner',
+    role: 'owner',
+    at: '2026-10-09T12:01:00.000Z',
+    scopeConfirmed: true,
+    coverageStatement: 'Sky検索の調査だけを進める',
+    acceptanceCriteria: [
+      { id: 'GOAL-AC1', criterion: '必要な変更を証拠と照合する' },
+    ],
+  });
+  const saved = JSON.stringify(reply.goal);
+  const next = planningReply(1, 'revisited');
+  next.context.botId = 'sky';
+  const ui = browser({
+    plannerSession,
+    stored: saved,
+    fetchImpl: async () => plannerResponse(next),
+  });
+  assert.equal(ui.elements.get('planner-review-goal').hidden, false);
+  await ui.event('planner-review-goal');
+  assert.equal(ui.elements.get('simple-home').hidden, false);
+  assert.equal(ui.elements.get('advanced-workbench').open, false);
+  assert.equal(ui.elements.get('simple-request').value, reply.goal.instruction);
+  assert.equal(
+    ui.elements.get('planner-intent').value,
+    reply.goal.adaptiveBrief.intent,
+  );
+  assert.equal(ui.elements.get('planner-bot').value, 'sky');
+  assert.equal(
+    ui.elements.get('planner-replan-feedback').value,
+    reply.goal.adaptiveBrief.feedback,
+  );
+  assert.equal(ui.elements.get('planner-replan-fields').hidden, false);
+  assert.equal(ui.raw('amc-goal-workbench-v1'), saved);
+  assert.equal(ui.writes(), 0);
+  assert.equal(ui.networkCalls.length, 0);
+  ui.elements.get('planner-share').checked = true;
+  ui.elements.get('planner-replan-feedback').value += '\n試験を先に調べる';
+  await ui.event('simple-request-form', 'submit');
+  const request = JSON.parse(ui.networkCalls[0][1].body);
+  assert.equal(request.previousGoal.id, reply.goal.id);
+  assert.equal(request.previousGoal.revision, 1);
+  assert.match(request.feedback, /Skyの検索だけ/);
+  assert.match(request.feedback, /試験を先に/);
+  assert.equal(ui.raw('amc-goal-workbench-v1'), saved);
+  await ui.event('planner-adopt');
+  assert.match(ui.elements.get('error').textContent, /バックアップ/);
+  assert.equal(ui.raw('amc-goal-workbench-v1'), saved);
+  const offline = browser({ stored: saved });
+  assert.equal(offline.elements.get('planner-review-goal').hidden, true);
+});
+
+await test('adopting a connected candidate keeps legacy chat collapsed and manual management reachable', async () => {
+  const ui = browser({
+    plannerSession,
+    fetchImpl: async () => plannerResponse(planningReply(1, 'visible')),
+  });
+  fillPlanningRequest(ui);
+  await ui.event('simple-request-form', 'submit');
+  await ui.event('planner-adopt');
+  const saved = ui.raw('amc-goal-workbench-v1');
+  assert.equal(ui.elements.get('simple-progress').hidden, false);
+  assert.equal(ui.elements.get('advanced-workbench').open, false);
+  assert.equal(ui.elements.get('planner-review-goal').hidden, false);
+  await ui.event('simple-details');
+  assert.equal(ui.elements.get('advanced-workbench').open, true);
+  assert.equal(ui.elements.get('plan-view').hidden, false);
+  await ui.event('planner-review-goal');
+  assert.equal(ui.elements.get('advanced-workbench').open, false);
+  assert.equal(ui.elements.get('simple-home').hidden, false);
+  assert.equal(ui.raw('amc-goal-workbench-v1'), saved);
+  assert.equal(ui.networkCalls.length, 1);
+});
+
+await test('revisiting a legacy Sky Goal preserves its intent and protections without sending', async () => {
+  const goal = planningReply(1, 'legacy-sky').goal;
+  goal.skyBrief = {
+    schema: 'amc-sky-brief/1',
+    templateId: 'sky-specific-launch-v1',
+    request: 'Skyの接続開始を使いやすくしたい',
+    goal: goal.instruction,
+    intent: '検索した商品へ本人が承認して接続できるようにする',
+  };
+  const saved = JSON.stringify(goal);
+  const ui = browser({ plannerSession, stored: saved });
+  await ui.event('planner-review-goal');
+  assert.notEqual(goal.skyBrief.request, goal.instruction);
+  assert.notEqual(goal.skyBrief.intent, goal.instruction);
+  assert.equal(ui.elements.get('simple-request').value, goal.skyBrief.request);
+  assert.equal(ui.elements.get('planner-intent').value, goal.skyBrief.intent);
+  assert.equal(ui.read().instruction, goal.skyBrief.goal);
+  assert.equal(ui.elements.get('planner-bot').value, 'sky');
+  assert.equal(ui.raw('amc-goal-workbench-v1'), saved);
+  assert.equal(ui.writes(), 0);
+  assert.equal(ui.networkCalls.length, 0);
+  assert.throws(
+    () => ui.authorizeSky(ui.read(), { type: 'start_task' }),
+    /cannot authorize Sky/,
+  );
+});
+
+await test('revisiting a legacy request brief keeps its distinct request, Goal and intent', async () => {
+  const goal = planningReply(1, 'legacy-request').goal;
+  goal.requestBrief = {
+    schema: 'amc-request-brief/1',
+    templateId: 'software-local-prototype-v1',
+    request: '商品をもっと探しやすくしたい',
+    goal: goal.instruction,
+    intent: '最初に必要な商品を見つける時間を減らす',
+  };
+  const saved = JSON.stringify(goal);
+  const ui = browser({ plannerSession, stored: saved });
+  await ui.event('planner-review-goal');
+  assert.notEqual(goal.requestBrief.request, goal.instruction);
+  assert.notEqual(goal.requestBrief.intent, goal.instruction);
+  assert.equal(
+    ui.elements.get('simple-request').value,
+    goal.requestBrief.request,
+  );
+  assert.equal(
+    ui.elements.get('planner-intent').value,
+    goal.requestBrief.intent,
+  );
+  assert.equal(ui.elements.get('planner-bot').value, 'operations');
+  assert.equal(ui.read().instruction, goal.requestBrief.goal);
+  assert.equal(ui.raw('amc-goal-workbench-v1'), saved);
+  assert.equal(ui.writes(), 0);
+  assert.equal(ui.networkCalls.length, 0);
+});

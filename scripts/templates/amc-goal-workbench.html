@@ -263,6 +263,7 @@ __AMC_BOARD__
         <label for="planner-bot">担当Bot</label><select id="planner-bot"></select>
         <label><input id="planner-share" type="checkbox"> 依頼・意図・Goalの要約・対象Gitコードを、この端末のCodexで設定したモデルへ共有して計画する</label>
         <label for="planner-intent">意図・大切にしたいこと <span class="muted">任意</span></label><textarea id="planner-intent" rows="2" maxlength="2000" placeholder="誰のために、何を変えたい？"></textarea>
+        <div id="planner-replan-fields" hidden><label for="planner-replan-feedback">これまでの追加指示・今回変えたいこと</label><textarea id="planner-replan-feedback" rows="3" maxlength="8000" placeholder="例：試験を先に。検索機能に絞って進めたい"></textarea><p class="small">元のGoalと進捗は保持したまま、別の候補を作ります。</p></div>
       </div>
       <div class="simple-request-actions"><button id="simple-example" type="button">例を入れてみる</button><button id="simple-request-submit" type="submit" class="primary">共通テンプレートで下書き <span aria-hidden="true">→</span></button></div>
     </form>
@@ -297,7 +298,7 @@ __AMC_BOARD__
     <div id="simple-metrics" aria-label="作業の進み具合"></div>
     <h2 class="simple-section-label">部隊の仕事</h2><div id="simple-squads"></div>
     <div id="simple-attention" role="status" aria-live="polite"></div>
-    <div class="simple-progress-actions"><button id="simple-handoff" type="button" class="primary">AIへ渡す指示をコピー</button><button id="simple-details" type="button" class="quiet">計画の詳細を見る</button></div>
+    <div class="simple-progress-actions"><button id="planner-review-goal" type="button" class="primary" hidden>この計画を見直す</button><button id="simple-handoff" type="button" class="primary">AIへ渡す指示をコピー</button><button id="simple-details" type="button" class="quiet">計画の詳細を見る</button></div>
     <p id="simple-boundary">計画は自動作成。AIによる実作業は未接続です。課金・公開・実機操作は、この計画の承認だけでは行いません。</p>
   </section>
 
