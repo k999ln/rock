@@ -5082,7 +5082,7 @@
     {
       "id": "AMC03",
       "title": "機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "AMC02",
         "ORG04"
@@ -5094,7 +5094,7 @@
         "toolkits/amc-agent/README.md",
         "docs/evidence/project-bots.json"
       ],
-      "nextAction": "10担当のCodex定義と依頼時CLIを追加。対象16試験・TOML10件・生成／担当／進捗同期合格。全体verifyは依存ai未配置で停止。同一SHAのGitHub CIを確認する。実Botの一件完走・常時実行・Web起動は別受入。"
+      "nextAction": "10担当の定義と依頼時CLIを実装。対象16試験と実装SHA 4a8861b4の全体verify／CodeQL等8 checksが成功。PR #95へ保存。具体的な依頼でBotの一件完走を別途受け入れる。常時実行・GitHub App・main統合・公開は未実施。"
     }
   ],
   "phaseGates": [
@@ -5846,10 +5846,12 @@
   "projectBots": {
     "taskId": "AMC03",
     "scope": "developer_profiles_and_on_demand_cli",
-    "status": "in_progress",
+    "status": "done",
     "gitHubPullRequest": "https://github.com/k999ln/rock/pull/95",
     "mainIntegrated": false,
     "liveBotTaskAccepted": false,
-    "evidence": "docs/evidence/project-bots.json"
+    "evidence": "docs/evidence/project-bots.json",
+    "verifiedImplementationSha": "4a8861b4beb11437d4bc08b47455e81f99cd12e1",
+    "completionScope": "10 developer profiles and tested on-demand launch interface; not live task or always-on acceptance"
   }
 }
