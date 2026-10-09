@@ -1,5 +1,7 @@
 # プロジェクト別ガイド
 
+担当Botに実装を依頼する場合は[プロジェクト別Bot](toolkits/amc-agent/README.md#プロジェクト別bot)を使います。Sky、Zema、Walletなどの入口から、専用branchとPRへ成果を残します。
+
 > **この文書の役割** — 製品・実装単位から **ソースコードと担当資料の場所** を探すための案内です。これは何か・今どこまで出来ているかは [README](README.md)、文書全体の地図は [docs/README.md](docs/README.md)、仕様がいつどう変わったかは [仕様変遷](docs/spec-history.md)、全Toolとエージェントの機能は [エージェント・Tool総覧](docs/agents-and-tools.md) にあります。
 
 このページは、`k999ln/rock`の成果物を**製品・実装単位**から探す入口です。確定要望は[製品ベース](docs/product-baseline.md)、現在のtaskと完了条件は[進捗JSON](data/project-status.json)、部隊別Goal・進捗・ruleは[avokado Mission Control](docs/mission-control.md)、設計の正本は[全設計ポータル](docs/rockstaros-design-portal.md)を参照してください。ここに書くディレクトリの存在は、実機・本番・販売の受入完了を意味しません。

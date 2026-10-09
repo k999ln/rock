@@ -5078,6 +5078,23 @@
         "docs/evidence/workspace-organization.json"
       ],
       "nextAction": "32分野・379taskの作業入口、224taskPlanの読取CLI、アイデア置き場を実装・検証。PR #95の実装SHA cbebc979で全体verify・CodeQLを含む8 checks success。main統合と元dirty treeの回収は別作業。"
+    },
+    {
+      "id": "AMC03",
+      "title": "機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する",
+      "status": "in_progress",
+      "dependsOn": [
+        "AMC02",
+        "ORG04"
+      ],
+      "evidence": [
+        "data/amc/project-bots.json",
+        "scripts/project-bots.mjs",
+        "tests/project-bots.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bots.json"
+      ],
+      "nextAction": "10担当のCodex定義と依頼時CLIを追加。対象16試験・TOML10件・生成／担当／進捗同期合格。全体verifyは依存ai未配置で停止。同一SHAのGitHub CIを確認する。実Botの一件完走・常時実行・Web起動は別受入。"
     }
   ],
   "phaseGates": [
@@ -5825,5 +5842,14 @@
     "verifiedImplementationSha": "cbebc979e634d0af5f6eb60c475d178f3b98b996",
     "checkRunsPassed": 8,
     "githubSaved": true
+  },
+  "projectBots": {
+    "taskId": "AMC03",
+    "scope": "developer_profiles_and_on_demand_cli",
+    "status": "in_progress",
+    "gitHubPullRequest": "https://github.com/k999ln/rock/pull/95",
+    "mainIntegrated": false,
+    "liveBotTaskAccepted": false,
+    "evidence": "docs/evidence/project-bots.json"
   }
 }

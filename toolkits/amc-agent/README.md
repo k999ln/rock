@@ -36,3 +36,54 @@ CLI起動は既存のCodex CLIの認証・モデル・権限・承認設定を�
 Goalの版が変わった時は影響する任務を停止して再照合する。結果不明の作業を重複実行しない。元のGoalと成果を保持し、再開は既存の最新記録から行う。カスタム定義の更新は差分確認後に行い、異なる既存ファイルをインストーラーで強制置換しない。
 
 実稼働確認（2026-10-04）: CLIのフォルダ信頼確認で停止し、実行部隊・検収担当は未起動。新規フォルダの信頼設定は本人の判断が必要。exit 0だけで任務成功とは判定しない。
+
+## プロジェクト別Bot
+
+「Sky BotへSkyの仕事を依頼し、成果をGitへ出す」ための開発用入口。流れは **依頼 → 担当Bot → 専用branchで実装・検証 → commit → GitHub PR**。GitHubはソースと成果の保存先で、Botを動かすのはCodex。現在は依頼時に開く対話セッションであり、常時実行やIssue監視は設定していない。
+
+| ID | 担当 | 主な作業 |
+| --- | --- | --- |
+| `sky` | Sky Bot | Tool・MCP・Agent接続、marketplace |
+| `zema` | Zema Bot | 仕事の依頼・進捗・承認・成果、保存／復旧 |
+| `wallet` | Wallet Bot | 台帳・予約・照合・料金表示 |
+| `rockstaros` | RockstarOS Bot | OS・AI・SIM/eSIM導入、Pixel・QEMU |
+| `game` | Game Bot | 非金融ゲーム、作者SDK、sandbox |
+| `security` | Security Bot | 本人性・権限・SPIDER・脆弱性修正 |
+| `avocado-mini` | avocadoMini Bot | Mini・物質発明・試験資料 |
+| `avokado-pro` | avokadoPro Bot | Pro・連携・試験資料 |
+| `rocketstar` | rocketstar Bot | rocketstar・地上支援・試験資料 |
+| `operations` | Operations Bot | 横断調整、Git・CI・進捗台帳 |
+
+### 依頼方法
+
+このbranchをcheckoutしたフォルダの対話ターミナルで使う。既存のCodex CLIと認証が必要。
+
+```sh
+npm run bot -- list
+npm run bot -- show sky
+npm run bot -- run sky --goal 'Skyの接続エラーを分かりやすくし、検証してPRにする'
+# 既存taskを指定する場合
+npm run bot -- run sky --task SKY07-01 --goal '既存の合格条件に沿って、このtaskを進めてPRにする'
+# 起動せずに担当・task・指示を確認
+npm run bot -- run sky --task SKY07-01 --goal 'このtaskを進める' --preview
+```
+
+新しいCodexセッションでは `.codex/agents/sky-bot.toml` などのネイティブ定義も利用できる。「sky-botを使って○○を実装し、PRを出して」と依頼する。既に開いたセッションの定義再読込は実行環境に依存するため、CLI入口は定義を起動時に直接渡す。設定は [Codex公式のcustom subagents形式](https://learn.chatgpt.com/docs/agent-configuration/subagents)に従う。
+
+Botは既存の[作業部屋](../../workspaces/README.md)とtaskAssignmentsを読む。複数BotがO5などを参照していても、taskの主担当は台帳の一つの部隊のまま。`--task` はそのBotが参照する部隊か検査し、前提と親taskの保留も引き継ぐ。具体的な編集範囲は各依頼で絞る。プロンプトの担当分けはOSによるpath権限制御や、実装上の並列排他ではない。同時に進める場合は別worktreeを使う。
+
+### Gitへ残すもの
+
+- `codex/sky-<目的>` など、作業ごとのbranch。必要な変更だけをcommitする。
+- PR本文に担当Bot、task、変更内容、検証結果、残課題を記録する。
+- 最後にcommit SHAとPR URLを返す。独立検収、main統合、公開はそれぞれ別の結果として扱う。
+
+Git authorとGitHub認証は既存設定を使う。この機能はGitHub Appを登録せず、Contributorsに`sky-bot[bot]`という専用名義を作らない。CLIの認証・モデル・承認・sandbox設定も変更しない。GitHubへ接続できなければ手元の変更／commitを保持し、未pushと理由を返す。
+
+### 定義の更新・復旧・確認
+
+正本は [data/amc/project-bots.json](../../data/amc/project-bots.json)、起動入口は [scripts/project-bots.mjs](../../scripts/project-bots.mjs)。追加・変更後に `npm run bot:update` で当該repositoryのTOMLを生成する。異なる既存custom定義は上書きしない。`npm run bot:check` は生成のずれを検出し、全体verifyにも含める。個別試験は `node --test tests/project-bots.test.mjs`。
+
+中断したら既存branch・差分・PRを確認し、同じ成果を重複実行せずに再開する。CLIが無い、認証できない、フォルダ信頼や承認が必要な場合はその対話を解決する。起動プロセスのexit 0はtask／PRの合格証拠にはならない。具体的な開発依頼をBotで完走し、差分・試験・PRを照合する受入は、この定義・起動引数の試験とは別。
+
+この入口は開発用で、SkyのAMC Toolや `amc:codex` の外部実行境界を変更しない。製品Webからの起動・無人運転・自動mergeは未接続。

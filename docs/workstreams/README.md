@@ -27,7 +27,7 @@
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
 <!-- project-overview:start -->
-現在の機械可読進捗は379登録task（親32、子192、独立155。実行単位は親を除く347件）中108 done、34 in progress、236 planned、1 blocked。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は380登録task（親32、子192、独立156。実行単位は親を除く348件）中108 done、35 in progress、236 planned、1 blocked。件数は作業量や製品完成率を表さない。
 <!-- project-overview:end -->
 
 ## 作業ストリーム

@@ -104,7 +104,7 @@ void test('all generated local links resolve, including links between workspace 
   const pages = renderWorkspaces(workspaceModel(...inputs()));
   for (const [path, text] of pages) {
     for (const match of text.matchAll(/\]\(([^)]+)\)/g)) {
-      const destination = resolve(root, dirname(path), match[1]);
+      const destination = resolve(root, dirname(path), match[1].split('#')[0]);
       assert.ok(existsSync(destination), `${path}: ${match[1]}`);
     }
   }

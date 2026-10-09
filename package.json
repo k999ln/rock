@@ -38,7 +38,7 @@
     "sky:check": "node scripts/check-sky.mjs",
     "prompt:context": "node scripts/prompt-context.mjs",
     "db:generate": "node scripts/generate-migration.mjs",
-    "verify": "npm run project:check && npm run repository:check && npm run version:check && npm run schema:check && npm run database:check && npm run release:check && npm run release:signing:check && npm run baseline:check && npm run avocado:r5:check && npm run design:check && npm run system:composition:check && npm run llm:architecture:check && npm run csv:check && npm run sky:check && npm run sky:launch:check && npm run android:architecture:check && npm run device-support:check && npm run android:first-flash:check && npm run shared:check && npm run typecheck && npm run lint:product && npm test && npm run fashion:package:check && npm run mcp:package:check && npm run billing:check && npm run operator-dock:check && npm run test:fashion-brand-ops && npm run test:avocado-mini-site && npm run test:public-preview && npm run test:meme-intelligence && npm run test:avocado-farm && npm run build && npm run release:web-bundle:check && npm run release:web-assets:check && npm run test:api && npm run mission:check && npm run work:check",
+    "verify": "npm run project:check && npm run repository:check && npm run version:check && npm run schema:check && npm run database:check && npm run release:check && npm run release:signing:check && npm run baseline:check && npm run avocado:r5:check && npm run design:check && npm run system:composition:check && npm run llm:architecture:check && npm run csv:check && npm run sky:check && npm run sky:launch:check && npm run android:architecture:check && npm run device-support:check && npm run android:first-flash:check && npm run shared:check && npm run typecheck && npm run lint:product && npm test && npm run fashion:package:check && npm run mcp:package:check && npm run billing:check && npm run operator-dock:check && npm run test:fashion-brand-ops && npm run test:avocado-mini-site && npm run test:public-preview && npm run test:meme-intelligence && npm run test:avocado-farm && npm run build && npm run release:web-bundle:check && npm run release:web-assets:check && npm run test:api && npm run mission:check && npm run work:check && npm run bot:check",
     "discover": "node scripts/discover.mjs",
     "discover:watch": "node scripts/discover.mjs --watch",
     "os:check": "node scripts/check-os-contracts.mjs",
@@ -83,7 +83,10 @@
     "amc:autonomy:fixture": "node scripts/amc-autonomy-fixture.mjs",
     "work": "node scripts/workspaces.mjs",
     "work:update": "node scripts/workspaces.mjs --write",
-    "work:check": "node scripts/workspaces.mjs --check"
+    "work:check": "node scripts/workspaces.mjs --check",
+    "bot": "node scripts/project-bots.mjs",
+    "bot:update": "node scripts/project-bots.mjs --write",
+    "bot:check": "node scripts/project-bots.mjs --check"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

@@ -4,6 +4,8 @@
 
 このフォルダは既存の担当表から生成する作業用の入口です。ソースは元の場所にあり、状態・主担当・手順は [進捗JSON](../data/project-status.json) と [Mission Control](../data/mission-control.json) が正本です。生成ページを直接編集せず `npm run work:update` で同期します。
 
+作業を担当Botへ依頼するには [プロジェクト別Bot](../toolkits/amc-agent/README.md#プロジェクト別bot)へ。例: `npm run bot -- run sky --goal 'Skyの接続エラー表示を改善する'`。成果は専用branchのcommitとPRへ提出します。
+
 ## よく使う入口
 
 | やりたいこと | 開く部屋 |

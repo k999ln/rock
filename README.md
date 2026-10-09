@@ -36,6 +36,8 @@ Public homepage: [avocadomini.si](https://avocadomini.si) — the user-selected 
 
 > **Restored on 2026-10-07** — A merge on 2026-10-05 replaced this README with an older copy. The lead-service description and the Sky Market, payment, local-runtime, eSIM, and security passages below were restored from the version that was on `main` that day (`624124cf`). Counts inside those passages are as of that date; for example, they predate AMC becoming the 13th built-in Tool. What was lost and what was restored is recorded in the [merge-loss audit](docs/merge-loss-audit-20261007.md) (Japanese).
 
+**Ask a project bot to do the work:** `npm run bot -- list` lists the developer bots. For example, `npm run bot -- run sky --goal 'Improve the Sky connection error message'` opens an interactive Codex session with Sky scope and a commit/PR handoff. See [project bot usage](toolkits/amc-agent/README.md#プロジェクト別bot). These are on-demand developer profiles, not always-running GitHub Apps.
+
 ## At a glance
 
 ### How the direction changed
@@ -320,7 +322,7 @@ Payment and Wallet design: [integration design](docs/sky-commerce-design.md), [W
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-09 / 379 task records (32 parents, 192 children, 155 standalone; 347 execution units excluding parents): 108 done, 34 in progress, 236 planned, 1 blocked
+Updated: 2026-10-09 / 380 task records (32 parents, 192 children, 156 standalone; 348 execution units excluding parents): 108 done, 35 in progress, 236 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)
