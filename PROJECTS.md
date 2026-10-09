@@ -4,6 +4,10 @@
 
 このページは、`k999ln/rock`の成果物を**製品・実装単位**から探す入口です。確定要望は[製品ベース](docs/product-baseline.md)、現在のtaskと完了条件は[進捗JSON](data/project-status.json)、部隊別Goal・進捗・ruleは[avokado Mission Control](docs/mission-control.md)、設計の正本は[全設計ポータル](docs/rockstaros-design-portal.md)を参照してください。ここに書くディレクトリの存在は、実機・本番・販売の受入完了を意味しません。
 
+## 一つの機能・作業を進める
+
+[作業部屋一覧](workspaces/README.md)から一分野を開くと、触る場所・未完了task・前提・保留・検証方法がまとまっています。担当と手順は既存AMCから同期します。新しい思いつきは[アイデア置き場](workspaces/IDEAS.md)へ残し、現在のtaskを変える前に切り分けます。
+
 ## 製品・独立した構想
 
 | プロジェクト | 役割 | 最初に開くもの | 実装・素材の場所 |

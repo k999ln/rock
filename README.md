@@ -10,7 +10,7 @@ A product concept that begins with games and connects creation, learning, and ev
 We are designing the compact autonomous spatial-input, display, and game device **avocadoMini R5**, the standalone game-and-services computer **avokadoPro**, and **RockstarOS v1.0**, the common operating-system design that connects approved hardware, work, AI, creative assets, and permissions.
 The fully recoverable and reusable small-satellite launch vehicle **rocketstar** is a separate, active design program.
 
-[What this is](#what-this-repository-is) · [At a glance](#at-a-glance) · [Product experience](#product-experience) · [Feature details](#feature-details) · [Current status](#current-status) · [Design library](#design-library) · [Find a document](docs/README.md) · [Still image](docs/brand/avokado/avokado-r5-editorial-hero.png)
+[What this is](#what-this-repository-is) · [At a glance](#at-a-glance) · [Product experience](#product-experience) · [Feature details](#feature-details) · [Current status](#current-status) · [Design library](#design-library) · [Find a document](docs/README.md) · [Work by feature](workspaces/README.md) · [Still image](docs/brand/avokado/avokado-r5-editorial-hero.png)
 
 </div>
 
@@ -27,6 +27,8 @@ The fully recoverable and reusable small-satellite launch vehicle **rocketstar**
 | **3. The hardware** | **avocadoMini R5**, a 200 mm stand-alone spatial-input, display, and game device, and **avokadoPro**, a compact NVIDIA desktop for AI and PC games. **rocketstar**, a reusable small-satellite launch vehicle, is a separate design program. | Design documents only. Nothing has been built, approved for manufacturing, or put on sale. |
 
 Most design documents are written in Japanese. This README is the English entry point.
+
+**Work on one feature at a time:** open the [32 workspaces](workspaces/README.md) for source paths, unfinished tasks, prerequisites, and checks. Put new thoughts in the [idea inbox](workspaces/IDEAS.md). Run `npm run work -- O4` to focus on one area, `npm run work -- SKY07-01` for one task's steps and acceptance criteria, or `npm run work -- --find eSIM` to find related work. These read-only commands reuse the existing Mission Control assignments. `npm run project:update` and `npm run mission:update` also refresh the workspace pages; `npm run work:check` checks for drift.
 
 **Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [avokadoPro product definition](sites/avocado-mini/src/pages/pro/index.astro) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Mission Control](docs/mission-control.md) · [Complete design index](#design-library)
 
@@ -318,7 +320,7 @@ Payment and Wallet design: [integration design](docs/sky-commerce-design.md), [W
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-06 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
+Updated: 2026-10-09 / 379 task records (32 parents, 192 children, 155 standalone; 347 execution units excluding parents): 107 done, 35 in progress, 236 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)

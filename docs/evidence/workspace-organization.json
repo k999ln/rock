@@ -1,0 +1,64 @@
+{
+  "recordedAt": "2026-10-09",
+  "taskId": "ORG04",
+  "primarySquad": "H1",
+  "primaryOwner": "ROCK",
+  "baseMainSha": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "baseMainCheckRuns": {
+    "observed": 19,
+    "success": 19,
+    "appliesToChangedTree": false
+  },
+  "branch": "codex/feature-workspaces",
+  "scope": "Navigation and read-only task lookup using existing AMC assignments; no source relocation or runtime acceptance.",
+  "workspaces": 32,
+  "tasks": 379,
+  "taskPlans": 224,
+  "taskStateAuthority": "data/project-status.json",
+  "assignmentAuthority": "data/mission-control.json",
+  "validation": {
+    "focused": {
+      "command": "node --test tests/workspaces.test.mjs",
+      "passed": 6,
+      "failed": 0
+    },
+    "integrity": "project:check, mission:check, work:check, all generated local links and git diff --check passed",
+    "typecheck": "passed",
+    "productLint": "passed",
+    "fullVerify": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "not_completed_local_environment",
+      "attempts": [
+        {
+          "exitCode": 1,
+          "cause": "Shared node_modules symlink resolved reviewed braces to another worktree. Fixed with a private APFS copy; focused dependency regressions 9/9 passed."
+        },
+        {
+          "exitCode": 127,
+          "nodeTests": {
+            "total": 1379,
+            "passed": 1378,
+            "failed": 0,
+            "skipped": 1
+          },
+          "fashionTestsPassed": 25,
+          "cause": "Astro missing in the dedicated site dependency directory; later build/API checks were not run.",
+          "log": "/private/tmp/rock-workspaces-task/verify-final.log"
+        },
+        {
+          "exitCode": 130,
+          "cause": "Stopped retry to correct site dependency version before tests. Cache recovery then encountered ENOSPC. Only task-created dependency copies were removed."
+        }
+      ],
+      "next": "Run full npm run verify in GitHub CI with both root and site npm ci on the PR head; do not promote the base-main checks."
+    }
+  },
+  "mainIntegrated": false,
+  "runtimePublished": false,
+  "originalDirtyWorktreesModified": false,
+  "sourceHashes": {
+    "scripts/workspaces.mjs": "e0c3e92c9a7327024f7ae912d80cf4b417fb70ad26ad25217ed28c416d77ed21",
+    "tests/workspaces.test.mjs": "f6e81dccf640d6da13bea6571544f2b7640b12f510a75a248ce7c4a5f582c75a",
+    "data/workspaces.json": "74c26a7f3eab604d929935b6da2c1e53131a5a01ff9922fe5aa2da5a81286e0d"
+  }
+}

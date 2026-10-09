@@ -1,5 +1,11 @@
 # Git / CI / Operations
 
+## 作業部屋の維持（ORG04 / H1 / ROCK）
+
+[作業部屋一覧](../../workspaces/README.md)は既存AMCの32分野をフォルダへ分けた作業入口。主担当はtaskAssignments、状態はproject-status、手順と合格条件はtaskPlansのまま維持する。場所と確認コマンドだけをdata/workspaces.jsonへ持つ。完了条件は全taskの一意な所属、参照pathの存在、親から子への実行保留の継承、更新後の生成物一致、対象試験とnpm run verify。新しい思いつきはアイデア置き場へ記録し、採用前に製品要件や実行へ昇格させない。
+
+GitHub main 0455499d8726118b8892c5cfbe2e49236c8b4c31を基に専用worktreeで着手。同SHAの取得19 checksはsuccess。元のcodex/esim-cloud-accessはremoteに存在せず、多数の未保存差分があるため触らない。先行変更回収は別作業であり、入口整理をその統合完了とは扱わない。次担当は最新mainと自分のbranchを再確認し、npm run work -- <task ID>の担当・前提・holdを使う。GitHub保存・main統合・公開は別記録。
+
 ## 目的
 
 設計、実装、証拠、branch、PR、CI、Sites配備、release artifactを追跡可能にし、別候補や別環境の成功を混同しない。
