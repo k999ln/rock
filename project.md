@@ -2949,6 +2949,11 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 
 # 2026-09-21 — Rocket Star orbital communication access page
 
+## 2026-10-09 — SkyへのSPIDER公開反映を再開（SYS15／SKY20）
+
+利用者の「やんないと」を公開反映の指示として受け、PR #96の検証・main統合・既存public Siteへの反映・実画面確認まで進める。最新mainは0455499d。現PRのverify／CodeQL等は成功、secretsの残る2候補は同じlib/sky-code-api.tsの公開SHA-256と再計算して一致したため、値と証拠pathの組だけ分類する。新値・別pathの検出を維持する。配布候補はv48からの既存差分を引き継ぎ、単独検査Toolの入口も現行Siteに接続する。配備前の状態であり、main統合・本番反映をまだ完了としない。
+
+
 - Added `/rocket-star/` as a dedicated public concept page for a planned orbital communication network connecting Rocket Star spacecraft with compatible avocadoMini hardware through RockstarOS.
 - Created original orbital artwork in the avocadoMini satin-metal and cyan-sensor language, plus a full-height scroll sequence covering launch, relay, receiver hardware, and future software activation.
 - The page explains that a RockstarOS update still requires certified radio hardware, spectrum access, service availability, and network validation. It does not claim that software alone can add missing receiver hardware.
