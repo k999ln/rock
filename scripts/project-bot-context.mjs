@@ -2,6 +2,11 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createHash, randomUUID } from 'node:crypto';
 import {
+  constants,
+  openSync,
+  closeSync,
+  fstatSync,
+  readSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -9,12 +14,68 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { resolve } from 'node:path';
-import { compileGoal, validateGoal } from './amc-goal-engine.mjs';
+import {
+  compileGoal,
+  validateGoal,
+  renderGoalPrompt,
+} from './amc-goal-engine.mjs';
 
 const execute = promisify(execFile);
 const digest = (text) => createHash('sha256').update(text).digest('hex');
 const json = (value) => JSON.stringify(value, null, 2) + '\n';
 const sourcePaths = ['data/mission-control.json', 'data/project-status.json'];
+
+export function readBotGoalFile(path, repo) {
+  const source = resolve(repo, path);
+  const maxBytes = 1900000;
+  const fd = openSync(source, constants.O_RDONLY | constants.O_NONBLOCK);
+  let raw;
+  try {
+    const info = fstatSync(fd);
+    if (!info.isFile() || info.size > maxBytes)
+      throw new Error('AMC入力は1.9 MB以内の通常ファイルにしてください');
+    const buffer = Buffer.alloc(maxBytes + 1);
+    let length = 0;
+    while (length < buffer.length) {
+      const count = readSync(
+        fd,
+        buffer,
+        length,
+        buffer.length - length,
+        length,
+      );
+      if (!count) break;
+      length += count;
+    }
+    if (length > maxBytes) throw new Error('AMC入力は1.9 MB以内にしてください');
+    const bytes = buffer.subarray(0, length);
+    raw = bytes.toString('utf8');
+    if (!Buffer.from(raw, 'utf8').equals(bytes))
+      throw new Error('AMC入力は有効なUTF-8にしてください');
+  } finally {
+    closeSync(fd);
+  }
+  let value;
+  try {
+    value = JSON.parse(raw);
+  } catch {
+    throw new Error('AMC入力は有効なJSONではありません');
+  }
+  const checked = validateGoal(value);
+  if (!checked.ok) throw new Error('AMC Goalの構造・状態・参照が不正です');
+  return { path: source, raw, value, sha256: digest(raw) };
+}
+
+export function resolveBotRequest(options, repo) {
+  if (!options.goalFile) return options;
+  if (options.goal !== undefined || options.taskId !== undefined)
+    throw new Error(
+      '--goal-fileは--goalや--taskと併用できません。JSON内のGoalとtaskを維持します',
+    );
+  const { goalFile, ...rest } = options;
+  const inputGoal = readBotGoalFile(goalFile, repo);
+  return { ...rest, goal: inputGoal.value.instruction, inputGoal };
+}
 
 export function botPlanSources(repo) {
   const sources = sourcePaths.map((path) =>
@@ -185,15 +246,18 @@ export async function collectBotContext(
 }
 
 export async function prepareBotWork(
-  { bot, goal, taskId, repo },
+  { bot, goal, taskId, repo, inputGoal },
   dependencies = {},
 ) {
   if (typeof goal !== 'string' || !goal.trim() || goal.length > 16000)
     throw new Error('依頼は1〜16000文字で指定してください');
-  const plan = taskId ? createBotPlan({ bot, goal, taskId, repo }) : null;
+  const plan =
+    inputGoal?.value ??
+    (taskId ? createBotPlan({ bot, goal, taskId, repo }) : null);
   const context = await collectBotContext({ bot, repo }, dependencies);
   if (
     plan &&
+    !inputGoal &&
     JSON.stringify(plan.sourceFiles) !== JSON.stringify(context.sourceFiles)
   )
     throw new Error('調査中にAMC正本が変わりました。再取得してください');
@@ -213,18 +277,46 @@ export async function prepareBotWork(
   const parent = resolve(base, 'work/project-bots');
   const directory = mkdtempSync(resolve(parent, bot.id + '-'));
   const contextPath = resolve(directory, 'context.json');
-  const goalPath = resolve(directory, 'amc-goal-r0.json');
+  const goalPath = plan
+    ? resolve(directory, `amc-goal-r${plan.revision}.json`)
+    : null;
+  const instructionPath = plan
+    ? resolve(directory, 'amc-instructions.md')
+    : null;
   writeFileSync(contextPath, json(context), { flag: 'wx', mode: 0o600 });
   writeFileSync(resolve(directory, 'request.md'), goal.trim() + '\n', {
     flag: 'wx',
     mode: 0o600,
   });
-  if (plan) writeFileSync(goalPath, json(plan), { flag: 'wx', mode: 0o600 });
+  if (plan) {
+    writeFileSync(goalPath, inputGoal ? inputGoal.raw : json(plan), {
+      flag: 'wx',
+      mode: 0o600,
+    });
+    writeFileSync(instructionPath, renderGoalPrompt(plan), {
+      flag: 'wx',
+      mode: 0o600,
+    });
+  }
   return {
     directory,
     contextPath,
-    goalPath: plan ? goalPath : null,
-    amcState: plan ? 'draft' : 'awaiting_bot_task_selection',
+    goalPath,
+    instructionPath,
+    inputKind: inputGoal
+      ? 'amc_goal_file'
+      : plan
+        ? 'canonical_task'
+        : 'request_text',
+    importedGoal: inputGoal
+      ? {
+          path: inputGoal.path,
+          sha256: inputGoal.sha256,
+          goalId: plan.id,
+          revision: plan.revision,
+        }
+      : null,
+    amcState: plan ? plan.state : 'awaiting_bot_task_selection',
     sourceReviewComplete: false,
     botStarted: false,
   };

@@ -1,0 +1,49 @@
+{
+  "taskId": "AMC05",
+  "date": "2026-10-09",
+  "scope": "existing_amc_json_validation_snapshot_and_native_bot_handoff",
+  "branch": "codex/feature-workspaces",
+  "pullRequest": "https://github.com/k999ln/rock/pull/95",
+  "liveReadOnlyPreparation": {
+    "inputBytes": 47586,
+    "originalMatchesSnapshot": true,
+    "copyMatchesOriginal": true,
+    "instructionMatchesEngine": true,
+    "goalIdPreserved": true,
+    "revision": 1,
+    "state": "active",
+    "taskCount": 7,
+    "readyTaskIds": [
+      "REQ-01"
+    ],
+    "mainSha": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "localHead": "0b1063042da57e156ef9a2750caf6410a8df872e",
+    "liveMetadataVerified": true,
+    "codeIndexFiles": 919,
+    "scopedTaskCount": 72,
+    "sourceReviewComplete": false,
+    "botStarted": false
+  },
+  "localChecks": {
+    "command": "node --test tests/project-bot-context.test.mjs tests/project-bots.test.mjs tests/workspaces.test.mjs",
+    "passed": 32,
+    "failed": 0,
+    "modelLaunch": "stub_only"
+  },
+  "githubCI": {
+    "status": "pending"
+  },
+  "acceptance": {
+    "liveDevelopmentTaskAccepted": false,
+    "independentReadOnlyReview": "pending",
+    "webSynced": false,
+    "mainIntegrated": false,
+    "alwaysRunning": false
+  },
+  "localFullVerify": {
+    "command": "npm run verify",
+    "status": "blocked_environment",
+    "stage": "llm:architecture:check",
+    "reason": "ai package is not installed in the isolated worktree; prior static checks passed"
+  }
+}

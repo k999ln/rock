@@ -775,7 +775,7 @@ AMCをCodexから使うための役割定義です。正本は [`data/amc/agent-
 
 #### プロジェクト別の10担当Bot
 
-正本は [`data/amc/project-bots.json`](../data/amc/project-bots.json)。Sky、Zema、Wallet、RockstarOS、Game、Security、avocadoMini、avokadoPro、rocketstar、Operationsを依頼窓口とし、32部隊のtaskAssignmentsを維持する。`npm run bot -- run sky --goal '…'` はGitHubと担当コードの履歴・task資料を収集してからCodexを起動する。Botが対象コードを読み、既存taskを選択／新規taskを具体化し、既存engineのAMC計画→任務遂行→別担当の検収→Git commit／PR→AMC結果記録を進める。計画作成だけで稼働・検収済みにはしない。[利用・復旧・検証](../toolkits/amc-agent/README.md#プロジェクト別bot)。開発用の入口で、Sky catalog Toolの実行権限やWeb保存先は変更しない。
+正本は [`data/amc/project-bots.json`](../data/amc/project-bots.json)。Sky、Zema、Wallet、RockstarOS、Game、Security、avocadoMini、avokadoPro、rocketstar、Operationsを依頼窓口とし、32部隊のtaskAssignmentsを維持する。`npm run bot -- run sky --goal '…'` はGitHubと担当コードの履歴・task資料を収集してからCodexを起動する。Botが対象コードを読み、既存taskを選択／新規taskを具体化し、既存engineのAMC計画→任務遂行→別担当の検収→Git commit／PR→AMC結果記録を進める。計画作成だけで稼働・検収済みにはしない。`run/prepare <bot> --goal-file <AMC JSON>` は既存Goalを保持したコピーとengine生成の指示書を渡す。入力state・承認記録を新しい実行実績や権限へ変換しない。[利用・復旧・検証](../toolkits/amc-agent/README.md#プロジェクト別bot)。開発用の入口で、Sky catalog Toolの実行権限やWeb保存先は変更しない。
 
 ### 8.4 新しい依頼に使う4役割・7工程
 

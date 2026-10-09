@@ -1,5 +1,17 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-07 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
+# RockstarOS — 事業・設計・進捗
+
+## 2026-10-09 — 既存AMC JSONを担当Botへ直接渡す（AMC05、着手）
+
+利用者の「このシステムでできる」に対応し、既存AMCのJSON読込み・指示生成を担当Botの入口へ接続する。H1 / ROCK、Git / CI / Operations。添付Goalを別の任務へ置き換えず、ID・revision・意図・task・履歴を保持したローカルコピーを渡す。読み込みを新しい本人認証・検収・実行実績にしない。元Downloadsファイルと元dirty checkoutは変更しない。
+
+main `0455499d`、PR #95 head `0b106304` と同SHAの8 checks成功を確認。既存mission:codexの一件実行・Git禁止境界は変更せず、担当Botの対話入口だけを拡張する。既存Goalの状態遷移はreducerを使う。main統合・公開・実機操作は対象外。
+
+添付された47,586 byteのJSONで実GitHub調査を行い、コピーの全byte・Goal ID・revision 1・7 task・既存engineの指示書が一致した。原本hashは不変、着手候補はREQ-01。main `0455499d`、調査時HEAD `0b106304`、Operations参照919 file／72 taskを取得。保存されたactiveは入力の記録でありBot起動の結果ではない。対象試験・独立した読み取り検収・全体CIを続けて確認する。
+
+対象32試験合格。JSON不正・過大・通常ファイル以外・混在引数を拒否し、読込み後に入力pathが変わっても同じsnapshotを引き継ぐ。起動argvはstubで確認し、実モデル任務の完走とは区別する。全体verifyは同期／baseline／design等を通過後、隔離作業木にai依存がないためllm:architecture:checkで停止。[証拠](docs/evidence/project-bot-goal-input.json)と同一実装SHAのCIで補う。
+
 ## 2026-10-09 — BotがGitを調べてAMCを作成・遂行する流れ（AMC04、入口接続の検証完了）
 
 利用者の「botはGitから情報を集め、AMCを作成して作業を進める」という明示指示を記録。H1 / ROCK、Git / CI / Operations。既存prompt:contextとAMC Goal engineを再利用し、調査資料→担当Botのtask具体化→AMC作成→実行／検収→Git成果という入口へ接続する。添付amc-goal-r1.jsonは形式の参考であり、過去のGoal・意図・local-owner承認・active状態を新規任務へコピーしない。
@@ -22,7 +34,6 @@ main `0455499d` と作業branch `ad6c3472` を確認、後者の8 CI成功を確
 >
 > **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
 
-# RockstarOS — 事業・設計・進捗
 
 ## 2026-10-09 — 機能・作業ごとの入口整理（ORG04 / H1 / ROCK、作業branch上で実装・検証完了）
 
@@ -2552,7 +2563,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 110/381件（親32・子192・独立157。実行単位は親を除く349件）
+最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 110/382件（親32・子192・独立158。実行単位は親を除く350件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -2937,6 +2948,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ORG04 | 既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する | 完了 | [記録](workspaces/README.md) · [記録](workspaces/IDEAS.md) · [記録](data/workspaces.json) · [記録](scripts/workspaces.mjs) · [記録](tests/workspaces.test.mjs) · [記録](docs/evidence/workspace-organization.json) |
 | AMC03 | 機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する | 完了 | [記録](data/amc/project-bots.json) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bots.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bots.json) |
 | AMC04 | 担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する | 完了 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-amc.json) |
+| AMC05 | 既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ | 進行中 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-goal-input.json) |
 
 段階ゲート（作業全体の完了とは別判定）
 

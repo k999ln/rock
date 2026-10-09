@@ -72,6 +72,24 @@ npm run bot -- run sky --task SKY07-01 --goal 'このtaskを進める' --preview
 
 Botは既存の[作業部屋](../../workspaces/README.md)とtaskAssignmentsを読む。複数BotがO5などを参照していても、taskの主担当は台帳の一つの部隊のまま。`--task` はそのBotが参照する部隊か検査し、前提と親taskの保留も引き継ぐ。具体的な編集範囲は各依頼で絞る。プロンプトの担当分けはOSによるpath権限制御や、実装上の並列排他ではない。同時に進める場合は別worktreeを使う。
 
+### 手元のAMC JSONをそのまま渡す
+
+既に `amc-goal/1` のJSONがある場合は `--goal-file` で渡す。Goalを作り直さず、ID・revision・意図・task・履歴を維持して担当Botが引き継ぐ。
+
+```sh
+npm run bot -- run operations --goal-file /absolute/path/amc-goal-r1.json
+# Git調査と指示書の保存までを確認する場合
+npm run bot -- prepare operations --goal-file /absolute/path/amc-goal-r1.json
+# 入力検査と起動引数だけを確認する場合
+npm run bot -- run operations --goal-file /absolute/path/amc-goal-r1.json --preview
+```
+
+Skyの依頼は `operations` を `sky` に替える。JSON内のtaskと担当Botの関係、現在のGitと利用者の依頼を照合して進める。`--goal`・`--task` は併用できない。1.9 MB以内の通常ファイルを読み、既存engineで構造・状態・参照を検査する。不正な入力では調査・モデル起動へ進まない。
+
+`run/prepare` は入力を一度読み、同じ内容のコピーをGit管理外の `work/project-bots/<bot>-<実行ID>/amc-goal-r<revision>.json` へ保存する。元ファイルは変更しない。既存engineが `amc-instructions.md` を生成し、最新のGit調査資料とともにBotへ渡す。新しいGoal候補を作る場合とは異なり、入力のstateを保持する。`active` の読み込みはBotが稼働中という意味ではない。入力内の承認・検収記録も保持するが、本人認証や新しい実行権限の証拠へ自動昇格させない。状態遷移には既存reducerで新しい版を保存する。
+
+このチャットでAMCを使う場合は、担当と依頼を文章で伝えればよい。CLIは手元のターミナルから起動する別の入口である。既存 `mission:codex` のJSON受付・一件実行と、その外部送信同意・Git変更禁止の境界は変えない。
+
 ### Gitを調べてAMCを作り、仕事を進める
 
 `run` はモデル起動前に既存の `prompt:context` を実行する。GitHub main・branch・PR・同一SHAのCIとref再確認、担当pathのGit blob一覧・直近履歴、既存taskを集め、Git管理外の `work/project-bots/<bot>-<実行ID>/context.json` へ保存する。GitHub取得失敗や調査中のHEAD変更時はBotを起動しない。CIなしはNO_CHECKSのまま。調査資料にはsourceReviewComplete=falseを残し、コードを読んだことにはしない。

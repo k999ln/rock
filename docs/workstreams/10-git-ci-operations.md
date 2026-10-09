@@ -8,6 +8,10 @@
 
 ROCKが既存prompt-contextのGitHub情報と担当コードのblob／履歴／task資料を収集し、担当Botが具体的なtaskを選んでAMCを作成する。planは既存engineのdraft生成を再利用し、正本のnextTaskIds・受入状態を変更しない。EXTERNALはGitHub／Codex接続、OWNERは依頼の範囲と既存gateの判断を担う。合格条件は担当範囲、前提とhold、Git SHAと資料hash、未確認ソースの明示、調査失敗時の未起動、新規版保存の維持。`node --test tests/project-bot-context.test.mjs tests/project-bots.test.mjs tests/workspaces.test.mjs` と全体verifyで確認する。実Botによる任務完走と、Git調査／計画生成／引渡しのhost試験は別証拠とする。
 
+### 既存AMCの直接入力（AMC05 / H1 / ROCK）
+
+`run/prepare --goal-file` で利用者の既存AMCを担当Botへ引き渡す。ROCKは読込み検証、原本を保持した作業コピー、既存engineでの指示生成、Git調査との接続を担当する。EXTERNALは既存Codex／GitHubの認証と実行環境、OWNERは依頼と適用範囲を担う。合格条件はID・revision・task・履歴・保留の保持、原本非変更、不正入力の起動前拒否、同じ読込み内容のコピーと引渡し。検証は `node --test tests/project-bot-context.test.mjs tests/project-bots.test.mjs tests/workspaces.test.mjs` と `npm run verify`。読み取りレビューはWeb上の認証済み検収イベントを代替しない。
+
 ## 作業部屋の維持（ORG04 / H1 / ROCK）
 
 [作業部屋一覧](../../workspaces/README.md)は既存AMCの32分野をフォルダへ分けた作業入口。主担当はtaskAssignments、状態はproject-status、手順と合格条件はtaskPlansのまま維持する。場所と確認コマンドだけをdata/workspaces.jsonへ持つ。完了条件は全taskの一意な所属、参照pathの存在、親から子への実行保留の継承、更新後の生成物一致、対象試験とnpm run verify。新しい思いつきはアイデア置き場へ記録し、採用前に製品要件や実行へ昇格させない。

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
@@ -12,6 +13,9 @@ import {
   runBot,
   syncBots,
 } from '../scripts/project-bots.mjs';
+
+import { buildRequestPlan } from '../scripts/amc-request-plan.mjs';
+import { applyGoalEvent, compileGoal } from '../scripts/amc-goal-engine.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const prepare = async () => ({
@@ -119,7 +123,7 @@ void test('real launch interface uses argv, no shell; process exit does not cert
         assert.equal(command, 'codex');
         assert.equal(args[0], '--cd');
         assert.match(args[4], /Git調査資料: \/fixture\/run\/context.json/);
-        assert.match(args[4], /AMC候補: \/fixture\/run\/amc-goal-r0.json/);
+        assert.match(args[4], /AMC指示書: \/fixture\/run\/amc-goal-r0.json/);
         assert.deepEqual(options, { stdio: 'inherit', shell: false });
         const child = new EventEmitter();
         queueMicrotask(() => child.emit('exit', 7, null));
@@ -192,5 +196,165 @@ void test('Git collection failure never starts a worker', async () => {
       },
     ),
     /Git lookup failed/,
+  );
+});
+
+function inputGoalFixture(t) {
+  const directory = mkdtempSync(resolve(tmpdir(), 'rock-bot-input-'));
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const definition = buildRequestPlan({
+    request: 'AMCの引継ぎを試す',
+    goal: '入力JSONを一度読み込んで担当Botへ渡す',
+    intent: '利用者の指示と版を保つ',
+    planId: 'synthetic-launch',
+    createdAt: '2026-10-09T00:00:00Z',
+  });
+  const draft = compileGoal({
+    ...definition,
+    instruction: definition.brief.goal,
+    squadIds: definition.mission.squads.map((squad) => squad.id),
+    goalId: 'synthetic-launch',
+    createdAt: '2026-10-09T00:00:00Z',
+  });
+  draft.requestBrief = definition.brief;
+  const goal = applyGoalEvent(draft, {
+    id: 'synthetic-approval',
+    type: 'approve_plan',
+    expectedRevision: 0,
+    actor: 'synthetic-owner',
+    role: 'owner',
+    scopeConfirmed: true,
+    coverageStatement: definition.coverage,
+    acceptanceCriteria: definition.acceptanceCriteria,
+  });
+  const path = resolve(directory, 'input.json');
+  const raw = JSON.stringify(goal, null, 2) + '\n';
+  writeFileSync(path, raw);
+  return { path, raw, goal };
+}
+
+void test('goal-file syntax is allowed only for run and prepare and cannot replace imported instructions or tasks', () => {
+  for (const command of ['run', 'prepare']) {
+    assert.deepEqual(
+      parseBotArgs([command, 'operations', '--goal-file', 'existing.json']),
+      {
+        command,
+        id: 'operations',
+        goalFile: 'existing.json',
+      },
+    );
+  }
+  assert.deepEqual(
+    parseBotArgs(['run', 'sky', '--goal-file', 'existing.json', '--preview']),
+    {
+      command: 'run',
+      id: 'sky',
+      goalFile: 'existing.json',
+      preview: true,
+    },
+  );
+  for (const args of [
+    ['run', 'sky', '--goal-file'],
+    ['run', 'sky', '--goal-file', 'one.json', '--goal-file', 'two.json'],
+    ['run', 'sky', '--goal-file', 'existing.json', '--goal', 'replacement'],
+    ['run', 'sky', '--goal-file', 'existing.json', '--task', 'SKY07-01'],
+    ['prepare', 'sky', '--goal-file', 'existing.json', '--preview'],
+    ['show', 'sky', '--goal-file', 'existing.json'],
+    [
+      'plan',
+      'sky',
+      '--goal-file',
+      'existing.json',
+      '--task',
+      'SKY07-01',
+      '--out',
+      'new.json',
+    ],
+  ])
+    assert.throws(() => parseBotArgs(args));
+});
+
+void test('goal-file preview reads existing Goal without preparing Git or starting a model', async (t) => {
+  const { path, raw, goal } = inputGoalFixture(t);
+  const result = await runBot(
+    { id: 'operations', goalFile: path, preview: true },
+    {
+      interactive: false,
+      prepare: () => assert.fail('preview must not collect Git'),
+      launch: () => assert.fail('preview must not spawn'),
+    },
+  );
+  assert.equal(result.started, false);
+  assert.equal(result.githubSaved, false);
+  assert.ok(result.args[4].includes(goal.instruction));
+  assert.match(result.args[4], /Goal ID: synthetic-launch \/ revision: 1/);
+  assert.match(result.args[4], /本人認証・検収の証明ではありません/);
+  assert.equal(readFileSync(path, 'utf8'), raw);
+});
+
+void test('goal-file launch passes one immutable loaded snapshot through preparation and native argv', async (t) => {
+  const { path, raw, goal } = inputGoalFixture(t);
+  let preparedInput;
+  let calls = 0;
+  const result = await runBot(
+    { id: 'operations', goalFile: path },
+    {
+      interactive: true,
+      prepare: async (input) => {
+        preparedInput = input;
+        assert.equal(input.goal, goal.instruction);
+        assert.equal(input.taskId, undefined);
+        assert.equal(input.inputGoal.raw, raw);
+        assert.deepEqual(input.inputGoal.value, goal);
+        writeFileSync(path, 'input changed after initial read');
+        return {
+          directory: '/fixture/import',
+          contextPath: '/fixture/import/context.json',
+          goalPath: '/fixture/import/amc-goal-r1.json',
+          instructionPath: '/fixture/import/amc-instructions.md',
+          amcState: 'active',
+          botStarted: false,
+        };
+      },
+      launch: (command, args, options) => {
+        calls++;
+        assert.equal(command, 'codex');
+        assert.deepEqual(options, { stdio: 'inherit', shell: false });
+        assert.ok(args[4].includes(goal.instruction));
+        assert.match(args[4], /Goal ID: synthetic-launch \/ revision: 1/);
+        assert.ok(args[4].includes(preparedInput.inputGoal.sha256));
+        assert.match(args[4], /AMC指示書: \/fixture\/import\/amc-goal-r1.json/);
+        assert.match(
+          args[4],
+          /実行用プロンプト: \/fixture\/import\/amc-instructions.md/,
+        );
+        assert.equal(
+          args[4].includes('input changed after initial read'),
+          false,
+        );
+        const child = new EventEmitter();
+        queueMicrotask(() => child.emit('exit', 0, null));
+        return child;
+      },
+    },
+  );
+  assert.equal(calls, 1);
+  assert.equal(result.exitCode, 0);
+  assert.equal(result.acceptance, 'process_exit_is_not_pr_or_task_acceptance');
+});
+
+void test('invalid goal-file fails before any preparation or model launch', async (t) => {
+  const { path } = inputGoalFixture(t);
+  writeFileSync(path, '{ invalid input');
+  await assert.rejects(
+    runBot(
+      { id: 'operations', goalFile: path },
+      {
+        interactive: true,
+        prepare: () => assert.fail('invalid input must not collect Git'),
+        launch: () => assert.fail('invalid input must not spawn'),
+      },
+    ),
+    /有効なJSON/,
   );
 });

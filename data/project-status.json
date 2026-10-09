@@ -5111,6 +5111,22 @@
         "docs/evidence/project-bot-amc.json"
       ],
       "nextAction": "Git調査→AMC候補生成→native Botへの引渡しを接続。対象23試験と実装SHA 59d7d6dcの全体verify／CodeQL等8 checksが成功。PR #95へ保存。実Botの開発・独立検収・Git提出の一件完走とWeb同期は別受入、main統合・公開は未実施。"
+    },
+    {
+      "id": "AMC05",
+      "title": "既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ",
+      "status": "in_progress",
+      "dependsOn": [
+        "AMC04"
+      ],
+      "evidence": [
+        "scripts/project-bot-context.mjs",
+        "scripts/project-bots.mjs",
+        "tests/project-bot-context.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bot-goal-input.json"
+      ],
+      "nextAction": "直接JSON入力、元ファイル保持、既存engineの指示生成と担当Botへの引渡しを検証する。"
     }
   ],
   "phaseGates": [
@@ -5879,5 +5895,13 @@
     "evidence": "docs/evidence/project-bot-amc.json",
     "verifiedImplementationSha": "59d7d6dc54a15d182e59796f499e008bf7a0b1f4",
     "completionScope": "Git collection, canonical-task AMC draft creation, and native Bot handoff; live task execution is separate acceptance"
+  },
+  "projectBotGoalInput": {
+    "taskId": "AMC05",
+    "status": "in_progress",
+    "mainIntegrated": false,
+    "evidence": "docs/evidence/project-bot-goal-input.json",
+    "inputPreserved": true,
+    "liveDevelopmentTaskAccepted": false
   }
 }
