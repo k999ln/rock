@@ -17,8 +17,8 @@ const candidateCount = catalog.filter(
   ({ status }) => status === 'candidate',
 ).length;
 requireValue(
-  readyCount === 13,
-  `Web/PC readyは13件です（実際: ${readyCount}）`,
+  readyCount === 14,
+  `Web/PC readyは14件です（実際: ${readyCount}）`,
 );
 requireValue(
   candidateCount === 22,

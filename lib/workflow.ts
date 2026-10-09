@@ -10,6 +10,12 @@ import {
 
 export const workflowTemplates = [
   {
+    id: 'spider-security',
+    name: 'SPIDERの入力検査',
+    description: '明示入力を端末内で静的検査し、結果と範囲を確認します。安全認定や外部送信承認ではありません。',
+    steps: [{ id: 'inspect', title: '入力の静的検査を実行する', tool: 'rockstar-spider', runner: 'spider-inspect' }],
+  },
+  {
     id: 'article',
     name: '記事の販売準備',
     description: '出典を整理し、無料版を作って内容を確認します。',

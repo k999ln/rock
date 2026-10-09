@@ -341,6 +341,8 @@ Web AI送信前検査とMCP Connectorは補助系統として保持する。こ�
 
 ### 19.2 Spiderの明示入力コード検査
 
+2026-10-09: 同じ検出器をSky catalogの`rockstar-spider`からZemaへ接続する。Web Workerで明示入力だけを静的検査し、原文／ファイル名／検出値は送信・保存しない。入力変更時に古い結果を破棄し、停止・失敗は未完了として表示する。仕事状態は既存workflowの画面内契約を再利用し、owner保存・nativeの権限／常駐範囲を変更しない。[入出力・状態・復旧・合格条件](sky-tools-complete-design.md#spider--skyのセキュリティ検査)。
+
 追加の利用者指定により、編集したsourceを自動検査するoffline HTMLと、native owner限定`security.inspectCode`を既存Security領域へ接続する。catalog Toolや実行権限は追加しない。詳細と配布物の使い方は[Spider Guard](spider-guard.md#自分のコードを貼って検査する)。
 
 | 設計項目 | 接続契約 |

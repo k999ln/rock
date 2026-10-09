@@ -23,6 +23,11 @@ export function skyToolUiState(
     service,
   }: SkyToolUiContext = {},
 ): SkyToolUiState {
+  if (tool.id === 'rockstar-spider') return {
+    label: 'ブラウザ内で検査',
+    detail: '明示入力の静的検査。原文は送信・保存しません',
+    className: 'is-ready',
+  };
   if (tool.id === 'jev-router')
     return {
       label: 'Sky未接続・PC CLIのみ',

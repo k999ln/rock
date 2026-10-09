@@ -1,0 +1,73 @@
+{
+  "recordedAt": "2026-10-09",
+  "taskId": "SYS15",
+  "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "scope": "Sky local static inspection component continuation",
+  "reproduction": {
+    "LF": "selected eval(user_input)",
+    "CRLF": "selected al(user_input)",
+    "CR": "selected empty string"
+  },
+  "fix": "Normalize file CRLF and CR to LF before keeping component state, matching HTML textarea offsets. Original file untouched.",
+  "validation": {
+    "componentRegression": {
+      "passed": 5,
+      "failed": 0,
+      "command": "node --experimental-strip-types --test tests/spider-workspace-state.test.mjs"
+    },
+    "relatedRegression": {
+      "passed": 110,
+      "failed": 0
+    },
+    "designCheck": "pass",
+    "targetedLint": "pass",
+    "fullVerify": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodeTests": {
+        "passed": 1384,
+        "failed": 0,
+        "skipped": 1
+      },
+      "workerD1Assertions": 1192,
+      "csvAssertions": 385,
+      "webAssetReferences": 177,
+      "webAssetsMissing": 0,
+      "log": "/private/tmp/spider-handoff-verify.log",
+      "logSha256": "70587bc9bb30379a44bee15d8958e191db5a2fd4d0833ca1c8fba8cfb8fb2092"
+    },
+    "browser": {
+      "url": "http://localhost:4179/zema/tools/rockstar-spider",
+      "skyToZema": true,
+      "actualWorkerSample": {
+        "secret": 1,
+        "personal": 0,
+        "code": 1
+      },
+      "editingClearsPriorResult": true,
+      "cleanInputReinspectionAndAcknowledgement": true,
+      "download": {
+        "saved": "spider-inspection-report (2).json",
+        "schemaVersion": 1,
+        "rawSourceOrFilenameFields": false,
+        "syntheticSecretValueIncluded": false,
+        "note": "Browser event wait timed out, but download was confirmed from the timestamped saved JSON."
+      },
+      "mobileViewport": 390,
+      "mobileDocumentWidth": 390,
+      "screenshot": "/Users/kaiya/.codex-work/visualizations/2026/10/09/01a121c9-034e-7af1-8438-f295323f1262/spider-sky.png"
+    }
+  },
+  "sourceHashes": {
+    "components/spider-workspace.tsx": "aa3121b5a4a3917c6a58a7f37e63ec00e6580768d47c9917f0552e6955b3a338",
+    "tests/spider-workspace-state.test.mjs": "ec44ba637bc97f06729fbc0f70cabc2b6c505e7b83309db9b09ea1326867f48d"
+  },
+  "mainIntegrated": false,
+  "productionDeployed": false,
+  "fileChooserUiAcceptance": "not completed in continuation; synthetic component File read covered",
+  "unresolved": [
+    "GitHub save/CI and main integration are not claimed",
+    "Native/physical guard acceptance and production publication remain separate",
+    "Native file chooser UI is unverified; File read and newline selection are component-harness validated"
+  ]
+}

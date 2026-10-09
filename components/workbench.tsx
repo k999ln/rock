@@ -1362,7 +1362,7 @@ export default function Workbench({
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                {workflowTemplates.map((template) => (
+                {workflowTemplates.filter((template) => template.id !== 'spider-security').map((template) => (
                   <SelectItem key={template.id} value={template.id}>
                     {template.name}
                   </SelectItem>

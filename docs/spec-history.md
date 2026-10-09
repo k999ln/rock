@@ -21,6 +21,10 @@
 
 ---
 
+## 2026-10-09 — SPIDERをSkyで提供
+
+利用者は「セキュリティーで開発したい」「skyでしたい」と指定。既存OS常駐を保持し、Skyで選びZemaでコード／テキストを端末内検査する提供面を追加する。現行仕様は下のセキュリティ行と[Tool設計](sky-tools-complete-design.md#spider--skyのセキュリティ検査)。
+
 ## 1. 30秒でわかる変遷
 
 約1か月で、製品の中心は **5回** 大きく動いています。
@@ -71,7 +75,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 | Miniゲームの分配 | クリエイター80%：Mini運営20%（比率のみ確定。何を分けるかは未決） | 09-27 | [会話仕様アーカイブ](avocado-mini-conversation-2026-09-27/README.md) |
 | ATM | Rockが徴収するATM手数料は0（RQ15）。ゲーム料金とは別 | 09-09 | 製品ベース RQ15 |
 | クラウド実行 | 受付・承認済みの仕事は、端末が圏外でも予算と期限の範囲でクラウドが続ける | 09-30 | [継続実行契約](sky-cloud-continuity.md) |
-| セキュリティ | Spider GuardをOS本体に常駐させ、秘密・個人情報のある場所を継続監視し、送信前に検査・拒否する（SYS15） | 10-02 | [Spider Guard](spider-guard.md) |
+| セキュリティ | SPIDERをSkyのToolとして提供。Zemaで明示入力を端末内検査。既存のOS常駐guardも保持し、受入は区別する | 10-09 | [SPIDER](spider-guard.md) / [Tool詳細](sky-tools-complete-design.md#spider--skyのセキュリティ検査) |
 | 開発の進め方 | 3製品＋共通OSを5師団32部隊に分け、Goal・段階・証拠で管理（AMC） | 09-26 | [Mission Control](mission-control.md) |
 | 公開サイト | `https://avocadomini.si`（Mini／Proの製品ホーム）。OSの作業画面とは別 | 10-05 | [Web workstream](workstreams/05-web-pwa-sites.md) |
 

@@ -1980,5 +1980,14 @@
     "llmEntry": "existing_zema_with_quote_and_approval",
     "esimChipOs": false,
     "newLocalModelInstalled": false
+  },
+  "spiderSkyIntent": {
+    "decidedAt": "2026-10-09",
+    "source": "利用者: セキュリティーで開発したい / skyでしたい",
+    "toolId": "rockstar-spider",
+    "entry": "Sky catalog → Zema tool workspace",
+    "initialScope": "explicit_input_browser_local_static_inspection",
+    "existingNativeGuardRetained": true,
+    "doesNotAuthorize": "full_device_surveillance_or_automatic_external_submission"
   }
 }

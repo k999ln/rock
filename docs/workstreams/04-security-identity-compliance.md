@@ -21,6 +21,10 @@
 
 主なtask: `SYS01`〜`SYS13`, `SYS15`, `LCH02`, `LCH03`, `OS05`。
 
+## SkyのSPIDER（2026-10-09 / SYS15 / ROCK）
+
+Sky掲載→Zemaの明示入力検査へ既存検出器を接続する。AMCの一意の主担当は既存taskAssignmentsのH1を維持。ローカルWorker・入力上限・停止・旧結果失効・値を含まないreportを対象とし、原文保存と外部送信は追加しない。主な検証: `node --experimental-strip-types --test tests/spider-sky.test.mjs tests/spider-program-inspector.test.mjs tests/sky-tool-execution-scope.test.mjs`、`npm run design:check`、`npm run verify`、Sky→Zemaの実画面。検証結果はproject.mdとdata/project-status.jsonのspiderSky、[追加検証証拠](../evidence/spider-sky-continuation.json)へ記録した。2026-10-09のローカル全体verifyと実画面が合格、公開・実機は別受入。[全契約](../sky-tools-complete-design.md#spider--skyのセキュリティ検査)。
+
 ## 次に進める順番
 
 1. 自作部分の製品license、適用範囲、第三者NOTICE/source提供条件を確定する。

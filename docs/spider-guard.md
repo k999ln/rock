@@ -4,6 +4,8 @@
 
 ## 要求と現在地
 
+2026-10-09の明示指示「skyでしたい」により、SPIDERをSkyのセキュリティTool `rockstar-spider`として追加する。Skyの商品ページからZemaのブラウザ内検査へ進み、入力・選択fileだけを検査する。原文は送信・保存しない。検査結果の確認と値を含まないJSON書出しまでを今回の範囲とし、OS常駐・全通信遮断の稼働へ換算しない。[現行Tool詳細](sky-tools-complete-design.md#spider--skyのセキュリティ検査)。
+
 利用者は、クモが秘密コード・個人情報のある場所を優先して守り、継続して監視する実機能を要求した。表示デモではなく、正本repository `k999ln/rock` の実処理へ接続する。画面のクモは実際の検査結果を表現するもので、描画や経過時間を保護実績として数えない。
 
 利用者は常駐先として **RockstarOS本体** を選択した。既存Platform serviceのUID 1002で起動し、OS側の固定範囲を継続検査する。Platform MCP送信とRunnerControlのprepare／初回send claimにも検査を組み込む。Web AI／MCP Connectorの送信前検査は補助であり、OS本体への常駐を代替しない。

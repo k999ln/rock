@@ -33,7 +33,7 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/69",
     "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
   },
-  "updatedAt": "2026-10-06",
+  "updatedAt": "2026-10-09",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
   "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。",
   "tasks": [
@@ -5043,7 +5043,11 @@
         "tests/amc-autonomy-store-read.test.mjs",
         "scripts/amc-parallel.mjs",
         "tests/amc-workspace-snapshot.test.mjs",
-        "docs/evidence/spider-workspace-snapshot-read.json"
+        "docs/evidence/spider-workspace-snapshot-read.json",
+        "docs/evidence/spider-sky-continuation.json",
+        "components/spider-workspace.tsx",
+        "tests/spider-sky.test.mjs",
+        "tests/spider-workspace-state.test.mjs"
       ]
     },
     {
@@ -5793,5 +5797,25 @@
     "verifiedSourceSha": "92bb9f2ff87cffcf72aa370105cff26def693939",
     "ci": "7/7 checks passed; npm run verify including build/API/full regression passed",
     "ciRun": "https://github.com/k999ln/rock/actions/runs/37555780451"
+  },
+  "spiderSky": {
+    "taskId": "SYS15",
+    "status": "local_verified_not_published",
+    "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "scope": "Sky catalog and Zema browser-only explicit-input security inspection",
+    "sourceAndFindingsPersisted": false,
+    "sourceUploaded": false,
+    "validation": "PASS: npm run verify exit 0, Node 1384 pass / 1 documented skip, Worker/D1 1192 assertions, CSV 385 assertions; actual browser Worker, metadata download, reinspection and 390px viewport verified.",
+    "mainIntegrated": false,
+    "productionDeployed": false,
+    "latestMainObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "githubSaved": false,
+    "continuationReview": {
+      "status": "verified",
+      "evidence": "docs/evidence/spider-sky-continuation.json",
+      "focusedTestsPassed": 115,
+      "knownIssueFixed": "CRLF and CR file finding selections were offset from textarea positions"
+    },
+    "nextAction": "Save the coordinated work branch to GitHub and inspect same-SHA CI; native/Pixel/always-on acceptance and production publication are separate."
   }
 }

@@ -7,7 +7,7 @@ import { skyToolUiState } from '../lib/sky-tool-ui.ts';
 
 void test('every advertised service has an explicit implementation boundary', () => {
   const scopes = catalog.map((tool) => [tool.id, skyToolExecutionScope(tool)]);
-  assert.equal(scopes.length, 35);
+  assert.equal(scopes.length, 36);
   assert.equal(scopes.filter(([, scope]) => scope === 'unavailable').length, 0);
   assert.equal(scopes.filter(([, scope]) => scope === 'template').length, 11);
   assert.equal(
@@ -16,7 +16,7 @@ void test('every advertised service has an explicit implementation boundary', ()
   );
   assert.equal(
     scopes.filter(([, scope]) => scope === 'browser-processing').length,
-    3,
+    4,
   );
   assert.equal(
     skyToolExecutionScope({ id: 'new-unimplemented-tool', status: 'ready' }),
