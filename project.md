@@ -1,8 +1,65 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-07 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
+
+# RockstarOS — 事業・設計・進捗
+
+## 2026-10-09 — AMCの固定計画を可変のCodex提案へ接続（AMC06、ローカル計画・見直しの検証完了）
+
+利用者の「AMCが固定されて能力を感じない」という指摘を記録。指定のローカルHTMLは2026-09-27の保存物で、実装は依頼を4部隊7工程へ埋め込むローカルテンプレート、通信なしである。H1 / ROCK、Git / CI / Operationsを主担当として、既存AMC engine・Git調査・Codex認証を再利用したローカル計画画面を実装する。担当Bot・依頼・意図・追加指示から可変の作業と依存を提案し、既存Goalと成果を残して候補を見直せるようにする。
+
+GitHub main `0455499d`、PR #95 head `dd31cc01`を確認。元dirty checkout・元HTMLの保存記録は保持する。計画生成はread-only、モデル出力は未承認draft。公開Sky/Zemaの実行権限・課金・本人検収・main統合を拡張しない。入力の送信先と範囲を画面に示し、明示操作前にCodexへ送らない。対象試験、実Codex計画、UI、独立検収、同一SHA CIを別々に検証する。
+
+可変計画API・Codex接続画面・追加指示の累積・旧Goal保持を実装。対象132試験合格、独立検収pass。実CodexがGitと対象コードを調査し、README改善の依頼へ固定7工程ではない3作業のdraftを返した。ブラウザから共有確認前の未起動、実候補表示を確認。追加指示での実再計画を検証中。全体verifyは既知のai依存未配置でllm:architecture:check停止、同期／baseline／design等は合格。同一実装SHAのGitHub CIを別途確認する。
+
+実装SHA `9f3d950c` の初回CIはtypecheck通過後、lintの制御文字regexと新規20試験の未await登録で停止。制御文字の拒否条件を文字コード比較へ保ち、既存試験と同じawait登録へ修正して再検証する。実Codexの追加指示は2作業のdraftを返し、既存CLI非変更条件を保持した。
+
+修正SHA `0a3306d9` は全8 check-runs成功。採用後の「この計画を見直す」を追加し、原依頼・意図・Bot・累積指示を復元する。独立検収で旧Sky／requestBriefの原依頼と意図の欠落を再現したため、形式ごとの復元と回帰を追加した。最終対象136試験・独立UI検収58試験合格。実ブラウザでdraft復元・条件の再入力・自動送信なし・旧チャットを閉じた表示を確認した。追補後の同一SHA CIを確認する。
+
+最終実装SHA `083f00f82ffad17e4b724442900c84b4be58c0e4` の全体verify・CodeQL等8 checksがsuccess。AMC06はローカルのGit調査・可変計画・追加指示・旧Goal保持・見直しの範囲でdone。[検証証拠](docs/evidence/amc/adaptive-planner.json)に実モデル、UI、fixture、独立検収、Git SHAを区別して保存した。PR #95へGitHub保存済み、main未統合。次は具体的なGoalの実装・独立検収・Git成果を担当Botで照合する。公開Sky/Zemaのモデル接続、無人常駐、提案した任務の完走は今回の合格に含めない。
+
+## 2026-10-09 — 既存AMC JSONを担当Botへ直接渡す（AMC05、入力接続の検証完了）
+
+利用者の「このシステムでできる」に対応し、既存AMCのJSON読込み・指示生成を担当Botの入口へ接続する。H1 / ROCK、Git / CI / Operations。添付Goalを別の任務へ置き換えず、ID・revision・意図・task・履歴を保持したローカルコピーを渡す。読み込みを新しい本人認証・検収・実行実績にしない。元Downloadsファイルと元dirty checkoutは変更しない。
+
+main `0455499d`、PR #95 head `0b106304` と同SHAの8 checks成功を確認。既存mission:codexの一件実行・Git禁止境界は変更せず、担当Botの対話入口だけを拡張する。既存Goalの状態遷移はreducerを使う。main統合・公開・実機操作は対象外。
+
+添付された47,586 byteのJSONで実GitHub調査を行い、コピーの全byte・Goal ID・revision 1・7 task・既存engineの指示書が一致した。原本hashは不変、着手候補はREQ-01。main `0455499d`、調査時HEAD `0b106304`、Operations参照919 file／72 taskを取得。保存されたactiveは入力の記録でありBot起動の結果ではない。対象試験・独立した読み取り検収・全体CIを続けて確認する。
+
+対象32試験合格。JSON不正・過大・通常ファイル以外・混在引数を拒否し、読込み後に入力pathが変わっても同じsnapshotを引き継ぐ。起動argvはstubで確認し、実モデル任務の完走とは区別する。全体verifyは同期／baseline／design等を通過後、隔離作業木にai依存がないためllm:architecture:checkで停止。[証拠](docs/evidence/project-bot-goal-input.json)と同一実装SHAのCIで補う。
+
+独立したAMC検収担当が入力接続をpassと判定。不正UTF-8の置換を独立再現して修正を確認し、24対象試験を再実行した。元Goalの正式受入やWeb検収イベントではない。実装SHA `bfecf01b63651a7fea4b5279f335136d395538dd` の全体verify・CodeQL等8 check-runsがsuccess。AMC05は直接入力・指示生成・引渡しの範囲でdone。PR #95へ保存、main未統合。添付Goalの7任務完走、無人常駐、Web同期は今回の受入対象に含めない。
+
+## 2026-10-09 — BotがGitを調べてAMCを作成・遂行する流れ（AMC04、入口接続の検証完了）
+
+利用者の「botはGitから情報を集め、AMCを作成して作業を進める」という明示指示を記録。H1 / ROCK、Git / CI / Operations。既存prompt:contextとAMC Goal engineを再利用し、調査資料→担当Botのtask具体化→AMC作成→実行／検収→Git成果という入口へ接続する。添付amc-goal-r1.jsonは形式の参考であり、過去のGoal・意図・local-owner承認・active状態を新規任務へコピーしない。
+
+main `0455499d`、PR #95 head `c65cb8ed` と同SHAの8 CI成功を確認し、同じ専用branchで続行。元のdirty checkoutは保持する。対象は開発Botのワークフローで、Web Toolの起動機能、無人常駐、main統合、公開、実機・実資金のgateは変更しない。検証結果と実Botによる一件完走は分けて記録する。
+
+対象23試験合格。実GitHubのmain/branch/PR/CI、Sky担当186 fileと68 taskを取得し、SKY07-01をrootとするAMC draft（依存含む16 task、承認なし）を作成した。実Codexの起動は行っておらず、実装・検収・Git提出の完走とは区別する。[検証証拠](docs/evidence/project-bot-amc.json)。ローカル全体verifyは既知のai依存未配置で停止。同期・baseline・design等は合格。同一SHAのGitHub CIで全体を確認する。
+
+実装SHA `59d7d6dc54a15d182e59796f499e008bf7a0b1f4` の全体verify・CodeQL等8 check-runsがsuccess。AMC04はGit収集・AMC候補作成・native Botへの引渡しの接続範囲でdone。後続変更は結果と生成進捗の記録のみ。実Botの開発・独立検収・Git提出の一件完走、Web同期、main統合、公開は未受入。PR #95へ保存し、次の具体的な依頼で実行成果を照合する。
+
+## 2026-10-09 — 機能別BotからGitへ成果を提出する入口（AMC03、設定・起動入口の検証完了）
+
+利用者の「プロジェクトごとにBotを作り、SkyならSkyの作業をして、出力をGitにする」という明示要望を記録。Git / CI / Operations、H1 / ROCK。既存AMCの担当・保留・Goal状態を再利用し、開発用10担当のCodex定義と対話CLI入口を追加する。既存PR #95のbranchで続行し、未保存差分のある元checkoutを保持する。今回の範囲は依頼時の起動設定・実装／検証／commit／PRの作業契約。GitHub App名義、Web起動、定期実行、実Botの一件完走は未受入。SkyカタログToolや製品runtimeの変更ではない。
+
+main `0455499d` と作業branch `ad6c3472` を確認、後者の8 CI成功を確認した上で着手。今回の変更後の試験・全体verify・GitHub保存は別記録する。main統合・公開は未実施。
+
+10担当のnative Codex TOML、一覧／担当表示／依頼時の対話CLI、task主担当と保留の引継ぎ、Git／PR提出の作業契約を実装。対象16試験・TOML10件・生成同期・mission/project/diff合格。全体verifyはDB進捗件数を同期後、開発依存ai未配置で停止。GitHub同一head CIを確認する。検証証拠は[担当Bot](docs/evidence/project-bots.json)。 初回CI dcf2616dは追加試験のsort比較関数を要求するlintで停止。文字列比較を明示して再検査する。CodeQL等の取得済み他7 checksはsuccess。実モデル呼出し・PR提出完走の受入、独立検収、GitHub App作成は未実施。
+
+実装SHA `4a8861b4beb11437d4bc08b47455e81f99cd12e1` で全体verify・CodeQLを含む8 check-runsがsuccess。AMC03は開発Botの設定と起動入口の範囲でdone。後続変更はこの結果と生成進捗の記録。PR #95へ保存済み、main統合・公開なし。次は具体的な一件を担当Botへ依頼し、実行成果とPRを受け入れる。
 >
 > **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
 
-# RockstarOS — 事業・設計・進捗
+
+## 2026-10-09 — 機能・作業ごとの入口整理（ORG04 / H1 / ROCK、作業branch上で実装・検証完了）
+
+利用者の「色々思いつくので機能や作業ごとに分けて作業しやすく」の指示に対応。最新GitHub main 0455499d（取得19 check-runs success）から専用worktreeを作成し、元のdirty treeを保持した。既存AMCの32分野・378taskを再利用し、作業部屋、task単位の読取CLI、アイデア置き場を追加する。ORG04自体を加え379task。taskAssignmentsの一意な担当、taskPlansの手順、親子依存、料金hold、旧版分類を維持する。検証は対象Node試験・生成物/リンク整合・project/mission check・npm run verify。GitHub保存・main統合・公開は未実施。製品runtime・料金・Device gateは変更しない。
+
+32作業部屋、379taskの一意な表示、224taskPlanの読取CLI、アイデア置き場、生成物同期を実装。対象6試験・全リンク・project/mission/work/diff整合合格。typecheck/lintと全体Node1378合格・失敗0・既定skip1、Fashion25合格。全体verifyは専用siteのAstro依存不足で後段未実行。依存復旧中にディスク枯渇となり、今回作った依存コピーだけを削除。全体成功には換算せず、GitHub同一head CIを次の検証とする。実装と証拠は docs/evidence/workspace-organization.json。main統合・公開なし。
+
+PR #95へ保存。初回head 68a4dcfbのGitHub全体verifyは成功。CodeQLが生成ページの存在確認後の書込み競合を指摘したため、排他的な一時ファイル作成・descriptor書込み・atomic renameへ修正した。symlink差替え先の内容保護と更新失敗時の一時ファイル掃除の回帰を追加。修正後headの全体CI・CodeQLを再確認する。
+
+最終実装SHA cbebc979e634d0af5f6eb60c475d178f3b98b996で全体verify、CodeQL、secrets、repair、Web測定、public fixtureの取得8 check-runsがすべてsuccess。ローカル対象8試験も合格。ORG04は作業branch上の入口整備・検証の範囲でdone。後続commitはこの結果と生成進捗の同期のみ。PR #95へGitHub保存済み、main統合・公開は未実施。次は作業部屋で一件を選び、未統合差分を保全してbranch単位で再開する。元のdirty worktreeへは変更していない。
 
 ## 2026-10-07 — 文書の情報設計の整理と、統合で失われた記録の復元（Git / CI / Operations、未push）
 
@@ -2522,7 +2579,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-06 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
+最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 112/383件（親32・子192・独立159。実行単位は親を除く351件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -2904,6 +2961,11 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ORG03 | AMCの担当・旧版混入・受入条件を精査し、部隊ごとの実行可能taskと検査を同期 | 完了 | [記録](docs/mission-control.md) · [記録](data/mission-control.json) · [記録](scripts/check-mission-control.mjs) · [記録](scripts/sync-mission-control.mjs) · [記録](tests/mission-control.test.mjs) · [記録](docs/evidence/amc/task-precision-audit.json) · [記録](docs/evidence/spider-mission-squad-dom.json) |
 | SYS15 | Spider Security AgentのGitHub検査・コード検査・OS常駐監視・送信前拒否・native表示・boot監督を統合する（ROCK・同一image起動未受入） | 進行中 | [記録](docs/spider-guard.md) · [記録](docs/evidence/spider-guard-source-validation.json) · [記録](docs/workstreams/04-security-identity-compliance.md) · [記録](docs/product-baseline.md) · [記録](docs/rockstaros-complete-design.md) · [記録](data/design-document-index.json) · [記録](systems/rock-star-os/os/platform/sensitive_guard.py) · [記録](systems/rock-star-os/os/platform/supervisor.py) · [記録](systems/rock-star-os/os/platform/service.py) · [記録](systems/rock-star-os/os/platform/runner_control.py) · [記録](systems/rock-star-os/os/platform/install-target.sh) · [記録](systems/rock-star-os/os/ui/security-ui.inc) · [記録](systems/rock-star-os/os/ui/test_ui.c) · [記録](systems/rock-star-os/tests/test_sensitive_guard.py) · [記録](systems/rock-star-os/tests/test_os_security_guard_integration.py) · [記録](systems/rock-star-os/tests/test_os_runner_control.py) · [記録](systems/rock-star-os/os/ui/spider-motion.c) · [記録](systems/rock-star-os/os/ui/spider-motion.h) · [記録](systems/rock-star-os/os/ui/pin-readiness.json) · [記録](scripts/review-native-pin-source.py) · [記録](systems/rock-star-os/tests/test_ui_pin_source_profile.py) · [記録](scripts/build-spider-inspector.mjs) · [記録](toolkits/spider-guard/README.md) · [記録](toolkits/spider-guard/inspector.html) · [記録](toolkits/spider-guard/program-inspector.mjs) · [記録](toolkits/spider-guard/program-inspector.d.mts) · [記録](tests/spider-inspector-artifact.test.mjs) · [記録](tests/spider-program-inspector.test.mjs) · [記録](systems/rock-star-os/os/platform/code_inspector.py) · [記録](systems/rock-star-os/tests/test_code_inspector.py) · [記録](SECURITY.md) · [記録](.github/workflows/spider.yml) · [記録](.github/workflows/spider-codeql.yml) · [記録](.github/spider/gitleaks.toml) · [記録](scripts/spider-repository-scan.py) · [記録](tests/test_spider_repository_scan.py) · [記録](tests/test_spider_gitleaks_policy.py) · [記録](tests/spider-codeql-workflow.test.mjs) · [記録](docs/evidence/spider-github-source-validation.json) · [記録](scripts/spider-feedback.mjs) · [記録](tests/spider-feedback.test.mjs) · [記録](.github/workflows/spider-regressions.yml) · [記録](tests/service-worker-update.test.mjs) · [記録](toolkits/fashion-brand-ops/test/http-security.test.mjs) · [記録](docs/evidence/spider-improvement-cycle.json) · [記録](tests/mcp-local-descriptor.test.mjs) · [記録](tests/test_mr_delivery_boundary.py) · [記録](tests/test_mr_http_deadline.py) · [記録](scripts/select-native-artifacts.py) · [記録](systems/rock-star-os/tests/test_native_artifacts.py) · [記録](docs/native-os-validation.md) · [記録](systems/rock-star-os/os/desktop/launcher.py) · [記録](systems/rock-star-os/tests/test_os_desktop_browser.py) · [記録](systems/rock-star-os/os/desktop/README.md) · [記録](systems/rock-star-os/os/platform/guest-test.py) · [記録](systems/rock-star-os/tests/test_os_platform_isolation_proof.py) · [記録](systems/rock-star-os/tests/test_game_exchange_deadlines.py) · [記録](scripts/verify-mcp-flow.mjs) · [記録](tests/mcp.test.mjs) · [記録](tests/mr-tools.test.mjs) · [記録](tests/csv-transform.test.mjs) · [記録](tests/fixtures/csv-report.html) · [記録](tests/mcp-connector.test.mjs) · [記録](systems/rock-star-os/os/mcp_broker/http.py) · [記録](systems/rock-star-os/tests/test_mcp_http_deadline.py) · [記録](tests/undici-tls-options.test.mjs) · [記録](data/web-third-party-license-audit.json) · [記録](scripts/spider-web-runtime.mjs) · [記録](tests/spider-web-runtime.test.mjs) · [記録](scripts/amc-autonomy-store.mjs) · [記録](tests/amc-autonomy-store-read.test.mjs) · [記録](scripts/amc-parallel.mjs) · [記録](tests/amc-workspace-snapshot.test.mjs) · [記録](docs/evidence/spider-workspace-snapshot-read.json) |
 | MAT16 | avokadoProのNVIDIA搭載小型PC設計・調達・AI/PCゲーム/熱/復旧受入 | 進行中 | [記録](docs/avokado-pro-pc-design.md) · [記録](data/avokado-pro-pc.json) · [記録](docs/evidence/avokado-pro-pc-design.json) |
+| ORG04 | 既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する | 完了 | [記録](workspaces/README.md) · [記録](workspaces/IDEAS.md) · [記録](data/workspaces.json) · [記録](scripts/workspaces.mjs) · [記録](tests/workspaces.test.mjs) · [記録](docs/evidence/workspace-organization.json) |
+| AMC03 | 機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する | 完了 | [記録](data/amc/project-bots.json) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bots.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bots.json) |
+| AMC04 | 担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する | 完了 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-amc.json) |
+| AMC05 | 既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ | 完了 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-goal-input.json) |
+| AMC06 | 固定テンプレートを補助へ分け、Gitを読むCodexの可変計画と追加指示による見直しをAMCへ接続する | 完了 | [記録](scripts/amc-planner.mjs) · [記録](scripts/templates/amc-goal-workbench.html) · [記録](scripts/templates/amc-goal-workbench.js) · [記録](scripts/amc-goal-engine.mjs) · [記録](tests/amc-adaptive-brief.test.mjs) · [記録](docs/amc-goal-orchestrator.md) · [記録](docs/evidence/amc/adaptive-planner.json) |
 
 段階ゲート（作業全体の完了とは別判定）
 

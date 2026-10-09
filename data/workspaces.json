@@ -1,0 +1,528 @@
+[
+  {
+    "squad": "H1",
+    "paths": [
+      "PROJECTS.md",
+      "data/mission-control.json",
+      "data/project-status.json",
+      ".github/workflows/",
+      "docs/mission-control.md"
+    ],
+    "guides": [
+      "docs/workstreams/01-product-ux.md",
+      "docs/workstreams/10-git-ci-operations.md"
+    ],
+    "checks": [
+      "npm run project:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "O1",
+    "paths": [
+      "lib/request-auth.ts",
+      "docs/spider-guard.md",
+      "services/operator-dock/",
+      "systems/rock-star-os/",
+      "docs/security-incident-response.md",
+      "data/device-emergency-access-policy.json"
+    ],
+    "guides": [
+      "docs/workstreams/04-security-identity-compliance.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "O2",
+    "paths": [
+      "lib/workflow.ts",
+      "app/api/work-jobs/",
+      "db/schema.ts",
+      "drizzle/",
+      "contracts/platform-api.json",
+      "docs/platform-core.md"
+    ],
+    "guides": [
+      "docs/workstreams/01-product-ux.md",
+      "docs/data-storage-boundaries.md"
+    ],
+    "checks": [
+      "npm run schema:check",
+      "npm run database:check"
+    ]
+  },
+  {
+    "squad": "O3",
+    "paths": [
+      "lib/llm-providers.ts",
+      "lib/jev-evaluation.ts",
+      "app/api/llm/",
+      "android/",
+      "docs/jev-local-qwen-decision-fabric-design.md",
+      "contracts/decision-provider.json"
+    ],
+    "guides": [
+      "docs/llm-evaluation-architecture.md",
+      "docs/workstreams/07-android-device-local-ai.md"
+    ],
+    "checks": [
+      "npm run llm:architecture:check",
+      "npm run android:architecture:check"
+    ]
+  },
+  {
+    "squad": "O4",
+    "paths": [
+      "lib/catalog.ts",
+      "app/api/sky/",
+      "toolkits/",
+      "services/sky-agent-runtime/",
+      "docs/sky-mcp-connector.md"
+    ],
+    "guides": [
+      "docs/workstreams/02-sky-mcp.md",
+      "docs/sky-tools-complete-design.md"
+    ],
+    "checks": [
+      "npm run sky:check",
+      "npm run mcp:package:check"
+    ]
+  },
+  {
+    "squad": "O5",
+    "paths": [
+      "app/sky/",
+      "app/chat/",
+      "app/work/",
+      "app/wallet/",
+      "app/connect/",
+      "components/home-screen.tsx",
+      "lib/rock-wallet.ts",
+      "services/sky-billing/",
+      "docs/rockstaros-product-system-map.md",
+      "docs/sky-billing.md"
+    ],
+    "guides": [
+      "docs/workstreams/03-wallet-billing-providers.md",
+      "docs/workstreams/09-business-pilots.md",
+      "docs/sim-led-product-architecture.md"
+    ],
+    "checks": [
+      "npm run sky:check",
+      "npm run billing:check"
+    ],
+    "keywords": [
+      "Home",
+      "Zema",
+      "eSIM",
+      "SIM",
+      "Wallet",
+      "決済"
+    ]
+  },
+  {
+    "squad": "O6",
+    "paths": [
+      "android/",
+      "os/",
+      "data/device-support-matrix.json",
+      "docs/device-support-architecture.md"
+    ],
+    "guides": [
+      "docs/workstreams/07-android-device-local-ai.md",
+      "docs/os-prototype.md"
+    ],
+    "checks": [
+      "npm run android:architecture:check",
+      "npm run device-support:check"
+    ]
+  },
+  {
+    "squad": "O7",
+    "paths": [
+      "systems/rock-star-os/",
+      "public-release/rockstaros/",
+      "sites/avocado-mini/",
+      ".github/workflows/",
+      "docs/release-minimum-gates.md",
+      "data/release-readiness.json"
+    ],
+    "guides": [
+      "docs/workstreams/06-native-qemu-release.md",
+      "docs/workstreams/05-web-pwa-sites.md"
+    ],
+    "checks": [
+      "npm run release:check",
+      "npm run release:signing:check"
+    ]
+  },
+  {
+    "squad": "M1",
+    "paths": [
+      "docs/avocado-mini-r5/",
+      "contracts/avocado-mini-spatial-interaction.json",
+      "docs/avocado-mini-r5/README.md",
+      "docs/avocado-mini-r5/package/integrated_design.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md"
+    ],
+    "checks": [
+      "npm run avocado:r5:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "M2",
+    "paths": [
+      "docs/avocado-mini-r5/",
+      "contracts/avocado-mini-spatial-interaction.json",
+      "docs/avocado-mini-r5/package/integrated_design.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md"
+    ],
+    "checks": [
+      "npm run avocado:r5:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "M3",
+    "paths": [
+      "docs/avocado-mini-r5/",
+      "contracts/avocado-mini-spatial-interaction.json",
+      "docs/avocado-mini-r5/package/integrated_design.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md"
+    ],
+    "checks": [
+      "npm run avocado:r5:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "M4",
+    "paths": [
+      "docs/avocado-mini-r5/",
+      "contracts/avocado-mini-spatial-interaction.json",
+      "docs/material-invention-xr.md",
+      "docs/avocado-mini-r5/package/integrated_design.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md"
+    ],
+    "checks": [
+      "npm run avocado:r5:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "M5",
+    "paths": [
+      "docs/avocado-mini-r5/",
+      "contracts/avocado-mini-spatial-interaction.json",
+      "docs/avocado-mini-r5/package/integrated_design.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md"
+    ],
+    "checks": [
+      "npm run avocado:r5:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "M6",
+    "paths": [
+      "docs/avocado-mini-r5/",
+      "contracts/avocado-mini-spatial-interaction.json",
+      "docs/avocado-mini-r5/package/integrated_design.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md"
+    ],
+    "checks": [
+      "npm run avocado:r5:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "M7",
+    "paths": [
+      "docs/avocado-mini-r5/",
+      "contracts/avocado-mini-spatial-interaction.json",
+      "docs/avocado-mini-r5/package/integrated_design.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md"
+    ],
+    "checks": [
+      "npm run avocado:r5:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "P1",
+    "paths": [
+      "docs/avokado-pro-pc-design.md",
+      "sites/avocado-mini/src/pages/pro/index.astro"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md",
+      "docs/workstreams/08-game-market-fund.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "P2",
+    "paths": [
+      "docs/avokado-pro-pc-design.md",
+      "sites/avocado-mini/src/pages/pro/index.astro"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md",
+      "docs/workstreams/08-game-market-fund.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "P3",
+    "paths": [
+      "docs/avokado-pro-pc-design.md",
+      "sites/avocado-mini/src/pages/pro/index.astro",
+      "docs/game-api-contract-draft.md",
+      "systems/rock-star-os/examples/game/README.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md",
+      "docs/workstreams/08-game-market-fund.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "P4",
+    "paths": [
+      "docs/avokado-pro-pc-design.md",
+      "sites/avocado-mini/src/pages/pro/index.astro",
+      "docs/data-storage-boundaries.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md",
+      "docs/workstreams/08-game-market-fund.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "P5",
+    "paths": [
+      "docs/avokado-pro-pc-design.md",
+      "sites/avocado-mini/src/pages/pro/index.astro"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md",
+      "docs/workstreams/08-game-market-fund.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "P6",
+    "paths": [
+      "docs/avokado-pro-pc-design.md",
+      "sites/avocado-mini/src/pages/pro/index.astro",
+      "docs/avocado-mini-r5/package/integrated_design.md"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md",
+      "docs/workstreams/08-game-market-fund.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "P7",
+    "paths": [
+      "docs/avokado-pro-pc-design.md",
+      "sites/avocado-mini/src/pages/pro/index.astro"
+    ],
+    "guides": [
+      "docs/workstreams/11-material-invention-avocado-mini.md",
+      "docs/workstreams/08-game-market-fund.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run design:check"
+    ]
+  },
+  {
+    "squad": "R1",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "R2",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "R3",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "R4",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "R5",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "R6",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "R7",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "R8",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "R9",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  },
+  {
+    "squad": "R10",
+    "paths": [
+      "docs/rocketstar-design/",
+      "sites/avocado-mini/src/pages/rocket-star/",
+      "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+    ],
+    "guides": [
+      "docs/rocketstar-design/README.md"
+    ],
+    "checks": [
+      "npm run baseline:check",
+      "npm run mission:check"
+    ]
+  }
+]

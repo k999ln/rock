@@ -10,7 +10,7 @@ A product concept that begins with games and connects creation, learning, and ev
 We are designing the compact autonomous spatial-input, display, and game device **avocadoMini R5**, the standalone game-and-services computer **avokadoPro**, and **RockstarOS v1.0**, the common operating-system design that connects approved hardware, work, AI, creative assets, and permissions.
 The fully recoverable and reusable small-satellite launch vehicle **rocketstar** is a separate, active design program.
 
-[What this is](#what-this-repository-is) · [At a glance](#at-a-glance) · [Product experience](#product-experience) · [Feature details](#feature-details) · [Current status](#current-status) · [Design library](#design-library) · [Find a document](docs/README.md) · [Still image](docs/brand/avokado/avokado-r5-editorial-hero.png)
+[What this is](#what-this-repository-is) · [At a glance](#at-a-glance) · [Product experience](#product-experience) · [Feature details](#feature-details) · [Current status](#current-status) · [Design library](#design-library) · [Find a document](docs/README.md) · [Work by feature](workspaces/README.md) · [Still image](docs/brand/avokado/avokado-r5-editorial-hero.png)
 
 </div>
 
@@ -28,11 +28,17 @@ The fully recoverable and reusable small-satellite launch vehicle **rocketstar**
 
 Most design documents are written in Japanese. This README is the English entry point.
 
+**Work on one feature at a time:** open the [32 workspaces](workspaces/README.md) for source paths, unfinished tasks, prerequisites, and checks. Put new thoughts in the [idea inbox](workspaces/IDEAS.md). Run `npm run work -- O4` to focus on one area, `npm run work -- SKY07-01` for one task's steps and acceptance criteria, or `npm run work -- --find eSIM` to find related work. These read-only commands reuse the existing Mission Control assignments. `npm run project:update` and `npm run mission:update` also refresh the workspace pages; `npm run work:check` checks for drift.
+
 **Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [avokadoPro product definition](sites/avocado-mini/src/pages/pro/index.astro) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Mission Control](docs/mission-control.md) · [Complete design index](#design-library)
 
 Public homepage: [avocadomini.si](https://avocadomini.si) — the user-selected Mini/Pro website, with DNS and HTTPS verified. See the [deployment and DNS record](docs/workstreams/05-web-pwa-sites.md#avocadominisi2026-10-05web13).
 
 > **Restored on 2026-10-07** — A merge on 2026-10-05 replaced this README with an older copy. The lead-service description and the Sky Market, payment, local-runtime, eSIM, and security passages below were restored from the version that was on `main` that day (`624124cf`). Counts inside those passages are as of that date; for example, they predate AMC becoming the 13th built-in Tool. What was lost and what was restored is recorded in the [merge-loss audit](docs/merge-loss-audit-20261007.md) (Japanese).
+
+**Plan with the local AMC:** `npm run amc:workbench` opens a loopback-only planning service. Choose a project bot, describe the work, and explicitly send the request to your existing Codex session configuration. Codex reads repository context and proposes a variable task plan; further instructions revise a separate candidate while existing Goal records stay intact. See [adaptive AMC planning](docs/amc-goal-orchestrator.md#ローカルamcで依頼に合わせて計画するamc06).
+
+**Ask a project bot to do the work:** `npm run bot -- list` lists the developer bots. For example, `npm run bot -- run sky --goal 'Improve the Sky connection error message'` collects GitHub refs/PRs/CI and scoped Git history, then opens a Sky Codex session. The bot reads source, selects or defines a task, creates an AMC plan, and proceeds through implementation, review, and a commit/PR handoff. `npm run bot -- prepare sky --task SKY07-01 --goal '…'` collects context and an AMC draft without starting a model. An existing AMC JSON can be handed over unchanged with `npm run bot -- run operations --goal-file /absolute/path/amc-goal-r1.json`; its Goal ID, revision, tasks, and history are preserved. See [project bot usage](toolkits/amc-agent/README.md#プロジェクト別bot). These are on-demand developer profiles, not always-running GitHub Apps.
 
 ## At a glance
 
@@ -318,7 +324,7 @@ Payment and Wallet design: [integration design](docs/sky-commerce-design.md), [W
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-06 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
+Updated: 2026-10-09 / 383 task records (32 parents, 192 children, 159 standalone; 351 execution units excluding parents): 112 done, 34 in progress, 236 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) / [Pixel pre-tests](docs/evidence/android-pixel-10-prefull-physical-20260916.json) / [First-flash gates](docs/android-first-flash-gate-20260916.md) / [R5 preservation and verification record](docs/avocado-mini-r5/verification.json)

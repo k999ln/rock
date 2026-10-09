@@ -273,6 +273,16 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 
 [検証記録](evidence/spider-mission-squad-dom.json)は部隊表示に限定する。mainで既に確認したAMC export契約や生成資料の不整合、他のCodeQL／依存／秘密候補は別途修正し、今回の表示試験を全体受入へ転用しない。
 
+### 担当Gitから可変計画を作るローカルAMC（AMC06）
+
+目的は依頼ごとの具体的な作業・担当・依存を組み立てること。`npm run amc:workbench` の127.0.0.1専用画面で、担当Bot・依頼・任意の意図を選び、Codexに共有する入力とGit資料を確認して計画を生成する。追加指示で候補を見直し、既存Goalの成果や履歴を保持する。ROCKはread-only planner adapter、proposal検査、既存engineでのdraft変換、保存と停止を実装する。Codex／GitHubは既存認証を使い、新しいAPI key・model契約は作らない。
+
+入力は依頼8,000字、意図2,000字、累積追加指示8,000字まで、既存Goalは要約だけ。生成候補は可変task・担当・対象path・依存・成果物・合格条件・質問・仮定を持つ。Git基準と再計画元をadaptiveBriefへ保存し、原本のGoal ID／revision／承認／成果を別候補へ移したことにしない。モデルの承認・実行・検収記録は受付けず、必ずdraftから既存の計画承認と状態遷移を使う。
+
+画面は同一origin/session token/Host検証、ループバック限定。offline exportのconnect-src noneは維持する。送信前の明示操作、1件ずつの有界実行、停止時の子process終了、失敗時の原文保持と手動再試行を備える。生成物はGit管理外のローカル作業フォルダ、Goalの保存・復元は既存機構。raw入力を公開Gitへ保存しない。許可が必要な外部作用は既存holdを維持し、計画だけで実行権限を付与しない。
+
+合格条件は可変件数・依存・参照・hold、不正応答、同意前未起動、接続元／token拒否、停止、旧Goal不変、追加指示と遅延応答、実モデルの具体的計画。未決事項はモデルが質問として返し、本人の回答を次の候補へ取り込む。[入力・状態・保存・復旧・検証](amc-goal-orchestrator.md#ローカルamcで依頼に合わせて計画するamc06)。公開Sky/ZemaのaiPlannerConnected=falseやWeb実行境界はこの開発入口の追加で変更しない。
+
 ## 5. CSV整形・検査・納品
 
 公開接続状態の`csvPayments`はCSV専用Webhook、同一originのStripe設定、DB/R2を確認し、一般Marketplaceの`payments`とは別に返す。CSV専用secretをMarketplaceへ転用しない。利用案内は「購入・販売」と「CSVの50円試験」を分けて表示する。`live`は設定確認であり、新規実決済や全商品の販売受入を証明しない。

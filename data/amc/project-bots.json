@@ -1,0 +1,227 @@
+{
+  "schema": "rock-project-bots/1",
+  "repository": "k999ln/rock",
+  "bots": [
+    {
+      "id": "sky",
+      "name": "Sky Bot",
+      "purpose": "SkyのTool・MCP・Agent接続とmarketplace",
+      "squads": [
+        "O4",
+        "O5"
+      ],
+      "paths": [
+        "app/sky/",
+        "app/api/sky/",
+        "lib/catalog.ts",
+        "toolkits/",
+        "services/sky-agent-runtime/"
+      ],
+      "guides": [
+        "docs/workstreams/02-sky-mcp.md",
+        "docs/sky-tools-complete-design.md"
+      ]
+    },
+    {
+      "id": "zema",
+      "name": "Zema Bot",
+      "purpose": "仕事の依頼・進捗・承認・成果と保存／復旧",
+      "squads": [
+        "O2",
+        "O5"
+      ],
+      "paths": [
+        "app/chat/",
+        "app/work/",
+        "app/activity/",
+        "lib/workflow.ts",
+        "lib/zema-chat-session.ts",
+        "db/schema.ts"
+      ],
+      "guides": [
+        "docs/workstreams/05-web-pwa-sites.md",
+        "docs/platform-core.md",
+        "docs/data-storage-boundaries.md"
+      ]
+    },
+    {
+      "id": "wallet",
+      "name": "Wallet Bot",
+      "purpose": "Walletの台帳・予約・照合と料金表示",
+      "squads": [
+        "O5"
+      ],
+      "paths": [
+        "app/wallet/",
+        "lib/rock-wallet.ts",
+        "services/sky-billing/"
+      ],
+      "guides": [
+        "docs/workstreams/03-wallet-billing-providers.md"
+      ]
+    },
+    {
+      "id": "rockstaros",
+      "name": "RockstarOS Bot",
+      "purpose": "共通OS runtime、AI、SIM／eSIM利用開始、端末適合、Pixel／QEMU",
+      "squads": [
+        "O2",
+        "O3",
+        "O5",
+        "O6",
+        "O7"
+      ],
+      "paths": [
+        "systems/rock-star-os/",
+        "android/",
+        "os/",
+        "contracts/",
+        "app/connect/",
+        "toolkits/esim-bootstrap/"
+      ],
+      "guides": [
+        "docs/rockstaros-design-portal.md",
+        "docs/workstreams/06-native-qemu-release.md",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "docs/phone-preview-20260911.md"
+      ]
+    },
+    {
+      "id": "game",
+      "name": "Game Bot",
+      "purpose": "非金融ゲーム・作者API／SDK・sandboxと導入診断",
+      "squads": [
+        "O4",
+        "O5"
+      ],
+      "paths": [
+        "lib/game-sandbox.ts",
+        "toolkits/mini-game-client/"
+      ],
+      "guides": [
+        "docs/workstreams/08-game-market-fund.md"
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security Bot",
+      "purpose": "本人性・権限・SPIDER・脆弱性修正",
+      "squads": [
+        "O1"
+      ],
+      "paths": [
+        "lib/request-auth.ts",
+        "docs/spider-guard.md",
+        "services/operator-dock/",
+        "systems/rock-star-os/",
+        "docs/security-incident-response.md",
+        "data/device-emergency-access-policy.json"
+      ],
+      "guides": [
+        "docs/workstreams/04-security-identity-compliance.md"
+      ]
+    },
+    {
+      "id": "avocado-mini",
+      "name": "avocadoMini Bot",
+      "purpose": "avocadoMiniの設計・物質発明・試験資料",
+      "squads": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M7"
+      ],
+      "paths": [
+        "docs/avocado-mini-r5/",
+        "contracts/avocado-mini-spatial-interaction.json",
+        "docs/avocado-mini-r5/README.md",
+        "docs/avocado-mini-r5/package/integrated_design.md",
+        "docs/material-invention-xr.md"
+      ],
+      "guides": [
+        "docs/workstreams/11-material-invention-avocado-mini.md"
+      ]
+    },
+    {
+      "id": "avokado-pro",
+      "name": "avokadoPro Bot",
+      "purpose": "avokadoProの設計・連携・試験資料",
+      "squads": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "P7"
+      ],
+      "paths": [
+        "docs/avokado-pro-pc-design.md",
+        "sites/avocado-mini/src/pages/pro/index.astro",
+        "docs/game-api-contract-draft.md",
+        "systems/rock-star-os/examples/game/README.md",
+        "docs/data-storage-boundaries.md",
+        "docs/avocado-mini-r5/package/integrated_design.md"
+      ],
+      "guides": [
+        "docs/workstreams/11-material-invention-avocado-mini.md",
+        "docs/workstreams/08-game-market-fund.md"
+      ]
+    },
+    {
+      "id": "rocketstar",
+      "name": "rocketstar Bot",
+      "purpose": "rocketstarの設計・地上支援・試験資料",
+      "squads": [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6",
+        "R7",
+        "R8",
+        "R9",
+        "R10"
+      ],
+      "paths": [
+        "docs/rocketstar-design/",
+        "sites/avocado-mini/src/pages/rocket-star/",
+        "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md"
+      ],
+      "guides": [
+        "docs/rocketstar-design/README.md"
+      ]
+    },
+    {
+      "id": "operations",
+      "name": "Operations Bot",
+      "purpose": "横断設計・進捗台帳・Git・CIと担当間の調整",
+      "squads": [
+        "H1",
+        "O7"
+      ],
+      "paths": [
+        "PROJECTS.md",
+        "data/mission-control.json",
+        "data/project-status.json",
+        ".github/workflows/",
+        "docs/mission-control.md",
+        "systems/rock-star-os/",
+        "public-release/rockstaros/",
+        "sites/avocado-mini/",
+        "docs/release-minimum-gates.md",
+        "data/release-readiness.json"
+      ],
+      "guides": [
+        "docs/workstreams/01-product-ux.md",
+        "docs/workstreams/10-git-ci-operations.md",
+        "docs/workstreams/06-native-qemu-release.md",
+        "docs/workstreams/05-web-pwa-sites.md"
+      ]
+    }
+  ]
+}

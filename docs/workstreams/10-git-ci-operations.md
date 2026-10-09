@@ -1,5 +1,27 @@
 # Git / CI / Operations
 
+## プロジェクト別開発Bot（AMC03 / H1 / ROCK）
+
+[担当Botの利用方法](../../toolkits/amc-agent/README.md#プロジェクト別bot)。開発Botの正本はdata/amc/project-bots.json。既存32部隊のtaskAssignmentsを置き換えず、10個の依頼窓口として実装・検証・Git commit・PR提出を担当する。OWNERは具体的な依頼と既存の外部実行条件を決め、EXTERNALはCodex／GitHubの認証と実行環境を提供する。GitHub App、常時実行、main自動mergeは未設定。完了条件は全定義の生成一致、担当外task拒否、holdの引継ぎ、起動失敗とPR受入の区別、対象試験と同一SHAの全体verify。検証: `npm run bot:check`、`node --test tests/project-bots.test.mjs`、`npm run verify`。実BotのGit提出は具体的な開発依頼で別途受け入れる。
+
+### Git調査からAMCへ（AMC04 / H1 / ROCK）
+
+ROCKが既存prompt-contextのGitHub情報と担当コードのblob／履歴／task資料を収集し、担当Botが具体的なtaskを選んでAMCを作成する。planは既存engineのdraft生成を再利用し、正本のnextTaskIds・受入状態を変更しない。EXTERNALはGitHub／Codex接続、OWNERは依頼の範囲と既存gateの判断を担う。合格条件は担当範囲、前提とhold、Git SHAと資料hash、未確認ソースの明示、調査失敗時の未起動、新規版保存の維持。`node --test tests/project-bot-context.test.mjs tests/project-bots.test.mjs tests/workspaces.test.mjs` と全体verifyで確認する。実Botによる任務完走と、Git調査／計画生成／引渡しのhost試験は別証拠とする。
+
+### 既存AMCの直接入力（AMC05 / H1 / ROCK）
+
+`run/prepare --goal-file` で利用者の既存AMCを担当Botへ引き渡す。ROCKは読込み検証、原本を保持した作業コピー、既存engineでの指示生成、Git調査との接続を担当する。EXTERNALは既存Codex／GitHubの認証と実行環境、OWNERは依頼と適用範囲を担う。合格条件はID・revision・task・履歴・保留の保持、原本非変更、不正入力の起動前拒否、同じ読込み内容のコピーと引渡し。検証は `node --test tests/project-bot-context.test.mjs tests/project-bots.test.mjs tests/workspaces.test.mjs` と `npm run verify`。読み取りレビューはWeb上の認証済み検収イベントを代替しない。
+
+### 可変の計画提案（AMC06 / H1 / ROCK）
+
+固定7工程の補助に加え、localhostのAMCから既存CodexへGit調査と具体的な計画提案を依頼する。入力・状態・担当・保存・復旧・検証は[AMC設計](../amc-goal-orchestrator.md#ローカルamcで依頼に合わせて計画するamc06)を参照。旧Goalや正本は保持し、計画生成、採用、承認、実行、検収を混同しない。EXTERNALは既存Codex/GitHub環境、OWNERは入力送信と候補採用。公開Sky/Zemaの実行器は別範囲。
+
+## 作業部屋の維持（ORG04 / H1 / ROCK）
+
+[作業部屋一覧](../../workspaces/README.md)は既存AMCの32分野をフォルダへ分けた作業入口。主担当はtaskAssignments、状態はproject-status、手順と合格条件はtaskPlansのまま維持する。場所と確認コマンドだけをdata/workspaces.jsonへ持つ。完了条件は全taskの一意な所属、参照pathの存在、親から子への実行保留の継承、更新後の生成物一致、対象試験とnpm run verify。新しい思いつきはアイデア置き場へ記録し、採用前に製品要件や実行へ昇格させない。
+
+GitHub main 0455499d8726118b8892c5cfbe2e49236c8b4c31を基に専用worktreeで着手。同SHAの取得19 checksはsuccess。元のcodex/esim-cloud-accessはremoteに存在せず、多数の未保存差分があるため触らない。先行変更回収は別作業であり、入口整理をその統合完了とは扱わない。次担当は最新mainと自分のbranchを再確認し、npm run work -- <task ID>の担当・前提・holdを使う。GitHub保存・main統合・公開は別記録。
+
 ## 目的
 
 設計、実装、証拠、branch、PR、CI、Sites配備、release artifactを追跡可能にし、別候補や別環境の成功を混同しない。

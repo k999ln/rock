@@ -2,14 +2,14 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-10-06
+更新日: 2026-10-09
 
 ## 全体
 
 - データ境界: 6、table: 149
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 378 task中 107 done、34 in progress、236 planned、1 blocked
+- 作業進捗: 383 task中 112 done、34 in progress、236 planned、1 blocked
 - 現在milestone: AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口
 
 ## 保存境界と配備状態

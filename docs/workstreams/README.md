@@ -6,10 +6,14 @@
 
 製品や配備単位から探す場合は[プロジェクト別ガイド](../../PROJECTS.md)を開く。`docs/` 全体の地図は[docs/README.md](../README.md)、仕様の変遷は[仕様変遷](../spec-history.md)、全Toolとエージェントの機能は[エージェント・Tool総覧](../agents-and-tools.md)にある。
 
+## 一つの作業に絞る入口
+
+[機能別の作業部屋](../../workspaces/README.md)は、既存AMCの32分野と全taskを使う作業用索引です。各部屋にソース、未完了task、前提、実行保留、検証コマンドをまとめています。[アイデア置き場](../../workspaces/IDEAS.md)では採用前の思いつきを分離します。
+
 ## 最初に確認するもの
 
 1. `git status --short --branch` でbranch、競合、未保存差分を確認する。
-2. [現在の開発状態](../current-state-20260911.md) と [製品ベース](../product-baseline.md) を読む。
+2. [製品ベース](../product-baseline.md)、最新Gitと進捗JSON・同一artifactの証拠を読む。[現在の開発状態](../current-state-20260911.md) は履歴を含むため現在値へ置き換えない。
 3. [Mission Control](../mission-control.md) のtaskAssignmentsで一意の担当を確認し、対象範囲・残課題とtaskPlansの入力、手順、成果物、合格条件を読む。参考・旧版taskを担当実績に加算しない。
 4. [進捗JSON](../../data/project-status.json) から対応するtask IDと依存gateを選ぶ。
 5. 下表の作業ストリームを一つ開き、対象、非対象、完了条件、検証コマンドを確認する。
@@ -23,7 +27,7 @@
 - `blocked`: 必須の本人判断、機種、鍵、契約、provider、公開許可などが不足している。
 
 <!-- project-overview:start -->
-現在の機械可読進捗は378登録task（親32、子192、独立154。実行単位は親を除く346件）中107 done、34 in progress、236 planned、1 blocked。件数は作業量や製品完成率を表さない。
+現在の機械可読進捗は383登録task（親32、子192、独立159。実行単位は親を除く351件）中112 done、34 in progress、236 planned、1 blocked。件数は作業量や製品完成率を表さない。
 <!-- project-overview:end -->
 
 ## 作業ストリーム

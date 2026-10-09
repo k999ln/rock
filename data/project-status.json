@@ -33,7 +33,7 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/69",
     "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
   },
-  "updatedAt": "2026-10-06",
+  "updatedAt": "2026-10-09",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
   "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。",
   "tasks": [
@@ -5061,6 +5061,90 @@
       "externalDependency": "OEM/ODM供給、exact SKU QVL/driver/firmware、見積",
       "ownerAction": "見積後の購入・製造・販売条件",
       "acceptance": "同一Pro実機でAI/ゲーム/熱/保存復旧を独立受入。設計だけでは完了にしない"
+    },
+    {
+      "id": "ORG04",
+      "title": "既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する",
+      "status": "done",
+      "dependsOn": [
+        "ORG03"
+      ],
+      "evidence": [
+        "workspaces/README.md",
+        "workspaces/IDEAS.md",
+        "data/workspaces.json",
+        "scripts/workspaces.mjs",
+        "tests/workspaces.test.mjs",
+        "docs/evidence/workspace-organization.json"
+      ],
+      "nextAction": "32分野・379taskの作業入口、224taskPlanの読取CLI、アイデア置き場を実装・検証。PR #95の実装SHA cbebc979で全体verify・CodeQLを含む8 checks success。main統合と元dirty treeの回収は別作業。"
+    },
+    {
+      "id": "AMC03",
+      "title": "機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する",
+      "status": "done",
+      "dependsOn": [
+        "AMC02",
+        "ORG04"
+      ],
+      "evidence": [
+        "data/amc/project-bots.json",
+        "scripts/project-bots.mjs",
+        "tests/project-bots.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bots.json"
+      ],
+      "nextAction": "10担当の定義と依頼時CLIを実装。対象16試験と実装SHA 4a8861b4の全体verify／CodeQL等8 checksが成功。PR #95へ保存。具体的な依頼でBotの一件完走を別途受け入れる。常時実行・GitHub App・main統合・公開は未実施。"
+    },
+    {
+      "id": "AMC04",
+      "title": "担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する",
+      "status": "done",
+      "dependsOn": [
+        "AMC03"
+      ],
+      "evidence": [
+        "scripts/project-bot-context.mjs",
+        "scripts/project-bots.mjs",
+        "tests/project-bot-context.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bot-amc.json"
+      ],
+      "nextAction": "Git調査→AMC候補生成→native Botへの引渡しを接続。対象23試験と実装SHA 59d7d6dcの全体verify／CodeQL等8 checksが成功。PR #95へ保存。実Botの開発・独立検収・Git提出の一件完走とWeb同期は別受入、main統合・公開は未実施。"
+    },
+    {
+      "id": "AMC05",
+      "title": "既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ",
+      "status": "done",
+      "dependsOn": [
+        "AMC04"
+      ],
+      "evidence": [
+        "scripts/project-bot-context.mjs",
+        "scripts/project-bots.mjs",
+        "tests/project-bot-context.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bot-goal-input.json"
+      ],
+      "nextAction": "既存AMC JSONの直接入力・Git調査・指示書保存・起動引渡しは検証済み。具体的な任務の実Bot完走と成果PRは別途照合し、元Goalの最終受入を代行しない。"
+    },
+    {
+      "id": "AMC06",
+      "title": "固定テンプレートを補助へ分け、Gitを読むCodexの可変計画と追加指示による見直しをAMCへ接続する",
+      "status": "done",
+      "dependsOn": [
+        "AMC05"
+      ],
+      "evidence": [
+        "scripts/amc-planner.mjs",
+        "scripts/templates/amc-goal-workbench.html",
+        "scripts/templates/amc-goal-workbench.js",
+        "scripts/amc-goal-engine.mjs",
+        "tests/amc-adaptive-brief.test.mjs",
+        "docs/amc-goal-orchestrator.md",
+        "docs/evidence/amc/adaptive-planner.json"
+      ],
+      "nextAction": "ローカルの可変計画・追加指示・旧Goal保持・見直し導線を検証済み。対象136試験、実Codexの3→2作業再計画、独立検収、実装SHA 083f00f8の全体verify／CodeQL等8 checks成功。PR #95へ保存。次は具体的なGoalを担当Botへ渡し実装・独立検収・Git成果を照合する。公開Sky/Zema接続・main統合・無人常駐は別受入。"
     }
   ],
   "phaseGates": [
@@ -5793,5 +5877,52 @@
     "verifiedSourceSha": "92bb9f2ff87cffcf72aa370105cff26def693939",
     "ci": "7/7 checks passed; npm run verify including build/API/full regression passed",
     "ciRun": "https://github.com/k999ln/rock/actions/runs/37555780451"
+  },
+  "workspaceOrganization": {
+    "taskId": "ORG04",
+    "status": "verified_on_work_branch",
+    "primarySquad": "H1",
+    "entry": "workspaces/README.md",
+    "ideas": "workspaces/IDEAS.md",
+    "workspaces": 32,
+    "branch": "codex/feature-workspaces",
+    "evidence": "docs/evidence/workspace-organization.json",
+    "mainIntegrated": false,
+    "pullRequest": "https://github.com/k999ln/rock/pull/95",
+    "verifiedImplementationSha": "cbebc979e634d0af5f6eb60c475d178f3b98b996",
+    "checkRunsPassed": 8,
+    "githubSaved": true
+  },
+  "projectBots": {
+    "taskId": "AMC03",
+    "scope": "developer_profiles_and_on_demand_cli",
+    "status": "done",
+    "gitHubPullRequest": "https://github.com/k999ln/rock/pull/95",
+    "mainIntegrated": false,
+    "liveBotTaskAccepted": false,
+    "evidence": "docs/evidence/project-bots.json",
+    "verifiedImplementationSha": "4a8861b4beb11437d4bc08b47455e81f99cd12e1",
+    "completionScope": "10 developer profiles and tested on-demand launch interface; not live task or always-on acceptance"
+  },
+  "projectBotAmc": {
+    "taskId": "AMC04",
+    "status": "done",
+    "scope": "git_context_and_native_bot_amc_workflow",
+    "mainIntegrated": false,
+    "liveDevelopmentTaskAccepted": false,
+    "evidence": "docs/evidence/project-bot-amc.json",
+    "verifiedImplementationSha": "59d7d6dc54a15d182e59796f499e008bf7a0b1f4",
+    "completionScope": "Git collection, canonical-task AMC draft creation, and native Bot handoff; live task execution is separate acceptance"
+  },
+  "projectBotGoalInput": {
+    "taskId": "AMC05",
+    "status": "done",
+    "mainIntegrated": false,
+    "evidence": "docs/evidence/project-bot-goal-input.json",
+    "inputPreserved": true,
+    "liveDevelopmentTaskAccepted": false,
+    "verifiedImplementationSha": "bfecf01b63651a7fea4b5279f335136d395538dd",
+    "githubCI": "success",
+    "independentReadOnlyReview": "pass"
   }
 }

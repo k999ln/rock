@@ -2,7 +2,7 @@
   "schema": "avokado-mission-control/3",
   "name": "avokado Mission Control",
   "shortName": "AMC",
-  "updatedAt": "2026-09-27",
+  "updatedAt": "2026-10-09",
   "purpose": "RockstarOS、avocadoMini、avokadoPro、rocketstarを責任単位へ分け、各部隊のGoal、進捗段階、規則、依存、証拠、次の作業を同じ基準で管理する。",
   "authority": {
     "progress": "data/mission-control.json",
@@ -161,7 +161,12 @@
         "LCH05",
         "AMC01",
         "ORG03",
-        "SYS15"
+        "SYS15",
+        "ORG04",
+        "AMC03",
+        "AMC04",
+        "AMC05",
+        "AMC06"
       ],
       "rules": [
         "製品名と現行profileを一意にする",
@@ -12511,6 +12516,89 @@
       ],
       "unresolvedDecision": "未決値は根拠・決定者の役割・必要入力を記し、確定前の実証判定を保留する。",
       "completionScope": "既存taskの全完了条件が対象。stepsや文書の作成だけでdoneへ変更しない。"
+    },
+    {
+      "taskId": "AMC06",
+      "scope": "担当Gitから可変task計画を作るローカルAMCと追加指示での見直し。既存Goal・正本・Web認証・実行権限は保持する。",
+      "workloadClass": "code_test",
+      "executionBoundary": "ローカル開発と試験。127.0.0.1限定の開発画面、既存Codex認証の読取専用planner。新規課金契約・一般公開・main統合・自動実行は含めない。",
+      "inputs": [
+        {
+          "path": "scripts/amc-request-plan.mjs",
+          "locator": "既存固定テンプレート"
+        },
+        {
+          "path": "scripts/amc-goal-engine.mjs",
+          "locator": "可変task compileと状態遷移"
+        },
+        {
+          "path": "scripts/project-bot-context.mjs",
+          "locator": "最新Gitと担当コード資料"
+        }
+      ],
+      "steps": [
+        {
+          "id": "AMC06-S1",
+          "action": "固定工程の原因と再利用するAMC契約を特定する"
+        },
+        {
+          "id": "AMC06-S2",
+          "action": "読取専用Codex計画・可変task・追加指示・旧Goal保護を接続する"
+        },
+        {
+          "id": "AMC06-S3",
+          "action": "試験・実モデル・UI・独立検収の証拠を区別して記録する"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "scripts/amc-planner.mjs",
+          "description": "ローカルplannerと検証済みdraft生成"
+        },
+        {
+          "path": "scripts/templates/amc-goal-workbench.js",
+          "description": "依頼・追加指示・可変計画と保存保護のUI"
+        }
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "AMC06-AC1",
+          "criterion": "異なる依頼に異なる具体task・担当・依存・成果・検証を提案し、固定7工程へ置換しない",
+          "verification": "可変件数の試験と実Codex計画出力",
+          "status": "passed",
+          "evidence": [
+            "docs/evidence/amc/adaptive-planner.json",
+            "tests/amc-planner.test.mjs"
+          ]
+        },
+        {
+          "id": "AMC06-AC2",
+          "criterion": "既存Goalを保持し、提案の生成や採用で承認・実行・検収を捏造しない",
+          "verification": "状態・原本・再計画・遅延応答の試験",
+          "status": "passed",
+          "evidence": [
+            "docs/evidence/amc/adaptive-planner.json",
+            "tests/amc-adaptive-brief.test.mjs",
+            "tests/amc-goal-cli.test.mjs"
+          ]
+        },
+        {
+          "id": "AMC06-AC3",
+          "criterion": "localhost/token/Origin/同意/容量/停止を検証し、失敗を固定案成功へ置換しない",
+          "verification": "HTTP/起動stub、UI、独立検収",
+          "status": "passed",
+          "evidence": [
+            "docs/evidence/amc/adaptive-planner.json",
+            "tests/amc-planner.test.mjs",
+            "tests/amc-goal-cli.test.mjs"
+          ]
+        }
+      ],
+      "primaryOwner": "ROCK",
+      "assignee": null,
+      "ownerRole": "AMCローカル計画・Git運用担当",
+      "unresolvedDecision": "重要な入力不足は質問へ戻す。公開サービスへの統合と実任務完走は別受入。",
+      "completionScope": "ローカルの可変計画・追加指示・保存保護の実装と検証。元Goalの正式受入、実機、本番、main統合を含めない。"
     }
   ],
   "taskAssignments": [
@@ -14403,6 +14491,31 @@
       "taskId": "MAT16",
       "primarySquad": "P2",
       "classification": "current_product"
+    },
+    {
+      "taskId": "ORG04",
+      "primarySquad": "H1",
+      "classification": "coordination"
+    },
+    {
+      "taskId": "AMC03",
+      "primarySquad": "H1",
+      "classification": "coordination"
+    },
+    {
+      "taskId": "AMC04",
+      "primarySquad": "H1",
+      "classification": "coordination"
+    },
+    {
+      "taskId": "AMC05",
+      "primarySquad": "H1",
+      "classification": "coordination"
+    },
+    {
+      "taskId": "AMC06",
+      "primarySquad": "H1",
+      "classification": "coordination"
     }
   ],
   "executionHolds": [
