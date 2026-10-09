@@ -1,3 +1,8 @@
+## 2026-10-09 — 登録不要の出力テスト（WEB04 / ROCK、実装検証済み・公開準備）
+
+利用者の「テストで一旦全部使えるようにして、出力確認したい」を受け、既存Siteに隔離した登録不要テスト入口を実装した。既存の決定的な変換・検査関数を再利用し、外部接続待ちは模擬または未実行と明示する。本番本人認証・予算・同意・Wallet台帳は緩和しない。入力は上限付きstateless処理、結果は画面内のみで保持。全catalog項目の状態と出力を一括確認し、Cloud生成・実収益・実取引成功への読み替えを防ぐ。公開ソースは全17項目（実処理10・模擬3・接続待ち4）のUI一括応答、CSV入力変更、Wallet入力拒否、リセット、390/320幅のoverflowなし、結果JSONダウンロードを確認。追加6単体/API境界試験合格。公開source全体verify exit0（Node291、Fashion19、Worker/D1 495、asset missing0）。正本全体verifyはsandboxでAPI待受EPERMのため必要権限で再実行中。native APKは今回変更せず、既存Web版入口から同じ/testを利用する。AI実生成・外部接続4項目は未完了。
+
+
 ## 2026-10-09 — Webアプリ共通デザインの統一（WEB04 / HOME01、検証済み・配備待ち）
 
 利用者が「デザインが統一されてない」と再指摘。Home単独修正から、Home・Sky・Zema・Wallet・Market・設定の共通header/navigationと色・面・文字・操作部の共通tokenへ範囲を広げる。Web / PWA / Sites、ROCK担当。既存機能・本人認証・実行中の離脱防止を保持し、PC/mobileの全6画面を比較検収して指定public Siteへ反映する。main 0455499d、公開v46/source 6d0e5f6が基点。正本の他作業差分を保持し、GitHub main統合は別途。 共通OSHeader、6アプリnavigation、無彩色tokenと意味を持つ状態色を導入。PC1280/mobile390/320の全6画面で同一header・背景・現在地、横はみ出しなしを検収。Market検索欄の絶対配置とSky接続ボタンの折返しを修正。公開source npm run verify exit0（Node285、Fashion19、Worker/D1 495、asset欠落0）、正本 TMPDIR=/private/tmp npm run verify exit0（Node900、Worker/D1 1178、CSV113、asset欠落0）。最終CSS調整後は配備helperで再build。証拠: docs/evidence/web-unified-design.json。次は同一public Site配備と公開画面の読戻し。

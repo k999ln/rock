@@ -1720,5 +1720,28 @@
     "evidence": "docs/evidence/home-intent-refresh.json",
     "scope": "Home UI, Zema handoff, owner job list, tool search and focus mode",
     "githubMainMerged": false
+  },
+  "guestOutputTesting": {
+    "status": "verified_awaiting_deploy",
+    "taskId": "WEB04",
+    "route": "/test",
+    "publicScenarios": {
+      "total": 17,
+      "realProcessing": 10,
+      "simulation": 3,
+      "unconnected": 4
+    },
+    "publicVerify": "passed",
+    "browserChecks": [
+      "run_all",
+      "edited_csv",
+      "invalid_wallet",
+      "reset",
+      "390_and_320_no_overflow",
+      "download_17_results_json"
+    ],
+    "nativeApkChanged": false,
+    "externalAiEnabled": false,
+    "evidence": "docs/evidence/guest-output-testing.json"
   }
 }

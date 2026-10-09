@@ -58,7 +58,12 @@ export default function OSHeader({
             <span>RockstarOS</span>
           </Link>
           <span className="os-current-app">{title}</span>
-          <div className="os-header-actions">{children}</div>
+          <div className="os-header-actions">
+            <Link href="/test" aria-disabled={running || undefined}>
+              出力テスト
+            </Link>
+            {children}
+          </div>
         </div>
         <nav
           className="os-app-navigation"
