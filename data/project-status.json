@@ -5047,7 +5047,8 @@
         "docs/evidence/spider-sky-continuation.json",
         "components/spider-workspace.tsx",
         "tests/spider-sky.test.mjs",
-        "tests/spider-workspace-state.test.mjs"
+        "tests/spider-workspace-state.test.mjs",
+        "tests/spider-inspector-worker.test.mjs"
       ]
     },
     {
@@ -5800,22 +5801,24 @@
   },
   "spiderSky": {
     "taskId": "SYS15",
-    "status": "local_verified_not_published",
+    "status": "local_implemented_ci_validation",
     "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
     "scope": "Sky catalog and Zema browser-only explicit-input security inspection",
     "sourceAndFindingsPersisted": false,
     "sourceUploaded": false,
-    "validation": "PASS: npm run verify exit 0, Node 1384 pass / 1 documented skip, Worker/D1 1192 assertions, CSV 385 assertions; actual browser Worker, metadata download, reinspection and 390px viewport verified.",
+    "validation": "Initial full verify passed (1384 Node, 1192 API, 385 CSV). Hardened Worker revision: 1388 Node pass / 1 skip, targeted 28 and actual Worker UI pass; full local build stopped by ENOSPC. Final same-SHA CI is on PR 96.",
     "mainIntegrated": false,
     "productionDeployed": false,
     "latestMainObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
-    "githubSaved": false,
+    "githubSaved": true,
     "continuationReview": {
       "status": "verified",
       "evidence": "docs/evidence/spider-sky-continuation.json",
       "focusedTestsPassed": 115,
-      "knownIssueFixed": "CRLF and CR file finding selections were offset from textarea positions"
+      "knownIssueFixed": "CRLF and CR file finding selections were offset from textarea positions",
+      "workerBoundary": "28 targeted pass and browser pass; Node 1388 pass / 1 skip; local build ENOSPC; GitHub verify and CodeQL required."
     },
-    "nextAction": "Save the coordinated work branch to GitHub and inspect same-SHA CI; native/Pixel/always-on acceptance and production publication are separate."
+    "nextAction": "Check final PR 96 head verify/CodeQL before review; main integration, publication and native acceptance remain separate.",
+    "pullRequest": "https://github.com/k999ln/rock/pull/96"
   }
 }

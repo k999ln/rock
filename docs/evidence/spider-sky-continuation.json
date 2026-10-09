@@ -55,19 +55,55 @@
       },
       "mobileViewport": 390,
       "mobileDocumentWidth": 390,
-      "screenshot": "/Users/kaiya/.codex-work/visualizations/2026/10/09/01a121c9-034e-7af1-8438-f295323f1262/spider-sky.png"
+      "screenshot": "/Users/kaiya/.codex-work/visualizations/2026/10/09/01a121c9-034e-7af1-8438-f295323f1262/spider-sky.png",
+      "fileChooserCrlfSelection": true
+    },
+    "workerBoundary": {
+      "targetedTestsPassed": 28,
+      "actualBrowserWorker": "pass",
+      "firstPrHead": "e79d6b9d14d1286619c37e9d48c14b8b072ddc52",
+      "firstPrCi": "verify and five SPIDER jobs passed; CodeQL aggregate failed on alerts 66 and 67",
+      "changes": [
+        "Validate dedicated-worker event and message schema; do not echo arbitrary id or errors",
+        "Use explicit numeric indexes for masked character writes"
+      ],
+      "revisedFullVerify": {
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "exitCode": 1,
+        "nodeTests": {
+          "passed": 1388,
+          "failed": 0,
+          "skipped": 1
+        },
+        "packageChecks": "pass after regenerating existing MCP ZIP",
+        "failedStage": "production client build",
+        "reason": "ENOSPC: no space left on device creating dist/.openai",
+        "log": "/private/tmp/spider-worker-verify-packaged.log",
+        "logSha256": "c4838c129bf496f9834ff38bfeb6c4d0a8e2f202923521a9dcf398fcc85238d8",
+        "nextValidation": "same-SHA GitHub verify and CodeQL on PR 96"
+      }
     }
   },
   "sourceHashes": {
     "components/spider-workspace.tsx": "aa3121b5a4a3917c6a58a7f37e63ec00e6580768d47c9917f0552e6955b3a338",
-    "tests/spider-workspace-state.test.mjs": "ec44ba637bc97f06729fbc0f70cabc2b6c505e7b83309db9b09ea1326867f48d"
+    "lib/spider-inspector-worker.ts": "57ea5201857dbbcf04deb89972ae83cfa8345f58ad8c416b24f952f675828085",
+    "toolkits/spider-guard/program-inspector.mjs": "fea244a0e3eff9724e851b1f8e3dfc814976bb4b2bf20d9566a442c2e22150a3",
+    "tests/spider-workspace-state.test.mjs": "ec44ba637bc97f06729fbc0f70cabc2b6c505e7b83309db9b09ea1326867f48d",
+    "tests/spider-inspector-worker.test.mjs": "46e4b6c6cba7c393117f8098a208121986652f695de98fe58077a3a16ae27253",
+    "public/toolkits/sky-mcp-connector.zip": "37175a409f6937fa6997cb365b7055b938d4e014edba3d56cccb79145a2d08d9"
   },
   "mainIntegrated": false,
   "productionDeployed": false,
-  "fileChooserUiAcceptance": "not completed in continuation; synthetic component File read covered",
+  "fileChooserUiAcceptance": "PASS: synthetic CRLF Python file loaded through native chooser, language auto-selected, actual Worker finding line 3 selected exact eval(user_input)",
   "unresolved": [
-    "GitHub save/CI and main integration are not claimed",
-    "Native/physical guard acceptance and production publication remain separate",
-    "Native file chooser UI is unverified; File read and newline selection are component-harness validated"
-  ]
+    "Current revision same-SHA CI (see PR checks)",
+    "Main integration and production publication",
+    "Native/physical guard acceptance remains separate"
+  ],
+  "github": {
+    "branch": "codex/spider-sky",
+    "pullRequest": "https://github.com/k999ln/rock/pull/96",
+    "savedBaseCommit": "e79d6b9d14d1286619c37e9d48c14b8b072ddc52",
+    "sameHeadCi": "Read live checks on the PR; execution success is not absence of alerts"
+  }
 }

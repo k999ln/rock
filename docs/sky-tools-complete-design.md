@@ -14,7 +14,7 @@
 | 目的・利用者 | Sky利用者が送信や共有の前にコード・テキスト内の秘密／個人情報／危険処理の候補を確認する。 |
 | 利用体験 | SkyでSPIDERを検索→商品説明→Zemaで開く→入力／UTF-8ファイル選択→明示検査→該当行・理由・対処→編集・再検査→任意のmetadata JSONダウンロード。クモは検査中に動き、候補があれば色を変える。 |
 | 責任・禁止権限 | 既存 `toolkits/spider-guard/program-inspector.mjs` と検出器を再利用。入力を実行しない。root、全端末走査、他アプリ通信遮断、任意URL取得、外部修復権限を持たない。既存native guardは別機能として保持。 |
-| 入出力・版・上限 | `javascript` / `python` / `text`、64 KiB、2,000行、最大100 finding。report schemaVersion 1。専用Web Workerへ渡し4秒で停止。UTF-8不正・NULを持つfileは読み込まず元入力を保持。CRLF／CRはtextareaと同じLFへ正規化し、findingの行番号と選択位置を一致させる。出力はrule／kind／severity／line／理由／対処／件数／coverage。原文・filename・検出値を出力しない。 |
+| 入出力・版・上限 | `javascript` / `python` / `text`、64 KiB、2,000行、最大100 finding。report schemaVersion 1。専用Web Workerへ渡し4秒で停止。Workerはprivate dedicated channelのtrusted event（empty origin/null source）と非負safe integer ID・文字列source・3言語allowlistを検証し、不正messageを反射しない。検出器のmask書込は数値添字に限定する。UTF-8不正・NULを持つfileは読み込まず元入力を保持。CRLF／CRはtextareaと同じLFへ正規化し、findingの行番号と選択位置を一致させる。出力はrule／kind／severity／line／理由／対処／件数／coverage。原文・filename・検出値を出力しない。 |
 | 状態・失敗 | UIのidle/checking/ready/stopped/errorと `lib/workflow.ts` のspider-securityを使用。完了した静的検査だけactive→review、本人の結果確認でcompleted。passedは検査実行の完了であり安全認定ではない。sample・coverage不足・空入力はcompletedにしない。編集／言語変更／file変更で結果とdownloadを失効。停止・timeout後の旧revision結果を拒否。 |
 | 保存・保持・削除・backup | 入力・report・WorkJobは当該画面のmemoryだけ。原文、filename、検出値をfetch、localStorage、DB、consoleへ書かない。消去／画面を閉じると破棄。明示downloadは値を含まないreportのみ。Sky libraryのTool保存は既存の本人別保存を再利用し、検査入力とは別。 |
 | Offline・再送・不明 | 検査は外部API不要。画面／Worker assetの初回読込は必要で、完全offline配布を新たに保証しない。失敗は未完了表示し、本人操作で再試行。同じ結果を新入力へ転用せずWorkerを破棄する。 |

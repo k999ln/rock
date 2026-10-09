@@ -487,7 +487,8 @@
         "inputOrReportPersisted": false,
         "osWideMonitoring": false,
         "externalSendAuthorization": false,
-        "productionDeploymentAccepted": false
+        "productionDeploymentAccepted": false,
+        "workerInputValidation": "private dedicated-worker trusted event; empty origin/null source; nonnegative safe integer id; source string; language allowlist"
       }
     }
   ],
