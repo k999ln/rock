@@ -27,7 +27,11 @@
     "botStarted": false
   },
   "githubCI": {
-    "status": "pending"
+    "status": "success",
+    "verifiedImplementationSha": "59d7d6dc54a15d182e59796f499e008bf7a0b1f4",
+    "checkRuns": 8,
+    "verifyRun": "https://github.com/k999ln/rock/actions/runs/37982431810",
+    "meaning": "Implementation SHA passed all eight check-runs; subsequent progress-only commit has its own CI."
   },
   "acceptance": {
     "liveDevelopmentTaskAccepted": false,
