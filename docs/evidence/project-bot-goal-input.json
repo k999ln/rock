@@ -31,11 +31,22 @@
     "modelLaunch": "stub_only"
   },
   "githubCI": {
-    "status": "pending"
+    "status": "success",
+    "verifiedImplementationSha": "bfecf01b63651a7fea4b5279f335136d395538dd",
+    "checkRuns": 8,
+    "verifyRun": "https://github.com/k999ln/rock/actions/runs/37984903882",
+    "meaning": "Implementation SHA passed all eight check-runs; subsequent progress-only commit has its own CI."
   },
   "acceptance": {
     "liveDevelopmentTaskAccepted": false,
-    "independentReadOnlyReview": "pending",
+    "independentReadOnlyReview": {
+      "status": "pass",
+      "scope": "AMC05_v1_input_and_handoff",
+      "reviewer": "native_amc_reviewer",
+      "testsPassed": 24,
+      "resolvedFinding": "Invalid UTF-8 was replaced during decoding; invalid bytes are now rejected and the original is preserved.",
+      "formalGoalAcceptance": false
+    },
     "webSynced": false,
     "mainIntegrated": false,
     "alwaysRunning": false

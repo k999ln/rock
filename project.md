@@ -2,7 +2,7 @@
 
 # RockstarOS — 事業・設計・進捗
 
-## 2026-10-09 — 既存AMC JSONを担当Botへ直接渡す（AMC05、着手）
+## 2026-10-09 — 既存AMC JSONを担当Botへ直接渡す（AMC05、入力接続の検証完了）
 
 利用者の「このシステムでできる」に対応し、既存AMCのJSON読込み・指示生成を担当Botの入口へ接続する。H1 / ROCK、Git / CI / Operations。添付Goalを別の任務へ置き換えず、ID・revision・意図・task・履歴を保持したローカルコピーを渡す。読み込みを新しい本人認証・検収・実行実績にしない。元Downloadsファイルと元dirty checkoutは変更しない。
 
@@ -11,6 +11,8 @@ main `0455499d`、PR #95 head `0b106304` と同SHAの8 checks成功を確認。�
 添付された47,586 byteのJSONで実GitHub調査を行い、コピーの全byte・Goal ID・revision 1・7 task・既存engineの指示書が一致した。原本hashは不変、着手候補はREQ-01。main `0455499d`、調査時HEAD `0b106304`、Operations参照919 file／72 taskを取得。保存されたactiveは入力の記録でありBot起動の結果ではない。対象試験・独立した読み取り検収・全体CIを続けて確認する。
 
 対象32試験合格。JSON不正・過大・通常ファイル以外・混在引数を拒否し、読込み後に入力pathが変わっても同じsnapshotを引き継ぐ。起動argvはstubで確認し、実モデル任務の完走とは区別する。全体verifyは同期／baseline／design等を通過後、隔離作業木にai依存がないためllm:architecture:checkで停止。[証拠](docs/evidence/project-bot-goal-input.json)と同一実装SHAのCIで補う。
+
+独立したAMC検収担当が入力接続をpassと判定。不正UTF-8の置換を独立再現して修正を確認し、24対象試験を再実行した。元Goalの正式受入やWeb検収イベントではない。実装SHA `bfecf01b63651a7fea4b5279f335136d395538dd` の全体verify・CodeQL等8 check-runsがsuccess。AMC05は直接入力・指示生成・引渡しの範囲でdone。PR #95へ保存、main未統合。添付Goalの7任務完走、無人常駐、Web同期は今回の受入対象に含めない。
 
 ## 2026-10-09 — BotがGitを調べてAMCを作成・遂行する流れ（AMC04、入口接続の検証完了）
 
@@ -2563,7 +2565,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 110/382件（親32・子192・独立158。実行単位は親を除く350件）
+最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 111/382件（親32・子192・独立158。実行単位は親を除く350件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -2948,7 +2950,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ORG04 | 既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する | 完了 | [記録](workspaces/README.md) · [記録](workspaces/IDEAS.md) · [記録](data/workspaces.json) · [記録](scripts/workspaces.mjs) · [記録](tests/workspaces.test.mjs) · [記録](docs/evidence/workspace-organization.json) |
 | AMC03 | 機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する | 完了 | [記録](data/amc/project-bots.json) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bots.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bots.json) |
 | AMC04 | 担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する | 完了 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-amc.json) |
-| AMC05 | 既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ | 進行中 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-goal-input.json) |
+| AMC05 | 既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ | 完了 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-goal-input.json) |
 
 段階ゲート（作業全体の完了とは別判定）
 

@@ -5115,7 +5115,7 @@
     {
       "id": "AMC05",
       "title": "既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ",
-      "status": "in_progress",
+      "status": "done",
       "dependsOn": [
         "AMC04"
       ],
@@ -5126,7 +5126,7 @@
         "toolkits/amc-agent/README.md",
         "docs/evidence/project-bot-goal-input.json"
       ],
-      "nextAction": "直接JSON入力、元ファイル保持、既存engineの指示生成と担当Botへの引渡しを検証する。"
+      "nextAction": "既存AMC JSONの直接入力・Git調査・指示書保存・起動引渡しは検証済み。具体的な任務の実Bot完走と成果PRは別途照合し、元Goalの最終受入を代行しない。"
     }
   ],
   "phaseGates": [
@@ -5898,10 +5898,13 @@
   },
   "projectBotGoalInput": {
     "taskId": "AMC05",
-    "status": "in_progress",
+    "status": "done",
     "mainIntegrated": false,
     "evidence": "docs/evidence/project-bot-goal-input.json",
     "inputPreserved": true,
-    "liveDevelopmentTaskAccepted": false
+    "liveDevelopmentTaskAccepted": false,
+    "verifiedImplementationSha": "bfecf01b63651a7fea4b5279f335136d395538dd",
+    "githubCI": "success",
+    "independentReadOnlyReview": "pass"
   }
 }
