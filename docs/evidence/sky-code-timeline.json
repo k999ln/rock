@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-09",
+  "task": "SKY20",
+  "primaryOwner": "ROCK",
+  "securityTask": "SYS15",
+  "status": "implemented_verified_deployment_approval_required",
+  "request": "Sky timeline agent source publication with Git-like commits/history/diff; default SPIDER protection removable and replaceable",
+  "canonical": {
+    "repository": "k999ln/rock",
+    "branch": "codex/spider-sky",
+    "mainObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "mainIntegrated": false,
+    "sourceSha256": {
+      "lib/sky-code.ts": "368a6680b4e7146430ef7d8774767be6a8119259cc3d3fdc8da421e894e501d4",
+      "lib/sky-code-api.ts": "ac6b8e8bff4f233d82a56a46b96b947d683083cb1942a6a33a7bd8c53988b82e",
+      "lib/sky-code-store.ts": "f0751778d05ad699983bd713560240702526f79571642eea978f6578dd020829",
+      "lib/sky-code-security.ts": "f41cc4f609a9c4ca3b1cab487f19c46a581bea4c804ebe82485d1f301c7cc3dc",
+      "lib/workflow.ts": "0c848b476966342d46e6eb580d7d0e2759bcdec9d2487da784dc966d54dfca02",
+      "components/sky-code-timeline.tsx": "2570e6f9cb72c797f06b5f3b594a9942da6c82b6e7619c5c29bb3c7a95e5e1d5",
+      "components/sky-code-timeline.module.css": "41b25bf04ee69a1e054f24a1b76530db9144ecebf16ba444b7a9cf31623bb2ee",
+      "components/sky-workspace.tsx": "b668f6b9d070285437597c6dbdee58f59ac283054d9a9540259b30505403733e",
+      "app/api/sky/code/route.ts": "b382433a04f2c8dbbebf5aaeb66c879743e4755534f7942f1da3909ce70e1f41",
+      "app/sky/code/[id]/page.tsx": "849d9c040293faf1c07bcf777873170030b9c3c452df34d74121f87cf92bed84",
+      "drizzle/0060_sky_code_timeline.sql": "472af38e2deabd549e49adf44d6edf5e9700921668a60e1efd6e74f744965daf",
+      "tests/sky-code-timeline.test.mjs": "69aa01a7552f0a3cfad61ef61e88c79fed061fe2a1a7bfdd7fde610a6a11bb9f"
+    }
+  },
+  "verification": {
+    "featureTests": 15,
+    "relatedFeatureWorkflowSpiderTests": 28,
+    "canonicalVerify": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodeTests": 1404,
+      "nodePass": 1403,
+      "nodeSkip": 1,
+      "workerD1Assertions": 1219,
+      "csvAssertions": 385,
+      "log": "/private/tmp/sky-code-verify.log",
+      "logSha256": "01b9318bedf0437ab1a74bb08070fe9ede417c507bfd264ac0575b88bc6aa9ab",
+      "scope": "full implementation; subsequent CSS token mapping and evidence-only changes checked on the Site candidate"
+    },
+    "siteCandidateVerify": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 0,
+      "nodePass": 306,
+      "fashionPass": 19,
+      "workerD1Assertions": 522,
+      "assetReferences": 96,
+      "assetMissing": 0,
+      "log": "/private/tmp/sky-code-site-verify.log",
+      "logSha256": "993c2600de2486828acb0dfb22a441be8240370bad619c616b5ed3271866bfba"
+    },
+    "browser": {
+      "environment": "local Vite/D1; synthetic local test session, never real production owner acceptance",
+      "checks": [
+        "SPIDER default selected",
+        "eval pattern blocks publication with line 2 finding",
+        "fixed source publishes v1",
+        "Secret Check replacement requires scope confirmation and publishes v2",
+        "none requires explicit removal confirmation and publishes v3 with no-inspection badge",
+        "restoring SPIDER rechecks changed code and publishes v4",
+        "revision history retains prior provider/scope",
+        "line diff shows removed and added greeting",
+        "reload restores records",
+        "revision-specific shared URL opens correct version",
+        "390px viewport document width equals scrollWidth"
+      ],
+      "screenshots": [
+        "/Users/kaiya/.codex-work/visualizations/2026/10/09/01a121c9-034e-7af1-8438-f295323f1262/sky-code-timeline.png",
+        "/Users/kaiya/.codex-work/visualizations/2026/10/09/01a121c9-034e-7af1-8438-f295323f1262/sky-code-mobile.png"
+      ],
+      "siteCandidate": {
+        "url": "http://localhost:4181/sky",
+        "result": "Local synthetic user successfully published a clean sample through the current Site source with SPIDER. Existing navigation and dark OS design retained. No production write.",
+        "screenshot": "/Users/kaiya/.codex-work/visualizations/2026/10/09/01a121c9-034e-7af1-8438-f295323f1262/sky-code-site-candidate.png"
+      }
+    }
+  },
+  "siteCandidate": {
+    "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky",
+    "audience": "public",
+    "baseVersion": 48,
+    "baseCommit": "cc61f7057301113d82994a1c2d7fb1c4c30acd31",
+    "checkout": "/private/tmp/sky-code-site",
+    "preparedOnly": true,
+    "sourcePushed": false,
+    "productionDeployed": false,
+    "migration": "0016_sky_code_timeline.sql",
+    "canonicalMigration": "0060_sky_code_timeline.sql",
+    "preserved": [
+      "existing Home design",
+      "shared OS design tokens/header",
+      "guest output testing",
+      "existing auth/Wallet/Tool contracts",
+      "all existing migration bytes"
+    ],
+    "adaptations": [
+      "insert timeline without replacing current Sky workspace",
+      "add only code-publication template to current workflow",
+      "upgrade compatible execution-access UI state",
+      "omit unsupported WorkspaceShell tone prop on shared-code page",
+      "generate migration against existing Sites snapshot; keep its independent numbering"
+    ],
+    "approvalBlock": {
+      "action": "Sites source workflow with archivePath (source push and publication preparation)",
+      "reason": "Automatic approval reviewer requires explicit approval of concrete deployment payload and side effects",
+      "impactIfApproved": "publish code-sharing UI/API and add two D1 tables; existing audience and existing pages preserved; no test source auto-published"
+    },
+    "nextAction": "After explicit owner approval, refresh same-site write credential; rerun site-workflow with prior opening result, commands [] and archivePath /private/tmp/sky-code-site.tar.gz; save exact returned source commit and archive, deploy saved version, and read back /sky plus code API. If remote source moved, reopen/reconcile without overwriting it.",
+    "sharedImplementationHashes": {
+      "lib/sky-code.ts": "368a6680b4e7146430ef7d8774767be6a8119259cc3d3fdc8da421e894e501d4",
+      "lib/sky-code-api.ts": "ac6b8e8bff4f233d82a56a46b96b947d683083cb1942a6a33a7bd8c53988b82e",
+      "lib/sky-code-store.ts": "f0751778d05ad699983bd713560240702526f79571642eea978f6578dd020829",
+      "lib/sky-code-security.ts": "f41cc4f609a9c4ca3b1cab487f19c46a581bea4c804ebe82485d1f301c7cc3dc",
+      "components/sky-code-timeline.tsx": "2570e6f9cb72c797f06b5f3b594a9942da6c82b6e7619c5c29bb3c7a95e5e1d5",
+      "components/sky-code-timeline.module.css": "41b25bf04ee69a1e054f24a1b76530db9144ecebf16ba444b7a9cf31623bb2ee"
+    }
+  },
+  "remaining": [
+    "Sites source push/save/deployment approval",
+    "production migration/API/UI readback",
+    "real owner-authenticated publication acceptance",
+    "third-party security products not connected",
+    "Git transport/branch merging not implemented",
+    "main integration remains separate"
+  ]
+}

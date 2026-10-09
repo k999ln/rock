@@ -2324,7 +2324,11 @@
         "tests/sky-tool-package.test.mjs",
         "tests/sky-activation.test.mjs",
         "tests/sky-tool-sdk.test.mjs",
-        "docs/sky-tool-sdk.md"
+        "docs/sky-tool-sdk.md",
+        "lib/sky-code-store.ts",
+        "lib/sky-code-security.ts",
+        "components/sky-code-timeline.tsx",
+        "docs/evidence/sky-code-timeline.json"
       ]
     },
     {
@@ -5831,5 +5835,19 @@
       "aggregateCodeql": "https://github.com/k999ln/rock/runs/113977064918",
       "scope": "Same source commit; subsequent completion record is documentation only. No main merge or deployment."
     }
+  },
+  "skyCodeTimeline": {
+    "status": "implemented_verified_deployment_approval_required",
+    "taskId": "SKY20",
+    "primaryOwner": "ROCK",
+    "securityTask": "SYS15",
+    "branch": "codex/spider-sky",
+    "latestMainObserved": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "mainIntegrated": false,
+    "productionDeployed": false,
+    "nextAction": "After explicit owner approval, refresh same-site write credential; rerun site-workflow with prior opening result, commands [] and archivePath /private/tmp/sky-code-site.tar.gz; save exact returned source commit and archive, deploy saved version, and read back /sky plus code API. If remote source moved, reopen/reconcile without overwriting it.",
+    "evidence": "docs/evidence/sky-code-timeline.json",
+    "canonicalVerifyExitCode": 0,
+    "siteCandidateVerifyExitCode": 0
   }
 }

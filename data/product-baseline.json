@@ -1989,5 +1989,18 @@
     "initialScope": "explicit_input_browser_local_static_inspection",
     "existingNativeGuardRetained": true,
     "doesNotAuthorize": "full_device_surveillance_or_automatic_external_submission"
+  },
+  "skyCodeTimelineIntent": {
+    "decidedAt": "2026-10-09",
+    "requested": true,
+    "entry": "/sky",
+    "scope": "public_agent_source_with_immutable_commits_history_diff_and_copy",
+    "defaultProtector": "spider",
+    "ownerCanRemoveProtector": true,
+    "ownerCanReplaceProtector": true,
+    "sourceUploadRequiresExplicitPublication": true,
+    "standaloneSpiderRemainsMemoryOnly": true,
+    "doesNotAuthorize": "automatic_code_execution_or_tool_verification",
+    "record": "docs/sky-tools-complete-design.md"
   }
 }

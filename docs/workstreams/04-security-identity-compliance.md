@@ -1,3 +1,7 @@
+## 2026-10-09 SYS15連携 — Skyコード公開時の標準保護
+
+SKY20／ROCKのコード公開にSPIDERを既定で適用。本人がSecret Checkへの交換／取り外しを選べる。選択とexact content hashを各commitへ束ね、検査失敗／未登録検査器は公開を停止する。認証・所有権・revision・Broker承認は別境界として維持。[詳細](../sky-tools-complete-design.md#skyタイムラインのエージェントコードと交換可能な保護)。
+
 # Security / Identity / Compliance
 
 ## 目的

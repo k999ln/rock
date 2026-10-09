@@ -488,7 +488,18 @@
         "osWideMonitoring": false,
         "externalSendAuthorization": false,
         "productionDeploymentAccepted": false,
-        "workerInputValidation": "private dedicated-worker trusted event; empty origin/null source; nonnegative safe integer id; source string; language allowlist"
+        "workerInputValidation": "private dedicated-worker trusted event; empty origin/null source; nonnegative safe integer id; source string; language allowlist",
+        "scope": "standalone_browser_inspector_only; timeline publication uses separate explicit upload contract"
+      },
+      "timelineProtection": {
+        "task": "SKY20",
+        "default": "spider",
+        "replaceable": true,
+        "removable": true,
+        "storage": "owner-scoped D1 repositories and immutable commits; explicit publication only",
+        "workflow": "sky-code-publication",
+        "designSection": "Skyタイムラインのエージェントコードと交換可能な保護",
+        "productionAccepted": false
       }
     }
   ],

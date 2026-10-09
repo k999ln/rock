@@ -1,5 +1,8 @@
 <div align="center">
 
+Skyのタイムラインにエージェントコードの公開入口を追加しました（作業branch、未公開）。「コード」→「コードを公開」で、ファイル・作者名・license・変更メッセージを入力し、一般公開を確認して投稿します。SPIDERが標準で検査し、指摘時は公開を停止。公開前の保護はSecret Check（秘密／個人情報のみ）へ交換、または取り外しできます。各版の全文・親との差分・検査範囲を確認でき、所有者は更新・全履歴の非公開・再公開が可能です。Gitのclone/pushやコード実行は未対応。保存にはD1 migration `0060`が必要です。単体SPIDERの入力は引き続きブラウザmemoryだけです。
+
+
 <img src="docs/brand/avokado/avokado-motion-v2.gif" alt="avokado product concept: one slim silver avocadoMini R5 stands beside the words PLAY, MAKE, and LIVE with subtle animated lines" width="100%">
 
 # avokado

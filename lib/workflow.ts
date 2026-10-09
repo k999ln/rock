@@ -10,6 +10,11 @@ import {
 
 export const workflowTemplates = [
   {
+    id: 'sky-code-publication', name: 'Skyコードの公開',
+    description: '本人が選んだ保護条件を検証し、コードを版付きで公開します。実行許可ではありません。',
+    steps: [{ id: 'publish', title: '公開条件を検証してコードを保存', tool: 'sky-code-publication', runner: 'sky-code-publication' }],
+  },
+  {
     id: 'spider-security',
     name: 'SPIDERの入力検査',
     description: '明示入力を端末内で静的検査し、結果と範囲を確認します。安全認定や外部送信承認ではありません。',
