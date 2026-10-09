@@ -51,6 +51,7 @@ import { MrToolRunner } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
 import { FashionBrandOpsRunner } from '@/components/fashion-brand-ops-runner';
 import SkyMcpCenter from '@/components/sky-mcp-center';
+import SkyCodeTimeline from '@/components/sky-code-timeline';
 import SkyPublisherForm from '@/components/sky-publisher-form';
 import WorkspaceShell from '@/components/workspace-shell';
 import {
@@ -63,10 +64,11 @@ import {
 } from '@/lib/operations-client';
 import type { SkyConnection } from '@/lib/operations';
 
-type FeedFilter = 'おすすめ' | '今使える' | '導入候補';
+type FeedFilter = 'おすすめ' | '今使える' | '導入候補' | 'コード';
 
-const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補'];
+const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補', 'コード'];
 const icons: Record<string, LucideIcon> = {
+  'rockstar-spider': ShieldCheck,
   'mercari-revenue': ShoppingBag,
   'fashion-brand-ops': Shirt,
   coconala: BriefcaseBusiness,
@@ -505,7 +507,8 @@ export default function SkyWorkspace({
             </div>
           )}
 
-          <div className="sky-feed" aria-live="polite">
+          {(filter === 'おすすめ' || filter === 'コード') && <SkyCodeTimeline />}
+          {filter !== 'コード' && <div className="sky-feed" aria-live="polite">
             {visibleTools.map((tool, index) => {
               const Icon = icons[tool.id] ?? Link2;
               const provider = providerFor(tool);
@@ -595,7 +598,7 @@ export default function SkyWorkspace({
                 </button>
               </div>
             )}
-          </div>
+          </div>}
         </section>
       </div>
 

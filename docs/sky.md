@@ -33,7 +33,9 @@ flowchart LR
 
 ## 現在Skyにあるツール
 
-### Web / PCで現在使える11件
+### Web / PCで現在使える12件
+
+- **SPIDER**: 明示入力をブラウザ内で検査。SkyからZemaの専用画面へ移り、原文を外部送信せず確認する。
 
 | ツール | 実行場所 | 現在できること | 明示的な限界 |
 | --- | --- | --- | --- |
@@ -49,7 +51,7 @@ flowchart LR
 | 法務受付 | Webブラウザ | 相談内容を整理し、公式情報と無料窓口を案内 | 法的助言・期限・受任を保証せず、自動連絡しない |
 | 特許出願アシスタント | Webブラウザ | 発明情報から調査候補と出願書類ドラフトを作る | 特許性・登録を保証せず、提出・支払を自動化しない |
 
-この11件は `lib/catalog.ts` で `ready` とされる。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは公開ライブ市場の読取専用で、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。
+この12件は `lib/catalog.ts` で `ready` とされる。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは公開ライブ市場の読取専用で、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。
 
 ### Skyに表示する導入候補3件
 

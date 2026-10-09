@@ -1,3 +1,7 @@
+## 2026-10-09 — Skyコードタイムライン（SKY20／ROCK、公開準備）
+
+GitHubのcodex/spider-skyで実装したコード全文・履歴・差分・共有URLと交換可能なSPIDER公開前検査を、Site v48/source cc61f705へ差分移植。既存Home・共通デザイン・出力テストを保持。検査はserver側、本人認証とowner/CAS、追記履歴、非公開、再送保護を確認。追加15試験＋既存workflow5、型検査合格。GitHub側全verifyはNode1403成功/1skip・Worker/D1 1219・CSV385合格。Site配布artifactの全verifyもexit0（Node306・Fashion19・Worker/D1 522・assets96/欠落0）。残るのはnative Sites配備と本番readback。Sites独立migrationは0016、GitHubは0060であり、両migration系列の全置換は行わない。
+
 ## 2026-10-09 — 登録不要の出力テスト（WEB04 / ROCK、実装検証済み・公開準備）
 
 利用者の「テストで一旦全部使えるようにして、出力確認したい」を受け、既存Siteに隔離した登録不要テスト入口を実装した。既存の決定的な変換・検査関数を再利用し、外部接続待ちは模擬または未実行と明示する。本番本人認証・予算・同意・Wallet台帳は緩和しない。入力は上限付きstateless処理、結果は画面内のみで保持。全catalog項目の状態と出力を一括確認し、Cloud生成・実収益・実取引成功への読み替えを防ぐ。公開ソースは全17項目（実処理10・模擬3・接続待ち4）のUI一括応答、CSV入力変更、Wallet入力拒否、リセット、390/320幅のoverflowなし、結果JSONダウンロードを確認。追加6単体/API境界試験合格。公開source全体verify exit0（Node291、Fashion19、Worker/D1 495、asset missing0）。正本全体verifyはsandboxでAPI待受EPERMのため必要権限で再実行中。native APKは今回変更せず、既存Web版入口から同じ/testを利用する。AI実生成・外部接続4項目は未完了。
@@ -25,6 +29,11 @@
 既存配備元7c79e43を基準に、Skyホーム→`/sky/marketplace`→`/sky/tools/{toolId}`の文章ツール入口を追加。対象は出典整理、記事の無料版メーカー、ココナラ応募前チェック。既存本人確認とjob状態遷移を用いて実行し、成果は明示操作で同一ブラウザへ全Tool合計20件保存、同じToolで再表示・コピー・Markdown保存・削除できる。元原稿は保存しない。成果はlocalStorageで、アカウント別クラウド同期ではなく共有ブラウザの他利用者からも読めるため注意を表示する。保存拒否・容量超過を成功扱いにしない。関連15試験とtypecheck合格。公開準備中、既存公開設定を維持。実Provider、決済、OS実機の合格ではない。
 
 # Rock star — 事業・設計・進捗
+
+## 2026-10-09 — SPIDER単独検査の公開候補接続
+
+Sky掲載とZemaのブラウザ内検査画面を追加。既存タイムライン公開前のSPIDER保護・コード保存とは別の、原文を送信しないローカル検査。現行Home・既存DB migrationを保持し、既存workflow契約を利用する。公開前verify exit 0（Node328・Fashion19・Worker/D1 522 assertions・asset99/欠落0）。実画面でSkyから単独SPIDERを起動し、実Workerのsample検出2件を確認。公開後の画面／API確認は次工程。
+
 
 ## 2026-10-06 — NFCからWebホームへ直接開く入口
 

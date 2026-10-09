@@ -1743,5 +1743,42 @@
     "nativeApkChanged": false,
     "externalAiEnabled": false,
     "evidence": "docs/evidence/guest-output-testing.json"
+  },
+  "skyCodeTimeline": {
+    "status": "verified_ready_to_publish",
+    "request": "Skyタイムラインでエージェントコードを公開、SPIDERを標準にし、交換・取り外しを可能にする",
+    "sourceBase": "cc61f7057301113d82994a1c2d7fb1c4c30acd31",
+    "canonicalRepository": "k999ln/rock",
+    "canonicalBranch": "codex/spider-sky",
+    "scope": "Source sharing only; no agent execution or verified Tool registry enrollment",
+    "details": "docs/sky-code-timeline.md",
+    "newNodeTests": 15,
+    "siteWorkflowAndFeatureTests": 20,
+    "productionDeployed": false,
+    "siteVerify": {
+      "exitCode": 0,
+      "nodeTests": 306,
+      "fashionTests": 19,
+      "workerD1Assertions": 522,
+      "webAssetReferences": 96,
+      "missingAssets": 0
+    },
+    "remaining": "native Sites deployment and production readback"
+  },
+  "spiderSkyPublication": {
+    "status": "verified_ready_to_publish",
+    "toolId": "rockstar-spider",
+    "sourceUploaded": false,
+    "productionDeployed": false,
+    "nextAction": "Verify Site candidate, publish, and check standalone inspection and code timeline routes.",
+    "validation": {
+      "verifyExitCode": 0,
+      "nodePass": 328,
+      "fashionPass": 19,
+      "workerD1Assertions": 522,
+      "assetReferences": 99,
+      "missingAssets": 0,
+      "actualBrowserWorker": "pass; Sky launch, sample secret 1/code 1"
+    }
   }
 }

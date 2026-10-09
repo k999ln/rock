@@ -1,0 +1,49 @@
+.panel { --spider-border: #2a3345; border: 1px solid var(--spider-border); border-radius: 22px; background: #0c111b; color: #e9eef8; padding: clamp(18px, 3vw, 32px); min-width: 0; }
+.hero { display: flex; align-items: center; gap: 20px; }
+.hero h2 { font-size: clamp(22px, 3vw, 32px); letter-spacing: -.04em; margin: 6px 0 10px; line-height: 1.3; }
+.hero p { color: #b4bfd1; font-size: 13px; line-height: 1.8; margin: 0; }
+.hero .eyebrow { color: #9beced; font-size: 10px; letter-spacing: .18em; }
+.spider { width: 150px; flex: 0 0 150px; color: #8ee5ec; filter: drop-shadow(0 0 9px #58c4dc30); }
+.spider svg { display: block; width: 100%; }
+.review { color: #f3a8cf; }
+.checking { animation: breathe 1.4s ease-in-out infinite; }
+@keyframes breathe { 50% { transform: translateY(-5px); filter: drop-shadow(0 0 15px #58c4dc80); } }
+.privacy { display: flex; align-items: center; gap: 9px; background: #14272b; color: #b5e3d7; padding: 12px 15px; border-radius: 10px; font-size: 12px; line-height: 1.7; margin: 20px 0; }
+.privacy svg { flex: 0 0 auto; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.editor, .results { min-width: 0; }
+.toolbar, .actions, .inputInfo, .findingTop { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.toolbar { justify-content: space-between; margin-bottom: 14px; }
+.toolbar label { display: grid; gap: 6px; font-size: 11px; color: #b4bfd1; }
+.panel button, .panel select { font: inherit; font-size: 12px; border: 1px solid #354157; border-radius: 8px; background: #172131; color: #e9eef8; min-height: 36px; padding: 8px 11px; }
+.panel button { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.panel button:hover { background: #233047; }
+.panel button:disabled { opacity: .5; cursor: default; }
+.panel button:focus-visible, .panel select:focus-visible, .panel textarea:focus-visible, .limits summary:focus-visible { outline: 2px solid #8ee5ec; outline-offset: 3px; }
+.inputLabel { display: block; font-size: 12px; margin-bottom: 8px; color: #b4bfd1; }
+.panel textarea { width: 100%; min-height: 320px; resize: vertical; border: 1px solid var(--spider-border); border-radius: 12px; background: #070b12; color: #d8e4f8; padding: 16px; font: 12px/23px ui-monospace, SFMono-Regular, monospace; tab-size: 2; }
+.panel textarea::placeholder { color: #8997b0; }
+.fileInput { display: none; }
+.inputInfo { justify-content: space-between; color: #a4b1c7; font-size: 11px; margin: 8px 0 14px; }
+.inputInfo button { background: transparent; border: 0; padding: 4px; }
+.panel .primary { background: #9beced; border-color: #9beced; color: #092326; font-weight: 650; }
+.panel .primary:hover { background: #c1f5f6; }
+.counts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-bottom: 15px; }
+.counts div { border: 1px solid var(--spider-border); border-radius: 10px; padding: 12px; display: grid; gap: 7px; }
+.counts span { font-size: 11px; color: #b4bfd1; }
+.counts strong { font-size: 24px; font-weight: 500; }
+.empty { color: #a9b7ce; font-size: 13px; line-height: 1.9; padding: 20px 2px; }
+.findings { max-height: 460px; overflow-y: auto; display: grid; gap: 10px; margin-bottom: 16px; }
+.finding { background: #121a28; border: 1px solid var(--spider-border); border-radius: 12px; padding: 15px; }
+.findingTop { justify-content: space-between; font-size: 11px; color: #f3b8d5; }
+.findingTop button { min-height: 30px; padding: 5px 8px; }
+.finding h3 { font-size: 14px; margin: 10px 0 8px; }
+.finding p { color: #b9c5d9; font-size: 12px; line-height: 1.8; margin: 7px 0 0; overflow-wrap: anywhere; }
+.finding .remediation { color: #c7dedb; }
+.note, .limits { color: #a9b7ce; font-size: 11px; line-height: 1.8; margin-top: 18px; }
+.limits summary { cursor: pointer; }
+.limits ul { padding-left: 18px; }
+.error { background: #322817; color: #f5d9a1; border-radius: 8px; padding: 12px; font-size: 12px; line-height: 1.8; }
+@media (max-width: 850px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .hero { gap: 10px; } .spider { width: 76px; flex-basis: 76px; } .hero h2 { font-size: 21px; } .panel { padding: 16px; border-radius: 15px; } .toolbar { align-items: end; } .counts div { padding: 10px; } }
+@media (prefers-reduced-motion: reduce) { .checking { animation: none; } }

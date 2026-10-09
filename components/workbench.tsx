@@ -302,7 +302,7 @@ export default function Workbench() {
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {workflowTemplates.map((template) => (
+                  {workflowTemplates.filter(template => !['sky-code-publication', 'spider-security'].includes(template.id)).map((template) => (
                     <SelectItem key={template.id} value={template.id}>
                       {template.name}
                     </SelectItem>

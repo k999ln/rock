@@ -735,3 +735,14 @@ export const skyToolEvents = sqliteTable(
     index('idx_sky_tool_events_package_time').on(table.packageKey, table.occurredAt),
   ],
 );
+
+export const skyCodeRepositories = sqliteTable('sky_code_repositories', {
+  id: text('id').primaryKey(), userId: text('user_id').notNull(),
+  revision: integer('revision').notNull().default(0), headId: text('head_id'),
+  hidden: integer('hidden').notNull().default(0), updatedAt: integer('updated_at').notNull(),
+}, table => [index('idx_sky_code_owner').on(table.userId)]);
+export const skyCodeCommits = sqliteTable('sky_code_commits', {
+  id: text('id').primaryKey(), repoId: text('repo_id').notNull().references(() => skyCodeRepositories.id),
+  revision: integer('revision').notNull(), parentId: text('parent_id'),
+  payload: text('payload').notNull(), createdAt: integer('created_at').notNull(),
+}, table => [uniqueIndex('idx_sky_code_repo_revision').on(table.repoId, table.revision)]);

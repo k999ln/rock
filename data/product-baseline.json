@@ -588,5 +588,35 @@
     "theme": "graphite_silver",
     "stateColors": "semantic_with_labels",
     "minimumTouchTargetPx": 44
+  },
+  "skyCodeTimeline": {
+    "status": "verified_ready_to_publish",
+    "request": "Skyタイムラインでエージェントコードを公開、SPIDERを標準にし、交換・取り外しを可能にする",
+    "sourceBase": "cc61f7057301113d82994a1c2d7fb1c4c30acd31",
+    "canonicalRepository": "k999ln/rock",
+    "canonicalBranch": "codex/spider-sky",
+    "scope": "Source sharing only; no agent execution or verified Tool registry enrollment",
+    "details": "docs/sky-code-timeline.md",
+    "newNodeTests": 15,
+    "siteWorkflowAndFeatureTests": 20,
+    "productionDeployed": false,
+    "siteVerify": {
+      "exitCode": 0,
+      "nodeTests": 306,
+      "fashionTests": 19,
+      "workerD1Assertions": 522,
+      "webAssetReferences": 96,
+      "missingAssets": 0
+    },
+    "remaining": "native Sites deployment and production readback"
+  },
+  "spiderSkyIntent": {
+    "decidedAt": "2026-10-09",
+    "source": "利用者: セキュリティーで開発したい / skyでしたい",
+    "toolId": "rockstar-spider",
+    "entry": "Sky catalog → Zema tool workspace",
+    "initialScope": "explicit_input_browser_local_static_inspection",
+    "existingNativeGuardRetained": true,
+    "doesNotAuthorize": "full_device_surveillance_or_automatic_external_submission"
   }
 }
