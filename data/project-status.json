@@ -2344,6 +2344,25 @@
       ]
     },
     {
+      "id": "GRID01",
+      "title": "Sky Compute Gridで未使用Androidの余剰計算を固定lotへmatchingし、検証後だけ精算候補にする",
+      "status": "in_progress",
+      "dependsOn": [
+        "AI05",
+        "WLT03"
+      ],
+      "evidence": [
+        "docs/sky-compute-grid.md",
+        "contracts/sky-compute-grid.json",
+        "contracts/sky-compute-grid-fixture.json",
+        "lib/sky-compute-grid.ts",
+        "tests/sky-compute-grid.test.mjs",
+        "app/sky/compute-grid/page.tsx",
+        "app/api/sky/compute-grid/demo/route.ts",
+        "docs/evidence/amc/grid01-host-fixture.md"
+      ]
+    },
+    {
       "id": "DOC01",
       "title": "RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化",
       "status": "done",

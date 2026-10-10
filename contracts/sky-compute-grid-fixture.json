@@ -1,0 +1,150 @@
+{
+  "evidenceKind": "synthetic_host_fixture",
+  "now": "2026-10-10T03:00:00.000Z",
+  "order": {
+    "schema": "sky-compute-order/1",
+    "orderId": "order_demo_001",
+    "buyerRefHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "skuId": "public-text-embedding-v1",
+    "dataClass": "synthetic",
+    "runtimeArtifactSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "modelSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "tokenizerSha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "regions": ["JP-KANTO"],
+    "minimumTrustTier": "play_integrity_device",
+    "minimumMemoryMiB": 4096,
+    "maximumInputBytesPerLot": 262144,
+    "maximumPriceMicrosPerLot": 5000,
+    "budgetMicros": 10000,
+    "deadline": "2026-10-10T03:30:00.000Z",
+    "interruptible": true,
+    "cloudFallbackAuthorized": false,
+    "containsPersonalData": false,
+    "containsSecrets": false,
+    "validation": { "method": "independent_reference", "quorum": 1 },
+    "lots": [
+      { "lotId": "lot_demo_001", "inputSha256": "4444444444444444444444444444444444444444444444444444444444444444", "inputBytes": 98304 },
+      { "lotId": "lot_demo_002", "inputSha256": "5555555555555555555555555555555555555555555555555555555555555555", "inputBytes": 131072 }
+    ]
+  },
+  "offers": [
+    {
+      "schema": "sky-capacity-offer/1",
+      "offerId": "offer_pixel_night_001",
+      "providerRefHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "providerPseudonym": "Night Pixel 17",
+      "platform": "android",
+      "abi": "arm64-v8a",
+      "region": "JP-KANTO",
+      "trustTier": "play_integrity_device",
+      "runtimeArtifactSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "modelSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "tokenizerSha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "memoryMiB": 8192,
+      "benchmarkLotsPerHour": 24,
+      "reliabilityBps": 9850,
+      "availableFrom": "2026-10-10T02:00:00.000Z",
+      "availableUntil": "2026-10-10T06:00:00.000Z",
+      "maxLots": 4,
+      "priceMicrosPerLot": 3200,
+      "settlementAsset": "sky_test_credits",
+      "workloadPolicy": {
+        "dataClasses": ["public", "synthetic"],
+        "maxInputBytesPerLot": 262144,
+        "permitsPersonalData": false,
+        "permitsSecrets": false,
+        "permitsArbitraryCode": false
+      },
+      "currentConditions": { "charging": true, "deviceIdle": true, "unmeteredNetwork": true, "thermalStatus": "light" }
+    },
+    {
+      "schema": "sky-capacity-offer/1",
+      "offerId": "offer_phone_in_use_002",
+      "providerRefHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "providerPseudonym": "Evening Android 04",
+      "platform": "android",
+      "abi": "arm64-v8a",
+      "region": "JP-KANTO",
+      "trustTier": "hardware_backed",
+      "runtimeArtifactSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "modelSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "tokenizerSha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "memoryMiB": 12288,
+      "benchmarkLotsPerHour": 30,
+      "reliabilityBps": 9900,
+      "availableFrom": "2026-10-10T02:00:00.000Z",
+      "availableUntil": "2026-10-10T06:00:00.000Z",
+      "maxLots": 8,
+      "priceMicrosPerLot": 2500,
+      "settlementAsset": "sky_test_credits",
+      "workloadPolicy": {
+        "dataClasses": ["public", "synthetic"],
+        "maxInputBytesPerLot": 262144,
+        "permitsPersonalData": false,
+        "permitsSecrets": false,
+        "permitsArbitraryCode": false
+      },
+      "currentConditions": { "charging": true, "deviceIdle": false, "unmeteredNetwork": true, "thermalStatus": "none" }
+    },
+    {
+      "schema": "sky-capacity-offer/1",
+      "offerId": "offer_other_region_003",
+      "providerRefHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "providerPseudonym": "West Coast Phone 09",
+      "platform": "android",
+      "abi": "arm64-v8a",
+      "region": "US-WEST",
+      "trustTier": "hardware_backed",
+      "runtimeArtifactSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "modelSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "tokenizerSha256": "3333333333333333333333333333333333333333333333333333333333333333",
+      "memoryMiB": 8192,
+      "benchmarkLotsPerHour": 28,
+      "reliabilityBps": 9950,
+      "availableFrom": "2026-10-10T02:00:00.000Z",
+      "availableUntil": "2026-10-10T06:00:00.000Z",
+      "maxLots": 6,
+      "priceMicrosPerLot": 2100,
+      "settlementAsset": "sky_test_credits",
+      "workloadPolicy": {
+        "dataClasses": ["public", "synthetic"],
+        "maxInputBytesPerLot": 262144,
+        "permitsPersonalData": false,
+        "permitsSecrets": false,
+        "permitsArbitraryCode": false
+      },
+      "currentConditions": { "charging": true, "deviceIdle": true, "unmeteredNetwork": true, "thermalStatus": "none" }
+    }
+  ],
+  "receipt": {
+    "schema": "sky-compute-receipt/1",
+    "receiptId": "receipt_demo_001",
+    "leaseId": "replaced_by_fixture_runner",
+    "orderId": "order_demo_001",
+    "offerId": "offer_pixel_night_001",
+    "providerRefHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "runtimeArtifactSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "modelSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "tokenizerSha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "startedAt": "2026-10-10T03:01:00.000Z",
+    "completedAt": "2026-10-10T03:06:00.000Z",
+    "deviceEvidence": {
+      "trustTier": "play_integrity_device",
+      "chargingThroughout": true,
+      "deviceIdleThroughout": true,
+      "unmeteredThroughout": true,
+      "maximumThermalStatus": "light"
+    },
+    "results": [
+      { "lotId": "lot_demo_001", "inputSha256": "4444444444444444444444444444444444444444444444444444444444444444", "outputSha256": "6666666666666666666666666666666666666666666666666666666666666666", "outputBytes": 3072, "status": "completed" },
+      { "lotId": "lot_demo_002", "inputSha256": "5555555555555555555555555555555555555555555555555555555555555555", "outputSha256": "7777777777777777777777777777777777777777777777777777777777777777", "outputBytes": 3072, "status": "completed" }
+    ]
+  },
+  "verificationEvidence": {
+    "providerRefHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "referenceOutputs": {
+      "lot_demo_001": "6666666666666666666666666666666666666666666666666666666666666666",
+      "lot_demo_002": "7777777777777777777777777777777777777777777777777777777777777777"
+    }
+  }
+}
