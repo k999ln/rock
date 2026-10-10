@@ -79,7 +79,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 | 開発の進め方 | 3製品＋共通OSを5師団32部隊に分け、Goal・段階・証拠で管理（AMC） | 09-26 | [Mission Control](mission-control.md) |
 | 公開サイト | `https://avocadomini.si`（Mini／Proの製品ホーム）。OSの作業画面とは別 | 10-05 | [Web workstream](workstreams/05-web-pwa-sites.md) |
 
-> **読み方の注意** — 上の表は「決めた仕様」です。実機・本番・実資金で合格した範囲はずっと狭く、たとえばR5の実機試験は0件、Pixelの初回flash gateは未合格、実課金・実払出しは未開始です。到達点は [README の Current status](../README.md#current-status) と [進捗の全task表](../project.md) を見てください。
+> **読み方の注意** — 上の表は「決めた仕様」です。実機・本番・実資金で合格した範囲はずっと狭く、たとえばR5の実機試験は0件、Pixelの初回flash gateは未合格、実課金・実払出しは未開始です。到達点は [README の Where it stands](../README.md#where-it-stands) と [進捗の全task表](../project.md) を見てください。
 
 ---
 
