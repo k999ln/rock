@@ -6,6 +6,8 @@
 
 ## 現在地
 
+- 2026-10-10: Sky Compute Gridのhost fixtureは、検証済みcompute lotから冪等な`service_credit_hold` previewを作る。既存Walletへ直接書き込まず、`livePayoutAuthorized=false`、`walletMutationAllowed=false`を固定する。未検証結果、timeout不明、重複receiptを収益にしない。provider credit、buyer price、Sky spread、税・返金・chargeback、sandbox rail、限定liveは未決で、SKY19/WLT06/BIL02の実行保留を解除しない。[設計](../sky-compute-grid.md)。
+
 - 2026-10-01: BIL02の[決済統合設計](../sky-commerce-design.md)と[Wallet詳細設計](../wallet-commerce-design.md)、型/DDL草案と再現用検証を追加。旧月額8.88 USD案は利用者指示で対象外。これは設計の完了範囲であり実Provider受入・runtime実装の完了ではない。
 
 - Sky Marketの商品購入はWeb D1の別経路として実装。`/sky/sell` のStripe Express受取先登録、審査済み `external_contract` Packageの円建て買い切り販売、10% application fee、Checkout、`/sky/purchases` の支払い照合、提供者返金を含む。LLM Packageも同じ条件を使う。

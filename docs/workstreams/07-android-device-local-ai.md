@@ -1,5 +1,9 @@
 # Android / Device / Local AI
 
+## 2026-10-10 GRID01／O5・O6連携 — 余剰計算workerの境界
+
+Sky Compute Gridの供給端末は初期段階でAndroid arm64だけとする。既存AI05のowner指定authority deviceを自動移管せず、公開／合成dataの固定embedding lotだけを別leaseとして扱う。開始・継続にはcharging、device idle、unmetered network、thermal none/lightが必要で、owner useを計算より優先する。Play配布の動的code制限を前提に、任意DEX/JAR/native library、shell/rootを取得せず、署名・hash固定済みruntimeへdata/parameterだけを渡す。現在はhost fixtureだけで、Android JobScheduler/WorkManager、attestation、APK、emulator、Pixel、50台pilotは未実装・未受入。[専用設計](../sky-compute-grid.md)。
+
 ## SIM/eSIMサービスの利用開始におけるAndroidの役割（2026-10-01）
 
 ## 2026-10-02 製品要件監査と優先順位

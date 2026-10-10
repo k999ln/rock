@@ -37,12 +37,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 49 },
+    { length: 50 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ49の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ50の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -1332,6 +1332,38 @@ export function validateBaseline(
       data.skyNetworkEconomy?.multiMcpConnector?.skyUiConnected === true,
     '複数MCP Connectorの配布・Sky接続とremote/OAuth未受入の境界を維持してください',
   );
+  const computeGrid = data.skyComputeGrid;
+  requireValue(
+    computeGrid?.status ===
+      'synthetic_host_fixture_android_runtime_not_connected' &&
+      computeGrid?.initialSupplyPlatform === 'android_arm64' &&
+      computeGrid?.iosSupplyEnabled === false &&
+      computeGrid?.initialSku === 'public-text-embedding-v1' &&
+      computeGrid?.pricingUnit === 'verified_compute_lot' &&
+      computeGrid?.cpuHourPricingAllowed === false &&
+      JSON.stringify(computeGrid?.dataClasses) ===
+        JSON.stringify(['public', 'synthetic']) &&
+      computeGrid?.personalDataAllowed === false &&
+      computeGrid?.secretsAllowed === false &&
+      computeGrid?.arbitraryCodeAllowed === false &&
+      computeGrid?.exactLocationExposedToBuyer === false &&
+      computeGrid?.ownerIdentityExposedToBuyer === false &&
+      computeGrid?.ownerUsePreemptsCompute === true &&
+      computeGrid?.verificationRequiredBeforeSettlement === true &&
+      computeGrid?.settlementAsset === 'sky_test_credits' &&
+      computeGrid?.liveDispatchEnabled === false &&
+      computeGrid?.liveBillingEnabled === false &&
+      computeGrid?.livePayoutEnabled === false &&
+      computeGrid?.cloudFallbackWithoutExplicitOrderAuthorization === false &&
+      [
+        computeGrid.architecture,
+        computeGrid.contract,
+        computeGrid.fixture,
+        computeGrid.runtime,
+        computeGrid.tests,
+      ].every((path) => existsSync(resolve(root, path))),
+    'Sky Compute Gridの固定lot、privacy、安全停止、検証前精算拒否、live停止境界を維持してください',
+  );
   requireValue(
     data.releaseInstallation?.releaseName === 'RockstarOS 1.0',
     '1.0の発表名が必要です',
@@ -1457,6 +1489,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ49、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Coreへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ50、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Core・Sky Compute Gridへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、Android余剰計算の固定lot仲介、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

@@ -25,7 +25,7 @@
 | 1 | [README](../README.md) | これは何か、何を作っていて、今どこまで出来ているか | 5分 |
 | 2 | [仕様変遷](spec-history.md) | いつ、何が、何から何へ変わったか。いま有効な仕様の一覧 | 10分 |
 | 3 | [エージェント・Tool総覧](agents-and-tools.md) | Skyの35 Tool、役割エージェント、クラウドのAgent、32部隊のそれぞれの機能 | 10分 |
-| 4 | [製品ベース](product-baseline.md) | 確定要望 RQ01〜RQ49 の全文。仕様で迷ったときの最終的なよりどころ | 必要な箇所だけ |
+| 4 | [製品ベース](product-baseline.md) | 確定要望 RQ01〜RQ50 の全文。仕様で迷ったときの最終的なよりどころ | 必要な箇所だけ |
 | 5 | [全設計ポータル](rockstaros-design-portal.md) | 領域ごとの詳細設計書への入口 | 必要な箇所だけ |
 
 ---
@@ -84,6 +84,7 @@ README.md ─────────────── これは何か（表玄
 | Sky・Zema・Walletの違い | [Sky](sky.md) / [製品・サービス・システム関係図](rockstaros-product-system-map.md) |
 | 料金・手数料はどうなっている？ | [仕様変遷 §3.3](spec-history.md#33-料金手数料) → [Sky経済設計](sky-network-economy.md) / [決済](sky-billing.md) |
 | クラウドのAgentはどう動く？ | [Sky Cloud継続実行](sky-cloud-continuity.md) / [A2A Bridge](sky-a2a-bridge.md) |
+| 使っていない携帯の計算力をどう束ねる？ | [Sky Compute Grid](sky-compute-grid.md) |
 | SIM/eSIMを買ってから使えるまで | [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [利用権claim](sim-service-entitlement-claims.md) |
 | avocadoMiniの現行設計 | [R5統合基本設計](avocado-mini-r5/README.md) |
 | avocadoMiniの昔の形 | [仕様変遷 §3.5](spec-history.md#35-avocadominiの形) → [E3](avocado-mini-tower20-e3/README.md) / [E2](avocado-mini-mini200-e2/README.md) / [E1](avocado-mini-mini200-e1/README.md) |
@@ -136,7 +137,7 @@ README.md ─────────────── これは何か（表玄
 
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
-| [`product-baseline.md`](product-baseline.md) | 正本 | 確定要望 RQ01〜RQ49 と、日付付きの方針判断・変更記録。仕様の最終的なよりどころ | 10-07 |
+| [`product-baseline.md`](product-baseline.md) | 正本 | 確定要望 RQ01〜RQ50 と、日付付きの方針判断・変更記録。仕様の最終的なよりどころ | 10-10 |
 | [`spec-history.md`](spec-history.md) | 索引 | 仕様変遷。いつ・何が・何から何へ変わったかを日付順とテーマ別に並べ直したもの | 10-07 |
 | [`readme-details.md`](readme-details.md) | 索引 | READMEの詳しい版（英語）。事業、サービスの流れ、機能の詳細、決済、セキュリティ、設計書の一覧、開発手順。2026-10-09にREADMEを短くしたとき、それまでの本文を文言を変えずに移した | 10-09 |
 | [`sim-led-product-architecture.md`](sim-led-product-architecture.md) | 正本 | 現行の主商品（SIM/eSIMを入口にしたサービス）の定義、利用開始の流れ、実行と料金の契約 | 10-06 |
@@ -208,6 +209,7 @@ Toolを探す・つなぐ・動かす側の設計。
 | [`sky-identity-connection.md`](sky-identity-connection.md) | 設計 | Skyの本人確認と1タップ接続 | 09-12 |
 | [`sky-role-agents-20260912.md`](sky-role-agents-20260912.md) | 設計 | Skyの役割エージェント（担当）の仕様と会話契約 | 09-12 |
 | [`sky-network-economy.md`](sky-network-economy.md) | 正本 | Toolチームと開発者還元。Sky Market手数料10%と、過去の貢献・還元設計 | 09-29 |
+| [`sky-compute-grid.md`](sky-compute-grid.md) | 正本 | 未使用Androidの計算余力を固定lotへmatchingし、検証後にだけ精算候補へするVirtual Compute Plant設計 | 10-10 |
 | [`sky-mr-automation-candidates.md`](sky-mr-automation-candidates.md) | 設計 | 旧 `Mr.` Hubの自動化11件をSkyの導入候補にする設計 | 09-20 |
 | [`mr-integration.md`](mr-integration.md) | 設計 | `Mr.` からの取り込み範囲、固定原本とhash、license | 10-03 |
 | [`pc-citations-adapter.md`](pc-citations-adapter.md) | 設計 | PC出典整理の実処理接続（固定CLI、上限、cleanup） | 10-02 |

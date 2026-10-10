@@ -1,10 +1,10 @@
 # 仕様変遷 — いつ、何が、どう変わったか
 
-対象期間: 2026-09-04（最初のcommit）〜 2026-10-06（main `0fbf688b`）／ 作成: 2026-10-07
+対象期間: 2026-09-04（最初のcommit）〜 2026-10-10 ／ 作成: 2026-10-07、更新: 2026-10-10
 
 この文書は、プロジェクトの仕様が **何日に、何から何へ変わったか** を人が読める順番に並べ直したものです。
 
-- **正本ではありません。** 確定要望の正本は [製品ベース](product-baseline.md)（RQ01〜RQ49と日付付きの判断）、機械可読の正本は [`data/product-baseline.json`](../data/product-baseline.json) です。ここは、その内容とGitの履歴（1,068 commit）を日付順に引き直した **読むための索引** です。
+- **正本ではありません。** 確定要望の正本は [製品ベース](product-baseline.md)（RQ01〜RQ50と日付付きの判断）、機械可読の正本は [`data/product-baseline.json`](../data/product-baseline.json) です。ここは、その内容とGitの履歴を日付順に引き直した **読むための索引** です。
 - 各項目の `v1.xx` は製品ベースの版番号です。全文を読みたいときは、製品ベースをその番号か日付で検索してください。
 - 「決めた」と「作った」と「動いた」は別です。この文書の「仕様の決定」は利用者（owner）が指示した内容、「この日に作ったもの」はGitに入った成果です。実機・本番・実資金で合格したかどうかは [現在地](#2-いま有効な仕様2026-10-06時点) と各設計書を見てください。
 - **2026-09-24〜10-05の一部は、統合（merge）で消えていた記録を戻したうえで書いています。** `main` の作業記録と一部の決定は2026-10-05の統合で文書から落ちていました。何が落ち、何を戻したかは [統合で失われた情報の監査](merge-loss-audit-20261007.md) にあります。この文書で戻した記録に基づく項目には「〔復元した記録〕」と付けています。
@@ -25,6 +25,10 @@
 
 利用者は「セキュリティーで開発したい」「skyでしたい」と指定。既存OS常駐を保持し、Skyで選びZemaでコード／テキストを端末内検査する提供面を追加する。現行仕様は下のセキュリティ行と[Tool設計](sky-tools-complete-design.md#spider--skyのセキュリティ検査)。
 
+## 2026-10-10 — Sky Compute Grid
+
+利用者は、cloud serverを借りる代わりに、世界中の人が使っていない時間の携帯を計算資源として束ね、需要と供給のmatchingをSkyに含める方針を指定した。初期供給は充電中・idle・unmetered・低温のAndroid arm64、初期需要はpublic/synthetic text embeddingの固定lot、単価はCPU時間ではなくverified lotとする。任意code、個人情報、秘密、exact location／owner identity公開、無断cloud fallback、未検証収益化、live billing/payoutを許可しない。`RQ50`と[専用設計](sky-compute-grid.md)へ固定した。
+
 ## 1. 30秒でわかる変遷
 
 約1か月で、製品の中心は **5回** 大きく動いています。
@@ -36,6 +40,7 @@
 | 2 | 09-12 〜 09-16 | **Sky / Zema / Wallet** — AI自動化チームを持つためのOS | Hubを **Sky** と命名、Chatを **Zema** と命名。MCP接続、収益からの8.88 USD精算、メルカリ、Fashion Brand Ops、Wallet。実機はPixel 10に確定。名前が一時 **avocadoOS** になる。最後に「AIネイティブOS」が中核になる（RQ48） |
 | 3 | 09-17 〜 09-26 | **avocadoMini** — ハードウェアを表の主役に | 名前がRockstarOSへ戻る。物質発明（Material Invention）とavocadoMiniが登場し、7日間に8つの案を経てR5に落ち着く。rocketstarの設計も保存。8.88 USDは保留。最後に「Mini・Pro・rocketstarの3製品＋共通OS」に整理 |
 | 4 | 09-27 〜 10-06 | **SIM/eSIMを入口にしたサービス**（現行） | Sky Market（手数料10%）と決済、Campus、AMC。クラウドAgentの継続実行。10-02に **「SIM/eSIMを買うとRockstarOS・Sky・Zema・Agentが使える」** が主商品になる。Spider Guard、ProのPC化、Mini本体SIM、専用モデル |
+| 5 | 10-10 〜 | **Sky Compute Gridを追加**（現行追加） | SIM/eSIM主商品を置換せず、未使用Androidの余剰計算を固定・検証可能なlotとして仲介する供給networkをSkyへ追加 |
 
 名前の変遷だけを抜き出すと、こうなります。
 
@@ -61,6 +66,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 | 主商品 | 物理SIMまたはeSIMの購入を入口に、RockstarOS・Sky・Zema・統合Agentの利用権を提供するサービス。OSのbinaryをSIMへ入れる前提にはしない | 10-02 | [製品ベース冒頭](product-baseline.md) / [SIM/eSIM-led architecture](sim-led-product-architecture.md) |
 | 選ばれる理由 | ①クラウドLLM・Agentへ速く簡単に ②料金と使用量が透明 ③Sky/Zemaを最小設定で | 10-02 | 同上 |
 | Skyの提供形態 | OSの導入を必須としない独立サービスとしても提供する。OS内と単独Web（`/sky/marketplace`）で同じcatalog・本人認証・履歴・実行条件を共有 | 10-01 | [Sky](sky.md#単独アプリとos内の共通マーケットプレイス) / [Skyローンチ設計](sky-launch-design.md) |
+| Sky Compute Grid | 充電中・未使用のAndroid余剰計算を、public/synthetic text embeddingの固定lotへmatchingする。検証済みlotだけを精算候補にし、実端末dispatchとlive billing/payoutは未開始 | 10-10 | [製品ベース RQ50](product-baseline.md#rq50-使われていないスマートフォンの計算余力をskyで仲介する) / [Compute Grid設計](sky-compute-grid.md) |
 | 最上位の目的 | 利用者が自分専用のAI自動化チームを持ち、その効率を上げて便利さと検証可能な収益機会を増やす（RQ47） | 09-15 | [製品北極星](product-north-star-20260915.md) |
 | 製品名 | 表示は **RockstarOS**（共通版は `RockstarOS 1.0 Developer Preview`）。内部識別子は `dev.rock`。ブランドは avokado | 09-17 | 製品ベース RQ43・RQ44 |
 | OSの位置づけ | AI・Agent実行、権限、本人性、端末適合、保存・復旧の共通runtime。ローカルLLMは対応端末向けの追加能力で、必須ではない（RQ48） | 09-16 / 10-02 | [AIネイティブOS設計](ai-native-os-architecture.md) |

@@ -2,7 +2,7 @@
   "schema": "avokado-mission-control/3",
   "name": "avokado Mission Control",
   "shortName": "AMC",
-  "updatedAt": "2026-09-27",
+  "updatedAt": "2026-10-10",
   "purpose": "RockstarOS、avocadoMini、avokadoPro、rocketstarを責任単位へ分け、各部隊のGoal、進捗段階、規則、依存、証拠、次の作業を同じ基準で管理する。",
   "authority": {
     "progress": "data/mission-control.json",
@@ -506,6 +506,7 @@
         "SKY19-06",
         "UXCHAR01",
         "SKY19",
+        "GRID01",
         "AI06",
         "MAT01",
         "MAT02",
@@ -567,7 +568,8 @@
       "evidence": [
         "docs/rockstaros-product-system-map.md",
         "docs/sky-billing.md",
-        "docs/external-wallet-fund-provider-boundary-20260913.md"
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/sky-compute-grid.md"
       ],
       "acceptanceGate": "Webの依頼・承認・結果・費用を縦断受入する。料金の再開と金融LIVEは、保留解除と個別受入後の別作業。",
       "nextAction": "SKY19: 現行の課金停止と旧試験契約を項目ごとに比較する",
@@ -578,13 +580,14 @@
       "stageAssessment": {
         "scope": "Web Sky/Zema/Walletと非金融の共通Game基盤",
         "gaps": [
-          "Pro固有game、全Provider入金、保留中料金は未受入"
+          "Pro固有game、全Provider入金、保留中料金、Compute Grid Android workerと実端末pilotは未受入"
         ],
         "evidenceKind": "repository_records",
         "references": [
           "docs/rockstaros-product-system-map.md",
           "docs/sky-billing.md",
-          "docs/external-wallet-fund-provider-boundary-20260913.md"
+          "docs/external-wallet-fund-provider-boundary-20260913.md",
+          "docs/sky-compute-grid.md"
         ],
         "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
       }
@@ -12397,6 +12400,76 @@
       "completionScope": "既存taskの全完了条件が対象。stepsや文書の作成だけでdoneへ変更しない。"
     },
     {
+      "taskId": "GRID01",
+      "primaryOwner": "ROCK",
+      "assignee": null,
+      "ownerRole": "Sky・Zema・Wallet担当（Device Adapter連携）",
+      "scope": "余剰Android計算のoffer、order、matching、有限lease、result verification、精算候補を安全境界付きで段階受入する",
+      "inputs": [
+        {
+          "path": "docs/product-baseline.md",
+          "locator": "RQ50 / 2026-10-10 Sky Compute Grid"
+        },
+        {
+          "path": "contracts/compute-device-capabilities.json",
+          "locator": "selection / trust / freshness"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/amc/grid01-host-fixture.md",
+          "description": "host fixtureのcontract、matching、verification、精算holdと未受入境界"
+        }
+      ],
+      "steps": [
+        {
+          "id": "GRID01-S1",
+          "action": "固定SKUとoffer/order/lease/receiptのclosed contractを作りprivacyと任意code禁止を固定する"
+        },
+        {
+          "id": "GRID01-S2",
+          "action": "地域・trust・artifact・価格・budget・端末状態でmatchingし、独立参照またはduplicateで結果を検証する"
+        },
+        {
+          "id": "GRID01-S3",
+          "action": "Android worker、attestation、50台pilot、実需要、実精算を別環境で受け入れる"
+        }
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "GRID01-AC1",
+          "criterion": "固定SKU、公開／合成data、Android限定、owner-use優先、任意codeと無断cloud fallback禁止がcontractと回帰で固定される",
+          "status": "passed",
+          "verification": "schema、fixture、baseline checkと安全境界testを確認する",
+          "evidence": [
+            "contracts/sky-compute-grid.json",
+            "tests/sky-compute-grid.test.mjs",
+            "docs/evidence/amc/grid01-host-fixture.md"
+          ]
+        },
+        {
+          "id": "GRID01-AC2",
+          "criterion": "host fixtureでmatching、finite lease、独立参照／duplicate検証、未検証精算拒否、test-credit holdが再現できる",
+          "status": "passed",
+          "verification": "対象Node test、design check、baseline checkの結果を記録する",
+          "evidence": [
+            "lib/sky-compute-grid.ts",
+            "contracts/sky-compute-grid-fixture.json",
+            "docs/evidence/amc/grid01-host-fixture.md"
+          ]
+        },
+        {
+          "id": "GRID01-AC3",
+          "criterion": "同一Android候補と50台pilotで停止・熱・電力・通信・改変・復旧・unit economicsを受け入れる",
+          "status": "not_verified",
+          "verification": "同一APK/runtime/modelと対象端末で物理受入を実施し、host fixtureと区別した証拠を保存する",
+          "evidence": []
+        }
+      ],
+      "unresolvedDecision": "anchor buyer、lot size、reference device、検証率、料金spread、attestation、法務・税・Wallet railはownerと各担当がpilot前に決める。",
+      "completionScope": "host fixtureは段階2の証拠。Android worker、実端末network、production storage、実需要、実課金・払出しまで終わるまでGRID01をdoneにしない。"
+    },
+    {
       "taskId": "OS02",
       "primaryOwner": "ROCK",
       "assignee": null,
@@ -13511,6 +13584,11 @@
     },
     {
       "taskId": "SKY19",
+      "primarySquad": "O5",
+      "classification": "shared_system"
+    },
+    {
+      "taskId": "GRID01",
       "primarySquad": "O5",
       "classification": "shared_system"
     },
