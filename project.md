@@ -1,3 +1,19 @@
+> **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-09 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
+>
+> **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
+
+# RockstarOS — 事業・設計・進捗
+
+## 2026-10-09 — READMEを約1画面に短くし、本文を詳しい版へそのまま移した（Git / CI / Operations、ROCK）
+
+利用者の「README更新まだ？一旦してほしい」を受け、READMEだけを整理した。コード、`data/*.json` の台帳、`vendor/`、証拠は変更していない。ファイルの移動・改名・削除は0件。作業branchは `docs/readme-one-screen`、基点はmain `1c20e987`（2026-10-07の文書整理はPR #92としてmainへ統合済み。作業中にmainへ入ったSPIDER・Skyコード公開のREADME追記は、READMEの数字を更新し、本文は詳しい版の該当節へ移した）。
+
+READMEは521行から113行にした。冒頭の見出しと画像、「これは何か」の3層の表、SIM/eSIMのサービスの説明、製品ごとの1行、現在地の表、方針の変遷、探し方、開発の始め方、安全と画像の注意だけを置いた。それまでの本文は [README details](docs/readme-details.md) へ文言を変えずに移し（リンクの相対パスだけ `docs/` から辿れるよう直した。自動生成の進捗行は日付つきの文として残した）、[文書の地図](docs/README.md) に索引として1行足した。主サービスの説明が3回続いていた箇所は、READMEでは1回にまとめた（原文は詳しい版に3回とも残る）。READMEの最初の見出し（merge欠落の監査の判断④）は変えていない。avokadoProの価格はREADMEでは「価格は未確定」とし、2つの数字は詳しい版と監査に残した（判断⑥）。
+
+検証（main `1c20e987` へrebase後）: READMEと詳しい版の相対リンク309件の行き先がすべて存在。消えたREADMEの見出しへのリンクは [仕様変遷](docs/spec-history.md) の1件だけで、`#where-it-stands` へ直した。`npm run verify` のうち `project:check` から `shared:check` までの19段と `mission:check` が合格。`npm test`・`typecheck`・`build` などの残りの段はrebase前の基点で実行し、`npm test` は1367件合格・5件失敗（674、678、712、713、751。2026-10-07の記録と同じ、変更前からの失敗）、`test:avocado-mini-site` はこの作業環境に `sites/avocado-mini` の依存が無く `astro: not found`、それ以外は合格。rebase後には再実行していない。同一SHAのCIは未確認。
+
+GitHubへの反映: 作業環境からのpushは権限がなく拒否されたため、利用者がログインしたブラウザのGitHub編集画面から、5ファイルを同じ内容で `docs/readme-one-screen` へcommitした（各ファイルのSHA-256を作業環境の版と照合済み）。mainへの統合はPRで行う。
+
 ## 2026-10-09 — Skyコード公開と交換可能なSPIDER保護（SKY20／ROCK、検証完了・公開承認待ち）
 
 利用者の明示指示により、Skyタイムラインへコード本文・親付きコミット・変更差分・履歴・共有URL・複製・全履歴非公開／再公開を実装。新規・複製はSPIDER標準。所有者はSecret Check（秘密／個人情報のみ）へ交換、または明示確認で取り外せる。serverが公開ごとに検査し、owner・exact revision・idempotency・追記履歴を維持。Toolの実行・審査認定・料金・nativeを変更しない。
