@@ -4,6 +4,7 @@ import { zemaPrivateStorageBlocked, subscribeZemaPrivateStorage } from '@/lib/ze
 import { ProviderDraftFeedback, useProviderDraft } from '@/components/provider-draft';
 
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -329,6 +330,22 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatAbortRef = useRef<AbortController | null>(null);
   const activeChatThreadRef = useRef('');
+  const mcpRequestRef = useRef(0);
+  const mcpMountedRef = useRef(false);
+  const mcpTokenRef = useRef<string | null>(null);
+  const refreshConnectedMcp = useCallback(() => {
+    const request = ++mcpRequestRef.current;
+    const token = deviceToken();
+    if (!mcpMountedRef.current) return;
+    if (mcpTokenRef.current !== token || !token) setMcpServers([]);
+    mcpTokenRef.current = token;
+    if (!token) return;
+    const current = () => mcpMountedRef.current &&
+      mcpRequestRef.current === request && deviceToken() === token;
+    void listMcpConnections()
+      .then((servers) => { if (current()) setMcpServers(servers); })
+      .catch(() => { if (current()) setMcpServers([]); });
+  }, []);
   const hasActiveJob = jobs.some(
     (job) => job.status === 'queued' || job.status === 'running',
   );
@@ -471,31 +488,18 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   }, []);
 
   useEffect(() => {
-    let active = true;
-    const refresh = () => {
-      if (!deviceToken()) {
-        if (active) setMcpServers([]);
-        return;
-      }
-      void listMcpConnections()
-        .then((servers) => {
-          if (active) setMcpServers(servers);
-        })
-        .catch(() => {
-          if (active) setMcpServers([]);
-        });
-    };
-    refresh();
-    window.addEventListener('focus', refresh);
-    window.addEventListener('loop-device', refresh);
-    window.addEventListener('sky-mcp-servers', refresh);
+    mcpMountedRef.current = true;
+    refreshConnectedMcp();
+    window.addEventListener('focus', refreshConnectedMcp);
+    window.addEventListener('loop-device', refreshConnectedMcp);
+    window.addEventListener('sky-mcp-servers', refreshConnectedMcp);
     return () => {
-      active = false;
-      window.removeEventListener('focus', refresh);
-      window.removeEventListener('loop-device', refresh);
-      window.removeEventListener('sky-mcp-servers', refresh);
+      mcpMountedRef.current = false;
+      window.removeEventListener('focus', refreshConnectedMcp);
+      window.removeEventListener('loop-device', refreshConnectedMcp);
+      window.removeEventListener('sky-mcp-servers', refreshConnectedMcp);
     };
-  }, []);
+  }, [refreshConnectedMcp]);
 
   useEffect(() => {
     if (messages.length === 0) return;
@@ -773,13 +777,6 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     if (field === 'textGeneration' && isTextModelProvider(value))
       next.textGenerationModel = textModelProviderDefinition(value).defaultModel;
     routingDraft.session.edit(next);
-  }
-
-  function refreshConnectedMcp() {
-    if (!deviceToken()) return setMcpServers([]);
-    void listMcpConnections()
-      .then(setMcpServers)
-      .catch(() => setMcpServers([]));
   }
 
   function updateDraft(value: string) {
