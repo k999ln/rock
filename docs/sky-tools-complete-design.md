@@ -1,7 +1,7 @@
 # Sky／Zema／全Tool詳細設計
 
 版: 1.2 / 2026-09-27
-対象: Skyにある14件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
+対象: Skyにある15件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
@@ -12,6 +12,12 @@
 2026-10-11: leaseの完全な条件と時刻をIDへ固定し、order・入力・予算との照合と、同じleaseのverified usageだけを精算候補へ渡す検査を追加した。receipt IDを変えた再送でも精算keyは変わらない。永続台帳の重複拒否・実精算は未実装。
 
 host fixtureは`CapacityOffer → ComputeOrder → ComputeLease → ComputeReceipt → verified usage → service-credit hold`を再現する。`/sky/compute-grid`と`GET /api/sky/compute-grid/demo`は合成fixtureの可視化で、実端末dispatch、実需要、production storage、実課金・払出しではない。責任、入出力、状態、保存、retry、compatibility、安全、受入、未決事項の11項目は[専用設計](sky-compute-grid.md)を正本とする。
+
+## Material Invention — 物質候補の机上比較
+
+`rockstar-material-invention`はSkyからZemaへ開く研究用sandbox。由来・lot・比率・工程を入力し、候補と不足条件を比較して本人用仕事へ保存・復旧する。保存済み入力から同じdigestの候補を再生成する。外部simulation、ラボ、物理実験、装置操作、性能・特許性判定は未接続。合成サンプルを実データの仕事完了へ昇格しない。
+
+責任はROCK/O5、追跡はMAT03。入出力、状態、保存、本人分離、失敗、再送、復旧、承認、合格条件、残る判断の正本は[Material CoreのWeb接続](material-invention-core.md#sky--zemaの机上比較と本人用保存)。実装は`lib/material-study.ts`、`app/api/material-invention/route.ts`、`components/material-invention-workspace.tsx`。既存`work_jobs`と`lib/workflow.ts`を使い、サーバー保存の前に入力送信を明示する。
 
 ## SPIDER — Skyのセキュリティ検査
 
@@ -687,7 +693,7 @@ Linux／QEMU imageには次の6 family・9 versionがある。
 
 ## 18. Material Inventionは通常Tool一個ではない
 
-Material Invention／avocadoMiniは、Core、sensor、XR、Safety、Simulation、Patent AI、labを束ねるapplication systemである。SkyからsimulationやPatent AI等をTool／Providerとして選ぶが、候補graphと証拠の正本はMaterial Invention Coreに置く。詳細は[空間発明システム設計](rockstaros-avocado-mini-complete-design.md)。
+Material Invention／avocadoMiniは、Core、sensor、XR、Safety、Simulation、Patent AI、labを束ねるapplication systemである。SkyからsimulationやPatent AI等をTool／Providerとして選ぶが、候補graphと証拠の正本はMaterial Invention Coreに置く。机上候補生成・比較・保存の限定機能だけを`rockstar-material-invention` Toolとして接続する。これをStudio全体の実装完了に換算しない。詳細は[空間発明システム設計](rockstaros-avocado-mini-complete-design.md)。
 
 ## 19. Game、Wallet、Fundも通常Toolと区別する
 

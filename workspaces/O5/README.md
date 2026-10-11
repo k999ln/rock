@@ -57,7 +57,7 @@ SIM01/SKY21: SIM/eSIM利用開始からSky/Zemaの保存・復旧・費用表示
 | SKY19（親） | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 / 共通基盤 | 実行保留: ToC収益料金の請求・回収・払出し実行 |
 | GRID01 | Sky Compute Gridで未使用Androidの余剰計算を固定lotへmatchingし、検証後だけ精算候補にする | 進行中 / 共通基盤 | AI05 |
 | AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 進行中 / 共通基盤 | AI03 / AI05 |
-| MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 未着手 / 共通基盤 | AI02 / AI03 |
+| MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 進行中 / 共通基盤 | AI02 / AI03 |
 | WLT06 | owner受取Walletを本人署名で登録し、最初の実USDC回収をEarning Receiptへ照合 | 進行中 / 共通基盤 | BIL02 / 実行保留: ToC収益料金の請求・回収・払出し実行 |
 | B02 | 既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 / 共通基盤 | — |
 | B03 | 実行費用・認証済み収益を既存Walletへ接続し縦断検証 | 進行中 / 共通基盤 | B02 |

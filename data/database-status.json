@@ -11,8 +11,8 @@
   "projectProgress": {
     "total": 392,
     "done": 114,
-    "in_progress": 46,
-    "planned": 231,
+    "in_progress": 47,
+    "planned": 230,
     "blocked": 1,
     "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
     "nextAction": "G04/SIM01/SKY21: 既存9 PR・欠落コード・台帳を統合し、利用開始とSky/Zema/Materialの一連の操作、全体verify、同一SHA CIを検証して作業branchとPRへ保存する。実機・Provider・実課金・公開gateは別受入。"

@@ -23,6 +23,11 @@ export function skyToolUiState(
     service,
   }: SkyToolUiContext = {},
 ): SkyToolUiState {
+  if (tool.id === 'rockstar-material-invention') return {
+    label: '机上の候補比較',
+    detail: '端末内で生成。本人用の保存・再開にはサインインが必要です',
+    className: 'is-ready',
+  };
   if (tool.id === 'rockstar-spider') return {
     label: 'ブラウザ内で検査',
     detail: '明示入力の静的検査。原文は送信・保存しません',

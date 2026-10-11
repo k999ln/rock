@@ -7,8 +7,14 @@ import {
   type AmcEvent,
   type AmcGoal,
 } from './amc-tool.ts';
+import type { MaterialStudy } from './material-study.ts';
 
 export const workflowTemplates = [
+  {
+    id: 'material-invention', name: '物質候補の机上比較',
+    description: '配合候補と安全上の不足を保存・確認します。実験、性能評価、装置操作は行いません。',
+    steps: [{ id: 'generate', title: '候補と確認事項を生成', tool: 'rockstar-material-invention', runner: 'material-invention' }],
+  },
   {
     id: 'sky-code-publication', name: 'Skyコードの公開',
     description: '本人が選んだ保護条件を検証し、コードを版付きで公開します。実行許可ではありません。',
@@ -129,6 +135,7 @@ export type WorkJob = {
   updatedAt: string;
   amcGoal?: AmcGoal;
   amcCreationDigest?: string;
+  materialStudy?: MaterialStudy;
 };
 export class WorkError extends Error {
   status: number;
@@ -450,6 +457,9 @@ export function applyWorkCommand(
   }
   if (command.action === 'amc_event')
     throw new WorkError('AMC以外の仕事にはAMC記録を追加できません。');
+  if (job.templateId === 'material-invention' && command.action === 'record' &&
+      (!job.materialStudy || command.sample !== job.materialStudy.sample))
+    throw new WorkError('物質候補は専用画面で生成し、サンプル区分を維持してください。', 409);
   if (job.status === 'completed' || job.status === 'cancelled')
     throw new WorkError('終了した仕事には記録を追加できません。', 409);
   if (command.action === 'edit_plan') {

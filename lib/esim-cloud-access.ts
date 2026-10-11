@@ -40,6 +40,7 @@ export function esimCloudRequestScope(request: Request) {
   if (['GET', 'PATCH'].includes(method) && /^\/api\/sky\/a2a-delegations\/[A-Za-z0-9._:-]+$/.test(pathname)) return 'agents';
   if (method === 'POST' && /^\/api\/sky\/a2a-delegations\/[A-Za-z0-9._:-]+\/broker-authorization$/.test(pathname)) return 'agents';
   if (['GET', 'POST', 'PATCH'].includes(method) && pathname === '/api/work-jobs') return 'zema';
+  if (['GET', 'POST'].includes(method) && pathname === '/api/material-invention') return 'zema';
   if (method === 'POST' && ['/api/legal-guidance', '/api/patent-research', '/api/jev-evaluation', '/api/sky/mcp/inspect'].includes(pathname)) return 'sky';
   return null;
 }

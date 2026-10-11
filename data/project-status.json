@@ -2726,15 +2726,20 @@
     {
       "id": "MAT03",
       "title": "Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "MAT02",
         "AI02",
         "AI03"
       ],
       "evidence": [
-        "docs/material-invention-core.md"
-      ]
+        "docs/material-invention-core.md",
+        "lib/material-study.ts",
+        "app/api/material-invention/route.ts",
+        "components/material-invention-workspace.tsx",
+        "tests/material-study.test.mjs"
+      ],
+      "nextAction": "Accept integrated Sky/Zema Material preview, authenticated WorkJob save/reload and eSIM-scoped access on one source candidate. Simulation/lab/XR, physical materials and limited-memory integration remain unimplemented."
     },
     {
       "id": "MAT04",

@@ -34,6 +34,10 @@ void test('cloud credentials use one HttpOnly cookie and never authorize unknown
   assert.equal(esimCloudRequestScope(request()), 'rockstaros_access');
   assert.equal(esimCloudRequestScope(request('/api/sky/a2a-agents')), 'agents');
   assert.equal(esimCloudRequestScope(request('/api/work-jobs', { method: 'POST' })), 'zema');
+  assert.equal(esimCloudRequestScope(request('/api/material-invention')), 'zema');
+  assert.equal(esimCloudRequestScope(request('/api/material-invention', { method: 'POST' })), 'zema');
+  assert.equal(esimCloudRequestScope(request('/api/material-invention', { method: 'PATCH' })), null);
+  assert.equal(esimCloudRequestScope(request('/api/material-invention/future-path')), null);
   assert.equal(esimCloudRequestScope(request('/api/sky/a2a-delegations/task-id', { method: 'PATCH' })), 'agents');
   assert.equal(esimCloudRequestScope(request('/api/sky/a2a-delegations/task-id/artifacts')), 'agents');
   assert.equal(esimCloudRequestScope(request('/api/llm/text/future-path')), null);

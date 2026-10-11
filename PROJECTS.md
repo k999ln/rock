@@ -36,6 +36,8 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 
 ## SkyのAI自動化チーム
 
+追加Tool: `rockstar-material-invention`はMaterial Coreの机上候補比較・本人用保存・再開を提供します。[実装と境界](docs/material-invention-core.md#sky--zemaの机上比較と本人用保存)。Studio全体のsensor・XR・simulation・labとは区別します。
+
 作成しているToolと、それを組み合わせる仕事は、利用者が所有する一つのAI自動化チームの中で整理します。Skyが目的に合わせてTool・役割・構成版を選び、Zemaが同じ仕事の実行と成果を管理します。チームの実際の構成は選択と受入状態によって変わり、一覧にある全Toolが同時に稼働するという意味ではありません。[Toolチーム設計](docs/sky-network-economy.md)と[役割エージェント仕様](docs/sky-role-agents-20260912.md)がこの関係の入口です。
 
 | Skyのチームが扱う仕事 | 現在のSkyとの接続 | 実装・設計の入口 |
@@ -44,7 +46,7 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 | **AMC** — 部隊・Goal・進捗の管理 | `rockstar-amc`としてcatalogにready登録。SkyからZema内で依頼・計画・手動記録を扱う。LLM・AI実作業は未接続 | [`app/amc/`](app/amc/)・[`components/amc-tool-runner.tsx`](components/amc-tool-runner.tsx)・[AMC設計](docs/mission-control.md)・[`app/zema/amc/`](app/zema/amc/)・[Sky専用AMCの設計](docs/amc-sky-launch-integration.md) |
 | **メルカリ収益ループ** — 出品から入金確認までの事業pilot | `mercari-revenue`としてcatalogにready登録。Skyから出品準備画面へ進める。入金の自動確認は未接続 | [`app/income/mercari/`](app/income/mercari/)・[メルカリ設計](docs/mercari-revenue-loop.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
 | **Fashion Brand Ops** — 受注型ブランド運営の事業pilot | `fashion-brand-ops`としてcatalogにready登録。外部Providerの本番接続は別受入 | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/)・[統合設計](docs/fashion-brand-ops-integration.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
-| **Material Invention Studio** — 発明候補の操作・比較 | Skyで組み合わせる発明チームの複合機能。単体のcatalog Toolではない。Coreのsandboxは実装済み、操作画面とSky接続は未実装 | [`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json)・[Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |
+| **Material Invention Studio** — 発明候補の操作・比較 | Skyで組み合わせる発明チームの複合機能。単体のcatalog Toolではない。Coreのsandboxは実装済み、2D候補比較とSky接続を実装。XR・simulation・外部labは未実装 | [`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json)・[Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |
 | **Market / Polymarket** — 市場の検討とPAPER試験 | `rockstar-markets-analysis`はcatalogにready登録。`/polymarket`は`/market`への転送で、外部市場のPAPER試作は別のToolkit。外部市場backtestとミームコイン候補評価はPAPER sandboxへ分離 | [`app/market/`](app/market/)・[`app/polymarket/`](app/polymarket/)・[`toolkits/polymarket-bot-sandbox/`](toolkits/polymarket-bot-sandbox/)・[`toolkits/meme-intelligence-sandbox/`](toolkits/meme-intelligence-sandbox/)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
 | **Avocado Farm Sandbox** — 集中流動性LPの候補評価・レンジ計画・リスク制御・PAPER実行 | 現在はRobinhood Chain Testnet向けのPAPER専用Toolkit。実トランザクション送信は未接続 | [`toolkits/avocado-farm-sandbox/`](toolkits/avocado-farm-sandbox/)・[`README`](toolkits/avocado-farm-sandbox/README.md) |
 | **Fund** — 検証済み実績に基づく構想と試算 | Skyから選ぶファンド構想。単体のcatalog Toolではない | [`app/fund/`](app/fund/)・[ファンド統合](docs/markets-fund-integration-20260913.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |

@@ -1,6 +1,6 @@
 # RockstarOS Material Invention Core — 物質の組合せから発明候補を作る共通設計
 
-状態: RQ49の設計と装置非接続sandbox Coreを実装済み。標準製品体験をRockstarOS端末`avocadoMini`の四方向sensor、hand interaction、差分再計算、Patent AI支援として設計済み。XR runtime、四方向rig、化学simulation、外部データベース、Zemaの仕事／限定記憶、外部ラボ、実験設備との接続は未実装。本文と実装は候補生成と検証の契約であり、安全性、性能、特許性、量産性の実証ではない。
+状態: RQ49の設計と装置非接続sandbox Coreを実装済み。標準製品体験をRockstarOS端末`avocadoMini`の四方向sensor、hand interaction、差分再計算、Patent AI支援として設計済み。SkyからZemaの2D候補比較・本人用保存・再開へ接続済み。XR runtime、四方向rig、化学simulation、外部データベース、限定記憶、外部ラボ、実験設備との接続は未実装。本文と実装は候補生成と検証の契約であり、安全性、性能、特許性、量産性の実証ではない。
 
 ## 目的
 
@@ -93,6 +93,22 @@ cameraが物理物質を直接動かすわけではなく、gestureは物理実�
 runtimeは2〜16物質から二物質pairを作り、指定された複数比率と版付き工程を候補graphへ変換する。候補IDとrequest digestはcanonical JSONのSHA-256で、物質lot、配合比、工程版の変更を別候補として固定する。未知field、重複ID、矛盾する危険分類、工程順の欠落は入力拒否、SDS不足、危険性不明、禁止物質／危険分類、配合単位不一致、許可外設備、温度・圧力上限超過は候補を`BLOCKED`にする。既知の危険分類は`REVIEW_REQUIRED`にするが、どの状態でも`physicalExecutionAllowed`はfalseのままである。
 
 simulationは`SIMULATED`、文献・supplier情報は`SCREENED`として実測と分離する。実験扱いへ進めるのは、外部境界で署名検証済みとされたreceiptと有効なraw data SHA-256が揃った場合だけである。現在のCore自身は署名検証、装置操作、物理実験を行わない。
+
+## Sky / Zemaの机上比較と本人用保存
+
+2026-10-11実装。`rockstar-material-invention`をSkyから選び、`/zema/tools/rockstar-material-invention`で入力・比較・保存・再開する。MAT03のうちWeb仕事への接続を進めるもので、MAT03全体、Mini実機、化学simulation、限定記憶、外部ラボの完了ではない。
+
+- **目的・利用体験**: 入力JSONまたは危険物を含まない合成サンプルから、二物質の比率候補を2Dカードで比較する。SDS不足・禁止条件・資格者審査を文字で示し、lot・工程版・入力digestへ戻れる。生成はブラウザ内、保存は別の明示操作である。
+- **責任・費用**: ROCK/O5がCoreとWeb保存を担当。外部AI、simulation、ラボ、有料API、Wallet、装置には接続しない。利用者は入力の由来・共有範囲を判断する。保存操作は本人用サーバーへの入力送信であり、外部共有や物理実行の承認ではない。
+- **入出力**: `contracts/material-invention.json`の既存入力を維持。2〜16物質、1〜19比率、工程版を受ける。API入力は48 KB、UIの入力本文は47 KBに制限。Coreから最大2,280候補を生成し、`HYPOTHESIS`と`physicalExecutionAllowed: false`を全候補で維持する。物質IDと工程IDの衝突を拒否する。
+- **状態・承認**: `lib/workflow.ts`の`material-invention`仕事を使用。通常入力は候補生成後に`review`となり、本人が不足条件を確認して`completed`へ進める。完了は机上比較の確認だけである。合成サンプルは`sample: true`のまま`active`へ保存し、実データ仕事の完了へ昇格できない。取消は`cancelled`とし、保存した入力を削除しない。
+- **保存・本人分離**: `/api/material-invention`は既存`requestUser`とZema利用権検査を通し、`work_jobs`へ正規化入力・Core版・request digest・sample区分・WorkJob履歴を保存する。新DBや独立の本人性を作らない。一覧は入力本文を含まない。詳細読出しは本人とjob IDを照合し、入力から候補を再生成してdigestを検証する。機密配合は本人用サーバーへ保存されることを画面に明記し、raw cameraや生体入力は持たない。
+- **失敗・再送・競合**: 同じjob IDと入力digest・名前・sample区分の再送は既存仕事を返す。違う入力の再送、別owner、形式版の不一致、保存内容のdigest不一致を拒否する。状態更新は既存revision CAS。応答不明時は入力と同じcommand/job IDを保持し、再試行後も二重の仕事を作らない。入力変更は新しい候補生成と別仕事になる。
+- **復旧・export**: 再読込後は本人の保存一覧から同じ入力を開ける。JSON exportは入力と重複を除いた候補要約を含む。importは入力とsample区分だけを読む。持ち込まれたgraph、安全表示、WorkJob owner・承認・完了状態を信頼せず再生成する。ブラウザのlocalStorageへ配合を既定保存しない。
+- **合格条件**: 正常系、SDS不足、サンプル昇格拒否、別owner拒否、同一ID再送、入力変更の競合、revision競合、破損digest拒否、export/importで承認を引き継がないことを確認する。`tests/material-study.test.mjs`は実際のroute、認証/Origin判定、全SQLite migration、work storeを使うhost試験で、外部IdP・本番配備の証明ではない。
+- **未決事項**: 限定記憶、simulation receipt取込、候補ランキング、外部ラボ、共同研究共有、保存期間・削除policyの製品化は別受入。現状の仕事履歴は既存保存期間に従い、個別配合の削除APIは追加していない。
+
+実装: `lib/material-study.ts`、`app/api/material-invention/route.ts`、`components/material-invention-workspace.tsx`。検証: `node --experimental-strip-types --test tests/material-invention.test.mjs tests/material-study.test.mjs tests/workflow.test.mjs`、`npm run typecheck`、`npm run lint:product`。ローカル実ブラウザで合成候補3件、SDS不足の`BLOCKED`、未認証保存拒否、保存再試行、再読込復旧、確認済み後のBLOCKED保持、320/390/1280px横はみ出し0を確認した。本番配備・実材料・実機試験は未実施。
 
 ## 標準操作面: avocadoMini Spatial Invention Studio
 

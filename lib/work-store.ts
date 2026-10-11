@@ -10,6 +10,15 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
   }
   return {
     get,
+    async listMaterial(user: string) {
+      const rows = await db.prepare(
+        `SELECT id, json_extract(payload, '$.title') AS title, revision,
+        json_extract(payload, '$.status') AS status, updated_at AS updatedAt
+        FROM work_jobs WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'material-invention'
+        ORDER BY updated_at DESC, id DESC LIMIT 100`,
+      ).bind(user).all<Pick<WorkJob, 'id' | 'title' | 'revision' | 'status' | 'updatedAt'>>();
+      return rows.results;
+    },
     async list(user: string, excludeAmc = false) {
       const rows = await db
         .prepare(

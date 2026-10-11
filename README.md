@@ -35,12 +35,12 @@ Most design documents are written in Japanese; this README is the English entry 
 | Part | In one line | Read more |
 | --- | --- | --- |
 | RockstarOS v1.0 | Identity, permissions, work, storage, and recovery shared by every device and service. The on-device LLM only proposes plans; it never decides whether a Tool may run. | [Complete OS design](docs/rockstaros-complete-design.md) |
-| Sky | Find Tools and AI teams and compare their author, version, permissions, where they run, and cost before connecting. 36 Tools are listed; 14 can run today. | [Sky](docs/sky.md) · [Agents and tools](docs/agents-and-tools.md) |
+| Sky | Find Tools and AI teams and compare their author, version, permissions, where they run, and cost before connecting. 37 Tools are listed; 15 can run today. | [Sky](docs/sky.md) · [Agents and tools](docs/agents-and-tools.md) |
 | Zema | Takes a request and keeps its plan, progress, stopping, approvals, results, and history together as one piece of work. | [Complete Tool design](docs/sky-tools-complete-design.md) |
 | Wallet | Cost estimates, reservations, confirmed earnings, refunds, and reconciliation. No live billing or payouts have started. | [Wallet workstream](docs/workstreams/03-wallet-billing-providers.md) |
 | avocadoMini R5 | A 200 mm stand-alone device for playing, making, and everyday help. R5 is the current design baseline. It is a design only: zero physical-device tests have been completed, and manufacturing approval is **on hold**. | [R5 design](docs/avocado-mini-r5/README.md) |
 | avokadoPro | A compact NVIDIA desktop for AI development and PC games. Two price figures are on record and the price is not final. Nothing has been bought or assembled. | [Pro PC design](docs/avokado-pro-pc-design.md) |
-| Material Invention | Reproducible digital candidates for new materials, with evidence. Only a sandbox core exists. The Material Invention interface and Sky connection are not implemented. | [Core design](docs/material-invention-core.md) |
+| Material Invention | Reproducible digital candidates for new materials, with evidence. Sky and Zema offer sandbox candidate comparison, private work storage, and digest-checked recovery. Simulation and laboratory connections are not implemented. | [Core design](docs/material-invention-core.md) |
 | rocketstar R1.0 | A reusable small-satellite launch vehicle; a separate design program with no manufacturing or flight. | [Design archive](docs/rocketstar-design/README.md) |
 
 ## Where it stands
@@ -53,12 +53,12 @@ Most design documents are written in Japanese; this README is the English entry 
 | Web / Sky / Zema | Source for screens, catalog, work, approvals, history, and the Tool foundation | Current-version readback for each deployment, external providers, and production commercial acceptance |
 | Pixel 10 GL066 | Pre-tests on an existing OS with a test-signed APK for offline planning, limited Tools, storage, and restart | Full RockstarOS image build, production signing, first flash and boot, OTA, and total-loss recovery |
 | Linux / QEMU | Independent Developer Preview implementation and acceptance records | Release gates for the current artifact; not transferable to Pixel physical-device acceptance |
-| Material Invention | Reproducible sandbox Core and integrated design | R5 input/display adapter, interface, physical sensors, and simulation/Patent AI connections |
+| Material Invention | Sandbox Core, Sky/Zema candidate comparison, private saved work and digest-checked recovery | R5 input/display adapter, physical sensors, and simulation/Patent AI connections |
 
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-11 / 392 task records (32 parents, 192 children, 168 standalone; 360 execution units excluding parents): 114 done, 46 in progress, 231 planned, 1 blocked
+Updated: 2026-10-11 / 392 task records (32 parents, 192 children, 168 standalone; 360 execution units excluding parents): 114 done, 47 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Mission Control](docs/mission-control.md) · [Security](SECURITY.md)

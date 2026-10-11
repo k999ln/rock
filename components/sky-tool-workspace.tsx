@@ -1,6 +1,7 @@
 'use client';
 import AmcWorkspace from '@/components/amc-workspace';
 import SpiderWorkspace from '@/components/spider-workspace';
+import MaterialInventionWorkspace from '@/components/material-invention-workspace';
 
 import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
@@ -153,6 +154,8 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
             </section>
           ) : tool.id === 'rockstar-spider' ? (
             <SpiderWorkspace />
+          ) : tool.id === 'rockstar-material-invention' ? (
+            <MaterialInventionWorkspace />
           ) : isJevRouter ? (
             <section className={styles.openCard}>
               <h2>

@@ -1562,11 +1562,31 @@ try {
   const cloudHome = await call('GET', undefined, { path: '/api/rockstar/device-home', user: null, headers: { Cookie: cloudCookie } });
   check(cloudHome.access, { rockstaros: true, sky: true, zema: true, agents: true });
   await call('GET', undefined, { user: null, headers: { Cookie: cloudCookie } });
+  const materialStudyId = randomUUID();
+  const materialInput = { id: materialStudyId, title: 'Synthetic scoped Material comparison', sample: true,
+    request: JSON.parse(readFileSync(join(root, 'contracts/material-invention-fixture.json'), 'utf8')) };
+  const savedMaterial = await call('POST', materialInput, {
+    path: '/api/material-invention', user: null, headers: { Cookie: cloudCookie }, status: 201,
+  });
+  check(savedMaterial.job.id, materialStudyId);
+  check(savedMaterial.job.status, 'active');
+  check(savedMaterial.graph.physicalExecutionAllowed, false);
+  const restoredMaterial = await call('GET', undefined, {
+    path: `/api/material-invention?id=${materialStudyId}`, user: null, headers: { Authorization: `Bearer ${cloudToken()}` },
+  });
+  check(restoredMaterial.graph.requestDigest, savedMaterial.graph.requestDigest);
+  await call('GET', undefined, { path: `/api/material-invention?id=${materialStudyId}`, user: bob, status: 404 });
+  await call('POST', materialInput, { path: '/api/material-invention', user: null,
+    headers: { Cookie: cloudCookie }, origin: 'https://elsewhere.invalid', status: 403 });
   await call('PATCH', { action: 'unknown' }, { path: `/api/sky/a2a-delegations/${randomUUID()}`, user: null, headers: { Cookie: cloudCookie }, status: 400 });
   await database.prepare('UPDATE esim_cloud_access_keys SET scopes_json=? WHERE id=?').bind(JSON.stringify(['rockstaros_access']), cloudIssued.key.id).run();
   const limitedHome = await call('GET', undefined, { path: '/api/rockstar/device-home', user: null,
     headers: { Cookie: cloudCookie, 'oai-authenticated-user-email': 'untrusted@example.invalid' } });
   check(limitedHome.access, { rockstaros: true, sky: false, zema: false, agents: false });
+  await call('GET', undefined, { path: `/api/material-invention?id=${materialStudyId}`, user: null,
+    headers: { Cookie: cloudCookie }, status: 401 });
+  await call('POST', materialInput, { path: '/api/material-invention', user: null,
+    headers: { Authorization: `Bearer ${cloudToken()}` }, status: 401 });
   await call('GET', undefined, { user: null, headers: { Cookie: cloudCookie }, status: 401 });
   await database.prepare('UPDATE esim_cloud_access_keys SET scopes_json=? WHERE id=?').bind(JSON.stringify(['rockstaros_access', 'sky', 'zema', 'agents']), cloudIssued.key.id).run();
   await call('GET', undefined, { path: cloudAccessPath, user: null, headers: { Cookie: cloudCookie }, status: 401 });
