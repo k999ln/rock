@@ -1028,6 +1028,42 @@
         ],
         "testsRerun": false
       }
+    },
+    "mcpConnectionScreenRecovery": {
+      "sourceSha": "9c46f916e3f15473736c998d67125528e7914338",
+      "finding": "Late list and connect success/error could overwrite the current UI or clear a newer connection busy state after reconnect. Successful connection also requested two lists.",
+      "repair": "List request and device session generations; one UI connect guarded against same-render clicks; stale results and cleanup ignored; one refresh after success.",
+      "verification": {
+        "componentBefore": {
+          "failed": 10
+        },
+        "componentAfter": {
+          "passed": 10,
+          "failed": 0
+        },
+        "existingOnboarding": {
+          "passed": 3
+        },
+        "typecheck": "passed",
+        "targetLint": "passed",
+        "diffCheck": "passed",
+        "realReactBrowserBefore": {
+          "failed": 10
+        },
+        "realReactBrowserAfter": {
+          "passed": 10,
+          "failed": 0,
+          "consoleErrors": 0
+        }
+      },
+      "environment": "Actual SkyMcpCenter React component and Dialog in local browser fixture, delayed synthetic MCP responses; no external provider.",
+      "authorityUnchanged": [
+        "lib/device.ts",
+        "lib/mcp-hub.ts",
+        "Passport and one-time approval",
+        "pricing and execution gates"
+      ],
+      "integratedRecheck": "pending final candidate"
     }
   },
   "github": {

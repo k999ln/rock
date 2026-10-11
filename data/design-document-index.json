@@ -527,6 +527,16 @@
         "repeatedCursor": "reject",
         "staleConnection": "cannot restore a disconnected or replaced connection",
         "tests": "tests/mcp-connector.test.mjs"
+      },
+      "connectionScreenRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/sky-mcp-center.tsx",
+        "regressions": "tests/sky-mcp-center-recovery.test.mjs",
+        "readback": "Only the newest list request in the current device connection session may update the screen.",
+        "connection": "One pending UI connect; stale success, error and cleanup after disconnect, reconnect or unmount are discarded.",
+        "recovery": "A current failure remains visible and permits an explicit retry; a successful connect triggers one list refresh.",
+        "authority": "UI state only; existing Passport, pricing, approval and execution gates unchanged.",
+        "limits": "Local React and synthetic MCP response fixtures; no real provider acceptance."
       }
     },
     {

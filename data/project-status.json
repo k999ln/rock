@@ -3039,8 +3039,17 @@
         "docs/sky-mcp-connector.md",
         "tests/mcp-connector.test.mjs",
         "tests/sky-mcp-onboarding.test.mjs",
-        "docs/product-baseline.md"
-      ]
+        "docs/product-baseline.md",
+        "tests/sky-mcp-center-recovery.test.mjs",
+        "docs/evidence/integrated-development-20261011.json"
+      ],
+      "connectionScreenRecovery": {
+        "sourceSha": "9c46f916e3f15473736c998d67125528e7914338",
+        "status": "local_component_and_browser_verified",
+        "regressionTests": 10,
+        "existingOnboardingTests": 3,
+        "limits": "Synthetic local response timing only; external providers and production recovery remain separate."
+      }
     },
     {
       "id": "SKY08",
