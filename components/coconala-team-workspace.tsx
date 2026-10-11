@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import { ArrowLeft, ArrowRight, CircleCheck, ExternalLink, Plus, RefreshCw } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
+import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
 import ZemaNavigation from '@/components/zema-navigation';
 import SkyLibrarySave from '@/components/sky-library-save';
 import { MrToolRunner } from '@/components/mr-tool-runner';
@@ -93,12 +94,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   const listGeneration = useRef(0);
   const locked = busy || pendingSave !== null;
 
-  useEffect(() => {
-    if (!pendingSave) return;
-    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); };
-    window.addEventListener('beforeunload', warn);
-    return () => window.removeEventListener('beforeunload', warn);
-  }, [pendingSave]);
+  usePendingSaveNavigation(pendingSave !== null);
 
   const refresh = useCallback(async () => {
     if (saveInFlight.current) return;
