@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
+import { stripTypeScriptTypes } from 'node:module';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createTeamCase, applyTeamAction, teamMoney } from '../lib/coconala-team.ts';
 import { coconalaTeamStore } from '../lib/coconala-team-store.ts';
@@ -54,7 +55,7 @@ void test('rejects unsupported payout conditions and malformed terms', () => {
   ]) assert.throws(() => createTeamCase({ id: randomUUID(), terms: { ...terms, ...change } }));
 });
 
-void test('persists owner-isolated cases and enforces revision compare-and-swap', async (t) => {
+function setup(t) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
   const hostedSchema = new URL('../sky-schema-bootstrap.json', import.meta.url);
@@ -80,6 +81,11 @@ void test('persists owner-isolated cases and enforces revision compare-and-swap'
     },
   };
   const store = coconalaTeamStore(db);
+  return { sqlite, db, store };
+}
+
+void test('persists owner-isolated cases and enforces revision compare-and-swap', async (t) => {
+  const { store } = setup(t);
   const file = createTeamCase({ id: randomUUID(), terms });
   assert.equal((await store.create('owner-a', file))?.id, file.id);
   assert.equal((await store.list('owner-b')).length, 0);
@@ -105,4 +111,87 @@ void test('persists owner-isolated cases and enforces revision compare-and-swap'
   assert.equal(await store.get('owner-a', draft.id), null);
   assert.equal((await store.list('owner-a')).some((item) => item.id === draft.id), false);
   assert.equal(await store.removeDraft('owner-a', draft.id, 1), false);
+});
+
+
+void test('exact saved commands replay without duplicating manual money, even after later operations', () => {
+  let file = applyTeamAction(createTeamCase({ id: randomUUID(), terms }), command('assign'), 0);
+  const receipt = command('record_customer_receipt', { amountYen: 7800, reference: 'bank-01' });
+  file = applyTeamAction(file, receipt, 1);
+  const afterReceipt = file;
+  assert.equal(applyTeamAction(file, receipt, 1), file);
+  file = applyTeamAction(file, command('deliver', { note: '受領' }), 2);
+  assert.equal(applyTeamAction(file, { reference: ' bank-01 ', amountYen: 7800,
+    action: receipt.action, id: receipt.id.toUpperCase() }, 1), file);
+  assert.equal(file.customerReceipts.length, 1);
+  assert.equal(teamMoney(file).manuallyRecordedCustomerNet, 7800);
+  for (const changed of [{ amountYen: 7801 }, { reference: 'bank-02' }, { action: 'record_refund' }])
+    assert.throws(() => applyTeamAction(file, { ...receipt, ...changed }, file.revision), { status: 409 });
+  assert.throws(() => applyTeamAction(file, { ...receipt, note: 'ignored field' }, file.revision), { status: 400 });
+  const legacy = structuredClone(afterReceipt);
+  delete legacy.events.find((event) => event.id === receipt.id).command;
+  assert.throws(() => applyTeamAction(legacy, receipt, legacy.revision), { status: 409 });
+  const maxed = { ...file, revision: Number.MAX_SAFE_INTEGER };
+  assert.throws(() => applyTeamAction(maxed, command('accept', { note: '確認' }), maxed.revision), { status: 409 });
+  assert.equal(applyTeamAction(maxed, receipt, 1), maxed);
+});
+
+void test('real API and SQLite recover lost create/action responses and retain owner isolation', async (t) => {
+  const { sqlite, db } = setup(t);
+  const key = `coconala-recovery-${randomUUID()}`;
+  globalThis[key] = db;
+  t.after(() => delete globalThis[key]);
+  const dataModule = (source) => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;
+  const refs = new Map([
+    ['@/lib/fund-store', dataModule(`export function database() { return globalThis[${JSON.stringify(key)}]; }
+      export { requestUser } from ${JSON.stringify(new URL('../lib/request-auth.ts', import.meta.url).href)};`)],
+    ...['coconala-team', 'coconala-team-store'].map((name) =>
+      [`@/lib/${name}`, new URL(`../lib/${name}.ts`, import.meta.url).href]),
+  ]);
+  const source = stripTypeScriptTypes(readFileSync(new URL('../app/api/coconala-team/route.ts', import.meta.url), 'utf8'), { mode: 'strip' })
+    .replace(/\bfrom\s+(['"])([^'"]+)\1/g, (_match, _quote, name) => {
+      assert.ok(refs.has(name), `unknown route dependency ${name}`);
+      return `from ${JSON.stringify(refs.get(name))}`;
+    });
+  const route = await import(dataModule(source));
+  async function call(method, body, owner = 'fixture-alice', origin = 'https://local.test') {
+    const response = await route[method](new Request('https://local.test/api/coconala-team', {
+      method, headers: { 'content-type': 'application/json', origin,
+        ...(owner ? { 'oai-authenticated-user-id': owner } : {}) },
+      ...(method === 'GET' ? {} : { body: JSON.stringify(body) }),
+    }));
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+    return { status: response.status, data: await response.json() };
+  }
+  const create = { id: randomUUID(), terms };
+  assert.equal((await call('POST', create, null)).status, 401);
+  assert.equal((await call('POST', create, 'fixture-alice', 'https://other.test')).status, 403);
+  const first = await call('POST', create);
+  assert.equal(first.status, 201);
+  assert.deepEqual(await call('POST', create), first, 'lost creation response reuses the same case');
+  assert.equal(sqlite.prepare('SELECT count(*) AS n FROM coconala_team_cases').get().n, 1);
+  const edit = { caseId: create.id, revision: 0,
+    command: command('update_terms', { terms: { ...terms, title: '別画面で条件更新' } }) };
+  const edited = await call('PATCH', edit);
+  assert.equal(edited.status, 200);
+  const recoveredCreate = await call('POST', create);
+  assert.deepEqual(recoveredCreate.data, edited.data, 'original create proof survives later edits');
+  assert.equal((await call('POST', { ...create, terms: { ...terms, title: '別の依頼' } })).status, 409);
+  assert.equal((await call('POST', create, 'fixture-bob')).status, 409);
+  assert.deepEqual((await call('GET', undefined, 'fixture-bob')).data.cases, []);
+  assert.equal((await call('PATCH', edit, 'fixture-bob')).status, 404);
+  const assign = { caseId: create.id, revision: 1, command: command('assign') };
+  assert.equal((await call('PATCH', assign)).status, 200);
+  const money = { caseId: create.id, revision: 2,
+    command: command('record_worker_payment', { amountYen: 3000, reference: 'manual-bank-01' }) };
+  const saved = await call('PATCH', money);
+  assert.equal(saved.status, 200);
+  assert.deepEqual(await call('PATCH', money), saved, 'lost PATCH response does not pay or record twice');
+  assert.equal(saved.data.caseFile.workerPayments.length, 1);
+  assert.equal(saved.data.caseFile.revision, 3);
+  assert.equal((await call('PATCH', { ...money, command: { ...money.command, amountYen: 3001 } })).status, 409);
+  assert.equal((await call('PATCH', { ...money, command: command('deliver', { note: 'stale' }) })).status, 409);
+  const readback = await call('GET');
+  assert.equal(readback.data.cases.length, 1);
+  assert.deepEqual(readback.data.cases[0], saved.data.caseFile);
 });

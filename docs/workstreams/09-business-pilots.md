@@ -47,3 +47,7 @@ CSV変換・出力・検査・報告は共通標準機能として扱い、今�
 - `npm run csv:check`
 - `node --experimental-strip-types --test tests/csv-transform.test.mjs tests/csv-fee-policy.test.mjs`
 - `npm run test:fashion-brand-ops`
+
+## ココナラの保存復旧
+
+案件と手入力の入出金記録は、結果不明時に同じID・同じ正規化入力で再確認する。最初の作成条件と変更操作を本人別D1 payloadに残し、後続更新や応答喪失を挟んでも再送を重複計上しない。画面は未確認操作を保持して別操作を止める。API／SQLite、componentの応答喪失試験、ローカルbrowserの一時的保存失敗→再確認→再読込で検証する。外部受注・入金照合・銀行送金は追加しない。

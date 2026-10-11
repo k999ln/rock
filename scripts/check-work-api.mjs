@@ -2429,6 +2429,12 @@ try {
     reference: 'synthetic-bank-001',
   }));
   check(caseFile.workerPayments[0].amountYen, 3000);
+  // A lost response is recovered with the original command, never a new payment record.
+  const recordedPayment = JSON.parse(caseFile.events.at(-1).command);
+  const paymentRetry = { caseId: caseFile.id, revision: caseFile.revision - 1, command: recordedPayment };
+  check((await call('PATCH', paymentRetry, { path: teamPath })).caseFile, caseFile);
+  await call('PATCH', { ...paymentRetry, command: { ...recordedPayment, amountYen: 3001 } }, { path: teamPath, status: 409 });
+  check((await call('POST', teamInput, { path: teamPath, status: 201 })).caseFile, caseFile);
   await teamPatch(
     'record_worker_payment',
     {
