@@ -5,6 +5,7 @@ type Database = Pick<D1Database, 'prepare' | 'batch'>;
 export const ESIM_CLOUD_COOKIE = 'rock_esim_access';
 const TOKEN = /^rock_esim_[A-Za-z0-9_-]{43}$/;
 const CREDENTIAL_TTL_MS = 30 * 86_400_000;
+const MAX_SCOPE_CANDIDATES = 100;
 type Key = {
   id: string; orderId: string; ownerUserId: string; deviceRef: string; receiptSha256: string;
   scopesJson: string; createdAt: number; expiresAt: number; revokedAt: number | null;
@@ -161,8 +162,19 @@ export function esimCloudAccessStore(db: Database, runtime: unknown) {
       if (!config.ESIM_CLOUD_ACCESS_POLICIES_JSON) return false;
       const rows = await db.prepare(`SELECT ${columns} FROM esim_cloud_access_keys
         WHERE owner_user_id=? AND revoked_at IS NULL AND expires_at>? AND active_slot=sky_order_id
-        ORDER BY created_at DESC LIMIT 100`).bind(owner, now).all<Key>();
-      for (const key of rows.results) if (await usable(key, scope, now)) return true;
+          AND EXISTS (SELECT 1 FROM json_each(
+            CASE WHEN json_valid(scopes_json) THEN
+              CASE WHEN json_type(scopes_json) = 'array' THEN scopes_json ELSE '[]' END
+            ELSE '[]' END
+          ) key_scope WHERE key_scope.type='text' AND key_scope.value=?)
+        ORDER BY created_at DESC,id DESC LIMIT ?`)
+        .bind(owner, now, scope, MAX_SCOPE_CANDIDATES + 1).all<Key>();
+      // Only matching scopes consume the bounded, full current-grant checks.
+      // One extra row detects incomplete discovery; it grants no permission.
+      for (const key of rows.results.slice(0, MAX_SCOPE_CANDIDATES))
+        if (await usable(key, scope, now)) return true;
+      if (rows.results.length > MAX_SCOPE_CANDIDATES)
+        throw new Error('CLOUD_ACCESS_SCOPE_CHECK_INCOMPLETE');
       return false;
     },
   };

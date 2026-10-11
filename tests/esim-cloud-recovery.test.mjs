@@ -23,6 +23,11 @@ import {
 } from '../lib/esim-cloud-access.ts';
 import { skyToolPackageStore } from '../lib/sky-tool-package-store.ts';
 import { rockstarServiceScopeAllowed } from '../lib/rockstar-service-access.ts';
+import { missingRockstarServiceScope } from '../lib/rockstar-service-access.ts';
+import { loadRouteFixture } from './route-fixture.mjs';
+import * as workflow from '../lib/workflow.ts';
+import { workStore } from '../lib/work-store.ts';
+import { a2aDelegationStore } from '../lib/a2a-delegation-store.ts';
 
 const hash = (value) => createHash('sha256').update(value).digest('hex');
 const require = createRequire(import.meta.url);
@@ -303,6 +308,89 @@ async function fixture(t, { reviewDurationMs = null } = {}) {
     store: esimCloudAccessStore(db, config),
   };
 }
+
+function workRoute(f) {
+  const route = loadRouteFixture(new URL('../app/api/work-jobs/route.ts', import.meta.url), new Map([
+    ['cloudflare:workers', { env: { ...f.config, ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'true' } }],
+    ['@/lib/a2a-delegation-store', { a2aDelegationStore }],
+    ['@/lib/fund-store', { database: () => f.db, requestUser }],
+    ['@/lib/work-store', { workStore }],
+    ['@/lib/rockstar-service-access', { rockstarServiceScopeAllowed, missingRockstarServiceScope }],
+    ['@/lib/workflow', workflow],
+  ]));
+  return (owner = f.owner) => route.POST(new Request('https://rock.test/api/work-jobs', {
+    method: 'POST', headers: { Origin: 'https://rock.test', 'oai-authenticated-user-id': owner,
+      'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: randomUUID(), templateId: 'article', title: 'Synthetic eSIM scope test' }),
+  }));
+}
+
+void test('account scope finds the original eSIM key behind 100 newer keys for another scope', async t => {
+  const f = await fixture(t);
+  const policies = JSON.parse(f.config.ESIM_CLOUD_ACCESS_POLICIES_JSON);
+  const scopes = values => { f.config.ESIM_CLOUD_ACCESS_POLICIES_JSON = JSON.stringify([{ ...policies[0], scopes: ['rockstaros_access', ...values] }]); };
+  scopes(['zema']);
+  const originalOrder = f.order(), original = await f.store.issue(f.owner, originalOrder, null, f.now);
+  assert.equal((await workRoute(f)()).status, 201);
+  scopes(['sky']);
+  let latest;
+  for (let index = 1; index <= 100; index++) latest = await f.store.issue(f.owner, f.order(), null, f.now + index);
+  scopes(['sky', 'zema']);
+  assert.equal(f.sqlite.prepare('SELECT COUNT(DISTINCT sky_order_id) AS n FROM esim_cloud_access_keys').get().n, 101);
+  assert.equal(await f.store.authenticate(original.token, 'zema'), f.owner);
+  await assert.rejects(f.store.authenticate(latest.token, 'zema'), /UNAUTHORIZED/);
+  let checked = 0;
+  const prepare = f.db.prepare.bind(f.db);
+  t.mock.method(f.db, 'prepare', sql => { if (sql.includes('FROM sky_commerce_orders o')) checked++; return prepare(sql); });
+  assert.equal(await f.store.hasScope(f.owner, 'zema'), true);
+  assert.equal(checked, 1, 'unrelated scopes never consume the grant-validation budget');
+  assert.equal((await workRoute(f)()).status, 201);
+  assert.equal((await workRoute(f)('another-owner')).status, 403);
+  assert.equal(await rockstarServiceScopeAllowed(f.db, f.owner, 'zema', 'true', f.config,
+    new Request('https://rock.test/api/work-jobs', { headers: { authorization: `Bearer ${latest.token}` } })), false);
+  assert.equal(await f.store.hasScope(f.owner, 'zema', original.expiresAt), false);
+
+  scopes(['sky']);
+  assert.equal(await f.store.hasScope(f.owner, 'zema'), false, 'current policy still restricts older credentials');
+  scopes(['sky', 'zema']);
+  f.sqlite.prepare('UPDATE sky_commerce_orders SET refunded_minor=1 WHERE id=?').run(originalOrder);
+  assert.equal(await f.store.hasScope(f.owner, 'zema'), false, 'a partial refund removes service eligibility');
+  f.sqlite.prepare('UPDATE sky_commerce_orders SET refunded_minor=0 WHERE id=?').run(originalOrder);
+  assert.equal(await f.store.hasScope(f.owner, 'zema'), true);
+  f.sqlite.prepare('UPDATE esim_device_entitlements SET device_ref=? WHERE sky_order_id=?').run('another-device', originalOrder);
+  assert.equal(await f.store.hasScope(f.owner, 'zema'), false, 'install proof and key must bind the same device');
+  f.sqlite.prepare('UPDATE esim_device_entitlements SET device_ref=? WHERE sky_order_id=?').run('fixture-device', originalOrder);
+  await f.store.revoke(f.owner, originalOrder, original.id);
+  assert.equal(await f.store.hasScope(f.owner, 'zema'), false);
+});
+
+void test('account scope reports an incomplete bounded check instead of denying an unseen valid key', async t => {
+  const f = await fixture(t), original = await f.store.issue(f.owner, f.order(), null, f.now);
+  const newer = [];
+  for (let index = 1; index <= 100; index++) {
+    const order = f.order(), key = await f.store.issue(f.owner, order, null, f.now + index);
+    newer.push({ order, key });
+    f.sqlite.prepare('UPDATE sky_commerce_orders SET refunded_minor=1 WHERE id=?').run(order);
+  }
+  assert.equal(await f.store.authenticate(original.token, 'zema'), f.owner);
+  let checked = 0;
+  const prepare = f.db.prepare.bind(f.db);
+  t.mock.method(f.db, 'prepare', sql => { if (sql.includes('FROM sky_commerce_orders o')) checked++; return prepare(sql); });
+  await assert.rejects(f.store.hasScope(f.owner, 'zema'), /CLOUD_ACCESS_SCOPE_CHECK_INCOMPLETE/);
+  assert.equal(checked, 100);
+  checked = 0;
+  const response = await workRoute(f)();
+  assert.equal(response.status, 503);
+  assert.notEqual((await response.json()).code, 'SERVICE_ENTITLEMENT_REQUIRED');
+  assert.equal(checked, 100);
+  assert.equal(f.sqlite.prepare('SELECT COUNT(*) AS n FROM work_jobs').get().n, 0);
+  const last = newer.at(-1);
+  await f.store.revoke(f.owner, last.order, last.key.id);
+  checked = 0;
+  assert.equal(await f.store.hasScope(f.owner, 'zema'), true);
+  assert.equal(checked, 100, 'after explicit cleanup the last allowed candidate is validated');
+  assert.equal((await workRoute(f)()).status, 201);
+});
 
 void test('valid cloud access survives unrelated newer registry publications while revoked pinned packages stop access', async (t) => {
   const f = await fixture(t),
