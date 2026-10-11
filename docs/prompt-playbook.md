@@ -10,7 +10,7 @@
 
 1. `AGENTS.md`、`docs/product-baseline.md`、`data/product-baseline.json`。
 2. GitHubのdefault/main SHA、全branch、open PR、関連するclosed/merged PR。`npm run prompt:context` で読み取り専用の最新メタデータを出せる。GitHubに接続できなければ「最新確認未了」とし、過去snapshotを最新と表示しない。
-3. 対象SHAのREADME、project.md、data/project-status.json、CHECKPOINT.md（存在する場合）。PRに記載された別branchの関連開発も調べる。
+3. 対象SHAのREADME、project.md、data/project-status.json、docs/mission-control.md。PRに記載された別branchの関連開発も調べる。
 4. nativeなら `docs/native-os-integration.md`、`docs/native-os-validation.md`、`systems/rock-star-os/README.md` と対象領域の実装/テスト。AOSPなら対応設計と `docs/os-prototype.md`。そのcheckoutのAGENTSも読む。
 5. 対象SHAのCIと実行ログ/証拠。別SHAの成功は参照実績にとどめる。現行ソースから必要な変更前テストを選ぶ。
 
@@ -32,7 +32,7 @@ remote内容は読み取り後に作業checkoutへfetchし、refを40桁SHAに�
 
 指摘した相違は列挙だけで終えず、問題ID、対象RQ、原因/コードの根拠、修正担当、作業順、合格証拠、未解決条件を次の実行プロンプトへ必ず対応付ける。今回の4問題は最新の差分監査と次段階プロンプトでGAP01〜04として追跡する。未解決事項は次回にも引き継ぎ、解消済みなら対象SHAの証拠を示して重複実装を避ける。
 
-製品ベースを保存したbranchと実装branchが異なる場合、最初の実装段階はベースと引継ぎ入口/優先順位の統合とする。AGENTS、README、project、進捗JSON、CHECKPOINT、関連設計に同じ再開先と順番を残す。mainへの保存、作業branchでの反映、元native/mainへの統合は別状態として報告する。起動/安全性に直接依存する修正は先行できるが、実機完成や機種選定を独立したHub/Wallet検証の一律の前提にしない。
+製品ベースを保存したbranchと実装branchが異なる場合、最初の実装段階はベースと引継ぎ入口/優先順位の統合とする。AGENTS、README、project、進捗JSON、Mission Control、関連設計に同じ再開先と順番を残す。mainへの保存、作業branchでの反映、元native/mainへの統合は別状態として報告する。起動/安全性に直接依存する修正は先行できるが、実機完成や機種選定を独立したHub/Wallet検証の一律の前提にしない。
 
 今回の中心はHub＋Wallet。商品契約、実行資格、費用、履歴、収益照合を一連で使えるようにする。実機/金融条件が未解決でも、依存しない契約・adapter・fixture検証は進められる。Web公開や旧repo archiveをこの作業の一律の前提にしない。
 
@@ -56,7 +56,7 @@ SDKの接続基盤と商品の業務開発を区別する。remote MCP認可を�
 
 ## 5. Gitへの引継ぎ
 
-新しい明示要望があれば `docs/product-baseline.md` の版と変更記録を更新し、`data/product-baseline.json` を同期する。進捗変更は対象branchのproject/status/CHECKPOINTに残す。新規監査は日付付き、プロンプトには作成時の対象SHAを書く。
+新しい明示要望があれば `docs/product-baseline.md` の版と変更記録を更新し、`data/product-baseline.json` を同期する。進捗変更は対象branchのproject/status/Mission Controlに残す。新規監査は日付付き、プロンプトには作成時の対象SHAを書く。
 
 main由来のベース保存commitをnative branchへ取り込む際は、ベースのRQとnativeの実装・Nタスク・BlackBerry方針・固定月額をともに残す。README/AGENTS/statusの片側優先置換をしない。既存PRの取り込み自体は別作業として記録する。
 

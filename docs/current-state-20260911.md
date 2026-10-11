@@ -149,4 +149,4 @@ QEMUの凍結sourceは`b7d819cd291b653d165aa124f25a52b9898bfb2e`、版は`1.0.0-
 
 スマホ準備commitのGitHub4check（Web、Android、準備検証のpush／PR）は全て成功。[同一SHAの記録](evidence/launch/ci-phone-3eeeeed.json)。これは全OS buildや実機受入ではない。今回の文書整合後の検証結果は`project.md`、最新HEADのCIはPR #4で別に確認する。
 
-次回の実行入口は[現在の再開指示](prompts/rock-current-next-20260911.md)。ローンチ状態は**BLOCKED_FOR_LAUNCH**を維持する。
+次回の実行入口は[現在の再開指示](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/rock-current-next-20260911.md)。ローンチ状態は**BLOCKED_FOR_LAUNCH**を維持する。

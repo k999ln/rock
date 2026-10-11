@@ -4,11 +4,17 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 全領域開発の開始と未使用の旧内容削除（G01 / H1、ROCK）
+
+開始2026-10-11 09:13:50 UTC、終了予定19:13:50 UTCの10時間枠。基点mainは `96845e6006c15e39ba5b45495f79c21bdff7399e`、作業branchは `codex/rock-development-20261011`。現在の明示指示に従い、参照監査後に旧CHECKPOINT・重複README・旧指示など8ファイル（161082 bytes）を削除した。必要な開発手順と再開先は現行の入口へ収束し、過去のリンクは固定commitを参照する。[削除一覧と復元方法](docs/git-consolidation.md#obsolete-content-cleanup)。固定証拠・vendor・ライセンス・欠落回収原本は保持。変更文書の相対リンク1,877件は欠落0、project/mission/repository/baseline/design/database検査が合格。全体verifyは統合後に実施し、GitHub保存・main統合・公開・実機受入は未実施。
+
+既存PRの統合とサービス／基盤／応用の開発を専用worktreeで並行する。失われたSIM01・SKY21・B06・G04、AI状態、設計索引を現在の実装と照合して復旧する。過去の成功を今回のsourceへ転記しない。
+
 ## 2026-10-09 — READMEを約1画面に短くし、本文を詳しい版へそのまま移した（Git / CI / Operations、ROCK）
 
 利用者の「README更新まだ？一旦してほしい」を受け、READMEだけを整理した。コード、`data/*.json` の台帳、`vendor/`、証拠は変更していない。ファイルの移動・改名・削除は0件。作業branchは `docs/readme-one-screen`、基点はmain `1c20e987`（2026-10-07の文書整理はPR #92としてmainへ統合済み。作業中にmainへ入ったSPIDER・Skyコード公開のREADME追記は、READMEの数字を更新し、本文は詳しい版の該当節へ移した）。
 
-READMEは521行から113行にした。冒頭の見出しと画像、「これは何か」の3層の表、SIM/eSIMのサービスの説明、製品ごとの1行、現在地の表、方針の変遷、探し方、開発の始め方、安全と画像の注意だけを置いた。それまでの本文は [README details](docs/readme-details.md) へ文言を変えずに移し（リンクの相対パスだけ `docs/` から辿れるよう直した。自動生成の進捗行は日付つきの文として残した）、[文書の地図](docs/README.md) に索引として1行足した。主サービスの説明が3回続いていた箇所は、READMEでは1回にまとめた（原文は詳しい版に3回とも残る）。READMEの最初の見出し（merge欠落の監査の判断④）は変えていない。avokadoProの価格はREADMEでは「価格は未確定」とし、2つの数字は詳しい版と監査に残した（判断⑥）。
+READMEは521行から113行にした。冒頭の見出しと画像、「これは何か」の3層の表、SIM/eSIMのサービスの説明、製品ごとの1行、現在地の表、方針の変遷、探し方、開発の始め方、安全と画像の注意だけを置いた。それまでの本文は [README details](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/readme-details.md) へ文言を変えずに移し（リンクの相対パスだけ `docs/` から辿れるよう直した。自動生成の進捗行は日付つきの文として残した）、[文書の地図](docs/README.md) に索引として1行足した。主サービスの説明が3回続いていた箇所は、READMEでは1回にまとめた（原文は詳しい版に3回とも残る）。READMEの最初の見出し（merge欠落の監査の判断④）は変えていない。avokadoProの価格はREADMEでは「価格は未確定」とし、2つの数字は詳しい版と監査に残した（判断⑥）。
 
 検証（main `1c20e987` へrebase後）: READMEと詳しい版の相対リンク309件の行き先がすべて存在。消えたREADMEの見出しへのリンクは [仕様変遷](docs/spec-history.md) の1件だけで、`#where-it-stands` へ直した。`npm run verify` のうち `project:check` から `shared:check` までの19段と `mission:check` が合格。`npm test`・`typecheck`・`build` などの残りの段はrebase前の基点で実行し、`npm test` は1367件合格・5件失敗（674、678、712、713、751。2026-10-07の記録と同じ、変更前からの失敗）、`test:avocado-mini-site` はこの作業環境に `sites/avocado-mini` の依存が無く `astro: not found`、それ以外は合格。rebase後には再実行していない。同一SHAのCIは未確認。
 
@@ -42,7 +48,7 @@ GitHubへの反映: 作業環境からのpushは権限がなく拒否された�
 
 検証: 変更した既存19ファイルについて、main `0fbf688b` にあった4,256行すべてが作業ツリーのどこかに原文で残ることを照合（同じファイルに4,207行、新しい版へ書き換えた49行は保管庫に原文）。変更した文書のリンク切れ0件。`project:check`、`repository:check`、`version:check`、`schema:check`、`database:check`、`release:check`、`release:signing:check`、`baseline:check`、`design:check`、`mission:check`、`system:composition:check`、`llm:architecture:check`、`csv:check`、`sky:check`、`os:check`、`android:architecture:check`、`device-support:check`、`android:first-flash:check`、`sky:launch:check`、`avocado:r5:check`、`mcp:package:check`、`fashion:package:check`、`shared:check` は変更前後とも合格。`os:parity` と `npm test` の5件（674、678、712、713、751）は、この作業環境では変更前から失敗しており、変更後も同じ結果。`npm run verify` 全体と同一SHAのCIは未実行。
 
-未完了: GitHubへのpushとPR作成。作業したセッションには `k999ln/rock` への書き込み権限がなく、pushが拒否された。次の担当は[引き継ぎ手順](docs/prompts/docs-reorg-handoff-20261007.md)に従い、bundleを取り込んでpushし、PRを作る。taskは追加していない（task台帳の復元がowner判断待ちのため）。
+未完了: GitHubへのpushとPR作成。作業したセッションには `k999ln/rock` への書き込み権限がなく、pushが拒否された。次の担当は[引き継ぎ手順](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/docs-reorg-handoff-20261007.md)に従い、bundleを取り込んでpushし、PRを作る。taskは追加していない（task台帳の復元がowner判断待ちのため）。
 
 owner判断待ち（開発側で決めない）: ①task台帳から消えた `SIM01`・`SKY21`・`B06`・`G04` と `AI02`〜`AI06` の状態を戻すか、②`data/design-document-index.json` をmainの内容へ戻すか、③PR側だけにあった `WEB20`・`AI09`・`WEB21`・`BIL04` を台帳へ入れるか、④READMEの最初の見出し、⑤統合で古い側になったままのコード9件の確認、⑥avokadoProの価格（From ¥880,000 と 80万円）。あわせて、理念そのものについてownerへ質問を出しており、回答待ちである。無料配布の範囲、手数料、解約ロック、「OSをSIMに入れる」の意味、最初の入口は、回答が出るまで文書・実装で確定させない。
 
@@ -2276,7 +2282,7 @@ main `7cdbb5f`とDraft PR #4の候補`c182a5b`を再取得し、PR #4の同HEAD 
 
 ## 2026-09-11 — 開発本体へスマホ準備と現状を統合
 
-現在の入口は[統合した開発状態](docs/current-state-20260911.md)、次の指示は[再開手順](docs/prompts/rock-current-next-20260911.md)。スマホ準備3eeeeedをlaunch-candidateへ取り込み、旧QEMU受入、本人限定Site公開、CM制作途中、MIT/署名鍵/クラウド予算の未回答を同期した。main・配布image・Sites配信は今回変更していない。
+現在の入口は[統合した開発状態](docs/current-state-20260911.md)、次の指示は[再開手順](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/rock-current-next-20260911.md)。スマホ準備3eeeeedをlaunch-candidateへ取り込み、旧QEMU受入、本人限定Site公開、CM制作途中、MIT/署名鍵/クラウド予算の未回答を同期した。main・配布image・Sites配信は今回変更していない。
 
 検証: `npm run verify`（93 tests・型/lint/build・API143）、スマホ準備8 tests、OS契約整合、shell構文、現在入口のリンク確認に合格。独立した2件の整合レビューも指摘解消を確認。過去の未完了・料金・QEMU/Android runtime・公開済みSiteを保持した。[今回の統合証拠](docs/evidence/launch/development-integration-20260911.json)。
 
@@ -2344,7 +2350,7 @@ Linuxで全1660件／17checks、元1392件＋新規4件の主suite網羅、Web v
 
 ## 2026-09-10: 8時間の実装・配布準備を開始
 
-ユーザー指定MDを[今回の実行入口](docs/prompts/rockstaros-release-20260910.md)へ保存し、[実行記録](docs/release-execution-20260910.md)に開始・担当・受入条件を固定。GitHubの4headはMDと一致。PR #2起点の専用worktreeで進める。RQ01〜RQ17、月888 cents、Rock ATM手数料0、既存データを維持。下記の「設計のみ」は前回の履歴。
+ユーザー指定MDを[今回の実行入口](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/rockstaros-release-20260910.md)へ保存し、[実行記録](docs/release-execution-20260910.md)に開始・担当・受入条件を固定。GitHubの4headはMDと一致。PR #2起点の専用worktreeで進める。RQ01〜RQ17、月888 cents、Rock ATM手数料0、既存データを維持。下記の「設計のみ」は前回の履歴。
 
 ## 08:23 UTC 境界・復旧の統合
 
@@ -2404,7 +2410,7 @@ D01は文書と検査の保存だけ。V01/GX01/GX02/DX01とB04/B02/B03/B05は�
 
 ## 2026-09-09: 指摘した4問題を解消する実行プロンプトへ改訂
 
-利用者の「指摘した問題を解決する内容を含めて作業を進めるプロンプトを作成」に対応。15:01 UTCにmain `f9b1cbd99eeaa20f7cbc80bd2d88909949cca863`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、OPENのPR #1と同SHAのCIを再確認した。詳細は [追補監査](docs/progress-audit-20260909-followup.md)。
+利用者の「指摘した問題を解決する内容を含めて作業を進めるプロンプトを作成」に対応。15:01 UTCにmain `f9b1cbd99eeaa20f7cbc80bd2d88909949cca863`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、OPENのPR #1と同SHAのCIを再確認した。詳細は [追補監査](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/progress-audit-20260909-followup.md)。
 
 新ベースのnative未反映、無料開発商品への制限、Wallet実収益未接続、PC比較を含む利用価値未検証をGAP01〜04に対応付けた。段階0のB04引継ぎ統合を先頭に置き、既存商品のSky実利用/改善前測定→商品条件と実行adapter→Wallet接続→同条件の再試験へ進む。既存Nタスクは保持し、起動/安全性の直接依存だけ先行する。旧OS02〜OS05は別トラックと明示した。
 
@@ -2550,7 +2556,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-09 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
+最終更新: 2026-10-11 / AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口 / 完了記録 107/378件（親32・子192・独立154。実行単位は親を除く346件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |

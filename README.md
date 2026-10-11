@@ -8,7 +8,7 @@
 
 A product concept that begins with games and connects creation, learning, and everyday action to enrich life as a whole.
 
-[What this is](#what-this-is) · [The parts](#the-parts) · [Where it stands](#where-it-stands) · [Find anything](#find-anything) · [Start developing](#start-developing) · [Full details](docs/readme-details.md)
+[What this is](#what-this-is) · [The parts](#the-parts) · [Where it stands](#where-it-stands) · [Find anything](#find-anything) · [Start developing](#start-developing) · [Document map](docs/README.md)
 
 </div>
 
@@ -26,7 +26,7 @@ A product concept that begins with games and connects creation, learning, and ev
 
 **How the service works.** A SIM or eSIM purchase includes access to the services. The OS itself is not stored on the SIM: a supported device installs it through an approved path, and any other device uses an app or a browser. Before paid AI work starts, you see an estimate and approve a budget; while it runs you can see what it has spent; afterwards you get an itemized record. [SIM/eSIM-led product architecture](docs/sim-led-product-architecture.md)
 
-Most design documents are written in Japanese; this README is the English entry point. Everything that used to be on this page is kept, word for word, in **[README details](docs/readme-details.md)**.
+Most design documents are written in Japanese; this README is the English entry point. Use the [document map](docs/README.md) to find the current requirements, designs, operating instructions, and evidence.
 
 ## The parts
 
@@ -56,7 +56,7 @@ Most design documents are written in Japanese; this README is the English entry 
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-09 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
+Updated: 2026-10-11 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Mission Control](docs/mission-control.md) · [Security](SECURITY.md)
@@ -83,12 +83,11 @@ Day by day, with what is in force today and what was withdrawn: [specification h
 | read the confirmed requirements, RQ01–RQ49 | [Product baseline](docs/product-baseline.md) |
 | see what changed, and on which day | [Specification history](docs/spec-history.md) |
 | see every tool and agent and what each one does | [Agent and tool overview](docs/agents-and-tools.md) |
-| read a design | [Design portal](docs/rockstaros-design-portal.md) / [Design library](docs/readme-details.md#design-library) |
-| find any document in `docs/` | [Document map](docs/README.md) — all 186 documents, classified |
+| read a design | [Design portal](docs/rockstaros-design-portal.md) / [Document map](docs/README.md) |
+| find any document in `docs/` | [Document map](docs/README.md) — current documents, classified |
 | find the source code for a product | [Project guide](PROJECTS.md) |
 | see progress and who owns what | [All tasks](project.md) / [Mission Control](docs/mission-control.md) |
 | see what a merge on 2026-10-05 dropped and what still needs a decision | [Merge-loss audit](docs/merge-loss-audit-20261007.md) |
-| read every feature, payment, security, and design detail that used to be here | [README details](docs/readme-details.md) |
 | visit the public homepage | [avocadomini.si](https://avocadomini.si) |
 | try Sky in a browser (public version) | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) |
 | start developing | [Start developing](#start-developing) / [Rules for AI coding agents](AGENTS.md) |
@@ -101,12 +100,14 @@ Use Node.js 22.13 or later and npm. This starts the web app locally:
     npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc
     npm run dev
 
-After changing documents or progress, run:
+Install the product site dependencies before running the full repository checks. After changing documents or progress, run:
 
+    npm ci --prefix sites/avocado-mini
     npm run project:update
+    npm run mission:update
     npm run verify
 
-Pixel, QEMU, Workers, and the product site have their own instructions and gates: [Linux/QEMU](docs/workstreams/06-native-qemu-release.md) · [Android/Pixel](docs/workstreams/07-android-device-local-ai.md) · [avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md) · [all commands and checks](docs/readme-details.md#start-developing).
+Pixel, QEMU, Workers, and the product site have their own instructions and gates: [Linux/QEMU](docs/workstreams/06-native-qemu-release.md) · [Android/Pixel](docs/workstreams/07-android-device-local-ai.md) · [avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md) · [Git / CI / Operations](docs/workstreams/10-git-ci-operations.md).
 
 ## Safety, rights, and images
 

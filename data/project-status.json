@@ -31,9 +31,74 @@
     "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac",
     "latestMainIntegrated": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
     "pullRequest": "https://github.com/k999ln/rock/pull/69",
-    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
+    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102",
+    "obsoleteContent": {
+      "task": "G01",
+      "primaryOwner": "ROCK",
+      "stage": "local_reference_and_contract_checks_passed",
+      "sourceMainSha": "96845e6006c15e39ba5b45495f79c21bdff7399e",
+      "startedAt": "2026-10-11T09:13:50Z",
+      "plannedEndAt": "2026-10-11T19:13:50Z",
+      "removedFiles": [
+        {
+          "path": "CHECKPOINT.md",
+          "bytes": 21867,
+          "reason": "2026-09-12で止まった重複した作業入口。現在の進捗JSON・project・AMCへ収束。"
+        },
+        {
+          "path": "docs/progress-audit-20260909-followup.md",
+          "bytes": 4904,
+          "reason": "初回監査の追補。後続監査と現行台帳へ置換済み。凍結証跡は元commitで照合。"
+        },
+        {
+          "path": "docs/prompts/docs-reorg-handoff-20261007.md",
+          "bytes": 10923,
+          "reason": "PR #92で統合済みの文書整理を未pushとして案内する手順。"
+        },
+        {
+          "path": "docs/prompts/rock-current-next-20260911.md",
+          "bytes": 4603,
+          "reason": "旧再開指示。現在のSIM/eSIM主方針と2026-10-02の指示へ置換済み。"
+        },
+        {
+          "path": "docs/prompts/rock-current-next-20261001.md",
+          "bytes": 4187,
+          "reason": "前日の再開指示。2026-10-02の指示へ置換済み。"
+        },
+        {
+          "path": "docs/prompts/rockstaros-release-20260910.md",
+          "bytes": 40581,
+          "reason": "終了済みの8時間実行指示。結果と受入証拠は既存のrelease記録へ保存済み。"
+        },
+        {
+          "path": "docs/prompts/value-spend-runtime-next.md",
+          "bytes": 1624,
+          "reason": "未使用の旧作業指示。現行Wallet/workflowの仕様・台帳から参照なし。"
+        },
+        {
+          "path": "docs/readme-details.md",
+          "bytes": 72393,
+          "reason": "旧README全文の重複コピー。製品・設計・課金・開発の正本へ直接案内。"
+        }
+      ],
+      "removedBytes": 161082,
+      "githubSaved": false,
+      "mainIntegrated": false,
+      "published": false,
+      "validation": {
+        "relativeMarkdownLinks": "1877 checked in modified Markdown; zero missing destinations",
+        "project": "passed",
+        "mission": "32 squads / 378 explicit owners / 224 scoped plans, passed",
+        "repository": "passed; no tracked build outputs",
+        "baseline": "RQ01–RQ49, passed",
+        "design": "18 domains / 36 Tools / 6 native families, passed",
+        "database": "151 tables across 6 boundaries, passed after date regeneration",
+        "fullVerify": "pending final integrated source"
+      },
+      "nextAction": "Validate links, repository/progress/baseline checks, then restore lost ledger records against current implementation."
+    }
   },
-  "updatedAt": "2026-10-09",
+  "updatedAt": "2026-10-11",
   "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
   "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。",
   "tasks": [
