@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "reviewedHead": "c7b20bcbdd6dfbea7ada9779c545cef57c22e0d2",
   "occurrences": 2945,
-  "distinctValues": 163,
+  "distinctValues": 166,
   "classifications": {
     "idempotency-fixture": 87,
-    "public-artifact-digest": 56,
+    "public-artifact-digest": 59,
     "public-rfc8032-seed": 1,
     "public-webauthn-authenticator-data": 1,
     "synthetic-rejection-test": 1,
@@ -2356,5 +2356,11 @@
       "addedDistinctValues": 3,
       "basis": "Recomputed source SHA-256 values; exact path and exact value only."
     }
-  ]
+  ],
+  "integratedReview": {
+    "head": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+    "recordedOn": "2026-10-11",
+    "basis": "Union of reviewed exact exceptions from current main, eSIM evidence hashes and Zema storage paths. Recomputed all 5 eSIM source SHA-256 values at f9c858706601e43ad5da526d94e408fb3daf0c31; the 3 matching digest exceptions are public source hashes. Historical occurrences/reviewedHead remain the original scan snapshot.",
+    "policySha256": "36d30ae624943c4587d9453668a0cb149168d06da7a71de008ec8d2e7b586c9b"
+  }
 }
