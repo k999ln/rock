@@ -145,6 +145,14 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 
 [Proの構成・組立設計](../avokado-pro-pc-design.md)を追加。AIとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・AI・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
 
+### Proの公開ソースとP0設計の照合（2026-10-11）
+
+`sites/avocado-mini/`のPro、ホーム、Mini内のPro紹介、販売状況、販売開示を、`avokadoProPcIntent`と[Pro構成・組立設計](../avokado-pro-pc-design.md)へ合わせた。NVIDIA搭載の独立小型PC、AI/PCゲーム、Mini任意を設計目標として説明し、候補RAMとGPU VRAM、Laptop GPUとdesktop GPU、筐体目標と収納/冷却未検証、OS未確定を分ける。既存正本の概念SVGを同一bytesで使い、旧E3 Hub画像は履歴の図と明示した。
+
+80万円は販売目標のみ、税・送料・保証・最終価格は未定。旧88万円/US$5,800は販売状況ページの履歴注記だけに保持し、現行PCの確定販売価格・自動通貨換算にしない。Miniの16万円/41万円の旧製品ライン参考値は保存し、R5価格や4本+Hub必須構成へ転用しない。販売・予約・決済は停止のままで、Pro SKUをcheckoutへ渡しても予約・外部決済は作らない。共有台帳や受領原本は変更していない。
+
+検証: `npm test --prefix sites/avocado-mini`（Astro全13 route build、Worker staging、21 tests）、正本価格/SVG照合・ページ間fragment・Pro checkout拒否を確認。Chrome実画面で1280px/390px、Pro候補carousel・menu・価格目標から販売状況への導線を確認した。既存のPro mobile Menu内navまで非表示にするCSSを限定修正。ローカルソースの確認であり、Sites配備・価格確定・実機試験・購入・生産・販売開始は行っていない。
+
 ## Mini本体SIMによる独立通信（2026-10-05）
 
 利用者指定により[Mini cellular設計](../avocado-mini-cellular.md)を追加。MAT15の通信サブ項目としてmodem/antenna/物理SIM、電源/熱、接続・保存復旧、Pro/PC/phone不要の実通信受入を追跡し、SIM01のcarrier/service権と区別する。R5のoffline基本動作、使用時200mm、外部給電を維持する。地域・回線未定、部品選定・内蔵・driver・実通信・cloud gamingは未受入。元R5配布原本は変更せず追加要求として読む。
