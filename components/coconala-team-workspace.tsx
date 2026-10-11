@@ -90,6 +90,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   const [needsSignin, setNeedsSignin] = useState(false);
   const [pendingSave, setPendingSave] = useState<PendingSave | null>(null);
   const saveInFlight = useRef(false);
+  const listGeneration = useRef(0);
   const locked = busy || pendingSave !== null;
 
   useEffect(() => {
@@ -100,22 +101,28 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   }, [pendingSave]);
 
   const refresh = useCallback(async () => {
+    if (saveInFlight.current) return;
+    const version = ++listGeneration.current;
     setLoading(true);
     try {
       const result = await request<{ cases: TeamCase[] }>();
+      if (version !== listGeneration.current) return;
       setCases(result.cases);
       setNeedsSignin(false);
       setError('');
     } catch (caught) {
-      if (caught instanceof OperationRequestError && caught.status === 401)
-        setNeedsSignin(true);
+      if (version !== listGeneration.current) return;
+      if (caught instanceof OperationRequestError && caught.status === 401) {
+        setNeedsSignin(true); setCases([]);
+      }
       setError(caught instanceof Error ? caught.message : '案件を読み込めませんでした。');
-    } finally { setLoading(false); }
+    } finally { if (version === listGeneration.current) setLoading(false); }
   }, []);
 
   useEffect(() => {
+    const generation = listGeneration;
     const timeout = window.setTimeout(() => void refresh(), 0);
-    return () => window.clearTimeout(timeout);
+    return () => { window.clearTimeout(timeout); generation.current++; };
   }, [refresh]);
 
   const selected = cases.find((item) => item.id === selectedId) ?? cases[0] ?? null;
@@ -133,6 +140,8 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   async function attemptSave(operation: PendingSave) {
     if (saveInFlight.current || busy) return;
     saveInFlight.current = true;
+    // Earlier list snapshots must not replace a confirmed mutation or undo 401.
+    listGeneration.current++; setLoading(false);
     setPendingSave(operation);
     setBusy(true); setError(''); setNotice('');
     try {
@@ -153,7 +162,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
       }
     } catch (caught) {
       if (caught instanceof OperationRequestError) {
-        if (caught.status === 401) setNeedsSignin(true);
+        if (caught.status === 401) { setNeedsSignin(true); setCases([]); }
         // Validation/conflict responses are definitive. Network/server failures
         // retain the exact operation, including its original revision and ID.
         if ([400, 404, 409, 413, 415].includes(caught.status)) setPendingSave(null);
@@ -191,6 +200,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
 
   async function deleteDraft() {
     if (!deleteTarget || locked || needsSignin) return;
+    listGeneration.current++; setLoading(false);
     setBusy(true); setError(''); setNotice('');
     try {
       const result = await request<{ deletedCaseId: string }>('DELETE', {

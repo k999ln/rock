@@ -10,7 +10,7 @@ const compiled = ts.transpileModule(readFileSync(new URL('../components/mercari-
 }).outputText;
 class RequestError extends Error { constructor(status) { super(`HTTP ${status}`); this.status = status; } }
 function harness(records = new Map()) {
-  const slots = [], effects = [], requests = [], listeners = new Map(), timers = new Map();
+  const slots = [], effects = [], requests = [], listeners = new Map(), timers = new Map(), replies = [];
   let nextTimer = 0;
   let cursor = 0, tree, failure = null, resets = 0, access = 'ready', visibleRecords = records;
   const form = { fields: { channel: 'consumer_assisted', title: 'Synthetic owned stock', condition: 'Checked', facts: 'Local fixture only',
@@ -31,7 +31,7 @@ function harness(records = new Map()) {
   const inert = () => null, needsSignin = (value) => { access = value ? 'signin' : 'ready'; };
   async function request(_path, method = 'GET', value) {
     requests.push({ method, value: value === undefined ? undefined : JSON.parse(JSON.stringify(value)) });
-    if (method === 'GET') return { plans: [...visibleRecords.values()] };
+    if (method === 'GET') return replies.length ? await replies.shift()() : { plans: [...visibleRecords.values()] };
     assert.equal(method, 'POST');
     const mode = failure; failure = null;
     if (mode === 'unauthorized') throw new RequestError(401);
@@ -82,7 +82,7 @@ function harness(records = new Map()) {
     if (twice) await handler({ preventDefault() {}, currentTarget: form });
     render(); await promise; await flush(); }
   render();
-  return { render, find, nodes: () => nodes(tree), flush, click, submit, requests, records, listeners, form,
+  return { replies, render, find, nodes: () => nodes(tree), flush, click, submit, requests, records, listeners, form,
     setAccess(value, visible = visibleRecords) { access = value; visibleRecords = visible; render(); },
     get resets() { return resets; }, fail(mode) { failure = mode; } };
 }
@@ -145,4 +145,13 @@ void test('Mercari retains the uncertain payload through sign-in and deduplicate
   const posts = h.requests.filter((r) => r.method === 'POST');
   assert.equal(posts.length, 3); assert.deepEqual(posts[0].value, posts[2].value);
   assert.equal(h.records.size, 1); assert.equal(h.nodes().filter((n) => n.type === 'h3').length, 1);
+});
+
+void test('a late pre-create Mercari list cannot erase the confirmed saved card', async () => {
+  const h = harness(); const delayed = Promise.withResolvers();
+  h.replies.push(() => delayed.promise); await h.flush();
+  await h.submit(); assert.equal(h.records.size, 1);
+  delayed.resolve({ plans: [] }); await h.flush();
+  assert.ok(h.find('h3', 'Synthetic owned stock'));
+  assert.equal(h.records.size, 1);
 });
