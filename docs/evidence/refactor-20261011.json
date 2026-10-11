@@ -6,7 +6,7 @@
   "primaryOwner": "ROCK",
   "baseMain": "bcd31090e11f6b22c130b9551292a15fa805aa8a",
   "branch": "codex/rock-refactor-20261011",
-  "status": "targeted_verification_passed",
+  "status": "local_full_verification_passed",
   "scope": [
     "Workbench Cloud AI state, transport and view as one component responsibility",
     "Shared owner/pending decision helpers with per-screen transport and form state",
@@ -27,7 +27,7 @@
     "Fixed archives, vendor originals and physical/production acceptance boundaries"
   ],
   "validation": {
-    "status": "targeted_passed_full_verify_pending",
+    "status": "local_passed_final_github_head_pending",
     "targeted": [
       {
         "area": "metadata generation",
@@ -162,13 +162,46 @@
         "reviewFix": "Kept router.replace within the original catch boundary when extracting session creation. Added storage-failure and synchronous navigation-failure characterization."
       }
     ],
-    "fullVerify": null,
-    "github": null
+    "fullVerify": {
+      "command": "npm run verify",
+      "sourceCommit": "2cf1382fdde30663376bc6b9b714c3824ad170b2",
+      "result": "passed",
+      "exitCode": 0,
+      "environment": "macOS arm64; local Worker/D1/R2, synthetic identities",
+      "node": {
+        "passed": 1756,
+        "failed": 0,
+        "skipped": 1,
+        "skipReason": "Unsupported-platform discovery branch is not applicable on this supported host."
+      },
+      "workApiAssertions": 1356,
+      "csvAssertions": 385,
+      "webAssetReferences": 185,
+      "missingWebAssets": 0,
+      "completedAt": "2026-10-11T18:58:32.369811+00:00",
+      "logSha256": "811fdde24e2b0395a9d7b4c4668e88659dfd59322057d63f400e72b897ea254b",
+      "otherChecks": "Project/repository/schema/release/baseline/design/mission/workspace consistency, typecheck, product lint, toolkit/site/public tests, build and Worker dry-runs all passed.",
+      "scope": "This source commit includes every runtime and test change. Following evidence/metadata changes are checked separately and will be verified by final-HEAD GitHub CI."
+    },
+    "github": null,
+    "integrationRepairs": [
+      {
+        "candidate": "10697ccf",
+        "failure": "Sky static checker expected handoff in the old component file.",
+        "repair": "Verify component useSkyChatSession wiring and handoff call in the extracted hook; retain lower-level handoff checks."
+      },
+      {
+        "candidate": "92227c1a4195c475eba9fd919a3a704c3c7a496f",
+        "failure": "Full Node suite: 1748 pass, 8 fail, 1 skip. Seven failures were two route fixtures missing the real bounded-stream import; one static route assertion read the old hook location.",
+        "repair": "Map the actual shared module into both route fixtures and assert the extracted hook call. All 24 affected-file tests passed; final full verify passed without changing product logic."
+      }
+    ]
   },
   "github": {
     "saved": false,
     "mainIntegrated": false,
-    "deployed": false
+    "deployed": false,
+    "asOf": "Evidence snapshot before the new refactor branch is pushed; final PR body records the actual remote HEAD and CI results."
   },
   "acceptanceLimits": [
     "This refactor does not establish external Provider, commercial, physical-device or current OS image acceptance.",

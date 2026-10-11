@@ -23,7 +23,7 @@
 - **G04**: 重複するAI・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する — 詳細: `npm run work -- G04`
 - **AMC01**: 現行3製品とOSの責任表・未決事項台帳をレビューする — 詳細: `npm run work -- AMC01`
 
-G04: PR #99のmain統合後、Web/API/Androidの重複処理と進捗生成入口を整理し、同一候補の全体verify・CIを確認する。AMC01の製品間Interface整理は並行する。
+G04: PR #99統合後の共通化は全体verify合格。新PRの最終HEAD CIを確認してレビューへ渡す。AMC01の製品間Interface整理は並行する。
 
 ## 守る条件・残課題
 

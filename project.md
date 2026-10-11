@@ -6,7 +6,7 @@
 
 ## 2026-10-11 — Web・API・A2A・Androidの責務と重複処理を整理（G04 / H1、ROCK）
 
-Cloud AIをWorkbench専用module、会話sessionをSkyChat専用hook、A2A保存契約／固定照会列を専用moduleへ分離した。API本文readerは8→1、Android本文readerは4→1、JSON header／UTF-8は各6→1、A2A署名検証は3→1へ共通化。Android originの正規化を保存層と通信層の共通責務へ移した。本人判定・不明な保存の再確認・料金承認・署名bytes・CAS・精算は保持。分離前後の実component比較と実built UI、Worker/D1、Android host／SDK compileが合格し、別担当のread-only reviewでも実害ある差は見つからなかった。全体verifyと同一SHA CIはこの統合候補で続ける。[各検証のsourceと範囲](docs/evidence/refactor-20261011.json)。
+Cloud AIをWorkbench専用module、会話sessionをSkyChat専用hook、A2A保存契約／固定照会列を専用moduleへ分離した。API本文readerは8→1、Android本文readerは4→1、JSON header／UTF-8は各6→1、A2A署名検証は3→1へ共通化。Android originの正規化を保存層と通信層の共通責務へ移した。本人判定・不明な保存の再確認・料金承認・署名bytes・CAS・精算は保持。分離前後の実component比較と実built UI、Worker/D1、Android host／SDK compileが合格し、別担当のread-only reviewでも実害ある差は見つからなかった。runtime／試験候補 `2cf1382f` は全体verify exit0（Node1756 pass／1 platform skip、API1356、CSV385、185assets欠落0）。移動前のsourceを参照した静的チェックと試験fixtureのimport不足を修正してから完走した。この追補は証拠・台帳のみで、最終HEADのGitHub CIはPRで続けて照合する。[各検証のsourceと範囲](docs/evidence/refactor-20261011.json)。
 
 ## 2026-10-11 — PR #99をmainへ統合し、重複処理の整理へ（G04 / H1、ROCK）
 
@@ -3241,7 +3241,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: G04: PR #99はmain bcd31090へ統合済み。WebのCloud AI／会話session責務、owner/pending判定、API本文読取、A2A保存照会／署名検証、Android応答／origin処理を現行契約のまま共通化し、対象回帰・全体verify・同一SHA CIで確認する。WEB01のSites同一source受入、SIM01/SKY21の実issuer／Provider、OS10／R5／Proの実機受入は個別条件を維持する。
+次の作業: G04: PR #99はmain bcd31090へ統合済み。Web/API/A2A/Androidの責務分離・共通化は2cf1382fで全体verify合格。新PRを保存して最終HEADのCIを照合し、レビューへ渡す。WEB01のSites同一source受入、SIM01/SKY21の実issuer／Provider、OS10／R5／Proの実機受入は個別条件を維持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

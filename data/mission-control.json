@@ -195,7 +195,7 @@
         "docs/evidence/spider-agent-preflight-read.json"
       ],
       "acceptanceGate": "全project taskにちょうど一つのprimary squadが明記され、各squadにGoal、対象範囲、証拠、次taskと合格条件がある。",
-      "nextAction": "G04: PR #99のmain統合後、Web/API/Androidの重複処理と進捗生成入口を整理し、同一候補の全体verify・CIを確認する。AMC01の製品間Interface整理は並行する。",
+      "nextAction": "G04: PR #99統合後の共通化は全体verify合格。新PRの最終HEAD CIを確認してレビューへ渡す。AMC01の製品間Interface整理は並行する。",
       "relatedTasks": [],
       "nextTaskIds": [
         "G04",
@@ -12788,9 +12788,11 @@
         {
           "id": "G04-AC1",
           "criterion": "対象の重複処理が共通化され、本人確認・料金承認・署名・CAS・入力保持・再試行条件が既存契約と一致する",
-          "status": "not_verified",
-          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
-          "evidence": []
+          "status": "passed",
+          "verification": "分離前後の対象比較・独立reviewと2cf1382fの統合全体verifyで維持契約を確認。環境と未受入は証拠内に限定。",
+          "evidence": [
+            "docs/evidence/refactor-20261011.json"
+          ]
         },
         {
           "id": "G04-AC2",

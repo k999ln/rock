@@ -124,7 +124,7 @@
   },
   "updatedAt": "2026-10-11",
   "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
-  "nextAction": "G04: PR #99はmain bcd31090へ統合済み。WebのCloud AI／会話session責務、owner/pending判定、API本文読取、A2A保存照会／署名検証、Android応答／origin処理を現行契約のまま共通化し、対象回帰・全体verify・同一SHA CIで確認する。WEB01のSites同一source受入、SIM01/SKY21の実issuer／Provider、OS10／R5／Proの実機受入は個別条件を維持する。",
+  "nextAction": "G04: PR #99はmain bcd31090へ統合済み。Web/API/A2A/Androidの責務分離・共通化は2cf1382fで全体verify合格。新PRを保存して最終HEADのCIを照合し、レビューへ渡す。WEB01のSites同一source受入、SIM01/SKY21の実issuer／Provider、OS10／R5／Proの実機受入は個別条件を維持する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -5842,7 +5842,7 @@
         "docs/evidence/integrated-development-20261011.json",
         "docs/evidence/refactor-20261011.json"
       ],
-      "nextAction": "Refactor duplicated Web Cloud AI/chat session, API, A2A store/signature and Android response/origin handling from merged main bcd31090; preserve owner, pricing, signing, CAS and recovery contracts. Synchronize derived project metadata through one command and verify the resulting branch before submitting a new PR.",
+      "nextAction": "Full local verify passed for refactor runtime/test source 2cf1382f. Save the new PR and confirm final-HEAD CI, then review the refactor; main integration and deployment remain separate.",
       "recoveredFrom": {
         "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",

@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-G04: PR #99はmain bcd31090へ統合済み。WebのCloud AI／会話session責務、owner/pending判定、API本文読取、A2A保存照会／署名検証、Android応答／origin処理を現行契約のまま共通化し、対象回帰・全体verify・同一SHA CIで確認する。WEB01のSites同一source受入、SIM01/SKY21の実issuer／Provider、OS10／R5／Proの実機受入は個別条件を維持する。
+G04: PR #99はmain bcd31090へ統合済み。Web/API/A2A/Androidの責務分離・共通化は2cf1382fで全体verify合格。新PRを保存して最終HEADのCIを照合し、レビューへ渡す。WEB01のSites同一source受入、SIM01/SKY21の実issuer／Provider、OS10／R5／Proの実機受入は個別条件を維持する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。
