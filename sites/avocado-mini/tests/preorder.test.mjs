@@ -210,3 +210,19 @@ test('expired checkout releases its capacity for another order', async () => {
     assert.equal(db.sqlite.prepare('SELECT reserved FROM preorder_stock WHERE sku = ?').get('r5').reserved, 0);
   } finally { globalThis.fetch = originalFetch; }
 });
+
+
+test('Pro design targets cannot create a reservation or payment', async (t) => {
+  const db = database();
+  t.after(() => db.sqlite.close());
+  const originalFetch = globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  let providerCalls = 0;
+  globalThis.fetch = async () => { providerCalls++; throw new Error('Pro must not contact payment provider'); };
+  for (const sku of ['pro', 'avokadoPro']) {
+    assert.equal((await worker.fetch(checkoutRequest(sku), env(db))).status, 400);
+  }
+  assert.equal(providerCalls, 0);
+  assert.equal(db.sqlite.prepare('SELECT count(*) AS count FROM preorders').get().count, 0);
+  assert.equal(db.sqlite.prepare('SELECT count(*) AS count FROM preorder_stock').get().count, 0);
+});

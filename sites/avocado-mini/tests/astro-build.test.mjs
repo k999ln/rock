@@ -38,7 +38,7 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   const mini = built('client/mini/index.html');
   const pro = built('client/pro/index.html');
   assert.match(home, /AVOKADO \/ SPATIAL EXPERIENCES/);
-  assert.match(home, /Make the room part<br\s*\/?>of the experience\./);
+  assert.match(home, /Make the room part<br\b[^>]*>of the experience\./);
   assert.match(home, /id="choose-setup"/);
   assert.match(home, /id="possibilities"/);
   const experiences = home.match(/<section id="possibilities"[\s\S]*?<\/section>/)?.[0] || '';
@@ -50,23 +50,23 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   assert.match(home, /href="\/pro\/"/);
   assert.match(home, /home-promo-mini/);
   assert.match(home, /home-promo-pro/);
-  assert.match(mini, /Give the space<br\s*\/?>another sense\./);
+  assert.match(mini, /Give the space<br\b[^>]*>another sense\./);
   assert.match(mini, /id="mini-use-cases"/);
   assert.match(mini, /You move\./);
   assert.match(mini, /\/images\/avocado-mini-tower20-e3-kit\.png/);
   assert.equal((mini.match(/class="highlight-card /g) || []).length, 4);
-  assert.match(mini, /The space can<br\s*\/?>respond to you\./);
-  assert.match(mini, /Everything,<br\s*\/?>for the space\./);
+  assert.match(mini, /The space can<br\b[^>]*>respond to you\./);
+  assert.match(mini, /Everything,<br\b[^>]*>for the space\./);
   assert.equal((mini.match(/class="turn-frame"/g) || []).length, 3);
   assert.match(mini, /id="angle"/);
   assert.match(mini, /data-view="side"/);
   assert.match(mini, /data-view="rear"/);
   assert.match(mini, /Check release status/);
-  assert.match(pro, /Bring the game closer\.<br\s*\/?>Let the room join in\./);
-  assert.match(pro, /From ¥880,000/);
-  assert.match(pro, /GAME \+ SERVICES HUB/);
+  assert.match(pro, /AI\. PC games\.<br\b[^>]*>A place on your desk\./);
+  assert.match(pro, /¥800,000 design target/);
+  assert.match(pro, /COMPACT NVIDIA PC \/ DESIGN P0/);
   assert.match(pro, /id="pro-use-cases"/);
-  assert.match(pro, /Start the experience\./);
+  assert.match(pro, /AI and games\./);
   assert.match(built('client/install/index.html'), /id="os-use-cases"/);
   assert.match(built('client/install/index.html'), /Input in\./);
   assert.match(built('client/rocket-star/index.html'), /Complete product design/);
@@ -114,17 +114,9 @@ test('reference-led product navigation and Pro highlights remain interactive', (
   assert.match(pro, /id="pro-highlights"/);
   assert.match(pro, /data-carousel/);
   assert.equal((pro.match(/class="pro-highlight-card"/g) || []).length, 4);
-  for (const image of [
-    'avokado-pro-play-e3-v3.png',
-    'avocado-mini-tower20-e3-kit.png',
-    'tower20-e3-highlight-sensor-v2.png',
-    'tower20-e3-highlight-200mm-v1.png',
-  ]) {
-    assert.match(pro, new RegExp(image.replace('.', '\\.')));
-  }
-  assert.equal((pro.match(/tower20-e3-highlight-edge-hub-v1\.png/g) || []).length, 1);
-  assert.equal((pro.match(/avocado-mini-tower20-e3-kit\.png/g) || []).length, 1);
-  assert.doesNotMatch(pro, /motion-tower-satin-four-point\.png/);
+  assert.match(pro, /avokado-pro-pc-concept\.svg/);
+  assert.match(pro, /Archived E3 pairing illustration/);
+  assert.doesNotMatch(pro, /tower20-e3-highlight-edge-hub-v1\.png|avokado-pro-play-e3-v3\.png/);
   assert.match(pro, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
   assert.match(pro, /id="pro-os"/);
   const enhancement = built('client/site-enhancements.js');
@@ -147,13 +139,14 @@ test('benefit-first journey ends in a truthful price and support path', () => {
   assert.match(status, /avokadoPro/);
   assert.match(status, /¥160,000/);
   assert.match(status, /¥410,000/);
-  assert.match(status, /¥880,000/);
-  assert.doesNotMatch(status, /R5|Old E3 pricing/);
+  assert.match(status, /¥800,000 design target/);
+  assert.match(status, /earlier Pro product page used/);
+  assert.match(status, /do not settle the current R5 price/);
   assert.doesNotMatch(install, /R5/);
   assert.match(install, /PUBLIC INSTALLER NOT YET AVAILABLE/);
 });
 
-test('the restored Mini 180-degree story and dedicated Pro page preserve their pricing', () => {
+test('Mini references stay separate from the unconfirmed Pro design target', () => {
   const mini = built('client/mini/index.html');
   const pro = built('client/pro/index.html');
   assert.match(mini, /0° \/ SINGLE MINI/);
@@ -165,9 +158,10 @@ test('the restored Mini 180-degree story and dedicated Pro page preserve their p
   assert.match(mini, /class="pro-addon"/);
   assert.equal((mini.match(/aria-label="Display currency"/g) || []).length, 2);
   assert.match(mini, /avocado-mini-tower20-e3-kit-transparent-v2\.png/);
-  assert.match(pro, /From ¥880,000/);
-  assert.match(pro, /data-price-usd="From US\$5,800"/);
-  assert.equal((pro.match(/aria-label="Display currency"/g) || []).length, 1);
+  assert.match(pro, /¥800,000 design target/);
+  assert.doesNotMatch(pro, /data-price-usd|Display currency|From ¥880,000/);
+  assert.match(pro, /Tax, shipping, warranty, and final sale price are undecided/);
+  assert.match(pro, /Reservations and payments are closed/);
   for (const view of ['front', 'side', 'rear']) {
     assert.match(mini, new RegExp(`tower20-e3-${view}-transparent-v2\\.png`));
   }
@@ -176,7 +170,7 @@ test('the restored Mini 180-degree story and dedicated Pro page preserve their p
 test('all public Astro pages are English-first', () => {
   for (const route of routes) {
     const html = built(route);
-    assert.match(html, /<html lang="en">/, `${route} must declare English`);
+    assert.match(html, /<html lang="en"(?:\s[^>]*)?>/, `${route} must declare English`);
     assert.doesNotMatch(html, /[ぁ-んァ-ヶ一-龠]/, `${route} must not contain Japanese interface copy`);
   }
 });
@@ -188,6 +182,39 @@ test('built pages use bundled assets instead of retired source paths', () => {
     assert.doesNotMatch(html, /(?:href|src)=["']\/rocket-star\/(?:main\.js|design\.css)/, `${route} must use Astro assets`);
     for (const host of ['fonts.googleapis.com', 'fonts.gstatic.com']) {
       assert.equal(html.toLowerCase().includes(host), false, `${route} must not request third-party fonts`);
+    }
+  }
+});
+
+
+test('current Pro summaries match the canonical intent without opening an order path', async () => {
+  const { proDesign } = await import('../src/pro-design.js');
+  const canonical = JSON.parse(readFileSync(new URL('../../../data/product-baseline.json', outputRoot), 'utf8')).avokadoProPcIntent;
+  assert.equal(proDesign.targetJpy, canonical.salesPriceTargetJpy);
+  assert.equal(canonical.miniDependency, false);
+  assert.equal(canonical.candidateOnly, true);
+  assert.equal(built('client/images/avokado-pro-pc-concept.svg'), readFileSync(new URL('../../../docs/assets/avokado-pro-pc-concept.svg', outputRoot), 'utf8'));
+  for (const route of ['client/index.html', 'client/mini/index.html', 'client/pro/index.html', 'client/preorder/index.html']) {
+    const html = built(route);
+    assert.match(html, /¥800,000 design target/);
+    assert.doesNotMatch(html, /data-price-(?:jpy|usd)="From/);
+    assert.doesNotMatch(html, /<form|action="[^"]*checkout|href="https:\/\/checkout\.stripe/);
+  }
+});
+
+test('local product links and fragment targets resolve across built routes', () => {
+  const pages = new Map(routes.map(route => [route.replace('client', '').replace('index.html', ''), built(route)]));
+  for (const [path, html] of pages) {
+    for (const match of html.matchAll(/href="([^"]+)"/g)) {
+      const href = match[1];
+      if (!href.startsWith('/') && !href.startsWith('#')) continue;
+      const url = new URL(href, `https://site.invalid${path}`);
+      const target = pages.get(url.pathname);
+      if (target === undefined) {
+        assert.ok(existsSync(new URL(`client${url.pathname}`, outputRoot)), `${path} links to missing local resource ${href}`);
+        continue;
+      }
+      if (url.hash) assert.ok(target.includes(`id="${url.hash.slice(1)}"`), `${path} links to missing ${href}`);
     }
   }
 });
