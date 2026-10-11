@@ -219,6 +219,8 @@ OSへ組み込むLocal AI APKは、上流commitに加えてbase overlayと順序
 
 model固有tokenやembeddingはprojection cache。canonical記憶としない。AIの推測を本人の事実や承認へ昇格させない。credential、seed、秘密鍵を記憶本文へ入れない。
 
+暗号化記憶のhost storeはcipherのseal/open失敗を内容を含まない固定`MemoryUnavailable`へ変換し、原因例外を通常tracebackに連結しない。seal失敗時は既存revision・projectionを変更せず、callerへ失敗を返す。これはAI03／ROCKの保存・診断境界であり、実OS鍵・Android／Zema接続は未受入。[責任・入出力・復旧・合格条件](ai-memory-architecture.md)とhost回帰`systems/rock-star-os/tests/test_memory_store.py`を参照する。
+
 ## 11. 実行場所とnetwork
 
 | 実行場所 | 利用条件 | 通信断時 |

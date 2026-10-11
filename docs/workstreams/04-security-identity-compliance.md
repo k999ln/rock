@@ -96,3 +96,7 @@ Dependabot #26のsharp／librsvg修正はrootのminiflare overrideと同梱nativ
 SDKのOAuth issuer結合修正は既存Dependabot PR #89を継続する。lock hashに束縛した監査を同期し、法的clearanceと公開gateを保持して既存release回帰・全体CIを確認する。実credential移行やOAuth連携の実運用受入は別であり、main alertの状態も分けて記録する。[証拠](../evidence/spider-sdk-lock-audit.json)。
 
 2026-10-07 cycle77: PR #89へmain `0455499d` の文書整理を反映し、project.mdの競合を両側の記録を残して解消。SDK lockと監査一覧の既存修正は同一byte、release回帰35/35とrelease／inventory checkが合格。新しいSHAの全体CI・SPIDERは後続確認。詳細は同じ検証記録のlatestMainRefreshへ保存する。
+
+## Canonical Memoryのcipher失敗（AI03 / SYS02、2026-10-11）
+
+ROCK／O3・O1。host storeのseal失敗がProvider例外をそのまま返し、open失敗の例外連鎖が内容を通常tracebackへ含める問題を合成cipherで再現した。固定エラーと連鎖抑止へ統一し、失敗した暗号化は旧revision・projectionを維持する。追加3回帰は修正前1 failure / 2 errors、修正後Memory storeとBroker façadeの16試験が成功。fixture cipherの境界確認であり、暗号強度、実OS鍵、端末受入ではない。[記憶契約](../ai-memory-architecture.md)。

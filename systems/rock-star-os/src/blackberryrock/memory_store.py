@@ -218,7 +218,10 @@ class CanonicalMemoryStore:
                 raise MemoryConflict("memory revision changed")
             revision = actual + 1
             aad = self._aad(owner, project, mid, revision, "canonical")
-            ciphertext = self.cipher.seal(owner, aad, plaintext)
+            try:
+                ciphertext = self.cipher.seal(owner, aad, plaintext)
+            except Exception:
+                raise MemoryUnavailable("memory encryption failed") from None
             if (not isinstance(ciphertext, bytes) or len(ciphertext) < len(plaintext) + 16
                     or len(ciphertext) > MAX_CIPHER_BYTES):
                 raise MemoryUnavailable("OS cipher returned an invalid envelope")
@@ -260,14 +263,14 @@ class CanonicalMemoryStore:
         aad = self._aad(owner, project, mid, row["revision"], "canonical")
         try:
             plaintext = self.cipher.open(owner, aad, bytes(row["content_ciphertext"]))
-        except Exception as exc:
-            raise MemoryUnavailable("memory authentication failed") from exc
+        except Exception:
+            raise MemoryUnavailable("memory authentication failed") from None
         if not isinstance(plaintext, bytes) or len(plaintext) > MAX_CONTENT_BYTES:
             raise MemoryUnavailable("memory plaintext invalid")
         try:
             content = plaintext.decode("utf-8")
-        except UnicodeDecodeError as exc:
-            raise MemoryUnavailable("memory plaintext encoding invalid") from exc
+        except UnicodeDecodeError:
+            raise MemoryUnavailable("memory plaintext encoding invalid") from None
         return {"ownerRef": owner, "projectRef": project, "memoryId": mid, "kind": row["kind"],
                 "provenance": json.loads(row["provenance"]), "createdAt": row["created_at"],
                 "expiresAt": row["expires_at"], "revision": row["revision"], "content": content}
@@ -298,7 +301,10 @@ class CanonicalMemoryStore:
             raise ValueError("bounded model projection required")
         revision = canonical["revision"]
         aad = self._aad(owner, project, mid, revision, "model-projection", model_profile_id)
-        ciphertext = self.cipher.seal(owner, aad, projection)
+        try:
+            ciphertext = self.cipher.seal(owner, aad, projection)
+        except Exception:
+            raise MemoryUnavailable("projection encryption failed") from None
         if (not isinstance(ciphertext, bytes) or len(ciphertext) < len(projection) + 16
                 or len(ciphertext) > MAX_CIPHER_BYTES):
             raise MemoryUnavailable("OS cipher returned an invalid projection envelope")
@@ -332,8 +338,8 @@ class CanonicalMemoryStore:
         aad = self._aad(owner, project, mid, row["revision"], "model-projection", model_profile_id)
         try:
             value = self.cipher.open(owner, aad, bytes(row["projection_ciphertext"]))
-        except Exception as exc:
-            raise MemoryUnavailable("projection authentication failed") from exc
+        except Exception:
+            raise MemoryUnavailable("projection authentication failed") from None
         if not isinstance(value, bytes) or not value or len(value) > MAX_PROJECTION_BYTES:
             raise MemoryUnavailable("projection invalid")
         return value

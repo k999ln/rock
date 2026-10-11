@@ -3,6 +3,8 @@ from contextlib import closing
 import json
 import sqlite3
 import tempfile
+import traceback
+from unittest.mock import patch
 import unittest
 from pathlib import Path
 
@@ -146,6 +148,54 @@ class CanonicalMemoryStoreTest(unittest.TestCase):
         (link_dir / "canonical-memory.sqlite3").symlink_to(victim)
         with self.assertRaises(MemoryUnavailable):
             CanonicalMemoryStore(link_dir, cipher=self.cipher)
+
+    def assert_private_cipher_failure(self, operation, expected_message):
+        marker = "synthetic-private-cipher-content"
+        try:
+            operation()
+        except MemoryUnavailable as error:
+            self.assertEqual(expected_message, str(error))
+            self.assertNotIn(marker, "".join(traceback.format_exception(error)))
+            self.assertIsNone(error.__cause__)
+            self.assertTrue(error.__suppress_context__)
+        else:
+            self.fail("cipher failure must stop the operation")
+
+    def test_canonical_seal_failure_is_sanitized_and_keeps_prior_revision(self):
+        self.put()
+        marker = "synthetic-private-cipher-content"
+        with patch.object(self.cipher, "seal", side_effect=ValueError(marker)):
+            self.assert_private_cipher_failure(
+                lambda: self.put(content="replacement", expected_revision=1, now=200),
+                "memory encryption failed")
+        stored = self.store.get(owner_ref="owner:alice", project_ref="project:alpha",
+                                memory_id="memory-1", now=200)
+        self.assertEqual(1, stored["revision"])
+        self.assertEqual("Use Japanese, short explanations.", stored["content"])
+
+    def test_canonical_open_failure_does_not_expose_provider_traceback(self):
+        self.put()
+        marker = "synthetic-private-cipher-content"
+        with patch.object(self.cipher, "open", side_effect=ValueError(marker)):
+            self.assert_private_cipher_failure(
+                lambda: self.store.get(owner_ref="owner:alice", project_ref="project:alpha",
+                                       memory_id="memory-1", now=200),
+                "memory authentication failed")
+
+    def test_projection_cipher_failures_are_sanitized_and_preserve_old_projection(self):
+        self.put()
+        args = dict(owner_ref="owner:alice", project_ref="project:alpha",
+                    memory_id="memory-1", model_profile_id="profile.lifeline.qwen@2", now=200)
+        self.store.rebuild_projection(**args, builder=lambda _: b"old projection")
+        marker = "synthetic-private-cipher-content"
+        with patch.object(self.cipher, "seal", side_effect=ValueError(marker)):
+            self.assert_private_cipher_failure(
+                lambda: self.store.rebuild_projection(**args, builder=lambda _: b"new projection"),
+                "projection encryption failed")
+        self.assertEqual(b"old projection", self.store.read_projection(**args))
+        with patch.object(self.cipher, "open", side_effect=ValueError(marker)):
+            self.assert_private_cipher_failure(lambda: self.store.read_projection(**args),
+                                               "projection authentication failed")
 
     def test_expired_and_unbounded_inputs_are_rejected(self):
         with self.assertRaises(ValueError):
