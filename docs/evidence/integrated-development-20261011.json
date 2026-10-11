@@ -4,7 +4,7 @@
   "plannedEndAt": "2026-10-11T19:13:50Z",
   "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
   "branch": "codex/rock-development-20261011",
-  "status": "integrated_candidate_verified_final_runtime_smoke_in_progress",
+  "status": "integrated_candidate_verified_with_confirmed_start_and_workbench_followups",
   "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
   "taskIds": [
     "G04",
@@ -1036,6 +1036,57 @@
         "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
         "localVerify": "passed",
         "github15Checks": "passed"
+      },
+      "integratedBrowser": {
+        "recordedAt": "2026-10-11T16:57:13.773624+00:00",
+        "sourceSHA": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "result": "pass",
+        "environment": {
+          "runtime": "Exact root vinext build in Miniflare/workerd; actual HTTP routes and D1; exact dist/client assets from local proxy",
+          "authentication": "Synthetic trusted-header gateway only, test owners integration_owner_a/b, no external IdP",
+          "persistence": "Fresh local Miniflare D1 with every canonical SQL migration; existing old Wrangler state was not reused after CLI runtime mismatch",
+          "appUrl": "http://localhost:5195/income/mercari",
+          "gatewayControlsUrl": "http://localhost:5195/_fixture",
+          "scope": "Mercari integrated browser flow; Material/Coconala covered by prior component/route/SQLite regressions, not rerun here"
+        },
+        "steps": [
+          "Normal create under A returned200 with ownerScope header matching authenticated GET; reload restored one record",
+          "Second A create committed in D1; gateway replaced successful response with synthetic503",
+          "Manual exact retry GET observed401 and preserved pending input",
+          "B authentication recovery fetched B scope/list; same-operation retry disabled, no B POST, B records0",
+          "A connection check restored original scope; explicit same-ID/header retry returned200",
+          "Reload retained exactly two A records (normal+recovery), no duplicate and B0"
+        ],
+        "trace": {
+          "posts": 3,
+          "uniqueSavedIds": 2,
+          "sameIdRetry": true,
+          "allPostsOwnerA": true,
+          "allPostScopeMatchesGet": true,
+          "ARecordCount": 2,
+          "BRecordCount": 0,
+          "readback": "ignored integrated-owner-ui/readback.json"
+        },
+        "captures": {
+          "normalReload": "normal-reloaded.jpg",
+          "BRefusal": "b-retry-blocked.jpg",
+          "ARecoveryReload": "a-recovered-reloaded.jpg"
+        },
+        "buildSHA256": {
+          "dist/server/index.js": "de463e290a05f2a326206351b9ec9705feb6d86aa6c80b309637478e711cb40d",
+          "dist/server/wrangler.json": "b748c5a5779b70d5c8af9268897a65a0911719b172882e3550edbbf5ca060a57"
+        },
+        "cleanup": {
+          "serverStopped": true,
+          "tabsClosed": true,
+          "trackedChanges": false,
+          "fileChooserUsed": false
+        },
+        "boundaries": [
+          "No external provider, purchase, real transaction or publication",
+          "Real response frame restriction blocked the initial iframe wrapper; preserved security headers and tested a separate top-level app tab",
+          "Gateway log records original Worker status200 for the deliberately replaced503; no deployed bundle changes"
+        ]
       }
     },
     "mcpConnectionScreenRecovery": {
@@ -1319,8 +1370,23 @@
       "limits": [
         "Node skip is the non-POSIX descriptor-refusal fixture on this POSIX environment.",
         "Android physical reboot and Local AI acceptance are separate.",
-        "Browser follow-up checks real built vinext routes with synthetic local identity; no production acceptance."
+        "Actual built vinext HTML/assets/routes and D1 were verified with synthetic local owner authentication; no production acceptance."
       ]
+    },
+    "followupFindings": {
+      "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+      "workbenchOwnerIntent": {
+        "status": "reproduced_fix_in_progress",
+        "scope": "R03/O2/ROCK",
+        "finding": "Same creation ID/title/template persisted across A pre-insert503, unauthenticated401 and B403. After B acquired a valid Zema entitlement, the old A input was created under B with201.",
+        "limits": "Existing A/B job separation and no billing/provider effects confirmed; pending creation owner intent is the missing boundary."
+      },
+      "localPreviewRuntime": {
+        "status": "reproduced_fix_in_progress",
+        "scope": "WEB01/O7/ROCK",
+        "finding": "npm start selected top-level Wrangler4.122.0 and its older workerd after migration, rejecting the build compatibility date2026-10-01. Verification uses the newer builder runtime, so CI did not cover this CLI path.",
+        "repairBoundary": "Reuse existing builder-aligned productionWrangler resolver; no dependency update or lowered compatibility date."
+      }
     }
   },
   "github": {
