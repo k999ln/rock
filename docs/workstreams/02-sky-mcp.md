@@ -40,6 +40,10 @@
 
 disconnect、遅延initialize後の再接続、遅延tools/list認証エラー、SDK定義削除・差し替えを実HTTPで確認し、関連41件成功・非対応platform用1件skip、対象lint・配布ZIP source一致を確認した。削除だけでは従来も404で拒否されており、新規欠陥として数えない。異なるserverの承認券も失効させる点は既存disconnect・syncLocal・期限切れのcontrol-plane全失効方針を維持する。承認payload自体はserver IDに束縛済みで、一律失効が暗号上必須という意味ではない。
 
+同日追補（SKY07-03）: `connect`の`tools/list`はTool総数だけを制限し、空ページと同一／循環／毎回新しい`nextCursor`では取得を無制限に続けていた。実Connector HTTPとローカルMCP fixtureで、試験側が8ページ目に終了させるまで取得が続き、誤って200のPassportを作ることを確認した。不正な型や空文字のcursorも成功扱いになった。
+
+既存の掲載診断と同じ最大5ページで完結することを要求し、`nextCursor`は省略時だけ終了、存在時は非空文字列・UTF-8最大1 KiB・既出値ではないことを検査する。Tool総数2,000件の制限も維持し、失敗時はPassportなし・`error`とする。空の中間ページを含む正常な5ページと1 KiBのcursorは成功し、5ページ目待機中のdisconnectは409 `connection_superseded`で優先される。実HTTPの異常cursor／ページ上限と正常取得・取消、既存認証・承認・SPIDER・限定mode関連は55件成功・非対応platform用1件skip。product lint、対象Connector lint、再生成ZIPのsource一致を確認した。実行はローカル合成fixtureの範囲に限り、外部MCP・有料Providerへの接続や課金gateの変更は行っていない。
+
 ## 現在地
 
 - 2026-10-04 SKY07／SKY14（ROCK）: IP StudioへLiveKit音声・電話の接続設定・Zema候補選択・依頼振分けを追加。設定保存は実接続ではなく、別アプリ本体と音声・電話runtimeの受入は未完了。[契約と残る作業](../sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)。
