@@ -39,6 +39,12 @@ ROCKはHome、device authorization、Broker device enrollment、Wallet handoff�
 
 これは本文期限の検査であり、接続全体の強制停止を受入した記録ではない。[Androidのread timeout](https://developer.android.com/reference/java/net/URLConnection#setReadTimeout(int))はデータ到着待ちの制限で、接続全体の期限ではない。現行のbody deadlineはHTTP header取得後に始まり、`read()`内部のTLS／HTTP framing待ちも戻るまで検査できない。slow header、継続するchunk metadata、進行中TLS readを総期限で中断するには、取消可能なtransport方式と同候補の実Android受入が必要。外部timer/thread、依存APIの置換、ネットワーク接続はこの限定修正へ追加していない。
 
+### 2026-10-11 OS10／O6 — HTTPS応答処理の共通化
+
+main `bcd31090`から、4 readerのbyte上限・単調時計期限と6経路のJSON media type／identity encoding検査・厳密UTF-8変換を、automation内の`AndroidJsonResponse`へ集約した。各transportは期限の起算点と値、error prefix、HTTP status、401失効、署名、JSON構造、stream closeとbyte配列の消去を引き続き所有する。接続方式・依存・公開APIの変更はない。
+
+既存157件（Core 121、session／401 16、4 callerの期限20）を変更前後で実行し、共通処理のhost JUnit 10件を加えた167件が合格。追加試験はheader検査の順序、caller固有error、UTF-8破損、期限ちょうどのread／EOF、短いreadとzero read、byte上限とcleanup責任を確認する。SDK 35で7 AIDL／74 Java sourceをcompileした。再現入口は`gradle -p android :core:test :automation:testDebugUnitTest`と既存の`:automation:connectedDebugAndroidTest`。hostの期限試験は時計APIをJVM単調時計へ置換しており、この変更のAPK／API35実行・Pixel／全OS受入は同一候補で別に確認する。
+
 ### 2026-10-11 OS10／O6 — A2A予約応答喪失後の再確認
 
 主taskは`OS10`（AMC primarySquad `O6`）、責任は`ROCK`。`AI04`の外部作用・crash復旧契約を参照するが、Provider／実支出／実機やAI04全体の受入へ加算しない。Brokerの`confirmCloudA2AWalletReservation`は、確定済み予約の再確認で存在しない`payload_digest`列を読んでいた。予約時に本人承認が`CONSUMED`へ進むため、応答喪失後は同じ予約でも本人確認待ちへ誤って戻っていた。Coreの`A2ARecoveryBinding.isConfirmedHeldReservation`へ実callerの判定を共通化し、正しい`approval_digest`、owner、delegation ID、approval ID、保持額、`HELD`状態が一致する場合だけ既存予約を返す。再承認・二度目の予約・Cloud dispatchは行わない。

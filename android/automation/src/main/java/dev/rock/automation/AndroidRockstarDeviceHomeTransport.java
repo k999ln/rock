@@ -2,16 +2,13 @@ package dev.rock.automation;
 
 import android.os.Looper;
 import android.os.SystemClock;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONObject;
@@ -74,19 +71,13 @@ final class AndroidRockstarDeviceHomeTransport {
             int status = connection.getResponseCode();
             rejectUnauthorized(status, authorization, "DEVICE_HOME_HTTP_401");
             if (status != 200) throw new IOException("DEVICE_HOME_HTTP_" + status);
-            String contentType = connection.getContentType();
-            if (contentType == null || !"application/json".equalsIgnoreCase(contentType.split(";", 2)[0].trim()))
-                throw new IOException("DEVICE_HOME_CONTENT_TYPE_INVALID");
-            String encoding = connection.getContentEncoding();
-            if (encoding != null && !"identity".equalsIgnoreCase(encoding.trim()))
-                throw new IOException("DEVICE_HOME_CONTENT_ENCODING_INVALID");
+            AndroidJsonResponse.requireJsonHeaders(connection, "DEVICE_HOME");
             try (InputStream input = connection.getInputStream()) {
                 responseBytes = readBounded(input, MAX_RESPONSE_BYTES, SystemClock.elapsedRealtime() + 20_000L);
             }
             String response;
             try {
-                response = StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-                    .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(responseBytes)).toString();
+                response = AndroidJsonResponse.decodeUtf8(responseBytes);
             } catch (CharacterCodingException malformed) {
                 throw new IOException("DEVICE_HOME_UTF8_INVALID", malformed);
             }
@@ -268,17 +259,11 @@ final class AndroidRockstarDeviceHomeTransport {
             try (java.io.OutputStream output = connection.getOutputStream()) { output.write(requestBytes); }
             int status = connection.getResponseCode();
             if (status != 200 && status != 201) throw new IOException("DEVICE_LLM_QUOTE_HTTP_" + status);
-            String contentType = connection.getContentType();
-            if (contentType == null || !"application/json".equalsIgnoreCase(contentType.split(";", 2)[0].trim()))
-                throw new IOException("DEVICE_LLM_QUOTE_CONTENT_TYPE_INVALID");
-            String encoding = connection.getContentEncoding();
-            if (encoding != null && !"identity".equalsIgnoreCase(encoding.trim()))
-                throw new IOException("DEVICE_LLM_QUOTE_CONTENT_ENCODING_INVALID");
+            AndroidJsonResponse.requireJsonHeaders(connection, "DEVICE_LLM_QUOTE");
             try (InputStream input = connection.getInputStream()) {
                 responseBytes = readBounded(input, 24_000, SystemClock.elapsedRealtime() + 25_000L);
             }
-            String response = StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-                .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(responseBytes)).toString();
+            String response = AndroidJsonResponse.decodeUtf8(responseBytes);
             JSONObject root = new JSONObject(response);
             if (root.optJSONObject("execution") == null || !root.has("executionAvailable"))
                 throw new IOException("DEVICE_LLM_QUOTE_RESPONSE_INVALID");
@@ -383,17 +368,11 @@ final class AndroidRockstarDeviceHomeTransport {
             rejectUnauthorized(status, authorization, "DEVICE_HOME_ACTION_HTTP_401");
             if (status != 200 && status != 201 && status != 202)
                 throw new IOException("DEVICE_HOME_ACTION_HTTP_" + status);
-            String contentType = connection.getContentType();
-            if (contentType == null || !"application/json".equalsIgnoreCase(contentType.split(";", 2)[0].trim()))
-                throw new IOException("DEVICE_LLM_POST_CONTENT_TYPE_INVALID");
-            String encoding = connection.getContentEncoding();
-            if (encoding != null && !"identity".equalsIgnoreCase(encoding.trim()))
-                throw new IOException("DEVICE_LLM_POST_CONTENT_ENCODING_INVALID");
+            AndroidJsonResponse.requireJsonHeaders(connection, "DEVICE_LLM_POST");
             try (InputStream input = connection.getInputStream()) {
                 responseBytes = readBounded(input, MAX_RESPONSE_BYTES, SystemClock.elapsedRealtime() + 125_000L);
             }
-            String response = StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
-                .onUnmappableCharacter(CodingErrorAction.REPORT).decode(ByteBuffer.wrap(responseBytes)).toString();
+            String response = AndroidJsonResponse.decodeUtf8(responseBytes);
             return new JSONObject(response);
         } catch (org.json.JSONException | CharacterCodingException | IllegalArgumentException invalid) {
             throw new IOException("DEVICE_LLM_POST_RESPONSE_INVALID", invalid);
@@ -439,16 +418,7 @@ final class AndroidRockstarDeviceHomeTransport {
     }
 
     private static byte[] readBounded(InputStream input, int maximum, long deadline) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1_024];
-        while (true) {
-            if (SystemClock.elapsedRealtime() >= deadline) throw new IOException("DEVICE_HOME_RESPONSE_TIMEOUT");
-            int count = input.read(buffer);
-            if (SystemClock.elapsedRealtime() >= deadline) throw new IOException("DEVICE_HOME_RESPONSE_TIMEOUT");
-            if (count == -1) break;
-            if (output.size() > maximum - count) throw new IOException("DEVICE_HOME_RESPONSE_TOO_LARGE");
-            output.write(buffer, 0, count);
-        }
-        return output.toByteArray();
+        return AndroidJsonResponse.readBounded(input, maximum, deadline,
+            SystemClock::elapsedRealtime, "DEVICE_HOME");
     }
 }
