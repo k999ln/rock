@@ -628,8 +628,7 @@ public final class MainActivity extends Activity {
         String state = home.optString("state", "ready");
         if ("not_linked".equals(state)) {
             cloudTaskHandler.removeCallbacks(cloudTaskRefresh);
-            entitlementClaimPanel.setVisibility(View.GONE);
-            entitlementClaimPackageInput.setText("");
+            applyDeviceLinkStatus(home);
             cloudServiceHomeStatus.setText("クラウドの状態を確認するにはRockstarアカウント連携が必要です。");
             return;
         }
@@ -827,6 +826,7 @@ public final class MainActivity extends Activity {
                     } else if ("claim_rejected".equals(state)) {
                         entitlementClaimStatus.setText("claimが無効・期限切れ・別のRockstar IDで登録済みの可能性があります。販売元へ確認してください。");
                     } else if ("not_linked".equals(state)) {
+                        applyCloudServiceHome(result);
                         entitlementClaimStatus.setText("Rockstar IDの有効な端末連携を確認できません。再接続してから、同じclaimを明示的に再試行できます。");
                     } else if ("invalid_package".equals(state)) {
                         entitlementClaimStatus.setText("購入claimのJSON形式を確認してください。");
@@ -1848,8 +1848,39 @@ public final class MainActivity extends Activity {
             accountLinkStatus.setText("Rockstarサービス接続先が未設定です。開発時はGradleのrockstarServiceOriginを指定します。");
         else if ("denied".equals(state)) accountLinkStatus.setText("連携は承認されませんでした。必要ならもう一度開始してください。");
         else if ("expired".equals(state)) accountLinkStatus.setText("承認コードの期限が切れました。もう一度開始してください。");
-        else if ("not_linked".equals(state)) accountLinkStatus.setText("Rockstarアカウント未連携です。");
+        else if ("not_linked".equals(state)) {
+            clearCloudAccountPresentation();
+            accountLinkStatus.setText("Rockstarアカウント未連携です。もう一度連携を開始してください。");
+        }
         else accountLinkStatus.setText("連携状態を確認できません。" + status.optString("code", ""));
+    }
+
+    private void clearCloudAccountPresentation() {
+        entitlementClaimPanel.setVisibility(View.GONE);
+        entitlementClaimPackageInput.setText("");
+        entitlementClaimStatus.setText("");
+        cloudTaskActions.removeAllViews();
+        cloudTaskDetailActions.removeAllViews();
+        cloudTaskDetailStatus.setText("アカウント連携後に同じ作業の状態を再確認してください。");
+        cloudA2aAgentList.removeAllViews();
+        cloudA2aVerifiedQuote = null;
+        cloudA2aQuotedPrompt = null; cloudA2aQuotedCurrency = null; cloudA2aQuotedAgentId = null;
+        cloudA2aCurrentDraft = null;
+        cloudA2aWalletApprovalId = null; cloudA2aHeldDelegationId = null;
+        renderCloudA2AParentJobs(null);
+        for (Button action : new Button[] {cloudA2aWalletApprovalButton, cloudA2aWalletReserveButton,
+                cloudA2aWalletReleaseButton, cloudA2aBrokerProofButton, cloudA2aFinalApprovalButton,
+                cloudA2aExecutionRecoveryButton}) action.setVisibility(View.GONE);
+        cloudA2aQuoteDisclosureConsent.setChecked(false);
+        cloudA2aPaidExecutionConsent.setChecked(false);
+        cloudA2aExecutionConsent.setChecked(false);
+        cloudA2aQuoteStatus.setText("アカウント連携後に見積・作業状態を再確認してください。保存済みの予約・作業は継続して照合できます。");
+        cloudLlmQuoteId = null; cloudLlmApprovalDigest = null; cloudLlmQuotedPrompt = null;
+        cloudLlmQuotedModel = null; cloudLlmQuotedCurrency = null;
+        cloudLlmExecuteButton.setVisibility(View.GONE);
+        cloudLlmExecutionConsent.setChecked(false);
+        cloudLlmQuoteSummary.setText("アカウント連携後に見積を確認してください。");
+        // Keep the durable same-ID recovery keys and Broker Wallet holds: unlinking is not cancellation.
     }
 
     private void applyDeviceCapabilities(JSONObject capabilities) {

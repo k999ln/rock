@@ -1,6 +1,7 @@
 package dev.rock.core;
 
 import dev.rock.core.platform.A2ABrokerAuthorization;
+import dev.rock.core.platform.A2ARecoveryBinding;
 import dev.rock.core.platform.A2AUsageReceiptVerifier;
 import dev.rock.core.platform.A2AWalletSettlementSync;
 import dev.rock.core.platform.ComponentManifest;
@@ -120,6 +121,86 @@ public final class A2AWalletReservationTest {
         assertEquals("RELEASED", store.releaseA2ABudgetBeforeDispatch("alice", "a2a-job-1", NOW + 4).get("state"));
         assertEquals(1_000, store.availableBalance("alice", "USD"));
         assertThrows(IllegalStateException.class, () -> store.markA2ABudgetDispatched("alice", "a2a-job-1", NOW + 5));
+    }
+
+    @Test public void lostReservationResponseRecoversAfterDatabaseReopenWithConsumedApproval() {
+        String approval = firstPartyApproval();
+        store.reserveA2ABudget(approval, PlatformStore.A2A_WALLET_APPROVAL_COMPONENT,
+            PlatformStore.a2aBudgetPayloadDigest(hold), hold, NOW + 2);
+        assertEquals("CONSUMED", store.approval("alice", approval).get("state"));
+        reopen();
+        Map<String,String> existing = store.findA2AWalletReservation("alice", hold.delegationId);
+        assertTrue(A2ARecoveryBinding.isConfirmedHeldReservation(existing, "alice", hold.delegationId,
+            approval, PlatformStore.a2aBudgetPayloadDigest(hold), hold.limitMinor));
+        assertEquals(300, store.availableBalance("alice", "USD"));
+        assertEquals("CONSUMED", store.approval("alice", approval).get("state"));
+        assertEquals("1", db.query("SELECT COUNT(*) AS count FROM platform_events WHERE kind='A2A_WALLET_RESERVED'")
+            .get(0).get("count"));
+    }
+
+    @Test public void reservationRecoveryRejectsAnotherOwnerApprovalQuoteOrCap() {
+        String approval = firstPartyApproval();
+        String payload = PlatformStore.a2aBudgetPayloadDigest(hold);
+        Map<String,String> existing = store.reserveA2ABudget(approval,
+            PlatformStore.A2A_WALLET_APPROVAL_COMPONENT, payload, hold, NOW + 2);
+        assertNull(store.findA2AWalletReservation("bob", hold.delegationId));
+        assertFalse(A2ARecoveryBinding.isConfirmedHeldReservation(existing, "bob", hold.delegationId,
+            approval, payload, hold.limitMinor));
+        assertFalse(A2ARecoveryBinding.isConfirmedHeldReservation(existing, "alice", "other-delegation",
+            approval, payload, hold.limitMinor));
+        assertFalse(A2ARecoveryBinding.isConfirmedHeldReservation(existing, "alice", hold.delegationId,
+            java.util.UUID.randomUUID().toString(), payload, hold.limitMinor));
+        assertFalse(A2ARecoveryBinding.isConfirmedHeldReservation(existing, "alice", hold.delegationId,
+            approval, "f".repeat(64), hold.limitMinor));
+        assertFalse(A2ARecoveryBinding.isConfirmedHeldReservation(existing, "alice", hold.delegationId,
+            approval, payload, hold.limitMinor + 1));
+        assertEquals(300, store.availableBalance("alice", "USD"));
+    }
+
+    @Test public void dispatchedReservationIsNeverRecoveredAsPermissionToDispatchAgain() {
+        String approval = firstPartyApproval();
+        String payload = PlatformStore.a2aBudgetPayloadDigest(hold);
+        store.reserveA2ABudget(approval, PlatformStore.A2A_WALLET_APPROVAL_COMPONENT, payload, hold, NOW + 2);
+        store.markA2ABudgetDispatched("alice", hold.delegationId, NOW + 3);
+        reopen();
+        assertFalse(A2ARecoveryBinding.isConfirmedHeldReservation(
+            store.findA2AWalletReservation("alice", hold.delegationId), "alice", hold.delegationId,
+            approval, payload, hold.limitMinor));
+        assertEquals("DISPATCHED", store.a2aWalletReservation("alice", hold.delegationId).get("state"));
+        assertThrows(IllegalStateException.class,
+            () -> store.releaseA2ABudgetBeforeDispatch("alice", hold.delegationId, NOW + 4));
+    }
+
+    @Test public void failedReservationWriteRollsBackApprovalAndCanBeRetriedAfterRestart() {
+        String approval = firstPartyApproval();
+        String payload = PlatformStore.a2aBudgetPayloadDigest(hold);
+        db.execute("CREATE TRIGGER fail_a2a_reservation BEFORE INSERT ON a2a_wallet_reservations " +
+            "BEGIN SELECT RAISE(ABORT, 'fixture reservation persistence failure'); END");
+        assertThrows(IllegalStateException.class, () -> store.reserveA2ABudget(approval,
+            PlatformStore.A2A_WALLET_APPROVAL_COMPONENT, payload, hold, NOW + 2));
+        assertEquals("ISSUED", store.approval("alice", approval).get("state"));
+        assertNull(store.findA2AWalletReservation("alice", hold.delegationId));
+        assertEquals(1_000, store.availableBalance("alice", "USD"));
+        db.execute("DROP TRIGGER fail_a2a_reservation");
+        reopen();
+        Map<String,String> saved = store.reserveA2ABudget(approval,
+            PlatformStore.A2A_WALLET_APPROVAL_COMPONENT, payload, hold, NOW + 3);
+        assertTrue(A2ARecoveryBinding.isConfirmedHeldReservation(saved, "alice", hold.delegationId,
+            approval, payload, hold.limitMinor));
+        assertEquals(300, store.availableBalance("alice", "USD"));
+    }
+
+    private String firstPartyApproval() {
+        String approval = store.proposeA2AWalletApproval("alice", "native-approve:" + hold.delegationId,
+            hold, NOW + 300_000, NOW);
+        store.confirmApproval("alice", approval, NOW + 1);
+        return approval;
+    }
+
+    private void reopen() {
+        db.close();
+        db = new JdbcDatabase(new java.io.File(temp.getRoot(), "a2a-wallet.db").getPath());
+        store = new PlatformStore(db);
     }
 
     @Test public void ownerApprovedReservationCommitsExactQuoteDigestAndStablePreDispatchTaskId() {

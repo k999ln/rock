@@ -131,7 +131,7 @@ final class AndroidA2ABrokerEnrollment {
         Map<String,String> reservation = platform.a2aWalletReservation(owner, delegationId);
         String state = reservation.get("state");
         if ("HELD".equals(state)) {
-            AndroidRockstarDeviceHomeTransport cloud = new AndroidRockstarDeviceHomeTransport(origin);
+            AndroidRockstarDeviceHomeTransport cloud = new AndroidRockstarDeviceHomeTransport(origin, sessions::clearIfAuthorizationMatches);
             JSONObject detail = new JSONObject(cloud.get(cloud.taskDetailPath("agent-status", delegationId), authorization));
             JSONObject delegation = detail.optJSONObject("delegation");
             if (delegation == null || !delegationId.equals(delegation.optString("id")) ||

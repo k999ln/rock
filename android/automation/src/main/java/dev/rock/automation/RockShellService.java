@@ -199,8 +199,10 @@ public final class RockShellService extends Service {
                     return "{\"state\":\"not_configured\"}";
                 String authorization = deviceSessionStore().authorizationHeader();
                 if (authorization == null) return "{\"state\":\"not_linked\"}";
-                return new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN)
+                return deviceHomeTransport()
                     .get(AndroidRockstarDeviceHomeTransport.PATH, authorization);
+            } catch (AndroidRockstarDeviceHomeTransport.SessionRejectedException rejected) {
+                return "{\"state\":\"not_linked\"}";
             } catch (Exception failure) {
                 return "{\"state\":\"unavailable\",\"code\":\"DEVICE_HOME_UNAVAILABLE\"}";
             }
@@ -212,7 +214,7 @@ public final class RockShellService extends Service {
             try {
                 String authorization = deviceSessionStore().authorizationHeader();
                 if (authorization == null) return "{\"state\":\"not_linked\"}";
-                JSONObject result = new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN)
+                JSONObject result = deviceHomeTransport()
                     .claimRockstarServiceEntitlement(authorization, packageJson);
                 JSONObject entitlement = result.getJSONObject("entitlement");
                 JSONObject safe = new JSONObject();
@@ -241,7 +243,7 @@ public final class RockShellService extends Service {
                 String authorization = deviceSessionStore().authorizationHeader();
                 if (authorization == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 String path = transport.taskDetailPath(kind, taskId);
                 return transport.get(path, authorization);
             } catch (Exception failure) {
@@ -256,7 +258,7 @@ public final class RockShellService extends Service {
                 String authorization = deviceSessionStore().authorizationHeader();
                 if (authorization == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 return transport.get(transport.a2aAgentsPath(), authorization);
             } catch (Exception failure) {
                 return a2aBrokerFailure("AGENT_DIRECTORY_UNAVAILABLE");
@@ -275,7 +277,7 @@ public final class RockShellService extends Service {
                 String owner = sessions.ownerUserId();
                 if (authorization == null || owner == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 JSONObject directory = new JSONObject(transport.get(transport.a2aAgentsPath(), authorization));
                 JSONArray agents = directory.optJSONArray("agents");
                 JSONObject selected = null;
@@ -349,7 +351,7 @@ public final class RockShellService extends Service {
                 String owner = sessions.ownerUserId();
                 if (authorization == null || owner == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 JSONObject directory = new JSONObject(transport.get(transport.a2aAgentsPath(), authorization));
                 JSONArray agents = directory.optJSONArray("agents");
                 JSONObject selected = null;
@@ -413,7 +415,7 @@ public final class RockShellService extends Service {
                 String authorization = deviceSessionStore().authorizationHeader();
                 if (authorization == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 String path = transport.recoverA2ADelegationPath(parentJobId, idempotencyKey, inputSha256);
                 JSONObject response = new JSONObject(transport.get(path, authorization));
                 JSONObject delegation = response.optJSONObject("delegation");
@@ -491,10 +493,8 @@ public final class RockShellService extends Service {
                             Long.parseLong(approval.get("expires_at")) > draft.hold.deadlineAt)
                         return a2aBrokerFailure("WALLET_APPROVAL_TERMS_MISMATCH");
                     Map<String,String> existing = platform.findA2AWalletReservation(draft.ownerUserId, draft.delegationId);
-                    if (existing != null && "HELD".equals(existing.get("state")) &&
-                            approvalId.equals(existing.get("approval_id")) &&
-                            payloadDigest.equals(existing.get("payload_digest")) &&
-                            Long.parseLong(existing.get("held_minor")) == draft.hold.limitMinor) {
+                    if (A2ARecoveryBinding.isConfirmedHeldReservation(existing, draft.ownerUserId,
+                            draft.delegationId, approvalId, payloadDigest, draft.hold.limitMinor)) {
                         JSONObject response = new JSONObject(); response.put("state", "reserved");
                         response.put("delegationId", draft.delegationId); response.put("walletState", "HELD");
                         response.put("currency", draft.currency); response.put("heldMinor", draft.hold.limitMinor);
@@ -536,7 +536,7 @@ public final class RockShellService extends Service {
                 String authorization = sessions.authorizationHeader();
                 if (authorization == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 JSONObject detail = new JSONObject(transport.get(
                     transport.taskDetailPath("agent-status", delegationId), authorization));
                 JSONObject remote = detail.optJSONObject("delegation");
@@ -574,7 +574,7 @@ public final class RockShellService extends Service {
                     String authorization = sessions.authorizationHeader();
                     if (authorization == null) return "{\"state\":\"not_linked\"}";
                     AndroidRockstarDeviceHomeTransport transport =
-                        new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                        deviceHomeTransport();
                     String localDeviceRef = new AndroidA2ABrokerDeviceRefStore(RockShellService.this).getOrCreate();
                     JSONObject detail = new JSONObject(transport.get(
                         transport.taskDetailPath("agent-status", draft.delegationId), authorization));
@@ -652,7 +652,7 @@ public final class RockShellService extends Service {
                     if (authorization == null) return "{\"state\":\"not_linked\"}";
                     String localDeviceRef = new AndroidA2ABrokerDeviceRefStore(RockShellService.this).getOrCreate();
                     AndroidRockstarDeviceHomeTransport transport =
-                        new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                        deviceHomeTransport();
                     JSONObject detail = readCloudA2ADelegation(transport, authorization, draft.ownerUserId,
                         draft.delegationId);
                     JSONObject proof = detail.optJSONObject("brokerAuthorization");
@@ -716,7 +716,7 @@ public final class RockShellService extends Service {
                 String owner = sessions.ownerUserId(), authorization = sessions.authorizationHeader();
                 if (owner == null || authorization == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 PlatformStore platform = ((RockApplication) getApplication()).platform();
                 return cloudA2AExecutionReadback(transport, authorization, owner, id, platform,
                     System.currentTimeMillis());
@@ -734,7 +734,7 @@ public final class RockShellService extends Service {
                 String owner = sessions.ownerUserId(), authorization = sessions.authorizationHeader();
                 if (owner == null || authorization == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 JSONObject before = readCloudA2ADelegation(transport, authorization, owner, delegationId);
                 JSONObject current = before.getJSONObject("delegation");
                 String priorState = current.optString("state", "unknown");
@@ -761,7 +761,7 @@ public final class RockShellService extends Service {
                     String owner = sessions.ownerUserId(), authorization = sessions.authorizationHeader();
                     if (owner != null && authorization != null) {
                         AndroidRockstarDeviceHomeTransport transport =
-                            new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                            deviceHomeTransport();
                         JSONObject after = readCloudA2ADelegation(transport, authorization, owner, delegationId);
                         return cancellationReadback(delegationId, after.getJSONObject("delegation"), true);
                     }
@@ -778,7 +778,7 @@ public final class RockShellService extends Service {
                 String authorization = deviceSessionStore().authorizationHeader();
                 if (authorization == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 String parentJobId = "device-cloud-llm-" + requestId;
                 return transport.prepareCloudLlmQuote(authorization, requestId, parentJobId,
                     prompt, maximumBudgetMinor, currency, saveResult);
@@ -795,7 +795,7 @@ public final class RockShellService extends Service {
                 String authorization = deviceSessionStore().authorizationHeader();
                 if (authorization == null) return "{\"state\":\"not_linked\"}";
                 AndroidRockstarDeviceHomeTransport transport =
-                    new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+                    deviceHomeTransport();
                 return transport.executeCloudLlmQuote(authorization, prompt, quoteId,
                     approvalDigest, model, outputTokenLimit);
             } catch (Exception failure) {
@@ -1037,6 +1037,11 @@ public final class RockShellService extends Service {
         return new AndroidRockstarDeviceSessionStore(this, BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
     }
 
+    private AndroidRockstarDeviceHomeTransport deviceHomeTransport() {
+        return new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN,
+            deviceSessionStore()::clearIfAuthorizationMatches);
+    }
+
     private String beginRockstarDeviceLinkResponse() {
         synchronized (deviceLinkLock) {
             try {
@@ -1082,6 +1087,8 @@ public final class RockShellService extends Service {
                 pendingDeviceLinkIntervalSeconds = result.intervalSeconds;
                 if (result.state == RockstarDeviceAuthorizationFlow.PollState.AUTHORIZED) {
                     long expiry = deviceSessionStore().activeExpiry();
+                    if (expiry <= System.currentTimeMillis())
+                        throw new java.io.IOException("DEVICE_SESSION_COMMIT_UNCONFIRMED");
                     clearPendingDeviceLink();
                     return linkedDeviceLinkStatus(expiry);
                 }
@@ -1280,7 +1287,7 @@ public final class RockShellService extends Service {
         String authorization = sessions.authorizationHeader(), owner = sessions.ownerUserId();
         if (authorization == null || owner == null) throw new SecurityException("DEVICE_SESSION_REQUIRED");
         AndroidRockstarDeviceHomeTransport transport =
-            new AndroidRockstarDeviceHomeTransport(BuildConfig.ROCKSTAR_SERVICE_ORIGIN);
+            deviceHomeTransport();
         JSONObject directory = new JSONObject(transport.get(transport.a2aAgentsPath(), authorization));
         JSONArray agents = directory.optJSONArray("agents"); JSONObject selected = null;
         if (agents != null) for (int i = 0; i < agents.length(); i++) {

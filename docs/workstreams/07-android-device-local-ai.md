@@ -6,6 +6,20 @@ Sky Compute Gridの供給端末は初期段階でAndroid arm64だけとする。
 
 ## SIM/eSIMサービスの利用開始におけるAndroidの役割（2026-10-01）
 
+### 2026-10-11 端末セッション失効・再連携・保存確定
+
+Brokerのservice-home／購入claim／Cloud作業アダプターは、正規HTTPS originの401を受けた時に、そのリクエストが使ったセッションだけを暗号化ストアから削除する。403・rate limit・server failure・通信断ではアカウント連携を消さない。以前は401の後も90日expiryだけで`linked`を返し、新しい連携を開始できなかった。別のstore instanceからの保存と失効を同じprocess lockで直列化し、遅れて届いた旧セッションの401が新しいセッションを消さない。購入claimは自動再送しない。
+
+セッション保存はAES-GCMの書込み・syncに加え、AtomicFile commit後の暗号文一致を読み戻してから成功を返す。Androidの`finishWrite`はrename失敗を例外で返さないため、呼出しの終了だけを保存成功へ換算しない（[AOSP Android 15 AtomicFile](https://raw.githubusercontent.com/aosp-mirror/platform_frameworks_base/android15-release/core/java/android/util/AtomicFile.java)）。Shellは`not_linked`で購入claim入力、以前の成果、見積・承認・実行ボタンを消去して再連携を案内する。BrokerのWallet予約と同一IDの復旧キーは保持し、アカウント失効を仕事のcancelや予約解除に変換しない。
+
+検証: 401処理とcommit読戻しを外した従来動作を、実Java adapter／AES-GCM codecと合成HTTPS・実一時ファイルのJUnitで5失敗として再現した。修正後は新しいautomation JVM 10件とCore 112件の計122件が合格。既存SDK 35のAIDL compilerと復旧したローカルJDK 17で7 AIDL／72 Java source（Broker・Shell・更新instrumentationを含む）がcompile合格、SIM entry／Android source契約14件と`npm run design:check`も合格。Gradleでの再現は`gradle -p android :core:test :automation:testDebugUnitTest`。`RockstarDeviceAccountLinkTest`は実Keystoreの再生成後readback／失効・旧応答と実AtomicFile rename失敗、`CloudSessionPresentationTest`は実Shell Viewの失効時消去を対象にする。今回のAPK／emulator instrumentation／Pixel実機での実行はまだ未確認であり、既存CIや過去の実機合格を今回の候補へ転用しない。
+
+### 2026-10-11 OS10／O6 — A2A予約応答喪失後の再確認
+
+主taskは`OS10`（AMC primarySquad `O6`）、責任は`ROCK`。`AI04`の外部作用・crash復旧契約を参照するが、Provider／実支出／実機やAI04全体の受入へ加算しない。Brokerの`confirmCloudA2AWalletReservation`は、確定済み予約の再確認で存在しない`payload_digest`列を読んでいた。予約時に本人承認が`CONSUMED`へ進むため、応答喪失後は同じ予約でも本人確認待ちへ誤って戻っていた。Coreの`A2ARecoveryBinding.isConfirmedHeldReservation`へ実callerの判定を共通化し、正しい`approval_digest`、owner、delegation ID、approval ID、保持額、`HELD`状態が一致する場合だけ既存予約を返す。再承認・二度目の予約・Cloud dispatchは行わない。
+
+実SQLiteをclose/reopenするJUnitで、従来の列名を使う判定が「応答喪失後の復旧」「保存失敗をrollbackしてから同じ承認で再試行」の2件に失敗することを確認した。修正後は4件の追加試験を含むCore 116件とautomation 10件、計126件が合格。保存失敗はSQLite triggerの`RAISE(ABORT)`で発生させ、未作成のhold、`ISSUED`の承認、元の残高が同時に維持されることを確認した。別owner／別ID／別承認／別digest／別上限は復旧せず、dispatch済み予約は再dispatch可能な`HELD`へ戻さない。SDK 35で7 AIDL／72 Java source compile、関連source契約14件も合格。取消前後・結果不明・署名usage receipt・append-only精算の既存Core試験は維持する。APK／Android runtime／Providerの新規受入は未実行。
+
 ## 2026-10-02 製品要件監査と優先順位
 
 | 要件 | 再利用できる実装 | 現在の限界／次の作業 |
