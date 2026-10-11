@@ -662,6 +662,10 @@ export class McpHub {
   }
   async connect(id) {
     const entry = this.entry(id);
+    // Reinitialization must retire consent before any new authorization check.
+    // A failed reconnect cannot leave the previous Passport executable.
+    entry.passport = null;
+    this.approvals.clear();
     entry.state = 'connecting';
     entry.transport.reset();
     try {
@@ -845,6 +849,8 @@ export class McpHub {
     )
       fail('承認が無効または期限切れです。', 403, 'invalid_approval');
     const entry = this.entry(id);
+    if (!entry.passport || entry.state !== 'connected')
+      fail('先にMCPへ接続してください。', 409, 'not_connected');
     const payloadDigest = digest({
       id,
       name,

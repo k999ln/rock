@@ -323,6 +323,49 @@ void test('connector binds browser token to an allowlisted Origin', async (t) =>
   assert.equal(response.status, 403);
 });
 
+void test('failed reauthorization invalidates the previous Passport and approval before dispatch', async (t) => {
+  const { request, connector } = await harness(t);
+  assert.equal((await request('/servers/rock-star-mr/connect', {})).status, 200);
+  const args = { text: 'local fixture' };
+  const prepared = await (await request('/servers/rock-star-mr/prepare', {
+    name: 'format_citations', arguments: args,
+  })).json();
+  const transport = connector.hub.entry('rock-star-mr').transport;
+  const original = transport.request.bind(transport);
+  let calls = 0;
+  transport.request = async (message, timeout) => {
+    if (message.method === 'initialize')
+      throw Object.assign(new Error('fixture authorization revoked'), { code: 'authorization_required', status: 401 });
+    if (message.method === 'tools/call') calls++;
+    return original(message, timeout);
+  };
+  assert.equal((await request('/servers/rock-star-mr/connect', {})).status, 401);
+  const stale = await request('/servers/rock-star-mr/execute', {
+    name: 'format_citations', arguments: args,
+    approvalToken: prepared.approvalToken, confirmed: true,
+  });
+  assert.equal(stale.status, 403);
+  assert.equal(calls, 0);
+  const listed = await (await request('/servers', undefined, 'GET')).json();
+  assert.equal(listed.servers[0].state, 'needs_authorization');
+  assert.equal(listed.servers[0].passport, null);
+  transport.request = original;
+  assert.equal((await request('/servers/rock-star-mr/connect', {})).status, 200);
+  assert.equal((await request('/servers/rock-star-mr/execute', {
+    name: 'format_citations', arguments: args,
+    approvalToken: prepared.approvalToken, confirmed: true,
+  })).status, 403);
+  const fresh = await (await request('/servers/rock-star-mr/prepare', {
+    name: 'format_citations', arguments: args,
+  })).json();
+  const recovered = await request('/servers/rock-star-mr/execute', {
+    name: 'format_citations', arguments: args,
+    approvalToken: fresh.approvalToken, confirmed: true,
+  });
+  assert.equal(recovered.status, 200);
+  assert.equal((await recovered.json()).result.isError, false);
+});
+
 void test('legacy MCP refuses changed processor identity before transport dispatch', async (t) => {
   const { request, connector } = await harness(t);
   const entry = connector.hub.entry('rock-star-mr');

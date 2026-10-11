@@ -28,6 +28,14 @@
 
 自動化Toolを安全に発見、登録、接続、権限確認、実行、停止、結果確認できる共通面を提供する。MCPごとの個別例外ではなく、Connection Passportと一回承認を共通契約にする。
 
+### 2026-10-11 SKY07-03／SKY07-05 — 再接続失敗後の旧承認を失効
+
+主担当はAMC O4／ROCK。`lib/mcp-hub.ts` → PC Connectorの`POST /servers/:id/connect`・`prepare`・`execute`を調査し、接続・一回券発行後に再接続のinitializeが401 `authorization_required`で失敗しても、前回のPassportと券が残り、旧券のexecuteが200で同梱processorを実行する欠陥を再現した。実Connector HTTP handlerと同梱ローカルprocessorを使い、再認証の応答だけをfixtureで拒否して確認した。
+
+再接続開始時に前回Passportと未使用承認を失効させ、executeも現在の`connected`状態を必須にした。失敗後は`needs_authorization`・Passportなしを維持し、再接続に成功しても旧券は再使用できない。新しいprepare／一回承認による実行は成功する。Connector／descriptor／pilot／SPIDER関連試験は35件成功・非対応platform用1件skip、対象lint・配布ZIPのsource一致を確認した。外部MCPの料金gate、Origin認証、同梱基本4機能の限定互換境界は変更していない。
+
+これはローカル再認証失敗の回帰受入であり、外部OAuth失効・Providerの実取消・同一remote jobの照会／永続復旧は未受入。MCPの汎用実行にはA2Aと同等のdurable job／receipt照合はなく、結果不明時に自動再送しない既存境界を維持する。SKY07全体の完成やProvider sandbox成功へ加算しない。
+
 ## 現在地
 
 - 2026-10-04 SKY07／SKY14（ROCK）: IP StudioへLiveKit音声・電話の接続設定・Zema候補選択・依頼振分けを追加。設定保存は実接続ではなく、別アプリ本体と音声・電話runtimeの受入は未完了。[契約と残る作業](../sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)。
