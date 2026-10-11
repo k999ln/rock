@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { runInNewContext } from 'node:vm';
 import * as amc from '../lib/amc-tool.ts';
-import { prepareSkyGoal } from '../scripts/amc-sky-plan.mjs';
+import { prepareSkyGoal, skyReferencePaths } from '../scripts/amc-sky-plan.mjs';
 import { protectedSkyEvents } from '../scripts/amc-sky-authority.mjs';
 
 const require = createRequire(import.meta.url);
@@ -26,6 +26,20 @@ const compiled = ts.transpileModule(
   )
     .replace('function ManualRecord(', 'export function ManualRecord(')
     .replace('function MissionBoard(', 'export function MissionBoard('),
+  {
+    compilerOptions: {
+      target: ts.ScriptTarget.ES2022,
+      module: ts.ModuleKind.CommonJS,
+      jsx: ts.JsxEmit.ReactJSX,
+      esModuleInterop: true,
+    },
+  },
+).outputText;
+const compiledLaunch = ts.transpileModule(
+  readFileSync(
+    new URL('../components/amc-sky-launch.tsx', import.meta.url),
+    'utf8',
+  ),
   {
     compilerOptions: {
       target: ts.ScriptTarget.ES2022,
@@ -104,7 +118,7 @@ function harness(component = 'AmcToolRunner', props = {}) {
   };
   const jsx = (type, props) => ({ type, props });
   const exports = {};
-  runInNewContext(compiled, {
+  runInNewContext(component === 'SkyLaunch' ? compiledLaunch : compiled, {
     exports,
     AbortController,
     crypto,
@@ -141,6 +155,10 @@ function harness(component = 'AmcToolRunner', props = {}) {
       if (id === '@/data/mission-control.json') return mission;
       if (id === '@/data/project-status.json') return project;
       if (id === '@/lib/amc-tool') return amc;
+      if (id.startsWith('@/data/amc/'))
+        return json('../data/amc/' + id.slice('@/data/amc/'.length));
+      if (id === '@/scripts/amc-sky-plan.mjs')
+        return { prepareSkyGoal, skyReferencePaths };
       if (id === './amc-sky-launch')
         return { __esModule: true, default: SkyLaunch, skyStarterGoal };
       if (id === './amc-command-center')
@@ -151,7 +169,7 @@ function harness(component = 'AmcToolRunner', props = {}) {
   });
   function render() {
     cursor = 0;
-    tree = exports[component](props);
+    tree = exports[component === 'SkyLaunch' ? 'default' : component](props);
     for (const effect of effects.splice(0)) effect();
     return tree;
   }
@@ -389,4 +407,63 @@ void test('AMC unsaved request preview task does not open an unrelated Sky task'
     true,
   );
   assert.equal(h.find(SkyLaunch).props.initialTaskId, 'S0-01');
+});
+
+void test('Sky launch empty status filter hides excluded task details and directives', () => {
+  const goal = copy(skyStarterGoal);
+  goal.skyDirectives = [
+    {
+      taskId: 'S0-01',
+      directiveId: 'old-directive',
+      status: 'current',
+      taskSpecRevision: 1,
+      observedAt: '2026-10-11T00:00:00Z',
+      reason: [],
+    },
+  ];
+  const h = harness('SkyLaunch', {
+    disabled: false,
+    savedGoal: goal,
+    onSave() {},
+  });
+  assert.match(h.text(), /old-directive/);
+  h.change(h.field('-filter'), 'done');
+  assert.equal(h.field('-task').props.value, '');
+  assert.equal(h.field('-task').props.disabled, true);
+  assert.match(h.text(), /この部隊には該当する作業がありません/);
+  assert.doesNotMatch(h.text(), /old-directive/);
+  assert.equal(
+    h.find(
+      'section',
+      (node) => node.props['aria-label'] === '担当への具体指示',
+    ),
+    undefined,
+  );
+});
+
+void test('Sky launch filter selects a matching task and keeps filtering when selecting another match', () => {
+  const goal = copy(skyStarterGoal);
+  for (const task of goal.tasks)
+    if (['S0-02', 'S0-03'].includes(task.id)) task.status = 'done';
+  const h = harness('SkyLaunch', {
+    disabled: false,
+    savedGoal: goal,
+    onSave() {},
+  });
+  h.change(h.field('-filter'), 'done');
+  assert.equal(h.field('-task').props.value, 'S0-02');
+  assert.ok(h.find('h3', (node) => text(node).startsWith('S0-02')));
+  h.change(h.field('-task'), 'S0-03');
+  assert.equal(h.field('-filter').props.value, 'done');
+  assert.ok(h.find('h3', (node) => text(node).startsWith('S0-03')));
+});
+
+void test('Sky launch cross-squad task links clear a filter that excludes their destination', () => {
+  const h = harness('SkyLaunch', { disabled: false, onSave() {} });
+  h.change(h.field('-filter'), 'done');
+  h.find('button', (node) => text(node) === 'S10-01').props.onClick();
+  h.render();
+  assert.equal(h.field('-filter').props.value, 'all');
+  assert.equal(h.field('-task').props.value, 'S10-01');
+  assert.ok(h.find('h3', (node) => text(node).startsWith('S10-01')));
 });

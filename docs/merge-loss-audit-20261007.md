@@ -165,6 +165,8 @@ git diff 624124cf 0fbf688b -- <ファイル>
 
 **検証。** 実際のrunnerをtranspileしてHTTP完了順・hook状態を操作する `tests/amc-tool-runner-state.test.mjs` を追加。修正前 `adf4b8e` のrunnerでは12件中11件が失敗し、復元後は12件通過。明示保存のみ、未承認の原案保持、確認なしの承認拒否、版と受入条件の一致、5種類のSky状態で保護対象操作を出さないこと、focus直後と401後の非表示、古い中断応答の無視、正本状態フィルタ、保存済みの別GoalとSky原案の選択先分離を検証した。AMC integration / launch / authority / API auth、routing、Zema sessionとの対象回帰試験は計41件通過。TypeScript・変更箇所のlint・差分空白検査も通過。
 
+**再接続後の追加修正。** `AmcSkyLaunch` の状態フィルタで0件になっても以前の任務詳細と指示を表示する問題を再現した。担当作業の選択値・詳細・指示を同じ可視タスクから導き、0件時は選択を無効化して詳細を消す。依存・Gateなど別任務への明示リンクはフィルタを解除し、絞り込み内の選択変更ではフィルタを保つ。追加3件の実コンポーネント試験は修正前に全件失敗、修正後はrunner状態＋Sky launch計20件通過。TypeScript・対象lintも通過。
+
 **限界。** 上記はローカル状態・fixture検証であり、配備済みの本人認証やtrusted observer、実Provider、本番ローンチの受入証拠ではない。ブラウザ確認の入口は `/amc` → `/zema/amc`、同画面の「Skyローンチ」「部隊・進捗」タブ。全体台帳・設計索引と `check-llm-architecture` の復元は別の統合作業で扱う。
 
 ### 4.3 並行ブランチで番号が重なった要望
