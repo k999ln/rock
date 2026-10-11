@@ -14,6 +14,10 @@ Brokerのservice-home／購入claim／Cloud作業アダプターは、正規HTTP
 
 検証: 401処理とcommit読戻しを外した従来動作を、実Java adapter／AES-GCM codecと合成HTTPS・実一時ファイルのJUnitで5失敗として再現した。修正後は新しいautomation JVM 10件とCore 112件の計122件が合格。既存SDK 35のAIDL compilerと復旧したローカルJDK 17で7 AIDL／72 Java source（Broker・Shell・更新instrumentationを含む）がcompile合格、SIM entry／Android source契約14件と`npm run design:check`も合格。Gradleでの再現は`gradle -p android :core:test :automation:testDebugUnitTest`。`RockstarDeviceAccountLinkTest`は実Keystoreの再生成後readback／失効・旧応答と実AtomicFile rename失敗、`CloudSessionPresentationTest`は実Shell Viewの失効時消去を対象にする。今回のAPK／emulator instrumentation／Pixel実機での実行はまだ未確認であり、既存CIや過去の実機合格を今回の候補へ転用しない。
 
+追加監査（OS10／O6／ROCK）では、読取りの全例外をセッション削除へ変換する既存経路を修正した。現在の鍵には`setUnlockedDeviceRequired(true)`があり、[Androidの仕様](https://developer.android.com/reference/android/security/keystore/KeyGenParameterSpec.Builder#setUnlockedDeviceRequired(boolean))では端末ロック中に復号できない。一時的な鍵・ファイル読取り失敗では操作を失敗にして暗号文を保持し、次のstore instanceで再読取りする。saveや401の比較・削除でも同じ条件を使うため、読めない旧アカウントを上書きしたり、削除成功と表示したりしない。構造破損・内容不正・認証タグ不一致、[永久鍵失効](https://developer.android.com/reference/android/security/keystore/KeyPermanentlyInvalidatedException)は従来どおり利用不可として廃棄し、期限判定・失効処理・Wallet予約は維持する。
+
+この追加差分は、変更前`5c4b027f`の実storeでload／save／401 clear／I/Oの4失敗を再現し、変更後のautomation JVM 16件が合格した。実AES-GCMと一時ファイルを使い、鍵失敗は注入している。I/OのEOFと暗号文の切断を区別し、解除後の同一token・owner復旧、別instanceのowner交代と旧401、破損／別origin／永久失効も検査する。SDK 35で7 AIDL／72 Java source compileとSIM entry／Android release source契約10件が合格。実際の画面ロック／unlock、Keystore、Binder process再作成、同候補APKのinstrumentationは引き続き端末／emulator条件であり、hostの注入試験を実機受入へ加算しない。
+
 ### 2026-10-11 OS10／O6 — A2A予約応答喪失後の再確認
 
 主taskは`OS10`（AMC primarySquad `O6`）、責任は`ROCK`。`AI04`の外部作用・crash復旧契約を参照するが、Provider／実支出／実機やAI04全体の受入へ加算しない。Brokerの`confirmCloudA2AWalletReservation`は、確定済み予約の再確認で存在しない`payload_digest`列を読んでいた。予約時に本人承認が`CONSUMED`へ進むため、応答喪失後は同じ予約でも本人確認待ちへ誤って戻っていた。Coreの`A2ARecoveryBinding.isConfirmedHeldReservation`へ実callerの判定を共通化し、正しい`approval_digest`、owner、delegation ID、approval ID、保持額、`HELD`状態が一致する場合だけ既存予約を返す。再承認・二度目の予約・Cloud dispatchは行わない。

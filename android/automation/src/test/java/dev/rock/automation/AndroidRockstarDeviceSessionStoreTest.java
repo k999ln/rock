@@ -70,6 +70,98 @@ public final class AndroidRockstarDeviceSessionStoreTest {
         assertEquals(OWNER, second.ownerUserId());
     }
 
+    @Test public void temporarilyUnavailableKeyDoesNotDestroyTheSavedAccount() throws Exception {
+        File base = new File(directory.getRoot(), "locked");
+        store(new DiskFile(base)).save(TOKEN, expiry(), OWNER);
+        byte[] saved = Files.readAllBytes(base.toPath());
+        AndroidRockstarDeviceSessionStore locked = unavailableKeyStore(base);
+        try { locked.authorizationHeader(); fail("unavailable key must not authorize a request"); }
+        catch (IOException expected) { assertEquals("DEVICE_SESSION_READ_FAILED", expected.getMessage()); }
+        assertTrue("temporary key failure must preserve ciphertext", base.isFile());
+        assertArrayEquals(saved, Files.readAllBytes(base.toPath()));
+        AndroidRockstarDeviceSessionStore unlocked = store(new DiskFile(base));
+        assertEquals("Bearer " + TOKEN, unlocked.authorizationHeader());
+        assertEquals(OWNER, unlocked.ownerUserId());
+        assertTrue(unlocked.activeExpiry() > System.currentTimeMillis());
+    }
+
+    @Test public void temporarilyUnreadableFileDoesNotTurnIntoAnUnlinkedAccount() throws Exception {
+        DiskFile file = new DiskFile(new File(directory.getRoot(), "unreadable"));
+        store(file).save(TOKEN, expiry(), OWNER);
+        byte[] saved = Files.readAllBytes(file.base.toPath());
+        for (IOException unavailable : new IOException[] {
+                new IOException("fixture read unavailable"), new java.io.EOFException("fixture incomplete read") }) {
+            file.readFailure = unavailable;
+            try { store(file).ownerUserId(); fail(); }
+            catch (IOException expected) { assertSame(unavailable, expected); }
+            assertTrue("read failure must preserve ciphertext", file.base.isFile());
+            assertArrayEquals(saved, Files.readAllBytes(file.base.toPath()));
+        }
+        file.readFailure = null;
+        assertEquals(OWNER, store(file).ownerUserId());
+    }
+
+    @Test public void saveCannotReplaceAnAccountWhoseKeyIsTemporarilyUnavailable() throws Exception {
+        File base = new File(directory.getRoot(), "locked-save");
+        store(new DiskFile(base)).save(TOKEN, expiry(), OWNER);
+        byte[] saved = Files.readAllBytes(base.toPath());
+        try { unavailableKeyStore(base).save(NEXT, expiry(), "account:other"); fail(); }
+        catch (IOException expected) { }
+        assertTrue("failed account replacement must preserve the old account", base.isFile());
+        assertArrayEquals(saved, Files.readAllBytes(base.toPath()));
+        AndroidRockstarDeviceSessionStore unlocked = store(new DiskFile(base));
+        try { unlocked.save(NEXT, expiry(), "account:other"); fail(); }
+        catch (IOException expected) { assertEquals("DEVICE_SESSION_ALREADY_LINKED", expected.getMessage()); }
+        assertEquals("Bearer " + TOKEN, unlocked.authorizationHeader());
+        assertEquals(OWNER, unlocked.ownerUserId());
+    }
+
+    @Test public void failedRevocationReadMustNotClaimSuccessfulLocalDeletion() throws Exception {
+        File base = new File(directory.getRoot(), "locked-revocation");
+        store(new DiskFile(base)).save(TOKEN, expiry(), OWNER);
+        byte[] saved = Files.readAllBytes(base.toPath());
+        try { rejectThroughHome(unavailableKeyStore(base), "Bearer " + TOKEN); fail(); }
+        catch (IOException expected) {
+            assertFalse(expected instanceof AndroidRockstarDeviceHomeTransport.SessionRejectedException);
+            assertEquals("DEVICE_SESSION_READ_FAILED", expected.getMessage());
+        }
+        assertTrue("failed comparison must not delete the stored session", base.isFile());
+        assertArrayEquals(saved, Files.readAllBytes(base.toPath()));
+        AndroidRockstarDeviceSessionStore unlocked = store(new DiskFile(base));
+        rejectThroughHome(unlocked, "Bearer " + TOKEN);
+        assertNull(unlocked.authorizationHeader());
+    }
+
+    @Test public void corruptOrWrongOriginCiphertextStillFailsClosedAndIsDiscarded() throws Exception {
+        for (String corruption : new String[] { "tag", "truncated", "format", "origin" }) {
+            File base = new File(directory.getRoot(), corruption);
+            store(new DiskFile(base)).save(TOKEN, expiry(), OWNER);
+            byte[] encrypted = Files.readAllBytes(base.toPath());
+            if (corruption.equals("tag")) encrypted[encrypted.length - 1] ^= 1;
+            if (corruption.equals("truncated")) encrypted = java.util.Arrays.copyOf(encrypted, 3);
+            if (corruption.equals("format")) encrypted[2] ^= 1;
+            Files.write(base.toPath(), encrypted);
+            AndroidRockstarDeviceSessionStore reader = new AndroidRockstarDeviceSessionStore(
+                new DiskFile(base), "dev.rock.automation", corruption.equals("origin") ? "https://other.example" : ORIGIN, () -> KEY);
+            try { reader.authorizationHeader(); fail("accepted " + corruption); }
+            catch (IOException expected) { }
+            assertFalse("discard " + corruption, base.exists());
+            assertNull(store(new DiskFile(base)).authorizationHeader());
+        }
+    }
+
+    @Test public void permanentlyInvalidatedKeyStillRequiresFreshAccountLink() throws Exception {
+        File base = new File(directory.getRoot(), "invalidated-key");
+        store(new DiskFile(base)).save(TOKEN, expiry(), OWNER);
+        AndroidRockstarDeviceSessionStore invalidated = new AndroidRockstarDeviceSessionStore(
+            new DiskFile(base), "dev.rock.automation", ORIGIN,
+            () -> { throw new android.security.keystore.KeyPermanentlyInvalidatedException(); });
+        try { invalidated.authorizationHeader(); fail(); }
+        catch (IOException expected) { }
+        assertFalse(base.exists());
+        assertNull(store(new DiskFile(base)).authorizationHeader());
+    }
+
     @Test public void revocationComparisonAndDeletionAreAtomicAcrossStoreInstances() throws Exception {
         File base = new File(directory.getRoot(), "concurrent");
         AndroidRockstarDeviceSessionStore first = store(new DiskFile(base));
@@ -90,7 +182,7 @@ public final class AndroidRockstarDeviceSessionStoreTest {
             });
             assertTrue(reading.await(5, java.util.concurrent.TimeUnit.SECONDS));
             java.util.concurrent.Future<?> replace = pool.submit(() -> {
-                replacing.countDown(); first.clearLocal(); first.save(NEXT, expiry(), OWNER); return null;
+                replacing.countDown(); first.clearLocal(); first.save(NEXT, expiry(), "account:other"); return null;
             });
             assertTrue(replacing.await(5, java.util.concurrent.TimeUnit.SECONDS));
             try {
@@ -101,6 +193,7 @@ public final class AndroidRockstarDeviceSessionStoreTest {
             revoke.get(5, java.util.concurrent.TimeUnit.SECONDS);
             replace.get(5, java.util.concurrent.TimeUnit.SECONDS);
             assertEquals("Bearer " + NEXT, first.authorizationHeader());
+            assertEquals("account:other", first.ownerUserId());
         } finally {
             release.countDown(); pool.shutdownNow();
             assertTrue(pool.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS));
@@ -121,11 +214,16 @@ public final class AndroidRockstarDeviceSessionStoreTest {
     private static AndroidRockstarDeviceSessionStore store(DiskFile file) {
         return new AndroidRockstarDeviceSessionStore(file, "dev.rock.automation", ORIGIN, () -> KEY);
     }
+    private static AndroidRockstarDeviceSessionStore unavailableKeyStore(File base) {
+        return new AndroidRockstarDeviceSessionStore(new DiskFile(base), "dev.rock.automation", ORIGIN,
+            () -> { throw new java.security.InvalidKeyException("fixture: device locked"); });
+    }
 
     private static final class DiskFile extends AtomicFile {
         private final File base;
         private final File pending;
         boolean dropCommit, dropDelete;
+        IOException readFailure;
         DiskFile(File base) { super(base); this.base = base; pending = new File(base + ".new"); }
         @Override public File getBaseFile() { return base; }
         @Override public FileOutputStream startWrite() throws IOException { return new FileOutputStream(pending); }
@@ -139,7 +237,10 @@ public final class AndroidRockstarDeviceSessionStoreTest {
             try { output.close(); } catch (IOException ignored) { }
             pending.delete();
         }
-        @Override public byte[] readFully() throws IOException { return Files.readAllBytes(base.toPath()); }
+        @Override public byte[] readFully() throws IOException {
+            if (readFailure != null) throw readFailure;
+            return Files.readAllBytes(base.toPath());
+        }
         @Override public void delete() { if (!dropDelete) { base.delete(); pending.delete(); } }
     }
 }

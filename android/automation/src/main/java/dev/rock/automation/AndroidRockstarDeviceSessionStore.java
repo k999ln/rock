@@ -171,21 +171,24 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
         byte[] plaintext = null;
         try {
             envelope = file.readFully();
-            if (envelope.length > 4_096) throw new java.io.IOException("DEVICE_SESSION_FILE_TOO_LARGE");
+            if (envelope.length > 4_096) throw new InvalidSessionException("DEVICE_SESSION_FILE_TOO_LARGE");
+            byte[] nonce;
             try (DataInputStream data = new DataInputStream(new ByteArrayInputStream(envelope))) {
                 if (!FORMAT.equals(data.readUTF())) throw new java.io.IOException("DEVICE_SESSION_FORMAT");
                 int nonceLength = data.readInt();
                 if (nonceLength != NONCE_BYTES) throw new java.io.IOException("DEVICE_SESSION_NONCE_INVALID");
-                byte[] nonce = data.readNBytes(nonceLength);
+                nonce = data.readNBytes(nonceLength);
                 int encryptedLength = data.readInt();
                 if (encryptedLength < 32 || encryptedLength > 2_048 || data.available() != encryptedLength)
                     throw new java.io.IOException("DEVICE_SESSION_CIPHERTEXT_INVALID");
                 encrypted = data.readNBytes(encryptedLength);
-                Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-                cipher.init(Cipher.DECRYPT_MODE, keySource.key(), new GCMParameterSpec(TAG_BITS, nonce));
-                cipher.updateAAD(aad());
-                plaintext = cipher.doFinal(encrypted);
+            } catch (java.io.IOException malformed) {
+                throw new InvalidSessionException(malformed);
             }
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            cipher.init(Cipher.DECRYPT_MODE, keySource.key(), new GCMParameterSpec(TAG_BITS, nonce));
+            cipher.updateAAD(aad());
+            plaintext = cipher.doFinal(encrypted);
             try (DataInputStream data = new DataInputStream(new ByteArrayInputStream(plaintext))) {
                 if (!FORMAT.equals(data.readUTF()) || !packageName.equals(data.readUTF()) ||
                         !serviceOrigin.equals(data.readUTF())) throw new java.io.IOException("DEVICE_SESSION_BINDING_MISMATCH");
@@ -198,9 +201,15 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
                     throw new java.io.IOException("DEVICE_SESSION_CONTENT_INVALID");
                 if (expiresAt <= System.currentTimeMillis()) { file.delete(); return null; }
                 return new Session(token, expiresAt, ownerUserId);
+            } catch (java.io.IOException malformed) {
+                throw new InvalidSessionException(malformed);
             }
         } catch (Exception failure) {
-            file.delete();
+            // A locked device or a transient storage/Keystore failure is not revocation.
+            // Refuse this operation, but preserve the account for a later unlocked read.
+            if (failure instanceof InvalidSessionException || failure instanceof javax.crypto.AEADBadTagException ||
+                    failure instanceof android.security.keystore.KeyPermanentlyInvalidatedException)
+                file.delete();
             if (failure instanceof java.io.IOException) throw (java.io.IOException) failure;
             throw new java.io.IOException("DEVICE_SESSION_READ_FAILED", failure);
         } finally {
@@ -237,6 +246,11 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
             if (code < 32 || code == 127) return false;
         }
         return true;
+    }
+
+    private static final class InvalidSessionException extends java.io.IOException {
+        InvalidSessionException(String message) { super(message); }
+        InvalidSessionException(java.io.IOException cause) { super(cause.getMessage(), cause); }
     }
 
     private static final class Session {
