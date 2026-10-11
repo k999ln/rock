@@ -92,7 +92,7 @@
         }
       ],
       "removedBytes": 211975,
-      "githubSaved": false,
+      "githubSaved": true,
       "mainIntegrated": false,
       "published": false,
       "validation": {
@@ -118,7 +118,8 @@
         }
       },
       "nextAction": "Run full verify and save the expanded cleanup with the followup integrated candidate.",
-      "previousCleanupSavedCommit": "f7266bd"
+      "previousCleanupSavedCommit": "f7266bd",
+      "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
   "updatedAt": "2026-10-11",
@@ -4339,7 +4340,10 @@
         "docs/evidence/android-zema-selected-tool-20260916.json",
         "docs/evidence/android-local-ai-plan-v2-20260916.json",
         "docs/evidence/android-pixel-10-prefull-physical-20260916.json",
-        "android/sepolicy/private/rockstar_platform.te"
+        "android/sepolicy/private/rockstar_platform.te",
+        "android/core/src/main/java/dev/rock/core/platform/A2ARecoveryBinding.java",
+        "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceSessionStoreTest.java",
+        "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceHomeTransportTest.java"
       ]
     },
     {
@@ -4908,7 +4912,10 @@
         "lib/mercari-revenue.ts",
         "app/api/revenue/mercari/route.ts",
         "components/mercari-revenue-starter.tsx",
-        "tests/mercari-revenue.test.mjs"
+        "tests/mercari-revenue.test.mjs",
+        "lib/mercari-revenue-store.ts",
+        "tests/mercari-revenue-route.test.mjs",
+        "tests/mercari-workspace-recovery.test.mjs"
       ]
     },
     {

@@ -263,7 +263,13 @@
         "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
         "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
         "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
-        "tests/esim-device-entitlement.test.mjs"
+        "tests/esim-device-entitlement.test.mjs",
+        "android/core/src/main/java/dev/rock/core/platform/A2ARecoveryBinding.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceSessionStore.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java",
+        "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceSessionStoreTest.java",
+        "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceHomeTransportTest.java",
+        "android/shell/src/androidTest/java/dev/rock/shell/CloudSessionPresentationTest.java"
       ]
     },
     {
@@ -892,7 +898,20 @@
     },
     {
       "id": "mercari-revenue",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "creationRecovery": {
+        "ownerScoped": true,
+        "immutableTermsReplay": true,
+        "concurrentCreateReadback": true,
+        "pendingPayload": "memory-only",
+        "manualRetry": true,
+        "patchRevisionConflictPreserved": true,
+        "implementation": "components/mercari-revenue-starter.tsx",
+        "tests": [
+          "tests/mercari-revenue-route.test.mjs",
+          "tests/mercari-workspace-recovery.test.mjs"
+        ]
+      }
     },
     {
       "id": "fashion-brand-ops",
