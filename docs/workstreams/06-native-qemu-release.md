@@ -10,6 +10,7 @@ Buildroot/LinuxのRockstarOSをQEMU Developer Previewとして再現可能にbui
 - QEMU rc2は候補同一性、安全基礎、更新・rollback、backup、診断、native部品表の6/10 gateを満たす。
 - 製品license、production署名、署名後の同一候補受入、一般公開承認の4 gateが未完了。
 - 過去候補の合格は最新sourceやスマホOSへ転用しない。
+- 2026-10-11: 保管rc2 archiveと716 fileの読取整合を再確認した。新sourceのimageと専用Linux/QEMU環境は未用意で、旧VMは起動していない。QMP画面取得の総期限欠落をhostの実socketで再現して修正し、関連69件を検証した。[範囲と再開条件](../native-os-validation.md#qemu受入monitorの総期限2026-10-11)。
 
 主なtask: `OS01`, `V01`, `N01`, `N02`, `RLS01`, `LCH01`〜`LCH03`, `LCH07`, `LCH08`。
 
