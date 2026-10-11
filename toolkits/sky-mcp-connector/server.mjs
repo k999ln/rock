@@ -509,14 +509,19 @@ class HttpTransport {
     this.spec = spec;
     this.protocol = null;
     this.sessionId = null;
+    this.generation = 0;
   }
   reset() {
+    this.generation++;
     this.protocol = null;
     this.sessionId = null;
   }
   async request(message, timeoutMs = REQUEST_TIMEOUT_MS) {
+    const generation = this.generation;
     const local = this.spec.transport === 'local_http';
     const remote = local ? null : await validateRemoteUrl(this.spec.url);
+    if (generation !== this.generation)
+      fail('MCP接続が変更されました。再接続してください。', 409, 'connection_superseded');
     const headers = {
       'Content-Type': 'application/json',
       Accept: 'application/json, text/event-stream',
@@ -550,7 +555,9 @@ class HttpTransport {
     )
       fail('遠隔MCPへ接続できませんでした。', 502, 'upstream_failed');
     const session = response.headers['mcp-session-id'];
-    if (typeof session === 'string') this.sessionId = session;
+    // Preserve a completed Tool result, but never let an old response replace
+    // the newly negotiated session. connect() separately checks its attempt.
+    if (generation === this.generation && typeof session === 'string') this.sessionId = session;
     if (response.status === 202 || !('id' in message)) return null;
     const text = response.text;
     const type = response.headers['content-type'] ?? '';
@@ -662,6 +669,13 @@ export class McpHub {
   }
   async connect(id) {
     const entry = this.entry(id);
+    const attempt = Symbol('MCP connection attempt');
+    entry.connectionAttempt = attempt;
+    const current = () => this.entries.get(id) === entry && entry.connectionAttempt === attempt;
+    const assertCurrent = () => {
+      if (!current())
+        fail('MCP接続が変更されました。再接続してください。', 409, 'connection_superseded');
+    };
     // Reinitialization must retire consent before any new authorization check.
     // A failed reconnect cannot leave the previous Passport executable.
     entry.passport = null;
@@ -674,6 +688,7 @@ export class McpHub {
         capabilities: {},
         clientInfo: { name: 'rockstaros-sky-connector', version: '1.0.0' },
       });
+      assertCurrent();
       if (!PROTOCOL_VERSIONS.includes(initialized.protocolVersion))
         fail(
           '対応するMCP protocol versionではありません。',
@@ -685,6 +700,7 @@ export class McpHub {
         jsonrpc: '2.0',
         method: 'notifications/initialized',
       });
+      assertCurrent();
       const tools = [];
       let cursor;
       do {
@@ -693,6 +709,7 @@ export class McpHub {
           'tools/list',
           cursor ? { cursor } : {},
         );
+        assertCurrent();
         if (!Array.isArray(listed.tools))
           fail('tools/listの応答が不正です。', 502, 'invalid_tools');
         tools.push(...listed.tools);
@@ -737,6 +754,8 @@ export class McpHub {
       entry.state = 'connected';
       return entry.passport;
     } catch (error) {
+      // A prior failure cannot downgrade a newer connection or undo a stop.
+      assertCurrent();
       entry.state =
         error.code === 'authorization_required'
           ? 'needs_authorization'
@@ -762,6 +781,7 @@ export class McpHub {
   }
   disconnect(id) {
     const entry = this.entry(id);
+    entry.connectionAttempt = null;
     entry.transport.reset();
     entry.passport = null;
     entry.state = 'available';

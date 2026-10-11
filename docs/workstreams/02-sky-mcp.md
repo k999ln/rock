@@ -36,6 +36,10 @@
 
 これはローカル再認証失敗の回帰受入であり、外部OAuth失効・Providerの実取消・同一remote jobの照会／永続復旧は未受入。MCPの汎用実行にはA2Aと同等のdurable job／receipt照合はなく、結果不明時に自動再送しない既存境界を維持する。SKY07全体の完成やProvider sandbox成功へ加算しない。
 
+同日追補（SKY07-05）: 実Connector HTTPと遅延可能なローカルMCP応答で、initialize待機中のdisconnectが200でも、古いconnectが後から200となって`connected`とPassportを復活させる競合を再現した。重複connectとSDK定義差し替えでも古い接続が成功扱いになり、遅延したtools/listの401は新しい接続を未認可へ戻しうる。接続試行のidentityと現在のentryを各await後・例外処理で照合し、失効した試行は409 `connection_superseded`で終了する。HTTP transportのreset世代も照合し、遅延応答のsession headerを新しい接続へ書き戻さない。確定済みTool応答を破棄する仕組みや再送は追加していない。
+
+disconnect、遅延initialize後の再接続、遅延tools/list認証エラー、SDK定義削除・差し替えを実HTTPで確認し、関連41件成功・非対応platform用1件skip、対象lint・配布ZIP source一致を確認した。削除だけでは従来も404で拒否されており、新規欠陥として数えない。異なるserverの承認券も失効させる点は既存disconnect・syncLocal・期限切れのcontrol-plane全失効方針を維持する。承認payload自体はserver IDに束縛済みで、一律失効が暗号上必須という意味ではない。
+
 ## 現在地
 
 - 2026-10-04 SKY07／SKY14（ROCK）: IP StudioへLiveKit音声・電話の接続設定・Zema候補選択・依頼振分けを追加。設定保存は実接続ではなく、別アプリ本体と音声・電話runtimeの受入は未完了。[契約と残る作業](../sky-tools-complete-design.md#ipキャラクターの音声会話電話連携2026-10-04)。
