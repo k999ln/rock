@@ -237,7 +237,8 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(shellUi, /同じ委任IDの状態を読み取り確認/);
   assert.match(shellService, /reconcileA2ABudgetDispatched\(owner, id, cloudState, now\)/);
   assert.match(shellService, /findA2AWalletReservation\(owner, id\)/);
-  assert.match(shellService, /A2ARecoveryBinding\.matches\(cloudA2ARecoveryTerms\(delegation, quote\), local\)/);
+  assert.match(shellService, /Map<String,String> cloudTerms = cloudA2ARecoveryTerms\(delegation, quote\)/);
+  assert.match(shellService, /A2ARecoveryBinding\.matches\(cloudTerms, local\)/);
   assert.match(recoveryBinding, /MessageDigest\.isEqual/);
   assert.match(recoveryBinding, /RECOVERABLE_WALLET_STATES/);
   assert.match(recoveryBindingTest, /missingLocalReservationCannotRecover/);

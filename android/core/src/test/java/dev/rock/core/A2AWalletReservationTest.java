@@ -190,6 +190,154 @@ public final class A2AWalletReservationTest {
         assertEquals(300, store.availableBalance("alice", "USD"));
     }
 
+    @Test public void settledReadbackSurvivesReopenWithoutAnotherLedgerEntryOrReservation() throws Exception {
+        String receiptId = settleForReadback();
+        reopen();
+        String before = readbackSnapshot();
+        for (String state : List.of("remote_completed", "remote_failed", "remote_rejected", "remote_cancelled")) {
+            Map<String,String> result = store.readSettledA2ABudget("alice", hold.delegationId, state,
+                cloudTerms(), receipt(), DEADLINE + 1);
+            assertEquals("SETTLED", result.get("state"));
+            assertEquals("0", result.get("held_minor"));
+            assertEquals("650", result.get("settled_minor"));
+            assertEquals("50", result.get("released_minor"));
+            assertEquals(receiptId, result.get("receipt_id"));
+            assertFalse(A2ARecoveryBinding.matches(cloudTerms(), result));
+        }
+        assertEquals(before, readbackSnapshot());
+        assertEquals(350, store.availableBalance("alice", "USD"));
+        assertEquals(2, store.receipts("alice").size());
+        assertThrows(IllegalStateException.class,
+            () -> store.markA2ABudgetDispatched("alice", hold.delegationId, DEADLINE + 1));
+        assertThrows(IllegalStateException.class,
+            () -> store.releaseA2ABudgetBeforeDispatch("alice", hold.delegationId, DEADLINE + 1));
+        assertEquals(before, readbackSnapshot());
+    }
+
+    @Test public void settledReadbackRejectsDifferentOwnerIdOrApprovalTermsAfterReopen() throws Exception {
+        settleForReadback();
+        reopen();
+        Map<String,Object> signed = receipt();
+        String before = readbackSnapshot();
+        assertThrows(IllegalStateException.class, () -> store.readSettledA2ABudget("bob", hold.delegationId,
+            "remote_completed", cloudTerms(), signed, DEADLINE + 1));
+        assertThrows(IllegalStateException.class, () -> store.readSettledA2ABudget("alice", "other-delegation",
+            "remote_completed", cloudTerms(), signed, DEADLINE + 1));
+        assertThrows(SecurityException.class, () -> readSettled(null, signed));
+        for (String field : cloudTerms().keySet()) {
+            Map<String,String> different = cloudTerms();
+            different.put(field, isNumericCloudTerm(field) ? "1" : "different");
+            assertThrows("changed " + field, SecurityException.class, () -> readSettled(different, signed));
+            different.remove(field);
+            assertThrows("missing " + field, SecurityException.class, () -> readSettled(different, signed));
+        }
+        assertEquals(before, readbackSnapshot());
+    }
+
+    @Test public void settledReadbackNeverTurnsActiveOrReleasedReservationsIntoSettlement() throws Exception {
+        reserve(approve());
+        Map<String,Object> signed = receipt();
+        String before = readbackSnapshot();
+        assertThrows(SecurityException.class, () -> readSettled(cloudTerms(), signed));
+        assertEquals(before, readbackSnapshot());
+        store.markA2ABudgetDispatched("alice", hold.delegationId, NOW + 3);
+        before = readbackSnapshot();
+        assertThrows(SecurityException.class, () -> readSettled(cloudTerms(), signed));
+        assertEquals(before, readbackSnapshot());
+        store.settleA2ABudget("alice", hold.delegationId, "settle:1", signed, DEADLINE);
+        before = readbackSnapshot();
+        for (String state : List.of("awaiting_approval", "prepared", "working", "indeterminate",
+                "cancel_unconfirmed", "expired", "cancelled_before_dispatch", "unknown"))
+            assertThrows("cloud state " + state, SecurityException.class, () -> store.readSettledA2ABudget(
+                "alice", hold.delegationId, state, cloudTerms(), signed, DEADLINE + 1));
+        assertEquals(before, readbackSnapshot());
+        db.execute("UPDATE a2a_wallet_reservations SET state='RELEASED' WHERE delegation_id=?", hold.delegationId);
+        before = readbackSnapshot();
+        assertThrows(SecurityException.class, () -> readSettled(cloudTerms(), signed));
+        assertEquals(before, readbackSnapshot());
+    }
+
+    @Test public void settledReadbackRequiresTheVerifiedReceiptAndCurrentTrust() throws Exception {
+        settleForReadback();
+        reopen();
+        String before = readbackSnapshot();
+        assertThrows(SecurityException.class, () -> readSettled(cloudTerms(), null));
+        for (String field : List.of("ownerUserId", "delegationId", "receiptId", "providerId", "signature")) {
+            Map<String,Object> different = receipt();
+            different.put(field, "different");
+            assertThrows("receipt " + field, SecurityException.class, () -> readSettled(cloudTerms(), different));
+        }
+        Map<String,Object> signed = receipt();
+        store = new PlatformStore(db);
+        assertThrows(SecurityException.class, () -> readSettled(cloudTerms(), signed));
+        store = new PlatformStore(db, new A2AUsageReceiptVerifier(List.of(
+            new A2AUsageReceiptVerifier.TrustedKey("provider-x", "usage-key-1", ORIGIN, PUBLIC_KEY, true))));
+        assertThrows(SecurityException.class, () -> readSettled(cloudTerms(), signed));
+        assertEquals(before, readbackSnapshot());
+    }
+
+    @Test public void settledReadbackRejectsMissingOrConflictingDurableSettlement() throws Exception {
+        String receiptId = settleForReadback();
+        reopen();
+        Map<String,Object> signed = receipt();
+        Map<String,String> saved = store.a2aWalletReservation("alice", hold.delegationId);
+        for (String column : List.of("held_minor", "settled_minor", "released_minor", "provider_ref", "provider_receipt_digest")) {
+            String value = column.endsWith("_minor") ? "1" : "f".repeat(64);
+            db.execute("UPDATE a2a_wallet_reservations SET " + column + "=? WHERE delegation_id=?", value, hold.delegationId);
+            String before = readbackSnapshot();
+            assertThrows("reservation " + column, SecurityException.class, () -> readSettled(cloudTerms(), signed));
+            assertEquals(before, readbackSnapshot());
+            db.execute("UPDATE a2a_wallet_reservations SET " + column + "=? WHERE delegation_id=?", saved.get(column), hold.delegationId);
+        }
+        Map<String,String> ledger = db.query("SELECT * FROM platform_ledger WHERE receipt_id=?", receiptId).get(0);
+        for (String column : List.of("entry_digest", "amount_minor", "currency", "component_id", "provider_receipt_digest")) {
+            db.execute("UPDATE platform_ledger SET " + column + "=? WHERE receipt_id=?",
+                "amount_minor".equals(column) ? "-1" : "different", receiptId);
+            String before = readbackSnapshot();
+            assertThrows("ledger " + column, SecurityException.class, () -> readSettled(cloudTerms(), signed));
+            assertEquals(before, readbackSnapshot());
+            db.execute("UPDATE platform_ledger SET " + column + "=? WHERE receipt_id=?", ledger.get(column), receiptId);
+        }
+        db.execute("DELETE FROM platform_ledger WHERE receipt_id=?", receiptId);
+        String before = readbackSnapshot();
+        assertThrows(IllegalStateException.class, () -> readSettled(cloudTerms(), signed));
+        assertEquals(before, readbackSnapshot());
+    }
+
+    private String settleForReadback() throws Exception {
+        reserve(approve());
+        store.markA2ABudgetDispatched("alice", hold.delegationId, NOW + 3);
+        return store.settleA2ABudget("alice", hold.delegationId, "settle:readback", receipt(), DEADLINE);
+    }
+
+    private Map<String,String> readSettled(Map<String,String> terms, Map<String,Object> signed) {
+        return store.readSettledA2ABudget("alice", hold.delegationId, "remote_completed", terms, signed, DEADLINE + 1);
+    }
+
+    private String readbackSnapshot() {
+        return db.query("SELECT * FROM a2a_wallet_reservations ORDER BY delegation_id").toString() +
+            db.query("SELECT * FROM platform_ledger ORDER BY receipt_id") +
+            db.query("SELECT * FROM platform_approvals ORDER BY id") +
+            db.query("SELECT * FROM platform_events ORDER BY seq");
+    }
+
+    private Map<String,String> cloudTerms() {
+        Map<String,String> terms = new HashMap<>();
+        terms.put("owner", hold.ownerUserId); terms.put("delegationId", hold.delegationId);
+        terms.put("parentJobId", hold.parentJobId); terms.put("agentOrigin", hold.agentOrigin);
+        terms.put("agentName", hold.agentName); terms.put("agentVersion", hold.agentVersion);
+        terms.put("currency", hold.currency); terms.put("pricingVersion", hold.pricingVersion);
+        terms.put("walletApprovalDigest", PlatformStore.a2aBudgetPayloadDigest(hold));
+        terms.put("budgetLimitMinor", Long.toString(hold.limitMinor));
+        terms.put("deadlineAt", Long.toString(hold.deadlineAt));
+        terms.put("quoteIssuedAt", Long.toString(hold.createdAt));
+        return terms;
+    }
+
+    private static boolean isNumericCloudTerm(String field) {
+        return List.of("budgetLimitMinor", "deadlineAt", "quoteIssuedAt").contains(field);
+    }
+
     private String firstPartyApproval() {
         String approval = store.proposeA2AWalletApproval("alice", "native-approve:" + hold.delegationId,
             hold, NOW + 300_000, NOW);
@@ -200,7 +348,8 @@ public final class A2AWalletReservationTest {
     private void reopen() {
         db.close();
         db = new JdbcDatabase(new java.io.File(temp.getRoot(), "a2a-wallet.db").getPath());
-        store = new PlatformStore(db);
+        store = new PlatformStore(db, new A2AUsageReceiptVerifier(List.of(
+            new A2AUsageReceiptVerifier.TrustedKey("provider-x", "usage-key-1", ORIGIN, PUBLIC_KEY, false))));
     }
 
     @Test public void ownerApprovedReservationCommitsExactQuoteDigestAndStablePreDispatchTaskId() {

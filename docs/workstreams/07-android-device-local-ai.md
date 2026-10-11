@@ -32,6 +32,14 @@ ROCKはHome、device authorization、Broker device enrollment、Wallet handoff�
 
 実SQLiteをclose/reopenするJUnitで、従来の列名を使う判定が「応答喪失後の復旧」「保存失敗をrollbackしてから同じ承認で再試行」の2件に失敗することを確認した。修正後は4件の追加試験を含むCore 116件とautomation 10件、計126件が合格。保存失敗はSQLite triggerの`RAISE(ABORT)`で発生させ、未作成のhold、`ISSUED`の承認、元の残高が同時に維持されることを確認した。別owner／別ID／別承認／別digest／別上限は復旧せず、dispatch済み予約は再dispatch可能な`HELD`へ戻さない。SDK 35で7 AIDL／72 Java source compile、関連source契約14件も合格。取消前後・結果不明・署名usage receipt・append-only精算の既存Core試験は維持する。APK／Android runtime／Providerの新規受入は未実行。
 
+### 2026-10-11 OS10／O6 — 精算済みA2Aの同一ID照合
+
+ROCKは、署名usage receiptで`SETTLED`へ保存した予約を実SQLiteでclose/reopenし、既存のactive-only照合が同じowner・delegation・見積でも拒否することを再現した。Brokerは`unknown`を返し、Shellがheld額0の予約を「未確定・保持」と表示していた。active matchingの対象は広げず、`PlatformStore.readSettledA2ABudget`という独立した読取り経路を追加した。認証済みCloudの終端状態、owner／delegation／parent job／agent／currency／見積時刻・期限／承認digest／上限を確認し、署名usage receiptを現在のtrust inventoryで再検証する。さらに保存済みreceipt digest・provider参照・精算額・解放額・held額0と、元のowner-scoped Wallet ledger debitを照合した場合だけ`wallet_settled`を返す。鍵失効、receipt不足、台帳欠落や相違は確定状態にしない。
+
+この経路は既存の予約・承認・dispatch・精算・解除を呼ばない。Shellは精算額と解放済み額を表示し、終端task詳細にも同一ID照合の入口を出す。照合失敗時はWalletを変更せず、実際の保存状態によらず「予約を保持中」と断定していた表現を修正した。
+
+検証: 5件の実SQLite回帰試験で再起動後の繰返し照合、別owner／ID／見積条件、非終端状態、署名receipt・trust相違、保存済み精算・台帳の相違／欠落を確認し、読取り前後の予約・承認・台帳・event全行が不変であることを比較した。Core 121件と既存automation JVM 16件、計137件が合格。SDK 35で7 AIDL／73 Java sourceをcompileし、SIM entry／Android release source契約10件も合格。`CloudSessionPresentationTest`へ精算表示、承認／解除ボタン非表示、4つの終端状態からの照合入口を追加したが、今回のShell instrumentation実行は同候補のAndroid CIで別途確認する。Provider実接続・請求・Pixel実機・OS imageの受入は追加していない。再実行入口は`gradle -p android :core:test :automation:testDebugUnitTest :shell:connectedDebugAndroidTest`。
+
 ## 2026-10-02 製品要件監査と優先順位
 
 | 要件 | 再利用できる実装 | 現在の限界／次の作業 |
