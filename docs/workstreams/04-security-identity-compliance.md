@@ -90,3 +90,9 @@ PR #93の公開storage item名は、移動後も同じ値のまま2つのsource�
 Dependabot #26のsharp／librsvg修正はrootのminiflare overrideと同梱native lockを対象にする。実際にロードされた修正版librsvg、SVG描画とPNG互換性、同一SHAの全体verifyを受入条件とし、版番号更新だけを脆弱性再現試験としない。site側は既存PR #88、SDKは既存PR #89で扱う。license inventoryと未clearanceを維持し、main統合前のalert状態を別に記録する。[証拠](../evidence/spider-root-sharp-update.json)。
 
 2026-10-07 cycle78: main `0455499d` の文書整理を既存PR #90へ同期し、project.mdの双方の記録を保持して競合解消。sharp修正・lock・監査一覧・native試験は変更しない。変更SHAの検証結果は同じ証拠のlatestMainRefreshとPR欄へ記録する。
+
+## SDK依存の監査同期（SYS15）
+
+SDKのOAuth issuer結合修正は既存Dependabot PR #89を継続する。lock hashに束縛した監査を同期し、法的clearanceと公開gateを保持して既存release回帰・全体CIを確認する。実credential移行やOAuth連携の実運用受入は別であり、main alertの状態も分けて記録する。[証拠](../evidence/spider-sdk-lock-audit.json)。
+
+2026-10-07 cycle77: PR #89へmain `0455499d` の文書整理を反映し、project.mdの競合を両側の記録を残して解消。SDK lockと監査一覧の既存修正は同一byte、release回帰35/35とrelease／inventory checkが合格。新しいSHAの全体CI・SPIDERは後続確認。詳細は同じ検証記録のlatestMainRefreshへ保存する。
