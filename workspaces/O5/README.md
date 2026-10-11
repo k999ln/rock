@@ -26,9 +26,11 @@
 
 ## 次の作業
 
+- **SIM01**: 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す — 詳細: `npm run work -- SIM01`
+- **SKY21**: Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる — 詳細: `npm run work -- SKY21`
 - **SKY19**: SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） — 詳細: `npm run work -- SKY19`
 
-SKY19: 現行の課金停止と旧試験契約を項目ごとに比較する
+SIM01/SKY21: SIM/eSIM利用開始からSky/Zemaの保存・復旧・費用表示を同一候補で受入する。料金executionHoldsと実機・Provider gateは維持する。
 
 **実行保留:** ToC収益料金の請求・回収・払出し実行。2026-09-24に料金動線の確定まで保留。設計整理・sandboxの既存試験は継続可能。
 
@@ -40,6 +42,7 @@ SKY19: 現行の課金停止と旧試験契約を項目ごとに比較する
 - 費用と収益を分離する
 - LIVE金融は本人署名を必須にする
 - 未解決: Pro固有game、全Provider入金、保留中料金、Compute Grid Android workerと実端末pilotは未受入
+- 未解決: SIM/eSIMのcarrier契約・実activation・最新sourceの公開受入は未完了
 
 ## 未完了の作業
 
@@ -53,7 +56,7 @@ SKY19: 現行の課金停止と旧試験契約を項目ごとに比較する
 | SKY19-06（子） | Toolチーム入口・Wallet決済・開発者還元の設計全体をレビューする | 未着手 / 共通基盤 | SKY19-05 / 実行保留: ToC収益料金の請求・回収・払出し実行 |
 | SKY19（親） | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 / 共通基盤 | 実行保留: ToC収益料金の請求・回収・払出し実行 |
 | GRID01 | Sky Compute Gridで未使用Androidの余剰計算を固定lotへmatchingし、検証後だけ精算候補にする | 進行中 / 共通基盤 | AI05 |
-| AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 未着手 / 共通基盤 | AI03 / AI05 |
+| AI06 | 非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存） | 進行中 / 共通基盤 | AI03 / AI05 |
 | MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 未着手 / 共通基盤 | AI02 / AI03 |
 | WLT06 | owner受取Walletを本人署名で登録し、最初の実USDC回収をEarning Receiptへ照合 | 進行中 / 共通基盤 | BIL02 / 実行保留: ToC収益料金の請求・回収・払出し実行 |
 | B02 | 既存商品のSky実利用と不便の改善・実行/料金/権利の条件拡張 | 進行中 / 共通基盤 | — |
@@ -62,6 +65,11 @@ SKY19: 現行の課金停止と旧試験契約を項目ごとに比較する
 | GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 / 共通基盤 | — |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 / 共通基盤 | 実行保留: ToC収益料金の請求・回収・払出し実行 |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 / 共通基盤 | — |
+| SIM01 | 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す | 進行中 / 共通基盤 | SKY07 / SKY21 |
+| SKY21 | Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる | 進行中 / 共通基盤 | SKY07 / SKY20 |
+| B06 | ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理 | 進行中 / 共通基盤 | — |
+| GM01 | AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外） | 進行中 / 共通基盤 | — |
+| CAMPUS01 | 大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装 | 進行中 / 共通基盤 | — |
 
 <details>
 <summary>完了記録のあるtask（当該範囲の記録。製品全体の完成ではありません）</summary>

@@ -42,7 +42,7 @@ AI04: OS10の保存契約とoperation key・結果照会の対応を確認する
 | AI04-04（子） | provider照会とreceiptの署名・内容・金額・finality照合を実装する | 未着手 / 共通基盤 | OS10 / AI04-03 |
 | AI04-05（子） | 再起動後の承認・receipt回収と取消競合を故障注入試験する | 未着手 / 共通基盤 | OS10 / AI04-04 |
 | AI04-06（子） | AI01・OS10の依存とAI04全体の復旧証拠を同一版で受入する | 未着手 / 共通基盤 | OS10 / AI04-05 |
-| AI04（親） | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 未着手 / 共通基盤 | OS10 |
+| AI04（親） | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 | 進行中 / 共通基盤 | OS10 |
 
 <details>
 <summary>完了記録のあるtask（当該範囲の記録。製品全体の完成ではありません）</summary>

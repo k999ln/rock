@@ -2,7 +2,7 @@
   "schema": "avokado-mission-control/3",
   "name": "avokado Mission Control",
   "shortName": "AMC",
-  "updatedAt": "2026-10-10",
+  "updatedAt": "2026-10-11",
   "purpose": "RockstarOS、avocadoMini、avokadoPro、rocketstarを責任単位へ分け、各部隊のGoal、進捗段階、規則、依存、証拠、次の作業を同じ基準で管理する。",
   "authority": {
     "progress": "data/mission-control.json",
@@ -166,7 +166,10 @@
         "AMC03",
         "AMC04",
         "AMC05",
-        "AMC06"
+        "AMC06",
+        "G04",
+        "AI09",
+        "DOC05"
       ],
       "rules": [
         "製品名と現行profileを一意にする",
@@ -192,9 +195,10 @@
         "docs/evidence/spider-agent-preflight-read.json"
       ],
       "acceptanceGate": "全project taskにちょうど一つのprimary squadが明記され、各squadにGoal、対象範囲、証拠、次taskと合格条件がある。",
-      "nextAction": "AMC01: Mini単体、Pro単体、任意連携、rocketstar地上支援の4利用構成に入出力と主担当を記す",
+      "nextAction": "G04: 欠落台帳と既存PRを現行mainへ整合させ、同一候補の全体verify・CIを確認する。AMC01の製品間Interface整理は並行する。",
       "relatedTasks": [],
       "nextTaskIds": [
+        "G04",
         "AMC01"
       ],
       "stageAssessment": {
@@ -556,7 +560,12 @@
         "BIL01",
         "BIL02",
         "BIL03",
-        "CSV00"
+        "CSV00",
+        "SIM01",
+        "SKY21",
+        "B06",
+        "GM01",
+        "CAMPUS01"
       ],
       "rules": [
         "Tool完了を売上と呼ばない",
@@ -577,15 +586,18 @@
         "docs/sky-compute-grid.md"
       ],
       "acceptanceGate": "Webの依頼・承認・結果・費用を縦断受入する。料金の再開と金融LIVEは、保留解除と個別受入後の別作業。",
-      "nextAction": "SKY19: 現行の課金停止と旧試験契約を項目ごとに比較する",
+      "nextAction": "SIM01/SKY21: SIM/eSIM利用開始からSky/Zemaの保存・復旧・費用表示を同一候補で受入する。料金executionHoldsと実機・Provider gateは維持する。",
       "relatedTasks": [],
       "nextTaskIds": [
+        "SIM01",
+        "SKY21",
         "SKY19"
       ],
       "stageAssessment": {
         "scope": "Web Sky/Zema/Walletと非金融の共通Game基盤",
         "gaps": [
-          "Pro固有game、全Provider入金、保留中料金、Compute Grid Android workerと実端末pilotは未受入"
+          "Pro固有game、全Provider入金、保留中料金、Compute Grid Android workerと実端末pilotは未受入",
+          "SIM/eSIMのcarrier契約・実activation・最新sourceの公開受入は未完了"
         ],
         "evidenceKind": "repository_records",
         "references": [
@@ -12672,6 +12684,195 @@
       "ownerRole": "AMCローカル計画・Git運用担当",
       "unresolvedDecision": "重要な入力不足は質問へ戻す。公開サービスへの統合と実任務完走は別受入。",
       "completionScope": "ローカルの可変計画・追加指示・保存保護の実装と検証。元Goalの正式受入、実機、本番、main統合を含めない。"
+    },
+    {
+      "taskId": "G04",
+      "primaryOwner": "ROCK",
+      "assignee": null,
+      "ownerRole": "H1 / Git・CI統合担当",
+      "scope": "現行main、既存9 PR、欠落コード・台帳を一つの検証候補へ統合する",
+      "inputs": [
+        {
+          "path": "docs/git-consolidation.md",
+          "locator": "現行契約・失敗復旧・受入境界"
+        },
+        {
+          "path": "data/product-baseline.json",
+          "locator": "serviceAccessModel / confirmed requirements"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/integrated-development-20261011.json",
+          "section": "G04",
+          "description": "対象source、環境、再現操作、合否と未受入条件"
+        }
+      ],
+      "steps": [
+        {
+          "id": "G04-S1",
+          "action": "各PRと過去mainの差分をレビューし、現行runtime・履歴・固定証跡を保つ選択的統合を行う"
+        },
+        {
+          "id": "G04-S2",
+          "action": "task/設計/DB/担当の整合、対象試験と全体verifyを実行し、失敗を修正する"
+        },
+        {
+          "id": "G04-S3",
+          "action": "作業branchをpushしてPRを作成し、同一40桁SHAのCIと残る外部gateを記録する"
+        }
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "G04-AC1",
+          "criterion": "既存mainの有効な変更と各PR固有機能が保持され、欠落箇所の判定理由がある",
+          "status": "not_verified",
+          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
+          "evidence": []
+        },
+        {
+          "id": "G04-AC2",
+          "criterion": "同じ候補の全体verifyとCIが合格し、skip・未検証・外部条件を明示する",
+          "status": "not_verified",
+          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
+          "evidence": []
+        },
+        {
+          "id": "G04-AC3",
+          "criterion": "GitHub上のbranch/PRがローカル成果と一致し、main merge・公開を別状態にする",
+          "status": "not_verified",
+          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
+          "evidence": []
+        }
+      ],
+      "unresolvedDecision": "Provider/通信/実機・署名・販売/課金の条件は承認済み範囲を維持し、不足条件と決定者を別記する。",
+      "completionScope": "既存taskの全体範囲。host fixture、文書、統合だけでProvider/実機/商用受入を代替しない。"
+    },
+    {
+      "taskId": "SIM01",
+      "primaryOwner": "ROCK",
+      "assignee": null,
+      "ownerRole": "O5 / SIM・Sky・Zema担当",
+      "scope": "SIM/eSIM購入から本人認証、端末別利用権、Cloud利用開始と料金確認を段階受入する",
+      "inputs": [
+        {
+          "path": "docs/sim-led-product-architecture.md",
+          "locator": "現行契約・失敗復旧・受入境界"
+        },
+        {
+          "path": "data/product-baseline.json",
+          "locator": "serviceAccessModel / confirmed requirements"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/integrated-development-20261011.json",
+          "section": "SIM01",
+          "description": "対象source、環境、再現操作、合否と未受入条件"
+        }
+      ],
+      "steps": [
+        {
+          "id": "SIM01-S1",
+          "action": "購入claim・端末認証・利用権・失効・Cloudキーの既存実装を統合しsourceとfixtureで照合する"
+        },
+        {
+          "id": "SIM01-S2",
+          "action": "異なる本人、期限切れ、再送、取消、結果不明、予算超過と再接続を試験する"
+        },
+        {
+          "id": "SIM01-S3",
+          "action": "契約と実機が揃った環境で販売者・carrier・Provider・請求照合・exact-SKU導入を別受入する"
+        }
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "SIM01-AC1",
+          "criterion": "本人/端末/利用権を束縛し、一度きりの発行と失効、無権限実行拒否が同じ候補で合格する",
+          "status": "not_verified",
+          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
+          "evidence": []
+        },
+        {
+          "id": "SIM01-AC2",
+          "criterion": "見積・上限承認・予約・実行中usage・事後明細と結果不明復旧が一連で照合できる",
+          "status": "not_verified",
+          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
+          "evidence": []
+        },
+        {
+          "id": "SIM01-AC3",
+          "criterion": "販売/通信/Provider契約、実activation、請求、対応端末導入が対象環境の証拠で受け入れられる",
+          "status": "not_verified",
+          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
+          "evidence": []
+        }
+      ],
+      "unresolvedDecision": "Provider/通信/実機・署名・販売/課金の条件は承認済み範囲を維持し、不足条件と決定者を別記する。",
+      "completionScope": "既存taskの全体範囲。host fixture、文書、統合だけでProvider/実機/商用受入を代替しない。"
+    },
+    {
+      "taskId": "SKY21",
+      "primaryOwner": "ROCK",
+      "assignee": null,
+      "ownerRole": "O5 / Sky・Zema・Wallet担当",
+      "scope": "Skyの基本利用、作者市場、有料販売、OS/他アプリ接続を証拠別に受け入れる",
+      "inputs": [
+        {
+          "path": "docs/sky-launch-operations.md",
+          "locator": "現行契約・失敗復旧・受入境界"
+        },
+        {
+          "path": "data/product-baseline.json",
+          "locator": "serviceAccessModel / confirmed requirements"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/integrated-development-20261011.json",
+          "section": "SKY21",
+          "description": "対象source、環境、再現操作、合否と未受入条件"
+        }
+      ],
+      "steps": [
+        {
+          "id": "SKY21-S1",
+          "action": "同一sourceのTool分類、接続、依頼、保存、再表示、認証失効をdesktop/mobileで確認する"
+        },
+        {
+          "id": "SKY21-S2",
+          "action": "作者offer・Provider設定のrevision競合と古いclient、停止、再送、使用額表示を検証する"
+        },
+        {
+          "id": "SKY21-S3",
+          "action": "公開readback、本人の代表journey、Provider sandbox/実端末/商用条件を独立に確認する"
+        }
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "SKY21-AC1",
+          "criterion": "Toolの実行可能性と未対応理由が正確で、本人別に依頼・結果を保存/復旧できる",
+          "status": "not_verified",
+          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
+          "evidence": []
+        },
+        {
+          "id": "SKY21-AC2",
+          "criterion": "競合で新しい状態を失わず、失効・停止・再送で重複実行や越権を起こさない",
+          "status": "not_verified",
+          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
+          "evidence": []
+        },
+        {
+          "id": "SKY21-AC3",
+          "criterion": "同一公開候補の本人操作・商用Provider・OS接続と料金gateの証拠が揃う",
+          "status": "not_verified",
+          "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
+          "evidence": []
+        }
+      ],
+      "unresolvedDecision": "Provider/通信/実機・署名・販売/課金の条件は承認済み範囲を維持し、不足条件と決定者を別記する。",
+      "completionScope": "既存taskの全体範囲。host fixture、文書、統合だけでProvider/実機/商用受入を代替しない。"
     }
   ],
   "taskAssignments": [
@@ -14594,6 +14795,46 @@
       "taskId": "AMC06",
       "primarySquad": "H1",
       "classification": "coordination"
+    },
+    {
+      "taskId": "SIM01",
+      "primarySquad": "O5",
+      "classification": "shared_system"
+    },
+    {
+      "taskId": "SKY21",
+      "primarySquad": "O5",
+      "classification": "shared_system"
+    },
+    {
+      "taskId": "B06",
+      "primarySquad": "O5",
+      "classification": "shared_system"
+    },
+    {
+      "taskId": "G04",
+      "primarySquad": "H1",
+      "classification": "coordination"
+    },
+    {
+      "taskId": "AI09",
+      "primarySquad": "H1",
+      "classification": "coordination"
+    },
+    {
+      "taskId": "DOC05",
+      "primarySquad": "H1",
+      "classification": "coordination"
+    },
+    {
+      "taskId": "GM01",
+      "primarySquad": "O5",
+      "classification": "shared_system"
+    },
+    {
+      "taskId": "CAMPUS01",
+      "primarySquad": "O5",
+      "classification": "shared_system"
     }
   ],
   "executionHolds": [

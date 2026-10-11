@@ -46,7 +46,7 @@ npm run work:check           # 全taskの所属と入口の同期確認
 
 | 部屋 | 目的 | 次に確認するtask |
 | --- | --- | --- |
-| [H1 製品・Interface統合](H1/README.md) | Mini、Pro、RockstarOS、rocketstarの優先順位、正本、Interface、合格条件を同期する。 | AMC01 |
+| [H1 製品・Interface統合](H1/README.md) | Mini、Pro、RockstarOS、rocketstarの優先順位、正本、Interface、合格条件を同期する。 | G04, AMC01 |
 
 ### RockstarOS師団
 
@@ -56,7 +56,7 @@ npm run work:check           # 全taskの所属と入口の同期確認
 | [O2 Work・Data](O2/README.md) | 仕事、状態、成果物、Receiptを競合なく保存し、再起動後も復元する。 | AI04 |
 | [O3 AI・Agent](O3/README.md) | 交換可能なローカルAIが権限を持たずに計画し、Agentが許可済み手順だけを実行する。 | AI02 |
 | [O4 Tool・MCP](O4/README.md) | Toolを審査、登録、接続、実行、停止、失効し、結果をReceiptで照合する。 | SKY07 |
-| [O5 Sky・Zema・Wallet](O5/README.md) | Tool選択、依頼、進捗、承認、成果、費用、確認済み収益を一つの利用体験にする。 | SKY19 |
+| [O5 Sky・Zema・Wallet](O5/README.md) | Tool選択、依頼、進捗、承認、成果、費用、確認済み収益を一つの利用体験にする。 | SIM01, SKY21, SKY19 |
 | [O6 Device Adapter](O6/README.md) | 共通Coreを作り直さず、各hardwareをDevice ProfileとAdapterで接続する。 | OS02 |
 | [O7 Release・運用](O7/README.md) | 同一候補を再現配布し、更新失敗や端末喪失から安全に復旧する。 | LCH07 |
 

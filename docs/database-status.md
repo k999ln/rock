@@ -9,8 +9,8 @@
 - データ境界: 6、table: 152
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 384 task中 112 done、35 in progress、236 planned、1 blocked
-- 現在milestone: AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口
+- 作業進捗: 392 task中 114 done、46 in progress、231 planned、1 blocked
+- 現在milestone: SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる
 
 ## 保存境界と配備状態
 
@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。
+G04/SIM01/SKY21: 既存9 PR・欠落コード・台帳を統合し、利用開始とSky/Zema/Materialの一連の操作、全体verify、同一SHA CIを検証して作業branchとPRへ保存する。実機・Provider・実課金・公開gateは別受入。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

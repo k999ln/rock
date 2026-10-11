@@ -42,8 +42,8 @@ AI02: model ID、hash、runtime、license、能力をmanifestで固定する
 | AI02-04（子） | Brokerによるatomic切替・health判定・crash rollbackを実装する | 未着手 / 共通基盤 | OS10 / AI02-02 / AI02-03 |
 | AI02-05（子） | 承認済み評価環境で2 model候補の交換・旧job再開・失敗復旧を実測する | 未着手 / 共通基盤 | OS10 / AI02-04 |
 | AI02-06（子） | 権限非昇格の回帰とAI02の全体完了条件を照合する | 未着手 / 共通基盤 | OS10 / AI02-05 |
-| AI02（親） | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 未着手 / 共通基盤 | OS10 |
-| AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 未着手 / 共通基盤 | OS10 |
+| AI02（親） | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 進行中 / 共通基盤 | OS10 |
+| AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 進行中 / 共通基盤 | OS10 |
 | AI07 | JevのSky明示利用を設計し、DecisionProviderとRouter／Harnessへの統合を受け入れる | 進行中 / 共通基盤 | AI02 |
 | OS08 | Local Action AssistantのKotlin・arm64 APKをnative buildし、artifact lockとSoong OS imageへ接続 | 進行中 / 共通基盤 | — |
 | OS09 | 確定した対象端末でGGUF import・機内モード推論・変更確認・30分連続温度試験を完走 | 進行中 / 共通基盤 | OS08 |

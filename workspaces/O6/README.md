@@ -40,7 +40,7 @@ OS02: 型番・source lock・vendor artifactを同じ構成で確認する
 | OS02-04（子） | build前freezeの不足入力と準備検査のfail-closedを検証する | 未着手 / 共通基盤 | OS02-02 / OS02-03 |
 | OS02-05（子） | 適合済みLinux向けcompile-only再現手順とartifact保全条件を固定する | 未着手 / 共通基盤 | OS02-04 |
 | OS02-06（子） | OS02適合確認の全条件とfull build・first-flashの別gateをレビューする | 未着手 / 共通基盤 | OS02-05 |
-| AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 未着手 / 共通基盤 | OS10 |
+| AI05 | Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入 | 進行中 / 共通基盤 | OS10 |
 | OS02（親） | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 | 進行中 / 共通基盤 | — |
 | OS03 | 【Android/AOSP別トラック】CuttlefishでOS起動と自律実行の最小縦断試作 | 未着手 / 共通基盤 | OS02 |
 | OS04 | 【Android/AOSP別トラック】Pixel実機で復旧・省電力・再起動・署名更新を検証 | 未着手 / 共通基盤 | OS03 |

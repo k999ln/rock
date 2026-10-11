@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros-design-document-index/1",
   "version": "1.6",
-  "updatedAt": "2026-10-10",
+  "updatedAt": "2026-10-11",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/avocado-mini-r5/README.md",
@@ -109,7 +109,21 @@
       "coverage": "DETAILED_WITH_OPEN_IMPLEMENTATION_GAPS",
       "documents": [
         "docs/platform-core.md",
-        "contracts/platform-api.json"
+        "contracts/platform-api.json",
+        "contracts/device-capability-snapshot.json",
+        "docs/rockstaros-complete-design.md",
+        "docs/workstreams/03-wallet-billing-providers.md",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "docs/provider-contract-readiness-20260930.md"
+      ],
+      "interfaceImplementation": [
+        "android/core/src/main/java/dev/rock/core/platform/EsimDeviceEntitlement.java",
+        "android/core/src/main/java/dev/rock/core/platform/EsimProvisioningCompatibility.java",
+        "android/core/src/test/java/dev/rock/core/platform/EsimProvisioningCompatibilityTest.java",
+        "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
+        "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
+        "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
+        "tests/esim-device-entitlement.test.mjs"
       ]
     },
     {
@@ -128,7 +142,15 @@
         "components/data-collection-workspace.tsx",
         "lib/rockstar-addons.ts",
         "lib/data-collection.ts",
-        "lib/backup-crypto.ts"
+        "lib/backup-crypto.ts",
+        "components/home-screen.tsx",
+        "components/home-screen.module.css",
+        "components/workspace-shell.tsx",
+        "components/sky-surface.module.css",
+        "app/workspace.css",
+        "components/system-settings.module.css",
+        "components/csv-business-workspace.module.css",
+        "components/rock-studio.tsx"
       ]
     },
     {
@@ -138,6 +160,19 @@
         "docs/native-os-integration.md",
         "docs/native-os-validation.md",
         "data/qemu-release-audit.json"
+      ],
+      "recoveredContractReferences": [
+        "docs/native-os-validation.md",
+        "docs/rockstaros-complete-design.md",
+        "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+        "systems/rock-star-os/os/platform/guest-test.py",
+        "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
+        "systems/rock-star-os/os/desktop/README.md",
+        "systems/rock-star-os/os/desktop/launcher.py",
+        "systems/rock-star-os/tests/test_os_desktop_browser.py",
+        "scripts/select-native-artifacts.py",
+        ".github/workflows/native-os.yml",
+        "systems/rock-star-os/tests/test_native_artifacts.py"
       ]
     },
     {
@@ -147,13 +182,31 @@
         "docs/android-production-architecture.md",
         "docs/phone-preview-20260911.md",
         "docs/device-support-architecture.md",
-        "data/android-release-architecture-policy.json"
+        "data/android-release-architecture-policy.json",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "docs/provider-contract-readiness-20260930.md"
       ],
       "interfaceImplementation": [
         "scripts/build-phone-bringup.sh",
         "scripts/verify-phone-artifacts.py",
         "tests/test_phone_artifacts.py",
-        "tests/test_phone_build_runner.py"
+        "tests/test_phone_build_runner.py",
+        "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
+        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+        "android/automation/src/main/java/dev/rock/automation/EsimDeviceGatewayKeyStore.java",
+        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "android/shell/src/main/java/dev/rock/shell/ShellConnection.java",
+        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+        "contracts/device-capability-snapshot.json",
+        "scripts/check-os-contracts.mjs",
+        "android/automation/src/androidTest/java/dev/rock/automation/DeviceCapabilitySnapshotTest.java",
+        "android/automation/src/androidTest/java/dev/rock/automation/EsimDeviceGatewayKeyStoreTest.java",
+        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
+        "android/core/src/main/java/dev/rock/core/platform/EsimDeviceEntitlement.java",
+        "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
+        "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
+        "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
+        "tests/esim-device-entitlement.test.mjs"
       ]
     },
     {
@@ -166,7 +219,9 @@
         "contracts/local-ai-runtime.json",
         "contracts/decision-provider.json",
         "data/decision-fabric-policy.json",
-        "docs/avokado-llm-pretraining.md"
+        "docs/avokado-llm-pretraining.md",
+        "docs/ai-memory-architecture.md",
+        "docs/llm-evaluation-architecture.md"
       ],
       "interfaceImplementation": [
         "systems/rock-star-os/src/blackberryrock/memory_store.py",
@@ -189,7 +244,15 @@
         "docs/sky-compute-grid.md",
         "docs/amc-goal-orchestrator.md",
         "docs/workstreams/05-web-pwa-sites.md",
-        "docs/sim-led-product-architecture.md"
+        "docs/sim-led-product-architecture.md",
+        "docs/sky-cloud-continuity.md",
+        "docs/cloud-agent-provider-comparison-20261001.md",
+        "docs/sky-a2a-bridge.md",
+        "docs/sky-mcp-architecture.md",
+        "docs/sky-launch-design.md",
+        "docs/sky-launch-operations.md",
+        "docs/agent-control-plane.md",
+        "docs/amc-autonomy-fixture.md"
       ],
       "interfaceImplementation": [
         "lib/sky-compute-grid.ts",
@@ -197,7 +260,77 @@
         "lib/sky-zema-handoff.ts",
         "lib/zema-chat-session.ts",
         "tests/sky-zema-handoff.test.mjs",
-        "tests/zema-chat-session.test.mjs"
+        "tests/zema-chat-session.test.mjs",
+        "components/tool-icon.tsx",
+        "components/tool-character.tsx",
+        "components/sky-chat-workspace.tsx",
+        "components/sky-candidate-runner.tsx",
+        "components/sky-workspace.tsx",
+        "components/sky-workspace.module.css",
+        "components/workbench.tsx",
+        "app/work/work.css",
+        "app/api/sky/a2a-delegations/route.ts",
+        "app/api/sky/a2a-delegations/[id]/route.ts",
+        "lib/a2a-delegation-store.ts",
+        "lib/a2a-authorization.ts",
+        "lib/a2a-broker-authorization.ts",
+        "systems/rock-star-os/os/mcp_broker/a2a_authorization.py",
+        "systems/rock-star-os/src/blackberryrock/spend.py",
+        "services/sky-agent-runtime/src/worker.ts",
+        "drizzle/0033_a2a_offline_continuation_consent.sql",
+        "tests/a2a-delegation-store.test.mjs",
+        "tests/a2a-broker-authorization.test.mjs",
+        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
+        "components/sky-tool-card.tsx",
+        "components/sky-tool-card.module.css",
+        "components/sky-marketplace.tsx",
+        "components/sky-marketplace.module.css",
+        "components/sky-tool-workspace.tsx",
+        "components/sky-tool-workspace.module.css",
+        "components/sky-tool-overview.tsx",
+        "components/sky-tool-overview.module.css",
+        "components/coconala-team-workspace.tsx",
+        "components/coconala-team-workspace.module.css",
+        "components/sky-surface.module.css",
+        "components/fashion-brand-ops-runner.tsx",
+        "components/fashion-brand-ops-runner.module.css",
+        "components/sky-connection-center.tsx",
+        "components/sky-connection-center.module.css",
+        "components/sky-mcp-center.tsx",
+        "components/sky-mcp-center.module.css",
+        "components/sky-publisher-form.tsx",
+        "components/sky-publisher-form.module.css",
+        "lib/use-sky-tool-context.ts",
+        "components/sky-service-help.tsx",
+        "lib/sky-service-status.ts",
+        "app/api/sky/service-status/route.ts",
+        "lib/sky-tool-labels.ts",
+        "components/execution-access.tsx"
+      ],
+      "recoveredContractReferences": [
+        "docs/sky-tool-sdk.md",
+        "toolkits/sky-tool-sdk/src/index.mjs",
+        "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
+        "tests/sky-tool-sdk.test.mjs"
+      ],
+      "implementation": [
+        "scripts/check-sky-launch.mjs",
+        "scripts/lib/sky-launch-audit.mjs",
+        "data/sky-service-launch.json",
+        "tests/sky-launch-audit.test.mjs",
+        "scripts/amc-goal-engine.mjs",
+        "scripts/amc-effort.mjs",
+        "scripts/amc-request-plan.mjs",
+        "scripts/amc-sky-authority.mjs",
+        "scripts/amc-autonomy.mjs",
+        "scripts/amc-autonomy-store.mjs",
+        "scripts/amc-autonomy-fixture.mjs",
+        "tests/amc-goal-engine.test.mjs",
+        "tests/amc-effort.test.mjs",
+        "tests/amc-request-plan.test.mjs",
+        "tests/amc-autonomy.test.mjs",
+        "tests/amc-autonomy-lock.test.mjs",
+        "tests/amc-autonomy-fixture.test.mjs"
       ]
     },
     {
@@ -207,6 +340,27 @@
         "docs/sky-mcp-connector.md",
         "docs/sky-mcp-architecture.md",
         "docs/external-wallet-fund-provider-boundary-20260913.md"
+      ],
+      "recoveredContractReferences": [
+        "docs/sky-mcp-connector.md",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "tests/mcp-connector.test.mjs",
+        "docs/rockstaros-complete-design.md",
+        "systems/rock-star-os/os/mcp_broker/http.py",
+        "systems/rock-star-os/tests/test_mcp_http_deadline.py",
+        "docs/sky-tools-complete-design.md",
+        "toolkits/mr/mcp_server.py",
+        "tests/test_mr_http_deadline.py",
+        "toolkits/mr/rock_star_tools.py",
+        "tests/test_mr_delivery_boundary.py",
+        "toolkits/sky-mcp-connector/local-descriptor.mjs",
+        "tests/mcp-local-descriptor.test.mjs"
+      ],
+      "implementation": [
+        "scripts/sky-local-runtime.mjs",
+        "lib/sky-local-runtime.ts",
+        "tests/sky-local-runtime.test.mjs",
+        "components/delivery-runner.tsx"
       ]
     },
     {
@@ -224,7 +378,20 @@
       "documents": [
         "docs/external-wallet-fund-provider-boundary-20260913.md",
         "docs/everything-market-and-autonomous-fund-20260913.md",
-        "docs/rock-wallet-production-rail-20260913.md"
+        "docs/rock-wallet-production-rail-20260913.md",
+        "docs/sky-billing.md",
+        "docs/workstreams/03-wallet-billing-providers.md",
+        "docs/provider-contract-readiness-20260930.md",
+        "lib/esim-public-catalog.ts",
+        "app/api/esim/catalog/route.ts",
+        "app/sky/esim/page.tsx",
+        "components/esim-catalog.tsx",
+        "components/sky-commerce.tsx",
+        "components/sky-commerce.module.css",
+        "tests/esim-public-catalog.test.mjs",
+        "docs/sky-tools-complete-design.md",
+        "docs/sky-commerce-design.md",
+        "docs/wallet-commerce-design.md"
       ]
     },
     {
@@ -234,7 +401,9 @@
         "docs/security-incident-response.md",
         "docs/release-minimum-gates.md",
         "data/device-emergency-access-policy.json",
-        "data/release-readiness.json"
+        "data/release-readiness.json",
+        "docs/spider-guard.md",
+        "docs/rockstaros-complete-design.md"
       ],
       "observerReportBoundary": {
         "design": "docs/rockstaros-complete-design.md",
@@ -242,7 +411,39 @@
         "scope": "existing simulation observer scalar report validation",
         "guestAcceptance": false,
         "outputReconstruction": "After strict validation, emit canonical YYYY-MM periods from integers and literal boolean worker state; do not forward service-owned strings/objects."
-      }
+      },
+      "recoveredContractReferences": [
+        "docs/spider-guard.md",
+        "scripts/spider-feedback.mjs",
+        ".github/workflows/spider-regressions.yml",
+        "docs/sky-tools-complete-design.md",
+        "docs/evidence/spider-guard-source-validation.json",
+        "scripts/build-spider-inspector.mjs",
+        "toolkits/spider-guard/inspector.html",
+        "toolkits/spider-guard/README.md",
+        "toolkits/spider-guard/program-inspector.mjs",
+        "toolkits/spider-guard/program-inspector.d.mts",
+        "tests/spider-inspector-artifact.test.mjs",
+        "tests/spider-program-inspector.test.mjs",
+        "systems/rock-star-os/os/platform/code_inspector.py",
+        "systems/rock-star-os/tests/test_code_inspector.py"
+      ],
+      "spiderGuardImplementation": [
+        "systems/rock-star-os/os/platform/sensitive_guard.py",
+        "systems/rock-star-os/os/platform/supervisor.py",
+        "systems/rock-star-os/os/platform/service.py",
+        "systems/rock-star-os/os/platform/runner_control.py",
+        "systems/rock-star-os/os/platform/install-target.sh",
+        "systems/rock-star-os/os/buildroot/package/rock-platform/rock-platform.mk",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform",
+        "systems/rock-star-os/os/ui/security-ui.inc",
+        "systems/rock-star-os/os/ui/test_ui.c",
+        "systems/rock-star-os/os/ui/spider-motion.c",
+        "systems/rock-star-os/os/ui/spider-motion.h",
+        "systems/rock-star-os/os/ui/pin-readiness.json",
+        "scripts/review-native-pin-source.py",
+        "systems/rock-star-os/tests/test_ui_pin_source_profile.py"
+      ]
     },
     {
       "id": "game_ip",
@@ -251,7 +452,8 @@
         "docs/game-api-contract-draft.md",
         "docs/gx01-contract-implementation-plan.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
-        "docs/mini-game-client.md"
+        "docs/mini-game-client.md",
+        "docs/workstreams/08-game-market-fund.md"
       ]
     },
     {
@@ -276,7 +478,8 @@
       "documents": [
         "docs/validation.md",
         "docs/database-status.md",
-        "data/project-status.json"
+        "data/project-status.json",
+        "docs/git-consolidation.md"
       ]
     }
   ],
@@ -348,15 +551,44 @@
         "feedback": "separate_candidate_preserving_previous_Goal",
         "executionAuthority": "none_from_planner_output",
         "evidence": "docs/evidence/amc/adaptive-planner.json"
-      }
+      },
+      "recoveredContractReferences": [
+        "docs/amc-sky-launch-integration.md",
+        "tests/amc-revalidation.test.mjs",
+        "components/amc-quick-board.tsx",
+        "components/amc-command-center.tsx",
+        "scripts/amc-parallel.mjs",
+        "tests/amc-parallel.test.mjs",
+        "data/amc/agent-definitions.json",
+        "scripts/amc-agent.mjs",
+        "toolkits/amc-agent/README.md",
+        "tests/amc-agent.test.mjs",
+        "data/amc/agent-runtime-source.json"
+      ]
     },
     {
       "id": "rockstar-csv-cleanup",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "lib/sky-service-status.ts",
+        "components/sky-service-help.tsx",
+        "tests/sky-service-status.test.mjs",
+        "scripts/check-work-api.mjs",
+        "lib/csv-job-store.ts",
+        "scripts/check-csv-storage.mjs",
+        "docs/evidence/sky-csv-storage-verification.json",
+        "docs/evidence/sky-production-auth-verification.json",
+        "docs/evidence/sky-csv-expiry-verification.json"
+      ]
     },
     {
       "id": "rockstar-markets-analysis",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "components/everything-market.tsx"
+      ]
     },
     {
       "id": "mercari-revenue",
@@ -368,7 +600,14 @@
     },
     {
       "id": "rockstar-ip-studio",
-      "catalogStatus": "candidate"
+      "catalogStatus": "candidate",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "lib/sky-connections.ts",
+        "lib/operations.ts",
+        "tests/operations.test.mjs",
+        "tests/sky-routing.test.mjs"
+      ]
     },
     {
       "id": "coconala",
@@ -405,11 +644,35 @@
     },
     {
       "id": "rockstar-legal-intake",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "lib/local-guide-history.ts",
+        "components/local-guide-history-consent.tsx",
+        "lib/operations-client.ts",
+        "tests/local-guide-history.test.mjs",
+        "tests/operations.test.mjs",
+        "lib/llm-providers.ts",
+        "lib/remote-ai-pricing-gate.ts",
+        "tests/llm-providers.test.mjs",
+        "scripts/check-work-api.mjs"
+      ]
     },
     {
       "id": "rockstar-patent-assistant",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "lib/local-guide-history.ts",
+        "components/local-guide-history-consent.tsx",
+        "lib/operations-client.ts",
+        "tests/local-guide-history.test.mjs",
+        "tests/operations.test.mjs",
+        "lib/llm-providers.ts",
+        "lib/remote-ai-pricing-gate.ts",
+        "tests/llm-providers.test.mjs",
+        "scripts/check-work-api.mjs"
+      ]
     },
     {
       "id": "faster-whisper",
@@ -568,5 +831,205 @@
     "scope": "Provider autosave/conflict and known authentication-loss session boundary",
     "acceptance": "synthetic actual UI/native D1; real auth/provider and public gates pending",
     "storageRepair": "031修正: getter/remove failure quarantine, verified both-key cleanup, explicit retry and same-origin tab reload"
+  },
+  "mergeRecovery": {
+    "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+    "reviewedAt": "2026-10-11",
+    "restoredReferenceCount": 235,
+    "policy": "Union existing document/source/test paths with current index; preserve newer domains and acceptance flags. Prior nested result/configuration claims require a separate semantic review.",
+    "pendingContractReview": [
+      {
+        "entity": "linux_qemu",
+        "contract": "gameRecoveryFixtureValidation",
+        "sourceReferences": 3,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "linux_qemu",
+        "contract": "platformGuestVerificationEntry",
+        "sourceReferences": 4,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "linux_qemu",
+        "contract": "desktopCredentialHandoff",
+        "sourceReferences": 4,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "linux_qemu",
+        "contract": "nativeCiArtifactSelection",
+        "sourceReferences": 4,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "sky_zema_and_tools",
+        "contract": "localSdkAuthenticationBoundary",
+        "sourceReferences": 4,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "legacyMrCompatibilitySecurity",
+        "sourceReferences": 3,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "nativeMcpHttpsCaBoundary",
+        "sourceReferences": 3,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "mrHttpReceiveSecurity",
+        "sourceReferences": 3,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "mrDeliverySecurity",
+        "sourceReferences": 3,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "localDescriptorSecurity",
+        "sourceReferences": 3,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "security_operator_release",
+        "contract": "spiderImprovementCycle",
+        "sourceReferences": 4,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "security_operator_release",
+        "contract": "spiderGuardAnimationRevision",
+        "sourceReferences": 2,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "security_operator_release",
+        "contract": "spiderGuardAgentRole",
+        "sourceReferences": 2,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "security_operator_release",
+        "contract": "spiderCodeInspector",
+        "sourceReferences": 11,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-csv-cleanup",
+        "contract": "releaseAcceptance",
+        "sourceReferences": 1,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-csv-cleanup",
+        "contract": "paymentStatusContract",
+        "sourceReferences": 4,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-csv-cleanup",
+        "contract": "storageIsolationContract",
+        "sourceReferences": 5,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-markets-analysis",
+        "contract": "signinRecoveryAcceptance",
+        "sourceReferences": 2,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-markets-analysis",
+        "contract": "paperAcceptance",
+        "sourceReferences": 0,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-ip-studio",
+        "contract": "launchRecovery",
+        "sourceReferences": 1,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-ip-studio",
+        "contract": "voiceTelephony",
+        "sourceReferences": 5,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "coconala",
+        "contract": "signinRecovery",
+        "sourceReferences": 0,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "coconala",
+        "contract": "mobileResultActions",
+        "sourceReferences": 0,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "coconala",
+        "contract": "draftDeletion",
+        "sourceReferences": 0,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-legal-intake",
+        "contract": "localHistoryAcceptance",
+        "sourceReferences": 6,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-legal-intake",
+        "contract": "cloudTransportAcceptance",
+        "sourceReferences": 5,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-patent-assistant",
+        "contract": "localHistoryAcceptance",
+        "sourceReferences": 6,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-patent-assistant",
+        "contract": "cloudTransportAcceptance",
+        "sourceReferences": 5,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-amc",
+        "contract": "acceptedCandidateRevalidation",
+        "sourceReferences": 2,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-amc",
+        "contract": "quickFormat",
+        "sourceReferences": 2,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-amc",
+        "contract": "commandCenter",
+        "sourceReferences": 4,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      },
+      {
+        "entity": "rockstar-amc",
+        "contract": "agentDefinition",
+        "sourceReferences": 6,
+        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+      }
+    ]
   }
 }

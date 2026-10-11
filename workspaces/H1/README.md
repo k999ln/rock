@@ -20,9 +20,10 @@
 
 ## 次の作業
 
+- **G04**: 重複するAI・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する — 詳細: `npm run work -- G04`
 - **AMC01**: 現行3製品とOSの責任表・未決事項台帳をレビューする — 詳細: `npm run work -- AMC01`
 
-AMC01: Mini単体、Pro単体、任意連携、rocketstar地上支援の4利用構成に入出力と主担当を記す
+G04: 欠落台帳と既存PRを現行mainへ整合させ、同一候補の全体verify・CIを確認する。AMC01の製品間Interface整理は並行する。
 
 ## 守る条件・残課題
 
@@ -48,6 +49,7 @@ AMC01: Mini単体、Pro単体、任意連携、rocketstar地上支援の4利用�
 | LCH05 | 制作中CMの完成待ち・内容照合・導入案内への接続 | 進行中 / 調整 | — |
 | AMC01（親） | 現行3製品とOSの責任表・未決事項台帳をレビューする | 未着手 / 調整 | — |
 | SYS15 | Spider Security AgentのGitHub検査・コード検査・OS常駐監視・送信前拒否・native表示・boot監督を統合する（ROCK・同一image起動未受入） | 進行中 / 調整 | — |
+| G04 | 重複するAI・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する | 進行中 / 調整 | — |
 
 <details>
 <summary>完了記録のあるtask（当該範囲の記録。製品全体の完成ではありません）</summary>
@@ -85,6 +87,8 @@ AMC01: Mini単体、Pro単体、任意連携、rocketstar地上支援の4利用�
 | AMC04 | 担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する | 完了記録あり / 調整 | — |
 | AMC05 | 既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ | 完了記録あり / 調整 | — |
 | AMC06 | 固定テンプレートを補助へ分け、Gitを読むCodexの可変計画と追加指示による見直しをAMCへ接続する | 完了記録あり / 調整 | — |
+| AI09 | 本人決定（2026-09-25 01:26 ET、チャット指示）: Core offline仕事loopとGame最小loopの両方を、OS10完了前にhost／fixture段階で先行してよい。emulator・実機・OS統合の合格には転用しない。AI02〜AI05の依存注記に反映（AI06はGame側作業の担当範囲のため本記録では変更しない） | 完了記録あり / 調整 | — |
+| DOC05 | PR・task・配備記録なしでmainへ直接入った5コミット（9c1332e・8617863・4b49bf9・862ba30・851bb04）を証拠へ記録し、PR #39のSite試験verify組込みと網羅検査を取り込む | 完了記録あり / 調整 | — |
 
 </details>
 

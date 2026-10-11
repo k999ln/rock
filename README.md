@@ -58,7 +58,7 @@ Most design documents are written in Japanese; this README is the English entry 
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-11 / 384 task records (32 parents, 192 children, 160 standalone; 352 execution units excluding parents): 112 done, 35 in progress, 236 planned, 1 blocked
+Updated: 2026-10-11 / 392 task records (32 parents, 192 children, 168 standalone; 360 execution units excluding parents): 114 done, 46 in progress, 231 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Mission Control](docs/mission-control.md) · [Security](SECURITY.md)
@@ -82,7 +82,7 @@ Day by day, with what is in force today and what was withdrawn: [specification h
 | I want to… | Open |
 | --- | --- |
 | understand the current product direction | [What is in force today](docs/spec-history.md#2-いま有効な仕様2026-10-06時点) / [SIM/eSIM-led architecture](docs/sim-led-product-architecture.md) |
-| read the confirmed requirements, RQ01–RQ49 | [Product baseline](docs/product-baseline.md) |
+| read the confirmed requirements, RQ01–RQ50 | [Product baseline](docs/product-baseline.md) |
 | see what changed, and on which day | [Specification history](docs/spec-history.md) |
 | see every tool and agent and what each one does | [Agent and tool overview](docs/agents-and-tools.md) |
 | read a design | [Design portal](docs/rockstaros-design-portal.md) / [Document map](docs/README.md) |

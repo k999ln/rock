@@ -100,7 +100,8 @@ await test('AMC child work preserves ownership, prerequisites and separate outpu
   }
   assert.equal(project.tasks.find((task) => task.id === 'AMC02').parentTaskId, undefined);
   assert.equal(mission.taskAssignments.find((a) => a.taskId === 'AMC02').primarySquad, 'H1');
-  assert.deepEqual(mission.squads.find((s) => s.id === 'H1').nextTaskIds, ['AMC01']);
+  assert.deepEqual(mission.squads.find((s) => s.id === 'H1').nextTaskIds, ['G04', 'AMC01']);
+  assert.deepEqual(mission.squads.find((s) => s.id === 'O5').nextTaskIds, ['SIM01', 'SKY21', 'SKY19']);
   validateMissionControl(mission, project, baseline);
   for (const mutate of [
     (m, p) => { p.tasks.find((task) => task.id === 'PRO04-01').parentTaskId = 'PRO99'; },

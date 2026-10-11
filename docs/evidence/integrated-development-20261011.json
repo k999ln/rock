@@ -1,0 +1,63 @@
+{
+  "schema": "rock-integrated-development-evidence/1",
+  "startedAt": "2026-10-11T09:13:50Z",
+  "plannedEndAt": "2026-10-11T19:13:50Z",
+  "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
+  "branch": "codex/rock-development-20261011",
+  "status": "implementation_and_validation_in_progress",
+  "sourceSha": null,
+  "taskIds": [
+    "G04",
+    "SIM01",
+    "SKY21"
+  ],
+  "cleanup": {
+    "commit": "f7266bd",
+    "filesRemoved": 8,
+    "bytesRemoved": 161082,
+    "localMarkdownLinksChecked": 1877,
+    "missingLinks": 0,
+    "manifest": "data/project-status.json#repositoryCleanup.obsoleteContent"
+  },
+  "ledgerRecovery": {
+    "tasks": [
+      "SIM01",
+      "SKY21",
+      "B06",
+      "G04",
+      "AI09",
+      "DOC05",
+      "GM01",
+      "CAMPUS01"
+    ],
+    "stateCorrections": [
+      "AI02",
+      "AI03",
+      "AI04",
+      "AI05",
+      "AI06"
+    ],
+    "sourceReferenceCount": 235,
+    "historicalPreparationRecords": 23
+  },
+  "validation": {
+    "ledgerRecovery": {
+      "status": "passed_on_local_working_tree",
+      "command": "node --experimental-strip-types --test tests/campus.test.mjs tests/game-sandbox.test.mjs tests/mission-control.test.mjs tests/workspaces.test.mjs tests/agent-control-plane.test.mjs",
+      "tests": 44,
+      "pass": 44,
+      "fail": 0,
+      "skip": 0,
+      "limits": "No browser, provider or physical acceptance; repository and data contract checks also passed."
+    }
+  },
+  "github": {
+    "saved": false,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "acceptanceLimits": [
+    "Host and synthetic fixtures are separate from provider, emulator, physical device and production acceptance.",
+    "No purchases, live charges, transfers, signing keys, device flash or deployment performed."
+  ]
+}

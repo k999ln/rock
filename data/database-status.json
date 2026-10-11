@@ -9,13 +9,13 @@
     "currentProductionReadbackCount": 0
   },
   "projectProgress": {
-    "total": 384,
-    "done": 112,
-    "in_progress": 35,
-    "planned": 236,
+    "total": 392,
+    "done": 114,
+    "in_progress": 46,
+    "planned": 231,
     "blocked": 1,
-    "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-    "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。"
+    "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
+    "nextAction": "G04/SIM01/SKY21: 既存9 PR・欠落コード・台帳を統合し、利用開始とSky/Zema/Materialの一連の操作、全体verify、同一SHA CIを検証して作業branchとPRへ保存する。実機・Provider・実課金・公開gateは別受入。"
   },
   "webSchema": {
     "tableCount": 80,
