@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-G04/SIM01/SKY21: 既存9 PR・欠落コード・台帳を統合し、利用開始とSky/Zema/Materialの一連の操作、全体verify、同一SHA CIを検証して作業branchとPRへ保存する。実機・Provider・実課金・公開gateは別受入。
+G04/WEB01: 全体verify・同一SHA CIを合格したPR #99をレビューし、承認範囲に従うmain統合と既存Sitesの同一source受入を別途進める。SIM01/SKY21は実issuer／Provider sandboxの本人・資格情報・予算上限・receipt条件を揃えて利用開始を受入。OS10の全OS／Pixelと現行QEMU image、R5/Pro実機は独立した受入を維持する。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

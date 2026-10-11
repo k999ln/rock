@@ -2091,6 +2091,23 @@
         }
       },
       "completionMeaning": "All local and GitHub checks of this runtime candidate succeeded. Later evidence-only commits must still be checked at their own PR head; no other SHA is silently substituted."
+    },
+    "finalRecordFollowup": {
+      "sourceSha": "4985feb82cb2a192d719e5a04a130308307a2f04",
+      "githubVerifyRun": 38160183329,
+      "result": "failed in database:check before typecheck/tests/build/API stages",
+      "cause": "Final nextAction update in project-status was not regenerated into the database status JSON and Markdown.",
+      "repair": "npm run database:status updated only nextAction in data/database-status.json and docs/database-status.md; database:check then passed.",
+      "runtimeChange": false,
+      "recordedChecks": [
+        "project:check",
+        "mission:check",
+        "repository:check",
+        "design:check",
+        "database:check",
+        "git diff --check"
+      ],
+      "finalHeadAcceptance": "Use final PR99 head check-runs; this historical failure is not hidden or assigned to the passing 0c53 runtime candidate."
     }
   },
   "github": {

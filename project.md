@@ -6,7 +6,7 @@
 
 ## 2026-10-11 — 最終runtime候補のローカル全体検証とmobile受入（G04 / H1、ROCK）
 
-`0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce`は全体verify成功。Node1726 pass／1 platform skip／失敗0、Worker／D1 1356項目、CSV D1／R2 385項目、185assets欠落0、設計・台帳・型・lint・buildを確認した。Workbenchの390px画面は横overflow0、案内・主要3ボタンとLibrary移動遮断を受入済み。同一SHAのGitHub全15チェックも成功。AndroidはJUnit200 pass／2 physical skip／失敗0。CodeQLの初回Python結果登録エラーは同SHAの再実行1回で復旧し、新規alertなし。mainは96845e60のまま、元9PRのHEADはすべて統合候補の履歴に含まれる。最終追補は証拠と次作業の同期だけで、runtimeを変更しない。
+`0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce`は全体verify成功。Node1726 pass／1 platform skip／失敗0、Worker／D1 1356項目、CSV D1／R2 385項目、185assets欠落0、設計・台帳・型・lint・buildを確認した。Workbenchの390px画面は横overflow0、案内・主要3ボタンとLibrary移動遮断を受入済み。同一SHAのGitHub全15チェックも成功。AndroidはJUnit200 pass／2 physical skip／失敗0。CodeQLの初回Python結果登録エラーは同SHAの再実行1回で復旧し、新規alertなし。mainは96845e60のまま、元9PRのHEADはすべて統合候補の履歴に含まれる。最終追補は証拠と次作業の同期だけで、runtimeを変更しない。 追補4985feb8のCIはdatabase現況へのnextAction転記漏れで停止したため、指定生成コマンドでJSON／Markdownの該当2箇所だけを同期し、database:checkを確認。後続試験を未実行のまま成功扱いにせず、最終HEADのCIへ進む。
 
 ## 2026-10-11 — 起動コマンド変更後の既存migration試験を整合（WEB01 / O7、ROCK）
 
