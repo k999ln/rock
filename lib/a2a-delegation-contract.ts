@@ -266,4 +266,3 @@ export function sameDelegationIntent(existing: A2ADelegation, input: A2ADelegati
     existing.deadlineAt === input.deadlineAt
   );
 }
-

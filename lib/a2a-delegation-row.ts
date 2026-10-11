@@ -40,4 +40,3 @@ export function normalizeDelegation(row: A2ADelegationRow | null): A2ADelegation
     continueWhileDeviceOffline: row.continueWhileDeviceOffline === 1 || row.continueWhileDeviceOffline === true,
   };
 }
-
