@@ -128,7 +128,7 @@ async function setup(t) {
     );
     return { response, data: await response.clone().json() };
   }
-  async function fetch(url, options = {}) {
+  async function fetch(url, options = {}, tracking) {
     const method = options.method ?? 'GET';
     if (new URL(url, 'https://local.test').pathname !== '/api/work-jobs') {
       assert.equal(method, 'GET');
@@ -140,6 +140,8 @@ async function setup(t) {
       });
     }
     const value = options.body ? JSON.parse(options.body) : undefined;
+    const gate = method === 'GET' ? delayedList : null;
+    if (gate) { delayedList = null; tracking.held = true; }
     const requestOwner = owner;
     const result = await routeCall(
       method,
@@ -165,9 +167,7 @@ async function setup(t) {
         afterGet = null;
         next();
       }
-      if (delayedList) {
-        const gate = delayedList;
-        delayedList = null;
+      if (gate) {
         return new Promise((resolve) => {
           gate.release = () => resolve(Response.json(result.data));
         });
@@ -176,12 +176,14 @@ async function setup(t) {
     }
     return result.response;
   }
-  function trackedFetch(...args) {
-    const promise = fetch(...args);
-    pending.add(promise);
+  function trackedFetch(url, options) {
+    const tracking = { held: false, promise: null };
+    const promise = fetch(url, options, tracking);
+    tracking.promise = promise;
+    pending.add(tracking);
     void promise.then(
-      () => pending.delete(promise),
-      () => pending.delete(promise),
+      () => pending.delete(tracking),
+      () => pending.delete(tracking),
     );
     return promise;
   }
@@ -240,7 +242,9 @@ async function setup(t) {
       ['./sky-zema-handoff', {}],
     ]),
   );
+  let navigationBlocked = false;
   const modules = {
+    '@/components/use-pending-save-navigation': { usePendingSaveNavigation(pending) { navigationBlocked = pending; } },
     '@/lib/operations-client': client,
     '@/lib/owner-intent': deps.get('@/lib/owner-intent'),
     react,
@@ -365,9 +369,15 @@ async function setup(t) {
     );
   }
   async function flush() {
-    for (let n = 0; n < 3; n++) {
+    // Wait for actual route/crypto work, not a fixed number of event-loop turns.
+    // Only the explicitly deferred old-list response remains pending on purpose.
+    let quiet = 0;
+    while (quiet < 2) {
+      const active = [...pending].filter((entry) => !entry.held);
+      await Promise.allSettled(active.map((entry) => entry.promise));
       await new Promise((r) => setImmediate(r));
       render();
+      quiet = [...pending].some((entry) => !entry.held) ? 0 : quiet + 1;
     }
   }
   async function click(label) {
@@ -386,6 +396,7 @@ async function setup(t) {
     flush,
     click,
     find,
+    get navigationBlocked() { return navigationBlocked; },
     nodes: () => nodes(tree),
     owner(value) {
       owner = value;
@@ -444,6 +455,7 @@ void test('Workbench keeps A creation through precommit failure, 401 and B switc
     503,
   );
   assert.equal(h.count(), 0);
+  assert.equal(h.navigationBlocked, true);
   const original = h.requests.find((r) => r.method === 'POST');
   h.owner(null);
   await h.click('同じ作成内容で結果を確認');
@@ -477,6 +489,7 @@ void test('Workbench keeps A creation through precommit failure, 401 and B switc
     original.headers['X-Rock-Owner-Scope'],
   );
   assert.equal(h.count(), 1);
+  assert.equal(h.navigationBlocked, false);
   assert.equal(
     h.sqlite.prepare('SELECT user_id FROM work_jobs').get().user_id,
     'alice',
@@ -592,6 +605,7 @@ void test('Workbench unknown identity blocks creation and retry; explicit releas
   await h.click('保存先の接続を確認');
   assert.ok(h.find('button', '同じ作成内容で結果を確認').props.disabled);
   await h.click('保留を解除（入力は保持）');
+  assert.equal(h.navigationBlocked, false);
   await h.click('仕事を作成');
   const next = h.requests.filter((r) => r.method === 'POST').at(-1);
   assert.equal(next.status, 201);

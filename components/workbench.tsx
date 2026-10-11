@@ -41,6 +41,7 @@ import { compatibleLocalPackageRuntimes } from '@/lib/sky-package-runtime';
 import type { SkyToolPackage } from '@/lib/sky-tool-package';
 import type { McpConnection } from '@/lib/mcp-hub';
 import { McpBotRunner } from '@/components/mcp-bot-runner';
+import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
 import { OperationRequestError } from '@/lib/operations-client';
 import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 
@@ -449,6 +450,7 @@ export default function Workbench({
   const creation = useRef<Creation | null>(null);
   const createInFlight = useRef(false);
   const listGeneration = useRef(0);
+  usePendingSaveNavigation(pendingCreation !== null);
   const handoffPackage = handoffPackageResult?.packageKey === initialPackageKey
     ? handoffPackageResult.package ?? null : null;
   const handoffPackageState = !initialPackageKey ? 'none'
@@ -1312,6 +1314,7 @@ export default function Workbench({
         )}
         {pendingCreation && <section className="work-notice" aria-label="仕事の作成結果の確認">
           <p>作成結果が未確認です。最初のアカウントで、同じ仕事ID・名前・進め方を確認します。別アカウントには再送しません。</p>
+          <p>作成結果を確認するか、保留を解除してから別の画面へ移動してください。サインインは別タブで行えます。</p>
           <p>{ownerScope && ownerScope !== pendingCreation.ownerScope ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
           <a href="/signin-with-chatgpt?return_to=/work" target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</a>
           <button disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button>
