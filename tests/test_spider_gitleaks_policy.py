@@ -173,6 +173,36 @@ class RealScannerPolicyTests(unittest.TestCase):
         self.assertEqual(self.scan(copies, "", return_locations=True), {(p, 1) for p in copies})
         self.assertEqual(self.scan(mutations, "", return_locations=True), expected_mutations)
 
+
+    def test_relocated_zema_storage_name_is_exact_and_new_paths_reject_credentials(self):
+        expected_paths = {
+            "lib/sky-zema-handoff.ts",
+            "lib/zema-private-storage.ts",
+            "tests/zema-chat-session.test.mjs",
+        }
+        entries = [(value, paths) for value, paths in reviewed_public_entries()
+                   if "lib/sky-zema-handoff.ts" in paths]
+        self.assertEqual(len(entries), 1, "One reviewed public storage name is required")
+        value, paths = entries[0]
+        self.assertEqual(set(paths), expected_paths)
+        source = "const SKY_ZEMA_HANDOFF_KEY = " + json.dumps(value) + ";\n"
+        files = {path: source for path in expected_paths}
+        locations = {(path, 1) for path in files}
+        self.assertEqual(self.scan(files, "", policy=False, return_locations=True), locations)
+        self.assertEqual(self.scan(files, "", return_locations=True), set())
+
+        # Every added path must still reject replacement credentials. A hit in
+        # the original path must not hide a bypass in either relocated path.
+        replacements = {
+            path: "api_key = " + json.dumps(
+                "spider-canary-" + hashlib.sha256(("relocation:" + path).encode()).hexdigest())
+            for path in expected_paths
+        }
+        self.assertEqual(self.scan(replacements, "", return_locations=True), locations)
+        copies = {path + ".unreviewed": source for path in expected_paths}
+        self.assertEqual(self.scan(copies, "", return_locations=True),
+                         {(path, 1) for path in copies})
+
     def test_public_pem_is_detected_by_defaults_and_only_exact_path_is_allowed(self):
         source = (ROOT / PEM_PATH).read_text()
         self.assertIn("private-key", self.scan(PEM_PATH, source, policy=False))

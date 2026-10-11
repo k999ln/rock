@@ -289,14 +289,22 @@
     {
       "candidateSha256": "201bf419d4905b964931f84e207b3d66e3dc21d27d9f65a65321fd79c6fc4101",
       "classification": "browser-storage-name",
-      "evidence": "lib/sky-zema-handoff.ts: public localStorage identifier",
+      "evidence": "Public browser sessionStorage identifier. Moved unchanged from lib/sky-zema-handoff.ts to lib/zema-private-storage.ts:2; tests/zema-chat-session.test.mjs verifies removal of that same public identifier. No credential, account ID, or private message value.",
       "source": {
         "commit": "e5306b5d0496f40f434d4a264546ec56180d7fd7",
         "path": "lib/sky-zema-handoff.ts",
         "line": 3,
         "field": []
       },
-      "exactPathCount": 1
+      "exactPathCount": 3,
+      "additionalPathReview": {
+        "commit": "fa4cab60e10292309c5dc8509ab443c5aac70ad9",
+        "paths": [
+          "lib/zema-private-storage.ts",
+          "tests/zema-chat-session.test.mjs"
+        ],
+        "reason": "Two exact new source/test locations for the already reviewed public storage identifier; full value/path anchors retained."
+      }
     },
     {
       "candidateSha256": "20add98a81c6b16b5d7d110e4b024b2524f3e498d99fd12914fd3ba7c4cad857",

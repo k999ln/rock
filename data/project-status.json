@@ -5054,7 +5054,8 @@
         "tests/spider-workspace-state.test.mjs",
         "tests/spider-inspector-worker.test.mjs",
         "tests/dependency-cache-revalidation-security.test.mjs",
-        "docs/evidence/spider-cache-error-revalidation.json"
+        "docs/evidence/spider-cache-error-revalidation.json",
+        "docs/evidence/spider-zema-storage-policy.json"
       ]
     },
     {
@@ -5994,6 +5995,17 @@
       "audience": "public",
       "deployedAt": "2026-10-09T21:13:17.969665+00:00"
     },
-    "publicationEvidence": "docs/evidence/spider-sky-publication.json"
+    "publicationEvidence": "docs/evidence/spider-sky-publication.json"  },
+  "spiderZemaStoragePolicyRefresh": {
+    "status": "reviewed_control_pinned_local_validation_pass_ci_pending",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "workstream": "Security / Identity / Compliance",
+    "responsibility": "ROCK",
+    "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "finding": "PR93 relocated public storage identifier is absent from pinned policy exact paths",
+    "evidence": "docs/evidence/spider-zema-storage-policy.json",
+    "mainIntegrated": false,
+    "reviewedControlCommit": "b4c9000e2f265723d29b90c5f37c7f34b1a18362"
   }
 }

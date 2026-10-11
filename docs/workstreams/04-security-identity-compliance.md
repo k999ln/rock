@@ -80,3 +80,7 @@ O1 / SYS02の診断共有の安全条件として、entitlement observerの登�
 PR83統合後のmain e12d880cで、stale-if-error経路が通常判定の再利用禁止を迂回する残存不具合を再現した。response禁止条件を共通化し、error fallbackでもURI/host/method/Varyとrequest no-cacheを確認する。13試験は修正前3 pass /10 fail、修正後13 pass /0 fail /0 skip。304・公開cache・非共有cache・HEADの正例を維持。GitHub同一SHA CIとmain統合は別に確認する。[再現と修正の証拠](../evidence/spider-cache-error-revalidation.json)。既存SYS15のprimary squad H1・進行中statusと各製品の受入段階を変更しない。
 
 2026-10-07 cycle79: main `0455499d` の文書整理を既存PR #84へ同期し、project.mdの復元履歴と従来のcache修正記録を両方保持して競合解消。cache source・13回帰試験・workflow・元licenseは変更しない。同一SHAの再検査結果は上記証拠のdocumentationMainRefreshとPR欄へ記録する。
+
+### 公開保存キーの移動と固定control
+
+PR #93の公開storage item名は、移動後も同じ値のまま2つのsource／回帰test pathへ現れる。候補側の設定では固定controlの検査結果は変わらないため、source確認済みの値・path完全一致だけをcontrolへ同期する。実Gitleaksで各pathの差替え秘密値と未承認pathコピーを検出し、全履歴・既定rule・固定control・metadata-only出力を維持する。[範囲と試験](../evidence/spider-zema-storage-policy.json)。PR側で新しい固定controlを使った同一SHA再検査が成功するまで、旧失敗を解消済みにしない。
