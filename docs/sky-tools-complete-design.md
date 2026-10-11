@@ -807,6 +807,8 @@ Zema Workbenchの選択中jobからdirect-text quoteを作成し、親jobの残�
 
 2026-10-11の責務整理では、Cloud AIの状態・通信・表示・回答削除dialogを`components/workbench-cloud-text.tsx`へ集約した。controller hookはWorkbenchと同じ生存期間を保ち、job切替時も依頼文・上限・同一request IDを維持する。親側は選択jobとA2A共通予算を渡す。DOM・ラベル・10秒readback・入力hash照合・明示承認・結果不明時の再送禁止は変更しない。Material／メルカリ／ココナラ／Workbenchの未確認操作は`lib/pending-owner-intent.ts`の純関数で本人不明・不一致・一致を区別し、各画面の保存契約を維持する。Workbenchは失敗時に保留を維持し、事業3画面だけ確定した入力エラー等で解除する。本人照合は既存APIの`requestUser`とowner intentによるもので、helperは認証や権限を与えない。
 
+SKY07／O4の会話保存は`components/use-sky-chat-session.ts`へ集約する。画面は入力・runner・未保存AMCの確認と通信中止を担当し、hookは既存sessionStorageの復元・保存・新規thread・resetを担当する。10分TTL、Toolとthreadの一致、引継ぎの一度限り消費、runningの再読込はfailedとして案内する規則、保存不可でも現在の会話を保持する動作を維持する。mode変更と新規会話の共通resetは、既存の未保存確認が通った後だけ実行する。保存内容を実行承認へ昇格せず、会話復元から自動実行しない。
+
 応答のキャッシュ読込と作成は総入力の互いに重ならない区分として保存用metadataへ保持する。標準文章生成は`service_tier=default`を送信し、実応答tierを別に保持する。使用量計算は各区分をBigIntで加算し、通貨minor unitへの切上げを総額で一度だけ行い、項目ごとのtoken数・署名単価・正確な分子を返す。欠落した使用量を0と推定せず、別model/tier、未知のTool、検索、入力/出力上限超過、quote条件不一致はunreconciledとする。これらは予約保持と照合が必要な状態であり、支払い・請求書照合の成功を意味しない。
 
 保存・復旧は正本ローカルでrequest-bound quoteのD1保存、本人別の原子的予約、一度だけのsend claim、送信結果不明時のhold、明細の一度限り確定と再取得を実装した。取消はD1のtriggerを含む更新件数ではなく本人の保存状態で確認し、共有budgetを一度だけ解放する。本文はquoteへ保存せず、成果本文も明示opt-in時だけ保存し、本文削除後も使用量と会計記録を保持する。未完了点はSky会話composerからの引継ぎ、保存成果のUI受入、Sitesへのmigration/実装配備、実Provider応答・invoice照合と資金接続の受入。既存A2A台帳はProvider署名receiptを要求するため、OpenAIの通常JSON応答をその署名receiptと偽って流用しない。資金接続・使用額承認の未受入も維持する。法務・特許の検索追加費用はこのtext-only料金表に含まれず、従来の停止gateを通す。実Provider credential、実測のframing上限、実応答・invoice照合はJOINT/OWNERの受入が残る。
