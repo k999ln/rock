@@ -1654,8 +1654,41 @@
           "lib/mcp-hub",
           "root source/dist"
         ],
-        "status": "repaired_targeted_and_browser_verification_passed"
+        "status": "repaired_targeted_and_browser_verification_passed",
+        "independentReview": {
+          "result": "no reproducible defect identified",
+          "scope": "event/manual reads, token change, unmount and StrictMode effect restart",
+          "verification": "Source and existing assertions reviewed independently; tests not needlessly repeated."
+        }
       }
+    },
+    "finalIntegrationRegression": {
+      "sourceSha": "9e5488ebf95d50ef99169799001110b5ef9b81cd",
+      "command": "npm run verify",
+      "result": "failed in Node suite before bundled/API stages",
+      "node": {
+        "tests": 1728,
+        "passed": 1726,
+        "failed": 1,
+        "skipped": 1
+      },
+      "failure": "migration-union.test.mjs expected the old literal shell start command after the builder-aligned runner replacement.",
+      "repairSha": "889b63835d5d46c165f3b27691acd27a18f96972",
+      "repair": "Keep the existing published migration check and execute the real start runner with a shared fixture; move the duplicate startup behavior assertions from start-local-web rather than maintaining two checks.",
+      "preservedAssertions": [
+        "builder runtime selected",
+        "CI=1 on migrations",
+        "--local and exact published config",
+        "migration completes before dev",
+        "preview args forwarded only to dev",
+        "migration failure/signal prevents serving",
+        "exit codes and signals propagated",
+        "all six fresh/historical D1 filename and Drizzle paths"
+      ],
+      "targetedTestsPassed": 19,
+      "productChange": false,
+      "expectedTestCountChange": "one duplicate test merged; no behavioral assertion removed",
+      "integratedRecheck": "pending"
     }
   },
   "github": {
@@ -2498,7 +2531,14 @@
       "missingImplementationPaths": 0,
       "policyReview": "Later SIM/eSIM service-first, Pixel 10/GL066/frankel, R5 research-versus-product and fee execution holds retained. New owner-bound save and MCP recovery changes do not grant identity, execution permission or provider acceptance.",
       "runtimeEvidence": "validation.integratedOwnerAndMcpRecovery",
-      "unresolvedGatesPreserved": true
+      "unresolvedGatesPreserved": true,
+      "latestPathInventory": {
+        "sourceSha": "9e5488ebf95d50ef99169799001110b5ef9b81cd",
+        "requirements": 50,
+        "exactIds": "RQ01 through RQ50",
+        "missingImplementationPaths": 0,
+        "scope": "Current paths and existing requirement-by-requirement policy boundaries only; no new real-device/provider acceptance."
+      }
     }
   },
   "executionAccounting": {

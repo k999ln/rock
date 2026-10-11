@@ -4,6 +4,10 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 起動コマンド変更後の既存migration試験を整合（WEB01 / O7、ROCK）
+
+`9e5488eb`の全体verifyはNode1726 pass／1 failure／1 platform skipで停止。旧shell文字列を期待する1件を実runner呼出へ変え、builder選択・local migration・CI・起動順と追加引数を実際に確認する。重複していた新規動作試験を統合したため総件数は1減るが、assertion・失敗停止・signal・旧D1復旧は保持。対象19件とlintが合格。productionコードは変えず、新候補で全体検証する。
+
 ## 2026-10-11 — Workbench移動時の消失とSkyチャットの古い一覧を修正（R03 / O2、SKY07 / O4、ROCK）
 
 実build＋D1のWorkbenchで作成前503の後Library移動から戻ると入力と未確認IDが消えることを再現し、既存の未確認保存hookへ接続した。関連6件・型検査・lintが合格し、実buildで追加確認する。Skyチャットはevent／手動一覧と端末token切替の競合を修正。追加component9件、既存13件、実Reactブラウザ8件が合格。大きな追加開発を止め、統合候補の全体verify／実画面／同一SHA CIへ進む。
