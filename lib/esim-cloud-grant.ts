@@ -85,7 +85,7 @@ export async function resolveEsimCloudGrant(
   try {
     const pricing = await selectEsimOrderPricing(db, config.ESIMGO_PLAN_CATALOG_JSON, row, ownerUserId);
     if (await sha256Hex(JSON.stringify(pricing.plan.starterAgentPack)) !== row.packHash) return null;
-    await verifyEsimStarterAgentPack(pricing.plan, await skyToolPackageStore(db).listRegistry());
+    await verifyEsimStarterAgentPack(pricing.plan, await skyToolPackageStore(db).verifiedRegistryPackages(pricing.plan.starterAgentPack.packages));
     const identity = { authorityId: row.authorityId, keyId: row.keyId, ownerUserId, deviceRef: row.deviceRef };
     const fixed = await trustedEsimDeviceGatewayKeyFingerprint(config.ESIM_DEVICE_GATEWAY_KEYS, identity);
     const attested = await esimDeviceEntitlementStore(db).attestedGatewayKey(identity);

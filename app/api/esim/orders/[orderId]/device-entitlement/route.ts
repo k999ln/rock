@@ -133,7 +133,7 @@ async function eligibleOrder(orderId: string, ownerUserId: string) {
     config.ESIM_INSTALL_RECEIPT_KEYS, row.installIssuerId, row.installKeyId,
   )) throw new Error('INSTALL_PROOF_NOT_TRUSTED');
   const pricing = await selectEsimOrderPricing(db, config.ESIMGO_PLAN_CATALOG_JSON, row, ownerUserId);
-  const registry = await skyToolPackageStore(db).listRegistry();
+  const registry = await skyToolPackageStore(db).verifiedRegistryPackages(pricing.plan.starterAgentPack.packages);
   await verifyEsimStarterAgentPack(pricing.plan, registry);
   const packHash = await sha256Hex(JSON.stringify(pricing.plan.starterAgentPack));
   return { db, row, pack: pricing.plan.starterAgentPack, packHash, config };
