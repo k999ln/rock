@@ -10,7 +10,7 @@
     "build": "vinext build",
     "start": "node scripts/start-local-web.mjs",
     "lint": "oxlint",
-    "lint:product": "oxlint app lib db components/*.tsx services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs shared public-release/rockstaros/packages/sky-zema-core/src",
+    "lint:product": "oxlint app lib db components/*.tsx components/*.ts services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs shared public-release/rockstaros/packages/sky-zema-core/src",
     "format": "oxfmt",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:api": "node scripts/check-work-api.mjs && node scripts/check-csv-storage.mjs",

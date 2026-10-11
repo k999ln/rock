@@ -4,6 +4,10 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — Web・API・A2A・Androidの責務と重複処理を整理（G04 / H1、ROCK）
+
+Cloud AIをWorkbench専用module、会話sessionをSkyChat専用hook、A2A保存契約／固定照会列を専用moduleへ分離した。API本文readerは8→1、Android本文readerは4→1、JSON header／UTF-8は各6→1、A2A署名検証は3→1へ共通化。Android originの正規化を保存層と通信層の共通責務へ移した。本人判定・不明な保存の再確認・料金承認・署名bytes・CAS・精算は保持。分離前後の実component比較と実built UI、Worker/D1、Android host／SDK compileが合格し、別担当のread-only reviewでも実害ある差は見つからなかった。全体verifyと同一SHA CIはこの統合候補で続ける。[各検証のsourceと範囲](docs/evidence/refactor-20261011.json)。
+
 ## 2026-10-11 — PR #99をmainへ統合し、重複処理の整理へ（G04 / H1、ROCK）
 
 利用者のmain反映指示に従い、最終HEAD `a81b48eaf102851244bf67f84ecb7d6b6e379b34` の全15チェック成功を照合してPR #99をmergeした。mainは `bcd31090e11f6b22c130b9551292a15fa805aa8a`（2026-10-11 14:23 EDT）。公開配備は行っていない。このmainから専用branchでWebのCloud AI責務、owner/pending判定、API本文読取、A2A保存照会、Android応答処理を整理する。本人確認・承認・署名・CAS・復旧条件を維持し、対象回帰から全体verifyと同一SHA CIへ進む。進捗文書の更新入口は `metadata:update` へ統合し、以前のnextAction変更時に生じたDB状態の転記漏れも防ぐ。[範囲と検証](docs/evidence/refactor-20261011.json)。

@@ -307,7 +307,9 @@
         "android/shell/src/androidTest/java/dev/rock/shell/CloudSessionPresentationTest.java",
         "android/automation/src/androidTest/java/dev/rock/automation/AndroidResponseDeadlineTest.java",
         "android/automation/src/main/java/dev/rock/automation/AndroidJsonResponse.java",
-        "android/automation/src/test/java/dev/rock/automation/AndroidJsonResponseTest.java"
+        "android/automation/src/test/java/dev/rock/automation/AndroidJsonResponseTest.java",
+        "android/automation/src/main/java/dev/rock/automation/RockstarServiceOrigin.java",
+        "android/automation/src/test/java/dev/rock/automation/RockstarServiceOriginTest.java"
       ],
       "responseRecovery": {
         "accountStorage": "Transient errors preserve encrypted state; proven invalid data or permanent invalidation clears it.",
@@ -434,7 +436,15 @@
         "lib/bounded-stream.ts",
         "tests/bounded-stream.test.mjs",
         "lib/a2a-delegation-contract.ts",
-        "lib/a2a-delegation-row.ts"
+        "lib/a2a-delegation-row.ts",
+        "components/workbench-cloud-text.tsx",
+        "lib/pending-owner-intent.ts",
+        "tests/workbench-cloud-text.test.mjs",
+        "tests/pending-owner-intent.test.mjs",
+        "lib/a2a-provider-signature.ts",
+        "tests/a2a-provider-signature.test.mjs",
+        "components/use-sky-chat-session.ts",
+        "tests/sky-chat-session-recovery.test.mjs"
       ],
       "recoveredContractReferences": [
         "docs/sky-tool-sdk.md",
