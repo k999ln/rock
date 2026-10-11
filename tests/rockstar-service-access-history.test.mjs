@@ -1,4 +1,5 @@
 import * as ownerIntent from '../lib/owner-intent.ts';
+import * as boundedStream from '../lib/bounded-stream.ts';
 import assert from 'node:assert/strict';
 import { generateKeyPairSync, randomUUID, sign } from 'node:crypto';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -54,6 +55,7 @@ for (const [scope, newerScope] of [['zema', 'sky'], ['sky', 'zema']]) {
     const dependencies = new Map([
       ['cloudflare:workers', { env }],
       ['@/lib/owner-intent', ownerIntent],
+      ['@/lib/bounded-stream', boundedStream],
       ['@/lib/a2a-delegation-store', { a2aDelegationStore }],
       ['@/lib/fund-store', { database: () => db, requestUser }],
       ['@/lib/work-store', { workStore }],
