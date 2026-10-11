@@ -4,8 +4,8 @@
   "plannedEndAt": "2026-10-11T19:13:50Z",
   "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
   "branch": "codex/rock-development-20261011",
-  "status": "integrated_candidate_verified_followup_development_in_progress",
-  "sourceSha": "6ba00c09087145b636b7613250a974823fb2abdf",
+  "status": "integrated_candidate_verified_final_runtime_smoke_in_progress",
+  "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
   "taskIds": [
     "G04",
     "SIM01",
@@ -844,7 +844,11 @@
           "undici": "8.0.2",
           "miniflare": "5.20261001.0-alpha"
         },
-        "fullIntegratedRecheck": "pending later candidate"
+        "fullIntegratedRecheck": {
+          "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+          "status": "passed",
+          "record": "validation.integratedOwnerAndMcpRecovery"
+        }
       }
     },
     "npmAdvisoryAudit": {
@@ -1027,6 +1031,11 @@
           "existing owner isolation, CAS and monetary deduplication retained"
         ],
         "testsRerun": false
+      },
+      "integratedRecheck": {
+        "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "localVerify": "passed",
+        "github15Checks": "passed"
       }
     },
     "mcpConnectionScreenRecovery": {
@@ -1063,19 +1072,267 @@
         "Passport and one-time approval",
         "pricing and execution gates"
       ],
-      "integratedRecheck": "pending final candidate"
+      "integratedRecheck": {
+        "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "localVerify": "passed",
+        "github15Checks": "passed"
+      },
+      "browserCleanup": {
+        "server": "stopped",
+        "tab": "closed"
+      }
+    },
+    "integratedOwnerAndMcpRecovery": {
+      "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+      "local": {
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "exitCode": 0,
+        "environment": "macOS arm64, Node 26.0.0",
+        "node": {
+          "tests": 1705,
+          "passed": 1704,
+          "failed": 0,
+          "skipped": 1
+        },
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385,
+        "webAssetReferences": 185,
+        "missingAssets": 0,
+        "typecheck": "passed",
+        "productLint": "passed",
+        "productionBuild": "passed",
+        "projectMissionRepositoryBaselineDesignDatabase": "passed",
+        "record": "integrated-verify-9.log"
+      },
+      "github": {
+        "checks": 15,
+        "passed": 15,
+        "failed": 0,
+        "verifyRun": "https://github.com/k999ln/rock/actions/runs/38156884093",
+        "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "nodePassed": 1704,
+        "nodeSkipped": 1,
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385,
+        "allChecks": [
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114522067227",
+            "name": "source-tests",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/runs/114522046343",
+            "name": "CodeQL",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884061/job/114521584587",
+            "name": "SPIDER CodeQL (javascript-typescript)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584475",
+            "name": "partitions (support)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584343",
+            "name": "partitions (main-3)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584320",
+            "name": "partitions (main-0)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584305",
+            "name": "partitions (main-1)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884061/job/114521584290",
+            "name": "SPIDER CodeQL (python)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884075/job/114521584247",
+            "name": "SPIDER / secrets",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584138",
+            "name": "partitions (main-2)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884121/job/114521584103",
+            "name": "public-fixture-tests",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884093/job/114521584030",
+            "name": "verify",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884023/job/114521584010",
+            "name": "prototype",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156883981/job/114521583933",
+            "name": "SPIDER / production web security measurement",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156883981/job/114521583780",
+            "name": "SPIDER / repair regressions",
+            "status": "completed"
+          }
+        ]
+      },
+      "android": {
+        "schemaVersion": 1,
+        "runId": 38156884023,
+        "runAttempt": 1,
+        "runUrl": "https://github.com/k999ln/rock/actions/runs/38156884023",
+        "headSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "status": "completed",
+        "conclusion": "success",
+        "sourceVerification": {
+          "runHeadAndArtifactHeadMatch": true,
+          "checkoutAndCollectorLogMatch": true,
+          "androidTree": "19f1b1bb6a86cbe8b69cc2ab62b0478420af36ba",
+          "sameAndroidSourceAs": "7f5ed3610c23092882dab81aa69ff8129a71828c"
+        },
+        "artifact": {
+          "id": 11709625109,
+          "name": "android-prototype-reports",
+          "sizeBytes": 353557,
+          "sha256": "04a8c66465da5c482584a20f2cd19c76ba836901dbea3cfbabbb440d7e09637e",
+          "githubDigestMatched": true
+        },
+        "junit": {
+          "core": {
+            "tests": 121,
+            "passed": 121,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 17
+          },
+          "automationUnit": {
+            "tests": 16,
+            "passed": 16,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 2
+          },
+          "toolSdk": {
+            "tests": 7,
+            "passed": 7,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 2
+          },
+          "automationInstrumentation": {
+            "tests": 45,
+            "passed": 43,
+            "skipped": 2,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          },
+          "shellInstrumentation": {
+            "tests": 7,
+            "passed": 7,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          },
+          "operatorInstrumentation": {
+            "tests": 6,
+            "passed": 6,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          }
+        },
+        "totals": {
+          "tests": 202,
+          "passed": 200,
+          "skipped": 2,
+          "failures": 0,
+          "errors": 0
+        },
+        "skipped": [
+          {
+            "className": "dev.rock.automation.PhysicalRebootRecoveryTest",
+            "method": "recoverSelectedToolAndFinishAfterPhysicalReboot",
+            "xmlReason": null,
+            "reason": "Physical two-phase reboot test: avocadoPhase defaults to empty and this emulator run supplies neither seed nor recover. JUnit Assume prevents execution.",
+            "source": "android/automation/src/androidTest/java/dev/rock/automation/PhysicalRebootRecoveryTest.java:24,36,57"
+          },
+          {
+            "className": "dev.rock.automation.PhysicalRebootRecoveryTest",
+            "method": "seedSelectedToolAndLeaveFirstStepRunning",
+            "xmlReason": null,
+            "reason": "Physical two-phase reboot test: avocadoPhase defaults to empty and this emulator run supplies neither seed nor recover. JUnit Assume prevents execution.",
+            "source": "android/automation/src/androidTest/java/dev/rock/automation/PhysicalRebootRecoveryTest.java:24,36,57"
+          }
+        ],
+        "execution": {
+          "apiLevel": 35,
+          "image": "google_apis",
+          "architecture": "x86_64",
+          "device": "emulator-5554 - 15",
+          "acceptanceTarget": "emulator",
+          "excludedClass": "dev.rock.automation.LocalAiServiceIntegrationTest",
+          "excludedClassReason": "Separate Local AI workflow/device acceptance; not included in these JUnit totals."
+        },
+        "limits": [
+          "No physical Pixel or physical reboot acceptance",
+          "No full Android OS build or boot acceptance",
+          "No APK download or signer verification repeated"
+        ]
+      },
+      "limits": [
+        "Node skip is the non-POSIX descriptor-refusal fixture on this POSIX environment.",
+        "Android physical reboot and Local AI acceptance are separate.",
+        "Browser follow-up checks real built vinext routes with synthetic local identity; no production acceptance."
+      ]
     }
   },
   "github": {
     "saved": true,
     "mainIntegrated": false,
     "deployed": false,
-    "validatedSourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+    "validatedSourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
     "pullRequest": "https://github.com/k999ln/rock/pull/99",
     "draft": true,
-    "savedSourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
-    "latestFullCi": "All 15 checks passed at 7f5ed361. Subsequent owner-intent UI/API recovery and the macOS negative-test transport repair require a fresh integrated verification.",
-    "latestCheckedSourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+    "savedSourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+    "latestFullCi": "All 15 checks passed at 2ebb6250; completed source/run evidence is in validation.integratedOwnerAndMcpRecovery.",
+    "latestCheckedSourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
     "originalOpenPrHeadsRechecked": {
       "checkedAt": "2026-10-11T16:33:00Z",
       "mainSha": "96845e6006c15e39ba5b45495f79c21bdff7399e",
@@ -1899,7 +2156,15 @@
           "docs/evidence/amc/grid01-host-fixture.md"
         ]
       }
-    ]
+    ],
+    "followup": {
+      "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+      "requirements": 50,
+      "missingImplementationPaths": 0,
+      "policyReview": "Later SIM/eSIM service-first, Pixel 10/GL066/frankel, R5 research-versus-product and fee execution holds retained. New owner-bound save and MCP recovery changes do not grant identity, execution permission or provider acceptance.",
+      "runtimeEvidence": "validation.integratedOwnerAndMcpRecovery",
+      "unresolvedGatesPreserved": true
+    }
   },
   "executionAccounting": {
     "toolWaitSeconds": 17587.5306,

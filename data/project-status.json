@@ -103,7 +103,7 @@
         "baseline": "RQ01–RQ49, passed",
         "design": "18 domains / 36 Tools / 6 native families, passed",
         "database": "151 tables across 6 boundaries, passed after date regeneration",
-        "fullVerify": "Passed at 19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0 and 92c9930f371bd47901208ae183f870c7d306c7c5; latest runtime candidate requires revalidation.",
+        "fullVerify": "Passed at 2ebb625045e9f0aaa15effdc1f337c761708f53a locally and in GitHub; Node1704 pass/1 platform skip, Worker/D1 1356, CSV D1/R2 385. All15 GitHub checks passed.",
         "additionalCleanup": {
           "removedFiles": 2,
           "removedBytes": 50893,
