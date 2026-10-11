@@ -1,0 +1,86 @@
+{
+  "schema": "sky-compute-sku-vectors/1",
+  "note": "Normative test vectors for text-lexical-embedding-v1. Every implementation (the TypeScript reference in lib/sky-compute-grid-skus.ts and the Android worker) must reproduce outputSha256 for the lot input whose bytes hash to inputSha256.",
+  "skuId": "text-lexical-embedding-v1",
+  "artifacts": {
+    "runtimeArtifactSha256": "2b83ef14061ea53c5825cede9ee7e79f953ad10f86815bc41bcc11a9a3832c2a",
+    "modelSha256": "10e63d0a4ed7f16a5c42b0c806787b4aba61fa5930e86e79610daa028800d3d5",
+    "tokenizerSha256": "0148e10d32030fbaee7eedf967db70a3b7665da854faeb0f87ecd8e3659381a5"
+  },
+  "output": {
+    "encoding": "i8-vectors/1",
+    "dimensions": 256
+  },
+  "vectors": [
+    {
+      "name": "ascii sentence",
+      "items": [
+        "The quick brown fox jumps over the lazy dog"
+      ],
+      "inputBytes": 92,
+      "inputSha256": "c6a4aea7e11c814a3f7594484b3ec183ebfef91e2b03369c5cd7dce67a33be04",
+      "outputBytes": 256,
+      "outputSha256": "9c630b183edb4d47706ae841b1f742fc5bb248827be9412a7c0ec98bb4acb3a9",
+      "firstItemHeadHex": "004000c04040c0000000c00000400000"
+    },
+    {
+      "name": "japanese",
+      "items": [
+        "朝のメモ: 牛乳を買う",
+        "旅行の計画 京都 二泊三日"
+      ],
+      "inputBytes": 116,
+      "inputSha256": "23cfc559199446a800ae7340474b8fdfcfcc838a2859c233fc524b528875b5d6",
+      "outputBytes": 512,
+      "outputSha256": "7e41588e8a838a2e45f5a021d95bf3cdf6862bda6b0e30651894e61958dcc771",
+      "firstItemHeadHex": "40c00000c00000004000000000c0c000"
+    },
+    {
+      "name": "empty and one-byte items give zero vectors",
+      "items": [
+        "",
+        "a",
+        "ab"
+      ],
+      "inputBytes": 58,
+      "inputSha256": "79292cd0f15e8ceb31a427b7f7d4168a2eb00bd234ec447b6b7e50158489d261",
+      "outputBytes": 768,
+      "outputSha256": "eb4a0683945fa63a90d674c769ab46fafb5faa9b8a589ab350ea3358b505a7b2",
+      "firstItemHeadHex": "00000000000000000000000000000000"
+    },
+    {
+      "name": "emoji and combining marks are plain UTF-8 bytes",
+      "items": [
+        "🥑 avokado",
+        "é vs é"
+      ],
+      "inputBytes": 73,
+      "inputSha256": "6ec3b709e07377621a8ac9d8f476d3842a263841702d4b78b7a581e90d1c0236",
+      "outputBytes": 512,
+      "outputSha256": "079ef22165ccb77df1939fc75cdfefe4e4c5baa48b380ec6ad8e13bdae1ce7dd",
+      "firstItemHeadHex": "00000000000000000000000000000000"
+    },
+    {
+      "name": "repetition saturates the quantiser",
+      "items": [
+        "abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc"
+      ],
+      "inputBytes": 6049,
+      "inputSha256": "ad586b3c5ad744ad908c2cd2e35d93ca29f0871ca2f2e4cedf50b6ced2fbf4c9",
+      "outputBytes": 256,
+      "outputSha256": "f24c26b7b839ffc9478d66cef3aee0e363c40f541b993a5d57cfb598c2bafdc3",
+      "firstItemHeadHex": "00000000000000000000000000000000"
+    },
+    {
+      "name": "control characters and quotes survive JSON framing",
+      "items": [
+        "line1\nline2\t\"quoted\" \\ backslash"
+      ],
+      "inputBytes": 86,
+      "inputSha256": "e782110fa5b3c0ffdc7e89e58def26c0f31d2a7b476b15a982a2f9ff6b93ee3b",
+      "outputBytes": 256,
+      "outputSha256": "4b981b35d9d9bd6b531b7afdb9a0ba9834545b08f6b72891734519aead869625",
+      "firstItemHeadHex": "d67f000000002ad6000000002a000000"
+    }
+  ]
+}

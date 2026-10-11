@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import vectors from '../contracts/sky-compute-grid-lexical-embedding-vectors.json' with { type: 'json' };
 import {
@@ -181,4 +182,19 @@ void test('floating-point SKUs agree by per-item cosine similarity and refuse no
     assert.deepEqual([compareLotOutputs(sku, 2, reference, bad).agrees, compareLotOutputs(sku, 2, bad, bad).agrees], [false, false]);
   }
   assert.equal(invalidLotOutput(sku, 2, reference.subarray(0, 31)), 'output_length_mismatch');
+});
+
+void test('the Android port ships the same vectors and the same artifact digests as the registry', () => {
+  const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+  // The JVM test loads its own copy from the classpath; it must not drift from the contract.
+  assert.equal(read('android/core/src/test/resources/sky-compute-grid-lexical-embedding-vectors.json'),
+    read('contracts/sky-compute-grid-lexical-embedding-vectors.json'));
+  const java = read('android/core/src/main/java/dev/rock/core/ComputeGridLexicalEmbedding.java');
+  for (const [constant, value] of [
+    ['SKU_ID', lexical.skuId],
+    ['RUNTIME_ARTIFACT_SHA256', lexical.artifacts.runtimeArtifactSha256],
+    ['MODEL_SHA256', lexical.artifacts.modelSha256],
+    ['TOKENIZER_SHA256', lexical.artifacts.tokenizerSha256],
+  ]) assert.match(java, new RegExp(`${constant} =\\s+"${value}";`), constant);
+  assert.match(java, new RegExp(`DIMENSIONS = ${lexical.output.dimensions};`));
 });

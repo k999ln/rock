@@ -18,7 +18,22 @@ Sky Compute Gridは、世界中の **充電中・未使用・unmetered network�
 | 電力量計 | verified Compute Lot / usage receipt |
 | 売電精算 | Walletへ渡す検証済み精算候補 |
 
-対象利用者は、可用性より価格と分散性を優先できるbatch計算の買い手と、自分の端末を使わない時間だけ明示的に提供したい所有者である。汎用cloud server、常時稼働API、低遅延推論、秘密data処理の代替とは扱わない。
+対象利用者は、可用性より価格と分散性を優先できるbatch計算の買い手と、自分の端末を使わない時間だけ明示的に提供したい所有者である。汎用cloud server、常時稼働API、低遅延推論の代替とは扱わない。
+
+2026-10-11、ownerの指示で次を採用した。
+
+| 判断 | 採用 |
+| --- | --- |
+| 最初の計算 | text embedding。最初に端から端まで通すのは整数演算の字句embedding（`text-lexical-embedding-v1`）。意味を扱うmodelは端末側engineの選定後 |
+| 最初の買い手 | Rock自身 |
+| 最初のプール | **owner pool**（同じaccountの端末だけ）。他人の端末を使う**public pool**は次の受入 |
+| 供給端末 | Android arm64だけ。契約は他の機種を足せる形にする |
+| 配布 | 最初はAPKの直接配布 |
+| 報酬 | grid内のcredit。現金・払出しなし |
+| Skyの取り分 | 0%。列として記録するだけ |
+| 本番 | 既定で無効。本番DBへの反映と有効化は別の受入 |
+
+この文書は二つの層を扱う。**host fixture**は合成dataだけで契約を再現する純粋関数（`sky-*-/1`）。**永続grid**は実端末と実注文を扱うcoordinator（DB、署名付きの端末要求、API）で、既定では無効である。
 
 ## 2. End-to-end体験
 
@@ -29,7 +44,7 @@ Sky Compute Gridは、世界中の **充電中・未使用・unmetered network�
 5. Android workerは充電・idle・unmetered・温度を再検査し、ownerが端末を使い始めたら停止して未完lotを戻す。
 6. 結果は入力・出力・runtime/model/tokenizer hash、時刻、端末安全条件を持つ`ComputeReceipt`として返す。
 7. 中央の独立参照計算、または別leaseのduplicate quorumで各lotを検証する。
-8. 合格lotだけをusage receiptへし、同じreceiptから一意なsettlement idempotency keyを作る。現在は`sky_test_credits`のhold previewまでで、Wallet書込みとlive payoutは行わない。
+8. 合格lotだけを精算する。host fixtureは`sky_test_credits`のhold previewまで。永続gridは`sky_compute_credits`をgrid内の台帳へ記帳する。どちらもWallet書込みとlive payoutは行わない。
 
 買い手へ表示するのはcoarse region、capability、trust tier、価格、完了見込み、pseudonymだけである。所有者の本人情報、端末固有ID、正確な位置は表示しない。
 
@@ -37,104 +52,173 @@ Sky Compute Gridは、世界中の **充電中・未使用・unmetered network�
 
 | component | 責任 | 禁止 |
 | --- | --- | --- |
-| Android worker | 端末状態の測定、固定runtimeの実行、協調停止、receipt署名候補 | 任意APK/codeの取得、個人dataの送信、Wallet記帳 |
-| Sky Matcher | hard filter、score、有限lease、budget予約候補 | offer条件の緩和、地域越境、無断cloud fallback |
-| Result Verifier | schema/hash/参照出力/duplicateの照合 | workerの自己申告だけで合格にすること |
-| Wallet adapter | verified usageを冪等な精算候補へ変換 | 未検証結果の収益化、現行料金holdの解除 |
-| Buyer | data class、地域、期限、上限、検証方法の指定 | 個人情報・秘密・違法data・任意codeの投入 |
-| Owner | 提供のon/off、時間、熱・通信・data・価格条件 | 他ownerや買い手の情報へのアクセス |
+| Android worker | 端末状態の測定、審査済みSKUの実行、協調停止、要求とreceiptへの署名 | 任意APK/codeの取得、leaseにないdataの送信、Wallet記帳 |
+| Sky Matcher（`claim`） | hard filter、有限lease、budget予約、期限切れの再割当 | offer条件の緩和、地域越境、無断cloud fallback、1端末への二重lease |
+| Result Verifier（`settleLot`） | 構造検査、参照計算、提供者間の合議 | workerの自己申告だけで他人の注文を合格にすること |
+| Credit台帳 | 検証済みassignmentを1回だけ記帳 | 未検証結果の記帳、Wallet・実料金への接続、現行料金holdの解除 |
+| Buyer | pool、data class、地域、期限、上限、検証方法の指定 | public poolへの個人情報・秘密の投入、任意codeの投入 |
+| Owner | 提供のon/off、時間、pool、data class、価格条件 | 他ownerや買い手の情報へのアクセス |
 
-Sky Compute Gridは既存AI05のauthority deviceを自動で移す仕組みではない。AI05はowner自身の仕事を一台のauthority deviceへ固定する。Gridは公開・合成dataの独立したinterruptible lotだけを、匿名化された供給端末へ配る。
+Sky Compute Gridは既存AI05のauthority deviceを自動で移す仕組みではない。AI05はowner自身の仕事を一台のauthority deviceへ固定する。Gridは独立したinterruptible lotだけを配る。
+
+### Poolと許可範囲
+
+| | owner pool | public pool |
+| --- | --- | --- |
+| 組み合わせ | 注文と端末が同じaccount | 注文と端末が別account（同じaccountの端末も参加できる） |
+| data class | `public`、`synthetic`、`owner_private` | `public`、`synthetic`だけ |
+| 検証 | `owner_trust`、`independent_reference`、`duplicate_quorum` | `independent_reference`、`duplicate_quorum`だけ |
+| 合議の独立性 | 別の端末 | 別のaccount |
+| 料金 | 常に0。台帳に記帳しない | offerの単価（注文の上限以下）。creditで記帳 |
+| 有効化 | `SKY_COMPUTE_GRID_MODE=owner_pool` | `owner_and_public_pool`。fraud・Sybil・法務の受入前に有効化しない |
+
+`owner_private`は本人のdataを本人の端末へ渡すだけなので許可する。serverには暗号文で保存し、lotが確定した時点で入力を消す。
 
 ## 4. 入出力・ID・版・上限
 
-正本schemaは[`contracts/sky-compute-grid.json`](../contracts/sky-compute-grid.json)。host実装は[`lib/sky-compute-grid.ts`](../lib/sky-compute-grid.ts)。
+### Host fixture（`sky-*-/1`）
 
-- `CapacityOffer` (`sky-capacity-offer/1`): Android arm64、粗いregion、provider ref hash、pseudonym、artifact hashes、memory、benchmark、reliability、window、max lots、test-credit単価、data policy、現在条件。
-- `ComputeOrder` (`sky-compute-order/1`): `public-text-embedding-v1`だけ。public/synthetic data、artifact hashes、region、trust、memory、lot size、単価・総予算、deadline、検証方法、入力hash。
-- `ComputeLease` (`sky-compute-lease/1`): 最大10分、order/offerへ固定。IDは入力lot/hash/bytes、artifact、単価、提供者表示、地域・trust、安全条件、発行・失効時刻から決定する。同一条件・時刻の再試行は同じID、期限後の再割当や条件変更は別IDとする。charging、idle、unmetered、thermal `light`以下、owner useで停止、arbitrary code禁止。
+正本schemaは[`contracts/sky-compute-grid.json`](../contracts/sky-compute-grid.json)。実装は[`lib/sky-compute-grid.ts`](../lib/sky-compute-grid.ts)。
+
+- `CapacityOffer` (`sky-capacity-offer/1`): Android arm64、粗いregion、provider ref hash、pseudonym、artifact hashes、memory、benchmark、reliability、window、max lots、test-credit単価、data policy、現在条件。artifact hashesは審査済みSKUのものだけを受け付ける。
+- `ComputeOrder` (`sky-compute-order/1`): `public-text-embedding-v1`だけ。public/synthetic data、artifact hashes、region、trust、memory、lot size、単価・総予算、deadline、検証方法、入力hash。予算が全lotに足りない注文も受け付け、matcherが`partial`を返す。
+- `ComputeLease` (`sky-compute-lease/1`): 最大10分、order/offerへ固定。IDは入力lot/hash/bytes、artifact、単価、提供者表示、地域・trust、安全条件、発行・失効時刻と、**非公開のprovider ref hash**から決定する。買い手に見えるleaseは提供者を明かさないが、後から別の提供者へ差し替えるとIDが合わなくなる。
 - `ComputeReceipt` (`sky-compute-receipt/1`): lease/order/offer/artifactへ固定し、lotごとのinput/output hashとdevice conditionを持つ。
+- 検証の入力: matcher自身が持つ`matchedOffer`（receiptと一緒に届いた値ではない）。duplicate quorumの相手は、同じorder・同じlotを持つ自己整合したlease全体と、そのofferで示す。lease IDの文字列だけでは数えない。同じ提供者の別leaseも数えない。
 - settlement preview (`sky-compute-settlement-preview/1`): `service_credit_hold`、`livePayoutAuthorized=false`、`walletMutationAllowed=false`。
 
-初期lotは1,000件相当の公開または合成UTF-8 text embeddingを想定するが、ワイヤー上は入力bytesとhashで固定する。CPU時間ではなく **検証済みlot**で単価を付ける。遅い端末ほど多く稼げる逆インセンティブを作らないためである。
+### SKU registry
+
+実装は[`lib/sky-compute-grid-skus.ts`](../lib/sky-compute-grid-skus.ts)。端末へcodeは配らない。SKU idとruntime／model／tokenizerの3つのhashを渡し、端末は署名済みappに同梱した実装を動かす。offerと注文は、hashがregistryの値と一致する時だけ受け付ける。
+
+| SKU | 状態 | 出力 | 一致の判定 | 参照計算 |
+| --- | --- | --- | --- | --- |
+| `text-lexical-embedding-v1` | `dispatchable` | `i8-vectors/1`、256次元 | byte完全一致 | あり（server） |
+| `public-text-embedding-v1` | `fixture_only` | `f32le-vectors/1`、384次元 | item別cosine ≥ 0.99 | なし（engine未選定） |
+
+`text-lexical-embedding-v1`はUTF-8 byteの2・3・4-gramをhashして符号付きで数え、最大値で8bitへ量子化する。浮動小数点を使わないので、どの端末でも同じbyte列になる。仕様文のSHA-256がそのままartifact hashで、[`contracts/sky-compute-grid-lexical-embedding-vectors.json`](../contracts/sky-compute-grid-lexical-embedding-vectors.json)が全実装の合わせるべきtest vectorである。字句の重なりを測るembeddingであり、意味検索用のmodelではない。
+
+浮動小数点のSKUは、同じmodelでもchipが違うと下位bitがずれる。hashの一致では正直な端末同士も不一致になるため、item別のcosine類似度で比べ、非有限値は比較前に拒否する。
+
+### 永続gridのwire protocol
+
+実装は[`lib/sky-compute-grid-live.ts`](../lib/sky-compute-grid-live.ts)。
+
+- **端末の要求**: `POST /api/sky/compute-grid/device`へ`{ payload, signature, outputs? }`。`payload`はJSON文字列で、`schema`（`sky-compute-grid-device-request/1`）、`action`、`requestId`、`authorityId`、`deviceRef`、`keyId`、`issuedAt`とaction別の項目を持つ。`signature`は`rock-sky-compute-grid-device-request/1\0` + payloadのUTF-8 byte列へのP-256 ECDSA（r‖s 64 byte、base64url）。鍵はA2A Broker登録と同じ、Android Key Attestationで検証済みのhardware-backed鍵である。
+- **action**: `offer`（供給条件の登録）、`withdraw`、`claim`（現在の充電・idle・通信・温度を添えて仕事を要求）、`release`（結果なしで返却）、`receipt`（結果）。
+- **端末が名乗らないもの**: 所有者、trust tier、provider ref、表示名、受け取る単価。所有者はsession、trustは登録記録、単価は保存済みofferから決める。
+- **lease** (`sky-compute-lease/2`): lease id、order id、SKUと3つのhash、pool、data class、単価、発行・失効時刻、実行policy、lotごとの入力（base64）。買い手のaccountは含まない。
+- **lot入力** (`sky-compute-lot-input/1`): `{"schema":…,"items":[…]}`のUTF-8 byte列。端末はこのbyte列をhashし、`items`を計算する。孤立surrogateを含む文字列はAndroidとV8でbyte列が変わるため注文時に拒否する。
+- **注文**: `POST /api/sky/compute-grid/orders`へ`orderId`（clientが決めるUUID）、`pool`、`skuId`、`dataClass`、`regions`（空は制限なし）、`minimumMemoryMiB`、`maximumPriceMicrosPerLot`、`budgetMicros`、`deadlineAt`、`validation`、`lots[{ lotId, items[] }]`。
+
+上限（[`COMPUTE_GRID_LIMITS`](../lib/sky-compute-grid-live.ts)）: 1注文64 lot・入力合計1.5 MiB、1 lease 8 lot・10分、receiptの猶予30秒、注文期限は1分後から7日後まで、1 lotの失敗は6回まで、合議の追加は2台まで、署名するpayloadは15,000 byteまで。
+
+CPU時間ではなく **検証済みlot**で単価を付ける。遅い端末ほど多く稼げる逆インセンティブを作らないためである。
 
 ## 5. 状態と失敗遷移
 
 ```text
-offer_available
-  └─ hard_filter_passed
-       └─ lease_issued
-            ├─ completed → receipt_received → verified → settlement_candidate
-            ├─ owner_active / thermal / metered → interrupted → lot_requeued
-            ├─ lease_expired → expired → lot_requeued
-            ├─ invalid_receipt → rejected → reputation_event
-            └─ result_unknown → held_for_reconciliation（自動精算しない）
+order:      open → completed | completed_with_failures | cancelled | expired
+lot:        queued → verified | failed | cancelled
+lease:      active → submitted | rejected | released | expired
+assignment: leased → submitted → verified | rejected | unverified
+            leased → rejected | expired | released
 ```
 
-orderは`matched | partial | unmatched`を返す。条件を満たさないofferには機械可読理由を残す。budgetが足りない場合は割り当てられる分だけ`partial`にし、上限を超えて予約しない。
+- `claim`は条件を満たす注文を期限の近い順に選び、1端末へ同時に1 leaseだけを発行する。同じ端末がもう一度`claim`すると同じleaseを返す。
+- `release`と、receiptに載らなかったlotは待ち行列へ戻る。失敗回数には数えない。
+- leaseが失効時刻＋猶予を過ぎると`expired`になり、lotは別の端末へ再割当される。失効後のreceiptは拒否する。
+- 実行条件を破ったと自ら申告するreceipt、別のruntimeを名乗るreceipt、leaseにないlotを含むreceiptは丸ごと`rejected`。そのlotは同じ端末へ二度と渡さない。
+- 結果は`submitted`として保存し、`settleLot`が判定する。`owner_trust`は本人の端末を信じる。`independent_reference`はserverが再計算して比べる。`duplicate_quorum`は必要数の提供者が互いに一致した時だけ合格とし、一致しなければ1台ずつ追加し、上限まで一致しなければlotを`failed`、結果を`unverified`にして誰にも記帳しない。
+- 同じlotが6回失効・拒否されると`failed`にする。期限を過ぎた注文は`expired`にし、残りのlotを`cancelled`にする。
+
+host fixtureのmatcherは`matched | partial | unmatched`を返す。条件を満たさないofferには機械可読理由を残す。budgetが足りない場合は割り当てられる分だけ`partial`にし、上限を超えて予約しない。
 
 ## 6. 保存・保持・削除・backup
 
-host fixtureは永続保存しない。本番候補では次を別table／権限へ分ける。
+host fixtureは永続保存しない。永続gridは[`drizzle/0063_sky_compute_grid.sql`](../drizzle/0063_sky_compute_grid.sql)の8 tableへ保存する。
 
-- public market view: pseudonym、coarse region、capability、価格、availabilityだけ。
-- private provider binding: owner account、端末attestation、provider ref hash。buyerへ返さない。
-- order/lease/receipt: owner/buyer scope、artifact hashes、lot hashes、state、期限、金額。
-- input/output artifacts: object storageへ暗号化し、leaseには短期取得権だけを渡す。個人情報・秘密を受け付けない。
-- accounting: verified usage receiptとsettlement idempotency key。元data本文をWalletへ渡さない。
+| table | 内容 |
+| --- | --- |
+| `sky_compute_offers` | 端末×SKUの供給条件、provider ref hash、表示名、最後に申告した状態、実績の件数 |
+| `sky_compute_orders` | 注文条件、予算・予約・確定額、lotの件数 |
+| `sky_compute_lots` | 入力hash、暗号化した入力、必要な結果数と空き枠、確定した出力hash |
+| `sky_compute_leases` | 端末への割当と期限 |
+| `sky_compute_assignments` | lease×lot。状態、単価、暗号化した出力 |
+| `sky_compute_receipts` | 署名済みpayloadと判定の記録。leaseごとに1件 |
+| `sky_compute_credit_entries` / `_accounts` | 追記専用の台帳と残高 |
 
-保持期間、削除SLA、法令上の会計保持、backup/restoreの具体値は本番前の未決事項。削除しても既に成立した会計receiptを改変せず、本文artifactとpublic offerは切り離して削除できる構造にする。
+- 入力と出力はAES-256-GCMで暗号化する（[`lib/sky-compute-grid-crypto.ts`](../lib/sky-compute-grid-crypto.ts)）。associated dataでowner、order、lot、役割、平文hash（出力はassignmentも）へ固定する。鍵は`SKY_COMPUTE_GRID_DATA_KEY`。未設定なら注文も結果も保存しない。
+- 入力はlotが確定（verified／failed／cancelled）した時に消す。出力は注文が閉じてから7日で消す。買い手は閉じた注文の入力と出力をすぐ消せる。hash、状態、台帳は残す。
+- 買い手に返すのは提供者の表示名と粗い地域だけ。端末に渡すleaseに買い手のaccountは含めない。
+- 枠、予約、残高はDBのtriggerが更新し、CHECK制約と一意indexが不可能な状態を拒否する: 1端末1 active lease、1 lease 1 receipt、予約＋確定 ≤ 予算、残高 ≥ 0、確定済みassignmentの状態・単価の変更禁止、台帳とreceiptの更新・削除禁止。
+
+削除SLA、法令上の会計保持、backup/restoreの具体値は本番前の未決事項。
 
 ## 7. Offline・retry・重複・結果不明
 
 - lease取得前の通信切れは実行しない。
-- lease中の通信切れは端末内の固定lotだけを期限まで続けられるが、期限後の結果は拒否する。
-- 未完lotは同じlease内で勝手に成功扱いせず、lease失効後に新leaseへ再配置する。
-- VerifierはleaseをorderのID・SKU・artifact・入力lot/hash/bytes・地域・trust・予算・期限へ照合する。改変leaseや別orderのreceiptを合格へ移さない。
-- 精算候補は同じleaseのverified usageだけを受け入れ、lot数・単価・合計・assetを再照合する。同じleaseの全lotはreceipt IDを変えて再送しても同じsettlement keyになる。productionでのreceipt ID重複・異内容の保存拒否は、未実装の永続台帳で別途受け入れる。
-- 同じoffer IDの重複入力は供給量の二重使用を避けるため拒否する。
-- 外部作用を伴うworkloadは初期SKUに入れない。embedding lotは同じ入力・版なら再計算できる。
-- timeout後に結果が不明なlotは、検証または不在確認まで精算しない。再配置する場合もduplicateを許容する計算として扱い、二重精算を防ぐ。
+- lease中の通信切れは端末内のlotだけを期限まで続けられるが、失効時刻＋30秒を過ぎた結果は拒否する。
+- 注文の作成は`orderId`で冪等。同じ内容の再送は保存済みの注文を返し、同じIDで内容が違えば拒否する。
+- `claim`の再送は同じleaseを返す。同じ端末の同時要求でもleaseは1件。
+- receiptはleaseごとに1件。同じbyte列の再送は記録済みの判定を返す。同じleaseへの別のreceiptは拒否する。記帳はassignmentが`verified`になる遷移でtriggerが1回だけ行うので、再送・競合・再判定で二重に記帳されない。
+- 古い署名のofferで新しいofferを上書きできない。5分より古い、または1分より先の時刻の要求は拒否する。
+- 外部作用を伴うworkloadはSKUに入れない。embedding lotは同じ入力・版なら再計算できる。
+- timeout後に結果が不明なlotは検証されるまで記帳しない。再割当しても、先の結果が後から合格することはない（leaseが閉じている）。
+
+host fixture側: Verifierはleaseをorder・offerへ照合し、改変lease、別orderのreceipt、差し替えた提供者を合格へ移さない。同じleaseはreceipt IDを変えても同じsettlement keyになる。同じoffer IDの重複入力は拒否する。
 
 ## 8. 更新・互換性・rollback・復旧
 
-runtime、model、tokenizerはSHA-256完全一致でleaseへ固定する。いずれかが変われば別versionのSKUとして扱い、進行中leaseを移行しない。matcher／verifierの更新は、保存済みfixture、旧receipt、期限、重複、改変、部分一致の回帰を通す。
+runtime、model、tokenizerはSHA-256完全一致でleaseへ固定する。いずれかが変われば別versionのSKUとして扱い、進行中leaseを移行しない。matcher／verifierの更新は、保存済みfixture、test vector、期限、重複、改変、部分一致の回帰を通す。
 
-新matcherに問題があれば新規leaseを止め、既存leaseは旧versionの検証器で期限まで照合する。Android worker更新時も、配布済みleaseのartifact hashが端末runtimeと一致しなければ実行せず返却する。端末交換や自動cloud fallbackで仕事の実行先・費用・data境界を黙って変えない。
+新しい版に問題があれば`SKY_COMPUTE_GRID_MODE`を外して新規の注文・lease・receiptを止める。保存済みのdataと台帳はそのまま残る。Android worker更新時も、leaseのartifact hashが端末の実装と一致しなければ実行せず返却する。端末交換や自動cloud fallbackで仕事の実行先・費用・data境界を黙って変えない。
 
 ## 9. 安全・privacy・security・外部承認
 
 - Android supplyだけを初期対象にする。iOSは買い手UI・結果確認だけにし、background供給を約束しない。
 - charging、device idle、unmetered network、thermal `light`以下を開始・継続条件にする。owner操作を最優先し、停止を収益より優先する。
-- Play配布を前提に、downloaded executable code、DEX/JAR/native library、shell、root、Accessibilityによる迂回を許可しない。審査済み固定runtimeへdataとbounded parameterだけを渡す。
-- public/synthetic dataだけ。個人情報、秘密、credential、会話、写真、正確な位置は拒否する。
-- attestationはdevice/app integrityの一要素であり、計算結果の正しさを証明しない。結果は独立参照またはduplicate quorumで別に検証する。
+- 最初はAPKの直接配布。配布経路にかかわらず、downloaded executable code、DEX/JAR/native library、shell、root、Accessibilityによる迂回を許可しない。審査済みSKUへdataとbounded parameterだけを渡す。
+- public poolはpublic/synthetic dataだけ。個人情報、秘密、credential、会話、写真、正確な位置は拒否する。`owner_private`はowner poolだけで、本人の端末にしか渡さない。
+- 端末の要求は登録済みのhardware-backed鍵の署名で認証する。充電・idle・温度などの申告は、その鍵を持つ正規appの申告であって、物理的な証明ではない。
+- attestationはdevice/app integrityの一要素であり、計算結果の正しさを証明しない。public poolの結果は参照計算または別accountとの合議で別に検証する。
 - regionはdata residencyの代替証明ではない。本番の越境要件は契約・storage・routingの別受入を必要とする。
-- 供給on、料金条件、通信使用、発熱上限、夜間windowはownerが明示設定する。OSの電池最適化を迂回しない。
+- creditはgrid内の記帳である。換金、払出し、他serviceへの充当はできない。開始残高を与えるのはdeployment側の操作だけで、APIはない。
 - 実課金・払出し、税務、労働・通信・消費者法、盗難端末、bot farm、Sybil対策は法務・Provider・OWNERの個別承認前に有効化しない。
 
 ## 10. 受入環境と証拠
 
-2026-10-11の実装範囲は **synthetic host fixture**。別orderへのreceipt転用、別leaseへの精算転用、再割当の同一ID、異なるreceipt IDでの二重精算候補をhostで再現し修正した。9件の対象試験でこれらの拒否と正常fixtureを確認した。
+2026-10-11の実装範囲は **host fixtureの契約修正** と **永続gridのserver側**。実端末は接続していない。
 
-- fixture: [`contracts/sky-compute-grid-fixture.json`](../contracts/sky-compute-grid-fixture.json)
-- tests: [`tests/sky-compute-grid.test.mjs`](../tests/sky-compute-grid.test.mjs)
-- demo API: `GET /api/sky/compute-grid/demo`
-- demo UI: `/sky/compute-grid`
+| 範囲 | 証拠 |
+| --- | --- |
+| host fixtureの契約（提供者の固定、審査済みhash、独立した合議、partial budget） | [`tests/sky-compute-grid.test.mjs`](../tests/sky-compute-grid.test.mjs) |
+| SKU、test vector、二つの独立実装の一致、cosine比較 | [`tests/sky-compute-grid-skus.test.mjs`](../tests/sky-compute-grid-skus.test.mjs) |
+| 永続grid: 実D1（Miniflare）と実migrationで、署名、割当の競合、偽造、再送、失効と再割当、参照・合議・類似度の検証、台帳、取消、削除、DBのguard | [`tests/sky-compute-grid-store.test.mjs`](../tests/sky-compute-grid-store.test.mjs) |
+| HTTP: 注文から結果まで、拒否のstatusとcode、無効時の応答、routeの配線 | [`tests/sky-compute-grid-api.test.mjs`](../tests/sky-compute-grid-api.test.mjs) |
+| SKUのJava実装（[`ComputeGridLexicalEmbedding.java`](../android/core/src/main/java/dev/rock/core/ComputeGridLexicalEmbedding.java)）: test vectorの再現と、TypeScript参照との出力一致 | `android/core`のJVM試験、[`scripts/check-os-parity.mjs`](../scripts/check-os-parity.mjs) |
 
-host fixtureで受け入れるのは、固定SKU、hard filter、score、lot割当、有限lease、artifact binding、独立参照／duplicate検証、未検証精算拒否、test-credit hold、privacy境界である。Android worker、ネットワークcluster、real attestation、production storage、実需要、実料金、実払出し、性能・電力・熱・端末寿命は未受入。
+- fixture: [`contracts/sky-compute-grid-fixture.json`](../contracts/sky-compute-grid-fixture.json)、demo API `GET /api/sky/compute-grid/demo`、demo UI `/sky/compute-grid`
+- 永続gridのAPI: `GET /api/sky/compute-grid/status`、`GET|POST /api/sky/compute-grid/orders`、`GET|DELETE /api/sky/compute-grid/orders/{id}`、`GET|DELETE /api/sky/compute-grid/orders/{id}/results`、`POST /api/sky/compute-grid/device`
 
-次の物理MVPは日本、同系統Pixel/Android 50台、買い手3社以下、1 SKU・1 runtime・1 model、public/synthetic data、中央matcher/verifier、service credit限定とする。目標は期限内verified 95%以上、false accept・二重精算・温度/電池違反・data事故0、比較cloud比総費用25%以上低いこと、4週後provider継続50%、買い手3社中2社が4週間repeatすること。数値は仮説であり、達成済み表示をしない。
+試験の「端末」は、登録済みのP-256鍵で署名し参照実装で計算するsimulatorである。Javaで実装済みなのはSKUの計算だけで、端末を動かすworkerは[設計](sky-compute-grid-android-worker.md)の段階である。**未受入**: Android worker、実機での計算・停止・熱・電力、実際のKey Attestation経路、Cloudflare D1本番での性能と上限、本番migration、public poolの有効化、意味を扱うembedding model、creditの利用先、実需要、実料金、実払出し。
+
+次の受入は順に、(1) [Android worker設計](sky-compute-grid-android-worker.md)の実装、(2) Pixel 1台でowner poolの注文を実際に計算する（同設計のW1〜W10）、(3) 同じaccountの2〜5台で切断・発熱・本人使用・改変を試す。50台と外部の買い手はその後である。
+
+物理MVPの仮説（未達成）: 日本、同系統Pixel/Android 50台、買い手3社以下、1 SKU、期限内verified 95%以上、false accept・二重精算・温度/電池違反・data事故0、比較cloud比総費用25%以上低いこと、4週後provider継続50%、買い手3社中2社が4週間repeatすること。
 
 ## 11. 未決事項・decision owner・判定方法
 
 | 未決 | owner | 決めるための試験 |
 | --- | --- | --- |
+| 意味を扱うembeddingの端末側engineとmodel | O6 / OWNER | Local AI runtimeへのembedding API追加と、grid専用engine同梱の比較。同一入力で機種間のcosineを実測 |
+| 端末のemulator受入でのABI | O6 | arm64限定のまま、CI emulator（x86_64）をどう試験経路にするか |
+| creditの利用先（cloud利用への充当） | OWNER / O5 | 料金動線の確定後に別契約として受入 |
+| public poolの開始残高とSybil対策 | Security / OWNER | 改変worker・複数account・遅延・誤出力を含むred-team |
 | 最初のanchor buyerと許可dataset | OWNER / Sales / Legal | 実需要3件のdata分類・期限・単価を比較 |
-| 1 lotの正確な文書数・token数・reference Pixel時間 | O6 / O5 | 50台pilot前の同一端末benchmark |
-| verification率とduplicate比率 | Security / O5 | 改変worker・遅延・誤出力を含むred-team |
+| 1 lotの正確な文書数・reference Pixel時間 | O6 / O5 | pilot前の同一端末benchmark |
+| verification率とduplicate比率 | Security / O5 | red-teamと全費用の比較 |
 | provider creditとbuyer price、Sky spread | OWNER / O5 | 全費用（検証・retry・egress・support）込みunit economics |
-| attestation providerと失効運用 | Security / O6 | Play Integrity／hardware keyのdevice acceptance |
 | 税・利用規約・端末所有者の扱い | Legal / OWNER | 日本pilotの契約・会計review |
 | production Wallet rail | OWNER / Wallet | sandbox精算、返金、chargeback、初回限定live受入 |
 | retired phone rackをfirm reserveにするか | O6 / OWNER | live phoneとの熱・電力・故障・稼働率比較 |

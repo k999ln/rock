@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 152,
+    "tableCount": 160,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "G04/WEB01: 全体verify・同一SHA CIを合格したPR #99をレビューし、承認範囲に従うmain統合と既存Sitesの同一source受入を別途進める。SIM01/SKY21は実issuer／Provider sandboxの本人・資格情報・予算上限・receipt条件を揃えて利用開始を受入。OS10の全OS／Pixelと現行QEMU image、R5/Pro実機は独立した受入を維持する。"
   },
   "webSchema": {
-    "tableCount": 80,
+    "tableCount": 88,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -86,6 +86,14 @@
       "sky_commerce_offers",
       "sky_commerce_orders",
       "sky_commerce_sellers",
+      "sky_compute_assignments",
+      "sky_compute_credit_accounts",
+      "sky_compute_credit_entries",
+      "sky_compute_leases",
+      "sky_compute_lots",
+      "sky_compute_offers",
+      "sky_compute_orders",
+      "sky_compute_receipts",
       "sky_connections",
       "sky_developer_tokens",
       "sky_library_items",
@@ -101,8 +109,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 63,
-    "latestMigration": "0062_sky_provider_revision.sql",
+    "migrationCount": 64,
+    "latestMigration": "0063_sky_compute_grid.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -156,6 +164,14 @@
           "sky_commerce_offers",
           "sky_commerce_orders",
           "sky_commerce_sellers",
+          "sky_compute_assignments",
+          "sky_compute_credit_accounts",
+          "sky_compute_credit_entries",
+          "sky_compute_leases",
+          "sky_compute_lots",
+          "sky_compute_offers",
+          "sky_compute_orders",
+          "sky_compute_receipts",
           "sky_connections",
           "sky_developer_tokens",
           "sky_library_items",
@@ -168,7 +184,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 35
+        "tableCount": 43
       },
       {
         "id": "marketplace",
@@ -303,6 +319,14 @@
         "sky_commerce_offers",
         "sky_commerce_orders",
         "sky_commerce_sellers",
+        "sky_compute_assignments",
+        "sky_compute_credit_accounts",
+        "sky_compute_credit_entries",
+        "sky_compute_leases",
+        "sky_compute_lots",
+        "sky_compute_offers",
+        "sky_compute_orders",
+        "sky_compute_receipts",
         "sky_connections",
         "sky_developer_tokens",
         "sky_library_items",
@@ -318,8 +342,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0062_sky_provider_revision.sql",
-      "tableCount": 80,
+      "expectedAppliedThrough": "0063_sky_compute_grid.sql",
+      "tableCount": 88,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

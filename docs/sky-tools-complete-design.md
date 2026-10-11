@@ -11,7 +11,9 @@
 
 2026-10-11: leaseの完全な条件と時刻をIDへ固定し、order・入力・予算との照合と、同じleaseのverified usageだけを精算候補へ渡す検査を追加した。receipt IDを変えた再送でも精算keyは変わらない。永続台帳の重複拒否・実精算は未実装。
 
-host fixtureは`CapacityOffer → ComputeOrder → ComputeLease → ComputeReceipt → verified usage → service-credit hold`を再現する。`/sky/compute-grid`と`GET /api/sky/compute-grid/demo`は合成fixtureの可視化で、実端末dispatch、実需要、production storage、実課金・払出しではない。責任、入出力、状態、保存、retry、compatibility、安全、受入、未決事項の11項目は[専用設計](sky-compute-grid.md)を正本とする。
+2026-10-11（永続grid）: ownerの指示で、同じaccountの端末だけで組むowner poolを先に作り、他人の端末を使うpublic poolを次の受入にした。注文・lot・lease・結果・credit台帳をD1へ保存し、端末の要求は登録済みのhardware-backed鍵の署名で認証する。1端末1 lease、1 lease 1 receipt、予算内の予約、検証済みassignmentごとに1回の記帳はDBのtriggerと制約で強制する。receiptの提供者はleaseへ固定し、審査済みSKUのhashだけを受け付け、合議は独立した提供者だけを数える。最初に配るSKUは整数演算の字句embedding（`text-lexical-embedding-v1`）で、浮動小数点のSKUはcosine類似度で比べる。`SKY_COMPUTE_GRID_MODE`を設定しない限り無効で、Android worker、実機、本番migration、creditの利用先、実課金・払出しは未受入。
+
+host fixtureは`CapacityOffer → ComputeOrder → ComputeLease → ComputeReceipt → verified usage → service-credit hold`を再現する。`/sky/compute-grid`と`GET /api/sky/compute-grid/demo`は合成fixtureの可視化で、実端末dispatch、実需要、production storage、実課金・払出しではない。永続gridのAPIは`/api/sky/compute-grid/status`、`orders`、`orders/{id}`、`orders/{id}/results`、`device`。責任、入出力、状態、保存、retry、compatibility、安全、受入、未決事項の11項目は[専用設計](sky-compute-grid.md)を正本とする。
 
 ## Material Invention — 物質候補の机上比較
 
