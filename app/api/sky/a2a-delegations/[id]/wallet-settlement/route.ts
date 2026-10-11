@@ -77,6 +77,8 @@ async function createHandoff(owner: string, id: string) {
     receipt.currency !== usage.currency || receipt.amountMinor !== usage.amountMinor ||
     receipt.issuedAt !== usage.issuedAt)
     return json({ error: 'Provider receiptと精算台帳の参照が一致しません。', code: 'USAGE_LEDGER_MISMATCH' }, 409);
+  if (delegation.priceQuoteDigest && !delegation.priceQuote)
+    return json({ error: '保存された価格見積を確認できません。', code: 'USAGE_RECEIPT_UNTRUSTED' }, 409);
   const valid = await verifyA2AUsageReceipt(receipt, {
     ownerUserId: owner,
     parentJobId: delegation.parentJobId,
@@ -90,6 +92,8 @@ async function createHandoff(owner: string, id: string) {
     issuedAt: usage.issuedAt,
     delegationCreatedAt: delegation.createdAt,
     delegationLimitMinor: delegation.budgetLimitMinor,
+    providerId: delegation.priceQuote?.providerId,
+    pricingVersion: delegation.priceQuote?.pricingVersion,
   }, trustedA2AUsageKeyResolver(
     (env as unknown as { A2A_TRUSTED_USAGE_KEYS?: string }).A2A_TRUSTED_USAGE_KEYS,
   ));

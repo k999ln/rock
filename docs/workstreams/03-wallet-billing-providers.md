@@ -60,6 +60,13 @@ The actual Commerce handler/SQLite fixture reproduced an unknown full-refund res
 
 The regression keeps access revoked, records the partial amount, and still refuses a refund retry after the original 20-hour window. A dispute → partial-refund → stale-paid sequence keeps the dispute and known amount, blocks another Checkout, and never restores access. The original refund-request event timestamp remains the retry authority; an observation does not create another refund request. Commerce/Stripe tests (58/58), TypeScript and scoped lint are the local acceptance; no external refund, dispute handling, or production entitlement enforcement was exercised.
 
+
+### 2026-10-11: final usage bound to approved pricing
+
+The actual A2A Worker/D1 fixture reproduced a validly signed final receipt under a different `pricingVersion` settling a quote-bound reservation. Owner, parent, task, currency, amount cap and signature were checked, but the final receipt's Provider/pricing identity was not compared with the approved quote unless an earlier live-usage snapshot happened to exist.
+
+The common final-usage verifier now accepts the expected Provider and pricing version from the saved quote. Both Worker settlement and the device-Wallet handoff pass those expectations, and the store rejects an inconsistent quote-bound receipt before persistence. An unreadable saved quote fails closed; legacy records without a quote preserve their existing verification contract. This does not reprice usage, expire a legitimate late receipt, or change any cap. The existing Worker recovery fixture now includes the correctly signed wrong-pricing response: it keeps the reservation held and stores no receipt, then settles a later matching receipt once. Worker 14/14 and related SQLite/receipt/direct-LLM tests 47/47 pass, as do TypeScript and scoped lint. Synthetic local evidence only; paid gates and live transfers remain unchanged.
+
 Sky Market決済の主担当は `JOINT`。`ROCK` は商品・注文・手数料・照合・本人分離・返金停止を実装し、`EXTERNAL` のStripeは決済・受取先本人確認・銀行払出しを担う。`OWNER` は既存の決済実装指示を前提に、実アカウントと資格情報・販売条件を用意する。現段階はローカルmockでの `ROCK_READY` であり `PROVIDER_READY` / `INTEGRATED` / `LIMITED_LIVE` / `PRODUCTION` ではない。
 
 ## Cloud agent quote → native Wallet approval status (2026-10-02)

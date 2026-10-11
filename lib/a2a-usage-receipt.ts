@@ -33,6 +33,9 @@ export type A2AUsageReceiptIntent = Pick<A2AUsageReceipt,
   'agentName' | 'agentVersion' | 'currency' | 'amountMinor' | 'issuedAt'> & {
   delegationCreatedAt: number;
   delegationLimitMinor: number;
+  /** Required by callers for quote-bound delegations; absent only for legacy records. */
+  providerId?: string;
+  pricingVersion?: string;
 };
 
 export type A2AUsageKeyResolver = (identity: { providerId: string; keyId: string; agentOrigin: string }) => Promise<Uint8Array | null>;
@@ -97,6 +100,8 @@ export async function verifyA2AUsageReceipt(
     if (!Number.isSafeInteger(lineTotal)) return false;
   }
   if (lineTotal !== receipt.amountMinor || receipt.amountMinor > intent.delegationLimitMinor ||
+    (intent.providerId !== undefined && receipt.providerId !== intent.providerId) ||
+    (intent.pricingVersion !== undefined && receipt.pricingVersion !== intent.pricingVersion) ||
     receipt.ownerUserId !== intent.ownerUserId || receipt.parentJobId !== intent.parentJobId ||
     receipt.delegationId !== intent.delegationId || receipt.taskId !== intent.taskId ||
     receipt.agentOrigin !== intent.agentOrigin || receipt.agentName !== intent.agentName ||
