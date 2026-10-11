@@ -1681,3 +1681,266 @@ export const skyCodeCommits = sqliteTable('sky_code_commits', {
   revision: integer('revision').notNull(), parentId: text('parent_id'),
   payload: text('payload').notNull(), createdAt: integer('created_at').notNull(),
 }, table => [uniqueIndex('idx_sky_code_repo_revision').on(table.repoId, table.revision)]);
+
+// ---------------------------------------------------------------------------
+// Sky Compute Grid (GRID01) — persistent coordinator state.
+// Counters, reservations and credit balances are maintained by the triggers in
+// drizzle/0063_sky_compute_grid.sql so that no store code path can settle a lot
+// twice, lease a device twice, or reserve past an order's budget.
+// ---------------------------------------------------------------------------
+
+export const skyComputeOffers = sqliteTable(
+  'sky_compute_offers',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    authorityId: text('authority_id').notNull(),
+    keyId: text('key_id').notNull(),
+    skuId: text('sku_id').notNull(),
+    servesOwnerPool: integer('serves_owner_pool').notNull(),
+    servesPublicPool: integer('serves_public_pool').notNull(),
+    providerRefHash: text('provider_ref_hash').notNull(),
+    providerPseudonym: text('provider_pseudonym').notNull(),
+    platform: text('platform').notNull(),
+    abi: text('abi').notNull(),
+    region: text('region').notNull(),
+    trustTier: text('trust_tier').notNull(),
+    runtimeArtifactSha256: text('runtime_artifact_sha256').notNull(),
+    modelSha256: text('model_sha256').notNull(),
+    tokenizerSha256: text('tokenizer_sha256').notNull(),
+    memoryMib: integer('memory_mib').notNull(),
+    maxLotsPerLease: integer('max_lots_per_lease').notNull(),
+    priceMicrosPerLot: integer('price_micros_per_lot').notNull(),
+    maxInputBytesPerLot: integer('max_input_bytes_per_lot').notNull(),
+    dataClassesJson: text('data_classes_json').notNull(),
+    availableFrom: integer('available_from').notNull(),
+    availableUntil: integer('available_until').notNull(),
+    state: text('state').notNull(),
+    conditionsJson: text('conditions_json'),
+    conditionsObservedAt: integer('conditions_observed_at'),
+    verifiedLots: integer('verified_lots').notNull().default(0),
+    rejectedLots: integer('rejected_lots').notNull().default(0),
+    expiredLeases: integer('expired_leases').notNull().default(0),
+    releasedLeases: integer('released_leases').notNull().default(0),
+    signedAt: integer('signed_at').notNull(),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_compute_offer_device_sku').on(table.ownerUserId, table.deviceRef, table.skuId),
+    index('idx_sky_compute_offer_state').on(table.state, table.skuId),
+    check('sky_compute_offer_state_check', sql`${table.state} IN ('active', 'withdrawn')`),
+    check('sky_compute_offer_pool_check', sql`${table.servesOwnerPool} IN (0, 1) AND ${table.servesPublicPool} IN (0, 1) AND ${table.servesOwnerPool} + ${table.servesPublicPool} >= 1`),
+    check('sky_compute_offer_platform_check', sql`${table.platform} = 'android' AND ${table.abi} = 'arm64-v8a'`),
+    check('sky_compute_offer_trust_check', sql`${table.trustTier} = 'hardware_backed'`),
+    check('sky_compute_offer_digest_check', sql`length(${table.providerRefHash}) = 64 AND length(${table.keyId}) = 64 AND length(${table.runtimeArtifactSha256}) = 64 AND length(${table.modelSha256}) = 64 AND length(${table.tokenizerSha256}) = 64`),
+    check('sky_compute_offer_bounds_check', sql`${table.memoryMib} >= 1 AND ${table.maxLotsPerLease} BETWEEN 1 AND 8 AND ${table.priceMicrosPerLot} >= 0 AND ${table.maxInputBytesPerLot} >= 1 AND ${table.availableUntil} > ${table.availableFrom}`),
+    check('sky_compute_offer_counter_check', sql`${table.verifiedLots} >= 0 AND ${table.rejectedLots} >= 0 AND ${table.expiredLeases} >= 0 AND ${table.releasedLeases} >= 0`),
+  ],
+);
+
+export const skyComputeOrders = sqliteTable(
+  'sky_compute_orders',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    pool: text('pool').notNull(),
+    skuId: text('sku_id').notNull(),
+    dataClass: text('data_class').notNull(),
+    runtimeArtifactSha256: text('runtime_artifact_sha256').notNull(),
+    modelSha256: text('model_sha256').notNull(),
+    tokenizerSha256: text('tokenizer_sha256').notNull(),
+    regionsJson: text('regions_json').notNull(),
+    minimumMemoryMib: integer('minimum_memory_mib').notNull(),
+    maximumPriceMicrosPerLot: integer('maximum_price_micros_per_lot').notNull(),
+    budgetMicros: integer('budget_micros').notNull(),
+    reservedMicros: integer('reserved_micros').notNull().default(0),
+    settledMicros: integer('settled_micros').notNull().default(0),
+    skyFeeBps: integer('sky_fee_bps').notNull().default(0),
+    validationMethod: text('validation_method').notNull(),
+    quorum: integer('quorum').notNull(),
+    deadlineAt: integer('deadline_at').notNull(),
+    state: text('state').notNull(),
+    lotCount: integer('lot_count').notNull(),
+    verifiedLots: integer('verified_lots').notNull().default(0),
+    failedLots: integer('failed_lots').notNull().default(0),
+    requestSha256: text('request_sha256').notNull(),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+    closedAt: integer('closed_at'),
+    purgedAt: integer('purged_at'),
+  },
+  (table) => [
+    index('idx_sky_compute_order_owner').on(table.ownerUserId, table.createdAt),
+    index('idx_sky_compute_order_open').on(table.state, table.skuId, table.deadlineAt),
+    check('sky_compute_order_pool_check', sql`${table.pool} IN ('owner', 'public')`),
+    check('sky_compute_order_data_check', sql`${table.dataClass} IN ('public', 'synthetic', 'owner_private') AND (${table.dataClass} <> 'owner_private' OR ${table.pool} = 'owner')`),
+    check('sky_compute_order_validation_check', sql`(${table.validationMethod} = 'owner_trust' AND ${table.pool} = 'owner' AND ${table.quorum} = 1) OR (${table.validationMethod} = 'independent_reference' AND ${table.quorum} = 1) OR (${table.validationMethod} = 'duplicate_quorum' AND ${table.quorum} IN (2, 3))`),
+    check('sky_compute_order_state_check', sql`${table.state} IN ('open', 'completed', 'completed_with_failures', 'cancelled', 'expired')`),
+    check('sky_compute_order_budget_check', sql`${table.budgetMicros} >= 0 AND ${table.maximumPriceMicrosPerLot} >= 0 AND ${table.reservedMicros} >= 0 AND ${table.settledMicros} >= 0 AND ${table.reservedMicros} + ${table.settledMicros} <= ${table.budgetMicros}`),
+    check('sky_compute_order_owner_pool_free_check', sql`${table.pool} <> 'owner' OR (${table.budgetMicros} = 0 AND ${table.maximumPriceMicrosPerLot} = 0)`),
+    check('sky_compute_order_fee_check', sql`${table.skyFeeBps} = 0`),
+    check('sky_compute_order_lot_check', sql`${table.lotCount} BETWEEN 1 AND 64 AND ${table.verifiedLots} >= 0 AND ${table.failedLots} >= 0 AND ${table.verifiedLots} + ${table.failedLots} <= ${table.lotCount}`),
+    check('sky_compute_order_closed_check', sql`(${table.state} = 'open' AND ${table.closedAt} IS NULL) OR (${table.state} <> 'open' AND ${table.closedAt} IS NOT NULL AND ${table.reservedMicros} = 0)`),
+    check('sky_compute_order_digest_check', sql`length(${table.requestSha256}) = 64 AND length(${table.runtimeArtifactSha256}) = 64 AND length(${table.modelSha256}) = 64 AND length(${table.tokenizerSha256}) = 64`),
+  ],
+);
+
+export const skyComputeLots = sqliteTable(
+  'sky_compute_lots',
+  {
+    orderId: text('order_id').notNull(),
+    lotId: text('lot_id').notNull(),
+    ownerUserId: text('owner_user_id').notNull(),
+    inputSha256: text('input_sha256').notNull(),
+    inputBytes: integer('input_bytes').notNull(),
+    itemCount: integer('item_count').notNull(),
+    inputCiphertext: text('input_ciphertext'),
+    inputNonce: text('input_nonce'),
+    keyVersion: text('key_version').notNull(),
+    state: text('state').notNull(),
+    requiredResults: integer('required_results').notNull(),
+    openSlots: integer('open_slots').notNull(),
+    attempts: integer('attempts').notNull().default(0),
+    verifiedOutputSha256: text('verified_output_sha256'),
+    verifiedAssignmentId: text('verified_assignment_id'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.orderId, table.lotId], name: 'pk_sky_compute_lots' }),
+    index('idx_sky_compute_lot_queue').on(table.orderId, table.state, table.openSlots),
+    check('sky_compute_lot_state_check', sql`${table.state} IN ('queued', 'verified', 'failed', 'cancelled')`),
+    check('sky_compute_lot_slot_check', sql`${table.requiredResults} BETWEEN 1 AND 5 AND ${table.openSlots} >= 0 AND ${table.openSlots} <= ${table.requiredResults} AND ${table.attempts} >= 0`),
+    check('sky_compute_lot_input_check', sql`length(${table.inputSha256}) = 64 AND ${table.inputBytes} >= 1 AND ${table.itemCount} >= 1`),
+    check('sky_compute_lot_closed_check', sql`${table.state} = 'queued' OR ${table.openSlots} = 0`),
+    check('sky_compute_lot_verified_check', sql`(${table.state} = 'verified') = (${table.verifiedOutputSha256} IS NOT NULL AND ${table.verifiedAssignmentId} IS NOT NULL)`),
+  ],
+);
+
+export const skyComputeLeases = sqliteTable(
+  'sky_compute_leases',
+  {
+    id: text('id').primaryKey(),
+    orderId: text('order_id').notNull(),
+    offerId: text('offer_id').notNull(),
+    orderOwnerUserId: text('order_owner_user_id').notNull(),
+    providerOwnerUserId: text('provider_owner_user_id').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    keyId: text('key_id').notNull(),
+    pool: text('pool').notNull(),
+    skuId: text('sku_id').notNull(),
+    priceMicrosPerLot: integer('price_micros_per_lot').notNull(),
+    lotCount: integer('lot_count').notNull().default(0),
+    state: text('state').notNull(),
+    issuedAt: integer('issued_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+    closedAt: integer('closed_at'),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_compute_lease_one_active_per_device')
+      .on(table.providerOwnerUserId, table.deviceRef)
+      .where(sql`${table.state} = 'active'`),
+    index('idx_sky_compute_lease_expiry').on(table.state, table.expiresAt),
+    index('idx_sky_compute_lease_order').on(table.orderId, table.state),
+    check('sky_compute_lease_state_check', sql`${table.state} IN ('active', 'submitted', 'rejected', 'released', 'expired')`),
+    check('sky_compute_lease_pool_check', sql`(${table.pool} = 'owner' AND ${table.orderOwnerUserId} = ${table.providerOwnerUserId} AND ${table.priceMicrosPerLot} = 0) OR (${table.pool} = 'public' AND ${table.priceMicrosPerLot} >= 0)`),
+    check('sky_compute_lease_window_check', sql`${table.expiresAt} > ${table.issuedAt} AND ${table.expiresAt} - ${table.issuedAt} <= 600000 AND ${table.lotCount} BETWEEN 0 AND 8`),
+    check('sky_compute_lease_closed_check', sql`(${table.state} = 'active') = (${table.closedAt} IS NULL)`),
+  ],
+);
+
+export const skyComputeAssignments = sqliteTable(
+  'sky_compute_assignments',
+  {
+    id: text('id').primaryKey(),
+    leaseId: text('lease_id').notNull(),
+    orderId: text('order_id').notNull(),
+    lotId: text('lot_id').notNull(),
+    orderOwnerUserId: text('order_owner_user_id').notNull(),
+    providerOwnerUserId: text('provider_owner_user_id').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    priceMicros: integer('price_micros').notNull(),
+    state: text('state').notNull(),
+    outputSha256: text('output_sha256'),
+    outputBytes: integer('output_bytes'),
+    outputCiphertext: text('output_ciphertext'),
+    outputNonce: text('output_nonce'),
+    detailJson: text('detail_json'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_compute_assignment_lease_lot').on(table.leaseId, table.lotId),
+    // A device computes a given lot at most once; only a lease that expired or
+    // was handed back may be followed by a fresh assignment of the same lot.
+    uniqueIndex('idx_sky_compute_assignment_device_once')
+      .on(table.orderId, table.lotId, table.providerOwnerUserId, table.deviceRef)
+      .where(sql`${table.state} NOT IN ('expired', 'released')`),
+    index('idx_sky_compute_assignment_lot').on(table.orderId, table.lotId, table.state),
+    check('sky_compute_assignment_state_check', sql`${table.state} IN ('leased', 'submitted', 'verified', 'rejected', 'unverified', 'expired', 'released')`),
+    check('sky_compute_assignment_price_check', sql`${table.priceMicros} >= 0`),
+    check('sky_compute_assignment_output_check', sql`(${table.outputSha256} IS NULL AND ${table.outputBytes} IS NULL) OR (length(${table.outputSha256}) = 64 AND ${table.outputBytes} >= 1)`),
+  ],
+);
+
+export const skyComputeReceipts = sqliteTable(
+  'sky_compute_receipts',
+  {
+    id: text('id').primaryKey(),
+    leaseId: text('lease_id').notNull(),
+    providerOwnerUserId: text('provider_owner_user_id').notNull(),
+    deviceRef: text('device_ref').notNull(),
+    keyId: text('key_id').notNull(),
+    payload: text('payload').notNull(),
+    payloadSha256: text('payload_sha256').notNull(),
+    signature: text('signature').notNull(),
+    startedAt: integer('started_at').notNull(),
+    completedAt: integer('completed_at').notNull(),
+    outcome: text('outcome').notNull(),
+    outcomeJson: text('outcome_json').notNull(),
+    receivedAt: integer('received_at').notNull(),
+  },
+  (table) => [
+    // One receipt per lease: resending under another receipt id cannot settle twice.
+    uniqueIndex('idx_sky_compute_receipt_lease').on(table.leaseId),
+    check('sky_compute_receipt_outcome_check', sql`${table.outcome} IN ('accepted', 'rejected')`),
+    check('sky_compute_receipt_digest_check', sql`length(${table.payloadSha256}) = 64 AND length(${table.keyId}) = 64`),
+  ],
+);
+
+export const skyComputeCreditAccounts = sqliteTable(
+  'sky_compute_credit_accounts',
+  {
+    ownerUserId: text('owner_user_id').primaryKey(),
+    balanceMicros: integer('balance_micros').notNull().default(0),
+    heldMicros: integer('held_micros').notNull().default(0),
+    revision: integer('revision').notNull().default(0),
+    updatedAt: integer('updated_at').notNull(),
+  },
+  (table) => [
+    check('sky_compute_credit_account_check', sql`${table.balanceMicros} >= 0 AND ${table.heldMicros} >= 0 AND ${table.heldMicros} <= ${table.balanceMicros}`),
+  ],
+);
+
+export const skyComputeCreditEntries = sqliteTable(
+  'sky_compute_credit_entries',
+  {
+    id: text('id').primaryKey(),
+    ownerUserId: text('owner_user_id').notNull(),
+    kind: text('kind').notNull(),
+    balanceDeltaMicros: integer('balance_delta_micros').notNull(),
+    heldDeltaMicros: integer('held_delta_micros').notNull(),
+    orderId: text('order_id'),
+    leaseId: text('lease_id'),
+    assignmentId: text('assignment_id'),
+    idempotencyKey: text('idempotency_key').notNull(),
+    createdAt: integer('created_at').notNull(),
+  },
+  (table) => [
+    uniqueIndex('idx_sky_compute_credit_entry_key').on(table.idempotencyKey),
+    index('idx_sky_compute_credit_entry_owner').on(table.ownerUserId, table.createdAt),
+    check('sky_compute_credit_entry_kind_check', sql`(${table.kind} = 'grant' AND ${table.balanceDeltaMicros} > 0 AND ${table.heldDeltaMicros} = 0) OR (${table.kind} = 'hold' AND ${table.balanceDeltaMicros} = 0 AND ${table.heldDeltaMicros} > 0) OR (${table.kind} = 'hold_release' AND ${table.balanceDeltaMicros} = 0 AND ${table.heldDeltaMicros} < 0) OR (${table.kind} = 'spend' AND ${table.balanceDeltaMicros} < 0 AND ${table.heldDeltaMicros} = ${table.balanceDeltaMicros}) OR (${table.kind} = 'earn' AND ${table.balanceDeltaMicros} > 0 AND ${table.heldDeltaMicros} = 0)`),
+  ],
+);

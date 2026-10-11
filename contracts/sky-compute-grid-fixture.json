@@ -141,7 +141,6 @@
     ]
   },
   "verificationEvidence": {
-    "providerRefHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "referenceOutputs": {
       "lot_demo_001": "6666666666666666666666666666666666666666666666666666666666666666",
       "lot_demo_002": "7777777777777777777777777777777777777777777777777777777777777777"
