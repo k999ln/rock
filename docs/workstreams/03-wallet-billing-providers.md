@@ -69,6 +69,12 @@ The common final-usage verifier now accepts the expected Provider and pricing ve
 
 Sky Market決済の主担当は `JOINT`。`ROCK` は商品・注文・手数料・照合・本人分離・返金停止を実装し、`EXTERNAL` のStripeは決済・受取先本人確認・銀行払出しを担う。`OWNER` は既存の決済実装指示を前提に、実アカウントと資格情報・販売条件を用意する。現段階はローカルmockでの `ROCK_READY` であり `PROVIDER_READY` / `INTEGRATED` / `LIMITED_LIVE` / `PRODUCTION` ではない。
 
+### 2026-10-11: consumed Wallet consent cannot undo revocation
+
+The legacy billing Worker's `POST /v1/rock-wallet/verify` called `lib/rock-wallet.ts` for signature verification, then consumed the challenge and updated the receiving operator in a D1 batch. A concurrent request could have read the same unused challenge earlier; its consume statement changed zero rows, but its operator upsert still committed before the handler returned HTTP 409. The real handler/SQLite regression pauses that earlier request, completes the same consent through a second request, revokes the operator through `DELETE /v1/rock-wallet`, then resumes the first request. Before the fix, it returned 409 while silently changing `revoked` back to `active`.
+
+All mutations now require the same owner-bound unused challenge inside the atomic batch, and consumption occurs last. A late consumed-challenge replay leaves the revoked operator and subsequently created `awaiting_wallet` collection instruction unchanged. The regression uses the actual signing, verification, revoke and synthetic earning-ingest handlers with the existing SQLite migrations; related billing/Wallet tests pass 9/9, TypeScript and scoped lint pass. Production fee policy still blocks challenge/verify/reconcile; only the explicit legacy fixture exercises these paths. No paid gate, fee rule, transfer, Provider, or production Wallet connection was enabled.
+
 ## Cloud agent quote → native Wallet approval status (2026-10-02)
 
 Operator configuration, release gates, monitoring, stop behavior, and recovery steps are documented in the [Sky cloud execution runbook](../sky-cloud-operations-runbook.md). Its production steps remain gated on provider contracts, production D1/key custody, and invoice/funded-Wallet acceptance.
