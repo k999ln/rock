@@ -1,5 +1,18 @@
 # Android / Device / Local AI
 
+## 現行の検証段階と再開条件（2026-10-11）
+
+| 範囲 | 確認済みの段階 | 次に必要な証拠 |
+|---|---|---|
+| source／host | `57f63413`のCore 121件＋automation JVM 16件、実SQLite再起動・精算照合、SDK 35で7 AIDL／73 Java source compileが合格。既存JDK 17・SDKを使用でき、下記履歴の「Java runtimeなし」は現環境の説明ではない | host試験をAndroid runtimeやProvider実接続の受入へ転用しない |
+| Android API 35 CI | `19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0`の[run 38153378733](https://github.com/k999ln/rock/actions/runs/38153378733)が成功。APK build／lint、Core 116件、automation JVM 16件、SDK 7件、emulator instrumentationはautomation 43件合格／物理専用2件skip、Shell 6件、Operator 6件 | 後続の精算済み同ID照合は、このSHAの成功に含めない |
+| Pixel 10 GL066／frankel | [2026-09-16の試験署名APK・非破壊再起動23/23](../evidence/android-pixel-10-prefull-physical-20260916.json)はそのartifactに限定した過去の実機証拠 | 現行APKの再起動・画面ロック／unlock・Keystore・再連携を同一artifactで受け入れる |
+| Android全OS／物理配布 | source・検査手順の段階。Soong全OS build、正式署名、flash／boot、OTA／rollback、data・Keystore喪失復元は未受入 | 専用Linux x86_64環境と[Device Previewのgate](../phone-preview-20260911.md)を満たす。Linux/QEMU Developer Previewは独立系列 |
+
+最新候補`7f5ed3610c23092882dab81aa69ff8129a71828c`の[run 38155308883](https://github.com/k999ln/rock/actions/runs/38155308883)は記録時点で進行中。まず同SHAの結果とartifactを確認し、精算済み同ID照合のCore／Shell回帰を確定する。次に、合成Cloud Agentの見積→native hold→明示承認→切断→同job復旧を同一候補で接続検証する。外部Provider契約・meter／invoice・Wallet、実Carrier activation、対応SKUの導入は別gateであり、execution flagをこのCI成功だけで開かない。
+
+以下の日付付き実装・環境記録は当時の結果を残す。現行段階はこの表と同SHAの証拠を優先する。
+
 ## 2026-10-10 GRID01／O5・O6連携 — 余剰計算workerの境界
 
 Sky Compute Gridの供給端末は初期段階でAndroid arm64だけとする。既存AI05のowner指定authority deviceを自動移管せず、公開／合成dataの固定embedding lotだけを別leaseとして扱う。開始・継続にはcharging、device idle、unmetered network、thermal none/lightが必要で、owner useを計算より優先する。Play配布の動的code制限を前提に、任意DEX/JAR/native library、shell/rootを取得せず、署名・hash固定済みruntimeへdata/parameterだけを渡す。現在はhost fixtureだけで、Android JobScheduler/WorkManager、attestation、APK、emulator、Pixel、50台pilotは未実装・未受入。[専用設計](../sky-compute-grid.md)。
@@ -40,21 +53,23 @@ ROCKは、署名usage receiptで`SETTLED`へ保存した予約を実SQLiteでclo
 
 検証: 5件の実SQLite回帰試験で再起動後の繰返し照合、別owner／ID／見積条件、非終端状態、署名receipt・trust相違、保存済み精算・台帳の相違／欠落を確認し、読取り前後の予約・承認・台帳・event全行が不変であることを比較した。Core 121件と既存automation JVM 16件、計137件が合格。SDK 35で7 AIDL／73 Java sourceをcompileし、SIM entry／Android release source契約10件も合格。`CloudSessionPresentationTest`へ精算表示、承認／解除ボタン非表示、4つの終端状態からの照合入口を追加したが、今回のShell instrumentation実行は同候補のAndroid CIで別途確認する。Provider実接続・請求・Pixel実機・OS imageの受入は追加していない。再実行入口は`gradle -p android :core:test :automation:testDebugUnitTest :shell:connectedDebugAndroidTest`。
 
-## 2026-10-02 製品要件監査と優先順位
+## 製品要件監査と優先順位（現行表: 2026-10-11）
 
 | 要件 | 再利用できる実装 | 現在の限界／次の作業 |
 |---|---|---|
-| SIM/eSIM購入後、短い導線で利用開始 | channel-neutral signed entitlement、`/connect` claim import、owner-scoped device account link、capability snapshot。Android Shell API v18はlinked device sessionからBroker経由で同じowner claim APIへ登録する。Worker/D1 synthetic API suiteは署名claim初回redeem・same-owner retry・cross-owner拒否・tamper拒否・device-home capabilityを確認 | 購入先が使うissuer-hosted one-time redeem link/codeと失効・再発行契約、物理SIMの販売/配送、実Carrier activationが未接続。native Java/AIDL/APK/device acceptance未実施 |
+| SIM/eSIM購入後、短い導線で利用開始 | channel-neutral signed entitlement、`/connect` claim import、owner-scoped device account link、capability snapshot。Android Shell API v18はlinked device sessionからBroker経由で同じowner claim APIへ登録する。Worker/D1 synthetic API suiteは署名claim初回redeem・same-owner retry・cross-owner拒否・tamper拒否・device-home capabilityを確認 | 購入先が使うissuer-hosted one-time redeem link/codeと失効・再発行契約、物理SIMの販売/配送、実Carrier activationが未接続。Java/AIDL/APKとAPI 35 emulatorは冒頭のSHA限定で検証済み。現行Pixelでのservice利用開始と実Carrier受入は未実施 |
 | 販売offerごとに初期Agent構成を変え、後から追加 | `ROCKSTAR_SERVICE_OFFER_PROFILES`が署名claimの`issuerId + offerId`を版固定のSky package key/manifest hashへ結び、entitlements/device-homeとWeb/Android Shellへ状態を案内する | 合成packageでのみローカル試験済み。Healthcare/Lifeline用の実packageと本番offer設定、端末install/execute acceptanceは未完了。claimは自動install/実行を許可しない |
 | Sky/Zema/Agentへ一度の認証でアクセス | Rockstar account session、Android Homeの直接entry、service scopes | Shellから一部serviceが開けることと、対応全SKUのinstall/onboarding受入は別。SIM activation aloneではloginしない |
-| 簡単な依頼、進捗、成果 | durable encrypted Cloud LLM queue、owner-scoped device-home/detail、A2A task status/artifact、terminal result retrieval、restart recovery | Shell Homeはforeground中のbounded pollingと再接続時readback、task detailは同じjobのprogress・usage・成果を取得するsourceを持つ。Android SDK/APK/device表示とOS終了後の通知受入は未確認 |
+| 簡単な依頼、進捗、成果 | durable encrypted Cloud LLM queue、owner-scoped device-home/detail、A2A task status/artifact、terminal result retrieval、restart recovery | Shell Homeはforeground中のbounded pollingと再接続時readback、task detailは同じjobのprogress・usage・成果を取得するsourceを持つ。SDK/APKとAPI 35 Shell fixtureは冒頭のSHA限定で検証済み。実Cloud一本通し、現行Pixelでの表示・再接続とOS終了後の通知受入は未確認 |
 | 利用前の単価・見積と支出上限 | signed rate cards、task quote、approval digest、A2A reservation/live meter | 通常通貨表示、quote-bound native Wallet hold、Cloudと一致するBroker proof、別操作のoffline continuation consent、最終Cloud承認UIまでsource接続済み。実際にAgentをdispatchするCloud execution flagはclosed。直接LLMは予約上限を表示するがProvider live spend meterは未提供 |
 | 利用後の明細と予算超過防止 | signed final usage receipt verifier、itemized settlement、per-task cap binding | Signed receiptの検証・Wallet settlement経路と、A2A progress/live snapshot/final receiptの表示sourceがある。Provider公開鍵inventoryが未設定ならWallet同期をfail-closedにする。ローカルreceipt/usage行は顧客請求ではない |
+| 機種に合ったOS/client | device attestation/capability design、既存OS Shell/browser route、Pixel GL066 OS investigation | SKU allowlist別のsigned OS image/boot/rollback受入とAndroid APK/Binder/device testを継続。eSIM能力はOS互換性を意味しない |
+
+### 2026-10-02の実装・環境記録（履歴）
 
 2026-10-02のquote verifier追加後の実装更新: Android Coreはprovider-signed quoteの正確なrequest/agent/currency/maximum、署名有効期間、明細、operator trustを検証し、そのquote digestとparent capをnative hold/approval digestへ固定する。Shell/Broker経路は同一delegation IDをstable task IDにしてWallet hold作成、同一holdからのみ端末鍵proof署名、Cloudへのproof登録、利用者が別途許可するoffline continuation、最終Cloud承認、結果不明時の同ID readbackとINDETERMINATE fencingまでsource接続済み。2026-10-02後続のAIDL v16では承認画面から最終Cloud PATCHを明示送信し、受理後にWallet状態をDISPATCHEDへ照合する。初期quote-verifier／reservation-bridge監査の「後続holdが未接続」は当時の状態であり、現行状態の説明には使わない。関連証拠: [quote verification](../evidence/android-a2a-price-quote-verifier-20261002.json)、[native reservation Core](../evidence/android-a2a-native-reservation-core-20261002.json)、[Cloud approval and recovery](../evidence/android-a2a-cloud-approval-recovery-20261002.json)。
 
 2026-10-02 status boundary: local Node/Worker fixtures and TypeScript/source-contract checks exercise Cloud authorization, recovery, budget/approval binding and fail-closed pricing. The Cloud A2A execution feature flag remains disabled, so the enabled dispatch branch and actual connected Agent execution are not accepted. Provider usage/invoice, funded Wallet, production Cloud durability, and production D1 are also not accepted. The current host has `adb` but no Java runtime, Gradle executable/wrapper runtime, or SDK manager, so Android JVM/JUnit, AIDL/APK compile, instrumentation, and device UI were not run. Do not describe source connection as device acceptance or billed service.
-| 機種に合ったOS/client | device attestation/capability design、既存OS Shell/browser route、Pixel GL066 OS investigation | SKU allowlist別のsigned OS image/boot/rollback受入とAndroid APK/Binder/device testを継続。eSIM能力はOS互換性を意味しない |
 
 今ターンの実装修正: 見積前は通貨単位（例 `1.00`）を受け付ける一方、承認時だけ同じ欄をminor unitの整数として再解釈していた不整合を修正し、見積時と同じISO通貨fraction-digit parserを使う。静的回帰testで、承認経路も同parserを通しminor-unit再parseをしないことを確認する。Android Gradle wrapper/SDKに加えて利用可能なJava runtimeもこのcheckoutにないため、native formatter/app/APK/instrumentation compilationは未検証。Node source contract testsのみ通過。
 
