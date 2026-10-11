@@ -1147,6 +1147,9 @@ function wbClearResultForm() {
   for (const id of ['result-summary', 'deliverables', 'evidence'])
     wbEl(id).value = '';
   wbEl('outcome').value = 'succeeded';
+  // A record action belongs to its selected task, just like its result fields.
+  // Do not carry a previous task's pause/block choice to the next task.
+  wbEl('event-type').value = '';
 }
 wbOn('record', 'click', () => {
   if (!wbGoal) throw new Error('計画がありません。');

@@ -478,7 +478,8 @@ await test('CLI compiles, exports and refuses overwrite/unknown options', () => 
         encoding: 'utf8',
       }),
     );
-    assert.equal(status.leafTotal, 6);
+    assert.ok(goal.tasks.some((task) => task.id === 'G04'));
+    assert.equal(status.leafTotal, 7);
     assert.equal(status.leafCompleted, 0);
     const bad = spawnSync(
       process.execPath,
@@ -705,6 +706,8 @@ await test('Workbench filters tasks and clears results when selecting another ta
   );
   ui.elements.get('result-summary').value = 'must not carry to another task';
   ui.elements.get('evidence').value = 'docs/old-evidence.json';
+  ui.elements.get('event-type').value = 'block_task';
+  await ui.event('event-type', 'change');
   await ui.event('task-list', 'click', { target: buttons[0].children[0] });
   assert.equal(
     ui.elements.get('task-select').value,
@@ -712,6 +715,8 @@ await test('Workbench filters tasks and clears results when selecting another ta
   );
   assert.equal(ui.elements.get('result-summary').value, '');
   assert.equal(ui.elements.get('evidence').value, '');
+  assert.equal(ui.elements.get('event-type').value, 'start_task');
+  assert.equal(ui.elements.get('field-summary').hidden, true);
   assert.equal(ui.elements.get('task-detail').focused, true);
   ui.elements.get('deliverables').value = 'docs/old-output.md';
   await ui.event('task-select', 'change', { target: { value: 'AMC01' } });
@@ -1515,7 +1520,7 @@ await test('Simple handoff and details are non-executing, and both old and reque
   assert.equal(oldRestored.read().state, 'draft');
   assert.match(
     oldRestored.elements.get('simple-squads').innerHTML,
-    /0 \/ 6件を検収済み/,
+    /0 \/ 7件を検収済み/,
   );
 });
 
