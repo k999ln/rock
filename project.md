@@ -4,6 +4,10 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 統合候補の全体verify合格・Draft PR保存（G04 / H1、ROCK）
+
+候補 `5d5708d3ce297a7b6c48e7944116d44563c89fc5` はmacOS arm64で全体verify exit0。Node1584 pass/1 platform skip、Worker/D1 1356項目、CSV D1/R2 385項目、buildと184 asset参照/欠落0、32部隊台帳を確認。SPIDERはpartial clone未取得145 objectによる失敗を解消して全1167到達commitを走査完了、検出0。GitHubは[Draft PR #99](https://github.com/k999ln/rock/pull/99)へ保存。CIの旧controlにはeSIMの公開ソースhash3値の既存例外が含まれず、合成policyの来歴集計も163/166で不整合だった。5ソースhash再計算と厳密例外/走査境界16試験後、全例外を持つreview済みcontrol `1ae13f30` へpinを更新する。root runtimeのブラウザー受入と同一最新SHA CIは引き続き実行中。main統合・公開・実課金・実機は未実施。
+
 ## 2026-10-11 — 不明応答からの同一仕事・案件・利用権の復旧（AI04/SIM01/SKY21、host）
 
 nativeは送信済みjobの取消時に一時的なnot-foundだけで完了・入力消去していた問題を修正。同じIDを再起動後も照合し、遅延受理された元要求の取消または実結果を回収する（対象68試験）。eSIMは最新200件の一覧依存を購入時pin照合へ置換し、別注文の失効で有効Cookieを消さず、同時rotate後の不整合なcookie配布を拒否する（実SQLite/routeを含む13試験）。ココナラは未知の通信結果を同じ内容・同じIDで再照合し、案件と手動金額記録を重複させない（対象57試験とローカル画面）。各担当の対象試験であり、同一統合候補の全体verify/UI/CIはこれから実行。外部送信・送金・Provider/実機受入は含まない。

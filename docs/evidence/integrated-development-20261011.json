@@ -4,8 +4,8 @@
   "plannedEndAt": "2026-10-11T19:13:50Z",
   "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
   "branch": "codex/rock-development-20261011",
-  "status": "implementation_and_validation_in_progress",
-  "sourceSha": null,
+  "status": "integrated_candidate_verified_followup_development_in_progress",
+  "sourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
   "taskIds": [
     "G04",
     "SIM01",
@@ -93,12 +93,58 @@
       "skip": 0,
       "status": "passed",
       "limits": "Targeted Node/DOM fixtures; full verify and integrated browser still pending."
+    },
+    "fullVerify": {
+      "sourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "passed",
+      "exitCode": 0,
+      "environment": "macOS arm64, Node 26.0.0, local Cloudflare Worker/D1/R2 synthetic fixtures",
+      "node": {
+        "tests": 1585,
+        "pass": 1584,
+        "fail": 0,
+        "skip": 1
+      },
+      "workerD1Assertions": 1356,
+      "csvD1R2Assertions": 385,
+      "webAssetReferences": 184,
+      "missingWebAssets": 0,
+      "skippedReason": "unsupported-platform local-descriptor refusal test is inapplicable on the supported POSIX host",
+      "limits": "No live Provider, external billing, device OS, hardware or production acceptance."
+    },
+    "historySecurity": {
+      "status": "clean",
+      "targetHead": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+      "reachableCommitCount": 1167,
+      "historyScanCompleted": true,
+      "totalFindings": 0,
+      "configSha256": "36d30ae624943c4587d9453668a0cb149168d06da7a71de008ec8d2e7b586c9b",
+      "priorFailure": "SCANNER_FAILED with 145 unhydrated partial-clone objects; hydrated the exact Git objects and completed a fresh scan."
+    },
+    "securityControl": {
+      "reviewedControlSha": "1ae13f30444961e9cc740174469cea2c9315ec99",
+      "policyTests": {
+        "pass": 10,
+        "fail": 0,
+        "skip": 0
+      },
+      "scannerBoundaryTests": {
+        "pass": 6,
+        "fail": 0,
+        "skip": 0
+      },
+      "review": "Exact public storage identifier at reviewed paths plus existing exact public source digest exceptions; recomputed all 5 eSIM source hashes at f9c858706601e43ad5da526d94e408fb3daf0c31. Corrected merged provenance counts from163 to166 without adding or broadening exception rules.",
+      "initialCi": "SPIDER on5d5708d3 failed under older control06efd843; updated pinned control requires a new same-head CI result."
     }
   },
   "github": {
-    "saved": false,
+    "saved": true,
     "mainIntegrated": false,
-    "deployed": false
+    "deployed": false,
+    "validatedSourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+    "pullRequest": "https://github.com/k999ln/rock/pull/99",
+    "draft": true
   },
   "acceptanceLimits": [
     "Host and synthetic fixtures are separate from provider, emulator, physical device and production acceptance.",
