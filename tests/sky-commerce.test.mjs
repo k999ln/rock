@@ -474,7 +474,7 @@ void test('reconciliation cannot refresh an unknown refund past its original ide
   await f.sell();
   const result = await f.checkout();
   const order = f.order(result.data.orderId);
-  f.stripe.pay(order.session_id);
+  const { charge } = f.stripe.pay(order.session_id);
   await f.call('reconcile', { orderId: order.id });
   f.stripe.behavior.refundFailure = true;
   const firstRequest = Date.now();
@@ -482,6 +482,13 @@ void test('reconciliation cannot refresh an unknown refund past its original ide
   assert.equal(f.order(order.id).status, 'refund_pending');
   const refundCalls = () => f.stripe.calls.filter((call) => call.path === '/v1/refunds').length;
   assert.equal(refundCalls(), 1);
+  // A partial refund may become known while the full refund is still unclear.
+  // Preserve that monetary fact without restoring access or resetting retries.
+  charge.amount_refunded = 2_000;
+  assert.equal((await f.webhook('charge.refunded', { id: charge.id })).status, 200);
+  assert.equal(f.order(order.id).status, 'refund_pending');
+  assert.equal(f.order(order.id).refunded_minor, 2_000);
+  assert.equal((await f.call('purchases', {}, { method: 'GET' })).data.purchases[0].access, false);
   t.mock.method(Date, 'now', () => firstRequest + 21 * 60 * 60 * 1000);
   await f.call('reconcile', { orderId: order.id });
   const retry = await f.call('refund', { orderId: order.id }, { user: 'seller' });
@@ -497,6 +504,29 @@ void test('seller account creation does not retry an unresolved reservation afte
   const response = await f.call('seller', { action: 'onboard' }, { user: 'seller' });
   assert.equal(response.status, 409, JSON.stringify(response.data));
   assert.equal(f.stripe.calls.length, 0);
+});
+
+void test('a later partial refund preserves a recorded dispute while updating the known refunded amount', async t => {
+  const f = await setup(t);
+  await f.sell();
+  const checkout = await f.checkout();
+  const order = f.order(checkout.data.orderId);
+  const { charge } = f.stripe.pay(order.session_id);
+  await f.call('reconcile', { orderId: order.id });
+  charge.disputed = true;
+  assert.equal((await f.webhook('charge.dispute.created', { id: 'dp_fixture', charge: charge.id })).status, 200);
+  Object.assign(charge, { disputed: false, amount_refunded: 2_000 });
+  assert.equal((await f.webhook('charge.refunded', { id: charge.id })).status, 200);
+  assert.equal(f.order(order.id).status, 'disputed');
+  assert.equal(f.order(order.id).refunded_minor, 2_000);
+  charge.amount_refunded = 0;
+  await f.webhook('checkout.session.completed', { id: order.session_id });
+  const purchase = (await f.call('purchases', {}, { method: 'GET' })).data.purchases[0];
+  assert.equal(purchase.status, 'disputed');
+  assert.equal(purchase.refundedMinor, 2_000);
+  assert.equal(purchase.access, false);
+  assert.equal((await f.checkout()).status, 409);
+  assert.equal(f.stripe.sessions.size, 1);
 });
 
 void test('revoked package, changed manifest and expired review block purchased access and further sales', async (t) => {
