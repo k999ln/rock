@@ -5,7 +5,7 @@
   "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
   "branch": "codex/rock-development-20261011",
   "status": "integrated_candidate_verified_followup_development_in_progress",
-  "sourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+  "sourceSha": "6af91cadd418d8f13add6e8989998f255f1aa850",
   "taskIds": [
     "G04",
     "SIM01",
@@ -359,15 +359,150 @@
         }
       },
       "limits": "Targeted integrated runtime tests only. QMP first attempt was blocked by sandbox socket binding; explicit permitted local Unix-socket run passed. No QEMU guest boot or Provider accepted."
+    },
+    "followupFullVerify": {
+      "sourceSha": "6af91cadd418d8f13add6e8989998f255f1aa850",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "passed",
+      "exitCode": 0,
+      "environment": "macOS arm64, Node 26.0.0, local Cloudflare Worker/D1/R2 synthetic fixtures",
+      "node": {
+        "tests": 1626,
+        "pass": 1625,
+        "fail": 0,
+        "skip": 1
+      },
+      "workerD1Assertions": 1356,
+      "csvD1R2Assertions": 385,
+      "webAssetReferences": 184,
+      "missingWebAssets": 0,
+      "skippedReason": "unsupported-platform local-descriptor refusal test is inapplicable on the supported POSIX host",
+      "limits": "No live Provider, external billing, device OS, hardware or production acceptance."
+    },
+    "intermediateFullVerify": {
+      "sourceSha": "1746e81cb34054db9e9587f67d6d8e78c7b313b3",
+      "status": "passed",
+      "nodePass": 1597,
+      "nodeSkip": 1,
+      "workerD1Assertions": 1356,
+      "csvD1R2Assertions": 385,
+      "priorFailure": {
+        "sourceSha": "0f724cf6efeb04a2971283ea73740c28c8780ff3",
+        "stage": "lint:product",
+        "cause": "7 unowned test registration promises; fixed by explicit void. Later stages not run in that failed invocation."
+      }
+    },
+    "androidRecoveryCi": {
+      "sourceSha": "6af91cadd418d8f13add6e8989998f255f1aa850",
+      "run": "https://github.com/k999ln/rock/actions/runs/38151633702",
+      "status": "success",
+      "coreUnitTests": 116,
+      "automationUnitTests": 10,
+      "toolSdkUnitTests": 7,
+      "emulator": {
+        "api": 35,
+        "automation": {
+          "tests": 25,
+          "passed": 23,
+          "skipped": 2
+        },
+        "shell": {
+          "tests": 6,
+          "passed": 6
+        },
+        "operatorAgent": {
+          "tests": 6,
+          "passed": 6
+        },
+        "skipReason": "Two PhysicalRebootRecoveryTest cases require an actual physical reboot; not applicable to emulator acceptance."
+      },
+      "artifact": "android-prototype-reports / 11707495420",
+      "apkBuild": true,
+      "physicalDevice": false,
+      "pixelFullOs": false
+    },
+    "purchaseSelection": {
+      "sourceSha": "552e508a",
+      "beforeSourceSha": "1746e81cb34054db9e9587f67d6d8e78c7b313b3",
+      "reproducedFailures": 3,
+      "componentTests": 10,
+      "ui": {
+        "sourceComponent": "components/rockstar-entitlement-claim.tsx",
+        "syntheticOnly": true,
+        "viewports": [
+          390,
+          1280
+        ],
+        "overflow": false,
+        "verified": [
+          "handoff replaced by pasted purchase; exactly one POST for pasted offer",
+          "handoff replaced by selected JSON; exactly one POST for file offer"
+        ],
+        "captures": [
+          "work/claim-ui/paste-mobile.jpg",
+          "work/claim-ui/file-desktop.jpg"
+        ]
+      },
+      "limits": "No real issuer signature, carrier activation, purchase or production entitlement."
+    },
+    "proSite": {
+      "sourceSha": "10dc0ee67be469e6bc3139f11515396fe519386c",
+      "siteTests": 21,
+      "builtRoutes": 13,
+      "viewports": [
+        390,
+        1280
+      ],
+      "overflow": false,
+      "scope": "Home/Pro/Mini/sales-status/legal aligned to independent PC concept and provisional JPY800000 target. Canonical SVG unchanged; old E3 image labeled archive. Mini current prices retained, R5 price undecided.",
+      "physicalTests": 0,
+      "published": false
+    },
+    "mercariRecovery": {
+      "sourceSha": "6c3fa52e413ca37267239cd37994ff31c0767e4e",
+      "targetTests": 15,
+      "beforeFailures": 2,
+      "realHandlerSQLite": true,
+      "browser": {
+        "viewports": [
+          390,
+          1280
+        ],
+        "overflow": false,
+        "journey": "precommit SQLite failure 503 → manual same-ID retry → one row revision0 → reload → approve revision1",
+        "postcommitReplyLoss": "component/handler fixture only"
+      },
+      "externalListingsOrPayments": false
+    },
+    "codeqlFollowup": {
+      "failedSourceShas": [
+        "0f724cf6efeb04a2971283ea73740c28c8780ff3",
+        "6af91cadd418d8f13add6e8989998f255f1aa850"
+      ],
+      "newAnnotationsLatest": 11,
+      "scope": "Test HTML extraction, host-literal assertions, route fixture code construction and file-derived HTTP destination.",
+      "repairCommits": [
+        "537a5a7a",
+        "23f9893703e029284c18ed75568dca255cc22fcb"
+      ],
+      "regressionTests": {
+        "amcMarketplaceMaterialCoconala": 86,
+        "routeFixtures": 19,
+        "mcpConnector": 17
+      },
+      "newAnalysis": "pending",
+      "dismissedOrSuppressed": false
     }
   },
   "github": {
     "saved": true,
     "mainIntegrated": false,
     "deployed": false,
-    "validatedSourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+    "validatedSourceSha": "6af91cadd418d8f13add6e8989998f255f1aa850",
     "pullRequest": "https://github.com/k999ln/rock/pull/99",
-    "draft": true
+    "draft": true,
+    "savedSourceSha": "23f9893703e029284c18ed75568dca255cc22fcb",
+    "latestFullCi": "6af91cad: verify/Android/native/SPIDER success; CodeQL aggregate failed on 11 test annotations, subsequent repair awaiting analysis."
   },
   "acceptanceLimits": [
     "Host and synthetic fixtures are separate from provider, emulator, physical device and production acceptance.",
@@ -1148,5 +1283,28 @@
         ]
       }
     ]
+  },
+  "executionAccounting": {
+    "toolWaitSeconds": 17587.5306,
+    "tool": "CUA file chooser for local synthetic purchase JSON",
+    "period": "approximately 2026-10-11 10:34–15:27 UTC",
+    "effect": "Root integration blocked until the call returned; assigned agents completed their existing bounded tasks. This interval is elapsed time, not active development time.",
+    "plannedEndUnchanged": true
+  },
+  "rocketstarGroundAudit": {
+    "sourceSha": "10dc0ee67be469e6bc3139f11515396fe519386c",
+    "activeCallers": [
+      "sites/avocado-mini/src/pages/rocket-star/index.astro",
+      "sites/avocado-mini/scripts/build-rocketstar.mjs",
+      "scripts/verify-rocketstar-archive.py"
+    ],
+    "result": "Outside the fixed archive, design presentation and archive verification exist; no active telemetry import/replay/persistence adapter was found.",
+    "archivedTestMethodsRead": {
+      "receiver": 71,
+      "colony": 35
+    },
+    "archiveTestsExecuted": false,
+    "fixedArchiveChanged": false,
+    "r7r9r10Stage": "design; not raised by source audit"
   }
 }

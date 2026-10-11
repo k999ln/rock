@@ -83,6 +83,7 @@ jobs:
           path: |
             android/core/build/test-results/test/
             android/tool-sdk/build/test-results/testDebugUnitTest/
+            android/automation/build/test-results/testDebugUnitTest/
             android/automation/build/reports/
             android/automation/build/outputs/androidTest-results/
             android/shell/build/reports/
