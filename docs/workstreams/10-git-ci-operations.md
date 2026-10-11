@@ -77,6 +77,12 @@ GitHub main 0455499d8726118b8892c5cfbe2e49236c8b4c31を基に専用worktreeで�
 - `npm run database:check`
 - `npm run verify`
 
+### API試験のローカルHTTP接続（2026-10-11）
+
+候補`7f5ed361`の既存buildを使うMiniflare直接HTTP試験で、AMCの2,097,153-byte POSTが413を返した後、同じsocketを再利用した次の237-byte POSTが`EPIPE`で失敗する順序を確認した。peerの`ECONNRESET`を次要求より先に処理した場合は新socketで400となり、同じbuildのAPI通しが成功する場合もある。環境はmacOS arm64、Node 26.0.0（組込みUndici 8.0.2）、Miniflare 5.20261001.0-alpha。scopeや保存処理の変更が原因という証拠ではない。
+
+`scripts/check-work-api.mjs`の過大入力413 caseだけに`Connection: close`を指定し、取消されたuploadの接続を次の独立要求へ再利用しない。入力bytes、413、直後の400、本文上限、reader取消、認証と保存境界は維持し、自動再送は追加しない。fetch失敗はmethod・pathname・本文byte数と元のcauseだけを追記し、本文・認証headerを診断へ出さない。これはローカルHTTP試験の接続管理であり、本番transportの修正・受入ではない。変更後の対象2要求、同じbuildの全API 1356 assertions、製品lintが成功した。
+
 ## 2026-10-02 共通実装統合
 
 G04では[重複実装の統合記録](../git-consolidation.md#2026-10-02-共通実装の統合g04)に従い、既存mainとPR #39/#51、AI/MCP/保存/決済/公開Previewの共通処理を一つの検証経路へまとめる。下記の「open PR 0」は2026-09-15時点の履歴であり現在値ではない。今回固有機能を持つ未merge PRを削除せず、共通処理の更新後に各branchをrebaseする。

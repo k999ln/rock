@@ -259,25 +259,36 @@ function check(actual, expected) {
   assertions++;
 }
 async function call(method = 'GET', body, options = {}) {
-  const response = await fetch(`${base}${options.path ?? '/api/work-jobs'}`, {
-    method,
-    headers: {
-      ...(options.user === null
-        ? {}
-        : { 'oai-authenticated-user-id': options.user ?? alice }),
-      ...(method === 'GET'
-        ? {}
-        : {
+  const url = `${base}${options.path ?? '/api/work-jobs'}`;
+  const requestBody = body === undefined ? undefined : options.raw ? body : JSON.stringify(body);
+  let response;
+  try {
+    response = await fetch(url, {
+      method,
+      headers: {
+        ...(options.user === null
+          ? {}
+          : { 'oai-authenticated-user-id': options.user ?? alice }),
+        ...(method === 'GET'
+          ? {}
+          : {
             Origin: options.origin ?? base,
-          'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
           }),
-      ...options.headers,
-    },
-    ...(body === undefined
-      ? {}
-      : { body: options.raw ? body : JSON.stringify(body) }),
-    signal: AbortSignal.timeout(10000),
-  });
+        ...options.headers,
+      },
+      ...(requestBody === undefined ? {} : { body: requestBody }),
+      signal: AbortSignal.timeout(10000),
+    });
+  } catch (cause) {
+    const bodyBytes = requestBody === undefined ? 0
+      : typeof requestBody === 'string' ? Buffer.byteLength(requestBody)
+      : ArrayBuffer.isView(requestBody) ? requestBody.byteLength : 'unknown';
+    throw new Error(
+      `${method} ${new URL(url).pathname}: fetch failed (request body ${bodyBytes} bytes)`,
+      { cause },
+    );
+  }
   if (response.status !== (options.status ?? 200))
     throw new Error(
       `${method} ${options.path ?? '/api/work-jobs'}: expected ${options.status ?? 200}, received ${response.status}: ${(await response.text()).slice(0, 2000)}${(options.path ?? '').includes('/device-entitlement') ? `; verifier requests=${attestationVerifierRequestCount}; verifier error=${attestationVerifierLastError || 'none'}` : ''}`,
@@ -2653,6 +2664,10 @@ try {
     path: amcPath,
     raw: true,
     status: 413,
+    // Workerd cancels the unread oversized upload. On macOS/Node 26, its peer
+    // close can race Undici's reuse for the next POST (ECONNRESET/EPIPE).
+    // Retire this negative-test connection; never retry a mutation on failure.
+    headers: { Connection: 'close' },
   });
   await call(
     'POST',
