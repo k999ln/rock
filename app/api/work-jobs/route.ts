@@ -1,4 +1,4 @@
-import { rejectChangedOwner } from '@/lib/owner-intent';
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { env } from 'cloudflare:workers';
 import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
 import { database, requestUser } from '@/lib/fund-store';
@@ -68,7 +68,7 @@ async function body(request: Request) {
 export async function GET(request: Request) {
   try {
     const user = await requestUser(request);
-    return json({ jobs: await workStore(database()).list(user, true) });
+    return json({ jobs: await workStore(database()).list(user, true), ownerScope: await ownerScopeFor(user) });
   } catch (error) {
     return rejected(request, error);
   }
@@ -76,6 +76,8 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const db = database();
     if (!(await rockstarServiceScopeAllowed(
       db,
