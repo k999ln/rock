@@ -942,6 +942,15 @@
         "authenticationRecovery": "Retain pending payload, reload the owner list after sign-in, and block same-tab links until save confirmation.",
         "navigationImplementation": "components/use-pending-save-navigation.ts",
         "listGeneration": "Pre-create and pre-authentication GET responses cannot replace a newer confirmed list."
+      },
+      "ownerIntentBinding": {
+        "implementation": "lib/owner-intent.ts",
+        "regressions": "tests/owner-intent-route.test.mjs",
+        "authentication": "Existing requestUser only; ownerScope grants no access.",
+        "ui": "Freeze the first confirmed owner scope in the pending operation; recheck via GET, then send the intent header on mutation.",
+        "api": "Optional header for existing clients; supplied mismatches or malformed scopes return 409 before writes. Updated UIs require a confirmed scope.",
+        "recovery": "Return to the original account, or explicitly release the pending operation while keeping input and creating a fresh operation ID. Committed records are not deleted.",
+        "limits": "Legacy clients without header retain existing semantics; memory-only pending operations do not survive crash/forced close."
       }
     },
     {
@@ -1022,6 +1031,15 @@
         "regressions": "tests/coconala-workspace-recovery.test.mjs",
         "listGeneration": "Late replies cannot restore old owner data or revert confirmed mutations.",
         "limits": "No durable recovery after forced close, crash, history or programmatic navigation."
+      },
+      "ownerIntentBinding": {
+        "implementation": "lib/owner-intent.ts",
+        "regressions": "tests/owner-intent-route.test.mjs",
+        "authentication": "Existing requestUser only; ownerScope grants no access.",
+        "ui": "Freeze the first confirmed owner scope in the pending operation; recheck via GET, then send the intent header on mutation.",
+        "api": "Optional header for existing clients; supplied mismatches or malformed scopes return 409 before writes. Updated UIs require a confirmed scope.",
+        "recovery": "Return to the original account, or explicitly release the pending operation while keeping input and creating a fresh operation ID. Committed records are not deleted.",
+        "limits": "Legacy clients without header retain existing semantics; memory-only pending operations do not survive crash/forced close."
       }
     },
     {
@@ -1317,6 +1335,15 @@
         "externalLabConnected": false,
         "limitedMemoryConnected": false,
         "productionDeploymentAccepted": false
+      },
+      "ownerIntentBinding": {
+        "implementation": "lib/owner-intent.ts",
+        "regressions": "tests/owner-intent-route.test.mjs",
+        "authentication": "Existing requestUser only; ownerScope grants no access.",
+        "ui": "Freeze the first confirmed owner scope in the pending operation; recheck via GET, then send the intent header on mutation.",
+        "api": "Optional header for existing clients; supplied mismatches or malformed scopes return 409 before writes. Updated UIs require a confirmed scope.",
+        "recovery": "Return to the original account, or explicitly release the pending operation while keeping input and creating a fresh operation ID. Committed records are not deleted.",
+        "limits": "Legacy clients without header retain existing semantics; memory-only pending operations do not survive crash/forced close."
       }
     }
   ],

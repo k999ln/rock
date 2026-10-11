@@ -2765,9 +2765,18 @@
         "tests/material-study.test.mjs",
         "components/use-pending-save-navigation.ts",
         "tests/material-workspace-recovery.test.mjs",
-        "tests/pending-save-navigation.test.mjs"
+        "tests/pending-save-navigation.test.mjs",
+        "lib/owner-intent.ts",
+        "tests/owner-intent-route.test.mjs"
       ],
-      "nextAction": "Accept integrated Sky/Zema Material preview, authenticated WorkJob save/reload and eSIM-scoped access on one source candidate. Simulation/lab/XR, physical materials and limited-memory integration remain unimplemented."
+      "nextAction": "Accept integrated Sky/Zema Material preview, authenticated WorkJob save/reload and eSIM-scoped access on one source candidate. Simulation/lab/XR, physical materials and limited-memory integration remain unimplemented.",
+      "ownerIntentRecovery": {
+        "sourceSha": "d3538e8a93f31282a65be33f30c1659fe4f8c4d2",
+        "status": "local_component_route_and_representative_browser_verified",
+        "tests": 98,
+        "scope": "Pending owner intent, pre-send GET and mutation header prevent automatic transfer of an uncertain save to another account.",
+        "limits": "Synthetic identity/local SQLite; legacy clients without optional header and crash recovery retain existing limits."
+      }
     },
     {
       "id": "MAT04",
@@ -4923,8 +4932,17 @@
         "tests/mercari-revenue-route.test.mjs",
         "tests/mercari-workspace-recovery.test.mjs",
         "components/use-pending-save-navigation.ts",
-        "tests/pending-save-navigation.test.mjs"
-      ]
+        "tests/pending-save-navigation.test.mjs",
+        "lib/owner-intent.ts",
+        "tests/owner-intent-route.test.mjs"
+      ],
+      "ownerIntentRecovery": {
+        "sourceSha": "d3538e8a93f31282a65be33f30c1659fe4f8c4d2",
+        "status": "local_component_route_and_representative_browser_verified",
+        "tests": 98,
+        "scope": "Pending owner intent, pre-send GET and mutation header prevent automatic transfer of an uncertain save to another account.",
+        "limits": "Synthetic identity/local SQLite; legacy clients without optional header and crash recovery retain existing limits."
+      }
     },
     {
       "id": "CSV00",
@@ -5745,14 +5763,23 @@
         "tests/coconala-sky-entry.test.mjs",
         "tests/coconala-workspace-recovery.test.mjs",
         "components/use-pending-save-navigation.ts",
-        "tests/pending-save-navigation.test.mjs"
+        "tests/pending-save-navigation.test.mjs",
+        "lib/owner-intent.ts",
+        "tests/owner-intent-route.test.mjs"
       ],
-      "nextAction": "Local synthetic API/SQLite/browser create, recovery, replay and pending navigation verified. Complete owner-switch recovery review and same-candidate CI; real customer orders, fulfillment, payments and payouts remain separate.",
+      "nextAction": "Owner-switch recovery, exact replay and pending navigation locally verified; confirm final integrated CI. Real customer orders, fulfillment, payments and payouts remain separate.",
       "recoveredFrom": {
         "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",
         "reviewedAt": "2026-10-11",
         "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      },
+      "ownerIntentRecovery": {
+        "sourceSha": "d3538e8a93f31282a65be33f30c1659fe4f8c4d2",
+        "status": "local_component_route_and_representative_browser_verified",
+        "tests": 98,
+        "scope": "Pending owner intent, pre-send GET and mutation header prevent automatic transfer of an uncertain save to another account.",
+        "limits": "Synthetic identity/local SQLite; legacy clients without optional header and crash recovery retain existing limits."
       }
     },
     {

@@ -826,7 +826,26 @@
         "CSV API suite",
         "final mission/work/bot checks"
       ],
-      "investigation": "in_progress; exact same SHA passed GitHub Linux full verify. No automatic request retry or weakened assertion added."
+      "investigation": "Diagnosed: 2,097,153-byte AMC POST returned 413, then Undici reused the same socket for the next 237-byte POST before the peer close notification, producing EPIPE/ECONNRESET. Scope and persistence logic were not the cause demonstrated by this evidence.",
+      "repair": {
+        "sourceSha": "18bae0a1881a182719cd5d417ff4449f19f27bfd",
+        "change": "Only the oversized negative request uses Connection: close. Original body, 413/400 assertions, reader cancellation and authentication remain. No retry or production route change.",
+        "diagnostics": "Method, URL pathname, body byte count and cause; no request body or authentication headers.",
+        "validation": {
+          "oversizedRequest": 413,
+          "nextInvalidRequest": 400,
+          "separateSockets": true,
+          "fullApiAssertions": 1356,
+          "productLint": "passed"
+        },
+        "environment": {
+          "os": "macOS arm64",
+          "node": "26.0.0",
+          "undici": "8.0.2",
+          "miniflare": "5.20261001.0-alpha"
+        },
+        "fullIntegratedRecheck": "pending later candidate"
+      }
     },
     "npmAdvisoryAudit": {
       "sourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
@@ -939,6 +958,76 @@
       "physical_device": "NOT_RUN",
       "release_signing": "NOT_CONFIGURED",
       "repository_changes": false
+    },
+    "ownerBoundSaveRecovery": {
+      "sourceSha": "d3538e8a93f31282a65be33f30c1659fe4f8c4d2",
+      "finding": "A precommit failure -> 401 -> explicit original POST under B could create the pending private input under B in all three workspaces. Existing A commits remained protected by global IDs and money PATCH remained owner-scoped.",
+      "contract": {
+        "authority": "Existing requestUser only; no authentication DB or credential added",
+        "ownerScope": "Stable owner-v1 SHA-256 intent identifier returned by authenticated list GET",
+        "client": "Bind pending intent to initial confirmed scope; require valid scope; authenticated GET before every explicit attempt; unknown/different owner does not POST",
+        "api": "Optional X-Rock-Owner-Scope for existing API client compatibility; when supplied mismatch/malformed values return 409 OWNER_CHANGED before write. Updated recovery UIs require it.",
+        "recovery": "Keep text and exact operation ID on unknown/different owner. Resume original owner or explicitly release pending operation then start a new ID; release never deletes committed records."
+      },
+      "verification": {
+        "targetTests": 98,
+        "targetFailures": 0,
+        "targetLog": "target-final.log",
+        "typecheckExit": 0,
+        "typecheckLog": "typecheck-final.log",
+        "lintExit": 0,
+        "lintLog": "lint-final.log",
+        "diffCheckExit": 0,
+        "fullNodeAttempt": {
+          "tests": 1659,
+          "passed": 1606,
+          "failed": 52,
+          "skipped": 1,
+          "log": "all-tests.log",
+          "analysis": "44 sandbox local listen EPERM failures, 1 expected braces absolute-path mismatch from shared node_modules symlink, 7 newly added import fixture failures corrected and verified in 98 targeted cases. Parent runs final full verify in installed real checkout."
+        }
+      },
+      "browser": {
+        "environment": "Actual MercariRevenueStarter, useExecutionAccess, operations-client, CSS, route, requestUser, stores and all migrations via local SQLite HTTP fixture. Synthetic owner gateway and jobs authentication probe; shell/next navigation are fixture wrappers. Not production IdP or vinext acceptance.",
+        "url": "http://localhost:5194/",
+        "steps": [
+          "Enter synthetic item under A",
+          "Force actual SQLite BEFORE INSERT failure: 503 and pending frozen",
+          "Switch synthetic gateway to unauthenticated: real access hook observes 401 and hides input",
+          "Switch to B: restored input preserved, original retry disabled, POST remains 1, A0/B0",
+          "Switch back to A and restore DB",
+          "Explicit same-operation retry saves exactly one A row",
+          "Reload page: A1/B0 and one visible card retained"
+        ],
+        "result": "pass",
+        "captures": [
+          "owner-b-blocked.jpg",
+          "owner-a-reloaded.jpg"
+        ],
+        "readback": "browser-readback.json",
+        "bundleSHA256": "6e6bc77f88aff821a6214fa683ab6f4320a98a21d2fd90170e72055dbe62b869",
+        "serverStopped": true,
+        "tabClosed": true,
+        "fileChooserUsed": false
+      },
+      "boundaries": [
+        "No automatic POST; no new authentication authority; scope alone cannot authorize an API call.",
+        "Legacy API clients omitting scope retain existing requestUser/ID/CAS semantics without owner-bound retry guarantee.",
+        "Pending input remains memory-only; forced close/crash does not provide durable draft recovery.",
+        "No external messages, real payments, purchases, publication or shared ledger changes."
+      ],
+      "independentReview": {
+        "sourceSha": "d3538e8a93f31282a65be33f30c1659fe4f8c4d2",
+        "reviewer": "service_development",
+        "status": "no additional concrete defect found",
+        "coverage": [
+          "GET-to-mutation account switch rejected before body read or writes",
+          "requestUser remains the sole authenticated owner authority",
+          "unknown or different owner preserves pending input and ID without automatic resend",
+          "existing owner isolation, CAS and monetary deduplication retained"
+        ],
+        "testsRerun": false
+      }
     }
   },
   "github": {
@@ -949,7 +1038,7 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/99",
     "draft": true,
     "savedSourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
-    "latestFullCi": "All 15 check-runs completed successfully at 7f5ed361. macOS API transport failure and owner-switch draft recovery remain under investigation on later work.",
+    "latestFullCi": "All 15 checks passed at 7f5ed361. Subsequent owner-intent UI/API recovery and the macOS negative-test transport repair require a fresh integrated verification.",
     "latestCheckedSourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
     "originalOpenPrHeadsRechecked": {
       "checkedAt": "2026-10-11T16:33:00Z",

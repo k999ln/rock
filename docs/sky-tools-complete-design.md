@@ -471,6 +471,12 @@ IP StudioはHiggsfield専用の生成画面でも、Roblox／GTA専用の投稿�
 
 実装: `lib/sky-connections.ts`、`lib/operations.ts`、`components/sky-connection-center.tsx`、`components/sky-chat-workspace.tsx`、`lib/sky-routing.ts`。検証: `tests/operations.test.mjs`、`tests/sky-routing.test.mjs`。公式資料: [LiveKit Agents](https://docs.livekit.io/agents/)、[電話連携](https://docs.livekit.io/telephony/)、[OSS](https://github.com/livekit/agents)。
 
+### 本人用保存のアカウント切替（Material・ココナラ・メルカリ、2026-10-11）
+
+本人用の保存が成立する前に通信が失敗し、別アカウントで再認証すると、同じ入力とIDを新しい本人へ新規保存できる隙間があった。3つの画面は認証済み一覧GETの`ownerScope`を未確認操作へ固定し、明示再確認の直前にもGETで一致を確認する。本人不明・別アカウントではPOSTせず、入力と元IDを保持する。直前GET後の切替も、mutationの`X-Rock-Owner-Scope`と現在の`requestUser`をAPIで照合して409で拒否する。
+
+scopeは非秘密の意図識別値で、認証や権限を与えない。既存API clientのheader省略は従来契約のままで、新UIではscope確認を必須にする。元アカウントへ戻れば同じIDで再開でき、本人が保留解除を明示したときだけ入力を残して新しい操作IDから始める。解除は保存済み記録を削除しない。legacy client、タブ強制終了・crash後の復旧はこの保証の対象外。実route／全SQLite migration／component回帰と、合成本人の実Mercari画面でB保存0件→A復帰後1件→再読込を確認し、実取引・外部Provider・本番本人認証とは分ける。
+
 ## 9. ココナラ
 
 Skyで`coconala`を選ぶと`/sky/tools/coconala`へ直接進む。同じ画面の「案件管理」と「応募前チェック」で下記2機能を切り替えられる。独立した「受託チーム」アプリや別のSky Toolは作らない。旧`/coconala-team`はこのSky画面へ転送する。
