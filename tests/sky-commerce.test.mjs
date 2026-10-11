@@ -299,6 +299,35 @@ void test('expired and revoked SIM/eSIM claims do not block a legitimate package
   assert.equal(f.stripe.calls.filter((call) => call.path === '/v1/checkout/sessions').length, 2);
 });
 
+void test('an included package cannot be bought twice when unrelated publications push it beyond the registry page', async t => {
+  const f = await setup(t);
+  await f.sell();
+  insertServiceEntitlement(f.db, 'buyer');
+  const options = { runtime: { ...runtime, ROCKSTAR_SERVICE_OFFER_PROFILES: offerProfileFor(f) } };
+  assert.equal((await f.checkout({}, options)).status, 409);
+  const packageStore = skyToolPackageStore(f.db);
+  for (let index = 0; index < 200; index++) {
+    const draft = createSkyToolPackageDraft({ sourceKind: 'github',
+      sourceUrl: `https://github.com/example/unrelated-${index}`,
+      developerName: 'Unrelated Fixture', developerId: 'unrelated-fixture', license: 'MIT' });
+    const row = await packageStore.create('unrelated-seller', draft);
+    f.db.prepare("UPDATE sky_tool_packages SET status = 'verified', published_at = ? WHERE package_key = ?")
+      .bind(Date.now() + index + 1, row.packageKey).run();
+    f.db.prepare(`INSERT INTO sky_tool_package_reviews
+      (id,package_key,manifest_sha256,reviewer_id,decision,checks_json,evidence_json,notes,reviewed_at,expires_at)
+      VALUES (?,?,?,'reviewer','verified','{}','[]','Fixture review',?,NULL)`)
+      .bind(`unrelated-${index}`, row.packageKey, row.manifestSha256, Date.now()).run();
+  }
+  assert.equal((await packageStore.listRegistry()).some(row => row.packageKey === f.saved.packageKey), false);
+  const result = await f.checkout({}, options);
+  assert.equal(result.status, 409, JSON.stringify(result.data));
+  assert.match(result.data.error, /有効なSIM\/eSIM利用権に含まれています/);
+  assert.equal(f.db.prepare('SELECT COUNT(*) AS count FROM sky_commerce_orders').first().count, 0);
+  assert.equal(f.stripe.calls.some(call => call.path === '/v1/checkout/sessions'), false);
+  // The entitlement remains private; it does not block a different owner.
+  assert.equal((await f.checkout({}, { ...options, user: 'another-buyer' })).status, 200);
+});
+
 void test('an invalid service offer profile configuration fails closed before Stripe checkout', async (t) => {
   const f = await setup(t);
   await f.sell();

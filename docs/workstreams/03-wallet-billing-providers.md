@@ -46,6 +46,13 @@ The pre-fix SQLite regression missed a terminal task with captured artifacts and
 
 The surrounding Wallet boundaries remain unchanged: `/api/wallet` → `operations.book/wallet` is an owner-scoped manual JPY book with `transfers: not-connected`; it does not fund these usage reservations. `lib/rock-wallet.ts` is called by the separate billing Worker's `/v1/rock-wallet/verify` and `/reconcile` paths, whose current fee-policy gate blocks the legacy challenge/verify/reconcile routes outside the explicitly isolated regression fixture. The A2A wallet-settlement API returns a verified device-Wallet command; it does not mutate the device ledger or move money. Direct cloud LLM metering still has no funded authoritative Wallet integration.
 
+
+### 2026-10-11: included-package purchase guard after registry growth
+
+`POST /api/sky/commerce/checkout` → `handleSkyCommerce` → `isIncludedInActiveServiceOffer` previously looked for the owner's signed service-offer packages in the newest 200 public registry entries. The actual handler and SQLite fixture demonstrated that 200 unrelated newer reviewed publications removed an already included package from this check and created another order plus Stripe Checkout (HTTP 200 instead of the required 409).
+
+The guard now parses the existing service-offer catalog, selects only profiles held by the authenticated owner, and reuses the exact `{packageKey, manifestSha256}` registry lookup. Its manifest/review validation and invalid-configuration failure remain unchanged. The regression proves no order or Checkout is created after registry growth, while a different owner can still purchase normally. Existing expired/revoked claim, partial/full refund, early dispute, stale completion, owner separation and unknown-refund retry-window fixtures remain in place. This is local SQLite plus mock Stripe HTTP evidence; production purchase, Provider-side entitlement enforcement, refunds and dispute operations remain unaccepted.
+
 Sky Market決済の主担当は `JOINT`。`ROCK` は商品・注文・手数料・照合・本人分離・返金停止を実装し、`EXTERNAL` のStripeは決済・受取先本人確認・銀行払出しを担う。`OWNER` は既存の決済実装指示を前提に、実アカウントと資格情報・販売条件を用意する。現段階はローカルmockでの `ROCK_READY` であり `PROVIDER_READY` / `INTEGRATED` / `LIMITED_LIVE` / `PRODUCTION` ではない。
 
 ## Cloud agent quote → native Wallet approval status (2026-10-02)

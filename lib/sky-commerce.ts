@@ -5,7 +5,7 @@ import { readSkyStripeConfig, skyStripe, SkyPaymentError, type SkyStripeConfig, 
 import { verifyStripeSignature } from '../services/sky-billing/src/stripe-signature.ts';
 import type { SkyToolPackage } from './sky-tool-package.ts';
 import { rockstarEntitlementStore } from './rockstar-entitlement-claim.ts';
-import { describeRockstarServiceOfferProfile } from './rockstar-service-offers.ts';
+import { describeRockstarServiceOfferProfile, parseRockstarServiceOfferProfiles } from './rockstar-service-offers.ts';
 import { skyToolPackageStore } from './sky-tool-package-store.ts';
 
 type Database = Pick<D1Database, 'prepare' | 'batch'>;
@@ -62,7 +62,15 @@ export function skyCommerce(
     const entitlements = (await rockstarEntitlementStore(db).list(userId))
       .filter((entitlement) => entitlement.status === 'active');
     if (!entitlements.length) return false;
-    const registry = await skyToolPackageStore(db).listRegistry();
+    let profiles;
+    try { profiles = parseRockstarServiceOfferProfiles(serviceOfferProfiles).profiles; }
+    catch { throw new SkyPaymentError('SIM/eSIMのPackage構成を検証できません。購入を保留してください。', 503); }
+    // Purchase eligibility must use the owner's exact offer pins, independent
+    // of the paginated public registry and unrelated newer publications.
+    const references = profiles.filter((profile) => entitlements.some((entitlement) =>
+      entitlement.issuerId === profile.issuerId && entitlement.offerId === profile.offerId,
+    )).flatMap((profile) => profile.packages);
+    const registry = await skyToolPackageStore(db).verifiedRegistryPackages(references);
     for (const entitlement of entitlements) {
       const profile = await describeRockstarServiceOfferProfile(
         entitlement.issuerId,
