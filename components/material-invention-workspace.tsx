@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
 import fixture from '@/contracts/material-invention-fixture.json';
 import { generateMaterialCandidateGraph, validateMaterialInventionRequest, type MaterialCandidateGraph, type MaterialInventionRequest } from '@/lib/material-invention';
 import { MATERIAL_STUDY_MAX_BYTES, readMaterialStudyInput, exportMaterialStudy } from '@/lib/material-study';
@@ -16,6 +17,7 @@ const errorText = (error: unknown) => error instanceof Error ? error.message : '
 class MaterialApiError extends Error { status: number; constructor(message: string, status: number) { super(message); this.status = status; } }
 async function fetchSavedStudies(signal?: AbortSignal) {
   const response = await fetch('/api/material-invention', { credentials: 'same-origin', cache: 'no-store', signal });
+  if (response.status === 401) throw new MaterialApiError('保存済みの候補の確認にはサインインが必要です。', 401);
   const data = await response.json() as { jobs?: SavedStudy[]; error?: string };
   if (!response.ok || !Array.isArray(data.jobs)) throw new MaterialApiError(data.error || '保存済みの候補を確認できません。', response.status);
   return data.jobs;
@@ -38,26 +40,35 @@ export default function MaterialInventionWorkspace() {
   const [filter, setFilter] = useState('all');
   const [limit, setLimit] = useState(30);
   const generation = useRef(0);
+  const storageGeneration = useRef(0);
   const mounted = useRef(true);
   const active = useRef<AbortController | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const locked = busy || pending !== null;
+  usePendingSaveNavigation(pending !== null);
 
+  function loseStorageAccess() {
+    storageGeneration.current++;
+    setNeedsSignin(true);
+    setJobs([]);
+  }
   async function list(signal?: AbortSignal) {
+    const version = ++storageGeneration.current;
     try {
       const saved = await fetchSavedStudies(signal);
-      if (mounted.current && !signal?.aborted) { setJobs(saved); setNeedsSignin(false); setStorageMessage('サインイン中の本人が保存した候補です。'); }
+      if (mounted.current && !signal?.aborted && version === storageGeneration.current) { setJobs(saved); setNeedsSignin(false); setStorageMessage('サインイン中の本人が保存した候補です。'); }
     } catch (error) {
-      if (mounted.current && !signal?.aborted) { setStorageMessage(errorText(error)); setNeedsSignin(error instanceof MaterialApiError && error.status === 401); }
+      if (mounted.current && !signal?.aborted && version === storageGeneration.current) { setStorageMessage(errorText(error)); if (error instanceof MaterialApiError && error.status === 401) loseStorageAccess(); }
     }
   }
   useEffect(() => {
     mounted.current = true;
     const mountedRef = mounted, generationRef = generation, activeRef = active;
     const controller = new AbortController();
+    const version = ++storageGeneration.current;
     void fetchSavedStudies(controller.signal).then((saved) => {
-      if (!controller.signal.aborted) { setJobs(saved); setNeedsSignin(false); setStorageMessage('サインイン中の本人が保存した候補です。'); }
-    }).catch((error: unknown) => { if (!controller.signal.aborted) { setStorageMessage(errorText(error)); setNeedsSignin(error instanceof MaterialApiError && error.status === 401); } });
+      if (!controller.signal.aborted && version === storageGeneration.current) { setJobs(saved); setNeedsSignin(false); setStorageMessage('サインイン中の本人が保存した候補です。'); }
+    }).catch((error: unknown) => { if (!controller.signal.aborted && version === storageGeneration.current) { setStorageMessage(errorText(error)); if (error instanceof MaterialApiError && error.status === 401) loseStorageAccess(); } });
     return () => { mountedRef.current = false; generationRef.current++; controller.abort(); activeRef.current?.abort(); };
   }, []);
 
@@ -100,15 +111,20 @@ export default function MaterialInventionWorkspace() {
     try {
       const response = await fetch(operation.url, { method: operation.method, credentials: 'same-origin', cache: 'no-store', signal: controller.signal,
         headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(operation.body) });
+      if (response.status === 401) {
+        if (mounted.current) loseStorageAccess();
+        throw new Error('保存の確認にはサインインが必要です。同じ記録IDを保持しています。');
+      }
       const data = await response.json() as Partial<Result> & { error?: string };
       if (!mounted.current) return;
       if (!response.ok || !data.job) {
-        if (response.status === 401) setNeedsSignin(true);
-        // Only a confirmed client rejection releases the retry identity.
-        if (response.status < 500) setPending(null);
+        // Authentication loss and malformed success are still uncertain: a
+        // previous attempt may already have committed with this exact ID.
+        if ([400, 404, 409, 413, 415].includes(response.status)) setPending(null);
         throw new Error(data.error || '保存状態を確認できません。同じ操作を再試行してください。');
       }
       setJob(data.job);
+      setNeedsSignin(false);
       if (data.graph) setGraph(data.graph);
       setPending(null);
       setMessage(operation.method === 'POST' ? '入力と候補を本人の仕事として保存しました。' : '仕事の状態を保存しました。');
@@ -121,6 +137,10 @@ export default function MaterialInventionWorkspace() {
     const controller = new AbortController(); active.current = controller;
     try {
       const response = await fetch(`/api/material-invention?id=${encodeURIComponent(id)}`, { credentials: 'same-origin', cache: 'no-store', signal: controller.signal });
+      if (response.status === 401) {
+        if (mounted.current) loseStorageAccess();
+        throw new Error('保存候補の確認にはサインインが必要です。');
+      }
       const data = await response.json() as Partial<Result> & { error?: string };
       if (!response.ok || !data.job?.materialStudy || !data.graph) throw new Error(data.error || '保存候補を復元できません。');
       if (!mounted.current) return;
@@ -180,7 +200,7 @@ export default function MaterialInventionWorkspace() {
     </div>
     {message && <output className={styles.message}>{message}</output>}
     {pending && !busy && <div className={styles.boundary}><p>保存結果が不明です。入力を変えず、同じ記録IDで照合・再試行します。</p><button onClick={() => void mutate(pending)}>同じ操作を再試行</button></div>}
-    {needsSignin && !pending && <p className={styles.note}><Link prefetch={false} href="/signin-with-chatgpt?return_to=%2Fzema%2Ftools%2Frockstar-material-invention" target="_top">サインインして保存を使う</Link>。画面を移る前に、入力を含むJSONを手元へ保存できます。読み込み時は候補と承認を引き継がず、入力から再生成します。</p>}
+    {needsSignin && <p className={styles.note}><Link prefetch={false} href="/signin-with-chatgpt?return_to=%2Fzema%2Ftools%2Frockstar-material-invention" target="_blank" rel="noopener noreferrer">サインインして保存を使う</Link>。別タブでサインイン後、この画面で再確認してください。入力を含むJSONは手元へ保存できます。読み込み時は候補と承認を引き継がず、入力から再生成します。</p>}
     <section className={styles.saved} aria-label="保存した物質候補"><h3>保存した仕事</h3><p className={styles.note}>{storageMessage}</p><button disabled={locked} onClick={() => void list()}>一覧を再読込</button>{jobs.length === 0 ? <p className={styles.note}>保存済みの候補はまだ表示されていません。</p> : <ul>{jobs.map((item) => <li key={item.id}><button disabled={locked} onClick={() => void open(item.id)}>{item.title}</button><span>{item.status} / {new Date(item.updatedAt).toLocaleString()}</span></li>)}</ul>}</section>
   </section>;
 }

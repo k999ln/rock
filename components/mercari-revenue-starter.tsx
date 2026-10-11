@@ -16,6 +16,7 @@ import {
   WalletCards,
 } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
+import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
 import { ExecutionSignin, useExecutionAccess } from '@/components/execution-access';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import type { MercariRevenuePlan } from '@/lib/mercari-revenue';
@@ -64,12 +65,7 @@ export default function MercariRevenueStarter() {
     [plans],
   );
 
-  useEffect(() => {
-    if (!pendingCreate) return;
-    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); };
-    window.addEventListener('beforeunload', warn);
-    return () => window.removeEventListener('beforeunload', warn);
-  }, [pendingCreate]);
+  usePendingSaveNavigation(pendingCreate !== null);
 
   async function refresh() {
     try {
@@ -88,26 +84,34 @@ export default function MercariRevenueStarter() {
 
   useEffect(() => {
     let current = true;
-    void operationRequest<Response>('/api/revenue/mercari')
-      .then((response) => {
-        if (current) setPlans(response.plans);
-      })
-      .catch((cause) => {
-        if (!current) return;
-        if (cause instanceof OperationRequestError && cause.status === 401)
-          setNeedsSignin(true);
-        else
-          setError(
-            cause instanceof Error ? cause.message : '読み込めませんでした。',
-          );
-      })
-      .finally(() => {
-        if (current) setLoading(false);
-      });
+    const timer = window.setTimeout(() => {
+      if (executionBlocked) {
+        setPlans([]);
+        return;
+      }
+      setLoading(true);
+      void operationRequest<Response>('/api/revenue/mercari')
+        .then((response) => {
+          if (current) setPlans(response.plans);
+        })
+        .catch((cause) => {
+          if (!current) return;
+          if (cause instanceof OperationRequestError && cause.status === 401)
+            setNeedsSignin(true);
+          else
+            setError(
+              cause instanceof Error ? cause.message : '読み込めませんでした。',
+            );
+        })
+        .finally(() => {
+          if (current) setLoading(false);
+        });
+    }, 0);
     return () => {
       current = false;
+      window.clearTimeout(timer);
     };
-  }, [setNeedsSignin]);
+  }, [executionBlocked, setNeedsSignin]);
 
   async function saveCreate(payload: Record<string, unknown>) {
     if (createInFlight.current || busy) return;
@@ -141,7 +145,7 @@ export default function MercariRevenueStarter() {
 
   async function create(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (locked || createInFlight.current) return;
+    if (executionBlocked || locked || createInFlight.current) return;
     createForm.current = event.currentTarget;
     const form = new FormData(event.currentTarget);
     await saveCreate({
@@ -165,7 +169,7 @@ export default function MercariRevenueStarter() {
     plan: MercariRevenuePlan,
     action: 'approve' | 'mark_listed' | 'report_sale' | 'cancel',
   ) {
-    if (locked || createInFlight.current) return;
+    if (executionBlocked || locked || createInFlight.current) return;
     const payload: Record<string, unknown> = {
       id: plan.id,
       action,
@@ -247,13 +251,13 @@ export default function MercariRevenueStarter() {
           </article>
         </section>
 
-        {executionBlocked ? (
+        {executionBlocked && (
           <>
             <ExecutionSignin state={accessState} />
             <p>商品情報と進捗は本人別に保存されます。メルカリのパスワードやCookieは保存しません。</p>
           </>
-        ) : (
-          <div className="mercari-grid">
+        )}
+          <div className="mercari-grid" hidden={executionBlocked} style={executionBlocked ? { display: 'none' } : undefined}>
             <section className="mercari-panel">
               <div className="mercari-panel-title">
                 <BadgeJapaneseYen size={21} />
@@ -321,7 +325,6 @@ export default function MercariRevenueStarter() {
               )}
             </section>
           </div>
-        )}
 
         <footer className="mercari-footer">
           <p>このツールは売上・販売速度・利益を保証しません。認証情報、購入、メッセージ、発送、出金を代行しません。</p>

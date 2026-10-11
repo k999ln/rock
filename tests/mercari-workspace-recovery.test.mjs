@@ -10,8 +10,9 @@ const compiled = ts.transpileModule(readFileSync(new URL('../components/mercari-
 }).outputText;
 class RequestError extends Error { constructor(status) { super(`HTTP ${status}`); this.status = status; } }
 function harness(records = new Map()) {
-  const slots = [], effects = [], requests = [], listeners = new Map();
-  let cursor = 0, tree, failure = null, resets = 0;
+  const slots = [], effects = [], requests = [], listeners = new Map(), timers = new Map();
+  let nextTimer = 0;
+  let cursor = 0, tree, failure = null, resets = 0, access = 'ready', visibleRecords = records;
   const form = { fields: { channel: 'consumer_assisted', title: 'Synthetic owned stock', condition: 'Checked', facts: 'Local fixture only',
     priceJPY: '3000', marketplaceFeeJPY: '300', shippingJPY: '750', itemCostJPY: '0', otherCostJPY: '0',
     ownsStock: 'on', accurate: 'on', prohibitedChecked: 'on' }, reset() { resets++; } };
@@ -27,12 +28,13 @@ function harness(records = new Map()) {
     },
   };
   const jsx = (type, props) => ({ type, props });
-  const inert = () => null, needsSignin = () => {};
+  const inert = () => null, needsSignin = (value) => { access = value ? 'signin' : 'ready'; };
   async function request(_path, method = 'GET', value) {
     requests.push({ method, value: value === undefined ? undefined : JSON.parse(JSON.stringify(value)) });
-    if (method === 'GET') return { plans: [...records.values()] };
+    if (method === 'GET') return { plans: [...visibleRecords.values()] };
     assert.equal(method, 'POST');
     const mode = failure; failure = null;
+    if (mode === 'unauthorized') throw new RequestError(401);
     if (mode === 'validation') throw new RequestError(400);
     if (mode === 'before') throw new RequestError(503);
     const plan = records.get(value.id) ?? createMercariRevenuePlan(value);
@@ -45,12 +47,13 @@ function harness(records = new Map()) {
     react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': inert,
     '@/lib/operations-client': { operationRequest: request, OperationRequestError: RequestError },
     '@/components/workspace-shell': inert,
-    '@/components/execution-access': { ExecutionSignin: inert, useExecutionAccess: () => ({ executionBlocked: false, setNeedsSignin: needsSignin }) },
+    '@/components/use-pending-save-navigation': { usePendingSaveNavigation(pending) { react.useEffect(() => { if (!pending) return; const fn = () => {}; listeners.set('beforeunload', fn); return () => listeners.delete('beforeunload'); }, [pending]); } },
+    '@/components/execution-access': { ExecutionSignin: inert, useExecutionAccess: () => ({ executionBlocked: access !== 'ready', accessState: access, setNeedsSignin: needsSignin }) },
   };
   const exports = {};
   runInNewContext(compiled, { exports, crypto, Intl, Error,
     FormData: class { constructor(element) { this.fields = element.fields; } get(key) { return this.fields[key]; } },
-    window: { addEventListener(name, fn) { listeners.set(name, fn); }, removeEventListener(name) { listeners.delete(name); } },
+    window: { setTimeout(fn) { const id = ++nextTimer; timers.set(id, fn); return id; }, clearTimeout(id) { timers.delete(id); }, addEventListener(name, fn) { listeners.set(name, fn); }, removeEventListener(name) { listeners.delete(name); } },
     require(id) {
       if (id in modules) return modules[id];
       if (id === 'lucide-react') return new Proxy({}, { get: () => inert });
@@ -65,8 +68,13 @@ function harness(records = new Map()) {
   }
   function text(node) { return typeof node === 'string' || typeof node === 'number' ? String(node) :
     Array.isArray(node) ? node.map(text).join('') : node && typeof node === 'object' ? text(node.props?.children) : ''; }
-  function find(type, label) { return nodes(tree).find((node) => node.type === type && (!label || text(node).includes(label))); }
-  async function flush() { await new Promise((resolve) => setImmediate(resolve)); render(); }
+  function visibleNodes(node, out = []) {
+    if (!node || typeof node !== 'object' || node.props?.hidden) return out;
+    if (Array.isArray(node)) { node.forEach((v) => visibleNodes(v, out)); return out; }
+    out.push(node); visibleNodes(node.props?.children, out); return out;
+  }
+  function find(type, label) { return visibleNodes(tree).find((node) => node.type === type && (!label || text(node).includes(label))); }
+  async function flush() { for (const [id, fn] of timers) { timers.delete(id); fn(); } await new Promise((resolve) => setImmediate(resolve)); render(); }
   async function click(label) { const button = find('button', label); assert.ok(button, label); assert.ok(!button.props.disabled, label);
     const result = button.props.onClick(); render(); await result; await flush(); }
   async function submit(twice = false) { const handler = find('form').props.onSubmit;
@@ -75,6 +83,7 @@ function harness(records = new Map()) {
     render(); await promise; await flush(); }
   render();
   return { render, find, nodes: () => nodes(tree), flush, click, submit, requests, records, listeners, form,
+    setAccess(value, visible = visibleRecords) { access = value; visibleRecords = visible; render(); },
     get resets() { return resets; }, fail(mode) { failure = mode; } };
 }
 
@@ -114,4 +123,26 @@ void test('definitive validation failure releases the form with its entered valu
   assert.ok(!h.find('button', '出品原稿と利益計画を作る').props.disabled);
   assert.equal(h.find('button', '同じ保存内容で結果を確認'), undefined);
   assert.equal(h.listeners.has('beforeunload'), false);
+});
+
+
+void test('Mercari rechecks the owner list after authentication recovery instead of showing the old owner', async () => {
+  const h = harness(); await h.flush(); await h.submit();
+  assert.ok(h.find('h3', 'Synthetic owned stock'));
+  h.setAccess('signin'); await h.flush();
+  assert.ok(h.nodes().some((n) => n.type === 'form'), 'auth notice must hide, not unmount, the input form');
+  h.setAccess('checking', new Map()); await h.flush();
+  h.setAccess('ready'); await h.flush();
+  assert.equal(h.find('h3', 'Synthetic owned stock'), undefined);
+  assert.equal(h.requests.filter((r) => r.method === 'GET').length, 2);
+});
+
+void test('Mercari retains the uncertain payload through sign-in and deduplicates the refreshed row', async () => {
+  const h = harness(); await h.flush(); h.fail('after'); await h.submit();
+  h.fail('unauthorized'); await h.click('同じ保存内容で結果を確認');
+  h.setAccess('ready'); await h.flush();
+  await h.click('同じ保存内容で結果を確認');
+  const posts = h.requests.filter((r) => r.method === 'POST');
+  assert.equal(posts.length, 3); assert.deepEqual(posts[0].value, posts[2].value);
+  assert.equal(h.records.size, 1); assert.equal(h.nodes().filter((n) => n.type === 'h3').length, 1);
 });
