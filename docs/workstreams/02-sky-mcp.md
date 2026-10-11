@@ -12,6 +12,10 @@
 
 # Sky / MCP
 
+## 2026-10-10 GRID01／ROCK — Sky Compute Grid host fixture
+
+未使用Androidの余剰計算を固定・中断可能なlotへmatchingするplatform serviceをSkyへ追加した。MCPの第三者任意Tool実行とは分け、初期SKUは固定runtime/model/tokenizerによるpublic/synthetic text embeddingだけとする。`CapacityOffer`、`ComputeOrder`、`ComputeLease`、`ComputeReceipt`のclosed contract、hard filter、score、有限lease、独立参照／duplicate検証、service-credit hold preview、合成demo UI/APIをhostで実装した。実端末worker、remote dispatch、本番storage、実需要、実料金・払出しは未接続。詳細は[Sky Compute Grid](../sky-compute-grid.md)。
+
 ## 2026-10-01 MCP直接実行の料金gate
 
 全MCPのTool一覧に料金方式を持たせ、価格申告をPassport digestへ含めた。Sky Tool SDKは料金未定義・未知方式のTool登録を拒否する。PC ConnectorはローカルSDK descriptorまたはremote MCPの`_meta['rockstaros.dev/pricing']`から料金方式を読み、欠落は`unknown`として実行を停止する。`free`であってもUIは提供元申告と表示し、Rockstar独立検証済みとは主張しない。さらに遠隔MCPの`free`自己申告は、署名見積・予算予約の共通経路がないため直接実行不可とする。local SDK descriptorは別境界であり、表示上の`free`は外部料金がない証明ではない。subscription/usage/external contractも直接実行不可。料金条件の変更はPassport digestを変え、承認を更新させる。

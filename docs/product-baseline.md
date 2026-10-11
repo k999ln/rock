@@ -1,4 +1,12 @@
-> **この文書の読み方（2026-10-07追記）** — 利用者が確定した要望と方針判断の **正本** です。新しい判断を上へ足してきたため、並びは日付順ではありません。上から順に、①2026-09-24以降の方針判断（新しい順。RQ48の本文もここにあります）、②「2026-09-24 ハードウェア設計基準 — avocadoMini R5」と「過去の判断履歴」（09-20〜09-22）、③「RockstarOS — 確定した製品ベース」（09-09〜09-21の追記が新しい順に並び、そのあとに RQ01〜RQ47・RQ49 の本文）、④「現時点の未決事項」と「変更記録」、⑤末尾に2026-10-05の追加指示4件、です。**日付順・テーマ別に読みたいときは [仕様変遷](spec-history.md) を使ってください。** 食い違ったときは、この文書と [`data/product-baseline.json`](../data/product-baseline.json) が優先です。
+> **この文書の読み方（2026-10-10追記）** — 利用者が確定した要望と方針判断の **正本** です。新しい判断を上へ足してきたため、並びは日付順ではありません。上から順に、①2026-09-24以降の方針判断（新しい順。RQ48の本文もここにあります）、②「2026-09-24 ハードウェア設計基準 — avocadoMini R5」と「過去の判断履歴」（09-20〜09-22）、③「RockstarOS — 確定した製品ベース」（09-09〜09-21の追記が新しい順に並び、そのあとに RQ01〜RQ50 の本文）、④「現時点の未決事項」と「変更記録」、⑤末尾の日付付き追加指示、です。**日付順・テーマ別に読みたいときは [仕様変遷](spec-history.md) を使ってください。** 食い違ったときは、この文書と [`data/product-baseline.json`](../data/product-baseline.json) が優先です。
+
+## 2026-10-10 Sky Compute Grid — 余剰スマートフォン計算力の仲介
+
+利用者は、cloud serverを借りる代わりに、世界中の人が使っていない時間の携帯をMac miniのような計算資源として束ね、誰のどの端末へ何を割り当てるかのmatchingまでSkyに含める方針を明示した。発電余力を束ねるvirtual power plantと同様に、端末は`CapacityOffer`、計算需要は`ComputeOrder`、Skyはmatcher、実行割当は`ComputeLease`、検証済み結果はmeter／receiptとして扱う。
+
+初期供給はAndroid arm64だけとし、充電中、端末idle、unmetered network、thermal none/lightを必要条件にする。所有者が使い始めたら計算を停止する。初期SKUは公開／合成textを固定runtime・model・tokenizerでembeddingする中断可能lotだけとし、任意code、個人情報、秘密、正確な位置の公開、所有者identityの買い手への公開を許可しない。価格単位はCPU時間ではなく **検証済みCompute Lot**とする。
+
+結果は端末の自己申告だけで合格にせず、独立参照計算または別leaseのduplicate quorumで検証する。合格lotだけを精算候補にするが、現段階は`sky_test_credits`のhold previewまでで、Walletへの実記帳、買い手への実請求、提供者への実払出しは開始しない。本人のorderにないcloud fallbackを行わない。既存AI05の単一authority deviceを自動移管せず、Gridのinterruptible lotを別経路として扱う。詳細は[Sky Compute Grid設計](sky-compute-grid.md)を正本とする。
 
 ## 2026-10-09 Skyタイムラインのコード公開と交換可能な保護
 
@@ -760,7 +768,17 @@ VR／ARでは同じ候補graphを派生sceneへ投影し、候補、物質lot、
 
 avocadoMiniの操作履歴は、人の直接操作、AI提案、simulation、文献、実験receiptを分けたまま既存Sky Patent AIへ渡し、発明開示、先行技術候補、構成要件差分、専門家向けpacketを作る。gestureは物理実験・外部共有・出願の最終承認に使わず、cameraは物理物質や装置を直接制御しない。Patent AIは特許性、登録、侵害回避、法的発明者、権利帰属を確定せず、電子署名、料金支払、出願を自動実行しない。詳細は[Spatial Invention Studio](material-invention-xr.md)と[avocadoMini端末設計](avocado-mini-spatial-invention.md)を正本とする。
 
-## 1.0への8原則の適用（RQ01〜RQ49を維持）
+## RQ50 使われていないスマートフォンの計算余力をSkyで仲介する
+
+RockstarOSは、端末所有者が使っていない時間のAndroid計算能力を明示条件付きで提示し、計算を必要とする買い手の固定workloadへmatchingするSky Compute Gridを持つ。供給offerは粗い地域、capability、artifact hash、benchmark、availability、価格、data policy、電池・通信・温度条件を持つ。需要orderは固定SKU、input hash、期限、地域、trust、価格上限、総予算、検証方式を持つ。Skyは互換性をhard filterし、価格、完了確率、性能、地域、trustを使って短命leaseへ割り当てる。
+
+初期供給はAndroid arm64に限定する。charging、device idle、unmetered network、thermal none/lightを実行条件とし、owner useを計算より優先する。初期workloadはpublic/synthetic text embeddingの固定runtimeだけとする。downloaded executable code、任意shell/root、個人情報、秘密、credential、会話、写真、正確な位置を配らない。iOSは需要・結果確認UIに使えても供給端末として合格表示しない。
+
+計量単位はCPU時間ではなくverified Compute Lotとする。resultはartifact/input/output hash、実行条件、期限へ結び、独立参照または別lease quorumで検証する。未検証結果、timeoutの結果不明、重複receiptを収益へ変換しない。買い手にはpseudonym、coarse region、capability、trust、価格だけを示し、owner identityとexact locationを開示しない。
+
+host fixture、contract、demoは実装してよいが、実端末dispatch、production storage、実課金・実払出し、端末attestation運用、税・法務・通信・fraud対策は個別受入前に有効化しない。既存Walletのhold・receipt・idempotency境界を再利用し、現行の料金実行保留を解除しない。ownerが明示していないcloud fallbackで実行先、費用、data境界を変えない。
+
+## 1.0への8原則の適用（RQ01〜RQ50を維持）
 
 利用者の「その上で設計を組んで」により、0→1、小市場からの拡大、逆張りの問い、秘密の探索、べき乗則、明確な楽観主義、販売、チームの整合を [製品・事業・開発設計](rockstaros-1.0-strategy.md)へ具体化する。現ベースの機能・料金・ハード方針を置換せず、一つの商品で実行・成果・費用・復旧までの体験を検証する。
 
@@ -916,4 +934,3 @@ avocadoMiniの操作履歴は、人の直接操作、AI提案、simulation、文
 ## 2026-10-05 avokadoProの独立小型PC方針
 
 利用者指定により、ProはNVIDIA搭載のMac miniのような据え置き小型PCとして、AIとPCゲーム双方を重視する。販売目標は80万円/台（回答80の文脈解釈、税込/税別等未定）。[構成・組立設計](avokado-pro-pc-design.md)へ候補部品、OEM試作とODM販売筐体、冷却・互換性・受入を記録した。MiniはProなしの単体動作を目指す既存R5を維持する。新task MAT16はMini MAT15と別受入であり、購入・組立・生産・公開・受注済みではない。
-
