@@ -15,7 +15,7 @@ export type CommerceOffer = {
   revision: number;
   amountMinor: number;
   currency: string;
-  active?: boolean;
+  active?: boolean | 0 | 1;
   termsUrl: string;
   refundPolicy: string;
 };
@@ -67,7 +67,7 @@ async function commerceRequest<T>(path: string, body?: unknown, signal?: AbortSi
   return data;
 }
 
-export function useCommerceResource<T>(path: string) {
+export function useCommerceResource<T>(path: string, preserveOnRefreshError = false) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
@@ -78,13 +78,13 @@ export function useCommerceResource<T>(path: string) {
       if (sequence === requestSequence.current && !signal?.aborted) setData(next);
     }).catch((cause: unknown) => {
       if (sequence === requestSequence.current && !signal?.aborted) {
-        setData(null);
+        if (!preserveOnRefreshError || (cause instanceof CommerceError && [401, 403].includes(cause.status))) setData(null);
         setError(cause instanceof Error ? cause : new Error('読み込めませんでした。'));
       }
     }).finally(() => {
       if (sequence === requestSequence.current && !signal?.aborted) setLoading(false);
     });
-  }, [path]);
+  }, [path, preserveOnRefreshError]);
   const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -290,53 +290,102 @@ export function SkyPurchases() {
   </CommercePage>;
 }
 
-function OfferEditor({ item, offer, ready, onSave }: { item: Seller['packages'][number]; offer?: CommerceOffer; ready: boolean; onSave: () => Promise<void> }) {
+export function OfferEditor({ item, offer, ready, onSave }: { item: Seller['packages'][number]; offer?: CommerceOffer; ready: boolean; onSave: () => Promise<void> }) {
   const [price, setPrice] = useState(offer ? String(offer.amountMinor) : '');
   const [termsUrl, setTermsUrl] = useState(offer?.termsUrl || '');
   const [refundPolicy, setRefundPolicy] = useState(offer?.refundPolicy || '');
-  const [active, setActive] = useState(offer?.active ?? true);
+  const [active, setActive] = useState(offer ? Boolean(offer.active) : true);
+  // The draft and its baseline are a pair; prop refreshes must never rebase edits.
+  const [expectedRevision, setExpectedRevision] = useState(offer?.revision ?? 0);
+  const [conflict, setConflict] = useState(false);
+  const [latest, setLatest] = useState<CommerceOffer | null | undefined>(undefined);
+  const [reviewing, setReviewing] = useState(false);
+  const [reviewed, setReviewed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const submitting = useRef(false);
   const amountMinor = Number(price);
-  const validPrice = Number.isSafeInteger(amountMinor) && amountMinor >= 50;
+  const validPrice = Number.isSafeInteger(amountMinor) && amountMinor >= 50 && amountMinor <= 99_999_999;
   const commission = validPrice ? marketplaceCommissionMinor(amountMinor) : 0;
   async function submit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submitting.current || !validPrice || !ready || !item.installable) return;
+    if (submitting.current || conflict || reviewing || !validPrice || !ready || !item.installable) return;
     submitting.current = true;
     setSaving(true);
     setSaved(false);
     setError(null);
     try {
-      await commerceRequest('offers', { packageKey: item.packageKey, amountMinor, currency: 'jpy', active, termsUrl, refundPolicy });
-      await onSave();
+      const result = await commerceRequest<{ offer: CommerceOffer }>('offers', {
+        packageKey: item.packageKey, expectedRevision, amountMinor, currency: 'jpy', active, termsUrl, refundPolicy,
+      });
+      setExpectedRevision(result.offer.revision);
+      setReviewed(false);
       setSaved(true);
+      await onSave();
     } catch (cause) {
+      setSaved(false);
+      if (cause instanceof CommerceError && cause.status === 409) {
+        setConflict(true);
+        setLatest(undefined);
+        setReviewed(false);
+      }
       setError(cause instanceof Error ? cause : new Error('販売条件を保存できませんでした。'));
     } finally {
       submitting.current = false;
       setSaving(false);
     }
   }
+  async function loadLatest() {
+    if (submitting.current) return;
+    submitting.current = true;
+    setReviewing(true);
+    setLatest(undefined);
+    setError(null);
+    try {
+      const result = await commerceRequest<Seller>('seller');
+      setLatest(result.offers.find((value) => value.packageKey === item.packageKey) ?? null);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause : new Error('最新版を取得できませんでした。'));
+    } finally {
+      submitting.current = false;
+      setReviewing(false);
+    }
+  }
   return <form className={styles.offerForm} onSubmit={submit} onChange={() => setSaved(false)}>
+    {(offer?.revision ?? 0) > expectedRevision && !saved && <p className={styles.notice}>表示後に販売条件が更新されています。入力は編集開始時の版を基に保持しています。</p>}
+    <fieldset disabled={saving || reviewing} style={{ border: 0, padding: 0, margin: 0, display: 'contents' }}>
     <label>販売価格（円・買い切り）<input type="number" min="50" max="99999999" step="1" required inputMode="numeric" placeholder="例：1,000" value={price} onChange={(event) => setPrice(event.target.value)} /></label>
     {validPrice && <div className={styles.feeBreakdown}><div><span>あなたの受取分</span><strong>{commerceAmount(amountMinor - commission, 'jpy')}</strong></div><div><span>Sky手数料 10%</span><span>{commerceAmount(commission, 'jpy')}</span></div></div>}
     <p className={styles.subtle}>決済処理の費用はSkyの手数料から負担します。</p>
     <label>利用・販売条件のURL<input type="url" pattern="https://.*" required placeholder="https://…" value={termsUrl} onChange={(event) => setTermsUrl(event.target.value)} /></label>
     <label>返金条件<textarea required minLength={1} maxLength={2000} rows={3} placeholder="返金できる条件と、問い合わせ方法" value={refundPolicy} onChange={(event) => setRefundPolicy(event.target.value)} /></label>
     <label className={styles.checkbox}><input type="checkbox" checked={active} onChange={(event) => setActive(event.target.checked)} />マーケットで販売する</label>
+    </fieldset>
     {!item.installable && <p className={styles.notice}>ツールの公開・接続確認が完了すると販売できます。</p>}
     {!ready && <p className={styles.notice}>先に売上の受取先を登録してください。</p>}
-    <button className={styles.primary} type="submit" disabled={saving || !ready || !item.installable}>{saving ? '保存中…' : '販売条件を保存'} <ArrowRight size={16} /></button>
+    {conflict && <section className={styles.notice} aria-label="販売条件の競合確認">
+      <p role="alert">保存できませんでした。入力は保持しています。最新版を確認してから、入力した条件を再保存してください。</p>
+      <button className={styles.secondary} type="button" disabled={reviewing} onClick={() => void loadLatest()}>{reviewing ? '取得中…' : '最新版を取得して確認'}</button>
+      {latest !== undefined && <>
+        {latest ? <dl><dt>最新の版</dt><dd>{latest.revision}</dd><dt>販売価格</dt><dd>{commerceAmount(latest.amountMinor, latest.currency)}</dd><dt>販売状態</dt><dd>{latest.active ? '販売中' : '停止中'}</dd><dt>販売条件URL</dt><dd>{latest.termsUrl}</dd><dt>返金条件</dt><dd>{latest.refundPolicy}</dd></dl> : <p>販売条件は未登録です。</p>}
+        <button className={styles.secondary} type="button" onClick={() => {
+          setExpectedRevision(latest?.revision ?? 0);
+          setLatest(undefined);
+          setConflict(false);
+          setReviewed(true);
+          setError(null);
+        }}>最新版を確認した・入力を保持して続ける</button>
+      </>}
+    </section>}
+    <button className={styles.primary} type="submit" disabled={saving || reviewing || conflict || !validPrice || !ready || !item.installable}>{saving ? '保存中…' : reviewed ? '確認した最新版を基に再保存' : '販売条件を保存'} <ArrowRight size={16} /></button>
     {saved && <output className={styles.success}><Check size={16} />販売条件を保存しました。</output>}
     <ErrorNotice error={error} returnTo="/sky/sell" />
   </form>;
 }
 
 export function SkySeller() {
-  const { data, error, loading, refresh } = useCommerceResource<Seller>('seller');
+  const { data, error, loading, refresh } = useCommerceResource<Seller>('seller', true);
   const [actionError, setActionError] = useState<Error | null>(null);
   const [pending, setPending] = useState(false);
   const [selectedKey, setSelectedKey] = useState('');

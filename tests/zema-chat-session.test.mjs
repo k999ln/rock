@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  clearZemaPrivateSession,
   readZemaChatSessions,
   saveZemaChatSession,
   ZEMA_CHAT_SESSION_KEY,
@@ -17,6 +18,25 @@ function memoryStorage() {
 }
 
 const id = 'b55ad88a-5b84-4ac2-ac0d-c5441c832be1';
+
+void test('expiry cleanup write failures preserve and restore valid sessions without reviving expired text', () => {
+  const storage = memoryStorage();
+  const valid = { version: 1, id, toolId: 'mr-citations', createdAt: 1_000,
+    messages: [{ id: 'retained', side: 'me', text: 'unfinished private request' }],
+    activeRequest: null, workflowStatus: 'ready', outcome: null };
+  const stale = { ...valid, id: '03100000-0000-4000-8000-000000000001', createdAt: 0,
+    messages: [{ id: 'expired', side: 'me', text: 'expired private request' }] };
+  const raw = JSON.stringify([valid, stale]);
+  const now = ZEMA_CHAT_SESSION_TTL_MS + 1;
+  for (const name of ['QuotaExceededError', 'SecurityError']) {
+    storage.setItem(ZEMA_CHAT_SESSION_KEY, raw);
+    const unavailable = { ...storage, setItem() { throw new DOMException('cannot write', name); } };
+    assert.deepEqual(readZemaChatSessions(unavailable, now), [valid]);
+    assert.equal(storage.getItem(ZEMA_CHAT_SESSION_KEY), raw);
+    assert.deepEqual(readZemaChatSessions(storage, now + 1), [valid]);
+    assert.deepEqual(JSON.parse(storage.getItem(ZEMA_CHAT_SESSION_KEY)), [valid]);
+  }
+});
 
 void test('a Sky handoff creates a separate Zema chat that survives reload in the same tab', () => {
   const storage = memoryStorage();
@@ -175,4 +195,26 @@ await test('AMC longer briefs do not relax other Tools and malformed saved reque
     ]),
   );
   assert.deepEqual(readZemaChatSessions(storage, 1_003), []);
+});
+
+void test('known auth loss removes private chat and pending handoff but preserves unrelated storage', () => {
+  const storage = memoryStorage();
+  storage.setItem(ZEMA_CHAT_SESSION_KEY, 'private chat');
+  storage.setItem('rockstaros.sky-zema-handoff.v1', 'private handoff');
+  storage.setItem('unrelated', 'keep');
+  clearZemaPrivateSession(storage);
+  assert.equal(storage.getItem(ZEMA_CHAT_SESSION_KEY), null);
+  assert.equal(storage.getItem('rockstaros.sky-zema-handoff.v1'), null);
+  assert.equal(storage.getItem('unrelated'), 'keep');
+  assert.deepEqual(readZemaChatSessions(storage), []);
+});
+
+void test('unavailable chat storage does not prevent handoff cleanup', () => {
+  const removed = [];
+  assert.doesNotThrow(() => clearZemaPrivateSession({ removeItem(key) {
+    removed.push(key);
+    if (key === ZEMA_CHAT_SESSION_KEY) throw new Error('unavailable');
+  }}));
+  assert.deepEqual(removed, [ZEMA_CHAT_SESSION_KEY, 'rockstaros.sky-zema-handoff.v1']);
+  assert.equal(clearZemaPrivateSession(memoryStorage()), true);
 });

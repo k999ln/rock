@@ -37,3 +37,7 @@ Gradleのdebug鍵とAOSPの公開testkeyは検証専用。作者認証や商用�
 `material-invention-xr.json` はMaterial Invention CoreのsnapshotをVR／ARへ投影するview-only scene契約である。Core entityとのbinding、右手metre座標、表示上の仮定、安全overlay、source digestを必須にし、物理実験の最終承認、装置制御、Core DB直接書込みを常にfalseへ固定する。
 
 `avocado-mini-spatial-interaction.json` はRockstarOS端末`avocadoMini`の四方向sensor rigからCoreへ送るhand interaction提案契約である。north／east／south／westのsensor set、校正digest、tracking model／confidence、gesture phase、対象binding、仮説だけの操作範囲を固定する。cameraが物質を物理操作する契約ではなく、gestureを物理実験、外部共有、Wallet、特許出願の承認として使わない。
+
+## Sky Compute Grid契約
+
+`sky-compute-grid.json` は、充電中・未使用のAndroid端末へ公開／合成text embedding lotを割り当てる`CapacityOffer`、`ComputeOrder`、`ComputeLease`、`ComputeReceipt`のclosed contractである。任意code、個人情報、秘密、無断cloud fallback、live settlementは許可しない。`sky-compute-grid-fixture.json`はhostだけでmatcher、独立検証、test-credit holdを再現する合成fixtureであり、Android実機・分散network・実収益の証拠ではない。

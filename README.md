@@ -26,6 +26,8 @@ A product concept that begins with games and connects creation, learning, and ev
 
 **How the service works.** A SIM or eSIM purchase includes access to the services. The OS itself is not stored on the SIM: a supported device installs it through an approved path, and any other device uses an app or a browser. Before paid AI work starts, you see an estimate and approve a budget; while it runs you can see what it has spent; afterwards you get an itemized record. [SIM/eSIM-led product architecture](docs/sim-led-product-architecture.md)
 
+Optional eSIM cloud access can be issued, rotated, and revoked from [purchase history](/sky/purchases) after trusted installation/device proof and contracted policy configuration. Missing configuration keeps issuance disabled; this does not enable paid execution. [Access contract](docs/sim-led-product-architecture.md#optional-esim-cloud-access-implementation)
+
 Most design documents are written in Japanese; this README is the English entry point. Use the [document map](docs/README.md) to find the current requirements, designs, operating instructions, and evidence.
 
 ## The parts
@@ -56,7 +58,7 @@ Most design documents are written in Japanese; this README is the English entry 
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-11 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
+Updated: 2026-10-11 / 384 task records (32 parents, 192 children, 160 standalone; 352 execution units excluding parents): 112 done, 35 in progress, 236 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Mission Control](docs/mission-control.md) · [Security](SECURITY.md)
@@ -93,6 +95,8 @@ Day by day, with what is in force today and what was withdrawn: [specification h
 | start developing | [Start developing](#start-developing) / [Rules for AI coding agents](AGENTS.md) |
 
 ## Start developing
+
+Use [feature workspaces](workspaces/README.md) to select an existing task and its checks (`npm run work -- --find eSIM`). [Project bots and AMC planning](toolkits/amc-agent/README.md) provide explicit local Git research, planning, and development handoff.
 
 Use Node.js 22.13 or later and npm. This starts the web app locally:
 

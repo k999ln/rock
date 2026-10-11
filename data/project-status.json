@@ -2409,6 +2409,25 @@
       ]
     },
     {
+      "id": "GRID01",
+      "title": "Sky Compute Gridで未使用Androidの余剰計算を固定lotへmatchingし、検証後だけ精算候補にする",
+      "status": "in_progress",
+      "dependsOn": [
+        "AI05",
+        "WLT03"
+      ],
+      "evidence": [
+        "docs/sky-compute-grid.md",
+        "contracts/sky-compute-grid.json",
+        "contracts/sky-compute-grid-fixture.json",
+        "lib/sky-compute-grid.ts",
+        "tests/sky-compute-grid.test.mjs",
+        "app/sky/compute-grid/page.tsx",
+        "app/api/sky/compute-grid/demo/route.ts",
+        "docs/evidence/amc/grid01-host-fixture.md"
+      ]
+    },
+    {
       "id": "DOC01",
       "title": "RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化",
       "status": "done",
@@ -5135,6 +5154,90 @@
       "externalDependency": "OEM/ODM供給、exact SKU QVL/driver/firmware、見積",
       "ownerAction": "見積後の購入・製造・販売条件",
       "acceptance": "同一Pro実機でAI/ゲーム/熱/保存復旧を独立受入。設計だけでは完了にしない"
+    },
+    {
+      "id": "ORG04",
+      "title": "既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する",
+      "status": "done",
+      "dependsOn": [
+        "ORG03"
+      ],
+      "evidence": [
+        "workspaces/README.md",
+        "workspaces/IDEAS.md",
+        "data/workspaces.json",
+        "scripts/workspaces.mjs",
+        "tests/workspaces.test.mjs",
+        "docs/evidence/workspace-organization.json"
+      ],
+      "nextAction": "32分野・379taskの作業入口、224taskPlanの読取CLI、アイデア置き場を実装・検証。PR #95の実装SHA cbebc979で全体verify・CodeQLを含む8 checks success。main統合と元dirty treeの回収は別作業。"
+    },
+    {
+      "id": "AMC03",
+      "title": "機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する",
+      "status": "done",
+      "dependsOn": [
+        "AMC02",
+        "ORG04"
+      ],
+      "evidence": [
+        "data/amc/project-bots.json",
+        "scripts/project-bots.mjs",
+        "tests/project-bots.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bots.json"
+      ],
+      "nextAction": "10担当の定義と依頼時CLIを実装。対象16試験と実装SHA 4a8861b4の全体verify／CodeQL等8 checksが成功。PR #95へ保存。具体的な依頼でBotの一件完走を別途受け入れる。常時実行・GitHub App・main統合・公開は未実施。"
+    },
+    {
+      "id": "AMC04",
+      "title": "担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する",
+      "status": "done",
+      "dependsOn": [
+        "AMC03"
+      ],
+      "evidence": [
+        "scripts/project-bot-context.mjs",
+        "scripts/project-bots.mjs",
+        "tests/project-bot-context.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bot-amc.json"
+      ],
+      "nextAction": "Git調査→AMC候補生成→native Botへの引渡しを接続。対象23試験と実装SHA 59d7d6dcの全体verify／CodeQL等8 checksが成功。PR #95へ保存。実Botの開発・独立検収・Git提出の一件完走とWeb同期は別受入、main統合・公開は未実施。"
+    },
+    {
+      "id": "AMC05",
+      "title": "既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ",
+      "status": "done",
+      "dependsOn": [
+        "AMC04"
+      ],
+      "evidence": [
+        "scripts/project-bot-context.mjs",
+        "scripts/project-bots.mjs",
+        "tests/project-bot-context.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bot-goal-input.json"
+      ],
+      "nextAction": "既存AMC JSONの直接入力・Git調査・指示書保存・起動引渡しは検証済み。具体的な任務の実Bot完走と成果PRは別途照合し、元Goalの最終受入を代行しない。"
+    },
+    {
+      "id": "AMC06",
+      "title": "固定テンプレートを補助へ分け、Gitを読むCodexの可変計画と追加指示による見直しをAMCへ接続する",
+      "status": "done",
+      "dependsOn": [
+        "AMC05"
+      ],
+      "evidence": [
+        "scripts/amc-planner.mjs",
+        "scripts/templates/amc-goal-workbench.html",
+        "scripts/templates/amc-goal-workbench.js",
+        "scripts/amc-goal-engine.mjs",
+        "tests/amc-adaptive-brief.test.mjs",
+        "docs/amc-goal-orchestrator.md",
+        "docs/evidence/amc/adaptive-planner.json"
+      ],
+      "nextAction": "ローカルの可変計画・追加指示・旧Goal保持・見直し導線を検証済み。対象136試験、実Codexの3→2作業再計画、独立検収、実装SHA 083f00f8の全体verify／CodeQL等8 checks成功。PR #95へ保存。次は具体的なGoalを担当Botへ渡し実装・独立検収・Git成果を照合する。公開Sky/Zema接続・main統合・無人常駐は別受入。"
     }
   ],
   "phaseGates": [
@@ -5941,5 +6044,233 @@
       "deployedAt": "2026-10-09T21:13:17.969665+00:00"
     },
     "publicationEvidence": "docs/evidence/spider-sky-publication.json"
+  },
+  "repositoryProgressIntegration": {
+    "recordedOn": "2026-10-06",
+    "baseMainSha": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+    "taskIds": [
+      "LCH06",
+      "SKY19"
+    ],
+    "primarySquad": "O7",
+    "status": "source_ci_verified_main_and_deployment_pending",
+    "scope": "Recover the previously local eSIM access implementation onto current main; retain the canonical 32-squad progress and release gates.",
+    "remaining": [
+      "OWNER main merge",
+      "Separate deployment and authenticated readback",
+      "Provider/device/production acceptance",
+      "Review remaining original-checkout payment/composition changes"
+    ],
+    "evidence": "docs/evidence/esim-main-integration.json",
+    "localValidation": "19 focused tests and 1369 Node tests passed; full verify stopped at missing Astro and ENOSPC during nested dependency installation.",
+    "previousNextAction": "SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。",
+    "ciFollowup": "PR85: regenerate DB nextAction; verify three reported source digests and add exact literal provenance; distinguish current source observation from historical stage assessment.",
+    "githubValidation": {
+      "head": "f9c858706601e43ad5da526d94e408fb3daf0c31",
+      "verifyRun": 37505939314,
+      "verifyUrl": "https://github.com/k999ln/rock/actions/runs/37505939314",
+      "conclusion": "success",
+      "checksPassed": 7,
+      "node": {
+        "pass": 1368,
+        "fail": 0,
+        "skip": 1
+      },
+      "workApiAssertions": 1305,
+      "csvAssertions": 385,
+      "coverage": [
+        "typecheck",
+        "lint",
+        "build",
+        "D1 migrations",
+        "Worker API",
+        "project/baseline/design/mission checks"
+      ],
+      "provider": "not_run",
+      "physicalDevice": "not_run",
+      "productionBilling": "not_run"
+    },
+    "pullRequest": "https://github.com/k999ln/rock/pull/85"
+  },
+  "skyOfferCasCandidate": {
+    "requestId": "SKY-S7-OFFER-CAS-20261007-01",
+    "baseMainSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "primaryOwner": "S7/O2",
+    "stage": "isolated_candidate_pending_independent_review",
+    "scope": "Offer save CAS and seller conflict recovery only",
+    "schemaMigration": false,
+    "compatibility": "expectedRevision required: create 0; update the reviewed revision; old clients receive 400 and need reload/update",
+    "evidence": [
+      "lib/sky-commerce-store.ts",
+      "lib/sky-commerce.ts",
+      "components/sky-commerce.tsx",
+      "tests/sky-commerce.test.mjs",
+      "docs/sky-billing.md"
+    ],
+    "validation": {
+      "commerceTests": 45,
+      "marketplaceTests": 14,
+      "uiComponentContractAssertions": 18,
+      "browserRecovery": "not accepted: local listen EPERM; browser environment unavailable",
+      "realStripe": false,
+      "fullVerify": false
+    },
+    "nextAction": "Independent offer-CAS review and browser recovery check; then coordinated API/UI integration. Provider/AMC/adjacent APIs and public gates remain pending.",
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyProviderCasCandidate": {
+    "requestId": "SKY-S7-PROVIDER-CAS-20261007-01",
+    "baseMainSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "primaryOwner": "S7/O2; shared Provider boundary S3/O4",
+    "stage": "isolated_candidate_pending_independent_review",
+    "migration": "0060_sky_provider_revision; legacy rows default1; existing DB not migrated",
+    "compatibility": "GET revision; PUT expectedRevision mandatory; create0/update read revision; old clients400; stale409",
+    "callers": [
+      "SkyConnectionCenter",
+      "SkyChatWorkspace routing autosave via shared ProviderDraft"
+    ],
+    "validation": {
+      "targetedTests": 25,
+      "actualD1Checks": 52,
+      "browser": "actual connection center/shared routing hook + real handler/D1; fixture dialog/auth only",
+      "realProvider": false,
+      "fullVerify": false
+    },
+    "nextAction": "Independent review, coordinated schema/API/UI integration and same-candidate S0 acceptance; AMC/adjacent API/real PC and public gates pending",
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyZemaProviderUiCandidate": {
+    "requestId": "SKY-S7-ZEMA-PROVIDER-UI-20261007-01",
+    "base": "frozen030",
+    "primaryOwner": "S7/O2 ROCK",
+    "stage": "isolated_candidate_pending_independent_review",
+    "knownAuthLossFix": "Unmount private workspace; clear tab chat/handoff; reload owner reads on reauthentication",
+    "validation": {
+      "targetedTests": 11,
+      "actualUi": "SkyChatWorkspace chat/work; synthetic Alice/Bob; real handler/native D1; framework navigation adapter",
+      "typecheck": true,
+      "targetedLint": true,
+      "fullVerify": false,
+      "productionBuildRerun": false,
+      "realProvider": false
+    },
+    "nextAction": "Independent031 review; library inventory and17 adjacent APIs; same candidate S0 and real PC021 separately",
+    "goalRevision": 48,
+    "S7Overall": "pending",
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyZemaProviderStorageRepair": {
+    "requestId": "SKY-S7-ZEMA-PROVIDER-UI-20261007-01",
+    "ledger": "031 repair",
+    "base": "frozen initial031",
+    "stage": "isolated_candidate_pending_independent_review",
+    "scope": "sessionStorage getter/removal failures; verified cleanup barrier; chat/handoff consumer gates and retry UI",
+    "validation": "See isolated repair result; no automatic carryforward of audit/full acceptance",
+    "S7Overall": "pending",
+    "goalRevision": 48,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyBundleInventoryCandidate": {
+    "requestId": "SKY-S10-BUNDLE-INVENTORY-20261007-01",
+    "ledger": "033",
+    "taskId": "S10-01",
+    "base": "032 accepted limited local production runtime candidate",
+    "stage": "isolated_candidate_pending_independent_review",
+    "scope": "Physical module to installed package/version/license and exact lock entry; generated chunk source evidence",
+    "unresolvedBefore": {
+      "client": 8,
+      "rsc": 4,
+      "ssr": 8
+    },
+    "unresolvedAfter": {
+      "client": 0,
+      "rsc": 0,
+      "ssr": 0
+    },
+    "legalClearance": false,
+    "wholeS10Accepted": false,
+    "goalRevision": 48,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyLocalIntegration034": {
+    "recordedAt": "2026-10-07",
+    "ledger": "034",
+    "stage": "local_candidate_pending_independent_review",
+    "baseMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "scope": "Accepted cumulative027/030/031/032/033 product changes; both main/product document histories retained; build isolation excluded from product",
+    "mainIntegrated": false,
+    "published": false,
+    "fullVerifyPassed": false,
+    "runtimeAcceptanceInherited": false,
+    "nextAction": "Read034 same-candidate build, patch-apply and protection evidence, then independent review; all parent/public gates remain pending",
+    "validation": {
+      "targetTestsPassed": 31,
+      "typecheck": "passed",
+      "targetLint": "0 warnings / 0 errors",
+      "projectMissionSchemaDatabaseBaselineDesign": "passed",
+      "buildEvidence": "Recorded separately in034 result after isolated build; no inherited pass",
+      "fullVerify": "held_classified_scope",
+      "newRuntimeUiD1Acceptance": false
+    }
+  },
+  "skyZemaMainIntegration": {
+    "status": "prepared_for_main",
+    "baseMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "evidence": "docs/evidence/sky-zema-main-integration.json",
+    "localReview": "034/035 bounded acceptance",
+    "sameCommitCi": "pending",
+    "publicLaunchAccepted": false
+  },
+  "workspaceOrganization": {
+    "taskId": "ORG04",
+    "status": "verified_on_work_branch",
+    "primarySquad": "H1",
+    "entry": "workspaces/README.md",
+    "ideas": "workspaces/IDEAS.md",
+    "workspaces": 32,
+    "branch": "codex/feature-workspaces",
+    "evidence": "docs/evidence/workspace-organization.json",
+    "mainIntegrated": false,
+    "pullRequest": "https://github.com/k999ln/rock/pull/95",
+    "verifiedImplementationSha": "cbebc979e634d0af5f6eb60c475d178f3b98b996",
+    "checkRunsPassed": 8,
+    "githubSaved": true
+  },
+  "projectBots": {
+    "taskId": "AMC03",
+    "scope": "developer_profiles_and_on_demand_cli",
+    "status": "done",
+    "gitHubPullRequest": "https://github.com/k999ln/rock/pull/95",
+    "mainIntegrated": false,
+    "liveBotTaskAccepted": false,
+    "evidence": "docs/evidence/project-bots.json",
+    "verifiedImplementationSha": "4a8861b4beb11437d4bc08b47455e81f99cd12e1",
+    "completionScope": "10 developer profiles and tested on-demand launch interface; not live task or always-on acceptance"
+  },
+  "projectBotAmc": {
+    "taskId": "AMC04",
+    "status": "done",
+    "scope": "git_context_and_native_bot_amc_workflow",
+    "mainIntegrated": false,
+    "liveDevelopmentTaskAccepted": false,
+    "evidence": "docs/evidence/project-bot-amc.json",
+    "verifiedImplementationSha": "59d7d6dc54a15d182e59796f499e008bf7a0b1f4",
+    "completionScope": "Git collection, canonical-task AMC draft creation, and native Bot handoff; live task execution is separate acceptance"
+  },
+  "projectBotGoalInput": {
+    "taskId": "AMC05",
+    "status": "done",
+    "mainIntegrated": false,
+    "evidence": "docs/evidence/project-bot-goal-input.json",
+    "inputPreserved": true,
+    "liveDevelopmentTaskAccepted": false,
+    "verifiedImplementationSha": "bfecf01b63651a7fea4b5279f335136d395538dd",
+    "githubCI": "success",
+    "independentReadOnlyReview": "pass"
   }
 }

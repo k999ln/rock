@@ -26,10 +26,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(() => validateBaseline(billingGateOpened), /SIM\/eSIM offer/);
   const missing = structuredClone(source);
   missing.requirements.pop();
-  assert.throws(() => validateBaseline(missing), /RQ01〜RQ49/);
+  assert.throws(() => validateBaseline(missing), /RQ01〜RQ50/);
   const missingOperationalBase = structuredClone(source);
   missingOperationalBase.requirements.splice(11, 1);
-  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ49/);
+  assert.throws(() => validateBaseline(missingOperationalBase), /RQ01〜RQ50/);
   const missingWholeDesign = structuredClone(source);
   missingWholeDesign.designDocumentation.tools = null;
   assert.throws(
@@ -258,6 +258,12 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const fakeConnector = structuredClone(source);
   fakeConnector.skyNetworkEconomy.multiMcpConnector.skyUiConnected = false;
   assert.throws(() => validateBaseline(fakeConnector), /複数MCP Connector/);
+  const unsafeComputeGrid = structuredClone(source);
+  unsafeComputeGrid.skyComputeGrid.arbitraryCodeAllowed = true;
+  assert.throws(() => validateBaseline(unsafeComputeGrid), /Sky Compute Grid/);
+  const liveComputeSettlement = structuredClone(source);
+  liveComputeSettlement.skyComputeGrid.livePayoutEnabled = true;
+  assert.throws(() => validateBaseline(liveComputeSettlement), /Sky Compute Grid/);
   const escaped = structuredClone(source);
   escaped.authority = '../external.md';
   assert.throws(() => validateBaseline(escaped), /repository外/);

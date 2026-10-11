@@ -5,6 +5,14 @@
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
 
+## Sky Compute Grid — 固定lotの分散計算供給
+
+2026-10-10、利用者の明示指示により、未使用Androidの余剰計算を需要へmatchingする`GRID01`を追加した。これはcatalogの任意Toolではなく、Skyの供給・実行・検証・精算を結ぶplatform serviceである。初期SKUはpublic/synthetic text embedding、Android arm64、充電・idle・unmetered・thermal none/light、固定runtime/model/tokenizer、verified lot単価に限定する。任意code、個人情報、秘密、exact location／owner identity公開、無断cloud fallback、未検証Wallet収益を禁止する。
+
+2026-10-11: leaseの完全な条件と時刻をIDへ固定し、order・入力・予算との照合と、同じleaseのverified usageだけを精算候補へ渡す検査を追加した。receipt IDを変えた再送でも精算keyは変わらない。永続台帳の重複拒否・実精算は未実装。
+
+host fixtureは`CapacityOffer → ComputeOrder → ComputeLease → ComputeReceipt → verified usage → service-credit hold`を再現する。`/sky/compute-grid`と`GET /api/sky/compute-grid/demo`は合成fixtureの可視化で、実端末dispatch、実需要、production storage、実課金・払出しではない。責任、入出力、状態、保存、retry、compatibility、安全、受入、未決事項の11項目は[専用設計](sky-compute-grid.md)を正本とする。
+
 ## SPIDER — Skyのセキュリティ検査
 
 2026-10-09、利用者の「skyでしたい」を受けて `rockstar-spider` を追加。既存SYS15 / H1の割当とROCK責任を継続する。`ready`は以下のブラウザ内機能の実装範囲で、公開配備・全端末保護の受入ではない。
@@ -117,6 +125,22 @@ Skyはapp storeだけではなく、発見から接続、実行場所、停止�
 - 承認: 価格変更時は購入を止め、新価格を表示して再操作を求める。支払いの確定はStripe画面。返金は販売者本人が注文・残額を確認するdialogで明示する。LLM・閲覧・戻りURLだけで金銭処理や購入完了を成立させない。外部MCPの接続許可と購入は別である。
 - 実装: `components/sky-commerce.tsx`と同CSS、`components/sky-marketplace.tsx`、`app/api/sky/commerce/[action]/route.ts`、`lib/sky-commerce.ts`、`lib/sky-commerce-store.ts`、`lib/sky-stripe.ts`。共有手数料は`lib/sky-marketplace-policy.ts`。migrationは`drizzle/0018_sky_commerce.sql`。
 - 合格条件・未完了の決め方: SQLite/API・Provider代替fixtureで改ざん/重複/失効/部分返金/所有者分離を検証する。実Stripe sandboxで購入→通知→権利→返金、公開Webhook到達、認証gateway、提供者認可、実売上配分と銀行払出しは別の受入。現在はStripe資格情報未設定、Provider sandbox・本番配備は未実施で、BIL02を完了扱いにしない。設定手順と運営確認は[決済設計](sky-billing.md)を正本にする。
+
+### 保存領域が消去できない場合（031修正）
+
+既知の認証失効時は、Storage取得自体の例外も捕捉する。チャットと未消費handoffの両キーについて、個別の削除試行と不存在のreadbackが成功するまで私的データを隔離する。一方の失敗でも他方の消去を試みる。隔離中は読込が空を返し、保存・handoff追加を拒否し、本人確認がreadyでも仕事と会話の画面を生成しない。保存領域を利用可能にして「保存領域の消去を再試行」を選ぶと両キーを再確認し、新しい状態から再開する。復旧だけで旧内容を自動復元しない。
+
+メモリの隔離状態に加え、同一タブのwindow.nameへ非機密の接頭フラグと元のnameを保持する。これは本人識別子ではなく、sessionStorage getterが例外でも同一originのreloadをまたぐ安全停止用。両キー消去確認後だけ元のnameへ戻す。異なるoriginや新規タブ、401なしの利用者変更、全ブラウザ状態APIが拒否される環境の永続性は別受入。通信checking/unavailableのみの場合には隔離を開始しない。
+
+合格条件はgetter例外で画面が落ちないこと、片方/両方の削除失敗後も旧会話とhandoffを復元しないこと、明示再試行後だけ新しい本人用画面へ入れること。実認証/Provider/仕事実行の成功とは別とする。
+
+### Zemaの認証失効と会話設定（候補031 / 2026-10-07）
+
+Provider設定の自動保存は共有revision契約を使う。409では入力を維持し、最新版を取得・表示・明示確認した後に別の保存操作を求める。設定readyを認証・OAuth・接続成功に変換しない。会話と仕事を切り替えても設定の保存状態は共通で、閉じた画面の遅延応答は新しい画面を更新しない。
+
+既知の401では会話・仕事・履歴を含む私的画面を破棄し、このタブの会話stashとSkyからの未消費依頼を消去する。本人確認がreadyになるまで私的画面を生成しない。再認証後は本人別の保存済み仕事を再取得する。一時的な接続確認・通信失敗では入力を保持した画面を隠して復旧を待つ。サーバーの仕事を削除・実行する処理ではない。
+
+合格範囲は実Zema UIと合成利用者・専用native D1での保存復帰、入力保持、認証失効後の分離。認証失効を経ない利用者変更、実OAuth、実LLM、実機、本番配備は別受入。利用者別の永続会話保存を新設する変更ではない。
 
 ### 商品詳細から仕事画面への引継ぎ（2026-10-05）
 
@@ -309,6 +333,16 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 引用符・タグ・event属性・CSS記号を含む合成IDでも文字として表示し、32部隊の選択、`aria-pressed`、保存済み選択の復元とフォーカスを維持する。変更する保存は従来の表示用選択状態だけで、Goal・project台帳の変更、外部通信、実行権限を追加しない。描画の失敗はGoal完了に換算せず、正本と対応版テンプレートからsnapshotを再生成する。既存の書き出し済みHTMLは自動更新されない。
 
 [検証記録](evidence/spider-mission-squad-dom.json)は部隊表示に限定する。mainで既に確認したAMC export契約や生成資料の不整合、他のCodeQL／依存／秘密候補は別途修正し、今回の表示試験を全体受入へ転用しない。
+
+### 担当Gitから可変計画を作るローカルAMC（AMC06）
+
+目的は依頼ごとの具体的な作業・担当・依存を組み立てること。`npm run amc:workbench` の127.0.0.1専用画面で、担当Bot・依頼・任意の意図を選び、Codexに共有する入力とGit資料を確認して計画を生成する。追加指示で候補を見直し、既存Goalの成果や履歴を保持する。ROCKはread-only planner adapter、proposal検査、既存engineでのdraft変換、保存と停止を実装する。Codex／GitHubは既存認証を使い、新しいAPI key・model契約は作らない。
+
+入力は依頼8,000字、意図2,000字、累積追加指示8,000字まで、既存Goalは要約だけ。生成候補は可変task・担当・対象path・依存・成果物・合格条件・質問・仮定を持つ。Git基準と再計画元をadaptiveBriefへ保存し、原本のGoal ID／revision／承認／成果を別候補へ移したことにしない。モデルの承認・実行・検収記録は受付けず、必ずdraftから既存の計画承認と状態遷移を使う。
+
+画面は同一origin/session token/Host検証、ループバック限定。offline exportのconnect-src noneは維持する。送信前の明示操作、1件ずつの有界実行、停止時の子process終了、失敗時の原文保持と手動再試行を備える。生成物はGit管理外のローカル作業フォルダ、Goalの保存・復元は既存機構。raw入力を公開Gitへ保存しない。許可が必要な外部作用は既存holdを維持し、計画だけで実行権限を付与しない。
+
+合格条件は可変件数・依存・参照・hold、不正応答、同意前未起動、接続元／token拒否、停止、旧Goal不変、追加指示と遅延応答、実モデルの具体的計画。未決事項はモデルが質問として返し、本人の回答を次の候補へ取り込む。[入力・状態・保存・復旧・検証](amc-goal-orchestrator.md#ローカルamcで依頼に合わせて計画するamc06)。公開Sky/ZemaのaiPlannerConnected=falseやWeb実行境界はこの開発入口の追加で変更しない。
 
 ## 5. CSV整形・検査・納品
 
@@ -966,3 +1000,19 @@ Skyの詳細表示は同じcatalogの料金・環境・接続状態を読むだ�
 | `producthunt-discovery` | Product Hunt公式API向けの候補検索処理。 | API利用条件と商用許諾を確認する |
 
 これらは候補表示のみで、Skyからの実行、外部service接続、公開、通知送信は未接続。入力schema、版、owner、許可先、実費、本人同意、保存・削除、停止と再試行をToolごとに決め、実行結果のreceiptを別に検証する。SNS投稿、販売、応募、請求、外部連絡は内容を固定した個別承認を必須とする。失敗や結果不明を成功に変えず、providerと本人の記録を照合する。採用時にこの表の候補を各Tool詳細設計へ展開し、端末・PC・Cloudでの試験、rollbackと権限失効を受け入れる。
+
+## eSIM導入確認後のクラウド利用権（2026-10-06統合）
+
+既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
+
+## Zemaの会話復旧と引き継ぎ（2026-10-11）
+
+同じToolの古いチャットURLを開いても、別thread IDの新しいSky引き継ぎを消費しない。Toolとthread IDの両方が一致してから一度だけ消費する。会話一覧のTTL整理で保存容量不足・書込拒否が起きても、有効な会話の原本を削除せず、有効な分だけ表示して次回に整理を再試行する。期限切れ・不正な会話は復元しない。認証失効時の私有領域隔離と確認済み消去は維持する。対象は同じタブのsessionStorageであり、別アカウントの証拠なし復旧やサーバー保存を意味しない。
+
+## Provider設定の同時保存（S7-01、候補030）
+
+`GET /api/sky/provider-connections` は各設定の正整数 `revision` を返す。PUTは `expectedRevision` が必須。未作成は0、更新は読み取った版を送る。欠落・文字列・小数・負数は400、別画面で更新済み・存在しない設定への更新は409となり書き込まない。旧クライアントには画面更新が必要。API/UIと `0062_sky_provider_revision` を同じ候補として反映する。移行は既存行を版1にし、設定・状態・secret_ref・時刻を保つ。本候補の移行試験は新しい合成DBのみで、実DBへは未適用。
+
+Skyの接続管理とZemaのルーティング設定は、入力と基準版を一緒に保持する。再取得で編集中の基準版を自動更新しない。409では入力を残し、「最新設定を取得」で内容を表示、「最新設定を確認し、入力を残す」を押してから、別操作で保存する。Zemaの通常の自動保存は維持し、競合・保存失敗後は明示再保存に切り替える。取得失敗時は再取得まで保存を止め、遅い応答・Provider切替・二重保存を分離する。401は保護対象の入力を消す。設定保存成功はOAuth・実接続・grant発行の成功を意味しない。
+
+保存SQLはowner/provider/revisionで比較と更新を同時に行い、RETURNINGでその書込結果を返す。秘密入力拒否、routing既定値、LiveKit検証、購入/料金/権利契約は維持。独立検収と統合後の同一候補受入は残り、S7全体・公開Gate・Goal r48は未完了のまま。

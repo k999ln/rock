@@ -1,16 +1,32 @@
 # avokado Mission Control
 
+2026-10-06照合: GitHub main `e12d880c`では378登録task。以下の版履歴にある376件はその時点の記録であり、現在の実績件数ではない。段階は各部隊の対象範囲で読み、実装・実機・本番を区別する。今回のeSIM統合と残作業は[進行記録](workstreams/10-git-ci-operations.md#全体進行と未統合差分の回収2026-10-06)を参照。
+
 版: 3.0 / 2026-09-27
 
 AMCは3製品と共有OSを5師団32部隊へ分け、責任、成果、作業、証拠を管理する。部隊・担当・実行計画の正本は[data/mission-control.json](../data/mission-control.json)、task状態の正本は[data/project-status.json](../data/project-status.json)。
 
-## 今回の精査と対象
+## 2026-10-06に確認した現在地
+
+| 系統 | 確認できた範囲 | 未完了・次の作業 |
+| --- | --- | --- |
+| 共通OS / Sky / Zema | mainのWeb実装と同一SHA CI、既存の権限・仕事・台帳契約 | 同一候補の本番readbackと端末ごとの受入 |
+| eSIM入口 | PR #85の期限付きcloud access実装。source f9c85870で全7チェック・仕事API1305項目成功 | main統合・配備・契約済みProvider/端末gateway。実eSIMを配布済みとは扱わない |
+| Pixel 10 GL066 | 過去APK実機受入と現行v4 APK buildを別々に記録 | 専用Linuxで全OS build、正式署名、flash、復旧。現行v4実機未受入 |
+| QEMU | 独立したDeveloper Preview系列に起動・保存・復旧の証拠 | 現行の同一候補と公開releaseの個別gate |
+| avocadoMini / Pro | Mini基本設計、Pro要件整理。共通Game基盤は別記録 | 専用hardware統合・製造・実機試験 |
+| 公開サイト | avocadomini.siはversion 6、OS Siteはversion 44を照合 | GitHub最新mainやPR #85と同じsourceの配備ではない。今回の公開操作なし |
+| 共通決済 / 仕事composition | 元作業木に未保存差分あり | 最新mainの契約・migration・試験へ照合して個別統合 |
+
+この表は確認範囲の要約であり、部隊の過去評価を一括更新しない。進捗画面は保存時点の記録で、自動実行・自動同期はしない。ソースの検証結果は[同一SHAの証拠](evidence/esim-main-integration.json)、残作業の正本は既存taskPlansとphaseGates。
+
+## 2026-09-27の精査と対象（履歴）
 
 IDの頭文字だけで担当を推測する方式を廃止し、全taskに一つの主担当を明記した。共通Game SDKをPro固有の完了、旧Mini profileをR5の完了、資料の保存をrocketstarの実装完了として数えない。
 
 32部隊の「次の1タスク」にある入力・担当・成果物・全体合格条件を保ったまま、各6件、合計192件の子作業へ分解した。各子には個別の成果物section、手順、確認可能な合格条件、親の前提と必要な兄弟依存、計画上の負荷区分、実行境界を付ける。すべて未着手・未検証で登録し、既存183 taskの状態と証拠は変更していない。担当者と期限は未割当・未設定を明示し、根拠なく確定しない。
 
-現在は376登録レコードで、内訳は全体受入を管理する親32件、子192件、独立152件。実行単位の集計は親を除く344件とし、親子を二重加算しない。既存183件＋子192件に加え、H1の独立task AMC02を「AMC Goal Orchestratorのローカル計画compiler・CLI・進捗UI」の進行中として登録した。AMC02は計画exportと進捗追跡の実装であり、live AI runner、サーバー契約、遠隔の自動実行を含まない。H1の既存nextTaskはAMC01のまま保持する。
+当時は376登録レコードで、内訳は全体受入を管理する親32件、子192件、独立152件。実行単位の集計は親を除く344件とし、親子を二重加算しない。既存183件＋子192件に加え、H1の独立task AMC02を「AMC Goal Orchestratorのローカル計画compiler・CLI・進捗UI」の進行中として登録した。AMC02は計画exportと進捗追跡の実装であり、live AI runner、サーバー契約、遠隔の自動実行を含まない。H1の既存nextTaskはAMC01のまま保持する。
 
 対象はローカル基点SHA <code>4e74e2f5f250b87c792ced6c03c5298c882cbd70</code>と作業中変更。確認したremote mainは<code>5f3a3694474180415d08cd814b6aad864694d10f</code>で1 commit先だが、差分は公開画像とWEB19の証拠追加で、task状態・製品要求の変更はない。remote差分は未merge。この精査は静的照合であり、既存の外部Provider・実機・本番試験の再実行ではない。
 

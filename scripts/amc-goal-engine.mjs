@@ -464,6 +464,44 @@ export function validateGoal(goal) {
       'Invalid request brief',
     );
   }
+  if (goal.adaptiveBrief !== undefined) {
+    const brief = goal.adaptiveBrief;
+    const bounded = (value, max, empty = false) =>
+      typeof value === 'string' && (empty || Boolean(value.trim())) && value.length <= max;
+    const keys = (value, allowed) => object(value) &&
+      Object.keys(value).length === allowed.length &&
+      allowed.every((key) => Object.hasOwn(value, key));
+    const notes = (value) => Array.isArray(value) && value.length <= 24 &&
+      value.every((item) => bounded(item, 2000));
+    const sha = (value) => typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
+    const context = brief?.context;
+    const previous = brief?.previousGoal;
+    const sources = brief?.taskSources;
+    const taskIds = new Set(Array.isArray(goal.tasks) ? goal.tasks.map((task) => task?.id) : []);
+    check(
+      keys(brief, ['schema', 'request', 'intent', 'feedback', 'planningMethod',
+        'proposalSummary', 'questions', 'assumptions', 'botId', 'context', 'previousGoal', 'taskSources']) &&
+      brief.schema === 'amc-adaptive-brief/1' &&
+      brief.planningMethod === 'codex_read_only' &&
+      bounded(brief.request, 8000) && brief.request === goal.instruction &&
+      bounded(brief.intent, 2000) && bounded(brief.feedback, 8000, true) &&
+      bounded(brief.proposalSummary, 8000) && notes(brief.questions) && notes(brief.assumptions) &&
+      typeof brief.botId === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(brief.botId) &&
+      keys(context, ['mainSha', 'localHead', 'collectedAt']) &&
+      sha(context.mainSha) && sha(context.localHead) && bounded(context.collectedAt, 100) &&
+      (previous === null || (keys(previous, ['id', 'revision']) &&
+        bounded(previous.id, 100) && previous.id !== goal.id &&
+        Number.isSafeInteger(previous.revision) && previous.revision >= 0)) &&
+      Array.isArray(sources) && sources.length === taskIds.size && sources.length <= 24 &&
+      new Set(sources.map((item) => item?.taskId)).size === sources.length &&
+      sources.every((item) => keys(item, ['taskId', 'sourceTaskIds']) &&
+        taskIds.has(item.taskId) && Array.isArray(item.sourceTaskIds) &&
+        item.sourceTaskIds.length <= 24 && new Set(item.sourceTaskIds).size === item.sourceTaskIds.length &&
+        item.sourceTaskIds.every((id) => bounded(id, 100))) &&
+      goal.requestBrief === undefined && goal.skyBrief === undefined,
+      'Invalid adaptive planning brief',
+    );
+  }
   check(GOAL_STATES.includes(goal.state), 'Unknown goal state');
   if (goal.skyBrief !== undefined) {
     const brief = goal.skyBrief;
@@ -1402,6 +1440,21 @@ export function renderGoalPrompt(goal, { squadId } = {}) {
           '準備方式: ソフトウェアのローカル試作向け共通テンプレート。AIの意味分解・最終見積りではない。実装前に具体的な変更pathと試験条件を確認し、対象ファイルの排他管理を設定する。報告書pathのlockだけでコードの排他管理を代用しない。',
         ]
       : []),
+    ...(goal.adaptiveBrief ? [
+      '準備方式: Codexがrepositoryを読み取って作成した可変の計画提案。計画の生成は任務実行・承認・検収の証拠ではない。',
+      `元の依頼: ${goal.adaptiveBrief.request}`,
+      `意図（計画提案）: ${goal.adaptiveBrief.intent}`,
+      `計画の理由: ${goal.adaptiveBrief.proposalSummary}`,
+      `追加指示: ${goal.adaptiveBrief.feedback || 'なし'}`,
+      `Git調査基準: main ${goal.adaptiveBrief.context.mainSha} / local ${goal.adaptiveBrief.context.localHead} / ${goal.adaptiveBrief.context.collectedAt}`,
+      `仮定: ${goal.adaptiveBrief.assumptions.join(' / ') || 'なし'}`,
+      `確認事項: ${goal.adaptiveBrief.questions.join(' / ') || 'なし'}`,
+      ...(goal.adaptiveBrief.previousGoal ? [
+        `再計画元: ${goal.adaptiveBrief.previousGoal.id} / revision ${goal.adaptiveBrief.previousGoal.revision}。別の計画候補として保存し、元の実行・成果・承認・検収は引き継いだことにしない。`,
+      ] : []),
+      ...goal.adaptiveBrief.taskSources.map((item) =>
+        `既存task参照 ${item.taskId}: ${item.sourceTaskIds.join(', ') || '新規提案'}（今回の受入ではない）`),
+    ] : []),
     `計画境界: ${goal.scopeWarning}`,
     `計画承認: ${goal.reviewRequired ? '未承認。網羅性・不足要求・全体合格条件を確認し、ownerのapprove_plan前に実行しない。' : goal.approval.coverageStatement}`,
     `並列枠の意味: ${goal.parallelismScope}`,

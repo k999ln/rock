@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.5",
-  "updatedAt": "2026-10-09",
+  "version": "1.6",
+  "updatedAt": "2026-10-10",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/avocado-mini-r5/README.md",
@@ -186,8 +186,18 @@
         "docs/sky.md",
         "docs/chat-mcp-control-room-20260913.md",
         "docs/sky-tool-sdk.md",
+        "docs/sky-compute-grid.md",
         "docs/amc-goal-orchestrator.md",
-        "docs/workstreams/05-web-pwa-sites.md"
+        "docs/workstreams/05-web-pwa-sites.md",
+        "docs/sim-led-product-architecture.md"
+      ],
+      "interfaceImplementation": [
+        "lib/sky-compute-grid.ts",
+        "tests/sky-compute-grid.test.mjs",
+        "lib/sky-zema-handoff.ts",
+        "lib/zema-chat-session.ts",
+        "tests/sky-zema-handoff.test.mjs",
+        "tests/zema-chat-session.test.mjs"
       ]
     },
     {
@@ -326,6 +336,18 @@
         "design": "docs/sky-tools-complete-design.md",
         "scope": "local_owner_managed_workspace_identity_checked_descriptor_read",
         "authority": "does_not_add_remote_auth_or_worker_acceptance"
+      },
+      "localAdaptivePlanner": {
+        "taskId": "AMC06",
+        "scope": "explicit_loopback_developer_workbench_only_not_hosted_Sky_Zema",
+        "source": "scripts/amc-planner.mjs",
+        "design": "docs/sky-tools-complete-design.md",
+        "state": "implemented_local_planning_verified",
+        "model": "existing_Codex_auth_and_config_read_only",
+        "result": "unapproved_variable_task_draft_with_Git_provenance",
+        "feedback": "separate_candidate_preserving_previous_Goal",
+        "executionAuthority": "none_from_planner_output",
+        "evidence": "docs/evidence/amc/adaptive-planner.json"
       }
     },
     {
@@ -530,5 +552,12 @@
       "runtimeImported": false,
       "r5RequirementsChanged": false
     }
-  ]
+  ],
+  "zemaProviderSessionAcceptance": {
+    "document": "docs/sky-tools-complete-design.md",
+    "candidate": "031",
+    "scope": "Provider autosave/conflict and known authentication-loss session boundary",
+    "acceptance": "synthetic actual UI/native D1; real auth/provider and public gates pending",
+    "storageRepair": "031修正: getter/remove failure quarantine, verified both-key cleanup, explicit retry and same-origin tab reload"
+  }
 }

@@ -81,6 +81,7 @@ export async function POST(request: Request) {
       user,
       'zema',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) {
       if (request.body && !request.bodyUsed && !request.body.locked)
         void request.body.cancel().catch(() => {});

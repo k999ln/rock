@@ -289,14 +289,22 @@
     {
       "candidateSha256": "201bf419d4905b964931f84e207b3d66e3dc21d27d9f65a65321fd79c6fc4101",
       "classification": "browser-storage-name",
-      "evidence": "lib/sky-zema-handoff.ts: public localStorage identifier",
+      "evidence": "Public browser sessionStorage identifier. Moved unchanged from lib/sky-zema-handoff.ts to lib/zema-private-storage.ts:2; tests/zema-chat-session.test.mjs verifies removal of that same public identifier. No credential, account ID, or private message value.",
       "source": {
         "commit": "e5306b5d0496f40f434d4a264546ec56180d7fd7",
         "path": "lib/sky-zema-handoff.ts",
         "line": 3,
         "field": []
       },
-      "exactPathCount": 1
+      "exactPathCount": 3,
+      "additionalPathReview": {
+        "commit": "fa4cab60e10292309c5dc8509ab443c5aac70ad9",
+        "paths": [
+          "lib/zema-private-storage.ts",
+          "tests/zema-chat-session.test.mjs"
+        ],
+        "reason": "Two exact new source/test locations for the already reviewed public storage identifier; full value/path anchors retained."
+      }
     },
     {
       "candidateSha256": "20add98a81c6b16b5d7d110e4b024b2524f3e498d99fd12914fd3ba7c4cad857",
@@ -2297,6 +2305,56 @@
         ]
       },
       "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "b14ac262a42934982764bf5028f2e8aa56f6c3e21902dff09cb69a7209fb0b94",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 recomputed from repository source bytes: lib/esim-cloud-access.ts",
+      "source": {
+        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+        "path": "docs/evidence/esim-main-integration.json",
+        "line": 37,
+        "field": [
+          "/sourceHashes/lib/esim-cloud-access.ts"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "c032871f0530db5014e56d8fc5d4b249c0949abbde2eb202fdc9383b260cca56",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 recomputed from repository source bytes: tests/esim-cloud-access.test.mjs",
+      "source": {
+        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+        "path": "docs/evidence/esim-main-integration.json",
+        "line": 41,
+        "field": [
+          "/sourceHashes/tests/esim-cloud-access.test.mjs"
+        ]
+      },
+      "exactPathCount": 1
+    },
+    {
+      "candidateSha256": "fd8d4da4650880b8e72f266b8036b2647bf7b258e3cd19d92a487cf38b4b8d60",
+      "classification": "public-artifact-digest",
+      "evidence": "SHA-256 recomputed from repository source bytes: drizzle/0060_esim_cloud_access_keys.sql",
+      "source": {
+        "commit": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+        "path": "docs/evidence/esim-main-integration.json",
+        "line": 40,
+        "field": [
+          "/sourceHashes/drizzle/0060_esim_cloud_access_keys.sql"
+        ]
+      },
+      "exactPathCount": 1
+    }
+  ],
+  "supplementalReviews": [
+    {
+      "head": "f9f34576cacdca51258b9ffb79f1a07811fe72f5",
+      "recordedOn": "2026-10-06",
+      "addedDistinctValues": 3,
+      "basis": "Recomputed source SHA-256 values; exact path and exact value only."
     }
   ]
 }

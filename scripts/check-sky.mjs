@@ -293,7 +293,7 @@ for (const marker of [
   );
 
 for (const marker of [
-  'sessionStorage',
+  'openZemaPrivateStorage(providedStorage)',
   'SKY_ZEMA_HANDOFF_TTL_MS',
   'removeItem(SKY_ZEMA_HANDOFF_KEY)',
   'MAX_REQUEST_LENGTH',
@@ -302,6 +302,11 @@ for (const marker of [
     skyZemaHandoff.includes(marker),
     `SkyからZemaへの一回引き継ぎに「${marker}」がありません`,
   );
+const privateStorage = read('lib/zema-private-storage.ts');
+for (const marker of ['window.sessionStorage', 'zemaPrivateStorageBlocked()', 'target.removeItem(key)', 'target.getItem(key) !== null'])
+  requireValue(privateStorage.includes(marker), `Zemaの共有保存・消去確認に「${marker}」がありません`);
+for (const file of ['lib/sky-zema-handoff.ts', 'lib/zema-chat-session.ts'])
+  requireValue(read(file).includes("from './zema-private-storage.ts'"), `${file}: 共有保存境界を利用してください`);
 for (const marker of [
   '.sky-chat-simple',
   '.sky-chat-messages',
