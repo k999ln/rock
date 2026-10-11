@@ -168,14 +168,17 @@ export function rockstarEntitlementStore(db: Database) {
     },
     async hasActiveScope(ownerUserId: string, scope: string, now = Date.now()) {
       if (!allowedScopes.has(scope)) return false;
-      const rows = await db.prepare(`SELECT scopes_json AS scopesJson FROM rockstar_service_entitlements
+      // Authorization must inspect matching grants, independent of UI history pages.
+      const row = await db.prepare(`SELECT 1 AS allowed FROM rockstar_service_entitlements
         WHERE owner_user_id = ? AND status = 'active' AND (expires_at IS NULL OR expires_at > ?)
-        ORDER BY claimed_at DESC LIMIT 100`)
-        .bind(ownerUserId, now).all<{ scopesJson: string }>();
-      return rows.results.some((row) => {
-        try { return (JSON.parse(row.scopesJson) as unknown[]).includes(scope); }
-        catch { return false; }
-      });
+          AND EXISTS (SELECT 1 FROM json_each(
+            CASE WHEN json_valid(scopes_json) THEN
+              CASE WHEN json_type(scopes_json) = 'array' THEN scopes_json ELSE '[]' END
+            ELSE '[]' END
+          ) grant_scope WHERE grant_scope.type = 'text' AND grant_scope.value = ?)
+        LIMIT 1`)
+        .bind(ownerUserId, now, scope).first<{ allowed: number }>();
+      return Boolean(row);
     },
   };
 }
