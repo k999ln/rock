@@ -30,7 +30,7 @@ final class AndroidRockstarDeviceAuthorizationTransport
     private final String origin;
 
     AndroidRockstarDeviceAuthorizationTransport(String configuredOrigin) {
-        this.origin = canonicalOrigin(configuredOrigin);
+        this.origin = RockstarServiceOrigin.canonicalOrigin(configuredOrigin);
     }
 
     @Override public String serviceOrigin() { return origin; }
@@ -83,21 +83,6 @@ final class AndroidRockstarDeviceAuthorizationTransport
             if (responseBytes != null) java.util.Arrays.fill(responseBytes, (byte) 0);
             if (connection != null) connection.disconnect();
         }
-    }
-
-    static String canonicalOrigin(String value) {
-        if (value == null || value.isEmpty()) throw new IllegalArgumentException("ROCKSTAR_SERVICE_ORIGIN_REQUIRED");
-        final URI uri;
-        try { uri = URI.create(value); }
-        catch (IllegalArgumentException invalid) { throw new IllegalArgumentException("ROCKSTAR_SERVICE_ORIGIN_INVALID", invalid); }
-        if (!"https".equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null ||
-                uri.getUserInfo() != null || uri.getQuery() != null || uri.getFragment() != null ||
-                (uri.getPort() != -1 && uri.getPort() != 443) ||
-                (uri.getPath() != null && !uri.getPath().isEmpty() && !"/".equals(uri.getPath())))
-            throw new IllegalArgumentException("ROCKSTAR_SERVICE_ORIGIN_INVALID");
-        int port = uri.getPort();
-        return "https://" + uri.getHost().toLowerCase(java.util.Locale.ROOT) +
-            (port == -1 || port == 443 ? "" : ":" + port);
     }
 
     private static byte[] readBounded(InputStream input, int maximum, long deadlineElapsed) throws IOException {

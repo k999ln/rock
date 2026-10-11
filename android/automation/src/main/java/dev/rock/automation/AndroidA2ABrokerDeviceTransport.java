@@ -26,7 +26,7 @@ final class AndroidA2ABrokerDeviceTransport {
     private final String origin;
 
     AndroidA2ABrokerDeviceTransport(String configuredOrigin) {
-        this.origin = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(configuredOrigin);
+        this.origin = RockstarServiceOrigin.canonicalOrigin(configuredOrigin);
         if (configuredOrigin == null || configuredOrigin.length() > 255 || !origin.equals(configuredOrigin))
             throw new IllegalArgumentException("A2A_BROKER_ORIGIN_INVALID");
     }

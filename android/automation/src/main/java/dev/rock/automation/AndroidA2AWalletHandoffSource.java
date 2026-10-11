@@ -53,7 +53,7 @@ final class AndroidA2AWalletHandoffSource
     AndroidA2AWalletHandoffSource(String configuredOrigin, String authorityId,
             String ownerUserId, String deviceRef, String keyId,
             A2AWalletHandoffRequest.Signer signer) {
-        this.origin = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(configuredOrigin);
+        this.origin = RockstarServiceOrigin.canonicalOrigin(configuredOrigin);
         this.authorityId = safeIdentity(authorityId);
         this.ownerUserId = safeIdentity(ownerUserId);
         this.deviceRef = safeIdentity(deviceRef);

@@ -45,6 +45,12 @@ main `bcd31090`から、4 readerのbyte上限・単調時計期限と6経路のJ
 
 既存157件（Core 121、session／401 16、4 callerの期限20）を変更前後で実行し、共通処理のhost JUnit 10件を加えた167件が合格。追加試験はheader検査の順序、caller固有error、UTF-8破損、期限ちょうどのread／EOF、短いreadとzero read、byte上限とcleanup責任を確認する。SDK 35で7 AIDL／74 Java sourceをcompileした。再現入口は`gradle -p android :core:test :automation:testDebugUnitTest`と既存の`:automation:connectedDebugAndroidTest`。hostの期限試験は時計APIをJVM単調時計へ置換しており、この変更のAPK／API35実行・Pixel／全OS受入は同一候補で別に確認する。
 
+### 2026-10-11 OS10／O6 — 保存層と通信層のorigin検証
+
+`AndroidRockstarDeviceSessionStore`がorigin検証のためだけにAuthorization transportへ依存していたため、URIだけを使う同一関数をpackage-privateの`RockstarServiceOrigin`へ移し、5 classの6呼出しを接続した。Auth／Homeの正規化許容と、Session／Broker／Handoffの完全一致・255文字制限は各callerに保持する。HTTPSのlocalhost／loopback許容、HTTP拒否、既存errorとcauseを変更しない。sessionの暗号化・AAD・保存形式・Keystore操作にも変更はない。
+
+originの6件を加えた173件のhost JUnitが分離前後とも合格し、SDK 35の7 AIDL／75 Java sourceをcompileした。試験は同一originの正規化、URL・credential・path／port拒否、caller固有制約を確認し、通信・鍵取得・実端末操作を行わない。APK／API35・Pixel／全OSの受入段階は前項と同様に分離する。
+
 ### 2026-10-11 OS10／O6 — A2A予約応答喪失後の再確認
 
 主taskは`OS10`（AMC primarySquad `O6`）、責任は`ROCK`。`AI04`の外部作用・crash復旧契約を参照するが、Provider／実支出／実機やAI04全体の受入へ加算しない。Brokerの`confirmCloudA2AWalletReservation`は、確定済み予約の再確認で存在しない`payload_digest`列を読んでいた。予約時に本人承認が`CONSUMED`へ進むため、応答喪失後は同じ予約でも本人確認待ちへ誤って戻っていた。Coreの`A2ARecoveryBinding.isConfirmedHeldReservation`へ実callerの判定を共通化し、正しい`approval_digest`、owner、delegation ID、approval ID、保持額、`HELD`状態が一致する場合だけ既存予約を返す。再承認・二度目の予約・Cloud dispatchは行わない。

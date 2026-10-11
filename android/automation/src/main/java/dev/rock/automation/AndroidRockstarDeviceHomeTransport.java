@@ -41,7 +41,7 @@ final class AndroidRockstarDeviceHomeTransport {
 
     AndroidRockstarDeviceHomeTransport(String configuredOrigin, RejectedSessionHandler rejectedSession,
             ConnectionFactory connections, java.util.function.BooleanSupplier mainThread) {
-        origin = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(configuredOrigin);
+        origin = RockstarServiceOrigin.canonicalOrigin(configuredOrigin);
         this.rejectedSession = java.util.Objects.requireNonNull(rejectedSession);
         this.connections = java.util.Objects.requireNonNull(connections);
         this.mainThread = java.util.Objects.requireNonNull(mainThread);
