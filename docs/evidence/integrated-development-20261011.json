@@ -1386,7 +1386,7 @@
           "relatedUniqueTests": 49,
           "typecheck": "passed",
           "productLint": "passed",
-          "integratedBrowser": "Owner retry and explicit release passed on built be8038be; same-tab navigation loss separately reproduced and under repair.",
+          "integratedBrowser": "Owner retry and explicit release passed on be8038be; navigation defect reproduced there, then repaired and verified on built 9e5488eb.",
           "integratedFullVerification": "pending"
         },
         "integratedBrowser": {
@@ -1578,7 +1578,7 @@
       },
       "workbenchNavigation": {
         "sourceSha": "be8038be3c55fa2602c9acab4a45e296e10e7a25",
-        "status": "repaired_targeted_verification_passed",
+        "status": "repaired_built_browser_verified",
         "task": "R03/O2/ROCK",
         "finding": "After real pre-insert503, following Library and returning to Work removed the pending title and creation ID with no saved row.",
         "repairBoundary": "Reuse existing pending-save navigation hook for pending creation only; keep separate-tab signin and explicit release.",
@@ -1587,8 +1587,60 @@
           "relatedTestsPassed": 6,
           "typecheck": "passed",
           "productLint": "passed",
-          "integratedBrowser": "pending",
+          "integratedBrowser": "passed at 9e5488ebf95d50ef99169799001110b5ef9b81cd",
           "integratedFullVerification": "pending"
+        },
+        "integratedBrowser": {
+          "source": {
+            "sourceSHA": "9e5488ebf95d50ef99169799001110b5ef9b81cd",
+            "serverSha256": "772e6e24cb3413429e683fec1f1ad0d3eaaa5bf57acec948ed26e4c3df8e70d4",
+            "configSha256": "b748c5a5779b70d5c8af9268897a65a0911719b172882e3550edbbf5ca060a57"
+          },
+          "status": "passed",
+          "runtime": "actual root vinext dist/server + dist/client, Miniflare/D1; synthetic owner gateway and fresh local D1",
+          "checks": [
+            {
+              "case": "pending navigation protection",
+              "result": "pass",
+              "procedure": "Create article job; actual D1 BEFORE INSERT abort makes route503. Click product Library then Home links. Both retain /chat?view=work, original title and pending confirmation controls.",
+              "id": "42a4762f-0dc1-49b7-940f-7254a1ebcba4",
+              "title": "画面移動後も同じ仕事を確認",
+              "capture": "outputs/workbench-pending-navigation-protected.jpg"
+            },
+            {
+              "case": "navigation restored after confirmation",
+              "result": "pass",
+              "procedure": "Disable local SQL failure; explicit same-content confirmation POST201 retains original id and scope. Library link now reaches /zema/library. Work link returns to one saved job.",
+              "id": "42a4762f-0dc1-49b7-940f-7254a1ebcba4",
+              "capture": "outputs/workbench-confirmed-after-navigation.jpg"
+            },
+            {
+              "case": "navigation restored after explicit release",
+              "result": "pass",
+              "procedure": "Create second title with precommit503. Click explicit release; title remains editable unchanged and pending panel disappears. Home link reaches /. No second successful write.",
+              "id": "473c7c64-f94f-4697-a57f-43c7235871a4",
+              "titlePreserved": "保留解除後の画面移動確認"
+            }
+          ],
+          "postStatuses": [
+            503,
+            201,
+            503
+          ],
+          "finalD1": {
+            "a": 1,
+            "b": 0
+          },
+          "limitations": [
+            "Only requested navigation follow-up; previously accepted owner switch cases were not repeated.",
+            "Synthetic identity gateway, not real IdP; no Provider, paid execution, external transaction or file chooser."
+          ],
+          "cleanup": "task browser tabs closed; localhost server stopped; no tracked edits",
+          "evidence": [
+            "readback.json",
+            "server.log",
+            "server.mjs"
+          ]
         }
       },
       "skyChatMcpAvailability": {

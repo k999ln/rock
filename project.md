@@ -10,7 +10,7 @@
 
 ## 2026-10-11 — Workbench移動時の消失とSkyチャットの古い一覧を修正（R03 / O2、SKY07 / O4、ROCK）
 
-実build＋D1のWorkbenchで作成前503の後Library移動から戻ると入力と未確認IDが消えることを再現し、既存の未確認保存hookへ接続した。関連6件・型検査・lintが合格し、実buildで追加確認する。Skyチャットはevent／手動一覧と端末token切替の競合を修正。追加component9件、既存13件、実Reactブラウザ8件が合格。大きな追加開発を止め、統合候補の全体verify／実画面／同一SHA CIへ進む。
+実build＋D1のWorkbenchで作成前503の後Library移動から戻ると入力と未確認IDが消えることを再現し、既存の未確認保存hookへ接続した。関連6件・型検査・lintが合格。9e5488ebの実vinext／D1画面でHome／Library遮断、同一ID保存後または明示解除後の移動再開を確認。D1はA1件／B0件、重複なし。Skyチャットはevent／手動一覧と端末token切替の競合を修正。追加component9件、既存13件、実Reactブラウザ8件が合格。大きな追加開発を止め、統合候補の全体verify／実画面／同一SHA CIへ進む。
 
 ## 2026-10-11 — Zemaの作成先とWebの標準起動を修正（R03 / O2、WEB01 / O7、ROCK）
 
