@@ -29,6 +29,16 @@ public final class A2ARecoveryBinding {
      * mutate the reservation when this returns false.
      */
     public static boolean matches(Map<String,String> cloud, Map<String,String> local) {
+        return sameTerms(cloud, local) && local.get("state") != null &&
+            RECOVERABLE_WALLET_STATES.contains(local.get("state"));
+    }
+
+    /** Terminal identity only; PlatformStore must also verify the saved settlement receipt and ledger. */
+    static boolean matchesSettledTerms(Map<String,String> cloud, Map<String,String> local) {
+        return local != null && "SETTLED".equals(local.get("state")) && sameTerms(cloud, local);
+    }
+
+    private static boolean sameTerms(Map<String,String> cloud, Map<String,String> local) {
         if (cloud == null || local == null) return false;
         if (!same(cloud, "owner", local, "owner") ||
                 !same(cloud, "delegationId", local, "delegation_id") ||
@@ -39,8 +49,7 @@ public final class A2ARecoveryBinding {
                 !same(cloud, "agentVersion", local, "agent_version") ||
                 !same(cloud, "currency", local, "currency") ||
                 !same(cloud, "pricingVersion", local, "pricing_version") ||
-                !sameDigest(cloud.get("walletApprovalDigest"), local.get("approval_digest")) ||
-                !RECOVERABLE_WALLET_STATES.contains(local.get("state"))) return false;
+                !sameDigest(cloud.get("walletApprovalDigest"), local.get("approval_digest"))) return false;
         try {
             return Long.parseLong(cloud.get("budgetLimitMinor")) == Long.parseLong(local.get("budget_limit_minor")) &&
                 Long.parseLong(cloud.get("deadlineAt")) == Long.parseLong(local.get("deadline_at")) &&

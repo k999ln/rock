@@ -18,6 +18,48 @@ import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public final class CloudSessionPresentationTest {
+    @Test public void settledReadbackShowsFinalAmountsWithoutExecutionOrReleaseActions() throws Exception {
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        Intent intent = new Intent(instrumentation.getTargetContext(), MainActivity.class)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MainActivity activity = (MainActivity) instrumentation.startActivitySync(intent);
+        try {
+            instrumentation.runOnMainSync(() -> {
+                try {
+                    Method render = MainActivity.class.getDeclaredMethod("renderCloudA2AExecutionState", JSONObject.class);
+                    render.setAccessible(true);
+                    render.invoke(activity, new JSONObject().put("state", "wallet_settled")
+                        .put("walletState", "SETTLED").put("settledMinor", 650).put("releasedMinor", 50)
+                        .put("currency", "USD"));
+                    String text = ((TextView) get(activity, "cloudA2aQuoteStatus")).getText().toString();
+                    assertTrue(text.contains("精算明細を照合"));
+                    assertTrue(text.contains("6.50"));
+                    assertTrue(text.contains("0.50"));
+                    assertEquals(View.GONE, ((View) get(activity, "cloudA2aFinalApprovalButton")).getVisibility());
+                    assertEquals(View.GONE, ((View) get(activity, "cloudA2aWalletReleaseButton")).getVisibility());
+                    assertEquals(View.VISIBLE, ((View) get(activity, "cloudA2aExecutionRecoveryButton")).getVisibility());
+
+                    Method actions = MainActivity.class.getDeclaredMethod("renderCloudTaskDetailActions",
+                        String.class, String.class, JSONObject.class);
+                    actions.setAccessible(true);
+                    for (String state : new String[]{"remote_completed", "remote_cancelled", "remote_failed", "remote_rejected"}) {
+                        actions.invoke(activity, "agent-status", "same-delegation", new JSONObject()
+                            .put("delegation", new JSONObject().put("state", state)));
+                        LinearLayout buttons = (LinearLayout) get(activity, "cloudTaskDetailActions");
+                        assertEquals(2, buttons.getChildCount());
+                        assertTrue(((Button) buttons.getChildAt(1)).getText().toString().contains("同じ委任ID"));
+                    }
+                    render.invoke(activity, new JSONObject().put("state", "unknown").put("walletState", "SETTLED"));
+                    text = ((TextView) get(activity, "cloudA2aQuoteStatus")).getText().toString();
+                    assertFalse(text.contains("保持しています"));
+                    assertTrue(text.contains("保存済みのWallet状態を変更せず"));
+                } catch (ReflectiveOperationException | org.json.JSONException failure) {
+                    throw new AssertionError(failure);
+                }
+            });
+        } finally { instrumentation.runOnMainSync(activity::finish); }
+    }
+
     @Test public void revokedSessionClearsClaimResultsAndApprovalsButKeepsSameIdRecovery() throws Exception {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         Intent intent = new Intent(instrumentation.getTargetContext(), MainActivity.class)

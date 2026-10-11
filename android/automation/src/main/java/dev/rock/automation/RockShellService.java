@@ -1378,7 +1378,27 @@ public final class RockShellService extends Service {
         response.put("cloudState", cloudState);
         Map<String,String> local = platform.findA2AWalletReservation(owner, id);
         JSONObject quote = delegation.optJSONObject("priceQuote");
-        if (!A2ARecoveryBinding.matches(cloudA2ARecoveryTerms(delegation, quote), local)) {
+        Map<String,String> cloudTerms = cloudA2ARecoveryTerms(delegation, quote);
+        if (local != null && "SETTLED".equals(local.get("state"))) {
+            JSONObject usage = detail.optJSONObject("usageReceipt");
+            JSONObject receipt = usage == null ? null : usage.optJSONObject("receipt");
+            try {
+                Map<String,String> settled = platform.readSettledA2ABudget(owner, id, cloudState,
+                    cloudTerms, receipt == null ? null : AndroidA2AJson.object(receipt), now);
+                response.put("state", "wallet_settled");
+                response.put("walletState", "SETTLED");
+                response.put("settledMinor", Long.parseLong(settled.get("settled_minor")));
+                response.put("releasedMinor", Long.parseLong(settled.get("released_minor")));
+                response.put("currency", settled.get("currency"));
+                response.put("receiptId", settled.get("receipt_id"));
+                response.put("recoveredByReadback", true);
+                response.put("recoveryRequired", false);
+                return boundedJson(response);
+            } catch (SecurityException | IllegalArgumentException | IllegalStateException mismatch) {
+                // Keep terminal data untouched when the Cloud receipt or local ledger cannot be proved.
+            }
+        }
+        if (!A2ARecoveryBinding.matches(cloudTerms, local)) {
             response.put("state", "unknown");
             response.put("walletState", local == null ? "NOT_FOUND" : local.get("state"));
             response.put("recoveryRequired", true);

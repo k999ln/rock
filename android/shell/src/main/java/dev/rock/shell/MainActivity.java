@@ -1194,7 +1194,12 @@ public final class MainActivity extends Activity {
     private void renderCloudA2AExecutionState(JSONObject response) {
         if (isDestroyed()) return;
         String state = response.optString("state", "unknown");
-        if ("cloud_accepted".equals(state)) {
+        if ("wallet_settled".equals(state)) {
+            cloudA2aFinalApprovalButton.setVisibility(View.GONE);
+            cloudA2aExecutionRecoveryButton.setVisibility(View.VISIBLE);
+            cloudA2aWalletReleaseButton.setVisibility(View.GONE);
+            cloudA2aQuoteStatus.setText(settledA2AReadbackText(response));
+        } else if ("cloud_accepted".equals(state)) {
             cloudA2aFinalApprovalButton.setVisibility(View.GONE);
             cloudA2aExecutionRecoveryButton.setVisibility(View.VISIBLE);
             cloudA2aWalletReleaseButton.setVisibility(View.GONE);
@@ -1214,7 +1219,7 @@ public final class MainActivity extends Activity {
             cloudA2aFinalApprovalButton.setVisibility(View.GONE);
             cloudA2aExecutionRecoveryButton.setVisibility(View.VISIBLE);
             cloudA2aWalletReleaseButton.setVisibility(View.GONE);
-            cloudA2aQuoteStatus.setText("Cloud承認結果は未確定です。Wallet上限を解放せず保持しています。再送せず、同じ委任IDの状態を照合してください。");
+            cloudA2aQuoteStatus.setText("Cloudと端末Walletの状態を確定できません。保存済みのWallet状態を変更せず、同じ委任IDの状態を照合してください。");
         } else {
             cloudA2aFinalApprovalButton.setEnabled(true);
             cloudA2aQuoteStatus.setText("Cloud承認状態を確認できません（" + safeState(state) + "）。実行の有無は未確認です。");
@@ -1223,6 +1228,13 @@ public final class MainActivity extends Activity {
 
     private String formatMoney(long minor, String currency) {
         return UsageCurrencyFormatter.formatMinor(minor, currency, Locale.JAPAN);
+    }
+
+    private String settledA2AReadbackText(JSONObject response) {
+        return "保存済みの精算明細を照合しました。精算額 " +
+            formatMoney(response.optLong("settledMinor"), response.optString("currency")) +
+            " / 予約から解放済み " + formatMoney(response.optLong("releasedMinor"), response.optString("currency")) +
+            "。追加の実行・予約・精算・解除は行っていません。";
     }
 
     private static String safeState(String state) {
@@ -1321,7 +1333,8 @@ public final class MainActivity extends Activity {
         String state = delegation.optString("state", "unknown");
         if (java.util.Set.of("awaiting_approval", "prepared", "dispatching", "dispatch_submitting",
                 "indeterminate", "submitted", "working", "awaiting_remote_input", "cancel_requested",
-                "cancel_submitting", "cancel_unconfirmed").contains(state))
+                "cancel_submitting", "cancel_unconfirmed", "remote_completed", "remote_cancelled",
+                "remote_failed", "remote_rejected").contains(state))
             button(cloudTaskDetailActions, "同じ委任IDのCloud・端末Wallet状態を照合",
                 () -> recoverCloudA2AFromTaskDetail(id));
         if (!java.util.Set.of("awaiting_approval", "prepared", "dispatching", "dispatch_submitting",
@@ -1343,7 +1356,9 @@ public final class MainActivity extends Activity {
                     String detail = "同じ委任ID " + delegationId + " / Cloud " +
                         safeState(response.optString("cloudState")) + " / 端末Wallet " +
                         safeState(response.optString("walletState"));
-                    if ("awaiting_cloud_approval".equals(state)) {
+                    if ("wallet_settled".equals(state)) {
+                        cloudTaskDetailStatus.setText(detail + "。" + settledA2AReadbackText(response));
+                    } else if ("awaiting_cloud_approval".equals(state)) {
                         cloudTaskDetailStatus.setText(detail + "。Cloud実行開始前です。元の予算予約は確認済みで、再送・再承認はしていません。");
                     } else if ("cloud_accepted".equals(state)) {
                         cloudTaskDetailStatus.setText(detail + "。同じCloud作業を照合しました。Wallet予約の状態を同期し、再送はしていません。");
@@ -1352,7 +1367,7 @@ public final class MainActivity extends Activity {
                         button(cloudTaskDetailActions, "実行前のWallet予約を解除",
                             () -> releaseRecoveredA2ABudget(delegationId));
                     } else {
-                        cloudTaskDetailStatus.setText(detail + "。条件または状態を照合できないため、予約を保持して再送しません。後で同じIDを再確認してください。");
+                        cloudTaskDetailStatus.setText(detail + "。条件または状態を照合できないため、保存済みのWallet状態を変更しません。後で同じIDを再確認してください。");
                     }
                     button(cloudTaskDetailActions, "状態・利用量を読み直す", () -> fetchCloudTaskDetail("agent-status", delegationId));
                 });

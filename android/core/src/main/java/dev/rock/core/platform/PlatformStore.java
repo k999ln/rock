@@ -497,6 +497,45 @@ public final class PlatformStore {
         });
     }
 
+    /** Read an existing terminal settlement; never reserve, dispatch, settle again, or release funds. */
+    public Map<String,String> readSettledA2ABudget(String owner, String delegationId, String cloudState,
+        Map<String,String> cloudTerms, Map<String,Object> receipt, long now) {
+        owner(owner); identifier(delegationId, "INVALID_DELEGATION_ID"); clock(now);
+        if (cloudState == null || !Set.of("remote_cancelled", "remote_completed", "remote_failed", "remote_rejected").contains(cloudState))
+            throw new SecurityException("A2A_CLOUD_STATE_NOT_TERMINAL");
+        if (a2aUsageReceiptVerifier == null) throw new SecurityException("A2A_USAGE_RECEIPT_VERIFIER_UNAVAILABLE");
+        return db.transaction(() -> {
+            Map<String,String> saved = a2aWalletReservation(owner, delegationId);
+            if (!A2ARecoveryBinding.matchesSettledTerms(cloudTerms, saved))
+                throw new SecurityException("A2A_SETTLED_RESERVATION_MISMATCH");
+            A2AUsageReceiptVerifier.Hold intent = holdFromReservation(saved);
+            String receiptDigest = a2aUsageReceiptVerifier.verify(receipt, intent, now);
+            long amountMinor = ((Number) receipt.get("amountMinor")).longValue();
+            String providerRef = Engine.digest(receipt.get("providerId") + "\n" + receipt.get("receiptId"));
+            if (!receiptDigest.equals(saved.get("provider_receipt_digest")) ||
+                !providerRef.equals(saved.get("provider_ref")) ||
+                Long.parseLong(saved.get("held_minor")) != 0 ||
+                Long.parseLong(saved.get("settled_minor")) != amountMinor ||
+                Long.parseLong(saved.get("released_minor")) != intent.limitMinor - amountMinor)
+                throw new SecurityException("A2A_SETTLED_RECEIPT_MISMATCH");
+            String entryDigest = ledgerDigest(owner, "org.rockstar.a2a.wallet", null,
+                "wallet.a2a.settle", receiptDigest, amountMinor, -amountMinor,
+                intent.currency, providerRef, receiptDigest);
+            Map<String,String> ledger = one(db.query(
+                "SELECT receipt_id,entry_digest,amount_minor,currency,component_id,provider_receipt_digest FROM platform_ledger WHERE owner=? AND provider_ref=?",
+                owner, providerRef), "A2A_SETTLED_LEDGER_NOT_FOUND");
+            if (!entryDigest.equals(ledger.get("entry_digest")) ||
+                !"org.rockstar.a2a.wallet".equals(ledger.get("component_id")) ||
+                !receiptDigest.equals(ledger.get("provider_receipt_digest")) ||
+                !intent.currency.equals(ledger.get("currency")) ||
+                Long.parseLong(ledger.get("amount_minor")) != -amountMinor)
+                throw new SecurityException("A2A_SETTLED_LEDGER_MISMATCH");
+            Map<String,String> result = new HashMap<>(saved);
+            result.put("receipt_id", ledger.get("receipt_id"));
+            return result;
+        });
+    }
+
     /** Validate the read-only Cloud handoff envelope, then independently verify and settle its Provider receipt. */
     public String applyA2AWalletSettlementHandoff(String owner, String delegationId,
         Map<String,Object> handoff, long now) {
