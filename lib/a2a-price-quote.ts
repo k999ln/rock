@@ -1,3 +1,5 @@
+import { verifyA2AProviderSignature } from './a2a-provider-signature.ts';
+
 /** Signed, request-bound price disclosure for a single A2A task. */
 export const A2A_PRICE_QUOTE_SCHEMA = 'rock-a2a-provider-price-quote/1' as const;
 const DOMAIN = new TextEncoder().encode('rock-a2a-provider-price-quote-signature/1\0');
@@ -127,10 +129,5 @@ export async function verifyA2APriceQuote(
   try { publicKey = await resolveKey({ providerId: quote.providerId, keyId: quote.keyId, agentOrigin: quote.agentOrigin }); }
   catch { return false; }
   if (!(publicKey instanceof Uint8Array) || publicKey.length !== 32) return false;
-  try {
-    const key = await crypto.subtle.importKey('raw', Uint8Array.from(publicKey).buffer as ArrayBuffer, { name: 'Ed25519' }, false, ['verify']);
-    const raw = Uint8Array.from(atob(quote.signature.replaceAll('-', '+').replaceAll('_', '/') + '=='), (character) => character.charCodeAt(0));
-    if (raw.length !== 64 || btoa(String.fromCharCode(...raw)).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '') !== quote.signature) return false;
-    return await crypto.subtle.verify({ name: 'Ed25519' }, key, raw, a2aPriceQuoteSigningBytes(quote));
-  } catch { return false; }
+  return verifyA2AProviderSignature(publicKey, quote, () => a2aPriceQuoteSigningBytes(quote));
 }
