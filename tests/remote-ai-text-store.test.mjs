@@ -360,6 +360,42 @@ void test('durably queued work outlives quote approval expiry but stops at its f
   assert.equal(f.pool().reserved_minor, 0);
 });
 
+void test('queued execution after quote approval expiry sends and settles once within its execution deadline', async t => {
+  const f = await fixture(t);
+  await f.reserve();
+  await f.queueInput();
+  // /api/llm/text accepted the exact input while the quote was valid. A later
+  // Worker scan may run it after the five-minute approval window has closed.
+  const dispatchAt = f.quote.expiresAt + 1;
+  t.mock.method(Date, 'now', () => dispatchAt);
+  assert.equal((await f.store.expireBeforeSend(owner, f.record.id)).state, 'reserved');
+  assert.deepEqual((await f.store.listPrepared()).map(row => ({ ...row })), [{ ownerUserId: owner, id: f.record.id }]);
+  let calls = 0;
+  const fetcher = async () => { calls++; return response(); };
+  const result = await f.request(fetcher);
+  assert.equal(result.providerSubmission, 'performed');
+  assert.equal(result.record.state, 'completed');
+  assert.equal(calls, 1);
+  assert.deepEqual({ ...f.pool() }, { reserved_minor: 0, settled_minor: 1, budget_limit_minor: 1 });
+  assert.equal((await f.request(fetcher)).providerSubmission, 'not_repeated');
+  assert.equal(calls, 1);
+});
+
+void test('the final send claim still refuses a foreign owner and an elapsed durable execution deadline', async t => {
+  const f = await fixture(t);
+  await f.reserve();
+  await f.queueInput();
+  const dispatchAt = f.quote.expiresAt + 1;
+  assert.equal(await f.store.claimDispatch(owner, f.record.id, f.record.approvalDigest, dispatchAt), true);
+  assert.equal(await f.store.claimProviderSend('another-owner', f.record.id, dispatchAt), false);
+  // If the queue deadline passes between dispatch and send, no external request
+  // may claim this input. It remains uncertain until the coordinator records it.
+  const deadline = (await f.store.getInput(owner, f.record.id)).expiresAt;
+  assert.equal(await f.store.claimProviderSend(owner, f.record.id, deadline), false);
+  assert.equal(f.sqlite.prepare('SELECT COUNT(*) AS count FROM remote_ai_text_send_claims').get().count, 0);
+  assert.equal(f.pool().reserved_minor, 1);
+});
+
 void test('history filters by owned parent before limiting rows and expires only unsubmitted reservations', async t => {
   const f = await fixture(t);
   const another = createWorkJob({ id: randomUUID(), templateId: 'article', title: 'Another synthetic parent' });

@@ -97,6 +97,9 @@ const terminalRemoteStates = new Set<A2ATaskState>([
   'TASK_STATE_CANCELED',
   'TASK_STATE_REJECTED',
 ]);
+const terminalDelegationStates = new Set<A2ADelegation['state']>([
+  'remote_completed', 'remote_failed', 'remote_cancelled', 'remote_rejected',
+]);
 
 async function captureTaskArtifacts(
   env: Env,
@@ -876,7 +879,8 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
       await store.markCancelUnconfirmed(ownerUserId, delegationId, current.revision);
       return { outcome: 'cancel_unconfirmed_after_retry' };
     }
-    if (['remote_completed', 'remote_failed', 'remote_cancelled', 'remote_rejected'].includes(current.state))
+    if (terminalDelegationStates.has(current.state) && current.artifactsCaptured &&
+      (await store.getBudgetReservation(ownerUserId, delegationId))?.state !== 'held')
       return { outcome: 'not_dispatchable' };
     if (
       !a2aEgressOriginAllowed(
@@ -885,6 +889,9 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
       )
     )
       return { outcome: 'egress_origin_not_allowed' };
+
+    if (terminalDelegationStates.has(current.state))
+      await store.noteTerminalReconciliationAttempt(ownerUserId, delegationId, current.remoteTaskId!);
 
     const cardValue = await step.do(
       'discover-agent-for-reconciliation',
@@ -1053,13 +1060,11 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
         if (!latest?.remoteTaskId)
           throw new NonRetryableError('Remote task ID is unavailable.');
         const task = await client.getTask(card, latest.remoteTaskId);
-        await captureTaskArtifacts(
-          this.env,
-          store,
-          ownerUserId,
-          delegationId,
-          task,
-        );
+        // A terminal state can precede artifact/receipt persistence. Read the
+        // known task again, but never reopen it or accept conflicting results.
+        if (!latest.artifactsCaptured && (!terminalDelegationStates.has(latest.state) ||
+          latest.remoteState === task.status.state))
+          await captureTaskArtifacts(this.env, store, ownerUserId, delegationId, task);
         const snapshot: TaskSnapshot = {
           id: task.id,
           contextId: task.contextId,
@@ -1071,7 +1076,10 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
     );
     const latest = await store.get(ownerUserId, delegationId);
     if (!latest) return { outcome: 'delegation_missing' };
-    const reconciled = await store.reconcileRemoteTask(
+    const terminal = terminalDelegationStates.has(latest.state);
+    if (terminal && latest.remoteState !== task.state)
+      return { outcome: 'terminal_task_state_mismatch', state: latest.state };
+    const reconciled = terminal ? latest : await store.reconcileRemoteTask(
       ownerUserId,
       delegationId,
       latest.revision,

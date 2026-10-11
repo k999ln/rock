@@ -837,12 +837,24 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
         revision, created_at AS createdAt, updated_at AS updatedAt
         FROM agent_delegations WHERE remote_task_id IS NOT NULL AND (
           state IN ('indeterminate','submitted','working','awaiting_remote_input','cancel_requested','cancel_submitting','cancel_unconfirmed')
-          OR (artifacts_captured = 0 AND state IN ('remote_cancelled','remote_completed','remote_failed','remote_rejected'))
+          OR (state IN ('remote_cancelled','remote_completed','remote_failed','remote_rejected') AND (
+            artifacts_captured = 0 OR EXISTS (SELECT 1 FROM agent_delegation_budget_reservations r
+              WHERE r.owner_user_id = agent_delegations.owner_user_id
+                AND r.delegation_id = agent_delegations.id AND r.state = 'held')
+          ))
         )
         ORDER BY updated_at, id LIMIT ?`)
         .bind(Math.min(Math.max(Math.trunc(limit), 1), 100))
         .all<A2ADelegationRow>();
       return rows.results.map((row) => normalizeDelegation(row)!);
+    },
+    async noteTerminalReconciliationAttempt(ownerUserId: string, id: string, remoteTaskId: string, now = Date.now()) {
+      // Rotate unresolved terminal reads through the bounded scheduler scan.
+      // This observation timestamp changes no state, revision, or budget fact.
+      await db.prepare(`UPDATE agent_delegations SET updated_at = MAX(updated_at, ?)
+        WHERE owner_user_id = ? AND id = ? AND remote_task_id = ?
+          AND state IN ('remote_cancelled','remote_completed','remote_failed','remote_rejected')`)
+        .bind(now, ownerUserId, id, remoteTaskId).run();
     },
     async listEvents(ownerUserId: string, id: string) {
       const rows = await db

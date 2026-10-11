@@ -313,6 +313,10 @@ void test('final provider usage receipt settles the held child cap once and keep
     id: 'remote-task-9', state: 'TASK_STATE_COMPLETED',
   }, 1_120);
   assert.equal(received.state, 'remote_completed');
+  const captured = await store.markArtifactsCaptured('alice', received.id, received.remoteTaskId, received.revision, 1_121);
+  assert.equal(captured.artifactsCaptured, 1);
+  assert.ok((await store.listForReconciliation()).some(row => row.id === captured.id),
+    'a terminal task with captured artifacts still needs its held usage receipt reconciled');
   const receipt = {
     schema: 'rock-a2a-provider-usage-receipt/1', providerId: 'provider-x', keyId: 'usage-key',
     receiptId: 'usage-9', ownerUserId: 'alice', parentJobId: parentId,
@@ -337,6 +341,32 @@ void test('final provider usage receipt settles the held child cap once and keep
     (error) => error instanceof A2ADelegationStoreError && error.code === 'usage_receipt_conflict',
   );
   assert.equal(await store.getUsageReceipt('bob', prepared.delegation.id), null);
+  assert.equal((await store.listForReconciliation()).some(row => row.id === captured.id), false,
+    'a terminal task leaves the scan only once both artifacts and usage have been reconciled');
+});
+
+void test('unresolved terminal reads rotate through the bounded scan without changing state or held budgets', async t => {
+  const { store } = await setup(t);
+  const first = await approved(store, childInput(21, { budgetLimitMinor: 100 }));
+  const claim = await store.claimDispatch('alice', first.delegation.id, 1_100);
+  const sending = await store.beginRemoteSend('alice', claim.id, claim.revision, 1_101);
+  const terminal = await store.recordTaskReceipt('alice', sending.id, sending.revision,
+    { id: 'terminal-to-reconcile', state: 'TASK_STATE_COMPLETED' }, 1_102);
+  await store.markArtifactsCaptured('alice', terminal.id, terminal.remoteTaskId, terminal.revision, 1_103);
+  const second = await approved(store, childInput(22, { budgetLimitMinor: 100 }));
+  const otherClaim = await store.claimDispatch('alice', second.delegation.id, 1_110);
+  const otherSending = await store.beginRemoteSend('alice', otherClaim.id, otherClaim.revision, 1_111);
+  await store.recordTaskReceipt('alice', otherSending.id, otherSending.revision,
+    { id: 'working-to-reconcile', state: 'TASK_STATE_WORKING' }, 1_112);
+  assert.equal((await store.listForReconciliation(1))[0].id, terminal.id);
+  const before = await store.get('alice', terminal.id);
+  await store.noteTerminalReconciliationAttempt('bob', terminal.id, terminal.remoteTaskId, 1_120);
+  await store.noteTerminalReconciliationAttempt('alice', terminal.id, 'wrong-task', 1_120);
+  assert.equal((await store.listForReconciliation(1))[0].id, terminal.id);
+  await store.noteTerminalReconciliationAttempt('alice', terminal.id, terminal.remoteTaskId, 1_120);
+  assert.equal((await store.listForReconciliation(1))[0].id, otherSending.id);
+  assert.deepEqual(await store.get('alice', terminal.id), { ...before, updatedAt: 1_120 });
+  assert.equal((await store.getBudget('alice', parentId)).reservedMinor, 200);
 });
 
 void test('budget cannot be settled without a persisted matching usage receipt or above the reservation', async (t) => {
@@ -602,7 +632,8 @@ void test('durable reconciliation polls remote tasks and sends cancellation once
     1_206,
   );
   assert.equal(captured.artifactsCaptured, 1);
-  assert.deepEqual(await store.listForReconciliation(), []);
+  assert.equal((await store.getBudgetReservation('alice', captured.id)).state, 'held');
+  assert.equal((await store.listForReconciliation()).length, 1, 'usage receipt remains unresolved');
 });
 
 void test('scheduled deadline cleanup expires pre-send work and releases its held budget', async (t) => {
@@ -689,7 +720,8 @@ void test('terminal remote tasks stay reconcilable until their encrypted result 
     1_105,
   );
   assert.equal(captured.artifactsCaptured, 1);
-  assert.deepEqual(await store.listForReconciliation(), []);
+  assert.equal((await store.getBudgetReservation('alice', captured.id)).state, 'held');
+  assert.equal((await store.listForReconciliation()).length, 1, 'usage receipt remains unresolved');
   assert.equal(
     (await store.listEvents('alice', completed.id)).at(-1).eventType,
     'remote_artifacts_captured',
