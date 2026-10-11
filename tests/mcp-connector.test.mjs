@@ -468,6 +468,93 @@ void test('late local HTTP MCP responses cannot replace the current connection o
   }
 });
 
+async function paginationHarness(t, list) {
+  const directory = await mkdtemp(join(tmpdir(), 'sky-mcp-pages-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const cursors = [];
+  const upstream = createServer(async (request, response) => {
+    const chunks = [];
+    for await (const chunk of request) chunks.push(chunk);
+    const message = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+    if (!('id' in message)) { response.writeHead(202); response.end(); return; }
+    let result;
+    if (message.method === 'initialize') {
+      result = { protocolVersion: '2025-11-25', serverInfo: { name: 'pages fixture', version: '1' }, capabilities: { tools: {} } };
+    } else if (message.method === 'tools/list') {
+      cursors.push(message.params.cursor);
+      // A broken client must terminate the test without running an infinite fixture.
+      result = cursors.length > 7 ? { tools: [] } : await list(cursors.length, message.params.cursor);
+    } else {
+      response.writeHead(500); response.end('{}'); return;
+    }
+    response.writeHead(200, { 'content-type': 'application/json' });
+    response.end(JSON.stringify({ jsonrpc: '2.0', id: message.id, result }));
+  });
+  await new Promise(resolve => upstream.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise(resolve => upstream.close(resolve)));
+  const id = `sdk-${'c'.repeat(24)}`;
+  await writeFile(join(directory, `${id}.json`), JSON.stringify({
+    schema: 'sky-local-tool/1', id, name: 'Pages fixture', description: 'Local synthetic MCP',
+    transport: 'local_http', url: `http://127.0.0.1:${upstream.address().port}/mcp`,
+    secret: 'c'.repeat(43), pid: process.pid, toolPricing: [],
+  }), { mode: 0o600 });
+  return { ...await harness(t, { localToolDirectory: directory }), id, cursors };
+}
+
+void test('MCP pagination rejects looping, unbounded and invalid cursors before publishing a Passport', async (t) => {
+  const cases = [
+    { name: 'repeated cursor with no tools', cursor: () => 'same', pages: 2 },
+    { name: 'cursor cycle with no tools', cursor: page => page % 2 ? 'first' : 'second', pages: 3 },
+    { name: 'fresh cursors with no tools', cursor: page => `page-${page}`, pages: 5, status: 409, error: 'too_many_tool_pages' },
+    ...[null, false, 0, 1, {}, [], '', 'é'.repeat(513)].map((cursor, index) => ({
+      name: `invalid cursor ${index}`, cursor: () => cursor, pages: 1,
+    })),
+  ];
+  for (const scenario of cases) {
+    await t.test(scenario.name, async (t) => {
+      const { request, connector, id, cursors } = await paginationHarness(t, page => ({ tools: [], nextCursor: scenario.cursor(page) }));
+      const response = await request(`/servers/${id}/connect`, {});
+      assert.equal(response.status, scenario.status ?? 502);
+      assert.equal((await response.json()).error, scenario.error ?? 'invalid_tools_cursor');
+      assert.equal(cursors.length, scenario.pages);
+      assert.equal(connector.hub.entry(id).state, 'error');
+      assert.equal(connector.hub.entry(id).passport, null);
+      assert.equal((await request(`/servers/${id}/prepare`, { name: 'fixture', arguments: {} })).status, 409);
+    });
+  }
+});
+
+void test('MCP pagination accepts five complete pages including an empty intermediate page', async (t) => {
+  const { request, id, cursors } = await paginationHarness(t, page => ({
+    tools: page === 2 ? [] : [{ name: `fixture-${page}`, inputSchema: { type: 'object' } }],
+    ...(page < 5 ? { nextCursor: page === 1 ? 'é'.repeat(512) : `page-${page}` } : {}),
+  }));
+  const response = await request(`/servers/${id}/connect`, {});
+  assert.equal(response.status, 200);
+  assert.deepEqual((await response.json()).passport.tools.map(tool => tool.name), ['fixture-1', 'fixture-3', 'fixture-4', 'fixture-5']);
+  assert.deepEqual(cursors, [undefined, 'é'.repeat(512), 'page-2', 'page-3', 'page-4']);
+});
+
+void test('disconnect during the final MCP page wins over pagination failure', async (t) => {
+  const reached = Promise.withResolvers(), resume = Promise.withResolvers();
+  t.after(() => resume.resolve());
+  const { request, connector, id, cursors } = await paginationHarness(t, async page => {
+    if (page === 5) { reached.resolve(); await resume.promise; }
+    return { tools: [], nextCursor: `page-${page}` };
+  });
+  const pending = request(`/servers/${id}/connect`, {});
+  try {
+    await reached.promise;
+    assert.equal((await request(`/servers/${id}/disconnect`, {})).status, 200);
+  } finally { resume.resolve(); }
+  const response = await pending;
+  assert.equal(response.status, 409);
+  assert.equal((await response.json()).error, 'connection_superseded');
+  assert.equal(cursors.length, 5);
+  assert.equal(connector.hub.entry(id).state, 'available');
+  assert.equal(connector.hub.entry(id).passport, null);
+});
+
 void test('legacy MCP refuses changed processor identity before transport dispatch', async (t) => {
   const { request, connector } = await harness(t);
   const entry = connector.hub.entry('rock-star-mr');
