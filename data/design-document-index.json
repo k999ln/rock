@@ -275,6 +275,13 @@
       "responseRecovery": {
         "accountStorage": "Transient errors preserve encrypted state; proven invalid data or permanent invalidation clears it.",
         "bodyDeadline": "Four readers check monotonic deadlines before and after reads including EOF; forced whole-exchange cancellation remains unverified."
+      },
+      "webDeviceConfirmation": {
+        "implementation": "components/rockstar-device-authorization.tsx",
+        "regressions": "tests/rockstar-device-authorization-ui.test.mjs",
+        "contract": "docs/rockstar-device-link.md",
+        "binding": "Only the exact inspected userCode may be approved; editing invalidates confirmation.",
+        "recovery": "10-second response deadline; no automatic mutation retry; fresh owner list and code inspection after authentication recovery."
       }
     },
     {
