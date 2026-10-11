@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createSkyToolApp } from '../toolkits/sky-tool-sdk/src/index.mjs';
@@ -321,6 +322,150 @@ void test('connector binds browser token to an allowlisted Origin', async (t) =>
     body: '{}',
   });
   assert.equal(response.status, 403);
+});
+
+void test('failed reauthorization invalidates the previous Passport and approval before dispatch', async (t) => {
+  const { request, connector } = await harness(t);
+  assert.equal((await request('/servers/rock-star-mr/connect', {})).status, 200);
+  const args = { text: 'local fixture' };
+  const prepared = await (await request('/servers/rock-star-mr/prepare', {
+    name: 'format_citations', arguments: args,
+  })).json();
+  const transport = connector.hub.entry('rock-star-mr').transport;
+  const original = transport.request.bind(transport);
+  let calls = 0;
+  transport.request = async (message, timeout) => {
+    if (message.method === 'initialize')
+      throw Object.assign(new Error('fixture authorization revoked'), { code: 'authorization_required', status: 401 });
+    if (message.method === 'tools/call') calls++;
+    return original(message, timeout);
+  };
+  assert.equal((await request('/servers/rock-star-mr/connect', {})).status, 401);
+  const stale = await request('/servers/rock-star-mr/execute', {
+    name: 'format_citations', arguments: args,
+    approvalToken: prepared.approvalToken, confirmed: true,
+  });
+  assert.equal(stale.status, 403);
+  assert.equal(calls, 0);
+  const listed = await (await request('/servers', undefined, 'GET')).json();
+  assert.equal(listed.servers[0].state, 'needs_authorization');
+  assert.equal(listed.servers[0].passport, null);
+  transport.request = original;
+  assert.equal((await request('/servers/rock-star-mr/connect', {})).status, 200);
+  assert.equal((await request('/servers/rock-star-mr/execute', {
+    name: 'format_citations', arguments: args,
+    approvalToken: prepared.approvalToken, confirmed: true,
+  })).status, 403);
+  const fresh = await (await request('/servers/rock-star-mr/prepare', {
+    name: 'format_citations', arguments: args,
+  })).json();
+  const recovered = await request('/servers/rock-star-mr/execute', {
+    name: 'format_citations', arguments: args,
+    approvalToken: fresh.approvalToken, confirmed: true,
+  });
+  assert.equal(recovered.status, 200);
+  assert.equal((await recovered.json()).result.isError, false);
+});
+
+void test('disconnect wins over an earlier delayed MCP initialize response', async (t) => {
+  const { request, connector } = await harness(t);
+  const transport = connector.hub.entry('rock-star-mr').transport;
+  const original = transport.request.bind(transport);
+  const reached = Promise.withResolvers(), resume = Promise.withResolvers();
+  const sent = [];
+  transport.request = async (message, timeout) => {
+    sent.push(message.method);
+    const response = await original(message, timeout);
+    if (message.method === 'initialize') {
+      reached.resolve();
+      await resume.promise;
+    }
+    return response;
+  };
+  const connecting = request('/servers/rock-star-mr/connect', {});
+  try {
+    await reached.promise;
+    assert.equal((await request('/servers/rock-star-mr/disconnect', {})).status, 200);
+  } finally { resume.resolve(); }
+  assert.equal((await connecting).status, 409);
+  assert.deepEqual(sent, ['initialize']);
+  const listed = await (await request('/servers', undefined, 'GET')).json();
+  assert.equal(listed.servers[0].state, 'available');
+  assert.equal(listed.servers[0].passport, null);
+  assert.equal((await request('/servers/rock-star-mr/prepare', {
+    name: 'format_citations', arguments: { text: 'stopped fixture' },
+  })).status, 409);
+});
+
+void test('late local HTTP MCP responses cannot replace the current connection or session', async (t) => {
+  for (const scenario of ['reconnect', 'late_auth_failure', 'remove', 'replace']) {
+    await t.test(scenario, async (t) => {
+      const directory = await mkdtemp(join(tmpdir(), 'sky-mcp-race-'));
+      t.after(() => rm(directory, { recursive: true, force: true }));
+      const reached = Promise.withResolvers(), resume = Promise.withResolvers();
+      const delayedMethod = scenario === 'late_auth_failure' ? 'tools/list' : 'initialize';
+      let delayed = false, initializations = 0;
+      const seen = [];
+      const upstream = createServer(async (request, response) => {
+        const chunks = [];
+        for await (const chunk of request) chunks.push(chunk);
+        const message = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+        seen.push(message.method);
+        if (!('id' in message)) { response.writeHead(202); response.end(); return; }
+        if (message.method === 'initialize') initializations++;
+        const version = initializations;
+        const result = message.method === 'initialize'
+          ? { protocolVersion: '2025-11-25', serverInfo: { name: 'race fixture', version: String(version) }, capabilities: { tools: {} } }
+          : { tools: [{ name: 'fixture', inputSchema: { type: 'object' } }] };
+        if (!delayed && message.method === delayedMethod) {
+          delayed = true;
+          reached.resolve();
+          await resume.promise;
+          if (scenario === 'late_auth_failure') { response.writeHead(401); response.end('{}'); return; }
+        }
+        response.writeHead(200, { 'content-type': 'application/json', 'mcp-session-id': `session-${version}` });
+        response.end(JSON.stringify({ jsonrpc: '2.0', id: message.id, result }));
+      });
+      await new Promise(resolve => upstream.listen(0, '127.0.0.1', resolve));
+      t.after(() => { resume.resolve(); return new Promise(resolve => upstream.close(resolve)); });
+      const id = `sdk-${'a'.repeat(24)}`;
+      const path = join(directory, `${id}.json`);
+      const descriptor = {
+        schema: 'sky-local-tool/1', id, name: 'Race fixture', description: 'Local synthetic MCP',
+        transport: 'local_http', url: `http://127.0.0.1:${upstream.address().port}/mcp`,
+        secret: 'a'.repeat(43), pid: process.pid, toolPricing: [{ name: 'fixture', model: 'free' }],
+      };
+      await writeFile(path, JSON.stringify(descriptor), { mode: 0o600 });
+      const { request, connector } = await harness(t, { localToolDirectory: directory });
+      const pending = request(`/servers/${id}/connect`, {});
+      try {
+        await reached.promise;
+        if (scenario === 'remove') {
+          await rm(path);
+          const listed = await (await request('/servers', undefined, 'GET')).json();
+          assert.equal(listed.servers.some(entry => entry.id === id), false);
+        } else {
+          if (scenario === 'replace')
+            await writeFile(path, JSON.stringify({ ...descriptor, secret: 'b'.repeat(43) }), { mode: 0o600 });
+          const connected = await request(`/servers/${id}/connect`, {});
+          assert.equal(connected.status, 200);
+          assert.equal((await connected.json()).passport.server.version, '2');
+        }
+      } finally { resume.resolve(); }
+      assert.equal((await pending).status, 409);
+      if (scenario === 'remove') {
+        assert.equal(connector.hub.entries.has(id), false);
+        assert.deepEqual(seen, ['initialize']);
+      } else {
+        const entry = connector.hub.entry(id);
+        assert.equal(entry.state, 'connected');
+        assert.equal(entry.passport.server.version, '2');
+        assert.equal(entry.transport.sessionId, 'session-2');
+        assert.equal(seen.filter(method => method === 'notifications/initialized').length,
+          scenario === 'late_auth_failure' ? 2 : 1);
+      }
+    });
+  }
 });
 
 void test('legacy MCP refuses changed processor identity before transport dispatch', async (t) => {
