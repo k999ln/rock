@@ -17,6 +17,10 @@ rootの `scripts/test-native.py` と `.github/workflows/native-os.yml` はこの
 
 検証は使い捨てLinux環境で行う。suite全体がtimeoutした場合は失敗を記録して停止する。直接のprocess groupは終了するが、試験が独立sessionにした子孫全ての終了は保証しない。その環境を自動再利用せず、所有を確認した後片付けまたは使い捨てrunnerの終了を行う。
 
+## 2026-10-11 QMP受入monitorの総期限
+
+`os/verify-platform.py`のQMP画面取得を総5秒・frame 1 MiBへ制限し、通知継続や細切れ応答でguest外側期限を妨げる待機を修正した。`tests/test_os_platform_qmp.py`の実AF_UNIX fixture 7件と既存scope／配布検証を合わせ69件合格。IMPORT-MANIFESTは維持し、実guestや新imageの保存・復旧受入とは分ける。[再現と環境条件](../../docs/native-os-validation.md#qemu受入monitorの総期限2026-10-11)。
+
 ## 2026-10-11 Runner取消後の未確認状態保持
 
 `os/platform/runner_control.py`は送信claim後の取消でremote不在だけをcancelledへ確定しない。元submitが遅れて届く場合を`tests/test_os_runner_control.py`の実SQLiteで再現し、同ID照合・daemon再起動・再送0・正確なterminal回収・入力消去を検査した。追加2件は修正前失敗、修正後は関連68件合格。IMPORT-MANIFESTは維持し、実隔離executor／guest／実機／Providerの合格を追加しない。[契約](../../docs/rockstaros-complete-design.md#native-runnerの取消と結果不明2026-10-11)。
