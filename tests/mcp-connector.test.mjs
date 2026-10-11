@@ -73,7 +73,9 @@ void test('SDK tools appear in the PC hub and execute only after one-time approv
   assert.equal(before.servers.at(-1).id, runtime.localId);
   assert.equal(before.servers.at(-1).state, 'available');
   const descriptor = JSON.parse(await readFile(join(directory, `${runtime.localId}.json`), 'utf8'));
-  const direct = await fetch(descriptor.url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) });
+  const fixtureUrl = `http://127.0.0.1:${runtime.port}${runtime.path}`;
+  assert.equal(descriptor.url, fixtureUrl);
+  const direct = await fetch(fixtureUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) });
   assert.equal(direct.status, 401);
   const connected = await (await request(`/servers/${runtime.localId}/connect`, {})).json();
   assert.equal(connected.passport.tools[0].name, 'count');

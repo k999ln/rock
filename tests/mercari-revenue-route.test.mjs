@@ -1,18 +1,12 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { readFileSync, readdirSync } from 'node:fs';
-import { stripTypeScriptTypes } from 'node:module';
+import { loadRouteFixture } from './route-fixture.mjs';
+import * as auth from '../lib/request-auth.ts';
+import * as operations from '../lib/operations.ts';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 
-const dataModule = (source) => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;
-function compile(path, imports) {
-  return dataModule(stripTypeScriptTypes(readFileSync(new URL(path, import.meta.url), 'utf8'), { mode: 'strip' })
-    .replace(/\bfrom\s+(['"])([^'"]+)\1/g, (_match, _quote, name) => {
-      assert.ok(imports.has(name), `unmapped route import: ${name}`);
-      return `from ${JSON.stringify(imports.get(name))}`;
-    }));
-}
 const value = (id = randomUUID()) => ({
   id, channel: 'consumer_assisted', title: 'Synthetic owned stock', condition: 'Checked fixture',
   facts: 'Local fixture only.', priceJPY: 3000, marketplaceFeeJPY: 300, shippingJPY: 750,
@@ -27,18 +21,16 @@ async function setup(t) {
     async first() { return sqlite.prepare(sql).get(...args) ?? null; },
     async all() { return { results: sqlite.prepare(sql).all(...args) }; },
   }; } }; } };
-  const key = `mercari-route-${randomUUID()}`;
-  globalThis[key] = db; t.after(() => { delete globalThis[key]; });
-  const auth = new URL('../lib/request-auth.ts', import.meta.url).href;
-  const operations = new URL('../lib/operations.ts', import.meta.url).href;
-  // Only the Cloudflare DB binding is substituted. The real auth, streamed body
+  // Only the Cloudflare DB binding is substituted; the real auth, streamed body
   // parser, route, normalization, owner-scoped store and SQLite statements run.
-  const fund = dataModule(`export const database = () => globalThis[${JSON.stringify(key)}]; export { requestUser } from ${JSON.stringify(auth)};`);
-  const api = compile('../lib/operations-api.ts', new Map([['./fund-store', fund], ['./operations', operations]]));
-  const route = await import(compile('../app/api/revenue/mercari/route.ts', new Map([
+  const fund = { database: () => db, requestUser: auth.requestUser };
+  const api = loadRouteFixture(new URL('../lib/operations-api.ts', import.meta.url),
+    new Map([['./fund-store', fund], ['./operations', operations]]));
+  const route = loadRouteFixture(new URL('../app/api/revenue/mercari/route.ts', import.meta.url), new Map([
     ['@/lib/fund-store', fund], ['@/lib/operations-api', api], ['@/lib/operations', operations], ['@/lib/request-auth', auth],
-    ...['mercari-revenue', 'mercari-revenue-store'].map((name) => [`@/lib/${name}`, new URL(`../lib/${name}.ts`, import.meta.url).href]),
-  ])));
+    ...await Promise.all(['mercari-revenue', 'mercari-revenue-store'].map(async (name) =>
+      [`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url).href)])),
+  ]));
   async function call(method, input, { owner = 'alice', origin = 'https://fixture.invalid', contentType = 'application/json', raw } = {}) {
     const headers = { origin, 'content-type': contentType, ...(owner ? { 'oai-authenticated-user-id': owner } : {}) };
     const response = await route[method](new Request('https://fixture.invalid/api/revenue/mercari', {
