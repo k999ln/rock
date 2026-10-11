@@ -69,6 +69,35 @@ release:web-bundle:check, release:web-assets:check, test:api, mission:check, wor
 
 The repository-wide run is therefore recorded as **blocked by the container's root user in six unrelated tests**, not as passed. GitHub CI on the pushed commit is the result to rely on for those six and for the Android JUnit and Gradle jobs.
 
+## GitHub CI
+
+Commit `ca76306c0b8596e6c3ced24482b12a357ce32ae2` on branch `claude/sky-compute-grid-live`, pull request #103.
+
+| Check | Result |
+| --- | --- |
+| `verify` | success. This includes the six tests the work container could not run as root |
+| `prototype` (Android) | success. The step `gradle -p android :core:test …` ran the JUnit test of the Java SKU for the first time, and the step `check-os-parity.mjs` compared Java with TypeScript |
+| `CodeQL`, `SPIDER CodeQL (javascript-typescript)`, `SPIDER CodeQL (python)` | success |
+| `SPIDER / repair regressions`, `SPIDER / production web security measurement` | success |
+| `SPIDER / secrets` | **failure**: three `generic-api-key` candidates, all the same value |
+
+The value the secret scanner reports is `0148e10d32030fbaee7eedf967db70a3b7665da854faeb0f87ecd8e3659381a5`, under the key `tokenizerSha256`, in:
+
+- `lib/sky-compute-grid-skus.ts` line 64 (commit `0cf0895f`)
+- `contracts/sky-compute-grid-lexical-embedding-vectors.json` line 8 (commit `0cf0895f`)
+- `android/core/src/test/resources/sky-compute-grid-lexical-embedding-vectors.json` line 8 (commit `934cc8db`)
+
+It is not a credential. It is the SHA-256 of the public specification text `LEXICAL_EMBEDDING_TOKENIZER_SPEC` in `lib/sky-compute-grid-skus.ts`, and can be recomputed:
+
+```text
+printf 'sky-compute-tokenizer/utf8-bytes/1\nnormalization=none\nlone-surrogates=rejected-before-dispatch\n' | sha256sum
+0148e10d32030fbaee7eedf967db70a3b7665da854faeb0f87ecd8e3659381a5
+```
+
+The scanner matches it because the key name contains "token". The fourth annotation on that check (`hidden.txt`) is the scanner's own self-test and also appears on main.
+
+This branch does **not** add a scanner exception and does not move the pinned policy commit. `SECURITY.md` and `docs/spider-guard.md` put exceptions and the pinned control commit under owner review, and a pull request should not change the policy that judges it. The check stays red until the owner, or whoever maintains SPIDER for the owner, registers the reviewed exception (rule `generic-api-key`, the three exact paths above, the exact value above, classification `public-artifact-digest`, with the same-file detection test `SECURITY.md` requires) and pins the new control commit.
+
 ## Not accepted
 
 - Android worker: designed in `docs/sky-compute-grid-android-worker.md`, not implemented. No APK contains it.

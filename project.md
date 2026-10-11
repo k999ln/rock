@@ -17,9 +17,13 @@
 - 実装はCodexへ渡す。設計した側は、worker・Shell・console・実機受入に着手していない。
 - 画面 `/sky/compute-grid` は、合成fixtureの表示であること、永続gridが既定で無効であること、端末側が未実装であることを表示する。
 
-検証（host）: 対象の4 suiteは54件すべて合格（契約12、SKU 8、store 30、API 4）。`javac --release 11` でandroid/coreのmainをbuildし、Java↔TypeScriptの46 lotが一致。証拠は `docs/evidence/amc/grid01-persistent-grid-host.md`。JUnitはこの環境で実行できずGitHub CIの `:core:test` に任せる。emulator、Pixel、複数端末、deployment、本番DBはいずれも未実行。
+保存: branch `claude/sky-compute-grid-live` をGitHubへpushし、[PR #103](https://github.com/k999ln/rock/pull/103)を開いた。mainへは統合していない（統合はownerの判断）。本番への反映もしていない。
 
-残り: (1) Android workerとShellの入切の実装（GRID01-S5）。(2) 注文consoleの実装（S6）。(3) 本番でないdeploymentとPixel 1台での実機受入（S7）。(4) 2〜5台での合議・改変・切断（S8）。(5) 意味を扱うembeddingの端末側engine、creditの利用先、public pool、50台pilot（S9）。未回答の2件は、手元のPixelの台数と、Local AIのrepository（`noellesugar99/local-action-assistant`）を変更してよいか。
+検証（host）: 対象の4 suiteは54件すべて合格（契約12、SKU 8、store 30、API 4）。`javac --release 11` でandroid/coreのmainをbuildし、Java↔TypeScriptの46 lotが一致。`npm run verify` は、作業containerがrootで動くために実行を拒否するMCP／PC出典の6件（このbranchは該当fileを変えていない）で止まり、その前後の段はすべて合格した。証拠は `docs/evidence/amc/grid01-persistent-grid-host.md`。JUnitはこの環境で実行できずGitHub CIの `:core:test` に任せる。emulator、Pixel、複数端末、deployment、本番DBはいずれも未実行。
+
+GitHub CI（`ca76306c`、PR #103）: `verify`、Androidの`prototype`（JavaのJUnitの初回実行とJava↔TypeScriptの照合を含む）、CodeQL、SPIDERの回帰とWeb測定は成功。**`SPIDER / secrets`だけ失敗**。秘密検査が`tokenizerSha256`という名前の公開hash 1個（仕様文のSHA-256。3 file）を鍵の候補として検出したためで、秘密ではない。例外の登録と検査policyの固定commitの更新はowner reviewの対象なので、このbranchでは行っていない（PRが自分を判定するpolicyを変えない）。詳細と再計算の方法は証拠fileの「GitHub CI」。
+
+残り: (0) `SPIDER / secrets`の例外をownerのreviewで登録する。(1) Android workerとShellの入切の実装（GRID01-S5）。(2) 注文consoleの実装（S6）。(3) 本番でないdeploymentとPixel 1台での実機受入（S7）。(4) 2〜5台での合議・改変・切断（S8）。(5) 意味を扱うembeddingの端末側engine、creditの利用先、public pool、50台pilot（S9）。未回答の2件は、手元のPixelの台数と、Local AIのrepository（`noellesugar99/local-action-assistant`）を変更してよいか。
 
 ## 2026-10-11 — 公開rockの整理（暗号化は同日にやめた）、確定事項の反映（Git / CI / Operations、ROCK）
 

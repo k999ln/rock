@@ -319,7 +319,9 @@ Nodeの2つ目は、Javaのharness（`main`）に固定の入力を渡して要�
 
 この設計を実装するのはCodexである（2026-10-11、ownerの指示）。設計した側は、server側（永続grid）とSKUのJava実装までを実装し、worker・Shell・実機受入には着手していない。
 
-**出発点。** PR「Sky Compute Grid: 永続grid（既定で無効）とAndroid workerの設計」（branch `claude/sky-compute-grid-live`）。このPRがmainへ入っていればmainから、入っていなければこのbranchから作業branchを切る。workerはserver側の実装に依存するので、PRを取り込まずにmainだけから始めない。
+**出発点。** [PR #103](https://github.com/k999ln/rock/pull/103)「Sky Compute Grid: 永続grid（既定で無効）とAndroid worker・注文consoleの設計」（branch `claude/sky-compute-grid-live`）。このPRがmainへ入っていればmainから、入っていなければこのbranchから作業branchを切る。workerはserver側の実装に依存するので、PRを取り込まずにmainだけから始めない。
+
+**先に片付けること。** PR #103では`SPIDER / secrets`が失敗している。秘密検査が`tokenizerSha256`の公開hash（仕様文のSHA-256）を鍵の候補として検出したためで、秘密ではない。場所、値、再計算の方法は[永続gridのhost証拠](evidence/amc/grid01-persistent-grid-host.md)の「GitHub CI」にある。例外の登録（`.github/spider/gitleaks.toml`と`public-value-provenance.json`へ、ruleと3つのpathと値を絞った1件、同じfileの別の値は検出される試験つき）と、workflowが固定しているcontrol commitの更新は、`SECURITY.md`のとおりownerのreviewを受けて行う。検査を避けるためにkeyの名前を変えたり、値を分割したりしない。
 
 **変えてよいもの。** `android/core`（`ComputeGridProtocol`とその試験）、`android/automation`（§4の各class、manifest、`BootReceiver`、`RockShellService`）、`android/shell-api`（`IShellApi`）、`android/shell`（`MainActivity`の一群）、`scripts/check-os-parity.mjs`（Javaの要求本文の照合）、台帳と証拠。
 
