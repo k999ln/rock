@@ -123,11 +123,15 @@ export function esimCloudAccessStore(db: Database, runtime: unknown) {
       // Fresh authorization is checked on every use; the token never grants payment or Tool approval.
       return { id, token: secret, expiresAt };
     },
-    async revoke(owner: string, order: string, expectedKeyId: string, now = Date.now()) {
+    async revoke(owner: string, order: string, expectedKeyId: string, now = Date.now(), requestToken?: string | null) {
+      const requestHash = requestToken && TOKEN.test(requestToken) ? await sha256Hex(requestToken) : null;
       const result = await db.prepare(`UPDATE esim_cloud_access_keys SET revoked_at=COALESCE(revoked_at,?),active_slot=NULL
-        WHERE id=? AND owner_user_id=? AND sky_order_id=? AND replaced_by_id IS NULL`)
-        .bind(now, expectedKeyId, owner, order).run();
-      if (result.meta.changes !== 1) throw new Error('CLOUD_ACCESS_CONFLICT');
+        WHERE id=? AND owner_user_id=? AND sky_order_id=? AND replaced_by_id IS NULL
+        RETURNING token_sha256 = ? AS matchesRequestToken`)
+        .bind(now, expectedKeyId, owner, order, requestHash).first<{ matchesRequestToken: number | null }>();
+      if (!result) throw new Error('CLOUD_ACCESS_CONFLICT');
+      // A browser may currently use another order's key; revoking this order must not erase it.
+      return result.matchesRequestToken === 1;
     },
     async authenticate(secret: string, scope: string, now = Date.now()) {
       if (!TOKEN.test(secret)) throw new Error('UNAUTHORIZED');

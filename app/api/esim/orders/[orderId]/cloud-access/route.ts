@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:workers';
 import { database, requestUser } from '@/lib/fund-store';
-import { esimCloudAccessStore, esimCloudCookie, readEsimCloudRequest } from '@/lib/esim-cloud-access';
+import { esimCloudAccessStore, esimCloudCookie, esimCloudRequestToken, readEsimCloudRequest } from '@/lib/esim-cloud-access';
 import { parseEsimCloudPolicies } from '@/lib/esim-cloud-grant';
 
 const json = (value: unknown, status = 200, cookie?: string) => Response.json(value, {
@@ -55,10 +55,13 @@ export async function POST(request: Request, context: { params: Promise<{ orderI
     // Validate HTTPS before changing the credential, so no unusable key replaces a working one.
     esimCloudCookie(request, null);
     if (input.action === 'revoke') {
-      await ctx.store!.revoke(ctx.owner!, ctx.orderId!, input.expectedKeyId as string);
-      return json(await ctx.store!.status(ctx.owner!, ctx.orderId!), 200, esimCloudCookie(request, null));
+      const clearCookie = await ctx.store!.revoke(ctx.owner!, ctx.orderId!, input.expectedKeyId as string,
+        Date.now(), esimCloudRequestToken(request));
+      return json(await ctx.store!.status(ctx.owner!, ctx.orderId!), 200, clearCookie ? esimCloudCookie(request, null) : undefined);
     }
     const issued = await ctx.store!.issue(ctx.owner!, ctx.orderId!, input.action === 'rotate' ? input.expectedKeyId as string : null);
-    return json(await ctx.store!.status(ctx.owner!, ctx.orderId!), 201, esimCloudCookie(request, issued.token, issued.expiresAt));
+    const current = await ctx.store!.status(ctx.owner!, ctx.orderId!);
+    if (current.key?.id !== issued.id || current.state !== 'active') throw new Error('CLOUD_ACCESS_CONFLICT');
+    return json(current, 201, esimCloudCookie(request, issued.token, issued.expiresAt));
   } catch (error) { return failure(error); }
 }
