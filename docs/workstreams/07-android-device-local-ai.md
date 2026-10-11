@@ -18,6 +18,14 @@ Brokerのservice-home／購入claim／Cloud作業アダプターは、正規HTTP
 
 この追加差分は、変更前`5c4b027f`の実storeでload／save／401 clear／I/Oの4失敗を再現し、変更後のautomation JVM 16件が合格した。実AES-GCMと一時ファイルを使い、鍵失敗は注入している。I/OのEOFと暗号文の切断を区別し、解除後の同一token・owner復旧、別instanceのowner交代と旧401、破損／別origin／永久失効も検査する。SDK 35で7 AIDL／72 Java source compileとSIM entry／Android release source契約10件が合格。実際の画面ロック／unlock、Keystore、Binder process再作成、同候補APKのinstrumentationは引き続き端末／emulator条件であり、hostの注入試験を実機受入へ加算しない。
 
+### 2026-10-11 OS10／O6 — HTTPS応答本文の期限
+
+ROCKはHome、device authorization、Broker device enrollment、Wallet handoffの4つの既存response readerを監査した。通常の小分けbodyには従来から経過時間・byte上限があるが、`read()`がEOFを返す場合だけ期限検査を飛ばし、期限超過後の本文を成功として返していた。4 readerともread前とread後（EOFを含む）に既存の単調時計期限を確認する。期限切れ後の次のblocking readを開始せず、遅いEOFを成功へ変換しない。origin、認証、401処理、byte上限、再送・予約状態の契約は変更しない。
+
+`AndroidResponseDeadlineTest`は実際の4 private readerを呼び、期限切れの空body／期限後read開始／遅いEOFの12失敗を変更前`e55430e3`で再現した。変更後は小分けbody停止・正常body・byte上限を含む20件と、既存session／401の16件、計36件がhost合格。hostではAndroidの時計APIだけをJVMの実単調時計へ置き換え、streamは合成入力を使った。SDK 35で7 AIDL／73 Java source（このinstrumentation fixtureを含む）をcompileした。同候補のAndroid runtimeでの実行は`gradle -p android :automation:connectedDebugAndroidTest`で別途確認する。
+
+これは本文期限の検査であり、接続全体の強制停止を受入した記録ではない。[Androidのread timeout](https://developer.android.com/reference/java/net/URLConnection#setReadTimeout(int))はデータ到着待ちの制限で、接続全体の期限ではない。現行のbody deadlineはHTTP header取得後に始まり、`read()`内部のTLS／HTTP framing待ちも戻るまで検査できない。slow header、継続するchunk metadata、進行中TLS readを総期限で中断するには、取消可能なtransport方式と同候補の実Android受入が必要。外部timer/thread、依存APIの置換、ネットワーク接続はこの限定修正へ追加していない。
+
 ### 2026-10-11 OS10／O6 — A2A予約応答喪失後の再確認
 
 主taskは`OS10`（AMC primarySquad `O6`）、責任は`ROCK`。`AI04`の外部作用・crash復旧契約を参照するが、Provider／実支出／実機やAI04全体の受入へ加算しない。Brokerの`confirmCloudA2AWalletReservation`は、確定済み予約の再確認で存在しない`payload_digest`列を読んでいた。予約時に本人承認が`CONSUMED`へ進むため、応答喪失後は同じ予約でも本人確認待ちへ誤って戻っていた。Coreの`A2ARecoveryBinding.isConfirmedHeldReservation`へ実callerの判定を共通化し、正しい`approval_digest`、owner、delegation ID、approval ID、保持額、`HELD`状態が一致する場合だけ既存予約を返す。再承認・二度目の予約・Cloud dispatchは行わない。

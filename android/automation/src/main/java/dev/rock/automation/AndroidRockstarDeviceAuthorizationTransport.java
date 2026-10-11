@@ -112,10 +112,13 @@ final class AndroidRockstarDeviceAuthorizationTransport
     private static byte[] readBounded(InputStream input, int maximum, long deadlineElapsed) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] buffer = new byte[1_024];
-        int count;
-        while ((count = input.read(buffer)) != -1) {
+        while (true) {
             if (android.os.SystemClock.elapsedRealtime() >= deadlineElapsed)
                 throw new IOException("DEVICE_AUTH_RESPONSE_TIMEOUT");
+            int count = input.read(buffer);
+            if (android.os.SystemClock.elapsedRealtime() >= deadlineElapsed)
+                throw new IOException("DEVICE_AUTH_RESPONSE_TIMEOUT");
+            if (count == -1) break;
             if (output.size() > maximum - count) throw new IOException("DEVICE_AUTH_RESPONSE_TOO_LARGE");
             output.write(buffer, 0, count);
         }
