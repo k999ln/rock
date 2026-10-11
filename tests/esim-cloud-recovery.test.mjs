@@ -1,3 +1,4 @@
+import * as ownerIntent from '../lib/owner-intent.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createHash, randomUUID } from 'node:crypto';
@@ -313,6 +314,7 @@ function workRoute(f) {
   const route = loadRouteFixture(new URL('../app/api/work-jobs/route.ts', import.meta.url), new Map([
     ['cloudflare:workers', { env: { ...f.config, ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'true' } }],
     ['@/lib/a2a-delegation-store', { a2aDelegationStore }],
+    ['@/lib/owner-intent', ownerIntent],
     ['@/lib/fund-store', { database: () => f.db, requestUser }],
     ['@/lib/work-store', { workStore }],
     ['@/lib/rockstar-service-access', { rockstarServiceScopeAllowed, missingRockstarServiceScope }],

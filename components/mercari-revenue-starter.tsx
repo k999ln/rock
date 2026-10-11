@@ -3,6 +3,7 @@
 
 import { useEffect, useMemo, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
+import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 import {
   ArrowRight,
   BadgeJapaneseYen,
@@ -21,7 +22,9 @@ import { ExecutionSignin, useExecutionAccess } from '@/components/execution-acce
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import type { MercariRevenuePlan } from '@/lib/mercari-revenue';
 
+type PendingCreate = { ownerScope: string; payload: Record<string, unknown> };
 type Response = {
+  ownerScope?: string;
   plans: MercariRevenuePlan[];
   readiness: {
     consumerAssisted: 'ready';
@@ -55,7 +58,8 @@ export default function MercariRevenueStarter() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState('');
-  const [pendingCreate, setPendingCreate] = useState<Record<string, unknown> | null>(null);
+  const [ownerScope, setOwnerScope] = useState<string | null>(null);
+  const [pendingCreate, setPendingCreate] = useState<PendingCreate | null>(null);
   const createInFlight = useRef(false);
   const listGeneration = useRef(0);
   const createForm = useRef<HTMLFormElement | null>(null);
@@ -74,9 +78,11 @@ export default function MercariRevenueStarter() {
       const response = await operationRequest<Response>('/api/revenue/mercari');
       if (version !== listGeneration.current) return;
       setPlans(response.plans);
+      setOwnerScope(readOwnerScope(response.ownerScope));
       setError('');
     } catch (cause) {
       if (version !== listGeneration.current) return;
+      setOwnerScope(null);
       if (cause instanceof OperationRequestError && cause.status === 401)
         setNeedsSignin(true);
       else
@@ -92,16 +98,17 @@ export default function MercariRevenueStarter() {
     const timer = window.setTimeout(() => {
       if (!current || version !== listGeneration.current) return;
       if (executionBlocked) {
-        setPlans([]);
+        setPlans([]); setOwnerScope(null);
         return;
       }
       setLoading(true);
       void operationRequest<Response>('/api/revenue/mercari')
         .then((response) => {
-          if (current && version === listGeneration.current) setPlans(response.plans);
+          if (current && version === listGeneration.current) { setPlans(response.plans); setOwnerScope(readOwnerScope(response.ownerScope)); }
         })
         .catch((cause) => {
           if (!current || version !== listGeneration.current) return;
+          setOwnerScope(null);
           if (cause instanceof OperationRequestError && cause.status === 401)
             setNeedsSignin(true);
           else
@@ -119,19 +126,26 @@ export default function MercariRevenueStarter() {
     };
   }, [executionBlocked, setNeedsSignin]);
 
-  async function saveCreate(payload: Record<string, unknown>) {
+  async function saveCreate(operation: PendingCreate) {
+    const { payload } = operation;
     if (createInFlight.current || busy) return;
     createInFlight.current = true;
     // A list captured before this save must not remove its confirmed result.
     listGeneration.current++; setLoading(false);
-    setPendingCreate(payload);
+    setPendingCreate(operation);
     setBusy(true);
     setError('');
     try {
+      const identity = await operationRequest<Response>('/api/revenue/mercari');
+      const currentScope = readOwnerScope(identity.ownerScope);
+      setOwnerScope(currentScope);
+      if (!currentScope) throw new Error(OWNER_CHECK_REQUIRED);
+      if (currentScope !== operation.ownerScope) { setPlans([]); throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED); }
       const plan = await operationRequest<MercariRevenuePlan>(
         '/api/revenue/mercari',
         'POST',
         payload,
+        { [OWNER_SCOPE_HEADER]: operation.ownerScope },
       );
       if (plan.id !== payload.id || !Number.isSafeInteger(plan.revision) ||
           typeof plan.listingDraft !== 'string' || !(plan.status in statusLabel))
@@ -141,8 +155,9 @@ export default function MercariRevenueStarter() {
       createForm.current?.reset();
     } catch (cause) {
       if (cause instanceof OperationRequestError) {
-        if (cause.status === 401) setNeedsSignin(true);
-        if ([400, 404, 409, 413, 415].includes(cause.status)) setPendingCreate(null);
+        if (cause.status === 401) { setNeedsSignin(true); setOwnerScope(null); setPlans([]); }
+        if (cause.code === OWNER_CHANGED) { setOwnerScope(null); setPlans([]); }
+        if (cause.code !== OWNER_CHANGED && [400, 404, 409, 413, 415].includes(cause.status)) setPendingCreate(null);
       }
       setError(cause instanceof Error ? cause.message : '保存できませんでした。');
     } finally {
@@ -154,9 +169,10 @@ export default function MercariRevenueStarter() {
   async function create(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     if (executionBlocked || locked || createInFlight.current) return;
+    if (!ownerScope) { setError(OWNER_CHECK_REQUIRED); return; }
     createForm.current = event.currentTarget;
     const form = new FormData(event.currentTarget);
-    await saveCreate({
+    await saveCreate({ ownerScope, payload: {
       id: crypto.randomUUID(),
       channel: form.get('channel'),
       title: form.get('title'),
@@ -170,14 +186,14 @@ export default function MercariRevenueStarter() {
       ownsStock: form.get('ownsStock') === 'on',
       accurate: form.get('accurate') === 'on',
       prohibitedChecked: form.get('prohibitedChecked') === 'on',
-    });
+    } });
   }
 
   async function transition(
     plan: MercariRevenuePlan,
     action: 'approve' | 'mark_listed' | 'report_sale' | 'cancel',
   ) {
-    if (executionBlocked || locked || createInFlight.current) return;
+    if (executionBlocked || locked || createInFlight.current || !ownerScope) return;
     const payload: Record<string, unknown> = {
       id: plan.id,
       action,
@@ -204,6 +220,7 @@ export default function MercariRevenueStarter() {
         '/api/revenue/mercari',
         'PATCH',
         payload,
+        { [OWNER_SCOPE_HEADER]: ownerScope },
       );
       setPlans((current) =>
         current.map((item) => (item.id === updated.id ? updated : item)),
@@ -289,18 +306,23 @@ export default function MercariRevenueStarter() {
                   <label><input disabled={locked} type="checkbox" name="accurate" /> 写真・状態・説明を正確に確認しました</label>
                   <label><input disabled={locked} type="checkbox" name="prohibitedChecked" /> 禁止されている出品物・行為に該当しないことを確認しました</label>
                 </fieldset>
-                <button className="mercari-primary" disabled={locked}>
+                <button className="mercari-primary" disabled={locked || !ownerScope}>
                   {busy ? <LoaderCircle className="mercari-spin" size={18} /> : <PackageCheck size={18} />}
                   出品原稿と利益計画を作る
                 </button>
               </form>
               {pendingCreate && <section aria-label="保存結果の確認">
-                <p>保存結果が確認できるまで、この画面を開いたままにしてください。同じ商品情報と保存IDで再確認します。</p>
-                <button type="button" className="mercari-primary" disabled={busy}
+                <p>保存結果が確認できるまで、この画面を開いたままにしてください。最初のアカウントで同じ保存IDを確認し、別アカウントには再送しません。</p>
+                <p>{ownerScope && ownerScope !== pendingCreate.ownerScope ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
+                <Link href="/signin-with-chatgpt?return_to=%2Fincome%2Fmercari" target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</Link>
+                <p>保留を解除しても保存済み記録は削除されません。元のアカウントで保存結果を確認してから新しく保存してください。入力本文は残ります。</p>
+                <button type="button" disabled={busy} onClick={() => { setPendingCreate(null); setError('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
+                <button type="button" className="mercari-primary" disabled={busy || (!!ownerScope && ownerScope !== pendingCreate.ownerScope)}
                   onClick={() => void saveCreate(pendingCreate)}>
                   {busy ? '確認中…' : '同じ保存内容で結果を確認'}
                 </button>
               </section>}
+              {(!ownerScope || pendingCreate) && <p>{!ownerScope && OWNER_CHECK_REQUIRED}<button type="button" disabled={busy} onClick={() => void refresh()}>保存先の接続を確認</button></p>}
               {error && <p className="mercari-error" role="alert">{error}</p>}
             </section>
 

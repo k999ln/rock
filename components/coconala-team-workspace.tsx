@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
+import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import { ArrowLeft, ArrowRight, CircleCheck, ExternalLink, Plus, RefreshCw } from 'lucide-react';
 import WorkspaceShell from '@/components/workspace-shell';
@@ -36,11 +37,12 @@ const statusNames: Record<TeamCase['status'], string> = {
 };
 const coconalaTool = catalog.find((tool) => tool.id === 'coconala');
 
-async function request<T>(method = 'GET', value?: unknown): Promise<T> {
-  return operationRequest<T>('/api/coconala-team', method, value);
+async function request<T>(method = 'GET', value?: unknown, ownerScope?: string): Promise<T> {
+  return operationRequest<T>('/api/coconala-team', method, value, ownerScope ? { [OWNER_SCOPE_HEADER]: ownerScope } : undefined);
 }
 
 type PendingSave = {
+  ownerScope: string;
   method: 'POST' | 'PATCH';
   value: { id: string; terms: TeamTerms } | {
     caseId: string; revision: number; command: Record<string, unknown>;
@@ -89,6 +91,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [needsSignin, setNeedsSignin] = useState(false);
+  const [ownerScope, setOwnerScope] = useState<string | null>(null);
   const [pendingSave, setPendingSave] = useState<PendingSave | null>(null);
   const saveInFlight = useRef(false);
   const listGeneration = useRef(0);
@@ -101,13 +104,15 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
     const version = ++listGeneration.current;
     setLoading(true);
     try {
-      const result = await request<{ cases: TeamCase[] }>();
+      const result = await request<{ cases: TeamCase[]; ownerScope?: string }>();
       if (version !== listGeneration.current) return;
       setCases(result.cases);
+      setOwnerScope(readOwnerScope(result.ownerScope));
       setNeedsSignin(false);
       setError('');
     } catch (caught) {
       if (version !== listGeneration.current) return;
+      setOwnerScope(null);
       if (caught instanceof OperationRequestError && caught.status === 401) {
         setNeedsSignin(true); setCases([]);
       }
@@ -141,7 +146,15 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
     setPendingSave(operation);
     setBusy(true); setError(''); setNotice('');
     try {
-      const result = await request<{ caseFile: TeamCase }>(operation.method, operation.value);
+      const identity = await request<{ ownerScope?: string }>();
+      const currentScope = readOwnerScope(identity.ownerScope);
+      setOwnerScope(currentScope);
+      if (!currentScope) throw new Error(OWNER_CHECK_REQUIRED);
+      if (currentScope !== operation.ownerScope) {
+        setCases([]);
+        throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
+      }
+      const result = await request<{ caseFile: TeamCase }>(operation.method, operation.value, operation.ownerScope);
       const expectedId = 'id' in operation.value ? operation.value.id : operation.value.caseId;
       if (!result.caseFile || result.caseFile.id !== expectedId ||
           !Number.isSafeInteger(result.caseFile.revision) || !result.caseFile.terms ||
@@ -158,10 +171,11 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
       }
     } catch (caught) {
       if (caught instanceof OperationRequestError) {
-        if (caught.status === 401) { setNeedsSignin(true); setCases([]); }
+        if (caught.status === 401) { setNeedsSignin(true); setCases([]); setOwnerScope(null); }
+        if (caught.code === OWNER_CHANGED) { setCases([]); setOwnerScope(null); }
         // Validation/conflict responses are definitive. Network/server failures
         // retain the exact operation, including its original revision and ID.
-        if ([400, 404, 409, 413, 415].includes(caught.status)) setPendingSave(null);
+        if (caught.code !== OWNER_CHANGED && [400, 404, 409, 413, 415].includes(caught.status)) setPendingSave(null);
       }
       setError(caught instanceof Error ? caught.message : '保存できませんでした。');
     } finally { saveInFlight.current = false; setBusy(false); }
@@ -170,15 +184,16 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   async function save(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     if (locked) return;
+    if (!ownerScope) { setError(OWNER_CHECK_REQUIRED); return; }
     const current = cases.find((item) => item.id === editingId);
     if (editingId && !current) { setError('下書きを再読込してください。'); return; }
     await attemptSave(current ? {
-      method: 'PATCH', fromForm: true,
+      ownerScope, method: 'PATCH', fromForm: true,
       value: { caseId: current.id, revision: current.revision,
         command: { id: crypto.randomUUID(), action: 'update_terms', terms: { ...form } } },
       notice: '発注前の条件を更新しました。',
     } : {
-      method: 'POST', fromForm: true,
+      ownerScope, method: 'POST', fromForm: true,
       value: { id: crypto.randomUUID(), terms: { ...form } },
       notice: '案件を下書き保存しました。内容と証拠を確認してから担当開始を記録してください。',
     });
@@ -186,8 +201,9 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
 
   async function act(action: string, payload: Record<string, unknown> = {}) {
     if (!selected || locked) return;
+    if (!ownerScope) { setError(OWNER_CHECK_REQUIRED); return; }
     await attemptSave({
-      method: 'PATCH', fromForm: false,
+      ownerScope, method: 'PATCH', fromForm: false,
       value: { caseId: selected.id, revision: selected.revision,
         command: { id: crypto.randomUUID(), action, ...payload } },
       notice: '記録を保存しました。外部サイトへの送信・銀行振込は行っていません。',
@@ -196,12 +212,13 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
 
   async function deleteDraft() {
     if (!deleteTarget || locked || needsSignin) return;
+    if (!ownerScope) { setError(OWNER_CHECK_REQUIRED); return; }
     listGeneration.current++; setLoading(false);
     setBusy(true); setError(''); setNotice('');
     try {
       const result = await request<{ deletedCaseId: string }>('DELETE', {
         caseId: deleteTarget.id, revision: deleteTarget.revision,
-      });
+      }, ownerScope);
       if (result.deletedCaseId !== deleteTarget.id) throw new Error('削除結果を確認できませんでした。案件を再読込してください。');
       setCases((current) => current.filter((item) => item.id !== result.deletedCaseId));
       setSelectedId((current) => current === result.deletedCaseId ? '' : current);
@@ -221,8 +238,13 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   </section>;
 
   const saveRecovery = pendingSave && <section className={styles.empty} aria-label="保存結果の確認">
-    <p>保存結果の確認中です。この画面を開いたまま、同じ内容で確認してください。案件や金額を二重に記録しません。</p>
-    <button type="button" className={styles.secondary} disabled={busy || needsSignin}
+    <p>保存結果の確認中です。最初のアカウントで同じ記録IDを確認します。別アカウントには再送しません。</p>
+    <p>{ownerScope && ownerScope !== pendingSave.ownerScope ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
+    <Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</Link>
+    <p>保留を解除しても保存済みの記録は削除されません。元のアカウントで保存結果を確認してから、新しい保存を行ってください。入力本文は残ります。</p>
+    <button type="button" disabled={busy} onClick={() => { setPendingSave(null); setEditingId(''); setError(''); setNotice('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
+    <button type="button" disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button>
+    <button type="button" className={styles.secondary} disabled={busy || needsSignin || (!!ownerScope && pendingSave.ownerScope !== ownerScope)}
       onClick={() => void attemptSave(pendingSave)}>{busy ? '確認中…' : '同じ保存内容で結果を確認'}</button>
   </section>;
 
@@ -238,6 +260,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
         <button type="button" disabled={locked} aria-current={view === 'management' ? 'page' : undefined} onClick={() => setView('management')}>案件管理</button>
         <button type="button" disabled={locked} aria-current={view === 'check' ? 'page' : undefined} onClick={() => setView('check')}>応募前チェック</button>
       </nav>
+      {!ownerScope && !needsSignin && <output>{OWNER_CHECK_REQUIRED}<button disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button></output>}
       {view === 'check' ? <section className={styles.checkPanel} aria-label="ココナラ応募前チェック">
         <span className={styles.eyebrow}>COCONALA / BEFORE APPLYING</span>
         <h1>応募前に案件を確認</h1>
@@ -332,7 +355,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
           {error && <p className={styles.error} role="alert">{error}</p>}
           {saveRecovery}
           {needsSignin && signinRecovery}
-          <button className={styles.primary} disabled={locked || needsSignin}>{busy ? '保存中…' : '下書きとして保存'}</button></form>
+          <button className={styles.primary} disabled={locked || needsSignin || !ownerScope}>{busy ? '保存中…' : '下書きとして保存'}</button></form>
       </DialogContent></Dialog>
       <Dialog open={Boolean(deleteCaseId)} onOpenChange={(open) => { if (!locked && !open) setDeleteCaseId(''); }}>
         <DialogContent className={`${styles.modal} ${styles.deleteModal}`} showCloseButton={false}>

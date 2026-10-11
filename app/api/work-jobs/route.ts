@@ -1,3 +1,4 @@
+import { rejectChangedOwner } from '@/lib/owner-intent';
 import { env } from 'cloudflare:workers';
 import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
 import { database, requestUser } from '@/lib/fund-store';
@@ -104,12 +105,14 @@ export async function POST(request: Request) {
 }
 export async function PATCH(request: Request) {
   try {
-    const user = await requestUser(request),
-      input = objectInput(await body(request), [
-        'jobId',
-        'revision',
-        'command',
-      ]);
+    const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
+    const input = objectInput(await body(request), [
+      'jobId',
+      'revision',
+      'command',
+    ]);
     const store = workStore(database()),
       current = await store.get(user, workId(input.jobId));
     if (!current) throw new WorkError('仕事が見つかりません。', 404);

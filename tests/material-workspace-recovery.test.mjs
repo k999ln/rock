@@ -1,3 +1,5 @@
+import * as ownerIntent from '../lib/owner-intent.ts';
+const ownerA = 'owner-v1:' + 'a'.repeat(64), ownerB = 'owner-v1:' + 'b'.repeat(64);
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
@@ -11,7 +13,7 @@ const compiled = ts.transpileModule(readFileSync(new URL('../components/material
 }).outputText;
 function harness() {
   const slots = [], effects = [], requests = [], records = new Map(), computations = new Set();
-  let generationGate;
+  let generationGate, currentOwner = ownerA;
   function track(promise) { computations.add(promise); void promise.then(() => computations.delete(promise), () => computations.delete(promise)); return promise; }
   let cursor = 0, tree, mode = null, signedIn = true, holdList = false, releaseList;
   const react = {
@@ -23,21 +25,22 @@ function harness() {
     },
   };
   const jsx = (type, props) => ({ type, props });
-  const modules = { react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
+  const modules = { '@/lib/owner-intent': ownerIntent, react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
     '@/contracts/material-invention-fixture.json': fixture, '@/lib/material-invention': { ...material,
       generateMaterialCandidateGraph(...args) { return track((async () => { if (generationGate) await generationGate.promise; return material.generateMaterialCandidateGraph(...args); })()); } }, '@/lib/material-study': study,
     './material-invention-workspace.module.css': {}, '@/components/use-pending-save-navigation': { usePendingSaveNavigation() {} },
   };
   async function fetch(url, options = {}) {
     const method = options.method ?? 'GET', value = options.body ? JSON.parse(options.body) : undefined;
-    requests.push({ method, url, value });
+    requests.push({ method, url, value, headers: options.headers });
     if (!signedIn) return new Response('Synthetic gateway sign-in required', { status: 401 });
     if (method === 'GET') {
-      const response = Response.json({ jobs: [...records.values()].map(({ job }) => job) });
+      const response = Response.json({ ownerScope: currentOwner, jobs: [...records.values()].map(({ job }) => job) });
       if (holdList) { holdList = false; return new Promise((resolve) => { releaseList = () => resolve(response); }); }
       return response;
     }
     assert.equal(method, 'POST');
+    if (mode === 'owner') { mode = null; return Response.json({error:'Changed after identity check',code:ownerIntent.OWNER_CHANGED},{status:409}); }
     const result = records.get(value.id) ?? await track(study.createMaterialStudy(value));
     records.set(value.id, result);
     if (mode === 'lost') { mode = null; throw Error('response lost'); }
@@ -53,14 +56,14 @@ function harness() {
     out.push(node); nodes(node.props?.children, out); return out; }
   function text(n) { return typeof n === 'string' || typeof n === 'number' ? String(n) : Array.isArray(n) ? n.map(text).join('') : n ? text(n.props?.children) : ''; }
   function find(type, label) { return nodes(tree).find((n) => n.type === type && (!label || text(n).includes(label))); }
-  async function flush() { while (computations.size) await Promise.allSettled(computations);
+  async function flush() { await new Promise((r) => setImmediate(r)); while (computations.size) await Promise.allSettled(computations);
     await new Promise((r) => setImmediate(r)); render(); }
   async function click(label) { const button = find('button', label); assert.ok(button, label); assert.ok(!button.props.disabled, label);
     button.props.onClick(); render(); await flush(); }
   function source(value) { find('textarea').props.onChange({ target: { value } }); render(); }
   render();
-  return { render, find, flush, click, source, records, requests,
-    holdGeneration() { generationGate = Promise.withResolvers(); return () => generationGate.resolve(); }, holdList() { holdList = true; }, releaseList() { releaseList(); }, lost() { mode = 'lost'; }, signin(v) { signedIn = v; } };
+  return { setOwner(value) { currentOwner = value; }, render, find, flush, click, source, records, requests,
+    holdGeneration() { generationGate = Promise.withResolvers(); return () => generationGate.resolve(); }, holdList() { holdList = true; }, releaseList() { releaseList(); }, ownerRace() { mode = 'owner'; }, lost() { mode = 'lost'; }, signin(v) { signedIn = v; } };
 }
 
 void test('Material keeps the exact pending save through a 401 after a lost committed response', async () => {
@@ -73,7 +76,7 @@ void test('Material keeps the exact pending save through a 401 after a lost comm
   assert.equal(h.find('a', 'サインインして保存を使う').props.target, '_blank');
   h.signin(true); await h.click('同じ操作を再試行'); await h.flush();
   const posts = h.requests.filter((r) => r.method === 'POST');
-  assert.equal(posts.length, 3); assert.deepEqual(posts[1].value, posts[0].value); assert.deepEqual(posts[2].value, posts[0].value);
+  assert.equal(posts.length, 2); assert.deepEqual(posts[1].value, posts[0].value);
   assert.equal(h.records.size, 1);
 });
 
@@ -122,4 +125,53 @@ void test('Material harness waits for the actual candidate computation rather th
   assert.equal(h.find('button', '入力と候補を本人用に保存'), undefined);
   release(); await generating;
   assert.ok(h.find('button', '入力と候補を本人用に保存'));
+});
+
+void test('Material retains original input and scope across 401 and blocks retry to another owner', async () => {
+  const h = harness(); await h.flush(); await h.click('合成サンプルを開く'); await h.click('この端末で候補を生成');
+  h.lost(); await h.click('入力と候補を本人用に保存');
+  const source = h.find('textarea').props.value;
+  h.signin(false); await h.click('同じ操作を再試行');
+  h.signin(true); h.setOwner(ownerB); await h.click('同じ操作を再試行');
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
+  assert.ok(h.find('button', '同じ操作を再試行').props.disabled);
+  assert.equal(h.find('textarea').props.value, source);
+  h.setOwner(ownerA); await h.click('一覧を再読込'); await h.click('同じ操作を再試行');
+  const posts = h.requests.filter(r => r.method === 'POST');
+  assert.equal(posts.length, 2); assert.deepEqual(posts[1].value, posts[0].value);
+  assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA);
+});
+void test('Material explicit release preserves the formulation and creates a fresh ID under confirmed B', async () => {
+  const h = harness(); await h.flush(); await h.click('合成サンプルを開く'); await h.click('この端末で候補を生成');
+  h.lost(); await h.click('入力と候補を本人用に保存');
+  h.setOwner(ownerB); await h.click('同じ操作を再試行');
+  const source = h.find('textarea').props.value;
+  await h.click('保留を解除（入力は保持）');
+  assert.equal(h.find('textarea').props.value, source);
+  await h.click('入力と候補を本人用に保存');
+  const posts = h.requests.filter(r => r.method === 'POST');
+  assert.equal(posts.length, 2); assert.notEqual(posts[1].value.id, posts[0].value.id);
+  assert.deepEqual(posts[1].value.request, posts[0].value.request);
+  assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerB);
+});
+void test('Material unknown owner scope prevents new and pending writes without losing the comparison', async () => {
+  const h = harness(); await h.flush(); h.setOwner(null); await h.click('一覧を再読込');
+  await h.click('合成サンプルを開く'); await h.click('この端末で候補を生成');
+  assert.ok(h.find('button', '入力と候補を本人用に保存').props.disabled);
+  h.setOwner(ownerA); await h.click('一覧を再読込'); h.lost(); await h.click('入力と候補を本人用に保存');
+  h.setOwner(null); await h.click('同じ操作を再試行');
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
+  assert.ok(h.find('button', '同じ操作を再試行'));
+  assert.ok(h.find('button', '入力と候補を本人用に保存').props.disabled);
+});
+
+void test('Material keeps the original ID when API rejects an owner switch after preflight', async () => {
+ const h = harness(); await h.flush(); await h.click('合成サンプルを開く'); await h.click('この端末で候補を生成');
+ h.ownerRace(); await h.click('入力と候補を本人用に保存');
+ assert.ok(h.find('button', '同じ操作を再試行'));
+ await h.click('同じ操作を再試行');
+ const posts = h.requests.filter(r => r.method === 'POST');
+ assert.deepEqual(posts[1].value, posts[0].value);
+ assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA);
+ assert.equal(h.records.size, 1);
 });

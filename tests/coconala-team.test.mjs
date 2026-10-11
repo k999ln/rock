@@ -141,7 +141,7 @@ void test('real API and SQLite recover lost create/action responses and retain o
   const { sqlite, db } = setup(t);
   const refs = new Map([
     ['@/lib/fund-store', { database: () => db, requestUser }],
-    ...await Promise.all(['coconala-team', 'coconala-team-store'].map(async (name) =>
+    ...await Promise.all(['owner-intent', 'coconala-team', 'coconala-team-store'].map(async (name) =>
       [`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url).href)])),
   ]);
   const route = loadRouteFixture(new URL('../app/api/coconala-team/route.ts', import.meta.url), refs);

@@ -1,3 +1,5 @@
+import * as ownerIntent from '../lib/owner-intent.ts';
+const ownerA = 'owner-v1:' + 'a'.repeat(64), ownerB = 'owner-v1:' + 'b'.repeat(64);
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
@@ -8,10 +10,11 @@ import { createMercariRevenuePlan } from '../lib/mercari-revenue.ts';
 const compiled = ts.transpileModule(readFileSync(new URL('../components/mercari-revenue-starter.tsx', import.meta.url), 'utf8'), {
   compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
 }).outputText;
-class RequestError extends Error { constructor(status) { super(`HTTP ${status}`); this.status = status; } }
+class RequestError extends Error { constructor(message, status, code) { super(typeof message === 'number' ? `HTTP ${message}` : message); this.status = typeof message === 'number' ? message : status; this.code = code; } }
 function harness(records = new Map()) {
   const slots = [], effects = [], requests = [], listeners = new Map(), timers = new Map(), replies = [];
   let nextTimer = 0;
+  let currentOwner = ownerA;
   let cursor = 0, tree, failure = null, resets = 0, access = 'ready', visibleRecords = records;
   const form = { fields: { channel: 'consumer_assisted', title: 'Synthetic owned stock', condition: 'Checked', facts: 'Local fixture only',
     priceJPY: '3000', marketplaceFeeJPY: '300', shippingJPY: '750', itemCostJPY: '0', otherCostJPY: '0',
@@ -29,11 +32,12 @@ function harness(records = new Map()) {
   };
   const jsx = (type, props) => ({ type, props });
   const inert = () => null, needsSignin = (value) => { access = value ? 'signin' : 'ready'; };
-  async function request(_path, method = 'GET', value) {
-    requests.push({ method, value: value === undefined ? undefined : JSON.parse(JSON.stringify(value)) });
-    if (method === 'GET') return replies.length ? await replies.shift()() : { plans: [...visibleRecords.values()] };
+  async function request(_path, method = 'GET', value, headers) {
+    requests.push({ method, headers, value: value === undefined ? undefined : JSON.parse(JSON.stringify(value)) });
+    if (method === 'GET') return replies.length ? await replies.shift()() : { ownerScope: currentOwner, plans: [...visibleRecords.values()] };
     assert.equal(method, 'POST');
     const mode = failure; failure = null;
+    if (mode === 'owner') throw new RequestError('Changed after identity check', 409, ownerIntent.OWNER_CHANGED);
     if (mode === 'unauthorized') throw new RequestError(401);
     if (mode === 'validation') throw new RequestError(400);
     if (mode === 'before') throw new RequestError(503);
@@ -43,7 +47,7 @@ function harness(records = new Map()) {
     if (mode === 'invalid') return {};
     return plan;
   }
-  const modules = {
+  const modules = { '@/lib/owner-intent': ownerIntent,
     react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': inert,
     '@/lib/operations-client': { operationRequest: request, OperationRequestError: RequestError },
     '@/components/workspace-shell': inert,
@@ -82,7 +86,7 @@ function harness(records = new Map()) {
     if (twice) await handler({ preventDefault() {}, currentTarget: form });
     render(); await promise; await flush(); }
   render();
-  return { replies, render, find, nodes: () => nodes(tree), flush, click, submit, requests, records, listeners, form,
+  return { setOwner(value) { currentOwner = value; }, replies, render, find, nodes: () => nodes(tree), flush, click, submit, requests, records, listeners, form,
     setAccess(value, visible = visibleRecords) { access = value; visibleRecords = visible; render(); },
     get resets() { return resets; }, fail(mode) { failure = mode; } };
 }
@@ -134,7 +138,7 @@ void test('Mercari rechecks the owner list after authentication recovery instead
   h.setAccess('checking', new Map()); await h.flush();
   h.setAccess('ready'); await h.flush();
   assert.equal(h.find('h3', 'Synthetic owned stock'), undefined);
-  assert.equal(h.requests.filter((r) => r.method === 'GET').length, 2);
+  assert.equal(h.requests.filter((r) => r.method === 'GET').length, 3);
 });
 
 void test('Mercari retains the uncertain payload through sign-in and deduplicates the refreshed row', async () => {
@@ -149,9 +153,54 @@ void test('Mercari retains the uncertain payload through sign-in and deduplicate
 
 void test('a late pre-create Mercari list cannot erase the confirmed saved card', async () => {
   const h = harness(); const delayed = Promise.withResolvers();
+  await h.flush(); h.setAccess('checking'); h.setAccess('ready');
   h.replies.push(() => delayed.promise); await h.flush();
   await h.submit(); assert.equal(h.records.size, 1);
-  delayed.resolve({ plans: [] }); await h.flush();
+  delayed.resolve({ ownerScope: ownerA, plans: [] }); await h.flush();
   assert.ok(h.find('h3', 'Synthetic owned stock'));
   assert.equal(h.records.size, 1);
+});
+
+void test('Mercari binds a pending create across 401, rejects B, and resumes the original A ID', async () => {
+  const h = harness(); await h.flush(); h.fail('before'); await h.submit();
+  h.fail('unauthorized'); await h.click('同じ保存内容で結果を確認');
+  h.setOwner(ownerB); h.setAccess('ready'); await h.flush();
+  assert.ok(h.find('button', '同じ保存内容で結果を確認').props.disabled);
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 2);
+  assert.equal(h.records.size, 0); assert.equal(h.resets, 0);
+  h.setOwner(ownerA); await h.click('保存先の接続を確認'); await h.click('同じ保存内容で結果を確認');
+  const posts = h.requests.filter(r => r.method === 'POST');
+  assert.equal(posts.length, 3); assert.deepEqual(posts[2].value, posts[0].value);
+  assert.equal(posts[2].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA);
+});
+void test('Mercari keeps fields when explicitly abandoning the old owner operation and creates a fresh ID', async () => {
+  const h = harness(); await h.flush(); h.fail('before'); await h.submit();
+  h.setOwner(ownerB); await h.click('同じ保存内容で結果を確認');
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
+  await h.click('保存先の接続を確認'); await h.click('保留を解除（入力は保持）');
+  assert.equal(h.resets, 0); assert.equal(h.form.fields.title, 'Synthetic owned stock');
+  await h.submit();
+  const posts = h.requests.filter(r => r.method === 'POST');
+  assert.equal(posts.length, 2); assert.notEqual(posts[1].value.id, posts[0].value.id);
+  assert.equal(posts[1].value.title, posts[0].value.title);
+  assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerB);
+});
+void test('Mercari never treats an unknown identity GET as ready for a new or pending write', async () => {
+  const h = harness(); h.setOwner(null); await h.flush();
+  assert.ok(h.find('button', '出品原稿と利益計画を作る').props.disabled);
+  h.setOwner(ownerA); await h.click('保存先の接続を確認'); h.fail('before'); await h.submit();
+  h.setOwner(null); await h.click('同じ保存内容で結果を確認');
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
+  assert.ok(h.find('button', '同じ保存内容で結果を確認'));
+  assert.equal(h.resets, 0);
+});
+
+void test('Mercari keeps the frozen operation when owner changes between preflight and POST', async () => {
+ const h = harness(); await h.flush(); h.fail('owner'); await h.submit();
+ assert.ok(h.find('button', '同じ保存内容で結果を確認'));
+ await h.click('同じ保存内容で結果を確認');
+ const posts = h.requests.filter(r => r.method === 'POST');
+ assert.deepEqual(posts[1].value, posts[0].value);
+ assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA);
+ assert.equal(h.records.size, 1);
 });
