@@ -21,13 +21,37 @@ final class AndroidRockstarDeviceHomeTransport {
     static final String PATH = "/api/rockstar/device-home";
     private static final int MAX_RESPONSE_BYTES = 64_000;
     private final String origin;
+    private final RejectedSessionHandler rejectedSession;
+    private final ConnectionFactory connections;
+    private final java.util.function.BooleanSupplier mainThread;
 
-    AndroidRockstarDeviceHomeTransport(String configuredOrigin) {
+    interface RejectedSessionHandler {
+        void reject(String authorization) throws IOException;
+    }
+
+    interface ConnectionFactory {
+        HttpsURLConnection open(URL url) throws IOException;
+    }
+
+    static final class SessionRejectedException extends IOException {
+        SessionRejectedException(String message) { super(message); }
+    }
+
+    AndroidRockstarDeviceHomeTransport(String configuredOrigin, RejectedSessionHandler rejectedSession) {
+        this(configuredOrigin, rejectedSession, url -> (HttpsURLConnection) url.openConnection(),
+            () -> Looper.myLooper() == Looper.getMainLooper());
+    }
+
+    AndroidRockstarDeviceHomeTransport(String configuredOrigin, RejectedSessionHandler rejectedSession,
+            ConnectionFactory connections, java.util.function.BooleanSupplier mainThread) {
         origin = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(configuredOrigin);
+        this.rejectedSession = java.util.Objects.requireNonNull(rejectedSession);
+        this.connections = java.util.Objects.requireNonNull(connections);
+        this.mainThread = java.util.Objects.requireNonNull(mainThread);
     }
 
     String get(String path, String authorization) throws IOException {
-        if (Looper.myLooper() == Looper.getMainLooper()) throw new IOException("DEVICE_HOME_NETWORK_ON_MAIN_THREAD");
+        if (mainThread.getAsBoolean()) throw new IOException("DEVICE_HOME_NETWORK_ON_MAIN_THREAD");
         if (!allowedPath(path)) throw new IOException("DEVICE_HOME_PATH_REJECTED");
         if (authorization == null || !authorization.matches("Bearer rock_session_[A-Za-z0-9_-]{43}"))
             throw new IOException("DEVICE_HOME_SESSION_REQUIRED");
@@ -36,7 +60,7 @@ final class AndroidRockstarDeviceHomeTransport {
         byte[] responseBytes = null;
         try {
             URL url = URI.create(origin + path).toURL();
-            connection = (HttpsURLConnection) url.openConnection();
+            connection = connections.open(url);
             connection.setConnectTimeout(10_000);
             connection.setReadTimeout(10_000);
             connection.setInstanceFollowRedirects(false);
@@ -48,6 +72,7 @@ final class AndroidRockstarDeviceHomeTransport {
             connection.setRequestProperty("Cache-Control", "no-store");
             connection.setRequestProperty("Pragma", "no-cache");
             int status = connection.getResponseCode();
+            rejectUnauthorized(status, authorization, "DEVICE_HOME_HTTP_401");
             if (status != 200) throw new IOException("DEVICE_HOME_HTTP_" + status);
             String contentType = connection.getContentType();
             if (contentType == null || !"application/json".equalsIgnoreCase(contentType.split(";", 2)[0].trim()))
@@ -219,7 +244,7 @@ final class AndroidRockstarDeviceHomeTransport {
             throw new IOException("DEVICE_LLM_QUOTE_INPUT_INVALID", invalid);
         }
         if (requestBytes.length > 28_000) throw new IOException("DEVICE_LLM_QUOTE_TOO_LARGE");
-        if (Looper.myLooper() == Looper.getMainLooper()) throw new IOException("DEVICE_HOME_NETWORK_ON_MAIN_THREAD");
+        if (mainThread.getAsBoolean()) throw new IOException("DEVICE_HOME_NETWORK_ON_MAIN_THREAD");
         if (CookieHandler.getDefault() != null) throw new IOException("DEVICE_HOME_COOKIE_HANDLER_UNSUPPORTED");
         if (authorization == null || !authorization.matches("Bearer rock_session_[A-Za-z0-9_-]{43}"))
             throw new IOException("DEVICE_HOME_SESSION_REQUIRED");
@@ -329,7 +354,7 @@ final class AndroidRockstarDeviceHomeTransport {
         boolean allowed = "POST".equals(method) ? allowedPostPath(path) :
             "PATCH".equals(method) && allowedPatchPath(path);
         if (!allowed) throw new IOException("DEVICE_HOME_ACTION_PATH_REJECTED");
-        if (Looper.myLooper() == Looper.getMainLooper()) throw new IOException("DEVICE_HOME_NETWORK_ON_MAIN_THREAD");
+        if (mainThread.getAsBoolean()) throw new IOException("DEVICE_HOME_NETWORK_ON_MAIN_THREAD");
         if (CookieHandler.getDefault() != null) throw new IOException("DEVICE_HOME_COOKIE_HANDLER_UNSUPPORTED");
         if (authorization == null || !authorization.matches("Bearer rock_session_[A-Za-z0-9_-]{43}"))
             throw new IOException("DEVICE_HOME_SESSION_REQUIRED");
@@ -339,7 +364,7 @@ final class AndroidRockstarDeviceHomeTransport {
         HttpURLConnection connection = null;
         byte[] responseBytes = null;
         try {
-            connection = (HttpsURLConnection) URI.create(origin + path).toURL().openConnection();
+            connection = connections.open(URI.create(origin + path).toURL());
             connection.setConnectTimeout(10_000);
             connection.setReadTimeout(120_000);
             connection.setInstanceFollowRedirects(false);
@@ -355,6 +380,7 @@ final class AndroidRockstarDeviceHomeTransport {
             connection.setRequestProperty("Pragma", "no-cache");
             try (java.io.OutputStream output = connection.getOutputStream()) { output.write(requestBytes); }
             int status = connection.getResponseCode();
+            rejectUnauthorized(status, authorization, "DEVICE_HOME_ACTION_HTTP_401");
             if (status != 200 && status != 201 && status != 202)
                 throw new IOException("DEVICE_HOME_ACTION_HTTP_" + status);
             String contentType = connection.getContentType();
@@ -376,6 +402,14 @@ final class AndroidRockstarDeviceHomeTransport {
             if (responseBytes != null) java.util.Arrays.fill(responseBytes, (byte) 0);
             if (connection != null) connection.disconnect();
         }
+    }
+
+    private void rejectUnauthorized(int status, String authorization, String message) throws IOException {
+        if (status != 401) return;
+        // A permission failure (403), unavailable server, or transport error is not revocation.
+        // The store compares the rejected token so an old response cannot delete a new link.
+        rejectedSession.reject(authorization);
+        throw new SessionRejectedException(message);
     }
 
     private static boolean allowedPath(String path) {

@@ -111,6 +111,17 @@ public final class RockstarDeviceAuthorizationFlowTest {
         assertEquals(0, vault.saves);
     }
 
+    @Test public void storageFailureNeverReturnsAuthorized() throws Exception {
+        FakeHttp http = new FakeHttp();
+        http.responses.add(beginResponse(600, 5));
+        http.responses.add(authorized(TOKEN, NOW + 60_000));
+        RockstarDeviceAuthorizationFlow flow = new RockstarDeviceAuthorizationFlow(http,
+            (token, expiry, owner) -> { throw new IOException("DEVICE_SESSION_COMMIT_UNCONFIRMED"); });
+        RockstarDeviceAuthorizationFlow.DeviceAuthorization link = flow.begin("Rockstar Tablet", NOW);
+        try { flow.poll(link, NOW); fail("storage failure cannot become AUTHORIZED"); }
+        catch (IOException expected) { assertEquals("DEVICE_SESSION_COMMIT_UNCONFIRMED", expected.getMessage()); }
+    }
+
     private static Map<String,Object> beginResponse(long expiresIn, long interval) {
         return beginResponse(expiresIn, interval, USER_CODE);
     }
