@@ -493,10 +493,8 @@ public final class RockShellService extends Service {
                             Long.parseLong(approval.get("expires_at")) > draft.hold.deadlineAt)
                         return a2aBrokerFailure("WALLET_APPROVAL_TERMS_MISMATCH");
                     Map<String,String> existing = platform.findA2AWalletReservation(draft.ownerUserId, draft.delegationId);
-                    if (existing != null && "HELD".equals(existing.get("state")) &&
-                            approvalId.equals(existing.get("approval_id")) &&
-                            payloadDigest.equals(existing.get("payload_digest")) &&
-                            Long.parseLong(existing.get("held_minor")) == draft.hold.limitMinor) {
+                    if (A2ARecoveryBinding.isConfirmedHeldReservation(existing, draft.ownerUserId,
+                            draft.delegationId, approvalId, payloadDigest, draft.hold.limitMinor)) {
                         JSONObject response = new JSONObject(); response.put("state", "reserved");
                         response.put("delegationId", draft.delegationId); response.put("walletState", "HELD");
                         response.put("currency", draft.currency); response.put("heldMinor", draft.hold.limitMinor);

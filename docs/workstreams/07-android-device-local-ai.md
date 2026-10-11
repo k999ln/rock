@@ -14,6 +14,12 @@ Brokerのservice-home／購入claim／Cloud作業アダプターは、正規HTTP
 
 検証: 401処理とcommit読戻しを外した従来動作を、実Java adapter／AES-GCM codecと合成HTTPS・実一時ファイルのJUnitで5失敗として再現した。修正後は新しいautomation JVM 10件とCore 112件の計122件が合格。既存SDK 35のAIDL compilerと復旧したローカルJDK 17で7 AIDL／72 Java source（Broker・Shell・更新instrumentationを含む）がcompile合格、SIM entry／Android source契約14件と`npm run design:check`も合格。Gradleでの再現は`gradle -p android :core:test :automation:testDebugUnitTest`。`RockstarDeviceAccountLinkTest`は実Keystoreの再生成後readback／失効・旧応答と実AtomicFile rename失敗、`CloudSessionPresentationTest`は実Shell Viewの失効時消去を対象にする。今回のAPK／emulator instrumentation／Pixel実機での実行はまだ未確認であり、既存CIや過去の実機合格を今回の候補へ転用しない。
 
+### 2026-10-11 OS10／O6 — A2A予約応答喪失後の再確認
+
+主taskは`OS10`（AMC primarySquad `O6`）、責任は`ROCK`。`AI04`の外部作用・crash復旧契約を参照するが、Provider／実支出／実機やAI04全体の受入へ加算しない。Brokerの`confirmCloudA2AWalletReservation`は、確定済み予約の再確認で存在しない`payload_digest`列を読んでいた。予約時に本人承認が`CONSUMED`へ進むため、応答喪失後は同じ予約でも本人確認待ちへ誤って戻っていた。Coreの`A2ARecoveryBinding.isConfirmedHeldReservation`へ実callerの判定を共通化し、正しい`approval_digest`、owner、delegation ID、approval ID、保持額、`HELD`状態が一致する場合だけ既存予約を返す。再承認・二度目の予約・Cloud dispatchは行わない。
+
+実SQLiteをclose/reopenするJUnitで、従来の列名を使う判定が「応答喪失後の復旧」「保存失敗をrollbackしてから同じ承認で再試行」の2件に失敗することを確認した。修正後は4件の追加試験を含むCore 116件とautomation 10件、計126件が合格。保存失敗はSQLite triggerの`RAISE(ABORT)`で発生させ、未作成のhold、`ISSUED`の承認、元の残高が同時に維持されることを確認した。別owner／別ID／別承認／別digest／別上限は復旧せず、dispatch済み予約は再dispatch可能な`HELD`へ戻さない。SDK 35で7 AIDL／72 Java source compile、関連source契約14件も合格。取消前後・結果不明・署名usage receipt・append-only精算の既存Core試験は維持する。APK／Android runtime／Providerの新規受入は未実行。
+
 ## 2026-10-02 製品要件監査と優先順位
 
 | 要件 | 再利用できる実装 | 現在の限界／次の作業 |

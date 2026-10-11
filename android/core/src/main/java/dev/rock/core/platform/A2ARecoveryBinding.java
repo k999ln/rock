@@ -12,6 +12,17 @@ public final class A2ARecoveryBinding {
 
     private A2ARecoveryBinding() { }
 
+    /** Recover the response of a committed Wallet reservation without consuming approval again. */
+    public static boolean isConfirmedHeldReservation(Map<String,String> local, String owner,
+            String delegationId, String approvalId, String payloadDigest, long limitMinor) {
+        if (local == null || owner == null || delegationId == null || approvalId == null ||
+                !owner.equals(local.get("owner")) || !delegationId.equals(local.get("delegation_id")) ||
+                !"HELD".equals(local.get("state")) || !approvalId.equals(local.get("approval_id")) ||
+                !sameDigest(payloadDigest, local.get("approval_digest"))) return false;
+        try { return limitMinor > 0 && Long.parseLong(local.get("held_minor")) == limitMinor; }
+        catch (RuntimeException malformed) { return false; }
+    }
+
     /**
      * Compares normalized Cloud fields with an owner-scoped durable local reservation.
      * The caller must fetch Cloud data using the authenticated owner session and must not
