@@ -59,7 +59,7 @@ function cloudRoute(f) {
       throw new Error(`Unexpected dependency ${id}`);
     },
   });
-  return async (orderId, body, owner = f.owner) => {
+  return async (orderId, body, owner = f.owner, headers = {}) => {
     const method = body ? 'POST' : 'GET';
     const request = new Request(
       `https://rock.test/api/esim/orders/${orderId}/cloud-access`,
@@ -69,6 +69,7 @@ function cloudRoute(f) {
           origin: 'https://rock.test',
           'oai-authenticated-user-id': owner,
           'content-type': 'application/json',
+          ...headers,
         },
         body: body ? JSON.stringify(body) : undefined,
       },
@@ -545,4 +546,65 @@ void test('exact package lookup deduplicates catalogue pins and bounds D1 parame
     packages.some((item) => item.packageKey === f.packageKey),
     false,
   );
+});
+
+void test('revoking another eSIM order does not erase this browser active cloud credential', async (t) => {
+  const f = await fixture(t),
+    orderA = f.order(),
+    orderB = f.order(),
+    call = cloudRoute(f);
+  const a = await f.store.issue(f.owner, orderA, null);
+  const b = await f.store.issue(f.owner, orderB, null);
+  const cookieB = `rock_esim_access=${b.token}`;
+  const response = await call(
+    orderA,
+    { action: 'revoke', expectedKeyId: a.id },
+    f.owner,
+    { cookie: cookieB },
+  );
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('set-cookie'), null);
+  await assert.rejects(f.store.authenticate(a.token, 'zema'), /UNAUTHORIZED/);
+  assert.equal(
+    await authenticateEsimCloudRequest(
+      new Request('https://rock.test/api/work-jobs', {
+        headers: { cookie: cookieB },
+      }),
+      f.db,
+      f.config,
+    ),
+    f.owner,
+  );
+  const own = await call(
+    orderB,
+    { action: 'revoke', expectedKeyId: b.id },
+    f.owner,
+    { cookie: cookieB },
+  );
+  assert.equal(own.status, 200);
+  assert.match(own.headers.get('set-cookie'), /Max-Age=0/);
+});
+
+void test('issuance response never couples a replaced cookie to newer key metadata', async (t) => {
+  const f = await fixture(t),
+    orderId = f.order();
+  let replacement;
+  const racedDb = {
+    prepare: (sql) => f.db.prepare(sql),
+    async batch(statements) {
+      const result = await f.db.batch(statements);
+      if (!replacement) {
+        const current = await f.store.status(f.owner, orderId);
+        replacement = await f.store.issue(f.owner, orderId, current.key.id);
+      }
+      return result;
+    },
+  };
+  const response = await cloudRoute({ ...f, db: racedDb })(orderId, {
+    action: 'issue',
+  });
+  assert.equal(response.status, 409);
+  assert.equal(response.headers.get('set-cookie'), null);
+  assert.equal((await response.json()).error, 'CLOUD_ACCESS_CONFLICT');
+  assert.equal(await f.store.authenticate(replacement.token, 'zema'), f.owner);
 });
