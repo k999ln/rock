@@ -227,7 +227,9 @@
       },
       "interfaceImplementation": [
         "systems/rock-star-os/os/platform/runner_control.py",
-        "systems/rock-star-os/tests/test_os_runner_control.py"
+        "systems/rock-star-os/tests/test_os_runner_control.py",
+        "systems/rock-star-os/os/verify-platform.py",
+        "systems/rock-star-os/tests/test_os_platform_qmp.py"
       ]
     },
     {
