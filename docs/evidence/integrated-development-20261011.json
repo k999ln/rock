@@ -17,7 +17,18 @@
     "bytesRemoved": 161082,
     "localMarkdownLinksChecked": 1877,
     "missingLinks": 0,
-    "manifest": "data/project-status.json#repositoryCleanup.obsoleteContent"
+    "manifest": "data/project-status.json#repositoryCleanup.obsoleteContent",
+    "followup": {
+      "filesRemoved": 2,
+      "bytesRemoved": 50893,
+      "originalFilesRemoved": 8,
+      "totalFilesRemoved": 10,
+      "totalBytesRemoved": 211975,
+      "acceptanceContract": "docs/workstreams/06-native-qemu-release.md#continuing-acceptance",
+      "relativeLinksChecked": 2090,
+      "missingLinks": 0,
+      "fixedEvidenceUnchanged": true
+    }
   },
   "ledgerRecovery": {
     "tasks": [
@@ -331,7 +342,7 @@
       }
     },
     "recoveryFollowup": {
-      "sourceSha": "eb0e2722",
+      "sourceSha": "eb0e2722d2e27592ee41e9ad76e5a8ee5fedc24c",
       "tests": {
         "nodeTargeted": {
           "pass": 123,

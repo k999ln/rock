@@ -194,7 +194,7 @@ host専用copy fixture上のmigration実証は先に進められる。OS公開�
 - `systems/rock-star-os/os/wallet_backend/{contract_runtime,authority_fence,server,client}.py`: current contract admission、runtime close、HTTPdeadline、remote許可list。
 - `systems/rock-star-os/os/game_exchange/{protocol,connections,storage}.py`: connection-onlyscope、privateindex、currenthead、protectedmapping、lock順。
 - `systems/rock-star-os/os/update/rock_update.py`: signedmanifestの固定dataABI検査。
-- `docs/game-api-contract-draft.md` §4–6、S02–S10、X01–X07、`docs/gx00-owner-isolation-adr.md`、`docs/prompts/os-operational-base-next.md` D。
+- `docs/game-api-contract-draft.md` §4–6、S02–S10、X01–X07、`docs/gx00-owner-isolation-adr.md`、[統合後の受入契約](workstreams/06-native-qemu-release.md#continuing-acceptance)。旧実行指示Dは[固定原文](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/os-operational-base-next.md)で確認できる。
 - C担当への限定確認: C current-copy proofは外部台帳/worker/unknown outcomeを証明しない。全terminal化やhold消去を復元前提にしない。
 
 追加runtime: **0**。追加/実行test: **0**。VM/QEMU/DB/funds操作: **0**。本文の提案を実装済み・試験済み・本番条件確定と扱わない。

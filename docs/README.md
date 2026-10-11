@@ -423,7 +423,7 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`design-implementation-alignment-20260909.md`](design-implementation-alignment-20260909.md) | 履歴 | 設計・プロンプトと実装の再照合（2026-09-09） | 09-12 |
 | [`progress-audit-20260909.md`](progress-audit-20260909.md) | 履歴 | 進捗と確定要望の相違の監査（2026-09-09） | 09-09 |
 
-関連フォルダ：[`workstreams/`](workstreams/)（13ファイル）／[`prompts/`](prompts/)（10ファイル）／[`templates/`](templates/)（4ファイル）
+関連フォルダ：[`workstreams/`](workstreams/)（13ファイル）／[`prompts/`](prompts/)（3ファイル）／[`templates/`](templates/)（4ファイル）
 ### P. 証拠・素材
 
 | フォルダ | 何が入っているか |
@@ -447,7 +447,7 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`avocado-mini-conversation-2026-09-27/`](avocado-mini-conversation-2026-09-27/README.md) | 29 | 2026-09-27の会話仕様アーカイブ（原文のまま）。個人認証、GTA、クリエイター収益分配80:20 |
 | [`rocketstar-design/`](rocketstar-design/README.md) | 936 | rocketstar 設計アーカイブ。R1.0完全版、A-LINK、受信試作、OS完全版の付録、コロニー、計算・検証記録 |
 | [`evidence/`](evidence/) | 841 | 受入証拠（JSONとログ要約）。文書から参照される試験結果の正本 |
-| [`prompts/`](prompts/) | 5 | 現行の再開指示と、台帳・承認記録の理解に必要な原文。現行入口は `data/product-baseline.json.nextPrompt` |
+| [`prompts/`](prompts/) | 3 | 現行の再開指示と、台帳・承認記録の理解に必要な原文。現行入口は `data/product-baseline.json.nextPrompt` |
 | [`templates/`](templates/) | 4 | 受入報告などの雛形 |
 | [`contracts/`](contracts/) | 3 | Sky commerce v2の契約案（SQL・TypeScript） |
 | [`design-validation/`](design-validation/README.md) | 5 | 設計の状態モデル検証（commerce state model） |

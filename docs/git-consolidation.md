@@ -108,6 +108,8 @@ Stripeのstandalone配布コピーは生成物であり、共通sourceとの一�
 | `docs/prompts/rockstaros-release-20260910.md` | 終了済みの8時間実行指示。結果と受入証拠は既存のrelease記録へ保存済み。 |
 | `docs/prompts/value-spend-runtime-next.md` | 未使用の旧作業指示。現行Wallet/workflowの仕様・台帳から参照なし。 |
 | `docs/readme-details.md` | 旧README全文の重複コピー。製品・設計・課金・開発の正本へ直接案内。 |
+| `docs/prompts/hub-wallet-next.md` | 2026-09-09のHub/Wallet・BlackBerry-first再開指示。GAP受入を現行workstreamへ統合し、現行SIM方針と重複する作業指示を削除。 |
+| `docs/prompts/os-operational-base-next.md` | 旧D6 run44待ちと単一owner未実装を現在形で案内する旧指示。D0〜D6・復旧・Game/Walletの必要受入契約を正本へ統合。 |
 
 現行SIM/eSIM方針、承認、release記録、必要な証拠・固定原本・ライセンスは保持する。過去のマージで失われた台帳・コードの回収元も復旧完了までは保持する。今回の削除で実装・本番・実機の受入を完了扱いにしない。検証とGitHub反映は `data/project-status.json.repositoryCleanup.obsoleteContent` とprojectに記録する。
 

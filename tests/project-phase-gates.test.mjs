@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { phaseGateEvidencePaths, renderPhaseGates, validatePhaseGates } from '../scripts/project-phase-gates.mjs';
 
 const tasks = [{ id: 'B04' }, { id: 'V01' }, { id: 'GX01' }];
-const evidence = 'docs/prompts/os-operational-base-next.md';
+const evidence = 'docs/workstreams/06-native-qemu-release.md';
 const existing = new Set([evidence]);
 const gate = (id = 'B04-INTEGRATED', overrides = {}) => ({
   id, task: 'B04', status: 'planned', dependsOn: [], evidence: [evidence], title: '統合', ...overrides,

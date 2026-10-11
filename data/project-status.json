@@ -35,7 +35,7 @@
     "obsoleteContent": {
       "task": "G01",
       "primaryOwner": "ROCK",
-      "stage": "local_reference_and_contract_checks_passed",
+      "stage": "expanded_cleanup_reference_and_contract_checks_passed",
       "sourceMainSha": "96845e6006c15e39ba5b45495f79c21bdff7399e",
       "startedAt": "2026-10-11T09:13:50Z",
       "plannedEndAt": "2026-10-11T19:13:50Z",
@@ -79,9 +79,19 @@
           "path": "docs/readme-details.md",
           "bytes": 72393,
           "reason": "旧README全文の重複コピー。製品・設計・課金・開発の正本へ直接案内。"
+        },
+        {
+          "path": "docs/prompts/hub-wallet-next.md",
+          "bytes": 20967,
+          "reason": "2026-09-09のHub/Wallet・BlackBerry-first再開指示。GAP受入を現行workstreamへ統合し、現行SIM方針と重複する作業指示を削除。"
+        },
+        {
+          "path": "docs/prompts/os-operational-base-next.md",
+          "bytes": 29926,
+          "reason": "旧D6 run44待ちと単一owner未実装を現在形で案内する旧指示。D0〜D6・復旧・Game/Walletの必要受入契約を正本へ統合。"
         }
       ],
-      "removedBytes": 161082,
+      "removedBytes": 211975,
       "githubSaved": false,
       "mainIntegrated": false,
       "published": false,
@@ -93,9 +103,22 @@
         "baseline": "RQ01–RQ49, passed",
         "design": "18 domains / 36 Tools / 6 native families, passed",
         "database": "151 tables across 6 boundaries, passed after date regeneration",
-        "fullVerify": "pending final integrated source"
+        "fullVerify": "pending final integrated source",
+        "additionalCleanup": {
+          "removedFiles": 2,
+          "removedBytes": 50893,
+          "relativeMarkdownLinks": 2090,
+          "missingDestinations": 0,
+          "project": "passed",
+          "mission": "32 squads / 392 explicit owners / 229 scoped plans, passed",
+          "repository": "passed",
+          "baseline": "RQ01–RQ50, passed",
+          "phaseGateTests": "10/10 passed; same gate/graph/evidence assertions, current evidence path",
+          "fixedEvidence": "data/amc and frozen os-base manifests byte-unchanged"
+        }
       },
-      "nextAction": "Validate links, repository/progress/baseline checks, then restore lost ledger records against current implementation."
+      "nextAction": "Run full verify and save the expanded cleanup with the followup integrated candidate.",
+      "previousCleanupSavedCommit": "f7266bd"
     }
   },
   "updatedAt": "2026-10-11",
@@ -4390,7 +4413,7 @@
         "docs/product-north-star-20260915.md",
         "docs/progress-audit-20260909.md",
         "docs/prompt-playbook.md",
-        "docs/prompts/hub-wallet-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/validation.md"
       ]
     },
@@ -4404,7 +4427,7 @@
       ],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/os-operational-validation-20260909.md"
       ]
     },
@@ -4416,7 +4439,7 @@
         "B04"
       ],
       "evidence": [
-        "docs/prompts/hub-wallet-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/pc-citations-adapter.md",
         "docs/evidence/pc-citations/integration.json",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
@@ -4439,7 +4462,7 @@
         "B02"
       ],
       "evidence": [
-        "docs/prompts/hub-wallet-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
         "docs/evidence/android-pre-full-build-tests-20260915.json",
         "app/api/earnings/receipts/route.ts",
@@ -4457,7 +4480,7 @@
         "B02"
       ],
       "evidence": [
-        "docs/prompts/hub-wallet-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/hub-wallet-pc-comparison-20260909.md",
         "docs/evidence/hub-wallet/b05-pc-machine-20260909/report.json"
       ]
@@ -4472,7 +4495,7 @@
       "evidence": [
         "docs/product-baseline.md",
         "docs/os-readiness-audit-20260909.md",
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/templates/os-acceptance-report.md",
         "docs/validation.md"
       ]
@@ -4485,7 +4508,7 @@
         "B04"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/templates/os-acceptance-report.md",
         "docs/os-operational-validation-20260909.md",
         "docs/evidence/os-base/startup-update-acceptance-b8287bc.json",
@@ -4510,7 +4533,7 @@
       ],
       "evidence": [
         "docs/design-implementation-alignment-20260909.md",
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/gx00-owner-isolation-adr.md",
         "docs/evidence/gx00/integration.json",
         "systems/rock-star-os/os/wallet_backend/FENCE.md",
@@ -4537,7 +4560,7 @@
         "GX00"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/gx01-contract-implementation-plan.md",
         "docs/gx01-native-ui-20260910.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
@@ -4554,7 +4577,7 @@
         "GX01"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/workstreams/06-native-qemu-release.md"
       ]
     },
     {
@@ -4565,7 +4588,7 @@
         "GX00"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
         "docs/evidence/rls01/sdk-final-9abf78a/README.md",
         "docs/evidence/rls01/sdk-final-9abf78a/summary.json",
@@ -5817,7 +5840,7 @@
       "status": "done",
       "dependsOn": [],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/os-operational-validation-20260909.md"
       ]
     },
@@ -5830,7 +5853,7 @@
         "B04-INTEGRATED"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/evidence/os-base/freeze-b8287bc.json",
         "docs/evidence/os-base/boot-b8287bc.json",
         "docs/evidence/os-base/platform-b8287bc.json",
@@ -5846,7 +5869,7 @@
         "V01-BOOT"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
       ]
@@ -5860,7 +5883,7 @@
         "B02-NATIVE"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/evidence/os-base/business-wallet-foundation-b8287bc.json",
         "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
         "docs/evidence/tool-earning-wallet-bridge-20260915.json"
@@ -5877,7 +5900,7 @@
         "B03-FIXTURE"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/os-acceptance-9abf78a-20260910.md",
         "docs/os-native-repeat-20260910.md",
         "docs/os-final-compatibility-20260910.md"
@@ -5892,7 +5915,7 @@
         "B03-FIXTURE"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/workstreams/06-native-qemu-release.md"
       ]
     },
     {
@@ -5905,7 +5928,7 @@
         "B03-FIXTURE"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md"
+        "docs/workstreams/06-native-qemu-release.md"
       ]
     },
     {
@@ -5917,7 +5940,7 @@
         "B03-FIXTURE"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/evidence/gx00/integration.json",
         "docs/evidence/gx00/release-required-acceptance-20260910.json"
       ]
@@ -5931,7 +5954,7 @@
         "GX00-ISOLATION"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/gx01-native-ui-20260910.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
         "docs/game-wallet-release-checkpoint-20260910.md",
@@ -5950,7 +5973,7 @@
         "V01-BOOT"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/gx01-native-ui-20260910.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
         "docs/game-wallet-release-checkpoint-20260910.md",
@@ -5967,7 +5990,7 @@
         "GX01-CONTRACT"
       ],
       "evidence": [
-        "docs/prompts/os-operational-base-next.md",
+        "docs/workstreams/06-native-qemu-release.md",
         "docs/gx01-reference-sdk-sandbox-20260910.md",
         "docs/evidence/rls01/sdk-final-9abf78a/README.md",
         "docs/evidence/rls01/sdk-final-9abf78a/summary.json",

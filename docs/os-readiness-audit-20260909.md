@@ -59,4 +59,4 @@ V01はGX01/GX02や実ATM設置、実資金提供の完了を待たない。既�
 - [PlayFabの冪等取引](https://learn.microsoft.com/en-us/gaming/playfab/economy-monetization/economy-v2/tutorials/idempotent-transactions-and-retries)では同じIDによる重複排除にも保持期間がある。外部の短期重複排除だけに依存せず、Rock側で交換IDと結果を永続化し、期限後の不明取引を無条件再送しない。
 - [PlayFabのTransfer API](https://learn.microsoft.com/en-us/rest/api/playfab/economy/inventory/transfer-inventory-items?view=playfab-rest)は処理中の応答と後続照会を区別する。HTTP受付を交換完了としない設計の参考であり、PlayFab採用や現金交換許諾の根拠ではない。
 
-詳細指示: [次の実行プロンプト](prompts/os-operational-base-next.md)。判定雛形: [OS受入報告](templates/os-acceptance-report.md)。
+詳細指示: [次の実行プロンプト](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/os-operational-base-next.md)。判定雛形: [OS受入報告](templates/os-acceptance-report.md)。
