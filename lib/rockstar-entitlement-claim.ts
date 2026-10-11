@@ -154,6 +154,18 @@ export function rockstarEntitlementStore(db: Database) {
         .bind(Date.now(), ownerUserId).all<{ issuerId: string; claimId: string; offerId: string; formFactor: string; scopesJson: string; status: string; claimedAt: number; expiresAt: number | null }>();
       return rows.results.map(({ scopesJson, ...row }) => ({ ...row, scopes: JSON.parse(scopesJson) as string[] }));
     },
+    async activeOffers(ownerUserId: string, offers: { issuerId: string; offerId: string }[], now = Date.now()) {
+      // Eligibility is bounded by the configured offers, not the UI history page.
+      const rows = await db.prepare(`SELECT DISTINCT e.issuer_id AS issuerId,e.offer_id AS offerId
+        FROM rockstar_service_entitlements e
+        WHERE e.owner_user_id = ? AND e.status = 'active' AND (e.expires_at IS NULL OR e.expires_at > ?)
+          AND EXISTS (SELECT 1 FROM json_each(?) offer
+            WHERE e.issuer_id = json_extract(offer.value, '$.issuerId')
+              AND e.offer_id = json_extract(offer.value, '$.offerId'))`)
+        .bind(ownerUserId, now, JSON.stringify(offers.map(({ issuerId, offerId }) => ({ issuerId, offerId }))))
+        .all<{ issuerId: string; offerId: string }>();
+      return rows.results;
+    },
     async hasActiveScope(ownerUserId: string, scope: string, now = Date.now()) {
       if (!allowedScopes.has(scope)) return false;
       const rows = await db.prepare(`SELECT scopes_json AS scopesJson FROM rockstar_service_entitlements
