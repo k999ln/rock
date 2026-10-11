@@ -59,12 +59,11 @@ export function skyCommerce(
   }
   async function isIncludedInActiveServiceOffer(userId: string, packageKey: string) {
     if (!serviceOfferProfiles) return false;
-    const entitlements = (await rockstarEntitlementStore(db).list(userId))
-      .filter((entitlement) => entitlement.status === 'active');
-    if (!entitlements.length) return false;
     let profiles;
     try { profiles = parseRockstarServiceOfferProfiles(serviceOfferProfiles).profiles; }
     catch { throw new SkyPaymentError('SIM/eSIMのPackage構成を検証できません。購入を保留してください。', 503); }
+    const entitlements = await rockstarEntitlementStore(db).activeOffers(userId, profiles);
+    if (!entitlements.length) return false;
     // Purchase eligibility must use the owner's exact offer pins, independent
     // of the paginated public registry and unrelated newer publications.
     const references = profiles.filter((profile) => entitlements.some((entitlement) =>

@@ -299,7 +299,7 @@ void test('expired and revoked SIM/eSIM claims do not block a legitimate package
   assert.equal(f.stripe.calls.filter((call) => call.path === '/v1/checkout/sessions').length, 2);
 });
 
-void test('an included package cannot be bought twice when unrelated publications push it beyond the registry page', async t => {
+void test('an included package cannot be bought twice beyond the registry and claim history pages', async t => {
   const f = await setup(t);
   await f.sell();
   insertServiceEntitlement(f.db, 'buyer');
@@ -319,6 +319,13 @@ void test('an included package cannot be bought twice when unrelated publication
       .bind(`unrelated-${index}`, row.packageKey, row.manifestSha256, Date.now()).run();
   }
   assert.equal((await packageStore.listRegistry()).some(row => row.packageKey === f.saved.packageKey), false);
+  assert.equal((await f.checkout({}, options)).status, 409);
+  for (let index = 0; index < 100; index++) {
+    const fixtureOwner = `old-plan-${index}`;
+    insertServiceEntitlement(f.db, fixtureOwner, { expiresAt: Date.now() - 1 });
+    f.db.prepare('UPDATE rockstar_service_entitlements SET owner_user_id=?,claimed_at=? WHERE owner_user_id=?')
+      .bind('buyer', Date.now() + index, fixtureOwner).run();
+  }
   const result = await f.checkout({}, options);
   assert.equal(result.status, 409, JSON.stringify(result.data));
   assert.match(result.data.error, /有効なSIM\/eSIM利用権に含まれています/);
