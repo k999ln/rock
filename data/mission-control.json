@@ -12747,7 +12747,7 @@
       "primaryOwner": "ROCK",
       "assignee": null,
       "ownerRole": "H1 / Git・CI統合担当",
-      "scope": "main bcd31090を基点にWeb/API/A2A保存/Androidの重複処理と進捗生成を整理する。既存の本人確認、料金承認、署名、CAS、復旧条件を保持する。",
+      "scope": "main bcd31090を基点にWebのCloud AIと会話session/API/A2A保存と署名/Android応答とoriginの重複処理と進捗生成を整理する。既存の本人確認、料金承認、署名、CAS、復旧条件を保持する。",
       "inputs": [
         {
           "path": "docs/git-consolidation.md",

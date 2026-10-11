@@ -13,7 +13,10 @@
     "Bounded API request-body stream reader with per-route policy and error mapping",
     "A2A read projection and validation responsibilities; unchanged mutations and settlement",
     "Android bounded response reader and strict JSON transport decoding",
-    "One metadata update entry point for project, mission, database and workspaces"
+    "One metadata update entry point for project, mission, database and workspaces",
+    "A2A raw Ed25519 key/signature verification mechanics, keeping each signed contract unchanged",
+    "SkyChat session restore/save/reset responsibilities, keeping TTL, handoff, dirty confirmation and cancellation",
+    "Android origin normalization boundary between session storage and transports, if a responsibility split removes coupling without changing policy"
   ],
   "preservedContracts": [
     "Authentication and owner-intent ordering",
@@ -42,6 +45,48 @@
           "A repeated update produced identical SHA256 hashes for all 39 generated files; metadata:check also left those bytes unchanged."
         ],
         "scope": "Local canonical records and generated source documents; no production database readback."
+      },
+      {
+        "area": "Android response mechanics",
+        "sourceCommit": "6f52b11f69ca718f62f2c233a158fbd7c01a3155",
+        "result": "passed",
+        "hostJUnit": {
+          "baseline": 157,
+          "after": 167,
+          "coreRealSQLite": 121,
+          "sessionAnd401": 16,
+          "callerDeadlineWithHostClockShim": 20,
+          "sharedResponse": 10
+        },
+        "sdkCompile": {
+          "api": 35,
+          "aidl": 7,
+          "java": 74
+        },
+        "nodeSourceContracts": 10,
+        "remaining": "Same integrated SHA Android CI; physical-device and full OS acceptance are separate.",
+        "integratedCommit": "f1d6e6ee49a15505312871a09018939d65b1fbe3"
+      },
+      {
+        "area": "API stream reader",
+        "sourceCommit": "98a9c9857072ad624b17067e869fcbf4aa7d3a56",
+        "result": "passed",
+        "nodeTests": 72,
+        "preserved": "Eight caller limits, decoding, content type, object-only policy, cancel failure precedence and reader ownership.",
+        "integratedCommit": "c9b088dbb01f88077719e6048a547e68fc3a5411"
+      },
+      {
+        "area": "A2A delegation store",
+        "sourceCommit": "19e7807e234f7a2cb6cb368b51f06d7cc3942100",
+        "result": "passed",
+        "nodeTests": 42,
+        "workerD1WorkflowTests": 14,
+        "workApiAssertions": 1356,
+        "typecheck": "passed",
+        "productLint": "passed",
+        "build": "passed",
+        "preserved": "All 35 SQL statements match after expanding the fixed projections and normalizing whitespace; mutations, binds, owner, CAS and settlement remain unchanged.",
+        "integratedCommit": "83262de282c44b7ed359afae963602a10cbada17"
       }
     ],
     "fullVerify": null,
@@ -55,5 +100,60 @@
   "acceptanceLimits": [
     "This refactor does not establish external Provider, commercial, physical-device or current OS image acceptance.",
     "Pins are pending clarification of the requested target."
+  ],
+  "refactorMeasurements": {
+    "apiStreamLoops": {
+      "before": 8,
+      "after": 1
+    },
+    "androidBoundedReaders": {
+      "before": 4,
+      "after": 1
+    },
+    "androidHeaderValidators": {
+      "before": 6,
+      "after": 1
+    },
+    "androidUtf8Decoders": {
+      "before": 6,
+      "after": 1
+    },
+    "a2aRepeatedProjectionDefinitions": {
+      "before": 7,
+      "after": 1,
+      "note": "One common column definition with two fixed variants preserves the existing scheduler projection."
+    },
+    "a2aStoreLines": {
+      "before": 1614,
+      "after": 1267,
+      "contractModule": 269,
+      "rowModule": 43
+    }
+  },
+  "independentReview": [
+    {
+      "sourceCommit": "1f8ee865f6d0fc2aaaef70d2bcfbe6690f000411",
+      "reviewer": "platform subagent",
+      "result": "No actionable findings",
+      "scope": "Command graph, fail-fast/read-only behavior, generated nextAction and preservation of previous evidence/history."
+    },
+    {
+      "sourceCommit": "98a9c9857072ad624b17067e869fcbf4aa7d3a56",
+      "reviewer": "platform subagent",
+      "result": "No actionable findings",
+      "scope": "All eight callers: byte bounds, auth/owner ordering, UTF-8/JSON policy, cancellation, lock ownership and error mapping."
+    },
+    {
+      "sourceCommit": "6f52b11f69ca718f62f2c233a158fbd7c01a3155",
+      "reviewer": "root integrator",
+      "result": "No actionable findings",
+      "scope": "All four transport diffs, error prefixes, deadlines, status/401 ordering, strict decoder and cleanup."
+    },
+    {
+      "sourceCommit": "19e7807e234f7a2cb6cb368b51f06d7cc3942100",
+      "reviewer": "platform subagent",
+      "result": "No actionable findings",
+      "scope": "Expanded/whitespace-normalized full store function equals the previous commit; public exports, validation, row mapping and two scheduler projections are preserved."
+    }
   ]
 }

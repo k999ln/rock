@@ -30,7 +30,7 @@ GitHub main 0455499d8726118b8892c5cfbe2e49236c8b4c31を基に専用worktreeで�
 
 - 正本は `k999ln/rock`、originはGitHub、Sitesは配信用と定義済み。
 - 進捗は `data/project-status.json`、要望は `docs/product-baseline.md`、再開条件は `docs/current-state-20260911.md` に分離されている。
-- DB状態は5境界のsource inventoryと本番readbackを分離し、`database:status`でJSONと文書へ同期する。
+- DB状態は6境界のsource inventoryと本番readbackを分離し、`database:status`でJSONと文書へ同期する。
 - 2026-09-15にsites/mainとの競合を解消し、統合commit `acd7ab0`へ収束した。
 - 2026-09-15にGitHubのPR #1〜#23を再監査し、13件はmain統合済み、10件はmainへ同一または後継実装が統合済みの旧PRとして閉じた。open PRは0件である。
 - GitHub remoteの旧作業branchと一時archive branchを削除し、remote branchを`main`だけへ収束した。repository設定のmerge後branch自動削除も有効化した。
