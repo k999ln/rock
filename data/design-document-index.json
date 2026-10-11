@@ -224,7 +224,11 @@
           "original log hashes",
           "complete discovery"
         ]
-      }
+      },
+      "interfaceImplementation": [
+        "systems/rock-star-os/os/platform/runner_control.py",
+        "systems/rock-star-os/tests/test_os_runner_control.py"
+      ]
     },
     {
       "id": "android_pixel",

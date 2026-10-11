@@ -2592,7 +2592,8 @@
         "docs/ai-native-os-architecture.md",
         "docs/evidence/pr-consolidation-20261005.json",
         "android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java",
-        "android/core/src/test/java/dev/rock/core/ExternalWriteOutboxTest.java"
+        "android/core/src/test/java/dev/rock/core/ExternalWriteOutboxTest.java",
+        "systems/rock-star-os/tests/test_os_runner_control.py"
       ],
       "nextAction": "ExternalWriteOutbox exists with persistent operation identity, uncertain-result reconciliation and authorization recheck fixtures. Tool/Provider/Zema/AIDL integration and real external-effect recovery remain unaccepted.",
       "recoveredFrom": {
