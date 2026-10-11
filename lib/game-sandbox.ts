@@ -249,6 +249,11 @@ function validateCore(value: unknown): SandboxCore {
     hold,
   };
   const g = groups(core);
+  if (
+    hold &&
+    g.members(hold.particleId).some((particle) => particle.vx !== 0 || particle.vy !== 0)
+  )
+    fail('保持中の粒子は停止した状態で保存してください。');
   for (const p of particles)
     for (const m of g.members(p.id))
       if (m.vx !== p.vx || m.vy !== p.vy)
@@ -629,6 +634,8 @@ function mutate(core: SandboxCore, command: SandboxCommand) {
     case 'step':
       if (core.paused)
         fail('時間が止まっています。再開してから進めてください。', 409);
+      if (!Number.isSafeInteger(core.tick + command.ticks))
+        fail('時刻の上限です。保存して新しい作品へ引き継いでください。', 409);
       for (let t = 0; t < command.ticks; t += 1) advance(core);
       return;
     case 'undo':
@@ -651,6 +658,8 @@ export function applySandboxCommand(
   }
   if (!Number.isInteger(revision) || revision !== state.revision)
     fail('別の操作で更新されています。再読込してください。', 409);
+  if (!Number.isSafeInteger(state.revision + 1))
+    fail('版数の上限です。保存して新しい作品へ引き継いでください。', 409);
   const commands = [
     ...state.commands,
     { id: command.id, command: serialized },
@@ -799,12 +808,17 @@ export async function loadSandbox(raw: unknown): Promise<SandboxState> {
       fail('操作記録の形式が不正です。');
     return { id: command.id, command: entry.command as string };
   });
+  if (new Set(commands.map(({ id }) => id)).size !== commands.length)
+    fail('操作記録のIDが重複しています。');
+  const revision = integer(input.revision, 0, Number.MAX_SAFE_INTEGER, '版数');
+  if (commands.length > revision || (input.history as unknown[]).length > revision)
+    fail('操作記録・取消履歴と版数が一致しません。');
   return {
     rules: R.id,
     title: text(input.title, 120, '作品名'),
     author: text(input.author, 80, '作者'),
     seed: integer(input.seed, 0, 0xffffffff, '乱数種'),
-    revision: integer(input.revision, 0, Number.MAX_SAFE_INTEGER, '版数'),
+    revision,
     ...core,
     history: (input.history as unknown[]).map(validateCore),
     commands,
