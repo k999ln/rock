@@ -87,6 +87,9 @@ export default function SkyMcpCenter({
   const [connectionFailed, setConnectionFailed] = useState(false);
   const setupTab = useRef<HTMLButtonElement>(null);
   const toolsTab = useRef<HTMLButtonElement>(null);
+  const sessionGeneration = useRef(0);
+  const serverRequest = useRef(0);
+  const connecting = useRef(false);
 
   function moveTab(event: KeyboardEvent<HTMLButtonElement>) {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
@@ -117,73 +120,75 @@ export default function SkyMcpCenter({
   );
 
   const refreshServers = useCallback(async () => {
-    if (!connected) {
-      setServers([]);
-      setServerError('');
-      return;
-    }
+    if (!connected) return;
+    const generation = sessionGeneration.current;
+    const request = ++serverRequest.current;
     try {
-      setServers(await listMcpConnections());
+      const next = await listMcpConnections();
+      if (generation !== sessionGeneration.current || request !== serverRequest.current) return;
+      setServers(next);
       setServerError('');
     } catch (cause) {
+      if (generation !== sessionGeneration.current || request !== serverRequest.current) return;
       setServers([]);
       setServerError(cause instanceof Error ? cause.message : 'MCPの一覧を取得できませんでした。');
     }
   }, [connected]);
 
   useEffect(() => {
-    let active = true;
+    const generation = ++sessionGeneration.current;
+    connecting.current = false;
+    queueMicrotask(() => {
+      if (generation !== sessionGeneration.current) return;
+      setServers([]);
+      setServerError('');
+      setBusyServer('');
+      setConnectionMessage('');
+      setConnectionFailed(false);
+    });
     const refresh = () => {
-      if (!connected) {
-        setServers([]);
-        setServerError('');
-        return;
-      }
       if (document.visibilityState === 'hidden') return;
-      void listMcpConnections()
-        .then((next) => {
-          if (active) {
-            setServers(next);
-            setServerError('');
-          }
-        })
-        .catch((cause) => {
-          if (active) {
-            setServers([]);
-            setServerError(cause instanceof Error ? cause.message : 'MCPの一覧を取得できませんでした。');
-          }
-        });
+      void refreshServers();
     };
     refresh();
     const interval = window.setInterval(refresh, 5_000);
     window.addEventListener('sky-mcp-servers', refresh);
     document.addEventListener('visibilitychange', refresh);
     return () => {
-      active = false;
+      sessionGeneration.current += 1;
+      serverRequest.current += 1;
       window.clearInterval(interval);
       window.removeEventListener('sky-mcp-servers', refresh);
       document.removeEventListener('visibilitychange', refresh);
     };
-  }, [connected]);
+  }, [refreshServers]);
 
   async function connectServer(server: McpConnection) {
+    if (!connected || connecting.current) return;
+    const generation = sessionGeneration.current;
+    connecting.current = true;
+    serverRequest.current += 1;
     setBusyServer(server.id);
     setConnectionMessage('');
     setConnectionFailed(false);
     try {
       const passport = await connectMcp(server.id);
+      if (generation !== sessionGeneration.current) return;
       window.dispatchEvent(new Event('sky-mcp-servers'));
       setConnectionMessage(
         `${server.name}へ接続しました。${passport.tools.length}機能を確認済みです。`,
       );
-      await refreshServers();
     } catch (error) {
+      if (generation !== sessionGeneration.current) return;
       setConnectionFailed(true);
       setConnectionMessage(
         error instanceof Error ? error.message : 'MCPへ接続できませんでした。',
       );
     } finally {
-      setBusyServer('');
+      if (generation === sessionGeneration.current) {
+        connecting.current = false;
+        setBusyServer('');
+      }
     }
   }
 
@@ -384,7 +389,7 @@ export default function SkyMcpCenter({
                         </div>
                         <button
                           type="button"
-                          disabled={busyServer === server.id}
+                          disabled={busyServer !== ''}
                           onClick={() => void connectServer(server)}
                         >
                           {server.state === 'connected' ? (
