@@ -32,6 +32,8 @@
 
 AMC O4／ROCK。poll・event一覧の順序逆転と、切断／再接続後に古いconnect成功・error・finallyが届く競合を実componentで再現した。要求世代と接続世代を照合し、同時接続の連打を止め、成功時の二重GETを1回へ統合した。変更前10失敗→変更後10合格、既存onboarding3合格、typecheck・対象lintが成功。実React／Dialogのブラウザfixtureでも同じ10ケースを合格した。local応答fixtureのUI受入であり、MCP本体・権限・料金契約やProvider受入は変更していない。統合SHAの全体検証へ進む。
 
+同日追補: Skyチャットにもevent／手動読戻しの順序逆転とtoken切替・unmount後の反映を再現し、共通要求世代と現在tokenの照合で修正した。追加Node9件、既存画面13件、実React／Dialogの合成ブラウザ8件が合格。実行・承認・料金APIは変更せず、外部MCPの実接続は別受入。
+
 ### 2026-10-11 SKY07-03／SKY07-05 — 再接続失敗後の旧承認を失効
 
 主担当はAMC O4／ROCK。`lib/mcp-hub.ts` → PC Connectorの`POST /servers/:id/connect`・`prepare`・`execute`を調査し、接続・一回券発行後に再接続のinitializeが401 `authorization_required`で失敗しても、前回のPassportと券が残り、旧券のexecuteが200で同梱processorを実行する欠陥を再現した。実Connector HTTP handlerと同梱ローカルprocessorを使い、再認証の応答だけをfixtureで拒否して確認した。

@@ -4,7 +4,7 @@
   "plannedEndAt": "2026-10-11T19:13:50Z",
   "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
   "branch": "codex/rock-development-20261011",
-  "status": "integrated_candidate_verified_with_confirmed_start_and_workbench_followups",
+  "status": "latest_runtime_repairs_integrated_full_verification_pending",
   "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
   "taskIds": [
     "G04",
@@ -1578,10 +1578,83 @@
       },
       "workbenchNavigation": {
         "sourceSha": "be8038be3c55fa2602c9acab4a45e296e10e7a25",
-        "status": "reproduced_fix_in_progress",
+        "status": "repaired_targeted_verification_passed",
         "task": "R03/O2/ROCK",
         "finding": "After real pre-insert503, following Library and returning to Work removed the pending title and creation ID with no saved row.",
-        "repairBoundary": "Reuse existing pending-save navigation hook for pending creation only; keep separate-tab signin and explicit release."
+        "repairBoundary": "Reuse existing pending-save navigation hook for pending creation only; keep separate-tab signin and explicit release.",
+        "repairSha": "d8c7c23bd549e5c6f2102090414014cb6b3fcb40",
+        "validation": {
+          "relatedTestsPassed": 6,
+          "typecheck": "passed",
+          "productLint": "passed",
+          "integratedBrowser": "pending",
+          "integratedFullVerification": "pending"
+        }
+      },
+      "skyChatMcpAvailability": {
+        "scope": "SKY07 / O4 / ROCK: SkyChatWorkspace connection-list UI only",
+        "beforeCommit": "7106f0c7e94bf19cefdfefbe9e3bb98ab97ea7e9",
+        "afterCommit": "6f9de4b02d9e906d572a56e8234e9241d6f9a801",
+        "browser": {
+          "browser": "Chrome",
+          "actualComponents": [
+            "SkyChatWorkspace authenticated body",
+            "React",
+            "Dialog"
+          ],
+          "syntheticBoundaries": [
+            "device token",
+            "MCP list promises",
+            "provider/session data",
+            "McpBotRunner disconnect button",
+            "surrounding layout"
+          ],
+          "before": {
+            "passed": 1,
+            "failed": 7
+          },
+          "after": {
+            "passed": 8,
+            "failed": 0
+          },
+          "afterConsoleErrors": 0,
+          "realMcpOrProviderCalls": false
+        },
+        "node": {
+          "before": {
+            "passed": 1,
+            "failed": 8
+          },
+          "after": {
+            "passed": 9,
+            "failed": 0
+          },
+          "existingMcpCenterAndOnboardingPassed": 13,
+          "additionalNodeBoundary": "manual response cannot set state after unmount"
+        },
+        "checks": {
+          "typecheck": "PASS",
+          "targetedOxlint": "PASS",
+          "gitDiffCheck": "PASS"
+        },
+        "screenshots": {
+          "before": "before.jpg",
+          "after": "after.jpg"
+        },
+        "cleanup": {
+          "fixtureServer": "STOPPED: session 79953 exited 0 after SIGINT",
+          "fixtureTab": "CLOSED: 48023013 absent from inventory",
+          "trackedWorktree": "CLEAN"
+        },
+        "preserved": [
+          "McpBotRunner activeRequest/selectedToolId stop callback",
+          "execution and approval APIs",
+          "billing APIs",
+          "lib/device",
+          "lib/mcp-hub",
+          "root source/dist"
+        ],
+        "status": "repaired_targeted_and_browser_verification_passed"
       }
     }
   },

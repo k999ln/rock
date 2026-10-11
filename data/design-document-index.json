@@ -135,7 +135,8 @@
         "recovery": "Before explicit retry, reload authenticated owner intent. Unknown/different owner cannot create. Resume original owner or explicitly release pending intent before a new ID.",
         "apiBoundary": "Optional intent header is checked before writes, never used to authenticate. Legacy clients and Zema entitlement checks remain.",
         "uiBoundary": "401 disables creation and clears displayed private jobs; sign-in opens a separate tab. Late reads and simultaneous create are rejected.",
-        "limits": "Memory-only pending creation; no provider, fee or production acceptance."
+        "limits": "Memory-only pending creation; no provider, fee or production acceptance.",
+        "navigation": "While creation is pending, the shared pending-save hook blocks same-tab links and warns on unload. Confirmed save or explicit release restores navigation; separate-tab sign-in remains available."
       }
     },
     {
@@ -563,6 +564,13 @@
         "recovery": "A current failure remains visible and permits an explicit retry; a successful connect triggers one list refresh.",
         "authority": "UI state only; existing Passport, pricing, approval and execution gates unchanged.",
         "limits": "Local React and synthetic MCP response fixtures; no real provider acceptance."
+      },
+      "chatConnectionRecovery": {
+        "implementation": "components/sky-chat-workspace.tsx",
+        "regressions": "tests/sky-chat-mcp-recovery.test.mjs",
+        "contract": "Event and manual list reads share a request generation, mounted guard and captured/current device token. Token removal invalidates outstanding responses, owner changes clear the previous list, and stale success/error cannot replace current availability.",
+        "recovery": "A current error clears availability; explicit reconnect/current readback restores it. Existing disconnect stops the active request and selection.",
+        "limits": "Synthetic local component and browser response timing; no provider, execution, approval or billing change."
       }
     },
     {
