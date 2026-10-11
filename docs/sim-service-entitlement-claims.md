@@ -38,6 +38,8 @@ Android Shellのnative登録欄は、device-home APIがissuer設定から有効�
 
 Webのfragment handoff、ファイル、貼り付けは一つの登録候補を共有する。本人が別ファイルまたは入力を選ぶと古いlink候補を破棄し、不正な新入力から古い購入へ戻さない。ファイル読込中は登録を止め、遅延読込は最後の選択を上書きしない。登録中は入力変更を止める。10件の実component回帰と390px/1280pxのローカル合成画面で、リンクA後の貼り付け/ファイルBがそれぞれBだけを一度送信することを確認した。実issuer署名・購入者登録・本番利用権の受入とは区別する。
 
+Webの一覧取得と登録は共通transportでheader/bodyを合わせて10秒以内に制限し、redirectを自動追従しない。応答喪失・不正な成功応答では結果不明として登録済み一覧の読戻しを案内し、POSTを自動再送しない。同じ購入データは画面内に保持し、必要時だけ本人が再登録する。401では旧一覧と登録操作を隠し、別タブのサインイン後に元の画面で再確認する。画面を閉じた場合の入力保持は保証しない。17件の実component回帰で選択競合・header/body timeout・不正応答・401/redirect後の同一購入復旧を確認する。
+
 ### Offer別の初期Agent構成
 
 購入claimはサービス利用権を付与し、ツールを自動実行・導入する権限は付与しない。任意設定`ROCKSTAR_SERVICE_OFFER_PROFILES` (`rockstar-service-offer-profiles/1`) が、署名claimの`issuerId + offerId`を`profileId + version + label + exact Sky packageKey + manifestSha256`へ対応させる。これによりLifeline、Developer等で異なる構成を複数の販売チャネルから同じowner-bound entitlement経路で案内できる。構成を更新する場合は既存購入の意味を変えないよう、新しい`offerId`とprofile versionを発行し、旧claim用のmappingを保持する。

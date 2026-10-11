@@ -5666,6 +5666,16 @@
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",
         "reviewedAt": "2026-10-11",
         "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      },
+      "webClaimRecovery": {
+        "status": "local_component_and_browser_verified",
+        "scope": "10-second header/body deadline; GET readback without automatic POST; explicit same-package retry; separate-tab sign-in preserves selection",
+        "tests": 17,
+        "browser": "390px local synthetic responses: lost POST reply, readback, 401, recovery",
+        "limitations": [
+          "No real seller or production claim redemption",
+          "In-memory purchase selection is not retained after closing the page"
+        ]
       }
     },
     {

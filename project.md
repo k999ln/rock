@@ -4,6 +4,10 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 購入claimの応答期限と認証復旧（SIM01 / O5、ROCK）
+
+登録応答が戻らない場合を共通10秒transportへ接続し、不正な成功応答も結果不明として扱う。登録済み一覧のGET再確認はPOSTを繰り返さず、同じ購入データで本人が明示的に再試行できる。401後は旧一覧を隠し、別タブでサインインして元画面の購入データを保持する。17件の実component回帰、独立レビューの5復旧ケース、390px実画面で応答喪失→読戻し/401→復帰を確認。AMC試験用HTMLのscript終端読取りも空白・属性を含む終端へ対応し、関連75試験が合格。実購入/issuer/本番認証の受入とは区別する。
+
 ## 2026-10-11 — Android・MCP・メルカリの復旧差分を統合（OS10 / SKY07 / BIL03、ROCK）
 
 Androidは401を返した同じsessionだけを失効し、保存確定を暗号化fileの読戻しで確認。旧応答から新しい連携を保護し、Shellの旧claim/成果/承認を消す。HELD予約の照合列をapproval_digestへ訂正し、再起動後の同一予約復旧を実SQLiteで確認（JUnit126、source14、7AIDL/72Java compile）。APK/Android instrumentationはCIで別途確認する。

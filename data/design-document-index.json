@@ -411,7 +411,8 @@
         "trustBoundary": "local loopback client; descriptor and execution approval policies unchanged",
         "regressions": "tests/sky-tool-sdk.test.mjs",
         "acceptanceLimit": "isolated host source tests; real device and external reachability not established"
-      }
+      },
+      "webClaimRecovery": "Bounded 10-second header/body request; unknown response uses read-only entitlement refresh before explicit same-package retry; authentication recovery opens a separate tab to retain the in-memory selection."
     },
     {
       "id": "mcp_and_providers",

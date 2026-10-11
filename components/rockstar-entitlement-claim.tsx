@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'r
 import Link from 'next/link';
 import styles from '@/components/sky-commerce.module.css';
 import { parseRockstarEntitlementHandoffFragment, parseRockstarEntitlementPackage, type RockstarEntitlementPackage } from '@/lib/rockstar-entitlement-package';
+import { operationRequest, OperationRequestError, OperationResponseError } from '@/lib/operations-client';
 
 type Entitlement = {
   issuerId: string;
@@ -27,6 +28,15 @@ type Entitlement = {
 
 type Snapshot = { entitlements: Entitlement[]; claimRedemptionAvailable: boolean };
 
+async function readEntitlements() {
+  const snapshot = await operationRequest<Snapshot>('/api/rockstar/entitlements');
+  if (!Array.isArray(snapshot.entitlements) || typeof snapshot.claimRedemptionAvailable !== 'boolean')
+    throw new OperationResponseError('INVALID_RESPONSE');
+  return snapshot;
+}
+
+const requiresSignIn = (error: unknown) => error instanceof OperationRequestError && error.status === 401;
+
 export function RockstarEntitlementClaim() {
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [loadError, setLoadError] = useState<'signin' | 'unavailable' | null>(null);
@@ -39,27 +49,26 @@ export function RockstarEntitlementClaim() {
 
   useEffect(() => () => { selectionRevision.current += 1; }, []);
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (keepMessage = false) => {
+    setBusy(true);
     try {
-      const response = await fetch('/api/rockstar/entitlements', { cache: 'no-store' });
-      if (response.status === 401) { setLoadError('signin'); return; }
-      if (!response.ok) throw new Error('unavailable');
-      setSnapshot(await response.json() as Snapshot);
+      setSnapshot(await readEntitlements());
       setLoadError(null);
-    } catch { setLoadError('unavailable'); }
+      if (!keepMessage) setMessage('最新の利用権を確認しました。下の登録済み一覧を確認してください。');
+    } catch (error) {
+      setSnapshot(null);
+      setLoadError(requiresSignIn(error) ? 'signin' : 'unavailable');
+    } finally { setBusy(false); }
   }, []);
 
   useEffect(() => {
     let current = true;
-    fetch('/api/rockstar/entitlements', { cache: 'no-store' })
-      .then(async (response) => ({ response, body: await response.json() as Snapshot & { error?: string } }))
-      .then(({ response, body }) => {
+    readEntitlements()
+      .then((body) => {
         if (!current) return;
-        if (response.status === 401) setLoadError('signin');
-        else if (!response.ok) setLoadError('unavailable');
-        else { setSnapshot(body); setLoadError(null); }
+        setSnapshot(body); setLoadError(null);
       })
-      .catch(() => { if (current) setLoadError('unavailable'); });
+      .catch((error) => { if (current) { setSnapshot(null); setLoadError(requiresSignIn(error) ? 'signin' : 'unavailable'); } });
     return () => { current = false; };
   }, []);
 
@@ -98,22 +107,22 @@ export function RockstarEntitlementClaim() {
     }
     setBusy(true);
     try {
-      const response = await fetch('/api/rockstar/entitlements', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bundle),
-      });
-      const result = await response.json() as { entitlement?: Entitlement & { alreadyClaimed: boolean }; error?: string };
-      if (!response.ok || !result.entitlement) {
-        setMessage(result.error || '購入claimを確認できませんでした。');
-        return;
-      }
+      const result = await operationRequest<{ entitlement?: Entitlement & { alreadyClaimed: boolean } }>(
+        '/api/rockstar/entitlements', 'POST', bundle);
+      if (!result.entitlement || typeof result.entitlement !== 'object' || typeof result.entitlement.alreadyClaimed !== 'boolean')
+        throw new OperationResponseError('INVALID_RESPONSE');
       setMessage(result.entitlement.alreadyClaimed ? 'このRockstar IDには登録済みです。' : 'Rockstar IDに利用権を登録しました。');
       setPackageText('');
       setHandoffBundle(null);
       try { window.sessionStorage.removeItem('rockstar-entitlement-handoff'); } catch { /* best-effort cleanup */ }
-      await refresh();
-    } catch { setMessage('接続できません。再接続後に同じ購入データを再送できます。'); }
+      await refresh(true);
+    } catch (error) {
+      if (requiresSignIn(error)) { setSnapshot(null); setLoadError('signin'); }
+      else if (error instanceof OperationResponseError) {
+        setSnapshot(null); setLoadError('unavailable');
+        setMessage('登録結果が不明です。利用権を再確認してから、必要なら同じ購入データで登録を確認してください。');
+      } else setMessage(error instanceof Error ? error.message : '購入claimを確認できませんでした。');
+    }
     finally { setBusy(false); }
   }
 
@@ -152,14 +161,19 @@ export function RockstarEntitlementClaim() {
     </div>
     {loadError === 'signin' ? <div className={styles.notice}>
       <p>利用権を確認するにはRockstar IDでサインインしてください。</p>
-      <Link href="/signin-with-chatgpt?return_to=%2Fconnect" target="_top">サインインして続ける</Link>
-    </div> : loadError === 'unavailable' ? <output className={styles.error}>利用権へ接続できません。時間をおいて再読み込みしてください。</output> : !snapshot ?
+      <Link href="/signin-with-chatgpt?return_to=%2Fconnect" target="_blank" rel="noopener noreferrer">サインインして続ける</Link>
+      <p>別タブでサインイン後、この画面で利用権を再確認してください。読み込んだ購入データはこの画面で保持しています。</p>
+      <button type="button" disabled={busy} onClick={() => void refresh()}>利用権を再確認</button>
+    </div> : loadError === 'unavailable' ? <div className={styles.error}>
+      <output aria-live="polite">{message || '利用権へ接続できません。時間をおいて再確認してください。'}</output>
+      <button type="button" disabled={busy} onClick={() => void refresh()}>利用権を再確認</button>
+    </div> : !snapshot ?
       <output className={styles.loading}>Rockstar IDを確認しています…</output> : <>
         {snapshot.claimRedemptionAvailable ? <form className={styles.offerForm} onSubmit={submit}>
           <label htmlFor="rockstar-entitlement-package-file">販売元の購入データを選択</label>
           <input id="rockstar-entitlement-package-file" type="file" accept="application/json,.json" disabled={busy} onChange={(event) => void importPackageFile(event)} />
           <p>販売元から受け取った利用開始リンクを開くと、claimを読み込んでURLから削除します。リンクを開いただけでは登録されません。リンクがない場合はJSONファイルを選ぶか、下へデータを貼り付けてください。</p>
-          {handoffBundle ? <p className={styles.notice}>購入データを読み込みました（offer: {typeof handoffBundle.claim.offerId === 'string' ? handoffBundle.claim.offerId : '不明'}）。Rockstar IDへの登録はまだ行われていません。</p> : null}
+          {handoffBundle ? <p className={styles.notice}>購入データを読み込みました（offer: {typeof handoffBundle.claim.offerId === 'string' ? handoffBundle.claim.offerId : '不明'}）。内容と下の登録済み一覧を確認してください。</p> : null}
           <label htmlFor="rockstar-entitlement-package">購入データ（claimとcode）</label>
           <textarea id="rockstar-entitlement-package" value={packageText} disabled={busy} onChange={(event) => {
             selectionRevision.current += 1;
