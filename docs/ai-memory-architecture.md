@@ -33,7 +33,7 @@ Projection builders receive decrypted canonical content only after an exact owne
 
 ## Failure, recovery, and privacy
 
-Unknown or absent cipher, schema mismatch, corrupt authentication tag, stale revision, expired record, and incomplete projection all fail closed. Cipher failures never include content in exception text. Ciphertext, canonical text, and projections must not be written to telemetry or standard logs.
+Unknown or absent cipher, schema mismatch, corrupt authentication tag, stale revision, expired record, and incomplete projection all fail closed. Cipher seal/open failures are converted to fixed `MemoryUnavailable` messages with exception chaining suppressed, so ordinary formatted tracebacks do not expose provider error text or canonical/projection bytes. Encryption failure occurs before the write transaction and leaves the prior revision or projection intact. Cipher failures never include content in exception text. Ciphertext, canonical text, and projections must not be written to telemetry or standard logs.
 
 SQLite uses a versioned initial schema and full synchronous transactions. There is no migration implementation yet; an unexpected schema stops startup for explicit migration or recovery. The OS integration must store only encrypted data in backups, re-resolve the owner key after restore, and leave the memory unavailable if the key is lost or revoked. A successful database deletion removes ciphertext and derived projection rows. Secure erasure from flash media is not claimed; device/key destruction is a separate platform guarantee.
 

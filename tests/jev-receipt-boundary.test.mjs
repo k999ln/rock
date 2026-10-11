@@ -17,7 +17,9 @@ const receipt = (result) => makeJevReceipt('synthetic-request', input, result,
   '2026-10-11T12:01:00.000Z');
 
 void test('an evaluated receipt requires exactly the three rubric answers', async () => {
-  for (const invalid of [null, [], new Array(3), {}, { grounded: answers().grounded },
+  const sparse = [];
+  sparse.length = 3;
+  for (const invalid of [null, [], sparse, {}, { grounded: answers().grounded },
     { ...answers(), execute: { type: 'boolean', probability: 1 } }]) {
     await assert.rejects(receipt({ answers: invalid }), /INVALID_RESPONSE/);
   }
