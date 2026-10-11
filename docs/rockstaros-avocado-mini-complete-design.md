@@ -472,7 +472,7 @@ XR、AI、cameraが持たない権限:
 | 項目 | 現在地 | 次の証拠 |
 | --- | --- | --- |
 | 製品の全体設計 | この文書で統合済み | 利用者5人が説明後に操作を言い直せる |
-| 二物質sandbox Core | 実装済み、9 test | Zemaとsimulation fixtureへ接続 |
+| 二物質sandbox Core | 実装済み、10 test。Sky/Zemaで2D候補比較・本人用保存・再開を追加 | 限定記憶、simulation fixture、外部labへ接続 |
 | XR scene契約 | 設計済み | 同じCore入力から同じsceneを生成 |
 | hand event契約 | 設計済み | 合成poseで接続・分離を再現 |
 | 四方向sensor | Bench／Full-scale設計とconcept画像まで | tabletop prototypeで誤操作を測り、その後Full-scale端部と遮蔽を測る |

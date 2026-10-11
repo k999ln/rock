@@ -501,6 +501,30 @@
         "designSection": "Skyタイムラインのエージェントコードと交換可能な保護",
         "productionAccepted": false
       }
+    },
+    {
+      "id": "rockstar-material-invention",
+      "catalogStatus": "ready",
+      "displayName": "Material Invention · 物質候補の比較",
+      "designDocument": "docs/material-invention-core.md",
+      "designSection": "Sky / Zemaの机上比較と本人用保存",
+      "primaryOwner": "ROCK",
+      "ownerSquad": "O5",
+      "implementationTask": "MAT03",
+      "readyScope": [
+        "browser_deterministic_candidate_comparison",
+        "owner_scoped_request_save_and_digest_replay",
+        "workflow_review_cancel_and_sample_boundary",
+        "source_export_and_reimport_without_authority"
+      ],
+      "implementationBoundary": {
+        "storage": "existing_work_jobs_payload_with_authenticated_user_and_revision_cas",
+        "physicalExecutionAllowed": false,
+        "externalSimulationConnected": false,
+        "externalLabConnected": false,
+        "limitedMemoryConnected": false,
+        "productionDeploymentAccepted": false
+      }
     }
   ],
   "nativeToolFamilies": [

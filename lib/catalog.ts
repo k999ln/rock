@@ -56,6 +56,20 @@ const mrHubCandidates = ([
 }));
 const catalogEntries = [
   {
+    id: 'rockstar-material-invention',
+    name: 'Material Invention · 物質候補の比較',
+    category: '研究・ものづくり',
+    description: '物質の由来・lot・比率・工程から机上の配合候補を生成し、危険性情報の不足と根拠を比較・保存します。',
+    source: 'https://github.com/k999ln/rock/blob/main/lib/material-invention.ts',
+    launchPath: '/zema/tools/rockstar-material-invention',
+    environment: 'ブラウザ内の候補生成 / サーバーへの保存・復元はサインイン必須',
+    cost: '外部AI・simulation・ラボ・有料APIを呼びません。',
+    steps: ['入力JSONまたは合成サンプルを開く', '端末内で候補・配合比・不足条件を比較する', '必要なら入力と候補を本人用に保存する', '保存した仕事を開き、同一入力の候補を照合する'],
+    note: '全候補は未検証の仮説です。物理実験、安全性・性能・特許性の承認、装置操作は行いません。保存時は入力本文を本人用サーバーへ送信します。合成サンプルは実データの仕事完了へ昇格しません。',
+    color: 'green', license: 'RockstarOS code', licenseUrl: 'https://github.com/k999ln/rock',
+    status: 'ready', origin: 'rockstaros',
+  },
+  {
     id: 'rockstar-spider',
     name: 'SPIDER · セキュリティ検査',
     category: 'セキュリティ',

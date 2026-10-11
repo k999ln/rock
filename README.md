@@ -33,12 +33,12 @@ Most design documents are written in Japanese; this README is the English entry 
 | Part | In one line | Read more |
 | --- | --- | --- |
 | RockstarOS v1.0 | Identity, permissions, work, storage, and recovery shared by every device and service. The on-device LLM only proposes plans; it never decides whether a Tool may run. | [Complete OS design](docs/rockstaros-complete-design.md) |
-| Sky | Find Tools and AI teams and compare their author, version, permissions, where they run, and cost before connecting. 36 Tools are listed; 14 can run today. | [Sky](docs/sky.md) · [Agents and tools](docs/agents-and-tools.md) |
+| Sky | Find Tools and AI teams and compare their author, version, permissions, where they run, and cost before connecting. 37 Tools are listed; 15 can run today. | [Sky](docs/sky.md) · [Agents and tools](docs/agents-and-tools.md) |
 | Zema | Takes a request and keeps its plan, progress, stopping, approvals, results, and history together as one piece of work. | [Complete Tool design](docs/sky-tools-complete-design.md) |
 | Wallet | Cost estimates, reservations, confirmed earnings, refunds, and reconciliation. No live billing or payouts have started. | [Wallet workstream](docs/workstreams/03-wallet-billing-providers.md) |
 | avocadoMini R5 | A 200 mm stand-alone device for playing, making, and everyday help. R5 is the current design baseline. It is a design only: zero physical-device tests have been completed, and manufacturing approval is **on hold**. | [R5 design](docs/avocado-mini-r5/README.md) |
 | avokadoPro | A compact NVIDIA desktop for AI development and PC games. Two price figures are on record and the price is not final. Nothing has been bought or assembled. | [Pro PC design](docs/avokado-pro-pc-design.md) |
-| Material Invention | Reproducible digital candidates for new materials, with evidence. Only a sandbox core exists. The Material Invention interface and Sky connection are not implemented. | [Core design](docs/material-invention-core.md) |
+| Material Invention | Reproducible digital candidates for new materials, with evidence. Sky and Zema offer sandbox candidate comparison, private work storage, and digest-checked recovery. Simulation and laboratory connections are not implemented. | [Core design](docs/material-invention-core.md) |
 | rocketstar R1.0 | A reusable small-satellite launch vehicle; a separate design program with no manufacturing or flight. | [Design archive](docs/rocketstar-design/README.md) |
 
 ## Where it stands
