@@ -190,6 +190,10 @@
         "docs/amc-goal-orchestrator.md",
         "docs/workstreams/05-web-pwa-sites.md",
         "docs/sim-led-product-architecture.md"
+      ],
+      "interfaceImplementation": [
+        "lib/sky-compute-grid.ts",
+        "tests/sky-compute-grid.test.mjs"
       ]
     },
     {

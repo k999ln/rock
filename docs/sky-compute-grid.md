@@ -1,6 +1,6 @@
 # Sky Compute Grid — 使われていない携帯を束ねるVirtual Compute Plant
 
-更新: 2026-10-10 ／ task: `GRID01` ／ owner: ROCK（O5 Sky・Zema・Wallet、O6 Device Adapter連携）
+更新: 2026-10-11 ／ task: `GRID01` ／ owner: ROCK（O5 Sky・Zema・Wallet、O6 Device Adapter連携）
 
 ## 1. 目的と利用者
 
@@ -52,7 +52,7 @@ Sky Compute Gridは既存AI05のauthority deviceを自動で移す仕組みで�
 
 - `CapacityOffer` (`sky-capacity-offer/1`): Android arm64、粗いregion、provider ref hash、pseudonym、artifact hashes、memory、benchmark、reliability、window、max lots、test-credit単価、data policy、現在条件。
 - `ComputeOrder` (`sky-compute-order/1`): `public-text-embedding-v1`だけ。public/synthetic data、artifact hashes、region、trust、memory、lot size、単価・総予算、deadline、検証方法、入力hash。
-- `ComputeLease` (`sky-compute-lease/1`): 最大10分、order/offerへ固定。charging、idle、unmetered、thermal `light`以下、owner useで停止、arbitrary code禁止。
+- `ComputeLease` (`sky-compute-lease/1`): 最大10分、order/offerへ固定。IDは入力lot/hash/bytes、artifact、単価、提供者表示、地域・trust、安全条件、発行・失効時刻から決定する。同一条件・時刻の再試行は同じID、期限後の再割当や条件変更は別IDとする。charging、idle、unmetered、thermal `light`以下、owner useで停止、arbitrary code禁止。
 - `ComputeReceipt` (`sky-compute-receipt/1`): lease/order/offer/artifactへ固定し、lotごとのinput/output hashとdevice conditionを持つ。
 - settlement preview (`sky-compute-settlement-preview/1`): `service_credit_hold`、`livePayoutAuthorized=false`、`walletMutationAllowed=false`。
 
@@ -90,7 +90,9 @@ host fixtureは永続保存しない。本番候補では次を別table／権限
 - lease取得前の通信切れは実行しない。
 - lease中の通信切れは端末内の固定lotだけを期限まで続けられるが、期限後の結果は拒否する。
 - 未完lotは同じlease内で勝手に成功扱いせず、lease失効後に新leaseへ再配置する。
-- receipt IDとsettlement keyは内容から決定的に作り、同じ内容の再送を冪等にする。異内容の同一IDは拒否する。
+- VerifierはleaseをorderのID・SKU・artifact・入力lot/hash/bytes・地域・trust・予算・期限へ照合する。改変leaseや別orderのreceiptを合格へ移さない。
+- 精算候補は同じleaseのverified usageだけを受け入れ、lot数・単価・合計・assetを再照合する。同じleaseの全lotはreceipt IDを変えて再送しても同じsettlement keyになる。productionでのreceipt ID重複・異内容の保存拒否は、未実装の永続台帳で別途受け入れる。
+- 同じoffer IDの重複入力は供給量の二重使用を避けるため拒否する。
 - 外部作用を伴うworkloadは初期SKUに入れない。embedding lotは同じ入力・版なら再計算できる。
 - timeout後に結果が不明なlotは、検証または不在確認まで精算しない。再配置する場合もduplicateを許容する計算として扱い、二重精算を防ぐ。
 
@@ -113,7 +115,7 @@ runtime、model、tokenizerはSHA-256完全一致でleaseへ固定する。い�
 
 ## 10. 受入環境と証拠
 
-2026-10-10の実装範囲は **synthetic host fixture**。
+2026-10-11の実装範囲は **synthetic host fixture**。別orderへのreceipt転用、別leaseへの精算転用、再割当の同一ID、異なるreceipt IDでの二重精算候補をhostで再現し修正した。9件の対象試験でこれらの拒否と正常fixtureを確認した。
 
 - fixture: [`contracts/sky-compute-grid-fixture.json`](../contracts/sky-compute-grid-fixture.json)
 - tests: [`tests/sky-compute-grid.test.mjs`](../tests/sky-compute-grid.test.mjs)

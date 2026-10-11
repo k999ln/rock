@@ -202,6 +202,21 @@ function digestId(prefix: string, parts: unknown[]) {
     .slice(0, 24)}`;
 }
 
+// Bind the opaque identifier to the exact assignment, execution window and price.
+// Re-matching an expired assignment must not reuse its receipt namespace.
+function computeLeaseId(lease: Omit<ComputeLease, 'leaseId'>) {
+  return digestId('lease', [
+    lease.schema, lease.orderId, lease.offerId, lease.providerPseudonym,
+    lease.region, lease.trustTier, lease.skuId, lease.runtimeArtifactSha256,
+    lease.modelSha256, lease.tokenizerSha256,
+    lease.lots.map((lot) => [lot.lotId, lot.inputSha256, lot.inputBytes]),
+    lease.priceMicrosPerLot, lease.settlementAsset, lease.issuedAt, lease.expiresAt,
+    lease.executionPolicy.requiresCharging, lease.executionPolicy.requiresDeviceIdle,
+    lease.executionPolicy.requiresUnmeteredNetwork, lease.executionPolicy.maximumThermalStatus,
+    lease.executionPolicy.arbitraryCodeAllowed, lease.executionPolicy.stopOnOwnerUse,
+  ]);
+}
+
 export function validateCapacityOffer(offer: CapacityOffer) {
   requireValue(offer?.schema === 'sky-capacity-offer/1', 'OFFER_SCHEMA', '供給offerのschemaが不正です。');
   requireValue(idPattern.test(offer.offerId), 'OFFER_ID', '供給offerのIDが不正です。');
@@ -213,7 +228,7 @@ export function validateCapacityOffer(offer: CapacityOffer) {
   );
   requireValue(offer.platform === 'android' && offer.abi === 'arm64-v8a', 'OFFER_PLATFORM', '初期供給端末はAndroid arm64だけです。');
   requireValue(regionPattern.test(offer.region), 'OFFER_REGION', '地域は国または粗い地域codeで指定してください。');
-  requireValue(offer.trustTier in trustRank, 'OFFER_TRUST', '端末trust tierが不正です。');
+  requireValue(Object.hasOwn(trustRank, offer.trustTier), 'OFFER_TRUST', '端末trust tierが不正です。');
   requireValue(
     validDigest(offer.runtimeArtifactSha256) && validDigest(offer.modelSha256) && validDigest(offer.tokenizerSha256),
     'OFFER_ARTIFACT',
@@ -241,7 +256,7 @@ export function validateCapacityOffer(offer: CapacityOffer) {
     typeof offer.currentConditions?.charging === 'boolean' &&
       typeof offer.currentConditions?.deviceIdle === 'boolean' &&
       typeof offer.currentConditions?.unmeteredNetwork === 'boolean' &&
-      offer.currentConditions.thermalStatus in thermalRank,
+      Object.hasOwn(thermalRank, offer.currentConditions.thermalStatus),
     'OFFER_CONDITIONS',
     '端末の充電・idle・通信・温度状態が不正です。',
   );
@@ -266,7 +281,7 @@ export function validateComputeOrder(order: ComputeOrder) {
     'ORDER_REGION',
     '許可地域が不正です。',
   );
-  requireValue(order.minimumTrustTier in trustRank, 'ORDER_TRUST', '必要trust tierが不正です。');
+  requireValue(Object.hasOwn(trustRank, order.minimumTrustTier), 'ORDER_TRUST', '必要trust tierが不正です。');
   requireValue(positiveSafeInteger(order.minimumMemoryMiB), 'ORDER_MEMORY', '必要memoryが不正です。');
   requireValue(positiveSafeInteger(order.maximumInputBytesPerLot), 'ORDER_INPUT_LIMIT', 'lot入力上限が不正です。');
   requireValue(Number.isSafeInteger(order.maximumPriceMicrosPerLot) && order.maximumPriceMicrosPerLot >= 0, 'ORDER_PRICE', 'lot上限単価が不正です。');
@@ -337,8 +352,11 @@ export function matchComputeOrder(
   requireValue(Number.isFinite(nowMs), 'MATCH_TIME', 'matching時刻が不正です。');
   const rejectedOffers: OfferRejection[] = [];
   const eligible: CapacityOffer[] = [];
+  const offerIds = new Set<string>();
   for (const offer of offers) {
     validateCapacityOffer(offer);
+    requireValue(!offerIds.has(offer.offerId), 'OFFER_DUPLICATE', '同じ供給offerを重複して割り当てられません。');
+    offerIds.add(offer.offerId);
     const reasons = rejectionReasons(order, offer, nowMs);
     if (reasons.length > 0) rejectedOffers.push({ offerId: offer.offerId, reasons });
     else eligible.push(offer);
@@ -357,7 +375,7 @@ export function matchComputeOrder(
     const expiresAtMs = Math.min(Date.parse(order.deadline), Date.parse(offer.availableUntil), nowMs + 10 * 60_000);
     const lease: ComputeLease = {
       schema: 'sky-compute-lease/1',
-      leaseId: digestId('lease', [order.orderId, offer.offerId, assigned.map((lot) => lot.lotId)]),
+      leaseId: '',
       orderId: order.orderId,
       offerId: offer.offerId,
       providerPseudonym: offer.providerPseudonym,
@@ -381,6 +399,7 @@ export function matchComputeOrder(
         stopOnOwnerUse: true,
       },
     };
+    lease.leaseId = computeLeaseId(lease);
     leases.push(lease);
     reservedMicros += assigned.length * offer.priceMicrosPerLot;
     if (unassigned.length === 0) break;
@@ -402,6 +421,27 @@ export function verifyComputeReceipt(
 ) {
   validateComputeOrder(order);
   const reasons: string[] = [];
+  if (lease.schema !== 'sky-compute-lease/1' || lease.orderId !== order.orderId || lease.skuId !== order.skuId)
+    reasons.push('lease_order_mismatch');
+  if (lease.runtimeArtifactSha256 !== order.runtimeArtifactSha256 || lease.modelSha256 !== order.modelSha256 || lease.tokenizerSha256 !== order.tokenizerSha256)
+    reasons.push('lease_artifact_mismatch');
+  if (!order.regions.includes(lease.region) || !Object.hasOwn(trustRank, lease.trustTier) || trustRank[lease.trustTier] < trustRank[order.minimumTrustTier])
+    reasons.push('lease_constraints_invalid');
+  if (!validInstant(lease.issuedAt) || !validInstant(lease.expiresAt) || Date.parse(lease.expiresAt) <= Date.parse(lease.issuedAt) || Date.parse(lease.expiresAt) > Date.parse(order.deadline) || Date.parse(lease.expiresAt) - Date.parse(lease.issuedAt) > 10 * 60_000)
+    reasons.push('lease_window_invalid');
+  const policy = lease.executionPolicy;
+  if (policy?.requiresCharging !== true || policy?.requiresDeviceIdle !== true || policy?.requiresUnmeteredNetwork !== true || policy?.maximumThermalStatus !== 'light' || policy?.arbitraryCodeAllowed !== false || policy?.stopOnOwnerUse !== true)
+    reasons.push('lease_policy_invalid');
+  const lots = Array.isArray(lease.lots) ? lease.lots : [];
+  const orderLots = new Map(order.lots.map((lot) => [lot.lotId, lot]));
+  if (lots.length === 0 || new Set(lots.map((lot) => lot.lotId)).size !== lots.length || lots.some((lot) => {
+    const ordered = orderLots.get(lot.lotId);
+    return !ordered || ordered.inputSha256 !== lot.inputSha256 || ordered.inputBytes !== lot.inputBytes;
+  })) reasons.push('lease_lots_invalid');
+  if (!Number.isSafeInteger(lease.priceMicrosPerLot) || lease.priceMicrosPerLot < 0 || lease.priceMicrosPerLot > order.maximumPriceMicrosPerLot || !Number.isSafeInteger(lots.length * lease.priceMicrosPerLot) || lots.length * lease.priceMicrosPerLot > order.budgetMicros || lease.settlementAsset !== SKY_COMPUTE_GRID_SETTLEMENT_ASSET)
+    reasons.push('lease_price_invalid');
+  if (!policy || !Array.isArray(lease.lots) || lease.leaseId !== computeLeaseId(lease))
+    reasons.push('lease_identity_invalid');
   if (receipt.schema !== 'sky-compute-receipt/1') reasons.push('receipt_schema_invalid');
   if (!idPattern.test(receipt.receiptId)) reasons.push('receipt_id_invalid');
   if (receipt.leaseId !== lease.leaseId || receipt.orderId !== order.orderId || receipt.offerId !== lease.offerId) reasons.push('lease_binding_mismatch');
@@ -414,11 +454,11 @@ export function verifyComputeReceipt(
     !receipt.deviceEvidence?.chargingThroughout ||
     !receipt.deviceEvidence?.deviceIdleThroughout ||
     !receipt.deviceEvidence?.unmeteredThroughout ||
-    !(receipt.deviceEvidence?.maximumThermalStatus in thermalRank) ||
+    !Object.hasOwn(thermalRank, receipt.deviceEvidence?.maximumThermalStatus) ||
     thermalRank[receipt.deviceEvidence.maximumThermalStatus] > thermalRank.light
   ) reasons.push('device_safety_gate_failed');
 
-  const expectedLots = new Map(lease.lots.map((lot) => [lot.lotId, lot]));
+  const expectedLots = new Map(lots.map((lot) => [lot.lotId, lot]));
   const resultIds = new Set<string>();
   let verifiedLots = 0;
   for (const result of receipt.results ?? []) {
@@ -479,9 +519,18 @@ export function createSettlementPreview(
   verification: ReturnType<typeof verifyComputeReceipt>,
 ) {
   requireValue(verification.state === 'verified' && verification.usageReceipt !== null, 'SETTLEMENT_UNVERIFIED', '検証済みlotだけを精算候補にできます。');
+  const usage = verification.usageReceipt;
+  requireValue(
+    lease.leaseId === computeLeaseId(lease) && usage.leaseId === lease.leaseId &&
+      usage.orderId === lease.orderId && usage.verifiedLots === lease.lots.length &&
+      verification.verifiedLots === usage.verifiedLots && usage.unitPriceMicros === lease.priceMicrosPerLot &&
+      Number.isSafeInteger(usage.totalMicros) && usage.totalMicros === usage.verifiedLots * lease.priceMicrosPerLot &&
+      usage.settlementAsset === lease.settlementAsset && lease.settlementAsset === SKY_COMPUTE_GRID_SETTLEMENT_ASSET,
+    'SETTLEMENT_BINDING', '検証結果と同じlease・lot・単価だけを精算候補にできます。',
+  );
   return {
     schema: 'sky-compute-settlement-preview/1' as const,
-    idempotencyKey: digestId('settlement', [lease.leaseId, verification.usageReceipt.receiptId, verification.usageReceipt.totalMicros]),
+    idempotencyKey: digestId('settlement', [lease.leaseId, usage.totalMicros]),
     leaseId: lease.leaseId,
     providerPseudonym: lease.providerPseudonym,
     amountMicros: verification.usageReceipt.totalMicros,

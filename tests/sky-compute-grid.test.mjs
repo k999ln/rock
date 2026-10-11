@@ -133,3 +133,65 @@ void test('contract and fixture preserve the explicit privacy, code, fallback, a
     '"ownerIdentityExposedToBuyer": false',
   ]) assert.match(contract, new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
 });
+
+void test('receipt cannot be transferred to another order or altered assignment and settlement stays bound to its lease', () => {
+  const input = clone(fixture);
+  const lease = matchComputeOrder(input.order, input.offers, new Date(input.now)).leases[0];
+  const receipt = { ...input.receipt, leaseId: lease.leaseId };
+  const otherOrder = { ...input.order, orderId: 'other_order_001' };
+  const crossOrder = verifyComputeReceipt(otherOrder, lease, { ...receipt, orderId: otherOrder.orderId }, input.verificationEvidence);
+  assert.equal(crossOrder.state, 'rejected');
+  assert.ok(crossOrder.reasons.includes('lease_order_mismatch'));
+  for (const mutate of [
+    (value) => { value.priceMicrosPerLot = 999_999; },
+    (value) => { value.lots[0].inputSha256 = 'f'.repeat(64); },
+    (value) => { value.lots[0].inputBytes += 1; },
+    (value) => { value.lots.push(clone(value.lots[0])); },
+    (value) => { value.modelSha256 = 'e'.repeat(64); },
+    (value) => { value.region = 'US'; },
+    (value) => { value.executionPolicy.arbitraryCodeAllowed = true; },
+    (value) => { value.expiresAt = '2027-01-01T00:00:00Z'; },
+    (value) => { value.providerPseudonym = 'another-provider'; },
+  ]) {
+    const altered = clone(lease);
+    mutate(altered);
+    const verification = verifyComputeReceipt(input.order, altered, receipt, input.verificationEvidence);
+    assert.equal(verification.state, 'rejected');
+    assert.equal(verification.usageReceipt, null);
+    assert.ok(verification.reasons.includes('lease_identity_invalid'));
+  }
+  const verified = verifyComputeReceipt(input.order, lease, receipt, input.verificationEvidence);
+  assert.equal(verified.state, 'verified');
+  assert.throws(() => createSettlementPreview({ ...lease, leaseId: 'other_lease_001' }, verified), { code: 'SETTLEMENT_BINDING' });
+  const incorrectPrice = clone(verified);
+  incorrectPrice.usageReceipt.totalMicros += 1;
+  assert.throws(() => createSettlementPreview(lease, incorrectPrice), { code: 'SETTLEMENT_BINDING' });
+});
+
+void test('rematching binds time and terms while receipt retries share one settlement identity', () => {
+  const input = clone(fixture);
+  const lease = matchComputeOrder(input.order, input.offers, new Date(input.now)).leases[0];
+  assert.equal(matchComputeOrder(input.order, input.offers, new Date(input.now)).leases[0].leaseId, lease.leaseId);
+  const later = matchComputeOrder(input.order, input.offers, new Date(Date.parse(input.now) + 1_000)).leases[0];
+  assert.notEqual(later.leaseId, lease.leaseId);
+  const repriced = clone(input.offers);
+  repriced[0].priceMicrosPerLot -= 1;
+  assert.notEqual(matchComputeOrder(input.order, repriced, new Date(input.now)).leases[0].leaseId, lease.leaseId);
+  const receipt = { ...input.receipt, leaseId: lease.leaseId };
+  const replay = { ...receipt, receiptId: 'receipt_resend_002' };
+  const first = createSettlementPreview(lease, verifyComputeReceipt(input.order, lease, receipt, input.verificationEvidence));
+  const second = createSettlementPreview(lease, verifyComputeReceipt(input.order, lease, replay, input.verificationEvidence));
+  assert.equal(first.idempotencyKey, second.idempotencyKey);
+  assert.equal(verifyComputeReceipt(input.order, later, receipt, input.verificationEvidence).state, 'rejected');
+});
+
+void test('duplicate offers cannot multiply capacity and prototype property names are not trust or thermal tiers', () => {
+  const offer = clone(fixture.offers[0]);
+  offer.maxLots = 1;
+  assert.throws(() => matchComputeOrder(fixture.order, [offer, clone(offer)], new Date(fixture.now)), { code: 'OFFER_DUPLICATE' });
+  for (const value of ['constructor', '__proto__', 'toString']) {
+    assert.throws(() => validateCapacityOffer({ ...offer, trustTier: value }), { code: 'OFFER_TRUST' });
+    assert.throws(() => validateCapacityOffer({ ...offer, currentConditions: { ...offer.currentConditions, thermalStatus: value } }), { code: 'OFFER_CONDITIONS' });
+    assert.throws(() => validateComputeOrder({ ...fixture.order, minimumTrustTier: value }), { code: 'ORDER_TRUST' });
+  }
+});

@@ -1,5 +1,11 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-09 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
+## 2026-10-11 — サービスPR統合とCompute Grid照合の修正（O5/GRID01、host）
+
+現行main 96845e6から#85/#93/#95/#98を専用branchへ履歴付きで統合し、mainの短いREADME・復元済み文書・Skyコード公開を保持した。新しいeSIMキーmigrationを0061、Provider revisionを0062へ配置し、80 Web tableのschema・snapshotを一致させた。既存mainの0060は変更しない。台帳の現行整合は統括側で復旧を続ける。
+
+Compute Gridで、別orderへreceiptを転用でき、別leaseへverified金額を渡せることを修正前に再現した。lease IDを入力・単価・提供条件・時刻へ固定し、orderとusageの照合、offer重複・未知tier拒否、同leaseのreceipt再送時に同じ精算keyを返す処理を追加。対象9件、サービス・AMC・DBの合成158件、typecheck合格。実端末、production dispatch、Wallet記帳・実払出し・本番公開は行っていない。
+
 ## 2026-10-09 — AMCの固定計画を可変のCodex提案へ接続（AMC06、ローカル計画・見直しの検証完了）
 
 利用者の「AMCが固定されて能力を感じない」という指摘を記録。指定のローカルHTMLは2026-09-27の保存物で、実装は依頼を4部隊7工程へ埋め込むローカルテンプレート、通信なしである。H1 / ROCK、Git / CI / Operationsを主担当として、既存AMC engine・Git調査・Codex認証を再利用したローカル計画画面を実装する。担当Bot・依頼・意図・追加指示から可変の作業と依存を提案し、既存Goalと成果を残して候補を見直せるようにする。
