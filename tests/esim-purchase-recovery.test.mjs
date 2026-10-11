@@ -79,18 +79,18 @@ async function showMaterial(h) {
   assert.ok(h.text().includes(material.matchingId));
 }
 
-test('refreshing an ineligible order removes previously displayed installation material', async () => {
+void test('refreshing an ineligible order removes previously displayed installation material', async () => {
   const h = harness(); await showMaterial(h);
   h.replies.push({ body: { orderId, state: 'not_eligible' } }); await h.click('状態を更新');
   assert.ok(!h.text().includes(material.matchingId), 'old install code must no longer be shown');
 });
-test('authentication loss removes installation material and previous entitlement state', async () => {
+void test('authentication loss removes installation material and previous entitlement state', async () => {
   const h = harness(); await showMaterial(h);
   h.replies.push({ body: { error: 'unauthorized' }, status: 401 }); await h.click('状態を更新');
   assert.ok(!h.text().includes(material.matchingId), 'old install code must no longer be shown');
   assert.ok(!h.text().includes('導入情報を確認できます'));
 });
-for (const hang of ['headers', 'body']) test(`timeout during ${hang} returns control without automatically repeating the request`, async () => {
+for (const hang of ['headers', 'body']) void test(`timeout during ${hang} returns control without automatically repeating the request`, async () => {
   const h = harness(); h.replies.push({ hang }); await h.click('状態を確認');
   h.controllers.forEach((control) => control.abort(new DOMException('timeout', 'TimeoutError'))); await h.flush();
   assert.equal(h.button('状態を確認')?.props.disabled, false);
@@ -98,7 +98,7 @@ for (const hang of ['headers', 'body']) test(`timeout during ${hang} returns con
   assert.equal(h.requests.length, 1);
 });
 
-test('a delivery with a lost reply recovers the same attempt after a status read', async () => {
+void test('a delivery with a lost reply recovers the same attempt after a status read', async () => {
   const h = harness();
   h.replies.push({ body: ready }, { body: cloud }); await h.click('状態を確認');
   h.replies.push({ hang: 'body' }); await h.click('導入情報を表示');
@@ -115,7 +115,7 @@ test('a delivery with a lost reply recovers the same attempt after a status read
   assert.ok(h.requests.every((request) => request.options.redirect === 'manual'));
 });
 
-test('an acknowledgement with a lost reply hides the local code and reads back its committed state', async () => {
+void test('an acknowledgement with a lost reply hides the local code and reads back its committed state', async () => {
   const h = harness(); await showMaterial(h);
   h.replies.push({ hang: 'headers' }); await h.click('サーバーから消去');
   h.controllers.at(-1).abort(new DOMException('timeout', 'TimeoutError')); await h.flush();
@@ -128,7 +128,7 @@ test('an acknowledgement with a lost reply hides the local code and reads back i
   assert.equal(h.requests.filter((request) => request.options.body?.includes('acknowledge')).length, 1);
 });
 
-test('a cloud rotation with a lost reply removes stale access and reads back the new key without repeating rotation', async () => {
+void test('a cloud rotation with a lost reply removes stale access and reads back the new key without repeating rotation', async () => {
   const h = harness();
   const active = { ...cloud, available: true, state: 'active', key: { id: 'fixture-key-before', expiresAt: 2000000000000, scopes: ['sky:read'] } };
   h.replies.push({ body: ready }, { body: active }); await h.click('状態を確認');
@@ -144,7 +144,7 @@ test('a cloud rotation with a lost reply removes stale access and reads back the
   assert.equal(h.requests.filter((request) => request.options.body?.includes('rotate')).length, 1);
 });
 
-test('a sign-in redirect clears cached access without following the redirect', async () => {
+void test('a sign-in redirect clears cached access without following the redirect', async () => {
   const h = harness(); await showMaterial(h);
   h.replies.push({ body: {}, status: 302 }); await h.click('状態を更新');
   assert.ok(!h.text().includes(material.matchingId));
