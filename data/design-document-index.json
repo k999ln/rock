@@ -269,8 +269,13 @@
         "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java",
         "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceSessionStoreTest.java",
         "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceHomeTransportTest.java",
-        "android/shell/src/androidTest/java/dev/rock/shell/CloudSessionPresentationTest.java"
-      ]
+        "android/shell/src/androidTest/java/dev/rock/shell/CloudSessionPresentationTest.java",
+        "android/automation/src/androidTest/java/dev/rock/automation/AndroidResponseDeadlineTest.java"
+      ],
+      "responseRecovery": {
+        "accountStorage": "Transient errors preserve encrypted state; proven invalid data or permanent invalidation clears it.",
+        "bodyDeadline": "Four readers check monotonic deadlines before and after reads including EOF; forced whole-exchange cancellation remains unverified."
+      }
     },
     {
       "id": "local_ai_and_memory",
@@ -501,6 +506,13 @@
         "rejectSymlinksAndNonRegularFiles": true,
         "parentDirectoryTrust": "existing owner-local boundary",
         "regressions": "tests/mcp-local-descriptor.test.mjs"
+      },
+      "toolDiscoveryBoundary": {
+        "maxPages": 5,
+        "maxCursorUtf8Bytes": 1024,
+        "repeatedCursor": "reject",
+        "staleConnection": "cannot restore a disconnected or replaced connection",
+        "tests": "tests/mcp-connector.test.mjs"
       }
     },
     {
@@ -910,8 +922,11 @@
         "implementation": "components/mercari-revenue-starter.tsx",
         "tests": [
           "tests/mercari-revenue-route.test.mjs",
-          "tests/mercari-workspace-recovery.test.mjs"
-        ]
+          "tests/mercari-workspace-recovery.test.mjs",
+          "tests/pending-save-navigation.test.mjs"
+        ],
+        "authenticationRecovery": "Retain pending payload, reload the owner list after sign-in, and block same-tab links until save confirmation.",
+        "navigationImplementation": "components/use-pending-save-navigation.ts"
       }
     },
     {

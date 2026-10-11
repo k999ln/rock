@@ -522,6 +522,10 @@ AI02〜AI06の旧host fixtureを現行のSIM/eSIM・署名付きPlatform Coreへ
 
 統合対象・除外理由・検証環境は[PR統合証拠](evidence/pr-consolidation-20261005.json)に保存する。旧仕様へのrollbackはmerge履歴から追跡し、現行署名registry、SIM entitlement、本人別保存、課金上限を失う一括巻戻しをしない。
 
+### Androidの認証保存と応答期限（2026-10-11、OS10）
+
+一時的なKeystore/file読取失敗では連携を利用不可として扱い、暗号化sessionを削除しない。保存内容の不正や恒久的な鍵無効化が確認された場合だけ破棄する。Home・認証・Broker登録・Wallet handoffの本文readerはread前後とEOFで既存期限を検査し、期限切れ応答を成功へ変換しない。HTTP header/TLS/framingを含む全通信の強制停止は未受入。復旧・実Android試験条件は[Android workstream](workstreams/07-android-device-local-ai.md)を正本とする。
+
 ### native MCPのHTTPSとCA境界（SYS15）
 
 ROCKの`MCPHttpClient`は、明示選択した入力とbearerを固定originへ送る前に接続設定を検査する。HTTPSでは明示した空でないCAを必須とし、欠落・空文字・false相当のCAでclientを生成しない。無効なCAは接続・送信前に失敗し、平文へのfallbackや自動再試行を行わない。正しいCA設定へ直した後にclientを作り直す。CAの内容は既存のTLS context生成で読み込み、証明書・hostname検証と全通信共通deadlineを維持する。

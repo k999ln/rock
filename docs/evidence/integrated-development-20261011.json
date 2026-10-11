@@ -5,7 +5,7 @@
   "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
   "branch": "codex/rock-development-20261011",
   "status": "integrated_candidate_verified_followup_development_in_progress",
-  "sourceSha": "6af91cadd418d8f13add6e8989998f255f1aa850",
+  "sourceSha": "705476cf2bdb4f59ae7fb1c710842bdec40f05ef",
   "taskIds": [
     "G04",
     "SIM01",
@@ -477,21 +477,95 @@
     "codeqlFollowup": {
       "failedSourceShas": [
         "0f724cf6efeb04a2971283ea73740c28c8780ff3",
-        "6af91cadd418d8f13add6e8989998f255f1aa850"
+        "6af91cadd418d8f13add6e8989998f255f1aa850",
+        "23f9893703e029284c18ed75568dca255cc22fcb"
       ],
-      "newAnnotationsLatest": 11,
+      "newAnnotationsLatest": 2,
       "scope": "Test HTML extraction, host-literal assertions, route fixture code construction and file-derived HTTP destination.",
       "repairCommits": [
         "537a5a7a",
-        "23f9893703e029284c18ed75568dca255cc22fcb"
+        "23f9893703e029284c18ed75568dca255cc22fcb",
+        "b46a1bfdc6c309e484fe243b88308100ceaf578e"
       ],
       "regressionTests": {
         "amcMarketplaceMaterialCoconala": 86,
         "routeFixtures": 19,
         "mcpConnector": 17
       },
-      "newAnalysis": "pending",
+      "newAnalysis": "pending after script-end-tag attribute repair",
       "dismissedOrSuppressed": false
+    },
+    "purchaseRecovery": {
+      "sourceSha": "c0c1fbbdfef4743460dbd46bb7f367336795f4c8",
+      "componentTests": 17,
+      "independentAdditionalCases": 5,
+      "browser": {
+        "viewport": 390,
+        "environment": "actual component/CSS with local synthetic API",
+        "cases": [
+          "lost POST reply then GET readback without duplicate registration",
+          "401 hides old entitlements and registration",
+          "separate-tab sign-in retains selection",
+          "restored access reads entitlements with same purchase selected"
+        ]
+      },
+      "notAccepted": [
+        "production sign-in",
+        "real purchase or issuer",
+        "page-close persistence"
+      ]
+    },
+    "pendingSaveRecovery": {
+      "sourceSha": "07260aca868d93bf4b82d6391271062d328538fb",
+      "targetedTests": 33,
+      "browser": "Material local DB fault: Home blocked until same-ID save recovery; Home works after success",
+      "scope": "Memory-only state and explicit same-tab link guard; no crash/history durability"
+    },
+    "androidBodyDeadline": {
+      "sourceSha": "c2af372fc3c973f8fc5beee234376efccde90259",
+      "beforeFailures": 12,
+      "readerTests": 20,
+      "existingSessionTests": 16,
+      "compile": {
+        "sdk": 35,
+        "aidl": 7,
+        "java": 73
+      },
+      "androidRuntime": "pending latest CI",
+      "limitations": "Body deadline starts after headers and does not interrupt an ongoing TLS/framing read."
+    },
+    "mcpPagination": {
+      "sourceSha": "6c158a4bb395a443f6d36643e5d1cce670b893fe",
+      "beforeFailures": 11,
+      "testsPassed": 55,
+      "platformSkipped": 1,
+      "maxPages": 5,
+      "maxCursorUtf8Bytes": 1024,
+      "archiveCheck": "passed"
+    },
+    "securitySourceTriage": {
+      "status": "read-only local audit; no dismissal or suppression",
+      "sourceSha": "732aa504fcfcfb0234782c88dd427b011328882f",
+      "noVnc39And40": {
+        "scope": "Frozen noVNC original unchanged and import hash verified",
+        "finding": "Bounded integer password-length indexes in fixed Uint8Arrays, not attacker-selected property names",
+        "inputsPerMethod": 14,
+        "prototypeOrNonIndexChanges": 0,
+        "realVncTest": false
+      },
+      "mrResponseSplitting10": {
+        "boundary": "Exact Origin allowlist and loopback Host precede response header",
+        "test": "Real HTTP fixture: folded CRLF rejected with 403 and no ACAO"
+      },
+      "walletResponseSplitting11": {
+        "boundary": "Strict ASCII device_ref registration and authenticated exact-principal lookup before header",
+        "realTlsSqliteFixture": {
+          "valid": 2,
+          "rejected": 10,
+          "rejectedLegacyImport": 2
+        },
+        "productionDeployment": false
+      }
     }
   },
   "github": {
@@ -502,7 +576,7 @@
     "pullRequest": "https://github.com/k999ln/rock/pull/99",
     "draft": true,
     "savedSourceSha": "23f9893703e029284c18ed75568dca255cc22fcb",
-    "latestFullCi": "6af91cad: verify/Android/native/SPIDER success; CodeQL aggregate failed on 11 test annotations, subsequent repair awaiting analysis."
+    "latestFullCi": "6af91cad verify/Android/native/SPIDER passed. CodeQL at 23f98937 has two test HTML annotations remaining; b46a1bfd repair awaits analysis."
   },
   "acceptanceLimits": [
     "Host and synthetic fixtures are separate from provider, emulator, physical device and production acceptance.",

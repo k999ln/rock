@@ -2762,7 +2762,10 @@
         "lib/material-study.ts",
         "app/api/material-invention/route.ts",
         "components/material-invention-workspace.tsx",
-        "tests/material-study.test.mjs"
+        "tests/material-study.test.mjs",
+        "components/use-pending-save-navigation.ts",
+        "tests/material-workspace-recovery.test.mjs",
+        "tests/pending-save-navigation.test.mjs"
       ],
       "nextAction": "Accept integrated Sky/Zema Material preview, authenticated WorkJob save/reload and eSIM-scoped access on one source candidate. Simulation/lab/XR, physical materials and limited-memory integration remain unimplemented."
     },
@@ -4343,7 +4346,8 @@
         "android/sepolicy/private/rockstar_platform.te",
         "android/core/src/main/java/dev/rock/core/platform/A2ARecoveryBinding.java",
         "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceSessionStoreTest.java",
-        "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceHomeTransportTest.java"
+        "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceHomeTransportTest.java",
+        "android/automation/src/androidTest/java/dev/rock/automation/AndroidResponseDeadlineTest.java"
       ]
     },
     {
@@ -4915,7 +4919,9 @@
         "tests/mercari-revenue.test.mjs",
         "lib/mercari-revenue-store.ts",
         "tests/mercari-revenue-route.test.mjs",
-        "tests/mercari-workspace-recovery.test.mjs"
+        "tests/mercari-workspace-recovery.test.mjs",
+        "components/use-pending-save-navigation.ts",
+        "tests/pending-save-navigation.test.mjs"
       ]
     },
     {

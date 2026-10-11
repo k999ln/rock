@@ -19,6 +19,8 @@ host fixtureは`CapacityOffer → ComputeOrder → ComputeLease → ComputeRecei
 
 責任はROCK/O5、追跡はMAT03。入出力、状態、保存、本人分離、失敗、再送、復旧、承認、合格条件、残る判断の正本は[Material CoreのWeb接続](material-invention-core.md#sky--zemaの机上比較と本人用保存)。実装は`lib/material-study.ts`、`app/api/material-invention/route.ts`、`components/material-invention-workspace.tsx`。既存`work_jobs`と`lib/workflow.ts`を使い、サーバー保存の前に入力送信を明示する。
 
+Materialとメルカリの保存結果が不明な間は入力と記録IDを画面内に保持し、同じタブのリンク移動を止める。別タブのサインインとexportは利用できる。401で旧一覧を隠し、認証復帰後に本人の一覧を読戻す。遅い旧GETで認証切れを解除しない。タブ終了・crash・履歴移動をまたぐ永続復旧は未受入。
+
 ## SPIDER — Skyのセキュリティ検査
 
 2026-10-09、利用者の「skyでしたい」を受けて `rockstar-spider` を追加。既存SYS15 / H1の割当とROCK責任を継続する。`ready`は以下のブラウザ内機能の実装範囲で、公開配備・全端末保護の受入ではない。
@@ -181,6 +183,8 @@ SDKのローカルMCP認証は、受信文字列と期待キーをUTF-8 byte列�
 完全なbody受信とJSON解析後も、token発行／Tool実行前に期限を検査する。期限超過や不完全な要求は処理せず接続を閉じ、次の要求を受付する。許可された通常要求は従来のJSON-RPC結果を返し、応答writeには別の10秒timeoutを使う。受信本文や例外詳細の保存・ログ出力を追加せず、stdioの処理と本人承認の境界を変更しない。失敗後は利用者が完全な要求を再送できる。
 
 合格条件は実loopback上の遅いrequest-line／header／bodyの打切りと次の正常接続への復旧、期限後のtoken・Tool作用0、headerとbodyで期限が共通、buffer先読み・8 KiB超の正常分割入力・既存Origin／認証・通常Tool結果・資源解放の維持。`tests/test_mr_http_deadline.py`をCIで実行する。対象は1接続の受信時間境界であり、接続floodや全OS・Internetからの防御の受入ではない。
+
+MCPのTool列挙は空ページも含め最大5ページ。継続cursorは非空文字列・UTF-8 1 KiB以内で、循環を拒否する。失敗時はPassportを発行せず、部分一覧を成功にしない。正常な複数ページと本人の切断・接続変更を保つ。
 
 ### Toolが必ず宣言するもの
 
