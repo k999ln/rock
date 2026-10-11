@@ -54,8 +54,12 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   const rockApplication = read('android/automation/src/main/java/dev/rock/automation/RockApplication.java');
   const automationGradle = read('android/automation/build.gradle');
 
+  // 2026-10-10: the public launch page is account-first; SIM purchase claims stay in onboarding.
+  assert.match(onboarding, /SIM[ /]+eSIM|physical SIM|物理SIM/i);
+  assert.match(launch, /アカウントひとつで/);
+  assert.match(launch, /SIMは不要です/);
+  assert.doesNotMatch(launch, /href="\/sky\/esim"/);
   for (const source of [onboarding, launch]) {
-    assert.match(source, /SIM[ /]+eSIM|physical SIM|物理SIM/i);
     assert.match(source, /RockstarOS/);
     assert.match(source, /Sky/);
     assert.match(source, /Zema/);

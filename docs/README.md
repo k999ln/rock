@@ -1,14 +1,17 @@
 # docs/ の地図 — どこに何があるか
 
-作成: 2026-10-07 ／ 更新: 2026-10-11 ／ 対象: `docs/` 直下の186文書と16フォルダ
+更新: 2026-10-11 ／ 対象: `docs/` 直下の文書とフォルダ
 
-`docs/` には設計書・記録・証拠が約2,100ファイルあります。このページは **その全部を分類した地図** です。直下の文書は1つ残らず下の表のどこか1か所に載っています。
+このリポジトリは公開されています。ただし一部のファイルは git-crypt で暗号化されていて、鍵を持つ人だけが読めます。この地図では暗号化されている文書に 🔒 を付けました。何を暗号化しているかは [「暗号化している場所」](#encrypted-areas) にまとめています。
 
-> 2026-10-11の明示指示に基づき、重複したREADME全文と役目を終えた旧指示を削除しました。必要な受入証拠・固定原本は保持し、当時の文書はGitの固定commitから参照します。[削除理由と復元元](git-consolidation.md#obsolete-content-cleanup)を記録しています。
+> 2026-10-10〜11に、もう使わなくなった資料（実験用ツール、古いavocadoMini版、9月前半の作業記録、rocketstarの旧版、役目を終えた旧指示、重複したREADME全文など）を削除しました。削除したpathの一覧は [`data/archived-paths.json`](../data/archived-paths.json)、理由は [Git統合の記録](git-consolidation.md#obsolete-content-cleanup) 🔒 にあります。
+
+> `docs/` の文書は、進捗台帳・検証スクリプト・受入証拠から **パスとSHA-256で参照** されています。動かす・消す前に参照を確かめてください。
 
 **目次**
 
 1. [まず読む5つ](#1-まず読む5つ)
+   - [暗号化している場所](#encrypted-areas)
 2. [入口はこの順番](#2-入口はこの順番)
 3. [知りたいことから探す](#3-知りたいことから探す)
 4. [文書の種類の見分け方](#4-文書の種類の見分け方)
@@ -22,13 +25,30 @@
 
 | 順 | 文書 | これで分かること | 読む時間 |
 | ---: | --- | --- | --- |
-| 1 | [README](../README.md) | これは何か、何を作っていて、今どこまで出来ているか | 5分 |
-| 2 | [仕様変遷](spec-history.md) | いつ、何が、何から何へ変わったか。いま有効な仕様の一覧 | 10分 |
-| 3 | [エージェント・Tool総覧](agents-and-tools.md) | Skyの35 Tool、役割エージェント、クラウドのAgent、32部隊のそれぞれの機能 | 10分 |
-| 4 | [製品ベース](product-baseline.md) | 確定要望 RQ01〜RQ50 の全文。仕様で迷ったときの最終的なよりどころ | 必要な箇所だけ |
-| 5 | [全設計ポータル](rockstaros-design-portal.md) | 領域ごとの詳細設計書への入口 | 必要な箇所だけ |
+| 1 | [README](../README.md) | これは何か、何を作っていて、今どこまで出来ているか（英語） | 5分 |
+| 2 | [エージェント・Tool総覧](agents-and-tools.md) | Skyの Tool、役割エージェント、クラウドのAgent、開発の部隊のそれぞれの機能 | 10分 |
+| 3 | [全設計ポータル](rockstaros-design-portal.md) | 領域ごとの詳細設計書への入口 | 必要な箇所だけ |
+| 4 | [Sky](sky.md) | Sky・Zema・Walletの役割と使い方 | 10分 |
+| 5 | [PROJECTS.md](../PROJECTS.md) | 製品・Toolごとのソースコードの場所 | 必要な箇所だけ |
 
----
+鍵を持つ人は、続けて [製品ベース](product-baseline.md) 🔒（確定要望 RQ01〜RQ50）と [仕様変遷](spec-history.md) 🔒 を読んでください。
+
+<a id="encrypted-areas"></a>
+
+### 暗号化している場所
+
+ファイル名と場所は誰でも見えます。中身を読めるのは鍵を持つ人と環境だけです。正確な一覧は [`.gitattributes`](../.gitattributes) です。
+
+| 分類 | 主な場所 |
+| --- | --- |
+| ハード設計・発明・意匠 | `avocado-mini-r5/`、`rocketstar-design/`、`assets/avocado-mini-hardware-*`、avocadoMini・avokadoPro・Material Inventionの設計書、`data/avocado-mini-cellular.json`、`data/avokado-pro-pc.json` |
+| お金・価格・契約・事業方針 | 製品ベース（`product-baseline.md`・`data/product-baseline.json`）、Sky経済設計、決済運用、精算口座・ファンド・Marketの事業設計、契約準備、事業戦略 |
+| 調査資料 | `research/`、`research.md`、市場調査、AIプロバイダ比較 |
+| 会話記録 | `avocado-mini-conversation-2026-09-27/` |
+| AIへの指示文・非公開データ | リポジトリ直下の `private/`（法律AI・特許AIの指示文、弁護士の一覧）。鍵がないビルドでは公開用の仮の内容に置き換わる |
+| 開発の内部 | `../project.md`（作業ログと全task表）、`evidence/`（公開のOS契約が参照するローカルAIの検証記録5件を除く）、`workstreams/`、`prompts/`、AMCとMission Controlの文書・定義、仕様変遷、監査、`../AGENTS.private.md`、`.codex/`、`.cursor/rules/`、`../workspaces/` |
+
+公開のまま残しているもの: コード、技術設計、使い方、セキュリティ方針、利用者に見せている価格、AMC画面が表示する台帳（`data/project-status.json`・`data/mission-control.json` など）。
 
 ## 2. 入口はこの順番
 
@@ -58,48 +78,49 @@ README.md ─────────────── これは何か（表玄
 | --- | --- | --- |
 | [README](../README.md) | 表玄関。製品の説明と現在地（約1画面） | 進捗の詳細、設計の全文（各分野の正本へこの地図から進む） |
 | この地図 | 文書の場所と分類 | 仕様そのもの |
-| [製品ベース](product-baseline.md) | 利用者が確定した要望の正本 | 実装状況の証明 |
-| [仕様変遷](spec-history.md) | 要望の変遷を読みやすく並べた索引 | 正本（製品ベースが優先） |
+| [製品ベース](product-baseline.md) 🔒 | 利用者が確定した要望の正本 | 実装状況の証明 |
+| [仕様変遷](spec-history.md) 🔒 | 要望の変遷を読みやすく並べた索引 | 正本（製品ベースが優先） |
 | [全設計ポータル](rockstaros-design-portal.md) | 設計書の入口と「詳細設計済み」の条件 | 進捗 |
 | [PROJECTS.md](../PROJECTS.md) | 製品・実装単位からソースの場所を探す | 仕様 |
-| [Mission Control](mission-control.md) | 部隊の担当、段階、次のタスク | task個別の状態（`project.md`が正本） |
-| [workstreams/](workstreams/README.md) | 作業分野ごとの対象・完了条件・検証コマンド | 設計の全文 |
-| [project.md](../project.md) | 日付順の作業ログ＋全taskの状態表（自動生成） | 仕様 |
-| [AGENTS.md](../AGENTS.md) | AI開発エージェントが作業するときのルール | 人向けの説明 |
+| [Mission Control](mission-control.md) 🔒 | 部隊の担当、段階、次のタスク | task個別の状態（`project.md`が正本） |
+| [workstreams/](workstreams/README.md) 🔒 | 作業分野ごとの対象・完了条件・検証コマンド | 設計の全文 |
+| [project.md](../project.md) 🔒 | 日付順の作業ログ＋全taskの状態表（自動生成） | 仕様 |
+| [AGENTS.md](../AGENTS.md) | AI開発エージェントが作業するときの共通ルール（鍵の扱い） | 人向けの説明 |
+| [AGENTS.private.md](../AGENTS.private.md) 🔒 | 鍵を持つエージェント向けの作業ルール全文 | 公開の説明 |
 
 ---
 
-作業の単位を選ぶときは [機能別の作業部屋](../workspaces/README.md)（手順・生成索引）へ進んでください。各部屋にコード・task・確認方法、新しい思いつきには [アイデア置き場](../workspaces/IDEAS.md)（記録）があります。
+作業の単位を選ぶときは [機能別の作業部屋](../workspaces/README.md) 🔒（手順・生成索引）へ進んでください。各部屋にコード・task・確認方法、新しい思いつきには [アイデア置き場](../workspaces/IDEAS.md) 🔒（記録）があります。
 
 ## 3. 知りたいことから探す
 
 | 知りたいこと | 開く文書 |
 | --- | --- |
-| 結局いまの主商品は何？ | [仕様変遷 §2](spec-history.md#2-いま有効な仕様2026-10-06時点) → [SIM/eSIM-led architecture](sim-led-product-architecture.md) |
-| この仕様はいつ決まった？ 前は何だった？ | [仕様変遷 §3・§5](spec-history.md#3-テーマ別何から何へ変わったか) |
-| ある日に何を決めて何を作った？ | [仕様変遷 §4](spec-history.md#4-日付順の全記録) → くわしくは [project.md](../project.md) |
-| RQ○○の原文を読みたい | [製品ベース](product-baseline.md) |
+| 結局いまの主商品は何？ | [README](../README.md#what-this-is)（アカウントひとつで使うAgent。SIMは機器の任意部品）→ 鍵があれば [仕様変遷 §2](spec-history.md#2-いま有効な仕様2026-10-10時点) 🔒 |
+| この仕様はいつ決まった？ 前は何だった？ | [仕様変遷 §3・§5](spec-history.md#3-テーマ別何から何へ変わったか) 🔒 |
+| ある日に何を決めて何を作った？ | [仕様変遷 §4](spec-history.md#4-日付順の全記録) 🔒 → くわしくは [project.md](../project.md) 🔒 |
+| RQ○○の原文を読みたい | [製品ベース](product-baseline.md) 🔒 |
 | Toolは何がある？ それぞれ何をする？ | [エージェント・Tool総覧 §2](agents-and-tools.md#2-skyのtool-35件) |
 | あるToolの入出力・保存・禁止事項 | [全Tool詳細設計](sky-tools-complete-design.md) |
 | 「エージェント」とは何を指す？ | [エージェント・Tool総覧 §1](agents-and-tools.md#1-まず用語エージェントは5種類ある) |
 | Sky・Zema・Walletの違い | [Sky](sky.md) / [製品・サービス・システム関係図](rockstaros-product-system-map.md) |
-| 料金・手数料はどうなっている？ | [仕様変遷 §3.3](spec-history.md#33-料金手数料) → [Sky経済設計](sky-network-economy.md) / [決済](sky-billing.md) |
+| 料金・手数料はどうなっている？ | [仕様変遷 §3.3](spec-history.md#33-料金手数料) 🔒 → [Sky経済設計](sky-network-economy.md) 🔒 / [決済](sky-billing.md) 🔒 |
 | クラウドのAgentはどう動く？ | [Sky Cloud継続実行](sky-cloud-continuity.md) / [A2A Bridge](sky-a2a-bridge.md) |
 | 使っていない携帯の計算力をどう束ねる？ | [Sky Compute Grid](sky-compute-grid.md) |
-| SIM/eSIMを買ってから使えるまで | [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [利用権claim](sim-service-entitlement-claims.md) |
-| avocadoMiniの現行設計 | [R5統合基本設計](avocado-mini-r5/README.md) |
-| avocadoMiniの昔の形 | [仕様変遷 §3.5](spec-history.md#35-avocadominiの形) → [E3](avocado-mini-tower20-e3/README.md) / [E2](avocado-mini-mini200-e2/README.md) / [E1](avocado-mini-mini200-e1/README.md) |
-| avokadoProの設計 | [avokadoPro PC設計](avokado-pro-pc-design.md) |
-| rocketstarの設計 | [rocketstar設計アーカイブ](rocketstar-design/README.md) |
+| 機器の回線・SIM購入claim（2026-10-10から任意部品） | [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [利用権claim](sim-service-entitlement-claims.md) |
+| avocadoMiniの現行設計 | [R5統合基本設計](avocado-mini-r5/README.md) 🔒 |
+| avocadoMiniの昔の形 | [仕様変遷 §3.5](spec-history.md#35-avocadominiの形) 🔒 → E3（削除済み） / E2（削除済み） / E1（削除済み） |
+| avokadoProの設計 | [avokadoPro PC設計](avokado-pro-pc-design.md) 🔒 |
+| rocketstarの設計 | [rocketstar設計アーカイブ](rocketstar-design/README.md) 🔒 |
 | OS全体の設計 | [全設計ポータル](rockstaros-design-portal.md) → [OS全体詳細設計](rockstaros-complete-design.md) / [設計書完全版 v1.0 PDF](rockstaros-complete-design-v1.0.pdf) |
 | LLMは何をどこで使っている？ | [エージェント・Tool総覧 §7](agents-and-tools.md#7-llmモデルの役割) → [LLM・評価モデル設計](llm-evaluation-architecture.md) |
 | Pixel実機はどこまで進んだ？ | [端末preview](phone-preview-20260911.md) / [初回flash gate](android-first-flash-gate-20260916.md) |
 | 公開してよい条件は？ | [最低公開条件](release-minimum-gates.md) |
 | セキュリティの仕組みは？ | [Spider Guard](spider-guard.md) / [緊急アクセスとインシデント対応](security-incident-response.md) |
-| 誰が何を担当している？ | [Mission Control](mission-control.md) / [エージェント・Tool総覧 §8](agents-and-tools.md#8-開発を進めるエージェントamc) |
+| 誰が何を担当している？ | [Mission Control](mission-control.md) 🔒 / [エージェント・Tool総覧 §8](agents-and-tools.md#8-開発を進めるエージェントamc) |
 | ソースコードはどこ？ | [PROJECTS.md](../PROJECTS.md) |
-| 試験結果の証拠は？ | [evidence/](evidence/) （各文書の「証拠」リンクから辿る） |
-| Gitに何を入れてよい？ | [Repository storage policy](git-consolidation.md#repository-storage-policy) |
+| 試験結果の証拠は？ | [evidence/](evidence/) 🔒 （各文書の「証拠」リンクから辿る） |
+| Gitに何を入れてよい？ | [Repository storage policy](git-consolidation.md#repository-storage-policy) 🔒 |
 
 ---
 
@@ -110,11 +131,11 @@ README.md ─────────────── これは何か（表玄
 | 種類 | 意味 | 件数 |
 | --- | --- | ---: |
 | **正本** | いま有効な内容。他の文書と食い違ったらこちらが優先 | 26 |
-| **設計** | 設計書。内容は有効だが、実装・受入が済んでいるとは限らない | 56 |
+| **設計** | 設計書。内容は有効だが、実装・受入が済んでいるとは限らない | 55 |
 | **手順** | 操作手順・運用手順・規約 | 13 |
-| **監査** | ある時点で設計・実装・証拠を照合した結果 | 10 |
-| **記録** | その日の作業・試験・判断の記録。書かれた時点の事実で、いまの状態ではない | 62 |
-| **履歴** | 上書きされた古い方針・古い「現在地」。経緯を知るために残している | 14 |
+| **監査** | ある時点で設計・実装・証拠を照合した結果 | 6 |
+| **記録** | その日の作業・試験・判断の記録。書かれた時点の事実で、いまの状態ではない | 30 |
+| **履歴** | 上書きされた古い方針・古い「現在地」。経緯を知るために残している | 10 |
 | **原本** | 受け取った成果物そのもの（PDFなど）。内容を変えない | 2 |
 | **索引** | 他の正本を読みやすく並べ直したもの（この整理で追加） | 3 |
 
@@ -138,18 +159,18 @@ README.md ─────────────── これは何か（表玄
 
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
-| [`product-baseline.md`](product-baseline.md) | 正本 | 確定要望 RQ01〜RQ50 と、日付付きの方針判断・変更記録。仕様の最終的なよりどころ | 10-10 |
-| [`spec-history.md`](spec-history.md) | 索引 | 仕様変遷。いつ・何が・何から何へ変わったかを日付順とテーマ別に並べ直したもの | 10-07 |
+| [`product-baseline.md`](product-baseline.md) 🔒 | 正本 | 確定要望 RQ01〜RQ50 と、日付付きの方針判断・変更記録。仕様の最終的なよりどころ | 10-10 |
+| [`spec-history.md`](spec-history.md) 🔒 | 索引 | 仕様変遷。いつ・何が・何から何へ変わったかを日付順とテーマ別に並べ直したもの | 10-10 |
 | [`sim-led-product-architecture.md`](sim-led-product-architecture.md) | 正本 | 現行の主商品（SIM/eSIMを入口にしたサービス）の定義、利用開始の流れ、実行と料金の契約 | 10-06 |
 | [`sim-service-entitlement-claims.md`](sim-service-entitlement-claims.md) | 設計 | SIM/eSIMの購入をRockstarアカウントの利用権へ結び付ける署名付きclaimの仕様 | 10-05 |
-| [`provider-contract-readiness-20260930.md`](provider-contract-readiness-20260930.md) | 記録 | eSIM・クラウド供給元の公開資料比較と契約前の準備（契約・問い合わせは未実施） | 10-05 |
-| [`product-north-star-20260915.md`](product-north-star-20260915.md) | 正本 | 最上位目的（AI自動化チームの所有と効率化）から逆算した開発軸。RQ47の補助資料 | 10-05 |
-| [`rockstaros-1.0-strategy.md`](rockstaros-1.0-strategy.md) | 設計 | 8原則を適用した製品・事業・開発設計。対象市場や代表商品は検証仮説 | 10-05 |
+| [`provider-contract-readiness-20260930.md`](provider-contract-readiness-20260930.md) 🔒 | 記録 | eSIM・クラウド供給元の公開資料比較と契約前の準備（契約・問い合わせは未実施） | 10-05 |
+| [`product-north-star-20260915.md`](product-north-star-20260915.md) 🔒 | 正本 | 最上位目的（AI自動化チームの所有と効率化）から逆算した開発軸。RQ47の補助資料 | 10-05 |
+| [`rockstaros-1.0-strategy.md`](rockstaros-1.0-strategy.md) 🔒 | 設計 | 8原則を適用した製品・事業・開発設計。対象市場や代表商品は検証仮説 | 10-05 |
 | [`rockstaros-1.0-architecture.md`](rockstaros-1.0-architecture.md) | 設計 | RockstarOS 1.0 のベース構成と、各systemの現在地・進化方針 | 10-05 |
 | [`rockstaros-product-system-map.md`](rockstaros-product-system-map.md) | 設計 | 製品・サービス・内部システム・`Mr.`・MRの関係図。v1.1（2026-10-02）でSIM/eSIM起点の主商品に合わせてある | 10-07 |
-| [`execution-approval-20260909.md`](execution-approval-20260909.md) | 記録 | 設計v1.1の実装承認と、条件付きの公開・実機・実資金の了承範囲 | 09-09 |
+| [`execution-approval-20260909.md`](execution-approval-20260909.md) 🔒 | 記録 | 設計v1.1の実装承認と、条件付きの公開・実機・実資金の了承範囲 | 09-09 |
 | [`product.md`](product.md) | 履歴 | Rock star の初期仕様（2026-09-04） | 09-12 |
-| [`market-exploration-20260909.md`](market-exploration-20260909.md) | 記録 | ゲーム資産市場・予測市場の検討メモ（未承認の検討事項） | 09-09 |
+| [`market-exploration-20260909.md`](market-exploration-20260909.md) 🔒 | 記録 | ゲーム資産市場・予測市場の検討メモ（未承認の検討事項） | 09-09 |
 | [`version-boundaries.md`](version-boundaries.md) | 設計 | 製品版・API版・schema版の境界と、版番号の付け方 | 09-17 |
 
 ### B. OS全体・Platform Core
@@ -163,7 +184,7 @@ RockstarOS本体の設計。全設計ポータルが設計書の入口。
 | [`rockstaros-complete-design-v1.0.pdf`](rockstaros-complete-design-v1.0.pdf) | 原本 | RockstarOS 設計書完全版 v1.0（41ページ・32章）の原本PDF | 09-24 |
 | [`rockstaros-complete-design-v1.0.txt`](rockstaros-complete-design-v1.0.txt) | 原本 | 同PDFの全文検索用の抽出テキスト | 09-24 |
 | [`ai-native-os-architecture.md`](ai-native-os-architecture.md) | 正本 | AIネイティブOSの共通設計。交換可能なLLM、記憶、仕事、offlineと外部作用の境界（RQ48） | 10-05 |
-| [`ai-native-os-design-audit.md`](ai-native-os-design-audit.md) | 監査 | 同設計のSolによる独立監査。設計上の解消と実装・受入待ちの区別 | 09-20 |
+| [`ai-native-os-design-audit.md`](ai-native-os-design-audit.md) 🔒 | 監査 | 同設計のSolによる独立監査。設計上の解消と実装・受入待ちの区別 | 09-20 |
 | [`platform-core.md`](platform-core.md) | 設計 | Platform Core v1。Tool／MCP／Providerの登録、承認、Wallet台帳、更新・rollback（RQ42） | 10-05 |
 | [`system-composition.md`](system-composition.md) | 監査 | 全体構成監査。12層・7経路の選択と接続状態 | 09-19 |
 | [`data-storage-boundaries.md`](data-storage-boundaries.md) | 設計 | データの保存場所の境界と、重複の整理 | 09-15 |
@@ -188,7 +209,7 @@ RockstarOS本体の設計。全設計ポータルが設計書の入口。
 | [`jev-ecosystem-integration-design.md`](jev-ecosystem-integration-design.md) | 設計 | Jev ecosystem 10件を役割別にSkyへ入れる全体詳細設計 | 09-19 |
 | [`jev-ultrafast-integration-design.md`](jev-ultrafast-integration-design.md) | 設計 | Jev Ultrafast（選択型browser agent）の統合設計 | 09-19 |
 | [`local-ai-os-integration-20260915.md`](local-ai-os-integration-20260915.md) | 設計 | Local Action Assistantを物理Android版のローカルLLMとして導入する設計と証拠（RQ41） | 10-05 |
-| [`local-llm-connection-audit-20260920.md`](local-llm-connection-audit-20260920.md) | 監査 | ローカルLLM接続の監査（2026-09-20） | 09-27 |
+| [`local-llm-connection-audit-20260920.md`](local-llm-connection-audit-20260920.md) 🔒 | 監査 | ローカルLLM接続の監査（2026-09-20） | 09-27 |
 | [`ai-memory-architecture.md`](ai-memory-architecture.md) | 設計 | 正本の記憶とモデルごとの投影（canonical memory and model projections） | 10-05 |
 | [`sky-assistant-and-memory.md`](sky-assistant-and-memory.md) | 設計 | Sky AssistantとSky Memory。一つの入口と、アプリを毎回入れない仕組み | 09-29 |
 | [`agent-control-plane.md`](agent-control-plane.md) | 設計 | Agent Control Plane v1。開発作業をCursor Cloud Agentへ委任する境界（dry-runのみ） | 10-05 |
@@ -208,16 +229,14 @@ Toolを探す・つなぐ・動かす側の設計。
 | [`sky-mcp-usability-20260912.md`](sky-mcp-usability-20260912.md) | 記録 | MCP導入・利用体験の改善記録 | 09-12 |
 | [`sky-identity-connection.md`](sky-identity-connection.md) | 設計 | Skyの本人確認と1タップ接続 | 09-12 |
 | [`sky-role-agents-20260912.md`](sky-role-agents-20260912.md) | 設計 | Skyの役割エージェント（担当）の仕様と会話契約 | 09-12 |
-| [`sky-network-economy.md`](sky-network-economy.md) | 正本 | Toolチームと開発者還元。Sky Market手数料10%と、過去の貢献・還元設計 | 09-29 |
+| [`sky-network-economy.md`](sky-network-economy.md) 🔒 | 正本 | Toolチームと開発者還元。Sky Market手数料10%と、過去の貢献・還元設計 | 09-29 |
 | [`sky-compute-grid.md`](sky-compute-grid.md) | 正本 | 未使用Androidの計算余力を固定lotへmatchingし、検証後にだけ精算候補へするVirtual Compute Plant設計 | 10-10 |
 | [`sky-mr-automation-candidates.md`](sky-mr-automation-candidates.md) | 設計 | 旧 `Mr.` Hubの自動化11件をSkyの導入候補にする設計 | 09-20 |
 | [`mr-integration.md`](mr-integration.md) | 設計 | `Mr.` からの取り込み範囲、固定原本とhash、license | 10-03 |
 | [`pc-citations-adapter.md`](pc-citations-adapter.md) | 設計 | PC出典整理の実処理接続（固定CLI、上限、cleanup） | 10-02 |
-| [`citation-remote-preview-20260910.md`](citation-remote-preview-20260910.md) | 記録 | 引用整理の開発用遠隔実行 | 09-10 |
 | [`chat-mcp-control-room-20260913.md`](chat-mcp-control-room-20260913.md) | 記録 | Chat（現Zema）のMCP botコントロールルーム | 09-13 |
 | [`chat-usability-20260912.md`](chat-usability-20260912.md) | 記録 | Chat（現Zema）の操作性改善 | 09-13 |
-| [`hub-onboarding-20260910.md`](hub-onboarding-20260910.md) | 記録 | Hub（現Sky）の初回利用と保存結果の改善 | 09-10 |
-| [`frontend-usability-audit-20260915.md`](frontend-usability-audit-20260915.md) | 監査 | フロントの機能性監査（RQ40） | 09-15 |
+| [`frontend-usability-audit-20260915.md`](frontend-usability-audit-20260915.md) 🔒 | 監査 | フロントの機能性監査（RQ40） | 09-15 |
 | [`instagram-photo-onboarding-20260912.md`](instagram-photo-onboarding-20260912.md) | 記録 | Instagram写真によるオンボーディング | 09-15 |
 | [`sky-launch-design.md`](sky-launch-design.md) | 設計 | Skyサービス設計とローンチ受入 v1.0 | 10-05 |
 | [`sky-launch-operations.md`](sky-launch-operations.md) | 手順 | Skyのローンチ運用・受入 | 10-05 |
@@ -232,8 +251,8 @@ Toolを探す・つなぐ・動かす側の設計。
 | [`sky-cloud-continuity.md`](sky-cloud-continuity.md) | 正本 | 端末切断中の継続実行契約。受付時に固定する条件、停止と費用、再接続 | 10-05 |
 | [`sky-cloud-operations-runbook.md`](sky-cloud-operations-runbook.md) | 手順 | クラウド実行の運用・停止・復旧手順 | 10-05 |
 | [`sky-a2a-bridge.md`](sky-a2a-bridge.md) | 設計 | A2A Bridge。Agent間の委任adapter、Broker承認証明、共通予算、上限 | 10-05 |
-| [`a2a-pricing-extension.md`](a2a-pricing-extension.md) | 設計 | A2Aのクラウド Agent価格見積拡張（契約準備） | 10-05 |
-| [`cloud-agent-provider-comparison-20261001.md`](cloud-agent-provider-comparison-20261001.md) | 記録 | クラウドAgentのruntime・orchestration供給元の比較 | 10-05 |
+| [`a2a-pricing-extension.md`](a2a-pricing-extension.md) 🔒 | 設計 | A2Aのクラウド Agent価格見積拡張（契約準備） | 10-05 |
+| [`cloud-agent-provider-comparison-20261001.md`](cloud-agent-provider-comparison-20261001.md) 🔒 | 記録 | クラウドAgentのruntime・orchestration供給元の比較 | 10-05 |
 
 ### F. 個別Tool・事業pilot
 
@@ -243,9 +262,9 @@ Toolを探す・つなぐ・動かす側の設計。
 | --- | --- | --- | --- |
 | [`csv-business-v1.ja.md`](csv-business-v1.ja.md) | 正本 | CSV仕事 v1。商品・実装・運用の正本 | 10-05 |
 | [`csv-business-security.ja.md`](csv-business-security.ja.md) | 手順 | CSV仕事のセキュリティ・プライバシー運用 | 09-15 |
-| [`csv-business-market-evidence-20260915.ja.md`](csv-business-market-evidence-20260915.ja.md) | 記録 | CSV仕事の市場確認記録 | 09-15 |
-| [`sky-csv-trial-payment.md`](sky-csv-trial-payment.md) | 記録 | Sky CSV・50円の決済試験 | 10-05 |
-| [`mercari-revenue-loop.md`](mercari-revenue-loop.md) | 正本 | メルカリ収益ループ。個人メルカリとShopsの扱い、収益検証（RQ28） | 09-24 |
+| [`csv-business-market-evidence-20260915.ja.md`](csv-business-market-evidence-20260915.ja.md) 🔒 | 記録 | CSV仕事の市場確認記録 | 09-15 |
+| [`sky-csv-trial-payment.md`](sky-csv-trial-payment.md) 🔒 | 記録 | Sky CSV・50円の決済試験 | 10-05 |
+| [`mercari-revenue-loop.md`](mercari-revenue-loop.md) 🔒 | 正本 | メルカリ収益ループ。個人メルカリとShopsの扱い、収益検証（RQ28） | 09-24 |
 | [`fashion-brand-ops-integration.md`](fashion-brand-ops-integration.md) | 設計 | Instagram運用・受注型ブランド管理のSky統合（RQ19） | 10-02 |
 | [`sky-legal-intake-20260912.md`](sky-legal-intake-20260912.md) | 設計 | 日本語法律相談受付の実装と安全境界 | 09-12 |
 | [`sky-patent-assistant-20260912.md`](sky-patent-assistant-20260912.md) | 設計 | 特許出願アシスタント | 09-12 |
@@ -257,23 +276,20 @@ Toolを探す・つなぐ・動かす側の設計。
 
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
-| [`sky-billing.md`](sky-billing.md) | 正本 | Sky Market決済（Stripe）と旧収益精算。API、導入手順、返金、受入条件 | 10-05 |
+| [`sky-billing.md`](sky-billing.md) 🔒 | 正本 | Sky Market決済（Stripe）と旧収益精算。API、導入手順、返金、受入条件 | 10-05 |
 | [`sky-commerce-design.md`](sky-commerce-design.md) | 設計 | Sky Market 決済・Wallet 統合詳細設計 | 10-05 |
 | [`wallet-commerce-design.md`](wallet-commerce-design.md) | 設計 | Wallet 統合詳細設計 | 10-05 |
-| [`sky-security-declaration.md`](sky-security-declaration.md) | 記録 | Stripeのセキュリティ申告との対応 | 10-05 |
+| [`sky-security-declaration.md`](sky-security-declaration.md) 🔒 | 記録 | Stripeのセキュリティ申告との対応 | 10-05 |
 | [`wallet-front-design.md`](wallet-front-design.md) | 設計 | Wallet画面の設計・実装 v0.3 | 09-13 |
-| [`external-wallet-fund-provider-boundary-20260913.md`](external-wallet-fund-provider-boundary-20260913.md) | 正本 | 外部Wallet／ファンドProviderを受け入れるOS境界（RQ34） | 09-13 |
-| [`rock-first-party-settlement-wallet-20260913.md`](rock-first-party-settlement-wallet-20260913.md) | 設計 | Rock自身のSettlement Walletを最初のProviderにする（RQ35） | 09-14 |
-| [`rock-wallet-production-rail-20260913.md`](rock-wallet-production-rail-20260913.md) | 設計 | Base Mainnet USDCの本番受取レール（RQ36） | 09-14 |
-| [`rock-wallet-revenue-hub-20260913.md`](rock-wallet-revenue-hub-20260913.md) | 記録 | Rock Wallet — 収益の共通精算口座 | 09-13 |
-| [`everything-market-and-autonomous-fund-20260913.md`](everything-market-and-autonomous-fund-20260913.md) | 設計 | 汎用PAPER市場（Market）と自律型ファンド（RQ33） | 09-15 |
-| [`markets-fund-integration-20260913.md`](markets-fund-integration-20260913.md) | 記録 | Marketsと自動化ファンドの統合 | 09-13 |
-| [`polymarket-bot-sandbox-20260913.md`](polymarket-bot-sandbox-20260913.md) | 記録 | Polymarket bot sandbox（backtest専用）の境界 | 09-13 |
+| [`external-wallet-fund-provider-boundary-20260913.md`](external-wallet-fund-provider-boundary-20260913.md) 🔒 | 正本 | 外部Wallet／ファンドProviderを受け入れるOS境界（RQ34） | 09-13 |
+| [`rock-first-party-settlement-wallet-20260913.md`](rock-first-party-settlement-wallet-20260913.md) 🔒 | 設計 | Rock自身のSettlement Walletを最初のProviderにする（RQ35） | 09-14 |
+| [`rock-wallet-production-rail-20260913.md`](rock-wallet-production-rail-20260913.md) 🔒 | 設計 | Base Mainnet USDCの本番受取レール（RQ36） | 09-14 |
+| [`rock-wallet-revenue-hub-20260913.md`](rock-wallet-revenue-hub-20260913.md) 🔒 | 記録 | Rock Wallet — 収益の共通精算口座 | 09-13 |
+| [`everything-market-and-autonomous-fund-20260913.md`](everything-market-and-autonomous-fund-20260913.md) 🔒 | 設計 | 汎用PAPER市場（Market）と自律型ファンド（RQ33） | 09-15 |
+| [`markets-fund-integration-20260913.md`](markets-fund-integration-20260913.md) 🔒 | 記録 | Marketsと自動化ファンドの統合 | 09-13 |
 | [`value-spend-runtime.md`](value-spend-runtime.md) | 設計 | Value/Spend Runtime（nativeのPAPER予約・実行・再照合） | 10-05 |
-| [`value-spend-runtime-audit-20260912.md`](value-spend-runtime-audit-20260912.md) | 監査 | Value/Spend Runtime 着手監査 | 09-13 |
 | [`fund-and-mcp.md`](fund-and-mcp.md) | 履歴 | Rock starファンドとワンボタン実行（2026-09-04の初期設計） | 09-12 |
 | [`b03-synthetic-hub-wallet-adapter.md`](b03-synthetic-hub-wallet-adapter.md) | 設計 | 合成 Hub↔Wallet adapter 設計（B03 段1〜2） | 09-12 |
-| [`hub-wallet-pc-comparison-20260909.md`](hub-wallet-pc-comparison-20260909.md) | 記録 | PCで同じ成果を出す場合との限定比較（B05） | 09-09 |
 
 関連フォルダ：[`contracts/`](contracts/)（3ファイル）／[`design-validation/`](design-validation/)（5ファイル）
 
@@ -286,19 +302,14 @@ Toolを探す・つなぐ・動かす側の設計。
 | [`game-api-contract-draft.md`](game-api-contract-draft.md) | 設計 | 合成ゲームAPI契約の設計草案 0.2 | 09-12 |
 | [`gx01-contract-implementation-plan.md`](gx01-contract-implementation-plan.md) | 設計 | GX01：既存Walletに接続する合成交換の実装準備 | 09-09 |
 | [`gx01-reference-sdk-sandbox-20260910.md`](gx01-reference-sdk-sandbox-20260910.md) | 記録 | GX01 参照SDKと空の公開sandbox | 09-10 |
-| [`gx01-dx01-acceptance-20260910.md`](gx01-dx01-acceptance-20260910.md) | 記録 | GX01／DX01の合成受入matrix | 09-10 |
 | [`gx01-native-ui-20260910.md`](gx01-native-ui-20260910.md) | 記録 | Gameのnative入口と所有者境界 | 09-10 |
 | [`gx01-ui-wire-20260910.md`](gx01-ui-wire-20260910.md) | 記録 | GX01 UI／Platformの境界契約 | 09-10 |
-| [`gx01-current-copy-sdk-recovery-20260910.md`](gx01-current-copy-sdk-recovery-20260910.md) | 記録 | Gameのcurrent-copy復旧と実processの中断 | 09-10 |
 | [`gx00-connection-wire-v1.md`](gx00-connection-wire-v1.md) | 設計 | GX00 接続契約1（schema・署名単位） | 09-09 |
 | [`gx00-connections-runtime.md`](gx00-connections-runtime.md) | 記録 | GX00 接続の限定host実装 | 09-09 |
 | [`gx00-current-game-restore.md`](gx00-current-game-restore.md) | 記録 | GX00 current-copyのゲーム引継ぎ（host runtimeのみ） | 09-09 |
 | [`gx00-legacy-game-basis.md`](gx00-legacy-game-basis.md) | 記録 | GX00 非空legacyと接続の共通fixture | 09-09 |
 | [`gx00-owner-connection-client.md`](gx00-owner-connection-client.md) | 記録 | GX00 owner接続要求の保存と復旧 | 09-09 |
 | [`gx00-owner-isolation-adr.md`](gx00-owner-isolation-adr.md) | 設計 | GX00 ADR案：1契約1台帳を維持した認証付き複数ownerの接続 | 09-09 |
-| [`game-connection-node-wire-20260909.md`](game-connection-node-wire-20260909.md) | 記録 | 合成ゲーム接続v1のNode.jsによる独立wire検証 | 09-09 |
-| [`game-authority-ui-retention-20260910.md`](game-authority-ui-retention-20260910.md) | 記録 | Game UIの読取り保持 | 09-10 |
-| [`game-wallet-release-checkpoint-20260910.md`](game-wallet-release-checkpoint-20260910.md) | 記録 | Game／Wallet／SDKの2026-09-10作業記録 | 09-10 |
 | [`mini-game-client.md`](mini-game-client.md) | 設計 | MiniからGTA VIを遊ぶための接続（公式Remote Playへのhandoff） | 10-05 |
 
 ### I. Android・Pixel
@@ -314,7 +325,6 @@ Toolを探す・つなぐ・動かす側の設計。
 | [`android-google-stock-recovery.md`](android-google-stock-recovery.md) | 手順 | Google純正への復旧セット | 09-17 |
 | [`android-production-signing-custody.md`](android-production-signing-custody.md) | 設計 | Android正式署名鍵の保管方針 | 09-17 |
 | [`android-rollback-index-policy.md`](android-rollback-index-policy.md) | 設計 | AVB rollback indexの運用 | 09-17 |
-| [`android-and-personal-number-gates-20260913.md`](android-and-personal-number-gates-20260913.md) | 監査 | Android実機の5 gateとマイナンバー連携の7 gate | 09-16 |
 | [`android-trial.md`](android-trial.md) | 手順 | Rock Android P1 — Pixel 10でのアプリ試験 | 10-05 |
 | [`os-prototype.md`](os-prototype.md) | 手順 | Rock star OS — P1実装と検証手順（SQLite／SDK／APK／端末試験） | 10-05 |
 
@@ -327,24 +337,7 @@ QEMUで動くDeveloper Previewの統合と受入。多くは2026-09-09〜11の�
 | [`native-os-integration.md`](native-os-integration.md) | 設計 | native OSの統合と現行方針 | 09-12 |
 | [`native-os-validation.md`](native-os-validation.md) | 記録 | native OSのRock統合検証 | 10-05 |
 | [`native-release-build-20260910.md`](native-release-build-20260910.md) | 記録 | 同じsource・imageを固定するbuild入口 | 09-10 |
-| [`native-ci-partition-fix-20260910.md`](native-ci-partition-fix-20260910.md) | 記録 | native CIの失敗と実行枠の分割 | 09-10 |
-| [`native-pin-readiness-20260910.md`](native-pin-readiness-20260910.md) | 記録 | native認証画面のsource pin再レビュー | 09-10 |
-| [`os-readiness-audit-20260909.md`](os-readiness-audit-20260909.md) | 監査 | OS稼働ベース・ゲーム交換の差分監査 | 09-09 |
-| [`os-operational-validation-20260909.md`](os-operational-validation-20260909.md) | 記録 | 統合後のOS稼働検証 | 09-09 |
-| [`os-acceptance-b8287bc-20260909.md`](os-acceptance-b8287bc-20260909.md) | 記録 | 凍結候補 b8287bc の受入・引継ぎ報告 | 09-09 |
-| [`os-acceptance-9abf78a-20260910.md`](os-acceptance-9abf78a-20260910.md) | 記録 | Developer Preview 同一候補（9abf78a）の受入報告 | 09-10 |
-| [`os-acceptance-b7d819c-20260911.md`](os-acceptance-b7d819c-20260911.md) | 記録 | rc2 の導入・保存・再起動・復旧の実測 | 09-11 |
-| [`os-final-acceptance-plan-20260910.md`](os-final-acceptance-plan-20260910.md) | 記録 | 最終same-image受入計画 | 09-10 |
-| [`os-final-build-20260910.md`](os-final-build-20260910.md) | 記録 | 最終 9abf78a のbuildとsource証拠 | 09-10 |
-| [`os-final-compatibility-20260910.md`](os-final-compatibility-20260910.md) | 記録 | 新旧 client／slot／台帳の互換・復旧対応表 | 09-10 |
-| [`os-local-final-20260910.md`](os-local-final-20260910.md) | 記録 | 凍結 9abf78a のローカルOS受入 | 09-10 |
-| [`os-native-repeat-20260910.md`](os-native-repeat-20260910.md) | 記録 | 9ab native sourceの再実行 | 09-10 |
-| [`os-d4-probe-20260910.md`](os-d4-probe-20260910.md) | 記録 | D4 診断の継続 | 09-10 |
-| [`os-run44-recovery-20260910.md`](os-run44-recovery-20260910.md) | 記録 | 凍結 b8287bc の run44 最終結果の回収 | 09-10 |
-| [`os-game-nonfinancial-gates-20260910.md`](os-game-nonfinancial-gates-20260910.md) | 記録 | same-imageのGame非金融gate | 09-10 |
-| [`os-game-profile-d3-isolation-20260910.md`](os-game-profile-d3-isolation-20260910.md) | 記録 | same-imageのGame profile分離受入 | 09-10 |
-| [`os-game-profile-observation-20260910.md`](os-game-profile-observation-20260910.md) | 記録 | Game authority profileの停止後観測 | 09-10 |
-| [`os-game-read-clock-retention-20260910.md`](os-game-read-clock-retention-20260910.md) | 記録 | Game SDKのread-clock保持 | 09-10 |
+| [`os-readiness-audit-20260909.md`](os-readiness-audit-20260909.md) 🔒 | 監査 | OS稼働ベース・ゲーム交換の差分監査 | 09-09 |
 
 ### K. リリース・公開・署名・ライセンス
 
@@ -353,24 +346,15 @@ QEMUで動くDeveloper Previewの統合と受入。多くは2026-09-09〜11の�
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
 | [`release-minimum-gates.md`](release-minimum-gates.md) | 正本 | 最低公開条件。配布形態ごとの必須gate（RQ30） | 10-05 |
-| [`release-installation-plan-20260909.md`](release-installation-plan-20260909.md) | 設計 | 導入可能版とCM発表のリリース計画（RQ16） | 09-16 |
 | [`release-signing-operations.md`](release-signing-operations.md) | 手順 | 保護された署名の運用（Protected release signing control） | 09-12 |
 | [`release-artifact-access.md`](release-artifact-access.md) | 手順 | Draft配布物を取り違えずに取得する | 09-10 |
 | [`candidate-preparation.md`](candidate-preparation.md) | 手順 | 新しい未署名候補の準備 | 09-10 |
 | [`owner-manual-signing.md`](owner-manual-signing.md) | 手順 | 所有者本人による手動署名の準備 | 09-12 |
 | [`owner-legal-approval.md`](owner-legal-approval.md) | 手順 | 将来の所有者による法務承認（detached） | 09-11 |
-| [`owner-setup-20260911.md`](owner-setup-20260911.md) | 記録 | kaiyaの決定と残る設定 | 09-11 |
-| [`license-proposal-20260911.md`](license-proposal-20260911.md) | 記録 | 自作部分のMIT採用案（kaiya確認用） | 09-11 |
+| [`owner-setup-20260911.md`](owner-setup-20260911.md) 🔒 | 記録 | kaiyaの決定と残る設定 | 09-11 |
 | [`preview-installation-ja.md`](preview-installation-ja.md) | 手順 | Developer Previewの最初の導入と復旧 | 09-10 |
 | [`preview-legal-notice.md`](preview-legal-notice.md) | 正本 | Developer PreviewのライセンスとNOTICE | 09-10 |
 | [`preview-release-notes.md`](preview-release-notes.md) | 記録 | Developer Preview配布候補の変更点 | 09-17 |
-| [`launch-readiness-20260910.md`](launch-readiness-20260910.md) | 記録 | RockstarOS 1.0 ローンチ準備（LCH01〜07） | 09-12 |
-| [`release-execution-20260910.md`](release-execution-20260910.md) | 記録 | 2026-09-10 実行checkpoint | 09-10 |
-| [`release-followup-20260910.md`](release-followup-20260910.md) | 記録 | 8時間作業の完了記録とCM完成後の残件 | 09-10 |
-| [`release-verification-20260911.md`](release-verification-20260911.md) | 記録 | 新候補の導入・サイト復旧 | 09-11 |
-| [`rc2-remaining-acceptance-20260911.md`](rc2-remaining-acceptance-20260911.md) | 記録 | rc2の追加受入 | 09-11 |
-| [`qemu-release-completion-audit-20260912.md`](qemu-release-completion-audit-20260912.md) | 監査 | QEMU Developer Preview配布完了監査（10 gate、RQ31） | 09-12 |
-| [`backend-launch-20260912.md`](backend-launch-20260912.md) | 監査 | OSバックエンド最小ローンチ監査。付録に同日の「ローンチ手順」（起動・設定・監視・復旧） | 10-07 |
 
 ### L. セキュリティ・運営
 
@@ -387,20 +371,20 @@ QEMUで動くDeveloper Previewの統合と受入。多くは2026-09-09〜11の�
 
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
-| [`rockstaros-avocado-mini-complete-design.md`](rockstaros-avocado-mini-complete-design.md) | 正本 | RockstarOS × avocadoMini — 見て分かる空間発明システム設計書（Material Inventionの研究profile） | 10-05 |
-| [`material-invention-core.md`](material-invention-core.md) | 設計 | Material Invention Core。物質の組合せから発明候補を作る共通設計（RQ49） | 09-18 |
-| [`material-invention-xr.md`](material-invention-xr.md) | 設計 | Spatial Invention Studio。Material Invention CoreのVR／AR設計 | 09-18 |
-| [`avocado-mini-spatial-invention.md`](avocado-mini-spatial-invention.md) | 履歴 | 四方向センサーで物質候補を操作する発明端末（別の研究profile） | 09-21 |
-| [`avocado-mini-hardware-design.md`](avocado-mini-hardware-design.md) | 履歴 | Full-scale 空間発明台のハードウェア詳細設計（別の研究profile） | 09-21 |
-| [`avocado-mini-cellular.md`](avocado-mini-cellular.md) | 設計 | avocadoMini — 本体SIMによる単独通信 | 10-05 |
-| [`avocado-mini-crowdfunding.md`](avocado-mini-crowdfunding.md) | 記録 | クラウドファンディング企画案（募集・決済は未開始） | 09-19 |
-| [`avokado-pro-pc-design.md`](avokado-pro-pc-design.md) | 設計 | avokadoPro — NVIDIA搭載の小型PC。構成、組立、受入計画 | 10-05 |
+| [`rockstaros-avocado-mini-complete-design.md`](rockstaros-avocado-mini-complete-design.md) 🔒 | 正本 | RockstarOS × avocadoMini — 見て分かる空間発明システム設計書（Material Inventionの研究profile） | 10-05 |
+| [`material-invention-core.md`](material-invention-core.md) 🔒 | 設計 | Material Invention Core。物質の組合せから発明候補を作る共通設計（RQ49） | 09-18 |
+| [`material-invention-xr.md`](material-invention-xr.md) 🔒 | 設計 | Spatial Invention Studio。Material Invention CoreのVR／AR設計 | 09-18 |
+| [`avocado-mini-spatial-invention.md`](avocado-mini-spatial-invention.md) 🔒 | 履歴 | 四方向センサーで物質候補を操作する発明端末（別の研究profile） | 09-21 |
+| [`avocado-mini-hardware-design.md`](avocado-mini-hardware-design.md) 🔒 | 履歴 | Full-scale 空間発明台のハードウェア詳細設計（別の研究profile） | 09-21 |
+| [`avocado-mini-cellular.md`](avocado-mini-cellular.md) 🔒 | 設計 | avocadoMini — 本体SIMによる単独通信 | 10-05 |
+| [`avocado-mini-crowdfunding.md`](avocado-mini-crowdfunding.md) 🔒 | 記録 | クラウドファンディング企画案（募集・決済は未開始） | 09-19 |
+| [`avokado-pro-pc-design.md`](avokado-pro-pc-design.md) 🔒 | 設計 | avokadoPro — NVIDIA搭載の小型PC。構成、組立、受入計画 | 10-05 |
 
-関連フォルダ：[`avocado-mini-r5/`](avocado-mini-r5/)（40ファイル）／[`avocado-mini-tower20-e3/`](avocado-mini-tower20-e3/)（1ファイル）／[`avocado-mini-mini200-e2/`](avocado-mini-mini200-e2/)（1ファイル）／[`avocado-mini-mini200-e1/`](avocado-mini-mini200-e1/)（30ファイル）／[`avocado-mini-conversation-2026-09-27/`](avocado-mini-conversation-2026-09-27/)（29ファイル）
+関連フォルダ：[`avocado-mini-r5/`](avocado-mini-r5/) 🔒（40ファイル）。旧版のTower20 E3・Mini200 E1/E2は削除した。
 
 ### N. rocketstar
 
-rocketstarの資料はすべて1フォルダにまとまっています：[`rocketstar-design/`](rocketstar-design/README.md)（936ファイル）。R1.0完全版（44ページ・35章）、60要求、18システムinterface、継承したC3資料、A-LINK、受信試作、OS完全版の付録、コロニー運用、端末ボタン、旧版、計算・検証記録。元の成果物のバイト列を保持しているため、中のファイルは編集しません。
+rocketstarの資料はすべて1フォルダにまとまっています：[`rocketstar-design/`](rocketstar-design/README.md) 🔒（936ファイル）。R1.0完全版（44ページ・35章）、60要求、18システムinterface、継承したC3資料、A-LINK、受信試作、OS完全版の付録、コロニー運用、端末ボタン、旧版、計算・検証記録。元の成果物のバイト列を保持しているため、中のファイルは編集しません。
 
 ### O. 開発の進め方・進捗・過去の状態記録
 
@@ -408,28 +392,25 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
-| [`mission-control.md`](mission-control.md) | 正本 | avokado Mission Control。5師団32部隊、段階、次のタスク、集計と合格のルール | 10-05 |
-| [`amc-goal-orchestrator.md`](amc-goal-orchestrator.md) | 設計 | AMC Goal Orchestrator。指示→部隊→Goalの管理ツールの使い方と境界 | 10-05 |
-| [`amc-sky-launch-integration.md`](amc-sky-launch-integration.md) | 記録 | Sky専用AMCの取り込みとローンチ判定 | 10-05 |
-| [`amc-autonomy-fixture.md`](amc-autonomy-fixture.md) | 記録 | AMCの有限fixture実行 | 10-05 |
-| [`git-consolidation.md`](git-consolidation.md) | 正本 | Gitプロジェクト統合方針とRepository storage policy（Gitに入れるもの・入れないもの） | 10-05 |
-| [`merge-loss-audit-20261007.md`](merge-loss-audit-20261007.md) | 監査 | 統合（merge）で失われた情報の監査。何が消え、何を戻し、何を戻していないか。ownerの判断が必要な項目（task台帳・設計台帳・READMEの見出しなど） | 10-07 |
+| [`mission-control.md`](mission-control.md) 🔒 | 正本 | avokado Mission Control。5師団32部隊、段階、次のタスク、集計と合格のルール | 10-05 |
+| [`amc-goal-orchestrator.md`](amc-goal-orchestrator.md) 🔒 | 設計 | AMC Goal Orchestrator。指示→部隊→Goalの管理ツールの使い方と境界 | 10-05 |
+| [`amc-sky-launch-integration.md`](amc-sky-launch-integration.md) 🔒 | 記録 | Sky専用AMCの取り込みとローンチ判定 | 10-05 |
+| [`amc-autonomy-fixture.md`](amc-autonomy-fixture.md) 🔒 | 記録 | AMCの有限fixture実行 | 10-05 |
+| [`git-consolidation.md`](git-consolidation.md) 🔒 | 正本 | Gitプロジェクト統合方針とRepository storage policy（Gitに入れるもの・入れないもの） | 10-05 |
+| [`merge-loss-audit-20261007.md`](merge-loss-audit-20261007.md) 🔒 | 監査 | 統合（merge）で失われた情報の監査。何が消え、何を戻し、何を戻していないか。ownerの判断が必要な項目（task台帳・設計台帳・READMEの見出しなど） | 10-07 |
 | [`reference-repositories.md`](reference-repositories.md) | 記録 | 参照元リポジトリと採用判断 | 09-07 |
-| [`prompt-playbook.md`](prompt-playbook.md) | 手順 | 最新進捗から実行プロンプトを作る規約（RQ10） | 09-19 |
-| [`validation.md`](validation.md) | 記録 | 検証記録（2026-09-04〜09-20の累積） | 09-20 |
-| [`research.md`](research.md) | 記録 | 設計に使った一次資料 | 09-05 |
-| [`current-state-20260911.md`](current-state-20260911.md) | 履歴 | 2026-09-11〜17時点の「現在の開発状態と再開条件」 | 09-17 |
-| [`implementation-checkpoint-20260909.md`](implementation-checkpoint-20260909.md) | 履歴 | 2026-09-09の実装・検証の保存時点 | 09-12 |
-| [`design-implementation-alignment-20260909.md`](design-implementation-alignment-20260909.md) | 履歴 | 設計・プロンプトと実装の再照合（2026-09-09） | 09-12 |
-| [`progress-audit-20260909.md`](progress-audit-20260909.md) | 履歴 | 進捗と確定要望の相違の監査（2026-09-09） | 09-09 |
+| [`prompt-playbook.md`](prompt-playbook.md) 🔒 | 手順 | 最新進捗から実行プロンプトを作る規約（RQ10） | 09-19 |
+| [`validation.md`](validation.md) 🔒 | 記録 | 検証記録（2026-09-04〜09-20の累積） | 09-20 |
+| [`research.md`](research.md) 🔒 | 記録 | 設計に使った一次資料 | 09-05 |
+| [`design-implementation-alignment-20260909.md`](design-implementation-alignment-20260909.md) 🔒 | 履歴 | 設計・プロンプトと実装の再照合（2026-09-09） | 09-12 |
 
-関連フォルダ：[`workstreams/`](workstreams/)（13ファイル）／[`prompts/`](prompts/)（3ファイル）／[`templates/`](templates/)（4ファイル）
+関連フォルダ：[`workstreams/`](workstreams/) 🔒（13ファイル）／[`prompts/`](prompts/) 🔒（3ファイル）／[`templates/`](templates/)（4ファイル）
 ### P. 証拠・素材
 
 | フォルダ | 何が入っているか |
 | --- | --- |
-| [`evidence/`](evidence/) | 受入証拠（841ファイル）。各文書の「証拠」リンクの行き先。内容は変更しない |
-| [`research/`](research/) | RockstarOSの特許調査と出典台帳 |
+| [`evidence/`](evidence/) 🔒 | 受入証拠（763ファイル）。各文書の「証拠」リンクの行き先。内容は変更しない |
+| [`research/`](research/) 🔒 | RockstarOSの特許調査と出典台帳 |
 | [`assets/`](assets/) | 設計図・製品カバーの画像 |
 | [`brand/`](brand/) | avokadoのブランド素材 |
 
@@ -439,31 +420,29 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 
 | フォルダ | ファイル数 | 何が入っているか |
 | --- | ---: | --- |
-| [`workstreams/`](workstreams/README.md) | 13 | 作業ストリーム別の入口（00責任分界、01 Product/UX … 11 Material Invention）。担当・完了条件・検証コマンド |
-| [`avocado-mini-r5/`](avocado-mini-r5/README.md) | 40 | **現行** avocadoMini R5 統合基本設計。51ページのPDF／Word、図8点、計算、参考文献、検証記録 |
-| [`avocado-mini-tower20-e3/`](avocado-mini-tower20-e3/README.md) | 1 | Tower20 E3（4本＋別Edge Hub）の設計記録。原本PDFは未収録 |
-| [`avocado-mini-mini200-e2/`](avocado-mini-mini200-e2/README.md) | 1 | Mini200 E2（4本＋中央ユニット）の統合記録 |
-| [`avocado-mini-mini200-e1/`](avocado-mini-mini200-e1/README.md) | 30 | Mini200 E1（20cmゲーム機・日本語音声）の設計、図、計算 |
-| [`avocado-mini-conversation-2026-09-27/`](avocado-mini-conversation-2026-09-27/README.md) | 29 | 2026-09-27の会話仕様アーカイブ（原文のまま）。個人認証、GTA、クリエイター収益分配80:20 |
-| [`rocketstar-design/`](rocketstar-design/README.md) | 936 | rocketstar 設計アーカイブ。R1.0完全版、A-LINK、受信試作、OS完全版の付録、コロニー、計算・検証記録 |
-| [`evidence/`](evidence/) | 841 | 受入証拠（JSONとログ要約）。文書から参照される試験結果の正本 |
-| [`prompts/`](prompts/) | 3 | 現行の再開指示と、台帳・承認記録の理解に必要な原文。現行入口は `data/product-baseline.json.nextPrompt` |
+| [`workstreams/`](workstreams/README.md) 🔒 | 13 | 作業ストリーム別の入口（00責任分界、01 Product/UX … 11 Material Invention）。担当・完了条件・検証コマンド |
+| [`avocado-mini-r5/`](avocado-mini-r5/README.md) 🔒 | 40 | **現行** avocadoMini R5 統合基本設計。51ページのPDF／Word、図8点、計算、参考文献、検証記録 |
+| [`avocado-mini-conversation-2026-09-27/`](avocado-mini-conversation-2026-09-27/README.md) 🔒 | 29 | 2026-09-27の会話仕様アーカイブ（原文のまま）。個人認証、GTA、クリエイター収益分配80:20 |
+| [`rocketstar-design/`](rocketstar-design/README.md) 🔒 | 214 | rocketstar 設計アーカイブの最新版（R1.0完全版、RockstarOS完全版v1.0の付録、コロニーC0.1、A-LINK、ボタン）。旧RETURN-1/C3版・作業フォルダ・ZIPは削除済み |
+| [`evidence/`](evidence/) 🔒 | 763 | 受入証拠（JSONとログ要約）。文書から参照される試験結果の正本 |
+| [`prompts/`](prompts/) 🔒 | 3 | 現行の再開指示と、台帳・承認記録の理解に必要な原文。現行入口は `data/product-baseline.json.nextPrompt` |
 | [`templates/`](templates/) | 4 | 受入報告などの雛形 |
 | [`contracts/`](contracts/) | 3 | Sky commerce v2の契約案（SQL・TypeScript） |
 | [`design-validation/`](design-validation/README.md) | 5 | 設計の状態モデル検証（commerce state model） |
-| [`research/`](research/) | 2 | RockstarOSの特許調査と出典台帳 |
+| [`research/`](research/) 🔒 | 2 | RockstarOSの特許調査と出典台帳 |
 | [`assets/`](assets/) | 24 | 設計図・製品カバーなどの画像 |
 | [`brand/`](brand/) | 3 | avokadoのブランド素材（README冒頭のGIF、関係図） |
-| [`merge-loss-audit-20261007/`](merge-loss-audit-20261007.md) | 2 | [統合で失われた情報の監査](merge-loss-audit-20261007.md)の添付。どの文書にも残っていない行の原文と、台帳から消えた記録の控え |
+| [`merge-loss-audit-20261007/`](merge-loss-audit-20261007.md) 🔒 | 2 | [統合で失われた情報の監査](merge-loss-audit-20261007.md) 🔒の添付。どの文書にも残っていない行の原文と、台帳から消えた記録の控え |
 ---
 
 ## 7. 文書を足すとき・直すときのルール
 
-既存のルール（[AGENTS.md](../AGENTS.md)・[全設計ポータルの変更規則](rockstaros-design-portal.md#変更規則)・[workstreamの分類ルール](workstreams/README.md#分類ルール)）はそのまま有効です。この地図を保つために、次を足します。
+既存のルール（[AGENTS.md](../AGENTS.md)・[全設計ポータルの変更規則](rockstaros-design-portal.md#変更規則)・[workstreamの分類ルール](workstreams/README.md#分類ルール) 🔒）はそのまま有効です。この地図を保つために、次を足します。
 
+0. **暗号化の対象を確認する。** 新しい文書がお金・契約・ハード設計・発明・調査・会話記録・開発の内部に当たるなら、[`.gitattributes`](../.gitattributes) の該当分類に1行足し、この地図の [暗号化している場所](#encrypted-areas) も直す。push前に `npm run private:check` を通す。
 1. **`docs/` 直下に文書を足したら、この地図の [§5](#5-分野別の全文書) の該当分野に1行足す。** 種類（正本／設計／手順／監査／記録／履歴）も付ける。
 2. **新しい情報は、関係する節に入れる。** 文書の末尾や題名の上に足さない。日付付きの追記は、その文書の「変更記録」か該当する節の中へ。
 3. **日付付きの記録を新しい入口にしない。** 入口は [§2](#2-入口はこの順番) の階層だけ。新しい設計書はまず該当workstreamの「関連資料」に足す。
-4. **古いだけで削除せず、役目を終えた未使用・重複内容は参照監査後に削除する。** 必要な説明を正本へ統合し、リンク・索引・検査を同時に更新する。固定原本・必要な受入証拠は保持し、削除理由と復元元commitを残す。
-5. **仕様を変えたら [仕様変遷](spec-history.md) に、Toolを変えたら [エージェント・Tool総覧](agents-and-tools.md) に追記する。**
+4. **役目を終えた未使用・重複内容は、参照を確かめてから削除する。** 必要な説明を正本へ統合し、リンク・索引・検査を同時に更新する。固定原本・必要な受入証拠は残す。削除したpathは `data/archived-paths.json` に追記し、削除理由と復元元commitを [Git統合の記録](git-consolidation.md) 🔒 に残す。古くなっただけで使っている文書は、種類を「履歴」に変えて冒頭に「いまは○○が優先」と1行書く。
+5. **仕様を変えたら [仕様変遷](spec-history.md) 🔒 に、Toolを変えたら [エージェント・Tool総覧](agents-and-tools.md) に追記する。**
 6. **ファイルを移動・改名しない。** 進捗台帳（`data/project-status.json`）、設計台帳（`data/design-document-index.json`）、受入証拠がパスで参照しています。どうしても必要なときは、参照元をすべて同じ変更で直し、`npm run verify` を通す。

@@ -650,7 +650,7 @@ Higgsfield、Runway、Roblox、GTA／FiveM、YouTube、Instagramは接続先の 
 | **Wallet** | 金融台帳とProviderの境界。Toolの自己申告で残高を変更しない |
 | **Fund** | 確認済みの実績から構成を比較する system。Tool自身に配分の権限を与えない |
 | **ATM** | Walletとは別のadapter。ATM手数料0を他のTool料金へ転用しない |
-| **Market / Polymarket** | `rockstar-markets-analysis` はcatalogのready Tool。`/polymarket` は `/market` への転送で、外部市場のPAPER試作は別のToolkit |
+| **Market** | `rockstar-markets-analysis` はcatalogのready Tool。外部市場のPAPER試作Toolkitは2026-10-11に削除した |
 
 ---
 
@@ -840,9 +840,6 @@ Toolの実装、SDK、connector、PAPER試作をまとめた場所です。チ�
 | [`esim-bootstrap`](../toolkits/esim-bootstrap/) | 試験fixture | eSIM provider接続を試すhost fixtureとadapter。製品形態を限定しない |
 | [`avokado-llm`](../toolkits/avokado-llm/) | 研究試作 | random-initのCPU学習・保存・再開のhost試作 |
 | [`mini-game-client`](../toolkits/mini-game-client/) | 診断launcher | 本人の明示操作で公式Remote Play（PS5／Xbox）へ渡す。実game／consoleは未受入 |
-| [`polymarket-bot-sandbox`](../toolkits/polymarket-bot-sandbox/) | PAPER試作 | 外部市場を動かさないbacktest |
-| [`meme-intelligence-sandbox`](../toolkits/meme-intelligence-sandbox/) | PAPER試作 | ミームコイン候補評価のPAPER sandbox |
-| [`avocado-farm-sandbox`](../toolkits/avocado-farm-sandbox/) | PAPER試作 | 集中流動性LPの候補評価・レンジ計画・リスク制御（Robinhood Chain Testnet向け）。実トランザクション送信は未接続 |
 
 ### 10.2 サービス 5個（`services/`）
 

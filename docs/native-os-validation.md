@@ -45,7 +45,7 @@ nativeのsource検査は4つのmain partitionとsupportに分割する。artifac
 前回 `258fa5d`のrun37102143646では、main-1の再実行PASS artifact11265968595が存在するのに、集計が旧FAIL11266067774を取得した。集計内reportのhash一致で原因を確認した。これは試験結果の選択修正であり、Wallet試験の期限延長、試験削除、OS boot／実機受入を含まない。今回の合格証拠は[SPIDER改善cycle記録](evidence/spider-improvement-cycle.json)と同じSHAのPR報告で追跡する。
 
 
-現在の統合後の結果は[OS稼働検証](os-operational-validation-20260909.md)。以下は元native取り込み時点の履歴であり、起動改善候補・backup検証器・全observerの後続修正は現在の記録を参照する。
+現在の統合後の結果はOS稼働検証（削除済み）。以下は元native取り込み時点の履歴であり、起動改善候補・backup検証器・全observerの後続修正は現在の記録を参照する。
 
 日付: 2026-09-09。取り込み前のRock: `5cec83478fe97bf272869298160a572ef7fcefee`。統合branch: `codex/integrate-native-os-20260909`。
 

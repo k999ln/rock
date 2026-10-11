@@ -15,7 +15,7 @@
     "planned": 230,
     "blocked": 1,
     "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
-    "nextAction": "G04: PR #99はmain bcd31090へ統合済み。Web/API/A2A/Androidの責務分離・共通化は2cf1382fで全体verify合格。新PRを保存して最終HEADのCIを照合し、レビューへ渡す。WEB01のSites同一source受入、SIM01/SKY21の実issuer／Provider、OS10／R5／Proの実機受入は個別条件を維持する。"
+    "nextAction": "G04/WEB01: 全体verify・同一SHA CIを合格したPR #99をレビューし、承認範囲に従うmain統合と既存Sitesの同一source受入を別途進める。SIM01/SKY21は実issuer／Provider sandboxの本人・資格情報・予算上限・receipt条件を揃えて利用開始を受入。OS10の全OS／Pixelと現行QEMU image、R5/Pro実機は独立した受入を維持する。"
   },
   "webSchema": {
     "tableCount": 80,

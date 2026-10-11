@@ -88,3 +88,9 @@ void test('phase rendering includes task, dependency, status and evidence withou
   assert.ok(output.includes(`[記録](${evidence})`));
   assert.ok(!output.includes('件完了'));
 });
+
+void test('phase rendering can point evidence for removed files at a fixed history link', () => {
+  const output = renderPhaseGates([gate(undefined, { status: 'done' })], (file) => `https://example.test/blob/abc/${file}`).join('\n');
+  assert.ok(output.includes(`[記録](https://example.test/blob/abc/${evidence})`));
+  assert.ok(!output.includes(`[記録](${evidence})`));
+});

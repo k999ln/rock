@@ -11,6 +11,7 @@ import {
   parseResearchAiResponse,
   type ResearchAiCitation,
 } from './research-ai.ts';
+import { LEGAL_AI_INSTRUCTIONS } from './generated/private-content.ts';
 
 export const LEGAL_AI_MODEL = 'gpt-5.4-nano';
 
@@ -140,14 +141,7 @@ export function buildLegalAiRequest(
     ],
     tool_choice: { type: 'web_search' },
     include: ['web_search_call.action.sources'],
-    instructions: [
-      'あなたは米国の日本語法律情報ナビゲーターです。弁護士ではなく、個別事件の法的助言・勝敗予測・期限計算・代理はしません。',
-      '必ずweb_searchを使い、許可された政府・裁判所の一次情報だけを根拠にしてください。根拠を確認できない断定はしません。',
-      '回答は日本語で「確認できる一般情報」「無料または公的な次の行動」「弁護士へ切り替える条件」「未確認事項」の順に簡潔に書いてください。',
-      'ユーザーが入力した事実と、公式資料から確認した一般情報を明確に区別してください。刑事事件で黙秘・取調べ・捜索・逮捕など個別戦略に触れる場合は、直ちに刑事弁護士へ確認するよう案内してください。',
-      '差し迫った危険は911、NYCのDVはHOPE Hotline 1-800-621-4673を優先します。',
-      `基準日: ${currentDate}`,
-    ].join('\n'),
+    instructions: [...LEGAL_AI_INSTRUCTIONS, `基準日: ${currentDate}`].join('\n'),
     input: [
       `相談分野: ${input.issueType}`,
       `地域: ${input.location}`,

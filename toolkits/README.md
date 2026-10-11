@@ -18,8 +18,5 @@ Skyの **Toolそのものの実装**、Toolを作るための **SDK**、接続�
 | [`esim-bootstrap/`](esim-bootstrap/) | 試験fixture | eSIM provider接続を試すhost fixtureとadapter | catalog Toolではない。製品形態を限定しない |
 | [`avokado-llm/`](avokado-llm/) | 研究試作 | random-initの小型モデルをCPUで学習・保存・再開する試作 | catalog Toolではない |
 | [`mini-game-client/`](mini-game-client/) | 診断launcher | 本人の明示操作で公式Remote Play（PS5／Xbox）へ渡す | catalog Toolではない |
-| [`polymarket-bot-sandbox/`](polymarket-bot-sandbox/) | PAPER試作 | 外部市場を動かさないbacktest | `rockstar-markets-analysis` の周辺。LIVE禁止 |
-| [`meme-intelligence-sandbox/`](meme-intelligence-sandbox/) | PAPER試作 | ミームコイン候補評価 | 同上 |
-| [`avocado-farm-sandbox/`](avocado-farm-sandbox/) | PAPER試作 | 集中流動性LPの候補評価・レンジ計画・リスク制御 | 同上。実トランザクション送信は未接続 |
 
 Toolkitを足したら、[プロジェクト別ガイド](../PROJECTS.md) にも同じ変更で載せます（`npm run sky:check` が欠落を検出します）。

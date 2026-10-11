@@ -6,8 +6,9 @@
 
 | コマンド | いつ使うか |
 | --- | --- |
+| `npm run verify:public` | 鍵のない環境で公開コードを検査する。鍵が必要な検査は名前を示してスキップする |
 | `npm run verify` | 変更を仕上げる前の全体検査。下の表のcheckのほぼ全部に加えて、`typecheck`・`lint:product`・`npm test`・Toolkit／Site／公開物の試験・`build`・`test:api` を順に実行する（途中で失敗するとそこで止まる） |
-| `npm run metadata:update` | task・部隊・担当を変えたあと。進捗欄・Mission Control・DB状態JSON/文書・作業部屋をまとめて再生成する。途中の検証失敗で停止する |
+| `npm run metadata:update` | 鍵でunlockした環境でtask・部隊・担当を変えたあと。進捗欄・Mission Control・DB状態JSON/文書・作業部屋をまとめて再生成する。lock中は書込前に停止する |
 | `npm run project:update`・`npm run mission:update` | `metadata:update`の互換入口。nextActionやtask件数をDB状態へ転記し忘れることを防ぐ |
 | `npm run database:status` | DBのschemaやmigrationを変えたあと。`docs/database-status.md` を再生成する |
 | `npm test` | Nodeの単体試験（`tests/*.test.mjs`） |
@@ -16,7 +17,7 @@
 
 | コマンド | 検査する内容 | 主な対象 |
 | --- | --- | --- |
-| `metadata:check` | 進捗・部隊・DB状態・作業部屋をまとめて検査する。書込みは行わない | 各正本と生成済み文書 |
+| `metadata:check` | unlock後に進捗・部隊・DB状態・作業部屋をまとめて検査する。書込みは行わない | 各正本と生成済み文書 |
 | `project:check` | 進捗台帳と、生成済みの進捗欄が一致するか。完了taskに証拠があるか | `data/project-status.json` |
 | `baseline:check` | 確定要望と機械可読正本・関連文書の整合 | `data/product-baseline.json`・`docs/product-baseline.md` |
 | `design:check` | 全Toolと設計領域が設計台帳・詳細設計に載っているか | `data/design-document-index.json` |
@@ -45,7 +46,7 @@
 | AMC | `mission:goal`（Goalの計画・書き出し）・`mission:codex` / `amc:codex`（ローカルCodexで1件実行）・`amc:agent`・`amc:parallel`・`amc:autonomy:fixture` |
 | Sky・MCP | `mcp:connector`・`mcp:package`・`sky:a2a:workflow:test`・`sky:a2a:workflow:positive`・`sky:agent-runtime:check` |
 | 課金・運営Worker | `billing:check`・`billing:deploy`・`billing:migrate`・`operator-dock:dev`・`operator-dock:check`・`operator-dock:migrate:local` |
-| Toolkitの試験 | `test:fashion-brand-ops`・`test:meme-intelligence`・`test:avocado-farm`・`esim:demo`・`esim:test` |
+| Toolkitの試験 | `test:fashion-brand-ops`・`esim:demo`・`esim:test` |
 | Site・公開物 | `test:avocado-mini-site`・`test:public-preview`・`release:sbom` |
 | その他 | `prompt:context`（最新進捗からプロンプトの材料を集める）・`discover`（外部ツール候補の発見）・`spider:feedback`・`fashion:package`・`shared:sync` |
 

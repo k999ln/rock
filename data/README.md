@@ -42,14 +42,14 @@
 | ファイル | 何の正本か | 対になる文書 | 検査 |
 | --- | --- | --- | --- |
 | [`release-readiness.json`](release-readiness.json) | 配布形態ごとの公開最低条件と判定（RQ30） | [最低公開条件](../docs/release-minimum-gates.md) | `npm run release:check` |
-| [`qemu-release-audit.json`](qemu-release-audit.json) | QEMU Developer Preview rc2 の10 gate（RQ31） | [QEMU配布完了監査](../docs/qemu-release-completion-audit-20260912.md) | `npm run release:check` |
+| [`qemu-release-audit.json`](qemu-release-audit.json) | QEMU Developer Preview rc2 の10 gate（RQ31） | QEMU配布完了監査（削除済み） | `npm run release:check` |
 | [`qemu-rc2-legal-info/`](qemu-rc2-legal-info/) | rc2に同梱するlegal bundleのmanifest（target／host） | 同上 | `npm run release:check` |
 | [`rockstaros-preview.json`](rockstaros-preview.json) | Preview候補のsource commit・版・公開URL | [Preview変更点](../docs/preview-release-notes.md) | `npm run release:check` |
 | [`release-owner-intent-20260911.json`](release-owner-intent-20260911.json) | 2026-09-11のowner意思（権利者名、自作コードの扱い、署名、Sites） | [kaiyaの決定](../docs/owner-setup-20260911.md) | `npm run release:check` |
 | [`release-signing-control-protection.json`](release-signing-control-protection.json) | 署名control branchの保護設定 | [署名運用](../docs/release-signing-operations.md) | `npm run release:signing:check` |
 | [`release-signing-policy.example.json`](release-signing-policy.example.json)・[`release-trust.example.json`](release-trust.example.json) | 署名policyとtrustの記入例 | 同上 | 同上 |
 | [`sky-service-launch.json`](sky-service-launch.json) | Skyサービスのローンチgate | [Skyローンチ設計](../docs/sky-launch-design.md) | `npm run sky:launch:check` |
-| [`personal-number-release-audit.json`](personal-number-release-audit.json) | マイナンバー連携の7 gate | [Android実機・マイナンバーgate](../docs/android-and-personal-number-gates-20260913.md) | `npm run release:check` |
+| [`personal-number-release-audit.json`](personal-number-release-audit.json) | マイナンバー連携の7 gate | Android実機・マイナンバーgate（削除済み） | `npm run release:check` |
 
 ## Android・端末
 
@@ -57,7 +57,7 @@
 | --- | --- | --- | --- |
 | [`device-support-matrix.json`](device-support-matrix.json) | 対応機種の台帳と提供区分 | [多機種対応設計](../docs/device-support-architecture.md) | `npm run device-support:check` |
 | [`android-release-architecture-policy.json`](android-release-architecture-policy.json) | Android 1.0の構成決定と許可するBinder経路 | [Android production architecture](../docs/android-production-architecture.md) | `npm run android:architecture:check` |
-| [`android-physical-release-audit.json`](android-physical-release-audit.json) | Android物理端末の5 gateの判定 | [Android実機gate](../docs/android-and-personal-number-gates-20260913.md) | `npm run android:architecture:check` |
+| [`android-physical-release-audit.json`](android-physical-release-audit.json) | Android物理端末の5 gateの判定 | Android実機gate（削除済み） | `npm run android:architecture:check` |
 | [`android-first-flash-gate.json`](android-first-flash-gate.json) | 初回flash前の4 gateの判定 | [初回flash gate](../docs/android-first-flash-gate-20260916.md) | `npm run android:first-flash:check` |
 | [`android-backup-recovery-policy.json`](android-backup-recovery-policy.json) | バックアップ・全損復元のpolicy | [backup・復旧](../docs/android-backup-recovery.md) | 同上 |
 | [`android-rollback-index-policy.json`](android-rollback-index-policy.json) | AVB rollback indexの運用 | [rollback index](../docs/android-rollback-index-policy.md) | 同上 |

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
+import { lockedSkip } from '../../../tests/private-locked.mjs';
 
 const outputRoot = new URL('../dist/', import.meta.url);
 const routes = [
@@ -69,7 +70,10 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   assert.match(pro, /AI and games\./);
   assert.match(built('client/install/index.html'), /id="os-use-cases"/);
   assert.match(built('client/install/index.html'), /Input in\./);
-  assert.match(built('client/rocket-star/index.html'), /Complete product design/);
+  // 2026-10-10: design documents are no longer distributed from the public site.
+  assert.match(built('client/rocket-star/index.html'), /kept private while the program is in development/);
+  for (const route of ['client/rocket-star/index.html', 'client/crowdfunding/index.html'])
+    assert.doesNotMatch(built(route), /href="\/(?:rocket-star\/design\/|downloads\/)/, `${route} must not link to design downloads`);
   assert.match(built('client/preorder/index.html'), /NOT YET FOR SALE/);
 });
 
@@ -187,7 +191,9 @@ test('built pages use bundled assets instead of retired source paths', () => {
 });
 
 
-test('current Pro summaries match the canonical intent without opening an order path', async () => {
+test('current Pro summaries match the canonical intent without opening an order path', {
+  skip: lockedSkip('data/product-baseline.json', 'docs/assets/avokado-pro-pc-concept.svg'),
+}, async () => {
   const { proDesign } = await import('../src/pro-design.js');
   const canonical = JSON.parse(readFileSync(new URL('../../../data/product-baseline.json', outputRoot), 'utf8')).avokadoProPcIntent;
   assert.equal(proDesign.targetJpy, canonical.salesPriceTargetJpy);

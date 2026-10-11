@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
+import { existsOrArchived } from './archived-paths.mjs';
 
 const allowedGateStates = new Set(['pass', 'blocked', 'not_applicable']);
 const allowedTargetStates = new Set(['ready', 'blocked']);
@@ -330,7 +331,7 @@ const validateAuditRequirements = ({ root, requirements, expected, label }) => {
         fail(label + '/' + requirement.id + ': 合格根拠がありません');
       }
       for (const evidence of requirement.evidence) {
-        if (!inside(root, evidence) || !existsSync(resolve(root, evidence))) {
+        if (!inside(root, evidence) || !existsOrArchived(evidence, root)) {
           fail(label + '/' + requirement.id + ': 根拠がありません: ' + evidence);
         }
       }
@@ -1376,7 +1377,7 @@ export function validateReleaseReadiness({
         fail(`${target.id}/${gate.id}: 未達時の必要行動がありません`);
       }
       for (const evidence of gate.evidence || []) {
-        if (!inside(root, evidence) || !existsSync(resolve(root, evidence))) {
+        if (!inside(root, evidence) || !existsOrArchived(evidence, root)) {
           fail(`${target.id}/${gate.id}: 根拠がありません: ${evidence}`);
         }
       }
@@ -1471,7 +1472,7 @@ export function validateQemuReleaseAudit({
       fail(`${requirement.id}: 未達時の次の行動がありません`);
     }
     for (const evidence of requirement.evidence || []) {
-      if (!inside(root, evidence) || !existsSync(resolve(root, evidence))) {
+      if (!inside(root, evidence) || !existsOrArchived(evidence, root)) {
         fail(`${requirement.id}: QEMU根拠がありません: ${evidence}`);
       }
     }

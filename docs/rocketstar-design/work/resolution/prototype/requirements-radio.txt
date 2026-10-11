@@ -1,2 +1,0 @@
--r requirements.txt
-rockblock9704==1.0.1
