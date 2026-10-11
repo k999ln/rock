@@ -1173,3 +1173,24 @@ condition = "AND"
 regexTarget = "secret"
 paths = ['''\A(?:docs/evidence/sky\-code\-timeline\.json)\z''']
 regexes = ['''\Aac6b8e8bff4f233d82a56a46b96b947d683083cb1942a6a33a7bd8c53988b82e\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest b14ac262a429"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/esim\-main\-integration\.json)\z''']
+regexes = ['''\A1955d0817c8c29c72c5cf8b042550d2cc3acb4021f16f0b83a616a7109205350\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest fd8d4da46508"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/esim\-main\-integration\.json)\z''']
+regexes = ['''\Aa004d21ce22497bd7cd618540a0001cdd317773ea564331c4373d6b9f14d4946\z''']
+
+[[rules.allowlists]]
+description = "public-artifact-digest c032871f0530"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:docs/evidence/esim\-main\-integration\.json)\z''']
+regexes = ['''\A502ae8861ba3decf5b2dfe0a6ed8d3566de2b643caa497262b653749033b305e\z''']

@@ -11,7 +11,7 @@ export function requestPlanSupport(request) {
       routingText,
     )
   )
-    return 'この入口はアプリ・ツール・Webなどのソフトウェア試作向けです。作りたいソフトウェアも一緒に書いてください。既存のOS・ハードウェア計画は「詳細・手動管理」から開けます。';
+    return 'この入口はアプリ・ツール・Webなどのソフトウェア試作向けです。作りたいソフトウェアも一緒に書いてください。既存のOS・ハードウェア計画は「部隊・進捗」から開けます。';
   return null;
 }
 

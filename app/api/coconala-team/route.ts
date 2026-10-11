@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     const user = await requestUser(request);
     const candidate = createTeamCase(await body(request));
     const saved = await coconalaTeamStore(database()).create(user, candidate);
-    if (!saved || JSON.stringify(saved.terms) !== JSON.stringify(candidate.terms))
+    if (!saved || JSON.stringify(saved.creationTerms ?? saved.terms) !== JSON.stringify(candidate.terms))
       throw new TeamCaseError('同じ案件IDで別の内容は登録できません。', 409);
     return json({ caseFile: saved }, 201);
   } catch (error) {
@@ -77,7 +77,7 @@ export async function PATCH(request: Request) {
     const current = await store.get(user, teamId(input.caseId));
     if (!current) throw new TeamCaseError('案件が見つかりません。', 404);
     const next = applyTeamAction(current, input.command, input.revision);
-    if (!(await store.update(user, next, current.revision)))
+    if (next !== current && !(await store.update(user, next, current.revision)))
       throw new TeamCaseError('別の操作で更新されています。再読込してください。', 409);
     return json({ caseFile: next });
   } catch (error) {

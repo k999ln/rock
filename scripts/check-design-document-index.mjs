@@ -1,6 +1,6 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { dirname, resolve } from 'node:path';
+import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { catalog } from '../lib/catalog.ts';
 
@@ -42,6 +42,27 @@ for (const document of referenced) {
     existsSync(resolve(root, document)),
     `設計書が存在しません: ${document}`,
   );
+}
+
+// A design is also an index into its current implementation and regressions.
+// Validate these paths so a merge cannot silently leave a dangling source map.
+for (const entry of [...index.systemDomains, ...index.catalogTools]) {
+  for (const field of [
+    'implementation',
+    'interfaceImplementation',
+    'spiderGuardImplementation',
+    'recoveredContractReferences',
+  ]) {
+    const paths = entry[field] ?? [];
+    fail(Array.isArray(paths), `${entry.id}: ${field} must be a path array`);
+    for (const path of paths) {
+      fail(typeof path === 'string' && path.length > 0, `${entry.id}: empty ${field} path`);
+      const absolute = resolve(root, path);
+      const local = relative(root, absolute);
+      fail(!isAbsolute(path) && local !== '..' && !local.startsWith('../'), `${entry.id}: non-repository path ${path}`);
+      fail(existsSync(absolute) && statSync(absolute).isFile(), `${entry.id}: source or regression is missing: ${path}`);
+    }
+  }
 }
 
 fail(index.sourceArtifacts?.length >= 1, '原本設計artifactの台帳が必要です');
@@ -115,8 +136,8 @@ fail(
   'Sky catalogの全ready／candidate Toolを設計台帳へ同期してください',
 );
 fail(
-  catalog.filter(({ status }) => status === 'ready').length === 14,
-  'ready Tool 14件（SPIDERを含む）を保持してください',
+  catalog.filter(({ status }) => status === 'ready').length === 15,
+  'ready Tool 15件（SPIDER・Materialを含む）を保持してください',
 );
 fail(
   catalog.filter(({ status }) => status === 'candidate').length === 22,

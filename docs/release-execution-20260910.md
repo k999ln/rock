@@ -1,6 +1,6 @@
 # RockstarOS 1.0 — 2026-09-10 実行checkpoint
 
-状態: IN_PROGRESS。開始 2026-09-10T05:43:35Z、終了目標 2026-09-10T13:43:35Z。実働と停止時間は終了時に区別する。製品要件は [product-baseline](product-baseline.md)、今回の指示は [実行プロンプト](prompts/rockstaros-release-20260910.md)。時間経過やDeveloper Previewの名称では合格にしない。
+状態: IN_PROGRESS。開始 2026-09-10T05:43:35Z、終了目標 2026-09-10T13:43:35Z。実働と停止時間は終了時に区別する。製品要件は [product-baseline](product-baseline.md)、今回の指示は [実行プロンプト](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/rockstaros-release-20260910.md)。時間経過やDeveloper Previewの名称では合格にしない。
 
 ## 起点と担当
 

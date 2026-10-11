@@ -424,6 +424,7 @@ export const skyProviderConnections = sqliteTable(
   {
     userId: text('user_id').notNull(),
     provider: text('provider').notNull(),
+    revision: integer('revision').notNull().default(1),
     status: text('status').notNull().default('setup_required'),
     config: text('config').notNull().default('{}'),
     secretRef: text('secret_ref'),
@@ -431,6 +432,7 @@ export const skyProviderConnections = sqliteTable(
     updatedAt: integer('updated_at').notNull(),
   },
   (table) => [
+    check('sky_provider_revision_positive', sql`typeof(${table.revision}) = 'integer' AND ${table.revision} >= 1`),
     uniqueIndex('idx_sky_provider_connections_user_provider').on(
       table.userId,
       table.provider,
@@ -1425,6 +1427,28 @@ export const esimDeviceEntitlements = sqliteTable(
     check('esim_device_entitlement_receipt_check', sql`length(${table.receiptSha256}) = 64`),
   ],
 );
+
+export const esimCloudAccessKeys = sqliteTable('esim_cloud_access_keys', {
+  id: text('id').primaryKey(),
+  skyOrderId: text('sky_order_id').notNull(),
+  ownerUserId: text('owner_user_id').notNull(),
+  deviceRef: text('device_ref').notNull(),
+  entitlementReceiptSha256: text('entitlement_receipt_sha256').notNull(),
+  tokenSha256: text('token_sha256').notNull(),
+  scopesJson: text('scopes_json').notNull(),
+  createdAt: integer('created_at').notNull(),
+  expiresAt: integer('expires_at').notNull(),
+  revokedAt: integer('revoked_at'),
+  activeSlot: text('active_slot'),
+  replacedById: text('replaced_by_id'),
+}, (table) => [
+  uniqueIndex('idx_esim_cloud_token').on(table.tokenSha256),
+  uniqueIndex('idx_esim_cloud_active_order').on(table.activeSlot),
+  index('idx_esim_cloud_owner').on(table.ownerUserId, table.skyOrderId, table.createdAt),
+  check('esim_cloud_hash_check', sql`length(${table.tokenSha256})=64 AND length(${table.entitlementReceiptSha256})=64`),
+  check('esim_cloud_expiry_check', sql`${table.expiresAt}>${table.createdAt}`),
+  check('esim_cloud_active_check', sql`(${table.revokedAt} IS NULL AND ${table.activeSlot} IS NOT NULL AND ${table.activeSlot}=${table.skyOrderId}) OR (${table.revokedAt} IS NOT NULL AND ${table.activeSlot} IS NULL)`),
+]);
 
 export const csvTrialPayments = sqliteTable('csv_trial_payments', {
   id: text('id').primaryKey(),

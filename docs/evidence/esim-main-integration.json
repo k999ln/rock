@@ -1,0 +1,74 @@
+{
+  "schema": "rock-esim-main-integration/1",
+  "recordedOn": "2026-10-06",
+  "baseMainSha": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+  "branch": "codex/progress-and-esim-integration",
+  "status": "source_ci_verified_main_and_deployment_pending",
+  "taskIds": [
+    "LCH06",
+    "SKY19"
+  ],
+  "validation": {
+    "focused": "19/19 including stream-size rejection, all migration histories and DB status",
+    "typecheck": "passed before final bounded-reader addition; CI must recheck final source",
+    "nodeTests": "1369/1369 after final code changes",
+    "fullVerify": "attempted; stopped at missing Astro dependency; installation failed with ENOSPC",
+    "localLogSha256": "df313a8039bef0eab35127e1e07d3440fcaaa00e7fe5d106aec1c1d9f3acfee3",
+    "provider": "not_run",
+    "physicalDevice": "not_run",
+    "productionBilling": "not_run"
+  },
+  "migration": {
+    "preserved": "0059_sky_library",
+    "added": "0060_esim_cloud_access_keys",
+    "tableCount": 78
+  },
+  "security": {
+    "credential": "SHA-256 at rest; HttpOnly SameSite cookie; current order/proof/key/package/scopes rechecked",
+    "managementBodyLimitBytes": 1024,
+    "cloudCredentialDenied": [
+      "account management",
+      "payments",
+      "AMC control",
+      "Sky library changes"
+    ]
+  },
+  "sourceHashes": {
+    "lib/esim-cloud-access.ts": "1955d0817c8c29c72c5cf8b042550d2cc3acb4021f16f0b83a616a7109205350",
+    "lib/esim-cloud-grant.ts": "63e28c49a1bdd7f7c6e15ef9382d8fdd59056b50df957519c58ed682645580e4",
+    "app/api/esim/orders/[orderId]/cloud-access/route.ts": "3523a7b2b96996536b32c1817472cce96af52f85e3379500493d3ec64bab6550",
+    "drizzle/0060_esim_cloud_access_keys.sql": "a004d21ce22497bd7cd618540a0001cdd317773ea564331c4373d6b9f14d4946",
+    "tests/esim-cloud-access.test.mjs": "502ae8861ba3decf5b2dfe0a6ed8d3566de2b643caa497262b653749033b305e"
+  },
+  "remaining": [
+    "main integration",
+    "deployment and authenticated readback",
+    "contracted carrier/device gateway and exact-device acceptance",
+    "approved commercial terms; existing execution holds stay closed"
+  ],
+  "githubValidation": {
+    "head": "f9c858706601e43ad5da526d94e408fb3daf0c31",
+    "verifyRun": 37505939314,
+    "verifyUrl": "https://github.com/k999ln/rock/actions/runs/37505939314",
+    "conclusion": "success",
+    "checksPassed": 7,
+    "node": {
+      "pass": 1368,
+      "fail": 0,
+      "skip": 1
+    },
+    "workApiAssertions": 1305,
+    "csvAssertions": 385,
+    "coverage": [
+      "typecheck",
+      "lint",
+      "build",
+      "D1 migrations",
+      "Worker API",
+      "project/baseline/design/mission checks"
+    ],
+    "provider": "not_run",
+    "physicalDevice": "not_run",
+    "productionBilling": "not_run"
+  }
+}

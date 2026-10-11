@@ -11,7 +11,7 @@
 **目次**
 
 1. [まず用語：「エージェント」は5種類ある](#1-まず用語エージェントは5種類ある)
-2. [SkyのTool 36件](#2-skyのtool-36件)
+2. [SkyのTool 37件](#2-skyのtool-37件)
 3. [Skyの役割エージェント（担当）](#3-skyの役割エージェント担当)
 4. [Toolの中にあるサブシステム](#4-toolの中にあるサブシステム)
 5. [OSに入っているAIとAgent](#5-osに入っているaiとagent)
@@ -31,11 +31,11 @@
 
 | 呼び名 | 何か | 数 | 利用者から見えるか | この文書の章 |
 | --- | --- | ---: | --- | --- |
-| **Tool**（商品） | Skyの一覧に並ぶ自動化。1つの仕事をする部品 | 36（ready 14＋候補22） | 見える。Skyで選ぶ | [第2章](#2-skyのtool-36件) |
+| **Tool**（商品） | Skyの一覧に並ぶ自動化。1つの仕事をする部品 | 37（ready 15＋候補22） | 見える。Skyで選ぶ | [第2章](#2-skyのtool-37件) |
 | **役割エージェント**（担当） | 「サブスク顧問」「法務受付」のように、役割を持って会話で仕事を進める担当。許可されたToolだけを使う | 7（実装3＋構成案4） | 見える。Sky／Zemaで話す | [第3章](#3-skyの役割エージェント担当) |
 | **OS内のAgent** | 端末の中で計画・実行・監視をする仕組み（ローカルLLMのplanner、Agent runtime、Security Agentのクモ、Operator Agent） | 4 | 一部見える | [第5章](#5-osに入っているaiとagent) |
 | **クラウドのAgent** | 端末が圏外でも仕事を続ける、クラウド側の実行者。外部のAgentへ委任する経路（A2A）を含む | — | 見える。見積と承認のあとに動く | [第6章](#6-クラウドのagent) |
-| **部隊**（AMC） | このプロジェクト自体を開発する体制。3製品＋OSを5師団32部隊に分けたもの。Codexの司令官・実行担当・検収担当を含む | 32部隊＋3エージェント | 開発者向け | [第8章](#8-開発を進めるエージェントamc) |
+| **部隊**（AMC） | このプロジェクト自体を開発する体制。3製品＋OSを5師団32部隊に分けたもの。Codexの司令官・実行担当・検収担当を含む | 32部隊＋3エージェント＋10担当Bot | 開発者向け | [第8章](#8-開発を進めるエージェントamc) |
 
 もう一つの原則として、**LLM・Agent・Toolは別物** です。LLMは「案を出す」、Agentは「許可された手順を進める」、Toolは「個別の処理をする」。権限を決めるのはどれでもなく、OSのBroker（Platform Core）です。
 
@@ -53,20 +53,22 @@
 
 ---
 
-## 2. SkyのTool 36件
+## 2. SkyのTool 37件
 
-Skyに登録されているToolは **36件** です。使い始められる `ready` が14件、まだ実行できない導入候補 `candidate` が22件あります。
+Skyに登録されているToolは **37件** です。使い始められる `ready` が15件、まだ実行できない導入候補 `candidate` が22件あります。
 
 | 区分 | 件数 | 内訳 |
 | --- | ---: | --- |
-| ready | 14 | Rock側で作成 10件（AMCを含む）＋ `Mr.` 由来 4件 |
+| ready | 15 | Rock側で作成 11件（AMCを含む）＋ `Mr.` 由来 4件 |
 | candidate | 22 | Rock構想 1件 ＋ `Mr.` 由来 11件 ＋ 第三者 10件 |
 
 Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外部サービスの[接続情報の登録とProviderの差し替え](sky.md#接続情報の登録と再利用)、[Telegramから自作Toolを有効化するコード](sky.md#telegramからの有効化)、[サインイン切れや公開判定などの利用時の注意](sky.md#利用時の注意と復旧readmeに置かれていた案内)。
 
-### 2.1 使い始められる14件（ready）
+### 2.1 使い始められる15件（ready）
 
 追加: **SPIDER · セキュリティ検査**（`rockstar-spider`）。Sky → Zemaで本人が入力したコード・テキストの秘密／個人情報／危険処理候補をローカル検査。該当行・理由・対処方法と値を含まないreportを返す。原文送信・保存なし。既存番号1〜35は参照互換のため維持し、SPIDERは追加36番。[設計](sky-tools-complete-design.md#spider--skyのセキュリティ検査)。
+
+追加（2026-10-11）: **Material Invention · 物質候補の比較**（`rockstar-material-invention`）。Sky→Zemaで決定的候補生成、危険条件の比較、本人用保存、再読込を扱う。外部simulation・実験は未接続。[詳細設計](material-invention-core.md#sky--zemaの机上比較と本人用保存)。
 
 | # | Sky ID | 表示名 | 分類 | 由来 | 一言でいうと |
 | ---: | --- | --- | --- | --- | --- |
@@ -643,7 +645,7 @@ Higgsfield、Runway、Roblox、GTA／FiveM、YouTube、Instagramは接続先の 
 
 | 名前 | なぜToolと数えないか |
 | --- | --- |
-| **Material Invention Studio** | Core・sensor・XR・Safety・Simulation・Patent AI・labを束ねる application system。Skyで組み合わせる「発明チーム」の複合機能で、単体のcatalog Toolではない。Coreのsandboxは実装済み、操作画面とSky接続は未実装 |
+| **Material Invention Studio** | Core・sensor・XR・Safety・Simulation・Patent AI・labを束ねる application system。Skyで組み合わせる「発明チーム」の複合機能で、単体のcatalog Toolではない。机上候補比較・本人用保存を`rockstar-material-invention` Toolとして接続済み。Studio全体のsensor・XR・simulation・labは未接続 |
 | **Game** | 本体は application。生成や変換だけをToolにできる |
 | **Wallet** | 金融台帳とProviderの境界。Toolの自己申告で残高を変更しない |
 | **Fund** | 確認済みの実績から構成を比較する system。Tool自身に配分の権限を与えない |
@@ -775,7 +777,15 @@ AMCをCodexから使うための役割定義です。正本は [`data/amc/agent-
 
 起動は `npm run amc:agent -- run --goal '…'`。Zema Webからの起動、自動同期、無人の常時稼働は未接続です。
 
-### 8.4 新しい依頼に使う4役割・7工程
+#### プロジェクト別の10担当Bot
+
+正本は [`data/amc/project-bots.json`](../data/amc/project-bots.json)。Sky、Zema、Wallet、RockstarOS、Game、Security、avocadoMini、avokadoPro、rocketstar、Operationsを依頼窓口とし、32部隊のtaskAssignmentsを維持する。`npm run bot -- run sky --goal '…'` はGitHubと担当コードの履歴・task資料を収集してからCodexを起動する。Botが対象コードを読み、既存taskを選択／新規taskを具体化し、既存engineのAMC計画→任務遂行→別担当の検収→Git commit／PR→AMC結果記録を進める。計画作成だけで稼働・検収済みにはしない。`run/prepare <bot> --goal-file <AMC JSON>` は既存Goalを保持したコピーとengine生成の指示書を渡す。入力state・承認記録を新しい実行実績や権限へ変換しない。[利用・復旧・検証](../toolkits/amc-agent/README.md#プロジェクト別bot)。開発用の入口で、Sky catalog Toolの実行権限やWeb保存先は変更しない。
+
+#### Gitを読むローカル計画画面
+
+`npm run amc:workbench`で開くCodex接続版では、担当Bot・依頼・意図と最新Gitから作業数、依存、成果物、検証方法を提案する。追加指示で候補を組み直し、元Goalの履歴を残して未承認draftとして採用する。ローカルの計画生成までを接続し、実装は既存Bot入口へGoal JSONを渡す。[使い方](../toolkits/amc-agent/README.md#gitを読んで計画を組み立てる画面)。
+
+### 8.4 Sky／Zemaの共通準備テンプレート
 
 SkyのTool `rockstar-amc` で新規の依頼を保存すると、**設計・実装・検証・統括** の4役割と7工程の共通テンプレートに置かれます。保存しても7工程はすべて `pending` で、AIや作業processは動きません。これは依頼の意味を理解して分解した結果ではなく、共通の準備計画です。
 
@@ -852,9 +862,9 @@ Webアプリ本体とは別に配備する単位です。
 
 ### 数えるときの決まり
 
-- `ready` 14件はSky catalog上の状態。外部Providerや本番決済まで接続済みという意味ではない。
+- `ready` 15件はSky catalog上の状態。外部Providerや本番決済まで接続済みという意味ではない。
 - `candidate` 22件を、稼働中の担当・対応機能・収益機会へ数えない。
-- Fashion Brand Opsの41操作、nativeの6種類9版、AndroidのToolを、Sky catalogの36件へ足さない。
+- Fashion Brand Opsの41操作、nativeの6種類9版、AndroidのToolを、Sky catalogの37件へ足さない。
 - 一覧にある全Toolが同時に稼働するという意味ではない。チームの構成は利用者の選択と受入状態で変わる。
 - Toolの完了は、販売・入金・法的有効性・特許・実世界の成果を保証しない。
 
@@ -870,7 +880,7 @@ Webアプリ本体とは別に配備する単位です。
 | 4 | [全Tool詳細設計 §21](sky-tools-complete-design.md#21-現在の共通未完成点) | 「candidate 13件の採否」とあるが、現在の候補は22件 |
 | 5 | [製品ベース](product-baseline.md) の並び | 新しい判断を上へ足してきたため、H1が2つあり、日付順でもない。検査（`npm run baseline:check`）が本文と結び付いているので並べ替えず、冒頭に読み方の案内だけ足した。[`sky.md`](sky.md) と [進捗ログ](../project.md) にあった「題名より上の追記」は2026-10-07に本文へ移した |
 | 6 | [`sky.md`](sky.md)「Skyに表示する導入候補22件」 | 見出しは22件だが、従来の表は13行で、catalogにない資料・研究用の3件を含み、`Mr.` 由来11件とIP Studioが無かった。2026-10-07に、統合で落ちていたID付きの22行の表を復元して並べた。従来の表は残してある |
-| 7 | 復元した2026-10-01〜10-05の記述 | [全Tool詳細設計 §1.3](sky-tools-complete-design.md#13-全toolの実行器棚卸しと管理runtime進行中) やREADMEの復元箇所には「全34件」「built-in 12件」とある。AMC（`rockstar-amc`）が13件目のreadyとして入る前の数で、現在は36件・ready 14件 |
+| 7 | 復元した2026-10-01〜10-05の記述 | [全Tool詳細設計 §1.3](sky-tools-complete-design.md#13-全toolの実行器棚卸しと管理runtime進行中) やREADMEの復元箇所には「全34件」「built-in 12件」とある。AMC（`rockstar-amc`）が13件目のreadyとして入る前の数で、現在はMaterial候補比較を含む37件・ready 15件 |
 | 8 | avokadoProの価格 | 2026-09-25の本人決定と公開Siteは「From ¥880,000」、2026-10-05の[Pro PC設計](avokado-pro-pc-design.md)とREADMEは「販売目標80万円／台」。どちらが現行かの記録がない |
 | 9 | task台帳と設計台帳 | [`data/project-status.json`](../data/project-status.json) にSIM/eSIMを題名に持つtaskが無い（`main` にあった `SIM01` などが2026-10-05の統合で消えた）。[`data/design-document-index.json`](../data/design-document-index.json) もToolごとの実装・試験の対応が大きく減っている。詳細は[統合で失われた情報の監査](merge-loss-audit-20261007.md) |
 

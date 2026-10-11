@@ -40,6 +40,7 @@ function render(toolId, workspace = false, { tools = catalog, hostMismatch = nul
     '@/components/sky-library-save': inert('bookmark'),
     '@/components/amc-workspace': inert('amc'),
     '@/components/spider-workspace': inert('spider'),
+    '@/components/material-invention-workspace': inert('material'),
     '@/components/coconala-team-workspace': inert('coconala'),
     '@/components/csv-business-workspace': inert('csv'),
     '@/components/mr-tool-runner': { MrToolRunner: inert('mr') },
@@ -62,7 +63,7 @@ function render(toolId, workspace = false, { tools = catalog, hostMismatch = nul
   return { html, mounts };
 }
 
-const runnerNames = new Set(['amc', 'spider', 'coconala', 'csv', 'mr', 'candidate', 'fashion', 'voice-connection']);
+const runnerNames = new Set(['amc', 'spider', 'material', 'coconala', 'csv', 'mr', 'candidate', 'fashion', 'voice-connection']);
 for (const tool of catalog) {
   void test(`Sky detail for ${tool.id} only describes, bookmarks and links to Zema`, () => {
     const { html, mounts } = render(tool.id);
@@ -94,6 +95,17 @@ void test('SPIDER is discoverable in Sky and mounts its local inspector only in 
   const zema = render('rockstar-spider', true);
   assert.equal(zema.mounts.filter((item) => item.name === 'spider').length, 1);
   assert.ok(!zema.mounts.some((item) => item.name === 'mr' || item.name === 'bookmark'));
+});
+
+void test('Material describes its sandbox in Sky and mounts candidate comparison only in Zema', () => {
+  const sky = render('rockstar-material-invention');
+  assert.ok(sky.html.includes('PC接続は必須ではありません'));
+  assert.ok(!sky.mounts.some((item) => item.name === 'material'));
+  const zema = render('rockstar-material-invention', true);
+  assert.equal(zema.mounts.filter((item) => item.name === 'material').length, 1);
+  assert.deepEqual(zema.mounts.filter((item) => runnerNames.has(item.name)).map((item) => item.name), ['material']);
+  assert.ok(!zema.mounts.some((item) => item.name === 'bookmark'));
+  assert.ok(zema.html.includes('href="/zema/library"'));
 });
 
 for (const [toolId, name] of [['rockstar-amc', 'amc'], ['coconala', 'coconala'], ['rockstar-csv-cleanup', 'csv']]) {

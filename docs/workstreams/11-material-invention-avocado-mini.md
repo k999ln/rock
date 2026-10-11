@@ -49,8 +49,8 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 ## 現在地
 
 - `MAT01`: Core entity、発明loop、安全境界の設計完了。
-- `MAT02`: 二物質・複数比率のsandbox Coreと9 testを実装済み。
-- `MAT03`: Zema、限定記憶、simulation、外部lab接続は未着手。
+- `MAT02`: 二物質・複数比率のsandbox Coreを実装済み。物質・工程ID衝突の拒否を含む10 test。
+- `MAT03`: Sky→Zemaの2D候補比較・本人用WorkJob保存・digest照合再開を実装。限定記憶、simulation、外部lab接続は未実装。本人分離・再送・revision競合・サンプル昇格拒否をhost試験し、実機や本番の完成には換算しない。
 - `MAT04`: avocadoMini、XR、四方向sensor、hand interaction、Patent AI統合設計に加え、Bench／ビリヤード台規模Full-scaleの寸法budget、concept画像、機構・光学・電気・演算・安全・校正・HVTのhardware詳細設計まで完了。
 - `MAT05`: 決定的scene projectionと合成pose interactionは未着手。
 - `MAT06`: 四方向Bench／Full-scale実機prototype、simulation／Patent AI bridgeは未着手。

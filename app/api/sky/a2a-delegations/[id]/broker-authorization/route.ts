@@ -76,6 +76,7 @@ export async function POST(request: Request, context: Context) {
       owner,
       'agents',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Agent');
     const { id } = await context.params;
     if (!uuid.test(id)) return json({ error: '委任IDが不正です。' }, 400);

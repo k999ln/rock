@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers';
+import { esimCloudAccessStore } from '@/lib/esim-cloud-access';
 import { database } from '@/lib/fund-store';
 import { requestRockstarUser } from '@/lib/rockstar-device-link';
 import {
@@ -30,6 +31,7 @@ export async function GET(request: Request) {
           item.issuerId, item.offerId, runtime.ROCKSTAR_SERVICE_OFFER_PROFILES, registry,
         ) : null,
       }))),
+      esimAccess: await esimCloudAccessStore(db, env).listActive(ownerUserId),
       claimRedemptionAvailable: hasActiveRockstarEntitlementIssuer(runtime.ROCKSTAR_SERVICE_CLAIM_ISSUERS),
     });
   } catch (error) {

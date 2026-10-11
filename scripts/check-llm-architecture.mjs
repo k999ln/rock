@@ -99,6 +99,9 @@ for (const marker of [
   'lib/jev-evaluation.ts',
   'lib/decision-layer.ts',
   'tests/decision-layer.test.mjs',
+  'app/api/agent-control-plane/route.ts',
+  'lib/agent-control-plane.ts',
+  'tests/agent-control-plane.test.mjs',
 ])
   requireValue(
     existsSync(resolve(root, marker)),
@@ -136,6 +139,7 @@ for (const marker of [
   'implemented_configuration_required',
   'DecisionProvider',
   'local-action-assistant-binder-v2',
+  'Agent Control Plane',
   'rockstar-amc',
   'LLMを呼ばない計画・手動記録Tool',
 ])

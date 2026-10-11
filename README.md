@@ -8,7 +8,7 @@
 
 A product concept that begins with games and connects creation, learning, and everyday action to enrich life as a whole.
 
-[What this is](#what-this-is) · [The parts](#the-parts) · [Where it stands](#where-it-stands) · [Find anything](#find-anything) · [Start developing](#start-developing) · [Full details](docs/readme-details.md)
+[What this is](#what-this-is) · [The parts](#the-parts) · [Where it stands](#where-it-stands) · [Find anything](#find-anything) · [Start developing](#start-developing) · [Document map](docs/README.md)
 
 </div>
 
@@ -26,19 +26,21 @@ A product concept that begins with games and connects creation, learning, and ev
 
 **How the service works.** A SIM or eSIM purchase includes access to the services. The OS itself is not stored on the SIM: a supported device installs it through an approved path, and any other device uses an app or a browser. Before paid AI work starts, you see an estimate and approve a budget; while it runs you can see what it has spent; afterwards you get an itemized record. [SIM/eSIM-led product architecture](docs/sim-led-product-architecture.md)
 
-Most design documents are written in Japanese; this README is the English entry point. Everything that used to be on this page is kept, word for word, in **[README details](docs/readme-details.md)**.
+Optional eSIM cloud access can be issued, rotated, and revoked from [purchase history](/sky/purchases) after trusted installation/device proof and contracted policy configuration. Missing configuration keeps issuance disabled; this does not enable paid execution. [Access contract](docs/sim-led-product-architecture.md#optional-esim-cloud-access-implementation)
+
+Most design documents are written in Japanese; this README is the English entry point. Use the [document map](docs/README.md) to find the current requirements, designs, operating instructions, and evidence.
 
 ## The parts
 
 | Part | In one line | Read more |
 | --- | --- | --- |
 | RockstarOS v1.0 | Identity, permissions, work, storage, and recovery shared by every device and service. The on-device LLM only proposes plans; it never decides whether a Tool may run. | [Complete OS design](docs/rockstaros-complete-design.md) |
-| Sky | Find Tools and AI teams and compare their author, version, permissions, where they run, and cost before connecting. 36 Tools are listed; 14 can run today. | [Sky](docs/sky.md) · [Agents and tools](docs/agents-and-tools.md) |
+| Sky | Find Tools and AI teams and compare their author, version, permissions, where they run, and cost before connecting. 37 Tools are listed; 15 can run today. | [Sky](docs/sky.md) · [Agents and tools](docs/agents-and-tools.md) |
 | Zema | Takes a request and keeps its plan, progress, stopping, approvals, results, and history together as one piece of work. | [Complete Tool design](docs/sky-tools-complete-design.md) |
 | Wallet | Cost estimates, reservations, confirmed earnings, refunds, and reconciliation. No live billing or payouts have started. | [Wallet workstream](docs/workstreams/03-wallet-billing-providers.md) |
 | avocadoMini R5 | A 200 mm stand-alone device for playing, making, and everyday help. R5 is the current design baseline. It is a design only: zero physical-device tests have been completed, and manufacturing approval is **on hold**. | [R5 design](docs/avocado-mini-r5/README.md) |
 | avokadoPro | A compact NVIDIA desktop for AI development and PC games. Two price figures are on record and the price is not final. Nothing has been bought or assembled. | [Pro PC design](docs/avokado-pro-pc-design.md) |
-| Material Invention | Reproducible digital candidates for new materials, with evidence. Only a sandbox core exists. The Material Invention interface and Sky connection are not implemented. | [Core design](docs/material-invention-core.md) |
+| Material Invention | Reproducible digital candidates for new materials, with evidence. Sky and Zema offer sandbox candidate comparison, private work storage, and digest-checked recovery. Simulation and laboratory connections are not implemented. | [Core design](docs/material-invention-core.md) |
 | rocketstar R1.0 | A reusable small-satellite launch vehicle; a separate design program with no manufacturing or flight. | [Design archive](docs/rocketstar-design/README.md) |
 
 ## Where it stands
@@ -51,12 +53,12 @@ Most design documents are written in Japanese; this README is the English entry 
 | Web / Sky / Zema | Source for screens, catalog, work, approvals, history, and the Tool foundation | Current-version readback for each deployment, external providers, and production commercial acceptance |
 | Pixel 10 GL066 | Pre-tests on an existing OS with a test-signed APK for offline planning, limited Tools, storage, and restart | Full RockstarOS image build, production signing, first flash and boot, OTA, and total-loss recovery |
 | Linux / QEMU | Independent Developer Preview implementation and acceptance records | Release gates for the current artifact; not transferable to Pixel physical-device acceptance |
-| Material Invention | Reproducible sandbox Core and integrated design | R5 input/display adapter, interface, physical sensors, and simulation/Patent AI connections |
+| Material Invention | Sandbox Core, Sky/Zema candidate comparison, private saved work and digest-checked recovery | R5 input/display adapter, physical sensors, and simulation/Patent AI connections |
 
 R5 manufacturing approval is **on hold**, and **all four Pixel first-flash gates are failing**. Task counts are not a measure of product completion.
 
 <!-- project-overview:start -->
-Updated: 2026-10-09 / 378 task records (32 parents, 192 children, 154 standalone; 346 execution units excluding parents): 107 done, 34 in progress, 236 planned, 1 blocked
+Updated: 2026-10-11 / 392 task records (32 parents, 192 children, 168 standalone; 360 execution units excluding parents): 114 done, 47 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Mission Control](docs/mission-control.md) · [Security](SECURITY.md)
@@ -80,20 +82,21 @@ Day by day, with what is in force today and what was withdrawn: [specification h
 | I want to… | Open |
 | --- | --- |
 | understand the current product direction | [What is in force today](docs/spec-history.md#2-いま有効な仕様2026-10-06時点) / [SIM/eSIM-led architecture](docs/sim-led-product-architecture.md) |
-| read the confirmed requirements, RQ01–RQ49 | [Product baseline](docs/product-baseline.md) |
+| read the confirmed requirements, RQ01–RQ50 | [Product baseline](docs/product-baseline.md) |
 | see what changed, and on which day | [Specification history](docs/spec-history.md) |
 | see every tool and agent and what each one does | [Agent and tool overview](docs/agents-and-tools.md) |
-| read a design | [Design portal](docs/rockstaros-design-portal.md) / [Design library](docs/readme-details.md#design-library) |
-| find any document in `docs/` | [Document map](docs/README.md) — all 186 documents, classified |
+| read a design | [Design portal](docs/rockstaros-design-portal.md) / [Document map](docs/README.md) |
+| find any document in `docs/` | [Document map](docs/README.md) — current documents, classified |
 | find the source code for a product | [Project guide](PROJECTS.md) |
 | see progress and who owns what | [All tasks](project.md) / [Mission Control](docs/mission-control.md) |
 | see what a merge on 2026-10-05 dropped and what still needs a decision | [Merge-loss audit](docs/merge-loss-audit-20261007.md) |
-| read every feature, payment, security, and design detail that used to be here | [README details](docs/readme-details.md) |
 | visit the public homepage | [avocadomini.si](https://avocadomini.si) |
 | try Sky in a browser (public version) | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) |
 | start developing | [Start developing](#start-developing) / [Rules for AI coding agents](AGENTS.md) |
 
 ## Start developing
+
+Use [feature workspaces](workspaces/README.md) to select an existing task and its checks (`npm run work -- --find eSIM`). [Project bots and AMC planning](toolkits/amc-agent/README.md) provide explicit local Git research, planning, and development handoff.
 
 Use Node.js 22.13 or later and npm. This starts the web app locally:
 
@@ -101,12 +104,14 @@ Use Node.js 22.13 or later and npm. This starts the web app locally:
     npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc
     npm run dev
 
-After changing documents or progress, run:
+Install the product site dependencies before running the full repository checks. After changing documents or progress, run:
 
+    npm ci --prefix sites/avocado-mini
     npm run project:update
+    npm run mission:update
     npm run verify
 
-Pixel, QEMU, Workers, and the product site have their own instructions and gates: [Linux/QEMU](docs/workstreams/06-native-qemu-release.md) · [Android/Pixel](docs/workstreams/07-android-device-local-ai.md) · [avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md) · [all commands and checks](docs/readme-details.md#start-developing).
+Pixel, QEMU, Workers, and the product site have their own instructions and gates: [Linux/QEMU](docs/workstreams/06-native-qemu-release.md) · [Android/Pixel](docs/workstreams/07-android-device-local-ai.md) · [avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md) · [Git / CI / Operations](docs/workstreams/10-git-ci-operations.md).
 
 ## Safety, rights, and images
 

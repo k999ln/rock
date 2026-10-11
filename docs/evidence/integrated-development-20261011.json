@@ -1,0 +1,153 @@
+{
+  "schema": "rock-integrated-development-evidence/1",
+  "startedAt": "2026-10-11T09:13:50Z",
+  "plannedEndAt": "2026-10-11T19:13:50Z",
+  "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
+  "branch": "codex/rock-development-20261011",
+  "status": "integrated_candidate_verified_followup_development_in_progress",
+  "sourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+  "taskIds": [
+    "G04",
+    "SIM01",
+    "SKY21"
+  ],
+  "cleanup": {
+    "commit": "f7266bd",
+    "filesRemoved": 8,
+    "bytesRemoved": 161082,
+    "localMarkdownLinksChecked": 1877,
+    "missingLinks": 0,
+    "manifest": "data/project-status.json#repositoryCleanup.obsoleteContent"
+  },
+  "ledgerRecovery": {
+    "tasks": [
+      "SIM01",
+      "SKY21",
+      "B06",
+      "G04",
+      "AI09",
+      "DOC05",
+      "GM01",
+      "CAMPUS01"
+    ],
+    "stateCorrections": [
+      "AI02",
+      "AI03",
+      "AI04",
+      "AI05",
+      "AI06"
+    ],
+    "sourceReferenceCount": 235,
+    "historicalPreparationRecords": 23,
+    "proAssessmentCorrections": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5",
+      "P6",
+      "P7"
+    ],
+    "nestedContractsReviewed": 32,
+    "nestedContractReviewLimit": "Current source semantics only; historical successful-state flags not transferred to this candidate."
+  },
+  "validation": {
+    "ledgerRecovery": {
+      "status": "passed_on_local_working_tree",
+      "command": "node --experimental-strip-types --test tests/campus.test.mjs tests/game-sandbox.test.mjs tests/mission-control.test.mjs tests/workspaces.test.mjs tests/agent-control-plane.test.mjs",
+      "tests": 44,
+      "pass": 44,
+      "fail": 0,
+      "skip": 0,
+      "limits": "No browser, provider or physical acceptance; repository and data contract checks also passed."
+    },
+    "firstIntegratedVerify": {
+      "sourceSha": "f675a83c4bb33d7bff4cb1916ead383313b5783e",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "failed",
+      "reached": "npm test",
+      "tests": 1558,
+      "pass": 1507,
+      "fail": 50,
+      "skip": 1,
+      "failureGroups": [
+        "Material catalog icon missing (1)",
+        "Material workspace missing from existing handoff harness (46)",
+        "Recovered G04 changes H1 leaf count (2)",
+        "AMC record action carried across task selection (1)"
+      ],
+      "notRun": [
+        "remaining package checks",
+        "build",
+        "Worker/D1 API",
+        "final mission/work/bot checks"
+      ],
+      "limits": "macOS arm64; one unsupported-platform discovery refusal case skipped on this supported platform."
+    },
+    "integrationRegressionRepair": {
+      "sourceSha": "6f18dc27719e303ee34cae67c5f676a911495402",
+      "command": "node --experimental-strip-types --test tests/amc-goal-cli.test.mjs tests/sky-tool-icons.test.mjs tests/sky-tool-workspace-handoff.test.mjs",
+      "tests": 106,
+      "pass": 106,
+      "fail": 0,
+      "skip": 0,
+      "status": "passed",
+      "limits": "Targeted Node/DOM fixtures; full verify and integrated browser still pending."
+    },
+    "fullVerify": {
+      "sourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "passed",
+      "exitCode": 0,
+      "environment": "macOS arm64, Node 26.0.0, local Cloudflare Worker/D1/R2 synthetic fixtures",
+      "node": {
+        "tests": 1585,
+        "pass": 1584,
+        "fail": 0,
+        "skip": 1
+      },
+      "workerD1Assertions": 1356,
+      "csvD1R2Assertions": 385,
+      "webAssetReferences": 184,
+      "missingWebAssets": 0,
+      "skippedReason": "unsupported-platform local-descriptor refusal test is inapplicable on the supported POSIX host",
+      "limits": "No live Provider, external billing, device OS, hardware or production acceptance."
+    },
+    "historySecurity": {
+      "status": "clean",
+      "targetHead": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+      "reachableCommitCount": 1167,
+      "historyScanCompleted": true,
+      "totalFindings": 0,
+      "configSha256": "36d30ae624943c4587d9453668a0cb149168d06da7a71de008ec8d2e7b586c9b",
+      "priorFailure": "SCANNER_FAILED with 145 unhydrated partial-clone objects; hydrated the exact Git objects and completed a fresh scan."
+    },
+    "securityControl": {
+      "reviewedControlSha": "1ae13f30444961e9cc740174469cea2c9315ec99",
+      "policyTests": {
+        "pass": 10,
+        "fail": 0,
+        "skip": 0
+      },
+      "scannerBoundaryTests": {
+        "pass": 6,
+        "fail": 0,
+        "skip": 0
+      },
+      "review": "Exact public storage identifier at reviewed paths plus existing exact public source digest exceptions; recomputed all 5 eSIM source hashes at f9c858706601e43ad5da526d94e408fb3daf0c31. Corrected merged provenance counts from163 to166 without adding or broadening exception rules.",
+      "initialCi": "SPIDER on5d5708d3 failed under older control06efd843; updated pinned control requires a new same-head CI result."
+    }
+  },
+  "github": {
+    "saved": true,
+    "mainIntegrated": false,
+    "deployed": false,
+    "validatedSourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+    "pullRequest": "https://github.com/k999ln/rock/pull/99",
+    "draft": true
+  },
+  "acceptanceLimits": [
+    "Host and synthetic fixtures are separate from provider, emulator, physical device and production acceptance.",
+    "No purchases, live charges, transfers, signing keys, device flash or deployment performed."
+  ]
+}

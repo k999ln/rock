@@ -1,0 +1,79 @@
+{
+  "recordedAt": "2026-10-09",
+  "taskId": "ORG04",
+  "primarySquad": "H1",
+  "primaryOwner": "ROCK",
+  "baseMainSha": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+  "baseMainCheckRuns": {
+    "observed": 19,
+    "success": 19,
+    "appliesToChangedTree": false
+  },
+  "branch": "codex/feature-workspaces",
+  "scope": "Navigation and read-only task lookup using existing AMC assignments; no source relocation or runtime acceptance.",
+  "workspaces": 32,
+  "tasks": 379,
+  "taskPlans": 224,
+  "taskStateAuthority": "data/project-status.json",
+  "assignmentAuthority": "data/mission-control.json",
+  "validation": {
+    "focused": {
+      "command": "node --test tests/workspaces.test.mjs",
+      "passed": 8,
+      "failed": 0
+    },
+    "integrity": "project:check, mission:check, work:check, all generated local links and git diff --check passed",
+    "typecheck": "passed",
+    "productLint": "passed",
+    "fullVerify": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "not_completed_local_environment",
+      "attempts": [
+        {
+          "exitCode": 1,
+          "cause": "Shared node_modules symlink resolved reviewed braces to another worktree. Fixed with a private APFS copy; focused dependency regressions 9/9 passed."
+        },
+        {
+          "exitCode": 127,
+          "nodeTests": {
+            "total": 1379,
+            "passed": 1378,
+            "failed": 0,
+            "skipped": 1
+          },
+          "fashionTestsPassed": 25,
+          "cause": "Astro missing in the dedicated site dependency directory; later build/API checks were not run.",
+          "log": "/private/tmp/rock-workspaces-task/verify-final.log"
+        },
+        {
+          "exitCode": 130,
+          "cause": "Stopped retry to correct site dependency version before tests. Cache recovery then encountered ENOSPC. Only task-created dependency copies were removed."
+        }
+      ],
+      "next": "Run full npm run verify in GitHub CI with both root and site npm ci on the PR head; do not promote the base-main checks."
+    },
+    "priorHeadFullVerify": {
+      "sha": "68a4dcfbe5fecefdd786c6d6c15cc7fd68829024",
+      "result": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/37971989383"
+    },
+    "codeqlFollowup": "Exclusive temporary creation, descriptor write, atomic rename and cleanup verified by 8 focused tests and all 8 check-runs on cbebc979. No new CodeQL alerts.",
+    "verifiedImplementationHead": {
+      "sha": "cbebc979e634d0af5f6eb60c475d178f3b98b996",
+      "checkRuns": 8,
+      "success": 8,
+      "fullVerify": "https://github.com/k999ln/rock/actions/runs/37973663366",
+      "codeql": "https://github.com/k999ln/rock/runs/113966995412",
+      "scope": "Exact implementation head; subsequent change records verification and synchronizes generated progress only."
+    }
+  },
+  "mainIntegrated": false,
+  "runtimePublished": false,
+  "originalDirtyWorktreesModified": false,
+  "sourceHashes": {
+    "scripts/workspaces.mjs": "ed147825e04e10164b141f5f19337ce9139e7711cf33a1975c49c307f16461cb",
+    "tests/workspaces.test.mjs": "a1534ae488985e72fdba3edc262c65149fb45b2f7bd09c90ac08bfe57fdad863",
+    "data/workspaces.json": "74c26a7f3eab604d929935b6da2c1e53131a5a01ff9922fe5aa2da5a81286e0d"
+  },
+  "pullRequest": "https://github.com/k999ln/rock/pull/95"
+}

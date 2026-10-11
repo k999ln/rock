@@ -62,6 +62,7 @@ export type SkyConnection = {
   connectedAt: number;
 };
 export type SkyProviderConnection = {
+  revision: number;
   provider: SkyProvider;
   status: SkyProviderStatus;
   config: Record<string, string>;
@@ -429,44 +430,32 @@ export function operations(
     };
   }
 
+  const providerColumns = `provider, status, config, secret_ref AS secretRef,
+    connected_at AS connectedAt, updated_at AS updatedAt, revision`;
+  type ProviderRow = Omit<SkyProviderConnection, 'config'> & { config: string };
+  function providerRow(row: ProviderRow): SkyProviderConnection {
+    let config: Record<string, string> = {};
+    try {
+      const parsed: unknown = JSON.parse(row.config);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed))
+        config = Object.fromEntries(Object.entries(parsed).filter(
+          ([key, value]) => typeof value === 'string' && !isSensitiveConnectionKey(key),
+        ));
+    } catch { /* Retain the existing behavior for malformed legacy metadata. */ }
+    return { ...row, config };
+  }
   async function listSkyProviderConnections() {
-    const rows = (
-      await statement(
-        `SELECT provider, status, config, secret_ref AS secretRef,
-          connected_at AS connectedAt, updated_at AS updatedAt
-         FROM sky_provider_connections WHERE user_id = ?
-         ORDER BY updated_at DESC, provider ASC`,
-        user,
-      ).all<{
-        provider: string;
-        status: SkyProviderStatus;
-        config: string;
-        secretRef: string | null;
-        connectedAt: number | null;
-        updatedAt: number;
-      }>()
-    ).results;
-    return rows.map((row) => {
-      let config: Record<string, string> = {};
-      try {
-        const parsed = JSON.parse(row.config) as unknown;
-        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed))
-          config = Object.fromEntries(
-            Object.entries(parsed).filter(
-              ([key, value]) =>
-                typeof value === 'string' && !isSensitiveConnectionKey(key),
-            ),
-          );
-      } catch {
-        config = {};
-      }
-      return { ...row, provider: row.provider as SkyProvider, config };
-    });
+    const { results } = await statement(
+      `SELECT ${providerColumns} FROM sky_provider_connections WHERE user_id = ?
+       ORDER BY updated_at DESC, provider ASC`, user,
+    ).all<ProviderRow>();
+    return results.map(providerRow);
   }
 
   async function saveSkyProviderConnection(value: unknown) {
-    const v = object(value, ['provider', 'status', 'config']),
+    const v = object(value, ['provider', 'status', 'config', 'expectedRevision']),
       provider = v.provider;
+    const expectedRevision = int(v.expectedRevision, Number.MAX_SAFE_INTEGER - 1);
     if (!isSkyProvider(provider))
       throw new OperationError('対応していない接続先です。');
     if (
@@ -510,30 +499,25 @@ export function operations(
     )
       throw new OperationError('必要な接続情報を入力してください。');
     const now = clock();
-    await statement(
-      `INSERT INTO sky_provider_connections
-        (user_id, provider, status, config, secret_ref, connected_at, updated_at)
-       VALUES (?, ?, ?, ?, NULL, ?, ?)
-       ON CONFLICT(user_id, provider) DO UPDATE SET
-         status = excluded.status,
-         config = excluded.config,
-         connected_at = excluded.connected_at,
-         updated_at = excluded.updated_at`,
-      user,
-      provider,
-      status,
-      JSON.stringify(config),
-      status === 'ready' ? now : null,
-      now,
-    ).run();
-    return {
-      provider,
-      status,
-      config,
-      secretRef: null,
-      connectedAt: status === 'ready' ? now : null,
-      updatedAt: now,
-    } satisfies SkyProviderConnection;
+    // One statement owns both the comparison and write. Never re-read after writing:
+    // a second writer may already have advanced the row before this response returns.
+    const row = expectedRevision === 0
+      ? await statement(
+        `INSERT INTO sky_provider_connections
+          (user_id, provider, status, config, secret_ref, connected_at, updated_at, revision)
+         VALUES (?, ?, ?, ?, NULL, ?, ?, 1)
+         ON CONFLICT(user_id, provider) DO NOTHING RETURNING ${providerColumns}`,
+        user, provider, status, JSON.stringify(config), status === 'ready' ? now : null, now,
+      ).first<ProviderRow>()
+      : await statement(
+        `UPDATE sky_provider_connections SET status = ?, config = ?, connected_at = ?,
+         updated_at = ?, revision = revision + 1
+         WHERE user_id = ? AND provider = ? AND revision = ? RETURNING ${providerColumns}`,
+        status, JSON.stringify(config), status === 'ready' ? now : null, now,
+        user, provider, expectedRevision,
+      ).first<ProviderRow>();
+    if (!row) throw new OperationError('別の画面で設定が更新されました。最新設定を確認してから保存してください。', 409);
+    return providerRow(row);
   }
 
   async function device(value: unknown) {

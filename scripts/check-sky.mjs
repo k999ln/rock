@@ -17,8 +17,8 @@ const candidateCount = catalog.filter(
   ({ status }) => status === 'candidate',
 ).length;
 requireValue(
-  readyCount === 14,
-  `Web/PC readyは14件です（実際: ${readyCount}）`,
+  readyCount === 15,
+  `Web/PC readyは15件です（実際: ${readyCount}）`,
 );
 requireValue(
   candidateCount === 22,
@@ -101,7 +101,7 @@ for (const name of [
   );
 }
 requireValue(
-  teamGuide.includes('操作画面とSky接続は未実装') &&
+  teamGuide.includes('2D候補比較とSky接続を実装') &&
     teamGuide.includes('Sky Tool SDKの開発者向け画面'),
   'Material Inventionの接続状態または/studioの用途が不明です',
 );
@@ -121,7 +121,7 @@ const readme = read('README.md');
 requireValue(
   readme.includes('R5 is the current design baseline') &&
     readme.includes(
-      'The Material Invention interface and Sky connection are not implemented',
+      'Simulation and laboratory connections are not implemented',
     ),
   'READMEの現行R5またはMaterial Inventionの実装状態が不明です',
 );
@@ -293,7 +293,7 @@ for (const marker of [
   );
 
 for (const marker of [
-  'sessionStorage',
+  'openZemaPrivateStorage(providedStorage)',
   'SKY_ZEMA_HANDOFF_TTL_MS',
   'removeItem(SKY_ZEMA_HANDOFF_KEY)',
   'MAX_REQUEST_LENGTH',
@@ -302,6 +302,11 @@ for (const marker of [
     skyZemaHandoff.includes(marker),
     `SkyからZemaへの一回引き継ぎに「${marker}」がありません`,
   );
+const privateStorage = read('lib/zema-private-storage.ts');
+for (const marker of ['window.sessionStorage', 'zemaPrivateStorageBlocked()', 'target.removeItem(key)', 'target.getItem(key) !== null'])
+  requireValue(privateStorage.includes(marker), `Zemaの共有保存・消去確認に「${marker}」がありません`);
+for (const file of ['lib/sky-zema-handoff.ts', 'lib/zema-chat-session.ts'])
+  requireValue(read(file).includes("from './zema-private-storage.ts'"), `${file}: 共有保存境界を利用してください`);
 for (const marker of [
   '.sky-chat-simple',
   '.sky-chat-messages',

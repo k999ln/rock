@@ -1,10 +1,10 @@
 # docs/ の地図 — どこに何があるか
 
-作成: 2026-10-07 ／ 対象: `docs/` 直下の186文書と16フォルダ
+作成: 2026-10-07 ／ 更新: 2026-10-11 ／ 対象: `docs/` 直下の186文書と16フォルダ
 
 `docs/` には設計書・記録・証拠が約2,100ファイルあります。このページは **その全部を分類した地図** です。直下の文書は1つ残らず下の表のどこか1か所に載っています。
 
-> ファイルは動かしていません。`docs/` の文書は、進捗台帳・検証スクリプト・受入証拠から **パスとSHA-256で参照** されています（直下のMarkdown 180本のうち142本がスクリプトや台帳のJSONからパスで参照され、そのうち約50本はSHA-256と一緒に記録）。場所を変えると過去の証拠と照合できなくなります。そのため、置き場所はそのままにして、この地図で意味を付けています。
+> 2026-10-11の明示指示に基づき、重複したREADME全文と役目を終えた旧指示を削除しました。必要な受入証拠・固定原本は保持し、当時の文書はGitの固定commitから参照します。[削除理由と復元元](git-consolidation.md#obsolete-content-cleanup)を記録しています。
 
 **目次**
 
@@ -25,7 +25,7 @@
 | 1 | [README](../README.md) | これは何か、何を作っていて、今どこまで出来ているか | 5分 |
 | 2 | [仕様変遷](spec-history.md) | いつ、何が、何から何へ変わったか。いま有効な仕様の一覧 | 10分 |
 | 3 | [エージェント・Tool総覧](agents-and-tools.md) | Skyの35 Tool、役割エージェント、クラウドのAgent、32部隊のそれぞれの機能 | 10分 |
-| 4 | [製品ベース](product-baseline.md) | 確定要望 RQ01〜RQ49 の全文。仕様で迷ったときの最終的なよりどころ | 必要な箇所だけ |
+| 4 | [製品ベース](product-baseline.md) | 確定要望 RQ01〜RQ50 の全文。仕様で迷ったときの最終的なよりどころ | 必要な箇所だけ |
 | 5 | [全設計ポータル](rockstaros-design-portal.md) | 領域ごとの詳細設計書への入口 | 必要な箇所だけ |
 
 ---
@@ -56,7 +56,7 @@ README.md ─────────────── これは何か（表玄
 
 | 文書 | 役割 | 役割ではないもの |
 | --- | --- | --- |
-| [README](../README.md) | 表玄関。製品の説明と現在地（約1画面） | 進捗の詳細、設計の全文（機能・決済・設計書一覧の詳細は [readme-details.md](readme-details.md)） |
+| [README](../README.md) | 表玄関。製品の説明と現在地（約1画面） | 進捗の詳細、設計の全文（各分野の正本へこの地図から進む） |
 | この地図 | 文書の場所と分類 | 仕様そのもの |
 | [製品ベース](product-baseline.md) | 利用者が確定した要望の正本 | 実装状況の証明 |
 | [仕様変遷](spec-history.md) | 要望の変遷を読みやすく並べた索引 | 正本（製品ベースが優先） |
@@ -66,9 +66,10 @@ README.md ─────────────── これは何か（表玄
 | [workstreams/](workstreams/README.md) | 作業分野ごとの対象・完了条件・検証コマンド | 設計の全文 |
 | [project.md](../project.md) | 日付順の作業ログ＋全taskの状態表（自動生成） | 仕様 |
 | [AGENTS.md](../AGENTS.md) | AI開発エージェントが作業するときのルール | 人向けの説明 |
-| [CHECKPOINT.md](../CHECKPOINT.md) | 2026-09-09〜12のローンチ準備の作業履歴 | 現在の入口（09-12で止まっている） |
 
 ---
+
+作業の単位を選ぶときは [機能別の作業部屋](../workspaces/README.md)（手順・生成索引）へ進んでください。各部屋にコード・task・確認方法、新しい思いつきには [アイデア置き場](../workspaces/IDEAS.md)（記録）があります。
 
 ## 3. 知りたいことから探す
 
@@ -84,6 +85,7 @@ README.md ─────────────── これは何か（表玄
 | Sky・Zema・Walletの違い | [Sky](sky.md) / [製品・サービス・システム関係図](rockstaros-product-system-map.md) |
 | 料金・手数料はどうなっている？ | [仕様変遷 §3.3](spec-history.md#33-料金手数料) → [Sky経済設計](sky-network-economy.md) / [決済](sky-billing.md) |
 | クラウドのAgentはどう動く？ | [Sky Cloud継続実行](sky-cloud-continuity.md) / [A2A Bridge](sky-a2a-bridge.md) |
+| 使っていない携帯の計算力をどう束ねる？ | [Sky Compute Grid](sky-compute-grid.md) |
 | SIM/eSIMを買ってから使えるまで | [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [利用権claim](sim-service-entitlement-claims.md) |
 | avocadoMiniの現行設計 | [R5統合基本設計](avocado-mini-r5/README.md) |
 | avocadoMiniの昔の形 | [仕様変遷 §3.5](spec-history.md#35-avocadominiの形) → [E3](avocado-mini-tower20-e3/README.md) / [E2](avocado-mini-mini200-e2/README.md) / [E1](avocado-mini-mini200-e1/README.md) |
@@ -136,9 +138,8 @@ README.md ─────────────── これは何か（表玄
 
 | 文書 | 種類 | 何が書いてあるか | 最終更新 |
 | --- | --- | --- | --- |
-| [`product-baseline.md`](product-baseline.md) | 正本 | 確定要望 RQ01〜RQ49 と、日付付きの方針判断・変更記録。仕様の最終的なよりどころ | 10-07 |
+| [`product-baseline.md`](product-baseline.md) | 正本 | 確定要望 RQ01〜RQ50 と、日付付きの方針判断・変更記録。仕様の最終的なよりどころ | 10-10 |
 | [`spec-history.md`](spec-history.md) | 索引 | 仕様変遷。いつ・何が・何から何へ変わったかを日付順とテーマ別に並べ直したもの | 10-07 |
-| [`readme-details.md`](readme-details.md) | 索引 | READMEの詳しい版（英語）。事業、サービスの流れ、機能の詳細、決済、セキュリティ、設計書の一覧、開発手順。2026-10-09にREADMEを短くしたとき、それまでの本文を文言を変えずに移した | 10-09 |
 | [`sim-led-product-architecture.md`](sim-led-product-architecture.md) | 正本 | 現行の主商品（SIM/eSIMを入口にしたサービス）の定義、利用開始の流れ、実行と料金の契約 | 10-06 |
 | [`sim-service-entitlement-claims.md`](sim-service-entitlement-claims.md) | 設計 | SIM/eSIMの購入をRockstarアカウントの利用権へ結び付ける署名付きclaimの仕様 | 10-05 |
 | [`provider-contract-readiness-20260930.md`](provider-contract-readiness-20260930.md) | 記録 | eSIM・クラウド供給元の公開資料比較と契約前の準備（契約・問い合わせは未実施） | 10-05 |
@@ -208,6 +209,7 @@ Toolを探す・つなぐ・動かす側の設計。
 | [`sky-identity-connection.md`](sky-identity-connection.md) | 設計 | Skyの本人確認と1タップ接続 | 09-12 |
 | [`sky-role-agents-20260912.md`](sky-role-agents-20260912.md) | 設計 | Skyの役割エージェント（担当）の仕様と会話契約 | 09-12 |
 | [`sky-network-economy.md`](sky-network-economy.md) | 正本 | Toolチームと開発者還元。Sky Market手数料10%と、過去の貢献・還元設計 | 09-29 |
+| [`sky-compute-grid.md`](sky-compute-grid.md) | 正本 | 未使用Androidの計算余力を固定lotへmatchingし、検証後にだけ精算候補へするVirtual Compute Plant設計 | 10-10 |
 | [`sky-mr-automation-candidates.md`](sky-mr-automation-candidates.md) | 設計 | 旧 `Mr.` Hubの自動化11件をSkyの導入候補にする設計 | 09-20 |
 | [`mr-integration.md`](mr-integration.md) | 設計 | `Mr.` からの取り込み範囲、固定原本とhash、license | 10-03 |
 | [`pc-citations-adapter.md`](pc-citations-adapter.md) | 設計 | PC出典整理の実処理接続（固定CLI、上限、cleanup） | 10-02 |
@@ -420,7 +422,6 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`implementation-checkpoint-20260909.md`](implementation-checkpoint-20260909.md) | 履歴 | 2026-09-09の実装・検証の保存時点 | 09-12 |
 | [`design-implementation-alignment-20260909.md`](design-implementation-alignment-20260909.md) | 履歴 | 設計・プロンプトと実装の再照合（2026-09-09） | 09-12 |
 | [`progress-audit-20260909.md`](progress-audit-20260909.md) | 履歴 | 進捗と確定要望の相違の監査（2026-09-09） | 09-09 |
-| [`progress-audit-20260909-followup.md`](progress-audit-20260909-followup.md) | 履歴 | 同監査の追補 | 09-09 |
 
 関連フォルダ：[`workstreams/`](workstreams/)（13ファイル）／[`prompts/`](prompts/)（10ファイル）／[`templates/`](templates/)（4ファイル）
 ### P. 証拠・素材
@@ -446,7 +447,7 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 | [`avocado-mini-conversation-2026-09-27/`](avocado-mini-conversation-2026-09-27/README.md) | 29 | 2026-09-27の会話仕様アーカイブ（原文のまま）。個人認証、GTA、クリエイター収益分配80:20 |
 | [`rocketstar-design/`](rocketstar-design/README.md) | 936 | rocketstar 設計アーカイブ。R1.0完全版、A-LINK、受信試作、OS完全版の付録、コロニー、計算・検証記録 |
 | [`evidence/`](evidence/) | 841 | 受入証拠（JSONとログ要約）。文書から参照される試験結果の正本 |
-| [`prompts/`](prompts/) | 10 | 実行プロンプトの保存（再開指示、引継ぎ原文）。2026-10-07の文書整理の引き継ぎは [`docs-reorg-handoff-20261007.md`](prompts/docs-reorg-handoff-20261007.md) |
+| [`prompts/`](prompts/) | 5 | 現行の再開指示と、台帳・承認記録の理解に必要な原文。現行入口は `data/product-baseline.json.nextPrompt` |
 | [`templates/`](templates/) | 4 | 受入報告などの雛形 |
 | [`contracts/`](contracts/) | 3 | Sky commerce v2の契約案（SQL・TypeScript） |
 | [`design-validation/`](design-validation/README.md) | 5 | 設計の状態モデル検証（commerce state model） |
@@ -463,6 +464,6 @@ rocketstarの資料はすべて1フォルダにまとまっています：[`rock
 1. **`docs/` 直下に文書を足したら、この地図の [§5](#5-分野別の全文書) の該当分野に1行足す。** 種類（正本／設計／手順／監査／記録／履歴）も付ける。
 2. **新しい情報は、関係する節に入れる。** 文書の末尾や題名の上に足さない。日付付きの追記は、その文書の「変更記録」か該当する節の中へ。
 3. **日付付きの記録を新しい入口にしない。** 入口は [§2](#2-入口はこの順番) の階層だけ。新しい設計書はまず該当workstreamの「関連資料」に足す。
-4. **方針が変わって古くなった文書は消さず、種類を「履歴」に変える。** 冒頭に「いまは○○が優先」と1行書く。
+4. **古いだけで削除せず、役目を終えた未使用・重複内容は参照監査後に削除する。** 必要な説明を正本へ統合し、リンク・索引・検査を同時に更新する。固定原本・必要な受入証拠は保持し、削除理由と復元元commitを残す。
 5. **仕様を変えたら [仕様変遷](spec-history.md) に、Toolを変えたら [エージェント・Tool総覧](agents-and-tools.md) に追記する。**
 6. **ファイルを移動・改名しない。** 進捗台帳（`data/project-status.json`）、設計台帳（`data/design-document-index.json`）、受入証拠がパスで参照しています。どうしても必要なときは、参照元をすべて同じ変更で直し、`npm run verify` を通す。

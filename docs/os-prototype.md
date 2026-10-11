@@ -1,6 +1,6 @@
 # Rock star OS — P1 実装と検証手順
 
-現行要望は [製品ベース](product-baseline.md)、現在の実装再開先は [CHECKPOINT](../CHECKPOINT.md)。Android/AOSPとLinux nativeの実績を分けます。
+現行要望は [製品ベース](product-baseline.md)、現在の実装再開先は [進捗・再開条件](../project.md)。Android/AOSPとLinux nativeの実績を分けます。
 
 対象範囲: 本書は既存の **Android/AOSP P1のみ**。2026-09-09追加のLinux native OSは [別の実装・検証記録](native-os-integration.md)を参照する。初期製品端末の優先候補はBlackBerryへ更新し、以下のPixel計画は比較候補として保持する。
 

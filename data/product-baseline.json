@@ -1,6 +1,6 @@
 {
-  "version": "1.96",
-  "decidedAt": "2026-10-01",
+  "version": "1.97",
+  "decidedAt": "2026-10-10",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -96,7 +96,7 @@
   "strategy": {
     "document": "docs/rockstaros-1.0-strategy.md",
     "status": "design",
-    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ49 and the current RockstarOS 1.0 technical base",
+    "basis": "User-provided product purpose and eight Zero-to-One principles; preserve RQ01-RQ50 and the current RockstarOS 1.0 technical base",
     "initialAudienceHypothesis": "not_fixed; earlier independent-writer hypothesis remains historical until the verified economic loop selects a repeatable problem",
     "representativeProductCandidate": "one existing Tool capable of completing the offline-to-signed-earning-to-Wallet acceptance loop",
     "marketValidation": "not_run",
@@ -892,7 +892,8 @@
     "RQ46",
     "RQ47",
     "RQ48",
-    "RQ49"
+    "RQ49",
+    "RQ50"
   ],
   "primaryCapabilities": [
     "sky-automation-control",
@@ -906,7 +907,8 @@
     "local-offline-ai-runtime",
     "os-platform-core",
     "single-operator-emergency-device-protection",
-    "material-invention-candidate-engine"
+    "material-invention-candidate-engine",
+    "sky-interruptible-mobile-compute-grid"
   ],
   "localAiRuntime": {
     "requested": true,
@@ -1293,6 +1295,49 @@
     "persistentSidebarOnSky": false,
     "legacyRouteBehavior": "open_sky_with_mcp_manager",
     "record": "docs/sky-network-economy.md"
+  },
+  "skyComputeGrid": {
+    "requestedAt": "2026-10-10",
+    "status": "synthetic_host_fixture_android_runtime_not_connected",
+    "role": "match_unused_charging_android_capacity_to_bounded_interruptible_compute_lots",
+    "initialSupplyPlatform": "android_arm64",
+    "iosSupplyEnabled": false,
+    "initialSku": "public-text-embedding-v1",
+    "pricingUnit": "verified_compute_lot",
+    "cpuHourPricingAllowed": false,
+    "dataClasses": [
+      "public",
+      "synthetic"
+    ],
+    "personalDataAllowed": false,
+    "secretsAllowed": false,
+    "arbitraryCodeAllowed": false,
+    "exactLocationExposedToBuyer": false,
+    "ownerIdentityExposedToBuyer": false,
+    "ownerUsePreemptsCompute": true,
+    "requiredDeviceConditions": [
+      "charging",
+      "device_idle",
+      "unmetered_network",
+      "thermal_none_or_light"
+    ],
+    "verificationRequiredBeforeSettlement": true,
+    "validationMethods": [
+      "independent_reference",
+      "duplicate_quorum"
+    ],
+    "settlementAsset": "sky_test_credits",
+    "liveDispatchEnabled": false,
+    "liveBillingEnabled": false,
+    "livePayoutEnabled": false,
+    "cloudFallbackWithoutExplicitOrderAuthorization": false,
+    "architecture": "docs/sky-compute-grid.md",
+    "contract": "contracts/sky-compute-grid.json",
+    "fixture": "contracts/sky-compute-grid-fixture.json",
+    "runtime": "lib/sky-compute-grid.ts",
+    "tests": "tests/sky-compute-grid.test.mjs",
+    "demoRoute": "/sky/compute-grid",
+    "demoApi": "/api/sky/compute-grid/demo"
   },
   "skyMonthlyBilling": {
     "status": "retired",

@@ -154,6 +154,6 @@ Recoverable state v2はowner-scoped job pinをexport/restoreするが、profile 
 
 段階3（JOINT/OWNER、DSP01/RLS02）は既存full build入力と[初回flash gate](android-first-flash-gate-20260916.md)を満たした同一OS候補でCore物理受入を行う。インフラ契約、鍵管理、wipe/flashは本設計更新では実行しない。段階4は応用ごとの受入を独立に進め、実収益ProviderはJOINT/OWNER、Tool/Game adapterはROCKを主担当にする。実名の運用責任者や外部契約が必要なgateは公開前に確定する。
 
-実装単位は進捗JSONの `AI01`（本設計と独立監査）、`AI02`（model/runtime互換）、`AI03`（限定記憶とprojection）、`AI04`（effect分類と不明結果照合）、`AI05`（Sky能力交渉・単一実行端末）、`AI06`（非金融Game/IP fixture）に対応する。AI02〜06は計画で、既存OS07〜OS11/DSP01/RLS02の受入を置き換えない。AI04のexternal-writeは現行pure Engineに実証された脆弱性ではなく、外部変更を一般化する前の設計blockerである。
+実装単位は進捗JSONの `AI01`（本設計と独立監査）、`AI02`（model/runtime互換）、`AI03`（限定記憶とprojection）、`AI04`（effect分類と不明結果照合）、`AI05`（Sky能力交渉・単一実行端末）、`AI06`（非金融Game/IP fixture）に対応する。AI02〜06はhost／fixtureと一部Android sourceの実装が進行中で、実装・試験への参照を2026-10-11に台帳へ復旧した。既存OS07〜OS11/DSP01/RLS02の実機・同一artifact受入を置き換えない。AI04のexternal-writeは現行pure Engineに実証された脆弱性ではなく、外部変更を一般化する前の設計blockerである。
 
 直近の未確定事項は、比較採用するmodelと性能/電池予算、長期記憶の保持期間、一般Tool manifestのcapability schema、遠隔device enrollmentとwriter移送の具体transport、story候補の素材/成果schema、外部Providerの照会・冪等性契約である。これらは設計/fixture作業を進めながら具体化し、未確定を実装済み・高性能達成・本番対応と表示しない。

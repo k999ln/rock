@@ -20,5 +20,14 @@ export function includedRockstarServicePackageKeys(payload: unknown): Set<string
         packageKeys.add(item.packageKey);
     }
   }
+  if (Array.isArray(payload.esimAccess)) for (const access of payload.esimAccess) {
+    if (!object(access) || access.state !== 'active' || !object(access.starterAgentPack) ||
+        !Array.isArray(access.starterAgentPack.packages)) continue;
+    for (const item of access.starterAgentPack.packages) {
+      if (object(item) && typeof item.packageKey === 'string' &&
+          /^[a-z0-9]+(?:[.-][a-z0-9]+)+@(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(item.packageKey))
+        packageKeys.add(item.packageKey);
+    }
+  }
   return packageKeys;
 }

@@ -81,6 +81,7 @@ export async function POST(request: Request) {
       user,
       'zema',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) {
       if (request.body && !request.bodyUsed && !request.body.locked)
         void request.body.cancel().catch(() => {});
@@ -88,6 +89,7 @@ export async function POST(request: Request) {
     }
     const candidate = createWorkJob(await body(request));
     if (candidate.templateId === 'amc') throw new WorkError('AMC画面から計画を保存してください。');
+    if (candidate.templateId === 'material-invention') throw new WorkError('物質候補の専用画面から入力を保存してください。');
     const saved = await workStore(db).create(user, candidate);
     if (
       !saved ||

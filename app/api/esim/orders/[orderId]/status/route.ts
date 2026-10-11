@@ -125,7 +125,7 @@ export async function GET(request: Request, context: { params: Promise<{ orderId
     const installationVerified = row.installationVerifiedAt !== null &&
       row.installIssuer !== null && row.installKeyId !== null &&
       hasTrustedEsimInstallIssuerKey(installIssuerKeys, row.installIssuer, row.installKeyId);
-    const registry = await skyToolPackageStore(database()).listRegistry();
+    const registry = await skyToolPackageStore(database()).verifiedRegistryPackages(starterPack.packages);
     const starterPackages = await describeEsimStarterAgentPack(starterPack, registry);
     const currentStarterPackHash = await sha256Hex(JSON.stringify(starterPack));
     const gatewayKeys = (env as unknown as { ESIM_DEVICE_GATEWAY_KEYS?: string }).ESIM_DEVICE_GATEWAY_KEYS;

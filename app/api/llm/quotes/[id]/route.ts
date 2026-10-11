@@ -13,7 +13,7 @@ async function access(request: Request, context: Context) {
   const db = database();
   const owner = await authorizeRemoteAiRequest(request, request.method === 'GET' ? 'llm-quote-status' : 'llm-quote-update', db);
   const runtime = env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string; REMOTE_AI_TRUSTED_RATE_KEYS?: string; SKY_REMOTE_LLM_ENABLED?: string; OPENAI_API_KEY?: string; REMOTE_AI_TEXT_INPUT_ENCRYPTION_KEY?: string };
-  const scoped = await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED);
+  const scoped = await rockstarServiceScopeAllowed(db, owner, 'rockstaros_access', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request);
   const { id } = await context.params;
   if (!/^[A-Za-z0-9._:-]{1,128}$/.test(id)) throw new LlmProviderError('INVALID_ID', 400);
   return { db, owner, id, runtime, scoped, store: new RemoteAiTextStore(db) };

@@ -31,11 +31,76 @@
     "savedSourceCommit": "d2568fb703ee472f10c11a597e8ed3a155ec67ac",
     "latestMainIntegrated": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
     "pullRequest": "https://github.com/k999ln/rock/pull/69",
-    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102"
+    "mainIntegrationCommit": "f84a3c4c9109ff1f641bd068a3849f8d43a4c102",
+    "obsoleteContent": {
+      "task": "G01",
+      "primaryOwner": "ROCK",
+      "stage": "local_reference_and_contract_checks_passed",
+      "sourceMainSha": "96845e6006c15e39ba5b45495f79c21bdff7399e",
+      "startedAt": "2026-10-11T09:13:50Z",
+      "plannedEndAt": "2026-10-11T19:13:50Z",
+      "removedFiles": [
+        {
+          "path": "CHECKPOINT.md",
+          "bytes": 21867,
+          "reason": "2026-09-12で止まった重複した作業入口。現在の進捗JSON・project・AMCへ収束。"
+        },
+        {
+          "path": "docs/progress-audit-20260909-followup.md",
+          "bytes": 4904,
+          "reason": "初回監査の追補。後続監査と現行台帳へ置換済み。凍結証跡は元commitで照合。"
+        },
+        {
+          "path": "docs/prompts/docs-reorg-handoff-20261007.md",
+          "bytes": 10923,
+          "reason": "PR #92で統合済みの文書整理を未pushとして案内する手順。"
+        },
+        {
+          "path": "docs/prompts/rock-current-next-20260911.md",
+          "bytes": 4603,
+          "reason": "旧再開指示。現在のSIM/eSIM主方針と2026-10-02の指示へ置換済み。"
+        },
+        {
+          "path": "docs/prompts/rock-current-next-20261001.md",
+          "bytes": 4187,
+          "reason": "前日の再開指示。2026-10-02の指示へ置換済み。"
+        },
+        {
+          "path": "docs/prompts/rockstaros-release-20260910.md",
+          "bytes": 40581,
+          "reason": "終了済みの8時間実行指示。結果と受入証拠は既存のrelease記録へ保存済み。"
+        },
+        {
+          "path": "docs/prompts/value-spend-runtime-next.md",
+          "bytes": 1624,
+          "reason": "未使用の旧作業指示。現行Wallet/workflowの仕様・台帳から参照なし。"
+        },
+        {
+          "path": "docs/readme-details.md",
+          "bytes": 72393,
+          "reason": "旧README全文の重複コピー。製品・設計・課金・開発の正本へ直接案内。"
+        }
+      ],
+      "removedBytes": 161082,
+      "githubSaved": false,
+      "mainIntegrated": false,
+      "published": false,
+      "validation": {
+        "relativeMarkdownLinks": "1877 checked in modified Markdown; zero missing destinations",
+        "project": "passed",
+        "mission": "32 squads / 378 explicit owners / 224 scoped plans, passed",
+        "repository": "passed; no tracked build outputs",
+        "baseline": "RQ01–RQ49, passed",
+        "design": "18 domains / 36 Tools / 6 native families, passed",
+        "database": "151 tables across 6 boundaries, passed after date regeneration",
+        "fullVerify": "pending final integrated source"
+      },
+      "nextAction": "Validate links, repository/progress/baseline checks, then restore lost ledger records against current implementation."
+    }
   },
-  "updatedAt": "2026-10-09",
-  "milestone": "AMC: Sky／ZemaのGoal台帳と明示起動のローカルCodex一件実行入口",
-  "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。",
+  "updatedAt": "2026-10-11",
+  "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
+  "nextAction": "G04/SIM01/SKY21: 既存9 PR・欠落コード・台帳を統合し、利用開始とSky/Zema/Materialの一連の操作、全体verify、同一SHA CIを検証して作業branchとPRへ保存する。実機・Provider・実課金・公開gateは別受入。",
   "tasks": [
     {
       "id": "AMC02",
@@ -2344,6 +2409,25 @@
       ]
     },
     {
+      "id": "GRID01",
+      "title": "Sky Compute Gridで未使用Androidの余剰計算を固定lotへmatchingし、検証後だけ精算候補にする",
+      "status": "in_progress",
+      "dependsOn": [
+        "AI05",
+        "WLT03"
+      ],
+      "evidence": [
+        "docs/sky-compute-grid.md",
+        "contracts/sky-compute-grid.json",
+        "contracts/sky-compute-grid-fixture.json",
+        "lib/sky-compute-grid.ts",
+        "tests/sky-compute-grid.test.mjs",
+        "app/sky/compute-grid/page.tsx",
+        "app/api/sky/compute-grid/demo/route.ts",
+        "docs/evidence/amc/grid01-host-fixture.md"
+      ]
+    },
+    {
       "id": "DOC01",
       "title": "RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化",
       "status": "done",
@@ -2426,7 +2510,7 @@
     {
       "id": "AI02",
       "title": "モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "OS10"
@@ -2436,49 +2520,123 @@
         "docs/avokado-llm-pretraining.md",
         "docs/evidence/avokado-llm-pretraining.json",
         "toolkits/avokado-llm/train.py",
-        "toolkits/avokado-llm/test_pretraining.py"
-      ]
+        "toolkits/avokado-llm/test_pretraining.py",
+        "android/core/src/main/java/dev/rock/core/platform/RuntimeManifest.java",
+        "android/core/src/main/java/dev/rock/core/platform/ModelProfileManifest.java",
+        "android/core/src/main/java/dev/rock/core/platform/TrustedModelPublisherVerifier.java",
+        "android/core/src/main/java/dev/rock/core/platform/TrustedModelArtifactPipeline.java",
+        "android/core/src/main/java/dev/rock/core/platform/ResumableModelArtifactStager.java",
+        "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+        "android/core/src/main/java/dev/rock/core/Engine.java",
+        "android/core/src/test/java/dev/rock/core/PlatformStoreTest.java",
+        "android/core/src/test/java/dev/rock/core/EngineTest.java",
+        "android/core/src/test/java/dev/rock/core/platform/TrustedModelPublisherVerifierTest.java",
+        "android/core/src/test/java/dev/rock/core/platform/ResumableModelArtifactStagerTest.java",
+        "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
+        "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+        "contracts/local-ai-runtime.json",
+        "os/physical/local-ai-profile-v3.patch",
+        "docs/evidence/local-ai-profile-v3-validation-20261001.json",
+        "docs/evidence/ai02-core-java-validation-20261001.json",
+        "android/local-ai-api/src/main/aidl/dev/rock/localai/ILocalAiService.aidl",
+        "os/physical/local-ai-model-handoff-v4.patch",
+        "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json",
+        "android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java",
+        "android/automation/src/main/java/dev/rock/automation/ModelProfileOperationLock.java",
+        "scripts/check-os-contracts.mjs",
+        "docs/evidence/pr-consolidation-20261005.json"
+      ],
+      "nextAction": "Signed model manifest/staging and activation coordinator exist in current source. Compile and accept exact profile swap plus old-job restart on equipped Android CI/device; production trust/catalogue and hardware acceptance remain open.",
+      "recoveredFrom": {
+        "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      }
     },
     {
       "id": "AI03",
       "title": "モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
-      ]
+        "docs/ai-native-os-architecture.md",
+        "docs/ai-memory-architecture.md",
+        "systems/rock-star-os/src/blackberryrock/memory_store.py",
+        "systems/rock-star-os/src/blackberryrock/memory_access.py",
+        "systems/rock-star-os/tests/test_memory_store.py",
+        "systems/rock-star-os/tests/test_memory_access.py",
+        "docs/evidence/ai03-canonical-memory-store-20261001.json",
+        "docs/evidence/pr-consolidation-20261005.json"
+      ],
+      "nextAction": "Canonical encrypted-content/project store and Broker guard exist with host fixtures; real OS cipher/key adapter, authoritative consent, backup/migration and device wiring remain open. Host errors must not expose input content.",
+      "recoveredFrom": {
+        "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      }
     },
     {
       "id": "AI04",
       "title": "1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
-      ]
+        "docs/ai-native-os-architecture.md",
+        "docs/evidence/pr-consolidation-20261005.json",
+        "android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java",
+        "android/core/src/test/java/dev/rock/core/ExternalWriteOutboxTest.java",
+        "systems/rock-star-os/tests/test_os_runner_control.py"
+      ],
+      "nextAction": "ExternalWriteOutbox exists with persistent operation identity, uncertain-result reconciliation and authorization recheck fixtures. Tool/Provider/Zema/AIDL integration and real external-effect recovery remain unaccepted.",
+      "recoveredFrom": {
+        "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      }
     },
     {
       "id": "AI05",
       "title": "Sky app／OSの能力宣言と単一実行端末固定を実装し、多端末移管は独立拡張として受入",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "OS10"
       ],
       "evidence": [
-        "docs/ai-native-os-architecture.md"
-      ]
+        "docs/ai-native-os-architecture.md",
+        "contracts/compute-device-capabilities.json",
+        "systems/rock-star-os/os/ai_routes/policy.py",
+        "systems/rock-star-os/os/ai_routes/store.py",
+        "contracts/device-capability-snapshot.json",
+        "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
+        "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java",
+        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+        "android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java",
+        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "systems/rock-star-os/os/ai_routes/tests/test_policy_budget.py",
+        "docs/evidence/pr-consolidation-20261005.json"
+      ],
+      "nextAction": "Device capability contracts and Android observations exist; bind authenticated device identity and exact model profile through discovery/submit and recheck freshness on Android CI/physical device.",
+      "recoveredFrom": {
+        "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      }
     },
     {
       "id": "AI06",
       "title": "非金融Game／IP fixtureを共通仕事・限定記憶・Zema進捗へ接続（Fund完成に非依存）",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "AI01",
         "AI03",
@@ -2488,8 +2646,18 @@
         "docs/ai-native-os-architecture.md",
         "docs/mini-game-client.md",
         "toolkits/mini-game-client/client.mjs",
-        "tests/mini-game-client.test.mjs"
-      ]
+        "tests/mini-game-client.test.mjs",
+        "docs/evidence/pr-consolidation-20261005.json",
+        "lib/game-sandbox.ts",
+        "tests/game-sandbox.test.mjs"
+      ],
+      "nextAction": "Non-financial game host fixtures and Mini client exist. Connect the agreed game/project context with scoped memory and the common durable work contract; Pro/Mini physical behavior and external balances remain unaccepted.",
+      "recoveredFrom": {
+        "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      }
     },
     {
       "id": "AI08",
@@ -2559,15 +2727,20 @@
     {
       "id": "MAT03",
       "title": "Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入",
-      "status": "planned",
+      "status": "in_progress",
       "dependsOn": [
         "MAT02",
         "AI02",
         "AI03"
       ],
       "evidence": [
-        "docs/material-invention-core.md"
-      ]
+        "docs/material-invention-core.md",
+        "lib/material-study.ts",
+        "app/api/material-invention/route.ts",
+        "components/material-invention-workspace.tsx",
+        "tests/material-study.test.mjs"
+      ],
+      "nextAction": "Accept integrated Sky/Zema Material preview, authenticated WorkJob save/reload and eSIM-scoped access on one source candidate. Simulation/lab/XR, physical materials and limited-memory integration remain unimplemented."
     },
     {
       "id": "MAT04",
@@ -5077,6 +5250,563 @@
       "externalDependency": "OEM/ODM供給、exact SKU QVL/driver/firmware、見積",
       "ownerAction": "見積後の購入・製造・販売条件",
       "acceptance": "同一Pro実機でAI/ゲーム/熱/保存復旧を独立受入。設計だけでは完了にしない"
+    },
+    {
+      "id": "ORG04",
+      "title": "既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する",
+      "status": "done",
+      "dependsOn": [
+        "ORG03"
+      ],
+      "evidence": [
+        "workspaces/README.md",
+        "workspaces/IDEAS.md",
+        "data/workspaces.json",
+        "scripts/workspaces.mjs",
+        "tests/workspaces.test.mjs",
+        "docs/evidence/workspace-organization.json"
+      ],
+      "nextAction": "32分野・379taskの作業入口、224taskPlanの読取CLI、アイデア置き場を実装・検証。PR #95の実装SHA cbebc979で全体verify・CodeQLを含む8 checks success。main統合と元dirty treeの回収は別作業。"
+    },
+    {
+      "id": "AMC03",
+      "title": "機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する",
+      "status": "done",
+      "dependsOn": [
+        "AMC02",
+        "ORG04"
+      ],
+      "evidence": [
+        "data/amc/project-bots.json",
+        "scripts/project-bots.mjs",
+        "tests/project-bots.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bots.json"
+      ],
+      "nextAction": "10担当の定義と依頼時CLIを実装。対象16試験と実装SHA 4a8861b4の全体verify／CodeQL等8 checksが成功。PR #95へ保存。具体的な依頼でBotの一件完走を別途受け入れる。常時実行・GitHub App・main統合・公開は未実施。"
+    },
+    {
+      "id": "AMC04",
+      "title": "担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する",
+      "status": "done",
+      "dependsOn": [
+        "AMC03"
+      ],
+      "evidence": [
+        "scripts/project-bot-context.mjs",
+        "scripts/project-bots.mjs",
+        "tests/project-bot-context.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bot-amc.json"
+      ],
+      "nextAction": "Git調査→AMC候補生成→native Botへの引渡しを接続。対象23試験と実装SHA 59d7d6dcの全体verify／CodeQL等8 checksが成功。PR #95へ保存。実Botの開発・独立検収・Git提出の一件完走とWeb同期は別受入、main統合・公開は未実施。"
+    },
+    {
+      "id": "AMC05",
+      "title": "既存AMC Goal JSONを担当Botへ直接渡し、ID・revision・履歴を維持して引き継ぐ",
+      "status": "done",
+      "dependsOn": [
+        "AMC04"
+      ],
+      "evidence": [
+        "scripts/project-bot-context.mjs",
+        "scripts/project-bots.mjs",
+        "tests/project-bot-context.test.mjs",
+        "toolkits/amc-agent/README.md",
+        "docs/evidence/project-bot-goal-input.json"
+      ],
+      "nextAction": "既存AMC JSONの直接入力・Git調査・指示書保存・起動引渡しは検証済み。具体的な任務の実Bot完走と成果PRは別途照合し、元Goalの最終受入を代行しない。"
+    },
+    {
+      "id": "AMC06",
+      "title": "固定テンプレートを補助へ分け、Gitを読むCodexの可変計画と追加指示による見直しをAMCへ接続する",
+      "status": "done",
+      "dependsOn": [
+        "AMC05"
+      ],
+      "evidence": [
+        "scripts/amc-planner.mjs",
+        "scripts/templates/amc-goal-workbench.html",
+        "scripts/templates/amc-goal-workbench.js",
+        "scripts/amc-goal-engine.mjs",
+        "tests/amc-adaptive-brief.test.mjs",
+        "docs/amc-goal-orchestrator.md",
+        "docs/evidence/amc/adaptive-planner.json"
+      ],
+      "nextAction": "ローカルの可変計画・追加指示・旧Goal保持・見直し導線を検証済み。対象136試験、実Codexの3→2作業再計画、独立検収、実装SHA 083f00f8の全体verify／CodeQL等8 checks成功。PR #95へ保存。次は具体的なGoalを担当Botへ渡し実装・独立検収・Git成果を照合する。公開Sky/Zema接続・main統合・無人常駐は別受入。"
+    },
+    {
+      "id": "SIM01",
+      "title": "物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す",
+      "status": "in_progress",
+      "dependsOn": [
+        "SKY07",
+        "SKY21"
+      ],
+      "evidence": [
+        "docs/product-baseline.md",
+        "docs/rockstaros-complete-design.md",
+        "docs/os-development-design.md",
+        "toolkits/esim-bootstrap/README.md",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "app/connect/page.tsx",
+        "components/home-screen.tsx",
+        "data/product-baseline.json",
+        "AGENTS.md",
+        "sites/avocado-mini/src/pages/index.astro",
+        "sites/avocado-mini/src/service-home.css",
+        "sites/avocado-mini/tests/astro-build.test.mjs",
+        "tests/sim-service-entry.test.mjs",
+        "docs/prompts/rock-current-next-20261002.md",
+        "docs/sim-service-entitlement-claims.md",
+        "lib/rockstar-entitlement-claim.ts",
+        "app/api/rockstar/entitlements/route.ts",
+        "lib/rockstar-entitlement-event.ts",
+        "app/api/rockstar/entitlements/events/route.ts",
+        "db/schema.ts",
+        "drizzle/0039_rockstar_service_entitlements.sql",
+        "drizzle/0040_rockstar_entitlement_events.sql",
+        "tests/rockstar-entitlement-claim.test.mjs",
+        "components/rockstar-entitlement-claim.tsx",
+        "scripts/check-work-api.mjs",
+        "app/api/sky/a2a-delegations/route.ts",
+        "app/api/sky/a2a-delegations/[id]/route.ts",
+        "services/sky-agent-runtime/src/worker.ts",
+        "services/sky-agent-runtime/vitest.config.ts",
+        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
+        "docs/a2a-pricing-extension.md",
+        "lib/currency-format.ts",
+        "tests/currency-format.test.mjs",
+        "components/workbench.tsx",
+        "app/work/work.css",
+        "lib/a2a-price-quote.ts",
+        "tests/a2a-price-quote.test.mjs",
+        "app/api/sky/a2a-delegations/[id]/broker-authorization/route.ts",
+        "lib/remote-ai-pricing-gate.ts",
+        "lib/remote-ai-rate-card.ts",
+        "lib/remote-ai-rate-card-registry.ts",
+        "tests/remote-ai-rate-card.test.mjs",
+        "tests/remote-ai-rate-card-registry.test.mjs",
+        "app/api/llm/estimate/route.ts",
+        "components/sky-chat-workspace.tsx",
+        "docs/evidence/remote-ai-estimate-api-20261001.json",
+        "drizzle/0042_remote_ai_rate_cards.sql",
+        "lib/remote-ai-rate-card-store.ts",
+        "lib/remote-ai-rate-card-operator.ts",
+        "app/api/internal/remote-ai/rate-cards/route.ts",
+        "drizzle/0043_a2a_delegation_fanout_limits.sql",
+        "lib/a2a-delegation-store.ts",
+        "tests/a2a-client.test.mjs",
+        "app/api/llm/text/route.ts",
+        "app/api/legal-guidance/route.ts",
+        "app/api/patent-research/route.ts",
+        "app/api/jev-evaluation/route.ts",
+        "lib/sky-service-status.ts",
+        "tests/sky-service-status.test.mjs",
+        "docs/evidence/remote-ai-price-gate-20261001.json",
+        "drizzle/0044_a2a_live_usage_snapshots.sql",
+        "lib/a2a-live-usage.ts",
+        "app/api/sky/a2a-delegations/[id]/usage-snapshots/route.ts",
+        "tests/a2a-live-usage.test.mjs",
+        "docs/evidence/a2a-live-usage-local-20261001.json",
+        "docs/evidence/mcp-pricing-gate-local-20261001.json",
+        "docs/evidence/product-direction-regression-20261001.json",
+        "docs/evidence/android-a2a-usage-verifier-20261001.json",
+        "docs/evidence/android-a2a-wallet-reservation-20261001.json",
+        "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+        "android/core/src/test/java/dev/rock/core/A2AWalletReservationTest.java",
+        "docs/workstreams/03-wallet-billing-providers.md",
+        "docs/provider-contract-readiness-20260930.md",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "tests/mcp-connector.test.mjs",
+        "public/toolkits/sky-mcp-connector.zip",
+        "docs/workstreams/02-sky-mcp.md",
+        "android/core/src/main/java/dev/rock/core/platform/A2AWalletSettlementSync.java",
+        "android/core/src/main/java/dev/rock/core/platform/A2AWalletHandoffRequest.java",
+        "android/core/src/test/java/dev/rock/core/A2AWalletHandoffRequestTest.java",
+        "android/core/src/test/resources/a2a-wallet-handoff-request-v1.json",
+        "tests/a2a-wallet-handoff-auth.test.mjs",
+        "android/automation/src/main/java/dev/rock/automation/A2ABrokerDeviceKeyStore.java",
+        "android/automation/src/androidTest/java/dev/rock/automation/A2ABrokerDeviceKeyStoreTest.java",
+        "docs/rockstar-device-link.md",
+        "docs/evidence/rockstar-device-link-local-20261001.json",
+        "lib/rockstar-device-link.ts",
+        "lib/request-auth.ts",
+        "app/api/rockstar/device-authorizations/route.ts",
+        "app/api/rockstar/device-authorizations/approve/route.ts",
+        "app/api/rockstar/device-sessions/route.ts",
+        "app/connect/device/page.tsx",
+        "components/rockstar-device-authorization.tsx",
+        "android/core/src/main/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlow.java",
+        "android/core/src/test/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlowTest.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceAuthorizationTransport.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceSessionStore.java",
+        "android/automation/src/androidTest/java/dev/rock/automation/RockstarDeviceAccountLinkTest.java",
+        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "android/shell/src/main/java/dev/rock/shell/ShellConnection.java",
+        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerEnrollment.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java",
+        "android/automation/src/main/AndroidManifest.xml",
+        "android/automation/build.gradle",
+        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
+        "drizzle/0045_rockstar_device_sessions.sql",
+        "drizzle/0046_remote_ai_text_executions.sql",
+        "lib/remote-ai-text-store.ts",
+        "app/api/rockstar/device-home/route.ts",
+        "scripts/check-os-contracts.mjs",
+        "app/api/llm/quotes/route.ts",
+        "app/api/llm/quotes/[id]/route.ts",
+        "lib/remote-ai-text-http.ts",
+        "tests/remote-ai-pricing-gate.test.mjs",
+        "tests/remote-ai-text-public-record.test.mjs",
+        "docs/sky-cloud-continuity.md",
+        "lib/remote-ai-text-input.ts",
+        "lib/remote-ai-text-execution.ts",
+        "services/sky-agent-runtime/wrangler.jsonc",
+        "drizzle/0047_remote_ai_text_durable_inputs.sql",
+        "tests/remote-ai-text-input.test.mjs",
+        "drizzle/meta/0047_snapshot.json",
+        "tests/remote-ai-text-store.test.mjs",
+        "scripts/database-status.mjs",
+        "tests/database-status.test.mjs",
+        "docs/database-status.md",
+        "docs/evidence/remote-ai-cloud-workflow-local-20261002.json",
+        "docs/ai-native-os-architecture.md",
+        "docs/rockstaros-1.0-strategy.md",
+        "docs/rockstaros-product-system-map.md",
+        "docs/product-north-star-20260915.md",
+        "docs/workstreams/01-product-ux.md",
+        "components/home-screen.module.css",
+        "tests/web-route-style-contract.test.mjs",
+        "tests/migration-union.test.mjs",
+        "docs/evidence/sim-service-entry-local-20261002.json",
+        "docs/evidence/sim-service-usage-rates-local-20261002.json",
+        "docs/evidence/sim-service-claim-file-import-local-20261002.json",
+        "android/shell/src/main/java/dev/rock/shell/UsageCurrencyFormatter.java",
+        "docs/evidence/sim-service-android-usage-status-local-20261002.json",
+        "android/shell/src/main/AndroidManifest.xml",
+        "docs/evidence/sim-led-product-direction-audit-20261002.json",
+        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerDeviceRefStore.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerDeviceTransport.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidA2AUsageTrustConfig.java",
+        "android/automation/src/androidTest/java/dev/rock/automation/AndroidA2AUsageTrustConfigTest.java",
+        "android/automation/src/main/java/dev/rock/automation/RockApplication.java",
+        "android/core/src/main/java/dev/rock/core/platform/A2AUsageReceiptVerifier.java",
+        "docs/rockstaros-1.0-architecture.md",
+        "android/core/src/test/java/dev/rock/core/platform/A2AUsageReceiptVerifierTest.java",
+        "android/core/src/test/resources/a2a-price-quote-v1.json",
+        "docs/evidence/android-a2a-price-quote-verifier-20261002.json",
+        "docs/evidence/android-a2a-reservation-bridge-audit-20261002.json",
+        "android/core/src/main/java/dev/rock/core/platform/A2ABrokerAuthorization.java",
+        "android/core/src/test/java/dev/rock/core/platform/A2ABrokerAuthorizationTest.java",
+        "android/core/src/test/resources/a2a-wallet-reservation-v2.json",
+        "android/core/src/test/resources/a2a-broker-authorization-v2.json",
+        "tests/a2a-wallet-reservation.test.mjs",
+        "tests/a2a-broker-authorization.test.mjs",
+        "docs/evidence/android-a2a-native-reservation-core-20261002.json",
+        "docs/evidence/a2a-price-quote-acquisition-local-20261002.json",
+        "app/api/sky/a2a-price-quotes/route.ts",
+        "lib/a2a-price-quote-acquisition.ts",
+        "tests/a2a-price-quote-acquisition.test.mjs",
+        "lib/a2a-usage-receipt.ts",
+        "tests/a2a-usage-receipt.test.mjs",
+        "lib/a2a-price-quote-consent-store.ts",
+        "drizzle/0049_a2a_price_quote_consent_events.sql",
+        "tests/a2a-price-quote-consent-store.test.mjs",
+        "android/automation/src/main/java/dev/rock/automation/AndroidA2AJson.java",
+        "docs/evidence/android-a2a-quote-review-source-20261002.json",
+        "docs/evidence/android-a2a-cloud-draft-bridge-20261002.json",
+        "docs/evidence/android-a2a-cloud-approval-recovery-20261002.json",
+        "docs/evidence/android-a2a-native-cancel-20261002.json",
+        "docs/evidence/android-a2a-detail-recovery-20261002.json",
+        "android/core/src/main/java/dev/rock/core/platform/A2ARecoveryBinding.java",
+        "android/core/src/test/java/dev/rock/core/platform/A2ARecoveryBindingTest.java",
+        "drizzle/0050_rockstar_entitlement_purchase_once.sql",
+        "lib/rockstar-entitlement-issuer.ts",
+        "tests/rockstar-entitlement-issuer.test.mjs",
+        "docs/evidence/remote-ai-text-live-estimate-local-20261002.json",
+        "lib/llm-providers.ts",
+        "lib/remote-ai-text-pricing.ts",
+        "drizzle/0051_remote_ai_text_live_estimates.sql",
+        "drizzle/meta/0051_snapshot.json",
+        "tests/llm-providers.test.mjs",
+        "docs/evidence/sim-service-replacement-ack-local-20261002.json",
+        "docs/evidence/sim-service-issuer-delivery-store-local-20261002.json",
+        "docs/evidence/sim-service-issuer-delivery-api-local-20261002.json",
+        "docs/evidence/sim-service-issuer-rate-limit-local-20261002.json",
+        "drizzle/0054_rockstar_entitlement_issuer_rate_limits.sql",
+        "tests/rockstar-entitlement-delivery-http.test.mjs",
+        "lib/rockstar-entitlement-issuer-store.ts",
+        "drizzle/0052_rockstar_entitlement_issuer_deliveries.sql",
+        "drizzle/0053_rockstar_entitlement_delivery_key_ids.sql",
+        "drizzle/meta/0052_snapshot.json",
+        "drizzle/meta/0053_snapshot.json",
+        "tests/rockstar-entitlement-issuer-store.test.mjs",
+        "docs/evidence/sim-service-android-native-claim-local-20261002.json",
+        "lib/rockstar-service-offers.ts",
+        "tests/rockstar-service-offers.test.mjs",
+        "docs/evidence/rockstar-service-offer-profiles-local-20261002.json",
+        "components/sky-marketplace.tsx",
+        "lib/workflow.ts",
+        "lib/rockstar-package-handoff.ts",
+        "lib/sky-package-runtime.ts",
+        "lib/mcp-hub.ts",
+        "components/mcp-bot-runner.tsx",
+        "tests/sky-package-runtime.test.mjs",
+        "tests/rockstar-package-handoff.test.mjs",
+        "tests/workflow.test.mjs",
+        "docs/evidence/zema-versioned-plan-local-20261002.json",
+        "docs/evidence/rockstar-package-zema-handoff-local-20261002.json",
+        "lib/rockstar-service-package-access.ts",
+        "tests/rockstar-service-package-access.test.mjs",
+        "lib/sky-commerce.ts",
+        "tests/sky-commerce.test.mjs",
+        "lib/sky-package-runtime-binding.ts",
+        "tests/sky-package-runtime-binding.test.mjs",
+        "docs/evidence/sky-package-runtime-binding-local-20261002.json",
+        "drizzle/0055_sky_package_runtime_bindings.sql",
+        "lib/sky-package-runtime-binding-store.ts",
+        "lib/sky-tool-package-store.ts",
+        "app/api/internal/sky-package-runtime-bindings/route.ts",
+        "docs/evidence/sky-package-runtime-binding-quote-delegation-local-20261002.json",
+        "docs/sim-led-product-architecture.md",
+        "docs/sky-a2a-bridge.md",
+        "docs/evidence/sim-led-product-correction-20261002.json",
+        "docs/evidence/a2a-two-agent-handoff-local-20261002.json",
+        "lib/a2a-result-handoff.ts",
+        "tests/a2a-result-handoff.test.mjs",
+        "docs/evidence/a2a-zema-result-handoff-local-20261002.json",
+        "docs/evidence/a2a-two-agent-cloud-workflow-local-20261002.json",
+        "lib/esim-device-install-store.ts",
+        "docs/evidence/esim-install-proof-concurrency-local-20261002.json",
+        "lib/a2a-parent-controller.ts",
+        "tests/a2a-parent-controller.test.mjs",
+        "docs/evidence/a2a-parent-controller-local-20261002.json",
+        "tests/a2a-delegation-store.test.mjs",
+        "docs/evidence/a2a-deadline-sweep-local-20261002.json",
+        "drizzle/0057_a2a_parent_sequence.sql",
+        "drizzle/meta/_journal.json",
+        "lib/a2a-delegation-recovery.ts",
+        "tests/a2a-delegation-recovery.test.mjs",
+        "docs/evidence/a2a-persisted-handoff-link-local-20261002.json",
+        "docs/sky-cloud-operations-runbook.md",
+        "lib/rockstar-entitlement-delivery-http.ts",
+        "app/api/internal/rockstar/entitlement-deliveries/route.ts",
+        "docs/evidence/sim-led-product-correction-followup-20261002.json",
+        "components/esim-purchase-setup.tsx",
+        "tests/esim-purchase-recovery.test.mjs"
+      ],
+      "nextAction": "Current integrated source includes purchase claims, device linking/entitlements, quote/approval/usage contracts and optional eSIM cloud access. Revalidate one owner journey and failure paths on the integrated candidate. Seller/carrier contracts, real activation, funded settlement, exact-SKU OS install and physical acceptance remain separate external gates.",
+      "files": [
+        "lib/a2a-client.ts",
+        "lib/a2a-price-quote-acquisition.ts",
+        "app/api/sky/a2a-price-quotes/route.ts",
+        "components/workbench.tsx",
+        "lib/a2a-delegation-store.ts",
+        "lib/a2a-authorization.ts",
+        "app/api/sky/a2a-delegations/route.ts",
+        "app/api/sky/a2a-delegations/[id]/route.ts",
+        "app/api/sky/a2a-delegations/[id]/broker-authorization/route.ts",
+        "services/sky-agent-runtime/src/worker.ts",
+        "drizzle/0056_a2a_package_runtime_binding_refs.sql",
+        "db/schema.ts",
+        "lib/a2a-agent-directory.ts",
+        "lib/sky-package-runtime-binding-dispatch.ts",
+        "services/sky-agent-runtime/vitest.config.ts",
+        "tests/sky-package-runtime-binding-dispatch.test.mjs",
+        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
+        "tests/a2a-client.test.mjs",
+        "app/api/internal/sky-package-runtime-bindings/route.ts",
+        "docs/evidence/sim-led-product-correction-20261002.json",
+        "scripts/check-work-api.mjs",
+        "lib/rockstar-entitlement-issuer.ts",
+        "lib/rockstar-entitlement-issuer-store.ts",
+        "lib/rockstar-entitlement-delivery-http.ts",
+        "app/api/internal/rockstar/entitlement-deliveries/route.ts",
+        "tests/rockstar-entitlement-delivery-http.test.mjs",
+        "tests/rockstar-entitlement-issuer-store.test.mjs",
+        "tests/rockstar-entitlement-issuer.test.mjs",
+        "docs/evidence/sim-service-claim-file-import-local-20261002.json"
+      ],
+      "recoveredFrom": {
+        "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      }
+    },
+    {
+      "id": "SKY21",
+      "title": "Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる",
+      "status": "in_progress",
+      "dependsOn": [
+        "SKY07",
+        "SKY20"
+      ],
+      "evidence": [
+        "docs/sky-launch-design.md",
+        "data/sky-service-launch.json",
+        "lib/sky-service-status.ts",
+        "app/api/sky/service-status/route.ts",
+        "app/sky/help/page.tsx",
+        "tests/sky-service-status.test.mjs",
+        "docs/sky-launch-operations.md",
+        "components/sky-publisher-form.tsx",
+        "docs/evidence/sky-pixel-service-acceptance.json",
+        "lib/operations.ts",
+        "lib/local-guide-history.ts",
+        "components/local-guide-history-consent.tsx",
+        "components/legal-intake-runner.tsx",
+        "components/patent-assistant-runner.tsx",
+        "tests/local-guide-history.test.mjs",
+        "tests/operations.test.mjs"
+      ],
+      "nextAction": "Accept the integrated Sky/Zema entry, owner-scoped library, offer/provider revision conflicts, auth-loss recovery and itemized usage on one source candidate. Historical Sites versions and earlier tests do not prove this branch is deployed or commercially accepted; provider/paid/native gates remain open.",
+      "recoveredFrom": {
+        "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      }
+    },
+    {
+      "id": "B06",
+      "title": "ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/sky-tools-complete-design.md",
+        "docs/workstreams/09-business-pilots.md",
+        "app/sky/tools/[toolId]/page.tsx",
+        "components/coconala-team-workspace.tsx",
+        "app/api/coconala-team/route.ts",
+        "lib/coconala-team.ts",
+        "tests/coconala-team.test.mjs",
+        "tests/coconala-sky-entry.test.mjs"
+      ],
+      "nextAction": "Revalidate representative Coconala case create/read/update/reload with authenticated owners and conflict handling. Real customer orders, external fulfillment, payments and payouts require separate evidence and authorization.",
+      "recoveredFrom": {
+        "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      }
+    },
+    {
+      "id": "G04",
+      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "docs/git-consolidation.md",
+        "docs/evidence/common-foundation-integration.json",
+        "tests/sky-zema-contract.test.mjs",
+        "tests/shared-stripe.test.mjs",
+        "tests/mcp-client.test.mjs",
+        "tests/owner-revision-json-store.test.mjs",
+        "docs/evidence/pr-consolidation-20261005.json",
+        "docs/research/rockstar-patent-research.html",
+        "docs/research/rockstar-patent-sources.json",
+        "scripts/spider-web-runtime.mjs",
+        "tests/spider-web-runtime.test.mjs",
+        "docs/amc-autonomy-fixture.md",
+        "docs/evidence/amc-fixture-csv-main-integration.json"
+      ],
+      "nextAction": "Integrate the nine open PR histories and selective merge-loss repairs with current main; run full verify and same-SHA CI, publish the work branch and reviewable PR. Main merge and deployment remain separate.",
+      "recoveredFrom": {
+        "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate."
+      }
+    },
+    {
+      "id": "AI09",
+      "title": "本人決定（2026-09-25 01:26 ET、チャット指示）: Core offline仕事loopとGame最小loopの両方を、OS10完了前にhost／fixture段階で先行してよい。emulator・実機・OS統合の合格には転用しない。AI02〜AI05の依存注記に反映（AI06はGame側作業の担当範囲のため本記録では変更しない）",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "data/project-status.json",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "project.md"
+      ],
+      "recoveredFrom": {
+        "sourceCommit": "b37c52a6e813b9c76d87ef7aad37277c6375fb15",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate.",
+        "originalRecord": "AI09@b37c52a6"
+      }
+    },
+    {
+      "id": "DOC05",
+      "title": "PR・task・配備記録なしでmainへ直接入った5コミット（9c1332e・8617863・4b49bf9・862ba30・851bb04）を証拠へ記録し、PR #39のSite試験verify組込みと網羅検査を取り込む",
+      "status": "done",
+      "dependsOn": [],
+      "evidence": [
+        "docs/evidence/ledger-sync-20260925.json",
+        "package.json",
+        "tests/verify-coverage.test.mjs",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "project.md"
+      ],
+      "recoveredFrom": {
+        "sourceCommit": "846f3950ec79b1029290c82605896e9ec98ead26",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate.",
+        "originalRecord": "DOC05@846f3950"
+      }
+    },
+    {
+      "id": "GM01",
+      "title": "AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外）",
+      "status": "in_progress",
+      "dependsOn": [],
+      "evidence": [
+        "lib/game-sandbox.ts",
+        "tests/game-sandbox.test.mjs",
+        "tests/fixtures/game-sandbox-session.json",
+        "docs/workstreams/08-game-market-fund.md"
+      ],
+      "recoveredFrom": {
+        "sourceCommit": "78638565bd042defe9bec1ffb8d26c8b6cca48b6",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate.",
+        "originalRecord": "GM01@78638565"
+      }
+    },
+    {
+      "id": "CAMPUS01",
+      "title": "大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装",
+      "status": "in_progress",
+      "dependsOn": [
+        "ORG01"
+      ],
+      "evidence": [
+        "app/campus/page.tsx",
+        "app/api/campus/route.ts",
+        "app/t/[tagId]/route.ts",
+        "components/campus-workspace.tsx",
+        "components/campus-workspace.module.css",
+        "lib/campus.ts",
+        "lib/campus-store.ts",
+        "db/schema.ts",
+        "drizzle/0058_campus_layer.sql",
+        "tests/campus.test.mjs",
+        "docs/campus-layer.md"
+      ],
+      "recoveredFrom": {
+        "sourceCommit": "29202ae6a398dfcc257f9ddae6980f8a1f0e300e",
+        "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+        "reviewedAt": "2026-10-11",
+        "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate.",
+        "originalRecord": "CAMPUS01@29202ae6"
+      },
+      "nextAction": "Revalidate existing Campus runtime and owner/block/report/delete contracts on the integrated candidate before restoring historical done status; production acceptance remains separate."
     }
   ],
   "phaseGates": [
@@ -6001,6 +6731,234 @@
     },
     "publicationEvidence": "docs/evidence/spider-sky-publication.json"
   },
+  "repositoryProgressIntegration": {
+    "recordedOn": "2026-10-06",
+    "baseMainSha": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+    "taskIds": [
+      "LCH06",
+      "SKY19"
+    ],
+    "primarySquad": "O7",
+    "status": "source_ci_verified_main_and_deployment_pending",
+    "scope": "Recover the previously local eSIM access implementation onto current main; retain the canonical 32-squad progress and release gates.",
+    "remaining": [
+      "OWNER main merge",
+      "Separate deployment and authenticated readback",
+      "Provider/device/production acceptance",
+      "Review remaining original-checkout payment/composition changes"
+    ],
+    "evidence": "docs/evidence/esim-main-integration.json",
+    "localValidation": "19 focused tests and 1369 Node tests passed; full verify stopped at missing Astro and ENOSPC during nested dependency installation.",
+    "previousNextAction": "SYS15 / G04: 全PRをmain統合。#83同一SHAの全8 CI成功、依存脆弱性0件。公開値の完全一致policyと一時依存forkの回帰を維持し、上流修正版を実再現で検証して復帰する。次は全OS build/正式署名/復旧・Provider・Mini/Pro実機の個別gate。",
+    "ciFollowup": "PR85: regenerate DB nextAction; verify three reported source digests and add exact literal provenance; distinguish current source observation from historical stage assessment.",
+    "githubValidation": {
+      "head": "f9c858706601e43ad5da526d94e408fb3daf0c31",
+      "verifyRun": 37505939314,
+      "verifyUrl": "https://github.com/k999ln/rock/actions/runs/37505939314",
+      "conclusion": "success",
+      "checksPassed": 7,
+      "node": {
+        "pass": 1368,
+        "fail": 0,
+        "skip": 1
+      },
+      "workApiAssertions": 1305,
+      "csvAssertions": 385,
+      "coverage": [
+        "typecheck",
+        "lint",
+        "build",
+        "D1 migrations",
+        "Worker API",
+        "project/baseline/design/mission checks"
+      ],
+      "provider": "not_run",
+      "physicalDevice": "not_run",
+      "productionBilling": "not_run"
+    },
+    "pullRequest": "https://github.com/k999ln/rock/pull/85"
+  },
+  "skyOfferCasCandidate": {
+    "requestId": "SKY-S7-OFFER-CAS-20261007-01",
+    "baseMainSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "primaryOwner": "S7/O2",
+    "stage": "isolated_candidate_pending_independent_review",
+    "scope": "Offer save CAS and seller conflict recovery only",
+    "schemaMigration": false,
+    "compatibility": "expectedRevision required: create 0; update the reviewed revision; old clients receive 400 and need reload/update",
+    "evidence": [
+      "lib/sky-commerce-store.ts",
+      "lib/sky-commerce.ts",
+      "components/sky-commerce.tsx",
+      "tests/sky-commerce.test.mjs",
+      "docs/sky-billing.md"
+    ],
+    "validation": {
+      "commerceTests": 45,
+      "marketplaceTests": 14,
+      "uiComponentContractAssertions": 18,
+      "browserRecovery": "not accepted: local listen EPERM; browser environment unavailable",
+      "realStripe": false,
+      "fullVerify": false
+    },
+    "nextAction": "Independent offer-CAS review and browser recovery check; then coordinated API/UI integration. Provider/AMC/adjacent APIs and public gates remain pending.",
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyProviderCasCandidate": {
+    "requestId": "SKY-S7-PROVIDER-CAS-20261007-01",
+    "baseMainSha": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "primaryOwner": "S7/O2; shared Provider boundary S3/O4",
+    "stage": "isolated_candidate_pending_independent_review",
+    "migration": "0060_sky_provider_revision; legacy rows default1; existing DB not migrated",
+    "compatibility": "GET revision; PUT expectedRevision mandatory; create0/update read revision; old clients400; stale409",
+    "callers": [
+      "SkyConnectionCenter",
+      "SkyChatWorkspace routing autosave via shared ProviderDraft"
+    ],
+    "validation": {
+      "targetedTests": 25,
+      "actualD1Checks": 52,
+      "browser": "actual connection center/shared routing hook + real handler/D1; fixture dialog/auth only",
+      "realProvider": false,
+      "fullVerify": false
+    },
+    "nextAction": "Independent review, coordinated schema/API/UI integration and same-candidate S0 acceptance; AMC/adjacent API/real PC and public gates pending",
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyZemaProviderUiCandidate": {
+    "requestId": "SKY-S7-ZEMA-PROVIDER-UI-20261007-01",
+    "base": "frozen030",
+    "primaryOwner": "S7/O2 ROCK",
+    "stage": "isolated_candidate_pending_independent_review",
+    "knownAuthLossFix": "Unmount private workspace; clear tab chat/handoff; reload owner reads on reauthentication",
+    "validation": {
+      "targetedTests": 11,
+      "actualUi": "SkyChatWorkspace chat/work; synthetic Alice/Bob; real handler/native D1; framework navigation adapter",
+      "typecheck": true,
+      "targetedLint": true,
+      "fullVerify": false,
+      "productionBuildRerun": false,
+      "realProvider": false
+    },
+    "nextAction": "Independent031 review; library inventory and17 adjacent APIs; same candidate S0 and real PC021 separately",
+    "goalRevision": 48,
+    "S7Overall": "pending",
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyZemaProviderStorageRepair": {
+    "requestId": "SKY-S7-ZEMA-PROVIDER-UI-20261007-01",
+    "ledger": "031 repair",
+    "base": "frozen initial031",
+    "stage": "isolated_candidate_pending_independent_review",
+    "scope": "sessionStorage getter/removal failures; verified cleanup barrier; chat/handoff consumer gates and retry UI",
+    "validation": "See isolated repair result; no automatic carryforward of audit/full acceptance",
+    "S7Overall": "pending",
+    "goalRevision": 48,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyBundleInventoryCandidate": {
+    "requestId": "SKY-S10-BUNDLE-INVENTORY-20261007-01",
+    "ledger": "033",
+    "taskId": "S10-01",
+    "base": "032 accepted limited local production runtime candidate",
+    "stage": "isolated_candidate_pending_independent_review",
+    "scope": "Physical module to installed package/version/license and exact lock entry; generated chunk source evidence",
+    "unresolvedBefore": {
+      "client": 8,
+      "rsc": 4,
+      "ssr": 8
+    },
+    "unresolvedAfter": {
+      "client": 0,
+      "rsc": 0,
+      "ssr": 0
+    },
+    "legalClearance": false,
+    "wholeS10Accepted": false,
+    "goalRevision": 48,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "skyLocalIntegration034": {
+    "recordedAt": "2026-10-07",
+    "ledger": "034",
+    "stage": "local_candidate_pending_independent_review",
+    "baseMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "scope": "Accepted cumulative027/030/031/032/033 product changes; both main/product document histories retained; build isolation excluded from product",
+    "mainIntegrated": false,
+    "published": false,
+    "fullVerifyPassed": false,
+    "runtimeAcceptanceInherited": false,
+    "nextAction": "Read034 same-candidate build, patch-apply and protection evidence, then independent review; all parent/public gates remain pending",
+    "validation": {
+      "targetTestsPassed": 31,
+      "typecheck": "passed",
+      "targetLint": "0 warnings / 0 errors",
+      "projectMissionSchemaDatabaseBaselineDesign": "passed",
+      "buildEvidence": "Recorded separately in034 result after isolated build; no inherited pass",
+      "fullVerify": "held_classified_scope",
+      "newRuntimeUiD1Acceptance": false
+    }
+  },
+  "skyZemaMainIntegration": {
+    "status": "prepared_for_main",
+    "baseMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "evidence": "docs/evidence/sky-zema-main-integration.json",
+    "localReview": "034/035 bounded acceptance",
+    "sameCommitCi": "pending",
+    "publicLaunchAccepted": false
+  },
+  "workspaceOrganization": {
+    "taskId": "ORG04",
+    "status": "verified_on_work_branch",
+    "primarySquad": "H1",
+    "entry": "workspaces/README.md",
+    "ideas": "workspaces/IDEAS.md",
+    "workspaces": 32,
+    "branch": "codex/feature-workspaces",
+    "evidence": "docs/evidence/workspace-organization.json",
+    "mainIntegrated": false,
+    "pullRequest": "https://github.com/k999ln/rock/pull/95",
+    "verifiedImplementationSha": "cbebc979e634d0af5f6eb60c475d178f3b98b996",
+    "checkRunsPassed": 8,
+    "githubSaved": true
+  },
+  "projectBots": {
+    "taskId": "AMC03",
+    "scope": "developer_profiles_and_on_demand_cli",
+    "status": "done",
+    "gitHubPullRequest": "https://github.com/k999ln/rock/pull/95",
+    "mainIntegrated": false,
+    "liveBotTaskAccepted": false,
+    "evidence": "docs/evidence/project-bots.json",
+    "verifiedImplementationSha": "4a8861b4beb11437d4bc08b47455e81f99cd12e1",
+    "completionScope": "10 developer profiles and tested on-demand launch interface; not live task or always-on acceptance"
+  },
+  "projectBotAmc": {
+    "taskId": "AMC04",
+    "status": "done",
+    "scope": "git_context_and_native_bot_amc_workflow",
+    "mainIntegrated": false,
+    "liveDevelopmentTaskAccepted": false,
+    "evidence": "docs/evidence/project-bot-amc.json",
+    "verifiedImplementationSha": "59d7d6dc54a15d182e59796f499e008bf7a0b1f4",
+    "completionScope": "Git collection, canonical-task AMC draft creation, and native Bot handoff; live task execution is separate acceptance"
+  },
+  "projectBotGoalInput": {
+    "taskId": "AMC05",
+    "status": "done",
+    "mainIntegrated": false,
+    "evidence": "docs/evidence/project-bot-goal-input.json",
+    "inputPreserved": true,
+    "liveDevelopmentTaskAccepted": false,
+    "verifiedImplementationSha": "bfecf01b63651a7fea4b5279f335136d395538dd",
+    "githubCI": "success",
+    "independentReadOnlyReview": "pass"
+  },
   "spiderZemaStoragePolicyRefresh": {
     "status": "reviewed_control_pinned_local_validation_pass_ci_pending",
     "taskId": "SYS15",
@@ -6145,6 +7103,285 @@
         "duplicateJsonKeys": 0,
         "conflictMarkers": 0
       }
+    }
+  },
+  "mergeRecovery": {
+    "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+    "record": "docs/merge-loss-audit-20261007/ledger-records.json",
+    "reviewedAt": "2026-10-11",
+    "acceptance": "Current source and referenced files inspected; historical test/deployment results are not acceptance of this integrated candidate.",
+    "stage": "task_and_source_mapping_restored_current_tests_pending",
+    "restoredTasks": [
+      "SIM01",
+      "SKY21",
+      "B06",
+      "G04",
+      "AI09",
+      "DOC05",
+      "GM01",
+      "CAMPUS01"
+    ],
+    "correctedTaskStates": [
+      "AI02",
+      "AI03",
+      "AI04",
+      "AI05",
+      "AI06"
+    ],
+    "retainedNewerTaskState": "MAT15 remains in_progress for the current cellular design subtask, not manufacturing acceptance.",
+    "restoredDesignReferences": 235,
+    "historicalPreparationRecords": [
+      {
+        "name": "esimDevelopment",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.esimDevelopment",
+        "currentReferences": [
+          "toolkits/esim-bootstrap/README.md",
+          "android/automation/src/main/java/dev/rock/automation/EsimDeviceGatewayKeyStore.java",
+          "android/automation/src/androidTest/java/dev/rock/automation/EsimDeviceGatewayKeyStoreTest.java",
+          "docs/evidence/android-esim-gateway-contract-20261001.json",
+          "docs/a2a-pricing-extension.md"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "cloudContinuationPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.cloudContinuationPreparation",
+        "currentReferences": [
+          "docs/sky-cloud-continuity.md",
+          "docs/cloud-agent-provider-comparison-20261001.md"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "satelliteConnectivityPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.satelliteConnectivityPreparation",
+        "currentReferences": [
+          "docs/evidence/satellite-connectivity-research-20261002.json",
+          "docs/sky-cloud-continuity.md"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "universalAdaptationPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.universalAdaptationPreparation",
+        "currentReferences": [
+          "docs/sky-mcp-architecture.md"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "agentInterconnectionPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.agentInterconnectionPreparation",
+        "currentReferences": [
+          "docs/sky-mcp-architecture.md",
+          "docs/sky-a2a-bridge.md",
+          "lib/a2a-usage-receipt.ts",
+          "tests/a2a-usage-receipt.test.mjs",
+          "drizzle/0026_a2a_usage_receipts.sql",
+          "services/sky-agent-runtime/src/worker.ts",
+          "docs/evidence/sky-a2a-workflow-local-20260930.json",
+          "services/sky-agent-runtime/vitest.config.ts",
+          "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
+          "drizzle/0033_a2a_offline_continuation_consent.sql",
+          "systems/rock-star-os/tests/test_spend_runtime.py",
+          "systems/rock-star-os/src/blackberryrock/a2a_usage_receipt.py",
+          "systems/rock-star-os/tests/test_a2a_usage_receipt.py",
+          "systems/rock-star-os/tests/fixtures/a2a-usage-receipt-v1.json",
+          "systems/rock-star-os/scripts/accept-cloud-wallet-handoff.py",
+          "docs/evidence/a2a-cloud-python-wallet-handoff-20261001.json",
+          "docs/evidence/a2a-active-task-workflow-restart-20261001.json",
+          "docs/evidence/a2a-cloud-recovery-recheck-20261001.json"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyStandalonePublication",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyStandalonePublication",
+        "currentReferences": [
+          "docs/sky-tools-complete-design.md",
+          "lib/llm-providers.ts",
+          "lib/remote-ai-pricing-gate.ts",
+          "tests/llm-providers.test.mjs",
+          "scripts/check-work-api.mjs",
+          "lib/remote-ai-rate-card.ts",
+          "lib/remote-ai-text-request.ts",
+          "lib/remote-ai-text-pricing.ts",
+          "lib/remote-ai-text-store.ts",
+          "lib/remote-ai-text-execution.ts",
+          "lib/remote-ai-text-http.ts",
+          "app/api/llm/quotes/route.ts",
+          "app/api/llm/quotes/[id]/route.ts",
+          "app/api/llm/text/route.ts",
+          "components/workbench.tsx",
+          "drizzle/0046_remote_ai_text_executions.sql",
+          "tests/remote-ai-rate-card.test.mjs",
+          "tests/remote-ai-text-store.test.mjs",
+          "/Users/kaiya/Documents/Codex/2026-10-01/https-github-com-k999ln-rock-git/work/sky-cloud-transport/verify-text-pricing-accepted.log",
+          "docs/evidence/sky-cloud-text-pricing-verification.json",
+          "docs/evidence/sky-cloud-text-execution-verification.json",
+          "/Users/kaiya/Documents/Codex/2026-10-01/https-github-com-k999ln-rock-git/work/sky-cloud-transport/verify-text-execution-accepted.log",
+          "docs/evidence/sky-cloud-ui-verification.json",
+          "/Users/kaiya/Documents/Codex/2026-10-01/https-github-com-k999ln-rock-git/work/sky-cloud-ui/verify-accepted.log",
+          "docs/evidence/sky-cloud-ui-publication-verification.json",
+          "docs/evidence/sky-focused-release-check.json",
+          "docs/evidence/sky-individual-tool-verification.json",
+          "docs/evidence/sky-csv-storage-verification.json",
+          "docs/evidence/sky-production-auth-verification.json",
+          "docs/evidence/sky-csv-storage-publication-verification.json",
+          "docs/evidence/sky-csv-expiry-verification.json",
+          "docs/evidence/sky-paired-storage-recovery-verification.json",
+          "docs/evidence/sky-csv-expiry-publication-verification.json",
+          "docs/evidence/sky-csv-github-sync-verification.json",
+          "docs/evidence/sky-release-verification-alignment.json",
+          "docs/evidence/sky-access-publication-verification.json"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyAccessRecoveryPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyAccessRecoveryPreparation",
+        "currentReferences": [
+          "docs/evidence/sky-access-recovery-verification.json",
+          "docs/evidence/sky-access-publication-verification.json"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "localVerification",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.localVerification",
+        "currentReferences": [],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "avocadoMiniCustomDomain",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.avocadoMiniCustomDomain",
+        "currentReferences": [
+          "docs/evidence/avocadomini-domain.json"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "immersiveGtaResearchArchive",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.immersiveGtaResearchArchive",
+        "currentReferences": [
+          "docs/avocado-mini-r5/research/immersive-gta/README.md"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "patentResearch",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.patentResearch",
+        "currentReferences": [
+          "docs/research/rockstar-patent-research.html",
+          "docs/research/rockstar-patent-sources.json"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyToolExecutionBoundaryPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyToolExecutionBoundaryPreparation",
+        "currentReferences": [
+          "docs/evidence/sky-tool-execution-boundaries.json"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyIntegratedAcceptancePreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyIntegratedAcceptancePreparation",
+        "currentReferences": [
+          "tests/sky-launch-validation.test.mjs"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyLibraryIntegrationPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyLibraryIntegrationPreparation",
+        "currentReferences": [
+          "app/api/sky/library/route.ts",
+          "app/zema/library/page.tsx",
+          "scripts/check-csv-storage.mjs"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyResultExportPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyResultExportPreparation",
+        "currentReferences": [
+          "lib/sky-result-download.ts",
+          "tests/sky-result-download.test.mjs",
+          "docs/sky-launch-operations.md"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyCsvRetentionPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyCsvRetentionPreparation",
+        "currentReferences": [
+          "lib/csv-retention.ts",
+          "scripts/check-csv-storage.mjs",
+          "tests/csv-retention.test.mjs",
+          "docs/sky-launch-operations.md"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyConnectionEntryPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyConnectionEntryPreparation",
+        "currentReferences": [],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyDedicatedToolLibraryPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyDedicatedToolLibraryPreparation",
+        "currentReferences": [],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyConnectorPilotPreparation",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyConnectorPilotPreparation",
+        "currentReferences": [],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyConnectionReachability",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyConnectionReachability",
+        "currentReferences": [],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyCsvHistoryRecovery",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyCsvHistoryRecovery",
+        "currentReferences": [],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "skyGithubIntegration",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.skyGithubIntegration",
+        "currentReferences": [
+          "docs/evidence/sky-github-main-integration.json"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      },
+      {
+        "name": "amcMainIntegration",
+        "sourceRecord": "projectStatus.topLevelRecordsOnMainMissingNow.amcMainIntegration",
+        "currentReferences": [
+          "docs/workstreams/10-git-ci-operations.md",
+          "docs/evidence/amc-fixture-csv-main-integration.json"
+        ],
+        "acceptance": "Historical results retained at source snapshot; current deployment/provider/physical acceptance must be rechecked."
+      }
+    ],
+    "unresolvedHistoricalDecisions": {
+      "WEB20": "Pro reference price conflict (880000 vs 800000 JPY); retain both dated sources and current owner decision gate, no price selected.",
+      "WEB21": "Older naming proposal remains a historical unresolved decision, not a new instruction to rename current products.",
+      "BIL04": "Existing billing execution holds remain authoritative; historical proposal does not authorize new charging terms."
+    },
+    "codeReview": "Selective runtime review in progress; legacy markup/test expectations are not blindly restored.",
+    "validation": {
+      "projectMissionDesignBaselineDatabase": "passed; 392 tasks, 32 squads, 229 scoped plans; 235 design source references checked",
+      "focusedRegression": "44 passed, 0 failed, 0 skipped (Campus, Game, AMC, workspaces, Agent Control Plane)",
+      "fullVerify": "pending integrated application/runtime follow-up"
     }
   }
 }

@@ -4,6 +4,14 @@
 
 リポジトリを整理する途中で、**過去の統合（merge）のときに文書の中身が消えていた**ことが分かりました。この文書は、何が消えていたか、何を戻したか、何を戻していないかを記録します。戻していないものには、ownerの判断が必要なものがあります（[5節](#5-ownerに決めてほしいこと)）。
 
+## 2026-10-11の追跡更新
+
+現在の明示指示に従い、SIM01・SKY21・B06・G04を`in_progress`として復旧した。AI02〜AI06は現行sourceとhost試験への参照を戻し、`planned`から`in_progress`へ訂正した。新しいpretraining／Mini client記録とMAT15の通信設計の進捗は保持する。AI09のhost先行承認、DOC05の記録、GM01のhost Game、CAMPUS01も現行資料と照合して復旧し、Campusの最新候補受入は再試験待ちとした。
+
+設計索引は現在の領域・Toolを土台に、存在する設計・実装・試験の対応235件を追加した。古いnested contractの判定・公開version・Provider接続状態は無条件で復活させず、source参照と未レビュー項目を`data/design-document-index.json.mergeRecovery`へ明示した。欠落した23準備記録の現存参照と元記録は`data/project-status.json.mergeRecovery.historicalPreparationRecords`から辿れる。古いテスト・公開版の成功を今回のSHAへ移してはいない。
+
+以下は2026-10-07時点の監査原文であり、「現在」「台帳に無い」はその時点を指す。Pro価格・旧命名案・後継料金の判断はこの復旧で決めない。コードの選択的回収・新規全体検証・GitHub保存は継続中。
+
 ## 1. 30秒でわかること
 
 - **いちばん大きい原因は2026-10-05 05:09 ET（米東部時間、以下同じ）の統合 `ecb4b2af` です。** 2026-09-29で止まっていたローカルのブランチへ `main` を取り込んだとき、`main` 側で更新されていた47ファイルのうち39ファイルが、丸ごと古いローカル側の内容になりました。`main` はその間に349コミット進んでいました。
@@ -138,6 +146,28 @@ git diff 624124cf 0fbf688b -- data/design-document-index.json data/project-statu
 ```sh
 git diff 624124cf 0fbf688b -- <ファイル>
 ```
+
+### 4.2.1 2026-10-11 current follow-up — AMC / Zema runtime
+
+`624124cf`（統合前main）と `ecb4b2af`、およびPR #85・#93・#95・#98を統合したサービス作業版 `adf4b8e` を比較し、残存する実行コードを選択的に確認した。旧ファイル全体は戻していない。
+
+| 対象 | 確認と今回の扱い |
+| --- | --- |
+| `components/amc-tool-runner.tsx` | 内部コンポーネントとAPIが残っているのに、Sky専用計画・CommandCenterへの入口、未承認Goal保存、計画承認、正本ボードの状態絞り込みが失われていたため再接続。`O2` / `AI04` の既定値、正本JSON参照、既存の保存再試行と現在の認証境界は維持。Skyの実行・提出・検収・再着手はtrusted observer未接続のAPIと揃えて非表示。 |
+| 同runnerの保存記録 | focus / visibility復帰時の再読込と以前の本人データの即時破棄、失敗時の記録消去が欠落。復元し、読み込み中・401・選択の不一致では詳細と下位コンポーネントへ保存Goalを渡さない。中断された古い詳細応答は無視する。 |
+| `components/amc-tool-runner.module.css` | Sky部隊名に必要な `.skyCells` の配置だけ復元。過去の配色上書きは戻さず、現在のスタイルを維持。 |
+| `app/amc/page.tsx` | 現在の正規画面 `/zema/amc` へredirectする旧alias動作を復元。サインイン後の戻り先も正規画面へ統一。 |
+| `lib/sky-routing.ts` / 対応試験 | IP電話・LiveKit・音声Agentの明示依頼をIP Toolへ送る規則と、配列順序に依存しないAMC role検索を復元。「電話番号をCSVで整理」はIP Toolへ誤配送しない試験も復元。 |
+| `lib/zema-chat-session.ts` | 旧共有定数参照の欠落は数値が同一で振る舞いの欠落ではない。現行のAMC 8,000文字・quarantine・期限処理、および `adf4b8e` の保存失敗時に有効会話を保持する修正を維持。旧版への置換不要。 |
+| `app/api/amc/route.ts` | 旧mainとの実質差分は新しいサービス権限拒否時のrequest body cancel。既存owner隔離・private cache・Sky observer境界は残存し、変更不要。 |
+| `lib/operations.ts` | ライブラリのowner条件は残存。差分の中心はPR #93のprovider revision/CASと整形で、旧実装に戻すと競合防止が失われるため現行を維持。 |
+| `scripts/check-work-api.mjs` | 旧mainの試験を保持し、eSIM cloud access、AMC本人隔離・競合・容量、コード公開試験が追加されている。AMCの`private, no-store`期待値も現行に一致。削除された必須試験はこの比較では認めなかった。 |
+
+**検証。** 実際のrunnerをtranspileしてHTTP完了順・hook状態を操作する `tests/amc-tool-runner-state.test.mjs` を追加。修正前 `adf4b8e` のrunnerでは12件中11件が失敗し、復元後は12件通過。明示保存のみ、未承認の原案保持、確認なしの承認拒否、版と受入条件の一致、5種類のSky状態で保護対象操作を出さないこと、focus直後と401後の非表示、古い中断応答の無視、正本状態フィルタ、保存済みの別GoalとSky原案の選択先分離を検証した。AMC integration / launch / authority / API auth、routing、Zema sessionとの対象回帰試験は計41件通過。TypeScript・変更箇所のlint・差分空白検査も通過。
+
+**再接続後の追加修正。** `AmcSkyLaunch` の状態フィルタで0件になっても以前の任務詳細と指示を表示する問題を再現した。担当作業の選択値・詳細・指示を同じ可視タスクから導き、0件時は選択を無効化して詳細を消す。依存・Gateなど別任務への明示リンクはフィルタを解除し、絞り込み内の選択変更ではフィルタを保つ。追加3件の実コンポーネント試験は修正前に全件失敗、修正後はrunner状態＋Sky launch計20件通過。TypeScript・対象lintも通過。
+
+**限界。** 上記はローカル状態・fixture検証であり、配備済みの本人認証やtrusted observer、実Provider、本番ローンチの受入証拠ではない。ブラウザ確認の入口は `/amc` → `/zema/amc`、同画面の「Skyローンチ」「部隊・進捗」タブ。全体台帳・設計索引と `check-llm-architecture` の復元は別の統合作業で扱う。
 
 ### 4.3 並行ブランチで番号が重なった要望
 

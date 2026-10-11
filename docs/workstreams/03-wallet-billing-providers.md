@@ -6,6 +6,8 @@
 
 ## 現在地
 
+- 2026-10-10: Sky Compute Gridのhost fixtureは、検証済みcompute lotから冪等な`service_credit_hold` previewを作る。既存Walletへ直接書き込まず、`livePayoutAuthorized=false`、`walletMutationAllowed=false`を固定する。未検証結果、timeout不明、重複receiptを収益にしない。provider credit、buyer price、Sky spread、税・返金・chargeback、sandbox rail、限定liveは未決で、SKY19/WLT06/BIL02の実行保留を解除しない。[設計](../sky-compute-grid.md)。
+
 - 2026-10-01: BIL02の[決済統合設計](../sky-commerce-design.md)と[Wallet詳細設計](../wallet-commerce-design.md)、型/DDL草案と再現用検証を追加。旧月額8.88 USD案は利用者指示で対象外。これは設計の完了範囲であり実Provider受入・runtime実装の完了ではない。
 
 - Sky Marketの商品購入はWeb D1の別経路として実装。`/sky/sell` のStripe Express受取先登録、審査済み `external_contract` Packageの円建て買い切り販売、10% application fee、Checkout、`/sky/purchases` の支払い照合、提供者返金を含む。LLM Packageも同じ条件を使う。
@@ -25,6 +27,24 @@
 Direct LLM execution has a local-only implementation path alongside the A2A receipt path: signed rate card → exact-request quote → owner approval digest → shared parent-budget reserve → single-send claim → observed provider usage → itemized priced record. Migration `0046`, `/api/llm/quotes`, `/api/llm/quotes/{id}`, and the quote-bound branch of `/api/llm/text` implement this state path; 9 synthetic SQLite D1 tests pass. This local record is a metering calculation, not a payment, provider invoice, funded balance, or carrier charge.
 
 Workbench now persists a quote against the selected active parent job, checks the request cap against shared remaining budget, presents explicit approval only when the execution gate accepts it, polls saved state after reconnect, displays an opt-in persisted result, and renders itemized calculated usage. Responses streaming now persists a monotonic provisional cost estimate from the quoted input-token upper bound plus visible output UTF-8 bytes / 3; it is labelled approximate and is not provider-reported usage or a settlement input. Final itemized pricing still requires completed Provider response usage. `remoteAiPricingGateAccepted()` remains false, and therefore direct LLM approve/send controls are disabled. Remaining product backlog: accept Provider-supported in-progress usage if available, verify streamed usage and invoice reconciliation, exercise the full Workbench/HTTP/Worker path in a local-listener-capable test environment, and integrate a funded authoritative Wallet before enabling paid use. Do not count local tests/usage as production billing proof.
+
+
+### 2026-10-11: delayed durable execution reservation recovery
+
+The exact-request quote is still valid for five minutes, and `/api/llm/text` accepts encrypted input only inside that window. Once accepted, migration `0047` fixes its execution deadline to the original quote expiry plus 24 hours. The scheduler (`startReadyDelegations` → `listPrepared`) and `RemoteAiTextWorkflow` already use this durable deadline; the final `claimProviderSend` incorrectly rechecked the earlier approval deadline. The actual SQLite store/coordinator reproduced a queued job at quote expiry + 1 ms entering `unreconciled` without any Provider request, retaining its entire reservation.
+
+The final send claim now uses the already committed input deadline. It preserves the original request/approval digest, signed price, approved amount and parent cap; it neither extends the deadline nor accepts new input after approval expiry. Current signed pricing and the active parent are still checked at dispatch, and owner isolation, one-time send claims, unknown-outcome holds, and deadline rejection remain in place. The added regression sends and settles the queued request exactly once after approval expiry, then refuses replay; another test refuses a foreign owner and an elapsed input deadline at the final claim. All migrations and the real store/coordinator run against in-memory SQLite with synthetic Provider responses. The paid execution gate remains disabled; this is no paid Provider or funded Wallet acceptance.
+
+
+### 2026-10-11: terminal A2A usage recovery
+
+The scheduler → `listForReconciliation` → `A2ADelegationWorkflow.reconcile` path previously dropped terminal tasks after artifact capture, while the Worker also returned immediately for every terminal task. If completion committed before usage persistence, or the Provider made its signed usage available later, the shared parent reservation stayed held and `/api/sky/a2a-delegations/{id}/wallet-settlement` continued returning `CLOUD_USAGE_NOT_SETTLED` with no automatic recovery path.
+
+Terminal tasks now remain eligible while artifacts are missing or their owner-bound reservation is held. The Worker only reads their known remote task ID. It keeps the persisted terminal state, refuses contradictory Provider status, captures missing artifacts, and passes the signed receipt through the existing verification and atomic settlement path. A failed or invalid receipt keeps the reservation; success removes the task from the scan once both results and usage are complete. A terminal read attempt advances only its observation timestamp so unresolved old tasks rotate through the bounded scan without rewriting state, revision, approval, or accounting. Send and cancel operations are never repeated by this recovery.
+
+The pre-fix SQLite regression missed a terminal task with captured artifacts and held funds; the pre-fix real Worker/D1 regression returned `not_dispatchable` before recovery. Local fixtures now cover another-owner rejection, contradictory working status after completion, invalid signature with the reservation retained, later valid signed usage, one settlement, one original send claim, no cancel claim, encrypted input cleanup, and no further poll after completion. Related Node tests and the existing Worker restart/cancellation fixtures are run with only synthetic Providers; no paid call, ledger transfer, or production receipt is implied.
+
+The surrounding Wallet boundaries remain unchanged: `/api/wallet` → `operations.book/wallet` is an owner-scoped manual JPY book with `transfers: not-connected`; it does not fund these usage reservations. `lib/rock-wallet.ts` is called by the separate billing Worker's `/v1/rock-wallet/verify` and `/reconcile` paths, whose current fee-policy gate blocks the legacy challenge/verify/reconcile routes outside the explicitly isolated regression fixture. The A2A wallet-settlement API returns a verified device-Wallet command; it does not mutate the device ledger or move money. Direct cloud LLM metering still has no funded authoritative Wallet integration.
 
 Sky Market決済の主担当は `JOINT`。`ROCK` は商品・注文・手数料・照合・本人分離・返金停止を実装し、`EXTERNAL` のStripeは決済・受取先本人確認・銀行払出しを担う。`OWNER` は既存の決済実装指示を前提に、実アカウントと資格情報・販売条件を用意する。現段階はローカルmockでの `ROCK_READY` であり `PROVIDER_READY` / `INTEGRATED` / `LIMITED_LIVE` / `PRODUCTION` ではない。
 
