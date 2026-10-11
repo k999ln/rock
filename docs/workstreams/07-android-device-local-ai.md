@@ -263,6 +263,10 @@ eSIM chipの検出は、OS全体・通信plan・特定provider・LLM・端末内
 
 2026-10-06、ROCKはPixel 10向け署名sourceを`2026100200`へ更新し、compile出力の機種・番号・必須アプリ・SHA-256検査を実装した。実行入口と検証コマンドは[Device Preview](../phone-preview-20260911.md#全os-compile成果物の検査os11--rls02)。OWNERの専用Linux／支出上限指定待ち。全OS compile、正式署名、実機flashと復旧は未実施。
 
+### AI04: native Runner取消の同ID照合（2026-10-11）
+
+ROCK／O3。送信claim後の取消とremote不在が重なる際、遅延した元submitを追跡できなくなる問題を実SQLiteで再現・修正した。local unknown＋取消意図を再起動後も保持し、同IDのmetadata照会を続ける。queuedの取消または既に成立した結果を照合するまで入力を消さず、再送・別key生成は行わない。関連68 host試験が合格。[再現・合格条件](../native-os-validation.md#遠隔仕事の取消と遅延要求ai042026-10-11)。Android outbox／guest／実機／外部Providerの受入とは区別する。
+
 ### 文章providerの完了理由と上限（2026-10-11）
 
 ROCK／O3。`lib/llm-providers.ts`でOllama／Anthropic／Gemini／Chat Completionsの正常終了理由を検証し、途中本文・未処理Tool・必要な理由の欠落を成功にしない。Ollamaへ出力token上限を送信する。OpenAI Responsesのoptional statusとTool配列の空defaultは仕様どおり保持する。`node --experimental-strip-types --test tests/llm-completion-boundary.test.mjs tests/llm-providers.test.mjs`が合格条件を検証し、Provider実接続・実課金・native bridge実機は別gateとする。[契約と公式仕様](../llm-evaluation-architecture.md#文章生成の完了判定2026-10-11)。
