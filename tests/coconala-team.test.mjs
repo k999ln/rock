@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { stripTypeScriptTypes } from 'node:module';
+import { loadRouteFixture } from './route-fixture.mjs';
+import { requestUser } from '../lib/request-auth.ts';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createTeamCase, applyTeamAction, teamMoney } from '../lib/coconala-team.ts';
 import { coconalaTeamStore } from '../lib/coconala-team-store.ts';
@@ -138,22 +139,12 @@ void test('exact saved commands replay without duplicating manual money, even af
 
 void test('real API and SQLite recover lost create/action responses and retain owner isolation', async (t) => {
   const { sqlite, db } = setup(t);
-  const key = `coconala-recovery-${randomUUID()}`;
-  globalThis[key] = db;
-  t.after(() => delete globalThis[key]);
-  const dataModule = (source) => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;
   const refs = new Map([
-    ['@/lib/fund-store', dataModule(`export function database() { return globalThis[${JSON.stringify(key)}]; }
-      export { requestUser } from ${JSON.stringify(new URL('../lib/request-auth.ts', import.meta.url).href)};`)],
-    ...['coconala-team', 'coconala-team-store'].map((name) =>
-      [`@/lib/${name}`, new URL(`../lib/${name}.ts`, import.meta.url).href]),
+    ['@/lib/fund-store', { database: () => db, requestUser }],
+    ...await Promise.all(['coconala-team', 'coconala-team-store'].map(async (name) =>
+      [`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url).href)])),
   ]);
-  const source = stripTypeScriptTypes(readFileSync(new URL('../app/api/coconala-team/route.ts', import.meta.url), 'utf8'), { mode: 'strip' })
-    .replace(/\bfrom\s+(['"])([^'"]+)\1/g, (_match, _quote, name) => {
-      assert.ok(refs.has(name), `unknown route dependency ${name}`);
-      return `from ${JSON.stringify(refs.get(name))}`;
-    });
-  const route = await import(dataModule(source));
+  const route = loadRouteFixture(new URL('../app/api/coconala-team/route.ts', import.meta.url), refs);
   async function call(method, body, owner = 'fixture-alice', origin = 'https://local.test') {
     const response = await route[method](new Request('https://local.test/api/coconala-team', {
       method, headers: { 'content-type': 'application/json', origin,

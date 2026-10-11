@@ -302,9 +302,9 @@ function browser({
   const documentRoot = node('document');
   // Keep every inline script and all surrounding markup, including the embedded
   // canonical board. Script bodies are data/code, never parsed as HTML elements.
-  const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+  const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
   parse(
-    html.replace(/(<script\b[^>]*>)[\s\S]*?<\/script>/gi, '$1</script>'),
+    html.replace(/(<script\b[^>]*>)[\s\S]*?<\/script\s*>/gi, '$1</script>'),
     documentRoot,
   );
   for (const script of scripts) {

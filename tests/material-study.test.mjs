@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { readFileSync, readdirSync } from 'node:fs';
-import { stripTypeScriptTypes } from 'node:module';
+import { loadRouteFixture } from './route-fixture.mjs';
+import { requestUser } from '../lib/request-auth.ts';
 import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { createMaterialStudy, restoreMaterialStudy, readMaterialStudyInput, exportMaterialStudy } from '../lib/material-study.ts';
@@ -9,7 +10,6 @@ import { applyWorkCommand } from '../lib/workflow.ts';
 import { workStore } from '../lib/work-store.ts';
 const fixture = JSON.parse(readFileSync(new URL('../contracts/material-invention-fixture.json', import.meta.url), 'utf8'));
 const input = (overrides = {}) => ({ id: randomUUID(), title: '合成経路検証', request: structuredClone(fixture), sample: false, ...overrides });
-const dataModule = (source) => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;
 
 async function setup(t, required = 'false') {
   const sqlite = new DatabaseSync(':memory:');
@@ -21,25 +21,16 @@ async function setup(t, required = 'false') {
     async all() { return { results: sqlite.prepare(sql).all(...values) }; },
     async run() { db.beforeRun?.(sql, values); return { meta: { changes: Number(sqlite.prepare(sql).run(...values).changes) } }; },
   }; } }; } };
-  const key = `material-fixture-${randomUUID()}`;
-  globalThis[key] = { db, env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: required } };
-  t.after(() => delete globalThis[key]);
   const refs = new Map([
-    ['cloudflare:workers', dataModule(`export const env = globalThis[${JSON.stringify(key)}].env;`)],
-    ['@/lib/fund-store', dataModule(`export function database() { return globalThis[${JSON.stringify(key)}].db; }
-      export { requestUser } from ${JSON.stringify(new URL('../lib/request-auth.ts', import.meta.url).href)};`)],
-    ...['work-store', 'workflow', 'material-invention', 'material-study', 'rockstar-service-access', 'a2a-delegation-store']
-      .map((name) => [`@/lib/${name}`, new URL(`../lib/${name}.ts`, import.meta.url).href]),
+    ['cloudflare:workers', { env: { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: required } }],
+    ['@/lib/fund-store', { database: () => db, requestUser }],
+    ...await Promise.all(['work-store', 'workflow', 'material-invention', 'material-study', 'rockstar-service-access', 'a2a-delegation-store']
+      .map(async (name) => [`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url).href)])),
   ]);
-  async function load(name) {
-    const source = stripTypeScriptTypes(readFileSync(new URL(`../app/api/${name}/route.ts`, import.meta.url), 'utf8'), { mode: 'strip' })
-      .replace(/\bfrom\s+(['"])([^'"]+)\1/g, (_match, _quote, name) => {
-        assert.ok(refs.has(name), `route import not mapped: ${name}`);
-        return `from ${JSON.stringify(refs.get(name))}`;
-      });
-    return import(dataModule(source));
+  function load(name) {
+    return loadRouteFixture(new URL(`../app/api/${name}/route.ts`, import.meta.url), refs);
   }
-  const material = await load('material-invention'), work = await load('work-jobs');
+  const material = load('material-invention'), work = load('work-jobs');
   async function call(method, body, { owner = 'fixture-alice', id, generic = false, origin = 'https://local.test' } = {}) {
     const route = generic ? work : material;
     const response = await route[method](new Request(`https://local.test/api/${generic ? 'work-jobs' : 'material-invention'}${id ? `?id=${id}` : ''}`, {
