@@ -19,6 +19,25 @@ function memoryStorage() {
 
 const id = 'b55ad88a-5b84-4ac2-ac0d-c5441c832be1';
 
+void test('expiry cleanup write failures preserve and restore valid sessions without reviving expired text', () => {
+  const storage = memoryStorage();
+  const valid = { version: 1, id, toolId: 'mr-citations', createdAt: 1_000,
+    messages: [{ id: 'retained', side: 'me', text: 'unfinished private request' }],
+    activeRequest: null, workflowStatus: 'ready', outcome: null };
+  const stale = { ...valid, id: '03100000-0000-4000-8000-000000000001', createdAt: 0,
+    messages: [{ id: 'expired', side: 'me', text: 'expired private request' }] };
+  const raw = JSON.stringify([valid, stale]);
+  const now = ZEMA_CHAT_SESSION_TTL_MS + 1;
+  for (const name of ['QuotaExceededError', 'SecurityError']) {
+    storage.setItem(ZEMA_CHAT_SESSION_KEY, raw);
+    const unavailable = { ...storage, setItem() { throw new DOMException('cannot write', name); } };
+    assert.deepEqual(readZemaChatSessions(unavailable, now), [valid]);
+    assert.equal(storage.getItem(ZEMA_CHAT_SESSION_KEY), raw);
+    assert.deepEqual(readZemaChatSessions(storage, now + 1), [valid]);
+    assert.deepEqual(JSON.parse(storage.getItem(ZEMA_CHAT_SESSION_KEY)), [valid]);
+  }
+});
+
 void test('a Sky handoff creates a separate Zema chat that survives reload in the same tab', () => {
   const storage = memoryStorage();
   const session = {

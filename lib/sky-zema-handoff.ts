@@ -75,6 +75,7 @@ export function consumeSkyZemaHandoff(
   expectedToolId: string,
   providedStorage?: HandoffStorage,
   now = Date.now(),
+  expectedThreadId?: string,
 ): SkyZemaHandoff | null {
   const storage = openZemaPrivateStorage(providedStorage);
   if (!storage) return null;
@@ -96,7 +97,8 @@ export function consumeSkyZemaHandoff(
     storage.removeItem(SKY_ZEMA_HANDOFF_KEY);
     return null;
   }
-  if (value.toolId !== expectedToolId) return null;
+  // A stale URL for the same Tool must not consume a newer pending request.
+  if (value.toolId !== expectedToolId || (expectedThreadId !== undefined && value.id !== expectedThreadId)) return null;
   storage.removeItem(SKY_ZEMA_HANDOFF_KEY);
   return value;
 }

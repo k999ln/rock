@@ -193,7 +193,11 @@
       ],
       "interfaceImplementation": [
         "lib/sky-compute-grid.ts",
-        "tests/sky-compute-grid.test.mjs"
+        "tests/sky-compute-grid.test.mjs",
+        "lib/sky-zema-handoff.ts",
+        "lib/zema-chat-session.ts",
+        "tests/sky-zema-handoff.test.mjs",
+        "tests/zema-chat-session.test.mjs"
       ]
     },
     {

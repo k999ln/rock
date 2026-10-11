@@ -1,5 +1,9 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-09 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
+## 2026-10-11 — Zemaの有効な会話と次の依頼の消失を修正（O5/WEB04、host）
+
+期限切れ会話と有効な会話が混在し、sessionStorageの整理書込がQuotaExceededErrorになると、有効な会話も消えることを再現した。JSON検証と書込整理の失敗を分け、原本と有効な復元結果を保持する。さらに同Toolの古いthread URLで新しい引き継ぎを消費しないよう、消費前にthread IDを照合する。TTL・本人失効の隔離を維持し、関連38 host試験合格。実画面と本番受入は統合後に別途確認する。
+
 ## 2026-10-11 — サービスPR統合とCompute Grid照合の修正（O5/GRID01、host）
 
 現行main 96845e6から#85/#93/#95/#98を専用branchへ履歴付きで統合し、mainの短いREADME・復元済み文書・Skyコード公開を保持した。新しいeSIMキーmigrationを0061、Provider revisionを0062へ配置し、80 Web tableのschema・snapshotを一致させた。既存mainの0060は変更しない。台帳の現行整合は統括側で復旧を続ける。

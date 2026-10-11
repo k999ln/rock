@@ -650,7 +650,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     }
     if (!preferredTool || !requestedThreadId) return;
     let handoff;
-    try { handoff = consumeSkyZemaHandoff(preferredTool); } catch { return; }
+    try { handoff = consumeSkyZemaHandoff(preferredTool, undefined, undefined, requestedThreadId); } catch { return; }
     if (!handoff || handoff.id !== requestedThreadId) return;
     const tool = catalog.find((item) => item.id === handoff.toolId);
     if (!tool) return;

@@ -38,6 +38,17 @@ void test('Sky request is consumed by the matching Zema Tool exactly once', () =
   assert.equal(consumeSkyZemaHandoff('mr-citations', storage, 1_002), null);
 });
 
+void test('opening an older thread for the same Tool keeps the new pending handoff recoverable', () => {
+  const storage = memoryStorage();
+  const old = queueSkyZemaHandoff('mr-citations', 'old request', storage, 1_000);
+  const pending = queueSkyZemaHandoff('mr-citations', 'new request', storage, 1_001);
+  const raw = storage.getItem(SKY_ZEMA_HANDOFF_KEY);
+  assert.equal(consumeSkyZemaHandoff('mr-citations', storage, 1_002, old.id), null);
+  assert.equal(storage.getItem(SKY_ZEMA_HANDOFF_KEY), raw);
+  assert.deepEqual(consumeSkyZemaHandoff('mr-citations', storage, 1_003, pending.id), pending);
+  assert.equal(consumeSkyZemaHandoff('mr-citations', storage, 1_004, pending.id), null);
+});
+
 void test('expired, malformed and future handoffs are discarded', () => {
   const storage = memoryStorage();
   queueSkyZemaHandoff('coconala', '案件を見て', storage, 1_000);

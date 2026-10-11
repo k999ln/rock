@@ -1005,6 +1005,10 @@ Skyの詳細表示は同じcatalogの料金・環境・接続状態を読むだ�
 
 既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
 
+## Zemaの会話復旧と引き継ぎ（2026-10-11）
+
+同じToolの古いチャットURLを開いても、別thread IDの新しいSky引き継ぎを消費しない。Toolとthread IDの両方が一致してから一度だけ消費する。会話一覧のTTL整理で保存容量不足・書込拒否が起きても、有効な会話の原本を削除せず、有効な分だけ表示して次回に整理を再試行する。期限切れ・不正な会話は復元しない。認証失効時の私有領域隔離と確認済み消去は維持する。対象は同じタブのsessionStorageであり、別アカウントの証拠なし復旧やサーバー保存を意味しない。
+
 ## Provider設定の同時保存（S7-01、候補030）
 
 `GET /api/sky/provider-connections` は各設定の正整数 `revision` を返す。PUTは `expectedRevision` が必須。未作成は0、更新は読み取った版を送る。欠落・文字列・小数・負数は400、別画面で更新済み・存在しない設定への更新は409となり書き込まない。旧クライアントには画面更新が必要。API/UIと `0062_sky_provider_revision` を同じ候補として反映する。移行は既存行を版1にし、設定・状態・secret_ref・時刻を保つ。本候補の移行試験は新しい合成DBのみで、実DBへは未適用。

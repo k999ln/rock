@@ -114,20 +114,25 @@ export function readZemaChatSessions(
   if (!storage) return [];
   const raw = storage.getItem(ZEMA_CHAT_SESSION_KEY);
   if (!raw) return [];
+  let parsed: unknown[];
   try {
     if (raw.length > 1_000_000) throw new Error('oversized');
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) throw new Error('invalid');
-    const sessions = parsed
-      .filter((item) => validSession(item, now))
-      .slice(0, MAX_SESSIONS) as ZemaChatSession[];
-    if (sessions.length !== parsed.length)
-      storage.setItem(ZEMA_CHAT_SESSION_KEY, JSON.stringify(sessions));
-    return sessions;
+    const value: unknown = JSON.parse(raw);
+    if (!Array.isArray(value)) throw new Error('invalid');
+    parsed = value;
   } catch {
     storage.removeItem(ZEMA_CHAT_SESSION_KEY);
     return [];
   }
+  const sessions = parsed
+    .filter((item) => validSession(item, now))
+    .slice(0, MAX_SESSIONS) as ZemaChatSession[];
+  if (sessions.length !== parsed.length) {
+    // Best-effort expiry cleanup is separate from parsing. A quota/security
+    // failure must not erase still-valid conversations along with expired ones.
+    try { storage.setItem(ZEMA_CHAT_SESSION_KEY, JSON.stringify(sessions)); } catch { /* Retry cleanup on the next read. */ }
+  }
+  return sessions;
 }
 
 export function saveZemaChatSession(
