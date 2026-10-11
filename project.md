@@ -4,6 +4,10 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — Material研究profileとR5現行要求の説明を同期（MAT03 / MAT15、ROCK）
+
+Material Coreの冒頭が旧四方向構成を現行の標準製品として案内していたため、R5正本へ接続し、研究profile・実装済み2D UI・未受入の実機を分離した。元の四方向設計と固定資料は維持し、R5の機構や性能を新たに確定していない。仕様変更ではなく現行要求への説明の同期。
+
 ## 2026-10-11 — 同SHAのGitHub全15チェック成功、ローカル差異を調査（G04 / H1、ROCK）
 
 `7f5ed3610c23092882dab81aa69ff8129a71828c`のGitHub verify／CodeQL／SPIDER／native／Android全15チェックが成功。Node1674 pass/1 platform skip、API1356、CSV385、185assets欠落0。Androidは精算済みCore 5回帰・Shell表示1回帰を含むCore121、automation JVM16、SDK7、emulator automation43 pass/2物理skip、Shell7、operator6が合格。root/Miniサイトのlockfile advisory監査も検出0。同じSHAのMac全体verifyはbuildまで成功後APIのAMC POSTでECONNRESETを2回再現したため、Linux成功で隠さず原因を調査中。owner切替後の未成立保存は限定修正中。main統合・公開・実機受入は未実施。
