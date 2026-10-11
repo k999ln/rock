@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
-    "start": "CI=1 wrangler d1 migrations apply site-creator-d1 --local --config dist/server/wrangler.json && wrangler dev --config dist/server/wrangler.json",
+    "start": "node scripts/start-local-web.mjs",
     "lint": "oxlint",
     "lint:product": "oxlint app lib db components/*.tsx services/sky-billing/src services/operator-dock/src services/operator-dock/public/app.js scripts/*.mjs tests/*.mjs shared public-release/rockstaros/packages/sky-zema-core/src",
     "format": "oxfmt",
@@ -58,7 +58,7 @@
     "billing:deploy": "wrangler deploy --config services/sky-billing/wrangler.jsonc",
     "billing:check": "WRANGLER_WRITE_LOGS=false WRANGLER_LOG_PATH=work/wrangler-logs wrangler deploy --dry-run --config services/sky-billing/wrangler.jsonc --outdir work/sky-billing-dry-run",
     "billing:migrate": "wrangler d1 migrations apply rockstar-sky-billing --remote --config services/sky-billing/wrangler.jsonc",
-    "operator-dock:dev": "wrangler dev --config services/operator-dock/wrangler.jsonc",
+    "operator-dock:dev": "node scripts/local-wrangler.mjs --config services/operator-dock/wrangler.jsonc",
     "operator-dock:check": "WRANGLER_WRITE_LOGS=false WRANGLER_LOG_PATH=work/wrangler-logs wrangler deploy --dry-run --config services/operator-dock/wrangler.jsonc --outdir work/operator-dock-dry-run",
     "operator-dock:migrate:local": "wrangler d1 migrations apply avocado-operator-dock --local --config services/operator-dock/wrangler.jsonc",
     "avocado:r5:check": "python3 scripts/verify-avocado-r5-package.py",

@@ -104,6 +104,15 @@ Use Node.js 22.13 or later and npm. This starts the web app locally:
     npx wrangler d1 migrations apply DB --local --config wrangler.local.jsonc
     npm run dev
 
+To preview the built Worker locally:
+
+    npm run build
+    npm start
+
+`npm start` uses the same Wrangler dependency as the Cloudflare build plugin, applies local D1 migrations, and starts the preview only after migration succeeds. It forwards shutdown signals and preserves failure exit codes. To choose a port, use `npm start -- --port 8788`. Migrations use the default local persistence path; a custom `--persist-to` passed to the preview needs a matching migration separately. This does not deploy the Worker or run remote migrations.
+
+`npm run operator-dock:dev` also uses that runtime for the local Operator Dock. Its existing operator authentication and separate local database setup still apply; see [Operator Dock](services/operator-dock/README.md).
+
 Install the product site dependencies before running the full repository checks. After changing documents or progress, run:
 
     npm ci --prefix sites/avocado-mini
