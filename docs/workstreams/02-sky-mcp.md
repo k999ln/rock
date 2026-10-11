@@ -12,6 +12,16 @@
 
 # Sky / MCP
 
+## 2026-10-11 GRID01／ROCK — Sky Compute Gridの永続grid（server側、既定で無効）
+
+ownerの指示で、同じaccountの端末だけで組むowner poolを先に作った。注文・lot・lease・結果・credit台帳をWeb D1（migration `0063`）へ保存し、`/api/sky/compute-grid/`の`status`、`orders`、`orders/{id}`、`orders/{id}/results`、`device`を追加した。端末の要求は、A2A Broker登録と同じhardware-backed鍵の署名で認証する。MCPの第三者Tool実行とは別経路で、端末へcodeは配らない。審査済みSKUのhashだけを受け付け、最初に配るSKUは整数演算の字句embedding（`text-lexical-embedding-v1`）である。
+
+host fixtureの契約も直した: receiptの提供者をleaseへ固定、審査済みhashだけを受理、合議は独立した提供者だけを数える、予算が足りない注文は`partial`。
+
+`SKY_COMPUTE_GRID_MODE`を設定しない限り無効。Android worker、実機、本番migration、public poolの有効化は未受入。設計は[Sky Compute Grid](../sky-compute-grid.md)、証拠は[永続gridのhost証拠](../evidence/amc/grid01-persistent-grid-host.md)。
+
+注文を出す画面はまだない（APIだけ）。ownerの「設計だけして、下流作業はcodexに渡す」により、注文console（入力の検査、注文の作成・取消・削除、結果の保存）と受入用deploymentの手順は設計だけを同文書の12・13節へ書いた。実装はCodexが担当する（`GRID01-S6`）。既存のAPIは変えない。consoleはZemaの仕事を作らず、`lib/workflow.ts`には載せない。
+
 ## 2026-10-10 GRID01／ROCK — Sky Compute Grid host fixture
 
 未使用Androidの余剰計算を固定・中断可能なlotへmatchingするplatform serviceをSkyへ追加した。MCPの第三者任意Tool実行とは分け、初期SKUは固定runtime/model/tokenizerによるpublic/synthetic text embeddingだけとする。`CapacityOffer`、`ComputeOrder`、`ComputeLease`、`ComputeReceipt`のclosed contract、hard filter、score、有限lease、独立参照／duplicate検証、service-credit hold preview、合成demo UI/APIをhostで実装した。実端末worker、remote dispatch、本番storage、実需要、実料金・払出しは未接続。詳細は[Sky Compute Grid](../sky-compute-grid.md)。

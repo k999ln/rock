@@ -1,6 +1,6 @@
 {
-  "version": "1.98",
-  "decidedAt": "2026-10-10",
+  "version": "1.99",
+  "decidedAt": "2026-10-11",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -1298,7 +1298,7 @@
   },
   "skyComputeGrid": {
     "requestedAt": "2026-10-10",
-    "status": "synthetic_host_fixture_android_runtime_not_connected",
+    "status": "persistent_grid_server_implemented_disabled_by_default_android_worker_not_implemented",
     "role": "match_unused_charging_android_capacity_to_bounded_interruptible_compute_lots",
     "initialSupplyPlatform": "android_arm64",
     "iosSupplyEnabled": false,
@@ -1337,7 +1337,72 @@
     "runtime": "lib/sky-compute-grid.ts",
     "tests": "tests/sky-compute-grid.test.mjs",
     "demoRoute": "/sky/compute-grid",
-    "demoApi": "/api/sky/compute-grid/demo"
+    "demoApi": "/api/sky/compute-grid/demo",
+    "persistentGridDecidedAt": "2026-10-11",
+    "persistentGrid": {
+      "status": "server_implemented_disabled_by_default",
+      "enabledByDefault": false,
+      "modeSetting": "SKY_COMPUTE_GRID_MODE",
+      "firstPool": "owner",
+      "publicPoolEnabled": false,
+      "dispatchableSku": "text-lexical-embedding-v1",
+      "deviceRequestsSignedByEnrolledHardwareKey": true,
+      "androidWorker": "designed_not_implemented",
+      "orderConsole": "designed_not_implemented",
+      "physicalDeviceAccepted": false,
+      "productionMigrationApplied": false,
+      "firstBuyer": "rock",
+      "firstDistribution": "direct_apk",
+      "store": "lib/sky-compute-grid-store.ts",
+      "protocol": "lib/sky-compute-grid-live.ts",
+      "skuRegistry": "lib/sky-compute-grid-skus.ts",
+      "migration": "drizzle/0063_sky_compute_grid.sql",
+      "skuVectors": "contracts/sky-compute-grid-lexical-embedding-vectors.json",
+      "androidSku": "android/core/src/main/java/dev/rock/core/ComputeGridLexicalEmbedding.java",
+      "androidWorkerDesign": "docs/sky-compute-grid-android-worker.md",
+      "orderConsoleDesign": "docs/sky-compute-grid.md",
+      "acceptanceDeploymentDesign": "docs/sky-compute-grid.md",
+      "downstreamImplementation": "codex",
+      "downstreamHandoffDecidedAt": "2026-10-11",
+      "tests": [
+        "tests/sky-compute-grid-store.test.mjs",
+        "tests/sky-compute-grid-api.test.mjs",
+        "tests/sky-compute-grid-skus.test.mjs"
+      ]
+    },
+    "ownerPool": {
+      "sameAccountOnly": true,
+      "dataClasses": [
+        "public",
+        "synthetic",
+        "owner_private"
+      ],
+      "charged": false,
+      "validationMethods": [
+        "owner_trust",
+        "independent_reference",
+        "duplicate_quorum"
+      ]
+    },
+    "publicPool": {
+      "dataClasses": [
+        "public",
+        "synthetic"
+      ],
+      "personalDataAllowed": false,
+      "validationMethods": [
+        "independent_reference",
+        "duplicate_quorum"
+      ],
+      "quorumIndependence": "distinct_accounts"
+    },
+    "credit": {
+      "asset": "sky_compute_credits",
+      "redeemable": false,
+      "cashPayout": false,
+      "walletConnected": false,
+      "skyFeeBps": 0
+    }
   },
   "skyMonthlyBilling": {
     "status": "retired",

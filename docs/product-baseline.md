@@ -1,5 +1,22 @@
 > **この文書の読み方（2026-10-10追記）** — 利用者が確定した要望と方針判断の **正本** です。新しい判断を上へ足してきたため、並びは日付順ではありません。上から順に、①2026-09-24以降の方針判断（新しい順。RQ48の本文もここにあります）、②「2026-09-24 ハードウェア設計基準 — avocadoMini R5」と「過去の判断履歴」（09-20〜09-22）、③「RockstarOS — 確定した製品ベース」（09-09〜09-21の追記が新しい順に並び、そのあとに RQ01〜RQ50 の本文）、④「現時点の未決事項」と「変更記録」、⑤末尾の日付付き追加指示、です。**日付順・テーマ別に読みたいときは [仕様変遷](spec-history.md) を使ってください。** 食い違ったときは、この文書と [`data/product-baseline.json`](../data/product-baseline.json) が優先です。
 
+## 2026-10-11 Sky Compute Grid — 自分の端末だけのプールを先に作り、永続gridは既定で無効のまま実装する
+
+利用者は、前日のhost fixtureの会話記録を示して「これ作れる？」と尋ねた。回答は11の未決事項それぞれに既定案を付け、「答えがなければ既定案で進める」とした。利用者は「やって」と指示した。これにより、既定案のうち次の8点が確定した。
+
+1. 最初に流す計算はtext embeddingとする。最初に端から端まで通すのは、検証が単純な整数演算の字句embedding（`text-lexical-embedding-v1`）。意味を扱うmodelは端末側engineを選んでから加える。
+2. 最初の買い手はRock自身とする。
+3. **同じaccountの端末だけで組むowner poolを先に作り**、他人の端末を使うpublic poolを次の受入にする。owner poolでは本人の非公開data（`owner_private`）を本人の端末へ渡してよい。public poolは引き続きpublic／syntheticだけとする。
+4. 供給端末はAndroid arm64だけとする。
+5. 最初の配布はAPKの直接配布とする。
+6. 報酬はgrid内のcredit（`sky_compute_credits`）とし、現金・払出しは行わない。creditは換金も他serviceへの充当もできない記帳である。owner poolでは料金を発生させない。
+7. Skyの取り分は0%とし、列として記録するだけにする。
+8. 本番DBへの反映と有効化は行わない。永続gridは`SKY_COMPUTE_GRID_MODE`を設定しない限り無効とする。
+
+同日、利用者は「製品化できた？もう売るよ？」と確認した。携帯側のappがなく実機が1台も計算していないため売れる段階ではない、という回答を受けて、利用者は「設計だけして、下流作業はcodexに渡す」と指示した。これを受けて、実装済みのserver側とSKUのJava実装を1つのPRにまとめ、端末を動かすAndroid workerとShellの画面は[設計](sky-compute-grid-android-worker.md)として、ownerが注文を出す画面（注文console）と受入用deploymentの手順は[Compute Grid設計](sky-compute-grid.md)の12・13節として残した。これらの実装はCodexが担当する。残る未決は、手元のPixelの台数と、Local AI runtimeのrepositoryを変更してよいかの2点である。
+
+RQ50の境界のうち、変えたのは「個人情報を配らない」の適用範囲（public poolに限る）と、精算の単位（fixtureは`sky_test_credits`のhold preview、永続gridは`sky_compute_credits`の記帳）である。任意codeを配らない、exact locationとowner identityを買い手へ見せない、owner useを優先する、検証前に記帳しない、無断でcloudへ切り替えない、Walletへ書き込まない、実課金・実払出しをしない、は変えていない。現行の料金実行保留も解除していない。詳細は[Sky Compute Grid設計](sky-compute-grid.md)を正本とする。
+
 ## 2026-10-10 Sky Compute Grid — 余剰スマートフォン計算力の仲介
 
 利用者は、cloud serverを借りる代わりに、世界中の人が使っていない時間の携帯をMac miniのような計算資源として束ね、誰のどの端末へ何を割り当てるかのmatchingまでSkyに含める方針を明示した。発電余力を束ねるvirtual power plantと同様に、端末は`CapacityOffer`、計算需要は`ComputeOrder`、Skyはmatcher、実行割当は`ComputeLease`、検証済み結果はmeter／receiptとして扱う。
@@ -789,7 +806,7 @@ RockstarOSは、端末所有者が使っていない時間のAndroid計算能力
 
 計量単位はCPU時間ではなくverified Compute Lotとする。resultはartifact/input/output hash、実行条件、期限へ結び、独立参照または別lease quorumで検証する。未検証結果、timeoutの結果不明、重複receiptを収益へ変換しない。買い手にはpseudonym、coarse region、capability、trust、価格だけを示し、owner identityとexact locationを開示しない。
 
-host fixture、contract、demoは実装してよいが、実端末dispatch、production storage、実課金・実払出し、端末attestation運用、税・法務・通信・fraud対策は個別受入前に有効化しない。既存Walletのhold・receipt・idempotency境界を再利用し、現行の料金実行保留を解除しない。ownerが明示していないcloud fallbackで実行先、費用、data境界を変えない。
+host fixture、contract、demoは実装してよいが、実端末dispatch、production storage、実課金・実払出し、端末attestation運用、税・法務・通信・fraud対策は個別受入前に有効化しない。2026-10-11の指示で、同じaccountの端末だけで組むowner poolと永続grid（保存、署名付きの端末要求、検証、credit台帳）を実装してよいことになった。owner poolでは本人の非公開dataを本人の端末へ渡してよい。永続gridは既定で無効とし、public pool、実機、本番DBは個別受入前に有効化しない。既存Walletのhold・receipt・idempotency境界を再利用し、現行の料金実行保留を解除しない。ownerが明示していないcloud fallbackで実行先、費用、data境界を変えない。
 
 ## 1.0への8原則の適用（RQ01〜RQ50を維持）
 

@@ -276,6 +276,25 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   const liveComputeSettlement = structuredClone(source);
   liveComputeSettlement.skyComputeGrid.livePayoutEnabled = true;
   assert.throws(() => validateBaseline(liveComputeSettlement), /Sky Compute Grid/);
+  // The persistent grid stays off by default, owner-pool first, with credits that are not money.
+  for (const weaken of [
+    (grid) => { grid.persistentGrid.enabledByDefault = true; },
+    (grid) => { grid.persistentGrid.publicPoolEnabled = true; },
+    (grid) => { grid.persistentGrid.physicalDeviceAccepted = true; },
+    (grid) => { grid.persistentGrid.androidWorker = 'implemented'; },
+    (grid) => { grid.ownerPool.sameAccountOnly = false; },
+    (grid) => { grid.ownerPool.charged = true; },
+    (grid) => { grid.publicPool.dataClasses.push('owner_private'); },
+    (grid) => { grid.publicPool.validationMethods.push('owner_trust'); },
+    (grid) => { grid.credit.redeemable = true; },
+    (grid) => { grid.credit.cashPayout = true; },
+    (grid) => { grid.credit.skyFeeBps = 1000; },
+    (grid) => { grid.persistentGrid.store = 'lib/missing-compute-grid-store.ts'; },
+  ]) {
+    const weakened = structuredClone(source);
+    weaken(weakened.skyComputeGrid);
+    assert.throws(() => validateBaseline(weakened), /Sky Compute Gridの永続grid/);
+  }
   const escaped = structuredClone(source);
   escaped.authority = '../external.md';
   assert.throws(() => validateBaseline(escaped), /repository外/);

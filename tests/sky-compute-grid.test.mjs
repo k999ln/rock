@@ -13,6 +13,12 @@ import {
 } from '../lib/sky-compute-grid.ts';
 
 const clone = (value) => structuredClone(value);
+// The verifier takes the matcher's own offer record, never a provider value
+// that arrives next to the receipt.
+const evidenceFor = (input, lease) => ({
+  matchedOffer: input.offers.find((offer) => offer.offerId === lease.offerId),
+  referenceOutputs: input.verificationEvidence.referenceOutputs,
+});
 
 void test('fixed public-text lots match an idle charging Android offer without exposing owner identity', () => {
   const result = runComputeGridFixture(fixture);
@@ -59,12 +65,12 @@ void test('matcher rejects phones that are in use, outside the requested region,
   );
 });
 
-void test('orders fail closed for personal data, arbitrary SKU, silent cloud fallback, and insufficient budget', () => {
+void test('orders fail closed for personal data, arbitrary SKU, and silent cloud fallback', () => {
   for (const mutate of [
     (order) => { order.containsPersonalData = true; },
     (order) => { order.skuId = 'arbitrary-container-v1'; },
     (order) => { order.cloudFallbackAuthorized = true; },
-    (order) => { order.budgetMicros = 9_999; },
+    (order) => { order.budgetMicros = -1; },
   ]) {
     const order = clone(fixture.order);
     mutate(order);
@@ -88,7 +94,7 @@ void test('receipt verification binds exact lease, artifacts, safety conditions 
   ]) {
     const invalid = clone(receipt);
     mutate(invalid);
-    const result = verifyComputeReceipt(input.order, lease, invalid, input.verificationEvidence);
+    const result = verifyComputeReceipt(input.order, lease, invalid, evidenceFor(input, lease));
     assert.equal(result.state, 'rejected');
     assert.equal(result.verifiedLots, 0);
     assert.equal(result.usageReceipt, null);
@@ -96,30 +102,59 @@ void test('receipt verification binds exact lease, artifacts, safety conditions 
   }
 });
 
-void test('duplicate verification counts distinct leases only and requires the requested quorum', () => {
+void test('duplicate verification needs a real sibling lease of the same lot held by another provider', () => {
   const input = clone(fixture);
   input.order.validation = { method: 'duplicate_quorum', quorum: 2 };
-  const match = matchComputeOrder(input.order, input.offers, new Date(input.now));
-  const lease = match.leases[0];
+  const now = new Date(input.now);
+  const other = clone(input.offers[0]);
+  other.offerId = 'offer_pixel_night_010';
+  other.providerRefHash = '9'.repeat(64);
+  other.providerPseudonym = 'Night Pixel 21';
+  const lease = matchComputeOrder(input.order, input.offers, now).leases[0];
+  const sibling = matchComputeOrder(input.order, [other], now).leases[0];
   const receipt = { ...input.receipt, leaseId: lease.leaseId };
-  const missing = verifyComputeReceipt(input.order, lease, receipt, {
-    providerRefHash: input.verificationEvidence.providerRefHash,
-    duplicateOutputs: {},
+  const matchedOffer = input.offers[0];
+  const verifyWith = (observation, order = input.order) => verifyComputeReceipt(order, lease, receipt, {
+    matchedOffer,
+    duplicateOutputs: Object.fromEntries(receipt.results.map((result) => [
+      result.lotId,
+      observation ? [{ outputSha256: result.outputSha256, ...observation }] : [],
+    ])),
   });
-  assert.equal(missing.state, 'rejected');
-  const duplicateOutputs = Object.fromEntries(receipt.results.map((result, index) => [
-    result.lotId,
-    [
-      { leaseId: `independent_lease_${index}`, outputSha256: result.outputSha256 },
-      { leaseId: `independent_lease_${index}`, outputSha256: result.outputSha256 },
-    ],
-  ]));
-  const verified = verifyComputeReceipt(input.order, lease, receipt, {
-    providerRefHash: input.verificationEvidence.providerRefHash,
-    duplicateOutputs,
-  });
+
+  assert.equal(verifyWith(null).state, 'rejected');
+  const verified = verifyWith({ lease: sibling, offer: other });
   assert.equal(verified.state, 'verified');
   assert.equal(verified.verifiedLots, 2);
+
+  // A lease id nobody issued, even with matching output hashes.
+  assert.equal(verifyWith({ lease: { ...sibling, leaseId: 'this_lease_does_not_exist' }, offer: other }).state, 'rejected');
+  // A second lease that the same provider holds under another offer id.
+  const sameProvider = { ...clone(other), providerRefHash: matchedOffer.providerRefHash };
+  const sameProviderLease = matchComputeOrder(input.order, [sameProvider], now).leases[0];
+  assert.equal(verifyWith({ lease: sameProviderLease, offer: sameProvider }).state, 'rejected');
+  // A real lease of a different order.
+  const otherOrder = { ...clone(input.order), orderId: 'order_demo_other_002' };
+  const otherOrderLease = matchComputeOrder(otherOrder, [other], now).leases[0];
+  assert.equal(verifyWith({ lease: otherOrderLease, offer: other }).state, 'rejected');
+  // An offer record whose provider was swapped after the lease was issued.
+  assert.equal(verifyWith({ lease: sibling, offer: { ...other, providerRefHash: '8'.repeat(64) } }).state, 'rejected');
+  // A sibling that disagrees on the output.
+  assert.equal(verifyWith({ lease: sibling, offer: other, outputSha256: 'e'.repeat(64) }).state, 'rejected');
+
+  // The same independent provider listed twice is still one provider.
+  const three = clone(input.order);
+  three.validation = { method: 'duplicate_quorum', quorum: 3 };
+  const leaseOfThree = matchComputeOrder(three, input.offers, now).leases[0];
+  const siblingOfThree = matchComputeOrder(three, [other], now).leases[0];
+  const twice = verifyComputeReceipt(three, leaseOfThree, { ...input.receipt, leaseId: leaseOfThree.leaseId }, {
+    matchedOffer,
+    duplicateOutputs: Object.fromEntries(receipt.results.map((result) => [result.lotId, [
+      { lease: siblingOfThree, offer: other, outputSha256: result.outputSha256 },
+      { lease: siblingOfThree, offer: other, outputSha256: result.outputSha256 },
+    ]])),
+  });
+  assert.equal(twice.state, 'rejected');
 });
 
 void test('contract and fixture preserve the explicit privacy, code, fallback, and live-payment boundaries', () => {
@@ -139,7 +174,7 @@ void test('receipt cannot be transferred to another order or altered assignment 
   const lease = matchComputeOrder(input.order, input.offers, new Date(input.now)).leases[0];
   const receipt = { ...input.receipt, leaseId: lease.leaseId };
   const otherOrder = { ...input.order, orderId: 'other_order_001' };
-  const crossOrder = verifyComputeReceipt(otherOrder, lease, { ...receipt, orderId: otherOrder.orderId }, input.verificationEvidence);
+  const crossOrder = verifyComputeReceipt(otherOrder, lease, { ...receipt, orderId: otherOrder.orderId }, evidenceFor(input, lease));
   assert.equal(crossOrder.state, 'rejected');
   assert.ok(crossOrder.reasons.includes('lease_order_mismatch'));
   for (const mutate of [
@@ -155,12 +190,12 @@ void test('receipt cannot be transferred to another order or altered assignment 
   ]) {
     const altered = clone(lease);
     mutate(altered);
-    const verification = verifyComputeReceipt(input.order, altered, receipt, input.verificationEvidence);
+    const verification = verifyComputeReceipt(input.order, altered, receipt, evidenceFor(input, lease));
     assert.equal(verification.state, 'rejected');
     assert.equal(verification.usageReceipt, null);
     assert.ok(verification.reasons.includes('lease_identity_invalid'));
   }
-  const verified = verifyComputeReceipt(input.order, lease, receipt, input.verificationEvidence);
+  const verified = verifyComputeReceipt(input.order, lease, receipt, evidenceFor(input, lease));
   assert.equal(verified.state, 'verified');
   assert.throws(() => createSettlementPreview({ ...lease, leaseId: 'other_lease_001' }, verified), { code: 'SETTLEMENT_BINDING' });
   const incorrectPrice = clone(verified);
@@ -179,10 +214,10 @@ void test('rematching binds time and terms while receipt retries share one settl
   assert.notEqual(matchComputeOrder(input.order, repriced, new Date(input.now)).leases[0].leaseId, lease.leaseId);
   const receipt = { ...input.receipt, leaseId: lease.leaseId };
   const replay = { ...receipt, receiptId: 'receipt_resend_002' };
-  const first = createSettlementPreview(lease, verifyComputeReceipt(input.order, lease, receipt, input.verificationEvidence));
-  const second = createSettlementPreview(lease, verifyComputeReceipt(input.order, lease, replay, input.verificationEvidence));
+  const first = createSettlementPreview(lease, verifyComputeReceipt(input.order, lease, receipt, evidenceFor(input, lease)));
+  const second = createSettlementPreview(lease, verifyComputeReceipt(input.order, lease, replay, evidenceFor(input, lease)));
   assert.equal(first.idempotencyKey, second.idempotencyKey);
-  assert.equal(verifyComputeReceipt(input.order, later, receipt, input.verificationEvidence).state, 'rejected');
+  assert.equal(verifyComputeReceipt(input.order, later, receipt, evidenceFor(input, later)).state, 'rejected');
 });
 
 void test('duplicate offers cannot multiply capacity and prototype property names are not trust or thermal tiers', () => {
@@ -194,4 +229,56 @@ void test('duplicate offers cannot multiply capacity and prototype property name
     assert.throws(() => validateCapacityOffer({ ...offer, currentConditions: { ...offer.currentConditions, thermalStatus: value } }), { code: 'OFFER_CONDITIONS' });
     assert.throws(() => validateComputeOrder({ ...fixture.order, minimumTrustTier: value }), { code: 'ORDER_TRUST' });
   }
+});
+
+void test('the provider of a receipt is fixed by the lease and cannot be replaced by the caller', () => {
+  const input = clone(fixture);
+  const lease = matchComputeOrder(input.order, input.offers, new Date(input.now)).leases[0];
+  const matchedOffer = input.offers[0];
+  const forgedProvider = 'f'.repeat(64);
+  const receipt = { ...input.receipt, leaseId: lease.leaseId };
+  const { referenceOutputs } = input.verificationEvidence;
+
+  // A receipt that names another provider.
+  const renamed = verifyComputeReceipt(input.order, lease, { ...receipt, providerRefHash: forgedProvider }, { matchedOffer, referenceOutputs });
+  assert.equal(renamed.state, 'rejected');
+  assert.ok(renamed.reasons.includes('provider_reference_invalid'));
+  // The same forged value supplied on both sides, as the first prototype accepted.
+  const bothForged = verifyComputeReceipt(input.order, lease, { ...receipt, providerRefHash: forgedProvider }, {
+    matchedOffer: { ...matchedOffer, providerRefHash: forgedProvider }, referenceOutputs,
+  });
+  assert.equal(bothForged.state, 'rejected');
+  assert.ok(bothForged.reasons.includes('lease_identity_invalid'));
+  // No offer record at all.
+  assert.equal(verifyComputeReceipt(input.order, lease, receipt, { referenceOutputs }).state, 'rejected');
+  // The buyer-facing lease still does not reveal the provider reference.
+  assert.equal(JSON.stringify(lease).includes(matchedOffer.providerRefHash), false);
+  const verified = verifyComputeReceipt(input.order, lease, receipt, { matchedOffer, referenceOutputs });
+  assert.equal(verified.usageReceipt.providerRefHash, matchedOffer.providerRefHash);
+});
+
+void test('only the reviewed artifact digests of a SKU can be ordered, offered, matched or verified', () => {
+  const unreviewed = { runtimeArtifactSha256: 'e'.repeat(64), modelSha256: 'e'.repeat(64), tokenizerSha256: 'e'.repeat(64) };
+  assert.throws(() => validateComputeOrder({ ...clone(fixture.order), ...unreviewed }), { code: 'ORDER_ARTIFACT_UNREVIEWED' });
+  assert.throws(() => validateCapacityOffer({ ...clone(fixture.offers[0]), ...unreviewed }), { code: 'OFFER_ARTIFACT_UNREVIEWED' });
+  // Digests that agree with each other everywhere are still refused.
+  const offers = clone(fixture.offers).map((offer) => ({ ...offer, ...unreviewed }));
+  assert.throws(() => matchComputeOrder({ ...clone(fixture.order), ...unreviewed }, offers, new Date(fixture.now)), ComputeGridError);
+  // One reviewed digest mixed with two of another SKU is refused as well.
+  assert.throws(() => validateComputeOrder({ ...clone(fixture.order), modelSha256: 'e'.repeat(64) }), { code: 'ORDER_ARTIFACT_UNREVIEWED' });
+});
+
+void test('a budget that covers part of the lots leases what it affords and never reserves more', () => {
+  const order = clone(fixture.order);
+  order.budgetMicros = 5_000;
+  const partial = matchComputeOrder(order, fixture.offers, new Date(fixture.now));
+  assert.equal(partial.state, 'partial');
+  assert.deepEqual(partial.leases[0].lots.map((lot) => lot.lotId), ['lot_demo_001']);
+  assert.deepEqual(partial.unmatchedLotIds, ['lot_demo_002']);
+  assert.equal(partial.reservedMicros, 3_200);
+  assert.ok(partial.reservedMicros <= order.budgetMicros);
+  order.budgetMicros = 3_199;
+  const none = matchComputeOrder(order, fixture.offers, new Date(fixture.now));
+  assert.equal(none.state, 'unmatched');
+  assert.equal(none.reservedMicros, 0);
 });

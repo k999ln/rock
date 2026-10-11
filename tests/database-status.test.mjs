@@ -19,7 +19,7 @@ void test('database status inventories every boundary and keeps production readb
     project.tasks.map(({ id, status }) => [id, status]),
   );
   assert.equal(report.summary.boundaryCount, 6);
-  assert.equal(report.summary.tableCount, 152);
+  assert.equal(report.summary.tableCount, 160);
   assert.equal(report.summary.sourceVerifiedCount, 6);
   assert.equal(report.summary.currentProductionReadbackCount, 0);
   assert.equal(taskStatus.SKY07, 'in_progress');
@@ -30,8 +30,8 @@ void test('database status inventories every boundary and keeps production readb
       .deploymentStatus,
     'OWNER_ACCESS_BLOCKED',
   );
-  assert.equal(report.webSchema.tableCount, 80);
-  assert.equal(report.webSchema.migrationCount, 63);
+  assert.equal(report.webSchema.tableCount, 88);
+  assert.equal(report.webSchema.migrationCount, 64);
   assert.ok(report.webSchema.tables.includes('sky_library_items'));
   assert.ok(report.webSchema.tables.includes('esim_cloud_access_keys'));
   assert.ok(report.webSchema.tables.includes('sky_code_repositories'));
@@ -46,14 +46,16 @@ void test('database status inventories every boundary and keeps production readb
   assert.ok(report.webSchema.tables.includes('sky_package_runtime_bindings'));
   assert.ok(report.webSchema.tables.includes('rockstar_device_authorizations'));
   assert.ok(report.webSchema.tables.includes('rockstar_device_sessions'));
-  assert.equal(report.webSchema.latestMigration, '0062_sky_provider_revision.sql');
+  assert.ok(report.webSchema.tables.includes('sky_compute_orders'));
+  assert.ok(report.webSchema.tables.includes('sky_compute_credit_entries'));
+  assert.equal(report.webSchema.latestMigration, '0063_sky_compute_grid.sql');
   assert.equal(report.webSchema.accidentalDuplicateCount, 0);
   assert.equal(report.webSchema.marketplaceRelationGuardCount, 8);
   assert.deepEqual(
     report.webSchema.domains.map(({ id, tableCount }) => [id, tableCount]),
     [
       ['core', 12],
-      ['sky', 35],
+      ['sky', 43],
       ['marketplace', 7],
       ['csv', 5],
       ['business', 21],

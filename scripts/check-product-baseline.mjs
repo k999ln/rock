@@ -1338,7 +1338,7 @@ export function validateBaseline(
   const computeGrid = data.skyComputeGrid;
   requireValue(
     computeGrid?.status ===
-      'synthetic_host_fixture_android_runtime_not_connected' &&
+      'persistent_grid_server_implemented_disabled_by_default_android_worker_not_implemented' &&
       computeGrid?.initialSupplyPlatform === 'android_arm64' &&
       computeGrid?.iosSupplyEnabled === false &&
       computeGrid?.initialSku === 'public-text-embedding-v1' &&
@@ -1366,6 +1366,46 @@ export function validateBaseline(
         computeGrid.tests,
       ].every((path) => existsSync(resolve(root, path))),
     'Sky Compute Gridの固定lot、privacy、安全停止、検証前精算拒否、live停止境界を維持してください',
+  );
+  // 2026-10-11: the persistent grid exists, but stays off until a deployment
+  // enables it; the first pool is the owner's own devices, and credits are
+  // bookkeeping only.
+  const persistentGrid = computeGrid.persistentGrid;
+  requireValue(
+    persistentGrid?.status === 'server_implemented_disabled_by_default' &&
+      persistentGrid?.enabledByDefault === false &&
+      persistentGrid?.firstPool === 'owner' &&
+      persistentGrid?.publicPoolEnabled === false &&
+      persistentGrid?.dispatchableSku === 'text-lexical-embedding-v1' &&
+      persistentGrid?.deviceRequestsSignedByEnrolledHardwareKey === true &&
+      persistentGrid?.androidWorker === 'designed_not_implemented' &&
+      persistentGrid?.physicalDeviceAccepted === false &&
+      persistentGrid?.productionMigrationApplied === false &&
+      computeGrid.ownerPool?.sameAccountOnly === true &&
+      computeGrid.ownerPool?.charged === false &&
+      JSON.stringify(computeGrid.ownerPool?.dataClasses) ===
+        JSON.stringify(['public', 'synthetic', 'owner_private']) &&
+      JSON.stringify(computeGrid.publicPool?.dataClasses) ===
+        JSON.stringify(['public', 'synthetic']) &&
+      computeGrid.publicPool?.personalDataAllowed === false &&
+      !computeGrid.publicPool?.validationMethods?.includes('owner_trust') &&
+      computeGrid.publicPool?.quorumIndependence === 'distinct_accounts' &&
+      computeGrid.credit?.asset === 'sky_compute_credits' &&
+      computeGrid.credit?.redeemable === false &&
+      computeGrid.credit?.cashPayout === false &&
+      computeGrid.credit?.walletConnected === false &&
+      computeGrid.credit?.skyFeeBps === 0 &&
+      [
+        persistentGrid.store,
+        persistentGrid.protocol,
+        persistentGrid.skuRegistry,
+        persistentGrid.migration,
+        persistentGrid.skuVectors,
+        persistentGrid.androidSku,
+        persistentGrid.androidWorkerDesign,
+        ...(persistentGrid.tests ?? []),
+      ].every((path) => typeof path === 'string' && existsSync(resolve(root, path))),
+    'Sky Compute Gridの永続gridは既定で無効、owner pool先行、public pool未開始、creditは換金・充当不可の境界を維持してください',
   );
   requireValue(
     data.releaseInstallation?.releaseName === 'RockstarOS 1.0',

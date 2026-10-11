@@ -27,6 +27,9 @@
 .card dl > div { display: grid; grid-template-columns: minmax(90px, .8fr) 1.4fr; gap: 12px; padding: 10px 0; border-top: 1px solid #2d2d2a; }
 .card dt { color: #888880; }
 .card dd { margin: 0; overflow-wrap: anywhere; text-align: right; }
+.status { margin-top: 16px; }
+.status dl > div { grid-template-columns: minmax(120px, .5fr) 2fr; }
+.status dd { color: #b7b7af; line-height: 1.6; text-align: left; }
 .lots, .rejections, .boundaries { margin: 0; padding: 0; list-style: none; }
 .lots li, .rejections li { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-top: 1px solid #2d2d2a; }
 .lots li div { display: grid; gap: 4px; }
@@ -38,4 +41,4 @@
 .disclaimer strong { color: #edede8; }
 .disclaimer p { max-width: 760px; line-height: 1.7; }
 .disclaimer a { color: #bfead9; text-underline-offset: 4px; }
-@media (max-width: 760px) { .flow, .grid { grid-template-columns: 1fr; } .flow > div { min-height: 0; border-right: 0; border-bottom: 1px solid #343431; } .flow > div:last-child { border-bottom: 0; } .hero h1 { font-size: clamp(36px, 12vw, 54px); } }
+@media (max-width: 760px) { .page { padding-inline: 16px; } .flow, .grid, .status dl > div { grid-template-columns: 1fr; } .flow > div { min-height: 0; border-right: 0; border-bottom: 1px solid #343431; } .flow > div:last-child { border-bottom: 0; } .hero h1 { font-size: clamp(36px, 12vw, 54px); } }

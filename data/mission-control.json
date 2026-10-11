@@ -12478,11 +12478,23 @@
       "primaryOwner": "ROCK",
       "assignee": null,
       "ownerRole": "Sky・Zema・Wallet担当（Device Adapter連携）",
-      "scope": "余剰Android計算のoffer、order、matching、有限lease、result verification、精算候補を安全境界付きで段階受入する",
+      "scope": "余剰Android計算のoffer、order、matching、有限lease、result verification、記帳を安全境界付きで段階受入する。同じaccountの端末だけで組むowner poolを先に、他人の端末を使うpublic poolを後に受け入れる",
       "inputs": [
         {
           "path": "docs/product-baseline.md",
-          "locator": "RQ50 / 2026-10-10 Sky Compute Grid"
+          "locator": "RQ50 / 2026-10-10 Sky Compute Grid / 2026-10-11 自分の端末だけのプールを先に作る"
+        },
+        {
+          "path": "docs/sky-compute-grid.md",
+          "locator": "Poolと許可範囲 / 永続gridのwire protocol / 保存 / 受入環境と証拠 / 12. 注文console / 13. 受入用deployment"
+        },
+        {
+          "path": "docs/sky-compute-grid-android-worker.md",
+          "locator": "Shellの画面 / 構成 / 通信の細部 / Protocolへの結び付け / 一回の実行 / 実機受入W1〜W10 / 実装の順序 / 14. 実装者への引継ぎ"
+        },
+        {
+          "path": "contracts/sky-compute-grid-lexical-embedding-vectors.json",
+          "locator": "全実装が再現するtest vector"
         },
         {
           "path": "contracts/compute-device-capabilities.json",
@@ -12493,6 +12505,18 @@
         {
           "path": "docs/evidence/amc/grid01-host-fixture.md",
           "description": "host fixtureのcontract、matching、verification、精算holdと未受入境界"
+        },
+        {
+          "path": "docs/evidence/amc/grid01-persistent-grid-host.md",
+          "description": "永続grid（server側）とSKUのJava実装のhost証拠、未受入境界"
+        },
+        {
+          "path": "docs/sky-compute-grid-android-worker.md",
+          "description": "Android workerとShell画面の設計、実機受入W1〜W10の合格条件、実装者への引継ぎ"
+        },
+        {
+          "path": "docs/sky-compute-grid.md",
+          "description": "注文consoleと受入用deploymentの設計（12・13節）"
         }
       ],
       "steps": [
@@ -12506,42 +12530,118 @@
         },
         {
           "id": "GRID01-S3",
-          "action": "Android worker、attestation、50台pilot、実需要、実精算を別環境で受け入れる"
+          "action": "永続gridのserver側を作る: D1保存、登録済み端末鍵の署名、原子的な割当と再割当、参照計算・合議・類似度の検証、credit台帳、API。既定で無効にする"
+        },
+        {
+          "id": "GRID01-S4",
+          "action": "最初のSKUをJavaへ実装し、公開test vectorとTypeScript参照に一致させる"
+        },
+        {
+          "id": "GRID01-S5",
+          "action": "docs/sky-compute-grid-android-worker.mdの順序でAndroid workerとShellの入切を実装する（Protocol、条件監視、通信、JobService、Shell、emulator試験）。実装担当はCodex"
+        },
+        {
+          "id": "GRID01-S6",
+          "action": "docs/sky-compute-grid.md 12節の注文consoleを実装する（入力の検査、注文の作成・取消・削除、結果の保存）。実装担当はCodex"
+        },
+        {
+          "id": "GRID01-S7",
+          "action": "docs/sky-compute-grid.md 13節の受入用deployment（本番ではない、owner pool）とPixel 1台で、実機受入W1〜W10を行い記録する"
+        },
+        {
+          "id": "GRID01-S8",
+          "action": "同じaccountの2〜5台で合議・改変・切断・発熱・本人使用を受け入れる"
+        },
+        {
+          "id": "GRID01-S9",
+          "action": "意味を扱うembeddingのengine、creditの利用先、public pool、50台pilot、実需要を、それぞれ別の受入として決める"
         }
       ],
       "acceptanceCriteria": [
         {
           "id": "GRID01-AC1",
-          "criterion": "固定SKU、公開／合成data、Android限定、owner-use優先、任意codeと無断cloud fallback禁止がcontractと回帰で固定される",
+          "criterion": "審査済みSKUだけ、Android限定、owner-use優先、任意codeと無断cloud fallback禁止、他人の端末へはpublic／synthetic dataだけ、がcontractと回帰で固定される",
           "status": "passed",
           "verification": "schema、fixture、baseline checkと安全境界testを確認する",
           "evidence": [
             "contracts/sky-compute-grid.json",
             "tests/sky-compute-grid.test.mjs",
-            "docs/evidence/amc/grid01-host-fixture.md"
+            "tests/sky-compute-grid-store.test.mjs",
+            "docs/evidence/amc/grid01-host-fixture.md",
+            "docs/evidence/amc/grid01-persistent-grid-host.md"
           ]
         },
         {
           "id": "GRID01-AC2",
-          "criterion": "host fixtureでmatching、finite lease、独立参照／duplicate検証、未検証精算拒否、test-credit holdが再現できる",
+          "criterion": "host fixtureでmatching、finite lease、提供者をleaseへ固定した独立参照／独立した提供者によるduplicate検証、未検証精算拒否、test-credit holdが再現できる",
           "status": "passed",
           "verification": "対象Node test、design check、baseline checkの結果を記録する",
           "evidence": [
             "lib/sky-compute-grid.ts",
             "contracts/sky-compute-grid-fixture.json",
-            "docs/evidence/amc/grid01-host-fixture.md"
+            "tests/sky-compute-grid.test.mjs",
+            "docs/evidence/amc/grid01-host-fixture.md",
+            "docs/evidence/amc/grid01-persistent-grid-host.md"
           ]
         },
         {
           "id": "GRID01-AC3",
+          "criterion": "永続gridが実D1と実migrationのhost試験で、署名による認証、1端末1 lease、期限切れの再割当、偽造・再送・競合の拒否、参照計算・合議・類似度の検証、検証済みassignmentごとに1回の記帳、取消と削除、既定で無効、を再現できる",
+          "status": "passed",
+          "verification": "対象Node試験（store、API、SKU）とmigration収束試験、schema・database・design・baseline checkの結果を記録する",
+          "evidence": [
+            "lib/sky-compute-grid-store.ts",
+            "lib/sky-compute-grid-live.ts",
+            "drizzle/0063_sky_compute_grid.sql",
+            "tests/sky-compute-grid-store.test.mjs",
+            "tests/sky-compute-grid-api.test.mjs",
+            "docs/evidence/amc/grid01-persistent-grid-host.md"
+          ]
+        },
+        {
+          "id": "GRID01-AC4",
+          "criterion": "最初のSKUのJava実装が公開test vectorを再現し、TypeScriptの参照実装と出力がbyte単位で一致する",
+          "status": "passed",
+          "verification": "javacでandroid/coreのmainをbuildし、npm run os:parityで照合する。JUnitはCIの:core:testで実行する",
+          "evidence": [
+            "android/core/src/main/java/dev/rock/core/ComputeGridLexicalEmbedding.java",
+            "contracts/sky-compute-grid-lexical-embedding-vectors.json",
+            "scripts/check-os-parity.mjs",
+            "tests/sky-compute-grid-skus.test.mjs",
+            "docs/evidence/amc/grid01-persistent-grid-host.md"
+          ]
+        },
+        {
+          "id": "GRID01-AC5",
+          "criterion": "Android workerが設計どおりに実装され、Pixel 1台でowner poolの注文を実際に計算し、実機受入W1〜W10に合格する",
+          "status": "not_verified",
+          "verification": "同一APKと本番でないdeploymentで物理受入を行い、機種、APKのSHA-256、deploymentの版、各idの結果を保存する。emulator、host、試験用端末の合格を実機の合格として扱わない",
+          "evidence": []
+        },
+        {
+          "id": "GRID01-AC6",
+          "criterion": "同じaccountの2〜5台で、合議の一致、改変した1台だけの拒否、切断・発熱・本人使用時の停止と再割当を受け入れる",
+          "status": "not_verified",
+          "verification": "duplicate_quorumの注文と改変worker、通信切断、充電解除、画面点灯を実機で行い記録する",
+          "evidence": []
+        },
+        {
+          "id": "GRID01-AC7",
           "criterion": "同一Android候補と50台pilotで停止・熱・電力・通信・改変・復旧・unit economicsを受け入れる",
           "status": "not_verified",
           "verification": "同一APK/runtime/modelと対象端末で物理受入を実施し、host fixtureと区別した証拠を保存する",
           "evidence": []
+        },
+        {
+          "id": "GRID01-AC8",
+          "criterion": "サインインしたownerが注文consoleから自分の端末向けの注文を作り、取り消し、結果を保存し、入力と結果を削除できる。無効な環境と未サインインでは注文欄が出ない",
+          "status": "not_verified",
+          "verification": "入力検査のNode試験、componentの試験、owner poolを有効にしたlocal起動でのbrowser操作（390px幅を含む）を記録する。実端末が計算した結果の保存はAC5のW2で確かめる",
+          "evidence": []
         }
       ],
-      "unresolvedDecision": "anchor buyer、lot size、reference device、検証率、料金spread、attestation、法務・税・Wallet railはownerと各担当がpilot前に決める。",
-      "completionScope": "host fixtureは段階2の証拠。Android worker、実端末network、production storage、実需要、実課金・払出しまで終わるまでGRID01をdoneにしない。"
+      "unresolvedDecision": "意味を扱うembeddingの端末側engine（Local AI runtimeの変更可否を含む）、手元のPixelの台数、creditの利用先、public poolの開始残高とSybil対策、anchor buyer、lot size、reference device、検証率、料金spread、法務・税・Wallet railはownerと各担当が決める。",
+      "completionScope": "host fixtureと永続gridのserver側、SKUのJava実装はhostの証拠。Android worker、実端末、本番migrationと有効化、public pool、実需要、実課金・払出しまで終わるまでGRID01をdoneにしない。"
     },
     {
       "taskId": "OS02",

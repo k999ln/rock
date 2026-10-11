@@ -41,3 +41,5 @@ Gradleのdebug鍵とAOSPの公開testkeyは検証専用。作者認証や商用�
 ## Sky Compute Grid契約
 
 `sky-compute-grid.json` は、充電中・未使用のAndroid端末へ公開／合成text embedding lotを割り当てる`CapacityOffer`、`ComputeOrder`、`ComputeLease`、`ComputeReceipt`のclosed contractである。任意code、個人情報、秘密、無断cloud fallback、live settlementは許可しない。`sky-compute-grid-fixture.json`はhostだけでmatcher、独立検証、test-credit holdを再現する合成fixtureであり、Android実機・分散network・実収益の証拠ではない。
+
+`sky-compute-grid-lexical-embedding-vectors.json` は、永続gridが最初に配るSKU `text-lexical-embedding-v1` のtest vectorである。lot入力のSHA-256と、そこから計算した出力のSHA-256を固定する。TypeScriptの参照実装（`lib/sky-compute-grid-skus.ts`）とAndroid workerは、この出力hashを再現しなければならない。3つのartifact hashは同じfileの仕様文のSHA-256であり、仕様を変えたらhashとvectorを同時に変える。永続gridのwire protocolと保存は[`docs/sky-compute-grid.md`](../docs/sky-compute-grid.md)を正本とする。

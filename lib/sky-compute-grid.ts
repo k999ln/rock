@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { COMPUTE_SKUS, sameArtifacts, skuForArtifacts } from './sky-compute-grid-skus.ts';
 
 export const SKY_COMPUTE_GRID_SKU = 'public-text-embedding-v1' as const;
 export const SKY_COMPUTE_GRID_SETTLEMENT_ASSET = 'sky_test_credits' as const;
@@ -132,13 +133,22 @@ export type ComputeReceipt = {
   }>;
 };
 
+// A second device's result for the same lot. The observation carries the whole
+// sibling lease and the offer it was issued from, so a made-up lease id or a
+// second lease held by the same provider cannot stand in for an independent
+// result. Whether the sibling lease was really issued is a fact only the
+// persistent grid knows; lib/sky-compute-grid-store.ts checks that part.
 export type DuplicateObservation = {
-  leaseId: string;
+  lease: ComputeLease;
+  offer: CapacityOffer;
   outputSha256: string;
 };
 
 export type VerificationEvidence = {
-  providerRefHash: string;
+  // The matcher's own record of the offer the verified lease was issued from.
+  // The receipt's provider reference is checked against this record, never
+  // against a value supplied next to the receipt.
+  matchedOffer: CapacityOffer;
   referenceOutputs?: Record<string, string>;
   duplicateOutputs?: Record<string, DuplicateObservation[]>;
 };
@@ -204,8 +214,12 @@ function digestId(prefix: string, parts: unknown[]) {
 
 // Bind the opaque identifier to the exact assignment, execution window and price.
 // Re-matching an expired assignment must not reuse its receipt namespace.
-function computeLeaseId(lease: Omit<ComputeLease, 'leaseId'>) {
+// The private provider reference is part of the digest: the buyer-facing lease
+// never shows who the provider is, yet no other provider can be substituted
+// for it afterwards without changing the id.
+function computeLeaseId(lease: Omit<ComputeLease, 'leaseId'>, providerRefHash: string) {
   return digestId('lease', [
+    providerRefHash,
     lease.schema, lease.orderId, lease.offerId, lease.providerPseudonym,
     lease.region, lease.trustTier, lease.skuId, lease.runtimeArtifactSha256,
     lease.modelSha256, lease.tokenizerSha256,
@@ -234,6 +248,7 @@ export function validateCapacityOffer(offer: CapacityOffer) {
     'OFFER_ARTIFACT',
     'runtime、model、tokenizerのhashが必要です。',
   );
+  requireValue(skuForArtifacts(offer) !== null, 'OFFER_ARTIFACT_UNREVIEWED', '審査済みSKUのruntime、model、tokenizerだけを供給できます。');
   requireValue(positiveSafeInteger(offer.memoryMiB) && offer.memoryMiB <= 1_048_576, 'OFFER_MEMORY', 'memory上限が不正です。');
   requireValue(positiveSafeInteger(offer.benchmarkLotsPerHour), 'OFFER_BENCHMARK', '検証済みbenchmarkが必要です。');
   requireValue(Number.isInteger(offer.reliabilityBps) && offer.reliabilityBps >= 0 && offer.reliabilityBps <= 10_000, 'OFFER_RELIABILITY', '信頼度はbasis pointsで指定してください。');
@@ -276,6 +291,8 @@ export function validateComputeOrder(order: ComputeOrder) {
     'ORDER_ARTIFACT',
     'runtime、model、tokenizerのhashが必要です。',
   );
+  const sku = COMPUTE_SKUS.get(order.skuId);
+  requireValue(sku !== undefined && sameArtifacts(sku.artifacts, order), 'ORDER_ARTIFACT_UNREVIEWED', '注文のhashが審査済みSKUの版と一致しません。');
   requireValue(
     Array.isArray(order.regions) && order.regions.length > 0 && order.regions.length <= 16 && order.regions.every((region) => regionPattern.test(region)),
     'ORDER_REGION',
@@ -306,11 +323,8 @@ export function validateComputeOrder(order: ComputeOrder) {
     requireValue(validDigest(lot.inputSha256), 'ORDER_LOT_DIGEST', 'lot入力hashが不正です。');
     requireValue(positiveSafeInteger(lot.inputBytes) && lot.inputBytes <= order.maximumInputBytesPerLot, 'ORDER_LOT_SIZE', 'lot入力が上限を超えています。');
   }
-  requireValue(
-    order.lots.length * order.maximumPriceMicrosPerLot <= order.budgetMicros,
-    'ORDER_BUDGET',
-    '全lotの上限額を予算内に収めてください。',
-  );
+  // A budget that covers only part of the lots is allowed: the matcher leases
+  // what the budget affords and reports the rest as unmatched (`partial`).
   return order;
 }
 
@@ -399,7 +413,7 @@ export function matchComputeOrder(
         stopOnOwnerUse: true,
       },
     };
-    lease.leaseId = computeLeaseId(lease);
+    lease.leaseId = computeLeaseId(lease, offer.providerRefHash);
     leases.push(lease);
     reservedMicros += assigned.length * offer.priceMicrosPerLot;
     if (unassigned.length === 0) break;
@@ -411,6 +425,48 @@ export function matchComputeOrder(
     rejectedOffers,
     reservedMicros,
   };
+}
+
+function boundToOffer(lease: ComputeLease, offer: CapacityOffer | undefined): offer is CapacityOffer {
+  try {
+    validateCapacityOffer(offer as CapacityOffer);
+  } catch {
+    return false;
+  }
+  const matched = offer as CapacityOffer;
+  return matched.offerId === lease.offerId && matched.providerPseudonym === lease.providerPseudonym &&
+    matched.region === lease.region && matched.trustTier === lease.trustTier &&
+    matched.priceMicrosPerLot === lease.priceMicrosPerLot && matched.settlementAsset === lease.settlementAsset &&
+    matched.runtimeArtifactSha256 === lease.runtimeArtifactSha256 && matched.modelSha256 === lease.modelSha256 &&
+    matched.tokenizerSha256 === lease.tokenizerSha256;
+}
+
+// A sibling result counts toward a quorum only when it is a self-consistent
+// lease of the same order and lot, issued from a different offer that belongs
+// to a different provider.
+function independentObservation(
+  order: ComputeOrder,
+  lease: ComputeLease,
+  matchedOffer: CapacityOffer,
+  lot: ComputeLot,
+  item: DuplicateObservation,
+) {
+  try {
+    const sibling = item.lease;
+    return validDigest(item.outputSha256) && boundToOffer(sibling, item.offer) &&
+      sibling.schema === 'sky-compute-lease/1' &&
+      sibling.leaseId === computeLeaseId(sibling, item.offer.providerRefHash) &&
+      sibling.leaseId !== lease.leaseId && sibling.offerId !== lease.offerId &&
+      item.offer.providerRefHash !== matchedOffer.providerRefHash &&
+      sibling.orderId === order.orderId && sibling.skuId === order.skuId &&
+      sibling.runtimeArtifactSha256 === order.runtimeArtifactSha256 && sibling.modelSha256 === order.modelSha256 &&
+      sibling.tokenizerSha256 === order.tokenizerSha256 && order.regions.includes(sibling.region) &&
+      trustRank[sibling.trustTier] >= trustRank[order.minimumTrustTier] &&
+      sibling.lots.some((candidate) => candidate.lotId === lot.lotId &&
+        candidate.inputSha256 === lot.inputSha256 && candidate.inputBytes === lot.inputBytes);
+  } catch {
+    return false;
+  }
 }
 
 export function verifyComputeReceipt(
@@ -440,12 +496,16 @@ export function verifyComputeReceipt(
   })) reasons.push('lease_lots_invalid');
   if (!Number.isSafeInteger(lease.priceMicrosPerLot) || lease.priceMicrosPerLot < 0 || lease.priceMicrosPerLot > order.maximumPriceMicrosPerLot || !Number.isSafeInteger(lots.length * lease.priceMicrosPerLot) || lots.length * lease.priceMicrosPerLot > order.budgetMicros || lease.settlementAsset !== SKY_COMPUTE_GRID_SETTLEMENT_ASSET)
     reasons.push('lease_price_invalid');
-  if (!policy || !Array.isArray(lease.lots) || lease.leaseId !== computeLeaseId(lease))
+  const matchedOffer = evidence?.matchedOffer;
+  const offerBound = boundToOffer(lease, matchedOffer);
+  if (!policy || !Array.isArray(lease.lots) || !offerBound ||
+      lease.leaseId !== computeLeaseId(lease, matchedOffer.providerRefHash))
     reasons.push('lease_identity_invalid');
   if (receipt.schema !== 'sky-compute-receipt/1') reasons.push('receipt_schema_invalid');
   if (!idPattern.test(receipt.receiptId)) reasons.push('receipt_id_invalid');
   if (receipt.leaseId !== lease.leaseId || receipt.orderId !== order.orderId || receipt.offerId !== lease.offerId) reasons.push('lease_binding_mismatch');
-  if (!validDigest(evidence.providerRefHash) || receipt.providerRefHash !== evidence.providerRefHash) reasons.push('provider_reference_invalid');
+  if (!offerBound) reasons.push('lease_offer_binding_invalid');
+  if (!offerBound || receipt.providerRefHash !== matchedOffer.providerRefHash) reasons.push('provider_reference_invalid');
   if (receipt.runtimeArtifactSha256 !== lease.runtimeArtifactSha256 || receipt.modelSha256 !== lease.modelSha256 || receipt.tokenizerSha256 !== lease.tokenizerSha256) reasons.push('artifact_digest_mismatch');
   if (!validInstant(receipt.startedAt) || !validInstant(receipt.completedAt) || Date.parse(receipt.startedAt) < Date.parse(lease.issuedAt) || Date.parse(receipt.completedAt) < Date.parse(receipt.startedAt) || Date.parse(receipt.completedAt) > Date.parse(lease.expiresAt)) reasons.push('execution_window_invalid');
   if (
@@ -473,18 +533,21 @@ export function verifyComputeReceipt(
       continue;
     }
     if (order.validation.method === 'independent_reference') {
-      if (evidence.referenceOutputs?.[result.lotId] !== result.outputSha256) {
+      if (evidence?.referenceOutputs?.[result.lotId] !== result.outputSha256) {
         reasons.push(`reference_mismatch:${result.lotId}`);
         continue;
       }
     } else {
-      const observations = evidence.duplicateOutputs?.[result.lotId] ?? [];
-      const matchingLeases = new Set(
-        observations
-          .filter((item) => item.leaseId !== lease.leaseId && item.outputSha256 === result.outputSha256)
-          .map((item) => item.leaseId),
-      );
-      if (1 + matchingLeases.size < order.validation.quorum) {
+      const observations = evidence?.duplicateOutputs?.[result.lotId] ?? [];
+      // Agreement is counted per independent provider, not per lease id.
+      const agreeingProviders = new Set<string>();
+      if (offerBound && Array.isArray(observations)) {
+        for (const item of observations) {
+          if (item?.outputSha256 === result.outputSha256 && independentObservation(order, lease, matchedOffer, lot, item))
+            agreeingProviders.add(item.offer.providerRefHash);
+        }
+      }
+      if (1 + agreeingProviders.size < order.validation.quorum) {
         reasons.push(`duplicate_quorum_missing:${result.lotId}`);
         continue;
       }
@@ -504,6 +567,8 @@ export function verifyComputeReceipt(
           receiptId: receipt.receiptId,
           leaseId: lease.leaseId,
           orderId: order.orderId,
+          // Settlement needs to know whom to credit; the buyer-facing lease does not.
+          providerRefHash: (matchedOffer as CapacityOffer).providerRefHash,
           verifiedLots,
           unitPriceMicros: lease.priceMicrosPerLot,
           totalMicros: verifiedLots * lease.priceMicrosPerLot,
@@ -521,7 +586,8 @@ export function createSettlementPreview(
   requireValue(verification.state === 'verified' && verification.usageReceipt !== null, 'SETTLEMENT_UNVERIFIED', '検証済みlotだけを精算候補にできます。');
   const usage = verification.usageReceipt;
   requireValue(
-    lease.leaseId === computeLeaseId(lease) && usage.leaseId === lease.leaseId &&
+    validDigest(usage.providerRefHash) && lease.leaseId === computeLeaseId(lease, usage.providerRefHash) &&
+      usage.leaseId === lease.leaseId &&
       usage.orderId === lease.orderId && usage.verifiedLots === lease.lots.length &&
       verification.verifiedLots === usage.verifiedLots && usage.unitPriceMicros === lease.priceMicrosPerLot &&
       Number.isSafeInteger(usage.totalMicros) && usage.totalMicros === usage.verifiedLots * lease.priceMicrosPerLot &&
@@ -547,13 +613,18 @@ export function runComputeGridFixture(input: {
   order: ComputeOrder;
   offers: CapacityOffer[];
   receipt: ComputeReceipt;
-  verificationEvidence: VerificationEvidence;
+  verificationEvidence: Pick<VerificationEvidence, 'referenceOutputs'>;
 }) {
   const match = matchComputeOrder(input.order, input.offers, new Date(input.now));
   requireValue(match.leases.length === 1, 'FIXTURE_MATCH', 'fixtureは1 leaseへ収まる必要があります。');
   const lease = match.leases[0];
+  const matchedOffer = input.offers.find((offer) => offer.offerId === lease.offerId);
+  requireValue(matchedOffer, 'FIXTURE_MATCH', 'leaseの元になった供給offerが必要です。');
   const receipt = { ...input.receipt, leaseId: lease.leaseId };
-  const verification = verifyComputeReceipt(input.order, lease, receipt, input.verificationEvidence);
+  const verification = verifyComputeReceipt(input.order, lease, receipt, {
+    matchedOffer,
+    referenceOutputs: input.verificationEvidence.referenceOutputs,
+  });
   const settlement = createSettlementPreview(lease, verification);
   return {
     evidenceKind: 'synthetic_host_fixture' as const,
