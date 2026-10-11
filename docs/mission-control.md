@@ -74,13 +74,13 @@ plannedは未着手、in_progressは進行中、blockedは明示停止、doneは
 | M5 | 組込み・Firmware | 1 基本設計あり | MINI05 | 6 | Mini単独boot・入力・game・保存・停止の最小実装仕様を作る |
 | M6 | 電源・熱・通信 | 1 基本設計あり | MINI06 | 6 | R5電源・熱・1/2/4台通信の評価条件を定義する |
 | M7 | Calibration・安全・受入 | 1 基本設計あり | MINI07 | 6 | R5校正・停止・privacy・復旧の危険分析と受入表を作る |
-| P1 | Pro統合設計 | 0 要件整理 | PRO01 | 6 | Pro v0.1の製品要求と単独利用・任意Mini連携の境界を定義する |
-| P2 | Compute・基板 | 0 要件整理 | PRO02 | 6 | Proの代表負荷・性能予算と演算基板候補の比較条件を定義する |
+| P1 | Pro統合設計 | 1 基本設計あり | PRO01 | 6 | Pro v0.1の製品要求と単独利用・任意Mini連携の境界を定義する |
+| P2 | Compute・基板 | 1 基本設計あり | PRO02 | 6 | Proの代表負荷・性能予算と演算基板候補の比較条件を定義する |
 | P3 | Game Runtime・SDK | 0 要件整理 | PRO03 | 6 | Pro非金融ゲームのsample・保存再開・入力SDKの差分仕様を作る |
 | P4 | Service・Storage | 0 要件整理 | PRO04 | 6 | Proの利用者別保存・容量・backup・復旧契約を定義する |
 | P5 | 映像・Audio・I/O | 0 要件整理 | PRO05 | 6 | Proの映像・音声・controller・端子の最小I/O表を作る |
 | P6 | Mini接続・時刻同期 | 0 要件整理 | PRO06 | 6 | 任意Mini–Pro接続の認証・時刻・Pose契約v0を作る |
-| P7 | 筐体・電源・Security・受入 | 0 要件整理 | PRO07 | 6 | Pro筐体・熱・電源・更新復旧の制約と評価計画を作る |
+| P7 | 筐体・電源・Security・受入 | 1 基本設計あり | PRO07 | 6 | Pro筐体・熱・電源・更新復旧の制約と評価計画を作る |
 | R1 | Mission・System | 1 基本設計あり | RKT01 | 6 | rocketstar R1.0のMission入力・未決台帳と要求追跡を整理する |
 | R2 | 構造・Tank | 1 基本設計あり | RKT02 | 6 | 構造・tank・取付Interfaceの解析入力と検証計画を整理する |
 | R3 | 推進 | 1 基本設計あり | RKT03 | 6 | 推進系の要求・機体Interface・検証段階を整理する |

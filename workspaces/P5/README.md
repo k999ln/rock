@@ -6,7 +6,7 @@
 
 **目的:** Pro単体でdisplay、audio、controller、network、外部機器を接続する。
 
-**主担当:** ROCK / **評価対象:** 公開製品説明と要求整理
+**主担当:** ROCK / **評価対象:** OEM参照I/O候補と独立PCの周辺機器要求
 
 ## 触る場所・読む資料
 
@@ -19,13 +19,13 @@
 
 - **PRO05**: Proの映像・音声・controller・端子の最小I/O表を作る — 詳細: `npm run work -- PRO05`
 
-PRO05: 代表display・audio・controllerの接続と非接続時挙動を整理する
+PRO05: OEM基板図面を入力条件に映像・audio・USB・networkの版付き受入条件を具体化する
 
 ## 守る条件・残課題
 
 - 接続規格と実装済みportを区別する
 - latencyとaccessibilityを同時に測る
-- 未解決: Pro固有の統合設計・BOM・実測は未作成
+- 未解決: 販売版port数/位置・音声/映像のexact interfaceは基板図面待ち。同時入出力・driver・latency・復帰の実機測定は未実施
 
 ## 未完了の作業
 

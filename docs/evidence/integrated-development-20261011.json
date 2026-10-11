@@ -38,7 +38,18 @@
       "AI06"
     ],
     "sourceReferenceCount": 235,
-    "historicalPreparationRecords": 23
+    "historicalPreparationRecords": 23,
+    "proAssessmentCorrections": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5",
+      "P6",
+      "P7"
+    ],
+    "nestedContractsReviewed": 32,
+    "nestedContractReviewLimit": "Current source semantics only; historical successful-state flags not transferred to this candidate."
   },
   "validation": {
     "ledgerRecovery": {
@@ -49,6 +60,39 @@
       "fail": 0,
       "skip": 0,
       "limits": "No browser, provider or physical acceptance; repository and data contract checks also passed."
+    },
+    "firstIntegratedVerify": {
+      "sourceSha": "f675a83c4bb33d7bff4cb1916ead383313b5783e",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "failed",
+      "reached": "npm test",
+      "tests": 1558,
+      "pass": 1507,
+      "fail": 50,
+      "skip": 1,
+      "failureGroups": [
+        "Material catalog icon missing (1)",
+        "Material workspace missing from existing handoff harness (46)",
+        "Recovered G04 changes H1 leaf count (2)",
+        "AMC record action carried across task selection (1)"
+      ],
+      "notRun": [
+        "remaining package checks",
+        "build",
+        "Worker/D1 API",
+        "final mission/work/bot checks"
+      ],
+      "limits": "macOS arm64; one unsupported-platform discovery refusal case skipped on this supported platform."
+    },
+    "integrationRegressionRepair": {
+      "sourceSha": "6f18dc27719e303ee34cae67c5f676a911495402",
+      "command": "node --experimental-strip-types --test tests/amc-goal-cli.test.mjs tests/sky-tool-icons.test.mjs tests/sky-tool-workspace-handoff.test.mjs",
+      "tests": 106,
+      "pass": 106,
+      "fail": 0,
+      "skip": 0,
+      "status": "passed",
+      "limits": "Targeted Node/DOM fixtures; full verify and integrated browser still pending."
     }
   },
   "github": {

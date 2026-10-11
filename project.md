@@ -4,6 +4,10 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 統合回帰の修正と現行契約・Pro設計台帳の照合（G04 / H1、ROCK）
+
+初回全体verifyは `f675a83c` でNode 1507 pass / 50 fail / 1 platform skipとなり、後続build/APIは未実行。Material固有iconとhandoff試験の接続漏れ、G04復旧に伴うH1件数、別taskへ前の記録操作が残る不具合を修正し、`6f18dc27` の対象106試験が合格した。P1〜P7は既存Pro P0設計・候補BOMと未受入項目を照合し、「設計未作成」を訂正。P1/P2/P7のscopeを基本設計までとし、実機・供給・製造は未受入のまま維持した。設計索引の32 nested契約を現行sourceで照合・復旧し、旧実行成功や公開状態は復旧しない。SPIDERは公開storage名のexact値と既存2path追加だけを確認したcontrol `06efd843` へpinを更新。次は同一候補のfull verify、UI、履歴検査、GitHub CI。
+
 ## 2026-10-11 — Material CoreをSky/Zemaの本人用仕事へ接続（MAT03 / O5、ROCK）
 
 既存Coreの候補・安全上の不足・由来を比較し、明示保存で既存WorkJobへ入力を記録、同じdigestで再生成・再読込する画面/APIを統合した。所有者分離・不正入力・再送・CAS・サンプル昇格拒否の試験と、320/390/1280pxの実画面を担当worktreeで確認。統合時にeSIM Cloud credentialのZema scopeへ専用APIを接続し、本人別readback・scope不足・cross-origin拒否をWorker/D1試験へ追加した。統合後の全体verifyは未実行。Simulation、ラボ、XR/実機、装置操作、物性・特許性の実証は含まない。

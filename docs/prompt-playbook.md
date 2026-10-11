@@ -6,7 +6,7 @@
 
 ## 1. 読む順番
 
-現在は利用者による設計確認を先行する指示がある。data/product-baseline.jsonのdesignReview/executionApprovalを読み、docs/os-sky-wallet-game-design.mdの承認前は文書の提示・修正だけにする。プロンプト内の実装手順を見つけても自動開始しない。
+data/product-baseline.jsonのdesignReview/executionApprovalと最新の明示指示を読む。設計v1.1は実装承認済みであり、旧文書の承認待ちを再開条件にしない。一方、プロンプト作成だけの依頼は実装開始の依頼ではない。プロンプト本文を作成・保存する作業と、利用者が明示した実行指示を区別する。
 
 1. `AGENTS.md`、`docs/product-baseline.md`、`data/product-baseline.json`。
 2. GitHubのdefault/main SHA、全branch、open PR、関連するclosed/merged PR。`npm run prompt:context` で読み取り専用の最新メタデータを出せる。GitHubに接続できなければ「最新確認未了」とし、過去snapshotを最新と表示しない。
@@ -30,11 +30,11 @@ remote内容は読み取り後に作業checkoutへfetchし、refを40桁SHAに�
 
 各RQを現行実装へ対応付け、再利用・拡張・未接続・不要な方向への逸脱を判定する。商品原本や既存Walletを作り直さず、共通契約とadapterで結ぶことを優先する。新料金、新しい事業、tobの特定企業化、OS/hardwareの変更は既存決定に見せかけない。
 
-指摘した相違は列挙だけで終えず、問題ID、対象RQ、原因/コードの根拠、修正担当、作業順、合格証拠、未解決条件を次の実行プロンプトへ必ず対応付ける。今回の4問題は最新の差分監査と次段階プロンプトでGAP01〜04として追跡する。未解決事項は次回にも引き継ぎ、解消済みなら対象SHAの証拠を示して重複実装を避ける。
+指摘した相違は列挙だけで終えず、問題ID、対象RQ、原因/コードの根拠、修正担当、作業順、合格証拠、未解決条件を次の実行プロンプトへ必ず対応付ける。過去のGAP01〜04などの監査項目は、その記録時点の問題として現在の実装へ再照合する。未解決事項は次回にも引き継ぎ、解消済みなら対象SHAの証拠を示して重複実装を避ける。
 
 製品ベースを保存したbranchと実装branchが異なる場合、最初の実装段階はベースと引継ぎ入口/優先順位の統合とする。AGENTS、README、project、進捗JSON、Mission Control、関連設計に同じ再開先と順番を残す。mainへの保存、作業branchでの反映、元native/mainへの統合は別状態として報告する。起動/安全性に直接依存する修正は先行できるが、実機完成や機種選定を独立したHub/Wallet検証の一律の前提にしない。
 
-今回の中心はHub＋Wallet。商品契約、実行資格、費用、履歴、収益照合を一連で使えるようにする。実機/金融条件が未解決でも、依存しない契約・adapter・fixture検証は進められる。Web公開や旧repo archiveをこの作業の一律の前提にしない。
+現在の主商品はSIM/eSIMを入口とするRockstarOS・Sky・Zema・Agentの利用権と透明なusage料金。回線・SIM profile・本人/サービス利用権・OS/client導入状態を別々に追跡し、商品契約、実行資格、費用、保存・復旧を一連で使えるようにする。Walletは既存の予約・台帳・照合を再利用する。実機/金融条件が未解決でも、依存しない契約・adapter・fixture検証は進められる。Web公開や旧repo archiveをこの作業の一律の前提にしない。
 
 SDKの接続基盤と商品の業務開発を区別する。remote MCP認可を採用する場合は選んだprotocol版の一次資料を確認するが、API商品全体へ同じ認可方式を強制しない。
 
@@ -52,13 +52,13 @@ SDKの接続基盤と商品の業務開発を区別する。remote MCP認可を�
 - 改善候補の相乗効果と測定指標。確定ベースを変更するものは別判断として記録。
 - 既存データ/契約の互換、未決条件、Git保存範囲、次の再開点。
 
-プロンプト末尾でRQ01〜RQ15の漏れ・矛盾を自己点検する。「全部やる」「OSを完成する」だけの完了条件にしない。実装のない宣言schema、mock成功、画面だけの残高表示を完成と呼ばない。最新入口はdata/product-baseline.jsonのnextPrompt。OS受入はdocs/templates/os-acceptance-report.mdで環境別に記録する。ゲーム通貨交換はATMから独立させ、未確定のゲーム/方向/レートと実資金未検証を引き継ぐ。作者向けAPI/SDK/sandboxの導入体験とATM自社手数料0を保持し、ゲーム料金・外部実費・OS月額の判断を混ぜない。
+プロンプト末尾で現行の全RQ（2026-10-11時点はRQ01〜RQ50）と後続の明示要望の漏れ・矛盾を自己点検する。「全部やる」「OSを完成する」だけの完了条件にしない。実装のない宣言schema、mock成功、画面だけの残高表示を完成と呼ばない。最新入口はdata/product-baseline.jsonのnextPrompt。OS受入はdocs/templates/os-acceptance-report.mdで環境別に記録する。ゲーム通貨交換はATMから独立させ、未確定のゲーム/方向/レートと実資金未検証を引き継ぐ。作者向けAPI/SDK/sandboxの導入体験とATM自社手数料0を保持し、ゲーム料金・外部実費・OS月額の判断を混ぜない。
 
 ## 5. Gitへの引継ぎ
 
 新しい明示要望があれば `docs/product-baseline.md` の版と変更記録を更新し、`data/product-baseline.json` を同期する。進捗変更は対象branchのproject/status/Mission Controlに残す。新規監査は日付付き、プロンプトには作成時の対象SHAを書く。
 
-main由来のベース保存commitをnative branchへ取り込む際は、ベースのRQとnativeの実装・Nタスク・BlackBerry方針・固定月額をともに残す。README/AGENTS/statusの片側優先置換をしない。既存PRの取り込み自体は別作業として記録する。
+main由来のベース保存commitをnative branchへ取り込む際は、現行RQと有効なnative実装・Nタスク・料金境界を保持する。物理対象はPixel 10 GL066／frankel、QEMU開発OS受入は独立系列であり、退役したBlackBerry-first方針へ戻さない。README/AGENTS/statusの片側優先置換をしない。既存PRの取り込み自体は別作業として記録する。
 
 プロンプト作成の依頼では、文書保存と将来の実装成果を分ける。今回の文書改訂でブランチ統合・Hub実利用・実収益連携を完了にしない。実装側に未反映ならその事実と正確な次の作業branchを残す。基礎を再説明させるのではなく、次の担当がこの問題表と証拠から再開できる状態にする。
 

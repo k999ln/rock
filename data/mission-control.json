@@ -1230,7 +1230,7 @@
       "division": "avokado-pro",
       "name": "Pro統合設計",
       "goal": "Proの要求、構成、BOM、接続、受入条件を一つの正本へ固定する。",
-      "currentStage": 0,
+      "currentStage": 1,
       "primaryOwner": "ROCK",
       "outcome": "Proを商品説明だけでなく、実装可能で検証可能な製品へ変える。",
       "dependsOnSquads": [
@@ -1258,24 +1258,33 @@
         "受入matrix"
       ],
       "evidence": [
-        "sites/avocado-mini/src/pages/pro/index.astro"
+        "sites/avocado-mini/src/pages/pro/index.astro",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json"
       ],
       "acceptanceGate": "Pro専用正本とproject taskが作成され、P2〜P7のInterfaceと合格条件が閉じている。",
-      "nextAction": "PRO01: 公開説明からgames・services・compute・storage・audioの要求候補を抽出する",
-      "relatedTasks": [],
+      "nextAction": "PRO01: 既存P0設計とMAT16を起点にP2〜P7のInterface・受入matrix・未決担当を具体化する",
+      "relatedTasks": [
+        {
+          "taskId": "MAT16",
+          "relation": "shared_reference"
+        }
+      ],
       "nextTaskIds": [
         "PRO01"
       ],
       "stageAssessment": {
-        "scope": "公開製品説明と要求整理",
+        "scope": "Pro独立PCのP0構成・組立手順・受入方針の基本設計",
         "gaps": [
-          "Pro固有の統合設計・BOM・実測は未作成"
+          "P2〜P7の版付きInterfaceと合格matrixの詳細固定、OEM/ODM供給契約・販売条件・実機受入は未完了"
         ],
-        "evidenceKind": "product_definition",
+        "evidenceKind": "design_candidate",
         "references": [
-          "sites/avocado-mini/src/pages/pro/index.astro"
+          "sites/avocado-mini/src/pages/pro/index.astro",
+          "docs/avokado-pro-pc-design.md",
+          "data/avokado-pro-pc.json"
         ],
-        "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
+        "reviewMethod": "2026-10-11の静的照合。既存P0設計の存在・候補BOM・明示された未受入項目を確認。外部供給仕様の再検証、調達・実機試験・本番受入は含めない。"
       }
     },
     {
@@ -1283,7 +1292,7 @@
       "division": "avokado-pro",
       "name": "Compute・基板",
       "goal": "ゲーム、サービス、ローカルAIを所定性能と電力内で実行する。",
-      "currentStage": 0,
+      "currentStage": 1,
       "primaryOwner": "ROCK",
       "outcome": "Pro単体で主要体験を安定して実行できる。",
       "dependsOnSquads": [
@@ -1310,24 +1319,28 @@
         "性能・電力report"
       ],
       "evidence": [
-        "sites/avocado-mini/src/pages/pro/index.astro"
+        "sites/avocado-mini/src/pages/pro/index.astro",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json"
       ],
       "acceptanceGate": "代表game、AI、serviceを同時負荷で実測し、熱・電力上限内に収める。",
-      "nextAction": "PRO02: ゲーム単独、ゲーム＋音声、サービス＋保存、ローカルAI併用の負荷を定義する",
+      "nextAction": "PRO02: OEM/ODM基板供給、RAM/SSD QVL、firmwareと電源条件を既存候補へ対応付ける",
       "relatedTasks": [],
       "nextTaskIds": [
         "PRO02"
       ],
       "stageAssessment": {
-        "scope": "公開製品説明と要求整理",
+        "scope": "OEM CPU/GPU基板・128GB RAM・4TB SSDの構成候補とP0試験計画",
         "gaps": [
-          "Pro固有の統合設計・BOM・実測は未作成"
+          "exact SKUの供給見積・基板CAD・RAM/SSD型番/QVL・firmware版は未確定。候補BOMはあるが見積済みBOM・組立・電気/熱受入は未完了"
         ],
-        "evidenceKind": "product_definition",
+        "evidenceKind": "design_candidate",
         "references": [
-          "sites/avocado-mini/src/pages/pro/index.astro"
+          "sites/avocado-mini/src/pages/pro/index.astro",
+          "docs/avokado-pro-pc-design.md",
+          "data/avokado-pro-pc.json"
         ],
-        "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
+        "reviewMethod": "2026-10-11の静的照合。既存P0設計の存在・候補BOM・明示された未受入項目を確認。外部供給仕様の再検証、調達・実機試験・本番受入は含めない。"
       }
     },
     {
@@ -1365,10 +1378,12 @@
       ],
       "evidence": [
         "docs/game-api-contract-draft.md",
-        "systems/rock-star-os/examples/game/README.md"
+        "systems/rock-star-os/examples/game/README.md",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json"
       ],
       "acceptanceGate": "Pro candidateでsample gameの導入、実行、Mini入力、保存、削除、復旧を完走する。",
-      "nextAction": "PRO03: 既存DX01の共通契約とPro固有profileの不足を対応付ける",
+      "nextAction": "PRO03: 既存P0受入方針から代表ゲーム・SDK接続・save復旧の測定matrixを具体化する",
       "relatedTasks": [
         {
           "taskId": "DX01",
@@ -1377,22 +1392,28 @@
         {
           "taskId": "GX01",
           "relation": "shared_reference"
+        },
+        {
+          "taskId": "MAT16",
+          "relation": "shared_reference"
         }
       ],
       "nextTaskIds": [
         "PRO03"
       ],
       "stageAssessment": {
-        "scope": "公開製品説明と要求整理",
+        "scope": "ProのAI/ゲーム負荷・保存復旧の要求と共通SDKの参照",
         "gaps": [
-          "Pro固有の統合設計・BOM・実測は未作成"
+          "対象ゲーム・OS/driver・設定・測定条件は未固定。共通Game SDKのhost試験はPro実機の性能・互換受入ではない"
         ],
-        "evidenceKind": "product_definition",
+        "evidenceKind": "product_requirements",
         "references": [
           "docs/game-api-contract-draft.md",
-          "systems/rock-star-os/examples/game/README.md"
+          "systems/rock-star-os/examples/game/README.md",
+          "docs/avokado-pro-pc-design.md",
+          "data/avokado-pro-pc.json"
         ],
-        "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
+        "reviewMethod": "2026-10-11の静的照合。既存P0設計の存在・候補BOM・明示された未受入項目を確認。外部供給仕様の再検証、調達・実機試験・本番受入は含めない。"
       }
     },
     {
@@ -1429,25 +1450,34 @@
       ],
       "evidence": [
         "sites/avocado-mini/src/pages/pro/index.astro",
-        "docs/data-storage-boundaries.md"
+        "docs/data-storage-boundaries.md",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json"
       ],
       "acceptanceGate": "複数利用者、容量不足、電源断、backup、削除、復元を実機で受け入れる。",
-      "nextAction": "PRO04: session・game・作品・秘密参照・ログの保持区分を作る",
-      "relatedTasks": [],
+      "nextAction": "PRO04: 既存2TB×2構成案に本人分離・backup・仕事とゲームsaveの復旧条件を対応付ける",
+      "relatedTasks": [
+        {
+          "taskId": "MAT16",
+          "relation": "shared_reference"
+        }
+      ],
       "nextTaskIds": [
         "PRO04"
       ],
       "stageAssessment": {
-        "scope": "公開製品説明と要求整理",
+        "scope": "OS/apps用とmodel/assets用の保存構成案・仕事復旧の要求",
         "gaps": [
-          "Pro固有の統合設計・BOM・実測は未作成"
+          "暗号化・backup・失効・再起動後復旧のPro固有契約は未固定。共通storageの証拠をPro実機受入へ転用しない"
         ],
-        "evidenceKind": "product_definition",
+        "evidenceKind": "product_requirements",
         "references": [
           "sites/avocado-mini/src/pages/pro/index.astro",
-          "docs/data-storage-boundaries.md"
+          "docs/data-storage-boundaries.md",
+          "docs/avokado-pro-pc-design.md",
+          "data/avokado-pro-pc.json"
         ],
-        "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
+        "reviewMethod": "2026-10-11の静的照合。既存P0設計の存在・候補BOM・明示された未受入項目を確認。外部供給仕様の再検証、調達・実機試験・本番受入は含めない。"
       }
     },
     {
@@ -1482,24 +1512,33 @@
         "Latency report"
       ],
       "evidence": [
-        "sites/avocado-mini/src/pages/pro/index.astro"
+        "sites/avocado-mini/src/pages/pro/index.astro",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json"
       ],
       "acceptanceGate": "代表display、audio、controllerで起動から連続sessionまで実測する。",
-      "nextAction": "PRO05: 代表display・audio・controllerの接続と非接続時挙動を整理する",
-      "relatedTasks": [],
+      "nextAction": "PRO05: OEM基板図面を入力条件に映像・audio・USB・networkの版付き受入条件を具体化する",
+      "relatedTasks": [
+        {
+          "taskId": "MAT16",
+          "relation": "shared_reference"
+        }
+      ],
       "nextTaskIds": [
         "PRO05"
       ],
       "stageAssessment": {
-        "scope": "公開製品説明と要求整理",
+        "scope": "OEM参照I/O候補と独立PCの周辺機器要求",
         "gaps": [
-          "Pro固有の統合設計・BOM・実測は未作成"
+          "販売版port数/位置・音声/映像のexact interfaceは基板図面待ち。同時入出力・driver・latency・復帰の実機測定は未実施"
         ],
-        "evidenceKind": "product_definition",
+        "evidenceKind": "product_requirements",
         "references": [
-          "sites/avocado-mini/src/pages/pro/index.astro"
+          "sites/avocado-mini/src/pages/pro/index.astro",
+          "docs/avokado-pro-pc-design.md",
+          "data/avokado-pro-pc.json"
         ],
-        "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
+        "reviewMethod": "2026-10-11の静的照合。既存P0設計の存在・候補BOM・明示された未受入項目を確認。外部供給仕様の再検証、調達・実機試験・本番受入は含めない。"
       }
     },
     {
@@ -1540,25 +1579,34 @@
       ],
       "evidence": [
         "sites/avocado-mini/src/pages/pro/index.astro",
-        "docs/avocado-mini-r5/package/integrated_design.md"
+        "docs/avocado-mini-r5/package/integrated_design.md",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json"
       ],
       "acceptanceGate": "1台・4台で遅延、jitter、欠落、時刻ずれ、切断、再接続を測定する。",
-      "nextAction": "PRO06: pairing、能力交渉、座標・単位・時刻・schema版を定義する",
-      "relatedTasks": [],
+      "nextAction": "PRO06: Mini cellular設計とPro P0設計を照合し任意連携・切断時独立動作の契約を具体化する",
+      "relatedTasks": [
+        {
+          "taskId": "MAT16",
+          "relation": "shared_reference"
+        }
+      ],
       "nextTaskIds": [
         "PRO06"
       ],
       "stageAssessment": {
-        "scope": "公開製品説明と要求整理",
+        "scope": "Mini単独通信とPro独立PCを維持した任意連携の責任境界",
         "gaps": [
-          "Pro固有の統合設計・BOM・実測は未作成"
+          "Mini接続の本人認証・校正・時刻同期・停止と切断復旧のPro固有受入は未実施。Miniの単独動作・SIM通信をPro必須へ変更しない"
         ],
-        "evidenceKind": "product_definition",
+        "evidenceKind": "product_requirements",
         "references": [
           "sites/avocado-mini/src/pages/pro/index.astro",
-          "docs/avocado-mini-r5/package/integrated_design.md"
+          "docs/avocado-mini-r5/package/integrated_design.md",
+          "docs/avokado-pro-pc-design.md",
+          "data/avokado-pro-pc.json"
         ],
-        "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
+        "reviewMethod": "2026-10-11の静的照合。既存P0設計の存在・候補BOM・明示された未受入項目を確認。外部供給仕様の再検証、調達・実機試験・本番受入は含めない。"
       }
     },
     {
@@ -1566,7 +1614,7 @@
       "division": "avokado-pro",
       "name": "筐体・電源・Security・受入",
       "goal": "Proを家庭内で安全に連続利用し、更新失敗から復旧できる製品へする。",
-      "currentStage": 0,
+      "currentStage": 1,
       "primaryOwner": "JOINT",
       "outcome": "熱、電源、鍵、筐体、保守を含む販売可能性を検証できる。",
       "dependsOnSquads": [
@@ -1598,24 +1646,33 @@
         "実機受入report"
       ],
       "evidence": [
-        "sites/avocado-mini/src/pages/pro/index.astro"
+        "sites/avocado-mini/src/pages/pro/index.astro",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json"
       ],
       "acceptanceGate": "同一試作機で連続負荷、過熱、電源断、更新、rollback、data復元を通す。",
-      "nextAction": "PRO07: 基板、冷却、storage、I/Oから筐体包絡と電力予算の未決を整理する",
-      "relatedTasks": [],
+      "nextAction": "PRO07: OEM P0と販売版を分離し供給図面・熱計測・電源・security・復旧の受入matrixを整備する",
+      "relatedTasks": [
+        {
+          "taskId": "MAT16",
+          "relation": "shared_reference"
+        }
+      ],
       "nextTaskIds": [
         "PRO07"
       ],
       "stageAssessment": {
-        "scope": "公開製品説明と要求整理",
+        "scope": "OEM標準筐体のP0受入と販売版の筐体・電源・熱設計目標",
         "gaps": [
-          "Pro固有の統合設計・BOM・実測は未作成"
+          "販売版寸法は目標であり基板収納/熱/EMC/security/保守は未受入。正式BOM・調達・製造・販売・実機性能は未完了"
         ],
-        "evidenceKind": "product_definition",
+        "evidenceKind": "design_candidate",
         "references": [
-          "sites/avocado-mini/src/pages/pro/index.astro"
+          "sites/avocado-mini/src/pages/pro/index.astro",
+          "docs/avokado-pro-pc-design.md",
+          "data/avokado-pro-pc.json"
         ],
-        "reviewMethod": "静的照合。過去runtime・実機証拠の再実行ではない。"
+        "reviewMethod": "2026-10-11の静的照合。既存P0設計の存在・候補BOM・明示された未受入項目を確認。外部供給仕様の再検証、調達・実機試験・本番受入は含めない。"
       }
     },
     {

@@ -173,7 +173,58 @@
         "scripts/select-native-artifacts.py",
         ".github/workflows/native-os.yml",
         "systems/rock-star-os/tests/test_native_artifacts.py"
-      ]
+      ],
+      "gameRecoveryFixtureValidation": {
+        "document": "docs/native-os-validation.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "regressions": "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+        "purpose": "verify unresolved transport outcomes through durable claim state and exact single grant",
+        "input": "private synthetic Game/Wallet, one controlled transport error or delayed original apply",
+        "success": "verified status/terminal evidence, exact hold release and one journal entry; once True alone is insufficient",
+        "failure": "unexpected claim outcome fails; no extra retry loop or deadline widening",
+        "recovery": "next bounded status reconciles the original signed result or retains the hold",
+        "scope": "test fixture behavior only; production deadlines and authorization unchanged; no guest or real funds"
+      },
+      "platformGuestVerificationEntry": {
+        "document": "docs/native-os-validation.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/platform/guest-test.py",
+        "regressions": "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
+        "input": "/proc/cmdline requires exactly one rock.platform.verify=1 token before any guest verification effect",
+        "authorization": "existing effective UID 0 and aarch64 requirements; does not protect against control of root",
+        "scope": "default local-full or one explicit game-isolation; peer authorization probes unchanged",
+        "failure": "missing, malformed, false, duplicate or conflicting enable tokens fail before PASS, subprocess, IPC, chmod or business mutation",
+        "recovery": "use os/verify-platform.py with fresh userdata, no NIC and read-only rootfs; no automatic enable fallback",
+        "storage": "no new credential, file or persistent setting",
+        "acceptance": "requires synthetic entry regressions and same-head Linux source CI; actual guest image boot remains separate"
+      },
+      "desktopCredentialHandoff": {
+        "document": "systems/rock-star-os/os/desktop/README.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/desktop/launcher.py",
+        "regressions": "systems/rock-star-os/tests/test_os_desktop_browser.py",
+        "input": "exact validated loopback viewer URL with current-session credential fragment",
+        "processArguments": "fixed osascript command only; credential supplied over stdin",
+        "temporaryFileOrEnvironmentCredential": false,
+        "openTimeoutSeconds": 10,
+        "failure": "fixed error; no credential-bearing argv fallback",
+        "noOpen": "no credential fetch or opener invocation",
+        "scope": "Mac host display launcher; guest SSH response and existing VNC auth unchanged"
+      },
+      "nativeCiArtifactSelection": {
+        "document": "docs/native-os-validation.md",
+        "implementation": "scripts/select-native-artifacts.py",
+        "workflow": ".github/workflows/native-os.yml",
+        "regressions": "systems/rock-star-os/tests/test_native_artifacts.py",
+        "selection": "same-run/head maximum attempt per partition, explicit artifact IDs",
+        "preserves": [
+          "prior failure artifacts",
+          "all partition success gate",
+          "source inventory",
+          "original log hashes",
+          "complete discovery"
+        ]
+      }
     },
     {
       "id": "android_pixel",
@@ -333,7 +384,18 @@
         "tests/amc-autonomy.test.mjs",
         "tests/amc-autonomy-lock.test.mjs",
         "tests/amc-autonomy-fixture.test.mjs"
-      ]
+      ],
+      "localSdkAuthenticationBoundary": {
+        "document": "docs/sky-tool-sdk.md",
+        "implementation": "toolkits/sky-tool-sdk/src/index.mjs",
+        "distributionPackage": "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
+        "distributionBoundary": "versioned local package and Studio install link; source byte parity required, no registry publication",
+        "comparison": "UTF-8 byte length equality before timingSafeEqual on the same buffers",
+        "malformedCredentialOutcome": "401 before body parsing or handler; process remains available",
+        "trustBoundary": "local loopback client; descriptor and execution approval policies unchanged",
+        "regressions": "tests/sky-tool-sdk.test.mjs",
+        "acceptanceLimit": "isolated host source tests; real device and external reachability not established"
+      }
     },
     {
       "id": "mcp_and_providers",
@@ -369,7 +431,60 @@
         "lib/llm-providers.ts",
         "tests/llm-providers.test.mjs",
         "tests/llm-completion-boundary.test.mjs"
-      ]
+      ],
+      "legacyMrCompatibilitySecurity": {
+        "document": "docs/sky-mcp-connector.md",
+        "implementation": "toolkits/sky-mcp-connector/server.mjs",
+        "scope": "exact bundled MR connection, four local processors and existing lifecycle only",
+        "approvalException": "legacy four local processors; generic server-ID path still requires one-time approval",
+        "rejection": "403 legacy_mcp_not_supported before transport dispatch",
+        "recovery": "restore bundled connection definition or use generic connect/prepare/confirm/execute",
+        "regressions": "tests/mcp-connector.test.mjs"
+      },
+      "nativeMcpHttpsCaBoundary": {
+        "document": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/mcp_broker/http.py",
+        "httpsRequiresExplicitNonemptyCa": true,
+        "emptyCaFailure": "reject construction before socket connection or credential transmission",
+        "httpException": "explicit allow_http_fixture true and exact 127.0.0.1 only",
+        "currentDeploymentScope": "existing local development fixture; external-provider acceptance pending",
+        "regressions": "systems/rock-star-os/tests/test_mcp_http_deadline.py"
+      },
+      "mrHttpReceiveSecurity": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "toolkits/mr/mcp_server.py",
+        "absoluteReceiveDeadlineSeconds": 10,
+        "deadlineCovers": [
+          "request-line",
+          "headers",
+          "body"
+        ],
+        "responseWriteTimeoutSeconds": 10,
+        "maximumBodyBytes": 16000000,
+        "executionModel": "existing sequential loopback server",
+        "expiryBeforeDispatch": "close without token creation or tool execution",
+        "regressions": "tests/test_mr_http_deadline.py"
+      },
+      "mrDeliverySecurity": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "toolkits/mr/rock_star_tools.py",
+        "readBoundary": "directory-handle-relative no-follow opens; bounded regular-file reads",
+        "verifierInput": "private snapshot of selected artifacts, contract and stored receipt",
+        "metadataMaximumBytes": 1000000,
+        "unsupportedPlatform": "fail closed",
+        "vendorSnapshotChanged": false,
+        "regressions": "tests/test_mr_delivery_boundary.py",
+        "artifactAggregateMaximumBytes": 10000000
+      },
+      "localDescriptorSecurity": {
+        "document": "docs/sky-mcp-connector.md",
+        "implementation": "toolkits/sky-mcp-connector/local-descriptor.mjs",
+        "sameHandleValidationAndRead": true,
+        "maximumBytes": 4096,
+        "rejectSymlinksAndNonRegularFiles": true,
+        "parentDirectoryTrust": "existing owner-local boundary",
+        "regressions": "tests/mcp-local-descriptor.test.mjs"
+      }
     },
     {
       "id": "data_backup_and_recovery",
@@ -451,7 +566,78 @@
         "systems/rock-star-os/os/ui/pin-readiness.json",
         "scripts/review-native-pin-source.py",
         "systems/rock-star-os/tests/test_ui_pin_source_profile.py"
-      ]
+      ],
+      "spiderImprovementCycle": {
+        "document": "docs/spider-guard.md",
+        "collector": "scripts/spider-feedback.mjs",
+        "regressions": ".github/workflows/spider-regressions.yml",
+        "autoMerge": false,
+        "toolDesign": "docs/sky-tools-complete-design.md",
+        "operation": "read-only bounded alert/current-head workflow metadata collection; no automatic fix, dismissal or merge"
+      },
+      "spiderGuardAnimationRevision": {
+        "document": "docs/spider-guard.md",
+        "actualFindingsOnly": true,
+        "newActualBlockedCounterOnly": true,
+        "inactiveOnUnhealthyOrDisconnected": true,
+        "currentSurface": "native security panel",
+        "globalOverlaySelected": false,
+        "protectionAuthority": "presentation consumes sanitized actual metadata; it cannot authorize or weaken guard enforcement",
+        "implementation": [
+          "systems/rock-star-os/os/ui/security-ui.inc",
+          "systems/rock-star-os/os/ui/spider-motion.c"
+        ],
+        "regressions": "systems/rock-star-os/os/ui/test_ui.c"
+      },
+      "spiderGuardAgentRole": {
+        "document": "docs/spider-guard.md",
+        "id": "spider",
+        "role": "security",
+        "scope": "platform-data",
+        "duties": [
+          "watch_platform_data",
+          "inspect_outbound",
+          "deny_sensitive_outbound",
+          "report_health"
+        ],
+        "stateSource": "actual worker liveness, freshness and findings",
+        "lastActionSource": "sanitized actual blocking metadata",
+        "currentSurface": "native security panel",
+        "protectionAuthority": "presentation consumes sanitized actual metadata; it cannot authorize or weaken guard enforcement",
+        "implementation": [
+          "systems/rock-star-os/os/platform/sensitive_guard.py",
+          "systems/rock-star-os/os/platform/service.py"
+        ],
+        "regressions": "systems/rock-star-os/tests/test_sensitive_guard.py"
+      },
+      "spiderCodeInspector": {
+        "document": "docs/spider-guard.md",
+        "completeDesignSection": "19.2",
+        "nativeOperation": "security.inspectCode",
+        "standaloneBuild": "scripts/build-spider-inspector.mjs",
+        "standaloneSource": "toolkits/spider-guard/inspector.html",
+        "executesInput": false,
+        "externalRequests": false,
+        "persistsInput": false,
+        "inputMaxBytes": 65536,
+        "inputMaxLines": 2000,
+        "findingsMax": 100,
+        "reportExport": "optional metadata-only JSON",
+        "implementation": [
+          "scripts/build-spider-inspector.mjs",
+          "toolkits/spider-guard/README.md",
+          "toolkits/spider-guard/inspector.html",
+          "toolkits/spider-guard/program-inspector.mjs",
+          "toolkits/spider-guard/program-inspector.d.mts",
+          "tests/spider-inspector-artifact.test.mjs",
+          "tests/spider-program-inspector.test.mjs",
+          "systems/rock-star-os/os/platform/code_inspector.py",
+          "systems/rock-star-os/tests/test_code_inspector.py",
+          "systems/rock-star-os/os/platform/service.py"
+        ],
+        "nativeOwnerUid": 1000,
+        "nativePythonAstNodeLimit": 20000
+      }
     },
     {
       "id": "game_ip",
@@ -572,7 +758,41 @@
         "toolkits/amc-agent/README.md",
         "tests/amc-agent.test.mjs",
         "data/amc/agent-runtime-source.json"
-      ]
+      ],
+      "acceptedCandidateRevalidation": {
+        "event": "revalidate_task",
+        "design": "docs/amc-sky-launch-integration.md",
+        "test": "tests/amc-revalidation.test.mjs",
+        "executionBoundary": "local_owner_transition_web_fail_closed",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "quickFormat": {
+        "design": "docs/amc-sky-launch-integration.md",
+        "component": "components/amc-quick-board.tsx",
+        "storage": "sessionStorage_tab_only",
+        "authority": "manual_checklist_not_execution_or_acceptance",
+        "placement": "auxiliary_collapsed",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "commandCenter": {
+        "design": "docs/amc-sky-launch-integration.md",
+        "component": "components/amc-command-center.tsx",
+        "runner": "scripts/amc-parallel.mjs",
+        "test": "tests/amc-parallel.test.mjs",
+        "executionBoundary": "local_fixture_only_web_execution_not_connected",
+        "sourceIntegration": "mounted by components/amc-tool-runner.tsx; draft/owner-bound saved views; no automatic external execution",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "agentDefinition": {
+        "source": "data/amc/agent-definitions.json",
+        "launcher": "scripts/amc-agent.mjs",
+        "design": "docs/amc-sky-launch-integration.md",
+        "usage": "toolkits/amc-agent/README.md",
+        "tests": "tests/amc-agent.test.mjs",
+        "runtimeSource": "data/amc/agent-runtime-source.json",
+        "scope": "Codex_custom_agents_web_execution_not_connected",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      }
     },
     {
       "id": "rockstar-csv-cleanup",
@@ -588,7 +808,51 @@
         "docs/evidence/sky-csv-storage-verification.json",
         "docs/evidence/sky-production-auth-verification.json",
         "docs/evidence/sky-csv-expiry-verification.json"
-      ]
+      ],
+      "releaseAcceptance": {
+        "document": "docs/sky-tools-complete-design.md#5-csv整形検査納品",
+        "checks": [
+          "JPY_50_without_currency_conversion",
+          "owner_scoped_checkout_return",
+          "server_verified_payment_and_completed_artifacts",
+          "unpaid_cancel_without_execution",
+          "reload_and_output_hash",
+          "Apple_Pay_requires_supported_device_acceptance"
+        ],
+        "acceptanceState": "requirements_only_not_new_provider_acceptance",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "paymentStatusContract": {
+        "implementation": [
+          "lib/sky-service-status.ts",
+          "components/sky-service-help.tsx"
+        ],
+        "tests": [
+          "tests/sky-service-status.test.mjs",
+          "scripts/check-work-api.mjs"
+        ],
+        "csvPayments": "dedicated CSV webhook plus valid mode/key/origin and available DB/R2",
+        "payments": "marketplace configuration only; not CSV trial availability",
+        "configuredIsPaymentProof": false,
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "storageIsolationContract": {
+        "implementation": [
+          "lib/csv-job-store.ts"
+        ],
+        "tests": [
+          "scripts/check-csv-storage.mjs"
+        ],
+        "insertion": "attempt-specific R2 input key; owner-scoped replay; reconcile uncertain commit before cleanup",
+        "productionOwnerAcceptance": false,
+        "expiry": "processing and retry reject before claim after expiry; unauthorized requests do not purge another owner",
+        "historicalEvidence": [
+          "docs/evidence/sky-csv-storage-verification.json",
+          "docs/evidence/sky-production-auth-verification.json",
+          "docs/evidence/sky-csv-expiry-verification.json"
+        ],
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      }
     },
     {
       "id": "rockstar-markets-analysis",
@@ -596,7 +860,25 @@
       "recoveredContractReferences": [
         "docs/sky-tools-complete-design.md",
         "components/everything-market.tsx"
-      ]
+      ],
+      "signinRecoveryAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": "components/everything-market.tsx",
+        "trigger": "HTTP401",
+        "recovery": "separate-tab-signin-and-refresh",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "paperAcceptance": {
+        "samplesNotVerifiedServices": true,
+        "samplePriceNotPerformance": true,
+        "completedHistoryInWorkspace": true,
+        "receiptReadbackAfterReload": true,
+        "successClosesTicketAndFocusesActivity": true,
+        "jsonTimeoutMs": 10000,
+        "mobileSearchInHeaderGrid": true,
+        "scope": "PAPER workspace source behavior; no live asset or settlement acceptance",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      }
     },
     {
       "id": "mercari-revenue",
@@ -615,11 +897,64 @@
         "lib/operations.ts",
         "tests/operations.test.mjs",
         "tests/sky-routing.test.mjs"
-      ]
+      ],
+      "launchRecovery": {
+        "desktopOnly": true,
+        "mobileAndUnknownHostLoopbackLink": false,
+        "runtimeAvailabilityVerifiedByLaunchLink": false,
+        "design": "docs/sky-tools-complete-design.md#85-ip-studio--交換可能な制作配信ゲーム展開",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "voiceTelephony": {
+        "provider": "livekit",
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/sky-connections.ts",
+          "lib/operations.ts"
+        ],
+        "tests": [
+          "tests/operations.test.mjs",
+          "tests/sky-routing.test.mjs"
+        ],
+        "runtimeConnected": false,
+        "executionBoundary": "setup_metadata_only",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      }
     },
     {
       "id": "coconala",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "signinRecovery": {
+        "inputPreservedInOpenDialog": true,
+        "separateTab": true,
+        "recheckDoesNotSubmitDraft": true,
+        "requestTimeoutMs": 10000,
+        "returnPaths": {
+          "workspace": "/zema/tools/coconala",
+          "legacyDetail": "/sky/tools/coconala"
+        },
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "mobileResultActions": {
+        "stackHeadingBelow760px": true,
+        "wrapButtons": true,
+        "minimumButtonHeightPx": 44,
+        "restoredOutputDarkContrast": true,
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "draftDeletion": {
+        "confirmationRequired": true,
+        "ownerScoped": true,
+        "sameOriginRequired": true,
+        "expectedRevisionRequired": true,
+        "draftOnly": true,
+        "atomicStateAndRevisionCheck": true,
+        "deletesCaseContentAndHistory": true,
+        "refreshDoesNotDelete": true,
+        "externalTransactionUnchanged": true,
+        "activeCaseRetentionAccepted": false,
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      }
     },
     {
       "id": "mr-free-article",
@@ -664,7 +999,51 @@
         "lib/remote-ai-pricing-gate.ts",
         "tests/llm-providers.test.mjs",
         "scripts/check-work-api.mjs"
-      ]
+      ],
+      "localHistoryAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/local-guide-history.ts",
+          "components/local-guide-history-consent.tsx",
+          "lib/operations-client.ts"
+        ],
+        "tests": [
+          "tests/local-guide-history.test.mjs",
+          "tests/operations.test.mjs"
+        ],
+        "consent": "optional-default-off",
+        "contentStored": false,
+        "remoteExecutionVerified": false,
+        "diagnosticCodes": [
+          "HTTP_STATUS",
+          "TIMEOUT",
+          "NETWORK",
+          "INVALID_RESPONSE",
+          "CLIENT_ERROR"
+        ],
+        "calculationFailureRetry": false
+      },
+      "cloudTransportAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/llm-providers.ts",
+          "lib/remote-ai-pricing-gate.ts"
+        ],
+        "tests": [
+          "tests/llm-providers.test.mjs",
+          "scripts/check-work-api.mjs"
+        ],
+        "timeoutMs": 20000,
+        "automaticRetry": false,
+        "redirects": "manual",
+        "responseStore": false,
+        "usage": "validated-provider-counts-or-null",
+        "observedSearchCalls": "not-invoice-proof",
+        "pricingGateAccepted": false,
+        "productionProviderExecutionVerified": false,
+        "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
+        "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+      }
     },
     {
       "id": "rockstar-patent-assistant",
@@ -680,7 +1059,51 @@
         "lib/remote-ai-pricing-gate.ts",
         "tests/llm-providers.test.mjs",
         "scripts/check-work-api.mjs"
-      ]
+      ],
+      "localHistoryAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/local-guide-history.ts",
+          "components/local-guide-history-consent.tsx",
+          "lib/operations-client.ts"
+        ],
+        "tests": [
+          "tests/local-guide-history.test.mjs",
+          "tests/operations.test.mjs"
+        ],
+        "consent": "optional-default-off",
+        "contentStored": false,
+        "remoteExecutionVerified": false,
+        "diagnosticCodes": [
+          "HTTP_STATUS",
+          "TIMEOUT",
+          "NETWORK",
+          "INVALID_RESPONSE",
+          "CLIENT_ERROR"
+        ],
+        "calculationFailureRetry": false
+      },
+      "cloudTransportAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/llm-providers.ts",
+          "lib/remote-ai-pricing-gate.ts"
+        ],
+        "tests": [
+          "tests/llm-providers.test.mjs",
+          "scripts/check-work-api.mjs"
+        ],
+        "timeoutMs": 20000,
+        "automaticRetry": false,
+        "redirects": "manual",
+        "responseStore": false,
+        "usage": "validated-provider-counts-or-null",
+        "observedSearchCalls": "not-invoice-proof",
+        "pricingGateAccepted": false,
+        "productionProviderExecutionVerified": false,
+        "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
+        "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+      }
     },
     {
       "id": "faster-whisper",
@@ -868,200 +1291,268 @@
     "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
     "reviewedAt": "2026-10-11",
     "restoredReferenceCount": 235,
-    "policy": "Union existing document/source/test paths with current index; preserve newer domains and acceptance flags. Prior nested result/configuration claims require a separate semantic review.",
-    "pendingContractReview": [
+    "policy": "Restore verified current source references and reviewed contract invariants; omit historical successful-state claims, superseded configuration and output locations. Record unresolved contracts separately.",
+    "pendingContractReview": [],
+    "reviewedContracts": [
       {
         "entity": "linux_qemu",
         "contract": "gameRecoveryFixtureValidation",
-        "sourceReferences": 3,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Restore the durable claim/outcome, exact hold and single-journal assertions as host fixture acceptance requirements; this is not real-funds or guest acceptance.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "linux_qemu",
         "contract": "platformGuestVerificationEntry",
-        "sourceReferences": 4,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "The exact enable-token guard precedes PASS, UID/architecture checks and all guest effects. Linux source CI and actual guest boot are separate acceptance requirements, not established by this review.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "linux_qemu",
         "contract": "desktopCredentialHandoff",
-        "sourceReferences": 4,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Credential-bearing browser URL uses stdin to a fixed osascript argv. The separate /usr/bin/open path is credential-free VNC only. No-open avoids credential retrieval.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "linux_qemu",
         "contract": "nativeCiArtifactSelection",
-        "sourceReferences": 4,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Five partitions are selected using same run/head and latest attempt; selector cannot prefer a passing older artifact. Workflow separately requires all partitions/root UI success.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "sky_zema_and_tools",
         "contract": "localSdkAuthenticationBoundary",
-        "sourceReferences": 4,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current package remains 0.1.3. Buffer byte length is checked before timingSafeEqual, preceding readJson; test verifies process survival and legitimate follow-up requests.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "mcp_and_providers",
         "contract": "legacyMrCompatibilitySecurity",
-        "sourceReferences": 3,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "The legacy exception remains exactly the bundled stdio spec and four fixed first-party processors. Generic Tool execution still uses one-time approval.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "mcp_and_providers",
         "contract": "nativeMcpHttpsCaBoundary",
-        "sourceReferences": 3,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "HTTPS rejects empty CA before ssl/socket setup; HTTP requires literal 127.0.0.1 and explicit fixture flag. No external TLS/provider claim.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "mcp_and_providers",
         "contract": "mrHttpReceiveSecurity",
-        "sourceReferences": 3,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Receive deadline covers request line, headers, body and final pre-dispatch check; response writing receives an independent timeout.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "mcp_and_providers",
         "contract": "mrDeliverySecurity",
-        "sourceReferences": 3,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Correct the historical ambiguous artifactMaximumBytes: implementation uses a cumulative 10,000,000-byte artifact budget. Each control metadata file is bounded at 1,000,000 bytes. No vendor snapshot changes.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "mcp_and_providers",
         "contract": "localDescriptorSecurity",
-        "sourceReferences": 3,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "fstat and bounded read use the same handle. O_NOFOLLOW/O_NONBLOCK, regular-file status and owner/private permissions are mandatory; unsupported platforms fail closed.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "security_operator_release",
         "contract": "spiderImprovementCycle",
-        "sourceReferences": 4,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Restore read-only collection, no auto-merge and regression references. Do not restore the claimed hourly Codex schedule or old first-repair PR list as current state. Old toolDesign anchor incorrectly names Instagram.",
+        "historicalFieldsNotRestored": [
+          "status",
+          "cadence",
+          "firstRepairs"
+        ]
       },
       {
         "entity": "security_operator_release",
         "contract": "spiderGuardAnimationRevision",
-        "sourceReferences": 2,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Restore source behavior only: renderer uses actual findings, triggers a pulse on a new observed blocked-count increase, and is inactive if disconnected/unhealthy/off panel. Historical renderer validation is not fresh guest/UI acceptance.",
+        "historicalFieldsNotRestored": [
+          "status",
+          "baseCommit",
+          "evidence",
+          "evidenceSection",
+          "freshValidationRecorded",
+          "protectionAuthorityChanged"
+        ]
       },
       {
         "entity": "security_operator_release",
         "contract": "spiderGuardAgentRole",
-        "sourceReferences": 2,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Identity/duties and sanitized actual action/state contracts match SensitiveGuard and Platform summary. Omit revision comparison flags and historical validation status.",
+        "historicalFieldsNotRestored": [
+          "status",
+          "evidence",
+          "evidenceSection",
+          "freshValidationRecorded",
+          "protectionAuthorityChanged",
+          "monitoringCadenceOrScopeChanged"
+        ]
       },
       {
         "entity": "security_operator_release",
         "contract": "spiderCodeInspector",
-        "sourceReferences": 11,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Static data-only inspection and source limits remain implemented. Native dispatch requires UI_UID=1000; historical external outputs/SPIDER.html is not a repository deliverable or current acceptance. Host fixture tests are not Linux/guest deployment.",
+        "historicalFieldsNotRestored": [
+          "status",
+          "deliverableOutsideRepository",
+          "freshValidationRecorded",
+          "guardCountersChanged",
+          "evidence",
+          "evidenceSection",
+          "nativeLinuxValidationRecorded"
+        ]
+      },
+      {
+        "entity": "rockstar-legal-intake",
+        "contract": "localHistoryAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Both legal and patent UI defaults are false. Pure local generation runs at most once even when recording fails; only tool/bytes/duration/outcome metadata is sent, not source text. Keep remote execution unverified.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-legal-intake",
+        "contract": "cloudTransportAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Apply these fields only to the legal-guidance and patent-research routes. They remain pricing-gated before Provider dispatch. General remote-ai queue/reservation persistence exists elsewhere, so do not restore a repository-wide no-usage-ledger claim.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-patent-assistant",
+        "contract": "localHistoryAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Both legal and patent UI defaults are false. Pure local generation runs at most once even when recording fails; only tool/bytes/duration/outcome metadata is sent, not source text. Keep remote execution unverified.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-patent-assistant",
+        "contract": "cloudTransportAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Apply these fields only to the legal-guidance and patent-research routes. They remain pricing-gated before Provider dispatch. General remote-ai queue/reservation persistence exists elsewhere, so do not restore a repository-wide no-usage-ledger claim.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "rockstar-csv-cleanup",
         "contract": "releaseAcceptance",
-        "sourceReferences": 1,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "rockstar-csv-cleanup",
         "contract": "paymentStatusContract",
-        "sourceReferences": 4,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "rockstar-csv-cleanup",
         "contract": "storageIsolationContract",
-        "sourceReferences": 5,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": [
+          "historical evidence treated as fresh validation"
+        ]
       },
       {
         "entity": "rockstar-markets-analysis",
         "contract": "signinRecoveryAcceptance",
-        "sourceReferences": 2,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "rockstar-markets-analysis",
         "contract": "paperAcceptance",
-        "sourceReferences": 0,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "rockstar-ip-studio",
         "contract": "launchRecovery",
-        "sourceReferences": 1,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "rockstar-ip-studio",
         "contract": "voiceTelephony",
-        "sourceReferences": 5,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": [
+          "historical status"
+        ]
       },
       {
         "entity": "coconala",
         "contract": "signinRecovery",
-        "sourceReferences": 0,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "coconala",
         "contract": "mobileResultActions",
-        "sourceReferences": 0,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "coconala",
         "contract": "draftDeletion",
-        "sourceReferences": 0,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
-      },
-      {
-        "entity": "rockstar-legal-intake",
-        "contract": "localHistoryAcceptance",
-        "sourceReferences": 6,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
-      },
-      {
-        "entity": "rockstar-legal-intake",
-        "contract": "cloudTransportAcceptance",
-        "sourceReferences": 5,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
-      },
-      {
-        "entity": "rockstar-patent-assistant",
-        "contract": "localHistoryAcceptance",
-        "sourceReferences": 6,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
-      },
-      {
-        "entity": "rockstar-patent-assistant",
-        "contract": "cloudTransportAcceptance",
-        "sourceReferences": 5,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "rockstar-amc",
         "contract": "acceptedCandidateRevalidation",
-        "sourceReferences": 2,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": [
+          "historical status"
+        ]
       },
       {
         "entity": "rockstar-amc",
         "contract": "quickFormat",
-        "sourceReferences": 2,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       },
       {
         "entity": "rockstar-amc",
         "contract": "commandCenter",
-        "sourceReferences": 4,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": [
+          "historical status"
+        ]
       },
       {
         "entity": "rockstar-amc",
         "contract": "agentDefinition",
-        "sourceReferences": 6,
-        "decision": "Restore current source references only; historical status/configuration claims stay in source history until contract review."
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
       }
-    ]
+    ],
+    "reviewScope": "32 nested contracts reviewed against current code after runtime restoration. Existing source invariants restored; old run success and production claims excluded."
   }
 }
