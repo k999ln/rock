@@ -3811,8 +3811,17 @@
         "tests/web-asset-closure.test.mjs",
         "app/workspace.css",
         "docs/product-baseline.md",
-        "docs/evidence/launch/sites-owner-auth-blocker-20260915.json"
-      ]
+        "docs/evidence/launch/sites-owner-auth-blocker-20260915.json",
+        "scripts/start-local-web.mjs",
+        "scripts/local-wrangler.mjs",
+        "scripts/spider-web-runtime.mjs",
+        "tests/start-local-web.test.mjs"
+      ],
+      "recoveryFollowup": {
+        "date": "2026-10-11",
+        "scope": "local built Worker start, migrations, shutdown and Operator authentication refusal verified; production deployment remains separate",
+        "sourceSha": "7106f0c7e94bf19cefdfefbe9e3bb98ab97ea7e9"
+      }
     },
     {
       "id": "HOME01",
@@ -4135,8 +4144,17 @@
       "evidence": [
         "tests/workflow.test.mjs",
         "scripts/check-work-api.mjs",
-        "docs/evidence/spider-work-plan-contract.json"
-      ]
+        "docs/evidence/spider-work-plan-contract.json",
+        "components/workbench.tsx",
+        "app/api/work-jobs/route.ts",
+        "lib/owner-intent.ts",
+        "tests/workbench-owner-recovery.test.mjs"
+      ],
+      "recoveryFollowup": {
+        "date": "2026-10-11",
+        "scope": "local component, real requestUser/store/SQLite and entitlement fixture verified; integrated browser/CI pending",
+        "sourceSha": "ea489506b210c951573a1716fbe4fd55be3514cb"
+      }
     },
     {
       "id": "R04",

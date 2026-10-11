@@ -166,6 +166,8 @@ O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承
 
 本人は履歴の委任証拠が欠けても未終了のローカル計画を取り消せる。owner・revision・終了状態の検査を通し、リモートAgentの停止成功とは分ける。進行・完了では既存の証跡照合を省略せず、証拠不足は409として再取得・照合後に再試行する。mainのAMC専用イベントと2段revision、新しい表示修正を保持する。
 
+2026-10-11の作成復旧では、未確認の仕事ID・名前・templateへ元アカウントの`ownerScope`を固定する。Workbenchは明示再送の前にGETで照合し、POSTも現在の`requestUser`と意図headerが不一致なら保存前に拒否する。scopeは認証・利用権を与えない。401では作成を止め、本人用一覧と選択を消し、入力を残して別タブのサインインへ案内する。元ownerへの復帰で同IDを確認でき、保留解除を明示した後だけ新IDから始める。古い一覧応答・同時createは現在の状態を上書きしない。既存API clientのheader省略、PATCH/CAS、Zema利用権、料金・実行承認は維持する。作成IDはmemory-onlyで、強制終了後の復旧を保証しない。
+
 合格範囲は実handler/storeとSQLiteによる拒否・取消・競合回帰。合成認証と実requestUserを使う別fixtureを区別し、本番認証・配備・実機・料金保留解除は受入に含めない。[検証と未解決条件](evidence/spider-work-plan-contract.json)を参照する。
 
 ## 2. 共通Tool契約

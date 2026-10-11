@@ -1376,16 +1376,212 @@
     "followupFindings": {
       "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
       "workbenchOwnerIntent": {
-        "status": "reproduced_fix_in_progress",
+        "status": "repaired_targeted_verification_passed",
         "scope": "R03/O2/ROCK",
         "finding": "Same creation ID/title/template persisted across A pre-insert503, unauthenticated401 and B403. After B acquired a valid Zema entitlement, the old A input was created under B with201.",
-        "limits": "Existing A/B job separation and no billing/provider effects confirmed; pending creation owner intent is the missing boundary."
+        "limits": "Existing A/B job separation and no billing/provider effects confirmed; pending creation owner intent is the missing boundary.",
+        "repairSha": "ea489506b210c951573a1716fbe4fd55be3514cb",
+        "validation": {
+          "dedicatedComponentRouteSqliteTests": 5,
+          "relatedUniqueTests": 49,
+          "typecheck": "passed",
+          "productLint": "passed",
+          "integratedBrowser": "Owner retry and explicit release passed on built be8038be; same-tab navigation loss separately reproduced and under repair.",
+          "integratedFullVerification": "pending"
+        },
+        "integratedBrowser": {
+          "source": {
+            "sourceSHA": "be8038be3c55fa2602c9acab4a45e296e10e7a25",
+            "serverSha256": "fc23b007002d5212abd3531568d31672762ebe49661f1f4febecbd4672bb9b66",
+            "configSha256": "b748c5a5779b70d5c8af9268897a65a0911719b172882e3550edbbf5ca060a57"
+          },
+          "status": "owner-recovery-passed-navigation-loss-reproduced",
+          "runtime": "exact root vinext dist/server + dist/client; direct Miniflare with fresh local D1",
+          "isolation": "gateway-auth synthetic A/B/null and preview entitlement mode; actual route and SQL; no Provider, purchases, file chooser or production identity",
+          "checks": [
+            {
+              "name": "precommit failure",
+              "result": "pass",
+              "detail": "SQLite BEFORE INSERT trigger caused real API 503; zero records at first failure",
+              "id": "cd9183f5-6e41-439f-a186-0373ebfc563c"
+            },
+            {
+              "name": "401 + signin",
+              "result": "pass",
+              "detail": "Explicit confirmation GET 401; real product signin link opened new tab 48023007 while original Workbench tab 48023004 retained title and pending"
+            },
+            {
+              "name": "B owner rejection",
+              "result": "pass",
+              "detail": "B GET returned distinct ownerScope; same creation button disabled, title retained, zero B POST until separate explicit release/new-create case"
+            },
+            {
+              "name": "original A resume + reload",
+              "result": "pass",
+              "detail": "Original ID and ownerScope POST 201; reload showed exactly one A job and zero B at this stage",
+              "id": "cd9183f5-6e41-439f-a186-0373ebfc563c",
+              "capture": "a-recovered-reloaded.jpg"
+            },
+            {
+              "name": "explicit release",
+              "result": "pass",
+              "detail": "Second A503 switched to B, manual connection confirmed mismatch; explicit release retained title, following explicit create used fresh ID and B scope",
+              "originalId": "3293b7c4-75e9-46c7-b2a0-64d36ba47168",
+              "newId": "d2b499b7-6177-49d6-a2e7-12a304963352"
+            },
+            {
+              "name": "same-tab library navigation",
+              "result": "fail",
+              "detail": "Third precommit503 pending visible. Clicking product Library navigated to /zema/library with no dialog; clicking product Work returned /chat?view=work with title empty and pending notice absent. Failed ID has no D1 row. No new create was attempted afterward.",
+              "lostId": "f30a2b37-b2b2-4ee7-adfa-22b356017df9",
+              "captures": [
+                "pending-before-navigation.jpg",
+                "pending-lost-after-navigation.jpg"
+              ]
+            }
+          ],
+          "finalD1": {
+            "a": 1,
+            "b": 1,
+            "postCount": 5
+          },
+          "evidence": [
+            "readback.json",
+            "b-blocked.jpg",
+            "a-recovered-reloaded.jpg",
+            "pending-before-navigation.jpg",
+            "pending-lost-after-navigation.jpg"
+          ],
+          "changes": "ignored work fixture only; no tracked edits and root source/dist untouched",
+          "cleanup": "localhost fixture stopped and all three task tabs closed",
+          "limitations": [
+            "Synthetic trusted auth gateway, not real IdP acceptance.",
+            "Creation and reload only; no execution/delegation/paid Provider.",
+            "Navigation defect reported to root before product changes."
+          ]
+        }
       },
       "localPreviewRuntime": {
-        "status": "reproduced_fix_in_progress",
+        "status": "repaired_local_runtime_verified",
         "scope": "WEB01/O7/ROCK",
         "finding": "npm start selected top-level Wrangler4.122.0 and its older workerd after migration, rejecting the build compatibility date2026-10-01. Verification uses the newer builder runtime, so CI did not cover this CLI path.",
-        "repairBoundary": "Reuse existing builder-aligned productionWrangler resolver; no dependency update or lowered compatibility date."
+        "repairBoundary": "Reuse existing builder-aligned productionWrangler resolver; no dependency update or lowered compatibility date.",
+        "repairSha": "7106f0c7e94bf19cefdfefbe9e3bb98ab97ea7e9",
+        "validation": {
+          "baseCommit": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+          "fixCommit": "7106f0c7e94bf19cefdfefbe9e3bb98ab97ea7e9",
+          "task": "WEB01 / O7 / ROCK: local preview only",
+          "runtimePaths": {
+            "rootCli": {
+              "wrangler": "4.122.0",
+              "miniflare": "5.20260811.0-alpha",
+              "workerd": "1.20260811.1",
+              "maximumCompatibilityDateObserved": "2026-08-18"
+            },
+            "builderAndVinextDev": {
+              "wrangler": "4.147.0",
+              "miniflare": "5.20261001.0-alpha",
+              "workerd": "1.20261001.1"
+            },
+            "lockfileAndInstalledResolutionAgree": true
+          },
+          "before": [
+            {
+              "command": "npm run start -- --port 4320 --ip 127.0.0.1",
+              "exitCode": 1,
+              "error": "service core:user:rock-star: This Worker requires compatibility date \"2026-10-01\", but the newest date supported by this server binary is \"2026-08-18\".",
+              "log": "npm-start.log"
+            },
+            {
+              "command": "npm run operator-dock:dev -- --port 4321 --ip 127.0.0.1 --persist-to <own ignored operator-old-state>",
+              "exitCode": 1,
+              "error": "service core:user:avocado-operator-dock: This Worker requires compatibility date \"2026-09-15\", but the newest date supported by this server binary is \"2026-08-18\".",
+              "log": "operator-old.log"
+            }
+          ],
+          "after": {
+            "freshBuiltWorker": {
+              "name": "npm-start-fresh",
+              "command": [
+                "npm",
+                "run",
+                "start",
+                "--",
+                "--port",
+                "4320",
+                "--ip",
+                "127.0.0.1"
+              ],
+              "freshState": true,
+              "httpStatus": 200,
+              "exitCode": -15,
+              "portClosed": true,
+              "appliedMigrations": 63,
+              "expectedMigrations": 63
+            },
+            "operatorDock": {
+              "name": "operator-dock",
+              "command": [
+                "npm",
+                "run",
+                "operator-dock:dev",
+                "--",
+                "--port",
+                "4321",
+                "--ip",
+                "127.0.0.1",
+                "--persist-to",
+                "<own ignored operator-fixed-state>"
+              ],
+              "status": 503,
+              "bodyPrefix": "{\"error\":\"運営Dockの認証設定が完了していません。\"}",
+              "contentType": "application/json",
+              "exitCode": -15,
+              "portClosed": true
+            },
+            "vinextDevUnchanged": {
+              "name": "npm-dev-unchanged",
+              "command": [
+                "npm",
+                "run",
+                "dev",
+                "--",
+                "--port",
+                "4322",
+                "--hostname",
+                "127.0.0.1"
+              ],
+              "httpStatus": 200,
+              "exitCode": 143,
+              "portClosed": true
+            },
+            "builtWorkerSource": "Unchanged dist built from 2ebb625045e9f0aaa15effdc1f337c761708f53a copied into independent ignored fixture; copied Wrangler state removed before fresh migration check"
+          },
+          "checks": {
+            "commandRegressionAndResolver": {
+              "passed": 11,
+              "failed": 0
+            },
+            "targetedOxlint": "PASS",
+            "gitDiffCheck": "PASS",
+            "trackedWorktree": "CLEAN"
+          },
+          "boundaries": [
+            "No dependency or lockfile update",
+            "No compatibility date downgrade",
+            "No root source or dist mutation",
+            "No deployment or remote migration",
+            "Only default local persistence is migrated by npm start; forwarded custom --persist-to needs its own matching migration",
+            "Operator Dock returns 503 for absent operator authentication configuration; no authorization bypass"
+          ]
+        }
+      },
+      "workbenchNavigation": {
+        "sourceSha": "be8038be3c55fa2602c9acab4a45e296e10e7a25",
+        "status": "reproduced_fix_in_progress",
+        "task": "R03/O2/ROCK",
+        "finding": "After real pre-insert503, following Library and returning to Work removed the pending title and creation ID with no saved row.",
+        "repairBoundary": "Reuse existing pending-save navigation hook for pending creation only; keep separate-tab signin and explicit release."
       }
     }
   },

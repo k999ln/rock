@@ -124,7 +124,19 @@
         "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
         "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
         "tests/esim-device-entitlement.test.mjs"
-      ]
+      ],
+      "workbenchCreationRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/workbench.tsx",
+        "api": "app/api/work-jobs/route.ts",
+        "sharedOwnerIntent": "lib/owner-intent.ts",
+        "regressions": "tests/workbench-owner-recovery.test.mjs",
+        "input": "Original authenticated owner scope, creation ID, title and template are frozen together.",
+        "recovery": "Before explicit retry, reload authenticated owner intent. Unknown/different owner cannot create. Resume original owner or explicitly release pending intent before a new ID.",
+        "apiBoundary": "Optional intent header is checked before writes, never used to authenticate. Legacy clients and Zema entitlement checks remain.",
+        "uiBoundary": "401 disables creation and clears displayed private jobs; sign-in opens a separate tab. Late reads and simultaneous create are rejected.",
+        "limits": "Memory-only pending creation; no provider, fee or production acceptance."
+      }
     },
     {
       "id": "web_pc",
@@ -151,7 +163,21 @@
         "components/system-settings.module.css",
         "components/csv-business-workspace.module.css",
         "components/rock-studio.tsx"
-      ]
+      ],
+      "localPreviewRuntime": {
+        "document": "README.md",
+        "implementation": [
+          "scripts/start-local-web.mjs",
+          "scripts/local-wrangler.mjs",
+          "scripts/spider-web-runtime.mjs"
+        ],
+        "regressions": "tests/start-local-web.test.mjs",
+        "runtime": "Resolve Wrangler from the Cloudflare builder dependency, matching the generated Worker compatibility date.",
+        "webStart": "Apply default local D1 migrations successfully before starting built Worker dev.",
+        "operatorStart": "Use matching runtime; retain separate database setup and fail closed on missing operator authentication.",
+        "failure": "Do not start dev after migration failure or interruption; preserve child exit code and shutdown signals.",
+        "limits": "No dependency/date/config/authorization changes or remote deployment. Custom preview persistence still requires a matching separate migration."
+      }
     },
     {
       "id": "linux_qemu",

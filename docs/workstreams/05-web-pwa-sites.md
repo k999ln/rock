@@ -1,5 +1,12 @@
 # Web / PWA / Sites
 
+## 2026-10-11 — buildとlocal previewのruntimeを一致（WEB01 / O7、ROCK）
+
+標準`npm start`と`operator-dock:dev`が直下Wrangler 4.122.0の古いworkerdを使い、生成済みWorkerの2026-10-01／Operatorの2026-09-15 compatibility dateを拒否することを再現した。既存`productionWrangler` resolverでbuilder側Wrangler 4.147.0を選び、依存更新・日付の引下げ・認証変更なしで復旧した。Webはlocal D1 migration成功後のみ起動し、失敗codeとSIGINT／SIGTERMを伝搬する。Operatorは別DBの準備と本人認証を維持する。
+
+command／resolver回帰11件、fresh DBの63 migrationとbuilt Worker HTTP200、未認証Operatorの期待503、既存`npm dev`のHTTP200と全port停止を確認。既存custom `--persist-to`をpreviewだけに渡す場合は同じ保存先へ別途migrationが必要。配備・remote migration・公開・本番readbackは行っておらず、WEB01のblocked状態は保持する。
+
+
 ## 既存端末への機能追加（2026-10-06、HOME01 / SYS01 / WEB14）
 
 利用者の追加指示に基づき、Sky・データ回収・LLMを既存OS上のWeb/PWAから選んで使う。目的は端末交換やOS書込を要求せず同じ入口を提供すること。主担当はWeb / PWA / Sites、ROCK。SIM/eSIMの通信・利用権と、機能の表示設定は独立し、追加操作だけで権限・課金・Provider接続を成立させない。
