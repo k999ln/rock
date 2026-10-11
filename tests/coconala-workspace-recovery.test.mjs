@@ -8,6 +8,9 @@ import { createTeamCase, applyTeamAction, teamMoney } from '../lib/coconala-team
 const compiled = ts.transpileModule(readFileSync(new URL('../components/coconala-team-workspace.tsx', import.meta.url), 'utf8'), {
   compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
 }).outputText;
+const navigationCompiled = ts.transpileModule(readFileSync(new URL('../components/use-pending-save-navigation.ts', import.meta.url), 'utf8'), {
+  compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS },
+}).outputText;
 class RequestError extends Error { constructor(status) { super(`HTTP ${status}`); this.status = status; } }
 const fields = {
   案件名: 'Synthetic recovery case', 'ココナラ案件番号・参照': 'fixture-01', '顧客の表示名': 'fixture-customer',
@@ -18,7 +21,7 @@ const fields = {
   '担当者へ発注条件を明示した記録': 'fixture reference',
 };
 function harness() {
-  const slots = [], effects = [], requests = [], records = new Map(), timers = [], listeners = new Map(), replies = [];
+  const slots = [], effects = [], requests = [], records = new Map(), timers = [], listeners = new Map(), documentListeners = new Map(), replies = [];
   let cursor = 0, tree, drop = null, validation = false;
   const react = {
     useState(initial) { const i = cursor++; if (!(i in slots)) slots[i] = initial;
@@ -41,7 +44,7 @@ function harness() {
     const payload = value === undefined ? undefined : JSON.parse(JSON.stringify(value));
     requests.push({ method, value: payload });
     if (method === 'GET') return replies.length ? await replies.shift()() : { cases: [...records.values()] };
-    if (validation) { validation = false; throw new RequestError(400); }
+    if (validation) { const status = validation; validation = false; throw new RequestError(status); }
     let file;
     if (method === 'POST') {
       file = records.get(payload.id) ?? createTeamCase(payload);
@@ -52,8 +55,18 @@ function harness() {
     if (drop === method) { drop = null; throw new RequestError(503); }
     return { caseFile: file };
   }
+  const windowSurface = { setTimeout(fn) { timers.push(fn); return timers.length; }, clearTimeout() {},
+    addEventListener(name, fn) { listeners.set(name, fn); }, removeEventListener(name) { listeners.delete(name); } };
+  class Element { constructor(attributes) { this.attributes = attributes; } closest() { return this; }
+    getAttribute(name) { return this.attributes[name] ?? null; } hasAttribute(name) { return name in this.attributes; } }
+  const navigation = {};
+  runInNewContext(navigationCompiled, { exports: navigation, Element, window: windowSurface,
+    document: { addEventListener(name, fn) { documentListeners.set(name, fn); }, removeEventListener(name) { documentListeners.delete(name); } },
+    require(name) { assert.equal(name, 'react'); return react; },
+  });
   const modules = {
-    react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': inert,
+    react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
+    '@/components/use-pending-save-navigation': navigation,
     '@/lib/operations-client': { operationRequest: request, OperationRequestError: RequestError },
     '@/lib/coconala-team': { teamMoney }, '@/lib/catalog': { catalog: [] },
     '@/lib/sky-tool-ui': { skyToolUiState: inert },
@@ -62,8 +75,7 @@ function harness() {
   };
   const exports = {};
   runInNewContext(compiled, { exports, crypto,
-    window: { setTimeout(fn) { timers.push(fn); return timers.length; }, clearTimeout() {},
-      addEventListener(name, fn) { listeners.set(name, fn); }, removeEventListener(name) { listeners.delete(name); } },
+    window: windowSurface,
     require(id) {
       if (id in modules) return modules[id];
       if (id.startsWith('@/components/')) return inert;
@@ -93,8 +105,9 @@ function harness() {
   async function reload() { const button = nodes(tree).find((node) => node.type === 'button' && node.props['aria-label'] === '再読込');
     assert.ok(button); assert.ok(!button.props.disabled); button.props.onClick(); render(); await flush(); }
   render();
-  return { replies, reload, render, find, nodes: (node = tree) => nodes(node), flush, click, fillLabel, fillPlaceholder, submit, requests, records, listeners,
-    drop(method) { drop = method; }, rejectNext() { validation = true; } };
+  return { replies, reload, render,
+    navigate(attributes) { let prevented = false; documentListeners.get('click')?.({ button: 0, target: new Element(attributes), preventDefault() { prevented = true; } }); return prevented; }, find, nodes: (node = tree) => nodes(node), flush, click, fillLabel, fillPlaceholder, submit, requests, records, listeners,
+    drop(method) { drop = method; }, rejectNext(status = 400) { validation = status; } };
 }
 
 void test('lost create response retains a frozen operation and retries one draft with the same ID', async () => {
@@ -180,4 +193,20 @@ void test('a pre-action Coconala list cannot roll back a confirmed PATCH in the 
   delayed.resolve({ cases: prior }); await h.flush();
   assert.equal(h.find('button', '担当開始を記録'), undefined);
   assert.ok(h.nodes().some((node) => node.props?.placeholder === '成果物を受領した記録・検査結果'));
+});
+
+void test('Coconala pending saves protect same-tab navigation while allowing separate-tab sign-in', async () => {
+  const h = await savedCase(); await h.click('担当開始を記録');
+  h.fillPlaceholder('金額（円）', '3000'); h.fillPlaceholder('外部明細・振込参照番号', 'navigation-fixture');
+  h.drop('PATCH'); await h.click('記録する');
+  const back = h.find('a', 'ライブラリへ戻る'); assert.ok(back);
+  assert.equal(h.navigate({ href: back.props.href }), true);
+  assert.equal(h.navigate({ href: '/' }), true, 'WorkspaceShell Home shares the document guard');
+  h.rejectNext(401); await h.click('同じ保存内容で結果を確認');
+  const signin = h.find('a', '別タブでサインイン'); assert.ok(signin);
+  assert.equal(h.navigate({ href: signin.props.href, target: signin.props.target }), false);
+  assert.equal(h.navigate({ href: 'blob:fixture', download: 'fixture.json' }), false);
+  await h.click('サインイン後に接続を確認'); await h.click('同じ保存内容で結果を確認');
+  assert.equal(h.navigate({ href: back.props.href }), false, 'confirmed save releases navigation');
+  assert.equal([...h.records.values()][0].customerReceipts.length, 1);
 });
