@@ -59,6 +59,7 @@ async function setup(t) {
     ['@/lib/fund-store', { database: () => db, requestUser: auth.requestUser }],
   ]);
   for (const name of [
+    'bounded-stream',
     'owner-intent',
     'a2a-delegation-store',
     'work-store',
