@@ -1,3 +1,4 @@
+import * as ownerIntent from '../lib/owner-intent.ts';
 import assert from 'node:assert/strict';
 import { generateKeyPairSync, randomUUID, sign } from 'node:crypto';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -52,6 +53,7 @@ for (const [scope, newerScope] of [['zema', 'sky'], ['sky', 'zema']]) {
     const env = { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'true' };
     const dependencies = new Map([
       ['cloudflare:workers', { env }],
+      ['@/lib/owner-intent', ownerIntent],
       ['@/lib/a2a-delegation-store', { a2aDelegationStore }],
       ['@/lib/fund-store', { database: () => db, requestUser }],
       ['@/lib/work-store', { workStore }],

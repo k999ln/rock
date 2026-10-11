@@ -61,3 +61,14 @@ BIL03（AMC O5、ROCK）の原稿作成は、同じowner・保存ID・正規化�
 2026-10-11の追加競合検証では、一覧GETへ世代を付け、認証失敗・新しい本人別一覧・保存開始より前の応答を破棄する。ココナラは401後の旧案件復活、アカウント切替後の旧一覧、担当開始PATCH後の画面巻戻しを3つの実component回帰で拒否する。メルカリは初回GETの空一覧が新規保存カードを消す競合を回帰試験とChromeの実component＋合成transportで検証した。サーバーのowner条件・同一ID再送・revision CASは変更していない。
 
 追加の離脱回帰ではココナラも共通`usePendingSaveNavigation`へ接続した。ローカル実vinext/API/D1で保存前503→Home/Library移動の停止と入力維持→同一記録の再確認→移動再開を確認し、手入力receiptは0→1、revisionは1→2。別タブ認証・exportは許可する。強制終了・crash・history/programmatic navigationの永続復旧は保証しない。
+
+
+## 保存途中の認証切替
+
+2026-10-11、Material・メルカリ・ココナラで、Aの保存前DB失敗→401→Bとして同じPOSTを再確認すると、未保存の旧入力がBへ登録されることを実route／全migration SQLiteで再現した。既にAへcommit済みならID衝突で409、別ownerへの金額PATCHは404であり、認証権限の突破や自動二重入金ではなかった。
+
+3画面は既存の一覧GETに追加した`ownerScope`を未確認操作へ固定し、送信直前のGET一致と`X-Rock-Owner-Scope`のAPI照合を行う。scopeは現在の`requestUser`のSHA-256識別値で、認証・権限・新DBではない。`POST/PATCH /api/coconala-team`（DELETEにも適用）、`POST/PATCH /api/revenue/mercari`、Material POST／WorkJob PATCHは、headerがある場合は不正値・別ownerを409 `OWNER_CHANGED`で書込前に拒否し、owner決定は常に`requestUser`に従う。既存API client互換のためheader自体は任意だが、この3復旧UIは確認済みscopeを必須とし、省略・不明を同一ownerと見なさない。
+
+別ownerでは旧操作の再送を止め、元ownerで接続確認するか、明示的に保留を解除した後に新しい保存IDで操作を始める。解除は本文を残し、保存済み記録を削除しない。元owner側の保存結果確認を案内し、確認前の強制終了・永続復旧は従来どおり保証しない。外部送信・取引・実決済は追加しない。
+
+関連98試験が合格（実route／SQLiteのowner固定8、実component復帰31、既存Material/Coconala/Mercari/WorkJob/eSIMの回帰）。未知scope、401→BでPOSTなし、A復帰の同一ID再送、確認直後のowner切替409、明示解除後の本文保持と新IDを検証した。Chromeでは実Mercari component・既存認証確認hook・実HTTP client・実route／SQLiteを接続し、認証入口だけを合成化したlocal fixtureで、A保存前503→401→Bで再送停止・A0/B0→Aへ戻り同一操作保存→再読込後A1/B0を確認した。本番IdPや実取引の受入ではない。

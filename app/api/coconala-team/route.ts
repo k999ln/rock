@@ -1,3 +1,4 @@
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { database, requestUser } from '@/lib/fund-store';
 import { coconalaTeamStore } from '@/lib/coconala-team-store';
 import { applyTeamAction, createTeamCase, teamId, TeamCaseError } from '@/lib/coconala-team';
@@ -45,7 +46,7 @@ async function body(request: Request): Promise<unknown> {
 export async function GET(request: Request) {
   try {
     const user = await requestUser(request);
-    return json({ cases: await coconalaTeamStore(database()).list(user) });
+    return json({ cases: await coconalaTeamStore(database()).list(user), ownerScope: await ownerScopeFor(user) });
   } catch (error) {
     return failure(error);
   }
@@ -54,6 +55,8 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const candidate = createTeamCase(await body(request));
     const saved = await coconalaTeamStore(database()).create(user, candidate);
     if (!saved || JSON.stringify(saved.creationTerms ?? saved.terms) !== JSON.stringify(candidate.terms))
@@ -67,6 +70,8 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const value = await body(request);
     if (!value || typeof value !== 'object' || Array.isArray(value))
       throw new TeamCaseError('入力を確認してください。');
@@ -88,6 +93,8 @@ export async function PATCH(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const value = await body(request);
     if (!value || typeof value !== 'object' || Array.isArray(value))
       throw new TeamCaseError('入力を確認してください。');

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
 import fixture from '@/contracts/material-invention-fixture.json';
 import { generateMaterialCandidateGraph, validateMaterialInventionRequest, type MaterialCandidateGraph, type MaterialInventionRequest } from '@/lib/material-invention';
@@ -11,16 +12,16 @@ import styles from './material-invention-workspace.module.css';
 
 type SavedStudy = Pick<WorkJob, 'id' | 'title' | 'status' | 'revision' | 'updatedAt'>;
 type Result = { job: WorkJob; graph: MaterialCandidateGraph };
-type Pending = { url: string; method: 'POST' | 'PATCH'; body: unknown };
+type Pending = { ownerScope: string; url: string; method: 'POST' | 'PATCH'; body: unknown };
 const safetyLabels = { BLOCKED: '情報不足・禁止条件あり', REVIEW_REQUIRED: '資格者の確認が必要', SANDBOX_ONLY: '机上候補のみ' };
 const errorText = (error: unknown) => error instanceof Error ? error.message : '処理を確認できませんでした。';
 class MaterialApiError extends Error { status: number; constructor(message: string, status: number) { super(message); this.status = status; } }
 async function fetchSavedStudies(signal?: AbortSignal) {
   const response = await fetch('/api/material-invention', { credentials: 'same-origin', cache: 'no-store', signal });
   if (response.status === 401) throw new MaterialApiError('保存済みの候補の確認にはサインインが必要です。', 401);
-  const data = await response.json() as { jobs?: SavedStudy[]; error?: string };
+  const data = await response.json() as { jobs?: SavedStudy[]; ownerScope?: string; error?: string };
   if (!response.ok || !Array.isArray(data.jobs)) throw new MaterialApiError(data.error || '保存済みの候補を確認できません。', response.status);
-  return data.jobs;
+  return { jobs: data.jobs, ownerScope: readOwnerScope(data.ownerScope) };
 }
 
 export default function MaterialInventionWorkspace() {
@@ -36,6 +37,7 @@ export default function MaterialInventionWorkspace() {
   const [busy, setBusy] = useState(false);
   const [previewRunning, setPreviewRunning] = useState(false);
   const [needsSignin, setNeedsSignin] = useState(false);
+  const [ownerScope, setOwnerScope] = useState<string | null>(null);
   const [pending, setPending] = useState<Pending | null>(null);
   const [filter, setFilter] = useState('all');
   const [limit, setLimit] = useState(30);
@@ -50,15 +52,16 @@ export default function MaterialInventionWorkspace() {
   function loseStorageAccess() {
     storageGeneration.current++;
     setNeedsSignin(true);
+    setOwnerScope(null);
     setJobs([]);
   }
   async function list(signal?: AbortSignal) {
     const version = ++storageGeneration.current;
     try {
       const saved = await fetchSavedStudies(signal);
-      if (mounted.current && !signal?.aborted && version === storageGeneration.current) { setJobs(saved); setNeedsSignin(false); setStorageMessage('サインイン中の本人が保存した候補です。'); }
+      if (mounted.current && !signal?.aborted && version === storageGeneration.current) { setJobs(saved.jobs); setOwnerScope(saved.ownerScope); setNeedsSignin(false); setStorageMessage('サインイン中の本人が保存した候補です。'); }
     } catch (error) {
-      if (mounted.current && !signal?.aborted && version === storageGeneration.current) { setStorageMessage(errorText(error)); if (error instanceof MaterialApiError && error.status === 401) loseStorageAccess(); }
+      if (mounted.current && !signal?.aborted && version === storageGeneration.current) { setOwnerScope(null); setStorageMessage(errorText(error)); if (error instanceof MaterialApiError && error.status === 401) loseStorageAccess(); }
     }
   }
   useEffect(() => {
@@ -67,8 +70,8 @@ export default function MaterialInventionWorkspace() {
     const controller = new AbortController();
     const version = ++storageGeneration.current;
     void fetchSavedStudies(controller.signal).then((saved) => {
-      if (!controller.signal.aborted && version === storageGeneration.current) { setJobs(saved); setNeedsSignin(false); setStorageMessage('サインイン中の本人が保存した候補です。'); }
-    }).catch((error: unknown) => { if (!controller.signal.aborted && version === storageGeneration.current) { setStorageMessage(errorText(error)); if (error instanceof MaterialApiError && error.status === 401) loseStorageAccess(); } });
+      if (!controller.signal.aborted && version === storageGeneration.current) { setJobs(saved.jobs); setOwnerScope(saved.ownerScope); setNeedsSignin(false); setStorageMessage('サインイン中の本人が保存した候補です。'); }
+    }).catch((error: unknown) => { if (!controller.signal.aborted && version === storageGeneration.current) { setOwnerScope(null); setStorageMessage(errorText(error)); if (error instanceof MaterialApiError && error.status === 401) loseStorageAccess(); } });
     return () => { mountedRef.current = false; generationRef.current++; controller.abort(); activeRef.current?.abort(); };
   }, []);
 
@@ -104,23 +107,31 @@ export default function MaterialInventionWorkspace() {
     finally { if (mounted.current) setBusy(false); }
   }
   async function mutate(operation: Pending) {
+    if (!readOwnerScope(operation.ownerScope)) { setMessage(OWNER_CHECK_REQUIRED); return; }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 20000);
     active.current = controller;
+    storageGeneration.current++;
     setPending(operation); setBusy(true); setMessage('');
     try {
+      const identity = await fetchSavedStudies(controller.signal);
+      if (!mounted.current) return;
+      setOwnerScope(identity.ownerScope);
+      if (!identity.ownerScope) throw new Error(OWNER_CHECK_REQUIRED);
+      if (identity.ownerScope !== operation.ownerScope) { setJobs([]); throw new Error(OWNER_CHANGED_MESSAGE); }
       const response = await fetch(operation.url, { method: operation.method, credentials: 'same-origin', cache: 'no-store', signal: controller.signal,
-        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(operation.body) });
+        headers: { 'Content-Type': 'application/json', [OWNER_SCOPE_HEADER]: operation.ownerScope }, body: JSON.stringify(operation.body) });
       if (response.status === 401) {
         if (mounted.current) loseStorageAccess();
         throw new Error('保存の確認にはサインインが必要です。同じ記録IDを保持しています。');
       }
-      const data = await response.json() as Partial<Result> & { error?: string };
+      const data = await response.json() as Partial<Result> & { error?: string; code?: string };
       if (!mounted.current) return;
       if (!response.ok || !data.job) {
         // Authentication loss and malformed success are still uncertain: a
         // previous attempt may already have committed with this exact ID.
-        if ([400, 404, 409, 413, 415].includes(response.status)) setPending(null);
+        if (data.code === OWNER_CHANGED) { setOwnerScope(null); setJobs([]); }
+        if (data.code !== OWNER_CHANGED && [400, 404, 409, 413, 415].includes(response.status)) setPending(null);
         throw new Error(data.error || '保存状態を確認できません。同じ操作を再試行してください。');
       }
       setJob(data.job);
@@ -129,7 +140,7 @@ export default function MaterialInventionWorkspace() {
       setPending(null);
       setMessage(operation.method === 'POST' ? '入力と候補を本人の仕事として保存しました。' : '仕事の状態を保存しました。');
       void list();
-    } catch (error) { if (mounted.current) setMessage(controller.signal.aborted ? '応答を確認できません。同じ記録IDで再試行してください。' : errorText(error)); }
+    } catch (error) { if (mounted.current) { if (error instanceof MaterialApiError && error.status === 401) loseStorageAccess(); setMessage(controller.signal.aborted ? '応答を確認できません。同じ記録IDで再試行してください。' : errorText(error)); } }
     finally { clearTimeout(timeout); if (mounted.current) setBusy(false); }
   }
   async function open(id: string) {
@@ -141,7 +152,7 @@ export default function MaterialInventionWorkspace() {
         if (mounted.current) loseStorageAccess();
         throw new Error('保存候補の確認にはサインインが必要です。');
       }
-      const data = await response.json() as Partial<Result> & { error?: string };
+      const data = await response.json() as Partial<Result> & { error?: string; code?: string };
       if (!response.ok || !data.job?.materialStudy || !data.graph) throw new Error(data.error || '保存候補を復元できません。');
       if (!mounted.current) return;
       const saved = data.job.materialStudy;
@@ -152,8 +163,8 @@ export default function MaterialInventionWorkspace() {
     finally { if (mounted.current) setBusy(false); }
   }
   function command(action: 'complete' | 'cancel') {
-    if (!job) return;
-    void mutate({ url: '/api/work-jobs', method: 'PATCH', body: { jobId: job.id, revision: job.revision,
+    if (!job || !ownerScope) return;
+    void mutate({ ownerScope, url: '/api/work-jobs', method: 'PATCH', body: { jobId: job.id, revision: job.revision,
       command: { id: crypto.randomUUID(), action, ...(action === 'complete' ? { note: '机上の配合候補と不足条件を確認。実験・性能・安全・特許性の承認ではない。' } : {}) } } });
   }
   function download() {
@@ -193,14 +204,15 @@ export default function MaterialInventionWorkspace() {
           {filtered.length === 0 && <p>この条件の候補はありません。</p>}
           {filtered.length > limit && <button onClick={() => setLimit(limit + 30)}>次の30候補を表示</button>}
           <details className={styles.provenance}><summary>入力・版・再現情報</summary><p>{request?.goal.title}</p><code>{graph.contract}</code><p>入力SHA-256</p><code>{graph.requestDigest}</code>{request?.materials.map((material) => <p key={material.id}>{material.name}：{material.source} / lot {material.lot} / SDS {material.sdsRef || 'なし'}</p>)}<p>工程：{request?.process.id} / v{request?.process.version}</p></details>
-          <div className={styles.actions}><button onClick={download}>入力を含むJSONを保存</button>{!job && <button className={styles.primary} disabled={locked || !title.trim()} onClick={() => void mutate({ url: '/api/material-invention', method: 'POST', body: { id: crypto.randomUUID(), title, request, sample } })}>入力と候補を本人用に保存</button>}{job?.status === 'review' && <button disabled={locked} onClick={() => command('complete')}>結果・不足条件を確認済みにする</button>}{job && ['active', 'review'].includes(job.status) && <button disabled={locked} onClick={() => command('cancel')}>仕事を終了する</button>}</div>
+          <div className={styles.actions}><button onClick={download}>入力を含むJSONを保存</button>{!job && <button className={styles.primary} disabled={locked || !title.trim() || !ownerScope} onClick={() => ownerScope && void mutate({ ownerScope, url: '/api/material-invention', method: 'POST', body: { id: crypto.randomUUID(), title, request, sample } })}>入力と候補を本人用に保存</button>}{job?.status === 'review' && <button disabled={locked || !ownerScope} onClick={() => command('complete')}>結果・不足条件を確認済みにする</button>}{job && ['active', 'review'].includes(job.status) && <button disabled={locked || !ownerScope} onClick={() => command('cancel')}>仕事を終了する</button>}</div>
           {job && <p className={styles.note}>保存済みの仕事：{job.status === 'completed' ? '確認済み' : job.status === 'cancelled' ? '終了' : job.status === 'review' ? '確認待ち' : 'サンプル確認中'} / revision {job.revision}。候補の安全状態は変わりません。</p>}
         </>}
       </section>
     </div>
+    {!ownerScope && !needsSignin && <output>{OWNER_CHECK_REQUIRED}</output>}
     {message && <output className={styles.message}>{message}</output>}
-    {pending && !busy && <div className={styles.boundary}><p>保存結果が不明です。入力を変えず、同じ記録IDで照合・再試行します。</p><button onClick={() => void mutate(pending)}>同じ操作を再試行</button></div>}
-    {needsSignin && <p className={styles.note}><Link prefetch={false} href="/signin-with-chatgpt?return_to=%2Fzema%2Ftools%2Frockstar-material-invention" target="_blank" rel="noopener noreferrer">サインインして保存を使う</Link>。別タブでサインイン後、この画面で再確認してください。入力を含むJSONは手元へ保存できます。読み込み時は候補と承認を引き継がず、入力から再生成します。</p>}
-    <section className={styles.saved} aria-label="保存した物質候補"><h3>保存した仕事</h3><p className={styles.note}>{storageMessage}</p><button disabled={locked} onClick={() => void list()}>一覧を再読込</button>{jobs.length === 0 ? <p className={styles.note}>保存済みの候補はまだ表示されていません。</p> : <ul>{jobs.map((item) => <li key={item.id}><button disabled={locked} onClick={() => void open(item.id)}>{item.title}</button><span>{item.status} / {new Date(item.updatedAt).toLocaleString()}</span></li>)}</ul>}</section>
+    {pending && !busy && <div className={styles.boundary}><p>保存結果が不明です。最初のアカウントで同じ記録IDを確認します。別アカウントには再送しません。</p><p>{ownerScope && ownerScope !== pending.ownerScope ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p><p>保留を解除しても保存済み記録は削除されません。元のアカウントで保存結果を確認してから新しく保存してください。入力本文は残ります。</p><button onClick={() => { setPending(null); setJob(null); setMessage('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button><button disabled={!!ownerScope && ownerScope !== pending.ownerScope} onClick={() => void mutate(pending)}>同じ操作を再試行</button></div>}
+    {(needsSignin || pending) && <p className={styles.note}><Link prefetch={false} href="/signin-with-chatgpt?return_to=%2Fzema%2Ftools%2Frockstar-material-invention" target="_blank" rel="noopener noreferrer">サインインして保存を使う</Link>。別タブでサインイン後、この画面で再確認してください。入力を含むJSONは手元へ保存できます。読み込み時は候補と承認を引き継がず、入力から再生成します。</p>}
+    <section className={styles.saved} aria-label="保存した物質候補"><h3>保存した仕事</h3><p className={styles.note}>{storageMessage}</p><button disabled={busy} onClick={() => void list()}>一覧を再読込</button>{jobs.length === 0 ? <p className={styles.note}>保存済みの候補はまだ表示されていません。</p> : <ul>{jobs.map((item) => <li key={item.id}><button disabled={locked} onClick={() => void open(item.id)}>{item.title}</button><span>{item.status} / {new Date(item.updatedAt).toLocaleString()}</span></li>)}</ul>}</section>
   </section>;
 }

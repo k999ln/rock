@@ -1,3 +1,4 @@
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { env } from 'cloudflare:workers';
 import { database, requestUser } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
@@ -46,7 +47,7 @@ export async function GET(request: Request) {
   try {
     const user = await requestUser(request), store = workStore(database());
     const id = new URL(request.url).searchParams.get('id');
-    if (!id) return json({ jobs: await store.listMaterial(user) });
+    if (!id) return json({ jobs: await store.listMaterial(user), ownerScope: await ownerScopeFor(user) });
     const job = await store.get(user, workId(id));
     if (!job || job.templateId !== 'material-invention') throw new WorkError('物質候補が見つかりません。', 404);
     return json({ job, graph: await restoreMaterialStudy(job) });
@@ -55,6 +56,8 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const user = await requestUser(request), db = database();
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     if (!(await rockstarServiceScopeAllowed(db, user, 'zema',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request))) {
       if (request.body && !request.bodyUsed && !request.body.locked) void request.body.cancel().catch(() => {});

@@ -28,7 +28,7 @@ async function setup(t) {
     new Map([['./fund-store', fund], ['./operations', operations]]));
   const route = loadRouteFixture(new URL('../app/api/revenue/mercari/route.ts', import.meta.url), new Map([
     ['@/lib/fund-store', fund], ['@/lib/operations-api', api], ['@/lib/operations', operations], ['@/lib/request-auth', auth],
-    ...await Promise.all(['mercari-revenue', 'mercari-revenue-store'].map(async (name) =>
+    ...await Promise.all(['owner-intent', 'mercari-revenue', 'mercari-revenue-store'].map(async (name) =>
       [`@/lib/${name}`, await import(new URL(`../lib/${name}.ts`, import.meta.url).href)])),
   ]));
   async function call(method, input, { owner = 'alice', origin = 'https://fixture.invalid', contentType = 'application/json', raw } = {}) {
