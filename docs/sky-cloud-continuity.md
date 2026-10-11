@@ -165,4 +165,4 @@ RockstarOSの接続経路が地上回線から衛星に変わっても、受付�
 
 「どこでも」は目標であり、地下・屋内・遮蔽・提供地域外・混雑時まで保証しない。MVPでは既存事業者連携/専用端末/自社衛星を比較し、後者は対象地域・可用性・速度・同時利用者・端末・予算、周波数認可/国際調整、衛星・地上局・携帯網、製造/打上げ/運用を別々に実現性評価する。ITU非静止衛星の手続きは主管庁による申請・周波数/軌道調整を伴う。[ITU non-GSO procedures](https://www.itu.int/en/ITU-R/space/support/nonGSO/Pages/default.aspx) 独自衛星の技術・規制・資金feasibility、製造・打上げ・無線送信・運用契約、実接続は未実施。外部事業者の技術実証はRockstarの受入証拠ではない。
 
-既存の[衛星通信設計](avocado-mini-mini200-e1/game-first-life-connectivity.md)とrocketstar原本を参照するが、旧ハードウェア形状・打上げ能力・通信payload受入を継承しない。技術的参考は[AST SpaceMobile](https://ast-science.com/how-it-works/)と[Starlinkの直接通信説明](https://starlink.com/public-files/DIRECT_TO_CELL_FIRST_TEXT_UPDATE.pdf)。他社の技術実証はRockstarの受入証拠ではない。
+既存の衛星通信設計（削除済み）とrocketstar原本を参照するが、旧ハードウェア形状・打上げ能力・通信payload受入を継承しない。技術的参考は[AST SpaceMobile](https://ast-science.com/how-it-works/)と[Starlinkの直接通信説明](https://starlink.com/public-files/DIRECT_TO_CELL_FIRST_TEXT_UPDATE.pdf)。他社の技術実証はRockstarの受入証拠ではない。

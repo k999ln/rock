@@ -4,6 +4,7 @@ import {
   parseResearchAiResponse,
   type ResearchAiCitation,
 } from './research-ai.ts';
+import { PATENT_AI_INSTRUCTIONS } from './generated/private-content.ts';
 
 export const PATENT_AI_MODEL = 'gpt-5.4-nano';
 
@@ -106,14 +107,7 @@ export function buildPatentAiRequest(
     ],
     tool_choice: { type: 'web_search' },
     include: ['web_search_call.action.sources'],
-    instructions: [
-      'あなたは日本のソフトウェア・システム発明の先行技術調査を補助する担当です。弁理士ではなく、特許性、侵害回避、登録、期限を保証しません。',
-      '必ずweb_searchを使い、JPO、INPIT/J-PlatPat、WIPO、EPO/Espacenetの一次情報だけを根拠にしてください。ブログ、まとめ、販売ページは根拠にしません。',
-      '公開番号、名称、URLを推測・創作しないでください。原文を確認できた候補だけを挙げ、確認できない場合は「確認できず」と書いてください。',
-      '日本語で「検索観点」「近い可能性がある文献・分類」「新規性・進歩性で確認すべき差分」「追加検索」「限界」の順に回答してください。各候補について似ている構成と異なる可能性を分けてください。',
-      'ユーザー入力に秘密情報が含まれる可能性があるため、回答に不要な固有名詞や個人名を繰り返さないでください。',
-      `基準日: ${currentDate}`,
-    ].join('\n'),
+    instructions: [...PATENT_AI_INSTRUCTIONS, `基準日: ${currentDate}`].join('\n'),
     input: [
       `発明名称: ${input.inventionTitle}`,
       `技術課題: ${input.problem}`,

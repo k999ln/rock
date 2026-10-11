@@ -1,5 +1,9 @@
 # SIM/eSIM-led RockstarOS service architecture
 
+## 2026-10-10 主商品の入口はアカウントへ（この文書の位置づけの変更）
+
+利用者が [アカウント入口と回線の役割整理](account-entry-proposal.md) を確定し、主商品は **avokadoのアカウントひとつで使うAgent** になった。SIMは不要で、avocadoMiniのような機器だけが通信用の回線を任意で使う。本書の「SIM/eSIM購入が入口」という前提は置き換えられ、以後は **機器の回線と、招待・店頭販売用の購入claim** の設計として読む。消費者向けeSIMの発行・販売（`/sky/esim`、eSIM Go経路）は保留し、codeは消さず既定で無効のまま残す。端末の分岐（native OS／既存OSアプリ／ブラウザ）と、回線・利用権・OS導入状態を別々に追跡する設計はそのまま有効。正本は [製品ベースの2026-10-10の節](product-baseline.md)。
+
 ## 既存端末への機能追加（2026-10-06、HOME01 / SYS01 / WEB14）
 
 利用者の追加指示に基づき、Sky・データ回収・LLMを既存OS上のWeb/PWAから選んで使う。目的は端末交換やOS書込を要求せず同じ入口を提供すること。主担当はWeb / PWA / Sites、ROCK。SIM/eSIMの通信・利用権と、機能の表示設定は独立し、追加操作だけで権限・課金・Provider接続を成立させない。

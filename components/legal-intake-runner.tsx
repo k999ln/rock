@@ -32,6 +32,7 @@ import {
   getSelfHelpResources,
   legalIssueCategories,
   officialLegalResources,
+  primaryCounselFor,
   recommendLawyers,
   type LegalAssessment,
   type LegalContactPreference,
@@ -84,6 +85,10 @@ const emptyInput: LegalIntakeInput = {
   receivedOfficialDocument: false,
   contactPreference: 'email',
 };
+
+function counselLabel(lawyer: LawyerDirectoryEntry | undefined) {
+  return lawyer?.displayName ?? lawyer?.name ?? '担当弁護士';
+}
 
 function contactHref(
   lawyer: LawyerDirectoryEntry,
@@ -218,7 +223,7 @@ export function LegalIntakeRunner({
     setNeedsSignin(false);
     setNotice(
       next.primaryCounselId
-        ? '刑事弁護の第一連絡候補として藤原茜弁護士を表示しました。連絡前に内容を確認してください。'
+        ? `第一連絡候補として${counselLabel(primaryCounselFor(input.issueType))}を表示しました。連絡前に内容を確認してください。`
         : next.lawyerRequired
           ? '弁護士へ渡す要約と候補を準備しました。連絡前に内容を確認してください。'
           : '一般情報を確認するための次の手順を整理しました。',
@@ -742,12 +747,12 @@ export function LegalIntakeRunner({
                   <p>分野＋地域で絞り込み</p>
                   <h3>
                     {assessment.primaryCounselId
-                      ? '刑事弁護：藤原茜弁護士へ引継ぎ'
+                      ? `第一連絡候補：${counselLabel(primaryCounselFor(input.issueType))}へ引継ぎ`
                       : '日本語対応の候補'}
                   </h3>
                   <small>
                     {assessment.primaryCounselId
-                      ? '藤原茜弁護士を第一連絡候補として表示します。自動送信・受任確定は行いません。'
+                      ? `${counselLabel(primaryCounselFor(input.issueType))}を第一連絡候補として表示します。自動送信・受任確定は行いません。`
                       : `在ニューヨーク日本国総領事館の公開リスト（${LEGAL_DIRECTORY_AS_OF}現在）を使用。推薦・斡旋ではありません。`}
                   </small>
                 </div>

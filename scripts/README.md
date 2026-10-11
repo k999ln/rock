@@ -44,7 +44,7 @@
 | AMC | `mission:goal`（Goalの計画・書き出し）・`mission:codex` / `amc:codex`（ローカルCodexで1件実行）・`amc:agent`・`amc:parallel`・`amc:autonomy:fixture` |
 | Sky・MCP | `mcp:connector`・`mcp:package`・`sky:a2a:workflow:test`・`sky:a2a:workflow:positive`・`sky:agent-runtime:check` |
 | 課金・運営Worker | `billing:check`・`billing:deploy`・`billing:migrate`・`operator-dock:dev`・`operator-dock:check`・`operator-dock:migrate:local` |
-| Toolkitの試験 | `test:fashion-brand-ops`・`test:meme-intelligence`・`test:avocado-farm`・`esim:demo`・`esim:test` |
+| Toolkitの試験 | `test:fashion-brand-ops`・`esim:demo`・`esim:test` |
 | Site・公開物 | `test:avocado-mini-site`・`test:public-preview`・`release:sbom` |
 | その他 | `prompt:context`（最新進捗からプロンプトの材料を集める）・`discover`（外部ツール候補の発見）・`spider:feedback`・`fashion:package`・`shared:sync` |
 

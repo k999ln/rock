@@ -404,7 +404,7 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 - 完了: 同一digestの本人承認後にPAPER台帳が一度だけ更新される。
 - 失敗: 外部取得失敗をsampleで補完しない。unknown marketや不正数値を拒否。
 
-正本: [Everything Market / Fund](everything-market-and-autonomous-fund-20260913.md)、[Polymarket sandbox](polymarket-bot-sandbox-20260913.md)。
+正本: [Everything Market / Fund](everything-market-and-autonomous-fund-20260913.md)、Polymarket sandbox（削除済み）。
 
 ## 7. メルカリ収益スターター
 

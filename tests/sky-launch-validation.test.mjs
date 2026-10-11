@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { launchStages, launchGateStages, validateSkyLaunchReport } from '../scripts/sky-launch-validation.mjs';
+import { lockedSkip } from './private-locked.mjs';
 
 const candidate = {
   sourceCommit: 'a'.repeat(40),
@@ -48,7 +49,7 @@ void test('all seventeen unit fixture gates require one candidate including focu
   assert.equal(Object.keys(launchGateStages).length, 17);
 });
 
-void test('historical canonical records remain unchanged and cannot certify the current candidate', () => {
+void test('historical canonical records remain unchanged and cannot certify the current candidate', { skip: lockedSkip('data/sky-service-launch.json') }, () => {
   const report = JSON.parse(readFileSync(new URL('../data/sky-service-launch.json', import.meta.url), 'utf8'));
   const original = structuredClone(report);
   const result = validateSkyLaunchReport(report, {

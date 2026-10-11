@@ -11,10 +11,10 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.equal(validateBaseline(source).repository, 'k999ln/rock');
   const osOnSim = structuredClone(source);
   osOnSim.serviceAccessModel.osBinaryStoredOnSim = true;
-  assert.throws(() => validateBaseline(osOnSim), /SIM\/eSIM offer/);
+  assert.throws(() => validateBaseline(osOnSim), /Account-led service access/);
   const esimOnly = structuredClone(source);
   esimOnly.serviceAccessModel.distributionChannels = ['rockstar_direct'];
-  assert.throws(() => validateBaseline(esimOnly), /SIM\/eSIM offer/);
+  assert.throws(() => validateBaseline(esimOnly), /Account-led service access/);
   const offlineCloudLost = structuredClone(source);
   offlineCloudLost.serviceAccessModel.deviceMinimumExperience =
     offlineCloudLost.serviceAccessModel.deviceMinimumExperience.filter(
@@ -23,7 +23,19 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(() => validateBaseline(offlineCloudLost), /SIM-led service value/);
   const billingGateOpened = structuredClone(source);
   billingGateOpened.serviceAccessModel.productionBillingAccepted = true;
-  assert.throws(() => validateBaseline(billingGateOpened), /SIM\/eSIM offer/);
+  assert.throws(() => validateBaseline(billingGateOpened), /Account-led service access/);
+  const simRequired = structuredClone(source);
+  simRequired.serviceAccessModel.simRequiredForService = true;
+  assert.throws(() => validateBaseline(simRequired), /Account-led service access/);
+  const storedBalance = structuredClone(source);
+  storedBalance.accountEntryDecision.billing.storedBalance = true;
+  assert.throws(() => validateBaseline(storedBalance), /accountEntryDecision/);
+  const liveBilling = structuredClone(source);
+  liveBilling.accountEntryDecision.liveBillingAccepted = true;
+  assert.throws(() => validateBaseline(liveBilling), /accountEntryDecision/);
+  const miniUndecided = structuredClone(source);
+  delete miniUndecided.miniCellularIntent.radio;
+  assert.throws(() => validateBaseline(miniUndecided), /miniCellularIntent/);
   const missing = structuredClone(source);
   missing.requirements.pop();
   assert.throws(() => validateBaseline(missing), /RQ01〜RQ50/);
@@ -270,7 +282,7 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(
     () =>
       validateBaseline(source, (path) =>
-        path.endsWith('AGENTS.md')
+        path.endsWith('AGENTS.private.md')
           ? 'missing links'
           : readFileSync(path, 'utf8'),
       ),

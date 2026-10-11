@@ -55,7 +55,8 @@ export function phaseGateEvidencePaths(phaseGates) {
 
 const cell = (value) => String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
 
-export function renderPhaseGates(phaseGates = []) {
+// linkFor maps an evidence path to the link target (for example a permalink for a removed file).
+export function renderPhaseGates(phaseGates = [], linkFor = (file) => file) {
   if (!phaseGates.length) return [];
   return [
     '段階ゲート（作業全体の完了とは別判定）',
@@ -63,7 +64,7 @@ export function renderPhaseGates(phaseGates = []) {
     '| 段階ID | 作業ID | 内容 | 状態 | 先に通す段階 | 根拠 |',
     '| --- | --- | --- | --- | --- | --- |',
     ...phaseGates.map((gate) =>
-      `| ${cell(gate.id)} | ${cell(gate.task)} | ${cell(gate.title ?? gate.id)} | ${gate.status === 'done' ? '合格' : '未合格'} | ${gate.dependsOn.map(cell).join(' · ') || '—'} | ${gate.evidence.map((file) => `[記録](${file})`).join(' · ') || '—'} |`),
+      `| ${cell(gate.id)} | ${cell(gate.task)} | ${cell(gate.title ?? gate.id)} | ${gate.status === 'done' ? '合格' : '未合格'} | ${gate.dependsOn.map(cell).join(' · ') || '—'} | ${gate.evidence.map((file) => `[記録](${linkFor(file)})`).join(' · ') || '—'} |`),
     '',
   ];
 }

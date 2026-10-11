@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
+import { archiveUrl, existsOrArchived, isArchivedPath } from './archived-paths.mjs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 import {
@@ -35,7 +36,7 @@ for (const task of status.tasks) {
       ))
   )
     throw new Error(`${task.id}: 完了には根拠と依存作業の完了が必要です。`);
-  if (task.evidence.some((file) => !existsSync(resolve(root, file))))
+  if (task.evidence.some((file) => !existsOrArchived(file, root)))
     throw new Error(`${task.id}: 根拠ファイルがありません。`);
   if (task.status === 'blocked' && !task.reason)
     throw new Error(`${task.id}: 停止理由が必要です。`);
@@ -50,7 +51,8 @@ for (const id of ids) visit(id);
 const existingGateEvidence = new Set(
   phaseGateEvidencePaths(status.phaseGates).filter(
     (file) =>
-      existsSync(resolve(root, file)) && statSync(resolve(root, file)).isFile(),
+      (existsSync(resolve(root, file)) && statSync(resolve(root, file)).isFile()) ||
+      isArchivedPath(file, root),
   ),
 );
 const phaseGates = validatePhaseGates(
@@ -86,10 +88,10 @@ const block = [
   '| --- | --- | --- | --- |',
   ...status.tasks.map(
     (task) =>
-      `| ${task.id} | ${task.parentTaskId ? `子作業（${task.parentTaskId}）: ` : parentIds.has(task.id) ? '親タスク: ' : ''}${cell(task.title)} | ${labels[task.status]}${task.reason ? `: ${cell(task.reason)}` : ''} | ${task.evidence.map((file) => `[記録](${file})`).join(' · ') || '—'} |`,
+      `| ${task.id} | ${task.parentTaskId ? `子作業（${task.parentTaskId}）: ` : parentIds.has(task.id) ? '親タスク: ' : ''}${cell(task.title)} | ${labels[task.status]}${task.reason ? `: ${cell(task.reason)}` : ''} | ${task.evidence.map((file) => `[記録](${archiveUrl(file, root) ?? file})`).join(' · ') || '—'} |`,
   ),
   '',
-  ...renderPhaseGates(phaseGates),
+  ...renderPhaseGates(phaseGates, (file) => archiveUrl(file, root) ?? file),
   `次の作業: ${status.nextAction}`,
   '<!-- project-status:end -->',
 ].join('\n');

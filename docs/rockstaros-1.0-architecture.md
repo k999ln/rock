@@ -10,7 +10,7 @@ RockstarOS 1.0は、現在の検証済み範囲を最初の製品ベースとし
 
 ## 全体構造
 
-2026-09-16更新: 本文のnative構成はLinux/QEMU版のもの。スマホ版は所有Pixel 10／GL066／`frankel`を最初の物理対象へ確定し、機種構成・Android接続層へ移植する。端末OS build／起動は未実施で、Linux版の受入を流用しない。[全体構成監査](system-composition.md)／[現在の区分](current-state-20260911.md)／[スマホ版](phone-preview-20260911.md)。
+2026-09-16更新: 本文のnative構成はLinux/QEMU版のもの。スマホ版は所有Pixel 10／GL066／`frankel`を最初の物理対象へ確定し、機種構成・Android接続層へ移植する。端末OS build／起動は未実施で、Linux版の受入を流用しない。[全体構成監査](system-composition.md)／現在の区分（削除済み）／[スマホ版](phone-preview-20260911.md)。
 
 以下はLinux/QEMU資産の構造である。利用者はnative UIからHub、Wallet、Game、端末操作を行い、Platformが認証、権限、実行、保存、外部接続を仲介する。OS本体は読取専用、利用者データは別diskへ保存し、A/B slotとbackupで復旧する。Androidの現行到達設計は共通設計のCore→Sky/Zema→応用の責任分離に従う。Game契約のhost実装と、個々の配布imageに搭載された範囲を混同しない。
 
@@ -100,13 +100,13 @@ A/B slot、署名bundle、stage0、起動health、mark-good、失敗rollbackを�
 
 ## 14. Game接続・交換
 
-Wallet owner、端末、作者、game、playerを別IDにし、署名契約と本人同意で接続する。認証TLS、複数owner/game分離、current-copy引継ぎに加え、GX01の合成quote・予約・両台帳・返金／照合、native UI、DX01のSDK・サンプルを実装し、限定受入を記録した。正式ゲームGX02、実資金、Androidへの移植は未完了。[契約／SDKと実OSの確認範囲](rc2-remaining-acceptance-20260911.md)。
+Wallet owner、端末、作者、game、playerを別IDにし、署名契約と本人同意で接続する。認証TLS、複数owner/game分離、current-copy引継ぎに加え、GX01の合成quote・予約・両台帳・返金／照合、native UI、DX01のSDK・サンプルを実装し、限定受入を記録した。正式ゲームGX02、実資金、Androidへの移植は未完了。契約／SDKと実OSの確認範囲（削除済み）。
 
 進化余地は、正式ゲームのsandbox、複数engine adapter、公式ゲーム接続、スマホでの同じ契約・利用体験の検証である。
 
 ## 15. Desktop導入
 
-以前のMac launcherは既存Lima VMと固定imageを使う方式だった。現在は専用VM作成・image検証・起動・保存・再開・backup／復旧・削除のDeveloper Preview導入処理があり、b7/rc2でfresh導入と同一VM中断復旧を内部確認した。受入はmacOS 15.7.4／Apple Silicon／Lima 2.2.0の範囲。正式署名・一般公開と他host対応は未完了。[導入手順](preview-installation-ja.md)／[受入](os-acceptance-b7d819c-20260911.md)。
+以前のMac launcherは既存Lima VMと固定imageを使う方式だった。現在は専用VM作成・image検証・起動・保存・再開・backup／復旧・削除のDeveloper Preview導入処理があり、b7/rc2でfresh導入と同一VM中断復旧を内部確認した。受入はmacOS 15.7.4／Apple Silicon／Lima 2.2.0の範囲。正式署名・一般公開と他host対応は未完了。[導入手順](preview-installation-ja.md)／受入（削除済み）。
 
 進化余地は、正式署名release、対応hostの拡大、仮想化backend選択、自動update、保存データのある端末での追加削除受入、診断bundleである。
 

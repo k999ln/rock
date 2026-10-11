@@ -5,28 +5,31 @@ import argparse,hashlib,json,subprocess,zipfile
 ROOT=Path(__file__).resolve().parents[1]
 ARCHIVE=ROOT/'docs/rocketstar-design'
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+# Older versions, work folders and ZIP duplicates were removed on 2026-10-11 (still in Git history at 96845e6).
+ARCHIVED={p[len('docs/rocketstar-design/'):] for p in json.loads((ROOT/'data/archived-paths.json').read_text())['paths'] if p.startswith('docs/rocketstar-design/')}
 def main():
  parser=argparse.ArgumentParser(description=__doc__)
  parser.add_argument('--source',type=Path,help='Optional original task directory for independent copy comparison')
  parser.add_argument('--git',action='store_true',help='Also require every archived source file in the Git index')
  parser.add_argument('--write-report',action='store_true')
- args=parser.parse_args();inv=json.loads((ARCHIVE/'inventory.json').read_text());rows=inv['files'];checks=[]
+ args=parser.parse_args();inv=json.loads((ARCHIVE/'inventory.json').read_text());all_rows=inv['files'];rows=[x for x in all_rows if x['path'] not in ARCHIVED];checks=[]
  def check(name,result):checks.append({'name':name,'passed':bool(result)});assert result,name
- check('inventory identifiers unique',len({x['path'] for x in rows})==len(rows)==inv['file_count'])
- check('inventory byte total',sum(x['bytes'] for x in rows)==inv['total_bytes'])
- check('safe relative source paths',all(not Path(x['path']).is_absolute() and '..' not in Path(x['path']).parts for x in rows))
+ check('inventory identifiers unique',len({x['path'] for x in all_rows})==len(all_rows)==inv['file_count'])
+ check('archived paths are inventory rows',ARCHIVED<={x['path'] for x in all_rows})
+ check('inventory byte total',sum(x['bytes'] for x in all_rows)==inv['total_bytes'])
+ check('safe relative source paths',all(not Path(x['path']).is_absolute() and '..' not in Path(x['path']).parts for x in all_rows))
  check('every copied file has the source bytes',all((ARCHIVE/x['path']).is_file() and (ARCHIVE/x['path']).stat().st_size==x['bytes'] and sha(ARCHIVE/x['path'])==x['sha256'] for x in rows))
- actual={p.relative_to(ARCHIVE).as_posix() for top in ['outputs','work'] for p in (ARCHIVE/top).rglob('*') if p.is_file()}
- check('inventory covers all archived work and outputs',actual=={x['path'] for x in rows})
+ actual={p.relative_to(ARCHIVE).as_posix() for top in ['outputs','work'] if (ARCHIVE/top).is_dir() for p in (ARCHIVE/top).rglob('*') if p.is_file()}
+ check('inventory covers all kept work and outputs',actual=={x['path'] for x in rows})
  check('only documented caches and installed QA dependencies excluded',all('__pycache__' in Path(x['path']).parts or x['path'].endswith('.pyc') or x['path'].startswith('work/os_complete_v1/qa-deps/') or Path(x['path']).name=='.DS_Store' or Path(x['path']).name.startswith('._') for x in inv['excluded_files']))
  zip_count=0
  for row in rows:
   if row['path'].endswith('.zip'):
    with zipfile.ZipFile(ARCHIVE/row['path']) as z:assert z.testzip() is None,row['path']
    zip_count+=1
- check('all preserved ZIPs have valid CRCs',zip_count>0)
+ check('all kept ZIPs have valid CRCs',zip_count==sum(1 for x in rows if x['path'].endswith('.zip')))
  expected=['outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf','outputs/rocketstar_Complete_Design_R1_0_package.zip','outputs/RockstarOS_Complete_Design_v1_0/contracts/operations_store.sql','outputs/Avokado_Power_Button_Engineering_v1/button_behavior.json','outputs/Avokado_Fit_Button_v1/pear_shape_reference.png']
- check('current master and previously missing appendices present',all(x in actual for x in expected))
+ check('current master and previously missing appendices present',all(x in actual for x in expected if x not in ARCHIVED))
  check('existing OS PDF equals archived source',sha(ROOT/'docs/rockstaros-complete-design-v1.0.pdf')==sha(ARCHIVE/'outputs/RockstarOS_Complete_Design_v1_0/RockstarOS_Complete_Design_v1_0.pdf'))
  current=ARCHIVE/'outputs/rocketstar_Complete_Design_R1_0'
  manifest=json.loads((current/'manifest.json').read_text())

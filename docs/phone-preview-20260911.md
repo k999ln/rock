@@ -37,7 +37,7 @@ ROCKが担当する`scripts/build-phone-bringup.sh`は、呼出しごとにRock 
 
 2026-09-16実機確認: 読取り専用ADBで所有端末をPixel 10／`frankel`／日本向けSKU `GL066`へ確定した。現在はGrapheneOS `2026091000`／Android 17、bootloader locked、alternate verified-boot rootのyellow状態。端末serialは保存していない。これは対象固定だけの合格で、RockstarOSのbuild、flash、boot、復旧合格ではない。初回full buildは下記の事前gate完了まで開始しない。初回の安全側候補はDigitalOcean 48 vCPU／96GiB／600GiB、計画枠20〜30 USD（未承認）。GPUは不要。
 
-ソース準備はlaunch-candidateへ統合済み。[現在の全体状態](current-state-20260911.md)と[再開指示](prompts/rock-current-next-20261002.md)を優先する。前回のクラウド初回サーバー代税別10 USD案は未承認で、今回のGit統合指示は支払い承認ではない。
+ソース準備はlaunch-candidateへ統合済み。現在の全体状態（削除済み）と[再開指示](prompts/rock-current-next-20261002.md)を優先する。前回のクラウド初回サーバー代税別10 USD案は未承認で、今回のGit統合指示は支払い承認ではない。
 
 2026-09-11の利用者指示「スマホ本体にOSを書き込める版を作成して」を受領し、実機版の開発を開始した。利用できるLinux PC／サーバーはないとの回答を受領。対象機種・地域SKUは後続の実機readbackでPixel 10／GL066へ確定した。BlackBerry優先という以前の方針を、Pixel対応完了へ読み替えない。
 

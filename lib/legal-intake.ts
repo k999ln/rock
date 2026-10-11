@@ -1,4 +1,8 @@
-export const LEGAL_DIRECTORY_AS_OF = '2026-06-18';
+import { LAWYER_DIRECTORY, LAWYER_DIRECTORY_AS_OF } from './generated/private-content.ts';
+
+// The directory lives in private/legal/lawyer-directory.json (encrypted in Git).
+// Public builds without the key ship an empty directory.
+export const LEGAL_DIRECTORY_AS_OF = LAWYER_DIRECTORY_AS_OF;
 
 export const legalIssueCategories = [
   { id: 'criminal', label: '刑事・逮捕・交通違反' },
@@ -43,6 +47,12 @@ export type LawyerDirectoryEntry = {
   email?: string;
   contactNote?: string;
   focus: string;
+  /** Extra ranking weight for specific issue types. */
+  recommendationBoost?: Partial<Record<LegalIssueId, number>>;
+  /** Issue types for which this entry is the first contact when a lawyer is required. */
+  primaryFor?: LegalIssueId[];
+  /** Short name used in UI copy, e.g. a lawyer's name. */
+  displayName?: string;
 };
 
 export type LegalIntakeInput = {
@@ -79,420 +89,7 @@ export type OfficialLegalResource = {
   locations: LegalLocation[] | 'all';
 };
 
-const ALL_CORE_REGIONS: LegalLocation[] = ['nyc', 'ny_state', 'new_jersey'];
-
-export const lawyerDirectory: LawyerDirectoryEntry[] = [
-  {
-    id: 'akane-fujiwara',
-    name: 'Akane Fujiwara Law Office / 藤原 茜 法律事務所',
-    categories: ['criminal'],
-    regions: ['nyc', 'ny_state', 'new_jersey'],
-    website: 'https://fujiwaralawoffice.com/',
-    phone: '+1-347-677-4168',
-    email: 'fujiwara@fujiwaralawoffice.com',
-    contactNote: '弁護士 藤原 茜',
-    focus: '刑法、連邦法、ホワイトカラー犯罪。NY/NJおよびNY連邦地区裁判所。',
-  },
-  {
-    id: 'aleinik',
-    name: 'Aleinik Law Firm, PLLC',
-    categories: ['business', 'litigation', 'housing', 'ip', 'immigration'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.aleiniklaw.com/',
-    phone: '+1-718-909-1989',
-    email: 'kei.errico@aleiniklaw.com',
-    contactNote: '弁護士 Kei Errico',
-    focus: '商事訴訟、家主・借家人、契約、許認可、商標、移民。',
-  },
-  {
-    id: 'andrew-ceraulo',
-    name: 'Andrew Ceraulo Attorney at Law',
-    categories: ['immigration', 'injury', 'employment'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://andrewceraulo.com/',
-    phone: '+1-212-608-0012',
-    email: 'Mutsuko.suzuki16@gmail.com',
-    focus: '移民、交通・医療事故、職場のハラスメント・差別・賃金問題。',
-  },
-  {
-    id: 'antao-chung',
-    name: 'Antao & Chung, Attorney at Law',
-    categories: ['immigration'],
-    regions: ALL_CORE_REGIONS,
-    phone: '+1-212-488-6899',
-    email: 'contact@legalaction.com',
-    focus: '移民法。ニューヨークとニュージャージーに拠点。',
-  },
-  {
-    id: 'burghergray',
-    name: 'BurgherGray LLP',
-    categories: [
-      'business',
-      'employment',
-      'litigation',
-      'ip',
-      'housing',
-      'immigration',
-      'estate',
-      'tax_finance',
-    ],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://burghergray.com/',
-    phone: '+1-212-603-9281',
-    email: 'nmotegi@burghergray.com',
-    contactNote: '弁護士 茂木 紀子',
-    focus:
-      '企業法務、労務、M&A、訴訟、知財、AI、不動産、移民、相続、倒産、税務。',
-  },
-  {
-    id: 'danziger',
-    name: 'Danziger, Danziger & Muro, LLP',
-    categories: ['ip', 'business', 'housing', 'employment'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://danziger.com/',
-    phone: '+1-212-754-7000',
-    email: 'info@danziger.com',
-    focus: '芸術・ファッション・知財、契約、国際取引、不動産、雇用。',
-  },
-  {
-    id: 'florence-rostami',
-    name: 'Florence Rostami Law LLC',
-    categories: ['business', 'litigation', 'housing'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://rostamilaw.com/',
-    phone: '+1-212-209-3962',
-    email: 'hsugano@rostamilaw.com',
-    focus: '契約、会社法、民事訴訟、不動産。',
-  },
-  {
-    id: 'garganigo',
-    name: 'Garganigo Goldsmith & Weiss',
-    categories: ['immigration'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.ggw.com/',
-    phone: '+1-212-643-6400',
-    email: 'askggw@ggw.com',
-    focus: '移民法。',
-  },
-  {
-    id: 'goldstein-lee',
-    name: 'Goldstein & Lee, P.C.',
-    categories: ['immigration'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.goldsteinvisa.com/',
-    phone: '+1-212-957-0500',
-    email: 'tammylee@lorsg.com',
-    contactNote: '追加連絡先 yumiko@lorsg.com',
-    focus: '移民法。',
-  },
-  {
-    id: 'gray-injury',
-    name: 'Gray Injury Law / グレイ法律事務所',
-    categories: ['injury', 'employment'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.grayinjurylaw.com/',
-    phone: '+1-212-537-7000',
-    email: 'contact@grayinjurylaw.com',
-    focus:
-      'タクシー・Uber・交通・建設事故、セクシャルハラスメント、施設管理者責任。',
-  },
-  {
-    id: 'isoai',
-    name: '礒合法律事務所',
-    categories: [
-      'criminal',
-      'housing',
-      'estate',
-      'business',
-      'injury',
-      'litigation',
-    ],
-    regions: ['ny_state'],
-    website: 'https://www.isoailaw.com/',
-    phone: '+1-845-999-1250',
-    email: 'info@isoailaw.com',
-    focus:
-      '交通違反・刑事弁護、家主借家人、相続、商取引、不動産、交通事故、民事。',
-  },
-  {
-    id: 'kawasaki',
-    name: 'Kawasaki Law Office PLLC',
-    categories: ['business', 'housing', 'employment'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.kawasakilaw.com/',
-    phone: '+1-917-546-9255',
-    email: 'info@kawasakilaw.com',
-    contactNote: '弁護士 川崎 晋平',
-    focus: 'リカーライセンス、不動産、労働・雇用、契約、会社、M&A。',
-  },
-  {
-    id: 'keiko-kato',
-    name: 'Law Office of Keiko Kato',
-    categories: ['business', 'immigration', 'employment', 'litigation'],
-    regions: ['nyc', 'ny_state'],
-    phone: '+1-212-251-0011',
-    email: 'kkatolaw@earthlink.net',
-    contactNote: '弁護士 加藤 恵子',
-    focus: '会社、移民、契約、雇用、法律一般。',
-  },
-  {
-    id: 'li-wakida',
-    name: 'Li & Wakida, LLP',
-    categories: ['immigration'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://liwakida.com/',
-    phone: '+1-646-470-0880',
-    email: 'wakida@tlilaw.com',
-    contactNote: '弁護士 脇田 理彦',
-    focus: '移民法。',
-  },
-  {
-    id: 'mayer-brown',
-    name: 'Mayer Brown LLP',
-    categories: ['business', 'litigation', 'immigration'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.mayerbrown.com/en',
-    phone: '+1-212-506-2120',
-    email: 'smurase@mayerbrown.com',
-    contactNote: '弁護士 村瀬 悟',
-    focus: '法律一般、会社、訴訟、企業移民。',
-  },
-  {
-    id: 'michael-dunn',
-    name: 'Michael Dunn 法律事務所',
-    categories: ['immigration'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://michaeldunnlaw.com/',
-    phone: '+1-646-546-5342',
-    email: 'nihongo@michaeldunnlaw.com',
-    focus: '移民法。',
-  },
-  {
-    id: 'miki-dixon',
-    name: 'Miki Dixon & Presseau, PLLC',
-    categories: [
-      'business',
-      'housing',
-      'litigation',
-      'immigration',
-      'estate',
-      'family',
-      'ip',
-    ],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.mdp-law.com/',
-    phone: '+1-212-661-1010',
-    email: 'contact@mdp-law.com',
-    contactNote: '弁護士 三木 克己',
-    focus:
-      '会社、不動産、民事訴訟、移民、商号、相続・家族、著作権、電子商取引。',
-  },
-  {
-    id: 'moses-singer',
-    name: 'Moses & Singer',
-    categories: [
-      'business',
-      'litigation',
-      'ip',
-      'employment',
-      'housing',
-      'tax_finance',
-      'estate',
-      'family',
-    ],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.mosessinger.com/',
-    phone: '+1-212-554-7670',
-    email: 'hnaito@mosessinger.com',
-    contactNote: '弁護士 内藤 博久',
-    focus: '会社・M&A、訴訟、知財、労務、不動産、広告、税・資産、家族。',
-  },
-  {
-    id: 'mari-maemoto',
-    name: 'Law Office of Mari Maemoto, P.C.',
-    categories: ['immigration', 'litigation'],
-    regions: ['nyc', 'ny_state'],
-    phone: '+1-917-921-9472',
-    email: 'Info@americaiminvisa.com',
-    focus: '移民法、法律一般。',
-  },
-  {
-    id: 'mayumi-iijima',
-    name: 'Law Offices of Mayumi Iijima, P.C. / 飯島 真由美 弁護士事務所',
-    categories: ['family', 'business', 'estate', 'immigration', 'litigation'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.iinylaw.com/ja',
-    phone: '+1-212-598-4125',
-    email: 'mciijima@iinylaw.com',
-    contactNote: '弁護士 飯島 真由美',
-    focus: '法律一般、家庭、会社、遺言・相続、移民、訴訟。',
-  },
-  {
-    id: 'noandt',
-    name: 'Nagashima Ohno & Tsunematsu NY LLP / 長島・大野・常松 法律事務所 NYオフィス',
-    categories: ['business', 'employment', 'litigation', 'housing', 'ip'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.noandt.com/locations/new_york/',
-    phone: '+1-212-258-3333',
-    email: 'info-ny@noandt.com',
-    focus:
-      '会社設立・進出、労務、M&A、投資・金融、紛争、不動産、知財、調査、テクノロジー。',
-  },
-  {
-    id: 'rbl',
-    name: 'RBL Partners PLLC / ボアズ 麗奈 法律事務所',
-    categories: ['immigration', 'employment', 'business', 'litigation'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.rblpartners.com/',
-    phone: '+1-212-960-3593',
-    email: 'info@rblpartners.com',
-    focus: '移民、雇用、会社、法律一般。',
-  },
-  {
-    id: 'richard-newman',
-    name: 'Law Office of A. Richard Newman',
-    categories: ['immigration'],
-    regions: ['ny_state'],
-    website: 'https://richardnewmanlaw.com/',
-    phone: '+1-212-986-0947',
-    email: 'info@richardnewmanlaw.com',
-    focus: '移民法。',
-  },
-  {
-    id: 'saito-law-group',
-    name: 'SAITO LAW GROUP PLLC',
-    categories: ['litigation', 'criminal', 'business'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://saitolawgroup.com/',
-    phone: '+1-347-931-0976',
-    email: 'saito@saitolawgroup.com',
-    contactNote: '弁護士 齋藤 康弘',
-    focus:
-      '大型企業訴訟・仲裁、危機管理、不祥事、ホワイトカラー犯罪、規制当局対応。',
-  },
-  {
-    id: 'sirota',
-    name: 'Sirota Law Firm, P.C.',
-    categories: ['business', 'ip', 'litigation'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://sirotalawfirm.com/',
-    phone: '+1-646-504-1020',
-    email: 'info@sirotalawfirm.com',
-    contactNote: '弁護士 Jonathan Sirota',
-    focus:
-      '会社、契約、著作権・商標、エンターテインメント・メディア、法律一般。',
-  },
-  {
-    id: 'sgr',
-    name: 'Smith, Gambrell & Russell / スミス ガンブレル ラッセル (SGR) 法律事務所',
-    categories: [
-      'business',
-      'employment',
-      'litigation',
-      'ip',
-      'tax_finance',
-      'estate',
-      'immigration',
-    ],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.sgrlaw.com/practices/japan-practice-team/',
-    phone: '+1-212-907-9781',
-    email: 'sonuma@sgrlaw.com',
-    contactNote: '弁護士 Susan J. Onuma',
-    focus: '会社、M&A、雇用、訴訟、貿易、知財、税・相続、情報保護、移民。',
-  },
-  {
-    id: 'sw-law-group',
-    name: 'SW Law Group, P.C. (Sindell Law Offices)',
-    categories: ['immigration'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.swlgpc.com/',
-    phone: '+1-212-459-3800',
-    email: 'ny@swlgpc.com',
-    contactNote: '弁護士 David Sindell',
-    focus: '移民法。',
-  },
-  {
-    id: 'terai',
-    name: 'Terai 寺井法律事務所',
-    categories: ['business', 'housing', 'employment', 'immigration'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://terailaw.com/',
-    phone: '+1-212-279-2262',
-    email: 'info@terailaw.com',
-    contactNote: '弁護士 寺井 眞美',
-    focus: 'ビジネス、不動産、労働・雇用、移民。',
-  },
-  {
-    id: 'tigris',
-    name: 'Tigris Legal PLLC',
-    categories: ['immigration', 'business'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://attorneyforusimmigration.com/ja/',
-    phone: '+1-212-287-5671',
-    email: 'contact@tigrislegal.com',
-    contactNote: '弁護士 山田 晃子',
-    focus: '移民、会社。',
-  },
-  {
-    id: 'torys',
-    name: 'Torys LLP / トリーズ',
-    categories: ['business', 'litigation', 'tax_finance'],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.torys.com/',
-    phone: '+1-212-880-6000',
-    email: 'DBell@torys.com',
-    contactNote: '弁護士 Don Bell',
-    focus:
-      '米国・カナダ法、投資、会社、契約、M&A・独禁、税、商事訴訟、会社更生。',
-  },
-  {
-    id: 'windels-marx',
-    name: 'Windels Marx Lane & Mittendorf, LLP',
-    categories: [
-      'estate',
-      'tax_finance',
-      'business',
-      'ip',
-      'housing',
-      'litigation',
-      'employment',
-    ],
-    regions: ['nyc', 'ny_state'],
-    website: 'https://www.windelsmarx.com/',
-    phone: '+1-212-237-1000',
-    email: 'gmoriwaki@windelsmarx.com',
-    contactNote: 'Gary Moriwaki / Reiko Takikawa / Yumi Higashi',
-    focus:
-      '国際相続・遺言・信託、税、会社、金融、知財、不動産、訴訟、雇用、破産ほか。',
-  },
-  {
-    id: 'raquel-romero',
-    name: 'Law Offices of Raquel Romero',
-    categories: [
-      'employment',
-      'injury',
-      'housing',
-      'estate',
-      'family',
-      'litigation',
-    ],
-    regions: ['new_jersey'],
-    website: 'https://www.romerolegal-jp.com/',
-    phone: '+1-201-463-6568',
-    email: 'rromerolaw@gmail.com',
-    focus: '労働・事故訴訟、不動産・賃貸、相続・遺言、離婚・家族。',
-  },
-  {
-    id: 'akemi-stauffer',
-    name: 'Akemi Y Stauffer Attorney at Law',
-    categories: ['immigration', 'estate', 'housing'],
-    regions: ['pennsylvania'],
-    phone: '+1-724-422-5250',
-    email: 'akemi@astaufferlaw.com',
-    focus: '連邦移民法、ペンシルベニア州の相続・信託・不動産。',
-  },
-];
+export const lawyerDirectory: LawyerDirectoryEntry[] = [...LAWYER_DIRECTORY];
 
 const documentChecklists: Record<LegalIssueId, string[]> = {
   criminal: [
@@ -680,6 +277,12 @@ function parseDay(value: string | undefined): number | null {
     : null;
 }
 
+export function primaryCounselFor(
+  issueType: LegalIssueId,
+): LawyerDirectoryEntry | undefined {
+  return lawyerDirectory.find((lawyer) => lawyer.primaryFor?.includes(issueType));
+}
+
 export function recommendLawyers(
   issueType: LegalIssueId,
   location: LegalLocation,
@@ -693,7 +296,7 @@ export function recommendLawyers(
       score:
         (lawyer.regions.includes(location) ? 30 : 0) +
         (location === 'nyc' && lawyer.regions.includes('ny_state') ? 10 : 0) +
-        (issueType === 'criminal' && lawyer.id === 'akane-fujiwara' ? 20 : 0) +
+        (lawyer.recommendationBoost?.[issueType] ?? 0) +
         Math.max(0, 8 - lawyer.categories.length),
     }))
     .sort((a, b) => b.score - a.score || a.index - b.index)
@@ -814,10 +417,9 @@ export function assessLegalIntake(
     matchedLawyerIds: recommendLawyers(input.issueType, input.location).map(
       (lawyer) => lawyer.id,
     ),
-    primaryCounselId:
-      copy.lawyerRequired && input.issueType === 'criminal'
-        ? 'akane-fujiwara'
-        : undefined,
+    primaryCounselId: copy.lawyerRequired
+      ? primaryCounselFor(input.issueType)?.id
+      : undefined,
   };
 }
 

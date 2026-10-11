@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname, isAbsolute, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { isArchivedPath } from './archived-paths.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export function validateBaseline(
@@ -54,8 +55,9 @@ export function validateBaseline(
   requireValue(
     serviceAccess?.status ===
       'authoritative_product_direction_design_and_local_onboarding_only' &&
-      serviceAccess?.primaryEntry ===
-        'purchase_physical_sim_or_esim_including_rockstaros_service_access' &&
+      serviceAccess?.primaryEntry === 'rockstar_account_service_access' &&
+      serviceAccess?.simRequiredForService === false &&
+      serviceAccess?.consumerEsimSales === 'on_hold_code_kept_disabled_by_default' &&
       JSON.stringify(serviceAccess?.distributionChannels) ===
         JSON.stringify([
           'rockstar_direct',
@@ -68,7 +70,7 @@ export function validateBaseline(
       serviceAccess?.productionBillingAccepted === false &&
       serviceAccess?.carrierActivationAccepted === false &&
       serviceAccess?.deviceOsInstallationAccepted === false,
-    'SIM/eSIM offer, channel-neutral access, separate device delivery, and unaccepted production states must remain explicit',
+    'Account-led service access (SIM optional), channel-neutral access, separate device delivery, and unaccepted production states must remain explicit',
   );
   requireValue(
     JSON.stringify(serviceAccess?.primaryReasonsToChoose) ===
@@ -1029,13 +1031,13 @@ export function validateBaseline(
   const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
-      data.launchPage?.role === 'public_sim_esim_service_home' &&
+      data.launchPage?.role === 'public_account_service_home' &&
       data.launchPage?.osHomeRoute === '/' &&
       data.launchPage?.installGuideRoute === '/rockstaros/guide' &&
       data.launchPage?.directOsHomeLink === false &&
       data.launchPage?.serviceDetailsLocation === 'public_service_home' &&
       data.launchPage?.hardwareProgramRoute === '/avocado-mini' &&
-      data.marketPositioning?.customerFacingFocus === 'sim_esim_led_rockstaros_service_access' &&
+      data.marketPositioning?.customerFacingFocus === 'account_led_rockstaros_service_access' &&
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
       data.marketPositioning?.leadHardwareForm ===
         'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
@@ -1046,10 +1048,11 @@ export function validateBaseline(
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
       data.launchPage?.primaryAction === 'start_service_onboarding' &&
-      data.launchPage?.secondaryAction === 'view_sim_esim_plans' &&
+      data.launchPage?.secondaryAction === 'view_avocado_mini_device' &&
       data.launchPage?.publicDownloadFallback === '/connect' &&
-      launchPageSource.includes('SIM/eSIMをつないで、Sky・Zema・AI Agentへ') &&
-      launchPageSource.includes('RockstarOSはSIMカード内で動くOSではありません') &&
+      launchPageSource.includes('アカウントひとつで、Sky・Zema・AI Agentへ') &&
+      launchPageSource.includes('SIMは不要です') &&
+      !launchPageSource.includes('href="/sky/esim"') &&
       launchPageSource.includes('href="/connect"') &&
       hardwarePageSource.includes('<AvocadoTurntable />') &&
       hardwarePageSource.includes('href="/rockstaros"') &&
@@ -1376,7 +1379,8 @@ export function validateBaseline(
     );
     const resolved = resolve(root, path);
     requireValue(
-      !relative(root, resolved).startsWith('..') && read(resolved).length > 100,
+      !relative(root, resolved).startsWith('..') &&
+        (isArchivedPath(path, root) || read(resolved).length > 100),
       `releaseInstallation.${field}: repository内の本文が必要です`,
     );
   }
@@ -1457,8 +1461,39 @@ export function validateBaseline(
     devicePolicy.physicalFlashAuthorized === false,
     '実機flashは未承認です',
   );
+  // The 2026-10-10 decisions live in the encrypted baseline; this public script checks
+  // their shape and internal consistency without restating the decided values.
+  const entry = data.accountEntryDecision;
+  const nonEmpty = (value) => typeof value === 'string' && value.length > 0;
+  requireValue(
+    /^\d{4}-\d{2}-\d{2}$/.test(entry?.decidedAt ?? '') &&
+      nonEmpty(entry?.record) &&
+      nonEmpty(entry?.mainProduct) &&
+      nonEmpty(entry?.simRole) &&
+      entry?.billing?.storedBalance === false &&
+      Array.isArray(entry?.billing?.exits) &&
+      entry.billing.exits.length >= 3 &&
+      entry?.skyFee?.currentBps === data.skyMarketplacePayments?.commissionBps &&
+      Number.isInteger(entry?.skyFee?.targetBps) &&
+      entry.skyFee.targetBps <= entry.skyFee.currentBps &&
+      nonEmpty(entry?.skyFee?.switchCondition) &&
+      nonEmpty(entry?.skyHosting?.url) &&
+      entry?.liveBillingAccepted === false &&
+      Array.isArray(entry?.externalConfirmationsPending) &&
+      entry.externalConfirmationsPending.length > 0 &&
+      (serviceAccess?.simRequiredForService === false) === (entry.simRole !== 'required'),
+    'accountEntryDecision: 確定事項の記録（残高なし、出口、手数料の現在値と目標、本番課金未受入、外部確認）が欠けています',
+  );
+  requireValue(
+    nonEmpty(data.miniCellularIntent?.radio) &&
+      nonEmpty(data.miniCellularIntent?.sim) &&
+      typeof data.miniCellularIntent?.sgp32Capable === 'boolean' &&
+      nonEmpty(data.miniCellularIntent?.remoteProfileSwitching) &&
+      data.miniCellularIntent?.decisionDate === entry.decidedAt,
+    'miniCellularIntent: Miniの回線の確定事項が欠けています',
+  );
   for (const file of [
-    'AGENTS.md',
+    'AGENTS.private.md',
     'README.md',
     'project.md',
     'docs/product.md',
@@ -1473,8 +1508,8 @@ export function validateBaseline(
     );
   }
   requireValue(
-    read(resolve(root, 'AGENTS.md')).includes('prompt-playbook.md'),
-    'AGENTSに作成規約がありません',
+    read(resolve(root, 'AGENTS.private.md')).includes('prompt-playbook.md'),
+    'AGENTS.private.mdに作成規約がありません',
   );
   return data;
 }
