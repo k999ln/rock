@@ -101,8 +101,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 62,
-    "latestMigration": "0061_esim_cloud_access_keys.sql",
+    "migrationCount": 63,
+    "latestMigration": "0062_sky_provider_revision.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -318,7 +318,7 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0061_esim_cloud_access_keys.sql",
+      "expectedAppliedThrough": "0062_sky_provider_revision.sql",
       "tableCount": 80,
       "sourceStatus": "VERIFIED",
       "deployment": {

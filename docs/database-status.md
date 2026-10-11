@@ -25,8 +25,8 @@
 
 ## Web D1
 
-- expected latest migration: 0061_esim_cloud_access_keys.sql
-- migration files: 62
+- expected latest migration: 0062_sky_provider_revision.sql
+- migration files: 63
 - accidental duplicate: 0
 - published convergence definitions: 6
 - Marketplace relation guards: 8

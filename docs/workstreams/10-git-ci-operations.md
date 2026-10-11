@@ -123,3 +123,7 @@ ROCK担当。#63–65 / #69–76をmain 0c90253cへ統合する。ecb4b2afで失
 LCH06/O7が主担当、SKY19/O5が機能担当。最新main e12d880cの同一SHA verify/security合格を確認し、旧作業木の未保存差分を保持した独立branchでeSIMキーを統合する。共通決済・仕事composition・AWS準備の未保存差分は混入させず、各契約と最新mainとの差を確認して次の統合候補とする。優先順は同一source検証→GitHub保存/CI→main統合→配信source同期→Provider/端末受入。外部契約/価格/鍵/flashは個別gateを保持する。全体進捗はAMC32部隊と既存taskPlansを使い、別のtask台帳を新設しない。検証: focused eSIM tests、typecheck、database/project/mission/design checks、npm run verify。
 
 PR #85のsource `f9c85870`はGitHub全7チェック成功。全体verify内のNode1368 pass/1既定skip・仕事API1305・CSV385を確認。main mergeは責任分界のOWNER操作として残し、配備・Provider・実機へ結果を転用しない。元作業木の共通決済/composition/AWS検討は未保存状態を維持している。
+
+## Sky／Zemaの検証済み修正統合（2026-10-08 UTC、G04）
+
+ROCK担当。利用者のmain反映指示により、034/035で限定検収された保存競合・会話復旧・bundle修正を最新mainへ統合する。[今回の証拠と未受入範囲](../evidence/sky-zema-main-integration.json)を参照。同一commitのCIを確認し、未完了の隣接表示試験や本番公開を完了扱いにしない。

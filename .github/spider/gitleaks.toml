@@ -170,7 +170,7 @@ regexes = ['''\Aui\-470a79eb699c62a51a153808c451aa75\z''']
 description = "browser-storage-name 201bf419d490"
 condition = "AND"
 regexTarget = "secret"
-paths = ['''\A(?:lib/sky\-zema\-handoff\.ts)\z''']
+paths = ['''\A(?:lib/sky\-zema\-handoff\.ts|lib/zema\-private\-storage\.ts|tests/zema\-chat\-session\.test\.mjs)\z''']
 regexes = ['''\Arockstaros\.sky\-zema\-handoff\.v1\z''']
 
 [[rules.allowlists]]

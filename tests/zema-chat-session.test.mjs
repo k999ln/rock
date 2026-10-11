@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  clearZemaPrivateSession,
   readZemaChatSessions,
   saveZemaChatSession,
   ZEMA_CHAT_SESSION_KEY,
@@ -175,4 +176,26 @@ await test('AMC longer briefs do not relax other Tools and malformed saved reque
     ]),
   );
   assert.deepEqual(readZemaChatSessions(storage, 1_003), []);
+});
+
+void test('known auth loss removes private chat and pending handoff but preserves unrelated storage', () => {
+  const storage = memoryStorage();
+  storage.setItem(ZEMA_CHAT_SESSION_KEY, 'private chat');
+  storage.setItem('rockstaros.sky-zema-handoff.v1', 'private handoff');
+  storage.setItem('unrelated', 'keep');
+  clearZemaPrivateSession(storage);
+  assert.equal(storage.getItem(ZEMA_CHAT_SESSION_KEY), null);
+  assert.equal(storage.getItem('rockstaros.sky-zema-handoff.v1'), null);
+  assert.equal(storage.getItem('unrelated'), 'keep');
+  assert.deepEqual(readZemaChatSessions(storage), []);
+});
+
+void test('unavailable chat storage does not prevent handoff cleanup', () => {
+  const removed = [];
+  assert.doesNotThrow(() => clearZemaPrivateSession({ removeItem(key) {
+    removed.push(key);
+    if (key === ZEMA_CHAT_SESSION_KEY) throw new Error('unavailable');
+  }}));
+  assert.deepEqual(removed, [ZEMA_CHAT_SESSION_KEY, 'rockstaros.sky-zema-handoff.v1']);
+  assert.equal(clearZemaPrivateSession(memoryStorage()), true);
 });

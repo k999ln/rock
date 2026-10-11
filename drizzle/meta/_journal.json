@@ -435,6 +435,13 @@
       "when": 1791504000001,
       "tag": "0061_esim_cloud_access_keys",
       "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "6",
+      "when": 1791504000002,
+      "tag": "0062_sky_provider_revision",
+      "breakpoints": true
     }
   ]
 }
