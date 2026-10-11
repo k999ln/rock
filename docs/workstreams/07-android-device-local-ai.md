@@ -9,7 +9,7 @@
 | Pixel 10 GL066／frankel | [2026-09-16の試験署名APK・非破壊再起動23/23](../evidence/android-pixel-10-prefull-physical-20260916.json)はそのartifactに限定した過去の実機証拠 | 現行APKの再起動・画面ロック／unlock・Keystore・再連携を同一artifactで受け入れる |
 | Android全OS／物理配布 | source・検査手順の段階。Soong全OS build、正式署名、flash／boot、OTA／rollback、data・Keystore喪失復元は未受入 | 専用Linux x86_64環境と[Device Previewのgate](../phone-preview-20260911.md)を満たす。Linux/QEMU Developer Previewは独立系列 |
 
-最新候補`7f5ed3610c23092882dab81aa69ff8129a71828c`の[run 38155308883](https://github.com/k999ln/rock/actions/runs/38155308883)は記録時点で進行中。まず同SHAの結果とartifactを確認し、精算済み同ID照合のCore／Shell回帰を確定する。次に、合成Cloud Agentの見積→native hold→明示承認→切断→同job復旧を同一候補で接続検証する。外部Provider契約・meter／invoice・Wallet、実Carrier activation、対応SKUの導入は別gateであり、execution flagをこのCI成功だけで開かない。
+候補`7f5ed3610c23092882dab81aa69ff8129a71828c`の[run 38155308883](https://github.com/k999ln/rock/actions/runs/38155308883)は成功し、artifact XMLでCore 121／automation JVM 16／SDK 7、emulator automation 43合格・2物理skip／Shell 7／Operator 6を確認した。追加の精算Core 5ケースとShell表示1ケースを含む。次に、合成Cloud Agentの見積→native hold→明示承認→切断→同job復旧を同一候補で接続検証する。外部Provider契約・meter／invoice・Wallet、実Carrier activation、対応SKUの導入は別gateであり、execution flagをこのCI成功だけで開かない。
 
 以下の日付付き実装・環境記録は当時の結果を残す。現行段階はこの表と同SHAの証拠を優先する。
 

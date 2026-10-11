@@ -623,7 +623,7 @@
           },
           "repairedBy": "eab77b0df129a538cddd4321feeb5bd6c3334cb9",
           "repair": "Await actual candidate-generation and save-computation promises; a gate regression verifies the harness waits for completion.",
-          "latestCiRecheck": "pending"
+          "latestCiRecheck": "passed at 7f5ed3610c23092882dab81aa69ff8129a71828c"
         }
       ],
       "limits": "Successes apply only to this exact SHA. Later runtime changes require their own CI."
@@ -751,20 +751,250 @@
         "java": 73
       },
       "independentSourceReview": "Receipt/ledger tampering, owner/delegation mismatch, held balance and substituted receipt cannot reach wallet_settled; no source difference from reviewed commit.",
-      "androidCi": "pending integrated candidate",
+      "androidCi": {
+        "sourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+        "run": "https://github.com/k999ln/rock/actions/runs/38155308883",
+        "status": "success",
+        "coreUnitTests": 121,
+        "automationUnitTests": 16,
+        "toolSdkUnitTests": 7,
+        "emulator": {
+          "api": 35,
+          "automation": {
+            "tests": 45,
+            "passed": 43,
+            "skipped": 2
+          },
+          "shell": {
+            "tests": 7,
+            "passed": 7
+          },
+          "operatorAgent": {
+            "tests": 6,
+            "passed": 6
+          }
+        },
+        "newSettledCoreCases": 5,
+        "newSettledShellCase": "settledReadbackShowsFinalAmountsWithoutExecutionOrReleaseActions",
+        "apkBuildAndLint": true,
+        "limits": "Physical reboot tests skipped; no current Pixel or full OS acceptance."
+      },
       "limits": "No reserve/dispatch/settle/release is performed by readback. Host SQLite success does not prove physical or full OS acceptance."
+    },
+    "githubIntegratedRecovery": {
+      "sourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+      "status": "all_completed_success",
+      "checks": 15,
+      "verify": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38155308885",
+        "node": {
+          "tests": 1675,
+          "pass": 1674,
+          "fail": 0,
+          "skip": 1
+        },
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385,
+        "webAssetReferences": 185,
+        "missingWebAssets": 0
+      },
+      "families": [
+        "verify",
+        "CodeQL Python/JavaScript and aggregate",
+        "SPIDER secrets/repair/web measurement",
+        "native main 0–3/support/source summary",
+        "Android prototype",
+        "public fixture tests"
+      ],
+      "limits": "GitHub Linux verification; no main merge, deployment, real Provider or physical acceptance."
+    },
+    "macosIntegratedRecovery": {
+      "sourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "failed",
+      "environment": "macOS arm64, Node 26.0.0",
+      "completed": [
+        "preflight and project/design checks",
+        "typecheck/product lint",
+        "Node 1674 pass / 1 platform skip",
+        "package suites",
+        "production build",
+        "185 assets / missing 0"
+      ],
+      "failure": "Worker/D1 API suite failed with ECONNRESET. One diagnostic rerun reproduced fetch sequence 421 POST /api/amc. No input/credential bytes were logged.",
+      "notRun": [
+        "CSV API suite",
+        "final mission/work/bot checks"
+      ],
+      "investigation": "in_progress; exact same SHA passed GitHub Linux full verify. No automatic request retry or weakened assertion added."
+    },
+    "npmAdvisoryAudit": {
+      "sourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+      "checkedAt": "2026-10-11T16:29:00Z",
+      "command": "npm audit --package-lock-only --json",
+      "root": {
+        "status": "success",
+        "findings": 0,
+        "dependencies": 957
+      },
+      "miniSite": {
+        "status": "success",
+        "findings": 0,
+        "dependencies": 288
+      },
+      "limits": "Registry advisory lookup for these lockfiles only; not proof of zero source vulnerabilities and not main-branch deployment."
+    },
+    "androidTrialArtifact": {
+      "schema": "rock-android-trial-local-review/1",
+      "reviewed_source_sha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+      "workflow_run": 38155308883,
+      "workflow_conclusion": "success",
+      "artifact_id": 11708247850,
+      "artifact_name": "android-p1-trial-38155308883",
+      "archive_bytes": 511296,
+      "archive_sha256": "614b5d0aec6853a0a40d757af0d4f0c64d01720fd7051ce96d67ed2cb05bee66",
+      "github_archive_digest_matches": true,
+      "manifest_source_and_run_match": true,
+      "collector_matches_source_sha": true,
+      "readme_matches_source_sha": true,
+      "checksum_inventory_matches": true,
+      "apk_records": [
+        {
+          "file": "automation-debug.apk",
+          "package": "dev.rock.automation",
+          "sha256": "6b1c61edc0935db57de8d85a47d30f0839a5938d9c8b3a9b857e46320b14b9f5",
+          "signer_sha256": "a08e7371dff38cef6abb3af8e9d7742944c9984e1fb7e0b6396cf3dc40feaab0",
+          "min_sdk": 35,
+          "target_sdk": 35,
+          "debuggable": true,
+          "internet_permission": true,
+          "cleartext_traffic": false,
+          "bytes": 587274,
+          "version_code": 1,
+          "uses_permissions": [
+            "dev.rock.permission.RUN_TOOL",
+            "dev.rock.permission.USE_LOCAL_AI",
+            "dev.rock.permission.MANAGE_PLATFORM",
+            "android.permission.INTERNET",
+            "android.permission.RECEIVE_BOOT_COMPLETED"
+          ],
+          "signature_schemes": [
+            "Verified using v1 scheme (JAR signing): false",
+            "Verified using v2 scheme (APK Signature Scheme v2): true",
+            "Verified using v3 scheme (APK Signature Scheme v3): false",
+            "Verified using v3.1 scheme (APK Signature Scheme v3.1): false",
+            "Verified using v4 scheme (APK Signature Scheme v4): false"
+          ],
+          "source_permission_inventory_matches": true
+        },
+        {
+          "file": "shell-debug.apk",
+          "package": "dev.rock.shell",
+          "sha256": "2c6c89f4916bb107f073204663d024b25de0549c3a4be934c01c72c1f4347ceb",
+          "signer_sha256": "a08e7371dff38cef6abb3af8e9d7742944c9984e1fb7e0b6396cf3dc40feaab0",
+          "min_sdk": 35,
+          "target_sdk": 35,
+          "debuggable": true,
+          "internet_permission": false,
+          "cleartext_traffic": false,
+          "bytes": 221687,
+          "version_code": 1,
+          "uses_permissions": [
+            "dev.rock.permission.USE_SHELL_API",
+            "android.permission.ACCESS_NETWORK_STATE"
+          ],
+          "signature_schemes": [
+            "Verified using v1 scheme (JAR signing): false",
+            "Verified using v2 scheme (APK Signature Scheme v2): true",
+            "Verified using v3 scheme (APK Signature Scheme v3): false",
+            "Verified using v3.1 scheme (APK Signature Scheme v3.1): false",
+            "Verified using v4 scheme (APK Signature Scheme v4): false"
+          ],
+          "source_permission_inventory_matches": true
+        },
+        {
+          "file": "article-tool-debug.apk",
+          "package": "dev.rock.tools.article",
+          "sha256": "bb7b63f8498ea1f026fde39a9c915393e355d2d028ab52798c4a11a5f6d782c4",
+          "signer_sha256": "a08e7371dff38cef6abb3af8e9d7742944c9984e1fb7e0b6396cf3dc40feaab0",
+          "min_sdk": 35,
+          "target_sdk": 35,
+          "debuggable": true,
+          "internet_permission": false,
+          "cleartext_traffic": false,
+          "bytes": 354314,
+          "version_code": 1,
+          "uses_permissions": [],
+          "signature_schemes": [
+            "Verified using v1 scheme (JAR signing): false",
+            "Verified using v2 scheme (APK Signature Scheme v2): true",
+            "Verified using v3 scheme (APK Signature Scheme v3): false",
+            "Verified using v3.1 scheme (APK Signature Scheme v3.1): false",
+            "Verified using v4 scheme (APK Signature Scheme v4): false"
+          ],
+          "source_permission_inventory_matches": true
+        }
+      ],
+      "scope": "Downloaded exact CI artifact; static APK byte, signature, identity, SDK and network-contract verification only",
+      "physical_device": "NOT_RUN",
+      "release_signing": "NOT_CONFIGURED",
+      "repository_changes": false
     }
   },
   "github": {
     "saved": true,
     "mainIntegrated": false,
     "deployed": false,
-    "validatedSourceSha": "6af91cadd418d8f13add6e8989998f255f1aa850",
+    "validatedSourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
     "pullRequest": "https://github.com/k999ln/rock/pull/99",
     "draft": true,
-    "savedSourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
-    "latestFullCi": "19ef1020 CodeQL, Android, native and SPIDER passed; verify failed in one Material test harness timing case. eab77b0d fixes the harness; latest integrated CI pending.",
-    "latestCheckedSourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0"
+    "savedSourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+    "latestFullCi": "All 15 check-runs completed successfully at 7f5ed361. macOS API transport failure and owner-switch draft recovery remain under investigation on later work.",
+    "latestCheckedSourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+    "originalOpenPrHeadsRechecked": {
+      "checkedAt": "2026-10-11T16:33:00Z",
+      "mainSha": "96845e6006c15e39ba5b45495f79c21bdff7399e",
+      "allNineHeadsAreAncestors": true,
+      "pullRequests": [
+        {
+          "number": 98,
+          "headSha": "1df3e858477277a1e902b39fc83b90bf3bbce272"
+        },
+        {
+          "number": 95,
+          "headSha": "dbc7f1fdf38983f5ca67c0278de521094624eecb"
+        },
+        {
+          "number": 94,
+          "headSha": "d4ce73c5d046ccf0a5f85716c28a6bad4b642fa3"
+        },
+        {
+          "number": 93,
+          "headSha": "22e8320706d46658f22f2a89890ab6fa6ce60c5f"
+        },
+        {
+          "number": 90,
+          "headSha": "20f38c88c23b53d37f1446591126b3342b99987e"
+        },
+        {
+          "number": 89,
+          "headSha": "0a213e7f1b627f3e451429f4e059c8ba6337ff00"
+        },
+        {
+          "number": 88,
+          "headSha": "33d6469855a656dc5da165b11d2aacd7dfa0f610"
+        },
+        {
+          "number": 85,
+          "headSha": "a7caf43a360fa0b8583feda6d9a78e86d6412fdb"
+        },
+        {
+          "number": 84,
+          "headSha": "60ca6aecde5b7e32a15cc652844fbb812ec616d4"
+        }
+      ],
+      "originalPullRequestsUnchanged": true
+    }
   },
   "acceptanceLimits": [
     "Host and synthetic fixtures are separate from provider, emulator, physical device and production acceptance.",

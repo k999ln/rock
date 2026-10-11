@@ -4,6 +4,11 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 同SHAのGitHub全15チェック成功、ローカル差異を調査（G04 / H1、ROCK）
+
+`7f5ed3610c23092882dab81aa69ff8129a71828c`のGitHub verify／CodeQL／SPIDER／native／Android全15チェックが成功。Node1674 pass/1 platform skip、API1356、CSV385、185assets欠落0。Androidは精算済みCore 5回帰・Shell表示1回帰を含むCore121、automation JVM16、SDK7、emulator automation43 pass/2物理skip、Shell7、operator6が合格。root/Miniサイトのlockfile advisory監査も検出0。同じSHAのMac全体verifyはbuildまで成功後APIのAMC POSTでECONNRESETを2回再現したため、Linux成功で隠さず原因を調査中。owner切替後の未成立保存は限定修正中。main統合・公開・実機受入は未実施。
+
+
 ## 2026-10-11 — 利用権の履歴上限・一覧競合・精算済み読戻しを修正（SIM01 / OS10 / B06 / BIL03、ROCK）
 
 別scopeの新規購入100件に隠れた有効claim／eSIM keyを認可できるよう、要求scopeをSQLで先に絞る。eSIMは完全照合100候補と継続判定1行に限定し、未確認候補が残る場合は503で止める。Coconala／メルカリの遅いGETが最新本人や保存結果を上書きする競合を修正し、ココナラも未確認保存中の同一タブ移動を保護。実vinext/API/D1で503→入力維持→再確認→1記録保存→Library移動を確認した。Androidは精算済み予約の署名usageと元ledgerを読取照合し、Wallet変更なしで正しい精算結果を表示する。別ownerでの未成立保存再確認は追加調査・修正中。

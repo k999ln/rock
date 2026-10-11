@@ -8,7 +8,7 @@
 
 現行の段階と同SHAの証拠は[Android workstreamの表](workstreams/07-android-device-local-ai.md#現行の検証段階と再開条件2026-10-11)を優先する。既存JDK 17／SDK 35を使ったhostの実SQLite・AIDL／Java compileに加え、`19ef1020`の[Android API 35 CI](https://github.com/k999ln/rock/actions/runs/38153378733)が成功した。Core 116件、automation JVM 16件、SDK 7件、emulator instrumentationのautomation 43件合格／物理専用2件skip、Shell 6件、Operator 6件とAPK build／lintが対象で、RockstarOS imageの起動試験ではない。
 
-後続`57f63413`の精算済み同ID照合はCore 121件＋automation JVM 16件のhost合格まで確認済み。これを含む最新候補`7f5ed361`の[Android CI](https://github.com/k999ln/rock/actions/runs/38155308883)は記録時点で進行中であり、同SHAの成功・artifactはまだ確定しない。[2026-09-16のPixel非破壊再起動23/23](evidence/android-pixel-10-prefull-physical-20260916.json)は当時の試験署名APKの証拠として保持し、今回の変更や全OSの受入へ加算しない。全OS build／正式署名／flash・boot／OTA・rollback／data・Keystore喪失復元は未受入。
+後続`57f63413`の精算済み同ID照合はCore 121件＋automation JVM 16件のhost合格まで確認済み。これを含む候補`7f5ed361`の[Android CI](https://github.com/k999ln/rock/actions/runs/38155308883)も成功し、artifact XMLでCore 121、automation JVM 16、SDK 7、emulator automation 43合格／2物理skip、Shell 7、Operator 6を確認した。追加の精算Core 5ケースとShell表示1ケースが実行されている。[2026-09-16のPixel非破壊再起動23/23](evidence/android-pixel-10-prefull-physical-20260916.json)は当時の試験署名APKの証拠として保持し、今回の変更や全OSの受入へ加算しない。全OS build／正式署名／flash・boot／OTA・rollback／data・Keystore喪失復元は未受入。
 
 以下のP1設計、2026-09-05の到達点と試験記録は履歴を含む。再開作業は末尾の現行手順を使い、過去の「未実施」や件数を現状の集計へ流用しない。
 
@@ -130,7 +130,7 @@ Gradleはpackage/versionをbuild設定から補うが、Soongではその設定�
 
 ## 7. 次の作業と受入条件（2026-10-11）
 
-1. 最新候補`7f5ed361`のAndroid CI結果・JUnit／instrumentationレポート・APK hashを同SHAで確認する。先行`19ef1020`の成功を後続修正へ転記せず、失敗があれば該当境界だけを修正する。
+1. `7f5ed361`のAndroid CIとJUnit／instrumentationは確認済み。さらにsourceを変更する場合は新しいSHAのCIを確認し、配布前には対象APK hashを固定する。以前の合格を後続修正や実機へ転記しない。
 2. 同一候補の合成Cloud Agentで見積→native hold→明示承認→切断→再接続→同jobの進捗・結果・精算receiptを接続検証する。実Provider鍵・契約・請求・fundingを未受入のまま本番executionを有効化しない。
 3. 現行APKを対象にPixel 10 GL066の画面ロック／unlock、プロセス終了・再起動、セッション失効／再連携、同一ID復旧を非破壊で受け入れる。過去のPixel合格とAPI 35 emulatorの物理専用skipは別に扱う。
 4. 全OSは[Device Preview手順](phone-preview-20260911.md)に従い、専用Linux x86_64・source／vendor inventory・同一imageのbuild検査条件を満たしてから進める。正式署名・純正復旧artifact・backup復元・rollbackのgateが揃うまでflashを行わない。CuttlefishとLinux/QEMUの成功もPixel full OSへ転用しない。
