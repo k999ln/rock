@@ -1,0 +1,59 @@
+{
+  "schema": "rock-refactor-evidence/1",
+  "updatedAt": "2026-10-11",
+  "taskId": "G04",
+  "primarySquad": "H1",
+  "primaryOwner": "ROCK",
+  "baseMain": "bcd31090e11f6b22c130b9551292a15fa805aa8a",
+  "branch": "codex/rock-refactor-20261011",
+  "status": "in_progress",
+  "scope": [
+    "Workbench Cloud AI state, transport and view as one component responsibility",
+    "Shared owner/pending decision helpers with per-screen transport and form state",
+    "Bounded API request-body stream reader with per-route policy and error mapping",
+    "A2A read projection and validation responsibilities; unchanged mutations and settlement",
+    "Android bounded response reader and strict JSON transport decoding",
+    "One metadata update entry point for project, mission, database and workspaces"
+  ],
+  "preservedContracts": [
+    "Authentication and owner-intent ordering",
+    "Limits, deadlines and error classifications",
+    "Pricing, explicit approval, signing bytes and settlement",
+    "CAS and idempotency; no automatic retry of uncertain mutations",
+    "Existing UI wording, form persistence and navigation holds",
+    "Fixed archives, vendor originals and physical/production acceptance boundaries"
+  ],
+  "validation": {
+    "status": "pending",
+    "targeted": [
+      {
+        "area": "metadata generation",
+        "result": "passed",
+        "commands": [
+          "npm run metadata:check (before sync: expected exit 1)",
+          "npm run project:update",
+          "npm run metadata:check",
+          "npm run mission:update"
+        ],
+        "observations": [
+          "Changing the canonical nextAction first made the generated project check fail.",
+          "The existing project:update alias regenerated project, mission, both database status outputs and 32 workspaces.",
+          "All four check groups then passed.",
+          "A repeated update produced identical SHA256 hashes for all 39 generated files; metadata:check also left those bytes unchanged."
+        ],
+        "scope": "Local canonical records and generated source documents; no production database readback."
+      }
+    ],
+    "fullVerify": null,
+    "github": null
+  },
+  "github": {
+    "saved": false,
+    "mainIntegrated": false,
+    "deployed": false
+  },
+  "acceptanceLimits": [
+    "This refactor does not establish external Provider, commercial, physical-device or current OS image acceptance.",
+    "Pins are pending clarification of the requested target."
+  ]
+}

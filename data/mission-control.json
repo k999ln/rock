@@ -195,7 +195,7 @@
         "docs/evidence/spider-agent-preflight-read.json"
       ],
       "acceptanceGate": "全project taskにちょうど一つのprimary squadが明記され、各squadにGoal、対象範囲、証拠、次taskと合格条件がある。",
-      "nextAction": "G04: 欠落台帳と既存PRを現行mainへ整合させ、同一候補の全体verify・CIを確認する。AMC01の製品間Interface整理は並行する。",
+      "nextAction": "G04: PR #99のmain統合後、Web/API/Androidの重複処理と進捗生成入口を整理し、同一候補の全体verify・CIを確認する。AMC01の製品間Interface整理は並行する。",
       "relatedTasks": [],
       "nextTaskIds": [
         "G04",
@@ -12747,7 +12747,7 @@
       "primaryOwner": "ROCK",
       "assignee": null,
       "ownerRole": "H1 / Git・CI統合担当",
-      "scope": "現行main、既存9 PR、欠落コード・台帳を一つの検証候補へ統合する",
+      "scope": "main bcd31090を基点にWeb/API/A2A保存/Androidの重複処理と進捗生成を整理する。既存の本人確認、料金承認、署名、CAS、復旧条件を保持する。",
       "inputs": [
         {
           "path": "docs/git-consolidation.md",
@@ -12763,26 +12763,31 @@
           "path": "docs/evidence/integrated-development-20261011.json",
           "section": "G04",
           "description": "対象source、環境、再現操作、合否と未受入条件"
+        },
+        {
+          "path": "docs/evidence/refactor-20261011.json",
+          "section": "validation",
+          "description": "main統合後の整理範囲、維持契約、対象sourceと検証結果"
         }
       ],
       "steps": [
         {
           "id": "G04-S1",
-          "action": "各PRと過去mainの差分をレビューし、現行runtime・履歴・固定証跡を保つ選択的統合を行う"
+          "action": "重複箇所と責務を調査し、Web、service、Android、台帳生成の担当範囲と維持契約を固定する"
         },
         {
           "id": "G04-S2",
-          "action": "task/設計/DB/担当の整合、対象試験と全体verifyを実行し、失敗を修正する"
+          "action": "小さい共通処理と責務単位へ整理し、境界回帰・実画面・設計/台帳を照合する"
         },
         {
           "id": "G04-S3",
-          "action": "作業branchをpushしてPRを作成し、同一40桁SHAのCIと残る外部gateを記録する"
+          "action": "全体verifyを完走し、作業branchと新PRをGitHubへ保存して同一40桁SHAのCIを確認する"
         }
       ],
       "acceptanceCriteria": [
         {
           "id": "G04-AC1",
-          "criterion": "既存mainの有効な変更と各PR固有機能が保持され、欠落箇所の判定理由がある",
+          "criterion": "対象の重複処理が共通化され、本人確認・料金承認・署名・CAS・入力保持・再試行条件が既存契約と一致する",
           "status": "not_verified",
           "verification": "同じsource SHAと対象環境の実行結果を照合し、過去の別候補結果を流用しない。",
           "evidence": []

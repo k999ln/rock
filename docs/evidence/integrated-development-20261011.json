@@ -3032,5 +3032,17 @@
       "No full OS or current QEMU image acceptance",
       "No Mini/Pro hardware or flight-control acceptance"
     ]
+  },
+  "mainMergeFollowup": {
+    "mergedAt": "2026-10-11T18:23:24Z",
+    "mergedAtLocal": "2026-10-11T14:23:24-04:00",
+    "authorization": "User explicitly requested main integration in the follow-up conversation.",
+    "pullRequest": "https://github.com/k999ln/rock/pull/99",
+    "headSha": "a81b48eaf102851244bf67f84ecb7d6b6e379b34",
+    "mergeCommit": "bcd31090e11f6b22c130b9551292a15fa805aa8a",
+    "mergeState": "MERGED",
+    "headChecks": "15 success, 0 failures before merge",
+    "deployed": false,
+    "note": "Earlier github fields are the original candidate snapshot; this follow-up records the later final-head merge without rewriting those historical checks."
   }
 }

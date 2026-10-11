@@ -116,9 +116,10 @@ To preview the built Worker locally:
 Install the product site dependencies before running the full repository checks. After changing documents or progress, run:
 
     npm ci --prefix sites/avocado-mini
-    npm run project:update
-    npm run mission:update
+    npm run metadata:update
     npm run verify
+
+`metadata:update` synchronizes the project overview, Mission Control, database status, and feature workspaces from their canonical inputs. `project:update` and `mission:update` remain aliases; `metadata:check` checks the same outputs without writing.
 
 Pixel, QEMU, Workers, and the product site have their own instructions and gates: [Linux/QEMU](docs/workstreams/06-native-qemu-release.md) · [Android/Pixel](docs/workstreams/07-android-device-local-ai.md) · [avocadoMini](docs/workstreams/11-material-invention-avocado-mini.md) · [Git / CI / Operations](docs/workstreams/10-git-ci-operations.md).
 

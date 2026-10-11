@@ -155,3 +155,9 @@ PR #85のsource `f9c85870`はGitHub全7チェック成功。全体verify内のNo
 ## Sky／Zemaの検証済み修正統合（2026-10-08 UTC、G04）
 
 ROCK担当。利用者のmain反映指示により、034/035で限定検収された保存競合・会話復旧・bundle修正を最新mainへ統合する。[今回の証拠と未受入範囲](../evidence/sky-zema-main-integration.json)を参照。同一commitのCIを確認し、未完了の隣接表示試験や本番公開を完了扱いにしない。
+
+## main統合後のコード整理（2026-10-11、G04 / H1）
+
+PR #99は最終HEAD `a81b48ea` の全15チェック成功後、利用者の指示でmain `bcd31090`へ統合した。次のWeb/API/A2A保存/Androidの整理は専用branchで行い、署名・料金承認・owner・CAS・復旧契約を維持する。[今回の範囲と検証](../evidence/refactor-20261011.json)へ記録する。
+
+`npm run metadata:update`は進捗、Mission Control、DB状態JSON/Markdown、作業部屋を順に再生成する。`project:update`と`mission:update`も同じ入口へ接続し、nextActionやtask件数のDB転記漏れを防ぐ。`metadata:check`は対応する既存checkを実行し、書き込まない。各領域の単独checkとDB schema変更時の`database:status`も維持する。
