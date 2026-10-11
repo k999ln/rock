@@ -6,6 +6,7 @@
 
 ## 現在地
 
+- 2026-10-11: Sky Compute Gridの永続gridは、grid内のcredit（`sky_compute_credits`）を自前の追記専用台帳へ記帳する。既存Walletへは書き込まず、換金・払出し・他serviceへの充当はできない。記帳は検証済みassignmentごとにDBのtriggerが1回だけ行い、public poolの注文は作成時に予算を保留し、閉じた時に残りを戻す。owner poolは料金0で台帳に記帳しない。Skyの取り分は0%を列として記録するだけである。開始残高を与えるのはdeployment側の操作だけでAPIはない。現行の料金実行保留は解除していない。[設計](../sky-compute-grid.md)。
 - 2026-10-10: Sky Compute Gridのhost fixtureは、検証済みcompute lotから冪等な`service_credit_hold` previewを作る。既存Walletへ直接書き込まず、`livePayoutAuthorized=false`、`walletMutationAllowed=false`を固定する。未検証結果、timeout不明、重複receiptを収益にしない。provider credit、buyer price、Sky spread、税・返金・chargeback、sandbox rail、限定liveは未決で、SKY19/WLT06/BIL02の実行保留を解除しない。[設計](../sky-compute-grid.md)。
 
 - 2026-10-01: BIL02の[決済統合設計](../sky-commerce-design.md)と[Wallet詳細設計](../wallet-commerce-design.md)、型/DDL草案と再現用検証を追加。旧月額8.88 USD案は利用者指示で対象外。これは設計の完了範囲であり実Provider受入・runtime実装の完了ではない。

@@ -77,7 +77,7 @@ README.md ─────────────── これは何か（表玄
 
 | 知りたいこと | 開く文書 |
 | --- | --- |
-| 結局いまの主商品は何？ | [README](../README.md)（アカウントひとつで使うAgent。SIMは機器の任意部品）→ [仕様変遷 §2](spec-history.md#2-いま有効な仕様2026-10-10時点) |
+| 結局いまの主商品は何？ | [README](../README.md)（アカウントひとつで使うAgent。SIMは機器の任意部品）→ [仕様変遷 §2](spec-history.md#2-いま有効な仕様2026-10-11時点) |
 | この仕様はいつ決まった？ 前は何だった？ | [仕様変遷 §3・§5](spec-history.md#3-テーマ別何から何へ変わったか) |
 | ある日に何を決めて何を作った？ | [仕様変遷 §4](spec-history.md#4-日付順の全記録) → くわしくは [project.md](../project.md) |
 | RQ○○の原文を読みたい | [製品ベース](product-baseline.md) |
@@ -211,8 +211,8 @@ Toolを探す・つなぐ・動かす側の設計。
 | [`sky-identity-connection.md`](sky-identity-connection.md) | 設計 | Skyの本人確認と1タップ接続 | 09-12 |
 | [`sky-role-agents-20260912.md`](sky-role-agents-20260912.md) | 設計 | Skyの役割エージェント（担当）の仕様と会話契約 | 09-12 |
 | [`sky-network-economy.md`](sky-network-economy.md) | 正本 | Toolチームと開発者還元。Sky Market手数料10%と、過去の貢献・還元設計 | 09-29 |
-| [`sky-compute-grid.md`](sky-compute-grid.md) | 正本 | 未使用Androidの計算余力を固定lotへmatchingし、検証後にだけ記帳するVirtual Compute Plant設計。合成fixtureと、既定で無効の永続grid（注文・署名付き端末要求・検証・credit台帳）を扱う | 10-11 |
-| [`sky-compute-grid-android-worker.md`](sky-compute-grid-android-worker.md) | 設計 | Compute Gridへ実端末をつなぐAndroid workerの設計（未実装）。構成、端末要求の組み立て、実行条件と停止、試験、実機受入W1〜W10 | 10-11 |
+| [`sky-compute-grid.md`](sky-compute-grid.md) | 正本 | 未使用Androidの計算余力を固定lotへmatchingし、検証後にだけ記帳するVirtual Compute Plant設計。合成fixtureと、既定で無効の永続grid（注文・署名付き端末要求・検証・credit台帳）を扱う。12・13節は注文consoleと受入用deploymentの設計（未実装） | 10-11 |
+| [`sky-compute-grid-android-worker.md`](sky-compute-grid-android-worker.md) | 設計 | Compute Gridへ実端末をつなぐAndroid workerとShell画面の設計（未実装）。構成、端末要求の組み立て、実行条件と停止、試験、実機受入W1〜W10、実装者（Codex）への引継ぎ | 10-11 |
 | [`sky-mr-automation-candidates.md`](sky-mr-automation-candidates.md) | 設計 | 旧 `Mr.` Hubの自動化11件をSkyの導入候補にする設計 | 09-20 |
 | [`mr-integration.md`](mr-integration.md) | 設計 | `Mr.` からの取り込み範囲、固定原本とhash、license | 10-03 |
 | [`pc-citations-adapter.md`](pc-citations-adapter.md) | 設計 | PC出典整理の実処理接続（固定CLI、上限、cleanup） | 10-02 |

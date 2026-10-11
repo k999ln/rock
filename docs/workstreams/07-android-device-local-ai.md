@@ -13,6 +13,14 @@
 
 以下の日付付き実装・環境記録は当時の結果を残す。現行段階はこの表と同SHAの証拠を優先する。
 
+## 2026-10-11 GRID01／O5・O6連携 — SKUのJava実装とAndroid worker設計
+
+Sky Compute Gridの最初のSKU `text-lexical-embedding-v1` を`android/core`の`ComputeGridLexicalEmbedding`として実装した。公開したtest vectorを再現し、`npm run os:parity`でTypeScriptの参照実装と46 lotの出力が一致する。端末を動かすworker（JobService、条件の監視、通信、署名、Shellの入切）は**未実装**で、[Android worker設計](../sky-compute-grid-android-worker.md)に構成、要求の組み立て、停止、試験、実機受入W1〜W10を定めた。
+
+ownerの「設計だけして、下流作業はcodexに渡す」により、workerの実装はCodexが担当する（`GRID01-S5`）。設計にはShellの画面（`MainActivity`の`advancedPanel`へ足す一群）、`IShellApi`の2 methodと状態JSONの形、通信の細部、実装者への引継ぎ（変えてよいもの、変えないもの、してはいけないこと、終わりの判定）を含めた。
+
+workerは既存のaccount連携、端末鍵登録（`enrollA2ABrokerDevice`）、`A2ABrokerDeviceKeyStore`の署名をそのまま使う。Local AI runtime（`com.localactionassistant`）は変更しない。emulatorはx86_64なのでofferが受理されず、端から端までの確認は実機（arm64）だけで行う。
+
 ## 2026-10-10 GRID01／O5・O6連携 — 余剰計算workerの境界
 
 Sky Compute Gridの供給端末は初期段階でAndroid arm64だけとする。既存AI05のowner指定authority deviceを自動移管せず、公開／合成dataの固定embedding lotだけを別leaseとして扱う。開始・継続にはcharging、device idle、unmetered network、thermal none/lightが必要で、owner useを計算より優先する。Play配布の動的code制限を前提に、任意DEX/JAR/native library、shell/rootを取得せず、署名・hash固定済みruntimeへdata/parameterだけを渡す。現在はhost fixtureだけで、Android JobScheduler/WorkManager、attestation、APK、emulator、Pixel、50台pilotは未実装・未受入。[専用設計](../sky-compute-grid.md)。

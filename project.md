@@ -4,6 +4,23 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — Sky Compute Gridの永続gridをserver側だけ実装し、Android workerは設計で止めた（GRID01 / O5、host）
+
+利用者の「これ作れる？」（PR #98の経緯を添付）と「やって」を受けた。主担当はSky / MCP（O5）、Android側はAndroid / Device / Local AIと共同。その後の「製品化できた？もう売るよ？」には、まだ売れないと答えた（端末側のアプリがなく、実端末は1台も計算していない）。続く「設計だけして、下流作業はcodexに渡すから」により、以後の実装は行わず、設計と引継ぎだけを残す。
+
+- 決めたこと（質問11件のうち9件は提案どおり、2件は未回答）: 最初の計算は文章のembedding。最初の買い手はRock自身。同じaccountの端末だけで組むowner poolを先に作り、他人の端末を使うpublic poolは後。Android arm64だけ。配布は直接APK。報酬はgrid内のcreditで、現金にも他の支払いにも換えない。Skyの手数料は0として記録だけ残す。保存はCloudflare D1。本番へのmigration適用と有効化は行わない。
+- PR #98のhost fixtureで見つけた穴を塞いだ: 提供者がleaseへ結び付いていない、同じ提供者ひとりで合議を満たせる、未審査のartifactを受け付ける、内部の提供者参照が検証の証拠に出る。
+- 永続gridをserver側に実装した（既定で無効）: D1の8表とmigration 0063、登録済みの端末鍵による署名付きrequest、原子的な割当と期限切れの再割当、参照計算・合議・類似度による検証、検証済みassignmentごとに1回の記帳、保存時の暗号化、取消と削除、APIの5 route。1端末1 lease、1 lease 1 receipt、予算超過なし、残高が負にならないことは、applicationの検査に加えてDBの制約とtriggerで守る。
+- 最初に配れる計算種別は `text-lexical-embedding-v1`（整数だけの字句hash embedding）。意味を扱うembeddingではない。TypeScriptの参照実装、Javaの実装、共通のtest vectorを置いた。
+- Android workerは設計だけ: `docs/sky-compute-grid-android-worker.md` にclass構成、Shellの画面と状態の形、通信の細部、署名するpayload、実行の流れ、失敗時の扱い、実機受入W1〜W10、実装の順序、実装者への引継ぎを書いた。
+- 注文を出す画面（注文console）と、受入用deploymentの手順も設計だけ: `docs/sky-compute-grid.md` の12・13節。今はAPIしかなく、ownerが自分で注文を出す画面がない。
+- 実装はCodexへ渡す。設計した側は、worker・Shell・console・実機受入に着手していない。
+- 画面 `/sky/compute-grid` は、合成fixtureの表示であること、永続gridが既定で無効であること、端末側が未実装であることを表示する。
+
+検証（host）: 対象の4 suiteは54件すべて合格（契約12、SKU 8、store 30、API 4）。`javac --release 11` でandroid/coreのmainをbuildし、Java↔TypeScriptの46 lotが一致。証拠は `docs/evidence/amc/grid01-persistent-grid-host.md`。JUnitはこの環境で実行できずGitHub CIの `:core:test` に任せる。emulator、Pixel、複数端末、deployment、本番DBはいずれも未実行。
+
+残り: (1) Android workerとShellの入切の実装（GRID01-S5）。(2) 注文consoleの実装（S6）。(3) 本番でないdeploymentとPixel 1台での実機受入（S7）。(4) 2〜5台での合議・改変・切断（S8）。(5) 意味を扱うembeddingの端末側engine、creditの利用先、public pool、50台pilot（S9）。未回答の2件は、手元のPixelの台数と、Local AIのrepository（`noellesugar99/local-action-assistant`）を変更してよいか。
+
 ## 2026-10-11 — 公開rockの整理（暗号化は同日にやめた）、確定事項の反映（Git / CI / Operations、ROCK）
 
 利用者の「重複・もう使わない内容を削除したい」「gitはprojectへの導線なので見やすく」「パブリックで進めたい。みんなが見れるが大事なところは見れないように」「全部確定でいい」「今まで通りの上に描きたし」を受けた。主担当はGit / CI / Operations（ROCK）。`k999ln/rock` を公開のまま使い続け、履歴は書き換えず、main `bcd31090`（PR #99 統合後）の上に整理のcommitを足した。開いていたPR（#84・#85・#88・#89・#90・#93・#94・#95）はPR #99で統合済みのため、この作業では統合しない。
@@ -3042,7 +3059,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | UXCHAR01 | Sky/Zemaの共通キャラアイコンとクリック詳細（役割・現在状態・会話内成果） | 完了 | [記録](components/tool-character.tsx) · [記録](components/tool-character.module.css) · [記録](docs/workstreams/01-product-ux.md) |
 | SKY20 | Sky公開・Telegram配布を証拠付きverified Packageへ限定し、失効と利用イベント再送を受け入れる | 進行中 | [記録](drizzle/0016_red_crusher_hogan.sql) · [記録](lib/sky-tool-review.ts) · [記録](lib/sky-review-auth.ts) · [記録](app/api/sky/tool-reviews/route.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](lib/sky-activation.ts) · [記録](lib/sky-tool-events.ts) · [記録](toolkits/sky-tool-sdk/src/index.mjs) · [記録](tests/sky-tool-package.test.mjs) · [記録](tests/sky-activation.test.mjs) · [記録](tests/sky-tool-sdk.test.mjs) · [記録](docs/sky-tool-sdk.md) · [記録](lib/sky-code-store.ts) · [記録](lib/sky-code-security.ts) · [記録](components/sky-code-timeline.tsx) · [記録](docs/evidence/sky-code-timeline.json) |
 | SKY19 | 親タスク: SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） | 進行中 | [記録](docs/sky-network-economy.md) · [記録](docs/sky-billing.md) |
-| GRID01 | Sky Compute Gridで未使用Androidの余剰計算を固定lotへmatchingし、検証後だけ精算候補にする | 進行中 | [記録](docs/sky-compute-grid.md) · [記録](contracts/sky-compute-grid.json) · [記録](contracts/sky-compute-grid-fixture.json) · [記録](lib/sky-compute-grid.ts) · [記録](tests/sky-compute-grid.test.mjs) · [記録](app/sky/compute-grid/page.tsx) · [記録](app/api/sky/compute-grid/demo/route.ts) · [記録](docs/evidence/amc/grid01-host-fixture.md) |
+| GRID01 | Sky Compute Gridで未使用Androidの余剰計算を固定lotへmatchingし、検証後だけ記帳する（自分の端末だけのプールが先） | 進行中 | [記録](docs/sky-compute-grid.md) · [記録](contracts/sky-compute-grid.json) · [記録](contracts/sky-compute-grid-fixture.json) · [記録](lib/sky-compute-grid.ts) · [記録](tests/sky-compute-grid.test.mjs) · [記録](app/sky/compute-grid/page.tsx) · [記録](app/api/sky/compute-grid/demo/route.ts) · [記録](docs/evidence/amc/grid01-host-fixture.md) · [記録](docs/sky-compute-grid-android-worker.md) · [記録](lib/sky-compute-grid-skus.ts) · [記録](lib/sky-compute-grid-live.ts) · [記録](lib/sky-compute-grid-store.ts) · [記録](lib/sky-compute-grid-crypto.ts) · [記録](lib/sky-compute-grid-api.ts) · [記録](lib/sky-compute-grid-route.ts) · [記録](drizzle/0063_sky_compute_grid.sql) · [記録](contracts/sky-compute-grid-lexical-embedding-vectors.json) · [記録](android/core/src/main/java/dev/rock/core/ComputeGridLexicalEmbedding.java) · [記録](tests/sky-compute-grid-skus.test.mjs) · [記録](tests/sky-compute-grid-store.test.mjs) · [記録](tests/sky-compute-grid-api.test.mjs) · [記録](app/api/sky/compute-grid/device/route.ts) · [記録](app/api/sky/compute-grid/orders/route.ts) · [記録](docs/evidence/amc/grid01-persistent-grid-host.md) |
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | DOC02 | RockstarOS設計書完全版v1.0の原本PDF・全文抽出・完全性記録・設計索引をGit正本へ保存 | 完了 | [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rockstaros-complete-design-v1.0.txt) · [記録](data/rockstaros-complete-design-v1.0.json) · [記録](docs/rockstaros-design-portal.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | DOC03 | rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定） | 完了 | [記録](docs/rocketstar-design/README.md) · [記録](docs/rocketstar-design/inventory.json) · [記録](docs/rocketstar-design/verification.json) · [記録](scripts/verify-rocketstar-archive.py) · [記録](data/design-document-index.json) |

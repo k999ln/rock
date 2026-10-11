@@ -2434,7 +2434,7 @@
     },
     {
       "id": "GRID01",
-      "title": "Sky Compute Gridで未使用Androidの余剰計算を固定lotへmatchingし、検証後だけ精算候補にする",
+      "title": "Sky Compute Gridで未使用Androidの余剰計算を固定lotへmatchingし、検証後だけ記帳する（自分の端末だけのプールが先）",
       "status": "in_progress",
       "dependsOn": [
         "AI05",
@@ -2448,8 +2448,25 @@
         "tests/sky-compute-grid.test.mjs",
         "app/sky/compute-grid/page.tsx",
         "app/api/sky/compute-grid/demo/route.ts",
-        "docs/evidence/amc/grid01-host-fixture.md"
-      ]
+        "docs/evidence/amc/grid01-host-fixture.md",
+        "docs/sky-compute-grid-android-worker.md",
+        "lib/sky-compute-grid-skus.ts",
+        "lib/sky-compute-grid-live.ts",
+        "lib/sky-compute-grid-store.ts",
+        "lib/sky-compute-grid-crypto.ts",
+        "lib/sky-compute-grid-api.ts",
+        "lib/sky-compute-grid-route.ts",
+        "drizzle/0063_sky_compute_grid.sql",
+        "contracts/sky-compute-grid-lexical-embedding-vectors.json",
+        "android/core/src/main/java/dev/rock/core/ComputeGridLexicalEmbedding.java",
+        "tests/sky-compute-grid-skus.test.mjs",
+        "tests/sky-compute-grid-store.test.mjs",
+        "tests/sky-compute-grid-api.test.mjs",
+        "app/api/sky/compute-grid/device/route.ts",
+        "app/api/sky/compute-grid/orders/route.ts",
+        "docs/evidence/amc/grid01-persistent-grid-host.md"
+      ],
+      "nextAction": "server側の永続gridとSKUのJava実装はhostで確認済み、既定で無効。Android workerと注文consoleは設計まで（docs/sky-compute-grid-android-worker.md、docs/sky-compute-grid.md 12節）。次はCodexがAndroid worker（GRID01-S5）と注文console（S6）を実装し、ownerが用意する本番でないdeploymentとPixel 1台で実機受入W1〜W10を行う（S7）。本番へのmigration適用と有効化、public pool、creditの利用先は別の判断。"
     },
     {
       "id": "DOC01",

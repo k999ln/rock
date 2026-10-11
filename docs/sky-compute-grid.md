@@ -203,7 +203,7 @@ runtime、model、tokenizerはSHA-256完全一致でleaseへ固定する。い�
 
 試験の「端末」は、登録済みのP-256鍵で署名し参照実装で計算するsimulatorである。Javaで実装済みなのはSKUの計算だけで、端末を動かすworkerは[設計](sky-compute-grid-android-worker.md)の段階である。**未受入**: Android worker、実機での計算・停止・熱・電力、実際のKey Attestation経路、Cloudflare D1本番での性能と上限、本番migration、public poolの有効化、意味を扱うembedding model、creditの利用先、実需要、実料金、実払出し。
 
-次の受入は順に、(1) [Android worker設計](sky-compute-grid-android-worker.md)の実装、(2) Pixel 1台でowner poolの注文を実際に計算する（同設計のW1〜W10）、(3) 同じaccountの2〜5台で切断・発熱・本人使用・改変を試す。50台と外部の買い手はその後である。
+次の受入は順に、(1) [Android worker設計](sky-compute-grid-android-worker.md)の実装、(2) §12の注文consoleの実装、(3) §13の受入用deploymentとPixel 1台でowner poolの注文を実際に計算する（worker設計のW1〜W10）、(4) 同じaccountの2〜5台で切断・発熱・本人使用・改変を試す。50台と外部の買い手はその後である。(1)と(2)の実装はCodexが担当する（2026-10-11、ownerの指示）。
 
 物理MVPの仮説（未達成）: 日本、同系統Pixel/Android 50台、買い手3社以下、1 SKU、期限内verified 95%以上、false accept・二重精算・温度/電池違反・data事故0、比較cloud比総費用25%以上低いこと、4週後provider継続50%、買い手3社中2社が4週間repeatすること。
 
@@ -224,3 +224,98 @@ runtime、model、tokenizerはSHA-256完全一致でleaseへ固定する。い�
 | retired phone rackをfirm reserveにするか | O6 / OWNER | live phoneとの熱・電力・故障・稼働率比較 |
 
 最大の事業riskは、検証、再計算、通信、fraud、supportを含めるとcloudより高くなること。供給者数を先に増やさず、anchor demandと1 SKUのunit economicsを先に閉じる。
+
+## 12. 注文console — 設計のみ・未実装
+
+永続gridには注文を出す画面がない。APIはあるので開発者は使えるが、ownerが自分で「この文章を自分の端末で計算する」ことはできない。owner poolの受入（worker設計のW2以降）にも注文を出す手段が要る。そのための最小の画面を設計する。
+
+### 体験
+
+1. サインインして`/sky/compute-grid`を開く。永続gridが有効な環境では、説明の下に「自分の端末で計算する」が出る。無効な環境と未サインインでは、今と同じ説明と合成fixtureだけを出し、「この環境では有効化されていません」「サインインすると使えます」と書く。
+2. **自分の端末**: 供給条件を登録した端末の一覧。表示名、粗い地域、状態（`active`は受付中、`withdrawn`は取り下げ済み。`active`でも`availableUntil`を過ぎていれば期限切れと出す）、最後に条件を申告した時刻、合格lot数。0件の時は「端末のRockstarOS Shellで『使っていない時間の計算』を入にしてください」と出す。
+3. **新しい注文**: 文章を1行に1件ずつ貼る。dataの種類（自分の非公開data／公開data／合成data。初期値は自分の非公開data）、確かめ方（自分の端末を信じる／serverでも計算して比べる／2台で計算して一致を確かめる。初期値は「serverでも計算して比べる」）、期限（1時間／6時間／24時間。初期値6時間）を選び、「自分の端末で計算する」を押す。料金は0と表示する。
+4. **注文の一覧**: 状態、合格・失敗・残りのlot数、期限。進行中の注文は「取り消す」、閉じた注文は「結果を保存」と「入力と結果を今すぐ消す」。
+5. 端末が動くのは充電中・画面消灯・Wi‑Fiの時だけなので、注文はすぐには終わらない。画面には「端末が条件を満たした時に計算します。この画面を閉じても続きます」と書き、終わるまで待たせる表示（spinnerだけの画面）にはしない。
+
+### 責任と禁止
+
+| 部品 | 責任 | 禁止 |
+| --- | --- | --- |
+| `components/sky-compute-grid-console.tsx`（client component） | 状態の取得、入力の検査、注文の作成・取消・削除、結果の保存 | 入力・結果を`localStorage`や`sessionStorage`へ保存すること、public poolの注文を作ること、creditの残高を「使えるお金」として出すこと |
+| `app/sky/compute-grid/page.tsx` | consoleを説明の下、合成fixtureの上に置く | fixtureの数字を実績として見せること |
+| 既存のAPI | 変更しない | — |
+
+consoleが作る注文は固定値を持つ: `pool`は`owner`、`skuId`は`text-lexical-embedding-v1`、`regions`は`[]`、`minimumMemoryMiB`は`1024`、`maximumPriceMicrosPerLot`と`budgetMicros`は`0`。
+
+### 入出力
+
+- 取得: `GET /api/sky/compute-grid/status`。開いた時と、進行中（`open`）の注文がある間は5秒ごと。tabが見えていない間（`document.visibilityState !== 'visible'`）は止め、見えた時に1回取り直す。古い応答が新しい応答を上書きしないよう、要求に通し番号を付け、最後に出した要求の応答だけを画面へ反映する。
+- 入力の検査（送る前。serverも同じ検査をする）: 空行を除く。1件も残らなければ送れない。孤立surrogateを含む行は「使えない文字があります（行番号）」として送らない。32件ずつlotへ分け、`lotId`は`lot-0001`からの連番。lotが64を越える（2,048行を越える）、1 lotのJSON（`{"schema":"sky-compute-lot-input/1","items":[…]}`のUTF-8）が65,536 byteを越える、合計が1,572,864 byteを越える時は、どの上限を越えたかを示して送らない。65,536 byteを越えるlotは、越えなくなるまで件数を半分にして分け直す。1行だけで越える時は、その行番号を示す。
+- 確かめ方: 「自分の端末を信じる」は`{ method: 'owner_trust', quorum: 1 }`、「serverでも計算して比べる」は`{ method: 'independent_reference', quorum: 1 }`、「2台で計算して一致を確かめる」は`{ method: 'duplicate_quorum', quorum: 2 }`。最後のものは、受付中で期限切れでない端末が2台以上ある時だけ選べる。
+- 作成: `orderId`を`crypto.randomUUID()`で作り、**その値をcomponentの状態に持ってから**`POST /api/sky/compute-grid/orders`。通信失敗や5xxの後の「もう一度送る」は同じ`orderId`と同じ内容で送る（serverは同じ注文を返す）。入力を編集したら新しい`orderId`にする。`201`と`200`はどちらも成功。
+- 取消: `DELETE /api/sky/compute-grid/orders/{id}`。確認を1回出す。
+- 結果: `GET /api/sky/compute-grid/orders/{id}/results`の応答を、そのまま`compute-grid-{orderId}.json`として保存する（`Blob`とdownload link）。画面にはlot数と1件あたりの次元数だけを出し、vectorの中身は出さない。`purged`が`true`の時は「結果は削除済みです」と出す。
+- 削除: `DELETE /api/sky/compute-grid/orders/{id}/results`。「入力と結果を消します。元に戻せません」と確認する。
+
+### 状態
+
+```text
+console:  loading → signed_out | disabled | ready
+draft:    editing → invalid | sending → sent | failed（同じorderIdで再送できる）
+```
+
+### 失敗の扱い
+
+| 応答 | 表示と動作 |
+| --- | --- |
+| `401 sign_in_required` | サインインへの導線。下書きは画面に残す |
+| `403 service_entitlement_required` | 「RockstarOS Sky利用権を確認できません」。注文欄を閉じる |
+| `503 compute_grid_disabled`／`compute_grid_data_key_unavailable` | 「この環境では有効化されていません」。注文欄を閉じる |
+| `429 too_many_open_orders` | 「進行中の注文が上限です。終わるのを待つか、取り消してください」 |
+| `409 order_id_conflict` | 新しい`orderId`を作り直して、もう一度送れる状態へ戻す |
+| `413` | 上限を越えた旨。入力の検査と同じ文 |
+| その他の4xx | 応答の`error`の文を出す |
+| 通信失敗・5xx | 「送れたか分かりません。もう一度送っても二重にはなりません」と出し、同じ`orderId`で再送できる |
+
+### 安全・privacy
+
+- 注文の入力は自分の非公開dataでありうる。consoleはbrowserの保存領域へ書かず、tabを閉じれば下書きは消える。保存した結果のfileは利用者の端末に残るので、保存の時に「このfileにはあなたの文章から作ったvectorが入ります」と書く。
+- 一覧に出すのは自分の注文と自分の端末だけである（APIがaccountで絞る）。
+- この画面はZemaの仕事（work item）を作らない。gridの注文は独自の状態を持ち、`lib/workflow.ts`の状態遷移には載せない。Zemaの一覧へ出す時は、`lib/workflow.ts`を通す別の設計として出す。
+
+### 試験と合格条件
+
+| 層 | 内容 |
+| --- | --- |
+| Node | 入力の検査を純粋関数（`lib/sky-compute-grid-console.ts`）へ出し、空行、孤立surrogate、32件の分割、65,536 byteでの分け直し、64 lot、合計の上限を試す。作ったlotをserverの`parseComputeOrder`が受理することも同じ試験で確かめる |
+| component | 既存の`tests/sky-mcp-center-recovery.test.mjs`と同じ方法で、古い応答が新しい応答を上書きしないこと、通信失敗の後の再送が同じ`orderId`を使うこと、無効・未サインインで注文欄が出ないことを試す |
+| browser | `SKY_COMPUTE_GRID_MODE=owner_pool`のlocal起動で、注文の作成から取消まで。390px幅で横overflowがないこと |
+
+合格: 上の3層が通り、`npm run verify`が通ること。実端末が計算した結果を画面から保存できることは、worker設計のW2で確かめる。
+
+### 未決事項
+
+| 未決 | 決め方 |
+| --- | --- |
+| 1 lotあたりの件数（初期値32） | W7の所要時間から、1 leaseが3分以内に終わる件数にする |
+| 結果のfile形式（JSONのまま／vectorだけのbinary） | 最初の利用者（Rock自身）が結果を何に使うかで決める。決まるまでAPIの応答のまま |
+| fileの取込（1行1件のtext、CSV） | 貼り付けで足りない件数が実際に出てから |
+| 確かめ方の初期値 | W7で参照計算の負荷を測り、serverの費用が問題になれば「自分の端末を信じる」へ変える |
+
+## 13. 受入用deployment — 手順の設計・未実施
+
+実機受入は本番ではないdeploymentで行う。用意するのはownerで、実装者は手順と確認だけを行う。設計の依頼から、公開・契約・本番への反映の許可を推測しない。
+
+| 手順 | 担当 | 内容 |
+| --- | --- | --- |
+| 1 | OWNER | 受入に使うCloudflare accountと、本番とは別のWorker・D1を決める。既存の検証用環境があればそれを使う |
+| 2 | ROCK | そのD1へmigrationを最新（`0063`を含む）まで適用する。本番のD1には適用しない |
+| 3 | OWNER | `SKY_COMPUTE_GRID_DATA_KEY`を作る（乱数32 byteを16進64文字にしたもの）。secretとして設定し、Gitにも会話にも書かない。この鍵を失うと保存済みの入力と結果は読めなくなる（注文を出し直せば足りる） |
+| 4 | OWNER | `SKY_COMPUTE_GRID_MODE=owner_pool`を設定する。`owner_and_public_pool`にはしない |
+| 5 | ROCK | Android Key Attestationの検証serviceがその環境で動いていることを、既存の端末鍵登録（`enrollA2ABrokerDevice`）が成功することで確かめる |
+| 6 | ROCK | `ROCKSTAR_SERVICE_ORIGIN`をその環境のoriginにしたAPKをbuildし、SHA-256を記録する |
+| 7 | ROCK / OWNER | Pixelでaccount連携、端末鍵登録、workerを入にし、W1から順に行う |
+
+確認: `GET /api/sky/compute-grid/status`の`mode`が`owner_pool`であること。止める時は`SKY_COMPUTE_GRID_MODE`を外す（保存済みのdataと台帳は残る）。
+
+受入が終わっても本番へは進まない。本番DBへのmigration適用と有効化は、W1〜W10と2〜5台の受入の記録をownerが見てから決める別の判断である。

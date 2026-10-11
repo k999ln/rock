@@ -1,6 +1,6 @@
 # Sky Compute Grid — Android worker設計
 
-更新: 2026-10-11 ／ task: `GRID01` ／ 状態: **設計のみ。未実装・未受入**
+更新: 2026-10-11 ／ task: `GRID01`（手順 `GRID01-S5`・`S7`・`S8`。注文consoleの`S6`は[Sky Compute Grid設計](sky-compute-grid.md)の12節） ／ 状態: **設計のみ。未実装・未受入** ／ 実装担当: Codex（2026-10-11、ownerの指示「設計だけして、下流作業はcodexに渡す」）
 
 [Sky Compute Grid設計](sky-compute-grid.md)の永続gridへ、実際のAndroid端末をつなぐworkerの設計である。server側（注文、割当、検証、credit台帳、API）と、最初のSKUのJava実装は実装済みで、このworkerが残りの部分になる。実装者はこの文書と、合わせるべき相手である次のfileを読めば着手できる。
 
@@ -24,10 +24,42 @@
 1. account連携と端末鍵の登録を済ませる（既存の`beginRockstarDeviceLink`、`enrollA2ABrokerDevice`）。済んでいなければ、gridの設定は「先に連携と端末登録が必要」と表示して入にできない。
 2. Shellの設定で「使っていない時間に、自分の注文を計算する」を入にする。既定は**切**。入にする時に、動く条件（充電中・画面が消えている・Wi‑Fiなど従量でない通信・発熱していない）と、渡されるdataが自分の注文だけであることを一画面で示す。
 3. 入にすると端末は供給条件（offer）を登録する。以後、条件がそろった時だけ自動で仕事を取りに行く。通知は出さない。
-4. 設定画面には、最後に動いた時刻、最後の状態（計算した／仕事なし／条件を満たさず停止／要再連携など）、累計の合格lot数だけを出す。lotの中身は出さない。
+4. 設定画面には、最後に動いた時刻、最後の状態（計算した／仕事なし／条件を満たさず停止／要再連携など）、これまでに送ったlot数と、そのうち送った時点で合格と判定されたlot数だけを出す。lotの中身は出さない。合議の注文は相手の端末の結果を待つので、送った時点では合格にならない。確定した合格数はserverが持ち、Webの画面で見る。
 5. 切にすると、実行中の仕事を返却し、予約を取り消し、供給条件を取り下げる。
 
 本人が画面を点けたら、計算中のlotを捨てて止める。済んでいたlotだけを結果として返し、残りは他の端末へ回る。本人から見て、端末の動作は変わらない。
+
+### Shellの画面
+
+`android/shell`の`MainActivity`は画面をcodeで組み立てている。`advancedPanel`の「Sky Agent連携とWallet受取」（端末鍵を登録する場所）のすぐ下に、次の一群を足す。既存の`label`、`field`、`button`、`perform`をそのまま使い、新しいActivityやlayout fileは作らない。`ShellConnection`へ2つのmethodを足し、`perform`が操作のたびに行う読み直し（連携状態や復元状態と同じ場所）へ`computeGridStatus()`を足して、結果を`applyComputeGridStatus`で画面へ反映する。
+
+| 部品 | 内容 |
+| --- | --- |
+| 見出し | 「使っていない時間の計算」 |
+| 説明 | 「充電中で、画面が消えていて、Wi‑Fiなど従量でない通信につながり、熱くない時だけ、あなた自身の注文を計算します。端末を使い始めるとすぐ止まります。渡されるのはあなたのaccountの注文だけです。既定では切です。」 |
+| 状態 | `computeGridStatus()`の結果を下の表の文へ直して1行で出す。`onResume`と操作の後に読み直す |
+| 地域の入力 | 粗い地域code。空なら`JP`を初期値として入れる。形式が合わなければ入にできない |
+| 「入にする」 | 確認dialogで上の説明をもう一度示し、同意した時だけ`setComputeGridEnabled(true, region)` |
+| 「切にする」 | 確認なしで`setComputeGridEnabled(false, "")` |
+
+状態の文は`lastOutcome`から作る。
+
+| `lastOutcome` | 表示 |
+| --- | --- |
+| `never_run` | まだ動いていません |
+| `computed` | 計算しました（送ったlot数、合格lot数、時刻） |
+| `no_work` | 仕事はありませんでした |
+| `conditions_not_met` | 条件がそろわず動きませんでした |
+| `stopped_owner_active`／`stopped_unplugged`／`stopped_metered_network`／`stopped_thermal` | 端末を使い始めた／充電が外れた／通信が変わった／熱くなったので止めました |
+| `lease_returned` | 受け取った仕事を計算せずに返しました |
+| `network_error` | 通信できませんでした。次の機会に試します |
+| `server_disabled` | server側で無効です |
+| `clock_skew` | 端末の時計を確認してください |
+| `relink_required` | accountの再連携が必要です |
+| `reenroll_required` | 端末の再登録が必要です |
+| `entitlement_required` | 利用権を確認できません |
+| `client_error` | 問題が起きたので止めました（code） |
+| `unsupported_device` | この端末では使えません（arm64ではない） |
 
 ## 3. 責任と禁止
 
@@ -51,24 +83,54 @@ workerは端末へ届いたcodeを実行しない。動かすのはappに同梱�
 | `ComputeGridLexicalEmbedding` | core | **実装済み**。SKUの計算と3つのhash定数 |
 | `ComputeGridProtocol` | core | 要求payload（JSON文字列）の組み立て、署名対象byte列、lease応答の検査、lot入力の検査、receiptの組み立て。`org.json`に依存しない純Javaにするか、automation側へ置いて`org.json`を使うかは実装時に決める（§12） |
 | `ComputeGridConditions` | automation | 条件の一回測定と、実行中の監視（listener） |
-| `ComputeGridTransport` | automation | HTTPS POST。`AndroidJsonResponse`と`RockstarServiceOrigin`を使う |
+| `ComputeGridTransport` | automation | HTTPS POST。下の「通信の細部」に従う |
 | `ComputeGridWorker` | automation | 1回分の処理。JobServiceから別threadで呼ぶ |
 | `ComputeGridJobService` | automation | `JobService`。job id `4201` |
 | `ComputeGridScheduler` | automation | jobの登録・取消。`BootReceiver`から再登録 |
-| `ComputeGridSettings` | automation | no-backup領域の`AtomicFile`。入切、地域、最後の状態、累計 |
+| `ComputeGridSettings` | automation | no-backup領域の`AtomicFile`。保存する値は§7 |
 
 既存の部品はそのまま使う: `AndroidRockstarDeviceSessionStore`（`authorizationHeader()`、`ownerUserId()`）、`AndroidA2ABrokerDeviceRefStore`（`getOrCreate()`）、`AndroidA2ABrokerDeviceTransport.devices()`で得るactiveな`keyId`、`A2ABrokerDeviceKeyStore.open(context, keyId).sign(bytes)`（P-256、r‖s 64 byteを返す。署名対象は16,384 byteまで）。
 
+### 通信の細部
+
+既存の`AndroidA2ABrokerDeviceTransport`（mainにある）と同じ作りにする: `HttpsURLConnection`、redirectを追わない、cacheを使わない、`CookieHandler`が設定されていれば拒否、`Accept-Encoding: identity`、応答の`Content-Type`が`application/json`であることを確かめる、UTF-8として厳密にdecodeする、送受信したbyte列を`finally`で0で埋める。originの正規化は同fileが使っている`AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin`を使う。PR #100（Androidの通信helperの共通化）が先にmainへ入っていれば、同じ役割の共通部品（`AndroidJsonResponse`、`RockstarServiceOrigin`）へ置き換える。どちらの場合も新しいHTTP libraryは足さない。
+
+既存のtransportと違う点が3つある。
+
+- **拒否の本文を読む。** 2xx以外でも`getErrorStream()`から4,096 byteまで読み、`code`（`^[a-z0-9_]{1,64}$`）だけを取り出す。本文が読めない、JSONでない、`code`がない時は「応答の形式不正」として扱う。`error`の文は使わない。
+- **上限。** 要求の本文は1,572,864 byteまで。応答は1,048,576 byteまで（8 lot × 65,536 byteの入力をbase64にした大きさを収める）。接続8秒、読取り20秒、全体で45秒。
+- **時刻。** 要求の`issuedAt`は`System.currentTimeMillis()`。leaseの残り時間は、`claim`を送る直前に`SystemClock.elapsedRealtime()`を控え、`expiresAt − 端末の現在時刻`と`expiresAt − leaseのissuedAt`の小さい方を、その控えた時点からの残りとして単調時計で数える。端末の時計が進んでいれば前者が、初めて受け取るleaseなら後者が安全側に働く。端末の時計が遅れていて、かつ前の実行から持ち越したleaseの時だけ残りを長く見積もるが、その場合はserverが`lease_expired`で拒否し、lotは他の端末へ回る（serverは時計が5分より遅れた端末の要求を受け付けないので、ずれは5分未満である）。
+
 `AndroidManifest.xml`へ`ComputeGridJobService`（`android.permission.BIND_JOB_SERVICE`）と`android.permission.ACCESS_NETWORK_STATE`を足す。新しい危険権限は要らない。
 
-`IShellApi`は`API_VERSION`を1つ上げ、次の2つを足す。
+`IShellApi`は`API_VERSION`を1つ上げ（現在18）、次の2つを足す。番号は実装時点で空いている次の番号を使う（現在の最後は39）。どちらも`enforceShellCaller()`を最初に呼ぶ。
 
 ```text
 /** Turn idle compute for the owner's own orders on or off; returns the resulting status JSON. */
 String setComputeGridEnabled(boolean enabled, String regionCode) = 40;
-/** Read-only status: enabled, prerequisites, last run, last outcome code, verified lot count. */
+/** Read-only status: enabled, prerequisites, last run, last outcome code, lot counts. */
 String computeGridStatus() = 41;
 ```
+
+2つとも同じ形のJSON文字列を返す。keyの集合は固定で、Shellは知らないkeyを無視しない（形が合わなければ「状態を読めません」と出す）。
+
+| key | 型 | 内容 |
+| --- | --- | --- |
+| `schema` | string | `rock-compute-grid-worker-status/1` |
+| `enabled` | boolean | 本人が入にしているか |
+| `supported` | boolean | `Build.SUPPORTED_ABIS[0]`が`arm64-v8a`か |
+| `accountLinked` | boolean | sessionがあるか |
+| `deviceKeyEnrolled` | boolean | activeな端末鍵があるか。確かめられなかった時は`false` |
+| `region` | string／null | 設定した地域code |
+| `skuId` | string | `text-lexical-embedding-v1` |
+| `offerAvailableUntil` | number／null | 最後に受理されたofferの`availableUntil` |
+| `lastRunAt` | number／null | 最後に`onStartJob`が動いた時刻（epoch ms） |
+| `lastOutcome` | string | 上の表のcode |
+| `lastErrorCode` | string／null | `client_error`の時だけ、serverが返した`code`。それ以外は`null` |
+| `reportedLots` | number | serverが`accepted`と答えたreceiptに含めたlotの累計 |
+| `verifiedLots` | number | そのうち、receiptの応答で`state`が`verified`だったlotの累計 |
+
+`setComputeGridEnabled(true, …)`は、`supported`、`accountLinked`、`deviceKeyEnrolled`、地域の形式のどれかが欠ければ入にせず、`enabled: false`の状態を返す。そろっていれば設定を保存し、jobを登録し、offerの送信を1回試みる（失敗しても入のまま。次の実行で送り直す）。この呼出はnetworkを使うので、Shellは既存の`perform`でworker threadから呼ぶ。
 
 ## 5. Protocolへの結び付け
 
@@ -114,9 +176,9 @@ offerは、入にした時、設定を変えた時、`availableUntil`まで2日�
 
 | 状況 | 対応 |
 | --- | --- |
-| `claim` 200、`lease`がnull | `reasons`を最後の状態として記録して終了。次の定期実行を待つ |
+| `claim` 200、`lease`がnull | `reasons`の最初の値で最後の状態を決めて終了し、次の定期実行を待つ。`no_matching_work`は`no_work`、`not_charging`／`device_in_use`／`metered_network`／`thermal_limit`／`outside_supply_window`は`conditions_not_met`（`outside_supply_window`の時はofferを送り直す）、`previous_lease_in_grace`／`another_lease_active`は`no_work` |
 | `claim` 200、`lease`あり | §6の検査へ |
-| `receipt` 200 | 記録して終了 |
+| `receipt` 200 | `receipt.state`が`accepted`なら`reportedLots`へ`results`の件数を、`verifiedLots`へ`receipt.lots`のうち`state`が`verified`の件数を足して終了。`rejected`なら`client_error`として`receipt.reasons`の最初の値を`lastErrorCode`へ残す（§6の規則を守るworkerでは起きない） |
 | `receipt` 409 `receipt_conflict` | 先に送った結果が記録済み。成功として終了し、再送しない |
 | 409 `lease_not_active`／`lease_expired`、404 `lease_not_found` | そのleaseを捨てる。再送しない |
 | 409 `offer_not_registered`／`offer_key_mismatch` | offerを送り直し、同じ実行の中で1回だけ`claim`し直す |
@@ -165,11 +227,11 @@ offerは、入にした時、設定を変えた時、`availableUntil`まで2日�
 
 ## 7. 保存・保持・削除
 
-端末に保存するのは`ComputeGridSettings`の次の値だけである: 入切、地域code、最後に送ったofferの`issuedAt`と`availableUntil`、最後の実行時刻、最後の状態code、累計の合格lot数。no-backup領域に置き、appのbackupには含めない。
+端末に保存するのは`ComputeGridSettings`の次の値だけである: 入切、地域code、最後に受理されたofferの`issuedAt`と`availableUntil`、最後の実行時刻、最後の状態code、最後のerror code、送ったlotと合格lotの累計、連続した実装誤り（§8）の回数。no-backup領域（`Context.getNoBackupFilesDir()`）に置き、appのbackupには含めない。
 
 lease、lotの入力、出力、receiptは保存しない。process終了で失われてよい: 次の`claim`で同じleaseが返り、計算は決定的なので同じ出力になる。logへはcodeと件数だけを出し、payload、入力、出力、token、署名を出さない。
 
-workerを切にした時とaccountの連携を解いた時は、`ComputeGridSettings`を消し、jobを取り消す。
+workerを切にした時は、入切を切にし、offerの記録を消し、jobを取り消す。地域codeと累計は残す。accountの連携を解いた時と端末鍵を失効した時は、`ComputeGridSettings`を全部消し、jobを取り消す。鍵の失効は`RockShellService.revokeA2ABrokerDevice`から、連携の解除はsessionを消している既存の処理から呼ぶ。
 
 ## 8. 失敗・retry・重複
 
@@ -211,12 +273,12 @@ Nodeの2つ目は、Javaのharness（`main`）に固定の入力を渡して要�
 
 ### 実機受入（owner pool、Pixel 1台）
 
-前提: `SKY_COMPUTE_GRID_MODE=owner_pool`と`SKY_COMPUTE_GRID_DATA_KEY`を設定した**本番ではない**deployment、migration `0063`適用済み、Key Attestationの検証serviceが動いていること、端末がaccount連携と鍵登録を済ませていること。
+前提: `SKY_COMPUTE_GRID_MODE=owner_pool`と`SKY_COMPUTE_GRID_DATA_KEY`を設定した**本番ではない**deployment、migration `0063`適用済み、Key Attestationの検証serviceが動いていること、端末がaccount連携と鍵登録を済ませていること。用意の手順は[Sky Compute Grid設計](sky-compute-grid.md)の13節。注文は同12節の注文consoleから出す。
 
 | id | 確かめること | 合格 |
 | --- | --- | --- |
 | W1 | 入にするとofferが登録される | `GET /api/sky/compute-grid/status`の`offers`に端末が1件、`trustTier`が`hardware_backed` |
-| W2 | 充電・画面消灯・Wi‑Fiで、2 lotの注文が計算される | 注文が`completed`、結果がserverの参照実装の出力と一致、端末の累計が2 |
+| W2 | 充電・画面消灯・Wi‑Fiで、2 lotの注文が計算される | 注文が`completed`、結果がserverの参照実装の出力と一致、端末の`reportedLots`と`verifiedLots`がともに2 |
 | W3 | 計算中に画面を点ける | 1秒以内に計算が止まり、済んだlotだけが`verified`、残りは`queued`へ戻る |
 | W4 | 計算中に充電を抜く／Wi‑Fiを切る | W3と同じ。通信が切れた場合は、leaseが失効後に回収される |
 | W5 | 計算中に機内modeにし、失効後に戻す | lotが再割当可能になり、遅れた結果は記帳されない |
@@ -251,4 +313,22 @@ Nodeの2つ目は、Javaのharness（`main`）に固定の入力を渡して要�
 6. emulatorの試験。
 7. 実機受入（W1〜W10）と記録。
 
-各段階で`gradle -p android :core:test :automation:assembleDebug :automation:lintDebug`と`npm run verify:public`（鍵のある環境では`npm run verify`）を通す。Androidの通信helperを共通化する変更が先にmainへ入っている場合は、その共通部品（`AndroidJsonResponse`、`RockstarServiceOrigin`）を使う。
+各段階で`gradle -p android :core:test :automation:assembleDebug :automation:lintDebug :shell:assembleDebug`と`npm run verify`を通す。`IShellApi`を変える段階では、`API_VERSION`を参照している既存の試験と文書も同じ変更で直す。
+
+## 14. 実装者への引継ぎ
+
+この設計を実装するのはCodexである（2026-10-11、ownerの指示）。設計した側は、server側（永続grid）とSKUのJava実装までを実装し、worker・Shell・実機受入には着手していない。
+
+**出発点。** PR「Sky Compute Grid: 永続grid（既定で無効）とAndroid workerの設計」（branch `claude/sky-compute-grid-live`）。このPRがmainへ入っていればmainから、入っていなければこのbranchから作業branchを切る。workerはserver側の実装に依存するので、PRを取り込まずにmainだけから始めない。
+
+**変えてよいもの。** `android/core`（`ComputeGridProtocol`とその試験）、`android/automation`（§4の各class、manifest、`BootReceiver`、`RockShellService`）、`android/shell-api`（`IShellApi`）、`android/shell`（`MainActivity`の一群）、`scripts/check-os-parity.mjs`（Javaの要求本文の照合）、台帳と証拠。
+
+**変えないもの。** wire protocol（`lib/sky-compute-grid-live.ts`の`schema`とkeyの集合）、SKUの仕様文・hash・test vector、migration `0063`。端末側の都合でserverを変えたくなった時は、変える前に理由と互換性を`docs/sky-compute-grid.md`へ書き、`schema`の番号を上げる別の変更として出す。`com.localactionassistant`（Local AI runtime）には触れない。
+
+**してはいけないこと。** 本番DBへのmigration適用、本番での`SKY_COMPUTE_GRID_MODE`の設定、public poolの有効化、creditの換金・充当、料金の実行hold（2026-09-24）の解除、端末のbootloader解除や書込み、emulator・host・試験用端末の合格を実機の合格として記録すること。
+
+**台帳。** 実装が入ったら、同じ変更で`data/product-baseline.json`の`skyComputeGrid.persistentGrid.androidWorker`（今は`designed_not_implemented`）、それを固定している`scripts/check-product-baseline.mjs`と`tests/product-baseline.test.mjs`、`data/mission-control.json`の`GRID01`、`data/project-status.json`、`project.md`、`docs/workstreams/07-android-device-local-ai.md`、`data/design-document-index.json`を更新し、`npm run project:update`、`npm run mission:update`、`npm run mission:check`、`npm run design:check`を通す。host、emulator、実機の結果は別々の証拠fileへ書く（`docs/evidence/amc/`）。
+
+**終わりの判定。** §11の試験（JVM、Node、emulator）が通り、同じcommitのGitHub CIが成功した時点でS5は「実装あり・host／emulatorで確認」。実機受入W1〜W10は別の記録（S7）で、注文console（S6）ができ、Pixelと本番でないdeployment（[Sky Compute Grid設計](sky-compute-grid.md)の13節）をownerが用意してから行う。W1〜W10が終わるまで`GRID01-AC5`を`passed`にしない。
+
+**ownerへ確かめること。** 手元で使えるPixelの台数（1台ならS7まで、2台以上あればS8まで進める）。本番でないdeploymentをどのCloudflare accountに置くか。地域codeの初期値（`JP`でよいか）。意味を扱うembeddingのためにLocal AIのrepositoryを変更してよいか（この設計の範囲外。§12）。
