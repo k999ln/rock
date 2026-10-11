@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:workers';
 import { readEsimPublicCatalog } from '@/lib/esim-public-catalog';
-import { EsimPlanCatalogError } from '@/lib/esim-plan-catalog';
+import { EsimPlanCatalogError, parseEsimServerPlanCatalog } from '@/lib/esim-plan-catalog';
 import { database } from '@/lib/fund-store';
 import { skyToolPackageStore } from '@/lib/sky-tool-package-store';
 
@@ -19,7 +19,10 @@ export async function GET() {
   try {
     if (!config.ESIMGO_PLAN_CATALOG_JSON || !config.ESIM_PUBLIC_CATALOG_JSON)
       return json(await readEsimPublicCatalog(config.ESIMGO_PLAN_CATALOG_JSON, config.ESIM_PUBLIC_CATALOG_JSON));
-    const registry = await skyToolPackageStore(database()).listRegistry();
+    const plans = parseEsimServerPlanCatalog(config.ESIMGO_PLAN_CATALOG_JSON).plans;
+    const registry = await skyToolPackageStore(database()).verifiedRegistryPackages(
+      plans.flatMap((plan) => plan.starterAgentPack.packages),
+    );
     return json(await readEsimPublicCatalog(
       config.ESIMGO_PLAN_CATALOG_JSON,
       config.ESIM_PUBLIC_CATALOG_JSON,
