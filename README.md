@@ -97,6 +97,8 @@ Day by day, with what is in force today and what was withdrawn: [specification h
 
 ## Start developing
 
+Use [feature workspaces](workspaces/README.md) to select an existing task and its checks (`npm run work -- --find eSIM`). [Project bots and AMC planning](toolkits/amc-agent/README.md) provide explicit local Git research, planning, and development handoff.
+
 Use Node.js 22.13 or later and npm. This starts the web app locally:
 
     npm ci
