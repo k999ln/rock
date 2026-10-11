@@ -287,6 +287,7 @@ async function settleProviderUsage(
   if (!current || current.remoteTaskId !== taskId ||
     !['remote_completed', 'remote_failed', 'remote_cancelled', 'remote_rejected'].includes(current.state))
     return 'not_terminal';
+  if (current.priceQuoteDigest && !current.priceQuote) return 'rejected';
   let value: unknown;
   try { value = JSON.parse(serializedReceipt); } catch { return 'rejected'; }
   if (!value || typeof value !== 'object' || Array.isArray(value)) return 'rejected';
@@ -304,6 +305,8 @@ async function settleProviderUsage(
     issuedAt: receipt?.issuedAt as number,
     delegationCreatedAt: current.createdAt,
     delegationLimitMinor: current.budgetLimitMinor,
+    providerId: current.priceQuote?.providerId,
+    pricingVersion: current.priceQuote?.pricingVersion,
   }, trustedA2AUsageKeyResolver(env.A2A_TRUSTED_USAGE_KEYS));
   if (!valid) return 'rejected';
   await store.settleUsageReceipt(ownerUserId, delegationId, value as import('../../../lib/a2a-usage-receipt').A2AUsageReceipt);

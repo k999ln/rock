@@ -1130,6 +1130,11 @@ it('recovers terminal artifacts and delayed signed usage without reopening, rese
   assert.equal((await store.get(owner, id)).artifactsCaptured, 1);
   assert.equal((await store.getBudgetReservation(owner, id)).state, 'held');
   assert.ok((await store.listForReconciliation()).some(row => row.id === id));
+  // A valid signature does not authorize a pricing version absent from the
+  // exact quote the owner approved, even when the amount remains below cap.
+  assert.deepEqual(await run(owner), { outcome: 'task_reconciled', state: 'remote_completed', usageOutcome: 'rejected' });
+  assert.equal((await store.getBudgetReservation(owner, id)).state, 'held');
+  assert.equal(await store.getUsageReceipt(owner, id), null);
   assert.deepEqual(await run(owner), { outcome: 'task_reconciled', state: 'remote_completed', usageOutcome: 'settled' });
   const pool = await store.getBudget(owner, parent);
   assert.equal(pool.reservedMinor, 0);

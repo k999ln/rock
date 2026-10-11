@@ -605,6 +605,8 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
       const current = await get(ownerUserId, id);
       if (!current || !current.remoteTaskId ||
         !['remote_completed', 'remote_failed', 'remote_cancelled', 'remote_rejected'].includes(current.state) ||
+        (current.priceQuoteDigest && (!current.priceQuote ||
+          receipt.providerId !== current.priceQuote.providerId || receipt.pricingVersion !== current.priceQuote.pricingVersion)) ||
         !/^[A-Za-z0-9._:-]{1,128}$/.test(receipt.providerId) ||
         !/^[A-Za-z0-9._:-]{1,128}$/.test(receipt.receiptId) ||
         !/^[A-Z]{3}$/.test(receipt.currency) || receipt.currency !== current.budgetCurrency ||

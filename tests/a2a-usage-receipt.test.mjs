@@ -55,6 +55,12 @@ void test('provider usage receipt verifies owner, task, meter totals, cap and Ed
     return publicRaw(pair.publicKey);
   };
   assert.equal(await verifyA2AUsageReceipt(receipt, intent, resolver, now), true);
+  assert.equal(await verifyA2AUsageReceipt(receipt,
+    { ...intent, providerId: 'provider-x', pricingVersion: '2026-09' }, resolver, now), true);
+  assert.equal(await verifyA2AUsageReceipt(receipt,
+    { ...intent, providerId: 'another-approved-provider' }, resolver, now), false);
+  assert.equal(await verifyA2AUsageReceipt(receipt,
+    { ...intent, pricingVersion: 'other-rates' }, resolver, now), false);
   assert.equal(await verifyA2AUsageReceipt(receipt, intent, async () => null, now), false);
   assert.equal(await verifyA2AUsageReceipt(receipt, { ...intent, ownerUserId: 'bob' }, resolver, now), false);
   assert.equal(await verifyA2AUsageReceipt(receipt, { ...intent, delegationLimitMinor: 46 }, resolver, now), false);

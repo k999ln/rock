@@ -90,6 +90,7 @@ async function signedUsageReceipt(input: {
   agentOrigin?: string;
   agentName?: string;
   agentVersion?: string;
+  pricingVersion?: string;
 }) {
   const receipt: A2AUsageReceipt = {
     schema: 'rock-a2a-provider-usage-receipt/1' as const,
@@ -105,7 +106,7 @@ async function signedUsageReceipt(input: {
     agentVersion: input.agentVersion ?? '1.0.0',
     currency: 'USD',
     amountMinor: input.amountMinor,
-    pricingVersion: 'vitest-rates-1',
+    pricingVersion: input.pricingVersion ?? 'vitest-rates-1',
     issuedAt: Date.now(),
     usage: [{ meter: 'agent-operation', quantity: 1, unit: 'request', amountMinor: input.amountMinor }],
     signature: '',
@@ -213,12 +214,13 @@ async function outboundService(request: Request) {
     if (rpc.method === 'GetTask' && taskId === 'vitest-delayed-usage-task') {
       const reads = (remoteProgressTasks.get(taskId) ?? 0) + 1;
       remoteProgressTasks.set(taskId, reads);
-      if (reads > 3) throw new Error('A reconciled terminal task should leave the polling queue.');
+      if (reads > 4) throw new Error('A reconciled terminal task should leave the polling queue.');
       const usageReceipt = await signedUsageReceipt({
         receiptId: 'vitest-delayed-usage-receipt',
         parentJobId: '22222222-2222-4222-8222-222222222018',
         delegationId: '11111111-1111-4111-8111-111111111018',
         taskId, amountMinor: 23,
+        pricingVersion: reads === 3 ? 'vitest-unapproved-rates' : 'vitest-rates-1',
       });
       return Response.json({
         jsonrpc: '2.0', id: rpc.id,
