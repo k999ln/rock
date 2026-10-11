@@ -34,6 +34,10 @@ Android Shellのnative登録欄は、device-home APIがissuer設定から有効�
 
 `/connect`では、販売元が渡す`{ "claim": ..., "claimCode": "rsk_…" }` JSONをfragment handoff link、ファイル選択、または貼り付けで受け取り、16 KiB以内のclaim/code envelopeだけをAPIへ渡す。利用開始linkは同じタブのsession storageを一時transportにし、URL fragmentを除去後、画面から明示承認されるまで登録しない。Android Shellは端末連携済みの場合、同じJSONをnative formからBrokerへ渡し、Brokerが暗号化sessionを使って同じowner APIへHTTPS POSTする。native入力はview state/autofillへ保存せず、成功時またはowner session解除時に消去し、失敗時も自動再送しない。両方ともissuer署名検証・有効期限・scope検証・one-owner bindingはserver-sideで行う。Android native pathはsource実装済みだが、Java/AIDL/APK/device acceptanceは未実施。seller checkout、実販売元によるclaim発行/配信、issuer契約、本番鍵配備、購入者配送は未接続。
 
+### 購入データの選び直し（2026-10-11）
+
+Webのfragment handoff、ファイル、貼り付けは一つの登録候補を共有する。本人が別ファイルまたは入力を選ぶと古いlink候補を破棄し、不正な新入力から古い購入へ戻さない。ファイル読込中は登録を止め、遅延読込は最後の選択を上書きしない。登録中は入力変更を止める。10件の実component回帰と390px/1280pxのローカル合成画面で、リンクA後の貼り付け/ファイルBがそれぞれBだけを一度送信することを確認した。実issuer署名・購入者登録・本番利用権の受入とは区別する。
+
 ### Offer別の初期Agent構成
 
 購入claimはサービス利用権を付与し、ツールを自動実行・導入する権限は付与しない。任意設定`ROCKSTAR_SERVICE_OFFER_PROFILES` (`rockstar-service-offer-profiles/1`) が、署名claimの`issuerId + offerId`を`profileId + version + label + exact Sky packageKey + manifestSha256`へ対応させる。これによりLifeline、Developer等で異なる構成を複数の販売チャネルから同じowner-bound entitlement経路で案内できる。構成を更新する場合は既存購入の意味を変えないよう、新しい`offerId`とprofile versionを発行し、旧claim用のmappingを保持する。

@@ -366,7 +366,9 @@
         "lib/sky-tool-labels.ts",
         "components/execution-access.tsx",
         "components/esim-purchase-setup.tsx",
-        "tests/esim-purchase-recovery.test.mjs"
+        "tests/esim-purchase-recovery.test.mjs",
+        "components/rockstar-entitlement-claim.tsx",
+        "tests/rockstar-entitlement-claim-ui.test.mjs"
       ],
       "recoveredContractReferences": [
         "docs/sky-tool-sdk.md",

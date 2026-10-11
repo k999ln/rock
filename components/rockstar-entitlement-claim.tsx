@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState, type SyntheticEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import styles from '@/components/sky-commerce.module.css';
 import { parseRockstarEntitlementHandoffFragment, parseRockstarEntitlementPackage, type RockstarEntitlementPackage } from '@/lib/rockstar-entitlement-package';
@@ -34,6 +34,10 @@ export function RockstarEntitlementClaim() {
   const [handoffBundle, setHandoffBundle] = useState<RockstarEntitlementPackage | null>(null);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const selectionRevision = useRef(0);
+
+  useEffect(() => () => { selectionRevision.current += 1; }, []);
 
   const refresh = useCallback(async () => {
     try {
@@ -75,7 +79,9 @@ export function RockstarEntitlementClaim() {
     } catch { return; }
     const bundle = raw ? parseRockstarEntitlementPackage(raw) : null;
     if (!bundle) return;
+    const revision = selectionRevision.current;
     queueMicrotask(() => {
+      if (selectionRevision.current !== revision) return;
       setHandoffBundle(bundle);
       setMessage('購入claim linkを読み込みました。内容を確認してからRockstar IDへの登録を実行してください。');
     });
@@ -83,6 +89,7 @@ export function RockstarEntitlementClaim() {
 
   async function submit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (busy || importing) return;
     setMessage('');
     const bundle = handoffBundle ?? parseRockstarEntitlementPackage(packageText);
     if (!bundle) {
@@ -114,10 +121,17 @@ export function RockstarEntitlementClaim() {
     const input = event.currentTarget;
     const file = input.files?.[0];
     input.value = '';
-    if (!file) return;
+    if (!file || busy) return;
+    const revision = ++selectionRevision.current;
+    setHandoffBundle(null);
+    setPackageText('');
+    setImporting(false);
     if (file.size > 16_384) { setMessage('購入データが上限の16 KBを超えています。販売元へ確認してください。'); return; }
+    setImporting(true);
+    setMessage('購入データを読み込んでいます…');
     try {
       const text = await file.text();
+      if (selectionRevision.current !== revision) return;
       if (!parseRockstarEntitlementPackage(text)) {
         setMessage('購入データを読み取れません。販売元が発行したclaim JSONを選んでください。');
         return;
@@ -125,7 +139,9 @@ export function RockstarEntitlementClaim() {
       setPackageText(text);
       setMessage('購入データを読み込みました。Rockstar IDへの登録を実行してください。');
     } catch {
-      setMessage('購入データを読み取れませんでした。');
+      if (selectionRevision.current === revision) setMessage('購入データを読み取れませんでした。');
+    } finally {
+      if (selectionRevision.current === revision) setImporting(false);
     }
   }
 
@@ -141,14 +157,20 @@ export function RockstarEntitlementClaim() {
       <output className={styles.loading}>Rockstar IDを確認しています…</output> : <>
         {snapshot.claimRedemptionAvailable ? <form className={styles.offerForm} onSubmit={submit}>
           <label htmlFor="rockstar-entitlement-package-file">販売元の購入データを選択</label>
-          <input id="rockstar-entitlement-package-file" type="file" accept="application/json,.json" onChange={(event) => void importPackageFile(event)} />
+          <input id="rockstar-entitlement-package-file" type="file" accept="application/json,.json" disabled={busy} onChange={(event) => void importPackageFile(event)} />
           <p>販売元から受け取った利用開始リンクを開くと、claimを読み込んでURLから削除します。リンクを開いただけでは登録されません。リンクがない場合はJSONファイルを選ぶか、下へデータを貼り付けてください。</p>
           {handoffBundle ? <p className={styles.notice}>購入データを読み込みました（offer: {typeof handoffBundle.claim.offerId === 'string' ? handoffBundle.claim.offerId : '不明'}）。Rockstar IDへの登録はまだ行われていません。</p> : null}
           <label htmlFor="rockstar-entitlement-package">購入データ（claimとcode）</label>
-          <textarea id="rockstar-entitlement-package" value={packageText} onChange={(event) => setPackageText(event.target.value)}
+          <textarea id="rockstar-entitlement-package" value={packageText} disabled={busy} onChange={(event) => {
+            selectionRevision.current += 1;
+            setImporting(false);
+            setHandoffBundle(null);
+            setPackageText(event.target.value);
+            setMessage('');
+          }}
             rows={4} maxLength={16_384} autoComplete="off" spellCheck={false}
             placeholder="販売元が発行したclaimとclaimCodeを含むJSON" />
-          <button className={styles.primary} type="submit" disabled={busy || (!handoffBundle && packageText.trim().length === 0)}>
+          <button className={styles.primary} type="submit" disabled={busy || importing || (!handoffBundle && packageText.trim().length === 0)}>
             {busy ? '購入を確認中…' : 'このRockstar IDに登録'}
           </button>
           <output className={message ? styles.notice : styles.subtle} aria-live="polite">

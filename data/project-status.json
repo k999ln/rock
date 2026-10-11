@@ -5619,7 +5619,8 @@
         "app/api/internal/rockstar/entitlement-deliveries/route.ts",
         "docs/evidence/sim-led-product-correction-followup-20261002.json",
         "components/esim-purchase-setup.tsx",
-        "tests/esim-purchase-recovery.test.mjs"
+        "tests/esim-purchase-recovery.test.mjs",
+        "tests/rockstar-entitlement-claim-ui.test.mjs"
       ],
       "nextAction": "Current integrated source includes purchase claims, device linking/entitlements, quote/approval/usage contracts and optional eSIM cloud access. Revalidate one owner journey and failure paths on the integrated candidate. Seller/carrier contracts, real activation, funded settlement, exact-SKU OS install and physical acceptance remain separate external gates.",
       "files": [
