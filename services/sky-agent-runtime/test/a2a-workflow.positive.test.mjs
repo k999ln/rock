@@ -1095,3 +1095,52 @@ it('holds an ambiguous remote send and does not replay it after Workflow restart
     await workflow.dispose();
   }
 }, 30_000);
+
+it('recovers terminal artifacts and delayed signed usage without reopening, resending, or cancelling the task', async () => {
+  const id = '11111111-1111-4111-8111-111111111018';
+  const parent = '22222222-2222-4222-8222-222222222018';
+  const taskId = 'vitest-delayed-usage-task';
+  await seedApprovedDelegation({
+    delegationId: id, parentJobId: parent,
+    messageId: '33333333-3333-4333-8333-333333333018',
+    budgetLimitMinor: 100, parentBudgetLimitMinor: 200,
+  });
+  const store = a2aDelegationStore(env.DB);
+  const claimed = await store.claimDispatch(owner, id);
+  const sending = await store.beginRemoteSend(owner, id, claimed.revision);
+  // Simulate a committed terminal state followed by a lost workflow result,
+  // before either artifact capture or usage receipt persistence completes.
+  await store.recordTaskReceipt(owner, id, sending.revision, { id: taskId, state: 'TASK_STATE_COMPLETED' });
+  const run = async selectedOwner => {
+    const instanceId = `a2a-delayed-usage-${crypto.randomUUID()}`;
+    const workflow = await introspectWorkflowInstance(env.A2A_DELEGATION_WORKFLOW, instanceId);
+    try {
+      await env.A2A_DELEGATION_WORKFLOW.create({
+        id: instanceId, params: { ownerUserId: selectedOwner, delegationId: id, operation: 'reconcile' },
+      });
+      await workflow.waitForStatus('complete');
+      return await workflow.getOutput();
+    } finally { await workflow.dispose(); }
+  };
+  assert.deepEqual(await run('another-owner'), { outcome: 'no_remote_task' });
+  assert.deepEqual(await run(owner), { outcome: 'terminal_task_state_mismatch', state: 'remote_completed' });
+  assert.equal((await store.get(owner, id)).artifactsCaptured, 0);
+  assert.equal((await store.getBudgetReservation(owner, id)).state, 'held');
+  assert.deepEqual(await run(owner), { outcome: 'task_reconciled', state: 'remote_completed', usageOutcome: 'rejected' });
+  assert.equal((await store.get(owner, id)).artifactsCaptured, 1);
+  assert.equal((await store.getBudgetReservation(owner, id)).state, 'held');
+  assert.ok((await store.listForReconciliation()).some(row => row.id === id));
+  assert.deepEqual(await run(owner), { outcome: 'task_reconciled', state: 'remote_completed', usageOutcome: 'settled' });
+  const pool = await store.getBudget(owner, parent);
+  assert.equal(pool.reservedMinor, 0);
+  assert.equal(pool.settledMinor, 23);
+  assert.equal((await store.listArtifacts(owner, id)).length, 1);
+  assert.equal((await store.listForReconciliation()).some(row => row.id === id), false);
+  assert.equal(await store.getInput(owner, id), null);
+  assert.deepEqual(await run(owner), { outcome: 'not_dispatchable' });
+  assert.equal((await store.getBudget(owner, parent)).settledMinor, 23);
+  const claims = await env.DB.prepare(`SELECT event_type AS eventType, COUNT(*) AS count
+    FROM agent_delegation_events WHERE delegation_id = ? AND event_type IN ('remote_send_claimed','remote_cancel_claimed')
+    GROUP BY event_type`).bind(id).all();
+  assert.deepEqual(claims.results, [{ eventType: 'remote_send_claimed', count: 1 }]);
+});
