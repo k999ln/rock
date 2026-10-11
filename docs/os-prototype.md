@@ -2,7 +2,15 @@
 
 現行要望は [製品ベース](product-baseline.md)、現在の実装再開先は [進捗・再開条件](../project.md)。Android/AOSPとLinux nativeの実績を分けます。
 
-対象範囲: 本書は既存の **Android/AOSP P1のみ**。2026-09-09追加のLinux native OSは [別の実装・検証記録](native-os-integration.md)を参照する。初期製品端末の優先候補はBlackBerryへ更新し、以下のPixel計画は比較候補として保持する。
+対象範囲: 本書は既存の **Android/AOSP P1のみ**。2026-09-09追加のLinux native OSは [別の実装・検証記録](native-os-integration.md)を参照する。最初の物理対象はPixel 10 GL066／frankel。BlackBerry-firstは退役済みで、Linux/QEMU Developer Previewは独立した受入系列として保持する。
+
+## 現行の再開入口（2026-10-11）
+
+現行の段階と同SHAの証拠は[Android workstreamの表](workstreams/07-android-device-local-ai.md#現行の検証段階と再開条件2026-10-11)を優先する。既存JDK 17／SDK 35を使ったhostの実SQLite・AIDL／Java compileに加え、`19ef1020`の[Android API 35 CI](https://github.com/k999ln/rock/actions/runs/38153378733)が成功した。Core 116件、automation JVM 16件、SDK 7件、emulator instrumentationのautomation 43件合格／物理専用2件skip、Shell 6件、Operator 6件とAPK build／lintが対象で、RockstarOS imageの起動試験ではない。
+
+後続`57f63413`の精算済み同ID照合はCore 121件＋automation JVM 16件のhost合格まで確認済み。これを含む最新候補`7f5ed361`の[Android CI](https://github.com/k999ln/rock/actions/runs/38155308883)は記録時点で進行中であり、同SHAの成功・artifactはまだ確定しない。[2026-09-16のPixel非破壊再起動23/23](evidence/android-pixel-10-prefull-physical-20260916.json)は当時の試験署名APKの証拠として保持し、今回の変更や全OSの受入へ加算しない。全OS build／正式署名／flash・boot／OTA・rollback／data・Keystore喪失復元は未受入。
+
+以下のP1設計、2026-09-05の到達点と試験記録は履歴を含む。再開作業は末尾の現行手順を使い、過去の「未実施」や件数を現状の集計へ流用しない。
 
 2026-09-05。状態: OS部品を組み始めた試作。**OSイメージのビルド/起動、Pixel実機、第三者Storeは未検証。** [基本設計](os-development-design.md) の一般構想と、本書の実装範囲を区別する。
 
@@ -120,12 +128,12 @@ Gradleはpackage/versionをbuild設定から補うが、Soongではその設定�
 
 参照したr4のrelease mapでは `aosp_current` は `bp4a` のalias。選択するlunchは `rock_cf_x86_64_phone-aosp_current-userdebug`。[固定版のrelease map](https://android.googlesource.com/platform/build/release/+/refs/tags/android-16.0.0_r4/release_config_map.textproto)
 
-## 7. 次に埋めるべき穴
+## 7. 次の作業と受入条件（2026-10-11）
 
-1. Android実行環境で不正署名/UID・充電断・画面OFF・再起動・停止の受入試験。正常なBinder/SQLite接続2テストは成功済み。
-2. Linux上でSoongの実ビルドとCuttlefish起動。成功後にOS03を更新する。
-3. 任意コードを許可する前に専用隔離・強制資源制御・capability設計を実装/否定試験。
-4. 別作者鍵、正式manifest schema、署名catalog、導入・更新・失効と第三者のサンプル。
-5. ファイル取込、保持/削除/export、通知Inbox、実業務の外部接続と費用計測。決済・分配は別途確定する。
+1. 最新候補`7f5ed361`のAndroid CI結果・JUnit／instrumentationレポート・APK hashを同SHAで確認する。先行`19ef1020`の成功を後続修正へ転記せず、失敗があれば該当境界だけを修正する。
+2. 同一候補の合成Cloud Agentで見積→native hold→明示承認→切断→再接続→同jobの進捗・結果・精算receiptを接続検証する。実Provider鍵・契約・請求・fundingを未受入のまま本番executionを有効化しない。
+3. 現行APKを対象にPixel 10 GL066の画面ロック／unlock、プロセス終了・再起動、セッション失効／再連携、同一ID復旧を非破壊で受け入れる。過去のPixel合格とAPI 35 emulatorの物理専用skipは別に扱う。
+4. 全OSは[Device Preview手順](phone-preview-20260911.md)に従い、専用Linux x86_64・source／vendor inventory・同一imageのbuild検査条件を満たしてから進める。正式署名・純正復旧artifact・backup復元・rollbackのgateが揃うまでflashを行わない。CuttlefishとLinux/QEMUの成功もPixel full OSへ転用しない。
+5. 第三者作者の導入／失効、強制資源隔離、ファイル保持／export、通知、実業務接続・費用計測は[進捗・再開条件](../project.md)と各workstreamの残課題から選ぶ。既存のPlatform Core／SDK／backup契約を再利用し、旧P1の未実装一覧だけで作り直さない。
 
 作業進捗: [project.md](../project.md)。検証した範囲と残課題: [検証記録](validation.md)。
