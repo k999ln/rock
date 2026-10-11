@@ -13,7 +13,7 @@ export async function ownerScopeFor(user: string): Promise<string> {
 }
 export async function rejectChangedOwner(request: Request, user: string): Promise<Response | null> {
   const expected = request.headers.get(OWNER_SCOPE_HEADER);
-  // Optional for existing API clients. The three recovering browser workspaces
+  // Optional for existing API clients. Recovering browser workspaces
   // always send it; when supplied, malformed/empty values also fail closed.
   if (expected === null || (readOwnerScope(expected) && expected === await ownerScopeFor(user))) return null;
   if (request.body && !request.bodyUsed && !request.body.locked) void request.body.cancel().catch(() => {});

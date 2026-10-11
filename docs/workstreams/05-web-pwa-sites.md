@@ -199,6 +199,10 @@ G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの1
 
 O2 / R03、主streamはWeb / PWA、ROCK。main 0c90253cのWorkPlan/AMC/Agent証跡修復を保持し、PR #74は作成時のZema利用権・未読body解放と、証拠不足でも可能な本人のローカル取消へ絞る。進行・完了の証跡検査、owner・revision、遠隔停止との区別を維持する。
 
+2026-10-11、R03 / O2 / ROCKの作成復旧を修正。候補`2ebb6250`では、Aの作成が保存前に失敗し、401を経て有効なZema利用権を持つBへ切り替えると、保持した同じID・名前・templateをBの新規jobとして保存できた。実Workbench component、実認証handler・store・SQLite、検証済みの合成Ed25519 claimで再現した。既存jobのowner分離や料金gateの突破ではなく、保存先意図の欠落である。
+
+`/api/work-jobs`のGETとPOSTへ既存の非秘密`ownerScope`を接続し、Workbenchは元ownerを作成ID・入力と共に固定する。再試行前のGETと保存直前のAPI照合を通し、本人不明・401・owner変更では作成を止めて入力を保持する。別タブのサインイン、元ownerでの再確認、または結果確認後の明示的な保留解除から再開する。POSTの任意scope headerは認証にならず、headerを省略する既存client、Zema利用権、既存jobのPATCH・CAS・料金/実行承認を維持する。古い一覧応答の世代管理と同時create防止も追加。`tests/workbench-owner-recovery.test.mjs`は保存前失敗、保存後の応答喪失、401、正当な別owner、GET後の切替、未知scope、明示解除、同ID重複防止、遅延GETを実route/SQLite経路で確認する。実ブラウザー・同一統合候補の全体verifyは統括側で別に記録し、Provider・実資金・本番受入へ転用しない。
+
 通常の対象コマンドは以下。main追加6件は既存typescript devDependencyを必要とする。ローカルではlock検証済みcompilerをメモリ読み込みし6件、依存不要の既存67件を別実行して全て合格。main APIで2件の負例を確認した。通常install不一致はPR #73、DB inventory・catalog・AMC export退行は別件。[証拠](../evidence/spider-work-plan-contract.json)。main mergeと配備は自動サイクルでは行わない。
 
     node --experimental-strip-types --test tests/workflow.test.mjs tests/work-plan-route.test.mjs tests/workplan-reconcile.test.mjs tests/amc-main-integration.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-parent-controller.test.mjs tests/a2a-result-handoff.test.mjs

@@ -41,6 +41,8 @@ import { compatibleLocalPackageRuntimes } from '@/lib/sky-package-runtime';
 import type { SkyToolPackage } from '@/lib/sky-tool-package';
 import type { McpConnection } from '@/lib/mcp-hub';
 import { McpBotRunner } from '@/components/mcp-bot-runner';
+import { OperationRequestError } from '@/lib/operations-client';
+import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 
 const stateNames = {
   active: '作業中',
@@ -49,6 +51,7 @@ const stateNames = {
   cancelled: '中止',
 };
 type Update = { jobId: string; revision: number; command: WorkCommand };
+type Creation = { ownerScope: string; id: string; title: string; templateId: string };
 type Delegation = {
   id: string;
   parentJobId: string;
@@ -318,20 +321,24 @@ function WorkPlanEditor({
     </section>
   );
 }
-async function request<T>(method = 'GET', value?: unknown): Promise<T> {
+async function request<T>(method = 'GET', value?: unknown, ownerScope?: string): Promise<T> {
   const response = await fetch('/api/work-jobs', {
     method,
+    cache: 'no-store',
+    redirect: 'manual',
     signal: AbortSignal.timeout(20000),
     ...(value
       ? {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...(ownerScope ? { [OWNER_SCOPE_HEADER]: ownerScope } : {}) },
           body: JSON.stringify(value),
         }
       : {}),
   });
-  const data = (await response.json()) as T & { error?: string };
+  if (response.status === 401 || response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400))
+    throw new OperationRequestError('サインインを確認してください。', 401);
+  const data = (await response.json()) as T & { error?: string; code?: string };
   if (!response.ok)
-    throw new Error(data.error || '仕事を読み込めませんでした。');
+    throw new OperationRequestError(data.error || '仕事を読み込めませんでした。', response.status, data.code);
   return data;
 }
 async function delegationRequest<T>(path: string, method = 'GET', value?: unknown) {
@@ -437,11 +444,11 @@ export default function Workbench({
   const [runnerStep, setRunnerStep] = useState<string | null>(null),
     [pending, setPending] = useState<Update | null>(null);
   const [filter, setFilter] = useState('open');
-  const creation = useRef<{
-    id: string;
-    title: string;
-    templateId: string;
-  } | null>(null);
+  const [ownerScope, setOwnerScope] = useState<string | null>(null);
+  const [pendingCreation, setPendingCreation] = useState<Creation | null>(null);
+  const creation = useRef<Creation | null>(null);
+  const createInFlight = useRef(false);
+  const listGeneration = useRef(0);
   const handoffPackage = handoffPackageResult?.packageKey === initialPackageKey
     ? handoffPackageResult.package ?? null : null;
   const handoffPackageState = !initialPackageKey ? 'none'
@@ -502,25 +509,38 @@ export default function Workbench({
     return () => controller.abort();
   }, [initialPackageKey]);
   const refresh = useCallback(async () => {
+    if (createInFlight.current) return;
+    const version = ++listGeneration.current;
     setLoading(true);
     try {
-      const data = await request<{ jobs: WorkJob[] }>();
+      const data = await request<{ jobs: WorkJob[]; ownerScope?: string }>();
+      if (version !== listGeneration.current) return;
       setJobs(data.jobs);
-      setReady(true);
+      const scope = readOwnerScope(data.ownerScope);
+      setOwnerScope(scope);
+      setReady(Boolean(scope));
       setError('');
     } catch (e) {
+      if (version !== listGeneration.current) return;
+      setOwnerScope(null); setReady(false);
+      if (e instanceof OperationRequestError && e.status === 401) {
+        setJobs([]); setSelectedId(''); selectedIdRef.current = '';
+      }
       setError(e instanceof Error ? e.message : '読み込みに失敗しました。');
     } finally {
-      setLoading(false);
+      if (version === listGeneration.current) setLoading(false);
     }
   }, []);
   useEffect(() => {
     let active = true;
-    void request<{ jobs: WorkJob[] }>()
+    const version = ++listGeneration.current;
+    void request<{ jobs: WorkJob[]; ownerScope?: string }>()
       .then((data) => {
-        if (active) {
+        if (active && version === listGeneration.current) {
           setJobs(data.jobs);
-          setReady(true);
+          const scope = readOwnerScope(data.ownerScope);
+          setOwnerScope(scope);
+          setReady(Boolean(scope));
           const restoreId = new URL(window.location.href).searchParams.get('workJob');
           if (restoreId && data.jobs.some((job) => job.id === restoreId)) {
             selectedIdRef.current = restoreId;
@@ -529,11 +549,13 @@ export default function Workbench({
         }
       })
       .catch((e: unknown) => {
-        if (active)
+        if (active && version === listGeneration.current) {
+          setOwnerScope(null); setReady(false);
           setError(e instanceof Error ? e.message : '読み込みに失敗しました。');
+        }
       })
       .finally(() => {
-        if (active) setLoading(false);
+        if (active && version === listGeneration.current) setLoading(false);
       });
     return () => {
       active = false;
@@ -826,7 +848,7 @@ export default function Workbench({
   const remoteTextDeleteTarget = remoteTextExecutions.find((item) => item.id === remoteTextDeleteId && item.parentJobId === selectedId && item.state === 'completed' && item.resultText !== null);
   const currentStep = selected?.steps.find((step) => !step.passed);
   const openRunner = selected?.steps.find((step) => step.id === runnerStep);
-  const locked = busy || running || pending !== null || loading;
+  const locked = busy || running || pending !== null || pendingCreation !== null || loading;
   const visibleJobs = jobs.filter(
     (job) =>
       filter === 'all' ||
@@ -836,25 +858,40 @@ export default function Workbench({
     setJobs((items) => [job, ...items.filter((item) => item.id !== job.id)]);
   }, []);
   async function create() {
+    if (createInFlight.current || busy) return;
+    if (!creation.current && (!ownerScope || !ready)) { setError(OWNER_CHECK_REQUIRED); return; }
+    createInFlight.current = true;
+    listGeneration.current++; setLoading(false);
     setBusy(true);
     setError('');
-    const input =
-      creation.current?.title === title.trim() &&
-      creation.current.templateId === templateId
-        ? creation.current
-        : { id: crypto.randomUUID(), title: title.trim(), templateId };
-    creation.current = input;
+    const operation = creation.current ?? { ownerScope: ownerScope!, id: crypto.randomUUID(), title: title.trim(), templateId };
+    creation.current = operation;
+    setPendingCreation(operation);
     try {
-      const data = await request<{ job: WorkJob }>('POST', input);
+      const identity = await request<{ ownerScope?: string }>();
+      const currentScope = readOwnerScope(identity.ownerScope);
+      setOwnerScope(currentScope); setReady(Boolean(currentScope));
+      if (!currentScope) throw new Error(OWNER_CHECK_REQUIRED);
+      if (currentScope !== operation.ownerScope)
+        throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
+      const input = { id: operation.id, title: operation.title, templateId: operation.templateId };
+      const data = await request<{ job: WorkJob }>('POST', input, operation.ownerScope);
+      if (!data.job || data.job.id !== input.id || data.job.title !== input.title || data.job.templateId !== input.templateId || !Number.isSafeInteger(data.job.revision))
+        throw new Error('保存結果を確認できません。同じ作成内容で結果を確認してください。');
       accept(data.job);
       selectJob(data.job.id);
       setRunnerStep(null);
       setNote('');
       setTitle('');
       creation.current = null;
+      setPendingCreation(null);
     } catch (e) {
+      if (e instanceof OperationRequestError && (e.status === 401 || e.code === OWNER_CHANGED)) {
+        setOwnerScope(null); setReady(false); setJobs([]); setSelectedId(''); selectedIdRef.current = '';
+      }
       setError(e instanceof Error ? e.message : '作成できませんでした。');
     } finally {
+      createInFlight.current = false;
       setBusy(false);
     }
   }
@@ -1267,12 +1304,22 @@ export default function Workbench({
           <div className="work-notice" role="alert">
             {error}
             {!ready && (
-              <a href="/signin-with-chatgpt?return_to=/work" target="_top">
+              <a href="/signin-with-chatgpt?return_to=/work" target="_blank" rel="noopener noreferrer">
                 サインイン
               </a>
             )}
           </div>
         )}
+        {pendingCreation && <section className="work-notice" aria-label="仕事の作成結果の確認">
+          <p>作成結果が未確認です。最初のアカウントで、同じ仕事ID・名前・進め方を確認します。別アカウントには再送しません。</p>
+          <p>{ownerScope && ownerScope !== pendingCreation.ownerScope ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
+          <a href="/signin-with-chatgpt?return_to=/work" target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</a>
+          <button disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button>
+          <button disabled={busy || loading || (!!ownerScope && ownerScope !== pendingCreation.ownerScope)} onClick={() => void create()}>同じ作成内容で結果を確認</button>
+          <p>保留を解除しても保存済みの仕事は削除されません。元のアカウントで結果を確認してから、新しく保存してください。入力は保持します。</p>
+          <button disabled={busy} onClick={() => { creation.current = null; setPendingCreation(null); setError('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
+        </section>}
+        {!ownerScope && !loading && !pendingCreation && <p className="work-notice">{OWNER_CHECK_REQUIRED}</p>}
         {pending && (
           <div className="work-notice">
             <p>記録の保存が未確認です。結果は下の欄から保存できます。</p>
