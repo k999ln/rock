@@ -140,7 +140,7 @@
       "esbuild": "^0.25.12"
     },
     "miniflare": {
-      "sharp": "0.35.4"
+      "sharp": "0.35.5"
     },
     "undici": "7.29.1",
     "braces": "$braces"
