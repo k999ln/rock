@@ -181,6 +181,12 @@ pending → queued → running → succeeded
 
 `waiting`にはapproval、network、resource、provider、reconciliation等の理由を付ける。`uncertain`は外部で成立したか分からない状態であり、失敗として自動再送しない。完了したstepを別の結果で上書きせず、新revisionまたは取消eventを追加する。
 
+### native Runnerの取消と結果不明（2026-10-11）
+
+ROCKの`os/platform/runner_control.py`は、送信claim前の取消をローカルで確定し、claim後は同じkey・owner・endpoint・request hashの照合を継続する。`found: false`はその照会時点の不在であり、通信層で遅延した元submitを将来拒否する証拠ではない。取消要求後の不在応答は`unknown`と`cancel_requested`を永続化し、既存の有界backoffでmetadata照会だけを続ける。入力の再送、新keyへの切替、別実行場所へのfallbackは行わない。
+
+再接続／daemon再起動後に同じ仕事が見つかった場合、queued／runningには取消を要求し、既に成功していればその実結果を回収する。照合済みterminalの確定時に既存の入力／package消去を行う。不在のまま確定できない仕事は未確認と表示し、現protocolにない取消tombstoneを推測しない。hostの実SQLite・署名済み元要求による遅延配送fixtureで、再起動、再送0、取消時実行0回と既成功時1回を検査する。実機、Linux隔離実行、外部Providerの受入は別である。
+
 ## 8. 一回の実行
 
 1. owner、Tool selection、request hash、revisionを保存する。

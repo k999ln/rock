@@ -441,8 +441,12 @@ class RunnerControl:
                     if remote['found'] and remote['state'] not in TERMINAL:
                         remote = self._validate_remote(client.cancel(key),row,package,consent)
                     if not remote['found']:
-                        self._finish(key,'cancelled',remote,error='no matching remote job; cancelled after claim without re-submission')
-                        return True
+                        # Absence is only a snapshot: an earlier submit may
+                        # still arrive after a timeout. The Runner has no
+                        # durable rejection tombstone for an absent key. Keep
+                        # the cancellation intent and reconcile this same key;
+                        # never erase evidence or resubmit its input here.
+                        raise TransportError('remote cancellation unresolved; retain same key until a terminal outcome')
                 elif not remote['found']:
                     # Same exact key only. No cross-mode, package or input substitution.
                     receipt = client.submit(package,row['input_text'],key,consent=consent)

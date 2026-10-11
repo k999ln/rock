@@ -1,5 +1,11 @@
 # Native OSのRock統合検証
 
+## 遠隔仕事の取消と遅延要求（AI04、2026-10-11）
+
+`test_os_runner_control.py`で元submitを配送前に保持し、通信失敗→取消要求→remote不在→OS controller再起動→元submit遅延受理を実RunnerStore／SQLiteで再現する。修正前は不在だけでlocalをcancelledにして入力を消し、後の結果照合を止めるため2件とも失敗した。修正後は同IDのunknownと取消意図を保持し、再送せず照合を続ける。遅延要求がqueuedならremote取消で実行0回、既に成功なら実結果を回収して実行1回、照合後にinput/packageを消す。claim前の取消は従来どおり送信を防ぐ。
+
+検証コマンドはnative rootで`PYTHONPATH=src:os:tests python3 -B -W error::ResourceWarning -m unittest test_os_runner_control test_service_access_registry_runner test_platform_service_lifecycle`。68件合格。transportの時系列は制御fixture、executorは明示したfake callbackであり、guest／実機／本番クラウドの実行合格には加算しない。not-foundを将来の元submit拒否へ固定する契約がないため、不在が続く仕事は未確認のまま保持する。
+
 ## Gameの不確定応答からの復旧試験（SYS15、2026-10-03）
 
 `test_game_exchange_deadlines.py`はprivate fixtureの合成Game／Walletとloopback TLSを使うsource回帰である。`ExchangeWorker.once()`のTrueはclaimを処理した意味で、remote適用やNOT_FOUNDの証拠ではない。次へ進む前に永続claimのoperation／resultを確認し、保留金額・付与数・journal件数を別に照合する。
