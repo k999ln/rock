@@ -120,7 +120,7 @@
 
 ## 相違解消プロンプトの改訂 / 2026-09-09
 
-- 15:01 UTCのGitHub取得でmain `f9b1cbd99eeaa20f7cbc80bd2d88909949cca863`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、OPENのPR #1と同SHAのCI成功を確認。[追補監査](progress-audit-20260909-followup.md)へ入力と限界を保存した。
+- 15:01 UTCのGitHub取得でmain `f9b1cbd99eeaa20f7cbc80bd2d88909949cca863`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、OPENのPR #1と同SHAのCI成功を確認。[追補監査](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/progress-audit-20260909-followup.md)へ入力と限界を保存した。
 - GAP01〜04を修正順・担当・合格証拠・未解決条件へ対応付けた。引継ぎ統合を段階0/B04、既存商品実利用と商品条件を段階1〜2/B02、Walletを段階3/B03、最終比較を段階4/B05に分離した。作業branchへの反映と元native/mainへの反映、schemaと実接続、fixtureと実収益、host画面と携帯実機価値を混同しない条件を追加。
 - 別担当の読み取りレビューで、4問題の対応と権限境界を確認。PC商品のpathを正し、B02→B03→最終比較の依存が循環しないようB05を分離した。B03の台帳/fixture基礎が通れば、実サービス待ちでも比較へ進めるが、実収益の未接続は未解決に残す。
 - `npm run verify` は型、製品lint、35テスト、buildまで成功後、sandbox内API待受でEPERM。許可されたローカル通信でverify全体を再実行し、終了コード0、API143 assertions成功。既存Vite configLoader/Node module APIの警告は残る。

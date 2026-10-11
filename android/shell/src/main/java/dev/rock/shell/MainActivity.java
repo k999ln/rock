@@ -628,8 +628,7 @@ public final class MainActivity extends Activity {
         String state = home.optString("state", "ready");
         if ("not_linked".equals(state)) {
             cloudTaskHandler.removeCallbacks(cloudTaskRefresh);
-            entitlementClaimPanel.setVisibility(View.GONE);
-            entitlementClaimPackageInput.setText("");
+            applyDeviceLinkStatus(home);
             cloudServiceHomeStatus.setText("クラウドの状態を確認するにはRockstarアカウント連携が必要です。");
             return;
         }
@@ -827,6 +826,7 @@ public final class MainActivity extends Activity {
                     } else if ("claim_rejected".equals(state)) {
                         entitlementClaimStatus.setText("claimが無効・期限切れ・別のRockstar IDで登録済みの可能性があります。販売元へ確認してください。");
                     } else if ("not_linked".equals(state)) {
+                        applyCloudServiceHome(result);
                         entitlementClaimStatus.setText("Rockstar IDの有効な端末連携を確認できません。再接続してから、同じclaimを明示的に再試行できます。");
                     } else if ("invalid_package".equals(state)) {
                         entitlementClaimStatus.setText("購入claimのJSON形式を確認してください。");
@@ -1194,7 +1194,12 @@ public final class MainActivity extends Activity {
     private void renderCloudA2AExecutionState(JSONObject response) {
         if (isDestroyed()) return;
         String state = response.optString("state", "unknown");
-        if ("cloud_accepted".equals(state)) {
+        if ("wallet_settled".equals(state)) {
+            cloudA2aFinalApprovalButton.setVisibility(View.GONE);
+            cloudA2aExecutionRecoveryButton.setVisibility(View.VISIBLE);
+            cloudA2aWalletReleaseButton.setVisibility(View.GONE);
+            cloudA2aQuoteStatus.setText(settledA2AReadbackText(response));
+        } else if ("cloud_accepted".equals(state)) {
             cloudA2aFinalApprovalButton.setVisibility(View.GONE);
             cloudA2aExecutionRecoveryButton.setVisibility(View.VISIBLE);
             cloudA2aWalletReleaseButton.setVisibility(View.GONE);
@@ -1214,7 +1219,7 @@ public final class MainActivity extends Activity {
             cloudA2aFinalApprovalButton.setVisibility(View.GONE);
             cloudA2aExecutionRecoveryButton.setVisibility(View.VISIBLE);
             cloudA2aWalletReleaseButton.setVisibility(View.GONE);
-            cloudA2aQuoteStatus.setText("Cloud承認結果は未確定です。Wallet上限を解放せず保持しています。再送せず、同じ委任IDの状態を照合してください。");
+            cloudA2aQuoteStatus.setText("Cloudと端末Walletの状態を確定できません。保存済みのWallet状態を変更せず、同じ委任IDの状態を照合してください。");
         } else {
             cloudA2aFinalApprovalButton.setEnabled(true);
             cloudA2aQuoteStatus.setText("Cloud承認状態を確認できません（" + safeState(state) + "）。実行の有無は未確認です。");
@@ -1223,6 +1228,13 @@ public final class MainActivity extends Activity {
 
     private String formatMoney(long minor, String currency) {
         return UsageCurrencyFormatter.formatMinor(minor, currency, Locale.JAPAN);
+    }
+
+    private String settledA2AReadbackText(JSONObject response) {
+        return "保存済みの精算明細を照合しました。精算額 " +
+            formatMoney(response.optLong("settledMinor"), response.optString("currency")) +
+            " / 予約から解放済み " + formatMoney(response.optLong("releasedMinor"), response.optString("currency")) +
+            "。追加の実行・予約・精算・解除は行っていません。";
     }
 
     private static String safeState(String state) {
@@ -1321,7 +1333,8 @@ public final class MainActivity extends Activity {
         String state = delegation.optString("state", "unknown");
         if (java.util.Set.of("awaiting_approval", "prepared", "dispatching", "dispatch_submitting",
                 "indeterminate", "submitted", "working", "awaiting_remote_input", "cancel_requested",
-                "cancel_submitting", "cancel_unconfirmed").contains(state))
+                "cancel_submitting", "cancel_unconfirmed", "remote_completed", "remote_cancelled",
+                "remote_failed", "remote_rejected").contains(state))
             button(cloudTaskDetailActions, "同じ委任IDのCloud・端末Wallet状態を照合",
                 () -> recoverCloudA2AFromTaskDetail(id));
         if (!java.util.Set.of("awaiting_approval", "prepared", "dispatching", "dispatch_submitting",
@@ -1343,7 +1356,9 @@ public final class MainActivity extends Activity {
                     String detail = "同じ委任ID " + delegationId + " / Cloud " +
                         safeState(response.optString("cloudState")) + " / 端末Wallet " +
                         safeState(response.optString("walletState"));
-                    if ("awaiting_cloud_approval".equals(state)) {
+                    if ("wallet_settled".equals(state)) {
+                        cloudTaskDetailStatus.setText(detail + "。" + settledA2AReadbackText(response));
+                    } else if ("awaiting_cloud_approval".equals(state)) {
                         cloudTaskDetailStatus.setText(detail + "。Cloud実行開始前です。元の予算予約は確認済みで、再送・再承認はしていません。");
                     } else if ("cloud_accepted".equals(state)) {
                         cloudTaskDetailStatus.setText(detail + "。同じCloud作業を照合しました。Wallet予約の状態を同期し、再送はしていません。");
@@ -1352,7 +1367,7 @@ public final class MainActivity extends Activity {
                         button(cloudTaskDetailActions, "実行前のWallet予約を解除",
                             () -> releaseRecoveredA2ABudget(delegationId));
                     } else {
-                        cloudTaskDetailStatus.setText(detail + "。条件または状態を照合できないため、予約を保持して再送しません。後で同じIDを再確認してください。");
+                        cloudTaskDetailStatus.setText(detail + "。条件または状態を照合できないため、保存済みのWallet状態を変更しません。後で同じIDを再確認してください。");
                     }
                     button(cloudTaskDetailActions, "状態・利用量を読み直す", () -> fetchCloudTaskDetail("agent-status", delegationId));
                 });
@@ -1848,8 +1863,39 @@ public final class MainActivity extends Activity {
             accountLinkStatus.setText("Rockstarサービス接続先が未設定です。開発時はGradleのrockstarServiceOriginを指定します。");
         else if ("denied".equals(state)) accountLinkStatus.setText("連携は承認されませんでした。必要ならもう一度開始してください。");
         else if ("expired".equals(state)) accountLinkStatus.setText("承認コードの期限が切れました。もう一度開始してください。");
-        else if ("not_linked".equals(state)) accountLinkStatus.setText("Rockstarアカウント未連携です。");
+        else if ("not_linked".equals(state)) {
+            clearCloudAccountPresentation();
+            accountLinkStatus.setText("Rockstarアカウント未連携です。もう一度連携を開始してください。");
+        }
         else accountLinkStatus.setText("連携状態を確認できません。" + status.optString("code", ""));
+    }
+
+    private void clearCloudAccountPresentation() {
+        entitlementClaimPanel.setVisibility(View.GONE);
+        entitlementClaimPackageInput.setText("");
+        entitlementClaimStatus.setText("");
+        cloudTaskActions.removeAllViews();
+        cloudTaskDetailActions.removeAllViews();
+        cloudTaskDetailStatus.setText("アカウント連携後に同じ作業の状態を再確認してください。");
+        cloudA2aAgentList.removeAllViews();
+        cloudA2aVerifiedQuote = null;
+        cloudA2aQuotedPrompt = null; cloudA2aQuotedCurrency = null; cloudA2aQuotedAgentId = null;
+        cloudA2aCurrentDraft = null;
+        cloudA2aWalletApprovalId = null; cloudA2aHeldDelegationId = null;
+        renderCloudA2AParentJobs(null);
+        for (Button action : new Button[] {cloudA2aWalletApprovalButton, cloudA2aWalletReserveButton,
+                cloudA2aWalletReleaseButton, cloudA2aBrokerProofButton, cloudA2aFinalApprovalButton,
+                cloudA2aExecutionRecoveryButton}) action.setVisibility(View.GONE);
+        cloudA2aQuoteDisclosureConsent.setChecked(false);
+        cloudA2aPaidExecutionConsent.setChecked(false);
+        cloudA2aExecutionConsent.setChecked(false);
+        cloudA2aQuoteStatus.setText("アカウント連携後に見積・作業状態を再確認してください。保存済みの予約・作業は継続して照合できます。");
+        cloudLlmQuoteId = null; cloudLlmApprovalDigest = null; cloudLlmQuotedPrompt = null;
+        cloudLlmQuotedModel = null; cloudLlmQuotedCurrency = null;
+        cloudLlmExecuteButton.setVisibility(View.GONE);
+        cloudLlmExecutionConsent.setChecked(false);
+        cloudLlmQuoteSummary.setText("アカウント連携後に見積を確認してください。");
+        // Keep the durable same-ID recovery keys and Broker Wallet holds: unlinking is not cancellation.
     }
 
     private void applyDeviceCapabilities(JSONObject capabilities) {

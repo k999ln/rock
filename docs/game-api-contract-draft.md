@@ -14,7 +14,7 @@
 
 ## 1. 段階・主体・入口
 
-[実行プロンプトE](prompts/os-operational-base-next.md)はAPI設計の並行作業を許可している。runtimeは [phaseGates](../data/project-status.json) の **B03-FIXTURE → GX00-ISOLATION → GX01-CONTRACT → DX01-SDK** に従う。B03-PROVIDER/実ゲーム/実資金を合成試験の待ち条件に足さない。この文書を追加してもどのゲートのstatusも更新しない。
+[実行プロンプトE](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/os-operational-base-next.md)はAPI設計の並行作業を許可している。runtimeは [phaseGates](../data/project-status.json) の **B03-FIXTURE → GX00-ISOLATION → GX01-CONTRACT → DX01-SDK** に従う。B03-PROVIDER/実ゲーム/実資金を合成試験の待ち条件に足さない。この文書を追加してもどのゲートのstatusも更新しない。
 
 | 段階 | 提供する実装と合格に必要なもの |
 | --- | --- |

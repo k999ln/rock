@@ -1,8 +1,10 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Link from 'next/link';
 import { Check, ExternalLink, RefreshCw, ShieldCheck, Smartphone } from 'lucide-react';
 import type { EsimInstallMaterial } from '@/lib/esim-install-material';
+import { operationRequest, OperationRequestError, OperationResponseError } from '@/lib/operations-client';
 import styles from '@/components/sky-commerce.module.css';
 
 type EsimStatus = {
@@ -28,7 +30,30 @@ type EsimStatus = {
   installMaterialAcknowledged?: boolean;
 };
 
-type ApiResult<T> = T & { error?: string };
+type CloudAccess = {
+  configured?: boolean;
+  available: boolean;
+  state: 'not_issued' | 'active' | 'suspended' | 'expired' | 'revoked';
+  key: { id: string; expiresAt: number; scopes: string[] } | null;
+  accessExpiresAt: number | null;
+};
+
+async function cloudRequest(orderId: string, body?: { action: 'issue' | 'rotate' | 'revoke'; expectedKeyId?: string }) {
+  try {
+    return await operationRequest<CloudAccess>(`/api/esim/orders/${encodeURIComponent(orderId)}/cloud-access`, body ? 'POST' : 'GET', body);
+  } catch (cause) {
+    if (cause instanceof OperationResponseError) throw unknownRequestOutcome();
+    throw new Error(cause instanceof OperationRequestError && cause.message === 'CLOUD_ACCESS_CONFLICT'
+      ? 'アクセスキーの状態が変わりました。「状態を確認」してから操作してください。'
+      : cause instanceof OperationRequestError && cause.message === 'CLOUD_ACCESS_NOT_ELIGIBLE'
+        ? '利用条件を確認できません。eSIMの導入確認と利用期限をご確認ください。'
+        : 'クラウドアクセスを確認できませんでした。サインインと接続を確認して、状態を確認してください。');
+  }
+}
+
+function unknownRequestOutcome() {
+  return new Error('通信の応答を確認できず、操作の結果が不明です。接続を確認して「状態を確認」してください。');
+}
 
 function safeInstallUrl(value: unknown, host: 'esimsetup.apple.com' | 'esimsetup.android.com') {
   if (typeof value !== 'string') return null;
@@ -43,14 +68,10 @@ function safeInstallUrl(value: unknown, host: 'esimsetup.apple.com' | 'esimsetup
 }
 
 async function esimRequest<T>(orderId: string, body?: unknown): Promise<T> {
-  const response = await fetch(`/api/esim/orders/${encodeURIComponent(orderId)}/${body ? 'install-material' : 'status'}`, {
-    method: body ? 'POST' : 'GET',
-    cache: 'no-store',
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const result = await response.json() as ApiResult<T>;
-  if (!response.ok) {
+  try {
+    return await operationRequest<T>(`/api/esim/orders/${encodeURIComponent(orderId)}/${body ? 'install-material' : 'status'}`, body ? 'POST' : 'GET', body);
+  } catch (cause) {
+    if (cause instanceof OperationResponseError) throw unknownRequestOutcome();
     const errors: Record<string, string> = {
       esim_not_configured: 'eSIM供給元との接続設定はまだ完了していません。',
       esim_issuance_disabled: '契約前のため、eSIM発行は無効です。',
@@ -59,9 +80,9 @@ async function esimRequest<T>(orderId: string, body?: unknown): Promise<T> {
       order_not_found: 'この注文の状態を確認できません。ログイン中のアカウントをご確認ください。',
       unauthorized: 'eSIM情報の確認にはサインインが必要です。',
     };
-    throw new Error(errors[result.error || ''] || 'eSIMの状態を確認できませんでした。時間をおいて再度お試しください。');
+    throw new Error((cause instanceof OperationRequestError && (errors[cause.message] ||
+      (cause.status === 401 ? errors.unauthorized : null))) || 'eSIMの状態を確認できませんでした。時間をおいて再度お試しください。');
   }
-  return result;
 }
 
 function deliveryRequestId(orderId: string, cache: { current: string | null }) {
@@ -98,22 +119,45 @@ function stateLabel(status: EsimStatus) {
 export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
   const [status, setStatus] = useState<EsimStatus | null>(null);
   const [material, setMaterial] = useState<EsimInstallMaterial | null>(null);
-  const [pending, setPending] = useState<'status' | 'material' | 'ack' | null>(null);
+  const [pending, setPending] = useState<'status' | 'material' | 'ack' | 'cloud' | null>(null);
+  const [cloud, setCloud] = useState<CloudAccess | null>(null);
   const [error, setError] = useState<string | null>(null);
   const deliveryKey = useRef<string | null>(null);
 
+  function clearCachedAccess() {
+    setMaterial(null);
+    setStatus(null);
+    setCloud(null);
+    // Keep the delivery ID: a lost reply must not become a new delivery attempt.
+  }
+
   async function checkStatus() {
     setPending('status');
+    setCloud(null);
     setError(null);
     try {
       const result = await esimRequest<EsimStatus>(orderId);
       setStatus(result);
-      if (result.installMaterialAcknowledged) setMaterial(null);
+      if (!result.installMaterialAvailable || result.installMaterialAcknowledged ||
+        ['not_esim_order', 'not_eligible'].includes(result.state)) setMaterial(null);
+      if (!['not_esim_order', 'not_eligible'].includes(result.state)) setCloud(await cloudRequest(orderId));
     } catch (cause) {
+      clearCachedAccess();
       setError(cause instanceof Error ? cause.message : 'eSIMの状態を確認できませんでした。');
     } finally {
       setPending(null);
     }
+  }
+
+  async function manageCloud(action: 'issue' | 'rotate' | 'revoke') {
+    setPending('cloud');
+    setError(null);
+    try {
+      setCloud(await cloudRequest(orderId, { action, ...(cloud?.key ? { expectedKeyId: cloud.key.id } : {}) }));
+    } catch (cause) {
+      clearCachedAccess();
+      setError(cause instanceof Error ? cause.message : 'アクセスキーを更新できませんでした。');
+    } finally { setPending(null); }
   }
 
   async function revealMaterial() {
@@ -126,6 +170,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
       setMaterial(result.material);
       setStatus((current) => current ? { ...current, state: 'profile_bound_install_material_ready' } : current);
     } catch (cause) {
+      clearCachedAccess();
       setError(cause instanceof Error ? cause.message : '導入情報を表示できませんでした。');
     } finally {
       setPending(null);
@@ -140,6 +185,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
       setMaterial(null);
       setStatus((current) => current ? { ...current, state: 'install_material_acknowledged', installMaterialAvailable: false, installMaterialAcknowledged: true } : current);
     } catch (cause) {
+      clearCachedAccess();
       setError(cause instanceof Error ? cause.message : '導入情報を消去できませんでした。');
     } finally {
       setPending(null);
@@ -168,6 +214,32 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
               ? '署名付き証明でeSIM導入を確認しました。RockstarOSの端末ゲートウェイ利用権はまだ有効化されていません。'
               : '端末へのeSIM追加完了は未確認です。導入情報を表示しただけでは、端末適合やOS利用開始を確認したことになりません。'}
       </p>}
+    {cloud && <section className={styles.esimMaterial} aria-label="専用クラウドへのアクセス">
+      <h4><ShieldCheck size={16} /> RockstarOSクラウドアクセス</h4>
+      <output>{cloud.state === 'active' ? 'アクセスキーは有効です。Skyで、契約に含まれる機能を使えます。'
+        : cloud.state === 'revoked' ? 'アクセスキーを停止しました。利用期間内であれば再発行できます。'
+        : cloud.state === 'expired' ? 'アクセスキーの期限が切れました。利用期間内であれば再発行できます。'
+        : cloud.state === 'suspended' ? '現在の利用条件を確認できないため、クラウドアクセスを停止しています。'
+        : cloud.available ? 'eSIMの導入と利用権を確認しました。クラウドアクセスを開始できます。'
+        : cloud.configured === false ? 'この環境ではクラウドアクセスの提供準備中です。'
+        : 'eSIMの導入確認と、対象プランの利用権の確認を待っています。'}</output>
+      {cloud.key && <p>キーの有効期限: {new Date(cloud.key.expiresAt).toLocaleString('ja-JP')}</p>}
+      {cloud.accessExpiresAt && <p>サービス利用期限: {new Date(cloud.accessExpiresAt).toLocaleString('ja-JP')}</p>}
+      <p className={styles.subtle}>キーはこのブラウザに安全に保存します。再発行すると古いキーは使えなくなります。キーの再発行でサービス利用期間は延長されません。</p>
+      <div className={styles.esimLinks}>
+        {cloud.available && <button type="button" className={styles.primary} disabled={pending !== null}
+          onClick={() => void manageCloud(cloud.key ? 'rotate' : 'issue')}>
+          {pending === 'cloud' ? '更新中…' : cloud.key ? 'このブラウザ用にキーを再発行' : 'クラウドアクセスを開始'}
+        </button>}
+        {cloud.key && cloud.state !== 'revoked' && <button type="button" className={styles.secondary}
+          disabled={pending !== null} onClick={() => void manageCloud('revoke')}>アクセスキーを停止</button>}
+      </div>
+      {cloud.state === 'active' && <div className={styles.esimLinks}>
+        <Link className={styles.secondary} href="/sky">Skyを開く</Link>
+        <Link className={styles.secondary} href="/work">依頼・進捗・費用を見る</Link>
+      </div>}
+      <p className={styles.subtle}>クラウド作業の料金は実行前の見積・上限・承認で確認します。携帯電話料金との合算請求は未対応です。</p>
+    </section>}
     {status?.starterAgentPack && <div className={styles.notice}>
       <p>注文に固定された初期pack: {status.starterAgentPack.id} v{status.starterAgentPack.version}（{status.starterAgentPack.packageCount}件）。内容は注文時のPackage参照に基づきます。</p>
       <ul>{status.starterAgentPack.packages.map((item) => <li key={item.packageKey}>

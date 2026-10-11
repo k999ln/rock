@@ -31,6 +31,8 @@ export const PROTOCOL_VERSIONS = [
 export const DEFAULT_PORT = 38479;
 const MAX_BODY = 2_000_000;
 const MAX_TOOLS = 2_000;
+const MAX_TOOL_PAGES = 5;
+const MAX_CURSOR_BYTES = 1_024;
 const REQUEST_TIMEOUT_MS = 15_000;
 const CALL_TIMEOUT_MS = 60_000;
 const APPROVAL_TTL_MS = 5 * 60_000;
@@ -509,14 +511,19 @@ class HttpTransport {
     this.spec = spec;
     this.protocol = null;
     this.sessionId = null;
+    this.generation = 0;
   }
   reset() {
+    this.generation++;
     this.protocol = null;
     this.sessionId = null;
   }
   async request(message, timeoutMs = REQUEST_TIMEOUT_MS) {
+    const generation = this.generation;
     const local = this.spec.transport === 'local_http';
     const remote = local ? null : await validateRemoteUrl(this.spec.url);
+    if (generation !== this.generation)
+      fail('MCP接続が変更されました。再接続してください。', 409, 'connection_superseded');
     const headers = {
       'Content-Type': 'application/json',
       Accept: 'application/json, text/event-stream',
@@ -550,7 +557,9 @@ class HttpTransport {
     )
       fail('遠隔MCPへ接続できませんでした。', 502, 'upstream_failed');
     const session = response.headers['mcp-session-id'];
-    if (typeof session === 'string') this.sessionId = session;
+    // Preserve a completed Tool result, but never let an old response replace
+    // the newly negotiated session. connect() separately checks its attempt.
+    if (generation === this.generation && typeof session === 'string') this.sessionId = session;
     if (response.status === 202 || !('id' in message)) return null;
     const text = response.text;
     const type = response.headers['content-type'] ?? '';
@@ -662,6 +671,17 @@ export class McpHub {
   }
   async connect(id) {
     const entry = this.entry(id);
+    const attempt = Symbol('MCP connection attempt');
+    entry.connectionAttempt = attempt;
+    const current = () => this.entries.get(id) === entry && entry.connectionAttempt === attempt;
+    const assertCurrent = () => {
+      if (!current())
+        fail('MCP接続が変更されました。再接続してください。', 409, 'connection_superseded');
+    };
+    // Reinitialization must retire consent before any new authorization check.
+    // A failed reconnect cannot leave the previous Passport executable.
+    entry.passport = null;
+    this.approvals.clear();
     entry.state = 'connecting';
     entry.transport.reset();
     try {
@@ -670,6 +690,7 @@ export class McpHub {
         capabilities: {},
         clientInfo: { name: 'rockstaros-sky-connector', version: '1.0.0' },
       });
+      assertCurrent();
       if (!PROTOCOL_VERSIONS.includes(initialized.protocolVersion))
         fail(
           '対応するMCP protocol versionではありません。',
@@ -681,21 +702,35 @@ export class McpHub {
         jsonrpc: '2.0',
         method: 'notifications/initialized',
       });
+      assertCurrent();
       const tools = [];
+      const seenCursors = new Set();
+      let pages = 0;
       let cursor;
       do {
         const listed = await this.rpc(
           id,
           'tools/list',
-          cursor ? { cursor } : {},
+          cursor === undefined ? {} : { cursor },
         );
+        assertCurrent();
         if (!Array.isArray(listed.tools))
           fail('tools/listの応答が不正です。', 502, 'invalid_tools');
         tools.push(...listed.tools);
         cursor = listed.nextCursor;
         if (tools.length > MAX_TOOLS)
           fail('MCPの機能数が上限を超えています。', 409, 'too_many_tools');
-      } while (cursor);
+        pages++;
+        if (cursor !== undefined) {
+          if (typeof cursor !== 'string' || !cursor.length ||
+              Buffer.byteLength(cursor, 'utf8') > MAX_CURSOR_BYTES || seenCursors.has(cursor))
+            fail('tools/listの継続cursorが不正です。', 502, 'invalid_tools_cursor');
+          // Empty pages still consume the same bounded discovery budget.
+          if (pages >= MAX_TOOL_PAGES)
+            fail('MCPの機能一覧のページ数が上限を超えています。', 409, 'too_many_tool_pages');
+          seenCursors.add(cursor);
+        }
+      } while (cursor !== undefined);
       const safeTools = tools.map((tool) => ({
         name: cleanText(tool?.name, 'tool名', 128),
         title: typeof tool.title === 'string' ? tool.title.slice(0, 160) : null,
@@ -733,6 +768,8 @@ export class McpHub {
       entry.state = 'connected';
       return entry.passport;
     } catch (error) {
+      // A prior failure cannot downgrade a newer connection or undo a stop.
+      assertCurrent();
       entry.state =
         error.code === 'authorization_required'
           ? 'needs_authorization'
@@ -758,6 +795,7 @@ export class McpHub {
   }
   disconnect(id) {
     const entry = this.entry(id);
+    entry.connectionAttempt = null;
     entry.transport.reset();
     entry.passport = null;
     entry.state = 'available';
@@ -845,6 +883,8 @@ export class McpHub {
     )
       fail('承認が無効または期限切れです。', 403, 'invalid_approval');
     const entry = this.entry(id);
+    if (!entry.passport || entry.state !== 'connected')
+      fail('先にMCPへ接続してください。', 409, 'not_connected');
     const payloadDigest = digest({
       id,
       name,

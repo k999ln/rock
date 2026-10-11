@@ -99,6 +99,16 @@ APIキーやendpointはブラウザ・D1へ保存せず、server environmentだ�
 
 [利用量契約の公式資料](https://developers.openai.com/api/reference/cli/resources/responses/methods/create)。このusageはAPI応答であり、D1履歴やProvider請求書との照合は未実装。
 
+### 文章生成の完了判定（2026-10-11）
+
+ROCKの共通adapterは非streaming応答に文章が存在するだけで成功を返さない。Ollamaは`done: true`と`done_reason: stop`、Anthropicは`stop_reason: end_turn | stop_sequence`、Geminiは各candidateの`finishReason: STOP`、local bridgeとOpenAI互換Chat Completionsは各choiceの`finish_reason: stop`を要求する。欠落・不正型・上限打切り・filter・Tool待ちの理由は`INCOMPLETE_RESPONSE`（502）とする。成功理由と矛盾する未処理Tool callも文章成功へ変換しない。任意のTool配列の省略／null／空配列は許容する。
+
+Ollamaへは既存の1〜8,000 token上限を`options.num_predict`として送信し、runtime既定の無制限生成へ任せない。完了失敗時も自動再送・cloud fallback・Tool実行・本文の新規保存は行わず、既存の同意と予算条件で利用者が再試行を判断する。OpenAI Responsesの`status`は公式SDK schemaでoptionalのため、既存の未報告=nullを保持する。明示された非`completed`は拒否し、streamingでは`response.completed` eventが必要である。この未報告値を完了receipt／料金照合の根拠へ補完しない。
+
+合格条件は全adapterの途中出力・欠落理由・pending Toolの拒否、正常stop／stop sequenceとoptional defaultの維持、Ollama上限の一致、失敗時の送信1回。`tests/llm-completion-boundary.test.mjs`と`tests/llm-providers.test.mjs`で検証する。Provider実接続、モデル品質、料金照合、native実機は別受入とする。
+
+仕様根拠（2026-10-11確認）: [Ollama chat](https://docs.ollama.com/api/chat)、[Ollama num_predict](https://docs.ollama.com/modelfile)、[Claude stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons)、[Gemini candidate/finish reason](https://ai.google.dev/api/generate-content#v1beta.Candidate)、[OpenAI Chat Completions](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create)、[OpenAI Responses optional status](https://developers.openai.com/api/reference/python/resources/responses/methods/create)。
+
 ### OpenAI
 
 OpenAIへの接続は次の2 Toolの任意オンライン検索だけである。標準では呼び出さない。
@@ -162,6 +172,8 @@ response / receipt案:
   "authority": "advisory-only"
 }
 ```
+
+Receipt生成時にもclosed rubricを検査する。`grounded`・`safe`は型がbooleanで確率0〜1、`usefulness`は型がscoreで有限の0〜2（SDKの3段階criteriaのゼロ始まり位置）を必須とする。欠落・余分な回答ID・型違い・範囲外は`INVALID_RESPONSE`で拒否する。返す回答は検証した3つのscalarだけへ投影し、Providerが加えた本文・metadata・確率分布は保存・表示しない。usageは欠落をnullに保ち、存在するtoken数の非負整数・加算の安全性・合計との整合を検査する。usageは請求書や精算の証拠ではない。共通Jev transportは20秒のabortと自動再送0回を固定し、timeoutを評価成功にしない。adapterがabortを無視してもローカル待機を終了し、遅い結果をReceiptへ採用しない。timeoutはHTTP 504で返し、送信後に処理がなかったとは表示しない。fixtureは`tests/jev-receipt-boundary.test.mjs`・`tests/jev-transport.test.mjs`で検証する。Provider実接続と料金gateは別受入のまま維持する。
 
 仕事本文をreceiptへ保存しない。保存する場合もowner、用途、保持期限、削除、export、provider送信同意を別途実装する。`unavailable`、`invalid_response`、`denied`、`budget_exceeded`を`evaluated`や合格へ読み替えない。
 

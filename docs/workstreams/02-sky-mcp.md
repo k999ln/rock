@@ -12,6 +12,10 @@
 
 # Sky / MCP
 
+## 2026-10-10 GRID01／ROCK — Sky Compute Grid host fixture
+
+未使用Androidの余剰計算を固定・中断可能なlotへmatchingするplatform serviceをSkyへ追加した。MCPの第三者任意Tool実行とは分け、初期SKUは固定runtime/model/tokenizerによるpublic/synthetic text embeddingだけとする。`CapacityOffer`、`ComputeOrder`、`ComputeLease`、`ComputeReceipt`のclosed contract、hard filter、score、有限lease、独立参照／duplicate検証、service-credit hold preview、合成demo UI/APIをhostで実装した。実端末worker、remote dispatch、本番storage、実需要、実料金・払出しは未接続。詳細は[Sky Compute Grid](../sky-compute-grid.md)。
+
 ## 2026-10-01 MCP直接実行の料金gate
 
 全MCPのTool一覧に料金方式を持たせ、価格申告をPassport digestへ含めた。Sky Tool SDKは料金未定義・未知方式のTool登録を拒否する。PC ConnectorはローカルSDK descriptorまたはremote MCPの`_meta['rockstaros.dev/pricing']`から料金方式を読み、欠落は`unknown`として実行を停止する。`free`であってもUIは提供元申告と表示し、Rockstar独立検証済みとは主張しない。さらに遠隔MCPの`free`自己申告は、署名見積・予算予約の共通経路がないため直接実行不可とする。local SDK descriptorは別境界であり、表示上の`free`は外部料金がない証明ではない。subscription/usage/external contractも直接実行不可。料金条件の変更はPassport digestを変え、承認を更新させる。
@@ -23,6 +27,28 @@
 ## 目的
 
 自動化Toolを安全に発見、登録、接続、権限確認、実行、停止、結果確認できる共通面を提供する。MCPごとの個別例外ではなく、Connection Passportと一回承認を共通契約にする。
+
+### 2026-10-11 SKY07 — 接続画面の遅延応答を現在のsessionへ混入させない
+
+AMC O4／ROCK。poll・event一覧の順序逆転と、切断／再接続後に古いconnect成功・error・finallyが届く競合を実componentで再現した。要求世代と接続世代を照合し、同時接続の連打を止め、成功時の二重GETを1回へ統合した。変更前10失敗→変更後10合格、既存onboarding3合格、typecheck・対象lintが成功。実React／Dialogのブラウザfixtureでも同じ10ケースを合格した。local応答fixtureのUI受入であり、MCP本体・権限・料金契約やProvider受入は変更していない。統合SHAの全体検証へ進む。
+
+同日追補: Skyチャットにもevent／手動読戻しの順序逆転とtoken切替・unmount後の反映を再現し、共通要求世代と現在tokenの照合で修正した。追加Node9件、既存画面13件、実React／Dialogの合成ブラウザ8件が合格。実行・承認・料金APIは変更せず、外部MCPの実接続は別受入。
+
+### 2026-10-11 SKY07-03／SKY07-05 — 再接続失敗後の旧承認を失効
+
+主担当はAMC O4／ROCK。`lib/mcp-hub.ts` → PC Connectorの`POST /servers/:id/connect`・`prepare`・`execute`を調査し、接続・一回券発行後に再接続のinitializeが401 `authorization_required`で失敗しても、前回のPassportと券が残り、旧券のexecuteが200で同梱processorを実行する欠陥を再現した。実Connector HTTP handlerと同梱ローカルprocessorを使い、再認証の応答だけをfixtureで拒否して確認した。
+
+再接続開始時に前回Passportと未使用承認を失効させ、executeも現在の`connected`状態を必須にした。失敗後は`needs_authorization`・Passportなしを維持し、再接続に成功しても旧券は再使用できない。新しいprepare／一回承認による実行は成功する。Connector／descriptor／pilot／SPIDER関連試験は35件成功・非対応platform用1件skip、対象lint・配布ZIPのsource一致を確認した。外部MCPの料金gate、Origin認証、同梱基本4機能の限定互換境界は変更していない。
+
+これはローカル再認証失敗の回帰受入であり、外部OAuth失効・Providerの実取消・同一remote jobの照会／永続復旧は未受入。MCPの汎用実行にはA2Aと同等のdurable job／receipt照合はなく、結果不明時に自動再送しない既存境界を維持する。SKY07全体の完成やProvider sandbox成功へ加算しない。
+
+同日追補（SKY07-05）: 実Connector HTTPと遅延可能なローカルMCP応答で、initialize待機中のdisconnectが200でも、古いconnectが後から200となって`connected`とPassportを復活させる競合を再現した。重複connectとSDK定義差し替えでも古い接続が成功扱いになり、遅延したtools/listの401は新しい接続を未認可へ戻しうる。接続試行のidentityと現在のentryを各await後・例外処理で照合し、失効した試行は409 `connection_superseded`で終了する。HTTP transportのreset世代も照合し、遅延応答のsession headerを新しい接続へ書き戻さない。確定済みTool応答を破棄する仕組みや再送は追加していない。
+
+disconnect、遅延initialize後の再接続、遅延tools/list認証エラー、SDK定義削除・差し替えを実HTTPで確認し、関連41件成功・非対応platform用1件skip、対象lint・配布ZIP source一致を確認した。削除だけでは従来も404で拒否されており、新規欠陥として数えない。異なるserverの承認券も失効させる点は既存disconnect・syncLocal・期限切れのcontrol-plane全失効方針を維持する。承認payload自体はserver IDに束縛済みで、一律失効が暗号上必須という意味ではない。
+
+同日追補（SKY07-03）: `connect`の`tools/list`はTool総数だけを制限し、空ページと同一／循環／毎回新しい`nextCursor`では取得を無制限に続けていた。実Connector HTTPとローカルMCP fixtureで、試験側が8ページ目に終了させるまで取得が続き、誤って200のPassportを作ることを確認した。不正な型や空文字のcursorも成功扱いになった。
+
+既存の掲載診断と同じ最大5ページで完結することを要求し、`nextCursor`は省略時だけ終了、存在時は非空文字列・UTF-8最大1 KiB・既出値ではないことを検査する。Tool総数2,000件の制限も維持し、失敗時はPassportなし・`error`とする。空の中間ページを含む正常な5ページと1 KiBのcursorは成功し、5ページ目待機中のdisconnectは409 `connection_superseded`で優先される。実HTTPの異常cursor／ページ上限と正常取得・取消、既存認証・承認・SPIDER・限定mode関連は55件成功・非対応platform用1件skip。product lint、対象Connector lint、再生成ZIPのsource一致を確認した。実行はローカル合成fixtureの範囲に限り、外部MCP・有料Providerへの接続や課金gateの変更は行っていない。
 
 ## 現在地
 

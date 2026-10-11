@@ -32,10 +32,11 @@ export type TeamCase = {
   revision: number;
   status: TeamCaseStatus;
   terms: TeamTerms;
+  creationTerms?: TeamTerms;
   customerReceipts: TeamMoneyEntry[];
   customerRefunds: TeamMoneyEntry[];
   workerPayments: TeamMoneyEntry[];
-  events: { id: string; action: string; note: string; at: string }[];
+  events: { id: string; action: string; note: string; at: string; command?: string }[];
   createdAt: string;
   updatedAt: string;
 };
@@ -148,26 +149,65 @@ export function teamMoney(caseFile: TeamCase) {
 
 export function createTeamCase(value: unknown, now = new Date().toISOString()): TeamCase {
   const v = inputObject(value, ['id', 'terms']);
+  const terms = parseTeamTerms(v.terms);
   return {
-    id: teamId(v.id), revision: 0, status: 'draft', terms: parseTeamTerms(v.terms),
+    id: teamId(v.id), revision: 0, status: 'draft', terms, creationTerms: terms,
     customerReceipts: [], customerRefunds: [], workerPayments: [], events: [],
     createdAt: now, updatedAt: now,
   };
 }
 
-export function applyTeamAction(caseFile: TeamCase, value: unknown, revision: unknown,
-  now = new Date().toISOString()): TeamCase {
+type TeamCommand =
+  | { id: string; action: 'update_terms'; terms: TeamTerms }
+  | { id: string; action: 'assign' }
+  | { id: string; action: 'deliver'; note: string }
+  | { id: string; action: 'accept'; note: string }
+  | { id: string; action: 'record_customer_receipt' | 'record_refund' | 'record_worker_payment'; amountYen: number; reference: string };
+
+function teamCommand(value: unknown): TeamCommand {
   const v = inputObject(value, ['id', 'action', 'note', 'amountYen', 'reference', 'terms']);
   const id = teamId(v.id);
-  const action = v.action;
-  if (typeof action !== 'string' || ![
-    'update_terms', 'assign', 'deliver', 'accept', 'record_customer_receipt',
-    'record_refund', 'record_worker_payment',
-  ].includes(action)) throw new TeamCaseError('操作を確認してください。');
+  switch (v.action) {
+    case 'update_terms':
+      inputObject(v, ['id', 'action', 'terms']);
+      return { id, action: v.action, terms: parseTeamTerms(v.terms) };
+    case 'assign':
+      inputObject(v, ['id', 'action']);
+      return { id, action: v.action };
+    case 'deliver':
+    case 'accept':
+      inputObject(v, ['id', 'action', 'note']);
+      return { id, action: v.action, note: text(v.note, '受領・検収記録', 2000) };
+    case 'record_customer_receipt':
+    case 'record_refund':
+    case 'record_worker_payment': {
+      inputObject(v, ['id', 'action', 'amountYen', 'reference']);
+      const amountYen = yen(v.amountYen, '金額');
+      if (amountYen === 0) throw new TeamCaseError('金額を入力してください。');
+      return {
+        id, action: v.action, amountYen,
+        reference: text(v.reference, '外部明細・振込の参照番号', 240),
+      };
+    }
+    default: throw new TeamCaseError('操作を確認してください。');
+  }
+}
+
+export function applyTeamAction(caseFile: TeamCase, value: unknown, revision: unknown,
+  now = new Date().toISOString()): TeamCase {
+  const v = teamCommand(value);
+  const { id, action } = v;
+  const serialized = JSON.stringify(v);
   const prior = caseFile.events.find((event) => event.id === id);
-  if (prior) throw new TeamCaseError('同じ操作IDは既に使用されています。', 409);
-  if (!Number.isInteger(revision) || revision !== caseFile.revision)
+  if (prior) {
+    if (prior.command === serialized) return caseFile;
+    // Older records have no exact command proof; never infer a replay from a note.
+    throw new TeamCaseError('同じ操作IDは既に別の内容で使われています。案件を再読込してください。', 409);
+  }
+  if (!Number.isSafeInteger(revision) || revision !== caseFile.revision)
     throw new TeamCaseError('別の操作で更新されています。再読込してください。', 409);
+  if (!Number.isSafeInteger(caseFile.revision + 1))
+    throw new TeamCaseError('操作の上限です。新しい案件で続けてください。', 409);
   const next: TeamCase = {
     ...caseFile, revision: caseFile.revision + 1, updatedAt: now,
     customerReceipts: [...caseFile.customerReceipts],
@@ -178,7 +218,7 @@ export function applyTeamAction(caseFile: TeamCase, value: unknown, revision: un
   let note = '';
   if (action === 'update_terms') {
     if (caseFile.status !== 'draft') throw new TeamCaseError('担当開始後の条件変更は、新しい合意として別案件にしてください。', 409);
-    next.terms = parseTeamTerms(v.terms);
+    next.terms = v.terms;
     note = '発注前の条件を更新';
   } else if (action === 'assign') {
     if (caseFile.status !== 'draft') throw new TeamCaseError('担当開始済みです。', 409);
@@ -186,17 +226,15 @@ export function applyTeamAction(caseFile: TeamCase, value: unknown, revision: un
     note = '規約確認・顧客説明・担当者への条件明示を本人が記録して担当開始';
   } else if (action === 'deliver') {
     if (caseFile.status !== 'assigned') throw new TeamCaseError('担当開始後に納品を記録してください。', 409);
-    note = text(v.note, '成果物の受領・検査記録', 2000);
+    note = v.note;
     next.status = 'delivered';
   } else if (action === 'accept') {
     if (caseFile.status !== 'delivered') throw new TeamCaseError('納品確認後に顧客の検収を記録してください。', 409);
-    note = text(v.note, '顧客の検収記録', 2000);
+    note = v.note;
     next.status = 'accepted';
   } else {
     if (caseFile.status === 'draft') throw new TeamCaseError('担当開始前には入出金を記録できません。', 409);
-    const amountYen = yen(v.amountYen, '金額');
-    if (amountYen === 0) throw new TeamCaseError('金額を入力してください。');
-    const reference = text(v.reference, '外部明細・振込の参照番号', 240);
+    const { amountYen, reference } = v;
     const entry = { id, amountYen, reference, at: now };
     if (action === 'record_customer_receipt') next.customerReceipts.push(entry);
     if (action === 'record_refund') {
@@ -211,6 +249,6 @@ export function applyTeamAction(caseFile: TeamCase, value: unknown, revision: un
     }
     note = `${action}: ${amountYen}円 / ${reference}`;
   }
-  next.events.push({ id, action, note, at: now });
+  next.events.push({ id, action, note, at: now, command: serialized });
   return next;
 }

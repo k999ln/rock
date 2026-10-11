@@ -123,9 +123,11 @@ final class AndroidA2ABrokerDeviceTransport {
     private static byte[] readBounded(InputStream input, int maximum, long deadline) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] buffer = new byte[1_024];
-        int count;
-        while ((count = input.read(buffer)) != -1) {
+        while (true) {
             if (SystemClock.elapsedRealtime() >= deadline) throw new IOException("A2A_BROKER_RESPONSE_TIMEOUT");
+            int count = input.read(buffer);
+            if (SystemClock.elapsedRealtime() >= deadline) throw new IOException("A2A_BROKER_RESPONSE_TIMEOUT");
+            if (count == -1) break;
             if (output.size() > maximum - count) throw new IOException("A2A_BROKER_RESPONSE_TOO_LARGE");
             output.write(buffer, 0, count);
         }

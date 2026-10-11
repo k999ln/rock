@@ -1,5 +1,12 @@
 # Web / PWA / Sites
 
+## 2026-10-11 — buildとlocal previewのruntimeを一致（WEB01 / O7、ROCK）
+
+標準`npm start`と`operator-dock:dev`が直下Wrangler 4.122.0の古いworkerdを使い、生成済みWorkerの2026-10-01／Operatorの2026-09-15 compatibility dateを拒否することを再現した。既存`productionWrangler` resolverでbuilder側Wrangler 4.147.0を選び、依存更新・日付の引下げ・認証変更なしで復旧した。Webはlocal D1 migration成功後のみ起動し、失敗codeとSIGINT／SIGTERMを伝搬する。Operatorは別DBの準備と本人認証を維持する。
+
+command／resolver回帰11件、fresh DBの63 migrationとbuilt Worker HTTP200、未認証Operatorの期待503、既存`npm dev`のHTTP200と全port停止を確認。既存custom `--persist-to`をpreviewだけに渡す場合は同じ保存先へ別途migrationが必要。配備・remote migration・公開・本番readbackは行っておらず、WEB01のblocked状態は保持する。
+
+
 ## 既存端末への機能追加（2026-10-06、HOME01 / SYS01 / WEB14）
 
 利用者の追加指示に基づき、Sky・データ回収・LLMを既存OS上のWeb/PWAから選んで使う。目的は端末交換やOS書込を要求せず同じ入口を提供すること。主担当はWeb / PWA / Sites、ROCK。SIM/eSIMの通信・利用権と、機能の表示設定は独立し、追加操作だけで権限・課金・Provider接続を成立させない。
@@ -198,6 +205,10 @@ G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの1
 ## SPIDER cycle 46: Zema利用権とローカル取消の残差分
 
 O2 / R03、主streamはWeb / PWA、ROCK。main 0c90253cのWorkPlan/AMC/Agent証跡修復を保持し、PR #74は作成時のZema利用権・未読body解放と、証拠不足でも可能な本人のローカル取消へ絞る。進行・完了の証跡検査、owner・revision、遠隔停止との区別を維持する。
+
+2026-10-11、R03 / O2 / ROCKの作成復旧を修正。候補`2ebb6250`では、Aの作成が保存前に失敗し、401を経て有効なZema利用権を持つBへ切り替えると、保持した同じID・名前・templateをBの新規jobとして保存できた。実Workbench component、実認証handler・store・SQLite、検証済みの合成Ed25519 claimで再現した。既存jobのowner分離や料金gateの突破ではなく、保存先意図の欠落である。
+
+`/api/work-jobs`のGETとPOSTへ既存の非秘密`ownerScope`を接続し、Workbenchは元ownerを作成ID・入力と共に固定する。再試行前のGETと保存直前のAPI照合を通し、本人不明・401・owner変更では作成を止めて入力を保持する。別タブのサインイン、元ownerでの再確認、または結果確認後の明示的な保留解除から再開する。POSTの任意scope headerは認証にならず、headerを省略する既存client、Zema利用権、既存jobのPATCH・CAS・料金/実行承認を維持する。古い一覧応答の世代管理と同時create防止も追加。`tests/workbench-owner-recovery.test.mjs`は保存前失敗、保存後の応答喪失、401、正当な別owner、GET後の切替、未知scope、明示解除、同ID重複防止、遅延GETを実route/SQLite経路で確認する。実ブラウザー・同一統合候補の全体verifyは統括側で別に記録し、Provider・実資金・本番受入へ転用しない。
 
 通常の対象コマンドは以下。main追加6件は既存typescript devDependencyを必要とする。ローカルではlock検証済みcompilerをメモリ読み込みし6件、依存不要の既存67件を別実行して全て合格。main APIで2件の負例を確認した。通常install不一致はPR #73、DB inventory・catalog・AMC export退行は別件。[証拠](../evidence/spider-work-plan-contract.json)。main mergeと配備は自動サイクルでは行わない。
 

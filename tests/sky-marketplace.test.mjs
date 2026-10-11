@@ -31,8 +31,8 @@ void test('Sky paid-order eSIM setup is owner-driven, does not issue profiles, a
   assert.match(esimPurchase, /action: 'fetch'/);
   assert.match(esimPurchase, /action: 'acknowledge'/);
   assert.match(esimPurchase, /sessionStorage/);
-  assert.match(esimPurchase, /esimsetup\.apple\.com/);
-  assert.match(esimPurchase, /esimsetup\.android\.com/);
+  assert.ok(esimPurchase.includes("'esimsetup.apple.com'"));
+  assert.ok(esimPurchase.includes("'esimsetup.android.com'"));
   assert.match(esimPurchase, /referrerPolicy="no-referrer"/);
   assert.match(esimPurchase, /導入情報を表示/);
   assert.match(esimPurchase, /サーバーから消去/);
@@ -87,7 +87,7 @@ void test('publisher can reuse owner-scoped details without an assumed free pric
 });
 
 void test('all catalog tools remain individually discoverable without claiming candidates are operational', () => {
-  assert.equal(catalog.length, 36);
+  assert.equal(catalog.length, 37);
   assert.equal(catalog.filter((tool) => tool.status === 'candidate').length, 22);
   assert.match(marketplace, /catalog\.filter/);
   assert.match(marketplace, /skyToolUiState\(tool, runtimeContext\)/);

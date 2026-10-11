@@ -304,7 +304,7 @@ class RunnerControlTests(unittest.TestCase):
         self.transport.release.set();thread.join(2)
         self.assertFalse(thread.is_alive())
 
-    def test_cancel_after_claim_preserves_uncertainty_until_status(self):
+    def test_cancel_after_claim_preserves_uncertainty_on_missing_status(self):
         self.submit();self.transport.block=True
         thread=threading.Thread(target=self.step);thread.start()
         self.assertTrue(self.transport.entered.wait(2))
@@ -312,7 +312,8 @@ class RunnerControlTests(unittest.TestCase):
         self.assertFalse(receipt['before_send_claim'])
         self.assertEqual(self.control.status('job')['state'],'sending')
         self.transport.release.set();thread.join(2)
-        self.assertEqual(self.control.status('job')['state'],'cancelled')
+        self.assertEqual(self.control.status('job')['state'],'unknown')
+        self.assertTrue(self.control.status('job')['cancel_requested'])
         self.assertNotIn('submit',self.transport.ops)
 
     def test_update_after_claim_cancels_on_reconciliation_not_claimed_retraction(self):
@@ -326,6 +327,62 @@ class RunnerControlTests(unittest.TestCase):
         status=self.control.status('job')
         self.assertTrue(status['send_claimed']);self.assertTrue(status['cancel_requested'])
         self.assertEqual(status['state'],'cancelled');self.assertEqual(self.executor.calls,0)
+
+    def test_cancel_missing_status_keeps_reconciling_delayed_original_after_restart(self):
+        self._cancel_delayed_original(execute_before_recovery=False)
+
+    def test_cancel_missing_status_does_not_hide_late_success(self):
+        self._cancel_delayed_original(execute_before_recovery=True)
+
+    def _cancel_delayed_original(self, *, execute_before_recovery):
+        self.submit()
+        original = self.transport.exchange
+        held = []
+
+        def delay_submission(envelope):
+            if envelope['request']['op'] == 'submit':
+                self.transport.ops.append('submit')
+                held.append(copy.deepcopy(envelope))
+                raise TransportError('synthetic original submit is still in transit')
+            return original(envelope)
+
+        with patch.object(self.transport, 'exchange', delay_submission):
+            self.step()
+        self.assertEqual(len(held), 1)
+        self.assertEqual(self.control.status('job')['state'], 'unknown')
+        self.assertFalse(self.control.cancel('job', 'cancel-delayed')['before_send_claim'])
+        self.step()
+        status = self.control.status('job')
+        self.assertEqual(status['state'], 'unknown', 'absence cannot fence a delayed original submit')
+        self.assertTrue(status['cancel_requested'])
+        with closing(self.control.connect()) as db:
+            row = db.execute("SELECT input_text,package FROM remote_jobs WHERE key='job'").fetchone()
+            self.assertIsNotNone(row['input_text'])
+            self.assertIsNotNone(row['package'])
+        self.control.close(); self.control = self.new_control()
+        self.step()
+        self.assertEqual(self.control.status('job')['state'], 'unknown')
+        self.assertEqual(self.transport.ops.count('submit'), 1)
+
+        # The exact original request reaches the actual Runner SQLite store
+        # after both not-found replies and the OS controller restart.
+        reply = self.remote.dispatch(held[0], transport_target=self.transport.target,
+                                     transport_evidence=self.transport.evidence)
+        self.assertTrue(reply['response']['ok'])
+        if execute_before_recovery:
+            self.remote.tick()
+        self.step()
+        status = self.control.status('job')
+        self.assertEqual(status['state'], 'succeeded' if execute_before_recovery else 'cancelled')
+        self.assertTrue(status['cancel_requested'])
+        self.remote.tick()
+        self.assertEqual(self.executor.calls, int(execute_before_recovery))
+        self.assertEqual(self.transport.ops.count('submit'), 1)
+        self.assertFalse(self.step())
+        with closing(self.control.connect()) as db:
+            row = db.execute("SELECT input_text,package FROM remote_jobs WHERE key='job'").fetchone()
+            self.assertIsNone(row['input_text'])
+            self.assertIsNone(row['package'])
 
     def test_acceptance_write_failure_rolls_back_without_network(self):
         preview=self.prepare()

@@ -137,11 +137,13 @@ export class RemoteAiTextStore {
       .first<EncryptedRemoteAiTextInput & { executionId: string; ownerUserId: string; expiresAt: number; createdAt: number }>();
   }
   async claimProviderSend(owner: string, id: string, now = Date.now()) {
+    // The input was committed during the approval window. Dispatch uses that
+    // durable input's fixed execution deadline, not the earlier quote expiry.
     const result = await this.db.prepare(`INSERT INTO remote_ai_text_send_claims (execution_id, owner_user_id, claimed_at)
       SELECT e.id, e.owner_user_id, ? FROM remote_ai_text_executions e
       JOIN remote_ai_text_inputs i ON i.execution_id = e.id
-      WHERE e.owner_user_id = ? AND e.id = ? AND e.state = 'sending' AND e.expires_at > ? AND i.expires_at > ?
-      ON CONFLICT(execution_id) DO NOTHING`).bind(now, owner, id, now, now).run();
+      WHERE e.owner_user_id = ? AND e.id = ? AND e.state = 'sending' AND i.expires_at > ?
+      ON CONFLICT(execution_id) DO NOTHING`).bind(now, owner, id, now).run();
     return (result.meta?.changes ?? 0) === 1;
   }
   async deleteInputAfterTerminal(owner: string, id: string) {

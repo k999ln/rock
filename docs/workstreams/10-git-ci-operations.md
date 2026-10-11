@@ -1,5 +1,27 @@
 # Git / CI / Operations
 
+## プロジェクト別開発Bot（AMC03 / H1 / ROCK）
+
+[担当Botの利用方法](../../toolkits/amc-agent/README.md#プロジェクト別bot)。開発Botの正本はdata/amc/project-bots.json。既存32部隊のtaskAssignmentsを置き換えず、10個の依頼窓口として実装・検証・Git commit・PR提出を担当する。OWNERは具体的な依頼と既存の外部実行条件を決め、EXTERNALはCodex／GitHubの認証と実行環境を提供する。GitHub App、常時実行、main自動mergeは未設定。完了条件は全定義の生成一致、担当外task拒否、holdの引継ぎ、起動失敗とPR受入の区別、対象試験と同一SHAの全体verify。検証: `npm run bot:check`、`node --test tests/project-bots.test.mjs`、`npm run verify`。実BotのGit提出は具体的な開発依頼で別途受け入れる。
+
+### Git調査からAMCへ（AMC04 / H1 / ROCK）
+
+ROCKが既存prompt-contextのGitHub情報と担当コードのblob／履歴／task資料を収集し、担当Botが具体的なtaskを選んでAMCを作成する。planは既存engineのdraft生成を再利用し、正本のnextTaskIds・受入状態を変更しない。EXTERNALはGitHub／Codex接続、OWNERは依頼の範囲と既存gateの判断を担う。合格条件は担当範囲、前提とhold、Git SHAと資料hash、未確認ソースの明示、調査失敗時の未起動、新規版保存の維持。`node --test tests/project-bot-context.test.mjs tests/project-bots.test.mjs tests/workspaces.test.mjs` と全体verifyで確認する。実Botによる任務完走と、Git調査／計画生成／引渡しのhost試験は別証拠とする。
+
+### 既存AMCの直接入力（AMC05 / H1 / ROCK）
+
+`run/prepare --goal-file` で利用者の既存AMCを担当Botへ引き渡す。ROCKは読込み検証、原本を保持した作業コピー、既存engineでの指示生成、Git調査との接続を担当する。EXTERNALは既存Codex／GitHubの認証と実行環境、OWNERは依頼と適用範囲を担う。合格条件はID・revision・task・履歴・保留の保持、原本非変更、不正入力の起動前拒否、同じ読込み内容のコピーと引渡し。検証は `node --test tests/project-bot-context.test.mjs tests/project-bots.test.mjs tests/workspaces.test.mjs` と `npm run verify`。読み取りレビューはWeb上の認証済み検収イベントを代替しない。
+
+### 可変の計画提案（AMC06 / H1 / ROCK）
+
+固定7工程の補助に加え、localhostのAMCから既存CodexへGit調査と具体的な計画提案を依頼する。入力・状態・担当・保存・復旧・検証は[AMC設計](../amc-goal-orchestrator.md#ローカルamcで依頼に合わせて計画するamc06)を参照。旧Goalや正本は保持し、計画生成、採用、承認、実行、検収を混同しない。EXTERNALは既存Codex/GitHub環境、OWNERは入力送信と候補採用。公開Sky/Zemaの実行器は別範囲。
+
+## 作業部屋の維持（ORG04 / H1 / ROCK）
+
+[作業部屋一覧](../../workspaces/README.md)は既存AMCの32分野をフォルダへ分けた作業入口。主担当はtaskAssignments、状態はproject-status、手順と合格条件はtaskPlansのまま維持する。場所と確認コマンドだけをdata/workspaces.jsonへ持つ。完了条件は全taskの一意な所属、参照pathの存在、親から子への実行保留の継承、更新後の生成物一致、対象試験とnpm run verify。新しい思いつきはアイデア置き場へ記録し、採用前に製品要件や実行へ昇格させない。
+
+GitHub main 0455499d8726118b8892c5cfbe2e49236c8b4c31を基に専用worktreeで着手。同SHAの取得19 checksはsuccess。元のcodex/esim-cloud-accessはremoteに存在せず、多数の未保存差分があるため触らない。先行変更回収は別作業であり、入口整理をその統合完了とは扱わない。次担当は最新mainと自分のbranchを再確認し、npm run work -- <task ID>の担当・前提・holdを使う。GitHub保存・main統合・公開は別記録。
+
 ## 目的
 
 設計、実装、証拠、branch、PR、CI、Sites配備、release artifactを追跡可能にし、別候補や別環境の成功を混同しない。
@@ -39,7 +61,7 @@
 
 - [rocketstar・衛星・OS・ボタンの完全保存アーカイブ](../rocketstar-design/README.md) — DOC03。利用者の保存指示により原本・生成元・旧版・QA画像を保持し、全ファイルのhashを検査する。現行R5要件とアーカイブ内E3前提は分ける。
 
-- [統合で失われた情報の監査（2026-10-07）](../merge-loss-audit-20261007.md) — 2026-10-05の `ecb4b2af` ほかで文書と台帳が古い内容へ戻った経緯、復元した範囲、owner判断待ちの項目。次の担当は[文書整理の引き継ぎ](../prompts/docs-reorg-handoff-20261007.md)から始める。
+- [統合で失われた情報の監査（2026-10-07）](../merge-loss-audit-20261007.md) — 2026-10-05の `ecb4b2af` ほかで文書と台帳が古い内容へ戻った経緯、復元した範囲、owner判断待ちの項目。文書整理はPR #92で統合済み。現在の削除・復旧は[Git整理方針](../git-consolidation.md#obsolete-content-cleanup)と最新の進捗JSONから始める。
 - [Git consolidation](../git-consolidation.md)
 - [Prompt playbook](../prompt-playbook.md)
 - [Design/implementation alignment](../design-implementation-alignment-20260909.md)
@@ -54,6 +76,12 @@
 - `npm run repository:check`
 - `npm run database:check`
 - `npm run verify`
+
+### API試験のローカルHTTP接続（2026-10-11）
+
+候補`7f5ed361`の既存buildを使うMiniflare直接HTTP試験で、AMCの2,097,153-byte POSTが413を返した後、同じsocketを再利用した次の237-byte POSTが`EPIPE`で失敗する順序を確認した。peerの`ECONNRESET`を次要求より先に処理した場合は新socketで400となり、同じbuildのAPI通しが成功する場合もある。環境はmacOS arm64、Node 26.0.0（組込みUndici 8.0.2）、Miniflare 5.20261001.0-alpha。scopeや保存処理の変更が原因という証拠ではない。
+
+`scripts/check-work-api.mjs`の過大入力413 caseだけに`Connection: close`を指定し、取消されたuploadの接続を次の独立要求へ再利用しない。入力bytes、413、直後の400、本文上限、reader取消、認証と保存境界は維持し、自動再送は追加しない。fetch失敗はmethod・pathname・本文byte数と元のcauseだけを追記し、本文・認証headerを診断へ出さない。これはローカルHTTP試験の接続管理であり、本番transportの修正・受入ではない。変更後の対象2要求、同じbuildの全API 1356 assertions、製品lintが成功した。
 
 ## 2026-10-02 共通実装統合
 
@@ -117,3 +145,13 @@ Local AI unsigned APKの現行source buildを再開し、CI `37278057340`で`sdk
 ROCK担当。#63–65 / #69–76をmain 0c90253cへ統合する。ecb4b2afで失われた依存宣言・SIM利用権正本・AMC認可/再検収/強制停止・catalog接続契約・API検証範囲を復旧する。現在のWorkPlan保存とSky library、AMC手動入力UIは保持する。生成物の整理・LLM host研究・Mini launcher・Local AI APKはそれぞれの受入境界を維持する。対象回帰→npm run verify→同一SHA CIが合格条件。秘密情報履歴の候補は未分類で、検査の無効化や広い除外をしない。
 
 依存更新PR #79–81: lock変更時はMIT/BSD等のmetadata差分を確認し、`node scripts/sync-web-license-inventory.mjs --write`で台帳を同期する。root/site双方のsource-map-jsとproxy-addr/tinypool/oxfmtを検証。詳細は `docs/evidence/open-pr-integration.json` のdependencyFollowup。法的clearance・未修正advisory・履歴secret・本番gateは独立。
+
+## 全体進行と未統合差分の回収（2026-10-06）
+
+LCH06/O7が主担当、SKY19/O5が機能担当。最新main e12d880cの同一SHA verify/security合格を確認し、旧作業木の未保存差分を保持した独立branchでeSIMキーを統合する。共通決済・仕事composition・AWS準備の未保存差分は混入させず、各契約と最新mainとの差を確認して次の統合候補とする。優先順は同一source検証→GitHub保存/CI→main統合→配信source同期→Provider/端末受入。外部契約/価格/鍵/flashは個別gateを保持する。全体進捗はAMC32部隊と既存taskPlansを使い、別のtask台帳を新設しない。検証: focused eSIM tests、typecheck、database/project/mission/design checks、npm run verify。
+
+PR #85のsource `f9c85870`はGitHub全7チェック成功。全体verify内のNode1368 pass/1既定skip・仕事API1305・CSV385を確認。main mergeは責任分界のOWNER操作として残し、配備・Provider・実機へ結果を転用しない。元作業木の共通決済/composition/AWS検討は未保存状態を維持している。
+
+## Sky／Zemaの検証済み修正統合（2026-10-08 UTC、G04）
+
+ROCK担当。利用者のmain反映指示により、034/035で限定検収された保存競合・会話復旧・bundle修正を最新mainへ統合する。[今回の証拠と未受入範囲](../evidence/sky-zema-main-integration.json)を参照。同一commitのCIを確認し、未完了の隣接表示試験や本番公開を完了扱いにしない。

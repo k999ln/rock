@@ -49,8 +49,8 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 ## 現在地
 
 - `MAT01`: Core entity、発明loop、安全境界の設計完了。
-- `MAT02`: 二物質・複数比率のsandbox Coreと9 testを実装済み。
-- `MAT03`: Zema、限定記憶、simulation、外部lab接続は未着手。
+- `MAT02`: 二物質・複数比率のsandbox Coreを実装済み。物質・工程ID衝突の拒否を含む10 test。
+- `MAT03`: Sky→Zemaの2D候補比較・本人用WorkJob保存・digest照合再開を実装。限定記憶、simulation、外部lab接続は未実装。本人分離・再送・revision競合・サンプル昇格拒否をhost試験し、実機や本番の完成には換算しない。 認証切れ後の保存再確認でも元IDを保持し、401では古い保存一覧を消し、遅れて届いた一覧応答を無効にする。未確認時の同一タブ内リンクを止め、別タブのサインインとJSON出力を許可する。`tests/material-workspace-recovery.test.mjs` と `tests/pending-save-navigation.test.mjs` で確認する。
 - `MAT04`: avocadoMini、XR、四方向sensor、hand interaction、Patent AI統合設計に加え、Bench／ビリヤード台規模Full-scaleの寸法budget、concept画像、機構・光学・電気・演算・安全・校正・HVTのhardware詳細設計まで完了。
 - `MAT05`: 決定的scene projectionと合成pose interactionは未着手。
 - `MAT06`: 四方向Bench／Full-scale実機prototype、simulation／Patent AI bridgeは未着手。
@@ -144,6 +144,14 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 ## avokadoProのNVIDIA搭載小型PC（2026-10-05）
 
 [Proの構成・組立設計](../avokado-pro-pc-design.md)を追加。AIとPCゲーム、販売目標80万円/台、Miniなしの独立PC。ROCKが設計、EXTERNALがOEM/ODM供給、JOINTが熱・AI・ゲーム・復旧受入、OWNERが見積後の購入/製造/販売を担当。MAT16で追跡し、MAT15のMini単体受入と混同しない。現段階は構成候補・筐体目標で、実機未組立。
+
+### Proの公開ソースとP0設計の照合（2026-10-11）
+
+`sites/avocado-mini/`のPro、ホーム、Mini内のPro紹介、販売状況、販売開示を、`avokadoProPcIntent`と[Pro構成・組立設計](../avokado-pro-pc-design.md)へ合わせた。NVIDIA搭載の独立小型PC、AI/PCゲーム、Mini任意を設計目標として説明し、候補RAMとGPU VRAM、Laptop GPUとdesktop GPU、筐体目標と収納/冷却未検証、OS未確定を分ける。既存正本の概念SVGを同一bytesで使い、旧E3 Hub画像は履歴の図と明示した。
+
+80万円は販売目標のみ、税・送料・保証・最終価格は未定。旧88万円/US$5,800は販売状況ページの履歴注記だけに保持し、現行PCの確定販売価格・自動通貨換算にしない。Miniの16万円/41万円の旧製品ライン参考値は保存し、R5価格や4本+Hub必須構成へ転用しない。販売・予約・決済は停止のままで、Pro SKUをcheckoutへ渡しても予約・外部決済は作らない。共有台帳や受領原本は変更していない。
+
+検証: `npm test --prefix sites/avocado-mini`（Astro全13 route build、Worker staging、21 tests）、正本価格/SVG照合・ページ間fragment・Pro checkout拒否を確認。Chrome実画面で1280px/390px、Pro候補carousel・menu・価格目標から販売状況への導線を確認した。既存のPro mobile Menu内navまで非表示にするCSSを限定修正。ローカルソースの確認であり、Sites配備・価格確定・実機試験・購入・生産・販売開始は行っていない。
 
 ## Mini本体SIMによる独立通信（2026-10-05）
 

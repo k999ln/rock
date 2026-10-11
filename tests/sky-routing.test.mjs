@@ -4,6 +4,10 @@ import { routeSkyRequest, skyRoles } from '../lib/sky-routing.ts';
 
 await test('Sky routes a plain-language request to each available role', () => {
   const cases = [
+    ['LiveKitでIPの音声会話を設定したい', 'rockstar-ip-studio'],
+    ['IPに電話対応を追加して', 'rockstar-ip-studio'],
+    ['音声エージェントを作りたい', 'rockstar-ip-studio'],
+    ['電話番号をCSVで整理したい', 'rockstar-csv-cleanup'],
     ['AMCで部隊とタスクの進捗を管理したい', 'rockstar-amc'],
     ['CSVの列名と重複行を整理して', 'rockstar-csv-cleanup'],
     ['メルカリで不用品を出品して収益化したい', 'mercari-revenue'],
@@ -36,4 +40,5 @@ await test('Sky exposes thirteen distinct roles without changing existing roles 
   );
   assert.equal(routeSkyRequest('今日の天気を教えて'), null);
   assert.equal(routeSkyRequest('  '), null);
+  assert.equal(routeSkyRequest('電話番号を変更したい'), null);
 });

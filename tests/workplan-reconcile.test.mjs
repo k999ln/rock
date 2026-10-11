@@ -1,3 +1,4 @@
+import * as ownerIntent from '../lib/owner-intent.ts';
 import test from 'node:test';
 import * as amcSkyWeb from '../lib/amc-sky-web.ts';
 import assert from 'node:assert/strict';
@@ -35,6 +36,7 @@ function fixture(t) {
     const source = readFileSync(new URL(`../app/api/${String(name)}/route.ts`, import.meta.url), 'utf8');
     const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
     const exports = {}, modules = {
+      '@/lib/owner-intent': ownerIntent,
       '@/lib/fund-store': { database: () => db, requestUser },
       '@/lib/amc-sky-web': amcSkyWeb,
       '@/lib/work-store': { workStore }, '@/lib/workflow': workflow,

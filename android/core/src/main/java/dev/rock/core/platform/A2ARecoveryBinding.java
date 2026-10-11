@@ -12,12 +12,33 @@ public final class A2ARecoveryBinding {
 
     private A2ARecoveryBinding() { }
 
+    /** Recover the response of a committed Wallet reservation without consuming approval again. */
+    public static boolean isConfirmedHeldReservation(Map<String,String> local, String owner,
+            String delegationId, String approvalId, String payloadDigest, long limitMinor) {
+        if (local == null || owner == null || delegationId == null || approvalId == null ||
+                !owner.equals(local.get("owner")) || !delegationId.equals(local.get("delegation_id")) ||
+                !"HELD".equals(local.get("state")) || !approvalId.equals(local.get("approval_id")) ||
+                !sameDigest(payloadDigest, local.get("approval_digest"))) return false;
+        try { return limitMinor > 0 && Long.parseLong(local.get("held_minor")) == limitMinor; }
+        catch (RuntimeException malformed) { return false; }
+    }
+
     /**
      * Compares normalized Cloud fields with an owner-scoped durable local reservation.
      * The caller must fetch Cloud data using the authenticated owner session and must not
      * mutate the reservation when this returns false.
      */
     public static boolean matches(Map<String,String> cloud, Map<String,String> local) {
+        return sameTerms(cloud, local) && local.get("state") != null &&
+            RECOVERABLE_WALLET_STATES.contains(local.get("state"));
+    }
+
+    /** Terminal identity only; PlatformStore must also verify the saved settlement receipt and ledger. */
+    static boolean matchesSettledTerms(Map<String,String> cloud, Map<String,String> local) {
+        return local != null && "SETTLED".equals(local.get("state")) && sameTerms(cloud, local);
+    }
+
+    private static boolean sameTerms(Map<String,String> cloud, Map<String,String> local) {
         if (cloud == null || local == null) return false;
         if (!same(cloud, "owner", local, "owner") ||
                 !same(cloud, "delegationId", local, "delegation_id") ||
@@ -28,8 +49,7 @@ public final class A2ARecoveryBinding {
                 !same(cloud, "agentVersion", local, "agent_version") ||
                 !same(cloud, "currency", local, "currency") ||
                 !same(cloud, "pricingVersion", local, "pricing_version") ||
-                !sameDigest(cloud.get("walletApprovalDigest"), local.get("approval_digest")) ||
-                !RECOVERABLE_WALLET_STATES.contains(local.get("state"))) return false;
+                !sameDigest(cloud.get("walletApprovalDigest"), local.get("approval_digest"))) return false;
         try {
             return Long.parseLong(cloud.get("budgetLimitMinor")) == Long.parseLong(local.get("budget_limit_minor")) &&
                 Long.parseLong(cloud.get("deadlineAt")) == Long.parseLong(local.get("deadline_at")) &&

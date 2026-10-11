@@ -1,3 +1,4 @@
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { env } from 'cloudflare:workers';
 import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
 import { database, requestUser } from '@/lib/fund-store';
@@ -67,7 +68,7 @@ async function body(request: Request) {
 export async function GET(request: Request) {
   try {
     const user = await requestUser(request);
-    return json({ jobs: await workStore(database()).list(user, true) });
+    return json({ jobs: await workStore(database()).list(user, true), ownerScope: await ownerScopeFor(user) });
   } catch (error) {
     return rejected(request, error);
   }
@@ -75,12 +76,15 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const db = database();
     if (!(await rockstarServiceScopeAllowed(
       db,
       user,
       'zema',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) {
       if (request.body && !request.bodyUsed && !request.body.locked)
         void request.body.cancel().catch(() => {});
@@ -88,6 +92,7 @@ export async function POST(request: Request) {
     }
     const candidate = createWorkJob(await body(request));
     if (candidate.templateId === 'amc') throw new WorkError('AMC画面から計画を保存してください。');
+    if (candidate.templateId === 'material-invention') throw new WorkError('物質候補の専用画面から入力を保存してください。');
     const saved = await workStore(db).create(user, candidate);
     if (
       !saved ||
@@ -102,12 +107,14 @@ export async function POST(request: Request) {
 }
 export async function PATCH(request: Request) {
   try {
-    const user = await requestUser(request),
-      input = objectInput(await body(request), [
-        'jobId',
-        'revision',
-        'command',
-      ]);
+    const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
+    const input = objectInput(await body(request), [
+      'jobId',
+      'revision',
+      'command',
+    ]);
     const store = workStore(database()),
       current = await store.get(user, workId(input.jobId));
     if (!current) throw new WorkError('仕事が見つかりません。', 404);

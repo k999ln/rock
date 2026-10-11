@@ -91,6 +91,28 @@ Stripeのstandalone配布コピーは生成物であり、共通sourceとの一�
 
 検証は関連unit/HTTP mock、owner/CAS・再送・署名、MCP切断/再接続、双方のhandoff契約、standalone生成物一致、全体`npm run verify`。Provider sandbox、実機OS、本番配備の成功とは分ける。結果と次の手順は`project.md`とG04へ記録する。rollbackは統合PRのrevertと既存保存schema/versionで行い、DB migrationは追加しない。
 
+<a id="obsolete-content-cleanup"></a>
+## 2026-10-11 未使用の旧内容を現行ツリーから削除（G01）
+
+利用者の「昔の使わない内容は削除したい」という明示指示に従い、従来の「旧文書をすべて履歴として残す」方針を見直した。主担当H1 / Git / CI / Operations、ROCK。import・route・build・CI・台帳・設計索引・証拠の参照を調べ、必要な開発手順はREADMEとworkstream、現在の再開先はproject/status/AMCへ収束した。移動先やarchiveコピーは追加しない。
+
+削除前の復元元は全件 `96845e6006c15e39ba5b45495f79c21bdff7399e`。例: `git show 96845e6006c15e39ba5b45495f79c21bdff7399e:CHECKPOINT.md`。Git履歴は書き換えない。過去の作業ログのリンクは固定commitを参照し、凍結証拠JSONやmerge欠落の回収原本に残る当時のpath/hashは変更しない。それらは当時のsourceを示し、現在の実行入口ではない。
+
+| 削除したpath | 理由 |
+| --- | --- |
+| `CHECKPOINT.md` | 2026-09-12で止まった重複した作業入口。現在の進捗JSON・project・AMCへ収束。 |
+| `docs/progress-audit-20260909-followup.md` | 初回監査の追補。後続監査と現行台帳へ置換済み。凍結証跡は元commitで照合。 |
+| `docs/prompts/docs-reorg-handoff-20261007.md` | PR #92で統合済みの文書整理を未pushとして案内する手順。 |
+| `docs/prompts/rock-current-next-20260911.md` | 旧再開指示。現在のSIM/eSIM主方針と2026-10-02の指示へ置換済み。 |
+| `docs/prompts/rock-current-next-20261001.md` | 前日の再開指示。2026-10-02の指示へ置換済み。 |
+| `docs/prompts/rockstaros-release-20260910.md` | 終了済みの8時間実行指示。結果と受入証拠は既存のrelease記録へ保存済み。 |
+| `docs/prompts/value-spend-runtime-next.md` | 未使用の旧作業指示。現行Wallet/workflowの仕様・台帳から参照なし。 |
+| `docs/readme-details.md` | 旧README全文の重複コピー。製品・設計・課金・開発の正本へ直接案内。 |
+| `docs/prompts/hub-wallet-next.md` | 2026-09-09のHub/Wallet・BlackBerry-first再開指示。GAP受入を現行workstreamへ統合し、現行SIM方針と重複する作業指示を削除。 |
+| `docs/prompts/os-operational-base-next.md` | 旧D6 run44待ちと単一owner未実装を現在形で案内する旧指示。D0〜D6・復旧・Game/Walletの必要受入契約を正本へ統合。 |
+
+現行SIM/eSIM方針、承認、release記録、必要な証拠・固定原本・ライセンスは保持する。過去のマージで失われた台帳・コードの回収元も復旧完了までは保持する。今回の削除で実装・本番・実機の受入を完了扱いにしない。検証とGitHub反映は `data/project-status.json.repositoryCleanup.obsoleteContent` とprojectに記録する。
+
 <a id="repository-storage-policy"></a>
 ## Gitに保存するものと再生成するもの（G01、2026-10-05）
 

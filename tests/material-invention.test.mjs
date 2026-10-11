@@ -180,3 +180,9 @@ void test('simulation is never promoted to experimental proof', () => {
     'EXPERIMENT_VERIFIED',
   );
 });
+
+void test('material and process entities cannot collide in the candidate graph', () => {
+  const collision = structuredClone(fixture);
+  collision.process.id = collision.materials[0].id;
+  assert.throws(() => validateMaterialInventionRequest(collision), /重複/);
+});

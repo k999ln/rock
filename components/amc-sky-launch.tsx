@@ -23,7 +23,6 @@ export default function AmcSkyLaunch({ disabled, onSave, savedGoal, initialTaskI
   const [statusFilter, setStatusFilter] = useState('all');
   const [taskId, setTaskId] = useState(initialTaskId);
   const squad = plan.squads.find((item) => item.id === squadId)!;
-  const task = plan.tasks.find((item) => item.id === taskId)!;
   const progress = savedGoal?.skyBrief ? savedGoal : undefined;
   const directives = (progress?.skyDirectives ?? []) as {taskId:string; directiveId:string; status:string; reason:string[]; taskSpecRevision:number; observedAt:string}[];
   const stateOf = (id:string) => {
@@ -33,11 +32,13 @@ export default function AmcSkyLaunch({ disabled, onSave, savedGoal, initialTaskI
     return record?.status ?? 'pending';
   };
   const owned = plan.tasks.filter((item) => item.squadId === squadId && (statusFilter==='all' || stateOf(item.id)===statusFilter));
-  const detail = detailedSpecs.tasks[taskId as keyof typeof detailedSpecs.tasks];
-  const currentDirective = directives.filter(d=>d.taskId===taskId).at(-1);
+  const task = owned.find((item) => item.id === taskId) ?? owned[0];
+  const visibleId = task?.id ?? '';
+  const detail = task ? detailedSpecs.tasks[task.id as keyof typeof detailedSpecs.tasks] : undefined;
+  const currentDirective = directives.filter(d=>d.taskId===visibleId).at(-1);
   function select(id: string) {
     const found = plan.tasks.find((item) => item.id === id);
-    if (found) { setSquadId(found.squadId); setTaskId(id); }
+    if (found) { setSquadId(found.squadId); setStatusFilter('all'); setTaskId(id); }
   }
   return <section aria-label="Sky完全ローンチ専用計画">
     <p role="note">このmainにはSky計画の参照入力が{integration.missingInputs.length}件未統合です。計画は準備用で、該当任務の実行前に入力の統合・照合が必要です。</p>
@@ -84,10 +85,10 @@ export default function AmcSkyLaunch({ disabled, onSave, savedGoal, initialTaskI
       </select>
       {!owned.length && <p>この部隊には該当する作業がありません。</p>}
       <label className={styles.label} htmlFor={`${uid}-task`}>Skyの担当作業</label>
-      <select id={`${uid}-task`} value={taskId} onChange={(event) => select(event.target.value)}>
+      <select id={`${uid}-task`} value={visibleId} disabled={!task} onChange={(event) => setTaskId(event.target.value)}>
         {owned.map((item) => <option key={item.id} value={item.id}>{item.id} · {item.title}</option>)}
       </select>
-      <div className={styles.taskDetail}>
+      {task && <div className={styles.taskDetail}>
         <h3>{task.id}　{task.title}</h3>
         <p>{task.scope}</p>
         <dl className={styles.facts}>
@@ -119,7 +120,7 @@ export default function AmcSkyLaunch({ disabled, onSave, savedGoal, initialTaskI
           <ul>{task.sourceEvidence.map((item) => <li key={item.path}><code>{corrections[item.path] || item.path}</code>
             {corrections[item.path] && <p className={styles.muted}>原資料の {item.path} を訂正。配備設定はローカル用で本番証拠ではありません。</p>}</li>)}</ul>
         </details>
-      </div>
+      </div>}
     </section>
     <details className={styles.boardDetail}>
       <summary>ローンチまでのGateと公開後確認</summary>

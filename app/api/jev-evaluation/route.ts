@@ -25,6 +25,7 @@ export async function POST(request: Request) {
       owner,
       'sky',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Sky');
     if (!remoteAiPricingGateAccepted()) return remoteAiPricingUnavailable();
     const raw = await request.text();
@@ -86,14 +87,16 @@ export async function POST(request: Request) {
         },
         { status: error.status, headers: noStoreHeaders },
       );
-    console.error('jev evaluation failed', 'UPSTREAM_OR_INPUT_ERROR');
+    const timedOut = error instanceof Error &&
+      (error.name === 'TimeoutError' || error.name === 'AbortError');
+    console.error('jev evaluation failed', timedOut ? 'UPSTREAM_TIMEOUT' : 'UPSTREAM_OR_INPUT_ERROR');
     return Response.json(
       {
         error:
-          'Jev評価を利用できません。入力を送信せず、内容を本人が確認してください。',
-        code: 'unavailable',
+          'Jev評価を完了できませんでした。送信後の処理状況は未確認のため、自動では再送しません。内容を本人が確認してください。',
+        code: timedOut ? 'timeout' : 'unavailable',
       },
-      { status: 502, headers: noStoreHeaders },
+      { status: timedOut ? 504 : 502, headers: noStoreHeaders },
     );
   }
 }

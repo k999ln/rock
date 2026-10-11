@@ -1521,6 +1521,7 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
 .pro-addon>div:nth-child(2){align-items:flex-end;text-align:right}
 .pro-addon span:first-child{color:#a8dfee;font-size:9px;font-weight:750;letter-spacing:.18em}
 .pro-addon strong{color:#f5f5f7;font-size:23px;letter-spacing:-.045em}
+.pro-addon .pro-target-price{max-width:190px;font-size:19px;line-height:1.3;text-align:right}
 .pro-addon .price-value{color:#f5f5f7;font-size:19px;font-weight:750;letter-spacing:-.035em;white-space:nowrap}
 .pro-addon .price-conversion{color:#aeb4bc;font-size:11px;font-style:normal;white-space:nowrap}
 .pro-addon p{grid-column:1/-1;margin:3px 0 0;color:#aeb4bc;font-size:11px;line-height:1.55}
@@ -1684,7 +1685,7 @@ h1,h2,h3,.hero-bottom p,.feature-headline{text-wrap:balance}
 .site-menu summary::-webkit-details-marker{display:none}.site-menu summary:hover,.site-menu[open] summary{border-color:#a8ecff7d;background:#20252a}
 .site-menu-panel{position:fixed;z-index:90;top:82px;left:50%;width:min(920px,calc(100vw - 32px));max-height:calc(100svh - 102px);padding:26px;overflow:auto;transform:translateX(-50%);border:1px solid #ffffff28;border-radius:25px;background:linear-gradient(145deg,#1a1d21f2,#090a0cf5);box-shadow:0 38px 120px #000e,0 1px 0 #ffffff10 inset;backdrop-filter:saturate(145%) blur(34px);-webkit-backdrop-filter:saturate(145%) blur(34px)}
 .site-menu-panel>p{margin:0 0 16px;color:#9adff2;font-size:11px;font-weight:750;letter-spacing:.2em}
-.site-menu-panel nav,.mobile-menu .site-menu-panel nav{position:static;display:grid;gap:0;min-width:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none}
+.site-menu-panel nav,.site-header .site-menu-panel nav,.mobile-menu .site-menu-panel nav{position:static;display:grid;gap:0;min-width:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none}
 .site-menu-panel nav a,.mobile-menu .site-menu-panel nav a{display:grid!important;grid-template-columns:36px minmax(160px,.7fr) 1fr;align-items:center;gap:18px;padding:20px 8px;border-bottom:1px solid #ffffff1e;border-radius:0;color:#f5f5f7;text-decoration:none}
 .site-menu-panel nav a:first-child{border-top:1px solid #ffffff1e}.site-menu-panel nav a:hover,.mobile-menu .site-menu-panel nav a:hover{background:#ffffff08;color:#fff}
 .site-menu-panel nav a span{color:#79d8f0;font-size:10px;letter-spacing:.12em}.site-menu-panel nav a strong{font-size:clamp(24px,3vw,38px);letter-spacing:-.055em}.site-menu-panel nav a em{justify-self:end;color:#9ea8ae;font-size:14px;font-style:normal;text-align:right}

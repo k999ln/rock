@@ -92,7 +92,7 @@ async function eligibleBoundOrder(orderId: string, ownerUserId: string) {
     ESIM_INSTALL_RECEIPT_KEYS?: string;
   };
   const pricing = await selectEsimOrderPricing(db, config.ESIMGO_PLAN_CATALOG_JSON, row, ownerUserId);
-  const registry = await skyToolPackageStore(db).listRegistry();
+  const registry = await skyToolPackageStore(db).verifiedRegistryPackages(pricing.plan.starterAgentPack.packages);
   await verifyEsimStarterAgentPack(pricing.plan, registry);
   const trustedKeys = parseTrustedEsimInstallIssuerKeys(config.ESIM_INSTALL_RECEIPT_KEYS);
   if (!trustedKeys || ![...trustedKeys.values()].some((entry) => entry.status === 'active'))

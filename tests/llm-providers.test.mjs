@@ -62,9 +62,9 @@ void test('OpenAI adapter uses server credentials and returns normalized text', 
 
 void test('Anthropic, Gemini and OpenAI-compatible adapters share one contract', async () => {
   const providers = [
-    ['anthropic', { ANTHROPIC_API_KEY: 'a' }, { content: [{ type: 'text', text: 'claude' }] }],
-    ['google', { GOOGLE_GENERATIVE_AI_API_KEY: 'g' }, { candidates: [{ content: { parts: [{ text: 'gemini' }] } }] }],
-    ['openai-compatible', { SKY_LLM_COMPATIBLE_BASE_URL: 'http://127.0.0.1:1234/v1' }, { choices: [{ message: { content: 'compatible' } }] }],
+    ['anthropic', { ANTHROPIC_API_KEY: 'a' }, { stop_reason: 'end_turn', content: [{ type: 'text', text: 'claude' }] }],
+    ['google', { GOOGLE_GENERATIVE_AI_API_KEY: 'g' }, { candidates: [{ finishReason: 'STOP', content: { parts: [{ text: 'gemini' }] } }] }],
+    ['openai-compatible', { SKY_LLM_COMPATIBLE_BASE_URL: 'http://127.0.0.1:1234/v1' }, { choices: [{ finish_reason: 'stop', message: { content: 'compatible' } }] }],
   ];
   for (const [provider, runtimeEnv, payload] of providers) {
     const result = await generateText(
@@ -94,7 +94,7 @@ void test('local Qwen uses an explicitly configured loopback OpenAI-compatible b
     },
     async (url, init) => {
       seen = { url, init };
-      return response({ choices: [{ message: { content: 'local ok' } }] });
+      return response({ choices: [{ finish_reason: 'stop', message: { content: 'local ok' } }] });
     },
   );
   assert.equal(result.text, 'local ok');

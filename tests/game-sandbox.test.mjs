@@ -370,3 +370,44 @@ void test('save carries only game state: no price, purchase, wallet or exchange 
     /price|wallet|payment|purchase|exchange|balance|currency|amount/iu,
   );
 });
+
+void test('restore rejects moving held groups and ambiguous command identity even with recomputed hashes', async () => {
+  let state = sandbox([particle('p1', 100, 2), particle('p2', 800, 0)]);
+  state = run(state, { action: 'select', particleId: 'p1' });
+  state = run(state, { action: 'hold' });
+  const original = JSON.parse(await saveSandbox(state));
+  const { materialDigest } = await import('../lib/material-invention.ts');
+  async function changed(edit) {
+    const next = structuredClone(original);
+    edit(next.state);
+    next.digest = await materialDigest(next.state);
+    return JSON.stringify(next);
+  }
+  await assert.rejects(loadSandbox(await changed((s) => { s.particles[0].vx = 2; })), /保持中/u);
+  await assert.rejects(loadSandbox(await changed((s) => { s.commands.push(s.commands[0]); })), /IDが重複/u);
+  await assert.rejects(loadSandbox(await changed((s) => { s.revision = 0; })), /履歴と版数/u);
+  assert.equal(await sandboxDigest(await loadSandbox(JSON.stringify(original))), await sandboxDigest(state));
+});
+
+void test('counter exhaustion never produces a successful command that cannot be saved and restored', async () => {
+  const original = sandbox([particle('p1', 100, 0)]);
+  const { materialDigest } = await import('../lib/material-invention.ts');
+  async function restoredWith(field, value) {
+    const saved = JSON.parse(await saveSandbox(original));
+    saved.state[field] = value;
+    saved.digest = await materialDigest(saved.state);
+    return loadSandbox(JSON.stringify(saved));
+  }
+  for (const [field, command] of [['revision', { action: 'pause' }], ['tick', { action: 'step', ticks: 1 }]]) {
+    const state = await restoredWith(field, Number.MAX_SAFE_INTEGER);
+    const before = await sandboxDigest(state);
+    assert.throws(() => run(state, command), { status: 409 });
+    assert.equal(await sandboxDigest(state), before, 'failure keeps the accepted saved state unchanged');
+    assert.equal(await sandboxDigest(await loadSandbox(await saveSandbox(state))), before);
+  }
+  const last = await restoredWith('revision', Number.MAX_SAFE_INTEGER - 1);
+  const command = { id: randomUUID(), action: 'pause' };
+  const terminal = applySandboxCommand(last, command, last.revision);
+  assert.equal(terminal.revision, Number.MAX_SAFE_INTEGER);
+  assert.equal(applySandboxCommand(terminal, command, last.revision), terminal, 'last accepted command remains idempotent');
+});

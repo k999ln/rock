@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState, type SyntheticEvent } from 'react';
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import styles from '@/components/sky-commerce.module.css';
+import { operationRequest, OperationRequestError, OperationResponseError } from '@/lib/operations-client';
 
 type DeviceAuthorization = { clientName: string; expiresAt: number };
 type DeviceSession = { id: string; deviceName: string; createdAt: number; lastUsedAt: number | null; expiresAt: number };
@@ -13,77 +14,102 @@ function friendlyTime(value: number) {
 
 export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?: string }) {
   const [code, setCode] = useState(initialCode.slice(0, 8).toUpperCase());
-  const [authorization, setAuthorization] = useState<DeviceAuthorization | null>(null);
+  const [authorization, setAuthorization] = useState<(DeviceAuthorization & { userCode: string }) | null>(null);
   const [sessions, setSessions] = useState<DeviceSession[]>([]);
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const requestVersion = useRef(0);
+
+  function fail(error: unknown, mutation = false) {
+    const unauthorized = error instanceof OperationRequestError && error.status === 401;
+    const uncertain = error instanceof OperationResponseError || (error instanceof OperationRequestError && error.status >= 500);
+    requestVersion.current++;
+    setAuthorization(null);
+    setSessions([]);
+    setSignedIn(unauthorized ? false : null);
+    setMessage(unauthorized ? 'サインインを確認してください。' : mutation && uncertain
+      ? '操作結果が不明です。端末側の接続状態と接続中の端末を再確認してください。承認や解除は自動再送しません。'
+      : '端末の状態を確認できませんでした。接続状態を再確認し、必要なら端末コードを確認し直してください。');
+  }
+
+  async function readSessions() {
+    const result = await operationRequest<{ sessions: DeviceSession[] }>('/api/rockstar/device-sessions');
+    if (!Array.isArray(result.sessions)) throw new OperationResponseError('INVALID_RESPONSE');
+    return result.sessions;
+  }
 
   async function refreshSessions() {
-    const response = await fetch('/api/rockstar/device-sessions', { cache: 'no-store' });
-    if (response.status === 401) { setSignedIn(false); return; }
-    if (!response.ok) throw new Error('端末セッションを読み込めませんでした。');
-    const result = await response.json() as { sessions: DeviceSession[] };
-    setSessions(result.sessions);
-    setSignedIn(true);
+    const version = ++requestVersion.current;
+    setBusy(true);
+    setAuthorization(null);
+    try {
+      const currentSessions = await readSessions();
+      if (version !== requestVersion.current) return;
+      setSessions(currentSessions); setSignedIn(true);
+    } catch (error) { if (version === requestVersion.current) fail(error); }
+    finally { setBusy(false); }
   }
 
   useEffect(() => {
     let active = true;
-    fetch('/api/rockstar/device-sessions', { cache: 'no-store' })
-      .then(async (response) => {
-        if (!active) return;
-        if (response.status === 401) { setSignedIn(false); return; }
-        if (!response.ok) throw new Error('端末の状態を読み込めませんでした。');
-        const result = await response.json() as { sessions: DeviceSession[] };
-        if (!active) return;
-        setSessions(result.sessions);
+    const version = ++requestVersion.current;
+    readSessions()
+      .then((result) => {
+        if (!active || version !== requestVersion.current) return;
+        setSessions(result);
         setSignedIn(true);
       })
-      .catch(() => { if (active) setMessage('端末の状態を読み込めませんでした。'); });
+      .catch((error) => { if (active && version === requestVersion.current) fail(error); });
     return () => { active = false; };
   }, []);
 
   async function inspect(event: SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault(); setMessage(''); setAuthorization(null); setBusy(true);
+    event.preventDefault();
+    if (busy || signedIn !== true) return;
+    const version = ++requestVersion.current;
+    const userCode = code;
+    setMessage(''); setAuthorization(null); setBusy(true);
     try {
-      const response = await fetch(`/api/rockstar/device-authorizations/approve?user_code=${encodeURIComponent(code)}`, { cache: 'no-store' });
-      const result = await response.json() as { authorization?: DeviceAuthorization; error?: string };
-      if (response.status === 401) { setSignedIn(false); return; }
-      if (!response.ok || !result.authorization) throw new Error(result.error === 'device_code_invalid_expired_or_used'
-        ? 'コードが見つからないか、有効期限切れです。端末で新しいコードを表示してください。'
-        : '端末コードを確認できませんでした。');
-      setAuthorization(result.authorization);
-    } catch (error) { setMessage(error instanceof Error ? error.message : '端末コードを確認できませんでした。'); }
+      const result = await operationRequest<{ authorization?: DeviceAuthorization }>(`/api/rockstar/device-authorizations/approve?user_code=${encodeURIComponent(userCode)}`);
+      if (version !== requestVersion.current) return;
+      if (!result.authorization || typeof result.authorization.clientName !== 'string' || !Number.isFinite(result.authorization.expiresAt))
+        throw new OperationResponseError('INVALID_RESPONSE');
+      setAuthorization({ ...result.authorization, userCode });
+    } catch (error) {
+      if (version !== requestVersion.current) return;
+      if (error instanceof OperationRequestError && error.status === 404)
+        setMessage('コードが見つからないか、有効期限切れ・使用済みです。端末側の接続状態を確認してください。');
+      else fail(error);
+    }
     finally { setBusy(false); }
   }
 
   async function decide(action: 'approve' | 'deny') {
+    if (busy || signedIn !== true || !authorization || authorization.userCode !== code) return;
+    requestVersion.current++;
     setMessage(''); setBusy(true);
     try {
-      const response = await fetch('/api/rockstar/device-authorizations/approve', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, userCode: code }),
-      });
-      if (!response.ok) throw new Error('端末の認証コードが期限切れか、すでに使用されています。');
+      const result = await operationRequest<{ state: string }>('/api/rockstar/device-authorizations/approve', 'POST', { action, userCode: authorization.userCode });
+      if (result.state !== (action === 'approve' ? 'approved' : 'denied')) throw new OperationResponseError('INVALID_RESPONSE');
       setAuthorization(null);
-      setMessage(action === 'approve' ? '端末をRockstar IDに接続しました。端末へ戻ってください。'
+      setMessage(action === 'approve' ? '端末の接続を承認しました。端末へ戻って接続状態を確認してください。'
         : '端末の接続を拒否しました。');
       await refreshSessions();
-    } catch (error) { setMessage(error instanceof Error ? error.message : '端末の登録に失敗しました。'); }
+    } catch (error) { fail(error, true); }
     finally { setBusy(false); }
   }
 
   async function revoke(id: string) {
+    if (busy || signedIn !== true) return;
+    requestVersion.current++;
     setMessage(''); setBusy(true);
     try {
-      const response = await fetch('/api/rockstar/device-sessions', {
-        method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }),
-      });
-      if (!response.ok) throw new Error('端末の接続を解除できませんでした。');
+      const result = await operationRequest<{ revoked: boolean }>('/api/rockstar/device-sessions', 'DELETE', { id });
+      if (result.revoked !== true) throw new OperationResponseError('INVALID_RESPONSE');
       await refreshSessions();
       setMessage('端末の接続を解除しました。');
-    } catch (error) { setMessage(error instanceof Error ? error.message : '端末の接続を解除できませんでした。'); }
+    } catch (error) { fail(error, true); }
     finally { setBusy(false); }
   }
 
@@ -95,17 +121,18 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
       </div>
       {signedIn === false ? <div className={styles.notice}>
         <p>端末を接続するにはRockstar IDでサインインしてください。</p>
-        <Link href="/signin-with-chatgpt?return_to=%2Fconnect%2Fdevice" target="_top">サインインして続ける</Link>
-      </div> : <form className={styles.offerForm} onSubmit={inspect}>
+        <Link href="/signin-with-chatgpt?return_to=%2Fconnect%2Fdevice" target="_blank" rel="noopener noreferrer">サインインして続ける</Link>
+        <p>別タブでサインイン後、この画面で端末の状態を再確認してください。</p>
+      </div> : signedIn === null ? <p>端末の状態を確認してから接続操作を行ってください。</p> : <form className={styles.offerForm} onSubmit={inspect}>
         <label htmlFor="rockstar-device-code">端末に表示されたコード</label>
         <input id="rockstar-device-code" autoComplete="one-time-code" autoCapitalize="characters"
-          maxLength={8} minLength={8} pattern="[A-HJ-NP-Z2-9]{8}" value={code}
-          onChange={(event) => setCode(event.target.value.toUpperCase())} />
+          maxLength={8} minLength={8} pattern="[A-HJ-NP-Z2-9]{8}" value={code} disabled={busy}
+          onChange={(event) => { requestVersion.current++; setCode(event.target.value.toUpperCase()); setAuthorization(null); setMessage(''); }} />
         <button className={styles.primary} type="submit" disabled={busy || code.length !== 8}>
           {busy ? '端末を確認中…' : '端末を確認'}
         </button>
       </form>}
-      {authorization && <div className={styles.notice}>
+      {signedIn === true && authorization && authorization.userCode === code && <div className={styles.notice}>
         <p><strong>{authorization.clientName}</strong> がこのRockstar IDへの接続を求めています。</p>
         <p>コード有効期限: {friendlyTime(authorization.expiresAt)}</p>
         <div className={styles.esimPlanList}>
@@ -114,6 +141,7 @@ export function RockstarDeviceAuthorization({ initialCode = '' }: { initialCode?
         </div>
       </div>}
       {message && <output className={styles.notice} aria-live="polite">{message}</output>}
+      <button type="button" disabled={busy} onClick={() => void refreshSessions()}>端末の状態を再確認</button>
     </section>
     {signedIn && <section className={styles.esimCatalog} aria-labelledby="device-sessions-title">
       <div className={styles.esimCatalogTitle}>

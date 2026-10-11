@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { localStartFixture } from './local-start-fixture.mjs';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { drizzle } from 'drizzle-orm/d1';
 import { migrate } from 'drizzle-orm/d1/migrator';
@@ -26,19 +28,22 @@ const original = {
     '3aa55ef1a17c960808c953ef51fad24a800126ec1a0dd424bf85197e8b3b7eb9',
 };
 
-await test('local production start applies the published migrations before serving', () => {
-  const packageJson = JSON.parse(
-    readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
-  );
-  const viteConfig = readFileSync(
-    new URL('../vite.config.ts', import.meta.url),
-    'utf8',
-  );
-  assert.match(
-    packageJson.scripts.start,
-    /^CI=1 wrangler d1 migrations apply site-creator-d1 --local --config dist\/server\/wrangler\.json && wrangler dev --config dist\/server\/wrangler\.json$/,
-  );
+await test('local production start applies the published migrations before serving', (t) => {
+  const f = localStartFixture(t);
+  const viteConfig = readFileSync(new URL('../vite.config.ts', import.meta.url), 'utf8');
   assert.match(viteConfig, /migrations_dir: 'drizzle'/);
+  // Execute the same runner as npm start; failure and signal boundaries live
+  // in start-local-web.test.mjs using this shared fixture.
+  const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.equal(packageJson.scripts.start, 'node scripts/start-local-web.mjs');
+  const result = spawnSync(process.execPath, [...f.command, '--port', '8788', '--ip', '127.0.0.1'], {
+    cwd: f.root, env: f.env, encoding: 'utf8', timeout: 5000,
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(f.calls(), [
+    { stage: 'd1', args: ['d1', 'migrations', 'apply', 'site-creator-d1', '--local', '--config', 'dist/server/wrangler.json'], ci: '1' },
+    { stage: 'dev', args: ['dev', '--config', 'dist/server/wrangler.json', '--port', '8788', '--ip', '127.0.0.1'], ci: 'fixture-dev-env' },
+  ]);
 });
 
 await test('both published migration filenames and exact SQL bytes stay intact', () => {
@@ -168,7 +173,7 @@ await test('fresh and both historical D1 databases converge without losing recor
         // SQLite normalizes IF NOT EXISTS away in sqlite_master.
         expectedSchema ??= schema;
         assert.deepEqual(schema, expectedSchema);
-        assert.equal(schema.filter((item) => item.type === 'table').length, 79);
+        assert.equal(schema.filter((item) => item.type === 'table').length, 80);
         // D1 intentionally disallows PRAGMA integrity_check; compare all table/index
         // definitions and retained values instead of claiming that pragma ran.
         if (history !== 'fresh')

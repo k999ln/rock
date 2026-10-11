@@ -1,9 +1,25 @@
 # Sky／Zema／全Tool詳細設計
 
 版: 1.2 / 2026-09-27
-対象: Skyにある14件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
+対象: Skyにある15件のready Tool、22件の導入候補、native開発Tool、Tool追加基盤。
 
 この文書は、Tool名の一覧ではなく、各Toolについて「誰が何を入力し、どこで動き、何を保存し、どこから外部作用になり、何をもって完了とするか」を同じ形で説明する。カタログの機械可読正本は`lib/catalog.ts`。この文書とカタログの欠落は`npm run design:check`で検出する。
+
+## Sky Compute Grid — 固定lotの分散計算供給
+
+2026-10-10、利用者の明示指示により、未使用Androidの余剰計算を需要へmatchingする`GRID01`を追加した。これはcatalogの任意Toolではなく、Skyの供給・実行・検証・精算を結ぶplatform serviceである。初期SKUはpublic/synthetic text embedding、Android arm64、充電・idle・unmetered・thermal none/light、固定runtime/model/tokenizer、verified lot単価に限定する。任意code、個人情報、秘密、exact location／owner identity公開、無断cloud fallback、未検証Wallet収益を禁止する。
+
+2026-10-11: leaseの完全な条件と時刻をIDへ固定し、order・入力・予算との照合と、同じleaseのverified usageだけを精算候補へ渡す検査を追加した。receipt IDを変えた再送でも精算keyは変わらない。永続台帳の重複拒否・実精算は未実装。
+
+host fixtureは`CapacityOffer → ComputeOrder → ComputeLease → ComputeReceipt → verified usage → service-credit hold`を再現する。`/sky/compute-grid`と`GET /api/sky/compute-grid/demo`は合成fixtureの可視化で、実端末dispatch、実需要、production storage、実課金・払出しではない。責任、入出力、状態、保存、retry、compatibility、安全、受入、未決事項の11項目は[専用設計](sky-compute-grid.md)を正本とする。
+
+## Material Invention — 物質候補の机上比較
+
+`rockstar-material-invention`はSkyからZemaへ開く研究用sandbox。由来・lot・比率・工程を入力し、候補と不足条件を比較して本人用仕事へ保存・復旧する。保存済み入力から同じdigestの候補を再生成する。外部simulation、ラボ、物理実験、装置操作、性能・特許性判定は未接続。合成サンプルを実データの仕事完了へ昇格しない。
+
+責任はROCK/O5、追跡はMAT03。入出力、状態、保存、本人分離、失敗、再送、復旧、承認、合格条件、残る判断の正本は[Material CoreのWeb接続](material-invention-core.md#sky--zemaの机上比較と本人用保存)。実装は`lib/material-study.ts`、`app/api/material-invention/route.ts`、`components/material-invention-workspace.tsx`。既存`work_jobs`と`lib/workflow.ts`を使い、サーバー保存の前に入力送信を明示する。
+
+Materialとメルカリの保存結果が不明な間は入力と記録IDを画面内に保持し、同じタブのリンク移動を止める。別タブのサインインとexportは利用できる。401で旧一覧を隠し、認証復帰後に本人の一覧を読戻す。遅い旧GETで認証切れを解除しない。タブ終了・crash・履歴移動をまたぐ永続復旧は未受入。
 
 ## SPIDER — Skyのセキュリティ検査
 
@@ -118,6 +134,22 @@ Skyはapp storeだけではなく、発見から接続、実行場所、停止�
 - 実装: `components/sky-commerce.tsx`と同CSS、`components/sky-marketplace.tsx`、`app/api/sky/commerce/[action]/route.ts`、`lib/sky-commerce.ts`、`lib/sky-commerce-store.ts`、`lib/sky-stripe.ts`。共有手数料は`lib/sky-marketplace-policy.ts`。migrationは`drizzle/0018_sky_commerce.sql`。
 - 合格条件・未完了の決め方: SQLite/API・Provider代替fixtureで改ざん/重複/失効/部分返金/所有者分離を検証する。実Stripe sandboxで購入→通知→権利→返金、公開Webhook到達、認証gateway、提供者認可、実売上配分と銀行払出しは別の受入。現在はStripe資格情報未設定、Provider sandbox・本番配備は未実施で、BIL02を完了扱いにしない。設定手順と運営確認は[決済設計](sky-billing.md)を正本にする。
 
+### 保存領域が消去できない場合（031修正）
+
+既知の認証失効時は、Storage取得自体の例外も捕捉する。チャットと未消費handoffの両キーについて、個別の削除試行と不存在のreadbackが成功するまで私的データを隔離する。一方の失敗でも他方の消去を試みる。隔離中は読込が空を返し、保存・handoff追加を拒否し、本人確認がreadyでも仕事と会話の画面を生成しない。保存領域を利用可能にして「保存領域の消去を再試行」を選ぶと両キーを再確認し、新しい状態から再開する。復旧だけで旧内容を自動復元しない。
+
+メモリの隔離状態に加え、同一タブのwindow.nameへ非機密の接頭フラグと元のnameを保持する。これは本人識別子ではなく、sessionStorage getterが例外でも同一originのreloadをまたぐ安全停止用。両キー消去確認後だけ元のnameへ戻す。異なるoriginや新規タブ、401なしの利用者変更、全ブラウザ状態APIが拒否される環境の永続性は別受入。通信checking/unavailableのみの場合には隔離を開始しない。
+
+合格条件はgetter例外で画面が落ちないこと、片方/両方の削除失敗後も旧会話とhandoffを復元しないこと、明示再試行後だけ新しい本人用画面へ入れること。実認証/Provider/仕事実行の成功とは別とする。
+
+### Zemaの認証失効と会話設定（候補031 / 2026-10-07）
+
+Provider設定の自動保存は共有revision契約を使う。409では入力を維持し、最新版を取得・表示・明示確認した後に別の保存操作を求める。設定readyを認証・OAuth・接続成功に変換しない。会話と仕事を切り替えても設定の保存状態は共通で、閉じた画面の遅延応答は新しい画面を更新しない。
+
+既知の401では会話・仕事・履歴を含む私的画面を破棄し、このタブの会話stashとSkyからの未消費依頼を消去する。本人確認がreadyになるまで私的画面を生成しない。再認証後は本人別の保存済み仕事を再取得する。一時的な接続確認・通信失敗では入力を保持した画面を隠して復旧を待つ。サーバーの仕事を削除・実行する処理ではない。
+
+合格範囲は実Zema UIと合成利用者・専用native D1での保存復帰、入力保持、認証失効後の分離。認証失効を経ない利用者変更、実OAuth、実LLM、実機、本番配備は別受入。利用者別の永続会話保存を新設する変更ではない。
+
 ### 商品詳細から仕事画面への引継ぎ（2026-10-05）
 
 `/sky/tools/[toolId]` は商品説明、利用環境、料金・実費、接続条件、既存の本人別bookmarkを表示する。AMC、ココナラ、CSVも例外にせず、この画面で仕事runnerをmountしない。利用者が「Zemaで開く」を選ぶと、encode済みの同じTool IDを `/zema/tools/[toolId]` へ渡す。入力本文・承認・仕事作成はこのリンクでは送らない。
@@ -133,6 +165,8 @@ O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承
 利用権を必須とする環境では、仕事作成の前に本人のZema scopeを保存済み台帳で確認する。不足時は403とSERVICE_ENTITLEMENT_REQUIREDを返し、未読bodyを解放してjobを書き込まない。previewで利用権必須を有効にしない既存動作は維持する。仕事の保存が利用権の発行・購入・送金・Agent起動を意味することはない。
 
 本人は履歴の委任証拠が欠けても未終了のローカル計画を取り消せる。owner・revision・終了状態の検査を通し、リモートAgentの停止成功とは分ける。進行・完了では既存の証跡照合を省略せず、証拠不足は409として再取得・照合後に再試行する。mainのAMC専用イベントと2段revision、新しい表示修正を保持する。
+
+2026-10-11の作成復旧では、未確認の仕事ID・名前・templateへ元アカウントの`ownerScope`を固定する。Workbenchは明示再送の前にGETで照合し、POSTも現在の`requestUser`と意図headerが不一致なら保存前に拒否する。scopeは認証・利用権を与えない。401では作成を止め、本人用一覧と選択を消し、入力を残して別タブのサインインへ案内する。元ownerへの復帰で同IDを確認でき、保留解除を明示した後だけ新IDから始める。古い一覧応答・同時createは現在の状態を上書きしない。既存API clientのheader省略、PATCH/CAS、Zema利用権、料金・実行承認は維持する。未確認の作成中は共通hookで同一タブのリンク移動を止め、保存確認または明示保留解除後に移動を再開する。別タブのサインインは使える。作成IDはmemory-onlyで、強制終了後の復旧を保証しない。
 
 合格範囲は実handler/storeとSQLiteによる拒否・取消・競合回帰。合成認証と実requestUserを使う別fixtureを区別し、本番認証・配備・実機・料金保留解除は受入に含めない。[検証と未解決条件](evidence/spider-work-plan-contract.json)を参照する。
 
@@ -151,6 +185,16 @@ SDKのローカルMCP認証は、受信文字列と期待キーをUTF-8 byte列�
 完全なbody受信とJSON解析後も、token発行／Tool実行前に期限を検査する。期限超過や不完全な要求は処理せず接続を閉じ、次の要求を受付する。許可された通常要求は従来のJSON-RPC結果を返し、応答writeには別の10秒timeoutを使う。受信本文や例外詳細の保存・ログ出力を追加せず、stdioの処理と本人承認の境界を変更しない。失敗後は利用者が完全な要求を再送できる。
 
 合格条件は実loopback上の遅いrequest-line／header／bodyの打切りと次の正常接続への復旧、期限後のtoken・Tool作用0、headerとbodyで期限が共通、buffer先読み・8 KiB超の正常分割入力・既存Origin／認証・通常Tool結果・資源解放の維持。`tests/test_mr_http_deadline.py`をCIで実行する。対象は1接続の受信時間境界であり、接続floodや全OS・Internetからの防御の受入ではない。
+
+MCPのTool列挙は空ページも含め最大5ページ。継続cursorは非空文字列・UTF-8 1 KiB以内で、循環を拒否する。失敗時はPassportを発行せず、部分一覧を成功にしない。正常な複数ページと本人の切断・接続変更を保つ。
+
+### MCP接続画面の再読込・再接続（SKY07、2026-10-11）
+
+ROCKは接続画面の一覧と操作結果を、現在の端末接続と最新の読取要求に対応させる。遅れて届く古い一覧・成功・エラーは、再接続後の表示を上書きしない。切断または画面破棄で待機中のUI応答を失効させ、別の接続操作の確認中表示も解除させない。
+
+同時に確認する接続は画面から1件とし、同一描画内の連打も防ぐ。現在の接続成功では一覧を1回更新し、現在の失敗は説明と明示再試行を残す。永続データや新しい承認は追加しない。Passport、料金、実行前承認は既存の契約を維持する。合格範囲は実component回帰10件と実React画面の合成遅延応答10件。実Provider接続やProvider側の取消・復旧の受入ではない。
+
+Skyチャットの一覧も、eventと手動読戻しを共通の要求世代・画面生存・端末tokenで照合する。token消去で待機応答を失効し、owner変更時に旧一覧を消す。遅い成功・エラーは最新一覧を上書きしない。現在の失敗では一覧を消し、現在の再接続で復旧する。既存の切断時の依頼停止と選択解除は保持する。追加component回帰9件、実React／Dialogの合成ブラウザ8件で確認した。
 
 ### Toolが必ず宣言するもの
 
@@ -180,6 +224,10 @@ catalogued → selected → connected → ready → running → review → compl
 ```
 
 `ready`は各Toolが明示する機能範囲の利用入口で、処理成功ではない。接続を要する機能では接続検査と対象環境の受入を別途確認する。AMCのWeb readyは計画作成・本人別の手動台帳・exportまでであり、WebからのAI直接起動や実ブラウザ・本番配備の受入を意味しない。別途、明示操作のローカルCodex CLI一件実行入口がある。`completed`はTool処理の完了で、販売、入金、法的有効性、特許、実世界の成果を保証しない。AMCの保存処理成功と、依頼Goal全体の受入も区別する。
+
+### 文章providerの完了境界
+
+文章Toolの共通transportは、Providerごとの正常な終了理由を確認してから本文を返す。途中打切り、filter、Tool待ち、必要な完了理由の欠落は502で止め、既存の成果や本人承認を置換しない。Ollamaにも選択された出力token上限を渡す。未処理Tool callは実行せず、失敗後の再送は本人の次の操作と既存予算確認を通す。本文や秘密の保存は増やさない。ROCKがadapterとhost fixtureを管理し、Provider契約・実接続・課金の受入は別に残す。[文章モデル設計](llm-evaluation-architecture.md#文章生成の完了判定2026-10-11)に成功値、optional default、失敗・復旧、公式仕様と合格条件を記載する。
 
 ### 共通実行規則
 
@@ -310,6 +358,16 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 
 [検証記録](evidence/spider-mission-squad-dom.json)は部隊表示に限定する。mainで既に確認したAMC export契約や生成資料の不整合、他のCodeQL／依存／秘密候補は別途修正し、今回の表示試験を全体受入へ転用しない。
 
+### 担当Gitから可変計画を作るローカルAMC（AMC06）
+
+目的は依頼ごとの具体的な作業・担当・依存を組み立てること。`npm run amc:workbench` の127.0.0.1専用画面で、担当Bot・依頼・任意の意図を選び、Codexに共有する入力とGit資料を確認して計画を生成する。追加指示で候補を見直し、既存Goalの成果や履歴を保持する。ROCKはread-only planner adapter、proposal検査、既存engineでのdraft変換、保存と停止を実装する。Codex／GitHubは既存認証を使い、新しいAPI key・model契約は作らない。
+
+入力は依頼8,000字、意図2,000字、累積追加指示8,000字まで、既存Goalは要約だけ。生成候補は可変task・担当・対象path・依存・成果物・合格条件・質問・仮定を持つ。Git基準と再計画元をadaptiveBriefへ保存し、原本のGoal ID／revision／承認／成果を別候補へ移したことにしない。モデルの承認・実行・検収記録は受付けず、必ずdraftから既存の計画承認と状態遷移を使う。
+
+画面は同一origin/session token/Host検証、ループバック限定。offline exportのconnect-src noneは維持する。送信前の明示操作、1件ずつの有界実行、停止時の子process終了、失敗時の原文保持と手動再試行を備える。生成物はGit管理外のローカル作業フォルダ、Goalの保存・復元は既存機構。raw入力を公開Gitへ保存しない。許可が必要な外部作用は既存holdを維持し、計画だけで実行権限を付与しない。
+
+合格条件は可変件数・依存・参照・hold、不正応答、同意前未起動、接続元／token拒否、停止、旧Goal不変、追加指示と遅延応答、実モデルの具体的計画。未決事項はモデルが質問として返し、本人の回答を次の候補へ取り込む。[入力・状態・保存・復旧・検証](amc-goal-orchestrator.md#ローカルamcで依頼に合わせて計画するamc06)。公開Sky/ZemaのaiPlannerConnected=falseやWeb実行境界はこの開発入口の追加で変更しない。
+
 ## 5. CSV整形・検査・納品
 
 公開接続状態の`csvPayments`はCSV専用Webhook、同一originのStripe設定、DB/R2を確認し、一般Marketplaceの`payments`とは別に返す。CSV専用secretをMarketplaceへ転用しない。利用案内は「購入・販売」と「CSVの50円試験」を分けて表示する。`live`は設定確認であり、新規実決済や全商品の販売受入を証明しない。
@@ -349,6 +407,8 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 正本: [Everything Market / Fund](everything-market-and-autonomous-fund-20260913.md)、[Polymarket sandbox](polymarket-bot-sandbox-20260913.md)。
 
 ## 7. メルカリ収益スターター
+
+原稿作成はowner・保存ID・正規化済み商品条件で同一操作を照合し、時刻や承認済み状態を巻き戻さず保存結果を返す。同時createの競合も本人別に読戻す。応答不明時は入力とIDを画面内に保持し、同じ内容で本人が再確認する。新規登録/状態変更は確認まで停止、保存済み原稿は再読込可能。PATCHはrevision競合拒否を維持する。未確認入力のタブ終了・crash復元、実出品・実取引は別の未受入条件。
 
 - 目的: 所有在庫から出品原稿、実費後見込み、確認、取引完了までを管理する。
 - 入力: 所有商品、状態、価格、販売手数料、送料、仕入原価。
@@ -421,6 +481,12 @@ IP StudioはHiggsfield専用の生成画面でも、Roblox／GTA専用の投稿�
 
 実装: `lib/sky-connections.ts`、`lib/operations.ts`、`components/sky-connection-center.tsx`、`components/sky-chat-workspace.tsx`、`lib/sky-routing.ts`。検証: `tests/operations.test.mjs`、`tests/sky-routing.test.mjs`。公式資料: [LiveKit Agents](https://docs.livekit.io/agents/)、[電話連携](https://docs.livekit.io/telephony/)、[OSS](https://github.com/livekit/agents)。
 
+### 本人用保存のアカウント切替（Material・ココナラ・メルカリ、2026-10-11）
+
+本人用の保存が成立する前に通信が失敗し、別アカウントで再認証すると、同じ入力とIDを新しい本人へ新規保存できる隙間があった。3つの画面は認証済み一覧GETの`ownerScope`を未確認操作へ固定し、明示再確認の直前にもGETで一致を確認する。本人不明・別アカウントではPOSTせず、入力と元IDを保持する。直前GET後の切替も、mutationの`X-Rock-Owner-Scope`と現在の`requestUser`をAPIで照合して409で拒否する。
+
+scopeは非秘密の意図識別値で、認証や権限を与えない。既存API clientのheader省略は従来契約のままで、新UIではscope確認を必須にする。元アカウントへ戻れば同じIDで再開でき、本人が保留解除を明示したときだけ入力を残して新しい操作IDから始める。解除は保存済み記録を削除しない。legacy client、タブ強制終了・crash後の復旧はこの保証の対象外。実route／全SQLite migration／component回帰と、合成本人の実Mercari画面でB保存0件→A復帰後1件→再読込を確認し、実取引・外部Provider・本番本人認証とは分ける。
+
 ## 9. ココナラ
 
 Skyで`coconala`を選ぶと`/sky/tools/coconala`へ直接進む。同じ画面の「案件管理」と「応募前チェック」で下記2機能を切り替えられる。独立した「受託チーム」アプリや別のSky Toolは作らない。旧`/coconala-team`はこのSky画面へ転送する。
@@ -452,6 +518,13 @@ Pixelで保存済み成果を開き直したときの出力textareaは、背景�
 Pixelで結果の保存ボタンが縦に細く伸びる問題を確認したため、760px以下のチェック結果は見出しと操作列を縦配置し、ボタン列は折り返す。
 
 案件保存の401・サインイン転送は本人認証切れとして扱い、開いている入力画面を保持する。ダイアログ内にも別タブのサインインと接続再確認を表示する。再確認はGETだけで、下書きの再送や契約・送金を行わない。チェック本文のserver永続保存は追加せず、案件管理の17項目と変更履歴は本人別D1へ保存する。10秒の通信期限と不正なJSON応答の検出は共通requestへ揃える。合格条件は匿名画面で保存不可・入力保持・Skyへの復帰先を確認し、認証済み端末でチェックと保存・再読込を別々に検証する。
+
+
+案件作成・条件更新・進行・手入力の入出金記録では、通信期限切れや5xxなどの結果不明時に元の案件ID／操作ID・revision・入力を画面メモリーへ保持する。入力と別操作を止め、「同じ保存内容で結果を確認」からだけ同じ要求を再送する。自動再送はしない。再読込・別タブ認証の確認はGETだけであり、未確認時は既存共通hookでHome／Libraryなど同一タブのリンク移動を止める。別タブの認証とダウンロードは許可し、保存結果の確認後に移動を再開する。ページを閉じる前にも未確認状態を警告する。画面を閉じた後は本人別一覧と履歴を先に照合する。端末のlocalStorageへ案件内容は保存しない。
+
+一覧GETには世代を付け、認証失敗・新しい本人別一覧・保存開始より前の応答を棄却する。遅いGETから旧案件や保存前の状態を復活させない。メルカリも同じ世代境界で、初回GETの空一覧が保存済みカードを消すことを防ぐ。
+
+新規案件は最初の正規化済み条件を同じD1 payloadに保持し、後の条件編集後も元のPOST再送を同じ案件として読戻せる。新しい変更履歴には正規化済み操作を記録し、同一操作ID・同一内容の再送は最新案件を返す。異なる内容や操作証拠を持たない旧履歴の再送は409で止め、金額・履歴を追加しない。旧保存は読めるままにし、旧履歴のメモから操作一致を推測しない。受入は実API／SQLiteで本人分離・再送・後続編集を確認し、component試験では保存成立直後に応答を失わせ、案件と手入力金額が一度だけ増えることを照合する。これはココナラ側の受注や実送金の証拠ではない。
 
 
 #### 発注前の下書き削除
@@ -541,6 +614,8 @@ Pixelで結果の保存ボタンが縦に細く伸びる問題を確認したた
 ## 15.5 Jev品質評価
 
 `jev-evaluation` は本来、本人が送信対象・送信先・料金・保持条件を確認した後に、最小化した入力を評価するremote evaluatorとして設計する。現在はprovider price quote、owner cap、usage receipt settlementがAPI経路へ未接続のため、server routeをfail-closedにし外部送信を拒否する。料金gate、Sky scope entitlement、明示同意をserver側で受け入れた後に限り再有効化する。評価Receiptはreview signalであり、権限付与、Tool成功、仕事完了、専門家判断の代替にはしない。
+
+受領境界: 既存AI07／ROCKで、`lib/jev-evaluation.ts`は`grounded`・`safe`のboolean確率0〜1と、`usefulness`のSDK criterion位置0〜2だけを検査してReceiptへ写す。欠落・追加回答・異常なtoken数は失敗とし、Providerの任意本文・metadataは返さない。`lib/jev-transport.ts`は20秒でabort、自動再送なし。失敗後は評価結果を作らず本人reviewへ戻し、既存成果・承認を変更しない。詳細とhost合格条件は[LLM・評価モデル設計](llm-evaluation-architecture.md#5-jev-api契約)を参照する。
 
 ## 15. 特許出願アシスタント
 
@@ -651,7 +726,7 @@ Linux／QEMU imageには次の6 family・9 versionがある。
 
 ## 18. Material Inventionは通常Tool一個ではない
 
-Material Invention／avocadoMiniは、Core、sensor、XR、Safety、Simulation、Patent AI、labを束ねるapplication systemである。SkyからsimulationやPatent AI等をTool／Providerとして選ぶが、候補graphと証拠の正本はMaterial Invention Coreに置く。詳細は[空間発明システム設計](rockstaros-avocado-mini-complete-design.md)。
+Material Invention／avocadoMiniは、Core、sensor、XR、Safety、Simulation、Patent AI、labを束ねるapplication systemである。SkyからsimulationやPatent AI等をTool／Providerとして選ぶが、候補graphと証拠の正本はMaterial Invention Coreに置く。机上候補生成・比較・保存の限定機能だけを`rockstar-material-invention` Toolとして接続する。これをStudio全体の実装完了に換算しない。詳細は[空間発明システム設計](rockstaros-avocado-mini-complete-design.md)。
 
 ## 19. Game、Wallet、Fundも通常Toolと区別する
 
@@ -966,3 +1041,19 @@ Skyの詳細表示は同じcatalogの料金・環境・接続状態を読むだ�
 | `producthunt-discovery` | Product Hunt公式API向けの候補検索処理。 | API利用条件と商用許諾を確認する |
 
 これらは候補表示のみで、Skyからの実行、外部service接続、公開、通知送信は未接続。入力schema、版、owner、許可先、実費、本人同意、保存・削除、停止と再試行をToolごとに決め、実行結果のreceiptを別に検証する。SNS投稿、販売、応募、請求、外部連絡は内容を固定した個別承認を必須とする。失敗や結果不明を成功に変えず、providerと本人の記録を照合する。採用時にこの表の候補を各Tool詳細設計へ展開し、端末・PC・Cloudでの試験、rollbackと権限失効を受け入れる。
+
+## eSIM導入確認後のクラウド利用権（2026-10-06統合）
+
+既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
+
+## Zemaの会話復旧と引き継ぎ（2026-10-11）
+
+同じToolの古いチャットURLを開いても、別thread IDの新しいSky引き継ぎを消費しない。Toolとthread IDの両方が一致してから一度だけ消費する。会話一覧のTTL整理で保存容量不足・書込拒否が起きても、有効な会話の原本を削除せず、有効な分だけ表示して次回に整理を再試行する。期限切れ・不正な会話は復元しない。認証失効時の私有領域隔離と確認済み消去は維持する。対象は同じタブのsessionStorageであり、別アカウントの証拠なし復旧やサーバー保存を意味しない。
+
+## Provider設定の同時保存（S7-01、候補030）
+
+`GET /api/sky/provider-connections` は各設定の正整数 `revision` を返す。PUTは `expectedRevision` が必須。未作成は0、更新は読み取った版を送る。欠落・文字列・小数・負数は400、別画面で更新済み・存在しない設定への更新は409となり書き込まない。旧クライアントには画面更新が必要。API/UIと `0062_sky_provider_revision` を同じ候補として反映する。移行は既存行を版1にし、設定・状態・secret_ref・時刻を保つ。本候補の移行試験は新しい合成DBのみで、実DBへは未適用。
+
+Skyの接続管理とZemaのルーティング設定は、入力と基準版を一緒に保持する。再取得で編集中の基準版を自動更新しない。409では入力を残し、「最新設定を取得」で内容を表示、「最新設定を確認し、入力を残す」を押してから、別操作で保存する。Zemaの通常の自動保存は維持し、競合・保存失敗後は明示再保存に切り替える。取得失敗時は再取得まで保存を止め、遅い応答・Provider切替・二重保存を分離する。401は保護対象の入力を消す。設定保存成功はOAuth・実接続・grant発行の成功を意味しない。
+
+保存SQLはowner/provider/revisionで比較と更新を同時に行い、RETURNINGでその書込結果を返す。秘密入力拒否、routing既定値、LiveKit検証、購入/料金/権利契約は維持。独立検収と統合後の同一候補受入は残り、S7全体・公開Gate・Goal r48は未完了のまま。

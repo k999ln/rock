@@ -90,6 +90,7 @@ async function signedUsageReceipt(input: {
   agentOrigin?: string;
   agentName?: string;
   agentVersion?: string;
+  pricingVersion?: string;
 }) {
   const receipt: A2AUsageReceipt = {
     schema: 'rock-a2a-provider-usage-receipt/1' as const,
@@ -105,7 +106,7 @@ async function signedUsageReceipt(input: {
     agentVersion: input.agentVersion ?? '1.0.0',
     currency: 'USD',
     amountMinor: input.amountMinor,
-    pricingVersion: 'vitest-rates-1',
+    pricingVersion: input.pricingVersion ?? 'vitest-rates-1',
     issuedAt: Date.now(),
     usage: [{ meter: 'agent-operation', quantity: 1, unit: 'request', amountMinor: input.amountMinor }],
     signature: '',
@@ -133,7 +134,7 @@ async function outboundService(request: Request) {
     throw new Error(`Unexpected A2A mock origin: ${url.origin}`);
   if (request.method === 'GET' && url.pathname === '/.well-known/agent-card.json') {
     cardRequestCount += 1;
-    if (cardRequestCount > 16) throw new Error('Agent Card discovery exceeded the bounded workflow fixtures.');
+    if (cardRequestCount > 20) throw new Error('Agent Card discovery exceeded the bounded workflow fixtures.');
     return Response.json(url.origin === 'https://python.a2a.example.com' ? secondAgentCard : fixtureAgentCard);
   }
   if (request.method === 'POST' && url.pathname === '/rpc') {
@@ -207,6 +208,28 @@ async function outboundService(request: Request) {
           status: { state: 'TASK_STATE_COMPLETED' },
           artifacts: [{ name: 'result.txt', parts: [{ text: 'Verified asynchronous agent result.' }] }],
           metadata: { 'org.rockstar.usageReceipt': usageReceipt },
+        },
+      });
+    }
+    if (rpc.method === 'GetTask' && taskId === 'vitest-delayed-usage-task') {
+      const reads = (remoteProgressTasks.get(taskId) ?? 0) + 1;
+      remoteProgressTasks.set(taskId, reads);
+      if (reads > 4) throw new Error('A reconciled terminal task should leave the polling queue.');
+      const usageReceipt = await signedUsageReceipt({
+        receiptId: 'vitest-delayed-usage-receipt',
+        parentJobId: '22222222-2222-4222-8222-222222222018',
+        delegationId: '11111111-1111-4111-8111-111111111018',
+        taskId, amountMinor: 23,
+        pricingVersion: reads === 3 ? 'vitest-unapproved-rates' : 'vitest-rates-1',
+      });
+      return Response.json({
+        jsonrpc: '2.0', id: rpc.id,
+        result: {
+          id: taskId,
+          status: { state: reads === 1 ? 'TASK_STATE_WORKING' : 'TASK_STATE_COMPLETED' },
+          artifacts: [{ name: 'delayed.txt', parts: [{ text: 'Recovered terminal result.' }] }],
+          metadata: { 'org.rockstar.usageReceipt': reads === 2
+            ? { ...usageReceipt, signature: 'x'.repeat(86) } : usageReceipt },
         },
       });
     }

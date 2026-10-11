@@ -76,7 +76,7 @@ export async function POST(request: Request, context: { params: Promise<{ orderI
       return json({ error: 'esim_not_configured' }, 503);
     if (config.ESIMGO_PROVIDER_DEBIT_ENABLED !== 'true')
       return json({ error: 'esim_issuance_disabled' }, 503);
-    await verifyEsimStarterAgentPack(plan, await skyToolPackageStore(db).listRegistry());
+    await verifyEsimStarterAgentPack(plan, await skyToolPackageStore(db).verifiedRegistryPackages(plan.starterAgentPack.packages));
     const client = createEsimGoV25Client(config.ESIMGO_API_KEY);
     const result = await issuePaidSkyEsimGoProfile(db, client, {
       skyOrderId: order!.id,

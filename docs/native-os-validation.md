@@ -1,5 +1,21 @@
 # Native OSのRock統合検証
 
+## QEMU受入monitorの総期限（2026-10-11）
+
+`os/verify-platform.py`の画面取得用QMP接続は、従来のsocket待機5秒だけでは通知が流れ続ける間に戻らず、外側のguest起動240秒期限も確認できなかった。実AF_UNIXの合成monitorで、応答なし・通知継続時に5.41秒後も呼出しが未完了になることを再現した。接続、greeting、capability交渉、command応答を一つの単調時計5秒期限へ収め、改行のない細切れ応答にも同じ期限と1 MiBのframe上限を適用する。
+
+[QEMU公式QMP仕様](https://www.qemu.org/docs/master/interop/qmp-spec.html)に従い、各要求に付けたIDへ応答を照合し、通知と別IDは成功にしない。交渉失敗では画面取得commandを送らず、EOF、結果欠落、期限切れも成功へ変換しない。QEMU本体、guest、通常起動や保存diskを変更する修正ではない。
+
+native rootの`PYTHONPATH=src:os:tests python3 -B -W error::ResourceWarning -m unittest test_os_platform_qmp test_os_platform_isolation_proof test_os_desktop_preview`で69件合格。新規7件は実socketのhost fixtureであり、OS image bootを実行していない。既存のscope／起動許可、実署名・archive、所有VM・保存復旧guardの回帰も含めた。
+
+同日の読取調査ではmacOS 15.7.4 arm64／Lima 2.2.0のhost条件が一致し、保管rc2 archive（`b7d819c`、SHA-256 `5ce072f65fc4e24212ff6acc6887cbb03f3e7f664b50d574756738892e4ed95e`）の716 fileとimage tripleを現行verifierで照合した。公開試験鍵の整合確認であり、production真正性や新sourceの受入ではない。再利用可能なLinux VMは停止中で旧sourceへの書込mountを持つため起動せず、Macに汎用QEMUはない。新しいsourceの凍結imageと、専用Linux/QEMU `virt-10.0`・e2fsprogs・十分なRAM／保存領域を用意してから、同一imageの起動・保存・再起動・復旧を別途受け入れる。Android全OS用x86_64条件をこのARM64 QEMU系統へ持ち込まない。
+
+## 遠隔仕事の取消と遅延要求（AI04、2026-10-11）
+
+`test_os_runner_control.py`で元submitを配送前に保持し、通信失敗→取消要求→remote不在→OS controller再起動→元submit遅延受理を実RunnerStore／SQLiteで再現する。修正前は不在だけでlocalをcancelledにして入力を消し、後の結果照合を止めるため2件とも失敗した。修正後は同IDのunknownと取消意図を保持し、再送せず照合を続ける。遅延要求がqueuedならremote取消で実行0回、既に成功なら実結果を回収して実行1回、照合後にinput/packageを消す。claim前の取消は従来どおり送信を防ぐ。
+
+検証コマンドはnative rootで`PYTHONPATH=src:os:tests python3 -B -W error::ResourceWarning -m unittest test_os_runner_control test_service_access_registry_runner test_platform_service_lifecycle`。68件合格。transportの時系列は制御fixture、executorは明示したfake callbackであり、guest／実機／本番クラウドの実行合格には加算しない。not-foundを将来の元submit拒否へ固定する契約がないため、不在が続く仕事は未確認のまま保持する。
+
 ## Gameの不確定応答からの復旧試験（SYS15、2026-10-03）
 
 `test_game_exchange_deadlines.py`はprivate fixtureの合成Game／Walletとloopback TLSを使うsource回帰である。`ExchangeWorker.once()`のTrueはclaimを処理した意味で、remote適用やNOT_FOUNDの証拠ではない。次へ進む前に永続claimのoperation／resultを確認し、保留金額・付与数・journal件数を別に照合する。

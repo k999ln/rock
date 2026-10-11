@@ -162,6 +162,7 @@ export async function POST(request: Request) {
       owner,
       'agents',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Agent');
     const input = await body(request);
     const allowed = new Set([

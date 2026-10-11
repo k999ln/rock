@@ -198,7 +198,7 @@ async function setup(t) {
     const response = await handleSkyCommerce(request, action, db, options.runtime ?? runtime, stripe.fetcher);
     return { status: response.status, data: await response.json(), headers: response.headers };
   }
-  const offerInput = { packageKey: saved.packageKey, amountMinor: 10_000, currency: 'jpy', active: true,
+  const offerInput = { expectedRevision: 0, packageKey: saved.packageKey, amountMinor: 10_000, currency: 'jpy', active: true,
     termsUrl: 'https://seller.example/terms', refundPolicy: '購入後7日以内は提供者へ返金を依頼できます。' };
   async function sell() {
     const onboard = await call('seller', { action: 'onboard' }, { user: 'seller' });
@@ -262,7 +262,10 @@ void test('seller onboarding, reviewed offer, checkout and signed payment grant 
   assert.match(purchases.data.purchases[0].receiptUrl, /^https:\/\/pay\.stripe\.com\//);
   assert.equal(purchases.headers.get('cache-control'), 'no-store');
   assert.equal((await f.checkout()).data.owned, true);
-  await f.call('offers', { ...f.offerInput, amountMinor: 20_000 }, { user: 'seller' });
+  const revised = await f.call('offers', { ...f.offerInput, expectedRevision: 1, amountMinor: 20_000 }, { user: 'seller' });
+  assert.equal(revised.status, 200);
+  assert.equal(revised.data.offer.revision, 2);
+  assert.equal(f.order(order.id).offer_revision, 1);
   assert.equal(f.order(order.id).amount_minor, 10_000, 'later offer edits cannot alter purchased terms');
   assert.equal(f.order(order.id).commission_minor, 1_000);
   assert.doesNotMatch(JSON.stringify(purchases.data), /sk_test_|whsec_|acct_1/);
@@ -294,6 +297,42 @@ void test('expired and revoked SIM/eSIM claims do not block a legitimate package
   assert.equal(expired.status, 200, JSON.stringify(expired.data));
   assert.equal(revoked.status, 200, JSON.stringify(revoked.data));
   assert.equal(f.stripe.calls.filter((call) => call.path === '/v1/checkout/sessions').length, 2);
+});
+
+void test('an included package cannot be bought twice beyond the registry and claim history pages', async t => {
+  const f = await setup(t);
+  await f.sell();
+  insertServiceEntitlement(f.db, 'buyer');
+  const options = { runtime: { ...runtime, ROCKSTAR_SERVICE_OFFER_PROFILES: offerProfileFor(f) } };
+  assert.equal((await f.checkout({}, options)).status, 409);
+  const packageStore = skyToolPackageStore(f.db);
+  for (let index = 0; index < 200; index++) {
+    const draft = createSkyToolPackageDraft({ sourceKind: 'github',
+      sourceUrl: `https://github.com/example/unrelated-${index}`,
+      developerName: 'Unrelated Fixture', developerId: 'unrelated-fixture', license: 'MIT' });
+    const row = await packageStore.create('unrelated-seller', draft);
+    f.db.prepare("UPDATE sky_tool_packages SET status = 'verified', published_at = ? WHERE package_key = ?")
+      .bind(Date.now() + index + 1, row.packageKey).run();
+    f.db.prepare(`INSERT INTO sky_tool_package_reviews
+      (id,package_key,manifest_sha256,reviewer_id,decision,checks_json,evidence_json,notes,reviewed_at,expires_at)
+      VALUES (?,?,?,'reviewer','verified','{}','[]','Fixture review',?,NULL)`)
+      .bind(`unrelated-${index}`, row.packageKey, row.manifestSha256, Date.now()).run();
+  }
+  assert.equal((await packageStore.listRegistry()).some(row => row.packageKey === f.saved.packageKey), false);
+  assert.equal((await f.checkout({}, options)).status, 409);
+  for (let index = 0; index < 100; index++) {
+    const fixtureOwner = `old-plan-${index}`;
+    insertServiceEntitlement(f.db, fixtureOwner, { expiresAt: Date.now() - 1 });
+    f.db.prepare('UPDATE rockstar_service_entitlements SET owner_user_id=?,claimed_at=? WHERE owner_user_id=?')
+      .bind('buyer', Date.now() + index, fixtureOwner).run();
+  }
+  const result = await f.checkout({}, options);
+  assert.equal(result.status, 409, JSON.stringify(result.data));
+  assert.match(result.data.error, /有効なSIM\/eSIM利用権に含まれています/);
+  assert.equal(f.db.prepare('SELECT COUNT(*) AS count FROM sky_commerce_orders').first().count, 0);
+  assert.equal(f.stripe.calls.some(call => call.path === '/v1/checkout/sessions'), false);
+  // The entitlement remains private; it does not block a different owner.
+  assert.equal((await f.checkout({}, { ...options, user: 'another-buyer' })).status, 200);
 });
 
 void test('an invalid service offer profile configuration fails closed before Stripe checkout', async (t) => {
@@ -442,7 +481,7 @@ void test('reconciliation cannot refresh an unknown refund past its original ide
   await f.sell();
   const result = await f.checkout();
   const order = f.order(result.data.orderId);
-  f.stripe.pay(order.session_id);
+  const { charge } = f.stripe.pay(order.session_id);
   await f.call('reconcile', { orderId: order.id });
   f.stripe.behavior.refundFailure = true;
   const firstRequest = Date.now();
@@ -450,6 +489,13 @@ void test('reconciliation cannot refresh an unknown refund past its original ide
   assert.equal(f.order(order.id).status, 'refund_pending');
   const refundCalls = () => f.stripe.calls.filter((call) => call.path === '/v1/refunds').length;
   assert.equal(refundCalls(), 1);
+  // A partial refund may become known while the full refund is still unclear.
+  // Preserve that monetary fact without restoring access or resetting retries.
+  charge.amount_refunded = 2_000;
+  assert.equal((await f.webhook('charge.refunded', { id: charge.id })).status, 200);
+  assert.equal(f.order(order.id).status, 'refund_pending');
+  assert.equal(f.order(order.id).refunded_minor, 2_000);
+  assert.equal((await f.call('purchases', {}, { method: 'GET' })).data.purchases[0].access, false);
   t.mock.method(Date, 'now', () => firstRequest + 21 * 60 * 60 * 1000);
   await f.call('reconcile', { orderId: order.id });
   const retry = await f.call('refund', { orderId: order.id }, { user: 'seller' });
@@ -465,6 +511,29 @@ void test('seller account creation does not retry an unresolved reservation afte
   const response = await f.call('seller', { action: 'onboard' }, { user: 'seller' });
   assert.equal(response.status, 409, JSON.stringify(response.data));
   assert.equal(f.stripe.calls.length, 0);
+});
+
+void test('a later partial refund preserves a recorded dispute while updating the known refunded amount', async t => {
+  const f = await setup(t);
+  await f.sell();
+  const checkout = await f.checkout();
+  const order = f.order(checkout.data.orderId);
+  const { charge } = f.stripe.pay(order.session_id);
+  await f.call('reconcile', { orderId: order.id });
+  charge.disputed = true;
+  assert.equal((await f.webhook('charge.dispute.created', { id: 'dp_fixture', charge: charge.id })).status, 200);
+  Object.assign(charge, { disputed: false, amount_refunded: 2_000 });
+  assert.equal((await f.webhook('charge.refunded', { id: charge.id })).status, 200);
+  assert.equal(f.order(order.id).status, 'disputed');
+  assert.equal(f.order(order.id).refunded_minor, 2_000);
+  charge.amount_refunded = 0;
+  await f.webhook('checkout.session.completed', { id: order.session_id });
+  const purchase = (await f.call('purchases', {}, { method: 'GET' })).data.purchases[0];
+  assert.equal(purchase.status, 'disputed');
+  assert.equal(purchase.refundedMinor, 2_000);
+  assert.equal(purchase.access, false);
+  assert.equal((await f.checkout()).status, 409);
+  assert.equal(f.stripe.sessions.size, 1);
 });
 
 void test('revoked package, changed manifest and expired review block purchased access and further sales', async (t) => {
@@ -546,4 +615,120 @@ void test('authentication, same-origin and live gateway checks reject untrusted 
   const live = { ...runtime, SKY_PAYMENTS_MODE: 'live', SKY_STRIPE_SECRET_KEY: ['sk', 'live', 'CommerceFixtureOnly'].join('_') };
   assert.equal((await f.call('seller', {}, { method: 'GET', runtime: live })).status, 401);
   assert.equal(f.stripe.calls.length, 0);
+});
+
+void test('offer CAS: concurrent creates and updates have one winner and preserve its values', async (t) => {
+  const f = await setup(t);
+  await f.call('seller', { action: 'onboard' }, { user: 'seller' });
+  const create = await Promise.all([3100, 4200].map((amountMinor) => f.call('offers', { ...f.offerInput, amountMinor }, { user: 'seller' })));
+  assert.deepEqual(create.map((r) => r.status).sort((a, b) => a - b), [200, 409]);
+  assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM sky_commerce_offers').first().n, 1);
+  const first = create.find((r) => r.status === 200).data.offer;
+  assert.equal(first.revision, 1);
+  assert.equal(f.db.prepare('SELECT amount_minor AS amount FROM sky_commerce_offers').first().amount, first.amountMinor);
+  const updates = await Promise.all([5300, 6400].map((amountMinor) => f.call('offers', {
+    ...f.offerInput, expectedRevision: 1, amountMinor, refundPolicy: `条件${amountMinor}`,
+  }, { user: 'seller' })));
+  assert.deepEqual(updates.map((r) => r.status).sort((a, b) => a - b), [200, 409]);
+  const winner = updates.find((r) => r.status === 200).data.offer;
+  const row = f.db.prepare('SELECT * FROM sky_commerce_offers').first();
+  assert.equal(winner.revision, 2);
+  assert.equal(row.revision, 2);
+  assert.equal(row.amount_minor, winner.amountMinor);
+  assert.equal(row.refund_policy, winner.refundPolicy);
+  const reread = await f.call('seller', {}, { user: 'seller', method: 'GET' });
+  const resave = await f.call('offers', { ...f.offerInput, expectedRevision: reread.data.offers[0].revision, amountMinor: 7500 }, { user: 'seller' });
+  assert.equal(resave.status, 200);
+  assert.equal(resave.data.offer.revision, 3);
+  assert.equal(resave.data.offer.amountMinor, 7500);
+});
+
+void test('offer CAS: missing/invalid/stale revisions and foreign owners never mutate rows', async (t) => {
+  const f = await setup(t);
+  await f.sell();
+  const snapshot = () => JSON.stringify(f.db.prepare('SELECT * FROM sky_commerce_offers').all().results);
+  const before = snapshot();
+  const callsBefore = f.stripe.calls.length;
+  for (const expectedRevision of [undefined, null, -1, 1.5, '1', true, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER + 1]) {
+    assert.equal((await f.call('offers', { ...f.offerInput, expectedRevision, amountMinor: 9000 }, { user: 'seller' })).status, 400);
+    assert.equal(snapshot(), before);
+  }
+  assert.equal(f.stripe.calls.length, callsBefore, 'invalid versions fail before provider lookup');
+  for (const expectedRevision of [0, 2, 200]) {
+    assert.equal((await f.call('offers', { ...f.offerInput, expectedRevision, amountMinor: 9000 }, { user: 'seller' })).status, 409);
+    assert.equal(snapshot(), before);
+  }
+  assert.equal((await f.call('offers', { ...f.offerInput, expectedRevision: 1 }, { user: 'stranger' })).status, 403);
+  assert.equal(snapshot(), before);
+});
+
+void test('offer CAS: missing update target cannot create; SQL owner and mode scopes hold', async (t) => {
+  const f = await setup(t);
+  await f.call('seller', { action: 'onboard' }, { user: 'seller' });
+  assert.equal((await f.call('offers', { ...f.offerInput, expectedRevision: 1 }, { user: 'seller' })).status, 409);
+  assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM sky_commerce_offers').first().n, 0);
+  const row = await f.sell();
+  const { skyCommerceStore } = await import('../lib/sky-commerce-store.ts');
+  const store = skyCommerceStore(f.db);
+  assert.equal(await store.saveOffer({ ...row, sellerUserId: 'stranger', amountMinor: 8000 }, 1), null);
+  assert.equal(await store.saveOffer({ ...row, sellerUserId: 'stranger', amountMinor: 8000 }, 0), null);
+  assert.equal(await store.saveOffer({ ...row, mode: 'live', amountMinor: 8000 }, 1), null);
+  await assert.rejects(store.saveOffer(row, undefined), /Invalid expected/);
+  await assert.rejects(store.saveOffer(row, -1), /Invalid expected/);
+  assert.deepEqual({ ...await store.offer(row.packageKey, 'test') }, row);
+});
+
+void test('offer CAS: RETURNING is the saved operation even if another update wins before response', async (t) => {
+  const f = await setup(t);
+  const row = await f.sell();
+  const { skyCommerceStore } = await import('../lib/sky-commerce-store.ts');
+  const statements = [];
+  const intercepted = {
+    batch: (statements) => f.db.batch(statements),
+    prepare(sql) {
+      statements.push(sql);
+      return { bind(...values) { return { async first() {
+        const saved = f.db.prepare(sql).bind(...values).first();
+        f.db.prepare('UPDATE sky_commerce_offers SET revision=revision+1, amount_minor=8700 WHERE package_key=?')
+          .bind(row.packageKey).run();
+        return saved;
+      } }; } };
+    },
+  };
+  const saved = await skyCommerceStore(intercepted).saveOffer({ ...row, amountMinor: 7600 }, 1);
+  assert.equal(saved.revision, 2);
+  assert.equal(saved.amountMinor, 7600);
+  assert.equal(statements.length, 1, 'no post-write SELECT');
+  assert.match(statements[0], /RETURNING/);
+  const actual = await skyCommerceStore(f.db).offer(row.packageKey, 'test');
+  assert.equal(actual.revision, 3);
+  assert.equal(actual.amountMinor, 8700);
+});
+
+void test('offer CAS: price boundaries, checkout snapshots and review expiry remain enforced', async (t) => {
+  const f = await setup(t);
+  await f.sell();
+  for (const amountMinor of [49, 100_000_000, 50.5]) {
+    assert.equal((await f.call('offers', { ...f.offerInput, expectedRevision: 1, amountMinor }, { user: 'seller' })).status, 400);
+  }
+  for (const amountMinor of [50, 99_999_999]) {
+    const latest = (await f.call('seller', {}, { user: 'seller', method: 'GET' })).data.offers[0];
+    const saved = await f.call('offers', { ...f.offerInput, expectedRevision: latest.revision, amountMinor }, { user: 'seller' });
+    assert.equal(saved.status, 200);
+    assert.equal(saved.data.offer.amountMinor, amountMinor);
+  }
+  const checkout = await f.checkout();
+  assert.equal(checkout.status, 200);
+  const order = f.order(checkout.data.orderId);
+  assert.equal(order.offer_revision, 3);
+  assert.equal(order.amount_minor, 99_999_999);
+  assert.equal(order.commission_minor, 9_999_999);
+  const saved = await f.call('offers', { ...f.offerInput, expectedRevision: 3, amountMinor: 80 }, { user: 'seller' });
+  assert.equal(saved.status, 200);
+  assert.deepEqual(f.order(order.id), order);
+  assert.equal((await f.checkout({ offerRevision: 3 })).status, 409);
+  assert.equal((await f.checkout({ offerRevision: 4 })).status, 409, 'old pending order cannot silently use new terms');
+  t.mock.method(Date, 'now', () => f.reviewExpiresAt + 1);
+  assert.equal((await f.call('offers', { ...f.offerInput, expectedRevision: 4 }, { user: 'seller' })).status, 409);
+  assert.equal(f.db.prepare('SELECT revision FROM sky_commerce_offers').first().revision, 4);
 });

@@ -160,7 +160,7 @@ ATM、月額、ゲーム交換が同時に同じ残高を使っても、全体�
 
 設計v1.1の実装は承認済み。未決の実ゲーム/方向は、合成契約開発の承認を実交換の許可に置き換えない。
 
-実行指示: `docs/prompts/os-operational-base-next.md`。不足の根拠: `docs/os-readiness-audit-20260909.md`。試験結果の記入用雛形: `docs/templates/os-acceptance-report.md`。
+現在の受入契約: [Native / QEMU担当](workstreams/06-native-qemu-release.md#continuing-acceptance)。旧実行指示はGit履歴へ退役。不足の根拠: `docs/os-readiness-audit-20260909.md`。試験結果の記入用雛形: `docs/templates/os-acceptance-report.md`。
 
 追加相談の [予測市場・ゲーム資産売買の検討メモ](market-exploration-20260909.md) は本設計の実装承認対象に自動追加しない。採用する場合は運営方式・対象地域・非換金試作の範囲を別途確認する。
 

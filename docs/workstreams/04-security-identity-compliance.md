@@ -71,6 +71,32 @@ O1 / SYS02の診断共有の安全条件として、entitlement observerの登�
 
 履歴secret検査の2942出現・161種類を元のfield・公開fixture生成元へ照合する。公開値の分類は値と履歴pathの完全一致に限定し、差替え・別path・新規provider credentialを実Gitleaksで拒否する。全履歴、既定rule、pinned control、metadata-only出力は維持する。根拠は[公開値の個別記録](../../.github/spider/public-value-provenance.json)。
 
-未修正版bracesと、4.3.0でもmax-stale漏洩が再現したhttp-cache-semanticsは、MIT原本・出所・差分hashを保持するrepository内の明示forkで修正する。全依存先をoverrideし、元code 4 fail / 修正版8 passの回帰試験を保持する。上流修正版への復帰は同じ攻撃再現・互換性・全体verifyの合格後。詳細は[検証記録](../evidence/security-gate-completion.json)、[braces保守](../../vendor/braces/ROCKSTAR-PATCH.md)、[HTTP cache保守](../../sites/avocado-mini/vendor/http-cache-semantics/ROCKSTAR-PATCH.md)。実機・鍵・公開gateは変更しない。
+未修正版bracesと、4.3.0でもmax-stale漏洩が再現したhttp-cache-semanticsは、bracesのMIT／HTTP cacheのBSD-2-Clause原本・出所・差分hashを保持するrepository内の明示forkで修正する。全依存先をoverrideし、元code 4 fail / 修正版8 passの回帰試験を保持する。上流修正版への復帰は同じ攻撃再現・互換性・全体verifyの合格後。詳細は[検証記録](../evidence/security-gate-completion.json)、[braces保守](../../vendor/braces/ROCKSTAR-PATCH.md)、[HTTP cache保守](../../sites/avocado-mini/vendor/http-cache-semantics/ROCKSTAR-PATCH.md)。実機・鍵・公開gateは変更しない。
 
 受入更新: PR #83、`4e702fc2`の全8 CI成功後、`cb5955a2`でmain統合。GitHub verify Node 1362 pass / 0 fail / 1環境条件skip、依存監査0件、#17/#18は自動fixed。上流コードの追加regex DoSも線形処理へ修正。公開・物理OS受入とは分離する。
+
+## Origin error時のcache再利用（SYS15）
+
+PR83統合後のmain e12d880cで、stale-if-error経路が通常判定の再利用禁止を迂回する残存不具合を再現した。response禁止条件を共通化し、error fallbackでもURI/host/method/Varyとrequest no-cacheを確認する。13試験は修正前3 pass /10 fail、修正後13 pass /0 fail /0 skip。304・公開cache・非共有cache・HEADの正例を維持。GitHub同一SHA CIとmain統合は別に確認する。[再現と修正の証拠](../evidence/spider-cache-error-revalidation.json)。既存SYS15のprimary squad H1・進行中statusと各製品の受入段階を変更しない。
+
+2026-10-07 cycle79: main `0455499d` の文書整理を既存PR #84へ同期し、project.mdの復元履歴と従来のcache修正記録を両方保持して競合解消。cache source・13回帰試験・workflow・元licenseは変更しない。同一SHAの再検査結果は上記証拠のdocumentationMainRefreshとPR欄へ記録する。
+
+### 公開保存キーの移動と固定control
+
+PR #93の公開storage item名は、移動後も同じ値のまま2つのsource／回帰test pathへ現れる。候補側の設定では固定controlの検査結果は変わらないため、source確認済みの値・path完全一致だけをcontrolへ同期する。実Gitleaksで各pathの差替え秘密値と未承認pathコピーを検出し、全履歴・既定rule・固定control・metadata-only出力を維持する。[範囲と試験](../evidence/spider-zema-storage-policy.json)。PR側で新しい固定controlを使った同一SHA再検査が成功するまで、旧失敗を解消済みにしない。
+
+## root画像処理依存の更新（SYS15）
+
+Dependabot #26のsharp／librsvg修正はrootのminiflare overrideと同梱native lockを対象にする。実際にロードされた修正版librsvg、SVG描画とPNG互換性、同一SHAの全体verifyを受入条件とし、版番号更新だけを脆弱性再現試験としない。site側は既存PR #88、SDKは既存PR #89で扱う。license inventoryと未clearanceを維持し、main統合前のalert状態を別に記録する。[証拠](../evidence/spider-root-sharp-update.json)。
+
+2026-10-07 cycle78: main `0455499d` の文書整理を既存PR #90へ同期し、project.mdの双方の記録を保持して競合解消。sharp修正・lock・監査一覧・native試験は変更しない。変更SHAの検証結果は同じ証拠のlatestMainRefreshとPR欄へ記録する。
+
+## SDK依存の監査同期（SYS15）
+
+SDKのOAuth issuer結合修正は既存Dependabot PR #89を継続する。lock hashに束縛した監査を同期し、法的clearanceと公開gateを保持して既存release回帰・全体CIを確認する。実credential移行やOAuth連携の実運用受入は別であり、main alertの状態も分けて記録する。[証拠](../evidence/spider-sdk-lock-audit.json)。
+
+2026-10-07 cycle77: PR #89へmain `0455499d` の文書整理を反映し、project.mdの競合を両側の記録を残して解消。SDK lockと監査一覧の既存修正は同一byte、release回帰35/35とrelease／inventory checkが合格。新しいSHAの全体CI・SPIDERは後続確認。詳細は同じ検証記録のlatestMainRefreshへ保存する。
+
+## Canonical Memoryのcipher失敗（AI03 / SYS02、2026-10-11）
+
+ROCK／O3・O1。host storeのseal失敗がProvider例外をそのまま返し、open失敗の例外連鎖が内容を通常tracebackへ含める問題を合成cipherで再現した。固定エラーと連鎖抑止へ統一し、失敗した暗号化は旧revision・projectionを維持する。追加3回帰は修正前1 failure / 2 errors、修正後Memory storeとBroker façadeの16試験が成功。fixture cipherの境界確認であり、暗号強度、実OS鍵、端末受入ではない。[記憶契約](../ai-memory-architecture.md)。

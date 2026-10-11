@@ -181,6 +181,12 @@ pending → queued → running → succeeded
 
 `waiting`にはapproval、network、resource、provider、reconciliation等の理由を付ける。`uncertain`は外部で成立したか分からない状態であり、失敗として自動再送しない。完了したstepを別の結果で上書きせず、新revisionまたは取消eventを追加する。
 
+### native Runnerの取消と結果不明（2026-10-11）
+
+ROCKの`os/platform/runner_control.py`は、送信claim前の取消をローカルで確定し、claim後は同じkey・owner・endpoint・request hashの照合を継続する。`found: false`はその照会時点の不在であり、通信層で遅延した元submitを将来拒否する証拠ではない。取消要求後の不在応答は`unknown`と`cancel_requested`を永続化し、既存の有界backoffでmetadata照会だけを続ける。入力の再送、新keyへの切替、別実行場所へのfallbackは行わない。
+
+再接続／daemon再起動後に同じ仕事が見つかった場合、queued／runningには取消を要求し、既に成功していればその実結果を回収する。照合済みterminalの確定時に既存の入力／package消去を行う。不在のまま確定できない仕事は未確認と表示し、現protocolにない取消tombstoneを推測しない。hostの実SQLite・署名済み元要求による遅延配送fixtureで、再起動、再送0、取消時実行0回と既成功時1回を検査する。実機、Linux隔離実行、外部Providerの受入は別である。
+
 ## 8. 一回の実行
 
 1. owner、Tool selection、request hash、revisionを保存する。
@@ -218,6 +224,8 @@ OSへ組み込むLocal AI APKは、上流commitに加えてbase overlayと順序
 | 長期記憶 | 本人確認済みの好み、手順、参照 | 出所、用途、期限、訂正、削除を持つ |
 
 model固有tokenやembeddingはprojection cache。canonical記憶としない。AIの推測を本人の事実や承認へ昇格させない。credential、seed、秘密鍵を記憶本文へ入れない。
+
+暗号化記憶のhost storeはcipherのseal/open失敗を内容を含まない固定`MemoryUnavailable`へ変換し、原因例外を通常tracebackに連結しない。seal失敗時は既存revision・projectionを変更せず、callerへ失敗を返す。これはAI03／ROCKの保存・診断境界であり、実OS鍵・Android／Zema接続は未受入。[責任・入出力・復旧・合格条件](ai-memory-architecture.md)とhost回帰`systems/rock-star-os/tests/test_memory_store.py`を参照する。
 
 ## 11. 実行場所とnetwork
 
@@ -514,6 +522,16 @@ AI02〜AI06の旧host fixtureを現行のSIM/eSIM・署名付きPlatform Coreへ
 
 統合対象・除外理由・検証環境は[PR統合証拠](evidence/pr-consolidation-20261005.json)に保存する。旧仕様へのrollbackはmerge履歴から追跡し、現行署名registry、SIM entitlement、本人別保存、課金上限を失う一括巻戻しをしない。
 
+### Androidの認証保存と応答期限（2026-10-11、OS10）
+
+一時的なKeystore/file読取失敗では連携を利用不可として扱い、暗号化sessionを削除しない。保存内容の不正や恒久的な鍵無効化が確認された場合だけ破棄する。Home・認証・Broker登録・Wallet handoffの本文readerはread前後とEOFで既存期限を検査し、期限切れ応答を成功へ変換しない。HTTP header/TLS/framingを含む全通信の強制停止は未受入。復旧・実Android試験条件は[Android workstream](workstreams/07-android-device-local-ai.md)を正本とする。
+
+### Androidの精算済みWallet読戻し（2026-10-11、OS10）
+
+Cloud上のterminal仕事を開いたとき、既存SQLite予約が`SETTLED`でも、active予約用の照合を使って「未確認・保留中」と表示していた。`readSettledA2ABudget`はowner・delegation・承認条件・現在の信頼設定で再検証した署名usageと、保存済みreceipt digest／元ledger記帳を同じ読取transactionで照合する。held 0、精算額、解放額と通貨まで一致した場合だけBrokerが`wallet_settled`を返し、Shellは精算結果を表示する。読戻しからreserve／dispatch／settle／releaseは行わない。
+
+欠落・改変・別owner／job・失効した証明では未確認を維持し、保留額があるとも推測しない。4種類のterminal状態から読戻せるが、再承認や予算解放の操作は出さない。実SQLiteの保存・close/reopen・receipt／ledger改変回帰をhostで検証した。最新統合sourceのAndroid instrumentation、実機、全OS受入は別の検証段階とする。
+
 ### native MCPのHTTPSとCA境界（SYS15）
 
 ROCKの`MCPHttpClient`は、明示選択した入力とbearerを固定originへ送る前に接続設定を検査する。HTTPSでは明示した空でないCAを必須とし、欠落・空文字・false相当のCAでclientを生成しない。無効なCAは接続・送信前に失敗し、平文へのfallbackや自動再試行を行わない。正しいCA設定へ直した後にclientを作り直す。CAの内容は既存のTLS context生成で読み込み、証明書・hostname検証と全通信共通deadlineを維持する。
@@ -576,3 +594,7 @@ O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Ide
 合成値を使ったhost試験と既存SQLite Wallet回帰を合格条件とし、通常応答の互換性、想定外のprivate文字列／objectの拒否、無出力の失敗、追加fieldの非転送を確認する。同一SHAのCodeQL再解析は別証拠であり、host成功をguest boot・実機・24時間・本番受入へ転用しない。実serviceによる秘密漏洩を観測したとは主張しない。[検証記録](evidence/spider-observer-output-schema.json)とPRの再解析結果を参照する。
 
 統合受入補足: observerの年月は検証後の年/月整数からYYYY-MMへ再構成し、worker_aliveは固定booleanへ変換して出力する。応答object/文字列を直接診断へ転送しない。既存13 privacy＋22 Wallet host試験と同一候補CodeQLを再確認する。実guest受入とは別。
+
+## eSIM導入確認後のクラウド利用権（2026-10-06統合）
+
+既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。

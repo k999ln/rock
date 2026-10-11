@@ -1,12 +1,12 @@
 # RockstarOS Material Invention Core — 物質の組合せから発明候補を作る共通設計
 
-状態: RQ49の設計と装置非接続sandbox Coreを実装済み。標準製品体験をRockstarOS端末`avocadoMini`の四方向sensor、hand interaction、差分再計算、Patent AI支援として設計済み。XR runtime、四方向rig、化学simulation、外部データベース、Zemaの仕事／限定記憶、外部ラボ、実験設備との接続は未実装。本文と実装は候補生成と検証の契約であり、安全性、性能、特許性、量産性の実証ではない。
+状態: RQ49の設計と装置非接続sandbox Coreを実装済み。SkyからZemaの2D候補比較・本人用保存・再開へ接続済み。avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README.md)を優先する。本文の四方向sensor／hand interactionは保持する研究profileであり、R5の確定機構・標準搭載・実機成立を示さない。XR runtime、四方向rig、化学simulation、外部データベース、限定記憶、外部ラボ、実験設備との接続は未実装。本文と実装は候補生成と検証の契約であり、安全性、性能、特許性、量産性の実証ではない。
 
 ## 目的
 
 Material Invention Coreは、物質と物質だけでなく、配合比、混合順序、温度、圧力、雰囲気、加工、保持時間、冷却、表面処理を一つの候補として扱い、求める特性に近い材料・用途・工程を探索する。RockstarOSは発明の履歴と判断根拠を管理し、物理計算、化学計算、材料データベース、測定器、ロボット、ラボは交換可能なTool／Providerとして接続する。
 
-このCoreの標準製品体験は`avocadoMini Spatial Invention Studio`である。四方向のsensor／cameraが中央のInvention Volumeにある手の動きを捉え、利用者は物質digital twinを掴み、接続し、離し、配合や工程条件を変える。commitされた操作ごとに元候補を破壊しない仮説branchを作り、安全制約を先に検査してから対応simulationを差分再計算する。結果と失敗はInvention Event Ledgerへ残し、人の操作、AI提案、simulation、文献、実験receiptを区別したままPatent AIへ渡して、発明開示と先行技術差分の整理を支援する。
+このCoreの研究profileとして`avocadoMini Spatial Invention Studio`を設計する。四方向のsensor／cameraが中央のInvention Volumeにある手の動きを捉え、利用者は物質digital twinを掴み、接続し、離し、配合や工程条件を変える。commitされた操作ごとに元候補を破壊しない仮説branchを作り、安全制約を先に検査してから対応simulationを差分再計算する。結果と失敗はInvention Event Ledgerへ残し、人の操作、AI提案、simulation、文献、実験receiptを区別したままPatent AIへ渡して、発明開示と先行技術差分の整理を支援する。
 
 ```mermaid
 flowchart LR
@@ -70,7 +70,7 @@ cameraが物理物質を直接動かすわけではなく、gestureは物理実�
 - Zema: 目的、候補、追加確認、実行計画、停止、結果、次の反復を一つの仕事として管理する。
 - Wallet: simulation、試料、外部ラボ、測定、廃棄の費用を事前上限とreceiptで照合する。研究成果や将来収益を未確認で計上しない。
 - Local AI: 秘密の条件を端末内で扱える候補生成・要約を優先する。モデル版と入力hashを候補へ固定する。
-- avocadoMini: 四方向sensor、hand interaction、VR／AR／2D表示をMaterial Invention Coreの標準操作面として提供する。候補・安全・証拠の正本はCoreに残す。
+- avocadoMini: 現行R5要求に沿う操作面を個別に検証する。四方向sensor、hand interaction、VR／ARは研究profileとして保持し、現在の2D UIと実機の受入を分ける。候補・安全・証拠の正本はCoreに残す。
 - Patent AI: event ledgerから発明開示、先行技術候補、差分表、専門家向けpacketを作る。特許性、発明者、権利帰属、自動出願を確定しない。
 
 ## 最初の実装単位
@@ -94,6 +94,23 @@ runtimeは2〜16物質から二物質pairを作り、指定された複数比率
 
 simulationは`SIMULATED`、文献・supplier情報は`SCREENED`として実測と分離する。実験扱いへ進めるのは、外部境界で署名検証済みとされたreceiptと有効なraw data SHA-256が揃った場合だけである。現在のCore自身は署名検証、装置操作、物理実験を行わない。
 
-## 標準操作面: avocadoMini Spatial Invention Studio
+## Sky / Zemaの机上比較と本人用保存
 
-avocadoMiniは任意の飾りや後付け拡張ではなく、このCoreを人が使うための標準製品体験である。候補graphをVR／ARへ投影する共通仕様は[Spatial Invention Studio設計](material-invention-xr.md)、四方向sensorでhand interactionを取得し、候補の接続・分離・再計算とPatent AIを結ぶ端末仕様は[avocadoMini設計](avocado-mini-spatial-invention.md)を正本とする。XR sceneとgesture eventはCoreへの派生入力であり、物質、安全判定、証拠の正本にはしない。headsetがない場合も2D fallbackで同じ発明loopを利用できるようにする。
+2026-10-11実装。`rockstar-material-invention`をSkyから選び、`/zema/tools/rockstar-material-invention`で入力・比較・保存・再開する。MAT03のうちWeb仕事への接続を進めるもので、MAT03全体、Mini実機、化学simulation、限定記憶、外部ラボの完了ではない。
+
+- **目的・利用体験**: 入力JSONまたは危険物を含まない合成サンプルから、二物質の比率候補を2Dカードで比較する。SDS不足・禁止条件・資格者審査を文字で示し、lot・工程版・入力digestへ戻れる。生成はブラウザ内、保存は別の明示操作である。
+- **責任・費用**: ROCK/O5がCoreとWeb保存を担当。外部AI、simulation、ラボ、有料API、Wallet、装置には接続しない。利用者は入力の由来・共有範囲を判断する。保存操作は本人用サーバーへの入力送信であり、外部共有や物理実行の承認ではない。
+- **入出力**: `contracts/material-invention.json`の既存入力を維持。2〜16物質、1〜19比率、工程版を受ける。API入力は48 KB、UIの入力本文は47 KBに制限。Coreから最大2,280候補を生成し、`HYPOTHESIS`と`physicalExecutionAllowed: false`を全候補で維持する。物質IDと工程IDの衝突を拒否する。
+- **状態・承認**: `lib/workflow.ts`の`material-invention`仕事を使用。通常入力は候補生成後に`review`となり、本人が不足条件を確認して`completed`へ進める。完了は机上比較の確認だけである。合成サンプルは`sample: true`のまま`active`へ保存し、実データ仕事の完了へ昇格できない。取消は`cancelled`とし、保存した入力を削除しない。
+- **保存・本人分離**: `/api/material-invention`は既存`requestUser`とZema利用権検査を通し、`work_jobs`へ正規化入力・Core版・request digest・sample区分・WorkJob履歴を保存する。新DBや独立の本人性を作らない。一覧は入力本文を含まない。詳細読出しは本人とjob IDを照合し、入力から候補を再生成してdigestを検証する。機密配合は本人用サーバーへ保存されることを画面に明記し、raw cameraや生体入力は持たない。
+- **失敗・再送・競合**: 同じjob IDと入力digest・名前・sample区分の再送は既存仕事を返す。違う入力の再送、別owner、形式版の不一致、保存内容のdigest不一致を拒否する。状態更新は既存revision CAS。応答不明時は入力と同じcommand/job IDを保持し、再試行後も二重の仕事を作らない。入力変更は新しい候補生成と別仕事になる。
+- **認証復帰の保存意図**: 一覧GETの`ownerScope`は既存`requestUser`から導出した安定したSHA-256識別値で、認証credentialや権限tokenではない。画面は最初に確認できたscopeを未確認操作に固定し、再送前GETで同じ本人か確認する。不明・別ownerなら本文とIDを保持して送信を止める。元ownerで接続確認するか、「保留を解除（入力は保持）」の後に別IDで新規保存する。解除は保存済み仕事を削除せず、元owner側の保存結果を先に確認するよう案内する。`POST /api/material-invention`と`PATCH /api/work-jobs`へ`X-Rock-Owner-Scope`を送り、APIは現在の`requestUser`と不一致・不正値なら409 `OWNER_CHANGED`で書込前に拒否する。互換APIではheaderは任意だが、この復旧UIは必須とする。header省略は旧client契約であり、owner固定の復旧保証はない。保存のownerは常にサーバーの`requestUser`で決める。
+- **復旧・export**: 再読込後は本人の保存一覧から同じ入力を開ける。JSON exportは入力と重複を除いた候補要約を含む。importは入力とsample区分だけを読む。持ち込まれたgraph、安全表示、WorkJob owner・承認・完了状態を信頼せず再生成する。ブラウザのlocalStorageへ配合を既定保存しない。
+- **合格条件**: 正常系、SDS不足、サンプル昇格拒否、別owner拒否、同一ID再送、入力変更の競合、revision競合、破損digest拒否、export/importで承認を引き継がないことを確認する。`tests/material-study.test.mjs`は実際のroute、認証/Origin判定、全SQLite migration、work storeを使うhost試験で、外部IdP・本番配備の証明ではない。
+- **未決事項**: 限定記憶、simulation receipt取込、候補ランキング、外部ラボ、共同研究共有、保存期間・削除policyの製品化は別受入。現状の仕事履歴は既存保存期間に従い、個別配合の削除APIは追加していない。
+
+実装: `lib/material-study.ts`、`app/api/material-invention/route.ts`、`components/material-invention-workspace.tsx`。検証: `node --experimental-strip-types --test tests/material-invention.test.mjs tests/material-study.test.mjs tests/workflow.test.mjs`、`npm run typecheck`、`npm run lint:product`。ローカル実ブラウザで合成候補3件、SDS不足の`BLOCKED`、未認証保存拒否、保存再試行、再読込復旧、確認済み後のBLOCKED保持、320/390/1280px横はみ出し0を確認した。本番配備・実材料・実機試験は未実施。
+
+## 研究profile: avocadoMini Spatial Invention Studio
+
+この研究profileは、Coreを空間的に操作するための設計を保持する。現行R5の表示方式・精密3D入力・収納・熱・電源と確定回路／加工図は未決を含み、四方向構成を自動的にR5の製造仕様へ採用しない。候補graphをVR／ARへ投影する共通仕様は[Spatial Invention Studio設計](material-invention-xr.md)、四方向sensorでhand interactionを取得し、候補の接続・分離・再計算とPatent AIを結ぶ端末仕様は[avocadoMini設計](avocado-mini-spatial-invention.md)を正本とする。XR sceneとgesture eventはCoreへの派生入力であり、物質、安全判定、証拠の正本にはしない。headsetがない場合も2D fallbackで同じ発明loopを利用できるようにする。

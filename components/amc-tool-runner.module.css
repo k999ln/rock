@@ -248,6 +248,20 @@
   border-radius: 6px;
   font-variant-numeric: tabular-nums;
 }
+.cells.skyCells {
+  grid-template-columns: 1fr;
+  max-width: none;
+}
+.skyCells button {
+  padding: 10px;
+  white-space: normal;
+  text-align: left;
+}
+.skyCells button span {
+  display: inline-block;
+  min-width: 30px;
+  opacity: 0.65;
+}
 .cells button[aria-pressed='true'],
 .taskList button[aria-pressed='true'] {
   border-color: var(--amc-green);

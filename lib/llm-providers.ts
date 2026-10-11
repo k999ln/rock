@@ -350,8 +350,20 @@ function textFromOpenAiResponse(payload: Record<string, unknown> | null) {
   return text;
 }
 
+function hasToolCalls(value: unknown) {
+  // Compatible servers may omit the field or serialize the optional default.
+  return value !== undefined && value !== null &&
+    (!Array.isArray(value) || value.length > 0);
+}
+
 function textFromChatResponse(payload: Record<string, unknown> | null) {
   const choices = Array.isArray(payload?.choices) ? payload.choices : [];
+  if (choices.some((choice) => {
+    const record = asRecord(choice);
+    const message = asRecord(record?.message);
+    return record?.finish_reason !== 'stop' || hasToolCalls(message?.tool_calls) ||
+      message?.function_call != null;
+  })) throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
   const text = choices
     .map((choice) => {
       const message = asRecord(asRecord(choice)?.message);
@@ -638,10 +650,13 @@ async function generateTextRequest(
       method: 'POST',
       redirect: 'error',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, messages, stream: false }),
+      body: JSON.stringify({ model, messages, stream: false, options: { num_predict: maxOutputTokens } }),
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
     const payload = await jsonResponse(response);
+    if (payload.done !== true || payload.done_reason !== 'stop' ||
+        hasToolCalls(asRecord(payload.message)?.tool_calls))
+      throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
     const text =
       payload && typeof payload.message === 'object' && payload.message
         ? (payload.message as { content?: unknown }).content
@@ -700,6 +715,10 @@ async function generateTextRequest(
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
     const payload = await jsonResponse(response);
+    if ((payload.stop_reason !== 'end_turn' && payload.stop_reason !== 'stop_sequence') ||
+        (Array.isArray(payload.content) && payload.content.some((item) =>
+          ['tool_use', 'server_tool_use'].includes(String(asRecord(item)?.type)))))
+      throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
     const text = Array.isArray(payload?.content)
       ? payload.content
           .filter((item) => asRecord(item)?.type === 'text')
@@ -742,6 +761,12 @@ async function generateTextRequest(
       },
     );
     const payload = await jsonResponse(response);
+    if (Array.isArray(payload.candidates) && payload.candidates.some((candidate) => {
+      const record = asRecord(candidate);
+      const parts = asRecord(record?.content)?.parts;
+      return record?.finishReason !== 'STOP' || (Array.isArray(parts) &&
+        parts.some((part) => asRecord(part)?.functionCall != null));
+    })) throw new LlmProviderError('INCOMPLETE_RESPONSE', 502);
     const text = Array.isArray(payload?.candidates)
       ? payload.candidates
           .flatMap((candidate) => {

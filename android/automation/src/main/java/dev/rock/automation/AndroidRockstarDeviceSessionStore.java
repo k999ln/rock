@@ -29,11 +29,20 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
     private static final Pattern TOKEN = Pattern.compile("rock_session_[A-Za-z0-9_-]{43}");
     private static final int NONCE_BYTES = 12;
     private static final int TAG_BITS = 128;
+    // Binder calls create separate store objects for the same file. AtomicFile supplies no lock.
+    private static final Object STORAGE_LOCK = new Object();
     private final AtomicFile file;
     private final String packageName;
     private final String serviceOrigin;
+    private final KeySource keySource;
+
+    interface KeySource { SecretKey key() throws Exception; }
 
     AndroidRockstarDeviceSessionStore(Context context, String origin) {
+        this(context, origin, null);
+    }
+
+    AndroidRockstarDeviceSessionStore(Context context, String origin, AtomicFile storage) {
         if (context == null) throw new IllegalArgumentException("DEVICE_SESSION_CONTEXT_REQUIRED");
         String canonical = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(origin);
         if (origin.length() > 255 || !canonical.equals(origin))
@@ -44,10 +53,25 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
         File directory = new File(app.getNoBackupFilesDir(), "account");
         if (!directory.isDirectory() && !directory.mkdirs())
             throw new IllegalStateException("DEVICE_SESSION_DIRECTORY");
-        this.file = new AtomicFile(new File(directory, FILE_NAME));
+        this.file = storage == null ? new AtomicFile(new File(directory, FILE_NAME)) : storage;
+        this.keySource = AndroidRockstarDeviceSessionStore::key;
     }
 
-    @Override public synchronized void save(String accessToken, long expiresAt, String ownerUserId) throws java.io.IOException {
+    AndroidRockstarDeviceSessionStore(AtomicFile storage, String packageName, String origin, KeySource keySource) {
+        String canonical = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(origin);
+        if (origin.length() > 255 || !canonical.equals(origin))
+            throw new IllegalArgumentException("DEVICE_SESSION_ORIGIN_INVALID");
+        this.file = java.util.Objects.requireNonNull(storage);
+        this.packageName = java.util.Objects.requireNonNull(packageName);
+        this.serviceOrigin = origin;
+        this.keySource = java.util.Objects.requireNonNull(keySource);
+    }
+
+    @Override public void save(String accessToken, long expiresAt, String ownerUserId) throws java.io.IOException {
+        synchronized (STORAGE_LOCK) { saveLocked(accessToken, expiresAt, ownerUserId); }
+    }
+
+    private void saveLocked(String accessToken, long expiresAt, String ownerUserId) throws java.io.IOException {
         if (accessToken == null || !TOKEN.matcher(accessToken).matches() ||
                 !validOwnerId(ownerUserId) ||
                 expiresAt <= System.currentTimeMillis() ||
@@ -57,6 +81,7 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
         byte[] plaintext = null;
         byte[] encrypted = null;
         byte[] envelopeBytes = null;
+        byte[] committed = null;
         FileOutputStream pending = null;
         try {
             ByteArrayOutputStream clear = new ByteArrayOutputStream();
@@ -70,7 +95,7 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
             }
             plaintext = clear.toByteArray();
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            cipher.init(Cipher.ENCRYPT_MODE, key(), new SecureRandom());
+            cipher.init(Cipher.ENCRYPT_MODE, keySource.key(), new SecureRandom());
             cipher.updateAAD(aad());
             byte[] nonce = cipher.getIV();
             if (nonce == null || nonce.length != NONCE_BYTES) throw new java.io.IOException("DEVICE_SESSION_NONCE_INVALID");
@@ -86,6 +111,11 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
             pending.write(envelopeBytes);
             pending.getFD().sync();
             file.finishWrite(pending);
+            pending = null;
+            // AtomicFile.finishWrite logs rename failures instead of throwing them.
+            committed = file.readFully();
+            if (!java.security.MessageDigest.isEqual(envelopeBytes, committed))
+                throw new java.io.IOException("DEVICE_SESSION_COMMIT_UNCONFIRMED");
         } catch (Exception failure) {
             if (pending != null) file.failWrite(pending);
             if (failure instanceof java.io.IOException) throw (java.io.IOException) failure;
@@ -94,26 +124,44 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
             if (plaintext != null) Arrays.fill(plaintext, (byte) 0);
             if (encrypted != null) Arrays.fill(encrypted, (byte) 0);
             if (envelopeBytes != null) Arrays.fill(envelopeBytes, (byte) 0);
+            if (committed != null) Arrays.fill(committed, (byte) 0);
         }
     }
 
-    synchronized String authorizationHeader() throws java.io.IOException {
-        Session session = load();
-        return session == null ? null : "Bearer " + session.token;
+    String authorizationHeader() throws java.io.IOException {
+        synchronized (STORAGE_LOCK) {
+            Session session = load();
+            return session == null ? null : "Bearer " + session.token;
+        }
     }
 
-    synchronized long activeExpiry() throws java.io.IOException {
-        Session session = load();
-        return session == null ? 0 : session.expiresAt;
+    long activeExpiry() throws java.io.IOException {
+        synchronized (STORAGE_LOCK) {
+            Session session = load();
+            return session == null ? 0 : session.expiresAt;
+        }
     }
 
-    synchronized String ownerUserId() throws java.io.IOException {
-        Session session = load();
-        return session == null ? null : session.ownerUserId;
+    String ownerUserId() throws java.io.IOException {
+        synchronized (STORAGE_LOCK) {
+            Session session = load();
+            return session == null ? null : session.ownerUserId;
+        }
     }
 
-    synchronized void clearLocal() {
-        file.delete();
+    void clearLocal() {
+        synchronized (STORAGE_LOCK) { file.delete(); }
+    }
+
+    void clearIfAuthorizationMatches(String authorization) throws java.io.IOException {
+        synchronized (STORAGE_LOCK) {
+            Session current = load();
+            if (current == null || authorization == null ||
+                    !java.security.MessageDigest.isEqual(("Bearer " + current.token).getBytes(StandardCharsets.UTF_8),
+                        authorization.getBytes(StandardCharsets.UTF_8))) return;
+            file.delete();
+            if (file.getBaseFile().exists()) throw new java.io.IOException("DEVICE_SESSION_DELETE_UNCONFIRMED");
+        }
     }
 
     private Session load() throws java.io.IOException {
@@ -123,21 +171,24 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
         byte[] plaintext = null;
         try {
             envelope = file.readFully();
-            if (envelope.length > 4_096) throw new java.io.IOException("DEVICE_SESSION_FILE_TOO_LARGE");
+            if (envelope.length > 4_096) throw new InvalidSessionException("DEVICE_SESSION_FILE_TOO_LARGE");
+            byte[] nonce;
             try (DataInputStream data = new DataInputStream(new ByteArrayInputStream(envelope))) {
                 if (!FORMAT.equals(data.readUTF())) throw new java.io.IOException("DEVICE_SESSION_FORMAT");
                 int nonceLength = data.readInt();
                 if (nonceLength != NONCE_BYTES) throw new java.io.IOException("DEVICE_SESSION_NONCE_INVALID");
-                byte[] nonce = data.readNBytes(nonceLength);
+                nonce = data.readNBytes(nonceLength);
                 int encryptedLength = data.readInt();
                 if (encryptedLength < 32 || encryptedLength > 2_048 || data.available() != encryptedLength)
                     throw new java.io.IOException("DEVICE_SESSION_CIPHERTEXT_INVALID");
                 encrypted = data.readNBytes(encryptedLength);
-                Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-                cipher.init(Cipher.DECRYPT_MODE, key(), new GCMParameterSpec(TAG_BITS, nonce));
-                cipher.updateAAD(aad());
-                plaintext = cipher.doFinal(encrypted);
+            } catch (java.io.IOException malformed) {
+                throw new InvalidSessionException(malformed);
             }
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            cipher.init(Cipher.DECRYPT_MODE, keySource.key(), new GCMParameterSpec(TAG_BITS, nonce));
+            cipher.updateAAD(aad());
+            plaintext = cipher.doFinal(encrypted);
             try (DataInputStream data = new DataInputStream(new ByteArrayInputStream(plaintext))) {
                 if (!FORMAT.equals(data.readUTF()) || !packageName.equals(data.readUTF()) ||
                         !serviceOrigin.equals(data.readUTF())) throw new java.io.IOException("DEVICE_SESSION_BINDING_MISMATCH");
@@ -150,9 +201,15 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
                     throw new java.io.IOException("DEVICE_SESSION_CONTENT_INVALID");
                 if (expiresAt <= System.currentTimeMillis()) { file.delete(); return null; }
                 return new Session(token, expiresAt, ownerUserId);
+            } catch (java.io.IOException malformed) {
+                throw new InvalidSessionException(malformed);
             }
         } catch (Exception failure) {
-            file.delete();
+            // A locked device or a transient storage/Keystore failure is not revocation.
+            // Refuse this operation, but preserve the account for a later unlocked read.
+            if (failure instanceof InvalidSessionException || failure instanceof javax.crypto.AEADBadTagException ||
+                    failure instanceof android.security.keystore.KeyPermanentlyInvalidatedException)
+                file.delete();
             if (failure instanceof java.io.IOException) throw (java.io.IOException) failure;
             throw new java.io.IOException("DEVICE_SESSION_READ_FAILED", failure);
         } finally {
@@ -162,7 +219,7 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
         }
     }
 
-    private SecretKey key() throws Exception {
+    private static SecretKey key() throws Exception {
         KeyStore store = KeyStore.getInstance("AndroidKeyStore");
         store.load(null);
         if (store.containsAlias(ALIAS)) return (SecretKey) store.getKey(ALIAS, null);
@@ -189,6 +246,11 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
             if (code < 32 || code == 127) return false;
         }
         return true;
+    }
+
+    private static final class InvalidSessionException extends java.io.IOException {
+        InvalidSessionException(String message) { super(message); }
+        InvalidSessionException(java.io.IOException cause) { super(cause.getMessage(), cause); }
     }
 
     private static final class Session {

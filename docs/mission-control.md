@@ -1,16 +1,32 @@
 # avokado Mission Control
 
+2026-10-06照合: GitHub main `e12d880c`では378登録task。以下の版履歴にある376件はその時点の記録であり、現在の実績件数ではない。段階は各部隊の対象範囲で読み、実装・実機・本番を区別する。今回のeSIM統合と残作業は[進行記録](workstreams/10-git-ci-operations.md#全体進行と未統合差分の回収2026-10-06)を参照。
+
 版: 3.0 / 2026-09-27
 
 AMCは3製品と共有OSを5師団32部隊へ分け、責任、成果、作業、証拠を管理する。部隊・担当・実行計画の正本は[data/mission-control.json](../data/mission-control.json)、task状態の正本は[data/project-status.json](../data/project-status.json)。
 
-## 今回の精査と対象
+## 2026-10-06に確認した現在地
+
+| 系統 | 確認できた範囲 | 未完了・次の作業 |
+| --- | --- | --- |
+| 共通OS / Sky / Zema | mainのWeb実装と同一SHA CI、既存の権限・仕事・台帳契約 | 同一候補の本番readbackと端末ごとの受入 |
+| eSIM入口 | PR #85の期限付きcloud access実装。source f9c85870で全7チェック・仕事API1305項目成功 | main統合・配備・契約済みProvider/端末gateway。実eSIMを配布済みとは扱わない |
+| Pixel 10 GL066 | 過去APK実機受入と現行v4 APK buildを別々に記録 | 専用Linuxで全OS build、正式署名、flash、復旧。現行v4実機未受入 |
+| QEMU | 独立したDeveloper Preview系列に起動・保存・復旧の証拠 | 現行の同一候補と公開releaseの個別gate |
+| avocadoMini / Pro | Mini基本設計、Pro要件整理。共通Game基盤は別記録 | 専用hardware統合・製造・実機試験 |
+| 公開サイト | avocadomini.siはversion 6、OS Siteはversion 44を照合 | GitHub最新mainやPR #85と同じsourceの配備ではない。今回の公開操作なし |
+| 共通決済 / 仕事composition | 元作業木に未保存差分あり | 最新mainの契約・migration・試験へ照合して個別統合 |
+
+この表は確認範囲の要約であり、部隊の過去評価を一括更新しない。進捗画面は保存時点の記録で、自動実行・自動同期はしない。ソースの検証結果は[同一SHAの証拠](evidence/esim-main-integration.json)、残作業の正本は既存taskPlansとphaseGates。
+
+## 2026-09-27の精査と対象（履歴）
 
 IDの頭文字だけで担当を推測する方式を廃止し、全taskに一つの主担当を明記した。共通Game SDKをPro固有の完了、旧Mini profileをR5の完了、資料の保存をrocketstarの実装完了として数えない。
 
 32部隊の「次の1タスク」にある入力・担当・成果物・全体合格条件を保ったまま、各6件、合計192件の子作業へ分解した。各子には個別の成果物section、手順、確認可能な合格条件、親の前提と必要な兄弟依存、計画上の負荷区分、実行境界を付ける。すべて未着手・未検証で登録し、既存183 taskの状態と証拠は変更していない。担当者と期限は未割当・未設定を明示し、根拠なく確定しない。
 
-現在は376登録レコードで、内訳は全体受入を管理する親32件、子192件、独立152件。実行単位の集計は親を除く344件とし、親子を二重加算しない。既存183件＋子192件に加え、H1の独立task AMC02を「AMC Goal Orchestratorのローカル計画compiler・CLI・進捗UI」の進行中として登録した。AMC02は計画exportと進捗追跡の実装であり、live AI runner、サーバー契約、遠隔の自動実行を含まない。H1の既存nextTaskはAMC01のまま保持する。
+当時は376登録レコードで、内訳は全体受入を管理する親32件、子192件、独立152件。実行単位の集計は親を除く344件とし、親子を二重加算しない。既存183件＋子192件に加え、H1の独立task AMC02を「AMC Goal Orchestratorのローカル計画compiler・CLI・進捗UI」の進行中として登録した。AMC02は計画exportと進捗追跡の実装であり、live AI runner、サーバー契約、遠隔の自動実行を含まない。H1の既存nextTaskはAMC01のまま保持する。
 
 対象はローカル基点SHA <code>4e74e2f5f250b87c792ced6c03c5298c882cbd70</code>と作業中変更。確認したremote mainは<code>5f3a3694474180415d08cd814b6aad864694d10f</code>で1 commit先だが、差分は公開画像とWEB19の証拠追加で、task状態・製品要求の変更はない。remote差分は未merge。この精査は静的照合であり、既存の外部Provider・実機・本番試験の再実行ではない。
 
@@ -43,12 +59,12 @@ plannedは未着手、in_progressは進行中、blockedは明示停止、doneは
 <!-- AMC-SQUADS:START -->
 | ID | 部隊 | 証拠のある段階（対象限定） | 次task | 子作業 | 具体的な成果 |
 | --- | --- | --- | --- | --- | --- |
-| H1 | 製品・Interface統合 | 3 一部統合 | AMC01 | 6 | 現行3製品とOSの責任表・未決事項台帳をレビューする |
+| H1 | 製品・Interface統合 | 3 一部統合 | G04, AMC01 | 6 | 重複するAI・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する / 現行3製品とOSの責任表・未決事項台帳をレビューする |
 | O1 | 権限・Security | 3 一部統合 | SYS13 | 6 | 緊急accessのAndroid service・hardware credential・端末側制限・監査を実装しPixel 10で侵入／復旧試験 |
 | O2 | Work・Data | 3 一部統合 | AI04 | 6 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 |
 | O3 | AI・Agent | 3 一部統合 | AI02 | 6 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 |
 | O4 | Tool・MCP | 3 一部統合 | SKY07 | 6 | MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する |
-| O5 | Sky・Zema・Wallet | 3 一部統合 | SKY19 | 6 | SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） |
+| O5 | Sky・Zema・Wallet | 3 一部統合 | SIM01, SKY21, SKY19 | 6 | 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す / Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる / SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） |
 | O6 | Device Adapter | 2 試作済み | OS02 | 6 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 |
 | O7 | Release・運用 | 3 一部統合 | LCH07 | 6 | 同一最終候補の再現配布・導入・復旧リハーサル |
 | M1 | 製品設計・ICD | 1 基本設計あり | MINI01 | 6 | R5要求・OPEN01〜08と部隊別試験の追跡表を作る |
@@ -58,13 +74,13 @@ plannedは未着手、in_progressは進行中、blockedは明示停止、doneは
 | M5 | 組込み・Firmware | 1 基本設計あり | MINI05 | 6 | Mini単独boot・入力・game・保存・停止の最小実装仕様を作る |
 | M6 | 電源・熱・通信 | 1 基本設計あり | MINI06 | 6 | R5電源・熱・1/2/4台通信の評価条件を定義する |
 | M7 | Calibration・安全・受入 | 1 基本設計あり | MINI07 | 6 | R5校正・停止・privacy・復旧の危険分析と受入表を作る |
-| P1 | Pro統合設計 | 0 要件整理 | PRO01 | 6 | Pro v0.1の製品要求と単独利用・任意Mini連携の境界を定義する |
-| P2 | Compute・基板 | 0 要件整理 | PRO02 | 6 | Proの代表負荷・性能予算と演算基板候補の比較条件を定義する |
+| P1 | Pro統合設計 | 1 基本設計あり | PRO01 | 6 | Pro v0.1の製品要求と単独利用・任意Mini連携の境界を定義する |
+| P2 | Compute・基板 | 1 基本設計あり | PRO02 | 6 | Proの代表負荷・性能予算と演算基板候補の比較条件を定義する |
 | P3 | Game Runtime・SDK | 0 要件整理 | PRO03 | 6 | Pro非金融ゲームのsample・保存再開・入力SDKの差分仕様を作る |
 | P4 | Service・Storage | 0 要件整理 | PRO04 | 6 | Proの利用者別保存・容量・backup・復旧契約を定義する |
 | P5 | 映像・Audio・I/O | 0 要件整理 | PRO05 | 6 | Proの映像・音声・controller・端子の最小I/O表を作る |
 | P6 | Mini接続・時刻同期 | 0 要件整理 | PRO06 | 6 | 任意Mini–Pro接続の認証・時刻・Pose契約v0を作る |
-| P7 | 筐体・電源・Security・受入 | 0 要件整理 | PRO07 | 6 | Pro筐体・熱・電源・更新復旧の制約と評価計画を作る |
+| P7 | 筐体・電源・Security・受入 | 1 基本設計あり | PRO07 | 6 | Pro筐体・熱・電源・更新復旧の制約と評価計画を作る |
 | R1 | Mission・System | 1 基本設計あり | RKT01 | 6 | rocketstar R1.0のMission入力・未決台帳と要求追跡を整理する |
 | R2 | 構造・Tank | 1 基本設計あり | RKT02 | 6 | 構造・tank・取付Interfaceの解析入力と検証計画を整理する |
 | R3 | 推進 | 1 基本設計あり | RKT03 | 6 | 推進系の要求・機体Interface・検証段階を整理する |

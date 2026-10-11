@@ -3,9 +3,11 @@ import { captureDeviceSession, verifyDevice } from './device';
 import { announceSkyZemaJob } from './sky-zema-handoff';
 export class OperationRequestError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  code?: string;
+  constructor(message: string, status: number, code?: string) {
     super(message);
     this.status = status;
+    this.code = code;
   }
 }
 export class OperationResponseError extends Error {
@@ -31,15 +33,17 @@ export async function operationRequest<T>(
   path: string,
   method = 'GET',
   value?: unknown,
+  headers?: Record<string, string>,
 ): Promise<T> {
   const options: RequestInit = {
     method,
+    headers,
     signal: AbortSignal.timeout(10000),
     cache: 'no-store',
     redirect: 'manual',
   };
   if (value !== undefined && method !== 'GET') {
-    options.headers = { 'Content-Type': 'application/json' };
+    options.headers = { ...headers, 'Content-Type': 'application/json' };
     options.body = JSON.stringify(value);
   }
   let response: Response;
@@ -54,9 +58,9 @@ export async function operationRequest<T>(
   // These owned JSON endpoints redirect only to sign-in. Never follow a redirect.
   if (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400))
     throw new OperationRequestError('サインインを確認してください。', 401);
-  let data: T & { error?: string };
+  let data: T & { error?: string; code?: string };
   try {
-    data = (await response.json()) as T & { error?: string };
+    data = (await response.json()) as T & { error?: string; code?: string };
   } catch (error) {
     if (!response.ok)
       throw new OperationRequestError('保存できませんでした。', response.status);
@@ -68,6 +72,7 @@ export async function operationRequest<T>(
     throw new OperationRequestError(
       data?.error || '保存できませんでした。',
       response.status,
+      typeof data?.code === 'string' ? data.code : undefined,
     );
   if (!data || typeof data !== 'object')
     throw new OperationResponseError('INVALID_RESPONSE');

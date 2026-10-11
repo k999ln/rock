@@ -63,7 +63,7 @@ async function setup(t, enforcement = 'false') {
         return user;
       }
     `)],
-    ...['a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access']
+    ...['owner-intent', 'a2a-delegation-store', 'work-store', 'workflow', 'rockstar-service-access']
       .map((name) => [`@/lib/${name}`, new URL(`../lib/${name}.ts`, import.meta.url).href]),
   ]);
   const source = stripTypeScriptTypes(routeSource, { mode: 'strip' })
