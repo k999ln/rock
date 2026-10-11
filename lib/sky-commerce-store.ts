@@ -135,6 +135,12 @@ export function skyCommerceStore(db: Database) {
           receipt_url = COALESCE(?,receipt_url), refunded_minor = MAX(refunded_minor,?), updated_at = ?, active_key = ${release ? 'NULL' : 'active_key'}
           WHERE id = ? AND ${allowed}`)
           .bind(status, paymentIntentId, receiptUrl, refundedMinor, Date.now(), order.id),
+        // Preserve a stricter refund/dispute state without discarding a newly
+        // verified refund amount. This does not release the active purchase or
+        // replace the original refund-request timestamp used for safe retries.
+        db.prepare(`UPDATE sky_commerce_orders SET refunded_minor = ?, updated_at = ?
+          WHERE id = ? AND refunded_minor < ?`)
+          .bind(refundedMinor, Date.now(), order.id, refundedMinor),
       ]);
       return (await this.order(order.id))!;
     },
