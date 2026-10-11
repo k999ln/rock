@@ -181,6 +181,10 @@ catalogued → selected → connected → ready → running → review → compl
 
 `ready`は各Toolが明示する機能範囲の利用入口で、処理成功ではない。接続を要する機能では接続検査と対象環境の受入を別途確認する。AMCのWeb readyは計画作成・本人別の手動台帳・exportまでであり、WebからのAI直接起動や実ブラウザ・本番配備の受入を意味しない。別途、明示操作のローカルCodex CLI一件実行入口がある。`completed`はTool処理の完了で、販売、入金、法的有効性、特許、実世界の成果を保証しない。AMCの保存処理成功と、依頼Goal全体の受入も区別する。
 
+### 文章providerの完了境界
+
+文章Toolの共通transportは、Providerごとの正常な終了理由を確認してから本文を返す。途中打切り、filter、Tool待ち、必要な完了理由の欠落は502で止め、既存の成果や本人承認を置換しない。Ollamaにも選択された出力token上限を渡す。未処理Tool callは実行せず、失敗後の再送は本人の次の操作と既存予算確認を通す。本文や秘密の保存は増やさない。ROCKがadapterとhost fixtureを管理し、Provider契約・実接続・課金の受入は別に残す。[文章モデル設計](llm-evaluation-architecture.md#文章生成の完了判定2026-10-11)に成功値、optional default、失敗・復旧、公式仕様と合格条件を記載する。
+
 ### 共通実行規則
 
 1. SkyがTool ID、版、実行場所をselectionとして固定する。

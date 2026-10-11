@@ -199,7 +199,13 @@
       "documents": [
         "docs/sky-mcp-connector.md",
         "docs/sky-mcp-architecture.md",
-        "docs/external-wallet-fund-provider-boundary-20260913.md"
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/llm-evaluation-architecture.md"
+      ],
+      "interfaceImplementation": [
+        "lib/llm-providers.ts",
+        "tests/llm-providers.test.mjs",
+        "tests/llm-completion-boundary.test.mjs"
       ]
     },
     {
