@@ -59,3 +59,5 @@ BIL03（AMC O5、ROCK）の原稿作成は、同じowner・保存ID・正規化�
 案件と手入力の入出金記録は、結果不明時に同じID・同じ正規化入力で再確認する。最初の作成条件と変更操作を本人別D1 payloadに残し、後続更新や応答喪失を挟んでも再送を重複計上しない。画面は未確認操作を保持して別操作を止める。API／SQLite、componentの応答喪失試験、ローカルbrowserの一時的保存失敗→再確認→再読込で検証する。外部受注・入金照合・銀行送金は追加しない。
 
 2026-10-11の追加競合検証では、一覧GETへ世代を付け、認証失敗・新しい本人別一覧・保存開始より前の応答を破棄する。ココナラは401後の旧案件復活、アカウント切替後の旧一覧、担当開始PATCH後の画面巻戻しを3つの実component回帰で拒否する。メルカリは初回GETの空一覧が新規保存カードを消す競合を回帰試験とChromeの実component＋合成transportで検証した。サーバーのowner条件・同一ID再送・revision CASは変更していない。
+
+追加の離脱回帰ではココナラも共通`usePendingSaveNavigation`へ接続した。ローカル実vinext/API/D1で保存前503→Home/Library移動の停止と入力維持→同一記録の再確認→移動再開を確認し、手入力receiptは0→1、revisionは1→2。別タブ認証・exportは許可する。強制終了・crash・history/programmatic navigationの永続復旧は保証しない。

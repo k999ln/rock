@@ -5,7 +5,7 @@
   "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
   "branch": "codex/rock-development-20261011",
   "status": "integrated_candidate_verified_followup_development_in_progress",
-  "sourceSha": "705476cf2bdb4f59ae7fb1c710842bdec40f05ef",
+  "sourceSha": "6ba00c09087145b636b7613250a974823fb2abdf",
   "taskIds": [
     "G04",
     "SIM01",
@@ -480,7 +480,7 @@
         "6af91cadd418d8f13add6e8989998f255f1aa850",
         "23f9893703e029284c18ed75568dca255cc22fcb"
       ],
-      "newAnnotationsLatest": 2,
+      "newAnnotationsLatest": 0,
       "scope": "Test HTML extraction, host-literal assertions, route fixture code construction and file-derived HTTP destination.",
       "repairCommits": [
         "537a5a7a",
@@ -492,8 +492,9 @@
         "routeFixtures": 19,
         "mcpConnector": 17
       },
-      "newAnalysis": "pending after script-end-tag attribute repair",
-      "dismissedOrSuppressed": false
+      "newAnalysis": "success at 19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0 after script-end-tag attribute repair",
+      "dismissedOrSuppressed": false,
+      "passedSourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0"
     },
     "purchaseRecovery": {
       "sourceSha": "c0c1fbbdfef4743460dbd46bb7f367336795f4c8",
@@ -531,7 +532,13 @@
         "aidl": 7,
         "java": 73
       },
-      "androidRuntime": "pending latest CI",
+      "androidRuntime": {
+        "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+        "status": "passed",
+        "readerCases": 20,
+        "clock": "actual Android monotonic clock on API 35 emulator",
+        "run": "https://github.com/k999ln/rock/actions/runs/38153378733"
+      },
       "limitations": "Body deadline starts after headers and does not interrupt an ongoing TLS/framing read."
     },
     "mcpPagination": {
@@ -566,6 +573,186 @@
         },
         "productionDeployment": false
       }
+    },
+    "latestCompletedLocalVerifications": [
+      {
+        "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+        "status": "passed",
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "node": {
+          "pass": 1654,
+          "fail": 0,
+          "skip": 1
+        },
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385
+      },
+      {
+        "sourceSha": "92c9930f371bd47901208ae183f870c7d306c7c5",
+        "status": "passed",
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "node": {
+          "pass": 1671,
+          "fail": 0,
+          "skip": 1
+        },
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385
+      }
+    ],
+    "latestCompletedGithubCandidate": {
+      "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+      "status": "one_check_failed",
+      "passed": [
+        "CodeQL JavaScript, Python and aggregate",
+        "Android prototype",
+        "native main 0–3 and support",
+        "source tests",
+        "SPIDER secrets, repair and web measurement",
+        "public fixture tests"
+      ],
+      "failed": [
+        {
+          "name": "verify",
+          "run": "https://github.com/k999ln/rock/actions/runs/38153378722",
+          "cause": "Material recovery harness polled 20 event-loop ticks without awaiting candidate computation; one UI assertion failed.",
+          "node": {
+            "pass": 1653,
+            "fail": 1,
+            "skip": 1
+          },
+          "repairedBy": "eab77b0df129a538cddd4321feeb5bd6c3334cb9",
+          "repair": "Await actual candidate-generation and save-computation promises; a gate regression verifies the harness waits for completion.",
+          "latestCiRecheck": "pending"
+        }
+      ],
+      "limits": "Successes apply only to this exact SHA. Later runtime changes require their own CI."
+    },
+    "androidDeadlineCi": {
+      "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+      "run": "https://github.com/k999ln/rock/actions/runs/38153378733",
+      "status": "success",
+      "coreUnitTests": 116,
+      "automationUnitTests": 16,
+      "toolSdkUnitTests": 7,
+      "emulator": {
+        "api": 35,
+        "automation": {
+          "tests": 45,
+          "passed": 43,
+          "skipped": 2
+        },
+        "shell": {
+          "tests": 6,
+          "passed": 6
+        },
+        "operatorAgent": {
+          "tests": 6,
+          "passed": 6
+        },
+        "skipReason": "Two physical reboot recovery tests require a physical reboot."
+      },
+      "apkBuild": true,
+      "physicalDevice": false,
+      "pixelFullOs": false
+    },
+    "browserDeviceConfirmation": {
+      "sourceSha": "e428855afe541002fa169b37c1e76d39bec3204b",
+      "componentTests": 9,
+      "beforeFailures": 2,
+      "typecheck": "passed",
+      "productLint": "passed",
+      "browser": {
+        "widths": [
+          390,
+          1280
+        ],
+        "actualComponent": true,
+        "syntheticTransport": true,
+        "cases": [
+          "inspect A, edit B invalidates old confirmation, inspect B then POST B only",
+          "lost mutation response times out; explicit GET readback does not repeat POST",
+          "401 hides prior owner data; separate-tab sign-in and reinspection required"
+        ],
+        "overflow": false
+      },
+      "independentActualHandlerReview": {
+        "result": "passed",
+        "storage": "local SQLite",
+        "cases": [
+          "approval committed then response lost",
+          "device poll consumes approval before session appears",
+          "other owner cannot list/revoke session",
+          "committed revoke with lost response does not cause automatic DELETE",
+          "denied device receives access_denied",
+          "401 recovery requires a fresh inspection"
+        ]
+      },
+      "limits": "Synthetic browser and handler/SQLite fixtures; no live device authorization or production identity."
+    },
+    "serviceScopeHistory": {
+      "claimSourceSha": "6a3a70ae19a27cfd62e06cbc277355d7e3c87883",
+      "claimRelatedTests": 14,
+      "esimSourceSha": "3386cddd469b010a6401c2c49740572c20e485dc",
+      "esimRelatedTests": 19,
+      "result": "passed",
+      "reproduction": "An old valid grant hidden by 100 newer different-scope grants must still authorize the requested service.",
+      "contract": "Claim query and eSIM candidate selection filter owner/current-active/expiry/exact JSON-array scope before limiting. Existing purchase/install/device/current-policy checks remain required.",
+      "remainingBound": "eSIM evaluates at most 100 full candidates and fetches one continuation sentinel. An eligible key behind 100 same-scope ineligible keys is not resolved; API returns 503 without creating a job. Direct valid token or explicit stale-key revocation can recover. SQL historical scan cost is not globally bounded.",
+      "limits": "Actual handlers and local SQLite/Miniflare D1 with synthetic claims/orders; no Provider or paid execution."
+    },
+    "businessListRecovery": {
+      "sourceSha": "eab77b0df129a538cddd4321feeb5bd6c3334cb9",
+      "relatedTests": 54,
+      "typecheck": "passed",
+      "productLint": "passed",
+      "cases": [
+        "Coconala late GET cannot restore a list after 401 or replace a new owner list",
+        "Coconala late GET cannot roll back a confirmed PATCH",
+        "Mercari initial empty GET cannot remove a confirmed POST card"
+      ],
+      "browser": "Actual Mercari component/CSS with synthetic transport in Chrome; late initial GET retained one card and one POST.",
+      "limits": "Server owner/CAS contracts unchanged; a silent account change is only detected on a subsequent authenticated request."
+    },
+    "coconalaPendingNavigation": {
+      "sourceSha": "d4a423d23b0509ab107dec832541eb24caa84e7b",
+      "relatedTests": 56,
+      "typecheck": "passed",
+      "productLint": "passed",
+      "before": "Actual component had no same-tab document link guard during a pending PATCH.",
+      "implementation": "Existing usePendingSaveNavigation hook; separate-tab sign-in and download allowed.",
+      "browser": {
+        "environment": "Actual local vinext/API and local D1 SQLite with synthetic Sites local identity",
+        "fault": "Fixture-specific trigger produced PATCH 503 before commit",
+        "homeAndLibraryWhilePending": "blocked; URL and input retained",
+        "sameIdRetryAfterTriggerRemoval": "passed",
+        "receiptCount": [
+          0,
+          1
+        ],
+        "revision": [
+          1,
+          2
+        ],
+        "libraryAfterConfirmation": "allowed",
+        "triggerRemoved": true
+      },
+      "limits": "In-memory recovery only; force-close, crash, history and programmatic navigation are not durable recovery guarantees. No real customer or payment."
+    },
+    "androidSettledReadback": {
+      "sourceSha": "57f634138fc7fe81ba952e042d89bfa175552dc1",
+      "before": "After SQLite close/reopen, a valid SETTLED reservation was shown as unknown/held despite ledger 650, held 0 and available 350.",
+      "fix": "Separate read-only settled-terms verification, current signed usage proof and original ledger receipt matching return wallet_settled; active reservation matching is unchanged.",
+      "host": {
+        "coreTests": 121,
+        "automationTests": 16,
+        "sourceTests": 10,
+        "aidl": 7,
+        "java": 73
+      },
+      "independentSourceReview": "Receipt/ledger tampering, owner/delegation mismatch, held balance and substituted receipt cannot reach wallet_settled; no source difference from reviewed commit.",
+      "androidCi": "pending integrated candidate",
+      "limits": "No reserve/dispatch/settle/release is performed by readback. Host SQLite success does not prove physical or full OS acceptance."
     }
   },
   "github": {
@@ -575,8 +762,9 @@
     "validatedSourceSha": "6af91cadd418d8f13add6e8989998f255f1aa850",
     "pullRequest": "https://github.com/k999ln/rock/pull/99",
     "draft": true,
-    "savedSourceSha": "23f9893703e029284c18ed75568dca255cc22fcb",
-    "latestFullCi": "6af91cad verify/Android/native/SPIDER passed. CodeQL at 23f98937 has two test HTML annotations remaining; b46a1bfd repair awaits analysis."
+    "savedSourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+    "latestFullCi": "19ef1020 CodeQL, Android, native and SPIDER passed; verify failed in one Material test harness timing case. eab77b0d fixes the harness; latest integrated CI pending.",
+    "latestCheckedSourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0"
   },
   "acceptanceLimits": [
     "Host and synthetic fixtures are separate from provider, emulator, physical device and production acceptance.",
@@ -1379,6 +1567,16 @@
     },
     "archiveTestsExecuted": false,
     "fixedArchiveChanged": false,
-    "r7r9r10Stage": "design; not raised by source audit"
+    "r7r9r10Stage": "design; not raised by source audit",
+    "archiveVerification": {
+      "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+      "command": "python3 scripts/verify-rocketstar-archive.py --git",
+      "status": "passed",
+      "files": 932,
+      "zipArchives": 8,
+      "checks": 14,
+      "failures": 0,
+      "scope": "Fixed archive integrity only; archived receiver/colony runtime tests were not executed."
+    }
   }
 }

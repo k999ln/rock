@@ -282,6 +282,13 @@
         "contract": "docs/rockstar-device-link.md",
         "binding": "Only the exact inspected userCode may be approved; editing invalidates confirmation.",
         "recovery": "10-second response deadline; no automatic mutation retry; fresh owner list and code inspection after authentication recovery."
+      },
+      "settledWalletReadback": {
+        "implementation": "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+        "regressions": "android/core/src/test/java/dev/rock/core/A2AWalletReservationTest.java",
+        "contract": "Exact owner/delegation/terms, current signed usage proof and original settled ledger receipt are read-only requirements for wallet_settled.",
+        "mutation": "No reserve, dispatch, settle or release on readback.",
+        "failure": "Any missing, changed or unverifiable binding stays unknown; held is not asserted without proof."
       }
     },
     {
@@ -933,7 +940,8 @@
           "tests/pending-save-navigation.test.mjs"
         ],
         "authenticationRecovery": "Retain pending payload, reload the owner list after sign-in, and block same-tab links until save confirmation.",
-        "navigationImplementation": "components/use-pending-save-navigation.ts"
+        "navigationImplementation": "components/use-pending-save-navigation.ts",
+        "listGeneration": "Pre-create and pre-authentication GET responses cannot replace a newer confirmed list."
       }
     },
     {
@@ -1006,6 +1014,14 @@
         "externalTransactionUnchanged": true,
         "activeCaseRetentionAccepted": false,
         "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "saveRecovery": {
+        "pendingPayload": "memory-only",
+        "manualExactReplay": true,
+        "navigationImplementation": "components/use-pending-save-navigation.ts",
+        "regressions": "tests/coconala-workspace-recovery.test.mjs",
+        "listGeneration": "Late replies cannot restore old owner data or revert confirmed mutations.",
+        "limits": "No durable recovery after forced close, crash, history or programmatic navigation."
       }
     },
     {

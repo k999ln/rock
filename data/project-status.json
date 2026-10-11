@@ -103,7 +103,7 @@
         "baseline": "RQ01–RQ49, passed",
         "design": "18 domains / 36 Tools / 6 native families, passed",
         "database": "151 tables across 6 boundaries, passed after date regeneration",
-        "fullVerify": "pending final integrated source",
+        "fullVerify": "Passed at 19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0 and 92c9930f371bd47901208ae183f870c7d306c7c5; latest runtime candidate requires revalidation.",
         "additionalCleanup": {
           "removedFiles": 2,
           "removedBytes": 50893,
@@ -117,7 +117,7 @@
           "fixedEvidence": "data/amc and frozen os-base manifests byte-unchanged"
         }
       },
-      "nextAction": "Run full verify and save the expanded cleanup with the followup integrated candidate.",
+      "nextAction": "Expanded cleanup is saved in PR #99; confirm final integrated CI. Main integration and publication remain separate.",
       "previousCleanupSavedCommit": "f7266bd",
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
@@ -4347,7 +4347,9 @@
         "android/core/src/main/java/dev/rock/core/platform/A2ARecoveryBinding.java",
         "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceSessionStoreTest.java",
         "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceHomeTransportTest.java",
-        "android/automation/src/androidTest/java/dev/rock/automation/AndroidResponseDeadlineTest.java"
+        "android/automation/src/androidTest/java/dev/rock/automation/AndroidResponseDeadlineTest.java",
+        "android/core/src/test/java/dev/rock/core/A2AWalletReservationTest.java",
+        "android/shell/src/androidTest/java/dev/rock/shell/CloudSessionPresentationTest.java"
       ]
     },
     {
@@ -5634,7 +5636,9 @@
         "components/esim-purchase-setup.tsx",
         "tests/esim-purchase-recovery.test.mjs",
         "tests/rockstar-entitlement-claim-ui.test.mjs",
-        "tests/rockstar-device-authorization-ui.test.mjs"
+        "tests/rockstar-device-authorization-ui.test.mjs",
+        "tests/rockstar-service-access-history.test.mjs",
+        "tests/esim-cloud-recovery.test.mjs"
       ],
       "nextAction": "Current integrated source includes purchase claims, device linking/entitlements, quote/approval/usage contracts and optional eSIM cloud access. Revalidate one owner journey and failure paths on the integrated candidate. Seller/carrier contracts, real activation, funded settlement, exact-SKU OS install and physical acceptance remain separate external gates.",
       "files": [
@@ -5683,6 +5687,12 @@
           "No real seller or production claim redemption",
           "In-memory purchase selection is not retained after closing the page"
         ]
+      },
+      "serviceScopeHistory": {
+        "status": "local_route_and_store_verified",
+        "claimTests": 14,
+        "esimTests": 19,
+        "limits": "eSIM same-scope overflow remains explicit incomplete-resolution 503 after 100 full checks; no live Provider acceptance."
       }
     },
     {
@@ -5732,9 +5742,12 @@
         "app/api/coconala-team/route.ts",
         "lib/coconala-team.ts",
         "tests/coconala-team.test.mjs",
-        "tests/coconala-sky-entry.test.mjs"
+        "tests/coconala-sky-entry.test.mjs",
+        "tests/coconala-workspace-recovery.test.mjs",
+        "components/use-pending-save-navigation.ts",
+        "tests/pending-save-navigation.test.mjs"
       ],
-      "nextAction": "Revalidate representative Coconala case create/read/update/reload with authenticated owners and conflict handling. Real customer orders, external fulfillment, payments and payouts require separate evidence and authorization.",
+      "nextAction": "Local synthetic API/SQLite/browser create, recovery, replay and pending navigation verified. Complete owner-switch recovery review and same-candidate CI; real customer orders, fulfillment, payments and payouts remain separate.",
       "recoveredFrom": {
         "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",

@@ -526,6 +526,12 @@ AI02〜AI06の旧host fixtureを現行のSIM/eSIM・署名付きPlatform Coreへ
 
 一時的なKeystore/file読取失敗では連携を利用不可として扱い、暗号化sessionを削除しない。保存内容の不正や恒久的な鍵無効化が確認された場合だけ破棄する。Home・認証・Broker登録・Wallet handoffの本文readerはread前後とEOFで既存期限を検査し、期限切れ応答を成功へ変換しない。HTTP header/TLS/framingを含む全通信の強制停止は未受入。復旧・実Android試験条件は[Android workstream](workstreams/07-android-device-local-ai.md)を正本とする。
 
+### Androidの精算済みWallet読戻し（2026-10-11、OS10）
+
+Cloud上のterminal仕事を開いたとき、既存SQLite予約が`SETTLED`でも、active予約用の照合を使って「未確認・保留中」と表示していた。`readSettledA2ABudget`はowner・delegation・承認条件・現在の信頼設定で再検証した署名usageと、保存済みreceipt digest／元ledger記帳を同じ読取transactionで照合する。held 0、精算額、解放額と通貨まで一致した場合だけBrokerが`wallet_settled`を返し、Shellは精算結果を表示する。読戻しからreserve／dispatch／settle／releaseは行わない。
+
+欠落・改変・別owner／job・失効した証明では未確認を維持し、保留額があるとも推測しない。4種類のterminal状態から読戻せるが、再承認や予算解放の操作は出さない。実SQLiteの保存・close/reopen・receipt／ledger改変回帰をhostで検証した。最新統合sourceのAndroid instrumentation、実機、全OS受入は別の検証段階とする。
+
 ### native MCPのHTTPSとCA境界（SYS15）
 
 ROCKの`MCPHttpClient`は、明示選択した入力とbearerを固定originへ送る前に接続設定を検査する。HTTPSでは明示した空でないCAを必須とし、欠落・空文字・false相当のCAでclientを生成しない。無効なCAは接続・送信前に失敗し、平文へのfallbackや自動再試行を行わない。正しいCA設定へ直した後にclientを作り直す。CAの内容は既存のTLS context生成で読み込み、証明書・hostname検証と全通信共通deadlineを維持する。
