@@ -1,7 +1,7 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 
-import { useEffect, useMemo, useState, type SyntheticEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -54,11 +54,22 @@ export default function MercariRevenueStarter() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState('');
+  const [pendingCreate, setPendingCreate] = useState<Record<string, unknown> | null>(null);
+  const createInFlight = useRef(false);
+  const createForm = useRef<HTMLFormElement | null>(null);
+  const locked = busy || pendingCreate !== null;
   const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
   const active = useMemo(
     () => plans.filter((plan) => plan.status !== 'cancelled'),
     [plans],
   );
+
+  useEffect(() => {
+    if (!pendingCreate) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [pendingCreate]);
 
   async function refresh() {
     try {
@@ -98,48 +109,63 @@ export default function MercariRevenueStarter() {
     };
   }, [setNeedsSignin]);
 
-  async function create(event: SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (busy) return;
+  async function saveCreate(payload: Record<string, unknown>) {
+    if (createInFlight.current || busy) return;
+    createInFlight.current = true;
+    setPendingCreate(payload);
     setBusy(true);
     setError('');
-    const formElement = event.currentTarget;
-    const form = new FormData(formElement);
     try {
       const plan = await operationRequest<MercariRevenuePlan>(
         '/api/revenue/mercari',
         'POST',
-        {
-          id: crypto.randomUUID(),
-          channel: form.get('channel'),
-          title: form.get('title'),
-          condition: form.get('condition'),
-          facts: form.get('facts'),
-          priceJPY: number(form, 'priceJPY'),
-          marketplaceFeeJPY: number(form, 'marketplaceFeeJPY'),
-          shippingJPY: number(form, 'shippingJPY'),
-          itemCostJPY: number(form, 'itemCostJPY'),
-          otherCostJPY: number(form, 'otherCostJPY'),
-          ownsStock: form.get('ownsStock') === 'on',
-          accurate: form.get('accurate') === 'on',
-          prohibitedChecked: form.get('prohibitedChecked') === 'on',
-        },
+        payload,
       );
-      setPlans((current) => [plan, ...current]);
-      formElement.reset();
+      if (plan.id !== payload.id || !Number.isSafeInteger(plan.revision) ||
+          typeof plan.listingDraft !== 'string' || !(plan.status in statusLabel))
+        throw new Error('保存結果を確認できません。同じ内容でもう一度確認してください。');
+      setPlans((current) => [plan, ...current.filter((item) => item.id !== plan.id)]);
+      setPendingCreate(null);
+      createForm.current?.reset();
     } catch (cause) {
-      if (cause instanceof OperationRequestError && cause.status === 401)
-        setNeedsSignin(true);
+      if (cause instanceof OperationRequestError) {
+        if (cause.status === 401) setNeedsSignin(true);
+        if ([400, 404, 409, 413, 415].includes(cause.status)) setPendingCreate(null);
+      }
       setError(cause instanceof Error ? cause.message : '保存できませんでした。');
     } finally {
+      createInFlight.current = false;
       setBusy(false);
     }
+  }
+
+  async function create(event: SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (locked || createInFlight.current) return;
+    createForm.current = event.currentTarget;
+    const form = new FormData(event.currentTarget);
+    await saveCreate({
+      id: crypto.randomUUID(),
+      channel: form.get('channel'),
+      title: form.get('title'),
+      condition: form.get('condition'),
+      facts: form.get('facts'),
+      priceJPY: number(form, 'priceJPY'),
+      marketplaceFeeJPY: number(form, 'marketplaceFeeJPY'),
+      shippingJPY: number(form, 'shippingJPY'),
+      itemCostJPY: number(form, 'itemCostJPY'),
+      otherCostJPY: number(form, 'otherCostJPY'),
+      ownsStock: form.get('ownsStock') === 'on',
+      accurate: form.get('accurate') === 'on',
+      prohibitedChecked: form.get('prohibitedChecked') === 'on',
+    });
   }
 
   async function transition(
     plan: MercariRevenuePlan,
     action: 'approve' | 'mark_listed' | 'report_sale' | 'cancel',
   ) {
+    if (locked || createInFlight.current) return;
     const payload: Record<string, unknown> = {
       id: plan.id,
       action,
@@ -234,27 +260,34 @@ export default function MercariRevenueStarter() {
                 <div><h2>売るものを登録</h2><p>手数料は推測せず、現在の実額を入力してください。</p></div>
               </div>
               <form className="mercari-form" onSubmit={create}>
-                <label>販売経路<select name="channel" defaultValue="consumer_assisted"><option value="consumer_assisted">個人メルカリ（出品支援）</option><option value="shops_connector">メルカリShops（Connector準備）</option></select></label>
-                <label>商品名<input name="title" required maxLength={80} placeholder="例：使用済みワイヤレスキーボード" /></label>
-                <label>状態<input name="condition" required maxLength={80} placeholder="傷・動作・付属品を具体的に" /></label>
-                <label>商品の事実<textarea name="facts" required maxLength={1200} rows={5} placeholder="型番、購入時期、動作、傷、付属品、保管状況など" /></label>
+                <label>販売経路<select disabled={locked} name="channel" defaultValue="consumer_assisted"><option value="consumer_assisted">個人メルカリ（出品支援）</option><option value="shops_connector">メルカリShops（Connector準備）</option></select></label>
+                <label>商品名<input disabled={locked} name="title" required maxLength={80} placeholder="例：使用済みワイヤレスキーボード" /></label>
+                <label>状態<input disabled={locked} name="condition" required maxLength={80} placeholder="傷・動作・付属品を具体的に" /></label>
+                <label>商品の事実<textarea disabled={locked} name="facts" required maxLength={1200} rows={5} placeholder="型番、購入時期、動作、傷、付属品、保管状況など" /></label>
                 <div className="mercari-money-grid">
-                  <label>販売価格<input name="priceJPY" required type="number" min="300" step="1" /></label>
-                  <label>販売手数料<input name="marketplaceFeeJPY" required type="number" min="0" step="1" /></label>
-                  <label>送料<input name="shippingJPY" required type="number" min="0" step="1" /></label>
-                  <label>仕入原価<input name="itemCostJPY" required type="number" min="0" step="1" defaultValue="0" /></label>
-                  <label>その他実費<input name="otherCostJPY" required type="number" min="0" step="1" defaultValue="0" /></label>
+                  <label>販売価格<input disabled={locked} name="priceJPY" required type="number" min="300" step="1" /></label>
+                  <label>販売手数料<input disabled={locked} name="marketplaceFeeJPY" required type="number" min="0" step="1" /></label>
+                  <label>送料<input disabled={locked} name="shippingJPY" required type="number" min="0" step="1" /></label>
+                  <label>仕入原価<input disabled={locked} name="itemCostJPY" required type="number" min="0" step="1" defaultValue="0" /></label>
+                  <label>その他実費<input disabled={locked} name="otherCostJPY" required type="number" min="0" step="1" defaultValue="0" /></label>
                 </div>
                 <fieldset className="mercari-checks">
-                  <label><input type="checkbox" name="ownsStock" /> 自分が保有し、今発送できる在庫です</label>
-                  <label><input type="checkbox" name="accurate" /> 写真・状態・説明を正確に確認しました</label>
-                  <label><input type="checkbox" name="prohibitedChecked" /> 禁止されている出品物・行為に該当しないことを確認しました</label>
+                  <label><input disabled={locked} type="checkbox" name="ownsStock" /> 自分が保有し、今発送できる在庫です</label>
+                  <label><input disabled={locked} type="checkbox" name="accurate" /> 写真・状態・説明を正確に確認しました</label>
+                  <label><input disabled={locked} type="checkbox" name="prohibitedChecked" /> 禁止されている出品物・行為に該当しないことを確認しました</label>
                 </fieldset>
-                <button className="mercari-primary" disabled={busy}>
+                <button className="mercari-primary" disabled={locked}>
                   {busy ? <LoaderCircle className="mercari-spin" size={18} /> : <PackageCheck size={18} />}
                   出品原稿と利益計画を作る
                 </button>
               </form>
+              {pendingCreate && <section aria-label="保存結果の確認">
+                <p>保存結果が確認できるまで、この画面を開いたままにしてください。同じ商品情報と保存IDで再確認します。</p>
+                <button type="button" className="mercari-primary" disabled={busy}
+                  onClick={() => void saveCreate(pendingCreate)}>
+                  {busy ? '確認中…' : '同じ保存内容で結果を確認'}
+                </button>
+              </section>}
               {error && <p className="mercari-error" role="alert">{error}</p>}
             </section>
 
@@ -275,11 +308,11 @@ export default function MercariRevenueStarter() {
                       <pre>{plan.listingDraft}</pre>
                       <div className="mercari-plan-actions">
                         <button onClick={() => void copy(plan)}><Clipboard size={15} />{copied === plan.id ? 'コピー済み' : '原稿をコピー'}</button>
-                        {plan.status === 'review' && <button className="primary" disabled={busy} onClick={() => void transition(plan, 'approve')}><CheckCircle2 size={15} />内容を承認</button>}
-                        {plan.status === 'approved' && <><a href="https://jp.mercari.com/" target="_blank" rel="noreferrer">公式画面を開く<ExternalLink size={14} /></a><button className="primary" disabled={busy} onClick={() => void transition(plan, 'mark_listed')}>出品済みにする</button></>}
-                        {plan.status === 'listed' && <button className="primary" disabled={busy} onClick={() => void transition(plan, 'report_sale')}>取引完了を報告</button>}
+                        {plan.status === 'review' && <button className="primary" disabled={locked} onClick={() => void transition(plan, 'approve')}><CheckCircle2 size={15} />内容を承認</button>}
+                        {plan.status === 'approved' && <><a href="https://jp.mercari.com/" target="_blank" rel="noreferrer">公式画面を開く<ExternalLink size={14} /></a><button className="primary" disabled={locked} onClick={() => void transition(plan, 'mark_listed')}>出品済みにする</button></>}
+                        {plan.status === 'listed' && <button className="primary" disabled={locked} onClick={() => void transition(plan, 'report_sale')}>取引完了を報告</button>}
                         {plan.status === 'awaiting_provider_verification' && <Link href="/wallet">Walletで確認<ArrowRight size={14} /></Link>}
-                        {!['cancelled', 'awaiting_provider_verification'].includes(plan.status) && <button disabled={busy} onClick={() => void transition(plan, 'cancel')}>終了</button>}
+                        {!['cancelled', 'awaiting_provider_verification'].includes(plan.status) && <button disabled={locked} onClick={() => void transition(plan, 'cancel')}>終了</button>}
                       </div>
                       {plan.status === 'awaiting_provider_verification' && <p className="mercari-proof-note"><ShieldCheck size={15} />自己申告として保存済み。まだ精算対象ではありません。公式Providerの取引完了・金額照合が必要です。</p>}
                     </article>

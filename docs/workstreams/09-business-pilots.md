@@ -48,6 +48,12 @@ CSV変換・出力・検査・報告は共通標準機能として扱い、今�
 - `node --experimental-strip-types --test tests/csv-transform.test.mjs tests/csv-fee-policy.test.mjs`
 - `npm run test:fashion-brand-ops`
 
+## メルカリ出品原稿の保存復旧
+
+BIL03（AMC O5、ROCK）の原稿作成は、同じowner・保存ID・正規化済み商品条件で再確認できる。サーバー生成時刻や後続の承認状態は再送比較へ含めず、同時再送も本人別readbackで1件へ収束させる。入力変更は409、他ownerは内容を返さず、PATCHのrevision競合拒否は維持する。画面は応答不明時に入力と保存IDを保持し、新規作成・状態変更を止め、本人の操作で同じ内容を再確認する。確認前は画面を閉じないよう案内する。
+
+2026-10-11、修正前に時刻差のある再送と同時再送の409を再現。`node --experimental-strip-types --test tests/mercari*.test.mjs` は15件合格。実handlerとSQLiteで4096 byte境界、壊れたJSON/UTF-8、owner・Origin・認証、100件上限、保存前DB失敗、保存後の再送、再読込を検証した。component試験は保存後の応答喪失・同一ID再確認・二重submit防止を確認。ローカルbrowserの390px/1280pxでは合成商品の保存前503→同じ内容で再確認→1件保存→再読込→原稿承認を確認した。未確認入力は画面内だけに保持し、実出品・取引・Provider入金・料金徴収は行わない。
+
 ## ココナラの保存復旧
 
 案件と手入力の入出金記録は、結果不明時に同じID・同じ正規化入力で再確認する。最初の作成条件と変更操作を本人別D1 payloadに残し、後続更新や応答喪失を挟んでも再送を重複計上しない。画面は未確認操作を保持して別操作を止める。API／SQLite、componentの応答喪失試験、ローカルbrowserの一時的保存失敗→再確認→再読込で検証する。外部受注・入金照合・銀行送金は追加しない。
