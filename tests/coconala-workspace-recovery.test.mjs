@@ -1,3 +1,4 @@
+import * as pendingOwnerIntent from '../lib/pending-owner-intent.ts';
 import * as ownerIntent from '../lib/owner-intent.ts';
 const ownerA = 'owner-v1:' + 'a'.repeat(64), ownerB = 'owner-v1:' + 'b'.repeat(64);
 import assert from 'node:assert/strict';
@@ -69,7 +70,7 @@ function harness() {
     document: { addEventListener(name, fn) { documentListeners.set(name, fn); }, removeEventListener(name) { documentListeners.delete(name); } },
     require(name) { assert.equal(name, 'react'); return react; },
   });
-  const modules = { '@/lib/owner-intent': ownerIntent,
+  const modules = { '@/lib/pending-owner-intent': pendingOwnerIntent, '@/lib/owner-intent': ownerIntent,
     react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
     '@/components/use-pending-save-navigation': navigation,
     '@/lib/operations-client': { operationRequest: request, OperationRequestError: RequestError },

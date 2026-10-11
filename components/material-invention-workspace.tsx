@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { pendingOwnerStatus, isDefinitivePendingSaveFailure } from '@/lib/pending-owner-intent';
 import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
 import fixture from '@/contracts/material-invention-fixture.json';
@@ -117,8 +118,9 @@ export default function MaterialInventionWorkspace() {
       const identity = await fetchSavedStudies(controller.signal);
       if (!mounted.current) return;
       setOwnerScope(identity.ownerScope);
-      if (!identity.ownerScope) throw new Error(OWNER_CHECK_REQUIRED);
-      if (identity.ownerScope !== operation.ownerScope) { setJobs([]); throw new Error(OWNER_CHANGED_MESSAGE); }
+      const ownerStatus = pendingOwnerStatus(operation.ownerScope, identity.ownerScope);
+      if (ownerStatus === 'unknown') throw new Error(OWNER_CHECK_REQUIRED);
+      if (ownerStatus === 'changed') { setJobs([]); throw new Error(OWNER_CHANGED_MESSAGE); }
       const response = await fetch(operation.url, { method: operation.method, credentials: 'same-origin', cache: 'no-store', signal: controller.signal,
         headers: { 'Content-Type': 'application/json', [OWNER_SCOPE_HEADER]: operation.ownerScope }, body: JSON.stringify(operation.body) });
       if (response.status === 401) {
@@ -131,7 +133,7 @@ export default function MaterialInventionWorkspace() {
         // Authentication loss and malformed success are still uncertain: a
         // previous attempt may already have committed with this exact ID.
         if (data.code === OWNER_CHANGED) { setOwnerScope(null); setJobs([]); }
-        if (data.code !== OWNER_CHANGED && [400, 404, 409, 413, 415].includes(response.status)) setPending(null);
+        if (isDefinitivePendingSaveFailure(response.status, data.code)) setPending(null);
         throw new Error(data.error || '保存状態を確認できません。同じ操作を再試行してください。');
       }
       setJob(data.job);
@@ -211,7 +213,7 @@ export default function MaterialInventionWorkspace() {
     </div>
     {!ownerScope && !needsSignin && <output>{OWNER_CHECK_REQUIRED}</output>}
     {message && <output className={styles.message}>{message}</output>}
-    {pending && !busy && <div className={styles.boundary}><p>保存結果が不明です。最初のアカウントで同じ記録IDを確認します。別アカウントには再送しません。</p><p>{ownerScope && ownerScope !== pending.ownerScope ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p><p>保留を解除しても保存済み記録は削除されません。元のアカウントで保存結果を確認してから新しく保存してください。入力本文は残ります。</p><button onClick={() => { setPending(null); setJob(null); setMessage('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button><button disabled={!!ownerScope && ownerScope !== pending.ownerScope} onClick={() => void mutate(pending)}>同じ操作を再試行</button></div>}
+    {pending && !busy && <div className={styles.boundary}><p>保存結果が不明です。最初のアカウントで同じ記録IDを確認します。別アカウントには再送しません。</p><p>{pendingOwnerStatus(pending.ownerScope, ownerScope) === 'changed' ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p><p>保留を解除しても保存済み記録は削除されません。元のアカウントで保存結果を確認してから新しく保存してください。入力本文は残ります。</p><button onClick={() => { setPending(null); setJob(null); setMessage('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button><button disabled={pendingOwnerStatus(pending.ownerScope, ownerScope) === 'changed'} onClick={() => void mutate(pending)}>同じ操作を再試行</button></div>}
     {(needsSignin || pending) && <p className={styles.note}><Link prefetch={false} href="/signin-with-chatgpt?return_to=%2Fzema%2Ftools%2Frockstar-material-invention" target="_blank" rel="noopener noreferrer">サインインして保存を使う</Link>。別タブでサインイン後、この画面で再確認してください。入力を含むJSONは手元へ保存できます。読み込み時は候補と承認を引き継がず、入力から再生成します。</p>}
     <section className={styles.saved} aria-label="保存した物質候補"><h3>保存した仕事</h3><p className={styles.note}>{storageMessage}</p><button disabled={busy} onClick={() => void list()}>一覧を再読込</button>{jobs.length === 0 ? <p className={styles.note}>保存済みの候補はまだ表示されていません。</p> : <ul>{jobs.map((item) => <li key={item.id}><button disabled={locked} onClick={() => void open(item.id)}>{item.title}</button><span>{item.status} / {new Date(item.updatedAt).toLocaleString()}</span></li>)}</ul>}</section>
   </section>;

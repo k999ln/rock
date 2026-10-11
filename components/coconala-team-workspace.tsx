@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
+import { pendingOwnerStatus, isDefinitivePendingSaveFailure } from '@/lib/pending-owner-intent';
 import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 import { operationRequest, OperationRequestError } from '@/lib/operations-client';
 import { ArrowLeft, ArrowRight, CircleCheck, ExternalLink, Plus, RefreshCw } from 'lucide-react';
@@ -149,8 +150,9 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
       const identity = await request<{ ownerScope?: string }>();
       const currentScope = readOwnerScope(identity.ownerScope);
       setOwnerScope(currentScope);
-      if (!currentScope) throw new Error(OWNER_CHECK_REQUIRED);
-      if (currentScope !== operation.ownerScope) {
+      const ownerStatus = pendingOwnerStatus(operation.ownerScope, currentScope);
+      if (ownerStatus === 'unknown') throw new Error(OWNER_CHECK_REQUIRED);
+      if (ownerStatus === 'changed') {
         setCases([]);
         throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
       }
@@ -175,7 +177,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
         if (caught.code === OWNER_CHANGED) { setCases([]); setOwnerScope(null); }
         // Validation/conflict responses are definitive. Network/server failures
         // retain the exact operation, including its original revision and ID.
-        if (caught.code !== OWNER_CHANGED && [400, 404, 409, 413, 415].includes(caught.status)) setPendingSave(null);
+        if (isDefinitivePendingSaveFailure(caught.status, caught.code)) setPendingSave(null);
       }
       setError(caught instanceof Error ? caught.message : '保存できませんでした。');
     } finally { saveInFlight.current = false; setBusy(false); }
@@ -239,7 +241,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
 
   const saveRecovery = pendingSave && <section className={styles.empty} aria-label="保存結果の確認">
     <p>保存結果の確認中です。最初のアカウントで同じ記録IDを確認します。別アカウントには再送しません。</p>
-    <p>{ownerScope && ownerScope !== pendingSave.ownerScope ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
+    <p>{pendingOwnerStatus(pendingSave.ownerScope, ownerScope) === 'changed' ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
     <Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</Link>
     <p>保留を解除しても保存済みの記録は削除されません。元のアカウントで保存結果を確認してから、新しい保存を行ってください。入力本文は残ります。</p>
     <button type="button" disabled={busy} onClick={() => { setPendingSave(null); setEditingId(''); setError(''); setNotice('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
