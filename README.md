@@ -26,6 +26,8 @@ A product concept that begins with games and connects creation, learning, and ev
 
 **How the service works.** A SIM or eSIM purchase includes access to the services. The OS itself is not stored on the SIM: a supported device installs it through an approved path, and any other device uses an app or a browser. Before paid AI work starts, you see an estimate and approve a budget; while it runs you can see what it has spent; afterwards you get an itemized record. [SIM/eSIM-led product architecture](docs/sim-led-product-architecture.md)
 
+Optional eSIM cloud access can be issued, rotated, and revoked from [purchase history](/sky/purchases) after trusted installation/device proof and contracted policy configuration. Missing configuration keeps issuance disabled; this does not enable paid execution. [Access contract](docs/sim-led-product-architecture.md#optional-esim-cloud-access-implementation)
+
 Most design documents are written in Japanese; this README is the English entry point. Everything that used to be on this page is kept, word for word, in **[README details](docs/readme-details.md)**.
 
 ## The parts

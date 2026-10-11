@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 151,
+    "tableCount": 152,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "追加機能の同一SHA CIとUI復元を確認。回収範囲は選択ファイル・メモ。native OS全体buildと実機gateは別継続。"
   },
   "webSchema": {
-    "tableCount": 79,
+    "tableCount": 80,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -40,6 +40,7 @@
       "csv_monthly_fees",
       "csv_trial_payments",
       "devices",
+      "esim_cloud_access_keys",
       "esim_device_entitlements",
       "esim_device_gateway_challenges",
       "esim_device_gateway_keys",
@@ -100,8 +101,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 61,
-    "latestMigration": "0060_sky_code_timeline.sql",
+    "migrationCount": 62,
+    "latestMigration": "0061_esim_cloud_access_keys.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -202,6 +203,7 @@
           "automation_fund_memberships",
           "automation_funds",
           "coconala_team_cases",
+          "esim_cloud_access_keys",
           "esim_device_entitlements",
           "esim_device_gateway_challenges",
           "esim_device_gateway_keys",
@@ -220,7 +222,7 @@
           "rockstar_entitlement_issuer_rate_limits",
           "rockstar_service_entitlements"
         ],
-        "tableCount": 20
+        "tableCount": 21
       }
     ]
   },
@@ -255,6 +257,7 @@
         "csv_monthly_fees",
         "csv_trial_payments",
         "devices",
+        "esim_cloud_access_keys",
         "esim_device_entitlements",
         "esim_device_gateway_challenges",
         "esim_device_gateway_keys",
@@ -315,8 +318,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0060_sky_code_timeline.sql",
-      "tableCount": 79,
+      "expectedAppliedThrough": "0061_esim_cloud_access_keys.sql",
+      "tableCount": 80,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

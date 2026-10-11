@@ -14,6 +14,7 @@ export async function POST(request: Request) {
       owner,
       'sky',
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      env, request,
     ))) return missingRockstarServiceScope('Sky');
     const raw = await request.text();
     if (new TextEncoder().encode(raw).length > 1_024)

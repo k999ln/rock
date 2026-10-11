@@ -966,3 +966,7 @@ Skyの詳細表示は同じcatalogの料金・環境・接続状態を読むだ�
 | `producthunt-discovery` | Product Hunt公式API向けの候補検索処理。 | API利用条件と商用許諾を確認する |
 
 これらは候補表示のみで、Skyからの実行、外部service接続、公開、通知送信は未接続。入力schema、版、owner、許可先、実費、本人同意、保存・削除、停止と再試行をToolごとに決め、実行結果のreceiptを別に検証する。SNS投稿、販売、応募、請求、外部連絡は内容を固定した個別承認を必須とする。失敗や結果不明を成功に変えず、providerと本人の記録を照合する。採用時にこの表の候補を各Tool詳細設計へ展開し、端末・PC・Cloudでの試験、rollbackと権限失効を受け入れる。
+
+## eSIM導入確認後のクラウド利用権（2026-10-06統合）
+
+既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。

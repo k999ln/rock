@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     const db = database();
     const owner = await authorizeRemoteAiRequest(request, 'sky-a2a-price-quote', db);
     if (!(await rockstarServiceScopeAllowed(
-      db, owner, 'agents', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
+      db, owner, 'agents', runtime.ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED, env, request,
     ))) return missingRockstarServiceScope('Agent');
 
     const raw = await request.text();

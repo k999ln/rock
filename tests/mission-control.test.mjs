@@ -155,7 +155,7 @@ await test('AMC generated guide and snapshot use the same canonical tasks', () =
       embedded,
       id === 'mission'
         ? mission
-        : { updatedAt: project.updatedAt, tasks: project.tasks },
+        : { updatedAt: project.updatedAt, tasks: project.tasks, repositoryProgressIntegration: project.repositoryProgressIntegration },
     );
   }
   mission.taskPlans[0].scope = '</script><script>bad()</script>';
@@ -261,6 +261,9 @@ await test('AMC selection, prerequisite navigation and restored state render wit
   const [mission, project] = fixture();
   const { elements, dashboard, saves, events, buttons } = visualization(mission, project);
   assert.equal(buttons().length, 32);
+  assert.ok(elements.get('amc-snapshot').textContent.includes('GitHub main確認 ' + project.repositoryProgressIntegration.recordedOn + ' / ' + project.repositoryProgressIntegration.baseMainSha.slice(0, 7)));
+  assert.ok(elements.get('amc-snapshot').textContent.includes('部隊段階の評価記録 ' + mission.updatedAt));
+  assert.ok(!elements.get('amc-snapshot').textContent.includes('ローカル作業版'));
   assert.match(elements.get('amc-task').innerHTML, /PRO04/);
   assert.match(elements.get('amc-task').innerHTML, /着手前提待ち/);
   assert.equal(saves.length, 0, 'initial load must not save state');
