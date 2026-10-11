@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { Check, ExternalLink, RefreshCw, ShieldCheck, Smartphone } from 'lucide-react';
 import type { EsimInstallMaterial } from '@/lib/esim-install-material';
+import { operationRequest, OperationRequestError, OperationResponseError } from '@/lib/operations-client';
 import styles from '@/components/sky-commerce.module.css';
 
 type EsimStatus = {
@@ -38,21 +39,21 @@ type CloudAccess = {
 };
 
 async function cloudRequest(orderId: string, body?: { action: 'issue' | 'rotate' | 'revoke'; expectedKeyId?: string }) {
-  const response = await fetch(`/api/esim/orders/${encodeURIComponent(orderId)}/cloud-access`, {
-    method: body ? 'POST' : 'GET', cache: 'no-store',
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const result = await response.json() as CloudAccess & { error?: string };
-  if (!response.ok) throw new Error(result.error === 'CLOUD_ACCESS_CONFLICT'
-    ? 'アクセスキーの状態が変わりました。「状態を更新」してから操作してください。'
-    : result.error === 'CLOUD_ACCESS_NOT_ELIGIBLE'
-      ? '利用条件を確認できません。eSIMの導入確認と利用期限をご確認ください。'
-      : 'クラウドアクセスを確認できませんでした。サインインと接続を確認して、状態を更新してください。');
-  return result;
+  try {
+    return await operationRequest<CloudAccess>(`/api/esim/orders/${encodeURIComponent(orderId)}/cloud-access`, body ? 'POST' : 'GET', body);
+  } catch (cause) {
+    if (cause instanceof OperationResponseError) throw unknownRequestOutcome();
+    throw new Error(cause instanceof OperationRequestError && cause.message === 'CLOUD_ACCESS_CONFLICT'
+      ? 'アクセスキーの状態が変わりました。「状態を確認」してから操作してください。'
+      : cause instanceof OperationRequestError && cause.message === 'CLOUD_ACCESS_NOT_ELIGIBLE'
+        ? '利用条件を確認できません。eSIMの導入確認と利用期限をご確認ください。'
+        : 'クラウドアクセスを確認できませんでした。サインインと接続を確認して、状態を確認してください。');
+  }
 }
 
-type ApiResult<T> = T & { error?: string };
+function unknownRequestOutcome() {
+  return new Error('通信の応答を確認できず、操作の結果が不明です。接続を確認して「状態を確認」してください。');
+}
 
 function safeInstallUrl(value: unknown, host: 'esimsetup.apple.com' | 'esimsetup.android.com') {
   if (typeof value !== 'string') return null;
@@ -67,14 +68,10 @@ function safeInstallUrl(value: unknown, host: 'esimsetup.apple.com' | 'esimsetup
 }
 
 async function esimRequest<T>(orderId: string, body?: unknown): Promise<T> {
-  const response = await fetch(`/api/esim/orders/${encodeURIComponent(orderId)}/${body ? 'install-material' : 'status'}`, {
-    method: body ? 'POST' : 'GET',
-    cache: 'no-store',
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const result = await response.json() as ApiResult<T>;
-  if (!response.ok) {
+  try {
+    return await operationRequest<T>(`/api/esim/orders/${encodeURIComponent(orderId)}/${body ? 'install-material' : 'status'}`, body ? 'POST' : 'GET', body);
+  } catch (cause) {
+    if (cause instanceof OperationResponseError) throw unknownRequestOutcome();
     const errors: Record<string, string> = {
       esim_not_configured: 'eSIM供給元との接続設定はまだ完了していません。',
       esim_issuance_disabled: '契約前のため、eSIM発行は無効です。',
@@ -83,9 +80,9 @@ async function esimRequest<T>(orderId: string, body?: unknown): Promise<T> {
       order_not_found: 'この注文の状態を確認できません。ログイン中のアカウントをご確認ください。',
       unauthorized: 'eSIM情報の確認にはサインインが必要です。',
     };
-    throw new Error(errors[result.error || ''] || 'eSIMの状態を確認できませんでした。時間をおいて再度お試しください。');
+    throw new Error((cause instanceof OperationRequestError && (errors[cause.message] ||
+      (cause.status === 401 ? errors.unauthorized : null))) || 'eSIMの状態を確認できませんでした。時間をおいて再度お試しください。');
   }
-  return result;
 }
 
 function deliveryRequestId(orderId: string, cache: { current: string | null }) {
@@ -127,6 +124,13 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
   const [error, setError] = useState<string | null>(null);
   const deliveryKey = useRef<string | null>(null);
 
+  function clearCachedAccess() {
+    setMaterial(null);
+    setStatus(null);
+    setCloud(null);
+    // Keep the delivery ID: a lost reply must not become a new delivery attempt.
+  }
+
   async function checkStatus() {
     setPending('status');
     setCloud(null);
@@ -134,9 +138,11 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
     try {
       const result = await esimRequest<EsimStatus>(orderId);
       setStatus(result);
-      if (result.installMaterialAcknowledged) setMaterial(null);
+      if (!result.installMaterialAvailable || result.installMaterialAcknowledged ||
+        ['not_esim_order', 'not_eligible'].includes(result.state)) setMaterial(null);
       if (!['not_esim_order', 'not_eligible'].includes(result.state)) setCloud(await cloudRequest(orderId));
     } catch (cause) {
+      clearCachedAccess();
       setError(cause instanceof Error ? cause.message : 'eSIMの状態を確認できませんでした。');
     } finally {
       setPending(null);
@@ -149,6 +155,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
     try {
       setCloud(await cloudRequest(orderId, { action, ...(cloud?.key ? { expectedKeyId: cloud.key.id } : {}) }));
     } catch (cause) {
+      clearCachedAccess();
       setError(cause instanceof Error ? cause.message : 'アクセスキーを更新できませんでした。');
     } finally { setPending(null); }
   }
@@ -163,6 +170,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
       setMaterial(result.material);
       setStatus((current) => current ? { ...current, state: 'profile_bound_install_material_ready' } : current);
     } catch (cause) {
+      clearCachedAccess();
       setError(cause instanceof Error ? cause.message : '導入情報を表示できませんでした。');
     } finally {
       setPending(null);
@@ -177,6 +185,7 @@ export function EsimPurchaseSetup({ orderId }: { orderId: string }) {
       setMaterial(null);
       setStatus((current) => current ? { ...current, state: 'install_material_acknowledged', installMaterialAvailable: false, installMaterialAcknowledged: true } : current);
     } catch (cause) {
+      clearCachedAccess();
       setError(cause instanceof Error ? cause.message : '導入情報を消去できませんでした。');
     } finally {
       setPending(null);

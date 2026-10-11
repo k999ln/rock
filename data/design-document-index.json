@@ -362,7 +362,9 @@
         "lib/sky-service-status.ts",
         "app/api/sky/service-status/route.ts",
         "lib/sky-tool-labels.ts",
-        "components/execution-access.tsx"
+        "components/execution-access.tsx",
+        "components/esim-purchase-setup.tsx",
+        "tests/esim-purchase-recovery.test.mjs"
       ],
       "recoveredContractReferences": [
         "docs/sky-tool-sdk.md",
