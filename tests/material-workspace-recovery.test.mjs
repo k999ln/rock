@@ -10,7 +10,9 @@ const compiled = ts.transpileModule(readFileSync(new URL('../components/material
   compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
 }).outputText;
 function harness() {
-  const slots = [], effects = [], requests = [], records = new Map();
+  const slots = [], effects = [], requests = [], records = new Map(), computations = new Set();
+  let generationGate;
+  function track(promise) { computations.add(promise); void promise.then(() => computations.delete(promise), () => computations.delete(promise)); return promise; }
   let cursor = 0, tree, mode = null, signedIn = true, holdList = false, releaseList;
   const react = {
     useState(initial) { const i = cursor++; if (!(i in slots)) slots[i] = initial;
@@ -22,7 +24,8 @@ function harness() {
   };
   const jsx = (type, props) => ({ type, props });
   const modules = { react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
-    '@/contracts/material-invention-fixture.json': fixture, '@/lib/material-invention': material, '@/lib/material-study': study,
+    '@/contracts/material-invention-fixture.json': fixture, '@/lib/material-invention': { ...material,
+      generateMaterialCandidateGraph(...args) { return track((async () => { if (generationGate) await generationGate.promise; return material.generateMaterialCandidateGraph(...args); })()); } }, '@/lib/material-study': study,
     './material-invention-workspace.module.css': {}, '@/components/use-pending-save-navigation': { usePendingSaveNavigation() {} },
   };
   async function fetch(url, options = {}) {
@@ -35,7 +38,7 @@ function harness() {
       return response;
     }
     assert.equal(method, 'POST');
-    const result = records.get(value.id) ?? await study.createMaterialStudy(value);
+    const result = records.get(value.id) ?? await track(study.createMaterialStudy(value));
     records.set(value.id, result);
     if (mode === 'lost') { mode = null; throw Error('response lost'); }
     return Response.json(result, { status: 201 });
@@ -50,20 +53,19 @@ function harness() {
     out.push(node); nodes(node.props?.children, out); return out; }
   function text(n) { return typeof n === 'string' || typeof n === 'number' ? String(n) : Array.isArray(n) ? n.map(text).join('') : n ? text(n.props?.children) : ''; }
   function find(type, label) { return nodes(tree).find((n) => n.type === type && (!label || text(n).includes(label))); }
-  async function flush() { await new Promise((r) => setImmediate(r)); render(); }
+  async function flush() { while (computations.size) await Promise.allSettled(computations);
+    await new Promise((r) => setImmediate(r)); render(); }
   async function click(label) { const button = find('button', label); assert.ok(button, label); assert.ok(!button.props.disabled, label);
     button.props.onClick(); render(); await flush(); }
   function source(value) { find('textarea').props.onChange({ target: { value } }); render(); }
   render();
-  return { render, find, flush, click, source, records, requests, holdList() { holdList = true; }, releaseList() { releaseList(); }, lost() { mode = 'lost'; }, signin(v) { signedIn = v; } };
+  return { render, find, flush, click, source, records, requests,
+    holdGeneration() { generationGate = Promise.withResolvers(); return () => generationGate.resolve(); }, holdList() { holdList = true; }, releaseList() { releaseList(); }, lost() { mode = 'lost'; }, signin(v) { signedIn = v; } };
 }
 
 void test('Material keeps the exact pending save through a 401 after a lost committed response', async () => {
   const h = harness(); await h.flush(); await h.click('合成サンプルを開く'); await h.click('この端末で候補を生成');
-  // Digest generation is asynchronous; wait for its visible save control.
-  for (let i = 0; i < 20 && !h.find('button', '入力と候補を本人用に保存'); i++) await h.flush();
   h.lost(); await h.click('入力と候補を本人用に保存');
-  for (let i = 0; i < 20 && !h.find('button', '同じ操作を再試行'); i++) await h.flush();
   assert.equal(h.records.size, 1);
   h.signin(false); await h.click('同じ操作を再試行');
   assert.ok(h.find('button', '同じ操作を再試行'), '401 must not discard the original uncertain save ID');
@@ -111,4 +113,13 @@ void test('opening a Material saved study after auth loss removes stale titles a
   h.signin(false); await h.click('Expired account study');
   assert.equal(h.find('button', 'Expired account study'), undefined);
   assert.ok(h.find('a', 'サインインして保存を使う'));
+});
+
+void test('Material harness waits for the actual candidate computation rather than an event-loop count', async () => {
+  const h = harness(); await h.flush(); await h.click('合成サンプルを開く');
+  const release = h.holdGeneration();
+  const generating = h.click('この端末で候補を生成');
+  assert.equal(h.find('button', '入力と候補を本人用に保存'), undefined);
+  release(); await generating;
+  assert.ok(h.find('button', '入力と候補を本人用に保存'));
 });

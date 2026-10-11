@@ -57,6 +57,7 @@ export default function MercariRevenueStarter() {
   const [copied, setCopied] = useState('');
   const [pendingCreate, setPendingCreate] = useState<Record<string, unknown> | null>(null);
   const createInFlight = useRef(false);
+  const listGeneration = useRef(0);
   const createForm = useRef<HTMLFormElement | null>(null);
   const locked = busy || pendingCreate !== null;
   const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
@@ -68,23 +69,28 @@ export default function MercariRevenueStarter() {
   usePendingSaveNavigation(pendingCreate !== null);
 
   async function refresh() {
+    const version = ++listGeneration.current;
     try {
       const response = await operationRequest<Response>('/api/revenue/mercari');
+      if (version !== listGeneration.current) return;
       setPlans(response.plans);
       setError('');
     } catch (cause) {
+      if (version !== listGeneration.current) return;
       if (cause instanceof OperationRequestError && cause.status === 401)
         setNeedsSignin(true);
       else
         setError(cause instanceof Error ? cause.message : '読み込めませんでした。');
     } finally {
-      setLoading(false);
+      if (version === listGeneration.current) setLoading(false);
     }
   }
 
   useEffect(() => {
     let current = true;
+    const version = ++listGeneration.current;
     const timer = window.setTimeout(() => {
+      if (!current || version !== listGeneration.current) return;
       if (executionBlocked) {
         setPlans([]);
         return;
@@ -92,10 +98,10 @@ export default function MercariRevenueStarter() {
       setLoading(true);
       void operationRequest<Response>('/api/revenue/mercari')
         .then((response) => {
-          if (current) setPlans(response.plans);
+          if (current && version === listGeneration.current) setPlans(response.plans);
         })
         .catch((cause) => {
-          if (!current) return;
+          if (!current || version !== listGeneration.current) return;
           if (cause instanceof OperationRequestError && cause.status === 401)
             setNeedsSignin(true);
           else
@@ -104,7 +110,7 @@ export default function MercariRevenueStarter() {
             );
         })
         .finally(() => {
-          if (current) setLoading(false);
+          if (current && version === listGeneration.current) setLoading(false);
         });
     }, 0);
     return () => {
@@ -116,6 +122,8 @@ export default function MercariRevenueStarter() {
   async function saveCreate(payload: Record<string, unknown>) {
     if (createInFlight.current || busy) return;
     createInFlight.current = true;
+    // A list captured before this save must not remove its confirmed result.
+    listGeneration.current++; setLoading(false);
     setPendingCreate(payload);
     setBusy(true);
     setError('');
@@ -188,6 +196,7 @@ export default function MercariRevenueStarter() {
       payload.saleReference = reference;
       payload.reportedNetJPY = Number(reported);
     }
+    listGeneration.current++; setLoading(false);
     setBusy(true);
     setError('');
     try {

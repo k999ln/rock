@@ -18,14 +18,16 @@ const fields = {
   '担当者へ発注条件を明示した記録': 'fixture reference',
 };
 function harness() {
-  const slots = [], effects = [], requests = [], records = new Map(), timers = [], listeners = new Map();
+  const slots = [], effects = [], requests = [], records = new Map(), timers = [], listeners = new Map(), replies = [];
   let cursor = 0, tree, drop = null, validation = false;
   const react = {
     useState(initial) { const i = cursor++; if (!(i in slots)) slots[i] = initial;
       return [slots[i], (value) => { slots[i] = typeof value === 'function' ? value(slots[i]) : value; }]; },
     useRef(initial) { const i = cursor++; if (!(i in slots)) slots[i] = { current: initial }; return slots[i]; },
     useMemo(fn) { cursor++; return fn(); },
-    useCallback(fn) { cursor++; return fn; },
+    useCallback(fn, deps) { const i = cursor++, previous = slots[i];
+      if (!previous || deps.some((value, index) => value !== previous.deps[index])) slots[i] = { fn, deps };
+      return slots[i].fn; },
     useEffect(fn, deps) { const i = cursor++, previous = slots[i];
       if (!previous || deps.some((value, index) => value !== previous.deps[index])) {
         previous?.cleanup?.(); slots[i] = { deps };
@@ -38,7 +40,7 @@ function harness() {
   async function request(_path, method, value) {
     const payload = value === undefined ? undefined : JSON.parse(JSON.stringify(value));
     requests.push({ method, value: payload });
-    if (method === 'GET') return { cases: [...records.values()] };
+    if (method === 'GET') return replies.length ? await replies.shift()() : { cases: [...records.values()] };
     if (validation) { validation = false; throw new RequestError(400); }
     let file;
     if (method === 'POST') {
@@ -88,8 +90,10 @@ function harness() {
   function fillPlaceholder(placeholder, value) { const input = nodes(tree).find((node) => node.props?.placeholder === placeholder);
     assert.ok(input); assert.ok(!input.props.disabled); input.props.onChange({ target: { value } }); render(); }
   async function submit() { find('form').props.onSubmit({ preventDefault() {} }); render(); await flush(); }
+  async function reload() { const button = nodes(tree).find((node) => node.type === 'button' && node.props['aria-label'] === '再読込');
+    assert.ok(button); assert.ok(!button.props.disabled); button.props.onClick(); render(); await flush(); }
   render();
-  return { render, find, nodes: (node = tree) => nodes(node), flush, click, fillLabel, fillPlaceholder, submit, requests, records, listeners,
+  return { replies, reload, render, find, nodes: (node = tree) => nodes(node), flush, click, fillLabel, fillPlaceholder, submit, requests, records, listeners,
     drop(method) { drop = method; }, rejectNext() { validation = true; } };
 }
 
@@ -137,4 +141,43 @@ void test('definitive validation failure releases the input without losing enter
   const title = h.nodes(h.find('label', '案件名')).find((node) => node.type === 'input');
   assert.equal(title.props.value, 'keep my draft'); assert.ok(!title.props.disabled);
   assert.equal(h.find('button', '同じ保存内容で結果を確認'), undefined);
+});
+
+async function savedCase() {
+  const h = harness(); await h.flush(); await h.click('案件を作る');
+  for (const [label, value] of Object.entries(fields)) h.fillLabel(label, value);
+  await h.submit(); return h;
+}
+
+void test('a late Coconala list cannot undo a newer 401 or restore prior private cases', async () => {
+  const h = await savedCase(), prior = [...h.records.values()];
+  const delayed = Promise.withResolvers(); h.replies.push(() => delayed.promise); await h.reload();
+  h.replies.push(() => { throw new RequestError(401); }); await h.reload();
+  assert.ok(h.find('h2', 'サインインして案件を管理'));
+  delayed.resolve({ cases: prior }); await h.flush();
+  assert.ok(h.find('h2', 'サインインして案件を管理'));
+  assert.equal(h.find('h2', 'Synthetic recovery case'), undefined);
+  assert.equal(h.find('button', '担当開始を記録'), undefined);
+});
+
+void test('a prior-owner Coconala list cannot replace a newer account list', async () => {
+  const h = await savedCase(), prior = [...h.records.values()];
+  const other = { ...prior[0], id: crypto.randomUUID(), terms: { ...prior[0].terms, title: 'Different account fixture' } };
+  const delayed = Promise.withResolvers(); h.replies.push(() => delayed.promise); await h.reload();
+  h.replies.push(() => ({ cases: [other] })); await h.reload();
+  assert.ok(h.find('h2', 'Different account fixture'));
+  delayed.resolve({ cases: prior }); await h.flush();
+  assert.ok(h.find('h2', 'Different account fixture'));
+  assert.equal(h.find('h2', 'Synthetic recovery case'), undefined);
+});
+
+void test('a pre-action Coconala list cannot roll back a confirmed PATCH in the workspace', async () => {
+  const h = await savedCase(), prior = [...h.records.values()];
+  const delayed = Promise.withResolvers(); h.replies.push(() => delayed.promise); await h.reload();
+  await h.click('担当開始を記録');
+  assert.equal([...h.records.values()][0].status, 'assigned');
+  assert.equal(h.find('button', '担当開始を記録'), undefined);
+  delayed.resolve({ cases: prior }); await h.flush();
+  assert.equal(h.find('button', '担当開始を記録'), undefined);
+  assert.ok(h.nodes().some((node) => node.props?.placeholder === '成果物を受領した記録・検査結果'));
 });
