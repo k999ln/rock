@@ -124,7 +124,7 @@
   },
   "updatedAt": "2026-10-11",
   "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
-  "nextAction": "G04/SIM01/SKY21: 既存9 PR・欠落コード・台帳を統合し、利用開始とSky/Zema/Materialの一連の操作、全体verify、同一SHA CIを検証して作業branchとPRへ保存する。実機・Provider・実課金・公開gateは別受入。",
+  "nextAction": "G04/WEB01: 全体verify・同一SHA CIを合格したPR #99をレビューし、承認範囲に従うmain統合と既存Sitesの同一source受入を別途進める。SIM01/SKY21は実issuer／Provider sandboxの本人・資格情報・予算上限・receipt条件を揃えて利用開始を受入。OS10の全OS／Pixelと現行QEMU image、R5/Pro実機は独立した受入を維持する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -3058,7 +3058,7 @@
         "newRegressionsPassed": 9,
         "existingRelatedTestsPassed": 13,
         "browserCasesPassed": 8,
-        "limits": "Synthetic local MCP list, session and disconnect fixture; integrated CI pending."
+        "limits": "Synthetic local MCP list, session and disconnect fixture; full verify and all 15 GitHub checks passed at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce. Real provider acceptance remains separate."
       }
     },
     {
@@ -4162,7 +4162,7 @@
       ],
       "recoveryFollowup": {
         "date": "2026-10-11",
-        "scope": "Owner-bound creation verified in component/requestUser/SQLite and built vinext/D1 browser. Same-tab navigation blocked while pending and restored after confirmation or explicit release on built 9e5488eb; integrated CI pending.",
+        "scope": "Owner-bound creation, uncertain-save navigation and desktop/mobile recovery verified locally; full verify and all 15 GitHub checks passed at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce. Synthetic identities only.",
         "sourceSha": "ea489506b210c951573a1716fbe4fd55be3514cb",
         "navigationRepairSha": "d8c7c23bd549e5c6f2102090414014cb6b3fcb40"
       }

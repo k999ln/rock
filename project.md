@@ -4,6 +4,10 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 最終runtime候補のローカル全体検証とmobile受入（G04 / H1、ROCK）
+
+`0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce`は全体verify成功。Node1726 pass／1 platform skip／失敗0、Worker／D1 1356項目、CSV D1／R2 385項目、185assets欠落0、設計・台帳・型・lint・buildを確認した。Workbenchの390px画面は横overflow0、案内・主要3ボタンとLibrary移動遮断を受入済み。同一SHAのGitHub全15チェックも成功。AndroidはJUnit200 pass／2 physical skip／失敗0。CodeQLの初回Python結果登録エラーは同SHAの再実行1回で復旧し、新規alertなし。mainは96845e60のまま、元9PRのHEADはすべて統合候補の履歴に含まれる。最終追補は証拠と次作業の同期だけで、runtimeを変更しない。
+
 ## 2026-10-11 — 起動コマンド変更後の既存migration試験を整合（WEB01 / O7、ROCK）
 
 `9e5488eb`の全体verifyはNode1726 pass／1 failure／1 platform skipで停止。旧shell文字列を期待する1件を実runner呼出へ変え、builder選択・local migration・CI・起動順と追加引数を実際に確認する。重複していた新規動作試験を統合したため総件数は1減るが、assertion・失敗停止・signal・旧D1復旧は保持。対象19件とlintが合格。productionコードは変えず、新候補で全体検証する。
@@ -3229,7 +3233,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: G04/SIM01/SKY21: 既存9 PR・欠落コード・台帳を統合し、利用開始とSky/Zema/Materialの一連の操作、全体verify、同一SHA CIを検証して作業branchとPRへ保存する。実機・Provider・実課金・公開gateは別受入。
+次の作業: G04/WEB01: 全体verify・同一SHA CIを合格したPR #99をレビューし、承認範囲に従うmain統合と既存Sitesの同一source受入を別途進める。SIM01/SKY21は実issuer／Provider sandboxの本人・資格情報・予算上限・receipt条件を揃えて利用開始を受入。OS10の全OS／Pixelと現行QEMU image、R5/Pro実機は独立した受入を維持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

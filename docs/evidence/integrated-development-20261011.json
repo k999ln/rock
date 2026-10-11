@@ -4,8 +4,8 @@
   "plannedEndAt": "2026-10-11T19:13:50Z",
   "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
   "branch": "codex/rock-development-20261011",
-  "status": "latest_runtime_repairs_integrated_full_verification_pending",
-  "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+  "status": "runtime_candidate_verified_external_acceptance_open",
+  "sourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
   "taskIds": [
     "G04",
     "SIM01",
@@ -1387,7 +1387,7 @@
           "typecheck": "passed",
           "productLint": "passed",
           "integratedBrowser": "Owner retry and explicit release passed on be8038be; navigation defect reproduced there, then repaired and verified on built 9e5488eb.",
-          "integratedFullVerification": "pending"
+          "integratedFullVerification": "passed at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce"
         },
         "integratedBrowser": {
           "source": {
@@ -1588,7 +1588,7 @@
           "typecheck": "passed",
           "productLint": "passed",
           "integratedBrowser": "passed at 9e5488ebf95d50ef99169799001110b5ef9b81cd",
-          "integratedFullVerification": "pending"
+          "integratedFullVerification": "passed at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce"
         },
         "integratedBrowser": {
           "source": {
@@ -1641,6 +1641,76 @@
             "server.log",
             "server.mjs"
           ]
+        },
+        "mobileBrowser": {
+          "status": "passed",
+          "source": {
+            "sourceSHA": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "serverSha256": "500e51470f6f91ae68a2fd9622a53886a31366fa1315e7994c32cbdc5f05459e",
+            "configSha256": "b748c5a5779b70d5c8af9268897a65a0911719b172882e3550edbbf5ca060a57"
+          },
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "horizontalOverflowPx": 0,
+          "checks": [
+            "Actual precommit D1 failure returned503 and pending notice displayed.",
+            "Japanese guidance wraps within390px. Signin and all3primary buttons stay within viewport width; buttons44.398px high and enabled.",
+            "Mobile conversation-history menu opens. Library click remains onWorkbench with title and pending controls preserved."
+          ],
+          "dom": {
+            "metrics": {
+              "bodyWidth": 390,
+              "controls": [
+                {
+                  "disabled": false,
+                  "height": 19,
+                  "left": 51,
+                  "right": 322.5234375,
+                  "text": "別タブで元のアカウントにサインイン",
+                  "width": 271.5234375
+                },
+                {
+                  "disabled": false,
+                  "height": 44.3984375,
+                  "left": 35,
+                  "right": 205,
+                  "text": "保存先の接続を確認",
+                  "width": 170
+                },
+                {
+                  "disabled": false,
+                  "height": 44.3984375,
+                  "left": 35,
+                  "right": 253,
+                  "text": "同じ作成内容で結果を確認",
+                  "width": 218
+                },
+                {
+                  "disabled": false,
+                  "height": 44.3984375,
+                  "left": 35,
+                  "right": 253,
+                  "text": "保留を解除（入力は保持）",
+                  "width": 218
+                }
+              ],
+              "documentWidth": 390,
+              "scrollWidth": 390,
+              "viewport": 390
+            },
+            "navigation": {
+              "url": "http://localhost:5196/chat?view=work",
+              "title": "390px 保存確認の案内",
+              "pendingCount": 1
+            }
+          },
+          "postCount": 1,
+          "savedRows": 0,
+          "capture": "outputs/workbench-pending-mobile-390.jpg",
+          "limits": "Only requested mobile display/navigation follow-up; no owner-cycle or successful save repeated. Synthetic local identity, no Provider/transaction/file chooser.",
+          "cleanup": "viewport override reset;2task tabs closed;localhost server stopped;no tracked edits"
         }
       },
       "skyChatMcpAvailability": {
@@ -1711,7 +1781,8 @@
           "result": "no reproducible defect identified",
           "scope": "event/manual reads, token change, unmount and StrictMode effect restart",
           "verification": "Source and existing assertions reviewed independently; tests not needlessly repeated."
-        }
+        },
+        "integratedFullVerification": "passed at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce"
       }
     },
     "finalIntegrationRegression": {
@@ -1740,22 +1811,302 @@
       "targetedTestsPassed": 19,
       "productChange": false,
       "expectedTestCountChange": "one duplicate test merged; no behavioral assertion removed",
-      "integratedRecheck": "pending"
+      "integratedRecheck": "passed: full npm run verify at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce"
+    },
+    "finalIntegratedCandidate": {
+      "sourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+      "local": {
+        "command": "npm run verify",
+        "exitCode": 0,
+        "environment": "macOS arm64, Node v26.0.0",
+        "node": {
+          "tests": 1727,
+          "passed": 1726,
+          "failed": 0,
+          "skipped": 1
+        },
+        "skipReason": "Non-POSIX descriptor-refusal case is inapplicable on this POSIX environment.",
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385,
+        "webAssetReferences": 185,
+        "missingAssets": 0,
+        "typecheck": "passed",
+        "productLint": "passed",
+        "productionBuild": "passed",
+        "projectMissionRepositoryBaselineDesignDatabase": "passed",
+        "record": "integrated-verify-11.log"
+      },
+      "github": {
+        "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+        "checkedAt": "2026-10-11T17:32:00Z",
+        "checks": 15,
+        "allSuccess": true,
+        "runs": [
+          {
+            "id": 38159330375,
+            "name": "Release signing control tests",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330375",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330361,
+            "name": "SPIDER repair regressions",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330361",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330384,
+            "name": "SPIDER repository security",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330384",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330377,
+            "name": "Rock star native OS source",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330377",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330376,
+            "name": "Rock star verification",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330376",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330374,
+            "name": "Rock star Android prototype",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330374",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330378,
+            "name": "SPIDER CodeQL security",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330378",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 2,
+            "conclusion": "success"
+          }
+        ],
+        "verify": {
+          "nodePassed": 1726,
+          "nodeSkipped": 1,
+          "workerD1Assertions": 1356,
+          "csvD1R2Assertions": 385,
+          "webAssetReferences": 185,
+          "missingAssets": 0
+        }
+      },
+      "browserRuntime": "Desktop owner/navigation proofs remain separately SHA-bound; final 390px follow-up uses the built artifact of this exact SHA.",
+      "limits": [
+        "Synthetic local identities and fixtures",
+        "Provider sandbox, physical device and production acceptance remain separate"
+      ],
+      "android": {
+        "schemaVersion": 1,
+        "runId": 38159330374,
+        "runAttempt": 1,
+        "runUrl": "https://github.com/k999ln/rock/actions/runs/38159330374",
+        "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+        "status": "completed",
+        "conclusion": "success",
+        "sourceVerification": {
+          "runHeadAndArtifactHeadMatch": true,
+          "checkoutAndCollectorLogMatch": true,
+          "androidTree": "19f1b1bb6a86cbe8b69cc2ab62b0478420af36ba",
+          "sameAndroidSourceAndWorkflowAs": "2ebb625045e9f0aaa15effdc1f337c761708f53a"
+        },
+        "artifact": {
+          "id": 11709749005,
+          "name": "android-prototype-reports",
+          "sizeBytes": 358325,
+          "sha256": "26042220b083af92d00c608b1e80b8b1b8d96db224009043f72785fc03f3858a",
+          "githubDigestMatched": true
+        },
+        "junit": {
+          "core": {
+            "tests": 121,
+            "passed": 121,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 17
+          },
+          "automationUnit": {
+            "tests": 16,
+            "passed": 16,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 2
+          },
+          "toolSdk": {
+            "tests": 7,
+            "passed": 7,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 2
+          },
+          "automationInstrumentation": {
+            "tests": 45,
+            "passed": 43,
+            "skipped": 2,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          },
+          "shellInstrumentation": {
+            "tests": 7,
+            "passed": 7,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          },
+          "operatorInstrumentation": {
+            "tests": 6,
+            "passed": 6,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          }
+        },
+        "totals": {
+          "tests": 202,
+          "passed": 200,
+          "skipped": 2,
+          "failures": 0,
+          "errors": 0
+        },
+        "skipped": [
+          {
+            "className": "dev.rock.automation.PhysicalRebootRecoveryTest",
+            "method": "recoverSelectedToolAndFinishAfterPhysicalReboot",
+            "xmlReason": null,
+            "reason": "Physical two-phase reboot test: avocadoPhase defaults to empty and this emulator run supplies neither seed nor recover. JUnit Assume prevents execution.",
+            "source": "android/automation/src/androidTest/java/dev/rock/automation/PhysicalRebootRecoveryTest.java:24,36,57"
+          },
+          {
+            "className": "dev.rock.automation.PhysicalRebootRecoveryTest",
+            "method": "seedSelectedToolAndLeaveFirstStepRunning",
+            "xmlReason": null,
+            "reason": "Physical two-phase reboot test: avocadoPhase defaults to empty and this emulator run supplies neither seed nor recover. JUnit Assume prevents execution.",
+            "source": "android/automation/src/androidTest/java/dev/rock/automation/PhysicalRebootRecoveryTest.java:24,36,57"
+          }
+        ],
+        "execution": {
+          "apiLevel": 35,
+          "image": "google_apis",
+          "architecture": "x86_64",
+          "device": "emulator-5554 - 15",
+          "acceptanceTarget": "emulator",
+          "excludedClass": "dev.rock.automation.LocalAiServiceIntegrationTest",
+          "excludedClassReason": "Separate Local AI workflow/device acceptance; not included in these JUnit totals."
+        },
+        "limits": [
+          "No physical Pixel or physical reboot acceptance",
+          "No full Android OS build or boot acceptance",
+          "No APK download or signer verification repeated"
+        ],
+        "junitFiles": "junit-files.json"
+      },
+      "codeqlProcessingRecovery": {
+        "candidateHead": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+        "candidateMerge": "940e97c9f07bdf180d2f50f03a1648c75ef50492",
+        "runId": 38159330378,
+        "initialPythonJob": {
+          "id": 114528762562,
+          "conclusion": "success",
+          "uploadedAt": "2026-10-11T17:23:34Z",
+          "processingCompleteAt": "2026-10-11T17:23:50Z"
+        },
+        "initialPythonAnalysis": {
+          "id": 1932176773,
+          "category": "/spider/language:python",
+          "analysisKey": ".github/workflows/spider-codeql.yml:analyze",
+          "error": "Unknown Error",
+          "rulesCount": 0,
+          "resultsCount": 0,
+          "sarifId": "7bc69086-c598-11f1-87f8-e204e870f575",
+          "sarifProcessingStatus": "complete",
+          "sarifProcessingErrors": null,
+          "sarifDownloadStatus": 422,
+          "sarifDownloadMessage": "Analysis could not be processed for analysis ID 1932176773"
+        },
+        "initialAggregate": {
+          "id": 114529102505,
+          "conclusion": "neutral",
+          "title": "1 configuration not found"
+        },
+        "previousSuccessfulPython": {
+          "id": 1932168576,
+          "merge": "313fbf25c070dce8fe066f19b5d68917c0400d48",
+          "head": "9e5488ebf95d50ef99169799001110b5ef9b81cd",
+          "error": "",
+          "rulesCount": 50,
+          "resultsCount": 23
+        },
+        "pythonAndCodeqlConfigDiff": "No differences between previous successful head and candidate in all *.py, .github/workflows/spider-codeql.yml, or .github/codeql. Both CodeQL versions 2.27.2.",
+        "assessment": "Transient GitHub analysis processing/registration failure, not missing source/configuration or merely pending indexing. One authorized rerun of the same SHA restored Python results and aggregate success without source/workflow changes. Internal backend cause remains undisclosed.",
+        "rerun": {
+          "count": 1,
+          "requestedAt": "2026-10-11T17:28:18Z",
+          "sameRunId": 38159330378,
+          "sameHead": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+          "result": "success",
+          "attempt": 2,
+          "updatedAt": "2026-10-11T17:30:50Z",
+          "pythonAnalysis": {
+            "id": 1932193454,
+            "createdAt": "2026-10-11T17:30:42Z",
+            "error": "",
+            "rulesCount": 50,
+            "resultsCount": 23
+          },
+          "javascriptAnalysis": {
+            "id": 1932191580,
+            "createdAt": "2026-10-11T17:29:54Z",
+            "error": "",
+            "rulesCount": 103,
+            "resultsCount": 6
+          },
+          "aggregate": {
+            "id": 114529102505,
+            "conclusion": "success",
+            "title": "No new alerts in code changed by this pull request"
+          }
+        }
+      },
+      "completionMeaning": "All local and GitHub checks of this runtime candidate succeeded. Later evidence-only commits must still be checked at their own PR head; no other SHA is silently substituted."
     }
   },
   "github": {
     "saved": true,
     "mainIntegrated": false,
     "deployed": false,
-    "validatedSourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+    "validatedSourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
     "pullRequest": "https://github.com/k999ln/rock/pull/99",
     "draft": true,
-    "savedSourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
-    "latestFullCi": "All 15 checks passed at 2ebb6250; completed source/run evidence is in validation.integratedOwnerAndMcpRecovery.",
-    "latestCheckedSourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+    "savedSourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+    "latestFullCi": "All 15 checks passed at 0c53c80e; CodeQL result processing recovered on one same-SHA rerun. See validation.finalIntegratedCandidate.",
+    "latestCheckedSourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
     "originalOpenPrHeadsRechecked": {
-      "checkedAt": "2026-10-11T16:33:00Z",
+      "checkedAt": "2026-10-11T17:24:00Z",
       "mainSha": "96845e6006c15e39ba5b45495f79c21bdff7399e",
+      "mainCommittedAt": "2026-10-10T20:03:49Z",
       "allNineHeadsAreAncestors": true,
       "pullRequests": [
         {
@@ -1794,8 +2145,7 @@
           "number": 84,
           "headSha": "60ca6aecde5b7e32a15cc652844fbb812ec616d4"
         }
-      ],
-      "originalPullRequestsUnchanged": true
+      ]
     }
   },
   "acceptanceLimits": [
@@ -2598,7 +2948,8 @@
     "tool": "CUA file chooser for local synthetic purchase JSON",
     "period": "approximately 2026-10-11 10:34–15:27 UTC",
     "effect": "Root integration blocked until the call returned; assigned agents completed their existing bounded tasks. This interval is elapsed time, not active development time.",
-    "plannedEndUnchanged": true
+    "plannedEndUnchanged": true,
+    "verificationCheckpointAt": "2026-10-11T17:32:00Z"
   },
   "rocketstarGroundAudit": {
     "sourceSha": "10dc0ee67be469e6bc3139f11515396fe519386c",
@@ -2625,5 +2976,44 @@
       "failures": 0,
       "scope": "Fixed archive integrity only; archived receiver/colony runtime tests were not executed."
     }
+  },
+  "handoff": {
+    "review": "PR99 contains all nine original PR heads plus repairs and cleanup. Main is unchanged; review and approved integration are separate from publication.",
+    "next": [
+      {
+        "tasks": [
+          "G04",
+          "WEB01"
+        ],
+        "action": "Review PR99 and verify the accepted GitHub source against the existing Sites deployment target before any approved publication."
+      },
+      {
+        "tasks": [
+          "SIM01",
+          "SKY21",
+          "SKY07"
+        ],
+        "action": "Use an explicitly selected issuer/provider sandbox with owner authentication, credentials, budget cap and receipt/finality conditions to accept the real purchase-to-service flow."
+      },
+      {
+        "tasks": [
+          "OS10"
+        ],
+        "action": "Build a signed full Pixel image on the dedicated compatible x86_64 Linux environment; accept boot, permission, persistence and recovery on the same image. Keep current QEMU image acceptance separate."
+      },
+      {
+        "tasks": [
+          "MAT15"
+        ],
+        "action": "Resolve the recorded R5 hardware/safety decisions and obtain same-configuration physical evidence; do not transfer research-profile or host results to hardware acceptance."
+      }
+    ],
+    "unchangedBoundaries": [
+      "No main merge or deployment",
+      "No real payments or provider execution",
+      "No device initialization or flash",
+      "No full OS or current QEMU image acceptance",
+      "No Mini/Pro hardware or flight-control acceptance"
+    ]
   }
 }
