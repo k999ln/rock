@@ -163,6 +163,8 @@ response / receipt案:
 }
 ```
 
+Receipt生成時にもclosed rubricを検査する。`grounded`・`safe`は型がbooleanで確率0〜1、`usefulness`は型がscoreで有限の0〜2（SDKの3段階criteriaのゼロ始まり位置）を必須とする。欠落・余分な回答ID・型違い・範囲外は`INVALID_RESPONSE`で拒否する。返す回答は検証した3つのscalarだけへ投影し、Providerが加えた本文・metadata・確率分布は保存・表示しない。usageは欠落をnullに保ち、存在するtoken数の非負整数・加算の安全性・合計との整合を検査する。usageは請求書や精算の証拠ではない。共通Jev transportは20秒のabortと自動再送0回を固定し、timeoutを評価成功にしない。adapterがabortを無視してもローカル待機を終了し、遅い結果をReceiptへ採用しない。timeoutはHTTP 504で返し、送信後に処理がなかったとは表示しない。fixtureは`tests/jev-receipt-boundary.test.mjs`・`tests/jev-transport.test.mjs`で検証する。Provider実接続と料金gateは別受入のまま維持する。
+
 仕事本文をreceiptへ保存しない。保存する場合もowner、用途、保持期限、削除、export、provider送信同意を別途実装する。`unavailable`、`invalid_response`、`denied`、`budget_exceeded`を`evaluated`や合格へ読み替えない。
 
 ## 6. Privacy・料金・運用gate

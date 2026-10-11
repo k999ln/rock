@@ -5136,7 +5136,14 @@
         "components/spider-workspace.tsx",
         "tests/spider-sky.test.mjs",
         "tests/spider-workspace-state.test.mjs",
-        "tests/spider-inspector-worker.test.mjs"
+        "tests/spider-inspector-worker.test.mjs",
+        "tests/dependency-cache-revalidation-security.test.mjs",
+        "docs/evidence/spider-cache-error-revalidation.json",
+        "docs/evidence/spider-zema-storage-policy.json",
+        "tests/sharp-native-security.test.mjs",
+        "docs/evidence/spider-root-sharp-update.json",
+        "tests/release-readiness.test.mjs",
+        "docs/evidence/spider-sdk-lock-audit.json"
       ]
     },
     {
@@ -5941,6 +5948,123 @@
     "openDependencyAlerts": 0,
     "evidence": "docs/evidence/security-gate-completion.json"
   },
+  "spiderCacheErrorRevalidation": {
+    "status": "main_refresh_host_pass_ci_pending",
+    "baseCommit": "e12d880c788e90a7aa684a82106f14024a2c3c36",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "workstream": "Security / Identity / Compliance",
+    "responsibility": "ROCK",
+    "finding": "Origin-error reuse bypasses cached-response prohibitions and request matching in the local http-cache-semantics fork.",
+    "evidence": "docs/evidence/spider-cache-error-revalidation.json",
+    "mainIntegrated": false,
+    "mainRefresh": {
+      "cycle": 57,
+      "baseCommit": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+      "priorVerifiedHead": "de3a446bad36db49ff1e5a39b8cae74bc6862618",
+      "priorChecksPassed": 7,
+      "validation": "pending for refreshed candidate",
+      "mainIntegrated": false,
+      "localValidation": {
+        "cacheRegression": {
+          "pass": 13,
+          "fail": 0,
+          "skipped": 0
+        },
+        "metadataChecks": [
+          "mission:update",
+          "mission:check",
+          "project:update",
+          "project:check",
+          "database:status",
+          "database:check",
+          "git diff --check"
+        ],
+        "fullVerify": {
+          "exitCode": 1,
+          "stage": "llm:architecture:check",
+          "reason": "Existing local installation lacks ai; GitHub full install and verification still required."
+        }
+      },
+      "firstIntegratedMain": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
+      "preservedUpstreamWork": [
+        "Pixel build preparation from PR86",
+        "Sky connection dialog from PR87"
+      ]
+    },
+    "latestMainRefresh": {
+      "cycle": 62,
+      "baseCommit": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+      "priorVerifiedHead": "819422c49f8b78b2b9b5fff8696240335d02a83e",
+      "priorChecksPassed": 8,
+      "priorVerifyRun": 37512489543,
+      "conflicts": [
+        "project.md"
+      ],
+      "resolution": "Retain both progress sections; preserve all upstream runtime/features, portableAddons and main nextAction",
+      "cacheSourceTestsWorkflowAndLicenseUnchanged": true,
+      "validation": "local_cache_and_metadata_pass_exact_sha_ci_pending",
+      "mainIntegrated": false,
+      "existingDependencyFixPrs": [
+        88,
+        89,
+        90
+      ],
+      "localValidation": {
+        "cacheRegression": {
+          "tests": 13,
+          "pass": 13,
+          "fail": 0,
+          "skip": 0
+        },
+        "metadataChecks": "mission/project/database update/check and git diff --check passed",
+        "independentReview": {
+          "blockers": 0,
+          "mainFeaturesAndProgressPreserved": true,
+          "cacheRuntimeTestsWorkflowAndLicenseUnchanged": true
+        },
+        "fullVerify": {
+          "exitCode": 1,
+          "stage": "llm:architecture:check",
+          "reason": "Installed dependency tree lacks ai (ERR_MODULE_NOT_FOUND); GitHub full install and exact-SHA verification required",
+          "enospc": false
+        }
+      }
+    },
+    "documentationMainRefresh": {
+      "cycle": 79,
+      "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+      "priorVerifiedHead": "1a5a7079350e2742d65abdd1a9aaddaf0e87c6f0",
+      "priorChecksPassed": 7,
+      "priorVerifyRun": 37574887322,
+      "conflicts": [
+        "project.md"
+      ],
+      "resolution": "Preserve main reading guide, title, all restored history and ordered sections plus the complete existing cache progress section. Global nextAction and unrelated status unchanged.",
+      "cacheSourceTestsWorkflowAndLicenseUnchanged": true,
+      "validation": "local_cache_release_and_metadata_pass_exact_sha_ci_pending",
+      "mainIntegrated": false,
+      "existingDependencyFixPrs": [
+        88,
+        89,
+        90
+      ],
+      "localValidation": {
+        "cacheAndReleaseTests": {
+          "exitCode": 0,
+          "command": "node --test tests/dependency-cache-revalidation-security.test.mjs tests/release-readiness.test.mjs"
+        },
+        "releaseCheck": "pass; ready0/6 blocked6",
+        "metadataChecks": "mission/project/database update/check passed",
+        "fullVerify": {
+          "exitCode": 1,
+          "stage": "llm:architecture:check",
+          "reason": "Installed dependency tree lacks ai (ERR_MODULE_NOT_FOUND); exact-SHA GitHub full install and verification required",
+          "enospc": false
+        }
+      }
+    }
+  },
   "skyConnectionDialogFix": {
     "requestId": "SKY-S2-CONNECTION-FIX-INTEGRATE-20261006-01",
     "primarySquad": "O5",
@@ -6272,5 +6396,151 @@
     "verifiedImplementationSha": "bfecf01b63651a7fea4b5279f335136d395538dd",
     "githubCI": "success",
     "independentReadOnlyReview": "pass"
+  },
+  "spiderZemaStoragePolicyRefresh": {
+    "status": "reviewed_control_pinned_local_validation_pass_ci_pending",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "workstream": "Security / Identity / Compliance",
+    "responsibility": "ROCK",
+    "baseCommit": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "finding": "PR93 relocated public storage identifier is absent from pinned policy exact paths",
+    "evidence": "docs/evidence/spider-zema-storage-policy.json",
+    "mainIntegrated": false,
+    "reviewedControlCommit": "b4c9000e2f265723d29b90c5f37c7f34b1a18362"
+  },
+  "spiderRootSharpSecurityUpdate": {
+    "status": "previous_sha_ci_pass_merge_recheck_pending",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "responsibility": "ROCK",
+    "baseCommit": "e22b4a69ae9e600872f2e5ae60d9d0aab28bcfe9",
+    "targetAlert": 26,
+    "advisory": "GHSA-wq5f-xc86-pv6w",
+    "scope": "Root development dependency: all miniflare consumers resolve patched sharp and bundled librsvg. Site update remains existing PR88.",
+    "versions": {
+      "sharp": "0.35.5",
+      "sharpLibvips": "1.3.4",
+      "librsvg": "2.63.2",
+      "vips": "8.18.7"
+    },
+    "evidence": "docs/evidence/spider-root-sharp-update.json",
+    "mainIntegrated": false,
+    "lastVerifiedCommit": "0e87b9a81c6d58b66c4de2c9df4e0b61c189d159",
+    "lastVerifiedChecks": 8,
+    "lastVerifiedRun": "https://github.com/k999ln/rock/actions/runs/37554875390",
+    "mergeBaseline": "0fbf688b4585b829f9e34d37799d446cb5a66b32",
+    "integrationNote": "Preserve main portableAddons and nextAction; sharp dependency and three native tests remain byte-identical. Recheck the merge commit on GitHub; prior SHA success is historical.",
+    "mergeValidation": {
+      "metadataChecks": "mission/project/database/release/license inventory passed",
+      "independentReview": "No blockers; upstream feature paths and progress preserved, sharp source/test/lock unchanged",
+      "localVerify": "Stopped at llm:architecture:check: ERR_MODULE_NOT_FOUND for ai; no ENOSPC in this invocation; exact merge SHA Linux CI required"
+    },
+    "latestMainRefresh": {
+      "cycle": 78,
+      "incorporatedMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+      "previousValidatedHead": "90f8df72030a33aab4f507dbbf7c6c776a1a80a4",
+      "previousVerifiedRuns": {
+        "verify": 37569023537,
+        "branchCodeql": 37569039855,
+        "registeredChecks": 8,
+        "allSuccessful": true
+      },
+      "scope": "Resolve project.md conflict after PR92 documentation reorganization; preserve both history sections and unchanged sharp lock/audit/native tests",
+      "status": "local_release_and_metadata_checks_pass_exact_sha_ci_pending",
+      "localValidation": "pending",
+      "githubSameSha": "pending",
+      "sameRefCodeqlComparison": "pending",
+      "mainMerged": false,
+      "localReleaseTests": {
+        "tests": 35,
+        "pass": 35,
+        "fail": 0,
+        "skip": 0
+      },
+      "releaseCheck": "pass;ready0/6,blocked6 unchanged",
+      "inventoryCheck": "pass;956entries,914components,50review;legal clearance unchanged",
+      "metadataChecks": "mission/project/database update/check passed",
+      "localFullVerify": {
+        "exitCode": 1,
+        "stoppedAt": "llm:architecture:check",
+        "reason": "ai dependency missing; ERR_MODULE_NOT_FOUND",
+        "enospc": false
+      },
+      "localNativeTests": {
+        "status": "not_run",
+        "reason": "installed root sharp module unavailable (MODULE_NOT_FOUND); exact-SHA Linux CI must install locked native dependency and run all3 tests"
+      },
+      "independentReview": {
+        "blockers": 0,
+        "mainDocumentationFiles": 30,
+        "mainFilesByteIdenticalExceptProject": 29,
+        "upstreamProjectHeadingsPreserved": 410,
+        "sharpManifestLockAuditNativeTestsByteIdentical": true,
+        "globalNextActionPreserved": true,
+        "duplicateJsonKeys": 0,
+        "conflictMarkers": 0
+      }
+    }
+  },
+  "spiderSdkSecurityDependencyUpdate": {
+    "status": "local_release_regressions_pass_exact_sha_ci_pending",
+    "taskId": "SYS15",
+    "primarySquad": "H1",
+    "responsibility": "ROCK",
+    "pullRequest": "https://github.com/k999ln/rock/pull/89",
+    "targetAlert": 27,
+    "advisory": "GHSA-6qxp-vccf-f47h",
+    "scope": "Repair exact lock hash binding for the existing SDK1.32.1 dependency update; legal clearance and runtime integration unchanged",
+    "localReleaseReadiness": "35/35 regressions pass; release check and inventory synchronization pass",
+    "mainIntegrated": false,
+    "evidence": "docs/evidence/spider-sdk-lock-audit.json",
+    "localFullVerify": "Stopped at llm:architecture:check because installed ai is missing; exact-SHA GitHub verify pending",
+    "latestMainRefresh": {
+      "cycle": 77,
+      "incorporatedMain": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+      "previousValidatedHead": "1da02922e994e93d4e515936db1de414e9af4faa",
+      "scope": "Resolve only project.md integration conflict after PR92 documentation reorganization; preserve restored main documentation, SDK lock delta, inventory and existing gate behavior",
+      "status": "local_release_and_metadata_checks_pass_exact_sha_ci_pending",
+      "localReleaseTests": {
+        "tests": 35,
+        "pass": 35,
+        "fail": 0,
+        "skip": 0
+      },
+      "releaseCheck": "pass; ready0/6, blocked6 unchanged",
+      "inventoryCheck": "pass;956 entries,914 components,50 review; legal clearance unchanged",
+      "sameRefCodeqlComparison": "pending after branch analysis",
+      "githubSameSha": "pending",
+      "mainMerged": false,
+      "metadataChecks": "mission/project/database update and checks passed",
+      "localFullVerify": {
+        "exitCode": 1,
+        "stoppedAt": "llm:architecture:check",
+        "reason": "installed ai dependency missing (ERR_MODULE_NOT_FOUND); no ENOSPC",
+        "sameAsPriorLocalLimitation": true
+      },
+      "preservation": {
+        "sdkLockAuditAndReleaseTestsByteIdenticalToPreviousValidatedHead": true,
+        "mainDocumentationExceptScopedProjectAdditionsUnchanged": true
+      },
+      "previousExactShaValidation": {
+        "head": "1da02922e994e93d4e515936db1de414e9af4faa",
+        "verifyRun": 37570079750,
+        "branchCodeqlRun": 37570101735,
+        "registeredChecks": 7,
+        "allSuccessful": true
+      },
+      "independentReview": {
+        "blockers": 0,
+        "mainDocumentationFiles": 30,
+        "mainFilesByteIdenticalExceptProject": 29,
+        "upstreamProjectHeadingsPreserved": 410,
+        "sdkManifestLockAuditByteIdentical": true,
+        "globalNextActionPreserved": true,
+        "duplicateJsonKeys": 0,
+        "conflictMarkers": 0
+      }
+    }
   }
 }

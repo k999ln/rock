@@ -392,7 +392,16 @@
     },
     {
       "id": "jev-evaluation",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "implementationPaths": [
+        "lib/jev-evaluation.ts",
+        "lib/jev-transport.ts"
+      ],
+      "verificationPaths": [
+        "tests/jev-evaluation.test.mjs",
+        "tests/jev-receipt-boundary.test.mjs",
+        "tests/jev-transport.test.mjs"
+      ]
     },
     {
       "id": "rockstar-legal-intake",

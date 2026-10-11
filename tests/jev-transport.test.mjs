@@ -19,7 +19,10 @@ void test('shared Jev transport keeps model, zero retries and retention request 
     const result = await evaluateJev(
       { apiKey: 'fixture-key', state: 'public fixture', questions },
       async (options) => {
-        assert.deepEqual(options, {
+        const { abortSignal, ...contract } = options;
+        assert.ok(abortSignal instanceof AbortSignal);
+        assert.equal(abortSignal.aborted, false);
+        assert.deepEqual(contract, {
           model: JEV_MODEL,
           state: 'public fixture',
           questions,
@@ -118,4 +121,43 @@ void test('private, deterministic and approval-required requests never enter Jev
     const result = await router.route({ ...request, ...overrides });
     assert.equal(result.providerId, 'rule');
   }
+});
+
+void test('Jev aborts a stalled request at the fixed deadline without retrying', async (context) => {
+  const controller = new AbortController();
+  context.mock.method(AbortSignal, 'timeout', (milliseconds) => {
+    assert.equal(milliseconds, 20_000);
+    return controller.signal;
+  });
+  let calls = 0;
+  const pending = evaluateJev(
+    { apiKey: 'fixture', state: 'fixture', questions: JEV_ROUTING_RUBRIC },
+    ({ abortSignal }) => {
+      calls += 1;
+      return new Promise((_, reject) => {
+        abortSignal.addEventListener('abort', () => reject(abortSignal.reason), { once: true });
+      });
+    },
+  );
+  const timedOut = assert.rejects(pending, { name: 'TimeoutError' });
+  controller.abort(new DOMException('Deadline reached', 'TimeoutError'));
+  await timedOut;
+  assert.equal(calls, 1);
+});
+
+void test('deadline rejects even when the provider ignores abort and later returns an answer', async (context) => {
+  const controller = new AbortController();
+  context.mock.method(AbortSignal, 'timeout', () => controller.signal);
+  let finish;
+  let calls = 0;
+  const pending = evaluateJev(
+    { apiKey: 'fixture', state: 'fixture', questions: JEV_ROUTING_RUBRIC },
+    () => { calls += 1; return new Promise((resolve) => { finish = resolve; }); },
+  );
+  const timedOut = assert.rejects(pending, { name: 'TimeoutError' });
+  controller.abort(new DOMException('Deadline reached', 'TimeoutError'));
+  await timedOut;
+  finish({ answers: { destination: { type: 'choice', choice: 'code' } } });
+  await assert.rejects(pending, { name: 'TimeoutError' });
+  assert.equal(calls, 1);
 });

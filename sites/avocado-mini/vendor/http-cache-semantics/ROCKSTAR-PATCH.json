@@ -3,7 +3,7 @@
     "name": "http-cache-semantics",
     "version": "4.3.0",
     "source": "https://github.com/kornelski/http-cache-semantics/commit/b1d4bd682fbab0252985de45219f4e7497c0067c",
-    "license": "MIT"
+    "license": "BSD-2-Clause"
   },
   "localVersion": "4.3.0-rock.1",
   "advisory": "GHSA-ch52-4w7c-c8xp",
@@ -21,7 +21,7 @@
     {
       "path": "index.js",
       "upstreamSha256": "ede1cc404a492fa348eb9d97a3007a0d72aa717bd22cd86a56bd0824c19729ca",
-      "patchedSha256": "0951c9d26471af18a8e21988829ce08f8ccf01e267740eab4c601345b964d34a"
+      "patchedSha256": "324afc5b862048a3d80b6ae53cc7aeb0a0a6d6baf4121a4f52ea44893ac25f91"
     },
     {
       "path": "package.json",
