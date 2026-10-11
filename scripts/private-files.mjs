@@ -4,7 +4,8 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// Helpers for the git-crypt encrypted areas listed in .gitattributes.
+// Helpers for git-crypt encrypted areas listed in .gitattributes. Encryption is off
+// since 2026-10-11 (no paths are listed); `check` still fails if lib/generated is tracked.
 //   node scripts/private-files.mjs status   how many encrypted files, and whether they are readable
 //   node scripts/private-files.mjs check    fail if a file that must be encrypted is stored in plain text
 //   node scripts/private-files.mjs unlock   unlock with the base64 key in ROCK_GIT_CRYPT_KEY

@@ -92,10 +92,7 @@
     "amc:workbench": "node scripts/amc-planner.mjs",
     "postinstall": "node scripts/generate-private-modules.mjs",
     "private:generate": "node scripts/generate-private-modules.mjs",
-    "private:status": "node scripts/private-files.mjs status",
-    "private:check": "node scripts/private-files.mjs check",
-    "private:unlock": "node scripts/private-files.mjs unlock",
-    "verify:public": "node scripts/verify-public.mjs"
+    "private:check": "node scripts/private-files.mjs check"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",

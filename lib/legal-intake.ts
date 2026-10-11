@@ -1,7 +1,7 @@
 import { LAWYER_DIRECTORY, LAWYER_DIRECTORY_AS_OF } from './generated/private-content.ts';
 
-// The directory lives in private/legal/lawyer-directory.json (encrypted in Git).
-// Public builds without the key ship an empty directory.
+// The directory lives in private/legal/lawyer-directory.json and is generated into
+// lib/generated at build time (scripts/generate-private-modules.mjs).
 export const LEGAL_DIRECTORY_AS_OF = LAWYER_DIRECTORY_AS_OF;
 
 export const legalIssueCategories = [

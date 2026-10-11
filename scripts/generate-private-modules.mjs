@@ -2,10 +2,10 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// Builds lib/generated/private-content.ts from the encrypted files under private/.
-// With the git-crypt key unlocked, the real content is used. Without it (public
-// checkouts and public CI), safe public placeholders are used so the app still
-// builds. The generated file is git-ignored and must never be committed.
+// Builds lib/generated/private-content.ts from the files under private/.
+// Encryption is off since 2026-10-11, so the real content is always used. If the
+// files are ever git-crypt ciphertext again (encryption re-enabled, no key), safe
+// placeholders are used so the app still builds. The generated file is git-ignored.
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outputPath = resolve(root, 'lib/generated/private-content.ts');

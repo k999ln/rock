@@ -282,7 +282,7 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   assert.throws(
     () =>
       validateBaseline(source, (path) =>
-        path.endsWith('AGENTS.private.md')
+        path.endsWith('AGENTS.md')
           ? 'missing links'
           : readFileSync(path, 'utf8'),
       ),

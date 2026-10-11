@@ -19,12 +19,6 @@
         "public web core, workflow and fund simulation",
         "public tool contracts, fixtures and release documentation"
       ],
-      "encryption": {
-        "tool": "git-crypt",
-        "list": ".gitattributes",
-        "publicCiHasKey": false,
-        "since": "2026-10-11"
-      },
       "removedPaths": {
         "list": "data/archived-paths.json",
         "restoreCommit": "96845e6006c15e39ba5b45495f79c21bdff7399e",

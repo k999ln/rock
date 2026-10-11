@@ -1493,7 +1493,7 @@ export function validateBaseline(
     'miniCellularIntent: Miniの回線の確定事項が欠けています',
   );
   for (const file of [
-    'AGENTS.private.md',
+    'AGENTS.md',
     'README.md',
     'project.md',
     'docs/product.md',
@@ -1508,8 +1508,8 @@ export function validateBaseline(
     );
   }
   requireValue(
-    read(resolve(root, 'AGENTS.private.md')).includes('prompt-playbook.md'),
-    'AGENTS.private.mdに作成規約がありません',
+    read(resolve(root, 'AGENTS.md')).includes('prompt-playbook.md'),
+    'AGENTSに作成規約がありません',
   );
   return data;
 }

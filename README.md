@@ -262,11 +262,11 @@ The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded exper
 | **Web / Sky / Zema / Wallet** | Source for screens, catalog, work, approvals, history, Wallet boundaries, and Tool runners. | Current-version readback for each deployment, external Providers, and production commercial acceptance. |
 | **Pixel 10 GL066** | Existing-OS pre-tests with a test-signed app for offline planning, limited Tools, storage, and restart. | Full RockstarOS image, production signing, first flash/boot, OTA, and total-loss recovery; all four first-flash gates are failing. |
 | **Linux / QEMU** | Independent RockstarOS Developer Preview and acceptance records. | Release gates for the current artifact; results do not transfer to Android or a physical device. |
-| **avocadoMini R5** | R5 is the current design baseline, with integrated design and calculation checks. | Zero physical-device tests; input/display adapter, sensors, enclosure, thermal/power, manufacturing drawings, and manufacturing approval. |
+| **avocadoMini R5** | R5 is the current design baseline, with integrated design and calculation checks ([R5 design](docs/avocado-mini-r5/README.md)). | Zero physical-device tests have been completed, and manufacturing approval is **on hold**. Still open: input/display adapter, sensors, enclosure, thermal/power, and manufacturing drawings. |
 | **Material Invention** | Sandbox core, candidate comparison in Sky/Zema, owner-scoped saved work, and digest-checked recovery. | Physical R5 adapter and sensors. Simulation and laboratory connections are not implemented. |
 | **avokadoPro / rocketstar** | Public source includes product pages and design-program boundaries. | Purchase, assembly, manufacturing, flight, and physical acceptance. |
 
-Task counts are not a measure of product completion. The project ledger and detailed evidence are encrypted; the public repository intentionally exposes their filenames and public contracts without exposing their contents.
+Task counts are not a measure of product completion. [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Evidence](docs/evidence/)
 
 <!-- project-overview:start -->
 Updated: 2026-10-11 / 392 task records (32 parents, 192 children, 168 standalone; 360 execution units excluding parents): 114 done, 47 in progress, 230 planned, 1 blocked
@@ -285,20 +285,9 @@ Updated: 2026-10-11 / 392 task records (32 parents, 192 children, 168 standalone
 | inspect the separately deployed Workers | [services/README.md](services/README.md) |
 | see the product preview site | [avocadomini.si](https://avocadomini.si) |
 | try the public Sky preview | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) |
-| understand private/encrypted areas | [`.gitattributes`](.gitattributes) · [document map](docs/README.md#encrypted-areas) |
+| read the confirmed requirements and how they changed | [Product baseline](docs/product-baseline.md) · [Specification history](docs/spec-history.md) |
 
-Most design and work documents are Japanese or encrypted. The public README, source contracts, public SDK, and public previews are the intended starting points for a new contributor.
-
-## Public and encrypted parts
-
-Everything in this repository is public **except** a set of files encrypted with [git-crypt](https://github.com/AGWA/git-crypt). Everyone can see their names; only key holders can read them. The encrypted areas include:
-
-- 🔒 hardware designs, inventions, and industrial design;
-- 🔒 pricing, contracts, and business plans;
-- 🔒 research, conversation records, and private AI instructions;
-- 🔒 development internals such as the work ledger, evidence, workstreams, and agent settings.
-
-The exact path list is in [`.gitattributes`](.gitattributes). Without the key, use `npm run verify:public`; do not unlock, copy, summarize, or publish encrypted contents. Key holders may run `git-crypt unlock <key file>` and then the full verification command described below.
+Most design and work documents are written in Japanese. The README, source contracts, public SDK, and public previews are the intended starting points for a new contributor.
 
 ## Start developing
 
@@ -319,13 +308,14 @@ npm start
 
 `npm start` applies local D1 migrations and starts the preview only after migration succeeds. It does not deploy the Worker or run remote migrations. Choose a port with `npm start -- --port 8788`. The Operator Dock uses the same local runtime: `npm run operator-dock:dev`.
 
-Before opening a pull request, run the public checks:
+Before opening a pull request, run all checks:
 
 ```sh
-npm run verify:public
+npm ci --prefix sites/avocado-mini
+npm run verify
 ```
 
-Key holders unlock first (`git-crypt unlock <key file>`) and run `npm run verify`. After changing progress records or generated status, run the repository-prescribed update/check commands. Rules for people and AI coding agents are in [AGENTS.md](AGENTS.md).
+After changing progress records or generated status, run the repository-prescribed update/check commands. Rules for people and AI coding agents are in [AGENTS.md](AGENTS.md).
 
 ## Safety, rights, and images
 
