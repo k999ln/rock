@@ -68,7 +68,11 @@ export type JevEvaluationReceipt = {
   rubricId: JevRubricId;
   rubricHash: string;
   stateHash: string;
-  answers: Record<string, unknown>;
+  answers: {
+    grounded: { type: 'boolean'; probability: number };
+    safe: { type: 'boolean'; probability: number };
+    usefulness: { type: 'score'; score: number };
+  };
   usage: {
     inputTokens: number | null;
     outputTokens: number | null;
@@ -120,6 +124,62 @@ export async function sha256Hex(value: string): Promise<string> {
     .join('');
 }
 
+function record(value: unknown): Record<string, unknown> {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new Error('INVALID_RESPONSE');
+  return value as Record<string, unknown>;
+}
+
+function boundedNumber(value: unknown, maximum: number): number {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > maximum)
+    throw new Error('INVALID_RESPONSE');
+  return value;
+}
+
+function receiptAnswers(value: unknown): JevEvaluationReceipt['answers'] {
+  const answers = record(value);
+  const expected = Object.keys(JEV_RUBRICS[JEV_RUBRIC_ID]);
+  if (Object.keys(answers).length !== expected.length ||
+      !expected.every((key) => Object.hasOwn(answers, key)))
+    throw new Error('INVALID_RESPONSE');
+  const booleanAnswer = (value: unknown): { type: 'boolean'; probability: number } => {
+    const answer = record(value);
+    if (answer.type !== 'boolean') throw new Error('INVALID_RESPONSE');
+    return { type: 'boolean', probability: boundedNumber(answer.probability, 1) };
+  };
+  const usefulness = record(answers.usefulness);
+  if (usefulness.type !== 'score') throw new Error('INVALID_RESPONSE');
+  // Evaluation SDK scores are fractional, zero-based criterion positions.
+  // Retain only the rubric's verified scalars, never arbitrary provider metadata.
+  return {
+    grounded: booleanAnswer(answers.grounded),
+    safe: booleanAnswer(answers.safe),
+    usefulness: { type: 'score', score: boundedNumber(usefulness.score,
+      JEV_RUBRICS[JEV_RUBRIC_ID].usefulness.criteria.length - 1) },
+  };
+}
+
+function receiptUsage(value: unknown): JevEvaluationReceipt['usage'] {
+  const usage = value === undefined ? {} : record(value);
+  const tokens = (value: unknown): number | null => {
+    if (value === undefined) return null;
+    if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0)
+      throw new Error('INVALID_RESPONSE');
+    return value;
+  };
+  const inputTokens = tokens(usage.inputTokens);
+  const outputTokens = tokens(usage.outputTokens);
+  const totalTokens = tokens(usage.totalTokens);
+  if (inputTokens !== null && outputTokens !== null &&
+      (!Number.isSafeInteger(inputTokens + outputTokens) ||
+       (totalTokens !== null && totalTokens !== inputTokens + outputTokens)))
+    throw new Error('INVALID_RESPONSE');
+  if (totalTokens !== null && ((inputTokens !== null && inputTokens > totalTokens) ||
+      (outputTokens !== null && outputTokens > totalTokens)))
+    throw new Error('INVALID_RESPONSE');
+  return { inputTokens, outputTokens, totalTokens };
+}
+
 export async function makeJevReceipt(
   requestId: string,
   input: JevEvaluationInput,
@@ -133,8 +193,8 @@ export async function makeJevReceipt(
   },
   evaluatedAt = new Date().toISOString(),
 ): Promise<JevEvaluationReceipt> {
-  if (!result.answers || typeof result.answers !== 'object')
-    throw new Error('INVALID_RESPONSE');
+  const answers = receiptAnswers(result.answers);
+  const usage = receiptUsage(result.usage);
   return {
     schemaVersion: 1,
     requestId,
@@ -143,12 +203,8 @@ export async function makeJevReceipt(
     rubricId: input.rubricId,
     rubricHash: await sha256Hex(JSON.stringify(JEV_RUBRICS[input.rubricId])),
     stateHash: await sha256Hex(input.state),
-    answers: result.answers as Record<string, unknown>,
-    usage: {
-      inputTokens: result.usage?.inputTokens ?? null,
-      outputTokens: result.usage?.outputTokens ?? null,
-      totalTokens: result.usage?.totalTokens ?? null,
-    },
+    answers,
+    usage,
     evaluatedAt,
     authority: 'advisory-only',
   };

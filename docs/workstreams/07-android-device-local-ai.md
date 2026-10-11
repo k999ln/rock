@@ -258,3 +258,7 @@ eSIM chipの検出は、OS全体・通信plan・特定provider・LLM・端末内
 ### OS11 / RLS02: 同一build成果物の検査
 
 2026-10-06、ROCKはPixel 10向け署名sourceを`2026100200`へ更新し、compile出力の機種・番号・必須アプリ・SHA-256検査を実装した。実行入口と検証コマンドは[Device Preview](../phone-preview-20260911.md#全os-compile成果物の検査os11--rls02)。OWNERの専用Linux／支出上限指定待ち。全OS compile、正式署名、実機flashと復旧は未実施。
+
+### AI07: Jev receiptと期限のhost受入（2026-10-11）
+
+ROCK／O3。既存Jev adapterのReceiptが任意objectを`evaluated`にしていた境界を修正し、rubricの3回答・型・有限範囲とusage整合だけを受け入れる。Providerの任意metadataをReceiptへコピーせず、共通transportは20秒でabortし再送しない。合格条件は不正／欠落回答の拒否、正常なゼロ始まりscore・部分usageの保持、期限中止、advisory-onlyと既存privacy gateの維持。`node --experimental-strip-types --test tests/jev-evaluation.test.mjs tests/jev-receipt-boundary.test.mjs tests/jev-transport.test.mjs`で検査する。Provider契約、本課金、Android／実機への接続はこのhost検証に含めない。[契約](../llm-evaluation-architecture.md#5-jev-api契約)。

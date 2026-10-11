@@ -542,6 +542,8 @@ Pixelで結果の保存ボタンが縦に細く伸びる問題を確認したた
 
 `jev-evaluation` は本来、本人が送信対象・送信先・料金・保持条件を確認した後に、最小化した入力を評価するremote evaluatorとして設計する。現在はprovider price quote、owner cap、usage receipt settlementがAPI経路へ未接続のため、server routeをfail-closedにし外部送信を拒否する。料金gate、Sky scope entitlement、明示同意をserver側で受け入れた後に限り再有効化する。評価Receiptはreview signalであり、権限付与、Tool成功、仕事完了、専門家判断の代替にはしない。
 
+受領境界: 既存AI07／ROCKで、`lib/jev-evaluation.ts`は`grounded`・`safe`のboolean確率0〜1と、`usefulness`のSDK criterion位置0〜2だけを検査してReceiptへ写す。欠落・追加回答・異常なtoken数は失敗とし、Providerの任意本文・metadataは返さない。`lib/jev-transport.ts`は20秒でabort、自動再送なし。失敗後は評価結果を作らず本人reviewへ戻し、既存成果・承認を変更しない。詳細とhost合格条件は[LLM・評価モデル設計](llm-evaluation-architecture.md#5-jev-api契約)を参照する。
+
 ## 15. 特許出願アシスタント
 
 - 目的: 発明情報、先行技術候補、差分、明細書、請求項、要約のdraftを準備する。
