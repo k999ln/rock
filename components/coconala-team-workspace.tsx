@@ -17,7 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { catalog } from '@/lib/catalog';
 import { skyToolUiState } from '@/lib/sky-tool-ui';
 import {
-  teamMoney, type TeamCase, type TeamTerms,
+  teamMoney, parseTeamTerms, teamId, type TeamCase, type TeamTerms,
 } from '@/lib/coconala-team';
 import styles from './coconala-team-workspace.module.css';
 
@@ -52,6 +52,40 @@ type PendingSave = {
   notice: string;
 };
 
+const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
+const validDate = (value: unknown) => typeof value === 'string' && Number.isFinite(Date.parse(value));
+function readCase(value: unknown): TeamCase {
+  if (!object(value) || teamId(value.id) !== value.id || !Number.isSafeInteger(value.revision) || (value.revision as number) < 0 ||
+      typeof value.status !== 'string' || !Object.hasOwn(statusNames, value.status) || !validDate(value.createdAt) || !validDate(value.updatedAt))
+    throw new Error('案件の保存状態を確認できません。再読込してください。');
+  const terms = parseTeamTerms(value.terms);
+  for (const key of ['customerReceipts', 'customerRefunds', 'workerPayments']) {
+    const entries = value[key];
+    if (!Array.isArray(entries) || !entries.every(entry => object(entry) && typeof entry.id === 'string' &&
+      Number.isSafeInteger(entry.amountYen) && (entry.amountYen as number) > 0 && typeof entry.reference === 'string' && validDate(entry.at)))
+      throw new Error('入出金の記録を確認できません。同じ操作IDを保持して再確認してください。');
+  }
+  if (!Array.isArray(value.events) || !value.events.every(event => object(event) &&
+    ['id', 'action', 'note'].every(key => typeof event[key] === 'string') && validDate(event.at) &&
+    (event.command === undefined || typeof event.command === 'string')))
+    throw new Error('案件の変更履歴を確認できません。同じ操作IDを保持して再確認してください。');
+  return { ...value, terms, ...(value.creationTerms === undefined ? {} : { creationTerms: parseTeamTerms(value.creationTerms) }) } as TeamCase;
+}
+function readSnapshot(value: unknown) {
+  if (!object(value) || !Array.isArray(value.cases)) throw new Error('案件一覧を確認できません。再読込してください。');
+  return { cases: value.cases.map(readCase), ownerScope: readOwnerScope(value.ownerScope) };
+}
+type PrivateWorkspace = {
+  owner: string | null; form: TeamTerms; formBase: TeamTerms; editingId: string; editingRevision: number | null; formOpen: boolean; deleteCaseId: string;
+  selectedId: string; note: string; moneyKind: 'record_customer_receipt' | 'record_refund' | 'record_worker_payment';
+  moneyAmount: string; moneyReference: string; pendingSave: PendingSave | null;
+};
+const emptyWorkspace = (owner: string | null): PrivateWorkspace => ({ owner, form: { ...blank }, formBase: { ...blank },
+  editingId: '', editingRevision: null, formOpen: false, deleteCaseId: '', selectedId: '', note: '', moneyKind: 'record_customer_receipt',
+  moneyAmount: '', moneyReference: '', pendingSave: null });
+const dirtyWorkspace = (value: PrivateWorkspace) => JSON.stringify(value.form) !== JSON.stringify(value.formBase) ||
+  !!value.note.trim() || !!value.moneyAmount.trim() || !!value.moneyReference.trim();
+
 type Field = { key: keyof TeamTerms; label: string; kind?: 'date' | 'number' | 'textarea'; help?: string };
 const fields: Field[] = [
   { key: 'title', label: '案件名' },
@@ -77,54 +111,107 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   const returnTo = workspace ? '/zema/tools/coconala' : '/sky/tools/coconala';
   const [view, setView] = useState<'management' | 'check'>('management');
   const [infoOpen, setInfoOpen] = useState(false);
-  const [cases, setCases] = useState<TeamCase[]>([]);
-  const [form, setForm] = useState<TeamTerms>(blank);
-  const [editingId, setEditingId] = useState('');
-  const [formOpen, setFormOpen] = useState(false);
-  const [deleteCaseId, setDeleteCaseId] = useState('');
-  const [selectedId, setSelectedId] = useState('');
-  const [note, setNote] = useState('');
-  const [moneyKind, setMoneyKind] = useState<'record_customer_receipt' | 'record_refund' | 'record_worker_payment'>('record_customer_receipt');
-  const [moneyAmount, setMoneyAmount] = useState('');
-  const [moneyReference, setMoneyReference] = useState('');
+  const [cases, setCaseState] = useState<TeamCase[]>([]);
+  const currentCases = useRef<TeamCase[]>([]);
+  const setCases = useCallback((value: TeamCase[] | ((previous: TeamCase[]) => TeamCase[])) => {
+    const next = typeof value === 'function' ? value(currentCases.current) : value;
+    currentCases.current = next; setCaseState(next);
+  }, []);
+  const [privateState, setPrivateState] = useState<PrivateWorkspace>(emptyWorkspace(null));
+  const { form, editingId, formOpen, deleteCaseId, selectedId, note, moneyKind, moneyAmount, moneyReference, pendingSave } = privateState;
+  const currentWorkspace = useRef(privateState);
+  const workspaces = useRef(new Map<string | null, PrivateWorkspace>());
+  const currentOwner = useRef<string | null>(null);
+  const [retainedWork, setRetainedWork] = useState(false);
+  const [parkedWork, setParkedWork] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [needsSignin, setNeedsSignin] = useState(false);
   const [ownerScope, setOwnerScope] = useState<string | null>(null);
-  const [pendingSave, setPendingSave] = useState<PendingSave | null>(null);
   const saveInFlight = useRef(false);
   const listGeneration = useRef(0);
-  const locked = busy || pendingSave !== null;
+  const mutationGeneration = useRef(0);
+  const mounted = useRef(true);
+  const locked = busy || pendingSave !== null || !ownerScope;
+  const dirty = dirtyWorkspace(privateState);
+  usePendingSaveNavigation(retainedWork);
 
-  usePendingSaveNavigation(pendingSave !== null);
-
+  const updateWorkspace = useCallback((patch: Partial<PrivateWorkspace>) => {
+    const next = { ...currentWorkspace.current, ...patch };
+    currentWorkspace.current = next; workspaces.current.set(next.owner, next); setPrivateState(next);
+    const entries = Array.from(workspaces.current.values());
+    setRetainedWork(entries.some(value => !!value.pendingSave || dirtyWorkspace(value)));
+    setParkedWork(entries.some(value => value.owner !== next.owner && (!!value.pendingSave || dirtyWorkspace(value))));
+  }, []);
+  const showIdentity = useCallback((scope: string | null, savedCases: TeamCase[] = []) => {
+    if (currentOwner.current !== scope) {
+      workspaces.current.set(currentWorkspace.current.owner, currentWorkspace.current);
+      currentOwner.current = scope;
+      listGeneration.current++; mutationGeneration.current++;
+      saveInFlight.current = false; setBusy(false); setLoading(false);
+      currentWorkspace.current = workspaces.current.get(scope) ?? emptyWorkspace(scope);
+      updateWorkspace({}); setError(''); setNotice('');
+    }
+    setOwnerScope(scope); setCases(scope ? savedCases : []);
+  }, [updateWorkspace, setCases]);
+  function ownsInput() { return mounted.current && !!ownerScope && currentOwner.current === ownerScope && currentWorkspace.current.owner === privateState.owner; }
+  function editWorkspace(patch: Partial<PrivateWorkspace>) {
+    if (ownsInput() && !saveInFlight.current && !currentWorkspace.current.pendingSave) updateWorkspace(patch);
+  }
+  function setForm(value: TeamTerms | ((current: TeamTerms) => TeamTerms)) {
+    editWorkspace({ form: typeof value === 'function' ? value(currentWorkspace.current.form) : value });
+  }
+  function setFormOpen(value: boolean) { editWorkspace({ formOpen: value }); }
+  function setDeleteCaseId(value: string) { editWorkspace({ deleteCaseId: value }); }
+  function setSelectedId(value: string) { editWorkspace({ selectedId: value }); }
+  function setNote(value: string) { editWorkspace({ note: value }); }
+  function setMoneyKind(value: PrivateWorkspace['moneyKind']) { editWorkspace({ moneyKind: value }); }
+  function setMoneyAmount(value: string) { editWorkspace({ moneyAmount: value }); }
+  function setMoneyReference(value: string) { editWorkspace({ moneyReference: value }); }
+  function discardDraft() {
+    if (currentWorkspace.current !== privateState) return;
+    if (!ownsInput() || saveInFlight.current || currentWorkspace.current.pendingSave) return;
+    updateWorkspace({ form: { ...blank }, formBase: { ...blank }, editingId: '', editingRevision: null, note: '', moneyAmount: '', moneyReference: '' });
+    setNotice('未保存の入力を破棄しました。保存済み案件と手入力の入出金記録は変更していません。');
+  }
+  function openForm() {
+    if (!ownsInput() || saveInFlight.current || currentWorkspace.current.pendingSave) return;
+    updateWorkspace({ formOpen: true });
+  }
+  function editTerms(item: TeamCase) {
+    if (!currentCases.current.includes(item)) return;
+    if (!ownsInput() || saveInFlight.current || currentWorkspace.current.pendingSave) return;
+    if (dirtyWorkspace(currentWorkspace.current)) { updateWorkspace({ formOpen: true }); setError('未保存の入力が残っています。保存または明示的に破棄してから別の条件を編集してください。'); return; }
+    updateWorkspace({ form: { ...item.terms }, formBase: { ...item.terms }, editingId: item.id, editingRevision: item.revision, formOpen: true });
+  }
+  function releasePending() {
+    if (!ownsInput() || saveInFlight.current || !pendingSave || currentWorkspace.current.pendingSave !== pendingSave) return;
+    updateWorkspace({ pendingSave: null }); setError('');
+    setNotice('保留を解除しました。以前の保存が完了している可能性があります。案件一覧で結果を確認してから新しく保存してください。');
+  }
   const refresh = useCallback(async () => {
     if (saveInFlight.current) return;
     const version = ++listGeneration.current;
     setLoading(true);
     try {
-      const result = await request<{ cases: TeamCase[]; ownerScope?: string }>();
+      const result = readSnapshot(await request<unknown>());
       if (version !== listGeneration.current) return;
-      setCases(result.cases);
-      setOwnerScope(readOwnerScope(result.ownerScope));
-      setNeedsSignin(false);
-      setError('');
+      showIdentity(result.ownerScope, result.cases); setNeedsSignin(false); setError(''); setLoading(false);
     } catch (caught) {
       if (version !== listGeneration.current) return;
-      setOwnerScope(null);
-      if (caught instanceof OperationRequestError && caught.status === 401) {
-        setNeedsSignin(true); setCases([]);
-      }
-      setError(caught instanceof Error ? caught.message : '案件を読み込めませんでした。');
-    } finally { if (version === listGeneration.current) setLoading(false); }
-  }, []);
+      showIdentity(null);
+      if (caught instanceof OperationRequestError && caught.status === 401) setNeedsSignin(true);
+      setError(caught instanceof Error ? caught.message : '案件を読み込めませんでした。'); setLoading(false);
+    }
+  }, [showIdentity]);
 
   useEffect(() => {
-    const generation = listGeneration;
+    mounted.current = true;
+    const generation = listGeneration, mutations = mutationGeneration, mountedRef = mounted;
     const timeout = window.setTimeout(() => void refresh(), 0);
-    return () => { window.clearTimeout(timeout); generation.current++; };
+    return () => { mountedRef.current = false; window.clearTimeout(timeout); generation.current++; mutations.current++; };
   }, [refresh]);
 
   const selected = cases.find((item) => item.id === selectedId) ?? cases[0] ?? null;
@@ -134,61 +221,67 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
     return { net: form.grossYen - fee, margin: form.grossYen - fee - form.workerFeeYen };
   }, [form]);
 
-  function updateCase(next: TeamCase) {
-    setCases((current) => [next, ...current.filter((item) => item.id !== next.id)]);
-    setSelectedId(next.id);
-  }
-
-  async function attemptSave(operation: PendingSave) {
-    if (saveInFlight.current || busy) return;
+  async function attemptSave(operation: PendingSave, retry = false) {
+    if (!ownsInput() || operation.ownerScope !== currentOwner.current || saveInFlight.current ||
+      (retry ? currentWorkspace.current.pendingSave !== operation : currentWorkspace.current.pendingSave !== null)) return;
     saveInFlight.current = true;
-    // Earlier list snapshots must not replace a confirmed mutation or undo 401.
+    const version = ++mutationGeneration.current;
+    const current = () => mounted.current && version === mutationGeneration.current && currentOwner.current === operation.ownerScope && currentWorkspace.current.pendingSave === operation;
     listGeneration.current++; setLoading(false);
-    setPendingSave(operation);
-    setBusy(true); setError(''); setNotice('');
+    updateWorkspace({ pendingSave: operation }); setBusy(true); setError(''); setNotice('');
+    let dispatched = false;
     try {
-      const identity = await request<{ ownerScope?: string }>();
-      const currentScope = readOwnerScope(identity.ownerScope);
-      setOwnerScope(currentScope);
-      const ownerStatus = pendingOwnerStatus(operation.ownerScope, currentScope);
-      if (ownerStatus === 'unknown') throw new Error(OWNER_CHECK_REQUIRED);
-      if (ownerStatus === 'changed') {
-        setCases([]);
-        throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
+      const identity = readSnapshot(await request<unknown>());
+      if (!current()) return;
+      const ownerStatus = pendingOwnerStatus(operation.ownerScope, identity.ownerScope);
+      if (ownerStatus !== 'matching') {
+        showIdentity(identity.ownerScope, identity.cases);
+        setError(ownerStatus === 'unknown' ? OWNER_CHECK_REQUIRED : OWNER_CHANGED_MESSAGE); return;
       }
-      const result = await request<{ caseFile: TeamCase }>(operation.method, operation.value, operation.ownerScope);
-      const expectedId = 'id' in operation.value ? operation.value.id : operation.value.caseId;
-      if (!result.caseFile || result.caseFile.id !== expectedId ||
-          !Number.isSafeInteger(result.caseFile.revision) || !result.caseFile.terms ||
-          !Array.isArray(result.caseFile.events))
-        throw new Error('保存結果を確認できません。同じ内容でもう一度確認してください。');
-      updateCase(result.caseFile);
-      setNeedsSignin(false);
-      setPendingSave(null);
-      setNotice(operation.notice);
-      if (operation.fromForm) {
-        setFormOpen(false); setEditingId(''); setForm(blank);
+      setCases(identity.cases);
+      dispatched = true;
+      const result = await request<unknown>(operation.method, operation.value, operation.ownerScope);
+      if (!current()) return;
+      const caseFile = readCase(object(result) ? result.caseFile : null);
+      const value = operation.value;
+      if (caseFile.id !== ('id' in value ? value.id : value.caseId)) throw new Error('保存した案件との対応を確認できません。同じ記録IDを保持しています。');
+      if ('terms' in value) {
+        if (JSON.stringify(caseFile.creationTerms ?? caseFile.terms) !== JSON.stringify(parseTeamTerms(value.terms)))
+          throw new Error('保存した条件との対応を確認できません。同じ記録IDを保持しています。');
       } else {
-        setNote(''); setMoneyAmount(''); setMoneyReference('');
+        const command: Record<string, unknown> = { ...value.command,
+          ...(value.command.terms ? { terms: parseTeamTerms(value.command.terms) } : {}),
+          ...(typeof value.command.note === 'string' ? { note: value.command.note.trim() } : {}),
+          ...(typeof value.command.reference === 'string' ? { reference: value.command.reference.trim() } : {}) };
+        if (caseFile.revision <= value.revision || !caseFile.events.some(event => event.id === command.id && event.command === JSON.stringify(command)))
+          throw new Error('操作の保存を確認できません。同じ操作IDを保持しています。');
       }
+      setCases(previous => [caseFile, ...previous.filter(item => item.id !== caseFile.id)]);
+      updateWorkspace({ pendingSave: null, selectedId: caseFile.id, ...(operation.fromForm ? {
+        formOpen: false, editingId: '', editingRevision: null, form: { ...blank }, formBase: { ...blank },
+      } : { note: '', moneyAmount: '', moneyReference: '' }) });
+      setNeedsSignin(false); setNotice(operation.notice);
     } catch (caught) {
+      if (!current()) return;
       if (caught instanceof OperationRequestError) {
-        if (caught.status === 401) { setNeedsSignin(true); setCases([]); setOwnerScope(null); }
-        if (caught.code === OWNER_CHANGED) { setCases([]); setOwnerScope(null); }
-        // Validation/conflict responses are definitive. Network/server failures
-        // retain the exact operation, including its original revision and ID.
-        if (isDefinitivePendingSaveFailure(caught.status, caught.code)) setPendingSave(null);
+        if (caught.status === 401) { showIdentity(null); setNeedsSignin(true); }
+        if (caught.code === OWNER_CHANGED) showIdentity(null);
+        // A failed preflight does not resolve an earlier unknown mutation.
+        if (dispatched && isDefinitivePendingSaveFailure(caught.status, caught.code)) updateWorkspace({ pendingSave: null });
       }
       setError(caught instanceof Error ? caught.message : '保存できませんでした。');
-    } finally { saveInFlight.current = false; setBusy(false); }
+    } finally { if (version === mutationGeneration.current) { saveInFlight.current = false; setBusy(false); } }
   }
 
   async function save(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (locked) return;
+    if (currentWorkspace.current !== privateState) return;
+    if (!ownsInput() || saveInFlight.current || currentWorkspace.current.pendingSave || locked) return;
     if (!ownerScope) { setError(OWNER_CHECK_REQUIRED); return; }
     const current = cases.find((item) => item.id === editingId);
-    if (editingId && !current) { setError('下書きを再読込してください。'); return; }
+    if (editingId && (!current || current.revision !== currentWorkspace.current.editingRevision)) {
+      setError('編集中に案件が更新されました。入力は保持しています。変更内容を控え、未保存の入力を破棄して最新の条件を開き直してから確認してください。'); return;
+    }
     await attemptSave(current ? {
       ownerScope, method: 'PATCH', fromForm: true,
       value: { caseId: current.id, revision: current.revision,
@@ -202,7 +295,8 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   }
 
   async function act(action: string, payload: Record<string, unknown> = {}) {
-    if (!selected || locked) return;
+    if (currentWorkspace.current !== privateState || !selected || !currentCases.current.includes(selected)) return;
+    if (!ownsInput() || saveInFlight.current || currentWorkspace.current.pendingSave || !selected || locked) return;
     if (!ownerScope) { setError(OWNER_CHECK_REQUIRED); return; }
     await attemptSave({
       ownerScope, method: 'PATCH', fromForm: false,
@@ -213,28 +307,34 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
   }
 
   async function deleteDraft() {
-    if (!deleteTarget || locked || needsSignin) return;
-    if (!ownerScope) { setError(OWNER_CHECK_REQUIRED); return; }
-    listGeneration.current++; setLoading(false);
-    setBusy(true); setError(''); setNotice('');
+    if (currentWorkspace.current !== privateState || !deleteTarget || !currentCases.current.includes(deleteTarget)) return;
+    if (!ownsInput() || saveInFlight.current || currentWorkspace.current.pendingSave || !deleteTarget || locked || needsSignin) return;
+    saveInFlight.current = true;
+    const version = ++mutationGeneration.current;
+    const current = () => mounted.current && version === mutationGeneration.current && currentOwner.current === ownerScope;
+    listGeneration.current++; setLoading(false); setBusy(true); setError(''); setNotice('');
     try {
-      const result = await request<{ deletedCaseId: string }>('DELETE', {
-        caseId: deleteTarget.id, revision: deleteTarget.revision,
-      }, ownerScope);
-      if (result.deletedCaseId !== deleteTarget.id) throw new Error('削除結果を確認できませんでした。案件を再読込してください。');
-      setCases((current) => current.filter((item) => item.id !== result.deletedCaseId));
-      setSelectedId((current) => current === result.deletedCaseId ? '' : current);
-      setDeleteCaseId('');
+      const identity = readSnapshot(await request<unknown>());
+      if (!current()) return;
+      if (identity.ownerScope !== ownerScope) { showIdentity(identity.ownerScope, identity.cases); setError(OWNER_CHANGED_MESSAGE); return; }
+      const result = await request<{ deletedCaseId: string }>('DELETE', { caseId: deleteTarget.id, revision: deleteTarget.revision }, ownerScope!);
+      if (!current()) return;
+      if (!result || result.deletedCaseId !== deleteTarget.id) throw new Error('削除結果を確認できませんでした。案件を再読込してください。');
+      setCases(previous => previous.filter(item => item.id !== result.deletedCaseId));
+      updateWorkspace({ selectedId: currentWorkspace.current.selectedId === result.deletedCaseId ? '' : currentWorkspace.current.selectedId, deleteCaseId: '' });
       setNotice('下書きを削除しました。');
     } catch (caught) {
-      if (caught instanceof OperationRequestError && caught.status === 401) setNeedsSignin(true);
+      if (!current()) return;
+      if (caught instanceof OperationRequestError && (caught.status === 401 || caught.code === OWNER_CHANGED)) {
+        showIdentity(null); if (caught.status === 401) setNeedsSignin(true);
+      }
       setError(caught instanceof Error ? caught.message : '削除できませんでした。案件を再読込してください。');
-    } finally { setBusy(false); }
+    } finally { if (version === mutationGeneration.current) { saveInFlight.current = false; setBusy(false); } }
   }
 
   const signinRecovery = <section className={styles.empty} aria-label="サインインの復帰">
     <h2>サインインして案件を管理</h2>
-    <p>入力はこの画面に残ります。別タブでサインイン後、接続を確認してください。案件と報酬の記録はあなたのアカウントだけに保存されます。</p>
+    <p>入力は元のアカウント用にこの画面のメモリへ保持します。元のアカウントでサインイン後、接続を確認してください。案件と報酬の記録はあなたのアカウントだけに保存されます。</p>
     <Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">別タブでサインイン <ArrowRight size={15} /></Link>
     <button type="button" className={styles.secondary} disabled={loading || busy} onClick={() => void refresh()}>{loading ? '確認中…' : 'サインイン後に接続を確認'}</button>
   </section>;
@@ -244,10 +344,10 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
     <p>{pendingOwnerStatus(pendingSave.ownerScope, ownerScope) === 'changed' ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
     <Link href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</Link>
     <p>保留を解除しても保存済みの記録は削除されません。元のアカウントで保存結果を確認してから、新しい保存を行ってください。入力本文は残ります。</p>
-    <button type="button" disabled={busy} onClick={() => { setPendingSave(null); setEditingId(''); setError(''); setNotice('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
+    <button type="button" disabled={busy} onClick={releasePending}>保留を解除（入力は保持）</button>
     <button type="button" disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button>
     <button type="button" className={styles.secondary} disabled={busy || needsSignin || (!!ownerScope && pendingSave.ownerScope !== ownerScope)}
-      onClick={() => void attemptSave(pendingSave)}>{busy ? '確認中…' : '同じ保存内容で結果を確認'}</button>
+      onClick={() => void attemptSave(pendingSave, true)}>{busy ? '確認中…' : '同じ保存内容で結果を確認'}</button>
   </section>;
 
   return <WorkspaceShell title="ココナラ" tone="sky" contentClassName={styles.shell} hideTopActions>
@@ -262,6 +362,8 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
         <button type="button" disabled={locked} aria-current={view === 'management' ? 'page' : undefined} onClick={() => setView('management')}>案件管理</button>
         <button type="button" disabled={locked} aria-current={view === 'check' ? 'page' : undefined} onClick={() => setView('check')}>応募前チェック</button>
       </nav>
+      {parkedWork && <section className={styles.empty}><p>別のアカウントの未保存入力・未確認の保存をこの画面に保持しています。元のアカウントでサインインし、接続を確認すると再開できます。</p><button disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button></section>}
+      {dirty && !pendingSave && <section className={styles.empty}><p>未保存の入力を保持しています。閉じても同じアカウントで再開できます。</p><button disabled={locked} onClick={openForm}>未保存の入力を開く</button><button disabled={locked} onClick={discardDraft}>未保存の入力を破棄</button></section>}
       {!ownerScope && !needsSignin && <output>{OWNER_CHECK_REQUIRED}<button disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button></output>}
       {view === 'check' ? <section className={styles.checkPanel} aria-label="ココナラ応募前チェック">
         <span className={styles.eyebrow}>COCONALA / BEFORE APPLYING</span>
@@ -284,7 +386,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
           <h1>受注から制作・支払いまで。</h1>
           <p>顧客との取引と、制作担当者への業務委託を分けて管理します。受注・契約・納品・送金は本人が各公式画面で行います。</p>
         </div>
-        <button className={styles.primary} disabled={locked} onClick={() => { setForm(blank); setEditingId(''); setFormOpen(true); }}><Plus size={17} />案件を作る</button>
+        <button className={styles.primary} disabled={locked} onClick={openForm}><Plus size={17} />案件を作る</button>
       </header>
 
       <details className={styles.guidance}>
@@ -316,7 +418,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
           {selected && <section className={styles.detail}>
             <div className={styles.detailHead}><div><span className={styles.eyebrow}>{statusNames[selected.status]}</span><h2>{selected.terms.title}</h2><p>案件参照 {selected.terms.orderReference} · 顧客 {selected.terms.clientLabel} · 担当 {selected.terms.workerName}</p></div>
               {selected.status === 'draft' && <div className={styles.actionRow}>
-                <button className={styles.secondary} disabled={locked} onClick={() => { setForm(selected.terms); setEditingId(selected.id); setFormOpen(true); }}>条件を編集</button>
+                <button className={styles.secondary} disabled={locked} onClick={() => editTerms(selected)}>条件を編集</button>
                 <button className={styles.secondary} disabled={locked} onClick={() => { setError(''); setDeleteCaseId(selected.id); }}>下書きを削除</button>
               </div>}
             </div>
@@ -349,8 +451,8 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
           </section>}
         </div>}
 
-      <Dialog open={formOpen} onOpenChange={(open) => { if (!locked) { setFormOpen(open); if (!open) setEditingId(''); } }}>
-      <DialogContent className={styles.modal} showCloseButton={false}><div className={styles.modalHead}><DialogTitle>{editingId ? '発注前の条件を編集' : '受託案件を登録'}</DialogTitle><button disabled={locked} onClick={() => { setFormOpen(false); setEditingId(''); }}>閉じる</button></div>
+      <Dialog open={formOpen} onOpenChange={(open) => { if (!locked) setFormOpen(open); }}>
+      <DialogContent className={styles.modal} showCloseButton={false}><div className={styles.modalHead}><DialogTitle>{editingId ? '発注前の条件を編集' : '受託案件を登録'}</DialogTitle><button disabled={locked} onClick={() => setFormOpen(false)}>閉じる</button></div>
         <DialogDescription>この画面は案件管理の下書きです。ココナラでの契約、顧客・担当者への連絡、実送金は行いません。</DialogDescription>
         <form onSubmit={(event) => void save(event)}><div className={styles.formGrid}>{fields.map((field) => <label key={field.key}><span>{field.label}</span>{field.kind === 'textarea' ? <textarea required disabled={locked} value={String(form[field.key])} onChange={(e) => setForm((current) => ({ ...current, [field.key]: e.target.value }))} /> : <input required disabled={locked} type={field.kind ?? 'text'} min={field.kind === 'number' ? '0' : undefined} max={field.key === 'estimatedPlatformFeePercent' ? '100' : undefined} step={field.key === 'estimatedPlatformFeePercent' ? '0.01' : field.kind === 'number' ? '1' : undefined} value={form[field.key]} onChange={(e) => setForm((current) => ({ ...current, [field.key]: field.kind === 'number' ? Number(e.target.value) : e.target.value }))} />}{field.help && <small>{field.help}</small>}</label>)}</div>
           <div className={styles.formEstimate}><span>手数料後見込 <b>{yen(estimate.net)}</b></span><span>運営の見込差額 <b>{yen(estimate.margin)}</b></span><button type="button" disabled={locked} onClick={() => setForm((current) => { const net = current.grossYen - Math.round(current.grossYen * current.estimatedPlatformFeePercent / 100); return { ...current, workerFeeYen: Math.max(0, net - Math.round(net * .03)) }; })}>参考: 見込手取りの3%を残す</button></div>

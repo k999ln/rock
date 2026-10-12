@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 import ts from 'typescript';
-import { createTeamCase, applyTeamAction, teamMoney } from '../lib/coconala-team.ts';
+import { createTeamCase, applyTeamAction, teamMoney, parseTeamTerms, teamId } from '../lib/coconala-team.ts';
 
 const compiled = ts.transpileModule(readFileSync(new URL('../components/coconala-team-workspace.tsx', import.meta.url), 'utf8'), {
   compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
@@ -26,6 +26,8 @@ const fields = {
 };
 function harness() {
   const slots = [], effects = [], requests = [], records = new Map(), timers = [], listeners = new Map(), documentListeners = new Map(), replies = [];
+  const recordOwners = new Map();
+  const transforms = new Map();
   let currentOwner = ownerA;
   let cursor = 0, tree, drop = null, validation = false;
   const react = {
@@ -48,7 +50,7 @@ function harness() {
   async function request(_path, method, value, headers) {
     const payload = value === undefined ? undefined : JSON.parse(JSON.stringify(value));
     requests.push({ method, headers, value: payload });
-    if (method === 'GET') return replies.length ? await replies.shift()() : { ownerScope: currentOwner, cases: [...records.values()] };
+    if (method === 'GET') return replies.length ? await replies.shift()() : { ownerScope: currentOwner, cases: [...records.values()].filter(file => (recordOwners.get(file.id) ?? ownerA) === currentOwner) };
     if (validation) { const status = validation; validation = false;
       if (status === 'owner') throw new RequestError('Changed after identity check', 409, ownerIntent.OWNER_CHANGED);
       throw new RequestError(status); }
@@ -57,10 +59,15 @@ function harness() {
       file = records.get(payload.id) ?? createTeamCase(payload);
     } else if (method === 'PATCH') {
       file = applyTeamAction(records.get(payload.caseId), payload.command, payload.revision);
+    } else if (method === 'DELETE') {
+      assert.equal(records.get(payload.caseId).revision, payload.revision); records.delete(payload.caseId);
+      return { deletedCaseId: payload.caseId };
     } else throw Error(`unexpected method ${method}`);
-    records.set(file.id, file);
+    records.set(file.id, file); recordOwners.set(file.id, currentOwner);
     if (drop === method) { drop = null; throw new RequestError(503); }
-    return { caseFile: file };
+    const result = { caseFile: structuredClone(file) };
+    const transform = transforms.get(method); transforms.delete(method);
+    return transform ? transform(result) : result;
   }
   const windowSurface = { setTimeout(fn) { timers.push(fn); return timers.length; }, clearTimeout() {},
     addEventListener(name, fn) { listeners.set(name, fn); }, removeEventListener(name) { listeners.delete(name); } };
@@ -75,7 +82,7 @@ function harness() {
     react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
     '@/components/use-pending-save-navigation': navigation,
     '@/lib/operations-client': { operationRequest: request, OperationRequestError: RequestError },
-    '@/lib/coconala-team': { teamMoney }, '@/lib/catalog': { catalog: [] },
+    '@/lib/coconala-team': { teamMoney, parseTeamTerms, teamId }, '@/lib/catalog': { catalog: [] },
     '@/lib/sky-tool-ui': { skyToolUiState: inert },
     '@/components/ui/dialog': { Dialog: 'dialog', DialogContent: 'dialog-content', DialogDescription: 'p', DialogTitle: 'h2' },
     '@/components/tool-icon': { ToolIcon: inert }, '@/components/mr-tool-runner': { MrToolRunner: inert },
@@ -112,7 +119,7 @@ function harness() {
   async function reload() { const button = nodes(tree).find((node) => node.type === 'button' && node.props['aria-label'] === '再読込');
     assert.ok(button); assert.ok(!button.props.disabled); button.props.onClick(); render(); await flush(); }
   render();
-  return { setOwner(value) { currentOwner = value; }, replies, reload, render,
+  return { changeResponse(method, transform) { transforms.set(method, transform); }, setOwner(value) { currentOwner = value; }, replies, reload, render,
     navigate(attributes) { let prevented = false; documentListeners.get('click')?.({ button: 0, target: new Element(attributes), preventDefault() { prevented = true; } }); return prevented; }, find, nodes: (node = tree) => nodes(node), flush, click, fillLabel, fillPlaceholder, submit, requests, records, listeners,
     drop(method) { drop = method; }, rejectNext(status = 400) { validation = status; } };
 }
@@ -224,8 +231,9 @@ void test('Coconala pending create survives 401 and a different owner without an
   h.rejectNext(503); await h.submit();
   h.rejectNext(401); await h.click('同じ保存内容で結果を確認');
   h.setOwner(ownerB); await h.click('サインイン後に接続を確認');
-  assert.ok(h.find('button', '同じ保存内容で結果を確認').props.disabled);
-  assert.ok(h.find('button', '下書きとして保存').props.disabled);
+  assert.equal(h.find('button', '同じ保存内容で結果を確認'), undefined);
+  assert.equal(h.find('form'), undefined);
+  assert.ok(!h.nodes().some(node => node.props?.value === fields['案件名']));
   assert.equal(h.requests.filter(r => r.method === 'POST').length, 2);
   assert.equal(h.records.size, 0);
   h.setOwner(ownerA); await h.click('保存先の接続を確認'); await h.click('同じ保存内容で結果を確認');
@@ -234,39 +242,157 @@ void test('Coconala pending create survives 401 and a different owner without an
   assert.equal(posts[2].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA);
   assert.equal(h.records.size, 1);
 });
-void test('Coconala explicitly releases the pending ID and preserves terms before a new-owner save', async () => {
+void test('Coconala foreign and stale handlers cannot release or rebind the original owner terms', async () => {
   const h = harness(); await h.flush(); await h.click('案件を作る');
   for (const [label, value] of Object.entries(fields)) h.fillLabel(label, value);
-  h.rejectNext(503); await h.submit(); h.setOwner(ownerB);
-  await h.click('同じ保存内容で結果を確認');
-  assert.ok(h.find('button', '保留を解除（入力は保持）'));
+  h.drop('POST'); await h.submit();
+  const release = h.find('button', '保留を解除（入力は保持）').props.onClick;
+  const retry = h.find('button', '同じ保存内容で結果を確認').props.onClick;
+  const submit = h.find('form').props.onSubmit;
+  h.setOwner(ownerB); await h.click('同じ保存内容で結果を確認');
+  assert.equal(h.find('button', '保留を解除（入力は保持）'), undefined);
+  assert.equal(h.find('form'), undefined);
+  release(); retry(); submit({ preventDefault() {} }); h.render(); await h.flush();
   assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
-  await h.click('保存先の接続を確認'); await h.click('保留を解除（入力は保持）');
-  await h.submit();
+  assert.ok(!h.nodes().some(node => node.props?.value === fields['案件名']));
+  h.setOwner(ownerA); await h.click('保存先の接続を確認'); await h.click('同じ保存内容で結果を確認');
   const posts = h.requests.filter(r => r.method === 'POST');
-  assert.equal(posts.length, 2); assert.notEqual(posts[1].value.id, posts[0].value.id);
-  assert.deepEqual(posts[1].value.terms, posts[0].value.terms);
-  assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerB);
+  assert.deepEqual(posts[1].value, posts[0].value);
+  assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA); assert.equal(h.records.size, 1);
 });
 void test('Coconala refuses unknown owner scope on GET and on retry without dropping the pending input', async () => {
-  const h = harness(); h.setOwner(null); await h.flush(); await h.click('案件を作る');
-  assert.ok(h.find('button', '下書きとして保存').props.disabled);
-  h.setOwner(ownerA); await h.click('保存先の接続を確認');
+  const h = harness(); h.setOwner(null); await h.flush();
+  assert.ok(h.find('button', '案件を作る').props.disabled);
+  h.setOwner(ownerA); await h.click('保存先の接続を確認'); await h.click('案件を作る');
   for (const [label, value] of Object.entries(fields)) h.fillLabel(label, value);
   h.rejectNext(503); await h.submit(); h.setOwner(null); await h.click('同じ保存内容で結果を確認');
   assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
-  assert.ok(h.find('button', '同じ保存内容で結果を確認'));
-  assert.ok(h.find('button', '下書きとして保存').props.disabled);
+  assert.equal(h.find('button', '同じ保存内容で結果を確認'), undefined);
+  assert.equal(h.find('form'), undefined);
+  h.setOwner(ownerA); await h.click('保存先の接続を確認'); await h.click('同じ保存内容で結果を確認');
+  const posts = h.requests.filter(r => r.method === 'POST'); assert.deepEqual(posts[1].value, posts[0].value);
 });
 
 void test('Coconala keeps the frozen operation when owner changes between preflight and POST', async () => {
  const h = harness(); await h.flush(); await h.click('案件を作る');
  for (const [label, value] of Object.entries(fields)) h.fillLabel(label, value);
  h.rejectNext('owner'); await h.submit();
- assert.ok(h.find('button', '同じ保存内容で結果を確認'));
- await h.click('同じ保存内容で結果を確認');
+ assert.equal(h.find('form'), undefined);
+ await h.click('保存先の接続を確認'); await h.click('同じ保存内容で結果を確認');
  const posts = h.requests.filter(r => r.method === 'POST');
  assert.deepEqual(posts[1].value, posts[0].value);
  assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA);
  assert.equal(h.records.size, 1);
+});
+
+for (const status of [400, 404, 409, 413, 415]) void test(`a preflight GET ${status} cannot retire an earlier unknown committed create`, async () => {
+  const h = harness(); await h.flush(); await h.click('案件を作る');
+  for (const [label, value] of Object.entries(fields)) h.fillLabel(label, value);
+  h.drop('POST'); await h.submit();
+  h.replies.push(() => { throw new RequestError(status); }); await h.click('同じ保存内容で結果を確認');
+  assert.ok(h.find('button', '同じ保存内容で結果を確認')); assert.equal(h.records.size, 1);
+  await h.click('同じ保存内容で結果を確認');
+  const posts = h.requests.filter(r => r.method === 'POST');
+  assert.deepEqual(posts[1].value, posts[0].value); assert.equal(h.records.size, 1);
+});
+void test('Coconala private unsent terms survive close and owner return with dirty navigation protection', async () => {
+  const h = harness(); await h.flush(); await h.click('案件を作る'); h.fillLabel('案件名', 'Alice private unsent draft');
+  assert.equal(h.navigate({ href: '/' }), true); await h.click('閉じる'); await h.click('案件を作る');
+  assert.ok(h.nodes().some(node => node.props?.value === 'Alice private unsent draft'));
+  const discard = h.find('button', '未保存の入力を破棄').props.onClick;
+  h.setOwner(ownerB); await h.reload();
+  assert.ok(!h.nodes().some(node => node.props?.value === 'Alice private unsent draft'));
+  discard(); h.render(); await h.flush();
+  h.setOwner(ownerA); await h.click('保存先の接続を確認');
+  assert.ok(h.nodes().some(node => node.props?.value === 'Alice private unsent draft'));
+  await h.click('未保存の入力を破棄'); assert.equal(h.navigate({ href: '/' }), false);
+  assert.equal(h.requests.filter(r => r.method !== 'GET').length, 0);
+});
+void test('Coconala private notes and receipt references are masked for another owner and restored for their author', async () => {
+  const h = await savedCase(); await h.click('担当開始を記録');
+  h.fillPlaceholder('成果物を受領した記録・検査結果', 'Alice private inspection');
+  h.fillPlaceholder('金額（円）', '3000'); h.fillPlaceholder('外部明細・振込参照番号', 'Alice private payment reference');
+  const act = h.find('button', '記録する').props.onClick;
+  h.setOwner(ownerB); await h.reload();
+  assert.ok(!h.nodes().some(node => String(node.props?.value).includes('Alice private')));
+  act(); h.render(); await h.flush();
+  assert.equal(h.requests.filter(r => r.method === 'PATCH').length, 1);
+  h.setOwner(ownerA); await h.click('保存先の接続を確認');
+  assert.ok(h.nodes().some(node => node.props?.value === 'Alice private inspection'));
+  assert.ok(h.nodes().some(node => node.props?.value === 'Alice private payment reference'));
+});
+void test('stale release and retry callbacks cannot discard or replace a newer Coconala pending ID', async () => {
+  const h = harness(); await h.flush(); await h.click('案件を作る');
+  for (const [label, value] of Object.entries(fields)) h.fillLabel(label, value);
+  h.drop('POST'); await h.submit();
+  const release = h.find('button', '保留を解除（入力は保持）').props.onClick;
+  const retry = h.find('button', '同じ保存内容で結果を確認').props.onClick;
+  await h.click('保留を解除（入力は保持）');
+  assert.match(h.find('output').props.children, /完了している可能性/);
+  h.fillLabel('案件名', 'Explicit second case'); h.drop('POST'); await h.submit();
+  release(); retry(); h.render(); await h.flush();
+  assert.ok(h.find('button', '同じ保存内容で結果を確認'));
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 2);
+  await h.click('同じ保存内容で結果を確認');
+  const posts = h.requests.filter(r => r.method === 'POST');
+  assert.deepEqual(posts[2].value, posts[1].value); assert.notEqual(posts[1].value.id, posts[0].value.id);
+});
+void test('same-frame create, command and deletion each dispatch only one Coconala mutation', async () => {
+  const h = harness(); await h.flush(); await h.click('案件を作る');
+  for (const [label, value] of Object.entries(fields)) h.fillLabel(label, value);
+  const submit = h.find('form').props.onSubmit;
+  submit({ preventDefault() {} }); submit({ preventDefault() {} }); h.render(); await h.flush();
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
+  const act = h.find('button', '担当開始を記録').props.onClick;
+  act(); act(); h.render(); await h.flush();
+  assert.equal(h.requests.filter(r => r.method === 'PATCH').length, 1);
+  const h2 = await savedCase(); await h2.click('下書きを削除');
+  const remove = h2.find('button', 'この下書きを削除').props.onClick;
+  remove(); remove(); h2.render(); await h2.flush();
+  assert.equal(h2.requests.filter(r => r.method === 'DELETE').length, 1); assert.equal(h2.records.size, 0);
+});
+void test('Coconala malformed successful mutation keeps the exact ID without accepting invalid money or terms', async () => {
+  for (const change of [value => { delete value.caseFile.customerReceipts; return value; }, value => { value.caseFile.events = null; return value; },
+    value => { value.caseFile.creationTerms.title = 'Unrelated original title'; return value; }]) {
+    const h = harness(); await h.flush(); await h.click('案件を作る');
+    for (const [label, value] of Object.entries(fields)) h.fillLabel(label, value);
+    h.changeResponse('POST', change); await h.submit();
+    assert.ok(h.find('button', '同じ保存内容で結果を確認')); assert.equal(h.records.size, 1);
+    await h.click('同じ保存内容で結果を確認');
+    const posts = h.requests.filter(r => r.method === 'POST'); assert.deepEqual(posts[1].value, posts[0].value);
+    assert.equal(h.records.size, 1);
+  }
+});
+void test('Coconala malformed list is rejected before rendering totals and owner readback restores the draft', async () => {
+  const h = await savedCase(); await h.click('条件を編集'); h.fillLabel('案件名', 'Private edited draft');
+  const broken = structuredClone([...h.records.values()][0]); delete broken.customerReceipts;
+  h.replies.push(() => ({ ownerScope: ownerA, cases: [broken] })); await h.reload();
+  assert.equal(h.find('h2', 'Synthetic recovery case'), undefined);
+  assert.ok(!h.nodes().some(node => node.props?.value === 'Private edited draft'));
+  await h.click('保存先の接続を確認'); assert.ok(h.nodes().some(node => node.props?.value === 'Private edited draft'));
+});
+void test('Coconala receipt acknowledgement must contain the exact persisted command', async () => {
+  const h = await savedCase(); await h.click('担当開始を記録');
+  h.fillPlaceholder('金額（円）', '3000'); h.fillPlaceholder('外部明細・振込参照番号', 'Receipt fixture');
+  h.changeResponse('PATCH', value => { value.caseFile.events.at(-1).command = '{}'; return value; });
+  await h.click('記録する'); assert.ok(h.find('button', '同じ保存内容で結果を確認'));
+  await h.click('同じ保存内容で結果を確認');
+  const patches = h.requests.filter(r => r.method === 'PATCH'); assert.deepEqual(patches.at(-1).value, patches.at(-2).value);
+  assert.equal([...h.records.values()][0].customerReceipts.length, 1);
+});
+
+void test('a stale same-owner discard cannot delete newer unsent Coconala input', async () => {
+  const h = harness(); await h.flush(); await h.click('案件を作る'); h.fillLabel('案件名', 'First unsent value');
+  const discard = h.find('button', '未保存の入力を破棄').props.onClick;
+  h.fillLabel('案件名', 'Newer unsent value'); discard(); h.render(); await h.flush();
+  assert.ok(h.nodes().some(node => node.props?.value === 'Newer unsent value'));
+});
+void test('refreshing a remotely edited Coconala case cannot silently advance the revision of an open edit', async () => {
+  const h = await savedCase(); await h.click('条件を編集'); h.fillLabel('案件名', 'Local unsent edit');
+  const previous = [...h.records.values()][0];
+  const external = applyTeamAction(previous, { id: crypto.randomUUID(), action: 'update_terms', terms: { ...previous.terms, title: 'Newer external edit' } }, previous.revision);
+  h.records.set(external.id, external); await h.reload(); await h.submit();
+  assert.equal(h.records.get(external.id).terms.title, 'Newer external edit');
+  assert.equal(h.requests.filter(r => r.method === 'PATCH').length, 0, 'the draft keeps its original revision until explicit reconciliation');
+  assert.ok(h.nodes().some(node => node.props?.value === 'Local unsent edit'));
 });
