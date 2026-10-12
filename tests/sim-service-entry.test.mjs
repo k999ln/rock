@@ -81,7 +81,10 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(projectMap, /SIM\/eSIM-led RockstarOS service offer/);
   assert.doesNotMatch(projectMap, /eSIM専用製品の利用開始/);
   assert.doesNotMatch(onboarding, /対応eSIMプランを確認する/);
-  assert.match(onboarding, /Rockstar IDに一度だけ登録する/);
+  assert.match(onboarding, /アカウントでサインインする/);
+  assert.match(onboarding, /Web版を使うためにSIM\/eSIMを購入する必要はありません/);
+  assert.match(onboarding, /新しい消費者向けeSIMの発行・販売は現在保留中/);
+  assert.match(home, /アカウント・端末の接続を確認する/);
   assert.match(onboarding, /署名済み購入claim/);
   assert.match(onboarding, /見積と上限を承認したCloud作業は端末がオフラインでも続き/);
   assert.match(onboarding, /<RockstarEntitlementClaim \/>/);
