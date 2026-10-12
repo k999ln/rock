@@ -41,9 +41,10 @@ import { McpBotRunner } from '@/components/mcp-bot-runner';
 import { WorkbenchCloudText, WorkbenchCloudTextDeleteDialog, useWorkbenchCloudText } from '@/components/workbench-cloud-text';
 import { Textarea } from '@/components/ui/textarea';
 import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
+import { readWorkJobs, readWorkJobResponse, workJobConfirmsCommand } from '@/lib/work-job-view';
 import { OperationRequestError } from '@/lib/operations-client';
 import { pendingOwnerStatus } from '@/lib/pending-owner-intent';
-import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
+import { OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 
 const stateNames = {
   active: '作業中',
@@ -52,6 +53,7 @@ const stateNames = {
   cancelled: '中止',
 };
 type Update = { jobId: string; revision: number; command: WorkCommand };
+type PendingUpdate = Update & { ownerScope: string };
 type Creation = { ownerScope: string; id: string; title: string; templateId: string };
 type Delegation = {
   id: string;
@@ -329,12 +331,15 @@ async function sha256Hex(value: string) {
 function useWorkbenchOwnerState<T>(owner: string | null, currentOwner: { current: string | null }, initial: T) {
   const [empty] = useState(initial);
   const [values, setValues] = useState<Record<string, T>>({});
+  const [identity, setIdentity] = useState({});
+  const currentIdentity = useRef(identity);
   const setValue = useCallback((next: SetStateAction<T>, author = owner) => {
     if (!author || currentOwner.current !== author) return;
+    const token = {}; currentIdentity.current = token; setIdentity(token);
     setValues((current) => ({ ...current, [author]: typeof next === 'function'
       ? (next as (previous: T) => T)(current[author] ?? empty) : next }));
   }, [currentOwner, empty, owner]);
-  return [owner ? values[owner] ?? empty : empty, setValue, values] as const;
+  return [owner ? values[owner] ?? empty : empty, setValue, values, () => currentIdentity.current === identity] as const;
 }
 
 export default function Workbench({
@@ -363,11 +368,11 @@ export default function Workbench({
   const [delegationBusy, setDelegationBusy] = useState(false);
   const [delegationPredecessorId, setDelegationPredecessorId] = useWorkbenchOwnerState<string | null>(ownerScope, currentOwner, null);
   const [delegationError, setDelegationError] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
-  const [delegationQuoteConsent, setDelegationQuoteConsent] = useWorkbenchOwnerState(ownerScope, currentOwner, false);
-  const [delegationQuote, setDelegationQuote] = useWorkbenchOwnerState<DelegationQuote | null>(ownerScope, currentOwner, null);
+  const [delegationQuoteConsent, setDelegationQuoteConsent, , currentQuoteConsent] = useWorkbenchOwnerState(ownerScope, currentOwner, false);
+  const [delegationQuote, setDelegationQuote, , currentQuote] = useWorkbenchOwnerState<DelegationQuote | null>(ownerScope, currentOwner, null);
   const [artifactDocuments, setArtifactDocuments] = useState<Record<string, ArtifactDocument[]>>({});
   const [delegationUsageDetails, setDelegationUsageDetails] = useState<Record<string, DelegationUsageDetails | null>>({});
-  const [delegationForm, setDelegationForm, delegationFormDrafts] = useWorkbenchOwnerState(ownerScope, currentOwner, {
+  const [delegationForm, setDelegationForm, delegationFormDrafts, currentDelegationForm] = useWorkbenchOwnerState(ownerScope, currentOwner, {
     targetAgentId: '',
     targetOrigin: '',
     targetAgentName: '',
@@ -391,14 +396,14 @@ export default function Workbench({
   const [selectedPackageRuntime, setSelectedPackageRuntime] = useWorkbenchOwnerState<{
     packageKey: string; manifestSha256: string; serverId: string; toolName: string;
   } | null>(ownerScope, currentOwner, null);
-  const [localPackageTask, setLocalPackageTask, localPackageTaskDrafts] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
+  const [localPackageTask, setLocalPackageTask, localPackageTaskDrafts, currentLocalPackageTask] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
   const [remoteTextCurrency, setRemoteTextCurrency] = useState(cloudDraft?.currency || 'USD');
   const delegationSubmission = useRef<Record<string, { fingerprint: string; request: DelegationRequest; uncertain: boolean }>>({});
   const [uncertainDelegationOwners, setUncertainDelegationOwners] = useState<string[]>([]);
   const selectedIdRef = useRef('');
-  const [title, setTitle, titleDrafts] = useWorkbenchOwnerState(ownerScope, currentOwner, ''),
-    [templateId, setTemplateId] = useWorkbenchOwnerState(ownerScope, currentOwner, 'article'),
-    [note, setNote, noteDrafts] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
+  const [title, setTitle, titleDrafts, currentTitle] = useWorkbenchOwnerState(ownerScope, currentOwner, ''),
+    [templateId, setTemplateId, , currentTemplate] = useWorkbenchOwnerState(ownerScope, currentOwner, 'article'),
+    [note, setNote, noteDrafts, currentNote] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
   const [error, setError] = useState(''),
     [loading, setLoading] = useState(true),
     [ready, setReady] = useState(false);
@@ -406,12 +411,14 @@ export default function Workbench({
     [running, setRunning] = useState(false),
     [deviceOpen, setDeviceOpen] = useState(false);
   const [runnerStep, setRunnerStep] = useState<string | null>(null),
-    [pending, setPending] = useState<Update | null>(null);
+    [pending, setPending] = useState<PendingUpdate | null>(null);
   const [filter, setFilter] = useState('open');
   const [pendingCreation, setPendingCreation] = useState<Creation | null>(null);
   const creation = useRef<Creation | null>(null);
   const createInFlight = useRef(false);
   const listGeneration = useRef(0);
+  const pendingUpdate = useRef<PendingUpdate | null>(null);
+  const updateInFlight = useRef(false);
   const setOwnerScope = useCallback((scope: string | null) => {
     if (currentOwner.current !== scope) {
       selectedIdRef.current = ''; setSelectedId('');
@@ -426,10 +433,12 @@ export default function Workbench({
   const hasRetainedDrafts = Object.values(titleDrafts).some(value => value.trim()) ||
     Object.values(noteDrafts).some(value => value.trim()) || Object.values(localPackageTaskDrafts).some(value => value.trim()) ||
     Object.values(delegationFormDrafts).some(value => value.message.trim() || value.budgetLimitInput.trim() || value.parentBudgetLimitInput.trim() || value.continueWhileDeviceOffline);
-  usePendingSaveNavigation(pendingCreation !== null || hasRetainedDrafts || uncertainDelegationOwners.length > 0);
+  usePendingSaveNavigation(pendingCreation !== null || pending !== null || hasRetainedDrafts || uncertainDelegationOwners.length > 0);
   const ownsCurrentInput = () => Boolean(ownerScope && ownerScope === currentOwner.current);
   function discardPrivateDraft() {
-    if (!ownsCurrentInput() || busy || delegationBusy || createInFlight.current || creation.current || pending || delegationSubmission.current[ownerScope!]?.uncertain) return;
+    if (!ownsCurrentInput() || !currentTitle() || !currentTemplate() || !currentNote() || !currentLocalPackageTask() ||
+      !currentDelegationForm() || !currentQuote() || !currentQuoteConsent() || busy || delegationBusy ||
+      createInFlight.current || creation.current || updateInFlight.current || pendingUpdate.current || delegationSubmission.current[ownerScope!]?.uncertain) return;
     setTitle(''); setTemplateId('article'); setNote(''); setLocalPackageTask('');
     setDelegationForm((current) => ({ ...current, message: '', budgetLimitInput: '', budgetLimitMinor: 0,
       parentBudgetLimitInput: '', parentBudgetLimitMinor: 0, continueWhileDeviceOffline: false }));
@@ -497,21 +506,25 @@ export default function Workbench({
     return () => controller.abort();
   }, [initialPackageKey, ownerScope, setHandoffPackageResult, setTitle, setTemplateId]);
   const refresh = useCallback(async () => {
-    if (createInFlight.current) return null;
+    if (createInFlight.current || updateInFlight.current) return null;
     const version = ++listGeneration.current;
     setLoading(true);
     try {
-      const data = await request<{ jobs: WorkJob[]; ownerScope?: string }>();
+      const data = readWorkJobs(await request<unknown>());
       if (version !== listGeneration.current) return null;
-      const scope = readOwnerScope(data.ownerScope);
+      const scope = data.ownerScope;
       setOwnerScope(scope);
       setJobs(data.jobs);
       setReady(Boolean(scope));
+      const operation = pendingUpdate.current;
+      if (operation && scope === operation.ownerScope && data.jobs.some((job) => workJobConfirmsCommand(job, operation))) {
+        pendingUpdate.current = null; setPending(null);
+      }
       setError('');
       return scope;
     } catch (e) {
       if (version !== listGeneration.current) return null;
-      setOwnerScope(null); setReady(false);
+      setOwnerScope(null); setReady(false); setJobs([]);
       if (e instanceof OperationRequestError && e.status === 401) {
         setJobs([]); setSelectedId(''); selectedIdRef.current = '';
       }
@@ -524,10 +537,11 @@ export default function Workbench({
   useEffect(() => {
     let active = true;
     const version = ++listGeneration.current;
-    void request<{ jobs: WorkJob[]; ownerScope?: string }>()
-      .then((data) => {
+    void request<unknown>()
+      .then((value) => {
+        const data = readWorkJobs(value);
         if (active && version === listGeneration.current) {
-          const scope = readOwnerScope(data.ownerScope);
+          const scope = data.ownerScope;
           setOwnerScope(scope);
           setJobs(data.jobs);
           setReady(Boolean(scope));
@@ -664,7 +678,7 @@ export default function Workbench({
     setJobs((items) => [job, ...items.filter((item) => item.id !== job.id)]);
   }, []);
   async function create() {
-    if (createInFlight.current || busy || (!creation.current && !ownsCurrentInput())) return;
+    if (createInFlight.current || updateInFlight.current || busy || (!creation.current && !ownsCurrentInput())) return;
     if (!creation.current && (!ownerScope || !ready)) { setError(OWNER_CHECK_REQUIRED); return; }
     createInFlight.current = true;
     listGeneration.current++; setLoading(false);
@@ -674,8 +688,8 @@ export default function Workbench({
     creation.current = operation;
     setPendingCreation(operation);
     try {
-      const identity = await request<{ jobs: WorkJob[]; ownerScope?: string }>();
-      const currentScope = readOwnerScope(identity.ownerScope);
+      const identity = readWorkJobs(await request<unknown>());
+      const currentScope = identity.ownerScope;
       setOwnerScope(currentScope); setReady(Boolean(currentScope));
       if (Array.isArray(identity.jobs)) setJobs(identity.jobs);
       const ownerStatus = pendingOwnerStatus(operation.ownerScope, currentScope);
@@ -683,18 +697,18 @@ export default function Workbench({
       if (ownerStatus === 'changed')
         throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
       const input = { id: operation.id, title: operation.title, templateId: operation.templateId };
-      const data = await request<{ job: WorkJob }>('POST', input, operation.ownerScope);
-      if (!data.job || data.job.id !== input.id || data.job.title !== input.title || data.job.templateId !== input.templateId || !Number.isSafeInteger(data.job.revision))
+      const job = readWorkJobResponse(await request<unknown>('POST', input, operation.ownerScope));
+      if (job.id !== input.id || job.title !== input.title || job.templateId !== input.templateId)
         throw new Error('保存結果を確認できません。同じ作成内容で結果を確認してください。');
-      accept(data.job);
-      selectJob(data.job.id, operation.ownerScope);
+      accept(job);
+      selectJob(job.id, operation.ownerScope);
       setRunnerStep(null);
       setNote('', operation.ownerScope);
       setTitle('', operation.ownerScope);
       creation.current = null;
       setPendingCreation(null);
     } catch (e) {
-      if (e instanceof OperationRequestError && (e.status === 401 || e.code === OWNER_CHANGED)) {
+      if (!(e instanceof OperationRequestError) || e.status === 401 || e.code === OWNER_CHANGED) {
         setOwnerScope(null); setReady(false); setJobs([]); setSelectedId(''); selectedIdRef.current = '';
       }
       setError(e instanceof Error ? e.message : '作成できませんでした。');
@@ -705,23 +719,38 @@ export default function Workbench({
   }
   const submit = useCallback(
     async (update: Update) => {
-      setBusy(true);
-      setError('');
-      setPending(update);
+      if (createInFlight.current || updateInFlight.current) throw new Error('保存中です。同じ操作の結果を確認してください。');
+      const previous = pendingUpdate.current;
+      if (previous && (previous.jobId !== update.jobId || previous.command.id !== update.command.id))
+        throw new Error('前の記録が未確認です。同じ記録の保存結果を先に確認してください。');
+      if (!previous && (!ownerScope || ownerScope !== currentOwner.current)) throw new Error(OWNER_CHECK_REQUIRED);
+      const operation = previous ?? { ...update, ownerScope: ownerScope! };
+      pendingUpdate.current = operation; setPending(operation);
+      updateInFlight.current = true;
+      listGeneration.current++; setLoading(false); setBusy(true); setError('');
+      let dispatched = false;
       try {
-        const data = await request<{ job: WorkJob }>('PATCH', update);
-        accept(data.job);
-        setPending(null);
+        const identity = readWorkJobs(await request<unknown>());
+        setOwnerScope(identity.ownerScope); setReady(Boolean(identity.ownerScope)); setJobs(identity.jobs);
+        if (!identity.ownerScope) throw new Error(OWNER_CHECK_REQUIRED);
+        if (identity.ownerScope !== operation.ownerScope) throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
+        const input = { jobId: operation.jobId, revision: operation.revision, command: operation.command };
+        dispatched = true;
+        const job = readWorkJobResponse(await request<unknown>('PATCH', input, operation.ownerScope));
+        if (!workJobConfirmsCommand(job, operation)) throw new Error('返された仕事に同じ記録を確認できません。同じ操作IDで再確認してください。');
+        if (currentOwner.current === operation.ownerScope) {
+          accept(job); pendingUpdate.current = null; setPending(null);
+        }
       } catch (e) {
-        const message =
-          e instanceof Error ? e.message : '記録を保存できませんでした。';
-        setError(message);
-        throw new Error(message);
+        if (!dispatched || !(e instanceof OperationRequestError) || e.status === 401 || e.code === OWNER_CHANGED) {
+          setOwnerScope(null); setReady(false); setJobs([]);
+        }
+        const message = e instanceof Error ? e.message : '記録を保存できませんでした。';
+        setError(message); throw new Error(message);
       } finally {
-        setBusy(false);
+        updateInFlight.current = false; setBusy(false);
       }
-    },
-    [accept],
+    }, [accept, ownerScope, setOwnerScope],
   );
   const record = useCallback<RunRecorder>(
     async (...args) => {
@@ -1108,6 +1137,9 @@ export default function Workbench({
   }) : '';
   const activeDelegationQuote = delegationQuote?.fingerprint === activeDelegationQuoteFingerprint
     ? delegationQuote.quote : null;
+  const resultDelegation = delegations.find((item) => item.parentJobId === selected?.id && item.state === 'remote_completed' && item.artifactsCaptured === 1);
+  const resultDetails = resultDelegation ? delegationUsageDetails[resultDelegation.id] : null;
+  const resultCaptured = resultDelegation ? (artifactDocuments[resultDelegation.id]?.length ?? 0) > 0 : false;
   const content = (
     <div className={`work-shell${embedded ? ' is-chat-managed' : ''}`}>
       <div className="work-body">
@@ -1147,7 +1179,7 @@ export default function Workbench({
           <button disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button>
           <button disabled={busy || loading || (pendingOwnerStatus(pendingCreation.ownerScope, ownerScope) === 'changed')} onClick={() => void create()}>同じ作成内容で結果を確認</button>
           <p>保留を解除しても保存済みの仕事は削除されません。元のアカウントで結果を確認してから、新しく保存してください。入力は保持します。</p>
-          <button disabled={busy || pendingCreation.ownerScope !== ownerScope} onClick={() => { if (!ownsCurrentInput() || createInFlight.current || creation.current?.ownerScope !== ownerScope) return; creation.current = null; setPendingCreation(null); setError('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
+          <button disabled={busy || pendingCreation.ownerScope !== ownerScope} onClick={() => { if (!ownsCurrentInput() || createInFlight.current || creation.current !== pendingCreation || pendingCreation.ownerScope !== ownerScope) return; creation.current = null; setPendingCreation(null); setError('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
         </section>}
         {hasRetainedDrafts && !pendingCreation && <section className="work-notice" aria-label="仕事の未保存入力">
           <p>{hasPrivateDraft ? '未保存の入力をこのアカウントで保持しています。別の画面へ移動する前に保存するか、入力を破棄してください。保存済みの仕事は変更しません。' : '別のアカウントで入力した未保存の内容を非表示で保持しています。入力したアカウントへ接続し直すと復元できます。'}</p>
@@ -1156,9 +1188,10 @@ export default function Workbench({
         {!ownerScope && !loading && !pendingCreation && <p className="work-notice">{OWNER_CHECK_REQUIRED}</p>}
         {pending && (
           <div className="work-notice">
-            <p>記録の保存が未確認です。結果は下の欄から保存できます。</p>
+            <p>記録の保存が未確認です。同じ記録IDで再試行できます。最新状態の読み込みに失敗しても、この記録を保持します。</p>
+            <p>{pendingOwnerStatus(pending.ownerScope, ownerScope) === 'changed' ? OWNER_CHANGED_MESSAGE : '入力したアカウントで保存結果を確認してください。'}</p>
             <button
-              disabled={busy}
+              disabled={busy || pendingOwnerStatus(pending.ownerScope, ownerScope) === 'changed'}
               onClick={() => void submit(pending).catch(() => {})}
             >
               記録の保存を再試行
@@ -1166,7 +1199,6 @@ export default function Workbench({
             <button
               disabled={busy}
               onClick={() => {
-                setPending(null);
                 void refresh();
               }}
             >
@@ -1638,22 +1670,17 @@ export default function Workbench({
                             保存済みの依頼条件を確認して記録
                           </button>
                         </section>
-                      ) : openRunner.runner === 'a2a-result-check' ? (() => {
-                        const resultDelegation = delegations.find((item) => item.parentJobId === selected.id && item.state === 'remote_completed' && item.artifactsCaptured === 1);
-                        const details = resultDelegation ? delegationUsageDetails[resultDelegation.id] : null;
-                        const captured = resultDelegation ? (artifactDocuments[resultDelegation.id]?.length ?? 0) > 0 : false;
-                        return <section aria-label="A2A成果・利用量の確認">
+                      ) : openRunner.runner === 'a2a-result-check' ? <section aria-label="A2A成果・利用量の確認">
                           <p>相手側の完了、成果の取得、署名済み利用receiptを確認してから仕事を完了できます。未確定の利用額は通過条件にしません。</p>
-                          {resultDelegation && <p>委任先: {resultDelegation.targetAgentName} · 成果 {captured ? '取得済み' : '未取得'} · 利用receipt {details?.usageReceipt ? '照合済み' : '未確認'}</p>}
+                          {resultDelegation && <p>委任先: {resultDelegation.targetAgentName} · 成果 {resultCaptured ? '取得済み' : '未取得'} · 利用receipt {resultDetails?.usageReceipt ? '照合済み' : '未確認'}</p>}
                           <label><input type="checkbox" checked={resultReviewConfirmedForJob === selected.id} onChange={(event) => setResultReviewConfirmedForJob(event.target.checked ? selected.id : '')} />成果が依頼条件を満たすことと、明細内容を確認しました</label>
-                          <button type="button" disabled={busy || pending !== null || openRunner.passed || resultReviewConfirmedForJob !== selected.id || !resultDelegation || !captured || !details?.usageReceipt}
+                          <button type="button" disabled={busy || pending !== null || openRunner.passed || resultReviewConfirmedForJob !== selected.id || !resultDelegation || !resultCaptured || !resultDetails?.usageReceipt}
                             onClick={() => void record(openRunner.tool, 'browser', 'completed', performance.now(), false, 'passed', resultDelegation?.id)}>
                             成果と利用receiptを確認済みとして記録
                           </button>
-                          {resultDelegation && !details?.usageReceipt && <button type="button" disabled={delegationBusy} onClick={() => void loadUsageDetails(resultDelegation.id)}>Provider利用明細を取得</button>}
-                          {resultDelegation && !captured && <button type="button" disabled={delegationBusy || resultDelegation.artifactsCaptured !== 1} onClick={() => void loadArtifacts(resultDelegation.id)}>委任成果を取得</button>}
-                        </section>;
-                      })() : (
+                          {resultDelegation && !resultDetails?.usageReceipt && <button type="button" disabled={delegationBusy} onClick={() => void loadUsageDetails(resultDelegation.id)}>Provider利用明細を取得</button>}
+                          {resultDelegation && !resultCaptured && <button type="button" disabled={delegationBusy || resultDelegation.artifactsCaptured !== 1} onClick={() => void loadArtifacts(resultDelegation.id)}>委任成果を取得</button>}
+                        </section> : (
                         <MrToolRunner
                           onRunningChange={setRunning}
                           key={selected.id + openRunner.id}

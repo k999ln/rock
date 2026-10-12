@@ -10,7 +10,7 @@ import * as claims from '../lib/rockstar-entitlement-claim.ts';
 import test from 'node:test';
 import { createSkyToolPackageDraft } from '../lib/sky-tool-package.ts';
 const root = new URL('../', import.meta.url);
-async function setup(t, { onFetch, componentProps = {} } = {}) {
+async function setup(t, { onFetch, onWorkResponse, componentProps = {} } = {}) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
   for (const name of readdirSync(new URL('drizzle/', root))
@@ -64,7 +64,7 @@ async function setup(t, { onFetch, componentProps = {} } = {}) {
     'owner-intent',
     'a2a-delegation-store',
     'work-store',
-    'workflow',
+    'workflow', 'work-job-view',
     'pending-owner-intent',
     'rockstar-service-access',
   ])
@@ -109,6 +109,7 @@ async function setup(t, { onFetch, componentProps = {} } = {}) {
     assert.ok(verified);
     await claims.rockstarEntitlementStore(db).claim(verified, code, owner, now);
   }
+  const rejectNext = new Map();
   let owner = 'alice',
     afterGet = null,
     omitScope = false,
@@ -145,6 +146,11 @@ async function setup(t, { onFetch, componentProps = {} } = {}) {
       });
     }
     const value = options.body ? JSON.parse(options.body) : undefined;
+    if (rejectNext.has(method)) {
+      const status = rejectNext.get(method); rejectNext.delete(method);
+      requests.push({ method, user: owner, value, status, headers: options.headers });
+      return Response.json({ error: 'Synthetic persistence unavailable' }, { status });
+    }
     const gate = method === 'GET' ? delayedList : null;
     if (gate) { delayedList = null; tracking.held = true; }
     const requestOwner = owner;
@@ -161,6 +167,8 @@ async function setup(t, { onFetch, componentProps = {} } = {}) {
       status: result.response.status,
       headers: options.headers,
     });
+    const override = onWorkResponse?.(method, result);
+    if (override !== undefined) return override;
     if (method === 'POST' && losePost && result.response.ok) {
       losePost = false;
       throw new Error('synthetic response lost after commit');
@@ -248,9 +256,9 @@ async function setup(t, { onFetch, componentProps = {} } = {}) {
       ['./sky-zema-handoff', {}],
     ]),
   );
-  let navigationBlocked = false;
+  const navigationGuards = new Set();
   const modules = {
-    '@/components/use-pending-save-navigation': { usePendingSaveNavigation(pending) { navigationBlocked = pending; } },
+    '@/components/use-pending-save-navigation': { usePendingSaveNavigation(pending) { const id = react.useRef(Symbol()); react.useEffect(() => { if (pending) navigationGuards.add(id.current); return () => navigationGuards.delete(id.current); }, [pending]); } },
     '@/lib/operations-client': client,
     '@/lib/owner-intent': deps.get('@/lib/owner-intent'),
     react,
@@ -290,7 +298,7 @@ async function setup(t, { onFetch, componentProps = {} } = {}) {
     },
   };
   for (const name of [
-    'workflow',
+    'workflow', 'work-job-view',
     'pending-owner-intent',
     'a2a-delegation-recovery',
     'currency-format',
@@ -332,7 +340,7 @@ async function setup(t, { onFetch, componentProps = {} } = {}) {
     clearInterval() {},
   };
   const context = {
-    window, crypto, URL, AbortSignal, AbortController, TextEncoder, fetch: trackedFetch,
+    window, crypto, performance, URL, AbortSignal, AbortController, TextEncoder, fetch: trackedFetch,
     require(name) { assert.ok(name in modules, name); return modules[name]; },
   };
   const cloudExports = {};
@@ -395,6 +403,7 @@ async function setup(t, { onFetch, componentProps = {} } = {}) {
   }
   await grant('alice');
   return {
+    rejectNext(method, status = 503) { rejectNext.set(method, status); },
     sqlite,
     db,
     requests,
@@ -403,7 +412,7 @@ async function setup(t, { onFetch, componentProps = {} } = {}) {
     click,
     waitFor,
     find,
-    get navigationBlocked() { return navigationBlocked; },
+    get navigationBlocked() { return navigationGuards.size > 0; },
     nodes: () => nodes(tree),
     text: () => text(tree),
     owner(value) {
@@ -790,4 +799,107 @@ for (const packageKey of ['', 'fixture.package@1.0.0']) void test(`Workbench sig
     assert.equal(h.find('button', '条件を確認する').props.disabled, true, 'changed reviewed manifest cannot reuse old quote');
     assert.equal(posts.length, 2);
   }
+});
+
+
+void test('Workbench rejects malformed list and committed creation projections without losing the original ID', async (t) => {
+  let mode = 'bad-list';
+  const h = await setup(t, { onWorkResponse(method, result) {
+    if (method === 'GET' && mode === 'bad-list') return Response.json({ ...result.data, jobs: {} });
+    if (method === 'POST' && mode === 'bad-create') return Response.json({ ...result.data, job: { ...result.data.job, steps: null } }, { status: 201 });
+  } });
+  h.render(); await assert.doesNotReject(h.flush()); assert.equal(h.count(), 0);
+  mode = 'normal'; await h.click('再読込'); h.input('Synthetic projection recovery');
+  mode = 'bad-create'; await assert.doesNotReject(h.click('仕事を作成'));
+  assert.equal(h.count(), 1); assert.equal(h.navigationBlocked, true);
+  assert.ok(h.find('button', '同じ作成内容で結果を確認'));
+  mode = 'normal'; await h.click('同じ作成内容で結果を確認');
+  const posts = h.requests.filter((r) => r.method === 'POST');
+  assert.equal(posts.length, 2); assert.deepEqual(posts[1].value, posts[0].value);
+  assert.equal(h.count(), 1); assert.equal(h.find('button', '同じ作成内容で結果を確認'), undefined);
+});
+
+async function recordFixture(t, options) {
+  const h = await setup(t, options); const id = randomUUID();
+  const { data } = await h.routeCall('POST', { id, title: 'Saved execution job', templateId: 'article' }, 'alice');
+  h.render(); await h.flush(); await h.click('Saved execution job'); await h.click(data.job.steps[0].title);
+  const runner = h.nodes().find((n) => typeof n.props?.onRecord === 'function'); assert.ok(runner);
+  const record = () => runner.props.onRecord(data.job.steps[0].tool, 'browser', 'completed', performance.now(), false, 'passed');
+  return { h, id, record };
+}
+
+void test('pending tool success blocks navigation and survives failed latest-state reads with an immutable command', async (t) => {
+  const { h, id, record } = await recordFixture(t);
+  h.rejectNext('PATCH'); await assert.rejects(record()); h.render(); await h.flush();
+  assert.equal(h.navigationBlocked, true);
+  const original = h.requests.find((r) => r.method === 'PATCH').value;
+  h.rejectNext('GET'); await h.click('最新状態を読み直す');
+  assert.ok(h.find('button', '記録の保存を再試行')); assert.equal(h.navigationBlocked, true);
+  await h.click('記録の保存を再試行');
+  assert.deepEqual(h.requests.filter((r) => r.method === 'PATCH')[1].value, original);
+  const saved = (await h.routeCall('GET', undefined, 'alice')).data.jobs.find((j) => j.id === id);
+  assert.equal(saved.steps[0].passed, true); assert.equal(saved.events.length, 1);
+  assert.equal(h.find('button', '記録の保存を再試行'), undefined);
+});
+
+void test('pending tool record stays bound to Alice across unknown owner, Bob, and captured retry handlers', async (t) => {
+  const { h, id, record } = await recordFixture(t); await h.grant('bob');
+  h.rejectNext('PATCH'); await assert.rejects(record()); h.render(); await h.flush();
+  const oldRetry = h.find('button', '記録の保存を再試行').props.onClick;
+  h.owner(null); await h.click('最新状態を読み直す');
+  oldRetry(); await h.flush(); assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+  h.owner('bob'); await h.click('最新状態を読み直す');
+  assert.equal(h.find('button', '記録の保存を再試行').props.disabled, true);
+  oldRetry(); await h.flush(); assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+  h.owner('alice'); await h.click('最新状態を読み直す'); await h.click('記録の保存を再試行');
+  const patches = h.requests.filter((r) => r.method === 'PATCH'); assert.equal(patches.length, 2);
+  assert.deepEqual(patches[1].value, patches[0].value); assert.ok(patches.every((r) => r.user === 'alice'));
+  const saved = (await h.routeCall('GET', undefined, 'alice')).data.jobs.find((j) => j.id === id);
+  assert.equal(saved.events.length, 1); assert.equal(h.find('button', '記録の保存を再試行'), undefined);
+});
+
+void test('committed malformed tool response reconciles only the same command via validated GET and never resends', async (t) => {
+  const { h, id, record } = await recordFixture(t, { onWorkResponse(method, result) {
+    if (method === 'PATCH') return Response.json({ ...result.data, job: { ...result.data.job, events: {} } });
+  } });
+  await assert.rejects(record()); h.render(); await h.flush();
+  assert.ok(h.find('button', '記録の保存を再試行')); assert.equal(h.navigationBlocked, true);
+  await h.click('最新状態を読み直す');
+  assert.equal(h.find('button', '記録の保存を再試行'), undefined);
+  assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+  assert.equal((await h.routeCall('GET', undefined, 'alice')).data.jobs.find((j) => j.id === id).events.length, 1);
+});
+
+void test('two same-frame tool records send one command and no second approval or state mutation', async (t) => {
+  const { h, id, record } = await recordFixture(t);
+  const first = record(), second = record(); const result = await Promise.allSettled([first, second]);
+  h.render(); await h.flush(); assert.deepEqual(result.map((r) => r.status), ['fulfilled', 'rejected']);
+  assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+  assert.equal((await h.routeCall('GET', undefined, 'alice')).data.jobs.find((j) => j.id === id).events.length, 1);
+});
+
+
+void test('captured Workbench discard cannot erase later private fields, including edits before the next render', async (t) => {
+  const h = await setup(t); h.render(); await h.flush(); h.input('Earlier title');
+  const oldDiscard = h.find('button', '未保存の入力を破棄').props.onClick;
+  const title = () => h.nodes().find((n) => n.type === 'input' && n.props.placeholder === '例: 自動化についての記事');
+  title().props.onChange({ target: { value: 'Later private title' } });
+  oldDiscard(); h.render(); await h.flush();
+  assert.equal(title().props.value, 'Later private title'); assert.equal(h.navigationBlocked, true);
+  await h.click('未保存の入力を破棄'); assert.equal(title().props.value, ''); assert.equal(h.navigationBlocked, false);
+});
+
+
+void test('a captured release for the first unknown creation cannot retire a later unknown creation', async (t) => {
+  const h = await setup(t); h.render(); await h.flush(); h.input('First uncertain job');
+  h.loseNextPost(); await h.click('仕事を作成'); await h.click('保存先の接続を確認');
+  const oldRelease = h.find('button', '保留を解除（入力は保持）').props.onClick;
+  await h.click('保留を解除（入力は保持）'); h.input('Second uncertain job');
+  h.loseNextPost(); await h.click('仕事を作成'); await h.click('保存先の接続を確認');
+  const original = h.requests.filter((r) => r.method === 'POST')[1].value;
+  oldRelease(); h.render(); await h.flush();
+  assert.ok(h.find('button', '同じ作成内容で結果を確認')); assert.equal(h.navigationBlocked, true);
+  await h.click('同じ作成内容で結果を確認');
+  const posts = h.requests.filter((r) => r.method === 'POST'); assert.equal(posts.length, 3);
+  assert.deepEqual(posts[2].value, original); assert.equal(h.count(), 2);
 });

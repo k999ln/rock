@@ -16,8 +16,11 @@ const execution = (parentJobId, state = 'quoted') => ({ id: `quote-${parentJobId
   quote: { ceiling, requestDigest: 'c'.repeat(64), createdAt: 1, expiresAt: 9999999999999, approvedCapMinor: 100 },
   saveResult: false, resultText: state === 'completed' ? 'Synthetic saved answer' : null, createdAt: 1, updatedAt: 1 });
 
-async function harness({ onRemote, budget = null, records = [], executionAvailable = false } = {}) {
+async function harness({ onRemote, budget = null, records = [], executionAvailable = false, initialDraft = { prompt: 'Synthetic cloud task', currency: 'USD', maximumBudgetInput: '1.00' } } = {}) {
   const slots = [], effects = [], calls = [], timers = new Map(), requests = new Set();
+  const navigationListeners = new Set();
+  class Element { closest() { return this; } getAttribute(name) { return name === 'href' ? '/home' : null; } hasAttribute() { return false; } }
+  const document = { addEventListener(name, fn) { if (name === 'click') navigationListeners.add(fn); }, removeEventListener(name, fn) { if (name === 'click') navigationListeners.delete(fn); } };
   let account = 'a';
   let cursor = 0, tree, mounted = true, afterUnmountWrites = 0, href = `https://local.test/work?workJob=${first}`;
   const jobs = [first, second].map((id, index) => createWorkJob({ id, title: `Job ${index + 1}`, templateId: 'article' }));
@@ -60,19 +63,21 @@ async function harness({ onRemote, budget = null, records = [], executionAvailab
     '@/lib/operations-client': { OperationRequestError: class extends Error {} },
     '@/lib/remote-ai-text-client': { ...remoteTextClient, remoteAiTextRequest: trackedRemote },
   };
-  for (const name of ['workflow','owner-intent','pending-owner-intent','a2a-delegation-recovery','currency-format','remote-ai-text-request','rockstar-service-package-access','rockstar-package-handoff','a2a-result-handoff','sky-package-runtime'])
+  for (const name of ['workflow', 'work-job-view','owner-intent','pending-owner-intent','a2a-delegation-recovery','currency-format','remote-ai-text-request','rockstar-service-package-access','rockstar-package-handoff','a2a-result-handoff','sky-package-runtime'])
     modules[`@/lib/${name}`] = await import(new URL(`lib/${name}.ts`, root));
   function compile(path) {
     const exports = {};
     const compiled = ts.transpileModule(readFileSync(new URL(path, root), 'utf8'), { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, esModuleInterop: true } }).outputText;
-    runInNewContext(compiled, { exports, window, fetch, crypto, URL, TextEncoder, AbortSignal, AbortController, Error, setTimeout, require(name) { assert.ok(name in modules, name); return modules[name]; } }, { filename: path });
+    runInNewContext(compiled, { exports, window, document, Element, fetch, crypto, URL, TextEncoder, AbortSignal, AbortController, Error, setTimeout, require(name) { assert.ok(name in modules, name); return modules[name]; } }, { filename: path });
     return exports;
   }
+  modules['@/lib/history-navigation-guard'] = await import(new URL('lib/history-navigation-guard.ts', root));
+  modules['@/components/use-pending-save-navigation'] = compile('components/use-pending-save-navigation.ts');
   const childPath = 'components/workbench-cloud-text.tsx';
   const child = compile(childPath);
   modules['@/components/workbench-cloud-text'] = child;
   const component = compile('components/workbench.tsx').default;
-  function render() { cursor = 0; tree = component({ embedded: true, cloudDraft: { prompt: 'Synthetic cloud task', currency: 'USD', maximumBudgetInput: '1.00' } }); effects.splice(0).forEach((effect) => effect()); }
+  function render() { cursor = 0; tree = component({ embedded: true, cloudDraft: initialDraft }); effects.splice(0).forEach((effect) => effect()); }
   function nodes(node, result = []) { if (Array.isArray(node)) node.forEach((item) => nodes(item, result)); else if (node && typeof node === 'object') { result.push(node); if (typeof node.type === 'function' && (node.type === child.WorkbenchCloudText || node.type === child.WorkbenchCloudTextDeleteDialog)) nodes(node.type(node.props), result); else nodes(node.props?.children, result); } return result; }
   function text(node) { return typeof node === 'string' || typeof node === 'number' ? String(node) : Array.isArray(node) ? node.map(text).join('') : node && typeof node === 'object' ? text(typeof node.type === 'function' && (node.type === child.WorkbenchCloudText || node.type === child.WorkbenchCloudTextDeleteDialog) ? node.type(node.props) : node.props?.children) : ''; }
   const find = (type, label) => nodes(tree).find((node) => node.type === type && (!label || text(node).includes(label)));
@@ -81,7 +86,8 @@ async function harness({ onRemote, budget = null, records = [], executionAvailab
   function input(label, value) { const parent = find('label', label); assert.ok(parent, label); const input = nodes(parent).find((node) => ['input','textarea'].includes(node.type)); assert.ok(input, label); input.props.onChange({ target: { value } }); render(); }
   async function quote() { const form = nodes(tree).find((node) => node.type === 'form' && text(node).includes('料金見積を確認して保存')); assert.ok(form); form.props.onSubmit({ preventDefault() {} }); render(); await flush(); const deadline = Date.now() + 5000; while (find('button', '料金を確認中…')?.props.disabled) { assert.ok(Date.now() < deadline); await flush(); } }
   render(); await flush();
-  return { calls, records, find, input, click, quote, flush, render, account(value) { account = value; }, async tick() { for (let i = 0; i < 6; i++) { await new Promise((resolve) => setImmediate(resolve)); if (mounted) render(); } }, unmount() { mounted = false; slots.forEach((slot) => slot?.cleanup?.()); }, writes: () => afterUnmountWrites, text: () => text(tree), nodes: () => nodes(tree), timers, quoteHandler: () => nodes(tree).find((node) => node.type === 'form' && text(node).includes('料金見積を確認して保存')).props.onSubmit, startQuote() { const form = nodes(tree).find((node) => node.type === 'form' && text(node).includes('料金見積を確認して保存')); form.props.onSubmit({ preventDefault() {} }); render(); } };
+  function navigateHome() { let blocked = false; const event = { button: 0, target: new Element(), preventDefault() { blocked = true; } }; for (const listener of navigationListeners) listener(event); return blocked; }
+  return { navigateHome, calls, records, find, input, click, quote, flush, render, account(value) { account = value; }, async tick() { for (let i = 0; i < 6; i++) { await new Promise((resolve) => setImmediate(resolve)); if (mounted) render(); } }, unmount() { mounted = false; slots.forEach((slot) => slot?.cleanup?.()); }, writes: () => afterUnmountWrites, text: () => text(tree), nodes: () => nodes(tree), timers, quoteHandler: () => nodes(tree).find((node) => node.type === 'form' && text(node).includes('料金見積を確認して保存')).props.onSubmit, startQuote() { const form = nodes(tree).find((node) => node.type === 'form' && text(node).includes('料金見積を確認して保存')); form.props.onSubmit({ preventDefault() {} }); render(); } };
 }
 
 void test('Cloud AI preserves draft across job selection and retains the original polling cadence', async () => {
@@ -412,4 +418,117 @@ void test('a refresh handler captured before 401 must reconfirm the current owne
   h.account('b'); expired = false; staleRefresh(); await h.flush();
   assert.notEqual(h.nodes().find((node) => node.props?.id === 'work-cloud-text-prompt')?.props.value, 'Alice private instruction');
   assert.equal(h.calls.filter((call) => call.method === 'POST').length, 0);
+});
+
+
+void test('Cloud-only input guards actual same-tab navigation, default form does not, and explicit same-owner discard releases it', async () => {
+  const h = await harness({ initialDraft: null });
+  assert.equal(h.navigateHome(), false);
+  h.input('AIへの依頼', 'Unsaved cloud-only request');
+  assert.equal(h.navigateHome(), true);
+  await h.click('Cloud依頼の未保存入力を破棄');
+  assert.equal(h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.value, '');
+  assert.equal(h.navigateHome(), false); assert.equal(h.calls.filter((c) => c.method === 'POST').length, 0);
+});
+
+void test('hidden cloud input retains navigation protection and stale owner setters/discard cannot erase it', async () => {
+  const h = await harness({ initialDraft: null });
+  h.input('AIへの依頼', 'Alice retained cloud-only input');
+  const oldInput = h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.onChange;
+  const oldDiscard = h.find('button', 'Cloud依頼の未保存入力を破棄').props.onClick;
+  h.account('b'); await h.click('再読込'); await h.click('Job 2');
+  assert.equal(h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.value, '');
+  oldInput({ target: { value: 'Stale overwrite' } }); oldDiscard(); h.render(); await h.flush();
+  assert.equal(h.navigateHome(), true);
+  h.account('a'); await h.click('再読込'); await h.click('Job 1');
+  assert.equal(h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.value, 'Alice retained cloud-only input');
+  await h.click('Cloud依頼の未保存入力を破棄'); assert.equal(h.navigateHome(), false);
+});
+
+void test('an unknown sent quote blocks current and stale discard/input while retaining the exact retry intent', async () => {
+  let lose = true;
+  const h = await harness({ onRemote(call) { if (lose && call.path === '/api/llm/quotes' && call.method === 'POST') throw new RemoteAiTextClientError(0, 'NETWORK'); } });
+  h.input('親job全体の上限', '10.00');
+  const oldInput = h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.onChange;
+  const oldDiscard = h.find('button', 'Cloud依頼の未保存入力を破棄').props.onClick;
+  await h.quote();
+  assert.equal(h.find('button', 'Cloud依頼の未保存入力を破棄').props.disabled, true);
+  oldInput({ target: { value: 'Stale overwrite' } }); oldDiscard(); h.render(); await h.flush();
+  assert.equal(h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.value, 'Synthetic cloud task');
+  assert.equal(h.navigateHome(), true);
+  lose = false; await h.quote();
+  const posts = h.calls.filter((c) => c.path === '/api/llm/quotes' && c.method === 'POST');
+  assert.equal(posts.length, 2); assert.deepEqual(posts[1].body, posts[0].body);
+  assert.equal(h.find('button', 'Cloud依頼の未保存入力を破棄').props.disabled, false);
+  await h.click('Cloud依頼の未保存入力を破棄'); assert.equal(h.navigateHome(), false);
+});
+
+
+void test('first quote validation refusal permits editing but a refusal after unknown save cannot retire its identity', async () => {
+  for (const priorLostResponse of [false, true]) {
+    let phase = priorLostResponse ? 'lost' : 'rejected';
+    const h = await harness({ onRemote(call) {
+      if (call.path === '/api/llm/quotes' && call.method === 'POST')
+        throw new RemoteAiTextClientError(phase === 'lost' ? 0 : 422, phase === 'lost' ? 'NETWORK' : 'REMOTE_AI_QUOTE_OVER_CAP_OR_INVALID');
+    } });
+    h.input('親job全体の上限', '10.00'); await h.quote();
+    if (priorLostResponse) { phase = 'rejected'; await h.quote(); }
+    assert.equal(h.find('button', 'Cloud依頼の未保存入力を破棄').props.disabled, priorLostResponse);
+    h.input('AIへの依頼', 'Corrected request');
+    assert.equal(h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.value,
+      priorLostResponse ? 'Synthetic cloud task' : 'Corrected request');
+    if (priorLostResponse) {
+      const posts = h.calls.filter((c) => c.path === '/api/llm/quotes' && c.method === 'POST');
+      assert.deepEqual(posts[1].body, posts[0].body);
+    }
+  }
+});
+
+void test('matching saved quote readback reconciles unknown creation without another POST and permits explicit discard', async () => {
+  let saved;
+  const h = await harness({ onRemote(call) {
+    if (call.path === '/api/llm/quotes' && call.method === 'POST') return (async () => {
+      saved = execution(call.body.parentJobId); saved.requestId = call.body.requestId;
+      saved.quote.requestDigest = await remoteAiTextRequestDigest({ model: call.body.model, prompt: call.body.prompt, maxOutputTokens: call.body.maxOutputTokens });
+      throw new RemoteAiTextClientError(0, 'NETWORK');
+    })();
+    if (saved && call.path.startsWith('/api/llm/quotes?')) return { executions: [saved], executionAvailable: false };
+  } });
+  h.input('親job全体の上限', '10.00'); await h.quote();
+  assert.equal(h.find('button', 'Cloud依頼の未保存入力を破棄').props.disabled, true);
+  await h.click('状態を更新');
+  assert.equal(h.find('button', 'Cloud依頼の未保存入力を破棄').props.disabled, false);
+  assert.equal(h.calls.filter((c) => c.path === '/api/llm/quotes' && c.method === 'POST').length, 1);
+  await h.click('Cloud依頼の未保存入力を破棄'); assert.equal(h.navigateHome(), false);
+});
+
+
+void test('a captured Cloud discard cannot erase a later same-owner draft or release its navigation guard', async () => {
+  const h = await harness({ initialDraft: null });
+  h.input('AIへの依頼', 'Earlier draft');
+  const staleDiscard = h.find('button', 'Cloud依頼の未保存入力を破棄').props.onClick;
+  h.input('AIへの依頼', 'Later draft with new private work');
+  staleDiscard(); h.render(); await h.flush();
+  assert.equal(h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.value, 'Later draft with new private work');
+  assert.equal(h.navigateHome(), true);
+  await h.click('Cloud依頼の未保存入力を破棄'); assert.equal(h.navigateHome(), false);
+});
+
+
+void test('a saved quote with changed price identity cannot reconcile or release the original unknown intent', async () => {
+  for (const patch of [{ currency: 'JPY' }, { pricingVersion: 'other-price' }, { rateCardDigest: 'f'.repeat(64) }, { maximumChargeMinor: 6 }]) {
+    let saved;
+    const h = await harness({ onRemote(call) {
+      if (call.path === '/api/llm/quotes' && call.method === 'POST') return (async () => {
+        saved = execution(call.body.parentJobId); saved.requestId = call.body.requestId;
+        saved.quote.ceiling = { ...saved.quote.ceiling, ...patch };
+        saved.quote.requestDigest = await remoteAiTextRequestDigest({ model: call.body.model, prompt: call.body.prompt, maxOutputTokens: call.body.maxOutputTokens });
+        throw new RemoteAiTextClientError(0, 'NETWORK');
+      })();
+      if (saved && call.path.startsWith('/api/llm/quotes?')) return { executions: [saved], executionAvailable: false };
+    } });
+    h.input('親job全体の上限', '10.00'); await h.quote(); await h.click('状態を更新');
+    assert.equal(h.find('button', 'Cloud依頼の未保存入力を破棄').props.disabled, true);
+    assert.equal(h.navigateHome(), true); assert.equal(h.calls.filter((c) => c.path === '/api/llm/quotes' && c.method === 'POST').length, 1);
+  }
 });

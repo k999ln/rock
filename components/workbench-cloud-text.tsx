@@ -6,6 +6,7 @@ import type { WorkJob } from '@/lib/workflow';
 import { formatCurrencyMinor, formatCurrencyRatePerMillionTokens, parseCurrencyInputToMinor } from '@/lib/currency-format';
 import { remoteAiTextRequestDigest } from '@/lib/remote-ai-text-request';
 import { remoteAiTextRequest, RemoteAiTextClientError, readRemoteTextEstimate, readRemoteTextExecution, readRemoteTextList, type RemoteTextExecution } from '@/lib/remote-ai-text-client';
+import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
@@ -41,17 +42,23 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
   const [remoteTextBusy, setRemoteTextBusy] = useState(false);
   const [remoteTextResult, setRemoteTextResult] = useState<{ executionId: string; text: string } | null>(null);
   const [remoteTextDeleteId, setRemoteTextDeleteId] = useState<string | null>(null);
-  const remoteTextSubmission = useRef<{ fingerprint: string; requestId: string } | null>(null);
+  const remoteTextSubmission = useRef<{ fingerprint: string; requestId: string; uncertain: boolean; confirmation?: { parentJobId: string; requestDigest: string; parentCap: number; capMinor: number; saveResult: boolean; ceiling: RemoteTextExecution['quote']['ceiling'] } } | null>(null);
+  const [uncertainQuoteOwners, setUncertainQuoteOwners] = useState<string[]>([]);
   const confirmedOwner = useRef(ownerScope);
   const [draftOwner, setDraftOwner] = useState<string | null>(null);
+  const [draftRevision, setDraftRevision] = useState(0);
+  const currentDraftRevision = useRef(0);
   const observedOwner = useRef<string | null | undefined>(undefined);
-  const drafts = useRef(new Map<string, { prompt: string; model: string; currency: string; cap: string; parentCap: string; saveResult: boolean; submission: typeof remoteTextSubmission.current }>());
+  const [drafts, setDrafts] = useState<Record<string, { prompt: string; model: string; currency: string; cap: string; parentCap: string; saveResult: boolean; submission: typeof remoteTextSubmission.current }>>({});
   const authenticated = useRef(!remoteTextNeedsSignin);
   useLayoutEffect(() => {
     confirmedOwner.current = ownerScope;
     authenticated.current = !remoteTextNeedsSignin;
   }, [ownerScope, remoteTextNeedsSignin]);
   const ownerAvailable = Boolean(ownerScope && draftOwner === ownerScope && !remoteTextNeedsSignin);
+  const hasDraft = Boolean(remoteTextPrompt.trim() || remoteTextCapMinor.trim() || remoteTextParentCapMinor.trim() || remoteTextSaveResult);
+  const hasRetainedDraft = Object.entries(drafts).some(([owner, draft]) => owner !== draftOwner && Boolean(draft.prompt.trim() || draft.cap.trim() || draft.parentCap.trim() || draft.saveResult));
+  usePendingSaveNavigation(hasDraft || hasRetainedDraft || uncertainQuoteOwners.length > 0);
   const readGeneration = useRef(0);
   const readAbort = useRef<AbortController | null>(null);
   const selectionGeneration = useRef(0);
@@ -74,6 +81,7 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
   useLayoutEffect(() => {
     if (observedOwner.current === ownerScope) return;
     observedOwner.current = ownerScope;
+    setDraftRevision(++currentDraftRevision.current);
     selectionGeneration.current++;
     invalidateRead();
     setRemoteTextExecutions([]); setRemoteTextResult(null); setRemoteTextEstimate(null);
@@ -81,20 +89,35 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
     setRemoteTextNeedsSignin(false);
     if (!ownerScope) return;
     if (draftOwner && draftOwner !== ownerScope) {
-      drafts.current.set(draftOwner, { prompt: remoteTextPrompt, model: remoteTextModel,
+      const submission = remoteTextSubmission.current;
+      setDrafts((current) => ({ ...current, [draftOwner]: { prompt: remoteTextPrompt, model: remoteTextModel,
         currency: remoteTextCurrency, cap: remoteTextCapMinor, parentCap: remoteTextParentCapMinor,
-        saveResult: remoteTextSaveResult, submission: remoteTextSubmission.current });
-      const draft = drafts.current.get(ownerScope);
+        saveResult: remoteTextSaveResult, submission } }));
+      const draft = drafts[ownerScope];
       setRemoteTextPrompt(draft?.prompt ?? ''); setRemoteTextModel(draft?.model ?? '');
       setRemoteTextCurrency(draft?.currency ?? 'USD'); setRemoteTextCapMinor(draft?.cap ?? '');
       setRemoteTextParentCapMinor(draft?.parentCap ?? ''); setRemoteTextSaveResult(draft?.saveResult ?? false);
       remoteTextSubmission.current = draft?.submission ?? null;
     }
     setDraftOwner(ownerScope);
-  }, [ownerScope, draftOwner, invalidateRead, remoteTextPrompt, remoteTextModel, remoteTextCurrency, remoteTextCapMinor,
+  }, [ownerScope, draftOwner, drafts, invalidateRead, remoteTextPrompt, remoteTextModel, remoteTextCurrency, remoteTextCapMinor,
     remoteTextParentCapMinor, remoteTextSaveResult, setRemoteTextCurrency]);
   function currentOwner() {
     return Boolean(ownerScope && authenticated.current && confirmedOwner.current === ownerScope && draftOwner === ownerScope);
+  }
+  function changeDraft<T>(setter: (value: T) => void, value: T) {
+    if (!currentOwner() || mutationInFlight.current || remoteTextSubmission.current?.uncertain) return;
+    setDraftRevision(++currentDraftRevision.current);
+    setter(value);
+  }
+  function discardRemoteTextDraft() {
+    if (!currentOwner() || currentDraftRevision.current !== draftRevision || mutationInFlight.current || remoteTextSubmission.current?.uncertain ||
+        remoteTextExecutions.some((execution) => ['reserved', 'sending', 'unreconciled'].includes(execution.state))) return;
+    setDraftRevision(++currentDraftRevision.current);
+    setDrafts((current) => { const next = { ...current }; delete next[ownerScope!]; return next; });
+    remoteTextSubmission.current = null;
+    setRemoteTextPrompt(''); setRemoteTextModel(''); setRemoteTextCapMinor(''); setRemoteTextParentCapMinor('');
+    setRemoteTextSaveResult(false); setRemoteTextEstimate(null); setRemoteTextCurrencyOptions([]); setRemoteTextError('');
   }
   function beginMutation() {
     if (mutationInFlight.current || !mounted.current || !currentOwner()) return null;
@@ -140,6 +163,16 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
           ? AbortSignal.any([options.signal, controller.signal]) : controller.signal }));
       if (!current()) return;
       const data = readRemoteTextList(response, parentJobId);
+      const submission = remoteTextSubmission.current;
+      const intent = submission?.confirmation;
+      if (submission?.uncertain && intent && data.executions.some((item) =>
+        item.requestId === submission.requestId && item.parentJobId === intent.parentJobId &&
+        item.quote.requestDigest === intent.requestDigest && item.parentBudgetLimitMinor === intent.parentCap &&
+        item.quote.approvedCapMinor === intent.capMinor && item.saveResult === intent.saveResult &&
+        Object.entries(intent.ceiling).every(([key, value]) => item.quote.ceiling[key as keyof typeof item.quote.ceiling] === value))) {
+        submission.uncertain = false;
+        setUncertainQuoteOwners((owners) => owners.filter((owner) => owner !== ownerScope));
+      }
       setRemoteTextExecutions(data.executions);
       setRemoteTextExecutionAvailable(data.executionAvailable === true);
       setRemoteTextNeedsSignin(false);
@@ -192,9 +225,15 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
     if (generation === null) return;
     const parentJobId = selected.id;
     const fingerprint = JSON.stringify({ parentJobId: selected.id, prompt: remoteTextPrompt.trim(), currency, capMinor, parentCap, saveResult: remoteTextSaveResult });
+    if (remoteTextSubmission.current?.uncertain && remoteTextSubmission.current.fingerprint !== fingerprint) {
+      setRemoteTextError('見積の保存結果が未確認です。元の仕事・依頼内容で同じ保存IDを確認してください。');
+      finishMutation(); return;
+    }
     if (remoteTextSubmission.current?.fingerprint !== fingerprint)
-      remoteTextSubmission.current = { fingerprint, requestId: crypto.randomUUID() };
+      remoteTextSubmission.current = { fingerprint, requestId: crypto.randomUUID(), uncertain: false };
     const requestId = remoteTextSubmission.current.requestId;
+    const previouslyUncertain = remoteTextSubmission.current.uncertain;
+    let quoteDispatched = false;
     setRemoteTextError('');
     setRemoteTextResult(null);
     try {
@@ -206,6 +245,10 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
       setRemoteTextEstimate(estimateData);
       const requestDigest = await remoteAiTextRequestDigest({ model: estimateData.estimate.modelId, prompt: remoteTextPrompt.trim(), maxOutputTokens: 1200 });
       if (!currentMutation(generation, parentJobId)) return;
+      quoteDispatched = true;
+      if (!previouslyUncertain) remoteTextSubmission.current.confirmation = { parentJobId, requestDigest, parentCap, capMinor, saveResult: remoteTextSaveResult, ceiling: { ...estimateData.estimate } };
+      remoteTextSubmission.current.uncertain = true;
+      setUncertainQuoteOwners((owners) => owners.includes(ownerScope!) ? owners : [...owners, ownerScope!]);
       const quoteData = await remoteAiTextRequest<{ execution?: unknown; executionAvailable?: unknown }>(
         '/api/llm/quotes', 'POST', { requestId, parentJobId, parentBudgetLimitMinor: parentCap,
           model: estimateData.estimate.modelId, prompt: remoteTextPrompt.trim(), maxOutputTokens: 1200,
@@ -216,6 +259,10 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
         saved.quote.approvedCapMinor !== capMinor || saved.saveResult !== remoteTextSaveResult ||
         Object.entries(estimateData.estimate).some(([key, value]) => saved.quote.ceiling[key as keyof typeof saved.quote.ceiling] !== value))
         throw new RemoteAiTextClientError(200, 'INVALID_RESPONSE');
+      if (remoteTextSubmission.current?.requestId === requestId) {
+        remoteTextSubmission.current.uncertain = false;
+        setUncertainQuoteOwners((owners) => owners.filter((owner) => owner !== ownerScope));
+      }
       invalidateRead();
       setRemoteTextExecutionAvailable(quoteData.executionAvailable === true);
       setRemoteTextExecutions((items) => [saved, ...items.filter((item) => item.id !== saved.id)]);
@@ -226,6 +273,16 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
         : '見積を保存しました。外部Provider実行gateは未受入のため、送信していません。');
     } catch (cause) {
       if (!currentMutation(generation, parentJobId)) return;
+      // A fresh pre-save validation refusal permits correction. A refusal on a
+      // later retry cannot disprove an earlier committed-but-lost response.
+      if (quoteDispatched && !previouslyUncertain && cause instanceof RemoteAiTextClientError &&
+        ((cause.status === 400 && cause.code === 'INVALID_INPUT') ||
+         (cause.status === 413 && cause.code === 'BODY_TOO_LARGE') ||
+         (cause.status === 422 && cause.code === 'REMOTE_AI_QUOTE_OVER_CAP_OR_INVALID')) &&
+        remoteTextSubmission.current?.requestId === requestId) {
+        remoteTextSubmission.current.uncertain = false;
+        setUncertainQuoteOwners((owners) => owners.filter((owner) => owner !== ownerScope));
+      }
       if (cause instanceof RemoteAiTextClientError &&
         cause.code === 'RATE_CARD_CURRENCY_REQUIRED') setRemoteTextCurrencyOptions(cause.currencies);
       remoteTextFailure(cause, parentJobId);
@@ -352,12 +409,16 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, own
   }
   return {
     remoteTextOwnerAvailable: ownerAvailable,
-    remoteTextPrompt: ownerAvailable ? remoteTextPrompt : '', setRemoteTextPrompt,
-    remoteTextModel: ownerAvailable ? remoteTextModel : '', remoteTextCurrency: ownerAvailable ? remoteTextCurrency : 'USD', setRemoteTextCurrency,
-    remoteTextCurrencyOptions: ownerAvailable ? remoteTextCurrencyOptions : [], remoteTextCapMinor: ownerAvailable ? remoteTextCapMinor : '', setRemoteTextCapMinor,
-    remoteTextParentCapMinor: ownerAvailable ? remoteTextParentCapMinor : '', setRemoteTextParentCapMinor,
-    remoteTextSaveResult: ownerAvailable && remoteTextSaveResult, setRemoteTextSaveResult,
-    remoteTextEstimate: ownerAvailable ? remoteTextEstimate : null, setRemoteTextEstimate,
+    remoteTextHasDraft: ownerAvailable && hasDraft,
+    remoteTextUncertainQuote: Boolean(ownerScope && uncertainQuoteOwners.includes(ownerScope)),
+    remoteTextDiscardBlocked: remoteTextBusy || Boolean(ownerScope && uncertainQuoteOwners.includes(ownerScope)) || remoteTextExecutions.some((execution) => ['reserved', 'sending', 'unreconciled'].includes(execution.state)),
+    discardRemoteTextDraft,
+    remoteTextPrompt: ownerAvailable ? remoteTextPrompt : '', setRemoteTextPrompt: (value: string) => changeDraft(setRemoteTextPrompt, value),
+    remoteTextModel: ownerAvailable ? remoteTextModel : '', remoteTextCurrency: ownerAvailable ? remoteTextCurrency : 'USD', setRemoteTextCurrency: (value: string) => changeDraft(setRemoteTextCurrency, value),
+    remoteTextCurrencyOptions: ownerAvailable ? remoteTextCurrencyOptions : [], remoteTextCapMinor: ownerAvailable ? remoteTextCapMinor : '', setRemoteTextCapMinor: (value: string) => changeDraft(setRemoteTextCapMinor, value),
+    remoteTextParentCapMinor: ownerAvailable ? remoteTextParentCapMinor : '', setRemoteTextParentCapMinor: (value: string) => changeDraft(setRemoteTextParentCapMinor, value),
+    remoteTextSaveResult: ownerAvailable && remoteTextSaveResult, setRemoteTextSaveResult: (value: boolean) => changeDraft(setRemoteTextSaveResult, value),
+    remoteTextEstimate: ownerAvailable ? remoteTextEstimate : null, setRemoteTextEstimate: (value: typeof remoteTextEstimate) => changeDraft(setRemoteTextEstimate, value),
     remoteTextExecutions: ownerAvailable ? remoteTextExecutions : [], remoteTextExecutionAvailable: ownerAvailable && remoteTextExecutionAvailable,
     remoteTextError: ownerAvailable ? remoteTextError : '', remoteTextNeedsSignin, remoteTextBusy,
     remoteTextResult: ownerAvailable ? remoteTextResult : null, remoteTextDeleteTarget: ownerAvailable ? remoteTextDeleteTarget : undefined, setRemoteTextDeleteId,
@@ -370,7 +431,7 @@ type CloudTextController = ReturnType<typeof useWorkbenchCloudText>;
 
 export function WorkbenchCloudText({ controller, selected, delegationBudgetPool }: { controller: CloudTextController; selected: WorkJob; delegationBudgetPool: CloudTextOptions['delegationBudgetPool'] }) {
   const {
-    remoteTextOwnerAvailable, remoteTextPrompt, setRemoteTextPrompt, remoteTextModel, remoteTextCurrency, setRemoteTextCurrency, remoteTextCurrencyOptions, remoteTextCapMinor, setRemoteTextCapMinor, remoteTextParentCapMinor, setRemoteTextParentCapMinor,
+    remoteTextOwnerAvailable, remoteTextHasDraft, remoteTextUncertainQuote, remoteTextDiscardBlocked, discardRemoteTextDraft, remoteTextPrompt, setRemoteTextPrompt, remoteTextModel, remoteTextCurrency, setRemoteTextCurrency, remoteTextCurrencyOptions, remoteTextCapMinor, setRemoteTextCapMinor, remoteTextParentCapMinor, setRemoteTextParentCapMinor,
     remoteTextSaveResult, setRemoteTextSaveResult, remoteTextEstimate, setRemoteTextEstimate,
     remoteTextExecutions, remoteTextExecutionAvailable, remoteTextError, remoteTextNeedsSignin, remoteTextBusy, remoteTextResult, setRemoteTextDeleteId,
     refreshRemoteText, createRemoteTextQuote, runRemoteText, cancelRemoteTextQuote, downloadRemoteText, remoteTextBudgetCurrency, remoteTextBudgetLimit,
@@ -389,25 +450,25 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
       {selected.status === 'active' && remoteTextOwnerAvailable ? <form className="work-delegation-create" onSubmit={(event) => void createRemoteTextQuote(event)}>
         <label htmlFor="work-cloud-text-prompt">
           AIへの依頼
-          <Textarea id="work-cloud-text-prompt" value={remoteTextPrompt} onChange={(event) => { setRemoteTextPrompt(event.target.value); setRemoteTextEstimate(null); }} rows={5} maxLength={24000} placeholder="依頼を具体的に入力してください" />
+          <Textarea id="work-cloud-text-prompt" disabled={remoteTextBusy || remoteTextUncertainQuote} value={remoteTextPrompt} onChange={(event) => { setRemoteTextPrompt(event.target.value); setRemoteTextEstimate(null); }} rows={5} maxLength={24000} placeholder="依頼を具体的に入力してください" />
         </label>
         <div className="work-delegation-fields">
           <label>見積通貨
-            {remoteTextCurrencyOptions.length > 1 ? <select value={remoteTextCurrency} disabled={remoteTextBudgetCurrency !== null} onChange={(event) => { setRemoteTextCurrency(event.target.value); setRemoteTextEstimate(null); }}>
+            {remoteTextCurrencyOptions.length > 1 ? <select value={remoteTextCurrency} disabled={remoteTextBusy || remoteTextUncertainQuote || remoteTextBudgetCurrency !== null} onChange={(event) => { setRemoteTextCurrency(event.target.value); setRemoteTextEstimate(null); }}>
               {remoteTextCurrencyOptions.map((currency) => <option key={currency} value={currency}>{currency}</option>)}
-            </select> : <input value={remoteTextCurrency} maxLength={3} disabled={remoteTextBudgetCurrency !== null} onChange={(event) => { setRemoteTextCurrency(event.target.value.toUpperCase()); setRemoteTextEstimate(null); }} />}
+            </select> : <input value={remoteTextCurrency} maxLength={3} disabled={remoteTextBusy || remoteTextUncertainQuote || remoteTextBudgetCurrency !== null} onChange={(event) => { setRemoteTextCurrency(event.target.value.toUpperCase()); setRemoteTextEstimate(null); }} />}
           </label>
           <label>この依頼の最大額（{remoteTextCurrency}）
-            <input type="number" min="0.01" step={remoteTextCurrency === 'JPY' || remoteTextCurrency === 'KRW' ? '1' : '0.01'} value={remoteTextCapMinor} onChange={(event) => { setRemoteTextCapMinor(event.target.value); setRemoteTextEstimate(null); }} />
+            <input type="number" min="0.01" step={remoteTextCurrency === 'JPY' || remoteTextCurrency === 'KRW' ? '1' : '0.01'} value={remoteTextCapMinor} disabled={remoteTextBusy || remoteTextUncertainQuote} onChange={(event) => { setRemoteTextCapMinor(event.target.value); setRemoteTextEstimate(null); }} />
           </label>
           {remoteTextBudgetCurrency === remoteTextCurrency && remoteTextBudgetLimit !== null ? <p>
             親job共通上限 {formatCurrencyMinor(remoteTextBudgetLimit, remoteTextCurrency)} · 予約 {formatCurrencyMinor(delegationBudgetPool?.reservedMinor ?? 0, remoteTextCurrency)} · 確定記録 {formatCurrencyMinor(delegationBudgetPool?.settledMinor ?? 0, remoteTextCurrency)}
           </p> : <label>親job全体の上限（{remoteTextCurrency}）
-            <input type="number" min="0.01" step={remoteTextCurrency === 'JPY' || remoteTextCurrency === 'KRW' ? '1' : '0.01'} value={remoteTextParentCapMinor} onChange={(event) => setRemoteTextParentCapMinor(event.target.value)} />
+            <input type="number" min="0.01" step={remoteTextCurrency === 'JPY' || remoteTextCurrency === 'KRW' ? '1' : '0.01'} value={remoteTextParentCapMinor} disabled={remoteTextBusy || remoteTextUncertainQuote} onChange={(event) => setRemoteTextParentCapMinor(event.target.value)} />
           </label>}
         </div>
         <label className="work-delegation-consent work-cloud-text-consent">
-          <input type="checkbox" checked={remoteTextSaveResult} onChange={(event) => setRemoteTextSaveResult(event.target.checked)} />
+          <input type="checkbox" checked={remoteTextSaveResult} disabled={remoteTextBusy || remoteTextUncertainQuote} onChange={(event) => setRemoteTextSaveResult(event.target.checked)} />
           完了後の回答をCloudのjob履歴へ保存する（初期設定は保存しない）
         </label>
         <button className="work-primary" type="submit" disabled={remoteTextBusy || remoteTextNeedsSignin || !remoteTextPrompt.trim() || selected.status !== 'active'}>
@@ -415,6 +476,10 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
         </button>
         <p>見積と保存だけではProviderへ依頼文を送信しません。支出上限はこの親jobの残り予算内に設定してください。Cloud taskとして実行する許可は別の操作です。</p>
       </form> : <p>{remoteTextOwnerAvailable ? 'Cloud AI依頼は作業中の親jobから追加できます。完了・取消済みのjobには追加できません。' : 'アカウントを確認しています。確認できるまで依頼文と回答を表示・送信しません。'}</p>}
+      {remoteTextHasDraft && <div className="work-notice">
+        <p>{remoteTextUncertainQuote ? '見積の保存結果が未確認です。同じ仕事の依頼文・上限・保存IDを保持しています。同じ条件で結果を再確認してください。' : 'この画面を開いている間、依頼文と上限を入力したアカウントで保持します。別の画面へ移動する前に必要な内容を保存するか、入力を破棄してください。'}</p>
+        <button type="button" disabled={remoteTextDiscardBlocked} onClick={discardRemoteTextDraft}>Cloud依頼の未保存入力を破棄</button>
+      </div>}
       {remoteTextEstimate && <dl>
         <div><dt>最大見積</dt><dd>{formatCurrencyMinor(remoteTextEstimate.estimate.maximumChargeMinor, remoteTextEstimate.estimate.currency)}</dd></div>
         <div><dt>モデル / 価格版</dt><dd>{remoteTextEstimate.estimate.modelId} · {remoteTextEstimate.estimate.pricingVersion}</dd></div>
@@ -426,7 +491,7 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
         <div><dt>料金表</dt><dd><a href={remoteTextEstimate.rateSource} target="_blank" rel="noreferrer">{remoteTextEstimate.cardId}</a></dd></div>
       </dl>}
       {remoteTextError && <p className="work-delegation-error" role="alert">{remoteTextError}</p>}
-      {remoteTextNeedsSignin && <a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(typeof window === 'undefined' ? '/work' : window.location.pathname + window.location.search)}`} target="_top">サインインして続ける</a>}
+      {remoteTextNeedsSignin && <a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(typeof window === 'undefined' ? '/work' : window.location.pathname + window.location.search)}`} target="_blank" rel="noopener noreferrer">別タブでサインインして続ける</a>}
       {!remoteTextExecutionAvailable && <p className="work-delegation-gate">クラウドAIの実行は準備中です。見積もりを保存しても、AIへの送信や課金は始まりません。</p>}
       {remoteTextExecutions.length > 0 && <div className="work-delegation-list" aria-label="Cloud LLM依頼履歴">
         {remoteTextExecutions.map((execution) => <article className="work-delegation" key={execution.id}>
