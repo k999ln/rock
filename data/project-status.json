@@ -7596,7 +7596,7 @@
       "localVerify": "2049 pass / 1 existing skip, 1356 work API assertions and 385 CSV assertions; build and metadata PASS",
       "browserAcceptance": "Delivery draft hidden during 401/other-owner, restored original owner review+File; PC1280/mobile390 overflow0",
       "siteIntegration": {
-        "state": "validating_not_deployed",
+        "state": "deployment_failed_case_compatibility_repair_under_validation",
         "sourceBase": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc",
         "githubQualitySha": "6b72470ce25d4e7b20940b1698fde5a12281ed69",
         "preserves": [
@@ -7606,9 +7606,26 @@
         ],
         "generalApiAssertions": 1356,
         "liveApiAssertions": 522,
-        "fullSiteRepositoryTests": "in_progress; repository/private-evidence metadata gaps are not runtime acceptance",
+        "fullSiteRepositoryTests": "PASS at source2f083b8c: npm run verify; Node2025 pass/0 fail/1 platform skip; final CASE compatibility repair requires re-verification",
         "mainMerged": false,
-        "prepublicationEvidence": "docs/evidence/site-quality-integration.json"
+        "prepublicationEvidence": "docs/evidence/site-quality-integration.json",
+        "reviewPullRequest": "https://github.com/k999ln/rock/pull/106",
+        "deploymentAttempts": [
+          {
+            "version": 50,
+            "source": "679d769dcb22f3fb6ba71f7eaad7e122a97bc6b2",
+            "status": "failed",
+            "failure": "incomplete input: SQLITE_ERROR"
+          },
+          {
+            "version": 51,
+            "source": "2f083b8c304bc51e5ab20ae89016d64a5ed5d37f",
+            "status": "failed",
+            "failure": "incomplete input: SQLITE_ERROR"
+          }
+        ],
+        "lastObservedLiveVersion": 49,
+        "nextAcceptance": "Parenthesized CASE compatibility from Cloudflare issues4727/4326, unchanged trigger guards; final verify and independent review before a new native publication. Confirm saved source SHA, deployment success, retained schema and real public UI."
       }
     }
   }

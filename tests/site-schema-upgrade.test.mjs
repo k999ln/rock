@@ -19,6 +19,8 @@ const objects = (db) => db.prepare("SELECT type,name,tbl_name,sql FROM sqlite_ma
 const applyPrior = (db) => { for (const name of priorNames) db.exec(read(`drizzle/${name}`)); };
 // Preserve quoted literals/identifiers exactly while accepting transport-only whitespace.
 const sqlTokens = (sql) => sql.match(/'(?:''|[^'])*'|"(?:""|[^"])*"|`(?:``|[^`])*`|[^\s'"`]+/g);
+// Cloudflare workers-sdk#4727: preserve CASE semantics while shielding its END from legacy transport splitting.
+const wrapGuardCases = (sql) => sql.replace(/\bSELECT\s+(CASE\b[\s\S]*?\bEND)\s*;/g, 'SELECT ($1);');
 
 
 void test('Site applied SQL, snapshots, and journal prefix stay byte-for-byte immutable', () => {
@@ -53,7 +55,7 @@ void test('Site bridge retains every live definition and all final primary guard
     for (const row of objects(primary)) if (!priorSet.has(row.name)) {
       const actual = after.get(row.name);
       if (row.type === 'trigger') {
-        assert.deepEqual({ ...actual, sql: sqlTokens(actual.sql) }, { ...row, sql: sqlTokens(row.sql) });
+        assert.deepEqual({ ...actual, sql: sqlTokens(actual.sql) }, { ...row, sql: sqlTokens(wrapGuardCases(row.sql)) });
         assert.doesNotMatch(actual.sql, /[\r\n]/, `${row.name}: preserve the whole trigger at a hosted statement boundary`);
       } else assert.deepEqual(actual, row);
     }

@@ -4,9 +4,9 @@
 
 公開ソース整理: `services/sky-billing/work/sky-billing-dry-run/worker.js` と `.map` は再生成可能なdry-run配布出力のため追跡対象から除外した。実装 `services/sky-billing/src` と検証コマンドは保持。復元元はSites source `e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc`。
 
-## 既存Site v49との品質統合（配備前）
+## 既存Site v49との品質統合（配備再検証中）
 
-配信先は利用者指定の `rockstaros-kaiya.noellesugar1.chatgpt.site`。GitHubの品質候補 `6b72470c` のWeb/API改善と、公開v49のCSV納品revision・lease・共有リンク・会計保存を両立する。既存migration17本を保持して0017を追加し、公開39表の定義と保存済み行を消さない。公開版のAPI/保存契約は主PRの同期CSVと異なるため、両方を同一試験の合格として記録しない。Sites配備はまだ未実施で、source保存・migration適用・deployment・実画面の結果を順に確定する。main統合は未実施。
+配信先は利用者指定の `rockstaros-kaiya.noellesugar1.chatgpt.site`。GitHubの品質候補 `6b72470c` のWeb/API改善と、公開v49のCSV納品revision・lease・共有リンク・会計保存を両立する。既存migration17本を保持して0017を追加し、公開39表の定義と保存済み行を消さない。公開版のAPI/保存契約は主PRの同期CSVと異なるため、両方を同一試験の合格として記録しない。全体verifyはNode2,025成功/既存platform skip1、一般API1,356・公開CSV/会計API522、実buildとPC/390pxブラウザ操作で成功した。Site用sourceはPR #106（base: codex/sites-live-v49）に保存済み。v50/source679d769dとv51/source2f083b8cの配備はSQL適用の incomplete input: SQLITE_ERROR で失敗し、確認時点の公開v49・既存39表を維持している。改行だけの修正では解消しなかったため、Cloudflare workers-sdk #4727/#4326の既知報告に基づき、未適用0017の20個のCASE式を括弧で包む互換修正を検証する。guardの条件とRAISE、原本17 migrationは変えない。native側の原因確定や本番解消は、同一保存versionの配備結果と実画面で別途受け入れる。main統合は未実施。
 >
 > **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
 
