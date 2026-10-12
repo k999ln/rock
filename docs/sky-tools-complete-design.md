@@ -19,7 +19,7 @@ host fixtureは`CapacityOffer → ComputeOrder → ComputeLease → ComputeRecei
 
 責任はROCK/O5、追跡はMAT03。入出力、状態、保存、本人分離、失敗、再送、復旧、承認、合格条件、残る判断の正本は[Material CoreのWeb接続](material-invention-core.md#sky--zemaの机上比較と本人用保存)。実装は`lib/material-study.ts`、`app/api/material-invention/route.ts`、`components/material-invention-workspace.tsx`。既存`work_jobs`と`lib/workflow.ts`を使い、サーバー保存の前に入力送信を明示する。
 
-Materialとメルカリの保存結果が不明な間は入力と記録IDを画面内に保持し、同じタブのリンク移動を止める。別タブのサインインとexportは利用できる。401で旧一覧を隠し、認証復帰後に本人の一覧を読戻す。遅い旧GETで認証切れを解除しない。タブ終了・crash・履歴移動をまたぐ永続復旧は未受入。
+Materialとメルカリの保存結果が不明な間は入力と記録IDを元owner別の画面内memoryに保持し、同じタブのリンク移動を止める。本人不明・別ownerでは入力を隠し、元ownerでのみ復元・再確認・明示解除する。遅い応答と古い解除handlerは、新しい本人・保留操作へ反映しない。成功応答も既存データと照合し、不完全な候補・planを表示や保存成功へ進めない。別タブのサインインとexportは利用できる。401で旧一覧を隠し、認証復帰後に本人の一覧を読戻す。遅い旧GETで認証切れを解除しない。Materialの未完成JSON・名前も既知の保存時点との差分で離脱から保護し、現在の入力snapshotに限って明示破棄できる。匿名local draftと別ownerへの退避も含み、空入力では移動を妨げない。タブ終了・crashをまたぐ永続復旧は未受入。
 
 ## SPIDER — Skyのセキュリティ検査
 
@@ -170,6 +170,22 @@ O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承
 
 合格範囲は実handler/storeとSQLiteによる拒否・取消・競合回帰。合成認証と実requestUserを使う別fixtureを区別し、本番認証・配備・実機・料金保留解除は受入に含めない。[検証と未解決条件](evidence/spider-work-plan-contract.json)を参照する。
 
+### Zemaの古い応答と未送信入力（2026-10-11、WEB04）
+
+依頼・Tool・model・通貨・上限・会話が変わると進行中の見積取得を取り消し、取得世代が一致する応答だけを表示する。見積ボタンと実行操作は同期lockで二重開始を防ぐ。見積は本人承認でもTool成功でもなく、既存の費用・権限gateを通す。
+
+Tool実行カードはスクロール領域内で縮ませず、入力・再実行・結果保存を常に到達可能にする。390px実画面で高さ2pxへ潰れる現象を再現し、flex-shrinkを無効にして保存履歴から再表示できることを確認した。
+
+未送信本文とAMC編集がある場合、同じ画面の新規会話・会話切替・通常の内部リンクは破棄確認へ進み、取消で入力を保持する。Navigation APIを備えるbrowserでは戻る／進むも同じ確認を通す。明示破棄後だけ元の履歴項目へ進み、余分なhistory項目を作らない。未対応browserの履歴移動にはこの保証がなく、通常リンクとbeforeunloadの保護だけが残る。本文の自動永続化は追加しない。別タブ、外部リンク、download、修飾key操作は通常のbrowser動作を維持する。
+
+Workbenchの仕事名・メモ・A2A依頼・予算・offline同意とCloud AIの本文・モデル・上限・回答保存選択は、確認済みowner別の画面内memoryへまとめる。401・本人不明・別ownerでは前の本人の入力と成果を隠し、元ownerの再確認後だけ戻す。保留解除・破棄の古いhandlerも現在のownerを照合する。応答不明のA2A保存は入力が空に見えても保留を保持し、確認前の新IDや破棄から二重保存へ進ませない。Cloud AIの再認証は親Workbenchの本人を先に確認し、childだけのrefreshで旧ownerを再表示しない。
+
+Workbenchは選択した仕事と取得世代を照合し、古い一覧・詳細・見積が新しい操作結果を上書きしない。書込は共通lockを通し、削除・文章生成の応答不明時はGETで本人の現状を照合する。GETの失敗からmutationを自動再送せず、取消・削除・再試行は既存revisionと本人操作で行う。合格条件は遅延応答、A→B→A選択、二重操作、401、取消、応答不明の回帰と実画面。外部Provider完了や無人実行をこのclient検証で保証しない。
+
+WorkbenchのTool結果・状態更新は、元owner・job ID・元revision・command IDをひとつの保留操作として固定する。読込失敗ではこれを消さず、元ownerの一覧または更新応答に同じcommandが記録され、revisionが進んだ証拠を確認してから解除する。結果の再確認はToolそのものの再実行を要求しない。`lib/work-job-view.ts`が一覧・仕事・step・plan・履歴を既存parserと照合し、不完全な成功応答を描画や操作完了へ進めない。保存形式は変えず、旧planは既存storeの正規化を通った応答として受け入れる。
+
+Cloud AI本文だけが未保存の場合も、本人別draftを同一タブの離脱から保護する。未確認の見積保存は同じrequest IDを保持し、後続の拒否だけで以前の保存失敗を断定しない。初回の確定した入力拒否は修正を許可するが、不明な保存は本人の保存済み見積との一致で照合する。破棄は同じ本人・同じ現在の入力版に限定し、旧handlerから新しい本文・上限を消さない。料金・実行gate、明示承認、Providerへの再送禁止、強制終了をまたぐmemoryの限界は維持する。
+
 ## 2. 共通Tool契約
 
 PC Connectorの旧`/mcp`互換入口は、正確な同梱MR接続定義と4つのローカル機能・既存lifecycleへ限定する。対象外は送信前に403 `legacy_mcp_not_supported`で拒否し、汎用server IDの接続・prepare・本人確認・executeへ案内する。この互換4機能は一回券の限定例外であり、追加Toolへ自動的に拡張しない。Origin／session認証とデータ保護、設定を戻した場合の復旧を維持する。[Connector設計](sky-mcp-connector.md#互換性と移行)の入力・失敗・信頼範囲に従う。
@@ -195,6 +211,12 @@ ROCKは接続画面の一覧と操作結果を、現在の端末接続と最新�
 同時に確認する接続は画面から1件とし、同一描画内の連打も防ぐ。現在の接続成功では一覧を1回更新し、現在の失敗は説明と明示再試行を残す。永続データや新しい承認は追加しない。Passport、料金、実行前承認は既存の契約を維持する。合格範囲は実component回帰10件と実React画面の合成遅延応答10件。実Provider接続やProvider側の取消・復旧の受入ではない。
 
 Skyチャットの一覧も、eventと手動読戻しを共通の要求世代・画面生存・端末tokenで照合する。token消去で待機応答を失効し、owner変更時に旧一覧を消す。遅い成功・エラーは最新一覧を上書きしない。現在の失敗では一覧を消し、現在の再接続で復旧する。既存の切断時の依頼停止と選択解除は保持する。追加component回帰9件、実React／Dialogの合成ブラウザ8件で確認した。
+
+### MCP／A2Aの応答照合（2026-10-11、SKY07）
+
+共通MCP transportは、送信したrequest IDとJSON-RPC 2.0が一致し、result／errorの片方だけを持つ応答だけを受け入れる。errorは整数codeと文字列messageを必須とし、他の要求の応答・notification・不完全なerrorを今回のTool成功／確定失敗へ変換しない。承認済みTool callの結果が不明でもtransportから自動再送しない。接続・protocol negotiation・一回限りの承認・Origin・redirect拒否は維持する。
+
+A2Aも同じenvelope境界を持ち、本文受信の途中中断を既存transport errorへ正規化する。SendMessage／GetPriceQuoteは元のmessageId／quoteRequestId付きindeterminateを返し、保存済み一回限りmarkerと予算holdを解除しない。正当な相手errorと形式不正を区別する。回帰はID違い、version違い、resultとerror併記、code欠落、部分本文、正常拒否。外部Providerの本番受入をこのhost transport試験で代替しない。
 
 ### Toolが必ず宣言するもの
 
@@ -327,6 +349,10 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 - `pause`は台帳上の中断で、別のAIやPC processを停止する命令ではない。検収待ちの出力lockは維持する。失敗から再開する場合は理由・証拠を残し、前試行を消さない。
 - WebがofflineならD1の新規保存・最新取得を保証しない。未保存を明示し、手動exportと既存standaloneの利用を区別する。両者の自動同期や競合自動mergeは行わない。
 
+### AMC importの中断と競合（2026-10-11、WEB04）
+
+Goal fileの読込中は検証・保存を無効にして状態を表示する。別file選択、手入力、reset、unmountは読込世代を進め、先に開始したfile.textの遅延完了で現在の編集を上書きしない。本文は既存の編集欄とvalidatorへ渡し、読込完了をschema合格・Goal受入・外部実行へ昇格させない。保存schema、import上限、専用APIとrevision契約は維持する。回帰は連続選択、手入力優先、reset、読込失敗を対象とする。
+
 ### 保存・privacy・保持・削除・互換・復旧
 
 2026-10-05 契約復旧：既存ZemaのWorkPlanはschemaVersion 1、objective、templateから固定するapprovalGatesを持ち、更新競合はWorkJob revisionで判定する。planのない旧payloadは読取時に補い、読取だけではDBを書き換えない。通常jobのobjective編集は最初の実行記録前だけ許可し、利用者入力からgateを緩和できない。AMCのplanは互換表示用で、変更は引き続きamc_eventとGoal expectedRevisionの専用契約を通す。listAmcは認証user別の最大100件の要約のみ返し、Goal本文・手順・履歴を一覧へ展開しない。cloud-agentの記録には同一owner/親jobの既存委任と保存見積、結果には完了状態・保存成果・usage receiptを照合する。これは既存の保存契約の復旧で、外部実行・予算承認・権限付与ではない。再送は同一commandを返し、競合は409と最新読取で復旧する。合成DB/実routeコードの回帰はtests/workplan-reconcile.test.mjsで確認し、本番本人認証・公開受入は別とする。
@@ -392,6 +418,16 @@ Goalの`draft → active → paused / accepted`、taskの`pending → running �
 正本: [CSV business v1](csv-business-v1.ja.md)、`lib/csv-transform.ts`、`lib/csv-job-store.ts`、`data/csv-business-tasks.json`。
 
 50円試験はROCKの受付・Stripeの決済・本人の最終支払いを分ける。CheckoutはJPY 50を送り、Adaptive Pricingをsession単位で無効化して換算表示を出さない。決済復帰URLのjob IDは本人の保存済み受付と一致した場合だけ対象を表示・focusする。`stripe_verified`かつ`completed`で成果取得、`canceled=1`かつ`unpaid`で未払い案内、それ以外は照合待ちを表示する。URLだけで入金・成功を認定しない。ページ更新は同じ受付を復元し、再課金・再実行を行わない。受入は実機で金額・店舗名・キャンセル／成功の復帰・成果物hashを照合し、通知重複とowner分離はAPI fixtureと本番再送で別検証する。Apple Payは対応環境で本人が確認し、未試験を合格にしない。
+
+### CSVの応答喪失と保存の保護（2026-10-11、WEB04）
+
+ファイル選択inputは親ラベルの範囲内へ配置し、キーボードfocusをラベルのoutlineで示す。不可視inputが390px画面から55pxはみ出す旧表示を修正する。
+
+受付前に本人scopeを取得し、同一受付ID・file・指示・sample・trialを一つの操作としてメモリ内に保持する。POSTは確認済みscopeを添え、serverは現在の認証ownerと違えば書込前に拒否する。既存clientのheaderなし経路と保存rowは互換読取を維持する。処理中・応答不明の二重クリックは新しいIDを作らない。同じ内容の再確認と、警告を読んだ後の新規受付を分ける。401では以前の仕事一覧を消し、別タブで再認証して元ownerへ戻るまで再送しない。malformed／途切れたerror bodyは確定拒否にせず、元の操作を保持する。
+
+serverの完成状態更新やevent追記の応答が失われても、保存rowを照合するまで成果物を削除しない。既にcompletedなら同じ成果参照を返し、失敗への更新はowner・revision・attempt・inputの同じ処理だけに限定する。acceptedのevent失敗は同じ入金条件で明示再開でき、処理開始直後の一時読取失敗はquality_failedへ復旧する。未知の状態では私有objectを保護し、既存retry／本人削除／retentionへ任せる。
+
+process自体がprocessing中に強制終了した場合のlease回収は未実装であり、自動・手動の再実行成功を宣言しない。保存形式と削除契約を伴う追加復旧案は未適用。合格範囲は既存claimの応答喪失、同時受付、owner切替、完成直後の障害、同一内容の明示確認の回帰とローカルD1/R2であり、実課金・外部市場・Queue受入ではない。
 
 ## 6. RockstarOS Market Scanner
 
@@ -485,7 +521,7 @@ IP StudioはHiggsfield専用の生成画面でも、Roblox／GTA専用の投稿�
 
 本人用の保存が成立する前に通信が失敗し、別アカウントで再認証すると、同じ入力とIDを新しい本人へ新規保存できる隙間があった。3つの画面は認証済み一覧GETの`ownerScope`を未確認操作へ固定し、明示再確認の直前にもGETで一致を確認する。本人不明・別アカウントではPOSTせず、入力と元IDを保持する。直前GET後の切替も、mutationの`X-Rock-Owner-Scope`と現在の`requestUser`をAPIで照合して409で拒否する。
 
-scopeは非秘密の意図識別値で、認証や権限を与えない。既存API clientのheader省略は従来契約のままで、新UIではscope確認を必須にする。元アカウントへ戻れば同じIDで再開でき、本人が保留解除を明示したときだけ入力を残して新しい操作IDから始める。解除は保存済み記録を削除しない。legacy client、タブ強制終了・crash後の復旧はこの保証の対象外。実route／全SQLite migration／component回帰と、合成本人の実Mercari画面でB保存0件→A復帰後1件→再読込を確認し、実取引・外部Provider・本番本人認証とは分ける。
+scopeは非秘密の意図識別値で、認証や権限を与えない。既存API clientのheader省略は従来契約のままで、新UIではscope確認を必須にする。元アカウントへ戻れば同じIDで再開でき、元アカウントが現在の保留解除を明示したときだけ入力を残して新しい操作IDから始める。別アカウントへの旧入力の移し替えは行わない。解除は保存済み記録を削除しない。legacy client、タブ強制終了・crash後の復旧はこの保証の対象外。実route／全SQLite migration／component回帰と、合成本人の実Mercari画面でB保存0件→A復帰後1件→再読込を確認し、実取引・外部Provider・本番本人認証とは分ける。
 
 ## 9. ココナラ
 
@@ -517,7 +553,11 @@ Pixelで保存済み成果を開き直したときの出力textareaは、背景�
 
 Pixelで結果の保存ボタンが縦に細く伸びる問題を確認したため、760px以下のチェック結果は見出しと操作列を縦配置し、ボタン列は折り返す。
 
-案件保存の401・サインイン転送は本人認証切れとして扱い、開いている入力画面を保持する。ダイアログ内にも別タブのサインインと接続再確認を表示する。再確認はGETだけで、下書きの再送や契約・送金を行わない。チェック本文のserver永続保存は追加せず、案件管理の17項目と変更履歴は本人別D1へ保存する。10秒の通信期限と不正なJSON応答の検出は共通requestへ揃える。合格条件は匿名画面で保存不可・入力保持・Skyへの復帰先を確認し、認証済み端末でチェックと保存・再読込を別々に検証する。
+案件の入力・編集中revision・メモ・手入力金額・外部明細参照・保留操作は、確認済みowner別の画面内memoryにまとめる。本人不明・別ownerでは旧入力と案件を隠し、元ownerで同じ入力・IDを戻す。未送信入力も離脱から保護し、dialogを閉じて再び開いても消さない。破棄・保留解除・再試行・古い編集操作は、元ownerと現在の入力／操作snapshotを照合する。編集開始後に同じ案件のrevisionが進んだ場合は古い条件を新revisionへ自動的に載せ替えず、入力を残して本人の再確認を求める。本人による有効な入力破棄後は、その入力に関する古い競合エラーを消し、破棄完了の案内だけを残す。拒否された破棄では回復に必要なエラーを維持する。
+
+保存前のGET失敗から、以前の未確認POST/PATCHが失敗したとは判定しない。成功応答は既存の条件parser・ID・金額／履歴配列を検証し、作成時の条件、更新commandと進んだrevisionを確認してから保留を解除する。壊れた応答で画面を落としたり手入力入金を二重計上したりしない。API・保存schema・報酬条件・CAS・手入力を未照合とする契約は維持する。合格条件はowner切替、元ID再送、読取失敗、壊れた応答、古いcallbackと編集中競合の回帰、および合成本人のbuilt画面。外部契約・実入金・送金・本番受入は別とする。
+
+案件保存の401・サインイン転送は本人認証切れとして扱う。入力は元ownerのmemoryへ保持して表示を隠し、本人の再確認後に復元する。ダイアログ内にも別タブのサインインと接続再確認を表示する。再確認はGETだけで、下書きの再送や契約・送金を行わない。チェック本文のserver永続保存は追加せず、案件管理の17項目と変更履歴は本人別D1へ保存する。10秒の通信期限と不正なJSON応答の検出は共通requestへ揃える。合格条件は匿名画面で保存不可・入力保持・Skyへの復帰先を確認し、認証済み端末でチェックと保存・再読込を別々に検証する。
 
 
 案件作成・条件更新・進行・手入力の入出金記録では、通信期限切れや5xxなどの結果不明時に元の案件ID／操作ID・revision・入力を画面メモリーへ保持する。入力と別操作を止め、「同じ保存内容で結果を確認」からだけ同じ要求を再送する。自動再送はしない。再読込・別タブ認証の確認はGETだけであり、未確認時は既存共通hookでHome／Libraryなど同一タブのリンク移動を止める。別タブの認証とダウンロードは許可し、保存結果の確認後に移動を再開する。ページを閉じる前にも未確認状態を警告する。画面を閉じた後は本人別一覧と履歴を先に照合する。端末のlocalStorageへ案件内容は保存しない。
@@ -807,6 +847,8 @@ Zema Workbenchの選択中jobからdirect-text quoteを作成し、親jobの残�
 
 2026-10-11の責務整理では、Cloud AIの状態・通信・表示・回答削除dialogを`components/workbench-cloud-text.tsx`へ集約した。controller hookはWorkbenchと同じ生存期間を保ち、job切替時も依頼文・上限・同一request IDを維持する。親側は選択jobとA2A共通予算を渡す。DOM・ラベル・10秒readback・入力hash照合・明示承認・結果不明時の再送禁止は変更しない。Material／メルカリ／ココナラ／Workbenchの未確認操作は`lib/pending-owner-intent.ts`の純関数で本人不明・不一致・一致を区別し、各画面の保存契約を維持する。Workbenchは失敗時に保留を維持し、事業3画面だけ確定した入力エラー等で解除する。本人照合は既存APIの`requestUser`とowner intentによるもので、helperは認証や権限を与えない。
 
+Cloud AIの成功応答は`lib/remote-ai-text-client.ts`のreaderを通してから表示や後続操作へ使う。見積のmodel・通貨・上限、実行のparent job・request ID・入力digest、保存済みquoteの承認digest・予算・保存選択を照合する。不完全なexecutionや一覧を成功・空一覧と解釈せず、入力・同一request IDと確認済み状態を保持して状態読込へ案内する。不完全な承認応答から実行POSTへ進まない。pricedとunreconciledの既存応答を区別し、後者に存在しない明細を描画しない。料金gate、署名対象、Provider送信条件、永続schemaは変更しない。合格条件は壊れた成功応答、別parent応答、元owner復帰、401後の古いcallback、同一依頼再確認の回帰であり、実Provider・実課金は別受入。
+
 SKY07／O4の会話保存は`components/use-sky-chat-session.ts`へ集約する。画面は入力・runner・未保存AMCの確認と通信中止を担当し、hookは既存sessionStorageの復元・保存・新規thread・resetを担当する。10分TTL、Toolとthreadの一致、引継ぎの一度限り消費、runningの再読込はfailedとして案内する規則、保存不可でも現在の会話を保持する動作を維持する。mode変更と新規会話の共通resetは、既存の未保存確認が通った後だけ実行する。保存内容を実行承認へ昇格せず、会話復元から自動実行しない。
 
 応答のキャッシュ読込と作成は総入力の互いに重ならない区分として保存用metadataへ保持する。標準文章生成は`service_tier=default`を送信し、実応答tierを別に保持する。使用量計算は各区分をBigIntで加算し、通貨minor unitへの切上げを総額で一度だけ行い、項目ごとのtoken数・署名単価・正確な分子を返す。欠落した使用量を0と推定せず、別model/tier、未知のTool、検索、入力/出力上限超過、quote条件不一致はunreconciledとする。これらは予約保持と照合が必要な状態であり、支払い・請求書照合の成功を意味しない。
@@ -931,7 +973,7 @@ SkyのMac接続受入は `docs/sky-mcp-connector.md` の限定試験候補を使
 
 Sky接続画面はブラウザのonLineを通信設定のhintとして扱い、Sky APIの応答と本人認証で接続可否を判定する。401応答はSkyへ到達した証拠だが、サインイン完了・PC接続・利用権の証拠ではない。認証待ち/再確認/取得失敗中は接続操作を停止し、再確認はGETだけ。認証再確認中の古い接続応答は成功へ昇格させない。外観と接続コード発行の承認境界は維持する。
 
-CSV履歴の再確認は10秒でタイムアウトし、失敗時は入力・既存成果の表示を保持して実行・決済・再試行・削除操作を止める。再確認成功後に解除する。古いGET応答は新しい認証状態や処理結果を上書きしない。受付・処理・決済確認・削除の間は履歴pollを停止し、開始前のGETは中止する。復帰はGETのみで処理・課金を再実行しない。制御回帰とStripe合成証拠は実決済・Apple Pay・本人受入とは分離する。
+CSV履歴の再確認は10秒でタイムアウトし、失敗時は入力をメモリに保持するが、本人未確認の入力・既存成果は非表示にし、実行・決済・再試行・削除操作を止める。元ownerの再確認成功後に元の入力を復元する。古いGET応答は新しい認証状態や処理結果を上書きしない。受付・処理・決済確認・削除の間は履歴pollを停止し、開始前のGETは中止する。復帰はGETのみで処理・課金を再実行しない。制御回帰とStripe合成証拠は実決済・Apple Pay・本人受入とは分離する。
 
 ### AMC (`rockstar-amc`) — 部隊・Goal管理
 
@@ -966,6 +1008,8 @@ CLIはOS本人から承認されたGoalを使い、run claimに結び付けたex
 
 
 ### CSV入力の並行作成と復旧補足
+
+画面ではFile・変換条件・取引番号・未確認受付IDをownerへ束縛する。別ownerや401ではnative file inputも再作成して旧filenameを隠し、古いcallbackからのPOSTを拒否する。元ownerでの明示再確認だけが元の入力とIDを復元する。未送信入力も内部移動／対応ブラウザの履歴移動から保護し、本人の明示破棄で解除する。公開サンプルは私的Fileを送らない。履歴／quote／accept／paymentのJSONと表示モデルを`lib/csv-job-view.ts`で確認し、不完全な応答は成功表示・次の処理へ進めない。保存不明後の事前GET失敗は、400等でも元POSTの不成立を証明しないため受付IDを保持する。`QUALITY`は検査不合格、処理例外は処理失敗・再試行待ちとして区別する。
 
 `createCsvJob`はowner hashと試行UUIDを含む入力keyへ条件付きputを行い、DBのid一意制約で確定する。登録競合で負けた試行だけが自分のkeyを削除し、同じowner・bytes hash・正規化spec・名前・見積料金なら既存結果へ合流する。異なるpayload/ownerは情報を開示せず409。既存jobのinput_keyは変更せず、読出し・納品・期限削除との互換を保つ。schema変更はない。
 

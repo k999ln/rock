@@ -140,11 +140,28 @@
         "sharedOwnerIntent": "lib/owner-intent.ts",
         "regressions": "tests/workbench-owner-recovery.test.mjs",
         "input": "Original authenticated owner scope, creation ID, title and template are frozen together.",
-        "recovery": "Before explicit retry, reload authenticated owner intent. Unknown/different owner cannot create. Resume original owner or explicitly release pending intent before a new ID.",
+        "recovery": "Recheck authenticated owner before same-ID retry; only original owner can explicitly release an eligible pending intent. Unknown A2A saves cannot be discarded or rebound.",
         "apiBoundary": "Optional intent header is checked before writes, never used to authenticate. Legacy clients and Zema entitlement checks remain.",
         "uiBoundary": "401 disables creation and clears displayed private jobs; sign-in opens a separate tab. Late reads and simultaneous create are rejected.",
         "limits": "Memory-only pending creation; no provider, fee or production acceptance.",
-        "navigation": "While creation is pending, the shared pending-save hook blocks same-tab links and warns on unload. Confirmed save or explicit release restores navigation; separate-tab sign-in remains available."
+        "navigation": "While creation is pending, the shared pending-save hook blocks same-tab links and warns on unload. Confirmed save or explicit release restores navigation; separate-tab sign-in remains available.",
+        "privateDrafts": "Owner-scoped in-memory title, note, A2A inputs and consent; unknown/different owner masks private fields and original owner restores them."
+      },
+      "workbenchUpdateRecovery": {
+        "implementation": [
+          "components/workbench.tsx",
+          "lib/work-job-view.ts"
+        ],
+        "tests": [
+          "tests/workbench-owner-recovery.test.mjs",
+          "tests/work-job-view.test.mjs"
+        ],
+        "input": "Original owner, job ID, revision and immutable command ID/payload.",
+        "acceptance": "Validate existing list/job projection and exact persisted command at an advancing revision before retiring pending state.",
+        "failure": "Read failure or malformed success retains exact command and private input; different owner cannot dispatch it.",
+        "recovery": "Read back the same owner job or explicitly retry the same command, without rerunning the Tool.",
+        "compatibility": "Existing API, storage and authorization unchanged; legacy plans pass through existing store normalization.",
+        "limits": "Current-page memory; no forced-close persistence or Provider acceptance."
       }
     },
     {
@@ -178,14 +195,39 @@
         "implementation": [
           "scripts/start-local-web.mjs",
           "scripts/local-wrangler.mjs",
-          "scripts/spider-web-runtime.mjs"
+          "scripts/spider-web-runtime.mjs",
+          "scripts/local-web-state.mjs"
         ],
         "regressions": "tests/start-local-web.test.mjs",
         "runtime": "Resolve Wrangler from the Cloudflare builder dependency, matching the generated Worker compatibility date.",
-        "webStart": "Apply default local D1 migrations successfully before starting built Worker dev.",
+        "webStart": "Apply local D1 migrations before preview; both use the same absolute project .wrangler/state or explicit --persist-to outside build output. Config/environment aliases are normalized once for both stages; cwd overrides and remote mode stop before migration.",
         "operatorStart": "Use matching runtime; retain separate database setup and fail closed on missing operator authentication.",
-        "failure": "Do not start dev after migration failure or interruption; preserve child exit code and shutdown signals.",
-        "limits": "No dependency/date/config/authorization changes or remote deployment. Custom preview persistence still requires a matching separate migration."
+        "failure": "Stop build/start before touching legacy dist/server/.wrangler/state; preserve both old/new stores; reject generated-output paths and symlink aliases; retain failure/signal propagation.",
+        "limits": "No dependency/date/auth changes, automatic database merge or remote deployment. Existing legacy stores require stopped-process whole-directory backup and explicit selection; already-deleted data is not recoverable by the guard."
+      },
+      "accountEntryGuidance": {
+        "implementation": [
+          "components/home-screen.tsx",
+          "app/connect/page.tsx",
+          "tests/sim-service-entry.test.mjs"
+        ],
+        "contract": "Use the current account-led entry; preserve existing purchase claims and device links; consumer eSIM issuance/sales remains on hold."
+      },
+      "pendingWalletRecovery": {
+        "implementation": [
+          "components/use-wallet-ledger.tsx",
+          "components/use-pending-save-navigation.ts",
+          "lib/history-navigation-guard.ts",
+          "lib/operations-client.ts",
+          "app/api/wallet/route.ts",
+          "lib/wallet-snapshot.ts"
+        ],
+        "contract": "Same confirmed owner and immutable operation ID/payload on unknown-response replay; validate complete response before replacing state; hide private drafts on unknown/different owner, restore only original owner; protect meaningful unsent drafts; no raw-input persistence or authorization bypass.",
+        "regressions": [
+          "tests/wallet-workspace-recovery.test.mjs",
+          "tests/history-navigation-guard.test.mjs"
+        ],
+        "limits": "Navigation traversal protection requires Navigation API; closing the tab still loses in-memory input."
       }
     },
     {
@@ -265,7 +307,15 @@
         "systems/rock-star-os/tests/test_os_runner_control.py",
         "systems/rock-star-os/os/verify-platform.py",
         "systems/rock-star-os/tests/test_os_platform_qmp.py"
-      ]
+      ],
+      "receiverTerminalRecovery": {
+        "implementation": [
+          "systems/rock-star-os/src/blackberryrock/storage.py",
+          "systems/rock-star-os/tests/test_storage.py"
+        ],
+        "contract": "Compare-and-swap status/result/updated_at; identical terminal replay preserves saved row; conflicting terminal callback cannot replace result.",
+        "validationScope": "PC receiver host SQLite and HTTP; Linux CI, OS image and device acceptance remain distinct."
+      }
     },
     {
       "id": "android_pixel",
@@ -351,7 +401,28 @@
         "tests/test_stage_local_ai_apk.py",
         "systems/rock-star-os/src/blackberryrock/memory_access.py",
         "systems/rock-star-os/tests/test_memory_access.py"
-      ]
+      ],
+      "outboxReceiptReplay": {
+        "implementation": [
+          "android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java",
+          "android/core/src/test/java/dev/rock/core/ExternalWriteOutboxTest.java"
+        ],
+        "contract": "Confirmed replay must match saved provider reference, payload hash and exact settled amount; no resubmit or mutation on conflict.",
+        "validationScope": "Android Core host/SQLite fixture, not external Provider acceptance."
+      },
+      "shellSubmissionRecovery": {
+        "implementation": [
+          "android/shell/src/main/java/dev/rock/shell/LocalSubmission.java",
+          "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+          "android/shell/src/main/java/dev/rock/shell/DurableSubmissionStore.java"
+        ],
+        "contract": "Persist only operation UUID, input digest, Android user serial before Binder; ambiguous replies retain the same identity; explicit abandonment does not cancel Broker work. Failed preference commits preserve original metadata across Activity recreation; retry refusals cannot disprove an earlier committed request.",
+        "regressions": [
+          "android/shell/src/test/java/dev/rock/shell/LocalSubmissionTest.java",
+          "android/shell/src/androidTest/java/dev/rock/shell/LocalSubmissionIntegrationTest.java"
+        ],
+        "limits": "Host tests and APK compile only; instrumentation/device execution pending."
+      }
     },
     {
       "id": "sky_zema_and_tools",
@@ -482,7 +553,39 @@
         "regressions": "tests/sky-tool-sdk.test.mjs",
         "acceptanceLimit": "isolated host source tests; real device and external reachability not established"
       },
-      "webClaimRecovery": "Bounded 10-second header/body request; unknown response uses read-only entitlement refresh before explicit same-package retry; authentication recovery opens a separate tab to retain the in-memory selection."
+      "webClaimRecovery": "Bounded 10-second header/body request; unknown response uses read-only entitlement refresh before explicit same-package retry; authentication recovery opens a separate tab to retain the in-memory selection.",
+      "qualityRecovery": {
+        "implementation": [
+          "components/sky-chat-workspace.tsx",
+          "components/workbench-cloud-text.tsx",
+          "components/amc-tool-runner.tsx",
+          "components/csv-business-workspace.tsx",
+          "lib/csv-job-store.ts",
+          "components/workbench.tsx",
+          "lib/remote-ai-text-client.ts",
+          "lib/work-job-view.ts"
+        ],
+        "contract": "Ignore obsolete reads/imports, serialize writes, retain owner-bound operation identity and committed private artifacts across ambiguous failures.",
+        "documents": [
+          "docs/sky-tools-complete-design.md",
+          "docs/csv-business-v1.ja.md"
+        ],
+        "limits": "No automatic mutation replay or stale-processing lease recovery; no new Provider or live billing acceptance.",
+        "responseValidation": "Validate existing execution/estimate/list projection and parent/request/quote identity before state or next mutation; malformed success retains operation and never authorizes execution.",
+        "cloudDraftNavigation": "Meaningful owner-bound Cloud-only input protects navigation. Exact current draft revision gates discard; unknown quote outcome retains request ID until matching saved readback."
+      },
+      "transportResponseIntegrity": {
+        "implementation": [
+          "lib/mcp-client.ts",
+          "lib/a2a-client.ts"
+        ],
+        "contract": "Require same JSON-RPC request ID/version and exclusive result or valid error; retain send/quote identity on malformed or truncated response, never retry Tool calls automatically.",
+        "regressions": [
+          "tests/mcp-client.test.mjs",
+          "tests/a2a-client.test.mjs"
+        ],
+        "limits": "Host and loopback interoperability, not external production acceptance."
+      }
     },
     {
       "id": "mcp_and_providers",
@@ -958,6 +1061,22 @@
           "docs/evidence/sky-csv-expiry-verification.json"
         ],
         "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "clientRecovery": {
+        "implementation": [
+          "components/csv-business-workspace.tsx",
+          "lib/csv-job-view.ts",
+          "app/api/csv-jobs/route.ts"
+        ],
+        "regressions": [
+          "tests/csv-business-workspace.test.mjs",
+          "tests/csv-owner-intent-route.test.mjs",
+          "tests/csv-processing-recovery.test.mjs"
+        ],
+        "contract": "Bind private File, conditions, reference and pending quote ID to the confirmed owner. Mask native file input on identity uncertainty/change; restore only original owner. Validate history/quote/accept/payment responses before state or next write. Preflight GET failure never proves an earlier POST did not commit. Public sample never sends selected private File.",
+        "navigation": "Guard meaningful unsent input and unknown saves; explicit same-owner draft discard preserves committed jobs.",
+        "serverRecovery": "Read back completed commit before cleanup; retain winning artifacts; protect accepted/processing event and post-claim read failures.",
+        "limits": "Memory-only unsent/pending input. Hard-killed processing recovery and orphan R2 cleanup remain unresolved; no payment or retention-contract change."
       }
     },
     {
@@ -1012,8 +1131,17 @@
         "authentication": "Existing requestUser only; ownerScope grants no access.",
         "ui": "Freeze the first confirmed owner scope in the pending operation; recheck via GET, then send the intent header on mutation.",
         "api": "Optional header for existing clients; supplied mismatches or malformed scopes return 409 before writes. Updated UIs require a confirmed scope.",
-        "recovery": "Return to the original account, or explicitly release the pending operation while keeping input and creating a fresh operation ID. Committed records are not deleted.",
+        "recovery": "Only original confirmed owner restores private draft and exact pending operation. Explicit release requires the same owner and same pending operation; stale callbacks cannot release a newer operation.",
         "limits": "Legacy clients without header retain existing semantics; memory-only pending operations do not survive crash/forced close."
+      },
+      "privateInputRecovery": {
+        "storage": "Per-owner current-page memory only; unknown and other owners cannot see or rebind retained input. No persistent browser draft schema.",
+        "response": "Existing render projection and expected identity must validate before success; malformed response retains exact operation.",
+        "navigation": "Meaningful dirty or uncertain work blocks same-tab loss; original owner can explicitly discard eligible unsent input.",
+        "documents": [
+          "docs/mercari-revenue-loop.md",
+          "docs/sky-tools-complete-design.md"
+        ]
       }
     },
     {
@@ -1101,8 +1229,17 @@
         "authentication": "Existing requestUser only; ownerScope grants no access.",
         "ui": "Freeze the first confirmed owner scope in the pending operation; recheck via GET, then send the intent header on mutation.",
         "api": "Optional header for existing clients; supplied mismatches or malformed scopes return 409 before writes. Updated UIs require a confirmed scope.",
-        "recovery": "Return to the original account, or explicitly release the pending operation while keeping input and creating a fresh operation ID. Committed records are not deleted.",
+        "recovery": "Original owner restores exact private draft and operation. Explicit discard/release requires matching owner and current snapshot; foreign or stale callbacks cannot rebind or erase it.",
         "limits": "Legacy clients without header retain existing semantics; memory-only pending operations do not survive crash/forced close."
+      },
+      "workspaceRecovery": {
+        "implementation": "components/coconala-team-workspace.tsx",
+        "regressions": "tests/coconala-workspace-recovery.test.mjs",
+        "storage": "Memory-only owner snapshots for terms, edit revision, money/reference/note and pending command; no persistent draft schema.",
+        "conflict": "Capture editing revision at editor open; never silently rebase stale terms to a refreshed revision.",
+        "acceptance": "Validate existing case projection and immutable creation terms or exact persisted update command before retiring pending identity. Failed preflight GET is never definitive proof that an earlier mutation failed.",
+        "navigation": "Dirty or pending work, including parked owner drafts, blocks same-tab loss; close/reopen preserves input and explicit own-snapshot discard is available.",
+        "external": "Manual business records only; no external order, transfer, fee change or production acceptance."
       }
     },
     {
@@ -1405,8 +1542,17 @@
         "authentication": "Existing requestUser only; ownerScope grants no access.",
         "ui": "Freeze the first confirmed owner scope in the pending operation; recheck via GET, then send the intent header on mutation.",
         "api": "Optional header for existing clients; supplied mismatches or malformed scopes return 409 before writes. Updated UIs require a confirmed scope.",
-        "recovery": "Return to the original account, or explicitly release the pending operation while keeping input and creating a fresh operation ID. Committed records are not deleted.",
+        "recovery": "Only original confirmed owner restores private draft and exact pending operation. Explicit release requires the same owner and same pending operation; stale callbacks cannot release a newer operation.",
         "limits": "Legacy clients without header retain existing semantics; memory-only pending operations do not survive crash/forced close."
+      },
+      "privateInputRecovery": {
+        "storage": "Per-owner current-page memory only; unknown and other owners cannot see or rebind retained input. No persistent browser draft schema.",
+        "response": "Existing render projection and expected identity must validate before success; malformed response retains exact operation.",
+        "navigation": "Raw title/source/sample edits versus the last validated saved/read baseline, including anonymous and parked-owner drafts, block same-tab loss. Empty or unchanged saved work can navigate. Discard requires the same current workspace snapshot and no pending/busy operation.",
+        "documents": [
+          "docs/material-invention-core.md",
+          "docs/sky-tools-complete-design.md"
+        ]
       }
     }
   ],

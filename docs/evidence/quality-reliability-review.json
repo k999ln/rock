@@ -1,0 +1,268 @@
+{
+  "schema": "rock-quality-reliability-review/1",
+  "status": "in_progress",
+  "startedAt": "2026-10-11T23:56:26Z",
+  "plannedEndAt": "2026-10-12T04:56:26Z",
+  "updatedAt": "2026-10-12T02:49:08.780121+00:00",
+  "baseline": {
+    "main": "4055ad380d3876bee8e93eca71b1e072a2785959",
+    "reusedPr100": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
+    "gridPr103": "e80d0357aa88291b6ee955e62af875180d35e6cd",
+    "mainMerged": false
+  },
+  "pullRequests": {
+    "primary": "https://github.com/k999ln/rock/pull/105",
+    "grid": "https://github.com/k999ln/rock/pull/104",
+    "gridBase": "claude/sky-compute-grid-live"
+  },
+  "inventory": {
+    "Web/Sky/Zema": "existing components, route state and real built browser paths",
+    "API/DB/auth": "owner/CAS/idempotency route tests and SQLite/D1/R2 fault injection",
+    "A2A/MCP": "shared bounded readers reused from PR100; correlated envelopes and stream failures",
+    "Wallet": "both existing ledger views, same-operation recovery and reversal",
+    "Android": "Core/Broker/Shell/SDK host tests and debug APK/lint; device remains separate",
+    "native": "storage/receiver concurrency and existing Linux CI",
+    "Game": "existing TLS/SQLite/SIGKILL recovery audited; no new code needed in reviewed scope",
+    "Tools": "CSV/AMC/article and owner-bound Material/Mercari/Coconala, with built PC/390px flows",
+    "CI/development": "actual Wrangler local data persistence/config/environment; fixed-policy secret scans"
+  },
+  "verifiedImprovements": [
+    {
+      "id": "wallet-recovery",
+      "before": "24000 record committed, reply lost, user retried: 48000 and two records",
+      "after": "double click plus lost response: 24000 and one record; different owner cannot see draft or retry; original owner recovers exact operation",
+      "reversal": "lost reply followed by explicit same-operation check leaves one reversal, zero balance and two append-only rows",
+      "scope": "built local Worker/D1; synthetic owners; 1280/390px overflow0; no real funds"
+    },
+    {
+      "id": "csv-artifacts",
+      "before": "completed DB commit followed by event failure could remove completed artifacts; failed processing claim read could strand work",
+      "after": "readback confirms winner before cleanup; accepted/processing event and claim-read failure paths recover",
+      "scope": "focused regressions and built local accepted/processing/completed fault injections; four artifact links and actual result/report downloads",
+      "remaining": "process kill while processing is not automatically/manual-timeout recoverable; proposed contract change is unapplied"
+    },
+    {
+      "id": "csv-owner",
+      "before": "old owner private File/conditions/reference survived owner change; preflight error could retire prior unknown POST ID",
+      "after": "native file input and private fields masked; original owner restores; same-ID quote readback; meaningful unsent input navigation guard",
+      "scope": "independent six flows/48 conditions plus built local owner sequence; not production authentication"
+    },
+    {
+      "id": "layout",
+      "before": "390px CSV file input caused55px horizontal overflow; Zema workflow card flex-shrank to2px",
+      "after": "CSV overflow0 with280px input; Zema card visible with saved-result actions",
+      "scope": "built browser; PC1280 and mobile390; no broad restyle"
+    },
+    {
+      "id": "local-preview",
+      "before": "default D1/R2 state lived under generated dist and disappeared when build replaced output; --env affected only dev and produced500 no such table after migration succeeded",
+      "after": "one explicit stable persistence directory for migration/dev; legacy data stops build before changes; same config/environment for both stages; unsupported cwd/remote stop before migration",
+      "scope": "actual local Wrangler4.147.0 D1/R2 before/after, root independent56 tests, built product saved jobs/report retained"
+    },
+    {
+      "id": "android-native",
+      "before": "ambiguous Binder submission used newUUID; receipt duplicate accepted different settled amount; concurrent native terminal updates overwrote results",
+      "after": "durable same-owner/input submission identity; exact receipt reconciliation; native terminal CAS rejects conflicts and preserves exact duplicate timestamp",
+      "scope": "Android unit/APK/lint and native host HTTP/storage; instrumentation APK compiled, runtime not run"
+    },
+    {
+      "id": "rpc",
+      "before": "mismatched or malformed response envelopes could be accepted; response stream errors escaped ambiguous-outcome handling",
+      "after": "version/ID/result-error validation and normalized uncertain transport errors; no automatic external write retry",
+      "scope": "host actual-client and local HTTP fixtures"
+    },
+    {
+      "id": "zema-local-journey",
+      "before": "draft/navigation and estimate races; mobile result action region collapsed",
+      "after": "unsent draft/history protection, cancelled superseded estimates/imports; real article workflow completed and reopened",
+      "scope": "synthetic local article with one deduplicated citation, two successful steps, saved outputs and explicit review note; no publication or sale"
+    },
+    {
+      "id": "material-private-work",
+      "before": "Private formulation/graph displayed after owner switch; same-frame create made two studies; stale list could switch identity back; malformed committed graph crashed render.",
+      "after": "Owner-scoped memory and synchronous write guard; identity-generation fence; same-ID recovery after deterministic saved-input/graph validation; stale release cannot clear a newer pending operation.",
+      "scope": "47 targeted and independent cases; built local malformed committed graph→same-ID retry→one study, Bob masks input/graph and Alice restores; PC1280/mobile390 overflow0; no lab/physical execution."
+    },
+    {
+      "id": "mercari-private-work",
+      "before": "Unknown committed create ID was lost on preflight GET4xx; old owner input could be rebound; old release handler could retire newer pending save.",
+      "after": "Private native form remounts by owner; original owner restores exact input/ID; GET failure never confirms mutation failure; validate full projection before acceptance and require exact pending operation for release.",
+      "scope": "40 targeted and independent cases; built local 401→Bob masks fields/consents→Alice restores; malformed committed plan→same-ID retry→one plan; PC1280/mobile390 overflow0; no publication, transaction or fee activation."
+    },
+    {
+      "id": "material-unsent-draft",
+      "before": "Incomplete JSON/title could not yet export, but same-tab navigation unmounted and lost the only copy; anonymous and parked owner drafts also unprotected.",
+      "after": "Guard meaningful raw edits against validated save/read baseline; original current workspace can explicitly discard; old callbacks cannot erase newer input. Empty/saved baseline does not trap navigation.",
+      "scope": "Before3fail+emptycontrol pass; after56 own cases plus independent49+6. Built incomplete JSON/title blocks Sky navigation; explicit discard succeeds; validated saved study permits navigation."
+    },
+    {
+      "id": "coconala-private-work",
+      "before": "Preflight GET failure retired unknown committed save; old owner terms remained visible/rebindable; refreshed revision overwrote external edits using old form.",
+      "after": "Owner-bound draft/edit revision/money/reference/pending command; failed reads retain identity; stale editor revision stops PATCH and keeps input; dialog close/reopen preserves draft; exact current snapshot gates discard.",
+      "scope": "50 targeted and independent cases; built dialog close/reopen, owner switch, malformed committed create→one case. Real concurrent API update advances revision0→1; old form save rejected with input retained and persisted newer terms unchanged. PC1280/mobile390 overflow0; keyboard date entry/Escape exercised; no contract or funds."
+    },
+    {
+      "id": "workbench-record-and-cloud-draft",
+      "before": "Malformed job projections crashed or retired pending ID; failed latest GET erased successful Tool record command; Cloud-only draft navigation lost input.",
+      "after": "Runtime projection validation and exact owner/job/revision/command preservation. Built corrupted create→one job; PATCH commit/lost response→GET503→GET200 recovers two steps with two events and no Tool rerun. Cloud-only prompt blocks Home, Bob masks it and Alice restores.",
+      "scope": "72 targeted cases and independent62 plus20 server-reader compatibility cases; local Worker/D1 built browser; no external Provider execution."
+    }
+  ],
+  "inProgress": [
+    "Committed candidate full verify/build and built recheck of two reviewed feedback/selection fixes",
+    "Final same-SHA GitHub CI, review-ready PR and bounded handoff"
+  ],
+  "knownLimitations": [
+    "Memory-only drafts do not survive browser force-close",
+    "Navigation API traversal guard is browser-dependent; same-tab link and beforeunload guards remain",
+    "No physical Android instrumentation, full OS build/flash, external Agent/Provider or production authentication acceptance",
+    "No production deployment, money movement, suspended capability activation or main merge",
+    "No performance speedup claim; measured UI overflow and duplicate-count behavior only"
+  ],
+  "separateGrid": {
+    "sourceSha": "050fade2c72c440af8922d4f23a574d6c089cca5",
+    "headSha": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+    "verify": "local and GitHub success; concurrent receipt replay produces one settlement",
+    "ci": "six checks success, inherited secrets digest findings remain",
+    "newAndroidWorkerOrOrderConsole": false
+  },
+  "unappliedProposals": [
+    {
+      "name": "Exact public-tokenizer-digest secret-scanner exception",
+      "file": "grid-tokenizer-policy-proposal.UNAPPLIED.patch",
+      "sha256": "5416eb890a645496c983b7e2db926888ae81525ed8bd3594b77c6974d88afa1d",
+      "reason": "automatic approval review rejected security policy weakening; owner approval requested"
+    },
+    {
+      "name": "CSV stale-processing manual recovery and per-attempt artifacts",
+      "file": "csv-manual-processing-recovery.UNAPPLIED.patch",
+      "sha256": "3a158e7d3c10f054f5940948757e99f0101febfe6fd88fd3b9a480b6f34a1f21",
+      "reason": "automatic approval review rejected durable storage/retention contract change; owner approval requested"
+    }
+  ],
+  "verificationLogs": "Large logs, screenshots and unapplied proposals are outside Git in /private/tmp/rock-quality-audit; tracked regression tests reproduce accepted behavior.",
+  "finalValidation": {
+    "sourceSha": "e3567dddc6f484348e7bdb7d0a983515c086ce80",
+    "fullVerify": null,
+    "githubCi": null,
+    "finishedAt": null
+  },
+  "intermediateCi": {
+    "sha": "250b57b07e6a3191fc0a0ad11632ab1dbeb9ad58",
+    "checks": 15,
+    "success": 15,
+    "finalCandidate": false
+  },
+  "originalCheckoutPreservation": {
+    "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "trackedPatchAndStatusEqualInitial": true,
+    "statusEntries": 168,
+    "method": "Separate managed worktree; compared original tracked binary patch and porcelain status byte-for-byte; no original checkout writes."
+  },
+  "reproduce": [
+    {
+      "area": "Web/Wallet/CSV/Tool owner and recovery",
+      "command": "node --experimental-strip-types --test tests/wallet-workspace-recovery.test.mjs tests/wallet-snapshot.test.mjs tests/csv-business-workspace.test.mjs tests/material-workspace-recovery.test.mjs tests/mercari-workspace-recovery.test.mjs tests/coconala-workspace-recovery.test.mjs",
+      "evidence": [
+        "wallet-draft-owner-summary.json",
+        "csv-independent-review-summary.json",
+        "material-independent-review-summary.json",
+        "mercari-independent-review-summary.json",
+        "coconala-independent-review-summary.json"
+      ]
+    },
+    {
+      "area": "Workbench/Cloud projections and updates",
+      "command": "node --experimental-strip-types --test tests/workbench-owner-recovery.test.mjs tests/workbench-cloud-text.test.mjs tests/work-job-view.test.mjs tests/remote-ai-text-client.test.mjs",
+      "evidence": [
+        "workbench-boundary-summary.json",
+        "workbench-followup-independent-review-summary.json",
+        "work-job-view-compatibility-summary.json"
+      ]
+    },
+    {
+      "area": "RPC/A2A/MCP",
+      "command": "node --experimental-strip-types --test tests/a2a-client.test.mjs tests/mcp-client.test.mjs tests/mcp-connector.test.mjs tests/mcp.test.mjs",
+      "evidence": [
+        "mcp-a2a-summary.json",
+        "a2a-envelope-summary.json"
+      ]
+    },
+    {
+      "area": "Local preview storage/runtime",
+      "command": "node --test tests/start-local-web.test.mjs tests/migration-union.test.mjs",
+      "evidence": [
+        "local-web-state-summary.json",
+        "wrangler-runtime-resolution-summary.json"
+      ]
+    },
+    {
+      "area": "API/DB/auth and CSV D1/R2",
+      "command": "npm run test:api",
+      "evidence": [
+        "verify-primary-fifth.log",
+        "final-browser-api-readback-summary.json"
+      ]
+    },
+    {
+      "area": "Native/Game host recovery",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os:systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_storage test_server test_game_exchange_tls test_game_exchange_races test_game_reference_sdk test_game_exchange_process_kill -v",
+      "evidence": [
+        "android-native-summary.json",
+        "game-api-ci-audit-notes.md",
+        "game-api-ci-audit-source-hashes.json"
+      ]
+    },
+    {
+      "area": "Android host/build",
+      "command": "gradle -p android :core:testDebugUnitTest :automation:testDebugUnitTest :tool-sdk:testDebugUnitTest :shell:testDebugUnitTest :shell:assembleDebug :shell:assembleDebugAndroidTest :shell:lintDebug --offline --no-daemon",
+      "requirements": "Configured JDK17, API35 SDK and Gradle8.11.1; local exact paths/extra buildRoot in raw summary. Instrumentation runtime and physical device not executed.",
+      "evidence": [
+        "android-native-summary.json",
+        "android-shell-submission-summary.json"
+      ]
+    },
+    {
+      "area": "Full integration",
+      "command": "npm run verify",
+      "evidence": [
+        "verify-primary-fifth.log"
+      ],
+      "checkpoint": "08364bf0 runtime plus uncommitted documentation: Node2005 pass/1platformskip, Worker1356 andCSV385; final committed candidate still pending."
+    }
+  ],
+  "browserCheckpoint": {
+    "sourceSha": "08364bf0188c9d65683c7ddc2c066b8424fad067",
+    "environment": "Built Worker8788, loopback-only synthetic identity/fault gateway5180, actual local D1/R2",
+    "viewports": [
+      1280,
+      390
+    ],
+    "horizontalOverflowPx": 0,
+    "readback": "One Material study, one Mercari plan, one Coconala case at revision1; recovered article job revision2/two events; Wallet0/two rows; five completed free CSV samples plus one unaccepted quote",
+    "screenshots": [
+      "zema-completed-integrated-desktop.jpg",
+      "zema-completed-integrated-mobile.jpg",
+      "material-recovered-final-mobile.jpg",
+      "mercari-recovered-final-mobile.jpg",
+      "coconala-conflict-final-mobile.jpg",
+      "csv-notice-final-mobile.jpg",
+      "wallet-reload-integrated-desktop.jpg"
+    ],
+    "limitations": "Synthetic local identity injection tests application boundary; real ChatGPT identity/Provider/payment acceptance is separate. Two later UI followups require rebuilt confirmation."
+  },
+  "cleanup": {
+    "reused": "PR100 bounded response/origin helpers; existing workflow/terms/study parsers and owner intent contract",
+    "commonized": "Wallet ledger recovery shared by both existing views; one local preview persistence/config selection path; Workbench runtime projection reader",
+    "removed": "Duplicated implementations replaced in place. No additional whole source/dependency/history deletion without reference proof; main prior cleanup retained.",
+    "protected": "vendor originals/hashes, migration history, import manifests, recovery evidence and original checkout preserved"
+  },
+  "builtFollowups": {
+    "commits": [
+      "5590b7c5",
+      "e3567ddd"
+    ],
+    "independentReview": "45 scoped cases and two additional URL-intent race cases passed; built-ui-followups-independent-summary.json",
+    "builtRecheck": "pending rebuild"
+  }
+}

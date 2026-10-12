@@ -124,7 +124,7 @@
   },
   "updatedAt": "2026-10-11",
   "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
-  "nextAction": "G04/WEB01: 全体verify・同一SHA CIを合格したPR #99をレビューし、承認範囲に従うmain統合と既存Sitesの同一source受入を別途進める。SIM01/SKY21は実issuer／Provider sandboxの本人・資格情報・予算上限・receipt条件を揃えて利用開始を受入。OS10の全OS／Pixelと現行QEMU image、R5/Pro実機は独立した受入を維持する。",
+  "nextAction": "G04/WEB04: PR #105の統合候補を実ビルド・同一SHA verify/CIで仕上げ、PR #104の既存Grid server修正は別baseでレビューする。main統合・公開は別操作。Grid公開digestの秘密検査例外とCSV強制終了後の保存契約変更は未適用案のままowner判断待ち。OS10の全OS/Pixel、QEMU image、avocadoMini実機は独立gateを維持する。",
   "tasks": [
     {
       "id": "AMC02",
@@ -7509,5 +7509,46 @@
       "focusedRegression": "44 passed, 0 failed, 0 skipped (Campus, Game, AMC, workspaces, Agent Control Plane)",
       "fullVerify": "pending integrated application/runtime follow-up"
     }
+  },
+  "qualityRefactor": {
+    "startedAt": "2026-10-11T23:56:26Z",
+    "status": "validating_frozen_source",
+    "primaryWorkstream": "Git / CI / Operations",
+    "primaryOwner": "ROCK",
+    "taskId": "G04",
+    "relatedTaskIds": [
+      "WEB04",
+      "AI04",
+      "GRID01",
+      "MAT03",
+      "BIL03",
+      "CSV00"
+    ],
+    "baseMainSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
+    "workBranch": "codex/quality-reliability-20261011",
+    "reusedPr100Sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
+    "separateGridBranch": "codex/compute-grid-recovery-20261011",
+    "gridBasePr103Sha": "e80d0357aa88291b6ee955e62af875180d35e6cd",
+    "nextAction": "Source frozen after independent review of the two built-UI fixes. Commit documentation, run full verify/build and recheck those built paths. Push exact candidate, await same-SHA GitHub checks, ready PR105. Grid104 remains separate; two approval-blocked proposals remain unapplied.",
+    "githubSaved": true,
+    "mainIntegrated": false,
+    "deployed": false,
+    "physicalDeviceTested": false,
+    "checkpointAt": "2026-10-12T02:49:08.780121+00:00",
+    "gridPullRequest": "https://github.com/k999ln/rock/pull/104",
+    "gridSourceSha": "050fade2c72c440af8922d4f23a574d6c089cca5",
+    "gridGithubSaved": true,
+    "gridCi": "Same head: six checks success; secrets fails on three inherited public tokenizer specification digests. Exact exception proposal remains unapplied.",
+    "plannedEndAt": "2026-10-12T04:56:26Z",
+    "gridHeadSha": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+    "browserAcceptance": "Built Worker/D1/R2 synthetic owners, PC1280/mobile390 overflow0. Wallet exact retry/reversal; CSV artifact retention and neutral notice; article complete/reopen; Workbench malformed create/lost PATCH/failed GET recovery; Material and Mercari one-record retry/owner isolation; Coconala close/reopen/owner/revision conflict protects newer terms. Two final UI followups require rebuild.",
+    "primaryPullRequest": "https://github.com/k999ln/rock/pull/105",
+    "primaryPrState": "DRAFT",
+    "evidence": "docs/evidence/quality-reliability-review.json",
+    "latestMainObservedSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
+    "latestMainObservedAt": "2026-10-12T02:00:00Z",
+    "primaryIntermediateCi": "250b57b07e6a3191fc0a0ad11632ab1dbeb9ad58: all15 checks successful. Additional reviewed Coconala/Material followup commits are local; final candidate CI pending.",
+    "lastPushedPrimarySha": "250b57b0",
+    "sourceSha": "e3567dddc6f484348e7bdb7d0a983515c086ce80"
   }
 }

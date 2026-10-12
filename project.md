@@ -4,6 +4,16 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 既存機能の品質・復旧改善を開始（G04 / H1、ROCK）
+
+利用者の5時間のリファクタリング依頼に基づく。主担当はGit / CI / Operations、ROCK、関連はWEB04 / AI04 / GRID01。開始は2026-10-11 19:56 EDT（23:56 UTC）。元checkoutの多数の未保存変更を保持し、専用worktreeで最新main `4055ad380d3876bee8e93eca71b1e072a2785959` と未統合PR #100 `f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a` を統合した。作業branchだけの統合でありmain mergeではない。mainと#100の同一SHA各9検査成功、#103 `e80d0357aa88291b6ee955e62af875180d35e6cd` はsecrets以外成功を再取得した。
+
+既存Web/API/DB/認証/A2A/MCP/Wallet/Android/native/Game/Tool/CIを分担調査。優先候補はnative仕事の同時終端更新、Gridのreceipt保存後中断からの精算復旧、Zemaの古い見積応答と未送信下書き保持。再現してから小単位で修正する。PR #100の有効な共通化を再利用し、最新mainのaccount-led方針・削除・暗号化終了を維持する。#103の既存server修正は独立branchでレビューし、設計段階のAndroid worker・注文consoleは新規実装しない。公開・本番課金・実機flash・保留機能有効化は対象外。
+
+中間確認: Walletの応答喪失後二重記帳（24,000円が48,000円／2件）を実ビルドで再現し、同じ操作の確認で24,000円／1件へ復旧した。別ownerへの入力表示、Zema見積・下書き、Workbench競合、AMC読込、CSV完成後の成果削除、Android送信／receipt、native終端CASを修正し対象試験を実施。GridはPR #104の050fade2でverify／CodeQL成功、secretsは継承した公開仕様digest3件で失敗。限定例外とCSV強制終了後の保存契約変更は未適用の提案として分離した。
+
+PR #105をmain向けDraftとして保存し、Android/native・RPC・Wallet・Zema・ローカル保存先を意味別commitへ分けた。実画面ではCSVとWalletのPC/390px、別owner・応答喪失・再読込、記事2手順と確認メモを通した。Workbench・Material・出品準備の入力本人境界を追加修正し、統合verifyと同一最終SHA CIを照合する。進行中のため合格・性能改善・完了を宣言しない。中間候補`250b57b0`は同一SHAのGitHub15検査すべて成功。追加のCoconala編集revision・Material未送信離脱保護・Workbench記録回収も独立検収済み。08364bf0の全体verifyはNode2005 pass/1 platform skip、Worker1356、CSV385、build成功。PC1280/390pxでMaterial/Mercari/Coconalaの別owner・壊れた成功応答・同一ID回収、案件revision競合拒否、Cloud入力離脱保護も確認した。実画面で見つけた仕事詳細の再選択と破棄後の古いエラー表示の2点を仕上げ、最終committed SHAで再検証する。元checkoutのtracked差分・未保存状態168項目は開始時と一致。生ログはGit外 `/private/tmp/rock-quality-audit/`。再開状態は進捗JSONの`qualityRefactor`。
+
 ## 2026-10-11 — 公開rockの整理（暗号化は同日にやめた）、確定事項の反映（Git / CI / Operations、ROCK）
 
 利用者の「重複・もう使わない内容を削除したい」「gitはprojectへの導線なので見やすく」「パブリックで進めたい。みんなが見れるが大事なところは見れないように」「全部確定でいい」「今まで通りの上に描きたし」を受けた。主担当はGit / CI / Operations（ROCK）。`k999ln/rock` を公開のまま使い続け、履歴は書き換えず、main `bcd31090`（PR #99 統合後）の上に整理のcommitを足した。開いていたPR（#84・#85・#88・#89・#90・#93・#94・#95）はPR #99で統合済みのため、この作業では統合しない。
@@ -3254,7 +3264,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: G04/WEB01: 全体verify・同一SHA CIを合格したPR #99をレビューし、承認範囲に従うmain統合と既存Sitesの同一source受入を別途進める。SIM01/SKY21は実issuer／Provider sandboxの本人・資格情報・予算上限・receipt条件を揃えて利用開始を受入。OS10の全OS／Pixelと現行QEMU image、R5/Pro実機は独立した受入を維持する。
+次の作業: G04/WEB04: PR #105の統合候補を実ビルド・同一SHA verify/CIで仕上げ、PR #104の既存Grid server修正は別baseでレビューする。main統合・公開は別操作。Grid公開digestの秘密検査例外とCSV強制終了後の保存契約変更は未適用案のままowner判断待ち。OS10の全OS/Pixel、QEMU image、avocadoMini実機は独立gateを維持する。
 <!-- project-status:end -->
 
 ## 次段階の設計

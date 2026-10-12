@@ -1,5 +1,12 @@
 # Git / CI / Operations
 
+## 2026-10-11 — 既存機能の品質・復旧改善（G04 / H1、ROCK）
+
+開始23:56:26 UTCから5時間の品質改善。最新mainとPR100を専用branchで統合し、元checkoutの未保存変更を保持した。PR103の既存server修正は追補PR104で分離し、設計段階のAndroid worker／注文consoleは対象外。主branchとGridのGitHub保存、CI、main統合、公開を別々に記録する。SPIDER公開digest例外とCSV保存契約変更は自動承認レビューに拒否されたため具体案を未適用で用意し、owner回答待ち。
+
+検証状態と再開手順は[data/project-status.json](../../data/project-status.json)の`qualityRefactor`を正とする。全領域完成・main統合・本番公開は未宣言。
+
+
 ## プロジェクト別開発Bot（AMC03 / H1 / ROCK）
 
 [担当Botの利用方法](../../toolkits/amc-agent/README.md#プロジェクト別bot)。開発Botの正本はdata/amc/project-bots.json。既存32部隊のtaskAssignmentsを置き換えず、10個の依頼窓口として実装・検証・Git commit・PR提出を担当する。OWNERは具体的な依頼と既存の外部実行条件を決め、EXTERNALはCodex／GitHubの認証と実行環境を提供する。GitHub App、常時実行、main自動mergeは未設定。完了条件は全定義の生成一致、担当外task拒否、holdの引継ぎ、起動失敗とPR受入の区別、対象試験と同一SHAの全体verify。検証: `npm run bot:check`、`node --test tests/project-bots.test.mjs`、`npm run verify`。実BotのGit提出は具体的な開発依頼で別途受け入れる。
