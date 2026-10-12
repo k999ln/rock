@@ -6,7 +6,7 @@
 
 ## 2026-10-12 — Columbiaの学生向けSky NFCカードの設計（Product / UX・Campus、ROCK）
 
-利用者の「NFCタグにSKYを入れるための構想をして」と、質問への回答（タッチでSkyのTool／Agentを開く、Columbiaの学生、avokadoが書いて配る、1枚＝Columbia用Skyの入口、出典整理・AMC・特許アシスタント、英語版、特許は米国を追加しAI調査は最初は出さない、Columbiaと書く、実装はCodex）を受け、[設計書](docs/sky-nfc-columbia.md)と[Codexへの依頼](docs/prompts/sky-nfc-columbia-codex.md)を追加した。既存のCampusタグ入口 `/t/[tagId]` と匿名集計を使い、`avocadomini.si/t/*` からの転送、`/sky/campus/columbia` の英語入口、3つのToolの英語版、カード経由の特許AI調査の停止を実装範囲とする。コード・台帳のtask・カードの印刷と書き込みはまだ。
+利用者の「NFCタグにSKYを入れるための構想をして」と、質問への回答（タッチでSkyのTool／Agentを開く、Columbiaの学生、avokadoが書いて配る、1枚＝Columbia用Skyの入口、出典整理・AMC・特許アシスタント、英語版、特許は米国を追加しAI調査は最初は出さない、Columbiaと書く、実装はCodex）を受け、[設計書](docs/sky-nfc-columbia.md)と[Codexへの依頼](docs/prompts/sky-nfc-columbia-codex.md)を追加した。既存のCampusタグ入口 `/t/[tagId]` と匿名集計を使い、`avocadomini.si/t/*` からの転送、`/sky/campus/columbia` の英語入口、3つのToolの英語版、カード経由の特許AI調査の停止を実装し、`CAMPUS02` の台帳と設計台帳を同期した。A1〜A7の対象試験56/56、avocadoMini 24/24、型検査、lint、project・mission・design検査は合格。`npm run verify` は対象外の全体試験まで進み、sandboxが `127.0.0.1` のlistenを許可しない `EPERM` と通常macOS/Linux userを要求するPC Citations試験の既知環境差だけで停止し、代表4試験はclean mainでも同じ失敗を確認した。A8の実物カード確認、本番配備、カードの印刷・書き込み・配布はまだ。
 
 ## 2026-10-11 — 公開rockの整理（暗号化は同日にやめた）、確定事項の反映（Git / CI / Operations、ROCK）
 
@@ -2842,7 +2842,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-11 / SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/392件（親32・子192・独立168。実行単位は親を除く360件）
+最終更新: 2026-10-12 / SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -3238,6 +3238,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | DOC05 | PR・task・配備記録なしでmainへ直接入った5コミット（9c1332e・8617863・4b49bf9・862ba30・851bb04）を証拠へ記録し、PR #39のSite試験verify組込みと網羅検査を取り込む | 完了 | [記録](docs/evidence/ledger-sync-20260925.json) · [記録](package.json) · [記録](tests/verify-coverage.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
 | GM01 | AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外） | 進行中 | [記録](lib/game-sandbox.ts) · [記録](tests/game-sandbox.test.mjs) · [記録](tests/fixtures/game-sandbox-session.json) · [記録](docs/workstreams/08-game-market-fund.md) |
 | CAMPUS01 | 大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装 | 進行中 | [記録](app/campus/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/t/[tagId]/route.ts) · [記録](components/campus-workspace.tsx) · [記録](components/campus-workspace.module.css) · [記録](lib/campus.ts) · [記録](lib/campus-store.ts) · [記録](db/schema.ts) · [記録](drizzle/0058_campus_layer.sql) · [記録](tests/campus.test.mjs) · [記録](docs/campus-layer.md) |
+| CAMPUS02 | Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外） | 進行中 | [記録](docs/sky-nfc-columbia.md) · [記録](docs/prompts/sky-nfc-columbia-codex.md) · [記録](sites/avocado-mini/worker/index.js) · [記録](app/sky/campus/[campusId]/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/api/patent-research/route.ts) · [記録](lib/campus-tags.ts) · [記録](lib/sky-campus.ts) · [記録](tests/sky-nfc-columbia.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) |
 
 段階ゲート（作業全体の完了とは別判定）
 

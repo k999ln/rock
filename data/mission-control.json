@@ -2,7 +2,7 @@
   "schema": "avokado-mission-control/3",
   "name": "avokado Mission Control",
   "shortName": "AMC",
-  "updatedAt": "2026-10-11",
+  "updatedAt": "2026-10-12",
   "purpose": "RockstarOS、avocadoMini、avokadoPro、rocketstarを責任単位へ分け、各部隊のGoal、進捗段階、規則、依存、証拠、次の作業を同じ基準で管理する。",
   "authority": {
     "progress": "data/mission-control.json",
@@ -565,7 +565,8 @@
         "SKY21",
         "B06",
         "GM01",
-        "CAMPUS01"
+        "CAMPUS01",
+        "CAMPUS02"
       ],
       "rules": [
         "Tool完了を売上と呼ばない",
@@ -14890,6 +14891,11 @@
     },
     {
       "taskId": "CAMPUS01",
+      "primarySquad": "O5",
+      "classification": "shared_system"
+    },
+    {
+      "taskId": "CAMPUS02",
       "primarySquad": "O5",
       "classification": "shared_system"
     }
