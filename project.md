@@ -4,6 +4,12 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 復旧後の実画面とCI指摘を仕上げ（G04 / WEB04 / AI04、ROCK）
+
+`32ccdf3c`の全体verifyはNode2011 pass／1 platform skip、Worker1356、CSV385で成功。実buildでは保存後応答喪失→GET失敗→GET成功で元の原稿・結果・保存操作を復元し、別ownerで非表示、元ownerで復帰、明示保存→再読込→ライブラリ再表示を確認。390pxの案件通知は重なり8.1pxから間隔12pxへ改善。戻る操作で未送信依頼の確認が開き、取消で入力保持、明示破棄後だけ履歴移動することも確認した。
+
+同SHAのGitHubは13成功・2失敗。secretsは既知の公開説明文1件、CodeQLは新session辞書の動的property代入3件。後者は抑制を追加せずMapへ置き換えて独立検収と最終CIへ進む。実画面で残った保存済み記録の古いエラーと390pxの保存ラベル折返しも、親の復旧表示への責任分離と限定CSSで仕上げる。Android CIの実API35エミュレータは58 pass／物理再起動用2 skip、今回のShell送信復旧2件も成功。native Linuxは1847 Python実行／skip0と既存root UI検査成功。localでのinstrumentation未実施とCI emulator成功を区別し、実機・full OS・本番への受入には換算しない。
+
 ## 2026-10-11 — 実buildで見つけたTool成果消失を修正し変更範囲を凍結（G04 / WEB04、ROCK）
 
 `da644261`の全体verifyはNode2009 pass／1 platform skip、Worker1356、CSV385で成功。GitHubは14成功、secretsは今回の監査JSONの公開説明文1件を誤検出した。固定scannerと同じ1294commitで再現し、path・rule・完全な公開文言を限定した未適用案と11件の検出維持試験を用意した。SECURITY.mdのowner review待ちで、履歴・scan範囲・policyは変更していない。

@@ -342,7 +342,7 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, compone
     clearInterval() {},
   };
   const context = {
-    window, crypto, performance, URL, AbortSignal, AbortController, TextEncoder, fetch: trackedFetch,
+    window, Error, crypto, performance, URL, AbortSignal, AbortController, TextEncoder, fetch: trackedFetch,
     require(name) { assert.ok(name in modules, name); return modules[name]; },
   };
   const cloudExports = {};
@@ -1005,10 +1005,12 @@ void test('real MrToolRunner retains input and generated output across committed
   await h.click('作成する'); await h.waitFor(() => Boolean(result()));
   const output = result().props.value; assert.ok(output.includes('Private original text')); assert.notEqual(output, source);
   assert.ok(h.find('button', 'この端末に保存')); assert.equal(h.storageWrites, 0);
+  assert.ok(h.text().includes('Synthetic reply lost after commit'), 'unresolved record failure remains visible');
   h.rejectNext('GET'); await h.click('最新状態を読み直す');
   assert.equal(input(), undefined); assert.equal(result(), undefined);
   await h.click('最新状態を読み直す');
   assert.equal(input()?.props.value, source); assert.equal(result()?.props.value, output);
+  assert.ok(!h.text().includes('Synthetic reply lost after commit'), 'confirmed recording does not leave a stale Tool error');
   assert.ok(h.find('button', 'この端末に保存')); assert.equal(h.storageWrites, 0);
   assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
 });
@@ -1030,5 +1032,61 @@ void test('real runner sessions hide private text/output for Bob, reject stale a
   h.owner('alice'); await h.click('再読込'); await h.click('Alice runner job');
   assert.equal(input().props.value, 'Alice private manuscript');
   assert.equal(h.nodes().find((n) => n.props?.['aria-label'] === '生成結果').props.value, originalOutput);
+  assert.equal(h.storageWrites, 0);
+});
+
+
+void test('real Tool validation error remains visible after workflow record and latest-state refresh', async (t) => {
+  const h = await setup(t, { actualRunner: true });
+  const job = (await h.routeCall('POST', { id: randomUUID(), title: 'Tool validation recovery', templateId: 'article' })).data.job;
+  h.render(); await h.flush(); await h.click('Tool validation recovery'); await h.click(job.steps[0].title);
+  await h.click('作成する');
+  assert.ok(h.text().includes('本文を入力してください。'));
+  assert.equal(h.nodes().find((n) => n.props?.['aria-label'] === '生成結果'), undefined);
+  await h.click('再読込');
+  assert.ok(h.text().includes('本文を入力してください。'), 'successful metadata refresh must not clear an actual Tool input error');
+  assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+  assert.equal(h.requests.find((r) => r.method === 'PATCH').value.command.outcome, 'failed');
+});
+
+
+void test('runner session Maps isolate prototype-like authenticated identities and preserve immutable snapshots and subscriptions', async (t) => {
+  const h = await setup(t, { actualRunner: true });
+  const identities = ['__proto__', 'constructor', 'toString'];
+  const saved = new Map();
+  const input = () => h.nodes().find((n) => n.type === 'textarea' && n.props.placeholder?.includes('本文（出典:'));
+  const runner = () => h.nodes().find((n) => n.props?.session && n.props?.tool);
+  for (const owner of identities) {
+    await h.grant(owner);
+    const { response, data } = await h.routeCall('POST', { id: randomUUID(), title: `${owner} runner job`, templateId: 'article' }, owner);
+    assert.equal(response.status, 201, 'identity accepted by actual authenticated route');
+    h.owner(owner); h.render(); await h.flush(); await h.click('再読込');
+    await h.click(`${owner} runner job`); await h.click(data.job.steps[0].title);
+    assert.equal(input().props.value, '', 'another identity never inherits an existing session');
+    const session = runner().props.session;
+    let notifications = 0;
+    const unsubscribe = session.subscribe(() => { notifications++; });
+    input().props.onChange({ target: { value: `${owner} private manuscript` } }); h.render();
+    const before = session.getSnapshot();
+    assert.equal(session.getSnapshot(), before, 'unchanged snapshots stay referentially stable');
+    assert.ok(notifications > 0, 'live subscriber receives input transitions');
+    const firstNotifications = notifications;
+    input().props.onChange({ target: { value: `${owner} revised private manuscript` } }); h.render();
+    assert.notEqual(session.getSnapshot(), before);
+    assert.equal(before.text, `${owner} private manuscript`, 'previous snapshot is immutable');
+    assert.ok(notifications > firstNotifications, 'subsequent input notifies the same subscriber');
+    unsubscribe(); const finalNotifications = notifications;
+    const staleInput = input().props.onChange;
+    await h.click('作成する');
+    assert.equal(notifications, finalNotifications, 'unsubscribed listener stays detached');
+    saved.set(owner, { input: `${owner} revised private manuscript`, output: h.nodes().find((n) => n.props?.['aria-label'] === '生成結果').props.value, staleInput });
+  }
+  for (const owner of identities) {
+    h.owner(owner); await h.click('再読込'); await h.click(`${owner} runner job`);
+    for (const [other, state] of saved) if (other !== owner) state.staleInput({ target: { value: 'cross-owner overwrite' } });
+    h.render();
+    assert.equal(input().props.value, saved.get(owner).input);
+    assert.equal(h.nodes().find((n) => n.props?.['aria-label'] === '生成結果').props.value, saved.get(owner).output);
+  }
   assert.equal(h.storageWrites, 0);
 });

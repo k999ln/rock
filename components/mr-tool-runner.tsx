@@ -103,6 +103,7 @@ export function MrToolRunner({
   tool,
   initialText = '',
   onRecord,
+  recordErrorHandledByParent = false,
   onRunningChange,
   onOutcome,
   onFailure,
@@ -112,6 +113,7 @@ export function MrToolRunner({
   tool: MrRunner;
   initialText?: string;
   onRecord?: RunRecorder;
+  recordErrorHandledByParent?: boolean;
   onRunningChange?: (running: boolean) => void;
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   onFailure?: () => void;
@@ -347,15 +349,18 @@ export function MrToolRunner({
       setResult(tracked.result.check);
       setOutput(tracked.result.output);
       setError(tracked.warning);
-      if (onRecord)
-        await onRecord(
-          toolId,
-          transport,
-          'completed',
-          started,
-          sampleInput,
-          tracked.result.outcome,
-        );
+      if (onRecord) {
+        try {
+          await onRecord(toolId, transport, 'completed', started, sampleInput, tracked.result.outcome);
+        } catch (recordError) {
+          if (!recordErrorHandledByParent) throw recordError;
+          // Workbench owns the pending command and clears its save notice only
+          // after matching readback. Keep actual Tool warnings/results here.
+          onFailure?.();
+          onOutcome?.({ ok: false, text: recordError instanceof Error ? recordError.message : '記録を保存できませんでした。' });
+          return;
+        }
+      }
       onOutcome?.({ ok: true, text: tracked.result.output });
     } catch (e) {
       if (executed && !completed && onRecord) {

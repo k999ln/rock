@@ -2,7 +2,7 @@
 
 ## 2026-10-11 — 既存機能の品質・復旧改善（G04 / H1、ROCK）
 
-開始23:56:26 UTCから5時間の品質改善。最新mainとPR100を専用branchで統合し、元checkoutの未保存変更を保持した。PR103の既存server修正は追補PR104で分離し、設計段階のAndroid worker／注文consoleは対象外。主branchとGridのGitHub保存、CI、main統合、公開を別々に記録する。SPIDER公開digest例外とCSV保存契約変更は自動承認レビューに拒否されたため具体案を未適用で用意し、owner回答待ち。
+開始23:56:26 UTCから5時間の品質改善。最新mainとPR100を専用branchで統合し、元checkoutの未保存変更を保持した。PR103の既存server修正は追補PR104で分離し、設計段階のAndroid worker／注文consoleは対象外。主branchとGridのGitHub保存、CI、main統合、公開を別々に記録する。SPIDER公開digest例外とCSV保存契約変更は自動承認レビューに拒否されたため具体案を未適用で用意し、owner回答待ち。 PR105の監査JSONにある公開説明文も固定scannerが誤検出した。こちらはSECURITY.mdのowner reviewが必要な3件目の未適用案として分離し、自動承認拒否の2件と区別する。
 
 検証状態と再開手順は[data/project-status.json](../../data/project-status.json)の`qualityRefactor`を正とする。全領域完成・main統合・本番公開は未宣言。
 

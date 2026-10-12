@@ -413,13 +413,13 @@ export default function Workbench({
   const [runnerStep, setRunnerStepValue] = useState<string | null>(null),
     [pending, setPending] = useState<PendingUpdate | null>(null);
   const runnerStepRef = useRef<string | null>(null);
-  const lastRunnerSteps = useRef<Record<string, string>>({});
+  const lastRunnerSteps = useRef(new Map<string, string>());
   const setRunnerStep = useCallback((step: string | null) => {
-    if (step && currentOwner.current && selectedIdRef.current) lastRunnerSteps.current[JSON.stringify([currentOwner.current, selectedIdRef.current])] = step;
+    if (step && currentOwner.current && selectedIdRef.current) lastRunnerSteps.current.set(JSON.stringify([currentOwner.current, selectedIdRef.current]), step);
     runnerStepRef.current = step; setRunnerStepValue(step);
   }, []);
-  const runnerSnapshots = useRef<Record<string, Partial<MrToolRunnerState>>>({});
-  const runnerListeners = useRef<Record<string, Set<() => void>>>({});
+  const runnerSnapshots = useRef(new Map<string, Partial<MrToolRunnerState>>());
+  const runnerListeners = useRef(new Map<string, Set<() => void>>());
   const [filter, setFilter] = useState('open');
   const [pendingCreation, setPendingCreation] = useState<Creation | null>(null);
   const creation = useRef<Creation | null>(null);
@@ -690,14 +690,16 @@ export default function Workbench({
     if (!ownerScope || !selectedId || !runnerStep) return undefined;
     const key = JSON.stringify([ownerScope, selectedId, runnerStep]);
     return {
-      getSnapshot: () => runnerSnapshots.current[key],
+      getSnapshot: () => runnerSnapshots.current.get(key),
       subscribe(listener) {
-        const listeners = runnerListeners.current[key] ??= new Set(); listeners.add(listener);
+        let listeners = runnerListeners.current.get(key);
+        if (!listeners) { listeners = new Set(); runnerListeners.current.set(key, listeners); }
+        listeners.add(listener);
         return () => { listeners.delete(listener); };
       },
       patch(value) {
-        runnerSnapshots.current[key] = { ...runnerSnapshots.current[key], ...value };
-        runnerListeners.current[key]?.forEach((listener) => listener());
+        runnerSnapshots.current.set(key, { ...runnerSnapshots.current.get(key), ...value });
+        runnerListeners.current.get(key)?.forEach((listener) => listener());
       },
       isActive: () => currentOwner.current === ownerScope && selectedIdRef.current === selectedId && runnerStepRef.current === runnerStep,
     };
@@ -1354,7 +1356,7 @@ export default function Workbench({
                   disabled={locked}
                   onClick={() => {
                     selectJob(job.id);
-                    setRunnerStep(ownerScope ? lastRunnerSteps.current[JSON.stringify([ownerScope, job.id])] ?? null : null);
+                    setRunnerStep(ownerScope ? lastRunnerSteps.current.get(JSON.stringify([ownerScope, job.id])) ?? null : null);
                     setNote('');
                   }}
                 >
@@ -1721,6 +1723,7 @@ export default function Workbench({
                           tool={openRunner.runner as MrRunner}
                           session={runnerSession}
                           onRecord={record}
+                          recordErrorHandledByParent
                           executionDisabled={busy || pending !== null || openRunner.passed}
                         />
                       )}

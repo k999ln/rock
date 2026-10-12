@@ -167,8 +167,10 @@
           "boundary": "ownerScope + job ID + step ID; Workbench lifetime memory only",
           "scope": "Existing shared citation, free-article and Coconala checker fields and output; specialized lazy-runner internal state excluded",
           "recovery": "Restore original input, result and explicit save controls after read failure remount. Late results remain in original session; stale owner/job actions are rejected.",
-          "persistence": "No implicit localStorage write. Reload/tab close still requires explicit save/export.",
-          "regressions": "tests/workbench-owner-recovery.test.mjs"
+          "persistence": "No implicit localStorage write. Leaving Workbench (including same-tab navigation), reload or tab close requires explicit save/export. Tool-only input/output does not trigger the existing navigation guard.",
+          "regressions": "tests/workbench-owner-recovery.test.mjs",
+          "keyStorage": "Map for session snapshots, subscriptions and last opened steps; no external-name property assignment.",
+          "feedback": "Workbench owns completed Tool recording failures until exact readback; Tool validation/warnings and standalone recording feedback remain local."
         }
       }
     },

@@ -3,7 +3,7 @@
   "status": "in_progress",
   "startedAt": "2026-10-11T23:56:26Z",
   "plannedEndAt": "2026-10-12T04:56:26Z",
-  "updatedAt": "2026-10-12T02:49:08.780121+00:00",
+  "updatedAt": "2026-10-12T03:21:39.153630+00:00",
   "baseline": {
     "main": "4055ad380d3876bee8e93eca71b1e072a2785959",
     "reusedPr100": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
@@ -63,7 +63,7 @@
       "id": "android-native",
       "before": "ambiguous Binder submission used newUUID; receipt duplicate accepted different settled amount; concurrent native terminal updates overwrote results",
       "after": "durable same-owner/input submission identity; exact receipt reconciliation; native terminal CAS rejects conflicts and preserves exact duplicate timestamp",
-      "scope": "Android unit/APK/lint and native host HTTP/storage; instrumentation APK compiled, runtime not run"
+      "scope": "Android host unit/APK/lint and native host HTTP/storage; GitHub32ccdf3c emulator58pass/2physical-only skips, including both new Shell submission recovery tests. Local instrumentation runtime and physical device not run; LocalAiServiceIntegrationTest excluded by CI."
     },
     {
       "id": "rpc",
@@ -75,7 +75,7 @@
       "id": "zema-local-journey",
       "before": "draft/navigation and estimate races; mobile result action region collapsed",
       "after": "unsent draft/history protection, cancelled superseded estimates/imports; real article workflow completed and reopened",
-      "scope": "synthetic local article with one deduplicated citation, two successful steps, saved outputs and explicit review note; no publication or sale"
+      "scope": "synthetic local article with one deduplicated citation, two successful steps, saved outputs and explicit review note; no publication or sale Built32ccdf3c Back opens draft confirmation; cancel preserves exact unsent input, explicit discard returns to prior Tool page without sending request."
     },
     {
       "id": "material-private-work",
@@ -106,18 +106,32 @@
       "before": "Malformed job projections crashed or retired pending ID; failed latest GET erased successful Tool record command; Cloud-only draft navigation lost input.",
       "after": "Runtime projection validation and exact owner/job/revision/command preservation. Built corrupted create→one job; PATCH commit/lost response→GET503→GET200 recovers two steps with two events and no Tool rerun. Cloud-only prompt blocks Home, Bob masks it and Alice restores.",
       "scope": "72 targeted cases and independent62 plus20 server-reader compatibility cases; local Worker/D1 built browser; no external Provider execution."
+    },
+    {
+      "id": "tool-runner-input-result",
+      "before": "Actual built PATCH commit/503 then GET503/GET200 recovered job metadata but lost manuscript, output and explicit save controls. Same defect reproduced0/2 actual-runner/SQLite tests.",
+      "after": "Original owner/job/step session restores exact input, generated output and save/copy/download controls after read failure remount. Bob sees no original input; Alice restores it. Local API confirms one passed step, revision1, one event; no Tool rerun.",
+      "scope": "74 targeted and4 independent tests; built32ccdf3c PC1280/mobile390; explicit local save confirmed. Shared citation/free-article/Coconala fields only. No automatic persistent storage. Explicit save→reload→Library→same result reopened.",
+      "remaining": "Narrow resolved-record error feedback and mobile action layout followup under review. Tool-only input/output does not guard navigation away from Workbench."
+    },
+    {
+      "id": "coconala-notice-layout",
+      "before": "390px inline output notice overlapped following card by8.1016px",
+      "after": "Block notice has12px gap and0 horizontal overflow at390px",
+      "scope": "Built32ccdf3c screenshot and DOM rectangle measurement; no visual redesign"
     }
   ],
   "inProgress": [
-    "Committed candidate full verify/build and built recheck of two reviewed feedback/selection fixes",
-    "Final same-SHA GitHub CI, review-ready PR and bounded handoff"
+    "Bounded Tool record-feedback/mobile action followup and Map-key correction for three new CodeQL findings",
+    "Final documentation, same-SHA GitHub CI, review-ready PR and bounded handoff"
   ],
   "knownLimitations": [
     "Memory-only drafts do not survive browser force-close",
     "Navigation API traversal guard is browser-dependent; same-tab link and beforeunload guards remain",
     "No physical Android instrumentation, full OS build/flash, external Agent/Provider or production authentication acceptance",
     "No production deployment, money movement, suspended capability activation or main merge",
-    "No performance speedup claim; measured UI overflow and duplicate-count behavior only"
+    "No performance speedup claim; measured UI overflow and duplicate-count behavior only",
+    "MrToolRunner session retains shared fields only while Workbench remains mounted. Tool-only input/output does not block same-tab navigation away; explicit save/export is required. Specialized lazy-runner internal state is not included."
   ],
   "separateGrid": {
     "sourceSha": "050fade2c72c440af8922d4f23a574d6c089cca5",
@@ -138,14 +152,22 @@
       "file": "csv-manual-processing-recovery.UNAPPLIED.patch",
       "sha256": "3a158e7d3c10f054f5940948757e99f0101febfe6fd88fd3b9a480b6f34a1f21",
       "reason": "automatic approval review rejected durable storage/retention contract change; owner approval requested"
+    },
+    {
+      "name": "Exact public review-description secret-scanner exception",
+      "file": "primary-prose-policy-proposal.UNAPPLIED.patch",
+      "sha256": "37928043a6a1465167116cab5e038440c1f817c9be47323381030d69e0aeb16f",
+      "reason": "SECURITY.md requires owner review; approval requested, no automatic rejection claimed for this proposal",
+      "validation": "Pinned scanner8.30.1: same1294 reachable commits, current policy1 finding, exact proposed rule/path/public-value exception0 findings;11 tests retain other-value, other-path and other-rule detection. Repository policy/workflow/history unchanged."
     }
   ],
   "verificationLogs": "Large logs, screenshots and unapplied proposals are outside Git in /private/tmp/rock-quality-audit; tracked regression tests reproduce accepted behavior.",
   "finalValidation": {
-    "sourceSha": "e3567dddc6f484348e7bdb7d0a983515c086ce80",
-    "fullVerify": null,
-    "githubCi": null,
-    "finishedAt": null
+    "sourceSha": "32ccdf3c67e5e0b9ffe18ea459bc0293d0c5e81e",
+    "fullVerify": "pass; see validationCheckpoints",
+    "githubCi": "in progress; secrets public-prose finding expected pending approval",
+    "finishedAt": null,
+    "remainingSourceChange": "Bounded record-feedback and mobile result-action followup"
   },
   "intermediateCi": {
     "sha": "250b57b07e6a3191fc0a0ad11632ab1dbeb9ad58",
@@ -177,7 +199,10 @@
       "evidence": [
         "workbench-boundary-summary.json",
         "workbench-followup-independent-review-summary.json",
-        "work-job-view-compatibility-summary.json"
+        "work-job-view-compatibility-summary.json",
+        "workbench-runner-summary.json",
+        "workbench-runner-independent-summary.json",
+        "browser-32ccdf3c-summary.json"
       ]
     },
     {
@@ -216,19 +241,20 @@
     {
       "area": "Android host/build",
       "command": "gradle -p android :core:testDebugUnitTest :automation:testDebugUnitTest :tool-sdk:testDebugUnitTest :shell:testDebugUnitTest :shell:assembleDebug :shell:assembleDebugAndroidTest :shell:lintDebug --offline --no-daemon",
-      "requirements": "Configured JDK17, API35 SDK and Gradle8.11.1; local exact paths/extra buildRoot in raw summary. Instrumentation runtime and physical device not executed.",
+      "requirements": "Configured JDK17, API35 SDK and Gradle8.11.1; local exact paths/extra buildRoot in raw summary. Local instrumentation runtime/physical device not run; GitHub API35 emulator58pass/2physical-only skips at32ccdf3c verified separately.",
       "evidence": [
         "android-native-summary.json",
-        "android-shell-submission-summary.json"
+        "android-shell-submission-summary.json",
+        "ci-32cc-native-android-secrets-summary.json"
       ]
     },
     {
       "area": "Full integration",
       "command": "npm run verify",
       "evidence": [
-        "verify-primary-fifth.log"
+        "verify-primary-32ccdf3c.log"
       ],
-      "checkpoint": "08364bf0 runtime plus uncommitted documentation: Node2005 pass/1platformskip, Worker1356 andCSV385; final committed candidate still pending."
+      "checkpoint": "Committed32ccdf3c: Node2011 pass/1platformskip, Worker1356 andCSV385; bounded feedback followup still pending."
     }
   ],
   "browserCheckpoint": {
@@ -249,7 +275,7 @@
       "csv-notice-final-mobile.jpg",
       "wallet-reload-integrated-desktop.jpg"
     ],
-    "limitations": "Synthetic local identity injection tests application boundary; real ChatGPT identity/Provider/payment acceptance is separate. Two later UI followups require rebuilt confirmation."
+    "limitations": "Synthetic local identity injection tests application boundary; real identity/Provider/payment acceptance is separate. Later32ccdf3c browser checkpoint verifies reviewed selection/discard/session/layout changes."
   },
   "cleanup": {
     "reused": "PR100 bounded response/origin helpers; existing workflow/terms/study parsers and owner intent contract",
@@ -260,9 +286,92 @@
   "builtFollowups": {
     "commits": [
       "5590b7c5",
-      "e3567ddd"
+      "e3567ddd",
+      "b9e16184",
+      "32ccdf3c"
     ],
     "independentReview": "45 scoped cases and two additional URL-intent race cases passed; built-ui-followups-independent-summary.json",
-    "builtRecheck": "pending rebuild"
+    "builtRecheck": "32ccdf3c: original selection/input/output/savecontrols restored; Coconala valid discard clears conflict and notice12px gap. Remaining stale record-error feedback and cramped action label need bounded followup."
+  },
+  "validationCheckpoints": [
+    {
+      "sha": "da644261f7d2ad2a4889c56f62e5e865a75d2080",
+      "fullVerify": {
+        "exit": 0,
+        "nodePass": 2009,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385
+      },
+      "githubCi": {
+        "success": 14,
+        "failure": 1,
+        "failedCheck": "SPIDER / secrets",
+        "reason": "Public audit-description phrase in this commit; owner-reviewed exact exception pending",
+        "run": "https://github.com/k999ln/rock/actions/runs/38197329183"
+      }
+    },
+    {
+      "sha": "32ccdf3c67e5e0b9ffe18ea459bc0293d0c5e81e",
+      "fullVerify": {
+        "exit": 0,
+        "nodePass": 2011,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "log": "verify-primary-32ccdf3c.log",
+      "browserEvidence": "browser-32ccdf3c-summary.json",
+      "githubCi": {
+        "success": 13,
+        "failure": 2,
+        "failures": [
+          "SPIDER / secrets: inherited public prose in da644261, owner review pending",
+          "CodeQL: three remote-property-injection alerts on new Workbench session dictionaries; Map refactor under review"
+        ],
+        "codeqlCheck": "https://github.com/k999ln/rock/runs/114646760786"
+      },
+      "androidCi": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38198513297",
+        "emulator": "API35/google_apis/x86_64",
+        "passed": 58,
+        "skipped": 2,
+        "failures": 0,
+        "shell": 9,
+        "newSubmissionRecoveryTests": 2,
+        "skipReason": "PhysicalRebootRecoveryTest seed/recover phase absent",
+        "excluded": "LocalAiServiceIntegrationTest",
+        "hostXmlPass": 161,
+        "apkArtifactHashesVerified": true,
+        "physicalDevice": "NOT_RUN",
+        "releaseSigning": "NOT_CONFIGURED"
+      },
+      "nativeCi": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38198513304",
+        "pythonTestExecutions": 1847,
+        "skipped": 0,
+        "gatesPassed": 17,
+        "rootUi": "61observer/11PIN/8protocol groups; Wallet14 andATM14frames",
+        "osBoot": false
+      },
+      "ciEvidence": "ci-32cc-native-android-secrets-summary.json"
+    }
+  ],
+  "policyPreservation": {
+    "baseMain": "4055ad380d3876bee8e93eca71b1e072a2785959",
+    "protectedUnchanged": [
+      "AGENTS.md",
+      "data/product-baseline.json",
+      "docs/product-baseline.md",
+      "data/archived-paths.json",
+      ".gitattributes",
+      "vendor/mr",
+      "IMPORT-MANIFEST.json files"
+    ],
+    "archivedPaths": 968,
+    "resurrected": 0,
+    "evidence": "final-policy-preservation.json"
   }
 }
