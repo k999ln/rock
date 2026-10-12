@@ -1,3 +1,4 @@
+import { readBoundedStream } from '@/lib/bounded-stream';
 import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { database, requestUser } from '@/lib/fund-store';
 import { coconalaTeamStore } from '@/lib/coconala-team-store';
@@ -22,24 +23,9 @@ async function body(request: Request): Promise<unknown> {
     throw new TeamCaseError('JSONで送信してください。', 415);
   const reader = request.body?.getReader();
   if (!reader) throw new TeamCaseError('入力がありません。');
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    length += value.byteLength;
-    if (length > 16_000) {
-      await reader.cancel();
-      throw new TeamCaseError('入力は16 KB以下にしてください。', 413);
-    }
-    chunks.push(value);
-  }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
+  const bytes = await readBoundedStream(reader, 16_000, () =>
+    new TeamCaseError('入力は16 KB以下にしてください。', 413),
+  );
   return JSON.parse(new TextDecoder().decode(bytes)) as unknown;
 }
 

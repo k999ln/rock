@@ -41,7 +41,6 @@ import {
   localModelPresets,
   textModelProviderDefinition,
   textModelProviders,
-  type TextModelProviderId,
 } from '@/lib/llm-providers';
 import WorkspaceShell from '@/components/workspace-shell';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -74,27 +73,14 @@ import type {
 import ChatLiveProgress from '@/components/chat-live-progress';
 import type { CsvJob } from '@/components/chat-live-progress';
 import {
-  consumeSkyZemaHandoff,
   skyRequestLimit,
   SKY_ZEMA_JOB_EVENT,
 } from '@/lib/sky-zema-handoff';
-import {
-  clearZemaPrivateSession,
-  readZemaChatSessions,
-  saveZemaChatSession,
-  type ZemaChatSession,
-} from '@/lib/zema-chat-session';
+import { clearZemaPrivateSession } from '@/lib/zema-chat-session';
+import { useSkyChatSession, type ChatEntry, type WorkflowStatus } from '@/components/use-sky-chat-session';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 import { formatCurrencyMinor, parseCurrencyInputToMinor } from '@/lib/currency-format';
 import { remoteAiTextRequest, RemoteAiTextClientError } from '@/lib/remote-ai-text-client';
-
-type ChatEntry = {
-  id: string;
-  side: 'me' | 'sky';
-  text: string;
-  tool?: string;
-  suggestedTool?: string;
-};
 
 type RemoteAiEstimateResult = {
   currencies?: string[];
@@ -117,17 +103,6 @@ type RemoteAiEstimateResult = {
   providerSubmission: 'not_performed';
   executionAuthorized: false;
 };
-
-type ActiveRequest = {
-  id: string;
-  text: string;
-  toolId: string;
-  executionProvider: 'local-model';
-  plannerProvider: TextModelProviderId;
-  plannerModel: string;
-};
-
-type WorkflowStatus = 'ready' | 'running' | 'completed' | 'failed';
 
 type FundSnapshot = {
   funds: AutomationFundPlan[];
@@ -295,21 +270,10 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   const [fundRefreshing, setFundRefreshing] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
   const [draft, setDraft] = useState('');
-  const [messages, setMessages] = useState<ChatEntry[]>([]);
-  const [activeRequest, setActiveRequest] = useState<ActiveRequest | null>(
-    null,
-  );
-  const [requestStartedAt, setRequestStartedAt] = useState(0);
   const [running, setRunning] = useState(false);
-  const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus>('ready');
-  const [threadId, setThreadId] = useState('');
-  const [threadCreatedAt, setThreadCreatedAt] = useState(0);
-  const [sessionReady, setSessionReady] = useState(false);
-  const [recentThreads, setRecentThreads] = useState<ZemaChatSession[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [historyQuery, setHistoryQuery] = useState('');
   const [allBotsOpen, setAllBotsOpen] = useState(false);
-  const [outcome, setOutcome] = useState<{ ok: boolean; text: string } | null>(null);
   const [chatLoading, setChatLoading] = useState(false);
   const [remoteEstimate, setRemoteEstimate] = useState<RemoteAiEstimateResult | null>(null);
   const [cloudWorkDraft, setCloudWorkDraft] = useState<{
@@ -319,6 +283,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   const [remoteCurrencyOptions, setRemoteCurrencyOptions] = useState<string[]>([]);
   const [remoteBudgetInput, setRemoteBudgetInput] = useState('');
   const [loading, setLoading] = useState(true);
+  const { messages, setMessages, activeRequest, setActiveRequest, requestStartedAt, setRequestStartedAt,
+    workflowStatus, setWorkflowStatus, threadId, recentThreads, outcome, setOutcome, resetSession, beginSession } =
+    useSkyChatSession({ loading, workView, preferredTool, requestedThreadId, setSelectedToolId, roleFor });
   const [error, setError] = useState('');
   const routingDraft = useProviderDraft('routing', providerRoutingDefaults, !executionBlocked, true);
   const providerRouting = routingDraft.state.config;
@@ -609,91 +576,6 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     : selectedBotApp && !compactBotApps.some((tool) => tool.id === selectedBotApp.id)
       ? [selectedBotApp, ...compactBotApps]
       : compactBotApps;
-  useEffect(() => {
-    if (loading || workView) return;
-    const frame = window.requestAnimationFrame(() => {
-    let sessions: ZemaChatSession[] = [];
-    try { sessions = readZemaChatSessions(); } catch { /* Private storage may be unavailable. */ }
-    setRecentThreads(sessions);
-    setSessionReady(false);
-    setThreadId('');
-    setThreadCreatedAt(0);
-    setMessages([]);
-    setActiveRequest(null);
-    setRequestStartedAt(0);
-    setWorkflowStatus('ready');
-    setOutcome(null);
-    const saved = sessions.find((item) => item.id === requestedThreadId && item.toolId === preferredTool);
-    if (saved) {
-      setThreadId(saved.id);
-      setThreadCreatedAt(saved.createdAt);
-      setSelectedToolId(saved.toolId);
-      setMessages(saved.messages);
-      setActiveRequest(saved.activeRequest
-        ? {
-            ...saved.activeRequest,
-            executionProvider: saved.activeRequest.executionProvider ?? 'local-model',
-            plannerProvider: saved.activeRequest.plannerProvider ?? 'local-model',
-            plannerModel: saved.activeRequest.plannerModel ??
-              textModelProviderDefinition(saved.activeRequest.plannerProvider ?? 'local-model').defaultModel,
-          }
-        : null);
-      setRequestStartedAt(saved.createdAt);
-      if (saved.workflowStatus === 'running') {
-        setWorkflowStatus('failed');
-        setMessages((current) => [...current, {
-          id: `resume-${saved.id}`,
-          side: 'sky',
-          text: '画面を開き直しました。直前の実行結果はここでは確認できません。履歴を確認してから再実行してください。',
-          tool: saved.toolId,
-        }]);
-      } else setWorkflowStatus(saved.workflowStatus);
-      setOutcome(saved.outcome);
-      setSessionReady(true);
-      return;
-    }
-    if (!preferredTool || !requestedThreadId) return;
-    let handoff;
-    try { handoff = consumeSkyZemaHandoff(preferredTool, undefined, undefined, requestedThreadId); } catch { return; }
-    if (!handoff || handoff.id !== requestedThreadId) return;
-    const tool = catalog.find((item) => item.id === handoff.toolId);
-    if (!tool) return;
-    const id = `handoff-${handoff.id}`;
-    setSelectedToolId(tool.id);
-    setThreadId(handoff.id);
-    setThreadCreatedAt(handoff.createdAt);
-    setMessages([
-      ...(handoff.request ? [{ id: `${id}-me`, side: 'me' as const, text: handoff.request, tool: tool.id }] : []),
-      { id: `${id}-sky`, side: 'sky', text: handoff.request
-        ? `${roleFor(tool)}へSkyから引き継ぎました。入力を確認し、必要な承認を得てから実行します。進捗と結果はこのチャットに表示します。`
-        : `${roleFor(tool)}を開きました。下の入力欄に依頼を送ってください。`, tool: tool.id },
-    ]);
-    setActiveRequest(handoff.request ? {
-      id,
-      text: handoff.request,
-      toolId: tool.id,
-      executionProvider: handoff.executionProvider ?? 'local-model',
-      plannerProvider: 'local-model',
-      plannerModel: textModelProviderDefinition('local-model').defaultModel,
-    } : null);
-    setRequestStartedAt(handoff.createdAt);
-    setSessionReady(true);
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [loading, preferredTool, requestedThreadId, workView]);
-
-  useEffect(() => {
-    if (!sessionReady || !threadId || threadId !== requestedThreadId || !threadCreatedAt) return;
-    try {
-      const sessions = saveZemaChatSession({
-        version: 1, id: threadId, toolId: preferredTool, createdAt: threadCreatedAt,
-        messages, activeRequest, workflowStatus, outcome,
-      });
-      const frame = window.requestAnimationFrame(() => setRecentThreads(sessions));
-      return () => window.cancelAnimationFrame(frame);
-    } catch { /* Keep the current conversation usable without tab storage. */ }
-  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome]);
-
 
   function recordWorkflowStatus(status: WorkflowStatus) {
     setWorkflowStatus(status);
@@ -723,10 +605,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     return false;
   }
 
-  function chooseMode(toolId: string) {
-    setError('');
-    if (toolId === selectedToolId) return;
-    if (running || !confirmAmcReplacement(() => chooseMode(toolId))) return;
+  function resetConversation(toolId: string, resetRequestTime: boolean) {
     chatAbortRef.current?.abort();
     chatAbortRef.current = null;
     setChatLoading(false);
@@ -736,36 +615,23 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     setRemoteCurrency('');
     setRemoteCurrencyOptions([]);
     setRemoteBudgetInput('');
-    setMessages([]);
-    setActiveRequest(null);
-    setOutcome(null);
-    setWorkflowStatus('ready');
-    setThreadId('');
-    setThreadCreatedAt(0);
-    setSessionReady(false);
+    resetSession(resetRequestTime);
+  }
+
+  function chooseMode(toolId: string) {
+    setError('');
+    if (toolId === selectedToolId) return;
+    if (running || !confirmAmcReplacement(() => chooseMode(toolId))) return;
+    // Preserve the existing distinction: mode changes retain the request time
+    // until the new route restores it; a new chat resets it immediately.
+    resetConversation(toolId, false);
     router.replace(`/chat?tool=${encodeURIComponent(toolId)}`, { scroll: false });
   }
 
   function startNewChat() {
     if (running || !confirmAmcReplacement(startNewChat)) return;
-    chatAbortRef.current?.abort();
-    chatAbortRef.current = null;
-    setChatLoading(false);
-    setSelectedToolId(AUTO_MODE);
-    setDraft('');
-    setMessages([]);
-    setActiveRequest(null);
-    setRequestStartedAt(0);
-    setWorkflowStatus('ready');
-    setOutcome(null);
+    resetConversation(AUTO_MODE, true);
     setError('');
-    setRemoteEstimate(null);
-    setRemoteCurrency('');
-    setRemoteCurrencyOptions([]);
-    setRemoteBudgetInput('');
-    setThreadId('');
-    setThreadCreatedAt(0);
-    setSessionReady(false);
     closeSidebarOnSmallScreen();
   }
 
@@ -994,21 +860,12 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       const createdAt = currentTimestamp();
       const sessionToolId = toolId ?? AUTO_MODE;
       try {
-        setRecentThreads(saveZemaChatSession({
-          version: 1,
-          id: nextThreadId,
-          toolId: sessionToolId,
-          createdAt,
-          messages: nextMessages,
-          activeRequest: nextRequest,
-          workflowStatus: 'ready',
-          outcome: null,
-        }));
-        setThreadId(nextThreadId);
-        setThreadCreatedAt(createdAt);
-        setSessionReady(true);
+        beginSession({
+          version: 1, id: nextThreadId, toolId: sessionToolId, createdAt,
+          messages: nextMessages, activeRequest: nextRequest, workflowStatus: 'ready', outcome: null,
+        });
         router.replace(`/chat?tool=${encodeURIComponent(sessionToolId)}&thread=${encodeURIComponent(nextThreadId)}`, { scroll: false });
-      } catch { /* Keep the conversation available in this tab if storage is blocked. */ }
+      } catch { /* Keep the conversation available in this tab if storage or navigation is blocked. */ }
     }
   }
 

@@ -4,7 +4,6 @@ import android.os.Looper;
 import android.os.SystemClock;
 import dev.rock.core.platform.A2AWalletHandoffRequest;
 import dev.rock.core.platform.A2AWalletSettlementSync;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,9 +11,7 @@ import java.net.CookieHandler;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -56,7 +53,7 @@ final class AndroidA2AWalletHandoffSource
     AndroidA2AWalletHandoffSource(String configuredOrigin, String authorityId,
             String ownerUserId, String deviceRef, String keyId,
             A2AWalletHandoffRequest.Signer signer) {
-        this.origin = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(configuredOrigin);
+        this.origin = RockstarServiceOrigin.canonicalOrigin(configuredOrigin);
         this.authorityId = safeIdentity(authorityId);
         this.ownerUserId = safeIdentity(ownerUserId);
         this.deviceRef = safeIdentity(deviceRef);
@@ -111,13 +108,7 @@ final class AndroidA2AWalletHandoffSource
             try (OutputStream output = connection.getOutputStream()) { output.write(requestBytes); }
             int status = connection.getResponseCode();
             if (status != 200) throw new IOException("A2A_WALLET_HANDOFF_HTTP_" + status);
-            String contentType = connection.getContentType();
-            if (contentType == null || !"application/json".equalsIgnoreCase(
-                    contentType.split(";", 2)[0].trim()))
-                throw new IOException("A2A_WALLET_HANDOFF_CONTENT_TYPE_INVALID");
-            String contentEncoding = connection.getContentEncoding();
-            if (contentEncoding != null && !"identity".equalsIgnoreCase(contentEncoding.trim()))
-                throw new IOException("A2A_WALLET_HANDOFF_CONTENT_ENCODING_INVALID");
+            AndroidJsonResponse.requireJsonHeaders(connection, "A2A_WALLET_HANDOFF");
             try (InputStream input = connection.getInputStream()) {
                 responseBytes = readBounded(input, MAX_RESPONSE_BYTES,
                     SystemClock.elapsedRealtime() + TOTAL_TIMEOUT_MS);
@@ -138,30 +129,14 @@ final class AndroidA2AWalletHandoffSource
         return value;
     }
 
-    private static byte[] readBounded(InputStream input, int maximum, long deadlineElapsed)
-            throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1_024];
-        while (true) {
-            if (SystemClock.elapsedRealtime() >= deadlineElapsed)
-                throw new IOException("A2A_WALLET_HANDOFF_RESPONSE_TIMEOUT");
-            int count = input.read(buffer);
-            if (SystemClock.elapsedRealtime() >= deadlineElapsed)
-                throw new IOException("A2A_WALLET_HANDOFF_RESPONSE_TIMEOUT");
-            if (count == -1) break;
-            if (output.size() > maximum - count)
-                throw new IOException("A2A_WALLET_HANDOFF_RESPONSE_TOO_LARGE");
-            output.write(buffer, 0, count);
-        }
-        return output.toByteArray();
+    private static byte[] readBounded(InputStream input, int maximum, long deadlineElapsed) throws IOException {
+        return AndroidJsonResponse.readBounded(input, maximum, deadlineElapsed,
+            SystemClock::elapsedRealtime, "A2A_WALLET_HANDOFF");
     }
 
     private static Map<String,Object> parseObject(byte[] bytes) throws IOException, JSONException {
         try {
-            String text = StandardCharsets.UTF_8.newDecoder()
-                .onMalformedInput(CodingErrorAction.REPORT)
-                .onUnmappableCharacter(CodingErrorAction.REPORT)
-                .decode(ByteBuffer.wrap(bytes)).toString();
+            String text = AndroidJsonResponse.decodeUtf8(bytes);
             return object(new JSONObject(text));
         } catch (CharacterCodingException malformed) {
             throw new IOException("A2A_WALLET_HANDOFF_RESPONSE_UTF8_INVALID", malformed);

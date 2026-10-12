@@ -27,8 +27,8 @@ async function setup(t) {
   },
  };
  const refs=new Map([['cloudflare:workers',{env:{ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED:'false'}}],['@/lib/fund-store',{database:()=>db,requestUser:auth.requestUser}],['@/lib/request-auth',auth]]);
- for(const n of ['owner-intent','a2a-delegation-store','workflow','work-store','material-invention','material-study','rockstar-service-access','coconala-team','coconala-team-store','operations','mercari-revenue','mercari-revenue-store'])refs.set(`@/lib/${n}`,await import(new URL(`lib/${n}.ts`,root)));
- const api=loadRouteFixture(new URL('lib/operations-api.ts',root),new Map([['./fund-store',refs.get('@/lib/fund-store')],['./operations',refs.get('@/lib/operations')]]));refs.set('@/lib/operations-api',api);
+ for(const n of ['bounded-stream', 'owner-intent','a2a-delegation-store','workflow','work-store','material-invention','material-study','rockstar-service-access','coconala-team','coconala-team-store','operations','mercari-revenue','mercari-revenue-store'])refs.set(`@/lib/${n}`,await import(new URL(`lib/${n}.ts`,root)));
+ const api=loadRouteFixture(new URL('lib/operations-api.ts',root),new Map([['./bounded-stream.ts',refs.get('@/lib/bounded-stream')],['./fund-store',refs.get('@/lib/fund-store')],['./operations',refs.get('@/lib/operations')]]));refs.set('@/lib/operations-api',api);
  const routes=new Map([...entries,{path:'work-jobs'}].map(e=>[e.path,loadRouteFixture(new URL(`app/api/${e.path}/route.ts`,root),refs)]));
  async function call(entry,method,value,owner='alice',scope) {const response=await routes.get(entry.path)[method](new Request(`https://local.test/api/${entry.path}`,{method,headers:{origin:'https://local.test','content-type':'application/json',...(scope !== undefined ? {'X-Rock-Owner-Scope':scope}:{}),...(owner?{'oai-authenticated-user-id':owner}:{})},...(method==='GET'?{}:{body:JSON.stringify(value)})}));return {status:response.status,data:await response.json()};}
  return{sqlite,call};

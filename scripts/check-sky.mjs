@@ -182,6 +182,7 @@ const sky = read('docs/sky.md');
 const workspace = read('components/sky-workspace.tsx');
 const toolUiState = read('lib/sky-tool-ui.ts');
 const chat = read('components/sky-chat-workspace.tsx');
+const chatSession = read('components/use-sky-chat-session.ts');
 const skyZemaHandoff = read('lib/sky-zema-handoff.ts');
 const mcpBot = read('components/mcp-bot-runner.tsx');
 const workspaceCss = read('app/workspace.css');
@@ -282,7 +283,7 @@ for (const marker of [
   'listMcpConnections',
   'zema-sidebar',
   'zema-model-settings',
-  'consumeSkyZemaHandoff',
+  'useSkyChatSession(',
   'SKY_ZEMA_JOB_EVENT',
   'sky-chat-launch-tool',
   '<McpBotRunner',
@@ -291,6 +292,11 @@ for (const marker of [
     chat.includes(marker),
     `Zemaの会話操作に「${marker}」がありません`,
   );
+
+requireValue(
+  chatSession.includes('consumeSkyZemaHandoff(preferredTool, undefined, undefined, requestedThreadId)'),
+  'Zemaの会話sessionに対象threadへの一回引き継ぎがありません',
+);
 
 for (const marker of [
   'openZemaPrivateStorage(providedStorage)',

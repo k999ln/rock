@@ -3,6 +3,7 @@
 
 import { useEffect, useMemo, useRef, useState, type SyntheticEvent } from 'react';
 import Link from 'next/link';
+import { pendingOwnerStatus, isDefinitivePendingSaveFailure } from '@/lib/pending-owner-intent';
 import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
 import {
   ArrowRight,
@@ -139,8 +140,9 @@ export default function MercariRevenueStarter() {
       const identity = await operationRequest<Response>('/api/revenue/mercari');
       const currentScope = readOwnerScope(identity.ownerScope);
       setOwnerScope(currentScope);
-      if (!currentScope) throw new Error(OWNER_CHECK_REQUIRED);
-      if (currentScope !== operation.ownerScope) { setPlans([]); throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED); }
+      const ownerStatus = pendingOwnerStatus(operation.ownerScope, currentScope);
+      if (ownerStatus === 'unknown') throw new Error(OWNER_CHECK_REQUIRED);
+      if (ownerStatus === 'changed') { setPlans([]); throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED); }
       const plan = await operationRequest<MercariRevenuePlan>(
         '/api/revenue/mercari',
         'POST',
@@ -157,7 +159,7 @@ export default function MercariRevenueStarter() {
       if (cause instanceof OperationRequestError) {
         if (cause.status === 401) { setNeedsSignin(true); setOwnerScope(null); setPlans([]); }
         if (cause.code === OWNER_CHANGED) { setOwnerScope(null); setPlans([]); }
-        if (cause.code !== OWNER_CHANGED && [400, 404, 409, 413, 415].includes(cause.status)) setPendingCreate(null);
+        if (isDefinitivePendingSaveFailure(cause.status, cause.code)) setPendingCreate(null);
       }
       setError(cause instanceof Error ? cause.message : '保存できませんでした。');
     } finally {
@@ -313,11 +315,11 @@ export default function MercariRevenueStarter() {
               </form>
               {pendingCreate && <section aria-label="保存結果の確認">
                 <p>保存結果が確認できるまで、この画面を開いたままにしてください。最初のアカウントで同じ保存IDを確認し、別アカウントには再送しません。</p>
-                <p>{ownerScope && ownerScope !== pendingCreate.ownerScope ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
+                <p>{pendingOwnerStatus(pendingCreate.ownerScope, ownerScope) === 'changed' ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p>
                 <Link href="/signin-with-chatgpt?return_to=%2Fincome%2Fmercari" target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</Link>
                 <p>保留を解除しても保存済み記録は削除されません。元のアカウントで保存結果を確認してから新しく保存してください。入力本文は残ります。</p>
                 <button type="button" disabled={busy} onClick={() => { setPendingCreate(null); setError('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
-                <button type="button" className="mercari-primary" disabled={busy || (!!ownerScope && ownerScope !== pendingCreate.ownerScope)}
+                <button type="button" className="mercari-primary" disabled={busy || (pendingOwnerStatus(pendingCreate.ownerScope, ownerScope) === 'changed')}
                   onClick={() => void saveCreate(pendingCreate)}>
                   {busy ? '確認中…' : '同じ保存内容で結果を確認'}
                 </button>

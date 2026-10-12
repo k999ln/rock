@@ -1,3 +1,4 @@
+import * as boundedStream from '../lib/bounded-stream.ts';
 import * as ownerIntent from '../lib/owner-intent.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
@@ -314,6 +315,7 @@ function workRoute(f) {
   const route = loadRouteFixture(new URL('../app/api/work-jobs/route.ts', import.meta.url), new Map([
     ['cloudflare:workers', { env: { ...f.config, ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED: 'true' } }],
     ['@/lib/a2a-delegation-store', { a2aDelegationStore }],
+    ['@/lib/bounded-stream', boundedStream],
     ['@/lib/owner-intent', ownerIntent],
     ['@/lib/fund-store', { database: () => f.db, requestUser }],
     ['@/lib/work-store', { workStore }],

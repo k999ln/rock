@@ -1,3 +1,5 @@
+import { verifyA2AProviderSignature } from './a2a-provider-signature.ts';
+
 /** Signed cumulative meter snapshot. It is provisional until the final receipt reconciles it. */
 export const A2A_LIVE_USAGE_SCHEMA = 'rock-a2a-provider-live-usage/1' as const;
 const DOMAIN = new TextEncoder().encode('rock-a2a-provider-live-usage-signature/1\0');
@@ -100,10 +102,5 @@ export async function verifyA2ALiveUsageSnapshot(
   try { publicKey = await resolveKey({ providerId: snapshot.providerId, keyId: snapshot.keyId, agentOrigin: snapshot.agentOrigin }); }
   catch { return false; }
   if (!(publicKey instanceof Uint8Array) || publicKey.length !== 32) return false;
-  try {
-    const key = await crypto.subtle.importKey('raw', Uint8Array.from(publicKey).buffer as ArrayBuffer, { name: 'Ed25519' }, false, ['verify']);
-    const signature = Uint8Array.from(atob(snapshot.signature.replaceAll('-', '+').replaceAll('_', '/') + '=='), (c) => c.charCodeAt(0));
-    if (signature.length !== 64 || btoa(String.fromCharCode(...signature)).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '') !== snapshot.signature) return false;
-    return await crypto.subtle.verify({ name: 'Ed25519' }, key, signature, a2aLiveUsageSigningBytes(snapshot));
-  } catch { return false; }
+  return verifyA2AProviderSignature(publicKey, snapshot, () => a2aLiveUsageSigningBytes(snapshot));
 }

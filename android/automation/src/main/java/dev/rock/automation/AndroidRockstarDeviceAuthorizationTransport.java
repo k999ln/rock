@@ -2,7 +2,6 @@ package dev.rock.automation;
 
 import android.os.Looper;
 import dev.rock.core.platform.RockstarDeviceAuthorizationFlow;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,9 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
-import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -33,7 +30,7 @@ final class AndroidRockstarDeviceAuthorizationTransport
     private final String origin;
 
     AndroidRockstarDeviceAuthorizationTransport(String configuredOrigin) {
-        this.origin = canonicalOrigin(configuredOrigin);
+        this.origin = RockstarServiceOrigin.canonicalOrigin(configuredOrigin);
     }
 
     @Override public String serviceOrigin() { return origin; }
@@ -73,13 +70,7 @@ final class AndroidRockstarDeviceAuthorizationTransport
             int status = connection.getResponseCode();
             if (status != 200 && status != 201)
                 throw new IOException("DEVICE_AUTH_HTTP_" + status);
-            String contentType = connection.getContentType();
-            if (contentType == null || !"application/json".equalsIgnoreCase(
-                    contentType.split(";", 2)[0].trim()))
-                throw new IOException("DEVICE_AUTH_CONTENT_TYPE_INVALID");
-            String contentEncoding = connection.getContentEncoding();
-            if (contentEncoding != null && !"identity".equalsIgnoreCase(contentEncoding.trim()))
-                throw new IOException("DEVICE_AUTH_CONTENT_ENCODING_INVALID");
+            AndroidJsonResponse.requireJsonHeaders(connection, "DEVICE_AUTH");
             try (InputStream input = connection.getInputStream()) {
                 responseBytes = readBounded(input, MAX_RESPONSE_BYTES,
                     android.os.SystemClock.elapsedRealtime() + TOTAL_TIMEOUT_MS);
@@ -94,43 +85,14 @@ final class AndroidRockstarDeviceAuthorizationTransport
         }
     }
 
-    static String canonicalOrigin(String value) {
-        if (value == null || value.isEmpty()) throw new IllegalArgumentException("ROCKSTAR_SERVICE_ORIGIN_REQUIRED");
-        final URI uri;
-        try { uri = URI.create(value); }
-        catch (IllegalArgumentException invalid) { throw new IllegalArgumentException("ROCKSTAR_SERVICE_ORIGIN_INVALID", invalid); }
-        if (!"https".equalsIgnoreCase(uri.getScheme()) || uri.getHost() == null ||
-                uri.getUserInfo() != null || uri.getQuery() != null || uri.getFragment() != null ||
-                (uri.getPort() != -1 && uri.getPort() != 443) ||
-                (uri.getPath() != null && !uri.getPath().isEmpty() && !"/".equals(uri.getPath())))
-            throw new IllegalArgumentException("ROCKSTAR_SERVICE_ORIGIN_INVALID");
-        int port = uri.getPort();
-        return "https://" + uri.getHost().toLowerCase(java.util.Locale.ROOT) +
-            (port == -1 || port == 443 ? "" : ":" + port);
-    }
-
     private static byte[] readBounded(InputStream input, int maximum, long deadlineElapsed) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1_024];
-        while (true) {
-            if (android.os.SystemClock.elapsedRealtime() >= deadlineElapsed)
-                throw new IOException("DEVICE_AUTH_RESPONSE_TIMEOUT");
-            int count = input.read(buffer);
-            if (android.os.SystemClock.elapsedRealtime() >= deadlineElapsed)
-                throw new IOException("DEVICE_AUTH_RESPONSE_TIMEOUT");
-            if (count == -1) break;
-            if (output.size() > maximum - count) throw new IOException("DEVICE_AUTH_RESPONSE_TOO_LARGE");
-            output.write(buffer, 0, count);
-        }
-        return output.toByteArray();
+        return AndroidJsonResponse.readBounded(input, maximum, deadlineElapsed,
+            android.os.SystemClock::elapsedRealtime, "DEVICE_AUTH");
     }
 
     private static Map<String,Object> parseFlatObject(byte[] bytes) throws IOException, JSONException {
         try {
-            String text = StandardCharsets.UTF_8.newDecoder()
-                .onMalformedInput(CodingErrorAction.REPORT)
-                .onUnmappableCharacter(CodingErrorAction.REPORT)
-                .decode(ByteBuffer.wrap(bytes)).toString();
+            String text = AndroidJsonResponse.decodeUtf8(bytes);
             JSONObject object = new JSONObject(text);
             Map<String,Object> result = new LinkedHashMap<>();
             Iterator<String> keys = object.keys();

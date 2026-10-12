@@ -524,7 +524,7 @@ AI02〜AI06の旧host fixtureを現行のSIM/eSIM・署名付きPlatform Coreへ
 
 ### Androidの認証保存と応答期限（2026-10-11、OS10）
 
-一時的なKeystore/file読取失敗では連携を利用不可として扱い、暗号化sessionを削除しない。保存内容の不正や恒久的な鍵無効化が確認された場合だけ破棄する。Home・認証・Broker登録・Wallet handoffの本文readerはread前後とEOFで既存期限を検査し、期限切れ応答を成功へ変換しない。HTTP header/TLS/framingを含む全通信の強制停止は未受入。復旧・実Android試験条件は[Android workstream](workstreams/07-android-device-local-ai.md)を正本とする。
+一時的なKeystore/file読取失敗では連携を利用不可として扱い、暗号化sessionを削除しない。保存内容の不正や恒久的な鍵無効化が確認された場合だけ破棄する。Home・認証・Broker登録・Wallet handoffの本文readerはread前後とEOFで既存期限を検査し、期限切れ応答を成功へ変換しない。この4経路のbyte上限と期限検査、および6箇所のJSON header／厳密UTF-8変換は `AndroidJsonResponse` に集約する。各transportが従来の期限起算、error prefix、status／401、署名、JSON構造、close／byte消去を引き続き管理する。service originの純粋な正規化は `RockstarServiceOrigin` に置き、暗号化SessionStoreはHTTP transportに依存しない。caller固有の完全一致・長さ制限は維持する。HTTP header/TLS/framingを含む全通信の強制停止は未受入。復旧・実Android試験条件は[Android workstream](workstreams/07-android-device-local-ai.md)を正本とする。
 
 ### Androidの精算済みWallet読戻し（2026-10-11、OS10）
 

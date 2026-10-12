@@ -317,6 +317,8 @@ npm run verify
 
 After changing progress records or generated status, run the repository-prescribed update/check commands. Rules for people and AI coding agents are in [AGENTS.md](AGENTS.md).
 
+After unlocking, `npm run metadata:update` synchronizes project, Mission Control, database status, and workspace records. `project:update` and `mission:update` remain aliases; `metadata:check` checks without writing. These commands stop before reading or writing records when private files are locked.
+
 ## Safety, rights, and images
 
 Recording, external publication, appliance operation, purchasing, and payment each need their own permission. RockstarOS 1.0 is a Developer Preview. Packages in `public-release/rockstaros/` are MIT-licensed; a reuse license for the rest of the proprietary code has not been selected. Bundled open-source software, models, and external services keep their own terms. Images and GIFs are concept material, not product photographs or evidence of a working spatial display, manufacturing approval, safety performance, carrier availability, live billing, or production integration. [Distribution requirements](docs/release-minimum-gates.md) · [Sources and licenses](docs/mr-integration.md)

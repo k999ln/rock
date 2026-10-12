@@ -1,3 +1,4 @@
+import { readBoundedStream } from '@/lib/bounded-stream';
 import { env } from 'cloudflare:workers';
 import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import { skyWebCommand, requireSkyDraftImport } from '@/lib/amc-sky-web';
@@ -48,24 +49,9 @@ function reject(request: Request, error: unknown) {
 async function body(request: Request): Promise<unknown> {
   const reader = request.body?.getReader();
   if (!reader) throw new WorkError('入力がありません。');
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    length += value.byteLength;
-    if (length > MAX_BODY) {
-      await reader.cancel();
-      throw new WorkError('入力は2 MB以下にしてください。', 413);
-    }
-    chunks.push(value);
-  }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
+  const bytes = await readBoundedStream(reader, MAX_BODY, () =>
+    new WorkError('入力は2 MB以下にしてください。', 413),
+  );
   try {
     return JSON.parse(
       new TextDecoder('utf-8', { fatal: true }).decode(bytes),

@@ -19,7 +19,7 @@ function harness() {
   let cursor = 0, tree, token = 'owner-a', mounted = true, afterUnmountWrites = 0;
   const changed = (old, next) => !old || old.length !== next.length || old.some((v, i) => !Object.is(v, next[i]));
   const react = {
-    useState(initial) { const i = cursor++; if (!(i in slots)) slots[i] = typeof initial === 'function' ? initial() : initial; return [slots[i], (value) => { if (!mounted) afterUnmountWrites++; slots[i] = typeof value === 'function' ? value(slots[i]) : value; }]; },
+    useState(initial) { const i = cursor++; if (!(i in slots)) { const state = { value: typeof initial === 'function' ? initial() : initial }; state.set = (value) => { if (!mounted) afterUnmountWrites++; state.value = typeof value === 'function' ? value(state.value) : value; }; slots[i] = state; } return [slots[i].value, slots[i].set]; },
     useRef(initial) { const i = cursor++; if (!(i in slots)) slots[i] = { current: initial }; return slots[i]; },
     useMemo(fn, deps) { const i = cursor++; if (!slots[i] || changed(slots[i].deps, deps)) slots[i] = { value: fn(), deps }; return slots[i].value; },
     useCallback(fn, deps) { return react.useMemo(() => fn, deps); },
@@ -48,10 +48,17 @@ function harness() {
     '@/components/mcp-bot-runner': { McpBotRunner: 'McpBotRunner' },
   };
   const exports = {};
-  runInNewContext(compiled, { exports, Error, Event, queueMicrotask, window, crypto,
+  const context = { Error, Event, queueMicrotask, window, crypto,
     fetch: async (url) => ({ ok: true, json: async () => url === '/api/csv-jobs' ? { jobs: [] } : { funds: [], membership: null, analytics: [] } }),
     require(id) { if (modules[id]) return { __esModule: true, ...modules[id] }; if (id.startsWith('@/components/') || id === 'lucide-react' || id === 'next/link') return {}; if (id === '@/lib/zema-private-storage' || id === '@/lib/currency-format' || id === '@/lib/remote-ai-text-client') return {}; throw Error(`Unexpected module ${id}`); },
-  });
+  };
+  const sessionExports = {};
+  const sessionCompiled = ts.transpileModule(readFileSync(new URL('../components/use-sky-chat-session.ts', import.meta.url), 'utf8'), {
+    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS },
+  }).outputText;
+  runInNewContext(sessionCompiled, { ...context, exports: sessionExports });
+  modules['@/components/use-sky-chat-session'] = sessionExports;
+  runInNewContext(compiled, { ...context, exports });
   const props = { executionBlocked: false, accessState: 'ready', setNeedsSignin: noop };
   function render() { cursor = 0; tree = exports.Authenticated(props); effects.splice(0).forEach((effect) => effect()); }
   function nodes(node, out = []) { if (Array.isArray(node)) node.forEach((x) => nodes(x, out)); else if (node && typeof node === 'object') { out.push(node); nodes(node.props?.children, out); } return out; }
