@@ -20,7 +20,7 @@ const navigationCompiled = ts.transpileModule(readFileSync(new URL('../component
 function harness(initialSignedIn = true) {
   const slots = [], effects = [], requests = [], records = new Map(), recordOwners = new Map(), computations = new Set();
   const listHoldQueue = [], responseChanges = new Map();
-  let generationGate, currentOwner = ownerA, heldWrite, heldOpen;
+  let generationGate, currentOwner = ownerA, heldWrite, heldOpen, heldCreate;
   function track(promise) { computations.add(promise); void promise.then(() => computations.delete(promise), () => computations.delete(promise)); return promise; }
   let cursor = 0, tree, mode = null, signedIn = initialSignedIn, holdList = false, releaseList;
   const react = {
@@ -51,6 +51,7 @@ function harness(initialSignedIn = true) {
     return Response.json(change ? await track(Promise.resolve(change(structuredClone(value)))) : value, { status });
   }
   async function fetch(url, options = {}) {
+    const requestOwner = currentOwner;
     const method = options.method ?? 'GET', value = options.body ? JSON.parse(options.body) : undefined;
     requests.push({ method, url, value, headers: options.headers });
     if (!signedIn) return new Response('Synthetic gateway sign-in required', { status: 401 });
@@ -72,9 +73,10 @@ function harness(initialSignedIn = true) {
     }
     assert.equal(method, 'POST');
     if (mode === 'owner') { mode = null; return Response.json({error:'Changed after identity check',code:ownerIntent.OWNER_CHANGED},{status:409}); }
+    if (heldCreate) { const hold = heldCreate; heldCreate = null; hold.started.resolve(); await hold.promise; }
     const result = records.get(value.id) ?? await track(study.createMaterialStudy(value));
-    records.set(value.id, result); recordOwners.set(value.id, currentOwner);
-    if (heldWrite) { const hold = heldWrite; heldWrite = null; await hold.promise; }
+    records.set(value.id, result); recordOwners.set(value.id, requestOwner);
+    if (heldWrite) { const hold = heldWrite; heldWrite = null; hold.ready.resolve(); await hold.promise; }
     if (mode === 'lost') { mode = null; throw Error('response lost'); }
     return response(result, 'POST', 201);
   }
@@ -104,7 +106,7 @@ function harness(initialSignedIn = true) {
   render();
   return { listeners,
     navigate(attributes) { let prevented = false; documentListeners.get('click')?.({ button: 0, target: new Element(attributes), preventDefault() { prevented = true; } }); return prevented; },
-    title(value) { nodes(find('label', '仕事の名前')).find(node => node.type === 'input').props.onChange({ target: { value } }); render(); }, holdWrite() { heldWrite = Promise.withResolvers(); const hold = heldWrite; return () => hold.resolve(); }, holdOpen() { heldOpen = Promise.withResolvers(); const hold = heldOpen; return () => hold.resolve(); }, setOwner(value) { currentOwner = value; }, render, find, flush, click, source, records, requests,
+    title(value) { nodes(find('label', '仕事の名前')).find(node => node.type === 'input').props.onChange({ target: { value } }); render(); }, holdWrite() { heldWrite = { ...Promise.withResolvers(), ready: Promise.withResolvers() }; const hold = heldWrite; return { ready: hold.ready.promise, release: () => hold.resolve() }; }, holdCreate() { heldCreate = { ...Promise.withResolvers(), started: Promise.withResolvers() }; const hold = heldCreate; return { started: hold.started.promise, release: () => hold.resolve() }; }, holdOpen() { heldOpen = Promise.withResolvers(); const hold = heldOpen; return () => hold.resolve(); }, setOwner(value) { currentOwner = value; }, render, find, flush, click, source, records, recordOwners, requests,
     changeResponse(kind, change) { responseChanges.set(kind, change); },
     holdNextList() { const gate = Promise.withResolvers(); listHoldQueue.push(gate); return () => gate.resolve(); },
     holdGeneration() { generationGate = Promise.withResolvers(); return () => generationGate.resolve(); }, holdList() { holdList = true; }, releaseList() { releaseList(); }, ownerRace() { mode = 'owner'; }, lost() { mode = 'lost'; }, signin(v) { signedIn = v; } };
@@ -261,14 +263,37 @@ void test('anonymous candidate preview still works entirely in this browser with
 void test('a committed write finishing after an owner switch stays parked for original-ID reconciliation', async () => {
   const h = harness(); await privateStudy(h);
   const reload = h.find('button', '一覧を再読込').props.onClick;
-  const release = h.holdWrite(); const saving = h.click('入力と候補を本人用に保存');
-  await new Promise(resolve => setImmediate(resolve));
+  const held = h.holdWrite(); const saving = h.click('入力と候補を本人用に保存');
+  await held.ready;
+  const original = h.requests.find(request => request.method === 'POST');
+  assert.equal(h.recordOwners.get(original.value.id), ownerA, 'Alice owns the committed study before switching');
   h.setOwner(ownerB); reload(); h.render(); await h.flush();
-  release(); await saving; await h.flush();
+  held.release(); await saving; await h.flush();
   assert.equal(h.find('textarea').props.value, ''); assert.equal(h.find('strong', 'Alice private material'), undefined);
   h.setOwner(ownerA); await h.click('一覧を再読込'); await h.click('同じ操作を再試行');
   const posts = h.requests.filter(r => r.method === 'POST'); assert.deepEqual(posts[1].value, posts[0].value); assert.equal(h.records.size, 1);
 });
+void test('Material fixture binds the request owner before asynchronous creation commits', async () => {
+  const h = harness(); await privateStudy(h);
+  const reload = h.find('button', '一覧を再読込').props.onClick;
+  const creation = h.holdCreate(), response = h.holdWrite();
+  const saving = h.click('入力と候補を本人用に保存');
+  await creation.started;
+  const original = h.requests.find(request => request.method === 'POST');
+  assert.equal(h.records.size, 0, 'creation is explicitly paused before commit');
+  assert.equal(original.headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA);
+  h.setOwner(ownerB); reload(); h.render(); await h.flush();
+  creation.release(); await response.ready;
+  assert.equal(h.recordOwners.get(original.value.id), ownerA, 'later account state cannot change the dispatched request owner');
+  response.release(); await saving; await h.flush();
+  assert.equal(h.find('textarea').props.value, '');
+  assert.equal(h.find('strong', 'Alice private material'), undefined);
+  h.setOwner(ownerA); await h.click('一覧を再読込'); await h.click('同じ操作を再試行');
+  const posts = h.requests.filter(request => request.method === 'POST');
+  assert.deepEqual(posts[1].value, posts[0].value); assert.equal(h.records.size, 1);
+  assert.equal(h.recordOwners.get(original.value.id), ownerA);
+});
+
 void test('late saved-study reads and local previews cannot fill a different owner workspace', async () => {
   for (const kind of ['open', 'preview']) {
     const h = harness(); await privateStudy(h);

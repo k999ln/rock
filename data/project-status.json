@@ -7529,12 +7529,12 @@
     "reusedPr100Sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
     "separateGridBranch": "codex/compute-grid-recovery-20261011",
     "gridBasePr103Sha": "e80d0357aa88291b6ee955e62af875180d35e6cd",
-    "nextAction": "Record final test-only/doc head fullverify and GitHub CI in PR105. Runtime14bd7988 remains frozen and browser-accepted. Then owner-review three unapplied proposals (two exact public-value scanner exceptions and CSV processing recovery/storage contract). No main merge/deployment.",
+    "nextAction": "Confirm final documentation/test-harness head verify and CI from PR105 receipt. Runtime14bd7988 is unchanged and built-browser accepted (also rebuilt/reopened atf5e5). Then owner-review the three unapplied proposals; main merge/deployment and physical/provider acceptance remain separate.",
     "githubSaved": true,
     "mainIntegrated": false,
     "deployed": false,
     "physicalDeviceTested": false,
-    "checkpointAt": "2026-10-12T04:00:08.642936+00:00",
+    "checkpointAt": "2026-10-12T04:11:31.226182+00:00",
     "gridPullRequest": "https://github.com/k999ln/rock/pull/104",
     "gridSourceSha": "050fade2c72c440af8922d4f23a574d6c089cca5",
     "gridGithubSaved": true,
@@ -7547,8 +7547,8 @@
     "evidence": "docs/evidence/quality-reliability-review.json",
     "latestMainObservedSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
     "latestMainObservedAt": "2026-10-12T03:50:29Z",
-    "primaryIntermediateCi": "1bae02b8 local fullverify2017pass/1skip succeeds; CI13success/2fail: known public-prose secrets plus independently reproduced fixed8turn Wallet test race. Test-only promise-settling fix43/43; final fullverify/CI receipt follows in PR105.",
-    "lastPushedPrimarySha": "1bae02b8095058a8028bb4ff51ddee3000f596bb",
+    "primaryIntermediateCi": "f5e5f34a local fullverify2019pass/1skip; CI13success/2fail: known prose secrets and Workbench response-ready test race. Wallet prior failure fixed. Workbench63 related/73 independent, Material28 own+independent tests pass; final non-runtime head fullverify/CI receipt belongs in PR105.",
+    "lastPushedPrimarySha": "f5e5f34a95d5947704148151f927971e36e9ea32",
     "sourceSha": "14bd7988cd334d3419c0e138174b850641d568d7"
   }
 }

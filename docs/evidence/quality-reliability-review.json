@@ -3,7 +3,7 @@
   "status": "review_ready_with_known_secrets_ci_failure",
   "startedAt": "2026-10-11T23:56:26Z",
   "plannedEndAt": "2026-10-12T04:56:26Z",
-  "updatedAt": "2026-10-12T04:00:08.642936+00:00",
+  "updatedAt": "2026-10-12T04:11:31.226182+00:00",
   "baseline": {
     "main": "4055ad380d3876bee8e93eca71b1e072a2785959",
     "reusedPr100": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
@@ -155,6 +155,26 @@
         "wallet-async-settlement-independent-summary.json"
       ],
       "independentReview": "43/43 rerun passed; independent gate after JSON parsing but before save finally proves flush waits for complete handler. Removing only full-ledger tracking makes that unchanged assertion fail. Explicit held GET races remain awaited after release."
+    },
+    {
+      "id": "workbench-test-readiness",
+      "before": "Held-list fixture was excluded from settling before async route snapshot and release callback existed; GitHub failed with delayed.release TypeError. Two independently controlled original flows reproduce it.",
+      "after": "Both delayed-list callers await explicit ready after snapshot and release installation. Release unmarks held; response JSON is tracked. Existing newer-selection/one-PATCH/new-creation assertions remain, with captured empty-list assertion added.",
+      "scope": "Test only;63 related cases pass, independent73 scoped cases pass; moving ready before preparation fails both unchanged independent regressions.",
+      "evidence": [
+        "workbench-ready-gate-summary.json",
+        "workbench-held-readiness-independent-summary.json"
+      ]
+    },
+    {
+      "id": "material-test-request-owner",
+      "before": "Test fixture attributed async study creation to the current account after await; under controlled account change Alice request became Bob-owned while old assertions passed. This was not a reproduced runtime bug or existing CI flake.",
+      "after": "Capture owner at request entry, signal committed/held response readiness, assert original owner before and after account change. Controlled precommit switch remains attributed to original request owner.",
+      "scope": "Test only;28/28 author and independent passes, unchanged same-ID/no-private-display/one-record assertions; restoring old mutable-owner assignment makes the added controlled regression fail.",
+      "evidence": [
+        "material-harness-owner-readiness-summary.json",
+        "material-owner-fixture-independent-summary.json"
+      ]
     }
   ],
   "inProgress": [],
@@ -202,8 +222,13 @@
     "runtimeFrozen": true,
     "browserAcceptedAt": "2026-10-12T03:47:57.193717+00:00",
     "reviewTarget": "PR105 final head (documentation and three bounded screenshots follow this runtime checkpoint)",
-    "finalHeadVerification": "The final documentation-only head verification receipt belongs in PR105 body, with exact SHA and command/CI results. This JSON proves the stated14bd7988 runtime checkpoint only.",
-    "remainingSourceChange": "Test harness only: deterministic Wallet operation settling, followed by same-head verification receipt in PR105"
+    "finalHeadVerification": "The final non-runtime (documentation and test-harness) head verification receipt belongs in PR105 body, with exact SHA and command/CI results. This JSON proves its explicitly named checkpoints; final-source-equivalence.json proves runtime matches14bd7988.",
+    "postRuntimeAcceptanceChanges": [
+      "Documentation and three bounded screenshots",
+      "Wallet actual-operation settlement test harness",
+      "Workbench held-response readiness test harness",
+      "Material request-owner test fixture"
+    ]
   },
   "intermediateCi": {
     "sha": "250b57b07e6a3191fc0a0ad11632ab1dbeb9ad58",
@@ -579,6 +604,33 @@
       "browserEvidence": "browser-1bae02b8-summary.json",
       "log": "verify-primary-1bae02b8.log",
       "runtimeChanges": false
+    },
+    {
+      "sha": "f5e5f34a95d5947704148151f927971e36e9ea32",
+      "fullVerify": {
+        "localExit": 0,
+        "nodePass": 2019,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "githubCi": {
+        "success": 13,
+        "failure": 2,
+        "failures": [
+          "SPIDER / secrets: same known historical public-description finding",
+          "verify: Workbench test released a delayed response before async snapshot preparation installed its release callback; Wallet prior failure resolved"
+        ],
+        "nodePass": 2018,
+        "nodeFail": 1,
+        "nodeSkip": 1
+      },
+      "ciEvidence": "ci-f5e5-native-android-secrets-summary.json",
+      "browserEvidence": "browser-f5e5f34a-summary.json",
+      "log": "verify-primary-f5e5f34a.log",
+      "runtimeChanges": false
     }
   ],
   "policyPreservation": {
@@ -610,6 +662,7 @@
     ],
     "unappliedProposalDirectory": "/private/tmp/rock-quality-audit",
     "rawEvidenceDirectory": "/private/tmp/rock-quality-audit",
-    "reviewLimits": "CI secrets finding prevents claiming all-green/merge-ready. Physical/full-OS, real provider, production identity, funds and publication remain separate gates."
+    "reviewLimits": "CI secrets finding prevents claiming all-green/merge-ready. Physical/full-OS, real provider, production identity, funds and publication remain separate gates.",
+    "verificationNote": "Read the final PR105 receipt before treating any intermediate checkpoint as the current result. Two CI harness races and one fixture ownership assumption were causally corrected without runtime edits or weakened assertions."
   }
 }

@@ -4,6 +4,14 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-12 — 応答準備と模擬保存ownerを試験で明示（G04 / WEB04、ROCK）
+
+`f5e5f34a`のlocal全体verifyは2019 pass／1 skip、Worker1356、CSV385、asset186／欠落0で成功。実build再起動後も保存成果を再表示でき、PC1280／390px横はみ出し0・browser console error0。GitHubは13成功／2失敗で、Walletの旧失敗は解消したがWorkbench試験の遅延GET解除callbackがsnapshot準備前には存在しないraceが見つかった。独立した準備gateで元の2経路とも再現し、準備完了ready・解放後の実応答／JSON完了を待つ修正を行った。関連63件と独立73件が成功し、readyを早める失敗対照も確認した。
+
+同種のharnessを限定監査し、Materialの模擬保存だけがawait後のcurrent ownerを使う欠陥も訂正。要求開始時ownerを固定し、保存確定のsignalを待ってからownerを変更する。追加の制御gate回帰は元の代入1行に戻すとAlice→Bob誤帰属で失敗し、修正後は28/28、独立28/28成功。これは試験fixtureの前提訂正であり、本番runtime不具合や既存CI flakeの修正とは扱わない。
+
+どちらも元の選択保持・本人非表示・同ID・1記録のassertionを維持し、runtime変更なし。最終headの文書＋検証harnessと、受入済みruntime `14bd7988`を区別して、full verify／CIの確定receiptをPR #105へ残す。既知のsecretsと未適用3提案、実機／外部／公開の未受入境界は変えない。
+
 ## 2026-10-12 — CIのWallet試験を実処理完了で同期（G04 / WEB04、ROCK）
 
 文書head `1bae02b8`のlocal全体verifyは2017 pass／1 skipで成功した一方、GitHubは13成功／2失敗。既知のsecretsに加え、Wallet保存応答がまだ処理中なのに固定8回のtimer待ちだけでretry buttonを押す試験が失敗した。実SQLite確定後の応答をgateで保留する独立試験で同じ失敗を再現し、応答解放後は同ID再試行／1記録になることを確認した。

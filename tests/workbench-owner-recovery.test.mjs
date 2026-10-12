@@ -181,8 +181,11 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualN
         next();
       }
       if (gate) {
+        gate.prepared.resolve();
+        if (gate.prepare) await gate.prepare;
         return new Promise((resolve) => {
-          gate.release = () => resolve(Response.json(result.data));
+          gate.release = () => { tracking.held = false; resolve(Response.json(result.data)); };
+          gate.snapshotReady.resolve(result.data);
         });
       }
       return Response.json(result.data);
@@ -191,7 +194,17 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualN
   }
   function trackedFetch(url, options) {
     const tracking = { held: false, promise: null };
-    const promise = fetch(url, options, tracking);
+    const promise = fetch(url, options, tracking).then((response) => {
+      // fetch completion alone does not include the component's JSON read.
+      const json = response.json.bind(response);
+      response.json = (...args) => {
+        const reading = { held: false, promise: json(...args) };
+        pending.add(reading);
+        void reading.promise.then(() => pending.delete(reading), () => pending.delete(reading));
+        return reading.promise;
+      };
+      return response;
+    });
     tracking.promise = promise;
     pending.add(tracking);
     void promise.then(
@@ -494,8 +507,9 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualN
     omitScope(value) {
       omitScope = value;
     },
-    delayList() {
-      const gate = {};
+    delayList({ prepare } = {}) {
+      const snapshotReady = Promise.withResolvers(), prepared = Promise.withResolvers();
+      const gate = { snapshotReady, prepared, ready: snapshotReady.promise, prepare };
       delayedList = gate;
       return gate;
     },
@@ -719,6 +733,8 @@ void test('Workbench ignores a list snapshot superseded by a confirmed creation'
   const delayed = h.delayList();
   refresh();
   await h.flush();
+  const oldSnapshot = await delayed.ready;
+  assert.equal(oldSnapshot.jobs.length, 0, 'older snapshot is captured before the confirmed creation');
   create();
   h.render();
   await h.flush();
@@ -1007,6 +1023,7 @@ void test('a pending record readback does not replace a newer same-owner selecti
   await assert.rejects(runner.props.onRecord(data.job.steps[0].tool, 'browser', 'completed', performance.now(), false, 'passed'));
   h.render(); await h.flush();
   const delayed = h.delayList(); await h.click('最新状態を読み直す');
+  await delayed.ready;
   chooseOther(); h.render(); delayed.release(); await h.flush();
   assert.ok(h.find('h2', 'Newer selected job'));
   assert.equal(h.find('h2', 'Original selected job'), undefined);
@@ -1218,4 +1235,22 @@ void test('runner discard cannot erase a running or unknown recorded result and 
   clean.nodes().find((n) => n.props?.session && n.props?.tool).props.session.patch({ copied: true, editing: true }); clean.render();
   assert.equal(clean.find('button', 'このToolの入力・結果を破棄'), undefined);
   assert.equal(clean.navigateLink().prevented, false, 'error and default values alone do not lock navigation');
+});
+
+
+void test('delayed Workbench lists signal snapshot readiness before callers release them', async (t) => {
+  const h = await setup(t); h.render(); await h.flush();
+  const prepare = Promise.withResolvers();
+  const delayed = h.delayList({ prepare: prepare.promise });
+  let ready = false;
+  const readiness = delayed.ready.then(() => { ready = true; });
+  await h.click('再読込');
+  await delayed.prepared.promise;
+  assert.equal(ready, false, 'held transport is not proof that snapshot preparation finished');
+  assert.equal(delayed.release, undefined, 'the actual delayed response does not yet exist');
+  prepare.resolve();
+  await readiness;
+  assert.equal(typeof delayed.release, 'function', 'ready guarantees a releasable captured response');
+  delayed.release(); await h.flush();
+  assert.equal(h.find('button', '再読込').props.disabled, false, 'released response is read and the component leaves loading');
 });
