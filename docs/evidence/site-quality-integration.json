@@ -1,5 +1,5 @@
 {
-  "status": "prepublication validation; not a deployment receipt",
+  "status": "prepublication validation plus confirmed v52 publication receipt; next documentation-only source not yet published",
   "sourceBase": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc",
   "primaryRuntime": "6b72470ce25d4e7b20940b1698fde5a12281ed69",
   "preservedAudience": "public",
@@ -229,6 +229,75 @@
         "csv-history-request.test.mjs",
         "csv-request-limit.test.mjs",
         "csv-transform.test.mjs"
+      ]
+    },
+    "site-v52-publication-receipt": {
+      "version": 52,
+      "source": "08e1ae494a3ae332dbd5d1c2cf1098332cb2744b",
+      "versionId": "appgprj_6aa444b6e6508191a19f16405d0be927~appgver_439e4df9b010819189105019da6fef10",
+      "deploymentId": "appgdep_6acd15ded2008191874b12029f50d646",
+      "status": "succeeded",
+      "succeededAt": "2026-10-12T17:16:32.563974Z",
+      "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site",
+      "previousFailedVersions": [
+        50,
+        51
+      ],
+      "migrationRepair": {
+        "bridgeSha256": "12f842955ed47647302725f57d05a91e7ad29840ebf428d38f80c1ac78033360",
+        "caseExpressionsWrapped": 20,
+        "parenthesesAdded": 40,
+        "changedTriggers": 13,
+        "totalBridgeTriggers": 47,
+        "otherSqlTokensUnchangedFromV51": true,
+        "old17MigrationsUnchanged": true,
+        "independentCasesPassed": 52,
+        "basis": [
+          "https://github.com/cloudflare/workers-sdk/issues/4727",
+          "https://github.com/cloudflare/workers-sdk/issues/4326"
+        ]
+      },
+      "verification": {
+        "command": "npm run verify",
+        "exitCode": 0,
+        "nodePassed": 2027,
+        "nodeSkipped": 1,
+        "nodeFailed": 0,
+        "skipScope": "existing unsupported-platform safe-open branch on supported POSIX host",
+        "generalApiAssertions": 1356,
+        "liveCsvAccountApiAssertions": 522,
+        "buildTypeLint": "PASS",
+        "sourceRuntimeFilesUnchangedAtFreeze": 700,
+        "logSha256": "0fbbc3391771fcd4cfe141d834131ce6eaf380ea2e23a5bb5e019dce8ca3a140"
+      },
+      "liveSchema": {
+        "overviewCount": 50,
+        "overviewClaimedOmittedTables": 0,
+        "overviewIsComplete": false,
+        "additionalPriorExactTablesOutsideOverviewReadSuccessfully": 10,
+        "localSchemaTotal": 90,
+        "localAddedTables": 51,
+        "liveTotalCompletelyEnumerated": false,
+        "rowValuesRecorded": false,
+        "note": "Presence of39 prior tables confirmed by29 overview entries plus10 bounded reads of exact prior names outside the overview. Customer rows were not fully reconciled. Overview is incomplete despite omitted_tables0;50cap implementation is unconfirmed.",
+        "priorTablePresenceConfirmed": 39,
+        "overviewExistingTables": 29,
+        "directlyReadExistingTables": 10,
+        "customerRowsFullyReconciled": false
+      },
+      "review": {
+        "pullRequest": "https://github.com/k999ln/rock/pull/106",
+        "mainMerged": false,
+        "ciAllGreen": false,
+        "existingCodeqlFindings": 13,
+        "knownPublicProseSecretsFindings": 1,
+        "policyOrHistoryWeakened": false
+      },
+      "limits": [
+        "Records the already-published v52 source; including this receipt in the next source does not prove version53 saved or deployed",
+        "Prepublication browser and synthetic D1/R2/provider tests retain their original environment boundaries",
+        "No real funds, external provider, physical device, or complete live90-table enumeration acceptance claimed",
+        "Historical evidence records above keep their original source hashes and are not re-labelled as later artifacts"
       ]
     }
   }

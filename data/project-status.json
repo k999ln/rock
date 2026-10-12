@@ -7596,7 +7596,7 @@
       "localVerify": "2049 pass / 1 existing skip, 1356 work API assertions and 385 CSV assertions; build and metadata PASS",
       "browserAcceptance": "Delivery draft hidden during 401/other-owner, restored original owner review+File; PC1280/mobile390 overflow0",
       "siteIntegration": {
-        "state": "deployment_failed_case_compatibility_repair_under_validation",
+        "state": "published_v52_receipt_recorded_next_source_not_yet_published",
         "sourceBase": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc",
         "githubQualitySha": "6b72470ce25d4e7b20940b1698fde5a12281ed69",
         "preserves": [
@@ -7606,7 +7606,7 @@
         ],
         "generalApiAssertions": 1356,
         "liveApiAssertions": 522,
-        "fullSiteRepositoryTests": "PASS at source2f083b8c: npm run verify; Node2025 pass/0 fail/1 platform skip; final CASE compatibility repair requires re-verification",
+        "fullSiteRepositoryTests": "PASS for published source08e1ae494a3ae332dbd5d1c2cf1098332cb2744b: npm run verify; Node2027 pass/0 fail/1 platform skip; general API1356 and live CSV/account API522; this documentation-only source is re-verified separately",
         "mainMerged": false,
         "prepublicationEvidence": "docs/evidence/site-quality-integration.json",
         "reviewPullRequest": "https://github.com/k999ln/rock/pull/106",
@@ -7622,10 +7622,36 @@
             "source": "2f083b8c304bc51e5ab20ae89016d64a5ed5d37f",
             "status": "failed",
             "failure": "incomplete input: SQLITE_ERROR"
+          },
+          {
+            "version": 52,
+            "source": "08e1ae494a3ae332dbd5d1c2cf1098332cb2744b",
+            "versionId": "appgprj_6aa444b6e6508191a19f16405d0be927~appgver_439e4df9b010819189105019da6fef10",
+            "deploymentId": "appgdep_6acd15ded2008191874b12029f50d646",
+            "status": "succeeded",
+            "succeededAt": "2026-10-12T17:16:32.563974Z"
           }
         ],
-        "lastObservedLiveVersion": 49,
-        "nextAcceptance": "Parenthesized CASE compatibility from Cloudflare issues4727/4326, unchanged trigger guards; final verify and independent review before a new native publication. Confirm saved source SHA, deployment success, retained schema and real public UI."
+        "lastObservedLiveVersion": 52,
+        "nextAcceptance": "This source records the confirmed v52 publication. Re-verify this documentation-only update and freeze it; the next source/version53 save and deployment have not yet occurred. Bind any later result to its own saved source and deployment receipt; do not count it as v52.",
+        "liveSchemaAcceptance": {
+          "localSchemaTables": 90,
+          "localAddedTables": 51,
+          "liveOverviewReturned": 50,
+          "liveOverviewComplete": false,
+          "liveTotalTablesCompletelyEnumerated": false,
+          "note": "Presence of39 prior tables confirmed by29 overview entries plus10 bounded reads of exact prior names outside the overview. Customer rows were not fully reconciled; no raw rows recorded and no claim of full90 live enumeration.",
+          "priorTablePresenceConfirmed": 39,
+          "overviewExistingTables": 29,
+          "directlyReadExistingTables": 10,
+          "customerRowsFullyReconciled": false
+        },
+        "ciLimitations": {
+          "allGreen": false,
+          "codeqlExistingFindings": 13,
+          "knownPublicProseSecretsFindings": 1,
+          "policyChanged": false
+        }
       }
     }
   }

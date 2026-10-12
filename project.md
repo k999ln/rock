@@ -1,12 +1,17 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-11 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
-公開版の追加検証: `docs/evidence/site-quality-integration.json` に実D1追加移行、既存CSV leaseの競合・応答喪失、owner認証復旧、Sky→Zema→CSV納品・再読込、1280px/390pxの独立検収を集約。これは配備前の検証記録であり本番受入やmain統合を意味しない。
+公開版の追加検証: `docs/evidence/site-quality-integration.json` に実D1追加移行、既存CSV leaseの競合・応答喪失、owner認証復旧、Sky→Zema→CSV納品・再読込、1280px/390pxの独立検収を集約。配備前の検証記録と、後述のv52公開receiptを区別して保存する。公開はmain統合・外部Provider・実資金・実機の受入を意味しない。
 
 公開ソース整理: `services/sky-billing/work/sky-billing-dry-run/worker.js` と `.map` は再生成可能なdry-run配布出力のため追跡対象から除外した。実装 `services/sky-billing/src` と検証コマンドは保持。復元元はSites source `e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc`。
 
-## 既存Site v49との品質統合（配備再検証中）
+## 既存Site v49との品質統合（v52公開確認済み）
 
-配信先は利用者指定の `rockstaros-kaiya.noellesugar1.chatgpt.site`。GitHubの品質候補 `6b72470c` のWeb/API改善と、公開v49のCSV納品revision・lease・共有リンク・会計保存を両立する。既存migration17本を保持して0017を追加し、公開39表の定義と保存済み行を消さない。公開版のAPI/保存契約は主PRの同期CSVと異なるため、両方を同一試験の合格として記録しない。全体verifyはNode2,025成功/既存platform skip1、一般API1,356・公開CSV/会計API522、実buildとPC/390pxブラウザ操作で成功した。Site用sourceはPR #106（base: codex/sites-live-v49）に保存済み。v50/source679d769dとv51/source2f083b8cの配備はSQL適用の incomplete input: SQLITE_ERROR で失敗し、確認時点の公開v49・既存39表を維持している。改行だけの修正では解消しなかったため、Cloudflare workers-sdk #4727/#4326の既知報告に基づき、未適用0017の20個のCASE式を括弧で包む互換修正を検証する。guardの条件とRAISE、原本17 migrationは変えない。native側の原因確定や本番解消は、同一保存versionの配備結果と実画面で別途受け入れる。main統合は未実施。
+配信先は利用者指定の `rockstaros-kaiya.noellesugar1.chatgpt.site`。GitHubの品質候補 `6b72470c` のWeb/API改善と、公開v49のCSV納品revision・lease・共有リンク・会計保存を両立した。既存migration17本を保持して0017を追加し、既存39表の存在をoverviewの29件と一覧外10件の限定読み取りで確認した。顧客行の全件照合は未実施。追加51表を含む全90表のschema・制約・保存済み合成行の保持はローカルD1で検証済み。本番overviewは50件だけを返し、一覧外の既存表も読み取れるため、全90表を本番で完全列挙したとは主張しない。公開版のAPI/保存契約は主PRの同期CSVと異なるため、試験範囲を分けて記録する。
+
+v50/source `679d769d` とv51/source `2f083b8c` はSQL適用の `incomplete input: SQLITE_ERROR` で失敗した。その後、Cloudflare workers-sdk #4727/#4326の既知報告に基づき、0017の20個のCASE式だけを括弧で包み、guardの条件・RAISE・原本17 migrationを維持した。修正後の全体 `npm run verify` はNode2,027成功/既存platform skip1、一般API1,356・公開CSV/会計API522、build/type/lint成功。独立52件で条件保持を確認した。
+
+v52/source `08e1ae494a3ae332dbd5d1c2cf1098332cb2744b` は2026-10-12 17:16:32.563974 UTCに本番配備成功（deployment `appgdep_6acd15ded2008191874b12029f50d646`）。これはv52の公開を確認した記録であり、今回の記録を同梱する次source/v53の保存・配備成功を意味しない。Site用sourceはPR #106（base: `codex/sites-live-v49`）でレビューし、main統合は未実施。CodeQLの既存13件と既知の公開説明文に対するsecrets検出1件が残り、CI全体をgreenとは扱わない。詳細receiptは `docs/evidence/site-quality-integration.json` を参照する。
+
 >
 > **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
 
