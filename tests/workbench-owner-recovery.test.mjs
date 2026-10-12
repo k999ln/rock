@@ -903,3 +903,50 @@ void test('a captured release for the first unknown creation cannot retire a lat
   const posts = h.requests.filter((r) => r.method === 'POST'); assert.equal(posts.length, 3);
   assert.deepEqual(posts[2].value, original); assert.equal(h.count(), 2);
 });
+
+
+void test('committed Tool record restores the same selected detail after a failed latest-state read', async (t) => {
+  const { h, id, record } = await recordFixture(t, { onWorkResponse(method) {
+    if (method === 'PATCH') return Response.json({ error: 'Synthetic reply lost after commit' }, { status: 503 });
+  } });
+  await assert.rejects(record()); h.render(); await h.flush();
+  h.rejectNext('GET'); await h.click('最新状態を読み直す');
+  assert.ok(h.find('h2', '仕事を選んで開始')); assert.ok(h.find('button', '記録の保存を再試行'));
+  await h.click('最新状態を読み直す');
+  assert.equal(h.find('button', '記録の保存を再試行'), undefined);
+  assert.ok(h.find('h2', 'Saved execution job'), 'confirmed original job detail is restored without a second click');
+  assert.equal(h.find('h2', '仕事を選んで開始'), undefined);
+  assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+  assert.equal((await h.routeCall('GET', undefined, 'alice')).data.jobs.find((j) => j.id === id).events.length, 1);
+});
+
+void test('pending record readback never restores Alice detail in Bob scope', async (t) => {
+  const { h, record } = await recordFixture(t, { onWorkResponse(method) {
+    if (method === 'PATCH') return Response.json({ error: 'Synthetic reply lost after commit' }, { status: 503 });
+  } });
+  await h.grant('bob'); await assert.rejects(record()); h.render(); await h.flush();
+  h.owner('bob'); await h.click('最新状態を読み直す');
+  assert.equal(h.find('h2', 'Saved execution job'), undefined);
+  assert.ok(h.find('h2', '仕事を選んで開始'));
+  assert.equal(h.find('button', '記録の保存を再試行').props.disabled, true);
+  assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+});
+
+void test('a pending record readback does not replace a newer same-owner selection', async (t) => {
+  const h = await setup(t, { onWorkResponse(method) {
+    if (method === 'PATCH') return Response.json({ error: 'Synthetic reply lost after commit' }, { status: 503 });
+  } });
+  const { data } = await h.routeCall('POST', { id: randomUUID(), title: 'Original selected job', templateId: 'article' });
+  await h.routeCall('POST', { id: randomUUID(), title: 'Newer selected job', templateId: 'article' });
+  h.render(); await h.flush(); await h.click('Original selected job'); await h.click(data.job.steps[0].title);
+  const chooseOther = h.find('button', 'Newer selected job').props.onClick;
+  const runner = h.nodes().find((n) => typeof n.props?.onRecord === 'function');
+  await assert.rejects(runner.props.onRecord(data.job.steps[0].tool, 'browser', 'completed', performance.now(), false, 'passed'));
+  h.render(); await h.flush();
+  const delayed = h.delayList(); await h.click('最新状態を読み直す');
+  chooseOther(); h.render(); delayed.release(); await h.flush();
+  assert.ok(h.find('h2', 'Newer selected job'));
+  assert.equal(h.find('h2', 'Original selected job'), undefined);
+  assert.equal(h.find('button', '記録の保存を再試行'), undefined);
+  assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+});

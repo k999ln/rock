@@ -508,17 +508,27 @@ export default function Workbench({
   const refresh = useCallback(async () => {
     if (createInFlight.current || updateInFlight.current) return null;
     const version = ++listGeneration.current;
+    const selectionAtRead = selectedIdRef.current;
+    const routeJobAtRead = new URL(window.location.href).searchParams.get('workJob');
     setLoading(true);
     try {
       const data = readWorkJobs(await request<unknown>());
       if (version !== listGeneration.current) return null;
       const scope = data.ownerScope;
+      const selectionUnchanged = selectedIdRef.current === selectionAtRead &&
+        new URL(window.location.href).searchParams.get('workJob') === routeJobAtRead;
       setOwnerScope(scope);
       setJobs(data.jobs);
       setReady(Boolean(scope));
       const operation = pendingUpdate.current;
       if (operation && scope === operation.ownerScope && data.jobs.some((job) => workJobConfirmsCommand(job, operation))) {
         pendingUpdate.current = null; setPending(null);
+        // A failed read masks private selection. Restore only the confirmed
+        // command's original job, without replacing a newer user selection.
+        if (selectionUnchanged && (selectionAtRead === operation.jobId ||
+          (!selectionAtRead && routeJobAtRead === operation.jobId))) {
+          selectedIdRef.current = operation.jobId; setSelectedId(operation.jobId);
+        }
       }
       setError('');
       return scope;
