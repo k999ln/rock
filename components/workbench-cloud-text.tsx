@@ -1,68 +1,20 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
-import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { RefreshCw } from 'lucide-react';
 import type { WorkJob } from '@/lib/workflow';
 import { formatCurrencyMinor, formatCurrencyRatePerMillionTokens, parseCurrencyInputToMinor } from '@/lib/currency-format';
 import { remoteAiTextRequestDigest } from '@/lib/remote-ai-text-request';
-import { remoteAiTextRequest, RemoteAiTextClientError } from '@/lib/remote-ai-text-client';
+import { remoteAiTextRequest, RemoteAiTextClientError, readRemoteTextEstimate, readRemoteTextExecution, readRemoteTextList, type RemoteTextExecution } from '@/lib/remote-ai-text-client';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
-type RemoteTextExecution = {
-  id: string;
-  parentJobId: string;
-  parentBudgetLimitMinor: number;
-  requestId: string;
-  approvalDigest: string;
-  state: 'quoted' | 'reserved' | 'sending' | 'completed' | 'unreconciled' | 'cancelled' | 'expired';
-  quote: {
-    requestDigest: string;
-    createdAt: number;
-    expiresAt: number;
-    approvedCapMinor: number;
-    ceiling: {
-      currency: string;
-      maximumChargeMinor: number;
-      inputTokenUpperBound: number;
-      outputTokenLimit: number;
-      modelId: string;
-      pricingVersion: string;
-      rateCardDigest: string;
-    };
-  };
-  settledMinor: number | null;
-  usage: { inputTokens: number; cachedInputTokens: number; cacheWriteInputTokens: number; outputTokens: number } | null;
-  price: { chargeMinor: number; currency: string; pricingVersion: string; items: Array<{ category: string; tokens: number; rateMinorMicrosPerMillionTokens: number }> } | null;
-  spending?: {
-    status: string;
-    currency: string;
-    currentChargeMinor: number | null;
-    currentEstimateMinor: number | null;
-    estimateUpdatedAt: number | null;
-    estimateBasis: string | null;
-    reservedMaximumMinor: number;
-    providerMeter: string;
-    invoiceVerified: boolean;
-  };
-  resultText: string | null;
-  errorCode: string | null;
-  saveResult: boolean;
-  createdAt: number;
-  updatedAt: number;
-};
-type RemoteTextEstimate = {
-  estimate: RemoteTextExecution['quote']['ceiling'];
-  unitRates: Array<{ category: 'ordinary-input' | 'cached-input' | 'cache-write' | 'output'; rateMinorMicrosPerMillionTokens: number }>;
-  rateSource: string;
-  cardId: string;
-  withinUserCap: boolean;
-  currencies?: string[];
-};
 type CloudTextOptions = {
   selected: WorkJob | undefined;
   selectedId: string;
   selectedIdRef: RefObject<string>;
+  ownerScope: string | null;
+  refreshOwnerScope: () => Promise<string | null>;
   cloudDraft?: { prompt: string; currency: string; maximumBudgetInput: string; model?: string } | null;
   // Currency also follows the shared A2A budget readback in Workbench.
   remoteTextCurrency: string;
@@ -73,15 +25,15 @@ type CloudTextOptions = {
 
 // Keep this controller mounted with Workbench: changing jobs resets results,
 // but the draft, user-entered caps and stable request fingerprint survive.
-export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, cloudDraft,
+export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, ownerScope, refreshOwnerScope, cloudDraft,
   remoteTextCurrency, setRemoteTextCurrency, delegationBudgetPool, refreshDelegations }: CloudTextOptions) {
   const [remoteTextPrompt, setRemoteTextPrompt] = useState(cloudDraft?.prompt ?? '');
-  const [remoteTextModel] = useState(cloudDraft?.model ?? '');
+  const [remoteTextModel, setRemoteTextModel] = useState(cloudDraft?.model ?? '');
   const [remoteTextCurrencyOptions, setRemoteTextCurrencyOptions] = useState<string[]>([]);
   const [remoteTextCapMinor, setRemoteTextCapMinor] = useState(cloudDraft?.maximumBudgetInput ?? '');
   const [remoteTextParentCapMinor, setRemoteTextParentCapMinor] = useState('');
   const [remoteTextSaveResult, setRemoteTextSaveResult] = useState(false);
-  const [remoteTextEstimate, setRemoteTextEstimate] = useState<RemoteTextEstimate | null>(null);
+  const [remoteTextEstimate, setRemoteTextEstimate] = useState<ReturnType<typeof readRemoteTextEstimate> | null>(null);
   const [remoteTextExecutions, setRemoteTextExecutions] = useState<RemoteTextExecution[]>([]);
   const [remoteTextExecutionAvailable, setRemoteTextExecutionAvailable] = useState(false);
   const [remoteTextError, setRemoteTextError] = useState('');
@@ -90,29 +42,115 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, clo
   const [remoteTextResult, setRemoteTextResult] = useState<{ executionId: string; text: string } | null>(null);
   const [remoteTextDeleteId, setRemoteTextDeleteId] = useState<string | null>(null);
   const remoteTextSubmission = useRef<{ fingerprint: string; requestId: string } | null>(null);
+  const confirmedOwner = useRef(ownerScope);
+  const [draftOwner, setDraftOwner] = useState<string | null>(null);
+  const observedOwner = useRef<string | null | undefined>(undefined);
+  const drafts = useRef(new Map<string, { prompt: string; model: string; currency: string; cap: string; parentCap: string; saveResult: boolean; submission: typeof remoteTextSubmission.current }>());
+  const authenticated = useRef(!remoteTextNeedsSignin);
+  useLayoutEffect(() => {
+    confirmedOwner.current = ownerScope;
+    authenticated.current = !remoteTextNeedsSignin;
+  }, [ownerScope, remoteTextNeedsSignin]);
+  const ownerAvailable = Boolean(ownerScope && draftOwner === ownerScope && !remoteTextNeedsSignin);
+  const readGeneration = useRef(0);
+  const readAbort = useRef<AbortController | null>(null);
+  const selectionGeneration = useRef(0);
+  const mutationInFlight = useRef(false);
+  const mounted = useRef(false);
+  const invalidateRead = useCallback(() => {
+    readGeneration.current++;
+    readAbort.current?.abort();
+    readAbort.current = null;
+  }, []);
+  useEffect(() => {
+    const generation = selectionGeneration;
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      generation.current++;
+      invalidateRead();
+    };
+  }, [invalidateRead]);
+  useLayoutEffect(() => {
+    if (observedOwner.current === ownerScope) return;
+    observedOwner.current = ownerScope;
+    selectionGeneration.current++;
+    invalidateRead();
+    setRemoteTextExecutions([]); setRemoteTextResult(null); setRemoteTextEstimate(null);
+    setRemoteTextExecutionAvailable(false); setRemoteTextDeleteId(null); setRemoteTextError('');
+    setRemoteTextNeedsSignin(false);
+    if (!ownerScope) return;
+    if (draftOwner && draftOwner !== ownerScope) {
+      drafts.current.set(draftOwner, { prompt: remoteTextPrompt, model: remoteTextModel,
+        currency: remoteTextCurrency, cap: remoteTextCapMinor, parentCap: remoteTextParentCapMinor,
+        saveResult: remoteTextSaveResult, submission: remoteTextSubmission.current });
+      const draft = drafts.current.get(ownerScope);
+      setRemoteTextPrompt(draft?.prompt ?? ''); setRemoteTextModel(draft?.model ?? '');
+      setRemoteTextCurrency(draft?.currency ?? 'USD'); setRemoteTextCapMinor(draft?.cap ?? '');
+      setRemoteTextParentCapMinor(draft?.parentCap ?? ''); setRemoteTextSaveResult(draft?.saveResult ?? false);
+      remoteTextSubmission.current = draft?.submission ?? null;
+    }
+    setDraftOwner(ownerScope);
+  }, [ownerScope, draftOwner, invalidateRead, remoteTextPrompt, remoteTextModel, remoteTextCurrency, remoteTextCapMinor,
+    remoteTextParentCapMinor, remoteTextSaveResult, setRemoteTextCurrency]);
+  function currentOwner() {
+    return Boolean(ownerScope && authenticated.current && confirmedOwner.current === ownerScope && draftOwner === ownerScope);
+  }
+  function beginMutation() {
+    if (mutationInFlight.current || !mounted.current || !currentOwner()) return null;
+    mutationInFlight.current = true;
+    invalidateRead();
+    setRemoteTextBusy(true);
+    return selectionGeneration.current;
+  }
+  function currentMutation(generation: number, parentJobId: string) {
+    return currentOwner() && mounted.current && generation === selectionGeneration.current && selectedIdRef.current === parentJobId;
+  }
+  function finishMutation() {
+    mutationInFlight.current = false;
+    if (mounted.current) setRemoteTextBusy(false);
+  }
+
   const remoteTextFailure = useCallback((cause: unknown, parentJobId: string) => {
-    if (selectedIdRef.current !== parentJobId) return;
+    if (!ownerScope || confirmedOwner.current !== ownerScope || draftOwner !== ownerScope || selectedIdRef.current !== parentJobId) return;
     setRemoteTextExecutionAvailable(false);
     setRemoteTextError(cause instanceof Error ? cause.message : '保存済みの状態を確認できませんでした。');
     if (cause instanceof RemoteAiTextClientError && cause.status === 401) {
+      authenticated.current = false;
       setRemoteTextNeedsSignin(true);
       setRemoteTextExecutions([]);
       setRemoteTextResult(null);
     }
-  }, [selectedIdRef]);
+  }, [draftOwner, ownerScope, selectedIdRef]);
   const refreshRemoteText = useCallback(async (parentJobId: string) => {
-    if (!parentJobId) return;
+    if (!ownerScope || confirmedOwner.current !== ownerScope || draftOwner !== ownerScope || !parentJobId || !mounted.current || selectedIdRef.current !== parentJobId) return;
+    invalidateRead();
+    const generation = readGeneration.current;
+    const controller = new AbortController();
+    readAbort.current = controller;
+    const current = () => confirmedOwner.current === ownerScope && draftOwner === ownerScope && mounted.current && generation === readGeneration.current &&
+      !controller.signal.aborted && selectedIdRef.current === parentJobId;
     try {
-      const data = await remoteAiTextRequest<{ executions?: RemoteTextExecution[]; executionAvailable?: boolean }>(
-        `/api/llm/quotes?parentJobId=${encodeURIComponent(parentJobId)}`);
-      if (selectedIdRef.current !== parentJobId) return;
-      setRemoteTextExecutions((data.executions ?? []).filter((item) => item.parentJobId === parentJobId));
+      // A successful cloud list after reauthentication does not prove that the
+      // original owner returned. Reconfirm through Workbench's owned job read.
+      if (!authenticated.current && (await refreshOwnerScope() !== ownerScope || !current())) return;
+      const response = await remoteAiTextRequest<unknown>(
+        `/api/llm/quotes?parentJobId=${encodeURIComponent(parentJobId)}`, 'GET', undefined, 15_000,
+        (path, options) => fetch(path, { ...options, signal: options?.signal
+          ? AbortSignal.any([options.signal, controller.signal]) : controller.signal }));
+      if (!current()) return;
+      const data = readRemoteTextList(response, parentJobId);
+      setRemoteTextExecutions(data.executions);
       setRemoteTextExecutionAvailable(data.executionAvailable === true);
       setRemoteTextNeedsSignin(false);
-    } catch (cause) { remoteTextFailure(cause, parentJobId); }
-  }, [remoteTextFailure, selectedIdRef]);
+    } catch (cause) {
+      if (current()) remoteTextFailure(cause, parentJobId);
+    } finally {
+      if (readAbort.current === controller) readAbort.current = null;
+    }
+  }, [draftOwner, invalidateRead, ownerScope, refreshOwnerScope, remoteTextFailure, selectedIdRef]);
   useEffect(() => {
-    if (!selectedId || remoteTextNeedsSignin) return;
+    if (!ownerScope || !selectedId || remoteTextNeedsSignin) return;
     let active = true;
     let inFlight = false;
     const poll = async () => {
@@ -125,11 +163,11 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, clo
     };
     void poll();
     const timer = window.setInterval(() => { void poll(); }, 10000);
-    return () => { active = false; window.clearInterval(timer); };
-  }, [selectedId, remoteTextNeedsSignin, refreshRemoteText, refreshDelegations]);
+    return () => { active = false; window.clearInterval(timer); invalidateRead(); };
+  }, [ownerScope, selectedId, remoteTextNeedsSignin, refreshRemoteText, refreshDelegations, invalidateRead]);
   async function createRemoteTextQuote(event: { preventDefault(): void }) {
     event.preventDefault();
-    if (!selected || selected.status !== 'active') return;
+    if (!currentOwner() || !selected || selected.status !== 'active') return;
     const currency = remoteTextCurrency.trim().toUpperCase();
     const capMinor = parseCurrencyInputToMinor(remoteTextCapMinor, currency);
     const pendingAnchor = remoteTextExecutions.find((item) => ['quoted', 'reserved', 'sending', 'unreconciled', 'completed'].includes(item.state));
@@ -150,45 +188,55 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, clo
         : '依頼文、通貨、依頼別上限を確認してください。上限は同じ親jobの残り予算以下にしてください。');
       return;
     }
+    const generation = beginMutation();
+    if (generation === null) return;
     const parentJobId = selected.id;
     const fingerprint = JSON.stringify({ parentJobId: selected.id, prompt: remoteTextPrompt.trim(), currency, capMinor, parentCap, saveResult: remoteTextSaveResult });
     if (remoteTextSubmission.current?.fingerprint !== fingerprint)
       remoteTextSubmission.current = { fingerprint, requestId: crypto.randomUUID() };
     const requestId = remoteTextSubmission.current.requestId;
-    setRemoteTextBusy(true);
     setRemoteTextError('');
     setRemoteTextResult(null);
     try {
-      const estimateData = await remoteAiTextRequest<RemoteTextEstimate>('/api/llm/estimate', 'POST', {
+      const estimateResponse = await remoteAiTextRequest<unknown>('/api/llm/estimate', 'POST', {
         provider: 'openai', model: remoteTextModel || undefined, prompt: remoteTextPrompt.trim(), maxOutputTokens: 1200, currency, maximumBudgetMinor: capMinor,
       });
-      if (selectedIdRef.current !== parentJobId) return;
-      if (!estimateData.estimate) throw new Error('クラウドAIの料金見積を確認できませんでした。');
+      if (!currentMutation(generation, parentJobId)) return;
+      const estimateData = readRemoteTextEstimate(estimateResponse, { currency, model: remoteTextModel || undefined, outputTokenLimit: 1200, maximumBudgetMinor: capMinor });
       setRemoteTextEstimate(estimateData);
-      const quoteData = await remoteAiTextRequest<{ execution?: RemoteTextExecution; executionAvailable?: boolean }>(
+      const requestDigest = await remoteAiTextRequestDigest({ model: estimateData.estimate.modelId, prompt: remoteTextPrompt.trim(), maxOutputTokens: 1200 });
+      if (!currentMutation(generation, parentJobId)) return;
+      const quoteData = await remoteAiTextRequest<{ execution?: unknown; executionAvailable?: unknown }>(
         '/api/llm/quotes', 'POST', { requestId, parentJobId, parentBudgetLimitMinor: parentCap,
           model: estimateData.estimate.modelId, prompt: remoteTextPrompt.trim(), maxOutputTokens: 1200,
           currency: estimateData.estimate.currency, maximumBudgetMinor: capMinor, saveResult: remoteTextSaveResult });
-      if (selectedIdRef.current !== parentJobId) return;
-      if (!quoteData.execution) throw new Error('見積の保存を確認できませんでした。状態を更新してください。');
+      if (!currentMutation(generation, parentJobId)) return;
+      const saved = readRemoteTextExecution(quoteData.execution, { parentJobId, requestId, requestDigest });
+      if (typeof quoteData.executionAvailable !== 'boolean' || saved.parentBudgetLimitMinor !== parentCap ||
+        saved.quote.approvedCapMinor !== capMinor || saved.saveResult !== remoteTextSaveResult ||
+        Object.entries(estimateData.estimate).some(([key, value]) => saved.quote.ceiling[key as keyof typeof saved.quote.ceiling] !== value))
+        throw new RemoteAiTextClientError(200, 'INVALID_RESPONSE');
+      invalidateRead();
       setRemoteTextExecutionAvailable(quoteData.executionAvailable === true);
-      setRemoteTextExecutions((items) => [quoteData.execution!, ...items.filter((item) => item.id !== quoteData.execution!.id)]);
+      setRemoteTextExecutions((items) => [saved, ...items.filter((item) => item.id !== saved.id)]);
       setRemoteTextCurrency(estimateData.estimate.currency);
       setRemoteTextCurrencyOptions([]);
       setRemoteTextError(quoteData.executionAvailable
         ? '見積を保存しました。内容と最大費用を確認し、明示承認してから実行してください。'
         : '見積を保存しました。外部Provider実行gateは未受入のため、送信していません。');
     } catch (cause) {
-      if (selectedIdRef.current === parentJobId && cause instanceof RemoteAiTextClientError &&
+      if (!currentMutation(generation, parentJobId)) return;
+      if (cause instanceof RemoteAiTextClientError &&
         cause.code === 'RATE_CARD_CURRENCY_REQUIRED') setRemoteTextCurrencyOptions(cause.currencies);
       remoteTextFailure(cause, parentJobId);
-    } finally { setRemoteTextBusy(false); }
+    } finally { finishMutation(); }
   }
   async function runRemoteText(execution: RemoteTextExecution) {
     const parentJobId = execution.parentJobId;
     if (!remoteTextExecutionAvailable || selectedIdRef.current !== parentJobId || execution.state !== 'quoted') return;
+    const generation = beginMutation();
+    if (generation === null) return;
     const prompt = remoteTextPrompt.trim();
-    setRemoteTextBusy(true);
     setRemoteTextError('');
     setRemoteTextResult(null);
     try {
@@ -197,44 +245,60 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, clo
       });
       if (!prompt || requestHash !== execution.quote.requestDigest)
         throw new Error('見積時の依頼文と一致しません。元の依頼文を貼り付けてから承認してください。');
-      if (selectedIdRef.current !== parentJobId) return;
-      const approval = await remoteAiTextRequest<{ execution: RemoteTextExecution }>(
+      if (!currentMutation(generation, parentJobId)) return;
+      const approval = await remoteAiTextRequest<{ execution?: unknown }>(
         `/api/llm/quotes/${encodeURIComponent(execution.id)}`, 'POST',
         { action: 'approve', approvalDigest: execution.approvalDigest, consent: true });
-      if (selectedIdRef.current !== parentJobId) return;
-      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? approval.execution : item));
-      const result = await remoteAiTextRequest<{ text?: string; execution?: RemoteTextExecution }>(
+      if (!currentMutation(generation, parentJobId)) return;
+      const approved = readRemoteTextExecution(approval.execution, { parentJobId, previous: execution });
+      if (!['reserved', 'sending', 'completed', 'unreconciled'].includes(approved.state))
+        throw new RemoteAiTextClientError(200, 'INVALID_RESPONSE');
+      invalidateRead();
+      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? approved : item));
+      const result = await remoteAiTextRequest<{ text?: unknown; execution?: unknown }>(
         '/api/llm/text', 'POST', { provider: 'openai', model: execution.quote.ceiling.modelId,
           prompt, maxOutputTokens: execution.quote.ceiling.outputTokenLimit,
           quoteId: execution.id, approvalDigest: execution.approvalDigest, consent: true }, 120000);
-      if (selectedIdRef.current !== parentJobId) return;
-      if (result.execution) setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? result.execution! : item));
-      if (result.text) setRemoteTextResult({ executionId: execution.id, text: result.text });
+      if (!currentMutation(generation, parentJobId)) return;
+      const accepted = readRemoteTextExecution(result.execution, { parentJobId, previous: execution });
+      if (!['reserved', 'sending', 'completed', 'unreconciled'].includes(accepted.state) ||
+        (result.text !== undefined && (typeof result.text !== 'string' || accepted.state !== 'completed')))
+        throw new RemoteAiTextClientError(200, 'INVALID_RESPONSE');
+      invalidateRead();
+      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? accepted : item));
+      if (typeof result.text === 'string' && result.text) setRemoteTextResult({ executionId: execution.id, text: result.text });
       await refreshRemoteText(parentJobId);
       await refreshDelegations(parentJobId);
     } catch (cause) {
+      if (!currentMutation(generation, parentJobId)) return;
       remoteTextFailure(cause, parentJobId);
       if (!(cause instanceof RemoteAiTextClientError && cause.status === 401)) {
         await refreshRemoteText(parentJobId);
         await refreshDelegations(parentJobId);
       }
-    } finally { setRemoteTextBusy(false); }
+    } finally { finishMutation(); }
   }
   async function cancelRemoteTextQuote(execution: RemoteTextExecution) {
-    setRemoteTextBusy(true);
+    if (selectedIdRef.current !== execution.parentJobId || execution.state !== 'quoted') return;
+    const generation = beginMutation();
+    if (generation === null) return;
     setRemoteTextError('');
     try {
-      const data = await remoteAiTextRequest<{ execution: RemoteTextExecution }>(
+      const data = await remoteAiTextRequest<{ execution?: unknown }>(
         `/api/llm/quotes/${encodeURIComponent(execution.id)}`, 'POST',
         { action: 'cancel', approvalDigest: execution.approvalDigest, consent: true });
-      if (selectedIdRef.current !== execution.parentJobId) return;
-      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? data.execution : item));
+      if (!currentMutation(generation, execution.parentJobId)) return;
+      const cancelled = readRemoteTextExecution(data.execution, { parentJobId: execution.parentJobId, previous: execution });
+      if (cancelled.state !== 'cancelled') throw new RemoteAiTextClientError(200, 'INVALID_RESPONSE');
+      invalidateRead();
+      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? cancelled : item));
       await refreshDelegations(execution.parentJobId);
     } catch (cause) {
+      if (!currentMutation(generation, execution.parentJobId)) return;
       remoteTextFailure(cause, execution.parentJobId);
       if (!(cause instanceof RemoteAiTextClientError && cause.status === 401))
         await refreshRemoteText(execution.parentJobId);
-    } finally { setRemoteTextBusy(false); }
+    } finally { finishMutation(); }
   }
   function downloadRemoteText(text: string, executionId: string) {
     const url = URL.createObjectURL(new Blob([text], { type: 'text/markdown;charset=utf-8' }));
@@ -249,28 +313,34 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, clo
   async function deleteRemoteTextResult(execution: RemoteTextExecution) {
     const parentJobId = execution.parentJobId;
     if (selectedIdRef.current !== parentJobId || execution.state !== 'completed') return;
-    setRemoteTextBusy(true);
+    const generation = beginMutation();
+    if (generation === null) return;
     setRemoteTextError('');
     try {
-      const data = await remoteAiTextRequest<{ execution: RemoteTextExecution; resultDeleted: boolean }>(
+      const data = await remoteAiTextRequest<{ execution?: unknown; resultDeleted?: unknown }>(
         `/api/llm/quotes/${encodeURIComponent(execution.id)}`, 'DELETE');
-      if (selectedIdRef.current !== parentJobId) return;
-      if (!data.resultDeleted || data.execution.id !== execution.id || data.execution.parentJobId !== parentJobId || data.execution.resultText !== null)
-        throw new Error('保存した回答の削除を確認できませんでした。状態を更新してください。');
-      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? data.execution : item));
+      if (!currentMutation(generation, parentJobId)) return;
+      const deleted = readRemoteTextExecution(data.execution, { parentJobId, previous: execution });
+      if (data.resultDeleted !== true || deleted.state !== 'completed' || deleted.resultText !== null)
+        throw new RemoteAiTextClientError(200, 'INVALID_RESPONSE');
+      invalidateRead();
+      setRemoteTextExecutions((items) => items.map((item) => item.id === execution.id ? deleted : item));
       setRemoteTextResult((current) => current?.executionId === execution.id ? null : current);
     } catch (cause) {
+      if (!currentMutation(generation, parentJobId)) return;
       remoteTextFailure(cause, parentJobId);
       // GET reconciliation only; do not repeat an uncertain DELETE.
       if (!(cause instanceof RemoteAiTextClientError && cause.status === 401))
         await refreshRemoteText(parentJobId);
-    } finally { setRemoteTextBusy(false); setRemoteTextDeleteId(null); }
+    } finally { finishMutation(); if (currentMutation(generation, parentJobId)) setRemoteTextDeleteId(null); }
   }
   const pendingRemoteTextAnchor = remoteTextExecutions.find((item) => ['quoted', 'reserved', 'sending', 'unreconciled', 'completed'].includes(item.state));
   const remoteTextBudgetCurrency = delegationBudgetPool?.currency ?? pendingRemoteTextAnchor?.quote.ceiling.currency ?? null;
   const remoteTextBudgetLimit = delegationBudgetPool?.budgetLimitMinor ?? pendingRemoteTextAnchor?.parentBudgetLimitMinor ?? null;
   const remoteTextDeleteTarget = remoteTextExecutions.find((item) => item.id === remoteTextDeleteId && item.parentJobId === selectedId && item.state === 'completed' && item.resultText !== null);
   function resetForJob(id: string) {
+    selectionGeneration.current++;
+    invalidateRead();
     setRemoteTextExecutionAvailable(false);
     setRemoteTextNeedsSignin(false);
     setRemoteTextDeleteId(null);
@@ -281,9 +351,16 @@ export function useWorkbenchCloudText({ selected, selectedId, selectedIdRef, clo
     void refreshRemoteText(id);
   }
   return {
-    remoteTextPrompt, setRemoteTextPrompt, remoteTextModel, remoteTextCurrency, setRemoteTextCurrency, remoteTextCurrencyOptions, remoteTextCapMinor, setRemoteTextCapMinor, remoteTextParentCapMinor, setRemoteTextParentCapMinor,
-    remoteTextSaveResult, setRemoteTextSaveResult, remoteTextEstimate, setRemoteTextEstimate,
-    remoteTextExecutions, remoteTextExecutionAvailable, remoteTextError, remoteTextNeedsSignin, remoteTextBusy, remoteTextResult, remoteTextDeleteTarget, setRemoteTextDeleteId,
+    remoteTextOwnerAvailable: ownerAvailable,
+    remoteTextPrompt: ownerAvailable ? remoteTextPrompt : '', setRemoteTextPrompt,
+    remoteTextModel: ownerAvailable ? remoteTextModel : '', remoteTextCurrency: ownerAvailable ? remoteTextCurrency : 'USD', setRemoteTextCurrency,
+    remoteTextCurrencyOptions: ownerAvailable ? remoteTextCurrencyOptions : [], remoteTextCapMinor: ownerAvailable ? remoteTextCapMinor : '', setRemoteTextCapMinor,
+    remoteTextParentCapMinor: ownerAvailable ? remoteTextParentCapMinor : '', setRemoteTextParentCapMinor,
+    remoteTextSaveResult: ownerAvailable && remoteTextSaveResult, setRemoteTextSaveResult,
+    remoteTextEstimate: ownerAvailable ? remoteTextEstimate : null, setRemoteTextEstimate,
+    remoteTextExecutions: ownerAvailable ? remoteTextExecutions : [], remoteTextExecutionAvailable: ownerAvailable && remoteTextExecutionAvailable,
+    remoteTextError: ownerAvailable ? remoteTextError : '', remoteTextNeedsSignin, remoteTextBusy,
+    remoteTextResult: ownerAvailable ? remoteTextResult : null, remoteTextDeleteTarget: ownerAvailable ? remoteTextDeleteTarget : undefined, setRemoteTextDeleteId,
     refreshRemoteText, createRemoteTextQuote, runRemoteText, cancelRemoteTextQuote, downloadRemoteText, deleteRemoteTextResult,
     remoteTextBudgetCurrency, remoteTextBudgetLimit, resetForJob,
   };
@@ -293,7 +370,7 @@ type CloudTextController = ReturnType<typeof useWorkbenchCloudText>;
 
 export function WorkbenchCloudText({ controller, selected, delegationBudgetPool }: { controller: CloudTextController; selected: WorkJob; delegationBudgetPool: CloudTextOptions['delegationBudgetPool'] }) {
   const {
-    remoteTextPrompt, setRemoteTextPrompt, remoteTextModel, remoteTextCurrency, setRemoteTextCurrency, remoteTextCurrencyOptions, remoteTextCapMinor, setRemoteTextCapMinor, remoteTextParentCapMinor, setRemoteTextParentCapMinor,
+    remoteTextOwnerAvailable, remoteTextPrompt, setRemoteTextPrompt, remoteTextModel, remoteTextCurrency, setRemoteTextCurrency, remoteTextCurrencyOptions, remoteTextCapMinor, setRemoteTextCapMinor, remoteTextParentCapMinor, setRemoteTextParentCapMinor,
     remoteTextSaveResult, setRemoteTextSaveResult, remoteTextEstimate, setRemoteTextEstimate,
     remoteTextExecutions, remoteTextExecutionAvailable, remoteTextError, remoteTextNeedsSignin, remoteTextBusy, remoteTextResult, setRemoteTextDeleteId,
     refreshRemoteText, createRemoteTextQuote, runRemoteText, cancelRemoteTextQuote, downloadRemoteText, remoteTextBudgetCurrency, remoteTextBudgetLimit,
@@ -309,7 +386,7 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
           <RefreshCw size={14} /> 状態を更新
         </button>
       </div>
-      {selected.status === 'active' ? <form className="work-delegation-create" onSubmit={(event) => void createRemoteTextQuote(event)}>
+      {selected.status === 'active' && remoteTextOwnerAvailable ? <form className="work-delegation-create" onSubmit={(event) => void createRemoteTextQuote(event)}>
         <label htmlFor="work-cloud-text-prompt">
           AIへの依頼
           <Textarea id="work-cloud-text-prompt" value={remoteTextPrompt} onChange={(event) => { setRemoteTextPrompt(event.target.value); setRemoteTextEstimate(null); }} rows={5} maxLength={24000} placeholder="依頼を具体的に入力してください" />
@@ -337,7 +414,7 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
           {remoteTextBusy ? '料金を確認中…' : '料金見積を確認して保存'}
         </button>
         <p>見積と保存だけではProviderへ依頼文を送信しません。支出上限はこの親jobの残り予算内に設定してください。Cloud taskとして実行する許可は別の操作です。</p>
-      </form> : <p>Cloud AI依頼は作業中の親jobから追加できます。完了・取消済みのjobには追加できません。</p>}
+      </form> : <p>{remoteTextOwnerAvailable ? 'Cloud AI依頼は作業中の親jobから追加できます。完了・取消済みのjobには追加できません。' : 'アカウントを確認しています。確認できるまで依頼文と回答を表示・送信しません。'}</p>}
       {remoteTextEstimate && <dl>
         <div><dt>最大見積</dt><dd>{formatCurrencyMinor(remoteTextEstimate.estimate.maximumChargeMinor, remoteTextEstimate.estimate.currency)}</dd></div>
         <div><dt>モデル / 価格版</dt><dd>{remoteTextEstimate.estimate.modelId} · {remoteTextEstimate.estimate.pricingVersion}</dd></div>
@@ -362,7 +439,7 @@ export function WorkbenchCloudText({ controller, selected, delegationBudgetPool 
             予約上限 {formatCurrencyMinor(execution.spending?.reservedMaximumMinor ?? execution.quote.ceiling.maximumChargeMinor, execution.quote.ceiling.currency)}を保持中。
           </p> : null}
           {execution.state === 'unreconciled' && <p>利用量が確定できず上限予約を保持しています。自動再送は行いません。照合後に状態を更新してください。{execution.errorCode ? ` (${execution.errorCode})` : ''}</p>}
-          {execution.price && <section className="work-delegation-usage" aria-label="Cloud LLM利用明細">
+          {execution.price && execution.price.status !== 'unreconciled' && <section className="work-delegation-usage" aria-label="Cloud LLM利用明細">
             <h4>計算済み利用明細（Provider invoice照合前）</h4>
             <p>利用量から計算した金額: {formatCurrencyMinor(execution.price.chargeMinor, execution.price.currency)} · 価格版 {execution.price.pricingVersion}</p>
             <ul>{execution.price.items.map((item) => <li key={item.category}>{item.category}: {item.tokens.toLocaleString('ja-JP')} tokens · {item.rateMinorMicrosPerMillionTokens.toLocaleString('ja-JP')} minor-unit micro / 1M tokens</li>)}</ul>

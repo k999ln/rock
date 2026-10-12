@@ -1,6 +1,6 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type SetStateAction } from 'react';
 import Link from 'next/link';
 import { Check, Play, Plus, RefreshCw } from 'lucide-react';
 import {
@@ -163,6 +163,18 @@ type DelegationQuote = {
   packageRuntimeBindingDigest?: string;
   fingerprint: string;
 };
+function delegationQuoteFingerprint(input: {
+  parentJobId: string; agentId: string; origin: string; agentName: string; agentVersion: string;
+  message: string; currency: string; maximumBudgetMinor: number;
+  packageKey: string | null; packageManifestSha256: string | null;
+}) {
+  return JSON.stringify({
+    parentJobId: input.parentJobId, agentId: input.agentId, origin: input.origin,
+    agentName: input.agentName, agentVersion: input.agentVersion, message: input.message,
+    currency: input.currency, maximumBudgetMinor: input.maximumBudgetMinor,
+    packageKey: input.packageKey, packageManifestSha256: input.packageManifestSha256,
+  });
+}
 function delegationStateName(state: string) {
   const labels: Record<string, string> = {
     awaiting_approval: '本人の承認待ち',
@@ -312,6 +324,19 @@ async function sha256Hex(value: string) {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
   return [...new Uint8Array(bytes)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
+/** Private drafts stay in memory under the owner who entered them. Old event
+ * closures cannot edit the currently displayed account after reauthentication. */
+function useWorkbenchOwnerState<T>(owner: string | null, currentOwner: { current: string | null }, initial: T) {
+  const [empty] = useState(initial);
+  const [values, setValues] = useState<Record<string, T>>({});
+  const setValue = useCallback((next: SetStateAction<T>, author = owner) => {
+    if (!author || currentOwner.current !== author) return;
+    setValues((current) => ({ ...current, [author]: typeof next === 'function'
+      ? (next as (previous: T) => T)(current[author] ?? empty) : next }));
+  }, [currentOwner, empty, owner]);
+  return [owner ? values[owner] ?? empty : empty, setValue, values] as const;
+}
+
 export default function Workbench({
   embedded = false,
   cloudDraft,
@@ -323,6 +348,8 @@ export default function Workbench({
   initialPackageKey?: string;
   packageRuntimeServers?: McpConnection[];
 }) {
+  const [ownerScope, setOwnerScopeValue] = useState<string | null>(null);
+  const currentOwner = useRef<string | null>(null);
   const [jobs, setJobs] = useState<WorkJob[]>([]),
     [selectedId, setSelectedId] = useState('');
   const [delegations, setDelegations] = useState<Delegation[]>([]);
@@ -334,13 +361,13 @@ export default function Workbench({
   const [a2aAgents, setA2aAgents] = useState<A2AAgentConnection[]>([]);
   const [agentOrigin, setAgentOrigin] = useState('');
   const [delegationBusy, setDelegationBusy] = useState(false);
-  const [delegationPredecessorId, setDelegationPredecessorId] = useState<string | null>(null);
-  const [delegationError, setDelegationError] = useState('');
-  const [delegationQuoteConsent, setDelegationQuoteConsent] = useState(false);
-  const [delegationQuote, setDelegationQuote] = useState<DelegationQuote | null>(null);
+  const [delegationPredecessorId, setDelegationPredecessorId] = useWorkbenchOwnerState<string | null>(ownerScope, currentOwner, null);
+  const [delegationError, setDelegationError] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
+  const [delegationQuoteConsent, setDelegationQuoteConsent] = useWorkbenchOwnerState(ownerScope, currentOwner, false);
+  const [delegationQuote, setDelegationQuote] = useWorkbenchOwnerState<DelegationQuote | null>(ownerScope, currentOwner, null);
   const [artifactDocuments, setArtifactDocuments] = useState<Record<string, ArtifactDocument[]>>({});
   const [delegationUsageDetails, setDelegationUsageDetails] = useState<Record<string, DelegationUsageDetails | null>>({});
-  const [delegationForm, setDelegationForm] = useState({
+  const [delegationForm, setDelegationForm, delegationFormDrafts] = useWorkbenchOwnerState(ownerScope, currentOwner, {
     targetAgentId: '',
     targetOrigin: '',
     targetAgentName: '',
@@ -353,24 +380,25 @@ export default function Workbench({
     parentBudgetLimitMinor: 0,
     continueWhileDeviceOffline: false,
   });
-  const [delegationReview, setDelegationReview] = useState<DelegationReview | null>(null);
+  const [delegationReview, setDelegationReview] = useWorkbenchOwnerState<DelegationReview | null>(ownerScope, currentOwner, null);
   const [resultReviewConfirmedForJob, setResultReviewConfirmedForJob] = useState('');
-  const [handoffPackageResult, setHandoffPackageResult] = useState<{
+  const [handoffPackageResult, setHandoffPackageResult] = useWorkbenchOwnerState<{
     packageKey: string;
     state: 'ready' | 'unavailable' | 'not_included';
     package?: RockstarPackageHandoff;
     manifest?: SkyToolPackage;
-  } | null>(null);
-  const [selectedPackageRuntime, setSelectedPackageRuntime] = useState<{
+  } | null>(ownerScope, currentOwner, null);
+  const [selectedPackageRuntime, setSelectedPackageRuntime] = useWorkbenchOwnerState<{
     packageKey: string; manifestSha256: string; serverId: string; toolName: string;
-  } | null>(null);
-  const [localPackageTask, setLocalPackageTask] = useState('');
+  } | null>(ownerScope, currentOwner, null);
+  const [localPackageTask, setLocalPackageTask, localPackageTaskDrafts] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
   const [remoteTextCurrency, setRemoteTextCurrency] = useState(cloudDraft?.currency || 'USD');
-  const delegationSubmission = useRef<{ fingerprint: string; request: DelegationRequest } | null>(null);
+  const delegationSubmission = useRef<Record<string, { fingerprint: string; request: DelegationRequest; uncertain: boolean }>>({});
+  const [uncertainDelegationOwners, setUncertainDelegationOwners] = useState<string[]>([]);
   const selectedIdRef = useRef('');
-  const [title, setTitle] = useState(''),
-    [templateId, setTemplateId] = useState('article'),
-    [note, setNote] = useState('');
+  const [title, setTitle, titleDrafts] = useWorkbenchOwnerState(ownerScope, currentOwner, ''),
+    [templateId, setTemplateId] = useWorkbenchOwnerState(ownerScope, currentOwner, 'article'),
+    [note, setNote, noteDrafts] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
   const [error, setError] = useState(''),
     [loading, setLoading] = useState(true),
     [ready, setReady] = useState(false);
@@ -380,12 +408,34 @@ export default function Workbench({
   const [runnerStep, setRunnerStep] = useState<string | null>(null),
     [pending, setPending] = useState<Update | null>(null);
   const [filter, setFilter] = useState('open');
-  const [ownerScope, setOwnerScope] = useState<string | null>(null);
   const [pendingCreation, setPendingCreation] = useState<Creation | null>(null);
   const creation = useRef<Creation | null>(null);
   const createInFlight = useRef(false);
   const listGeneration = useRef(0);
-  usePendingSaveNavigation(pendingCreation !== null);
+  const setOwnerScope = useCallback((scope: string | null) => {
+    if (currentOwner.current !== scope) {
+      selectedIdRef.current = ''; setSelectedId('');
+      setDelegations([]); setA2aParentController(null); setDelegationBudgetPool(null); setDelegationBudgetReservations([]);
+      setArtifactDocuments({}); setDelegationUsageDetails({}); setDelegationBusy(false);
+    }
+    currentOwner.current = scope;
+    setOwnerScopeValue(scope);
+  }, []);
+  const hasPrivateDraft = Boolean(title.trim() || note.trim() || localPackageTask.trim() || delegationForm.message.trim() ||
+    delegationForm.budgetLimitInput.trim() || delegationForm.parentBudgetLimitInput.trim() || delegationForm.continueWhileDeviceOffline);
+  const hasRetainedDrafts = Object.values(titleDrafts).some(value => value.trim()) ||
+    Object.values(noteDrafts).some(value => value.trim()) || Object.values(localPackageTaskDrafts).some(value => value.trim()) ||
+    Object.values(delegationFormDrafts).some(value => value.message.trim() || value.budgetLimitInput.trim() || value.parentBudgetLimitInput.trim() || value.continueWhileDeviceOffline);
+  usePendingSaveNavigation(pendingCreation !== null || hasRetainedDrafts || uncertainDelegationOwners.length > 0);
+  const ownsCurrentInput = () => Boolean(ownerScope && ownerScope === currentOwner.current);
+  function discardPrivateDraft() {
+    if (!ownsCurrentInput() || busy || delegationBusy || createInFlight.current || creation.current || pending || delegationSubmission.current[ownerScope!]?.uncertain) return;
+    setTitle(''); setTemplateId('article'); setNote(''); setLocalPackageTask('');
+    setDelegationForm((current) => ({ ...current, message: '', budgetLimitInput: '', budgetLimitMinor: 0,
+      parentBudgetLimitInput: '', parentBudgetLimitMinor: 0, continueWhileDeviceOffline: false }));
+    setDelegationQuote(null); setDelegationQuoteConsent(false);
+  }
+
   const handoffPackage = handoffPackageResult?.packageKey === initialPackageKey
     ? handoffPackageResult.package ?? null : null;
   const handoffPackageState = !initialPackageKey ? 'none'
@@ -409,7 +459,7 @@ export default function Workbench({
     catch { return ''; }
   }, [delegationForm.message, handoffPackage, handoffPackageState]);
   useEffect(() => {
-    if (!initialPackageKey) return;
+    if (!initialPackageKey || !ownerScope) return;
     const controller = new AbortController();
     void Promise.all([
       fetch('/api/sky/tool-registry', { cache: 'no-store', signal: controller.signal }),
@@ -430,6 +480,7 @@ export default function Workbench({
         typeof entry.manifest.name === 'string' && typeof entry.manifest.summary === 'string' &&
         /^[a-f0-9]{64}$/.test(entry.manifestSha256));
       if (!item) throw new Error('HANDOFF_PACKAGE_UNAVAILABLE');
+      if (currentOwner.current !== ownerScope) return;
       const handoff = {
         packageKey: item.packageKey,
         manifestSha256: item.manifestSha256,
@@ -444,39 +495,41 @@ export default function Workbench({
       setHandoffPackageResult({ packageKey: initialPackageKey, state: 'unavailable' });
     });
     return () => controller.abort();
-  }, [initialPackageKey]);
+  }, [initialPackageKey, ownerScope, setHandoffPackageResult, setTitle, setTemplateId]);
   const refresh = useCallback(async () => {
-    if (createInFlight.current) return;
+    if (createInFlight.current) return null;
     const version = ++listGeneration.current;
     setLoading(true);
     try {
       const data = await request<{ jobs: WorkJob[]; ownerScope?: string }>();
-      if (version !== listGeneration.current) return;
-      setJobs(data.jobs);
+      if (version !== listGeneration.current) return null;
       const scope = readOwnerScope(data.ownerScope);
       setOwnerScope(scope);
+      setJobs(data.jobs);
       setReady(Boolean(scope));
       setError('');
+      return scope;
     } catch (e) {
-      if (version !== listGeneration.current) return;
+      if (version !== listGeneration.current) return null;
       setOwnerScope(null); setReady(false);
       if (e instanceof OperationRequestError && e.status === 401) {
         setJobs([]); setSelectedId(''); selectedIdRef.current = '';
       }
       setError(e instanceof Error ? e.message : '読み込みに失敗しました。');
+      return null;
     } finally {
       if (version === listGeneration.current) setLoading(false);
     }
-  }, []);
+  }, [setOwnerScope]);
   useEffect(() => {
     let active = true;
     const version = ++listGeneration.current;
     void request<{ jobs: WorkJob[]; ownerScope?: string }>()
       .then((data) => {
         if (active && version === listGeneration.current) {
-          setJobs(data.jobs);
           const scope = readOwnerScope(data.ownerScope);
           setOwnerScope(scope);
+          setJobs(data.jobs);
           setReady(Boolean(scope));
           const restoreId = new URL(window.location.href).searchParams.get('workJob');
           if (restoreId && data.jobs.some((job) => job.id === restoreId)) {
@@ -497,9 +550,9 @@ export default function Workbench({
     return () => {
       active = false;
     };
-  }, []);
+  }, [setOwnerScope]);
   const refreshDelegations = useCallback(async (parentJobId: string) => {
-    if (!parentJobId) {
+    if (!parentJobId || !ownerScope || ownerScope !== currentOwner.current) {
       return;
     }
     setDelegationBusy(true);
@@ -517,7 +570,7 @@ export default function Workbench({
         error?: string;
       };
       if (!response.ok) throw new Error(data.error || '委任を読み込めませんでした。');
-      if (selectedIdRef.current === parentJobId) {
+      if (ownerScope === currentOwner.current && selectedIdRef.current === parentJobId) {
         setDelegations(data.delegations ?? []);
         setA2aParentController(data.controller ?? null);
         setDelegationBudgetPool(data.budget ?? null);
@@ -535,14 +588,14 @@ export default function Workbench({
     } catch (cause) {
       setDelegationError(cause instanceof Error ? cause.message : '委任を読み込めませんでした。');
     } finally {
-      setDelegationBusy(false);
+      if (ownerScope === currentOwner.current) setDelegationBusy(false);
     }
-  }, []);
+  }, [ownerScope, setDelegationForm, setDelegationError]);
   const selected = jobs.find((job) => job.id === selectedId);
-  const cloudText = useWorkbenchCloudText({ selected, selectedId, selectedIdRef, cloudDraft,
+  const cloudText = useWorkbenchCloudText({ selected, selectedId, selectedIdRef, ownerScope, refreshOwnerScope: refresh, cloudDraft,
     remoteTextCurrency, setRemoteTextCurrency, delegationBudgetPool, refreshDelegations });
   useEffect(() => {
-    if (!selectedId) return;
+    if (!selectedId || !ownerScope) return;
     let active = true;
     let inFlight = false;
     const poll = async () => {
@@ -553,7 +606,7 @@ export default function Workbench({
         const response = await fetch(`/api/sky/a2a-delegations?parentJobId=${encodeURIComponent(selectedId)}`,
           { cache: 'no-store', signal: AbortSignal.timeout(8000) });
         const data = await response.json() as { delegations?: Delegation[]; controller?: A2AParentControllerSnapshot; budget?: DelegationBudgetPool | null; reservations?: DelegationBudgetReservation[] };
-        if (active && response.ok) {
+        if (active && response.ok && currentOwner.current === ownerScope && selectedIdRef.current === selectedId) {
           setDelegations(data.delegations ?? []);
           setA2aParentController(data.controller ?? null);
           setDelegationBudgetPool(data.budget ?? null);
@@ -564,7 +617,7 @@ export default function Workbench({
     };
     const timer = window.setInterval(() => { void poll(); }, 10_000);
     return () => { active = false; window.clearInterval(timer); };
-  }, [selectedId]);
+  }, [selectedId, ownerScope]);
   const refreshA2aAgents = useCallback(async () => {
     try {
       const data = await delegationRequest<{ agents: A2AAgentConnection[] }>(
@@ -574,15 +627,16 @@ export default function Workbench({
     } catch (cause) {
       setDelegationError(cause instanceof Error ? cause.message : 'Agent接続を読み込めませんでした。');
     }
-  }, []);
-  function selectJob(id: string) {
+  }, [setDelegationError]);
+  function selectJob(id: string, author = ownerScope) {
+    if (!author || currentOwner.current !== author) return;
     const url = new URL(window.location.href);
     url.searchParams.set('workJob', id);
     window.history.replaceState(window.history.state, '', url);
     selectedIdRef.current = id;
     setSelectedId(id);
-    setDelegationPredecessorId(null);
-    setDelegationQuote(null);
+    if (delegationQuote && JSON.parse(delegationQuote.fingerprint).parentJobId !== id) setDelegationQuote(null);
+    if (delegationSubmission.current[author]?.request.parentJobId !== id) setDelegationPredecessorId(null);
     setDelegationQuoteConsent(false);
     setArtifactDocuments({});
     setA2aParentController(null);
@@ -610,7 +664,7 @@ export default function Workbench({
     setJobs((items) => [job, ...items.filter((item) => item.id !== job.id)]);
   }, []);
   async function create() {
-    if (createInFlight.current || busy) return;
+    if (createInFlight.current || busy || (!creation.current && !ownsCurrentInput())) return;
     if (!creation.current && (!ownerScope || !ready)) { setError(OWNER_CHECK_REQUIRED); return; }
     createInFlight.current = true;
     listGeneration.current++; setLoading(false);
@@ -620,9 +674,10 @@ export default function Workbench({
     creation.current = operation;
     setPendingCreation(operation);
     try {
-      const identity = await request<{ ownerScope?: string }>();
+      const identity = await request<{ jobs: WorkJob[]; ownerScope?: string }>();
       const currentScope = readOwnerScope(identity.ownerScope);
       setOwnerScope(currentScope); setReady(Boolean(currentScope));
+      if (Array.isArray(identity.jobs)) setJobs(identity.jobs);
       const ownerStatus = pendingOwnerStatus(operation.ownerScope, currentScope);
       if (ownerStatus === 'unknown') throw new Error(OWNER_CHECK_REQUIRED);
       if (ownerStatus === 'changed')
@@ -632,10 +687,10 @@ export default function Workbench({
       if (!data.job || data.job.id !== input.id || data.job.title !== input.title || data.job.templateId !== input.templateId || !Number.isSafeInteger(data.job.revision))
         throw new Error('保存結果を確認できません。同じ作成内容で結果を確認してください。');
       accept(data.job);
-      selectJob(data.job.id);
+      selectJob(data.job.id, operation.ownerScope);
       setRunnerStep(null);
-      setNote('');
-      setTitle('');
+      setNote('', operation.ownerScope);
+      setTitle('', operation.ownerScope);
       creation.current = null;
       setPendingCreation(null);
     } catch (e) {
@@ -710,6 +765,7 @@ export default function Workbench({
     }
   }
   async function loadArtifacts(delegationId: string) {
+    if (!ownsCurrentInput()) return;
     setDelegationBusy(true);
     setDelegationError('');
     try {
@@ -722,6 +778,7 @@ export default function Workbench({
         error?: string;
       };
       if (!response.ok) throw new Error(data.error || '成果を取得できませんでした。');
+      if (!ownsCurrentInput() || selectedIdRef.current !== selectedId) return;
       setArtifactDocuments((current) => ({
         ...current,
         [delegationId]: (data.artifacts ?? []).map(({ document }) => document),
@@ -729,10 +786,11 @@ export default function Workbench({
     } catch (cause) {
       setDelegationError(cause instanceof Error ? cause.message : '成果を取得できませんでした。');
     } finally {
-      setDelegationBusy(false);
+      if (ownerScope === currentOwner.current) setDelegationBusy(false);
     }
   }
   function prepareResultForAnotherAgent(delegation: Delegation, document: ArtifactDocument) {
+    if (!ownsCurrentInput()) return;
     if (!selected || selected.status !== 'active' || delegation.parentJobId !== selected.id ||
         delegation.state !== 'remote_completed' || delegation.artifactsCaptured !== 1) {
       setDelegationError('次のAgentへ渡せるのは、このZema jobで完了し、成果の取得まで確認できた委任だけです。');
@@ -771,20 +829,23 @@ export default function Workbench({
     }
   }
   async function loadUsageDetails(delegationId: string) {
+    if (!ownsCurrentInput()) return;
     setDelegationBusy(true);
     setDelegationError('');
     try {
       const data = await delegationRequest<DelegationUsageDetails>(
         `/api/sky/a2a-delegations/${encodeURIComponent(delegationId)}`,
       );
+      if (!ownsCurrentInput() || selectedIdRef.current !== selectedId) return;
       setDelegationUsageDetails((current) => ({ ...current, [delegationId]: data }));
     } catch (cause) {
       setDelegationError(cause instanceof Error ? cause.message : '利用明細を取得できませんでした。');
     } finally {
-      setDelegationBusy(false);
+      if (ownerScope === currentOwner.current) setDelegationBusy(false);
     }
   }
   async function requestDelegationCancel(delegationId: string) {
+    if (!ownsCurrentInput()) return;
     if (!window.confirm('この委任先へ停止要求を送りますか？相手側で停止が確認されるまで「停止未確認」と表示します。')) return;
     setDelegationBusy(true);
     setDelegationError('');
@@ -801,13 +862,14 @@ export default function Workbench({
     } catch (cause) {
       setDelegationError(cause instanceof Error ? cause.message : '停止要求を送れませんでした。');
     } finally {
-      setDelegationBusy(false);
+      if (ownerScope === currentOwner.current) setDelegationBusy(false);
     }
   }
   const createDelegationDraft = useCallback(async () => {
+    if (!ownerScope || ownerScope !== currentOwner.current) return;
     const selected = jobs.find((job) => job.id === selectedId);
     if (!selected) return;
-    const quoteFingerprint = JSON.stringify({
+    const quoteFingerprint = delegationQuoteFingerprint({
       parentJobId: selected.id,
       agentId: delegationForm.targetAgentId,
       origin: delegationForm.targetOrigin.trim(),
@@ -839,8 +901,9 @@ export default function Workbench({
       ...delegationForm,
       message: fullDelegationMessage, quoteId: verifiedQuote.quoteId,
       packageRuntimeBindingDigest: packageRuntimeBindingDigest ?? null });
-    let request = delegationSubmission.current?.fingerprint === fingerprint
-      ? delegationSubmission.current.request
+    const previousSubmission = delegationSubmission.current[ownerScope];
+    let request = previousSubmission?.fingerprint === fingerprint
+      ? previousSubmission.request
       : null;
     if (!request) {
       request = {
@@ -864,8 +927,10 @@ export default function Workbench({
           packageRuntimeBindingDigest,
         } : {}),
       };
-      delegationSubmission.current = { fingerprint, request };
+      delegationSubmission.current[ownerScope] = { fingerprint, request, uncertain: true };
     }
+    delegationSubmission.current[ownerScope].uncertain = true;
+    setUncertainDelegationOwners((owners) => owners.includes(ownerScope) ? owners : [...owners, ownerScope]);
     try {
       const data = await delegationRequest<{
         delegation: Delegation;
@@ -873,6 +938,10 @@ export default function Workbench({
       }>('/api/sky/a2a-delegations', 'POST', request);
       if (!data.approval.required)
         throw new Error('この委任はすでに承認済みか、再確認が必要です。状態を更新してください。');
+      if (delegationSubmission.current[ownerScope]?.request.id === request.id) {
+        delegationSubmission.current[ownerScope].uncertain = false;
+        setUncertainDelegationOwners((owners) => owners.filter((owner) => owner !== ownerScope));
+      }
       setDelegationReview({ request, delegationId: data.delegation.id, authorizationSha256: data.approval.digest });
       setDelegationPredecessorId(null);
       await refreshDelegations(selected.id);
@@ -890,6 +959,10 @@ export default function Workbench({
         );
         const existing = result.delegation;
         if (matchesA2ADelegationRecovery(request, existing, inputSha256)) {
+          if (delegationSubmission.current[ownerScope]?.request.id === request.id) {
+            delegationSubmission.current[ownerScope].uncertain = false;
+            setUncertainDelegationOwners((owners) => owners.filter((owner) => owner !== ownerScope));
+          }
           recovered = true;
           setDelegationPredecessorId(null);
           if (existing.state === 'awaiting_approval')
@@ -903,11 +976,12 @@ export default function Workbench({
         ? '受付状態を照合しました。同じ依頼を再送せず、最新状態を確認してください。'
         : cause instanceof Error ? cause.message : '委任条件を保存できませんでした。');
     } finally {
-      setDelegationBusy(false);
+      if (ownerScope === currentOwner.current) setDelegationBusy(false);
     }
   }, [jobs, selectedId, delegationForm, delegationQuote, refreshDelegations, fullDelegationMessage,
-    initialPackageKey, handoffPackage, delegationPredecessorId]);
-  async function requestDelegationPriceQuote() {
+    initialPackageKey, handoffPackage, delegationPredecessorId, ownerScope, setDelegationReview, setDelegationPredecessorId, setDelegationError]);
+  const requestDelegationPriceQuote = useCallback(async () => {
+    if (!ownerScope || ownerScope !== currentOwner.current) return;
     const selected = jobs.find((job) => job.id === selectedId);
     const agent = a2aAgents.find((item) => item.id === delegationForm.targetAgentId);
     if (!selected || !agent || !delegationQuoteConsent || !fullDelegationMessage) return;
@@ -917,7 +991,7 @@ export default function Workbench({
     const requestId = crypto.randomUUID();
     const message = fullDelegationMessage;
     const currency = delegationForm.budgetCurrency.trim().toUpperCase();
-    const quoteFingerprint = JSON.stringify({
+    const quoteFingerprint = delegationQuoteFingerprint({
       parentJobId: selected.id,
       agentId: agent.id,
       origin: agent.origin,
@@ -973,9 +1047,9 @@ export default function Workbench({
       setDelegationQuoteConsent(false);
       setDelegationError(cause instanceof Error ? cause.message : '見積を取得できませんでした。要求を再送せず、接続と相手側状態を確認してください。');
     } finally {
-      setDelegationBusy(false);
+      if (ownerScope === currentOwner.current) setDelegationBusy(false);
     }
-  }
+  }, [ownerScope, jobs, selectedId, a2aAgents, delegationForm, delegationQuoteConsent, fullDelegationMessage, initialPackageKey, handoffPackage, setDelegationError, setDelegationQuote, setDelegationQuoteConsent]);
   async function discoverAgent() {
     setDelegationBusy(true);
     setDelegationError('');
@@ -1001,7 +1075,7 @@ export default function Workbench({
     } catch (cause) {
       setDelegationError(cause instanceof Error ? cause.message : 'Agent Cardを取得できませんでした。');
     } finally {
-      setDelegationBusy(false);
+      if (ownerScope === currentOwner.current) setDelegationBusy(false);
     }
   }
   async function forgetAgent(id: string) {
@@ -1017,10 +1091,10 @@ export default function Workbench({
     } catch (cause) {
       setDelegationError(cause instanceof Error ? cause.message : 'Agent接続を削除できませんでした。');
     } finally {
-      setDelegationBusy(false);
+      if (ownerScope === currentOwner.current) setDelegationBusy(false);
     }
   }
-  const activeDelegationQuoteFingerprint = selected ? JSON.stringify({
+  const activeDelegationQuoteFingerprint = selected ? delegationQuoteFingerprint({
     parentJobId: selected.id,
     agentId: delegationForm.targetAgentId,
     origin: delegationForm.targetOrigin.trim(),
@@ -1029,6 +1103,8 @@ export default function Workbench({
     message: fullDelegationMessage,
     currency: delegationForm.budgetCurrency.trim().toUpperCase(),
     maximumBudgetMinor: delegationForm.budgetLimitMinor,
+    packageKey: initialPackageKey && handoffPackage ? handoffPackage.packageKey : null,
+    packageManifestSha256: initialPackageKey && handoffPackage ? handoffPackage.manifestSha256 : null,
   }) : '';
   const activeDelegationQuote = delegationQuote?.fingerprint === activeDelegationQuoteFingerprint
     ? delegationQuote.quote : null;
@@ -1071,7 +1147,11 @@ export default function Workbench({
           <button disabled={busy || loading} onClick={() => void refresh()}>保存先の接続を確認</button>
           <button disabled={busy || loading || (pendingOwnerStatus(pendingCreation.ownerScope, ownerScope) === 'changed')} onClick={() => void create()}>同じ作成内容で結果を確認</button>
           <p>保留を解除しても保存済みの仕事は削除されません。元のアカウントで結果を確認してから、新しく保存してください。入力は保持します。</p>
-          <button disabled={busy} onClick={() => { creation.current = null; setPendingCreation(null); setError('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
+          <button disabled={busy || pendingCreation.ownerScope !== ownerScope} onClick={() => { if (!ownsCurrentInput() || createInFlight.current || creation.current?.ownerScope !== ownerScope) return; creation.current = null; setPendingCreation(null); setError('保留を解除しました。入力を確認してから新しく保存してください。'); }}>保留を解除（入力は保持）</button>
+        </section>}
+        {hasRetainedDrafts && !pendingCreation && <section className="work-notice" aria-label="仕事の未保存入力">
+          <p>{hasPrivateDraft ? '未保存の入力をこのアカウントで保持しています。別の画面へ移動する前に保存するか、入力を破棄してください。保存済みの仕事は変更しません。' : '別のアカウントで入力した未保存の内容を非表示で保持しています。入力したアカウントへ接続し直すと復元できます。'}</p>
+          {hasPrivateDraft && <button disabled={busy || delegationBusy || Boolean(pending) || Boolean(ownerScope && uncertainDelegationOwners.includes(ownerScope))} onClick={discardPrivateDraft}>未保存の入力を破棄</button>}
         </section>}
         {!ownerScope && !loading && !pendingCreation && <p className="work-notice">{OWNER_CHECK_REQUIRED}</p>}
         {pending && (
@@ -1124,7 +1204,7 @@ export default function Workbench({
                       <textarea rows={3} maxLength={4_000} value={localPackageTask} onChange={(event) => setLocalPackageTask(event.target.value)} placeholder="このPackage機能で行う具体的な依頼" />
                     </label>
                     <McpBotRunner key={`${handoffPackage.packageKey}:${handoffPackage.manifestSha256}:${selectedPackageRuntimeCandidate.server.id}:${selectedPackageRuntimeCandidate.tool.name}`}
-                      server={selectedPackageRuntimeCandidate.server} request={localPackageTask} fixedToolName={selectedPackageRuntimeCandidate.tool.name} executionDisabled={!localPackageTask.trim()} />
+                      server={selectedPackageRuntimeCandidate.server} request={localPackageTask} fixedToolName={selectedPackageRuntimeCandidate.tool.name} executionDisabled={!ownerScope || !localPackageTask.trim()} />
                   </>}
                 </> : <p>互換する実行先はありません。mcp_stdio・PC実行・Package/Tool双方の無料料金宣言・完全一致する入出力Schema・接続済みPC stdio runtimeが必要です。遠隔MCPや有料処理はこの経路では実行しません。</p>}
               </section>}
@@ -1139,7 +1219,7 @@ export default function Workbench({
             <input
               value={title}
               maxLength={120}
-              disabled={locked}
+              disabled={locked || !ownerScope}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="例: 自動化についての記事"
             />
@@ -1280,7 +1360,7 @@ export default function Workbench({
                   {delegationBudgetPool && (
                     <p>親jobの支出上限: {formatCurrencyMinor(delegationBudgetPool.budgetLimitMinor, delegationBudgetPool.currency)} · 予約中 {formatCurrencyMinor(delegationBudgetPool.reservedMinor, delegationBudgetPool.currency)} · 利用量確定記録（請求照合前） {formatCurrencyMinor(delegationBudgetPool.settledMinor, delegationBudgetPool.currency)}</p>
                   )}
-                  {['active', 'review'].includes(selected.status) && !delegationReview && (
+                  {['active', 'review'].includes(selected.status) && delegationReview?.request.parentJobId !== selected.id && (
                     <form
                       id="work-a2a-delegation-form"
                       className="work-delegation-create"
@@ -1402,7 +1482,7 @@ export default function Workbench({
                       </button>
                     </form>
                   )}
-                  {delegationReview && (
+                  {delegationReview?.request.parentJobId === selected.id && (
                     <section className="work-delegation-review" aria-label="委任条件の確認">
                       <h3>委任内容を確認</h3>
                       <p>以下の条件で確認待ちdraftを保存しました。まだProviderへの送信は行われていません。</p>

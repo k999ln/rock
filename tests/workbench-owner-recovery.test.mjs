@@ -8,8 +8,9 @@ import { loadRouteFixture } from './route-fixture.mjs';
 import * as auth from '../lib/request-auth.ts';
 import * as claims from '../lib/rockstar-entitlement-claim.ts';
 import test from 'node:test';
+import { createSkyToolPackageDraft } from '../lib/sky-tool-package.ts';
 const root = new URL('../', import.meta.url);
-async function setup(t) {
+async function setup(t, { onFetch, componentProps = {} } = {}) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
   for (const name of readdirSync(new URL('drizzle/', root))
@@ -133,6 +134,8 @@ async function setup(t) {
   async function fetch(url, options = {}, tracking) {
     const method = options.method ?? 'GET';
     if (new URL(url, 'https://local.test').pathname !== '/api/work-jobs') {
+      const response = onFetch?.(url, options);
+      if (response !== undefined) return response;
       assert.equal(method, 'GET');
       return Response.json({
         agents: [],
@@ -235,6 +238,7 @@ async function setup(t) {
   };
   // Named imports call without a receiver.
   react.useCallback = (fn, deps) => react.useMemo(() => fn, deps);
+  react.useLayoutEffect = (fn, deps) => react.useEffect(fn, deps);
   const jsx = (type, props) => ({ type, props }),
     inert = () => null;
   const client = loadRouteFixture(
@@ -328,7 +332,7 @@ async function setup(t) {
     clearInterval() {},
   };
   const context = {
-    window, crypto, URL, AbortSignal, TextEncoder, fetch: trackedFetch,
+    window, crypto, URL, AbortSignal, AbortController, TextEncoder, fetch: trackedFetch,
     require(name) { assert.ok(name in modules, name); return modules[name]; },
   };
   const cloudExports = {};
@@ -341,7 +345,7 @@ async function setup(t) {
   runInNewContext(compiled, { ...context, exports }, { filename: 'components/workbench.tsx' });
   function render() {
     cursor = 0;
-    tree = exports.default({});
+    tree = exports.default(componentProps);
     while (effects.length) effects.shift()();
   }
   function nodes(value, out = []) {
@@ -378,6 +382,10 @@ async function setup(t) {
       quiet = [...pending].some((entry) => !entry.held) ? 0 : quiet + 1;
     }
   }
+  async function waitFor(predicate) {
+    const deadline = Date.now() + 5000;
+    while (!predicate()) { assert.ok(Date.now() < deadline, 'bounded component transition'); await flush(); }
+  }
   async function click(label) {
     const button = find('button', label);
     assert.ok(button && !button.props.disabled, label);
@@ -393,9 +401,11 @@ async function setup(t) {
     render,
     flush,
     click,
+    waitFor,
     find,
     get navigationBlocked() { return navigationBlocked; },
     nodes: () => nodes(tree),
+    text: () => text(tree),
     owner(value) {
       owner = value;
     },
@@ -581,15 +591,17 @@ void test('Workbench API rejects the owner switch after preflight before save an
   );
 });
 
-void test('Workbench unknown identity blocks creation and retry; explicit release retains input and obtains a fresh B ID', async (t) => {
+void test('Workbench unknown identity blocks input; only original owner can release and discard a retained creation', async (t) => {
   const h = await setup(t);
   h.omitScope(true);
   h.render();
   await h.flush();
-  h.input('Synthetic retained input');
+  h.input('Unknown owner ignored');
   assert.ok(h.find('button', '仕事を作成').props.disabled);
   h.omitScope(false);
   await h.click('再読込');
+  assert.equal(h.nodes().find(n => n.type === 'input' && n.props.placeholder === '例: 自動化についての記事').props.value, '');
+  h.input('Synthetic retained input');
   h.insertFailure(true);
   await h.click('仕事を作成');
   h.insertFailure(false);
@@ -602,18 +614,26 @@ void test('Workbench unknown identity blocks creation and retry; explicit releas
   await h.grant('bob');
   await h.click('保存先の接続を確認');
   assert.ok(h.find('button', '同じ作成内容で結果を確認').props.disabled);
+  const releaseAsBob = h.find('button', '保留を解除（入力は保持）');
+  assert.equal(releaseAsBob.props.disabled, true);
+  releaseAsBob.props.onClick(); h.render();
+  assert.ok(h.find('button', '同じ作成内容で結果を確認'));
+  assert.equal(h.navigationBlocked, true);
+  assert.equal(h.nodes().find(n => n.type === 'input' && n.props.placeholder === '例: 自動化についての記事').props.value, '');
+  h.owner('alice');
+  await h.click('保存先の接続を確認');
+  assert.equal(h.nodes().find(n => n.type === 'input' && n.props.placeholder === '例: 自動化についての記事').props.value, original.value.title);
   await h.click('保留を解除（入力は保持）');
+  assert.equal(h.navigationBlocked, true);
+  await h.click('未保存の入力を破棄');
   assert.equal(h.navigationBlocked, false);
+  h.owner('bob'); await h.click('再読込'); h.input('Bob own new input');
   await h.click('仕事を作成');
   const next = h.requests.filter((r) => r.method === 'POST').at(-1);
   assert.equal(next.status, 201);
   assert.notEqual(next.value.id, original.value.id);
-  assert.equal(next.value.title, original.value.title);
-  assert.equal(next.value.templateId, original.value.templateId);
-  assert.equal(
-    h.sqlite.prepare('SELECT user_id FROM work_jobs').get().user_id,
-    'bob',
-  );
+  assert.equal(next.value.title, 'Bob own new input');
+  assert.equal(h.sqlite.prepare('SELECT user_id FROM work_jobs').get().user_id, 'bob');
 });
 
 void test('Workbench ignores a list snapshot superseded by a confirmed creation', async (t) => {
@@ -657,4 +677,117 @@ void test('Workbench lost committed response is reconciled with the same A ID wi
   assert.deepEqual(posts[1].value, original.value);
   assert.equal(h.count(), 1);
   assert.equal(h.find('button', '同じ作成内容で結果を確認'), undefined);
+});
+
+
+void test('Workbench unsent title remains private across owners and stale input/create/discard handlers cannot act', async (t) => {
+  const h = await setup(t); await h.grant('bob'); h.render(); await h.flush();
+  const title = () => h.nodes().find(n => n.type === 'input' && n.props.placeholder === '例: 自動化についての記事');
+  assert.equal(h.navigationBlocked, false);
+  h.input('Alice private title');
+  const oldInput = title().props.onChange;
+  const oldCreate = h.find('button', '仕事を作成').props.onClick;
+  const oldDiscard = h.find('button', '未保存の入力を破棄').props.onClick;
+  assert.equal(h.navigationBlocked, true);
+  h.owner('bob'); await h.click('再読込');
+  assert.equal(title().props.value, '');
+  assert.equal(h.find('button', '仕事を作成').props.disabled, true);
+  oldInput({ target: { value: 'stale Alice edit' } }); oldCreate(); oldDiscard(); h.render(); await h.flush();
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 0);
+  assert.equal(title().props.value, '');
+  h.input('Bob private title');
+  h.owner('alice'); await h.click('再読込');
+  assert.equal(title().props.value, 'Alice private title');
+  await h.click('未保存の入力を破棄');
+  assert.equal(h.navigationBlocked, true, 'another owner retained input still needs protection');
+  h.owner('bob'); await h.click('再読込');
+  assert.equal(title().props.value, 'Bob private title');
+  await h.click('未保存の入力を破棄');
+  assert.equal(h.navigationBlocked, false);
+});
+
+void test('Workbench Agent private prompt, caps and offline consent restore only for their author', async (t) => {
+  const h = await setup(t); await h.grant('bob');
+  await h.routeCall('POST', { id: randomUUID(), title: 'Alice saved job', templateId: 'article' }, 'alice');
+  await h.routeCall('POST', { id: randomUUID(), title: 'Bob saved job', templateId: 'article' }, 'bob');
+  h.render(); await h.flush(); await h.click('Alice saved job');
+  const input = (placeholder) => h.nodes().find(n => n.type === 'input' && n.props.placeholder === placeholder);
+  const message = () => h.nodes().find(n => n.type === 'textarea' && n.props.maxLength === 8000);
+  const consent = () => h.find('label', '受付・承認後、この仕事').props.children[0];
+  message().props.onChange({ target: { value: 'Alice confidential request' } });
+  input('例: 10.00').props.onChange({ target: { value: '12.34' } });
+  input('例: 25.00').props.onChange({ target: { value: '56.78' } });
+  consent().props.onChange({ target: { checked: true } }); h.render();
+  const staleMessage = message().props.onChange;
+  const staleConsent = consent().props.onChange;
+  h.owner('bob'); await h.click('再読込'); await h.click('Bob saved job');
+  assert.equal(message().props.value, ''); assert.equal(input('例: 10.00').props.value, '');
+  assert.equal(input('例: 25.00').props.value, ''); assert.equal(consent().props.checked, false);
+  staleMessage({ target: { value: 'stale edit' } }); staleConsent({ target: { checked: true } }); h.render();
+  assert.equal(message().props.value, ''); assert.equal(consent().props.checked, false);
+  h.owner('alice'); await h.click('再読込'); await h.click('Alice saved job');
+  assert.equal(message().props.value, 'Alice confidential request');
+  assert.equal(input('例: 10.00').props.value, '12.34'); assert.equal(input('例: 25.00').props.value, '56.78');
+  assert.equal(consent().props.checked, true);
+});
+
+for (const packageKey of ['', 'fixture.package@1.0.0']) void test(`Workbench signed quote becomes actionable and unknown Agent draft preserves exact ID through owner roundtrip (${packageKey || 'no Package'})`, async (t) => {
+  const posts = []; let quoteCount = 0; let manifestSha256 = 'c'.repeat(64);
+  const manifest = { ...createSkyToolPackageDraft({ sourceKind: 'github', sourceUrl: 'https://github.com/example/tool', developerName: 'Fixture', developerId: 'fixture', license: 'MIT' }), name: 'Fixture Package', summary: 'Synthetic existing Package' };
+  const agent = { id: 'fixture-agent', origin: 'https://agent.example', agentName: 'Fixture Agent', agentVersion: '1.0', cardSha256: 'a'.repeat(64), cardJson: '{"skills":[]}' };
+  const h = await setup(t, { componentProps: { initialPackageKey: packageKey }, onFetch(path, options) {
+    const method = options.method ?? 'GET'; const body = options.body ? JSON.parse(options.body) : null;
+    if (path === '/api/sky/tool-registry') return Response.json({ packages: [{ packageKey, manifest, manifestSha256, status: 'verified', installable: true }] });
+    if (path === '/api/rockstar/entitlements') return Response.json({ entitlements: [{ status: 'active', serviceProfile: { state: 'ready', activation: 'owner_choice_required', packages: [{ packageKey, state: 'ready' }] } }] });
+    if (path === '/api/sky/a2a-agents' && method === 'GET') return Response.json({ agents: [agent] });
+    if (path === '/api/sky/a2a-price-quotes' && method === 'POST') {
+      quoteCount++;
+      return crypto.subtle.digest('SHA-256', new TextEncoder().encode(body.message)).then(bytes => Response.json({
+        quote: { quoteId: 'fixture-quote', providerId: 'fixture-provider', pricingVersion: 'fixture-price', currency: 'USD', estimateMinor: 100, maxAmountMinor: 200, usage: [], expiresAt: Date.now() + 600000 },
+        ...(packageKey ? { packageRuntimeBinding: { packageKey, manifestSha256 }, packageRuntimeBindingId: 'binding-1', packageRuntimeBindingDigest: 'd'.repeat(64) } : {}),
+        quoteDigest: 'b'.repeat(64), requestSha256: Buffer.from(bytes).toString('hex'), quoteOnly: true, executionAuthorized: false,
+      }));
+    }
+    if (path === '/api/sky/a2a-delegations' && method === 'POST') { posts.push(body); throw new Error('synthetic unknown saved draft reply'); }
+    if (path.includes('idempotencyKey=')) return Response.json({ delegation: null });
+  } });
+  await h.grant('bob');
+  await h.routeCall('POST', { id: randomUUID(), title: 'Alice saved job', templateId: 'article' }, 'alice');
+  await h.routeCall('POST', { id: randomUUID(), title: 'Bob saved job', templateId: 'article' }, 'bob');
+  h.render(); await h.flush(); await h.click('Alice saved job'); await h.click('このAgentを選ぶ');
+  const input = (placeholder) => h.nodes().find(n => n.type === 'input' && n.props.placeholder === placeholder);
+  h.nodes().find(n => n.type === 'textarea' && n.props.maxLength === 8000).props.onChange({ target: { value: 'Alice immutable Agent input' } });
+  input('例: 10.00').props.onChange({ target: { value: '2.00' } }); input('例: 25.00').props.onChange({ target: { value: '10.00' } });
+  h.find('label', '依頼文全体をこのAgentのProviderへ').props.children[0].props.onChange({ target: { checked: true } }); h.render();
+  await h.click('署名付き見積を取得');
+  await h.waitFor(() => !h.find('button', 'このAgentを選ぶ').props.disabled);
+  assert.equal(quoteCount, 1); assert.ok(h.text().includes('Provider署名付き価格見積'));
+  h.find('label', '受付・承認後、この仕事').props.children[0].props.onChange({ target: { checked: true } }); h.render();
+  assert.equal(h.find('button', '条件を確認する').props.disabled, false);
+  const form = () => h.nodes().find(n => n.type === 'form' && n.props.id === 'work-a2a-delegation-form');
+  const oldSubmit = form().props.onSubmit;
+  const staleDiscard = h.find('button', '未保存の入力を破棄').props.onClick;
+  oldSubmit({ preventDefault() {} }); h.render(); await h.flush();
+  await h.waitFor(() => !h.find('button', '条件を確認する').props.disabled);
+  assert.equal(posts.length, 1);
+  const discard = h.find('button', '未保存の入力を破棄');
+  assert.equal(discard.props.disabled, true);
+  discard.props.onClick(); staleDiscard(); h.render();
+  assert.ok(h.text().includes('Alice immutable Agent input'));
+  assert.equal(h.navigationBlocked, true);
+  h.owner('bob'); await h.click('再読込'); await h.click('Bob saved job');
+  oldSubmit({ preventDefault() {} }); h.render(); await h.flush(); assert.equal(posts.length, 1);
+  h.owner('alice'); await h.click('再読込'); await h.click('Alice saved job');
+  assert.equal(h.find('button', '条件を確認する').props.disabled, false);
+  form().props.onSubmit({ preventDefault() {} }); h.render(); await h.flush();
+  await h.waitFor(() => !h.find('button', '条件を確認する').props.disabled);
+  assert.equal(posts.length, 2); assert.deepEqual(posts[1], posts[0]); assert.equal(quoteCount, 1);
+  if (packageKey) {
+    assert.ok(posts[0].message.includes(packageKey)); assert.ok(posts[0].message.includes(manifestSha256));
+    assert.equal(posts[0].packageRuntimeBindingDigest, 'd'.repeat(64));
+    manifestSha256 = 'e'.repeat(64);
+    h.owner('bob'); await h.click('再読込'); h.owner('alice'); await h.click('再読込'); await h.click('Alice saved job');
+    assert.equal(h.find('button', '条件を確認する').props.disabled, true, 'changed reviewed manifest cannot reuse old quote');
+    assert.equal(posts.length, 2);
+  }
 });
