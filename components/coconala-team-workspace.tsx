@@ -174,6 +174,7 @@ export default function CoconalaTeamWorkspace({ workspace = false }: { workspace
     if (currentWorkspace.current !== privateState) return;
     if (!ownsInput() || saveInFlight.current || currentWorkspace.current.pendingSave) return;
     updateWorkspace({ form: { ...blank }, formBase: { ...blank }, editingId: '', editingRevision: null, note: '', moneyAmount: '', moneyReference: '' });
+    setError('');
     setNotice('未保存の入力を破棄しました。保存済み案件と手入力の入出金記録は変更していません。');
   }
   function openForm() {

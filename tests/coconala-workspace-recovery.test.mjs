@@ -395,4 +395,35 @@ void test('refreshing a remotely edited Coconala case cannot silently advance th
   assert.equal(h.records.get(external.id).terms.title, 'Newer external edit');
   assert.equal(h.requests.filter(r => r.method === 'PATCH').length, 0, 'the draft keeps its original revision until explicit reconciliation');
   assert.ok(h.nodes().some(node => node.props?.value === 'Local unsent edit'));
+  assert.ok(h.find('p', '編集中に案件が更新されました'));
+  const staleDiscard = h.find('button', '未保存の入力を破棄').props.onClick;
+  h.fillLabel('案件名', 'Later local edit'); staleDiscard(); h.render(); await h.flush();
+  assert.ok(h.find('p', '編集中に案件が更新されました'), 'refused stale discard must preserve the actionable conflict');
+  assert.ok(h.nodes().some(node => node.props?.value === 'Later local edit'));
+  await h.click('未保存の入力を破棄');
+  assert.equal(h.find('p', '編集中に案件が更新されました'), undefined, 'successful discard must retire the error about retained input');
+  assert.ok(h.find('output', '未保存の入力を破棄しました'));
+  assert.equal(h.records.get(external.id).terms.title, 'Newer external edit');
+  assert.equal(h.requests.filter(r => r.method === 'PATCH').length, 0);
+});
+
+void test('refused Coconala discard preserves pending-save and authentication errors', async () => {
+  for (const failure of ['pending', 'owner']) {
+    const h = harness(); await h.flush(); await h.click('案件を作る');
+    for (const [label, value] of Object.entries(fields)) h.fillLabel(label, value);
+    const discard = h.find('button', '未保存の入力を破棄').props.onClick;
+    if (failure === 'pending') { h.drop('POST'); await h.submit(); }
+    else { h.setOwner(ownerB); h.replies.push(() => { throw new RequestError(401); }); await h.reload(); }
+    const error = h.nodes().find(node => node.props?.role === 'alert');
+    assert.ok(error, `${failure} must show an actionable recovery error`);
+    const message = error.props.children;
+    discard(); h.render(); await h.flush();
+    assert.ok(h.find('p', message), 'a refused discard must not acknowledge or hide the current recovery failure');
+    assert.equal(h.find('output', '未保存の入力を破棄しました'), undefined);
+    if (failure === 'pending') assert.ok(h.find('button', '同じ保存内容で結果を確認'));
+    else {
+      h.setOwner(ownerA); await h.click('保存先の接続を確認');
+      assert.ok(h.nodes().some(node => node.props?.value === fields.案件名));
+    }
+  }
 });
