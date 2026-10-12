@@ -17,6 +17,9 @@ const bridge = read(`drizzle/${bridgeName}`);
 const priorNames = manifest.liveJournal.entries.map(({ tag }) => `${tag}.sql`);
 const objects = (db) => db.prepare("SELECT type,name,tbl_name,sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY name").all();
 const applyPrior = (db) => { for (const name of priorNames) db.exec(read(`drizzle/${name}`)); };
+// Preserve quoted literals/identifiers exactly while accepting transport-only whitespace.
+const sqlTokens = (sql) => sql.match(/'(?:''|[^'])*'|"(?:""|[^"])*"|`(?:``|[^`])*`|[^\s'"`]+/g);
+
 
 void test('Site applied SQL, snapshots, and journal prefix stay byte-for-byte immutable', () => {
   for (const { path, sha256 } of manifest.liveFiles) {
@@ -47,7 +50,13 @@ void test('Site bridge retains every live definition and all final primary guard
     const after = new Map(objects(site).map((row) => [row.name, row]));
     for (const row of before) assert.deepEqual(after.get(row.name), row);
     const priorSet = new Set(before.map((row) => row.name));
-    for (const row of objects(primary)) if (!priorSet.has(row.name)) assert.deepEqual(after.get(row.name), row);
+    for (const row of objects(primary)) if (!priorSet.has(row.name)) {
+      const actual = after.get(row.name);
+      if (row.type === 'trigger') {
+        assert.deepEqual({ ...actual, sql: sqlTokens(actual.sql) }, { ...row, sql: sqlTokens(row.sql) });
+        assert.doesNotMatch(actual.sql, /[\r\n]/, `${row.name}: preserve the whole trigger at a hosted statement boundary`);
+      } else assert.deepEqual(actual, row);
+    }
     assert.equal([...after.values()].filter((row) => row.type === 'table').length, 90);
     assert.deepEqual(site.prepare('PRAGMA foreign_key_check').all(), []);
     assert.equal(site.prepare('PRAGMA integrity_check').get().integrity_check, 'ok');
