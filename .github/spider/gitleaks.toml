@@ -34,6 +34,13 @@ regexes = ['''\A(?:sk_test_CommerceFixtureOnly|sk_live_CommerceFixtureOnly)\z'''
 [[rules]]
 id = "generic-api-key"
 [[rules.allowlists]]
+description = "public-artifact-digest 0dd420287575"
+condition = "AND"
+regexTarget = "secret"
+paths = ['''\A(?:android/core/src/test/resources/sky\-compute\-grid\-lexical\-embedding\-vectors\.json|contracts/sky\-compute\-grid\-lexical\-embedding\-vectors\.json|lib/sky\-compute\-grid\-skus\.ts)\z''']
+regexes = ['''\A0148e10d32030fbaee7eedf967db70a3b7665da854faeb0f87ecd8e3659381a5\z''']
+
+[[rules.allowlists]]
 description = "idempotency-fixture 0280f7ac68cc"
 condition = "AND"
 regexTarget = "secret"

@@ -19,6 +19,12 @@ ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / ".github/spider/gitleaks.toml"
 PEM_PATH = "systems/rock-star-os/os/registry/fixtures/PUBLIC-FIXTURE-KEY.pem"
 STRIPE_PATH = "tests/sky-commerce.test.mjs"
+COMPUTE_GRID_TOKENIZER_SHA256 = "0148e10d32030fbaee7eedf967db70a3b7665da854faeb0f87ecd8e3659381a5"
+COMPUTE_GRID_TOKENIZER_PATHS = {
+    "android/core/src/test/resources/sky-compute-grid-lexical-embedding-vectors.json",
+    "contracts/sky-compute-grid-lexical-embedding-vectors.json",
+    "lib/sky-compute-grid-skus.ts",
+}
 BINARY = os.environ.get("GITLEAKS_BINARY")
 
 
@@ -172,6 +178,24 @@ class RealScannerPolicyTests(unittest.TestCase):
             mutations[paths[0]] = body + "api_key = " + json.dumps(changed) + "\n"
         self.assertEqual(self.scan(copies, "", return_locations=True), {(p, 1) for p in copies})
         self.assertEqual(self.scan(mutations, "", return_locations=True), expected_mutations)
+
+    def test_compute_grid_tokenizer_digest_is_exact_and_each_path_rejects_other_values(self):
+        source = "tokenizerSha256 = " + json.dumps(COMPUTE_GRID_TOKENIZER_SHA256) + "\n"
+        reviewed = {path: source for path in COMPUTE_GRID_TOKENIZER_PATHS}
+        locations = {(path, 1) for path in COMPUTE_GRID_TOKENIZER_PATHS}
+        self.assertEqual(self.scan(reviewed, "", policy=False, return_locations=True), locations)
+        self.assertEqual(self.scan(reviewed, "", return_locations=True), set())
+
+        replacements = {
+            path: "tokenizerSha256 = " + json.dumps(
+                hashlib.sha256(("replacement:" + path).encode()).hexdigest()) + "\n"
+            for path in COMPUTE_GRID_TOKENIZER_PATHS
+        }
+        self.assertEqual(self.scan(replacements, "", return_locations=True), locations)
+
+        copied = {"unreviewed/sky-compute-grid.json": source}
+        self.assertEqual(self.scan(copied, "", return_locations=True),
+                         {("unreviewed/sky-compute-grid.json", 1)})
 
 
     def test_relocated_zema_storage_name_is_exact_and_new_paths_reject_credentials(self):
