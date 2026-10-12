@@ -1,5 +1,5 @@
 'use client';
-import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useState, useSyncExternalStore, useCallback, type ReactNode } from 'react';
 import {
   readSkyResults,
   saveSkyResult,
@@ -64,6 +64,39 @@ export type MrRunner =
   | 'legal-intake'
   | 'patent-assistant'
   | 'jev-evaluation';
+export type MrToolRunnerState = {
+  text: string; proposal: string; bucket: string; rate: string; after: string; price: string;
+  summary: string; contents: string; url: string; output: string; result: CoconalaResult | null;
+  error: string; copied: boolean; editing: boolean; running: boolean; sampleInput: boolean;
+};
+export type MrToolRunnerSession = {
+  getSnapshot: () => Partial<MrToolRunnerState> | undefined;
+  subscribe: (listener: () => void) => () => void;
+  patch: (value: Partial<MrToolRunnerState>) => void;
+  isActive?: () => boolean;
+};
+function localSession(): MrToolRunnerSession {
+  let snapshot: Partial<MrToolRunnerState> = {};
+  const listeners = new Set<() => void>();
+  return {
+    getSnapshot: () => snapshot,
+    subscribe(listener) { listeners.add(listener); return () => { listeners.delete(listener); }; },
+    patch(value) { snapshot = { ...snapshot, ...value }; listeners.forEach((listener) => listener()); },
+  };
+}
+function useRunnerState(session: MrToolRunnerSession | undefined, initialText: string) {
+  const [local] = useState(localSession);
+  const [initial] = useState<MrToolRunnerState>(() => ({ text: initialText, proposal: '', bucket: 'single', rate: '',
+    after: '40', price: '500', summary: '', contents: '', url: '', output: '', result: null, error: '',
+    copied: false, editing: false, running: false, sampleInput: false }));
+  const store = session ?? local;
+  const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+  const state = { ...initial, ...snapshot };
+  const patch = useCallback((value: Partial<MrToolRunnerState>) => store.patch(value), [store]);
+  const active = useCallback(() => store.isActive?.() !== false, [store]);
+  const runningNow = useCallback(() => store.getSnapshot()?.running === true, [store]);
+  return { state, patch, active, runningNow };
+}
 const demoArticle =
   '# 仕事を小さく自動化する\n\n繰り返している作業を書き出します。毎回同じ手順をひとつ選びます。まずは短い入力で試して、結果を自分で確かめましょう。\n\n## 実践手順\n\nここからは完全版の具体的な手順です。作業を分解して、入力と完成条件を決めます。記録を残すと、次に改善する場所が見つかります。\n\n## 出典\n\n- [Python公式](https://docs.python.org/3/)';
 export function MrToolRunner({
@@ -74,6 +107,7 @@ export function MrToolRunner({
   onOutcome,
   onFailure,
   executionDisabled = false,
+  session,
 }: {
   tool: MrRunner;
   initialText?: string;
@@ -82,7 +116,9 @@ export function MrToolRunner({
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   onFailure?: () => void;
   executionDisabled?: boolean;
+  session?: MrToolRunnerSession;
 }) {
+  const { state, patch, active, runningNow } = useRunnerState(session, initialText);
   const [savedResults, setSavedResults] = useState<SkySavedResult[]>([]);
   const [libraryNotice, setLibraryNotice] = useState('');
   useEffect(() => {
@@ -100,6 +136,7 @@ export function MrToolRunner({
     return () => window.removeEventListener('storage', load);
   }, []);
   function saveResult() {
+    if (!active()) return;
     try {
       setSavedResults(
         saveSkyResult(window.localStorage, {
@@ -127,6 +164,7 @@ export function MrToolRunner({
     }
   }
   function removeResult(id: string) {
+    if (!active()) return;
     try {
       setSavedResults(deleteSkyResult(window.localStorage, id));
       setLibraryNotice('削除しました。');
@@ -134,24 +172,25 @@ export function MrToolRunner({
       setLibraryNotice('削除できませんでした。');
     }
   }
-  const [text, setText] = useState(initialText),
-    [proposal, setProposal] = useState(''),
-    [bucket, setBucket] = useState('single'),
-    [rate, setRate] = useState('');
-  const [after, setAfter] = useState('40'),
-    [price, setPrice] = useState('500'),
-    [summary, setSummary] = useState(''),
-    [contents, setContents] = useState(''),
-    [url, setUrl] = useState('');
-  const [output, setOutput] = useState(''),
-    [result, setResult] = useState<CoconalaResult | null>(null),
-    [error, setError] = useState(''),
-    [copied, setCopied] = useState(false),
-    [editing, setEditing] = useState(false);
+  const { text, proposal, bucket, rate, after, price, summary, contents, url, output, result, error, copied, editing, running, sampleInput } = state;
+  const setText = (value: MrToolRunnerState['text']) => patch({ text: value });
+  const setProposal = (value: MrToolRunnerState['proposal']) => patch({ proposal: value });
+  const setBucket = (value: MrToolRunnerState['bucket']) => patch({ bucket: value });
+  const setRate = (value: MrToolRunnerState['rate']) => patch({ rate: value });
+  const setAfter = (value: MrToolRunnerState['after']) => patch({ after: value });
+  const setPrice = (value: MrToolRunnerState['price']) => patch({ price: value });
+  const setSummary = (value: MrToolRunnerState['summary']) => patch({ summary: value });
+  const setContents = (value: MrToolRunnerState['contents']) => patch({ contents: value });
+  const setUrl = (value: MrToolRunnerState['url']) => patch({ url: value });
+  const setOutput = (value: MrToolRunnerState['output']) => patch({ output: value });
+  const setResult = (value: MrToolRunnerState['result']) => patch({ result: value });
+  const setError = (value: MrToolRunnerState['error']) => patch({ error: value });
+  const setCopied = (value: MrToolRunnerState['copied']) => patch({ copied: value });
+  const setEditing = (value: MrToolRunnerState['editing']) => patch({ editing: value });
+  const setRunning = (value: MrToolRunnerState['running']) => patch({ running: value });
+  const setSampleInput = (value: MrToolRunnerState['sampleInput']) => patch({ sampleInput: value });
   const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
-  const [connected, setConnected] = useState(false),
-    [running, setRunning] = useState(false),
-    [sampleInput, setSampleInput] = useState(false);
+  const [connected, setConnected] = useState(false);
   useEffect(() => {
     const update = () => setConnected(!!deviceToken());
     update();
@@ -159,6 +198,7 @@ export function MrToolRunner({
     return () => window.removeEventListener('loop-device', update);
   }, []);
   const update = (action: () => void) => {
+    if (!active()) return;
     action();
     setSampleInput(false);
     setEditing(true);
@@ -168,6 +208,7 @@ export function MrToolRunner({
     setCopied(false);
   };
   function sample() {
+    if (!active()) return;
     setSampleInput(true);
     setError('');
     setOutput('');
@@ -197,8 +238,8 @@ export function MrToolRunner({
       setUrl('https://note.com/your_account/n/your_article');
     }
   }
-  async function run() {
-    if (running || executionDisabled) return;
+  async function run(started: number) {
+    if (!active() || runningNow() || running || executionDisabled) return;
     setRunning(true);
     onRunningChange?.(true);
     setError('');
@@ -206,8 +247,7 @@ export function MrToolRunner({
     setEditing(false);
     setOutput('');
     setResult(null);
-    const started = performance.now(),
-      local = !!deviceToken();
+    const local = !!deviceToken();
     const toolId =
       tool === 'coconala'
         ? 'coconala'
@@ -345,6 +385,7 @@ export function MrToolRunner({
     }
   }
   async function copy() {
+    if (!active()) return;
     try {
       await navigator.clipboard.writeText(output);
       setCopied(true);
@@ -562,7 +603,7 @@ export function MrToolRunner({
         <button
           className="black-button bench-run"
           disabled={running}
-          onClick={() => void run()}
+          onClick={() => void run(performance.now())}
         >
           <Play size={16} />
           {running
@@ -631,6 +672,7 @@ export function MrToolRunner({
             <div key={item.id} className="bench-heading">
               <button
                 onClick={() => {
+                  if (!active()) return;
                   setOutput(item.output);
                   setEditing(false);
                   setResult(null);

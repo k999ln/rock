@@ -15,7 +15,7 @@ import type { A2AParentControllerSnapshot } from '@/lib/a2a-parent-controller';
 import type { A2APriceQuote } from '@/lib/a2a-price-quote';
 import type { SkyPackageRuntimeBinding } from '@/lib/sky-package-runtime-binding';
 import { formatCurrencyInputFromMinor, formatCurrencyMinor, parseCurrencyInputToMinor } from '@/lib/currency-format';
-import { MrToolRunner, type MrRunner } from '@/components/mr-tool-runner';
+import { MrToolRunner, type MrRunner, type MrToolRunnerSession, type MrToolRunnerState } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
 import {
   Select,
@@ -410,8 +410,16 @@ export default function Workbench({
   const [busy, setBusy] = useState(false),
     [running, setRunning] = useState(false),
     [deviceOpen, setDeviceOpen] = useState(false);
-  const [runnerStep, setRunnerStep] = useState<string | null>(null),
+  const [runnerStep, setRunnerStepValue] = useState<string | null>(null),
     [pending, setPending] = useState<PendingUpdate | null>(null);
+  const runnerStepRef = useRef<string | null>(null);
+  const lastRunnerSteps = useRef<Record<string, string>>({});
+  const setRunnerStep = useCallback((step: string | null) => {
+    if (step && currentOwner.current && selectedIdRef.current) lastRunnerSteps.current[JSON.stringify([currentOwner.current, selectedIdRef.current])] = step;
+    runnerStepRef.current = step; setRunnerStepValue(step);
+  }, []);
+  const runnerSnapshots = useRef<Record<string, Partial<MrToolRunnerState>>>({});
+  const runnerListeners = useRef<Record<string, Set<() => void>>>({});
   const [filter, setFilter] = useState('open');
   const [pendingCreation, setPendingCreation] = useState<Creation | null>(null);
   const creation = useRef<Creation | null>(null);
@@ -678,6 +686,22 @@ export default function Workbench({
   }, []);
   const currentStep = selected?.steps.find((step) => !step.passed);
   const openRunner = selected?.steps.find((step) => step.id === runnerStep);
+  const runnerSession = useMemo<MrToolRunnerSession | undefined>(() => {
+    if (!ownerScope || !selectedId || !runnerStep) return undefined;
+    const key = JSON.stringify([ownerScope, selectedId, runnerStep]);
+    return {
+      getSnapshot: () => runnerSnapshots.current[key],
+      subscribe(listener) {
+        const listeners = runnerListeners.current[key] ??= new Set(); listeners.add(listener);
+        return () => { listeners.delete(listener); };
+      },
+      patch(value) {
+        runnerSnapshots.current[key] = { ...runnerSnapshots.current[key], ...value };
+        runnerListeners.current[key]?.forEach((listener) => listener());
+      },
+      isActive: () => currentOwner.current === ownerScope && selectedIdRef.current === selectedId && runnerStepRef.current === runnerStep,
+    };
+  }, [ownerScope, selectedId, runnerStep]);
   const locked = busy || running || pending !== null || pendingCreation !== null || loading;
   const visibleJobs = jobs.filter(
     (job) =>
@@ -1330,7 +1354,7 @@ export default function Workbench({
                   disabled={locked}
                   onClick={() => {
                     selectJob(job.id);
-                    setRunnerStep(null);
+                    setRunnerStep(ownerScope ? lastRunnerSteps.current[JSON.stringify([ownerScope, job.id])] ?? null : null);
                     setNote('');
                   }}
                 >
@@ -1695,6 +1719,7 @@ export default function Workbench({
                           onRunningChange={setRunning}
                           key={selected.id + openRunner.id}
                           tool={openRunner.runner as MrRunner}
+                          session={runnerSession}
                           onRecord={record}
                           executionDisabled={busy || pending !== null || openRunner.passed}
                         />

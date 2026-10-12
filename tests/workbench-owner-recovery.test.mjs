@@ -10,7 +10,7 @@ import * as claims from '../lib/rockstar-entitlement-claim.ts';
 import test from 'node:test';
 import { createSkyToolPackageDraft } from '../lib/sky-tool-package.ts';
 const root = new URL('../', import.meta.url);
-async function setup(t, { onFetch, onWorkResponse, componentProps = {} } = {}) {
+async function setup(t, { onFetch, onWorkResponse, actualRunner = false, componentProps = {} } = {}) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
   for (const name of readdirSync(new URL('drizzle/', root))
@@ -247,7 +247,7 @@ async function setup(t, { onFetch, onWorkResponse, componentProps = {} } = {}) {
   // Named imports call without a receiver.
   react.useCallback = (fn, deps) => react.useMemo(() => fn, deps);
   react.useLayoutEffect = (fn, deps) => react.useEffect(fn, deps);
-  const jsx = (type, props) => ({ type, props }),
+  const jsx = (type, props, key) => ({ type, props, key }),
     inert = () => null;
   const client = loadRouteFixture(
     new URL('lib/operations-client.ts', root),
@@ -322,7 +322,9 @@ async function setup(t, { onFetch, onWorkResponse, componentProps = {} } = {}) {
   ).outputText;
   const exports = {};
   let href = 'https://local.test/work';
+  const storage = new Map(); let storageWrites = 0;
   const window = {
+    localStorage: { getItem(key) { return storage.get(key) ?? null; }, setItem(key, value) { storageWrites++; storage.set(key, value); }, removeItem(key) { storageWrites++; storage.delete(key); } },
     get location() {
       return new URL(href);
     },
@@ -351,16 +353,53 @@ async function setup(t, { onFetch, onWorkResponse, componentProps = {} } = {}) {
   ).outputText, { ...context, exports: cloudExports }, { filename: 'components/workbench-cloud-text.tsx' });
   modules['@/components/workbench-cloud-text'] = cloudExports;
   runInNewContext(compiled, { ...context, exports }, { filename: 'components/workbench.tsx' });
+  let runnerInstance = null, runnerExports;
+  if (actualRunner) {
+    const runnerReact = {
+      useState(initial) { const i = runnerInstance.cursor++; if (!(i in runnerInstance.slots)) runnerInstance.slots[i] = typeof initial === 'function' ? initial() : initial;
+        const instance = runnerInstance; return [instance.slots[i], (value) => { instance.slots[i] = typeof value === 'function' ? value(instance.slots[i]) : value; }]; },
+      useEffect(fn, deps) { const i = runnerInstance.cursor++, old = runnerInstance.slots[i];
+        if (!old || deps.some((v, j) => v !== old.deps[j])) { old?.cleanup?.(); const slot = { deps }; runnerInstance.slots[i] = slot; runnerInstance.effects.push(() => { slot.cleanup = fn(); }); } },
+      useCallback(fn) { return fn; },
+      useSyncExternalStore(_subscribe, getSnapshot) { return getSnapshot(); },
+      lazy() { return inert; }, Suspense: 'suspense',
+    };
+    const runnerModules = { ...modules, react: runnerReact,
+      'lucide-react': Object.fromEntries(['Play','Download','Copy','Check','CircleHelp','RotateCcw'].map((key) => [key, inert])),
+      '@/components/execution-access': { ExecutionSignin: inert, useExecutionAccess: () => ({ executionBlocked: false, accessState: 'ready', setNeedsSignin() {} }) },
+      '@/lib/operations-client': { ...client, processedBytes: (value) => new TextEncoder().encode(JSON.stringify(value)).length,
+        executeTracked: async ({ task }) => ({ result: await task(), warning: '' }) },
+      '@/lib/device': { deviceToken: () => '', runDevice() { throw Error('No external device in fixture'); } },
+    };
+    for (const name of ['mr-tools','sky-result-library','sky-result-download']) runnerModules[`@/lib/${name}`] = await import(new URL(`lib/${name}.ts`, root));
+    runnerExports = {};
+    runInNewContext(ts.transpileModule(readFileSync(new URL('components/mr-tool-runner.tsx', root), 'utf8'),
+      { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, esModuleInterop: true } }).outputText,
+      { ...context, exports: runnerExports, require(name) { assert.ok(name in runnerModules, name); return runnerModules[name]; } }, { filename: 'components/mr-tool-runner.tsx' });
+    Object.assign(modules['@/components/mr-tool-runner'], runnerExports);
+  }
+  function renderRunner() {
+    if (!actualRunner) return;
+    const node = nodes(tree).find((item) => item.type === runnerExports.MrToolRunner);
+    if (!node || runnerInstance?.key !== node.key) {
+      runnerInstance?.slots.forEach((slot) => slot?.cleanup?.()); runnerInstance = null;
+    }
+    if (!node) return;
+    runnerInstance ??= { key: node.key, cursor: 0, slots: [], effects: [] };
+    runnerInstance.cursor = 0; node.rendered = runnerExports.MrToolRunner(node.props);
+    while (runnerInstance.effects.length) runnerInstance.effects.shift()();
+  }
   function render() {
     cursor = 0;
     tree = exports.default(componentProps);
     while (effects.length) effects.shift()();
+    renderRunner();
   }
   function nodes(value, out = []) {
     if (Array.isArray(value)) value.forEach((x) => nodes(x, out));
     else if (value && typeof value === 'object') {
       out.push(value);
-      nodes(value.props?.children, out);
+      nodes(value.rendered ?? value.props?.children, out);
     }
     return out;
   }
@@ -370,7 +409,7 @@ async function setup(t, { onFetch, onWorkResponse, componentProps = {} } = {}) {
       : Array.isArray(node)
         ? node.map(text).join('')
         : node && typeof node === 'object'
-          ? text(node.props?.children)
+          ? text(node.rendered ?? node.props?.children)
           : '';
   }
   function find(type, label) {
@@ -413,6 +452,7 @@ async function setup(t, { onFetch, onWorkResponse, componentProps = {} } = {}) {
     waitFor,
     find,
     get navigationBlocked() { return navigationGuards.size > 0; },
+    get storageWrites() { return storageWrites; },
     nodes: () => nodes(tree),
     text: () => text(tree),
     owner(value) {
@@ -949,4 +989,46 @@ void test('a pending record readback does not replace a newer same-owner selecti
   assert.equal(h.find('h2', 'Original selected job'), undefined);
   assert.equal(h.find('button', '記録の保存を再試行'), undefined);
   assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+});
+
+
+void test('real MrToolRunner retains input and generated output across committed-record uncertainty and failed GET remount', async (t) => {
+  const h = await setup(t, { actualRunner: true, onWorkResponse(method) {
+    if (method === 'PATCH') return Response.json({ error: 'Synthetic reply lost after commit' }, { status: 503 });
+  } });
+  const { data } = await h.routeCall('POST', { id: randomUUID(), title: 'Runner recovery job', templateId: 'article' });
+  h.render(); await h.flush(); await h.click('Runner recovery job'); await h.click(data.job.steps[0].title);
+  const source = 'Private original text（出典: [Synthetic source](https://example.com/reference)）';
+  const input = () => h.nodes().find((n) => n.type === 'textarea' && n.props.placeholder?.includes('本文（出典:'));
+  const result = () => h.nodes().find((n) => n.type === 'textarea' && n.props['aria-label'] === '生成結果');
+  assert.ok(input(), 'actual runner input mounted'); input().props.onChange({ target: { value: source } }); h.render();
+  await h.click('作成する'); await h.waitFor(() => Boolean(result()));
+  const output = result().props.value; assert.ok(output.includes('Private original text')); assert.notEqual(output, source);
+  assert.ok(h.find('button', 'この端末に保存')); assert.equal(h.storageWrites, 0);
+  h.rejectNext('GET'); await h.click('最新状態を読み直す');
+  assert.equal(input(), undefined); assert.equal(result(), undefined);
+  await h.click('最新状態を読み直す');
+  assert.equal(input()?.props.value, source); assert.equal(result()?.props.value, output);
+  assert.ok(h.find('button', 'この端末に保存')); assert.equal(h.storageWrites, 0);
+  assert.equal(h.requests.filter((r) => r.method === 'PATCH').length, 1);
+});
+
+void test('real runner sessions hide private text/output for Bob, reject stale actions, and restore Alice without storage writes', async (t) => {
+  const h = await setup(t, { actualRunner: true }); await h.grant('bob');
+  const alice = (await h.routeCall('POST', { id: randomUUID(), title: 'Alice runner job', templateId: 'article' }, 'alice')).data.job;
+  const bob = (await h.routeCall('POST', { id: randomUUID(), title: 'Bob runner job', templateId: 'article' }, 'bob')).data.job;
+  h.render(); await h.flush(); await h.click('Alice runner job'); await h.click(alice.steps[0].title);
+  const input = () => h.nodes().find((n) => n.type === 'textarea' && n.props.placeholder?.includes('本文（出典:'));
+  input().props.onChange({ target: { value: 'Alice private manuscript' } }); h.render();
+  const oldInput = input().props.onChange; await h.click('作成する');
+  const originalOutput = h.nodes().find((n) => n.props?.['aria-label'] === '生成結果').props.value;
+  const oldSave = h.find('button', 'この端末に保存').props.onClick;
+  h.owner('bob'); await h.click('再読込'); await h.click('Bob runner job'); await h.click(bob.steps[0].title);
+  assert.equal(input().props.value, ''); assert.ok(!h.text().includes('Alice private manuscript'));
+  oldInput({ target: { value: 'Stale overwritten manuscript' } }); oldSave(); h.render(); await h.flush();
+  assert.equal(input().props.value, ''); assert.equal(h.storageWrites, 0);
+  h.owner('alice'); await h.click('再読込'); await h.click('Alice runner job');
+  assert.equal(input().props.value, 'Alice private manuscript');
+  assert.equal(h.nodes().find((n) => n.props?.['aria-label'] === '生成結果').props.value, originalOutput);
+  assert.equal(h.storageWrites, 0);
 });

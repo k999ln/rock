@@ -184,6 +184,8 @@ Workbenchは選択した仕事と取得世代を照合し、古い一覧・詳�
 
 WorkbenchのTool結果・状態更新は、元owner・job ID・元revision・command IDをひとつの保留操作として固定する。読込失敗ではこれを消さず、元ownerの一覧または更新応答に同じcommandが記録され、revisionが進んだ証拠を確認してから解除する。結果の再確認はToolそのものの再実行を要求しない。`lib/work-job-view.ts`が一覧・仕事・step・plan・履歴を既存parserと照合し、不完全な成功応答を描画や操作完了へ進めない。保存形式は変えず、旧planは既存storeの正規化を通った応答として受け入れる。
 
+出典整理・無料記事・Coconala検査で共用するMrToolRunnerの既存入力・出力は、親Workbenchのowner・job ID・step ID別memoryに保持する。保存結果の再取得が失敗してTool表示が一度外れても、同じ本人と仕事へ戻れば原稿・生成結果・明示保存操作を復元する。別ownerと別jobへ表示・記録を混在させず、遅延した結果は元sessionへだけ戻す。単体Toolは既存のlocal state相当で動く。自動localStorage保存は追加せず、再読込・タブ終了前の成果保存／exportは既存の明示操作が必要。専用lazy runner内部の入力保持は今回の保証範囲外。合格条件は実runner＋route／SQLiteでの保存後応答喪失→GET失敗→再取得、遅延完了、本人切替、別job切替、実build画面での原稿と結果の復元。
+
 Cloud AI本文だけが未保存の場合も、本人別draftを同一タブの離脱から保護する。未確認の見積保存は同じrequest IDを保持し、後続の拒否だけで以前の保存失敗を断定しない。初回の確定した入力拒否は修正を許可するが、不明な保存は本人の保存済み見積との一致で照合する。破棄は同じ本人・同じ現在の入力版に限定し、旧handlerから新しい本文・上限を消さない。料金・実行gate、明示承認、Providerへの再送禁止、強制終了をまたぐmemoryの限界は維持する。
 
 ## 2. 共通Tool契約

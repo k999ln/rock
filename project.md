@@ -4,6 +4,12 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 実buildで見つけたTool成果消失を修正し変更範囲を凍結（G04 / WEB04、ROCK）
+
+`da644261`の全体verifyはNode2009 pass／1 platform skip、Worker1356、CSV385で成功。GitHubは14成功、secretsは今回の監査JSONの公開説明文1件を誤検出した。固定scannerと同じ1294commitで再現し、path・rule・完全な公開文言を限定した未適用案と11件の検出維持試験を用意した。SECURITY.mdのowner review待ちで、履歴・scan範囲・policyは変更していない。
+
+実画面では保存済みの仕事詳細が復旧しても、Tool原稿と生成結果がunmountで消えることを確認。親Workbenchに本人／仕事／手順別sessionを保持し、既存の出典整理・無料記事・Coconala検査の入力・結果・明示保存操作を復元する。対象74試験と修正担当以外による実runner2件・遅延完了／別仕事2件が成功。自動永続化と専用runner全体への保証は追加しない。390pxのCoconala通知はinline outputが次のcardへ8.1px重なったためblock表示へ修正。ここで新領域への変更を止め、両経路を再buildした画面と最終CIで確認する。
+
 ## 2026-10-11 — 既存機能の品質・復旧改善を開始（G04 / H1、ROCK）
 
 利用者の5時間のリファクタリング依頼に基づく。主担当はGit / CI / Operations、ROCK、関連はWEB04 / AI04 / GRID01。開始は2026-10-11 19:56 EDT（23:56 UTC）。元checkoutの多数の未保存変更を保持し、専用worktreeで最新main `4055ad380d3876bee8e93eca71b1e072a2785959` と未統合PR #100 `f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a` を統合した。作業branchだけの統合でありmain mergeではない。mainと#100の同一SHA各9検査成功、#103 `e80d0357aa88291b6ee955e62af875180d35e6cd` はsecrets以外成功を再取得した。

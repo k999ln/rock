@@ -150,7 +150,8 @@
       "workbenchUpdateRecovery": {
         "implementation": [
           "components/workbench.tsx",
-          "lib/work-job-view.ts"
+          "lib/work-job-view.ts",
+          "components/mr-tool-runner.tsx"
         ],
         "tests": [
           "tests/workbench-owner-recovery.test.mjs",
@@ -161,7 +162,14 @@
         "failure": "Read failure or malformed success retains exact command and private input; different owner cannot dispatch it.",
         "recovery": "Read back the same owner job or explicitly retry the same command, without rerunning the Tool.",
         "compatibility": "Existing API, storage and authorization unchanged; legacy plans pass through existing store normalization.",
-        "limits": "Current-page memory; no forced-close persistence or Provider acceptance."
+        "limits": "Current-page memory; no forced-close persistence or Provider acceptance.",
+        "runnerSession": {
+          "boundary": "ownerScope + job ID + step ID; Workbench lifetime memory only",
+          "scope": "Existing shared citation, free-article and Coconala checker fields and output; specialized lazy-runner internal state excluded",
+          "recovery": "Restore original input, result and explicit save controls after read failure remount. Late results remain in original session; stale owner/job actions are rejected.",
+          "persistence": "No implicit localStorage write. Reload/tab close still requires explicit save/export.",
+          "regressions": "tests/workbench-owner-recovery.test.mjs"
+        }
       }
     },
     {

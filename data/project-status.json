@@ -7529,12 +7529,12 @@
     "reusedPr100Sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
     "separateGridBranch": "codex/compute-grid-recovery-20261011",
     "gridBasePr103Sha": "e80d0357aa88291b6ee955e62af875180d35e6cd",
-    "nextAction": "Source frozen after independent review of the two built-UI fixes. Commit documentation, run full verify/build and recheck those built paths. Push exact candidate, await same-SHA GitHub checks, ready PR105. Grid104 remains separate; two approval-blocked proposals remain unapplied.",
+    "nextAction": "Freeze reviewed Tool session retention and mobile notice layout fixes. Run full verify/build; reproduce recovery with original Tool input and result present, and measure notice layout. Save final evidence, push exact candidate and inspect same-SHA CI. Three unapplied approval proposals remain separate; no main merge or deployment.",
     "githubSaved": true,
     "mainIntegrated": false,
     "deployed": false,
     "physicalDeviceTested": false,
-    "checkpointAt": "2026-10-12T02:49:08.780121+00:00",
+    "checkpointAt": "2026-10-12T03:09:00Z",
     "gridPullRequest": "https://github.com/k999ln/rock/pull/104",
     "gridSourceSha": "050fade2c72c440af8922d4f23a574d6c089cca5",
     "gridGithubSaved": true,
@@ -7547,8 +7547,8 @@
     "evidence": "docs/evidence/quality-reliability-review.json",
     "latestMainObservedSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
     "latestMainObservedAt": "2026-10-12T02:00:00Z",
-    "primaryIntermediateCi": "250b57b07e6a3191fc0a0ad11632ab1dbeb9ad58: all15 checks successful. Additional reviewed Coconala/Material followup commits are local; final candidate CI pending.",
-    "lastPushedPrimarySha": "250b57b0",
-    "sourceSha": "e3567dddc6f484348e7bdb7d0a983515c086ce80"
+    "primaryIntermediateCi": "da644261: local full verify passed (Node2009 pass/1 platform skip, Worker1356, CSV385); GitHub14 success, secrets1 failure on a public evidence-description phrase. Exact reviewed exception proposal is unapplied; final source validation pending.",
+    "lastPushedPrimarySha": "da644261f7d2ad2a4889c56f62e5e865a75d2080",
+    "sourceSha": "da644261f7d2ad2a4889c56f62e5e865a75d2080"
   }
 }
