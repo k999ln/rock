@@ -67,6 +67,10 @@ Here is the smallest useful mental model: “Please clean this CSV and show me e
 
 The current CSV Tool already has a bounded local/Web path for one file and an explicit change report. Cloud dispatch and live billing are not yet live.
 
+When a Wallet or CSV save has an unknown result, keep the page open and use its same-operation recovery action. Signing in opens a separate tab so the original operation can be retained; a different account cannot retry it. Wallet and CSV hide private drafts until the original account is confirmed again. Unsubmitted input is protected during in-app navigation; only the confirmed original account can explicitly discard it. The pending input is held in memory, so it is not a backup against closing the browser. CSV work abandoned in `processing` after a server process stops still requires operator investigation.
+
+Zema asks before discarding unsent text when changing conversations or following an internal link. Back/Forward uses the same check in browsers with the Navigation API; older browsers retain only the existing link and unload protection.
+
 ## Service atlas
 
 The names below are organized by how a person meets them: core surfaces, supporting surfaces, separately deployed services, and independent programs. A route or folder is an implementation location; its stage is shown beside it.
@@ -306,7 +310,9 @@ npm run build
 npm start
 ```
 
-`npm start` applies local D1 migrations and starts the preview only after migration succeeds. It does not deploy the Worker or run remote migrations. Choose a port with `npm start -- --port 8788`. The Operator Dock uses the same local runtime: `npm run operator-dock:dev`.
+`npm start` applies local D1 migrations and starts the preview only after migration succeeds. Migrations and the preview use the same project-root `.wrangler/state` directory, outside generated build output. Choose a port with `npm start -- --port 8788`, or a separate complete local store with `npm start -- --persist-to /absolute/local-store --port 8788`. Both stages receive that store; rebuilds retain its D1 and R2 data. `--env`/`-e` and `--config`/`-c` select the same environment and configuration for both stages. Change projects with `cd /path/to/project && npm start`; the wrapper rejects `--cwd` and remote mode before migrations. This does not deploy the Worker or run remote migrations. The Operator Dock uses the same local runtime through its separate command: `npm run operator-dock:dev`.
+
+If an older preview left data in `dist/server/.wrangler/state`, build and start stop before changing it. Stop the preview, back up that **whole directory** outside `dist` (including D1, R2, SQLite WAL/SHM and blobs), then move it to an unused persistent directory and select it with `--persist-to`. If `.wrangler/state` already exists, preserve both stores and choose one; do not merge or overwrite database files. The diagnostic prints the exact paths. The guard cannot recover data already deleted by an earlier rebuild.
 
 Before opening a pull request, run all checks:
 
@@ -317,7 +323,7 @@ npm run verify
 
 After changing progress records or generated status, run the repository-prescribed update/check commands. Rules for people and AI coding agents are in [AGENTS.md](AGENTS.md).
 
-After unlocking, `npm run metadata:update` synchronizes project, Mission Control, database status, and workspace records. `project:update` and `mission:update` remain aliases; `metadata:check` checks without writing. These commands stop before reading or writing records when private files are locked.
+`npm run metadata:update` synchronizes project, Mission Control, database status, and workspace records. `project:update` and `mission:update` remain aliases; `metadata:check` checks without writing. Encryption is currently disabled; if encrypted records are restored in a future change, these commands stop before reading or writing locked records.
 
 ## Safety, rights, and images
 

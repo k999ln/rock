@@ -8,7 +8,7 @@
   "scripts": {
     "predev": "node scripts/generate-private-modules.mjs",
     "dev": "vinext dev",
-    "prebuild": "node scripts/generate-private-modules.mjs",
+    "prebuild": "node scripts/local-web-state.mjs && node scripts/generate-private-modules.mjs",
     "build": "vinext build",
     "start": "node scripts/start-local-web.mjs",
     "lint": "oxlint",

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { localStartFixture } from './local-start-fixture.mjs';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
@@ -41,8 +42,8 @@ await test('local production start applies the published migrations before servi
   });
   assert.equal(result.status, 0, result.stderr);
   assert.deepEqual(f.calls(), [
-    { stage: 'd1', args: ['d1', 'migrations', 'apply', 'site-creator-d1', '--local', '--config', 'dist/server/wrangler.json'], ci: '1' },
-    { stage: 'dev', args: ['dev', '--config', 'dist/server/wrangler.json', '--port', '8788', '--ip', '127.0.0.1'], ci: 'fixture-dev-env' },
+    { stage: 'd1', args: ['d1', 'migrations', 'apply', 'site-creator-d1', '--local', '--config', 'dist/server/wrangler.json', '--persist-to', join(f.root, '.wrangler/state')], ci: '1' },
+    { stage: 'dev', args: ['dev', '--config', 'dist/server/wrangler.json', '--port', '8788', '--ip', '127.0.0.1', '--persist-to', join(f.root, '.wrangler/state')], ci: 'fixture-dev-env' },
   ]);
 });
 

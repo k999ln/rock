@@ -6,7 +6,7 @@ export function localStartFixture(t) {
   const root = realpathSync(mkdtempSync(join(tmpdir(), 'rock-local-start-')));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   mkdirSync(join(root, 'scripts'));
-  for (const name of ['start-local-web.mjs', 'local-wrangler.mjs', 'spider-web-runtime.mjs']) {
+  for (const name of ['start-local-web.mjs', 'local-web-state.mjs', 'local-wrangler.mjs', 'spider-web-runtime.mjs']) {
     copyFileSync(new URL(`../scripts/${name}`, import.meta.url), join(root, 'scripts', name));
   }
   const packageAt = (path, manifest, source) => {
