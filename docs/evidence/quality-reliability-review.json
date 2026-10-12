@@ -1,14 +1,15 @@
 {
   "schema": "rock-quality-reliability-review/1",
-  "status": "in_progress",
+  "status": "review_ready_with_known_secrets_ci_failure",
   "startedAt": "2026-10-11T23:56:26Z",
   "plannedEndAt": "2026-10-12T04:56:26Z",
-  "updatedAt": "2026-10-12T03:39:31.533705+00:00",
+  "updatedAt": "2026-10-12T03:49:34.442761+00:00",
   "baseline": {
     "main": "4055ad380d3876bee8e93eca71b1e072a2785959",
     "reusedPr100": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
     "gridPr103": "e80d0357aa88291b6ee955e62af875180d35e6cd",
-    "mainMerged": false
+    "mainMerged": false,
+    "latestMainObservedAt": "2026-10-12T03:50:29Z"
   },
   "pullRequests": {
     "primary": "https://github.com/k999ln/rock/pull/105",
@@ -112,7 +113,7 @@
       "before": "Actual built PATCH commit/503 then GET503/GET200 recovered job metadata but lost manuscript, output and explicit save controls. Same defect reproduced0/2 actual-runner/SQLite tests.",
       "after": "Original owner/job/step session restores exact input, generated output and save/copy/download controls after read failure remount. Bob sees no original input; Alice restores it. Local API confirms one passed step, revision1, one event; no Tool rerun.",
       "scope": "74 targeted and4 independent tests; built32ccdf3c PC1280/mobile390; explicit local save confirmed. Shared citation/free-article/Coconala fields only. No automatic persistent storage. Explicit save→reload→Library→same result reopened.",
-      "remaining": "Specialized lazy runners excluded; forced reload/tab closure still requires explicit persistence. Bounded same-tab navigation followup is independently reviewed, built acceptance pending."
+      "remaining": "Specialized lazy runners excluded; forced reload/tab closure still requires explicit persistence. Shared-Tool same-tab guard and per-Tool explicit discard verified in14bd7988."
     },
     {
       "id": "coconala-notice-layout",
@@ -130,18 +131,21 @@
       "id": "tool-draft-navigation",
       "before": "Built5d855b84: type only Tool manuscript, clickLibrary, Back and reopen Tool produces empty input without warning.",
       "after": "Meaningful shared-Tool drafts join existing navigation guard; original confirmed owner can discard exact per-job/step memory even when cancelled/hidden, leaving saved Library and work records intact. Different owner/unknown owner hides names/counts/content; stale discard cannot erase newer input.",
-      "scope": "86 related tests plus independent8targeted/4adversarial; no new persistence or service. Actual rebuilt UI and candidate CI pending.",
+      "scope": "86 related tests plus independent8targeted/4adversarial; actual14bd7988 build PC1280/mobile390 accepted, saved output reopened and cancelled job remains revision1/event1. Same-head CI14success/1known public-prose secrets failure.",
       "evidence": [
         "tool-navigation-before-summary.json",
         "workbench-runner-navigation-summary.json",
-        "workbench-runner-navigation-independent-summary.json"
+        "workbench-runner-navigation-independent-summary.json",
+        "browser-14bd7988-summary.json"
+      ],
+      "screenshots": [
+        "docs/evidence/quality-reliability/tool-navigation-guard-14bd7988-desktop.jpg",
+        "docs/evidence/quality-reliability/tool-navigation-guard-14bd7988-mobile.jpg",
+        "docs/evidence/quality-reliability/tool-library-preserved-14bd7988-mobile.jpg"
       ]
     }
   ],
-  "inProgress": [
-    "Rebuild and visually accept the independently reviewed shared-Tool navigation guard",
-    "Final documentation, same-SHA verify/CI and review-ready PR handoff"
-  ],
+  "inProgress": [],
   "knownLimitations": [
     "Memory-only drafts do not survive browser force-close",
     "Navigation API traversal guard is browser-dependent; same-tab link and beforeunload guards remain",
@@ -180,11 +184,14 @@
   ],
   "verificationLogs": "Large logs, screenshots and unapplied proposals are outside Git in /private/tmp/rock-quality-audit; tracked regression tests reproduce accepted behavior.",
   "finalValidation": {
-    "sourceSha": "5d855b84269326c5e4fc6e93b967d6906d73c316",
-    "fullVerify": "pass; see validationCheckpoints",
-    "githubCi": "14success/1known public-prose secrets failure",
-    "finishedAt": null,
-    "remainingSourceChange": "Independently reviewed shared-Tool same-tab navigation guard"
+    "sourceSha": "14bd7988cd334d3419c0e138174b850641d568d7",
+    "fullVerify": "PASS: Node2017 pass/1platform skip, Worker1356, CSV385, production build and186 asset references/0missing",
+    "githubCi": "14success/1known public-prose secrets failure; same14bd7988",
+    "runtimeFrozen": true,
+    "browserAcceptedAt": "2026-10-12T03:47:57.193717+00:00",
+    "reviewTarget": "PR105 final head (documentation and three bounded screenshots follow this runtime checkpoint)",
+    "finalHeadVerification": "The final documentation-only head verification receipt belongs in PR105 body, with exact SHA and command/CI results. This JSON proves the stated14bd7988 runtime checkpoint only.",
+    "remainingSourceChange": null
   },
   "intermediateCi": {
     "sha": "250b57b07e6a3191fc0a0ad11632ab1dbeb9ad58",
@@ -196,7 +203,9 @@
     "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
     "trackedPatchAndStatusEqualInitial": true,
     "statusEntries": 168,
-    "method": "Separate managed worktree; compared original tracked binary patch and porcelain status byte-for-byte; no original checkout writes."
+    "method": "Separate managed worktree; compared original tracked binary patch and porcelain status byte-for-byte; no original checkout writes.",
+    "lastComparedAt": "2026-10-12T03:50:29.860956+00:00",
+    "evidence": "original-checkout-final-preservation.json"
   },
   "reproduce": [
     {
@@ -272,9 +281,9 @@
       "area": "Full integration",
       "command": "npm run verify",
       "evidence": [
-        "verify-primary-32ccdf3c.log"
+        "verify-primary-14bd7988.log"
       ],
-      "checkpoint": "Committed32ccdf3c: Node2011 pass/1platformskip, Worker1356 andCSV385; bounded feedback followup still pending."
+      "checkpoint": "Committed14bd7988 final runtime: Node2017pass/1platformskip, Worker1356, CSV385; final documentation-only head must repeat full verify and CI before handoff."
     }
   ],
   "browserCheckpoint": {
@@ -309,10 +318,11 @@
       "e3567ddd",
       "b9e16184",
       "32ccdf3c",
-      "5d855b84"
+      "5d855b84",
+      "14bd7988"
     ],
     "independentReview": "45 scoped cases and two additional URL-intent race cases passed; built-ui-followups-independent-summary.json",
-    "builtRecheck": "5d855b84: original manuscript/output/savecontrols restored, resolved record error cleared, save label126x44px at390px, no overflow. Cancel/retry oneevent/revision1. One subsequent navigation-protection change still needs rebuilt acceptance."
+    "builtRecheck": "14bd7988 final runtime: shared Tool-only draft blocks Library navigation and retains exact input; pending committed cancellation forbids discard, exact retry confirms revision1/event1; another owner sees no draft/title/action and original owner restores; cancelled-job draft can be explicitly discarded without modifying saved Library/job records. Existing saved output reopened; PC1280/mobile390 overflow0."
   },
   "validationCheckpoints": [
     {
@@ -403,6 +413,132 @@
       },
       "browserEvidence": "browser-5d855b84-summary.json",
       "log": "verify-primary-5d855b84.log"
+    },
+    {
+      "sha": "14bd7988cd334d3419c0e138174b850641d568d7",
+      "fullVerify": {
+        "exit": 0,
+        "nodePass": 2017,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "githubCi": {
+        "success": 14,
+        "failure": 1,
+        "failedCheck": "SPIDER / secrets",
+        "reason": "Known public-description finding introduced in da644261; owner review pending; no policy or history change",
+        "checks": [
+          {
+            "name": "SPIDER / secrets",
+            "conclusion": "FAILURE",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645949/job/114653081423"
+          },
+          {
+            "name": "public-fixture-tests",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645856/job/114653081165"
+          },
+          {
+            "name": "prototype",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645834/job/114653081238"
+          },
+          {
+            "name": "partitions (main-0)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082491"
+          },
+          {
+            "name": "verify",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646001/job/114653082014"
+          },
+          {
+            "name": "SPIDER CodeQL (javascript-typescript)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645843/job/114653081191"
+          },
+          {
+            "name": "SPIDER / repair regressions",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645958/job/114653081593"
+          },
+          {
+            "name": "partitions (main-1)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082388"
+          },
+          {
+            "name": "SPIDER CodeQL (python)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645843/job/114653081446"
+          },
+          {
+            "name": "partitions (main-2)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082212"
+          },
+          {
+            "name": "partitions (main-3)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082492"
+          },
+          {
+            "name": "partitions (support)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082392"
+          },
+          {
+            "name": "source-tests",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653556992"
+          },
+          {
+            "name": "SPIDER / production web security measurement",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645958/job/114653081876"
+          },
+          {
+            "name": "CodeQL",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/runs/114653520869"
+          }
+        ],
+        "reachableCommitsScanned": 1298,
+        "findings": 1
+      },
+      "log": "verify-primary-14bd7988.log",
+      "browserEvidence": "browser-14bd7988-summary.json",
+      "ciEvidence": "ci-14bd-native-android-secrets-summary.json",
+      "codeql": {
+        "newChangedCodeAlerts": 0,
+        "annotations": 0,
+        "check": "https://github.com/k999ln/rock/runs/114653520869"
+      },
+      "androidCi": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38200645834",
+        "emulator": "API35/google_apis/x86_64",
+        "passed": 58,
+        "skipped": 2,
+        "failures": 0,
+        "newShellSubmissionRecoveryTestsPassed": 2,
+        "hostXmlPass": 161,
+        "debugApkHashesVerified": true,
+        "excluded": "LocalAiServiceIntegrationTest",
+        "skipReason": "PhysicalRebootRecoveryTest seed/recover phase absent",
+        "physicalDevice": "NOT_RUN",
+        "releaseSigning": "NOT_CONFIGURED"
+      },
+      "nativeCi": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38200646106",
+        "pythonTestExecutions": 1847,
+        "gatesPassed": 17,
+        "skipped": 0,
+        "osBoot": false
+      }
     }
   ],
   "policyPreservation": {
@@ -419,5 +555,21 @@
     "archivedPaths": 968,
     "resurrected": 0,
     "evidence": "final-policy-preservation.json"
+  },
+  "handoff": {
+    "runtimeSourceSha": "14bd7988cd334d3419c0e138174b850641d568d7",
+    "primaryPr": "https://github.com/k999ln/rock/pull/105",
+    "primaryPrState": "OPEN_READY_FOR_REVIEW",
+    "mainIntegrated": false,
+    "deployed": false,
+    "nextSteps": [
+      "Read this evidence and current PR105/104 head checks; keep primary/main and Grid/PR103 bases separate.",
+      "Review the two exact public-value secrets exception proposals under SECURITY.md; neither scanner policy, pinned policy commit nor full-history scope was changed. Verify negative controls and all-history scan after an approved policy commit/pin update.",
+      "Review the separate CSV processing-timeout/storage-retention proposal before any implementation. Until then hard-killed processing requires operator investigation; no automatic unsafe takeover.",
+      "After approved remaining changes, repeat focused regressions, npm run verify, real browser recovery and same-SHA CI. Main merge and deployment are separate operations."
+    ],
+    "unappliedProposalDirectory": "/private/tmp/rock-quality-audit",
+    "rawEvidenceDirectory": "/private/tmp/rock-quality-audit",
+    "reviewLimits": "CI secrets finding prevents claiming all-green/merge-ready. Physical/full-OS, real provider, production identity, funds and publication remain separate gates."
   }
 }

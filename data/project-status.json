@@ -124,7 +124,7 @@
   },
   "updatedAt": "2026-10-11",
   "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
-  "nextAction": "G04/WEB04: PR #105の統合候補を実ビルド・同一SHA verify/CIで仕上げ、PR #104の既存Grid server修正は別baseでレビューする。main統合・公開は別操作。Grid公開digestの秘密検査例外とCSV強制終了後の保存契約変更は未適用案のままowner判断待ち。OS10の全OS/Pixel、QEMU image、avocadoMini実機は独立gateを維持する。",
+  "nextAction": "G04/WEB04: PR #105は実buildのPC1280／390px・復旧・本人境界を確認してレビュー可能。最終文書headのverify/CIをPRへ照合し、既知の公開文言の秘密検査はSECURITY owner review後に対応する。PR #104はPR #103基準の既存Grid server修正として別レビュー。CSV強制終了後の保存契約変更とGrid公開digest例外も未適用。main統合・公開、OS10全OS／Pixel・QEMU image・avocadoMini実機は独立gate。",
   "tasks": [
     {
       "id": "AMC02",
@@ -7512,7 +7512,7 @@
   },
   "qualityRefactor": {
     "startedAt": "2026-10-11T23:56:26Z",
-    "status": "validating_frozen_source",
+    "status": "review_ready_with_known_secrets_ci_failure",
     "primaryWorkstream": "Git / CI / Operations",
     "primaryOwner": "ROCK",
     "taskId": "G04",
@@ -7529,26 +7529,26 @@
     "reusedPr100Sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
     "separateGridBranch": "codex/compute-grid-recovery-20261011",
     "gridBasePr103Sha": "e80d0357aa88291b6ee955e62af875180d35e6cd",
-    "nextAction": "Commit frozen shared-Tool navigation protection and synced contracts; run full verify/build and actual input retention/discard/owner/cancelled-job paths. Then close final evidence and same-SHA CI, ready PR105. Three approval proposals remain unapplied; no main merge/deployment.",
+    "nextAction": "Use the exact final PR105 head verification receipt in its body; owner-review three unapplied proposals: primary public-prose and Grid public-digest exact scanner exceptions, CSV stale-processing recovery/storage contract. Runtime14bd7988 is frozen, accepted and saved; no main merge/deployment.",
     "githubSaved": true,
     "mainIntegrated": false,
     "deployed": false,
     "physicalDeviceTested": false,
-    "checkpointAt": "2026-10-12T03:39:31.533705+00:00",
+    "checkpointAt": "2026-10-12T03:49:34.442761+00:00",
     "gridPullRequest": "https://github.com/k999ln/rock/pull/104",
     "gridSourceSha": "050fade2c72c440af8922d4f23a574d6c089cca5",
     "gridGithubSaved": true,
     "gridCi": "Same head: six checks success; secrets fails on three inherited public tokenizer specification digests. Exact exception proposal remains unapplied.",
     "plannedEndAt": "2026-10-12T04:56:26Z",
     "gridHeadSha": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
-    "browserAcceptance": "Built32ccdf3c restores original Tool manuscript/output after committed PATCH response loss and failed GET, isolates owner, and reopens explicitly saved output from Library after reload. PC1280/mobile390 overflow0; Coconala notice12px gap. Back cancel preserves unsent Zema input. Narrow feedback/action layout followup still requires rebuilt confirmation.",
+    "browserAcceptance": "14bd7988 final runtime: shared Tool-only draft blocks Library navigation and retains exact input; pending committed cancellation forbids discard, exact retry confirms revision1/event1; another owner sees no draft/title/action and original owner restores; cancelled-job draft can be explicitly discarded without modifying saved Library/job records. Existing saved output reopened; PC1280/mobile390 overflow0.",
     "primaryPullRequest": "https://github.com/k999ln/rock/pull/105",
-    "primaryPrState": "DRAFT",
+    "primaryPrState": "OPEN_READY_FOR_REVIEW",
     "evidence": "docs/evidence/quality-reliability-review.json",
     "latestMainObservedSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
-    "latestMainObservedAt": "2026-10-12T03:21:39.153630+00:00",
-    "primaryIntermediateCi": "5d855b84: full verify2013pass/1skip; CI14success/1public-prose secrets failure. CodeQL new alert annotations0. Later shared-Tool navigation guard is independently reviewed; finalbuild/CI pending.",
-    "lastPushedPrimarySha": "5d855b84269326c5e4fc6e93b967d6906d73c316",
-    "sourceSha": "5d855b84269326c5e4fc6e93b967d6906d73c316"
+    "latestMainObservedAt": "2026-10-12T03:50:29Z",
+    "primaryIntermediateCi": "14bd7988 final runtime: full verify2017pass/1skip; CI14success/1known public-prose secrets failure; final documentation-only head validation recorded in PR105 before handoff.",
+    "lastPushedPrimarySha": "14bd7988cd334d3419c0e138174b850641d568d7",
+    "sourceSha": "14bd7988cd334d3419c0e138174b850641d568d7"
   }
 }

@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-G04/WEB04: PR #105の統合候補を実ビルド・同一SHA verify/CIで仕上げ、PR #104の既存Grid server修正は別baseでレビューする。main統合・公開は別操作。Grid公開digestの秘密検査例外とCSV強制終了後の保存契約変更は未適用案のままowner判断待ち。OS10の全OS/Pixel、QEMU image、avocadoMini実機は独立gateを維持する。
+G04/WEB04: PR #105は実buildのPC1280／390px・復旧・本人境界を確認してレビュー可能。最終文書headのverify/CIをPRへ照合し、既知の公開文言の秘密検査はSECURITY owner review後に対応する。PR #104はPR #103基準の既存Grid server修正として別レビュー。CSV強制終了後の保存契約変更とGrid公開digest例外も未適用。main統合・公開、OS10全OS／Pixel・QEMU image・avocadoMini実機は独立gate。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

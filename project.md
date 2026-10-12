@@ -4,6 +4,16 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — 既存機能の品質改善をレビュー可能PRへ（G04 / WEB04、ROCK）
+
+runtime `14bd7988`を凍結し、`npm run verify`はNode2017 pass／1 platform skip、Worker1356、CSV385、実buildとasset186参照／欠落0で成功。同一SHAのGitHub CIは14成功、既知の公開説明文に対するSPIDER secrets検出1件。PR #105をready for reviewにしたが、全CI成功・main統合・公開とは扱わない。最終の文書のみのheadも同じverify／CIで照合し、結果SHAをPR本文へ残す。
+
+実buildでは、従来Library移動→戻るで消失したTool単独原稿が離脱guardで保持された。取消PATCH確定後の応答喪失中は破棄できず、同じ記録の再試行後にrevision1／event1。別ownerには原稿・仕事名・破棄操作を表示せず、元owner復帰後は中止済み仕事の対象下書きだけを明示破棄できる。Libraryの保存済み成果は同じ本文と出典で再表示できた。PC1280と390pxの横はみ出し0。最小の画面証拠3枚を `docs/evidence/quality-reliability/` に保存した。
+
+独立検収後の説明訂正として、破棄対象を「入力と生成結果のメモリ」と明記。共通化はWallet両画面の復旧、local previewの保存先／設定選択、Workbench projection判定とTool初期値／下書き判定。行数だけを根拠にした削除は行わず、vendor・migration・IMPORT-MANIFEST・mainで削除済みの968 pathを保護した。未保存の元checkout168件は別worktreeで隔離したまま。
+
+引継ぎは `docs/evidence/quality-reliability-review.json` の改善前後・領域棚卸し・再現コマンド・未適用3提案を参照。GridはPR #104（PR #103基準）へ分離。公開digest例外とCSV保存契約変更は自動承認審査で拒否されて未適用、主PRの公開文言例外はSECURITY.mdのowner review待ち。scanner設定／pin／全履歴範囲を弱めず、実機・全OS・本番認証・外部Provider・実資金・公開を合格扱いにしない。
+
 ## 2026-10-11 — Tool単独入力の離脱消失も既存guardへ接続（G04 / WEB04、ROCK）
 
 `5d855b84`は全体verify Node2013 pass／1 platform skip、Worker1356、CSV385、GitHub14成功／既知のsecrets誤検出1件。Map変更後のCodeQL新規指摘は0。実buildの復旧後エラー消去・原稿と成果保持・390pxの保存ラベル一行／高さ44px、中止再試行が1event／revision1になることを確認した。
@@ -3282,7 +3292,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: G04/WEB04: PR #105の統合候補を実ビルド・同一SHA verify/CIで仕上げ、PR #104の既存Grid server修正は別baseでレビューする。main統合・公開は別操作。Grid公開digestの秘密検査例外とCSV強制終了後の保存契約変更は未適用案のままowner判断待ち。OS10の全OS/Pixel、QEMU image、avocadoMini実機は独立gateを維持する。
+次の作業: G04/WEB04: PR #105は実buildのPC1280／390px・復旧・本人境界を確認してレビュー可能。最終文書headのverify/CIをPRへ照合し、既知の公開文言の秘密検査はSECURITY owner review後に対応する。PR #104はPR #103基準の既存Grid server修正として別レビュー。CSV強制終了後の保存契約変更とGrid公開digest例外も未適用。main統合・公開、OS10全OS／Pixel・QEMU image・avocadoMini実機は独立gate。
 <!-- project-status:end -->
 
 ## 次段階の設計
