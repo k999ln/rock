@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 import ts from 'typescript';
+import * as historyNavigation from '../lib/history-navigation-guard.ts';
 
 const source = readFileSync(new URL('../components/sky-chat-workspace.tsx', import.meta.url), 'utf8');
 const compiled = ts.transpileModule(source, {
@@ -29,6 +30,7 @@ function harness() {
   const noop = () => {};
   const session = { id: 'fixture-thread', toolId: 'mcp:initial', createdAt: 1, messages: [], activeRequest: { id: 'fixture-request', text: 'Synthetic request', toolId: 'mcp:initial' }, workflowStatus: 'ready', outcome: null };
   const modules = {
+    '@/lib/history-navigation-guard': historyNavigation,
     'react': react,
     'react/jsx-runtime': { jsx, jsxs: jsx },
     'next/dynamic': { default: () => 'DynamicFixture' },

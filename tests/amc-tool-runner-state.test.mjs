@@ -467,3 +467,61 @@ void test('Sky launch cross-squad task links clear a filter that excludes their 
   assert.equal(h.field('-task').props.value, 'S10-01');
   assert.ok(h.find('h3', (node) => text(node).startsWith('S10-01')));
 });
+
+void test('a late older Goal file must not overwrite a newer selection', async () => {
+  const h = harness();
+  await h.respond(0, 200, {jobs: []});
+  let finishOld;
+  const old = JSON.stringify(amc.createAmcGoal('old-file', {request:'管理アプリを作成して',goal:'old goal',intent:'old intent'}));
+  const newer = JSON.stringify(amc.createAmcGoal('new-file', {request:'予定管理アプリを作成して',goal:'new goal',intent:'new intent'}));
+  const handle = h.field('-import-file').props.onChange;
+  const oldRead=handle({currentTarget:{files:[{size:old.length,text:()=>new Promise(resolve=>{finishOld=resolve})}],value:'old.json'}});
+  await handle({currentTarget:{files:[{size:newer.length,text:async()=>newer}],value:'new.json'}});
+  h.render();
+  assert.equal(h.field('-import').props.value,newer);
+  finishOld(old); await oldRead; h.render();
+  assert.equal(h.field('-import').props.value,newer,'latest chosen JSON must remain');
+});
+void test('typing during Goal file load must not be overwritten', async () => {
+  const h = harness();
+  await h.respond(0, 200, {jobs: []});
+  let finish;
+  const content = JSON.stringify(amc.createAmcGoal('file', {request:'管理アプリを作成して',goal:'old goal',intent:'old intent'}));
+  const pending=h.field('-import-file').props.onChange({currentTarget:{files:[{size:content.length,text:()=>new Promise(resolve=>{finish=resolve})}],value:'file.json'}});
+  h.change(h.field('-import'), 'new manually edited JSON');
+  finish(content); await pending; h.render();
+  assert.equal(h.field('-import').props.value,'new manually edited JSON');
+});
+
+void test('Goal file reading blocks submission until validated and confirmed again', async () => {
+  const h = harness(); await h.respond(0, 200, { jobs: [] });
+  const content = JSON.stringify(savedJob().amcGoal);
+  h.change(h.field('-import'), content);
+  const checkbox = () => h.all().find(node => node.type === 'input' && node.props.type === 'checkbox' && node.props.required);
+  h.change(checkbox(), true);
+  let finish;
+  const pending = h.field('-import-file').props.onChange({ currentTarget: { files: [{ size: content.length, text: () => new Promise(resolve => { finish = resolve; }) }], value: 'goal.json' } });
+  h.render();
+  assert.equal(checkbox().props.disabled, true);
+  const form = h.find('form', node => nodes(node).some(child => child.props?.id?.endsWith('-import')));
+  form.props.onSubmit({ preventDefault() {} });
+  assert.equal(h.requests.length, 1);
+  finish(content); await pending; h.render();
+  assert.equal(checkbox().props.checked, false); assert.equal(checkbox().props.disabled, false);
+});
+void test('discarding to a new Goal invalidates a still-reading import', async () => {
+  const h = harness(); await h.respond(0, 200, { jobs: [] });
+  const content = JSON.stringify(savedJob().amcGoal); let finish;
+  const pending = h.field('-import-file').props.onChange({ currentTarget: { files: [{ size: content.length, text: () => new Promise(resolve => { finish = resolve; }) }], value: 'goal.json' } });
+  h.render(); h.find('button', node => text(node) === '新しい依頼').props.onClick(); h.render();
+  finish(content); await pending; h.render(); assert.equal(h.field('-import').props.value, '');
+});
+void test('a rejected older Goal file cannot replace a newer successful import notice', async () => {
+  const h = harness(); await h.respond(0, 200, { jobs: [] });
+  const content = JSON.stringify(savedJob().amcGoal); let fail;
+  const handle = h.field('-import-file').props.onChange;
+  const old = handle({ currentTarget: { files: [{ size: content.length, text: () => new Promise((_resolve, reject) => { fail = reject; }) }], value: 'old.json' } });
+  await handle({ currentTarget: { files: [{ size: content.length, text: async () => content }], value: 'new.json' } });
+  fail(new Error('old file failed')); await old; h.render();
+  assert.equal(h.field('-import').props.value, content); assert.doesNotMatch(h.text(), /old file failed/);
+});
