@@ -6,7 +6,7 @@
 
 ## 2026-10-11 — 既存Compute Grid serverの中断・重複復旧を修正（GRID01 / O5、ROCK）
 
-5時間の品質改善指示に基づき、最新main `4055ad38`とPR #103 `e80d0357`を照合し、既存serverの3問題を再現して修正した。receipt保存後に検証へ進めない中断を同一receipt／owner読出しから復旧し、同時刻の重複返却を一度だけ数え、期限＋猶予ちょうどの判定を統一する。対象59件、型・lint、別担当の並行復旧試験は合格。独立した依存を導入後、全体verify（Node1769 pass／1 platform skip、Worker/D1 1356項目、CSV D1/R2 385項目、型・lint・build・設計／進捗）が合格。共有node_modulesを使った初回はvendor実path検査1件で失敗したため専用依存に変え、検査を維持して再実行した。最終SHAのCI・PR提出はこれから行う。未保存の利用者変更は元checkoutに残し、専用worktreeを使用。worker・console・新料金・公開・本番有効化・main mergeは行わない。SPIDERの公開tokenizer hashの既知失敗は別件として記録し、検査を弱めない。
+5時間の品質改善指示に基づき、最新main `4055ad38`とPR #103 `e80d0357`を照合し、既存serverの3問題を再現して修正した。receipt保存後に検証へ進めない中断を同一receipt／owner読出しから復旧し、同時刻の重複返却を一度だけ数え、期限＋猶予ちょうどの判定を統一する。対象59件、型・lint、別担当の並行復旧試験は合格。独立した依存を導入後、全体verify（Node1769 pass／1 platform skip、Worker/D1 1356項目、CSV D1/R2 385項目、型・lint・build・設計／進捗）が合格。共有node_modulesを使った初回はvendor実path検査1件で失敗したため専用依存に変え、検査を維持して再実行した。実装SHA `050fade2c72c440af8922d4f23a574d6c089cca5` をGitHubへ保存し、PR #104をPR #103のbranch向けに提出済み。同一SHAの7 checksはverify・CodeQL等6成功、SPIDER secretsのみ既存tokenizer hashの3候補で失敗。全CI成功とはしない。後続文書commitはそのSHAでCIを再確認する。未保存の利用者変更は元checkoutに残し、専用worktreeを使用。worker・console・新料金・公開・本番有効化・main mergeは行わない。SPIDERの公開tokenizer hashの既知失敗は別件として記録し、検査を弱めない。
 
 ## 2026-10-11 — Sky Compute Gridの永続gridをserver側だけ実装し、Android workerは設計で止めた（GRID01 / O5、host）
 

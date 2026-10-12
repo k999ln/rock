@@ -108,6 +108,14 @@ Commands: `node --experimental-strip-types --test tests/sky-compute-grid*.test.m
 
 Raw reproduction, final suite and independent-review logs remain outside Git under `/private/tmp/rock-quality-audit/` on the development host. This section records source-level evidence, not acceptance on physical devices or an assertion that the inherited secrets check is green. The existing tokenizer-digest policy issue above still requires its own reviewed resolution.
 
+## Recovery follow-up GitHub evidence (2026-10-12 UTC)
+
+Source commit `050fade2c72c440af8922d4f23a574d6c089cca5` is saved on GitHub in [PR #104](https://github.com/k999ln/rock/pull/104), from `codex/compute-grid-recovery-20261011` into PR #103's `claude/sky-compute-grid-live` branch. `githubSaved=true`; the PR remains open and neither this recovery follow-up nor PR #103 is recorded as integrated into main. Deployment and Grid activation remain unperformed.
+
+All seven checks on this source completed: [verify](https://github.com/k999ln/rock/actions/runs/38188248762/job/114615186232), CodeQL, SPIDER CodeQL for JavaScript/TypeScript and Python, SPIDER repair regressions, and SPIDER production web security measurement succeeded. [SPIDER secrets](https://github.com/k999ln/rock/actions/runs/38188248708/job/114615185933) failed. Its failed job log reports the same three inherited `generic-api-key` candidates at the exact tokenizer digest paths and original commits listed above; no new recovery-source secret candidate is reported. This is six successful checks and one failed check, not all-green CI. The policy, pinned control commit and workflows remain unchanged. Android and native jobs were not triggered by this follow-up's paths; they have no same-SHA success claim here.
+
+The local full verify and independent recovery tests described above correspond to this code source. A later documentation-only commit must receive its own CI check; these results must not be relabelled as evidence for an untested newer SHA.
+
 ## Not accepted
 
 - Android worker: designed in `docs/sky-compute-grid-android-worker.md`, not implemented. No APK contains it.
