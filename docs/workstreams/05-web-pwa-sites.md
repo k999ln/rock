@@ -1,11 +1,28 @@
 # Web / PWA / Sites
 
+## 2026-10-11 — 既存機能の品質・復旧改善（WEB04 / G04、ROCK）
+
+Zemaの見積世代・下書き離脱確認、Workbenchの読取／書込競合と本人別入力・成功応答照合、AMC importの古い読込、CSVの受付IDとowner保持を修正した。対象回帰と独立レビューは合格、統合候補の全体検証・同一SHAのCIは作業中。Walletは共通hookで同じ復旧契約を使用する。仕様はSky Tool全体設計の各節、実装と回帰はqualityRefactorの証拠へ集約する。processing強制終了後のCSV再開は未適用案として分離する。
+
+追補（2026-10-12）: Mr. Deliveryのreview JSON・選択File・結果を既存Workbenchのowner／job／step別memoryと離脱guardへ接続した。親または子の401では旧一覧世代を無効化して私有入力を隠し、元ownerの親再確認後だけ復元する。実client／認証hook／route／SQLiteで、応答喪失後のFile bytes・結果復元、別ownerと古いhandlerの送信0、遅延結果の元session限定を検査し、独立レビューで照合した。Legal／Patent／Jevは同期submit lockで二重送信を防ぎ、禁止中・unmount後の送信拒否、同意拒否・緊急案内・失敗後の明示再試行を回帰確認した。既存同意・料金gate・単体local利用を維持し、自動永続化や他の専用runnerの入力復元は追加していない。
+
+CSVの遅延eventはowner／ID／input世代と進行revisionに束縛し、削除済み・同ID別inputへの旧履歴混入を拒否する。同じinputの並行再開に伴う正当な遅延履歴は保持する。実D1/R2の再現と回帰に加え、`scripts/check-csv-process-crashes.mjs`でNode／workerdを実SIGKILLして同じ保存先へ再起動した。5地点中、claim・stream書込・部分成果の3地点はprocessingのまま再開／削除不可、期限回収も未解決。completedの成果読取とcleanup_pendingの再回収を区別した診断であり、合格をprocessing復旧と呼ばない。追加の保存・削除契約案は未適用。実build／browser、同一SHAの全体CI、既存公開Siteへの反映は統合側の個別証拠へ記録する。
+
+検証状態と再開手順は[data/project-status.json](../../data/project-status.json)の`qualityRefactor`を正とする。全領域完成・main統合・本番公開は未宣言。
+
+
 ## 2026-10-11 — buildとlocal previewのruntimeを一致（WEB01 / O7、ROCK）
 
 標準`npm start`と`operator-dock:dev`が直下Wrangler 4.122.0の古いworkerdを使い、生成済みWorkerの2026-10-01／Operatorの2026-09-15 compatibility dateを拒否することを再現した。既存`productionWrangler` resolverでbuilder側Wrangler 4.147.0を選び、依存更新・日付の引下げ・認証変更なしで復旧した。Webはlocal D1 migration成功後のみ起動し、失敗codeとSIGINT／SIGTERMを伝搬する。Operatorは別DBの準備と本人認証を維持する。
 
-command／resolver回帰11件、fresh DBの63 migrationとbuilt Worker HTTP200、未認証Operatorの期待503、既存`npm dev`のHTTP200と全port停止を確認。既存custom `--persist-to`をpreviewだけに渡す場合は同じ保存先へ別途migrationが必要。配備・remote migration・公開・本番readbackは行っておらず、WEB01のblocked状態は保持する。
+command／resolver回帰11件、fresh DBの63 migrationとbuilt Worker HTTP200、未認証Operatorの期待503、既存`npm dev`のHTTP200と全port停止を確認。この時点ではcustom `--persist-to`をpreviewだけに渡すと別途migrationが必要だった（下記の保存先統一で解消）。配備・remote migration・公開・本番readbackは行っておらず、WEB01のblocked状態は保持する。
 
+
+### Local previewの再buildで保存を失わない（WEB01 / O7、2026-10-11）
+
+旧launcherは生成configから既定の保存先を選び、D1とR2を`dist/server/.wrangler/state`へ置いていた。実Wrangler fixtureで合成Wallet記録とR2成果を保存し、build出力を再作成すると両方消えることを確認した。現在はproject rootの`.wrangler/state`（または明示`--persist-to`）をmigrationとdevへ同じ絶対pathで渡す。再build後も同じrow・objectを読み戻し、migrationは再適用不要だった。
+
+旧dist内stateが残る場合はprebuild／startで停止する。停止後の全体backupと空の保存先への手動移動を案内し、自動copy・merge・上書き・削除は行わない。既存root stateがある場合は両方を保持して選ぶ。生成先内pathとsymlink aliasは拒否する。従来のcustom storeについてもmigrationとdevを自動で揃えるため、上記の別migrationが必要という旧制限はこのlauncherでは解消した。復旧方法はREADMEのStart developing。実production／本番DBの移行ではない。
 
 ## 既存端末への機能追加（2026-10-06、HOME01 / SYS01 / WEB14）
 

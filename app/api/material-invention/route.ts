@@ -1,3 +1,4 @@
+import { readBoundedStream } from '@/lib/bounded-stream';
 import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { env } from 'cloudflare:workers';
 import { database, requestUser } from '@/lib/fund-store';
@@ -23,21 +24,9 @@ function failure(request: Request, error: unknown) {
 async function body(request: Request) {
   const reader = request.body?.getReader();
   if (!reader) throw new WorkError('入力がありません。');
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    length += value.byteLength;
-    if (length > MATERIAL_STUDY_MAX_BYTES) {
-      await reader.cancel();
-      throw new WorkError('入力は48 KB以内にしてください。', 413);
-    }
-    chunks.push(value);
-  }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+  const bytes = await readBoundedStream(reader, MATERIAL_STUDY_MAX_BYTES, () =>
+    new WorkError('入力は48 KB以内にしてください。', 413),
+  );
   let text: string;
   try { text = new TextDecoder('utf-8', { fatal: true }).decode(bytes); }
   catch { throw new WorkError('UTF-8のJSONを入力してください。'); }

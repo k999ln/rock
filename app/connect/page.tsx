@@ -6,12 +6,12 @@ import { RockstarEntitlementClaim } from '@/components/rockstar-entitlement-clai
 
 export const metadata: Metadata = {
   title: 'RockstarOSをはじめる',
-  description: '通常のWeb・アプリ接続と、対象eSIMから専用クラウドへ接続する方法を案内します。',
+  description: 'アカウントでのWeb・アプリ利用、端末の接続、既存の購入権を確認する方法を案内します。',
 };
 
 const steps = [
-  ['SIM/eSIMを購入・開通する', '対応する販売元で物理SIMまたはeSIMを購入します。商品にはRockstarOSサービス利用権が含まれます。回線の開通は通信事業者の手順で行います。'],
-  ['Rockstar IDに一度だけ登録する', '購入リンクまたは販売元が発行する署名済み購入claimを登録します。Sky、Zema、Agentは同じRockstar IDで使えます。SIMはOSを保存・導入しません。'],
+  ['アカウントでサインインする', 'いまのブラウザや対応アプリから利用します。Web版を使うためにSIM/eSIMを購入する必要はありません。'],
+  ['Skyで利用できるToolを選ぶ', 'Skyで機能と利用条件を確認し、Zemaへ依頼を渡します。購入済みサービスの署名済み購入claimがある場合だけ、下の登録からRockstar IDへ利用権を結び付けます。'],
   ['端末で開いて、仕事を依頼する', '確認済み端末だけRockstarOS導入へ進み、その他は既存OSのアプリまたはブラウザを使います。見積と上限を承認したCloud作業は端末がオフラインでも続き、再接続後に進捗・結果・明細を受け取れます。'],
 ];
 
@@ -22,7 +22,7 @@ export default function ConnectPage() {
       <header className={styles.header}>
         <div><span className={styles.eyebrow}>ROCKSTAROS SERVICE ACCESS</span>
           <h1>RockstarOSへの接続をはじめる</h1>
-          <p>Web・アプリから利用できます。対象eSIMを追加して、専用クラウドのアクセスキーを受け取る接続方法も選べます。</p>
+          <p>アカウントひとつでWeb・アプリから利用できます。SIM/eSIMの購入は不要です。端末との接続や、すでに持っている購入権はこの画面で確認できます。</p>
         </div>
       </header>
       <section className={styles.esimCatalog} aria-labelledby="service-reasons">
@@ -49,9 +49,9 @@ export default function ConnectPage() {
       </section>
       <section className={styles.esimCatalog} aria-labelledby="esim-cloud-entry">
         <div className={styles.esimCatalogTitle}>
-          <h2 id="esim-cloud-entry">eSIMの追加から、専用クラウドへ</h2>
-          <p>対象商品の購入履歴でeSIMを追加し、導入確認後に「クラウドアクセスを開始」を選びます。キーの期限、再発行、停止も同じ画面で管理できます。</p>
-          <p>提供元の接続と対象プランの設定が必要です。eSIMにOSを保存する機能ではなく、通常のWeb・アプリ接続と併用できる入口です。</p>
+          <h2 id="esim-cloud-entry">既存のeSIM・クラウドアクセスを確認する</h2>
+          <p>すでに対象商品の購入記録がある場合は、購入履歴から導入状況、キーの期限、再発行、停止を確認できます。新しい消費者向けeSIMの発行・販売は現在保留中です。</p>
+          <p>対応する提供元・プラン・端末の受入が必要です。SIMは対応機器の任意の通信手段で、OSを保存・導入するものではありません。</p>
         </div>
         <Link className={styles.esimPlanCard} href="/sky/purchases"><strong>購入履歴でeSIMとアクセスキーを確認</strong><span>導入・クラウド接続・キー管理 <ArrowRight size={15} /></span></Link>
       </section>
@@ -81,7 +81,7 @@ export default function ConnectPage() {
         </div>
         <div className={styles.esimPlanList}>
           <div className={styles.esimPlanCard}><strong>購入・通信開通</strong><span>購入チャネルと通信事業者が提供します。回線状態はRockstarOSサービス利用権とは別に確認します。</span></div>
-          <div className={styles.esimPlanCard}><strong>RockstarOSサービス利用権</strong><span>購入claimを一度Rockstar IDへ結び、Sky・Zema・Agentへ同じ認証でアクセスします。</span></div>
+          <div className={styles.esimPlanCard}><strong>RockstarOSサービス利用権</strong><span>Sky・Zema・Agentは同じアカウントで利用します。既存の購入claimがある場合は、その利用権を確認します。</span></div>
           <div className={styles.esimPlanCard}><strong>端末への導入</strong><span>対応機種は署名済みOS、それ以外は既存OSのアプリまたはブラウザを使います。</span></div>
           <Link className={styles.esimPlanCard} href="/sky"><strong>Skyを開く</strong><span> AgentやToolを探す <ArrowRight size={15} /></span></Link>
           <Link className={styles.esimPlanCard} href="/chat"><strong>Zemaを開く</strong><span> 依頼・進捗・成果を確認する <ArrowRight size={15} /></span></Link>

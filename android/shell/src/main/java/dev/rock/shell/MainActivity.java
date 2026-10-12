@@ -90,6 +90,8 @@ public final class MainActivity extends Activity {
     private EditText a2aBrokerKeyIdInput, a2aSettlementDelegationIdInput;
     private TextView a2aBrokerStatus;
     private CheckBox zemaConsent, consent, sample;
+    private LocalSubmission zemaSubmission, articleSubmission;
+    private Button zemaSubmitButton, articleSubmitButton, zemaRecoveryButton, articleRecoveryButton;
     private final List<EditText> recoveryConfirmationInputs = new ArrayList<>();
     private volatile String skySelectionToken;
     private volatile String deviceLinkFlowId, deviceLinkApprovalUri;
@@ -106,6 +108,8 @@ public final class MainActivity extends Activity {
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
+        zemaSubmission = localSubmission("zema_submission_recovery");
+        articleSubmission = localSubmission("article_submission_recovery");
         ScrollView scroll = new ScrollView(this);
         scroll.setBackgroundColor(Color.rgb(10, 15, 20));
         form = new LinearLayout(this); form.setOrientation(LinearLayout.VERTICAL);
@@ -220,7 +224,9 @@ public final class MainActivity extends Activity {
         zemaPrompt = field(form, "何をしたいですか？", "", true);
         zemaConsent = new CheckBox(this); zemaConsent.setText("この端末内で処理することを許可"); styleCheckBox(zemaConsent); form.addView(zemaConsent);
         message = label(form, "", 16);
-        button(form, "このToolで実行", this::submitZema);
+        zemaSubmitButton = button(form, "このToolで実行", this::submitZema);
+        zemaRecoveryButton = button(form, "未確認の依頼を履歴で確認", () -> reviewPendingSubmission(zemaSubmission, zemaRecoveryButton));
+        updateSubmissionRecovery(zemaSubmission, zemaRecoveryButton);
         button(form, "端末内AIの接続を確認", this::checkLocalAi);
 
         jobs = new LinearLayout(this); jobs.setOrientation(LinearLayout.VERTICAL); form.addView(jobs);
@@ -263,15 +269,9 @@ public final class MainActivity extends Activity {
         url = field(advancedPanel, "完全版の記事URL（https://note.com/.../n/...）", "", false);
         consent = new CheckBox(this); consent.setText("この原稿と成果物を端末に保存し、2工程を自動で実行することを許可する"); styleCheckBox(consent); advancedPanel.addView(consent);
         sample = new CheckBox(this); sample.setText("サンプル検証（最初の工程の結果を確認し、次へ進めない）"); styleCheckBox(sample); advancedPanel.addView(sample);
-        button(advancedPanel, "仕事を保存して自動実行を予約", () -> {
-            try {
-                JSONObject input = new JSONObject(); input.put("markdown", markdown.getText().toString()); input.put("summary", summary.getText().toString());
-                input.put("afterChars", Integer.parseInt(cutoff.getText().toString())); input.put("price", Integer.parseInt(price.getText().toString()));
-                input.put("paidContents", paid.getText().toString()); input.put("noteUrl", url.getText().toString());
-                String payload = input.toString(); boolean allowed = consent.isChecked(), isSample = sample.isChecked();
-                perform(connection -> connection.submit(UUID.randomUUID().toString(), payload, isSample, allowed));
-            } catch (Exception error) { message.setText("入力を確認してください。文字数・価格は整数、全項目の入力が必要です。"); }
-        });
+        articleSubmitButton = button(advancedPanel, "仕事を保存して自動実行を予約", this::submitArticle);
+        articleRecoveryButton = button(advancedPanel, "未確認の手動依頼を履歴で確認", () -> reviewPendingSubmission(articleSubmission, articleRecoveryButton));
+        updateSubmissionRecovery(articleSubmission, articleRecoveryButton);
         button(advancedPanel, "全停止（保存した仕事は残す）", () -> perform(connection -> { connection.setPaused(true); return null; }));
         button(advancedPanel, "自動実行を再開", () -> perform(connection -> { connection.setPaused(false); return null; }));
         button(advancedPanel, "進捗を更新", () -> perform(connection -> null));
@@ -2165,37 +2165,168 @@ public final class MainActivity extends Activity {
     }
 
     private void submitZema() {
-        String prompt = zemaPrompt.getText().toString();
-        String selectionToken = skySelectionToken;
-        boolean allowed = zemaConsent.isChecked();
+        final String prompt = zemaPrompt.getText().toString();
+        final String selectionToken = skySelectionToken;
+        final boolean allowed = zemaConsent.isChecked();
         if (prompt.trim().isEmpty()) { message.setText("Zemaへの依頼を入力してください。"); return; }
         if (selectionToken == null) { message.setText("先にSkyで使用するToolを選択してください。"); return; }
+        if (!allowed) { message.setText("端末内での処理と保存への同意を確認してください。"); return; }
+        final LocalSubmission.Attempt attempt = beginSubmission(zemaSubmission, zemaSubmitButton,
+            LocalSubmission.fingerprint("zema", selectionToken, prompt, "[]", Boolean.toString(allowed)));
+        if (attempt == null) return;
         message.setText("Zemaが端末内で計画しています…");
         worker.execute(() -> {
             try {
-                ShellConnection connection = new ShellConnection(this);
-                JSONObject response = new JSONObject(connection.submitZema(
-                    UUID.randomUUID().toString(), selectionToken, prompt, "[]", allowed));
-                JSONObject snapshot = new JSONObject(connection.snapshot());
-                JSONArray workItems = snapshot.getJSONArray("works");
+                JSONObject response = new JSONObject(new ShellConnection(this).submitZema(
+                    attempt.requestId, selectionToken, prompt, "[]", allowed));
                 String status = response.getString("status");
                 String workId = response.isNull("workId") ? null : response.getString("workId");
                 String code = response.isNull("code") ? null : response.getString("code");
+                boolean queued = "queued".equals(status) && validLocalWorkId(workId);
+                boolean known = queued || ("blocked".equals(status) && LocalSubmission.knownZemaRefusal(attempt, code));
                 runOnUiThread(() -> {
-                    if (!isDestroyed()) {
-                        if ("queued".equals(status) && workId != null) {
-                            message.setText("Zemaが仕事を保存しました: " + workId.substring(0, 8));
-                        } else {
-                            message.setText(zemaBlockedMessage(code));
-                        }
-                        render(workItems);
-                    }
+                    if (isDestroyed() || !finishSubmission(zemaSubmission, attempt, known, zemaSubmitButton, zemaRecoveryButton)) return;
+                    if (queued) {
+                        message.setText("Zemaが仕事を保存しました: " + workId.substring(0, 8));
+                        perform(connection -> null);
+                    } else message.setText(known ? zemaBlockedMessage(code) : uncertainSubmissionMessage());
                 });
             } catch (Exception error) {
-                runOnUiThread(() -> { if (!isDestroyed())
-                    message.setText("Zemaを開始できません。Local AIのモデル、署名、同意、依頼内容を確認してください。"); });
+                runOnUiThread(() -> {
+                    if (!isDestroyed() && finishSubmission(zemaSubmission, attempt, false, zemaSubmitButton, zemaRecoveryButton))
+                        message.setText(uncertainSubmissionMessage());
+                });
             }
         });
+    }
+
+    private void submitArticle() {
+        try {
+            JSONObject input = new JSONObject(); input.put("markdown", markdown.getText().toString()); input.put("summary", summary.getText().toString());
+            input.put("afterChars", Integer.parseInt(cutoff.getText().toString())); input.put("price", Integer.parseInt(price.getText().toString()));
+            input.put("paidContents", paid.getText().toString()); input.put("noteUrl", url.getText().toString());
+            final String payload = input.toString();
+            final boolean allowed = consent.isChecked(), isSample = sample.isChecked();
+            if (!allowed) { message.setText("原稿と成果物を端末に保存する同意を確認してください。"); return; }
+            final LocalSubmission.Attempt attempt = beginSubmission(articleSubmission, articleSubmitButton,
+                LocalSubmission.fingerprint("article", payload, Boolean.toString(isSample), Boolean.toString(allowed)));
+            if (attempt == null) return;
+            message.setText("仕事を保存しています…");
+            worker.execute(() -> {
+                try {
+                    String workId = new ShellConnection(this).submit(attempt.requestId, payload, isSample, allowed);
+                    if (!validLocalWorkId(workId)) throw new IllegalStateException("INVALID_WORK_RESPONSE");
+                    runOnUiThread(() -> {
+                        if (isDestroyed() || !finishSubmission(articleSubmission, attempt, true, articleSubmitButton, articleRecoveryButton)) return;
+                        message.setText("仕事を保存しました: " + workId.substring(0, 8));
+                        perform(connection -> null);
+                    });
+                } catch (Exception failure) {
+                    // Binder and scheduling can fail after Engine.submit committed, even with an
+                    // IllegalArgumentException. An exception alone never proves that nothing saved.
+                    runOnUiThread(() -> {
+                        if (!isDestroyed() && finishSubmission(articleSubmission, attempt, false, articleSubmitButton, articleRecoveryButton))
+                            message.setText(uncertainSubmissionMessage());
+                    });
+                }
+            });
+        } catch (Exception invalid) {
+            message.setText("入力を確認してください。文字数・価格は整数、全項目の入力が必要です。");
+        }
+    }
+
+    private LocalSubmission localSubmission(String name) {
+        android.content.SharedPreferences preferences = getSharedPreferences(name, MODE_PRIVATE);
+        return new LocalSubmission(new DurableSubmissionStore(getApplicationInfo().dataDir + "/" + name, new LocalSubmission.Store() {
+            public String read() { return preferences.getString("pending", null); }
+            public void write(String pending) throws java.io.IOException {
+                android.content.SharedPreferences.Editor edit = preferences.edit();
+                if (pending == null) edit.remove("pending"); else edit.putString("pending", pending);
+                if (!edit.commit()) throw new java.io.IOException("SUBMISSION_RECOVERY_WRITE_FAILED");
+            }
+        }));
+    }
+
+    private String localSubmissionOwner() {
+        android.os.UserManager users = getSystemService(android.os.UserManager.class);
+        if (users == null) throw new SecurityException("SUBMISSION_OWNER_UNAVAILABLE");
+        long serial = users.getSerialNumberForUser(android.os.Process.myUserHandle());
+        if (serial < 0) throw new SecurityException("SUBMISSION_OWNER_UNAVAILABLE");
+        return "android-user:" + serial;
+    }
+
+    private LocalSubmission.Attempt beginSubmission(LocalSubmission guard, Button button, String binding) {
+        try {
+            LocalSubmission.Attempt attempt = guard.begin(localSubmissionOwner(), binding);
+            if (attempt != null) button.setEnabled(false);
+            return attempt;
+        } catch (IllegalStateException changedInput) {
+            message.setText("前回の結果が未確認です。同じ入力とToolで照合するか、「未確認の依頼を履歴で確認」から照合を終了してください。");
+        } catch (Exception unavailable) {
+            message.setText("本人または依頼の照合情報を保存できないため、送信していません。再起動後に確認してください。");
+        }
+        return null;
+    }
+
+    private boolean finishSubmission(LocalSubmission guard, LocalSubmission.Attempt attempt, boolean known,
+            Button submit, Button recovery) {
+        try {
+            return guard.finish(attempt, localSubmissionOwner(), known);
+        } catch (Exception unavailable) {
+            // A local cleanup failure cannot undo an acknowledged Broker result.
+            // The store adapter retains its identity and blocks unsafe retries.
+            if (known && unavailable instanceof java.io.IOException) return true;
+            message.setText(uncertainSubmissionMessage());
+            return false;
+        } finally {
+            submit.setEnabled(!guard.inFlight());
+            updateSubmissionRecovery(guard, recovery);
+        }
+    }
+
+    private void updateSubmissionRecovery(LocalSubmission guard, Button recovery) {
+        try { recovery.setVisibility(guard.pending(localSubmissionOwner()) == null ? View.GONE : View.VISIBLE); }
+        catch (Exception unavailable) { recovery.setVisibility(View.VISIBLE); }
+    }
+
+    private void reviewPendingSubmission(LocalSubmission guard, Button recovery) {
+        final LocalSubmission.Attempt pending;
+        try { pending = guard.pending(localSubmissionOwner()); }
+        catch (Exception unavailable) { message.setText("現在の本人に結び付いた照合情報を確認できません。自動で削除・再送はしません。"); return; }
+        if (pending == null) { updateSubmissionRecovery(guard, recovery); return; }
+        worker.execute(() -> {
+            try {
+                JSONArray history = new JSONObject(new ShellConnection(this).snapshot()).getJSONArray("works");
+                runOnUiThread(() -> {
+                    if (isDestroyed()) return;
+                    try {
+                        if (!pending.owner.equals(localSubmissionOwner())) return;
+                        render(history);
+                        new AlertDialog.Builder(this).setTitle("未確認の依頼の照合を終了しますか？")
+                            .setMessage("保存履歴を更新しました。依頼ID: " + pending.requestId +
+                                "\n\n終了してもBrokerの処理中・保存済みの仕事は取消されません。端末内の照合情報だけを削除します。次の送信は新しい依頼になり、同じ内容なら仕事が重複する可能性があります。履歴を確認してから選んでください。")
+                            .setNegativeButton("照合を続ける", null)
+                            .setPositiveButton("照合を終了し、新しい依頼へ", (dialog, which) -> {
+                                try {
+                                    if (guard.retire(localSubmissionOwner(), pending.requestId))
+                                        message.setText("照合情報だけを終了しました。保存済みの仕事は残ります。次の送信は新しい依頼です。");
+                                    else message.setText("送信中または照合情報が変わったため、終了していません。");
+                                } catch (Exception unavailable) { message.setText("照合情報は維持しています。本人と保存状態を再確認してください。"); }
+                                updateSubmissionRecovery(guard, recovery);
+                            }).show();
+                    } catch (Exception unavailable) { message.setText("現在の本人を確認できません。照合情報は維持しています。"); }
+                });
+            } catch (Exception unavailable) {
+                runOnUiThread(() -> { if (!isDestroyed()) message.setText("保存履歴を取得できません。照合情報を維持しました。接続復旧後に再確認してください。"); });
+            }
+        });
+    }
+
+    private static boolean validLocalWorkId(String id) {
+        return id != null && id.matches("[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}");
+    }
+    private static String uncertainSubmissionMessage() {
+        return "保存結果を確認できません。同じ入力とToolで再試行すると同じ依頼IDで照合します。入力を変更する前に、未確認の依頼を履歴で確認してください。";
     }
 
     private static String zemaBlockedMessage(String code) {

@@ -4,6 +4,66 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-12 — 品質改善の残件を再開（G04 / WEB04 / AI04 / CSV00 / GRID01、ROCK）
+
+14:21 UTC開始。main `4055ad38`、PR105 `19e75e92`、PR104 `36a9f6b7`を再確認した。元checkoutの168件の未保存変更を保持し、前回のcleanな専用worktreeを再利用する。主担当はGit / CI / Operations。CSVの実process終了と同じD1/R2での再起動、個別Toolのmemory入力保持、Grid serverの独立照合を並行して進める。
+
+公開説明文・tokenizer digestの検査例外2案とCSV保存契約変更案は未適用。Grid検査例外とCSV案は前回の自動承認レビュー拒否、説明文例外はSECURITY.mdのowner review待ちであり、今回の続行を承認へ読み替えない。最新mainのアカウント入口とRQ01〜RQ50、削除済み資料、料金・保留gateを維持する。再開証拠は既存の[品質改善記録](docs/evidence/quality-reliability-review.json)のfollowupに追加する。main merge・公開・実機・実資金は行わない。
+
+今回の追加修正は、納品照合の本人確認競合・入力/選択Fileの復旧、法務/特許/Jevの同時送信抑止、削除後に遅れて復活するCSV履歴の抑止。実D1/R2の強制終了5地点を独立再現し、3地点のprocessing再開と期限回収は未解決として保持した。公開サイトへの反映が本チャットで明示指定されたため、既存Site v49/source `e95e63a1` の独自CSV納品/会計/保存契約を照合し、全体verifyと実画面確認後に統合配備する。GitHub PR更新・main未統合・Sites配備の結果は別記録。検査例外、旧nextPrompt訂正、CSV保存契約は承認待ちのまま。
+
+## 2026-10-12 — 応答準備と模擬保存ownerを試験で明示（G04 / WEB04、ROCK）
+
+`f5e5f34a`のlocal全体verifyは2019 pass／1 skip、Worker1356、CSV385、asset186／欠落0で成功。実build再起動後も保存成果を再表示でき、PC1280／390px横はみ出し0・browser console error0。GitHubは13成功／2失敗で、Walletの旧失敗は解消したがWorkbench試験の遅延GET解除callbackがsnapshot準備前には存在しないraceが見つかった。独立した準備gateで元の2経路とも再現し、準備完了ready・解放後の実応答／JSON完了を待つ修正を行った。関連63件と独立73件が成功し、readyを早める失敗対照も確認した。
+
+同種のharnessを限定監査し、Materialの模擬保存だけがawait後のcurrent ownerを使う欠陥も訂正。要求開始時ownerを固定し、保存確定のsignalを待ってからownerを変更する。追加の制御gate回帰は元の代入1行に戻すとAlice→Bob誤帰属で失敗し、修正後は28/28、独立28/28成功。これは試験fixtureの前提訂正であり、本番runtime不具合や既存CI flakeの修正とは扱わない。
+
+どちらも元の選択保持・本人非表示・同ID・1記録のassertionを維持し、runtime変更なし。最終headの文書＋検証harnessと、受入済みruntime `14bd7988`を区別して、full verify／CIの確定receiptをPR #105へ残す。既知のsecretsと未適用3提案、実機／外部／公開の未受入境界は変えない。
+
+## 2026-10-12 — CIのWallet試験を実処理完了で同期（G04 / WEB04、ROCK）
+
+文書head `1bae02b8`のlocal全体verifyは2017 pass／1 skipで成功した一方、GitHubは13成功／2失敗。既知のsecretsに加え、Wallet保存応答がまだ処理中なのに固定8回のtimer待ちだけでretry buttonを押す試験が失敗した。実SQLite確定後の応答をgateで保留する独立試験で同じ失敗を再現し、応答解放後は同ID再試行／1記録になることを確認した。
+
+実装は変えず、test harnessが元のrequestとsave／retry／reverse／refreshのPromiseをJSON解析・finallyまで待つよう修正。競合を作る明示保留GETは別扱いにして既存race試験を維持した。応答待ちとJSON decode待ちの追加2試験は旧helperで2/2失敗、新helperで2/2成功、既存を含め43/43成功。独立検収も43/43成功し、JSON解析後のfinally手前だけを止める追加試験とfull-handler追跡を除いた失敗対照で待機の必要性を確認した。enabled・同ID・記録1件のassertionを削らず、最終headのfull verifyとCIを再実行してPR #105本文へSHA付きで確定する。`1bae02b8`の実build再起動後もLibraryの保存成果を同文で再表示でき、390px横はみ出し0。
+
+## 2026-10-11 — 既存機能の品質改善をレビュー可能PRへ（G04 / WEB04、ROCK）
+
+runtime `14bd7988`を凍結し、`npm run verify`はNode2017 pass／1 platform skip、Worker1356、CSV385、実buildとasset186参照／欠落0で成功。同一SHAのGitHub CIは14成功、既知の公開説明文に対するSPIDER secrets検出1件。PR #105をready for reviewにしたが、全CI成功・main統合・公開とは扱わない。最終の文書のみのheadも同じverify／CIで照合し、結果SHAをPR本文へ残す。
+
+実buildでは、従来Library移動→戻るで消失したTool単独原稿が離脱guardで保持された。取消PATCH確定後の応答喪失中は破棄できず、同じ記録の再試行後にrevision1／event1。別ownerには原稿・仕事名・破棄操作を表示せず、元owner復帰後は中止済み仕事の対象下書きだけを明示破棄できる。Libraryの保存済み成果は同じ本文と出典で再表示できた。PC1280と390pxの横はみ出し0。最小の画面証拠3枚を `docs/evidence/quality-reliability/` に保存した。
+
+独立検収後の説明訂正として、破棄対象を「入力と生成結果のメモリ」と明記。共通化はWallet両画面の復旧、local previewの保存先／設定選択、Workbench projection判定とTool初期値／下書き判定。行数だけを根拠にした削除は行わず、vendor・migration・IMPORT-MANIFEST・mainで削除済みの968 pathを保護した。未保存の元checkout168件は別worktreeで隔離したまま。
+
+引継ぎは `docs/evidence/quality-reliability-review.json` の改善前後・領域棚卸し・再現コマンド・未適用3提案を参照。GridはPR #104（PR #103基準）へ分離。公開digest例外とCSV保存契約変更は自動承認審査で拒否されて未適用、主PRの公開文言例外はSECURITY.mdのowner review待ち。scanner設定／pin／全履歴範囲を弱めず、実機・全OS・本番認証・外部Provider・実資金・公開を合格扱いにしない。
+
+## 2026-10-11 — Tool単独入力の離脱消失も既存guardへ接続（G04 / WEB04、ROCK）
+
+`5d855b84`は全体verify Node2013 pass／1 platform skip、Worker1356、CSV385、GitHub14成功／既知のsecrets誤検出1件。Map変更後のCodeQL新規指摘は0。実buildの復旧後エラー消去・原稿と成果保持・390pxの保存ラベル一行／高さ44px、中止再試行が1event／revision1になることを確認した。
+
+追加の実画面でTool未実行原稿だけがLibrary移動→Backで空になることを再現したため、同じ既存Tool範囲で離脱guardへ接続。本人の仕事・手順別に保存／export後の明示破棄を案内し、取消済み／別手順でも抜けられる。別owner・古いsnapshot・実行中・記録保存不明では破棄を拒否し、保存済みLibraryと仕事は変更しない。関連86試験と独立8＋4件、型・lintに合格。ここでruntimeを凍結して実buildの入力保持・破棄導線と最終同一SHA CIを確認する。
+
+## 2026-10-11 — 復旧後の実画面とCI指摘を仕上げ（G04 / WEB04 / AI04、ROCK）
+
+`32ccdf3c`の全体verifyはNode2011 pass／1 platform skip、Worker1356、CSV385で成功。実buildでは保存後応答喪失→GET失敗→GET成功で元の原稿・結果・保存操作を復元し、別ownerで非表示、元ownerで復帰、明示保存→再読込→ライブラリ再表示を確認。390pxの案件通知は重なり8.1pxから間隔12pxへ改善。戻る操作で未送信依頼の確認が開き、取消で入力保持、明示破棄後だけ履歴移動することも確認した。
+
+同SHAのGitHubは13成功・2失敗。secretsは既知の公開説明文1件、CodeQLは新session辞書の動的property代入3件。後者は抑制を追加せずMapへ置き換えて独立検収と最終CIへ進む。実画面で残った保存済み記録の古いエラーと390pxの保存ラベル折返しも、親の復旧表示への責任分離と限定CSSで仕上げる。Android CIの実API35エミュレータは58 pass／物理再起動用2 skip、今回のShell送信復旧2件も成功。native Linuxは1847 Python実行／skip0と既存root UI検査成功。localでのinstrumentation未実施とCI emulator成功を区別し、実機・full OS・本番への受入には換算しない。
+
+## 2026-10-11 — 実buildで見つけたTool成果消失を修正し変更範囲を凍結（G04 / WEB04、ROCK）
+
+`da644261`の全体verifyはNode2009 pass／1 platform skip、Worker1356、CSV385で成功。GitHubは14成功、secretsは今回の監査JSONの公開説明文1件を誤検出した。固定scannerと同じ1294commitで再現し、path・rule・完全な公開文言を限定した未適用案と11件の検出維持試験を用意した。SECURITY.mdのowner review待ちで、履歴・scan範囲・policyは変更していない。
+
+実画面では保存済みの仕事詳細が復旧しても、Tool原稿と生成結果がunmountで消えることを確認。親Workbenchに本人／仕事／手順別sessionを保持し、既存の出典整理・無料記事・Coconala検査の入力・結果・明示保存操作を復元する。対象74試験と修正担当以外による実runner2件・遅延完了／別仕事2件が成功。自動永続化と専用runner全体への保証は追加しない。390pxのCoconala通知はinline outputが次のcardへ8.1px重なったためblock表示へ修正。ここで新領域への変更を止め、両経路を再buildした画面と最終CIで確認する。
+
+## 2026-10-11 — 既存機能の品質・復旧改善を開始（G04 / H1、ROCK）
+
+利用者の5時間のリファクタリング依頼に基づく。主担当はGit / CI / Operations、ROCK、関連はWEB04 / AI04 / GRID01。開始は2026-10-11 19:56 EDT（23:56 UTC）。元checkoutの多数の未保存変更を保持し、専用worktreeで最新main `4055ad380d3876bee8e93eca71b1e072a2785959` と未統合PR #100 `f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a` を統合した。作業branchだけの統合でありmain mergeではない。mainと#100の同一SHA各9検査成功、#103 `e80d0357aa88291b6ee955e62af875180d35e6cd` はsecrets以外成功を再取得した。
+
+既存Web/API/DB/認証/A2A/MCP/Wallet/Android/native/Game/Tool/CIを分担調査。優先候補はnative仕事の同時終端更新、Gridのreceipt保存後中断からの精算復旧、Zemaの古い見積応答と未送信下書き保持。再現してから小単位で修正する。PR #100の有効な共通化を再利用し、最新mainのaccount-led方針・削除・暗号化終了を維持する。#103の既存server修正は独立branchでレビューし、設計段階のAndroid worker・注文consoleは新規実装しない。公開・本番課金・実機flash・保留機能有効化は対象外。
+
+中間確認: Walletの応答喪失後二重記帳（24,000円が48,000円／2件）を実ビルドで再現し、同じ操作の確認で24,000円／1件へ復旧した。別ownerへの入力表示、Zema見積・下書き、Workbench競合、AMC読込、CSV完成後の成果削除、Android送信／receipt、native終端CASを修正し対象試験を実施。GridはPR #104の050fade2でverify／CodeQL成功、secretsは継承した公開仕様digest3件で失敗。限定例外とCSV強制終了後の保存契約変更は未適用の提案として分離した。
+
+PR #105をmain向けDraftとして保存し、Android/native・RPC・Wallet・Zema・ローカル保存先を意味別commitへ分けた。実画面ではCSVとWalletのPC/390px、別owner・応答喪失・再読込、記事2手順と確認メモを通した。Workbench・Material・出品準備の入力本人境界を追加修正し、統合verifyと同一最終SHA CIを照合する。進行中のため合格・性能改善・完了を宣言しない。中間候補`250b57b0`は同一SHAのGitHub15検査すべて成功。追加のCoconala編集revision・Material未送信離脱保護・Workbench記録回収も独立検収済み。08364bf0の全体verifyはNode2005 pass/1 platform skip、Worker1356、CSV385、build成功。PC1280/390pxでMaterial/Mercari/Coconalaの別owner・壊れた成功応答・同一ID回収、案件revision競合拒否、Cloud入力離脱保護も確認した。実画面で見つけた仕事詳細の再選択と破棄後の古いエラー表示の2点を仕上げ、最終committed SHAで再検証する。元checkoutのtracked差分・未保存状態168項目は開始時と一致。生ログはGit外 `/private/tmp/rock-quality-audit/`。再開状態は進捗JSONの`qualityRefactor`。
+
 ## 2026-10-11 — 公開rockの整理（暗号化は同日にやめた）、確定事項の反映（Git / CI / Operations、ROCK）
 
 利用者の「重複・もう使わない内容を削除したい」「gitはprojectへの導線なので見やすく」「パブリックで進めたい。みんなが見れるが大事なところは見れないように」「全部確定でいい」「今まで通りの上に描きたし」を受けた。主担当はGit / CI / Operations（ROCK）。`k999ln/rock` を公開のまま使い続け、履歴は書き換えず、main `bcd31090`（PR #99 統合後）の上に整理のcommitを足した。開いていたPR（#84・#85・#88・#89・#90・#93・#94・#95）はPR #99で統合済みのため、この作業では統合しない。
@@ -2838,7 +2898,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-11 / SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/392件（親32・子192・独立168。実行単位は親を除く360件）
+最終更新: 2026-10-12 / SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/392件（親32・子192・独立168。実行単位は親を除く360件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -3254,7 +3314,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: G04/WEB01: 全体verify・同一SHA CIを合格したPR #99をレビューし、承認範囲に従うmain統合と既存Sitesの同一source受入を別途進める。SIM01/SKY21は実issuer／Provider sandboxの本人・資格情報・予算上限・receipt条件を揃えて利用開始を受入。OS10の全OS／Pixelと現行QEMU image、R5/Pro実機は独立した受入を維持する。
+次の作業: G04/WEB04: PR #105は実buildのPC1280／390px・復旧・本人境界を確認してレビュー可能。最終文書headのverify/CIをPRへ照合し、既知の公開文言の秘密検査はSECURITY owner review後に対応する。PR #104はPR #103基準の既存Grid server修正として別レビュー。CSV強制終了後の保存契約変更とGrid公開digest例外も未適用。main統合・公開、OS10全OS／Pixel・QEMU image・avocadoMini実機は独立gate。
 <!-- project-status:end -->
 
 ## 次段階の設計

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, type MouseEventHandler, type ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Cable, CircleHelp, House } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
@@ -12,6 +12,7 @@ export default function WorkspaceShell({
   title,
   contentClassName,
   onConnect,
+  onClickCapture,
   running = false,
   hideTopActions = false,
   tone,
@@ -20,6 +21,7 @@ export default function WorkspaceShell({
   title: string;
   contentClassName?: string;
   onConnect?: () => void;
+  onClickCapture?: MouseEventHandler<HTMLDivElement>;
   running?: boolean;
   hideTopActions?: boolean;
   tone?: 'sky';
@@ -45,6 +47,7 @@ export default function WorkspaceShell({
           event.target.closest('a[href]')
         )
           event.preventDefault();
+        onClickCapture?.(event);
       }}
       className={`rock-workspace${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
       data-running={running ? 'true' : 'false'}

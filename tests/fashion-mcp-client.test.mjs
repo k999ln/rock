@@ -75,15 +75,16 @@ async function harness(t, listedTools = tools, callTool) {
     if (url.endsWith('/disconnect'))
       return Response.json({ disconnected: true });
     if (body.method === 'initialize')
-      return Response.json({ result: { protocolVersion: '2025-11-25' } });
+      return Response.json({ jsonrpc: '2.0', id: body.id, result: { protocolVersion: '2025-11-25' } });
     if (body.method === 'notifications/initialized')
       return new Response(null, { status: 202 });
     if (body.method === 'tools/list')
-      return Response.json({ result: { tools: listedTools } });
+      return Response.json({ jsonrpc: '2.0', id: body.id, result: { tools: listedTools } });
     if (body.method === 'tools/call' && callTool)
-      return Response.json({ result: { structuredContent: await callTool(body.params.name, body.params.arguments) } });
+      return Response.json({ jsonrpc: '2.0', id: body.id, result: { structuredContent: await callTool(body.params.name, body.params.arguments) } });
     if (body.method === 'tools/call')
       return Response.json({
+        jsonrpc: '2.0', id: body.id,
         result: {
           structuredContent:
             body.params.name === 'instagram.accounts.candidates.list'
@@ -98,7 +99,7 @@ async function harness(t, listedTools = tools, callTool) {
               : {},
         },
       });
-    if (body.method === 'ping') return Response.json({ result: {} });
+    if (body.method === 'ping') return Response.json({ jsonrpc: '2.0', id: body.id, result: {} });
     assert.fail('Unexpected request: ' + url);
   };
   t.after(() => {
@@ -207,10 +208,11 @@ for (const pendingMethod of ['ping', 'tools/list']) {
     let resolveStarted;
     const pending = new Promise((resolve) => { resolvePending = resolve; });
     const started = new Promise((resolve) => { resolveStarted = resolve; });
-    let intercepted = false;
+    let intercepted = false, pendingId;
     globalThis.fetch = (url, init) => {
       if (!intercepted && JSON.parse(init.body).method === pendingMethod) {
         intercepted = true;
+        pendingId = JSON.parse(init.body).id;
         resolveStarted();
         return pending;
       }
@@ -221,7 +223,7 @@ for (const pendingMethod of ['ping', 'tools/list']) {
     await h.client.disconnectFashionMcp();
     await h.client.connectFashionMcp();
     const requestCount = h.requests.length;
-    resolvePending(Response.json({ result: pendingMethod === 'ping' ? {} : { tools } }));
+    resolvePending(Response.json({ jsonrpc: '2.0', id: pendingId, result: pendingMethod === 'ping' ? {} : { tools } }));
     await oldVerification;
     assert.equal(h.requests.length, requestCount);
     assert.equal(h.client.fashionMcpConnected(), true);

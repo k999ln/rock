@@ -1,5 +1,9 @@
 # Material Invention / avocadoMini
 
+## Web候補比較の品質改善（MAT03 / O5 / ROCK）
+
+5時間の品質改善で、本人別memoryによる配合・候補・保留IDの復旧、二重submit防止、古い一覧によるowner巻戻し拒否、保存入力digestから再生成した候補の照合を修正した。元ownerで同じIDを確認し、不完全な成功応答では保留を消さない。入力形式・安全判定・workflow/CAS・装置非接続は維持する。設計は[CoreのWeb接続](../material-invention-core.md#sky--zemaの机上比較と本人用保存)、証拠は[品質改善記録](../evidence/quality-reliability-review.json)。`node --experimental-strip-types --test tests/material-invention.test.mjs tests/material-study.test.mjs tests/material-workspace-recovery.test.mjs`、型・lint、統合verifyと実画面で検証する。未完成JSONを含む未送信入力も保存時点との差分で離脱から保護し、元owner／匿名local draftの明示破棄を同じsnapshotに限定する。空・変更していない保存済み入力では移動できる。強制終了後のmemory復旧、外部ラボ・物理実験・本番受入は含まない。
+
 ## R5の現行入口
 
 2026-09-24の明示要求により、製品要求は[R5統合基本設計](../avocado-mini-r5/README.md)を優先する。使用時全高200mm以内、1本自律、同型miniの増設、別Edge Hubを必須にしない、全空間裸眼表示を目指す。外部給電は必要。表示方式・精密3D入力・収納・熱・電源・確定回路/加工図は未決を含み、実機0件・製造承認保留である。

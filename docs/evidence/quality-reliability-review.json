@@ -1,0 +1,911 @@
+{
+  "schema": "rock-quality-reliability-review/1",
+  "status": "review_ready_with_known_secrets_ci_failure",
+  "startedAt": "2026-10-11T23:56:26Z",
+  "plannedEndAt": "2026-10-12T04:56:26Z",
+  "updatedAt": "2026-10-12T04:11:31.226182+00:00",
+  "baseline": {
+    "main": "4055ad380d3876bee8e93eca71b1e072a2785959",
+    "reusedPr100": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
+    "gridPr103": "e80d0357aa88291b6ee955e62af875180d35e6cd",
+    "mainMerged": false,
+    "latestMainObservedAt": "2026-10-12T03:50:29Z"
+  },
+  "pullRequests": {
+    "primary": "https://github.com/k999ln/rock/pull/105",
+    "grid": "https://github.com/k999ln/rock/pull/104",
+    "gridBase": "claude/sky-compute-grid-live"
+  },
+  "inventory": {
+    "Web/Sky/Zema": "existing components, route state and real built browser paths",
+    "API/DB/auth": "owner/CAS/idempotency route tests and SQLite/D1/R2 fault injection",
+    "A2A/MCP": "shared bounded readers reused from PR100; correlated envelopes and stream failures",
+    "Wallet": "both existing ledger views, same-operation recovery and reversal",
+    "Android": "Core/Broker/Shell/SDK host tests and debug APK/lint; device remains separate",
+    "native": "storage/receiver concurrency and existing Linux CI",
+    "Game": "existing TLS/SQLite/SIGKILL recovery audited; no new code needed in reviewed scope",
+    "Tools": "CSV/AMC/article and owner-bound Material/Mercari/Coconala, with built PC/390px flows",
+    "CI/development": "actual Wrangler local data persistence/config/environment; fixed-policy secret scans"
+  },
+  "verifiedImprovements": [
+    {
+      "id": "wallet-recovery",
+      "before": "24000 record committed, reply lost, user retried: 48000 and two records",
+      "after": "double click plus lost response: 24000 and one record; different owner cannot see draft or retry; original owner recovers exact operation",
+      "reversal": "lost reply followed by explicit same-operation check leaves one reversal, zero balance and two append-only rows",
+      "scope": "built local Worker/D1; synthetic owners; 1280/390px overflow0; no real funds"
+    },
+    {
+      "id": "csv-artifacts",
+      "before": "completed DB commit followed by event failure could remove completed artifacts; failed processing claim read could strand work",
+      "after": "readback confirms winner before cleanup; accepted/processing event and claim-read failure paths recover",
+      "scope": "focused regressions and built local accepted/processing/completed fault injections; four artifact links and actual result/report downloads",
+      "remaining": "process kill while processing is not automatically/manual-timeout recoverable; proposed contract change is unapplied"
+    },
+    {
+      "id": "csv-owner",
+      "before": "old owner private File/conditions/reference survived owner change; preflight error could retire prior unknown POST ID",
+      "after": "native file input and private fields masked; original owner restores; same-ID quote readback; meaningful unsent input navigation guard",
+      "scope": "independent six flows/48 conditions plus built local owner sequence; not production authentication"
+    },
+    {
+      "id": "layout",
+      "before": "390px CSV file input caused55px horizontal overflow; Zema workflow card flex-shrank to2px",
+      "after": "CSV overflow0 with280px input; Zema card visible with saved-result actions",
+      "scope": "built browser; PC1280 and mobile390; no broad restyle"
+    },
+    {
+      "id": "local-preview",
+      "before": "default D1/R2 state lived under generated dist and disappeared when build replaced output; --env affected only dev and produced500 no such table after migration succeeded",
+      "after": "one explicit stable persistence directory for migration/dev; legacy data stops build before changes; same config/environment for both stages; unsupported cwd/remote stop before migration",
+      "scope": "actual local Wrangler4.147.0 D1/R2 before/after, root independent56 tests, built product saved jobs/report retained"
+    },
+    {
+      "id": "android-native",
+      "before": "ambiguous Binder submission used newUUID; receipt duplicate accepted different settled amount; concurrent native terminal updates overwrote results",
+      "after": "durable same-owner/input submission identity; exact receipt reconciliation; native terminal CAS rejects conflicts and preserves exact duplicate timestamp",
+      "scope": "Android host unit/APK/lint and native host HTTP/storage; GitHub32ccdf3c emulator58pass/2physical-only skips, including both new Shell submission recovery tests. Local instrumentation runtime and physical device not run; LocalAiServiceIntegrationTest excluded by CI."
+    },
+    {
+      "id": "rpc",
+      "before": "mismatched or malformed response envelopes could be accepted; response stream errors escaped ambiguous-outcome handling",
+      "after": "version/ID/result-error validation and normalized uncertain transport errors; no automatic external write retry",
+      "scope": "host actual-client and local HTTP fixtures"
+    },
+    {
+      "id": "zema-local-journey",
+      "before": "draft/navigation and estimate races; mobile result action region collapsed",
+      "after": "unsent draft/history protection, cancelled superseded estimates/imports; real article workflow completed and reopened",
+      "scope": "synthetic local article with one deduplicated citation, two successful steps, saved outputs and explicit review note; no publication or sale Built32ccdf3c Back opens draft confirmation; cancel preserves exact unsent input, explicit discard returns to prior Tool page without sending request."
+    },
+    {
+      "id": "material-private-work",
+      "before": "Private formulation/graph displayed after owner switch; same-frame create made two studies; stale list could switch identity back; malformed committed graph crashed render.",
+      "after": "Owner-scoped memory and synchronous write guard; identity-generation fence; same-ID recovery after deterministic saved-input/graph validation; stale release cannot clear a newer pending operation.",
+      "scope": "47 targeted and independent cases; built local malformed committed graph→same-ID retry→one study, Bob masks input/graph and Alice restores; PC1280/mobile390 overflow0; no lab/physical execution."
+    },
+    {
+      "id": "mercari-private-work",
+      "before": "Unknown committed create ID was lost on preflight GET4xx; old owner input could be rebound; old release handler could retire newer pending save.",
+      "after": "Private native form remounts by owner; original owner restores exact input/ID; GET failure never confirms mutation failure; validate full projection before acceptance and require exact pending operation for release.",
+      "scope": "40 targeted and independent cases; built local 401→Bob masks fields/consents→Alice restores; malformed committed plan→same-ID retry→one plan; PC1280/mobile390 overflow0; no publication, transaction or fee activation."
+    },
+    {
+      "id": "material-unsent-draft",
+      "before": "Incomplete JSON/title could not yet export, but same-tab navigation unmounted and lost the only copy; anonymous and parked owner drafts also unprotected.",
+      "after": "Guard meaningful raw edits against validated save/read baseline; original current workspace can explicitly discard; old callbacks cannot erase newer input. Empty/saved baseline does not trap navigation.",
+      "scope": "Before3fail+emptycontrol pass; after56 own cases plus independent49+6. Built incomplete JSON/title blocks Sky navigation; explicit discard succeeds; validated saved study permits navigation."
+    },
+    {
+      "id": "coconala-private-work",
+      "before": "Preflight GET failure retired unknown committed save; old owner terms remained visible/rebindable; refreshed revision overwrote external edits using old form.",
+      "after": "Owner-bound draft/edit revision/money/reference/pending command; failed reads retain identity; stale editor revision stops PATCH and keeps input; dialog close/reopen preserves draft; exact current snapshot gates discard.",
+      "scope": "50 targeted and independent cases; built dialog close/reopen, owner switch, malformed committed create→one case. Real concurrent API update advances revision0→1; old form save rejected with input retained and persisted newer terms unchanged. PC1280/mobile390 overflow0; keyboard date entry/Escape exercised; no contract or funds."
+    },
+    {
+      "id": "workbench-record-and-cloud-draft",
+      "before": "Malformed job projections crashed or retired pending ID; failed latest GET erased successful Tool record command; Cloud-only draft navigation lost input.",
+      "after": "Runtime projection validation and exact owner/job/revision/command preservation. Built corrupted create→one job; PATCH commit/lost response→GET503→GET200 recovers two steps with two events and no Tool rerun. Cloud-only prompt blocks Home, Bob masks it and Alice restores.",
+      "scope": "72 targeted cases and independent62 plus20 server-reader compatibility cases; local Worker/D1 built browser; no external Provider execution."
+    },
+    {
+      "id": "tool-runner-input-result",
+      "before": "Actual built PATCH commit/503 then GET503/GET200 recovered job metadata but lost manuscript, output and explicit save controls. Same defect reproduced0/2 actual-runner/SQLite tests.",
+      "after": "Original owner/job/step session restores exact input, generated output and save/copy/download controls after read failure remount. Bob sees no original input; Alice restores it. Local API confirms one passed step, revision1, one event; no Tool rerun.",
+      "scope": "74 targeted and4 independent tests; built32ccdf3c PC1280/mobile390; explicit local save confirmed. Shared citation/free-article/Coconala fields only. No automatic persistent storage. Explicit save→reload→Library→same result reopened.",
+      "remaining": "Specialized lazy runners excluded; forced reload/tab closure still requires explicit persistence. Shared-Tool same-tab guard and per-Tool explicit discard verified in14bd7988."
+    },
+    {
+      "id": "coconala-notice-layout",
+      "before": "390px inline output notice overlapped following card by8.1016px",
+      "after": "Block notice has12px gap and0 horizontal overflow at390px",
+      "scope": "Built32ccdf3c screenshot and DOM rectangle measurement; no visual redesign"
+    },
+    {
+      "id": "tool-result-feedback-and-keys",
+      "before": "A confirmed Tool record still showed its lost-response error; mobile save label wrapped into multiple lines; CodeQL flagged3 dynamic session property writes.",
+      "after": "Parent owns pending record feedback and clears it on exact readback; genuine Tool warning/error remains. Mobile save label is one line,126x44px with0 overflow. Three stores useMap; updated CodeQL has0 new alert annotations.",
+      "scope": "Built5d855b84 recovery and cancellation; cancellation response loss plus exact retry yields revision1/event1.76 targeted and separate independent regressions."
+    },
+    {
+      "id": "tool-draft-navigation",
+      "before": "Built5d855b84: type only Tool manuscript, clickLibrary, Back and reopen Tool produces empty input without warning.",
+      "after": "Meaningful shared-Tool drafts join existing navigation guard; original confirmed owner can discard exact per-job/step memory even when cancelled/hidden, leaving saved Library and work records intact. Different owner/unknown owner hides names/counts/content; stale discard cannot erase newer input.",
+      "scope": "86 related tests plus independent8targeted/4adversarial; actual14bd7988 build PC1280/mobile390 accepted, saved output reopened and cancelled job remains revision1/event1. Same-head CI14success/1known public-prose secrets failure.",
+      "evidence": [
+        "tool-navigation-before-summary.json",
+        "workbench-runner-navigation-summary.json",
+        "workbench-runner-navigation-independent-summary.json",
+        "browser-14bd7988-summary.json"
+      ],
+      "screenshots": [
+        "docs/evidence/quality-reliability/tool-navigation-guard-14bd7988-desktop.jpg",
+        "docs/evidence/quality-reliability/tool-navigation-guard-14bd7988-mobile.jpg",
+        "docs/evidence/quality-reliability/tool-library-preserved-14bd7988-mobile.jpg"
+      ]
+    },
+    {
+      "id": "wallet-test-settlement",
+      "before": "GitHub1bae verify retried while an actual SQLite-committed malformed response was still pending; helper waited8timer turns instead of full operation. Two controlled response/JSON gates fail with old helper.",
+      "after": "Tests track and await original operationRequest and full save/retry/reverse/refresh promises through parsing and finally, with bounded deadline. Explicit held GETs preserve concurrency scenarios. Enabled-button, same-ID/body and one durable-record assertions remain unchanged.",
+      "scope": "Test harness only; no runtime change. Wallet43/43 pass and two meaningful gate regressions pass. Final fullverify and same-head CI receipt belongs in PR105.",
+      "evidence": [
+        "wallet-promise-flush-summary.json",
+        "wallet-fixed-flush-independent.test.mjs",
+        "wallet-async-settlement-independent-summary.json"
+      ],
+      "independentReview": "43/43 rerun passed; independent gate after JSON parsing but before save finally proves flush waits for complete handler. Removing only full-ledger tracking makes that unchanged assertion fail. Explicit held GET races remain awaited after release."
+    },
+    {
+      "id": "workbench-test-readiness",
+      "before": "Held-list fixture was excluded from settling before async route snapshot and release callback existed; GitHub failed with delayed.release TypeError. Two independently controlled original flows reproduce it.",
+      "after": "Both delayed-list callers await explicit ready after snapshot and release installation. Release unmarks held; response JSON is tracked. Existing newer-selection/one-PATCH/new-creation assertions remain, with captured empty-list assertion added.",
+      "scope": "Test only;63 related cases pass, independent73 scoped cases pass; moving ready before preparation fails both unchanged independent regressions.",
+      "evidence": [
+        "workbench-ready-gate-summary.json",
+        "workbench-held-readiness-independent-summary.json"
+      ]
+    },
+    {
+      "id": "material-test-request-owner",
+      "before": "Test fixture attributed async study creation to the current account after await; under controlled account change Alice request became Bob-owned while old assertions passed. This was not a reproduced runtime bug or existing CI flake.",
+      "after": "Capture owner at request entry, signal committed/held response readiness, assert original owner before and after account change. Controlled precommit switch remains attributed to original request owner.",
+      "scope": "Test only;28/28 author and independent passes, unchanged same-ID/no-private-display/one-record assertions; restoring old mutable-owner assignment makes the added controlled regression fail.",
+      "evidence": [
+        "material-harness-owner-readiness-summary.json",
+        "material-owner-fixture-independent-summary.json"
+      ]
+    }
+  ],
+  "inProgress": [],
+  "knownLimitations": [
+    "Memory-only drafts do not survive browser force-close",
+    "Navigation API traversal guard is browser-dependent; same-tab link and beforeunload guards remain",
+    "No physical Android instrumentation, full OS build/flash, external Agent/Provider or production authentication acceptance",
+    "No production deployment, money movement, suspended capability activation or main merge",
+    "No performance speedup claim; measured UI overflow and duplicate-count behavior only",
+    "MrToolRunner retains shared fields only while Workbench is mounted. Same-tab guard and explicit per-Tool discard protect navigation; forced reload/closure can still lose memory. Specialized lazy-runner internal state is not included."
+  ],
+  "separateGrid": {
+    "sourceSha": "050fade2c72c440af8922d4f23a574d6c089cca5",
+    "headSha": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+    "verify": "local and GitHub success; concurrent receipt replay produces one settlement",
+    "ci": "six checks success, inherited secrets digest findings remain",
+    "newAndroidWorkerOrOrderConsole": false
+  },
+  "unappliedProposals": [
+    {
+      "name": "Exact public-tokenizer-digest secret-scanner exception",
+      "file": "grid-tokenizer-policy-proposal.UNAPPLIED.patch",
+      "sha256": "5416eb890a645496c983b7e2db926888ae81525ed8bd3594b77c6974d88afa1d",
+      "reason": "automatic approval review rejected security policy weakening; owner approval requested"
+    },
+    {
+      "name": "CSV stale-processing manual recovery and per-attempt artifacts",
+      "file": "csv-manual-processing-recovery.UNAPPLIED.patch",
+      "sha256": "3a158e7d3c10f054f5940948757e99f0101febfe6fd88fd3b9a480b6f34a1f21",
+      "reason": "automatic approval review rejected durable storage/retention contract change; owner approval requested"
+    },
+    {
+      "name": "Exact public review-description secret-scanner exception",
+      "file": "primary-prose-policy-proposal.UNAPPLIED.patch",
+      "sha256": "37928043a6a1465167116cab5e038440c1f817c9be47323381030d69e0aeb16f",
+      "reason": "SECURITY.md requires owner review; approval requested, no automatic rejection claimed for this proposal",
+      "validation": "Pinned scanner8.30.1: same1294 reachable commits, current policy1 finding, exact proposed rule/path/public-value exception0 findings;11 tests retain other-value, other-path and other-rule detection. Repository policy/workflow/history unchanged."
+    }
+  ],
+  "verificationLogs": "Large logs, screenshots and unapplied proposals are outside Git in /private/tmp/rock-quality-audit; tracked regression tests reproduce accepted behavior.",
+  "finalValidation": {
+    "sourceSha": "14bd7988cd334d3419c0e138174b850641d568d7",
+    "fullVerify": "PASS: Node2017 pass/1platform skip, Worker1356, CSV385, production build and186 asset references/0missing",
+    "githubCi": "14success/1known public-prose secrets failure; same14bd7988",
+    "runtimeFrozen": true,
+    "browserAcceptedAt": "2026-10-12T03:47:57.193717+00:00",
+    "reviewTarget": "PR105 final head (documentation and three bounded screenshots follow this runtime checkpoint)",
+    "finalHeadVerification": "The final non-runtime (documentation and test-harness) head verification receipt belongs in PR105 body, with exact SHA and command/CI results. This JSON proves its explicitly named checkpoints; final-source-equivalence.json proves runtime matches14bd7988.",
+    "postRuntimeAcceptanceChanges": [
+      "Documentation and three bounded screenshots",
+      "Wallet actual-operation settlement test harness",
+      "Workbench held-response readiness test harness",
+      "Material request-owner test fixture"
+    ]
+  },
+  "intermediateCi": {
+    "sha": "250b57b07e6a3191fc0a0ad11632ab1dbeb9ad58",
+    "checks": 15,
+    "success": 15,
+    "finalCandidate": false
+  },
+  "originalCheckoutPreservation": {
+    "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+    "trackedPatchAndStatusEqualInitial": true,
+    "statusEntries": 168,
+    "method": "Separate managed worktree; compared original tracked binary patch and porcelain status byte-for-byte; no original checkout writes.",
+    "lastComparedAt": "2026-10-12T03:50:29.860956+00:00",
+    "evidence": "original-checkout-final-preservation.json"
+  },
+  "reproduce": [
+    {
+      "area": "Web/Wallet/CSV/Tool owner and recovery",
+      "command": "node --experimental-strip-types --test tests/wallet-workspace-recovery.test.mjs tests/wallet-snapshot.test.mjs tests/csv-business-workspace.test.mjs tests/material-workspace-recovery.test.mjs tests/mercari-workspace-recovery.test.mjs tests/coconala-workspace-recovery.test.mjs",
+      "evidence": [
+        "wallet-draft-owner-summary.json",
+        "csv-independent-review-summary.json",
+        "material-independent-review-summary.json",
+        "mercari-independent-review-summary.json",
+        "coconala-independent-review-summary.json"
+      ]
+    },
+    {
+      "area": "Workbench/Cloud projections and updates",
+      "command": "node --experimental-strip-types --test tests/workbench-owner-recovery.test.mjs tests/workbench-cloud-text.test.mjs tests/work-job-view.test.mjs tests/remote-ai-text-client.test.mjs",
+      "evidence": [
+        "workbench-boundary-summary.json",
+        "workbench-followup-independent-review-summary.json",
+        "work-job-view-compatibility-summary.json",
+        "workbench-runner-summary.json",
+        "workbench-runner-independent-summary.json",
+        "browser-32ccdf3c-summary.json",
+        "workbench-session-map-independent-summary.json",
+        "workbench-record-feedback-summary.json",
+        "workbench-runner-navigation-summary.json"
+      ]
+    },
+    {
+      "area": "RPC/A2A/MCP",
+      "command": "node --experimental-strip-types --test tests/a2a-client.test.mjs tests/mcp-client.test.mjs tests/mcp-connector.test.mjs tests/mcp.test.mjs",
+      "evidence": [
+        "mcp-a2a-summary.json",
+        "a2a-envelope-summary.json"
+      ]
+    },
+    {
+      "area": "Local preview storage/runtime",
+      "command": "node --test tests/start-local-web.test.mjs tests/migration-union.test.mjs",
+      "evidence": [
+        "local-web-state-summary.json",
+        "wrangler-runtime-resolution-summary.json"
+      ]
+    },
+    {
+      "area": "API/DB/auth and CSV D1/R2",
+      "command": "npm run test:api",
+      "evidence": [
+        "verify-primary-fifth.log",
+        "final-browser-api-readback-summary.json"
+      ]
+    },
+    {
+      "area": "Native/Game host recovery",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=systems/rock-star-os/src:systems/rock-star-os/os:systems/rock-star-os/tests python3 -B -W error::ResourceWarning -m unittest test_storage test_server test_game_exchange_tls test_game_exchange_races test_game_reference_sdk test_game_exchange_process_kill -v",
+      "evidence": [
+        "android-native-summary.json",
+        "game-api-ci-audit-notes.md",
+        "game-api-ci-audit-source-hashes.json"
+      ]
+    },
+    {
+      "area": "Android host/build",
+      "command": "gradle -p android :core:testDebugUnitTest :automation:testDebugUnitTest :tool-sdk:testDebugUnitTest :shell:testDebugUnitTest :shell:assembleDebug :shell:assembleDebugAndroidTest :shell:lintDebug --offline --no-daemon",
+      "requirements": "Configured JDK17, API35 SDK and Gradle8.11.1; local exact paths/extra buildRoot in raw summary. Local instrumentation runtime/physical device not run; GitHub API35 emulator58pass/2physical-only skips at32ccdf3c verified separately.",
+      "evidence": [
+        "android-native-summary.json",
+        "android-shell-submission-summary.json",
+        "ci-32cc-native-android-secrets-summary.json"
+      ]
+    },
+    {
+      "area": "Full integration",
+      "command": "npm run verify",
+      "evidence": [
+        "verify-primary-14bd7988.log"
+      ],
+      "checkpoint": "Committed14bd7988 final runtime: Node2017pass/1platformskip, Worker1356, CSV385; final documentation-only head must repeat full verify and CI before handoff."
+    }
+  ],
+  "browserCheckpoint": {
+    "sourceSha": "08364bf0188c9d65683c7ddc2c066b8424fad067",
+    "environment": "Built Worker8788, loopback-only synthetic identity/fault gateway5180, actual local D1/R2",
+    "viewports": [
+      1280,
+      390
+    ],
+    "horizontalOverflowPx": 0,
+    "readback": "One Material study, one Mercari plan, one Coconala case at revision1; recovered article job revision2/two events; Wallet0/two rows; five completed free CSV samples plus one unaccepted quote",
+    "screenshots": [
+      "zema-completed-integrated-desktop.jpg",
+      "zema-completed-integrated-mobile.jpg",
+      "material-recovered-final-mobile.jpg",
+      "mercari-recovered-final-mobile.jpg",
+      "coconala-conflict-final-mobile.jpg",
+      "csv-notice-final-mobile.jpg",
+      "wallet-reload-integrated-desktop.jpg"
+    ],
+    "limitations": "Synthetic local identity injection tests application boundary; real identity/Provider/payment acceptance is separate. Later32ccdf3c browser checkpoint verifies reviewed selection/discard/session/layout changes."
+  },
+  "cleanup": {
+    "reused": "PR100 bounded response/origin helpers; existing workflow/terms/study parsers and owner intent contract",
+    "commonized": "Wallet ledger recovery shared by both existing views; one local preview persistence/config selection path; Workbench runtime projection reader",
+    "removed": "Duplicated implementations replaced in place. No additional whole source/dependency/history deletion without reference proof; main prior cleanup retained.",
+    "protected": "vendor originals/hashes, migration history, import manifests, recovery evidence and original checkout preserved",
+    "testReliability": "Replaced fixed timer-turn waiting with actual operation settlement; intentionally held reads remain available for race tests."
+  },
+  "builtFollowups": {
+    "commits": [
+      "5590b7c5",
+      "e3567ddd",
+      "b9e16184",
+      "32ccdf3c",
+      "5d855b84",
+      "14bd7988"
+    ],
+    "independentReview": "45 scoped cases and two additional URL-intent race cases passed; built-ui-followups-independent-summary.json",
+    "builtRecheck": "14bd7988 final runtime: shared Tool-only draft blocks Library navigation and retains exact input; pending committed cancellation forbids discard, exact retry confirms revision1/event1; another owner sees no draft/title/action and original owner restores; cancelled-job draft can be explicitly discarded without modifying saved Library/job records. Existing saved output reopened; PC1280/mobile390 overflow0."
+  },
+  "validationCheckpoints": [
+    {
+      "sha": "da644261f7d2ad2a4889c56f62e5e865a75d2080",
+      "fullVerify": {
+        "exit": 0,
+        "nodePass": 2009,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385
+      },
+      "githubCi": {
+        "success": 14,
+        "failure": 1,
+        "failedCheck": "SPIDER / secrets",
+        "reason": "Public audit-description phrase in this commit; owner-reviewed exact exception pending",
+        "run": "https://github.com/k999ln/rock/actions/runs/38197329183"
+      }
+    },
+    {
+      "sha": "32ccdf3c67e5e0b9ffe18ea459bc0293d0c5e81e",
+      "fullVerify": {
+        "exit": 0,
+        "nodePass": 2011,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "log": "verify-primary-32ccdf3c.log",
+      "browserEvidence": "browser-32ccdf3c-summary.json",
+      "githubCi": {
+        "success": 13,
+        "failure": 2,
+        "failures": [
+          "SPIDER / secrets: inherited public prose in da644261, owner review pending",
+          "CodeQL: three remote-property-injection alerts on new Workbench session dictionaries; Map refactor under review"
+        ],
+        "codeqlCheck": "https://github.com/k999ln/rock/runs/114646760786"
+      },
+      "androidCi": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38198513297",
+        "emulator": "API35/google_apis/x86_64",
+        "passed": 58,
+        "skipped": 2,
+        "failures": 0,
+        "shell": 9,
+        "newSubmissionRecoveryTests": 2,
+        "skipReason": "PhysicalRebootRecoveryTest seed/recover phase absent",
+        "excluded": "LocalAiServiceIntegrationTest",
+        "hostXmlPass": 161,
+        "apkArtifactHashesVerified": true,
+        "physicalDevice": "NOT_RUN",
+        "releaseSigning": "NOT_CONFIGURED"
+      },
+      "nativeCi": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38198513304",
+        "pythonTestExecutions": 1847,
+        "skipped": 0,
+        "gatesPassed": 17,
+        "rootUi": "61observer/11PIN/8protocol groups; Wallet14 andATM14frames",
+        "osBoot": false
+      },
+      "ciEvidence": "ci-32cc-native-android-secrets-summary.json"
+    },
+    {
+      "sha": "5d855b84269326c5e4fc6e93b967d6906d73c316",
+      "fullVerify": {
+        "exit": 0,
+        "nodePass": 2013,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "githubCi": {
+        "success": 14,
+        "failure": 1,
+        "failedCheck": "SPIDER / secrets",
+        "reason": "Same known public-description false positive; owner review pending"
+      },
+      "codeql": {
+        "conclusion": "success",
+        "newAlertAnnotations": 0,
+        "check": "https://github.com/k999ln/rock/runs/114649977865"
+      },
+      "browserEvidence": "browser-5d855b84-summary.json",
+      "log": "verify-primary-5d855b84.log"
+    },
+    {
+      "sha": "14bd7988cd334d3419c0e138174b850641d568d7",
+      "fullVerify": {
+        "exit": 0,
+        "nodePass": 2017,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "githubCi": {
+        "success": 14,
+        "failure": 1,
+        "failedCheck": "SPIDER / secrets",
+        "reason": "Known public-description finding introduced in da644261; owner review pending; no policy or history change",
+        "checks": [
+          {
+            "name": "SPIDER / secrets",
+            "conclusion": "FAILURE",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645949/job/114653081423"
+          },
+          {
+            "name": "public-fixture-tests",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645856/job/114653081165"
+          },
+          {
+            "name": "prototype",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645834/job/114653081238"
+          },
+          {
+            "name": "partitions (main-0)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082491"
+          },
+          {
+            "name": "verify",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646001/job/114653082014"
+          },
+          {
+            "name": "SPIDER CodeQL (javascript-typescript)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645843/job/114653081191"
+          },
+          {
+            "name": "SPIDER / repair regressions",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645958/job/114653081593"
+          },
+          {
+            "name": "partitions (main-1)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082388"
+          },
+          {
+            "name": "SPIDER CodeQL (python)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645843/job/114653081446"
+          },
+          {
+            "name": "partitions (main-2)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082212"
+          },
+          {
+            "name": "partitions (main-3)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082492"
+          },
+          {
+            "name": "partitions (support)",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653082392"
+          },
+          {
+            "name": "source-tests",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200646106/job/114653556992"
+          },
+          {
+            "name": "SPIDER / production web security measurement",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/actions/runs/38200645958/job/114653081876"
+          },
+          {
+            "name": "CodeQL",
+            "conclusion": "SUCCESS",
+            "url": "https://github.com/k999ln/rock/runs/114653520869"
+          }
+        ],
+        "reachableCommitsScanned": 1298,
+        "findings": 1
+      },
+      "log": "verify-primary-14bd7988.log",
+      "browserEvidence": "browser-14bd7988-summary.json",
+      "ciEvidence": "ci-14bd-native-android-secrets-summary.json",
+      "codeql": {
+        "newChangedCodeAlerts": 0,
+        "annotations": 0,
+        "check": "https://github.com/k999ln/rock/runs/114653520869"
+      },
+      "androidCi": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38200645834",
+        "emulator": "API35/google_apis/x86_64",
+        "passed": 58,
+        "skipped": 2,
+        "failures": 0,
+        "newShellSubmissionRecoveryTestsPassed": 2,
+        "hostXmlPass": 161,
+        "debugApkHashesVerified": true,
+        "excluded": "LocalAiServiceIntegrationTest",
+        "skipReason": "PhysicalRebootRecoveryTest seed/recover phase absent",
+        "physicalDevice": "NOT_RUN",
+        "releaseSigning": "NOT_CONFIGURED"
+      },
+      "nativeCi": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38200646106",
+        "pythonTestExecutions": 1847,
+        "gatesPassed": 17,
+        "skipped": 0,
+        "osBoot": false
+      }
+    },
+    {
+      "sha": "1bae02b8095058a8028bb4ff51ddee3000f596bb",
+      "fullVerify": {
+        "localExit": 0,
+        "nodePass": 2017,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "githubCi": {
+        "success": 13,
+        "failure": 2,
+        "failures": [
+          "SPIDER / secrets: same known public-description finding; owner review pending",
+          "verify: fixed-eight-timer-turn Wallet test flush observed legitimate in-flight save; independent controlled-delay reproduction confirmed test harness race"
+        ],
+        "nodePass": 2016,
+        "nodeFail": 1,
+        "nodeSkip": 1
+      },
+      "ciEvidence": "ci-1bae-native-android-secrets-summary.json",
+      "browserEvidence": "browser-1bae02b8-summary.json",
+      "log": "verify-primary-1bae02b8.log",
+      "runtimeChanges": false
+    },
+    {
+      "sha": "f5e5f34a95d5947704148151f927971e36e9ea32",
+      "fullVerify": {
+        "localExit": 0,
+        "nodePass": 2019,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "githubCi": {
+        "success": 13,
+        "failure": 2,
+        "failures": [
+          "SPIDER / secrets: same known historical public-description finding",
+          "verify: Workbench test released a delayed response before async snapshot preparation installed its release callback; Wallet prior failure resolved"
+        ],
+        "nodePass": 2018,
+        "nodeFail": 1,
+        "nodeSkip": 1
+      },
+      "ciEvidence": "ci-f5e5-native-android-secrets-summary.json",
+      "browserEvidence": "browser-f5e5f34a-summary.json",
+      "log": "verify-primary-f5e5f34a.log",
+      "runtimeChanges": false
+    }
+  ],
+  "policyPreservation": {
+    "baseMain": "4055ad380d3876bee8e93eca71b1e072a2785959",
+    "protectedUnchanged": [
+      "AGENTS.md",
+      "data/product-baseline.json",
+      "docs/product-baseline.md",
+      "data/archived-paths.json",
+      ".gitattributes",
+      "vendor/mr",
+      "IMPORT-MANIFEST.json files"
+    ],
+    "archivedPaths": 968,
+    "resurrected": 0,
+    "evidence": "final-policy-preservation.json"
+  },
+  "handoff": {
+    "runtimeSourceSha": "14bd7988cd334d3419c0e138174b850641d568d7",
+    "primaryPr": "https://github.com/k999ln/rock/pull/105",
+    "primaryPrState": "OPEN_READY_FOR_REVIEW",
+    "mainIntegrated": false,
+    "deployed": false,
+    "nextSteps": [
+      "Read this evidence and current PR105/104 head checks; keep primary/main and Grid/PR103 bases separate.",
+      "Review the two exact public-value secrets exception proposals under SECURITY.md; neither scanner policy, pinned policy commit nor full-history scope was changed. Verify negative controls and all-history scan after an approved policy commit/pin update.",
+      "Review the separate CSV processing-timeout/storage-retention proposal before any implementation. Until then hard-killed processing requires operator investigation; no automatic unsafe takeover.",
+      "After approved remaining changes, repeat focused regressions, npm run verify, real browser recovery and same-SHA CI. Main merge and deployment are separate operations."
+    ],
+    "unappliedProposalDirectory": "/private/tmp/rock-quality-audit",
+    "rawEvidenceDirectory": "/private/tmp/rock-quality-audit",
+    "reviewLimits": "CI secrets finding prevents claiming all-green/merge-ready. Physical/full-OS, real provider, production identity, funds and publication remain separate gates.",
+    "verificationNote": "Read the final PR105 receipt before treating any intermediate checkpoint as the current result. Two CI harness races and one fixture ownership assumption were causally corrected without runtime edits or weakened assertions."
+  },
+  "followup": {
+    "startedAt": "2026-10-12T14:21:32.246879+00:00",
+    "status": "final_validation_and_site_integration",
+    "mainSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
+    "primaryStartSha": "19e75e92d873f0b3e9d6294634cbdbe0d5f96567",
+    "gridStartSha": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+    "taskIds": [
+      "G04",
+      "WEB04",
+      "AI04",
+      "CSV00",
+      "GRID01"
+    ],
+    "scope": [
+      "secret_findings_and_proposal_review",
+      "real_csv_process_kill_reproduction",
+      "existing_tool_memory_recovery",
+      "independent_grid_review"
+    ],
+    "approvals": "Both scanner exceptions and CSV durable recovery proposal remain unapplied; this goal does not approve them.",
+    "nextAction": "Update existing PR105/104 and same-head CI; complete live-preserving Sites integration, its schema-upgrade tests and built-browser checks, then publish existing URL.",
+    "evidence": "docs/evidence/quality-reliability-review.json#followup",
+    "originalCheckout": {
+      "root": "/Users/kaiya/Documents/ChatGPT/avokdo",
+      "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+      "branch": "codex/esim-cloud-access",
+      "statusEntries": 168,
+      "statusSha256": "6e8b22d57e72609e6d1f471b238e4a00d75805024a2f236a61fd96f37fd53580",
+      "patchSha256": "a271e8e75dc48416d2d6e7e0b7922bb8ddd6e09bfba4c3bd6311a49b67fb956f"
+    },
+    "githubStart": {
+      "checkedAt": "2026-10-12T14:22:40.023873+00:00",
+      "main": "4055ad380d3876bee8e93eca71b1e072a2785959",
+      "pulls": [
+        {
+          "baseRefName": "main",
+          "headRefName": "codex/rock-refactor-20261011",
+          "headRefOid": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
+          "isDraft": false,
+          "mergedAt": null,
+          "number": 100,
+          "state": "OPEN",
+          "url": "https://github.com/k999ln/rock/pull/100",
+          "checks": {
+            "SUCCESS": 9
+          },
+          "failures": []
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "claude/sky-compute-grid-live",
+          "headRefOid": "e80d0357aa88291b6ee955e62af875180d35e6cd",
+          "isDraft": false,
+          "mergedAt": null,
+          "number": 103,
+          "state": "OPEN",
+          "url": "https://github.com/k999ln/rock/pull/103",
+          "checks": {
+            "FAILURE": 1,
+            "SUCCESS": 7
+          },
+          "failures": [
+            {
+              "name": "SPIDER / secrets",
+              "url": "https://github.com/k999ln/rock/actions/runs/38184274691/job/114603149994"
+            }
+          ]
+        },
+        {
+          "baseRefName": "claude/sky-compute-grid-live",
+          "headRefName": "codex/compute-grid-recovery-20261011",
+          "headRefOid": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+          "isDraft": false,
+          "mergedAt": null,
+          "number": 104,
+          "state": "OPEN",
+          "url": "https://github.com/k999ln/rock/pull/104",
+          "checks": {
+            "FAILURE": 1,
+            "SUCCESS": 6
+          },
+          "failures": [
+            {
+              "name": "SPIDER / secrets",
+              "url": "https://github.com/k999ln/rock/actions/runs/38189944538/job/114620328054"
+            }
+          ]
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "codex/quality-reliability-20261011",
+          "headRefOid": "19e75e92d873f0b3e9d6294634cbdbe0d5f96567",
+          "isDraft": false,
+          "mergedAt": null,
+          "number": 105,
+          "state": "OPEN",
+          "url": "https://github.com/k999ln/rock/pull/105",
+          "checks": {
+            "FAILURE": 1,
+            "SUCCESS": 14
+          },
+          "failures": [
+            {
+              "name": "SPIDER / secrets",
+              "url": "https://github.com/k999ln/rock/actions/runs/38202814700/job/114659706241"
+            }
+          ]
+        }
+      ]
+    },
+    "verification": [
+      {
+        "scope": "Delivery actual-client and actual execution-access owner/auth races",
+        "result": "pass",
+        "independentChecks": 8,
+        "relatedChecks": 51,
+        "limits": "In-memory same-owner recovery only; not forced-close persistence or production authentication."
+      },
+      {
+        "scope": "Legal/Patent/Jev synchronous submissions",
+        "result": "pass",
+        "targetedChecks": 12,
+        "independentChecks": 22,
+        "beforeAfter": "Same-frame duplicate POST 2 to 1; Jev disabled execution POST 1 to 0."
+      },
+      {
+        "scope": "CSV event fencing",
+        "result": "pass",
+        "targetedChecks": 19,
+        "independentExtraChecks": 2,
+        "beforeAfter": "Old delayed event survived deletion/recreation; conditional insert prevents stale/cross-owner history while allowing legitimate delayed events for same input."
+      },
+      {
+        "scope": "CSV real D1/R2 process-group SIGKILL",
+        "result": "diagnostic reproduced",
+        "checkpoints": 5,
+        "processingRecoverySolved": false,
+        "limits": "Claim, partial R2 stream and partial outputs remain stuck; completion preserves artifacts; cleanup_pending resumes. No orphan-retention/retry contract changes."
+      },
+      {
+        "scope": "Grid server",
+        "result": "pass",
+        "targetedChecks": 59,
+        "independentReplayChecks": 1,
+        "sourceSha": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+        "limits": "Post-D1-commit exception/new store instance fixture, not OS process kill; existing five-minute exact signed replay window maintained."
+      },
+      {
+        "scope": "npm run verify",
+        "result": "pass",
+        "nodeVersion": "v26.0.0",
+        "nodePassed": 2049,
+        "nodeSkipped": 1,
+        "nodeFailed": 0,
+        "workApiAssertions": 1356,
+        "csvWorkerAssertions": 385,
+        "sourceInputsUnchanged": true,
+        "limits": "The one existing platform skip remains; GitHub Node22 check is a separate result. Initial failure was five missing awaits in test registration and was fixed without changing assertions."
+      }
+    ],
+    "deployment": {
+      "authorization": "User explicitly requested all fixes on the existing URL in this chat; no new pricing, held feature enablement or main merge approval.",
+      "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+      "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+      "previousVersion": 49,
+      "previousSourceSha": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc",
+      "audience": "public",
+      "state": "preparing_preserving_live_only_csv_contracts",
+      "authorizationRecordedAt": "2026-10-12T16:07:04.459805+00:00"
+    },
+    "resolved": [
+      "Delivery draft/file owner fencing and parent authentication invalidation",
+      "Legal/Patent/Jev synchronous duplicate-submit guard",
+      "CSV delayed event fencing after deletion and input generation reuse"
+    ],
+    "unresolved": [
+      "Scanner exceptions/control pin require owner review; policies unchanged",
+      "CSV processing SIGKILL recovery and expired-processing purge remain unresolved; prior contract proposal remains unapplied",
+      "Canonical nextPrompt synchronization rejected by automatic approval review; user decision pending",
+      "Standalone anonymous drafts and forced tab-close persistence remain outside approved storage contract"
+    ],
+    "runtimeCandidateSha256": {
+      "components/workbench.tsx": "53269d782ddc331b020ef09cfb6df6d151a9939aac8de7d58699a783d911e4e9",
+      "components/mr-tool-runner.tsx": "271a175f9d34e9fc48d0968aef34daa53834d52d7a47ca97ead44a3333a229df",
+      "components/delivery-runner.tsx": "8752f24c0881076f79f128178692a6d2877807cb5b54502db14f20ef6dc4ea46",
+      "lib/delivery-runner-state.ts": "eb9fd20d8e3c08e923cbfbc54c1760721279399ac5de7055b845d38ab8b64b1f",
+      "components/legal-intake-runner.tsx": "4865263151846571ba112d82cdd982b98622d354fc1b8f363c3068c2786b8a16",
+      "components/patent-assistant-runner.tsx": "3b12d604f9c7bfe47fe5ff5dbdb76b65e907d913b4638b4f94a4df597645a3c6",
+      "components/jev-evaluation-runner.tsx": "3d5f13069c37a872bd84b44ece47a44821d4462371f42334befcd8cac9723278",
+      "lib/csv-job-store.ts": "b26907c79eba627b1cad355777a6051f135ec8ab780538c681024e67c780ba5d",
+      "scripts/check-csv-process-crashes.mjs": "2b65439adb7d776c0eb1527b250b4c7415a217bc5f0e86ff1f2945b4fa885521"
+    },
+    "scannerReview": {
+      "primary": {
+        "head": "19e75e92d873f0b3e9d6294634cbdbe0d5f96567",
+        "commits": 1301,
+        "pinnedFindings": 1,
+        "proposedFindings": 0,
+        "tests": 11
+      },
+      "grid": {
+        "head": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+        "commits": 1268,
+        "pinnedFindings": 3,
+        "proposedFindings": 0,
+        "tests": 12,
+        "independentNegativeCases": 15
+      },
+      "applied": false,
+      "note": "Complete reachable histories, pinned Gitleaks 8.30.1; exact rule/path/value proposals tested only in scratch. Intentional github-pat self-test annotation is not a repository leak."
+    },
+    "browser": {
+      "environment": "built local Worker, persisted synthetic D1/R2, gateway-controlled synthetic identity; no production-auth claim",
+      "checks": [
+        "Workbench synthetic job and explicitly saved result survived final build/reload",
+        "Delivery-only review/File draft blocked Library navigation",
+        "401 hid private job/review/discard and disabled creation",
+        "different owner had no prior job/review/discard",
+        "original owner restored exact review and selected File reference without reselecting",
+        "PC1280 and mobile390 document widths equal viewport; keyboard Tab reached file selector"
+      ],
+      "screenshots": [
+        "docs/evidence/quality-delivery-recovery-desktop.png",
+        "docs/evidence/quality-delivery-recovery-mobile.png"
+      ],
+      "limitations": [
+        "Native file input resets its browser label after remount; retained in-memory File count remains authoritative",
+        "No PC connector execution or external delivery/provider calls",
+        "Force-close persistence not added"
+      ]
+    },
+    "ciFirstCandidate": {
+      "sha": "9670aeee6ecf7ef3d30ef537d94ef3cc9597b0f7",
+      "success": 13,
+      "failure": 2,
+      "failures": [
+        "Known public-prose secrets detection, policy unchanged",
+        "CodeQL: three insecure temporary file locations in the new local crash audit; fixed to a fresh private mkdtemp directory, five real crash checkpoints revalidated"
+      ],
+      "codeqlFix": "The environment override is now a parent directory; every run creates a random private child. No rules, assertions, or product runtime weakened.",
+      "independentReview": "Old predictable-path symlink victim unchanged; new output/state modes 0700; custom parent receives one random child. All five real crash checkpoints pass."
+    }
+  }
+}

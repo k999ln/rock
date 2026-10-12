@@ -1,3 +1,4 @@
+import * as boundedStream from '../lib/bounded-stream.ts';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -25,7 +26,7 @@ async function setup(t) {
   // parser, route, normalization, owner-scoped store and SQLite statements run.
   const fund = { database: () => db, requestUser: auth.requestUser };
   const api = loadRouteFixture(new URL('../lib/operations-api.ts', import.meta.url),
-    new Map([['./fund-store', fund], ['./operations', operations]]));
+    new Map([['./bounded-stream.ts', boundedStream], ['./fund-store', fund], ['./operations', operations]]));
   const route = loadRouteFixture(new URL('../app/api/revenue/mercari/route.ts', import.meta.url), new Map([
     ['@/lib/fund-store', fund], ['@/lib/operations-api', api], ['@/lib/operations', operations], ['@/lib/request-auth', auth],
     ...await Promise.all(['owner-intent', 'mercari-revenue', 'mercari-revenue-store'].map(async (name) =>

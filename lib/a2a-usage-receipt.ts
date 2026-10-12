@@ -1,3 +1,5 @@
+import { verifyA2AProviderSignature } from './a2a-provider-signature.ts';
+
 /** Provider-signed final usage proof for one A2A delegation. */
 export const A2A_USAGE_RECEIPT_SCHEMA =
   'rock-a2a-provider-usage-receipt/1' as const;
@@ -110,14 +112,7 @@ export async function verifyA2AUsageReceipt(
   let publicKey: Uint8Array | null;
   try { publicKey = await resolveKey({ providerId: receipt.providerId, keyId: receipt.keyId, agentOrigin: receipt.agentOrigin }); } catch { return false; }
   if (!(publicKey instanceof Uint8Array) || publicKey.length !== 32) return false;
-  try {
-    const rawKey = Uint8Array.from(publicKey);
-    const key = await crypto.subtle.importKey('raw', rawKey.buffer as ArrayBuffer, { name: 'Ed25519' }, false, ['verify']);
-    const signature = Uint8Array.from(atob(receipt.signature.replaceAll('-', '+').replaceAll('_', '/') + '=='), (character) => character.charCodeAt(0));
-    if (signature.length !== 64 || btoa(String.fromCharCode(...signature)).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '') !== receipt.signature) return false;
-    const bytes = a2aUsageReceiptSigningBytes(receipt);
-    return await crypto.subtle.verify({ name: 'Ed25519' }, key, signature, bytes);
-  } catch { return false; }
+  return verifyA2AProviderSignature(publicKey, receipt, () => a2aUsageReceiptSigningBytes(receipt));
 }
 
 type TrustedUsageKey = { providerId: string; keyId: string; agentOrigin: string; publicKeyHex: string; status: 'active' | 'revoked' };

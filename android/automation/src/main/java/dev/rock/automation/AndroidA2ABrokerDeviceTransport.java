@@ -1,7 +1,6 @@
 package dev.rock.automation;
 
 import android.os.SystemClock;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,9 +8,7 @@ import java.net.CookieHandler;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONArray;
@@ -29,7 +26,7 @@ final class AndroidA2ABrokerDeviceTransport {
     private final String origin;
 
     AndroidA2ABrokerDeviceTransport(String configuredOrigin) {
-        this.origin = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(configuredOrigin);
+        this.origin = RockstarServiceOrigin.canonicalOrigin(configuredOrigin);
         if (configuredOrigin == null || configuredOrigin.length() > 255 || !origin.equals(configuredOrigin))
             throw new IllegalArgumentException("A2A_BROKER_ORIGIN_INVALID");
     }
@@ -96,20 +93,12 @@ final class AndroidA2ABrokerDeviceTransport {
                 : body != null && "register".equals(body.optString("action")) ? status == 200 || status == 201
                 : status == 200;
             if (!accepted) throw new IOException("A2A_BROKER_HTTP_" + status);
-            String contentType = connection.getContentType();
-            if (contentType == null || !"application/json".equalsIgnoreCase(contentType.split(";", 2)[0].trim()))
-                throw new IOException("A2A_BROKER_CONTENT_TYPE_INVALID");
-            String encoding = connection.getContentEncoding();
-            if (encoding != null && !"identity".equalsIgnoreCase(encoding.trim()))
-                throw new IOException("A2A_BROKER_CONTENT_ENCODING_INVALID");
+            AndroidJsonResponse.requireJsonHeaders(connection, "A2A_BROKER");
             try (InputStream input = connection.getInputStream()) {
                 responseBytes = readBounded(input, MAX_RESPONSE_BYTES,
                     SystemClock.elapsedRealtime() + TOTAL_TIMEOUT_MS);
             }
-            String text = StandardCharsets.UTF_8.newDecoder()
-                .onMalformedInput(CodingErrorAction.REPORT)
-                .onUnmappableCharacter(CodingErrorAction.REPORT)
-                .decode(ByteBuffer.wrap(responseBytes)).toString();
+            String text = AndroidJsonResponse.decodeUtf8(responseBytes);
             return new JSONObject(text);
         } catch (JSONException | CharacterCodingException | IllegalArgumentException invalid) {
             throw new IOException("A2A_BROKER_RESPONSE_INVALID", invalid);
@@ -121,16 +110,7 @@ final class AndroidA2ABrokerDeviceTransport {
     }
 
     private static byte[] readBounded(InputStream input, int maximum, long deadline) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1_024];
-        while (true) {
-            if (SystemClock.elapsedRealtime() >= deadline) throw new IOException("A2A_BROKER_RESPONSE_TIMEOUT");
-            int count = input.read(buffer);
-            if (SystemClock.elapsedRealtime() >= deadline) throw new IOException("A2A_BROKER_RESPONSE_TIMEOUT");
-            if (count == -1) break;
-            if (output.size() > maximum - count) throw new IOException("A2A_BROKER_RESPONSE_TOO_LARGE");
-            output.write(buffer, 0, count);
-        }
-        return output.toByteArray();
+        return AndroidJsonResponse.readBounded(input, maximum, deadline,
+            SystemClock::elapsedRealtime, "A2A_BROKER");
     }
 }

@@ -1,5 +1,12 @@
 # Android / Device / Local AI
 
+## 2026-10-11 — 既存機能の品質・復旧改善（AI04 / OS10、ROCK）
+
+Shell送信の二重tapとBinder応答喪失を同じUUID／入力digest／Android userで照合する。詳細はAI native OS設計§6。Core outboxの確定receiptはprovider参照・payload hash・実精算額の完全一致でのみ再照合する。host／SQLite回帰、Shell APK、lint、instrumentation APK compileを実機受入と分ける。
+
+検証状態と再開手順は[data/project-status.json](../../data/project-status.json)の`qualityRefactor`を正とする。全領域完成・main統合・本番公開は未宣言。
+
+
 ## 現行の検証段階と再開条件（2026-10-11）
 
 | 範囲 | 確認済みの段階 | 次に必要な証拠 |

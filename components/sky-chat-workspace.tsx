@@ -16,6 +16,7 @@ import {
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { guardHistoryNavigation } from '@/lib/history-navigation-guard';
 import {
   ArrowRight,
   CheckCircle2,
@@ -41,7 +42,6 @@ import {
   localModelPresets,
   textModelProviderDefinition,
   textModelProviders,
-  type TextModelProviderId,
 } from '@/lib/llm-providers';
 import WorkspaceShell from '@/components/workspace-shell';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -74,27 +74,14 @@ import type {
 import ChatLiveProgress from '@/components/chat-live-progress';
 import type { CsvJob } from '@/components/chat-live-progress';
 import {
-  consumeSkyZemaHandoff,
   skyRequestLimit,
   SKY_ZEMA_JOB_EVENT,
 } from '@/lib/sky-zema-handoff';
-import {
-  clearZemaPrivateSession,
-  readZemaChatSessions,
-  saveZemaChatSession,
-  type ZemaChatSession,
-} from '@/lib/zema-chat-session';
+import { clearZemaPrivateSession } from '@/lib/zema-chat-session';
+import { useSkyChatSession, type ChatEntry, type WorkflowStatus } from '@/components/use-sky-chat-session';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 import { formatCurrencyMinor, parseCurrencyInputToMinor } from '@/lib/currency-format';
 import { remoteAiTextRequest, RemoteAiTextClientError } from '@/lib/remote-ai-text-client';
-
-type ChatEntry = {
-  id: string;
-  side: 'me' | 'sky';
-  text: string;
-  tool?: string;
-  suggestedTool?: string;
-};
 
 type RemoteAiEstimateResult = {
   currencies?: string[];
@@ -117,17 +104,6 @@ type RemoteAiEstimateResult = {
   providerSubmission: 'not_performed';
   executionAuthorized: false;
 };
-
-type ActiveRequest = {
-  id: string;
-  text: string;
-  toolId: string;
-  executionProvider: 'local-model';
-  plannerProvider: TextModelProviderId;
-  plannerModel: string;
-};
-
-type WorkflowStatus = 'ready' | 'running' | 'completed' | 'failed';
 
 type FundSnapshot = {
   funds: AutomationFundPlan[];
@@ -295,21 +271,11 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   const [fundRefreshing, setFundRefreshing] = useState(false);
   const [selectedToolId, setSelectedToolId] = useState(AUTO_MODE);
   const [draft, setDraft] = useState('');
-  const [messages, setMessages] = useState<ChatEntry[]>([]);
-  const [activeRequest, setActiveRequest] = useState<ActiveRequest | null>(
-    null,
-  );
-  const [requestStartedAt, setRequestStartedAt] = useState(0);
+  const draftRef = useRef('');
   const [running, setRunning] = useState(false);
-  const [workflowStatus, setWorkflowStatus] = useState<WorkflowStatus>('ready');
-  const [threadId, setThreadId] = useState('');
-  const [threadCreatedAt, setThreadCreatedAt] = useState(0);
-  const [sessionReady, setSessionReady] = useState(false);
-  const [recentThreads, setRecentThreads] = useState<ZemaChatSession[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [historyQuery, setHistoryQuery] = useState('');
   const [allBotsOpen, setAllBotsOpen] = useState(false);
-  const [outcome, setOutcome] = useState<{ ok: boolean; text: string } | null>(null);
   const [chatLoading, setChatLoading] = useState(false);
   const [remoteEstimate, setRemoteEstimate] = useState<RemoteAiEstimateResult | null>(null);
   const [cloudWorkDraft, setCloudWorkDraft] = useState<{
@@ -319,17 +285,60 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   const [remoteCurrencyOptions, setRemoteCurrencyOptions] = useState<string[]>([]);
   const [remoteBudgetInput, setRemoteBudgetInput] = useState('');
   const [loading, setLoading] = useState(true);
+  const { messages, setMessages, activeRequest, setActiveRequest, requestStartedAt, setRequestStartedAt,
+    workflowStatus, setWorkflowStatus, threadId, recentThreads, outcome, setOutcome, resetSession, beginSession } =
+    useSkyChatSession({ loading, workView, preferredTool, requestedThreadId, setSelectedToolId, roleFor });
   const [error, setError] = useState('');
   const routingDraft = useProviderDraft('routing', providerRoutingDefaults, !executionBlocked, true);
   const providerRouting = routingDraft.state.config;
   useEffect(() => { if (routingDraft.state.unauthorized) setNeedsSignin(true); }, [routingDraft.state.unauthorized, setNeedsSignin]);
 
   const amcDirtyRef = useRef(false);
-  const [amcReplacement, setAmcReplacement] = useState<{ resume: () => void } | null>(null);
+  const [amcReplacement, setAmcReplacement] = useState<{ resume: () => void; draft?: boolean; amc?: boolean } | null>(null);
   const composerRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatAbortRef = useRef<AbortController | null>(null);
   const activeChatThreadRef = useRef('');
+  const submissionRef = useRef(false);
+  const estimateAbortRef = useRef<AbortController | null>(null);
+  const invalidateRemoteEstimate = useCallback(() => {
+    if (estimateAbortRef.current) {
+      estimateAbortRef.current.abort();
+      estimateAbortRef.current = null;
+      submissionRef.current = false;
+      setChatLoading(false);
+    }
+    setRemoteEstimate(null);
+  }, []);
+  useEffect(() => {
+    const previous = estimateAbortRef.current;
+    previous?.abort();
+    estimateAbortRef.current = null;
+    if (previous) submissionRef.current = false;
+    const frame = window.requestAnimationFrame(() => {
+      setRemoteEstimate(null);
+      if (previous) setChatLoading(false);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [preferredTool, requestedThreadId, workView]);
+  useEffect(() => () => {
+    chatAbortRef.current?.abort();
+    estimateAbortRef.current?.abort();
+    submissionRef.current = false;
+  }, []);
+  useEffect(() => {
+    if (!draft.trim()) return;
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [draft]);
+  useEffect(() => guardHistoryNavigation(window, (resume) => {
+    if (running) return true;
+    const hasDraft = Boolean(draftRef.current.trim());
+    if (!hasDraft && !amcDirtyRef.current) return false;
+    setAmcReplacement({ resume, draft: hasDraft, amc: amcDirtyRef.current });
+    return true;
+  }), [running]);
   const mcpRequestRef = useRef(0);
   const mcpMountedRef = useRef(false);
   const mcpTokenRef = useRef<string | null>(null);
@@ -516,6 +525,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     if (chatAbortRef.current && activeChatThreadRef.current !== requestedThreadId) {
       chatAbortRef.current.abort();
       chatAbortRef.current = null;
+      submissionRef.current = false;
       setChatLoading(false);
     }
   }, [requestedThreadId]);
@@ -609,91 +619,6 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     : selectedBotApp && !compactBotApps.some((tool) => tool.id === selectedBotApp.id)
       ? [selectedBotApp, ...compactBotApps]
       : compactBotApps;
-  useEffect(() => {
-    if (loading || workView) return;
-    const frame = window.requestAnimationFrame(() => {
-    let sessions: ZemaChatSession[] = [];
-    try { sessions = readZemaChatSessions(); } catch { /* Private storage may be unavailable. */ }
-    setRecentThreads(sessions);
-    setSessionReady(false);
-    setThreadId('');
-    setThreadCreatedAt(0);
-    setMessages([]);
-    setActiveRequest(null);
-    setRequestStartedAt(0);
-    setWorkflowStatus('ready');
-    setOutcome(null);
-    const saved = sessions.find((item) => item.id === requestedThreadId && item.toolId === preferredTool);
-    if (saved) {
-      setThreadId(saved.id);
-      setThreadCreatedAt(saved.createdAt);
-      setSelectedToolId(saved.toolId);
-      setMessages(saved.messages);
-      setActiveRequest(saved.activeRequest
-        ? {
-            ...saved.activeRequest,
-            executionProvider: saved.activeRequest.executionProvider ?? 'local-model',
-            plannerProvider: saved.activeRequest.plannerProvider ?? 'local-model',
-            plannerModel: saved.activeRequest.plannerModel ??
-              textModelProviderDefinition(saved.activeRequest.plannerProvider ?? 'local-model').defaultModel,
-          }
-        : null);
-      setRequestStartedAt(saved.createdAt);
-      if (saved.workflowStatus === 'running') {
-        setWorkflowStatus('failed');
-        setMessages((current) => [...current, {
-          id: `resume-${saved.id}`,
-          side: 'sky',
-          text: '画面を開き直しました。直前の実行結果はここでは確認できません。履歴を確認してから再実行してください。',
-          tool: saved.toolId,
-        }]);
-      } else setWorkflowStatus(saved.workflowStatus);
-      setOutcome(saved.outcome);
-      setSessionReady(true);
-      return;
-    }
-    if (!preferredTool || !requestedThreadId) return;
-    let handoff;
-    try { handoff = consumeSkyZemaHandoff(preferredTool, undefined, undefined, requestedThreadId); } catch { return; }
-    if (!handoff || handoff.id !== requestedThreadId) return;
-    const tool = catalog.find((item) => item.id === handoff.toolId);
-    if (!tool) return;
-    const id = `handoff-${handoff.id}`;
-    setSelectedToolId(tool.id);
-    setThreadId(handoff.id);
-    setThreadCreatedAt(handoff.createdAt);
-    setMessages([
-      ...(handoff.request ? [{ id: `${id}-me`, side: 'me' as const, text: handoff.request, tool: tool.id }] : []),
-      { id: `${id}-sky`, side: 'sky', text: handoff.request
-        ? `${roleFor(tool)}へSkyから引き継ぎました。入力を確認し、必要な承認を得てから実行します。進捗と結果はこのチャットに表示します。`
-        : `${roleFor(tool)}を開きました。下の入力欄に依頼を送ってください。`, tool: tool.id },
-    ]);
-    setActiveRequest(handoff.request ? {
-      id,
-      text: handoff.request,
-      toolId: tool.id,
-      executionProvider: handoff.executionProvider ?? 'local-model',
-      plannerProvider: 'local-model',
-      plannerModel: textModelProviderDefinition('local-model').defaultModel,
-    } : null);
-    setRequestStartedAt(handoff.createdAt);
-    setSessionReady(true);
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [loading, preferredTool, requestedThreadId, workView]);
-
-  useEffect(() => {
-    if (!sessionReady || !threadId || threadId !== requestedThreadId || !threadCreatedAt) return;
-    try {
-      const sessions = saveZemaChatSession({
-        version: 1, id: threadId, toolId: preferredTool, createdAt: threadCreatedAt,
-        messages, activeRequest, workflowStatus, outcome,
-      });
-      const frame = window.requestAnimationFrame(() => setRecentThreads(sessions));
-      return () => window.cancelAnimationFrame(frame);
-    } catch { /* Keep the current conversation usable without tab storage. */ }
-  }, [sessionReady, threadId, requestedThreadId, threadCreatedAt, preferredTool, messages, activeRequest, workflowStatus, outcome]);
-
 
   function recordWorkflowStatus(status: WorkflowStatus) {
     setWorkflowStatus(status);
@@ -723,55 +648,49 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     return false;
   }
 
+  function confirmConversationReplacement(resume: () => void) {
+    if (draftRef.current.trim()) {
+      setAmcReplacement({ resume, draft: true, amc: amcDirtyRef.current });
+      return false;
+    }
+    return confirmAmcReplacement(resume);
+  }
+
+  function resetConversation(toolId: string, resetRequestTime: boolean, preserveDraft = false) {
+    chatAbortRef.current?.abort();
+    chatAbortRef.current = null;
+    submissionRef.current = false;
+    setChatLoading(false);
+    setSelectedToolId(toolId);
+    if (!preserveDraft) { draftRef.current = ''; setDraft(''); }
+    invalidateRemoteEstimate();
+    setRemoteCurrency('');
+    setRemoteCurrencyOptions([]);
+    setRemoteBudgetInput('');
+    resetSession(resetRequestTime);
+  }
+
   function chooseMode(toolId: string) {
     setError('');
     if (toolId === selectedToolId) return;
     if (running || !confirmAmcReplacement(() => chooseMode(toolId))) return;
-    chatAbortRef.current?.abort();
-    chatAbortRef.current = null;
-    setChatLoading(false);
-    setSelectedToolId(toolId);
-    setDraft('');
-    setRemoteEstimate(null);
-    setRemoteCurrency('');
-    setRemoteCurrencyOptions([]);
-    setRemoteBudgetInput('');
-    setMessages([]);
-    setActiveRequest(null);
-    setOutcome(null);
-    setWorkflowStatus('ready');
-    setThreadId('');
-    setThreadCreatedAt(0);
-    setSessionReady(false);
+    // Preserve the existing distinction: mode changes retain the request time
+    // until the new route restores it; a new chat resets it immediately.
+    resetConversation(toolId, false, true);
     router.replace(`/chat?tool=${encodeURIComponent(toolId)}`, { scroll: false });
   }
 
   function startNewChat() {
-    if (running || !confirmAmcReplacement(startNewChat)) return;
-    chatAbortRef.current?.abort();
-    chatAbortRef.current = null;
-    setChatLoading(false);
-    setSelectedToolId(AUTO_MODE);
-    setDraft('');
-    setMessages([]);
-    setActiveRequest(null);
-    setRequestStartedAt(0);
-    setWorkflowStatus('ready');
-    setOutcome(null);
+    if (running || !confirmConversationReplacement(startNewChat)) return;
+    resetConversation(AUTO_MODE, true);
     setError('');
-    setRemoteEstimate(null);
-    setRemoteCurrency('');
-    setRemoteCurrencyOptions([]);
-    setRemoteBudgetInput('');
-    setThreadId('');
-    setThreadCreatedAt(0);
-    setSessionReady(false);
     closeSidebarOnSmallScreen();
+    router.push('/chat');
   }
 
   function changeProviderRoute(field: string, value: string) {
     const next = { ...routingDraft.state.config, [field]: value };
-    setRemoteEstimate(null);
+    invalidateRemoteEstimate();
     setRemoteCurrency('');
     setRemoteBudgetInput('');
     if (field === 'textGeneration' && isTextModelProvider(value))
@@ -780,8 +699,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
   }
 
   function updateDraft(value: string) {
+    draftRef.current = value;
     setDraft(value);
-    setRemoteEstimate(null);
+    invalidateRemoteEstimate();
     setRemoteBudgetInput('');
     setError('');
   }
@@ -814,7 +734,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
     const text = draft.trim();
     if (!text) return;
 
-    if (chatLoading || running) return;
+    if (submissionRef.current || chatLoading || running) return;
     const targetMcp = selectedMcpServer;
     const routedRole = selectedTool || targetMcp ? null : routeSkyRequest(text);
     const routedTool = routedRole
@@ -833,6 +753,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       return;
     }
     if (!confirmAmcReplacement(() => { void sendMessage(event); })) return;
+    submissionRef.current = true;
     if (!isAmc && remoteTextProvider) {
       const conversation = [...messages, { id: `${id}-me`, side: 'me' as const, text }]
         .slice(-12)
@@ -844,6 +765,9 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       const estimateSystem = tool
         ? `あなたはZema内の${tool.name} Botです。${roleFor(tool)}として、依頼を短く整理し、次に必要な入力・確認・実行手順を日本語で示してください。実行していない作業を完了したと主張せず、外部送信や法的判断を勝手に行わないでください。`
         : 'あなたはZemaです。日本語で自然に対話し、必要なときだけSkyのツール利用を案内してください。実行していない作業を完了したと主張しないでください。';
+      const controller = new AbortController();
+      estimateAbortRef.current = controller;
+      const isCurrent = () => estimateAbortRef.current === controller && !controller.signal.aborted;
       setChatLoading(true);
       setError('');
       try {
@@ -860,13 +784,15 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           maxOutputTokens: 1_200,
           currency: remoteCurrency || undefined,
           maximumBudgetMinor: parsedBudget ?? undefined,
-        });
+        }, 15_000, (path, options) => fetch(path, { ...options, signal: options?.signal ? AbortSignal.any([options.signal, controller.signal]) : controller.signal }));
+        if (!isCurrent()) return;
         if (!result.estimate) throw new Error('料金見積を確認できませんでした。状態を更新してください。');
         setRemoteEstimate(result);
         setRemoteCurrency(result.estimate.currency);
         setRemoteCurrencyOptions([]);
         setError('料金上限を確認しました。現在は見積のみで、Providerへの実行は未接続です。');
       } catch (reason) {
+        if (!isCurrent()) return;
         setRemoteEstimate(null);
         if (reason instanceof RemoteAiTextClientError) {
           if (reason.status === 401) setNeedsSignin(true);
@@ -874,11 +800,16 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
         }
         setError(reason instanceof Error ? reason.message : 'クラウドAIの料金見積を取得できませんでした。');
       } finally {
-        setChatLoading(false);
+        if (isCurrent()) {
+          estimateAbortRef.current = null;
+          submissionRef.current = false;
+          setChatLoading(false);
+        }
       }
       return;
     }
     setRemoteEstimate(null);
+    draftRef.current = '';
     setDraft('');
     setError('');
     setOutcome(null);
@@ -979,10 +910,12 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       }).finally(() => {
         if (chatAbortRef.current === controller) {
           chatAbortRef.current = null;
+          submissionRef.current = false;
           setChatLoading(false);
         }
       });
     } else {
+      queueMicrotask(() => { submissionRef.current = false; });
       setChatLoading(false);
     }
     if (toolId) {
@@ -994,21 +927,12 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       const createdAt = currentTimestamp();
       const sessionToolId = toolId ?? AUTO_MODE;
       try {
-        setRecentThreads(saveZemaChatSession({
-          version: 1,
-          id: nextThreadId,
-          toolId: sessionToolId,
-          createdAt,
-          messages: nextMessages,
-          activeRequest: nextRequest,
-          workflowStatus: 'ready',
-          outcome: null,
-        }));
-        setThreadId(nextThreadId);
-        setThreadCreatedAt(createdAt);
-        setSessionReady(true);
+        beginSession({
+          version: 1, id: nextThreadId, toolId: sessionToolId, createdAt,
+          messages: nextMessages, activeRequest: nextRequest, workflowStatus: 'ready', outcome: null,
+        });
         router.replace(`/chat?tool=${encodeURIComponent(sessionToolId)}&thread=${encodeURIComponent(nextThreadId)}`, { scroll: false });
-      } catch { /* Keep the conversation available in this tab if storage is blocked. */ }
+      } catch { /* Keep the conversation available in this tab if storage or navigation is blocked. */ }
     }
   }
 
@@ -1042,15 +966,29 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       title="Zema"
       contentClassName="sky-chat-page"
       running={running}
+        onClickCapture={(event) => {
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
+          const href = link?.getAttribute('href');
+          if (link && href?.startsWith('/') && !href.startsWith('//') && !link.hasAttribute('data-zema-new-chat') &&
+            link.getAttribute('target') !== '_blank' && !link.hasAttribute('download') &&
+            (running || !confirmConversationReplacement(() => {
+            router.push(href);
+          }))) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }}
     >
       <Dialog open={!!amcReplacement} onOpenChange={(open) => { if (!open) setAmcReplacement(null); }}>
         <DialogContent>
-          <DialogTitle>AMCに未保存の入力があります</DialogTitle>
-          <DialogDescription>別の依頼や画面に移ると、入力中の内容は消えます。保存済みのGoalは残ります。</DialogDescription>
+          <DialogTitle>{amcReplacement?.draft ? amcReplacement.amc ? '未送信の依頼とAMCの未保存入力があります' : '未送信の依頼があります' : 'AMCに未保存の入力があります'}</DialogTitle>
+          <DialogDescription>{amcReplacement?.draft ? `別の会話や画面に移ると、未送信の依頼${amcReplacement.amc ? 'とAMCの未保存入力' : ''}は消えます。入力を続けるか、破棄して進んでください。` : '別の依頼や画面に移ると、入力中の内容は消えます。保存済みのGoalは残ります。'}</DialogDescription>
           <button type="button" className="rock-button" onClick={() => setAmcReplacement(null)}>入力を続ける</button>
           <button type="button" className="rock-button" onClick={() => {
             const pending = amcReplacement;
             amcDirtyRef.current = false;
+            if (pending?.draft) { draftRef.current = ''; setDraft(''); }
             setAmcReplacement(null);
             pending?.resume();
           }}>未保存の入力を破棄して進む</button>
@@ -1059,23 +997,17 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
       <section
         className={`sky-chat-simple zema-grok-shell${sidebarOpen ? '' : ' is-sidebar-collapsed'}${!workView && displayMessages.length === 0 ? ' is-empty' : ''}`}
         aria-label="Zemaスレッド"
-        onClickCapture={(event) => {
-          const link = event.target instanceof Element ? event.target.closest('a[href]') : null;
-          if (link && (running || !confirmAmcReplacement(() => {
-            const href = link.getAttribute('href');
-            if (href) router.push(href);
-          }))) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-        }}
+
         >
         <aside className="zema-sidebar" aria-label="Zema Botと会話">
           <div className="zema-sidebar-top">
             <div className="zema-sidebar-identity"><span className="zema-sidebar-brand">avokado</span><strong>Zema <small>WORKSPACE</small></strong></div>
             <button type="button" className="zema-sidebar-close" aria-label="履歴を閉じる" onClick={() => setSidebarOpen(false)}><PanelLeft size={18} /></button>
           </div>
-          <Link className="zema-new-chat" href="/chat" onClick={startNewChat}><Plus size={17} /> <span>新しい会話</span></Link>
+          <Link className="zema-new-chat" data-zema-new-chat href="/chat" onClick={(event) => {
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault(); startNewChat();
+          }}><Plus size={17} /> <span>新しい会話</span></Link>
           <label className="zema-history-search"><span className="sr-only">ツールと会話を検索</span><input value={historyQuery} onChange={(event) => setHistoryQuery(event.target.value)} placeholder="ツール・会話を検索" /></label>
           <div className="zema-sidebar-section-title"><span>ツール</span><span>{visibleBotApps.length}</span></div>
           <div className="zema-character-list">
@@ -1618,7 +1550,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                         value={remoteBudgetInput}
                         onChange={(event) => {
                           setRemoteBudgetInput(event.target.value);
-                          setRemoteEstimate(null);
+                          invalidateRemoteEstimate();
                         }}
                         aria-label={`支出上限 ${remoteCurrency}`}
                       />
@@ -1629,7 +1561,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
                       <select value={remoteCurrency} onChange={(event) => {
                         setRemoteCurrency(event.target.value);
                         setRemoteBudgetInput('');
-                        setRemoteEstimate(null);
+                        invalidateRemoteEstimate();
                       }}>
                         <option value="">選択してください</option>
                         {remoteCurrencyOptions.map((currency) => <option key={currency} value={currency}>{currency}</option>)}

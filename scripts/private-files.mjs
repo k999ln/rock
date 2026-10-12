@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 //   node scripts/private-files.mjs status   how many encrypted files, and whether they are readable
 //   node scripts/private-files.mjs check    fail if a file that must be encrypted is stored in plain text
 //   node scripts/private-files.mjs unlock   unlock with the base64 key in ROCK_GIT_CRYPT_KEY
+//   node scripts/private-files.mjs require-unlocked   stop before updating unreadable private records
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const HEADER = Buffer.from('\0GITCRYPT\0');
@@ -82,6 +83,13 @@ function trackedGenerated() {
 }
 
 function main(command = 'status') {
+  if (command === 'require-unlocked') {
+    if (!isUnlocked()) {
+      console.error('Private records are locked. Unlock with git-crypt before updating or checking metadata.');
+      return 1;
+    }
+    return 0;
+  }
   if (command === 'status') {
     const paths = encryptedPaths();
     const locked = lockedPaths(paths);
@@ -120,7 +128,7 @@ function main(command = 'status') {
       rmSync(dir, { recursive: true, force: true });
     }
   }
-  console.error('usage: node scripts/private-files.mjs status|check|unlock');
+  console.error('usage: node scripts/private-files.mjs status|check|unlock|require-unlocked');
   return 2;
 }
 

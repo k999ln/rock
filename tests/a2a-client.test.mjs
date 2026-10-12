@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import {
   A2ARequestIndeterminateError,
+  A2AQuoteRequestIndeterminateError,
   createA2AClient,
   parseA2AAgentCard,
 } from '../lib/a2a-client.ts';
@@ -447,4 +448,85 @@ void test('Package-bound SendMessage carries the signed runtime invocation exten
     client.sendMessage(card, 'job-package-2', 'Run it.', invocation),
     { code: 'package_runtime_extension_mismatch' },
   );
+});
+
+for (const name of ['TypeError', 'AbortError', 'TimeoutError']) {
+  void test(`response body ${name} preserves SendMessage and quote indeterminate identity without retry`, async () => {
+    let sends = 0;
+    const extension = 'https://agent.example.test/quote/v1';
+    const extendedCard = { ...card, capabilities: { extensions: [{ uri: extension }] } };
+    const client = createA2AClient({
+      allowedOrigins: [origin], priceQuoteExtensionUri: extension,
+      authorizeDelegation: async () => {},
+      fetch: async () => {
+        sends++;
+        return new Response(new ReadableStream({
+          start(controller) {
+            controller.enqueue(new TextEncoder().encode('{"jsonrpc":"2.0",'));
+            const failure = new Error('synthetic loss after response headers'); failure.name = name;
+            queueMicrotask(() => controller.error(failure));
+          },
+        }));
+      },
+    });
+    await assert.rejects(client.sendMessage(card, 'stable-stream-message', 'fixture input'),
+      (error) => error instanceof A2ARequestIndeterminateError && error.messageId === 'stable-stream-message');
+    await assert.rejects(client.requestPriceQuote(extendedCard, 'stable-stream-quote', 'fixture input',
+      'USD', 100, Date.now() + 60000, true),
+      (error) => error instanceof A2AQuoteRequestIndeterminateError && error.quoteRequestId === 'stable-stream-quote');
+    assert.equal(sends, 2);
+  });
+}
+
+const malformedRpcEnvelopes = {
+  'error missing code': { error: { message: 'incomplete refusal' } },
+  'error with noninteger code': { error: { code: '-32603', message: 'incomplete refusal' } },
+  'error missing message': { error: { code: -32603 } },
+  'result and error together': { error: { code: -32603, message: 'contradictory refusal' }, result: true },
+  'result and null error': { error: null, result: true },
+  'result and primitive error': { error: 'failed', result: true },
+};
+for (const [scenario, fields] of Object.entries(malformedRpcEnvelopes)) {
+  void test(`A2A ${scenario} cannot confirm a send or quote and retains their original IDs`, async () => {
+    let sends = 0;
+    const extension = `${origin}/quote/v1`;
+    const extendedCard = { ...card, capabilities: { extensions: [{ uri: extension }] } };
+    const client = createA2AClient({
+      allowedOrigins: [origin], priceQuoteExtensionUri: extension, authorizeDelegation: async () => {},
+      fetch: async (_url, init) => {
+        sends++;
+        const { id, method } = JSON.parse(init.body);
+        const result = method === 'SendMessage'
+          ? { task: { id: 'provider-may-have-committed', status: { state: 'TASK_STATE_WORKING' } } }
+          : { schema: 'rock-a2a-price-quote-response/1', quoteRequestId: id, priceQuote: {} };
+        return Response.json({ jsonrpc: '2.0', id, ...fields, ...('result' in fields ? { result } : {}) });
+      },
+    });
+    const results = await Promise.allSettled([
+      client.sendMessage(card, 'original-message-envelope', 'synthetic input'),
+      client.requestPriceQuote(extendedCard, 'original-quote-envelope', 'synthetic input', 'USD', 100, Date.now() + 60000, true),
+    ]);
+    assert.equal(sends, 2, 'neither request is automatically retried');
+    assert.ok(results[0].status === 'rejected' && results[0].reason instanceof A2ARequestIndeterminateError);
+    assert.equal(results[0].reason.messageId, 'original-message-envelope');
+    assert.ok(results[1].status === 'rejected' && results[1].reason instanceof A2AQuoteRequestIndeterminateError);
+    assert.equal(results[1].reason.quoteRequestId, 'original-quote-envelope');
+  });
+}
+void test('valid correlated A2A errors retain their explicit refusal classification without retry', async () => {
+  let sends = 0;
+  const extension = `${origin}/quote/v1`;
+  const extendedCard = { ...card, capabilities: { extensions: [{ uri: extension }] } };
+  const client = createA2AClient({
+    allowedOrigins: [origin], priceQuoteExtensionUri: extension, authorizeDelegation: async () => {},
+    fetch: async (_url, init) => {
+      sends++;
+      return Response.json({ jsonrpc: '2.0', id: JSON.parse(init.body).id,
+        error: { code: -32602, message: 'request explicitly refused' } });
+    },
+  });
+  await assert.rejects(client.sendMessage(card, 'refused-message', 'synthetic input'), { code: 'a2a_remote_error' });
+  await assert.rejects(client.requestPriceQuote(extendedCard, 'refused-quote', 'synthetic input', 'USD', 100, Date.now() + 60000, true),
+    { code: 'a2a_remote_error' });
+  assert.equal(sends, 2);
 });

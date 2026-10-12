@@ -55,27 +55,35 @@ export async function operationRequest<T>(
         ? 'TIMEOUT' : 'NETWORK',
     );
   }
+  return readOperationResponse<T>(response);
+}
+
+/** Shared JSON boundary for both JSON and multipart operation requests. */
+export async function readOperationResponse<T>(response: Response): Promise<T> {
   // These owned JSON endpoints redirect only to sign-in. Never follow a redirect.
   if (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400))
+    throw new OperationRequestError('サインインを確認してください。', 401);
+  // Authentication loss can be recognized without consuming an error body.
+  // Other refusals need a complete error envelope: a truncated 409 might have
+  // been OWNER_CHANGED, which must retain the original pending operation.
+  if (response.status === 401)
     throw new OperationRequestError('サインインを確認してください。', 401);
   let data: T & { error?: string; code?: string };
   try {
     data = (await response.json()) as T & { error?: string; code?: string };
   } catch (error) {
-    if (!response.ok)
-      throw new OperationRequestError('保存できませんでした。', response.status);
     if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name))
       throw new OperationResponseError('TIMEOUT');
     throw new OperationResponseError('INVALID_RESPONSE');
   }
-  if (!response.ok)
-    throw new OperationRequestError(
-      data?.error || '保存できませんでした。',
-      response.status,
-      typeof data?.code === 'string' ? data.code : undefined,
-    );
   if (!data || typeof data !== 'object')
     throw new OperationResponseError('INVALID_RESPONSE');
+  if (!response.ok) {
+    if (Array.isArray(data) || typeof data.error !== 'string' || !data.error.trim() ||
+        (data.code !== undefined && typeof data.code !== 'string'))
+      throw new OperationResponseError('INVALID_RESPONSE');
+    throw new OperationRequestError(data.error, response.status, data.code);
+  }
   return data as T;
 }
 export const processedBytes = (value: unknown) =>

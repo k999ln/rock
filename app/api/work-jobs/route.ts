@@ -1,3 +1,4 @@
+import { readBoundedStream } from '@/lib/bounded-stream';
 import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { env } from 'cloudflare:workers';
 import { a2aDelegationStore } from '@/lib/a2a-delegation-store';
@@ -45,24 +46,9 @@ function rejected(request: Request, error: unknown) {
 async function body(request: Request) {
   const reader = request.body?.getReader();
   if (!reader) throw new WorkError('入力がありません。');
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    length += value.byteLength;
-    if (length > 12000) {
-      await reader.cancel();
-      throw new WorkError('入力は12 KB以下にしてください。', 413);
-    }
-    chunks.push(value);
-  }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
+  const bytes = await readBoundedStream(reader, 12000, () =>
+    new WorkError('入力は12 KB以下にしてください。', 413),
+  );
   return JSON.parse(new TextDecoder().decode(bytes)) as unknown;
 }
 export async function GET(request: Request) {

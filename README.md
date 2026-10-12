@@ -67,6 +67,14 @@ Here is the smallest useful mental model: “Please clean this CSV and show me e
 
 The current CSV Tool already has a bounded local/Web path for one file and an explicit change report. Cloud dispatch and live billing are not yet live.
 
+When a Wallet or CSV save has an unknown result, keep the page open and use its same-operation recovery action. Signing in opens a separate tab so the original operation can be retained; a different account cannot retry it. Wallet and CSV hide private drafts until the original account is confirmed again. Unsubmitted input is protected during in-app navigation; only the confirmed original account can explicitly discard it. The pending input is held in memory, so it is not a backup against closing the browser. CSV work abandoned in `processing` after a server process stops still requires operator investigation.
+
+Workbench, Material, Mercari and Coconala also keep private draft recovery tied to the original account. In Coconala, closing and reopening the editor retains unsaved terms. If someone else changes the case while you edit, saving stops with the original input intact; review the newer case before starting a replacement edit. Use the explicit discard action only when you no longer need that account’s unsaved input. No external orders, payments or messages are sent by these recovery controls. Material also protects incomplete local JSON and title edits before they can be exported; save or explicitly discard the current draft before leaving. Empty or unchanged saved work does not block navigation.
+
+If a Zema Tool finishes but its progress record is unconfirmed, use the record’s recovery controls instead of running the Tool again. A failed state reload keeps the original command; it is cleared only after the same account’s saved history confirms it. An unsent Cloud AI prompt also blocks accidental navigation until it is saved or explicitly discarded. The existing citation, free-article and Coconala checker inputs and generated results, plus Mr. Delivery’s review JSON, selected files and result, remain in memory for the same account, job and step while the Workbench reconnects. These Tool drafts also block accidental same-tab navigation. Save or export any result you need, then use the per-Tool discard action shown with its job and step to leave; it clears only that Tool’s in-memory input and generated output, not saved Library results or job records. The original confirmed account can discard a retained draft even after its job is cancelled or another step is selected. Forced reload or tab closure can still lose unsaved memory. For Mr. Delivery, an expired sign-in hides private inputs until the Workbench confirms the original account again; reconnect in a separate tab, then reload the work list. A child connection check alone cannot restore the old account’s inputs. This does not cover the internal state of other specialized runners.
+
+Zema asks before discarding unsent text when changing conversations or following an internal link. Back/Forward uses the same check in browsers with the Navigation API; older browsers retain only the existing link and unload protection.
+
 ## Service atlas
 
 The names below are organized by how a person meets them: core surfaces, supporting surfaces, separately deployed services, and independent programs. A route or folder is an implementation location; its stage is shown beside it.
@@ -269,7 +277,7 @@ The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded exper
 Task counts are not a measure of product completion. [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Evidence](docs/evidence/)
 
 <!-- project-overview:start -->
-Updated: 2026-10-11 / 392 task records (32 parents, 192 children, 168 standalone; 360 execution units excluding parents): 114 done, 47 in progress, 230 planned, 1 blocked
+Updated: 2026-10-12 / 392 task records (32 parents, 192 children, 168 standalone; 360 execution units excluding parents): 114 done, 47 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 ## Find the next level
@@ -306,7 +314,13 @@ npm run build
 npm start
 ```
 
-`npm start` applies local D1 migrations and starts the preview only after migration succeeds. It does not deploy the Worker or run remote migrations. Choose a port with `npm start -- --port 8788`. The Operator Dock uses the same local runtime: `npm run operator-dock:dev`.
+`npm start` applies local D1 migrations and starts the preview only after migration succeeds. Migrations and the preview use the same project-root `.wrangler/state` directory, outside generated build output. Choose a port with `npm start -- --port 8788`, or a separate complete local store with `npm start -- --persist-to /absolute/local-store --port 8788`. Both stages receive that store; rebuilds retain its D1 and R2 data. `--env`/`-e` and `--config`/`-c` select the same environment and configuration for both stages. Change projects with `cd /path/to/project && npm start`; the wrapper rejects `--cwd` and remote mode before migrations. This does not deploy the Worker or run remote migrations. The Operator Dock uses the same local runtime through its separate command: `npm run operator-dock:dev`.
+
+The preview uses the builder’s lockfile-pinned Wrangler, which may differ from the root CLI used by direct `npx wrangler` commands. `node scripts/spider-web-runtime.mjs cli` prints the selected preview CLI; this selection does not install a newer version.
+
+If an older preview left data in `dist/server/.wrangler/state`, build and start stop before changing it. Stop the preview, back up that **whole directory** outside `dist` (including D1, R2, SQLite WAL/SHM and blobs), then move it to an unused persistent directory and select it with `--persist-to`. If `.wrangler/state` already exists, preserve both stores and choose one; do not merge or overwrite database files. The diagnostic prints the exact paths. The guard cannot recover data already deleted by an earlier rebuild.
+
+To diagnose CSV process interruption on POSIX, run `node scripts/check-csv-process-crashes.mjs`. It uses synthetic input and temporary persisted local D1/R2, kills its own Node/workerd process group, and restarts against the same store. Logs default to a temporary directory outside Git; set `CSV_CRASH_ARTIFACT_DIR` to choose a parent directory outside the repository. Each run creates a new private randomly named child directory and prints the exact summary path when it finishes. A passing diagnostic confirms the observed contract, **not recovery of abandoned processing**: the three processing checkpoints still cannot resume or delete through the current API, and expired processing is excluded from cleanup. Completed output readback and interrupted-cleanup retry are checked separately. This does not test production authentication, Providers or payments.
 
 Before opening a pull request, run all checks:
 
@@ -316,6 +330,8 @@ npm run verify
 ```
 
 After changing progress records or generated status, run the repository-prescribed update/check commands. Rules for people and AI coding agents are in [AGENTS.md](AGENTS.md).
+
+`npm run metadata:update` synchronizes project, Mission Control, database status, and workspace records. `project:update` and `mission:update` remain aliases; `metadata:check` checks without writing. Encryption is currently disabled; if encrypted records are restored in a future change, these commands stop before reading or writing locked records.
 
 ## Safety, rights, and images
 
