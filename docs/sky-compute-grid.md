@@ -127,12 +127,18 @@ assignment: leased → submitted → verified | rejected | unverified
 
 - `claim`は条件を満たす注文を期限の近い順に選び、1端末へ同時に1 leaseだけを発行する。同じ端末がもう一度`claim`すると同じleaseを返す。
 - `release`と、receiptに載らなかったlotは待ち行列へ戻る。失敗回数には数えない。
-- leaseが失効時刻＋猶予を過ぎると`expired`になり、lotは別の端末へ再割当される。失効後のreceiptは拒否する。
+- leaseの失効時刻＋猶予ちょうど（`now >= expiresAt + receiptGraceMs`）から`expired`になり、lotは別の端末へ再割当される。この境界から未保存receiptを拒否する。既に保存済みの同一receiptの再送は保存結果を返す。
 - 実行条件を破ったと自ら申告するreceipt、別のruntimeを名乗るreceipt、leaseにないlotを含むreceiptは丸ごと`rejected`。そのlotは同じ端末へ二度と渡さない。
 - 結果は`submitted`として保存し、`settleLot`が判定する。`owner_trust`は本人の端末を信じる。`independent_reference`はserverが再計算して比べる。`duplicate_quorum`は必要数の提供者が互いに一致した時だけ合格とし、一致しなければ1台ずつ追加し、上限まで一致しなければlotを`failed`、結果を`unverified`にして誰にも記帳しない。
 - 同じlotが6回失効・拒否されると`failed`にする。期限を過ぎた注文は`expired`にし、残りのlotを`cancelled`にする。
 
 host fixtureのmatcherは`matched | partial | unmatched`を返す。条件を満たさないofferには機械可読理由を残す。budgetが足りない場合は割り当てられる分だけ`partial`にし、上限を超えて予約しない。
+
+### 保存直後の中断からの復旧（2026-10-11、既存serverの修正）
+
+receiptの保存とlotの検証は別の処理なので、その間にworkerが終了すると`submitted`と予算予約が残り得る。同じ署名済みreceiptの再送、または注文ownerによる既存の注文詳細・結果取得で、その注文の保存済み出力だけから検証を再開する。owner確認後に対象注文へ限定し、全注文を毎回再検証しない。結果・入力のhash、署名、独立参照／合議、DB制約による一度だけの記帳を維持する。不一致receiptは409で拒否し、新しい計算や外部送信を復旧のために発行しない。
+
+leaseの返却回数は同じtransaction内の`active`から`released`への遷移だけを数える。同時刻の取消・再送を別の返却として加算しない。合格条件は保存直後の障害とstore再生成後の復旧、注文詳細／結果取得からの復旧、並行した再送・読出しでも一度だけの精算、同時刻の重複返却、猶予境界の拒否。証拠は[既存host記録](evidence/amc/grid01-persistent-grid-host.md#server-recovery-refinement-2026-10-11)。実機worker・注文console・本番有効化はこの修正に含まない。
 
 ## 6. 保存・保持・削除・backup
 

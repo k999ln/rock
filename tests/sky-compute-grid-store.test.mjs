@@ -46,6 +46,137 @@ const publicOrder = (overrides = {}) => ({
   ...overrides,
 });
 
+/** Simulate process loss after D1 committed a receipt but before verification. */
+function interruptedReceiptDatabase() {
+  const sqlFor = new WeakMap();
+  let interrupted = false;
+  return {
+    prepare(sql) {
+      if (interrupted) throw new Error('simulated coordinator restart');
+      const statement = db.prepare(sql);
+      return {
+        bind(...values) {
+          const bound = statement.bind(...values);
+          sqlFor.set(bound, sql);
+          return bound;
+        },
+        all: () => statement.all(),
+        first: () => statement.first(),
+        run: () => statement.run(),
+      };
+    },
+    async batch(statements) {
+      const result = await db.batch(statements);
+      if (statements.some((statement) => sqlFor.get(statement)?.includes('INSERT INTO sky_compute_receipts'))) {
+        interrupted = true;
+        throw new Error('simulated coordinator restart');
+      }
+      return result;
+    },
+  };
+}
+
+async function interruptedPublicReceipt() {
+  const grid = await publicGrid();
+  const seller = await enrollDevice(db, 'seller');
+  await grid.offer(seller, publicOffer);
+  const order = await grid.order('buyer', publicOrder());
+  const { lease } = await grid.claim(seller);
+  const interrupted = gridHarness(interruptedReceiptDatabase(), { mode: 'owner_and_public_pool' });
+  await assert.rejects(interrupted.work(seller, lease, { now: START + 1_000 }), /simulated coordinator restart/);
+  assert.deepEqual((await all('SELECT state FROM sky_compute_assignments')).map(({ state }) => state), ['submitted', 'submitted']);
+  assert.equal((await grid.store.account('buyer')).heldMicros, 10_000);
+  const saved = await one('SELECT payload, signature FROM sky_compute_receipts WHERE lease_id = ?', lease.leaseId);
+  // Signed bytes survive the restart. Outputs are unnecessary for replay: the
+  // coordinator already committed and authenticated the encrypted result bytes.
+  const outputs = Object.fromEntries(lease.lots.map((lot) => [lot.lotId,
+    b64(lexicalEmbedding(JSON.parse(Buffer.from(lot.input, 'base64').toString('utf8')).items))]));
+  return { grid, seller, order, lease, body: { ...saved, outputs } };
+}
+
+async function assertRecoveredPublicReceipt(grid, order, lease) {
+  const closed = await grid.store.getOrder('buyer', order.orderId, START + 2_000);
+  assert.deepEqual([closed.state, closed.settledMicros, closed.reservedMicros], ['completed', 2_000, 0]);
+  assert.deepEqual((await grid.store.orderResults('buyer', order.orderId, START + 2_000)).results.map(({ output }) => output !== null), [true, true]);
+  assert.deepEqual([(await grid.store.account('buyer')).balanceMicros, (await grid.store.account('buyer')).heldMicros,
+    (await grid.store.account('seller')).balanceMicros], [998_000, 0, 2_000]);
+  assert.equal((await one("SELECT count(*) AS n FROM sky_compute_credit_entries WHERE kind = 'earn' AND lease_id = ?", lease.leaseId)).n, 2);
+}
+
+void test('retrying a committed receipt after coordinator restart completes verification exactly once', async () => {
+  const { grid, seller, order, lease, body } = await interruptedPublicReceipt();
+  const verified = await grid.verified(seller, body, START + 2_000);
+  const retried = await grid.store.submitReceipt('seller', verified, START + 2_000);
+  assert.deepEqual(retried.lots.map(({ state }) => state), ['verified', 'verified']);
+  assert.deepEqual(await grid.store.submitReceipt('seller', verified, START + 3_000), retried);
+  await assertRecoveredPublicReceipt(grid, order, lease);
+});
+
+void test('reading an order recovers committed results after restart without requiring another device receipt', async () => {
+  const { grid, order, lease } = await interruptedPublicReceipt();
+  await assertRecoveredPublicReceipt(grid, order, lease);
+});
+
+void test('results-only read resumes a committed receipt and remains owner isolated', async () => {
+  const { grid, order, lease } = await interruptedPublicReceipt();
+  assert.equal(await grid.store.orderResults('stranger', order.orderId, START + 2_000), null);
+  assert.deepEqual((await all('SELECT state FROM sky_compute_assignments')).map(({ state }) => state), ['submitted', 'submitted']);
+  const results = await grid.store.orderResults('buyer', order.orderId, START + 2_000);
+  assert.equal(results.state, 'completed');
+  assert.deepEqual(results.results.map(({ output }) => output !== null), [true, true]);
+  await assertRecoveredPublicReceipt(grid, order, lease);
+});
+
+void test('repeated and simultaneous releases at the same timestamp count only one handback', async () => {
+  const grid = gridHarness(db);
+  const phone = await enrollDevice(db, 'owner-a');
+  await grid.offer(phone);
+  await grid.order('owner-a');
+  const { lease } = await grid.claim(phone);
+  const outcomes = await Promise.all(Array.from({ length: 3 }, () =>
+    grid.release(phone, lease.leaseId, { now: START + 1_000 })));
+  assert.equal(outcomes.filter(({ released }) => released).length, 1);
+  assert.equal((await grid.release(phone, lease.leaseId, { now: START + 1_000 })).released, false);
+  assert.equal((await grid.store.listOffers('owner-a'))[0].history.releasedLeases, 1);
+  assert.deepEqual((await all('SELECT open_slots AS slots, attempts FROM sky_compute_lots')).map(({ slots, attempts }) => [slots, attempts]), [[1, 0], [1, 0]]);
+});
+
+void test('receipt arrival grace ends at the same instant as lease reclamation', async () => {
+  for (const beforeBoundary of [true, false]) {
+    await reset();
+    const grid = await publicGrid();
+    const seller = await enrollDevice(db, 'seller');
+    await grid.offer(seller, publicOffer);
+    await grid.order('buyer', publicOrder());
+    const { lease } = await grid.claim(seller);
+    const receivedAt = lease.expiresAt + 30_000 - (beforeBoundary ? 1 : 0);
+    const outputs = {};
+    const results = lease.lots.map((lot) => {
+      const input = Buffer.from(lot.input, 'base64');
+      const output = lexicalEmbedding(JSON.parse(input.toString('utf8')).items);
+      outputs[lot.lotId] = b64(output);
+      return { lotId: lot.lotId, inputSha256: sha256(input), outputSha256: sha256(output), outputBytes: output.byteLength };
+    });
+    const body = deviceBody(seller, 'receipt', {
+      leaseId: lease.leaseId, startedAt: lease.issuedAt, completedAt: lease.expiresAt - 1,
+      runtimeArtifactSha256: lease.runtimeArtifactSha256, modelSha256: lease.modelSha256,
+      tokenizerSha256: lease.tokenizerSha256,
+      deviceEvidence: { chargingThroughout: true, deviceIdleThroughout: true, unmeteredThroughout: true, maximumThermalStatus: 'none' },
+      results,
+    }, { now: receivedAt, outputs });
+    const verified = await grid.verified(seller, body, receivedAt);
+    if (beforeBoundary) {
+      assert.equal((await grid.store.submitReceipt('seller', verified, receivedAt)).state, 'accepted');
+      // An already committed result remains safely replayable after this boundary.
+      assert.equal((await grid.store.submitReceipt('seller', verified, receivedAt + 1)).state, 'accepted');
+    } else {
+      await assert.rejects(grid.store.submitReceipt('seller', verified, receivedAt), code('lease_expired'));
+      assert.equal((await grid.store.account('seller')).balanceMicros, 0);
+      assert.equal((await one('SELECT state FROM sky_compute_leases WHERE id = ?', lease.leaseId)).state, 'expired');
+    }
+  }
+});
+
 void test('an owner-private order is computed on the owner device, verified, returned, and never stored in clear', async () => {
   const grid = gridHarness(db);
   const phone = await enrollDevice(db, 'owner-a');

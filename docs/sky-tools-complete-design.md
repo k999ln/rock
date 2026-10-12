@@ -7,6 +7,8 @@
 
 ## Sky Compute Grid — 固定lotの分散計算供給
 
+既存serverの復旧契約（2026-10-11）: receipt保存直後の中断は同一receiptまたは注文ownerの詳細／結果取得から再開し、検証済みassignmentの記帳を一度だけ行う。重複返却はactive状態からの遷移だけを数え、期限＋猶予ちょうどから新規receiptを拒否する。入力・署名・予算・保存schemaは維持。責任、失敗・復旧、合格証拠は[詳細設計5節](sky-compute-grid.md#5-状態と失敗遷移)と[host証拠](evidence/amc/grid01-persistent-grid-host.md#server-recovery-refinement-2026-10-11)に統合し、未実装worker／consoleの実装や本番有効化は別条件のままとする。
+
 2026-10-10、利用者の明示指示により、未使用Androidの余剰計算を需要へmatchingする`GRID01`を追加した。これはcatalogの任意Toolではなく、Skyの供給・実行・検証・精算を結ぶplatform serviceである。初期SKUはpublic/synthetic text embedding、Android arm64、充電・idle・unmetered・thermal none/light、固定runtime/model/tokenizer、verified lot単価に限定する。任意code、個人情報、秘密、exact location／owner identity公開、無断cloud fallback、未検証Wallet収益を禁止する。
 
 2026-10-11: leaseの完全な条件と時刻をIDへ固定し、order・入力・予算との照合と、同じleaseのverified usageだけを精算候補へ渡す検査を追加した。receipt IDを変えた再送でも精算keyは変わらない。永続台帳の重複拒否・実精算は未実装。

@@ -477,7 +477,16 @@
         "regressions": "tests/sky-tool-sdk.test.mjs",
         "acceptanceLimit": "isolated host source tests; real device and external reachability not established"
       },
-      "webClaimRecovery": "Bounded 10-second header/body request; unknown response uses read-only entitlement refresh before explicit same-package retry; authentication recovery opens a separate tab to retain the in-memory selection."
+      "webClaimRecovery": "Bounded 10-second header/body request; unknown response uses read-only entitlement refresh before explicit same-package retry; authentication recovery opens a separate tab to retain the in-memory selection.",
+      "computeGridRecovery": {
+        "implementation": [
+          "lib/sky-compute-grid-store.ts",
+          "tests/sky-compute-grid-store.test.mjs"
+        ],
+        "contract": "Resume stored submitted lots on exact receipt replay or owner-scoped order/result read; count active-to-released once; reject fresh receipts at expiry plus grace. Preserve schema, signature, budget and ledger constraints.",
+        "evidence": "docs/evidence/amc/grid01-persistent-grid-host.md",
+        "scope": "Host D1 only; no Android worker, console, deployment or financial activation"
+      }
     },
     {
       "id": "mcp_and_providers",

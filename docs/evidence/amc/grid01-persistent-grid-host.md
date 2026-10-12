@@ -98,6 +98,16 @@ The scanner matches it because the key name contains "token". The fourth annotat
 
 This branch does **not** add a scanner exception and does not move the pinned policy commit. `SECURITY.md` and `docs/spider-guard.md` put exceptions and the pinned control commit under owner review, and a pull request should not change the policy that judges it. The check stays red until the owner, or whoever maintains SPIDER for the owner, registers the reviewed exception (rule `generic-api-key`, the three exact paths above, the exact value above, classification `public-artifact-digest`, with the same-file detection test `SECURITY.md` requires) and pins the new control commit.
 
+## Server recovery refinement (2026-10-11)
+
+A separate quality pass starts from PR #103 head `e80d0357aa88291b6ee955e62af875180d35e6cd` on `codex/compute-grid-recovery-20261011`. Scope: macOS host, local Miniflare D1, synthetic owners/devices/credits. No deployment, migration of a remote database, public pool activation, Android worker, order console or real financial operation.
+
+Before correction, four new tests failed: a receipt committed before settlement could remain submitted on replay or owner readback, and repeated release calls at the same timestamp counted four releases for one lease. A fifth regression showed a fresh receipt was accepted exactly at the expiry-plus-grace instant even though expiry processing rejected that same instant. After correction, all 59 Grid tests passed (including 35 store tests); typecheck and scoped lint passed. The complete `npm run verify` then passed on the same source with independently installed dependencies: Node 1769 passed / 1 platform skip, Worker/D1 1356 assertions, CSV D1/R2 385 assertions, build and metadata/design checks. The first run used a shared node_modules symlink and failed the existing vendor-realpath assertion; an independent `npm ci` fixed that environment mismatch without changing the assertion. Final commit CI is checked separately.
+
+Commands: `node --experimental-strip-types --test tests/sky-compute-grid*.test.mjs`, `npm run typecheck`, `npx oxlint lib/sky-compute-grid-store.ts tests/sky-compute-grid-store.test.mjs`. An independent reviewer also forced concurrent owner-detail reads, result reads and two receipt replays against one interrupted settlement: one credit entry, one settled assignment and no duplicate charge. A foreign-owner read did not resume that order's pending settlement. No schema migration or public request shape changed.
+
+Raw reproduction, final suite and independent-review logs remain outside Git under `/private/tmp/rock-quality-audit/` on the development host. This section records source-level evidence, not acceptance on physical devices or an assertion that the inherited secrets check is green. The existing tokenizer-digest policy issue above still requires its own reviewed resolution.
+
 ## Not accepted
 
 - Android worker: designed in `docs/sky-compute-grid-android-worker.md`, not implemented. No APK contains it.

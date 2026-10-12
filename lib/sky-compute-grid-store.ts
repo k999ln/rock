@@ -445,6 +445,15 @@ export function skyComputeGridStore(db: Database, options: ComputeGridStoreOptio
     for (const { lotId } of pending) await settleLot(orderId, lotId, now);
   }
 
+  /** Resume only this owner's order after a receipt committed before a restart. */
+  async function recoveredOwnedOrder(ownerUserId: string, orderId: string, now: number) {
+    const order = await ownedOrder(ownerUserId, orderId);
+    if (!order || order.state !== 'open') return order;
+    await settleSubmittedLots(orderId, now);
+    await closeOrderIfDone(orderId, now);
+    return ownedOrder(ownerUserId, orderId);
+  }
+
   /** Close an order that can no longer make progress (cancelled or past its deadline). */
   async function endOrder(order: OrderRow, reason: 'cancelled' | 'expired', now: number) {
     await settleSubmittedLots(order.id, now);
@@ -760,7 +769,7 @@ export function skyComputeGridStore(db: Database, options: ComputeGridStoreOptio
     async getOrder(ownerUserId: string, orderId: string, now = Date.now()) {
       enabled();
       await sweep(now);
-      const order = await ownedOrder(ownerUserId, orderId);
+      const order = await recoveredOwnedOrder(ownerUserId, orderId, now);
       if (!order) return null;
       const lots = (await db.prepare(`SELECT t.lot_id AS lotId, t.state, t.input_sha256 AS inputSha256,
           t.input_bytes AS inputBytes, t.item_count AS itemCount, t.attempts,
@@ -781,7 +790,7 @@ export function skyComputeGridStore(db: Database, options: ComputeGridStoreOptio
     async orderResults(ownerUserId: string, orderId: string, now = Date.now()) {
       enabled();
       await sweep(now);
-      const order = await ownedOrder(ownerUserId, orderId);
+      const order = await recoveredOwnedOrder(ownerUserId, orderId, now);
       if (!order) return null;
       const sku = skuOf(order.skuId);
       const rows = (await db.prepare(`SELECT ${qualify(ASSIGNMENT_COLUMNS, 'a')},
@@ -960,14 +969,16 @@ export function skyComputeGridStore(db: Database, options: ComputeGridStoreOptio
       if (!lease || lease.providerOwnerUserId !== ownerUserId || lease.deviceRef !== request.deviceRef)
         throw new ComputeGridLiveError('lease_not_found', 404);
       const results = await db.batch([
-        db.prepare(`UPDATE sky_compute_leases SET state = 'released', closed_at = ?
-          WHERE id = ? AND state = 'active'`).bind(now, lease.id),
+        // The same timestamp is not proof that this call closed the lease.
+        // Check its active state before the transition in this transaction.
         db.prepare(`UPDATE sky_compute_offers SET released_leases = released_leases + 1
           WHERE id = ? AND EXISTS (SELECT 1 FROM sky_compute_leases l
-            WHERE l.id = ? AND l.state = 'released' AND l.closed_at = ?)`).bind(lease.offerId, lease.id, now),
+            WHERE l.id = ? AND l.state = 'active')`).bind(lease.offerId, lease.id),
+        db.prepare(`UPDATE sky_compute_leases SET state = 'released', closed_at = ?
+          WHERE id = ? AND state = 'active'`).bind(now, lease.id),
       ]);
       const current = await leaseById(lease.id);
-      return { leaseId: lease.id, state: current?.state ?? lease.state, released: changes(results[0]) > 0 };
+      return { leaseId: lease.id, state: current?.state ?? lease.state, released: changes(results[1]) > 0 };
     },
 
     /**
@@ -994,12 +1005,17 @@ export function skyComputeGridStore(db: Database, options: ComputeGridStoreOptio
         if (!stored) return null;
         if (stored.payloadSha256 !== verified.payloadSha256)
           throw new ComputeGridLiveError('receipt_conflict', 409);
+        // A committed receipt can outlive the process before verification.
+        // Resume from its stored output; replay must not leave credits held
+        // until the order deadline or require resending a different receipt.
+        await settleSubmittedLots(lease.orderId, now);
+        await closeOrderIfDone(lease.orderId, now);
         return receiptOutcome(lease, stored);
       };
       const earlier = await replay();
       if (earlier) return earlier;
       if (lease.state !== 'active') throw new ComputeGridLiveError('lease_not_active', 409);
-      if (now > lease.expiresAt + COMPUTE_GRID_LIMITS.receiptGraceMs) {
+      if (now >= lease.expiresAt + COMPUTE_GRID_LIMITS.receiptGraceMs) {
         await sweep(now);
         throw new ComputeGridLiveError('lease_expired', 409);
       }
