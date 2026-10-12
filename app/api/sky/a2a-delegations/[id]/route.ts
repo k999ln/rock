@@ -1,3 +1,4 @@
+import { readBoundedStream } from '@/lib/bounded-stream';
 import {
   a2aDelegationStore,
   A2ADelegationStoreError,
@@ -30,24 +31,9 @@ function json(value: unknown, status = 200) {
 async function readBody(request: Request) {
   const reader = request.body?.getReader();
   if (!reader) throw new Error('INVALID_BODY');
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    length += value.byteLength;
-    if (length > 12_000) {
-      await reader.cancel();
-      throw new Error('BODY_TOO_LARGE');
-    }
-    chunks.push(value);
-  }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) {
-    bytes.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
+  const bytes = await readBoundedStream(reader, 12_000, () =>
+    new Error('BODY_TOO_LARGE'),
+  );
   const value: unknown = JSON.parse(new TextDecoder().decode(bytes));
   if (!value || typeof value !== 'object' || Array.isArray(value))
     throw new Error('INVALID_BODY');

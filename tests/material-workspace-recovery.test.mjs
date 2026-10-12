@@ -1,3 +1,4 @@
+import * as pendingOwnerIntent from '../lib/pending-owner-intent.ts';
 import * as ownerIntent from '../lib/owner-intent.ts';
 const ownerA = 'owner-v1:' + 'a'.repeat(64), ownerB = 'owner-v1:' + 'b'.repeat(64);
 import assert from 'node:assert/strict';
@@ -25,7 +26,7 @@ function harness() {
     },
   };
   const jsx = (type, props) => ({ type, props });
-  const modules = { '@/lib/owner-intent': ownerIntent, react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
+  const modules = { '@/lib/pending-owner-intent': pendingOwnerIntent, '@/lib/owner-intent': ownerIntent, react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
     '@/contracts/material-invention-fixture.json': fixture, '@/lib/material-invention': { ...material,
       generateMaterialCandidateGraph(...args) { return track((async () => { if (generationGate) await generationGate.promise; return material.generateMaterialCandidateGraph(...args); })()); } }, '@/lib/material-study': study,
     './material-invention-workspace.module.css': {}, '@/components/use-pending-save-navigation': { usePendingSaveNavigation() {} },

@@ -33,6 +33,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   const deviceHome = read('app/api/rockstar/device-home/route.ts');
   const remoteAiWorker = read('services/sky-agent-runtime/src/worker.ts');
   const deviceTransport = read('android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java');
+  const jsonResponse = read('android/automation/src/main/java/dev/rock/automation/AndroidJsonResponse.java');
   const shellApi = read('android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl');
   const shellUi = read('android/shell/src/main/java/dev/rock/shell/MainActivity.java');
   const shellConnection = read('android/shell/src/main/java/dev/rock/shell/ShellConnection.java');
@@ -178,7 +179,8 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.doesNotMatch(deviceHome, /prompt:\s*item/);
   assert.match(deviceTransport, /if \(!allowedPath\(path\)\)/);
   assert.match(deviceTransport, /setInstanceFollowRedirects\(false\)/);
-  assert.match(deviceTransport, /DEVICE_HOME_RESPONSE_TOO_LARGE/);
+  assert.match(deviceTransport, /return AndroidJsonResponse\.readBounded\(input, maximum, deadline,\s*SystemClock::elapsedRealtime, "DEVICE_HOME"\)/);
+  assert.match(jsonResponse, /if \(output\.size\(\) > maximum - count\) throw new IOException\(errorPrefix \+ "_RESPONSE_TOO_LARGE"\)/);
   assert.match(deviceTransport, /taskDetailPath\(String kind, String id\)/);
   assert.match(deviceTransport, /DEVICE_HOME_TASK_REFERENCE_REJECTED/);
   assert.match(shellApi, /const int API_VERSION = 18/);

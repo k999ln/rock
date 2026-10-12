@@ -59,10 +59,12 @@ async function setup(t) {
     ['@/lib/fund-store', { database: () => db, requestUser: auth.requestUser }],
   ]);
   for (const name of [
+    'bounded-stream',
     'owner-intent',
     'a2a-delegation-store',
     'work-store',
     'workflow',
+    'pending-owner-intent',
     'rockstar-service-access',
   ])
     deps.set(`@/lib/${name}`, await import(new URL(`lib/${name}.ts`, root)));
@@ -285,6 +287,7 @@ async function setup(t) {
   };
   for (const name of [
     'workflow',
+    'pending-owner-intent',
     'a2a-delegation-recovery',
     'currency-format',
     'remote-ai-text-request',
@@ -324,23 +327,18 @@ async function setup(t) {
     },
     clearInterval() {},
   };
-  runInNewContext(
-    compiled,
-    {
-      exports,
-      window,
-      crypto,
-      URL,
-      AbortSignal,
-      TextEncoder,
-      fetch: trackedFetch,
-      require(name) {
-        assert.ok(name in modules, name);
-        return modules[name];
-      },
-    },
-    { filename: 'components/workbench.tsx' },
-  );
+  const context = {
+    window, crypto, URL, AbortSignal, TextEncoder, fetch: trackedFetch,
+    require(name) { assert.ok(name in modules, name); return modules[name]; },
+  };
+  const cloudExports = {};
+  runInNewContext(ts.transpileModule(
+    readFileSync(new URL('components/workbench-cloud-text.tsx', root), 'utf8'),
+    { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022,
+      module: ts.ModuleKind.CommonJS, esModuleInterop: true } },
+  ).outputText, { ...context, exports: cloudExports }, { filename: 'components/workbench-cloud-text.tsx' });
+  modules['@/components/workbench-cloud-text'] = cloudExports;
+  runInNewContext(compiled, { ...context, exports }, { filename: 'components/workbench.tsx' });
   function render() {
     cursor = 0;
     tree = exports.default({});

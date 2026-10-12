@@ -44,7 +44,7 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
 
     AndroidRockstarDeviceSessionStore(Context context, String origin, AtomicFile storage) {
         if (context == null) throw new IllegalArgumentException("DEVICE_SESSION_CONTEXT_REQUIRED");
-        String canonical = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(origin);
+        String canonical = RockstarServiceOrigin.canonicalOrigin(origin);
         if (origin.length() > 255 || !canonical.equals(origin))
             throw new IllegalArgumentException("DEVICE_SESSION_ORIGIN_INVALID");
         Context app = context.getApplicationContext();
@@ -58,7 +58,7 @@ final class AndroidRockstarDeviceSessionStore implements RockstarDeviceAuthoriza
     }
 
     AndroidRockstarDeviceSessionStore(AtomicFile storage, String packageName, String origin, KeySource keySource) {
-        String canonical = AndroidRockstarDeviceAuthorizationTransport.canonicalOrigin(origin);
+        String canonical = RockstarServiceOrigin.canonicalOrigin(origin);
         if (origin.length() > 255 || !canonical.equals(origin))
             throw new IllegalArgumentException("DEVICE_SESSION_ORIGIN_INVALID");
         this.file = java.util.Objects.requireNonNull(storage);
