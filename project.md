@@ -1,8 +1,12 @@
-> **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-11 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
+> **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 >
 > **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
 
 # RockstarOS — 事業・設計・進捗
+
+## 2026-10-12 — Columbiaの学生向けSky NFCカードの設計（Product / UX・Campus、ROCK）
+
+利用者の「NFCタグにSKYを入れるための構想をして」と、質問への回答（タッチでSkyのTool／Agentを開く、Columbiaの学生、avokadoが書いて配る、1枚＝Columbia用Skyの入口、出典整理・AMC・特許アシスタント、英語版、特許は米国を追加しAI調査は最初は出さない、Columbiaと書く、実装はCodex）を受け、[設計書](docs/sky-nfc-columbia.md)と[Codexへの依頼](docs/prompts/sky-nfc-columbia-codex.md)を追加した。既存のCampusタグ入口 `/t/[tagId]` と匿名集計を使い、`avocadomini.si/t/*` からの転送、`/sky/campus/columbia` の英語入口、3つのToolの英語版、カード経由の特許AI調査の停止を実装範囲とする。コード・台帳のtask・カードの印刷と書き込みはまだ。
 
 ## 2026-10-11 — 公開rockの整理（暗号化は同日にやめた）、確定事項の反映（Git / CI / Operations、ROCK）
 
