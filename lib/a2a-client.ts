@@ -174,6 +174,11 @@ async function readJson(response: Response, maximum: number): Promise<unknown> {
       }
       chunks.push(value);
     }
+  } catch (error) {
+    if (error instanceof A2AClientError) throw error;
+    // Fetch may resolve at headers and then fail while receiving its body.
+    // Preserve the same indeterminate send/quote contract as a fetch failure.
+    throw new A2AClientError('A2A応答の受信が中断されました。', 'a2a_transport_error');
   } finally {
     reader.releaseLock();
   }
@@ -278,10 +283,16 @@ export function createA2AClient(options: A2AClientOptions) {
       throw new A2AClientError('A2A相手が要求を受け付けませんでした。', 'a2a_http_error', response.status);
     if (!object(payload) || payload.jsonrpc !== '2.0' || payload.id !== id)
       throw new A2AClientError('A2A JSON-RPC応答のIDまたは形式が一致しません。', 'invalid_a2a_rpc_response');
-    if (object(payload.error))
+    // A contradictory or incomplete envelope cannot prove a definitive refusal.
+    // The send/quote callers retain their original IDs through the invalid-response path.
+    if (('result' in payload) === ('error' in payload))
+      throw new A2AClientError('A2A応答のresultとerrorが不正です。', 'invalid_a2a_rpc_response');
+    if ('error' in payload) {
+      if (!object(payload.error) || !Number.isInteger(payload.error.code) ||
+          typeof payload.error.message !== 'string')
+        throw new A2AClientError('A2Aエラー応答の形式が不正です。', 'invalid_a2a_rpc_response');
       throw new A2AClientError('A2A相手で要求が失敗しました。', 'a2a_remote_error');
-    if (!('result' in payload))
-      throw new A2AClientError('A2A応答にresultがありません。', 'invalid_a2a_rpc_response');
+    }
     return payload.result as T;
   }
 

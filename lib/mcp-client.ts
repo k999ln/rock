@@ -66,15 +66,25 @@ export async function requestMcp<T extends object>(
   method: string,
   params?: unknown,
 ): Promise<T> {
+  const requestId = crypto.randomUUID();
   const response = await post(options, '/mcp', {
-    jsonrpc: '2.0', id: crypto.randomUUID(), method,
+    jsonrpc: '2.0', id: requestId, method,
     ...(params === undefined ? {} : { params }),
   }, method);
   const message = await objectResponse(response, method);
-  if (message.error) {
-    const detail = message.error as { message?: unknown };
+  // A response from another request (or a notification) cannot confirm this
+  // approved Tool call. Never retry here: its actual execution may be unknown.
+  if (message.jsonrpc !== '2.0' || message.id !== requestId ||
+      ('result' in message) === ('error' in message))
+    throw new McpClientError('protocol', method, response.status);
+  if ('error' in message) {
+    const detail = message.error;
+    if (!detail || typeof detail !== 'object' || Array.isArray(detail) ||
+        !Number.isInteger((detail as Record<string, unknown>).code) ||
+        typeof (detail as Record<string, unknown>).message !== 'string')
+      throw new McpClientError('protocol', method, response.status);
     throw new McpClientError('rpc', method, response.status,
-      typeof detail.message === 'string' ? detail.message : undefined);
+      (detail as { message: string }).message);
   }
   if (!message.result || typeof message.result !== 'object' || Array.isArray(message.result))
     throw new McpClientError('response', method, response.status);
