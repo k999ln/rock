@@ -17,21 +17,24 @@ function harness(records = new Map()) {
   let nextTimer = 0;
   let currentOwner = ownerA;
   let cursor = 0, tree, failure = null, resets = 0, access = 'ready', visibleRecords = records;
-  const form = { fields: { channel: 'consumer_assisted', title: 'Synthetic owned stock', condition: 'Checked', facts: 'Local fixture only',
+  const fixtureFields = { channel: 'consumer_assisted', title: 'Synthetic owned stock', condition: 'Checked', facts: 'Local fixture only',
     priceJPY: '3000', marketplaceFeeJPY: '300', shippingJPY: '750', itemCostJPY: '0', otherCostJPY: '0',
-    ownsStock: 'on', accurate: 'on', prohibitedChecked: 'on' }, reset() { resets++; } };
+    ownsStock: 'on', accurate: 'on', prohibitedChecked: 'on' };
+  const form = { fields: { ...fixtureFields }, reset() { resets++; this.fields = defaults(); } };
+  let formKey;
   const react = {
     useState(initial) { const i = cursor++; if (!(i in slots)) slots[i] = initial;
       return [slots[i], (value) => { slots[i] = typeof value === 'function' ? value(slots[i]) : value; }]; },
     useRef(initial) { const i = cursor++; if (!(i in slots)) slots[i] = { current: initial }; return slots[i]; },
-    useMemo(fn) { cursor++; return fn(); },
+    useMemo(fn, deps) { const i = cursor++, previous = slots[i]; if (!previous || deps.some((value, index) => value !== previous.deps[index])) slots[i] = { deps, value: fn() }; return slots[i].value; },
+    useCallback(fn, deps) { return react.useMemo(() => fn, deps); },
     useEffect(fn, deps) { const i = cursor++, previous = slots[i];
       if (!previous || deps.some((value, index) => value !== previous.deps[index])) {
         previous?.cleanup?.(); slots[i] = { deps }; effects.push(() => { slots[i].cleanup = fn(); });
       }
     },
   };
-  const jsx = (type, props) => ({ type, props });
+  const jsx = (type, props, key) => ({ type, props, key });
   const inert = () => null, needsSignin = (value) => { access = value ? 'signin' : 'ready'; };
   async function request(_path, method = 'GET', value, headers) {
     requests.push({ method, headers, value: value === undefined ? undefined : JSON.parse(JSON.stringify(value)) });
@@ -65,7 +68,8 @@ function harness(records = new Map()) {
       throw Error(id);
     },
   });
-  function render() { cursor = 0; tree = exports.default(); while (effects.length) effects.shift()(); return tree; }
+  function defaults() { return Object.fromEntries(nodes(tree).filter(n => ['input','textarea','select'].includes(n.type) && n.props.name).map(n => [n.props.name, n.props.type === 'checkbox' ? (n.props.defaultChecked ? 'on' : '') : n.props.defaultValue ?? ''])); }
+  function render() { cursor = 0; tree = exports.default(); const currentForm = nodes(tree).find(n => n.type === 'form'); if (currentForm && currentForm.key !== formKey) { formKey = currentForm.key; form.fields = defaults(); } while (effects.length) effects.shift()(); return tree; }
   function nodes(node, out = []) {
     if (!node || typeof node !== 'object') return out;
     if (Array.isArray(node)) { node.forEach((item) => nodes(item, out)); return out; }
@@ -82,14 +86,15 @@ function harness(records = new Map()) {
   async function flush() { for (const [id, fn] of timers) { timers.delete(id); fn(); } await new Promise((resolve) => setImmediate(resolve)); render(); }
   async function click(label) { const button = find('button', label); assert.ok(button, label); assert.ok(!button.props.disabled, label);
     const result = button.props.onClick(); render(); await result; await flush(); }
-  async function submit(twice = false) { const handler = find('form').props.onSubmit;
+  function fill(values = fixtureFields) { Object.assign(form.fields, values); find('form').props.onChange?.({ currentTarget: form }); render(); }
+  async function submit(twice = false) { if (!form.fields.title) fill(); const handler = find('form').props.onSubmit;
     const promise = handler({ preventDefault() {}, currentTarget: form });
     if (twice) await handler({ preventDefault() {}, currentTarget: form });
     render(); await promise; await flush(); }
   render();
   return { setOwner(value) { currentOwner = value; }, replies, render, find, nodes: () => nodes(tree), flush, click, submit, requests, records, listeners, form,
     setAccess(value, visible = visibleRecords) { access = value; visibleRecords = visible; render(); },
-    get resets() { return resets; }, fail(mode) { failure = mode; } };
+    fill, get resets() { return resets; }, fail(mode) { failure = mode; } };
 }
 
 void test('lost creation response freezes fields and retries exactly once with the original ID', async () => {
@@ -127,7 +132,7 @@ void test('definitive validation failure releases the form with its entered valu
   assert.equal(h.form.fields.title, 'Synthetic owned stock');
   assert.ok(!h.find('button', '出品原稿と利益計画を作る').props.disabled);
   assert.equal(h.find('button', '同じ保存内容で結果を確認'), undefined);
-  assert.equal(h.listeners.has('beforeunload'), false);
+  assert.equal(h.listeners.has('beforeunload'), true);
 });
 
 
@@ -174,17 +179,26 @@ void test('Mercari binds a pending create across 401, rejects B, and resumes the
   assert.equal(posts.length, 3); assert.deepEqual(posts[2].value, posts[0].value);
   assert.equal(posts[2].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA);
 });
-void test('Mercari keeps fields when explicitly abandoning the old owner operation and creates a fresh ID', async () => {
+void test('Mercari only lets the original owner release or discard retained private input', async () => {
   const h = harness(); await h.flush(); h.fail('before'); await h.submit();
+  const staleRelease = h.find('button', '保留を解除（入力は保持）').props.onClick;
   h.setOwner(ownerB); await h.click('同じ保存内容で結果を確認');
   assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
-  await h.click('保存先の接続を確認'); await h.click('保留を解除（入力は保持）');
-  assert.equal(h.resets, 0); assert.equal(h.form.fields.title, 'Synthetic owned stock');
+  await h.click('保存先の接続を確認');
+  const release = h.find('button', '保留を解除（入力は保持）');
+  assert.equal(release.props.disabled, true); release.props.onClick(); staleRelease(); h.render();
+  assert.ok(h.find('button', '同じ保存内容で結果を確認')); assert.equal(h.form.fields.title, '');
+  h.setOwner(ownerA); await h.click('保存先の接続を確認');
+  assert.equal(h.form.fields.title, 'Synthetic owned stock');
+  await h.click('保留を解除（入力は保持）'); assert.equal(h.listeners.has('beforeunload'), true);
+  await h.click('未保存の入力を破棄'); assert.equal(h.form.fields.title, '');
+  assert.equal(h.listeners.has('beforeunload'), false);
+  h.setAccess('checking'); await h.flush(); h.setOwner(ownerB); h.setAccess('ready'); await h.flush();
+  h.fill({ ...h.form.fields, title: 'Bob own stock', condition: 'Checked', facts: 'Bob facts', priceJPY: '3000', marketplaceFeeJPY: '300', shippingJPY: '750', ownsStock: 'on', accurate: 'on', prohibitedChecked: 'on' });
   await h.submit();
   const posts = h.requests.filter(r => r.method === 'POST');
   assert.equal(posts.length, 2); assert.notEqual(posts[1].value.id, posts[0].value.id);
-  assert.equal(posts[1].value.title, posts[0].value.title);
-  assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerB);
+  assert.equal(posts[1].value.title, 'Bob own stock'); assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerB);
 });
 void test('Mercari never treats an unknown identity GET as ready for a new or pending write', async () => {
   const h = harness(); h.setOwner(null); await h.flush();
@@ -204,4 +218,77 @@ void test('Mercari keeps the frozen operation when owner changes between preflig
  assert.deepEqual(posts[1].value, posts[0].value);
  assert.equal(posts[1].headers[ownerIntent.OWNER_SCOPE_HEADER], ownerA);
  assert.equal(h.records.size, 1);
+});
+
+
+for (const status of [400, 404, 409, 413, 415]) void test(`Mercari preflight GET ${status} cannot disprove an earlier committed save`, async () => {
+  const h = harness(); await h.flush(); h.fail('after'); await h.submit();
+  const original = h.requests.find(r => r.method === 'POST');
+  h.replies.push(async () => { throw new RequestError('Synthetic preflight failure', status); });
+  await h.click('同じ保存内容で結果を確認');
+  assert.ok(h.find('button', '同じ保存内容で結果を確認'));
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
+  assert.equal(h.records.size, 1); assert.equal(h.form.fields.title, '');
+  assert.equal(h.listeners.has('beforeunload'), true);
+  await h.click('同じ保存内容で結果を確認');
+  assert.deepEqual(h.requests.filter(r => r.method === 'POST')[1].value, original.value);
+  assert.equal(h.records.size, 1);
+});
+
+void test('Mercari unsent values and consent stay in memory for their author and stale handlers cannot submit/discard them', async () => {
+  const h = harness(); await h.flush(); assert.equal(h.listeners.has('beforeunload'), false);
+  h.fill(); assert.equal(h.listeners.has('beforeunload'), true);
+  const oldForm = h.find('form'); const oldInput = oldForm.props.onChange;
+  const oldSubmit = oldForm.props.onSubmit; const oldDiscard = h.find('button', '未保存の入力を破棄').props.onClick;
+  h.setAccess('signin'); await h.flush(); h.setOwner(ownerB); h.setAccess('ready', new Map()); await h.flush();
+  for (const key of ['title', 'condition', 'facts', 'priceJPY', 'ownsStock', 'accurate', 'prohibitedChecked']) assert.equal(h.form.fields[key], '', key);
+  oldInput({ currentTarget: { fields: { ...h.form.fields, title: 'stale Alice mutation' } } });
+  await oldSubmit({ preventDefault() {}, currentTarget: h.form }); oldDiscard(); h.render();
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 0);
+  assert.equal(h.form.fields.title, '');
+  h.fill({ title: 'Bob private product' });
+  h.setAccess('checking'); await h.flush(); h.setOwner(ownerA); h.setAccess('ready'); await h.flush();
+  assert.equal(h.form.fields.title, 'Synthetic owned stock'); assert.equal(h.form.fields.facts, 'Local fixture only');
+  assert.equal(h.form.fields.ownsStock, 'on');
+  await h.click('未保存の入力を破棄'); assert.equal(h.form.fields.title, '');
+  assert.equal(h.listeners.has('beforeunload'), true, 'Bob draft still remains');
+  h.setAccess('checking'); await h.flush(); h.setOwner(ownerB); h.setAccess('ready'); await h.flush();
+  assert.equal(h.form.fields.title, 'Bob private product'); assert.equal(h.form.fields.ownsStock, '');
+  await h.click('未保存の入力を破棄'); assert.equal(h.listeners.has('beforeunload'), false);
+});
+
+for (const malformed of [{}, { ownerScope: ownerB, plans: {} }, { ownerScope: ownerB, plans: [{}] }]) void test(`Mercari malformed snapshot masks prior private input and keeps uncertain ID (${JSON.stringify(malformed)})`, async () => {
+  const h = harness(); await h.flush(); h.fail('after'); await h.submit();
+  const original = h.requests.find(r => r.method === 'POST');
+  h.replies.push(async () => malformed); await h.click('保存先の接続を確認');
+  assert.equal(h.find('h3', 'Synthetic owned stock'), undefined); assert.equal(h.form.fields.title, '');
+  assert.ok(h.find('button', '同じ保存内容で結果を確認')); assert.equal(h.listeners.has('beforeunload'), true);
+  await h.click('同じ保存内容で結果を確認');
+  assert.deepEqual(h.requests.filter(r => r.method === 'POST')[1].value, original.value);
+  assert.equal(h.records.size, 1);
+});
+
+void test('Mercari captured retry and input handlers cannot revive a retired pending operation', async () => {
+  const h = harness(); await h.flush(); h.fill();
+  const oldInput = h.find('form').props.onChange;
+  h.fail('before'); await h.submit();
+  const oldRetry = h.find('button', '同じ保存内容で結果を確認').props.onClick;
+  oldInput({ currentTarget: { fields: { ...h.form.fields, title: 'stale during pending' } } }); h.render();
+  await h.click('保留を解除（入力は保持）');
+  await oldRetry(); await h.flush();
+  assert.equal(h.requests.filter(r => r.method === 'POST').length, 1);
+  assert.equal(h.form.fields.title, 'Synthetic owned stock');
+  assert.equal(h.find('button', '同じ保存内容で結果を確認'), undefined);
+});
+
+void test('Mercari stale release cannot retire a newer unknown save for the same owner', async () => {
+  const h = harness(); await h.flush(); h.fail('before'); await h.submit();
+  const oldRelease = h.find('button', '保留を解除（入力は保持）').props.onClick;
+  await h.click('保留を解除（入力は保持）'); h.fail('after'); await h.submit();
+  const pending = h.requests.filter(r => r.method === 'POST').at(-1).value;
+  await h.click('保存先の接続を確認'); oldRelease(); h.render();
+  assert.ok(h.find('button', '同じ保存内容で結果を確認'));
+  await h.click('同じ保存内容で結果を確認');
+  assert.deepEqual(h.requests.filter(r => r.method === 'POST').at(-1).value, pending);
+  assert.equal(h.records.size, 1);
 });
