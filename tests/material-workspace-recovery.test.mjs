@@ -1,3 +1,4 @@
+import { guardHistoryNavigation } from '../lib/history-navigation-guard.ts';
 import * as pendingOwnerIntent from '../lib/pending-owner-intent.ts';
 import * as ownerIntent from '../lib/owner-intent.ts';
 const ownerA = 'owner-v1:' + 'a'.repeat(64), ownerB = 'owner-v1:' + 'b'.repeat(64);
@@ -13,6 +14,9 @@ const fixture = JSON.parse(readFileSync(new URL('../contracts/material-invention
 const compiled = ts.transpileModule(readFileSync(new URL('../components/material-invention-workspace.tsx', import.meta.url), 'utf8'), {
   compilerOptions: { target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, esModuleInterop: true },
 }).outputText;
+const navigationCompiled = ts.transpileModule(readFileSync(new URL('../components/use-pending-save-navigation.ts', import.meta.url), 'utf8'), {
+  compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS },
+}).outputText;
 function harness(initialSignedIn = true) {
   const slots = [], effects = [], requests = [], records = new Map(), recordOwners = new Map(), computations = new Set();
   const listHoldQueue = [], responseChanges = new Map();
@@ -27,11 +31,20 @@ function harness(initialSignedIn = true) {
       if (!old || deps.some((v, j) => v !== old.deps[j])) { old?.cleanup?.(); slots[i] = { deps }; effects.push(() => { slots[i].cleanup = fn(); }); }
     },
   };
+  const listeners = new Map(), documentListeners = new Map();
+  const windowSurface = { addEventListener(name, fn) { listeners.set(name, fn); }, removeEventListener(name) { listeners.delete(name); } };
+  class Element { constructor(attributes) { this.attributes = attributes; } closest() { return this; }
+    getAttribute(name) { return this.attributes[name] ?? null; } hasAttribute(name) { return name in this.attributes; } }
+  const navigation = {};
+  runInNewContext(navigationCompiled, { exports: navigation, Element, window: windowSurface,
+    document: { addEventListener(name, fn) { documentListeners.set(name, fn); }, removeEventListener(name) { documentListeners.delete(name); } },
+    require(name) { if (name === '@/lib/history-navigation-guard') return { guardHistoryNavigation }; assert.equal(name, 'react'); return react; },
+  });
   const jsx = (type, props) => ({ type, props });
   const modules = { '@/lib/pending-owner-intent': pendingOwnerIntent, '@/lib/owner-intent': ownerIntent, react, 'react/jsx-runtime': { jsx, jsxs: jsx }, 'next/link': 'a',
     '@/contracts/material-invention-fixture.json': fixture, '@/lib/material-invention': { ...material,
       generateMaterialCandidateGraph(...args) { return track((async () => { if (generationGate) await generationGate.promise; return material.generateMaterialCandidateGraph(...args); })()); } }, '@/lib/material-study': { ...study, restoreMaterialStudy(...args) { return track(study.restoreMaterialStudy(...args)); } },
-    './material-invention-workspace.module.css': {}, '@/components/use-pending-save-navigation': { usePendingSaveNavigation() {} },
+    './material-invention-workspace.module.css': {}, '@/components/use-pending-save-navigation': navigation,
   };
   async function response(value, kind, status = 200) {
     const change = responseChanges.get(kind); responseChanges.delete(kind);
@@ -89,7 +102,9 @@ function harness(initialSignedIn = true) {
     button.props.onClick(); render(); await flush(); }
   function source(value) { find('textarea').props.onChange({ target: { value } }); render(); }
   render();
-  return { title(value) { nodes(find('label', '仕事の名前')).find(node => node.type === 'input').props.onChange({ target: { value } }); render(); }, holdWrite() { heldWrite = Promise.withResolvers(); const hold = heldWrite; return () => hold.resolve(); }, holdOpen() { heldOpen = Promise.withResolvers(); const hold = heldOpen; return () => hold.resolve(); }, setOwner(value) { currentOwner = value; }, render, find, flush, click, source, records, requests,
+  return { listeners,
+    navigate(attributes) { let prevented = false; documentListeners.get('click')?.({ button: 0, target: new Element(attributes), preventDefault() { prevented = true; } }); return prevented; },
+    title(value) { nodes(find('label', '仕事の名前')).find(node => node.type === 'input').props.onChange({ target: { value } }); render(); }, holdWrite() { heldWrite = Promise.withResolvers(); const hold = heldWrite; return () => hold.resolve(); }, holdOpen() { heldOpen = Promise.withResolvers(); const hold = heldOpen; return () => hold.resolve(); }, setOwner(value) { currentOwner = value; }, render, find, flush, click, source, records, requests,
     changeResponse(kind, change) { responseChanges.set(kind, change); },
     holdNextList() { const gate = Promise.withResolvers(); listHoldQueue.push(gate); return () => gate.resolve(); },
     holdGeneration() { generationGate = Promise.withResolvers(); return () => generationGate.resolve(); }, holdList() { holdList = true; }, releaseList() { releaseList(); }, ownerRace() { mode = 'owner'; }, lost() { mode = 'lost'; }, signin(v) { signedIn = v; } };
@@ -361,4 +376,49 @@ void test('stale same-owner release and retry callbacks cannot replace a newer p
   await h.click('同じ操作を再試行');
   const posts = h.requests.filter(r => r.method === 'POST');
   assert.deepEqual(posts[2].value, posts[1].value); assert.notEqual(posts[1].value.id, posts[0].value.id);
+});
+
+
+for (const authenticated of [false, true]) void test(`unsent Material input protects navigation before valid export (authenticated=${authenticated})`, async () => {
+  const h = harness(authenticated); await h.flush();
+  assert.equal(h.navigate({ href: '/zema' }), false); assert.equal(h.listeners.has('beforeunload'), false);
+  h.source('{"goal":"unfinished private input'); h.title('Unsent study');
+  assert.equal(h.records.size, 0); assert.equal(h.find('button', '入力を含むJSONを保存'), undefined);
+  assert.equal(h.navigate({ href: '/zema' }), true); assert.equal(h.listeners.has('beforeunload'), true);
+  assert.equal(h.navigate({ href: '/signin-with-chatgpt', target: '_blank' }), false);
+  await h.click('未保存の入力を破棄'); assert.equal(h.find('textarea').props.value, '');
+  assert.equal(h.navigate({ href: '/zema' }), false); assert.equal(h.listeners.has('beforeunload'), false);
+});
+
+void test('parked unsent Material input remains guarded and only its original workspace can discard it', async () => {
+  const h = harness(); await h.flush(); h.source('{"private":"Alice draft'); h.title('Alice draft');
+  const oldDiscard = h.find('button', '未保存の入力を破棄').props.onClick;
+  h.setOwner(ownerB); await h.click('一覧を再読込'); oldDiscard(); h.render();
+  assert.equal(h.find('textarea').props.value, ''); assert.equal(h.find('button', '未保存の入力を破棄'), undefined);
+  assert.equal(h.navigate({ href: '/zema' }), true);
+  h.setOwner(ownerA); await h.click('一覧を再読込'); assert.equal(h.find('textarea').props.value, '{"private":"Alice draft');
+  await h.click('未保存の入力を破棄'); assert.equal(h.navigate({ href: '/zema' }), false);
+});
+
+void test('stale Material discard cannot erase a newer draft or a committed unknown save', async () => {
+  const h = harness(); await h.flush(); h.source('{"earlier":');
+  const oldDiscard = h.find('button', '未保存の入力を破棄').props.onClick;
+  h.source('{"later":'); oldDiscard(); h.render(); assert.equal(h.find('textarea').props.value, '{"later":');
+  await h.click('合成サンプルを開く'); await h.click('この端末で候補を生成');
+  const preSaveDiscard = h.find('button', '未保存の入力を破棄').props.onClick;
+  h.lost(); await h.click('入力と候補を本人用に保存'); const first = h.requests.find(request => request.method === 'POST');
+  oldDiscard(); preSaveDiscard(); h.render(); assert.ok(h.find('button', '同じ操作を再試行'));
+  await h.click('同じ操作を再試行'); const posts = h.requests.filter(request => request.method === 'POST');
+  assert.deepEqual(posts.at(-1).value, first.value); assert.equal(h.records.size, 1);
+  assert.equal(h.navigate({ href: '/zema' }), false);
+});
+
+void test('confirmed saved and restored Material input leaves navigation without an unsaved warning', async () => {
+  const h = harness(); await h.flush(); await h.click('合成サンプルを開く'); await h.click('この端末で候補を生成');
+  assert.equal(h.navigate({ href: '/zema' }), true);
+  await h.click('入力と候補を本人用に保存'); assert.equal(h.navigate({ href: '/zema' }), false);
+  const saved = [...h.records.values()][0]; h.source('{"edited":'); assert.equal(h.navigate({ href: '/zema' }), true);
+  await h.click(saved.job.title); assert.equal(h.navigate({ href: '/zema' }), false);
+  assert.equal(h.find('button', '未保存の入力を破棄'), undefined);
+  await h.click('新しい入力'); assert.equal(h.navigate({ href: '/zema' }), false, 'a fresh empty editor has no unsaved work');
 });

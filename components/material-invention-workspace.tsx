@@ -45,13 +45,19 @@ async function fetchSavedStudies(signal?: AbortSignal) {
   return { jobs: data.jobs, ownerScope: readOwnerScope(data.ownerScope) };
 }
 
+type InputBaseline = { title: string; source: string; sample: boolean };
 type StudyWorkspace = {
+  inputBaseline: InputBaseline;
   owner: string | null; title: string; source: string; sample: boolean;
   graph: MaterialCandidateGraph | null; request: MaterialInventionRequest | null;
   job: WorkJob | null; pending: Pending | null; filter: string; limit: number;
 };
 const emptyWorkspace = (owner: string | null): StudyWorkspace => ({ owner, title: '', source: '', sample: false,
+  inputBaseline: { title: '', source: '', sample: false },
   graph: null, request: null, job: null, pending: null, filter: 'all', limit: 30 });
+const dirtyInput = (value: StudyWorkspace) => !!(value.title.trim() || value.source.trim()) &&
+  (value.title.trim() !== value.inputBaseline.title.trim() || value.source.trim() !== value.inputBaseline.source.trim() ||
+    value.sample !== value.inputBaseline.sample);
 
 export default function MaterialInventionWorkspace() {
   const [workspace, setWorkspace] = useState<StudyWorkspace>(emptyWorkspace(null));
@@ -68,13 +74,15 @@ export default function MaterialInventionWorkspace() {
   const [needsSignin, setNeedsSignin] = useState(false);
   const [ownerScope, setOwnerScope] = useState<string | null>(null);
   const [parkedPending, setParkedPending] = useState(false);
+  const [parkedDirty, setParkedDirty] = useState(false);
   const generation = useRef(0);
   const storageGeneration = useRef(0);
   const mounted = useRef(true);
   const active = useRef<AbortController | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const locked = busy || pending !== null;
-  usePendingSaveNavigation(pending !== null || parkedPending);
+  const dirty = dirtyInput(workspace);
+  usePendingSaveNavigation(pending !== null || parkedPending || dirty || parkedDirty);
 
   function updateWorkspace(patch: Partial<StudyWorkspace>) {
     const next = { ...currentWorkspace.current, ...patch };
@@ -99,6 +107,7 @@ export default function MaterialInventionWorkspace() {
       storageGeneration.current++; generation.current++; active.current?.abort(); active.current = null;
       busyRef.current = false; setBusy(false); setPreviewRunning(false); setMessage('');
       setParkedPending([...workspaces.current.entries()].some(([owner, draft]) => owner !== scope && draft.pending !== null));
+      setParkedDirty([...workspaces.current.entries()].some(([owner, draft]) => owner !== scope && dirtyInput(draft)));
     }
     setOwnerScope(scope); setJobs(scope ? saved : []);
   }
@@ -152,6 +161,12 @@ export default function MaterialInventionWorkspace() {
     if (isCurrent(version)) { busyRef.current = false; setBusy(false); setPreviewRunning(false); active.current = null; }
   }
   function setTitle(value: string) { if (sameWorkspace() && !busyRef.current && !currentWorkspace.current.pending) updateWorkspace({ title: value }); }
+  function discardInput() {
+    if (!sameWorkspace() || currentWorkspace.current !== workspace || busyRef.current || currentWorkspace.current.pending) return;
+    generation.current++;
+    updateWorkspace(emptyWorkspace(workspace.owner));
+    setMessage('この画面の未保存入力を破棄しました。保存済みの仕事は履歴に残っています。');
+  }
   function setFilter(value: string) { if (sameWorkspace()) updateWorkspace({ filter: value }); }
   function setLimit(value: number) { if (sameWorkspace()) updateWorkspace({ limit: value }); }
   function reset(value: string, isSample: boolean, nextTitle = title) {
@@ -237,7 +252,8 @@ export default function MaterialInventionWorkspace() {
       if (operation.method === 'PATCH' && (result.job.revision <= target.revision || !Array.isArray(result.job.events) ||
         !result.job.events.some(event => record(event) && canonicalMaterialJson(event.command) === canonicalMaterialJson(target.command))))
         throw new Error('操作の保存を確認できません。同じ操作IDで再試行してください。');
-      updateWorkspace({ job: result.job, graph: result.graph, pending: null });
+      updateWorkspace({ job: result.job, graph: result.graph, pending: null,
+        inputBaseline: { title: previous.title, source: previous.source, sample: previous.sample } });
       setNeedsSignin(false);
       setMessage(operation.method === 'POST' ? '入力と候補を本人の仕事として保存しました。' : '仕事の状態を保存しました。');
       void list();
@@ -265,7 +281,8 @@ export default function MaterialInventionWorkspace() {
       if (!isCurrent(version)) return;
       const saved = result.job.materialStudy!;
       updateWorkspace({ source: JSON.stringify(saved.request, null, 2), sample: saved.sample, title: result.job.title,
-        request: saved.request, graph: result.graph, job: result.job, limit: 30, filter: 'all' });
+        request: saved.request, graph: result.graph, job: result.job, limit: 30, filter: 'all',
+        inputBaseline: { source: JSON.stringify(saved.request, null, 2), title: result.job.title, sample: saved.sample } });
       setMessage('保存した入力のdigestを照合し、同じ候補を再生成しました。');
     } catch (error) { if (isCurrent(version)) setMessage(errorText(error)); }
     finally { finish(version); }
@@ -325,6 +342,8 @@ export default function MaterialInventionWorkspace() {
     {!ownerScope && !needsSignin && <output>{OWNER_CHECK_REQUIRED}</output>}
     {message && <output className={styles.message}>{message}</output>}
     {pending && !busy && <div className={styles.boundary}><p>保存結果が不明です。最初のアカウントで同じ記録IDを確認します。別アカウントには再送しません。</p><p>{pendingOwnerStatus(pending.ownerScope, ownerScope) === 'changed' ? OWNER_CHANGED_MESSAGE : '元のアカウントで接続を確認してください。'}</p><p>保留を解除しても保存済み記録は削除されません。元のアカウントで保存結果を確認してから新しく保存してください。入力本文は残ります。</p><button disabled={!ownerScope || pending.ownerScope !== ownerScope} onClick={releasePending}>保留を解除（入力は保持）</button><button disabled={pendingOwnerStatus(pending.ownerScope, ownerScope) === 'changed'} onClick={() => void mutate(pending, true)}>同じ操作を再試行</button></div>}
+    {dirty && !pending && <div className={styles.boundary}><p>未保存の入力があります。画面を離れる前に本人用の保存を確認するか、入力を明示的に破棄してください。</p><button disabled={locked} onClick={discardInput}>未保存の入力を破棄</button></div>}
+    {parkedDirty && <p className={styles.boundary}>別のアカウントの未保存入力を失わないよう、画面移動を止めています。元のアカウントでサインインし、一覧を再読込して保存または破棄してください。</p>}
     {parkedPending && <p className={styles.boundary}>別のアカウントで保存結果が不明な候補を保持しています。元のアカウントでサインインし、一覧を再読込すると同じ記録IDで確認できます。このアカウントには入力や候補を引き継ぎません。</p>}
     {(needsSignin || pending || parkedPending) && <p className={styles.note}><Link prefetch={false} href="/signin-with-chatgpt?return_to=%2Fzema%2Ftools%2Frockstar-material-invention" target="_blank" rel="noopener noreferrer">サインインして保存を使う</Link>。別タブでサインイン後、この画面で再確認してください。入力を含むJSONは手元へ保存できます。読み込み時は候補と承認を引き継がず、入力から再生成します。</p>}
     <section className={styles.saved} aria-label="保存した物質候補"><h3>保存した仕事</h3><p className={styles.note}>{storageMessage}</p><button disabled={busy} onClick={() => void list()}>一覧を再読込</button>{jobs.length === 0 ? <p className={styles.note}>保存済みの候補はまだ表示されていません。</p> : <ul>{jobs.map((item) => <li key={item.id}><button disabled={locked} onClick={() => void open(item.id)}>{item.title}</button><span>{item.status} / {new Date(item.updatedAt).toLocaleString()}</span></li>)}</ul>}</section>
