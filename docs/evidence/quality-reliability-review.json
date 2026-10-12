@@ -3,7 +3,7 @@
   "status": "review_ready_with_known_secrets_ci_failure",
   "startedAt": "2026-10-11T23:56:26Z",
   "plannedEndAt": "2026-10-12T04:56:26Z",
-  "updatedAt": "2026-10-12T03:49:34.442761+00:00",
+  "updatedAt": "2026-10-12T04:00:08.642936+00:00",
   "baseline": {
     "main": "4055ad380d3876bee8e93eca71b1e072a2785959",
     "reusedPr100": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
@@ -143,6 +143,18 @@
         "docs/evidence/quality-reliability/tool-navigation-guard-14bd7988-mobile.jpg",
         "docs/evidence/quality-reliability/tool-library-preserved-14bd7988-mobile.jpg"
       ]
+    },
+    {
+      "id": "wallet-test-settlement",
+      "before": "GitHub1bae verify retried while an actual SQLite-committed malformed response was still pending; helper waited8timer turns instead of full operation. Two controlled response/JSON gates fail with old helper.",
+      "after": "Tests track and await original operationRequest and full save/retry/reverse/refresh promises through parsing and finally, with bounded deadline. Explicit held GETs preserve concurrency scenarios. Enabled-button, same-ID/body and one durable-record assertions remain unchanged.",
+      "scope": "Test harness only; no runtime change. Wallet43/43 pass and two meaningful gate regressions pass. Final fullverify and same-head CI receipt belongs in PR105.",
+      "evidence": [
+        "wallet-promise-flush-summary.json",
+        "wallet-fixed-flush-independent.test.mjs",
+        "wallet-async-settlement-independent-summary.json"
+      ],
+      "independentReview": "43/43 rerun passed; independent gate after JSON parsing but before save finally proves flush waits for complete handler. Removing only full-ledger tracking makes that unchanged assertion fail. Explicit held GET races remain awaited after release."
     }
   ],
   "inProgress": [],
@@ -191,7 +203,7 @@
     "browserAcceptedAt": "2026-10-12T03:47:57.193717+00:00",
     "reviewTarget": "PR105 final head (documentation and three bounded screenshots follow this runtime checkpoint)",
     "finalHeadVerification": "The final documentation-only head verification receipt belongs in PR105 body, with exact SHA and command/CI results. This JSON proves the stated14bd7988 runtime checkpoint only.",
-    "remainingSourceChange": null
+    "remainingSourceChange": "Test harness only: deterministic Wallet operation settling, followed by same-head verification receipt in PR105"
   },
   "intermediateCi": {
     "sha": "250b57b07e6a3191fc0a0ad11632ab1dbeb9ad58",
@@ -310,7 +322,8 @@
     "reused": "PR100 bounded response/origin helpers; existing workflow/terms/study parsers and owner intent contract",
     "commonized": "Wallet ledger recovery shared by both existing views; one local preview persistence/config selection path; Workbench runtime projection reader",
     "removed": "Duplicated implementations replaced in place. No additional whole source/dependency/history deletion without reference proof; main prior cleanup retained.",
-    "protected": "vendor originals/hashes, migration history, import manifests, recovery evidence and original checkout preserved"
+    "protected": "vendor originals/hashes, migration history, import manifests, recovery evidence and original checkout preserved",
+    "testReliability": "Replaced fixed timer-turn waiting with actual operation settlement; intentionally held reads remain available for race tests."
   },
   "builtFollowups": {
     "commits": [
@@ -539,6 +552,33 @@
         "skipped": 0,
         "osBoot": false
       }
+    },
+    {
+      "sha": "1bae02b8095058a8028bb4ff51ddee3000f596bb",
+      "fullVerify": {
+        "localExit": 0,
+        "nodePass": 2017,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "githubCi": {
+        "success": 13,
+        "failure": 2,
+        "failures": [
+          "SPIDER / secrets: same known public-description finding; owner review pending",
+          "verify: fixed-eight-timer-turn Wallet test flush observed legitimate in-flight save; independent controlled-delay reproduction confirmed test harness race"
+        ],
+        "nodePass": 2016,
+        "nodeFail": 1,
+        "nodeSkip": 1
+      },
+      "ciEvidence": "ci-1bae-native-android-secrets-summary.json",
+      "browserEvidence": "browser-1bae02b8-summary.json",
+      "log": "verify-primary-1bae02b8.log",
+      "runtimeChanges": false
     }
   ],
   "policyPreservation": {

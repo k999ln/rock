@@ -46,6 +46,7 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
   let owner = 'alice',
     dropPost = false,
     malformedPost = false,
+    malformedResponseGate = null,
     malformedGet = null,
     corruptPost = null,
     rejectPost = null,
@@ -176,7 +177,13 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
     return exports;
   }
   modules['@/lib/operations-api'] = compile('lib/operations-api.ts');
-  modules['@/lib/operations-client'] = compile('lib/operations-client.ts');
+  const operationClient = compile('lib/operations-client.ts');
+  modules['@/lib/operations-client'] = { ...operationClient,
+    operationRequest(...args) {
+      const held = (args[1] ?? 'GET') === 'GET' && delayedGet !== null;
+      return track(operationClient.operationRequest(...args), held);
+    },
+  };
   const route = compile('app/api/wallet/route.ts');
   if (
     existsSync(new URL('../components/use-wallet-ledger.tsx', import.meta.url))
@@ -185,7 +192,16 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
     modules['@/components/use-wallet-ledger'] = {
       ...walletModule,
       useWalletLedger(...args) {
-        ledger = walletModule.useWalletLedger(...args);
+        const value = walletModule.useWalletLedger(...args);
+        // Views often discard handler return values with `void`. Track the full
+        // operation here so tests wait through response parsing and finally.
+        ledger = { ...value };
+        for (const name of ['save', 'retry', 'reverse', 'refresh']) {
+          ledger[name] = (...inputs) => {
+            const held = name === 'refresh' && delayedGet !== null;
+            return track(value[name](...inputs), held);
+          };
+        }
         return ledger;
       },
     };
@@ -218,7 +234,17 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
     }
     const response = await routeCall(method, input, owner, options.headers);
     entry.status = response.status;
-    if (method === 'POST' && malformedPost && response.ok) { malformedPost = false; return Response.json({ ownerScope: await ownerIntent.ownerScopeFor(owner) }); }
+    if (method === 'POST' && malformedPost && response.ok) {
+      malformedPost = false;
+      const gate = malformedResponseGate; malformedResponseGate = null;
+      if (gate?.stage === 'response') { gate.started.resolve(); await gate.promise; }
+      const malformed = Response.json({ ownerScope: await ownerIntent.ownerScopeFor(owner) });
+      if (gate?.stage === 'json') {
+        const readJson = malformed.json.bind(malformed);
+        malformed.json = async () => { gate.started.resolve(); await gate.promise; return readJson(); };
+      }
+      return malformed;
+    }
     if (method === 'GET' && malformedGet !== null && response.ok) { const body = malformedGet; malformedGet = null; return Response.json(body); }
     if (method === 'POST' && corruptPost && !response.ok) {
       const body = corruptPost === 'truncated' ? '{"error":' : '{}';
@@ -236,14 +262,16 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
     }
     return response;
   }
+  function track(promise, held = false) {
+    if (!promise?.then) return promise;
+    const task = { promise, held };
+    tasks.add(task);
+    void promise.then(() => tasks.delete(task), () => tasks.delete(task));
+    return promise;
+  }
   function trackedFetch(...args) {
-    const p = fetchWallet(...args);
-    tasks.add(p);
-    void p.then(
-      () => tasks.delete(p),
-      () => tasks.delete(p),
-    );
-    return p;
+    const held = (args[1]?.method ?? 'GET') === 'GET' && delayedGet !== null;
+    return track(fetchWallet(...args), held);
   }
   function render() {
     cursor = 0;
@@ -274,11 +302,27 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
   }
   const button = (label) =>
     nodes(tree).find((n) => n.type === 'button' && text(n) === label);
-  async function flush() {
-    for (let n = 0; n < 8; n++) {
-      await new Promise((r) => setTimeout(r, 0));
+  async function flush({ settle = true } = {}) {
+    const deadline = Date.now() + 10000;
+    let quiet = 0;
+    do {
+      // Let the initial effect timer enqueue its actual request. Intentionally
+      // deferred GETs remain held so stale-read concurrency tests can advance.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const active = [...tasks].filter((task) => !task.held);
+      if (settle && active.length) {
+        let timer;
+        try {
+          await Promise.race([
+            Promise.allSettled(active.map((task) => task.promise)),
+            new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Wallet operations did not settle')), Math.max(1, deadline - Date.now())); }),
+          ]);
+        } finally { clearTimeout(timer); }
+      }
       if (mounted) render();
-    }
+      quiet = [...tasks].some((task) => !task.held) ? 0 : quiet + 1;
+      assert.ok(Date.now() < deadline, 'Wallet operations settle within the bounded test deadline');
+    } while (settle && quiet < 2);
   }
   async function click(label) {
     const b = button(label);
@@ -319,6 +363,11 @@ function harness(t, componentFile = 'wallet-workspace.tsx') {
     nodes: () => nodes(tree),
     text: () => text(tree),
     incompletePost() { malformedPost = true; },
+    holdMalformedResponse(stage) {
+      const gate = { ...Promise.withResolvers(), started: Promise.withResolvers(), stage };
+      malformedResponseGate = gate;
+      return gate;
+    },
     incompleteGet(value) { malformedGet = value; },
     drop() {
       dropPost = true;
@@ -722,3 +771,28 @@ for (const view of ['wallet-workspace.tsx', 'revenue-wallet-workspace.tsx']) {
     assert.equal((await h.wallet('alice')).records.length, 0);
   });
 }
+
+
+for (const stage of ['response', 'json']) void test(`Wallet flush waits for ${stage} completion and the full save finalizer, not timer turns`, async (t) => {
+  const h = harness(t, 'revenue-wallet-workspace.tsx');
+  await h.flush(); await h.click('売上を記録'); h.input('24000');
+  const gate = h.holdMalformedResponse(stage);
+  h.incompletePost(); h.submit(); h.render();
+  await gate.started.promise;
+  assert.equal((await h.wallet()).records.length, 1, 'actual SQLite write committed before the response gate');
+  let flushed = false;
+  const flushing = h.flush().then(() => { flushed = true; });
+  try {
+    // Deliberately advance beyond the previous eight-turn flush without
+    // completing the response: busy must remain true and flush must wait.
+    for (let turn = 0; turn < 12; turn++) await h.flush({ settle: false });
+    assert.equal(h.button('同じ保存内容で結果を確認').props.disabled, true);
+    assert.equal(flushed, false, 'flush must not report completion while the actual save promise is pending');
+  } finally { gate.resolve(); await flushing; }
+  assert.equal(h.button('同じ保存内容で結果を確認').props.disabled, false, 'full response validation and finally have finished');
+  const original = h.requests.find((request) => request.method === 'POST').input;
+  await h.retry();
+  assert.deepEqual(h.requests.filter((request) => request.method === 'POST').at(-1).input, original);
+  assert.equal((await h.wallet()).records.length, 1);
+  assert.equal(h.ledger().pendingSave, null);
+});

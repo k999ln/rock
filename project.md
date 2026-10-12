@@ -4,6 +4,12 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-12 — CIのWallet試験を実処理完了で同期（G04 / WEB04、ROCK）
+
+文書head `1bae02b8`のlocal全体verifyは2017 pass／1 skipで成功した一方、GitHubは13成功／2失敗。既知のsecretsに加え、Wallet保存応答がまだ処理中なのに固定8回のtimer待ちだけでretry buttonを押す試験が失敗した。実SQLite確定後の応答をgateで保留する独立試験で同じ失敗を再現し、応答解放後は同ID再試行／1記録になることを確認した。
+
+実装は変えず、test harnessが元のrequestとsave／retry／reverse／refreshのPromiseをJSON解析・finallyまで待つよう修正。競合を作る明示保留GETは別扱いにして既存race試験を維持した。応答待ちとJSON decode待ちの追加2試験は旧helperで2/2失敗、新helperで2/2成功、既存を含め43/43成功。独立検収も43/43成功し、JSON解析後のfinally手前だけを止める追加試験とfull-handler追跡を除いた失敗対照で待機の必要性を確認した。enabled・同ID・記録1件のassertionを削らず、最終headのfull verifyとCIを再実行してPR #105本文へSHA付きで確定する。`1bae02b8`の実build再起動後もLibraryの保存成果を同文で再表示でき、390px横はみ出し0。
+
 ## 2026-10-11 — 既存機能の品質改善をレビュー可能PRへ（G04 / WEB04、ROCK）
 
 runtime `14bd7988`を凍結し、`npm run verify`はNode2017 pass／1 platform skip、Worker1356、CSV385、実buildとasset186参照／欠落0で成功。同一SHAのGitHub CIは14成功、既知の公開説明文に対するSPIDER secrets検出1件。PR #105をready for reviewにしたが、全CI成功・main統合・公開とは扱わない。最終の文書のみのheadも同じverify／CIで照合し、結果SHAをPR本文へ残す。
@@ -2876,7 +2882,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-11 / SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/392件（親32・子192・独立168。実行単位は親を除く360件）
+最終更新: 2026-10-12 / SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/392件（親32・子192・独立168。実行単位は親を除く360件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
