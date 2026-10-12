@@ -1,20 +1,16 @@
 'use client';
 
 import {
-  BriefcaseBusiness,
   Cable,
   Check,
   Cloud,
-  FileCheck2,
-  FilePenLine,
   Globe2,
   Laptop2,
   Network,
   PlugZap,
-  Quote,
   ShieldCheck,
 } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -69,39 +65,14 @@ const connectionTargets = [
   Icon: typeof Laptop2;
 }[];
 
-const mcpTools = [
-  {
-    name: '案件チェック',
-    id: 'coconala_check',
-    detail: '依頼と提案の条件差を確認',
-    Icon: BriefcaseBusiness,
-  },
-  {
-    name: '出典整理',
-    id: 'format_citations',
-    detail: 'Markdownの出典を整理',
-    Icon: Quote,
-  },
-  {
-    name: '無料版記事',
-    id: 'make_free_article',
-    detail: '原稿から無料公開版を作成',
-    Icon: FilePenLine,
-  },
-  {
-    name: '納品照合',
-    id: 'verify_delivery',
-    detail: '契約・成果物・記録を照合',
-    Icon: FileCheck2,
-  },
-] as const;
-
 export default function SkyMcpCenter({
+  showStatusRail = true,
   open,
   connected,
   onOpenChange,
   onOpenDevice,
 }: {
+  showStatusRail?: boolean;
   open: boolean;
   connected: boolean;
   onOpenChange: (open: boolean) => void;
@@ -112,6 +83,21 @@ export default function SkyMcpCenter({
   const [servers, setServers] = useState<McpConnection[]>([]);
   const [busyServer, setBusyServer] = useState('');
   const [connectionMessage, setConnectionMessage] = useState('');
+  const [serverError, setServerError] = useState('');
+  const [connectionFailed, setConnectionFailed] = useState(false);
+  const setupTab = useRef<HTMLButtonElement>(null);
+  const toolsTab = useRef<HTMLButtonElement>(null);
+  const sessionGeneration = useRef(0);
+  const serverRequest = useRef(0);
+  const connecting = useRef(false);
+
+  function moveTab(event: KeyboardEvent<HTMLButtonElement>) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const next = event.key === 'Home' ? 'setup' : event.key === 'End' ? 'tools' : view === 'setup' ? 'tools' : 'setup';
+    setView(next);
+    (next === 'setup' ? setupTab : toolsTab).current?.focus();
+  }
 
   const toolCount = useMemo(
     () =>
@@ -125,7 +111,7 @@ export default function SkyMcpCenter({
     () =>
       servers.filter((server) =>
         target === 'device'
-          ? server.transport === 'stdio'
+          ? server.transport === 'stdio' || server.transport === 'local_http'
           : target === 'provider'
             ? server.transport === 'streamable_http'
             : false,
@@ -134,36 +120,75 @@ export default function SkyMcpCenter({
   );
 
   const refreshServers = useCallback(async () => {
-    if (!connected) return setServers([]);
+    if (!connected) return;
+    const generation = sessionGeneration.current;
+    const request = ++serverRequest.current;
     try {
-      setServers(await listMcpConnections());
-    } catch {
+      const next = await listMcpConnections();
+      if (generation !== sessionGeneration.current || request !== serverRequest.current) return;
+      setServers(next);
+      setServerError('');
+    } catch (cause) {
+      if (generation !== sessionGeneration.current || request !== serverRequest.current) return;
       setServers([]);
+      setServerError(cause instanceof Error ? cause.message : 'MCPの一覧を取得できませんでした。');
     }
   }, [connected]);
 
   useEffect(() => {
-    if (!open) return;
-    const timeout = window.setTimeout(() => void refreshServers(), 0);
-    return () => window.clearTimeout(timeout);
-  }, [open, refreshServers]);
+    const generation = ++sessionGeneration.current;
+    connecting.current = false;
+    queueMicrotask(() => {
+      if (generation !== sessionGeneration.current) return;
+      setServers([]);
+      setServerError('');
+      setBusyServer('');
+      setConnectionMessage('');
+      setConnectionFailed(false);
+    });
+    const refresh = () => {
+      if (document.visibilityState === 'hidden') return;
+      void refreshServers();
+    };
+    refresh();
+    const interval = window.setInterval(refresh, 5_000);
+    window.addEventListener('sky-mcp-servers', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      sessionGeneration.current += 1;
+      serverRequest.current += 1;
+      window.clearInterval(interval);
+      window.removeEventListener('sky-mcp-servers', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, [refreshServers]);
 
   async function connectServer(server: McpConnection) {
+    if (!connected || connecting.current) return;
+    const generation = sessionGeneration.current;
+    connecting.current = true;
+    serverRequest.current += 1;
     setBusyServer(server.id);
     setConnectionMessage('');
+    setConnectionFailed(false);
     try {
       const passport = await connectMcp(server.id);
+      if (generation !== sessionGeneration.current) return;
       window.dispatchEvent(new Event('sky-mcp-servers'));
       setConnectionMessage(
         `${server.name}へ接続しました。${passport.tools.length}機能を確認済みです。`,
       );
-      await refreshServers();
     } catch (error) {
+      if (generation !== sessionGeneration.current) return;
+      setConnectionFailed(true);
       setConnectionMessage(
         error instanceof Error ? error.message : 'MCPへ接続できませんでした。',
       );
     } finally {
-      setBusyServer('');
+      if (generation === sessionGeneration.current) {
+        connecting.current = false;
+        setBusyServer('');
+      }
     }
   }
 
@@ -174,17 +199,17 @@ export default function SkyMcpCenter({
 
   return (
     <>
-      <section className={styles.rail} aria-label="MCP接続状態">
+      {showStatusRail && <section className={styles.rail} aria-label="MCP接続状態">
         <div className={styles.railIcon} aria-hidden="true">
           <Network size={20} />
         </div>
         <div className={styles.railCopy}>
           <div>
             <strong>MCP</strong>
-            <span>{toolCount || 4}機能</span>
+            <span>{toolCount}機能</span>
           </div>
           <p>
-            {connected
+            {serverError ? 'MCPの一覧を確認できません' : connected
               ? 'このPCで自動化を実行できます'
               : '初回だけ接続アプリを起動します'}
           </p>
@@ -201,7 +226,7 @@ export default function SkyMcpCenter({
           <PlugZap size={16} />
           {connected ? '接続・機能' : '導入する'}
         </button>
-      </section>
+      </section>}
 
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className={styles.dialog}>
@@ -219,7 +244,7 @@ export default function SkyMcpCenter({
             </div>
             <div className={styles.policyBadges}>
               <span>
-                <ShieldCheck size={14} /> 入力はPC内で処理
+                <ShieldCheck size={14} /> 実行前に権限を確認
               </span>
               <span className={connected ? styles.liveOn : styles.liveOff}>
                 {connected ? 'MCP接続中' : 'MCP未接続'}
@@ -229,6 +254,8 @@ export default function SkyMcpCenter({
 
           <div className={styles.tabs} role="tablist" aria-label="MCPメニュー">
             <button
+              ref={setupTab}
+              onKeyDown={moveTab}
               id="sky-mcp-setup-tab"
               role="tab"
               aria-controls="sky-mcp-setup-panel"
@@ -239,6 +266,8 @@ export default function SkyMcpCenter({
               導入・接続
             </button>
             <button
+              ref={toolsTab}
+              onKeyDown={moveTab}
               id="sky-mcp-tools-tab"
               role="tab"
               aria-controls="sky-mcp-tools-panel"
@@ -246,7 +275,7 @@ export default function SkyMcpCenter({
               tabIndex={view === 'tools' ? 0 : -1}
               onClick={() => setView('tools')}
             >
-              使える機能 <span>{toolCount || 4}</span>
+              使える機能 <span>{toolCount}</span>
             </button>
           </div>
 
@@ -257,6 +286,7 @@ export default function SkyMcpCenter({
               role="tabpanel"
               aria-labelledby="sky-mcp-setup-tab"
             >
+              {serverError && <p className={styles.errorMessage} role="alert">{serverError}</p>}
               <section className={styles.targetSection}>
                 <div className={styles.sectionHeading}>
                   <div>
@@ -339,7 +369,7 @@ export default function SkyMcpCenter({
                     {visibleServers.map((server) => (
                       <article key={server.id}>
                         <span className={styles.serverIcon} aria-hidden="true">
-                          {server.transport === 'stdio' ? (
+                          {server.transport === 'stdio' || server.transport === 'local_http' ? (
                             <Laptop2 size={18} />
                           ) : (
                             <Globe2 size={18} />
@@ -349,7 +379,7 @@ export default function SkyMcpCenter({
                           <strong>{server.name}</strong>
                           <p>{server.description}</p>
                           <small>
-                            {server.transport === 'stdio'
+                            {server.transport === 'stdio' || server.transport === 'local_http'
                               ? 'このPC内'
                               : 'Streamable HTTP'}
                             {server.toolCount !== null
@@ -359,7 +389,7 @@ export default function SkyMcpCenter({
                         </div>
                         <button
                           type="button"
-                          disabled={busyServer === server.id}
+                          disabled={busyServer !== ''}
                           onClick={() => void connectServer(server)}
                         >
                           {server.state === 'connected' ? (
@@ -384,7 +414,7 @@ export default function SkyMcpCenter({
                     )}
                   </div>
                   {connectionMessage && (
-                    <output className={styles.connectionMessage}>
+                    <output className={connectionFailed ? styles.errorMessage : styles.connectionMessage} role={connectionFailed ? 'alert' : 'status'}>
                       {connectionMessage}
                     </output>
                   )}
@@ -421,7 +451,7 @@ export default function SkyMcpCenter({
               </button>
 
               <p className={styles.boundaryNote}>
-                登録済みのstdio MCPとStreamable HTTP
+                SDKで起動したPC内Tool、登録済みのstdio MCPとStreamable HTTP
                 MCPに対応します。秘密情報はSkyへ渡さず、OAuthが必要な接続先は権限確認と接続証跡が揃うまで実行できません。
               </p>
             </div>
@@ -432,21 +462,18 @@ export default function SkyMcpCenter({
               role="tabpanel"
               aria-labelledby="sky-mcp-tools-tab"
             >
+              {serverError && <p className={styles.errorMessage} role="alert">{serverError}</p>}
               <div className={styles.toolList}>
-                {(servers.length
-                  ? servers.flatMap((server) =>
-                      (server.passport?.tools ?? []).map((tool) => ({
-                        name: tool.title || tool.name,
-                        id: `${server.id}/${tool.name}`,
-                        detail: tool.description || `${server.name}の機能`,
-                        Icon: PlugZap,
-                      })),
-                    )
-                  : mcpTools
-                ).map(({ name, id, detail, Icon }) => (
+                {servers.flatMap((server) =>
+                  (server.passport?.tools ?? []).map((tool) => ({
+                    name: tool.title || tool.name,
+                    id: `${server.id}/${tool.name}`,
+                    detail: tool.description || `${server.name}の機能`,
+                  })),
+                ).map(({ name, id, detail }) => (
                   <article key={id}>
                     <span className={styles.toolIcon} aria-hidden="true">
-                      <Icon size={18} />
+                      <PlugZap size={18} />
                     </span>
                     <div>
                       <strong>{name}</strong>
@@ -455,6 +482,11 @@ export default function SkyMcpCenter({
                     <code>{id}</code>
                   </article>
                 ))}
+                {toolCount === 0 && !serverError && (
+                  <p className={styles.serverEmpty}>
+                    MCPに接続すると、確認できた機能がここに表示されます。
+                  </p>
+                )}
               </div>
               <div className={styles.toolFooter}>
                 <p>

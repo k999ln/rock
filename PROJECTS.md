@@ -1,0 +1,192 @@
+# プロジェクト別ガイド
+
+担当Botに実装を依頼する場合は[プロジェクト別Bot](toolkits/amc-agent/README.md#プロジェクト別bot)を使います。Sky、Zema、Walletなどの入口から、専用branchとPRへ成果を残します。
+
+> **この文書の役割** — 製品・実装単位から **ソースコードと担当資料の場所** を探すための案内です。これは何か・今どこまで出来ているかは [README](README.md)、文書全体の地図は [docs/README.md](docs/README.md)、仕様がいつどう変わったかは [仕様変遷](docs/spec-history.md)、全Toolとエージェントの機能は [エージェント・Tool総覧](docs/agents-and-tools.md) にあります。
+
+このページは、`k999ln/rock`の成果物を**製品・実装単位**から探す入口です。確定要望は[製品ベース](docs/product-baseline.md)、現在のtaskと完了条件は[進捗JSON](data/project-status.json)、部隊別Goal・進捗・ruleは[avokado Mission Control](docs/mission-control.md)、設計の正本は[全設計ポータル](docs/rockstaros-design-portal.md)を参照してください。ここに書くディレクトリの存在は、実機・本番・販売の受入完了を意味しません。
+
+## 一つの機能・作業を進める
+
+[作業部屋一覧](workspaces/README.md)から一分野を開くと、触る場所・未完了task・前提・保留・検証方法がまとまっています。担当と手順は既存AMCから同期します。新しい思いつきは[アイデア置き場](workspaces/IDEAS.md)へ残し、現在のtaskを変える前に切り分けます。
+
+## 製品・独立した構想
+
+| プロジェクト | 役割 | 最初に開くもの | 実装・素材の場所 |
+| --- | --- | --- | --- |
+| **avocadoMini** | 現行R5は高さ200mm以内の1本自律mini。別Edge Hubを必須にしない。製品Siteは旧E3表示が残る | [R5統合設計](docs/avocado-mini-r5/README.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) | [`docs/avocado-mini-r5/`](docs/avocado-mini-r5/)・[`sites/avocado-mini/`](sites/avocado-mini/) |
+| **avokadoPro** | 単体でgame、service、compute、storage、audioを扱い、任意でMiniと接続する。専用統合設計・BOM・ICD・実機受入は未作成。2026-10-05にNVIDIA搭載の小型PCとしての候補構成・組立・受入計画を追加（購入・組立は未実施） | [製品定義](sites/avocado-mini/src/pages/pro/index.astro)・[NVIDIA小型PCの設計](docs/avokado-pro-pc-design.md)・[Mission Control P1〜P7](docs/mission-control.md) | [`sites/avocado-mini/src/pages/pro/`](sites/avocado-mini/src/pages/pro/) |
+| **rocketstar** | ロケットR1.0、衛星・A-LINK・受信試作などの設計アーカイブ。Siteの構想ページと設計原本を分ける | [設計アーカイブ](docs/rocketstar-design/README.md)・[構想ページ](sites/avocado-mini/src/pages/rocket-star/index.astro) | [`docs/rocketstar-design/`](docs/rocketstar-design/)・[`sites/avocado-mini/rocket-star/`](sites/avocado-mini/rocket-star/) |
+| **RockstarOS** | AIネイティブOSの共通基盤と配布候補。完全版原本はR5専用Device Profileの実装済みを意味しない | [OS設計書完全版 v1.0](docs/rockstaros-complete-design-v1.0.pdf)・[OS全体詳細設計](docs/rockstaros-complete-design.md) | [`systems/rock-star-os/`](systems/rock-star-os/)・[`contracts/`](contracts/)・[`public-release/rockstaros/`](public-release/rockstaros/) |
+| **AI自動化チーム** | 作成中のToolを役割ごとに組み合わせ、利用者の仕事を進める。独立hardware製品ではない | [Toolチーム設計](docs/sky-network-economy.md)・[役割エージェント仕様](docs/sky-role-agents-20260912.md) | [`lib/catalog.ts`](lib/catalog.ts)・[`lib/automation-fund-catalog.ts`](lib/automation-fund-catalog.ts)・[`app/sky/`](app/sky/)・[`app/work/`](app/work/) |
+| **Webアプリ** | Home、Sky、Zema、Campus、Wallet、設定、Sky Tool SDK用Rock Studioを一つのWeb/PWAとして提供 | [製品・サービス関係図](docs/rockstaros-product-system-map.md)・[Web担当作業](docs/workstreams/05-web-pwa-sites.md) | [`app/`](app/)・[`components/`](components/)・[`lib/`](lib/)・[`db/`](db/)・[`drizzle/`](drizzle/) |
+
+rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページです。両段再使用・衛星搭載・A-LINK・RockstarOSからコロニーへつなぐ計画を説明します。[設計アーカイブ](docs/rocketstar-design/README.md)にはロケット、衛星・受信、A-LINK、OS付録と検証記録がありますが、製造・実機・飛行・資金受付の完了を示しません。avocadoMiniの[P0.2](docs/avocado-mini-hardware-design.md)、Mini200 E1（削除済み）、E2（削除済み）、Tower20 E3（削除済み）は現行R5と区別した設計履歴です。AI自動化チームの仕事とToolはSkyの中で選び編成します。Zemaが依頼・進捗・承認・停止・成果を管理し、Walletが費用と確認済み収益を扱います。CSV、メルカリ、Material Inventionなどの仕事をWeb/OSの独立サービスとして数えません。
+
+| AIチームを支える共通機能 | 主なソース | 設計・担当の入口 |
+| --- | --- | --- |
+| **Sky** — Toolの発見と接続 | [`app/sky/`](app/sky/)・[`app/api/sky/`](app/api/sky/) | [全Tool詳細設計](docs/sky-tools-complete-design.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **Zema / Work / Activity** — 依頼、進捗、承認、停止、成果、履歴 | [`app/chat/`](app/chat/)・[`app/zema/`](app/zema/)（ライブラリ、Tool別の実行画面、AMC）・[`app/work/`](app/work/)・[`app/activity/`](app/activity/)・[`lib/zema-chat-session.ts`](lib/zema-chat-session.ts) | [Platform Core](docs/platform-core.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
+| **Wallet** — 費用と確認済み収益 | [`app/wallet/`](app/wallet/)・[`lib/rock-wallet.ts`](lib/rock-wallet.ts) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
+| **Home / Settings** — 入口と端末・接続設定 | [`app/page.tsx`](app/page.tsx)・[`app/settings/`](app/settings/) | [Product / UX](docs/workstreams/01-product-ux.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
+| **Rock Studio** — Sky Tool作者向けのコード・SDK入口 | [`app/studio/`](app/studio/)・[`app/sky/publish/`](app/sky/publish/) | [Sky Tool SDK](docs/sky-tool-sdk.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **はじめる（Connect）** — SIM/eSIM購入の利用権claimの登録と、端末の接続 | [`app/connect/`](app/connect/)・[`app/api/rockstar/`](app/api/rockstar/)・[`app/api/esim/`](app/api/esim/)・[`app/api/devices/`](app/api/devices/) | [SIM/eSIM-led architecture](docs/sim-led-product-architecture.md)・[購入とサービス利用権](docs/sim-service-entitlement-claims.md)・[端末のアカウント接続](docs/rockstar-device-link.md) |
+| **追加（Add）** — 既存OS上のWeb/PWAへSky・データ回収・LLMを足す入口（2026-10-06） | [`app/add/`](app/add/) | [既存端末への機能追加](docs/sim-led-product-architecture.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
+| **Campus** — 大学別のPeople / Project / Opportunity / Event / Community / Portfolio / ResourceとNFC/QR入口 | [`app/campus/`](app/campus/)・[`app/api/campus/`](app/api/campus/)・[`app/t/`](app/t/)・[`lib/campus.ts`](lib/campus.ts)・[`lib/campus-store.ts`](lib/campus-store.ts) | [Campus設計](docs/campus-layer.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
+
+## SkyのAI自動化チーム
+
+追加Tool: `rockstar-material-invention`はMaterial Coreの机上候補比較・本人用保存・再開を提供します。[実装と境界](docs/material-invention-core.md#sky--zemaの机上比較と本人用保存)。Studio全体のsensor・XR・simulation・labとは区別します。
+
+作成しているToolと、それを組み合わせる仕事は、利用者が所有する一つのAI自動化チームの中で整理します。Skyが目的に合わせてTool・役割・構成版を選び、Zemaが同じ仕事の実行と成果を管理します。チームの実際の構成は選択と受入状態によって変わり、一覧にある全Toolが同時に稼働するという意味ではありません。[Toolチーム設計](docs/sky-network-economy.md)と[役割エージェント仕様](docs/sky-role-agents-20260912.md)がこの関係の入口です。
+
+| Skyのチームが扱う仕事 | 現在のSkyとの接続 | 実装・設計の入口 |
+| --- | --- | --- |
+| **CSV業務** — データ整形の事業pilot | `rockstar-csv-cleanup`としてcatalogにready登録。Skyから専用画面へ進める | [`app/csv/`](app/csv/)・[CSV業務](docs/csv-business-v1.ja.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
+| **AMC** — 部隊・Goal・進捗の管理 | `rockstar-amc`としてcatalogにready登録。SkyからZema内で依頼・計画・手動記録を扱う。LLM・AI実作業は未接続 | [`app/amc/`](app/amc/)・[`components/amc-tool-runner.tsx`](components/amc-tool-runner.tsx)・[AMC設計](docs/mission-control.md)・[`app/zema/amc/`](app/zema/amc/)・[Sky専用AMCの設計](docs/amc-sky-launch-integration.md) |
+| **メルカリ収益ループ** — 出品から入金確認までの事業pilot | `mercari-revenue`としてcatalogにready登録。Skyから出品準備画面へ進める。入金の自動確認は未接続 | [`app/income/mercari/`](app/income/mercari/)・[メルカリ設計](docs/mercari-revenue-loop.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
+| **Fashion Brand Ops** — 受注型ブランド運営の事業pilot | `fashion-brand-ops`としてcatalogにready登録。外部Providerの本番接続は別受入 | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/)・[統合設計](docs/fashion-brand-ops-integration.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
+| **Material Invention Studio** — 発明候補の操作・比較 | Skyで組み合わせる発明チームの複合機能。単体のcatalog Toolではない。Coreのsandboxは実装済み、2D候補比較とSky接続を実装。XR・simulation・外部labは未実装 | [`lib/material-invention.ts`](lib/material-invention.ts)・[`contracts/material-invention.json`](contracts/material-invention.json)・[Material Invention Core](docs/material-invention-core.md)・[担当作業](docs/workstreams/11-material-invention-avocado-mini.md) |
+| **Market** — 市場の検討とPAPER試験 | `rockstar-markets-analysis`はcatalogにready登録。外部市場のbacktestやミームコイン候補評価のPAPER sandboxは2026-10-11に削除した | [`app/market/`](app/market/)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Fund** — 検証済み実績に基づく構想と試算 | Skyから選ぶファンド構想。単体のcatalog Toolではない | [`app/fund/`](app/fund/)・[ファンド統合](docs/markets-fund-integration-20260913.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+
+`/studio`は[Sky Tool SDKの開発者向け画面](app/studio/page.tsx)であり、Material Invention Studioの実装画面ではありません。
+
+### AI自動化チームのTool
+
+Web/PC版Skyの登録正本は[`lib/catalog.ts`](lib/catalog.ts)です。現在はready 14件（AMC・SPIDERを含むRock側で作成10件、`Mr.`由来4件）とcandidate 22件（Rock側の構想1件、`Mr.`由来11件、第三者候補10件）の計36件。Rock側と`Mr.`由来のToolはチームの実装・導入対象、第三者候補は将来の接続候補です。`ready`はSky catalog上の状態であり、外部Providerや本番決済まで接続済みという意味ではありません。`candidate`を稼働中の担当として数えません。[全Tool詳細設計](docs/sky-tools-complete-design.md)に権限・入出力・停止条件があります。
+
+### Rock側で作成・登録したTool
+
+| Sky ID | Tool | catalog状態 | 主な実装・入口 |
+| --- | --- | --- | --- |
+| `rockstar-spider` | SPIDER — ブラウザ内セキュリティ検査 | ready | [`components/spider-workspace.tsx`](components/spider-workspace.tsx)・[`toolkits/spider-guard/`](toolkits/spider-guard/) |
+| `rockstar-amc` | AMC — 部隊とGoalの管理 | ready | [`app/amc/`](app/amc/)・[`app/api/amc/`](app/api/amc/)・[`lib/amc-tool.ts`](lib/amc-tool.ts) |
+| `rockstar-csv-cleanup` | CSV整形・検査・納品 | ready | [`app/csv/`](app/csv/)・[`lib/csv-transform.ts`](lib/csv-transform.ts) |
+| `rockstar-markets-analysis` | Market Scanner | ready | [`app/market/`](app/market/)・[`lib/markets-adapter.ts`](lib/markets-adapter.ts) |
+| `mercari-revenue` | メルカリ収益スターター | ready | [`app/income/mercari/`](app/income/mercari/)・[`lib/mercari-revenue.ts`](lib/mercari-revenue.ts) |
+| `fashion-brand-ops` | Instagram運用・受注型ブランド管理 | ready | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/) |
+| `rockstar-ledger` | サブスク顧問 | ready | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) |
+| `jev-evaluation` | Jev品質評価 | ready | [`lib/jev-evaluation.ts`](lib/jev-evaluation.ts)・[`app/api/jev-evaluation/`](app/api/jev-evaluation/) |
+| `rockstar-legal-intake` | 法務受付 | ready | [`lib/legal-intake.ts`](lib/legal-intake.ts)・[`app/api/legal-guidance/`](app/api/legal-guidance/) |
+| `rockstar-patent-assistant` | 特許アシスタント | ready | [`lib/patent-assistant.ts`](lib/patent-assistant.ts)・[`app/api/patent-research/`](app/api/patent-research/) |
+| `rockstar-ip-studio` | IP Studio — SNS・ゲーム運用 | candidate | [catalog登録](lib/catalog.ts)・[設計](docs/sky-tools-complete-design.md)。Sky実行器は未接続 |
+
+Jev評価はRock側のToolと外部の評価先を組み合わせる構成です。`origin: rockstaros`はモデルそのものをRockが所有する意味ではありません。
+
+### `Mr.`から取り込んだready Tool
+
+| Sky ID | Tool | Rock内の入口 |
+| --- | --- | --- |
+| `coconala` | ココナラ（応募前チェック・代表受注の案件管理） | [`app/sky/tools/[toolId]/`](app/sky/tools/[toolId]/)・[`lib/coconala-team.ts`](lib/coconala-team.ts)・[`vendor/mr/application_eligibility.py`](vendor/mr/application_eligibility.py)・[`toolkits/mr/`](toolkits/mr/)・[`app/coconala-team/`](app/coconala-team/)（`/sky/tools/coconala`へ転送） |
+| `mr-free-article` | 記事の無料版メーカー | [`vendor/mr/make-free-version.py`](vendor/mr/make-free-version.py)・[`toolkits/mr/`](toolkits/mr/) |
+| `mr-citations` | 出典整理ツール | [`vendor/mr/citation-strip.py`](vendor/mr/citation-strip.py)・[`toolkits/mr/`](toolkits/mr/) |
+| `mr-delivery` | 納品記録の照合 | [`vendor/mr/deliverable_verifier.py`](vendor/mr/deliverable_verifier.py)・[`toolkits/mr/`](toolkits/mr/) |
+
+`vendor/mr`は固定snapshotです。Rock側の接続・振る舞いは[`toolkits/mr/`](toolkits/mr/)と[取り込み設計](docs/mr-integration.md)で追います。
+
+### 導入候補
+
+以下は[`lib/catalog.ts`](lib/catalog.ts)に`candidate`として登録された22件です。実行可能な標準Toolや本番接続として数えません。
+
+| 由来 | Sky ID・表示名 |
+| --- | --- |
+| Rock構想 | `rockstar-ip-studio` — IP Studio — SNS・ゲーム運用 |
+| `Mr.` | `coconala-proposal-draft` — ココナラ提案文の下書き |
+| `Mr.` | `gig-workflow` — 受託案件ワークフロー |
+| `Mr.` | `coconala-inbox` — ココナラの依頼・添付整理 |
+| `Mr.` | `youtube-script-writer` — YouTube台本 |
+| `Mr.` | `seo-blueprint` — SEO・記事構成 |
+| `Mr.` | `landing-page-sprint` — LP・販売ページ制作 |
+| `Mr.` | `sales-objection-reply-builder` — 商談返信・見積り支援 |
+| `Mr.` | `user-interview-synthesizer` — 顧客インタビュー分析 |
+| `Mr.` | `calendar-coordination` — 予定・カレンダー連携 |
+| `Mr.` | `telegram-notifications` — Telegram通知・承認 |
+| `Mr.` | `producthunt-discovery` — 外部ツール候補の発見 |
+| 第三者 | `faster-whisper` — 文字起こし |
+| 第三者 | `transformers-js` — ブラウザAI |
+| 第三者 | `playwright` — 許可Web操作 |
+| 第三者 | `jev-ultrafast` — 選択型browser agent |
+| 第三者 | `jev-trader` — PAPER市場判断 |
+| 第三者 | `typesafe-computer-use` — Mac画面操作 |
+| 第三者 | `jev-review` — code review |
+| 第三者 | `jev-router` — model routing |
+| 第三者 | `jev-browser` — browser操作 |
+| 第三者 | `mobile-jev` — Android操作 |
+
+[全Tool詳細設計](docs/sky-tools-complete-design.md)にはOpenJev、Jevlike、Awesome Jev by TypeSafeも研究・参考対象として記載されています。現行の[`lib/catalog.ts`](lib/catalog.ts)と[設計台帳](data/design-document-index.json)には登録されていないため、上の22件やready Toolには含めません。
+
+### Linux/QEMUに同梱した開発用Tool
+
+Web/PC catalogとは別に、[`systems/rock-star-os/examples/registry/`](systems/rock-star-os/examples/registry/)には次の6 family・9版があります。公開RFC試験鍵を使う開発用packageです。
+
+| package ID | 内容 |
+| --- | --- |
+| `org.example.action-checklist` | 共有用チェックリスト |
+| `org.rockstar.citation-organizer` | 引用整理 |
+| `org.rockstar.proposal-draft` | 提案下書き |
+| `org.rockstar.text-tidy` | 文章を整える |
+| `org.rockstar.unique-list` | リストの重複を整理 |
+| `org.rockstar.utf8-sha256` | 入力テキストのSHA-256 |
+
+Androidの[`article-tool`](android/article-tool/)は`mr-free-article`と`mr-citations`に対応する端末側の実装です。[Android Tool SDK](android/tool-sdk/)を使い、[OS prototype受入](docs/os-prototype.md)で別途検証します。nativeの[`hello`サンプル](systems/rock-star-os/examples/tools/hello/)はTool作成例です。これらをSky catalogの新しいTool IDや6 familyへ重複して加算しません。
+
+### 網羅確認
+
+| 正本・実装 | このガイドでの扱い |
+| --- | --- |
+| [Sky catalog](lib/catalog.ts) | 登録36件すべてを上に記載。ready 14件とcandidate 22件を分離 |
+| [native registry](systems/rock-star-os/examples/registry/) | 開発用6 family・9版を上に記載。Web/PC catalogと分離 |
+| [`toolkits/`](toolkits/) | 13ディレクトリを下表で分類。Tool実装、SDK、connector、エージェント定義、試験fixture、PAPER試作を区別 |
+| [Android article-tool](android/article-tool/)・[native hello](systems/rock-star-os/examples/tools/hello/) | 既存Toolの端末側実装と作成例として記載。独立したcatalog登録ではない |
+
+Fashion Brand Opsの[41件のMCP操作](lib/fashion-mcp-client.ts)は、catalog上では`fashion-brand-ops`という一つのTool packageの内部操作です。操作数をチームの人数や独立した製品数に加算しません。
+
+新しいToolを登録したときは、このチーム一覧と[全Tool詳細設計](docs/sky-tools-complete-design.md)を同じ変更で更新します。登録数だけで実行成功やチームへの参加完了とは扱いません。
+
+## 実装・配備単位
+
+次の表は同じチームを支えるソースや配備物の場所です。`toolkits/`の行をチームから独立した製品一覧としては扱いません。
+
+| 単位 | 対象と境界 | ソース | 担当・検証の入口 |
+| --- | --- | --- | --- |
+| **Linux / QEMU Developer Preview** | native OS、Tool実行、更新・復旧。Android imageとは別系列 | [`systems/rock-star-os/`](systems/rock-star-os/) | [native README](systems/rock-star-os/README.md)・[Native / QEMU / Release](docs/workstreams/06-native-qemu-release.md) |
+| **Android / Pixel Device Preview** | AOSP、Shell、Broker、端末内AI、Pixel 10向け受入 | [`android/`](android/)・[`os/`](os/) | [Android / Device / Local AI](docs/workstreams/07-android-device-local-ai.md)・[端末preview](docs/phone-preview-20260911.md) |
+| **avocadoMini製品サイト** | 製品紹介・導入案内の独立Site。表示は旧E3で、現行R5の公開反映は未完了 | [`sites/avocado-mini/`](sites/avocado-mini/) | [現行R5設計](docs/avocado-mini-r5/README.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
+| **Web内の製品紹介・導入画面** | [`app/rockstaros/`](app/rockstaros/)には旧P0.2の外観・税込価格表示が残る。現行R5の画面実装・配備は未完了 | [`app/rockstaros/`](app/rockstaros/)・[`app/avocado-mini/`](app/avocado-mini/)（hardware design programの紹介） | [現行R5設計](docs/avocado-mini-r5/README.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
+| **Operator Dock** | OS利用画面と分離した運営用の端末管理 | [`services/operator-dock/`](services/operator-dock/)・[`android/operator-agent/`](android/operator-agent/) | [Dock README](services/operator-dock/README.md)・[Security / Identity](docs/workstreams/04-security-identity-compliance.md) |
+| **Sky Billing** | 収益・費用の照合と請求Worker。Walletの実資金受入とは別 | [`services/sky-billing/`](services/sky-billing/) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md)・[請求設計](docs/sky-billing.md) |
+| **Sky Agent Runtime** | クラウドAgentの実行Worker。リモートAIのテキスト処理、A2A委任、1分ごとの期限sweep。本番D1・secret・cronは未設定 | [`services/sky-agent-runtime/`](services/sky-agent-runtime/) | [A2A Bridge](docs/sky-a2a-bridge.md)・[Sky Cloud継続実行](docs/sky-cloud-continuity.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **Sky専用Site** | 同じSky UIと認証済みAPIを載せる専用Siteの配備adapter。既存のOS用DBを初期化・置換しない | [`services/sky-web/`](services/sky-web/) | [README](services/sky-web/README.md)・[Skyローンチ設計](docs/sky-launch-design.md) |
+| **Android Attestation Verifier** | AndroidのKey Attestationを、端末gatewayの鍵登録前に検証する独立JVMサービス | [`services/android-attestation-verifier/`](services/android-attestation-verifier/) | [README](services/android-attestation-verifier/README.md)・[Android / Device / Local AI](docs/workstreams/07-android-device-local-ai.md) |
+| **Sky Tool SDK** | Tool作者向けのpackage、サンプル、契約 | [`toolkits/sky-tool-sdk/`](toolkits/sky-tool-sdk/) | [SDK README](toolkits/sky-tool-sdk/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **Sky MCP Connector** | MCP接続先と権限を管理する独立connector | [`toolkits/sky-mcp-connector/`](toolkits/sky-mcp-connector/) | [Connector README](toolkits/sky-mcp-connector/README.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
+| **Fashion Brand Ops** | 受注型ブランド運営の独立MCPサービス | [`toolkits/fashion-brand-ops/`](toolkits/fashion-brand-ops/) | [README](toolkits/fashion-brand-ops/README.md)・[Business Pilots](docs/workstreams/09-business-pilots.md) |
+| **Game SDK / Sandbox** | 非金融ゲームの接続と、資産交換を分けた試験 | [`systems/rock-star-os/examples/game/`](systems/rock-star-os/examples/game/) | [Game API契約](docs/game-api-contract-draft.md)・[Game / Market / Fund](docs/workstreams/08-game-market-fund.md) |
+| **Mr. Tool adapter** | `Mr.`の固定原本をSkyへ接続するRock側の実装 | [`toolkits/mr/`](toolkits/mr/) | [README](toolkits/mr/README.md)・[Mr.取り込み](docs/mr-integration.md) |
+| **Rockstar Ledger** | 台帳の個別Tool資料 | [`toolkits/rockstar-ledger/`](toolkits/rockstar-ledger/) | [README](toolkits/rockstar-ledger/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
+| **AMC agent** | Codexの司令官・実行担当・独立検収とCLI入口。実稼働の受入は未完了 | [`toolkits/amc-agent/`](toolkits/amc-agent/) | [使い方](toolkits/amc-agent/README.md)・[AMC設計](docs/amc-sky-launch-integration.md) |
+| **SPIDER Guard** | 機密情報の検出、外部送信前の検査、端末内コード検査に使う共通部品。独立したcatalog Toolではない | [`toolkits/spider-guard/`](toolkits/spider-guard/) | [README](toolkits/spider-guard/README.md)・[保護範囲と検証](docs/spider-guard.md) |
+| **eSIM Bootstrap** | SIM/eSIM-led RockstarOS service offerのうち、eSIM provider接続を試すhost fixtureとadapter。物理SIMや複数販売チャネルを除外する製品境界ではない | [`toolkits/esim-bootstrap/`](toolkits/esim-bootstrap/)・[`app/api/esim/`](app/api/esim/) | [開発ガイド](toolkits/esim-bootstrap/README.md)・[Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
+| **avokado-llm** | random-init CPU学習・保存・再開のhost試作。製品モデルの品質・端末・cloud未受入 | [`toolkits/avokado-llm/`](toolkits/avokado-llm/) | [README](toolkits/avokado-llm/README.md)・[専用モデルの事前学習設計](docs/avokado-llm-pretraining.md) |
+| **mini-game-client** | 本人の明示操作で公式Remote Playへ渡す診断launcher。実game/console未受入 | [`toolkits/mini-game-client/`](toolkits/mini-game-client/) | [README](toolkits/mini-game-client/README.md)・[MiniからGTA VIを遊ぶための接続](docs/mini-game-client.md) |
+
+## 共有領域と正本
+
+| 領域 | 用途 |
+| --- | --- |
+| [`contracts/`](contracts/)、[`data/`](data/) | 複数プロジェクトで共有する契約、設定、進捗。特定の配備物だけへ移さない |
+| [`hooks/`](hooks/)、[`public/`](public/) | Webアプリの共通hookと配信素材・Tool package。単独の製品ではない |
+| [`docs/`](docs/)、[`docs/workstreams/`](docs/workstreams/)、[`docs/evidence/`](docs/evidence/) | 設計、担当作業、受入証拠。作業分野から探す場合は[workstream案内](docs/workstreams/README.md)を使う |
+| [`scripts/`](scripts/)、[`tests/`](tests/)、[`.github/workflows/`](.github/workflows/) | リポジトリ横断の検証とCI。個別の実装を動かしただけで全製品の合格にはしない |
+| [`.cursor/rules/`](.cursor/rules/)、[`.openai/`](.openai/) | 開発運用とhostingの設定。利用者向けToolや事業ではない |
+| [`public-release/rockstaros/`](public-release/rockstaros/) | 配布候補とサンプル。開発の正本ソースや実機受入記録とは分ける |
+| [`vendor/mr/`](vendor/mr/) | 外部`Mr.`の固定原本。Rock固有の変更は[adapter側](toolkits/mr/)で行う |
+
+別リポジトリの役割と秘密情報の境界は[Gitプロジェクト統合方針](docs/git-consolidation.md)と[repository map](data/repository-map.json)を参照してください。`rock`内の分類を変えても、外部の運用設定や秘密情報を取り込みません。
+
+## 作業の始め方
+
+1. 上の表から対象プロジェクトの入口を開く。
+2. [workstream案内](docs/workstreams/README.md)から主担当を一つ選び、[進捗JSON](data/project-status.json)の既存task ID、完了条件、証拠を確認する。
+3. 変更後は対象の小さい検証を実行し、配布・統合候補では`npm run verify`と対象OS固有の受入を実施する。結果は`project.md`と進捗JSONへ記録する。

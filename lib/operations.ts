@@ -1,21 +1,20 @@
+import { catalogConnectionTools, catalogJobTools, type CatalogToolId, type TrackedCatalogToolId } from './catalog.ts';
 import { defaultFund, distributeFund, validateFund } from './fund.ts';
+import {
+  isSensitiveConnectionKey,
+  isSkyProvider,
+  liveKitConfigError,
+  providerDefinition,
+  type SkyProvider,
+  type SkyProviderStatus,
+} from './sky-connections.ts';
 
-// No runtime binding here: the same store is exercised against SQLite in tests.
-export const JOB_TOOLS = [
-  'coconala',
-  'mr-free-article',
-  'mr-citations',
-  'mr-delivery',
-] as const;
-export type JobTool = (typeof JOB_TOOLS)[number];
-export const SKY_CONNECTION_TOOLS = [
-  ...JOB_TOOLS,
-  'fashion-brand-ops',
-  'rockstar-ledger',
-  'rockstar-legal-intake',
-  'rockstar-patent-assistant',
-] as const;
-export type SkyConnectionTool = (typeof SKY_CONNECTION_TOOLS)[number];
+// Keep the persisted connector identity and tracked-job admission aligned with
+// the shared catalog; readiness in that catalog never grants execution by itself.
+export const JOB_TOOLS = catalogJobTools;
+export type JobTool = TrackedCatalogToolId;
+export const SKY_CONNECTION_TOOLS = catalogConnectionTools;
+export type SkyConnectionTool = CatalogToolId;
 export type JobState =
   | 'queued'
   | 'running'
@@ -61,6 +60,15 @@ export type SkyConnection = {
   scope: 'execute';
   consentVersion: string;
   connectedAt: number;
+};
+export type SkyProviderConnection = {
+  revision: number;
+  provider: SkyProvider;
+  status: SkyProviderStatus;
+  config: Record<string, string>;
+  secretRef: string | null;
+  connectedAt: number | null;
+  updatedAt: number;
 };
 const SKY_CONSENT_VERSION = '2026-09-12';
 export class OperationError extends Error {
@@ -370,6 +378,34 @@ export function operations(
     ).results;
   }
 
+  async function listSkyLibrary() {
+    const rows = await statement(
+      'SELECT tool, saved_at AS savedAt FROM sky_library_items WHERE user_id = ? ORDER BY saved_at DESC, tool',
+      user,
+    ).all<{ tool: string; savedAt: number }>();
+    return rows.results;
+  }
+
+  async function saveSkyLibrary(value: unknown) {
+    const v = object(value, ['tool', 'saved']);
+    const tool = skyConnectionToolName(v.tool);
+    if (typeof v.saved !== 'boolean')
+      throw new OperationError('保存状態を指定してください。');
+    if (v.saved) {
+      await statement(
+        'INSERT INTO sky_library_items (user_id,tool,saved_at) VALUES (?,?,?) ON CONFLICT(user_id,tool) DO NOTHING',
+        user, tool, clock(),
+      ).run();
+    } else {
+      await statement(
+        'DELETE FROM sky_library_items WHERE user_id = ? AND tool = ?',
+        user, tool,
+      ).run();
+    }
+    // A bookmark never creates execution consent, a purchase entitlement or a job.
+    return { tool, saved: v.saved };
+  }
+
   async function connectSky(value: unknown) {
     const v = object(value, ['tool']),
       tool = skyConnectionToolName(v.tool),
@@ -392,6 +428,96 @@ export function operations(
       consentVersion: SKY_CONSENT_VERSION,
       connectedAt,
     };
+  }
+
+  const providerColumns = `provider, status, config, secret_ref AS secretRef,
+    connected_at AS connectedAt, updated_at AS updatedAt, revision`;
+  type ProviderRow = Omit<SkyProviderConnection, 'config'> & { config: string };
+  function providerRow(row: ProviderRow): SkyProviderConnection {
+    let config: Record<string, string> = {};
+    try {
+      const parsed: unknown = JSON.parse(row.config);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed))
+        config = Object.fromEntries(Object.entries(parsed).filter(
+          ([key, value]) => typeof value === 'string' && !isSensitiveConnectionKey(key),
+        ));
+    } catch { /* Retain the existing behavior for malformed legacy metadata. */ }
+    return { ...row, config };
+  }
+  async function listSkyProviderConnections() {
+    const { results } = await statement(
+      `SELECT ${providerColumns} FROM sky_provider_connections WHERE user_id = ?
+       ORDER BY updated_at DESC, provider ASC`, user,
+    ).all<ProviderRow>();
+    return results.map(providerRow);
+  }
+
+  async function saveSkyProviderConnection(value: unknown) {
+    const v = object(value, ['provider', 'status', 'config', 'expectedRevision']),
+      provider = v.provider;
+    const expectedRevision = int(v.expectedRevision, Number.MAX_SAFE_INTEGER - 1);
+    if (!isSkyProvider(provider))
+      throw new OperationError('対応していない接続先です。');
+    if (
+      v.status !== 'setup_required' &&
+      v.status !== 'ready' &&
+      v.status !== 'reauth_required'
+    )
+      throw new OperationError('接続状態が不正です。');
+    if (!v.config || typeof v.config !== 'object' || Array.isArray(v.config))
+      throw new OperationError('接続情報の形式を確認してください。');
+    const config: Record<string, string> = {};
+    for (const [key, raw] of Object.entries(v.config as Record<string, unknown>)) {
+      if (
+        !/^[a-zA-Z][a-zA-Z0-9_]{0,39}$/.test(key) ||
+        isSensitiveConnectionKey(key)
+      )
+        throw new OperationError(
+          '秘密情報はSkyの設定欄へ保存できません。公式接続を使ってください。',
+        );
+      if (typeof raw !== 'string' || raw.length > 500)
+        throw new OperationError('接続情報を確認してください。');
+      config[key] = raw.trim();
+    }
+    if (provider === 'routing') {
+      for (const field of providerDefinition(provider).fields) {
+        if (!config[field.id] && field.placeholder) config[field.id] = field.placeholder;
+      }
+      for (const key of ['realtimeVoice', 'telephony']) {
+        if (config[key] && config[key] !== 'livekit')
+          throw new OperationError('音声・電話の接続候補を選択してください。');
+      }
+    }
+    if (provider === 'livekit') {
+      const error = liveKitConfigError(config);
+      if (error) throw new OperationError(error);
+    }
+    const status = v.status as SkyProviderStatus;
+    if (
+      status === 'ready' &&
+      providerDefinition(provider).fields.some((field) => !field.optional && !config[field.id])
+    )
+      throw new OperationError('必要な接続情報を入力してください。');
+    const now = clock();
+    // One statement owns both the comparison and write. Never re-read after writing:
+    // a second writer may already have advanced the row before this response returns.
+    const row = expectedRevision === 0
+      ? await statement(
+        `INSERT INTO sky_provider_connections
+          (user_id, provider, status, config, secret_ref, connected_at, updated_at, revision)
+         VALUES (?, ?, ?, ?, NULL, ?, ?, 1)
+         ON CONFLICT(user_id, provider) DO NOTHING RETURNING ${providerColumns}`,
+        user, provider, status, JSON.stringify(config), status === 'ready' ? now : null, now,
+      ).first<ProviderRow>()
+      : await statement(
+        `UPDATE sky_provider_connections SET status = ?, config = ?, connected_at = ?,
+         updated_at = ?, revision = revision + 1
+         WHERE user_id = ? AND provider = ? AND revision = ? RETURNING ${providerColumns}`,
+        status, JSON.stringify(config), status === 'ready' ? now : null, now,
+        user, provider, expectedRevision,
+      ).first<ProviderRow>();
+    if (!row) throw new OperationError('別の画面で設定が更新されました。最新設定を確認してから保存してください。', 409);
+    return providerRow(row);
   }
 
   async function device(value: unknown) {
@@ -503,18 +629,17 @@ export function operations(
         reversesId: null,
       };
     }
-    const existing = await statement(
+    const recorded = () => statement(
       `SELECT ${bookColumns} FROM book_records WHERE id = ? AND user_id = ?`,
       id,
       user,
     ).first<BookRecord>();
+    const sameRecord = (record: BookRecord) => Object.entries(data).every(
+      ([key, value]) => record[key as keyof BookRecord] === value,
+    );
+    const existing = await recorded();
     if (existing) {
-      if (
-        Object.entries(data).every(
-          ([k, val]) => existing[k as keyof BookRecord] === val,
-        )
-      )
-        return existing;
+      if (sameRecord(existing)) return existing;
       throw new OperationError('同じ記録IDで異なる内容は保存できません。', 409);
     }
     const result = await statement(
@@ -531,8 +656,14 @@ export function operations(
       user,
       clock() - 3600_000,
     ).all();
-    if (!result.results.length)
+    if (!result.results.length) {
+      // A concurrent identical request may have committed after the first read.
+      // Only this owner's exact operation is replayable; other IDs/payloads
+      // and a second reversal still conflict.
+      const replay = await recorded();
+      if (replay && sameRecord(replay)) return replay;
       throw new OperationError('重複した取消または保存回数の上限です。', 409);
+    }
     return { id, ...data };
   }
 
@@ -663,7 +794,11 @@ export function operations(
     },
     control,
     listSkyConnections,
+    listSkyLibrary,
+    saveSkyLibrary,
     connectSky,
+    listSkyProviderConnections,
+    saveSkyProviderConnection,
     device,
     book,
     wallet,

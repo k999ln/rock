@@ -1,0 +1,59 @@
+{
+  "schema": "avocadoos-android-zema-selected-tool-evidence/1",
+  "recordedAt": "2026-09-16",
+  "sourceCommitBeforeChange": "ba665a5f31e9dbe481e354693b6e1424522c2f9e",
+  "scope": "stock Android APK boundary before AOSP full build or flash",
+  "selectedTool": "article-preparation@1",
+  "implementedPath": [
+    "native Zema request",
+    "signed Shell API v2",
+    "Platform Broker",
+    "signed Local AI Binder",
+    "strict selected-Tool plan validation",
+    "existing idempotent Tool workflow and history"
+  ],
+  "safetyProperties": {
+    "shellHasInternetPermission": false,
+    "localAiCanCallToolDirectly": false,
+    "modelCanSubstituteSelectedTool": false,
+    "unknownPlanFieldsAccepted": false,
+    "workCreatedBeforePlanValidation": false,
+    "blockedResponseIsStructured": true,
+    "blockedRunLeavesPartialWork": false
+  },
+  "hostTests": {
+    "core": "34 passed",
+    "toolSdk": "7 passed per debug and release variant",
+    "build": "automation and Shell debug APK plus Shell instrumentation APK built"
+  },
+  "deviceTests": [
+    {
+      "target": "Android 15 arm64 Pixel 10 profile emulator",
+      "brokerToolIntegration": "6 of 6 passed",
+      "shellIntegration": "3 of 3 passed",
+      "zemaOutcome": "BLOCKED_WITHOUT_PARTIAL_WORK:LOCAL_AI_UNAVAILABLE",
+      "interpretation": "The missing emulator model is reported without creating a work item."
+    },
+    {
+      "target": "owner-connected stock Pixel 10",
+      "brokerToolIntegration": "6 of 6 passed",
+      "shellIntegration": "3 of 3 passed",
+      "zemaOutcome": "BLOCKED_WITHOUT_PARTIAL_WORK:INVALID_PLAN",
+      "interpretation": "The installed offline model responded, but its output did not satisfy the closed plan contract; zero partial work was created."
+    }
+  ],
+  "debugArtifactSha256": {
+    "broker": "f3f673108a0dad27f3f0c062ccf67cd4f25e053e9c42c462df9e6576983bedfa",
+    "shell": "ea579e600d0c6f894b206a9f763485b7afdaca7c7830e1c0139e77eb564f5f14",
+    "shellTest": "c830c48206051a3bff2bc6dff149756010850e95e69f16e8272e1dc865802c50",
+    "articleTool": "c1edaa2f9c8e2d40239ea3e46cd77081f3c770ab3a58d4bc755c0f8046ed633e"
+  },
+  "verdict": {
+    "sourceConnectionImplemented": true,
+    "failClosedBehaviorVerifiedOnEmulatorAndPhysicalDevice": true,
+    "physicalSuccessfulWorkCreationVerified": false,
+    "rebootAndFailureRecoveryVerified": false,
+    "aospImageOrSelinuxEvidence": false,
+    "nextBlockingStep": "Give Local AI a plan-only response contract and make the physical model produce the exact closed JSON without weakening Broker validation."
+  }
+}

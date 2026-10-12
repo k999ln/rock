@@ -1,13 +1,12 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites authentication is a top-level gateway route. */
 
 import { useState } from 'react';
 import Link from 'next/link';
 import {
   Activity,
-  ArrowLeft,
   Check,
   Clipboard,
-  Code2,
   ExternalLink,
   KeyRound,
   LoaderCircle,
@@ -16,13 +15,11 @@ import {
 } from 'lucide-react';
 
 const skyOrigin = 'https://rockstaros-kaiya.noellesugar1.chatgpt.site';
-const installCommand = `npm install ${skyOrigin}/toolkits/rockstaros-sky-tool-sdk-0.1.0.tgz`;
+const installCommand = `npm install ${skyOrigin}/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz`;
 const integrationCode = `import { createSkyToolApp } from '@rockstaros/sky-tool-sdk';
 import { run } from './your-tool.js'; // あなたの既存処理
 
 const sky = createSkyToolApp({
-  skyUrl: '${skyOrigin}',
-  developerToken: process.env.SKY_DEVELOPER_TOKEN,
   developer: {
     id: 'your-developer-id',
     name: 'Your name',
@@ -34,9 +31,9 @@ const sky = createSkyToolApp({
     version: '0.1.0',
     sourceUrl: 'https://github.com/your-name/your-tool',
     license: 'MIT',
-    publicMcpUrl: 'https://your-tool.example.com/mcp'
-  },
-  autoPublish: true
+    // 公開登録する場合だけ、実際に稼働するHTTPS URLを追加:
+    // publicMcpUrl: 'https://your-tool.example.com/mcp'
+  }
 });
 
 sky.tool({
@@ -60,20 +57,29 @@ type DeveloperTokenResponse = {
 
 export default function RockStudio() {
   const [copied, setCopied] = useState('');
+  const [copyError, setCopyError] = useState('');
   const [developerToken, setDeveloperToken] = useState('');
   const [tokenPending, setTokenPending] = useState(false);
   const [tokenError, setTokenError] = useState('');
+  const [needsSignin, setNeedsSignin] = useState(false);
 
   async function copy(name: string, value: string) {
-    await navigator.clipboard.writeText(value);
-    setCopied(name);
-    window.setTimeout(() => setCopied(''), 1600);
+    setCopied('');
+    setCopyError('');
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(name);
+      window.setTimeout(() => setCopied(''), 1600);
+    } catch {
+      setCopyError(name);
+    }
   }
 
   async function issueDeveloperToken() {
     if (tokenPending) return;
     setTokenPending(true);
     setTokenError('');
+    setNeedsSignin(false);
     try {
       const response = await fetch('/api/sky/developer-tokens', {
         method: 'POST',
@@ -81,6 +87,7 @@ export default function RockStudio() {
         body: JSON.stringify({ label: 'Rock Studio SDK' }),
       });
       const body = (await response.json().catch(() => ({}))) as DeveloperTokenResponse;
+      if (response.status === 401) setNeedsSignin(true);
       if (!response.ok || !body.token?.token)
         throw new Error(body.error || '開発者キーを発行できませんでした。');
       setDeveloperToken(body.token.token);
@@ -101,11 +108,15 @@ export default function RockStudio() {
     <main className="studio-chat-shell studio-code-first">
       <header className="studio-chat-header">
         <div className="studio-chat-brand">
-          <Link href="/sky" aria-label="Skyへ戻る"><ArrowLeft size={17} /></Link>
-          <span className="studio-chat-logo"><Code2 size={18} /></span>
-          <div><strong>Rock Studio</strong><span>Sky Tool SDK</span></div>
+          <Link href="/" className="studio-wordmark" aria-label="ホームへ戻る">
+            Rockstar<span>OS</span>
+          </Link>
+          <span className="studio-product-name">/ STUDIO</span>
         </div>
-        <div className="studio-chat-private"><ShieldCheck size={15} />ソースコードの送信なし</div>
+        <div className="studio-chat-nav">
+          <Link href="/sky">SKY</Link>
+          <div className="studio-chat-private"><ShieldCheck size={15} />ソースコードの送信なし</div>
+        </div>
       </header>
 
       <section className="studio-code-workspace" aria-label="Sky SDK組み込み">
@@ -113,7 +124,7 @@ export default function RockStudio() {
           <div className="studio-code-intro">
             <p className="studio-chat-kicker">ADD SKY TO YOUR TOOL</p>
             <h1>このコードを、<br />あなたのツールに付ける。</h1>
-            <p>起動するとSkyへ自動登録され、MCPから利用できる状態になります。入力や出力の本文はSkyへ送らず、利用回数と成否だけを記録します。</p>
+            <p>起動すると、このPCのSky一覧へ自動で追加されます。公開登録する場合だけ、公開MCP URLと開発者キーを設定します。PC内で使う間は入力・出力や利用記録をSky Cloudへ送りません。</p>
           </div>
 
           <div className="studio-install-row">
@@ -123,6 +134,7 @@ export default function RockStudio() {
               {copied === 'install' ? 'コピー済み' : 'コピー'}
             </button>
             <code>{installCommand}</code>
+            {copyError === 'install' && <p className="studio-chat-error" role="alert" style={{ gridColumn: '1 / -1' }}>コピーできませんでした。表示されているコードを選択してコピーしてください。</p>}
           </div>
 
           <div className="studio-primary-code">
@@ -134,6 +146,7 @@ export default function RockStudio() {
               </button>
             </div>
             <pre>{integrationCode}</pre>
+            {copyError === 'code' && <p className="studio-chat-error" role="alert">コピーできませんでした。表示されているコードを選択してコピーしてください。</p>}
           </div>
         </div>
 
@@ -141,8 +154,8 @@ export default function RockStudio() {
           <div className="studio-setup-card studio-key-card">
             <div className="studio-setup-number">03</div>
             <span className="studio-setup-icon"><KeyRound size={18} /></span>
-            <h2>開発者キー</h2>
-            <p>キーは登録先をあなたのアカウントへ結び付けます。コードへ直書きせず、環境変数へ保存します。</p>
+            <h2>開発者キー（公開時のみ）</h2>
+            <p>PC内だけで試す場合は不要です。公開時はコードにSky URL、公開MCP URL、環境変数のキーを追加します。</p>
             {developerToken ? (
               <div className="studio-token-result">
                 <code>{environmentLine}</code>
@@ -151,6 +164,7 @@ export default function RockStudio() {
                   {copied === 'token' ? 'コピー済み' : '.envへコピー'}
                 </button>
                 <small>このキーはこの画面を離れると再表示できません。</small>
+                {copyError === 'token' && <p className="studio-chat-error" role="alert">コピーできませんでした。表示されている設定を選択してコピーしてください。</p>}
               </div>
             ) : (
               <button className="studio-key-button" type="button" onClick={issueDeveloperToken} disabled={tokenPending}>
@@ -158,20 +172,21 @@ export default function RockStudio() {
                 {tokenPending ? '発行中…' : '開発者キーを発行'}
               </button>
             )}
-            {tokenError && <p className="studio-chat-error">{tokenError}</p>}
+            {tokenError && <p className="studio-chat-error" role="alert">{tokenError}</p>}
+            {needsSignin && <a href="/signin-with-chatgpt?return_to=%2Fsky%2Fpublish" target="_top">サインインしてキー発行へ戻る</a>}
           </div>
 
           <div className="studio-setup-card">
             <div className="studio-setup-number">04</div>
             <span className="studio-setup-icon"><PackagePlus size={18} /></span>
-            <h2>起動すれば登録完了</h2>
+            <h2>起動すればOSのSky一覧に追加</h2>
             <ul>
-              <li><Check size={14} />Tool Packageを自動生成</li>
-              <li><Check size={14} />Sky Registryへ所有者登録</li>
-              <li><Check size={14} />MCPの検索・実行に対応</li>
-              <li><Check size={14} />Fund候補と利用実績を記録</li>
+              <li><Check size={14} />PC内Connectorが自動検出</li>
+              <li><Check size={14} />Skyの一覧から接続して実行</li>
+              <li><Check size={14} />公開URL設定時はPackageを登録</li>
+              <li><Check size={14} />公開登録時に匿名の利用実績を記録</li>
             </ul>
-            <Link href="/sky"><Activity size={15} />登録後のSkyを確認<ExternalLink size={13} /></Link>
+            <Link href="/sky"><Activity size={15} />Skyの一覧を確認<ExternalLink size={13} /></Link>
           </div>
 
           <div className="studio-safety-note">

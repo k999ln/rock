@@ -1,0 +1,73 @@
+{
+  "pdfPages": 18,
+  "chapterCount": 15,
+  "allRequirementIdsPresent": true,
+  "packagedPythonMatchesTestHashes": true,
+  "allJsonParses": true,
+  "missionInputsRemainUnset": true,
+  "physicalReleaseGranted": false,
+  "visualReview": "All 18 final page renders reviewed in contact sheets; full page review of command flow and test evidence. Orphan continuation pages corrected. No visible clipping or overlaps.",
+  "schemaStandardValidation": "NOT_RUN; jsonschema not installed",
+  "chapters": [
+    {
+      "title": "01 設計の中心と今回決めること",
+      "page": 3
+    },
+    {
+      "title": "02 全体構成と故障の境界",
+      "page": 4
+    },
+    {
+      "title": "03 RockstarOSの実装基盤と追加モジュール",
+      "page": 5
+    },
+    {
+      "title": "04 データの正本と接続契約",
+      "page": 6
+    },
+    {
+      "title": "05 制御権・承認・復旧の仕様",
+      "page": 7
+    },
+    {
+      "title": "06 居住設備との境界設計",
+      "page": 8
+    },
+    {
+      "title": "07 衛星通信とavokadoの接続",
+      "page": 9
+    },
+    {
+      "title": "08 ロケット・貨物・建設の接続",
+      "page": 10
+    },
+    {
+      "title": "09 avokadoらしい操作体験と外観",
+      "page": 11
+    },
+    {
+      "title": "10 配備・更新・保存の運用設計",
+      "page": 12
+    },
+    {
+      "title": "11 動作模型と今回の試験結果",
+      "page": 13
+    },
+    {
+      "title": "12 要求と検証の追跡",
+      "page": 14
+    },
+    {
+      "title": "13 実装・建設へ進む順序",
+      "page": 16
+    },
+    {
+      "title": "14 未確定入力と変更管理",
+      "page": 17
+    },
+    {
+      "title": "15 根拠と成果物の読み方",
+      "page": 18
+    }
+  ]
+}

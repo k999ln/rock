@@ -1,0 +1,20 @@
+{
+  "section": "network_security",
+  "checked": "2026-09-24",
+  "status": "design_only_not_implemented",
+  "sources": [
+    {"id":"NS-S1","title":"IETF RFC 8446 — TLS 1.3","url":"https://www.rfc-editor.org/rfc/rfc8446","facts":["証明書による相互認証を構成できる","0-RTTは固有の再送攻撃対策を要し、アプリ再実行は別に扱う"],"design_use":"地上IP経路のmTLS候補、状態変更APIの0-RTT禁止","limits":"具体PKI、証明書期間、認可、実機対応は本設計の選択"},
+    {"id":"NS-S2","title":"W3C Web Authentication Level 2","url":"https://www.w3.org/TR/webauthn-2/","facts":["公開鍵認証器による認証と利用者検証を扱う"],"design_use":"現地の人認証候補","limits":"WebAuthn成功そのものを対象設備操作の承認としない。人台帳、認証器導入、復旧、期限は設計要素"},
+    {"id":"NS-S3","title":"IETF RFC 9200 — ACE-OAuth","url":"https://www.rfc-editor.org/rfc/rfc9200.html","facts":["トークンと鍵を結び付けるPoPを定義","受信資源側がscopeとaudienceを含む要求の許可を検査する"],"design_use":"主体鍵、対象、操作、期限を限定するcapability候補","limits":"本書のフィールド、TTL、回数上限、leaseは地上参照ポリシー。ACE相互運用実装済みではない"},
+    {"id":"NS-S4","title":"IETF RFC 9019 — Firmware Update Architecture for IoT","url":"https://www.rfc-editor.org/rfc/rfc9019","facts":["更新の信頼アンカーと保護されたストアを扱う"],"design_use":"OTA署名の検証器・信頼ルートを運用認証から分離する設計","limits":"鍵分離・二者確認・運用窓は本計画の選択。既存E3の署名起動合格を示さない"},
+    {"id":"NS-S5","title":"IETF RFC 8915 — Network Time Security","url":"https://www.rfc-editor.org/rfc/rfc8915","facts":["NTPクライアント/サーバー間の時刻同期に認証・再送検出を提供する"],"design_use":"地上時刻同期候補","limits":"時刻の物理的正確さ、2秒/24時間閾値、保護RTCと起動時復旧は本書の別設計"},
+    {"id":"NS-S6","title":"IETF RFC 9171 — Bundle Protocol Version 7","url":"https://www.rfc-editor.org/rfc/rfc9171","facts":["断続・遅延を伴うネットワークの蓄積転送オーバーレイ","収束層と経路計算の全てをこの文書が定義するわけではない"],"design_use":"外部断続配送の候補","limits":"RF性能、経路保証、設備実行確認、キューの割当は規定しない","updates":[{"title":"RFC 9713 — Administrative Record Types Registry","url":"https://www.rfc-editor.org/rfc/rfc9713"},{"title":"RFC 9758 — Updates to the ipn URI Scheme","url":"https://www.rfc-editor.org/rfc/rfc9758"}]},
+    {"id":"NS-S7","title":"IETF RFC 9172 / 9173 — BPSec and Default Security Contexts","url":"https://www.rfc-editor.org/rfc/rfc9172","related_urls":["https://www.rfc-editor.org/rfc/rfc9173"],"facts":["BPSecはBIBとBCBによるブロック保護を扱う","鍵管理は別のネットワーク管理要素","既定文脈としてBIB-HMAC-SHA2とBCB-AES-GCMを定義"],"design_use":"配送保護候補。共有MACと非対称の承認/結果署名を分離","limits":"鍵配布、操作認可、個人認証、実装適合は未完"},
+    {"id":"NS-S8","title":"IETF RFC 9052 — COSE Structures and Process","url":"https://www.rfc-editor.org/rfc/rfc9052.html","facts":["CBORで署名・MAC・暗号化の構造と処理を定義","COSE_Sign1は単一署名構造"],"design_use":"保存転送するアプリ包絡の非対称署名候補","limits":"アルゴリズム組合せと信頼管理は用途プロファイルで別途固定する。SIMの独自HMACをCOSE適合としない"},
+    {"id":"NS-L1","title":"RockstarOS Colony C0.1 local baseline","paths":["outputs/RockstarOS_Colony_C0_1/RockstarOS_Colony_C0_1_Integrated_Design.md","outputs/RockstarOS_Colony_C0_1/contracts/README.md","outputs/RockstarOS_Colony_C0_1/runtime/colony_core/core.py","outputs/RockstarOS_Colony_C0_1/README.md"],"facts":["公開HMACとactor文字列はSIM fixtureで認証ではない","APPLIEDは模擬希望値の保存で物理的完了ではない","UNCERTAINはexecuteを自動再送しない"]},
+    {"id":"NS-L2","title":"avocadoMini Tower20 E3 OS and hardware design","paths":["/Users/kaiya/Documents/Codex/2026-09-20/mo/outputs/avocadoMini_Tower20_E3_package/os_design.md","/Users/kaiya/Documents/Codex/2026-09-20/mo/outputs/avocadoMini_Tower20_E3_package/hardware_design.md"],"facts":["4本のMotion Towerと別体Edge Hub","通信・認証・保存・音声をHubへ集約","USB serialは暗号学的機器認証ではない","原音は既定で保存/外部送信なし、MIC OFFでバッファとticketを失効","秘密値をAI contextへ渡さずTPM保護は実機適合までHOLD"]},
+    {"id":"NS-L3","title":"rocketstar C3 / A-LINK E3 boundary","paths":["outputs/rocketstar_C3_package/rocketstar_C3_Integrated_Design_Baseline.md"],"facts":["E3へ更新し旧Mini200の電力/収納を流用しない","A-LINKとIridium/9704は別の経路","初期2機は全球常時接続を示さずRF方式と地上局は未確定","flight softwareと端末通信を分離"]}
+  ],
+  "design_parameters_not_source_claims": ["人セッション15分、read capability5分、承認60秒、authority30秒、command10秒", "機器証明書24時間、残8時間更新、失効同期5分、新旧鍵重複1時間", "時刻誤差2秒、確認間隔上限24時間", "2GiB/20000件spool、64MiB隔離受信、4GiB照合台帳", "P0/P1/P2/P3配分50/20/20/10と保持期間", "API名、操作許可モード、録音と設備データ境界"],
+  "verification": "一次資料とローカル設計を読んで作成した仕様案。ネットワーク、暗号実装、機器、衛星、有人設備の受入試験は未実行。"
+}

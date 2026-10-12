@@ -1,6 +1,6 @@
 # Rock starファンドとワンボタン実行
 
-本書は旧Web試算/MCPの記録。現行の中心は [製品ベース](product-baseline.md)のSky＋Wallet。nativeのWallet/月888 centsと以下の未接続記述を混同せず [差分監査](progress-audit-20260909.md)を参照する。ホスティング制限の出典は当時の判断で、現在の提供可否は採用時に再確認する。
+本書は旧Web試算/MCPの記録。現行の中心は [製品ベース](product-baseline.md)のSky＋Wallet。nativeのWallet/月888 centsと以下の未接続記述を混同せず 差分監査（削除済み）を参照する。ホスティング制限の出典は当時の判断で、現在の提供可否は採用時に再確認する。
 
 ## 今回の提供範囲
 

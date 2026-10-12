@@ -31,13 +31,14 @@ function stored(row: {
   status: SkyToolPackageStatus;
   createdAt: number;
   publishedAt: number | null;
+  reviewValid?: number;
 }): StoredSkyToolPackage {
   return {
     packageKey: row.packageKey,
     manifest: JSON.parse(row.manifest) as SkyToolPackage,
     manifestSha256: row.manifestSha256,
     status: row.status,
-    installable: row.status === 'verified',
+    installable: row.status === 'verified' && row.reviewValid === 1,
     createdAt: row.createdAt,
     publishedAt: row.publishedAt,
   };
@@ -84,15 +85,22 @@ export function skyToolPackageStore(db: Database) {
     },
 
     async listOwner(userId: string): Promise<StoredSkyToolPackage[]> {
+      const now = Date.now();
       const rows = await db
         .prepare(
           `SELECT package_key AS packageKey, manifest, manifest_sha256 AS manifestSha256,
-                  status, created_at AS createdAt, published_at AS publishedAt
-           FROM sky_tool_packages
-           WHERE user_id = ?
+                  status, created_at AS createdAt, published_at AS publishedAt,
+                  EXISTS (
+                    SELECT 1 FROM sky_tool_package_reviews r
+                    WHERE r.package_key = sky_tool_packages.package_key
+                      AND r.manifest_sha256 = sky_tool_packages.manifest_sha256
+                      AND r.decision = 'verified'
+                      AND (r.expires_at IS NULL OR r.expires_at > ?)
+                  ) AS reviewValid
+           FROM sky_tool_packages WHERE user_id = ?
            ORDER BY created_at DESC LIMIT 100`,
         )
-        .bind(userId)
+        .bind(now, userId)
         .all<{
           packageKey: string;
           manifest: string;
@@ -100,6 +108,7 @@ export function skyToolPackageStore(db: Database) {
           status: SkyToolPackageStatus;
           createdAt: number;
           publishedAt: number | null;
+          reviewValid: number;
         }>();
       return rows.results.map(stored);
     },
@@ -138,14 +147,24 @@ export function skyToolPackageStore(db: Database) {
     },
 
     async listRegistry(): Promise<StoredSkyToolPackage[]> {
+      const now = Date.now();
       const rows = await db
         .prepare(
           `SELECT package_key AS packageKey, manifest, manifest_sha256 AS manifestSha256,
-                  status, created_at AS createdAt, published_at AS publishedAt
+                  status, created_at AS createdAt, published_at AS publishedAt,
+                  1 AS reviewValid
            FROM sky_tool_packages
-           WHERE status IN ('published_declared', 'verified')
+           WHERE status = 'verified'
+             AND EXISTS (
+               SELECT 1 FROM sky_tool_package_reviews r
+               WHERE r.package_key = sky_tool_packages.package_key
+                 AND r.manifest_sha256 = sky_tool_packages.manifest_sha256
+                 AND r.decision = 'verified'
+                 AND (r.expires_at IS NULL OR r.expires_at > ?)
+             )
            ORDER BY published_at DESC LIMIT 200`,
         )
+        .bind(now)
         .all<{
           packageKey: string;
           manifest: string;
@@ -153,8 +172,56 @@ export function skyToolPackageStore(db: Database) {
           status: SkyToolPackageStatus;
           createdAt: number;
           publishedAt: number | null;
+          reviewValid: number;
         }>();
       return rows.results.map(stored);
+    },
+
+    async verifiedRegistryPackages(references: Array<{ packageKey: string; manifestSha256: string }>): Promise<StoredSkyToolPackage[]> {
+      // Authorization follows purchased pins, never a page of recent publications.
+      // Keep each query below D1's bound-parameter limit, including review time.
+      const pins = [...new Map(references.map((reference) => [
+        `${reference.packageKey}:${reference.manifestSha256}`, reference,
+      ])).values()];
+      const packages: StoredSkyToolPackage[] = [];
+      const now = Date.now();
+      for (let offset = 0; offset < pins.length; offset += 40) {
+        const batch = pins.slice(offset, offset + 40);
+        const matches = batch.map(() => '(p.package_key = ? AND p.manifest_sha256 = ?)').join(' OR ');
+        const rows = await db.prepare(`SELECT p.package_key AS packageKey, p.manifest,
+            p.manifest_sha256 AS manifestSha256, p.status, p.created_at AS createdAt,
+            p.published_at AS publishedAt, 1 AS reviewValid
+          FROM sky_tool_packages p WHERE p.status = 'verified' AND (${matches})
+            AND EXISTS (SELECT 1 FROM sky_tool_package_reviews r
+              WHERE r.package_key = p.package_key AND r.manifest_sha256 = p.manifest_sha256
+                AND r.decision = 'verified' AND (r.expires_at IS NULL OR r.expires_at > ?))`)
+          .bind(...batch.flatMap((reference) => [reference.packageKey, reference.manifestSha256]), now)
+          .all<{ packageKey: string; manifest: string; manifestSha256: string; status: SkyToolPackageStatus;
+            createdAt: number; publishedAt: number | null; reviewValid: number }>();
+        packages.push(...rows.results.map(stored));
+      }
+      return packages;
+    },
+
+    async verifiedRegistryPackage(packageKey: string, manifestSha256: string): Promise<StoredSkyToolPackage | null> {
+      const row = await db.prepare(`SELECT package_key AS packageKey, manifest,
+          manifest_sha256 AS manifestSha256, status, created_at AS createdAt,
+          published_at AS publishedAt, 1 AS reviewValid
+        FROM sky_tool_packages
+        WHERE package_key = ? AND manifest_sha256 = ? AND status = 'verified'
+          AND EXISTS (
+            SELECT 1 FROM sky_tool_package_reviews r
+            WHERE r.package_key = sky_tool_packages.package_key
+              AND r.manifest_sha256 = sky_tool_packages.manifest_sha256
+              AND r.decision = 'verified' AND (r.expires_at IS NULL OR r.expires_at > ?)
+          ) LIMIT 1`)
+        .bind(packageKey, manifestSha256, Date.now())
+        .first<{
+          packageKey: string; manifest: string; manifestSha256: string;
+          status: SkyToolPackageStatus; createdAt: number; publishedAt: number | null;
+          reviewValid: number;
+        }>();
+      return row ? stored(row) : null;
     },
   };
 }

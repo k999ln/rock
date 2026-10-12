@@ -1,0 +1,11 @@
+{
+  "rocketName": "rocketstar",
+  "case": "lowercase",
+  "formerRocketName": "RETURN-1",
+  "decidedOn": "2026-09-24",
+  "decisionSource": "user",
+  "osName": "RockstarOS",
+  "satelliteName": "A-LINK",
+  "interfaceProduct": "avokado",
+  "changeScope": "naming only; engineering parameters and past evidence retained"
+}

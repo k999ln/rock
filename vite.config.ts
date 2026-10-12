@@ -1,9 +1,10 @@
 import { sites } from '@openai/sites-vite-plugin';
 import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
-import { defineConfig } from 'vite';
+import { defineConfig, esmExternalRequirePlugin } from 'vite';
 import hostingConfig from './.openai/hosting.json' with { type: 'json' };
 import { createWebBundleInventoryPlugin } from './scripts/web-bundle-inventory.mjs';
+import { createSkyLocalRuntimePlugin } from './scripts/sky-local-runtime.mjs';
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
@@ -14,8 +15,10 @@ const { d1, r2 } = hostingConfig;
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 
 const localBindingConfig = {
+  // Preserve the deployed CSV lease/financial retention contract; no v1 purge scheduler.
   main: 'vinext/server/fetch-handler',
   compatibility_flags: ['nodejs_compat'],
+  vars: { A2A_EGRESS_ALLOWED_ORIGINS: '' },
   d1_databases: d1
     ? [
         {
@@ -36,6 +39,19 @@ const localBindingConfig = {
     : [],
 };
 
+const clientCloudflareWorkersStub = {
+  name: 'rockstar-client-cloudflare-workers-stub',
+  enforce: 'pre' as const,
+  resolveId(this: { environment?: { name?: string } }, source: string) {
+    if (source === 'cloudflare:workers' && this.environment?.name === 'client')
+      return '\0rockstar:cloudflare-workers-client-stub';
+  },
+  load(id: string) {
+    if (id === '\0rockstar:cloudflare-workers-client-stub')
+      return 'export const env = Object.freeze({});';
+  },
+};
+
 export default defineConfig(async () => {
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
@@ -52,10 +68,15 @@ export default defineConfig(async () => {
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,
     plugins: [
+      // Worker dependencies need ESM imports for Node builtins.
+      esmExternalRequirePlugin(),
+      createSkyLocalRuntimePlugin(),
       createWebBundleInventoryPlugin(),
+      clientCloudflareWorkersStub,
       vinext(),
       sites(),
       cloudflare({
+        inspectorPort: false,
         viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },
         config: localBindingConfig,
       }),

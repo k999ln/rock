@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type SyntheticEvent } from 'react';
+import { useMemo, useState, useRef, useLayoutEffect, type SyntheticEvent } from 'react';
 import {
   AlertTriangle,
   ArrowLeft,
@@ -22,6 +22,9 @@ import {
   type PatentIntakeInput,
 } from '@/lib/patent-assistant';
 import type { PatentAiResult } from '@/lib/patent-ai';
+import { executeLocalGuide } from '@/lib/local-guide-history';
+import { processedBytes } from '@/lib/operations-client';
+import { LocalGuideHistoryConsent, LocalGuideSignin } from './local-guide-history-consent';
 
 const emptyInput: PatentIntakeInput = {
   inventionTitle: '',
@@ -95,16 +98,27 @@ const fieldHelp: Array<{
 
 export function PatentAssistantRunner({
   onRunningChange,
+  onOutcome,
   executionDisabled = false,
 }: {
   onRunningChange?: (running: boolean) => void;
+  onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
+  const execution = useRef({ busy: false, disabled: executionDisabled, mounted: true });
+  useLayoutEffect(() => {
+    const current = execution.current;
+    current.disabled = executionDisabled;
+    current.mounted = true;
+    return () => { current.mounted = false; };
+  }, [executionDisabled]);
   const [input, setInput] = useState<PatentIntakeInput>(emptyInput);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [assessment, setAssessment] = useState<PatentAssessment | null>(null);
   const [research, setResearch] = useState<PatentAiResult | null>(null);
   const [researchConsent, setResearchConsent] = useState(false);
+  const [saveHistory, setSaveHistory] = useState(false);
+  const [needsSignin, setNeedsSignin] = useState(false);
   const [reviewed, setReviewed] = useState(false);
   const [running, setRunning] = useState(false);
   const [notice, setNotice] = useState(
@@ -141,6 +155,8 @@ export function PatentAssistantRunner({
 
   async function analyze(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (execution.current.busy || execution.current.disabled || !execution.current.mounted) return;
+    execution.current.busy = true;
     const next = assessPatentReadiness(input);
     setAssessment(next);
     setStep(3);
@@ -152,9 +168,36 @@ export function PatentAssistantRunner({
         ? '入力内容を保存せず、公式特許情報から候補を調べています。'
         : '端末内で予備評価と書類ドラフトを作成しました。',
     );
-    if (!researchConsent) return;
+    if (!researchConsent) {
+      setNeedsSignin(false);
+      setRunning(saveHistory);
+      onRunningChange?.(true);
+      try {
+        const tracked = await executeLocalGuide({
+          tool: 'rockstar-patent-assistant', saveHistory,
+          inputBytes: processedBytes(input),
+          task: () => ({ output: buildPatentPacket(input, next, null) }),
+        });
+        setNeedsSignin(tracked.needsSignin);
+        setNotice(tracked.warning || (saveHistory
+          ? '端末内で書類ドラフトを作成し、本文を含まない実行履歴をSkyに保存しました。'
+          : '端末内で予備評価と書類ドラフトを作成しました。通信は行っていません。'));
+        onOutcome?.({ ok: true, text: '端末内で予備評価と書類ドラフトを作成しました。出願・提出はしていません。内容はこのカードで確認してください。' });
+      } catch {
+        setAssessment(null);
+        setError('端末内の書類作成に失敗しました。入力を確認してください。');
+        setNotice('技術内容を修正して再実行してください。');
+        onOutcome?.({ ok: false, text: '端末内の書類作成に失敗しました。入力を確認してください。' });
+      } finally {
+        execution.current.busy = false;
+        setRunning(false);
+        onRunningChange?.(false);
+      }
+      return;
+    }
 
     setRunning(true);
+    setNeedsSignin(false);
     onRunningChange?.(true);
     try {
       const response = await fetch('/api/patent-research', {
@@ -168,6 +211,7 @@ export function PatentAssistantRunner({
       if (!response.ok)
         throw new Error(payload.error || '先行技術調査を利用できません。');
       setResearch(payload);
+      onOutcome?.({ ok: true, text: '先行技術候補と出典を取得しました。原文とドラフトをこのカードで確認してください。' });
       setNotice(
         '先行技術候補と出典を追加しました。原文を確認してから書類を利用してください。',
       );
@@ -177,8 +221,12 @@ export function PatentAssistantRunner({
           ? caught.message
           : '先行技術調査を利用できません。',
       );
-      setNotice('検索式と書類ドラフトは保存できます。');
+      setNotice(
+        'オンライン調査は利用できないため、端末内の検索式と書類ドラフトへ切り替えました。',
+      );
+      onOutcome?.({ ok: false, text: 'オンライン調査は利用できませんでした。端末内の検索式とドラフトをこのカードで確認してください。' });
     } finally {
+      execution.current.busy = false;
       setRunning(false);
       onRunningChange?.(false);
     }
@@ -376,6 +424,8 @@ export function PatentAssistantRunner({
                 先行技術候補を調べるため、この入力をOpenAIへ送ることに同意します。API応答保存はオフですが、保持条件は運営契約に従います。
               </span>
             </label>
+            <LocalGuideHistoryConsent checked={saveHistory && !researchConsent}
+              disabled={researchConsent || running} onChange={setSaveHistory} />
           </fieldset>
           <div className="legal-runner-form-actions">
             <button
@@ -388,7 +438,7 @@ export function PatentAssistantRunner({
             <button
               className="black-button legal-runner-submit"
               type="submit"
-              disabled={running}
+              disabled={running || executionDisabled}
             >
               {researchConsent ? (
                 <Search size={17} />
@@ -404,8 +454,9 @@ export function PatentAssistantRunner({
       )}
 
       <output className="legal-runner-status" aria-live="polite">
-        {running ? '公式特許情報を確認しています…' : notice}
+        {running ? (researchConsent ? '公式特許情報を確認しています…' : '本文を送らず実行履歴を保存しています…') : notice}
       </output>
+      {needsSignin && <LocalGuideSignin tool="rockstar-patent-assistant" />}
       {error && <p className="patent-error">{error}</p>}
 
       {step === 3 && assessment && (

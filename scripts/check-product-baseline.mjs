@@ -1,6 +1,7 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve, dirname, isAbsolute, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { isArchivedPath } from './archived-paths.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export function validateBaseline(
@@ -37,12 +38,12 @@ export function validateBaseline(
     requireValue(documents[key].length > 100, `${key}: 本文がありません`);
   }
   const expected = Array.from(
-    { length: 37 },
+    { length: 50 },
     (_, i) => `RQ${String(i + 1).padStart(2, '0')}`,
   );
   requireValue(
     JSON.stringify(data.requirements) === JSON.stringify(expected),
-    '確定要望RQ01〜RQ37の順序/欠落/重複を確認してください',
+    '確定要望RQ01〜RQ50の順序/欠落/重複を確認してください',
   );
   for (const id of expected) {
     requireValue(
@@ -50,9 +51,376 @@ export function validateBaseline(
       `${id}: 正本の見出しが一意ではありません`,
     );
   }
+  const serviceAccess = data.serviceAccessModel;
+  requireValue(
+    serviceAccess?.status ===
+      'authoritative_product_direction_design_and_local_onboarding_only' &&
+      serviceAccess?.primaryEntry === 'rockstar_account_service_access' &&
+      serviceAccess?.simRequiredForService === false &&
+      serviceAccess?.consumerEsimSales === 'on_hold_code_kept_disabled_by_default' &&
+      JSON.stringify(serviceAccess?.distributionChannels) ===
+        JSON.stringify([
+          'rockstar_direct',
+          'mobile_carrier',
+          'device_retailer',
+          'online_retailer',
+        ]) &&
+      serviceAccess?.osBinaryStoredOnSim === false &&
+      serviceAccess?.purchaseEnabled === false &&
+      serviceAccess?.productionBillingAccepted === false &&
+      serviceAccess?.carrierActivationAccepted === false &&
+      serviceAccess?.deviceOsInstallationAccepted === false,
+    'Account-led service access (SIM optional), channel-neutral access, separate device delivery, and unaccepted production states must remain explicit',
+  );
+  requireValue(
+    JSON.stringify(serviceAccess?.primaryReasonsToChoose) ===
+      JSON.stringify([
+        'fast_simple_access_to_cloud_llms_and_agents',
+        'transparent_usage_based_pricing_and_cost_estimates',
+        'integrated_rockstaros_sky_zema_access_with_minimal_setup',
+      ]) &&
+      JSON.stringify(serviceAccess?.deviceMinimumExperience) ===
+        JSON.stringify([
+          'short_activation_to_service_onboarding',
+          'direct_sky_zema_agent_entry_from_home',
+          'single_rockstar_identity_without_per_service_registration',
+          'submit_tasks_track_progress_and_retrieve_results',
+          'accepted_cloud_tasks_continue_while_device_offline_and_reconcile_on_reconnect',
+          'show_provider_rates_and_estimate_before_paid_execution',
+          'distinguish_reserved_budget_from_live_usage_and_invoice_confirmed_amount',
+          'itemize_usage_after_completion',
+          'user_controlled_spending_limits_and_explicit_approval_to_raise_them',
+        ]) &&
+      serviceAccess?.carrierAndAiChargesSeparated === true &&
+      serviceAccess?.dispatchPolicy ===
+        'fail_closed_until_quote_bound_reservation_provider_meter_invoice_reconciliation_and_funded_wallet_are_accepted',
+    'SIM-led service value, offline Cloud continuity, spend approval, and fail-closed paid execution requirements must remain explicit',
+  );
+  requireValue(
+    data.productIdentity?.displayName === 'RockstarOS' &&
+      data.productIdentity?.releaseName === 'RockstarOS 1.0' &&
+      data.productIdentity?.version === '1.0' &&
+      data.productIdentity?.releaseStage === 'developer_preview' &&
+      data.productIdentity?.previewName ===
+        'RockstarOS 1.0 Developer Preview' &&
+      data.productIdentity?.internalNamespace === 'dev.rock' &&
+      data.productIdentity?.legacyDisplayName === 'avocadoOS' &&
+      data.productIdentity?.legacySchemaPrefix === 'rockstaros' &&
+      data.productIdentity?.internalIdentifiersRenamed === false &&
+      data.productIdentity?.historicalEvidenceRewritten === false &&
+      data.productIdentity?.versioning?.format === 'major.minor' &&
+      data.productIdentity?.versioning?.minorExample === '1.5' &&
+      data.productIdentity?.versioning?.majorExample === '2.0' &&
+      data.productIdentity?.versioning
+        ?.majorUpdatesRequireMigrationAndRollbackAcceptance === true &&
+      data.productIdentity?.versioning?.completionClaimFromVersionOnly ===
+        false,
+    '正式名RockstarOSと内部識別子dev.rockの互換境界を維持してください',
+  );
+  const identityPath = data.productIdentity?.authority;
+  requireValue(
+    typeof identityPath === 'string' && !isAbsolute(identityPath),
+    '製品名と版の正本pathが必要です',
+  );
+  const identity = JSON.parse(read(resolve(root, identityPath)));
+  requireValue(
+    identity.schema === 'rockstaros-product-identity/1' &&
+      identity.displayName === 'RockstarOS' &&
+      identity.internalIdentifier === 'dev.rock' &&
+      identity.version === '1.0' &&
+      identity.releaseStage === 'developer_preview' &&
+      identity.releaseName === 'RockstarOS 1.0' &&
+      identity.previewName === 'RockstarOS 1.0 Developer Preview' &&
+      identity.versioning?.format === 'major.minor' &&
+      identity.versioning?.minorExample === '1.5' &&
+      identity.versioning?.majorExample === '2.0' &&
+      identity.versioning?.completionClaimFromVersionOnly === false,
+    'RockstarOS 1.0と将来のminor／major更新規則を維持してください',
+  );
   requireValue(
     data.auditInputs?.isLiveStatus === false,
     '監査snapshotを最新状態にしないでください',
+  );
+  const designDocumentation = data.designDocumentation;
+  requireValue(
+    designDocumentation?.portal === 'docs/rockstaros-design-portal.md' &&
+      designDocumentation?.operatingSystem ===
+        'docs/rockstaros-complete-design.md' &&
+      designDocumentation?.completeDesignPdf ===
+        'docs/rockstaros-complete-design-v1.0.pdf' &&
+      designDocumentation?.completeDesignSearchableText ===
+        'docs/rockstaros-complete-design-v1.0.txt' &&
+      designDocumentation?.completeDesignSourceRecord ===
+        'data/rockstaros-complete-design-v1.0.json' &&
+      designDocumentation?.completeDesignAuthorityDate === '2026-09-24' &&
+      designDocumentation?.completeDesignScope?.chapters === 32 &&
+      designDocumentation?.completeDesignScope?.deploymentProfiles === 5 &&
+      designDocumentation?.completeDesignScope?.logicalServices === 13 &&
+      designDocumentation?.completeDesignScope?.requirements === 60 &&
+      designDocumentation?.completeDesignScope?.structuralAndDdlChecks ===
+        '43/43' &&
+      designDocumentation?.tools === 'docs/sky-tools-complete-design.md' &&
+      designDocumentation?.materialInvention ===
+        'docs/rockstaros-avocado-mini-complete-design.md' &&
+      designDocumentation?.index === 'data/design-document-index.json' &&
+      designDocumentation?.automatedCheck === 'npm run design:check' &&
+      designDocumentation?.coverageStatus ===
+        'current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete' &&
+      designDocumentation?.allImplementationsComplete === false &&
+      [
+        designDocumentation.portal,
+        designDocumentation.operatingSystem,
+        designDocumentation.completeDesignPdf,
+        designDocumentation.completeDesignSearchableText,
+        designDocumentation.completeDesignSourceRecord,
+        designDocumentation.tools,
+        designDocumentation.materialInvention,
+        designDocumentation.index,
+      ].every((path) => existsSync(resolve(root, path))),
+    'OS・全Tool・Material Inventionの設計入口と未完成境界を維持してください',
+  );
+  requireValue(
+    data.materialInvention?.requested === true &&
+      data.materialInvention?.status ===
+        'sandbox_core_implemented_physical_runtime_not_connected' &&
+      data.materialInvention?.masterDesign ===
+        'docs/rockstaros-avocado-mini-complete-design.md' &&
+      data.materialInvention?.workstream ===
+        'docs/workstreams/11-material-invention-avocado-mini.md' &&
+      data.materialInvention?.designStatus ===
+        'integrated_complete_for_implementation_not_product_completion' &&
+      data.materialInvention?.architecture ===
+        'docs/material-invention-core.md' &&
+      data.materialInvention?.contract ===
+        'contracts/material-invention.json' &&
+      data.materialInvention?.fixture ===
+        'contracts/material-invention-fixture.json' &&
+      data.materialInvention?.runtime === 'lib/material-invention.ts' &&
+      data.materialInvention?.tests === 'tests/material-invention.test.mjs' &&
+      data.materialInvention?.primaryExperience ===
+        'avocado_mini_spatial_invention' &&
+      data.materialInvention?.referenceDevice === 'avocadoMini' &&
+      data.materialInvention?.role ===
+        'use_avocado_mini_spatial_interaction_to_combine_material_digital_twins_process_conditions_simulation_and_patent_ai_into_traceable_invention_candidates' &&
+      data.materialInvention?.coreEntities?.includes(
+        'spatial_interaction_event',
+      ) &&
+      data.materialInvention?.coreEntities?.includes(
+        'invention_event_ledger',
+      ) &&
+      data.materialInvention?.coreEntities?.includes('patent_ai_packet') &&
+      data.materialInvention?.autonomousPhysicalExperimentAllowed === false &&
+      data.materialInvention
+        ?.hazardousSynthesisWithoutQualifiedReviewAllowed === false &&
+      data.materialInvention?.simulationIsExperimentalProof === false &&
+      data.materialInvention?.externalLabIsReplaceableProvider === true &&
+      [
+        data.materialInvention.architecture,
+        data.materialInvention.masterDesign,
+        data.materialInvention.workstream,
+        data.materialInvention.contract,
+        data.materialInvention.fixture,
+        data.materialInvention.runtime,
+        data.materialInvention.tests,
+      ].every((path) => existsSync(resolve(root, path))),
+    'Material Invention Coreの安全境界、契約、sandbox実装を維持してください',
+  );
+  const spatial = data.materialInvention?.spatialDevelopment;
+  requireValue(
+    spatial?.requested === true &&
+      spatial?.status === 'design_approved_runtime_not_implemented' &&
+      spatial?.productName === 'Spatial Invention Studio' &&
+      spatial?.relationshipToMaterialCore ===
+        'primary_product_experience_not_optional_extension' &&
+      spatial?.referenceDevice === 'avocadoMini' &&
+      spatial?.operatingSystem === 'RockstarOS' &&
+      spatial?.fourDirectionalSensorRig === true &&
+      spatial?.materialDigitalTwinManipulation === true &&
+      spatial?.incrementalRecalculationPlanned === true &&
+      spatial?.patentAiIntegrationPlanned === true &&
+      spatial?.physicalExecutionAllowed === false &&
+      spatial?.gestureIsPhysicalApproval === false &&
+      spatial?.automaticPatentFilingAllowed === false &&
+      [
+        spatial.architecture,
+        spatial.deviceArchitecture,
+        spatial.policy,
+        spatial.sceneContract,
+        spatial.interactionContract,
+      ].every(
+        (path) =>
+          typeof path === 'string' &&
+          !isAbsolute(path) &&
+          !relative(root, resolve(root, path)).startsWith('..') &&
+          existsSync(resolve(root, path)),
+      ),
+    'Spatial Invention StudioとavocadoMiniの安全な設計境界を維持してください',
+  );
+  const spatialPolicy = JSON.parse(read(resolve(root, spatial.policy)));
+  const spatialSceneContract = JSON.parse(
+    read(resolve(root, spatial.sceneContract)),
+  );
+  const spatialInteractionContract = JSON.parse(
+    read(resolve(root, spatial.interactionContract)),
+  );
+  requireValue(
+    spatialPolicy.schema === 'rockstaros-material-invention-xr-policy/1' &&
+      spatialPolicy.status === 'design_approved_runtime_not_implemented' &&
+      spatialPolicy.relationshipToMaterialCore ===
+        'primary_product_experience_not_optional_extension' &&
+      spatialPolicy.referenceDevice?.displayName === 'avocadoMini' &&
+      spatialPolicy.referenceDevice?.operatingSystem === 'RockstarOS' &&
+      JSON.stringify(spatialPolicy.referenceDevice?.viewpoints) ===
+        JSON.stringify(['north', 'east', 'south', 'west']) &&
+      spatialPolicy.referenceDevice?.physicalMatterManipulatedByCameras ===
+        false &&
+      spatialPolicy.safety?.physicalExecutionAllowed === false &&
+      spatialPolicy.safety?.equipmentControlAllowed === false &&
+      spatialPolicy.safety?.physicalExperimentFinalApprovalAllowed === false &&
+      spatialPolicy.safety?.gestureIsPhysicalApproval !== true &&
+      spatialPolicy.patentAi?.patentabilityDeterminationAllowed === false &&
+      spatialPolicy.patentAi?.inventorshipDeterminationAllowed === false &&
+      spatialPolicy.patentAi?.automaticFilingAllowed === false &&
+      spatialPolicy.accessibility?.twoDimensionalFallbackRequired === true,
+    'avocadoMiniの四方向sensor、XR、Patent AI安全policyを維持してください',
+  );
+  requireValue(
+    spatialSceneContract.$id ===
+      'https://rockstaros.dev/contracts/material-invention-xr-scene-v1.json' &&
+      spatialSceneContract['x-rockstaros-boundary']?.derivedViewOnly === true &&
+      spatialSceneContract['x-rockstaros-boundary']
+        ?.devicePoseIsSafetyEvidence === false &&
+      spatialSceneContract.properties?.capabilities?.properties
+        ?.physicalExecutionAllowed?.const === false &&
+      spatialSceneContract.properties?.capabilities?.properties
+        ?.equipmentControlAllowed?.const === false &&
+      spatialInteractionContract.$id ===
+        'https://rockstaros.dev/contracts/avocado-mini-spatial-interaction-v1.json' &&
+      spatialInteractionContract['x-rockstaros-boundary']?.operatingSystem ===
+        'RockstarOS' &&
+      spatialInteractionContract['x-rockstaros-boundary']?.deviceConcept ===
+        'avocadoMini' &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.fourDirectionalViewpointsRequired === true &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.gestureIsPhysicalApproval === false &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.physicalExecutionAllowed === false &&
+      spatialInteractionContract['x-rockstaros-boundary']
+        ?.patentabilityDeterminationAllowed === false,
+    'XR sceneとavocadoMini interaction契約の権限境界を維持してください',
+  );
+  const compositionDocument = data.systemComposition?.document;
+  const compositionAuditPath = data.systemComposition?.audit;
+  requireValue(
+    typeof compositionDocument === 'string' &&
+      !isAbsolute(compositionDocument) &&
+      existsSync(resolve(root, compositionDocument)) &&
+      typeof compositionAuditPath === 'string' &&
+      !isAbsolute(compositionAuditPath) &&
+      existsSync(resolve(root, compositionAuditPath)) &&
+      data.systemComposition?.automatedCheck ===
+        'npm run system:composition:check' &&
+      data.systemComposition?.designAligned === true &&
+      data.systemComposition?.allRequiredConnectionsVerified === false &&
+      data.systemComposition?.productionReady === false,
+    '全体構成監査と未統合・未production境界を維持してください',
+  );
+  const compositionAudit = JSON.parse(
+    read(resolve(root, compositionAuditPath)),
+  );
+  requireValue(
+    compositionAudit.schema === 'avocadoos-system-composition-audit/1' &&
+      compositionAudit.verdict?.designAligned === true &&
+      compositionAudit.verdict?.allRequiredConnectionsVerified === false &&
+      compositionAudit.verdict?.productionReady === false,
+    '全体構成監査の設計適合と未完了判定が不正です',
+  );
+  const northStarPath = data.northStar?.document;
+  for (const key of ['architectureDocument', 'auditDocument']) {
+    const path = data.northStar?.[key];
+    requireValue(
+      typeof path === 'string' &&
+        !isAbsolute(path) &&
+        !relative(root, resolve(root, path)).startsWith('..') &&
+        existsSync(resolve(root, path)),
+      `AIネイティブOS Core: ${key}の正本が必要です`,
+    );
+  }
+  requireValue(
+    typeof northStarPath === 'string' &&
+      !isAbsolute(northStarPath) &&
+      existsSync(resolve(root, northStarPath)) &&
+      data.northStar?.productCore ===
+        'ai_native_operating_system_with_replaceable_high_performance_local_llm_and_offline_agent_runtime' &&
+      data.northStar?.osIsProductCore === true &&
+      data.northStar?.osIsUltimateSocialPurpose === false &&
+      JSON.stringify(data.northStar?.productHierarchy?.core) ===
+        JSON.stringify([
+          'ai_native_operating_system',
+          'replaceable_high_performance_local_llm',
+          'offline_agent_runtime',
+          'permission_memory_job_receipt_update_and_recovery_contracts',
+        ]) &&
+      data.northStar?.productHierarchy?.firstPartySystems?.includes(
+        'sky_tool_and_fund_connection',
+      ) &&
+      data.northStar?.productHierarchy?.firstPartySystems?.includes(
+        'zema_ai_team_control',
+      ) &&
+      data.northStar?.productHierarchy?.firstPartySystems?.includes(
+        'social_utility_automation',
+      ) &&
+      data.northStar?.productHierarchy?.interestExtensions?.includes(
+        'authorized_game_integrations',
+      ) &&
+      data.northStar?.developmentRule ===
+        'use_real_sky_zema_social_utility_and_game_workflows_to_improve_the_shared_os_core_without_baking_each_product_into_the_os_image' &&
+      data.northStar?.applicationReleaseIndependence === true &&
+      data.northStar?.pixelRole === 'first_reference_hardware' &&
+      data.northStar?.cameraQualityIsLaunchCriterion === false &&
+      data.northStar?.dedicatedDeviceBeforePixelValueProof === false &&
+      data.northStar?.offlineFirst ===
+        'local_reasoning_pure_execution_and_persistent_resume_with_reconciled_external_effects_on_reconnect' &&
+      JSON.stringify(data.northStar?.valueSequence) ===
+        JSON.stringify([
+          'ai_native_os_core',
+          'replaceable_offline_local_ai',
+          'offline_agent_runtime',
+          'sky_and_zema_first_party_systems',
+          'social_utility_and_interest_applications',
+          'reliable_tool_execution',
+          'verified_earning_receipt',
+          'wallet_reconciliation',
+          'autonomous_fund_improvement',
+          'tax_preparation_support',
+          'authorized_game_extensions',
+          'preconfigured_dedicated_device',
+        ]) &&
+      data.northStar?.monthlyIncomeTargetJpy === 500000 &&
+      data.northStar?.monthlyIncomeTargetNature ===
+        'long_term_verified_outcome_target_not_income_or_yield_guarantee' &&
+      data.northStar?.taxSupport ===
+        'record_classify_summarize_export_and_professional_review_not_autonomous_tax_advice_or_evasion' &&
+      data.northStar?.gameRole ===
+        'priority_interest_application_workstream_not_core_launch_dependency' &&
+      data.northStar?.dataCollection?.enabled === true &&
+      data.northStar?.dataCollection?.categorySpecificConsentRequired ===
+        true &&
+      data.northStar?.dataCollection
+        ?.purposeRetentionRecipientDeletionAndWithdrawalRequired === true &&
+      data.northStar?.dataCollection?.deviceLocalAggregationPreferred ===
+        true &&
+      data.northStar?.dataCollection?.defaultExcluded?.includes(
+        'raw_job_content',
+      ) &&
+      data.northStar?.dataCollection?.defaultExcluded?.includes(
+        'private_keys',
+      ) &&
+      data.northStar?.dataCollection?.defaultExcluded?.includes(
+        'precise_location',
+      ),
+    'AIネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層を維持してください',
   );
   for (const field of ['main', 'nativeHead', 'designHead']) {
     requireValue(
@@ -89,8 +457,357 @@ export function validateBaseline(
     '目標駆動のブランド運営能力が必要です',
   );
   requireValue(
+    data.primaryCapabilities?.includes('local-offline-ai-runtime') &&
+      data.localAiRuntime?.status ===
+        'physical_pixel_offline_ai_plan_v2_selected_tool_result_history_verified_test_signing' &&
+      data.localAiRuntime?.sourceCommit ===
+        '99b1c40d76f719cbba9c72d9f481c1b2df245504' &&
+      data.localAiRuntime?.engine === 'llama.rn' &&
+      data.localAiRuntime?.engineVersion === '0.12.9' &&
+      data.localAiRuntime?.modelFormat === 'GGUF' &&
+      data.localAiRuntime?.modelBundled === false &&
+      data.localAiRuntime?.releaseNetwork === 'none' &&
+      data.localAiRuntime?.trustMode === 'fixed_package_same_signer' &&
+      data.localAiRuntime?.mutationConfirmation === 'required_separate_call' &&
+      data.localAiRuntime?.apkBuilt === true &&
+      data.localAiRuntime?.soongBuilt === false &&
+      data.localAiRuntime?.imageBuilt === false &&
+      data.localAiRuntime?.deviceInferenceVerified === true,
+    'ローカルLLMの固定source・オフライン・署名・別確認・単体APK実機合格／OS image未検証境界を維持してください',
+  );
+  for (const field of [
+    'sourceLock',
+    'artifactLock',
+    'contract',
+    'record',
+    'physicalEvidence',
+    'planV2Evidence',
+  ]) {
+    const path = data.localAiRuntime?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `localAiRuntime.${field}: repository内の証拠が必要です`,
+    );
+  }
+  requireValue(
+    data.primaryCapabilities?.includes('os-platform-core') &&
+      data.androidPlatformCore?.status ===
+        'native_sky_api_v4_backup_v2_emulator_and_physical_reboot_export_pass_wipe_pending_aosp_not_run' &&
+      data.androidPlatformCore?.apiVersion === 1 &&
+      JSON.stringify(data.androidPlatformCore?.componentKinds) ===
+        JSON.stringify(['TOOL', 'MCP', 'PROVIDER']) &&
+      data.androidPlatformCore?.identityVerification ===
+        'installed_apk_uid_version_and_signer' &&
+      data.androidPlatformCore?.runtimeSelinuxGrant === false &&
+      data.androidPlatformCore?.approval ===
+        'proposal_then_device_credential_then_single_use' &&
+      data.androidPlatformCore?.ledger ===
+        'append_only_owner_scoped_idempotent_receipts' &&
+      data.androidPlatformCore?.backup ===
+        'dual_wrapped_v2_owner_phrase_and_android_keystore_allowlisted' &&
+      data.androidPlatformCore?.schemaVersion === 2 &&
+      data.androidPlatformCore?.migration === 'transactional_fail_closed' &&
+      data.androidPlatformCore?.androidBuilt === true &&
+      data.androidPlatformCore?.aospImageBuilt === false &&
+      data.androidPlatformCore?.selinuxEnforcingVerified === false &&
+      data.androidPlatformCore?.productionSigningVerified === false &&
+      data.androidPlatformCore?.otaRollbackVerified === false &&
+      data.androidPlatformCore?.shellApiVersion === 4 &&
+      data.androidPlatformCore?.nativeSkySelectionStore ===
+        'broker_sqlite_schema_v2' &&
+      data.androidPlatformCore?.nativeSkySelectionTokenRequired === true &&
+      data.androidPlatformCore?.nativeSkySelectionEmulatorVerified === true &&
+      data.androidPlatformCore?.nativeSkySelectionPhysicalRebootVerified ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupOwnerPhraseUi === true &&
+      data.androidPlatformCore?.recoverableBackupTransactionalImport === true &&
+      data.androidPlatformCore?.recoverableBackupNewKeystoreRebinding ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupEmptyTargetRequired === true &&
+      data.androidPlatformCore?.recoverableBackupRestoresPaused === true &&
+      data.androidPlatformCore?.recoverableBackupRestoresComponentAuthority ===
+        false &&
+      data.androidPlatformCore?.recoverableBackupEmulatorBrokerChecks ===
+        '11_pass_2_physical_skipped' &&
+      data.androidPlatformCore?.recoverableBackupEmulatorShellChecks ===
+        '5_pass' &&
+      data.androidPlatformCore?.recoverableBackupPhysicalExportVerified ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalHardwareBacked ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalFileSyncConfirmed ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalRebootVerified ===
+        true &&
+      data.androidPlatformCore?.recoverableBackupPhysicalWipeVerified ===
+        false &&
+      data.androidPlatformCore?.zemaSelectedToolPlanGateImplemented === true &&
+      data.androidPlatformCore?.zemaEmulatorNoModelFailClosed === true &&
+      data.androidPlatformCore?.zemaPhysicalStrictPlanAccepted === true &&
+      data.androidPlatformCore
+        ?.zemaPhysicalSelectedToolResultHistoryVerified === true,
+    'OS Platform Coreの署名・UID・承認・台帳・暗号化・standalone build済／AOSP未build境界を維持してください',
+  );
+  for (const field of [
+    'contract',
+    'record',
+    'zemaSelectedToolEvidence',
+    'recoverableBackupEvidence',
+    'physicalPreFullBuildEvidence',
+  ]) {
+    const path = data.androidPlatformCore?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `androidPlatformCore.${field}: repository内の証拠が必要です`,
+    );
+  }
+  requireValue(
+    data.androidPreFullBuildGate?.status === 'in_progress' &&
+      data.androidPreFullBuildGate?.paidFullBuildAllowed === false &&
+      data.androidPreFullBuildGate?.fullOsBuildRunsAfterPreflight === true &&
+      data.androidPreFullBuildGate?.physicalFlashAndBootRunAfterFullBuild ===
+        true &&
+      data.androidPreFullBuildGate
+        ?.preserveBuildEnvironmentUntilFirstPhysicalBoot === true &&
+      data.androidPreFullBuildGate?.appOnlyFixesPreferStandaloneApkRebuild ===
+        true &&
+      JSON.stringify(
+        data.androidPreFullBuildGate?.systemImageRebuildRequiredFor,
+      ) ===
+        JSON.stringify([
+          'platform_framework',
+          'sepolicy',
+          'privapp_product_configuration',
+          'boot_vendor_partition_or_avb',
+        ]) &&
+      data.androidPreFullBuildGate?.checks?.exactTargetReadback ===
+        'passed_pixel_10_gl066' &&
+      data.androidPreFullBuildGate?.checks?.sourceContractAndHostTests ===
+        'passed' &&
+      data.androidPreFullBuildGate?.checks?.standaloneAndroidBuildAndLint ===
+        'passed' &&
+      data.androidPreFullBuildGate?.checks?.androidEmulatorIntegration ===
+        'shell_sky_zema_4_of_4_and_broker_tool_sqlite_9_of_9_passed_no_model_fail_closed_reboot_phases_skipped' &&
+      data.androidPreFullBuildGate?.checks?.standaloneLocalAiApk === 'passed' &&
+      data.androidPreFullBuildGate?.checks?.stockPixelOfflineAiAndThermal ===
+        'passed_offline_reboot_thermal' &&
+      data.androidPreFullBuildGate?.checks?.skyZemaToolWalletPath ===
+        'native_sky_zema_selected_tool_result_history_physical_reboot_pass_wallet_provider_pending' &&
+      data.androidPreFullBuildGate?.checks
+        ?.sourceArtifactAndSigningPlanFreeze ===
+        'partial_source_tag_and_device_layout_frozen_recovery_vendor_and_signing_pending' &&
+      data.androidPreFullBuildGate?.checks?.operatorAgent ===
+        'source_emulator_test_signed_physical_and_public_overlay_stager_pass_production_credential_attestation_device_owner_pending' &&
+      data.androidPreFullBuildGate?.checks?.recoveryVendorSigningInputFreeze ===
+        'validators_implemented_9_of_9_synthetic_actual_google_artifacts_vendor_tree_and_hsm_pending' &&
+      data.androidPreFullBuildGate?.checks
+        ?.externalProviderForFirstOsFullBuild ===
+        'excluded_app_and_server_gate' &&
+      data.androidPreFullBuildGate?.checks
+        ?.externalProviderRequiredBeforePublicEarningLaunch === true &&
+      data.androidPreFullBuildGate?.checks
+        ?.liveEarningsClaimsBeforeProviderAcceptance === false,
+    '有料full build前の単体APK・emulator・純正Pixel受入gateを維持してください',
+  );
+  for (const field of [
+    'record',
+    'evidence',
+    'earningsBridgeEvidence',
+    'physicalToolWalletEvidence',
+    'zemaSelectedToolEvidence',
+    'operatorAgentEvidence',
+    'physicalPreFullBuildEvidence',
+    'dspSourceAndLayoutEvidence',
+    'inputFreezeEvidence',
+    'androidWorkflow',
+    'localAiWorkflow',
+  ]) {
+    const path = data.androidPreFullBuildGate?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `androidPreFullBuildGate.${field}: repository内の証拠が必要です`,
+    );
+  }
+  requireValue(
+    data.primaryCapabilities?.includes(
+      'single-operator-emergency-device-protection',
+    ) &&
+      data.deviceEmergencyAccess?.status ===
+        'dock_agent_source_emulator_test_signed_physical_and_overlay_stager_verified_production_enrollment_pending' &&
+      data.deviceEmergencyAccess?.singleOperatorActivation === true &&
+      data.deviceEmergencyAccess?.userApprovalRequiredAtActivation === false &&
+      data.deviceEmergencyAccess?.preEnrollmentRequired === true &&
+      data.deviceEmergencyAccess?.hardwareBoundOperatorCredentialRequired ===
+        true &&
+      data.deviceEmergencyAccess?.deviceSideEnforcement === true &&
+      data.deviceEmergencyAccess?.maximumSessionSeconds === 900 &&
+      data.deviceEmergencyAccess?.arbitraryShellAllowed === false &&
+      data.deviceEmergencyAccess?.rootShellAllowed === false &&
+      data.deviceEmergencyAccess?.privateUserContentAccessAllowed === false &&
+      data.deviceEmergencyAccess?.walletAccessAllowed === false &&
+      data.deviceEmergencyAccess?.keyExtractionAllowed === false &&
+      data.deviceEmergencyAccess?.microphoneOrCameraActivationAllowed ===
+        false &&
+      data.deviceEmergencyAccess?.llmActivationAllowed === false &&
+      data.deviceEmergencyAccess?.factoryResetCancellationWindowSeconds ===
+        1800 &&
+      data.deviceEmergencyAccess?.appendOnlyAuditRequired === true &&
+      data.deviceEmergencyAccess?.postIncidentUserNotificationRequired ===
+        true &&
+      data.deviceEmergencyAccess?.operatorConsoleRoute === 'operator-dock:/' &&
+      data.deviceEmergencyAccess?.operatorApiRoute ===
+        'operator-dock:/api/devices' &&
+      data.deviceEmergencyAccess?.operatorDeployment ===
+        'separate_cloudflare_worker' &&
+      data.deviceEmergencyAccess?.operatorDatabase ===
+        'separate_operator_dock_d1' &&
+      data.deviceEmergencyAccess?.includedInUserOs === false &&
+      data.deviceEmergencyAccess?.cloudflareAccessJwtRequired === true &&
+      data.deviceEmergencyAccess?.operatorAssetAuthenticationRequired ===
+        true &&
+      data.deviceEmergencyAccess?.operatorConsoleImplemented === true &&
+      data.deviceEmergencyAccess?.authenticatedOperatorApiImplemented ===
+        true &&
+      data.deviceEmergencyAccess?.persistentCommandQueueImplemented === true &&
+      data.deviceEmergencyAccess?.appendOnlyAuditImplemented === true &&
+      data.deviceEmergencyAccess?.operatorCommandWebAuthnSignatureRequired ===
+        true &&
+      data.deviceEmergencyAccess?.managementServerAloneCanIssueDeviceCommand ===
+        false &&
+      data.deviceEmergencyAccess?.deviceSignedChannelImplemented === true &&
+      data.deviceEmergencyAccess
+        ?.deviceIndependentCommandVerificationImplemented === true &&
+      data.deviceEmergencyAccess?.androidServiceImplemented === true &&
+      data.deviceEmergencyAccess?.androidEmulatorTestsPassed === true &&
+      data.deviceEmergencyAccess?.testSignedPhysicalPixelChecksPassed ===
+        true &&
+      data.deviceEmergencyAccess?.testSignedPhysicalPixelCheckCount === 5 &&
+      data.deviceEmergencyAccess?.productionPublicOverlayStagerImplemented ===
+        true &&
+      data.deviceEmergencyAccess?.productionPublicOverlayStagerEvidence ===
+        'docs/evidence/android-operator-overlay-stager-20260916.json' &&
+      data.deviceEmergencyAccess
+        ?.productionPublicOverlayInputStoredInRepository === false &&
+      data.deviceEmergencyAccess?.productionPublicOverlayActualValuesStaged ===
+        false &&
+      data.deviceEmergencyAccess?.productionPublicOverlayStrongBoxRequired ===
+        true &&
+      data.deviceEmergencyAccess
+        ?.productionPublicOverlayFactoryResetForcedOff === true &&
+      data.deviceEmergencyAccess
+        ?.singleDeviceAttestationChallengeValidationImplemented === true &&
+      data.deviceEmergencyAccess
+        ?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
+      data.deviceEmergencyAccess?.multiDeviceDynamicEnrollmentImplemented ===
+        false &&
+      data.deviceEmergencyAccess?.androidDeviceOwnerExecutionVerified ===
+        false &&
+      data.deviceEmergencyAccess?.hardwareDeviceAttestationVerified === false &&
+      data.deviceEmergencyAccess?.remoteProviderSessionRevocationImplemented ===
+        false &&
+      data.deviceEmergencyAccess?.factoryResetReleaseGateEnabled === false &&
+      data.deviceEmergencyAccess?.productionCredentialProvisioned === false &&
+      data.deviceEmergencyAccess?.physicalDeviceVerified === false &&
+      data.deviceEmergencyAccess?.penetrationTestCompleted === false &&
+      data.deviceEmergencyAccess?.incidentRecoveryDrillCompleted === false,
+    '運営1名の緊急保護を端末側で限定し、常設root・私的内容・Wallet・鍵へのaccessを禁止してください',
+  );
+  for (const field of [
+    'policy',
+    'record',
+    'testSignedPhysicalPixelEvidence',
+    'productionPublicOverlayStagerEvidence',
+  ]) {
+    const path = data.deviceEmergencyAccess?.[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `deviceEmergencyAccess.${field}: repository内の証拠が必要です`,
+    );
+  }
+  const emergencyPolicy = JSON.parse(
+    read(resolve(root, data.deviceEmergencyAccess.policy)),
+  );
+  requireValue(
+    emergencyPolicy.schema === 'dev.rock-device-emergency-access/1' &&
+      emergencyPolicy.status ===
+        'dock_agent_source_emulator_test_signed_physical_and_overlay_stager_verified_production_enrollment_pending' &&
+      emergencyPolicy.activation?.singleOperatorAllowed === true &&
+      emergencyPolicy.activation?.userApprovalRequiredAtActivation === false &&
+      emergencyPolicy.activation?.maximumSessionSeconds === 900 &&
+      emergencyPolicy.forbiddenCapabilities?.includes('arbitrary_shell') &&
+      emergencyPolicy.forbiddenCapabilities?.includes('root_shell') &&
+      emergencyPolicy.forbiddenCapabilities?.includes(
+        'read_private_user_content',
+      ) &&
+      emergencyPolicy.forbiddenCapabilities?.includes(
+        'wallet_transfer_or_approval',
+      ) &&
+      emergencyPolicy.trustBoundary?.deviceEnforcesScopeExpiryAndSignature ===
+        true &&
+      emergencyPolicy.trustBoundary?.llmMayActivateEmergencyAccess === false &&
+      emergencyPolicy.implementation?.operatorDeployment ===
+        'separate_cloudflare_worker' &&
+      emergencyPolicy.implementation?.operatorDatabase ===
+        'separate_operator_dock_d1' &&
+      emergencyPolicy.implementation?.includedInUserOs === false &&
+      emergencyPolicy.implementation?.cloudflareAccessJwtRequired === true &&
+      emergencyPolicy.implementation?.operatorAssetAuthenticationRequired ===
+        true &&
+      emergencyPolicy.implementation?.operatorConsoleImplemented === true &&
+      emergencyPolicy.implementation?.persistentCommandQueueImplemented ===
+        true &&
+      emergencyPolicy.implementation?.appendOnlyAuditImplemented === true &&
+      emergencyPolicy.implementation
+        ?.operatorCommandWebAuthnSignatureRequired === true &&
+      emergencyPolicy.implementation?.operatorUserVerificationRequired ===
+        true &&
+      emergencyPolicy.implementation
+        ?.managementServerAloneCanIssueDeviceCommand === false &&
+      emergencyPolicy.implementation?.deviceSignedChannelImplemented === true &&
+      emergencyPolicy.implementation
+        ?.deviceIndependentCommandVerificationImplemented === true &&
+      emergencyPolicy.implementation?.androidServiceImplemented === true &&
+      emergencyPolicy.implementation?.androidEmulatorTestsPassed === true &&
+      emergencyPolicy.implementation?.testSignedPhysicalPixelChecksPassed ===
+        true &&
+      emergencyPolicy.implementation?.testSignedPhysicalPixelCheckCount === 5 &&
+      emergencyPolicy.implementation?.testSignedPhysicalPixelEvidence ===
+        'docs/evidence/android-pixel-10-prefull-physical-20260916.json' &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayStagerImplemented === true &&
+      emergencyPolicy.implementation?.productionPublicOverlayStagerEvidence ===
+        'docs/evidence/android-operator-overlay-stager-20260916.json' &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayInputStoredInRepository === false &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayActualValuesStaged === false &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayStrongBoxRequired === true &&
+      emergencyPolicy.implementation
+        ?.productionPublicOverlayFactoryResetForcedOff === true &&
+      emergencyPolicy.implementation
+        ?.singleDeviceAttestationChallengeValidationImplemented === true &&
+      emergencyPolicy.implementation
+        ?.productionDeviceIdentityChallengeBoundAliasImplemented === true &&
+      emergencyPolicy.implementation
+        ?.multiDeviceDynamicEnrollmentImplemented === false &&
+      emergencyPolicy.implementation?.androidDeviceOwnerExecutionVerified ===
+        false &&
+      emergencyPolicy.implementation?.hardwareDeviceAttestationVerified ===
+        false &&
+      emergencyPolicy.implementation
+        ?.remoteProviderSessionRevocationImplemented === false &&
+      emergencyPolicy.implementation?.factoryResetReleaseGateEnabled ===
+        false &&
+      emergencyPolicy.implementation?.physicalDeviceVerified === false,
+    '緊急access policyの単独初動・端末側強制・禁止権限・未実装境界を維持してください',
+  );
+  requireValue(
     data.primaryCapabilities?.includes('csv-paid-work-pilot') &&
       data.csvBusinessPilot?.productId === 'rockstar-csv-cleanup' &&
+      data.csvBusinessPilot?.productPlacement ===
+        'sky_automation_tool_catalog' &&
+      data.csvBusinessPilot?.skyRole === 'CSV自動化役' &&
       data.csvBusinessPilot?.buyerPriceMinor === 300000 &&
       data.csvBusinessPilot?.retentionDays === 7 &&
       data.csvBusinessPilot?.monthlyThresholdUsdMinor === 3000 &&
@@ -124,7 +841,7 @@ export function validateBaseline(
   const skyInventory = resolve(root, data.sky?.inventory || '');
   requireValue(
     !relative(root, skyInventory).startsWith('..') &&
-      read(skyInventory).includes('Web / PCで現在使える12件'),
+      read(skyInventory).includes('Web / PCで現在使える14件'),
     'Skyの役割と収録ツールの正本が必要です',
   );
   requireValue(data.atmFees?.rockFeeMinor === 0, 'ATMの自社手数料は0です');
@@ -213,26 +930,91 @@ export function validateBaseline(
     '本番受取レールはBase USDCの所有確認・限定回収・finalized照合とし、秘密鍵保管・自動送金・完了の先取りを禁止してください',
   );
   requireValue(
-    data.chatInteraction?.connectedMcpPresentation ===
-      'one_bot_per_connected_server_or_ready_product' &&
-      data.chatInteraction?.controlSurface === 'chat_thread' &&
+    data.baseApps?.find?.((app) => app.id === 'chat')?.displayName === 'Zema' &&
+      data.baseApps?.find?.((app) => app.id === 'chat')?.route === '/chat' &&
+      data.chatInteraction?.displayName === 'Zema' &&
+      data.chatInteraction?.legacyDisplayName === 'Chat' &&
+      data.chatInteraction?.compatibilityRoute === '/chat' &&
+      data.chatInteraction?.connectedMcpPresentation ===
+        'one_bot_per_connected_server_or_ready_product' &&
+      data.chatInteraction?.controlSurface === 'zema_thread_and_work_center' &&
+      data.chatInteraction?.skyHandoff?.transport ===
+        'same_tab_session_storage' &&
+      data.chatInteraction?.skyHandoff?.selectedToolDeepLink ===
+        '/chat?tool={toolId}' &&
+      data.chatInteraction?.skyHandoff?.requestInUrl === false &&
+      data.chatInteraction?.skyHandoff?.serverPersistence === false &&
+      data.chatInteraction?.skyHandoff?.consumeOnce === true &&
+      data.chatInteraction?.skyHandoff?.ttlSeconds === 600 &&
+      data.chatInteraction?.skyHandoff?.maxRequestChars === 2000 &&
+      data.chatInteraction?.skyHandoff?.liveJobEvent ===
+        'rockstaros:sky-zema-job' &&
+      data.chatInteraction?.workManagement?.canonicalRoute ===
+        '/chat?view=work' &&
+      data.chatInteraction?.workManagement?.compatibilityRoutes?.includes(
+        '/work',
+      ) &&
+      data.chatInteraction?.workManagement?.compatibilityRoutes?.includes(
+        '/activity',
+      ) &&
+      data.chatInteraction?.workManagement?.preserveExistingRecords === true &&
+      data.chatInteraction?.liveProgress?.presentation ===
+        'grok_style_observable_activity_timeline' &&
+      data.chatInteraction?.liveProgress?.sources?.includes('owned_jobs') &&
+      data.chatInteraction?.liveProgress?.sources?.includes(
+        'automation_fund_membership',
+      ) &&
+      data.chatInteraction?.liveProgress?.sources?.includes(
+        'verified_receipts',
+      ) &&
+      data.chatInteraction?.liveProgress?.activeJobRefreshSeconds === 3 &&
+      data.chatInteraction?.liveProgress?.idleJobRefreshSeconds === 15 &&
+      data.chatInteraction?.liveProgress?.fundRefreshSeconds === 30 &&
+      data.chatInteraction?.liveProgress?.csvExecutionHandoff ===
+        '/chat?tool=rockstar-csv-cleanup' &&
+      data.chatInteraction?.liveProgress?.chainOfThoughtExposed === false &&
+      data.chatInteraction?.liveProgress?.fabricatedProgressAllowed === false &&
+      data.chatInteraction?.liveProgress?.unverifiedYieldAllowed === false &&
       data.chatInteraction?.genericExecutionContract ===
         'passport_tool_schema_then_prepare_confirm_execute',
-    'Chatの接続bot管理契約が必要です',
+    'Zemaの接続bot管理契約が必要です',
   );
   requireValue(
     data.webDeliveryIntegrity?.sourceAndPrivateSiteCommitMustMatch === true &&
       data.webDeliveryIntegrity?.assetClosureCheck ===
         'npm run release:web-assets:check' &&
-      data.webDeliveryIntegrity?.publicAccessAuthorized === false,
+      data.webDeliveryIntegrity?.publicAccessAuthorized === true,
     'Web画面と配備assetを同一commitへ固定してください',
+  );
+  requireValue(
+    data.campus?.displayName === 'Campus' &&
+      data.campus?.route === '/campus' &&
+      data.campus?.status === 'web_runtime_implemented' &&
+      JSON.stringify(data.campus?.campuses) ===
+        JSON.stringify(['nyu', 'fit', 'columbia', 'fordham', 'johnjay']) &&
+      data.campus?.affiliationVerification ===
+        'authenticated_email_domain_match_without_email_storage' &&
+      data.campus?.publicClaimsBoundary ===
+        'community_posted_content_not_official_university_data_unless_external_source_states_otherwise' &&
+      data.campus?.physicalEntry ===
+        'registered_nfc_or_qr_tag_to_campus_mode_with_source_analytics' &&
+      data.campus?.analyticsPrivacy ===
+        'tag_source_and_timestamp_only_no_ip_email_precise_location_or_raw_user_agent' &&
+      data.campus?.dataControls?.includes('block_and_report') &&
+      data.campus?.dataControls?.includes('tag_analytics_delete') &&
+      data.campus?.dataControls?.includes('campus_data_delete') &&
+      data.baseApps?.some?.(
+        (app) => app.id === 'campus' && app.route === '/campus',
+      ) &&
+      data.visualSystem?.homePrimaryApps?.includes('campus'),
+    'Campusの大学別機能・物理入口・privacy境界を維持してください',
   );
   requireValue(
     data.homeExperience?.defaultRoute === '/' &&
       data.homeExperience?.skyRoute === '/sky' &&
       data.homeExperience?.systemUtility === 'settings' &&
       data.homeExperience?.preferencesStorage === 'device_local' &&
-      data.homeExperience?.customizable?.includes('focus_mode') &&
+      data.homeExperience?.customizable?.includes('app_order') &&
       data.homeExperience?.settingsFunctions?.includes('pc_connector') &&
       data.homeExperience?.settingsFunctions?.includes(
         'install_recovery_guidance',
@@ -241,8 +1023,150 @@ export function validateBaseline(
   );
   requireValue(
     data.homeExperience.returnPolicy ===
-      'every_non_home_route_has_a_direct_home_affordance',
-    'Home以外の全画面に直接Homeへ戻る契約が必要です',
+      'os_routes_return_to_os_home_public_routes_return_to_product_home',
+    'OS内の画面と公開製品ページの戻り先を分けてください',
+  );
+  const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
+  const hardwarePageSource = read(resolve(root, 'app/avocado-mini/page.tsx'));
+  const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
+  requireValue(
+    data.launchPage?.route === '/rockstaros' &&
+      data.launchPage?.role === 'public_account_service_home' &&
+      data.launchPage?.osHomeRoute === '/' &&
+      data.launchPage?.installGuideRoute === '/rockstaros/guide' &&
+      data.launchPage?.directOsHomeLink === false &&
+      data.launchPage?.serviceDetailsLocation === 'public_service_home' &&
+      data.launchPage?.hardwareProgramRoute === '/avocado-mini' &&
+      data.marketPositioning?.customerFacingFocus === 'account_led_rockstaros_service_access' &&
+      data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
+      data.marketPositioning?.leadHardwareForm ===
+        'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
+      data.marketPositioning?.previousLeadHardwareForm ===
+        'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
+      data.marketPositioning?.legacyReferencePriceAppliesTo ===
+        'historical_motion_tower_p0_kit_only' &&
+      data.marketPositioning?.avocadoMiniStage ===
+        'design_only_no_physical_prototype_or_sales' &&
+      data.launchPage?.primaryAction === 'start_service_onboarding' &&
+      data.launchPage?.secondaryAction === 'view_avocado_mini_device' &&
+      data.launchPage?.publicDownloadFallback === '/connect' &&
+      launchPageSource.includes('アカウントひとつで、Sky・Zema・AI Agentへ') &&
+      launchPageSource.includes('SIMは不要です') &&
+      !launchPageSource.includes('href="/sky/esim"') &&
+      launchPageSource.includes('href="/connect"') &&
+      hardwarePageSource.includes('<AvocadoTurntable />') &&
+      hardwarePageSource.includes('href="/rockstaros"') &&
+      !launchPageSource.includes('href="/"') &&
+      !launchPageSource.includes('createSkyToolApp') &&
+      turntableSource.includes('turn * Math.PI * 2') &&
+      turntableSource.includes('className={styles.designDetails}') &&
+      turntableSource.includes('className={styles.osSection}') &&
+      turntableSource.includes('/rockstaros/avocado-mini-kit-p0.png') &&
+      data.marketPositioning?.motionTowerP0Engineering?.kitTowerCount === 4 &&
+      data.marketPositioning?.motionTowerP0Engineering?.kitEdgeHubCount === 1 &&
+      data.marketPositioning?.motionTowerP0Engineering?.freeStandingMaxHeightMm === 1200 &&
+      data.marketPositioning?.motionTowerP0Engineering?.dockedMaxHeightMm === 1800 &&
+      data.marketPositioning?.motionTowerP0Engineering?.llmCanAuthorizeMotionRecordingOrSafetyBypass === false &&
+      data.marketPositioning?.tower20E3?.document ===
+        'docs/avocado-mini-tower20-e3/README.md' &&
+      data.marketPositioning?.tower20E3?.role ===
+        'historical_E3_baseline_superseded_by_R5' &&
+      data.marketPositioning?.tower20E3?.towerCount === 4 &&
+      data.marketPositioning?.tower20E3?.edgeHubCount === 1 &&
+      data.marketPositioning?.tower20E3?.fixedHeight === true &&
+      data.marketPositioning?.tower20E3?.maximumUsageHeightMm === 200 &&
+      data.marketPositioning?.tower20E3?.activeCameraCandidatesPerTower === 1 &&
+      data.marketPositioning?.tower20E3?.physicalTests === 0 &&
+      data.marketPositioning?.tower20E3?.manufacturingReleased === false &&
+      turntableSource.includes('¥410,000') &&
+      turntableSource.includes('購入する') &&
+      turntableSource.includes('/rockstaros/guide#install'),
+    'avocadoMini製品ホームとOSホームを分け、製品から導入ガイドへ進めてください',
+  );
+  const miniR5 = data.marketPositioning?.r5;
+  requireValue(
+    miniR5?.document === 'docs/avocado-mini-r5/README.md' &&
+      miniR5?.role === 'current_avocado_mini_product_baseline' &&
+      miniR5?.maximumUsageHeightMm === 200 &&
+      miniR5?.heightIncludesBaseFeetCap === true &&
+      miniR5?.minimumNodeCount === 1 &&
+      miniR5?.sameTypePeerExpansion === true &&
+      miniR5?.separateEdgeHubRequired === false &&
+      miniR5?.externalPcRequiredForCoreFunctions === false &&
+      miniR5?.externalPowerRequired === true &&
+      miniR5?.batteryAdopted === false &&
+      miniR5?.displayRequirement === 'naked_eye_particles_distributed_in_surrounding_real_space' &&
+      miniR5?.displayStatus === 'unavailable_research_gate_not_room_scale_validated' &&
+      miniR5?.physicalTests === 0 &&
+      miniR5?.manufacturingReleased === false &&
+      miniR5?.runtimeIntegrated === false &&
+      miniR5?.publishedSiteUpdated === true &&
+      miniR5?.existingPixelQemuMaterialAndWalletEvidencePreserved === true,
+    'R5の単体自律・200mm・表示研究ゲートを維持し、公開Site更新を実機やruntime統合の受入へ換算しないでください',
+  );
+  requireValue(
+    data.gameFirstLifeVision?.primaryExperience === 'game_console_then_life_enrichment' &&
+      data.gameFirstLifeVision?.localAutonomySeparateFromConnectivity === true &&
+      data.gameFirstLifeVision?.localGameLoopRequiresInternet === false &&
+      data.gameFirstLifeVision?.offlineScope === 'installed_supported_local_features_only' &&
+      data.gameFirstLifeVision?.connectivityProposal?.includes('external_satellite_gateway') &&
+      data.gameFirstLifeVision?.directSatellite === 'future_research_not_integrated' &&
+      data.gameFirstLifeVision?.ownSatelliteConstellation === 'future_research_not_authorized_for_execution' &&
+      data.gameFirstLifeVision?.connectivityGrantsExecutionAuthority === false &&
+      data.gameFirstLifeVision?.lifeDeviceActionsRequireScopedConsent === true &&
+      data.gameFirstLifeVision?.automaticReplayOfExternalActionsOnReconnect === false &&
+      data.gameFirstLifeVision?.runtimeIntegrated === false &&
+      data.gameFirstLifeVision?.satelliteFieldTests === 0 &&
+      data.gameFirstLifeVision?.lifeDeviceFieldTests === 0 &&
+      data.gameFirstLifeVision?.existingPixelAndQemuGatesPreserved === true,
+    'ゲーム中心の生活OS設計と衛星通信・自律性・権限・未受入の境界を維持してください',
+  );
+  const studioSource = read(resolve(root, 'components/rock-studio.tsx'));
+  const homeSource = read(resolve(root, 'components/home-screen.tsx'));
+  const skySource = read(resolve(root, 'components/sky-workspace.tsx'));
+  const shellSource = read(resolve(root, 'components/workspace-shell.tsx'));
+  const workspaceStyles = read(resolve(root, 'app/workspace.css'));
+  requireValue(
+    data.visualSystem?.surfaces?.includes('/') &&
+      data.visualSystem?.surfaces?.includes('/rockstaros') &&
+      data.visualSystem?.surfaces?.includes('/studio') &&
+      data.visualSystem?.surfaces?.includes('workspace_shell') &&
+      data.visualSystem?.accent === 'ice_blue' &&
+      data.visualSystem?.productHomeAppearance === 'light_scroll_product_showcase' &&
+      data.visualSystem?.studioPrimarySurface === 'sdk_code_installation' &&
+      !data.visualSystem?.homePrimaryApps?.includes('work') &&
+      !data.visualSystem?.homePrimaryApps?.includes('csv') &&
+      data.sky?.internalSurfaces?.includes('/csv') &&
+      !data.sky?.internalSurfaces?.includes('/work') &&
+      !data.sky?.internalSurfaces?.includes('/activity') &&
+      data.visualSystem?.businessFunctionalityChanged === false &&
+      data.visualSystem?.interactionFunctionalityImproved === true &&
+      studioSource.includes('studio-code-first') &&
+      !homeSource.includes("id: 'work'") &&
+      !homeSource.includes("id: 'csv'") &&
+      !skySource.includes('href="/work"') &&
+      !skySource.includes('href="/csv"') &&
+      homeSource.includes('WEB / LOCAL') &&
+      data.homeExperience?.workspaceNavigation ===
+        'sidebar_free_with_top_home_affordance_and_contextual_in_page_navigation' &&
+      data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[0] === 320 &&
+      data.homeExperience?.smartphoneLayout?.supportedCssWidthPx?.[1] === 767 &&
+      data.homeExperience?.smartphoneLayout?.safeAreas === true &&
+      data.homeExperience?.smartphoneLayout?.minimumPrimaryTouchTargetPx ===
+        44 &&
+      data.homeExperience?.smartphoneLayout?.pageHorizontalOverflow ===
+        'forbidden' &&
+      !shellSource.includes('Sidebar') &&
+      !shellSource.includes('rock-sidebar') &&
+      shellSource.includes('rock-main-column rock-main-column-full') &&
+      shellSource.includes('className="rock-home-link"') &&
+      shellSource.includes('aria-disabled={running || undefined}') &&
+      workspaceStyles.includes(
+        'RockstarOS / Studio — shared dark launch system',
+      ) &&
+      workspaceStyles.includes('RockstarOS 1.0 — unified OS chrome') &&
+      workspaceStyles.includes('--studio-green: #bedce6'),
+    'RockstarOS全体の共通visual systemとフロント機能性改善を維持してください',
   );
   requireValue(
     data.systemMaintenance?.route === '/settings/system' &&
@@ -281,7 +1205,7 @@ export function validateBaseline(
       data.systemMaintenance?.releaseReadiness?.androidAudit ===
         'data/android-physical-release-audit.json' &&
       data.systemMaintenance?.releaseReadiness?.androidAuditStatus ===
-        '0_of_5_required_gates_passed' &&
+        '1_of_6_required_gates_passed' &&
       data.systemMaintenance?.releaseReadiness?.personalNumberAudit ===
         'data/personal-number-release-audit.json' &&
       data.systemMaintenance?.releaseReadiness?.personalNumberAuditStatus ===
@@ -304,9 +1228,11 @@ export function validateBaseline(
         ?.historicalNativeInventoryRule ===
         'never_substitute_9ab_inventory_for_rc2' &&
       data.systemMaintenance?.physicalDeviceStatus ===
-        'blocked_until_exact_model_bsp_bootloader_recovery' &&
+        'blocked_until_recovery_artifacts_vendor_inventory_build_flash_boot' &&
       data.systemMaintenance?.productionSigning ===
-        'blocked_until_owner_key_ceremony',
+        'blocked_until_owner_key_ceremony' &&
+      data.systemMaintenance?.externalProviders ===
+        'excluded_from_first_os_full_build_required_before_public_earning_launch',
     'OS運用・暗号化保全・公開審査gateを維持してください',
   );
   requireValue(
@@ -314,14 +1240,22 @@ export function validateBaseline(
     'tobのSky利用料は0です',
   );
   requireValue(
-    data.skyNetworkEconomy?.tobSkySalesCommissionBps === 0,
-    'tob売上のSky手数料は0%です',
+    data.commercialPolicyRevision?.status ===
+      'on_hold_pending_revenue_flow' &&
+      data.commercialPolicyRevision?.tocFeeAssessmentEnabled === false &&
+      data.commercialPolicyRevision?.csvSellerFeeAssessmentEnabled === false &&
+      data.commercialPolicyRevision?.legacy888FixtureOnly === true,
+    '8.88 USD料金案は収益動線の確定まで保留してください',
+  );
+  requireValue(
+    data.skyNetworkEconomy?.tobSkySalesCommissionBps === 1000,
+    'tob売上のSky手数料は10%です',
   );
   requireValue(
     data.skyNetworkEconomy?.tocMonthlyFeeCapMinor === 888 &&
       data.skyNetworkEconomy?.tocUpfrontCharge === false &&
       data.skyNetworkEconomy?.debtCarryForward === false,
-    'ToCは検証済み収益からだけ月最大888 centsを精算してください',
+    '旧ToC精算の888 cents値を回帰検証用に保持してください',
   );
   requireValue(
     data.skyMonthlyBilling?.status === 'retired' &&
@@ -401,6 +1335,38 @@ export function validateBaseline(
       data.skyNetworkEconomy?.multiMcpConnector?.skyUiConnected === true,
     '複数MCP Connectorの配布・Sky接続とremote/OAuth未受入の境界を維持してください',
   );
+  const computeGrid = data.skyComputeGrid;
+  requireValue(
+    computeGrid?.status ===
+      'synthetic_host_fixture_android_runtime_not_connected' &&
+      computeGrid?.initialSupplyPlatform === 'android_arm64' &&
+      computeGrid?.iosSupplyEnabled === false &&
+      computeGrid?.initialSku === 'public-text-embedding-v1' &&
+      computeGrid?.pricingUnit === 'verified_compute_lot' &&
+      computeGrid?.cpuHourPricingAllowed === false &&
+      JSON.stringify(computeGrid?.dataClasses) ===
+        JSON.stringify(['public', 'synthetic']) &&
+      computeGrid?.personalDataAllowed === false &&
+      computeGrid?.secretsAllowed === false &&
+      computeGrid?.arbitraryCodeAllowed === false &&
+      computeGrid?.exactLocationExposedToBuyer === false &&
+      computeGrid?.ownerIdentityExposedToBuyer === false &&
+      computeGrid?.ownerUsePreemptsCompute === true &&
+      computeGrid?.verificationRequiredBeforeSettlement === true &&
+      computeGrid?.settlementAsset === 'sky_test_credits' &&
+      computeGrid?.liveDispatchEnabled === false &&
+      computeGrid?.liveBillingEnabled === false &&
+      computeGrid?.livePayoutEnabled === false &&
+      computeGrid?.cloudFallbackWithoutExplicitOrderAuthorization === false &&
+      [
+        computeGrid.architecture,
+        computeGrid.contract,
+        computeGrid.fixture,
+        computeGrid.runtime,
+        computeGrid.tests,
+      ].every((path) => existsSync(resolve(root, path))),
+    'Sky Compute Gridの固定lot、privacy、安全停止、検証前精算拒否、live停止境界を維持してください',
+  );
   requireValue(
     data.releaseInstallation?.releaseName === 'RockstarOS 1.0',
     '1.0の発表名が必要です',
@@ -413,14 +1379,16 @@ export function validateBaseline(
     );
     const resolved = resolve(root, path);
     requireValue(
-      !relative(root, resolved).startsWith('..') && read(resolved).length > 100,
+      !relative(root, resolved).startsWith('..') &&
+        (isArchivedPath(path, root) || read(resolved).length > 100),
       `releaseInstallation.${field}: repository内の本文が必要です`,
     );
   }
   const devicePolicy = data.deviceSupportPolicy;
   requireValue(
-    devicePolicy?.status === 'approved_design_implemented_not_physical_support',
-    '多機種対応は設計済み・実機未対応として記録してください',
+    devicePolicy?.status ===
+      'source_tag_and_device_layout_frozen_not_physical_support',
+    '最初の実機対象を確定し、物理対応未完了として記録してください',
   );
   requireValue(
     JSON.stringify(devicePolicy?.deliveryModes) ===
@@ -449,9 +1417,42 @@ export function validateBaseline(
     '多機種対応台帳の検査commandが必要です',
   );
   requireValue(
-    devicePolicy.firstPhysicalTarget === null,
-    '最初の物理端末は未確定です',
+    JSON.stringify(devicePolicy.firstPhysicalTarget) ===
+      JSON.stringify({
+        manufacturer: 'Google',
+        model: 'Pixel 10',
+        sku: 'GL066',
+        region: 'JP',
+        codename: 'frankel',
+        readbackEvidence:
+          'docs/evidence/android-pixel-10-gl066-device-inventory-20260916.json',
+        sourceLock: 'os/physical/frankel-source-lock.json',
+        dspSourceAndLayoutEvidence:
+          'docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json',
+      }),
+    '最初の物理端末readbackが確定値と一致しません',
   );
+  requireValue(
+    devicePolicy.sourceTag === '2026100200' &&
+      devicePolicy.sourceTagSignatureVerified === true &&
+      devicePolicy.deviceLayoutReadOnlyVerified === true &&
+      devicePolicy.recoveryArtifactsHashed === false &&
+      devicePolicy.fullBuildInputGatePassed === false &&
+      devicePolicy.externalProviderBoundary ===
+        'app_server_gate_excluded_from_first_os_full_build_required_before_public_earning_launch',
+    'GL066のsource／layout固定と残る復旧artifact gateを維持してください',
+  );
+  for (const field of [
+    'readbackEvidence',
+    'sourceLock',
+    'dspSourceAndLayoutEvidence',
+  ]) {
+    const path = devicePolicy.firstPhysicalTarget[field];
+    requireValue(
+      typeof path === 'string' && existsSync(resolve(root, path)),
+      `deviceSupportPolicy.firstPhysicalTarget.${field}: repository内の証拠が必要です`,
+    );
+  }
   requireValue(
     devicePolicy.cloudSpendApproved === false,
     'クラウド課金は未承認です',
@@ -459,6 +1460,37 @@ export function validateBaseline(
   requireValue(
     devicePolicy.physicalFlashAuthorized === false,
     '実機flashは未承認です',
+  );
+  // The 2026-10-10 decisions live in the encrypted baseline; this public script checks
+  // their shape and internal consistency without restating the decided values.
+  const entry = data.accountEntryDecision;
+  const nonEmpty = (value) => typeof value === 'string' && value.length > 0;
+  requireValue(
+    /^\d{4}-\d{2}-\d{2}$/.test(entry?.decidedAt ?? '') &&
+      nonEmpty(entry?.record) &&
+      nonEmpty(entry?.mainProduct) &&
+      nonEmpty(entry?.simRole) &&
+      entry?.billing?.storedBalance === false &&
+      Array.isArray(entry?.billing?.exits) &&
+      entry.billing.exits.length >= 3 &&
+      entry?.skyFee?.currentBps === data.skyMarketplacePayments?.commissionBps &&
+      Number.isInteger(entry?.skyFee?.targetBps) &&
+      entry.skyFee.targetBps <= entry.skyFee.currentBps &&
+      nonEmpty(entry?.skyFee?.switchCondition) &&
+      nonEmpty(entry?.skyHosting?.url) &&
+      entry?.liveBillingAccepted === false &&
+      Array.isArray(entry?.externalConfirmationsPending) &&
+      entry.externalConfirmationsPending.length > 0 &&
+      (serviceAccess?.simRequiredForService === false) === (entry.simRole !== 'required'),
+    'accountEntryDecision: 確定事項の記録（残高なし、出口、手数料の現在値と目標、本番課金未受入、外部確認）が欠けています',
+  );
+  requireValue(
+    nonEmpty(data.miniCellularIntent?.radio) &&
+      nonEmpty(data.miniCellularIntent?.sim) &&
+      typeof data.miniCellularIntent?.sgp32Capable === 'boolean' &&
+      nonEmpty(data.miniCellularIntent?.remoteProfileSwitching) &&
+      data.miniCellularIntent?.decisionDate === entry.decidedAt,
+    'miniCellularIntent: Miniの回線の確定事項が欠けています',
   );
   for (const file of [
     'AGENTS.md',
@@ -492,6 +1524,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ37、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Chatの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、tob利用料/売上手数料0、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ50、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Core・Sky Compute Gridへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、Android余剰計算の固定lot仲介、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

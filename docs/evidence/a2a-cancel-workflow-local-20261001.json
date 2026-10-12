@@ -1,0 +1,29 @@
+{
+  "schema": "rock-a2a-cancel-workflow-evidence/1",
+  "date": "2026-10-01",
+  "status": "LOCAL_CONTROLLED_FIXTURE_PASS",
+  "command": "npm run sky:a2a:workflow:positive",
+  "result": "5/5 Cloudflare Workers Vitest cases passed",
+  "scenario": {
+    "remoteTask": "vitest-cancel-task-1",
+    "stateBeforeCancel": "TASK_STATE_WORKING",
+    "stopRequest": "Persisted as cancel_requested before remote CancelTask",
+    "stopConfirmation": "TASK_STATE_CANCELED mapped to remote_cancelled",
+    "usage": "Signed final fixture receipt settled 11 minor units from a 50-unit reservation",
+    "cancelClaims": 1,
+    "restart": "Terminal local state returned not_dispatchable without another provider request"
+  },
+  "discoveredIssue": "A restarted reconciliation Workflow previously polled the external task again after a terminal local state. It now exits before discovery or provider calls for terminal states.",
+  "coverage": "Local Miniflare D1/Workflow and controlled A2A service binding only; not a contracted provider, Cloudflare production, or live cancellation acceptance.",
+  "notProven": [
+    "contracted provider cancellation and cancellation fee semantics",
+    "production controller durability and worker-stop enforcement",
+    "funded Wallet reservation and settlement",
+    "device offline stop UI"
+  ],
+  "source": [
+    "services/sky-agent-runtime/src/worker.ts",
+    "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
+    "services/sky-agent-runtime/vitest.config.ts"
+  ]
+}

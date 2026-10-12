@@ -1,0 +1,408 @@
+{
+  "schema": "sky-commerce-prompt-context/1",
+  "checkedAtUtc": "2026-10-01 21:59:18 UTC",
+  "clientTimeZone": "America/New_York",
+  "sourceRepository": "https://github.com/k999ln/rock",
+  "main": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "workingBranch": "main",
+  "workingHead": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "localDesignChangesUncommitted": true,
+  "designPublishedToGitHub": false,
+  "branchCount": 16,
+  "branches": [
+    {
+      "name": "agent/jev-control-plane-20260927",
+      "sha": "6c3da397d1ec9a609c89bc15cb498d410e9744d4"
+    },
+    {
+      "name": "chore/ledger-sync-20260925",
+      "sha": "846f3950ec79b1029290c82605896e9ec98ead26"
+    },
+    {
+      "name": "ci/avocado-mini-site-tests-in-verify",
+      "sha": "4604bc4ad97287a20bd38dda58b19767d2e3268a"
+    },
+    {
+      "name": "codex/avocado-campus-layer",
+      "sha": "29202ae6a398dfcc257f9ddae6980f8a1f0e300e"
+    },
+    {
+      "name": "codex/jev-decision-layer-20260920",
+      "sha": "8978ca44a47bb01edeb12057fe7848959d28db0a"
+    },
+    {
+      "name": "codex/pixel10-compile-bringup-20260917",
+      "sha": "771770d08457f46f06a2d4db7c1098daeccdbc74"
+    },
+    {
+      "name": "docs/avokado-mini-product-name",
+      "sha": "0d2b758ffb068db256d0fb551517a4030bcac050"
+    },
+    {
+      "name": "feat/ai02-model-pinning-fixture",
+      "sha": "b37c52a6e813b9c76d87ef7aad37277c6375fb15"
+    },
+    {
+      "name": "feat/ai03-bounded-memory-fixture",
+      "sha": "829bf229d5c2f20fc8a92a008b85e0fc42fc9532"
+    },
+    {
+      "name": "feat/ai04-operation-key-fixture",
+      "sha": "504e43c6730806265caca5a1231eb5435d5f22b3"
+    },
+    {
+      "name": "feat/ai05-capability-single-executor-fixture",
+      "sha": "af38db8fa46fce20e6aa8563d7e427c327934f89"
+    },
+    {
+      "name": "feat/game-minimal-loop-fixture",
+      "sha": "78638565bd042defe9bec1ffb8d26c8b6cca48b6"
+    },
+    {
+      "name": "feature/avocado-farm-sandbox",
+      "sha": "0bac933377c57847151e5c440e3bc54db742edd5"
+    },
+    {
+      "name": "feature/meme-intelligence-sandbox",
+      "sha": "8b8ae899d1af5b534d76e2445186d85aea07dde0"
+    },
+    {
+      "name": "fix/readme-english-ci",
+      "sha": "b49bdf02ab3b953e91b4f5f4b3ff57634fbd81c9"
+    },
+    {
+      "name": "main",
+      "sha": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8"
+    }
+  ],
+  "openPulls": [
+    {
+      "number": 50,
+      "title": "Add PAPER-only Meme Intelligence sandbox",
+      "state": "open",
+      "draft": false,
+      "mergedAt": null,
+      "headRef": "feature/meme-intelligence-sandbox",
+      "headSha": "8b8ae899d1af5b534d76e2445186d85aea07dde0",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/50"
+    },
+    {
+      "number": 49,
+      "title": "Add Avocado Campus layer",
+      "state": "open",
+      "draft": false,
+      "mergedAt": null,
+      "headRef": "codex/avocado-campus-layer",
+      "headSha": "29202ae6a398dfcc257f9ddae6980f8a1f0e300e",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/49"
+    },
+    {
+      "number": 48,
+      "title": "Add Avocado Farm mechanism-first LP farming sandbox",
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "headRef": "feature/avocado-farm-sandbox",
+      "headSha": "0bac933377c57847151e5c440e3bc54db742edd5",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/48"
+    },
+    {
+      "number": 47,
+      "title": "feat: add Jev-gated agent control plane",
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "headRef": "agent/jev-control-plane-20260927",
+      "headSha": "6c3da397d1ec9a609c89bc15cb498d410e9744d4",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/47"
+    },
+    {
+      "number": 46,
+      "title": "AI05 host/fixture: capability negotiation, single executor device, persistent selection and snapshot recovery (stacked on #45)",
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "headRef": "feat/ai05-capability-single-executor-fixture",
+      "headSha": "af38db8fa46fce20e6aa8563d7e427c327934f89",
+      "base": "feat/ai03-bounded-memory-fixture",
+      "url": "https://github.com/k999ln/rock/pull/46"
+    },
+    {
+      "number": 45,
+      "title": "AI03 host/fixture: model-independent bounded memory, project isolation, provenance, deletion (stacked on #44)",
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "headRef": "feat/ai03-bounded-memory-fixture",
+      "headSha": "829bf229d5c2f20fc8a92a008b85e0fc42fc9532",
+      "base": "feat/ai04-operation-key-fixture",
+      "url": "https://github.com/k999ln/rock/pull/45"
+    },
+    {
+      "number": 44,
+      "title": "feat(core): AI04 host/fixture — external-write outboxのoperation key・結果不明照合・crash復旧（#42にstack）",
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "headRef": "feat/ai04-operation-key-fixture",
+      "headSha": "504e43c6730806265caca5a1231eb5435d5f22b3",
+      "base": "feat/ai02-model-pinning-fixture",
+      "url": "https://github.com/k999ln/rock/pull/44"
+    },
+    {
+      "number": 43,
+      "title": "feat(game): R5 §03 GAME01の最小loopを2D粒子sandboxとしてhost／fixtureで実装（GM01、AI06から切り出し）",
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "headRef": "feat/game-minimal-loop-fixture",
+      "headSha": "78638565bd042defe9bec1ffb8d26c8b6cca48b6",
+      "base": "chore/ledger-sync-20260925",
+      "url": "https://github.com/k999ln/rock/pull/43"
+    },
+    {
+      "number": 42,
+      "title": "feat(core): AI02 host/fixture — ModelProfile登録・仕事への版固定・モデル切替（AI09本人決定を記録、#41にstack）",
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "headRef": "feat/ai02-model-pinning-fixture",
+      "headSha": "b37c52a6e813b9c76d87ef7aad37277c6375fb15",
+      "base": "chore/ledger-sync-20260925",
+      "url": "https://github.com/k999ln/rock/pull/42"
+    },
+    {
+      "number": 41,
+      "title": "chore: 台帳をmain 851bb04と公開Siteへ同期し、Mini/Pro参考価格の本人決定を記録（#39を置換）",
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "headRef": "chore/ledger-sync-20260925",
+      "headSha": "846f3950ec79b1029290c82605896e9ec98ead26",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/41"
+    },
+    {
+      "number": 40,
+      "title": "docs: avokado miniの製品名とREADMEを統一",
+      "state": "open",
+      "draft": false,
+      "mergedAt": null,
+      "headRef": "docs/avokado-mini-product-name",
+      "headSha": "0d2b758ffb068db256d0fb551517a4030bcac050",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/40"
+    },
+    {
+      "number": 39,
+      "title": "ci: avocadoMini Site試験をnpm run verifyへ接続 / run avocadoMini site tests in verify",
+      "state": "open",
+      "draft": false,
+      "mergedAt": null,
+      "headRef": "ci/avocado-mini-site-tests-in-verify",
+      "headSha": "4604bc4ad97287a20bd38dda58b19767d2e3268a",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/39"
+    },
+    {
+      "number": 25,
+      "title": "feat: Jev Decision Fabric and optional Android provider source",
+      "state": "open",
+      "draft": true,
+      "mergedAt": null,
+      "headRef": "codex/jev-decision-layer-20260920",
+      "headSha": "8978ca44a47bb01edeb12057fe7848959d28db0a",
+      "base": "codex/pixel10-compile-bringup-20260917",
+      "url": "https://github.com/k999ln/rock/pull/25"
+    }
+  ],
+  "recentClosedPulls": [
+    {
+      "number": 38,
+      "title": "保留中の精算サービスを払出し設定なしで正常表示",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-25T00:59:06Z",
+      "headRef": "fix/billing-hold-without-payout-secret",
+      "headSha": "971c5abb758336449a1ff39948ab5a8f4f84a272",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/38"
+    },
+    {
+      "number": 37,
+      "title": "8.88 USD収益料金を動線確定まで保留",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-25T00:48:00Z",
+      "headRef": "policy/hold-888-fee",
+      "headSha": "2676d6268980af69c3e16c92ed2f51cee21f1c63",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/37"
+    },
+    {
+      "number": 36,
+      "title": "Sync database status after R5 deployment record",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-25T00:20:47Z",
+      "headRef": "fix/database-status-after-avokado-merge",
+      "headSha": "3b63762eec5d1dee3db776fe21bfb23e2ec48c74",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/36"
+    },
+    {
+      "number": 35,
+      "title": "Refine avokado README product visuals",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-25T00:15:40Z",
+      "headRef": "docs/avokado-visual-art-direction",
+      "headSha": "ece5d741d12507586cae74aef9ea38a265a5bbca",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/35"
+    },
+    {
+      "number": 34,
+      "title": "docs: avokado READMEのビジュアルを整理",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-24T23:55:28Z",
+      "headRef": "docs/avokado-readme-visual-polish",
+      "headSha": "9db425a817e8ff22b0547a3f8d7710b16eac8904",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/34"
+    },
+    {
+      "number": 33,
+      "title": "docs: avokado READMEをR5製品画像とブランドGIFで刷新",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-24T23:40:43Z",
+      "headRef": "docs/avokado-readme-r5-visuals",
+      "headSha": "6bd56a92bd00f80de0dd08bec297945a07c8b3fc",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/33"
+    },
+    {
+      "number": 32,
+      "title": "web: rocketstar完全設計書の全35章readerとPDF・付録を公開",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-24T22:09:05Z",
+      "headRef": "codex/rocketstar-public-design-downloads",
+      "headSha": "dc51450de681b2c955b2fdb59d4d28ae41373cf4",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/32"
+    },
+    {
+      "number": 31,
+      "title": "web: rocketstarを両段再使用・衛星・OSのR1.0構想へ更新",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-24T21:46:43Z",
+      "headRef": "codex/rocketstar-site-r1",
+      "headSha": "8bddcff5f295cd9b9830e0c13c839ccca5d6e2fd",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/31"
+    },
+    {
+      "number": 28,
+      "title": "Rocket StarとSkyのAI自動化チームを整理したプロジェクト別ガイド",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-24T21:38:11Z",
+      "headRef": "codex/project-by-project-index-20260924",
+      "headSha": "f243a66dd724c7841714b9e6e4ac7dd8be2b96d4",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/28"
+    },
+    {
+      "number": 30,
+      "title": "docs: rocketstar完全版・OS付録・設計作業一式を保存",
+      "state": "closed",
+      "draft": false,
+      "mergedAt": "2026-09-24T21:19:02Z",
+      "headRef": "codex/save-rocketstar-design",
+      "headSha": "c414490c6201932dc2ac4930edcfb3d2388ff255",
+      "base": "main",
+      "url": "https://github.com/k999ln/rock/pull/30"
+    }
+  ],
+  "observedRefsUnchanged": true,
+  "sameHeadChecks": [
+    {
+      "name": "collect",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/k999ln/rock/actions/runs/36866466667/job/110383054361"
+    },
+    {
+      "name": "collect",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/36821495324/job/110237835378"
+    },
+    {
+      "name": "collect",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/36784235477/job/110121667918"
+    },
+    {
+      "name": "collect",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/36715169441/job/109886207120"
+    },
+    {
+      "name": "collect",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/36673591279/job/109753656528"
+    },
+    {
+      "name": "collect",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/k999ln/rock/actions/runs/36638182304/job/109643861071"
+    },
+    {
+      "name": "prototype",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/k999ln/rock/actions/runs/36588996034/job/109476819949"
+    },
+    {
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "failure",
+      "url": "https://github.com/k999ln/rock/actions/runs/36588995906/job/109476819153"
+    }
+  ],
+  "legacyCommitStatus": {
+    "state": "pending",
+    "count": 0,
+    "interpretation": "No legacy statuses is not a passing CI result"
+  },
+  "collectionMethod": "GitHub connector read-only API fallback; npm run prompt:context blocked by known local visual baseline failure",
+  "scope": "Source inspection and tests cover main plus local design artifacts, not source/CI review of every unrelated branch",
+  "mainFetchedSuccessfully": true,
+  "draftReview": {
+    "status": "reviewed",
+    "scope": "Prompt accuracy and security/operations acceptance boundaries; not runtime security acceptance",
+    "followupsApplied": [
+      "Explicit v2 runtime and migration not implemented",
+      "Keep current card-only checkout"
+    ]
+  },
+  "promptValidation": {
+    "projectCheck": "passed",
+    "diffWhitespace": "passed",
+    "fullVerify": "failed_existing_visual_baseline",
+    "runtimeModified": false
+  }
+}

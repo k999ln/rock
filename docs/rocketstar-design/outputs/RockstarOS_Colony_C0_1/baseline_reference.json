@@ -1,0 +1,17 @@
+{
+  "design": "rocketstar C3",
+  "sourceAbsolutePath": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/outputs/rocketstar_C3_Integrated_Design_Baseline.pdf",
+  "sha256": "fccac9318d8754c525b5fd20e1f2498008d8c7bdf8ae7670f0c8210111e9e7b8",
+  "notIncludedAsRevisedDesign": true,
+  "formerRocketName": "RETURN-1",
+  "namingRevisionDate": "2026-09-24",
+  "changesToPerformance": false,
+  "manufacturingRelease": false,
+  "flightRelease": false,
+  "note": "C0.1 adds colony system interfaces; does not close C3 physical engineering gaps.",
+  "previousNamingBaseline": {
+    "sourceAbsolutePath": "/Users/kaiya/Documents/Codex/2026-09-21/codex-threads-01a0bc41-ceb2-72a0-8417/outputs/RETURN-1_C3_Integrated_Design_Baseline.pdf",
+    "sha256": "f58f9f174ef0fec12c608aca83e24642999783865b96f301c94f1870c4a9a175",
+    "historicalName": "RETURN-1 C3"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "rock-a2a-provider-usage-receipt/1",
+  "providerId": "provider-x",
+  "keyId": "usage-key-1",
+  "receiptId": "receipt-1",
+  "ownerUserId": "alice",
+  "parentJobId": "zema-job-1",
+  "delegationId": "a2a-job-1",
+  "taskId": "remote-task-1",
+  "agentOrigin": "https://agent.example",
+  "agentName": "Research Agent",
+  "agentVersion": "1.0.0",
+  "currency": "USD",
+  "amountMinor": 650,
+  "pricingVersion": "fixture-price-1",
+  "issuedAt": 1800000000000,
+  "usage": [
+    {
+      "meter": "agent-operation",
+      "quantity": 1,
+      "unit": "request",
+      "amountMinor": 650
+    }
+  ],
+  "signature": "odJ8MkXH15thYOWTrPMl5XURs2I6vxArEvNcs4nA5j7-DtKpYxjxq2HZVyg9_cdxjnXMUxmTM7xGDKqE97XlBQ",
+  "fixturePublicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+  "signingBytesSha256": "d07b4129081a85123aa233c8b7639e9654986a4d0b204def4cad0dd6b833ac75",
+  "notice": "Public RFC 8032 test key only; never production trust."
+}

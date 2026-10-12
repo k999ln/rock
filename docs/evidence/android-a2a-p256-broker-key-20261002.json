@@ -1,0 +1,40 @@
+{
+  "schema": "rockstar-local-implementation-evidence/1",
+  "date": "2026-10-02",
+  "scope": "Align Android Broker signing keys with the repository's hardware-backed Android Key Attestation verifier and permit exact-key P-256 verification in the existing Cloud A2A trust boundary.",
+  "research": {
+    "finding": "AOSP Key Attestation schema describes asymmetric key algorithms as RSA, EC, or ML-DSA. The repository's pinned verifier returns a P-256 public point, so the previous Android Ed25519 Broker key could not be established by that verifier.",
+    "source": "https://source.android.com/docs/security/features/keystore/attestation"
+  },
+  "implemented": [
+    "Android Broker signing now uses a non-exportable AndroidKeyStore P-256 key with attestation challenge, TEE/StrongBox requirement, and point-digest key ID.",
+    "Java ECDSA DER signatures are converted to the 64-byte P1363 encoding used by Cloud WebCrypto; the server request remains domain-separated and owner/device/delegation scoped.",
+    "Cloud A2A proof and wallet-handoff verification retain legacy Ed25519 verification and add uncompressed P-256 point verification.",
+    "Operator trust inventory accepts exact 32-byte Ed25519 keys or 65-byte uncompressed P-256 points, still bound to authority, owner, device and key ID. It remains operator-controlled; no self-enrollment was added."
+  ],
+  "locallyVerified": {
+    "tests": "node --experimental-strip-types --test tests/a2a-broker-authorization.test.mjs tests/a2a-wallet-handoff-auth.test.mjs",
+    "testCount": 9,
+    "testResult": "PASS",
+    "workerD1Api": "PASS: 863 assertions",
+    "cloudflareWorkflow": "PASS: 10 controlled-fixture cases",
+    "typescript": "PASS",
+    "productionWebBuild": "PASS with existing chunk-size and CSS filename-conflict warnings",
+    "androidArchitectureCheck": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "notVerified": [
+    "Android P-256 KeyStore generation, attestation chain, DER-to-P1363 Java code and instrumentation were not compiled or run because Android SDK/JDK are unavailable in this host.",
+    "No server challenge/enrollment/revocation API or dynamic Cloud D1 trust-key resolver exists yet; operator trust configuration is still required and currently has no production device keys.",
+    "No production Cloudflare deployment, Android APK/device, provider execution, billing, carrier activation, or RockstarOS installation is verified."
+  ],
+  "sha256": {
+    "android/automation/src/main/java/dev/rock/automation/A2ABrokerDeviceKeyStore.java": "433dbab044c9c72e9e829b1f1574173bd7bdec242637f82a703661749f55e6f6",
+    "android/automation/src/androidTest/java/dev/rock/automation/A2ABrokerDeviceKeyStoreTest.java": "77d8695a596b314950bfda8613d3ad155aeb885ba1289b0b8311d2d9951a791c",
+    "lib/a2a-broker-authorization.ts": "58bd6addb8be11a4af998086e358af67503bbaa130edbc2bd1ca467d902b326c",
+    "lib/a2a-wallet-handoff-auth.ts": "87941ddf06a266af3082551a2a30fb54b087c524d6de39dd6cdc8143833b0573",
+    "lib/a2a-broker-trust.ts": "25285d3dc514c6bc24c998aad238552d9a523e238a082a4c7378367a042a473a",
+    "tests/a2a-broker-authorization.test.mjs": "a0eeaa64684aba8ae91cc30d085135f54ad967e3dcac60c5e193b4710efcae22",
+    "tests/a2a-wallet-handoff-auth.test.mjs": "2db57cf45a5f1196fcc3dcaeeb6aef03baa8c8bf7370f6979def9c14554b11ac"
+  }
+}

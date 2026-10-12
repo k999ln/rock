@@ -1,0 +1,28 @@
+{
+  "schema": "rock-a2a-cloud-recovery-recheck-evidence/1",
+  "date": "2026-10-01",
+  "repositoryVerification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": "595/595",
+    "fashionBrandOpsTests": "19/19",
+    "workerD1Assertions": 424,
+    "typecheck": "passed",
+    "productLint": "passed",
+    "productionBuild": "passed",
+    "releaseReadiness": "0/6 public targets ready; Pixel first-flash 0/4"
+  },
+  "workflowRecovery": {
+    "positiveWorkflowCommand": "npm run sky:a2a:workflow:positive",
+    "positiveWorkflowCases": "4/4",
+    "workingTaskDurableRestart": "same remote task ID reconciled to completion; one send claim; one fixture usage settlement",
+    "processRestartCommand": "npm run sky:a2a:workflow:test",
+    "processRestartResult": "passed; three prepared rows survived a two-Workerd-process restart and failed closed before agent discovery because proof was absent, expired, or revoked",
+    "remoteSendClaims": 0
+  },
+  "limitations": [
+    "local synthetic D1 and controlled agent/verifier fixtures only",
+    "not Cloudflare production, external provider, funded Wallet, or device Gateway acceptance",
+    "Android SDK platform/build-tools and Java runtime are unavailable in the current host; ADB daemon could not start, so Android compile and instrumentation were not run"
+  ]
+}

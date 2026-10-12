@@ -18,6 +18,7 @@ import threading
 import time
 
 from .http import canonical, decode, digest, identifier, MAX_INPUT, MAX_BODY, TransportError
+from .a2a_authorization import build_authorization_proof, encode_signature, signing_bytes
 
 
 class AccessDenied(PermissionError):
@@ -58,7 +59,9 @@ TERMINAL = {'succeeded', 'failed', 'cancelled'}
 
 class Broker:
     def __init__(self, state_dir, *, routes=None, recovery_routes=(), principal_adapter=None, clock=time.time,
-                 max_operations=128, max_control_receipts=512, max_bytes=32 * 1024 * 1024):
+                 max_operations=128, max_control_receipts=512, max_bytes=32 * 1024 * 1024,
+                 a2a_authorization_signer=None, a2a_authority_id=None,
+                 a2a_wallet_reservation_authorizer=None):
         self.routes = dict(routes or {})
         for route_id in self.routes:
             identifier(route_id)
@@ -72,6 +75,19 @@ class Broker:
                 raise ValueError('invalid storage bounds')
         self.max_operations, self.max_control_receipts, self.max_bytes = max_operations, max_control_receipts, max_bytes
         self.adapter, self.clock = principal_adapter or DenyAll(), clock
+        if (a2a_authorization_signer is None) != (a2a_authority_id is None):
+            raise ValueError('A2A authority and protected signer must be configured together')
+        if a2a_authority_id is not None:
+            identifier(a2a_authority_id)
+            if not callable(getattr(a2a_authorization_signer, 'key_id', None)) or not callable(getattr(a2a_authorization_signer, 'sign', None)):
+                raise ValueError('protected A2A signer contract is incomplete')
+            if not callable(a2a_wallet_reservation_authorizer):
+                raise ValueError('A2A authorization requires a Wallet reservation authorizer')
+        elif a2a_wallet_reservation_authorizer is not None:
+            raise ValueError('A2A Wallet reservation authorizer requires the protected signer')
+        self.a2a_authorization_signer = a2a_authorization_signer
+        self.a2a_authority_id = a2a_authority_id
+        self.a2a_wallet_reservation_authorizer = a2a_wallet_reservation_authorizer
         self.mutex = threading.RLock()
         self._maximum_observed = 0
         self._processing = set()
@@ -202,6 +218,10 @@ class Broker:
             raise AccessDenied('verified Principal required')
         return principal.validate()
 
+    def authenticated_principal(self, auth):
+        """Return the Broker-verified identity for trusted in-process adapters."""
+        return self._principal(auth)
+
     def _now(self, db):
         value = self.clock()
         if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value < 2**62:
@@ -250,6 +270,63 @@ class Broker:
     def _remember_control(self, db, p, key, payload, result):
         db.execute('INSERT INTO control_receipts VALUES(?,?,?,?,?)', (*self._identity(p), key, digest(payload), canonical(result).decode()))
         return result
+
+    def authorize_a2a_delegation(self, intent, *, key, consent, auth):
+        """Persist a signed, short-lived proof after exact local owner consent.
+
+        The signing adapter must keep the private key outside this Broker and
+        apply its own protected-key/user-presence policy. No signer is bundled.
+        """
+        p = self._principal(auth)
+        identifier(key)
+        if self.a2a_authorization_signer is None:
+            raise Unavailable('protected A2A authorization signer is unavailable')
+        if type(intent) is not dict:
+            raise ValueError('A2A delegation intent required')
+        payload = {'operation': 'a2a.authorize', 'intent': intent}
+        with self.adapter.guard(p, 'a2a.authorize'):
+            # Return the exact old proof before asking the authenticator to sign
+            # again. The control journal stores only the request digest/result.
+            with self.mutex, closing(self._connect()) as db:
+                old = self._old_control(db, p, key, payload)
+                if old is not None:
+                    return old
+            with self.mutex, self._transaction() as db:
+                issued_at = self._now(db) * 1000
+            key_id = self.a2a_authorization_signer.key_id(p)
+            proof = build_authorization_proof(
+                self.a2a_authority_id, p.subject, p.device_ref, intent,
+                issued_at, min(issued_at + 5 * 60_000, intent.get('deadlineAt', 0)),
+                key_id,
+            )
+            if (type(consent) is not dict or set(consent) != {'approved', 'digest'} or
+                    consent.get('approved') is not True or
+                    consent.get('digest') != proof['authorizationSha256']):
+                raise AccessDenied('explicit exact A2A delegation consent required')
+            # The callback must atomically verify the native Wallet hold against
+            # this exact signed intent and conservatively fence it for dispatch.
+            # It runs before protected signing; failures must not mint a proof.
+            try:
+                authorized = self.a2a_wallet_reservation_authorizer(p, proof, key)
+            except Exception as error:
+                raise AccessDenied('matching native A2A Wallet reservation required') from error
+            if authorized is not True:
+                raise AccessDenied('matching native A2A Wallet reservation required')
+            try:
+                signature = self.a2a_authorization_signer.sign(p, key_id, signing_bytes(proof))
+                proof['signature'] = encode_signature(signature)
+            except PermissionError:
+                raise
+            except Exception as error:
+                raise Unavailable('protected A2A authorization signing failed') from error
+            with self.mutex, self._transaction() as db:
+                committed_at = self._now(db) * 1000
+                if committed_at >= proof['expiresAt']:
+                    raise AccessDenied('A2A delegation authorization expired before persistence')
+                old = self._old_control(db, p, key, payload)
+                if old is not None:
+                    return old
+                return self._remember_control(db, p, key, payload, proof)
 
     @staticmethod
     def _invalidate_unsent(db, p, alias):

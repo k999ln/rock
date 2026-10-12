@@ -1,3 +1,4 @@
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { requestUser } from '@/lib/request-auth';
 import {
   createCsvJob,
@@ -11,7 +12,7 @@ export const GET = async (request: Request) => {
   try {
     const user = await requestUser(request);
     return Response.json(
-      { jobs: await listCsvJobs(user), retentionDays: 7 },
+      { jobs: await listCsvJobs(user), retentionDays: 7, ownerScope: await ownerScopeFor(user) },
       { headers: { 'Cache-Control': 'no-store' } },
     );
   } catch (error) {
@@ -22,6 +23,8 @@ export const GET = async (request: Request) => {
 export const POST = async (request: Request) => {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const length = Number(request.headers.get('content-length') ?? 0);
     if (length > CSV_LIMITS.bytes + 64 * 1024)
       throw new CsvJobError(413, 'TOO_LARGE', 'CSVは10MB以下にしてください。');

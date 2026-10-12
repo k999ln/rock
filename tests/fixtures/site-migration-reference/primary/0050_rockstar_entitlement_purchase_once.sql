@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `idx_rockstar_entitlement_purchase_ref` ON `rockstar_service_entitlements` (`issuer_id`,`purchase_reference_sha256`);

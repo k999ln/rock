@@ -1,0 +1,43 @@
+name: Sky discovery collection
+
+on:
+  workflow_dispatch:
+    inputs:
+      query:
+        description: 'Search words for GitHub, Hugging Face, and approved Product Hunt sources'
+        required: false
+        default: 'automation'
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sky-discovery
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    env:
+      PRODUCT_HUNT_ACCESS_TOKEN: ${{ secrets.PRODUCT_HUNT_ACCESS_TOKEN }}
+      PRODUCT_HUNT_BUSINESS_APPROVED: ${{ vars.PRODUCT_HUNT_BUSINESS_APPROVED }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Collect review candidates
+        env:
+          DISCOVERY_QUERY: ${{ inputs.query || 'automation' }}
+        run: node scripts/discover.mjs "$DISCOVERY_QUERY"
+      - name: Upload review report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sky-discovery-report
+          path: data/discovered.json
+          retention-days: 14

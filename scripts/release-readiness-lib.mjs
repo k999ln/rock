@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
+import { existsOrArchived } from './archived-paths.mjs';
 
 const allowedGateStates = new Set(['pass', 'blocked', 'not_applicable']);
 const allowedTargetStates = new Set(['ready', 'blocked']);
@@ -330,7 +331,7 @@ const validateAuditRequirements = ({ root, requirements, expected, label }) => {
         fail(label + '/' + requirement.id + ': 合格根拠がありません');
       }
       for (const evidence of requirement.evidence) {
-        if (!inside(root, evidence) || !existsSync(resolve(root, evidence))) {
+        if (!inside(root, evidence) || !existsOrArchived(evidence, root)) {
           fail(label + '/' + requirement.id + ': 根拠がありません: ' + evidence);
         }
       }
@@ -405,7 +406,7 @@ function webLicenseReviewClass(expression) {
   return 'standard-license-text-and-notice';
 }
 
-export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness }) {
+export function createWebDependencyLicenseInventory(lock) {
   const label = 'Web第三者license監査';
   const dependencies = packageEntries(lock);
   const missing = dependencies.filter((entry) => !entry.license);
@@ -475,6 +476,14 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
       ).length,
     ]),
   );
+  return { packageEntries: dependencies.length, uniqueComponents: components.size,
+    missingLicenseMetadata: 0, licenses, reviewSummary, reviewComponents, reviewScopeSummary };
+}
+
+export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness }) {
+  const label = 'Web第三者license監査';
+  const inventory = createWebDependencyLicenseInventory(lock);
+  const { licenses, reviewSummary, reviewComponents, reviewScopeSummary } = inventory;
   if (audit?.schema !== 'rockstaros-web-third-party-license-audit/1') {
     fail(`${label}: schemaが不一致です`);
   }
@@ -488,8 +497,8 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
     fail(`${label}: package-lock hashとreview分類が不一致です`);
   }
   if (
-    audit.packageEntries !== dependencies.length ||
-    audit.uniqueComponents !== components.size ||
+    audit.packageEntries !== inventory.packageEntries ||
+    audit.uniqueComponents !== inventory.uniqueComponents ||
     audit.missingLicenseMetadata !== 0
   ) {
     fail(`${label}: component集計とreview分類が不一致です`);
@@ -529,8 +538,8 @@ export function validateWebDependencyLicenseAudit({ root, audit, lock, readiness
     fail(`${label}: 公開台帳の根拠が不足しています`);
   }
   return {
-    packageEntries: dependencies.length,
-    uniqueComponents: components.size,
+    packageEntries: inventory.packageEntries,
+    uniqueComponents: inventory.uniqueComponents,
     reviewRequired: reviewSummary['reciprocal-source-terms-review'] +
       reviewSummary['license-choice-review'] +
       reviewSummary['attribution-review'],
@@ -544,7 +553,8 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
   const expected = new Map([
     ['exact-model-and-sku', true],
     ['bsp-driver-boot-recovery', true],
-    ['android-cdd-cts', true],
+    ['selinux-enforcing-isolation', true],
+    ['android-cdd-cts-vts', true],
     ['gms', false],
     ['production-signing', true],
     ['regional-radio-and-sales', true],
@@ -579,7 +589,8 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
   const androidEvidenceRoles = {
     'exact-model-and-sku': ['read-only-device-inventory', 'bootloader-state-observation'],
     'bsp-driver-boot-recovery': ['bsp', 'vendor-drivers', 'boot-chain', 'recovery'],
-    'android-cdd-cts': ['cdd-version', 'cts-revision', 'cts-result', 'cts-verifier-result'],
+    'selinux-enforcing-isolation': ['sepolicy-build', 'upstream-neverallow', 'enforcing-readback', 'domain-map', 'negative-isolation-tests', 'avc-audit'],
+    'android-cdd-cts-vts': ['cdd-version', 'cts-revision', 'cts-result', 'cts-verifier-result', 'vts-revision', 'vts-result', 'vts-hal-result', 'vts-kernel-result'],
     'production-signing': ['key-identity', 'avb-and-ota-verification', 'rollback-policy', 'rotation-and-revocation'],
     'regional-radio-and-sales': ['distribution-model', 'target-regions', 'radio-impact-determination', 'regional-compliance-review'],
   };
@@ -588,15 +599,21 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
       fail(label + '/' + id + ': 必須証拠role定義が不一致です');
     }
   }
-  for (const id of ['bsp-driver-boot-recovery', 'android-cdd-cts', 'production-signing', 'regional-radio-and-sales']) {
+  for (const id of ['bsp-driver-boot-recovery', 'selinux-enforcing-isolation', 'android-cdd-cts-vts', 'production-signing', 'regional-radio-and-sales']) {
     if (requirement(id).status === 'pass' && requirement('exact-model-and-sku').status !== 'pass') {
       fail(label + '/' + id + ': 型番/SKU gateより先に合格にできません');
     }
   }
-  for (const id of ['android-cdd-cts', 'production-signing']) {
+  for (const id of ['selinux-enforcing-isolation', 'android-cdd-cts-vts', 'production-signing']) {
     if (requirement(id).status === 'pass' && requirement('bsp-driver-boot-recovery').status !== 'pass') {
       fail(label + '/' + id + ': BSP/boot/recovery gateより先に合格にできません');
     }
+  }
+  if (
+    requirement('android-cdd-cts-vts').status === 'pass' &&
+    requirement('selinux-enforcing-isolation').status !== 'pass'
+  ) {
+    fail(label + '/android-cdd-cts-vts: SELinux enforcing分離gateより先に合格にできません');
   }
   const deviceValues = Object.values(audit.candidate?.device || {});
   const buildValues = Object.values(audit.candidate?.build || {});
@@ -639,14 +656,21 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
     'gmsLicensed',
     'saleReady',
     'physicalFlashVerified',
+    'selinuxIsolationVerified',
   ]) {
     if (typeof claims[key] !== 'boolean') fail(label + ': claimの真偽値がありません: ' + key);
   }
-  if (claims.androidCompatible && requirement('android-cdd-cts').status !== 'pass') {
-    fail(label + ': CDD/CTS合格なしにAndroid互換を表示できません');
+  if (claims.androidCompatible && requirement('android-cdd-cts-vts').status !== 'pass') {
+    fail(label + ': CDD/CTS/VTS合格なしにAndroid互換を表示できません');
   }
-  if (requirement('android-cdd-cts').status === 'pass' && !claims.androidCompatible) {
-    fail(label + ': CDD/CTS合格後の互換表示状態が一致しません');
+  if (requirement('android-cdd-cts-vts').status === 'pass' && !claims.androidCompatible) {
+    fail(label + ': CDD/CTS/VTS合格後の互換表示状態が一致しません');
+  }
+  if (claims.selinuxIsolationVerified && requirement('selinux-enforcing-isolation').status !== 'pass') {
+    fail(label + ': SELinux分離gate合格なしに実証済みと表示できません');
+  }
+  if (requirement('selinux-enforcing-isolation').status === 'pass' && !claims.selinuxIsolationVerified) {
+    fail(label + ': SELinux分離gate合格後のclaimが一致しません');
   }
   if (claims.physicalFlashVerified && requirement('bsp-driver-boot-recovery').status !== 'pass') {
     fail(label + ': BSP/復旧合格なしに物理flash済みと表示できません');
@@ -685,7 +709,27 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
       audit.artifacts.some(({ sku }) => sku !== audit.candidate.device.sku)
     ) fail(label + ': BSP/boot/recoveryが同じSKUへ結合されていません');
   }
-  if (requirement('android-cdd-cts').status === 'pass') {
+  if (requirement('selinux-enforcing-isolation').status === 'pass') {
+    const isolation = audit.isolation || {};
+    if (
+      isolation.policy !== 'data/android-release-architecture-policy.json' ||
+      isolation.buildVariant !== 'user' ||
+      isolation.getenforce !== 'Enforcing' ||
+      !Array.isArray(isolation.permissiveDomains) ||
+      isolation.permissiveDomains.length !== 0 ||
+      isolation.upstreamNeverallowUnmodified !== true ||
+      isolation.unexpectedAcceptedFlowAvcDenials !== 0
+    ) {
+      fail(label + ': final user buildのSELinux enforcing分離条件が不足しています');
+    }
+    validateExactHashedEvidenceRoles(
+      root,
+      isolation.evidence,
+      label + '/selinux-enforcing-isolation',
+      androidEvidenceRoles['selinux-enforcing-isolation'],
+    );
+  }
+  if (requirement('android-cdd-cts-vts').status === 'pass') {
     const build = audit.candidate.build || {};
     const compatibility = audit.compatibility || {};
     if (
@@ -696,18 +740,27 @@ export function validateAndroidPhysicalReleaseAudit({ root, audit, readiness }) 
       !sha256Pattern.test(build.imageSha256 || '') ||
       !compatibility.cddVersion ||
       !compatibility.ctsRevision ||
+      !compatibility.vtsRevision ||
       !sha256Pattern.test(compatibility.cddDocumentSha256 || '') ||
       !sha256Pattern.test(compatibility.ctsPackageSha256 || '') ||
       !sha256Pattern.test(compatibility.ctsResultSha256 || '') ||
-      !sha256Pattern.test(compatibility.ctsVerifierResultSha256 || '')
+      !sha256Pattern.test(compatibility.ctsVerifierResultSha256 || '') ||
+      !sha256Pattern.test(compatibility.vtsPackageSha256 || '') ||
+      !sha256Pattern.test(compatibility.vtsResultSha256 || '') ||
+      !sha256Pattern.test(compatibility.vtsHalResultSha256 || '') ||
+      !sha256Pattern.test(compatibility.vtsKernelResultSha256 || '')
     ) {
-      fail(label + ': 同一buildのCDD/CTS/CTS Verifier識別子が不足しています');
+      fail(label + ': 同一buildのCDD/CTS/CTS Verifier/VTS識別子が不足しています');
     }
-    validateHashedEvidence(root, compatibility.evidence, label + '/android-cdd-cts', {
+    validateHashedEvidence(root, compatibility.evidence, label + '/android-cdd-cts-vts', {
       'cdd-version': compatibility.cddDocumentSha256,
       'cts-revision': compatibility.ctsPackageSha256,
       'cts-result': compatibility.ctsResultSha256,
       'cts-verifier-result': compatibility.ctsVerifierResultSha256,
+      'vts-revision': compatibility.vtsPackageSha256,
+      'vts-result': compatibility.vtsResultSha256,
+      'vts-hal-result': compatibility.vtsHalResultSha256,
+      'vts-kernel-result': compatibility.vtsKernelResultSha256,
     });
   }
   if (requirement('production-signing').status === 'pass') {
@@ -989,7 +1042,7 @@ export function validateWebSecurityPolicy({ root, policy, readiness }) {
   ) {
     fail(label + ': static asset用_headerがsecurity policy正本と不一致です');
   }
-  const localEvidencePath = 'docs/evidence/launch/web-security-local-20260913.json';
+  const localEvidencePath = 'docs/evidence/launch/web-security-local-20260917.json';
   const localEvidence = readJson(resolve(root, localEvidencePath));
   const localInputs = {
     'data/web-security-policy.json': sha256(readFileSync(resolve(root, 'data/web-security-policy.json'))),
@@ -1067,6 +1120,7 @@ export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness, webS
   const site = audit.site || {};
   const version = audit.latestVersion || {};
   const sync = audit.sync || {};
+  const access = audit.access || {};
   const deploymentSecurity = audit.deploymentSecurity || {};
   const claims = audit.claims || {};
   if (
@@ -1138,17 +1192,39 @@ export function validateOwnerPrivateSitesAudit({ audit, hosting, readiness, webS
       fail(label + ': 最新配備のsecurity header実読取りがありません');
     }
   } else if (sync.status === 'OUTDATED') {
+    const approvedButBlocked = sync.authorization === 'OWNER_APPROVED_ACCESS_BLOCKED';
     if (
       current?.status !== 'blocked' ||
       claims.latestApprovedSourceDeployed !== false ||
       version.sourceCommit === sync.comparedReviewHead ||
       !Number.isInteger(sync.commitsBehind) ||
       sync.commitsBehind < 1 ||
-      sync.authorization !== 'AWAITING_EXPLICIT_OWNER_APPROVAL' ||
+      !['AWAITING_EXPLICIT_OWNER_APPROVAL', 'OWNER_APPROVED_ACCESS_BLOCKED'].includes(
+        sync.authorization,
+      ) ||
       typeof sync.nextAction !== 'string' ||
       !sync.nextAction
     ) {
       fail(label + ': 未同期状態または必要な所有者行動が一致しません');
+    }
+    if (
+      approvedButBlocked &&
+      (
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(
+          sync.authorizationUpdatedAt || '',
+        ) ||
+        access.status !== 'OWNER_WORKSPACE_MISMATCH' ||
+        access.browser !== 'ACCESS_DENIED' ||
+        access.api !== 'PROJECT_NOT_FOUND' ||
+        access.dataMutationPerformed !== false ||
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(access.observedAt || '') ||
+        !Array.isArray(access.evidence) ||
+        !access.evidence.includes(
+          'docs/evidence/launch/sites-owner-auth-blocker-20260915.json',
+        )
+      )
+    ) {
+      fail(label + ': 承認済みaccess blockerの観測証拠が不足しています');
     }
     if (
       deploymentSecurity.status !== 'PENDING_CURRENT_DEPLOYMENT' ||
@@ -1178,6 +1254,21 @@ export function validateReleaseReadiness({
 }) {
   if (readiness.schema !== 'rockstaros-release-readiness/1') fail('schemaが違います');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(readiness.evaluatedAt)) fail('評価日が必要です');
+  const auditDates = [
+    androidAudit?.evaluatedAt,
+    personalNumberAudit?.evaluatedAt,
+    sitesAudit?.observedAt?.slice(0, 10),
+    sitesAudit?.access?.observedAt?.slice(0, 10),
+    webSecurityPolicy?.evaluatedAt,
+    webLicenseAudit?.evaluatedAt,
+  ].filter(Boolean);
+  if (
+    auditDates.some(
+      (date) => !/^\d{4}-\d{2}-\d{2}$/.test(date) || date > readiness.evaluatedAt,
+    )
+  ) {
+    fail('評価日が監査観測より古いか、監査日形式が不正です');
+  }
   if (!Array.isArray(readiness.targets) || readiness.targets.length < 5) fail('配布対象が不足しています');
 
   const targetIds = new Set();
@@ -1232,7 +1323,8 @@ export function validateReleaseReadiness({
       gates: new Map([
         ['exact-model-and-sku', true],
         ['bsp-driver-boot-recovery', true],
-        ['android-cdd-cts', true],
+        ['selinux-enforcing-isolation', true],
+        ['android-cdd-cts-vts', true],
         ['gms', false],
         ['production-signing', true],
         ['regional-radio-and-sales', true],
@@ -1285,7 +1377,7 @@ export function validateReleaseReadiness({
         fail(`${target.id}/${gate.id}: 未達時の必要行動がありません`);
       }
       for (const evidence of gate.evidence || []) {
-        if (!inside(root, evidence) || !existsSync(resolve(root, evidence))) {
+        if (!inside(root, evidence) || !existsOrArchived(evidence, root)) {
           fail(`${target.id}/${gate.id}: 根拠がありません: ${evidence}`);
         }
       }
@@ -1380,7 +1472,7 @@ export function validateQemuReleaseAudit({
       fail(`${requirement.id}: 未達時の次の行動がありません`);
     }
     for (const evidence of requirement.evidence || []) {
-      if (!inside(root, evidence) || !existsSync(resolve(root, evidence))) {
+      if (!inside(root, evidence) || !existsOrArchived(evidence, root)) {
         fail(`${requirement.id}: QEMU根拠がありません: ${evidence}`);
       }
     }

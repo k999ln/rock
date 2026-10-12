@@ -5,6 +5,12 @@ export const metadata: Metadata = {
   title: 'Zema — RockstarOS',
 };
 
-export default function ChatPage() {
+export default async function ChatPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tool?: string; thread?: string; view?: string }>;
+}) {
+  const params = await searchParams;
+  if (params.view === 'work') return <SkyChatWorkspace />;
   return <SkyChatWorkspace />;
 }

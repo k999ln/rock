@@ -1,26 +1,30 @@
 'use client';
 
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, type MouseEventHandler, type ReactNode } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Cable } from 'lucide-react';
+import { ArrowUpRight, Cable, CircleHelp, House } from 'lucide-react';
 import { monitorDevice } from '@/lib/device';
-import OSHeader from './os-header';
+import { PRODUCT_RELEASE_NAME } from '@/lib/product-identity';
+import skyStyles from '@/components/sky-surface.module.css';
 
 export default function WorkspaceShell({
   children,
   title,
   contentClassName,
   onConnect,
+  onClickCapture,
   running = false,
   hideTopActions = false,
+  tone,
 }: {
   children: ReactNode;
   title: string;
   contentClassName?: string;
   onConnect?: () => void;
+  onClickCapture?: MouseEventHandler<HTMLDivElement>;
   running?: boolean;
-  showSidebar?: boolean;
   hideTopActions?: boolean;
+  tone?: 'sky';
 }) {
   useEffect(() => {
     void navigator.serviceWorker?.register('/sw.js').catch(() => {});
@@ -36,9 +40,6 @@ export default function WorkspaceShell({
   }, [running]);
   return (
     <div
-      className="rock-workspace"
-      data-running={running ? 'true' : 'false'}
-      aria-busy={running}
       onClickCapture={(event) => {
         if (
           running &&
@@ -46,32 +47,60 @@ export default function WorkspaceShell({
           event.target.closest('a[href]')
         )
           event.preventDefault();
+        onClickCapture?.(event);
       }}
+      className={`rock-workspace${tone === 'sky' ? ` ${skyStyles.sky}` : ''}`}
+      data-running={running ? 'true' : 'false'}
+      aria-busy={running}
     >
       <a className="rock-skip" href="#workspace-main">
         メインコンテンツへ
       </a>
       <div className="rock-main-column rock-main-column-full">
-        <OSHeader title={title} running={running}>
-          {!hideTopActions &&
-            (onConnect ? (
-              <button
-                className="rock-button rock-button-subtle"
-                disabled={running}
-                onClick={onConnect}
-              >
-                <Cable size={17} /> PCを接続
-              </button>
-            ) : (
-              <Link
-                className="rock-button rock-button-subtle"
-                href="/rockstaros/guide"
-                aria-disabled={running || undefined}
-              >
-                使い方を見る
-              </Link>
-            ))}
-        </OSHeader>
+        <header className="rock-topbar">
+          <Link
+            href={tone === 'sky' ? '/sky/marketplace' : '/'}
+            className="rock-home-link"
+            aria-label="ホームへ戻る"
+            aria-disabled={running || undefined}
+          >
+            <House size={17} />
+            <span>ホーム</span>
+          </Link>
+          <div className="rock-breadcrumb">
+            <strong>{title}</strong>
+            <em>DEVELOPER PREVIEW</em>
+          </div>
+          {!hideTopActions && (
+            <div className="rock-topbar-actions">
+              {running && (
+                <output className="rock-executing">
+                  処理中 · 完了まで画面を開いてください
+                </output>
+              )}
+              <span className="rock-web-label">WEB / PC</span>
+              {onConnect ? (
+                <button
+                  className="rock-button rock-button-subtle"
+                  disabled={running}
+                  onClick={onConnect}
+                >
+                  <Cable size={17} />
+                  PCを接続
+                </button>
+              ) : (
+                <Link
+                  className="rock-button rock-button-subtle"
+                  href={tone === 'sky' ? '/sky/help' : '/rockstaros/guide'}
+                  aria-label="使い方を見る"
+                  aria-disabled={running || undefined}
+                >
+                  <CircleHelp size={17} /> 使い方を見る
+                </Link>
+              )}
+            </div>
+          )}
+        </header>
         <main
           id="workspace-main"
           className={`rock-main ${contentClassName ?? ''}`}
@@ -80,9 +109,9 @@ export default function WorkspaceShell({
           {children}
         </main>
         <div className="rock-bottom-note">
-          <span>RockstarOS 1.0</span>
+          <span>{tone === 'sky' ? 'Sky' : PRODUCT_RELEASE_NAME}</span>
           <Link
-            href="/rockstaros/guide#limits"
+            href={tone === 'sky' ? '/sky/help#limits' : '/rockstaros/guide#limits'}
             aria-disabled={running || undefined}
           >
             対応環境と既知の制限 <ArrowUpRight size={13} />

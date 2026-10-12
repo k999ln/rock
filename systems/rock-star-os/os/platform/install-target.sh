@@ -19,6 +19,10 @@ for module in __init__ state release onboarding device; do
   chmod 0644 "$dest/operations/$module.py"
 done
 cp "$repo/os/platform/wallet_view.py" "$dest/wallet_view.py"
+cp "$repo/os/platform/sensitive_guard.py" "$dest/sensitive_guard.py"
+cp "$repo/os/platform/code_inspector.py" "$dest/code_inspector.py"
+cp "$repo/os/platform/supervisor.py" "$dest/supervisor.py"
+chmod 0644 "$dest/sensitive_guard.py" "$dest/code_inspector.py" "$dest/supervisor.py"
 chmod 0644 "$dest/wallet_view.py"
 mkdir -p "$dest/mcp_broker"
 chmod 0755 "$dest/mcp_broker"
@@ -130,10 +134,12 @@ if not result.get('result', {}).get('ready'):
 EOF
 chmod 0755 "$target/usr/libexec/rock-platform-health"
 for role in platform wallet; do
+  entry="service.py --role $role"
+  [ "$role" != platform ] || entry="supervisor.py"
   cat > "$target/usr/libexec/rock-$role-launch" <<EOF
 #!/bin/sh
 exec >>/var/log/rock-$role.log 2>&1
-exec /usr/bin/python3 -I -B /usr/lib/rock-platform/service.py --role $role
+exec /usr/bin/python3 -I -B /usr/lib/rock-platform/$entry
 EOF
   chmod 0755 "$target/usr/libexec/rock-$role-launch"
 done

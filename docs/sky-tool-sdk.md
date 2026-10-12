@@ -1,6 +1,10 @@
 # Sky Tool SDK / Rock Studio — 自動化をSky商品へする標準導線
 
-最終更新: 2026-09-15
+最終更新: 2026-10-03
+
+2026-10-03更新: SDK 0.1.3は、PC内MCPへ不正な非ASCII認証値が届いた際のprocess停止を防ぐ。Studioの導入URLとCLIが生成する依存の最小版を0.1.3へ揃え、配布tgzの5ファイルを同じrepository sourceと照合する。旧版archiveは保持する。今回のGit保存はnpm公開や稼働中Toolの自動更新ではない。
+
+2026-09-20更新: SDK 0.1.2ではPC内ToolがRockstarOSのSky一覧へ自動で現れ、カードからHubへ接続できる。`publicMcpUrl`を省くとSky URL・開発者キーなしでローカル専用起動できる。公開URLを設定した場合だけSky RegistryへのPackage登録と利用記録を試す。PCでの接続成功はnative OS、公開審査やCloud配備の合格を意味しない。
 
 ## 目的
 
@@ -23,7 +27,7 @@ flowchart LR
   U --> M[匿名利用集計を開発者へ返す]
 ```
 
-通常はPCの`/studio`を開き、SDKの導入コマンドと組込みコードをコピーして既存ツールへ追加する。Rock Studioで一度だけ開発者キーを発行し、コードへ直書きせず`SKY_DEVELOPER_TOKEN`環境変数へ保存する。ツールを起動すると、SDKが同じ定義から`sky-tool-package/1`を生成し、所有者登録、宣言公開、MCP公開、匿名利用記録を行う。既存ツールのソース本文はSkyへ送らない。
+通常はPCの`/studio`を開き、SDKの導入コマンドと組込みコードをコピーして既存ツールへ追加する。ツールを起動すると、PC内のSky Connectorが検出し、RockstarOSのSky一覧から接続できる。公開する場合にRock Studioで開発者キーを発行し、コードへ直書きせず`SKY_DEVELOPER_TOKEN`環境変数へ保存する。実際に稼働する公開HTTPS MCP URLを設定した場合は、同じ定義から`sky-tool-package/1`を生成して所有者登録、宣言公開、匿名利用記録を行う。既存ツールのソース本文はSkyへ送らない。
 
 CLIから新規Toolを作る場合は、次のコマンドも利用できる。
 
@@ -45,6 +49,8 @@ node toolkits/sky-tool-sdk/bin/create-sky-tool.mjs init work/my-sky-tool \
 
 ## PCでの登録
 
+SDKを起動すると、所有者だけが読めるPC内の接続定義が作られ、Sky MCP Connectorが接続一覧へ反映する。PC内ToolはループバックURLと一時キーだけで接続し、任意のshell実行や外部URLへの迂回は受け付けない。接続時に`initialize`と`tools/list`を検査し、実行時はConnectorの一回承認を使う。旧Mr. Automation Hubにある11件の独立した自動化候補はSkyの「導入候補」に掲載した。実行器や本人アカウントが未接続の候補は接続済みとして表示しない。
+
 `/studio`は消費者向けSkyとは分けたSDK組込み用の開発者画面である。SDK配布物、コピー可能な組込みコード、開発者キー発行、登録後のSky確認を一画面にまとめる。ブラウザから既存ツールのコードやファイルを送らず、SDKが生成したPackageだけをRegistry APIへ送る。
 
 Sky Tool SDKは同じTool定義から次を生成する。
@@ -64,11 +70,11 @@ Sky Tool SDKは同じTool定義から次を生成する。
 | 状態 | 意味 | Skyから自動導入 |
 | --- | --- | --- |
 | `submitted` | 所有者領域へ保存。ID・版・SHAを固定 | 不可 |
-| `published_declared` | 開発者の宣言として公開Registryに掲載 | 不可 |
+| `published_declared` | 開発者の宣言を審査待ちとして保持。公開Registryには出さない | 不可 |
 | `verified` | Sky側のSandbox、作者、権限差分、接続、試験に合格 | 可 |
 | `rejected` / `revoked` | 検査不合格または失効 | 不可 |
 
-現在実装したのは`submitted`と`published_declared`までである。一般開発者向けの署名局、任意コードSandbox、審査操作、失効配信、公開remote MCP/OAuthの本番受入は未実装なので、宣言済みToolを検証済み・自動導入可能とは表示しない。
+公開RegistryとTelegram配布は、有効期限内の審査記録を持つ`verified`だけを返す。審査記録には固定source revision／SHA-256、権利、license、権限、privacy、料金、Sandbox、出力品質、証拠URL、reviewer、期限を保存する。`published_declared`は審査待ちであり公開しない。一般開発者向けの署名局、任意コードSandbox、公開remote MCP/OAuthの本番受入は未実装なので、審査者は外部条件を確認できないPackageを`verified`にしない。
 
 ## APIと保存データ
 
@@ -80,18 +86,28 @@ Sky Tool SDKは同じTool定義から次を生成する。
 | `GET /api/sky/tool-registry` | 公開 | 公開Packageと導入可否を取得 |
 | `POST /api/sky/tool-events` | 開発者キー | 匿名利用イベントを記録 |
 | `GET /api/sky/tool-events` | ブラウザ本人 | 自分のToolの集計だけを表示 |
+| `POST /api/sky/access-codes` | 開発者キーまたはブラウザ本人 | Telegram用の期限・回数付きコードを発行 |
+| `GET /api/sky/access-codes` | 開発者キーまたはブラウザ本人 | 発行済みコードの状態を確認（平文は再表示しない） |
+| `DELETE /api/sky/access-codes` | 開発者キーまたはブラウザ本人 | コードを失効 |
+| `POST /api/sky/telegram/redeem` | 内部Bridge secret | Telegram利用者へPackage Grantを付与 |
+| `GET /api/sky/telegram/tools` | 内部Bridge secret | Telegram利用者の有効化済みTool一覧 |
+| `POST /api/sky/telegram/build` | 内部Bridge secret | Telegram貼り付けコードを解析し、Manifestと一回用コードを作成（ソース本文は保存しない） |
 
-開発者キーはSHA-256だけをD1へ保存し、失効できる。利用イベントはPackage ID、Tool名、匿名Installation ID、結果区分、処理時間、実行時刻だけを受け付ける。入力、出力、会話、APIキー、Wallet残高は送信・保存しない。
+開発者キーはSHA-256だけをD1へ保存し、失効できる。利用イベントはEvent ID、Package ID、Tool名、匿名Installation ID、結果区分、処理時間、実行時刻だけを受け付ける。入力、出力、会話、APIキー、Wallet残高は送信・保存しない。Event IDは再送時も同じ値を使い、同一内容の再送を一件として扱う。SDKは一時的な送信失敗を最大3回まで再試行するが、process終了を越える永続queueではない。
+
+発行コードも平文では保存しない。使用時にコードをハッシュ照合し、`sky_tool_grants`へTelegram利用者・チャット・Packageを記録する。Grantの付与はToolの公開状態を再確認し、期限切れ・失効・使用回数超過を拒否する。Telegram BridgeはBotとSky間の共有secretで保護し、ソースコード、開発者キー、APIキーをTelegramへ渡さない。
 
 ## MCPと実行安全
 
 SDKはNode.js内にMCP `initialize`、`notifications/initialized`、`tools/list`、`tools/call`、`/health`を提供する。入力とhandlerの出力を宣言Schemaへ照合し、timeoutを成功にしない。外部書込みまたは金融副作用があるToolは`authorize` callbackがなければ定義を拒否する。
 
+PC内MCPの`x-sky-local-secret`は、string型を確認した後、受信値と期待値をUTF-8 Bufferへ変換し、byte長が同じ場合だけ定時間比較する。不一致・欠落は本文やhandlerを実行せず401で拒否する。非ASCII値もprocessを終了させず、同じserverで後続の正当な認証要求を処理する。資格情報を応答・ログへ含めず、loopback、private descriptor、一回承認の境界を維持する。隔離childの実HTTP回帰で不正入力後のhealthと正当なTool実行を確認し、実機・外部到達・秘密漏洩の証拠とは分ける。
+
 SDK単体の`authorize`は承認UIではない。Sky Connectorから実行する場合は、引数に結び付いた一回限りのExecution Covenantをcallbackで検証する。送信後timeoutは`outcome_unknown`とし、自動再試行しない。SDKのhandlerは開発者プロセスで動くため、任意コードSandboxの代替ではない。
 
 ## Fundとの関係
 
-Toolは単独でもMCPとして利用できる。Fundは複数Toolを目的別に束ね、LLMが順序、停止条件、成果確認を計画する商品面である。`fund.categories`と`fund.tags`はFund候補を探す情報であり、権限を増やしたり承認を省略したりしない。有料Toolの対価はPackageの開発者受取人へ帰属し、ToBのSky登録料・基本利用料・Sky売上手数料は0の既存方針を維持する。決済・払出しProviderの本番受入までは実売上や送金を開始しない。
+Toolは単独でもMCPとして利用できる。Fundは複数Toolを目的別に束ね、LLMが順序、停止条件、成果確認を計画する商品面である。`fund.categories`と`fund.tags`はFund候補を探す情報であり、権限を増やしたり承認を省略したりしない。有料Toolの対価はPackageの開発者受取人へ帰属し、ToBのSky登録料・基本利用料は0円、売上発生時のSky手数料は10%とする。決済・払出しProviderの本番受入までは実売上や送金を開始しない。
 
 ## 完了条件
 

@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:rockstaros:icd:command:v1",
+  "title": "command / DESIGN SPECIFICATION ONLY",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "rockstaros.icd.command.v1"
+    },
+    "executionMode": {
+      "enum": [
+        "SIMULATION",
+        "HARDWARE_IN_LOOP",
+        "OPERATIONAL"
+      ]
+    },
+    "dataClass": {
+      "enum": [
+        "SYNTHETIC",
+        "MEASURED",
+        "ESTIMATED",
+        "REPLAY"
+      ]
+    },
+    "siteId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "nodeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "messageId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "issuedAt": {
+      "type": "object",
+      "properties": {
+        "utcMs": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "monotonicMs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bootId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+        },
+        "quality": {
+          "enum": [
+            "TRUSTED",
+            "DEGRADED",
+            "UNTRUSTED"
+          ]
+        },
+        "uncertaintyMs": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "utcMs",
+        "monotonicMs",
+        "bootId",
+        "quality",
+        "uncertaintyMs"
+      ],
+      "additionalProperties": false
+    },
+    "workId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "commandId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "actorRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "issuingDeviceRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "targetAssetId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "targetBootId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "capabilityRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "authorizationReceiptRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    },
+    "authorityEpoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "expiresUtcMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "expectedRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "configurationDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "payload": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "operationRef": {
+              "const": "reference.noncritical_load.set"
+            },
+            "desiredFlexibleKw": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "operationRef",
+            "desiredFlexibleKw"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operationRef": {
+              "const": "equipment.profile.request"
+            },
+            "profileId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+            },
+            "profileDigest": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "operationRef",
+            "profileId",
+            "profileDigest"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "payloadDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "envelopeProofRef": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]{0,127}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "executionMode",
+    "dataClass",
+    "siteId",
+    "nodeId",
+    "messageId",
+    "issuedAt",
+    "workId",
+    "requestId",
+    "commandId",
+    "idempotencyKey",
+    "actorRef",
+    "issuingDeviceRef",
+    "targetAssetId",
+    "targetBootId",
+    "capabilityRef",
+    "authorizationReceiptRef",
+    "authorityEpoch",
+    "expiresUtcMs",
+    "expectedRevision",
+    "configurationDigest",
+    "payload",
+    "payloadDigest",
+    "envelopeProofRef"
+  ],
+  "additionalProperties": false
+}

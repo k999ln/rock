@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "rockstaros.icd.result.v1",
+  "executionMode": "SIMULATION",
+  "dataClass": "SYNTHETIC",
+  "siteId": "site:fixture",
+  "nodeId": "node:fixture",
+  "messageId": "message:fixture",
+  "issuedAt": {
+    "utcMs": 1000000,
+    "monotonicMs": 1000,
+    "bootId": "boot:fixture-A",
+    "quality": "TRUSTED",
+    "uncertaintyMs": 1
+  },
+  "commandId": "cmd:fixture",
+  "commandDigest": "1111111111111111111111111111111111111111111111111111111111111111",
+  "targetAssetId": "asset:load",
+  "targetBootId": "boot:fixture-A",
+  "stateRevision": 2,
+  "configurationDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "status": "SUCCEEDED",
+  "reasonCode": "SIM_SETTING_STORED",
+  "appliedScope": "SIM_SETTING",
+  "observedEffect": "NOT_OBSERVED",
+  "evidenceRefs": [
+    "evidence:fixture"
+  ],
+  "deviceProofRef": "proof:placeholder"
+}

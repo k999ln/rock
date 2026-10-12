@@ -1,9 +1,31 @@
 const CACHE = 'rockstaros-shell-v4';
 const CACHE_PREFIXES = ['rockstaros-shell-', 'loop-app-'];
 self.addEventListener('message', (event) => {
-  if (event.data?.type === 'ROCKSTAROS_ACTIVATE_UPDATE') {
-    event.waitUntil(self.skipWaiting());
-  }
+  if (
+    event.origin !== self.location.origin ||
+    event.data?.type !== 'ROCKSTAROS_ACTIVATE_UPDATE' ||
+    event.source?.type !== 'window' ||
+    typeof event.source.id !== 'string' ||
+    !event.source.id
+  )
+    return;
+
+  // A waiting worker can receive the update request from a page controlled by
+  // the previous worker. Resolve the sender without requiring this controller.
+  event.waitUntil(
+    self.clients
+      .get(event.source.id)
+      .then((client) => {
+        if (
+          client?.type !== 'window' ||
+          new URL(client.url).origin !== self.location.origin
+        )
+          return;
+        return self.skipWaiting();
+      })
+      // A closed client, failed lookup or invalid URL cannot authorize activation.
+      .catch(() => {}),
+  );
 });
 self.addEventListener('activate', (event) => {
   event.waitUntil(

@@ -15,16 +15,60 @@ export type Automation = {
     | 'delivery-local'
     | 'subscription-ledger'
     | 'legal-intake'
-    | 'patent-assistant';
+    | 'patent-assistant'
+    | 'jev-evaluation'
+    | 'candidate-local';
   launchPath?: string;
   origin?: 'mr' | 'rockstaros';
   integration?: 'fashion-brand-ops';
   environment: string;
   cost: string;
-  steps: string[];
+  steps: readonly string[];
+  /** A built-in PC MCP operation; does not authorize execution. */
+  mcpTool?: string;
   note: string;
 };
-export const catalog: Automation[] = [
+
+const mrHubCandidates = ([
+  ['coconala-proposal-draft', 'ココナラ提案文の下書き', '案件・納品支援', '案件条件から提案文と確認リストを作る既存の端末内処理。', '既存のローカル実行器をSky SDKへ接続する'],
+  ['gig-workflow', '受託案件ワークフロー', '案件・納品支援', '応募・交渉・制作・納品・売上確認の既存処理を段階ごとに支援。', '所有者設定を移し、外部操作に個別承認を付ける'],
+  ['coconala-inbox', 'ココナラの依頼・添付整理', '案件・納品支援', '本人の依頼文と添付を整理する既存処理。', '本人の接続と保存範囲を確認する'],
+  ['youtube-script-writer', 'YouTube台本', '動画制作', 'タイトル案、冒頭、台本、撮影キューを作る既存Service Cell。', '台本生成と品質確認の実行器を接続する'],
+  ['seo-blueprint', 'SEO・記事構成', '記事制作', '検索意図、キーワード、構成案を整理する既存Service Cell。', '調査元と生成実行器を接続する'],
+  ['landing-page-sprint', 'LP・販売ページ制作', '販売・収益化', '情報設計、コピー、画面と公開前確認を扱う既存Service Cell。', '制作実行器を接続し、公開は本人確認を通す'],
+  ['sales-objection-reply-builder', '商談返信・見積り支援', '販売・収益化', '正式な商品条件から返信文と確認事項を作る既存Service Cell。', '返信生成実行器を接続する'],
+  ['user-interview-synthesizer', '顧客インタビュー分析', '市場・商品設計', '発言をテーマ、根拠、仮説と次の検証に整理する既存Service Cell。', '発言と分析結果を結ぶ実行器を接続する'],
+  ['calendar-coordination', '予定・カレンダー連携', '生活・予定', '既存Coreの予定解釈とカレンダー連携処理。', '本人のアカウント接続と権限確認を行う'],
+  ['telegram-notifications', 'Telegram通知・承認', '通知・連絡', '既存Botの依頼受付、通知、進捗確認をSkyの仕事につなぐ処理。', '本人確認済みBotと送信範囲を接続する'],
+  ['producthunt-discovery', '外部ツール候補の発見', '市場・商品設計', 'Product Hunt公式API向けの候補検索処理。', 'API利用条件と商用許諾を確認する'],
+] as const).map(([id, name, category, description, next]) => ({
+  id, name, category, description,
+  source: 'https://github.com/k999ln/Mr.',
+  license: 'MIT',
+  licenseUrl: 'https://github.com/k999ln/Mr./blob/main/LICENSE',
+  color: 'blue',
+  status: 'candidate' as const,
+  origin: 'mr' as const,
+  environment: '既存コード・設計あり / Sky実行器は未接続',
+  cost: '接続先、モデル、外部サービスの実費を接続時に確認します。',
+  steps: [next, 'Sky SDKでPackageとMCPを登録する', '接続先、権限、副作用、結果を確認して使う'],
+  note: 'Mr.の旧Automation Hubの在庫から移した導入候補です。Skyからの実行と外部サービスへの接続は、実装・検証後に有効になります。',
+}));
+const catalogEntries = [
+  {
+    id: 'rockstar-material-invention',
+    name: 'Material Invention · 物質候補の比較',
+    category: '研究・ものづくり',
+    description: '物質の由来・lot・比率・工程から机上の配合候補を生成し、危険性情報の不足と根拠を比較・保存します。',
+    source: 'https://github.com/k999ln/rock/blob/main/lib/material-invention.ts',
+    launchPath: '/zema/tools/rockstar-material-invention',
+    environment: 'ブラウザ内の候補生成 / サーバーへの保存・復元はサインイン必須',
+    cost: '外部AI・simulation・ラボ・有料APIを呼びません。',
+    steps: ['入力JSONまたは合成サンプルを開く', '端末内で候補・配合比・不足条件を比較する', '必要なら入力と候補を本人用に保存する', '保存した仕事を開き、同一入力の候補を照合する'],
+    note: '全候補は未検証の仮説です。物理実験、安全性・性能・特許性の承認、装置操作は行いません。保存時は入力本文を本人用サーバーへ送信します。合成サンプルは実データの仕事完了へ昇格しません。',
+    color: 'green', license: 'RockstarOS code', licenseUrl: 'https://github.com/k999ln/rock',
+    status: 'ready', origin: 'rockstaros',
+  },
   {
     id: 'rockstar-spider',
     name: 'SPIDER · セキュリティ検査',
@@ -43,15 +87,32 @@ export const catalog: Automation[] = [
     origin: 'rockstaros',
   },
   {
+    id: 'rockstar-amc',
+    name: 'AMC · Goalと部隊の進捗',
+    category: '計画・進捗管理',
+    description: '作りたいものとGoal・意図から計画を準備し、部隊・作業・確認待ちをZemaで管理します。',
+    source: 'avocadoOS built-in',
+    launchPath: '/zema/amc',
+    environment: 'Sky / Zema / 保存・再開にはサインイン必須',
+    cost: '計画作成ではLLMや有料の外部実行を呼びません。工数はテンプレートによる参考値です。',
+    steps: ['依頼・Goal・意図を確認する', '計画を保存し、部隊と作業順を確認する', '作業の開始・提出・検収を記録する', '人の判断が必要な項目を確認し、Goalを受け入れる'],
+    note: '利用可能なのは計画作成と手動の進捗記録です。AIによる実装・自律実行・自動通知は未接続。OS・ハードウェアの32部隊は参照用で、依頼の計画と混同しません。',
+    color: 'green',
+    license: 'avocadoOS code',
+    licenseUrl: 'https://github.com/k999ln/rock',
+    status: 'ready',
+    origin: 'rockstaros',
+  },
+  {
     id: 'rockstar-csv-cleanup',
     name: 'CSV整形・検査・納品',
     category: '販売・収益化',
     description:
       '1ファイルのCSVを指定どおりに整形し、結果・変更報告・独立検査を一つの受付から納品します。',
-    source: 'RockstarOS built-in',
+    source: 'avocadoOS built-in',
     launchPath: '/csv',
     environment: 'Sky Cloud / サインイン必須 / 暗号化された非公開ストレージ',
-    cost: '購入者向け試験価格は税込3,000円。販売者の月額利用料はProvider確認済み純入金が月30 USD相当以上の月だけ8.88 USDです。',
+    cost: '購入者向け試験価格は税込3,000円。販売者向けの8.88 USD料金案は収益動線が決まるまで保留中です。',
     steps: [
       'CSVと列名・列順・空白・重複・並び順・出力文字コードを指定する',
       '10MB・50,000行・100列の範囲と変換可能性を検査し、見積りを固定する',
@@ -62,20 +123,20 @@ export const catalog: Automation[] = [
     ],
     note: '値の推測・補完、複数ファイル結合、外部市場の代理操作はしません。手入力した入金番号だけではWalletの確認済み収益に計上しません。',
     color: 'green',
-    license: 'RockstarOS code',
+    license: 'avocadoOS code',
     licenseUrl: 'https://github.com/k999ln/rock',
     status: 'ready',
     origin: 'rockstaros',
   },
   {
     id: 'rockstar-markets-analysis',
-    name: 'Rockstar Market Scanner',
+    name: 'avocadoOS Market Scanner',
     category: '市場・商品設計',
     description:
-      '型付きの価値対象をRockstar Marketへ登録し、価格・需要・PAPER取引履歴を検証します。',
-    source: 'RockstarOS built-in',
+      '型付きの価値対象をavocadoOS Marketへ登録し、価格・需要・PAPER取引履歴を検証します。',
+    source: 'avocadoOS built-in',
     launchPath: '/market',
-    environment: 'ブラウザ内 / RockstarOS PAPER市場',
+    environment: 'ブラウザ内 / avocadoOS PAPER市場',
     cost: '追加料金なし。PAPER残高は実資金ではなく、換金・送金・外部注文はできません。',
     steps: [
       '自動化、制作物、サービス、商品、稼働枠から対象の型を選ぶ',
@@ -85,9 +146,9 @@ export const catalog: Automation[] = [
       'receipt、position、eventから結果を確認する',
       'PAPER損益を実収益や将来利回りとして扱わない',
     ],
-    note: '取引はRockstarOS内のPAPER検証だけです。秘密鍵、LIVE切替、外部注文、実Wallet操作を受け付けず、simulation PnL、含み益、見積もり、取引量をファンド収益へ計上しません。',
+    note: '取引はavocadoOS内のPAPER検証だけです。秘密鍵、LIVE切替、外部注文、実Wallet操作を受け付けず、simulation PnL、含み益、見積もり、取引量をファンド収益へ計上しません。',
     color: 'blue',
-    license: 'RockstarOS code',
+    license: 'avocadoOS code',
     licenseUrl: 'https://github.com/k999ln/rock',
     status: 'ready',
     origin: 'rockstaros',
@@ -107,11 +168,11 @@ export const catalog: Automation[] = [
       '自分が保有する商品と、状態・価格・実費を入力する',
       'Skyが出品原稿と見込み手取りを作り、禁止物・誤表示・在庫を確認する',
       '個人メルカリは本人が公式画面で出品する。Shopsは公式API Connector接続後に個別承認する',
-      '取引完了と入金をProviderで確認できた売上だけをWalletと8.88 USD精算へ渡す',
+      '取引完了と入金をProviderで確認できた売上だけをWalletへ記録する。収益料金は保留中',
     ],
     note: '販売や利益は保証しません。個人アカウントの認証情報を預からず、無人出品・大量再出品・購入・メッセージ・発送・出金は行いません。自己申告の売上は検証済み収益として精算しません。',
     color: 'orange',
-    license: 'service terms / RockstarOS code MIT',
+    license: 'service terms / avocadoOS code MIT',
     licenseUrl: 'https://static.jp.mercari.com/tos',
     status: 'ready',
     origin: 'rockstaros',
@@ -126,7 +187,7 @@ export const catalog: Automation[] = [
       'https://github.com/k999ln/rock/tree/main/toolkits/fashion-brand-ops',
     integration: 'fashion-brand-ops',
     environment:
-      'PC / Node.js 22.13以上 / SkyへMCP接続後。外部Providerは任意接続',
+      '簡易プランはブラウザで利用可能。本格運用はPC / Node.js 22.13以上 / MCP接続が必要',
     cost: '初期状態はmockで外部費用なし。Higgsfield、Meta、Stripe等の外部料金は各契約に従い、実行前に確認します。',
     steps: [
       'ブランド方針と商品を登録し、数量・売上・粗利・期限・広告上限を目標にする',
@@ -144,23 +205,53 @@ export const catalog: Automation[] = [
     origin: 'rockstaros',
   },
   {
+    id: 'rockstar-ip-studio',
+    name: 'IP Studio — SNS・ゲーム・音声',
+    category: 'IP・コンテンツ運用',
+    description:
+      'キャラクター・スキンの制作からSNS・ゲーム展開を管理します。LiveKitによるIPキャラクターとの音声会話・電話対応の接続設定も用意しています（本体連携は未接続）。',
+    source: 'avocadoOS built-in / Kaiya IP Studio',
+    launchPath: 'http://127.0.0.1:18767/',
+    environment:
+      'このPCのIP Studio / Skyで接続状態と承認を管理',
+    cost:
+      'ローカル利用は追加料金なし。生成・SNS・ゲームに加え、LiveKit、音声モデル、電話番号・通話回線の料金と契約は利用前に確認します。',
+    steps: [
+      '参考画像と「何をしたいか」を入力してIPの制作依頼を作る',
+      'Higgsfieldで画像・動画を生成するか、完成素材を登録する',
+      '権利・利用条件・ゲーム導入先を確認してゲーム版を記録する',
+      'Instagram・YouTubeの投稿案を確認し、本人承認後にMakeへ送る',
+      '投稿結果とゲームへの導線を同じIPの履歴へ戻す',
+      '音声会話・電話を使う場合はSkyの接続管理でLiveKitとAgentを登録する（本体との通話連携は未接続）',
+    ],
+    note:
+      'Skyは本人・接続・承認・停止状態を管理します。IP Studioは素材と生成・投稿案を扱います。APIキー、Cookie、SNSログイン情報はSkyの入力欄や仕事本文へ保存しません。投稿、広告、DM、ゲームへの提出は1回ごとの本人承認が必要です。音声送信・録音・電話発信の許可は別々に扱います。LiveKit設定を保存しても通話や番号取得は始まりません。',
+    color: 'purple',
+    license: 'avocadoOS / Kaiya IP Studio',
+    licenseUrl: 'http://127.0.0.1:18767/',
+    status: 'candidate',
+    origin: 'rockstaros',
+  },
+  {
     id: 'coconala',
-    name: 'ココナラ案件チェック',
+    mcpTool: 'coconala_check',
+    name: 'ココナラ',
     category: '案件・納品支援',
     description:
-      '依頼文と提案文から、面談の必要性や役割の食い違いを確認。応募前の判断を助けます。',
+      '応募前の案件チェックから、代表受注・制作担当者への発注条件、納品、入金と支払いの管理まで。',
     source:
       'https://github.com/k999ln/Mr./blob/26a39d2c31ea5246cb78dbe42d86e333922db60c/skills/earn/gig/scripts/application_eligibility.py',
     runner: 'coconala',
-    environment: 'ブラウザ内 / Rockへのサインインが必要',
-    cost: '外部APIは使いません。サイト読込以外の追加通信はありません。',
+    launchPath: '/sky/tools/coconala',
+    environment: 'Skyの専用画面 / サインイン必須 / 本人別の非公開案件台帳',
+    cost: 'Sky Marketの売上手数料は10%。ココナラ手数料と担当者報酬は案件ごとに確認します。',
     steps: [
-      '依頼文と送信前の提案文を用意する',
-      '契約形態と発注率を元ページで確認する',
-      '案件チェックを実行し、理由を確認する',
-      '元ページの条件・規約を本人が確認して判断する',
+      '応募前に依頼文と提案文をチェックし、元ページの条件・規約を確認する',
+      '代表者の受注額と担当者の固定報酬・支払期日を事前登録する',
+      '規約・顧客説明・担当者への条件明示を記録し、納品と検収を管理する',
+      '顧客入金・返金と担当者への支払いを分けて記録する',
     ],
-    note: 'Mr.の単発・非同期案件向けルールを移植しました。ココナラの規約や受注可否を保証せず、自動応募・返信・入金確認は行いません。',
+    note: '応募前チェックはMr.の単発・非同期案件向けルールです。3%は見積りの参考値でSky手数料ではありません。ココナラの応募・契約・納品・入金照合、銀行振込は自動実行しません。手入力の入金は検証済み収益ではありません。',
     color: 'green',
     license: 'MIT',
     licenseUrl: '/toolkits/mr-LICENSE.txt',
@@ -169,6 +260,7 @@ export const catalog: Automation[] = [
   },
   {
     id: 'mr-free-article',
+    mcpTool: 'make_free_article',
     name: '記事の無料版メーカー',
     category: '記事制作',
     description:
@@ -193,6 +285,7 @@ export const catalog: Automation[] = [
   },
   {
     id: 'mr-citations',
+    mcpTool: 'format_citations',
     name: '出典整理ツール',
     category: '記事制作',
     description:
@@ -217,6 +310,7 @@ export const catalog: Automation[] = [
   },
   {
     id: 'mr-delivery',
+    mcpTool: 'verify_delivery',
     name: '納品記録の照合',
     category: '案件・納品支援',
     description:
@@ -264,6 +358,29 @@ export const catalog: Automation[] = [
     origin: 'rockstaros',
   },
   {
+    id: 'jev-evaluation',
+    name: 'Jev品質評価',
+    category: '品質・レビュー',
+    description:
+      '確認済みの最小出力をJevで評価し、根拠性・安全性・次の人手レビューの目安を返します。',
+    source: 'https://vercel.com/ai-gateway/models/jev',
+    environment: 'Sky Cloud / Vercel AI Gateway / 明示同意が必要',
+    cost: 'AI Gatewayのprovider料金・無料枠・保持条件に従います。送信前に表示を確認します。',
+    steps: [
+      '評価対象を最小化し、個人情報・法務相談・未公開発明・秘密情報を除く',
+      '送信先、料金、保持条件を確認して本人が同意する',
+      'Jevが根拠性・安全性・有用性をtyped resultで評価する',
+      'Evaluation Receiptをreview signalとして確認し、最終判断は本人が行う',
+    ],
+    note: 'Jevは文章生成器ではありません。評価結果は助言であり、権限判定、本人承認、Tool成功、仕事完了を決めません。',
+    color: 'green',
+    license: 'TypeSafe AI / Vercel AI Gateway terms',
+    licenseUrl: 'https://vercel.com/ai-gateway/models/jev',
+    status: 'ready',
+    runner: 'jev-evaluation',
+    origin: 'rockstaros',
+  },
+  {
     id: 'rockstar-legal-intake',
     name: '法務受付',
     category: '法律・生活支援',
@@ -272,7 +389,8 @@ export const catalog: Automation[] = [
     source:
       'https://github.com/k999ln/rock/tree/codex/sky-legal-intake-20260912',
     runner: 'legal-intake',
-    environment: 'Skyは相談内容を保存しません / 法令AI接続時はOpenAIへ送信',
+    environment:
+      'Skyは相談内容を保存しません / 標準は端末内処理、オンライン検索は本人が明示許可した場合だけ',
     cost: '利用者への料金は0円で提供できます。法令AI接続時のAPI利用料は運営側に発生し、連絡・依頼後の弁護士費用は別途確認が必要です。',
     steps: [
       '危険・逮捕・公的書類・期限の有無を確認する',
@@ -289,7 +407,7 @@ export const catalog: Automation[] = [
   },
   {
     id: 'rockstar-patent-assistant',
-    name: '特許出願アシスタント',
+    name: '特許アシスタント',
     category: '法律・生活支援',
     description:
       'システム発明を整理し、先行技術候補の調査、特許性の予備評価、明細書・請求項・要約のドラフトを一つにまとめます。',
@@ -297,7 +415,7 @@ export const catalog: Automation[] = [
       'https://github.com/k999ln/rock/tree/codex/sky-legal-intake-20260912',
     runner: 'patent-assistant',
     environment:
-      'Skyは発明内容を保存しません / AI調査は明示同意後だけOpenAIへ送信',
+      'Skyは発明内容を保存しません / 標準は端末内で書類作成、オンライン調査は本人が明示許可した場合だけ',
     cost: '書類ドラフトはブラウザ内で作成します。AI調査を選んだ場合だけ運営側にAPI利用料が発生し、出願料・弁理士費用は別です。',
     steps: [
       '発明者・出願人候補と、公開済みかどうかを確認する',
@@ -331,7 +449,7 @@ export const catalog: Automation[] = [
       'CodexでREADMEに沿ってローカル環境を準備する',
       '短い音声で試し、誤変換を確認してから納品する',
     ],
-    note: 'OSSの導入候補です。Rock starからの自動実行や収益連携は未対応です。',
+    note: 'OSSの導入候補です。avocadoOSからの自動実行や収益連携は未対応です。',
   },
   {
     id: 'transformers-js',
@@ -376,4 +494,194 @@ export const catalog: Automation[] = [
     ],
     note: 'ココナラ等の第三者サイトの無人操作を許諾するものではありません。',
   },
-];
+  {
+    id: 'jev-ultrafast',
+    name: 'Jev Ultrafast',
+    category: 'ブラウザ操作AI',
+    description:
+      'Web画面の操作候補を番号付きで整理し、AIが許可された一手を選ぶ高速ブラウザエージェント。',
+    source: 'https://github.com/browser-use/jev-ultrafast',
+    license: 'MIT',
+    licenseUrl:
+      'https://github.com/browser-use/jev-ultrafast/blob/main/LICENSE',
+    color: 'green',
+    status: 'candidate',
+    environment:
+      '本人PC / Python 3.12以上・uv・Chrome remote debugging・Browser Harness・TypeSafe API・text model API',
+    cost: '本体はMIT。選択したTypeSafe APIとtext model APIの利用料、通信量、本人PCの電力が別に発生する場合があります。',
+    steps: [
+      'source版・依存関係・MIT表示を固定し、offline testを通す',
+      '普段使いと分離した専用Chrome profileと、操作してよいsiteだけを設定する',
+      '閲覧だけの試験から始め、click・入力・送信を別の権限として確認する',
+      '送信・投稿・予約・購入等は実行直前に内容を表示し、本人が一回だけ許可する',
+      'Jevの完了申告とは別に、RockstarOSが結果を読み直してreceiptを保存する',
+    ],
+    note: '導入候補であり、まだ自動導入・実行できません。既存Chrome profile、password・OTP・決済情報、任意site、任意JavaScript、無人の投稿・予約・購入は許可しません。',
+  },
+  {
+    id: 'jev-trader',
+    name: 'Jev Trader',
+    category: '市場判断研究',
+    description:
+      'order bookから売買方向を選ぶJev実験を、RockstarOSのPAPER市場で検証する候補。',
+    source: 'https://github.com/jarrodwatts/jev-trader',
+    license: 'MIT',
+    licenseUrl: 'https://github.com/jarrodwatts/jev-trader/blob/main/LICENSE',
+    color: 'orange',
+    status: 'candidate',
+    environment: '隔離PC / Bun・TypeSafe API。RockstarOSではPAPER／replay限定',
+    cost: '本体はMIT。market data、TypeSafe API、network、計算費用が別に発生する場合があります。',
+    steps: [
+      'PRIVATE_KEYなし、dry-run、固定market replayで起動する',
+      '価格、判断、仮想注文、仮想約定、費用をPAPER台帳へ分離保存する',
+      'look-ahead、再現性、slippage、手数料、損失上限を検査する',
+      '実注文・実資金・Wallet接続は独立した金融release gateまで拒否する',
+    ],
+    note: 'LIVE取引、秘密鍵、実注文、実資金移動、自動収益化は許可しません。利益を保証せず、PAPER候補としてのみ登録します。',
+  },
+  {
+    id: 'typesafe-computer-use',
+    name: 'TypeSafe Computer Use',
+    category: 'PC画面操作AI',
+    description:
+      'Mac画面を決定的に読み取り、Jevが次の操作を選ぶcomputer-use候補。',
+    source: 'https://github.com/awlevin/typesafe-computer-use',
+    license: 'MIT',
+    licenseUrl:
+      'https://github.com/awlevin/typesafe-computer-use/blob/main/LICENSE',
+    color: 'pink',
+    status: 'candidate',
+    environment:
+      '隔離したmacOS account / Python・uv・OCR・TypeSafe API・画面操作権限',
+    cost: '本体はMIT。TypeSafe API、text model、OCR、通信、本人PCの電力が別に発生します。',
+    steps: [
+      '専用macOS accountと許可appだけでobserve modeを試す',
+      '画面読取、click、入力、外部送信の権限を分離する',
+      '座標と対象の再確認、confidence下限、緊急停止を検査する',
+      '送信・購入・削除・設定変更は直前の本人承認なしに実行しない',
+    ],
+    note: '普段使いaccount、password manager、system設定、決済、任意appを操作させません。repositoryの費用・速度値はRockstarOSで再測定します。',
+  },
+  {
+    id: 'jev-review',
+    name: 'Jev Review',
+    category: 'コードレビューAI',
+    description:
+      'Git差分または指定scopeのcodebaseを、段階的なJev判断でreviewする候補。',
+    source: 'https://github.com/devagrawal09/jev-review',
+    license: 'MIT',
+    licenseUrl: 'https://github.com/devagrawal09/jev-review/blob/main/LICENSE',
+    color: 'green',
+    status: 'candidate',
+    environment:
+      '本人PC / Node.js 24以上・Git・TypeSafe API。dashboardはloopback限定',
+    cost: '本体はMIT。review対象量に応じたTypeSafe API利用料が発生する場合があります。',
+    steps: [
+      'review対象repository、path、commit、diff範囲を固定する',
+      '秘密file、生成物、vendor、鍵を送信対象から除外する',
+      '指摘ごとにfile、位置、根拠、severity、confidenceを保存する',
+      '修正、commit、push、mergeは自動実行せず、人が確認する',
+    ],
+    note: 'review結果は補助判断です。秘密情報の外部送信、全filesystem走査、自動修正・commit・push・mergeを許可しません。',
+  },
+  {
+    id: 'jev-router',
+    name: 'Jev Router',
+    category: 'AIモデルルーティング',
+    description:
+      'Codex／Claude Codeの各turnを、速いmodelまたは強いmodelへ振り分ける候補。',
+    source: 'https://github.com/gargpratyush/jev-router',
+    license: 'MIT',
+    licenseUrl: 'https://github.com/gargpratyush/jev-router/blob/master/LICENSE',
+    color: 'orange',
+    status: 'candidate',
+    environment: '本人PC / Node.js 20.12以上・対応CLI・TypeSafe API',
+    cost: '本体はMIT。TypeSafe APIと、選択されたCLI／modelの契約・利用枠が必要です。',
+    steps: [
+      '対応CLI、model ID、reasoning、費用、fallbackをallowlist化する',
+      '既存session、permission、authenticationを変更しないことを確認する',
+      'routing理由、confidence、選択model、実費をreceiptへ記録する',
+      '品質・費用・latencyを固定taskで比較し、本人が無効化できるようにする',
+    ],
+    note: 'routerにshell権限や認証情報を渡しません。model選択は権限拡大ではなく、既存CLIの承認境界を必ず維持します。',
+  },
+  {
+    id: 'jev-browser',
+    name: 'Jev Browser',
+    category: 'ブラウザ操作AI',
+    description:
+      '既存browser toolの観測・操作・検証loop内で、Jevが画面要素を選ぶruntime候補。',
+    source: 'https://github.com/vlad-terin/jev-browser',
+    license: 'MIT',
+    licenseUrl: 'https://github.com/vlad-terin/jev-browser/blob/main/LICENSE',
+    color: 'green',
+    status: 'candidate',
+    environment: '本人PC / Node.js 22以上・対応browser tool・TypeSafe API',
+    cost: '本体はMIT。TypeSafe API、browser実行、接続先通信の費用が別に発生します。',
+    steps: [
+      'installerとskill内容を読取り、source版と権限差分を固定する',
+      '専用browser profileとowned siteでread-only navigationを試す',
+      '連続runnerの各操作をRockstarOS Browser Brokerへ通す',
+      '外部作用は一手ごとの承認と独立結果検証がない限り止める',
+    ],
+    note: '既存agentへ無条件installせず、default browser agentにも自動設定しません。Jev Ultrafastと同じ外部作用境界を適用します。',
+  },
+  {
+    id: 'mobile-jev',
+    name: 'Mobile Jev',
+    category: 'Android操作AI',
+    description:
+      'Mobilerun経由のAndroid端末で、Jevが次のmobile操作を選ぶagent候補。',
+    source: 'https://github.com/droidrun/mobile-jev',
+    license: 'MIT',
+    licenseUrl: 'https://github.com/droidrun/mobile-jev/blob/main/LICENSE',
+    color: 'pink',
+    status: 'candidate',
+    environment:
+      '隔離Android試験端末 / Node.js 22.16以上・pnpm 10.30.1・Mobilerun API・TypeSafe API',
+    cost: '本体はMIT。Mobilerun端末／service、TypeSafe API、通信、端末利用料が別に発生します。',
+    steps: [
+      'Rock所有のwipe可能な試験端末と許可appだけを接続する',
+      'device ID、app、操作、goal、step上限を一仕事へ固定する',
+      '観察から開始し、入力・送信・購入・予約・権限変更を分離する',
+      '停止、通信断、端末再起動、重複操作、trace削除を試験する',
+    ],
+    note: '個人端末、SIM、連絡先、写真、password、決済情報へ接続しません。demoは支払選択画面までで、予約完了の証明ではありません。',
+  },
+  ...mrHubCandidates,
+] as const satisfies readonly Automation[];
+
+export type CatalogToolId = (typeof catalogEntries)[number]['id'];
+type TrackedRunner =
+  | 'coconala'
+  | 'free-article'
+  | 'citations'
+  | 'delivery-local'
+  | 'legal-intake'
+  | 'patent-assistant';
+export type TrackedCatalogToolId = Extract<
+  (typeof catalogEntries)[number],
+  { status: 'candidate' } | { runner: TrackedRunner }
+>['id'];
+
+export const catalog: Automation[] = catalogEntries.map(
+  (tool) =>
+    tool.status === 'candidate'
+      ? { ...tool, runner: 'candidate-local' as const }
+      : tool,
+);
+
+/** Derived admission lists share catalog identity, never its readiness as execution authority. */
+export const catalogConnectionTools = catalogEntries.map(({ id }) => id);
+export const catalogJobTools = catalog.filter(({ status, runner }) =>
+  status === 'candidate' ||
+  (runner !== undefined && [
+    'coconala',
+    'free-article',
+    'citations',
+    'delivery-local',
+    'legal-intake',
+    'patent-assistant',
+  ].includes(runner)),
+).map(({ id }) => id) as TrackedCatalogToolId[];
+export const coreMcpToolNames = catalog.flatMap(({ mcpTool }) => mcpTool ? [mcpTool] : []);

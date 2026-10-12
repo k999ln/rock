@@ -1,0 +1,139 @@
+{
+  "document_revision": "R5",
+  "date": "2026-09-24",
+  "classification": "統合基本設計・製造承認保留",
+  "pdf_pages": 51,
+  "physical_tests_completed": 0,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2278,
+      "sha256": "d1aa3ee067665234ec3c45660adeadddf7c13256f3734d72b761356a2271d584"
+    },
+    {
+      "path": "avocadoMini_RockstarOS_R5_Integrated_Design.docx",
+      "bytes": 661605,
+      "sha256": "48ca59489face5ed4b947251158bf20e398779d316416ec1d78859ca13c30579"
+    },
+    {
+      "path": "avocadoMini_RockstarOS_R5_Integrated_Design.pdf",
+      "bytes": 2141539,
+      "sha256": "6f1e2091536b412f215e87589ba8f7b493410bd393d571c27cb3ecc0bb6d2b1b"
+    },
+    {
+      "path": "calculation_results.json",
+      "bytes": 4135,
+      "sha256": "d5f6f48af35caa1851a39134bf9b78b36c262f6cfffd53f0b85a4f9cd2a5109d"
+    },
+    {
+      "path": "drawings/R5-E01-power-safety.png",
+      "bytes": 98311,
+      "sha256": "c8e1465f0f9551f3e74f061649ceaa475ff340aa33e485bfb4e3b36222f5c6e0"
+    },
+    {
+      "path": "drawings/R5-E01-power-safety.svg",
+      "bytes": 5244,
+      "sha256": "6189a82cf575c48e27b74cc83522602a2876f7df82d390d2352b4cd60b1e5450"
+    },
+    {
+      "path": "drawings/R5-M01-envelope.png",
+      "bytes": 69275,
+      "sha256": "4036495b8848f86796e4cc4228075c4acb3508685df04303e9f180b8f25f3b92"
+    },
+    {
+      "path": "drawings/R5-M01-envelope.svg",
+      "bytes": 4466,
+      "sha256": "6c646851c84cc6243a325c87b5773373fc4178e59424be5c3c6458d632712243"
+    },
+    {
+      "path": "drawings/R5-M02-functional-stack.png",
+      "bytes": 93522,
+      "sha256": "e4655a4e56cc18c9ee1018cc911631406a963534ec685e3fdec91fcdeece5ed3"
+    },
+    {
+      "path": "drawings/R5-M02-functional-stack.svg",
+      "bytes": 4124,
+      "sha256": "358c7b59ff13e7356af7112b3455040457a1b6b2dda3aade105fe65449c2525b"
+    },
+    {
+      "path": "drawings/R5-O01-services.png",
+      "bytes": 86247,
+      "sha256": "f7069a00e13eb86c3834b9c8cd4975dd72b4b253ff458928f74cedb9cc46e44f"
+    },
+    {
+      "path": "drawings/R5-O01-services.svg",
+      "bytes": 6180,
+      "sha256": "97e07bd2b6ad4a2a38b75d60cd315173e487774b830208d7d9c3f4169359d4ab"
+    },
+    {
+      "path": "drawings/R5-O02-consent.png",
+      "bytes": 88824,
+      "sha256": "bb81f5f9dd94cec9f0ab5ee5d9095561c86efab8edee15e20d053d4dee222935"
+    },
+    {
+      "path": "drawings/R5-O02-consent.svg",
+      "bytes": 4495,
+      "sha256": "56332b56845cd63db18b9bdcdaf7b1356ac83c65f40c9da87b9c5b9e77732603"
+    },
+    {
+      "path": "drawings/R5-S01-scaling.png",
+      "bytes": 55889,
+      "sha256": "a784b189f3b953cd6978de67298f3407593bdc33d8d35a75a3410d8a87ef4344"
+    },
+    {
+      "path": "drawings/R5-S01-scaling.svg",
+      "bytes": 3148,
+      "sha256": "c6faef35273467c05213307e5d4133607ced6cf20bbbf5fd5c37d4caaa95ab0c"
+    },
+    {
+      "path": "drawings/R5-U01-startup.png",
+      "bytes": 93507,
+      "sha256": "cc6da6e731f131b659b2dccc01d4f7da660beef5f09428f896fec8926e6be43e"
+    },
+    {
+      "path": "drawings/R5-U01-startup.svg",
+      "bytes": 4535,
+      "sha256": "6dad192bfdf707a42b9e7677350c7a734d7a72381ed53a4b7ebf854dd51f71a5"
+    },
+    {
+      "path": "drawings/R5-V01-camera-geometry.png",
+      "bytes": 68481,
+      "sha256": "e4df20d77bc9d4af90b182385023133820fe120a977c294a4718a533e6cd2f49"
+    },
+    {
+      "path": "drawings/R5-V01-camera-geometry.svg",
+      "bytes": 3743,
+      "sha256": "e553a7620b43361531ddccbb4735cd5a1a4d688a2946a347a83e9f5d867d6d78"
+    },
+    {
+      "path": "integrated_design.md",
+      "bytes": 87409,
+      "sha256": "b8c8df4605045ad7f7e2bbbb2dd4bff81f48253466bbb2142ee7172279eeacd1"
+    },
+    {
+      "path": "reference_index.json",
+      "bytes": 10291,
+      "sha256": "c6c818bad408f821a74bbe546fd91687c2f021d8144e6ba65781d1d2d1422870"
+    },
+    {
+      "path": "references/01-life-needs.md",
+      "bytes": 15551,
+      "sha256": "f11d0310992fdf2c3654a0ef835cfabfe85f112eee7beb1922f966d2bc1d4070"
+    },
+    {
+      "path": "references/02-interaction-studies.md",
+      "bytes": 21198,
+      "sha256": "ca8155a490c2c8878b3d7c2d6dd464279650c9e878d7882d43e3428c470bcf3c"
+    },
+    {
+      "path": "references/03-platform-and-display.md",
+      "bytes": 10477,
+      "sha256": "49b345c0d1ba2e59abd0c59443f382ecaebb64fa795c3e7f189542d600eae1c1"
+    },
+    {
+      "path": "verify_calculations.py",
+      "bytes": 6358,
+      "sha256": "1a01bae937f9152cf66dcf59730cffcc9547754aee34f8a7fcc02117f93c1eb4"
+    }
+  ]
+}

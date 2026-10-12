@@ -2,7 +2,7 @@
 
 `IMPORT-MANIFEST.json` は封印済み第9ソースの取得時hash、選別した511ファイル、補完1ファイル、変更した文書・テストのhashを記録する。後続開発で取得時の値を塗り替えず、Git差分として変更する。
 
-2026-09-09後続: 起動応答候補にPython15件と実Linux C8群の検証を追加して採用。元WIPは取得時のまま保存する。Wallet/ATM observerを現行enroll/terms/quote/approvalへ追従し、全observer55件をroot fixtureでskip/warningなしで検証した。Hubへ既知の版選択・利用停止・hashに結ぶ再承認入口を追加。実QEMU GUI起動障害/A/B検証器はhost側のみで、通常imageにfault injectorを組み込まない。新imageの起動/復旧はまだ未合格。[現行結果](../../docs/os-operational-validation-20260909.md)を優先し、以下の「未適用」「未実行」は取得時の履歴として読む。
+2026-09-09後続: 起動応答候補にPython15件と実Linux C8群の検証を追加して採用。元WIPは取得時のまま保存する。Wallet/ATM observerを現行enroll/terms/quote/approvalへ追従し、全observer55件をroot fixtureでskip/warningなしで検証した。Hubへ既知の版選択・利用停止・hashに結ぶ再承認入口を追加。実QEMU GUI起動障害/A/B検証器はhost側のみで、通常imageにfault injectorを組み込まない。新imageの起動/復旧はまだ未合格。現行結果（削除済み）を優先し、以下の「未適用」「未実行」は取得時の履歴として読む。
 
 - 本体コード、署名Tool fixture、font・noVNC・第三者noticeは基準版を維持。
 - `os/operations/elf_guard.py` は同じ第9成果物のimage-sourceにあった検証部品を補完。`tests/test_operations_elf_guard.py` の参照を未追跡artifactsからこのファイルへ変更。
@@ -16,3 +16,32 @@
 rootの `scripts/test-native.py` と `.github/workflows/native-os.yml` はこの配置用の検証入口。正常hostのUI observerは元のMakefileと同じ `test_evidence.py` が対象。古いATM observerの認証fixture不整合とroot専用Wallet/power試験は、rootの `docs/native-os-validation.md` に残件として記録する。全ての `test_*evidence.py` が成功したと扱わない。
 
 検証は使い捨てLinux環境で行う。suite全体がtimeoutした場合は失敗を記録して停止する。直接のprocess groupは終了するが、試験が独立sessionにした子孫全ての終了は保証しない。その環境を自動再利用せず、所有を確認した後片付けまたは使い捨てrunnerの終了を行う。
+
+## 2026-10-11 PC receiverの終端更新
+
+`src/blackberryrock/storage.py`のstatus/result/updated_atによるCASで後着の完了・取消・異なる成果物から確定結果を保護し、完全一致の重複は元の保存時刻を返す。schemaとHTTP interface、取得時`IMPORT-MANIFEST.json`は変更しない。追加3件の修正前失敗と、Store 6件/HTTP 3件のhost合格を[既存検証記録](../../docs/native-os-validation.md#pc-receiverの終端競合と再送ai042026-10-11)に記録。OS image・実機受入ではない。
+
+## 2026-10-11 QMP受入monitorの総期限
+
+`os/verify-platform.py`のQMP画面取得を総5秒・frame 1 MiBへ制限し、通知継続や細切れ応答でguest外側期限を妨げる待機を修正した。`tests/test_os_platform_qmp.py`の実AF_UNIX fixture 7件と既存scope／配布検証を合わせ69件合格。IMPORT-MANIFESTは維持し、実guestや新imageの保存・復旧受入とは分ける。[再現と環境条件](../../docs/native-os-validation.md#qemu受入monitorの総期限2026-10-11)。
+
+## 2026-10-11 Runner取消後の未確認状態保持
+
+`os/platform/runner_control.py`は送信claim後の取消でremote不在だけをcancelledへ確定しない。元submitが遅れて届く場合を`tests/test_os_runner_control.py`の実SQLiteで再現し、同ID照合・daemon再起動・再送0・正確なterminal回収・入力消去を検査した。追加2件は修正前失敗、修正後は関連68件合格。IMPORT-MANIFESTは維持し、実隔離executor／guest／実機／Providerの合格を追加しない。[契約](../../docs/rockstaros-complete-design.md#native-runnerの取消と結果不明2026-10-11)。
+
+## 2026-10-11 canonical memoryのcipher失敗境界
+
+`src/blackberryrock/memory_store.py`のseal/open失敗と復号文字列不正を内容のない固定例外へ統一し、通常tracebackへの原因例外連鎖を抑止する。暗号化失敗後も以前のrevisionとprojectionが残ることをhost fixtureで確認した。追加3件は修正前失敗、修正後のMemory store／Broker façade計16件は成功。IMPORT-MANIFESTは維持し、実OS cipher・Android・端末bootの受入とは分ける。[契約](../../docs/ai-memory-architecture.md)。
+
+## 2026-10-05 native検証の資源解放
+
+`tests/test_memory_store.py`の3か所でtransaction contextだけではSQLite接続が閉じない問題を修正し、`contextlib.closing`を追加した。runtime/IMPORT-MANIFESTは変更しない。Linux 1,736 Python試験、厳格ResourceWarning検査を維持して成功。証拠はrootの`docs/evidence/release-blocker-resolution.json`。
+
+## 2026-10-03 — SPIDERのHTTPS CA境界
+
+`os/mcp_broker/http.py`のHTTPS設定では、空のCAがTLS contextなしの送信へ進む経路を拒否する。`tests/test_mcp_http_deadline.py`で設定拒否と既存TLS／期限の回帰を確認する。取得時のmanifest・public fixture証明書／鍵は変更しない。合成loopbackと同一SHAのsource CIの証拠は[改善記録](../../docs/evidence/spider-improvement-cycle.json)へ保存し、外部providerやOS起動の受入とは区別する。
+
+2026-10-05後続: Game/ATM独立性試験の合計2秒というCI scheduling依存を、実TLS transport戻り値境界のEvent保持へ変更した。元のTLS期限とhold/照合assertionを維持し、関連7件と3.1秒遅延回帰が合格。runtime変更はない。
+## 2026-10-06 — SPIDER observer出力の検証
+
+os/entitlement/guest_observer.pyの既存報告fieldをscalar schemaで検証し、不正応答とread例外のprivate内容を出さずに停止する。IMPORT-MANIFESTとfixture料金・認証・Wallet操作は維持。[範囲と証拠](../../docs/evidence/spider-observer-output-schema.json)。host合格は新imageのboot受入ではない。

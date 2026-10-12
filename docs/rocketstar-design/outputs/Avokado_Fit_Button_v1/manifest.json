@@ -1,0 +1,32 @@
+{
+  "files": [
+    {
+      "path": "Avokado_Fit_Button_Design_v1.md",
+      "sha256": "8500b7d9cb17c6a6ed7e6757cc4a1f66342680760e64afc311d4f0f02f2a3372"
+    },
+    {
+      "path": "button_spec.json",
+      "sha256": "f2c211e8d6f5151a16b8f79cad1854698fa1f0b3f32893616c9ec4494e638f40"
+    },
+    {
+      "path": "existing_button_audit.md",
+      "sha256": "a40bc8714b493d58f6d24b9697a259fee800aa77698cdbef55975412be4dced6"
+    },
+    {
+      "path": "fit_button_concept.png",
+      "sha256": "fa1ec14019082fed4ecbbed37e684e7236693118f317ba72ae74d461775e2a87"
+    },
+    {
+      "path": "generation_prompt.txt",
+      "sha256": "74a219b46ffb02d3a0af91673a9f3a96fae9ac186991cc7284a2378e2acb134d"
+    },
+    {
+      "path": "generation_record.json",
+      "sha256": "4d774c4ff3a7ebd7846385360f8c8e1e5ea9b41c2b3d9f5ac6947e41156a5232"
+    },
+    {
+      "path": "pear_shape_reference.png",
+      "sha256": "0df4e6aff10d0f72484dd42ab67c78d1c072a4a8d5b5da1dee43ffa8db9e3ae2"
+    }
+  ]
+}

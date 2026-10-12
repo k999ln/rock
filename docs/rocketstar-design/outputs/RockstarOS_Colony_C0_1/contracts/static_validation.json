@@ -1,0 +1,19 @@
+{
+  "scope": "JSON parse and field-set checks of manually constructed fixtures only. Standard JSON Schema validator is not installed in bundled or system Python.",
+  "schema_dialect": "https://json-schema.org/draft/2020-12/schema",
+  "schema_validation": "NOT_RUN",
+  "checks": [
+    {
+      "case": "command.json_parse_and_required_fields_match_static_example",
+      "passed": true
+    },
+    {
+      "case": "receipt.json_parse_and_required_fields_match_static_example",
+      "passed": true
+    },
+    {
+      "case": "telemetry.json_parse_and_required_fields_match_static_example",
+      "passed": true
+    }
+  ]
+}

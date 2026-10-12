@@ -1,0 +1,20 @@
+package dev.rock.core.platform;
+
+/** Stable compatibility boundary shared by Tool, MCP and financial Provider clients. */
+public final class PlatformApi {
+    public static final int VERSION = 1;
+    public static final int MIN_SUPPORTED = 1;
+    public static final int MAX_SUPPORTED = 1;
+    public static final String BACKUP_FORMAT = "rockstar-platform-backup/1";
+    public static final String RECOVERABLE_BACKUP_FORMAT = "avocadoos-recoverable-backup/2";
+    public static final String RECOVERABLE_STATE_FORMAT = "avocadoos-platform-state/2";
+    public static final String PLAN_SCHEMA_ID_PATTERN = "[a-z0-9][a-z0-9._-]{0,63}(?:@[1-9][0-9]{0,5}/[a-z0-9][a-z0-9._-]{0,31})?";
+
+    private PlatformApi() {}
+
+    public static void requireCompatible(int clientMin, int clientMax) {
+        if (clientMin < 1 || clientMax < clientMin || clientMin > MAX_SUPPORTED || clientMax < MIN_SUPPORTED) {
+            throw new IllegalArgumentException("INCOMPATIBLE_PLATFORM_API");
+        }
+    }
+}

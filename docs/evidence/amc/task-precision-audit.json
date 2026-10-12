@@ -1,0 +1,57 @@
+{
+  "schema": "amc-task-precision-audit/1",
+  "verifiedAt": "2026-09-27T04:16:34Z",
+  "taskId": "ORG03",
+  "scope": "AMC担当・分類・次task・手順・合格条件とローカル進捗表示の精査",
+  "basis": {
+    "localBaseSha": "4e74e2f5f250b87c792ced6c03c5298c882cbd70",
+    "workingTreeChanges": true,
+    "observedRemoteMainSha": "5f3a3694474180415d08cd814b6aad864694d10f",
+    "remoteMerged": false,
+    "pushed": false
+  },
+  "results": {
+    "squads": 32,
+    "explicitTaskOwners": 183,
+    "detailedNextTaskPlans": 32,
+    "newPlannedTasks": 25,
+    "criteria": 96,
+    "criteriaInitiallyVerified": 0
+  },
+  "checks": [
+    {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "nodeTests": 371,
+      "toolTests": 19,
+      "workApiAssertions": 149,
+      "webAssetMissing": 0
+    },
+    {
+      "command": "node --test tests/mission-control.test.mjs",
+      "exitCode": 0,
+      "tests": 8,
+      "coverage": [
+        "担当一意性",
+        "旧版・共有実績の分離",
+        "証拠なしの合格/完了拒否",
+        "実機証拠の必須化",
+        "依存循環",
+        "入力存在",
+        "正本と案内/表示の一致",
+        "32部隊切替・前提移動・状態復元（模擬DOM）"
+      ]
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "limitations": [
+    "表示の実ブラウザ目視検査は未実施。JavaScript動作は模擬DOMで検証した。",
+    "過去の外部Provider・実機・本番受入の再実行ではない。",
+    "25の新設taskは未着手。予定成果物を作成済み・合格済みとはしない。",
+    "実担当者と期限は未設定。会話の進捗表示は手動更新snapshot。",
+    "検査の証拠path存在確認は、報告内容の正しさの人手reviewを代替しない。"
+  ]
+}

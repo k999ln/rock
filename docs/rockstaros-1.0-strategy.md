@@ -1,16 +1,20 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
-状態: 設計。利用者が提示した8原則と「現段階を1.0のベースにし、継続改善する」を適用する。既存の[確定要望RQ01〜RQ17](product-baseline.md)、[system構成](rockstaros-1.0-architecture.md)、[実装承認範囲](execution-approval-20260909.md)を維持する。新しい市場・価格・所有権・実資金取引を確定した文書ではない。
+2026-10-02現行方針: 主商品は物理SIM/eSIM購入を入口にRockstarOS、Sky、Zema、cloud LLM/Agentへアクセスするサービス。これは本書の2026-09-21のhardware-first記述と2026-09-16のlocal-LLM-first市場positioningをsupersedeする。Cloud実行、透明な従量料金、短いservice onboardingを最初に提供する。端末内LLM、offline agent、Pixel/QEMU/native OSは共通基盤・対応端末向け能力および独立したengineering acceptance trackとして維持し、service利用の必須条件にしない。適用する製品要件は[現行製品ベース](product-baseline.md)、SIM/eSIM導線は[claim/onboarding設計](sim-service-entitlement-claims.md)を正本とする。
 
-## 1. 製品の核と決定の区分
+2026-09-16時点の履歴: [製品目的](product-north-star-20260915.md)とRQ48はAI-native OS/Coreを市場の主商品として説明していた。2026-10-02以降はOS/Coreの技術設計を[AIネイティブOS共通設計](ai-native-os-architecture.md)、顧客向け主商品の位置付けを[現行製品ベース](product-baseline.md)で別々に参照する。
 
-**目指す体験: 自動化の仕事を、実行から結果・費用・復旧まで見失わない。**
+状態: 設計。利用者が提示した8原則と「現段階を1.0のベースにし、継続改善する」を適用する。[確定要望RQ01〜RQ49](product-baseline.md)、[system構成](rockstaros-1.0-architecture.md)、[Material Invention Core](material-invention-core.md)、[実装承認範囲](execution-approval-20260909.md)を維持する。新しい市場・価格・所有権・実資金取引を確定した文書ではない。
 
-Hubが「何をどこで動かすか」を扱い、Walletが「いくら使い、何が確定したか」を扱う。tob側の商品を接続する共通基盤をRockが提供する。ジョブの成功、納品、売上の発生、入金の確定は別の出来事として表示し、仕事の完了だけで収益を記帳しない。
+## 1. 製品価値と共通基盤の区分
+
+**目指す体験: SIM/eSIMからcloud LLM/Agent、Sky、Zemaへすぐ入り、仕事を依頼して料金・進捗・結果を一か所で追える。**
+
+SIM/eSIM offerはRockstarOS service accessを含む。RockstarOS/Coreはidentity・capability・approval・job recoveryを担い、Skyが「どのAgent/Toolを使うか」、Zemaが「依頼・進捗・承認・成果」、Walletが「費用・itemized usage・確認済み資金」を扱う。LLMとAgentはcloud-firstで、端末内inferenceは対応端末の任意能力として追加する。job success、納品、売上、入金は別eventとし、仕事完了だけで収益を記帳しない。
 
 | 区分 | この設計での扱い |
 | --- | --- |
-| 利用者の確定指示 | 現ベースをRockstarOS 1.0として継続改善。Hub＋Wallet中心。既存商品も対象。ゲーム交換・作者SDKの要求は維持。BlackBerry優先、既存料金を維持 |
+| 利用者の確定指示 | SIM/eSIM購入を入口としたRockstarOS/Sky/Zema/cloud LLM/Agent service access、透明なusage料金、短いonboarding。端末内LLMはoptional。RockstarOS Core、Pixel 10 GL066、Game/SDKは独立した技術・応用trackとして維持 |
 | 具体化した設計案 | 最初の実用検証を一つの業務に集中し、同じ商品の実行・成果・状態確認・復旧を通す。配布と販売の入口を開発と同時に設計する |
 | 検証する仮説 | 初期利用者は文章・記事・提案を納品する個人事業主/クリエイター。候補商品は既存の引用整理。結果と状態を探す負担の削減が選ばれる理由になる |
 | 未実証 | 需要、継続率、支払意思、競争優位、市場規模、独占、世界初、利益、実機対応、本番金融。設計への記載を実証に換算しない |
@@ -34,9 +38,9 @@ Hubが「何をどこで動かすか」を扱い、Walletが「いくら使い�
 
 最初の対象仮説は「文章を納品する個人事業主のうち、引用整理を反復し、複数の実行結果を手作業で探している人」。文書を扱う全員を対象市場としない。この問題が見つからなければ、既存商品の中から別の反復業務を選び直す。
 
-候補は `org.rockstar.citation-organizer` の既存native recipe。入力した引用の整理に範囲を限定する。調査・事実確認・記事全文生成・顧客獲得・自動納品・売上発生はこの商品が実施するとは表示しない。
+Linux/QEMUの候補は `org.rockstar.citation-organizer` の既存native recipeで、引用整理に限定する。Androidの最初の候補は別契約の `article-preparation@1`（citations→free-article）。同名処理を同一商品にせず、各成果schemaと検収条件を比較する。調査・事実確認・顧客獲得・自動納品・売上発生を実装済みと表示しない。
 
-1. Hubで商品を選ぶ。用途、作者、版、出力例、対応実行先、必要な許可、料金/実費の状態を確認する。
+1. Skyで商品を選びZemaへ引き継ぐ。用途、作者、版、出力例、対応実行先、必要な許可、料金/実費の状態を確認する。Linuxの旧Hub入口とは実装環境を分ける。
 2. 本人が入力と保存先を選ぶ。外部へ送る内容と費用上限を開始前に示す。未接続/未対応なら開始せず理由を出す。
 3. 実行中は実行先・状態・最後の確認時刻を表示する。接続断で結果が不明なら「照合待ち」とし、新しい仕事として勝手に再送しない。
 4. 完了後、成果を表示・保存・再表示する。成果の出所と商品版を追えるようにする。job ID、receipt、成果参照を関連付けるが同じIDに統合しない。
@@ -45,7 +49,7 @@ Hubが「何をどこで動かすか」を扱い、Walletが「いくら使い�
 
 初回previewのWalletは**開発用テスト残高・模擬記帳**である。実業務データの投入や実売上の管理を許すには、公開試験鍵からの移行、データ保護、保存/削除方針、利用者の同意を別途整える。初回検証は公開または合成文書を用いる。
 
-native recipeとPC版Mr.の同名処理を同一商品と決めつけない。既存比較では出力形式に差があり、PC adapterの追加自体は処理速度改善を示していない。[比較記録](hub-wallet-pc-comparison-20260909.md)と[接続制約](pc-citations-adapter.md)を基準に、必要な場合だけ同じ成果契約で比較する。
+native recipeとPC版Mr.の同名処理を同一商品と決めつけない。既存比較では出力形式に差があり、PC adapterの追加自体は処理速度改善を示していない。[比較記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/hub-wallet-pc-comparison-20260909.md)と[接続制約](pc-citations-adapter.md)を基準に、必要な場合だけ同じ成果契約で比較する。
 
 ## 4. systemごとの責任と既存資産
 
@@ -60,13 +64,17 @@ native recipeとPC版Mr.の同名処理を同一商品と決めつけない。�
 | Game・作者SDK / RQ13,14 | 現行hostのGX00、既存Wallet、GX01契約案、SDK計画 | owner/game分離→合成交換契約→SDK・サンプル・診断。ゲームclientに資金台帳の書込み鍵を渡さない | 2作者/2game/2ownerで正当な取引と相互拒否、異常系、初見導入計測 |
 | 運用・更新 / RQ08〜10,12 | health判定、rollback、backup、診断、既存試験/進捗記録 | 保存形式とOS版の互換性、復旧入口、問い合わせ時に必要な最小診断をそろえる | データ保持、旧版復帰条件、秘密を含まない診断、障害時の担当 |
 
-標準画面はHubとWallet。Gameは利用者が選んで使う入口であり、ゲーム連携/SDKそのものを任意の開発要求に格下げしない。達成演出・レベル・ログイン報酬は追加しない。ゲーム停止で仕事・Wallet・OS復旧を止めない。
+最初の標準利用経路はSkyで選びZemaで仕事を管理する。Gameは関心に基づく優先的な応用系統で、連携/SDKの要求を落とさず、制作・試遊・保存を金融完成と独立に検証する。OSの達成演出・ログイン報酬を追加する決定ではない。ゲーム停止で仕事・Wallet・OS復旧を止めない。
 
 ## 5. 現在地と開発順
 
+現行順序は共通設計第9節のCore/応用別trackに従う。所有GL066での試験署名APKはLocal AI、Sky/Zema、固定Tool、実再起動、非破壊backupを確認済み。full build/flash、production署名、鍵喪失復旧は未受入。直近はmodel互換/記憶/副作用分類/Sky能力交渉の契約を具体化し、原稿Toolと非金融Game/IP候補を同じ基盤で検証する。後続の収益ProviderとFundは独立gateとする。
+
+以下のSHA、D6、RLS01の表は**2026-09-09の設計時点の履歴**。現在の未完了taskや優先順位ではない。現在の進捗は[全体構成](system-composition.md)と進捗JSONを参照する。
+
 設計着手時の参照sourceは `8e6d217632adfe6205793f1a9c5a2ce76c2e41cb`。同SHAの[Web等のverify](https://github.com/k999ln/rock/actions/runs/34428936385/job/102720064968)、[Android](https://github.com/k999ln/rock/actions/runs/34428936335/job/102720064909)、[native source-tests](https://github.com/k999ln/rock/actions/runs/34428936322/job/102720064559)はGitHubで成功を確認した。これは今後の変更や実OS長時間稼働の合格ではない。
 
-凍結OS imageのruntimeは `b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`。D0〜D5は[限定受入](os-acceptance-b8287bc-20260909.md)、D6は未合格。run44は開始記録があるが、この設計更新では最終結果を取得していない。現在のhost sourceにあるGX00を凍結imageへ搭載済みと扱わない。
+凍結OS imageのruntimeは `b8287bc4060f4301be3a2e17e5ff7f09df4ff1f9`。D0〜D5は[限定受入](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/os-acceptance-b8287bc-20260909.md)、D6は未合格。run44は開始記録があるが、この設計更新では最終結果を取得していない。現在のhost sourceにあるGX00を凍結imageへ搭載済みと扱わない。
 
 | 優先 | 作業と担当役割 | 完了条件 / 次へ進む条件 |
 | --- | --- | --- |
@@ -74,7 +82,7 @@ native recipeとPC版Mr.の同名処理を同一商品と決めつけない。�
 | P0b 導入 | 配布担当がRLS01 packagerを作る。P0aと実装は並行可、配布合格は両方必要 | 最初の対応host OS/CPU/版を明示し、空の対応環境で導入から削除まで成功。「Mac/PC全般対応」と広げない |
 | P1 商品価値 | 商品担当＋UX担当が代表商品一つの縦断体験を作り、B02/B03/B05で既存手順と比較 | 正常系と失敗復旧の証拠、成果品質、下記pilot指標。初回導線設計と計測準備はP0と並行可 |
 | 継続必須 Game | Wallet担当がGX00の分離・照合キー衝突・同TLS異常系を解消。GX01→DX01へ進む | 各phaseGateを通す。独立に進め、実provider/実ゲームの待ちをP0の新しい必須依存にしない |
-| 条件別拡張 | 実機担当がBlackBerryの正確な型番/variantと復旧可能性を調べる。provider担当は実資金接続条件を別整理 | 実機と金融はそれぞれ専用受入。別機種への変更、実取引、署名鍵運用は不足する選択/権限を確認してから |
+| 当時の条件別拡張（退役） | 当時はBlackBerryの型番/variant調査が候補。現行の初対象はGL066へ確定済み | 現在はGL066 OS受入と金融受入を独立管理する |
 
 配布候補はsource・image・host tools・設定・成果物hashの対応表を持つ。凍結版を採るなら対象版のCIと受入証拠を照合する。新しいsourceでbuildするなら旧imageのD0〜D6を流用せず、同じ新候補を再受入する。新台帳の搭載では移行・backup・A/B復旧も再試験する。
 
@@ -97,7 +105,7 @@ native recipeとPC版Mr.の同名処理を同一商品と決めつけない。�
 
 ## 7. CM・流通・継続運用
 
-2026-09-10追記: 利用者からCM制作完成済みとの申告を受領。制作は残件から外し、既存CMの表現照合と告知／導入ページへの接続を進める。以下は導線と表現の方針であり、CMを新規制作する指示ではない。現在の内部受入、公開停止条件、条件付きの追加1〜2日概算は[最新の進捗追記](release-followup-20260910.md)を参照。
+2026-09-10追記: 利用者からCM制作完成済みとの申告を受領。制作は残件から外し、既存CMの表現照合と告知／導入ページへの接続を進める。以下は導線と表現の方針であり、CMを新規制作する指示ではない。現在の内部受入、公開停止条件、条件付きの追加1〜2日概算は[最新の進捗追記](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-followup-20260910.md)を参照。
 
 伝える順序は「誰のどの作業が楽になるか→実際の一周デモ→対応環境/制限→試し方」。コンセプト表現の案は「自動化の仕事と成果を、見失わない。」とする。実現済みの範囲を併記し、収益保証・世界初・BlackBerryへ今すぐ導入可能とは表示しない。
 
@@ -105,7 +113,7 @@ native recipeとPC版Mr.の同名処理を同一商品と決めつけない。�
 
 初期チャネル案は対象業務の小さなコミュニティへの説明と紹介。実際の連絡・公開・広告購入は行わない。試用支援のつまずきをHub導線と診断へ還元する。集客数、対応環境に合う人数、導入数、初回完了数、継続数を別々に把握する。
 
-nativeの既存契約は1契約あたり月888 USD cents、同じ契約の複数端末で重複請求しない。商品代・API/実行実費は別軸、旧Webの料金試算は別契約として保持。ATMでRockが徴収する手数料は0、ゲーム料金は未定。preview試験から実課金を開始せず、Rock端末を持たないゲームplayerの資格/料金も推測しない。
+現行RQ20のSky利用料は、検証済み収益から直接実費を先に扱い、残額からUTC月最大888 USD centsまで回収する。収益0なら0、先払い・不足分の債務化・翌月繰越・カード定期請求はしない。ToB利用料0と同一契約の複数端末重複防止を維持する。nativeの月888固定試作は旧契約の履歴で、現行課金条件へ流用しない。商品代/API実費は別軸、CSV等の限定policyは各正本に従う。ATMのRock手数料0、ゲーム料金未定を維持し、previewから実課金を開始しない。
 
 採算は契約収入から決済・実行基盤・更新配布・利用者支援等の実コストを引いて検証する。未知の費用を0にしない。無制限の推論無料化、ATM外部費用の無制限補填、架空の販売実績は設計に入れない。
 

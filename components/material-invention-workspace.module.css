@@ -1,0 +1,33 @@
+.panel { padding: clamp(16px, 3vw, 32px); border: 1px solid #334237; border-radius: 22px; background: #101813; color: #e8f0e7; min-width: 0; }
+.panel h2 { margin: 10px 0; font-size: clamp(22px, 3vw, 32px); letter-spacing: -.03em; }
+.panel h3 { margin: 8px 0; }
+.panel p { line-height: 1.8; font-size: 14px; overflow-wrap: anywhere; }
+.eyebrow { color: #c4ef9e; letter-spacing: .14em; font-size: 11px !important; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 26px; margin-top: 24px; }
+.editor, .results { min-width: 0; }
+.panel label { display: grid; gap: 8px; margin: 16px 0; font-size: 13px; }
+.panel input, .panel textarea, .panel select { box-sizing: border-box; width: 100%; min-width: 0; padding: 12px; border: 1px solid #495b4b; border-radius: 9px; background: #0a100c; color: #e8f0e7; font: inherit; font-size: 16px; }
+.panel textarea { min-height: 350px; resize: vertical; font: 16px/1.7 ui-monospace, monospace; }
+.panel button { min-height: 44px; max-width: 100%; border: 1px solid #536b54; border-radius: 9px; padding: 9px 13px; background: #1d2c1f; color: #e8f0e7; font: inherit; font-size: 13px; cursor: pointer; overflow-wrap: anywhere; }
+.panel button:disabled { opacity: .45; cursor: default; }
+.panel button:focus-visible, .panel input:focus-visible, .panel textarea:focus-visible, .panel select:focus-visible, .panel summary:focus-visible { outline: 2px solid #c4ef9e; outline-offset: 3px; }
+.panel .primary { background: #c4ef9e; color: #12220c; border-color: #c4ef9e; font-weight: 650; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+.note { color: #adbea9; font-size: 12px !important; }
+.boundary, .message { background: #283122; color: #e0eac5; padding: 12px 15px; border-radius: 10px; font-size: 13px !important; }
+.empty { padding: 32px 8px; color: #adbea9; }
+.candidates { display: grid; gap: 12px; max-height: 610px; overflow-y: auto; margin-bottom: 16px; }
+.candidate { padding: 15px; border: 1px solid #3b4a38; border-radius: 12px; background: #162018; min-width: 0; }
+.candidate strong { font-size: 14px; overflow-wrap: anywhere; }
+.candidate p { margin: 7px 0; }
+.finding { color: #f0cca1; font-size: 12px !important; }
+.panel code { font-size: 11px; overflow-wrap: anywhere; word-break: break-word; }
+.panel details { font-size: 12px; line-height: 1.8; }
+.panel summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.provenance { border-top: 1px solid #334237; padding: 10px 0 18px; }
+.hidden { display: none; }
+.saved { margin-top: 28px; padding-top: 22px; border-top: 1px solid #334237; }
+.saved ul { padding: 0; list-style: none; }
+.saved li { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 10px 0; }
+.saved span { font-size: 12px; color: #adbea9; }
+@media (max-width: 850px) { .layout { grid-template-columns: minmax(0, 1fr); } }

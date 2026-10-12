@@ -1,0 +1,134 @@
+{
+  "taskId": "AMC06",
+  "date": "2026-10-09",
+  "scope": "local_read_only_codex_adaptive_planning_and_revision",
+  "branch": "codex/feature-workspaces",
+  "pullRequest": "https://github.com/k999ln/rock/pull/95",
+  "implementationSha": "083f00f82ffad17e4b724442900c84b4be58c0e4",
+  "sourceHashes": {
+    "scripts/amc-planner.mjs": "29437edef11a58684539eadae25a3eb0e8190d1ae67fcfe0a1ef4dadd764739c",
+    "scripts/amc-goal-engine.mjs": "6d9944010f2dd3899f4cac3d628b6ad8aa3a345a1d38ddb964a976015e47459d",
+    "scripts/amc-goal.mjs": "fc5565129f47e7f6b43ae367d692ddf3e8fb6815ce624dfce8f0db224e21e161",
+    "scripts/templates/amc-goal-workbench.html": "e354d3e451c70bc170209b16cb2d7b80ba1d363f72fdb84cddf37ef88e096a85",
+    "scripts/templates/amc-goal-workbench.js": "f85e560a75f26c21e02c2b01a303f0e7115d235087ddd72aa696171363ff9c6f",
+    "tests/amc-planner.test.mjs": "07effaa4eec068743fd8619bf969e30787feecc7d8d26196512da1f1546f9a35",
+    "tests/amc-adaptive-brief.test.mjs": "3d61421e26ebe161d78964b6c47d2497b224f88d49a7c82a0d0a270d5e56a75e",
+    "tests/amc-goal-cli.test.mjs": "26bebba1d56559b4c02738c85e0171f81e7358e532704e425d121024d72812d5"
+  },
+  "localChecks": {
+    "command": "node --test tests/amc-planner.test.mjs tests/amc-adaptive-brief.test.mjs tests/amc-goal-engine.test.mjs tests/amc-goal-cli.test.mjs tests/amc-request-plan.test.mjs tests/project-bots.test.mjs tests/project-bot-context.test.mjs tests/workspaces.test.mjs",
+    "passed": 136,
+    "failed": 0,
+    "skipped": 0,
+    "checks": [
+      "variable task counts 1/3/9/24 and branching dependencies",
+      "strict proposal and adaptiveBrief schema",
+      "source references and canonical holds",
+      "no model call without sharing confirmation",
+      "loopback Host/Origin/session token/body bounds",
+      "single in-flight job, cancellation and timeout",
+      "cumulative revision feedback and stale response rejection",
+      "old Goal retention, backup and independent draft adoption",
+      "offline template retained without model connection"
+    ]
+  },
+  "livePlanning": {
+    "request": "Plan a README-only improvement to the Sky Bot onboarding documentation, in 2–3 tasks; do not edit.",
+    "privateUserGoalSent": false,
+    "mainSha": "0455499d8726118b8892c5cfbe2e49236c8b4c31",
+    "localHeadAtCollection": "dd31cc0188efdf9afa75e937bd0cc78159596fa7",
+    "collectedAt": "2026-10-09T20:44:38.712Z",
+    "taskCount": 3,
+    "taskTitles": [
+      "公開READMEでSky Botの入口を見つけやすくする",
+      "詳細READMEを初回依頼の順序に整理する",
+      "別担当が導線と記載内容を検収する"
+    ],
+    "state": "draft",
+    "revision": 0,
+    "approval": null,
+    "allTasksPending": true,
+    "executionStarted": false,
+    "proposalSha256": "255db988ca8e10a49523473778cc247dae650d462fa85182ce884d507b6e7912",
+    "goalSha256": "711af1ede0095ffeaa4a950c72b92ad46ba563f879e3ecdea6e08edabaa5fc21",
+    "runtimeSourceSha": "9f3d950c599cc6460efc7a4cda33c6792b3bf036"
+  },
+  "liveRevision": {
+    "status": "pass",
+    "instruction": "Merge the documentation changes into one task and keep independent review as the second task; preserve the existing CLI.",
+    "previousTaskCount": 3,
+    "taskCount": 2,
+    "taskTitles": [
+      "2つのREADMEで担当選択からSky Bot起動までを整理する",
+      "別担当が初回利用の導線とCLIとの一致を読み取り検収する"
+    ],
+    "state": "draft",
+    "revision": 0,
+    "approval": null,
+    "allTasksPending": true,
+    "previousGoal": {
+      "id": "adaptive-acf5ac67-e566-4592-ad7d-afe6696c6074",
+      "revision": 0
+    },
+    "feedbackPreserved": true,
+    "goalSha256": "7eada93f80a62c105f3ec5523ac413b2ab457fd1bdf01eeffc7da08f41565a2f",
+    "executionStarted": false,
+    "runtimeSourceSha": "9f3d950c599cc6460efc7a4cda33c6792b3bf036"
+  },
+  "browser": {
+    "sharingRequiredBeforeStart": "pass",
+    "realThreeTaskCandidateRendered": "pass",
+    "revisionSubmission": "pass",
+    "draftAdoption": "pass",
+    "realTwoTaskRevisionRendered": "pass",
+    "reloadPreservesDraft": "pass",
+    "revisitRestoresRequestIntentBotAndFeedback": "pass",
+    "revisitDoesNotStartModel": "pass",
+    "legacyChatCollapsed": "pass",
+    "consoleErrors": 0,
+    "verifiedUiSourceSha": "083f00f82ffad17e4b724442900c84b4be58c0e4",
+    "screenshotSha256": "f64c467897ccfaf7aa11296167ba89e3283fc090c0405f5225aca5c75129161a"
+  },
+  "independentReview": {
+    "reviewer": "native_amc_reviewer",
+    "implementation": "pass",
+    "liveFirstProposal": "pass",
+    "liveRevision": "pass",
+    "formalGoalAcceptance": false,
+    "lintCorrection": "pass; 20 targeted tests independently rerun",
+    "finalUi": "pass",
+    "uiTestsPassed": 58,
+    "resolvedFinding": "Revisit now preserves request and intent from old Sky/requestBrief Goals, without changing saved Goal or bypassing Sky protection."
+  },
+  "localFullVerify": {
+    "command": "npm run verify",
+    "status": "blocked_environment",
+    "stage": "llm:architecture:check",
+    "reason": "ai package is not installed in the isolated worktree; prior synchronization, baseline, design and system composition checks passed"
+  },
+  "githubCI": {
+    "status": "success",
+    "implementationSha": "083f00f82ffad17e4b724442900c84b4be58c0e4",
+    "previousAttempt": {
+      "sha": "9f3d950c599cc6460efc7a4cda33c6792b3bf036",
+      "status": "failure",
+      "stage": "lint:product",
+      "fix": "Control character check rewritten without control characters in regex; top-level Node tests awaited."
+    },
+    "intermediateVerifiedSha": "0a3306d9",
+    "intermediateCheckRuns": 8,
+    "intermediateStatus": "success",
+    "verifiedImplementationSha": "083f00f82ffad17e4b724442900c84b4be58c0e4",
+    "checkRuns": 8,
+    "verifyRun": "https://github.com/k999ln/rock/actions/runs/37990735683",
+    "meaning": "All eight check-runs passed for the final implementation SHA. Subsequent progress-only changes have their own CI."
+  },
+  "boundaries": {
+    "hostedSkyZemaModelConnection": false,
+    "mainIntegrated": false,
+    "continuousExecution": false,
+    "proposedDevelopmentTasksExecuted": false,
+    "originalSavedHtmlModified": false,
+    "originalSavedHtmlSha256": "4e2660b59b53df0bae4b898dfc67ee9387353d421662a6e77d3a1e3495782ae8"
+  }
+}

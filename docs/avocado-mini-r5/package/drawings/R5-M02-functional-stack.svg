@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1000" viewBox="0 0 1620 1000"><rect width="1620" height="1000" fill="white"/>
+<rect x="60" y="105" width="465" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="292.5" y="174.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">光学表示エンジン</text>
+<text x="292.5" y="215.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">方式・占有寸法は未確定</text>
+<rect x="60" y="360" width="465" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="292.5" y="429.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">入力ヘッド</text>
+<text x="292.5" y="470.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">RGB・距離・音声候補</text>
+<rect x="60" y="615" width="465" height="180" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="292.5" y="684.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">胴と支持構造</text>
+<text x="292.5" y="725.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">ケーブル・アンテナ・放熱</text>
+<rect x="720" y="105" width="765" height="225" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1102.5" y="197.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">台座候補区画</text>
+<text x="1102.5" y="237.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">演算・保存・専用接続基板</text>
+<rect x="720" y="435" width="345" height="195" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="892.5" y="512.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">安全監視</text>
+<text x="892.5" y="552.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">MCU・遮断</text>
+<rect x="1155" y="435" width="330" height="195" fill="#f4f5f6" stroke="#333333" stroke-width="2"/>
+<text x="1320.0" y="512.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">給電・変換</text>
+<text x="1320.0" y="552.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">保護回路</text>
+<polyline points="525,450 720,240" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="720,240 716.7663266093656,250.51396007233728 709.7540485348393,244.00255900313434" fill="#333"/>
+<polyline points="885,435 885,330" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="885,330 889.7846208752235,339.9049181258794 880.2153791247765,339.9049181258794" fill="#333"/>
+<polyline points="1320,435 1320,330" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="1320,330 1324.7846208752235,339.9049181258794 1315.2153791247765,339.9049181258794" fill="#333"/>
+<text x="1110" y="789.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">空間の重複割当は禁止</text>
+<text x="1110" y="830.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">光学・放熱・無線・配線を同じ3Dモデルで照合</text>
+<text x="810" y="930.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="27.5" fill="#111111">R5 M02  機能別の分解関係図  実物の分解図や部品収納の証明ではない</text>
+</svg>

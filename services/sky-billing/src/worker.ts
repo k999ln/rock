@@ -26,6 +26,7 @@ export interface Env {
   DB: D1Database;
   BILLING_SHARED_SECRET: string;
   SETTLEMENT_INGEST_SECRET: string;
+  PAYOUT_ADAPTER_SECRET?: string;
   SKY_ORIGIN: string;
   BASE_RPC_URL?: string;
 }
@@ -36,8 +37,8 @@ function configuration(env: Env) {
   if (
     sky.protocol !== 'https:' ||
     baseRpc.protocol !== 'https:' ||
-    env.BILLING_SHARED_SECRET.length < 32 ||
-    env.SETTLEMENT_INGEST_SECRET.length < 32
+    (env.BILLING_SHARED_SECRET ?? '').length < 32 ||
+    (env.SETTLEMENT_INGEST_SECRET ?? '').length < 32
   )
     throw new Error('SETTLEMENT_CONFIGURATION_INVALID');
   return { skyOrigin: sky.origin, baseRpcUrl: baseRpc.toString() };
@@ -117,7 +118,11 @@ async function rockWalletOperator(db: D1Database) {
     .first<RockWalletOperator>();
 }
 
-async function rockWalletStatus(request: Request, env: Env) {
+async function rockWalletStatus(
+  request: Request,
+  env: Env,
+  legacyFixture = false,
+) {
   const { origin, token } = await authorizeUser(request, env);
   const operator = await rockWalletOperator(env.DB);
   const isOperator = operator?.userId === token.sub;
@@ -149,7 +154,7 @@ async function rockWalletStatus(request: Request, env: Env) {
       provider: {
         providerId: ROCK_WALLET_PROVIDER_ID,
         displayName: 'Rock Settlement Wallet',
-        mode: 'LIVE_RECEIVE',
+        mode: legacyFixture ? 'LIVE_RECEIVE' : 'ON_HOLD',
         custody: false,
         network: 'base',
         chainId: BASE_MAINNET_CHAIN_ID,
@@ -169,7 +174,7 @@ async function rockWalletStatus(request: Request, env: Env) {
           }
         : null,
       operator: isOperator,
-      canClaim: operator === null || isOperator,
+      canClaim: legacyFixture && (operator === null || isOperator),
       totals: isOperator
         ? (totals ?? {
             collectedMinor: 0,
@@ -266,11 +271,9 @@ async function verifyRockWallet(request: Request, env: Env) {
     signature: input.signature,
   });
 
+  // A replay may pass the read above before another request consumes consent.
+  // Gate every mutation on unused consent and consume it last in this transaction.
   const result = await env.DB.batch([
-    env.DB.prepare(
-      `UPDATE rock_wallet_challenges SET consumed_at=?
-         WHERE challenge_id=? AND user_id=? AND consumed_at IS NULL AND expires_at>?`,
-    ).bind(now, challenge.challengeId, token.sub, now),
     env.DB.prepare(
       `INSERT INTO rock_wallet_operators(
           provider_id,user_id,address,chain_id,network,asset_symbol,
@@ -278,6 +281,10 @@ async function verifyRockWallet(request: Request, env: Env) {
         ) SELECT ?,?,?,?,'base','USDC',?,'active',?,?,?,?
           WHERE NOT EXISTS(
             SELECT 1 FROM rock_wallet_operators WHERE provider_id=? AND user_id<>?
+          )
+          AND EXISTS(
+            SELECT 1 FROM rock_wallet_challenges
+             WHERE challenge_id=? AND user_id=? AND consumed_at IS NULL AND expires_at>?
           )
         ON CONFLICT(provider_id) DO UPDATE SET
           address=excluded.address,chain_id=excluded.chain_id,
@@ -297,16 +304,52 @@ async function verifyRockWallet(request: Request, env: Env) {
       now,
       ROCK_WALLET_PROVIDER_ID,
       token.sub,
+      challenge.challengeId,
+      token.sub,
+      now,
     ),
     env.DB.prepare(
       `UPDATE rock_fee_collection_instructions
          SET recipient_address=?,status='ready',updated_at=?
-         WHERE status='awaiting_wallet' AND amount_minor>0`,
-    ).bind(address, now),
+         WHERE status='awaiting_wallet' AND amount_minor>0
+           AND EXISTS(
+             SELECT 1 FROM rock_wallet_challenges
+              WHERE challenge_id=? AND user_id=? AND consumed_at IS NULL AND expires_at>?
+           )
+           AND EXISTS(
+             SELECT 1 FROM rock_wallet_operators
+              WHERE provider_id=? AND user_id=? AND address=? AND status='active'
+           )`,
+    ).bind(
+      address,
+      now,
+      challenge.challengeId,
+      token.sub,
+      now,
+      ROCK_WALLET_PROVIDER_ID,
+      token.sub,
+      address,
+    ),
+    env.DB.prepare(
+      `UPDATE rock_wallet_challenges SET consumed_at=?
+         WHERE challenge_id=? AND user_id=? AND consumed_at IS NULL AND expires_at>?
+           AND EXISTS(
+             SELECT 1 FROM rock_wallet_operators
+              WHERE provider_id=? AND user_id=? AND address=? AND status='active'
+           )`,
+    ).bind(
+      now,
+      challenge.challengeId,
+      token.sub,
+      now,
+      ROCK_WALLET_PROVIDER_ID,
+      token.sub,
+      address,
+    ),
   ]);
   if (
     (result[0].meta.changes ?? 0) !== 1 ||
-    (result[1].meta.changes ?? 0) !== 1
+    (result[2].meta.changes ?? 0) !== 1
   )
     throw new Error('ROCK_WALLET_OPERATOR_CONFLICT');
   return response(
@@ -502,7 +545,7 @@ async function reconcileRockCollection(request: Request, env: Env) {
   }
 }
 
-async function status(request: Request, env: Env) {
+async function status(request: Request, env: Env, legacyFixture = false) {
   const { origin, token } = await authorizeUser(request, env);
   const period = periodForUnix(Math.floor(Date.now() / 1000));
   const settlement = await env.DB.prepare(
@@ -563,9 +606,10 @@ async function status(request: Request, env: Env) {
   return response(
     {
       policy: {
-        mode: 'verified_earnings_only',
+        mode: legacyFixture ? 'verified_earnings_only' : 'fee_policy_on_hold',
         currency: SETTLEMENT_CURRENCY,
-        monthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
+        monthlyFeeCapMinor: legacyFixture ? SKY_MONTHLY_FEE_CAP_MINOR : null,
+        legacyMonthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
         upfrontCharge: false,
         debtCarry: false,
         tobFeeMinor: 0,
@@ -577,11 +621,13 @@ async function status(request: Request, env: Env) {
       period,
       settlement: {
         ...current,
-        remainingFeeCapMinor: Math.max(
-          0,
-          SKY_MONTHLY_FEE_CAP_MINOR -
-            Number((current as { skyFeeMinor?: number }).skyFeeMinor ?? 0),
-        ),
+        remainingFeeCapMinor: legacyFixture
+          ? Math.max(
+              0,
+              SKY_MONTHLY_FEE_CAP_MINOR -
+                Number((current as { skyFeeMinor?: number }).skyFeeMinor ?? 0),
+            )
+          : null,
       },
       funds: funds.results,
       tools: tools.results,
@@ -664,7 +710,7 @@ async function receiptResult(db: D1Database, receiptId: string) {
     .first();
 }
 
-async function ingest(request: Request, env: Env) {
+async function ingest(request: Request, env: Env, legacyFixture = false) {
   configuration(env);
   const raw = await request.text();
   if (new TextEncoder().encode(raw).length > 65_536)
@@ -675,6 +721,16 @@ async function ingest(request: Request, env: Env) {
     env.SETTLEMENT_INGEST_SECRET,
   );
   const receipt = validateEarningReceipt(JSON.parse(raw) as unknown);
+  // The USD 8.88 ToC proposal is on hold. Keep the legacy path available only
+  // to the in-process regression fixture; the deployed default fails closed.
+  if (receipt.beneficiaryRole === 'toc' && !legacyFixture)
+    return response(
+      {
+        code: 'SKY_FEE_POLICY_ON_HOLD',
+        error: '利用者向け収益料金は保留中です。料金と回収動線の確定後に再開します。',
+      },
+      409,
+    );
   const now = Math.floor(Date.now() / 1000);
   if (receipt.occurredAt > now + 300)
     throw new Error('EARNING_RECEIPT_OCCURRED_AT_INVALID');
@@ -842,13 +898,18 @@ async function ingest(request: Request, env: Env) {
 
 async function signedInput(request: Request, env: Env) {
   configuration(env);
+  // The payout rail is optional while no payout adapter is approved. Never
+  // accept a claim or result without its own secret.
+  const payoutSecret = env.PAYOUT_ADAPTER_SECRET;
+  if (!payoutSecret || payoutSecret.length < 32)
+    throw new Error('SETTLEMENT_CONFIGURATION_INVALID');
   const raw = await request.text();
   if (new TextEncoder().encode(raw).length > 16_384)
     throw new Error('SIGNED_INPUT_TOO_LARGE');
   await verifyReceiptSignature(
     raw,
     request.headers.get('sky-receipt-signature'),
-    env.SETTLEMENT_INGEST_SECRET,
+    payoutSecret,
   );
   const value = JSON.parse(raw) as unknown;
   if (!value || typeof value !== 'object' || Array.isArray(value))
@@ -977,10 +1038,21 @@ function retired(origin?: string) {
   return response(
     {
       error:
-        '先払いの月額契約は廃止しました。Skyは検証済み自動化収益からだけ最大$8.88を精算します。',
+        '先払いの月額契約は廃止しました。利用者向け収益料金も現在保留中です。',
       code: 'UPFRONT_BILLING_RETIRED',
     },
     410,
+    origin,
+  );
+}
+
+function feeOnHold(origin?: string) {
+  return response(
+    {
+      code: 'SKY_FEE_POLICY_ON_HOLD',
+      error: '利用者向け収益料金は保留中です。料金と回収動線の確定後に再開します。',
+    },
+    409,
     origin,
   );
 }
@@ -1047,62 +1119,75 @@ function errorResponse(error: unknown, origin?: string) {
   );
 }
 
-export default {
-  async fetch(request, env) {
-    let origin: string | undefined;
-    try {
-      const { skyOrigin } = configuration(env);
-      origin =
-        request.headers.get('origin') === skyOrigin ? skyOrigin : undefined;
-      const url = new URL(request.url);
-      if (request.method === 'OPTIONS') {
-        if (!origin) return new Response(null, { status: 403 });
-        return new Response(null, { status: 204, headers: cors(origin) });
-      }
-      if (request.method === 'GET' && url.pathname === '/health')
-        return response({
-          ok: true,
-          mode: 'verified_earnings_only',
-          monthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
-          currency: SETTLEMENT_CURRENCY,
-        });
-      if (request.method === 'GET' && url.pathname === '/v1/status')
-        return await status(request, env);
-      if (request.method === 'GET' && url.pathname === '/v1/rock-wallet')
-        return await rockWalletStatus(request, env);
-      if (
-        request.method === 'POST' &&
-        url.pathname === '/v1/rock-wallet/challenge'
-      )
-        return await createRockWalletChallenge(request, env);
-      if (
-        request.method === 'POST' &&
-        url.pathname === '/v1/rock-wallet/verify'
-      )
-        return await verifyRockWallet(request, env);
-      if (
-        request.method === 'POST' &&
-        url.pathname === '/v1/rock-wallet/reconcile'
-      )
-        return await reconcileRockCollection(request, env);
-      if (request.method === 'DELETE' && url.pathname === '/v1/rock-wallet')
-        return await revokeRockWallet(request, env);
-      if (request.method === 'POST' && url.pathname === '/v1/earnings')
-        return await ingest(request, env);
-      if (request.method === 'POST' && url.pathname === '/v1/payouts/claim')
-        return await claimPayout(request, env);
-      if (request.method === 'POST' && url.pathname === '/v1/payouts/result')
-        return await completePayout(request, env);
-      if (
-        request.method === 'POST' &&
-        ['/v1/checkout', '/v1/portal', '/v1/webhooks/stripe'].includes(
-          url.pathname,
+function createBillingWorker(legacyFixture = false) {
+  return {
+    async fetch(request, env) {
+      let origin: string | undefined;
+      try {
+        const { skyOrigin } = configuration(env);
+        origin =
+          request.headers.get('origin') === skyOrigin ? skyOrigin : undefined;
+        const url = new URL(request.url);
+        if (request.method === 'OPTIONS') {
+          if (!origin) return new Response(null, { status: 403 });
+          return new Response(null, { status: 204, headers: cors(origin) });
+        }
+        if (request.method === 'GET' && url.pathname === '/health')
+          return response({
+            ok: true,
+            mode: legacyFixture ? 'verified_earnings_only' : 'fee_policy_on_hold',
+            monthlyFeeCapMinor: legacyFixture ? SKY_MONTHLY_FEE_CAP_MINOR : null,
+            legacyMonthlyFeeCapMinor: SKY_MONTHLY_FEE_CAP_MINOR,
+            currency: SETTLEMENT_CURRENCY,
+          });
+        if (request.method === 'GET' && url.pathname === '/v1/status')
+          return await status(request, env, legacyFixture);
+        if (request.method === 'GET' && url.pathname === '/v1/rock-wallet')
+          return await rockWalletStatus(request, env, legacyFixture);
+        if (
+          request.method === 'POST' &&
+          url.pathname === '/v1/rock-wallet/challenge'
         )
-      )
-        return retired(origin);
-      return response({ error: 'not_found' }, 404, origin);
-    } catch (error) {
-      return errorResponse(error, origin);
-    }
-  },
-} satisfies ExportedHandler<Env>;
+          return legacyFixture
+            ? await createRockWalletChallenge(request, env)
+            : feeOnHold(origin);
+        if (
+          request.method === 'POST' &&
+          url.pathname === '/v1/rock-wallet/verify'
+        )
+          return legacyFixture
+            ? await verifyRockWallet(request, env)
+            : feeOnHold(origin);
+        if (
+          request.method === 'POST' &&
+          url.pathname === '/v1/rock-wallet/reconcile'
+        )
+          return legacyFixture
+            ? await reconcileRockCollection(request, env)
+            : feeOnHold(origin);
+        if (request.method === 'DELETE' && url.pathname === '/v1/rock-wallet')
+          return await revokeRockWallet(request, env);
+        if (request.method === 'POST' && url.pathname === '/v1/earnings')
+          return await ingest(request, env, legacyFixture);
+        if (request.method === 'POST' && url.pathname === '/v1/payouts/claim')
+          return await claimPayout(request, env);
+        if (request.method === 'POST' && url.pathname === '/v1/payouts/result')
+          return await completePayout(request, env);
+        if (
+          request.method === 'POST' &&
+          ['/v1/checkout', '/v1/portal', '/v1/webhooks/stripe'].includes(
+            url.pathname,
+          )
+        )
+          return retired(origin);
+        return response({ error: 'not_found' }, 404, origin);
+      } catch (error) {
+        return errorResponse(error, origin);
+      }
+    },
+  } satisfies ExportedHandler<Env>;
+}
+
+// Historical 888-cent behavior is exercised without exposing it as a Worker route.
+export const legacyFixtureBillingWorker = createBillingWorker(true);
+export default createBillingWorker();

@@ -1,0 +1,37 @@
+{
+  "schema": "rockstar-a2a-price-quote-acquisition-local/1",
+  "date": "2026-10-02",
+  "scope": "Local source behavior for an unpublished A2A quote-only extension proposal",
+  "implemented": [
+    "A2A client quote-only request boundary with stable quoteRequestId",
+    "Explicit prompt-disclosure consent guard before network access",
+    "Operator-configured HTTPS extension URI and exact Agent Card capability match",
+    "A2A-Extensions negotiation header and GetPriceQuote request with executionRequested=false",
+    "Ambiguous quote request preserves the ID and is never automatically retried",
+    "Returned signed quote remains untrusted until the existing Provider signature verifier accepts it",
+    "Owner-authenticated, per-user-rate-limited A2A quote endpoint with operator egress policy and Provider signature verification",
+    "Workbench consent checkbox and verified estimate/itemized cap display, invalidated when quote inputs change",
+    "Verified quote digest passed into existing single-use delegation draft persistence"
+  ],
+  "localVerification": {
+    "a2aClientTests": "PASS: node --experimental-strip-types --test tests/a2a-client.test.mjs (9/9, including Node/Python local fixture interoperability); loopback fixture required local network permission.",
+    "signedQuoteVerifierTests": "PASS: node --experimental-strip-types --test tests/a2a-price-quote.test.mjs (5/5, including Android canonical quote/digest fixture).",
+    "typecheck": "PASS: npm run typecheck (tsc --noEmit).",
+    "apiHarness": "PASS: npm run test:api (938 assertions) after build. Added route checks for sign-in, invalid input and missing prompt-disclosure consent; quote acquisition itself was verified using synthetic signed Provider fixtures in focused tests.",
+    "acquisitionAndTrustPreflightTests": "PASS: node --experimental-strip-types --test tests/a2a-price-quote-acquisition.test.mjs tests/a2a-price-quote.test.mjs tests/a2a-usage-receipt.test.mjs (13/13). This includes refusing prompt disclosure unless an active trusted Provider key exists for the exact Agent origin.",
+    "fullNodeSuite": "PASS: node --experimental-strip-types --test tests/*.test.mjs (683/683) under loopback-enabled local fixture execution.",
+    "build": "PASS: npm run build. Vinext reports existing-style large-chunk and duplicate CSS-output warnings; command completes and new API route is present in the route map."
+  },
+  "notImplementedOrAccepted": [
+    "A real Provider implementing and contractually accepting GetPriceQuote semantics",
+    "Production billing, task execution, carrier activation, or device/OS installation",
+    "Durable audit event recording the exact prompt-sharing consent and disclosure text/version",
+    "Android-native owner approval and exact quote-bound Wallet hold integration",
+    "A publicly controlled and versioned Rockstar extension URI, real Provider support, durable standalone consent audit, Android native approval/hold, production billing, carrier activation, and device/OS acceptance remain unaccepted."
+  ],
+  "limits": [
+    "A2A defines an extension mechanism but does not standardize this quote operation or guarantee peer support.",
+    "Local fixture responses and tests are not evidence of a Provider quote, production price, bill, payment, or service availability.",
+    "The API harness exercises owner authentication and consent-denial paths; signed quote acquisition uses a local cryptographic fixture, not a real provider."
+  ]
+}

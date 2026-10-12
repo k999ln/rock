@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "rockstaros.icd.alarm.v1",
+  "executionMode": "SIMULATION",
+  "dataClass": "SYNTHETIC",
+  "siteId": "site:fixture",
+  "nodeId": "node:fixture",
+  "messageId": "message:fixture",
+  "issuedAt": {
+    "utcMs": 1000000,
+    "monotonicMs": 1000,
+    "bootId": "boot:fixture-A",
+    "quality": "TRUSTED",
+    "uncertaintyMs": 1
+  },
+  "alarmId": "alarm:fixture",
+  "assetId": "asset:load",
+  "faultCode": "POWER_DEFICIT",
+  "severity": "CRITICAL",
+  "state": "ACTIVE",
+  "acknowledgedBy": null,
+  "conditionPresent": true,
+  "procedureRef": "procedure:fixture",
+  "evidenceRefs": [
+    "evidence:fixture"
+  ]
+}

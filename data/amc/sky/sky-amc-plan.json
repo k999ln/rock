@@ -1,0 +1,4184 @@
+{
+  "schema": "amc-sky-launch/1",
+  "id": "sky-launch",
+  "name": "AMC · Sky",
+  "revision": 1,
+  "createdAt": "2026-09-30T02:30:34.690594+00:00",
+  "goal": "Skyを完全ローンチ可能にする。方向性と責任境界が固定され、フロント・バックエンド・商品/接続/決済/利用権・Zema連携・配備/復旧/運用が同じ候補で受入済みとなり、各段階の指示と他タスクの整合・進捗を継続して確認できる状態にする。",
+  "coordinationStatus": "active",
+  "launchStatus": "not_accepted",
+  "executionStatus": "計画作成・実装担当への指示中。以下の新規受入taskは未検収。",
+  "groups": [
+    {
+      "id": "direction",
+      "name": "方針・司令部"
+    },
+    {
+      "id": "front",
+      "name": "商品・フロント"
+    },
+    {
+      "id": "back",
+      "name": "接続・バックエンド"
+    },
+    {
+      "id": "quality",
+      "name": "連携・品質"
+    },
+    {
+      "id": "release",
+      "name": "配備・ローンチ"
+    }
+  ],
+  "rules": [
+    "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+    "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+    "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+    "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+    "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+    "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+    "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+    "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+  ],
+  "squads": [
+    {
+      "id": "S0",
+      "name": "Sky司令部",
+      "division": "direction",
+      "goal": "Goal・方向性・他タスクの足並みを揃え、証拠に基づき次の指示を出す。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY19"
+      ],
+      "sourceFiles": [
+        "data/product-baseline.json",
+        "data/project-status.json",
+        "docs/workstreams/00-responsibility-boundaries.md"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S0-01",
+        "S0-02",
+        "S0-03"
+      ],
+      "relatedSquadIds": [],
+      "nextTaskIds": [
+        "S0-01",
+        "S0-02",
+        "S0-03"
+      ],
+      "acceptanceGate": "旧版指示は実行対象から外れ、完了報告に対象SHA/実行環境/検証結果があり、無関係の作業は継続できる。"
+    },
+    {
+      "id": "S1",
+      "name": "商品・掲載",
+      "division": "front",
+      "goal": "利用可能な商品と候補を正しく区別し、購入・接続条件まで確認できる。",
+      "sourceTaskIds": [
+        "SKY02",
+        "SKY15",
+        "SKY20"
+      ],
+      "sourceFiles": [
+        "lib/catalog.ts",
+        "lib/sky-tool-package-store.ts",
+        "lib/sky-tool-review.ts",
+        "components/sky-publisher-form.tsx"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S1-01",
+        "S1-02",
+        "S1-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S3",
+        "S4"
+      ],
+      "nextTaskIds": [
+        "S1-01",
+        "S1-02",
+        "S1-03"
+      ],
+      "acceptanceGate": "各提供可能表示に同じ版の導入証拠と制限が対応する。未検証候補は利用可能表示から外れる。"
+    },
+    {
+      "id": "S2",
+      "name": "フロント・UX",
+      "division": "front",
+      "goal": "初めての利用者がSkyで選び、決済・接続を終えてZemaへ進める。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY10",
+        "SKY16"
+      ],
+      "sourceFiles": [
+        "components/sky-marketplace.tsx",
+        "components/sky-navigation.tsx",
+        "lib/sky-routes.ts",
+        "components/sky-commerce.tsx"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S2-01",
+        "S2-02",
+        "S2-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S4",
+        "S5",
+        "S6",
+        "S7"
+      ],
+      "nextTaskIds": [
+        "S2-01",
+        "S2-02",
+        "S2-03"
+      ],
+      "acceptanceGate": "二重購入や行き止まりがなく、作業を中断・再読込しても所有者と次の操作が一致する。"
+    },
+    {
+      "id": "S3",
+      "name": "接続・MCP",
+      "division": "back",
+      "goal": "PC・Sky Cloud・提供者MCPへ正しい権限で接続し、失効・停止できる。",
+      "sourceTaskIds": [
+        "SKY07",
+        "SKY11",
+        "SKY20"
+      ],
+      "sourceFiles": [
+        "lib/mcp-hub.ts",
+        "lib/sky-connections.ts",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "components/sky-mcp-center.tsx"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S3-01",
+        "S3-02",
+        "S3-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S7",
+        "S8"
+      ],
+      "nextTaskIds": [
+        "S3-01",
+        "S3-02",
+        "S3-03"
+      ],
+      "acceptanceGate": "本物の接続先で同一版の記録が揃い、fixtureの合格だけを実接続の成功にしない。"
+    },
+    {
+      "id": "S4",
+      "name": "決済・精算",
+      "division": "back",
+      "goal": "注文とProviderの支払い・取消・精算を一致させ、権利付与へ渡す。",
+      "sourceTaskIds": [
+        "BIL02",
+        "SKY19"
+      ],
+      "sourceFiles": [
+        "lib/sky-commerce.ts",
+        "lib/sky-commerce-store.ts",
+        "lib/sky-stripe.ts",
+        "docs/sky-billing.md"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S4-01",
+        "S4-02",
+        "S4-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S1",
+        "S7",
+        "S9"
+      ],
+      "nextTaskIds": [
+        "S4-01",
+        "S4-02",
+        "S4-03"
+      ],
+      "acceptanceGate": "注文完了を銀行着金と誤認せず、差額/失敗/紛争の担当と解決手順がある。本番未検証を明示する。"
+    },
+    {
+      "id": "S5",
+      "name": "購入権・プロフィール",
+      "division": "back",
+      "goal": "誰がどの端末・商品を使えるかを、OSと提供者まで一貫して強制する。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY20"
+      ],
+      "sourceFiles": [
+        "lib/sky-os-policy.ts",
+        "lib/sky-activation.ts",
+        "lib/sky-commerce.ts",
+        "data/product-baseline.json"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S5-01",
+        "S5-02",
+        "S5-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S3",
+        "S4",
+        "S6",
+        "S7"
+      ],
+      "nextTaskIds": [
+        "S5-01",
+        "S5-02",
+        "S5-03"
+      ],
+      "acceptanceGate": "必要な対象環境の証拠が揃う。native未実装の範囲をWeb試験で合格扱いせず、未対応を保証しない。"
+    },
+    {
+      "id": "S6",
+      "name": "Zema・仕事連携",
+      "division": "quality",
+      "goal": "Skyから引き継いだ仕事をZemaで開始・確認・停止し、成果を追跡する。",
+      "sourceTaskIds": [
+        "SKY14",
+        "SKY16"
+      ],
+      "sourceFiles": [
+        "lib/sky-zema-handoff.ts",
+        "lib/workflow.ts",
+        "components/sky-chat-workspace.tsx",
+        "lib/zema-chat-session.ts"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S6-01",
+        "S6-02",
+        "S6-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S2",
+        "S3",
+        "S7",
+        "S8"
+      ],
+      "nextTaskIds": [
+        "S6-01",
+        "S6-02",
+        "S6-03"
+      ],
+      "acceptanceGate": "別利用者へ履歴/タイトル/成果が残らず、期限切れ/再認証後の復帰と消去が明示される。"
+    },
+    {
+      "id": "S7",
+      "name": "API・データ",
+      "division": "back",
+      "goal": "所有者別の永続化、競合処理、migrationと復元を提供する。",
+      "sourceTaskIds": [
+        "WEB04",
+        "B01"
+      ],
+      "sourceFiles": [
+        "lib/db.ts",
+        "lib/schema.ts",
+        "lib/workflow.ts",
+        "drizzle/0018_sky_commerce.sql",
+        "drizzle/0019_sky_library.sql"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S7-01",
+        "S7-02",
+        "S7-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S8",
+        "S9"
+      ],
+      "nextTaskIds": [
+        "S7-01",
+        "S7-02",
+        "S7-03"
+      ],
+      "acceptanceGate": "復元後に所有者・権利・仕事・支払い照合が保たれ、rollbackで利用者データを破壊しない。"
+    },
+    {
+      "id": "S8",
+      "name": "セキュリティ",
+      "division": "quality",
+      "goal": "本人・接続・保存・供給物の権限境界を同一候補で確認する。",
+      "sourceTaskIds": [
+        "WEB01",
+        "SKY20"
+      ],
+      "sourceFiles": [
+        "app/api/csv-jobs/route.ts",
+        "lib/csv-job-store.ts",
+        "lib/zema-chat-session.ts",
+        "toolkits/sky-mcp-connector/server.mjs"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S8-01",
+        "S8-02",
+        "S8-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S3",
+        "S5",
+        "S6",
+        "S7"
+      ],
+      "nextTaskIds": [
+        "S8-01",
+        "S8-02",
+        "S8-03"
+      ],
+      "acceptanceGate": "対象SHAと環境を固定し、重大な未解決と検証漏れを隠して安全宣言しない。"
+    },
+    {
+      "id": "S9",
+      "name": "配備・運用",
+      "division": "release",
+      "goal": "本番設定、Webhook到達、監視、復旧とサポートを用意する。",
+      "sourceTaskIds": [
+        "WEB01",
+        "LCH04",
+        "LCH06"
+      ],
+      "sourceFiles": [
+        "docs/sky-billing.md",
+        "wrangler.jsonc",
+        "docs/owner-setup-20260911.md",
+        "package.json"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S9-01",
+        "S9-02",
+        "S9-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S10",
+        "S6",
+        "S7"
+      ],
+      "nextTaskIds": [
+        "S9-01",
+        "S9-02",
+        "S9-03"
+      ],
+      "acceptanceGate": "ダミー異常を検知して担当へ到達し、停止/再開と照合が追跡できる。責任者と費用上限の未決を記録する。"
+    },
+    {
+      "id": "S10",
+      "name": "統合QA",
+      "division": "quality",
+      "goal": "フロントとバックエンドを同じ候補・データ・契約で受け入れる。",
+      "sourceTaskIds": [
+        "WEB01",
+        "WEB04",
+        "BIL02"
+      ],
+      "sourceFiles": [
+        "tests/sky-commerce.test.mjs",
+        "tests/sky-zema-handoff.test.mjs",
+        "tests/sky-routes.test.mjs",
+        "tests/amc-sky-integration.test.mjs",
+        "package.json"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S10-01",
+        "S10-02",
+        "S10-03"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S9"
+      ],
+      "nextTaskIds": [
+        "S10-01",
+        "S10-02",
+        "S10-03"
+      ],
+      "acceptanceGate": "合意した品質予算と対象環境の証拠があり、未測定性能を数値で保証しない。"
+    },
+    {
+      "id": "S11",
+      "name": "ローンチ受入",
+      "division": "release",
+      "goal": "設計・前後端・実接続・運用の証拠を揃え、ローンチ可能か判断する。",
+      "sourceTaskIds": [
+        "WEB06",
+        "LCH02",
+        "LCH06"
+      ],
+      "sourceFiles": [
+        "docs/product-baseline.md",
+        "docs/sky-tool-sdk.md",
+        "docs/sky-billing.md",
+        "project.md"
+      ],
+      "rules": [
+        "Skyは商品発見・決済・接続、Zemaは会話・ライブラリ・仕事の実行・承認・停止・成果を担当する。",
+        "目的は固定する。新作業には要求ID・必要な理由・成果物・合格条件を必ず付け、範囲外は候補に留める。",
+        "設計済み、コードあり、ローカル試験、Provider sandbox、実機、本番受入を別々に記録する。",
+        "既存taskのdoneは元の範囲の記録。今回のSkyローンチ合格へ自動転用しない。",
+        "商品売上のSky手数料10%、登録・接続・公開・基本利用料0円、第三者実費は別表示。旧8.88 USD収益料金は保留を維持する。",
+        "同じAPI・schema・料金条件・共有ファイルを触る仕事は担当と版を照合し、並行編集を避ける。",
+        "証拠を独立確認するまで提出を完了にしない。承認・権限・予算・対象変更が必要な仕事のみ判断待ちにする。",
+        "指示発行前・着手前・成果提出時・マージ前・Gate通過時に方向性、依存、他タスク、証拠の版を再照合する。"
+      ],
+      "taskIds": [
+        "S11-01",
+        "S11-02",
+        "S11-03",
+        "S11-04"
+      ],
+      "relatedSquadIds": [
+        "S0",
+        "S1",
+        "S10",
+        "S4",
+        "S5",
+        "S8",
+        "S9"
+      ],
+      "nextTaskIds": [
+        "S11-01",
+        "S11-02",
+        "S11-03",
+        "S11-04"
+      ],
+      "acceptanceGate": "公開の実行記録と配信環境の検証結果を保存する。launch-readyと実公開済みを分ける。"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "S0-01",
+      "title": "現行要求と作業版を固定する",
+      "squadId": "S0",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S0"
+      ],
+      "goal": "Goal・方向性・他タスクの足並みを揃え、証拠に基づき次の指示を出す。",
+      "scope": "フロント・バックエンド・接続・決済・運用の要求を現行コードへ対応付け、HEADと未コミット差分のhash、他タスクを記録する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S0-01-AC1",
+          "criterion": "すべての要求に責任部隊と合格証拠の種類があり、旧Sky統合案・旧料金案を現行要件に混入しない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [],
+      "gate": "G0",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY19"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "data/product-baseline.json",
+          "exists": true
+        },
+        {
+          "path": "data/project-status.json",
+          "exists": true
+        },
+        {
+          "path": "docs/workstreams/00-responsibility-boundaries.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "SKY19",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S0-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S0-01-2",
+          "action": "フロント・バックエンド・接続・決済・運用の要求を現行コードへ対応付け、HEADと未コミット差分のhash、他タスクを記録する。"
+        },
+        {
+          "id": "S0-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s0-01.json",
+          "description": "現行要求と作業版を固定するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S0-02",
+      "title": "境界・共有契約・公開対象を定義する",
+      "squadId": "S0",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S0"
+      ],
+      "goal": "Goal・方向性・他タスクの足並みを揃え、証拠に基づき次の指示を出す。",
+      "scope": "Sky/Zema、注文/購入権、本人/端末プロフィール、PC/Cloud/Providerの責任とversionを固定する。対応製品・実行先・商流・地域・未決の決定者も記録する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S0-02-AC1",
+          "criterion": "フロント、API、DB、接続先の入出力・失敗/復旧・所有者・料金が同じ契約を参照し、未決は空欄のまま進めない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-01"
+      ],
+      "gate": "G0",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY19"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "data/product-baseline.json",
+          "exists": true
+        },
+        {
+          "path": "data/project-status.json",
+          "exists": true
+        },
+        {
+          "path": "docs/workstreams/00-responsibility-boundaries.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "SKY19",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S0-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S0-02-2",
+          "action": "Sky/Zema、注文/購入権、本人/端末プロフィール、PC/Cloud/Providerの責任とversionを固定する。対応製品・実行先・商流・地域・未決の決定者も記録する。"
+        },
+        {
+          "id": "S0-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s0-02.json",
+          "description": "境界・共有契約・公開対象を定義するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S0-03",
+      "title": "指示・競合・再検証を管理する",
+      "squadId": "S0",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S0"
+      ],
+      "goal": "Goal・方向性・他タスクの足並みを揃え、証拠に基づき次の指示を出す。",
+      "scope": "新しい指示を要求とtaskへ結び付け、他担当・依存版・出力path・証拠の更新を照合して発行/失効を記録する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S0-03-AC1",
+          "criterion": "旧版指示は実行対象から外れ、完了報告に対象SHA/実行環境/検証結果があり、無関係の作業は継続できる。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY19"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "data/product-baseline.json",
+          "exists": true
+        },
+        {
+          "path": "data/project-status.json",
+          "exists": true
+        },
+        {
+          "path": "docs/workstreams/00-responsibility-boundaries.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "SKY19",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S0-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S0-03-2",
+          "action": "新しい指示を要求とtaskへ結び付け、他担当・依存版・出力path・証拠の更新を照合して発行/失効を記録する。"
+        },
+        {
+          "id": "S0-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s0-03.json",
+          "description": "指示・競合・再検証を管理するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S1-01",
+      "title": "商品・価格・提供条件を照合する",
+      "squadId": "S1",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S1"
+      ],
+      "goal": "利用可能な商品と候補を正しく区別し、購入・接続条件まで確認できる。",
+      "scope": "既存catalog、Registry、販売offer、LLM接続先を比較し、候補/導入可能/販売可能を明確にする。",
+      "acceptanceCriteria": [
+        {
+          "id": "S1-01-AC1",
+          "criterion": "価格未設定・取得失敗を無料と表示せず、商品価格・実行実費・環境・制限がUIとAPIで一致する。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "SKY02",
+        "SKY15",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/catalog.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-tool-package-store.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-tool-review.ts",
+          "exists": true
+        },
+        {
+          "path": "components/sky-publisher-form.tsx",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "SKY02",
+          "status": "done"
+        },
+        {
+          "id": "SKY15",
+          "status": "done"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S1-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S1-01-2",
+          "action": "既存catalog、Registry、販売offer、LLM接続先を比較し、候補/導入可能/販売可能を明確にする。"
+        },
+        {
+          "id": "S1-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s1-01.json",
+          "description": "商品・価格・提供条件を照合するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S1-02",
+      "title": "掲載・審査・失効の不足を補う",
+      "squadId": "S1",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S1"
+      ],
+      "goal": "利用可能な商品と候補を正しく区別し、購入・接続条件まで確認できる。",
+      "scope": "作者本人、Package版、manifest hash、掲載許諾、審査、SDK利用記録、期限切れと配布失効を接続する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S1-02-AC1",
+          "criterion": "別作者の更新、古い審査、変更manifest、失効Packageでは販売/配布できず、再試行が重複登録にならない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S1-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "SKY02",
+        "SKY15",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/catalog.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-tool-package-store.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-tool-review.ts",
+          "exists": true
+        },
+        {
+          "path": "components/sky-publisher-form.tsx",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "SKY02",
+          "status": "done"
+        },
+        {
+          "id": "SKY15",
+          "status": "done"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S1-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S1-02-2",
+          "action": "作者本人、Package版、manifest hash、掲載許諾、審査、SDK利用記録、期限切れと配布失効を接続する。"
+        },
+        {
+          "id": "S1-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s1-02.json",
+          "description": "掲載・審査・失効の不足を補うの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S1-03",
+      "title": "公開対象商品の導入を受け入れる",
+      "squadId": "S1",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S1"
+      ],
+      "goal": "利用可能な商品と候補を正しく区別し、購入・接続条件まで確認できる。",
+      "scope": "公開対象商品を一つずつ、正規の掲載→審査→発見→価格/権限確認→接続で検証する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S1-03-AC1",
+          "criterion": "各提供可能表示に同じ版の導入証拠と制限が対応する。未検証候補は利用可能表示から外れる。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S1-02",
+        "S3-03",
+        "S4-02"
+      ],
+      "gate": "G2",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "SKY02",
+        "SKY15",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/catalog.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-tool-package-store.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-tool-review.ts",
+          "exists": true
+        },
+        {
+          "path": "components/sky-publisher-form.tsx",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "SKY02",
+          "status": "done"
+        },
+        {
+          "id": "SKY15",
+          "status": "done"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S1-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S1-03-2",
+          "action": "公開対象商品を一つずつ、正規の掲載→審査→発見→価格/権限確認→接続で検証する。"
+        },
+        {
+          "id": "S1-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s1-03.json",
+          "description": "公開対象商品の導入を受け入れるの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S2-01",
+      "title": "SkyとZemaの導線を統一する",
+      "squadId": "S2",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S2"
+      ],
+      "goal": "初めての利用者がSkyで選び、決済・接続を終えてZemaへ進める。",
+      "scope": "/sky、/sky/purchases、/sky/networkと/zema、/zema/library、仕事画面を現行責任で揃える。旧URL・query・保存済み文脈を保持する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S2-01-AC1",
+          "criterion": "旧リンクと新リンクの同じ操作が同じ対象/状態へ到達し、Skyの画面が会話実行の重複入口にならない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY10",
+        "SKY16"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "components/sky-marketplace.tsx",
+          "exists": true
+        },
+        {
+          "path": "components/sky-navigation.tsx",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-routes.ts",
+          "exists": true
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "SKY10",
+          "status": "done"
+        },
+        {
+          "id": "SKY16",
+          "status": "done"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S2-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S2-01-2",
+          "action": "/sky、/sky/purchases、/sky/networkと/zema、/zema/library、仕事画面を現行責任で揃える。旧URL・query・保存済み文脈を保持する。"
+        },
+        {
+          "id": "S2-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s2-01.json",
+          "description": "SkyとZemaの導線を統一するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S2-02",
+      "title": "失敗・待ち・未接続の操作を整える",
+      "squadId": "S2",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S2"
+      ],
+      "goal": "初めての利用者がSkyで選び、決済・接続を終えてZemaへ進める。",
+      "scope": "一覧/詳細/購入/接続/販売画面に、読込・空・失敗・再試行・失効・返金・結果不明を実状態に合わせて実装する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S2-02-AC1",
+          "criterion": "スマホ幅・PC幅・200%拡大・キーボードで主要操作が使え、API失敗を成功/空データで隠さない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S2-01",
+        "S7-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY10",
+        "SKY16"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "components/sky-marketplace.tsx",
+          "exists": true
+        },
+        {
+          "path": "components/sky-navigation.tsx",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-routes.ts",
+          "exists": true
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "SKY10",
+          "status": "done"
+        },
+        {
+          "id": "SKY16",
+          "status": "done"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S2-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S2-02-2",
+          "action": "一覧/詳細/購入/接続/販売画面に、読込・空・失敗・再試行・失効・返金・結果不明を実状態に合わせて実装する。"
+        },
+        {
+          "id": "S2-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s2-02.json",
+          "description": "失敗・待ち・未接続の操作を整えるの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S2-03",
+      "title": "初見の購入・接続・復帰を検証する",
+      "squadId": "S2",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S2"
+      ],
+      "goal": "初めての利用者がSkyで選び、決済・接続を終えてZemaへ進める。",
+      "scope": "本番相当の利用者で無料/有料/未対応商品の操作と、決済/接続失敗後の復帰をブラウザ確認する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S2-03-AC1",
+          "criterion": "二重購入や行き止まりがなく、作業を中断・再読込しても所有者と次の操作が一致する。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S2-02",
+        "S4-02",
+        "S5-02",
+        "S6-02"
+      ],
+      "gate": "G2",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY10",
+        "SKY16"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "components/sky-marketplace.tsx",
+          "exists": true
+        },
+        {
+          "path": "components/sky-navigation.tsx",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-routes.ts",
+          "exists": true
+        },
+        {
+          "path": "components/sky-commerce.tsx",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "SKY10",
+          "status": "done"
+        },
+        {
+          "id": "SKY16",
+          "status": "done"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S2-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S2-03-2",
+          "action": "本番相当の利用者で無料/有料/未対応商品の操作と、決済/接続失敗後の復帰をブラウザ確認する。"
+        },
+        {
+          "id": "S2-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s2-03.json",
+          "description": "初見の購入・接続・復帰を検証するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S3-01",
+      "title": "接続先と権限契約を固定する",
+      "squadId": "S3",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S3"
+      ],
+      "goal": "PC・Sky Cloud・提供者MCPへ正しい権限で接続し、失効・停止できる。",
+      "scope": "各商品で実在する接続先、認証方式、scope、送信先、費用、timeout、再接続方式を定義する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S3-01-AC1",
+          "criterion": "未対応の接続先は選択不可で、掲載情報だけでconnectedに昇格しない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "SKY07",
+        "SKY11",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/mcp-hub.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "exists": true
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "exists": true
+        },
+        {
+          "path": "components/sky-mcp-center.tsx",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "SKY07",
+          "status": "in_progress"
+        },
+        {
+          "id": "SKY11",
+          "status": "done"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S3-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S3-01-2",
+          "action": "各商品で実在する接続先、認証方式、scope、送信先、費用、timeout、再接続方式を定義する。"
+        },
+        {
+          "id": "S3-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s3-01.json",
+          "description": "接続先と権限契約を固定するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S3-02",
+      "title": "接続認証・停止・再接続を補完する",
+      "squadId": "S3",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S3"
+      ],
+      "goal": "PC・Sky Cloud・提供者MCPへ正しい権限で接続し、失効・停止できる。",
+      "scope": "端末/Cloud/Providerごとの認証・期限・失効・scope変更を強制し、同じPCの別OS利用者のアクセス境界も検証する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S3-02-AC1",
+          "criterion": "Origin/Hostだけを利用者認証にせず、取消後の古い権限や別利用者からTool実行できない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S3-01",
+        "S8-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "SKY07",
+        "SKY11",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/mcp-hub.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "exists": true
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "exists": true
+        },
+        {
+          "path": "components/sky-mcp-center.tsx",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "SKY07",
+          "status": "in_progress"
+        },
+        {
+          "id": "SKY11",
+          "status": "done"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S3-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S3-02-2",
+          "action": "端末/Cloud/Providerごとの認証・期限・失効・scope変更を強制し、同じPCの別OS利用者のアクセス境界も検証する。"
+        },
+        {
+          "id": "S3-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s3-02.json",
+          "description": "接続認証・停止・再接続を補完するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S3-03",
+      "title": "実Providerとの接続を受け入れる",
+      "squadId": "S3",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S3"
+      ],
+      "goal": "PC・Sky Cloud・提供者MCPへ正しい権限で接続し、失効・停止できる。",
+      "scope": "対応表の全実行先でinitialize、Tool一覧、許可された実行、失敗、timeout、停止、再接続を記録する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S3-03-AC1",
+          "criterion": "本物の接続先で同一版の記録が揃い、fixtureの合格だけを実接続の成功にしない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S3-02",
+        "S7-02"
+      ],
+      "gate": "G2",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "SKY07",
+        "SKY11",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/mcp-hub.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-connections.ts",
+          "exists": true
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "exists": true
+        },
+        {
+          "path": "components/sky-mcp-center.tsx",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "SKY07",
+          "status": "in_progress"
+        },
+        {
+          "id": "SKY11",
+          "status": "done"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S3-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S3-03-2",
+          "action": "対応表の全実行先でinitialize、Tool一覧、許可された実行、失敗、timeout、停止、再接続を記録する。"
+        },
+        {
+          "id": "S3-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s3-03.json",
+          "description": "実Providerとの接続を受け入れるの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S4-01",
+      "title": "現行価格・注文契約を揃える",
+      "squadId": "S4",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S4"
+      ],
+      "goal": "注文とProviderの支払い・取消・精算を一致させ、権利付与へ渡す。",
+      "scope": "10%売上手数料と保留中の旧収益料金を分離し、円建て買い切り/未対応課金を明示する。商品版、offerRevision、受取先、modeをserverで固定する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S4-01-AC1",
+          "criterion": "UI・注文snapshot・Provider要求・台帳が同じ価格/手数料/受取先を使用し、ブラウザ申告で値を書き換えられない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02",
+        "S1-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "BIL02",
+        "SKY19"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/sky-commerce.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-commerce-store.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "BIL02",
+          "status": "in_progress"
+        },
+        {
+          "id": "SKY19",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S4-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S4-01-2",
+          "action": "10%売上手数料と保留中の旧収益料金を分離し、円建て買い切り/未対応課金を明示する。商品版、offerRevision、受取先、modeをserverで固定する。"
+        },
+        {
+          "id": "S4-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s4-01.json",
+          "description": "現行価格・注文契約を揃えるの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S4-02",
+      "title": "Stripe実sandboxで決済・取消を検証する",
+      "squadId": "S4",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S4"
+      ],
+      "goal": "注文とProviderの支払い・取消・精算を一致させ、権利付与へ渡す。",
+      "scope": "Connect、Checkout、署名Webhook、再照合、重複、逆順通知、結果不明、返金、紛争を実sandboxで通す。",
+      "acceptanceCriteria": [
+        {
+          "id": "S4-02-AC1",
+          "criterion": "実Provider ID付き証拠があり、二重課金せず、遅延paidで返金済み権利を復活させない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S4-01",
+        "S7-02",
+        "S9-01"
+      ],
+      "gate": "G2",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "BIL02",
+        "SKY19"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/sky-commerce.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-commerce-store.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "BIL02",
+          "status": "in_progress"
+        },
+        {
+          "id": "SKY19",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S4-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S4-02-2",
+          "action": "Connect、Checkout、署名Webhook、再照合、重複、逆順通知、結果不明、返金、紛争を実sandboxで通す。"
+        },
+        {
+          "id": "S4-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s4-02.json",
+          "description": "Stripe実sandboxで決済・取消を検証するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S4-03",
+      "title": "受取・照合・運用復旧を確定する",
+      "squadId": "S4",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S4"
+      ],
+      "goal": "注文とProviderの支払い・取消・精算を一致させ、権利付与へ渡す。",
+      "scope": "注文からProvider、分配、手数料、返金、払出しまでの照合と例外処理を整える。本番可否は提供者の設定・受入結果で判定する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S4-03-AC1",
+          "criterion": "注文完了を銀行着金と誤認せず、差額/失敗/紛争の担当と解決手順がある。本番未検証を明示する。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S4-02",
+        "S9-03"
+      ],
+      "gate": "G3",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "BIL02",
+        "SKY19"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/sky-commerce.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-commerce-store.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-stripe.ts",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "BIL02",
+          "status": "in_progress"
+        },
+        {
+          "id": "SKY19",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S4-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S4-03-2",
+          "action": "注文からProvider、分配、手数料、返金、払出しまでの照合と例外処理を整える。本番可否は提供者の設定・受入結果で判定する。"
+        },
+        {
+          "id": "S4-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s4-03.json",
+          "description": "受取・照合・運用復旧を確定するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S5-01",
+      "title": "OSポリシーと購入権の対応表を作る",
+      "squadId": "S5",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S5"
+      ],
+      "goal": "誰がどの端末・商品を使えるかを、OSと提供者まで一貫して強制する。",
+      "scope": "本人、購入者、共有端末、OSプロフィール、商品別共有、移行/失効/保存上限を明示する。未設定を無制限や共有許可にしない。",
+      "acceptanceCriteria": [
+        {
+          "id": "S5-01-AC1",
+          "criterion": "複数人Miniの方針とWeb本人別注文を区別し、UI表示だけで端末利用権を付与しない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/sky-os-policy.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "exists": true
+        },
+        {
+          "path": "data/product-baseline.json",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S5-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S5-01-2",
+          "action": "本人、購入者、共有端末、OSプロフィール、商品別共有、移行/失効/保存上限を明示する。未設定を無制限や共有許可にしない。"
+        },
+        {
+          "id": "S5-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s5-01.json",
+          "description": "OSポリシーと購入権の対応表を作るの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S5-02",
+      "title": "利用権をAPIと提供者で強制する",
+      "squadId": "S5",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S5"
+      ],
+      "goal": "誰がどの端末・商品を使えるかを、OSと提供者まで一貫して強制する。",
+      "scope": "購入済み状態を署名/信頼できるOS contextとProvider accessへ結び付け、返金/失効/認証変更を反映する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S5-02-AC1",
+          "criterion": "endpointを直接呼んでも未購入者・別利用者・失効権限では使えず、ブラウザの端末名で権利が増えない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S5-01",
+        "S3-02",
+        "S4-01",
+        "S7-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/sky-os-policy.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "exists": true
+        },
+        {
+          "path": "data/product-baseline.json",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S5-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S5-02-2",
+          "action": "購入済み状態を署名/信頼できるOS contextとProvider accessへ結び付け、返金/失効/認証変更を反映する。"
+        },
+        {
+          "id": "S5-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s5-02.json",
+          "description": "利用権をAPIと提供者で強制するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S5-03",
+      "title": "共有・移行・返金後の権利を受け入れる",
+      "squadId": "S5",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S5"
+      ],
+      "goal": "誰がどの端末・商品を使えるかを、OSと提供者まで一貫して強制する。",
+      "scope": "公開対応表のOS/端末ごとにユーザー切替、保存分離、購入移行、通信断、返金/失効後の再利用を検証する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S5-03-AC1",
+          "criterion": "必要な対象環境の証拠が揃う。native未実装の範囲をWeb試験で合格扱いせず、未対応を保証しない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S5-02",
+        "S4-02",
+        "S6-03"
+      ],
+      "gate": "G2",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/sky-os-policy.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-activation.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/sky-commerce.ts",
+          "exists": true
+        },
+        {
+          "path": "data/product-baseline.json",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S5-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S5-03-2",
+          "action": "公開対応表のOS/端末ごとにユーザー切替、保存分離、購入移行、通信断、返金/失効後の再利用を検証する。"
+        },
+        {
+          "id": "S5-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s5-03.json",
+          "description": "共有・移行・返金後の権利を受け入れるの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S6-01",
+      "title": "商品と依頼を一度だけ引き継ぐ",
+      "squadId": "S6",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S6"
+      ],
+      "goal": "Skyから引き継いだ仕事をZemaで開始・確認・停止し、成果を追跡する。",
+      "scope": "tool、版、接続、購入権、依頼と仕事IDを引き継ぎ、期限/再読込/旧URLとの整合を確保する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S6-01-AC1",
+          "criterion": "依頼本文をURLに露出せず、別商品/別利用者に渡らず、再読込で重複実行しない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02",
+        "S2-01",
+        "S7-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "SKY14",
+        "SKY16"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/workflow.ts",
+          "exists": true
+        },
+        {
+          "path": "components/sky-chat-workspace.tsx",
+          "exists": true
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "SKY14",
+          "status": "done"
+        },
+        {
+          "id": "SKY16",
+          "status": "done"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S6-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S6-01-2",
+          "action": "tool、版、接続、購入権、依頼と仕事IDを引き継ぎ、期限/再読込/旧URLとの整合を確保する。"
+        },
+        {
+          "id": "S6-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s6-01.json",
+          "description": "商品と依頼を一度だけ引き継ぐの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S6-02",
+      "title": "進捗・停止・Receiptを照合する",
+      "squadId": "S6",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S6"
+      ],
+      "goal": "Skyから引き継いだ仕事をZemaで開始・確認・停止し、成果を追跡する。",
+      "scope": "work状態遷移、revision、再試行、結果不明、停止、再開、Provider receiptを一つの仕事として戻す。",
+      "acceptanceCriteria": [
+        {
+          "id": "S6-02-AC1",
+          "criterion": "ブラウザeventだけで完了とせず、実行側と保存済みjob/receiptが一致する。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S6-01",
+        "S3-02",
+        "S7-02"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "SKY14",
+        "SKY16"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/workflow.ts",
+          "exists": true
+        },
+        {
+          "path": "components/sky-chat-workspace.tsx",
+          "exists": true
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "SKY14",
+          "status": "done"
+        },
+        {
+          "id": "SKY16",
+          "status": "done"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S6-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S6-02-2",
+          "action": "work状態遷移、revision、再試行、結果不明、停止、再開、Provider receiptを一つの仕事として戻す。"
+        },
+        {
+          "id": "S6-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s6-02.json",
+          "description": "進捗・停止・Receiptを照合するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S6-03",
+      "title": "認証切替時の会話・成果分離を検証する",
+      "squadId": "S6",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S6"
+      ],
+      "goal": "Skyから引き継いだ仕事をZemaで開始・確認・停止し、成果を追跡する。",
+      "scope": "同じtabでA→未認証→Bとなる場合の本文・タイトル・ライブラリ・保存済みGoalを確認する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S6-03-AC1",
+          "criterion": "別利用者へ履歴/タイトル/成果が残らず、期限切れ/再認証後の復帰と消去が明示される。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S6-02",
+        "S8-01"
+      ],
+      "gate": "G2",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "SKY14",
+        "SKY16"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/sky-zema-handoff.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/workflow.ts",
+          "exists": true
+        },
+        {
+          "path": "components/sky-chat-workspace.tsx",
+          "exists": true
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "SKY14",
+          "status": "done"
+        },
+        {
+          "id": "SKY16",
+          "status": "done"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S6-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S6-03-2",
+          "action": "同じtabでA→未認証→Bとなる場合の本文・タイトル・ライブラリ・保存済みGoalを確認する。"
+        },
+        {
+          "id": "S6-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s6-03.json",
+          "description": "認証切替時の会話・成果分離を検証するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S7-01",
+      "title": "API・DB・認証の対応を固定する",
+      "squadId": "S7",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S7"
+      ],
+      "goal": "所有者別の永続化、競合処理、migrationと復元を提供する。",
+      "scope": "catalog、review、connection、order、entitlement、library、work、AMC Goalの所有者とrevision、migration順を照合する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S7-01-AC1",
+          "criterion": "すべての更新APIが本人とrevisionを検査し、migration台帳と正本schemaが一致する。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "B01"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/db.ts",
+          "exists": false
+        },
+        {
+          "path": "lib/schema.ts",
+          "exists": false
+        },
+        {
+          "path": "lib/workflow.ts",
+          "exists": true
+        },
+        {
+          "path": "drizzle/0018_sky_commerce.sql",
+          "exists": true
+        },
+        {
+          "path": "drizzle/0019_sky_library.sql",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "B01",
+          "status": "done"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S7-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S7-01-2",
+          "action": "catalog、review、connection、order、entitlement、library、work、AMC Goalの所有者とrevision、migration順を照合する。"
+        },
+        {
+          "id": "S7-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s7-01.json",
+          "description": "API・DB・認証の対応を固定するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S7-02",
+      "title": "競合・再送・障害後の保存を検証する",
+      "squadId": "S7",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S7"
+      ],
+      "goal": "所有者別の永続化、競合処理、migrationと復元を提供する。",
+      "scope": "同時更新、二重要求、timeout、再起動、DB/外部保存の部分失敗でデータと状態を検証する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S7-02-AC1",
+          "criterion": "他者のデータを上書き/削除せず、同じoperationを再送しても二重記帳・二重実行しない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S7-01",
+        "S8-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "B01"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/db.ts",
+          "exists": false
+        },
+        {
+          "path": "lib/schema.ts",
+          "exists": false
+        },
+        {
+          "path": "lib/workflow.ts",
+          "exists": true
+        },
+        {
+          "path": "drizzle/0018_sky_commerce.sql",
+          "exists": true
+        },
+        {
+          "path": "drizzle/0019_sky_library.sql",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "B01",
+          "status": "done"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S7-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S7-02-2",
+          "action": "同時更新、二重要求、timeout、再起動、DB/外部保存の部分失敗でデータと状態を検証する。"
+        },
+        {
+          "id": "S7-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s7-02.json",
+          "description": "競合・再送・障害後の保存を検証するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S7-03",
+      "title": "backup・復元・データ寿命を受け入れる",
+      "squadId": "S7",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S7"
+      ],
+      "goal": "所有者別の永続化、競合処理、migrationと復元を提供する。",
+      "scope": "本番相当データのバックアップ/restore、旧schemaからのupgrade、成果物期限と削除、監査記録を検証する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S7-03-AC1",
+          "criterion": "復元後に所有者・権利・仕事・支払い照合が保たれ、rollbackで利用者データを破壊しない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S7-02",
+        "S9-01"
+      ],
+      "gate": "G3",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB04",
+        "B01"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "lib/db.ts",
+          "exists": false
+        },
+        {
+          "path": "lib/schema.ts",
+          "exists": false
+        },
+        {
+          "path": "lib/workflow.ts",
+          "exists": true
+        },
+        {
+          "path": "drizzle/0018_sky_commerce.sql",
+          "exists": true
+        },
+        {
+          "path": "drizzle/0019_sky_library.sql",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "B01",
+          "status": "done"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S7-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S7-03-2",
+          "action": "本番相当データのバックアップ/restore、旧schemaからのupgrade、成果物期限と削除、監査記録を検証する。"
+        },
+        {
+          "id": "S7-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s7-03.json",
+          "description": "backup・復元・データ寿命を受け入れるの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S8-01",
+      "title": "別監査の未検証候補を照合する",
+      "squadId": "S8",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S8"
+      ],
+      "goal": "本人・接続・保存・供給物の権限境界を同一候補で確認する。",
+      "scope": "監査報告のCSV ID衝突、同一tab履歴、ローカルMCP別OS利用者の候補を現行差分へ対応付ける。Android命令期限は公開対応に含む場合だけ追加する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S8-01-AC1",
+          "criterion": "候補は脆弱性確定と呼ばず、成立条件・防御・影響範囲・再現手順・担当を保持する。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB01",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "app/api/csv-jobs/route.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/csv-job-store.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "exists": true
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB01",
+          "status": "blocked"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S8-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S8-01-2",
+          "action": "監査報告のCSV ID衝突、同一tab履歴、ローカルMCP別OS利用者の候補を現行差分へ対応付ける。Android命令期限は公開対応に含む場合だけ追加する。"
+        },
+        {
+          "id": "S8-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s8-01.json",
+          "description": "別監査の未検証候補を照合するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S8-02",
+      "title": "認証・所有権・接続境界を検証する",
+      "squadId": "S8",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S8"
+      ],
+      "goal": "本人・接続・保存・供給物の権限境界を同一候補で確認する。",
+      "scope": "隔離環境で候補とauth/CSRF/SSRF/署名/replay/依存/秘密情報の検証を行い、不具合があれば修正する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S8-02-AC1",
+          "criterion": "再現と反証、修正前後の試験を残し、利用者分離/直接endpoint/未承認外部作用の拒否を確認する。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S8-01",
+        "S7-01"
+      ],
+      "gate": "G2",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB01",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "app/api/csv-jobs/route.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/csv-job-store.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "exists": true
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB01",
+          "status": "blocked"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S8-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S8-02-2",
+          "action": "隔離環境で候補とauth/CSRF/SSRF/署名/replay/依存/秘密情報の検証を行い、不具合があれば修正する。"
+        },
+        {
+          "id": "S8-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s8-02.json",
+          "description": "認証・所有権・接続境界を検証するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S8-03",
+      "title": "独立レビューと未解決事項を確定する",
+      "squadId": "S8",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S8"
+      ],
+      "goal": "本人・接続・保存・供給物の権限境界を同一候補で確認する。",
+      "scope": "受入候補の変更範囲と依存を別の確認者がレビューし、未検証/重大未解決をGateへ反映する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S8-03-AC1",
+          "criterion": "対象SHAと環境を固定し、重大な未解決と検証漏れを隠して安全宣言しない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S8-02",
+        "S3-03",
+        "S5-03",
+        "S6-03"
+      ],
+      "gate": "G3",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB01",
+        "SKY20"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "app/api/csv-jobs/route.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/csv-job-store.ts",
+          "exists": true
+        },
+        {
+          "path": "lib/zema-chat-session.ts",
+          "exists": true
+        },
+        {
+          "path": "toolkits/sky-mcp-connector/server.mjs",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB01",
+          "status": "blocked"
+        },
+        {
+          "id": "SKY20",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S8-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S8-03-2",
+          "action": "受入候補の変更範囲と依存を別の確認者がレビューし、未検証/重大未解決をGateへ反映する。"
+        },
+        {
+          "id": "S8-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s8-03.json",
+          "description": "独立レビューと未解決事項を確定するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S9-01",
+      "title": "本番相当環境と設定を準備する",
+      "squadId": "S9",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S9"
+      ],
+      "goal": "本番設定、Webhook到達、監視、復旧とサポートを用意する。",
+      "scope": "公開対象、本人API認証、秘密binding、Stripe mode、Webhook到達、DB、origin、外部接続を環境別に照合する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S9-01-AC1",
+          "criterion": "本人APIは認証されWebhookはraw署名で到達し、test/live混在・直接origin迂回・clientへの秘密露出がない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02",
+        "S7-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB01",
+        "LCH04",
+        "LCH06"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        },
+        {
+          "path": "wrangler.jsonc",
+          "exists": false
+        },
+        {
+          "path": "docs/owner-setup-20260911.md",
+          "exists": true
+        },
+        {
+          "path": "package.json",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB01",
+          "status": "blocked"
+        },
+        {
+          "id": "LCH04",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH06",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S9-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S9-01-2",
+          "action": "公開対象、本人API認証、秘密binding、Stripe mode、Webhook到達、DB、origin、外部接続を環境別に照合する。"
+        },
+        {
+          "id": "S9-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s9-01.json",
+          "description": "本番相当環境と設定を準備するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S9-02",
+      "title": "配布とrollbackを再現する",
+      "squadId": "S9",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S9"
+      ],
+      "goal": "本番設定、Webhook到達、監視、復旧とサポートを用意する。",
+      "scope": "同一source/treeのbuild、DB migration、asset、配備、smoke、停止、rollbackを本番相当環境で行う。",
+      "acceptanceCriteria": [
+        {
+          "id": "S9-02-AC1",
+          "criterion": "実配信assetとsourceが一致し、失敗時にサービスとデータを検証済み状態へ戻せる。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S9-01",
+        "S10-01",
+        "S7-03"
+      ],
+      "gate": "G3",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB01",
+        "LCH04",
+        "LCH06"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        },
+        {
+          "path": "wrangler.jsonc",
+          "exists": false
+        },
+        {
+          "path": "docs/owner-setup-20260911.md",
+          "exists": true
+        },
+        {
+          "path": "package.json",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB01",
+          "status": "blocked"
+        },
+        {
+          "id": "LCH04",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH06",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S9-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S9-02-2",
+          "action": "同一source/treeのbuild、DB migration、asset、配備、smoke、停止、rollbackを本番相当環境で行う。"
+        },
+        {
+          "id": "S9-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s9-02.json",
+          "description": "配布とrollbackを再現するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S9-03",
+      "title": "監視・通知・サポートを整える",
+      "squadId": "S9",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S9"
+      ],
+      "goal": "本番設定、Webhook到達、監視、復旧とサポートを用意する。",
+      "scope": "job失敗、接続失効、決済不一致、Webhook滞留、quota、侵害疑いの検知と担当/停止/復旧/利用者案内を準備する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S9-03-AC1",
+          "criterion": "ダミー異常を検知して担当へ到達し、停止/再開と照合が追跡できる。責任者と費用上限の未決を記録する。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S9-01",
+        "S6-02"
+      ],
+      "gate": "G3",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB01",
+        "LCH04",
+        "LCH06"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        },
+        {
+          "path": "wrangler.jsonc",
+          "exists": false
+        },
+        {
+          "path": "docs/owner-setup-20260911.md",
+          "exists": true
+        },
+        {
+          "path": "package.json",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB01",
+          "status": "blocked"
+        },
+        {
+          "id": "LCH04",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH06",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S9-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S9-03-2",
+          "action": "job失敗、接続失効、決済不一致、Webhook滞留、quota、侵害疑いの検知と担当/停止/復旧/利用者案内を準備する。"
+        },
+        {
+          "id": "S9-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s9-03.json",
+          "description": "監視・通知・サポートを整えるの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S10-01",
+      "title": "全体検証の既存不整合を解消する",
+      "squadId": "S10",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S10"
+      ],
+      "goal": "フロントとバックエンドを同じ候補・データ・契約で受け入れる。",
+      "scope": "最新差分で型・lint・設計index・DB台帳・test・buildを確認し、古い検証ルールと本当の不具合を分けて直す。",
+      "acceptanceCriteria": [
+        {
+          "id": "S10-01-AC1",
+          "criterion": "npm run verifyが同じ候補で通過し、既存失敗を除外しただけの成功ではない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB01",
+        "WEB04",
+        "BIL02"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "tests/sky-commerce.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "tests/sky-zema-handoff.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "tests/sky-routes.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "tests/amc-sky-integration.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "package.json",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB01",
+          "status": "blocked"
+        },
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "BIL02",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S10-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S10-01-2",
+          "action": "最新差分で型・lint・設計index・DB台帳・test・buildを確認し、古い検証ルールと本当の不具合を分けて直す。"
+        },
+        {
+          "id": "S10-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s10-01.json",
+          "description": "全体検証の既存不整合を解消するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S10-02",
+      "title": "代表商流をブラウザから横断検証する",
+      "squadId": "S10",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S10"
+      ],
+      "goal": "フロントとバックエンドを同じ候補・データ・契約で受け入れる。",
+      "scope": "掲載→審査→検索→無料/有料→決済→接続→Zema実行→成果→停止/再開→返金/失効を通す。",
+      "acceptanceCriteria": [
+        {
+          "id": "S10-02-AC1",
+          "criterion": "UI・API・DB・Providerの同一ID/版/所有者/金額/状態が一致し、異常から復帰できる。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S1-03",
+        "S2-03",
+        "S3-03",
+        "S4-02",
+        "S5-03",
+        "S6-03"
+      ],
+      "gate": "G2",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB01",
+        "WEB04",
+        "BIL02"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "tests/sky-commerce.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "tests/sky-zema-handoff.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "tests/sky-routes.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "tests/amc-sky-integration.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "package.json",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB01",
+          "status": "blocked"
+        },
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "BIL02",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S10-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S10-02-2",
+          "action": "掲載→審査→検索→無料/有料→決済→接続→Zema実行→成果→停止/再開→返金/失効を通す。"
+        },
+        {
+          "id": "S10-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s10-02.json",
+          "description": "代表商流をブラウザから横断検証するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S10-03",
+      "title": "対応表と品質予算を実測で受け入れる",
+      "squadId": "S10",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S10"
+      ],
+      "goal": "フロントとバックエンドを同じ候補・データ・契約で受け入れる。",
+      "scope": "公開対応する端末/ブラウザ/PC/Cloud/Provider、アクセス性、latency、同時接続、quota、復元を実測する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S10-03-AC1",
+          "criterion": "合意した品質予算と対象環境の証拠があり、未測定性能を数値で保証しない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S10-02",
+        "S7-03",
+        "S9-02"
+      ],
+      "gate": "G3",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB01",
+        "WEB04",
+        "BIL02"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "tests/sky-commerce.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "tests/sky-zema-handoff.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "tests/sky-routes.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "tests/amc-sky-integration.test.mjs",
+          "exists": true
+        },
+        {
+          "path": "package.json",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB01",
+          "status": "blocked"
+        },
+        {
+          "id": "WEB04",
+          "status": "done"
+        },
+        {
+          "id": "BIL02",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S10-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S10-03-2",
+          "action": "公開対応する端末/ブラウザ/PC/Cloud/Provider、アクセス性、latency、同時接続、quota、復元を実測する。"
+        },
+        {
+          "id": "S10-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s10-03.json",
+          "description": "対応表と品質予算を実測で受け入れるの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S11-01",
+      "title": "提供範囲・条件・未対応を確定する",
+      "squadId": "S11",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S11"
+      ],
+      "goal": "設計・前後端・実接続・運用の証拠を揃え、ローンチ可能か判断する。",
+      "scope": "誰に、どの商品と実行先を、どの価格/権利/サポート条件で提供するかを全画面・設計書・実装へ対応付ける。",
+      "acceptanceCriteria": [
+        {
+          "id": "S11-01-AC1",
+          "criterion": "利用者向け表示が実際の受入と一致し、販売条件/公開対象/担当の未決は判断事項として残る。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S0-02",
+        "S1-02",
+        "S5-01"
+      ],
+      "gate": "G1",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB06",
+        "LCH02",
+        "LCH06"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "docs/product-baseline.md",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-tool-sdk.md",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        },
+        {
+          "path": "project.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB06",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH02",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH06",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S11-01-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S11-01-2",
+          "action": "誰に、どの商品と実行先を、どの価格/権利/サポート条件で提供するかを全画面・設計書・実装へ対応付ける。"
+        },
+        {
+          "id": "S11-01-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s11-01.json",
+          "description": "提供範囲・条件・未対応を確定するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S11-02",
+      "title": "最終候補の証拠を固定する",
+      "squadId": "S11",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S11"
+      ],
+      "goal": "設計・前後端・実接続・運用の証拠を揃え、ローンチ可能か判断する。",
+      "scope": "GitHub・ローカル差分・配備source・依存・試験・Provider受入・復旧証拠を一つのrelease candidateへ固定する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S11-02-AC1",
+          "criterion": "変更後は影響試験を再実行し、別SHAや過去fixtureの成功を混ぜず、要件と証拠に欠落がない。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S4-03",
+        "S8-03",
+        "S9-02",
+        "S9-03",
+        "S10-03",
+        "S11-01"
+      ],
+      "gate": "G3",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB06",
+        "LCH02",
+        "LCH06"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "docs/product-baseline.md",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-tool-sdk.md",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        },
+        {
+          "path": "project.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB06",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH02",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH06",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S11-02-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S11-02-2",
+          "action": "GitHub・ローカル差分・配備source・依存・試験・Provider受入・復旧証拠を一つのrelease candidateへ固定する。"
+        },
+        {
+          "id": "S11-02-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s11-02.json",
+          "description": "最終候補の証拠を固定するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "ROCK",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "code_test",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S11-03",
+      "title": "完全ローンチ可能状態を判定する",
+      "squadId": "S11",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S11"
+      ],
+      "goal": "設計・前後端・実接続・運用の証拠を揃え、ローンチ可能か判断する。",
+      "scope": "全Goal要求をレビューし、フロント・バックエンド・支払い/権利・実接続・運用が同じ候補で受入済みか検収する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S11-03-AC1",
+          "criterion": "全必須Gate合格、重大未解決0、所有者判断の必要項目解決、配備/復旧/サポートの証拠が揃って初めてlaunch-readyとする。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S11-02"
+      ],
+      "gate": "G4",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB06",
+        "LCH02",
+        "LCH06"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "docs/product-baseline.md",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-tool-sdk.md",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        },
+        {
+          "path": "project.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB06",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH02",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH06",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S11-03-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S11-03-2",
+          "action": "全Goal要求をレビューし、フロント・バックエンド・支払い/権利・実接続・運用が同じ候補で受入済みか検収する。"
+        },
+        {
+          "id": "S11-03-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s11-03.json",
+          "description": "完全ローンチ可能状態を判定するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": true
+    },
+    {
+      "id": "S11-04",
+      "title": "公開実施と初期運用を記録する",
+      "squadId": "S11",
+      "requirementIds": [
+        "SKY-GOAL",
+        "SKY-S11"
+      ],
+      "goal": "設計・前後端・実接続・運用の証拠を揃え、ローンチ可能か判断する。",
+      "scope": "承認された対象と候補だけ公開し、実配信・運用のsmokeとrollback可否を確認する。",
+      "acceptanceCriteria": [
+        {
+          "id": "S11-04-AC1",
+          "criterion": "公開の実行記録と配信環境の検証結果を保存する。launch-readyと実公開済みを分ける。",
+          "verification": "対象版・所有者・環境・操作と期待結果を記した証拠を、実行者とは別の確認者が検収する。",
+          "status": "not_verified",
+          "evidence": []
+        }
+      ],
+      "dependsOn": [
+        "S11-03"
+      ],
+      "gate": "G5",
+      "status": "planned",
+      "progressMeaning": "今回定義したローンチ受入作業。既存実装の未着手を意味しない。",
+      "sourceTaskIds": [
+        "WEB06",
+        "LCH02",
+        "LCH06"
+      ],
+      "sourceEvidence": [
+        {
+          "path": "docs/product-baseline.md",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-tool-sdk.md",
+          "exists": true
+        },
+        {
+          "path": "docs/sky-billing.md",
+          "exists": true
+        },
+        {
+          "path": "project.md",
+          "exists": true
+        }
+      ],
+      "sourceStatus": [
+        {
+          "id": "WEB06",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH02",
+          "status": "in_progress"
+        },
+        {
+          "id": "LCH06",
+          "status": "in_progress"
+        }
+      ],
+      "steps": [
+        {
+          "id": "S11-04-1",
+          "action": "現行要求・対象版・他担当・依存の検収状態を確認し、差分だけを特定する。"
+        },
+        {
+          "id": "S11-04-2",
+          "action": "承認された対象と候補だけ公開し、実配信・運用のsmokeとrollback可否を確認する。"
+        },
+        {
+          "id": "S11-04-3",
+          "action": "成果・失敗・未検証を記録し、共有契約への影響をS0へ戻してから次の指示を確定する。"
+        }
+      ],
+      "deliverables": [
+        {
+          "path": "docs/evidence/sky-launch/s11-04.json",
+          "description": "公開実施と初期運用を記録するの受入記録。実装差分・試験ログ・対象環境・残課題を参照する。"
+        }
+      ],
+      "evidence": [],
+      "assignee": null,
+      "responsibility": "JOINT",
+      "executionBoundary": "ローカルの設計・実装・試験を進める。外部環境の操作は設定と既存権限を確認する。実課金・契約・公開・権限拡張は個別条件に従う。",
+      "workloadClass": "external",
+      "observedImplementation": "既存実装・試験を再利用して不足を埋める。ローンチ受入は未検証。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "requiredForLaunchReady": false
+    }
+  ],
+  "gates": [
+    {
+      "id": "G0",
+      "name": "方針・契約",
+      "required": [
+        "S0-01",
+        "S0-02"
+      ],
+      "condition": "全要求・公開対象・役割・API/料金/権利の契約が揃う。",
+      "status": "not_verified",
+      "evidence": []
+    },
+    {
+      "id": "G1",
+      "name": "前後端の整備",
+      "required": [
+        "S0-03",
+        "S1-01",
+        "S1-02",
+        "S2-01",
+        "S2-02",
+        "S3-01",
+        "S3-02",
+        "S4-01",
+        "S5-01",
+        "S5-02",
+        "S6-01",
+        "S6-02",
+        "S7-01",
+        "S7-02",
+        "S8-01",
+        "S9-01",
+        "S10-01",
+        "S11-01"
+      ],
+      "condition": "方向性どおりのUI・API・保存・認証・業務状態を実装し、局所試験が通る。",
+      "status": "not_verified",
+      "evidence": []
+    },
+    {
+      "id": "G2",
+      "name": "実接続・横断受入",
+      "required": [
+        "S1-03",
+        "S2-03",
+        "S3-03",
+        "S4-02",
+        "S5-03",
+        "S6-03",
+        "S8-02",
+        "S10-02"
+      ],
+      "condition": "実Provider sandboxと対象実行先で、購入から実行/停止/返金まで一致する。",
+      "status": "not_verified",
+      "evidence": []
+    },
+    {
+      "id": "G3",
+      "name": "本番・運用準備",
+      "required": [
+        "S4-03",
+        "S7-03",
+        "S8-03",
+        "S9-02",
+        "S9-03",
+        "S10-03",
+        "S11-02"
+      ],
+      "condition": "同一候補で品質・セキュリティ・配備・復旧・監視・条件を検証する。",
+      "status": "not_verified",
+      "evidence": []
+    },
+    {
+      "id": "G4",
+      "name": "ローンチ可能",
+      "required": [
+        "S11-03"
+      ],
+      "condition": "G0〜G3と全必須要件を独立検収し、未解決の必須条件がない。",
+      "status": "not_verified",
+      "evidence": []
+    },
+    {
+      "id": "G5",
+      "name": "公開後確認",
+      "required": [
+        "S11-04"
+      ],
+      "condition": "公開実施後の配信・監視・復旧を確認する。準備完了とは別の記録。",
+      "status": "not_verified",
+      "evidence": []
+    }
+  ],
+  "alignmentProtocol": [
+    {
+      "id": "A1",
+      "name": "方向性の一致",
+      "when": "指示発行前・要望変更時",
+      "check": "最新ユーザー指示→製品基準→要件ID→task→成果物を照合。Sky/Zemaの役割、現行手数料、保留項目を確認する。",
+      "failure": "旧指示を失効し、影響taskだけを再計画する。"
+    },
+    {
+      "id": "A2",
+      "name": "依存と契約の一致",
+      "when": "着手前・共有API/schema変更時",
+      "check": "依存taskの検収、入力version、API/schema、注文/権利/receiptのID・所有者・revisionを照合する。",
+      "failure": "不足する受け渡しを先行taskへ返し、影響する後続だけを待機させる。"
+    },
+    {
+      "id": "A3",
+      "name": "他担当との足並み",
+      "when": "指示発行前・作業中の変更通知時",
+      "check": "Sky開発とセキュリティ監査の担当・HEAD・出力path・実行中作業を照合し、同じ修正を二重発行しない。",
+      "failure": "担当を一本化し、共有ファイルの同時編集と古い指示の再送を避ける。"
+    },
+    {
+      "id": "A4",
+      "name": "進捗と証拠の一致",
+      "when": "提出時・マージ前・Gate判定時",
+      "check": "自己申告、保存済みtask、テストログ、対象tree、実行環境、Provider receiptを照合する。",
+      "failure": "提出済みのまま不足証拠を要求。過去版の成功は再検証へ戻す。"
+    },
+    {
+      "id": "A5",
+      "name": "次の指示の確定",
+      "when": "検収後・失敗後・判断回答後",
+      "check": "残るGoal差分から必要なtaskを選び、依存/担当競合/権限/費用/受入条件を再確認して一意の指示IDを付ける。",
+      "failure": "範囲外の機能追加は実行しない。目的・仕様・権限・予算を変える場合だけ具体案と影響を通知する。"
+    }
+  ],
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-30T02:30:34.690594+00:00",
+    "repo": "/Users/kaiya/Documents/Codex/2026-09-29/https-github-com-k999ln-rock-git/work/rock",
+    "localHead": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "remoteMainAtRead": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "remoteCheck": "git ls-remote completed; CI/PR status is not included",
+    "dirty": true,
+    "dirtyFileCount": 92,
+    "fingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+    "files": {
+      "app/api/csv-jobs/route.ts": "76050c6774745e603fd22a2673ec64575b89db9d45c213d8ff9255a1721dc1d7",
+      "components/amc-tool-runner.tsx": "c38f7da5c2cb95f7bbfee90ab03c14f666d7111ad3e0608d9af8df4f0e1d88d2",
+      "components/sky-chat-workspace.tsx": "bc1642ac0e58fd90aa3b21e3d21e78534bac39b67ba43b20763ffb2599b4a10e",
+      "components/sky-commerce.tsx": "aa5097a24a8575f5a55350cbf8ee778246fb89ee7df243eee015e24e21191d69",
+      "components/sky-marketplace.tsx": "1029b0eb23cf457f88980b28b62a8da4b0f7a06ec8a5f9a6715ef9142108f1b4",
+      "components/sky-mcp-center.tsx": "291c3de42d0e5d5f174b4ac76d51cf8f35d39ea2b81bf607327c87968c38ad18",
+      "components/sky-navigation.tsx": "ab08a3d2bc4aaf0f4b53d559fb7f977fb41e0b97a3d67e427b1914ba1d109099",
+      "components/sky-publisher-form.tsx": "b2051404f3318be0f1b5e1d44dfb3a36cdae57530c7a6db7cfc938a32f922d37",
+      "data/product-baseline.json": "0067c804b85367e4b5592d1cf21625d15502b42302ed55d8c4a55c2a7ad19f5a",
+      "data/project-status.json": "057b4d13ed6a937933751d4d07bf45a13d17374312c318c23d84fcdc12d3ab98",
+      "docs/owner-setup-20260911.md": "d7fe02ebab08af52f3fa96b832459d487b0d0a5035eeb570786782010b2ee1ae",
+      "docs/product-baseline.md": "24f268fd47d2871a0524e87dcf3f5dc5b35a83bed156ea28bbcd9e6389ba7c71",
+      "docs/sky-billing.md": "0584659bc2d8d25cd50b904176aec6d0e562bd111c7462e1f5ac145d1b2aef2a",
+      "docs/sky-tool-sdk.md": "d3f360e7ad5a649989413a46c9d4b5eac726bfdb147348911608902788757720",
+      "docs/workstreams/00-responsibility-boundaries.md": "638e422894c6e3ebc3df967dfb7886788bc61eb2ce25f912a8c38cf23c971a67",
+      "drizzle/0018_sky_commerce.sql": "b595e993c4982e575847195eaa5d8fe39053c487a0391ad372d08b8b13bdae26",
+      "drizzle/0019_sky_library.sql": "b3a23e2c7944acd42949e38cd26c240016fef73ab624aa1e7de1c5afccc582b4",
+      "lib/amc-tool.ts": "5a2c7a8292f080d667ad07721b2404f6a8ad8490abe33d4c23700122860c6cb9",
+      "lib/catalog.ts": "09ca5dcc95a73285bde087ea22adbfa14eadb77fa8b8fcc1529f38f12d516604",
+      "lib/csv-job-store.ts": "3c499d516a505ef326960c06fa031141b2553712e23668d18d0b1d2a9f976778",
+      "lib/mcp-hub.ts": "2ef6adf224ed2cefdfc62e4e65f65a462a3028ff66bacd2d4bcba1316d8c6c45",
+      "lib/sky-activation.ts": "13dd4de0400ffe350414b96e7d98777f7688a05979851fef660487d4c5bb3c56",
+      "lib/sky-commerce-store.ts": "0daa9932cb277ddadb8ee2cbc5309774bf0f1e65087c032c9baeb61dfec273ce",
+      "lib/sky-commerce.ts": "18945855aaf7dc47132cbda5562d752f798900dd2d3619c32a24a903790b69c9",
+      "lib/sky-connections.ts": "caa3a54eea5a03124f6529153a2ea268cf61c8f99aae289faf91ba6ccbf63f6b",
+      "lib/sky-os-policy.ts": "057b8171f611fbcb30408bd2dbdc86cf51c752b58b4cc0fddf5d494656dd99ec",
+      "lib/sky-routes.ts": "2636db873fb061edc7bbbd3bf849a8f79cacc058691e723dae13601f24e769c1",
+      "lib/sky-stripe.ts": "9b0a211372e5834e1d12cfbb717cecc400524e3d25e10c3ffd1a92c60334aa1e",
+      "lib/sky-tool-package-store.ts": "2090738d6f3e9ce3dd217f1328c1f1fd711e49e12ef4b598ebd025a19fadd9aa",
+      "lib/sky-tool-review.ts": "14ac556de0a8ee38fa88feda079e3bf94c7f1d584f3f2d35e284d4c4e948e6ad",
+      "lib/sky-zema-handoff.ts": "390f0d39074d5c6fff6f80c5b58d29b9223a4c7c306755a71604202d2e492013",
+      "lib/workflow.ts": "16a107dd09999cef58416df2e51e94624c456c2f45246fa1e90aa18811627666",
+      "lib/zema-chat-session.ts": "ab9c570fff2ffdbd1b987415a002a700770b236527f800bc6539e032f9873507",
+      "package-lock.json": "e0b7a8a0f0babbf5ce70b6ceb86d606e7b85d422a5e443367cba3be983a495a3",
+      "package.json": "d7ed7ebb2cd3d444b28c726538c8b72f0392f96156c5cd63cc9fda9bbf956939",
+      "project.md": "a5d724ef3db4fdfb2ce70d35465436b0068f707b60827401f3ec7af8558316e2",
+      "tests/amc-sky-integration.test.mjs": "cb8ba9ba6b9823392396caf33945c9e44dfd978ccad8c9f819fc0d573a34f1c2",
+      "tests/sky-commerce.test.mjs": "21ad746c6818443189bf8a89a1324c2f6e5024c31776a473328f0bcf14e6a6d5",
+      "tests/sky-routes.test.mjs": "b8e14355a574ab36879e15bc66578686d8dcec0ac32592988c64b4164034926d",
+      "tests/sky-zema-handoff.test.mjs": "06e184dc8be73bc30335cf6397f5c778679d64785ded74ca39b0e85242233fbc",
+      "toolkits/sky-mcp-connector/server.mjs": "15f43fb8593cf4f9e3228fbc6d85f4f79ce06366807863b0ebc938e8cb50cf1a"
+    },
+    "localTests": {
+      "passed": 58,
+      "failed": 0,
+      "scope": "sky-routes, sky-product-terms, sky-commerce, sky-stripe, sky-os-policy, amc-snapshot",
+      "log": "/Users/kaiya/Documents/Codex/2026-09-29/156-task-31-os-mini-rocketstar/work/sky-baseline-tests.log",
+      "level": "local_fixture",
+      "warning": "実Stripe sandbox・実機・本番受入ではない"
+    }
+  },
+  "coordination": [
+    {
+      "id": "sky-dev",
+      "title": "rockリポジトリにアクセス",
+      "threadId": "01a0ee5c-f71a-7c13-8c15-a9e27630483b",
+      "role": "Sky/Zema現行コード・統合担当",
+      "status": "Sky専用AMCの要件を送信済み。現行コードはこの担当へ集約。"
+    },
+    {
+      "id": "security",
+      "title": "Compare rock and security-audit-skil",
+      "threadId": "01a0ef43-73f3-74c2-9b8b-549b1da4657b",
+      "role": "独立ソース監査の参照",
+      "status": "報告書を確認。未検証候補4件、再現試験未完了。確定脆弱性扱いはしない。"
+    }
+  ],
+  "openDecisions": [
+    {
+      "id": "D1",
+      "topic": "初回公開の対象商品・実行先・利用者/地域",
+      "impact": "対象表が未確定のまま全商品・全端末のローンチ完了にはしない。",
+      "owner": "製品責任者",
+      "blocks": [
+        "S0-02",
+        "S1-03",
+        "S10-03",
+        "S11-03"
+      ]
+    },
+    {
+      "id": "D2",
+      "topic": "購入移行・共有/保存上限のOSポリシー具体値",
+      "impact": "現行の複数プロフィール方針は保持し、未設定を無制限/権利共有と解釈しない。",
+      "owner": "製品/OS責任者",
+      "blocks": [
+        "S5-03",
+        "S11-03"
+      ]
+    },
+    {
+      "id": "D3",
+      "topic": "決済Provider設定・本番配備先・運用責任者",
+      "impact": "コードありと実接続・本番受入を分ける。既存設定を先に調べ、未設定だけ判断する。",
+      "owner": "アカウント/運用責任者",
+      "blocks": [
+        "S4-02",
+        "S4-03",
+        "S9-01",
+        "S11-03"
+      ]
+    }
+  ],
+  "directives": [
+    {
+      "id": "SKY-DIR-001",
+      "status": "sent",
+      "recipientThreadId": "01a0ee5c-f71a-7c13-8c15-a9e27630483b",
+      "tasks": [
+        "S0-01",
+        "S0-02",
+        "S0-03",
+        "S10-01"
+      ],
+      "purpose": "現行実装の棚卸しとSky専用AMCの作成を、最新の責任分担で開始する。",
+      "sourceFingerprint": "0b1a456d687065fac3c79d2eda4d566f21d23366b38902b4f17853a314db5fbe",
+      "sentAt": "2026-09-30T02:30:34.690594+00:00",
+      "acceptance": "現在のコード/旧AMC/監査報告の差分を整理し、Sky専用Goal・作業・依存・証拠確認を扱える。",
+      "history": [
+        "前のAMC商品掲載依頼を、Sky完全ローンチを管理するAMC作成へ補足した。"
+      ]
+    }
+  ],
+  "monitoring": {
+    "mode": "event_driven_and_periodic_review",
+    "status": "not_scheduled_yet",
+    "events": [
+      "指示発行",
+      "着手",
+      "共有契約変更",
+      "成果提出",
+      "マージ",
+      "Gate判定"
+    ]
+  }
+}

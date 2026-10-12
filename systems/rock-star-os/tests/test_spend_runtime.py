@@ -5,6 +5,7 @@ import sqlite3
 import tempfile
 import time
 import unittest
+from types import SimpleNamespace
 
 from blackberryrock.spend import (
     OutcomeUnknown,
@@ -119,6 +120,119 @@ class SpendRuntimeTest(unittest.TestCase):
             authorization = json.loads(db.execute("SELECT authorization_json FROM spend_proposals").fetchone()[0])
         self.assertEqual(authorization["algorithm"], "SIMULATED-DIGEST-NO-SECRET")
         self.assertEqual(set(authorization), {"schema","algorithm","signer_ref","signer_version","payload_digest","signature","simulation_only"})
+
+    def a2a_reservation(self, runtime=None, **changes):
+        value = {
+            "owner_id": "alice", "delegation_id": "a2a-job-1", "parent_job_id": "zema-job-1",
+            "currency": "USD", "budget_limit_minor": 2_000,
+            "approval_sha256": "a" * 64, "deadline_at": (self.now + 3_600) * 1000,
+            "key": "a2a-reserve-1",
+        }
+        value.update(changes)
+        return (runtime or self.runtime).reserve_a2a_budget(**value)
+
+    def a2a_broker_proof(self, reservation, **changes):
+        proof = {
+            "schema": "rock-a2a-broker-authorization/2", "authorityId": "fixture-rockstaros",
+            "ownerUserId": reservation["owner_id"], "deviceRef": "device-a",
+            "delegationId": reservation["delegation_id"], "parentJobId": reservation["parent_job_id"],
+            "messageId": "message-1", "targetOrigin": "https://agent.example",
+            "targetAgentName": "Research Agent", "targetAgentVersion": "1.0.0",
+            "protocolVersion": "1.0", "inputSha256": "b" * 64,
+            "budgetCurrency": reservation["currency"],
+            "budgetLimitMinor": reservation["budget_limit_minor"],
+            "continueWhileDeviceOffline": True,
+            "deadlineAt": reservation["deadline_at"],
+            "authorizationSha256": reservation["approval_sha256"],
+            "issuedAt": self.now * 1000, "expiresAt": self.now * 1000 + 5 * 60_000,
+            "keyId": "fixture-device-key",
+        }
+        proof.update(changes)
+        return proof
+
+    def authorize_a2a_reservation(self, reservation, proof=None, key="a2a-broker-auth"):
+        principal = SimpleNamespace(subject=reservation["owner_id"], device_ref="device-a")
+        return self.runtime.authorize_a2a_proof(
+            principal, proof or self.a2a_broker_proof(reservation), key)
+
+    def test_a2a_wallet_reservation_is_atomic_owner_bound_and_idempotent(self):
+        first = self.a2a_reservation()
+        self.assertEqual(first["state"], "HELD")
+        self.assertEqual(first["held_minor"], 2_000)
+        self.assertEqual(first["owner_id"], "alice")
+        self.assertEqual(self.a2a_reservation(), first)
+        snapshot = self.wallet.snapshot()
+        self.assertEqual(snapshot["accounts"]["AVAILABLE"], 18_000)
+        self.assertEqual(snapshot["accounts"]["SPEND_HOLD"], 2_000)
+        with self.assertRaises(IdempotencyConflict):
+            self.a2a_reservation(budget_limit_minor=2_001)
+        with self.assertRaises(SpendError):
+            self.a2a_reservation(currency="JPY")
+        other = self.a2a_reservation(delegation_id="a2a-job-2", key="a2a-reserve-2", budget_limit_minor=18_000)
+        self.assertEqual(other["state"], "HELD")
+        self.assertEqual(self.wallet.snapshot()["accounts"]["SPEND_HOLD"], 20_000)
+
+    def test_broker_proof_authorizer_atomically_fences_exact_hold_until_proof_expiry(self):
+        reserved = self.a2a_reservation()
+        proof = self.a2a_broker_proof(reserved)
+        self.assertTrue(self.authorize_a2a_reservation(reserved, proof))
+        self.assertTrue(self.authorize_a2a_reservation(reserved, proof))
+        self.assertFalse(self.authorize_a2a_reservation(
+            reserved, proof, key="a2a-broker-auth-new-key"))
+        with self.assertRaises(SpendError):
+            self.runtime.release_a2a_budget(reserved["delegation_id"], "a2a-live-proof-release")
+        self.assertFalse(self.authorize_a2a_reservation(
+            reserved, {**proof, "budgetLimitMinor": proof["budgetLimitMinor"] + 1},
+            key="a2a-broker-auth-wrong-cap"))
+        self.assertFalse(self.authorize_a2a_reservation(
+            reserved, {**proof, "deviceRef": "device-b"}, key="a2a-broker-auth-wrong-device"))
+        self.assertFalse(self.authorize_a2a_reservation(
+            reserved, {**proof, "continueWhileDeviceOffline": False},
+            key="a2a-broker-auth-no-offline-consent"))
+        self.now += 301
+        self.assertEqual(self.runtime.release_a2a_budget(
+            reserved["delegation_id"], "a2a-expired-proof-release")["state"], "RELEASED")
+
+    def test_a2a_unknown_remote_outcome_retains_hold_and_cannot_be_released(self):
+        reserved = self.a2a_reservation()
+        dispatched = self.runtime.mark_a2a_dispatched(reserved["delegation_id"], "a2a-dispatch")
+        self.assertEqual(dispatched["state"], "DISPATCHED")
+        unknown = self.runtime.mark_a2a_indeterminate(reserved["delegation_id"], "a2a-unknown")
+        self.assertEqual(unknown["state"], "INDETERMINATE")
+        self.assertEqual(unknown["held_minor"], 2_000)
+        with self.assertRaises(SpendError):
+            self.runtime.release_a2a_budget(reserved["delegation_id"], "a2a-illegal-release")
+        with self.assertRaises(SpendError):
+            self.runtime.settle_a2a_budget(reserved["delegation_id"], {"amount_minor": 10}, "a2a-no-verifier")
+        self.assertEqual(self.runtime.get_a2a_budget(reserved["delegation_id"])["held_minor"], 2_000)
+
+    def test_a2a_settlement_requires_trusted_receipt_and_releases_unused_budget_once(self):
+        reserve = self.a2a_reservation()
+        runtime = ValueSpendRuntime(
+            self.wallet,
+            a2a_usage_receipt_verifier=lambda receipt, hold: (
+                receipt.get("signature_valid") is True and
+                receipt.get("delegation_id") == hold["delegation_id"] and
+                receipt.get("owner_id") == hold["owner_id"] and
+                receipt.get("currency") == hold["currency"] and
+                receipt.get("amountMinor") <= hold["budget_limit_minor"]
+            ),
+            clock=lambda: self.now,
+        )
+        runtime.mark_a2a_dispatched(reserve["delegation_id"], "a2a-dispatch-settle")
+        receipt = {"delegation_id": reserve["delegation_id"], "owner_id": "alice",
+                   "currency": "USD", "amountMinor": 650, "signature_valid": True}
+        settled = runtime.settle_a2a_budget(reserve["delegation_id"], receipt, "a2a-settle")
+        self.assertEqual(settled["state"], "SETTLED")
+        self.assertEqual(settled["settled_minor"], 650)
+        self.assertEqual(settled["released_minor"], 1_350)
+        self.assertEqual(runtime.settle_a2a_budget(reserve["delegation_id"], receipt, "a2a-settle"), settled)
+        with self.assertRaises(SpendError):
+            runtime.settle_a2a_budget(reserve["delegation_id"], {**receipt, "amount_minor": 651}, "a2a-settle-conflict")
+        snapshot = self.wallet.snapshot()
+        self.assertEqual(snapshot["accounts"]["AVAILABLE"], 19_350)
+        self.assertEqual(snapshot["accounts"]["SPEND_HOLD"], 0)
+        self.assertEqual(snapshot["accounts"]["SPEND_COMMITTED"], 650)
 
     def test_unknown_outcome_retains_hold_and_reconciliation_commits_once(self):
         runtime = ValueSpendRuntime(self.wallet, adapters=(UnknownThenExecutedAdapter(),), clock=lambda: self.now)

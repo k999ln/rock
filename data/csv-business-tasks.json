@@ -93,8 +93,8 @@
       "title": "永続実行キューと再開",
       "status": "blocked",
       "dependsOn": ["CSV-B01", "CSV-B02", "CSV-B03"],
-      "reason": "D1 acceptance後のwaitUntil、lease、認証poll時の期限切れ回収、attempt別成果物、二重完了防止はローカル統合試験済み。ただしSitesに独立Queue bindingはなく、これは独立queue実装ではない。実スマホを閉じた後の無人完了は未検証のためblockedを維持する。",
-      "evidence": ["lib/csv-job-store.ts", "scripts/check-work-api.mjs", "docs/csv-business-v1.ja.md"]
+      "reason": "Sitesに独立Queue bindingがなく、実スマホを閉じた後の無人完了を未検証。永続状態、revision claim、保存入力からの再試行は実装済み。",
+      "evidence": ["lib/csv-job-store.ts", "docs/csv-business-v1.ja.md"]
     },
     {
       "id": "CSV-B06",
@@ -131,47 +131,30 @@
       "title": "顧客納品・修正・検収",
       "status": "blocked",
       "dependsOn": ["CSV-B05", "CSV-B07"],
-      "reason": "期限・失効付きbearer capability URL、納品revision、範囲内1回修正、明示検収は合成API試験済み。URL保有者の操作でありbuyer本人のidentity bindingではない。B05独立queue、市場が許可する公式納品経路、実buyerによる端末確認が未了のためrelease gateとしてblocked。",
+      "reason": "v1はseller取得まで。buyer認証、期限付き共有、修正版と検収状態は未実装。",
       "evidence": [
-        "app/api/csv-jobs/[id]/delivery-link/route.ts",
-        "app/api/csv-delivery/",
-        "app/csv/delivery/",
-        "components/csv-delivery-workspace.tsx",
-        "scripts/check-work-api.mjs",
+        "app/api/csv-jobs/[id]/artifact/[kind]/route.ts",
         "docs/csv-business-v1.ja.md"
       ]
     },
     {
       "id": "CSV-B09",
       "title": "売上・入金・返金の台帳",
-      "status": "done",
+      "status": "blocked",
       "dependsOn": ["CSV-R02", "CSV-B07"],
-      "reason": "ローカル合成API 487 assertionsでJPY 3,000の厳密な金額・通貨照合、一部入金拒否、buyer返金・争議・取消の受注停止、payout調整返金との分離、逆順/重複/手動確認を検証。追加回帰で署名済みcurrency/job/type不一致を挿入前に拒否し、前後順とも不正イベントをledgerへ残さないこと、同イベントIDの正しい再送・accept・月次reconcile継続を確認。manual paymentのcross-action冪等キーはpayment/audit/outboxの部分記録を作らず409となる。実Provider口座・実顧客・実入金は含めない。",
-      "evidence": [
-        "lib/csv-money.ts",
-        "lib/csv-job-store.ts",
-        "app/api/csv-payments/webhook/route.ts",
-        "app/api/csv-operations/route.ts",
-        "tests/csv-money.test.mjs",
-        "scripts/check-work-api.mjs",
-        "docs/evidence/csv-local-feature-validation-20260915.ja.json"
-      ]
+      "reason": "手動照合状態は保存するが、販売経路の署名済みProvider eventが未接続。",
+      "evidence": ["lib/csv-job-store.ts", "docs/csv-business-v1.ja.md"]
     },
     {
       "id": "CSV-B10",
       "title": "月額8.88ドルの判定とテスト請求",
       "status": "in_progress",
       "dependsOn": ["CSV-B09"],
-      "reason": "USD 30.00閾値・USD 8.88固定額・JST月・同一billing accountに属する複数seller/providerの合算・月一意行・逆順/後日返金の再判定を合成試験済み。直接費は記録できるが純入金から未控除。請求ID、SCA、請求失敗再試行、fee refund adapter、8.88 USD月次回収上限の課金冪等制御、解約時の請求取消は未実装。実Providerのnet payout/FX mappingとtest-mode請求は未接続・未試験のため請求開始はしない。",
+      "reason": "閾値・固定額・JST月の純粋関数と月次一意schemaは実装。Provider eventとtest請求はB09待ち。",
       "evidence": [
         "lib/csv-fee-policy.ts",
-        "lib/csv-money.ts",
-        "lib/csv-operations-store.ts",
         "tests/csv-fee-policy.test.mjs",
-        "tests/csv-money.test.mjs",
-        "scripts/check-work-api.mjs",
-        "drizzle/0012_melodic_malcolm_colcord.sql",
-        "docs/evidence/csv-local-feature-validation-20260915.ja.json"
+        "drizzle/0011_overrated_skaar.sql"
       ]
     },
     {
@@ -179,18 +162,10 @@
       "title": "運営・停止・解約・出力",
       "status": "in_progress",
       "dependsOn": ["CSV-B07", "CSV-B08", "CSV-B09"],
-      "reason": "内部実装に全体/利用者/売主別の新規受付停止、受注済み案件の継続、翌JST月解約、本人データJSON export、介入/24時間納期/直接費dashboard、operator audit/outbox/idempotencyを追加し合成APIで検証。直接費は月額判定に未控除。production operator allowlist/secret、実担当による運用確認、実顧客受入は未了。",
+      "reason": "失敗状態、再試行、成果物取得、即時削除は実装。運営者横断画面と新規受付停止は未実装。",
       "evidence": [
         "lib/csv-job-store.ts",
-        "lib/csv-operations-store.ts",
-        "app/api/csv-operations/route.ts",
-        "app/api/csv-account/route.ts",
-        "app/api/csv-account/export/route.ts",
-        "app/csv/operations/",
-        "components/csv-operations-workspace.tsx",
-        "scripts/check-work-api.mjs",
-        "drizzle/0015_csv_billing_account_events.sql",
-        "docs/evidence/csv-local-feature-validation-20260915.ja.json"
+        "components/csv-business-workspace.tsx"
       ]
     },
     {

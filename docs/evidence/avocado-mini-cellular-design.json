@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-05",
+  "baseSha": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
+  "task": "MAT15",
+  "relatedTask": "SIM01",
+  "scope": "Mini internal SIM standalone cellular design; no runtime or physical integration",
+  "artifactSha256": {
+    "docs/avocado-mini-cellular.md": "f4b27e6b1d75062c6b0c9f71f8b2768390f0b1a6308280aef674f5d204af8057",
+    "data/avocado-mini-cellular.json": "ffa745a3dcd60fd5d9ea548173fbbe6f7a0ca41b8c4d0902d11685a947741405",
+    "docs/avokado-pro-pc-design.md": "8b16bef8e41bc4597d4f5d4ebb40e9ec322a71d6f043f45ddf6ba4592307ecd8"
+  },
+  "verification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": 870,
+    "workApiAssertions": 1048,
+    "csvAssertions": 113,
+    "initialAttempt": "Node migration test stopped with SQLITE_FULL; own temporary site dependencies/build cleaned; focused migration and full verify retries passed",
+    "designCheck": "passed",
+    "diffCheck": "passed"
+  },
+  "sources": [
+    "https://www.quectel.com/product/5g-rm520n-series/",
+    "https://www.quectel.com/product/5g-m2-evb-kit/"
+  ],
+  "country": null,
+  "carrier": null,
+  "modemSku": null,
+  "acceptance": {
+    "modemIntegrated": false,
+    "driverIntegrated": false,
+    "carrierConnected": false,
+    "standaloneDataTested": false,
+    "closedCaseRfThermalTested": false,
+    "gameTested": false,
+    "production": false,
+    "publicPageUpdated": false
+  },
+  "previousProEvidenceScope": "docs/evidence/avokado-pro-pc-design.json records the Pro design before the Mini cross-reference addition at commit 33cea702c6c36a6bc973bedb966a7ef661514258"
+}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1620" height="1000" viewBox="0 0 1620 1000"><rect width="1620" height="1000" fill="white"/>
+<polyline points="180,825 795,825" fill="none" stroke="#444" stroke-width="2"/>
+<rect x="306.59999999999997" y="742.5" width="316.8" height="82.5" fill="#eeeeee" stroke="#333" stroke-width="2"/>
+<rect x="415.5" y="165.0" width="99.0" height="577.5" fill="#dedede" stroke="#333" stroke-width="2"/>
+<rect x="415.5" y="198.00000000000006" width="99.0" height="49.5" fill="#303030" stroke="#333" stroke-width="2"/>
+<circle cx="439.5" cy="224.4" r="9.75" fill="#aaa" stroke="#111" stroke-width="2"/>
+<circle cx="490.50000000000006" cy="224.4" r="9.75" fill="#aaa" stroke="#111" stroke-width="2"/>
+<polyline points="415.5,574.2 514.5,574.2" fill="none" stroke="#888" stroke-width="1"/>
+<polyline points="415.5,405.90000000000003 514.5,405.90000000000003" fill="none" stroke="#888" stroke-width="1"/>
+<polyline points="240,825 240,165.0" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="240,165.0 244.78462087522354,174.90491812587945 235.21537912477646,174.90491812587945" fill="#333"/>
+<polygon points="240,825 235.21537912477646,815.0950818741205 244.78462087522354,815.0950818741205" fill="#333"/>
+<text x="180.0" y="476.4375" text-anchor="end" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="27.5" fill="#111111">200 mm</text>
+<text x="180.0" y="513.5625" text-anchor="end" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="27.5" fill="#111111">MAX</text>
+<polyline points="306.59999999999997,870 623.4000000000001,870" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="623.4000000000001,870 613.4950818741206,874.7846208752235 613.4950818741206,865.2153791247765" fill="#333"/>
+<polygon points="306.59999999999997,870 316.5049181258794,865.2153791247765 316.5049181258794,874.7846208752235" fill="#333"/>
+<text x="465.0" y="915.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="27.5" fill="#111111">D96 比較値</text>
+<polyline points="415.5,105 514.5,105" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="514.5,105 504.5950818741206,109.78462087522354 504.5950818741206,100.21537912477646" fill="#333"/>
+<polygon points="415.5,105 425.4049181258794,100.21537912477646 425.4049181258794,109.78462087522354" fill="#333"/>
+<text x="465.0" y="150.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="27.5" fill="#111111">D30 比較値</text>
+<polyline points="525,240 855,240" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="855,240 845.0950818741205,244.78462087522354 845.0950818741205,235.21537912477646" fill="#333"/>
+<text x="885" y="219.75" text-anchor="start" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">黒いカメラ帯</text>
+<text x="885" y="260.25" text-anchor="start" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">窓と光軸は未確定</text>
+<polyline points="630,780 855,690" fill="none" stroke="#333" stroke-width="2"/>
+<polygon points="855,690 847.5804779779413,698.1210031993704 844.0265508120468,689.2361852846343" fill="#333"/>
+<text x="885" y="669.75" text-anchor="start" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">低い円形台座</text>
+<text x="885" y="710.25" text-anchor="start" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="30.0" fill="#111111">放熱と演算の候補区画</text>
+<text x="1080" y="402.75" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="35.0" fill="#111111">使用時の高さ上限</text>
+<text x="1080" y="450.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="35.0" fill="#111111">脚と台座を含む</text>
+<text x="1080" y="497.25" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="35.0" fill="#111111">別Hubは必須にしない</text>
+<text x="810" y="945.0" text-anchor="middle" dominant-baseline="central" font-family="Arial Unicode MS,sans-serif" font-size="27.5" fill="#111111">R5 M01  比較包絡図  穴位置・壁厚・機構・材料は未リリース</text>
+</svg>

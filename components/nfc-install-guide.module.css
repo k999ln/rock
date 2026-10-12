@@ -1,0 +1,61 @@
+.nfcInstall {
+  position: relative;
+  width: calc(100% - 32px);
+  max-width: 800px;
+  margin: 24px auto 0;
+  padding: 22px;
+  border: 1px solid var(--os-line, #343b45);
+  border-radius: 12px;
+  background: var(--os-bg, #0b0d10);
+  color: var(--os-text, #f4f6f8);
+}
+.nfcClose {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--os-muted, #a0a8b3);
+  border: 0;
+  background: none;
+}
+.nfcEyebrow {
+  color: var(--os-muted, #a0a8b3);
+  font-size: 11px;
+}
+.nfcInstall h2 {
+  font-weight: 500;
+  font-size: 18px;
+  margin: 12px 0;
+}
+.nfcInstall p {
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 12px 0;
+  color: var(--os-muted, #a0a8b3);
+}
+.nfcInstallButton {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  padding: 12px 16px;
+  background: var(--home-accent);
+  border: 0;
+  border-radius: 8px;
+  color: #172631;
+  font-size: 12px;
+}
+.nfcDownloadLink {
+  display: inline-block;
+  font-size: 12px;
+  text-decoration: underline !important;
+  min-height: 44px;
+  padding-top: 12px;
+}
+.nfcInstall .nfcBoundary {
+  font-size: 11px;
+  color: var(--os-muted, #a0a8b3);
+}

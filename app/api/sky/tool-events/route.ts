@@ -46,8 +46,8 @@ export async function POST(request: Request) {
     const db = database();
     const userId = await requestDeveloperUser(request, db);
     const event = parseSkyToolEvent(await body(request));
-    await skyToolEventStore(db).record(userId, event);
-    return json({ recorded: true }, 202);
+    const result = await skyToolEventStore(db).record(userId, event);
+    return json(result, result.replay ? 200 : 202);
   } catch (error) {
     return failure(error);
   }

@@ -45,8 +45,11 @@ test('browser one-click session initializes, lists 41 tools, and revokes cleanly
     stdio: ['ignore', 'ignore', 'pipe'],
     env: {
       ...process.env,
+      FASHION_HTTP_HOST: '127.0.0.1',
       FASHION_HTTP_PORT: String(port),
       FASHION_BROWSER_ORIGINS: origin,
+      FASHION_MCP_BEARER_TOKEN: '',
+      ROCKSTAR_TENANT_ID: '',
       FASHION_BRAND_DB_PATH: path.join(temporary, 'ops.db'),
       ROCKSTAR_APPROVAL_SECRET: 'x'.repeat(40),
     },

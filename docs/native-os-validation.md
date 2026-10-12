@@ -1,6 +1,57 @@
 # Native OSのRock統合検証
 
-現在の統合後の結果は[OS稼働検証](os-operational-validation-20260909.md)。以下は元native取り込み時点の履歴であり、起動改善候補・backup検証器・全observerの後続修正は現在の記録を参照する。
+## PC receiverの終端競合と再送（AI04、2026-10-11）
+
+既存`src/blackberryrock/storage.py`の仕事更新で、2つのSQLite接続が同じrunning状態を読んだ後、完了と取消が両方成功し確定結果を上書きする競合を再現した。更新は読み取ったstatus・result・updated_atに対するCASで行う。同じ終端状態と同じ結果の再送は保存済み行を返し、時刻も書き換えない。異なる成果・状態の後着は409相当の競合として保持し、勝者の結果を消さない。DB schemaとHTTP interfaceは維持する。
+
+native rootで`PYTHONPATH=src python3 -m unittest discover -s tests -p test_storage.py`は6件、`PYTHONPATH=src python3 -m unittest discover -s tests -p test_server.py`は3件合格。新規3件は修正前に失敗し、実SQLiteの2接続・barrierによる同時終端、異なる成果物、完全一致の再送を確認する。独立担当もStore 6件を再実行した。PC receiverのhost source試験であり、Linux全体CI・QEMU image・実機・Provider受入は別の証拠を要する。
+
+## QEMU受入monitorの総期限（2026-10-11）
+
+`os/verify-platform.py`の画面取得用QMP接続は、従来のsocket待機5秒だけでは通知が流れ続ける間に戻らず、外側のguest起動240秒期限も確認できなかった。実AF_UNIXの合成monitorで、応答なし・通知継続時に5.41秒後も呼出しが未完了になることを再現した。接続、greeting、capability交渉、command応答を一つの単調時計5秒期限へ収め、改行のない細切れ応答にも同じ期限と1 MiBのframe上限を適用する。
+
+[QEMU公式QMP仕様](https://www.qemu.org/docs/master/interop/qmp-spec.html)に従い、各要求に付けたIDへ応答を照合し、通知と別IDは成功にしない。交渉失敗では画面取得commandを送らず、EOF、結果欠落、期限切れも成功へ変換しない。QEMU本体、guest、通常起動や保存diskを変更する修正ではない。
+
+native rootの`PYTHONPATH=src:os:tests python3 -B -W error::ResourceWarning -m unittest test_os_platform_qmp test_os_platform_isolation_proof test_os_desktop_preview`で69件合格。新規7件は実socketのhost fixtureであり、OS image bootを実行していない。既存のscope／起動許可、実署名・archive、所有VM・保存復旧guardの回帰も含めた。
+
+同日の読取調査ではmacOS 15.7.4 arm64／Lima 2.2.0のhost条件が一致し、保管rc2 archive（`b7d819c`、SHA-256 `5ce072f65fc4e24212ff6acc6887cbb03f3e7f664b50d574756738892e4ed95e`）の716 fileとimage tripleを現行verifierで照合した。公開試験鍵の整合確認であり、production真正性や新sourceの受入ではない。再利用可能なLinux VMは停止中で旧sourceへの書込mountを持つため起動せず、Macに汎用QEMUはない。新しいsourceの凍結imageと、専用Linux/QEMU `virt-10.0`・e2fsprogs・十分なRAM／保存領域を用意してから、同一imageの起動・保存・再起動・復旧を別途受け入れる。Android全OS用x86_64条件をこのARM64 QEMU系統へ持ち込まない。
+
+## 遠隔仕事の取消と遅延要求（AI04、2026-10-11）
+
+`test_os_runner_control.py`で元submitを配送前に保持し、通信失敗→取消要求→remote不在→OS controller再起動→元submit遅延受理を実RunnerStore／SQLiteで再現する。修正前は不在だけでlocalをcancelledにして入力を消し、後の結果照合を止めるため2件とも失敗した。修正後は同IDのunknownと取消意図を保持し、再送せず照合を続ける。遅延要求がqueuedならremote取消で実行0回、既に成功なら実結果を回収して実行1回、照合後にinput/packageを消す。claim前の取消は従来どおり送信を防ぐ。
+
+検証コマンドはnative rootで`PYTHONPATH=src:os:tests python3 -B -W error::ResourceWarning -m unittest test_os_runner_control test_service_access_registry_runner test_platform_service_lifecycle`。68件合格。transportの時系列は制御fixture、executorは明示したfake callbackであり、guest／実機／本番クラウドの実行合格には加算しない。not-foundを将来の元submit拒否へ固定する契約がないため、不在が続く仕事は未確認のまま保持する。
+
+## Gameの不確定応答からの復旧試験（SYS15、2026-10-03）
+
+`test_game_exchange_deadlines.py`はprivate fixtureの合成Game／Walletとloopback TLSを使うsource回帰である。`ExchangeWorker.once()`のTrueはclaimを処理した意味で、remote適用やNOT_FOUNDの証拠ではない。次へ進む前に永続claimのoperation／resultを確認し、保留金額・付与数・journal件数を別に照合する。
+
+停滞中も別GameとATMが進む既存試験は、解除後の最初の要求を意図的に未適用で終える。これでNOT_FOUND→元のapplyという前提を制御し、3秒の期限・全時間上限・既存残高照合を保持する。別の回帰では一度のstatus失敗からUNKNOWN→NOT_FOUND→TERMINAL、さらに結果不明後に元要求が遅れて適用される場合のstatus→TERMINALを確認する。未確認の結果で保留を解除せず、元要求だけを用い、二重付与しない。
+
+遅延適用は本物のauthority処理へ元要求を後から届ける制御fixtureで、過去CIの通信時系列を再現したとは扱わない。追加のretry loopやdeadline緩和はせず、予期しない状態は失敗として残す。ROCKの検証器改善でありproductionの権限・金額・timeout・Provider契約は変更しない。guest boot・実機・実資金・24時間運用は対象外である。
+
+## Platform検証guestの起動条件（SYS15、2026-10-03）
+
+`systems/rock-star-os/os/verify-platform.py`を、検証用artifactを用意したLinux環境から実行する既存入口を維持する。このhost入口は新規userdata、networkなし、読み取り専用rootfsで検証guestを起動し、kernel command lineへ `rock.platform.verify=1` を指定する。`--scope game-isolation`だけが追加scopeを指定する。既存imageの受入を新sourceへ流用しない。
+
+通常imageにも配置する `os/platform/guest-test.py` は、boot wrapperだけでなく本体でもroot・ARM64と1個の正確なenable tokenを必須にする。enable未指定、無効値、空値、重複・競合を拒否し、default local-full／単独のgame-isolation以外のscopeを拒否する。拒否はinventory子process、IPC、chmod、Tool操作、simulator操作、PASS出力より前に行う。rootで直接呼んでも通常bootでは検証処理へ進まない。これは誤った直接起動を防ぐ条件で、root権限保有者に対する隔離境界ではない。
+
+ROCKが検証器とそのhost回帰を管理する。入力はkernelの起動tokenと実行identityで、追加credentialや永続設定は保存しない。起動条件が満たされない場合は失敗を返し、flagを自動補完して継続しない。復旧は適合する検証artifactから既存host入口で専用guestを起動する。既存guestデータをこの拒否で変更しない。
+
+peer UIDをDACから独立検査する一時的な0755／0666と、通常復元の0660／0750、本文前のUID認証は保持する。復元syscall自体の失敗や強制終了への保証を追加したとは扱わない。host回帰は不正起動の無副作用と正規2scopeの継続を確認し、CodeQL #13〜#16の一時権限警告や、実guest／実機／24時間受入とは分離して記録する。
+
+## CI再実行の結果選択（SYS15、2026-10-03）
+
+nativeのsource検査は4つのmain partitionとsupportに分割する。artifact名にGitHubのrun attemptを含め、`scripts/select-native-artifacts.py`が同じrun／headのAPI metadataから各partitionの最大attemptを選ぶ。IDや時刻、PASSの有無では選択しない。再実行されなかった区分は同じrunの以前のattemptを再利用する。
+
+収集は100件ずつ最大10ページ／1,000件に制限し、total_count・ID重複・run／head・attempt・全5区分を確認する。選択された最新artifactがexpiredなら古い結果へ戻さず拒否する。downloadは明示したartifact IDで行い、別々のdirectoryへ保存する。API取得・一覧・選択・downloadが不完全なら成功にしない。
+
+`needs.partitions.result == success`と、既存のsource inventory・PASS・元ログhash・全test discoveryの集計検証は維持する。これにより最新jobがupload前に失敗した場合や、一部IDがdownloadできなかった場合も拒否する。元の失敗結果はattempt別のartifactとしてretention期間内に保持する。集計artifactもattempt別にする。選択器自体を入力hashへ含める。freeze検証器も選択器を必須入力にし、欠落・archiveとの不一致・改変を拒否する。freezeの回帰はCI集計jobで直接実行する。
+
+前回 `258fa5d`のrun37102143646では、main-1の再実行PASS artifact11265968595が存在するのに、集計が旧FAIL11266067774を取得した。集計内reportのhash一致で原因を確認した。これは試験結果の選択修正であり、Wallet試験の期限延長、試験削除、OS boot／実機受入を含まない。今回の合格証拠は[SPIDER改善cycle記録](evidence/spider-improvement-cycle.json)と同じSHAのPR報告で追跡する。
+
+
+現在の統合後の結果はOS稼働検証（削除済み）。以下は元native取り込み時点の履歴であり、起動改善候補・backup検証器・全observerの後続修正は現在の記録を参照する。
 
 日付: 2026-09-09。取り込み前のRock: `5cec83478fe97bf272869298160a572ef7fcefee`。統合branch: `codex/integrate-native-os-20260909`。
 
@@ -46,3 +97,9 @@
 `experiments/startup-health/changes.patch` は21ファイルのWIP。適用前検査だけ成功し、通常sourceには適用していない。C healthテストは未compile/未実行、Pythonのstartup-healthテストは未作成、新OS起動も未実行。今回1031件の成功はこのWIPの動作検証ではない。
 
 既存の9点の封印済み成果物と、稼働中の仮想OSプレビューのデータ・設定は今回のGit統合で変更していない。
+
+## SPIDER cycle 50: entitlement observerの出力境界
+
+既存serviceの応答から3つの報告fieldを型と許可値で検査し、想定外のnested値とread例外を診断へ出さない。[全体設計](rockstaros-complete-design.md#spider-simulation-observerの診断出力)と[証拠](evidence/spider-observer-output-schema.json)に範囲を記録する。hostの新規privacy試験と既存SQLite DeviceWallet試験を用い、guest・実機は実行しない。
+
+統合受入補足: observerの年月は検証後の年/月整数からYYYY-MMへ再構成し、worker_aliveは固定booleanへ変換して出力する。応答object/文字列を直接診断へ転送しない。既存13 privacy＋22 Wallet host試験と同一候補CodeQLを再確認する。実guest受入とは別。

@@ -1,0 +1,838 @@
+{
+  "date": "2026-09-30",
+  "version": "deep-research",
+  "jurisdiction": "Japan assumed; international published prior art",
+  "reference_commit": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "repository_current_visibility": "public",
+  "earliest_public_disclosure": "unconfirmed",
+  "jplatpat_query_log": [
+    {
+      "fields": "full text; domestic Japanese documents",
+      "query": "モデルコンテキストプロトコル",
+      "displayed_count": 1,
+      "scope": "result list"
+    },
+    {
+      "fields": "full text; domestic Japanese documents",
+      "query": "(ＭＣＰ OR MCP) AND (大規模言語 OR 言語モデル)",
+      "displayed_count": 42,
+      "scope": "titles screened, selected publications read"
+    },
+    {
+      "fields": "full text; domestic Japanese documents",
+      "query": "(ＭＣＰ OR MCP) AND (権限 OR 認可)",
+      "displayed_count": 4445,
+      "scope": "over 3000 result limit; not screened"
+    },
+    {
+      "fields": "full text; domestic Japanese documents",
+      "query": "(生成ＡＩ OR 生成AI) AND (実行許可 OR 実行権限)",
+      "displayed_count": 12,
+      "scope": "result list; all claims not examined"
+    }
+  ],
+  "additional_jp_followup_unread": [
+    "JP7886506",
+    "JP2026108454",
+    "JP2026105342",
+    "JP2026099218",
+    "JP2026098674",
+    "JP2026073418",
+    "JP2025538951"
+  ],
+  "sources": [
+    {
+      "id": "P1",
+      "title": "SIMによるOS拡張：WO2008042989A2",
+      "url": "https://patents.google.com/patent/WO2008042989A2/en",
+      "kind": "patent",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "SNAPin Software。優先日2006-10-03／公開2008-04-10。明細書[0065]–[0072]、請求項21–22。EP2074807A2、US20100093396A1の同族あり。検索で本文確認、直接取得は不安定。",
+      "status": "全同族・最新原簿の確認は未了。本文の確認範囲は上記の通り。",
+      "family": "P1"
+    },
+    {
+      "id": "P2",
+      "title": "eSIMから構成パッケージを導入：US10021558B2",
+      "url": "https://patents.google.com/patent/US10021558B2/en",
+      "kind": "patent",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "Qualcomm。優先日2016-03-29／公開US20170289788A1は2017-10-05／登録2018-07-10。登録請求項1、6–7、12を確認。",
+      "status": "全同族・最新原簿の確認は未了。本文の確認範囲は上記の通り。",
+      "family": "P2"
+    },
+    {
+      "id": "P3",
+      "title": "SIMによる端末自動構成：US10158988B2",
+      "url": "https://patents.google.com/patent/US10158988B2/en",
+      "kind": "patent",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "Qualcomm。優先日2014-07-24／公開US20160029204A1は2016-01-28／登録2018-12-18。登録請求項1–2を確認。",
+      "status": "全同族・最新原簿の確認は未了。本文の確認範囲は上記の通り。",
+      "family": "P3"
+    },
+    {
+      "id": "J1",
+      "title": "特許6469835：J-PlatPat公式記録",
+      "url": "https://www.j-platpat.inpit.go.jp/c1801/PU/JP-6469835/15/ja",
+      "kind": "register",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "2026-09-30ブラウザで確認。特願2017-502833／特表2017-529725／特許6469835。「特許 消滅」「年金不納による特許権の消滅」の表示。登録公報本文の画面は取得できず、国内請求項の逐語照合は未了。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "J1"
+    },
+    {
+      "id": "P4",
+      "title": "SIMによる自動開通・構成：EP2701413B1",
+      "url": "https://patents.google.com/patent/EP2701413B1/en",
+      "kind": "patent",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "Synchronoss Technologies。優先日2012-08-21／公開A1は2014-02-26／登録B1は2018-09-19。請求項の検索表示と明細書を確認。",
+      "status": "全同族・最新原簿の確認は未了。本文の確認範囲は上記の通り。",
+      "family": "P4"
+    },
+    {
+      "id": "P5",
+      "title": "US10277473B2 · Accenture · ベンチマークによるモデル配置",
+      "url": "https://patents.google.com/patent/US10277473B2/en",
+      "kind": "patent",
+      "dates": "優先 2016-05-23／A公開 2017-11-23／登録 2019-04-30",
+      "basis": "登録請求項1も追加確認。複数システムの端末、精度benchmark、モデル部分の配置とシステム間データ処理を含む。単一端末のLLM選択すべてではない。",
+      "status": "米国登録版を確認。原簿未照会。",
+      "family": "P5"
+    },
+    {
+      "id": "P6",
+      "title": "SaaSへの生成AI実装：US20250244964A1",
+      "url": "https://patents.google.com/patent/US20250244964A1/en",
+      "kind": "patent",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "monday.com。優先権表示2023-08-14／当該公開2025-07-31／登録US12524499B2は2026-01-13。明細書に生成AIエージェント市場。公開請求項1は表形式のSaaS操作等の限定を含む。各記載の優先権サポート、登録版の権利範囲は未精査。",
+      "status": "全同族・最新原簿の確認は未了。本文の確認範囲は上記の通り。",
+      "family": "P6"
+    },
+    {
+      "id": "N1",
+      "title": "AWS：エージェント・MCP・従量課金の組合せ",
+      "url": "https://aws.amazon.com/about-aws/whats-new/2025/10/aws-marketplace-pricing-ai-agents-tools/",
+      "kind": "official",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "2025-10-31付公式発表。AgentCore Runtimeコンテナの従量課金と、購入したMCPサーバーのGateway接続。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "N1"
+    },
+    {
+      "id": "N2",
+      "title": "AWS：AIエージェント製品",
+      "url": "https://docs.aws.amazon.com/marketplace/latest/userguide/ai-agents-tools.html",
+      "kind": "official",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "2026-09-30閲覧。マーケットプレイスのエージェント・ツール配布。現行ドキュメントの全記載が初版から存在したとは扱わない。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "N2"
+    },
+    {
+      "id": "N3",
+      "title": "Anthropic：MCP公開",
+      "url": "https://www.anthropic.com/news/model-context-protocol",
+      "kind": "official",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "2024-11-25付公式発表。AIと外部データ・ツールの標準接続。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "N3"
+    },
+    {
+      "id": "N4",
+      "title": "GSMA：IoT SAFE",
+      "url": "https://www.gsma.com/solutions-and-impact/industries/smart-mobility/gsma_resources/iot-safe-iot-sim-applet-for-secure-end-to-end-communication-2/",
+      "kind": "official",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "2019-12-09付。SIMを信頼の起点として通信の認証・保護に使用。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "N4"
+    },
+    {
+      "id": "N5",
+      "title": "AOSP：UICC carrier privileges",
+      "url": "https://source.android.com/docs/core/connect/uicc",
+      "kind": "official",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "2026-09-30閲覧。SIM内の証明書規則に基づく事業者アプリ権限。一般のOS置換権限とは異なる。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "N5"
+    },
+    {
+      "id": "N6",
+      "title": "AOSP：Carrier configuration",
+      "url": "https://source.android.com/docs/core/connect/carrier",
+      "kind": "official",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "2026-09-30閲覧。事業者アプリとSIM状態等に応じた設定。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "N6"
+    },
+    {
+      "id": "N7",
+      "title": "AWS：MeterUsageの重複抑止",
+      "url": "https://docs.aws.amazon.com/cli/latest/reference/meteringmarketplace/meter-usage.html",
+      "kind": "official",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "2026-09-30閲覧。計量レコードの冪等性、AgentCore向けClientTokenの仕様。現行仕様であり、個々の機能の初出日は未確認。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "N7"
+    },
+    {
+      "id": "N8",
+      "title": "VS Code：実行環境をまたぐエージェント引継ぎ",
+      "url": "https://code.visualstudio.com/docs/agents/run/agent-harnesses",
+      "kind": "official",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "2026-09-30閲覧。会話と文脈を維持する実行環境間のhandoff。個々の機能の初出日は未確認。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "N8"
+    },
+    {
+      "id": "L1",
+      "title": "特許庁：発明該当性",
+      "url": "https://www.jpo.go.jp/system/laws/rule/guideline/patent/tukujitu_kijun/ht/03_0100.html",
+      "kind": "law",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "ソフトウェア情報処理をハードウェア資源で具体的に実現する観点。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "L1"
+    },
+    {
+      "id": "L2",
+      "title": "特許庁：新規性・進歩性",
+      "url": "https://www.jpo.go.jp/system/laws/rule/guideline/patent/tukujitu_kijun/ht/03_0200.html",
+      "kind": "law",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "単一文献との相違と、組合せの容易想到性を分けて判断。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "L2"
+    },
+    {
+      "id": "L3",
+      "title": "特許庁：実施可能要件",
+      "url": "https://www.jpo.go.jp/system/laws/rule/guideline/patent/tukujitu_kijun/ht/02_0100.html",
+      "kind": "law",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "当業者が実施できる開示が必要。願望だけの機能列挙では不足する。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "L3"
+    },
+    {
+      "id": "L4",
+      "title": "特許庁：新規性喪失の例外の手続",
+      "url": "https://www.jpo.go.jp/system/laws/rule/guideline/patent/hatumei_reigai.html",
+      "kind": "law",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "日本で自己公開等に対する例外を検討するための手続案内。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "L4"
+    },
+    {
+      "id": "L5",
+      "title": "特許庁：例外規定の手引き",
+      "url": "https://www.jpo.go.jp/system/laws/rule/guideline/patent/document/hatumei_reigai/h30_tebiki.pdf",
+      "kind": "law",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "原則、対象の公開から1年以内に出願、出願時の申出と出願後30日以内の証明書。適用要件の確認が必要。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "L5"
+    },
+    {
+      "id": "L6",
+      "title": "EPO：EPC第55条",
+      "url": "https://www.epo.org/en/legal/epc/2020/a55.html",
+      "kind": "law",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "濫用・一定の国際博覧会等の限定的な例外。通常の自己公開に一般的な1年猶予はない。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "L6"
+    },
+    {
+      "id": "L7",
+      "title": "USPTO：仮出願と自己公開",
+      "url": "https://www.uspto.gov/patents/basics/apply/provisional-application",
+      "kind": "law",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "米国の一定の発明者由来開示の1年例外と外国出願への影響。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "L7"
+    },
+    {
+      "id": "L8",
+      "title": "WIPO：PCTの出願",
+      "url": "https://www.wipo.int/en/web/pct-system/filing/index",
+      "kind": "law",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "最初の出願の優先権を主張するPCT出願は原則12か月以内。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "L8"
+    },
+    {
+      "id": "L9",
+      "title": "WIPO：PCT第21条",
+      "url": "https://www.wipo.int/en/web/pct-system/texts/articles/a21",
+      "kind": "law",
+      "dates": "公表日・確認範囲は下記／閲覧 2026-09-30",
+      "basis": "国際公開は原則優先日から18か月後。未公開出願はこの調査から除外される。",
+      "status": "本報告では記載した確認範囲に使用。",
+      "family": "L9"
+    },
+    {
+      "id": "D22",
+      "title": "US11327735B2 · Intel · 更新に伴う再attestation",
+      "url": "https://patents.google.com/patent/US11327735B2/en",
+      "kind": "patent",
+      "dates": "優先 2018-10-16／A公開 2019-05-09／登録 2022-05-10",
+      "basis": "登録請求項1、6、7等。更新manifestから基準測定を生成し、package hashを使う鍵・新しい端末identity・証明記録を扱う。",
+      "status": "更新後の再証明一般も既知。請求項は鍵生成・identity更新等の限定を含み、すべての再検証を覆うとは読まない。",
+      "family": "INTEL-ATTEST"
+    },
+    {
+      "id": "D23",
+      "title": "US20260072811A1 · Pillay · 依存graphによる選択的回帰試験",
+      "url": "https://patents.google.com/patent/US20260072811A1/en",
+      "kind": "patent",
+      "dates": "優先権表示 2024-06-27／出願 2025-06-27／公開 2026-03-12",
+      "basis": "公開請求項147–165。意味的に正規化されたtoken差分、構造依存graph、影響箇所と試験部分集合の選択・実行。",
+      "status": "集約DBはPending。source codeの差分に関する限定がある。一般的な差分試験をR1独自の発明として扱わない。",
+      "family": "PILLAY-REGRESSION"
+    },
+    {
+      "id": "D24",
+      "title": "JP7755914B1 · OPTiM · 生成AIによる端末設定変更",
+      "url": "https://patents.google.com/patent/JP7755914B1/ja",
+      "kind": "patent",
+      "dates": "出願 2025-08-01／公報 2025-10-17",
+      "basis": "登録請求項1–2。組織のセキュリティガイドラインと端末manualから生成AIが変更commandを出力し、設定を変更。従属項2は手順の承認。",
+      "status": "J-PlatPat検索一覧で特許有効。MCP記載があっても一般的な実行認可すべての特許とは扱わない。",
+      "family": "OPTIM-CONFIG"
+    },
+    {
+      "id": "X4",
+      "title": "J-PlatPat · 特許7918612 · セキュリティ関連処理実行制御",
+      "url": "https://www.j-platpat.inpit.go.jp/c1801/PU/JP-7918612/15/ja",
+      "kind": "lead",
+      "dates": "出願 2026-05-22／公知日表示 2026-09-10",
+      "basis": "INDUSTRIAL-X、特願2026-086489。公式検索結果で名称・出願人・有効表示を確認。",
+      "status": "公報本文の表示を開けず、請求項未確認。重要な追加照合候補であり、権利範囲の認定には使用しない。",
+      "family": "INDUSTRIAL-X"
+    },
+    {
+      "id": "D20",
+      "title": "US11977476B2 · Salesforce · セキュリティ方針の差分検証",
+      "url": "https://patents.google.com/patent/US11977476B2/en",
+      "kind": "patent",
+      "dates": "優先・出願 2022-01-28／A公開 2023-08-03／登録 2024-05-07",
+      "basis": "登録請求項1–7。変更した方針に対応する属性部分集合を選び、試験環境を生成し、セキュリティ・可用性例外を検証。",
+      "status": "米国登録版を確認。継続US20240289259A1あり。単なる差分検証をR1の新規点にはできない。",
+      "family": "SALESFORCE-VALIDATION"
+    },
+    {
+      "id": "D21",
+      "title": "US20260252995A1 · AI workloadの認可・失効伝播",
+      "url": "https://patents.justia.com/patent/20260252995",
+      "kind": "patent",
+      "dates": "出願 2026-04-16／公開 2026-08-27",
+      "basis": "公開請求項1–3・7・20等。attestation、計算資源の許可、依存関係を通じた失効、物理作用前の別検証。",
+      "status": "Justia掲載の公報テキストで確認。公式PDFと原簿は未取得。文献中の性能・安全性の主張を当方で実証したものではない。",
+      "family": "HU-ADMISSION"
+    },
+    {
+      "id": "D01",
+      "title": "JP7731114B1 · RAYVEN · MCP接続の権限管理",
+      "url": "https://patents.google.com/patent/JP7731114B1/ja",
+      "kind": "patent",
+      "dates": "優先・出願 2025-04-09／公報 2025-08-29",
+      "basis": "登録請求項1–5。複数MCPホスト、資源源と1対1の複数サーバー、端末上のノーコードGUI、ホスト権限設定マスタ、接続可否の判定。",
+      "status": "J-PlatPatで特許有効を確認。請求項本文はGoogle Patents掲載の日本語公報。包袋全件は未取得。",
+      "family": "RAYVEN"
+    },
+    {
+      "id": "D02",
+      "title": "JP7652552B2 · NVIDIA · 機械学習モデルのライブ更新",
+      "url": "https://patents.google.com/patent/JP7652552B2/ja",
+      "kind": "patent",
+      "dates": "優先 2019-10-20／JP公開 2021-04-30／登録公報 2025-03-27",
+      "basis": "登録請求項1、10、16ほか。エッジのアプリケーションが新構成データに応じ、停止せずモデル版を切替。",
+      "status": "J-PlatPatで特許有効を確認。補正・訂正・解釈の全調査は未了。",
+      "family": "NVIDIA-LIVE"
+    },
+    {
+      "id": "D03",
+      "title": "JP7857639B1 · CLASSMETHOD · AIエージェント提供",
+      "url": "https://patents.google.com/patent/JP7857639B1/en",
+      "kind": "patent",
+      "dates": "優先・出願 2025-08-18／公報 2026-05-13",
+      "basis": "登録請求項1・3。人格模倣モデルの市場、更新、複数人格の統合が独立項の限定。利用料と収益分配は従属項。",
+      "status": "J-PlatPatで特許有効を確認。汎用的なエージェント販売すべてを覆うとは読まない。",
+      "family": "CLASSMETHOD"
+    },
+    {
+      "id": "D04",
+      "title": "US20260058997A1 · Paradigm Networks · 生成AIアプリの制御",
+      "url": "https://patents.google.com/patent/US20260058997A1/en",
+      "kind": "patent",
+      "dates": "優先権表示 2024-08-21／公開 2026-02-26",
+      "basis": "公開請求項21以降はMCP proxyと許可判断に加え、サーバー置換又はschema更新等。明細書は実行前の予算予約と精算も開示。",
+      "status": "集約DBはPending。最早優先日に各MCP記載が支持されるか未確認。予算の記載と請求項の範囲を区別。",
+      "family": "PARADIGM"
+    },
+    {
+      "id": "D05",
+      "title": "US12549574B1 · AIRIA · MCPの版変更検出",
+      "url": "https://patents.google.com/patent/US12549574B1/en",
+      "kind": "patent",
+      "dates": "優先権表示 2025-05-30／公報 2026-02-10",
+      "basis": "登録請求項1・4・6等。SSE bridgeが新旧resource profileを比較し、差分に応じた措置でコマンドの送信を制御。",
+      "status": "米国登録公報確認。最新原簿未照会。下記AIRIA群と同じ基礎仮出願を主張。",
+      "family": "AIRIA"
+    },
+    {
+      "id": "D06",
+      "title": "US12574336B1 · AIRIA · 承認済み部分の変更検出",
+      "url": "https://patents.google.com/patent/US12574336B1/en",
+      "kind": "patent",
+      "dates": "優先権表示 2025-05-30／公報 2026-03-10",
+      "basis": "登録請求項1・4・8・13等。管理者が承認した部分集合に関係する変更とUI表示、差分・checksum。",
+      "status": "米国登録請求項確認。最新原簿未照会。",
+      "family": "AIRIA"
+    },
+    {
+      "id": "D07",
+      "title": "US12568091B1 · AIRIA · MCPポリシー管理",
+      "url": "https://patents.google.com/patent/US12568091B1/en",
+      "kind": "patent",
+      "dates": "優先権表示 2025-05-30／公報 2026-03-03",
+      "basis": "登録請求項1・19・20。制限行為、trigger、権限、対処をGUIで選び、管理profileに従って検出・対処。",
+      "status": "米国登録請求項確認。単なる承認画面とは要件が異なる。最新原簿未照会。",
+      "family": "AIRIA"
+    },
+    {
+      "id": "D08",
+      "title": "US12562968B1 · AIRIA · MCPの隔離実行",
+      "url": "https://patents.google.com/patent/US12562968B1/en",
+      "kind": "patent",
+      "dates": "優先権表示 2025-05-30／公報 2026-02-24",
+      "basis": "登録請求項1等。STDIO/SSE、定義に沿うsandbox、資源・権限確認、コマンドと出力の検査。",
+      "status": "米国登録請求項確認。bubblewrapの語が従属項にあることだけで全実装が該当するわけではない。",
+      "family": "AIRIA"
+    },
+    {
+      "id": "D09",
+      "title": "US12602470B1 · AIRIA · MCP bridgeとnanosandbox",
+      "url": "https://patents.google.com/patent/US12602470B1/en",
+      "kind": "patent",
+      "dates": "優先権表示 2025-05-30／公報 2026-04-14",
+      "basis": "登録請求項1・3・7等。SSE channel要求から隔離環境を構築し、session識別子で実行・応答を関連付ける。",
+      "status": "米国登録請求項確認。全同族・国内移行は未追跡。",
+      "family": "AIRIA"
+    },
+    {
+      "id": "D10",
+      "title": "US12470381B2 · HP · モデルの実行条件と検証",
+      "url": "https://patents.google.com/patent/US12470381B2/en",
+      "kind": "patent",
+      "dates": "優先 2020-10-29／WO公開 2022-05-05／米国登録 2025-11-11",
+      "basis": "登録独立項1・11・15及び従属項10・14・17。署名付き実行仕様、端末条件判定、実行pipeline、試験・attestation。",
+      "status": "米国登録。集約DBはActive、公式最新原簿未照会。今回の端末適応案に強い先行資料。",
+      "family": "HP-CONTROL"
+    },
+    {
+      "id": "D11",
+      "title": "WO2022093240A1 · HP · 実行条件・ロード時試験",
+      "url": "https://patents.google.com/patent/WO2022093240A1/en",
+      "kind": "patent",
+      "dates": "優先・出願 2020-10-29／公開 2022-05-05",
+      "basis": "D10の国際公開。明細書[0054]–[0060]、[0129]–[0134]等でモデル仕様とロード時試験。",
+      "status": "WOのCeased表示を、米国登録D10の消滅と取り違えない。",
+      "family": "HP-CONTROL"
+    },
+    {
+      "id": "D12",
+      "title": "US20230409756A1 · HP · モデル情報の保護",
+      "url": "https://patents.google.com/patent/US20230409756A1/en",
+      "kind": "patent",
+      "dates": "優先表示 2020-10-29／米国公開 2023-12-21",
+      "basis": "明細書の制御面、モデル契約、ロード時試験・証明、版管理。",
+      "status": "D10と関連する技術開示。別出願であり同一請求項とは扱わない。集約DBはPending。",
+      "family": "HP-PROTECT"
+    },
+    {
+      "id": "D13",
+      "title": "WO2024092685A1 · Nokia · 方針に基づく能力の有効化",
+      "url": "https://patents.google.com/patent/WO2024092685A1/en",
+      "kind": "patent",
+      "dates": "優先・出願 2022-11-04／公開 2024-05-10",
+      "basis": "公開請求項1・24等。能力の有効化方針、実行状態の報告、方針の更新。段階・規則・意図に基づく方式。",
+      "status": "WO集約表示Ceased、CN120153637A等が表示。国別権利の不存在を意味しない。",
+      "family": "NOKIA-ACTIVATION"
+    },
+    {
+      "id": "D14",
+      "title": "CN120850274B · AI agentの配布と権限制御",
+      "url": "https://patents.google.com/patent/CN120850274B/en",
+      "kind": "patent",
+      "dates": "出願 2025-09-22／A公開 2025-10-28／B公報 2025-12-09",
+      "basis": "動的な意図契約、計画の検証、一段階の一時権限、子契約への制限継承を明細書で確認。",
+      "status": "中国登録表示。全請求項の中国語解釈・最新原簿未確認。先行開示の比較に使用。",
+      "family": "CN-INTENT"
+    },
+    {
+      "id": "D15",
+      "title": "CN121502759A · AI生成コードの安全化・予算",
+      "url": "https://patents.google.com/patent/CN121502759A/en",
+      "kind": "patent",
+      "dates": "出願 2025-11-14／A公開 2026-02-10",
+      "basis": "公開請求項1–4。ASTの危険箇所をhookへ変換し、ツール呼出しtokenと予算減算で制御。",
+      "status": "B版は2026-04-14表示。登録版の権利範囲は本調査で未照合。",
+      "family": "CN-CODE-GATE"
+    },
+    {
+      "id": "D16",
+      "title": "CN121327860A · 機能文脈による強制アクセス制御",
+      "url": "https://patents.google.com/patent/CN121327860A/en",
+      "kind": "patent",
+      "dates": "出願 2025-10-10／A公開 2026-01-13",
+      "basis": "公開請求項1–2。システム呼出し文脈、機能分類、一時lease、隔離情報、policy epoch等を使う判定cache。",
+      "status": "B公報は2026-04-07。登録請求項と公式状態未照合。一般的な世代付き能力制御との比較用。",
+      "family": "CN-CONTEXT"
+    },
+    {
+      "id": "D17",
+      "title": "US9923954B2 · IBM · 試験に応じた隔離の段階解除",
+      "url": "https://patents.google.com/patent/US9923954B2/en",
+      "kind": "patent",
+      "dates": "優先 2014-12-16／A公開 2016-06-16／登録 2018-03-20",
+      "basis": "明細書に静的検査、資源制限下の試験、安全試験を経て制限を段階的に解除する構成。",
+      "status": "集約DBは年金関連失効。公式原簿未確認。失効しても先行技術となり得る。",
+      "family": "IBM-FENCING"
+    },
+    {
+      "id": "D18",
+      "title": "US20160249218A1 · BlackBerry · SIM購入資格の利用者への統合",
+      "url": "https://patents.google.com/patent/US20160249218A1/en",
+      "kind": "patent",
+      "dates": "優先権表示 2014-11-13／公開 2016-08-25",
+      "basis": "SIMに関連するlicenseを利用者と端末群の関係に統合して管理する開示。",
+      "status": "集約DBはAbandoned。親出願US9729180B2あり。公開日と優先権サポートを区別。",
+      "family": "BLACKBERRY-LICENSE"
+    },
+    {
+      "id": "D19",
+      "title": "US12032940B2 · People Center · アプリ統合と組織データ",
+      "url": "https://patents.google.com/patent/US12032940B2/en",
+      "kind": "patent",
+      "dates": "優先権表示 2021-07-01／A公開 2023-02-16／登録 2024-07-09",
+      "basis": "登録請求項1。第三者アプリデータ、組織の正本、object graph、従業員群と端末群の権限等の組合せ。",
+      "status": "一般MCPに限定されない旧来の統合特許の例。Skyの個人向け版に全要件があるとは確認していない。",
+      "family": "PEOPLE-CENTER"
+    },
+    {
+      "id": "N09",
+      "title": "OpenPort Protocol · exact approvalと状態の再検証",
+      "url": "https://arxiv.org/html/2602.20196v1",
+      "kind": "paper",
+      "dates": "arXiv v1 2026-02-22",
+      "basis": "III-H等。操作payload、短期credential、実行時の状態照合、冪等性。StateWitnessには提案段階の要素もある。",
+      "status": "公開論文。仕様の提案であっても先行開示となり得る。実装成功の独立検証はしていない。",
+      "family": "OPENPORT"
+    },
+    {
+      "id": "N10",
+      "title": "Root-Scoped Quiescence · 委任後の権限停止",
+      "url": "https://arxiv.org/html/2609.21284v1",
+      "kind": "paper",
+      "dates": "arXiv v1 2026-09-18",
+      "basis": "epoch切替、作用点のfence、複数providerの証拠統合、独立した権限の保持。不明を停止成功にしない。",
+      "status": "公開preprint。論文の保証は完全な介在・証拠等の仮定付き。全世界の停止や補償ではない。",
+      "family": "QUIESCENCE"
+    },
+    {
+      "id": "N11",
+      "title": "CAVA · 実行環境をまたぐ操作の正規化",
+      "url": "https://arxiv.org/html/2607.13716v1",
+      "kind": "paper",
+      "dates": "arXiv v1 2026-07-15",
+      "basis": "異なるruntimeの操作を共通表現にし、承認・receiptを操作fingerprintへ結び付ける。",
+      "status": "論文内部の日付はJune 2026。公開証拠としてarXiv版を区別。観察しかできないruntimeも明示。",
+      "family": "CAVA"
+    },
+    {
+      "id": "N12",
+      "title": "AADP draft-04 · 操作ごとの許可と予算予約",
+      "url": "https://www.ietf.org/ietf-ftp/internet-drafts/draft-saha-aadp-04.html",
+      "kind": "standard-draft",
+      "dates": "draft-04 2026-09-27",
+      "basis": "4、4.1、7、8、9節。許可前の永続化・予約、結果報告、承認再評価、不明時の保守的会計。",
+      "status": "個人提出のInternet-Draft。IETF採択済み標準やRFCではない。版ごとの記載時点に注意。",
+      "family": "AADP"
+    },
+    {
+      "id": "N13",
+      "title": "AgenC · Execution Admission Kernel",
+      "url": "https://github.com/tetsuo-ai/agenc-core/blob/54d2d2174f2157f865cbda480cd7ea2d671ee2a0/docs/design/execution-admission-kernel.md",
+      "kind": "code",
+      "dates": "コミット記録 2026-09-12／現在公開確認 2026-09-30",
+      "basis": "祖先を含む予算の原子的予約、送信後不明の保持、再起動時の非再送、取消と子孫の制御。",
+      "status": "コード／設計資料。コミット日は最初の公開日の確定証拠ではない。実装試験は本調査では未実施。",
+      "family": "AGENC"
+    },
+    {
+      "id": "N14",
+      "title": "AP2 · Agent Authorization",
+      "url": "https://ap2-protocol.org/ap2/agent_authorization/",
+      "kind": "standard",
+      "dates": "現在版を2026-09-30閲覧",
+      "basis": "委任されたagentの取引・操作認可を機械検証可能な情報で扱う。",
+      "status": "現行仕様。全記載を2025年の発表時点へ遡及させない。",
+      "family": "AP2"
+    },
+    {
+      "id": "N15",
+      "title": "Google · AP2発表",
+      "url": "https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol",
+      "kind": "official",
+      "dates": "2025-09-16",
+      "basis": "Agent Payments Protocolの公開発表。",
+      "status": "発表日の確定に使用。現在版仕様の個々の要件の初出を証明しない。",
+      "family": "AP2"
+    },
+    {
+      "id": "N16",
+      "title": "MCP Tasks · cancellation semantics",
+      "url": "https://tasks.extensions.modelcontextprotocol.io/specification/draft/tasks",
+      "kind": "standard-draft",
+      "dates": "2026-09-30閲覧のdraft",
+      "basis": "取消の受理と、後で観測するtaskの状態を分離する。",
+      "status": "draftであり、Rockstar参照コードの2025-11-25版と区別。",
+      "family": "MCP-TASKS"
+    },
+    {
+      "id": "N17",
+      "title": "RFC8506 · Diameter Credit-Control",
+      "url": "https://www.rfc-editor.org/rfc/rfc8506",
+      "kind": "standard",
+      "dates": "2019年3月",
+      "basis": "サービス単位の予約・更新・終了、重複・障害を扱う既存の課金制御。",
+      "status": "AI以外の先行技術。エージェント用途へ名称変更しただけで新しくなるとはいえない。",
+      "family": "DIAMETER"
+    },
+    {
+      "id": "N18",
+      "title": "RIFL · Implementing Linearizability at Large Scale and Low Latency",
+      "url": "https://sigops.org/s/conferences/sosp/2015/current/2015-Monterey/printable/126-lee.pdf",
+      "kind": "paper",
+      "dates": "SOSP 2015",
+      "basis": "RPCの再試行識別、結果保存、移動時の整合性を扱う。",
+      "status": "論文の2015年公表を使用。Webの最近のcrawl日と混同しない。",
+      "family": "RIFL"
+    },
+    {
+      "id": "N19",
+      "title": "Bounded Counter · 数値不変条件と分散予算",
+      "url": "https://arxiv.org/abs/1503.09052",
+      "kind": "paper",
+      "dates": "arXiv v1 2015-03-31",
+      "basis": "分散環境の数値制約を守るための権利配分とescrow系の設計。",
+      "status": "予算を分割して全体上限を守るという一般論の背景。",
+      "family": "BOUNDED-COUNTER"
+    },
+    {
+      "id": "L10",
+      "title": "特許庁 · 拡大先願",
+      "url": "https://www.jpo.go.jp/system/laws/rule/guideline/patent/tukujitu_kijun/ht/03_0300.html",
+      "kind": "law",
+      "dates": "2026-09-30閲覧",
+      "basis": "一定の先願は後で公開されても後願排除の根拠になり得る。",
+      "status": "未公開出願の空白の説明に使用。外国の先願すべてを日本で同じに扱う意味ではない。",
+      "family": "JPO"
+    },
+    {
+      "id": "L11",
+      "title": "特許庁 · 発明者等の表示",
+      "url": "https://www.jpo.go.jp/system/process/shutugan/hatsumei.html",
+      "kind": "law",
+      "dates": "2026-09-30閲覧",
+      "basis": "発明者は自然人。AI・機械を願書の発明者として表示することは認めない。",
+      "status": "人による具体的創作への寄与を記録する。AI出力の採用だけで発明者を確定しない。",
+      "family": "JPO"
+    },
+    {
+      "id": "L12",
+      "title": "USPTO · Revised inventorship guidance",
+      "url": "https://www.uspto.gov/subscription-center/2025/revised-inventorship-guidance-ai-assisted-inventions",
+      "kind": "law",
+      "dates": "2025-11-26",
+      "basis": "AI補助発明の発明者判断に関する改訂。2024年ガイダンスを置換。",
+      "status": "米国についての資料。日本の審査基準へそのまま転用しない。",
+      "family": "USPTO"
+    },
+    {
+      "id": "J2",
+      "title": "J-PlatPat · 特許7731114",
+      "url": "https://www.j-platpat.inpit.go.jp/c1801/PU/JP-7731114/15/ja",
+      "kind": "register",
+      "dates": "2026-09-30照会",
+      "basis": "特願2025-064302。公式一覧に特許有効・登録公報の発行。",
+      "status": "原簿謄本の取得や訴訟調査ではない。",
+      "family": "RAYVEN"
+    },
+    {
+      "id": "J3",
+      "title": "J-PlatPat · 特許7652552",
+      "url": "https://www.j-platpat.inpit.go.jp/c1801/PU/JP-7652552/15/ja",
+      "kind": "register",
+      "dates": "2026-09-30照会",
+      "basis": "特願2020-175125、特開2021-068442。公式一覧に特許有効。",
+      "status": "原簿謄本の取得ではない。",
+      "family": "NVIDIA-LIVE"
+    },
+    {
+      "id": "J4",
+      "title": "J-PlatPat · 特許7857639",
+      "url": "https://www.j-platpat.inpit.go.jp/c1801/PU/JP-7857639/15/ja",
+      "kind": "register",
+      "dates": "2026-09-30照会",
+      "basis": "特願2025-135907。公式一覧に特許有効。",
+      "status": "原簿謄本の取得ではない。",
+      "family": "CLASSMETHOD"
+    },
+    {
+      "id": "X1",
+      "title": "cycaltrust · 実行権限と確定制御の分離",
+      "url": "https://prtimes.jp/main/html/rd/p/000000168.000044818.html",
+      "kind": "lead",
+      "dates": "企業発表 2026-09-01",
+      "basis": "特願2026-180158の特許査定受領を企業が発表。複数検証AIと確定権限の分離。",
+      "status": "公報・登録番号・現在の請求項を未確認。「日本初」「権利化」は企業表現で、当方の認定ではない。追跡候補。",
+      "family": "CYCALTRUST"
+    },
+    {
+      "id": "X2",
+      "title": "J-GLOBAL · 特開2026-113625",
+      "url": "https://jglobal.jst.go.jp/detail?JGLOBAL_ID=202603006363339757",
+      "kind": "lead",
+      "dates": "掲載公開日 2026-07-07",
+      "basis": "AI法人間の資源・承認・委任・予算を考慮する配分。",
+      "status": "公式公報本文の取得未了。要約の近さだけで新規性否定・侵害認定には使わない。",
+      "family": "JP-RESOURCE"
+    },
+    {
+      "id": "X3",
+      "title": "CN122756807A · ツール記述の境界固定",
+      "url": "https://eureka.patsnap.com/patent/CN122756807A",
+      "kind": "lead",
+      "dates": "2026-09-30に索引を確認",
+      "basis": "schema、権限、作用種別等の差分に基づく状態変更が検索索引に現れた。",
+      "status": "公報原文未取得。確認済み先行技術の数に含めず、追加調査候補として保存。",
+      "family": "CN-BOUNDARY"
+    },
+    {
+      "id": "N20",
+      "title": "RFC9396 · 操作内容を指定するOAuth認可",
+      "url": "https://www.rfc-editor.org/rfc/rfc9396.html",
+      "kind": "standard",
+      "dates": "2023年5月",
+      "basis": "authorization_detailsで操作、対象、金額等を記述して同意・権限へ反映。12節は改変・差替え対策。",
+      "status": "操作ごとの詳細認可はMCP以前から既知。ただし任意runtimeの意味同値検証や全副作用の保証を定義するものではない。",
+      "family": "OAUTH-RAR"
+    },
+    {
+      "id": "N21",
+      "title": "Macaroons · 条件で制限する委任資格",
+      "url": "https://research.google/pubs/macaroons-cookies-with-contextual-caveats-for-decentralized-authorization-in-the-cloud/",
+      "kind": "paper",
+      "dates": "NDSS 2014",
+      "basis": "HMAC連鎖と条件を用い、委任された資格の利用者・文脈・用途等を制限する。",
+      "status": "AI子agentへの権限縮小という一般発想の背景。論文の方式とRockstarの一回HMAC承認は同一構造とは限らない。",
+      "family": "MACAROONS"
+    },
+    {
+      "id": "N22",
+      "title": "Composable Attestation · AI構成の差分証明",
+      "url": "https://arxiv.org/html/2603.02451v1",
+      "kind": "paper",
+      "dates": "arXiv v1 2026-03-02",
+      "basis": "V-A/V-B等。LLMの環境・hardware・model・libraryを構成単位で証明し、変更箇所と全体との関連を再証明する提案。",
+      "status": "公開preprint。hashや証明の整合性と任意入力の動作安全性は別。論文の全理論・性能主張を独立検証したものではない。",
+      "family": "COMPOSABLE-ATTESTATION"
+    },
+    {
+      "id": "N23",
+      "title": "RASUES · 更新と端末状態の証明",
+      "url": "https://link.springer.com/article/10.1007/s10207-026-01233-1",
+      "kind": "paper",
+      "dates": "公開 2026-03-28",
+      "basis": "更新前後の期待状態、TPM/IMA測定、検証者の参照値更新、更新失敗と復旧を統合。",
+      "status": "試作のwatchdogは未対応、kernel信頼・rollback・TOCTOU等の限界も本文が明示。単なる更新と証明の連結を新規と扱わない。",
+      "family": "RASUES"
+    },
+    {
+      "id": "D25",
+      "title": "US12677130B2 · Jio · SIMを第三者アプリの基盤にする",
+      "url": "https://patents.justia.com/patent/12677130",
+      "kind": "patent",
+      "dates": "出願表示 2021-08-31／A公開 2023-10-12／登録 2026-07-07",
+      "basis": "登録項1・10は追加memory、custom-DF分割、AIDとAPI。項19は通信applet用と第三者アプリ用のmemory segment。",
+      "status": "Justia掲載の登録公報テキストを確認。先行A公報20230328505あり。最早優先日、国内同族、最新原簿は未確認。SIMを導入用の資格にだけ使う案と区別する。",
+      "family": "JIO-MICROPLATFORM"
+    }
+  ],
+  "official_jp_status": [
+    {
+      "number": "JP7731114",
+      "status": "有効",
+      "observed": "2026-09-30",
+      "basis": "J-PlatPat visible result list, not certified register copy"
+    },
+    {
+      "number": "JP7652552",
+      "status": "有効",
+      "observed": "2026-09-30",
+      "basis": "J-PlatPat visible result list, not certified register copy"
+    },
+    {
+      "number": "JP7857639",
+      "status": "有効",
+      "observed": "2026-09-30",
+      "basis": "J-PlatPat visible result list, not certified register copy"
+    },
+    {
+      "number": "JP6469835",
+      "status": "消滅・年金不納",
+      "observed": "2026-09-30",
+      "basis": "J-PlatPat visible result list, not certified register copy"
+    },
+    {
+      "number": "JP7755914",
+      "status": "有効",
+      "observed": "2026-09-30",
+      "basis": "J-PlatPat visible result list, not certified register copy"
+    },
+    {
+      "number": "JP7918612",
+      "status": "有効・請求項未確認",
+      "observed": "2026-09-30",
+      "basis": "J-PlatPat visible result list, not certified register copy"
+    }
+  ],
+  "conclusion": "No candidate demonstrated high probability of grant. R1 is an unproven research direction, not a filing-ready invention.",
+  "unperformed": [
+    "exhaustive FI/F-term search",
+    "all-family and prosecution audit",
+    "global FTO clearance",
+    "whole code path audit",
+    "real cloud/SIM experiments",
+    "comparative performance tests"
+  ],
+  "research_session": {
+    "started_at": "2026-09-30T17:48:46Z",
+    "completed_at": "2026-09-30T18:48:58Z",
+    "elapsed_seconds": 3612,
+    "requested_minimum_seconds": 3600
+  }
+}

@@ -1,0 +1,1937 @@
+{
+  "schema": "rockstaros-design-document-index/1",
+  "version": "1.6",
+  "updatedAt": "2026-10-12",
+  "authority": "docs/rockstaros-design-portal.md",
+  "primaryBooks": [
+    "docs/avocado-mini-r5/README.md",
+    "docs/rocketstar-design/README.md",
+    "docs/rockstaros-complete-design-v1.0.pdf",
+    "docs/rockstaros-product-system-map.md",
+    "docs/rockstaros-complete-design.md",
+    "docs/sky-tools-complete-design.md",
+    "docs/rockstaros-avocado-mini-complete-design.md",
+    "docs/jev-local-qwen-decision-fabric-design.md",
+    "docs/product-baseline.md",
+    "docs/mission-control.md",
+    "docs/amc-goal-orchestrator.md"
+  ],
+  "sourceArtifacts": [
+    {
+      "id": "rockstaros-complete-design-v1.0",
+      "pdf": "docs/rockstaros-complete-design-v1.0.pdf",
+      "searchableText": "docs/rockstaros-complete-design-v1.0.txt",
+      "integrityRecord": "data/rockstaros-complete-design-v1.0.json",
+      "supplementPackage": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+      "supplementManifest": "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json",
+      "supplementsReceived": true
+    },
+    {
+      "id": "rocketstar-complete-design-r1.0",
+      "pdf": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf",
+      "searchableText": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md",
+      "integrityRecord": "docs/rocketstar-design/inventory.json",
+      "packageManifest": "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/manifest.json",
+      "archiveEntry": "docs/rocketstar-design/README.md"
+    }
+  ],
+  "completionMeaning": "current_scope_documented_with_explicit_open_decisions_not_all_implementations_complete",
+  "requiredDesignFields": [
+    "purpose_and_user",
+    "end_to_end_experience",
+    "responsibilities_and_forbidden_authority",
+    "inputs_outputs_ids_versions_and_limits",
+    "state_and_failure_transitions",
+    "storage_retention_deletion_and_backup",
+    "offline_retry_duplicate_and_uncertain_result",
+    "update_compatibility_rollback_and_recovery",
+    "safety_privacy_security_and_external_approval",
+    "acceptance_environment_and_evidence",
+    "open_decisions_owner_and_decision_test"
+  ],
+  "systemDomains": [
+    {
+      "id": "mission_control_and_squad_progress",
+      "coverage": "DETAILED_WEB_INTEGRATION_WITH_BROWSER_ACCEPTANCE_PENDING",
+      "documents": [
+        "docs/mission-control.md",
+        "docs/amc-goal-orchestrator.md",
+        "docs/sky-tools-complete-design.md",
+        "data/mission-control.json",
+        "data/project-status.json"
+      ],
+      "interfaceImplementation": [
+        "package.json",
+        "scripts/README.md",
+        "scripts/project-status.mjs",
+        "scripts/sync-mission-control.mjs",
+        "scripts/database-status.mjs",
+        "scripts/workspaces.mjs"
+      ]
+    },
+    {
+      "id": "avocado_mini_r5",
+      "coverage": "BASIC_DESIGN_WITH_OPEN_ENGINEERING_DECISIONS",
+      "documents": [
+        "docs/avocado-mini-r5/README.md",
+        "docs/avocado-mini-r5/package/integrated_design.md",
+        "docs/avocado-mini-r5/verification.json",
+        "docs/avokado-pro-pc-design.md",
+        "data/avokado-pro-pc.json",
+        "docs/avocado-mini-cellular.md",
+        "data/avocado-mini-cellular.json"
+      ]
+    },
+    {
+      "id": "product_requirements",
+      "coverage": "DETAILED_WITH_OPEN_DECISIONS",
+      "documents": [
+        "docs/product-baseline.md",
+        "data/product-baseline.json"
+      ]
+    },
+    {
+      "id": "whole_os",
+      "coverage": "DETAILED_WITH_OPEN_DECISIONS",
+      "documents": [
+        "docs/rockstaros-complete-design-v1.0.pdf",
+        "docs/rockstaros-complete-design-v1.0.txt",
+        "data/rockstaros-complete-design-v1.0.json",
+        "docs/rockstaros-complete-design.md",
+        "docs/ai-native-os-architecture.md",
+        "docs/rockstaros-1.0-architecture.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/contracts/README.md",
+        "docs/rocketstar-design/outputs/RockstarOS_Complete_Design_v1_0/manifest.json"
+      ]
+    },
+    {
+      "id": "product_service_system_relations",
+      "coverage": "DETAILED_WITH_OPEN_DECISIONS",
+      "documents": [
+        "docs/rockstaros-product-system-map.md"
+      ]
+    },
+    {
+      "id": "platform_core_and_jobs",
+      "coverage": "DETAILED_WITH_OPEN_IMPLEMENTATION_GAPS",
+      "documents": [
+        "docs/platform-core.md",
+        "contracts/platform-api.json",
+        "contracts/device-capability-snapshot.json",
+        "docs/rockstaros-complete-design.md",
+        "docs/workstreams/03-wallet-billing-providers.md",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "docs/provider-contract-readiness-20260930.md"
+      ],
+      "interfaceImplementation": [
+        "android/core/src/main/java/dev/rock/core/platform/EsimDeviceEntitlement.java",
+        "android/core/src/main/java/dev/rock/core/platform/EsimProvisioningCompatibility.java",
+        "android/core/src/test/java/dev/rock/core/platform/EsimProvisioningCompatibilityTest.java",
+        "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
+        "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
+        "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
+        "tests/esim-device-entitlement.test.mjs"
+      ],
+      "workbenchCreationRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/workbench.tsx",
+        "api": "app/api/work-jobs/route.ts",
+        "sharedOwnerIntent": "lib/owner-intent.ts",
+        "regressions": "tests/workbench-owner-recovery.test.mjs",
+        "input": "Original authenticated owner scope, creation ID, title and template are frozen together.",
+        "recovery": "Recheck authenticated owner before same-ID retry; only original owner can explicitly release an eligible pending intent. Unknown A2A saves cannot be discarded or rebound.",
+        "apiBoundary": "Optional intent header is checked before writes, never used to authenticate. Legacy clients and Zema entitlement checks remain.",
+        "uiBoundary": "401 disables creation and clears displayed private jobs; sign-in opens a separate tab. Late reads and simultaneous create are rejected.",
+        "limits": "Memory-only pending creation; no provider, fee or production acceptance.",
+        "navigation": "While creation is pending, the shared pending-save hook blocks same-tab links and warns on unload. Confirmed save or explicit release restores navigation; separate-tab sign-in remains available.",
+        "privateDrafts": "Owner-scoped in-memory title, note, A2A inputs and consent; unknown/different owner masks private fields and original owner restores them."
+      },
+      "workbenchUpdateRecovery": {
+        "implementation": [
+          "components/workbench.tsx",
+          "lib/work-job-view.ts",
+          "components/mr-tool-runner.tsx"
+        ],
+        "tests": [
+          "tests/workbench-owner-recovery.test.mjs",
+          "tests/work-job-view.test.mjs"
+        ],
+        "input": "Original owner, job ID, revision and immutable command ID/payload.",
+        "acceptance": "Validate existing list/job projection and exact persisted command at an advancing revision before retiring pending state.",
+        "failure": "Read failure or malformed success retains exact command and private input; different owner cannot dispatch it.",
+        "recovery": "Read back the same owner job or explicitly retry the same command, without rerunning the Tool.",
+        "compatibility": "Existing API, storage and authorization unchanged; legacy plans pass through existing store normalization.",
+        "limits": "Current-page memory; no forced-close persistence or Provider acceptance.",
+        "runnerSession": {
+          "boundary": "ownerScope + job ID + step ID; Workbench lifetime memory only",
+          "scope": "Existing shared citation, free-article and Coconala checker fields/output, plus Delivery review JSON, selected File references and result. Other specialized lazy-runner internal state excluded.",
+          "recovery": "Restore original input, result and explicit save controls after read failure remount. Late results remain in original session; stale owner/job actions are rejected.",
+          "persistence": "No implicit localStorage write. Forced reload/tab close still loses unsaved memory; save/export remains explicit.",
+          "regressions": "tests/workbench-owner-recovery.test.mjs",
+          "keyStorage": "Map for session snapshots, subscriptions and last opened steps; no external-name property assignment.",
+          "feedback": "Workbench owns completed Tool recording failures until exact readback; Tool validation/warnings and standalone recording feedback remain local.",
+          "navigation": "Meaningful shared-Tool input/output/running state joins existing same-tab navigation guard. Original confirmed owner can discard each exact current snapshot by job/step, including cancelled/hidden jobs; pending/running writes and stale/foreign-owner callbacks cannot discard. Saved Library and job records are unchanged. Other-owner identity/details stay hidden; separate-tab links and downloads remain available.",
+          "authentication": "MR parent or Delivery 401 invalidates Workbench identity and older list generations, masks private details, and retains original memory. Child 200 alone cannot restore it; explicit parent recheck must confirm the original owner.",
+          "deliveryExecution": "Synchronous lock and current mounted/owner/job/step checks before dispatch, including after file preparation and tracking start. Unknown workflow record blocks stale rerun/discard; already-started late output stays in its original session."
+        }
+      }
+    },
+    {
+      "id": "web_pc",
+      "coverage": "DETAILED_IMPLEMENTED_PARTIAL_PRODUCTION",
+      "documents": [
+        "docs/architecture.md",
+        "docs/backend-design.md",
+        "docs/sim-led-product-architecture.md",
+        "docs/rockstaros-complete-design.md"
+      ],
+      "interfaceImplementation": [
+        "app/add/page.tsx",
+        "app/add/data/page.tsx",
+        "components/rockstar-addons.tsx",
+        "components/data-collection-workspace.tsx",
+        "lib/rockstar-addons.ts",
+        "lib/data-collection.ts",
+        "lib/backup-crypto.ts",
+        "components/home-screen.tsx",
+        "components/home-screen.module.css",
+        "components/workspace-shell.tsx",
+        "components/sky-surface.module.css",
+        "app/workspace.css",
+        "components/system-settings.module.css",
+        "components/csv-business-workspace.module.css",
+        "components/rock-studio.tsx"
+      ],
+      "localPreviewRuntime": {
+        "document": "README.md",
+        "implementation": [
+          "scripts/start-local-web.mjs",
+          "scripts/local-wrangler.mjs",
+          "scripts/spider-web-runtime.mjs",
+          "scripts/local-web-state.mjs"
+        ],
+        "regressions": "tests/start-local-web.test.mjs",
+        "runtime": "Resolve Wrangler from the Cloudflare builder dependency, matching the generated Worker compatibility date.",
+        "webStart": "Apply local D1 migrations before preview; both use the same absolute project .wrangler/state or explicit --persist-to outside build output. Config/environment aliases are normalized once for both stages; cwd overrides and remote mode stop before migration.",
+        "operatorStart": "Use matching runtime; retain separate database setup and fail closed on missing operator authentication.",
+        "failure": "Stop build/start before touching legacy dist/server/.wrangler/state; preserve both old/new stores; reject generated-output paths and symlink aliases; retain failure/signal propagation.",
+        "limits": "No dependency/date/auth changes, automatic database merge or remote deployment. Existing legacy stores require stopped-process whole-directory backup and explicit selection; already-deleted data is not recoverable by the guard."
+      },
+      "accountEntryGuidance": {
+        "implementation": [
+          "components/home-screen.tsx",
+          "app/connect/page.tsx",
+          "tests/sim-service-entry.test.mjs"
+        ],
+        "contract": "Use the current account-led entry; preserve existing purchase claims and device links; consumer eSIM issuance/sales remains on hold."
+      },
+      "pendingWalletRecovery": {
+        "implementation": [
+          "components/use-wallet-ledger.tsx",
+          "components/use-pending-save-navigation.ts",
+          "lib/history-navigation-guard.ts",
+          "lib/operations-client.ts",
+          "app/api/wallet/route.ts",
+          "lib/wallet-snapshot.ts"
+        ],
+        "contract": "Same confirmed owner and immutable operation ID/payload on unknown-response replay; validate complete response before replacing state; hide private drafts on unknown/different owner, restore only original owner; protect meaningful unsent drafts; no raw-input persistence or authorization bypass.",
+        "regressions": [
+          "tests/wallet-workspace-recovery.test.mjs",
+          "tests/history-navigation-guard.test.mjs"
+        ],
+        "limits": "Navigation traversal protection requires Navigation API; closing the tab still loses in-memory input."
+      }
+    },
+    {
+      "id": "linux_qemu",
+      "coverage": "DETAILED_DEVELOPER_PREVIEW",
+      "documents": [
+        "docs/native-os-integration.md",
+        "docs/native-os-validation.md",
+        "data/qemu-release-audit.json"
+      ],
+      "recoveredContractReferences": [
+        "docs/native-os-validation.md",
+        "docs/rockstaros-complete-design.md",
+        "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+        "systems/rock-star-os/os/platform/guest-test.py",
+        "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
+        "systems/rock-star-os/os/desktop/README.md",
+        "systems/rock-star-os/os/desktop/launcher.py",
+        "systems/rock-star-os/tests/test_os_desktop_browser.py",
+        "scripts/select-native-artifacts.py",
+        ".github/workflows/native-os.yml",
+        "systems/rock-star-os/tests/test_native_artifacts.py"
+      ],
+      "gameRecoveryFixtureValidation": {
+        "document": "docs/native-os-validation.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "regressions": "systems/rock-star-os/tests/test_game_exchange_deadlines.py",
+        "purpose": "verify unresolved transport outcomes through durable claim state and exact single grant",
+        "input": "private synthetic Game/Wallet, one controlled transport error or delayed original apply",
+        "success": "verified status/terminal evidence, exact hold release and one journal entry; once True alone is insufficient",
+        "failure": "unexpected claim outcome fails; no extra retry loop or deadline widening",
+        "recovery": "next bounded status reconciles the original signed result or retains the hold",
+        "scope": "test fixture behavior only; production deadlines and authorization unchanged; no guest or real funds"
+      },
+      "platformGuestVerificationEntry": {
+        "document": "docs/native-os-validation.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/platform/guest-test.py",
+        "regressions": "systems/rock-star-os/tests/test_os_platform_isolation_proof.py",
+        "input": "/proc/cmdline requires exactly one rock.platform.verify=1 token before any guest verification effect",
+        "authorization": "existing effective UID 0 and aarch64 requirements; does not protect against control of root",
+        "scope": "default local-full or one explicit game-isolation; peer authorization probes unchanged",
+        "failure": "missing, malformed, false, duplicate or conflicting enable tokens fail before PASS, subprocess, IPC, chmod or business mutation",
+        "recovery": "use os/verify-platform.py with fresh userdata, no NIC and read-only rootfs; no automatic enable fallback",
+        "storage": "no new credential, file or persistent setting",
+        "acceptance": "requires synthetic entry regressions and same-head Linux source CI; actual guest image boot remains separate"
+      },
+      "desktopCredentialHandoff": {
+        "document": "systems/rock-star-os/os/desktop/README.md",
+        "completeDesign": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/desktop/launcher.py",
+        "regressions": "systems/rock-star-os/tests/test_os_desktop_browser.py",
+        "input": "exact validated loopback viewer URL with current-session credential fragment",
+        "processArguments": "fixed osascript command only; credential supplied over stdin",
+        "temporaryFileOrEnvironmentCredential": false,
+        "openTimeoutSeconds": 10,
+        "failure": "fixed error; no credential-bearing argv fallback",
+        "noOpen": "no credential fetch or opener invocation",
+        "scope": "Mac host display launcher; guest SSH response and existing VNC auth unchanged"
+      },
+      "nativeCiArtifactSelection": {
+        "document": "docs/native-os-validation.md",
+        "implementation": "scripts/select-native-artifacts.py",
+        "workflow": ".github/workflows/native-os.yml",
+        "regressions": "systems/rock-star-os/tests/test_native_artifacts.py",
+        "selection": "same-run/head maximum attempt per partition, explicit artifact IDs",
+        "preserves": [
+          "prior failure artifacts",
+          "all partition success gate",
+          "source inventory",
+          "original log hashes",
+          "complete discovery"
+        ]
+      },
+      "interfaceImplementation": [
+        "systems/rock-star-os/os/platform/runner_control.py",
+        "systems/rock-star-os/tests/test_os_runner_control.py",
+        "systems/rock-star-os/os/verify-platform.py",
+        "systems/rock-star-os/tests/test_os_platform_qmp.py"
+      ],
+      "receiverTerminalRecovery": {
+        "implementation": [
+          "systems/rock-star-os/src/blackberryrock/storage.py",
+          "systems/rock-star-os/tests/test_storage.py"
+        ],
+        "contract": "Compare-and-swap status/result/updated_at; identical terminal replay preserves saved row; conflicting terminal callback cannot replace result.",
+        "validationScope": "PC receiver host SQLite and HTTP; Linux CI, OS image and device acceptance remain distinct."
+      }
+    },
+    {
+      "id": "android_pixel",
+      "coverage": "DETAILED_BUILD_AND_PHYSICAL_ACCEPTANCE_PENDING",
+      "documents": [
+        "docs/android-production-architecture.md",
+        "docs/phone-preview-20260911.md",
+        "docs/device-support-architecture.md",
+        "data/android-release-architecture-policy.json",
+        "docs/workstreams/07-android-device-local-ai.md",
+        "docs/provider-contract-readiness-20260930.md"
+      ],
+      "interfaceImplementation": [
+        "scripts/build-phone-bringup.sh",
+        "scripts/verify-phone-artifacts.py",
+        "tests/test_phone_artifacts.py",
+        "tests/test_phone_build_runner.py",
+        "android/automation/src/main/java/dev/rock/automation/DeviceCapabilitySnapshot.java",
+        "android/automation/src/main/java/dev/rock/automation/RockShellService.java",
+        "android/automation/src/main/java/dev/rock/automation/EsimDeviceGatewayKeyStore.java",
+        "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+        "android/shell/src/main/java/dev/rock/shell/ShellConnection.java",
+        "android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl",
+        "contracts/device-capability-snapshot.json",
+        "scripts/check-os-contracts.mjs",
+        "android/automation/src/androidTest/java/dev/rock/automation/DeviceCapabilitySnapshotTest.java",
+        "android/automation/src/androidTest/java/dev/rock/automation/EsimDeviceGatewayKeyStoreTest.java",
+        "android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java",
+        "android/core/src/main/java/dev/rock/core/platform/EsimDeviceEntitlement.java",
+        "android/core/src/test/java/dev/rock/core/platform/EsimDeviceEntitlementTest.java",
+        "android/core/src/test/resources/esim-device-entitlement-p256-vector.json",
+        "app/api/esim/orders/[orderId]/device-entitlement/route.ts",
+        "tests/esim-device-entitlement.test.mjs",
+        "android/core/src/main/java/dev/rock/core/platform/A2ARecoveryBinding.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceSessionStore.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java",
+        "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceSessionStoreTest.java",
+        "android/automation/src/test/java/dev/rock/automation/AndroidRockstarDeviceHomeTransportTest.java",
+        "android/shell/src/androidTest/java/dev/rock/shell/CloudSessionPresentationTest.java",
+        "android/automation/src/androidTest/java/dev/rock/automation/AndroidResponseDeadlineTest.java",
+        "android/automation/src/main/java/dev/rock/automation/AndroidJsonResponse.java",
+        "android/automation/src/test/java/dev/rock/automation/AndroidJsonResponseTest.java",
+        "android/automation/src/main/java/dev/rock/automation/RockstarServiceOrigin.java",
+        "android/automation/src/test/java/dev/rock/automation/RockstarServiceOriginTest.java"
+      ],
+      "responseRecovery": {
+        "accountStorage": "Transient errors preserve encrypted state; proven invalid data or permanent invalidation clears it.",
+        "bodyDeadline": "Four readers check monotonic deadlines before and after reads including EOF; forced whole-exchange cancellation remains unverified."
+      },
+      "webDeviceConfirmation": {
+        "implementation": "components/rockstar-device-authorization.tsx",
+        "regressions": "tests/rockstar-device-authorization-ui.test.mjs",
+        "contract": "docs/rockstar-device-link.md",
+        "binding": "Only the exact inspected userCode may be approved; editing invalidates confirmation.",
+        "recovery": "10-second response deadline; no automatic mutation retry; fresh owner list and code inspection after authentication recovery."
+      },
+      "settledWalletReadback": {
+        "implementation": "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+        "regressions": "android/core/src/test/java/dev/rock/core/A2AWalletReservationTest.java",
+        "contract": "Exact owner/delegation/terms, current signed usage proof and original settled ledger receipt are read-only requirements for wallet_settled.",
+        "mutation": "No reserve, dispatch, settle or release on readback.",
+        "failure": "Any missing, changed or unverifiable binding stays unknown; held is not asserted without proof."
+      }
+    },
+    {
+      "id": "local_ai_and_memory",
+      "coverage": "DETAILED_GENERAL_RUNTIME_AND_MEMORY_PENDING",
+      "documents": [
+        "docs/ai-native-os-architecture.md",
+        "docs/jev-local-qwen-decision-fabric-design.md",
+        "docs/local-ai-os-integration-20260915.md",
+        "contracts/local-ai-runtime.json",
+        "contracts/decision-provider.json",
+        "data/decision-fabric-policy.json",
+        "docs/avokado-llm-pretraining.md",
+        "docs/ai-memory-architecture.md",
+        "docs/llm-evaluation-architecture.md"
+      ],
+      "interfaceImplementation": [
+        "systems/rock-star-os/src/blackberryrock/memory_store.py",
+        "systems/rock-star-os/tests/test_memory_store.py",
+        "scripts/stage-local-ai-apk.py",
+        "tests/test_stage_local_ai_apk.py",
+        "systems/rock-star-os/src/blackberryrock/memory_access.py",
+        "systems/rock-star-os/tests/test_memory_access.py"
+      ],
+      "outboxReceiptReplay": {
+        "implementation": [
+          "android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java",
+          "android/core/src/test/java/dev/rock/core/ExternalWriteOutboxTest.java"
+        ],
+        "contract": "Confirmed replay must match saved provider reference, payload hash and exact settled amount; no resubmit or mutation on conflict.",
+        "validationScope": "Android Core host/SQLite fixture, not external Provider acceptance."
+      },
+      "shellSubmissionRecovery": {
+        "implementation": [
+          "android/shell/src/main/java/dev/rock/shell/LocalSubmission.java",
+          "android/shell/src/main/java/dev/rock/shell/MainActivity.java",
+          "android/shell/src/main/java/dev/rock/shell/DurableSubmissionStore.java"
+        ],
+        "contract": "Persist only operation UUID, input digest, Android user serial before Binder; ambiguous replies retain the same identity; explicit abandonment does not cancel Broker work. Failed preference commits preserve original metadata across Activity recreation; retry refusals cannot disprove an earlier committed request.",
+        "regressions": [
+          "android/shell/src/test/java/dev/rock/shell/LocalSubmissionTest.java",
+          "android/shell/src/androidTest/java/dev/rock/shell/LocalSubmissionIntegrationTest.java"
+        ],
+        "limits": "Host tests and APK compile only; instrumentation/device execution pending."
+      }
+    },
+    {
+      "id": "sky_zema_and_tools",
+      "coverage": "DETAILED_WITH_PLATFORM_GAPS",
+      "documents": [
+        "docs/sky-tools-complete-design.md",
+        "docs/jev-local-qwen-decision-fabric-design.md",
+        "docs/jev-ultrafast-integration-design.md",
+        "docs/jev-ecosystem-integration-design.md",
+        "docs/sky.md",
+        "docs/chat-mcp-control-room-20260913.md",
+        "docs/sky-tool-sdk.md",
+        "docs/sky-compute-grid.md",
+        "docs/amc-goal-orchestrator.md",
+        "docs/workstreams/05-web-pwa-sites.md",
+        "docs/sim-led-product-architecture.md",
+        "docs/sky-cloud-continuity.md",
+        "docs/cloud-agent-provider-comparison-20261001.md",
+        "docs/sky-a2a-bridge.md",
+        "docs/sky-mcp-architecture.md",
+        "docs/sky-launch-design.md",
+        "docs/sky-launch-operations.md",
+        "docs/agent-control-plane.md",
+        "docs/amc-autonomy-fixture.md"
+      ],
+      "interfaceImplementation": [
+        "lib/sky-compute-grid.ts",
+        "tests/sky-compute-grid.test.mjs",
+        "lib/sky-zema-handoff.ts",
+        "lib/zema-chat-session.ts",
+        "tests/sky-zema-handoff.test.mjs",
+        "tests/zema-chat-session.test.mjs",
+        "components/tool-icon.tsx",
+        "components/tool-character.tsx",
+        "components/sky-chat-workspace.tsx",
+        "components/sky-candidate-runner.tsx",
+        "components/sky-workspace.tsx",
+        "components/sky-workspace.module.css",
+        "components/workbench.tsx",
+        "app/work/work.css",
+        "app/api/sky/a2a-delegations/route.ts",
+        "app/api/sky/a2a-delegations/[id]/route.ts",
+        "lib/a2a-delegation-store.ts",
+        "lib/a2a-authorization.ts",
+        "lib/a2a-broker-authorization.ts",
+        "systems/rock-star-os/os/mcp_broker/a2a_authorization.py",
+        "systems/rock-star-os/src/blackberryrock/spend.py",
+        "services/sky-agent-runtime/src/worker.ts",
+        "tests/fixtures/site-migration-reference/primary/0033_a2a_offline_continuation_consent.sql",
+        "tests/a2a-delegation-store.test.mjs",
+        "tests/a2a-broker-authorization.test.mjs",
+        "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",
+        "components/sky-tool-card.tsx",
+        "components/sky-tool-card.module.css",
+        "components/sky-marketplace.tsx",
+        "components/sky-marketplace.module.css",
+        "components/sky-tool-workspace.tsx",
+        "components/sky-tool-workspace.module.css",
+        "components/sky-tool-overview.tsx",
+        "components/sky-tool-overview.module.css",
+        "components/coconala-team-workspace.tsx",
+        "components/coconala-team-workspace.module.css",
+        "components/sky-surface.module.css",
+        "components/fashion-brand-ops-runner.tsx",
+        "components/fashion-brand-ops-runner.module.css",
+        "components/sky-connection-center.tsx",
+        "components/sky-connection-center.module.css",
+        "components/sky-mcp-center.tsx",
+        "components/sky-mcp-center.module.css",
+        "components/sky-publisher-form.tsx",
+        "components/sky-publisher-form.module.css",
+        "lib/use-sky-tool-context.ts",
+        "components/sky-service-help.tsx",
+        "lib/sky-service-status.ts",
+        "app/api/sky/service-status/route.ts",
+        "lib/sky-tool-labels.ts",
+        "components/execution-access.tsx",
+        "components/esim-purchase-setup.tsx",
+        "tests/esim-purchase-recovery.test.mjs",
+        "components/rockstar-entitlement-claim.tsx",
+        "tests/rockstar-entitlement-claim-ui.test.mjs",
+        "lib/bounded-stream.ts",
+        "tests/bounded-stream.test.mjs",
+        "lib/a2a-delegation-contract.ts",
+        "lib/a2a-delegation-row.ts",
+        "components/workbench-cloud-text.tsx",
+        "lib/pending-owner-intent.ts",
+        "tests/workbench-cloud-text.test.mjs",
+        "tests/pending-owner-intent.test.mjs",
+        "lib/a2a-provider-signature.ts",
+        "tests/a2a-provider-signature.test.mjs",
+        "components/use-sky-chat-session.ts",
+        "tests/sky-chat-session-recovery.test.mjs"
+      ],
+      "recoveredContractReferences": [
+        "docs/sky-tool-sdk.md",
+        "toolkits/sky-tool-sdk/src/index.mjs",
+        "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
+        "tests/sky-tool-sdk.test.mjs"
+      ],
+      "implementation": [
+        "scripts/check-sky-launch.mjs",
+        "scripts/lib/sky-launch-audit.mjs",
+        "data/sky-service-launch.json",
+        "tests/sky-launch-audit.test.mjs",
+        "scripts/amc-goal-engine.mjs",
+        "scripts/amc-effort.mjs",
+        "scripts/amc-request-plan.mjs",
+        "scripts/amc-sky-authority.mjs",
+        "scripts/amc-autonomy.mjs",
+        "scripts/amc-autonomy-store.mjs",
+        "scripts/amc-autonomy-fixture.mjs",
+        "tests/amc-goal-engine.test.mjs",
+        "tests/amc-effort.test.mjs",
+        "tests/amc-request-plan.test.mjs",
+        "tests/amc-autonomy.test.mjs",
+        "tests/amc-autonomy-lock.test.mjs",
+        "tests/amc-autonomy-fixture.test.mjs"
+      ],
+      "localSdkAuthenticationBoundary": {
+        "document": "docs/sky-tool-sdk.md",
+        "implementation": "toolkits/sky-tool-sdk/src/index.mjs",
+        "distributionPackage": "public/toolkits/rockstaros-sky-tool-sdk-0.1.3.tgz",
+        "distributionBoundary": "versioned local package and Studio install link; source byte parity required, no registry publication",
+        "comparison": "UTF-8 byte length equality before timingSafeEqual on the same buffers",
+        "malformedCredentialOutcome": "401 before body parsing or handler; process remains available",
+        "trustBoundary": "local loopback client; descriptor and execution approval policies unchanged",
+        "regressions": "tests/sky-tool-sdk.test.mjs",
+        "acceptanceLimit": "isolated host source tests; real device and external reachability not established"
+      },
+      "webClaimRecovery": "Bounded 10-second header/body request; unknown response uses read-only entitlement refresh before explicit same-package retry; authentication recovery opens a separate tab to retain the in-memory selection.",
+      "qualityRecovery": {
+        "implementation": [
+          "components/sky-chat-workspace.tsx",
+          "components/workbench-cloud-text.tsx",
+          "components/amc-tool-runner.tsx",
+          "components/csv-business-workspace.tsx",
+          "lib/csv-job-store.ts",
+          "components/workbench.tsx",
+          "lib/remote-ai-text-client.ts",
+          "lib/work-job-view.ts"
+        ],
+        "contract": "Ignore obsolete reads/imports, serialize writes, retain owner-bound operation identity and committed private artifacts across ambiguous failures.",
+        "documents": [
+          "docs/sky-tools-complete-design.md",
+          "docs/csv-business-v1.ja.md"
+        ],
+        "limits": "No automatic mutation replay or stale-processing lease recovery; no new Provider or live billing acceptance.",
+        "responseValidation": "Validate existing execution/estimate/list projection and parent/request/quote identity before state or next mutation; malformed success retains operation and never authorizes execution.",
+        "cloudDraftNavigation": "Meaningful owner-bound Cloud-only input protects navigation. Exact current draft revision gates discard; unknown quote outcome retains request ID until matching saved readback."
+      },
+      "transportResponseIntegrity": {
+        "implementation": [
+          "lib/mcp-client.ts",
+          "lib/a2a-client.ts"
+        ],
+        "contract": "Require same JSON-RPC request ID/version and exclusive result or valid error; retain send/quote identity on malformed or truncated response, never retry Tool calls automatically.",
+        "regressions": [
+          "tests/mcp-client.test.mjs",
+          "tests/a2a-client.test.mjs"
+        ],
+        "limits": "Host and loopback interoperability, not external production acceptance."
+      }
+    },
+    {
+      "id": "mcp_and_providers",
+      "coverage": "DETAILED_REAL_PROVIDER_GAPS",
+      "documents": [
+        "docs/sky-mcp-connector.md",
+        "docs/sky-mcp-architecture.md",
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/llm-evaluation-architecture.md"
+      ],
+      "recoveredContractReferences": [
+        "docs/sky-mcp-connector.md",
+        "toolkits/sky-mcp-connector/server.mjs",
+        "tests/mcp-connector.test.mjs",
+        "docs/rockstaros-complete-design.md",
+        "systems/rock-star-os/os/mcp_broker/http.py",
+        "systems/rock-star-os/tests/test_mcp_http_deadline.py",
+        "docs/sky-tools-complete-design.md",
+        "toolkits/mr/mcp_server.py",
+        "tests/test_mr_http_deadline.py",
+        "toolkits/mr/rock_star_tools.py",
+        "tests/test_mr_delivery_boundary.py",
+        "toolkits/sky-mcp-connector/local-descriptor.mjs",
+        "tests/mcp-local-descriptor.test.mjs"
+      ],
+      "implementation": [
+        "scripts/sky-local-runtime.mjs",
+        "lib/sky-local-runtime.ts",
+        "tests/sky-local-runtime.test.mjs",
+        "components/delivery-runner.tsx"
+      ],
+      "interfaceImplementation": [
+        "lib/llm-providers.ts",
+        "tests/llm-providers.test.mjs",
+        "tests/llm-completion-boundary.test.mjs"
+      ],
+      "legacyMrCompatibilitySecurity": {
+        "document": "docs/sky-mcp-connector.md",
+        "implementation": "toolkits/sky-mcp-connector/server.mjs",
+        "scope": "exact bundled MR connection, four local processors and existing lifecycle only",
+        "approvalException": "legacy four local processors; generic server-ID path still requires one-time approval",
+        "rejection": "403 legacy_mcp_not_supported before transport dispatch",
+        "recovery": "restore bundled connection definition or use generic connect/prepare/confirm/execute",
+        "regressions": "tests/mcp-connector.test.mjs"
+      },
+      "nativeMcpHttpsCaBoundary": {
+        "document": "docs/rockstaros-complete-design.md",
+        "implementation": "systems/rock-star-os/os/mcp_broker/http.py",
+        "httpsRequiresExplicitNonemptyCa": true,
+        "emptyCaFailure": "reject construction before socket connection or credential transmission",
+        "httpException": "explicit allow_http_fixture true and exact 127.0.0.1 only",
+        "currentDeploymentScope": "existing local development fixture; external-provider acceptance pending",
+        "regressions": "systems/rock-star-os/tests/test_mcp_http_deadline.py"
+      },
+      "mrHttpReceiveSecurity": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "toolkits/mr/mcp_server.py",
+        "absoluteReceiveDeadlineSeconds": 10,
+        "deadlineCovers": [
+          "request-line",
+          "headers",
+          "body"
+        ],
+        "responseWriteTimeoutSeconds": 10,
+        "maximumBodyBytes": 16000000,
+        "executionModel": "existing sequential loopback server",
+        "expiryBeforeDispatch": "close without token creation or tool execution",
+        "regressions": "tests/test_mr_http_deadline.py"
+      },
+      "mrDeliverySecurity": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "toolkits/mr/rock_star_tools.py",
+        "readBoundary": "directory-handle-relative no-follow opens; bounded regular-file reads",
+        "verifierInput": "private snapshot of selected artifacts, contract and stored receipt",
+        "metadataMaximumBytes": 1000000,
+        "unsupportedPlatform": "fail closed",
+        "vendorSnapshotChanged": false,
+        "regressions": "tests/test_mr_delivery_boundary.py",
+        "artifactAggregateMaximumBytes": 10000000
+      },
+      "localDescriptorSecurity": {
+        "document": "docs/sky-mcp-connector.md",
+        "implementation": "toolkits/sky-mcp-connector/local-descriptor.mjs",
+        "sameHandleValidationAndRead": true,
+        "maximumBytes": 4096,
+        "rejectSymlinksAndNonRegularFiles": true,
+        "parentDirectoryTrust": "existing owner-local boundary",
+        "regressions": "tests/mcp-local-descriptor.test.mjs"
+      },
+      "toolDiscoveryBoundary": {
+        "maxPages": 5,
+        "maxCursorUtf8Bytes": 1024,
+        "repeatedCursor": "reject",
+        "staleConnection": "cannot restore a disconnected or replaced connection",
+        "tests": "tests/mcp-connector.test.mjs"
+      },
+      "connectionScreenRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/sky-mcp-center.tsx",
+        "regressions": "tests/sky-mcp-center-recovery.test.mjs",
+        "readback": "Only the newest list request in the current device connection session may update the screen.",
+        "connection": "One pending UI connect; stale success, error and cleanup after disconnect, reconnect or unmount are discarded.",
+        "recovery": "A current failure remains visible and permits an explicit retry; a successful connect triggers one list refresh.",
+        "authority": "UI state only; existing Passport, pricing, approval and execution gates unchanged.",
+        "limits": "Local React and synthetic MCP response fixtures; no real provider acceptance."
+      },
+      "chatConnectionRecovery": {
+        "implementation": "components/sky-chat-workspace.tsx",
+        "regressions": "tests/sky-chat-mcp-recovery.test.mjs",
+        "contract": "Event and manual list reads share a request generation, mounted guard and captured/current device token. Token removal invalidates outstanding responses, owner changes clear the previous list, and stale success/error cannot replace current availability.",
+        "recovery": "A current error clears availability; explicit reconnect/current readback restores it. Existing disconnect stops the active request and selection.",
+        "limits": "Synthetic local component and browser response timing; no provider, execution, approval or billing change."
+      }
+    },
+    {
+      "id": "data_backup_and_recovery",
+      "coverage": "DETAILED_PHYSICAL_LOSS_ACCEPTANCE_PENDING",
+      "documents": [
+        "docs/data-storage-boundaries.md",
+        "docs/android-backup-recovery.md",
+        "data/android-backup-recovery-policy.json"
+      ]
+    },
+    {
+      "id": "wallet_market_and_fund",
+      "coverage": "DETAILED_LIVE_PROVIDER_PENDING",
+      "documents": [
+        "docs/external-wallet-fund-provider-boundary-20260913.md",
+        "docs/everything-market-and-autonomous-fund-20260913.md",
+        "docs/rock-wallet-production-rail-20260913.md",
+        "docs/sky-billing.md",
+        "docs/workstreams/03-wallet-billing-providers.md",
+        "docs/provider-contract-readiness-20260930.md",
+        "lib/esim-public-catalog.ts",
+        "app/api/esim/catalog/route.ts",
+        "app/sky/esim/page.tsx",
+        "components/esim-catalog.tsx",
+        "components/sky-commerce.tsx",
+        "components/sky-commerce.module.css",
+        "tests/esim-public-catalog.test.mjs",
+        "docs/sky-tools-complete-design.md",
+        "docs/sky-commerce-design.md",
+        "docs/wallet-commerce-design.md"
+      ]
+    },
+    {
+      "id": "security_operator_release",
+      "coverage": "DETAILED_PRODUCTION_ENROLLMENT_PENDING",
+      "documents": [
+        "docs/security-incident-response.md",
+        "docs/release-minimum-gates.md",
+        "data/device-emergency-access-policy.json",
+        "data/release-readiness.json",
+        "docs/spider-guard.md",
+        "docs/rockstaros-complete-design.md"
+      ],
+      "observerReportBoundary": {
+        "design": "docs/rockstaros-complete-design.md",
+        "evidence": "docs/evidence/spider-observer-output-schema.json",
+        "scope": "existing simulation observer scalar report validation",
+        "guestAcceptance": false,
+        "outputReconstruction": "After strict validation, emit canonical YYYY-MM periods from integers and literal boolean worker state; do not forward service-owned strings/objects."
+      },
+      "recoveredContractReferences": [
+        "docs/spider-guard.md",
+        "scripts/spider-feedback.mjs",
+        ".github/workflows/spider-regressions.yml",
+        "docs/sky-tools-complete-design.md",
+        "docs/evidence/spider-guard-source-validation.json",
+        "scripts/build-spider-inspector.mjs",
+        "toolkits/spider-guard/inspector.html",
+        "toolkits/spider-guard/README.md",
+        "toolkits/spider-guard/program-inspector.mjs",
+        "toolkits/spider-guard/program-inspector.d.mts",
+        "tests/spider-inspector-artifact.test.mjs",
+        "tests/spider-program-inspector.test.mjs",
+        "systems/rock-star-os/os/platform/code_inspector.py",
+        "systems/rock-star-os/tests/test_code_inspector.py"
+      ],
+      "spiderGuardImplementation": [
+        "systems/rock-star-os/os/platform/sensitive_guard.py",
+        "systems/rock-star-os/os/platform/supervisor.py",
+        "systems/rock-star-os/os/platform/service.py",
+        "systems/rock-star-os/os/platform/runner_control.py",
+        "systems/rock-star-os/os/platform/install-target.sh",
+        "systems/rock-star-os/os/buildroot/package/rock-platform/rock-platform.mk",
+        "systems/rock-star-os/os/buildroot/board/rock-virt/overlay/etc/init.d/S50rockplatform",
+        "systems/rock-star-os/os/ui/security-ui.inc",
+        "systems/rock-star-os/os/ui/test_ui.c",
+        "systems/rock-star-os/os/ui/spider-motion.c",
+        "systems/rock-star-os/os/ui/spider-motion.h",
+        "systems/rock-star-os/os/ui/pin-readiness.json",
+        "scripts/review-native-pin-source.py",
+        "systems/rock-star-os/tests/test_ui_pin_source_profile.py"
+      ],
+      "spiderImprovementCycle": {
+        "document": "docs/spider-guard.md",
+        "collector": "scripts/spider-feedback.mjs",
+        "regressions": ".github/workflows/spider-regressions.yml",
+        "autoMerge": false,
+        "toolDesign": "docs/sky-tools-complete-design.md",
+        "operation": "read-only bounded alert/current-head workflow metadata collection; no automatic fix, dismissal or merge"
+      },
+      "spiderGuardAnimationRevision": {
+        "document": "docs/spider-guard.md",
+        "actualFindingsOnly": true,
+        "newActualBlockedCounterOnly": true,
+        "inactiveOnUnhealthyOrDisconnected": true,
+        "currentSurface": "native security panel",
+        "globalOverlaySelected": false,
+        "protectionAuthority": "presentation consumes sanitized actual metadata; it cannot authorize or weaken guard enforcement",
+        "implementation": [
+          "systems/rock-star-os/os/ui/security-ui.inc",
+          "systems/rock-star-os/os/ui/spider-motion.c"
+        ],
+        "regressions": "systems/rock-star-os/os/ui/test_ui.c"
+      },
+      "spiderGuardAgentRole": {
+        "document": "docs/spider-guard.md",
+        "id": "spider",
+        "role": "security",
+        "scope": "platform-data",
+        "duties": [
+          "watch_platform_data",
+          "inspect_outbound",
+          "deny_sensitive_outbound",
+          "report_health"
+        ],
+        "stateSource": "actual worker liveness, freshness and findings",
+        "lastActionSource": "sanitized actual blocking metadata",
+        "currentSurface": "native security panel",
+        "protectionAuthority": "presentation consumes sanitized actual metadata; it cannot authorize or weaken guard enforcement",
+        "implementation": [
+          "systems/rock-star-os/os/platform/sensitive_guard.py",
+          "systems/rock-star-os/os/platform/service.py"
+        ],
+        "regressions": "systems/rock-star-os/tests/test_sensitive_guard.py"
+      },
+      "spiderCodeInspector": {
+        "document": "docs/spider-guard.md",
+        "completeDesignSection": "19.2",
+        "nativeOperation": "security.inspectCode",
+        "standaloneBuild": "scripts/build-spider-inspector.mjs",
+        "standaloneSource": "toolkits/spider-guard/inspector.html",
+        "executesInput": false,
+        "externalRequests": false,
+        "persistsInput": false,
+        "inputMaxBytes": 65536,
+        "inputMaxLines": 2000,
+        "findingsMax": 100,
+        "reportExport": "optional metadata-only JSON",
+        "implementation": [
+          "scripts/build-spider-inspector.mjs",
+          "toolkits/spider-guard/README.md",
+          "toolkits/spider-guard/inspector.html",
+          "toolkits/spider-guard/program-inspector.mjs",
+          "toolkits/spider-guard/program-inspector.d.mts",
+          "tests/spider-inspector-artifact.test.mjs",
+          "tests/spider-program-inspector.test.mjs",
+          "systems/rock-star-os/os/platform/code_inspector.py",
+          "systems/rock-star-os/tests/test_code_inspector.py",
+          "systems/rock-star-os/os/platform/service.py"
+        ],
+        "nativeOwnerUid": 1000,
+        "nativePythonAstNodeLimit": 20000
+      }
+    },
+    {
+      "id": "game_ip",
+      "coverage": "DETAILED_REAL_GAME_PENDING",
+      "documents": [
+        "docs/game-api-contract-draft.md",
+        "docs/gx01-contract-implementation-plan.md",
+        "docs/gx01-reference-sdk-sandbox-20260910.md",
+        "docs/mini-game-client.md",
+        "docs/workstreams/08-game-market-fund.md"
+      ]
+    },
+    {
+      "id": "material_invention_avocado_mini",
+      "coverage": "DETAILED_HARDWARE_XR_PROVIDER_AND_RESEARCH_PENDING",
+      "documents": [
+        "docs/rockstaros-avocado-mini-complete-design.md",
+        "docs/material-invention-core.md",
+        "docs/material-invention-xr.md",
+        "docs/avocado-mini-spatial-invention.md",
+        "docs/avocado-mini-hardware-design.md"
+      ]
+    },
+    {
+      "id": "verification_and_operations",
+      "coverage": "DETAILED_PRODUCTION_READBACK_PENDING",
+      "documents": [
+        "docs/validation.md",
+        "docs/database-status.md",
+        "data/project-status.json",
+        "docs/git-consolidation.md"
+      ]
+    }
+  ],
+  "catalogTools": [
+    {
+      "id": "rockstar-amc",
+      "catalogStatus": "ready",
+      "displayName": "AMC · Goalと部隊の進捗",
+      "designDocument": "docs/sky-tools-complete-design.md",
+      "designSection": "4.5 AMC — Goal・部隊・進捗",
+      "primaryOwner": "ROCK",
+      "ownerSquad": "H1",
+      "implementationTask": "AMC02",
+      "readyScope": [
+        "request_goal_intent_preparation_template",
+        "read_only_canonical_squad_board",
+        "owner_scoped_manual_goal_ledger",
+        "json_and_prompt_export",
+        "explicit_local_codex_single_task_runner"
+      ],
+      "missionBoardRendering": {
+        "scope": "canonical_squad_board_only",
+        "text": "createElement_and_textContent",
+        "squadId": "dataset_value_not_HTML_or_CSS_selector",
+        "focus": "render_local_button_map",
+        "evidence": "docs/evidence/spider-mission-squad-dom.json",
+        "doesNotGrantExecutionAuthority": true
+      },
+      "implementationBoundary": {
+        "storage": "existing_work_jobs_payload_with_authenticated_user_and_revision_cas",
+        "workPlanCompatibility": "schema_1_read_normalization_and_pre_execution_objective_edit; amc_event_and_goal_revision_preserved",
+        "templateRoles": 4,
+        "templateSteps": 7,
+        "createdPlanState": "active",
+        "createdTaskState": "pending",
+        "canonicalMissionDataMutable": false,
+        "aiPlannerConnected": false,
+        "remoteExecutorConnected": false,
+        "automaticModelInstallation": false,
+        "externalActionsAuthorized": false,
+        "browserAcceptance": "not_verified",
+        "productionDeploymentAccepted": false,
+        "observationSourceRead": "single_descriptor_regular_file_with_canonical_containment_and_bigint_identity; source_buffer_hashed_once; full_AMC_import_not_accepted",
+        "agentDefinitionPreflight": "pinned_descriptor_bounded_utf8_comparison; creation_path_race_not_covered"
+      },
+      "localStateRead": {
+        "source": "scripts/amc-autonomy-store.mjs",
+        "test": "tests/amc-autonomy-store-read.test.mjs",
+        "design": "docs/sky-tools-complete-design.md",
+        "maximumBytes": 5000000,
+        "scope": "same_descriptor_local_fixture_read_not_authentication_boundary"
+      },
+      "workspaceSnapshotRead": {
+        "source": "scripts/amc-parallel.mjs",
+        "test": "tests/amc-workspace-snapshot.test.mjs",
+        "evidence": "docs/evidence/spider-workspace-snapshot-read.json",
+        "design": "docs/sky-tools-complete-design.md",
+        "scope": "local_owner_managed_workspace_identity_checked_descriptor_read",
+        "authority": "does_not_add_remote_auth_or_worker_acceptance"
+      },
+      "localAdaptivePlanner": {
+        "taskId": "AMC06",
+        "scope": "explicit_loopback_developer_workbench_only_not_hosted_Sky_Zema",
+        "source": "scripts/amc-planner.mjs",
+        "design": "docs/sky-tools-complete-design.md",
+        "state": "implemented_local_planning_verified",
+        "model": "existing_Codex_auth_and_config_read_only",
+        "result": "unapproved_variable_task_draft_with_Git_provenance",
+        "feedback": "separate_candidate_preserving_previous_Goal",
+        "executionAuthority": "none_from_planner_output",
+        "evidence": "docs/evidence/amc/adaptive-planner.json"
+      },
+      "recoveredContractReferences": [
+        "docs/amc-sky-launch-integration.md",
+        "tests/amc-revalidation.test.mjs",
+        "components/amc-quick-board.tsx",
+        "components/amc-command-center.tsx",
+        "scripts/amc-parallel.mjs",
+        "tests/amc-parallel.test.mjs",
+        "data/amc/agent-definitions.json",
+        "scripts/amc-agent.mjs",
+        "toolkits/amc-agent/README.md",
+        "tests/amc-agent.test.mjs",
+        "data/amc/agent-runtime-source.json"
+      ],
+      "acceptedCandidateRevalidation": {
+        "event": "revalidate_task",
+        "design": "docs/amc-sky-launch-integration.md",
+        "test": "tests/amc-revalidation.test.mjs",
+        "executionBoundary": "local_owner_transition_web_fail_closed",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "quickFormat": {
+        "design": "docs/amc-sky-launch-integration.md",
+        "component": "components/amc-quick-board.tsx",
+        "storage": "sessionStorage_tab_only",
+        "authority": "manual_checklist_not_execution_or_acceptance",
+        "placement": "auxiliary_collapsed",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "commandCenter": {
+        "design": "docs/amc-sky-launch-integration.md",
+        "component": "components/amc-command-center.tsx",
+        "runner": "scripts/amc-parallel.mjs",
+        "test": "tests/amc-parallel.test.mjs",
+        "executionBoundary": "local_fixture_only_web_execution_not_connected",
+        "sourceIntegration": "mounted by components/amc-tool-runner.tsx; draft/owner-bound saved views; no automatic external execution",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "agentDefinition": {
+        "source": "data/amc/agent-definitions.json",
+        "launcher": "scripts/amc-agent.mjs",
+        "design": "docs/amc-sky-launch-integration.md",
+        "usage": "toolkits/amc-agent/README.md",
+        "tests": "tests/amc-agent.test.mjs",
+        "runtimeSource": "data/amc/agent-runtime-source.json",
+        "scope": "Codex_custom_agents_web_execution_not_connected",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      }
+    },
+    {
+      "id": "rockstar-csv-cleanup",
+      "catalogStatus": "ready",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "docs/csv-business-v1.ja.md",
+        "lib/csv-job-store.ts",
+        "lib/csv-money.ts",
+        "components/csv-business-workspace.tsx",
+        "lib/csv-job-view.ts",
+        "app/api/csv-jobs/route.ts",
+        "scripts/check-site-api.mjs",
+        "tests/csv-processing-recovery.test.mjs",
+        "tests/site-csv-business-workspace.test.mjs",
+        "tests/site-schema-upgrade.test.mjs",
+        "docs/evidence/site-quality-integration.json"
+      ],
+      "releaseAcceptance": {
+        "document": "docs/sky-tools-complete-design.md#5-csv整形検査納品",
+        "checks": [
+          "JPY_3000_quote_and_zero_cost_public_sample",
+          "owner_scoped_idempotent_intake",
+          "provider_or_operator_payment_evidence_before_paid_processing",
+          "lease_bound_delivery_and_one_revision_request",
+          "expiry_and_financial_metadata_retention",
+          "reload_and_output_hash"
+        ],
+        "acceptanceState": "local_synthetic_checks_recorded_separately_from_real_customer_payment_and_device_acceptance",
+        "reviewScope": "Sites v49 contract retained; current integration evidence in docs/evidence/site-quality-integration.json"
+      },
+      "paymentStatusContract": {
+        "implementation": [
+          "lib/csv-money.ts",
+          "lib/csv-job-store.ts",
+          "components/sky-service-help.tsx"
+        ],
+        "tests": [
+          "tests/csv-money.test.mjs",
+          "tests/csv-fee-policy.test.mjs",
+          "tests/site-sky-service-help.test.mjs",
+          "scripts/check-site-api.mjs"
+        ],
+        "buyerPayment": "JPY 3000 exact quote/currency; provider evidence or operator manual_verified; public sample is zero cost",
+        "sellerFee": "Existing USD/JST monthly decision ledger only; no fee collection, card setup or refund adapter enabled",
+        "csvPayments": "Legacy Sky service configuration field remains backward compatible; not proof of this Sites payment ledger, buyer payment or acceptance",
+        "configuredIsPaymentProof": false
+      },
+      "storageIsolationContract": {
+        "implementation": [
+          "lib/csv-job-store.ts"
+        ],
+        "tests": [
+          "tests/csv-processing-recovery.test.mjs",
+          "tests/site-schema-upgrade.test.mjs",
+          "scripts/check-site-api.mjs"
+        ],
+        "insertion": "attempt-specific R2 input key; owner-scoped replay; reconcile uncertain commit before cleanup; existing persisted keys remain readable",
+        "productionOwnerAcceptance": false,
+        "expiry": "Seven-day acquisition/link expiry; subsequent authenticated owner cleanup removes R2 artifacts and links; financial metadata is retained; no independent scheduled purge",
+        "eventHistoryFence": {
+          "regressions": "tests/csv-processing-recovery.test.mjs",
+          "contract": "Append only to the same owner/job/input_key/created_at incarnation when current revision is at least the event snapshot revision. Preserve legitimate delayed same-incarnation events.",
+          "acceptance": "Synthetic local fault regressions include deletion and same-ID replacement, newer lease publication, and uncertain completion readback.",
+          "compatibility": "No event format, lease duration, attempt limit, payment, expiry or retention-contract change."
+        }
+      },
+      "clientRecovery": {
+        "implementation": [
+          "components/csv-business-workspace.tsx",
+          "lib/csv-job-view.ts",
+          "app/api/csv-jobs/route.ts"
+        ],
+        "regressions": [
+          "tests/site-csv-business-workspace.test.mjs",
+          "tests/csv-processing-recovery.test.mjs",
+          "scripts/check-site-api.mjs"
+        ],
+        "contract": "Bind private File, conditions, reference, revision drafts, links and pending quote ID to confirmed owner. Jobs/account must agree on owner; missing scope or 401 masks private state. Validate live delivery projections before acceptance. Preflight GET failure never proves an earlier POST did not commit. Public sample never sends selected private File; its server-generated ID is not automatically retried.",
+        "navigation": "Guard meaningful unsent input and unknown saves; explicit same-owner draft discard preserves committed jobs.",
+        "serverRecovery": "Keep delivered artifacts after lost finalization response; old lease cannot delete a newer publication. Processing read/event failures enter existing fenced failure path. Existing waitUntil and authenticated-poll lease resumption are retained.",
+        "limits": "Memory-only unsent/pending input; force-close can lose it. No independent queue or guaranteed completion while browser is closed; unreferenced R2 orphan reclamation remains unimplemented. No payment or retention-contract change."
+      },
+      "processingRecovery": {
+        "implementation": "lib/csv-job-store.ts",
+        "tests": [
+          "tests/csv-processing-recovery.test.mjs",
+          "scripts/check-site-api.mjs"
+        ],
+        "contract": "Existing two-minute revision/lease fence, attempt-specific output keys, and at most three attempts; next authenticated seller poll resumes at most three eligible jobs.",
+        "primaryDiagnosticBoundary": "GitHub primary synchronous completed/cleanup_pending SIGKILL diagnostic does not apply to this Sites delivered/lease implementation and is not a Site validation command.",
+        "limits": "Local exception/lease/API fixtures do not demonstrate Site process-kill recovery, production queue continuity, real payment or device acceptance."
+      }
+    },
+    {
+      "id": "rockstar-markets-analysis",
+      "catalogStatus": "ready",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "components/everything-market.tsx"
+      ],
+      "signinRecoveryAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": "components/everything-market.tsx",
+        "trigger": "HTTP401",
+        "recovery": "separate-tab-signin-and-refresh",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "paperAcceptance": {
+        "samplesNotVerifiedServices": true,
+        "samplePriceNotPerformance": true,
+        "completedHistoryInWorkspace": true,
+        "receiptReadbackAfterReload": true,
+        "successClosesTicketAndFocusesActivity": true,
+        "jsonTimeoutMs": 10000,
+        "mobileSearchInHeaderGrid": true,
+        "scope": "PAPER workspace source behavior; no live asset or settlement acceptance",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      }
+    },
+    {
+      "id": "mercari-revenue",
+      "catalogStatus": "ready",
+      "creationRecovery": {
+        "ownerScoped": true,
+        "immutableTermsReplay": true,
+        "concurrentCreateReadback": true,
+        "pendingPayload": "memory-only",
+        "manualRetry": true,
+        "patchRevisionConflictPreserved": true,
+        "implementation": "components/mercari-revenue-starter.tsx",
+        "tests": [
+          "tests/mercari-revenue-route.test.mjs",
+          "tests/mercari-workspace-recovery.test.mjs",
+          "tests/pending-save-navigation.test.mjs"
+        ],
+        "authenticationRecovery": "Retain pending payload, reload the owner list after sign-in, and block same-tab links until save confirmation.",
+        "navigationImplementation": "components/use-pending-save-navigation.ts",
+        "listGeneration": "Pre-create and pre-authentication GET responses cannot replace a newer confirmed list."
+      },
+      "ownerIntentBinding": {
+        "implementation": "lib/owner-intent.ts",
+        "regressions": "tests/owner-intent-route.test.mjs",
+        "authentication": "Existing requestUser only; ownerScope grants no access.",
+        "ui": "Freeze the first confirmed owner scope in the pending operation; recheck via GET, then send the intent header on mutation.",
+        "api": "Optional header for existing clients; supplied mismatches or malformed scopes return 409 before writes. Updated UIs require a confirmed scope.",
+        "recovery": "Only original confirmed owner restores private draft and exact pending operation. Explicit release requires the same owner and same pending operation; stale callbacks cannot release a newer operation.",
+        "limits": "Legacy clients without header retain existing semantics; memory-only pending operations do not survive crash/forced close."
+      },
+      "privateInputRecovery": {
+        "storage": "Per-owner current-page memory only; unknown and other owners cannot see or rebind retained input. No persistent browser draft schema.",
+        "response": "Existing render projection and expected identity must validate before success; malformed response retains exact operation.",
+        "navigation": "Meaningful dirty or uncertain work blocks same-tab loss; original owner can explicitly discard eligible unsent input.",
+        "documents": [
+          "docs/mercari-revenue-loop.md",
+          "docs/sky-tools-complete-design.md"
+        ]
+      }
+    },
+    {
+      "id": "fashion-brand-ops",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "rockstar-ip-studio",
+      "catalogStatus": "candidate",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "lib/sky-connections.ts",
+        "lib/operations.ts",
+        "tests/operations.test.mjs",
+        "tests/sky-routing.test.mjs"
+      ],
+      "launchRecovery": {
+        "desktopOnly": true,
+        "mobileAndUnknownHostLoopbackLink": false,
+        "runtimeAvailabilityVerifiedByLaunchLink": false,
+        "design": "docs/sky-tools-complete-design.md#85-ip-studio--交換可能な制作配信ゲーム展開",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "voiceTelephony": {
+        "provider": "livekit",
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/sky-connections.ts",
+          "lib/operations.ts"
+        ],
+        "tests": [
+          "tests/operations.test.mjs",
+          "tests/sky-routing.test.mjs"
+        ],
+        "runtimeConnected": false,
+        "executionBoundary": "setup_metadata_only",
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      }
+    },
+    {
+      "id": "coconala",
+      "catalogStatus": "ready",
+      "signinRecovery": {
+        "inputPreservedInOpenDialog": true,
+        "separateTab": true,
+        "recheckDoesNotSubmitDraft": true,
+        "requestTimeoutMs": 10000,
+        "returnPaths": {
+          "workspace": "/zema/tools/coconala",
+          "legacyDetail": "/sky/tools/coconala"
+        },
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "mobileResultActions": {
+        "stackHeadingBelow760px": true,
+        "wrapButtons": true,
+        "minimumButtonHeightPx": 44,
+        "restoredOutputDarkContrast": true,
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "draftDeletion": {
+        "confirmationRequired": true,
+        "ownerScoped": true,
+        "sameOriginRequired": true,
+        "expectedRevisionRequired": true,
+        "draftOnly": true,
+        "atomicStateAndRevisionCheck": true,
+        "deletesCaseContentAndHistory": true,
+        "refreshDoesNotDelete": true,
+        "externalTransactionUnchanged": true,
+        "activeCaseRetentionAccepted": false,
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+      },
+      "saveRecovery": {
+        "pendingPayload": "memory-only",
+        "manualExactReplay": true,
+        "navigationImplementation": "components/use-pending-save-navigation.ts",
+        "regressions": "tests/coconala-workspace-recovery.test.mjs",
+        "listGeneration": "Late replies cannot restore old owner data or revert confirmed mutations.",
+        "limits": "No durable recovery after forced close, crash, history or programmatic navigation."
+      },
+      "ownerIntentBinding": {
+        "implementation": "lib/owner-intent.ts",
+        "regressions": "tests/owner-intent-route.test.mjs",
+        "authentication": "Existing requestUser only; ownerScope grants no access.",
+        "ui": "Freeze the first confirmed owner scope in the pending operation; recheck via GET, then send the intent header on mutation.",
+        "api": "Optional header for existing clients; supplied mismatches or malformed scopes return 409 before writes. Updated UIs require a confirmed scope.",
+        "recovery": "Original owner restores exact private draft and operation. Explicit discard/release requires matching owner and current snapshot; foreign or stale callbacks cannot rebind or erase it.",
+        "limits": "Legacy clients without header retain existing semantics; memory-only pending operations do not survive crash/forced close."
+      },
+      "workspaceRecovery": {
+        "implementation": "components/coconala-team-workspace.tsx",
+        "regressions": "tests/coconala-workspace-recovery.test.mjs",
+        "storage": "Memory-only owner snapshots for terms, edit revision, money/reference/note and pending command; no persistent draft schema.",
+        "conflict": "Capture editing revision at editor open; never silently rebase stale terms to a refreshed revision.",
+        "acceptance": "Validate existing case projection and immutable creation terms or exact persisted update command before retiring pending identity. Failed preflight GET is never definitive proof that an earlier mutation failed.",
+        "navigation": "Dirty or pending work, including parked owner drafts, blocks same-tab loss; close/reopen preserves input and explicit own-snapshot discard is available.",
+        "external": "Manual business records only; no external order, transfer, fee change or production acceptance."
+      }
+    },
+    {
+      "id": "mr-free-article",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mr-citations",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "mr-delivery",
+      "catalogStatus": "ready",
+      "workbenchRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "components/delivery-runner.tsx",
+          "lib/delivery-runner-state.ts",
+          "components/mr-tool-runner.tsx",
+          "components/workbench.tsx"
+        ],
+        "regressions": "tests/workbench-owner-recovery.test.mjs",
+        "input": "Review JSON, original File references and result remain in existing owner/job/step memory and join the shared navigation guard.",
+        "recovery": "Mask on authentication loss; restore only after original owner is reconfirmed by Workbench. Different owner and stale callbacks cannot dispatch or discard. Retain result while the same workflow command is reconciled.",
+        "compatibility": "PC/approval/API/storage contracts and standalone local-state behavior unchanged; no implicit persistence or automatic replay.",
+        "acceptance": "Actual component/client/auth hook/route with SQLite: lost record reply and failed GET preserve original File bytes/result; 401 to foreign owner dispatches zero; original owner restores; delayed reads/start/completion are fenced. Independently reviewed.",
+        "limits": "Workbench lifetime only; other lazy runners, forced reload, real PC/provider and deployment acceptance remain separate."
+      }
+    },
+    {
+      "id": "rockstar-ledger",
+      "catalogStatus": "ready"
+    },
+    {
+      "id": "jev-evaluation",
+      "catalogStatus": "ready",
+      "implementationPaths": [
+        "lib/jev-evaluation.ts",
+        "lib/jev-transport.ts"
+      ],
+      "verificationPaths": [
+        "tests/jev-evaluation.test.mjs",
+        "tests/jev-receipt-boundary.test.mjs",
+        "tests/jev-transport.test.mjs"
+      ],
+      "submissionRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/jev-evaluation-runner.tsx",
+        "regressions": "tests/lazy-runner-submission.test.mjs",
+        "contract": "Synchronous lock before first await rejects same-frame duplicate submits. Current execution permission and mounted state fence stale handlers; permission toggles do not release an in-flight lock.",
+        "recovery": "Keep input and unlock after failure for an explicit retry. Consent refusal and legal emergency return do not strand the lock.",
+        "compatibility": "Existing payload, explicit consent, pricing gate and optional local-guide metadata history unchanged; no automatic replay or new persistence.",
+        "acceptance": "Actual form handlers: one POST for duplicate submit, zero while prohibited, held request retains lock, input survives explicit retry; independent review covers refusal/emergency recovery.",
+        "limits": "Synthetic transport; no provider/payment acceptance or new cross-navigation input retention guarantee."
+      }
+    },
+    {
+      "id": "rockstar-legal-intake",
+      "catalogStatus": "ready",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "lib/local-guide-history.ts",
+        "components/local-guide-history-consent.tsx",
+        "lib/operations-client.ts",
+        "tests/local-guide-history.test.mjs",
+        "tests/operations.test.mjs",
+        "lib/llm-providers.ts",
+        "lib/remote-ai-pricing-gate.ts",
+        "tests/llm-providers.test.mjs",
+        "scripts/check-work-api.mjs"
+      ],
+      "localHistoryAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/local-guide-history.ts",
+          "components/local-guide-history-consent.tsx",
+          "lib/operations-client.ts"
+        ],
+        "tests": [
+          "tests/local-guide-history.test.mjs",
+          "tests/operations.test.mjs"
+        ],
+        "consent": "optional-default-off",
+        "contentStored": false,
+        "remoteExecutionVerified": false,
+        "diagnosticCodes": [
+          "HTTP_STATUS",
+          "TIMEOUT",
+          "NETWORK",
+          "INVALID_RESPONSE",
+          "CLIENT_ERROR"
+        ],
+        "calculationFailureRetry": false
+      },
+      "cloudTransportAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/llm-providers.ts",
+          "lib/remote-ai-pricing-gate.ts"
+        ],
+        "tests": [
+          "tests/llm-providers.test.mjs",
+          "scripts/check-work-api.mjs"
+        ],
+        "timeoutMs": 20000,
+        "automaticRetry": false,
+        "redirects": "manual",
+        "responseStore": false,
+        "usage": "validated-provider-counts-or-null",
+        "observedSearchCalls": "not-invoice-proof",
+        "pricingGateAccepted": false,
+        "productionProviderExecutionVerified": false,
+        "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
+        "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+      },
+      "submissionRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/legal-intake-runner.tsx",
+        "regressions": "tests/lazy-runner-submission.test.mjs",
+        "contract": "Synchronous lock before first await rejects same-frame duplicate submits. Current execution permission and mounted state fence stale handlers; permission toggles do not release an in-flight lock.",
+        "recovery": "Keep input and unlock after failure for an explicit retry. Consent refusal and legal emergency return do not strand the lock.",
+        "compatibility": "Existing payload, explicit consent, pricing gate and optional local-guide metadata history unchanged; no automatic replay or new persistence.",
+        "acceptance": "Actual form handlers: one POST for duplicate submit, zero while prohibited, held request retains lock, input survives explicit retry; independent review covers refusal/emergency recovery.",
+        "limits": "Synthetic transport; no provider/payment acceptance or new cross-navigation input retention guarantee."
+      }
+    },
+    {
+      "id": "rockstar-patent-assistant",
+      "catalogStatus": "ready",
+      "recoveredContractReferences": [
+        "docs/sky-tools-complete-design.md",
+        "lib/local-guide-history.ts",
+        "components/local-guide-history-consent.tsx",
+        "lib/operations-client.ts",
+        "tests/local-guide-history.test.mjs",
+        "tests/operations.test.mjs",
+        "lib/llm-providers.ts",
+        "lib/remote-ai-pricing-gate.ts",
+        "tests/llm-providers.test.mjs",
+        "scripts/check-work-api.mjs"
+      ],
+      "localHistoryAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/local-guide-history.ts",
+          "components/local-guide-history-consent.tsx",
+          "lib/operations-client.ts"
+        ],
+        "tests": [
+          "tests/local-guide-history.test.mjs",
+          "tests/operations.test.mjs"
+        ],
+        "consent": "optional-default-off",
+        "contentStored": false,
+        "remoteExecutionVerified": false,
+        "diagnosticCodes": [
+          "HTTP_STATUS",
+          "TIMEOUT",
+          "NETWORK",
+          "INVALID_RESPONSE",
+          "CLIENT_ERROR"
+        ],
+        "calculationFailureRetry": false
+      },
+      "cloudTransportAcceptance": {
+        "design": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "lib/llm-providers.ts",
+          "lib/remote-ai-pricing-gate.ts"
+        ],
+        "tests": [
+          "tests/llm-providers.test.mjs",
+          "scripts/check-work-api.mjs"
+        ],
+        "timeoutMs": 20000,
+        "automaticRetry": false,
+        "redirects": "manual",
+        "responseStore": false,
+        "usage": "validated-provider-counts-or-null",
+        "observedSearchCalls": "not-invoice-proof",
+        "pricingGateAccepted": false,
+        "productionProviderExecutionVerified": false,
+        "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
+        "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+      },
+      "submissionRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/patent-assistant-runner.tsx",
+        "regressions": "tests/lazy-runner-submission.test.mjs",
+        "contract": "Synchronous lock before first await rejects same-frame duplicate submits. Current execution permission and mounted state fence stale handlers; permission toggles do not release an in-flight lock.",
+        "recovery": "Keep input and unlock after failure for an explicit retry. Consent refusal and legal emergency return do not strand the lock.",
+        "compatibility": "Existing payload, explicit consent, pricing gate and optional local-guide metadata history unchanged; no automatic replay or new persistence.",
+        "acceptance": "Actual form handlers: one POST for duplicate submit, zero while prohibited, held request retains lock, input survives explicit retry; independent review covers refusal/emergency recovery.",
+        "limits": "Synthetic transport; no provider/payment acceptance or new cross-navigation input retention guarantee."
+      }
+    },
+    {
+      "id": "faster-whisper",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "transformers-js",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "playwright",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-ultrafast",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-trader",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "typesafe-computer-use",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-review",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-router",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "jev-browser",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "mobile-jev",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "coconala-proposal-draft",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "gig-workflow",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "coconala-inbox",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "youtube-script-writer",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "seo-blueprint",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "landing-page-sprint",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "sales-objection-reply-builder",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "user-interview-synthesizer",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "calendar-coordination",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "telegram-notifications",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "producthunt-discovery",
+      "catalogStatus": "candidate"
+    },
+    {
+      "id": "rockstar-spider",
+      "catalogStatus": "ready",
+      "displayName": "SPIDER · セキュリティ検査",
+      "designDocument": "docs/sky-tools-complete-design.md",
+      "designSection": "SPIDER — Skyのセキュリティ検査",
+      "primaryOwner": "ROCK",
+      "ownerSquad": "H1",
+      "implementationTask": "SYS15",
+      "readyScope": [
+        "browser_local_explicit_input_static_inspection",
+        "metadata_only_report_download"
+      ],
+      "implementationBoundary": {
+        "stateContract": "lib/workflow.ts; ephemeral memory only; no work API writes",
+        "inputLimitBytes": 65536,
+        "lineLimit": 2000,
+        "findingLimit": 100,
+        "workerTimeoutMs": 4000,
+        "inputOrFilenameUploaded": false,
+        "inputOrReportPersisted": false,
+        "osWideMonitoring": false,
+        "externalSendAuthorization": false,
+        "productionDeploymentAccepted": false,
+        "workerInputValidation": "private dedicated-worker trusted event; empty origin/null source; nonnegative safe integer id; source string; language allowlist",
+        "scope": "standalone_browser_inspector_only; timeline publication uses separate explicit upload contract"
+      },
+      "timelineProtection": {
+        "task": "SKY20",
+        "default": "spider",
+        "replaceable": true,
+        "removable": true,
+        "storage": "owner-scoped D1 repositories and immutable commits; explicit publication only",
+        "workflow": "sky-code-publication",
+        "designSection": "Skyタイムラインのエージェントコードと交換可能な保護",
+        "productionAccepted": false
+      }
+    },
+    {
+      "id": "rockstar-material-invention",
+      "catalogStatus": "ready",
+      "displayName": "Material Invention · 物質候補の比較",
+      "designDocument": "docs/material-invention-core.md",
+      "designSection": "Sky / Zemaの机上比較と本人用保存",
+      "primaryOwner": "ROCK",
+      "ownerSquad": "O5",
+      "implementationTask": "MAT03",
+      "readyScope": [
+        "browser_deterministic_candidate_comparison",
+        "owner_scoped_request_save_and_digest_replay",
+        "workflow_review_cancel_and_sample_boundary",
+        "source_export_and_reimport_without_authority"
+      ],
+      "implementationBoundary": {
+        "storage": "existing_work_jobs_payload_with_authenticated_user_and_revision_cas",
+        "physicalExecutionAllowed": false,
+        "externalSimulationConnected": false,
+        "externalLabConnected": false,
+        "limitedMemoryConnected": false,
+        "productionDeploymentAccepted": false
+      },
+      "ownerIntentBinding": {
+        "implementation": "lib/owner-intent.ts",
+        "regressions": "tests/owner-intent-route.test.mjs",
+        "authentication": "Existing requestUser only; ownerScope grants no access.",
+        "ui": "Freeze the first confirmed owner scope in the pending operation; recheck via GET, then send the intent header on mutation.",
+        "api": "Optional header for existing clients; supplied mismatches or malformed scopes return 409 before writes. Updated UIs require a confirmed scope.",
+        "recovery": "Only original confirmed owner restores private draft and exact pending operation. Explicit release requires the same owner and same pending operation; stale callbacks cannot release a newer operation.",
+        "limits": "Legacy clients without header retain existing semantics; memory-only pending operations do not survive crash/forced close."
+      },
+      "privateInputRecovery": {
+        "storage": "Per-owner current-page memory only; unknown and other owners cannot see or rebind retained input. No persistent browser draft schema.",
+        "response": "Existing render projection and expected identity must validate before success; malformed response retains exact operation.",
+        "navigation": "Raw title/source/sample edits versus the last validated saved/read baseline, including anonymous and parked-owner drafts, block same-tab loss. Empty or unchanged saved work can navigate. Discard requires the same current workspace snapshot and no pending/busy operation.",
+        "documents": [
+          "docs/material-invention-core.md",
+          "docs/sky-tools-complete-design.md"
+        ]
+      }
+    }
+  ],
+  "nativeToolFamilies": [
+    "shared_checklist",
+    "citation_cleanup",
+    "proposal_draft",
+    "text_cleanup",
+    "list_deduplication",
+    "sha256"
+  ],
+  "rules": {
+    "allCatalogToolsMustBeDocumented": true,
+    "allReferencedDocumentsMustExist": true,
+    "unknownsMayNotBeReportedAsImplemented": true,
+    "environmentSpecificAcceptanceRequired": true,
+    "newSystemOrToolRequiresIndexUpdate": true,
+    "skyDetailMustHandoffBeforeExecution": true
+  },
+  "archivalCollections": [
+    {
+      "id": "rocketstar-design-history-and-supplements",
+      "entry": "docs/rocketstar-design/README.md",
+      "inventory": "docs/rocketstar-design/inventory.json",
+      "verification": "docs/rocketstar-design/verification.json",
+      "outputsRoot": "docs/rocketstar-design/outputs",
+      "authoringRoot": "docs/rocketstar-design/work",
+      "runtimeImported": false,
+      "r5RequirementsChanged": false
+    }
+  ],
+  "zemaProviderSessionAcceptance": {
+    "document": "docs/sky-tools-complete-design.md",
+    "candidate": "031",
+    "scope": "Provider autosave/conflict and known authentication-loss session boundary",
+    "acceptance": "synthetic actual UI/native D1; real auth/provider and public gates pending",
+    "storageRepair": "031修正: getter/remove failure quarantine, verified both-key cleanup, explicit retry and same-origin tab reload"
+  },
+  "mergeRecovery": {
+    "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
+    "reviewedAt": "2026-10-11",
+    "restoredReferenceCount": 235,
+    "policy": "Restore verified current source references and reviewed contract invariants; omit historical successful-state claims, superseded configuration and output locations. Record unresolved contracts separately.",
+    "pendingContractReview": [],
+    "reviewedContracts": [
+      {
+        "entity": "linux_qemu",
+        "contract": "gameRecoveryFixtureValidation",
+        "decision": "restored_current_invariants",
+        "adjustment": "Restore the durable claim/outcome, exact hold and single-journal assertions as host fixture acceptance requirements; this is not real-funds or guest acceptance.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "linux_qemu",
+        "contract": "platformGuestVerificationEntry",
+        "decision": "restored_current_invariants",
+        "adjustment": "The exact enable-token guard precedes PASS, UID/architecture checks and all guest effects. Linux source CI and actual guest boot are separate acceptance requirements, not established by this review.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "linux_qemu",
+        "contract": "desktopCredentialHandoff",
+        "decision": "restored_current_invariants",
+        "adjustment": "Credential-bearing browser URL uses stdin to a fixed osascript argv. The separate /usr/bin/open path is credential-free VNC only. No-open avoids credential retrieval.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "linux_qemu",
+        "contract": "nativeCiArtifactSelection",
+        "decision": "restored_current_invariants",
+        "adjustment": "Five partitions are selected using same run/head and latest attempt; selector cannot prefer a passing older artifact. Workflow separately requires all partitions/root UI success.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "sky_zema_and_tools",
+        "contract": "localSdkAuthenticationBoundary",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current package remains 0.1.3. Buffer byte length is checked before timingSafeEqual, preceding readJson; test verifies process survival and legitimate follow-up requests.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "legacyMrCompatibilitySecurity",
+        "decision": "restored_current_invariants",
+        "adjustment": "The legacy exception remains exactly the bundled stdio spec and four fixed first-party processors. Generic Tool execution still uses one-time approval.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "nativeMcpHttpsCaBoundary",
+        "decision": "restored_current_invariants",
+        "adjustment": "HTTPS rejects empty CA before ssl/socket setup; HTTP requires literal 127.0.0.1 and explicit fixture flag. No external TLS/provider claim.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "mrHttpReceiveSecurity",
+        "decision": "restored_current_invariants",
+        "adjustment": "Receive deadline covers request line, headers, body and final pre-dispatch check; response writing receives an independent timeout.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "mrDeliverySecurity",
+        "decision": "restored_current_invariants",
+        "adjustment": "Correct the historical ambiguous artifactMaximumBytes: implementation uses a cumulative 10,000,000-byte artifact budget. Each control metadata file is bounded at 1,000,000 bytes. No vendor snapshot changes.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "mcp_and_providers",
+        "contract": "localDescriptorSecurity",
+        "decision": "restored_current_invariants",
+        "adjustment": "fstat and bounded read use the same handle. O_NOFOLLOW/O_NONBLOCK, regular-file status and owner/private permissions are mandatory; unsupported platforms fail closed.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "security_operator_release",
+        "contract": "spiderImprovementCycle",
+        "decision": "restored_current_invariants",
+        "adjustment": "Restore read-only collection, no auto-merge and regression references. Do not restore the claimed hourly Codex schedule or old first-repair PR list as current state. Old toolDesign anchor incorrectly names Instagram.",
+        "historicalFieldsNotRestored": [
+          "status",
+          "cadence",
+          "firstRepairs"
+        ]
+      },
+      {
+        "entity": "security_operator_release",
+        "contract": "spiderGuardAnimationRevision",
+        "decision": "restored_current_invariants",
+        "adjustment": "Restore source behavior only: renderer uses actual findings, triggers a pulse on a new observed blocked-count increase, and is inactive if disconnected/unhealthy/off panel. Historical renderer validation is not fresh guest/UI acceptance.",
+        "historicalFieldsNotRestored": [
+          "status",
+          "baseCommit",
+          "evidence",
+          "evidenceSection",
+          "freshValidationRecorded",
+          "protectionAuthorityChanged"
+        ]
+      },
+      {
+        "entity": "security_operator_release",
+        "contract": "spiderGuardAgentRole",
+        "decision": "restored_current_invariants",
+        "adjustment": "Identity/duties and sanitized actual action/state contracts match SensitiveGuard and Platform summary. Omit revision comparison flags and historical validation status.",
+        "historicalFieldsNotRestored": [
+          "status",
+          "evidence",
+          "evidenceSection",
+          "freshValidationRecorded",
+          "protectionAuthorityChanged",
+          "monitoringCadenceOrScopeChanged"
+        ]
+      },
+      {
+        "entity": "security_operator_release",
+        "contract": "spiderCodeInspector",
+        "decision": "restored_current_invariants",
+        "adjustment": "Static data-only inspection and source limits remain implemented. Native dispatch requires UI_UID=1000; historical external outputs/SPIDER.html is not a repository deliverable or current acceptance. Host fixture tests are not Linux/guest deployment.",
+        "historicalFieldsNotRestored": [
+          "status",
+          "deliverableOutsideRepository",
+          "freshValidationRecorded",
+          "guardCountersChanged",
+          "evidence",
+          "evidenceSection",
+          "nativeLinuxValidationRecorded"
+        ]
+      },
+      {
+        "entity": "rockstar-legal-intake",
+        "contract": "localHistoryAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Both legal and patent UI defaults are false. Pure local generation runs at most once even when recording fails; only tool/bytes/duration/outcome metadata is sent, not source text. Keep remote execution unverified.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-legal-intake",
+        "contract": "cloudTransportAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Apply these fields only to the legal-guidance and patent-research routes. They remain pricing-gated before Provider dispatch. General remote-ai queue/reservation persistence exists elsewhere, so do not restore a repository-wide no-usage-ledger claim.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-patent-assistant",
+        "contract": "localHistoryAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Both legal and patent UI defaults are false. Pure local generation runs at most once even when recording fails; only tool/bytes/duration/outcome metadata is sent, not source text. Keep remote execution unverified.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-patent-assistant",
+        "contract": "cloudTransportAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Apply these fields only to the legal-guidance and patent-research routes. They remain pricing-gated before Provider dispatch. General remote-ai queue/reservation persistence exists elsewhere, so do not restore a repository-wide no-usage-ledger claim.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-csv-cleanup",
+        "contract": "releaseAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-csv-cleanup",
+        "contract": "paymentStatusContract",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-csv-cleanup",
+        "contract": "storageIsolationContract",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": [
+          "historical evidence treated as fresh validation"
+        ]
+      },
+      {
+        "entity": "rockstar-markets-analysis",
+        "contract": "signinRecoveryAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-markets-analysis",
+        "contract": "paperAcceptance",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-ip-studio",
+        "contract": "launchRecovery",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-ip-studio",
+        "contract": "voiceTelephony",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": [
+          "historical status"
+        ]
+      },
+      {
+        "entity": "coconala",
+        "contract": "signinRecovery",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "coconala",
+        "contract": "mobileResultActions",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "coconala",
+        "contract": "draftDeletion",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-amc",
+        "contract": "acceptedCandidateRevalidation",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": [
+          "historical status"
+        ]
+      },
+      {
+        "entity": "rockstar-amc",
+        "contract": "quickFormat",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      },
+      {
+        "entity": "rockstar-amc",
+        "contract": "commandCenter",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": [
+          "historical status"
+        ]
+      },
+      {
+        "entity": "rockstar-amc",
+        "contract": "agentDefinition",
+        "decision": "restored_current_invariants",
+        "adjustment": "Current callers, state handling and owner boundaries match; current Zema return paths and actual mounted AMC surface replace older route assumptions. Fresh acceptance not inferred.",
+        "historicalFieldsNotRestored": []
+      }
+    ],
+    "reviewScope": "32 nested contracts reviewed against current code after runtime restoration. Existing source invariants restored; old run success and production claims excluded."
+  }
+}

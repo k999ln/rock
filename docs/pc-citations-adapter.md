@@ -30,7 +30,7 @@ MCPの入力・出力schema（`structuredContent.output`）と4商品名は維�
 
 | ファイル | SHA-256 |
 |---|---|
-| toolkits/mr/rock_star_tools.py | `42f138200a472a0351f9b61d5ba7a0b487b0cabff4d9b4e9b96312b55fbff40f` |
+| toolkits/mr/rock_star_tools.py | `671bc5d2f2b31926e579c1134b1815f21e8b825716c88e875cfb6ec9f30bb6ae` |
 | vendor/mr/citation-strip.py | `ed5c28225402c5885c1265c0648b5d4d227a2345ca71e387275a8f205b4ffd13` |
 | vendor/mr/provenance.json | `e782c0b741e9bcdcc3a591e2e6c3bcdaf5b03b51d08e77e4becf218b1e4cbd4f` |
 | vendor/mr/LICENSE | `6cf38019109830262ffd5a3e1dca12e6e972c9750d2a68f99d5494d173960fac` |

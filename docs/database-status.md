@@ -1,0 +1,98 @@
+# Database status
+
+> `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
+
+更新日: 2026-10-12
+
+## 全体
+
+- データ境界: 6、table: 162
+- source inventory: 6/6確認済み
+- current production readback: 0/6
+- 作業進捗: 392 task中 114 done、47 in progress、230 planned、1 blocked
+- 現在milestone: SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる
+
+## 保存境界と配備状態
+
+| 境界 | 責任 | table | source | 配備状態 | 本番適用済み | current readback |
+| --- | --- | ---: | --- | --- | --- | --- |
+| Web D1 | Webサービス状態 | 90 | VERIFIED | OWNER_ACCESS_BLOCKED | 未確認 | 未確認 |
+| Sky Billing D1 | 収益精算・請求・受取Wallet | 13 | VERIFIED | DOCUMENTED_NOT_READ_BACK | 0004_rock_settlement_wallet.sql | 未確認 |
+| Operator Dock D1 | 運営専用の端末登録・緊急命令・監査 | 5 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
+| OS Wallet / Spend SQLite | 端末内Wallet・支出承認・PAPER position | 19 | VERIFIED | QEMU_SCOPED | 未確認 | 未確認 |
+| Android Work Engine SQLite | Android work・artifact・run・event | 24 | VERIFIED | EMULATOR_SCOPED | 未確認 | 未確認 |
+| Android Platform Core SQLite | component登録・owner承認・OS側ledger | 11 | VERIFIED | SOURCE_ONLY | 未確認 | 未確認 |
+
+## Web D1
+
+- expected latest migration: 0017_primary_quality_compatibility.sql
+- migration files: 18
+- accidental duplicate: 0
+- published convergence definitions: 6
+- Marketplace relation guards: 8
+
+| 分野 | table | 内訳 |
+| --- | ---: | --- |
+| 仕事・実行・端末・基本台帳 | 12 | book_records, devices, fund_plans, job_events, jobs, remote_ai_rate_cards, remote_ai_text_executions, remote_ai_text_inputs, remote_ai_text_send_claims, tool_controls, tool_runs, work_jobs |
+| Sky接続・Tool管理 | 35 | a2a_live_usage_snapshots, a2a_price_quote_consent_events, a2a_usage_receipts, agent_delegation_artifacts, agent_delegation_broker_authorizations, agent_delegation_budget_pools, agent_delegation_budget_reservations, agent_delegation_events, agent_delegation_inputs, agent_delegations, sky_a2a_agent_connections, sky_activation_codes, sky_campus_edges, sky_campus_items, sky_campus_profiles, sky_campus_reports, sky_campus_tag_events, sky_campus_tags, sky_code_commits, sky_code_repositories, sky_commerce_events, sky_commerce_offers, sky_commerce_orders, sky_commerce_sellers, sky_connections, sky_developer_tokens, sky_library_items, sky_package_runtime_bindings, sky_provider_connections, sky_remote_ai_rate_limits, sky_tool_events, sky_tool_grants, sky_tool_package_reviews, sky_tool_packages, sky_tool_submissions |
+| Marketplace | 7 | marketplace_approvals, marketplace_assets, marketplace_events, marketplace_positions, marketplace_proposals, marketplace_receipts, marketplace_reservations |
+| CSV業務 | 15 | csv_billing_account_events, csv_billing_accounts, csv_delivery_links, csv_delivery_revisions, csv_intake_controls, csv_job_costs, csv_job_events, csv_jobs, csv_monthly_fee_decisions, csv_monthly_fees, csv_operator_events, csv_operator_outbox, csv_operator_settings, csv_payment_events, csv_trial_payments |
+| 自動化ファンド・受託案件・事業補助 | 21 | automation_fund_memberships, automation_funds, coconala_team_cases, esim_cloud_access_keys, esim_device_entitlements, esim_device_gateway_challenges, esim_device_gateway_keys, esim_device_install_challenges, esim_device_install_receipts, esim_provider_orders, esim_provider_profile_bindings, esim_provider_webhook_inbox, mercari_revenue_plans, rockstar_a2a_broker_devices, rockstar_a2a_broker_enrollment_challenges, rockstar_device_authorizations, rockstar_device_sessions, rockstar_entitlement_events, rockstar_entitlement_issuer_deliveries, rockstar_entitlement_issuer_rate_limits, rockstar_service_entitlements |
+
+## 境界別の全table
+
+<details><summary>Web D1: 90 table</summary>
+
+`a2a_live_usage_snapshots`、`a2a_price_quote_consent_events`、`a2a_usage_receipts`、`agent_delegation_artifacts`、`agent_delegation_broker_authorizations`、`agent_delegation_budget_pools`、`agent_delegation_budget_reservations`、`agent_delegation_events`、`agent_delegation_inputs`、`agent_delegations`、`automation_fund_memberships`、`automation_funds`、`book_records`、`coconala_team_cases`、`csv_billing_account_events`、`csv_billing_accounts`、`csv_delivery_links`、`csv_delivery_revisions`、`csv_intake_controls`、`csv_job_costs`、`csv_job_events`、`csv_jobs`、`csv_monthly_fee_decisions`、`csv_monthly_fees`、`csv_operator_events`、`csv_operator_outbox`、`csv_operator_settings`、`csv_payment_events`、`csv_trial_payments`、`devices`、`esim_cloud_access_keys`、`esim_device_entitlements`、`esim_device_gateway_challenges`、`esim_device_gateway_keys`、`esim_device_install_challenges`、`esim_device_install_receipts`、`esim_provider_orders`、`esim_provider_profile_bindings`、`esim_provider_webhook_inbox`、`fund_plans`、`job_events`、`jobs`、`marketplace_approvals`、`marketplace_assets`、`marketplace_events`、`marketplace_positions`、`marketplace_proposals`、`marketplace_receipts`、`marketplace_reservations`、`mercari_revenue_plans`、`remote_ai_rate_cards`、`remote_ai_text_executions`、`remote_ai_text_inputs`、`remote_ai_text_send_claims`、`rockstar_a2a_broker_devices`、`rockstar_a2a_broker_enrollment_challenges`、`rockstar_device_authorizations`、`rockstar_device_sessions`、`rockstar_entitlement_events`、`rockstar_entitlement_issuer_deliveries`、`rockstar_entitlement_issuer_rate_limits`、`rockstar_service_entitlements`、`sky_a2a_agent_connections`、`sky_activation_codes`、`sky_campus_edges`、`sky_campus_items`、`sky_campus_profiles`、`sky_campus_reports`、`sky_campus_tag_events`、`sky_campus_tags`、`sky_code_commits`、`sky_code_repositories`、`sky_commerce_events`、`sky_commerce_offers`、`sky_commerce_orders`、`sky_commerce_sellers`、`sky_connections`、`sky_developer_tokens`、`sky_library_items`、`sky_package_runtime_bindings`、`sky_provider_connections`、`sky_remote_ai_rate_limits`、`sky_tool_events`、`sky_tool_grants`、`sky_tool_package_reviews`、`sky_tool_packages`、`sky_tool_submissions`、`tool_controls`、`tool_runs`、`work_jobs`
+
+次の確認: 既存Sitesの所有workspaceへ接続し、検証済み最新mainを同じSiteへ配備。公開設定変更後に匿名health、本人別API、migration、件数、孤立関係、backup状態をreadbackする
+
+</details>
+
+<details><summary>Sky Billing D1: 13 table</summary>
+
+`billing_checkout_locks`、`billing_customers`、`billing_events`、`billing_invoices`、`billing_subscriptions`、`earning_ledger_entries`、`earning_receipts`、`monthly_earning_settlements`、`monthly_fund_earning_settlements`、`payout_instructions`、`rock_fee_collection_instructions`、`rock_wallet_challenges`、`rock_wallet_operators`
+
+次の確認: current productionをreadbackし、0004適用と台帳件数を再確認する
+
+</details>
+
+<details><summary>Operator Dock D1: 5 table</summary>
+
+`operator_audit_events`、`operator_device_commands`、`operator_device_request_nonces`、`operator_managed_devices`、`operator_webauthn_assertions`
+
+次の確認: ownerが専用hostname、Cloudflare Access application、D1を作成後、0001・0002適用、production credential設定、端末attestation登録と認証済みreadbackを行う
+
+</details>
+
+<details><summary>OS Wallet / Spend SQLite: 19 table</summary>
+
+`a2a_wallet_authorizations`、`a2a_wallet_reservations`、`spend_approvals`、`spend_policy`、`spend_positions`、`spend_proposals`、`spend_receipts`、`spend_reservations`、`spend_strategies`、`value_assets`、`value_events`、`value_spend_schema`、`wallet_bills`、`wallet_consents`、`wallet_idempotency`、`wallet_journals`、`wallet_postings`、`wallet_sales`、`wallet_withdrawals`
+
+移行時だけ使用して最終schemaに残さないtable: `wallet_postings_spend_v1`
+
+次の確認: 同一QEMU候補と将来の実機で保存・再起動・復旧を別々に受入する
+
+</details>
+
+<details><summary>Android Work Engine SQLite: 24 table</summary>
+
+`artifacts`、`events`、`fixture_model_journal`、`fixture_model_meta`、`fixture_model_pins`、`fixture_model_pointer`、`fixture_model_profiles`、`memory_items`、`memory_meta`、`memory_projections`、`memory_tombstones`、`outbox_events`、`outbox_meta`、`outbox_operations`、`rock_meta`、`runs`、`settings`、`sky_capabilities`、`sky_executor`、`sky_executor_meta`、`sky_selection`、`sky_selection_v2`、`sky_work_bindings`、`works`
+
+次の確認: 対象端末を確定後、full buildと実機保存・復旧を受入する
+
+</details>
+
+<details><summary>Android Platform Core SQLite: 11 table</summary>
+
+`a2a_wallet_reservations`、`model_profile_activation`、`model_profile_job_pins`、`model_profiles`、`platform_approvals`、`platform_components`、`platform_events`、`platform_ledger`、`platform_meta`、`platform_registration_requests`、`runtime_manifests`
+
+次の確認: Kotlin/APK native build後、Soong imageと実機でschema移行を受入する
+
+</details>
+
+## 次の作業
+
+G04/WEB04: PR #105は実buildのPC1280／390px・復旧・本人境界を確認してレビュー可能。最終文書headのverify/CIをPRへ照合し、既知の公開文言の秘密検査はSECURITY owner review後に対応する。PR #104はPR #103基準の既存Grid server修正として別レビュー。CSV強制終了後の保存契約変更とGrid公開digest例外も未適用。main統合・公開、OS10全OS／Pixel・QEMU image・avocadoMini実機は独立gate。
+
+本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

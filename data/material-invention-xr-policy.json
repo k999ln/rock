@@ -1,0 +1,97 @@
+{
+  "schema": "rockstaros-material-invention-xr-policy/1",
+  "status": "design_approved_runtime_not_implemented",
+  "authority": "docs/material-invention-xr.md",
+  "sceneContract": "contracts/material-invention-xr.json",
+  "productName": "Spatial Invention Studio",
+  "relationshipToMaterialCore": "primary_product_experience_not_optional_extension",
+  "referenceDevice": {
+    "displayName": "avocadoMini",
+    "operatingSystem": "RockstarOS",
+    "architecture": "docs/avocado-mini-spatial-invention.md",
+    "interactionContract": "contracts/avocado-mini-spatial-interaction.json",
+    "role": "four_direction_spatial_invention_workstation",
+    "viewpoints": ["north", "east", "south", "west"],
+    "manipulatedObject": "material_digital_twin",
+    "physicalMatterManipulatedByCameras": false,
+    "hardwareSelected": false,
+    "prototypeBuilt": false
+  },
+  "sourceOfTruth": "material_invention_core",
+  "sourceFlow": [
+    "material_invention_core_snapshot",
+    "deterministic_spatial_projection",
+    "xr_interaction_runtime",
+    "replaceable_device_adapter"
+  ],
+  "surfaces": [
+    "vr_candidate_workbench",
+    "vr_process_tunnel",
+    "vr_evidence_layers",
+    "ar_lab_field_view",
+    "two_dimensional_fallback"
+  ],
+  "sceneEntities": [
+    "spatial_scene_manifest",
+    "coordinate_frame",
+    "spatial_object_binding",
+    "visualization_assumption",
+    "safety_overlay",
+    "spatial_annotation",
+    "observation_receipt",
+    "presence_session"
+  ],
+  "safety": {
+    "derivedViewOnly": true,
+    "physicalExecutionAllowed": false,
+    "equipmentControlAllowed": false,
+    "physicalExperimentFinalApprovalAllowed": false,
+    "approvalIntentAllowed": true,
+    "gestureIsPhysicalApproval": false,
+    "devicePoseIsSafetyEvidence": false,
+    "arBoundaryIsEquipmentClearanceEvidence": false,
+    "blockedOverlayCanBeHidden": false,
+    "staleOrUnboundSceneMode": "VIEW_ONLY",
+    "simulationIsExperimentalProof": false
+  },
+  "privacy": {
+    "rawCameraStoredByDefault": false,
+    "roomMeshStoredByDefault": false,
+    "eyeTrackingStoredByDefault": false,
+    "handTrackingStoredByDefault": false,
+    "voiceStoredByDefault": false,
+    "preciseLocationStoredByDefault": false,
+    "projectScopedSharingRequired": true,
+    "explicitExternalTransferConsentRequired": true
+  },
+  "accessibility": {
+    "twoDimensionalFallbackRequired": true,
+    "seatedModeRequired": true,
+    "oneHandModeRequired": true,
+    "captionsRequired": true,
+    "colorIndependentStatusRequired": true,
+    "reducedMotionRequired": true
+  },
+  "patentAi": {
+    "existingTool": "rockstar-patent-assistant",
+    "materialCoreConnected": false,
+    "eventProvenanceRequired": true,
+    "humanAiSimulationAndExperimentSourcesSeparated": true,
+    "priorArtCandidateSearchAllowed": true,
+    "patentabilityDeterminationAllowed": false,
+    "inventorshipDeterminationAllowed": false,
+    "automaticFilingAllowed": false,
+    "professionalReviewRequired": true
+  },
+  "developmentPhases": [
+    "XR01_contract_and_deterministic_projection",
+    "XR02_view_only_vr_prototype",
+    "XR03_annotations_and_2d_fallback",
+    "XR04_ar_binding_with_synthetic_markers",
+    "XR05_collaboration_simulation_and_lab_independent_acceptance"
+  ],
+  "runtimeImplemented": false,
+  "headsetVerified": false,
+  "arDeviceVerified": false,
+  "externalLabConnected": false
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "rockstar-a2a-persisted-handoff-link-local/1",
+  "date": "2026-10-02",
+  "scope": "Persist owner/parent-scoped, user-mediated A2A child lineage from a captured completed result to one separately approved successor.",
+  "implementation": {
+    "migration": "drizzle/0057_a2a_parent_sequence.sql adds predecessor_delegation_id and a unique partial index; a D1 trigger requires a same-owner, same-parent, remote_completed predecessor with captured artifacts.",
+    "ui": "Zema follow-up draft retains the selected predecessor ID and renders the persisted source link after reload.",
+    "api": "Successor creation rejects missing, foreign, incomplete, or uncaptured predecessors; one result cannot be branched into multiple successors.",
+    "recovery": "The idempotent submission fingerprint and lost-response comparison bind the predecessor ID.",
+    "authorization": "Each successor still requires its own signed quote, child cap, and explicit owner approval; source Agent authority is not inherited.",
+    "depthLimit": "Maximum redelegation depth is 1. Store/API reject a successor-of-successor, and the D1 insert trigger independently refuses that lineage. Each later independent task must use a new parent job."
+  },
+  "verification": {
+    "focused": "node --test tests/a2a-delegation-store.test.mjs tests/a2a-result-handoff.test.mjs tests/a2a-delegation-recovery.test.mjs: PASS, 28/28",
+    "typecheck": "npm run typecheck: PASS",
+    "lint": "npm run lint:product: PASS",
+    "schema": "npm run schema:check: PASS; npm run database:check: PASS, source 6/6 and production readback 0/6",
+    "api": "npm run build && npm run test:api: PASS, 1024 Worker/D1 assertions and 113 CSV assertions",
+    "fullSuite": "npm run verify: PASS; Node tests 754/754, Fashion tests 19/19, production build, Worker/D1 API 1,024 assertions, CSV Worker/D1/R2 113 assertions.",
+    "boundaries": "Local fixtures and tests only. database status: source 6/6; current production readback 0/6.",
+    "depthLimit": "node --test tests/a2a-delegation-store.test.mjs tests/a2a-result-handoff.test.mjs tests/a2a-delegation-recovery.test.mjs: PASS, 29/29; includes full root→successor workflow, rejected third level in store, raw D1 insert trigger rejection, and API/source contract.",
+    "limitations": "Local fixtures/tests only. The database status check reports source 6/6 and current production readback 0/6."
+  },
+  "notProven": [
+    "Autonomous multi-step planning or agent-initiated recursive delegation; successor creation is user-mediated and does not dispatch.",
+    "Production D1 migration/readback, real Provider interoperability or invoices, funded settlement, carrier activation, or device OS installation."
+  ]
+}

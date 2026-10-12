@@ -1,0 +1,22 @@
+{
+  "schema": "rockstar-a2a-parent-controller-local/1",
+  "date": "2026-10-02",
+  "scope": "Read-only owner/job-scoped aggregate of existing local A2A child delegations, budget and reservations for the Zema parent progress view.",
+  "implemented": [
+    "Derives parent state, approval/dispatch/run/reconciliation/result/failure/cancellation counts, and remaining shared budget from persisted child rows.",
+    "Rejects mismatched owner or parent-job records, duplicate child identities, and invalid budget conditions.",
+    "API list response exposes the snapshot and the Workbench displays progress and next safe user action.",
+    "Every paid child continues to require an explicit fresh approval; snapshot generation is read-only."
+  ],
+  "verification": {
+    "focused": "node --test tests/a2a-parent-controller.test.mjs: PASS, 9/9",
+    "typecheck": "npm run typecheck: PASS",
+    "lint": "npm run lint:product: PASS",
+    "api": "npm run build && npm run test:api: PASS, 1021 API assertions and 113 CSV assertions"
+  },
+  "limitations": [
+    "This is a locally verified derived snapshot, not a separately persisted autonomous parent workflow or automatic child sequencer.",
+    "Reported usage is internal local usage-record data, not a production invoice or proof of real payment settlement.",
+    "No commercial Provider execution, carrier activation, supported-device OS installation, or production deployment is established."
+  ]
+}

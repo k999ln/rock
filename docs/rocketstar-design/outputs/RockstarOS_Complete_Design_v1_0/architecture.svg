@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="342" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 342" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="342"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-342)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="327" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,654) scale(1,-1)">機能と故障境界 / 物理配置・台数の確定図ではない</text>
+			<rect x="0" y="248" width="153" height="54" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="38.97509765624999" y="286.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,572) scale(1,-1)">avokado E3 / Shell</text>
+			<text x="32.85131835937499" y="272.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,544) scale(1,-1)">4 Towers + Edge Hub</text>
+			<text x="26.999999999999993" y="258.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,516) scale(1,-1)">入力・表示・現地の資格</text>
+			<rect x="174" y="248" width="153" height="54" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="214.2451171875" y="286.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,572) scale(1,-1)">A-LINK / 外部通信</text>
+			<text x="205.5" y="272.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,544) scale(1,-1)">蓄積転送・期限・宛先</text>
+			<text x="205.5" y="258.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,516) scale(1,-1)">回線断でも現地は継続</text>
+			<rect x="348" y="248" width="153" height="54" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="389.249267578125" y="286.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,572) scale(1,-1)">地球側 / 遠隔拠点</text>
+			<text x="388.5" y="272.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,544) scale(1,-1)">状態の複製・提案</text>
+			<text x="397.5" y="258.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,516) scale(1,-1)">現地で再判定</text>
+			<rect x="0" y="143" width="327" height="65" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(80%,83%,84%); fill-rule: evenodd;"/>
+			<text x="104.97802734375" y="186.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,373) scale(1,-1)">RockstarOS Operations Core</text>
+			<text x="100.5" y="172.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,345) scale(1,-1)">仕事・資源・資産・権限・履歴</text>
+			<text x="120.980712890625" y="158.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,317) scale(1,-1)">Linux / Buildroot 継承</text>
+			<rect x="348" y="143" width="153" height="65" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="382.99365234375" y="186.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,373) scale(1,-1)">rocketstar / 衛星管理</text>
+			<text x="393.0" y="172.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,345) scale(1,-1)">専用飛行計算機</text>
+			<text x="376.37109375" y="158.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,317) scale(1,-1)">cFS + RTEMS 評価候補</text>
+			<path d="M 76,248 L 76,208 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="76 208, 78.17483 212.5022, 73.82517 212.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 250,248 L 250,208 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="250 208, 252.1748 212.5022, 247.8252 212.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 424,248 L 424,208 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="424 208, 426.1748 212.5022, 421.8252 212.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 327,175 L 348,175 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="348 175, 343.4978 177.1748, 343.4978 172.8252" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="0" y="56" width="153" height="51" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="45.0" y="92.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,185) scale(1,-1)">機器の局所制御</text>
+			<text x="35.99999999999999" y="78.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,157) scale(1,-1)">電力・空気・水・熱</text>
+			<text x="32.74365234374999" y="64.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,129) scale(1,-1)">機器ごとの認定profile</text>
+			<rect x="174" y="56" width="153" height="51" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="210.0" y="92.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,185) scale(1,-1)">独立保護・現地警報</text>
+			<text x="205.5" y="78.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,157) scale(1,-1)">電源・バスも分離検証</text>
+			<text x="203.74658203125" y="64.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,129) scale(1,-1)">OS／AI停止と切り離す</text>
+			<rect x="348" y="56" width="153" height="51" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.7; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="379.5" y="92.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,185) scale(1,-1)">機上センサー・操作系</text>
+			<text x="377.74658203125" y="78.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,157) scale(1,-1)">機体ごとの局所mission</text>
+			<text x="379.5" y="64.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,129) scale(1,-1)">地上の返事を待たない</text>
+			<path d="M 76,143 L 76,107 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="76 107, 78.17483 111.5022, 73.82517 111.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 424,143 L 424,107 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="424 107, 426.1748 111.5022, 421.8252 111.5022" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="87.99999999999997" y="21" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,42) scale(1,-1)">共通化するもの：身元・型・状態・仕事・証拠・版。制御は各機器の側に置く。</text>
+		</g>
+	</g>
+</svg>

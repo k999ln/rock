@@ -1,0 +1,37 @@
+{
+  "schema": "rockstaros-colony-mission-profile/1",
+  "version": "C0.1",
+  "mission": {
+    "destination": null,
+    "initialOccupants": null,
+    "maximumOccupants": null,
+    "stayDurationDays": null,
+    "resupplyIntervalDays": null,
+    "resupplyOutageDays": null,
+    "evacuationProfile": null,
+    "orbitOrSite": null,
+    "initialCargoManifest": null,
+    "launchAndRecoverySites": null
+  },
+  "nullMeans": "Decision and supporting engineering are still required, not zero demand.",
+  "initialDevelopmentAssumption": {
+    "kind": "uncrewed_ground_software_fixture",
+    "occupants": 0,
+    "notFinalMissionSelection": true
+  },
+  "simulation": {
+    "mode": "SIM_ONLY",
+    "sourceClass": "SYNTHETIC",
+    "hardwareConnected": false,
+    "supplyKw": 10,
+    "criticalDemandKw": 4,
+    "exampleFlexibleDemandKw": 5,
+    "meaning": "branch-coverage fixture, not habitat or avokado sizing"
+  },
+  "operationalRelease": {
+    "hardware": false,
+    "humanHabitation": false,
+    "flight": false,
+    "existingRockstarOsIntegration": false
+  }
+}

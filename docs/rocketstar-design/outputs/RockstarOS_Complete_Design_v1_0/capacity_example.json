@@ -1,0 +1,31 @@
+{
+  "profile": "GROUND-REF-v1 synthetic workload",
+  "devices": 8,
+  "channelsPerDevice": 16,
+  "sampleHz": 1,
+  "assumedBytesPerSample": 256,
+  "rawRetentionDays": 7,
+  "rawBytesPerDay": 2831155200,
+  "rawBytesSevenDays": 19818086400,
+  "assumedStorageOverheadFactor": 2,
+  "otherBudgetGiB": 8,
+  "volumeGiB": 100,
+  "usableFraction": 0.8,
+  "estimatedUsageGiB": 44.9140625,
+  "usableGiB": 80,
+  "headroomGiB": 35.0859375,
+  "isBenchmark": false,
+  "isHardwareSizingApproval": false,
+  "scope": "Data partition only",
+  "otherBudgetBreakdownGiB": {
+    "resultLedger": 4,
+    "transferSpool": 2,
+    "logsAndQuarantine": 2
+  },
+  "excludedScopes": [
+    "rootfs A/B",
+    "update/recovery scratch",
+    "AI models",
+    "raw audio/video"
+  ]
+}

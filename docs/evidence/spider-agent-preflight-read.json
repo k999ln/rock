@@ -1,0 +1,82 @@
+{
+  "schema": "spider-agent-preflight-read/1",
+  "cycle": 48,
+  "baseCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+  "primarySquad": "H1",
+  "taskId": "AMC02",
+  "primaryOwner": "ROCK",
+  "workstream": "Git / CI / Operations",
+  "target": {
+    "alert": 52,
+    "rule": "js/file-system-race",
+    "path": "scripts/amc-agent.mjs",
+    "scope": "existing destination read preflight only"
+  },
+  "status": "LOCAL_REGRESSIONS_PASS_REMOTE_AFTER_PENDING",
+  "rootCause": "Existing destination pathname is reopened after exists/lstat validation.",
+  "repair": [
+    "NOFOLLOW/NONBLOCK open; regular descriptor and bounded expected UTF-8 size",
+    "Current parent canonical path and named BigInt dev/ino matched before reading",
+    "Same FD read limited to expected byte length plus one; close on all exits",
+    "All-entry preflight before creation and existing custom preservation retained"
+  ],
+  "remaining": [
+    "CodeQL53 new-file creation parent-path race remains; trusted stable parent required",
+    "Arbitrary ancestor replacement, multiple ABA and atomic installer operation not guaranteed",
+    "Existing manifest/lock mismatch covered by PR73",
+    "Existing database inventory mismatch and duplicate catalog IDs"
+  ],
+  "boundaries": {
+    "actualCodexSettingsModified": false,
+    "mainMerged": false,
+    "deployed": false,
+    "scannerWeakened": false
+  },
+  "localRegression": {
+    "command": "node --test tests/amc-agent.test.mjs tests/amc-agent-preflight.test.mjs",
+    "nodeVersion": "v26.0.0",
+    "tests": 24,
+    "passed": 24,
+    "failed": 0,
+    "skipped": 0,
+    "newPreflightTests": 20,
+    "existingDirectImportTests": 4,
+    "boundary": "Real registry and temporary filesystem; exact installer module with instrumented filesystem imports for deterministic races; existing compatibility suite imports real module directly. No actual Codex launch/settings changes."
+  },
+  "negativeRegression": {
+    "sourceCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "method": "Same new 20 tests with only baseline installer source supplied in memory",
+    "tests": 20,
+    "passed": 2,
+    "failed": 18,
+    "parentFailuresIncluded": 2,
+    "concreteReproduction": "After file validation the path is replaced with a same-size outside synthetic file. Old code reads the outside contents; repaired descriptor reader reads the validated file.",
+    "syntheticExternalBytes": 4349,
+    "syntheticExternalSha256": "68c15ec0ec9caf32993d9ac2ffb0cfd0756f2f65386e89e01c969794380481a6"
+  },
+  "baselineCodeql": {
+    "run": 37392313670,
+    "ref": "refs/heads/codex/spider-agent-preflight-read",
+    "sourceCommit": "0c90253c19c34b7b9112a30a73a89fb67934b0f0",
+    "languagesSuccessful": 2,
+    "openAlerts": 42,
+    "target52Open": true,
+    "creation53Open": true
+  },
+  "sourceSha256": {
+    "scripts/amc-agent.mjs": "d0fc2e868932547876e5664af79a401f3709050d9c5f27b98e5291f4dcc7894b",
+    "tests/amc-agent-preflight.test.mjs": "54dc5fb029b12bd064c1836b1d042981e38ed0fceb6a62ee2c77426aba32d56f",
+    "tests/amc-agent.test.mjs": "2218c084a4321ca9a4fb6f1ef01d9aaf32789c50dbfb9ae5ad40389ce9e3ad99"
+  },
+  "checks": {
+    "mission:update": "pass",
+    "mission:check": "pass",
+    "project:update": "pass",
+    "project:check": "pass",
+    "sourceSyntax": "pass",
+    "diff:check": "pass",
+    "design:check": "failed: preexisting duplicate Sky catalog IDs",
+    "verify": "failed: preexisting stale database inventory; build/full tests not reached"
+  },
+  "sameRefAfterComparison": "Pending at source commit. Exact-SHA final results are recorded in the PR and ignored work/spider-ci/cycle-48-readback.json."
+}

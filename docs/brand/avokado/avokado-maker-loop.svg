@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="maker-title maker-desc">
+  <title id="maker-title">avokado maker loop from Studio and SDK to Sky, Zema, and Wallet</title>
+  <desc id="maker-desc">A creator defines a Tool in Studio, packages it with the SDK and MCP, publishes it to Sky for review and discovery, receives a Zema work request, runs it through the RockstarOS permission boundary, and returns a Wallet receipt. Feedback from the result and receipt can inform a new version. Integrations and publication status vary.</desc>
+  <defs>
+    <marker id="maker-arrow" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#587c72"/>
+    </marker>
+    <marker id="maker-arrow-muted" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#8a9995"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="680" fill="#f7f7f4"/>
+  <rect x="24" y="22" width="1152" height="636" rx="26" fill="#fbfaf7" stroke="#d8e0dc" stroke-width="2"/>
+
+  <g font-family="Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" fill="#26302f">
+    <text x="56" y="62" font-size="14" font-weight="700" letter-spacing="3.1" fill="#69579f">BUILD / SHARE / RUN</text>
+    <text x="1144" y="62" text-anchor="end" font-size="12" letter-spacing="1.8" fill="#76827f">THE CREATOR SIDE</text>
+    <line x1="56" y1="84" x2="1144" y2="84" stroke="#d3dbd7" stroke-width="1"/>
+    <text x="56" y="119" font-size="27" font-weight="700">Make a Tool people can find and use.</text>
+    <text x="56" y="145" font-size="16" fill="#5f6c69">Build a useful capability, connect it clearly, and help someone get a job done.</text>
+
+    <!-- top lane -->
+    <rect x="56" y="188" width="246" height="154" rx="16" fill="#f8e8dc" stroke="#d9a67f" stroke-width="1.5"/>
+    <text x="78" y="217" font-size="11" font-weight="700" letter-spacing="1.8" fill="#a65f32">01 / MAKE</text>
+    <text x="78" y="254" font-size="24" font-weight="700">Rock Studio</text>
+    <text x="78" y="282" font-size="15" fill="#6e5b50">Choose the inputs, actions,</text>
+    <text x="78" y="303" font-size="15" fill="#6e5b50">and result people need.</text>
+    <text x="78" y="326" font-size="12" font-weight="700" fill="#a65f32">build a useful capability</text>
+
+    <rect x="348" y="188" width="246" height="154" rx="16" fill="#e3f0f8" stroke="#8ab8d4" stroke-width="1.5"/>
+    <text x="370" y="217" font-size="11" font-weight="700" letter-spacing="1.8" fill="#377da6">02 / CONNECT</text>
+    <text x="370" y="254" font-size="24" font-weight="700">SDK + MCP</text>
+    <text x="370" y="282" font-size="15" fill="#50646b">Build with the SDK; connect</text>
+    <text x="370" y="303" font-size="15" fill="#50646b">through MCP when needed.</text>
+    <text x="370" y="326" font-size="12" font-weight="700" fill="#377da6">clear setup</text>
+
+    <rect x="640" y="188" width="246" height="154" rx="16" fill="#e3f0f8" stroke="#8ab8d4" stroke-width="1.5"/>
+    <text x="662" y="217" font-size="11" font-weight="700" letter-spacing="1.8" fill="#377da6">03 / SHARE</text>
+    <text x="662" y="254" font-size="24" font-weight="700">Sky</text>
+    <text x="662" y="282" font-size="15" fill="#50646b">List it where people can</text>
+    <text x="662" y="303" font-size="15" fill="#50646b">compare and choose Tools.</text>
+    <text x="662" y="326" font-size="12" font-weight="700" fill="#377da6">Sky discovery</text>
+
+    <rect x="932" y="188" width="212" height="154" rx="16" fill="#f8e8dc" stroke="#d9a67f" stroke-width="1.5"/>
+    <text x="954" y="217" font-size="11" font-weight="700" letter-spacing="1.6" fill="#a65f32">04 / START WORK</text>
+    <text x="954" y="254" font-size="24" font-weight="700">Zema</text>
+    <text x="954" y="282" font-size="15" fill="#6e5b50">Turn a choice into a request</text>
+    <text x="954" y="303" font-size="15" fill="#6e5b50">and a job in Zema.</text>
+    <text x="954" y="326" font-size="12" font-weight="700" fill="#a65f32">Zema work</text>
+
+    <!-- lower lane -->
+    <rect x="932" y="402" width="212" height="154" rx="16" fill="#e3f1ea" stroke="#8bb9a8" stroke-width="1.5"/>
+    <text x="954" y="431" font-size="11" font-weight="700" letter-spacing="1.6" fill="#397a6c">05 / RUN SAFELY</text>
+    <text x="954" y="468" font-size="24" font-weight="700">RockstarOS</text>
+    <text x="954" y="496" font-size="15" fill="#536760">Check who can run what,</text>
+    <text x="954" y="517" font-size="15" fill="#536760">where, and within which budget.</text>
+    <text x="954" y="540" font-size="12" font-weight="700" fill="#397a6c">RockstarOS checks access</text>
+
+    <rect x="640" y="402" width="246" height="154" rx="16" fill="#eee9f8" stroke="#b4a4d6" stroke-width="1.5"/>
+    <text x="662" y="431" font-size="11" font-weight="700" letter-spacing="1.8" fill="#69579f">06 / SEE THE COST</text>
+    <text x="662" y="468" font-size="24" font-weight="700">Wallet</text>
+    <text x="662" y="496" font-size="15" fill="#625a70">Show usage, receipt, and</text>
+    <text x="662" y="517" font-size="15" fill="#625a70">what is confirmed.</text>
+    <text x="662" y="540" font-size="12" font-weight="700" fill="#69579f">Wallet record</text>
+
+    <rect x="348" y="402" width="246" height="154" rx="16" fill="#f2f4f1" stroke="#c5d0cb" stroke-width="1.5"/>
+    <text x="370" y="431" font-size="11" font-weight="700" letter-spacing="1.8" fill="#71807b">07 / IMPROVE</text>
+    <text x="370" y="468" font-size="24" font-weight="700">Result feedback</text>
+    <text x="370" y="496" font-size="15" fill="#5f6c69">Use the result and history</text>
+    <text x="370" y="517" font-size="15" fill="#5f6c69">to improve the next version.</text>
+    <text x="370" y="540" font-size="12" font-weight="700" fill="#71807b">next version</text>
+
+    <!-- arrows around loop -->
+    <path d="M302 265 H338" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#maker-arrow)"/>
+    <path d="M594 265 H630" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#maker-arrow)"/>
+    <path d="M886 265 H922" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#maker-arrow)"/>
+    <path d="M1038 342 V392" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#maker-arrow)"/>
+    <path d="M932 479 H896" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#maker-arrow)"/>
+    <path d="M640 479 H604" fill="none" stroke="#587c72" stroke-width="2.5" marker-end="url(#maker-arrow)"/>
+    <path d="M348 479 H306 C278 479 278 371 178 371 C128 371 128 352 128 342" fill="none" stroke="#8a9995" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#maker-arrow-muted)"/>
+    <text x="88" y="405" font-size="12" fill="#71807b">improve</text>
+
+    <rect x="56" y="590" width="1088" height="42" rx="13" fill="#ffffff" stroke="#ccd6d1"/>
+    <text x="78" y="616" font-size="13" font-weight="700" fill="#536760">A Tool can change; the shared rules keep work understandable.</text>
+    <text x="1122" y="616" text-anchor="end" font-size="12" fill="#71807b">Conceptual loop · readiness varies</text>
+  </g>
+</svg>

@@ -1,0 +1,38 @@
+{
+  "schema": "rockstar-sim-led-product-correction-followup/1",
+  "date": "2026-10-02",
+  "supersedes": "docs/evidence/sim-led-product-correction-20261002.json missing.final-atomic-device-wallet-cloud-dispatch-handoff",
+  "productDirection": "A physical SIM or eSIM purchased through accepted sales channels includes access to RockstarOS services. SIM/eSIM identifies connectivity; it does not have to store or install the OS binary.",
+  "audit": {
+    "reused": [
+      "Channel-neutral signed service entitlement claims and seller delivery/recovery API",
+      "Shared Rockstar identity, device sessions, capability snapshot and owner authorization",
+      "Home and Android Shell entry to Sky, Zema and Agent work",
+      "Durable cloud execution, recovery, offline continuation consent and same-ID result retrieval",
+      "Signed rates/quotes, explicit consent, usage snapshots, itemized receipts and shared budget reservation"
+    ],
+    "changed": [
+      "Corrected progress audit: native quote-to-Wallet-to-Cloud approval is wired in Shell API v18 source; the prior missing-handoff note is stale",
+      "Reframed the immediate Android gap as compile/runtime/device acceptance, not another source-level handoff implementation"
+    ],
+    "missing": [
+      "Android Core Java/JUnit, AIDL generation, APK, device-credential and restart/reconnect runtime acceptance",
+      "Seller checkout and buyer delivery integration, physical SIM fulfillment and actual carrier activation",
+      "Contracted Provider quote/execution/usage semantics, production rates/invoices, funded settlement and production D1 readback",
+      "Successful RockstarOS installation or client acceptance for each exact supported hardware SKU"
+    ]
+  },
+  "localVerification": {
+    "sourceAudit": "PASS: traced MainActivity → ShellConnection → RockShellService → PlatformStore → Cloud A2A routes; source sequence uses a stable delegation ID, exact quote-bound HELD reservation, Broker proof, explicit Cloud approval, and read-only same-ID recovery.",
+    "sourceContract": "PASS: node --test tests/sim-service-entry.test.mjs (2/2) checks the source ordering and fail-closed gates.",
+    "canonicalVectors": "PASS: node --experimental-strip-types --test tests/a2a-broker-authorization.test.mjs tests/a2a-wallet-reservation.test.mjs tests/a2a-price-quote.test.mjs (12/12) checks shared quote/authorization signatures and digests.",
+    "repository": "The preceding full npm run verify passed on the pre-follow-up tree: Node 757/757, Fashion 19/19, Worker/D1 API 1,048 assertions, CSV 113 assertions, typecheck, product lint, build and release checks. After the follow-up UI/progress edits, focused source contract (2/2), typecheck, product lint, product-baseline, Android architecture, device-support, schema, regenerated database snapshot/check (125 source tables; production readback 0/6), project-status sync/check, git diff --check, and a new production build passed; this is not a post-edit full-repository verify.",
+    "onboardingUpdate": "PASS: /connect now presents three concise steps from SIM/eSIM purchase and carrier activation, through one Rockstar ID claim, to device routing and Cloud task/results. The source-contract regression test asserts the new flow and offline-continuation explanation.",
+    "progress": "SIM01 remains in_progress. Production D1 readback is 0/6."
+  },
+  "notProven": [
+    "Android source contract tests are not Android runtime proof; no usable Java/Gradle/Android SDK is installed on this host",
+    "No production billing, provider invoice, funded Wallet, actual carrier activation or physical SIM fulfillment",
+    "No exact-SKU successful OS installation or end-to-end device acceptance"
+  ]
+}

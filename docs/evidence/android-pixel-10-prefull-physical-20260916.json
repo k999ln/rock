@@ -1,0 +1,74 @@
+{
+  "schema": "avocadoos-pixel10-prefull-physical-acceptance/1",
+  "recordedAt": "2026-09-16T22:48:19Z",
+  "target": {
+    "model": "Pixel 10",
+    "codename": "frankel",
+    "sku": "GL066",
+    "androidRelease": "17",
+    "installedBuildFingerprint": "google/frankel/frankel:17/CP2A.260805.005/2026091000:user/release-keys",
+    "verifiedBootState": "yellow",
+    "serialStored": false
+  },
+  "scope": "test-signed standalone APK acceptance on the existing locked OS before any avocadoOS full build or flash",
+  "artifacts": {
+    "automationApkSha256": "9d4d356251328b37bf5559ffccf58587a1b76184e7fa3fb4101e5502156ae098",
+    "shellApkSha256": "bddef77e5b91bae0eb987354b4f46eb5adae4ff1b727330644b6fb6b4a112e2c",
+    "articleToolApkSha256": "d2a3712bd63a4dce5a052b1e59208547250764ed8794cf3a1a5f76aeac882810",
+    "operatorAgentApkSha256": "a741911005dd8926f04f63a15a0844caeec52e2621f80bd846c343e37f8e2dd9",
+    "testSigningCertificateSha256": "610499604b3469ae2f6c158b8482bbd6b0fb6e324862fb67e92731fe8a241f57",
+    "productionCredential": false
+  },
+  "results": {
+    "standaloneBuildCoreTestAndLint": "PASS_279_GRADLE_TASKS",
+    "brokerToolLocalAiAndSyntheticWallet": "PASS_11_OF_11",
+    "shellSkyZemaAndBackup": "PASS_5_OF_5",
+    "operatorAgentRestrictedCommandChecks": "PASS_5_OF_5",
+    "physicalRebootSeedPhase": "PASS_RUNNING_FIRST_STEP_AT_BOOT_COUNT_24",
+    "physicalRebootRecoveryPhase": "PASS_SELECTED_TOOL_RESULT_HISTORY_REVIEW_AT_BOOT_COUNT_25",
+    "recoveredAttempt": 2,
+    "completedToolSteps": 2,
+    "finalWorkState": "review",
+    "finalEventCount": 7,
+    "recoveryPhraseConfirmation": "PASS_24_WORDS_AND_RANDOM_WORD_CONFIRMATION",
+    "backupEnvelope": "PASS_AVOCADOOS_RECOVERABLE_BACKUP_V2",
+    "recoverySecretHardwareBacked": true,
+    "deviceWrapHardwareBacked": true,
+    "fileDescriptorStorageSyncConfirmed": true,
+    "deviceOwnerAbsentFactoryResetResult": "PASS_FAIL_CLOSED_DEVICE_OWNER_REQUIRED"
+  },
+  "verifiedPaths": [
+    "persisted native Sky selection",
+    "Zema strict local-LLM plan for the selected Tool",
+    "two-step article Tool execution",
+    "result and event history",
+    "synthetic provider receipt and owner-scoped Wallet ledger boundary",
+    "running-work recovery across a real device reboot",
+    "owner recovery setup and hardware-backed encrypted backup export",
+    "operator command signature, replay and monotonic-counter checks",
+    "factory reset rejection without Device Owner"
+  ],
+  "cleanup": {
+    "temporaryStayAwakeRestoredTo": 0,
+    "instrumentationPackagesRemoved": true,
+    "factoryResetPerformed": false,
+    "bootloaderChanged": false,
+    "osFlashed": false,
+    "rootUsed": false
+  },
+  "notProved": [
+    "Pixel wipe or Keystore-loss restore using the owner phrase",
+    "new-device Keystore rebinding on a wiped physical Pixel",
+    "production Operator WebAuthn credential",
+    "StrongBox key attestation enrollment",
+    "Device Owner allowlisted command execution",
+    "remote Provider session revocation",
+    "SELinux enforcing behavior in an avocadoOS image",
+    "AOSP or Soong full build",
+    "production signing, flash, OTA, rollback, stock recovery, CTS or VTS",
+    "external Provider sandbox, real income or real funds"
+  ],
+  "fullOsBuildStarted": false,
+  "firstFlashGatePassed": false,
+  "containsRecoveryPhraseOrSecret": false
+}

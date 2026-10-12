@@ -18,7 +18,7 @@ import {
   DEVICE_URL,
 } from '@/lib/device';
 
-export function DeviceConnection() {
+export function DeviceConnection({ connectionBlocked = false }: { connectionBlocked?: boolean }) {
   const [connected, setConnected] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -31,6 +31,7 @@ export function DeviceConnection() {
   }, []);
 
   async function connect() {
+    if (connectionBlocked) return;
     setBusy(true);
     setMessage('');
     try {
@@ -39,10 +40,12 @@ export function DeviceConnection() {
       setMessage(
         'Connectorへ接続しました。基本4機能を確認済みです。MCP画面から他の自動化も接続できます。',
       );
-    } catch {
+    } catch (error) {
       setConnected(Boolean(deviceToken()));
       setMessage(
-        '接続できませんでした。先に接続アプリを起動し、ブラウザのローカルネットワーク許可を確認してください。',
+        error instanceof Error
+          ? error.message
+          : '接続できませんでした。ブラウザのローカルネットワーク許可を確認してください。',
       );
     } finally {
       setBusy(false);
@@ -54,78 +57,82 @@ export function DeviceConnection() {
       <div className="page-heading device-heading">
         <div>
           <span className="eyebrow">SKY MCP / LOCAL</span>
-          <h1>3ステップで、Skyに接続</h1>
+          <h1>このPCの実行機能を接続</h1>
           <p>
-            初回だけ準備すれば、次からは接続アプリを起動してSkyを開くだけです。
+            ローカル開発版は、接続ボタンから必要な実行機能を自動で準備します。別端末・公開Web版では手動準備が必要です。
           </p>
         </div>
         <Cable size={35} />
       </div>
 
       <section className="panel device-card device-install-card">
-        <ol className="device-install-steps">
-          <li>
-            <span className="device-step-number">1</span>
-            <div className="device-step-icon">
-              <Download size={20} />
-            </div>
-            <div>
-              <h2>無料パックをダウンロード</h2>
-              <p>
-                追加アカウント、APIキー、有料の依存サービスは必要ありません。
-              </p>
-              <a
-                href="/toolkits/sky-mcp-connector.zip"
-                download
-                className="black-button device-download"
-              >
-                <Download size={16} />
-                Sky MCP Connectorをダウンロード
-              </a>
-            </div>
-          </li>
-          <li>
-            <span className="device-step-number">2</span>
-            <div className="device-step-icon">
-              <FolderOpen size={20} />
-            </div>
-            <div>
-              <h2>展開して接続アプリを起動</h2>
-              <p>
-                macOSはフォルダ内の「Sky
-                MCP接続.command」を開きます。起動したターミナルは、利用中そのままにします。
-              </p>
-              <small>
-                開けない場合はControlキーを押しながらクリックし、「開く」を選びます。
-              </small>
-              <small>macOS / Linux: Node.js 22.13以上・Python 3.13以上</small>
-            </div>
-          </li>
-          <li>
-            <span className="device-step-number">3</span>
-            <div className="device-step-icon">
-              <Play size={20} />
-            </div>
-            <div>
-              <h2>この画面から接続を確認</h2>
-              <p>
-                Skyが共通Connectorを確認します。その後、MCP画面から各自動化をワンタップ接続できます。
-              </p>
-              <button
-                className="black-button"
-                disabled={busy}
-                onClick={() => void connect()}
-              >
-                {connected ? <Check size={16} /> : <Cable size={16} />}
-                {busy
-                  ? '接続を確認中…'
-                  : connected
-                    ? 'もう一度接続を確認'
-                    : 'このPCを接続'}
-              </button>
-            </div>
-          </li>
-        </ol>
+        <button
+          className="black-button"
+          disabled={busy || connectionBlocked}
+          onClick={() => void connect()}
+        >
+          {connected ? <Check size={16} /> : <Cable size={16} />}
+          {busy
+            ? '実行機能を準備中…'
+            : connected
+              ? 'もう一度接続を確認'
+              : 'このPCを接続'}
+        </button>
+        {connectionBlocked && <output>Skyへのサインインを確認してください。閉じてサインインすると、この画面から接続を再確認できます。</output>}
+        <details>
+          <summary>自動準備が使えない環境の接続手順</summary>
+          <ol className="device-install-steps">
+            <li>
+              <span className="device-step-number">1</span>
+              <div className="device-step-icon">
+                <Download size={20} />
+              </div>
+              <div>
+                <h2>無料パックをダウンロード</h2>
+                <p>
+                  追加アカウント、APIキー、有料の依存サービスは必要ありません。
+                </p>
+                <a
+                  href="/toolkits/sky-mcp-connector.zip"
+                  download
+                  className="black-button device-download"
+                >
+                  <Download size={16} />
+                  Sky MCP Connectorをダウンロード
+                </a>
+              </div>
+            </li>
+            <li>
+              <span className="device-step-number">2</span>
+              <div className="device-step-icon">
+                <FolderOpen size={20} />
+              </div>
+              <div>
+                <h2>展開して接続アプリを起動</h2>
+                <p>
+                  macOSはフォルダ内の「Sky
+                  MCP接続.command」を開きます。起動したターミナルは、利用中そのままにします。
+                </p>
+                <small>
+                  開けない場合はControlキーを押しながらクリックし、「開く」を選びます。
+                </small>
+                <small>macOS / Linux: Node.js 22.13以上・Python 3.13以上</small>
+              </div>
+            </li>
+            <li>
+              <span className="device-step-number">3</span>
+              <div className="device-step-icon">
+                <Play size={20} />
+              </div>
+              <div>
+                <h2>この画面から接続を確認</h2>
+                <p>
+                  Skyが共通Connectorを確認します。その後、MCP画面から各自動化をワンタップ接続できます。
+                </p>
+              </div>
+            </li>
+          </ol>
+        </details>
 
         <div
           className={`device-connection-result ${connected ? 'is-connected' : ''}`}
@@ -137,7 +144,7 @@ export function DeviceConnection() {
             <p>
               {connected
                 ? 'Skyの対応ツールからMCP実行できます。'
-                : '手順2まで終えたら「このPCを接続」を押してください。'}
+                : '「このPCを接続」で準備を確認します。自動準備に対応しない環境では下の接続手順を開いてください。'}
             </p>
           </div>
           {connected && (

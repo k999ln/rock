@@ -96,7 +96,7 @@ class MCPHttpClient:
             raise ValueError('fixed origin required; no credentials/path/query/fragment')
         if parsed.scheme == 'http' and not (allow_http_fixture is True and parsed.hostname == '127.0.0.1'):
             raise ValueError('plain HTTP is restricted to explicit 127.0.0.1 development fixture')
-        if parsed.scheme == 'https' and ca_file is None:
+        if parsed.scheme == 'https' and not ca_file:
             raise ValueError('explicit CA required')
         try:
             ipaddress.ip_address(parsed.hostname)

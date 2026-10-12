@@ -1,0 +1,75 @@
+{
+  "schema": "rocketstar-design-archive-verification/1",
+  "scope": "File preservation and documentation integrity, not physical qualification",
+  "file_count": 932,
+  "bytes": 148595667,
+  "zip_count": 8,
+  "excluded_count": 251,
+  "checks": [
+    {
+      "name": "inventory identifiers unique",
+      "passed": true
+    },
+    {
+      "name": "inventory byte total",
+      "passed": true
+    },
+    {
+      "name": "safe relative source paths",
+      "passed": true
+    },
+    {
+      "name": "every copied file has the source bytes",
+      "passed": true
+    },
+    {
+      "name": "inventory covers all archived work and outputs",
+      "passed": true
+    },
+    {
+      "name": "only documented caches and installed QA dependencies excluded",
+      "passed": true
+    },
+    {
+      "name": "all preserved ZIPs have valid CRCs",
+      "passed": true
+    },
+    {
+      "name": "current master and previously missing appendices present",
+      "passed": true
+    },
+    {
+      "name": "existing OS PDF equals archived source",
+      "passed": true
+    },
+    {
+      "name": "R1.0 package manifest preserved",
+      "passed": true
+    },
+    {
+      "name": "R1.0 recorded coverage preserved",
+      "passed": true
+    },
+    {
+      "name": "no flight or manufacturing release inferred",
+      "passed": true
+    },
+    {
+      "name": "independent source-to-copy comparison",
+      "passed": true
+    },
+    {
+      "name": "every inventory file tracked",
+      "passed": true
+    },
+    {
+      "name": "Git index blob bytes equal source hashes",
+      "passed": true
+    }
+  ],
+  "passed": 15,
+  "failed": 0,
+  "repository_runtime_changed": false,
+  "manufacturing_release": false,
+  "flight_release": false
+}

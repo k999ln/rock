@@ -19,6 +19,7 @@ import {
   type McpConnection,
   type McpToolPassport,
 } from '@/lib/mcp-hub';
+import { describeMcpToolResult } from '@/lib/mcp-tool-result';
 
 type RunState = 'ready' | 'approval' | 'running' | 'completed' | 'failed';
 type ParentRunState = 'ready' | 'running' | 'completed' | 'failed';
@@ -83,29 +84,30 @@ function argsFor(tool: McpToolPassport | undefined, request: string) {
   return JSON.stringify(args, null, 2);
 }
 
-function prettyResult(value: unknown) {
-  if (typeof value === 'string') return value;
-  return JSON.stringify(value, null, 2);
-}
-
 export function McpBotRunner({
   server,
   request,
   onRunningChange,
   onStatusChange,
+  onOutcome,
   onDisconnected,
+  fixedToolName,
+  executionDisabled = false,
 }: {
   server: McpConnection;
   request: string;
   onRunningChange?: (running: boolean) => void;
   onStatusChange?: (status: ParentRunState) => void;
+  onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   onDisconnected?: () => void;
+  fixedToolName?: string;
+  executionDisabled?: boolean;
 }) {
   const tools = useMemo(
-    () => server.passport?.tools ?? [],
-    [server.passport],
+    () => (server.passport?.tools ?? []).filter((tool) => !fixedToolName || tool.name === fixedToolName),
+    [server.passport, fixedToolName],
   );
-  const initialTool = toolForRequest(tools, request);
+  const initialTool = fixedToolName ? tools[0] : toolForRequest(tools, request);
   const [toolName, setToolName] = useState(initialTool?.name ?? '');
   const selectedTool = useMemo(
     () => tools.find((tool) => tool.name === toolName),
@@ -118,6 +120,7 @@ export function McpBotRunner({
   const [result, setResult] = useState('');
   const [error, setError] = useState('');
   const [disconnecting, setDisconnecting] = useState(false);
+  const directExecutionAllowed = selectedTool?.pricing.model === 'free';
 
   function changeTool(value: string) {
     const next = tools.find((tool) => tool.name === value);
@@ -185,17 +188,25 @@ export function McpBotRunner({
         parseArgs(),
         approval.approvalToken,
       );
-      setResult(prettyResult(value));
+      const outcome = describeMcpToolResult(value);
       setApproval(null);
-      setState('completed');
-      onStatusChange?.('completed');
+      onOutcome?.(outcome);
+      if (outcome.ok) {
+        setResult(outcome.text);
+        setState('completed');
+        onStatusChange?.('completed');
+      } else {
+        setError(outcome.text);
+        setState('failed');
+        onStatusChange?.('failed');
+      }
     } catch (reason) {
       setApproval(null);
       setState('failed');
       onStatusChange?.('failed');
-      setError(
-        reason instanceof Error ? reason.message : 'MCPを実行できませんでした。',
-      );
+      const message = reason instanceof Error ? reason.message : 'MCPを実行できませんでした。';
+      setError(message);
+      onOutcome?.({ ok: false, text: message });
     } finally {
       onRunningChange?.(false);
     }
@@ -236,7 +247,7 @@ export function McpBotRunner({
 
       <label className="mcp-bot-field">
         <span>このbotに任せる機能</span>
-        <select value={toolName} onChange={(event) => changeTool(event.target.value)}>
+        <select value={toolName} disabled={Boolean(fixedToolName)} onChange={(event) => changeTool(event.target.value)}>
           {tools.map((tool) => (
             <option key={tool.name} value={tool.name}>
               {tool.title || tool.name}
@@ -244,6 +255,13 @@ export function McpBotRunner({
           ))}
         </select>
         {selectedTool?.description && <small>{selectedTool.description}</small>}
+        {selectedTool && <small>
+          {selectedTool.pricing.model === 'free'
+            ? `料金条件: 提供元申告「実行ごとの追加料金なし」（Rockstarによる独立検証なし）。${selectedTool.pricing.note}`
+            : selectedTool.pricing.model === 'unknown'
+              ? '料金条件: 未確認。実行を停止します。'
+              : `料金条件: ${selectedTool.pricing.model}。署名見積・予算予約・利用量照合が未接続のため、直接実行できません。${selectedTool.pricing.note}`}
+        </small>}
       </label>
 
       <div className="mcp-bot-direction">
@@ -289,6 +307,7 @@ export function McpBotRunner({
           <div>
             <strong>1回だけ実行します</strong>
             <p>{approval.summary}</p>
+            <small>料金条件: 提供元申告「実行ごとの追加料金なし」。この申告はRockstarが独立検証した料金見積ではありません。</small>
             <small>確認後の引数変更や再利用は拒否されます。</small>
           </div>
         </output>
@@ -296,7 +315,7 @@ export function McpBotRunner({
 
       <div className="mcp-bot-actions">
         {approval ? (
-          <button type="button" className="black-button" onClick={() => void execute()}>
+          <button type="button" className="black-button" disabled={executionDisabled} onClick={() => void execute()}>
             {state === 'running' ? (
               <LoaderCircle className="sky-chat-spin" size={16} />
             ) : (
@@ -305,7 +324,7 @@ export function McpBotRunner({
             {state === 'running' ? '実行中…' : '内容を承認して実行'}
           </button>
         ) : (
-          <button type="button" className="black-button" onClick={() => void prepare()}>
+          <button type="button" className="black-button" onClick={() => void prepare()} disabled={!directExecutionAllowed || executionDisabled}>
             <ShieldCheck size={16} /> 実行内容を確認
           </button>
         )}

@@ -1,0 +1,40 @@
+{
+  "schema": "avocadoos-android-backup-v2-emulator-evidence/1",
+  "recordedAt": "2026-09-16",
+  "target": "Android 15 arm64 emulator",
+  "purpose": "source-level pre-full-build acceptance for recoverable backup v2",
+  "format": "avocadoos-recoverable-backup/2",
+  "shellApiVersion": 4,
+  "results": {
+    "java11Core": "PASS_37_OF_37",
+    "brokerInstrumentation": "PASS_11_NON_SKIPPED_OF_13_WITH_2_PHYSICAL_REBOOT_PHASES_SKIPPED",
+    "shellInstrumentation": "PASS_5_OF_5",
+    "androidSourceBuildAndLint": "PASS_207_TASKS"
+  },
+  "verified": [
+    "256-bit locally generated recovery secret encoded as a checksum-protected 24-word avocadoOS phrase",
+    "exact random-word confirmation before recovery setup activation",
+    "phrase is explicitly not a Wallet seed",
+    "dual wrapping of one per-backup random data key through owner and device routes",
+    "wrong phrase, wrong owner, modified ciphertext and trailing bytes are rejected",
+    "allowlisted Broker state export excludes component authority, sessions and provider secrets",
+    "restore requires an empty owner target and is transactional",
+    "restored automation starts paused",
+    "restored Sky selection receives a fresh token",
+    "proposed and issued approvals restore as stopped",
+    "running leases restore without their old lease token or deadline",
+    "replacement restore creates a fresh Android Keystore binding",
+    "Shell export and import use bounded file descriptors without logging phrase or payload"
+  ],
+  "notProved": [
+    "Pixel 10 wipe and Keystore-loss restore",
+    "persistence across a physical reboot",
+    "hardware-backed status on the release device",
+    "SELinux enforcing release-image isolation",
+    "AOSP or Soong full build",
+    "production signing",
+    "first flash readiness"
+  ],
+  "containsRecoveryPhraseOrSecret": false,
+  "releaseGatePassed": false
+}

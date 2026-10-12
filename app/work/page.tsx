@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import Workbench from '@/components/workbench';
-import './work.css';
-export const metadata: Metadata = { title: '仕事を進める — Rock star' };
+import { redirect } from 'next/navigation';
+export const metadata: Metadata = { title: '仕事を進める — RockstarOS' };
 export default function WorkPage() {
-  return <Workbench />;
+  redirect('/chat?view=work');
 }

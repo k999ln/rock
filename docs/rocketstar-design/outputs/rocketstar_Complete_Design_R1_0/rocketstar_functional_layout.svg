@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="339" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 339" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="339"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-339)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="323" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,646) scale(1,-1)">機能配置 / 縮尺なし・断面寸法なし・機器個数を示さない</text>
+			<rect x="46" y="130" width="103" height="165" rx="30" ry="30" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(80%,83%,84%); fill-rule: evenodd;"/>
+			<rect x="70" y="207" width="55" height="60" rx="10" ry="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,19%,24%); fill-rule: evenodd;"/>
+			<circle cx="97.5" cy="221" r="2.1" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(5%,77%,87%); fill-rule: evenodd;"/>
+			<circle cx="97.5" cy="237" r="2.1" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(5%,77%,87%); fill-rule: evenodd;"/>
+			<circle cx="97.5" cy="253" r="2.1" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(5%,77%,87%); fill-rule: evenodd;"/>
+			<path d="M 46,191 L 149,191 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8;"/>
+			<text x="75.0" y="176" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,352) scale(1,-1)">推進・電装</text>
+			<text x="79.5" y="160" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,320) scale(1,-1)">機能領域</text>
+			<rect x="46" y="111" width="103" height="19" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="77.5" y="116" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,232) scale(1,-1)">段間・分離</text>
+			<rect x="46" y="23" width="103" height="88" rx="6" ry="6" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(80%,83%,84%); fill-rule: evenodd;"/>
+			<text x="84.71923828125" y="75" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,150) scale(1,-1)">第1段</text>
+			<text x="75.0" y="55" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,110) scale(1,-1)">推進・電装</text>
+			<text x="79.5" y="39" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,78) scale(1,-1)">回収機能</text>
+			<text x="54.74658203124999" y="303" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,606) scale(1,-1)">風下面 / 上段と第1段</text>
+			<text x="174" y="267" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,534) scale(1,-1)">上段衛星室</text>
+			<text x="174" y="251" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,502) scale(1,-1)">保持式扉</text>
+			<path d="M 169,257 L 125,250 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="125 250, 129.788 248.5596, 129.1046 252.8552" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="174" y="122" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,244) scale(1,-1)">段間構造は保持</text>
+			<path d="M 170,125 L 147,122 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="147 122, 151.7457 120.4258, 151.1831 124.7389" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="174" y="56" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,112) scale(1,-1)">脚・舵面・エンジン</text>
+			<text x="174" y="41" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,82) scale(1,-1)">個数・寸法は未定</text>
+			<rect x="361" y="130" width="103" height="165" rx="30" ry="30" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1; fill: rgb(9%,19%,24%); fill-rule: evenodd;"/>
+			<text x="399.21923828125" y="234" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,468) scale(1,-1)">第2段</text>
+			<text x="392.0" y="211" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,422) scale(1,-1)">連続する</text>
+			<text x="392.0" y="192" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(100%,100%,100%); stroke:none;" transform="translate(0,384) scale(1,-1)">熱防護面</text>
+			<text x="389.5" y="303" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,606) scale(1,-1)">上段風上面</text>
+			<text x="385.0" y="104" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(3%,49%,51%); stroke:none;" transform="translate(0,208) scale(1,-1)">扉は風下面側</text>
+			<text x="373.75" y="86" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8.5px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,172) scale(1,-1)">材料・厚さ・取付は</text>
+			<text x="376.8192138671875" y="70" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8.5px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,140) scale(1,-1)">熱/構造設計で決定</text>
+		</g>
+	</g>
+</svg>

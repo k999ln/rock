@@ -23,7 +23,9 @@ const lock = read('package-lock.json');
 const androidAudit = read('data/android-physical-release-audit.json');
 const personalNumberAudit = read('data/personal-number-release-audit.json');
 const sitesAudit = read('data/sites-owner-preview-audit.json');
-const sitesHosting = read('.openai/hosting.json');
+// Validate the recorded audit independently of the developer's deployment.
+// The release CLI still reads the actual .openai/hosting.json.
+const sitesHosting = read('tests/fixtures/sites-owner-preview-hosting.json');
 const webSecurityPolicy = read('data/web-security-policy.json');
 const webLicenseAudit = read('data/web-third-party-license-audit.json');
 const qemuAudit = read('data/qemu-release-audit.json');
@@ -79,12 +81,18 @@ void test('current release matrix passes while preserving real blockers', () => 
   assert.equal(result.blockedTargets.length, 6);
   assert.equal(result.missingDependencyLicenses, 0);
   assert.deepEqual(result.webLicense, {
-    packageEntries: 899,
-    uniqueComponents: 866,
-    reviewRequired: 47,
+    packageEntries: 956,
+    uniqueComponents: 914,
+    reviewRequired: 50,
   });
   assert.equal(result.sites.status, 'OUTDATED');
   assert.deepEqual(result.webSecurity, { status: 'PASS_SOURCE_POLICY', headers: 8 });
+});
+
+void test('release evaluation cannot predate any incorporated audit observation', () => {
+  const stale = structuredClone(readiness);
+  stale.evaluatedAt = '2026-09-14';
+  assert.throws(() => validateMatrix({ matrix: stale }), /評価日が監査観測より古い/);
 });
 
 void test('Web security source policy is exact and current deployment must prove it independently', () => {
@@ -135,6 +143,35 @@ void test('owner-private delivery stays safe while latest source sync remains bl
   );
 });
 
+void test('owner approval and owner-workspace access remain separate launch gates', () => {
+  assert.deepEqual(
+    validateOwnerPrivateSitesAudit({
+      audit: sitesAudit,
+      hosting: sitesHosting,
+      readiness,
+      webSecurityPolicy,
+    }),
+    {
+      status: 'OUTDATED',
+      version: 29,
+      sourceCommit: '25cf0fa2cae303475a9bf54280889a1192be455e',
+    },
+  );
+
+  const missingObservation = structuredClone(sitesAudit);
+  delete missingObservation.access.evidence;
+  assert.throws(
+    () =>
+      validateOwnerPrivateSitesAudit({
+        audit: missingObservation,
+        hosting: sitesHosting,
+        readiness,
+        webSecurityPolicy,
+      }),
+    /承認済みaccess blockerの観測証拠/,
+  );
+});
+
 void test('owner-private delivery rejects public or external access readback', () => {
   const changed = structuredClone(sitesAudit);
   changed.site.externalVisitors = 1;
@@ -142,6 +179,38 @@ void test('owner-private delivery rejects public or external access readback', (
     () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
     /本人1名限定/,
   );
+});
+
+void test('recorded Sites audit rejects missing or mismatched deployment identity', () => {
+  for (const hosting of [undefined, {}, { project_id: 'different-project' }]) {
+    assert.throws(
+      () => validateOwnerPrivateSitesAudit({ audit: sitesAudit, hosting, readiness, webSecurityPolicy }),
+      /本人1名限定/,
+    );
+  }
+  const changed = structuredClone(sitesAudit);
+  changed.site.projectId = 'different-project';
+  assert.throws(
+    () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
+    /本人1名限定/,
+  );
+});
+
+void test('recorded Sites audit rejects broader access even with matching identity', () => {
+  for (const fields of [
+    { accessMode: 'public' },
+    { currentUserRole: 'editor' },
+    { allowedUsers: 2 },
+    { allowedGroups: 1 },
+    { allowedEditors: 1 },
+  ]) {
+    const changed = structuredClone(sitesAudit);
+    Object.assign(changed.site, fields);
+    assert.throws(
+      () => validateOwnerPrivateSitesAudit({ audit: changed, hosting: sitesHosting, readiness, webSecurityPolicy }),
+      /本人1名限定/,
+    );
+  }
 });
 
 void test('cannot label a target ready while a required gate is blocked', () => {
@@ -248,12 +317,12 @@ void test('dependency license audit is pinned to the complete package-lock', () 
 
 void test('Android and personal-number audits preserve exact real blockers', () => {
   const result = validateMatrix();
-  assert.equal(result.android.passed, 0);
-  assert.equal(result.android.required, 5);
+  assert.equal(result.android.passed, 1);
+  assert.equal(result.android.required, 6);
   assert.deepEqual(result.android.blocked, [
-    'exact-model-and-sku',
     'bsp-driver-boot-recovery',
-    'android-cdd-cts',
+    'selinux-enforcing-isolation',
+    'android-cdd-cts-vts',
     'production-signing',
     'regional-radio-and-sales',
   ]);
@@ -274,7 +343,7 @@ void test('Android compatibility and physical flash claims require their exact g
   changedCompatibility.claims.androidCompatible = true;
   assert.throws(
     () => validateAndroidPhysicalReleaseAudit({ root, audit: changedCompatibility, readiness }),
-    /CDD\/CTS合格なし/,
+    /CDD\/CTS\/VTS合格なし/,
   );
 
   const changedFlash = structuredClone(androidAudit);
@@ -301,9 +370,11 @@ void test('Android gate list and public matrix cannot drift apart', () => {
   );
 
   const changedMatrix = structuredClone(readiness);
-  changedMatrix.targets
+  const changedGate = changedMatrix.targets
     .find(({ id }) => id === 'android-physical-preview')
-    .gates.find(({ id }) => id === 'exact-model-and-sku').status = 'pass';
+    .gates.find(({ id }) => id === 'exact-model-and-sku');
+  changedGate.status = 'blocked';
+  changedGate.ownerAction = 'Fixture mismatch';
   assert.throws(
     () => validateMatrix({ matrix: changedMatrix }),
     /公開台帳と監査が不一致/,
@@ -326,6 +397,7 @@ void test('Android gate PASS requires hashed role evidence from the selected dev
   const requirement = changed.requirements.find(({ id }) => id === 'exact-model-and-sku');
   requirement.status = 'pass';
   requirement.evidence = ['docs/android-and-personal-number-gates-20260913.md'];
+  changed.deviceEvidence = [];
   const matrix = structuredClone(readiness);
   matrix.targets
     .find(({ id }) => id === 'android-physical-preview')
@@ -338,16 +410,16 @@ void test('Android gate PASS requires hashed role evidence from the selected dev
 
 void test('Android build gates cannot pass before exact device and BSP gates', () => {
   const changed = structuredClone(androidAudit);
-  const requirement = changed.requirements.find(({ id }) => id === 'android-cdd-cts');
+  const requirement = changed.requirements.find(({ id }) => id === 'android-cdd-cts-vts');
   requirement.status = 'pass';
   requirement.evidence = ['docs/android-and-personal-number-gates-20260913.md'];
   const matrix = structuredClone(readiness);
   matrix.targets
     .find(({ id }) => id === 'android-physical-preview')
-    .gates.find(({ id }) => id === 'android-cdd-cts').status = 'pass';
+    .gates.find(({ id }) => id === 'android-cdd-cts-vts').status = 'pass';
   assert.throws(
     () => validateAndroidPhysicalReleaseAudit({ root, audit: changed, readiness: matrix }),
-    /型番\/SKU gateより先/,
+    /BSP\/boot\/recovery gateより先/,
   );
 });
 

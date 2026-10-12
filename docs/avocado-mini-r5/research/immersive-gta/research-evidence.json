@@ -1,0 +1,1036 @@
+{
+  "title": "rock / 没入型GTA 技術調査",
+  "date": "2026-09-30",
+  "research_start_utc": "2026-09-30T17:41:44Z",
+  "research_end_utc": "2026-09-30T18:41:55.974984Z",
+  "repository_sha": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "pr43_sha": "78638565bd042defe9bec1ffb8d26c8b6cca48b6",
+  "validation": {
+    "scope": "Extracted PR43 host fixture with main shared helpers; Node v26.0.0",
+    "tests": 9,
+    "passed": 9,
+    "failed": 0,
+    "gta_tested": false,
+    "physical_display_tested": false
+  },
+  "sources": [
+    {
+      "id": "R1",
+      "kind": "リポジトリ",
+      "title": "R5 統合設計書",
+      "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/docs/avocado-mini-r5/package/integrated_design.md",
+      "note": "要求、OS契約、光学・収納・熱の未承認事項。実機試験0件という記載を確認。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "R2",
+      "kind": "リポジトリ",
+      "title": "GTA対応を成立させるための変更案（2026-09-27）",
+      "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/docs/avocado-mini-conversation-2026-09-27/avocadoMini_GTA_enablement_2026-09-27.md",
+      "note": "本体実行優先、Enhanced Storyの仮試験条件、外部演算は未選択。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "R3",
+      "kind": "コード",
+      "title": "GTA/FiveM 接続項目",
+      "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/lib/sky-connections.ts#L94",
+      "note": "接続先のメタデータ。起動・入力・立体レンダラーの実装とは別。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "R4",
+      "kind": "コード",
+      "title": "既存の空間入力契約",
+      "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/contracts/avocado-mini-spatial-interaction.json#L50",
+      "note": "Material Invention向けで、4方向のviewpointsが必須。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "R5",
+      "kind": "未マージコード",
+      "title": "PR #43：最小粒子ゲーム",
+      "url": "https://github.com/k999ln/rock/pull/43",
+      "note": "調査時open。head 78638565bd042defe9bec1ffb8d26c8b6cca48b6。2D host/fixture。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "R6",
+      "kind": "コード",
+      "title": "PR #43 のゲーム処理",
+      "url": "https://github.com/k999ln/rock/blob/78638565bd042defe9bec1ffb8d26c8b6cca48b6/lib/game-sandbox.ts",
+      "note": "2D、最大64粒子、版固定ルール、操作・保存・再開。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "R7",
+      "kind": "コード",
+      "title": "PR #43 のテスト",
+      "url": "https://github.com/k999ln/rock/blob/78638565bd042defe9bec1ffb8d26c8b6cca48b6/tests/game-sandbox.test.mjs",
+      "note": "切り出した9テストをローカル実行し9件合格。対象と限界は本文。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G1",
+      "kind": "公式仕様",
+      "title": "GTA V PC システム要件",
+      "url": "https://support.rockstargames.com/articles/lMQXeP2Z1mN3g9oZiBZFR/grand-theft-auto-v-pc-system-requirements",
+      "note": "EnhancedとLegacyを分ける。VR・Miniの性能保証ではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G2",
+      "kind": "公式仕様",
+      "title": "GTA VI 対応プラットフォーム",
+      "url": "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions",
+      "note": "2026-08-18更新。PS5、Xbox Series X|Sを掲載。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G3",
+      "kind": "公式運用",
+      "title": "GTA Online BattlEye FAQ",
+      "url": "https://support.rockstargames.com/articles/1nenwhZlVrJY6CTFeSS2Fx/grand-theft-auto-online-battleye-faq",
+      "note": "Storyと公式Onlineの条件を区別。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G4",
+      "kind": "作者資料",
+      "title": "Script Hook V",
+      "url": "https://www.dev-c.com/gtav/scripthookv/",
+      "note": "2026-07-15公開版。対応ゲームbuildを作者が指定。GTA Online対象外。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G5",
+      "kind": "公式開発文書",
+      "title": "FiveM Enhanced の変更点",
+      "url": "https://docs.fivem.net/docs/developers/legacy-vs-enhanced/",
+      "note": "Early Access、Pure Mode常時有効、graphic mods不可、通信と音声等の変更。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G6",
+      "kind": "公式更新",
+      "title": "FiveM Enhanced 2026-09-24 hotfix",
+      "url": "https://github.com/citizenfx/rfc/discussions/545",
+      "note": "直近の修正状況。早期アクセスの互換性を固定・再試験する根拠。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G7",
+      "kind": "公式開発文書",
+      "title": "FiveM Enhanced onboarding",
+      "url": "https://docs.fivem.net/docs/server-manual/onboarding-guide-fivem-for-gtav-enhanced/",
+      "note": "Enhanced用サーバーとAlchemist等の準備。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G8",
+      "kind": "公式開発文書",
+      "title": "FiveM Secure Your Events",
+      "url": "https://docs.fivem.net/docs/developers/server-security/",
+      "note": "クライアント要求をサーバー側の状態・権限で検証。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G9",
+      "kind": "公式コード文書",
+      "title": "FiveM GetEntityCoords",
+      "url": "https://github.com/citizenfx/natives/blob/master/ENTITY/GetEntityCoords.md",
+      "note": "ゲーム内オブジェクトの位置取得。全メッシュの取得ではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G10",
+      "kind": "公式コード文書",
+      "title": "FiveM SetCamCoord",
+      "url": "https://github.com/citizenfx/natives/blob/master/CAM/SetCamCoord.md",
+      "note": "カメラ位置を指定する関数。複数視点描画の保証ではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G11",
+      "kind": "作者資料",
+      "title": "GTAVR",
+      "url": "https://github.com/DeployAbi/GTAVR",
+      "note": "Legacy・特定build・Story向け試験版。作者の未検証表示と配布条件を確認。今回は実行せず。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "G12",
+      "kind": "公式規約",
+      "title": "Creator Platform License Agreement（2026-01-12）",
+      "url": "https://static.cfx.re/platform-license-agreement-12-jan-2026.pdf",
+      "note": "第2.3、2.4、3.1等を確認。ゲーム音声、ブランド、課金・換金に関係。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D1",
+      "kind": "査読研究",
+      "title": "Photophoretic-trap volumetric display（2018）",
+      "url": "https://www.nature.com/articles/nature25176",
+      "note": "空中の捕捉粒子を動かす体積表示。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D2",
+      "kind": "査読研究",
+      "title": "Dual-Path Holographic Laser-Excited Volumetric Display（2026）",
+      "url": "https://doi.org/10.1145/3816042",
+      "note": "Xe入りガラスセル内のcm級実証。室内照明下の実演があるが、通常の空気中・Mini完成機ではない。8月27日修正の掲載本文を参照。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D3",
+      "kind": "査読研究",
+      "title": "音響捕捉による視覚・触覚・音の表示（2019）",
+      "url": "https://www.nature.com/articles/s41586-019-1739-5",
+      "note": "MATDの表示原理。対向アレイを使う実験。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D4",
+      "kind": "査読研究",
+      "title": "単面アレイによる音響捕捉（2015）",
+      "url": "https://www.nature.com/articles/ncomms9661",
+      "note": "単面から3D捕捉・操作した例。音響方式すべてが対向必須ではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D5",
+      "kind": "査読研究",
+      "title": "EyeReal（2025）",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12675290/",
+      "note": "Nature原著の公開版・検索索引本文を確認。直接取得には制限あり。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D6",
+      "kind": "研究コード",
+      "title": "EyeReal 公開実装",
+      "url": "https://github.com/WeijieMax/EyeReal",
+      "note": "左右画像／座標+3DGSからの推論経路。公開LICENSEのAGPL-3.0を直接確認。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D7",
+      "kind": "メーカー仕様",
+      "title": "Voxon VX2",
+      "url": "https://www.voxon.co/product-page/voxon-vx2",
+      "note": "体積径256×高さ256mm、装置高さ500mm、30 volumes/s等の公表仕様。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D8",
+      "kind": "メーカー開発資料",
+      "title": "Voxon 開発者向けSDK",
+      "url": "https://www.voxon.co/developers",
+      "note": "Unity、C/C++、シミュレーター。GTA対応の証拠ではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D9",
+      "kind": "メーカー仕様",
+      "title": "ASKA3D 空中結像",
+      "url": "https://www.asukanet.co.jp/contents/product/aerialimaging.html",
+      "note": "プレートによる空中結像。部屋全体の自由な3D点群とは区別。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D10",
+      "kind": "メーカー資料",
+      "title": "Looking Glass 27",
+      "url": "https://blog.lookingglassfactory.com/revolutionary-looking-glass-27-light-field-display-unveiled/",
+      "note": "多数の視点を表示するパネル。周囲実空間の発光点ではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D11",
+      "kind": "研究機関資料",
+      "title": "FlexiVol（CHI 2025）",
+      "url": "https://upnalab.com/project/flexivol-reach-through-volumetric-display/",
+      "note": "弾性のある拡散面を動かす、手を入れられる体積表示。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D12",
+      "kind": "査読研究",
+      "title": "OTDの仮想背景・視差拡張（2021）",
+      "url": "https://www.nature.com/articles/s41598-021-86495-6.pdf",
+      "note": "小さな描画領域から遠方の見かけを表す実験。単眼・焦点手掛かりの制約。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D13",
+      "kind": "査読研究",
+      "title": "Holobricks（2022）",
+      "url": "https://www.nature.com/articles/s41377-022-00742-7",
+      "note": "光学モジュールを物理的に並べる拡張。無線接続だけで表示範囲が増えるわけではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D14",
+      "kind": "査読研究",
+      "title": "Neural étendue expander（2024）",
+      "url": "https://www.nature.com/articles/s41467-024-46915-3",
+      "note": "視野と表示範囲の制約を計算光学で緩和する研究。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D15",
+      "kind": "研究論文",
+      "title": "Occlusion-capable multiview volumetric display（2007）",
+      "url": "https://compphotolab.northwestern.edu/wordpress/wp-content/uploads/2015/04/Occlusion_Capable.pdf",
+      "note": "体積表示で遮蔽を扱う方向制御の研究。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D16",
+      "kind": "研究機関資料",
+      "title": "RoomAlive",
+      "url": "https://www.microsoft.com/en-us/research/project/roomalive/",
+      "note": "室内表面への投影と対話。R5の代替合格にはしない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "H1",
+      "kind": "メーカー仕様",
+      "title": "AMD Ryzen Z2 Extreme",
+      "url": "https://www.amd.com/en/products/processors/handhelds/ryzen-z-series/z2-series/z2-extreme.html",
+      "note": "28W標準、15–35W設定範囲。製品全体の消費電力ではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "H2",
+      "kind": "メーカー仕様",
+      "title": "Raspberry Pi Compute Module 5",
+      "url": "https://www.raspberrypi.com/products/compute-module-5/",
+      "note": "Armモジュールの仕様。Windowsゲームへの互換性は別問題。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "H3",
+      "kind": "メーカー仕様",
+      "title": "VL53L5CX データシート",
+      "url": "https://www.st.com/resource/en/datasheet/vl53l5cx.pdf",
+      "note": "最大8×8ゾーン、距離・照度・反射率・更新条件を確認。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "H4",
+      "kind": "メーカー仕様",
+      "title": "RealSense D405",
+      "url": "https://www.realsenseai.com/product-family/d405-series/",
+      "note": "近距離7–50cmが主用途。全身・部屋向けと取り違えない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "H5",
+      "kind": "メーカー仕様",
+      "title": "Orbbec Gemini 335",
+      "url": "https://www.orbbec.com/products/stereo-vision-camera/gemini-335/",
+      "note": "深度入力の評価機候補。内蔵採用済みではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "I1",
+      "kind": "公式開発文書",
+      "title": "MediaPipe Hand Landmarker",
+      "url": "https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker",
+      "note": "21点の手の推定。製品の絶対位置精度は実測する。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "I2",
+      "kind": "公式開発文書",
+      "title": "MediaPipe Pose Landmarker",
+      "url": "https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker",
+      "note": "33点の身体姿勢推定。遮蔽・尺度・較正を別評価。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "I3",
+      "kind": "W3C文書",
+      "title": "XR Accessibility User Requirements",
+      "url": "https://www.w3.org/TR/xaur/",
+      "note": "特定の動作に依存しない操作と代替入力。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "S1",
+      "kind": "公式開発文書",
+      "title": "Windows Graphics Capture",
+      "url": "https://learn.microsoft.com/en-us/windows/apps/develop/media-authoring-processing/screen-capture",
+      "note": "ウィンドウ／画面のフレーム取得。HDR形式にも注意。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "S2",
+      "kind": "開発元資料",
+      "title": "ReShade",
+      "url": "https://reshade.me/",
+      "note": "色・深度を扱う仕組みと制約。GTA特定版の動作は未検証。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "S3",
+      "kind": "測定ツール文書",
+      "title": "PresentMon Console Application",
+      "url": "https://github.com/GameTechDev/PresentMon/blob/main/README-ConsoleApplication.md",
+      "note": "フレーム・GPU・入力関連指標の意味と必要な計測条件。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "S4",
+      "kind": "メーカー技術解説",
+      "title": "PC Latencyの測定範囲",
+      "url": "https://developer.nvidia.com/blog/understanding-and-measuring-pc-latency/",
+      "note": "PC内部時間と周辺入力・表示走査を区別する。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "A1",
+      "kind": "開発元資料",
+      "title": "whisper.cpp",
+      "url": "https://github.com/ggml-org/whisper.cpp",
+      "note": "ローカル音声認識の実装候補。日本語と同時負荷は未測定。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "A2",
+      "kind": "開発元規約",
+      "title": "VOICEVOX利用規約",
+      "url": "https://voicevox.hiroshiba.jp/term/",
+      "note": "音声ごとの利用規約・クレジット条件を確認する入口。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "A3",
+      "kind": "メーカー開発資料",
+      "title": "NVIDIA ACE",
+      "url": "https://developer.nvidia.com/ace",
+      "note": "音声・言語・キャラクター処理の候補。GTAへの自動接続ではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "A4",
+      "kind": "公式開発文書",
+      "title": "Windows Spatial Audio",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/coreaudio/render-spatial-sound-using-spatial-audio-objects",
+      "note": "空間音響APIと出力装置ごとの条件。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "H6",
+      "kind": "メーカー開発文書",
+      "title": "VL53L5CX Ultra Lite Driverガイド（UM2884）",
+      "url": "https://www.st.com.cn/resource/en/user_manual/dm00797144-a-guide-to-using-the-vl53l5cx-multizone-timeofflight-ranging-sensor-with-wide-field-of-view-ultra-lite-driver-uld-stmicroelectronics.pdf",
+      "note": "公式検索索引の周波数表を確認：4×4最大60Hz、8×8最大15Hz。直接PDF取得はtimeout。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "I4",
+      "kind": "公式開発文書",
+      "title": "OpenCV ステレオ深度の原理",
+      "url": "https://docs.opencv.org/4.13.0/dd/d53/tutorial_py_depthmap.html",
+      "note": "視差・基線・焦点距離と距離の関係。本文の誤差例は今回の仮定による計算。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "S5",
+      "kind": "公式開発文書",
+      "title": "Windows SendInput",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput",
+      "note": "キーボード・マウス入力とUIPI制約。GTAへの適合は実測前。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "S6",
+      "kind": "公式開発文書",
+      "title": "FiveM NUI Callbacks",
+      "url": "https://docs.fivem.net/docs/scripting-manual/nui-development/nui-callbacks/",
+      "note": "UIとresource間のJSON callback。外部センサー接続や多視点描画を自動提供するものではない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "S7",
+      "kind": "開発元資料",
+      "title": "ViGEmBus 公開リポジトリ",
+      "url": "https://github.com/nefarius/ViGEmBus",
+      "note": "2023-11-02にarchive。古い仮想ゲームパッド手順を製品の保守基盤にしない。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "R8",
+      "kind": "コード",
+      "title": "既存のThree.js表示部品",
+      "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/components/avocado-turntable.tsx",
+      "note": "WebGLRendererとPerspectiveCameraを使う製品外観ビュー。ゲーム実行や実空間表示ではない。package.jsonにはthree依存あり。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "S8",
+      "kind": "公式開発文書",
+      "title": "Three.js Render Targets",
+      "url": "https://threejs.org/manual/pages/rendertargets.html",
+      "note": "自社シーンを画面以外の描画先へ出力する仕組み。左右・多視点ベンチの構成材料。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "A5",
+      "kind": "開発元コード文書",
+      "title": "whisper.cpp stream example",
+      "url": "https://github.com/ggml-org/whisper.cpp/blob/master/examples/stream/README.md",
+      "note": "500msごとの素朴なストリーミング例とVADモード。完成品の音声応答遅延とは別。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "A6",
+      "kind": "公式開発文書",
+      "title": "Windows Acoustic Echo Cancellation sample",
+      "url": "https://github.com/microsoft/Windows-classic-samples/blob/main/Samples/AcousticEchoCancellation/README.md",
+      "note": "AEC対応の検査と参照音声ストリーム。利用できる機器・ドライバーを確認する必要がある。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "A7",
+      "kind": "メーカー開発文書",
+      "title": "reSpeaker Lite FAQ",
+      "url": "https://wiki.seeedstudio.com/respeaker_lite_faq/",
+      "note": "R5音声フロントエンド候補。USBとI2Sのfirmwareを区別。Windows評価時の音声入出力確認。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "S9",
+      "kind": "公式開発文書",
+      "title": "Windows Interactive Services",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/services/interactive-services",
+      "note": "システムサービスと対話する利用者のセッションを区別する。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "A8",
+      "kind": "メーカー開発文書",
+      "title": "ACE Unreal Plugin Support Matrix",
+      "url": "https://docs.nvidia.com/ace/ace-unreal-plugin/2.5/ace-unreal-plugin-support-matrix.html",
+      "note": "公開文書の検索索引を確認。現行URLはarchiveへ転送され、直接本文の取得には制限あり。機能・モデル別のGPU条件を再確認する入口。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "R9",
+      "kind": "リポジトリ",
+      "title": "R5の担当範囲とMAT15",
+      "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/docs/workstreams/11-material-invention-avocado-mini.md",
+      "note": "MAT14は資料保存、MAT15は単体表示・入力・収納・同一試作機の共同受入。旧E3/E2/E1は履歴。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D17",
+      "kind": "査読研究",
+      "title": "メタサーフェスによる2D–3D切替表示（2026）",
+      "url": "https://doi.org/10.1038/s41586-026-10318-9",
+      "note": "原著要旨をNature掲載ページの検索索引・PubMedで確認。1.2mmは光学構成の厚さで、OLEDパネル等を含むMini完成機の寸法ではない。本文全文は未取得。",
+      "checked": "2026-09-30"
+    },
+    {
+      "id": "D18",
+      "kind": "原著要旨・研究機関",
+      "title": "空中音響アレイが作る気流の実験（2026）",
+      "url": "https://research-information.bris.ac.uk/en/publications/experimental-and-numerical-study-of-acoustic-streaming-in-mid-air/",
+      "note": "Bristolの著者所属機関で原著要旨を確認。粒子浮上の安定性や触覚へ、装置自身が誘起する気流も影響し得る。",
+      "checked": "2026-09-30"
+    }
+  ],
+  "fixture_provenance": {
+    "tests/game-sandbox.test.mjs": "cc7f709d213c4aaf8f788239d19e5e45d224f4a3a624fbb6fa794aa0a47643d6",
+    "lib/workflow.ts": "e11de6797e7175252a0c44b8d958afc65e54619888981a56d6b2fd4b411757df",
+    "lib/material-invention.ts": "2fe2842a7e8e9343876cd8c33d9a03bb3d1a836e23727d7a267eb1abfc3b8c8c",
+    "lib/game-sandbox.ts": "fa384195168005521da6a4d01f3cb4f1614836af7923b720789f7f33c1263dba",
+    "tests/fixtures/game-sandbox-session.json": "0df00814e88721d16ca41e30b1dbb8c0ccc536c363e5f82958f292448699ea08",
+    "tests/fixtures/game-sandbox-process.mjs": "a840def5378dc9876489beb52cb781c8262d2592c8139d418343ebbadf1576c5"
+  },
+  "html_qa": {
+    "desktop_rendered": true,
+    "viewport_390px_page_overflow": false,
+    "four_calculators_checked": true,
+    "display_filter_checked": true,
+    "source_search_checked": true,
+    "out_of_range_feedback_checked": true,
+    "browser_warnings_errors": 0,
+    "mobile_toc_navigation_checked": true,
+    "source_count_final": 66,
+    "display_comparison_rows_final": 12
+  },
+  "formula_checks": {
+    "camera_18cm_person_180cm_vertical_span_deg": {
+      "distance_1m": 68.517606,
+      "distance_2m": 44.150237
+    },
+    "stereo_example": {
+      "image_width_px": 640,
+      "horizontal_fov_degrees": 75,
+      "baseline_m": 0.02,
+      "disparity_sigma_px": 0.25,
+      "distance_error_mm_at_1m": 29.97371,
+      "distance_error_mm_at_2m": 119.894842,
+      "measured": false
+    }
+  },
+  "repository_final_check": {
+    "main_sha": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+    "pr43_head": "78638565bd042defe9bec1ffb8d26c8b6cca48b6",
+    "pr43_state": "open",
+    "pr43_merged": false,
+    "local_clone_worktree_clean": true
+  },
+  "research_duration_minutes": 60.2,
+  "partial_source_link_audit": {
+    "checked_at": "2026-09-30T18:23:36.828168+00:00",
+    "method": "HEAD only; status errors are not proof of missing content",
+    "results": [
+      {
+        "id": "R1",
+        "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/docs/avocado-mini-r5/package/integrated_design.md",
+        "status": 200,
+        "resolved_url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/docs/avocado-mini-r5/package/integrated_design.md",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.81
+      },
+      {
+        "id": "R2",
+        "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/docs/avocado-mini-conversation-2026-09-27/avocadoMini_GTA_enablement_2026-09-27.md",
+        "status": 200,
+        "resolved_url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/docs/avocado-mini-conversation-2026-09-27/avocadoMini_GTA_enablement_2026-09-27.md",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 1.28
+      },
+      {
+        "id": "R3",
+        "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/lib/sky-connections.ts#L94",
+        "status": 200,
+        "resolved_url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/lib/sky-connections.ts#L94",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.69
+      },
+      {
+        "id": "R4",
+        "url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/contracts/avocado-mini-spatial-interaction.json#L50",
+        "status": 200,
+        "resolved_url": "https://github.com/k999ln/rock/blob/b3e2676abd8ae2a0b3f78f48483e067b429d9bc8/contracts/avocado-mini-spatial-interaction.json#L50",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.66
+      },
+      {
+        "id": "R5",
+        "url": "https://github.com/k999ln/rock/pull/43",
+        "status": 200,
+        "resolved_url": "https://github.com/k999ln/rock/pull/43",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 1.02
+      },
+      {
+        "id": "R6",
+        "url": "https://github.com/k999ln/rock/blob/78638565bd042defe9bec1ffb8d26c8b6cca48b6/lib/game-sandbox.ts",
+        "status": 200,
+        "resolved_url": "https://github.com/k999ln/rock/blob/78638565bd042defe9bec1ffb8d26c8b6cca48b6/lib/game-sandbox.ts",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.63
+      },
+      {
+        "id": "R7",
+        "url": "https://github.com/k999ln/rock/blob/78638565bd042defe9bec1ffb8d26c8b6cca48b6/tests/game-sandbox.test.mjs",
+        "status": 200,
+        "resolved_url": "https://github.com/k999ln/rock/blob/78638565bd042defe9bec1ffb8d26c8b6cca48b6/tests/game-sandbox.test.mjs",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.6
+      },
+      {
+        "id": "G1",
+        "url": "https://support.rockstargames.com/articles/lMQXeP2Z1mN3g9oZiBZFR/grand-theft-auto-v-pc-system-requirements",
+        "status": null,
+        "note": "The read operation timed out",
+        "elapsed_seconds": 18.08
+      },
+      {
+        "id": "G2",
+        "url": "https://support.rockstargames.com/articles/4QfG4FmZCf5W1gS8jy4UVT/grand-theft-auto-vi-platform-editions-and-versions",
+        "status": null,
+        "note": "The read operation timed out",
+        "elapsed_seconds": 18.04
+      },
+      {
+        "id": "G3",
+        "url": "https://support.rockstargames.com/articles/1nenwhZlVrJY6CTFeSS2Fx/grand-theft-auto-online-battleye-faq",
+        "status": null,
+        "note": "The read operation timed out",
+        "elapsed_seconds": 18.02
+      },
+      {
+        "id": "G4",
+        "url": "https://www.dev-c.com/gtav/scripthookv/",
+        "status": 200,
+        "resolved_url": "https://www.dev-c.com/gtav/scripthookv/",
+        "content_type": "text/html; charset=UTF-8",
+        "elapsed_seconds": 0.22
+      },
+      {
+        "id": "G5",
+        "url": "https://docs.fivem.net/docs/developers/legacy-vs-enhanced/",
+        "status": 200,
+        "resolved_url": "https://docs.fivem.net/docs/developers/legacy-vs-enhanced/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.07
+      },
+      {
+        "id": "G6",
+        "url": "https://github.com/citizenfx/rfc/discussions/545",
+        "status": 200,
+        "resolved_url": "https://github.com/citizenfx/rfc/discussions/545",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.75
+      },
+      {
+        "id": "G7",
+        "url": "https://docs.fivem.net/docs/server-manual/onboarding-guide-fivem-for-gtav-enhanced/",
+        "status": 200,
+        "resolved_url": "https://docs.fivem.net/docs/server-manual/onboarding-guide-fivem-for-gtav-enhanced/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.06
+      },
+      {
+        "id": "G8",
+        "url": "https://docs.fivem.net/docs/developers/server-security/",
+        "status": 200,
+        "resolved_url": "https://docs.fivem.net/docs/developers/server-security/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.05
+      },
+      {
+        "id": "G9",
+        "url": "https://github.com/citizenfx/natives/blob/master/ENTITY/GetEntityCoords.md",
+        "status": 200,
+        "resolved_url": "https://github.com/citizenfx/natives/blob/master/ENTITY/GetEntityCoords.md",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.41
+      },
+      {
+        "id": "G10",
+        "url": "https://github.com/citizenfx/natives/blob/master/CAM/SetCamCoord.md",
+        "status": 200,
+        "resolved_url": "https://github.com/citizenfx/natives/blob/master/CAM/SetCamCoord.md",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.58
+      },
+      {
+        "id": "G11",
+        "url": "https://github.com/DeployAbi/GTAVR",
+        "status": 200,
+        "resolved_url": "https://github.com/DeployAbi/GTAVR",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.5
+      },
+      {
+        "id": "G12",
+        "url": "https://static.cfx.re/platform-license-agreement-12-jan-2026.pdf",
+        "status": 200,
+        "resolved_url": "https://static.cfx.re/platform-license-agreement-12-jan-2026.pdf",
+        "content_type": "application/pdf",
+        "elapsed_seconds": 0.08
+      },
+      {
+        "id": "D1",
+        "url": "https://www.nature.com/articles/nature25176",
+        "status": 200,
+        "resolved_url": "https://www.nature.com/articles/nature25176?error=cookies_not_supported&code=eb38e35c-95e5-4273-9826-2300cda4860a",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 1.18
+      },
+      {
+        "id": "D2",
+        "url": "https://doi.org/10.1145/3816042",
+        "status": 403,
+        "note": "HEAD restriction does not establish a missing source",
+        "elapsed_seconds": 0.16
+      },
+      {
+        "id": "D3",
+        "url": "https://www.nature.com/articles/s41586-019-1739-5",
+        "status": 200,
+        "resolved_url": "https://www.nature.com/articles/s41586-019-1739-5?error=cookies_not_supported&code=7987a1ef-099b-4539-aeb1-adf39896914b",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 1.09
+      },
+      {
+        "id": "D4",
+        "url": "https://www.nature.com/articles/ncomms9661",
+        "status": 200,
+        "resolved_url": "https://www.nature.com/articles/ncomms9661?error=cookies_not_supported&code=4bbe2abc-a964-4fae-a718-5678ab513fa5",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 1.01
+      },
+      {
+        "id": "D5",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12675290/",
+        "status": 200,
+        "resolved_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12675290/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.09
+      },
+      {
+        "id": "D6",
+        "url": "https://github.com/WeijieMax/EyeReal",
+        "status": 200,
+        "resolved_url": "https://github.com/WeijieMax/EyeReal",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 1.09
+      },
+      {
+        "id": "D7",
+        "url": "https://www.voxon.co/product-page/voxon-vx2",
+        "status": 200,
+        "resolved_url": "https://voxel3d.co/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.22
+      },
+      {
+        "id": "D8",
+        "url": "https://www.voxon.co/developers",
+        "status": 200,
+        "resolved_url": "https://voxel3d.co/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.15
+      },
+      {
+        "id": "D9",
+        "url": "https://www.asukanet.co.jp/contents/product/aerialimaging.html",
+        "status": 200,
+        "resolved_url": "https://www.asukanet.co.jp/contents/product/aerialimaging.html",
+        "content_type": "text/html",
+        "elapsed_seconds": 1.31
+      },
+      {
+        "id": "D10",
+        "url": "https://blog.lookingglassfactory.com/revolutionary-looking-glass-27-light-field-display-unveiled/",
+        "status": 200,
+        "resolved_url": "https://blog.lookingglassfactory.com/revolutionary-looking-glass-27-light-field-display-unveiled/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.6
+      },
+      {
+        "id": "D11",
+        "url": "https://upnalab.com/project/flexivol-reach-through-volumetric-display/",
+        "status": 200,
+        "resolved_url": "https://upnalab.com/project/flexivol-reach-through-volumetric-display/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.16
+      },
+      {
+        "id": "D12",
+        "url": "https://www.nature.com/articles/s41598-021-86495-6.pdf",
+        "status": 200,
+        "resolved_url": "https://www.nature.com/articles/s41598-021-86495-6.pdf?error=cookies_not_supported&code=8ae54053-12f4-450e-bea0-f2eb0b4b3852",
+        "content_type": "application/pdf",
+        "elapsed_seconds": 1.6
+      },
+      {
+        "id": "D13",
+        "url": "https://www.nature.com/articles/s41377-022-00742-7",
+        "status": 200,
+        "resolved_url": "https://www.nature.com/articles/s41377-022-00742-7?error=cookies_not_supported&code=44b87dbd-a6e9-4bee-b2c7-1eb0b8b3950c",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 1.16
+      },
+      {
+        "id": "D14",
+        "url": "https://www.nature.com/articles/s41467-024-46915-3",
+        "status": 200,
+        "resolved_url": "https://www.nature.com/articles/s41467-024-46915-3?error=cookies_not_supported&code=ddd3473c-3175-4611-966c-8ecb2657be49",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 1.08
+      },
+      {
+        "id": "D15",
+        "url": "https://compphotolab.northwestern.edu/wordpress/wp-content/uploads/2015/04/Occlusion_Capable.pdf",
+        "status": null,
+        "note": "<urlopen error timed out>",
+        "elapsed_seconds": 18.03
+      },
+      {
+        "id": "D16",
+        "url": "https://www.microsoft.com/en-us/research/project/roomalive/",
+        "status": 200,
+        "resolved_url": "https://www.microsoft.com/en-us/research/project/roomalive/",
+        "content_type": "text/html; charset=UTF-8",
+        "elapsed_seconds": 1.25
+      },
+      {
+        "id": "H1",
+        "url": "https://www.amd.com/en/products/processors/handhelds/ryzen-z-series/z2-series/z2-extreme.html",
+        "status": 200,
+        "resolved_url": "https://www.amd.com/en/products/processors/handhelds/ryzen-z-series/z2-series/z2-extreme.html",
+        "content_type": "text/html",
+        "elapsed_seconds": 0.19
+      },
+      {
+        "id": "H2",
+        "url": "https://www.raspberrypi.com/products/compute-module-5/",
+        "status": 403,
+        "note": "HEAD restriction does not establish a missing source",
+        "elapsed_seconds": 0.14
+      },
+      {
+        "id": "H3",
+        "url": "https://www.st.com/resource/en/datasheet/vl53l5cx.pdf",
+        "status": null,
+        "note": "The read operation timed out",
+        "elapsed_seconds": 18.07
+      },
+      {
+        "id": "H4",
+        "url": "https://www.realsenseai.com/product-family/d405-series/",
+        "status": 200,
+        "resolved_url": "https://www.realsenseai.com/product-family/d405-series/",
+        "content_type": "text/html; charset=UTF-8",
+        "elapsed_seconds": 0.6
+      },
+      {
+        "id": "H5",
+        "url": "https://www.orbbec.com/products/stereo-vision-camera/gemini-335/",
+        "status": 200,
+        "resolved_url": "https://www.orbbec.com/products/stereo-vision-camera/gemini-335/",
+        "content_type": "text/html; charset=UTF-8",
+        "elapsed_seconds": 0.68
+      },
+      {
+        "id": "I1",
+        "url": "https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker",
+        "status": 200,
+        "resolved_url": "https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.35
+      },
+      {
+        "id": "I2",
+        "url": "https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker",
+        "status": 200,
+        "resolved_url": "https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.35
+      },
+      {
+        "id": "I3",
+        "url": "https://www.w3.org/TR/xaur/",
+        "status": 200,
+        "resolved_url": "https://www.w3.org/TR/xaur/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.06
+      },
+      {
+        "id": "S1",
+        "url": "https://learn.microsoft.com/en-us/windows/apps/develop/media-authoring-processing/screen-capture",
+        "status": 200,
+        "resolved_url": "https://learn.microsoft.com/en-us/windows/apps/develop/media-authoring-processing/screen-capture",
+        "content_type": "text/html",
+        "elapsed_seconds": 0.2
+      },
+      {
+        "id": "S2",
+        "url": "https://reshade.me/",
+        "status": 200,
+        "resolved_url": "https://reshade.me/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.48
+      },
+      {
+        "id": "S3",
+        "url": "https://github.com/GameTechDev/PresentMon/blob/main/README-ConsoleApplication.md",
+        "status": 200,
+        "resolved_url": "https://github.com/GameTechDev/PresentMon/blob/main/README-ConsoleApplication.md",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.35
+      },
+      {
+        "id": "S4",
+        "url": "https://developer.nvidia.com/blog/understanding-and-measuring-pc-latency/",
+        "status": 200,
+        "resolved_url": "https://developer.nvidia.com/blog/understanding-and-measuring-pc-latency/",
+        "content_type": "text/html; charset=UTF-8",
+        "elapsed_seconds": 0.22
+      },
+      {
+        "id": "A1",
+        "url": "https://github.com/ggml-org/whisper.cpp",
+        "status": 200,
+        "resolved_url": "https://github.com/ggml-org/whisper.cpp",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.64
+      },
+      {
+        "id": "A2",
+        "url": "https://voicevox.hiroshiba.jp/term/",
+        "status": 200,
+        "resolved_url": "https://voicevox.hiroshiba.jp/term/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.49
+      },
+      {
+        "id": "A3",
+        "url": "https://developer.nvidia.com/ace",
+        "status": 200,
+        "resolved_url": "https://developer.nvidia.com/ace-for-games",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.46
+      },
+      {
+        "id": "A4",
+        "url": "https://learn.microsoft.com/en-us/windows/win32/coreaudio/render-spatial-sound-using-spatial-audio-objects",
+        "status": 200,
+        "resolved_url": "https://learn.microsoft.com/en-us/windows/win32/coreaudio/render-spatial-sound-using-spatial-audio-objects",
+        "content_type": "text/html",
+        "elapsed_seconds": 0.09
+      },
+      {
+        "id": "H6",
+        "url": "https://www.st.com.cn/resource/en/user_manual/dm00797144-a-guide-to-using-the-vl53l5cx-multizone-timeofflight-ranging-sensor-with-wide-field-of-view-ultra-lite-driver-uld-stmicroelectronics.pdf",
+        "status": null,
+        "note": "The read operation timed out",
+        "elapsed_seconds": 18.57
+      },
+      {
+        "id": "I4",
+        "url": "https://docs.opencv.org/4.13.0/dd/d53/tutorial_py_depthmap.html",
+        "status": 200,
+        "resolved_url": "https://docs.opencv.org/4.13.0/dd/d53/tutorial_py_depthmap.html",
+        "content_type": "text/html",
+        "elapsed_seconds": 0.12
+      },
+      {
+        "id": "S5",
+        "url": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput",
+        "status": 200,
+        "resolved_url": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput",
+        "content_type": "text/html",
+        "elapsed_seconds": 0.08
+      },
+      {
+        "id": "S6",
+        "url": "https://docs.fivem.net/docs/scripting-manual/nui-development/nui-callbacks/",
+        "status": 200,
+        "resolved_url": "https://docs.fivem.net/docs/scripting-manual/nui-development/nui-callbacks/",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.04
+      },
+      {
+        "id": "S7",
+        "url": "https://github.com/nefarius/ViGEmBus",
+        "status": 200,
+        "resolved_url": "https://github.com/nefarius/ViGEmBus",
+        "content_type": "text/html; charset=utf-8",
+        "elapsed_seconds": 0.45
+      }
+    ]
+  },
+  "report_sha256": "f52461c39d15c33a740eff244f2fb5a001b214db35334b5de0d8324417a05720"
+}
