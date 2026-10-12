@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "rockstaros.icd.release-manifest.v1",
+  "executionMode": "SIMULATION",
+  "dataClass": "SYNTHETIC",
+  "siteId": "site:fixture",
+  "nodeId": "node:fixture",
+  "messageId": "message:fixture",
+  "issuedAt": {
+    "utcMs": 1000000,
+    "monotonicMs": 1000,
+    "bootId": "boot:fixture-A",
+    "quality": "TRUSTED",
+    "uncertaintyMs": 1
+  },
+  "releaseId": "release:fixture",
+  "componentId": "dev.rock.colony.supervisor",
+  "artifactDigest": "1111111111111111111111111111111111111111111111111111111111111111",
+  "sourceRevision": "DESIGN-EXAMPLE-NOT-A-BUILD",
+  "targetProfileId": "GROUND-REF-v1",
+  "schemaMajor": 1,
+  "minimumBootVersion": "TEST-ONLY",
+  "configurationDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "rollbackPolicyRef": "rollback:fixture",
+  "migrationPlanRef": "migration:fixture",
+  "testEvidenceRefs": [
+    "evidence:fixture"
+  ],
+  "approvalRefs": [
+    "approval:placeholder"
+  ],
+  "updateSignerRef": "signer:placeholder"
+}

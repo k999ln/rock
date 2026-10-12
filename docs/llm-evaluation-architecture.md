@@ -1,0 +1,240 @@
+# avocadoOS — LLM・評価モデル設計
+
+更新日: 2026-09-27。対象: `avocadoOS 1.0` / `dev.rock`。
+
+この文書は、端末内LLM、Sky内の交換可能な文章モデル接続、Jev評価モデル、Broker／Engineの責任を分ける正本である。機械可読の現在地は [`data/llm-capabilities.json`](../data/llm-capabilities.json)、共通Coreの到達設計は [AIネイティブOS共通設計](ai-native-os-architecture.md)を参照する。
+
+## 1. 結論
+
+- 現行の端末内LLMは、Pixel 10上の `Qwen3-0.6B Q8_0` と `llama.rn 0.12.9` による固定profileの試験署名APK実証である。交換可能な複数profileやOS image搭載は未実装。
+- 端末内LLMは**非信頼planner**である。Toolを実行せず、許可を発行せず、台帳や仕事状態を書き換えない。
+- Brokerが唯一の実行権限判定者、Engineが検証済みToolの決定論的実行者、Zemaが依頼・進捗・承認・停止・結果の窓口である。
+- WebのOpenAI接続はSkyの `法務受付` と `特許アシスタント` のオンライン検索オプション内部だけにある。標準経路は端末内の決定論的ガイド／ドラフトで、通信断時もSkyの受付・整理・引継ぎを止めない。
+- Jev (`typesafe-ai/jev`) はTypeSafe AIのremote評価モデルである。端末内modelや汎用文章生成modelに数えない。
+- JevはSkyから本人が明示的に使う**任意の評価Tool**として導入する。結果は助言・品質証拠であり、Brokerの権限判定、本人承認、Tool成功、仕事完了を置き換えない。
+- Jev runtimeの状態は `implemented_configuration_required`。`ai@7.0.107` の `experimental_evaluate` をserver-side routeから呼び、Skyの同意UI、closed rubric、Evaluation Receiptまで実装した。API key、provider条件、料金上限、sandbox／本番受入は別の設定・外部gateとして残る。
+- Skyの固定振り分けは既存12会話役とAMC計画管理1役の計13役。AMC（`rockstar-amc`）はLLMを呼ばない計画・手動記録Toolであり、model providerやLLM能力の追加ではない。ZemaでAMCへの依頼を送っても会話LLMを呼ばず、本人確認後のGoal保存と手動記録だけを既存WorkJobへ接続する。
+
+## 2. 現在の構成
+
+```text
+Sky
+  ├─ browser / PC / MCP Tool
+  ├─ AMC ─────── 計画・手動記録（LLMなし、AI実作業は未接続）
+  ├─ 法務受付 ───── 端末内ガイド（標準） / OpenAI Responses API（明示許可時のみ）
+  ├─ 特許アシスタント ─ 端末内ドラフト（標準） / OpenAI Responses API（明示許可時のみ）
+  └─ Jev評価Tool ─── Vercel AI Gateway → TypeSafe AI Jev（実装済み・設定待ち）
+
+Zema
+  └─ 依頼 / 進捗 / 承認案内 / 停止 / 結果 / 履歴
+
+Platform Core
+  ├─ Broker ───── 唯一のidentity / capability / approval / policy判定
+  ├─ Local AI ─── plan候補だけを返す。network・Tool実行権限なし
+  ├─ Engine ───── 検証済み有限recipeを実行
+  └─ Job / Receipt / Artifact ─ 状態と証拠の正本
+```
+
+Sky Tool、model provider、実行場所、通信方式を同じ分類にしない。
+
+| 項目 | 意味 | 例 |
+| --- | --- | --- |
+| surface | 利用者が能力を選ぶ場所 | Sky、Zema、native Core |
+| tool | 利用者向けの限定能力 | 法務受付、特許アシスタント、Jev評価 |
+| model role | modelへ許す責任 | local planner、cloud generator、remote evaluator |
+| provider | 外部または端末内の供給元 | local runtime、OpenAI、TypeSafe AI via Vercel |
+| runtime / transport | 実際の呼出し場所 | Android Binder、server-side fetch、AI Gateway API |
+| status | 到達段階 | designed、implemented、configured、device-verified、production |
+
+`ready` はSkyの商品UIが利用可能というcatalog状態であり、外部credential設定済み、provider到達確認済み、本番合格を意味しない。
+
+## 2.1 共通Decision LayerとLocal Action Assistant
+
+Local Qwenの端末実装には、[noellesugar99/local-action-assistant](https://github.com/noellesugar99/local-action-assistant)を採用候補として固定している。Rock側では上流commit、MITのアプリlicense、`llama.rn 0.12.9`、GGUF、Android package、主要ファイルhashを [`os/physical/local-action-assistant-source-lock.json`](../os/physical/local-action-assistant-source-lock.json) で管理する。これはQwen等を端末内で実行するruntime／Tool Brokerであり、Jevの代替モデルではない。
+
+上流の責任分界はRockstarOSのLocal AI境界と一致する。モデルは提案だけを返し、Toolは6個のclosed allowlist、引数検証、1回1Tool、書込前の本人確認を通る。アプリはクラウド推論・telemetry・モデル自動配布を持たず、release/local variantではnetworkを禁止する。モデル重みのlicenseはアプリのMIT licenseと別に扱う。[上流アーキテクチャ](https://github.com/noellesugar99/local-action-assistant/blob/main/docs/ARCHITECTURE.md)
+
+Web／native共通の判断境界は [`lib/decision-layer.ts`](../lib/decision-layer.ts) の `DecisionProvider` に揃える。
+
+| Provider | 役割 | 現在地 |
+| --- | --- | --- |
+| `RuleDecisionProvider` | deterministic fast path、不可逆操作のhard stop | 実装済み |
+| `MockDecisionProvider` | provider未接続時のfixture／開発 | 実装済み |
+| `LocalQwenDecisionProvider` | `local-action-assistant-binder-v2`へのadapter境界 | transport差替え可能。自動cloud fallbackなし |
+| `TypeSafeJevProvider` | remote semantic routingのadapter | AI Gateway key／provider gate設定待ち |
+
+Routerは、単純処理をCODEへ、高リスク／不可逆操作を本人確認へ、local-only要求をLocal Qwenへ、複雑かつremote許可済みの要求だけをJev／cloud候補へ送る。Local runtime未接続時に秘密データをcloudへ送らない。Jevのchoice結果も `advisory-only` であり、Brokerの権限、Wallet、MCP、Tool成功を決めない。
+
+## 3. Local plannerの契約
+
+現在の経路は `Sky selection → Zema request → Broker → Local AI plan-only API v2 → Broker validation → Engine → review` である。
+
+Local AIは閉じたJSON Schemaへplan候補を返す。Brokerは次を再検査する。
+
+1. Local AI package、versionCode、signer、API version。
+2. 選択token、owner、Tool ID / version、recipe。
+3. planの未知field、step数、Tool identity、入力schema。
+4. claim時の権限、generation、停止、資源条件。
+
+LLMが返したTool名、成功、確率、説明を実行許可に変換しない。LLM障害時も履歴、停止、review、既存成果を失わない。再試行、確認待ち、成果保存の主体はAgent runtime / Broker / Engineであり、LLMではない。
+
+現行証拠は試験署名APK、stock Pixel、固定model一構成の範囲である。AOSP image、production signer、SELinux enforcing、OTA、複数ModelProfile、起動後autoloadは別受入とする。
+
+## 4. Skyの交換可能な文章モデル接続
+
+Skyの文章生成は `lib/llm-providers.ts` のadapter registryを経由する。UIの「Skyの接続管理 → Providerルーティング → 文章・LLM」でproviderとmodel IDを選べる。現在のadapterは次の6種類である。
+
+| adapter | 実行場所 | 用途 |
+| --- | --- | --- |
+| `local-model` | Local Action Assistant / Qwen Binder | 端末内planner。Webから直接呼ばず、native bridgeが必要 |
+| `ollama` | Ollama | Qwen、Llama、Gemma等のローカルHTTPモデル |
+| `openai` | OpenAI Responses API | server-sideの文章生成と、法務・特許の公式検索 |
+| `anthropic` | Anthropic Messages API | Claude系の文章生成 |
+| `google` | Gemini Generative Language API | Gemini系の文章生成 |
+| `openai-compatible` | LM Studio、llama.cpp、vLLM等 | Chat Completions互換の任意runtime |
+
+APIキーやendpointはブラウザ・D1へ保存せず、server environmentだけで設定する。`local-model`を使えない場合にcloudへ黙ってfallbackせず、`LOCAL_LLM_BRIDGE_REQUIRED`として停止する。remote providerはrequestごとの同意と `SKY_REMOTE_LLM_ENABLED=true` の両方が必要である。法務受付・特許アシスタントの標準経路は引き続き端末内の決定的ガイド／ドラフトであり、provider registryは将来の一般文章生成と明示的なremote経路に使う。
+
+文章モデルadapterはOpenAIのusage（入力・出力・合計・cache token）を妥当性確認して返し、処理時間を計測する。usage未提供はnullで、費用を推定しない。Provider資格情報のredirect転送を拒否し、timeout=504／transport・不正JSON・未完了応答=502を区別する。失敗時の自動再送は行わない。本文やAPIキーの新規保存なし。9件のfixtureは合格、実Provider接続と料金照合は未実施。
+
+[利用量契約の公式資料](https://developers.openai.com/api/reference/cli/resources/responses/methods/create)。このusageはAPI応答であり、D1履歴やProvider請求書との照合は未実装。
+
+### 文章生成の完了判定（2026-10-11）
+
+ROCKの共通adapterは非streaming応答に文章が存在するだけで成功を返さない。Ollamaは`done: true`と`done_reason: stop`、Anthropicは`stop_reason: end_turn | stop_sequence`、Geminiは各candidateの`finishReason: STOP`、local bridgeとOpenAI互換Chat Completionsは各choiceの`finish_reason: stop`を要求する。欠落・不正型・上限打切り・filter・Tool待ちの理由は`INCOMPLETE_RESPONSE`（502）とする。成功理由と矛盾する未処理Tool callも文章成功へ変換しない。任意のTool配列の省略／null／空配列は許容する。
+
+Ollamaへは既存の1〜8,000 token上限を`options.num_predict`として送信し、runtime既定の無制限生成へ任せない。完了失敗時も自動再送・cloud fallback・Tool実行・本文の新規保存は行わず、既存の同意と予算条件で利用者が再試行を判断する。OpenAI Responsesの`status`は公式SDK schemaでoptionalのため、既存の未報告=nullを保持する。明示された非`completed`は拒否し、streamingでは`response.completed` eventが必要である。この未報告値を完了receipt／料金照合の根拠へ補完しない。
+
+合格条件は全adapterの途中出力・欠落理由・pending Toolの拒否、正常stop／stop sequenceとoptional defaultの維持、Ollama上限の一致、失敗時の送信1回。`tests/llm-completion-boundary.test.mjs`と`tests/llm-providers.test.mjs`で検証する。Provider実接続、モデル品質、料金照合、native実機は別受入とする。
+
+仕様根拠（2026-10-11確認）: [Ollama chat](https://docs.ollama.com/api/chat)、[Ollama num_predict](https://docs.ollama.com/modelfile)、[Claude stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons)、[Gemini candidate/finish reason](https://ai.google.dev/api/generate-content#v1beta.Candidate)、[OpenAI Chat Completions](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create)、[OpenAI Responses optional status](https://developers.openai.com/api/reference/python/resources/responses/methods/create)。
+
+### OpenAI
+
+OpenAIへの接続は次の2 Toolの任意オンライン検索だけである。標準では呼び出さない。
+
+| Sky Tool | route | 用途 | 停止時 |
+| --- | --- | --- | --- |
+| 法務受付 | `app/api/legal-guidance/route.ts` | 本人が許可した場合の公式情報検索 | 標準は端末内ガイド。許可時のみ503へ縮退 |
+| 特許アシスタント | `app/api/patent-research/route.ts` | 本人が許可した場合の先行技術候補検索 | 標準は端末内ドラフト。許可時のみ503へ縮退 |
+
+どちらもserver-sideの `OPENAI_API_KEY` を使い、`lib/research-ai.ts` の共通transportからOpenAI Responses APIへ直接`fetch`する。`ai` packageの存在だけからVercel AI SDK推論を実装済みと判定しない。`store: false` はrequest optionであり、Zero Data Retention契約の証明ではない。
+
+共通化するのは固定endpointへの送信、HTTP失敗の扱い、引用付き本文の解析だけである。本人認証・same-origin・利用上限、remote有効化、法務の緊急案内、入力上限（法務4,000文字／特許12,000文字）、固有の案内文は各routeに残す。質問の組立、モデル設定、出力token数、検索回数、公式domainのallowlistも各Toolが持つ。引用はToolごとの公式domainまたはそのsubdomainに属する絶対HTTPS URLだけを表示し、userinfo、標準以外のport、制御文字、曖昧なURLを拒否する。回答または有効な引用がなければ `UNCITED_RESPONSE` とする。JSONを取得できた上流HTTPエラーは502、通信・JSON・回答解析の失敗は既存どおり一般入力エラー400へ縮退し、上流本文は利用者へ返さない。
+
+### Jev
+
+JevはTypeSafe AIのSystem One評価モデルで、typed questionに対するchoice、score、boolean probabilityを返す。初期用途を次に限定する。
+
+1. 本人がSkyで評価対象を選び、送信内容、provider、料金状態を確認する。
+2. server側で登録済みrubric IDをclosed question setへ解決する。
+3. 同意済み・最小化済みの`state`だけをJevへ送る。
+4. typed answerとprovider metadataを検証し、Evaluation Receiptを返す。
+5. Zemaは結果を「外部評価」と表示する。Brokerは結果を権限、承認、Tool成功へ昇格させない。
+
+JevをSkyの全依頼へ自動適用しない。決定的な既存routingは残し、未知依頼をJevが分類しても候補表示までにする。local不足時の自動fallback、Legal / Patent原文の自動送信、外部writeの自動承認には使わない。
+
+評価routeと `lib/decision-layer.ts` のJev adapterは、`lib/jev-transport.ts` だけを共通のAI Gateway呼出し口とする。model、server-side Authorization、`maxRetries: 0`、`zeroDataRetention: true`を一か所で固定し、試験時は送信関数を差し替える。評価用とrouting用のrubric、同意・privacy・hard stop、応答の解釈、receiptと `advisory-only` の責任は呼出し側に残す。別PRの公式TypeSafe API直結・Android provider・Agent Control Planeを取り込んだ状態ではなく、それらを接続するときもprovider固有の契約と受入を維持する。
+
+## 5. Jev API契約
+
+初期request案:
+
+```json
+{
+  "schemaVersion": 1,
+  "requestId": "client-generated-id",
+  "rubricId": "sky-output-quality-v1",
+  "state": "本人が確認した最小評価対象",
+  "consent": {
+    "provider": "typesafe-ai-via-vercel-ai-gateway",
+    "approved": true,
+    "approvedAt": "RFC3339 timestamp"
+  }
+}
+```
+
+`state` は初期4,000文字以下、rubricはserver allowlist、question数とtypeは固定する。利用者が任意instructions、model ID、provider、callback URLをrequestから注入できないようにする。
+
+response / receipt案:
+
+```json
+{
+  "schemaVersion": 1,
+  "requestId": "client-generated-id",
+  "status": "evaluated",
+  "model": "typesafe-ai/jev",
+  "rubricId": "sky-output-quality-v1",
+  "rubricHash": "sha256:...",
+  "stateHash": "sha256:...",
+  "answers": {},
+  "evaluatedAt": "RFC3339 timestamp",
+  "authority": "advisory-only"
+}
+```
+
+Receipt生成時にもclosed rubricを検査する。`grounded`・`safe`は型がbooleanで確率0〜1、`usefulness`は型がscoreで有限の0〜2（SDKの3段階criteriaのゼロ始まり位置）を必須とする。欠落・余分な回答ID・型違い・範囲外は`INVALID_RESPONSE`で拒否する。返す回答は検証した3つのscalarだけへ投影し、Providerが加えた本文・metadata・確率分布は保存・表示しない。usageは欠落をnullに保ち、存在するtoken数の非負整数・加算の安全性・合計との整合を検査する。usageは請求書や精算の証拠ではない。共通Jev transportは20秒のabortと自動再送0回を固定し、timeoutを評価成功にしない。adapterがabortを無視してもローカル待機を終了し、遅い結果をReceiptへ採用しない。timeoutはHTTP 504で返し、送信後に処理がなかったとは表示しない。fixtureは`tests/jev-receipt-boundary.test.mjs`・`tests/jev-transport.test.mjs`で検証する。Provider実接続と料金gateは別受入のまま維持する。
+
+仕事本文をreceiptへ保存しない。保存する場合もowner、用途、保持期限、削除、export、provider送信同意を別途実装する。`unavailable`、`invalid_response`、`denied`、`budget_exceeded`を`evaluated`や合格へ読み替えない。
+
+## 6. Privacy・料金・運用gate
+
+Jev呼出しにはリクエスト単位の`zeroDataRetention: true`を指定するが、providerの利用条件・保持・学習利用・地域・削除経路の確認を代替しない。そのため初期状態では、個人情報、法務相談、未公開発明、credential、秘密鍵、契約原文、顧客原稿を送らない。Provider Terms / Privacy、Gatewayログ、retention、学習利用、地域、削除経路を確認してから用途を拡張する。
+
+同ページのFree表示は恒久価格として固定せず、2026-09-25終了予定のpromotional pricingとして扱う。無料を前提に本番flowへ必須化しない。request上限、日次・月次budget、timeout、circuit breaker、費用表示を先に実装する。
+
+秘密値は `AI_GATEWAY_API_KEY` とし、client、Git、receipt、ログへ出さない。Vercel以外で配備する場合もserver-side secretとして設定する。`OPENAI_API_KEY`と共有しない。リモート呼出しは `SKY_REMOTE_LLM_ENABLED=true` を別途設定した環境だけで有効にし、未設定時は法務・特許・Jevを端末内／手動確認へ縮退する。
+
+## 7. 実装順と受入条件
+
+### AI07-A: SDK / API互換fixture
+
+- `ai@7.0.107` と `experimental_evaluate` を固定し、AI Gatewayのserver-side Authorization header経路を実装する。
+- Node 22 / Cloudflare runtimeでboolean、choice、score、parallel questionをfixture検証する。
+- timeout、429、5xx、不正answer、欠落answer、費用上限をfail-closedで確認する。
+- API keyなしの状態を通常の`unavailable`として扱い、既存Skyを壊さない。
+
+### AI07-B: Sky評価Tool
+
+- catalogへJev評価Toolを追加し、route、同意UI、rubric allowlist、receipt、テストを同じcommitへ揃えた。`ready`はUIと安全な縮退経路の状態で、credential設定済みやprovider本番合格を意味しない。
+- `ready`にするのは、credentialなしの縮退、provider sandbox、privacy表示、budget制限を受け入れた後。
+- Legal / PatentのOpenAI接続とは別runner、別environment表示、別provider consentにする。
+
+### AI07-C: 任意の品質評価
+
+- deterministic validation合格後の成果だけを対象にする。
+- Jev不合格や低確率は本人へのreview signalにできるが、既存成果を削除・非公開化・再実行しない。
+- 自動gateへ使う場合はgolden fixture、誤判定率、threshold版、再現性、human override、rollbackを別受入する。
+
+## 8. 完了と呼ばない範囲
+
+Jevのroute、UI、catalog、rubric、receiptは実装済みである。ただしAPI key設定、provider sandbox、privacy審査、料金上限、本番受入は未完了で、Jevを追加してもlocal plannerの交換、Sky Memory、外部作用reconciliation、AOSP imageは完成しない。
+
+## 9. 参照
+
+- [Vercel AI Gateway — Jev](https://vercel.com/ai-gateway/models/jev)
+- [Vercel AI Gateway Evaluation Quickstart](https://vercel.com/docs/ai-gateway/getting-started/evaluation)
+- [AIネイティブOS共通設計](ai-native-os-architecture.md)
+- [Platform Core](platform-core.md)
+- [Local AI実機統合](local-ai-os-integration-20260915.md)
+- [Sky](sky.md)
+
+
+## Agent Control Plane — 2026-09-27 runtime slice
+
+The **Agent Control Plane** preserves an advisory software-engineering adapter and an authenticated deterministic preview without promoting any model to an authority role. As of the 2026-10-05 integration, its public route accepts `dryRun: true` only: pricing, durable owner budget reservations, idempotent dispatch and Provider usage receipts have not been integrated, so it does not construct a Jev or Cursor client. Environment flags and PR-only approval cannot enable remote execution.
+
+The implementation lives in `lib/agent-control-plane.ts` with the authenticated entry point `app/api/agent-control-plane/route.ts`. Injected adapter tests cover deterministic gates, optional Jev workflow advice and a bounded Cursor Cloud Agent request. Repository policy and owner approval remain authoritative; those tests are not live dispatch or billing acceptance.
+
+Jev is used only for public-class task metadata with explicit per-task decision consent. The state sent to Jev is minimized to title, risk/effect class, acceptance-criteria count, allowed-path count, and the pstack preference. The full task body, owner-private data, confidential data, secrets, credentials, wallet state, and production authority are not sent by this adapter. Jev remains `advisory-only`; its choice can be made stricter by deterministic policy and can never lower the required review level, grant permissions, merge code, deploy, move funds, rotate credentials, or approve destructive work.
+
+Cursor Cloud Agents are used only after the deterministic execution gate passes. Repository writes require explicit `repository-pr-only` approval, and the worker prompt requires an isolated branch/workspace, a pull request, repository tests, independent verification, no direct main push, no merge, no production deployment, no real-money operation, no credential mutation, and no destructive action. High-risk work is clamped to a security review and a maximum of two workers. Critical-risk, any non-public data class, production-deploy, financial-transaction, credential-change, and destructive-operation requests fail closed instead of launching a cloud coding agent.
+
+This slice does not mean that the whole Decision Fabric is runtime-complete. The generic Sky-wide `DecisionRouter` composition, Local Qwen Web/native bridge, live Cursor credential acceptance, pstack account installation, Grok Bot programmatic handoff, provider calibration, and production acceptance remain separate work. The existing `DESIGN_APPROVED_IMPLEMENTATION_PENDING` Decision Fabric status therefore remains unchanged.
+
+Sky/Zemaの決定的routingはAMCのGoal・部隊管理役を加えた13役。AMCの指示照合はモデルの出力を権限とせず、信頼できる観測と担当認証が必要。Web観測adapter未接続時は着手・検収を拒否する。
+
+
+## avokado専用モデルの研究工程（2026-10-05）
+
+利用者指定により、ゼロから事前学習する自作モデルを端末内とcloudに使う研究工程を追加。追加費用0の小型host試作を実装した。既存Qwen実機受入とは別で、既存profileを置換していない。 詳細・責任・入出力・状態・保存・復旧・承認・合格条件は[専用モデル事前学習設計](avokado-llm-pretraining.md)を参照。

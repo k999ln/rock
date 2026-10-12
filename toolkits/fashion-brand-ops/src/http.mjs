@@ -10,22 +10,32 @@ import {
   verifyMetaSignature,
   verifyStripeSignature,
 } from './webhooks.mjs';
-import { publicError } from './util.mjs';
 
 const runtime = createRuntime();
-const protocol = new McpProtocol(runtime.callTool);
+// The HTTP boundary must never serialize provider/SQLite exception messages.
+const protocol = new McpProtocol(async (...args) => {
+  try {
+    return await runtime.callTool(...args);
+  } catch {
+    throw new Error('tool_request_failed');
+  }
+});
 const browserSessions = new Map();
 const BROWSER_SESSION_MS = 12 * 60 * 60 * 1000;
+const loopbackBind = ['127.0.0.1', '::1', 'localhost'].includes(
+  runtime.config.httpHost,
+);
+const browserSessionMode = loopbackBind && !runtime.config.mcpBearerToken;
 
 if (
-  !['127.0.0.1', '::1', 'localhost'].includes(runtime.config.httpHost) &&
+  !loopbackBind &&
   (!runtime.config.mcpBearerToken || !runtime.config.tenantId)
 ) {
   throw new Error('fashion_mcp_auth_and_tenant_required_for_non_loopback_bind');
 }
 
 function fixedTokenAuthorized(req) {
-  if (!runtime.config.mcpBearerToken) return true;
+  if (!runtime.config.mcpBearerToken) return false;
   const supplied = String(req.headers.authorization || '').replace(
     /^Bearer\s+/i,
     '',
@@ -36,6 +46,14 @@ function fixedTokenAuthorized(req) {
 }
 
 function browserRequestAllowed(req) {
+  // Origin and Host alone are forgeable by non-browser HTTP clients.
+  if (
+    !loopbackBind ||
+    !['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(
+      req.socket.remoteAddress,
+    )
+  )
+    return false;
   const origin = String(req.headers.origin || '');
   const host = String(req.headers.host || '').toLowerCase();
   const allowedHosts = new Set([
@@ -68,9 +86,10 @@ function browserSession(req) {
 }
 
 function authorized(req) {
-  return req.headers.origin
-    ? Boolean(browserSession(req))
-    : fixedTokenAuthorized(req);
+  // Configured credentials determine the mode; an Origin header cannot select
+  // a weaker authentication path or replace the fixed token with a session.
+  if (runtime.config.mcpBearerToken) return fixedTokenAuthorized(req);
+  return browserSessionMode && (!req.headers.origin || Boolean(browserSession(req)));
 }
 
 function tenantAuthorized(req) {
@@ -88,7 +107,7 @@ function send(req, res, status, body, contentType = 'application/json') {
   if (browserRequestAllowed(req)) {
     headers['access-control-allow-origin'] = req.headers.origin;
     headers['access-control-allow-headers'] =
-      'Content-Type, Authorization, MCP-Protocol-Version';
+      'Content-Type, Authorization, MCP-Protocol-Version, X-Rockstar-Tenant-ID';
     headers['access-control-allow-methods'] = 'POST, OPTIONS';
     headers['access-control-allow-private-network'] = 'true';
     headers.vary = 'Origin';
@@ -119,6 +138,8 @@ async function handler(req, res) {
     return send(req, res, browserRequestAllowed(req) ? 204 : 403, null);
   }
   if (req.method === 'POST' && url.pathname === '/connect') {
+    if (!browserSessionMode)
+      return send(req, res, 403, { error: 'browser_session_disabled' });
     if (!browserRequestAllowed(req))
       return send(req, res, 403, { error: 'browser_origin_denied' });
     const payload = JSON.parse(await raw(req));
@@ -232,19 +253,30 @@ async function handler(req, res) {
   return send(req, res, 404, { error: 'not_found' });
 }
 
-const server = http.createServer((req, res) =>
-  handler(req, res).catch((error) =>
-    send(
-      req,
-      res,
-      error.message.includes('signature') ||
-        error.message.includes('verification')
-        ? 401
-        : 400,
-      { error: publicError(error) },
-    ),
-  ),
-);
+function requestFailure(error) {
+  if (error instanceof SyntaxError)
+    return { status: 400, code: 'invalid_json' };
+  switch (error?.message) {
+    case 'request_too_large':
+      return { status: 400, code: 'request_too_large' };
+    case 'stripe_signature_invalid':
+    case 'stripe_signature_expired':
+    case 'meta_signature_invalid':
+      return { status: 401, code: 'webhook_verification_failed' };
+    case 'stripe_webhook_secret_not_configured':
+    case 'meta_app_secret_not_configured':
+      return { status: 400, code: 'provider_configuration_invalid' };
+    default:
+      return { status: 400, code: 'request_failed' };
+  }
+}
+
+const server = http.createServer((req, res) => {
+  handler(req, res).catch((error) => {
+    const failure = requestFailure(error);
+    send(req, res, failure.status, { error: failure.code });
+  });
+});
 server.listen(runtime.config.httpPort, runtime.config.httpHost, () =>
   process.stderr.write(
     `fashion-brand-ops-mcp listening on ${runtime.config.httpHost}:${runtime.config.httpPort}\n`,

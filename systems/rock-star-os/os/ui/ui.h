@@ -7,6 +7,7 @@
 #include <json-c/json.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "spider-motion.h"
 
 #define ROCK_UI_WIDTH 720
 #define ROCK_UI_HEIGHT 960
@@ -46,6 +47,7 @@ struct rock_hit {
 };
 
 struct rock_ui {
+    struct rock_spider_motion spider;
     cairo_surface_t *surface;
     cairo_t *cr;
     FT_Library ft;
@@ -92,6 +94,7 @@ int rock_ui_init(struct rock_ui *ui, int width, int height, const char *font_pat
                  char *error, size_t size);
 void rock_ui_destroy(struct rock_ui *ui);
 void rock_ui_draw(struct rock_ui *ui);
+int rock_ui_spider_tick(struct rock_ui *ui, int64_t now_ms);
 void rock_ui_response(struct rock_ui *ui, json_object *request, json_object *response, const char *error);
 void rock_ui_key(struct rock_ui *ui, unsigned code, int value);
 void rock_ui_pointer(struct rock_ui *ui, int x, int y, int state);

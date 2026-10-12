@@ -1,0 +1,33 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-02",
+  "scope": "Android Core source for pre-approval verification of signed A2A provider quotes",
+  "environment": "Node.js 22 TypeScript tests; Android/JVM compiler and Gradle are unavailable in this checkout",
+  "implementation": {
+    "class": "android/core/src/main/java/dev/rock/core/platform/A2AUsageReceiptVerifier.java",
+    "method": "verifyPriceQuote",
+    "signature": "Ed25519 with the operator-configured provider/key/origin trust tuple",
+    "binding": [
+      "exact provider quote schema, provider/key and HTTPS agent origin",
+      "agent name/version and exact request SHA-256",
+      "currency, estimate, authorized maximum and quote expiry",
+      "itemized quantity × unit price arithmetic and estimate total",
+      "canonical signed terms SHA-256 returned for later native hold binding"
+    ],
+    "sharedFixture": "android/core/src/test/resources/a2a-price-quote-v1.json",
+    "sharedSigningBytesSha256": "9ca4537c42d9cbcc26b214aae683d5115fb2e18dec863d86e7ad7c1cdc4da964"
+  },
+  "verification": {
+    "command": "node --experimental-strip-types --test tests/a2a-price-quote.test.mjs",
+    "result": "PASS",
+    "nodeTests": "5/5",
+    "crossImplementationFixture": "Cloud TypeScript verifier accepted the same RFC Ed25519 fixture and exact signing digest expected by Android Core source tests"
+  },
+  "notProven": [
+    "Android Core Java compilation or execution of its JUnit test",
+    "quote digest persisted into the native Wallet hold",
+    "dispatch blocked until the owner-approved native hold is committed",
+    "production provider key, quote, live meter, invoice, or payment",
+    "funded customer Wallet, SIM activation, Android APK/Binder/device acceptance, or successful OS installation"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "revision": "C3",
+  "rules": [
+    {
+      "id": "EX-01",
+      "title": "全体",
+      "rule": "直線的な円筒を主役にし、2段の境界を細い暗色の継ぎ目で示す",
+      "engineering_boundary": "RDR-003／007。外装の細線を追加の分離段・伸縮部にしない",
+      "design_register_ids": [
+        "RDR-003",
+        "RDR-007"
+      ],
+      "status": "visual_direction_selected_not_manufacturing_geometry"
+    },
+    {
+      "id": "EX-02",
+      "title": "先端",
+      "rule": "丸みのある流線形の先端から銀色の胴体へ連続させる",
+      "engineering_boundary": "RDR-007／018。半径、曲率、角度は空力・熱・収納から確定する",
+      "design_register_ids": [
+        "RDR-007",
+        "RDR-018"
+      ],
+      "status": "visual_direction_selected_not_manufacturing_geometry"
+    },
+    {
+      "id": "EX-03",
+      "title": "搭載扉",
+      "rule": "風下面に扉を保持し、その外面に黒い縦長意匠を置く",
+      "engineering_boundary": "RDR-011。実際の扉境界と可動範囲は別の機構図で管理する",
+      "design_register_ids": [
+        "RDR-011"
+      ],
+      "status": "visual_direction_selected_not_manufacturing_geometry"
+    },
+    {
+      "id": "EX-04",
+      "title": "3点",
+      "rule": "黒い面の中央軸上に小さいシアン点を縦に並べる",
+      "engineering_boundary": "RDR-008。意匠上の点。センサー穴、ガラス、光源、配線を新設しない",
+      "design_register_ids": [
+        "RDR-008"
+      ],
+      "status": "visual_direction_selected_not_manufacturing_geometry"
+    },
+    {
+      "id": "EX-05",
+      "title": "細い線",
+      "rule": "上部の黒い縦面より下と下部の外装に、細いシアンの周方向線を置く",
+      "engineering_boundary": "RDR-008／011。シール・可動隙間を埋める実施工指定ではない",
+      "design_register_ids": [
+        "RDR-008",
+        "RDR-011"
+      ],
+      "status": "visual_direction_selected_not_manufacturing_geometry"
+    },
+    {
+      "id": "EX-06",
+      "title": "熱防護",
+      "rule": "風上面は連続した暗色の熱防護面として示す",
+      "engineering_boundary": "RDR-018。意匠を理由に銀色へ変更しない。材質と厚さは未確定",
+      "design_register_ids": [
+        "RDR-018"
+      ],
+      "status": "visual_direction_selected_not_manufacturing_geometry"
+    },
+    {
+      "id": "EX-07",
+      "title": "可動部",
+      "rule": "舵面と脚の外形を胴体の簡潔な線にそろえる",
+      "engineering_boundary": "RDR-012／020。画像の個数、取付、格納断面は未承認の候補形状",
+      "design_register_ids": [
+        "RDR-012",
+        "RDR-020"
+      ],
+      "status": "visual_direction_selected_not_manufacturing_geometry"
+    },
+    {
+      "id": "EX-08",
+      "title": "継ぎ目",
+      "rule": "少数の細い水平線、控えめな縁の反射で精密さを表す",
+      "engineering_boundary": "RDR-007／009。外装の模様から溶接・接合位置を決めない",
+      "design_register_ids": [
+        "RDR-007",
+        "RDR-009"
+      ],
+      "status": "visual_direction_selected_not_manufacturing_geometry"
+    }
+  ],
+  "adds_cameras": false,
+  "adds_windows": false,
+  "adds_led_hardware": false,
+  "manufacturing_release": false,
+  "naming_decision": {
+    "rocketName": "rocketstar",
+    "case": "lowercase",
+    "formerRocketName": "RETURN-1",
+    "decidedOn": "2026-09-24",
+    "decisionSource": "user",
+    "osName": "RockstarOS",
+    "satelliteName": "A-LINK",
+    "interfaceProduct": "avokado",
+    "changeScope": "naming only; engineering parameters and past evidence retained"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-24",
+  "status": "PASS_AFTER_CORRECTION",
+  "independentReview": "Hardware boundaries and double-action reviewed. Transition-origin gesture promotion identified and corrected.",
+  "correction": "Normal gesture admission is latched at down; BOOTING/SHUTTING_DOWN/UPDATING gestures cannot become normal actions just because host becomes ready. Emergency hold remains available.",
+  "regressionTests": [
+    "test_transition_origin_short_is_not_promoted_after_host_ready",
+    "test_transition_origin_long_is_not_promoted_after_host_ready"
+  ],
+  "transitionOriginsPerRegressionTest": [
+    "BOOTING",
+    "SHUTTING_DOWN",
+    "UPDATING"
+  ],
+  "finalBehavioralTestsPassed": 32,
+  "hardwareTestsPerformed": false
+}

@@ -160,7 +160,7 @@ export function FundDashboard({
           <span className="dark-label">
             <Layers3 size={14} /> AUTOMATION FUND
           </span>
-          <h2>Rock star ファンド</h2>
+          <h2>RockstarOS ファンド</h2>
           <p>
             ココナラ案件支援と記事制作から始める、
             <br />
@@ -409,8 +409,7 @@ export function FundDashboard({
           <span className="outline-tag">すべて試算 / 入金・送金なし</span>
         </div>
         <p className="subnote">
-          運用費を先に回収し、月最大 $8.88 相当のRock
-          star利用料をファンド全体で1回だけ控除。残りを基本分配・ブースト・共同留保へ分ける案です。
+          運用費を先に考慮し、残りを基本分配・ブースト・共同留保へ分ける案です。収益料金は現在保留中のため、試算から差し引きません。
         </p>
         <div className="distribution-grid">
           <div className="panel scenario-panel">
@@ -482,7 +481,7 @@ export function FundDashboard({
                   </div>
                   <span>−</span>
                   <div>
-                    <span>Rock star利用料</span>
+                    <span>収益料金（保留中）</span>
                     <strong>{yen(calculation.fee)}</strong>
                   </div>
                 </div>
@@ -519,7 +518,7 @@ export function FundDashboard({
                 {calculation.unrecovered > 0 && (
                   <p className="notice">
                     運用費の未回収分 {yen(calculation.unrecovered)}
-                    。分配・Rock star利用料は0円です。
+                    。分配・RockstarOS利用料は0円です。
                   </p>
                 )}
                 <p className="subnote">

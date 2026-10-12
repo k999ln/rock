@@ -17,6 +17,16 @@ SPEC.loader.exec_module(phone)
 PROJECT_CHECK = Path(__file__).resolve().parents[1] / "scripts/check-phone-project.sh"
 
 
+class CurrentLocalAiLockTest(unittest.TestCase):
+    def test_current_repository_source_can_enter_phone_preparation(self):
+        lock = json.loads((Path(__file__).resolve().parents[1] /
+                           "os/physical/local-action-assistant-source-lock.json").read_text())
+        self.assertEqual(phone.local_ai_config(lock)["commit"], lock["commit"])
+        lock["integration"]["signedApk"] = "PRODUCTION_APPROVED_WITHOUT_EVIDENCE"
+        with self.assertRaisesRegex(ValueError, "invalid local-AI source lock"):
+            phone.local_ai_config(lock)
+
+
 class PhonePreparationTest(unittest.TestCase):
     def command(self, cwd, *args):
         return subprocess.check_output(args, cwd=cwd, stderr=subprocess.PIPE).decode().strip()
@@ -38,6 +48,23 @@ class PhonePreparationTest(unittest.TestCase):
         self.tree = Path(self.temp.name).resolve()
         self.root = self.tree / "external/rockstaros"
         self.repository(self.root)
+        self.local_ai = self.tree / "external/local-action-assistant"
+        local_ai_files = {
+            "LICENSE": "MIT fixture license\n",
+            "package.json": json.dumps({"version": "0.0.1", "license": "MIT",
+                                         "dependencies": {"llama.rn": "0.12.9"}}),
+            "src/native/modelRuntime.ts": "export const runtime = 'llama.rn';\n",
+            "src/native/modelFiles.ts": "export const format = 'GGUF';\n",
+            "src/core/toolBroker.ts": "export const tools = [];\n",
+            "android/app/build.gradle": 'android { namespace "com.localactionassistant"; defaultConfig { applicationId "com.localactionassistant" } }\n',
+            "android/app/src/main/AndroidManifest.xml": '<manifest xmlns:android="http://schemas.android.com/apk/res/android"/>\n',
+            "android/app/src/release/AndroidManifest.xml": '<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"><uses-permission android:name="android.permission.INTERNET" tools:node="remove" /></manifest>\n',
+        }
+        for filename, content in local_ai_files.items():
+            path = self.local_ai / filename
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content)
+        local_ai_commit = self.repository(self.local_ai)
         self.manifest = self.tree / ".repo/manifests"
         self.manifest.mkdir(parents=True)
         (self.manifest / "default.xml").write_text('<manifest/>')
@@ -62,8 +89,17 @@ class PhonePreparationTest(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text("# fixture input\n")
         self.lock = self.root / "lock.json"
-        self.lock.write_text(json.dumps({"rockCheckoutPath": "external/rockstaros",
+        self.lock.write_text(json.dumps({"schema": "rock-phone-source/2",
+            "stage": "SOURCE_TAG_AND_DEVICE_LAYOUT_FROZEN_RECOVERY_ARTIFACTS_PENDING",
+            "rockCheckoutPath": "external/rockstaros",
+            "manifestUrl": "https://github.com/GrapheneOS/platform_manifest.git",
             "manifestCommit": manifest_commit, "manifestTag": "fixture-stable",
+            "manifestTagObject": self.command(
+                self.manifest, "git", "rev-parse", "refs/tags/fixture-stable"),
+            "manifestDefaultXmlSha256": hashlib.sha256(
+                (self.manifest / "default.xml").read_bytes()
+            ).hexdigest(),
+            "allowedSignersSha256": hashlib.sha256(self.signers.read_bytes()).hexdigest(),
             "adevtoolCommit": adevtool_commit,
             "hook": "vendor/adevtool/config/mk/google_devices/device/frankel/device.mk",
             "kernel": {"prebuiltCommit": kernel_commit, "platform": "laguna", "version": "6.6"},
@@ -72,13 +108,47 @@ class PhonePreparationTest(unittest.TestCase):
             "buildTargets": ["target-files-package", "otatools-package"],
             "knownSkus": ["FIXTURE-SKU"],
             "confirmedSku": None,
-            "targetConfirmedByOwner": False}))
+            "targetConfirmedByOwner": False,
+            "fullBuildInputGatePassed": False,
+            "firstFlashGate": {
+                "schema": "avocadoos-android-first-flash-gate/1",
+                "path": "data/android-first-flash-gate.json",
+                "passed": False,
+            }}))
+        reviewed_names = [
+            "LICENSE", "package.json", "src/native/modelRuntime.ts", "src/native/modelFiles.ts",
+            "src/core/toolBroker.ts", "android/app/src/main/AndroidManifest.xml",
+            "android/app/src/release/AndroidManifest.xml",
+        ]
+        self.local_ai_lock = self.root / "local-ai-lock.json"
+        self.local_ai_lock.write_text(json.dumps({
+            "schema": "rock-local-ai-source/1",
+            "stage": "SOURCE_PINNED_NOT_BUILT",
+            "repository": "https://github.com/noellesugar99/local-action-assistant.git",
+            "manifestProject": "noellesugar99/local-action-assistant",
+            "checkoutPath": "external/local-action-assistant",
+            "commit": local_ai_commit,
+            "packageName": "com.localactionassistant",
+            "version": "0.0.1",
+            "sourceLicense": "MIT",
+            "runtime": {"engine": "llama.rn", "version": "0.12.9", "modelFormat": "GGUF",
+                        "modelBundled": False, "releaseNetworkPolicy": "deny"},
+            "reviewedFiles": {
+                name: hashlib.sha256((self.local_ai / name).read_bytes()).hexdigest()
+                for name in reviewed_names
+            },
+            "integration": {"routeId": "local-action-assistant", "target": "local",
+                            "osBridge": "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT",
+                            "signedApk": "NOT_BUILT",
+                            "productPackage": "STAGING_GENERATOR_DEFINED_NOT_BUILT"},
+        }))
         self.command(self.root, "git", "add", ".")
         self.command(self.root, "git", "commit", "-qm", "lock")
-        old_root, old_lock = phone.ROOT, phone.LOCK
-        phone.ROOT, phone.LOCK = self.root, self.lock
+        old_root, old_lock, old_local_ai_lock = phone.ROOT, phone.LOCK, phone.LOCAL_AI_LOCK
+        phone.ROOT, phone.LOCK, phone.LOCAL_AI_LOCK = self.root, self.lock, self.local_ai_lock
         self.addCleanup(setattr, phone, "ROOT", old_root)
         self.addCleanup(setattr, phone, "LOCK", old_lock)
+        self.addCleanup(setattr, phone, "LOCAL_AI_LOCK", old_local_ai_lock)
         self.local_manifest = self.tree / ".repo/local_manifests/rock-phone.xml"
         self.local_manifest.parent.mkdir()
         self.local_manifest.write_text(phone.render_manifest())
@@ -88,11 +158,72 @@ class PhonePreparationTest(unittest.TestCase):
         second = phone.prepare(self.tree, self.signers)
         self.assertEqual(first["hookSha256"], second["hookSha256"])
         self.assertEqual(self.hook.read_bytes(), self.original + phone.ADDITION)
+        self.assertEqual(second["localAssistant"]["stage"], "SOURCE_VERIFIED_NOT_BUILT")
+        self.assertEqual(second["localAssistant"]["engine"], "llama.rn")
+        self.assertEqual(second["localAssistant"]["releaseNetwork"], "none")
+        self.assertEqual(second["localAssistant"]["osBridge"],
+                         "CLIENT_AND_SERVER_SOURCE_IMPLEMENTED_NATIVE_NOT_BUILT")
         self.assertFalse(second["flashReady"])
+        self.assertFalse(second["firstFlashGatePassed"])
+
+    def test_manifest_pins_reviewed_local_ai_source(self):
+        root = phone.manifest_structure(phone.render_manifest())
+        projects = [attributes for tag, attributes, _children in root[2] if tag == "project"]
+        self.assertIn({"name": "noellesugar99/local-action-assistant",
+                       "path": "external/local-action-assistant", "remote": "rock-phone",
+                       "revision": self.command(self.local_ai, "git", "rev-parse", "HEAD")}, projects)
+
+    def test_local_ai_revision_and_worktree_must_match_reviewed_source(self):
+        (self.local_ai / "unexpected.txt").write_text("changed\n")
+        with self.assertRaisesRegex(ValueError, "local changes"):
+            phone.prepare(self.tree, self.signers)
+
+    def test_local_ai_lock_rejects_an_enabled_bridge_without_implementation(self):
+        lock = json.loads(self.local_ai_lock.read_text())
+        lock["integration"]["osBridge"] = "READY"
+        with self.assertRaisesRegex(ValueError, "invalid local-AI"):
+            phone.local_ai_config(lock)
+
+    def test_local_ai_lock_requires_every_reviewed_file(self):
+        lock = json.loads(self.local_ai_lock.read_text())
+        del lock["reviewedFiles"]["src/core/toolBroker.ts"]
+        with self.assertRaisesRegex(ValueError, "invalid local-AI"):
+            phone.local_ai_config(lock)
 
     def test_full_build_config_rejects_unconfirmed_target(self):
         with self.assertRaisesRegex(ValueError, "owner-confirmed"):
             phone.build_config()
+
+    def test_full_build_config_rejects_unfrozen_recovery_and_signing_inputs(self):
+        lock = json.loads(self.lock.read_text())
+        lock["targetConfirmedByOwner"] = True
+        lock["confirmedSku"] = "FIXTURE-SKU"
+        phone.LOCK.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(ValueError, "full OS build input gate"):
+            phone.build_config()
+
+    def test_compile_bringup_accepts_confirmed_target_without_release_inputs(self):
+        lock = json.loads(self.lock.read_text())
+        lock["targetConfirmedByOwner"] = True
+        lock["confirmedSku"] = "FIXTURE-SKU"
+        phone.LOCK.write_text(json.dumps(lock))
+        config = phone.build_config(mode="bringup")
+        self.assertTrue(config["compileBringupGatePassed"])
+        self.assertFalse(config["fullBuildInputGatePassed"])
+        self.assertFalse(config["releaseFlashGatePassed"])
+
+    def test_release_gate_stays_fail_closed_after_bringup_gate_passes(self):
+        lock = json.loads(self.lock.read_text())
+        lock["targetConfirmedByOwner"] = True
+        lock["confirmedSku"] = "FIXTURE-SKU"
+        phone.LOCK.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(ValueError, "full OS build input gate"):
+            phone.build_config(mode="release")
+
+        lock["fullBuildInputGatePassed"] = True
+        phone.LOCK.write_text(json.dumps(lock))
+        with self.assertRaisesRegex(ValueError, "RELEASE_FLASH gate"):
+            phone.build_config(mode="release")
 
     def test_host_report_enforces_minimum_memory_and_disk(self):
         class Usage:
@@ -118,6 +249,8 @@ class PhonePreparationTest(unittest.TestCase):
         lock = json.loads(self.lock.read_text())
         lock["targetConfirmedByOwner"] = True
         lock["confirmedSku"] = "FIXTURE-SKU"
+        lock["fullBuildInputGatePassed"] = True
+        lock["firstFlashGate"]["passed"] = True
         phone.LOCK.write_text(json.dumps(lock))
         config = phone.build_config()
         self.assertEqual(config["device"], "frankel")
@@ -126,6 +259,23 @@ class PhonePreparationTest(unittest.TestCase):
         self.assertEqual(config["kernel_path"], "device/google/laguna-kernels/6.6")
         self.assertEqual(config["buildTargets"], ["target-files-package", "otatools-package"])
         self.assertTrue(config["targetConfirmedByOwner"])
+        self.assertTrue(config["firstFlashGatePassed"])
+
+    def test_lock_rejects_missing_or_malformed_first_flash_gate(self):
+        for first_flash_gate in (None, {}, {
+                "schema": "avocadoos-android-first-flash-gate/1",
+                "path": "data/android-first-flash-gate.json",
+                "passed": "false",
+        }):
+            with self.subTest(first_flash_gate=first_flash_gate):
+                lock = json.loads(self.lock.read_text())
+                if first_flash_gate is None:
+                    del lock["firstFlashGate"]
+                else:
+                    lock["firstFlashGate"] = first_flash_gate
+                phone.LOCK.write_text(json.dumps(lock))
+                with self.assertRaisesRegex(ValueError, "invalid lock-derived"):
+                    phone.build_config(require_target_confirmation=False)
 
     def test_lock_rejects_device_hook_and_lunch_drift(self):
         for change in ({"device": "../panther"},
@@ -147,6 +297,8 @@ class PhonePreparationTest(unittest.TestCase):
         lock = json.loads(self.lock.read_text())
         lock["targetConfirmedByOwner"] = True
         lock["confirmedSku"] = "FIXTURE-SKU"
+        lock["fullBuildInputGatePassed"] = True
+        lock["firstFlashGate"]["passed"] = True
         phone.LOCK.write_text(json.dumps(lock))
         self.command(self.root, "git", "add", "lock.json")
         self.command(self.root, "git", "commit", "-qm", "confirm fixture lock change")
@@ -165,9 +317,9 @@ class PhonePreparationTest(unittest.TestCase):
             phone.prepare(self.tree, self.signers)
         self.assertEqual(self.hook.read_bytes(), changed)
 
-    def test_untrusted_upstream_tag_cannot_modify_device_source(self):
+    def test_changed_allowed_signers_cannot_modify_device_source(self):
         self.signers.write_text("")
-        with self.assertRaises(subprocess.CalledProcessError):
+        with self.assertRaisesRegex(ValueError, "allowed-signers trust file"):
             phone.prepare(self.tree, self.signers)
         self.assertEqual(self.hook.read_bytes(), self.original)
 

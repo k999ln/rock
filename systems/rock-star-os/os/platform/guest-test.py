@@ -108,7 +108,11 @@ def wait_job(job_id):
 
 
 def main():
-    scope_flags = [part for part in Path('/proc/cmdline').read_text().split()
+    boot_arguments = Path('/proc/cmdline').read_text().split()
+    enable_flags = [part for part in boot_arguments if part.split('=', 1)[0] == 'rock.platform.verify']
+    if enable_flags != ['rock.platform.verify=1']:
+        raise ValueError('exactly one explicit platform verification enable flag required')
+    scope_flags = [part for part in boot_arguments
                    if part.startswith('rock.platform.verify_scope=')]
     if scope_flags not in ([], ['rock.platform.verify_scope=game-isolation']):
         raise ValueError('unknown or duplicate platform verification scope')

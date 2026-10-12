@@ -51,7 +51,10 @@ const first = await executeTracked({
   inputBytes: processedBytes(args),
   task: () => runDevice('format_citations', args),
 });
-assert.ok(first.result.output.includes('https://docs.python.org/3/'));
+assert.equal(
+  first.result.output,
+  '本文\n---\n\n## 出典\n\n- [Python](https://docs.python.org/3/)\n',
+);
 assert.equal(first.warning, '');
 const delivery = await executeTracked({
   tool: 'mr-delivery',

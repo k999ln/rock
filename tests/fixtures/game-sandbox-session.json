@@ -1,0 +1,92 @@
+{
+  "description": "GAME01 host/fixture session: same seed and rules replayed across a process restart. No money, purchase or exchange.",
+  "create": {
+    "title": "粒子サンドボックス fixture",
+    "author": "fixture-local",
+    "seed": 20260925,
+    "count": 12
+  },
+  "restartAfter": 10,
+  "commands": [
+    {
+      "id": "7c669571-2279-5eeb-a2af-271ca0094cf5",
+      "action": "step",
+      "ticks": 40
+    },
+    {
+      "id": "d88655d5-647a-5843-86fb-ac65004e0117",
+      "action": "select",
+      "particleId": "p03"
+    },
+    {
+      "id": "73dbacfa-e39b-57b4-ad0c-a17a4d0c0e27",
+      "action": "hold"
+    },
+    {
+      "id": "eab5d798-f1c8-5259-a905-ba09d099d782",
+      "action": "move",
+      "x": 500,
+      "y": 520
+    },
+    {
+      "id": "b0b6c08d-9181-549f-882f-2d3c00393c51",
+      "action": "release"
+    },
+    {
+      "id": "64650081-218f-5db4-80dd-2b9b29ba4ce6",
+      "action": "step",
+      "ticks": 120
+    },
+    {
+      "id": "569635d1-77cb-55c9-ba28-f98b2c249a9d",
+      "action": "pause"
+    },
+    {
+      "id": "0ffa818c-b146-51e8-9846-5e4eacdb95f3",
+      "action": "select",
+      "particleId": "p05"
+    },
+    {
+      "id": "0432795f-6c62-5df5-8d9c-8fff7e89b692",
+      "action": "resume"
+    },
+    {
+      "id": "02572557-3600-5650-9318-43c4e6d74fd8",
+      "action": "step",
+      "ticks": 60
+    },
+    {
+      "id": "5d9ac37a-e74c-5be7-b4e8-6a0bb41fbd42",
+      "action": "undo"
+    },
+    {
+      "id": "a8a29ed4-0c62-5227-9ca6-b5a84cfe6004",
+      "action": "step",
+      "ticks": 90
+    },
+    {
+      "id": "396b92ae-e726-5188-bac3-ea5a449f7aaf",
+      "action": "select",
+      "particleId": "p01"
+    },
+    {
+      "id": "d54270a7-8b88-5808-ae33-6e6701376be3",
+      "action": "hold"
+    },
+    {
+      "id": "75bcba2e-dea5-5cf4-bdf7-922dfab0c116",
+      "action": "move",
+      "x": 880,
+      "y": 120
+    },
+    {
+      "id": "4dc15103-4dc8-582f-9380-515ae34aff26",
+      "action": "cancel_hold"
+    },
+    {
+      "id": "bfb7e005-5faa-5e14-8e67-eda7c0e79aed",
+      "action": "step",
+      "ticks": 200
+    }
+  ]
+}

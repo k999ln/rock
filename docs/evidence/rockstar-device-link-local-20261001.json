@@ -1,0 +1,64 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-01",
+  "scope": "Account-approved native device session issuance, authentication, service API access, one-time consumption, and revocation",
+  "environment": "Local Cloudflare Worker/D1 integration through Miniflare with synthetic gateway account identities, plus Android-independent Core tests on a local JVM",
+  "implementation": {
+    "authorizationFlow": "device code + user code; browser approval binds the pending request to the signed-in Rockstar owner",
+    "authorizationLifetimeMs": 600000,
+    "pollIntervalSeconds": 5,
+    "sessionLifetimeMs": 7776000000,
+    "tokenStorage": "SHA-256 token hashes only; clear token returned once after atomic authorization consumption",
+    "revocation": "owner-authenticated session listing and immediate per-session revocation",
+    "deviceSessionApis": [
+      "Rockstar service entitlement lookup/claim",
+      "Sky A2A agent discovery and connection management",
+      "A2A delegation create/read/update and artifact/settlement reads",
+      "remote LLM request and estimate authentication guard"
+    ],
+    "coreClientProtocol": "android/core/src/main/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlow.java; injected HTTPS transport and protected session-store interfaces only",
+    "androidClientSource": {
+      "transport": "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceAuthorizationTransport.java; exact-origin HTTPS, redirects rejected, bounded JSON and timeouts",
+      "sessionStore": "android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceSessionStore.java; no-backup AES-GCM ciphertext under AndroidKeyStore key",
+      "userFlow": "RockShellService + Shell AIDL v6 + MainActivity code/approval/poll UI",
+      "serviceOrigin": "Build-time rockstarServiceOrigin; no default production endpoint",
+      "sourceState": "AUTHORED_ANDROID_BUILD_AND_INSTRUMENTATION_NOT_RUN_SDK_UNAVAILABLE",
+      "limitedCompile": "Transport and storage Java sources compiled with javac 11 against temporary Android API stubs; not a substitute for Android SDK compilation or runtime"
+    },
+    "migration": "drizzle/0045_rockstar_device_sessions.sql"
+  },
+  "verification": {
+    "commands": [
+      "npm run test:api",
+      "GRADLE_USER_HOME=/private/tmp/rock-gradle-user-home JAVA_HOME=/private/tmp/rock-temurin17/Contents/Home gradle -p android :core:test --offline"
+    ],
+    "result": "PASS (local synthetic Worker/D1 and Android-independent Core JVM protocol tests)",
+    "workerD1Assertions": 711,
+    "coreJvmTests": 72,
+    "deviceFlowCases": [
+      "authorization request generates an eight-character user code and 256-bit device code",
+      "signed-in browser sees the requesting device name",
+      "cross-origin browser approval is rejected",
+      "approved device receives a one-time 90-day bearer session, with only its SHA-256 hash persisted",
+      "expired user codes and expired device sessions are rejected",
+      "replayed polling cannot retrieve the token again",
+      "bearer session resolves the same account through the shared requestUser helper for entitlement, Sky agent, and Zema work APIs",
+      "account holder can list sessions without exposing token material and revoke the session",
+      "revoked bearer session is rejected"
+    ],
+    "coreProtocolCases": [
+      "browser approval and one-time polling stores the token exactly once through the injected session-store seam",
+      "device name, origin, verification URLs, response schema, code shapes, and token expiry are validated",
+      "pending, slow_down, denial, expiry, and too-early polling are handled without leaking credentials"
+    ]
+  },
+  "notProven": [
+    "Android source compilation, runtime HTTPS/TLS and Keystore behavior, APK build, Binder/AIDL/device-link acceptance on a supported device",
+    "AndroidKeyStore attestation and server registration of the separate A2A Broker signing key",
+    "production identity provider behavior, deployment, rate limiting, carrier activation, SIM/eSIM fulfillment, or production billing"
+  ],
+  "notes": [
+    "Local gateway identities are synthetic and do not authenticate a real person or account.",
+    "The device session authorizes existing service APIs but does not bypass service entitlement scopes, price quotes, budgets, or provider receipt verification."
+  ]
+}

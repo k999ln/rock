@@ -1,0 +1,363 @@
+{
+  "schema": "rockstaros-colony-requirements/1",
+  "version": "C0.1",
+  "statusMeaning": {
+    "SIM_TESTED": "Only listed synthetic behavior tested; hardwareVerified remains false.",
+    "DESIGN_ONLY": "Contract or architecture proposed, not deployed.",
+    "OPEN": "Mission/hardware evidence needed."
+  },
+  "items": [
+    {
+      "id": "COL-01",
+      "requirement": "RockstarOSを現地の設備・仕事・資源・通信の運用核にする",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [],
+      "remainingForRealSystem": "既存OSへの登録・Adapter・実設備データの統合",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-02",
+      "requirement": "Coreのプロセス停止後も局所制御を進める",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_process.ProcessSeparationTests.test_local_ticks_continue_after_supervisor_killed"
+      ],
+      "remainingForRealSystem": "同一host上の模型のみ。独立電源・OS・設備保護を実証",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-03",
+      "requirement": "AIの提案と操作者の承認を分ける",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_planner_proposal_cannot_approve_or_dispatch"
+      ],
+      "remainingForRealSystem": "fixture actor検査のみ。本人確認・AI/署名鍵/Controllerの実隔離",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-04",
+      "requirement": "承認を命令内容全体に結び付ける",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_approval_requires_exact_full_command_digest",
+        "test_core.ColonyContractTests.test_changed_stored_body_is_not_approved_for_dispatch"
+      ],
+      "remainingForRealSystem": "実OSの権限・署名サービスと接続",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-05",
+      "requirement": "期限切れの新規要求を適用しない",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_controller_independently_rejects_expired_direct_command",
+        "test_core.ColonyContractTests.test_expired_queued_command_never_reaches_controller"
+      ],
+      "remainingForRealSystem": "時刻源・不確かさ・機器期限の検証",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-06",
+      "requirement": "同一ID同一内容の再到着で再作用しない",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_exact_replay_survives_controller_reboot_without_reapplying",
+        "test_core.ColonyContractTests.test_same_id_changed_payload_conflicts_after_reboot"
+      ],
+      "remainingForRealSystem": "物理作用の照合、長期receipt保持と履歴破損の扱い",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-07",
+      "requirement": "設備再起動後に旧世代の新規要求を拒否",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_reboot_fences_old_unapplied_generation"
+      ],
+      "remainingForRealSystem": "実装機で起動・停電・復元を確認",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-08",
+      "requirement": "単一の監督制御権とepochを設備で判定",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_exclusive_authority_cas_and_epoch_fence"
+      ],
+      "remainingForRealSystem": "認証されたlease発行、分断・自動切替・複数実機試験",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-09",
+      "requirement": "期待する設備状態の版を受信時に照合",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_state_revision_change_rejects_old_command"
+      ],
+      "remainingForRealSystem": "実設備Adapterの状態版と原子的判定",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-10",
+      "requirement": "供給変動を局所で再評価し不足を明示",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_local_resource_budget_is_checked_even_for_signed_fixture",
+        "test_core.ColonyContractTests.test_supply_drop_curtails_then_reports_critical_deficit"
+      ],
+      "remainingForRealSystem": "実電気・蓄電・起動過渡・損失・故障試験",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-11",
+      "requirement": "監督権失効時も重要負荷を優先",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_lease_expiry_curtails_local_flexible_load_without_broker"
+      ],
+      "remainingForRealSystem": "設備ごとの許可プロファイルと継続可能時間",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-12",
+      "requirement": "古い観測を現在の正常値として使わない",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_stale_telemetry_blocks_refresh_and_prepare"
+      ],
+      "remainingForRealSystem": "全センサーの時刻・品質・校正・欠測検査",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-13",
+      "requirement": "時計異常時に新規指令を止め局所計算を継続",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_clock_rollback_locally_curtails_and_revokes_authority",
+        "test_core.ColonyContractTests.test_nonfinite_clock_preserves_local_priority_and_latches_untrusted"
+      ],
+      "remainingForRealSystem": "時刻再認定手順、独立時計、実時間期限",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-14",
+      "requirement": "応答喪失後に再起動しても結果照合を優先",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_lost_receipt_restart_reconciles_without_resend"
+      ],
+      "remainingForRealSystem": "実トランスポート・機器receiptの照合",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-15",
+      "requirement": "送信claim後の停止を結果不明として保持",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_presend_durable_claim_crash_stays_unknown_with_no_resend"
+      ],
+      "remainingForRealSystem": "物理作用の有無を読出せない機器の現地手順",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-16",
+      "requirement": "未送信の承認を再起動後に自動実行しない",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_restart_cancels_prepared_and_queued"
+      ],
+      "remainingForRealSystem": "実OS仕事との状態連携",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-17",
+      "requirement": "模擬設定とreceiptを一括保存する",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_receipt_insert_failure_rolls_back_desired_state_and_revision"
+      ],
+      "remainingForRealSystem": "物理作用との非原子的境界、全損/破損/停電",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-18",
+      "requirement": "対象・モード・型が違う命令を拒否",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_authenticated_wrong_domain_mode_or_source_rejected",
+        "test_core.ColonyContractTests.test_critical_equipment_operation_cannot_be_expressed",
+        "test_core.ColonyContractTests.test_extra_envelope_fields_and_digest_mismatch_fail_closed"
+      ],
+      "remainingForRealSystem": "全設備操作を有限の型で登録し境界試験",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-19",
+      "requirement": "異なる/壊れた結果を成功と扱わない",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_wrong_receipt_cannot_be_marked_succeeded",
+        "test_contract_edges.ReceiptEdgeTests.test_non_json_receipt_leaves_result_uncertain"
+      ],
+      "remainingForRealSystem": "機器身元認証、返却結果の完全な契約検証",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-20",
+      "requirement": "設定反映と観測された動作を区別",
+      "verificationStage": "SIM_TESTED",
+      "evidence": [
+        "test_core.ColonyContractTests.test_explicit_prepare_exact_approve_dispatch_and_local_step"
+      ],
+      "remainingForRealSystem": "実機結果・監視観測と仕事合格の接続",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-21",
+      "requirement": "3種のJSON Schemaを厳格に定義する",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [
+        "contracts/static_validation.json"
+      ],
+      "remainingForRealSystem": "標準validatorはNOT_RUN。実行時の全schema適合検証を追加",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-22",
+      "requirement": "独立保護と局所操作をCore/UI/WANから分離",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [
+        "habitat_architecture.md:H-V01-H-V12"
+      ],
+      "remainingForRealSystem": "故障原因分析、実配線・電源・保護・警報の試験",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-23",
+      "requirement": "人数と環境に基づく資源容量を持つ",
+      "verificationStage": "OPEN",
+      "evidence": [],
+      "remainingForRealSystem": "ミッション入力、空気/水/電力/熱/廃棄物の量と故障予備",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-24",
+      "requirement": "更新・復元で旧設備権限を復活させない",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [
+        "os_inventory.md"
+      ],
+      "remainingForRealSystem": "既存基盤の統合、機器署名更新、中断/全損復旧",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-25",
+      "requirement": "キュー・記録・監査に上限と優先度を持つ",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [],
+      "remainingForRealSystem": "容量測定、満杯・破損・遅延・長期断線試験",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-26",
+      "requirement": "個人データと設備操作の権限を分離",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [],
+      "remainingForRealSystem": "本物の認証/認可、鍵基盤、保存・失効・監査",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-27",
+      "requirement": "貨物を検収後だけ使用可能在庫に加える",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [],
+      "remainingForRealSystem": "Manifest実装、物理ID、検収・隔離・commissioning試験",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-28",
+      "requirement": "ロケット→貨物船→拠点の引渡しを分ける",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [],
+      "remainingForRealSystem": "ミッション軌道、貨物船、係留、位置/速度/荷重/熱ICD",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-29",
+      "requirement": "rocketstarの両段回収と再使用を成立させる",
+      "verificationStage": "OPEN",
+      "evidence": [
+        "baseline_reference.json"
+      ],
+      "remainingForRealSystem": "C3未確定項目、推進・構造・熱・帰還・整備と実飛行",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-30",
+      "requirement": "A-LINKの通信範囲と性能を実証する",
+      "verificationStage": "OPEN",
+      "evidence": [],
+      "remainingForRealSystem": "RF予算、周波数/波形、地上局、見通し、相互接続、必要衛星数",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-31",
+      "requirement": "遅延リンクの転送と設備結果を分離",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [
+        "sources.json:S6-S8"
+      ],
+      "remainingForRealSystem": "BPv7/BPSec/CCSDSプロフィール選定と適合/相互接続",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-32",
+      "requirement": "avokado E3を操作窓口として接続",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [
+        "os_inventory.md"
+      ],
+      "remainingForRealSystem": "実Shell、Hub/Coreアダプター、認証、表示・欠測・回線切替試験",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-33",
+      "requirement": "ミッション未決定値を実定格として配布しない",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [
+        "mission_profile.json"
+      ],
+      "remainingForRealSystem": "場所・人数・滞在・補給・退避・輸送拠点の決定",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-34",
+      "requirement": "実機の継続運転と有人移行条件を検証",
+      "verificationStage": "OPEN",
+      "evidence": [
+        "habitat_architecture.md:H-V12"
+      ],
+      "remainingForRealSystem": "応答・容量・保護・故障・保守・補給・避難・適合性評価",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-35",
+      "requirement": "既存RockstarOSの仕事と指令状態を整合",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [
+        "os_inventory.md"
+      ],
+      "remainingForRealSystem": "sample専用template、UNCERTAIN中active、証拠の受入を統合",
+      "hardwareVerified": false
+    },
+    {
+      "id": "COL-36",
+      "requirement": "無人小型衛星輸送と有人輸送を区別",
+      "verificationStage": "DESIGN_ONLY",
+      "evidence": [],
+      "remainingForRealSystem": "有人機/避難機を別の要求・設計・検証へ分離",
+      "hardwareVerified": false
+    }
+  ]
+}

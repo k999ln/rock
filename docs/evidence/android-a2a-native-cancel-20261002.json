@@ -1,0 +1,26 @@
+{
+  "schema": "rockstar-android-a2a-native-cancel/1",
+  "date": "2026-10-02",
+  "status": "source_implemented_cloud_cancel_contract_locally_tested_android_unverified",
+  "implemented": [
+    "Shell API v17 exposes an owner-scoped explicit cancellation action for a selected Cloud A2A delegation.",
+    "The native UI confirms before sending and clearly distinguishes API/Cloud acceptance from remote-agent stop confirmation and final usage reconciliation.",
+    "The native Broker sends a single PATCH, uses read-only owner-scoped GET recovery if its response is uncertain, and never replays the request automatically.",
+    "A2A cancellation before dispatch, cancellation requested, cancel unconfirmed, remote cancellation confirmed, and already-terminal work are shown as separate states.",
+    "Existing durable Cloud Workflow cancellation uses its one-shot remote cancel marker and does not repeat an uncertain remote cancellation; terminal results and signed usage receipts continue through the existing reconciliation path."
+  ],
+  "localVerification": {
+    "osSourceContracts": "PASS: npm run os:check; this is a source/API contract check, not Android compilation.",
+    "simServiceAndCancellationTests": "PASS: node --test tests/sim-service-entry.test.mjs tests/a2a-delegation-store.test.mjs tests/a2a-workflow.test.mjs (22/22)",
+    "typecheck": "PASS: npm run typecheck",
+    "lint": "PASS: npm run lint:product",
+    "diffCheck": "PASS: git diff --check",
+    "projectStatus": "SIM01 remains in_progress; 104/159 project tasks are complete; production database readback is 0/6."
+  },
+  "notVerified": [
+    "Android AIDL/Java compilation, APK install, UI instrumentation, connectivity interruption, or physical-device cancellation behavior. /usr/bin/java has no runtime; Gradle and Android SDK are not configured on this host.",
+    "Actual Cloud A2A dispatch, remote Agent cancellation, provider usage, provider invoice, or billed amount. Paid execution remains feature-disabled.",
+    "Production carrier activation, physical SIM/eSIM distribution, supported-device OS/client installation, or end-to-end customer onboarding."
+  ],
+  "nextAction": "Run JDK/Android SDK CI and exact-device acceptance. Preserve remote cancel one-shot behavior and reconcile signed usage before any billing claim."
+}

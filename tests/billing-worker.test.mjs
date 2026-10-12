@@ -5,7 +5,9 @@ import { DatabaseSync } from 'node:sqlite';
 import test from 'node:test';
 import { privateKeyToAccount } from 'viem/accounts';
 import { createBillingToken } from '../lib/billing-token.ts';
-import billingWorker from '../services/sky-billing/src/worker.ts';
+import billingWorker, {
+  legacyFixtureBillingWorker,
+} from '../services/sky-billing/src/worker.ts';
 
 class Statement {
   #database;
@@ -81,23 +83,127 @@ class TestD1 {
 const origin = 'https://sky.example';
 const sharedSecret = 'test-billing-shared-secret-that-is-long-enough';
 const ingestSecret = 'test-receipt-ingest-secret-that-is-long-enough';
+const payoutSecret = 'test-payout-adapter-secret-that-is-long-enough';
 
-function signature(raw, timestamp = Math.floor(Date.now() / 1000)) {
-  return `t=${timestamp},v1=${createHmac('sha256', ingestSecret)
-    .update(`${timestamp}.${raw}`)
-    .digest('hex')}`;
-}
-
-void test('settlement Worker applies verified earnings once and never charges upfront', async () => {
+void test('current policy rejects a signed ToC receipt without writing a fee', async () => {
   const DB = new TestD1();
   const env = {
     DB,
     BILLING_SHARED_SECRET: sharedSecret,
     SETTLEMENT_INGEST_SECRET: ingestSecret,
+    PAYOUT_ADAPTER_SECRET: payoutSecret,
+    SKY_ORIGIN: origin,
+  };
+  try {
+    const health = await billingWorker.fetch(
+      new Request('https://settlement.example/health'),
+      env,
+    );
+    assert.equal((await health.json()).mode, 'fee_policy_on_hold');
+    const envWithoutPayout = { ...env, PAYOUT_ADAPTER_SECRET: undefined };
+    const healthWithoutPayout = await billingWorker.fetch(
+      new Request('https://settlement.example/health'),
+      envWithoutPayout,
+    );
+    assert.equal(healthWithoutPayout.status, 200);
+    const payoutWithoutSecret = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/payouts/claim', {
+        method: 'POST',
+        body: '{}',
+      }),
+      envWithoutPayout,
+    );
+    assert.equal(payoutWithoutSecret.status, 503);
+    const status = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/status', {
+        headers: {
+          Origin: origin,
+          Authorization: `Bearer ${await createBillingToken('alice', sharedSecret)}`,
+        },
+      }),
+      env,
+    );
+    assert.equal(status.status, 200);
+    const statusBody = await status.json();
+    assert.equal(statusBody.policy.mode, 'fee_policy_on_hold');
+    assert.equal(statusBody.policy.monthlyFeeCapMinor, null);
+    assert.equal(statusBody.settlement.remainingFeeCapMinor, null);
+    const walletChallenge = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/rock-wallet/challenge', {
+        method: 'POST',
+        headers: { Origin: origin },
+      }),
+      env,
+    );
+    assert.equal(walletChallenge.status, 409);
+    assert.equal(
+      (await walletChallenge.json()).code,
+      'SKY_FEE_POLICY_ON_HOLD',
+    );
+    const walletReconcile = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/rock-wallet/reconcile', {
+        method: 'POST',
+        headers: { Origin: origin },
+      }),
+      env,
+    );
+    assert.equal(walletReconcile.status, 409);
+    const receipt = {
+      receiptId: 'hold_1',
+      executionReceiptId: 'exec_hold_1',
+      userId: 'alice',
+      beneficiaryRole: 'toc',
+      sourceProvider: 'stripe-connect',
+      providerReference: 'pi_hold_1',
+      payoutAccountId: 'acct_alice',
+      evidenceSha256: 'a'.repeat(64),
+      currency: 'usd',
+      grossAmountMinor: 1000,
+      operatingCostMinor: 100,
+      occurredAt: Math.floor(Date.now() / 1000),
+    };
+    const raw = JSON.stringify(receipt);
+    const blocked = await billingWorker.fetch(
+      new Request('https://settlement.example/v1/earnings', {
+        method: 'POST',
+        headers: { 'Sky-Receipt-Signature': signature(raw) },
+        body: raw,
+      }),
+      env,
+    );
+    assert.equal(blocked.status, 409);
+    assert.equal((await blocked.json()).code, 'SKY_FEE_POLICY_ON_HOLD');
+    assert.equal(
+      DB.database.prepare('SELECT COUNT(*) AS total FROM earning_receipts').get()
+        .total,
+      0,
+    );
+  } finally {
+    DB.close();
+  }
+});
+
+function signature(
+  raw,
+  timestamp = Math.floor(Date.now() / 1000),
+  secret = ingestSecret,
+) {
+  return `t=${timestamp},v1=${createHmac('sha256', secret)
+    .update(`${timestamp}.${raw}`)
+    .digest('hex')}`;
+}
+
+void test('legacy settlement fixture applies verified earnings once', async () => {
+  const DB = new TestD1();
+  const env = {
+    DB,
+    BILLING_SHARED_SECRET: sharedSecret,
+    SETTLEMENT_INGEST_SECRET: ingestSecret,
+    PAYOUT_ADAPTER_SECRET: payoutSecret,
     SKY_ORIGIN: origin,
   };
   const request = async (path, options = {}) => {
-    const response = await billingWorker.fetch(
+    const response = await legacyFixtureBillingWorker.fetch(
       new Request(`https://settlement.example${path}`, {
         method: options.method ?? 'GET',
         headers: {
@@ -322,11 +428,18 @@ void test('settlement Worker applies verified earnings once and never charges up
     );
 
     const claimBody = JSON.stringify({ adapterId: 'stripe-connect' });
-    const claim = await request('/v1/payouts/claim', {
+    const wrongPayoutKey = await request('/v1/payouts/claim', {
       method: 'POST',
       origin: false,
       body: claimBody,
       signature: signature(claimBody),
+    });
+    assert.equal(wrongPayoutKey.response.status, 401);
+    const claim = await request('/v1/payouts/claim', {
+      method: 'POST',
+      origin: false,
+      body: claimBody,
+      signature: signature(claimBody, undefined, payoutSecret),
     });
     assert.equal(claim.response.status, 200);
     assert.equal(claim.body.instruction.status, 'processing');
@@ -342,7 +455,7 @@ void test('settlement Worker applies verified earnings once and never charges up
       method: 'POST',
       origin: false,
       body: resultBody,
-      signature: signature(resultBody),
+      signature: signature(resultBody, undefined, payoutSecret),
     });
     assert.equal(paid.body.instruction.status, 'paid');
     assert.equal(
@@ -353,7 +466,7 @@ void test('settlement Worker applies verified earnings once and never charges up
       method: 'POST',
       origin: false,
       body: resultBody,
-      signature: signature(resultBody),
+      signature: signature(resultBody, undefined, payoutSecret),
     });
     assert.equal(paidReplay.body.replay, true);
 
@@ -367,7 +480,117 @@ void test('settlement Worker applies verified earnings once and never charges up
       signature: signature(`${raw}changed`),
     });
     assert.equal(forged.response.status, 401);
+    const payoutKeyCannotCreateEarnings = await request('/v1/earnings', {
+      method: 'POST',
+      origin: false,
+      body: raw,
+      signature: signature(raw, undefined, payoutSecret),
+    });
+    assert.equal(payoutKeyCannotCreateEarnings.response.status, 401);
   } finally {
     DB.close();
   }
+});
+
+void test('a concurrent consumed Wallet challenge cannot reactivate a revoked operator after returning conflict', async (t) => {
+  const DB = new TestD1();
+  t.after(() => DB.close());
+  const env = {
+    DB,
+    BILLING_SHARED_SECRET: sharedSecret,
+    SETTLEMENT_INGEST_SECRET: ingestSecret,
+    PAYOUT_ADAPTER_SECRET: payoutSecret,
+    SKY_ORIGIN: origin,
+  };
+  const token = await createBillingToken('alice', sharedSecret);
+  const account = privateKeyToAccount(
+    '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+  );
+  const request = async (path, method, input) => {
+    const response = await legacyFixtureBillingWorker.fetch(
+      new Request(`https://settlement.example${path}`, {
+        method,
+        headers: { Origin: origin, Authorization: `Bearer ${token}` },
+        ...(input === undefined ? {} : { body: JSON.stringify(input) }),
+      }),
+      env,
+    );
+    return { status: response.status, body: await response.json() };
+  };
+  const challenge = await request('/v1/rock-wallet/challenge', 'POST', {
+    address: account.address,
+    chainId: 8453,
+  });
+  assert.equal(challenge.status, 201);
+  const input = {
+    challengeId: challenge.body.challengeId,
+    address: account.address,
+    signature: await account.signMessage({ message: challenge.body.message }),
+  };
+  const reached = Promise.withResolvers();
+  const resume = Promise.withResolvers();
+  const originalBatch = DB.batch.bind(DB);
+  let pauseNextVerify = true;
+  DB.batch = async (statements) => {
+    if (pauseNextVerify && statements.length === 3) {
+      pauseNextVerify = false;
+      reached.resolve();
+      await resume.promise;
+    }
+    return originalBatch(statements);
+  };
+  const delayedReplay = request('/v1/rock-wallet/verify', 'POST', input);
+  try {
+    await reached.promise;
+    assert.equal(
+      (await request('/v1/rock-wallet/verify', 'POST', input)).status,
+      200,
+    );
+    assert.equal((await request('/v1/rock-wallet', 'DELETE')).status, 200);
+    assert.equal(
+      DB.database.prepare('SELECT status FROM rock_wallet_operators').get()
+        .status,
+      'revoked',
+    );
+    const receipt = JSON.stringify({
+      receiptId: 'earn_after_revoke',
+      executionReceiptId: 'exec_after_revoke',
+      userId: 'alice',
+      beneficiaryRole: 'toc',
+      fundId: 'fund:test-one',
+      automationToolId: 'tool:test-one',
+      sourceProvider: 'stripe-connect',
+      providerReference: 'pi_after_revoke',
+      payoutAccountId: 'acct_alice',
+      evidenceSha256: 'a'.repeat(64),
+      currency: 'usd',
+      grossAmountMinor: 500,
+      operatingCostMinor: 100,
+      occurredAt: Math.floor(Date.now() / 1000),
+    });
+    const earned = await legacyFixtureBillingWorker.fetch(
+      new Request('https://settlement.example/v1/earnings', {
+        method: 'POST',
+        headers: { 'Sky-Receipt-Signature': signature(receipt) },
+        body: receipt,
+      }),
+      env,
+    );
+    assert.equal(earned.status, 201);
+  } finally {
+    resume.resolve();
+  }
+  assert.equal((await delayedReplay).status, 409);
+  assert.equal(
+    DB.database.prepare('SELECT status FROM rock_wallet_operators').get()
+      .status,
+    'revoked',
+  );
+  const collection = DB.database
+    .prepare(
+      "SELECT status,recipient_address FROM rock_fee_collection_instructions WHERE receipt_id='earn_after_revoke'",
+    )
+    .get();
+  assert.equal(collection.status, 'awaiting_wallet');
+  assert.equal(collection.recipient_address, null);
 });

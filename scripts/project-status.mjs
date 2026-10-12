@@ -1,7 +1,12 @@
 import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
+import { archiveUrl, existsOrArchived, isArchivedPath } from './archived-paths.mjs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
-import { phaseGateEvidencePaths, renderPhaseGates, validatePhaseGates } from './project-phase-gates.mjs';
+import {
+  phaseGateEvidencePaths,
+  renderPhaseGates,
+  validatePhaseGates,
+} from './project-phase-gates.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const status = JSON.parse(
@@ -31,7 +36,7 @@ for (const task of status.tasks) {
       ))
   )
     throw new Error(`${task.id}: 完了には根拠と依存作業の完了が必要です。`);
-  if (task.evidence.some((file) => !existsSync(resolve(root, file))))
+  if (task.evidence.some((file) => !existsOrArchived(file, root)))
     throw new Error(`${task.id}: 根拠ファイルがありません。`);
   if (task.status === 'blocked' && !task.reason)
     throw new Error(`${task.id}: 停止理由が必要です。`);
@@ -43,35 +48,104 @@ function visit(id, stack = new Set()) {
     visit(dep, next);
 }
 for (const id of ids) visit(id);
-const existingGateEvidence = new Set(phaseGateEvidencePaths(status.phaseGates)
-  .filter((file) => existsSync(resolve(root, file)) && statSync(resolve(root, file)).isFile()));
-const phaseGates = validatePhaseGates(status.tasks, status.phaseGates, existingGateEvidence);
+const existingGateEvidence = new Set(
+  phaseGateEvidencePaths(status.phaseGates).filter(
+    (file) =>
+      (existsSync(resolve(root, file)) && statSync(resolve(root, file)).isFile()) ||
+      isArchivedPath(file, root),
+  ),
+);
+const phaseGates = validatePhaseGates(
+  status.tasks,
+  status.phaseGates,
+  existingGateEvidence,
+);
 const cell = (value) =>
   String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
 const done = status.tasks.filter((task) => task.status === 'done').length;
+const planned = status.tasks.filter((task) => task.status === 'planned').length;
+const inProgress = status.tasks.filter(
+  (task) => task.status === 'in_progress',
+).length;
+const blocked = status.tasks.filter((task) => task.status === 'blocked').length;
+const parentIds = new Set(
+  status.tasks
+    .filter((task) => task.parentTaskId)
+    .map((task) => task.parentTaskId),
+);
+const childCount = status.tasks.filter((task) => task.parentTaskId).length;
+const leafCount = status.tasks.length - parentIds.size;
+const hierarchy = parentIds.size
+  ? `（親${parentIds.size}・子${childCount}・独立${leafCount - childCount}。実行単位は親を除く${leafCount}件）`
+  : '';
+const overview = `${status.tasks.length}登録task${hierarchy}中${done} done・${inProgress} in progress・${planned} planned${blocked ? `・${blocked} blocked` : ''}`;
+const overviewEnglish = `${status.tasks.length} task records${parentIds.size ? ` (${parentIds.size} parents, ${childCount} children, ${leafCount - childCount} standalone; ${leafCount} execution units excluding parents)` : ''}: ${done} done, ${inProgress} in progress, ${planned} planned${blocked ? `, ${blocked} blocked` : ''}`;
 const block = [
   '<!-- project-status:start -->',
-  `最終更新: ${status.updatedAt} / ${status.milestone} / 完了 ${done}/${status.tasks.length}件`,
+  `最終更新: ${status.updatedAt} / ${status.milestone} / 完了記録 ${done}/${status.tasks.length}件${hierarchy}`,
   '',
   '| ID | 作業 | 状態 | 根拠 |',
   '| --- | --- | --- | --- |',
   ...status.tasks.map(
     (task) =>
-      `| ${task.id} | ${cell(task.title)} | ${labels[task.status]}${task.reason ? `: ${cell(task.reason)}` : ''} | ${task.evidence.map((file) => `[記録](${file})`).join(' · ') || '—'} |`,
+      `| ${task.id} | ${task.parentTaskId ? `子作業（${task.parentTaskId}）: ` : parentIds.has(task.id) ? '親タスク: ' : ''}${cell(task.title)} | ${labels[task.status]}${task.reason ? `: ${cell(task.reason)}` : ''} | ${task.evidence.map((file) => `[記録](${archiveUrl(file, root) ?? file})`).join(' · ') || '—'} |`,
   ),
   '',
-  ...renderPhaseGates(phaseGates),
+  ...renderPhaseGates(phaseGates, (file) => archiveUrl(file, root) ?? file),
   `次の作業: ${status.nextAction}`,
   '<!-- project-status:end -->',
 ].join('\n');
 let stale = false;
-for (const name of ['README.md', 'project.md']) {
+const replaceMarkedBlock = (source, marker, replacement, name) => {
+  const pattern = new RegExp(
+    `<!-- ${marker}:start -->[\\s\\S]*?<!-- ${marker}:end -->`,
+  );
+  if (!pattern.test(source))
+    throw new Error(`${name}: ${marker}欄がありません。`);
+  return source.replace(pattern, () => replacement);
+};
+const targets = [
+  {
+    name: 'README.md',
+    transform: (source) => {
+      // Keep the landing page concise; the full task/gate table lives in project.md.
+      return replaceMarkedBlock(
+        source,
+        'project-overview',
+        [
+          '<!-- project-overview:start -->',
+          `Updated: ${status.updatedAt} / ${overviewEnglish}`,
+          '<!-- project-overview:end -->',
+        ].join('\n'),
+        'README.md',
+      );
+    },
+  },
+  {
+    name: 'project.md',
+    transform: (source) =>
+      replaceMarkedBlock(source, 'project-status', block, 'project.md'),
+  },
+  {
+    name: 'docs/workstreams/README.md',
+    transform: (source) => {
+      return replaceMarkedBlock(
+        source,
+        'project-overview',
+        [
+          '<!-- project-overview:start -->',
+          `現在の機械可読進捗は${overview.replaceAll('・', '、')}。件数は作業量や製品完成率を表さない。`,
+          '<!-- project-overview:end -->',
+        ].join('\n'),
+        'docs/workstreams/README.md',
+      );
+    },
+  },
+];
+for (const { name, transform } of targets) {
   const file = resolve(root, name);
   const before = readFileSync(file, 'utf8');
-  const marker =
-    /<!-- project-status:start -->[\s\S]*?<!-- project-status:end -->/;
-  if (!marker.test(before)) throw new Error(`${name}: 進捗欄がありません。`);
-  const after = before.replace(marker, () => block);
+  const after = transform(before);
   if (before !== after) {
     if (process.argv.includes('--check')) {
       stale = true;

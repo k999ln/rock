@@ -28,8 +28,19 @@
     "status": "OUTDATED",
     "comparedReviewHead": "c746621afeed4c27b3426e6cceab1b425b2dc7d0",
     "commitsBehind": 15,
-    "authorization": "AWAITING_EXPLICIT_OWNER_APPROVAL",
-    "nextAction": "最新版sourceを本人限定の同じSiteへ保存・配備し、version、deployment、source commit、archive、access policyを再読取りする"
+    "authorization": "OWNER_APPROVED_ACCESS_BLOCKED",
+    "authorizationUpdatedAt": "2026-09-15T23:09:35Z",
+    "nextAction": "本人限定Sitesを所有するworkspaceへ接続し、検証済み最新mainを同じSiteへ保存・配備してversion、deployment、source commit、archive、access policyを再読取りする"
+  },
+  "access": {
+    "status": "OWNER_WORKSPACE_MISMATCH",
+    "observedAt": "2026-09-15T23:09:35Z",
+    "browser": "ACCESS_DENIED",
+    "api": "PROJECT_NOT_FOUND",
+    "dataMutationPerformed": false,
+    "evidence": [
+      "docs/evidence/launch/sites-owner-auth-blocker-20260915.json"
+    ]
   },
   "deploymentSecurity": {
     "status": "PENDING_CURRENT_DEPLOYMENT",

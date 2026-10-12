@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="501.27559055118115" height="290" preserveAspectRatio="xMinYMin meet" viewBox="0 0 501 290" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="501.27559055118115" height="290"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-290)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="143" y="243" width="214" height="40" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="205.0" y="260.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,520) scale(1,-1)">配信・認証サービス</text>
+			<rect x="0" y="157" width="140" height="46" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="38.33984375" y="184.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,368) scale(1,-1)">許可済みWi-Fi</text>
+			<text x="30.0" y="170.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,340) scale(1,-1)">ルーター・地上網</text>
+			<rect x="180" y="157" width="140" height="46" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="210.0" y="184.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,368) scale(1,-1)">契約済み携帯回線</text>
+			<text x="215.0" y="170.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,340) scale(1,-1)">基地局・地上網</text>
+			<rect x="360" y="157" width="140" height="46" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="390.0" y="184.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,368) scale(1,-1)">衛星ゲートウェイ</text>
+			<text x="390.0" y="170.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,340) scale(1,-1)">フィーダーリンク</text>
+			<path d="M 165,243 L 70,203 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="70 203, 75.99205 202.6913, 73.96655 207.5018" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="165 243, 159.0079 243.3087, 161.0334 238.4982" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 250,243 L 250,203 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="250 203, 252.6098 208.4027, 247.3902 208.4027" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="250 243, 247.3902 237.5973, 252.6098 237.5973" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 335,243 L 430,203 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="430 203, 426.0334 207.5018, 424.0079 202.6913" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="335 243, 338.9666 238.4982, 340.9921 243.3087" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="360" y="83" width="140" height="43" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="403.88427734375" y="108.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,217) scale(1,-1)">A-LINK衛星</text>
+			<text x="400.0" y="94.5" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,189) scale(1,-1)">利用者リンク</text>
+			<path d="M 430,157 L 430,126 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="430 126, 432.6098 131.4027, 427.3902 131.4027" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="430 157, 427.3902 151.5973, 432.6098 151.5973" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<rect x="120" y="7" width="260" height="48" rx="5" ry="5" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 0.8; fill: rgb(93%,96%,96%); fill-rule: evenodd;"/>
+			<text x="206.9287109375" y="35.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,70) scale(1,-1)">avokado / 接続管理</text>
+			<text x="195.0" y="21.0" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 10px;fill: rgb(13%,23%,28%); stroke:none;" transform="translate(0,42) scale(1,-1)">認証・受信・保存・再開</text>
+			<path d="M 70,157 L 70,31 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="70 31, 72.60979 36.40268, 67.39021 36.40268" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="70 157, 67.39021 151.5973, 72.60979 151.5973" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 70,31 L 120,31 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="120 31, 114.5973 33.60979, 114.5973 28.39021" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 250,157 L 250,55 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="250 55, 252.6098 60.40268, 247.3902 60.40268" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="250 157, 247.3902 151.5973, 252.6098 151.5973" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 430,83 L 430,31 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="430 31, 432.6098 36.40268, 427.3902 36.40268" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<polygon points="430 83, 427.3902 77.59732, 432.6098 77.59732" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<path d="M 430,31 L 380,31 Z" style="stroke: rgb(3%,49%,51%); stroke-linecap: butt; stroke-width: 1.1;"/>
+			<polygon points="380 31, 385.4027 28.39021, 385.4027 33.60979" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(3%,49%,51%); fill-rule: evenodd;"/>
+			<text x="57.2470703125" y="114" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,228) scale(1,-1)">優先 1</text>
+			<text x="237.2470703125" y="113" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 9px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,226) scale(1,-1)">優先 2</text>
+			<text x="399.330078125" y="64" style="font-family: 'Arial Unicode MS', sans-serif; font-size: 8px;fill: rgb(38%,45%,49%); stroke:none;" transform="translate(0,128) scale(1,-1)">優先 3 / 小データ</text>
+		</g>
+	</g>
+</svg>

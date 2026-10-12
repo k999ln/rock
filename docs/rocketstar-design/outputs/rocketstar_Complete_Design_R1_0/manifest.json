@@ -1,0 +1,274 @@
+{
+  "title": "rocketstar Complete System Design",
+  "revision": "R1.0",
+  "date": "2026-09-24",
+  "manufacturing_release": false,
+  "flight_release": false,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3405,
+      "sha256": "af1e2068f134da254dd765a0bdf560e779bf7f1a73832d9f999242d1a0f4bd36"
+    },
+    {
+      "path": "context/AVP-L2/README.md",
+      "bytes": 1643,
+      "sha256": "852d4feb03de27599e16f240d64b3f1bcd3200e688337e1e076b211857a9df4c"
+    },
+    {
+      "path": "context/AVP-L2/RockstarOS_Complete_Design_v1_0.md",
+      "bytes": 92915,
+      "sha256": "dac28acec44684785d7bddd1376d1734d982d35e7e590461c0e128b7e89bc641"
+    },
+    {
+      "path": "context/AVP-L2/flight_equipment_sources.json",
+      "bytes": 9024,
+      "sha256": "9fe31c3e22648cf3c4d105a07d845a68d1c0c51e0731fa201e4d6fed36bbabf1"
+    },
+    {
+      "path": "context/AVP-L2/result.schema.json",
+      "bytes": 4418,
+      "sha256": "635d4bd3644f2561f0f145fc8dd5e75233a64cf53f2f2dd05e765086b56b0511"
+    },
+    {
+      "path": "context/AVP-L3/button_behavior.json",
+      "bytes": 3591,
+      "sha256": "c1173138c21edf7b192bbaf054145b6fe7f8733fe1e7f31bdf9b3c9b2bd8f9ec"
+    },
+    {
+      "path": "evidence/content_review.md",
+      "bytes": 8800,
+      "sha256": "a6619b6c34375afa3f554331210e347c8689fb1ecc908e1c13577361af2fee2d"
+    },
+    {
+      "path": "evidence/package_checks.json",
+      "bytes": 2342,
+      "sha256": "54e29c4a25a87621ae69de7f8af34e41785bc2976758d7b11f0865218a0fa868"
+    },
+    {
+      "path": "evidence/pdf_content.json",
+      "bytes": 3619,
+      "sha256": "cbb6deaebfc363f63eb3c766b5510716bbeed567302a8a7d8048181beaa32b4d"
+    },
+    {
+      "path": "evidence/review_resolution.json",
+      "bytes": 429,
+      "sha256": "6ae493ab697c0b8874ac68a83114845d24738ef7ac49c3df7e181972dc54a354"
+    },
+    {
+      "path": "evidence/visual_review.json",
+      "bytes": 3340,
+      "sha256": "5ff6911bc49127f4d23cb1e2fe0428a25e6c328617bba60e966da54f6367f09e"
+    },
+    {
+      "path": "mass_audit/audit.json",
+      "bytes": 10815,
+      "sha256": "6fcc930ebba192526b4c502786a257cc1b8a34668ff46dfdf4c0a1a1623b537f"
+    },
+    {
+      "path": "mass_audit/mass_performance.md",
+      "bytes": 13123,
+      "sha256": "8ea8d98cfebe76b32a6eb5a2cc488fbd8686f66e7640883f23437cd2fda68da6"
+    },
+    {
+      "path": "mass_audit/replay/mass_study.json",
+      "bytes": 506845,
+      "sha256": "10325fcd3c62847ddb6c4cb3e2383fb35b2b40145a8a3fa046bf3a27bcad410d"
+    },
+    {
+      "path": "mass_audit/replay/mass_study.md",
+      "bytes": 11811,
+      "sha256": "6768a221b5c479659e4b0e342db48aa1b7762b635926f93a3b324a0b644df1b7"
+    },
+    {
+      "path": "mass_audit/replay/mass_study.py",
+      "bytes": 20544,
+      "sha256": "609ba3bc1eff55bd63d56576580d04390a54898107193c6e7a73243617d36e39"
+    },
+    {
+      "path": "mass_audit/run_audit.py",
+      "bytes": 12871,
+      "sha256": "eefb29a5cccf977a6b0705ac7758b3db531e0840c5d8a1b72c84adf8db730f6b"
+    },
+    {
+      "path": "mission_profile.json",
+      "bytes": 3610,
+      "sha256": "f8b3f26f0d0cbeb297011f248da6b79d8fb6f73fe853b36c1cc918b06ac75274"
+    },
+    {
+      "path": "reference_c3/A-LINK_C3_functional_layout.svg",
+      "bytes": 5357,
+      "sha256": "bb9b4c0dce7f483b957ead7f17bcc361d92db538ab3678b36aa0589ba53c0a48"
+    },
+    {
+      "path": "reference_c3/A-LINK_E3_C3_network.svg",
+      "bytes": 6811,
+      "sha256": "d4851c075a62c87cd8b0ea2ab490f1b9f448559383b777ed99ba76d2b53aef06"
+    },
+    {
+      "path": "reference_c3/README.md",
+      "bytes": 2324,
+      "sha256": "149887c1c9048c777c5953c4fd21c0624ae0dd84b40b633981f75208e32a42fa"
+    },
+    {
+      "path": "reference_c3/appearance_definition.json",
+      "bytes": 3763,
+      "sha256": "374a787dad9528be24c9bf6606a9669a1e2074d4a0c6953df5a4bf920614ba26"
+    },
+    {
+      "path": "reference_c3/consistency_review.md",
+      "bytes": 7890,
+      "sha256": "018db7ef41127134f1b5192185fea1dfc220c3bdfa367223ebf5043d8ebc41e1"
+    },
+    {
+      "path": "reference_c3/design_register.csv",
+      "bytes": 24103,
+      "sha256": "c7904eed01531bb6f50473944c359af8b4099307285b73135d9df0d2c1dc0c26"
+    },
+    {
+      "path": "reference_c3/design_register.json",
+      "bytes": 73963,
+      "sha256": "9dfeff10b6f01cda7b84d77450abdc78ddae23a8d8675c40705ac5e4488250b9"
+    },
+    {
+      "path": "reference_c3/design_register.md",
+      "bytes": 62801,
+      "sha256": "8b7eab1e24c8bcfc79aa8d445ad68a47c48b782036e8292999516e313f389e54"
+    },
+    {
+      "path": "reference_c3/generation_record.json",
+      "bytes": 5333,
+      "sha256": "bd5e846c65ba68e87683c90fcbe0f265636eb37d021ba6c2ff9e07220f5c8312"
+    },
+    {
+      "path": "reference_c3/image_prompt.txt",
+      "bytes": 4816,
+      "sha256": "1ee3b1985056cd4f6bdbcd204185679eafb8c35f295653927ab39ccaa7e59b04"
+    },
+    {
+      "path": "reference_c3/interface_crossrefs.json",
+      "bytes": 15439,
+      "sha256": "63fda210b4ea309b7334bea023e4687562a6ccb0799bc47631b4fcb9fdd54c3a"
+    },
+    {
+      "path": "reference_c3/mass_study.json",
+      "bytes": 506845,
+      "sha256": "10325fcd3c62847ddb6c4cb3e2383fb35b2b40145a8a3fa046bf3a27bcad410d"
+    },
+    {
+      "path": "reference_c3/mass_study.md",
+      "bytes": 11811,
+      "sha256": "6768a221b5c479659e4b0e342db48aa1b7762b635926f93a3b324a0b644df1b7"
+    },
+    {
+      "path": "reference_c3/mass_study.py",
+      "bytes": 20544,
+      "sha256": "609ba3bc1eff55bd63d56576580d04390a54898107193c6e7a73243617d36e39"
+    },
+    {
+      "path": "reference_c3/naming_checks.json",
+      "bytes": 350,
+      "sha256": "7bddb97bc654df9d74ec86834271e76737ee02d46d28b2e4dc7a937720ddfcdb"
+    },
+    {
+      "path": "reference_c3/naming_decision.json",
+      "bytes": 318,
+      "sha256": "be9363dfda8dae178d3bb3a8840a9017b6e51c78838405e2c3e1c5edc5e20237"
+    },
+    {
+      "path": "reference_c3/naming_image_edit.json",
+      "bytes": 501,
+      "sha256": "982f661c46de41c24dffbbf72fa8ae71725c5ca29825abfba5cd18776db9bd07"
+    },
+    {
+      "path": "reference_c3/naming_image_prompt.txt",
+      "bytes": 750,
+      "sha256": "e5eb2bae4617ffaa1e17e7d79cc9ba739c70c8b1361e4866ddfb61826841ee72"
+    },
+    {
+      "path": "reference_c3/payload_interfaces.json",
+      "bytes": 21094,
+      "sha256": "3b5acf997e6fd37219a353c4eb89ae7837a51ced557a7b758b022ce7783629d9"
+    },
+    {
+      "path": "reference_c3/payload_interfaces.md",
+      "bytes": 16776,
+      "sha256": "cc19a1b3e01edaa51c4ff168986b412b386bfb0e9b6db7040574e4a11cbc3cb9"
+    },
+    {
+      "path": "reference_c3/revision_notes.md",
+      "bytes": 1960,
+      "sha256": "afa770843b04424125794ac11de8bfe60ae225d413d4963cd5f63793ae48692c"
+    },
+    {
+      "path": "reference_c3/rocketstar_C3_Integrated_Design_Baseline.md",
+      "bytes": 36041,
+      "sha256": "e06517cc35053590699bcd0a3be7d94ebe280030436b86a54f176d3ae03603ad"
+    },
+    {
+      "path": "reference_c3/rocketstar_C3_external_concept.png",
+      "bytes": 1680625,
+      "sha256": "8f30a9c08cd24a5aacd212b3bdfcba4c2bce04b1e9224262b3db5d408b38f8f8"
+    },
+    {
+      "path": "reference_c3/rocketstar_C3_functional_layout.svg",
+      "bytes": 6577,
+      "sha256": "690840b1e9bfbb078d018e9d87dc15333d1615e76bc3eae9529b317c45d342fb"
+    },
+    {
+      "path": "reference_c3/rocketstar_C3_mass_comparison.svg",
+      "bytes": 4781,
+      "sha256": "b9b121a4eaf51bc1648e51e1e7984cf75348e8d163648d4ba37d2f69e70575a8"
+    },
+    {
+      "path": "requirements.csv",
+      "bytes": 19852,
+      "sha256": "58f7c5c816d3ddc15bd346c0eaf44eb56b4a5b19db144c761fd9699483c963ee"
+    },
+    {
+      "path": "requirements.json",
+      "bytes": 35189,
+      "sha256": "333b472c28488ff0cfdf3171f3fb33caba675d30422d5edf12b750037de06bf3"
+    },
+    {
+      "path": "rocketstar_Complete_Design_R1_0.md",
+      "bytes": 97767,
+      "sha256": "fc958d4905614ca181b9d93fbc9f6944dcb5bfc9aebb0b5a67d55f53a45d4291"
+    },
+    {
+      "path": "rocketstar_Complete_Design_R1_0.pdf",
+      "bytes": 3512971,
+      "sha256": "c5497a5df7037ce7cdfe95d9ec93c8f976d4a7452041fdf27660c28806a36c4e"
+    },
+    {
+      "path": "rocketstar_functional_layout.svg",
+      "bytes": 6661,
+      "sha256": "3730a39a870f17319bf5df73a68e88220f2404be221a5a6f03d7cce6a821c471"
+    },
+    {
+      "path": "rocketstar_reuse_lifecycle.svg",
+      "bytes": 8409,
+      "sha256": "03a180f8e9e3af7b83aa269a716d122c56e6f55f80790f1b8015ee4b3828683b"
+    },
+    {
+      "path": "rocketstar_system.svg",
+      "bytes": 7451,
+      "sha256": "c5213e41565e4929997e7a6255cd6658c22fd7f6cab84185c00dc2e6824d26f5"
+    },
+    {
+      "path": "sections.json",
+      "bytes": 4221,
+      "sha256": "006e1f754224ad3cd0c0ac856f6ca5731d85d5e7bf402e9d4e2d328616fa1ddd"
+    },
+    {
+      "path": "sources.json",
+      "bytes": 16872,
+      "sha256": "166a8d674d3050fe11ee9a0c80688d93be4082c272df27037b60ec95db02274a"
+    },
+    {
+      "path": "system_interfaces.json",
+      "bytes": 14359,
+      "sha256": "6a31687f8554cccc3a2bed3d8249d4bf3bcfe85fb420f1f68281e63fa55e5050"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
   Bot,
@@ -123,6 +124,7 @@ function withVerifiedPerformance(
 }
 
 export default function AutonomousFundMarket() {
+  const router = useRouter();
   const [snapshot, setSnapshot] = useState<Snapshot>({
     funds: [],
     membership: null,
@@ -282,6 +284,7 @@ export default function AutonomousFundMarket() {
       }));
       const joined = value.funds.find((fund) => fund.id === fundId);
       setNotice(`${joined?.name ?? 'ファンド'}に参加しました。`);
+      router.push(`/chat?fund=${encodeURIComponent(fundId)}`);
     } catch (caught) {
       setError(
         caught instanceof Error ? caught.message : '参加を保存できませんでした。',
@@ -304,8 +307,8 @@ export default function AutonomousFundMarket() {
         </div>
         <div className="autofund-contract" aria-label="収益の配給ルール">
           <small>SKY REVENUE CONTRACT</small>
-          <strong>月最大 $8.88</strong>
-          <p>外部実費とSky利用料を除く残額は、すべてユーザーのものです。</p>
+          <strong>収益料金は保留中</strong>
+          <p>収益料金は保留中です。外部実費を分けて表示し、利用料は差し引きません。</p>
         </div>
       </header>
 
@@ -322,7 +325,7 @@ export default function AutonomousFundMarket() {
         <ArrowRight size={18} />
         <div>
           <CircleDollarSign size={19} />
-          <span>$8.88だけ回収</span>
+          <span>料金の回収動線は未確定</span>
         </div>
         <ArrowRight size={18} />
         <div>
@@ -412,6 +415,9 @@ export default function AutonomousFundMarket() {
               {active.tools.length}ツール · {strategyLabels[active.strategy]} ·
               実収益はProvider照合後にだけ計上
             </p>
+            <Link href={`/chat?fund=${encodeURIComponent(active.id)}`}>
+              Zemaで進捗を見る <ArrowRight size={15} />
+            </Link>
           </article>
         )}
 

@@ -1,0 +1,3036 @@
+{
+  "schema": "rock-integrated-development-evidence/1",
+  "startedAt": "2026-10-11T09:13:50Z",
+  "plannedEndAt": "2026-10-11T19:13:50Z",
+  "baseMain": "96845e6006c15e39ba5b45495f79c21bdff7399e",
+  "branch": "codex/rock-development-20261011",
+  "status": "runtime_candidate_verified_external_acceptance_open",
+  "sourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+  "taskIds": [
+    "G04",
+    "SIM01",
+    "SKY21"
+  ],
+  "cleanup": {
+    "commit": "f7266bd",
+    "filesRemoved": 8,
+    "bytesRemoved": 161082,
+    "localMarkdownLinksChecked": 1877,
+    "missingLinks": 0,
+    "manifest": "data/project-status.json#repositoryCleanup.obsoleteContent",
+    "followup": {
+      "filesRemoved": 2,
+      "bytesRemoved": 50893,
+      "originalFilesRemoved": 8,
+      "totalFilesRemoved": 10,
+      "totalBytesRemoved": 211975,
+      "acceptanceContract": "docs/workstreams/06-native-qemu-release.md#continuing-acceptance",
+      "relativeLinksChecked": 2090,
+      "missingLinks": 0,
+      "fixedEvidenceUnchanged": true
+    }
+  },
+  "ledgerRecovery": {
+    "tasks": [
+      "SIM01",
+      "SKY21",
+      "B06",
+      "G04",
+      "AI09",
+      "DOC05",
+      "GM01",
+      "CAMPUS01"
+    ],
+    "stateCorrections": [
+      "AI02",
+      "AI03",
+      "AI04",
+      "AI05",
+      "AI06"
+    ],
+    "sourceReferenceCount": 235,
+    "historicalPreparationRecords": 23,
+    "proAssessmentCorrections": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5",
+      "P6",
+      "P7"
+    ],
+    "nestedContractsReviewed": 32,
+    "nestedContractReviewLimit": "Current source semantics only; historical successful-state flags not transferred to this candidate."
+  },
+  "validation": {
+    "ledgerRecovery": {
+      "status": "passed_on_local_working_tree",
+      "command": "node --experimental-strip-types --test tests/campus.test.mjs tests/game-sandbox.test.mjs tests/mission-control.test.mjs tests/workspaces.test.mjs tests/agent-control-plane.test.mjs",
+      "tests": 44,
+      "pass": 44,
+      "fail": 0,
+      "skip": 0,
+      "limits": "No browser, provider or physical acceptance; repository and data contract checks also passed."
+    },
+    "firstIntegratedVerify": {
+      "sourceSha": "f675a83c4bb33d7bff4cb1916ead383313b5783e",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "failed",
+      "reached": "npm test",
+      "tests": 1558,
+      "pass": 1507,
+      "fail": 50,
+      "skip": 1,
+      "failureGroups": [
+        "Material catalog icon missing (1)",
+        "Material workspace missing from existing handoff harness (46)",
+        "Recovered G04 changes H1 leaf count (2)",
+        "AMC record action carried across task selection (1)"
+      ],
+      "notRun": [
+        "remaining package checks",
+        "build",
+        "Worker/D1 API",
+        "final mission/work/bot checks"
+      ],
+      "limits": "macOS arm64; one unsupported-platform discovery refusal case skipped on this supported platform."
+    },
+    "integrationRegressionRepair": {
+      "sourceSha": "6f18dc27719e303ee34cae67c5f676a911495402",
+      "command": "node --experimental-strip-types --test tests/amc-goal-cli.test.mjs tests/sky-tool-icons.test.mjs tests/sky-tool-workspace-handoff.test.mjs",
+      "tests": 106,
+      "pass": 106,
+      "fail": 0,
+      "skip": 0,
+      "status": "passed",
+      "limits": "Targeted Node/DOM fixtures; full verify and integrated browser still pending."
+    },
+    "fullVerify": {
+      "sourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "passed",
+      "exitCode": 0,
+      "environment": "macOS arm64, Node 26.0.0, local Cloudflare Worker/D1/R2 synthetic fixtures",
+      "node": {
+        "tests": 1585,
+        "pass": 1584,
+        "fail": 0,
+        "skip": 1
+      },
+      "workerD1Assertions": 1356,
+      "csvD1R2Assertions": 385,
+      "webAssetReferences": 184,
+      "missingWebAssets": 0,
+      "skippedReason": "unsupported-platform local-descriptor refusal test is inapplicable on the supported POSIX host",
+      "limits": "No live Provider, external billing, device OS, hardware or production acceptance."
+    },
+    "historySecurity": {
+      "status": "clean",
+      "targetHead": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+      "reachableCommitCount": 1167,
+      "historyScanCompleted": true,
+      "totalFindings": 0,
+      "configSha256": "36d30ae624943c4587d9453668a0cb149168d06da7a71de008ec8d2e7b586c9b",
+      "priorFailure": "SCANNER_FAILED with 145 unhydrated partial-clone objects; hydrated the exact Git objects and completed a fresh scan."
+    },
+    "securityControl": {
+      "reviewedControlSha": "1ae13f30444961e9cc740174469cea2c9315ec99",
+      "policyTests": {
+        "pass": 10,
+        "fail": 0,
+        "skip": 0
+      },
+      "scannerBoundaryTests": {
+        "pass": 6,
+        "fail": 0,
+        "skip": 0
+      },
+      "review": "Exact public storage identifier at reviewed paths plus existing exact public source digest exceptions; recomputed all 5 eSIM source hashes at f9c858706601e43ad5da526d94e408fb3daf0c31. Corrected merged provenance counts from163 to166 without adding or broadening exception rules.",
+      "initialCi": "SPIDER on5d5708d3 failed under older control06efd843; updated pinned control requires a new same-head CI result."
+    },
+    "integratedBrowser": {
+      "source": {
+        "testedRuntimeSHA": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+        "endHEAD": "7c6a53bba1f9e17c1b0e041dab028adaddea527d",
+        "interveningPaths": [
+          ".github/spider/public-value-provenance.json",
+          ".github/workflows/spider.yml",
+          "docs/evidence/integrated-development-20261011.json",
+          "project.md"
+        ],
+        "runtimeBytesUnchanged": true,
+        "rootTrackedStatusAtFinish": ""
+      },
+      "environment": {
+        "url": "http://localhost:5180",
+        "browser": "Chrome via CUA",
+        "server": "npm run dev -- --host 127.0.0.1 --port 5180",
+        "identity": "synthetic local Sites sign-in",
+        "storage": "local Wrangler D1 SQLite; existing 63 migrations applied to fresh DB",
+        "externalProviderCallsAuthorized": false,
+        "publiclyDeployed": false,
+        "realMoneyMoved": false
+      },
+      "results": [
+        {
+          "case": "material-sky-zema-save-reload",
+          "result": "pass",
+          "steps": [
+            "Open Sky /sky/tools/rockstar-material-invention",
+            "Click Zemaで開く",
+            "Load 合成サンプルを開く; title Integrated UI fixture — Material 5d5708d3",
+            "Generate candidates in browser",
+            "Save input and candidates for signed-in owner",
+            "Reload page and reopen saved title"
+          ],
+          "observed": {
+            "candidateCount": 3,
+            "ratiosPercent": [
+              25,
+              50,
+              75
+            ],
+            "evidence": "HYPOTHESIS",
+            "safety": "SANDBOX_ONLY",
+            "physicalExecution": "forbidden",
+            "savedJobState": "active",
+            "revision": 1,
+            "step": "サンプル確認中",
+            "completionNotClaimed": true
+          },
+          "apiEvidence": "POST /api/material-invention then GET list/detail 200; see dev-server.log",
+          "viewportChecks": [
+            {
+              "width": 1280,
+              "scrollWidth": 1280
+            },
+            {
+              "width": 390,
+              "scrollWidth": 390
+            }
+          ]
+        },
+        {
+          "case": "amc-goal-save-reload-main-screens",
+          "result": "pass-with-minor-copy-finding",
+          "steps": [
+            "Inspect 部隊・進捗 readonly 32-squad board at390",
+            "Open 依頼・Goal",
+            "Write synthetic Webアプリ request and intent",
+            "Save Goal without executing Codex",
+            "Reload page; open 依頼・Goal; select saved Goal",
+            "Inspect Skyローンチ readonly plan at1280; return to saved Goal"
+          ],
+          "observed": {
+            "postStatus": 201,
+            "detailStatus": 200,
+            "revision": 1,
+            "squadCount": 4,
+            "acceptedTasks": "0 / 7",
+            "startedTasks": 0,
+            "aiStarted": false,
+            "planVersusRuntimeBoundaryVisible": true
+          },
+          "viewportChecks": [
+            {
+              "width": 390,
+              "scrollWidth": 390
+            },
+            {
+              "width": 1280,
+              "scrollWidth": 1280
+            }
+          ]
+        },
+        {
+          "case": "coconala-save-transient-failure-retry-reload",
+          "result": "pass",
+          "steps": [
+            "Create synthetic case integrated-ui-5d5708d3 using 合成顧客A and 合成担当者B",
+            "Save draft to local D1",
+            "Create fixture-specific SQLite BEFORE UPDATE abort trigger",
+            "Click 担当開始を記録; API503; actions disabled and same-payload recovery offered",
+            "Remove injected trigger; click 同じ保存内容で結果を確認",
+            "Observe API200 and assigned state; reload; confirm one event and revision1"
+          ],
+          "observed": {
+            "createStatus": 201,
+            "failureStatus": 503,
+            "retryStatus": 200,
+            "failureState": "draft",
+            "failureRevision": 0,
+            "restoredState": "assigned",
+            "restoredRevision": 1,
+            "persistedEventCount": 1,
+            "fixtureRowCount": 1,
+            "moneyRecords": 0,
+            "triggerRemoved": true
+          },
+          "viewportChecks": [
+            {
+              "width": 390,
+              "scrollWidth": 390
+            },
+            {
+              "width": 1280,
+              "scrollWidth": 1280
+            }
+          ],
+          "limits": [
+            "Browser fault injection occurs before commit, not a dropped response after commit. Post-commit replay is covered by separate component/API tests."
+          ]
+        }
+      ],
+      "limits": [
+        "Local developer server and synthetic identity/data only; not production acceptance.",
+        "Browser cross-owner access not exercised here; separate integrated Worker/D1 test evidence owns authorization checks.",
+        "No real provider, Codex execution, contract, external send, bank transaction, or hardware interaction.",
+        "Console sample is latest40 warn/error messages and contains browser-extension warnings; not a complete browser-log audit.",
+        "Fresh local DB initially returned503 before existing migrations were applied; setup recorded separately."
+      ],
+      "minorCopyFindingFixedBy": "e9908be0"
+    },
+    "githubCandidate": {
+      "sourceSha": "7c6a53bba1f9e17c1b0e041dab028adaddea527d",
+      "checks": 15,
+      "result": "all_completed_success",
+      "families": [
+        "verify",
+        "SPIDER secrets, repair, web measurement",
+        "CodeQL Python/JavaScript",
+        "native partitions main 0–3 and support",
+        "Android prototype",
+        "source tests",
+        "public fixture tests"
+      ],
+      "limits": "GitHub CI only; no main merge, deployment or physical-device acceptance."
+    },
+    "esimComponentRecovery": {
+      "sourceSha": "72227a04b97c1b52ad497985e558c363cc153de9",
+      "command": "node --test tests/esim-purchase-recovery.test.mjs tests/sky-marketplace.test.mjs",
+      "tests": 22,
+      "pass": 22,
+      "fail": 0,
+      "skip": 0,
+      "browser": {
+        "method": "actual source component and CSS served by Vite; fetch responses replaced by explicit local synthetic fixture",
+        "screens": [
+          {
+            "width": 390,
+            "scrollWidth": 390
+          },
+          {
+            "width": 1280,
+            "scrollWidth": 1280
+          }
+        ],
+        "cases": [
+          "view synthetic installation material",
+          "ineligible status removes material",
+          "401 clears material and old access metadata",
+          "10-second transport timeout releases controls and reports unknown result",
+          "lost acknowledge response then read-only status reports acknowledged; no second acknowledgement"
+        ],
+        "result": "passed",
+        "limits": "Browser API fixtures, not live D1/Provider/carrier/device acceptance. Existing API suite is separate."
+      },
+      "before": {
+        "sourceSha": "7c6a53bba1f9e17c1b0e041dab028adaddea527d",
+        "cases": 4,
+        "fail": 4,
+        "method": "real component with corrected React harness; earlier scratch harness stack failure discarded"
+      }
+    },
+    "recoveryFollowup": {
+      "sourceSha": "eb0e2722d2e27592ee41e9ad76e5a8ee5fedc24c",
+      "tests": {
+        "nodeTargeted": {
+          "pass": 123,
+          "fail": 0,
+          "skip": 0
+        },
+        "localWorkerdA2A": {
+          "pass": 14,
+          "fail": 0
+        },
+        "qmpUnixSocket": {
+          "pass": 7,
+          "fail": 0
+        }
+      },
+      "limits": "Targeted integrated runtime tests only. QMP first attempt was blocked by sandbox socket binding; explicit permitted local Unix-socket run passed. No QEMU guest boot or Provider accepted."
+    },
+    "followupFullVerify": {
+      "sourceSha": "6af91cadd418d8f13add6e8989998f255f1aa850",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "passed",
+      "exitCode": 0,
+      "environment": "macOS arm64, Node 26.0.0, local Cloudflare Worker/D1/R2 synthetic fixtures",
+      "node": {
+        "tests": 1626,
+        "pass": 1625,
+        "fail": 0,
+        "skip": 1
+      },
+      "workerD1Assertions": 1356,
+      "csvD1R2Assertions": 385,
+      "webAssetReferences": 184,
+      "missingWebAssets": 0,
+      "skippedReason": "unsupported-platform local-descriptor refusal test is inapplicable on the supported POSIX host",
+      "limits": "No live Provider, external billing, device OS, hardware or production acceptance."
+    },
+    "intermediateFullVerify": {
+      "sourceSha": "1746e81cb34054db9e9587f67d6d8e78c7b313b3",
+      "status": "passed",
+      "nodePass": 1597,
+      "nodeSkip": 1,
+      "workerD1Assertions": 1356,
+      "csvD1R2Assertions": 385,
+      "priorFailure": {
+        "sourceSha": "0f724cf6efeb04a2971283ea73740c28c8780ff3",
+        "stage": "lint:product",
+        "cause": "7 unowned test registration promises; fixed by explicit void. Later stages not run in that failed invocation."
+      }
+    },
+    "androidRecoveryCi": {
+      "sourceSha": "6af91cadd418d8f13add6e8989998f255f1aa850",
+      "run": "https://github.com/k999ln/rock/actions/runs/38151633702",
+      "status": "success",
+      "coreUnitTests": 116,
+      "automationUnitTests": 10,
+      "toolSdkUnitTests": 7,
+      "emulator": {
+        "api": 35,
+        "automation": {
+          "tests": 25,
+          "passed": 23,
+          "skipped": 2
+        },
+        "shell": {
+          "tests": 6,
+          "passed": 6
+        },
+        "operatorAgent": {
+          "tests": 6,
+          "passed": 6
+        },
+        "skipReason": "Two PhysicalRebootRecoveryTest cases require an actual physical reboot; not applicable to emulator acceptance."
+      },
+      "artifact": "android-prototype-reports / 11707495420",
+      "apkBuild": true,
+      "physicalDevice": false,
+      "pixelFullOs": false
+    },
+    "purchaseSelection": {
+      "sourceSha": "552e508a",
+      "beforeSourceSha": "1746e81cb34054db9e9587f67d6d8e78c7b313b3",
+      "reproducedFailures": 3,
+      "componentTests": 10,
+      "ui": {
+        "sourceComponent": "components/rockstar-entitlement-claim.tsx",
+        "syntheticOnly": true,
+        "viewports": [
+          390,
+          1280
+        ],
+        "overflow": false,
+        "verified": [
+          "handoff replaced by pasted purchase; exactly one POST for pasted offer",
+          "handoff replaced by selected JSON; exactly one POST for file offer"
+        ],
+        "captures": [
+          "work/claim-ui/paste-mobile.jpg",
+          "work/claim-ui/file-desktop.jpg"
+        ]
+      },
+      "limits": "No real issuer signature, carrier activation, purchase or production entitlement."
+    },
+    "proSite": {
+      "sourceSha": "10dc0ee67be469e6bc3139f11515396fe519386c",
+      "siteTests": 21,
+      "builtRoutes": 13,
+      "viewports": [
+        390,
+        1280
+      ],
+      "overflow": false,
+      "scope": "Home/Pro/Mini/sales-status/legal aligned to independent PC concept and provisional JPY800000 target. Canonical SVG unchanged; old E3 image labeled archive. Mini current prices retained, R5 price undecided.",
+      "physicalTests": 0,
+      "published": false
+    },
+    "mercariRecovery": {
+      "sourceSha": "6c3fa52e413ca37267239cd37994ff31c0767e4e",
+      "targetTests": 15,
+      "beforeFailures": 2,
+      "realHandlerSQLite": true,
+      "browser": {
+        "viewports": [
+          390,
+          1280
+        ],
+        "overflow": false,
+        "journey": "precommit SQLite failure 503 → manual same-ID retry → one row revision0 → reload → approve revision1",
+        "postcommitReplyLoss": "component/handler fixture only"
+      },
+      "externalListingsOrPayments": false
+    },
+    "codeqlFollowup": {
+      "failedSourceShas": [
+        "0f724cf6efeb04a2971283ea73740c28c8780ff3",
+        "6af91cadd418d8f13add6e8989998f255f1aa850",
+        "23f9893703e029284c18ed75568dca255cc22fcb"
+      ],
+      "newAnnotationsLatest": 0,
+      "scope": "Test HTML extraction, host-literal assertions, route fixture code construction and file-derived HTTP destination.",
+      "repairCommits": [
+        "537a5a7a",
+        "23f9893703e029284c18ed75568dca255cc22fcb",
+        "b46a1bfdc6c309e484fe243b88308100ceaf578e"
+      ],
+      "regressionTests": {
+        "amcMarketplaceMaterialCoconala": 86,
+        "routeFixtures": 19,
+        "mcpConnector": 17
+      },
+      "newAnalysis": "success at 19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0 after script-end-tag attribute repair",
+      "dismissedOrSuppressed": false,
+      "passedSourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0"
+    },
+    "purchaseRecovery": {
+      "sourceSha": "c0c1fbbdfef4743460dbd46bb7f367336795f4c8",
+      "componentTests": 17,
+      "independentAdditionalCases": 5,
+      "browser": {
+        "viewport": 390,
+        "environment": "actual component/CSS with local synthetic API",
+        "cases": [
+          "lost POST reply then GET readback without duplicate registration",
+          "401 hides old entitlements and registration",
+          "separate-tab sign-in retains selection",
+          "restored access reads entitlements with same purchase selected"
+        ]
+      },
+      "notAccepted": [
+        "production sign-in",
+        "real purchase or issuer",
+        "page-close persistence"
+      ]
+    },
+    "pendingSaveRecovery": {
+      "sourceSha": "07260aca868d93bf4b82d6391271062d328538fb",
+      "targetedTests": 33,
+      "browser": "Material local DB fault: Home blocked until same-ID save recovery; Home works after success",
+      "scope": "Memory-only state and explicit same-tab link guard; no crash/history durability"
+    },
+    "androidBodyDeadline": {
+      "sourceSha": "c2af372fc3c973f8fc5beee234376efccde90259",
+      "beforeFailures": 12,
+      "readerTests": 20,
+      "existingSessionTests": 16,
+      "compile": {
+        "sdk": 35,
+        "aidl": 7,
+        "java": 73
+      },
+      "androidRuntime": {
+        "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+        "status": "passed",
+        "readerCases": 20,
+        "clock": "actual Android monotonic clock on API 35 emulator",
+        "run": "https://github.com/k999ln/rock/actions/runs/38153378733"
+      },
+      "limitations": "Body deadline starts after headers and does not interrupt an ongoing TLS/framing read."
+    },
+    "mcpPagination": {
+      "sourceSha": "6c158a4bb395a443f6d36643e5d1cce670b893fe",
+      "beforeFailures": 11,
+      "testsPassed": 55,
+      "platformSkipped": 1,
+      "maxPages": 5,
+      "maxCursorUtf8Bytes": 1024,
+      "archiveCheck": "passed"
+    },
+    "securitySourceTriage": {
+      "status": "read-only local audit; no dismissal or suppression",
+      "sourceSha": "732aa504fcfcfb0234782c88dd427b011328882f",
+      "noVnc39And40": {
+        "scope": "Frozen noVNC original unchanged and import hash verified",
+        "finding": "Bounded integer password-length indexes in fixed Uint8Arrays, not attacker-selected property names",
+        "inputsPerMethod": 14,
+        "prototypeOrNonIndexChanges": 0,
+        "realVncTest": false
+      },
+      "mrResponseSplitting10": {
+        "boundary": "Exact Origin allowlist and loopback Host precede response header",
+        "test": "Real HTTP fixture: folded CRLF rejected with 403 and no ACAO"
+      },
+      "walletResponseSplitting11": {
+        "boundary": "Strict ASCII device_ref registration and authenticated exact-principal lookup before header",
+        "realTlsSqliteFixture": {
+          "valid": 2,
+          "rejected": 10,
+          "rejectedLegacyImport": 2
+        },
+        "productionDeployment": false
+      }
+    },
+    "latestCompletedLocalVerifications": [
+      {
+        "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+        "status": "passed",
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "node": {
+          "pass": 1654,
+          "fail": 0,
+          "skip": 1
+        },
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385
+      },
+      {
+        "sourceSha": "92c9930f371bd47901208ae183f870c7d306c7c5",
+        "status": "passed",
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "node": {
+          "pass": 1671,
+          "fail": 0,
+          "skip": 1
+        },
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385
+      }
+    ],
+    "latestCompletedGithubCandidate": {
+      "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+      "status": "one_check_failed",
+      "passed": [
+        "CodeQL JavaScript, Python and aggregate",
+        "Android prototype",
+        "native main 0–3 and support",
+        "source tests",
+        "SPIDER secrets, repair and web measurement",
+        "public fixture tests"
+      ],
+      "failed": [
+        {
+          "name": "verify",
+          "run": "https://github.com/k999ln/rock/actions/runs/38153378722",
+          "cause": "Material recovery harness polled 20 event-loop ticks without awaiting candidate computation; one UI assertion failed.",
+          "node": {
+            "pass": 1653,
+            "fail": 1,
+            "skip": 1
+          },
+          "repairedBy": "eab77b0df129a538cddd4321feeb5bd6c3334cb9",
+          "repair": "Await actual candidate-generation and save-computation promises; a gate regression verifies the harness waits for completion.",
+          "latestCiRecheck": "passed at 7f5ed3610c23092882dab81aa69ff8129a71828c"
+        }
+      ],
+      "limits": "Successes apply only to this exact SHA. Later runtime changes require their own CI."
+    },
+    "androidDeadlineCi": {
+      "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+      "run": "https://github.com/k999ln/rock/actions/runs/38153378733",
+      "status": "success",
+      "coreUnitTests": 116,
+      "automationUnitTests": 16,
+      "toolSdkUnitTests": 7,
+      "emulator": {
+        "api": 35,
+        "automation": {
+          "tests": 45,
+          "passed": 43,
+          "skipped": 2
+        },
+        "shell": {
+          "tests": 6,
+          "passed": 6
+        },
+        "operatorAgent": {
+          "tests": 6,
+          "passed": 6
+        },
+        "skipReason": "Two physical reboot recovery tests require a physical reboot."
+      },
+      "apkBuild": true,
+      "physicalDevice": false,
+      "pixelFullOs": false
+    },
+    "browserDeviceConfirmation": {
+      "sourceSha": "e428855afe541002fa169b37c1e76d39bec3204b",
+      "componentTests": 9,
+      "beforeFailures": 2,
+      "typecheck": "passed",
+      "productLint": "passed",
+      "browser": {
+        "widths": [
+          390,
+          1280
+        ],
+        "actualComponent": true,
+        "syntheticTransport": true,
+        "cases": [
+          "inspect A, edit B invalidates old confirmation, inspect B then POST B only",
+          "lost mutation response times out; explicit GET readback does not repeat POST",
+          "401 hides prior owner data; separate-tab sign-in and reinspection required"
+        ],
+        "overflow": false
+      },
+      "independentActualHandlerReview": {
+        "result": "passed",
+        "storage": "local SQLite",
+        "cases": [
+          "approval committed then response lost",
+          "device poll consumes approval before session appears",
+          "other owner cannot list/revoke session",
+          "committed revoke with lost response does not cause automatic DELETE",
+          "denied device receives access_denied",
+          "401 recovery requires a fresh inspection"
+        ]
+      },
+      "limits": "Synthetic browser and handler/SQLite fixtures; no live device authorization or production identity."
+    },
+    "serviceScopeHistory": {
+      "claimSourceSha": "6a3a70ae19a27cfd62e06cbc277355d7e3c87883",
+      "claimRelatedTests": 14,
+      "esimSourceSha": "3386cddd469b010a6401c2c49740572c20e485dc",
+      "esimRelatedTests": 19,
+      "result": "passed",
+      "reproduction": "An old valid grant hidden by 100 newer different-scope grants must still authorize the requested service.",
+      "contract": "Claim query and eSIM candidate selection filter owner/current-active/expiry/exact JSON-array scope before limiting. Existing purchase/install/device/current-policy checks remain required.",
+      "remainingBound": "eSIM evaluates at most 100 full candidates and fetches one continuation sentinel. An eligible key behind 100 same-scope ineligible keys is not resolved; API returns 503 without creating a job. Direct valid token or explicit stale-key revocation can recover. SQL historical scan cost is not globally bounded.",
+      "limits": "Actual handlers and local SQLite/Miniflare D1 with synthetic claims/orders; no Provider or paid execution."
+    },
+    "businessListRecovery": {
+      "sourceSha": "eab77b0df129a538cddd4321feeb5bd6c3334cb9",
+      "relatedTests": 54,
+      "typecheck": "passed",
+      "productLint": "passed",
+      "cases": [
+        "Coconala late GET cannot restore a list after 401 or replace a new owner list",
+        "Coconala late GET cannot roll back a confirmed PATCH",
+        "Mercari initial empty GET cannot remove a confirmed POST card"
+      ],
+      "browser": "Actual Mercari component/CSS with synthetic transport in Chrome; late initial GET retained one card and one POST.",
+      "limits": "Server owner/CAS contracts unchanged; a silent account change is only detected on a subsequent authenticated request."
+    },
+    "coconalaPendingNavigation": {
+      "sourceSha": "d4a423d23b0509ab107dec832541eb24caa84e7b",
+      "relatedTests": 56,
+      "typecheck": "passed",
+      "productLint": "passed",
+      "before": "Actual component had no same-tab document link guard during a pending PATCH.",
+      "implementation": "Existing usePendingSaveNavigation hook; separate-tab sign-in and download allowed.",
+      "browser": {
+        "environment": "Actual local vinext/API and local D1 SQLite with synthetic Sites local identity",
+        "fault": "Fixture-specific trigger produced PATCH 503 before commit",
+        "homeAndLibraryWhilePending": "blocked; URL and input retained",
+        "sameIdRetryAfterTriggerRemoval": "passed",
+        "receiptCount": [
+          0,
+          1
+        ],
+        "revision": [
+          1,
+          2
+        ],
+        "libraryAfterConfirmation": "allowed",
+        "triggerRemoved": true
+      },
+      "limits": "In-memory recovery only; force-close, crash, history and programmatic navigation are not durable recovery guarantees. No real customer or payment."
+    },
+    "androidSettledReadback": {
+      "sourceSha": "57f634138fc7fe81ba952e042d89bfa175552dc1",
+      "before": "After SQLite close/reopen, a valid SETTLED reservation was shown as unknown/held despite ledger 650, held 0 and available 350.",
+      "fix": "Separate read-only settled-terms verification, current signed usage proof and original ledger receipt matching return wallet_settled; active reservation matching is unchanged.",
+      "host": {
+        "coreTests": 121,
+        "automationTests": 16,
+        "sourceTests": 10,
+        "aidl": 7,
+        "java": 73
+      },
+      "independentSourceReview": "Receipt/ledger tampering, owner/delegation mismatch, held balance and substituted receipt cannot reach wallet_settled; no source difference from reviewed commit.",
+      "androidCi": {
+        "sourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+        "run": "https://github.com/k999ln/rock/actions/runs/38155308883",
+        "status": "success",
+        "coreUnitTests": 121,
+        "automationUnitTests": 16,
+        "toolSdkUnitTests": 7,
+        "emulator": {
+          "api": 35,
+          "automation": {
+            "tests": 45,
+            "passed": 43,
+            "skipped": 2
+          },
+          "shell": {
+            "tests": 7,
+            "passed": 7
+          },
+          "operatorAgent": {
+            "tests": 6,
+            "passed": 6
+          }
+        },
+        "newSettledCoreCases": 5,
+        "newSettledShellCase": "settledReadbackShowsFinalAmountsWithoutExecutionOrReleaseActions",
+        "apkBuildAndLint": true,
+        "limits": "Physical reboot tests skipped; no current Pixel or full OS acceptance."
+      },
+      "limits": "No reserve/dispatch/settle/release is performed by readback. Host SQLite success does not prove physical or full OS acceptance."
+    },
+    "githubIntegratedRecovery": {
+      "sourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+      "status": "all_completed_success",
+      "checks": 15,
+      "verify": {
+        "run": "https://github.com/k999ln/rock/actions/runs/38155308885",
+        "node": {
+          "tests": 1675,
+          "pass": 1674,
+          "fail": 0,
+          "skip": 1
+        },
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385,
+        "webAssetReferences": 185,
+        "missingWebAssets": 0
+      },
+      "families": [
+        "verify",
+        "CodeQL Python/JavaScript and aggregate",
+        "SPIDER secrets/repair/web measurement",
+        "native main 0–3/support/source summary",
+        "Android prototype",
+        "public fixture tests"
+      ],
+      "limits": "GitHub Linux verification; no main merge, deployment, real Provider or physical acceptance."
+    },
+    "macosIntegratedRecovery": {
+      "sourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "status": "failed",
+      "environment": "macOS arm64, Node 26.0.0",
+      "completed": [
+        "preflight and project/design checks",
+        "typecheck/product lint",
+        "Node 1674 pass / 1 platform skip",
+        "package suites",
+        "production build",
+        "185 assets / missing 0"
+      ],
+      "failure": "Worker/D1 API suite failed with ECONNRESET. One diagnostic rerun reproduced fetch sequence 421 POST /api/amc. No input/credential bytes were logged.",
+      "notRun": [
+        "CSV API suite",
+        "final mission/work/bot checks"
+      ],
+      "investigation": "Diagnosed: 2,097,153-byte AMC POST returned 413, then Undici reused the same socket for the next 237-byte POST before the peer close notification, producing EPIPE/ECONNRESET. Scope and persistence logic were not the cause demonstrated by this evidence.",
+      "repair": {
+        "sourceSha": "18bae0a1881a182719cd5d417ff4449f19f27bfd",
+        "change": "Only the oversized negative request uses Connection: close. Original body, 413/400 assertions, reader cancellation and authentication remain. No retry or production route change.",
+        "diagnostics": "Method, URL pathname, body byte count and cause; no request body or authentication headers.",
+        "validation": {
+          "oversizedRequest": 413,
+          "nextInvalidRequest": 400,
+          "separateSockets": true,
+          "fullApiAssertions": 1356,
+          "productLint": "passed"
+        },
+        "environment": {
+          "os": "macOS arm64",
+          "node": "26.0.0",
+          "undici": "8.0.2",
+          "miniflare": "5.20261001.0-alpha"
+        },
+        "fullIntegratedRecheck": {
+          "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+          "status": "passed",
+          "record": "validation.integratedOwnerAndMcpRecovery"
+        }
+      }
+    },
+    "npmAdvisoryAudit": {
+      "sourceSha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+      "checkedAt": "2026-10-11T16:29:00Z",
+      "command": "npm audit --package-lock-only --json",
+      "root": {
+        "status": "success",
+        "findings": 0,
+        "dependencies": 957
+      },
+      "miniSite": {
+        "status": "success",
+        "findings": 0,
+        "dependencies": 288
+      },
+      "limits": "Registry advisory lookup for these lockfiles only; not proof of zero source vulnerabilities and not main-branch deployment."
+    },
+    "androidTrialArtifact": {
+      "schema": "rock-android-trial-local-review/1",
+      "reviewed_source_sha": "7f5ed3610c23092882dab81aa69ff8129a71828c",
+      "workflow_run": 38155308883,
+      "workflow_conclusion": "success",
+      "artifact_id": 11708247850,
+      "artifact_name": "android-p1-trial-38155308883",
+      "archive_bytes": 511296,
+      "archive_sha256": "614b5d0aec6853a0a40d757af0d4f0c64d01720fd7051ce96d67ed2cb05bee66",
+      "github_archive_digest_matches": true,
+      "manifest_source_and_run_match": true,
+      "collector_matches_source_sha": true,
+      "readme_matches_source_sha": true,
+      "checksum_inventory_matches": true,
+      "apk_records": [
+        {
+          "file": "automation-debug.apk",
+          "package": "dev.rock.automation",
+          "sha256": "6b1c61edc0935db57de8d85a47d30f0839a5938d9c8b3a9b857e46320b14b9f5",
+          "signer_sha256": "a08e7371dff38cef6abb3af8e9d7742944c9984e1fb7e0b6396cf3dc40feaab0",
+          "min_sdk": 35,
+          "target_sdk": 35,
+          "debuggable": true,
+          "internet_permission": true,
+          "cleartext_traffic": false,
+          "bytes": 587274,
+          "version_code": 1,
+          "uses_permissions": [
+            "dev.rock.permission.RUN_TOOL",
+            "dev.rock.permission.USE_LOCAL_AI",
+            "dev.rock.permission.MANAGE_PLATFORM",
+            "android.permission.INTERNET",
+            "android.permission.RECEIVE_BOOT_COMPLETED"
+          ],
+          "signature_schemes": [
+            "Verified using v1 scheme (JAR signing): false",
+            "Verified using v2 scheme (APK Signature Scheme v2): true",
+            "Verified using v3 scheme (APK Signature Scheme v3): false",
+            "Verified using v3.1 scheme (APK Signature Scheme v3.1): false",
+            "Verified using v4 scheme (APK Signature Scheme v4): false"
+          ],
+          "source_permission_inventory_matches": true
+        },
+        {
+          "file": "shell-debug.apk",
+          "package": "dev.rock.shell",
+          "sha256": "2c6c89f4916bb107f073204663d024b25de0549c3a4be934c01c72c1f4347ceb",
+          "signer_sha256": "a08e7371dff38cef6abb3af8e9d7742944c9984e1fb7e0b6396cf3dc40feaab0",
+          "min_sdk": 35,
+          "target_sdk": 35,
+          "debuggable": true,
+          "internet_permission": false,
+          "cleartext_traffic": false,
+          "bytes": 221687,
+          "version_code": 1,
+          "uses_permissions": [
+            "dev.rock.permission.USE_SHELL_API",
+            "android.permission.ACCESS_NETWORK_STATE"
+          ],
+          "signature_schemes": [
+            "Verified using v1 scheme (JAR signing): false",
+            "Verified using v2 scheme (APK Signature Scheme v2): true",
+            "Verified using v3 scheme (APK Signature Scheme v3): false",
+            "Verified using v3.1 scheme (APK Signature Scheme v3.1): false",
+            "Verified using v4 scheme (APK Signature Scheme v4): false"
+          ],
+          "source_permission_inventory_matches": true
+        },
+        {
+          "file": "article-tool-debug.apk",
+          "package": "dev.rock.tools.article",
+          "sha256": "bb7b63f8498ea1f026fde39a9c915393e355d2d028ab52798c4a11a5f6d782c4",
+          "signer_sha256": "a08e7371dff38cef6abb3af8e9d7742944c9984e1fb7e0b6396cf3dc40feaab0",
+          "min_sdk": 35,
+          "target_sdk": 35,
+          "debuggable": true,
+          "internet_permission": false,
+          "cleartext_traffic": false,
+          "bytes": 354314,
+          "version_code": 1,
+          "uses_permissions": [],
+          "signature_schemes": [
+            "Verified using v1 scheme (JAR signing): false",
+            "Verified using v2 scheme (APK Signature Scheme v2): true",
+            "Verified using v3 scheme (APK Signature Scheme v3): false",
+            "Verified using v3.1 scheme (APK Signature Scheme v3.1): false",
+            "Verified using v4 scheme (APK Signature Scheme v4): false"
+          ],
+          "source_permission_inventory_matches": true
+        }
+      ],
+      "scope": "Downloaded exact CI artifact; static APK byte, signature, identity, SDK and network-contract verification only",
+      "physical_device": "NOT_RUN",
+      "release_signing": "NOT_CONFIGURED",
+      "repository_changes": false
+    },
+    "ownerBoundSaveRecovery": {
+      "sourceSha": "d3538e8a93f31282a65be33f30c1659fe4f8c4d2",
+      "finding": "A precommit failure -> 401 -> explicit original POST under B could create the pending private input under B in all three workspaces. Existing A commits remained protected by global IDs and money PATCH remained owner-scoped.",
+      "contract": {
+        "authority": "Existing requestUser only; no authentication DB or credential added",
+        "ownerScope": "Stable owner-v1 SHA-256 intent identifier returned by authenticated list GET",
+        "client": "Bind pending intent to initial confirmed scope; require valid scope; authenticated GET before every explicit attempt; unknown/different owner does not POST",
+        "api": "Optional X-Rock-Owner-Scope for existing API client compatibility; when supplied mismatch/malformed values return 409 OWNER_CHANGED before write. Updated recovery UIs require it.",
+        "recovery": "Keep text and exact operation ID on unknown/different owner. Resume original owner or explicitly release pending operation then start a new ID; release never deletes committed records."
+      },
+      "verification": {
+        "targetTests": 98,
+        "targetFailures": 0,
+        "targetLog": "target-final.log",
+        "typecheckExit": 0,
+        "typecheckLog": "typecheck-final.log",
+        "lintExit": 0,
+        "lintLog": "lint-final.log",
+        "diffCheckExit": 0,
+        "fullNodeAttempt": {
+          "tests": 1659,
+          "passed": 1606,
+          "failed": 52,
+          "skipped": 1,
+          "log": "all-tests.log",
+          "analysis": "44 sandbox local listen EPERM failures, 1 expected braces absolute-path mismatch from shared node_modules symlink, 7 newly added import fixture failures corrected and verified in 98 targeted cases. Parent runs final full verify in installed real checkout."
+        }
+      },
+      "browser": {
+        "environment": "Actual MercariRevenueStarter, useExecutionAccess, operations-client, CSS, route, requestUser, stores and all migrations via local SQLite HTTP fixture. Synthetic owner gateway and jobs authentication probe; shell/next navigation are fixture wrappers. Not production IdP or vinext acceptance.",
+        "url": "http://localhost:5194/",
+        "steps": [
+          "Enter synthetic item under A",
+          "Force actual SQLite BEFORE INSERT failure: 503 and pending frozen",
+          "Switch synthetic gateway to unauthenticated: real access hook observes 401 and hides input",
+          "Switch to B: restored input preserved, original retry disabled, POST remains 1, A0/B0",
+          "Switch back to A and restore DB",
+          "Explicit same-operation retry saves exactly one A row",
+          "Reload page: A1/B0 and one visible card retained"
+        ],
+        "result": "pass",
+        "captures": [
+          "owner-b-blocked.jpg",
+          "owner-a-reloaded.jpg"
+        ],
+        "readback": "browser-readback.json",
+        "bundleSHA256": "6e6bc77f88aff821a6214fa683ab6f4320a98a21d2fd90170e72055dbe62b869",
+        "serverStopped": true,
+        "tabClosed": true,
+        "fileChooserUsed": false
+      },
+      "boundaries": [
+        "No automatic POST; no new authentication authority; scope alone cannot authorize an API call.",
+        "Legacy API clients omitting scope retain existing requestUser/ID/CAS semantics without owner-bound retry guarantee.",
+        "Pending input remains memory-only; forced close/crash does not provide durable draft recovery.",
+        "No external messages, real payments, purchases, publication or shared ledger changes."
+      ],
+      "independentReview": {
+        "sourceSha": "d3538e8a93f31282a65be33f30c1659fe4f8c4d2",
+        "reviewer": "service_development",
+        "status": "no additional concrete defect found",
+        "coverage": [
+          "GET-to-mutation account switch rejected before body read or writes",
+          "requestUser remains the sole authenticated owner authority",
+          "unknown or different owner preserves pending input and ID without automatic resend",
+          "existing owner isolation, CAS and monetary deduplication retained"
+        ],
+        "testsRerun": false
+      },
+      "integratedRecheck": {
+        "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "localVerify": "passed",
+        "github15Checks": "passed"
+      },
+      "integratedBrowser": {
+        "recordedAt": "2026-10-11T16:57:13.773624+00:00",
+        "sourceSHA": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "result": "pass",
+        "environment": {
+          "runtime": "Exact root vinext build in Miniflare/workerd; actual HTTP routes and D1; exact dist/client assets from local proxy",
+          "authentication": "Synthetic trusted-header gateway only, test owners integration_owner_a/b, no external IdP",
+          "persistence": "Fresh local Miniflare D1 with every canonical SQL migration; existing old Wrangler state was not reused after CLI runtime mismatch",
+          "appUrl": "http://localhost:5195/income/mercari",
+          "gatewayControlsUrl": "http://localhost:5195/_fixture",
+          "scope": "Mercari integrated browser flow; Material/Coconala covered by prior component/route/SQLite regressions, not rerun here"
+        },
+        "steps": [
+          "Normal create under A returned200 with ownerScope header matching authenticated GET; reload restored one record",
+          "Second A create committed in D1; gateway replaced successful response with synthetic503",
+          "Manual exact retry GET observed401 and preserved pending input",
+          "B authentication recovery fetched B scope/list; same-operation retry disabled, no B POST, B records0",
+          "A connection check restored original scope; explicit same-ID/header retry returned200",
+          "Reload retained exactly two A records (normal+recovery), no duplicate and B0"
+        ],
+        "trace": {
+          "posts": 3,
+          "uniqueSavedIds": 2,
+          "sameIdRetry": true,
+          "allPostsOwnerA": true,
+          "allPostScopeMatchesGet": true,
+          "ARecordCount": 2,
+          "BRecordCount": 0,
+          "readback": "ignored integrated-owner-ui/readback.json"
+        },
+        "captures": {
+          "normalReload": "normal-reloaded.jpg",
+          "BRefusal": "b-retry-blocked.jpg",
+          "ARecoveryReload": "a-recovered-reloaded.jpg"
+        },
+        "buildSHA256": {
+          "dist/server/index.js": "de463e290a05f2a326206351b9ec9705feb6d86aa6c80b309637478e711cb40d",
+          "dist/server/wrangler.json": "b748c5a5779b70d5c8af9268897a65a0911719b172882e3550edbbf5ca060a57"
+        },
+        "cleanup": {
+          "serverStopped": true,
+          "tabsClosed": true,
+          "trackedChanges": false,
+          "fileChooserUsed": false
+        },
+        "boundaries": [
+          "No external provider, purchase, real transaction or publication",
+          "Real response frame restriction blocked the initial iframe wrapper; preserved security headers and tested a separate top-level app tab",
+          "Gateway log records original Worker status200 for the deliberately replaced503; no deployed bundle changes"
+        ]
+      }
+    },
+    "mcpConnectionScreenRecovery": {
+      "sourceSha": "9c46f916e3f15473736c998d67125528e7914338",
+      "finding": "Late list and connect success/error could overwrite the current UI or clear a newer connection busy state after reconnect. Successful connection also requested two lists.",
+      "repair": "List request and device session generations; one UI connect guarded against same-render clicks; stale results and cleanup ignored; one refresh after success.",
+      "verification": {
+        "componentBefore": {
+          "failed": 10
+        },
+        "componentAfter": {
+          "passed": 10,
+          "failed": 0
+        },
+        "existingOnboarding": {
+          "passed": 3
+        },
+        "typecheck": "passed",
+        "targetLint": "passed",
+        "diffCheck": "passed",
+        "realReactBrowserBefore": {
+          "failed": 10
+        },
+        "realReactBrowserAfter": {
+          "passed": 10,
+          "failed": 0,
+          "consoleErrors": 0
+        }
+      },
+      "environment": "Actual SkyMcpCenter React component and Dialog in local browser fixture, delayed synthetic MCP responses; no external provider.",
+      "authorityUnchanged": [
+        "lib/device.ts",
+        "lib/mcp-hub.ts",
+        "Passport and one-time approval",
+        "pricing and execution gates"
+      ],
+      "integratedRecheck": {
+        "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "localVerify": "passed",
+        "github15Checks": "passed"
+      },
+      "browserCleanup": {
+        "server": "stopped",
+        "tab": "closed"
+      }
+    },
+    "integratedOwnerAndMcpRecovery": {
+      "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+      "local": {
+        "command": "TMPDIR=/private/tmp npm run verify",
+        "exitCode": 0,
+        "environment": "macOS arm64, Node 26.0.0",
+        "node": {
+          "tests": 1705,
+          "passed": 1704,
+          "failed": 0,
+          "skipped": 1
+        },
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385,
+        "webAssetReferences": 185,
+        "missingAssets": 0,
+        "typecheck": "passed",
+        "productLint": "passed",
+        "productionBuild": "passed",
+        "projectMissionRepositoryBaselineDesignDatabase": "passed",
+        "record": "integrated-verify-9.log"
+      },
+      "github": {
+        "checks": 15,
+        "passed": 15,
+        "failed": 0,
+        "verifyRun": "https://github.com/k999ln/rock/actions/runs/38156884093",
+        "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "nodePassed": 1704,
+        "nodeSkipped": 1,
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385,
+        "allChecks": [
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114522067227",
+            "name": "source-tests",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/runs/114522046343",
+            "name": "CodeQL",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884061/job/114521584587",
+            "name": "SPIDER CodeQL (javascript-typescript)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584475",
+            "name": "partitions (support)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584343",
+            "name": "partitions (main-3)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584320",
+            "name": "partitions (main-0)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584305",
+            "name": "partitions (main-1)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884061/job/114521584290",
+            "name": "SPIDER CodeQL (python)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884075/job/114521584247",
+            "name": "SPIDER / secrets",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884119/job/114521584138",
+            "name": "partitions (main-2)",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884121/job/114521584103",
+            "name": "public-fixture-tests",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884093/job/114521584030",
+            "name": "verify",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156884023/job/114521584010",
+            "name": "prototype",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156883981/job/114521583933",
+            "name": "SPIDER / production web security measurement",
+            "status": "completed"
+          },
+          {
+            "conclusion": "success",
+            "html_url": "https://github.com/k999ln/rock/actions/runs/38156883981/job/114521583780",
+            "name": "SPIDER / repair regressions",
+            "status": "completed"
+          }
+        ]
+      },
+      "android": {
+        "schemaVersion": 1,
+        "runId": 38156884023,
+        "runAttempt": 1,
+        "runUrl": "https://github.com/k999ln/rock/actions/runs/38156884023",
+        "headSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+        "status": "completed",
+        "conclusion": "success",
+        "sourceVerification": {
+          "runHeadAndArtifactHeadMatch": true,
+          "checkoutAndCollectorLogMatch": true,
+          "androidTree": "19f1b1bb6a86cbe8b69cc2ab62b0478420af36ba",
+          "sameAndroidSourceAs": "7f5ed3610c23092882dab81aa69ff8129a71828c"
+        },
+        "artifact": {
+          "id": 11709625109,
+          "name": "android-prototype-reports",
+          "sizeBytes": 353557,
+          "sha256": "04a8c66465da5c482584a20f2cd19c76ba836901dbea3cfbabbb440d7e09637e",
+          "githubDigestMatched": true
+        },
+        "junit": {
+          "core": {
+            "tests": 121,
+            "passed": 121,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 17
+          },
+          "automationUnit": {
+            "tests": 16,
+            "passed": 16,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 2
+          },
+          "toolSdk": {
+            "tests": 7,
+            "passed": 7,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 2
+          },
+          "automationInstrumentation": {
+            "tests": 45,
+            "passed": 43,
+            "skipped": 2,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          },
+          "shellInstrumentation": {
+            "tests": 7,
+            "passed": 7,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          },
+          "operatorInstrumentation": {
+            "tests": 6,
+            "passed": 6,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          }
+        },
+        "totals": {
+          "tests": 202,
+          "passed": 200,
+          "skipped": 2,
+          "failures": 0,
+          "errors": 0
+        },
+        "skipped": [
+          {
+            "className": "dev.rock.automation.PhysicalRebootRecoveryTest",
+            "method": "recoverSelectedToolAndFinishAfterPhysicalReboot",
+            "xmlReason": null,
+            "reason": "Physical two-phase reboot test: avocadoPhase defaults to empty and this emulator run supplies neither seed nor recover. JUnit Assume prevents execution.",
+            "source": "android/automation/src/androidTest/java/dev/rock/automation/PhysicalRebootRecoveryTest.java:24,36,57"
+          },
+          {
+            "className": "dev.rock.automation.PhysicalRebootRecoveryTest",
+            "method": "seedSelectedToolAndLeaveFirstStepRunning",
+            "xmlReason": null,
+            "reason": "Physical two-phase reboot test: avocadoPhase defaults to empty and this emulator run supplies neither seed nor recover. JUnit Assume prevents execution.",
+            "source": "android/automation/src/androidTest/java/dev/rock/automation/PhysicalRebootRecoveryTest.java:24,36,57"
+          }
+        ],
+        "execution": {
+          "apiLevel": 35,
+          "image": "google_apis",
+          "architecture": "x86_64",
+          "device": "emulator-5554 - 15",
+          "acceptanceTarget": "emulator",
+          "excludedClass": "dev.rock.automation.LocalAiServiceIntegrationTest",
+          "excludedClassReason": "Separate Local AI workflow/device acceptance; not included in these JUnit totals."
+        },
+        "limits": [
+          "No physical Pixel or physical reboot acceptance",
+          "No full Android OS build or boot acceptance",
+          "No APK download or signer verification repeated"
+        ]
+      },
+      "limits": [
+        "Node skip is the non-POSIX descriptor-refusal fixture on this POSIX environment.",
+        "Android physical reboot and Local AI acceptance are separate.",
+        "Actual built vinext HTML/assets/routes and D1 were verified with synthetic local owner authentication; no production acceptance."
+      ]
+    },
+    "followupFindings": {
+      "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+      "workbenchOwnerIntent": {
+        "status": "repaired_targeted_verification_passed",
+        "scope": "R03/O2/ROCK",
+        "finding": "Same creation ID/title/template persisted across A pre-insert503, unauthenticated401 and B403. After B acquired a valid Zema entitlement, the old A input was created under B with201.",
+        "limits": "Existing A/B job separation and no billing/provider effects confirmed; pending creation owner intent is the missing boundary.",
+        "repairSha": "ea489506b210c951573a1716fbe4fd55be3514cb",
+        "validation": {
+          "dedicatedComponentRouteSqliteTests": 5,
+          "relatedUniqueTests": 49,
+          "typecheck": "passed",
+          "productLint": "passed",
+          "integratedBrowser": "Owner retry and explicit release passed on be8038be; navigation defect reproduced there, then repaired and verified on built 9e5488eb.",
+          "integratedFullVerification": "passed at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce"
+        },
+        "integratedBrowser": {
+          "source": {
+            "sourceSHA": "be8038be3c55fa2602c9acab4a45e296e10e7a25",
+            "serverSha256": "fc23b007002d5212abd3531568d31672762ebe49661f1f4febecbd4672bb9b66",
+            "configSha256": "b748c5a5779b70d5c8af9268897a65a0911719b172882e3550edbbf5ca060a57"
+          },
+          "status": "owner-recovery-passed-navigation-loss-reproduced",
+          "runtime": "exact root vinext dist/server + dist/client; direct Miniflare with fresh local D1",
+          "isolation": "gateway-auth synthetic A/B/null and preview entitlement mode; actual route and SQL; no Provider, purchases, file chooser or production identity",
+          "checks": [
+            {
+              "name": "precommit failure",
+              "result": "pass",
+              "detail": "SQLite BEFORE INSERT trigger caused real API 503; zero records at first failure",
+              "id": "cd9183f5-6e41-439f-a186-0373ebfc563c"
+            },
+            {
+              "name": "401 + signin",
+              "result": "pass",
+              "detail": "Explicit confirmation GET 401; real product signin link opened new tab 48023007 while original Workbench tab 48023004 retained title and pending"
+            },
+            {
+              "name": "B owner rejection",
+              "result": "pass",
+              "detail": "B GET returned distinct ownerScope; same creation button disabled, title retained, zero B POST until separate explicit release/new-create case"
+            },
+            {
+              "name": "original A resume + reload",
+              "result": "pass",
+              "detail": "Original ID and ownerScope POST 201; reload showed exactly one A job and zero B at this stage",
+              "id": "cd9183f5-6e41-439f-a186-0373ebfc563c",
+              "capture": "a-recovered-reloaded.jpg"
+            },
+            {
+              "name": "explicit release",
+              "result": "pass",
+              "detail": "Second A503 switched to B, manual connection confirmed mismatch; explicit release retained title, following explicit create used fresh ID and B scope",
+              "originalId": "3293b7c4-75e9-46c7-b2a0-64d36ba47168",
+              "newId": "d2b499b7-6177-49d6-a2e7-12a304963352"
+            },
+            {
+              "name": "same-tab library navigation",
+              "result": "fail",
+              "detail": "Third precommit503 pending visible. Clicking product Library navigated to /zema/library with no dialog; clicking product Work returned /chat?view=work with title empty and pending notice absent. Failed ID has no D1 row. No new create was attempted afterward.",
+              "lostId": "f30a2b37-b2b2-4ee7-adfa-22b356017df9",
+              "captures": [
+                "pending-before-navigation.jpg",
+                "pending-lost-after-navigation.jpg"
+              ]
+            }
+          ],
+          "finalD1": {
+            "a": 1,
+            "b": 1,
+            "postCount": 5
+          },
+          "evidence": [
+            "readback.json",
+            "b-blocked.jpg",
+            "a-recovered-reloaded.jpg",
+            "pending-before-navigation.jpg",
+            "pending-lost-after-navigation.jpg"
+          ],
+          "changes": "ignored work fixture only; no tracked edits and root source/dist untouched",
+          "cleanup": "localhost fixture stopped and all three task tabs closed",
+          "limitations": [
+            "Synthetic trusted auth gateway, not real IdP acceptance.",
+            "Creation and reload only; no execution/delegation/paid Provider.",
+            "Navigation defect reported to root before product changes."
+          ]
+        }
+      },
+      "localPreviewRuntime": {
+        "status": "repaired_local_runtime_verified",
+        "scope": "WEB01/O7/ROCK",
+        "finding": "npm start selected top-level Wrangler4.122.0 and its older workerd after migration, rejecting the build compatibility date2026-10-01. Verification uses the newer builder runtime, so CI did not cover this CLI path.",
+        "repairBoundary": "Reuse existing builder-aligned productionWrangler resolver; no dependency update or lowered compatibility date.",
+        "repairSha": "7106f0c7e94bf19cefdfefbe9e3bb98ab97ea7e9",
+        "validation": {
+          "baseCommit": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+          "fixCommit": "7106f0c7e94bf19cefdfefbe9e3bb98ab97ea7e9",
+          "task": "WEB01 / O7 / ROCK: local preview only",
+          "runtimePaths": {
+            "rootCli": {
+              "wrangler": "4.122.0",
+              "miniflare": "5.20260811.0-alpha",
+              "workerd": "1.20260811.1",
+              "maximumCompatibilityDateObserved": "2026-08-18"
+            },
+            "builderAndVinextDev": {
+              "wrangler": "4.147.0",
+              "miniflare": "5.20261001.0-alpha",
+              "workerd": "1.20261001.1"
+            },
+            "lockfileAndInstalledResolutionAgree": true
+          },
+          "before": [
+            {
+              "command": "npm run start -- --port 4320 --ip 127.0.0.1",
+              "exitCode": 1,
+              "error": "service core:user:rock-star: This Worker requires compatibility date \"2026-10-01\", but the newest date supported by this server binary is \"2026-08-18\".",
+              "log": "npm-start.log"
+            },
+            {
+              "command": "npm run operator-dock:dev -- --port 4321 --ip 127.0.0.1 --persist-to <own ignored operator-old-state>",
+              "exitCode": 1,
+              "error": "service core:user:avocado-operator-dock: This Worker requires compatibility date \"2026-09-15\", but the newest date supported by this server binary is \"2026-08-18\".",
+              "log": "operator-old.log"
+            }
+          ],
+          "after": {
+            "freshBuiltWorker": {
+              "name": "npm-start-fresh",
+              "command": [
+                "npm",
+                "run",
+                "start",
+                "--",
+                "--port",
+                "4320",
+                "--ip",
+                "127.0.0.1"
+              ],
+              "freshState": true,
+              "httpStatus": 200,
+              "exitCode": -15,
+              "portClosed": true,
+              "appliedMigrations": 63,
+              "expectedMigrations": 63
+            },
+            "operatorDock": {
+              "name": "operator-dock",
+              "command": [
+                "npm",
+                "run",
+                "operator-dock:dev",
+                "--",
+                "--port",
+                "4321",
+                "--ip",
+                "127.0.0.1",
+                "--persist-to",
+                "<own ignored operator-fixed-state>"
+              ],
+              "status": 503,
+              "bodyPrefix": "{\"error\":\"運営Dockの認証設定が完了していません。\"}",
+              "contentType": "application/json",
+              "exitCode": -15,
+              "portClosed": true
+            },
+            "vinextDevUnchanged": {
+              "name": "npm-dev-unchanged",
+              "command": [
+                "npm",
+                "run",
+                "dev",
+                "--",
+                "--port",
+                "4322",
+                "--hostname",
+                "127.0.0.1"
+              ],
+              "httpStatus": 200,
+              "exitCode": 143,
+              "portClosed": true
+            },
+            "builtWorkerSource": "Unchanged dist built from 2ebb625045e9f0aaa15effdc1f337c761708f53a copied into independent ignored fixture; copied Wrangler state removed before fresh migration check"
+          },
+          "checks": {
+            "commandRegressionAndResolver": {
+              "passed": 11,
+              "failed": 0
+            },
+            "targetedOxlint": "PASS",
+            "gitDiffCheck": "PASS",
+            "trackedWorktree": "CLEAN"
+          },
+          "boundaries": [
+            "No dependency or lockfile update",
+            "No compatibility date downgrade",
+            "No root source or dist mutation",
+            "No deployment or remote migration",
+            "Only default local persistence is migrated by npm start; forwarded custom --persist-to needs its own matching migration",
+            "Operator Dock returns 503 for absent operator authentication configuration; no authorization bypass"
+          ]
+        }
+      },
+      "workbenchNavigation": {
+        "sourceSha": "be8038be3c55fa2602c9acab4a45e296e10e7a25",
+        "status": "repaired_built_browser_verified",
+        "task": "R03/O2/ROCK",
+        "finding": "After real pre-insert503, following Library and returning to Work removed the pending title and creation ID with no saved row.",
+        "repairBoundary": "Reuse existing pending-save navigation hook for pending creation only; keep separate-tab signin and explicit release.",
+        "repairSha": "d8c7c23bd549e5c6f2102090414014cb6b3fcb40",
+        "validation": {
+          "relatedTestsPassed": 6,
+          "typecheck": "passed",
+          "productLint": "passed",
+          "integratedBrowser": "passed at 9e5488ebf95d50ef99169799001110b5ef9b81cd",
+          "integratedFullVerification": "passed at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce"
+        },
+        "integratedBrowser": {
+          "source": {
+            "sourceSHA": "9e5488ebf95d50ef99169799001110b5ef9b81cd",
+            "serverSha256": "772e6e24cb3413429e683fec1f1ad0d3eaaa5bf57acec948ed26e4c3df8e70d4",
+            "configSha256": "b748c5a5779b70d5c8af9268897a65a0911719b172882e3550edbbf5ca060a57"
+          },
+          "status": "passed",
+          "runtime": "actual root vinext dist/server + dist/client, Miniflare/D1; synthetic owner gateway and fresh local D1",
+          "checks": [
+            {
+              "case": "pending navigation protection",
+              "result": "pass",
+              "procedure": "Create article job; actual D1 BEFORE INSERT abort makes route503. Click product Library then Home links. Both retain /chat?view=work, original title and pending confirmation controls.",
+              "id": "42a4762f-0dc1-49b7-940f-7254a1ebcba4",
+              "title": "画面移動後も同じ仕事を確認",
+              "capture": "outputs/workbench-pending-navigation-protected.jpg"
+            },
+            {
+              "case": "navigation restored after confirmation",
+              "result": "pass",
+              "procedure": "Disable local SQL failure; explicit same-content confirmation POST201 retains original id and scope. Library link now reaches /zema/library. Work link returns to one saved job.",
+              "id": "42a4762f-0dc1-49b7-940f-7254a1ebcba4",
+              "capture": "outputs/workbench-confirmed-after-navigation.jpg"
+            },
+            {
+              "case": "navigation restored after explicit release",
+              "result": "pass",
+              "procedure": "Create second title with precommit503. Click explicit release; title remains editable unchanged and pending panel disappears. Home link reaches /. No second successful write.",
+              "id": "473c7c64-f94f-4697-a57f-43c7235871a4",
+              "titlePreserved": "保留解除後の画面移動確認"
+            }
+          ],
+          "postStatuses": [
+            503,
+            201,
+            503
+          ],
+          "finalD1": {
+            "a": 1,
+            "b": 0
+          },
+          "limitations": [
+            "Only requested navigation follow-up; previously accepted owner switch cases were not repeated.",
+            "Synthetic identity gateway, not real IdP; no Provider, paid execution, external transaction or file chooser."
+          ],
+          "cleanup": "task browser tabs closed; localhost server stopped; no tracked edits",
+          "evidence": [
+            "readback.json",
+            "server.log",
+            "server.mjs"
+          ]
+        },
+        "mobileBrowser": {
+          "status": "passed",
+          "source": {
+            "sourceSHA": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "serverSha256": "500e51470f6f91ae68a2fd9622a53886a31366fa1315e7994c32cbdc5f05459e",
+            "configSha256": "b748c5a5779b70d5c8af9268897a65a0911719b172882e3550edbbf5ca060a57"
+          },
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "horizontalOverflowPx": 0,
+          "checks": [
+            "Actual precommit D1 failure returned503 and pending notice displayed.",
+            "Japanese guidance wraps within390px. Signin and all3primary buttons stay within viewport width; buttons44.398px high and enabled.",
+            "Mobile conversation-history menu opens. Library click remains onWorkbench with title and pending controls preserved."
+          ],
+          "dom": {
+            "metrics": {
+              "bodyWidth": 390,
+              "controls": [
+                {
+                  "disabled": false,
+                  "height": 19,
+                  "left": 51,
+                  "right": 322.5234375,
+                  "text": "別タブで元のアカウントにサインイン",
+                  "width": 271.5234375
+                },
+                {
+                  "disabled": false,
+                  "height": 44.3984375,
+                  "left": 35,
+                  "right": 205,
+                  "text": "保存先の接続を確認",
+                  "width": 170
+                },
+                {
+                  "disabled": false,
+                  "height": 44.3984375,
+                  "left": 35,
+                  "right": 253,
+                  "text": "同じ作成内容で結果を確認",
+                  "width": 218
+                },
+                {
+                  "disabled": false,
+                  "height": 44.3984375,
+                  "left": 35,
+                  "right": 253,
+                  "text": "保留を解除（入力は保持）",
+                  "width": 218
+                }
+              ],
+              "documentWidth": 390,
+              "scrollWidth": 390,
+              "viewport": 390
+            },
+            "navigation": {
+              "url": "http://localhost:5196/chat?view=work",
+              "title": "390px 保存確認の案内",
+              "pendingCount": 1
+            }
+          },
+          "postCount": 1,
+          "savedRows": 0,
+          "capture": "outputs/workbench-pending-mobile-390.jpg",
+          "limits": "Only requested mobile display/navigation follow-up; no owner-cycle or successful save repeated. Synthetic local identity, no Provider/transaction/file chooser.",
+          "cleanup": "viewport override reset;2task tabs closed;localhost server stopped;no tracked edits"
+        }
+      },
+      "skyChatMcpAvailability": {
+        "scope": "SKY07 / O4 / ROCK: SkyChatWorkspace connection-list UI only",
+        "beforeCommit": "7106f0c7e94bf19cefdfefbe9e3bb98ab97ea7e9",
+        "afterCommit": "6f9de4b02d9e906d572a56e8234e9241d6f9a801",
+        "browser": {
+          "browser": "Chrome",
+          "actualComponents": [
+            "SkyChatWorkspace authenticated body",
+            "React",
+            "Dialog"
+          ],
+          "syntheticBoundaries": [
+            "device token",
+            "MCP list promises",
+            "provider/session data",
+            "McpBotRunner disconnect button",
+            "surrounding layout"
+          ],
+          "before": {
+            "passed": 1,
+            "failed": 7
+          },
+          "after": {
+            "passed": 8,
+            "failed": 0
+          },
+          "afterConsoleErrors": 0,
+          "realMcpOrProviderCalls": false
+        },
+        "node": {
+          "before": {
+            "passed": 1,
+            "failed": 8
+          },
+          "after": {
+            "passed": 9,
+            "failed": 0
+          },
+          "existingMcpCenterAndOnboardingPassed": 13,
+          "additionalNodeBoundary": "manual response cannot set state after unmount"
+        },
+        "checks": {
+          "typecheck": "PASS",
+          "targetedOxlint": "PASS",
+          "gitDiffCheck": "PASS"
+        },
+        "screenshots": {
+          "before": "before.jpg",
+          "after": "after.jpg"
+        },
+        "cleanup": {
+          "fixtureServer": "STOPPED: session 79953 exited 0 after SIGINT",
+          "fixtureTab": "CLOSED: 48023013 absent from inventory",
+          "trackedWorktree": "CLEAN"
+        },
+        "preserved": [
+          "McpBotRunner activeRequest/selectedToolId stop callback",
+          "execution and approval APIs",
+          "billing APIs",
+          "lib/device",
+          "lib/mcp-hub",
+          "root source/dist"
+        ],
+        "status": "repaired_targeted_and_browser_verification_passed",
+        "independentReview": {
+          "result": "no reproducible defect identified",
+          "scope": "event/manual reads, token change, unmount and StrictMode effect restart",
+          "verification": "Source and existing assertions reviewed independently; tests not needlessly repeated."
+        },
+        "integratedFullVerification": "passed at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce"
+      }
+    },
+    "finalIntegrationRegression": {
+      "sourceSha": "9e5488ebf95d50ef99169799001110b5ef9b81cd",
+      "command": "npm run verify",
+      "result": "failed in Node suite before bundled/API stages",
+      "node": {
+        "tests": 1728,
+        "passed": 1726,
+        "failed": 1,
+        "skipped": 1
+      },
+      "failure": "migration-union.test.mjs expected the old literal shell start command after the builder-aligned runner replacement.",
+      "repairSha": "889b63835d5d46c165f3b27691acd27a18f96972",
+      "repair": "Keep the existing published migration check and execute the real start runner with a shared fixture; move the duplicate startup behavior assertions from start-local-web rather than maintaining two checks.",
+      "preservedAssertions": [
+        "builder runtime selected",
+        "CI=1 on migrations",
+        "--local and exact published config",
+        "migration completes before dev",
+        "preview args forwarded only to dev",
+        "migration failure/signal prevents serving",
+        "exit codes and signals propagated",
+        "all six fresh/historical D1 filename and Drizzle paths"
+      ],
+      "targetedTestsPassed": 19,
+      "productChange": false,
+      "expectedTestCountChange": "one duplicate test merged; no behavioral assertion removed",
+      "integratedRecheck": "passed: full npm run verify at 0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce"
+    },
+    "finalIntegratedCandidate": {
+      "sourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+      "local": {
+        "command": "npm run verify",
+        "exitCode": 0,
+        "environment": "macOS arm64, Node v26.0.0",
+        "node": {
+          "tests": 1727,
+          "passed": 1726,
+          "failed": 0,
+          "skipped": 1
+        },
+        "skipReason": "Non-POSIX descriptor-refusal case is inapplicable on this POSIX environment.",
+        "workerD1Assertions": 1356,
+        "csvD1R2Assertions": 385,
+        "webAssetReferences": 185,
+        "missingAssets": 0,
+        "typecheck": "passed",
+        "productLint": "passed",
+        "productionBuild": "passed",
+        "projectMissionRepositoryBaselineDesignDatabase": "passed",
+        "record": "integrated-verify-11.log"
+      },
+      "github": {
+        "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+        "checkedAt": "2026-10-11T17:32:00Z",
+        "checks": 15,
+        "allSuccess": true,
+        "runs": [
+          {
+            "id": 38159330375,
+            "name": "Release signing control tests",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330375",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330361,
+            "name": "SPIDER repair regressions",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330361",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330384,
+            "name": "SPIDER repository security",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330384",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330377,
+            "name": "Rock star native OS source",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330377",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330376,
+            "name": "Rock star verification",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330376",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330374,
+            "name": "Rock star Android prototype",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330374",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 1,
+            "conclusion": "success"
+          },
+          {
+            "id": 38159330378,
+            "name": "SPIDER CodeQL security",
+            "url": "https://github.com/k999ln/rock/actions/runs/38159330378",
+            "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+            "attempt": 2,
+            "conclusion": "success"
+          }
+        ],
+        "verify": {
+          "nodePassed": 1726,
+          "nodeSkipped": 1,
+          "workerD1Assertions": 1356,
+          "csvD1R2Assertions": 385,
+          "webAssetReferences": 185,
+          "missingAssets": 0
+        }
+      },
+      "browserRuntime": "Desktop owner/navigation proofs remain separately SHA-bound; final 390px follow-up uses the built artifact of this exact SHA.",
+      "limits": [
+        "Synthetic local identities and fixtures",
+        "Provider sandbox, physical device and production acceptance remain separate"
+      ],
+      "android": {
+        "schemaVersion": 1,
+        "runId": 38159330374,
+        "runAttempt": 1,
+        "runUrl": "https://github.com/k999ln/rock/actions/runs/38159330374",
+        "headSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+        "status": "completed",
+        "conclusion": "success",
+        "sourceVerification": {
+          "runHeadAndArtifactHeadMatch": true,
+          "checkoutAndCollectorLogMatch": true,
+          "androidTree": "19f1b1bb6a86cbe8b69cc2ab62b0478420af36ba",
+          "sameAndroidSourceAndWorkflowAs": "2ebb625045e9f0aaa15effdc1f337c761708f53a"
+        },
+        "artifact": {
+          "id": 11709749005,
+          "name": "android-prototype-reports",
+          "sizeBytes": 358325,
+          "sha256": "26042220b083af92d00c608b1e80b8b1b8d96db224009043f72785fc03f3858a",
+          "githubDigestMatched": true
+        },
+        "junit": {
+          "core": {
+            "tests": 121,
+            "passed": 121,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 17
+          },
+          "automationUnit": {
+            "tests": 16,
+            "passed": 16,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 2
+          },
+          "toolSdk": {
+            "tests": 7,
+            "passed": 7,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 2
+          },
+          "automationInstrumentation": {
+            "tests": 45,
+            "passed": 43,
+            "skipped": 2,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          },
+          "shellInstrumentation": {
+            "tests": 7,
+            "passed": 7,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          },
+          "operatorInstrumentation": {
+            "tests": 6,
+            "passed": 6,
+            "skipped": 0,
+            "failures": 0,
+            "errors": 0,
+            "xmlFiles": 1
+          }
+        },
+        "totals": {
+          "tests": 202,
+          "passed": 200,
+          "skipped": 2,
+          "failures": 0,
+          "errors": 0
+        },
+        "skipped": [
+          {
+            "className": "dev.rock.automation.PhysicalRebootRecoveryTest",
+            "method": "recoverSelectedToolAndFinishAfterPhysicalReboot",
+            "xmlReason": null,
+            "reason": "Physical two-phase reboot test: avocadoPhase defaults to empty and this emulator run supplies neither seed nor recover. JUnit Assume prevents execution.",
+            "source": "android/automation/src/androidTest/java/dev/rock/automation/PhysicalRebootRecoveryTest.java:24,36,57"
+          },
+          {
+            "className": "dev.rock.automation.PhysicalRebootRecoveryTest",
+            "method": "seedSelectedToolAndLeaveFirstStepRunning",
+            "xmlReason": null,
+            "reason": "Physical two-phase reboot test: avocadoPhase defaults to empty and this emulator run supplies neither seed nor recover. JUnit Assume prevents execution.",
+            "source": "android/automation/src/androidTest/java/dev/rock/automation/PhysicalRebootRecoveryTest.java:24,36,57"
+          }
+        ],
+        "execution": {
+          "apiLevel": 35,
+          "image": "google_apis",
+          "architecture": "x86_64",
+          "device": "emulator-5554 - 15",
+          "acceptanceTarget": "emulator",
+          "excludedClass": "dev.rock.automation.LocalAiServiceIntegrationTest",
+          "excludedClassReason": "Separate Local AI workflow/device acceptance; not included in these JUnit totals."
+        },
+        "limits": [
+          "No physical Pixel or physical reboot acceptance",
+          "No full Android OS build or boot acceptance",
+          "No APK download or signer verification repeated"
+        ],
+        "junitFiles": "junit-files.json"
+      },
+      "codeqlProcessingRecovery": {
+        "candidateHead": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+        "candidateMerge": "940e97c9f07bdf180d2f50f03a1648c75ef50492",
+        "runId": 38159330378,
+        "initialPythonJob": {
+          "id": 114528762562,
+          "conclusion": "success",
+          "uploadedAt": "2026-10-11T17:23:34Z",
+          "processingCompleteAt": "2026-10-11T17:23:50Z"
+        },
+        "initialPythonAnalysis": {
+          "id": 1932176773,
+          "category": "/spider/language:python",
+          "analysisKey": ".github/workflows/spider-codeql.yml:analyze",
+          "error": "Unknown Error",
+          "rulesCount": 0,
+          "resultsCount": 0,
+          "sarifId": "7bc69086-c598-11f1-87f8-e204e870f575",
+          "sarifProcessingStatus": "complete",
+          "sarifProcessingErrors": null,
+          "sarifDownloadStatus": 422,
+          "sarifDownloadMessage": "Analysis could not be processed for analysis ID 1932176773"
+        },
+        "initialAggregate": {
+          "id": 114529102505,
+          "conclusion": "neutral",
+          "title": "1 configuration not found"
+        },
+        "previousSuccessfulPython": {
+          "id": 1932168576,
+          "merge": "313fbf25c070dce8fe066f19b5d68917c0400d48",
+          "head": "9e5488ebf95d50ef99169799001110b5ef9b81cd",
+          "error": "",
+          "rulesCount": 50,
+          "resultsCount": 23
+        },
+        "pythonAndCodeqlConfigDiff": "No differences between previous successful head and candidate in all *.py, .github/workflows/spider-codeql.yml, or .github/codeql. Both CodeQL versions 2.27.2.",
+        "assessment": "Transient GitHub analysis processing/registration failure, not missing source/configuration or merely pending indexing. One authorized rerun of the same SHA restored Python results and aggregate success without source/workflow changes. Internal backend cause remains undisclosed.",
+        "rerun": {
+          "count": 1,
+          "requestedAt": "2026-10-11T17:28:18Z",
+          "sameRunId": 38159330378,
+          "sameHead": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+          "result": "success",
+          "attempt": 2,
+          "updatedAt": "2026-10-11T17:30:50Z",
+          "pythonAnalysis": {
+            "id": 1932193454,
+            "createdAt": "2026-10-11T17:30:42Z",
+            "error": "",
+            "rulesCount": 50,
+            "resultsCount": 23
+          },
+          "javascriptAnalysis": {
+            "id": 1932191580,
+            "createdAt": "2026-10-11T17:29:54Z",
+            "error": "",
+            "rulesCount": 103,
+            "resultsCount": 6
+          },
+          "aggregate": {
+            "id": 114529102505,
+            "conclusion": "success",
+            "title": "No new alerts in code changed by this pull request"
+          }
+        }
+      },
+      "completionMeaning": "All local and GitHub checks of this runtime candidate succeeded. Later evidence-only commits must still be checked at their own PR head; no other SHA is silently substituted."
+    },
+    "finalRecordFollowup": {
+      "sourceSha": "4985feb82cb2a192d719e5a04a130308307a2f04",
+      "githubVerifyRun": 38160183329,
+      "result": "failed in database:check before typecheck/tests/build/API stages",
+      "cause": "Final nextAction update in project-status was not regenerated into the database status JSON and Markdown.",
+      "repair": "npm run database:status updated only nextAction in data/database-status.json and docs/database-status.md; database:check then passed.",
+      "runtimeChange": false,
+      "recordedChecks": [
+        "project:check",
+        "mission:check",
+        "repository:check",
+        "design:check",
+        "database:check",
+        "git diff --check"
+      ],
+      "finalHeadAcceptance": "Use final PR99 head check-runs; this historical failure is not hidden or assigned to the passing 0c53 runtime candidate."
+    }
+  },
+  "github": {
+    "saved": true,
+    "mainIntegrated": false,
+    "deployed": false,
+    "validatedSourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+    "pullRequest": "https://github.com/k999ln/rock/pull/99",
+    "draft": true,
+    "savedSourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+    "latestFullCi": "All 15 checks passed at 0c53c80e; CodeQL result processing recovered on one same-SHA rerun. See validation.finalIntegratedCandidate.",
+    "latestCheckedSourceSha": "0c53c80e38696b9a8c9445cc399e3c2bfe75d3ce",
+    "originalOpenPrHeadsRechecked": {
+      "checkedAt": "2026-10-11T17:24:00Z",
+      "mainSha": "96845e6006c15e39ba5b45495f79c21bdff7399e",
+      "mainCommittedAt": "2026-10-10T20:03:49Z",
+      "allNineHeadsAreAncestors": true,
+      "pullRequests": [
+        {
+          "number": 98,
+          "headSha": "1df3e858477277a1e902b39fc83b90bf3bbce272"
+        },
+        {
+          "number": 95,
+          "headSha": "dbc7f1fdf38983f5ca67c0278de521094624eecb"
+        },
+        {
+          "number": 94,
+          "headSha": "d4ce73c5d046ccf0a5f85716c28a6bad4b642fa3"
+        },
+        {
+          "number": 93,
+          "headSha": "22e8320706d46658f22f2a89890ab6fa6ce60c5f"
+        },
+        {
+          "number": 90,
+          "headSha": "20f38c88c23b53d37f1446591126b3342b99987e"
+        },
+        {
+          "number": 89,
+          "headSha": "0a213e7f1b627f3e451429f4e059c8ba6337ff00"
+        },
+        {
+          "number": 88,
+          "headSha": "33d6469855a656dc5da165b11d2aacd7dfa0f610"
+        },
+        {
+          "number": 85,
+          "headSha": "a7caf43a360fa0b8583feda6d9a78e86d6412fdb"
+        },
+        {
+          "number": 84,
+          "headSha": "60ca6aecde5b7e32a15cc652844fbb812ec616d4"
+        }
+      ]
+    }
+  },
+  "acceptanceLimits": [
+    "Host and synthetic fixtures are separate from provider, emulator, physical device and production acceptance.",
+    "No purchases, live charges, transfers, signing keys, device flash or deployment performed."
+  ],
+  "requirementsReview": {
+    "sourceSha": "5d5708d3ce297a7b6c48e7944116d44563c89fc5",
+    "scope": "RQ01–RQ50 source and current-policy mapping; runtime acceptance remains in separately scoped validation records",
+    "requirements": [
+      {
+        "id": "RQ01",
+        "implementationPaths": [
+          "components/sky-workspace.tsx",
+          "components/sky-chat-workspace.tsx",
+          "lib/rockstar-service-access.ts"
+        ],
+        "stage": "Web/Core source integrated",
+        "unresolvedConditions": [
+          "SIM/eSIM carrier activation, funded cloud usage and same-candidate product journey remain unaccepted; native ownership is optional."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/remote-ai-estimate-api-20261001.json",
+          "docs/evidence/remote-ai-price-gate-20261001.json"
+        ]
+      },
+      {
+        "id": "RQ02",
+        "implementationPaths": [
+          "toolkits/sky-tool-sdk/src/index.mjs",
+          "lib/sky-tool-package-store.ts",
+          "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java"
+        ],
+        "stage": "SDK/registry/permission source",
+        "unresolvedConditions": [
+          "Independent supplier onboarding, verified package lifecycle and real provider acceptance remain open."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/sky-pixel-service-acceptance.json",
+          "docs/evidence/android-zema-selected-tool-20260916.json"
+        ]
+      },
+      {
+        "id": "RQ03",
+        "implementationPaths": [
+          "lib/catalog.ts",
+          "lib/workflow.ts",
+          "lib/work-store.ts"
+        ],
+        "stage": "Tool catalog and durable WorkJob source",
+        "unresolvedConditions": [
+          "Per-product provider/rights/installation acceptance; CSV is a Tool, not a separate standard app."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/pc-citations/integration.json",
+          "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
+        ]
+      },
+      {
+        "id": "RQ04",
+        "implementationPaths": [
+          "lib/mcp-hub.ts",
+          "systems/rock-star-os/os/platform/runner_control.py",
+          "lib/llm-providers.ts"
+        ],
+        "stage": "Multiple transport adapters and persistent job source",
+        "unresolvedConditions": [
+          "Real cloud continuation, authenticated device discovery and provider reconciliation; no implicit execution-target fallback."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/pr-consolidation-20261005.json",
+          "docs/evidence/remote-ai-estimate-api-20261001.json"
+        ]
+      },
+      {
+        "id": "RQ05",
+        "implementationPaths": [
+          "lib/sky-marketplace-policy.ts",
+          "app/api/llm/estimate/route.ts",
+          "services/sky-billing/src/worker.ts"
+        ],
+        "stage": "Separated commercial/rights policy and quote source",
+        "unresolvedConditions": [
+          "ToC success-fee terms remain undecided and disabled; external API/carrier costs and supplier price remain separate."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/sky-pixel-service-acceptance.json",
+          "docs/evidence/launch/backend-owner-validation-20260912.json"
+        ],
+        "policyOverride": "Historical monthly-888 wording is retained for compatibility, not the current billable price."
+      },
+      {
+        "id": "RQ06",
+        "implementationPaths": [
+          "app/api/wallet/route.ts",
+          "lib/earning-bridge.ts",
+          "systems/rock-star-os/os/wallet_backend/contract_runtime.py"
+        ],
+        "stage": "Owner-scoped Web/native ledger source",
+        "unresolvedConditions": [
+          "Verified external earnings, payout and real owner wallet receipt acceptance; handwritten ledger entries are not verified revenue."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/os-base/business-backup-acceptance-b8287bc.json",
+          "docs/evidence/android-pre-full-build-tests-20260915.json"
+        ]
+      },
+      {
+        "id": "RQ07",
+        "implementationPaths": [
+          "lib/workflow.ts",
+          "systems/rock-star-os/os/platform/runner_control.py",
+          "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java"
+        ],
+        "stage": "Durable jobs/credentials/backup source",
+        "unresolvedConditions": [
+          "Same-image OS integration and recovery; native key adapter, device notifications and real provider revocation remain open."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/android-zema-selected-tool-20260916.json",
+          "docs/evidence/android-local-ai-plan-v2-20260916.json"
+        ]
+      },
+      {
+        "id": "RQ08",
+        "implementationPaths": [
+          "toolkits/sky-mcp-connector/server.mjs",
+          "systems/rock-star-os/os/platform/runner_control.py",
+          "android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java"
+        ],
+        "stage": "Approval/unknown-result/cancellation source",
+        "unresolvedConditions": [
+          "Provider-specific cancellation/finality and real external-effect recovery; sent-but-not-found remains uncertain and is never resent automatically."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/pr-consolidation-20261005.json",
+          "docs/evidence/android-zema-selected-tool-20260916.json"
+        ]
+      },
+      {
+        "id": "RQ09",
+        "implementationPaths": [
+          "data/project-status.json",
+          "docs/git-consolidation.md",
+          "docs/evidence/integrated-development-20261011.json"
+        ],
+        "stage": "SHA/task/evidence tracking present",
+        "unresolvedConditions": [
+          "Parent is running full verify/SPIDER for this candidate; no remote/main/deployment or runtime acceptance is inferred from this audit."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/common-foundation-integration.json",
+          "docs/evidence/pr-consolidation-20261005.json"
+        ]
+      },
+      {
+        "id": "RQ10",
+        "implementationPaths": [
+          "docs/prompt-playbook.md",
+          "data/product-baseline.json",
+          "scripts/project-bot-context.mjs"
+        ],
+        "stage": "Canonical requirements/handoff process present",
+        "unresolvedConditions": [
+          "Carry unresolved gates into next work; prompt or document completion never substitutes for runtime acceptance."
+        ],
+        "historicalEvidence": [
+          "docs/progress-audit-20260909.md",
+          "docs/evidence/workspace-organization.json"
+        ]
+      },
+      {
+        "id": "RQ11",
+        "implementationPaths": [
+          "lib/catalog.ts",
+          "components/sky-tool-workspace.tsx",
+          "docs/hub-wallet-pc-comparison-20260909.md"
+        ],
+        "stage": "Product routes and historical comparison evidence",
+        "unresolvedConditions": [
+          "Current real product journey and PC-versus-device usefulness measurements; synthetic/historical samples do not prove demand or convenience."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/pc-citations/integration.json",
+          "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
+        ]
+      },
+      {
+        "id": "RQ12",
+        "implementationPaths": [
+          "systems/rock-star-os/os/platform/runner_control.py",
+          "systems/rock-star-os/os/update/install-target.sh",
+          "scripts/prepare_release_candidate.py"
+        ],
+        "stage": "Native OS source; historical QEMU acceptance",
+        "unresolvedConditions": [
+          "Fresh boot/save/restart/update/restore of the exact signed candidate; old b8287bc/9abf78a acceptance is not current rc2 or current source."
+        ],
+        "historicalEvidence": [
+          "docs/os-operational-validation-20260909.md",
+          "docs/evidence/os-base/startup-update-acceptance-b8287bc.json"
+        ],
+        "policyOverride": "The old RQ12 approval-wait paragraph is superseded by executionApproval.approved_for_implementation; do not reintroduce an approval block for authorized host work."
+      },
+      {
+        "id": "RQ13",
+        "implementationPaths": [
+          "systems/rock-star-os/os/game_exchange/exchange_authority.py",
+          "systems/rock-star-os/os/game_exchange/exchange_ledger.py",
+          "systems/rock-star-os/os/game_exchange/exchange_service.py"
+        ],
+        "stage": "Synthetic exchange authority/ledger source",
+        "unresolvedConditions": [
+          "Named real game, exchange direction/rate/fee, funded custody and provider sandbox remain undecided/unaccepted; ATM stays independent."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/gx00/integration.json",
+          "docs/evidence/gx00/game-protocol-review.json"
+        ]
+      },
+      {
+        "id": "RQ14",
+        "implementationPaths": [
+          "systems/rock-star-os/os/game_exchange/reference_sdk.py",
+          "systems/rock-star-os/os/game_exchange/sandbox.py",
+          "docs/gx01-reference-sdk-sandbox-20260910.md"
+        ],
+        "stage": "Game reference SDK and synthetic sandbox source",
+        "unresolvedConditions": [
+          "First-time external developer measurements and official game sandbox; no client/API authority to mint real Wallet value."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/rls01/sdk-final-9abf78a/README.md",
+          "docs/evidence/rls01/sdk-final-9abf78a/summary.json"
+        ]
+      },
+      {
+        "id": "RQ15",
+        "implementationPaths": [
+          "systems/rock-star-os/os/atm/simulator.py",
+          "systems/rock-star-os/os/atm/handoff.json"
+        ],
+        "stage": "Zero Rock ATM-fee contract and simulator",
+        "unresolvedConditions": [
+          "Real ATM/provider acceptance and disclosed external costs remain open; this does not set game fees to zero."
+        ],
+        "historicalEvidence": [
+          "docs/game-wallet-release-checkpoint-20260910.md",
+          "docs/evidence/hub-final-9abf78a/final-c01-completed-stages.json"
+        ]
+      },
+      {
+        "id": "RQ16",
+        "implementationPaths": [
+          "scripts/prepare_release_candidate.py",
+          "scripts/release_signing_preflight.py",
+          "docs/release-installation-plan-20260909.md"
+        ],
+        "stage": "Packaging source; historical Developer Preview install",
+        "unresolvedConditions": [
+          "License/production signing/same-candidate fresh install and recovery; Pixel full OS/flash and reviewed CM artifact remain pending."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/rls01/final-9abf78a/summary.json",
+          "docs/evidence/rls01/github-direct-install-9abf78a/summary.json"
+        ]
+      },
+      {
+        "id": "RQ17",
+        "implementationPaths": [
+          "data/product-identity.json",
+          "lib/product-identity.ts",
+          "docs/rockstaros-1.0-architecture.md"
+        ],
+        "stage": "Developer Preview identity and compatibility rules",
+        "unresolvedConditions": [
+          "Version 1.0 is not general availability, production finance or physical OS acceptance."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/rls01/final-9abf78a/summary.json",
+          "docs/evidence/rls01/github-direct-install-9abf78a/summary.json"
+        ]
+      },
+      {
+        "id": "RQ18",
+        "implementationPaths": [
+          "components/sky-workspace.tsx",
+          "components/sky-chat-workspace.tsx",
+          "app/market/page.tsx",
+          "app/campus/page.tsx"
+        ],
+        "stage": "Separated Sky/Zema/Wallet/Market source",
+        "unresolvedConditions": [
+          "Current baseline replaces legacy Polymarket center with PAPER Market and adds Campus; actual trading/settlement stays disabled."
+        ],
+        "historicalEvidence": [],
+        "policyOverride": "Later PAPER Market and Campus requirements supersede the initial four-app/Polymarket naming."
+      },
+      {
+        "id": "RQ19",
+        "implementationPaths": [
+          "toolkits/fashion-brand-ops/src/service.mjs",
+          "toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql"
+        ],
+        "stage": "Campaign/concierge/production workflow source",
+        "unresolvedConditions": [
+          "Real Meta/payment/manufacturing provider acceptance and per-action approval; planning cannot publish, DM or mark unpaid orders paid."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ20",
+        "implementationPaths": [
+          "services/sky-billing/src/worker.ts",
+          "services/sky-billing/src/domain.ts",
+          "lib/settlement.ts"
+        ],
+        "stage": "Legacy settlement fixture retained; ToC fee execution held",
+        "unresolvedConditions": [
+          "New success-fee percentage/profit definition/collection and owner/provider acceptance are pending; no 8.88 USD production charge."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/launch/backend-owner-validation-20260912.json",
+          "docs/evidence/launch/sky-billing-fee-hold-20260924.json"
+        ],
+        "policyOverride": "Current ToC fee assessment and CSV fee assessment are disabled; old 888-cent tests are historical regression fixtures."
+      },
+      {
+        "id": "RQ21",
+        "implementationPaths": [
+          "components/sky-network.tsx",
+          "lib/sky-marketplace-policy.ts",
+          "lib/sky-commerce.ts"
+        ],
+        "stage": "Passport/network and marketplace commerce source",
+        "unresolvedConditions": [
+          "Registration/connection/publication remain free; later ToB sale commission is 10%, with provider sandbox/live/payout unaccepted."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/sky-pixel-service-acceptance.json"
+        ],
+        "policyOverride": "Later marketplace policy sets 1000 bps sales commission; initial 0%-sales-commission text is historical. Free registration/connection/publication/base usage is preserved."
+      },
+      {
+        "id": "RQ22",
+        "implementationPaths": [
+          "components/sky-connection-center.tsx",
+          "components/sky-mcp-center.tsx",
+          "app/sky/network/page.tsx",
+          "app/sky/publish/page.tsx"
+        ],
+        "stage": "Sky-integrated connection and publish UI source",
+        "unresolvedConditions": [
+          "Current candidate browser journey and real external connection acceptance; visible Passport is not proof of remote provider acceptance."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ23",
+        "implementationPaths": [
+          "components/device-connection.tsx",
+          "toolkits/sky-mcp-connector/server.mjs",
+          "scripts/package-sky-mcp.py"
+        ],
+        "stage": "Local connector/onboarding source and package",
+        "unresolvedConditions": [
+          "Fresh local onboarding for this candidate; external MCP, real business providers and native service integration remain separate."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ24",
+        "implementationPaths": [
+          "components/sky-mcp-center.tsx",
+          "lib/mcp-hub.ts",
+          "toolkits/sky-mcp-connector/server.mjs"
+        ],
+        "stage": "Destination selection and local adapter source",
+        "unresolvedConditions": [
+          "Sky Cloud and provider OAuth/remote MCP one-tap acceptance, expiry/revocation and confirmed receipt are pending."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ25",
+        "implementationPaths": [
+          "toolkits/sky-mcp-connector/server.mjs",
+          "lib/mcp-hub.ts",
+          "package-lock.json"
+        ],
+        "stage": "Registry connector, Passport and one-shot approval source",
+        "unresolvedConditions": [
+          "Public remote MCP/OAuth interoperability and hosted service acceptance; SDK dependency update alone proves none of these."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ26",
+        "implementationPaths": [
+          "components/home-screen.tsx",
+          "components/system-settings.tsx",
+          "components/workspace-shell.tsx"
+        ],
+        "stage": "Home/settings/customization/navigation source",
+        "unresolvedConditions": [
+          "Same-candidate keyboard/mobile/browser review; current baseline app set supersedes old four-app wording."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ27",
+        "implementationPaths": [
+          "lib/system-backup.ts",
+          "components/system-maintenance.tsx"
+        ],
+        "stage": "Local home-settings encrypted backup and PWA update source",
+        "unresolvedConditions": [
+          "This backup excludes server Wallet/jobs/tokens; native image/key migration and whole-device restore require separate acceptance."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/launch/web-security-local-20260917.json"
+        ]
+      },
+      {
+        "id": "RQ28",
+        "implementationPaths": [
+          "lib/mercari-revenue.ts",
+          "app/api/revenue/mercari/route.ts",
+          "components/mercari-revenue-starter.tsx"
+        ],
+        "stage": "Mercari draft/profit/state source",
+        "unresolvedConditions": [
+          "Shops credentials, contracted Japanese fixed-IP connector, cancellation/refund and verified payment acceptance; manual sales stay unverified."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/launch/sky-billing-fee-hold-20260924.json"
+        ]
+      },
+      {
+        "id": "RQ29",
+        "implementationPaths": [
+          "components/system-maintenance.tsx",
+          "lib/system-backup.ts",
+          "data/release-readiness.json"
+        ],
+        "stage": "Maintenance diagnostics and per-channel gate source",
+        "unresolvedConditions": [
+          "Actual browser permission/storage availability and each release/legal/device gate; UI is not evidence of OS installation."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/spider-observer-output-schema.json",
+          "docs/evidence/launch/web-security-local-20260917.json"
+        ]
+      },
+      {
+        "id": "RQ30",
+        "implementationPaths": [
+          "scripts/release-readiness-lib.mjs",
+          "scripts/check-release-readiness.mjs",
+          "data/release-readiness.json"
+        ],
+        "stage": "Machine-readable release gate checker source",
+        "unresolvedConditions": [
+          "Product license, protected production signing, exact signed-candidate acceptance, public release decision and device-specific gates remain open."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ31",
+        "implementationPaths": [
+          "data/qemu-release-audit.json",
+          "scripts/release-readiness-lib.mjs",
+          "data/qemu-rc2-legal-info/manifest.csv"
+        ],
+        "stage": "Archive-bound rc2 legal/SBOM audit source",
+        "unresolvedConditions": [
+          "Archive-specific historical checks do not accept new source/image; production keys/license and same signed-image fresh recovery are pending."
+        ],
+        "historicalEvidence": [
+          "docs/qemu-release-completion-audit-20260912.md"
+        ]
+      },
+      {
+        "id": "RQ32",
+        "implementationPaths": [
+          "lib/sky-zema-handoff.ts",
+          "lib/zema-private-storage.ts",
+          "lib/sky-commerce-store.ts",
+          "scripts/web-bundle-inventory.mjs"
+        ],
+        "stage": "Local integration, owner ledger and asset checks source",
+        "unresolvedConditions": [
+          "Exact candidate full verify/SPIDER and deployment readback remain pending; parent controls branch/main/deploy decisions."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/common-foundation-integration.json",
+          "docs/evidence/pr-consolidation-20261005.json"
+        ]
+      },
+      {
+        "id": "RQ33",
+        "implementationPaths": [
+          "lib/everything-market.ts",
+          "lib/everything-market-store.ts",
+          "lib/automation-fund.ts",
+          "lib/automation-fund-store.ts"
+        ],
+        "stage": "PAPER-only market and evidence-based fund source",
+        "unresolvedConditions": [
+          "No LIVE orders, real reinvestment or guaranteed return; provider receipt data and current integration acceptance remain required."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ34",
+        "implementationPaths": [
+          "lib/financial-provider.ts",
+          "docs/external-wallet-fund-provider-boundary-20260913.md"
+        ],
+        "stage": "Versioned financial provider adapter source",
+        "unresolvedConditions": [
+          "Real provider discovery/contracts/KYC/region/custody and sandbox acceptance; unadvertised capabilities remain unavailable."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ35",
+        "implementationPaths": [
+          "lib/financial-provider.ts",
+          "services/sky-billing/src/worker.ts"
+        ],
+        "stage": "First-party fee-collection/reporting sandbox source",
+        "unresolvedConditions": [
+          "ToC fee hold supersedes old 888-cent activation; no real collection, arbitrary transfer, custody or fund management authority."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/launch/backend-owner-validation-20260912.json",
+          "docs/evidence/launch/sky-billing-fee-hold-20260924.json"
+        ],
+        "policyOverride": "Legacy cap and sandbox contracts must not reactivate the held ToC policy."
+      },
+      {
+        "id": "RQ36",
+        "implementationPaths": [
+          "lib/rock-wallet.ts",
+          "components/rock-settlement-wallet.tsx",
+          "services/sky-billing/src/worker.ts"
+        ],
+        "stage": "Owner-signature and exact finalized-USDC receipt source",
+        "unresolvedConditions": [
+          "Owner registration/first real transfer are unaccepted; current fee hold remains binding despite production-oriented code."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/launch/sky-billing-fee-hold-20260924.json"
+        ],
+        "policyOverride": "Existing mainnet-oriented code and historical deployment do not prove a real transfer or authorize new collection."
+      },
+      {
+        "id": "RQ37",
+        "implementationPaths": [
+          "toolkits/sky-tool-sdk/src/index.mjs",
+          "components/rock-studio.tsx",
+          "app/api/sky/tool-registry/route.ts"
+        ],
+        "stage": "Sky SDK package registration and Studio source",
+        "unresolvedConditions": [
+          "Independent supplier/package verification and real external use; declared publication is not sandbox verification or commercial acceptance."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/sky-pixel-service-acceptance.json"
+        ]
+      },
+      {
+        "id": "RQ38",
+        "implementationPaths": [
+          "app/rockstaros/page.tsx",
+          "app/rockstaros/guide/page.tsx",
+          "sites/avocado-mini/src/pages/index.astro"
+        ],
+        "stage": "Product/Developer Preview introduction source",
+        "unresolvedConditions": [
+          "No verified current signed physical installer; public site's deliberately restored E3 visuals do not redefine current R5 hardware."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/avocado-mini-site-r5.json",
+          "docs/evidence/avocado-mini-site-e3-restoration.json"
+        ],
+        "policyOverride": "Current R5 hardware identity and the owner-requested restored E3 public presentation are separate evidence scopes."
+      },
+      {
+        "id": "RQ39",
+        "implementationPaths": [
+          "components/rock-studio.tsx",
+          "app/workspace.css",
+          "app/rockstaros/page.tsx"
+        ],
+        "stage": "Studio/workspace visual system source",
+        "unresolvedConditions": [
+          "Product introduction has an explicitly allowed light design; current desktop/mobile usability requires candidate browser review."
+        ],
+        "historicalEvidence": [
+          "docs/frontend-usability-audit-20260915.md",
+          "docs/evidence/spider-workspace-snapshot-read.json"
+        ],
+        "policyOverride": "The explicit 2026-09-20 light product-page exception supersedes the earlier all-dark introduction wording."
+      },
+      {
+        "id": "RQ40",
+        "implementationPaths": [
+          "components/home-screen.tsx",
+          "components/workspace-shell.tsx",
+          "app/workspace.css"
+        ],
+        "stage": "Shared chrome/navigation/accessibility source",
+        "unresolvedConditions": [
+          "Same-candidate responsive/UI review; appearance changes cannot imply live network/device states or financial authority."
+        ],
+        "historicalEvidence": [
+          "docs/frontend-usability-audit-20260915.md",
+          "docs/evidence/spider-workspace-snapshot-read.json"
+        ]
+      },
+      {
+        "id": "RQ41",
+        "implementationPaths": [
+          "contracts/local-ai-runtime.json",
+          "os/physical/local-action-assistant-source-lock.json",
+          "android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java"
+        ],
+        "stage": "Fixed local-AI source and historical test-signed APK evidence",
+        "unresolvedConditions": [
+          "Current exchangeable profile/device restart, Soong/full image, production signing and OTA/rollback remain unaccepted; local LLM is optional service capability."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/local-ai-overlay-validation-20260915.json",
+          "docs/evidence/android-pre-full-build-tests-20260915.json"
+        ],
+        "policyOverride": "Fixed local runtime history is preserved; later service-first policy does not require every client to own a local LLM."
+      },
+      {
+        "id": "RQ42",
+        "implementationPaths": [
+          "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+          "android/core/src/main/java/dev/rock/core/ExternalWriteOutbox.java",
+          "docs/platform-core.md"
+        ],
+        "stage": "Platform/Binder/approval/Wallet persistence source",
+        "unresolvedConditions": [
+          "Exact AOSP build, enforcing SELinux boot, production signing and device OTA/rollback/restore acceptance are open."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/android-zema-selected-tool-20260916.json",
+          "docs/evidence/android-local-ai-plan-v2-20260916.json"
+        ]
+      },
+      {
+        "id": "RQ43",
+        "implementationPaths": [
+          "data/product-identity.json",
+          "lib/product-identity.ts",
+          "app/manifest.ts"
+        ],
+        "stage": "Product name/compatible internal identity source",
+        "unresolvedConditions": [
+          "Do not rewrite historical signed hashes, org.rockstar IDs or storage/crypto domains; branding is not a release gate."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ44",
+        "implementationPaths": [
+          "data/product-identity.json",
+          "lib/product-identity.ts",
+          "docs/device-support-architecture.md"
+        ],
+        "stage": "Single product version and compatibility policy source",
+        "unresolvedConditions": [
+          "Any major API/schema/trust-root change needs same-candidate migration/backup/rollback and provider/device compatibility."
+        ],
+        "historicalEvidence": []
+      },
+      {
+        "id": "RQ45",
+        "implementationPaths": [
+          "data/device-emergency-access-policy.json",
+          "android/operator-agent/src/main/java/dev/rock/operator/agent/OperatorCommandVerifier.java",
+          "services/operator-dock/src/device-channel.ts"
+        ],
+        "stage": "Restricted emergency protocol and Android verifier source",
+        "unresolvedConditions": [
+          "Production hardware operator credential/StrongBox/Device Owner, real Pixel intrusion and recovery acceptance remain pending."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/android-operator-agent-emulator-20260916.json",
+          "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
+        ]
+      },
+      {
+        "id": "RQ46",
+        "implementationPaths": [
+          "services/operator-dock/src/worker.ts",
+          "services/operator-dock/src/access-auth.ts",
+          "services/operator-dock/src/operator-control.ts"
+        ],
+        "stage": "Separate Operator Dock/auth/command queue source",
+        "unresolvedConditions": [
+          "Dedicated deployment/Access audience/operator/D1/enrollment and real device receipt are pending; no user-app admin route or arbitrary shell."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/android-operator-agent-emulator-20260916.json",
+          "docs/evidence/android-pixel-10-prefull-physical-20260916.json"
+        ]
+      },
+      {
+        "id": "RQ47",
+        "implementationPaths": [
+          "lib/workflow.ts",
+          "lib/earning-bridge.ts",
+          "lib/automation-fund.ts",
+          "systems/rock-star-os/os/platform/runner_control.py"
+        ],
+        "stage": "Agent/work/earnings integration source",
+        "unresolvedConditions": [
+          "Verified real economic loop and comparative benefit/tax/consent acceptance remain open; no guaranteed income; current SIM service-first direction applies."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/pr-consolidation-20261005.json",
+          "docs/evidence/os-base/business-backup-acceptance-b8287bc.json"
+        ],
+        "policyOverride": "Later SIM/eSIM service entry is primary; native and economic proof remain separate."
+      },
+      {
+        "id": "RQ48",
+        "implementationPaths": [
+          "systems/rock-star-os/src/blackberryrock/memory_store.py",
+          "systems/rock-star-os/os/platform/runner_control.py",
+          "lib/llm-providers.ts",
+          "lib/jev-evaluation.ts"
+        ],
+        "stage": "Core model/memory/work/provider source; host fixtures",
+        "unresolvedConditions": [
+          "Current model exchange/device binding/key adapter/real external reconciliation and creative providers remain open; limited host fixes are not OS/image acceptance."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/avokado-llm-pretraining.json",
+          "docs/evidence/local-ai-profile-v3-validation-20261001.json"
+        ],
+        "policyOverride": "Exchangeable local models, cloud adapters, pure-tool host tests and physical OS are separate stages."
+      },
+      {
+        "id": "RQ49",
+        "implementationPaths": [
+          "lib/material-invention.ts",
+          "lib/material-study.ts",
+          "app/api/material-invention/route.ts",
+          "components/material-invention-workspace.tsx"
+        ],
+        "stage": "Deterministic material sandbox and owner-scoped WorkJob source",
+        "unresolvedConditions": [
+          "Scoped memory, real simulation/lab receipts, four-direction XR/R5 hardware and physical safety acceptance remain open; no experiment authority."
+        ],
+        "historicalEvidence": [],
+        "policyOverride": "R5 is the current Mini product; older four-direction/Full-scale/E1/E2/E3 profiles are retained historical research, not current hardware acceptance."
+      },
+      {
+        "id": "RQ50",
+        "implementationPaths": [
+          "lib/sky-compute-grid.ts",
+          "contracts/sky-compute-grid.json",
+          "app/api/sky/compute-grid/demo/route.ts",
+          "app/sky/compute-grid/page.tsx"
+        ],
+        "stage": "Synthetic host Compute Grid and fixed demo source",
+        "unresolvedConditions": [
+          "Android device dispatch, attestation, production persistence, verified paid lots/billing/payout and fraud/operating acceptance remain disabled."
+        ],
+        "historicalEvidence": [
+          "docs/evidence/amc/grid01-host-fixture.md"
+        ]
+      }
+    ],
+    "followup": {
+      "sourceSha": "2ebb625045e9f0aaa15effdc1f337c761708f53a",
+      "requirements": 50,
+      "missingImplementationPaths": 0,
+      "policyReview": "Later SIM/eSIM service-first, Pixel 10/GL066/frankel, R5 research-versus-product and fee execution holds retained. New owner-bound save and MCP recovery changes do not grant identity, execution permission or provider acceptance.",
+      "runtimeEvidence": "validation.integratedOwnerAndMcpRecovery",
+      "unresolvedGatesPreserved": true,
+      "latestPathInventory": {
+        "sourceSha": "9e5488ebf95d50ef99169799001110b5ef9b81cd",
+        "requirements": 50,
+        "exactIds": "RQ01 through RQ50",
+        "missingImplementationPaths": 0,
+        "scope": "Current paths and existing requirement-by-requirement policy boundaries only; no new real-device/provider acceptance."
+      }
+    }
+  },
+  "executionAccounting": {
+    "toolWaitSeconds": 17587.5306,
+    "tool": "CUA file chooser for local synthetic purchase JSON",
+    "period": "approximately 2026-10-11 10:34–15:27 UTC",
+    "effect": "Root integration blocked until the call returned; assigned agents completed their existing bounded tasks. This interval is elapsed time, not active development time.",
+    "plannedEndUnchanged": true,
+    "verificationCheckpointAt": "2026-10-11T17:32:00Z"
+  },
+  "rocketstarGroundAudit": {
+    "sourceSha": "10dc0ee67be469e6bc3139f11515396fe519386c",
+    "activeCallers": [
+      "sites/avocado-mini/src/pages/rocket-star/index.astro",
+      "sites/avocado-mini/scripts/build-rocketstar.mjs",
+      "scripts/verify-rocketstar-archive.py"
+    ],
+    "result": "Outside the fixed archive, design presentation and archive verification exist; no active telemetry import/replay/persistence adapter was found.",
+    "archivedTestMethodsRead": {
+      "receiver": 71,
+      "colony": 35
+    },
+    "archiveTestsExecuted": false,
+    "fixedArchiveChanged": false,
+    "r7r9r10Stage": "design; not raised by source audit",
+    "archiveVerification": {
+      "sourceSha": "19ef1020d2065fd6c31bfeb6d7cbaa703be0a1f0",
+      "command": "python3 scripts/verify-rocketstar-archive.py --git",
+      "status": "passed",
+      "files": 932,
+      "zipArchives": 8,
+      "checks": 14,
+      "failures": 0,
+      "scope": "Fixed archive integrity only; archived receiver/colony runtime tests were not executed."
+    }
+  },
+  "handoff": {
+    "review": "PR99 contains all nine original PR heads plus repairs and cleanup. Main is unchanged; review and approved integration are separate from publication.",
+    "next": [
+      {
+        "tasks": [
+          "G04",
+          "WEB01"
+        ],
+        "action": "Review PR99 and verify the accepted GitHub source against the existing Sites deployment target before any approved publication."
+      },
+      {
+        "tasks": [
+          "SIM01",
+          "SKY21",
+          "SKY07"
+        ],
+        "action": "Use an explicitly selected issuer/provider sandbox with owner authentication, credentials, budget cap and receipt/finality conditions to accept the real purchase-to-service flow."
+      },
+      {
+        "tasks": [
+          "OS10"
+        ],
+        "action": "Build a signed full Pixel image on the dedicated compatible x86_64 Linux environment; accept boot, permission, persistence and recovery on the same image. Keep current QEMU image acceptance separate."
+      },
+      {
+        "tasks": [
+          "MAT15"
+        ],
+        "action": "Resolve the recorded R5 hardware/safety decisions and obtain same-configuration physical evidence; do not transfer research-profile or host results to hardware acceptance."
+      }
+    ],
+    "unchangedBoundaries": [
+      "No main merge or deployment",
+      "No real payments or provider execution",
+      "No device initialization or flash",
+      "No full OS or current QEMU image acceptance",
+      "No Mini/Pro hardware or flight-control acceptance"
+    ]
+  }
+}

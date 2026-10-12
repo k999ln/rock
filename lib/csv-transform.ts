@@ -123,6 +123,8 @@ export function csvSpecification(value: unknown): CsvSpecification {
   )
     throw new CsvError('SPEC', '重複処理の指定が不正です。');
   const dedupeObject = dedupeInput as Record<string, unknown>;
+  if (Object.keys(dedupeObject).some((key) => !['keys', 'mode'].includes(key)))
+    throw new CsvError('SPEC', '重複処理に未対応の指定が含まれています。');
   const mode = dedupeObject.mode ?? 'report_only';
   if (
     typeof mode !== 'string' ||
@@ -139,6 +141,8 @@ export function csvSpecification(value: unknown): CsvSpecification {
     if (!item || typeof item !== 'object' || Array.isArray(item))
       throw new CsvError('SPEC', '並び替えの指定が不正です。');
     const row = item as Record<string, unknown>;
+    if (Object.keys(row).some((key) => !['column', 'direction'].includes(key)))
+      throw new CsvError('SPEC', '並び替えに未対応の指定が含まれています。');
     const direction = row.direction ?? 'asc';
     if (direction !== 'asc' && direction !== 'desc')
       throw new CsvError('SPEC', '並び順は昇順または降順にしてください。');
@@ -150,6 +154,14 @@ export function csvSpecification(value: unknown): CsvSpecification {
     !['utf8', 'utf8-bom', 'cp932'].includes(outputEncoding)
   )
     throw new CsvError('SPEC', '出力文字コードが不正です。');
+  if (
+    source.spreadsheetSafe !== undefined &&
+    typeof source.spreadsheetSafe !== 'boolean'
+  )
+    throw new CsvError(
+      'SPEC',
+      '表計算向け安全版はtrueまたはfalseで指定してください。',
+    );
   return {
     renames,
     order: strings(source.order, '列順'),
@@ -261,7 +273,19 @@ export function parseCsv(source: string): CsvTable {
 
 const edgeWhitespace = /^[\s\u3000]+|[\s\u3000]+$/gu;
 const formulaLike = /^[=+\-@]/;
-const compare = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+
+function compare(a: string, b: string) {
+  let aIndex = 0;
+  let bIndex = 0;
+  while (aIndex < a.length && bIndex < b.length) {
+    const aPoint = a.codePointAt(aIndex)!;
+    const bPoint = b.codePointAt(bIndex)!;
+    if (aPoint !== bPoint) return aPoint < bPoint ? -1 : 1;
+    aIndex += aPoint > 0xffff ? 2 : 1;
+    bIndex += bPoint > 0xffff ? 2 : 1;
+  }
+  return aIndex < a.length ? 1 : bIndex < b.length ? -1 : 0;
+}
 
 function plan(table: CsvTable, spec: CsvSpecification) {
   const renamed = table.headers.map((header) => spec.renames[header] ?? header);
@@ -315,9 +339,11 @@ function expectedRows(table: CsvTable, spec: CsvSpecification) {
   }));
   const keyIndexes = spec.dedupe.keys.map((key) => outputHeaders.indexOf(key));
   const counts = new Map<string, number>();
-  for (const item of rows) {
-    const key = JSON.stringify(keyIndexes.map((index) => item.cells[index]));
-    counts.set(key, (counts.get(key) ?? 0) + 1);
+  if (keyIndexes.length) {
+    for (const item of rows) {
+      const key = JSON.stringify(keyIndexes.map((index) => item.cells[index]));
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
   }
   const duplicateRows = [...counts.values()].reduce(
     (sum, count) => sum + Math.max(0, count - 1),

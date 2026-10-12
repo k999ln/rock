@@ -1,7 +1,7 @@
 .work-shell {
   min-height: 100vh;
-  background: var(--os-panel);
-  color: var(--os-text);
+  background: #f5f7fb;
+  color: #202b3a;
   font:
     1rem/1.7 Arial,
     'Hiragino Kaku Gothic ProN',
@@ -13,11 +13,11 @@
   gap: 1.5rem;
   padding: 1.1rem max(1.25rem, calc((100% - 1240px) /2));
   background: white;
-  border-bottom: 1px solid var(--os-line);
+  border-bottom: 1px solid #dbe2ed;
 }
 .work-header .work-brand {
   margin-right: auto;
-  color: var(--os-muted);
+  color: #2f74d9;
   font-size: 1.65rem;
   font-weight: 800;
   white-space: nowrap;
@@ -35,7 +35,7 @@
 .work-notice button {
   background: white;
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--os-line);
+  border: 1px solid #d1dbea;
   border-radius: 0.45rem;
 }
 .work-shell main {
@@ -56,7 +56,7 @@
 }
 .work-title p,
 .work-footnote {
-  color: var(--os-muted);
+  color: #546278;
 }
 .work-create {
   display: grid;
@@ -64,7 +64,7 @@
   gap: 1rem;
   align-items: end;
   background: white;
-  border: 1px solid var(--os-line);
+  border: 1px solid #dbe2ed;
   border-radius: 0.8rem;
   padding: 1.25rem;
   margin-bottom: 1.5rem;
@@ -78,7 +78,7 @@
 }
 .work-create input {
   min-width: 0;
-  border: 1px solid var(--os-line);
+  border: 1px solid #bac7da;
   border-radius: 0.4rem;
   padding: 0.65rem 0.8rem;
   font: inherit;
@@ -92,7 +92,7 @@
 }
 .work-create p {
   grid-column: 1/-1;
-  color: var(--os-muted);
+  color: #546278;
   font-size: 0.95rem;
 }
 .work-shell .work-primary {
@@ -100,7 +100,7 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  background: var(--os-raised);
+  background: #2465c2;
   color: white;
   padding: 0.75rem 1rem;
   border-radius: 0.45rem;
@@ -115,7 +115,7 @@
 .work-list,
 .work-detail {
   background: white;
-  border: 1px solid var(--os-line);
+  border: 1px solid #dbe2ed;
   border-radius: 0.8rem;
   padding: 1.25rem;
   min-width: 0;
@@ -138,7 +138,7 @@
   width: 100%;
   text-align: left;
   gap: 0.4rem;
-  background: var(--os-panel);
+  background: #f6f8fc;
   padding: 0.85rem;
   border: 1px solid transparent;
   border-radius: 0.5rem;
@@ -146,12 +146,12 @@
   overflow-wrap: anywhere;
 }
 .work-job.selected {
-  border-color: var(--os-line);
-  background: var(--os-panel);
+  border-color: #2f74d9;
+  background: #edf4ff;
 }
 .work-job span {
   font-size: 0.875rem;
-  color: var(--os-muted);
+  color: #435a79;
 }
 .work-detail-heading {
   display: flex;
@@ -165,8 +165,8 @@
   overflow-wrap: anywhere;
 }
 .work-detail-heading > span {
-  background: var(--os-panel);
-  color: var(--os-muted);
+  background: #edf4ff;
+  color: #23558b;
   padding: 0.25rem 0.6rem;
   border-radius: 0.4rem;
   white-space: nowrap;
@@ -186,14 +186,14 @@
   gap: 0.35rem 0.5rem;
   align-items: center;
   padding: 0.85rem;
-  border: 1px solid var(--os-line);
+  border: 1px solid #dbe2ed;
   border-radius: 0.6rem;
 }
 .work-steps li > span {
   display: grid;
   place-items: center;
   height: 1.6rem;
-  background: var(--os-panel);
+  background: #e9eef6;
   border-radius: 50%;
 }
 .work-steps strong {
@@ -202,21 +202,58 @@
 .work-steps small {
   grid-column: 2;
   font-size: 0.875rem;
-  color: var(--os-muted);
+  color: #536478;
 }
 .work-steps .passed {
-  background: var(--os-panel);
-  border-color: var(--os-line);
+  background: #eef8f2;
+  border-color: #bddbca;
+}
+.work-plan {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.65rem;
+  background: #f8fafe;
+}
+.work-plan h3,
+.work-plan p { margin: 0; }
+.work-plan > p,
+.work-plan small { color: #536478; }
+.work-plan ol {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.4rem;
+}
+.work-plan li { padding-left: 0.2rem; }
+.work-plan li strong,
+.work-plan li small { display: block; }
+.work-plan label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.work-plan form { display: grid; gap: 0.65rem; }
+.work-plan textarea { width: 100%; font: inherit; }
+.work-plan form button {
+  justify-self: start;
+  border: 1px solid #c7d2e2;
+  border-radius: 0.45rem;
+  padding: 0.55rem 0.85rem;
+  background: white;
 }
 .work-runner {
   margin-top: 1.5rem;
-  border-top: 1px solid var(--os-line);
+  border-top: 1px solid #dbe2ed;
   padding-top: 1rem;
 }
 .work-runner > p {
   font-size: 0.95rem;
   margin-bottom: 1rem;
-  color: var(--os-muted);
+  color: #546278;
 }
 .work-runner .mr-workbench {
   margin-top: 0;
@@ -230,7 +267,7 @@
 }
 .work-review {
   margin-top: 1.5rem;
-  background: var(--os-warning-bg);
+  background: #f1f6fe;
   border-radius: 0.6rem;
   padding: 1.25rem;
   display: grid;
@@ -251,24 +288,172 @@
   display: grid;
   gap: 0.2rem;
   padding: 0.75rem 0;
-  border-bottom: 1px solid var(--os-line);
+  border-bottom: 1px solid #e4e9f1;
   overflow-wrap: anywhere;
 }
 .work-history time {
   font-size: 0.875rem;
-  color: var(--os-muted);
+  color: #596b82;
 }
+.work-delegations {
+  margin-top: 1.5rem;
+  border-top: 1px solid #dbe2ed;
+  padding-top: 1.25rem;
+}
+.work-delegation-create,
+.work-delegation-review {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.65rem;
+  padding: 1rem;
+  background: #f8fafe;
+}
+.work-delegation-create h3,
+.work-delegation-review h3 { font-size: 1rem; }
+.work-delegation-create > p,
+.work-delegation-review > p { margin: 0; color: #536478; }
+.work-delegation-create label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.work-delegation-create input,
+.work-delegation-create textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #c7d2e2;
+  border-radius: 0.45rem;
+  background: white;
+  padding: 0.65rem;
+  font: inherit;
+}
+.work-delegation-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.work-delegation-create label.work-offline-consent { display: flex; align-items: flex-start; gap: .65rem; padding: .8rem; border: 1px solid #a9bfd0; border-radius: .5rem; background: #f2f7fa; line-height: 1.55; }
+.work-delegation-create .work-offline-consent > input { flex: none; width: 1.1rem; height: 1.1rem; margin: .15rem 0 0; padding: 0; }
+.work-a2a-agent-list { display: grid; gap: 0.55rem; }
+.work-a2a-agent {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.7rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.5rem;
+  background: white;
+  overflow-wrap: anywhere;
+}
+.work-a2a-agent > div:first-child { display: grid; gap: 0.2rem; }
+.work-a2a-agent small,
+.work-a2a-agent span { color: #596b82; font-size: 0.82rem; }
+.work-delegation-create > button:not(.work-primary) {
+  justify-self: start;
+  border: 1px solid #c7d2e2;
+  border-radius: 0.45rem;
+  background: white;
+  padding: 0.55rem 0.75rem;
+}
+.work-delegation-review dl {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 0.5rem 0.75rem;
+  margin: 0;
+}
+.work-delegation-review dt { color: #596b82; }
+.work-delegation-review dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+.work-delegation-review dd pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  margin: 0;
+}
+.work-delegation-review dd code { overflow-wrap: anywhere; }
+.work-delegation-gate {
+  border-left: 3px solid #bf8d36;
+  padding: 0.65rem 0.8rem;
+  background: #fff8e9;
+  color: #654b1b !important;
+}
+.work-delegation-price-note,
+.work-delegation-usage {
+  border-left: 3px solid #7b94ab;
+  padding: 0.65rem 0.8rem;
+  background: #f0f5f9;
+  color: #34475c;
+  overflow-wrap: anywhere;
+}
+.work-delegation-usage h4 { margin: 0 0 0.35rem; font-size: 0.95rem; }
+.work-delegation-usage p { margin: 0.35rem 0; }
+.work-delegation-usage ul { margin: 0.45rem 0; padding-left: 1.2rem; }
+.work-delegation-usage li { padding: 0.2rem 0; font-variant-numeric: tabular-nums; }
+.work-delegations-heading,
+.work-delegation-title,
+.work-delegation-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.work-delegations-heading { margin-bottom: 0.75rem; }
+.work-delegations-heading h3 { font-size: 1.1rem; }
+.work-delegations-heading p,
+.work-delegation > p { margin: 0.3rem 0; color: #536478; }
+.work-delegation-list { display: grid; gap: 0.75rem; }
+.work-delegation {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.9rem;
+  border: 1px solid #dbe2ed;
+  border-radius: 0.6rem;
+  background: #f8fafe;
+  overflow-wrap: anywhere;
+}
+.work-delegation-title span,
+.work-delegation small { color: #596b82; font-size: 0.82rem; }
+.work-delegation-actions { justify-content: start; flex-wrap: wrap; }
+.work-delegation-actions a,
+.work-delegation-actions button,
+.work-delegations-heading button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid #c7d2e2;
+  border-radius: 0.45rem;
+  background: white;
+  padding: 0.45rem 0.65rem;
+}
+.work-delegation-actions button:disabled,
+.work-delegations-heading button:disabled { opacity: 0.5; }
+.work-delegation-artifact {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  background: #eef4fd;
+}
+.work-delegation-artifact pre {
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  margin: 0.4rem 0;
+}
+.work-delegation-error { color: #9a2f27; }
 .work-cancel {
   background: transparent;
-  color: var(--os-muted);
+  color: #775045;
   padding: 0.6rem 0;
   margin-top: 1rem;
   text-decoration: underline;
 }
 .work-notice {
-  background: var(--os-panel);
-  border: 1px solid var(--os-line);
-  color: var(--os-text);
+  background: #fff5e8;
+  border: 1px solid #e7d0ad;
+  color: #704218;
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -279,7 +464,7 @@
 }
 .work-notice button {
   margin: 0.5rem 0.75rem 0 0;
-  color: var(--os-text);
+  color: #704218;
 }
 .work-empty {
   padding: 2rem 0;
@@ -293,8 +478,9 @@
 }
 .work-shell button:focus-visible,
 .work-shell a:focus-visible,
-.work-shell input:focus-visible {
-  outline: 3px solid var(--os-focus);
+.work-shell input:focus-visible,
+.work-shell textarea:focus-visible {
+  outline: 3px solid #2465c2;
   outline-offset: 3px;
 }
 @media (max-width: 800px) {
@@ -320,4 +506,21 @@
   .work-steps {
     grid-template-columns: 1fr;
   }
+  .work-delegation-fields {
+    grid-template-columns: 1fr;
+  }
+  .work-delegation-review dl {
+    grid-template-columns: 1fr;
+  }
+}
+
+.work-delegation-create .work-cloud-text-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.work-delegation-create .work-cloud-text-consent input[type="checkbox"] {
+  width: 16px;
+  flex: 0 0 16px;
+  margin: 3px 0 0;
 }

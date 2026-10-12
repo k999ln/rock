@@ -1,0 +1,235 @@
+{
+  "status": "prepublication validation; not a deployment receipt",
+  "sourceBase": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc",
+  "primaryRuntime": "6b72470ce25d4e7b20940b1698fde5a12281ed69",
+  "preservedAudience": "public",
+  "records": {
+    "site-browser-acceptance": {
+      "environment": "localhost:5189 -> real local D1/R2 Worker 8800; synthetic owner, no external provider",
+      "source": "final runtime candidate; metadata build subsequently repeated by verify",
+      "route": [
+        "Sky: CSV now use",
+        "Zema: request text -> Toolを開く",
+        "/csv: sample ¥0",
+        "delivered with four artifact links",
+        "page reload -> same saved id",
+        "result CSV downloaded"
+      ],
+      "jobId": "6227e9e3-8708-4427-958b-278370103381",
+      "download": {
+        "bytes": 99,
+        "sha256": "dd163e34c8f454fae75639f82be859de69f9531a2eced3f565958afca4f80845"
+      },
+      "auth": {
+        "401": "private input and old jobs hidden",
+        "differentOwner": "draft value empty and original job absent",
+        "sameOwnerReauthentication": "name=site-draft-preserved restored; original delivery visible"
+      },
+      "viewports": [
+        {
+          "width": 1280,
+          "documentWidth": 1280
+        },
+        {
+          "width": 390,
+          "documentWidth": 390
+        }
+      ],
+      "screenshots": [
+        "site-csv-desktop-before-auth.png",
+        "site-csv-mobile-auth-recovered.png"
+      ],
+      "limits": [
+        "No real provider or billing action",
+        "Draft recovery is in current page memory; reload warns, not durable File persistence",
+        "Deployment and final metadata artifact browser acceptance separate"
+      ]
+    },
+    "site-schema-independent-review": {
+      "reviewedAt": "2026-10-12T16:30:02.030427+00:00",
+      "status": "PASS independent read-only review; no source edits",
+      "sourceHashes": {
+        "drizzle/0017_primary_quality_compatibility.sql": "e6a6d090c8a5a88f494293d02c8f6a2a1025520ab31adb00b06c503e418da23e",
+        "drizzle/meta/0017_snapshot.json": "70f1a93e67d3cf78fe0246f35d20dd28a9fb6f04032e1c1865f22a2156d1e72a",
+        "drizzle/meta/_journal.json": "147f82f42fba3c27bf06f7ca2ccc7c7db9593a638df123d305982ee3e215928a",
+        "db/schema.ts": "756a08b13880f41a8b703e2b86388f495e643a7b446842f95402dc2ccc16d366",
+        "tests/site-schema-upgrade.test.mjs": "15dbff43ad6f1bf89474c97720769bc3ca23318606d89c4bccfbf9ca2bc02f33",
+        "tests/fixtures/site-migration-reference/manifest.json": "33af941d580ffc4f24f865a0018e99962951eca56b193487e4fe01906bcfc3e3"
+      },
+      "checks": [
+        "Protected original v49 SQL/snapshot/journal hashes match manifest; all primary reference SQL hashes match the current primary worktree",
+        "Existing 39 tables/objects retained with exact DDL and synthetic rows; bridge only appends missing 51 tables,103 indexes,47 triggers",
+        "Shared-name differences outside CSV limited to Sky code SQL quoting/case; columns, foreign key and unique index semantics agree, no duplicate Sky code creation",
+        "No DROP/ALTER/table rebuild/data deletion in bridge; primary final added object SQL including CHECK and triggers compared exactly",
+        "Actual D1 with v49 applied migration history adds0017; second migration pass leaves objects, rows,18 journal entries and R2 bytes unchanged",
+        "81 targeted migration/A2A budget/remote AI/entitlement/activation/market tests pass unchanged"
+      ],
+      "execution": [
+        "Initial restricted run SQLite3pass and D1 listenEPERM; rerun with local-fixture permission4/4PASS",
+        "Combined81/81PASS log site-schema-contracts-independent.log"
+      ],
+      "limits": [
+        "Migration re-entry and second-pass inertness verified in same Miniflare instance, not a process-restart test",
+        "Synthetic local D1/R2; no production DB migration, live provider/financial or physical-device acceptance"
+      ],
+      "logs": [
+        "site-schema-independent-rerun.log",
+        "site-schema-contracts-independent.log"
+      ]
+    },
+    "site-nfc-independent-review": {
+      "status": "PASS independent read-only source and actual component harness",
+      "sourceHashes": {
+        "components/nfc-install-guide.tsx": "1d86c91eb79b08e20cb04d5bad38e96f700ff779564944f28e685184aae93e99",
+        "components/nfc-install-guide.module.css": "a976f6839aa2fe6c53f423ff1de6126b3545bbf7c2437e74d58a24d24c1b0a44",
+        "components/home-screen.tsx": "e0daeba5a259a3f703599e9f7c196566e580d74214548b3b3240532a4a094a2c",
+        "tests/nfc-entry.test.mjs": "66bda7e25c0e1c98d58e44b0c5b83f1bbeff4b25f7fc02cae41a102d838c004a"
+      },
+      "checks": [
+        "Home differs from current primary only by NfcInstallGuide import and mount",
+        "NFC-only/noninstalled/nondismissed display, default browser prompt not intercepted for non-NFC",
+        "Exact event handlers removed and deferred initialization canceled on unmount",
+        "Same-frame install requests invoke prompt once; dismissal retains manual instructions, appinstalled hides guide",
+        "Existing NDEF/URL/manifest unchanged; no native OS installation or persistence added"
+      ],
+      "tests": "3/3 independent actual component harness, no source changes",
+      "log": "site-nfc-independent.log",
+      "limitations": "Real beforeinstallprompt/Safari/390px browser acceptance belongs to root; no claim of actual device installation"
+    },
+    "site-csv-root-independent-review": {
+      "reviewer": "root (not implementer)",
+      "at": "2026-10-12T16:16:43.075521+00:00",
+      "result": "pass narrow recovery/idempotency fixes",
+      "sourceHashes": {
+        "lib/csv-job-store.ts": "bd06c61d735ac02bdfabb012d7b517df5b2ea155a910c074c97f166d6041129d",
+        "tests/csv-processing-recovery.test.mjs": "e3d952a84086945eac287c98a60b2c58cc6ba3d7458e25db87e48cbda5fbf7cc"
+      },
+      "independentTest": "node --experimental-strip-types --test tests/csv-processing-recovery.test.mjs",
+      "passed": 20,
+      "findingsResolved": [
+        "Root found deterministic inputKey + unconditional loser cleanup could delete the successful upload. Author reproduced differing-spec collision and fixed-clock reused-ID event contamination, then added private upload-attempt UUID keys and persisted winner readback.",
+        "Root reread processor atomic delivery batch, lease-revocation CAS, exact published revision/result key readback and event owner/input/creation/revision predicates.",
+        "Committed output readback failure preserves R2; former path deletion is compatible because persisted input_key is used for reads/deletes."
+      ],
+      "limits": [
+        "SQLite plus fake R2 fixture; real built Worker/D1/R2 verification remains separate",
+        "Unknown-state readback failure retains input rather than deleting it; this does not solve general orphan retention",
+        "Production feature switches, billing and lease durations unchanged"
+      ]
+    },
+    "site-csv-ui-independent-review": {
+      "checkedAt": "2026-10-12T16:21:50.354585+00:00",
+      "status": "closed_pass",
+      "root": "/private/tmp/rock-quality-site-source",
+      "sourceHashes": {
+        "components/csv-business-workspace.tsx": "21765c7bda89b371ad24a2be70670b44d735cc65c7d02c449bf4c542eeb86942",
+        "components/csv-business-workspace.module.css": "17e1c4b0cc44e1a29de96f95966497f97d018833a56344af20b7212e35b49b26",
+        "lib/csv-job-view.ts": "4b049407db499a32e35e984c31279a69150b846c63a197419536d378d10fbfe4",
+        "lib/csv-history-request.ts": "707d62b09e3541bd9f6ee9f8d9ec3395cb2347a06e57bdc2524a580a6330e231",
+        "app/api/csv-jobs/route.ts": "79c7345468005b2fb5e1bfc950627092d1439d932825461b8de5316710a27bf0",
+        "app/api/csv-jobs/[id]/route.ts": "f73f0ef6b6634456d58011db5b6f9d8abced560a0e9358735584e747d6b5bef2",
+        "app/api/csv-jobs/[id]/delivery-link/route.ts": "808dba6e0ed6a9ce654b7425c700f88e92ad209787b0501e10d4737745b987bb",
+        "app/api/csv-jobs/sample/route.ts": "b3783c9f245482f64772b39d6ea1e87a2401da06bb1903615298abe6e2d419bf",
+        "app/api/csv-account/route.ts": "c96df3bff7a37d6ef8139109b8dd23011c3ddbf3f9c1f0a072cc2fc935090feb",
+        "tests/site-csv-business-workspace.test.mjs": "6d31b8cd290d215d7d04f0ef634cbdd4de04c77fa1373e4371e0ae4823d7d936"
+      },
+      "findings": [
+        {
+          "id": "SITE-CSV-OWNERLESS-HISTORY",
+          "location": "lib/csv-job-view.ts isCsvHistory / components/csv-business-workspace.tsx refresh",
+          "severity": "P0",
+          "before": "A200 response with valid private jobs but omitted ownerScope is accepted; jobs render while ready=false and owner unknown.",
+          "required": "Require confirmed owner scope before displaying private history.",
+          "reproduction": "/private/tmp/rock-quality-followup/site-csv-ui-independent.test.mjs",
+          "resolution": "isCsvHistory now requires ownerScope and validates it with readOwnerScope before jobs are accepted. Unchanged independent assertion now passes.",
+          "status": "closed"
+        }
+      ],
+      "passed": [
+        "All six API mutation entrypoints use actual requestUser then owner-intent guard before store/body operations; author test rerun11/11.",
+        "Independent malformed quote then owner A/B/A roundtrip keeps exact request ID and file bytes.",
+        "Independent stale release cannot erase a newer unknown quote.",
+        "Independent captured old owner action handlers send no GET/POST after Bob identity confirmation."
+      ],
+      "results": {
+        "authorTests": {
+          "pass": 12,
+          "fail": 0,
+          "log": "/private/tmp/rock-quality-followup/site-csv-ui-independent-repo.log"
+        },
+        "independent": {
+          "pass": 3,
+          "fail": 1,
+          "log": "/private/tmp/rock-quality-followup/site-csv-ui-independent-before.log"
+        },
+        "independentAfter": {
+          "pass": 4,
+          "fail": 0,
+          "log": "/private/tmp/rock-quality-followup/site-csv-ui-independent-after.log",
+          "note": "Log runs original11 author cases plus4 independent cases, total15 pass; not 15 independent cases."
+        }
+      },
+      "limitations": [
+        "Hook/component harness plus actual requestUser/owner-intent; UI fetch and store side effects are fixture-controlled.",
+        "Not real-browser or remote production acceptance; root owns built UI and deployment.",
+        "Standalone input is memory-only while mounted; reload/tab close requires navigation acknowledgement and still loses unsaved memory.",
+        "CSS token/mobile adjustments and actual layout acceptance are separate; behavioral review does not assert pixel/layout acceptance."
+      ]
+    },
+    "site-verification-scope": {
+      "primaryCsvTests": [
+        "csv-business-workspace.test.mjs",
+        "csv-fee-policy.test.mjs",
+        "csv-history-request.test.mjs",
+        "csv-owner-intent-route.test.mjs",
+        "csv-processing-recovery.test.mjs",
+        "csv-request-limit.test.mjs",
+        "csv-retention.test.mjs",
+        "csv-transform.test.mjs",
+        "csv-trial-migration.test.mjs",
+        "csv-trial-payment-store.test.mjs",
+        "csv-trial-payment.test.mjs"
+      ],
+      "siteCsvTests": [
+        "csv-fee-policy.test.mjs",
+        "csv-history-request.test.mjs",
+        "csv-money.test.mjs",
+        "csv-processing-recovery.test.mjs",
+        "csv-request-limit.test.mjs",
+        "csv-transform.test.mjs"
+      ],
+      "primaryOnlyNotApplicableToLiveContract": [
+        "csv-business-workspace.test.mjs",
+        "csv-owner-intent-route.test.mjs",
+        "csv-retention.test.mjs",
+        "csv-trial-migration.test.mjs",
+        "csv-trial-payment-store.test.mjs",
+        "csv-trial-payment.test.mjs"
+      ],
+      "siteOnlyExistingCoverage": [
+        "csv-money.test.mjs"
+      ],
+      "siteNewTests": [
+        "tests/site-csv-business-workspace.test.mjs",
+        "tests/site-schema-upgrade.test.mjs"
+      ],
+      "primarySynchronousScriptsNotCopied": [
+        "scripts/check-csv-storage.mjs",
+        "scripts/check-csv-process-crashes.mjs"
+      ],
+      "integrationAcceptance": [
+        "npm run build",
+        "node scripts/check-work-api.mjs",
+        "node scripts/check-site-api.mjs",
+        "node --test tests/site-schema-upgrade.test.mjs",
+        "npm test"
+      ],
+      "knownScope": "Site retains deployed lease/delivery/financial retention contracts. Primary synchronous cleanup_pending/payment APIs are not installed as a substitute.",
+      "appliedPureHelperTests": [
+        "csv-history-request.test.mjs",
+        "csv-request-limit.test.mjs",
+        "csv-transform.test.mjs"
+      ]
+    }
+  }
+}

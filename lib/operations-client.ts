@@ -1,33 +1,89 @@
 import type { Job, JobTool } from './operations';
 import { captureDeviceSession, verifyDevice } from './device';
+import { announceSkyZemaJob } from './sky-zema-handoff';
 export class OperationRequestError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  code?: string;
+  constructor(message: string, status: number, code?: string) {
     super(message);
     this.status = status;
+    this.code = code;
   }
+}
+export class OperationResponseError extends Error {
+  code: 'TIMEOUT' | 'NETWORK' | 'INVALID_RESPONSE';
+  constructor(code: 'TIMEOUT' | 'NETWORK' | 'INVALID_RESPONSE') {
+    const messages = {
+      TIMEOUT: '保存の応答が時間内に返りませんでした。',
+      NETWORK: '保存先へ接続できませんでした。',
+      INVALID_RESPONSE: '保存先の応答を確認できませんでした。',
+    };
+    super(messages[code]);
+    this.code = code;
+  }
+}
+// Fixed diagnostic codes only: never expose response bodies or error messages.
+export function operationFailureCode(error: unknown): string {
+  if (error instanceof OperationRequestError)
+    return `HTTP_${error.status}`;
+  if (error instanceof OperationResponseError) return error.code;
+  return 'CLIENT_ERROR';
 }
 export async function operationRequest<T>(
   path: string,
   method = 'GET',
   value?: unknown,
+  headers?: Record<string, string>,
 ): Promise<T> {
   const options: RequestInit = {
     method,
+    headers,
     signal: AbortSignal.timeout(10000),
     cache: 'no-store',
+    redirect: 'manual',
   };
   if (value !== undefined && method !== 'GET') {
-    options.headers = { 'Content-Type': 'application/json' };
+    options.headers = { ...headers, 'Content-Type': 'application/json' };
     options.body = JSON.stringify(value);
   }
-  const response = await fetch(path, options);
-  const data = (await response.json()) as T & { error?: string };
-  if (!response.ok)
-    throw new OperationRequestError(
-      data.error || '保存できませんでした。',
-      response.status,
+  let response: Response;
+  try {
+    response = await fetch(path, options);
+  } catch (error) {
+    throw new OperationResponseError(
+      error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)
+        ? 'TIMEOUT' : 'NETWORK',
     );
+  }
+  return readOperationResponse<T>(response);
+}
+
+/** Shared JSON boundary for both JSON and multipart operation requests. */
+export async function readOperationResponse<T>(response: Response): Promise<T> {
+  // These owned JSON endpoints redirect only to sign-in. Never follow a redirect.
+  if (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400))
+    throw new OperationRequestError('サインインを確認してください。', 401);
+  // Authentication loss can be recognized without consuming an error body.
+  // Other refusals need a complete error envelope: a truncated 409 might have
+  // been OWNER_CHANGED, which must retain the original pending operation.
+  if (response.status === 401)
+    throw new OperationRequestError('サインインを確認してください。', 401);
+  let data: T & { error?: string; code?: string };
+  try {
+    data = (await response.json()) as T & { error?: string; code?: string };
+  } catch (error) {
+    if (error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name))
+      throw new OperationResponseError('TIMEOUT');
+    throw new OperationResponseError('INVALID_RESPONSE');
+  }
+  if (!data || typeof data !== 'object')
+    throw new OperationResponseError('INVALID_RESPONSE');
+  if (!response.ok) {
+    if (Array.isArray(data) || typeof data.error !== 'string' || !data.error.trim() ||
+        (data.code !== undefined && typeof data.code !== 'string'))
+      throw new OperationResponseError('INVALID_RESPONSE');
+    throw new OperationRequestError(data.error, response.status, data.code);
+  }
   return data as T;
 }
 export const processedBytes = (value: unknown) =>
@@ -64,9 +120,19 @@ export async function executeTracked<T extends { output: string }>(options: {
     };
     // Only a result report is retried. The task and start claim are never automatically repeated.
     try {
-      await operationRequest(`/api/jobs/${job!.id}`, 'PATCH', payload);
+      const saved = await operationRequest<Job>(
+        `/api/jobs/${job!.id}`,
+        'PATCH',
+        payload,
+      );
+      announceSkyZemaJob(saved);
     } catch {
-      await operationRequest(`/api/jobs/${job!.id}`, 'PATCH', payload);
+      const saved = await operationRequest<Job>(
+        `/api/jobs/${job!.id}`,
+        'PATCH',
+        payload,
+      );
+      announceSkyZemaJob(saved);
     }
   };
   try {
@@ -85,8 +151,12 @@ export async function executeTracked<T extends { output: string }>(options: {
       inputBytes: options.inputBytes,
       deviceId: session?.id ?? null,
     });
+    announceSkyZemaJob(job);
     // An ambiguous start response must not be turned into a second execution.
-    await operationRequest(`/api/jobs/${job.id}`, 'PATCH', { action: 'start' });
+    job = await operationRequest<Job>(`/api/jobs/${job.id}`, 'PATCH', {
+      action: 'start',
+    });
+    announceSkyZemaJob(job);
     started = performance.now();
     window.dispatchEvent(new Event('loop-fund-refresh'));
     await new Promise((resolve) => setTimeout(resolve, 0));
@@ -104,9 +174,9 @@ export async function executeTracked<T extends { output: string }>(options: {
     let warning = '';
     try {
       await finish('completed', processedBytes(result.output));
-    } catch {
+    } catch (error) {
       warning =
-        '結果はできましたが、完了の保存を確認できません。結果を保存し、履歴を確認してください。';
+        `結果はできましたが、完了の保存を確認できません。結果を保存し、履歴を確認してください。（完了通知: ${operationFailureCode(error)}、受付: ${job.id}）`;
     }
     return { result, warning };
   } finally {

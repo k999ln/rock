@@ -1,4 +1,10 @@
+import { assertSafeOutbound } from '../toolkits/spider-guard/detector.mjs';
 import type { PatentIntakeInput } from './patent-assistant';
+import {
+  parseResearchAiResponse,
+  type ResearchAiCitation,
+} from './research-ai.ts';
+import { PATENT_AI_INSTRUCTIONS } from './generated/private-content.ts';
 
 export const PATENT_AI_MODEL = 'gpt-5.4-nano';
 
@@ -10,22 +16,11 @@ export const PATENT_AI_ALLOWED_DOMAINS = [
   'espacenet.com',
 ] as const;
 
-export type PatentAiCitation = { title: string; url: string };
+export type PatentAiCitation = ResearchAiCitation;
 export type PatentAiResult = {
   answer: string;
   citations: PatentAiCitation[];
   searchedAt: string;
-};
-
-type OpenAiResponse = {
-  output?: Array<{
-    type?: string;
-    content?: Array<{
-      type?: string;
-      text?: string;
-      annotations?: Array<{ type?: string; title?: string; url?: string }>;
-    }>;
-  }>;
 };
 
 const disclosureStatuses = new Set([
@@ -88,6 +83,15 @@ export function buildPatentAiRequest(
   currentDate: string,
   model = PATENT_AI_MODEL,
 ) {
+  assertSafeOutbound({
+    inventionTitle: input.inventionTitle,
+    problem: input.problem,
+    mechanism: input.mechanism,
+    architecture: input.architecture,
+    technicalEffect: input.technicalEffect,
+    differences: input.differences,
+    knownPriorArt: input.knownPriorArt,
+  });
   return {
     model,
     store: false,
@@ -103,14 +107,7 @@ export function buildPatentAiRequest(
     ],
     tool_choice: { type: 'web_search' },
     include: ['web_search_call.action.sources'],
-    instructions: [
-      'あなたは日本のソフトウェア・システム発明の先行技術調査を補助する担当です。弁理士ではなく、特許性、侵害回避、登録、期限を保証しません。',
-      '必ずweb_searchを使い、JPO、INPIT/J-PlatPat、WIPO、EPO/Espacenetの一次情報だけを根拠にしてください。ブログ、まとめ、販売ページは根拠にしません。',
-      '公開番号、名称、URLを推測・創作しないでください。原文を確認できた候補だけを挙げ、確認できない場合は「確認できず」と書いてください。',
-      '日本語で「検索観点」「近い可能性がある文献・分類」「新規性・進歩性で確認すべき差分」「追加検索」「限界」の順に回答してください。各候補について似ている構成と異なる可能性を分けてください。',
-      'ユーザー入力に秘密情報が含まれる可能性があるため、回答に不要な固有名詞や個人名を繰り返さないでください。',
-      `基準日: ${currentDate}`,
-    ].join('\n'),
+    instructions: [...PATENT_AI_INSTRUCTIONS, `基準日: ${currentDate}`].join('\n'),
     input: [
       `発明名称: ${input.inventionTitle}`,
       `技術課題: ${input.problem}`,
@@ -123,44 +120,12 @@ export function buildPatentAiRequest(
   };
 }
 
-function isAllowedCitation(url: string) {
-  try {
-    const hostname = new URL(url).hostname.toLowerCase();
-    return PATENT_AI_ALLOWED_DOMAINS.some(
-      (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
-    );
-  } catch {
-    return false;
-  }
-}
-
 export function parsePatentAiResponse(
   value: unknown,
   searchedAt = new Date().toISOString(),
 ): PatentAiResult {
-  const response = value as OpenAiResponse;
-  const answer: string[] = [];
-  const citations = new Map<string, PatentAiCitation>();
-  for (const item of response.output ?? []) {
-    if (item.type !== 'message') continue;
-    for (const content of item.content ?? []) {
-      if (content.type !== 'output_text' || !content.text) continue;
-      answer.push(content.text);
-      for (const annotation of content.annotations ?? []) {
-        if (
-          annotation.type === 'url_citation' &&
-          annotation.url &&
-          isAllowedCitation(annotation.url)
-        ) {
-          citations.set(annotation.url, {
-            title: annotation.title?.trim() || new URL(annotation.url).hostname,
-            url: annotation.url,
-          });
-        }
-      }
-    }
-  }
-  const text = answer.join('\n\n').trim();
-  if (!text || citations.size === 0) throw new Error('UNCITED_RESPONSE');
-  return { answer: text, citations: [...citations.values()], searchedAt };
+  return {
+    ...parseResearchAiResponse(value, PATENT_AI_ALLOWED_DOMAINS),
+    searchedAt,
+  };
 }

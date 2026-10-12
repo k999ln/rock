@@ -10,9 +10,11 @@ import {
 } from '../lib/legal-intake.ts';
 import {
   LEGAL_AI_ALLOWED_DOMAINS,
+  buildLocalLegalResult,
   buildLegalAiRequest,
   parseLegalAiResponse,
 } from '../lib/legal-ai.ts';
+import { lockedSkip } from './private-locked.mjs';
 
 const baseInput = {
   issueType: 'criminal',
@@ -33,7 +35,7 @@ void test('legal intake is a ready Sky browser tool', () => {
   assert.equal(tool?.status, 'ready');
   assert.equal(tool?.runner, 'legal-intake');
   assert.match(tool?.environment ?? '', /保存しません/);
-  assert.match(tool?.environment ?? '', /OpenAIへ送信/);
+  assert.match(tool?.environment ?? '', /端末内処理/);
 });
 
 void test('general information stays in guided intake', () => {
@@ -66,7 +68,7 @@ void test('arrest or a deadline within seven days routes to urgent counsel', () 
   assert.equal(deadline.urgency, 'urgent');
 });
 
-void test('criminal matters prioritize the supplied criminal-law contact', () => {
+void test('criminal matters prioritize the supplied criminal-law contact', { skip: lockedSkip('private/legal/lawyer-directory.json') }, () => {
   const matches = recommendLawyers('criminal', 'nyc');
   assert.equal(matches[0]?.id, 'akane-fujiwara');
   const assessment = assessLegalIntake(
@@ -143,7 +145,19 @@ void test('legal AI output requires an allowlisted clickable citation', () => {
   );
 });
 
-void test('directory preserves all public entries from the supplied consulate list', () => {
+void test('offline legal guidance uses only the local official-entry registry', () => {
+  const assessment = assessLegalIntake(
+    baseInput,
+    new Date('2026-09-12T12:00:00Z'),
+  );
+  const result = buildLocalLegalResult(baseInput, assessment);
+  assert.equal(result.mode, 'local-registry');
+  assert.match(result.answer, /通信せず/);
+  assert.ok(result.citations.length > 0);
+  assert.ok(result.citations.every((citation) => citation.url.startsWith('https://')));
+});
+
+void test('directory preserves all public entries from the supplied consulate list', { skip: lockedSkip('private/legal/lawyer-directory.json') }, () => {
   assert.equal(lawyerDirectory.length, 33);
   assert.equal(
     new Set(lawyerDirectory.map((lawyer) => lawyer.id)).size,

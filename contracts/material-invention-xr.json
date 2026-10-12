@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rockstaros.dev/contracts/material-invention-xr-scene-v1.json",
+  "title": "RockstarOS Spatial Invention Scene Manifest v1",
+  "description": "A derived view-only spatial projection of a Material Invention Core snapshot.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sceneId",
+    "revision",
+    "sourceGraphDigest",
+    "candidateId",
+    "candidateDigest",
+    "generator",
+    "coordinateSystem",
+    "frames",
+    "objects",
+    "visualizationAssumptions",
+    "safetyOverlay",
+    "capabilities"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "sceneId": { "$ref": "#/$defs/identifier" },
+    "revision": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+    "sourceGraphDigest": { "$ref": "#/$defs/sha256" },
+    "candidateId": { "$ref": "#/$defs/identifier" },
+    "candidateDigest": { "$ref": "#/$defs/sha256" },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "inputDigest"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "version": { "$ref": "#/$defs/shortText" },
+        "inputDigest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "coordinateSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["handedness", "lengthUnit", "angleUnit", "matrixLayout"],
+      "properties": {
+        "handedness": { "const": "right" },
+        "lengthUnit": { "const": "metre" },
+        "angleUnit": { "const": "radian" },
+        "matrixLayout": { "const": "column_major_4x4" }
+      }
+    },
+    "frames": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "items": { "$ref": "#/$defs/frame" }
+    },
+    "objects": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10000,
+      "items": { "$ref": "#/$defs/objectBinding" }
+    },
+    "visualizationAssumptions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "items": { "$ref": "#/$defs/assumption" }
+    },
+    "safetyOverlay": { "$ref": "#/$defs/safetyOverlay" },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "annotationsAllowed",
+        "approvalIntentAllowed",
+        "physicalExperimentFinalApprovalAllowed",
+        "physicalExecutionAllowed",
+        "equipmentControlAllowed",
+        "coreDatabaseDirectWriteAllowed"
+      ],
+      "properties": {
+        "mode": { "enum": ["VIEW_ONLY", "ANNOTATE"] },
+        "annotationsAllowed": { "type": "boolean" },
+        "approvalIntentAllowed": { "type": "boolean" },
+        "physicalExperimentFinalApprovalAllowed": { "const": false },
+        "physicalExecutionAllowed": { "const": false },
+        "equipmentControlAllowed": { "const": false },
+        "coreDatabaseDirectWriteAllowed": { "const": false }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 160,
+      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+    },
+    "shortText": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "matrix": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": { "type": "number" }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "parentFrameId",
+        "anchorRef",
+        "transform",
+        "trackingState"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "kind": {
+          "enum": ["world", "local_marker", "equipment_reference", "model"]
+        },
+        "parentFrameId": {
+          "oneOf": [{ "$ref": "#/$defs/identifier" }, { "type": "null" }]
+        },
+        "anchorRef": {
+          "oneOf": [{ "$ref": "#/$defs/shortText" }, { "type": "null" }]
+        },
+        "transform": { "$ref": "#/$defs/matrix" },
+        "trackingState": {
+          "enum": ["TRACKED", "LIMITED", "LOST", "NOT_APPLICABLE"]
+        }
+      }
+    },
+    "objectBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "entityKind",
+        "entityId",
+        "frameId",
+        "transform",
+        "geometrySha256",
+        "semanticRole"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "entityKind": {
+          "enum": [
+            "material",
+            "candidate",
+            "process_step",
+            "evidence",
+            "annotation",
+            "decoration"
+          ]
+        },
+        "entityId": {
+          "oneOf": [{ "$ref": "#/$defs/identifier" }, { "type": "null" }]
+        },
+        "frameId": { "$ref": "#/$defs/identifier" },
+        "transform": { "$ref": "#/$defs/matrix" },
+        "geometrySha256": { "$ref": "#/$defs/sha256" },
+        "semanticRole": {
+          "enum": [
+            "matter_node",
+            "ratio_band",
+            "process_stage",
+            "evidence_marker",
+            "safety_marker",
+            "annotation_pin",
+            "decoration"
+          ]
+        }
+      }
+    },
+    "assumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "description", "isPhysicalMeasurement"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "kind": {
+          "enum": [
+            "scale",
+            "color",
+            "interpolation",
+            "simplification",
+            "predicted_range"
+          ]
+        },
+        "description": { "$ref": "#/$defs/shortText" },
+        "isPhysicalMeasurement": { "const": false }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "subjectId", "message"],
+      "properties": {
+        "code": { "$ref": "#/$defs/identifier" },
+        "subjectId": { "$ref": "#/$defs/identifier" },
+        "message": { "$ref": "#/$defs/shortText" }
+      }
+    },
+    "safetyOverlay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "sourceAssessmentDigest",
+        "blockers",
+        "reviewRequired",
+        "canHide"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "BLOCKED",
+            "REVIEW_REQUIRED",
+            "SANDBOX_ONLY",
+            "STALE_OR_UNBOUND"
+          ]
+        },
+        "sourceAssessmentDigest": { "$ref": "#/$defs/sha256" },
+        "blockers": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/finding" }
+        },
+        "reviewRequired": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/finding" }
+        },
+        "canHide": { "const": false }
+      }
+    }
+  },
+  "x-rockstaros-boundary": {
+    "derivedViewOnly": true,
+    "devicePoseIsSafetyEvidence": false,
+    "simulationCountsAsExperimentalProof": false,
+    "physicalExecutionAllowed": false
+  }
+}

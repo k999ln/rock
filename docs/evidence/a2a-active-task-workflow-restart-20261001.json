@@ -1,0 +1,24 @@
+{
+  "schema": "rock-a2a-active-task-workflow-restart-evidence/1",
+  "date": "2026-10-01",
+  "status": "LOCAL_CONTROLLED_FIXTURE_PASS",
+  "command": "npm run sky:a2a:workflow:positive",
+  "result": "4/4 Cloudflare Workers Vitest cases passed",
+  "scenario": {
+    "dispatchClaims": 1,
+    "persistedRemoteTaskId": "vitest-progress-task-1",
+    "beforeRestart": "TASK_STATE_WORKING; synthetic budget remains held",
+    "restart": "same durable reconciliation Workflow instance restarted",
+    "afterRestart": "TASK_STATE_COMPLETED; encrypted artifact captured; signed fixture usage receipt settled once",
+    "providerSendReplayed": false
+  },
+  "coverage": "Local Miniflare D1/Workflow fixture only. It verifies durable controller restart after a working-state checkpoint, not Cloudflare production durability or loss of a live request mid-activity.",
+  "runnerNote": "Miniflare prints engine-abort diagnostics for explicit Workflow restart and deliberate non-retryable failure fixtures; Vitest reports all four tests passed with exit code 0.",
+  "notProven": [
+    "contracted external A2A provider task reconciliation",
+    "Cloudflare production D1/Workflow durability",
+    "funded production Wallet settlement",
+    "Android/native device Gateway delivery or eSIM/offline acceptance"
+  ],
+  "source": "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs"
+}

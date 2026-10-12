@@ -1,0 +1,27 @@
+{
+  "schema": "rockstar-android-a2a-quote-review-source/1",
+  "date": "2026-10-02",
+  "status": "source_implemented_locally_unverified_on_device",
+  "scope": "Native Android owner-scoped Agent discovery and signed quote review; quote only",
+  "implemented": [
+    "Shell API v12 exposes authenticated connected-Agent listing and explicit-consent A2A quote acquisition through the Broker; the UI cannot access the Rockstar bearer session.",
+    "Android network transport allowlists only the A2A directory GET and quote POST paths, uses exact configured HTTPS origin, no redirects, cookies, or cache, bounded request/response sizes, and refuses quote acquisition without prompt-disclosure consent.",
+    "Broker binds the quote response to the selected owner-connected Agent origin, name, and version, hashes the exact submitted prompt, verifies the Provider Ed25519 signature against the operator build trust inventory, and checks currency, maximum budget, issue/expiry time, and itemized usage before marking it verified.",
+    "The Shell presents Provider, Agent version, estimate, maximum amount, pricing version, expiry, and itemized usage; Agent Card capabilities are explicitly labeled self-declared. The quote path requires quoteOnly=true and executionAuthorized=false and does not create a delegation, reserve Wallet balance, produce Broker authorization, or dispatch paid work.",
+    "Quote request IDs are one-shot UUIDs; the client never automatically repeats a quote request whose outcome is unknown. The existing Cloud API stores the separate prompt-disclosure consent event before quote-provider egress."
+  ],
+  "localVerification": {
+    "osSourceContract": "PASS: npm run os:check",
+    "androidArchitectureSourceContract": "PASS: npm run android:architecture:check",
+    "simServiceEntrySourceTest": "PASS: node --test tests/sim-service-entry.test.mjs (1/1)",
+    "diffCheck": "PASS: git diff --check",
+    "fullRepositoryVerify": "PASS: npm run verify completed exit 0 after this source change; Node 692/692, Fashion 19/19, Worker/D1 API 938 assertions, typecheck, product lint, dry-runs, production web build and bundle/asset checks. This does not compile the Android modules."
+  },
+  "notVerified": [
+    "Android Java compilation, AIDL generation, APK installation, instrumentation, and physical-device UI/network behavior; this host has no usable JDK/Gradle/Android SDK toolchain.",
+    "A real Agent directory, Provider quote extension, operator-configured Provider key, or Provider prompt-sharing behavior.",
+    "Paid A2A delegation creation/approval, native Wallet hold, Broker proof upload, Cloud execution, usage settlement, or production billing.",
+    "Carrier activation, SIM/eSIM fulfillment, or successful RockstarOS installation."
+  ],
+  "nextAction": "Connect the verified quote to an owner-visible exact-term delegation draft and separate paid-execution approval; then require a matching local HELD Wallet reservation before signing the Broker proof, submit proof and Cloud approval using the same delegation identity, and reconcile uncertain responses without replaying work. Keep paid dispatch fail-closed until that roundtrip is integrated and tested."
+}

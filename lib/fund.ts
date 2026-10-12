@@ -72,12 +72,14 @@ export function validateFund(value: unknown): FundPlan {
     );
   return { ...p, weights: [...p.weights] };
 }
-export function distributeFund(value: FundPlan) {
+export function distributeFund(value: FundPlan, legacyFixture = false) {
   const p = validateFund(value),
     revenue = Math.round(p.revenue),
     costs = Math.round(p.commonCost);
   const recovered = Math.min(revenue, costs),
-    fee = Math.min(revenue - recovered, Math.round(8.88 * p.fx));
+    fee = legacyFixture
+      ? Math.min(revenue - recovered, Math.round(8.88 * p.fx))
+      : 0;
   const distributable = revenue - recovered - fee,
     base = Math.floor((distributable * p.basePercent) / 100),
     boost = Math.floor((distributable * p.boostPercent) / 100);

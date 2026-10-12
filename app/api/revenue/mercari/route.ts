@@ -1,3 +1,4 @@
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { database } from '@/lib/fund-store';
 import { body, json } from '@/lib/operations-api';
 import { OperationError } from '@/lib/operations';
@@ -14,11 +15,16 @@ async function handle(
   request: Request,
   action: (
     store: ReturnType<typeof mercariRevenueStore>,
+    user: string,
   ) => Promise<unknown>,
 ) {
   try {
     const user = await requestUser(request);
-    return json(await action(mercariRevenueStore(database(), user)));
+    if (request.method !== 'GET') {
+      const mismatch = await rejectChangedOwner(request, user);
+      if (mismatch) return mismatch;
+    }
+    return json(await action(mercariRevenueStore(database(), user), user));
   } catch (error) {
     if (error instanceof MercariRevenueError || error instanceof OperationError)
       return json({ error: error.message }, error.status);
@@ -31,7 +37,8 @@ async function handle(
 }
 
 export const GET = (request: Request) =>
-  handle(request, async (store) => ({
+  handle(request, async (store, user) => ({
+    ownerScope: await ownerScopeFor(user),
     plans: await store.list(),
     readiness: mercariConnectorReadiness,
   }));

@@ -1,0 +1,34 @@
+{
+  "schema": "avocadoos-android-device-inventory/1",
+  "observedDate": "2026-09-16",
+  "method": "read-only ADB property allowlist",
+  "deviceSerialStored": false,
+  "selectedTarget": {
+    "manufacturer": "Google",
+    "commercialModel": "Pixel 10",
+    "modelNumber": "GL066",
+    "sku": "GL066",
+    "marketRegion": "JP",
+    "codename": "frankel"
+  },
+  "currentBuild": {
+    "operatingSystem": "GrapheneOS",
+    "release": "2026091000",
+    "androidRelease": "17",
+    "apiLevel": "37",
+    "buildId": "CP2A.260805.005",
+    "buildFingerprint": "google/frankel/frankel:17/CP2A.260805.005/2026091000:user/release-keys",
+    "securityPatch": "2026-09-01"
+  },
+  "hardwareObserved": {
+    "primaryAbi": "arm64-v8a",
+    "memoryKiB": 11460032,
+    "dataFreeKiB": 95348068
+  },
+  "marketEvidence": {
+    "publisher": "Google Store Japan",
+    "url": "https://store.google.com/jp/product/pixel_10_specs?hl=ja",
+    "observation": "The official Japan specification identifies GL066 as the Pixel 10 5G Sub-6 model."
+  },
+  "scope": "Confirms the first physical target identity and current installed build only. It does not prove avocadoOS image compatibility, flash readiness, Android compatibility, production signing, or sale readiness."
+}

@@ -1,0 +1,141 @@
+{
+  "schema": "rockstaros-release-blocker-resolution/1",
+  "observedAt": "2026-10-05",
+  "baseMain": "996b19552d1f3b8b1d8bc6f00da57b8c15aab475",
+  "primaryTask": "G04",
+  "scope": "Source/build repair and acceptance inventory; not physical OS or production acceptance",
+  "native": {
+    "sourceSha": "c79476e2ac0047c8ac045e04ad8c89484f2876c7",
+    "beforeRun": 37265108899,
+    "cause": "Three sqlite3 connection context managers in test_memory_store committed/rolled back but never closed the connections. Delayed GC reported warnings under another test.",
+    "fix": "contextlib.closing around the existing transaction context; strict warnings gate retained",
+    "focusedTests": 9,
+    "ciRun": 37277946832,
+    "ciResult": "success",
+    "pythonTestExecutions": 1736,
+    "sourceUnchanged": true,
+    "reportSha256": "8fab3ad2c8130adc24d66b1b51f5fc5e350a23b1f5ef25eefe80b27f3678e919"
+  },
+  "wholeVerify": {
+    "sourceSha": "c79476e2ac0047c8ac045e04ad8c89484f2876c7",
+    "ciRun": 37277946667,
+    "result": "success",
+    "command": "npm run verify"
+  },
+  "localAiBuild": {
+    "failedSourceSha": "c79476e2ac0047c8ac045e04ad8c89484f2876c7",
+    "failedRun": 37278057340,
+    "failure": "sdkmanager: command not found",
+    "fixSourceSha": "9d82ac5a45fb8291aacf52f17097ef2cb7cf2b22",
+    "fix": "Publish the detected Android cmdline-tools directory to GITHUB_PATH for subsequent steps",
+    "retryRun": 37278285567,
+    "result": "PASS_UNSIGNED_API_V4_APK_INSPECTED_AND_STAGED",
+    "currentOverlayApi": 4,
+    "artifactLockChanged": "Current reviewed v4 APK with ordered overlay hashes; historical v2 evidence retained",
+    "physicalTestPerformed": false,
+    "kotlinFailure": "RockLocalAiService.kt:59 Int timeout passed to Long parameter",
+    "sourceFindings": [
+      "API v4 service getApiVersion returned 3",
+      "APK inspector pinned to historical versionCode 1 despite current contract 3",
+      "artifact lock omitted overlay hashes",
+      "verify_stage trusted rewritten artifact metadata"
+    ],
+    "repairs": [
+      "Long timeout constants and API v4 handshake in additive source-locked patch",
+      "package version read from the runtime contract",
+      "ordered source overlay hashes bound to artifact lock",
+      "staged metadata compared to authoritative lock"
+    ],
+    "focusedTests": 40,
+    "successfulSourceSha": "2ba33366dc7f3d60b1cf2fb3a086261c33813172",
+    "successfulRun": 37279537731,
+    "artifactEvidence": "docs/evidence/local-ai-apk-v4-build.json",
+    "externalDependencyAudit": "Pinned upstream npm ci reported 46 high-severity package findings; not triaged or cleared by APK build success"
+  },
+  "buildHost": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "memoryGiB": 16,
+    "ready": false,
+    "required": "Dedicated x86_64 Linux with >=64 GiB RAM and >=400 GiB free",
+    "cloudProvisioned": false,
+    "budgetApproved": false,
+    "existingAccountConfiguration": "Scaleway configuration recorded; spending limit and usable host capacity need confirmation"
+  },
+  "deviceReadiness": {
+    "adbConnectedDevices": 0,
+    "firstFlashGatesPassed": 0,
+    "firstFlashGatesRequired": 4,
+    "osFlashPerformed": false
+  },
+  "dependencyAlerts": [
+    {
+      "number": 17,
+      "package": "braces",
+      "advisory": "GHSA-vfj7-8cjw-p6xm",
+      "patchedVersion": null,
+      "dependencyPath": "micromatch <- fast-glob <- @ts-morph/common/shadcn/vite-plugin-dynamic-import",
+      "status": "unresolved_not_dismissed"
+    },
+    {
+      "number": 18,
+      "package": "http-cache-semantics",
+      "advisory": "GHSA-ch52-4w7c-c8xp",
+      "patchedVersion": null,
+      "dependencyPath": "sites/avocado-mini Astro",
+      "status": "unresolved_not_dismissed"
+    }
+  ],
+  "remainingWorkstream": "docs/workstreams/10-git-ci-operations.md",
+  "mainIntegrated": false,
+  "productionChanged": false,
+  "finalVerification": {
+    "status": "CURRENT_PR_HEAD_CHECKS_ARE_AUTHORITATIVE",
+    "pullRequest": "https://github.com/k999ln/rock/pull/65",
+    "commands": [
+      "npm run verify",
+      "Linux native source partitions",
+      "Phone source preparation"
+    ],
+    "scope": "Recorded earlier runs prove their exact source; latest PR head results are not self-attested by this file."
+  },
+  "integratedMain": "624124cf53848542538a94b9d309e24d3efbb1fe",
+  "nativeDeadlineRegression": {
+    "observedSource": "bdc56dd7c1b605a6d7c189f812517bfae81e85ed",
+    "failedRun": 37280934247,
+    "sameSourcePassedRun": 37280935358,
+    "failure": "Independent B/ATM sequence took 3.4549s against an incidental 2s aggregate threshold; real transport deadline and ledger assertions were separate.",
+    "fix": "Hold the worker at the actual TLS transport return boundary until independent B/ATM operations finish, and measure the original TLS call separately. Preserve 2.5-3.4s transport assertions and ledger recovery checks.",
+    "focusedTests": 7,
+    "delayedIndependentOperationSeconds": 3.1,
+    "delayedRegression": "PASS",
+    "runtimeChanged": false
+  },
+  "latestObservedChecks": {
+    "source": "bdc56dd7c1b605a6d7c189f812517bfae81e85ed",
+    "verifyRun": 37280935412,
+    "verify": "success",
+    "nativeRun": 37280935358,
+    "native": "success_with_separate_timing_failure_recorded_above",
+    "androidRun": 37280935387,
+    "android": "success",
+    "codeqlRun": 37280935431,
+    "codeqlWorkflow": "success_not_alert_clearance",
+    "securityHistoryRun": 37280935399,
+    "securityHistory": "failure",
+    "historyCommits": 978,
+    "historicalCandidateOccurrences": 2868,
+    "uniqueSecretCount": "NOT_ESTABLISHED"
+  },
+  "preMergeValidatedSource": {
+    "sha": "1d7506cdd545695fd50f3f736e2d11ec0e5dcc6d",
+    "verify": 37281745117,
+    "native": 37281745009,
+    "android": 37281745111,
+    "apk": 37281745246,
+    "apkAttempt": 2,
+    "results": "SUCCESS",
+    "apkAttemptOneFailure": "External Kotlin compiler download HTTP 500; unchanged-source retry succeeded",
+    "securityHistory": "FAILURE_NOT_DISMISSED"
+  }
+}

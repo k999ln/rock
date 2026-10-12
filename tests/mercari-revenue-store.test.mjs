@@ -71,3 +71,35 @@ void test('D1-compatible store isolates owners and rejects stale writes', async 
   await assert.rejects(() => alice.update(plan, approved), /別の画面/);
   assert.equal((await alice.list())[0].status, 'approved');
 });
+
+void test('create retry compares immutable input and preserves later state after a lost response', async (t) => {
+  const sqlite = new DatabaseSync(':memory:');
+  t.after(() => sqlite.close());
+  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter((name) => name.endsWith('.sql') && !name.startsWith('._')).sort())
+    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  const store = mercariRevenueStore(database(sqlite), 'alice');
+  const value = input('123e4567-e89b-42d3-a456-426614174001');
+  const first = createMercariRevenuePlan(value, '2026-10-11T10:00:00.000Z');
+  await store.create(first);
+  const retry = createMercariRevenuePlan(value, '2026-10-11T10:01:00.000Z');
+  assert.deepEqual(await store.create(retry), first);
+  const approved = transitionMercariRevenuePlan(first, { id: first.id, action: 'approve', expectedRevision: 0 });
+  await store.update(first, approved);
+  assert.deepEqual(await store.create(retry), approved, 'replay returns current state without resetting approval');
+  for (const [key, changed] of Object.entries({ channel: 'shops_connector', title: 'different', condition: 'different', facts: 'different', priceJPY: 3001, marketplaceFeeJPY: 301, shippingJPY: 751, itemCostJPY: 1, otherCostJPY: 1 }))
+    await assert.rejects(() => store.create(createMercariRevenuePlan({ ...value, [key]: changed })), { status: 409 });
+  assert.equal((await store.list()).length, 1);
+  assert.deepEqual(await store.get(first.id), approved);
+});
+
+void test('concurrent identical create retries return one saved record', async (t) => {
+  const sqlite = new DatabaseSync(':memory:');
+  t.after(() => sqlite.close());
+  for (const file of readdirSync(new URL('../drizzle/', import.meta.url)).filter((name) => name.endsWith('.sql') && !name.startsWith('._')).sort())
+    sqlite.exec(readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8'));
+  const store = mercariRevenueStore(database(sqlite), 'alice');
+  const plan = createMercariRevenuePlan(input('123e4567-e89b-42d3-a456-426614174002'));
+  const saved = await Promise.all([store.create(plan), store.create(plan)]);
+  assert.deepEqual(saved[0], saved[1]);
+  assert.equal((await store.list()).length, 1);
+});

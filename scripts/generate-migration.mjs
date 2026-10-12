@@ -20,7 +20,6 @@ cpSync(source, output, {
   recursive: true,
   filter: (file) => !file.split('/').some((part) => part.startsWith('._')),
 });
-const interactive = Boolean(process.stdin.isTTY && process.stdout.isTTY);
 const result = spawnSync(
   process.execPath,
   [
@@ -31,14 +30,10 @@ const result = spawnSync(
     '--out=./drizzle',
     ...process.argv.slice(2),
   ],
-  interactive
-    ? { cwd: temporary, stdio: 'inherit' }
-    : { cwd: temporary, encoding: 'utf8' },
+  { cwd: temporary, encoding: 'utf8' },
 );
-if (!interactive) {
-  process.stdout.write(result.stdout || '');
-  process.stderr.write(result.stderr || '');
-}
+process.stdout.write(result.stdout || '');
+process.stderr.write(result.stderr || '');
 if (
   result.status !== 0 ||
   /(?:^|\n)\w*Error:/.test((result.stdout || '') + (result.stderr || ''))

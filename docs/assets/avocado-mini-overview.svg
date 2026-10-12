@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">avocadoMini空間発明システムの全体像</title>
+  <desc id="desc">四方向センサーで手の動きを捉え、デジタル物質を操作し、安全確認、再計算、候補比較、Patent AIへ進む流れ</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#14213d"/>
+    </linearGradient>
+    <linearGradient id="core" x1="0" x2="1">
+      <stop offset="0" stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#22c55e"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="720" rx="28" fill="url(#bg)"/>
+  <text x="55" y="64" fill="#f8fafc" font-family="sans-serif" font-size="30" font-weight="700">avocadoMini ─ 手で考えるデジタル発明台</text>
+  <text x="55" y="96" fill="#cbd5e1" font-family="sans-serif" font-size="17">物質のデジタル模型を組み合わせ、安全を確認し、変更部分を再計算して発明の記録へ残す</text>
+
+  <rect x="45" y="130" width="500" height="390" rx="22" fill="#101b31" stroke="#334155" stroke-width="2"/>
+  <text x="70" y="170" fill="#f8fafc" font-family="sans-serif" font-size="21" font-weight="700">1  手で物質を動かす</text>
+  <rect x="190" y="244" width="210" height="150" rx="20" fill="#172554" stroke="#38bdf8" stroke-width="3"/>
+  <text x="224" y="310" fill="#e0f2fe" font-family="sans-serif" font-size="20" font-weight="700">発明する空間</text>
+  <text x="229" y="340" fill="#bae6fd" font-family="sans-serif" font-size="15">物質 A  ↔  物質 B</text>
+  <rect x="235" y="190" width="120" height="38" rx="18" fill="#1e293b" stroke="#94a3b8"/>
+  <text x="261" y="215" fill="#f8fafc" font-family="sans-serif" font-size="15">北センサー</text>
+  <rect x="235" y="410" width="120" height="38" rx="18" fill="#1e293b" stroke="#94a3b8"/>
+  <text x="261" y="435" fill="#f8fafc" font-family="sans-serif" font-size="15">南センサー</text>
+  <rect x="60" y="300" width="120" height="38" rx="18" fill="#1e293b" stroke="#94a3b8"/>
+  <text x="86" y="325" fill="#f8fafc" font-family="sans-serif" font-size="15">西センサー</text>
+  <rect x="410" y="300" width="120" height="38" rx="18" fill="#1e293b" stroke="#94a3b8"/>
+  <text x="436" y="325" fill="#f8fafc" font-family="sans-serif" font-size="15">東センサー</text>
+  <path d="M295 228 V242 M295 395 V408 M180 319 H188 M402 319 H408" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M245 365 Q295 410 345 365" fill="none" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="245" cy="365" r="12" fill="#fbbf24"/>
+  <circle cx="345" cy="365" r="12" fill="#fbbf24"/>
+  <text x="205" y="485" fill="#cbd5e1" font-family="sans-serif" font-size="15">AR・VR・普通の2D画面で同じ候補を扱う</text>
+
+  <path d="M560 320 H615" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <rect x="630" y="130" width="525" height="390" rx="22" fill="#101b31" stroke="#334155" stroke-width="2"/>
+  <text x="655" y="170" fill="#f8fafc" font-family="sans-serif" font-size="21" font-weight="700">2  RockstarOSが順番に確かめる</text>
+  <g font-family="sans-serif" font-size="17">
+    <rect x="675" y="205" width="430" height="50" rx="14" fill="#1e293b" stroke="#38bdf8"/>
+    <text x="700" y="237" fill="#f8fafc">① 操作をpreview ─ まだ保存しない</text>
+    <path d="M890 258 V278" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="675" y="283" width="430" height="50" rx="14" fill="#1e293b" stroke="#fbbf24"/>
+    <text x="700" y="315" fill="#f8fafc">② 安全と不足情報を確認</text>
+    <path d="M890 336 V356" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="675" y="361" width="430" height="50" rx="14" fill="#1e293b" stroke="#a78bfa"/>
+    <text x="700" y="393" fill="#f8fafc">③ 新しい枝として保存・再計算</text>
+    <path d="M890 414 V434" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="675" y="439" width="430" height="50" rx="14" fill="url(#core)"/>
+    <text x="700" y="471" fill="#07111f" font-weight="700">④ 比較・発明履歴・Patent AI</text>
+  </g>
+
+  <rect x="45" y="555" width="1110" height="115" rx="20" fill="#0f172a" stroke="#ef4444" stroke-width="2"/>
+  <text x="70" y="595" fill="#fecaca" font-family="sans-serif" font-size="20" font-weight="700">ここには自動で進まない</text>
+  <text x="70" y="630" fill="#f8fafc" font-family="sans-serif" font-size="17">実物を混ぜる・装置を動かす・特許を出願する</text>
+  <text x="570" y="630" fill="#cbd5e1" font-family="sans-serif" font-size="17">→ 別の本人確認、専門家、安全設備、外部ラボが必要</text>
+</svg>

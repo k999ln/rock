@@ -1,6 +1,9 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { catalog } from '../lib/catalog.ts';
+import { JOB_TOOLS, SKY_CONNECTION_TOOLS } from '../lib/operations.ts';
+import { skyToolExecutionScope } from '../lib/sky-tool-execution-scope.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -9,21 +12,47 @@ const requireValue = (ok, message) => {
 };
 
 const catalogSource = read('lib/catalog.ts');
-const operationsSource = read('lib/operations.ts');
-const catalogBody = catalogSource.slice(
-  catalogSource.indexOf('export const catalog'),
-);
-const readyCount = (
-  catalogBody.match(/["']?status["']?\s*:\s*['"]ready['"]/g) || []
+const readyCount = catalog.filter(({ status }) => status === 'ready').length;
+const candidateCount = catalog.filter(
+  ({ status }) => status === 'candidate',
 ).length;
-const candidateCount = (
-  catalogBody.match(/["']?status["']?\s*:\s*['"]candidate['"]/g) || []
-).length;
-requireValue(readyCount === 12, `Web/PC readyは12件です（実際: ${readyCount}）`);
 requireValue(
-  candidateCount === 3,
-  `導入候補は3件です（実際: ${candidateCount}）`,
+  readyCount === 15,
+  `Web/PC readyは15件です（実際: ${readyCount}）`,
 );
+requireValue(
+  candidateCount === 22,
+  `導入候補は22件です（実際: ${candidateCount}）`,
+);
+const jobTools = new Set(JOB_TOOLS);
+const connectionTools = new Set(SKY_CONNECTION_TOOLS);
+for (const tool of catalog)
+  requireValue(
+    skyToolExecutionScope(tool) !== 'unavailable',
+    `実装範囲の判定がありません: ${tool.id}`,
+  );
+const amcTool = catalog.find(({ id }) => id === 'rockstar-amc');
+requireValue(
+  amcTool && skyToolExecutionScope(amcTool) === 'assisted-preparation',
+  'AMCの実装範囲は計画作成と手動の進捗記録です',
+);
+for (const tool of catalog.filter(({ status }) => status === 'candidate'))
+  requireValue(
+    jobTools.has(tool.id),
+    `導入候補がジョブ受付にありません: ${tool.id}`,
+  );
+for (const marker of [
+  "id: 'rockstar-legal-intake'",
+  "name: '法務受付'",
+  "runner: 'legal-intake'",
+  "id: 'rockstar-patent-assistant'",
+  "name: '特許アシスタント'",
+  "runner: 'patent-assistant'",
+])
+  requireValue(
+    catalogSource.includes(marker),
+    `Sky catalogに法務受付・特許アシスタントの登録がありません: ${marker}`,
+  );
 
 const registry = resolve(root, 'systems/rock-star-os/examples/registry');
 const packages = readdirSync(registry).filter((name) =>
@@ -42,6 +71,91 @@ requireValue(
   toolKinds.size === 6,
   `native内蔵Toolは6種類です（実際: ${toolKinds.size}）`,
 );
+
+const projectGuide = read('PROJECTS.md');
+requireValue(
+  projectGuide.includes('AI自動化チームのTool'),
+  'プロジェクト別ガイドにToolチームの入口がありません',
+);
+const teamGuide =
+  projectGuide
+    .split('## SkyのAI自動化チーム\n')[1]
+    ?.split('## 実装・配備単位\n')[0] ?? '';
+const commonGuide =
+  projectGuide
+    .split('| AIチームを支える共通機能 |')[1]
+    ?.split('## SkyのAI自動化チーム\n')[0] ?? '';
+for (const name of [
+  'CSV業務',
+  'メルカリ収益ループ',
+  'Fashion Brand Ops',
+  'Material Invention Studio',
+]) {
+  requireValue(
+    teamGuide.includes(`**${name}**`),
+    `Skyのチーム一覧に${name}がありません`,
+  );
+  requireValue(
+    !commonGuide.includes(`**${name}**`),
+    `${name}を共通機能へ分離しています`,
+  );
+}
+requireValue(
+  teamGuide.includes('2D候補比較とSky接続を実装') &&
+    teamGuide.includes('Sky Tool SDKの開発者向け画面'),
+  'Material Inventionの接続状態または/studioの用途が不明です',
+);
+for (const path of [
+  'app/activity/',
+  'app/work/',
+  'app/settings/',
+  'app/studio/',
+  'app/sky/publish/',
+  'app/rockstaros/',
+])
+  requireValue(
+    projectGuide.includes(`(${path})`),
+    `プロジェクト別ガイドにWeb内の画面がありません: ${path}`,
+  );
+const readme = read('README.md');
+requireValue(
+  readme.includes('R5 is the current design baseline') &&
+    readme.includes(
+      'Simulation and laboratory connections are not implemented',
+    ),
+  'READMEの現行R5またはMaterial Inventionの実装状態が不明です',
+);
+requireValue(
+  projectGuide.includes('docs/avocado-mini-r5/') &&
+    projectGuide.includes('docs/rocketstar-design/'),
+  'プロジェクト別ガイドに現行R5またはRocket Star設計原本がありません',
+);
+for (const { id } of catalog)
+  requireValue(
+    projectGuide.includes(`\`${id}\``),
+    `プロジェクト別ガイドにSky Toolがありません: ${id}`,
+  );
+for (const id of toolKinds)
+  requireValue(
+    projectGuide.includes(`\`${id}\``),
+    `プロジェクト別ガイドにnative Toolがありません: ${id}`,
+  );
+for (const entry of readdirSync(resolve(root, 'toolkits'), {
+  withFileTypes: true,
+}).filter((entry) => entry.isDirectory()))
+  requireValue(
+    projectGuide.includes(`toolkits/${entry.name}/`),
+    `プロジェクト別ガイドにToolKitがありません: ${entry.name}`,
+  );
+for (const path of [
+  'android/article-tool/',
+  'android/tool-sdk/',
+  'systems/rock-star-os/examples/tools/hello/',
+])
+  requireValue(
+    projectGuide.includes(`(${path})`),
+    `プロジェクト別ガイドにToolの実装・作成例がありません: ${path}`,
+  );
 
 for (const path of [
   'app/layout.tsx',
@@ -66,7 +180,10 @@ requireValue(
 );
 const sky = read('docs/sky.md');
 const workspace = read('components/sky-workspace.tsx');
+const toolUiState = read('lib/sky-tool-ui.ts');
 const chat = read('components/sky-chat-workspace.tsx');
+const chatSession = read('components/use-sky-chat-session.ts');
+const skyZemaHandoff = read('lib/sky-zema-handoff.ts');
 const mcpBot = read('components/mcp-bot-runner.tsx');
 const workspaceCss = read('app/workspace.css');
 for (const marker of [
@@ -75,18 +192,25 @@ for (const marker of [
   'PCなしのブラウザ簡易版',
 ])
   requireValue(
-    catalogSource.includes(marker) || workspace.includes(marker),
+    catalogSource.includes(marker) ||
+      workspace.includes(marker) ||
+      (workspace.includes('skyToolUiState(') && toolUiState.includes(marker)),
     `Fashion Brand OpsのSky登録に「${marker}」がありません`,
   );
 
 const fashionRunner = read('components/fashion-brand-ops-runner.tsx');
-for (const marker of ['Producerモード', 'プロデュース開始', 'ワンクリックで接続'])
+for (const marker of [
+  'Producerモード',
+  'プランを作って保存',
+  'ワンクリックで接続',
+])
   requireValue(
     fashionRunner.includes(marker),
     `Fashion Brand Opsの簡易版/MCP導線に「${marker}」がありません`,
   );
 
 const fashionClient = read('lib/fashion-mcp-client.ts');
+const sharedMcpClient = read('lib/mcp-client.ts');
 for (const marker of [
   'FASHION_MCP_TOOL_COUNT = 41',
   "'initialize'",
@@ -95,7 +219,7 @@ for (const marker of [
   "'/disconnect'",
 ])
   requireValue(
-    fashionClient.includes(marker),
+    (fashionClient + sharedMcpClient).includes(marker),
     `Fashion Brand Opsのワンクリック接続に「${marker}」がありません`,
   );
 requireValue(
@@ -149,34 +273,60 @@ for (const marker of [
 
 for (const marker of [
   'role="log"',
-  'aria-pressed=',
+  'aria-label="担当を選ぶ"',
   'handleComposerKeyDown',
   'messagesEndRef',
-  'maxLength={2000}',
+  'maxLength={composerLimit}',
+  'skyRequestLimit(composerToolId)',
   '<MrToolRunner',
   'sky-chat-workflow',
   'listMcpConnections',
-  'sky-chat-bot-board',
+  'zema-sidebar',
+  'zema-model-settings',
+  'useSkyChatSession(',
+  'SKY_ZEMA_JOB_EVENT',
+  'sky-chat-launch-tool',
   '<McpBotRunner',
 ])
   requireValue(
     chat.includes(marker),
-    `Chatの会話操作に「${marker}」がありません`,
+    `Zemaの会話操作に「${marker}」がありません`,
   );
+
+requireValue(
+  chatSession.includes('consumeSkyZemaHandoff(preferredTool, undefined, undefined, requestedThreadId)'),
+  'Zemaの会話sessionに対象threadへの一回引き継ぎがありません',
+);
+
+for (const marker of [
+  'openZemaPrivateStorage(providedStorage)',
+  'SKY_ZEMA_HANDOFF_TTL_MS',
+  'removeItem(SKY_ZEMA_HANDOFF_KEY)',
+  'MAX_REQUEST_LENGTH',
+])
+  requireValue(
+    skyZemaHandoff.includes(marker),
+    `SkyからZemaへの一回引き継ぎに「${marker}」がありません`,
+  );
+const privateStorage = read('lib/zema-private-storage.ts');
+for (const marker of ['window.sessionStorage', 'zemaPrivateStorageBlocked()', 'target.removeItem(key)', 'target.getItem(key) !== null'])
+  requireValue(privateStorage.includes(marker), `Zemaの共有保存・消去確認に「${marker}」がありません`);
+for (const file of ['lib/sky-zema-handoff.ts', 'lib/zema-chat-session.ts'])
+  requireValue(read(file).includes("from './zema-private-storage.ts'"), `${file}: 共有保存境界を利用してください`);
 for (const marker of [
   '.sky-chat-simple',
   '.sky-chat-messages',
   '.sky-chat-composer textarea',
   '.sky-chat-receipt.is-attention',
   '.sky-chat-workflow-steps',
-  '.sky-chat-bot-board',
+  '.zema-sidebar',
   '.mcp-bot-direction',
   '.mcp-bot-result',
   '@media (max-width: 420px)',
 ])
   requireValue(
     workspaceCss.includes(marker),
-    `ChatのレスポンシブCSSに「${marker}」がありません`,
+    `ZemaのレスポンシブCSSに「${marker}」がありません`,
   );
 for (const marker of [
   'prepareMcpTool',
@@ -187,18 +337,22 @@ for (const marker of [
 ])
   requireValue(
     mcpBot.includes(marker),
-    `ChatのMCP bot管理に「${marker}」がありません`,
+    `ZemaのMCP bot管理に「${marker}」がありません`,
   );
 for (const tool of [
+  'rockstar-amc',
+  'rockstar-csv-cleanup',
+  'rockstar-markets-analysis',
+  'mercari-revenue',
   'rockstar-ledger',
   'rockstar-legal-intake',
   'rockstar-patent-assistant',
+  'jev-evaluation',
+  ...catalog.filter(({ status }) => status === 'candidate').map(({ id }) => id),
 ])
   requireValue(
-    operationsSource
-      .slice(operationsSource.indexOf('SKY_CONNECTION_TOOLS'))
-      .includes(`'${tool}'`),
-    `Chatで使うready担当「${tool}」がSky接続許可リストにありません`,
+    connectionTools.has(tool),
+    `Zemaで使うready担当「${tool}」がSky接続許可リストにありません`,
   );
 
 console.log(

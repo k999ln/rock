@@ -1,0 +1,62 @@
+{
+  "schema": "amc-record-benchmark/1",
+  "measuredAt": "2026-09-27T06:38:59.261Z",
+  "inputSha256": "e9c1eb379ff7861112e193e0b23122642bc722bb44c6412a68c21b9aa8a676ae",
+  "method": "Node単一processでJSON読込・ID索引作成・全ID参照を5回。既存件数と合成1000件のみ。UI描画・AI推論・並列build・持続負荷は測っていない。",
+  "currentRecords": 376,
+  "cases": [
+    {
+      "records": 376,
+      "syntheticExtraRecords": 0,
+      "serializedBytes": 581621,
+      "iterations": 5,
+      "parseAndIndexMs": {
+        "minimum": 0.8240830000000017,
+        "median": 0.8573749999999976,
+        "maximum": 1.1309170000000037
+      },
+      "processRssBeforeBytes": 57376768,
+      "processRssAfterBytes": 60915712
+    },
+    {
+      "records": 1000,
+      "syntheticExtraRecords": 624,
+      "serializedBytes": 2010309,
+      "iterations": 5,
+      "parseAndIndexMs": {
+        "minimum": 2.6310000000000002,
+        "median": 3.251082999999994,
+        "maximum": 3.8568750000000023
+      },
+      "processRssBeforeBytes": 71958528,
+      "processRssAfterBytes": 80445440
+    }
+  ],
+  "inlinePayload": {
+    "currentHtmlBytes": 636942,
+    "formatLimitBytes": 1000000,
+    "planningBudgetBytes": 800000,
+    "additionalChildMeanBytes": 2338.3854166666665,
+    "approximateRecordCountAtPlanningBudget": 445,
+    "basis": "現在の全文埋込表示形式で、同程度の子作業が増える仮定。PCの限界ではない。大きい場合は要約・分割読込が必要。"
+  },
+  "limitations": [
+    "5回の短時間測定でありp95や持続性能ではない。",
+    "NodeのRSSはこの計測process全体。1 AIあたりのメモリではない。",
+    "1000件は合成レコード。全taskの意味や依存の正当性の受入ではない。",
+    "上限探索・メモリ圧迫試験・ブラウザ目視・サーバー測定は実施していない。",
+    "計測scriptが出力する低空き容量の注意書きは前回条件に基づく。今回の計測はdisk空きを再測定しておらず、現在の容量不足の証拠にはしない。"
+  ],
+  "environment": {
+    "node": "v26.0.0",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "execution": "local single Node process"
+  },
+  "interpretation": {
+    "recordHandling": "376実レコードと、624合成レコードを追加した1000件のJSON parse・索引参照が、この短時間計測で完走した。PCが1000のAI仕事を同時実行できる意味ではない。",
+    "inlineRisk": "現在の全文埋込HTMLは636942 bytes。1000000-byte形式制限未満だが、同程度の子作業を追加する800000-byte計画目安は約445件。これは表示形式の見積りで、PCやScalewayの実行容量ではない。",
+    "noCapacityClaim": "AI推論、コンテキスト保持、並列コード試験、AOSP build、UI描画、長時間運用、Scalewayの同時実行可能数は未測定。ホストRSSを1タスク当たりの必要RAMへ割り算しない。",
+    "inputVersion": "inputSha256は測定したmission/projectオブジェクトの組合せ。以後のtask状態・計画・表示テンプレート変更でサイズと結果は変わる。"
+  }
+}

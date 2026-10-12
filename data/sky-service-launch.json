@@ -1,0 +1,238 @@
+{
+  "schema": "sky-service-launch/1",
+  "evaluatedAt": "2026-10-02",
+  "design": "docs/sky-launch-design.md",
+  "liveUrl": "https://sky-marketplace.noellesugar1.chatgpt.site/sky/marketplace",
+  "sourceGithubHead": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "stageDependencies": {
+    "basic": [],
+    "marketplace": [
+      "basic"
+    ],
+    "paid": [
+      "marketplace"
+    ],
+    "clients": [
+      "basic"
+    ],
+    "focused": [
+      "basic"
+    ]
+  },
+  "completeLaunchClaim": false,
+  "gates": [
+    {
+      "id": "public-entry",
+      "stage": "basic",
+      "status": "passed",
+      "owner": "ROCK",
+      "acceptance": "公開URLとSky manifest・本人サインイン入口を確認",
+      "evidence": [
+        "data/project-status.json"
+      ],
+      "environment": "production-public-entry-only"
+    },
+    {
+      "id": "runtime-prerequisites",
+      "stage": "basic",
+      "status": "passed",
+      "owner": "ROCK",
+      "acceptance": "設定なし・DB不達をカードへ正確に反映し、秘密を返さない",
+      "evidence": [
+        "tests/sky-service-status.test.mjs",
+        "scripts/check-work-api.mjs",
+        "docs/sky-launch-operations.md"
+      ],
+      "environment": "production-readback-and-local-fixture"
+    },
+    {
+      "id": "authenticated-first-use",
+      "stage": "basic",
+      "status": "not_verified",
+      "owner": "JOINT",
+      "acceptance": "公開Skyで本人サインイン→文章処理→ファイル/端末保存→再読込。本人A/Bを分離",
+      "evidence": [
+        "docs/evidence/sky-pixel-service-acceptance.json"
+      ],
+      "environment": "production",
+      "partialEvidence": "Pixel本人の処理・保存・再読込は確認済み。公開別本人/削除/期限切れを含む全条件の合格とはしない。"
+    },
+    {
+      "id": "csv-private-delivery",
+      "stage": "basic",
+      "status": "not_verified",
+      "owner": "JOINT",
+      "acceptance": "公開R2のCSV受付→変換→検査→取得→削除。別本人拒否、期限切れ拒否",
+      "evidence": [
+        "docs/evidence/sky-pixel-service-acceptance.json",
+        "docs/evidence/sky-csv-storage-verification.json",
+        "docs/evidence/sky-production-auth-verification.json",
+        "docs/evidence/sky-csv-expiry-verification.json"
+      ],
+      "environment": "production",
+      "partialEvidence": "v32期限切れretryをprocessing claim前に拒否。合成D1/R2の衝突・同時受付・4成果・restart・削除・期限切れ・正常retry113項目と実アーカイブ84項目合格。本番owner A/B・削除/expiry受入は残る。"
+    },
+    {
+      "id": "service-policy-and-support",
+      "stage": "basic",
+      "status": "in_progress",
+      "owner": "OWNER",
+      "acceptance": "利用方法・保存/削除/外部送信・契約条件・私有問い合わせ窓口を確定し、問い合わせ疎通",
+      "evidence": [
+        "components/sky-service-help.tsx",
+        "docs/sky-launch-design.md"
+      ],
+      "environment": "production"
+    },
+    {
+      "id": "recovery-and-update",
+      "stage": "basic",
+      "status": "not_verified",
+      "owner": "ROCK",
+      "acceptance": "障害停止・D1/R2整合復元・データを失わない更新とrollbackの実受入",
+      "evidence": [
+        "docs/sky-launch-design.md",
+        "docs/evidence/sky-csv-storage-verification.json",
+        "docs/evidence/sky-paired-storage-recovery-verification.json"
+      ],
+      "environment": "staging",
+      "partialEvidence": "v31対snapshot復元82項目、v32実アーカイブでexpiryと対snapshot復元84項目合格。production backup、snapshot後の削除journal replay、運営停止は未受入。"
+    },
+    {
+      "id": "external-author-publish",
+      "stage": "marketplace",
+      "status": "not_verified",
+      "owner": "JOINT",
+      "acceptance": "権利のある作者1件を申請→審査→公開→別利用者が実行→更新/停止/失効",
+      "evidence": [
+        "tests/sky-tool-package.test.mjs",
+        "tests/sky-submission.test.mjs"
+      ],
+      "environment": "production"
+    },
+    {
+      "id": "provider-auth-and-pc",
+      "stage": "marketplace",
+      "status": "not_verified",
+      "owner": "JOINT",
+      "acceptance": "公開Webから提供者OAuth/本人PCを接続し、timeout・秘密保護・停止を確認",
+      "evidence": [
+        "docs/sky-mcp-architecture.md"
+      ],
+      "environment": "provider"
+    },
+    {
+      "id": "payment-provider",
+      "stage": "paid",
+      "status": "blocked",
+      "owner": "OWNER",
+      "acceptance": "Stripe実設定、Connect本人確認、sandbox支払い/取消/通知再送/返金、実決済受入",
+      "evidence": [
+        "docs/sky-billing.md"
+      ],
+      "environment": "provider-sandbox-and-live",
+      "partialEvidence": "Dedicated CSV trial is live and verified; this gate still concerns general marketplace/Connect, refund and seller fulfillment."
+    },
+    {
+      "id": "paid-tool-entitlement",
+      "stage": "paid",
+      "status": "not_verified",
+      "owner": "JOINT",
+      "acceptance": "提供者Toolが本人の購入権限を強制し、別本人/未購入/返金/失効を拒否",
+      "evidence": [
+        "lib/sky-commerce.ts"
+      ],
+      "environment": "provider"
+    },
+    {
+      "id": "cross-client-identity",
+      "stage": "clients",
+      "status": "not_verified",
+      "owner": "ROCK",
+      "acceptance": "OS/別アプリのaudience/scope/期限/失効を検証し、履歴/購入権限が同じ正本へ結び付く",
+      "evidence": [
+        "docs/sky-launch-design.md"
+      ],
+      "environment": "cross-client"
+    },
+    {
+      "id": "mini-device-acceptance",
+      "stage": "clients",
+      "status": "not_verified",
+      "owner": "JOINT",
+      "acceptance": "Mini能力snapshotと入力/表示/音声/承認adapterを実機で受入",
+      "evidence": [
+        "docs/sky-launch-design.md"
+      ],
+      "environment": "physical-device"
+    },
+    {
+      "id": "focused-csv-payment",
+      "stage": "focused",
+      "status": "passed",
+      "owner": "JOINT",
+      "acceptance": "既存のJPY50円trial:金額・支払確認・署名Webhook・処理完了・保存状態・取得と再読込・同受付の重複防止。新しい請求をしない",
+      "evidence": [
+        "docs/evidence/sky-pixel-service-acceptance.json",
+        "docs/evidence/sky-cloud-results-publication-verification.json"
+      ],
+      "environment": "production"
+    },
+    {
+      "id": "focused-cloud-ai",
+      "stage": "focused",
+      "status": "blocked",
+      "owner": "JOINT",
+      "acceptance": "サーバー専用Provider credentialと信頼料金を接続し、本人の入力束縛quote・上限・同意・一度限り送信・実応答/所要時間/使用量/費用/timeout・結果不明保持を同じ公開経路で確認。合成応答を実Provider合格にしない",
+      "evidence": [
+        "lib/remote-ai-pricing-gate.ts",
+        "docs/evidence/sky-cloud-results-publication-verification.json"
+      ],
+      "environment": "production"
+    },
+    {
+      "id": "focused-customer-journey",
+      "stage": "focused",
+      "status": "not_verified",
+      "owner": "JOINT",
+      "acceptance": "公開した同じsourceでdesktop/Pixelの選択→signin→接続→実行→結果/履歴取得を通し、reload・期限切れsignin・接続失敗・決済取消・復帰を確認。画面の実装/ローカルfixtureだけでは合格にしない",
+      "evidence": [
+        "docs/evidence/sky-cloud-results-verification.json",
+        "docs/evidence/sky-cloud-results-publication-verification.json"
+      ],
+      "environment": "production"
+    },
+    {
+      "id": "focused-tool-inventory",
+      "stage": "focused",
+      "status": "in_progress",
+      "owner": "ROCK",
+      "acceptance": "全34掲載Toolを個別検証しend-to-end/local/connection-required/unavailableへ分類する。実機処理は対象source付き、draft/plan/mockは外部サービス実行へ昇格しない",
+      "evidence": [
+        "docs/evidence/sky-pixel-service-acceptance.json",
+        "lib/sky-tool-ui.ts",
+        "docs/evidence/sky-individual-tool-verification.json"
+      ],
+      "environment": "production"
+    },
+    {
+      "id": "focused-apple-pay",
+      "stage": "focused",
+      "status": "not_verified",
+      "owner": "JOINT",
+      "acceptance": "Apple Pay対応端末で既存Sky merchantの表示と利用可能性を確認する。Pixelでのカード払いをApple Pay受入に換算せず、追加の実課金は本人の明示許可が必要",
+      "evidence": [
+        "docs/evidence/sky-pixel-service-acceptance.json"
+      ],
+      "environment": "production"
+    }
+  ],
+  "notes": [
+    "コードの試験とprovider sandboxと本番受入を分離する",
+    "候補22件・eSIM・native OS製造を基本Webローンチの必須条件にしない",
+    "v28では専用CSV Stripeはlive・既存JPY50円受付はcompleted/stripe_verified。一般Marketplaceの決済と実Cloud AI/Apple Payの受入は別。focused判定は既存basic条件を保持し、実AI・更新後の両端末・全Tool分類を追加する。"
+  ],
+  "completeLaunchScope": "standalone-web-paid-marketplace",
+  "focusedLaunchClaim": false,
+  "focusedLaunchScope": "csv-article-citations-and-one-cloud-ai"
+}

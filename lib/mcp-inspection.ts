@@ -26,6 +26,10 @@ type RpcEnvelope = {
 const MAX_RESPONSE_BYTES = 256 * 1024;
 const MAX_TOOLS = 100;
 
+function numericHostname(hostname: string) {
+  return /^(?:\d+\.){0,3}\d+$/.test(hostname);
+}
+
 export class McpInspectionError extends Error {
   status: number;
 
@@ -62,7 +66,7 @@ export function remoteMcpUrl(value: unknown) {
     parsed.hash ||
     !hostname ||
     hostname.includes(':') ||
-    /^\d+(?:\.\d+){3}$/.test(hostname) ||
+    numericHostname(hostname) ||
     blockedSuffixes.some(
       (suffix) => hostname === suffix || hostname.endsWith(suffix),
     )
@@ -170,7 +174,7 @@ export async function inspectRemoteMcp(
       method: 'POST',
       headers: requestHeaders(protocolVersion, sessionId),
       body: JSON.stringify({ jsonrpc: '2.0', id, method, params }),
-      redirect: 'error',
+      redirect: 'manual',
       cache: 'no-store',
       signal: AbortSignal.timeout(8_000),
     });
@@ -227,7 +231,7 @@ export async function inspectRemoteMcp(
         jsonrpc: '2.0',
         method: 'notifications/initialized',
       }),
-      redirect: 'error',
+      redirect: 'manual',
       cache: 'no-store',
       signal: AbortSignal.timeout(8_000),
     });

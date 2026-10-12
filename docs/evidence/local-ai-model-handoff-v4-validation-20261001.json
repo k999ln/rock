@@ -1,0 +1,41 @@
+{
+  "schema": "rock-local-ai-model-handoff-v4-validation/1",
+  "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "baseOverlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
+  "planV2PatchSha256": "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
+  "profileV3PatchSha256": "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
+  "modelHandoffV4PatchSha256": "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
+  "results": {
+    "cleanOverlayApplication": "PASS",
+    "typescript": "PASS",
+    "jest": "PASS",
+    "jestTests": 23,
+    "eslint": "PASS",
+    "offlineManifestSourceCheck": "PASS",
+    "androidGradleBuild": "NOT_RUN_ANDROID_SDK_UNAVAILABLE",
+    "kotlinAidlCompilation": "NOT_RUN_ANDROID_SDK_UNAVAILABLE",
+    "apiV4DeviceTest": "NOT_RUN"
+  },
+  "implementedBehavior": [
+    "Broker-side client validates the staged file type, exact manifest byte length and SHA-256 before opening a read-only ParcelFileDescriptor.",
+    "The authenticated runtime rejects non-regular or writable descriptors, enforces a bounded size and free-space reserve, streams into runtime-private storage, verifies length and SHA-256 independently, atomically renames, and invokes the profile-pinned local model loader.",
+    "The runtime returns the loaded profile ID, weights SHA-256 and byte count; the Broker checks the receipt and reads status again before accepting the loaded profile.",
+    "Android source now includes a Broker-owned activation coordinator which sequences publisher verification, private staging, the read-only descriptor RPC, loaded-profile receipt/status checks, and PlatformStore active-pointer commit. The active model cannot switch while another plan has an active work item or recent reservation; Zema submit and profile activation share a process lock."
+  ],
+  "limitations": [
+    "This is pinned upstream source plus an overlay and host-side TypeScript/Jest/source validation; no APK was rebuilt or signed.",
+    "Android SDK platform/build-tools are unavailable, so Kotlin/AIDL compilation and Binder/device testing were not run.",
+    "The coordinator has no user-facing model catalogue/API and has not been compiled or executed on Android; production artifact transport, publisher trust configuration and license receipts remain unset. Tokenizer/template assets and real model inference remain unaccepted."
+  ],
+  "testCommand": "npm run verify",
+  "testBoundary": "Clean pinned API v3 source with the sequential API v4 model-handoff overlay; not native Android compilation or runtime acceptance.",
+  "repositoryVerification": {
+    "command": "npm run verify",
+    "exitCode": 0,
+    "nodeTests": 530,
+    "fashionBrandOpsTests": 19,
+    "apiWorkerAssertions": 301,
+    "build": "PASS",
+    "scope": "Repository source contracts, Node tests, Worker/D1 fixtures, product builds and release asset closure; does not compile or execute the Android API v4 service."
+  }
+}

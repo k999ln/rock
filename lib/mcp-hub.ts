@@ -12,6 +12,11 @@ export type McpToolPassport = {
   title: string | null;
   description: string;
   inputSchema: Record<string, unknown>;
+  outputSchema?: Record<string, unknown>;
+  pricing: {
+    model: 'free' | 'subscription' | 'usage' | 'external_contract' | 'unknown';
+    note: string;
+  };
   approval: 'required';
 };
 
@@ -28,7 +33,7 @@ export type McpConnection = {
   id: string;
   name: string;
   description: string;
-  transport: 'stdio' | 'streamable_http';
+  transport: 'stdio' | 'streamable_http' | 'local_http';
   state: McpConnectionState;
   toolCount: number | null;
   passport: McpConnectionPassport | null;
@@ -41,6 +46,7 @@ export type McpApproval = {
   tool: string;
   toolId: string;
   summary: string;
+  pricing: McpToolPassport['pricing'] & { declaration: 'provider_unverified' };
   approvalRequired: true;
 };
 

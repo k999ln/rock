@@ -225,9 +225,16 @@ async function event(
 ) {
   await db
     .prepare(
-      'INSERT INTO csv_job_events (job_id, user_id, event, detail_json, created_at) VALUES (?, ?, ?, ?, ?)',
+      `INSERT INTO csv_job_events (job_id, user_id, event, detail_json, created_at)
+       SELECT ?, ?, ?, ?, ? WHERE EXISTS (
+         SELECT 1 FROM csv_jobs WHERE id = ? AND user_id = ? AND input_key = ?
+           AND created_at = ? AND revision >= ?
+       )`,
     )
-    .bind(row.id, row.user_id, name, JSON.stringify(detail), Date.now())
+    .bind(
+      row.id, row.user_id, name, JSON.stringify(detail), Date.now(),
+      row.id, row.user_id, row.input_key, row.created_at, row.revision,
+    )
     .run();
 }
 
@@ -1050,23 +1057,21 @@ export async function createCsvJob(
   await transformCsv(input.bytes, specification);
   const hash = await sha256(input.bytes);
   const now = Date.now();
-  const inputKey = `csv/${ownerHash}/${input.id}/${hash}.csv`;
-  const existing = await db
-    .prepare('SELECT * FROM csv_jobs WHERE id = ? AND user_id = ?')
-    .bind(input.id, user)
-    .first<CsvJobRow>();
-  if (existing) {
-    if (
-      existing.input_sha256 !== hash ||
-      existing.specification_json !== JSON.stringify(specification)
-    )
+  const specificationJson = JSON.stringify(specification);
+  const replay = (row: CsvJobRow) => {
+    if (row.input_sha256 !== hash || row.specification_json !== specificationJson)
       throw new CsvJobError(
         409,
         'IDEMPOTENCY',
         '同じ受付番号に異なる内容は保存できません。',
       );
-    return view(existing);
-  }
+    return view(row);
+  };
+  const existing = await db
+    .prepare('SELECT * FROM csv_jobs WHERE id = ? AND user_id = ?')
+    .bind(input.id, user)
+    .first<CsvJobRow>();
+  if (existing) return replay(existing);
   if (
     billing &&
     (billing.status === 'canceled' ||
@@ -1078,6 +1083,9 @@ export async function createCsvJob(
       'BILLING_CANCELED',
       '翌月以降の新規受付は停止されています。既存の受付は続行できます。',
     );
+  // An upload attempt owns its key. Concurrent conflicting requests and a
+  // recreated ID must never share input storage or event incarnation identity.
+  const inputKey = `csv/${ownerHash}/${input.id}/input-${crypto.randomUUID()}.csv`;
   await bucket.put(inputKey, input.bytes, {
     httpMetadata: { contentType: 'text/csv' },
     customMetadata: {
@@ -1111,7 +1119,7 @@ export async function createCsvJob(
         input.bytes.byteLength,
         hash,
         decoded.encoding,
-        JSON.stringify(specification),
+        specificationJson,
         input.sample ? 0 : 3000,
         now + RETENTION_MS,
         now,
@@ -1129,17 +1137,14 @@ export async function createCsvJob(
       );
     }
   } catch (error) {
+    // Reconcile before cleanup: an INSERT response may be lost after commit.
+    // A read failure retains input; only an unreferenced attempt key is removed.
     const winner = await db
       .prepare('SELECT * FROM csv_jobs WHERE id = ? AND user_id = ?')
       .bind(input.id, user)
       .first<CsvJobRow>();
-    if (
-      winner &&
-      winner.input_sha256 === hash &&
-      winner.specification_json === JSON.stringify(specification)
-    )
-      return view(winner);
-    await bucket.delete(inputKey);
+    if (winner?.input_key !== inputKey) await bucket.delete(inputKey);
+    if (winner) return replay(winner);
     throw error;
   }
   const row = await owned(db, user, input.id);
@@ -1205,12 +1210,12 @@ async function processCsvJob(row: CsvJobRow) {
     .run();
   if ((claim.meta.changes ?? 0) !== 1)
     return view(await owned(db, row.user_id, row.id));
-  row = await owned(db, row.user_id, row.id);
-  await event(db, row, 'processing', { attempt: row.attempt });
   const deliveryRevision = row.delivery_revision + 1;
   const base = `csv/${row.id}/v${deliveryRevision}/a${leaseId}`;
   let committedSuccessfully = false;
   try {
+    row = await owned(db, row.user_id, row.id);
+    await event(db, row, 'processing', { attempt: row.attempt });
     const inputObject = await bucket.get(row.input_key);
     if (!inputObject)
       throw new CsvJobError(
@@ -1412,7 +1417,6 @@ async function processCsvJob(row: CsvJobRow) {
     return view(row);
   } catch (error) {
     if (committedSuccessfully) throw error;
-    await bucket.delete(attemptArtifactKeys(row.id, deliveryRevision, leaseId));
     const code =
       error instanceof CsvError || error instanceof CsvJobError
         ? error.code
@@ -1426,6 +1430,22 @@ async function processCsvJob(row: CsvJobRow) {
       )
       .bind(code, Date.now(), Date.now(), row.id, row.user_id, leaseId)
       .run();
+    if ((failed.meta.changes ?? 0) === 0) {
+      // A batch response can be lost after publication. A failed lease CAS
+      // does not prove failure: published revisions retain their R2 objects.
+      // If this read is unavailable, leave the objects intact for owner recovery.
+      const published = await db
+        .prepare(
+          `SELECT id FROM csv_delivery_revisions
+           WHERE job_id = ? AND user_id = ? AND revision_number = ? AND result_key = ?`,
+        )
+        .bind(row.id, row.user_id, deliveryRevision, `${base}/result.csv`)
+        .first<{ id: string }>();
+      if (published) return view(await owned(db, row.user_id, row.id));
+    }
+    // Revoke this lease before cleanup so an ambiguous late commit cannot
+    // publish keys that its own error recovery has already deleted.
+    await bucket.delete(attemptArtifactKeys(row.id, deliveryRevision, leaseId));
     if ((failed.meta.changes ?? 0) === 1) {
       row = await owned(db, row.user_id, row.id);
       await event(db, row, 'quality_failed', { code });

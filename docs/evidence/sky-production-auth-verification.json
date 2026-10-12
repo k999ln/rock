@@ -1,0 +1,113 @@
+{
+  "environment": "production non-user platform service access",
+  "origin": "https://sky-marketplace.noellesugar1.chatgpt.site",
+  "sourceExpected": "5fcfe884d7038723e228156a54bfd78bfcabde89",
+  "recordedAt": "2026-10-02T11:25:06.110Z",
+  "ownerSigninVerified": false,
+  "serviceCredentialIsUserIdentity": false,
+  "requestsReadOnly": true,
+  "newPayment": false,
+  "checks": [
+    {
+      "name": "public-entry",
+      "path": "/sky",
+      "status": 200,
+      "pass": true,
+      "responseBytes": 41007,
+      "responseSha256": "3343520011615b4dbe910af0048b043e8dee309b33234dd7bfe0370346e3582c",
+      "contentType": "text/html; charset=utf-8",
+      "contentEncoding": null
+    },
+    {
+      "name": "public-health",
+      "path": "/api/health",
+      "status": 200,
+      "pass": true,
+      "responseBytes": 15,
+      "responseSha256": "a29ee2b15c494311c52521766e44af56a3ad2248e7a8ab465e5206463c13d288",
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "name": "anonymous-jobs",
+      "path": "/api/jobs",
+      "status": 401,
+      "pass": true,
+      "responseBytes": 48,
+      "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "name": "anonymous-csv-history",
+      "path": "/api/csv-jobs",
+      "status": 401,
+      "pass": true,
+      "responseBytes": 103,
+      "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "name": "anonymous-paid-csv-result",
+      "path": "/api/csv-jobs/6a969274-8d50-4a6f-8b54-1b2f143f6bdb/artifact/result",
+      "status": 401,
+      "pass": true,
+      "responseBytes": 103,
+      "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "name": "anonymous-paid-csv-report",
+      "path": "/api/csv-jobs/6a969274-8d50-4a6f-8b54-1b2f143f6bdb/artifact/report-json",
+      "status": 401,
+      "pass": true,
+      "responseBytes": 103,
+      "responseSha256": "a1c6d89575748453bf6baf74b729996674dc79291290ddc9dffbb625f6bfdaf6",
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "name": "anonymous-coconala",
+      "path": "/api/coconala-team",
+      "status": 401,
+      "pass": true,
+      "responseBytes": 66,
+      "responseSha256": "9333b5cf4d0432a406b05ec22b91b143a2c3453357eb57e7a2d628693a51ca10",
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "name": "anonymous-mercari",
+      "path": "/api/revenue/mercari",
+      "status": 401,
+      "pass": true,
+      "responseBytes": 48,
+      "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "name": "forged-user-id",
+      "path": "/api/jobs",
+      "status": 401,
+      "pass": true,
+      "responseBytes": 48,
+      "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+      "contentType": "application/json",
+      "contentEncoding": null
+    },
+    {
+      "name": "forged-email-dispatch",
+      "path": "/api/jobs",
+      "status": 401,
+      "pass": true,
+      "responseBytes": 48,
+      "responseSha256": "0f5809296c9ff9eb4168681db82e71a6dcae730783ed93bacd3bc8c9019e1e87",
+      "contentType": "application/json",
+      "contentEncoding": null
+    }
+  ],
+  "allPassed": true
+}

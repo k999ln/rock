@@ -1,0 +1,25 @@
+{
+  "schema": "amc-sky-import/1",
+  "sourceTask": "Show 156 tasks by squad",
+  "files": [
+    {
+      "path": "sky-amc-plan.json",
+      "sha256": "d3ba883e760d2e3e358aec728109b3557946dd0036b173286d3b7d5b9d6fe574"
+    },
+    {
+      "path": "sky-amc-source.json",
+      "sha256": "1d83acd0c4d463036a3ff1357543a5714879c98a5c14d4ec817dd805da6d495e"
+    },
+    {
+      "path": "sky-amc-goal.json",
+      "sha256": "0fe39f4153d3ef3eb0f43d039abb3940db5d115436fcaa6d8884bd30928bd289"
+    }
+  ],
+  "originalsPreserved": true,
+  "progressImportedAs": "draft_not_accepted",
+  "runtimeInputPathCorrections": {
+    "lib/db.ts": "lib/fund-store.ts",
+    "lib/schema.ts": "db/schema.ts",
+    "wrangler.jsonc": "wrangler.local.jsonc"
+  }
+}

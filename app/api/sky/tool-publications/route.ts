@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     return json({
       package: published,
       warning:
-        '掲載情報を公開しました。Sandbox実行と作者署名が未確認のため、自動インストールはまだ無効です。',
+        '審査待ちとして提出しました。固定source、権利、ライセンス、権限、privacy、料金、Sandbox、出力品質の審査に合格するまで公開・配布されません。',
     });
   } catch (error) {
     return failure(error);

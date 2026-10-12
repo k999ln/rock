@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "routeId": "local-action-assistant",
+  "executionTarget": "local",
+  "apiVersion": 4,
+  "packageVersionCode": 3,
+  "androidPackage": "com.localactionassistant",
+  "androidService": "com.localactionassistant.RockLocalAiService",
+  "androidPermission": "dev.rock.permission.USE_LOCAL_AI",
+  "trustedCallerPackage": "dev.rock.automation",
+  "trustMode": "fixed_package_same_signer",
+  "engine": "llama.rn",
+  "engineVersion": "0.12.9",
+  "modelFormat": "GGUF",
+  "modelBundled": false,
+  "modelHandoff": {
+    "operation": "installAndLoadModel",
+    "transport": "read_only_ParcelFileDescriptor",
+    "sourcePathAccepted": false,
+    "remoteUrlAccepted": false,
+    "expectedFields": [
+      "profileId",
+      "weightsSha256",
+      "artifactBytes"
+    ],
+    "runtimeCopiesToPrivateStorage": true,
+    "runtimeRehashesBeforeLoad": true,
+    "runtimeReportsLoadedProfile": true,
+    "maxArtifactBytes": 4294967296,
+    "requiredFreeSpaceReserveBytes": 33554432,
+    "timeoutSeconds": 900
+  },
+  "releaseNetwork": "none",
+  "tools": [
+    "get_current_datetime",
+    "calculate",
+    "search_notes",
+    "list_reminders",
+    "create_note",
+    "create_reminder"
+  ],
+  "mutatingTools": [
+    "create_note",
+    "create_reminder"
+  ],
+  "mutationConfirmation": "required",
+  "planOnly": {
+    "schemaId": "article-preparation@1/input-v1",
+    "toolId": "article-preparation@1",
+    "responseFormat": "json_schema",
+    "toolCallsAllowed": false,
+    "unknownFieldsAllowed": false,
+    "brokerExecutablePreflight": true
+  },
+  "events": [
+    "token",
+    "proposal",
+    "completed",
+    "failed"
+  ],
+  "maxPayloadBytes": 32768,
+  "timeoutSeconds": 90,
+  "sourceLock": "os/physical/local-action-assistant-source-lock.json",
+  "sourceValidation": "docs/evidence/local-ai-source-validation-20260915.json",
+  "overlayValidation": "docs/evidence/local-ai-overlay-validation-20260915.json",
+  "artifactLock": "os/physical/local-action-assistant-artifact-lock.json",
+  "aospModule": "RockLocalActionAssistant",
+  "aospStagingPath": "vendor/rockstaros-local-ai",
+  "aospSigning": "testkey_then_release_key_mapping",
+  "sourceStatus": "pinned_v4_unsigned_apk_built_not_device_verified",
+  "osBridgeStatus": "model_profile_hash_bound_v4_fd_handoff_native_compiled_not_device_verified",
+  "signedApkStatus": "v4_unsigned_release_apk_reviewed_not_signed",
+  "imageStatus": "not_built",
+  "deviceInferenceStatus": "physical_pixel_plan_tool_result_history_pass_api_v2_not_v3_not_os_image",
+  "profileV3Validation": "docs/evidence/local-ai-profile-v3-validation-20261001.json",
+  "modelHandoffV4Validation": "docs/evidence/local-ai-model-handoff-v4-validation-20261001.json",
+  "nativeBuildValidation": "docs/evidence/local-ai-apk-v4-build.json"
+}

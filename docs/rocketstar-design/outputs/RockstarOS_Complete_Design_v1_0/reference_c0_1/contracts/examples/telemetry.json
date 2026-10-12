@@ -1,0 +1,23 @@
+{
+  "schema": "rockstaros-colony-telemetry/1",
+  "mode": "SIM_ONLY",
+  "sourceClass": "SYNTHETIC",
+  "siteId": "sim-ground-01",
+  "nodeId": "sim-utility-01",
+  "componentGeneration": "static-generation-01",
+  "stateRevision": 1,
+  "sampleSeq": 1,
+  "sampledAt": 1002.0,
+  "clockTrusted": true,
+  "authorityEpoch": 1,
+  "leaseExpiresAt": 1030.0,
+  "holderId": "ops-A",
+  "supplyKw": 10.0,
+  "criticalDemandKw": 4.0,
+  "desiredFlexibleKw": 2.0,
+  "actualFlexibleKw": 2.0,
+  "criticalServedKw": 4.0,
+  "criticalDeficitKw": 0.0,
+  "state": "NOMINAL",
+  "signature": "144ba54ee784b84d18701f6f97f2e7d6bfb99ef44e758a0b9c5ee22785d647ae"
+}

@@ -1,0 +1,19 @@
+# Android hardware-key attestation verifier
+
+This isolated JVM service verifies Android Key Attestation chains before their P-256 public keys can be registered as device-gateway keys. It uses Google's Android Key Attestation verifier pinned in `UPSTREAM.json`, Google's production trust anchors, the current online revocation status, an exact package/version/signing-certificate allowlist, a 32-byte server challenge, and locked Verified Boot on a TEE or StrongBox. It returns the attested public key and non-secret verification facts; it never receives private keys.
+
+## Local run
+
+Use JDK 21 and run `./gradlew test`. The service also requires an outbound HTTPS connection to Google's current attestation revocation endpoint at verification time. It intentionally does not cache or bypass an unavailable status source.
+
+Set these environment values before running `./gradlew run`:
+
+- `ANDROID_ATTESTATION_VERIFIER_TOKEN`: at least 32 random bytes encoded as base64url.
+- `ANDROID_ATTESTED_APPLICATIONS_JSON`: a JSON array of exact package, minimum version, and lowercase SHA-256 signing-certificate digest records, for example `[ {"packageName":"dev.rock.app","minimumVersion":"12","signingCertificateSha256":"<64 lowercase hex characters>"} ]`.
+- Optional `ANDROID_ATTESTATION_BIND_HOST` (defaults to `127.0.0.1`) and `ANDROID_ATTESTATION_PORT` (defaults to `8789`). Non-loopback binding also requires `ANDROID_ATTESTATION_TLS_TERMINATION=confirmed`; deploy only behind a private authenticated TLS ingress.
+
+The authenticated endpoint is `POST /v1/android-key-attestation/verify`, accepting schema `rock-android-key-attestation-request/1` with a fresh UUID, canonical base64url 32-byte challenge, exact package name, and a bounded DER certificate chain. Configure the Worker with `ANDROID_ATTESTATION_VERIFIER_URL=https://<private-ingress>/v1/android-key-attestation/verify`, `ANDROID_ATTESTATION_VERIFIER_COMMIT=55c35040a1b5b72e6d63bfb150c5c68a175c1462`, and the matching bearer secret in `ANDROID_ATTESTATION_VERIFIER_TOKEN` using the deployment platform's secret store. Do not put the token in source control, build arguments, or logs. The Worker rejects non-HTTPS endpoints and all redirects; deploy the JVM service only behind private authenticated TLS ingress, allowlist the Worker egress, and rotate the shared secret as a coordinated operation. The Worker checks the returned schema, verifier commit, challenge ID/hash, package, device state and public-key fingerprint, then requires the receipt to use that exact P-256 key. A successful entitlement write stores the verified key record and entitlement together in D1; status checks the current key state and fingerprint. Existing operator-provisioned keys remain available for migration and host fixtures. `/healthz` reports process health only; it does not attest a device or certify production readiness.
+
+## Boundary
+
+The dynamic Worker HTTP route now passes Miniflare Workerd/D1 acceptance through a controlled verifier service-binding double: the suite covers authenticated eligible-order lookup, install proof, fresh challenge, verifier request, receipt checks, atomic key/entitlement persistence, and status readback (API suite: 424 assertions). This proves the Worker HTTP route and its D1 contract, not a deployed connection to the JVM service. The isolated JVM service itself has 4 policy/parser tests and the pinned upstream has 180 tests; these are separate host evidence. The Android Broker/AIDL caller is not connected. The service has not been deployed or configured with production package signer digests, tokens, or private ingress, and no Android device has enrolled. Device enrollment, replay/revocation lifecycle, provider/OEM eUICC installation proof, Android SDK build/instrumentation, and production ingress still require separate acceptance.

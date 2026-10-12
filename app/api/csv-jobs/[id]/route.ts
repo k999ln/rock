@@ -1,3 +1,4 @@
+import { rejectChangedOwner } from '@/lib/owner-intent';
 import { requestUser } from '@/lib/request-auth';
 import {
   acceptCsvJob,
@@ -15,6 +16,8 @@ export const POST = async (
 ) => {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const { id } = await context.params;
     const input = (await request.json()) as {
       action?: string;
@@ -60,6 +63,8 @@ export const DELETE = async (
 ) => {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     const { id } = await context.params;
     await deleteCsvJob(user, id);
     return new Response(null, { status: 204 });

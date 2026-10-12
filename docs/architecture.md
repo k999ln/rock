@@ -1,6 +1,6 @@
 # 実装と次の接続点
 
-製品要望は [製品ベース](product-baseline.md)。本書の「現在」は既存Web/PCに限定。nativeには別のSky/Wallet/backendがあり、[branch監査](progress-audit-20260909.md)を読まず新規実装と判断しない。
+製品要望は [製品ベース](product-baseline.md)。本書の「現在」は既存Web/PCに限定。nativeには別のSky/Wallet/backendがあり、branch監査（削除済み）を読まず新規実装と判断しない。
 
 本書は既存Web/PCの実装境界。主開発対象となるOSの構成・権限・更新設計は [OS開発設計書](os-development-design.md) を参照する。WebのサーバーやMCPアダプターだけをOSランタイムとは扱わない。現在のソースとD1は、OSへの移行設計が検証されるまで保持する。
 
@@ -46,26 +46,3 @@ Mr.の案件チェック・出典整理・無料版作成・納品記録照合�
 ## Mr.の実行面
 
 `lib/mr-tools.ts` がブラウザ向けの独立処理、`components/mr-tool-runner.tsx` が入力/結果/保存。入力原稿は永続化・外部送信しない。`toolkits/mr/rock_star_tools.py` は固定ハッシュを検証した原本をローカルに読み込む。保存済みツールを維持しつつ、新しい手順に合わせココナラの旧チェック項目だけをリセットしてv2へ移行する。
-
-## Home: 意図から仕事へ（2026-10-09）
-
-- 目的・体験: Homeで依頼を入力し、Zemaへ引継ぎ確認。本人の仕事を状態別に見て再開する。道具は上部のアプリ一覧と検索可能dialogから開く。
-- 責任: Web / PWA / Sites、ROCK、HOME01 / WEB01。Homeは表示と下書き引継ぎを担い、認証・workflow・予算承認を代行しない。
-- 入出力: 1〜2000文字の依頼をsessionStorageへ保存し、Zemaの編集欄へ一回だけ読み出す。GET /api/work-jobsの本人jobを一覧・絞込み・詳細リンクへ表示する。
-- 状態: loading / ready / signin / errorと、active / review / completed / cancelledを区別。activeはworkflow状態でありAgent実行中の捏造ではない。
-- 表示: 2026-10-09の追加修正指示で無彩色のHomeへ変更。彫刻・ライム・大見出し・浮遊dockを撤去し、既存アプリの暗い面・銀色文字・細い罫線へ合わせる。集中表示はアプリ一覧・説明・入力例を畳む。
-- 保存: 下書きは同じタブ、10分で失効、読出時消去。URL・localStorage・新規serverへ本文を保存しない。集中表示のbooleanだけをlocalStorageへ保存。旧外観設定値を削除しない。
-- 失敗・復旧: 保存拒否なら入力を残してコピーとZemaへの直接導線を提示。401は履歴を消してサインイン、読取失敗は空件数を捏造せず再読込。中断・古い応答は破棄する。
-- 承認: HomeはGETだけ。下書き引継ぎでTool実行・外部送信・支払は開始しない。実行は既存画面の承認に従う。
-- 合格条件: handoff一回/期限/不正値/保存失敗試験、typecheck、既存回帰、PC/mobileで入力→Zema・検索dialog・集中表示・仕事導線を確認。motion低減とkeyboard/focusを保持する。
-- 未決定: provider本番受入・native移植は既存gateへ残す。別Site移行は今回のUI刷新へ混ぜず、指定されたpublic Siteのaudienceを保持する。
-
-## Web共通デザイン（2026-10-09修正）
-
-- 目的・体験: Home・Sky・Zema・Wallet・Market・設定を、同じ製品のアプリとして行き来する。全画面で同じRockstarOSヘッダー、主要6アプリのナビゲーション、選択表示、コンテンツ幅を使う。Home単独の中性化では不十分という利用者の明示指示に基づく。
-- 共通定義: `app/os-design-tokens.css`を背景・面・文字・罫線・focus・意味色の正本にする。`components/os-header.tsx`と`app/os-appearance.css`を共通操作部にする。背景#0b0d10、面#15181d、文字#f4f6f8、選択・主操作は銀色。入力focusは淡い青、成功・注意・失敗は意味色とラベルを併用する。
-- 責任・入出力: Web / PWA / Sites、ROCK、WEB04 / HOME01。既存routeとpathname、実行中状態を入力に表示する。API・owner認証・仕事状態・料金・権限を変更しない。
-- 状態・保存: loading、未認証、失敗、workflow状態をそのまま表示する。共通ナビに現在地をaria-currentで示す。新規サーバー保存なし。Home集中表示は説明と入力例だけを畳み、共通ナビを残す。
-- 失敗・承認・復旧: running時は共通ナビも既存の離脱防止に従う。表示の変更で接続・送信・支払を実行しない。Sitesの前版v46を保存し、必要なら同版へ戻せる。
-- 合格条件: PC1280・スマホ390/320で全6routeのヘッダー・背景・選択・横はみ出し・入力・検索を確認。共通文字/面のcontrast、既存style contract、typecheck、design:check、npm run verify、配信version/sourceを記録する。
-- 未決定: native OS受入、provider本番・課金gateは既存契約へ残す。public製品紹介・OS配布案内はアプリ画面とは役割が異なり、一般利用可能という表示へ変更しない。

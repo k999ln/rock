@@ -19,14 +19,8 @@ void test('Sky MCP displays the real PC session and discovers registered servers
   assert.match(center, /server\.passport\?\.tools/);
   assert.doesNotMatch(center, /demo\.sky\.local/);
 
-  for (const id of [
-    'coconala_check',
-    'format_citations',
-    'make_free_article',
-    'verify_delivery',
-  ]) {
-    assert.match(center, new RegExp(id));
-  }
+  assert.doesNotMatch(center, /toolCount \|\| 4/);
+  assert.match(center, /MCPに接続すると、確認できた機能/);
 });
 
 void test('the onboarding screen exposes the generic Connector package and connect steps', () => {

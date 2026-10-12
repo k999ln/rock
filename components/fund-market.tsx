@@ -1,4 +1,5 @@
 'use client';
+/* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
 import {
   useCallback,
   useEffect,
@@ -86,7 +87,7 @@ const funds: Fund[] = [
   },
   {
     id: 'loop',
-    name: 'よくばり Rock star',
+    name: 'よくばり RockstarOS',
     english: 'ALL-IN ROCK STAR',
     emoji: '🪄',
     color: '#ffc7dc',
@@ -382,7 +383,7 @@ export default function FundMarket() {
         <div className="market-header-inner">
           <Link href="/" className="market-logo">
             <Loop size={32} strokeWidth={2.8} />
-            <span>Rock star</span>
+            <span>RockstarOS</span>
           </Link>
           <label className="market-search">
             <Search size={18} />
@@ -491,13 +492,9 @@ export default function FundMarket() {
               <button onClick={() => void refresh()}>再読み込み</button>
             )}
             {error.startsWith('サインイン') && (
-              <button
-                onClick={() =>
-                  window.location.assign('/signin-with-chatgpt?return_to=/')
-                }
-              >
+              <a className="market-primary" href="/signin-with-chatgpt?return_to=/" target="_top">
                 サインイン
-              </button>
+              </a>
             )}
           </output>
         )}
@@ -654,7 +651,7 @@ export default function FundMarket() {
       <footer className="market-footer">
         <span>
           <Loop size={17} />
-          Rock star
+          RockstarOS
         </span>
         <button onClick={() => openPanel('device')}>PC接続</button>
         <button onClick={() => openPanel('settings')}>ファンドのしくみ</button>
@@ -830,8 +827,7 @@ export default function FundMarket() {
                 </span>
               </div>
               <p>
-                運用費と月最大 $8.88
-                相当の利用料を引いた原資から。支援によるブーストも試算できます。
+                運用費を考慮した原資から。収益料金は保留中の旧案を用いた試算で、実際の請求条件ではありません。
               </p>
               <button onClick={() => openPanel('settings')}>
                 <Zap size={14} />
@@ -853,7 +849,9 @@ export default function FundMarket() {
               <div className="dialog-kicker">{active.name} / AUTOMATION</div>
               <DialogTitle className="dialog-title">{tool.name}</DialogTitle>
               <DialogDescription>{tool.description}</DialogDescription>
-              {tool.runner && <MrToolRunner key={tool.id} tool={tool.runner} />}
+              {tool.runner && tool.runner !== 'candidate-local' && (
+                <MrToolRunner key={tool.id} tool={tool.runner} />
+              )}
               <a
                 className="text-link"
                 href={tool.source}

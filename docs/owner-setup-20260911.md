@@ -22,8 +22,8 @@ Webの `npm run verify` に合格（型・lint・93 tests・build・API 143 asse
 
 共有node_modulesを使う開発プレビューで、build後に古い動的importへの遷移が失敗した。公開対象のproduction buildへ切り替えて同じ導入リンクを再確認し、正常遷移と390×844の表示を確認した。公開版の障害としても、開発cache問題の恒久修正済みとしても記録しない。
 
-[MITの確認用全文・適用範囲・配布差分案](license-proposal-20260911.md)を用意した。MITには商用利用・販売・再許諾も含まれるため、受領した改変・再配布意向だけで具体条文の採用済みにはしない。
+[MITの確認用全文・適用範囲・配布差分案](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/license-proposal-20260911.md)を用意した。MITには商用利用・販売・再許諾も含まれるため、受領した改変・再配布意向だけで具体条文の採用済みにはしない。
 
 [本人署名CLIと手順](owner-manual-signing.md)を追加した。prepareは未承認の対象確認票のみを生成し、承認後の固定値と全候補を確認してから外部鍵を読む。既存の署名・検証処理を共用する。本番鍵は生成・使用していない。
 
-本人署名の新7試験と既存署名29試験はローカルで成功。全て公開fixtureであり、実管理鍵や実署名の成功ではない。キャンセルの待ち経路と保存RSSの再集計は[追加受入の後続診断](rc2-remaining-acceptance-20260911.md)に記録した。
+本人署名の新7試験と既存署名29試験はローカルで成功。全て公開fixtureであり、実管理鍵や実署名の成功ではない。キャンセルの待ち経路と保存RSSの再集計は[追加受入の後続診断](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/rc2-remaining-acceptance-20260911.md)に記録した。

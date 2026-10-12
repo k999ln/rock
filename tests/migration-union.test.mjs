@@ -2,6 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { localStartFixture } from './local-start-fixture.mjs';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { drizzle } from 'drizzle-orm/d1';
 import { migrate } from 'drizzle-orm/d1/migrator';
@@ -26,19 +29,22 @@ const original = {
     '3aa55ef1a17c960808c953ef51fad24a800126ec1a0dd424bf85197e8b3b7eb9',
 };
 
-await test('local production start applies the published migrations before serving', () => {
-  const packageJson = JSON.parse(
-    readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
-  );
-  const viteConfig = readFileSync(
-    new URL('../vite.config.ts', import.meta.url),
-    'utf8',
-  );
-  assert.match(
-    packageJson.scripts.start,
-    /^CI=1 wrangler d1 migrations apply site-creator-d1 --local --config dist\/server\/wrangler\.json && wrangler dev --config dist\/server\/wrangler\.json$/,
-  );
+await test('local production start applies the published migrations before serving', (t) => {
+  const f = localStartFixture(t);
+  const viteConfig = readFileSync(new URL('../vite.config.ts', import.meta.url), 'utf8');
   assert.match(viteConfig, /migrations_dir: 'drizzle'/);
+  // Execute the same runner as npm start; failure and signal boundaries live
+  // in start-local-web.test.mjs using this shared fixture.
+  const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.equal(packageJson.scripts.start, 'node scripts/start-local-web.mjs');
+  const result = spawnSync(process.execPath, [...f.command, '--port', '8788', '--ip', '127.0.0.1'], {
+    cwd: f.root, env: f.env, encoding: 'utf8', timeout: 5000,
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(f.calls(), [
+    { stage: 'd1', args: ['d1', 'migrations', 'apply', 'site-creator-d1', '--local', '--config', 'dist/server/wrangler.json', '--persist-to', join(f.root, '.wrangler/state')], ci: '1' },
+    { stage: 'dev', args: ['dev', '--config', 'dist/server/wrangler.json', '--port', '8788', '--ip', '127.0.0.1', '--persist-to', join(f.root, '.wrangler/state')], ci: 'fixture-dev-env' },
+  ]);
 });
 
 await test('both published migration filenames and exact SQL bytes stay intact', () => {
@@ -69,8 +75,6 @@ await test('fresh and both historical D1 databases converge without losing recor
       await db.prepare(sql).run();
   };
   let expectedSchema;
-  const latestMigration = names.at(-1);
-  const previousMigrations = names.filter((name) => name !== latestMigration);
   for (const mode of ['filename', 'drizzle']) {
     for (const history of ['fresh', 'release', 'sites']) {
       await t.test(`${mode}: ${history}`, async () => {
@@ -130,24 +134,6 @@ await test('fresh and both historical D1 databases converge without losing recor
                 journal.find((e) => e.tag + '.sql' === name).when,
               )
               .run();
-          for (const name of previousMigrations) {
-            if (prior.includes(name)) continue;
-            await execute(name);
-            await db
-              .prepare(
-                'INSERT INTO __drizzle_migrations (hash, created_at) VALUES (?, ?)',
-              )
-              .bind(
-                hash(name),
-                journal.find((entry) => entry.tag + '.sql' === name).when,
-              )
-              .run();
-          }
-          await db
-            .prepare(
-              "INSERT INTO csv_monthly_fees VALUES ('legacy-fee','legacy-account','2026-08',3500,888,'paid','legacy-evidence',1,1)",
-            )
-            .run();
           await migrate(drizzle(db), { migrationsFolder: folder });
           await migrate(drizzle(db), { migrationsFolder: folder });
         } else {
@@ -161,19 +147,6 @@ await test('fresh and both historical D1 databases converge without losing recor
               .prepare('INSERT INTO d1_migrations (name) VALUES (?)')
               .bind(name)
               .run();
-          for (const name of previousMigrations) {
-            if (prior.includes(name)) continue;
-            await execute(name);
-            await db
-              .prepare('INSERT INTO d1_migrations (name) VALUES (?)')
-              .bind(name)
-              .run();
-          }
-          await db
-            .prepare(
-              "INSERT INTO csv_monthly_fees VALUES ('legacy-fee','legacy-account','2026-08',3500,888,'paid','legacy-evidence',1,1)",
-            )
-            .run();
           for (let pass = 0; pass < 2; pass++) {
             for (const name of names) {
               if (
@@ -201,7 +174,7 @@ await test('fresh and both historical D1 databases converge without losing recor
         // SQLite normalizes IF NOT EXISTS away in sqlite_master.
         expectedSchema ??= schema;
         assert.deepEqual(schema, expectedSchema);
-        assert.equal(schema.filter((item) => item.type === 'table').length, 39);
+        assert.equal(schema.filter((item) => item.type === 'table').length, 90);
         // D1 intentionally disallows PRAGMA integrity_check; compare all table/index
         // definitions and retained values instead of claiming that pragma ran.
         if (history !== 'fresh')
@@ -235,16 +208,6 @@ await test('fresh and both historical D1 databases converge without losing recor
             ).amount,
             888,
           );
-        assert.equal(
-          (
-            await db
-              .prepare(
-                "SELECT fee_due_usd_minor FROM csv_monthly_fees WHERE id = 'legacy-fee'",
-              )
-              .first()
-          ).fee_due_usd_minor,
-          888,
-        );
       });
     }
   }

@@ -1,0 +1,20 @@
+diff --git a/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt b/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt
+--- a/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt
++++ b/android/app/src/main/java/com/localactionassistant/RockLocalAiService.kt
+@@ -55,14 +55,14 @@
+       putString("proposalId", proposalId); putBoolean("approved", approved)
+     }
+     UiThreadUtil.runOnUiThread {
+-      val timeout = if (kind == "load_model") 900_000 else 90_000
++      val timeout = if (kind == "load_model") 900_000L else 90_000L
+       try { startTask(HeadlessJsTaskConfig("RockLocalAi", data, timeout, true)) }
+       catch (_: Exception) { RockLocalAiBroker.cancel(requestToken) }
+     }
+   }
+ 
+   private val binder = object : ILocalAiService.Stub() {
+-    override fun getApiVersion(): Int { authenticate(); return 3 }
++    override fun getApiVersion(): Int { authenticate(); return 4 }
+     override fun getStatus(): String {
+       authenticate()
+       val preferences = getSharedPreferences("rock-local-ai", 0)

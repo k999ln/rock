@@ -29,7 +29,9 @@ void test('NDEF payload is one short well-known URI record for the same URL', ()
 });
 
 void test('NFC arrival shows a dismissible Web-install guide, not an OS-install claim', () => {
-  const source = readFileSync(resolve(root, 'components/home-screen.tsx'), 'utf8');
+  const home = readFileSync(resolve(root, 'components/home-screen.tsx'), 'utf8');
+  assert.match(home, /<NfcInstallGuide \/>/);
+  const source = readFileSync(resolve(root, 'components/nfc-install-guide.tsx'), 'utf8');
   assert.match(source, /get\('nfc'\) === '1'/);
   assert.match(source, /nfcEntry && !installed && !installDismissed/);
   assert.match(source, /Safariの共有/);

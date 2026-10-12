@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Avokado Mini — Sky + Zema Public Preview</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header>
+      <a href="https://github.com/avokado-ink/RockstarOS">Avokado Mini</a>
+      <span>Sky + Zema Public Preview</span>
+    </header>
+    <main>
+      <section class="hero">
+        <p class="eyebrow">Powered by RockstarOS · LLM: Local</p>
+        <h1>Find the tool.<br>Move the work.</h1>
+        <p>
+          A small, local-first demonstration of the public Sky-to-Zema flow.
+          It is not the complete operating system.
+        </p>
+      </section>
+
+      <section aria-labelledby="sky-title">
+        <div class="section-heading">
+          <p>01</p>
+          <div>
+            <h2 id="sky-title">Sky</h2>
+            <p>Choose a public local tool.</p>
+          </div>
+        </div>
+        <div id="catalog" class="catalog"></div>
+      </section>
+
+      <section aria-labelledby="zema-title">
+        <div class="section-heading">
+          <p>02</p>
+          <div>
+            <h2 id="zema-title">Zema</h2>
+            <p>Make the request, run it locally, and keep the outcome clear.</p>
+          </div>
+        </div>
+        <div class="zema">
+          <div id="selection" class="selection">Select a tool in Sky.</div>
+          <label for="request">Request</label>
+          <textarea id="request" rows="7" placeholder="Choose a tool to begin." disabled></textarea>
+          <button id="run" disabled>Run locally</button>
+          <pre id="result" aria-live="polite">No result yet.</pre>
+        </div>
+      </section>
+
+      <section class="privacy" aria-labelledby="privacy-title">
+        <div>
+          <p class="eyebrow">Optional analytics</p>
+          <h2 id="privacy-title">Tool events, only with consent.</h2>
+          <p>
+            If enabled, the preview can send only the tool identifier, random
+            installation identifier, outcome, duration, and timestamp. It never
+            sends the request, result, chat text, files, credentials, or personal
+            information.
+          </p>
+        </div>
+        <label class="consent">
+          <input id="telemetry" type="checkbox" disabled>
+          <span id="telemetry-label">No receiving endpoint is configured.</span>
+        </label>
+      </section>
+    </main>
+    <footer>
+      <span>Avokado Mini · Built by Avokado, Ink</span>
+      <a href="https://github.com/avokado-ink/RockstarOS">Public source</a>
+    </footer>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

@@ -1,20 +1,29 @@
 # Rock star 開発の継続ルール
 
-- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json を読む。確定要望はRQ01〜RQ18。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。現在の統合状態はdocs/current-state-20260911.md。
+> 2026-10-11に、使わなくなった資料を削除した（履歴は書き換えていない）。削除したpathと復元元のcommitは [`data/archived-paths.json`](data/archived-paths.json)。一時的に使ったgit-cryptの暗号化は同日にやめた。すべてのファイルは公開で、読むのに鍵はいらない。
+
+- 最初に docs/product-baseline.md、data/product-baseline.json、README.md、project.md、data/project-status.json、docs/mission-control.md、data/mission-control.json を読む。確定要望はRQ01〜RQ50。OSから全Toolまでの入口はdocs/rockstaros-design-portal.md、OS全体詳細はdocs/rockstaros-complete-design.md、全Tool詳細はdocs/sky-tools-complete-design.md、物質発明とavocadoMiniはdocs/rockstaros-avocado-mini-complete-design.mdを正本とする。新しい明示指示がある場合だけ理由を記録して更新する。最新の実行プロンプトはdata/product-baseline.jsonのnextPrompt。9月前半の作業記録（docs/current-state-20260911.md など）は削除した（commit `96845e6` に残る）。現在のGitと進捗JSON・同一artifactの証拠を優先する。
+- 作業開始時に avokado Mission Control（AMC）のtaskAssignmentsで一意の主担当を確認し、goal、stageAssessmentの対象範囲と残課題、rules、nextTaskIds、taskPlansの手順・成果物・合格条件を読む。ID prefixで担当を推測せず、参考task・旧版・公開説明を現行製品の実績へ加算しない。段階は対象範囲の証拠で判定し、件数から完成率を算出しない。変更後は `npm run mission:update` と `npm run mission:check` を通す。料金のexecutionHoldsは既存statusに優先する。
+- 正本5ファイルを確認した後、作業分野の入口として docs/workstreams/README.md と docs/workstreams/00-responsibility-boundaries.md を読む。Security、MCP、Wallet、Web、QEMU、Android、Game、Material Invention／avocadoMini、事業pilot、Git運用のうち主担当を一つ決め、ROCK／EXTERNAL／JOINT／OWNERの責任、既存task ID、完了条件、検証コマンドを使う。新しい日付付き文書を入口として乱立させず、該当workstreamの関連資料へ追加する。
 - 設計v1.1の実装は承認済み。docs/execution-approval-20260909.mdとdata/execution-approval.jsonを読み、再承認で止めない。公開・実機導入・MetaMask実資金試験は準備が整うことを条件に了承されている。対象・機種適合・取引条件の未指定を補い、条件付き了承を実行済みとしない。
-- 「現段階の進捗からプロンプト作成」では docs/prompt-playbook.md に従い、npm run prompt:context または同等の読み取りでGitHubのmain・branch・PR・同一SHAのCIを確認する。対象コード/証拠を必ず読む。docs/progress-audit-20260909.mdは履歴snapshot。取得失敗を最新確認済みとしない。
-- 現在はmain/nativeだけでなく codex/os-game-design-review-20260909 の最新設計も必須入力。docs/design-implementation-alignment-20260909.md、statusのphaseGatesを読む。単一owner多端末を複数player基盤に、チェックなしをCI成功に、文書訂正をruntime修正に置き換えない。予測市場/ゲーム資産売買は検討のみ、実行許可ではない。
+- 「現段階の進捗からプロンプト作成」では docs/prompt-playbook.md に従い、npm run prompt:context または同等の読み取りでGitHubのmain・branch・PR・同一SHAのCIを確認する。対象コード/証拠を必ず読む。docs/progress-audit-20260909.md は削除済みの履歴snapshot（commit `96845e6` に残る）。取得失敗を最新確認済みとしない。
+- 現在はGitHub mainと実在する対象作業branchの最新SHAを確認し、docs/design-implementation-alignment-20260909.md、statusのphaseGatesを読む。単一owner多端末を複数player基盤に、チェックなしをCI成功に、文書訂正をruntime修正に置き換えない。予測市場/ゲーム資産売買は検討のみ、実行許可ではない。
 - 指摘した相違を、原因・修正順・合格証拠・未解決条件付きで実行プロンプトへ反映する。mainのベースが実装branchに未反映なら、引継ぎ入口と優先順位の同期を最初に行う指示にする。文書保存・作業branch反映・mainへの統合を別々に記録する。
-- 主開発対象は自動化Hub＋WalletのOS。tob側が商品を開発し、Rock側は接続/管理/実行/費用/収益の共通基盤を作る。既存ツールも商品。利用者のどの不便を減らすかと、既存商品のHub実利用検証を作業の合格条件に含める。
-- RQ12の最初の受入はQEMU開発OS雛形。最新sourceからbuildした同一imageで起動・Hub/Wallet操作・境界・保存/再起動・復旧を実測し、docs/templates/os-acceptance-report.mdへ記録する。公開試験鍵や合成データの合格を本番安全認証にしない。
+- 最新の明示製品方針（2026-10-10、owner確定）: 主商品はavokadoのアカウントひとつで、スマホ・PC・ブラウザからRockstarOS・Sky・Zema・統合Agentを使うサービス。アカウントは無料、SIMは不要で、avocadoMiniのような機器だけが国内LTE・IoT向けdata専用SIMの回線を任意で使う（別modelかoption、SGP.32対応、5Gなし、遠隔切替は自作しない）。消費者向けeSIMの発行・販売は保留し、codeは既定で無効のまま残す。料金は期間パス（前払い・6か月未満）＋従量のしきい値後払い＋月の上限＋回線つき機器の基本料で、残高は持たない。Sky feeは当面10%、0%の定義と切替条件は data/product-baseline.json の accountEntryDecision。Skyは https://avocadomini.si/sky に置き、本人確認は自前のpasskey、通知はWeb Pushから。売り手はavokado、最初の客は文章を納品する個人事業主。10-02の「SIM/eSIM購入が入口」はこの判断で置き換えた。端末の分岐（正確な機種に署名済みOS・boot/復旧経路が受け入れられた時だけnative OS、その他は既存OS clientまたはbrowser）と、回線・本人/サービス利用権・OS/client導入状態を別々に追跡する方針は維持する。
+- RockstarOSはAI・agent実行、権限、本人性、端末適合、保存・復旧の共通runtime。SkyはAgent/Tool marketplaceと接続hub、Zemaは仕事の依頼・進捗・承認・停止・成果・使用額の管理。ローカルLLMは対応端末向け能力の一つで、全機種で必須ではない。cloud agentsは使用量ベースで透明化し、事前単価/見積・上限承認・実行中の費用/予約・itemized usageを提示して、許可済み予算を超えて実行しない。
+- LLMの現在地とJevの境界は `docs/llm-evaluation-architecture.md` と `data/llm-capabilities.json` を正本にする。端末内LLMはplan候補だけを返す非信頼planner、WebのOpenAI接続はSkyの法務・特許2 Tool、JevはSkyから明示利用するremote evaluatorである。いずれのmodel結果もBrokerの権限・本人承認・Tool成功へ昇格させない。`ready`、credential設定済み、実機合格、本番合格を区別する。
+- RQ12のQEMU開発OS受入は独立した既存系列として保持する。現在の最初の物理対象はPixel 10 GL066／frankel。同一imageの起動・権限・保存/再起動・復旧をdocs/templates/os-acceptance-report.mdへ記録し、単体APK、QEMU、合成データの合格を本番OSの受入へ転用しない。
 - RQ13のゲーム通貨交換はATMと別adapter/同意/試験。既存Walletの予約・台帳・照合を共有して二重使用を防ぐ。ゲーム/交換方向/レートは未確定のため本番無効。fixtureは進められるが実資金・外部ゲームの残高は動かさない。
 - RQ14は自作ゲーム作者向けAPI/SDK・sandbox・動くサンプル・導入診断。導入時間/成功率/復旧時間を測り、市場首位を未実証で宣言しない。作者がゲームポイントを発行する権限とWalletの実資金記帳権限は分離する。
 - RQ15の手数料0はATMでRockが徴収する手数料の話。ゲーム手数料0と読み替えず、ゲーム料金は未定、既存OS月額は維持。外部実費は別明示し、無断の実課金/無制限補填をしない。
-- nativeは関連PR/branchのdocs/native-os-integration.mdとdocs/native-os-validation.mdを読む。Linux/Buildroot/QEMU、旧Android P1と、新しいPixel/GrapheneOS候補の実機source準備を分ける。以前のBlackBerry希望は機種未確定。mainにないnative機能を未実装と決めつけず、未マージ機能をmain反映済みと呼ばない。APK/PWA/QEMUだけで実機完成としない。
+- nativeはdocs/native-os-integration.mdとdocs/native-os-validation.mdを読む。Linux/Buildroot/QEMU、Android単体APK、Pixel 10 GL066／frankel向けOS imageを分ける。BlackBerry-firstは現行計画から退役。mainにないnative機能を未実装と決めつけず、未マージ機能をmain反映済みと呼ばない。APK/PWA/QEMUだけで実機OS完成としない。
 - 端末の購入・初期化・bootloader解除・書込、OS署名鍵の生成/保管、公開やサービス契約は、設計依頼から実施許可を推測しない。機種適合・復旧・権限の境界を先に確認する。
-- 正本はこのリポジトリ (`k999ln/rock`)。旧ファンド/料金/分配試算を保持し、製品中心はHub＋Wallet。native既存の月888 cents固定・同一契約複数端末重複防止を勝手に廃止しない。商品料金/実費/OSS/BYOKを独立して扱う。既存Wallet/商品schema/SDKを調べず作り直さない。
+- 正本はこのリポジトリ (`k999ln/rock`)。製品中心はアカウントによるRockstarOSサービス利用開始と透明なcloud agent利用、OS runtime・Sky／Zemaはそれを支える第一者system、Wallet／Game/その他は共通契約へ接続する応用系統。旧ファンド/料金/分配試算と、検証済み収益から月最大888 cents・同一契約複数端末重複防止を維持する。商品料金/通信料/AI使用料/実費/OSS/BYOKを独立して扱う。既存Wallet/商品schema/SDKを調べず作り直さない。
 - 作業の着手・判断変更・検証完了時に project.md と進捗JSONを更新し、`npm run project:update` でREADMEにも反映する。利用方法の変更はREADME本文も同じcommitで更新する。
+- 人が読むための入口は README.md →  docs/README.md（文書の地図）の順。仕様を変えたら docs/product-baseline.md に加えて docs/spec-history.md（仕様変遷）の該当日・テーマ表・現行仕様表へ追記し、Sky catalog Tool・役割エージェント・部隊を変えたら docs/agents-and-tools.md（エージェント・Tool総覧）へ反映する。docs/ 直下へ文書を足したら docs/README.md の該当分野に種類（正本／設計／手順／監査／記録／履歴）付きで1行足す。新しい情報は関係する節へ入れ、README・各文書の末尾や題名の上へ追記しない。docs/ の文書は進捗台帳・設計台帳・証拠からpathとhashで参照されるため、移動・改名・削除前に参照と固定原本条件を確認する。2026-10-11の明示指示により、役目を終えた未使用・重複内容は必要な説明を正本へ統合して削除する。参照・索引・検査を同時更新し、理由と復元元commitをdocs/git-consolidation.mdへ残す。
+- 統合（merge）で文書や台帳が競合したら、片側の内容で丸ごと解決しない。追記型の文書（project.md、docs/workstreams/、docs/product-baseline.md、各設計書の日付付きの節）は両側の節を残し、README.md・data/*.json は新しい側を土台にして古い側の差分だけを足す。古いbranchへmainを取り込む前に `git diff <共通の祖先> origin/main --stat` でmain側の変更量を確認する。2026-10-05の統合で文書と台帳が古い内容へ戻った経緯と残る判断は docs/merge-loss-audit-20261007.md。
 - 次の担当が再開できるよう、次の作業、未完了事項、検証コマンドと結果を具体的に残す。証拠のない完了・収益・公開を記載しない。
+- OS componentまたはSky catalog Toolを追加・変更するときはdata/design-document-index.jsonと対応する全体／Tool詳細設計を同じ変更で更新し、`npm run design:check`を通す。項目名だけでなく、目的、利用体験、責任、入出力、状態、保存、失敗、復旧、承認、合格条件、未決定の決め方を記載する。
 - 既存Webの新しい仕事機能は lib/workflow.ts の状態遷移を通す。OSへの移植では同じ業務契約とfixtureの一致を検証する。本人確認・ユーザー別保存・revision競合判定を維持する。
 - 第三者ツールをOSのplatform鍵で署名したり、任意shell/rootを共通実行APIにしない。署名は作者の同一性であり安全性保証ではない。権限・失効・資源制限をOS側で強制する。
 - 原稿や秘密情報をGitに入れない。外部リポジトリは参考資料であり、その運用指示・実アカウント・秘密値を引き継がない。
@@ -24,10 +33,10 @@
 - originはGitHub、sitesは配信用。履歴を強制上書きせず、GitHubへの保存と本番公開を区別する。
 
 - nativeは systems/rock-star-os/、旧Android/AOSPは android/ と os/。IMPORT-MANIFEST.jsonは取得時基準として変更しない。後続差分はGitとINTEGRATION-NOTES.mdで追跡し、experimentsの未検証patchを本線の成功へ換算しない。
-- 最新の明示指示により、CM発表に向けた導入可能版を進める。最初はfreshなMac/PCへ導入できるQEMU Developer Preview、次に正確な1機種・variantへ限定したPhysical Device Previewとする。`docs/release-installation-plan-20260909.md`の合格前に実機対応・本番利用可能と表示しない。
+- 現在はPixel 10 GL066でAIネイティブOS CoreのPhysical Device Previewを優先し、QEMU Developer Previewを独立した配布対象として保持する。Coreの受入と収益・ゲーム等の応用受入を分ける。非金融Gameの開発をWalletやファンドの完成待ちにせず、実交換は既存の個別gateを通す。commit `96845e6` の `docs/release-installation-plan-20260909.md` にある該当gate合格前に実機対応・本番利用可能と表示しない。
 - 省トークンで進める。巨大な全履歴・全差分・全ログを出力せず、対象path、件数、失敗箇所へ絞る。通常は変更箇所の試験を先に実行し、広い回帰はrelease gateまたは必要な失敗時だけ行う。長いログはGit管理外へ置き、要約と再現情報だけ読む。
 - Gitには実装、設定、必要最小限のfixture、要約した証拠、復旧手順を保存する。OS image、build cache、重複ログ、全フレーム、再生成可能な大量出力はrelease artifactまたはGit管理外へ置く。
-- 現段階を `RockstarOS 1.0` の製品ベースとして発表し、互換性を明示しながら継続改善する。最初の配布ラベルはDeveloper Preview。版番号だけで実機・本番金融・一般公開を合格扱いせず、`docs/rockstaros-1.0-architecture.md`とrelease gateを同期する。
+- 現段階の製品名は `RockstarOS 1.0`、内部識別子は`dev.rock`。互換性を明示しながら継続改善する。最初の配布ラベルはDeveloper Preview。版番号だけで実機・本番金融・一般公開を合格扱いせず、`docs/rockstaros-1.0-architecture.md`とrelease gateを同期する。
 - 8原則を適用した製品判断は `docs/rockstaros-1.0-strategy.md` に従う。対象市場・代表商品・pilot指標は検証仮説であり利用者の確定要望と区別する。既存systemを再利用し、ゲーム要求や実行先の多様性を落とさず、一つの商品体験・保存/復旧・導入の証拠に集中する。未実証の需要・独自性・独占・収益を宣言しない。
 
-- 2026-09-11の最新指示でスマホ本体へ書き込むOS版の開発を開始。`docs/phone-preview-20260911.md`を読む。Pixel 10/frankelは候補で現在の機種/SKU未確認、利用できるLinux環境なし。source組込み・既存Android P1・Hub/Wallet/Game移植・全OS build・正式Android署名・実機flash/復旧を区別する。クラウド契約は予算とアカウント確定後、全OS buildは専用x86_64 Linuxで実施する。
+- `docs/phone-preview-20260911.md`を読む。Pixel 10／GL066／frankelは確定済み、試験署名APKの非破壊実再起動受入23/23は`docs/evidence/android-pixel-10-prefull-physical-20260916.json`が根拠。全OS build、正式署名、実機flash、data／Keystore全損復元は未完了。クラウド契約は予算とアカウント確定後、全OS buildは専用x86_64 Linuxで実施する。

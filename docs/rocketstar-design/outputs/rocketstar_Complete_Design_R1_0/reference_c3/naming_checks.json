@@ -1,0 +1,11 @@
+{
+  "date": "2026-09-24",
+  "rocketName": "rocketstar",
+  "visualReview": "All 22 rocket and 18 colony PDF page renders reviewed; edited image heading and preserved design visible.",
+  "originalMassAndImageHistoryBytesPreserved": true,
+  "designStatusAndAllExistingNumericValuesPreserved": true,
+  "pages": {
+    "rocket": 22,
+    "colony": 18
+  }
+}

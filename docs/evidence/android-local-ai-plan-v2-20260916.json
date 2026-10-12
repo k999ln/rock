@@ -1,0 +1,76 @@
+{
+  "schema": "avocadoos-android-local-ai-plan-v2/1",
+  "recordedDate": "2026-09-16",
+  "sourceCommit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "sourcePreparation": {
+    "baseOverlaySha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
+    "planV2OverlaySha256": "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
+    "cleanPinnedArchiveApply": "PASS"
+  },
+  "runtimeContract": {
+    "apiVersion": 2,
+    "schemaId": "article-preparation@1/input-v1",
+    "selectedToolId": "article-preparation@1",
+    "responseFormat": "json_schema",
+    "localAiToolCallsAllowed": false,
+    "brokerClosedFieldValidation": "PASS",
+    "brokerExecutableInputPreflight": "PASS"
+  },
+  "artifacts": {
+    "unsignedArm64Release": {
+      "sha256": "b748cd207fb65c43eacaea172b5d80d313a7e5ab3e976f4aaa8b5de161491f4c",
+      "sizeBytes": 26395708,
+      "internetPermission": false
+    },
+    "testSignedForDeviceAcceptance": {
+      "sha256": "f980ce9aa59137559231d69077f7fc892f25a185eed2ad8fe17109f06a6058a7",
+      "sizeBytes": 26441371,
+      "productionSigned": false
+    }
+  },
+  "sourceTests": {
+    "typescript": "PASS",
+    "jestSuites": 6,
+    "jestTests": 18,
+    "eslint": "PASS",
+    "offlineManifestCheck": "PASS",
+    "npmAuditVulnerabilities": 0
+  },
+  "android15Arm64Emulator": {
+    "brokerInstrumentation": "8/8 PASS",
+    "shellInstrumentation": "3/3 PASS",
+    "modelState": "not_ready_or_no_model",
+    "zemaOutcome": "BLOCKED_WITHOUT_PARTIAL_WORK"
+  },
+  "stockPixel": {
+    "model": "Pixel 10",
+    "deviceCode": "frankel",
+    "androidVersion": 17,
+    "brokerInstrumentation": "8/8 PASS",
+    "shellInstrumentation": "3/3 PASS",
+    "shellZemaOutcome": "QUEUED",
+    "fullSelectedToolFlow": {
+      "planAccepted": true,
+      "stepsPassed": [
+        "citations@1",
+        "free-article@1"
+      ],
+      "finalState": "review",
+      "resultReadable": true,
+      "historyEvents": 5
+    }
+  },
+  "privacy": {
+    "rawModelOutputStored": false,
+    "testPromptContainedUserData": false
+  },
+  "notProved": [
+    "native Sky selection persistence",
+    "Zema flow recovery after physical reboot",
+    "AOSP image integration",
+    "SELinux enforcing domain acceptance",
+    "production signing",
+    "flash or OS boot",
+    "revenue or yield"
+  ]
+}

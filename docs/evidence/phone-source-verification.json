@@ -1,0 +1,44 @@
+{
+  "schema": "rock-phone-source-verification/1",
+  "verifiedAt": "2026-10-06T18:03:52.283574+00:00",
+  "scope": "Signed upstream manifest and referenced Pixel 10 source identities; not repo sync, build or hardware acceptance",
+  "reason": "Owner requested OS completion on 2026-10-06; compile from the current signed stable source while retaining historical device evidence.",
+  "releaseChannelUrl": "https://grapheneos.org/releases#frankel",
+  "source": {
+    "manifestUrl": "https://github.com/GrapheneOS/platform_manifest.git",
+    "manifestTag": "2026100200",
+    "manifestTagObject": "94691f0fc2ebfd9cf70d58d9091e52a895e515c9",
+    "manifestCommit": "58467adfb0c9f8a944f55e817e225ed862213c78",
+    "manifestDefaultXmlSha256": "c4c71c9b4eac78ac0c261114c32e53fda4af6f208309cce301eb4ac784619d2e",
+    "allowedSignersSha256": "344f59c6f058699e63fea68e35953b341c14e3bf1fbc1256f6baa84aa2aca1d0",
+    "verifiedSigner": {
+      "identity": "contact@grapheneos.org",
+      "keyFingerprint": "SHA256:AhgHif0mei+9aNyKLfMZBh2yptHdw/aN7Tlh/j2eFwM"
+    },
+    "adevtoolCommit": "649267e954063263d53799d3cc53e382ab242893",
+    "hook": "vendor/adevtool/config/mk/google_devices/device/frankel/device.mk",
+    "hookSha256": "3a24ad3ad1f68ca806b181f192d4cd8468c8a57316b2152b953939966c766a2d",
+    "kernel": {
+      "platform": "laguna",
+      "codename": "muzel",
+      "version": "6.6",
+      "prebuiltCommit": "097a148308ab088692bbc8ef3d206dab07b28ee7",
+      "artifactTree": "bb38415fc888b6c491601116a38943884a1a6c69",
+      "genericGkiPrebuiltCommit": "350899556b7cae26d5981c7055759428aef7598d",
+      "sourceRepository": "https://gitlab.com/grapheneos/kernel_pixel_6.6.git"
+    }
+  },
+  "tagSignatureVerified": true,
+  "signatureResult": "Good \"git\" signature for contact@grapheneos.org with ED25519 key SHA256:AhgHif0mei+9aNyKLfMZBh2yptHdw/aN7Tlh/j2eFwM",
+  "verificationCommands": [
+    "git -c gpg.ssh.allowedSignersFile=<official-allowed-signers> verify-tag 2026100200",
+    "git rev-parse refs/tags/2026100200",
+    "git rev-parse refs/tags/2026100200^{commit}",
+    "sha256sum default.xml <official-allowed-signers>",
+    "Read vendor/adevtool and device/google/laguna-kernels/6.6 revisions from the verified default.xml; hash the pinned frankel device.mk and inspect the pinned grapheneos/muzel tree."
+  ],
+  "historicalDeviceEvidence": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
+  "fullRepoSyncCompleted": false,
+  "soongBuildCompleted": false,
+  "hardwareFlashPerformed": false
+}

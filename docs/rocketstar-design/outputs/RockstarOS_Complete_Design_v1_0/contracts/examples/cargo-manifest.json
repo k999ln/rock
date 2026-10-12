@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "rockstaros.icd.cargo-manifest.v1",
+  "executionMode": "SIMULATION",
+  "dataClass": "SYNTHETIC",
+  "siteId": "site:fixture",
+  "nodeId": "node:fixture",
+  "messageId": "message:fixture",
+  "issuedAt": {
+    "utcMs": 1000000,
+    "monotonicMs": 1000,
+    "bootId": "boot:fixture-A",
+    "quality": "TRUSTED",
+    "uncertaintyMs": 1
+  },
+  "cargoId": "cargo:fixture",
+  "manifestRevision": 0,
+  "workId": "work:fixture",
+  "locationRef": "location:bench",
+  "state": "PLANNED",
+  "massKg": null,
+  "envelopeMm": null,
+  "handlingProfileRef": "handling:fixture",
+  "acceptanceEvidenceRefs": [],
+  "configurationDigest": "0000000000000000000000000000000000000000000000000000000000000000"
+}

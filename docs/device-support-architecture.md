@@ -6,12 +6,12 @@
 
 ## 一つの製品、四つの提供区分
 
-| 区分 | 意味 | 現在の例 |
-| --- | --- | --- |
-| `native_os` | RockstarOSのOS imageを対象環境で起動する。物理端末は機種別受入が必要 | QEMUは内部限定受入、Pixelは候補のみ |
-| `gsi_experimental` | Trebleとunlock条件を満たすAndroidへ機種別に試験する | 汎用Androidは計画段階 |
-| `client_only` | 既存OSを置換せず、最小権限clientからSky・Wallet・remote jobを利用する | iOS/iPadOS、現時点のBlackBerry Android |
-| `unsupported` | 安全な導入・更新・復旧経路がないため製品対応を表示しない | BBOS／BlackBerry 10の旧端末 |
+| 区分               | 意味                                                                  | 現在の例                               |
+| ------------------ | --------------------------------------------------------------------- | -------------------------------------- |
+| `native_os`        | RockstarOSのOS imageを対象環境で起動する。物理端末は機種別受入が必要  | QEMUは内部限定受入、Pixelは候補のみ    |
+| `gsi_experimental` | Trebleとunlock条件を満たすAndroidへ機種別に試験する                   | 汎用Androidは計画段階                  |
+| `client_only`      | 既存OSを置換せず、最小権限clientからSky・Wallet・remote jobを利用する | iOS/iPadOS、現時点のBlackBerry Android |
+| `unsupported`      | 安全な導入・更新・復旧経路がないため製品対応を表示しない              | BBOS／BlackBerry 10の旧端末            |
 
 仮想環境の`native_os`合格を、物理スマホの合格へ移さない。`client_only`はRockstarOSのサービス体験を提供できるが、root、OS更新、端末全体の隔離やハードウェア制御を提供できるとは表示しない。
 
@@ -70,8 +70,8 @@ unlockやflashに伴うデータ消去は、対象端末と実行直前に利用
 ## 現在の順序
 
 1. QEMUの既存受入を保持し、Android共通CoreのCuttlefish入口を作る。
-2. Pixel 7／`panther`とPixel 10／`frankel`を候補のまま保持し、所有端末を読取り専用で確認して最初のDSPを一つ選ぶ。
-3. 予算承認後に専用Linuxで選択端末の全source buildを行う。
+2. 所有済みPixel 10／`frankel`を最初の物理対象とし、読取り専用診断でproduct、現在OS、OEM unlocking可否を確認する。Pixel 7／`panther`はPixel 10受入後まで保留する。
+3. 予算承認後に専用LinuxでPixel 10の全source buildを行う。
 4. 選択端末の実機受入後、Treble端末を`gsi_experimental`として一機種ずつ追加する。
 5. BlackBerry Androidは正確なモデルにsupported unlock・vendor・recovery経路がある場合だけ実験候補へ上げる。旧BlackBerryは非対応を維持する。
 6. iPhone/iPadはOS置換ではなくclientとして共通Coreへ接続する。

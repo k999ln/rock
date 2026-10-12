@@ -1,0 +1,567 @@
+{
+  "checked_at": "2026-10-05T07:33:33.820183+00:00",
+  "client_design_date": "2026-10-01",
+  "evidence_level": "host_sqlite_design_validation_only",
+  "repository_baseline": "46aec2bc5b0ddd989c594f662877fc62890d987e",
+  "original_design_baseline": "b3e2676abd8ae2a0b3f78f48483e067b429d9bc8",
+  "source_scope": "checked-out worktree; HEAD identifies ancestry and input hashes identify tested contents",
+  "ddl": "docs/contracts/sky-commerce-v2.sql",
+  "ddl_sha256": "6200543a810fdb5d39fa855cd88fd2ff5d9508e4c334539d25a2726e743f0912",
+  "validator_sha256": "cf4a849d674fc4017fd2452bb7fca84144c58a6697478d715a749f2caca24f9b",
+  "sqlite_version": "3.53.4",
+  "existing_migrations": [
+    "0000_previous_havok.sql",
+    "0001_wealthy_shinko_yamashiro.sql",
+    "0002_operations_backend.sql",
+    "0002_work_jobs.sql",
+    "0004_union_bridge.sql",
+    "0005_early_the_enforcers.sql",
+    "0006_married_scream.sql",
+    "0007_yielding_giant_man.sql",
+    "0008_wooden_avengers.sql",
+    "0009_sad_giant_girl.sql",
+    "0010_gray_fat_cobra.sql",
+    "0011_overrated_skaar.sql",
+    "0012_marketplace_relation_guards.sql",
+    "0013_sky_provider_connections.sql",
+    "0014_sparkling_chimera.sql",
+    "0015_oval_the_twelve.sql",
+    "0016_red_crusher_hogan.sql",
+    "0017_high_krista_starr.sql",
+    "0018_sky_commerce.sql",
+    "0019_sky_a2a_delegations.sql",
+    "0020_a2a_delegation_events.sql",
+    "0021_a2a_delegation_inputs.sql",
+    "0022_a2a_delegation_artifacts.sql",
+    "0023_a2a_sky_agent_connections.sql",
+    "0024_a2a_broker_authorizations.sql",
+    "0025_a2a_shared_budget_reservations.sql",
+    "0026_a2a_usage_receipts.sql",
+    "0027_esim_provider_webhook_inbox.sql",
+    "0028_esim_provider_webhook_inbox.sql",
+    "0029_esim_profile_order_binding.sql",
+    "0030_esim_provider_order_once.sql",
+    "0031_esim_install_material_delivery.sql",
+    "0032_esim_order_pricing_snapshot.sql",
+    "0033_a2a_offline_continuation_consent.sql",
+    "0034_esim_install_receipts.sql",
+    "0035_esim_device_gateway_entitlements.sql",
+    "0036_nostalgic_miek.sql",
+    "0037_csv_trial_payments.sql",
+    "0038_android_attested_gateway_keys.sql",
+    "0039_rockstar_service_entitlements.sql",
+    "0040_rockstar_entitlement_events.sql",
+    "0041_a2a_price_quotes.sql",
+    "0042_remote_ai_rate_cards.sql",
+    "0043_a2a_delegation_fanout_limits.sql",
+    "0044_a2a_live_usage_snapshots.sql",
+    "0045_rockstar_device_sessions.sql",
+    "0046_remote_ai_text_executions.sql",
+    "0047_remote_ai_text_durable_inputs.sql",
+    "0048_rockstar_a2a_broker_enrollment.sql",
+    "0049_a2a_price_quote_consent_events.sql",
+    "0050_rockstar_entitlement_purchase_once.sql",
+    "0051_remote_ai_text_live_estimates.sql",
+    "0052_rockstar_entitlement_issuer_deliveries.sql",
+    "0053_rockstar_entitlement_delivery_key_ids.sql",
+    "0054_rockstar_entitlement_issuer_rate_limits.sql",
+    "0055_sky_package_runtime_bindings.sql",
+    "0056_a2a_package_runtime_binding_refs.sql",
+    "0057_a2a_parent_sequence.sql",
+    "0058_campus_layer.sql"
+  ],
+  "migration_sha256": {
+    "drizzle/0000_previous_havok.sql": "7372800f2fef3867abfdb3775079f39cbda1502e14ffa2265e4fedb102916c63",
+    "drizzle/0001_wealthy_shinko_yamashiro.sql": "dd7a0e05ff9d67b14f09c60addc4f27f689d68eead3d17102f31e898bb3218d9",
+    "drizzle/0002_operations_backend.sql": "83f1c3ced5eb396775926940fc73dc96e0fc9e2f3bb7991bd5a665b228e9d2eb",
+    "drizzle/0002_work_jobs.sql": "3aa55ef1a17c960808c953ef51fad24a800126ec1a0dd424bf85197e8b3b7eb9",
+    "drizzle/0004_union_bridge.sql": "e183bc5778f03886bcd03d0a1548121e06252acde6565769043c3b660dc151af",
+    "drizzle/0005_early_the_enforcers.sql": "711ed2bc635f5145be84fc953d06d9f2704a874d160275129842df9e4affd1b9",
+    "drizzle/0006_married_scream.sql": "6294d5c0f810962647d15bb739f9ca35d6914e3647f211c11381f5afd5a8ede4",
+    "drizzle/0007_yielding_giant_man.sql": "ceeb23872f9d88652a936f6f7f1a09d9f0f7dd096dc5ce191412374de22b8cc2",
+    "drizzle/0008_wooden_avengers.sql": "542c4e4356ec26b0afb8c55afb46341719ccce91f9c3c449422a7bad0165df70",
+    "drizzle/0009_sad_giant_girl.sql": "1f167394b9c8fe4fcff2c297c2058c6d1d697daf4cda07066ce4c227af2c91fc",
+    "drizzle/0010_gray_fat_cobra.sql": "3af98875ff3d2f07b2c5ae4e2d2badf91834c180647c5013fa3659eb575797af",
+    "drizzle/0011_overrated_skaar.sql": "0cbdb7330ccc5862e16ef35f211fa9a03338369a64a9aae19db1fc86044d9736",
+    "drizzle/0012_marketplace_relation_guards.sql": "d0785fb3eb987e035197bae77853b562ad0de05de187bf0f35640872f695ca2e",
+    "drizzle/0013_sky_provider_connections.sql": "6c49fb04ad788f534b464bf0fbe7c85fbc825996af1bd4e96a7e1b2b36a5578b",
+    "drizzle/0014_sparkling_chimera.sql": "c1a60c71fe6abc17a8bf816b89ccbfb7609aef86286d913f4b1fd7e547bc64f9",
+    "drizzle/0015_oval_the_twelve.sql": "1fe8549052f694e4e6d2e964f4449f60dc8020f0ae9d1c42ba678a82c3dc60f5",
+    "drizzle/0016_red_crusher_hogan.sql": "ee4351c89a0a48b3ff1a2de7bdfd4504ff82c1b7b4d167f2e37248b56c763ec9",
+    "drizzle/0017_high_krista_starr.sql": "5bb272de10ff801f9cf28ea86ad2e4be5abc82c2ad2981b77852b5f9c9f3cb09",
+    "drizzle/0018_sky_commerce.sql": "b595e993c4982e575847195eaa5d8fe39053c487a0391ad372d08b8b13bdae26",
+    "drizzle/0019_sky_a2a_delegations.sql": "b3b448c4c8df5fcb309c56ef8a35e709f3a7f5a2f5e47394acd1738eeff32add",
+    "drizzle/0020_a2a_delegation_events.sql": "8fb350013091cc26a5b59bbfb4626cf987f043f1661b8b1768b288af11995bad",
+    "drizzle/0021_a2a_delegation_inputs.sql": "a24a737720bdf44b7d1b50d96ee2087a0e202cec9c98a6520ed020f1d3c3f1f8",
+    "drizzle/0022_a2a_delegation_artifacts.sql": "feef54b76a08f89dad5fe7fe973714e5590a1812b968aa3fdfa26d8e0f334769",
+    "drizzle/0023_a2a_sky_agent_connections.sql": "b3375fbb54be7947c622ebcf03068bec2f8163be27855602b12fdb093ebbd7c1",
+    "drizzle/0024_a2a_broker_authorizations.sql": "11872c95da26391ec35e295d34c564377e13730bf1c93dcfb5bc135dda1226bd",
+    "drizzle/0025_a2a_shared_budget_reservations.sql": "99ab92eb2feffac6f273f039465071af8d61d4e6fa89a313a24a1e78c6802627",
+    "drizzle/0026_a2a_usage_receipts.sql": "8a6efd2d6e08d04d092439bf4851570baa551b4206aca3ca7d9a53feb14f16d5",
+    "drizzle/0027_esim_provider_webhook_inbox.sql": "58830bff9bd22847b3fd2727a9298c263e27f88d1f7c2feb8a041a3c6eb035c2",
+    "drizzle/0028_esim_provider_webhook_inbox.sql": "76843c70516bba2959120576a2cbf955779f0e84f8a69f46de95577d6e812612",
+    "drizzle/0029_esim_profile_order_binding.sql": "226c2dfa824390b6b708acf7db0f082fd460d7b75a324c81d002ac165012082c",
+    "drizzle/0030_esim_provider_order_once.sql": "0b0d1247c81faf3b6b80a5ae966bd56ac58de7d2018e3c0d778cf4e351785be3",
+    "drizzle/0031_esim_install_material_delivery.sql": "c5628a6eb338ec5f8ca6f49aa7f5daa2a25a310b73f407e1ca3d81d49599b61d",
+    "drizzle/0032_esim_order_pricing_snapshot.sql": "ff4973b282264863eb97c550e6174e9a89cc37178c517a758d782edb4fae011a",
+    "drizzle/0033_a2a_offline_continuation_consent.sql": "d111dbc202f597b6e87cd5b3d611368fa454501bfee0e66aed6bbd796d4ea444",
+    "drizzle/0034_esim_install_receipts.sql": "3e632b0edba45e6857ccab6de773de3e6b9d32e72037c186fbb9da9eaa7344fc",
+    "drizzle/0035_esim_device_gateway_entitlements.sql": "298a3c641b5ebcc862dc4156394d1f2df635489609b5febe2377b98a858ea54b",
+    "drizzle/0036_nostalgic_miek.sql": "03e90152127cd99de4694bab172e68a44924145c4c62d95a6c8562377370d62c",
+    "drizzle/0037_csv_trial_payments.sql": "6626fef8914586f42b228e4805b42575343afb085b2ae33c0cd7f9eb2eb33af7",
+    "drizzle/0038_android_attested_gateway_keys.sql": "cbeb908044b2eb4b6f506d2927367173897e5618b3eb7f6816025907646730a7",
+    "drizzle/0039_rockstar_service_entitlements.sql": "73b9b927589d97eb6ed15378e2d511568fda0eaf5945997face768f0a75d06e7",
+    "drizzle/0040_rockstar_entitlement_events.sql": "a54e5a511793e53582653f1a1d90db9efe20705510659cf6c58f3c02b64eb14c",
+    "drizzle/0041_a2a_price_quotes.sql": "2269c035155ef1fb707abf58a423f4695fb24ea363996c8e54308a9504804f5a",
+    "drizzle/0042_remote_ai_rate_cards.sql": "ab47f2da69fbe15fcf44df55572a74df20f41217d921d5f9d20aee3d5d184015",
+    "drizzle/0043_a2a_delegation_fanout_limits.sql": "2a7fe251949a7859f93f94fc048563bbd4c7ce91efe839c9849596a367418c1a",
+    "drizzle/0044_a2a_live_usage_snapshots.sql": "aa22641628a0bbc356d7f4ae1e9008f46591f4fde0fd5790142c759b7a3b3c96",
+    "drizzle/0045_rockstar_device_sessions.sql": "8bcb2497d8dbc5f05194a6135edaac3acfea14591d6575707f31dc43ce3c91e9",
+    "drizzle/0046_remote_ai_text_executions.sql": "022ad7625c7269874d195cc323a986c3ffb168c87237e84822e97e79a2adb219",
+    "drizzle/0047_remote_ai_text_durable_inputs.sql": "1b41984221b595b7282881bdd876f0b5f420f0eecc540d317ff9d3ea0105a34b",
+    "drizzle/0048_rockstar_a2a_broker_enrollment.sql": "2706c71ae998787c434d37550308f507ab427c5b6bbf1341112b97a5058462f5",
+    "drizzle/0049_a2a_price_quote_consent_events.sql": "4af15789d46c5a14791f9de8b022eab8cfe684d8089031b131dc8d582395600e",
+    "drizzle/0050_rockstar_entitlement_purchase_once.sql": "65d10e77038a70de296d105c03aa0a07f437819d6a06224cf319eb9a98dea4ff",
+    "drizzle/0051_remote_ai_text_live_estimates.sql": "8ed0987699467c276d33da8dd5bdfe7c6521fde8b118cf4d09c51949b92b75d5",
+    "drizzle/0052_rockstar_entitlement_issuer_deliveries.sql": "9c59f570b5ff85ee71283a62cbcce6e90da87e43df2c0fbac1027d5a80e33d47",
+    "drizzle/0053_rockstar_entitlement_delivery_key_ids.sql": "c6e5748d407a659781753e6c3f7deb3b67d7c850a8115ecb504c6f86a8aff31b",
+    "drizzle/0054_rockstar_entitlement_issuer_rate_limits.sql": "3252a601000575e2b0bd716408829f49019daf65bb934d0714ec5eb2171b216e",
+    "drizzle/0055_sky_package_runtime_bindings.sql": "3326f8bdb4474e92bac0b486f33874abd76910cafb8e68a990a21e4175024332",
+    "drizzle/0056_a2a_package_runtime_binding_refs.sql": "d7903f3d811a124ef22f78f50e98dbe5ec3d704a45952e1dcf6a99cfbaff28d9",
+    "drizzle/0057_a2a_parent_sequence.sql": "b7d8a4fb63e5ead7452a8c6c13151ff58c1da0df9217cd3142f4066b037e84c3",
+    "drizzle/0058_campus_layer.sql": "385902fb4e8b56ae0759484025bf4cb92bdc6e4216493ec2a117ad1f86b21404"
+  },
+  "migration_journal": "drizzle/meta/_journal.json",
+  "migration_journal_sha256": "b1905cb1695538f76577684d1e902406ab8766252aaf66fdc010f90b926d811b",
+  "counts": {
+    "total": 104,
+    "pass": 104,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "complete_sorted_migration_inventory_matches_journal",
+      "status": "pass"
+    },
+    {
+      "name": "required_legacy_commerce_migration_is_present",
+      "status": "pass"
+    },
+    {
+      "name": "foreign_keys_enabled",
+      "status": "pass"
+    },
+    {
+      "name": "existing_four_table_schemas_unchanged",
+      "status": "pass"
+    },
+    {
+      "name": "exactly_fourteen_sidecar_tables",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_has_one_seller_reservation",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_mode_must_match_seller",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_request_is_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_reservation_cannot_be_deleted",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_stale_fence_cas_is_noop",
+      "status": "pass"
+    },
+    {
+      "name": "unknown_account_creation_deadline_cannot_reset",
+      "status": "pass"
+    },
+    {
+      "name": "arbitrary_account_adoption_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_adopts_authenticated_matching_observation",
+      "status": "pass"
+    },
+    {
+      "name": "account_creation_cannot_adopt_second_account",
+      "status": "pass"
+    },
+    {
+      "name": "reject_duplicate_quote_id",
+      "status": "pass"
+    },
+    {
+      "name": "quote_terms_are_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "quote_delete_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "reject_mixed_mode_contract_quote",
+      "status": "pass"
+    },
+    {
+      "name": "reject_mixed_manifest_contract_quote",
+      "status": "pass"
+    },
+    {
+      "name": "reject_fractional_money",
+      "status": "pass"
+    },
+    {
+      "name": "reject_negative_money",
+      "status": "pass"
+    },
+    {
+      "name": "reject_wrong_commission",
+      "status": "pass"
+    },
+    {
+      "name": "reject_non_jpy_purchase",
+      "status": "pass"
+    },
+    {
+      "name": "reject_invalid_hash",
+      "status": "pass"
+    },
+    {
+      "name": "contract_identity_cannot_change_in_place",
+      "status": "pass"
+    },
+    {
+      "name": "subject_link_cannot_be_reassigned",
+      "status": "pass"
+    },
+    {
+      "name": "duplicate_entitlement_aggregate_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "entitlement_aggregate_delete_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "entitlement_revision_reset_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "operation_idempotency_collision_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "operation_request_digest_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "operation_wrong_account_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "operation_wrong_mode_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "checkout_amount_must_equal_order",
+      "status": "pass"
+    },
+    {
+      "name": "unknown_operation_keeps_original_deadline",
+      "status": "pass"
+    },
+    {
+      "name": "unknown_requires_submission_time",
+      "status": "pass"
+    },
+    {
+      "name": "over_20h_retry_deadline_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "refund_provider_id_duplicate_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "refund_has_independent_pending_state",
+      "status": "pass"
+    },
+    {
+      "name": "refund_failed_state_kept_without_recharge",
+      "status": "pass"
+    },
+    {
+      "name": "refund_wrong_operation_kind_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "refund_amount_above_order_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "refund_amount_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "unreviewed_refund_overallocation_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "payment_closure_without_evidence_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "verified_expired_session_preserves_unpaid_payment_fact",
+      "status": "pass"
+    },
+    {
+      "name": "duplicate_event_id_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "event_payload_hash_cannot_change",
+      "status": "pass"
+    },
+    {
+      "name": "event_cannot_bind_different_mode_order",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_account_scope_stale_lease_is_noop",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_account_observation_accepted_without_order",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_account_cannot_accept_other_accounts_balance",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_account_evidence_cannot_be_replayed_at_new_revision",
+      "status": "pass"
+    },
+    {
+      "name": "wallet_unknown_zero_negative_are_distinct",
+      "status": "pass"
+    },
+    {
+      "name": "observation_is_immutable",
+      "status": "pass"
+    },
+    {
+      "name": "observation_cannot_be_deleted",
+      "status": "pass"
+    },
+    {
+      "name": "unsafe_integer_balance_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "negative_charge_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "observation_json_must_parse",
+      "status": "pass"
+    },
+    {
+      "name": "nonce_unique_per_issuer_audience_mode",
+      "status": "pass"
+    },
+    {
+      "name": "nonce_expiry_not_extendable",
+      "status": "pass"
+    },
+    {
+      "name": "nonce_cas_second_consume_is_noop",
+      "status": "pass"
+    },
+    {
+      "name": "consumed_nonce_cannot_be_reset",
+      "status": "pass"
+    },
+    {
+      "name": "concrete_sql_example_has_five_statements",
+      "status": "pass"
+    },
+    {
+      "name": "stale_lease_cas_is_all_effect_noop",
+      "status": "pass"
+    },
+    {
+      "name": "expired_lease_cas_is_all_effect_noop",
+      "status": "pass"
+    },
+    {
+      "name": "entitlement_conflict_gates_first_cas",
+      "status": "pass"
+    },
+    {
+      "name": "stale_recovery_epoch_gates_first_cas",
+      "status": "pass"
+    },
+    {
+      "name": "order_domain_rejects_raw_provider_status",
+      "status": "pass"
+    },
+    {
+      "name": "order_domain_rejects_unknown_payment_fact",
+      "status": "pass"
+    },
+    {
+      "name": "no_audit_or_outbox_after_noop",
+      "status": "pass"
+    },
+    {
+      "name": "late_statement_error_rolls_back_both_aggregates",
+      "status": "pass"
+    },
+    {
+      "name": "matching_fence_and_revision_commit_all_effects",
+      "status": "pass"
+    },
+    {
+      "name": "state_audit_outbox_and_inbox_agree",
+      "status": "pass"
+    },
+    {
+      "name": "different_late_mutation_noops_after_commit",
+      "status": "pass"
+    },
+    {
+      "name": "audit_without_accepted_cas_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "accepted_audit_is_append_only",
+      "status": "pass"
+    },
+    {
+      "name": "lease_fence_cannot_move_backwards",
+      "status": "pass"
+    },
+    {
+      "name": "new_lease_token_requires_new_fence",
+      "status": "pass"
+    },
+    {
+      "name": "external_success_is_preserved_alongside_unknown_overlapping_reservation",
+      "status": "pass"
+    },
+    {
+      "name": "paid_ownership_does_not_require_buyer_oauth",
+      "status": "pass"
+    },
+    {
+      "name": "revoked_subject_link_rejects_old_grant_ack",
+      "status": "pass"
+    },
+    {
+      "name": "subject_state_change_requires_revision",
+      "status": "pass"
+    },
+    {
+      "name": "recovery_epoch_cannot_decrease_in_current_database",
+      "status": "pass"
+    },
+    {
+      "name": "refund_case_closure_does_not_restore_without_decision",
+      "status": "pass"
+    },
+    {
+      "name": "keep_revoked_disposition_blocks_grant_cas",
+      "status": "pass"
+    },
+    {
+      "name": "withdrawn_canceled_refund_with_explicit_restore_can_grant",
+      "status": "pass"
+    },
+    {
+      "name": "repurchase_keeps_aggregate_and_monotonic_revision",
+      "status": "pass"
+    },
+    {
+      "name": "old_grant_ack_after_repurchase_is_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "old_refund_does_not_rewrite_new_order",
+      "status": "pass"
+    },
+    {
+      "name": "refund_correction_requires_new_provider_evidence",
+      "status": "pass"
+    },
+    {
+      "name": "stale_refund_observation_cannot_replace_newer",
+      "status": "pass"
+    },
+    {
+      "name": "refund_success_can_be_corrected_to_failed",
+      "status": "pass"
+    },
+    {
+      "name": "old_refund_failure_preserves_repurchase_rights",
+      "status": "pass"
+    },
+    {
+      "name": "unresolved_refund_obligation_cannot_reactivate",
+      "status": "pass"
+    },
+    {
+      "name": "old_order_cannot_replace_current_pending_entitlement",
+      "status": "pass"
+    },
+    {
+      "name": "legacy_import_does_not_fabricate_quote_or_acceptance",
+      "status": "pass"
+    },
+    {
+      "name": "legacy_import_cannot_promote_without_provider_evidence",
+      "status": "pass"
+    },
+    {
+      "name": "new_quote_order_cannot_use_null_quote_bypass",
+      "status": "pass"
+    },
+    {
+      "name": "legacy_import_requires_historical_evidence_ref",
+      "status": "pass"
+    },
+    {
+      "name": "paid_access_contract_only_allows_server_introspection",
+      "status": "pass"
+    },
+    {
+      "name": "paid_access_positive_cache_is_fixed_at_60_seconds",
+      "status": "pass"
+    },
+    {
+      "name": "database_foreign_key_check_clean",
+      "status": "pass"
+    },
+    {
+      "name": "database_integrity_check_clean",
+      "status": "pass"
+    }
+  ],
+  "not_executed": [
+    "Cloudflare D1 deployment/runtime",
+    "Stripe sandbox",
+    "live payment",
+    "actual identity gateway",
+    "external MCP authorization",
+    "bank payout"
+  ]
+}

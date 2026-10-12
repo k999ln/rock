@@ -1,23 +1,120 @@
 {
-  "schema": "rock-phone-source/1",
-  "stage": "SOURCE_INTEGRATION_NOT_BUILT",
+  "schema": "rock-phone-source/2",
+  "stage": "SOURCE_TAG_AND_DEVICE_LAYOUT_FROZEN_RECOVERY_ARTIFACTS_PENDING",
   "device": "frankel",
   "model": "Google Pixel 10",
-  "targetConfirmedByOwner": false,
-  "knownSkus": ["GLBW0", "GL066", "GK2MP"],
-  "confirmedSku": null,
+  "targetConfirmedByOwner": true,
+  "fullBuildInputGatePassed": false,
+  "knownSkus": [
+    "GLBW0",
+    "GL066",
+    "GK2MP"
+  ],
+  "confirmedSku": "GL066",
   "manifestUrl": "https://github.com/GrapheneOS/platform_manifest.git",
-  "manifestTag": "2026090700",
-  "manifestCommit": "726237f979e7a36cc644f0a784f62ee27fee419b",
-  "adevtoolCommit": "144f004cc484d7e7234cdd167cee48e5f240288f",
+  "manifestTag": "2026100200",
+  "manifestTagObject": "94691f0fc2ebfd9cf70d58d9091e52a895e515c9",
+  "manifestCommit": "58467adfb0c9f8a944f55e817e225ed862213c78",
+  "manifestDefaultXmlSha256": "c4c71c9b4eac78ac0c261114c32e53fda4af6f208309cce301eb4ac784619d2e",
+  "allowedSignersSha256": "344f59c6f058699e63fea68e35953b341c14e3bf1fbc1256f6baa84aa2aca1d0",
+  "verifiedSigner": {
+    "identity": "contact@grapheneos.org",
+    "keyFingerprint": "SHA256:AhgHif0mei+9aNyKLfMZBh2yptHdw/aN7Tlh/j2eFwM"
+  },
+  "adevtoolCommit": "649267e954063263d53799d3cc53e382ab242893",
   "hook": "vendor/adevtool/config/mk/google_devices/device/frankel/device.mk",
   "hookSha256": "3a24ad3ad1f68ca806b181f192d4cd8468c8a57316b2152b953939966c766a2d",
   "rockCheckoutPath": "external/rockstaros",
   "lunch": "frankel-cur-userdebug",
-  "buildTargets": ["target-files-package", "otatools-package"],
-  "kernel": {"platform": "laguna", "codename": "muzel", "version": "6.6", "prebuiltCommit": "9535f8a628468a5143c867551773459a8bbe3e7e"},
+  "buildTargets": [
+    "target-files-package",
+    "otatools-package"
+  ],
+  "kernel": {
+    "platform": "laguna",
+    "codename": "muzel",
+    "version": "6.6",
+    "prebuiltCommit": "097a148308ab088692bbc8ef3d206dab07b28ee7",
+    "artifactTree": "bb38415fc888b6c491601116a38943884a1a6c69",
+    "genericGkiPrebuiltCommit": "350899556b7cae26d5981c7055759428aef7598d",
+    "sourceRepository": "https://gitlab.com/grapheneos/kernel_pixel_6.6.git"
+  },
+  "deviceLayout": {
+    "evidence": "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json",
+    "dynamicPartitions": true,
+    "virtualAb": true,
+    "abUpdate": true,
+    "avbVersion": "1.4",
+    "vbmetaDeviceState": "locked",
+    "requiredNamedPartitions": [
+      "boot_a",
+      "boot_b",
+      "dtbo_a",
+      "dtbo_b",
+      "init_boot_a",
+      "init_boot_b",
+      "metadata",
+      "super",
+      "userdata",
+      "vbmeta_a",
+      "vbmeta_b",
+      "vbmeta_system_a",
+      "vbmeta_system_b",
+      "vbmeta_vendor_a",
+      "vbmeta_vendor_b",
+      "vendor_boot_a",
+      "vendor_boot_b",
+      "vendor_kernel_boot_a",
+      "vendor_kernel_boot_b"
+    ]
+  },
+  "vendor": {
+    "generationCommand": "adevtool generate-all -d frankel",
+    "inventoryTool": "scripts/freeze-phone-build-inputs.py vendor",
+    "inventoryVerificationImplemented": true,
+    "generatedAndInventoried": false,
+    "redistributionApproved": false
+  },
+  "recovery": {
+    "artifactVerificationTool": "scripts/freeze-phone-build-inputs.py recovery",
+    "matchingPairVerificationImplemented": true,
+    "ownerTermsMustBeDetachedAndExternal": true,
+    "factoryImageStatus": "PENDING_OWNER_TERMS_DOWNLOAD_AND_SHA256",
+    "fullOtaStatus": "PENDING_OWNER_TERMS_DOWNLOAD_AND_SHA256",
+    "factoryImageSha256": null,
+    "fullOtaSha256": null,
+    "may2026BootloaderAntiRollbackApplies": true,
+    "olderAndroid16BootloaderFlashForbidden": true,
+    "bothSlotsBootableViaMatchingFullOtaBeforeRiskyFlash": true,
+    "factoryRestoreTested": false,
+    "bootloaderRelockTested": false
+  },
+  "signingPlan": {
+    "freezeTool": "scripts/freeze-phone-build-inputs.py signing-plan",
+    "procedureHashFreezeImplemented": true,
+    "hsmProvisioned": false,
+    "signingBridgesVerified": false
+  },
+  "firstFlashGate": {
+    "schema": "avocadoos-android-first-flash-gate/1",
+    "path": "data/android-first-flash-gate.json",
+    "passed": false
+  },
+  "externalProviderBoundary": {
+    "includedInFirstOsFullBuild": false,
+    "implementation": "APP_AND_SERVER",
+    "requiredBeforePublicEarningLaunch": true,
+    "liveEarningsClaimsAllowedBeforeAcceptance": false
+  },
   "imageBuildVerified": false,
   "imageBootVerified": false,
   "flashReady": false,
-  "notes": "Candidate bring-up source only. Re-check the release and device before any build or installation. Neither GrapheneOS support nor the existing QEMU acceptance proves RockstarOS hardware support."
+  "buildBlockers": [
+    "exact Google factory image and full OTA files with SHA-256",
+    "generated vendor-file inventory and redistribution review",
+    "production signing and recovery plan",
+    "production Operator Agent WebAuthn trust overlay and per-device StrongBox attestation enrollment"
+  ],
+  "notes": "The owner-selected Pixel 10 / frankel / GL066 device layout remains the read-only 2026-09-16 observation. The compile source was refreshed to signed stable 2026100200 on 2026-10-06 for OS completion; it is not a new physical-device observation. Dedicated Linux, vendor generation and a reviewed Local AI APK are needed for compile bringup. Production signing, stock recovery artifacts, Operator production trust/enrollment and first-flash acceptance remain separate blocked release gates.",
+  "sourceVerificationEvidence": "docs/evidence/phone-source-verification.json"
 }

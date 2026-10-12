@@ -1,0 +1,60 @@
+{
+  "schema": "rockstar-local-acceptance-evidence/1",
+  "date": "2026-10-01",
+  "scope": "Android-independent Platform Core A2A Wallet hold, signed handoff request construction, authenticated-source reconnect orchestration seam, Cloud settlement handoff validation, signed usage settlement, and recovery validation",
+  "environment": "Eclipse Temurin 17 and cached Gradle 8.11.1 offline JVM tests plus Node Cloud-WebCrypto verifier fixture; no Android SDK, production AndroidKeyStore key, APK, Binder, production HTTP transport, or physical device",
+  "implementation": {
+    "store": "android/core/src/main/java/dev/rock/core/platform/PlatformStore.java",
+    "schemaVersion": 4,
+    "state": [
+      "one-time owner approval reserves an exact funded-ledger cap for one immutable A2A delegation",
+      "active holds reduce spendable balance and block concurrent approved spending above the remainder",
+      "only a pre-dispatch hold can be released; dispatched work remains held when outcome is indeterminate",
+      "provider-signed receipt verification is bound to owner, job, delegation, task, agent, currency, price version, deadline, and cap",
+      "the exact rock-a2a-wallet-settlement-handoff/1 envelope and a2a.budget.settle command are checked against the local hold before application",
+      "reconnect orchestration fetches an owner-scoped handoff through an injected authenticated no-cache source and applies it through Core",
+      "transport failure preserves the dispatched hold and never retries remote task execution or releases funds",
+      "Java builds the exact short-lived domain-separated Broker request, and a shared RFC-test-key signature vector verifies in both Java and the Cloud WebCrypto implementation",
+      "settlement appends one idempotent Wallet debit and releases the unused hold",
+      "recoverable backup preserves in-flight holds as RECOVERY_REQUIRED and forbids redispatch or early release"
+    ],
+    "fixture": "systems/rock-star-os/tests/fixtures/a2a-usage-receipt-v1.json",
+    "fixtureNotice": "Public RFC 8032 key and synthetic provider funding are test-only; never production trust or customer funds."
+  },
+  "verification": {
+    "command": "GRADLE_USER_HOME=/private/tmp/rock-gradle-user-home JAVA_HOME=/private/tmp/rock-temurin17/Contents/Home /private/tmp/rock-gradle-install/gradle-8.11.1/bin/gradle -p android :core:test -ProckBuildRoot=/private/tmp/rock-gradle-output --no-daemon --offline",
+    "result": "PASS",
+    "coreJvmTests": 69,
+    "a2aReservationSettlementRecoveryTests": 5,
+    "crossLanguageSignedHandoffRequestTests": "2 JVM + 1 Node fixture verification; Node suite 4/4",
+    "handoffApplication": "Core accepts a synthetic exact cloud command map, rejects a changed parent-job binding, synchronizes idempotently via an injected fetch interface, and preserves holds on simulated offline failure; production Android transport is not wired",
+    "a2aReceiptVerifierTests": 2,
+    "fullRepositoryVerify": {
+      "command": "npm run verify",
+      "result": "PASS",
+      "nodeTests": 635,
+      "workerD1Assertions": 667,
+      "fashionBrandOpsTests": 19,
+      "build": "PASS",
+      "releaseBoundaries": "release check still reports 0/6 public readiness gates; first Android flash remains 0/4"
+    }
+  },
+  "notProven": [
+    "production authenticated HTTP/Broker transport and Android UI trigger fetches the cloud settlement handoff",
+    "AndroidKeyStore production Ed25519 Broker key enrollment and signing works on a supported device",
+    "a real device Wallet applies this handoff through APK/AIDL/Binder",
+    "a real funded Wallet, payment rail, invoice or production usage billing",
+    "production provider trust-key custody, rates, receipt semantics or sandbox behavior",
+    "Android APK/AIDL build, Binder instrumentation, hardware-backed key enrollment, or supported-device acceptance",
+    "carrier activation, physical SIM fulfillment, or successful RockstarOS installation"
+  ],
+  "unverifiedImplementationInProgress": {
+    "files": [
+      "android/automation/src/main/java/dev/rock/automation/A2ABrokerDeviceKeyStore.java",
+      "android/automation/src/androidTest/java/dev/rock/automation/A2ABrokerDeviceKeyStoreTest.java"
+    ],
+    "intendedBehavior": "AndroidKeyStore Ed25519 Broker key bound to a server-provided attestation challenge, with hardware-level checks and an exact-device signing/reopen acceptance test",
+    "verification": "NOT RUN: no Android SDK/APK/device validation in this checkpoint",
+    "trustBoundary": "A local or random challenge does not establish server authenticity, broker trust, Rockstar account identity, or production key enrollment."
+  }
+}

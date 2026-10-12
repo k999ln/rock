@@ -105,12 +105,14 @@ curl http://127.0.0.1:8787/health
 
 配布版の`RockstarOS Sky接続.command`を初回に開いておけば、Skyの商品カードで「接続」を1回押すだけで、loopback session発行、MCP initialize、initialized通知、tools/listによる41操作の確認まで完了します。接続状態はそのタブのsession storageだけに保持し、解除時はlocal sessionも失効します。
 
-ブラウザ接続は`FASHION_BROWSER_ORIGINS`のexact originと`127.0.0.1:8787`等のloopback Hostが両方一致する場合だけ許可します。CORSとPrivate Network Accessのpreflightに対応し、originごとに12時間以内のrandom session tokenを発行します。wildcard origin、URL内credential、cookie、永続tokenは使いません。
+ワンクリック接続は、loopbackへbindし、`FASHION_MCP_BEARER_TOKEN`を設定していないローカル構成だけで利用できます。ブラウザ接続は`FASHION_BROWSER_ORIGINS`のexact origin、loopback Host、実際の接続元socketがloopbackという条件を検査します。CORSとPrivate Network Accessのpreflightに対応し、originごとに12時間以内のrandom session tokenを発行します。wildcard origin、URL内credential、cookie、永続tokenは使いません。
+
+固定bearer tokenを設定した構成では`/connect`を無効にし、`/mcp`はOrigin headerに関係なく設定済みbearerとtenant境界を検査します。接続modeをrequest headerから選びません。HTTPの失敗応答は固定error codeだけを返し、入力本文、DB／Providerの内部エラー、stack traceを含めません。
 
 Endpoints:
 
 - `POST /mcp` — sessionless JSON-RPC MCP。loopback以外へbindする場合は`FASHION_MCP_BEARER_TOKEN`と`ROCKSTAR_TENANT_ID`必須
-- `POST /connect` — 許可済みSky originからのloopback browser session発行
+- `POST /connect` — 固定bearer未設定のloopback構成で、許可済みSky originへbrowser session発行
 - `POST /disconnect` — 現在のbrowser sessionを失効
 - `GET /webhooks/instagram` — Meta verify challenge
 - `POST /webhooks/instagram` — `X-Hub-Signature-256`検証付きInstagram DM intake

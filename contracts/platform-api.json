@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "apiVersion": 1,
+  "minSupportedApi": 1,
+  "maxSupportedApi": 1,
+  "componentKinds": ["TOOL", "MCP", "PROVIDER"],
+  "registrationTrust": "installed_apk_signer_and_uid_verified_by_os_broker",
+  "managementPermission": "dev.rock.permission.MANAGE_PLATFORM",
+  "approvalFlow": ["PROPOSED", "DEVICE_CREDENTIAL", "ISSUED", "CONSUMED"],
+  "approvalMaxLifetimeMs": 604800000,
+  "ledger": {
+    "model": "append_only_owner_scoped",
+    "idempotency": ["owner_request_key", "owner_provider_reference", "owner_reversed_receipt"],
+    "mutation": "compensating_reversal_only"
+  },
+  "storage": {
+    "schemaVersion": 2,
+    "migration": "transactional_fail_closed",
+    "backupFormat": "rockstar-platform-backup/1",
+    "encryption": "AES-256-GCM_ANDROID_KEYSTORE",
+    "recoverableBackupFormat": "avocadoos-recoverable-backup/2",
+    "recoverableBackupEncryption": "AES-256-GCM_FRESH_DEK_DUAL_WRAPPED_BY_ANDROID_KEYSTORE_AND_HKDF_SHA256_OWNER_RECOVERY",
+    "recoverableBackupStateFormat": "avocadoos-platform-state/2",
+    "recoverableBackupStatus": "SHELL_API_V4_UI_TRANSACTIONAL_IMPORT_AND_NEW_KEYSTORE_BINDING_EMULATOR_PASS_PHYSICAL_WIPE_PENDING",
+    "recoverableBackupRestoreSafety": {
+      "emptyTargetRequired": true,
+      "restoredAutomationPaused": true,
+      "restoredSkySelectionTokenRotated": true,
+      "restoredApprovalsStopped": true,
+      "installedComponentAuthorityRestored": false,
+      "operatorUniversalRecoveryKey": false,
+      "walletSeed": false
+    },
+    "scope": "android_user",
+    "maxPlaintextBytes": 4194304
+  },
+  "updates": {
+    "requires": ["same_component_identity", "same_signer", "platform_api_overlap", "stored_schema_compatibility"],
+    "rollback": "cached_older_version_only"
+  },
+  "isolation": {
+    "uid": "distinct_android_application_uid",
+    "selinux": "build_time_package_allowlist",
+    "runtimeRegistrationCanGrantDomain": false,
+    "crossComponentBinder": "deny_except_explicit_broker_edges",
+    "shellBinderPermission": "dev.rock.permission.USE_SHELL_API",
+    "shellMayRequestManagementPermission": false,
+    "currentLayout": "dev.rock.shell_ui_separate_from_dev.rock.automation_broker",
+    "targetLayout": "dev.rock.shell_ui_separate_from_dev.rock.automation_headless_broker",
+    "targetPolicy": "data/android-release-architecture-policy.json",
+    "targetStateImplemented": true
+  },
+  "nativeSkyHandoff": {
+    "shellApiVersion": 4,
+    "selectionStore": "broker_sqlite",
+    "selectionSchemaVersion": 2,
+    "selectionTokenRequiredByZema": true,
+    "selectionSurvivesUiAndDeviceRestart": true,
+    "browserSessionStorageUsed": false,
+    "v1ToolAllowlist": ["article-preparation@1"]
+  },
+  "implementationStatus": "SOURCE_PARTIAL_UI_BROKER_SPLIT_AND_BACKUP_V2_EMULATOR_IMPLEMENTED_OPERATOR_AGENT_AND_SEPOLICY_BUILD_PENDING",
+  "releaseStatus": "NOT_PRODUCTION_READY"
+}

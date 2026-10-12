@@ -1,0 +1,228 @@
+import assert from 'node:assert/strict';
+import { createHmac } from 'node:crypto';
+import { readFileSync, readdirSync } from 'node:fs';
+import { DatabaseSync } from 'node:sqlite';
+import test from 'node:test';
+import worker from '../worker/index.js';
+
+const origin = 'https://avocado-mini.example.test';
+const migrationDirectory = new URL('../drizzle/', import.meta.url);
+const migrations = readdirSync(migrationDirectory)
+  .filter(file => file.endsWith('.sql'))
+  .sort()
+  .map(file => readFileSync(new URL(file, migrationDirectory), 'utf8'));
+
+function database() {
+  const sqlite = new DatabaseSync(':memory:');
+  for (const migration of migrations) sqlite.exec(migration);
+  return {
+    sqlite,
+    prepare(sql) {
+      return {
+        bind(...values) {
+          const statement = sqlite.prepare(sql);
+          return {
+            async run() { const result = statement.run(...values); return { meta: { changes: result.changes } }; },
+            async first() { return statement.get(...values) || null; },
+            async all() { return { results: statement.all(...values) }; },
+          };
+        },
+      };
+    },
+  };
+}
+
+function env(db, overrides = {}) {
+  return {
+    DB: db,
+    PREORDER_SALES_ENABLED: 'true',
+    PREORDER_PRODUCT_BASELINE: 'avocadoMini-r5',
+    PREORDER_TERMS_APPROVED: 'true',
+    PREORDER_TOTAL_INCLUDES_SHIPPING: 'true',
+    PREORDER_SELLER_NAME: 'Example seller',
+    PREORDER_SELLER_ADDRESS: 'Example address',
+    PREORDER_SELLER_PHONE: '000-0000-0000',
+    PREORDER_SHIPPING_FEE: 'Included in the tax-inclusive total',
+    PREORDER_SHIPPING_DATE: 'By the end of June 2027',
+    PREORDER_CANCELLATION_TERMS: 'Full refund before shipment',
+    PREORDER_TERMS_VERSION: '2026-09-21.1',
+    PREORDER_R5_TOTAL_JPY: '450000',
+    PREORDER_R5_CAPACITY: '1',
+    STRIPE_SECRET_KEY: 'sk_test_example',
+    STRIPE_WEBHOOK_SECRET: 'whsec_example',
+    PREORDER_ABUSE_KEY: 'testing-rate-secret',
+    PREORDER_ADMIN_TOKEN: 'admin_test_token_long_enough',
+    ...overrides,
+  };
+}
+
+function checkoutRequest(sku = 'r5', requestOrigin = origin, body = {}) {
+  return new Request(`${origin}/api/preorders/checkout`, {
+    method: 'POST',
+    headers: { origin: requestOrigin, 'content-type': 'application/json', 'cf-connecting-ip': '203.0.113.1' },
+    body: JSON.stringify({ sku, termsAccepted: true, termsVersion: '2026-09-21.1', ...body }),
+  });
+}
+
+function webhookRequest(event) {
+  const raw = JSON.stringify(event);
+  const timestamp = Math.floor(Date.now() / 1000);
+  const signature = createHmac('sha256', 'whsec_example').update(`${timestamp}.${raw}`).digest('hex');
+  return new Request(`${origin}/api/preorders/webhook`, {
+    method: 'POST',
+    headers: { 'stripe-signature': `t=${timestamp},v1=${signature}` },
+    body: raw,
+  });
+}
+
+test('legacy RockstarOS path redirects at the HTTP layer', async () => {
+  const response = await worker.fetch(new Request(`${origin}/rockstaros/`), env(database()));
+  assert.equal(response.status, 308);
+  assert.equal(response.headers.get('location'), `${origin}/`);
+});
+
+test('sales remain closed until all payment and seller terms exist', async () => {
+  const db = database();
+  const response = await worker.fetch(checkoutRequest(), env(db, { PREORDER_SHIPPING_DATE: '' }));
+  assert.equal(response.status, 503);
+  assert.equal(db.sqlite.prepare('SELECT count(*) AS count FROM preorders').get().count, 0);
+});
+
+test('checkout requires acceptance of the current terms and rejects oversized bodies', async () => {
+  const db = database();
+  assert.equal((await worker.fetch(checkoutRequest('r5', origin, { termsAccepted: false }), env(db))).status, 409);
+  assert.equal((await worker.fetch(checkoutRequest('r5', origin, { termsVersion: 'old' }), env(db))).status, 409);
+  assert.equal((await worker.fetch(checkoutRequest('r5', origin, { padding: 'x'.repeat(2000) }), env(db))).status, 413);
+  assert.equal(db.sqlite.prepare('SELECT count(*) AS count FROM preorders').get().count, 0);
+});
+
+test('checkout uses server price, reserves capacity once, and only webhook confirms payment', async () => {
+  const db = database();
+  const originalFetch = globalThis.fetch;
+  let stripeForm;
+  globalThis.fetch = async (_url, options) => {
+    stripeForm = new URLSearchParams(options.body);
+    return Response.json({ id: 'cs_test_123456789012345', url: 'https://checkout.stripe.com/c/pay/example' });
+  };
+  try {
+    assert.equal((await worker.fetch(checkoutRequest('r5', 'https://evil.example'), env(db))).status, 403);
+    const checkout = await worker.fetch(checkoutRequest(), env(db));
+    assert.equal(checkout.status, 200);
+    assert.equal(stripeForm.get('line_items[0][price_data][unit_amount]'), '450000');
+    assert.equal(stripeForm.get('line_items[0][quantity]'), '1');
+    assert.ok(Number(stripeForm.get('expires_at')) > Math.floor(Date.now() / 1000));
+    assert.equal((await worker.fetch(checkoutRequest(), env(db))).status, 409);
+    const order = db.sqlite.prepare('SELECT * FROM preorders').get();
+    assert.equal(order.status, 'pending_payment');
+    assert.equal(order.terms_version, '2026-09-21.1');
+    assert.ok(order.terms_accepted_at > 0);
+    assert.equal((await worker.fetch(new Request(`${origin}/api/preorders/status?session_id=cs_test_123456789012345`), env(db))).status, 200);
+    const event = { id: 'evt_paid_1', type: 'checkout.session.completed', data: { object: {
+      id: 'cs_test_123456789012345', client_reference_id: order.id, payment_status: 'paid',
+      payment_intent: 'pi_123', amount_total: 450000,
+    } } };
+    const unsigned = new Request(`${origin}/api/preorders/webhook`, { method: 'POST', body: JSON.stringify(event) });
+    assert.equal((await worker.fetch(unsigned, env(db))).status, 400);
+    assert.equal((await worker.fetch(webhookRequest(event), env(db))).status, 200);
+    assert.equal((await worker.fetch(webhookRequest(event), env(db))).status, 200);
+    assert.equal(db.sqlite.prepare('SELECT status FROM preorders').get().status, 'paid');
+    assert.equal(db.sqlite.prepare('SELECT count(*) AS count FROM preorder_events').get().count, 1);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test('an expired Stripe session releases a checkout with an unknown network result', async () => {
+  const db = database();
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error('network unavailable'); };
+  try {
+    assert.equal((await worker.fetch(checkoutRequest(), env(db))).status, 503);
+    const order = db.sqlite.prepare('SELECT id, status FROM preorders').get();
+    assert.equal(order.status, 'checkout_unknown');
+    assert.equal(db.sqlite.prepare('SELECT reserved FROM preorder_stock WHERE sku = ?').get('r5').reserved, 1);
+    const event = { id: 'evt_unknown_expired_1', type: 'checkout.session.expired', data: { object: { id: 'cs_test_unknown12345', client_reference_id: order.id } } };
+    assert.equal((await worker.fetch(webhookRequest(event), env(db))).status, 200);
+    assert.equal(db.sqlite.prepare('SELECT status FROM preorders').get().status, 'expired');
+    assert.equal(db.sqlite.prepare('SELECT reserved FROM preorder_stock WHERE sku = ?').get('r5').reserved, 0);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test('admin order access requires the configured bearer token', async () => {
+  const db = database();
+  const unauthorized = new Request(`${origin}/api/admin/preorders`);
+  assert.equal((await worker.fetch(unauthorized, env(db))).status, 401);
+  const authorized = new Request(`${origin}/api/admin/preorders`, { headers: { authorization: 'Bearer admin_test_token_long_enough' } });
+  const response = await worker.fetch(authorized, env(db));
+  assert.equal(response.status, 200);
+  assert.deepEqual((await response.json()).orders, []);
+});
+
+test('uncertain checkout retries keep one reservation and the same Stripe idempotency key', async (t) => {
+  const db = database();
+  t.after(() => db.sqlite.close());
+  const originalFetch = globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  const calls = [];
+  globalThis.fetch = async (url, options) => {
+    calls.push({ url, options });
+    if (calls.length === 1) return new Response('provider-private-error', { status: 503 });
+    return Response.json({ id: 'cs_test_retry_fixture', url: 'https://checkout.stripe.com/c/pay/fixture' });
+  };
+  const response = await worker.fetch(checkoutRequest(), env(db));
+  assert.equal(response.status, 200);
+  assert.equal(calls.length, 2);
+  const order = db.sqlite.prepare('SELECT * FROM preorders').get();
+  for (const { url, options } of calls) {
+    assert.equal(url, 'https://api.stripe.com/v1/checkout/sessions');
+    assert.equal(options.headers['Idempotency-Key'], order.id);
+    assert.equal(options.redirect, 'error');
+    assert.ok(options.signal instanceof AbortSignal);
+  }
+  assert.equal(calls[0].options.body, calls[1].options.body);
+  assert.equal(db.sqlite.prepare('SELECT count(*) AS count FROM preorders').get().count, 1);
+  assert.equal(db.sqlite.prepare('SELECT reserved FROM preorder_stock').get().reserved, 1);
+  assert.equal(order.status, 'pending_payment');
+});
+
+test('Stripe client errors stop retries and preserve checkout_unknown for reconciliation', async (t) => {
+  const db = database();
+  t.after(() => db.sqlite.close());
+  const originalFetch = globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  let calls = 0;
+  globalThis.fetch = async () => { calls++; return new Response('private-provider-detail', { status: 400 }); };
+  const response = await worker.fetch(checkoutRequest(), env(db));
+  assert.equal(response.status, 503);
+  assert.equal(calls, 1);
+  assert.doesNotMatch(await response.text(), /private-provider-detail/);
+  assert.equal(db.sqlite.prepare('SELECT status FROM preorders').get().status, 'checkout_unknown');
+  assert.equal(db.sqlite.prepare('SELECT reserved FROM preorder_stock').get().reserved, 1);
+});
+
+test('expired checkout releases its capacity for another order', async () => {
+  const db = database();
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => Response.json({ id: 'cs_test_987654321012345', url: 'https://checkout.stripe.com/c/pay/example' });
+  try {
+    assert.equal((await worker.fetch(checkoutRequest(), env(db))).status, 200);
+    const order = db.sqlite.prepare('SELECT id FROM preorders').get();
+    const event = { id: 'evt_expired_1', type: 'checkout.session.expired', data: { object: { id: 'cs_test_987654321012345', client_reference_id: order.id } } };
+    assert.equal((await worker.fetch(webhookRequest(event), env(db))).status, 200);
+    assert.equal(db.sqlite.prepare('SELECT reserved FROM preorder_stock WHERE sku = ?').get('r5').reserved, 0);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+
+test('Pro design targets cannot create a reservation or payment', async (t) => {
+  const db = database();
+  t.after(() => db.sqlite.close());
+  const originalFetch = globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  let providerCalls = 0;
+  globalThis.fetch = async () => { providerCalls++; throw new Error('Pro must not contact payment provider'); };
+  for (const sku of ['pro', 'avokadoPro']) {
+    assert.equal((await worker.fetch(checkoutRequest(sku), env(db))).status, 400);
+  }
+  assert.equal(providerCalls, 0);
+  assert.equal(db.sqlite.prepare('SELECT count(*) AS count FROM preorders').get().count, 0);
+  assert.equal(db.sqlite.prepare('SELECT count(*) AS count FROM preorder_stock').get().count, 0);
+});

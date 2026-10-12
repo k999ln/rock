@@ -1,7 +1,13 @@
-CREATE TABLE rock_meta (version INTEGER NOT NULL CHECK(version=1));
-INSERT INTO rock_meta VALUES(1);
+CREATE TABLE rock_meta (version INTEGER NOT NULL CHECK(version>=1));
+INSERT INTO rock_meta VALUES(2);
 CREATE TABLE settings (id INTEGER PRIMARY KEY CHECK(id=1), paused INTEGER NOT NULL CHECK(paused IN(0,1)));
 INSERT INTO settings VALUES(1,0);
+CREATE TABLE sky_selection (
+ id INTEGER PRIMARY KEY CHECK(id=1),
+ selection_token TEXT NOT NULL UNIQUE,
+ tool_id TEXT NOT NULL CHECK(tool_id='article-preparation@1'),
+ revision INTEGER NOT NULL CHECK(revision>=1)
+);
 CREATE TABLE works (
  id TEXT PRIMARY KEY,
  request_key TEXT NOT NULL UNIQUE,

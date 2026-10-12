@@ -1,0 +1,17 @@
+{
+  "schema": "rockstaros-colony-receipt/1",
+  "mode": "SIM_ONLY",
+  "sourceClass": "SYNTHETIC",
+  "siteId": "sim-ground-01",
+  "nodeId": "sim-utility-01",
+  "commandId": "static-example-01",
+  "requestDigest": "95fbce1a16f0797b2b8436653383a40a130900a61910163947e67fb5cca34e7a",
+  "payloadDigest": "421caec0d95c0488777c0efc4f7f8a1d5e97f4dc5b08484d1129209eaa4a90a0",
+  "componentGeneration": "static-generation-01",
+  "stateRevision": 1,
+  "status": "APPLIED",
+  "reason": null,
+  "appliedScope": "synthetic desired-load state only",
+  "decidedAt": 1001.0,
+  "signature": "7fc6291883332d11df4b72ffd4db0866d76617f7263521bcadacc57e7bb4a08b"
+}

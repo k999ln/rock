@@ -12,7 +12,7 @@
   - 実資金操作・課金・外部送信は所有者の明示承認があるまで行わない
   - `realValueEnabled=false` を維持する。合成合格を実資金準備完了と呼ばない
 
-関連: [次の実行プロンプト](prompts/hub-wallet-next.md) 段階3（GAP03 / B03）、[製品ベース](product-baseline.md) RQ05〜RQ06 / RQ08。
+関連: 次の実行プロンプト（削除済み） 段階3（GAP03 / B03）、[製品ベース](product-baseline.md) RQ05〜RQ06 / RQ08。
 
 ## 0. 目的と非目的
 

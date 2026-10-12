@@ -1,0 +1,78 @@
+name: SPIDER CodeQL security
+
+on:
+  push:
+    branches: [main, codex/spider-guard]
+  pull_request:
+  schedule:
+    # Daily at 03:23 UTC; schedules run only after this file reaches main.
+    - cron: '23 3 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: spider-codeql-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: SPIDER CodeQL (${{ matrix.language }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [javascript-typescript, python]
+    steps:
+      - name: Read candidate source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Keep the default PR merge ref; do not persist a write credential.
+          persist-credentials: false
+
+      - name: Initialize SPIDER CodeQL analysis
+        id: initialize
+        # Official v4 annotated tag dereferenced to its commit on 2026-10-02.
+        uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+          queries: security-extended
+          dependency-caching: false
+
+      # No project dependency installation, build, test or candidate execution.
+      - name: Analyze and publish code-scanning results
+        id: analyze
+        uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
+        with:
+          category: /spider/language:${{ matrix.language }}
+          upload: always
+          upload-database: false
+          wait-for-processing: true
+
+      - name: Summarize actual SPIDER analysis status
+        if: always()
+        shell: bash
+        env:
+          SPIDER_LANGUAGE: ${{ matrix.language }}
+          SPIDER_INITIALIZE_OUTCOME: ${{ steps.initialize.outcome }}
+          SPIDER_ANALYZE_OUTCOME: ${{ steps.analyze.outcome }}
+        run: |
+          set -eu
+          if [ "$SPIDER_INITIALIZE_OUTCOME" = success ] && [ "$SPIDER_ANALYZE_OUTCOME" = success ]; then
+            result='解析とGitHubへの結果反映を完了しました。検出候補はSecurityのCode scanningで確認してください。'
+          else
+            result='解析または結果反映は完了していません。失敗・スキップ・中断の原因をジョブログで確認してください。'
+          fi
+          {
+            printf '# SPIDER / CodeQL security\n\n'
+            printf '対象言語: `%s`\n\n' "$SPIDER_LANGUAGE"
+            printf '初期化: `%s` / 解析・結果反映: `%s`\n\n' "$SPIDER_INITIALIZE_OUTCOME" "$SPIDER_ANALYZE_OUTCOME"
+            printf '%s\n\n' "$result"
+            printf '%s\n' 'security-extendedによる静的解析です。候補コードの実行、依存パッケージのインストール、C/C++・Javaの解析は行いません。'
+            printf '%s\n' '解析の成功は検出ゼロや安全の保証を意味しません。マージの阻止には別途GitHubのルール設定が必要です。'
+          } >> "$GITHUB_STEP_SUMMARY"

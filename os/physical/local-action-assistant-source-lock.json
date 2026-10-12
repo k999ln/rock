@@ -1,0 +1,65 @@
+{
+  "schema": "rock-local-ai-source/1",
+  "stage": "SOURCE_PINNED_APK_REVIEWED_NOT_IN_IMAGE",
+  "repository": "https://github.com/noellesugar99/local-action-assistant.git",
+  "manifestProject": "noellesugar99/local-action-assistant",
+  "checkoutPath": "external/local-action-assistant",
+  "commit": "99b1c40d76f719cbba9c72d9f481c1b2df245504",
+  "packageName": "com.localactionassistant",
+  "version": "0.0.1",
+  "sourceLicense": "MIT",
+  "runtime": {
+    "engine": "llama.rn",
+    "version": "0.12.9",
+    "modelFormat": "GGUF",
+    "modelBundled": false,
+    "releaseNetworkPolicy": "deny"
+  },
+  "reviewedFiles": {
+    "LICENSE": "1c63ade94815257719ba12e062102ba7f89368eade58a38476ae92e1d55e08f6",
+    "package.json": "60249a2ebcee05705c02c70bc311be9caca77385b518e8369739436e532667ec",
+    "src/native/modelRuntime.ts": "48f84562d0057382ef726cbe06e759515bbed967ce42fc4aff5bb821838c4650",
+    "src/native/modelFiles.ts": "7349a6909ac55088253676bf27def7cc696fee0041444979b2e8b656e2f8a6de",
+    "src/core/toolBroker.ts": "7dcb64427bac398acafd1215724d07cbb0bde2410adfdf410a5ae90975f83b64",
+    "android/app/src/main/AndroidManifest.xml": "5c021e5b32da0efee5d57ec666a89dcc46bd5eed625b8246f0e64c9de697b46f",
+    "android/app/src/release/AndroidManifest.xml": "5ad95a28317e1198668bd3ef389871c2b1e711ddf6ca8005e68cac7079411a86"
+  },
+  "integration": {
+    "routeId": "local-action-assistant",
+    "target": "local",
+    "osBridge": "PROFILE_HASH_API_V4_READONLY_FD_HANDOFF_NATIVE_COMPILED_NOT_DEVICE_VERIFIED",
+    "signedApk": "API_V4_UNSIGNED_RELEASE_APK_REVIEWED_NOT_SIGNED",
+    "productPackage": "STAGING_READY_NOT_IMAGE_INTEGRATED"
+  },
+  "overlay": {
+    "status": "SERVER_NATIVE_COMPILED_NOT_DEVICE_VERIFIED",
+    "path": "os/physical/local-ai-overlay.patch",
+    "sha256": "576206d336dc4b15ec77510f6a71fc65207ca6f9b57363ef56bed3a2f2395743",
+    "extensions": [
+      {
+        "path": "os/physical/local-ai-plan-v2.patch",
+        "sha256": "be1be99abdddef959cb9fe6f1744eef2efe8d0f25b6865b03262a89183425d69",
+        "purpose": "local_ai_api_v2_plan_only_json_schema"
+      },
+      {
+        "path": "os/physical/local-ai-profile-v3.patch",
+        "sha256": "313f721f35c5bf744f8eed3a36fd0bd70d6a7a3746c4b745b79b2964305c314a",
+        "purpose": "bind_plan_request_to_verified_loaded_gguf_sha256_and_bytes_api_v3"
+      },
+      {
+        "path": "os/physical/local-ai-model-handoff-v4.patch",
+        "sha256": "8c54a006022dde0599568311f2f376394db4e8ec2d02b5d11c9ae6407a537d8e",
+        "purpose": "authenticated_read_only_descriptor_model_copy_hash_recheck_and_profile_load_api_v4"
+      },
+      {
+        "path": "os/physical/local-ai-build-v4.patch",
+        "sha256": "d24e85460fd5338ec328101cc907dbd7f8173eba25ddea686f0404afc338eb1c",
+        "purpose": "api_v4_binder_handshake_and_long_headless_timeout_build_fix"
+      }
+    ]
+  },
+  "imageBuildVerified": false,
+  "imageBootVerified": false,
+  "deviceInferenceVerified": true,
+  "notes": "Base, plan-v2 and profile-v3 overlays retain prior Pixel 10 GL066 evidence. The API v4 extension adds an authenticated read-only ParcelFileDescriptor model handoff: the runtime accepts regular files only, independently bounds size and disk reserve, copies into private no-backup storage, verifies exact length and SHA-256, atomically renames, loads through the local runtime, and reports the active profile ID with the loaded model digest. Pinned upstream source TypeScript/Jest/lint/manifest checks and clean overlay application pass. Android Gradle/AIDL build, API v4 Binder/device tests, OS-image integration and production signing have not been run. Prior physical inference evidence applies only to the reviewed API v2 artifact."
+}
