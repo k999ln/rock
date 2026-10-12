@@ -22,6 +22,10 @@ host fixtureの契約も直した: receiptの提供者をleaseへ固定、審査
 
 注文を出す画面はまだない（APIだけ）。ownerの「設計だけして、下流作業はcodexに渡す」により、注文console（入力の検査、注文の作成・取消・削除、結果の保存）と受入用deploymentの手順は設計だけを同文書の12・13節へ書いた。実装はCodexが担当する（`GRID01-S6`）。既存のAPIは変えない。consoleはZemaの仕事を作らず、`lib/workflow.ts`には載せない。
 
+### 既存serverの中断・再送を修正（2026-10-11、GRID01 / O5）
+
+5時間の品質改善では既存serverだけを対象にし、receipt保存直後の中断から同一再送／注文ownerの読出しで検証を再開、同時刻の重複返却を1回に集計、猶予ちょうどの期限判定を統一した。MiniflareのGrid 59件と独立した競合試験が合格。仕様・再現・検証コマンドは上記の設計とhost証拠へ統合した。PR #103への追補branch上の変更であり、main統合・配備・実機合格ではない。Android workerと注文consoleは今回の実装対象外。
+
 ## 2026-10-10 GRID01／ROCK — Sky Compute Grid host fixture
 
 未使用Androidの余剰計算を固定・中断可能なlotへmatchingするplatform serviceをSkyへ追加した。MCPの第三者任意Tool実行とは分け、初期SKUは固定runtime/model/tokenizerによるpublic/synthetic text embeddingだけとする。`CapacityOffer`、`ComputeOrder`、`ComputeLease`、`ComputeReceipt`のclosed contract、hard filter、score、有限lease、独立参照／duplicate検証、service-credit hold preview、合成demo UI/APIをhostで実装した。実端末worker、remote dispatch、本番storage、実需要、実料金・払出しは未接続。詳細は[Sky Compute Grid](../sky-compute-grid.md)。

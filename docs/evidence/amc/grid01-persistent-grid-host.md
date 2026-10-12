@@ -98,6 +98,24 @@ The scanner matches it because the key name contains "token". The fourth annotat
 
 This branch does **not** add a scanner exception and does not move the pinned policy commit. `SECURITY.md` and `docs/spider-guard.md` put exceptions and the pinned control commit under owner review, and a pull request should not change the policy that judges it. The check stays red until the owner, or whoever maintains SPIDER for the owner, registers the reviewed exception (rule `generic-api-key`, the three exact paths above, the exact value above, classification `public-artifact-digest`, with the same-file detection test `SECURITY.md` requires) and pins the new control commit.
 
+## Server recovery refinement (2026-10-11)
+
+A separate quality pass starts from PR #103 head `e80d0357aa88291b6ee955e62af875180d35e6cd` on `codex/compute-grid-recovery-20261011`. Scope: macOS host, local Miniflare D1, synthetic owners/devices/credits. No deployment, migration of a remote database, public pool activation, Android worker, order console or real financial operation.
+
+Before correction, four new tests failed: a receipt committed before settlement could remain submitted on replay or owner readback, and repeated release calls at the same timestamp counted four releases for one lease. A fifth regression showed a fresh receipt was accepted exactly at the expiry-plus-grace instant even though expiry processing rejected that same instant. After correction, all 59 Grid tests passed (including 35 store tests); typecheck and scoped lint passed. The complete `npm run verify` then passed on the same source with independently installed dependencies: Node 1769 passed / 1 platform skip, Worker/D1 1356 assertions, CSV D1/R2 385 assertions, build and metadata/design checks. The first run used a shared node_modules symlink and failed the existing vendor-realpath assertion; an independent `npm ci` fixed that environment mismatch without changing the assertion. Final commit CI is checked separately.
+
+Commands: `node --experimental-strip-types --test tests/sky-compute-grid*.test.mjs`, `npm run typecheck`, `npx oxlint lib/sky-compute-grid-store.ts tests/sky-compute-grid-store.test.mjs`. An independent reviewer also forced concurrent owner-detail reads, result reads and two receipt replays against one interrupted settlement: both assignments settled once, with one spend and one earn entry per assignment and no duplicate charge. A foreign-owner read did not resume that order's pending settlement. No schema migration or public request shape changed.
+
+Raw reproduction, final suite and independent-review logs remain outside Git under `/private/tmp/rock-quality-audit/` on the development host. This section records source-level evidence, not acceptance on physical devices or an assertion that the inherited secrets check is green. The existing tokenizer-digest policy issue above still requires its own reviewed resolution.
+
+## Recovery follow-up GitHub evidence (2026-10-12 UTC)
+
+Source commit `050fade2c72c440af8922d4f23a574d6c089cca5` is saved on GitHub in [PR #104](https://github.com/k999ln/rock/pull/104), from `codex/compute-grid-recovery-20261011` into PR #103's `claude/sky-compute-grid-live` branch. `githubSaved=true`; the PR remains open and neither this recovery follow-up nor PR #103 is recorded as integrated into main. Deployment and Grid activation remain unperformed.
+
+All seven checks on this source completed: [verify](https://github.com/k999ln/rock/actions/runs/38188248762/job/114615186232), CodeQL, SPIDER CodeQL for JavaScript/TypeScript and Python, SPIDER repair regressions, and SPIDER production web security measurement succeeded. [SPIDER secrets](https://github.com/k999ln/rock/actions/runs/38188248708/job/114615185933) failed. Its failed job log reports the same three inherited `generic-api-key` candidates at the exact tokenizer digest paths and original commits listed above; no new recovery-source secret candidate is reported. This is six successful checks and one failed check, not all-green CI. The policy, pinned control commit and workflows remain unchanged. Android and native jobs were not triggered by this follow-up's paths; they have no same-SHA success claim here.
+
+The local full verify and independent recovery tests described above correspond to this code source. A later documentation-only commit must receive its own CI check; these results must not be relabelled as evidence for an untested newer SHA.
+
 ## Not accepted
 
 - Android worker: designed in `docs/sky-compute-grid-android-worker.md`, not implemented. No APK contains it.
