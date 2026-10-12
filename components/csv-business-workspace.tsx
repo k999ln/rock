@@ -3,7 +3,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { OperationRequestError } from '@/lib/operations-client';
+import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
+import { pendingOwnerStatus, isDefinitivePendingSaveFailure } from '@/lib/pending-owner-intent';
+import { readOwnerScope, OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
+import { OperationRequestError, OperationResponseError, readOperationResponse as json } from '@/lib/operations-client';
+import { isCsvClientJob, isCsvHistory, type CsvClientJob as Job } from '@/lib/csv-job-view';
 import { createCsvHistoryRequest } from '@/lib/csv-history-request';
 import { CSV_TRIAL_SAMPLE } from '@/lib/csv-trial-sample';
 import {
@@ -19,26 +23,8 @@ import ZemaNavigation from '@/components/zema-navigation';
 import SkyLibrarySave from '@/components/sky-library-save';
 import styles from './csv-business-workspace.module.css';
 
-type Job = {
-  id: string;
-  status: string;
-  paymentStatus: string;
-  inputName: string;
-  inputBytes: number;
-  inputSha256: string;
-  inputEncoding: string;
-  quoteMinor: number;
-  currency: string;
-  outputSha256: string | null;
-  validation: { passed?: boolean } | null;
-  attempt: number;
-  revision: number;
-  errorCode: string | null;
-  expiresAt: number;
-  createdAt: number;
-  completedAt: number | null;
-  artifacts: string[];
-};
+
+type PendingQuote = { id: string; ownerScope: string; file: File; specification: string; sample: boolean; trial: boolean };
 
 const statusLabel: Record<string, string> = {
   quoted: '見積り確認待ち',
@@ -49,11 +35,6 @@ const statusLabel: Record<string, string> = {
   quality_failed: '検査不合格・再試行待ち',
 };
 
-async function json<T>(response: Response) {
-  const data = (await response.json()) as T & { error?: string };
-  if (!response.ok) throw new OperationRequestError(data.error || '処理できませんでした。', response.status);
-  return data;
-}
 const columns = (value: string) =>
   value
     .split(',')
@@ -76,24 +57,70 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
   const [paymentMethod, setPaymentMethod] = useState('ココナラ');
   const [paymentReference, setPaymentReference] = useState('');
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
+  const [feedback, setFeedback] = useState<{ type: 'error' | 'notice'; message: string } | null>(null);
+  const error = feedback?.type === 'error' ? feedback.message : '';
+  const setError = useCallback((message: string) => setFeedback(message ? { type: 'error', message } : null), []);
   const [ready, setReady] = useState(false);
+  const [ownerScope, setOwnerScope] = useState<string | null>(null);
+  const [pendingQuote, setPendingQuote] = useState<PendingQuote | null>(null);
+  const quoteIntent = useRef<PendingQuote | null>(null);
+  const currentOwner = useRef<string | null>(null);
+  const draftOwner = useRef<string | null>(null);
+  const [draftOwnerScope, setDraftOwnerScope] = useState<string | null>(null);
+  const mutationBusy = useRef(false);
+  const mounted = useRef(false);
+  const hasDraft = Boolean(file || rename.trim() || order.trim() || trim.trim() || dedupeKeys.trim() ||
+    dedupeMode !== 'report_only' || sortColumn.trim() || sortDirection !== 'asc' || encoding !== 'utf8-bom' ||
+    !spreadsheetSafe || paymentMethod !== 'ココナラ' || paymentReference.trim());
+  const draftMatchesOwner = draftOwnerScope !== null && draftOwnerScope === ownerScope;
+  const hideDraft = hasDraft && draftOwnerScope !== null && !draftMatchesOwner;
+  const inputLocked = busy || !ready || hideDraft;
+  usePendingSaveNavigation(Boolean(pendingQuote) || hasDraft);
   const [needsSignin, setNeedsSignin] = useState(false);
   const [paymentReturn, setPaymentReturn] = useState<{ jobId: string; canceled: boolean } | null>(null);
   const historyRequest = useRef(createCsvHistoryRequest());
   const restoredPaymentJob = useRef<string | null>(null);
-  const reportError = useCallback((reason: unknown, fallback: string) => {
-    if (reason instanceof OperationRequestError && reason.status === 401) {
-      setReady(false);
-      setNeedsSignin(true);
-      setTrialPayment({ available: false, mode: null });
-    }
-    setError(reason instanceof Error ? reason.message : fallback);
-  }, []);
   const [trialPayment, setTrialPayment] = useState<{
     available: boolean;
     mode: string | null;
   }>({ available: false, mode: null });
+  const loseOwner = useCallback((signin = false) => {
+    currentOwner.current = null;
+    setReady(false);
+    setOwnerScope(null);
+    setJobs([]);
+    setNeedsSignin(signin);
+    setTrialPayment({ available: false, mode: null });
+  }, []);
+  const reportError = useCallback((reason: unknown, fallback: string) => {
+    if (reason instanceof OperationRequestError && (reason.status === 401 || reason.code === OWNER_CHANGED))
+      loseOwner(reason.status === 401);
+    if (reason instanceof OperationResponseError) loseOwner();
+    setError(reason instanceof OperationRequestError && reason.code === OWNER_CHANGED
+      ? '保存を始めたアカウントと異なります。元のアカウントで接続し直し、同じ受付番号の結果を確認してください。'
+      : reason instanceof Error ? reason.message : fallback);
+  }, [loseOwner, setError]);
+  function editDraft(change: () => void) {
+    const owner = currentOwner.current;
+    if (mutationBusy.current || !owner || owner !== ownerScope || (hasDraft && draftOwner.current && draftOwner.current !== owner)) return;
+    draftOwner.current = owner;
+    setDraftOwnerScope(owner);
+    change();
+  }
+  function discardDraft() {
+    if (mutationBusy.current || quoteIntent.current || !draftMatchesOwner || ownerScope !== currentOwner.current) return;
+    setFile(null); setRename(''); setOrder(''); setTrim(''); setDedupeKeys(''); setDedupeMode('report_only');
+    setSortColumn(''); setSortDirection('asc'); setEncoding('utf8-bom'); setSpreadsheetSafe(true);
+    setPaymentMethod('ココナラ'); setPaymentReference('');
+    draftOwner.current = null; setDraftOwnerScope(null);
+    setFeedback({ type: 'notice', message: '入力を破棄しました。保存済みの受付と成果物は変更していません。' });
+  }
+  function releaseQuote() {
+    if (mutationBusy.current || !pendingQuote || quoteIntent.current?.id !== pendingQuote.id ||
+        pendingOwnerStatus(pendingQuote.ownerScope, currentOwner.current) !== 'matching' || ownerScope !== currentOwner.current) return;
+    quoteIntent.current = null; setPendingQuote(null);
+    setFeedback({ type: 'notice', message: '保留を解除しました。入力を確認してから新しく見積りを作成してください。' });
+  }
 
   const specification = useMemo(() => {
     const renames: Record<string, string> = {};
@@ -129,32 +156,33 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
     spreadsheetSafe,
   ]);
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (preserveError = false) => {
     const request = historyRequest.current.begin();
     if (!request) return;
     try {
-      const data = await json<{
-        jobs: Job[];
-        trialPayment?: { available: boolean; mode: string | null };
-      }>(await fetch('/api/csv-jobs', { cache: 'no-store', signal: AbortSignal.any([request.signal, AbortSignal.timeout(10000)]) }));
+      const data = await json<unknown>(await fetch('/api/csv-jobs', { cache: 'no-store', redirect: 'manual', signal: AbortSignal.any([request.signal, AbortSignal.timeout(10000)]) }));
       if (!request.current()) return;
+      if (!isCsvHistory(data)) throw new OperationResponseError('INVALID_RESPONSE');
+      const scope = readOwnerScope(data.ownerScope);
+      currentOwner.current = scope;
+      setOwnerScope(scope);
       setJobs(data.jobs);
-      if (data.trialPayment) setTrialPayment(data.trialPayment);
-      setReady(true);
+      setTrialPayment(data.trialPayment ?? { available: false, mode: null });
+      setReady(Boolean(scope));
       setNeedsSignin(false);
-      setError('');
+      if (!preserveError) setError('');
     } catch (reason) {
       if (!request.current()) return;
-      setReady(false);
-      setTrialPayment({ available: false, mode: null });
+      loseOwner();
       reportError(reason, '履歴を読み込めませんでした。');
     }
-  }, [reportError]);
+  }, [loseOwner, reportError, setError]);
 
   useEffect(() => {
     const requests = historyRequest.current;
+    mounted.current = true;
     const timer = window.setTimeout(() => void refresh(), 0);
-    return () => { window.clearTimeout(timer); requests.invalidate(); };
+    return () => { mounted.current = false; window.clearTimeout(timer); requests.invalidate(); };
   }, [refresh]);
   useEffect(() => {
     if (
@@ -189,49 +217,106 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
     restoredPaymentJob.current = returnedJob.id;
   }, [ready, returnedJob]);
 
-  async function quote(selected: File, sample: boolean, trial = false) {
-    if (!ready) return;
-    const finishMutation = historyRequest.current.mutate();
+  function beginMutation() {
+    if (mutationBusy.current) return null;
+    mutationBusy.current = true;
+    const releaseHistory = historyRequest.current.mutate();
     setBusy(true);
     setError('');
+    let finished = false;
+    return {
+      finish() {
+        if (finished) return;
+        finished = true;
+        releaseHistory();
+        mutationBusy.current = false;
+        if (mounted.current) setBusy(false);
+      },
+      async refresh() {
+        releaseHistory();
+        await refresh(true);
+      },
+    };
+  }
+
+  async function quote(selected: File, sample: boolean, trial = false) {
+    if (!quoteIntent.current && (!ready || !ownerScope || ownerScope !== currentOwner.current ||
+        (hasDraft && draftOwner.current !== null && draftOwner.current !== currentOwner.current))) return;
+    const mutation = beginMutation();
+    if (!mutation) return;
+    const operation = quoteIntent.current ?? {
+      id: crypto.randomUUID(), ownerScope: ownerScope!, file: selected,
+      specification: JSON.stringify(specification), sample, trial,
+    };
+    quoteIntent.current = operation;
+    setPendingQuote(operation);
+    let quoteDispatched = false;
     try {
+      const identity = await json<unknown>(await fetch('/api/csv-jobs', {
+        cache: 'no-store', redirect: 'manual', signal: AbortSignal.timeout(10000),
+      }));
+      if (!mounted.current) return;
+      if (!isCsvHistory(identity)) throw new OperationResponseError('INVALID_RESPONSE');
+      const scope = readOwnerScope(identity.ownerScope);
+      setJobs(identity.jobs);
+      setTrialPayment(identity.trialPayment ?? { available: false, mode: null });
+      currentOwner.current = scope;
+      setOwnerScope(scope);
+      setReady(Boolean(scope));
+      setNeedsSignin(false);
+      const owner = pendingOwnerStatus(operation.ownerScope, scope);
+      if (owner === 'unknown') { loseOwner(); throw new Error(OWNER_CHECK_REQUIRED); }
+      if (owner === 'changed') throw new OperationRequestError(OWNER_CHANGED_MESSAGE, 409, OWNER_CHANGED);
       const form = new FormData();
-      form.set('id', crypto.randomUUID());
-      form.set('file', selected);
-      form.set('sample', String(sample));
-      form.set('trial', String(trial));
-      form.set('specification', JSON.stringify(specification));
+      form.set('id', operation.id);
+      form.set('file', operation.file);
+      form.set('sample', String(operation.sample));
+      form.set('trial', String(operation.trial));
+      form.set('specification', operation.specification);
+      quoteDispatched = true;
       const { job } = await json<{ job: Job }>(
         await fetch('/api/csv-jobs', {
-          method: 'POST',
-          body: form,
+          method: 'POST', body: form, redirect: 'manual',
+          headers: { [OWNER_SCOPE_HEADER]: operation.ownerScope },
           signal: AbortSignal.timeout(60000),
         }),
       );
+      if (!mounted.current) return;
+      if (!isCsvClientJob(job) || job.id !== operation.id)
+        throw new OperationResponseError('INVALID_RESPONSE');
       setJobs((items) => [job, ...items.filter((item) => item.id !== job.id)]);
-      if (sample) {
-        // The quote has settled. Hand the mutation fence to acceptance so its
-        // failure handler can refresh an uncertain server result immediately.
-        finishMutation();
-        await accept(job, true);
+      quoteIntent.current = null;
+      setPendingQuote(null);
+      if (operation.sample) {
+        // The quote is confirmed. Acceptance owns the next mutation and its
+        // reconciliation; an uncertain quote is never replaced by a new ID.
+        mutation.finish();
+        await accept(job, true, operation.ownerScope);
       }
     } catch (reason) {
+      if (!mounted.current) return;
+      if (!quoteDispatched) loseOwner();
+      // An owner-check GET refusal cannot disprove an earlier committed POST.
+      if (quoteDispatched && reason instanceof OperationRequestError && isDefinitivePendingSaveFailure(reason.status, reason.code)) {
+        quoteIntent.current = null;
+        setPendingQuote(null);
+      }
       reportError(reason, '見積りを作成できませんでした。');
     } finally {
-      finishMutation();
-      setBusy(false);
+      mutation.finish();
     }
   }
 
-  async function accept(job: Job, sample = false) {
-    if (!ready) return;
-    const finishMutation = historyRequest.current.mutate();
-    setBusy(true);
-    setError('');
+  async function accept(job: Job, sample = false, expectedOwner = ownerScope) {
+    if (!expectedOwner || expectedOwner !== currentOwner.current ||
+        (!sample && hasDraft && draftOwner.current !== currentOwner.current)) return;
+    const mutation = beginMutation();
+    if (!mutation) return;
     try {
       const { job: updated } = await json<{ job: Job }>(
         await fetch(`/api/csv-jobs/${job.id}`, {
           method: 'POST',
+          redirect: 'manual',
           headers: { 'Content-Type': 'application/json' },
           signal: AbortSignal.timeout(60000),
           body: JSON.stringify({
@@ -242,34 +327,40 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
           }),
         }),
       );
+      if (!mounted.current) return;
+      if (!isCsvClientJob(updated) || updated.id !== job.id) throw new OperationResponseError('INVALID_RESPONSE');
       setJobs((items) => [
         updated,
         ...items.filter((item) => item.id !== updated.id),
       ]);
     } catch (reason) {
-      finishMutation();
-      await refresh();
+      if (!mounted.current) return;
       reportError(reason, '開始できませんでした。入力は保存されています。');
+      await mutation.refresh();
     } finally {
-      finishMutation();
-      setBusy(false);
+      mutation.finish();
     }
   }
 
   async function payment(job: Job, action: 'checkout' | 'confirm') {
-    if (!ready) return;
-    const finishMutation = historyRequest.current.mutate();
-    setBusy(true);
-    setError('');
+    if (!ready || hideDraft || ownerScope !== currentOwner.current) return;
+    const mutation = beginMutation();
+    if (!mutation) return;
     try {
       const data = await json<{ url?: string; job?: Job }>(
         await fetch(`/api/csv-jobs/${job.id}/payment`, {
           method: 'POST',
+          redirect: 'manual',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action }),
           signal: AbortSignal.timeout(60000),
         }),
       );
+      if (!mounted.current) return;
+      if ((data.job !== undefined && (!isCsvClientJob(data.job) || data.job.id !== job.id)) ||
+          (action === 'confirm' && !data.job) ||
+          (action === 'checkout' && (typeof data.url !== 'string' || !/^https?:\/\//.test(data.url))))
+        throw new OperationResponseError('INVALID_RESPONSE');
       if (action === 'checkout' && data.url) window.location.assign(data.url);
       if (data.job)
         setJobs((items) => [
@@ -277,32 +368,34 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
           ...items.filter((item) => item.id !== data.job!.id),
         ]);
     } catch (reason) {
+      if (!mounted.current) return;
       reportError(reason, '支払いを確認できませんでした。');
+      await mutation.refresh();
     } finally {
-      finishMutation();
-      setBusy(false);
+      mutation.finish();
     }
   }
 
   async function remove(job: Job) {
-    if (!ready) return;
+    if (!ready || hideDraft || ownerScope !== currentOwner.current || mutationBusy.current) return;
     if (!window.confirm(`「${job.inputName}」と成果物を削除しますか？`)) return;
-    const finishMutation = historyRequest.current.mutate();
-    setBusy(true);
-    setError('');
+    const mutation = beginMutation();
+    if (!mutation) return;
     try {
       const response = await fetch(`/api/csv-jobs/${job.id}`, {
         method: 'DELETE',
+        redirect: 'manual',
+        signal: AbortSignal.timeout(60000),
       });
       if (!response.ok) await json(response);
+      if (!mounted.current) return;
       setJobs((items) => items.filter((item) => item.id !== job.id));
     } catch (reason) {
-      finishMutation();
-      await refresh();
+      if (!mounted.current) return;
       reportError(reason, '削除できませんでした。');
+      await mutation.refresh();
     } finally {
-      finishMutation();
-      setBusy(false);
+      mutation.finish();
     }
   }
 
@@ -346,6 +439,8 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
           <span>7日後は取得不可・順次削除</span>
         </section>
 
+        {feedback?.type === 'notice' && <output className={styles.notice}>{feedback.message}</output>}
+
         {error && (
           <div className={styles.error} role="alert">
             {error}
@@ -354,9 +449,27 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
                 別タブでサインイン
               </a>
             )}
-            <p>入力はこの画面に残ります。{needsSignin ? 'サインイン後に接続を確認してください。' : '通信を確認して、履歴を再確認してください。'}確認だけでは処理を実行しません。</p><button type="button" onClick={() => void refresh()} disabled={busy}>{needsSignin ? 'サインイン後に接続を確認' : '履歴を再確認'}</button>
+            <p>CSVと入力条件は、入力したアカウントでのみ表示されます。{needsSignin ? 'サインイン後に接続を確認してください。' : '通信を確認して、履歴を再確認してください。'}確認だけでは処理を実行しません。</p><button type="button" onClick={() => void refresh()} disabled={busy}>{needsSignin ? 'サインイン後に接続を確認' : '履歴を再確認'}</button>
           </div>
         )}
+
+        {pendingQuote && <section className={styles.error} aria-label="CSV見積りの保存結果の確認">
+          <p>{pendingOwnerStatus(pendingQuote.ownerScope, ownerScope) === 'matching' ? `「${pendingQuote.file.name}」の保存結果が未確認です。` : '保存結果が未確認の見積りを保持しています。'}最初のアカウント・受付番号・入力条件で確認します。</p>
+          <p>入力を変更しても保留中の内容は変わりません。確認または保留解除の後に、新しい見積りを作成できます。</p>
+          {pendingOwnerStatus(pendingQuote.ownerScope, ownerScope) === 'matching' ? <p>同じ受付番号で結果を確認できます。アカウントを切り替えた場合は、元のアカウントで接続を確認してください。</p> : <>
+            <p>元のアカウントで接続を確認してください。別のアカウントでは入力内容を表示・送信・保留解除できません。</p>
+            <a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</a>
+          </>}
+          <button disabled={busy} onClick={() => void refresh()}>保存先の接続を確認</button>
+          <button disabled={busy || pendingOwnerStatus(pendingQuote.ownerScope, ownerScope) === 'changed'} onClick={() => void quote(pendingQuote.file, pendingQuote.sample, pendingQuote.trial)}>同じ見積りの結果を確認</button>
+          <p>保留を解除しても保存済みの受付は削除されません。元のアカウントの履歴を確認してから新しく作成してください。</p>
+          <button disabled={busy || pendingOwnerStatus(pendingQuote.ownerScope, ownerScope) !== 'matching'} onClick={releaseQuote}>保留を解除（入力は保持）</button>
+        </section>}
+        {!pendingQuote && hasDraft && <section className={hideDraft ? styles.error : styles.notice} aria-label="CSV入力の保持と破棄">
+          <p>{hideDraft ? '入力したアカウントを確認できないため、CSVと入力条件を非表示にしています。元のアカウントで接続し直すと再表示できます。' : 'CSVと入力条件をこの画面に保持しています。別の画面へ移動する前に入力を破棄してください。保存済みの受付と成果物は変更しません。'}</p>
+          {hideDraft ? <><a href={`/signin-with-chatgpt?return_to=${encodeURIComponent(returnTo)}`} target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</a><button disabled={busy} onClick={() => void refresh()}>入力元の接続を確認</button></> : <button disabled={busy} onClick={discardDraft}>未保存の入力を破棄</button>}
+        </section>}
+        {!ready && !error && <output>{ownerScope ? '履歴を確認しています…' : OWNER_CHECK_REQUIRED}</output>}
 
         <div className={styles.grid}>
           <section className={styles.card}>
@@ -371,53 +484,59 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
             </div>
             <label className={styles.file}>
               <Upload size={22} />
-              <strong>{file?.name ?? 'CSVを選ぶ'}</strong>
+              <strong>{hideDraft ? '元のアカウントでCSVを確認' : file?.name ?? 'CSVを選ぶ'}</strong>
               <span>1ファイル / 最大10MB</span>
               <input
+                key={draftMatchesOwner ? draftOwnerScope : 'unconfirmed'}
                 type="file"
                 accept=".csv,text/csv"
-                disabled={busy}
-                onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+                disabled={inputLocked}
+                onChange={(event) => { const selected = event.target.files?.[0] ?? null; editDraft(() => setFile(selected)); }}
               />
             </label>
             <div className={styles.fields}>
               <label>
                 列名変更 <small>1行に 元の列名=新しい列名</small>
                 <textarea
-                  value={rename}
-                  onChange={(event) => setRename(event.target.value)}
+                  disabled={inputLocked}
+                  value={hideDraft ? '' : rename}
+                  onChange={(event) => editDraft(() => setRename(event.target.value))}
                   placeholder={'customer_id=顧客ID\nname=氏名'}
                 />
               </label>
               <label>
                 列順 <small>変更後の全列をカンマ区切り</small>
                 <input
-                  value={order}
-                  onChange={(event) => setOrder(event.target.value)}
+                  disabled={inputLocked}
+                  value={hideDraft ? '' : order}
+                  onChange={(event) => editDraft(() => setOrder(event.target.value))}
                   placeholder="顧客ID,氏名,note"
                 />
               </label>
               <label>
                 前後空白を除く列 <small>カンマ区切り</small>
                 <input
-                  value={trim}
-                  onChange={(event) => setTrim(event.target.value)}
+                  disabled={inputLocked}
+                  value={hideDraft ? '' : trim}
+                  onChange={(event) => editDraft(() => setTrim(event.target.value))}
                   placeholder="氏名,note"
                 />
               </label>
               <label>
                 重複キー <small>未指定なら重複処理なし</small>
                 <input
-                  value={dedupeKeys}
-                  onChange={(event) => setDedupeKeys(event.target.value)}
+                  disabled={inputLocked}
+                  value={hideDraft ? '' : dedupeKeys}
+                  onChange={(event) => editDraft(() => setDedupeKeys(event.target.value))}
                   placeholder="顧客ID"
                 />
               </label>
               <label>
                 重複の扱い
                 <select
-                  value={dedupeMode}
-                  onChange={(event) => setDedupeMode(event.target.value)}
+                  disabled={inputLocked}
+                  value={hideDraft ? 'report_only' : dedupeMode}
+                  onChange={(event) => editDraft(() => setDedupeMode(event.target.value))}
                 >
                   <option value="report_only">確認だけ（既定）</option>
                   <option value="first">先頭を残す</option>
@@ -427,17 +546,19 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
               <label>
                 並び替える列
                 <input
-                  value={sortColumn}
-                  onChange={(event) => setSortColumn(event.target.value)}
+                  disabled={inputLocked}
+                  value={hideDraft ? '' : sortColumn}
+                  onChange={(event) => editDraft(() => setSortColumn(event.target.value))}
                   placeholder="顧客ID"
                 />
               </label>
               <label>
                 並び順
                 <select
-                  value={sortDirection}
+                  disabled={inputLocked}
+                  value={hideDraft ? 'asc' : sortDirection}
                   onChange={(event) =>
-                    setSortDirection(event.target.value as 'asc' | 'desc')
+                    editDraft(() => setSortDirection(event.target.value as 'asc' | 'desc'))
                   }
                 >
                   <option value="asc">昇順</option>
@@ -447,8 +568,9 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
               <label>
                 出力文字コード
                 <select
-                  value={encoding}
-                  onChange={(event) => setEncoding(event.target.value)}
+                  disabled={inputLocked}
+                  value={hideDraft ? 'utf8-bom' : encoding}
+                  onChange={(event) => editDraft(() => setEncoding(event.target.value))}
                 >
                   <option value="utf8-bom">UTF-8 BOM付き</option>
                   <option value="utf8">UTF-8</option>
@@ -459,24 +581,26 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
             <label className={styles.check}>
               <input
                 type="checkbox"
-                checked={spreadsheetSafe}
-                onChange={(event) => setSpreadsheetSafe(event.target.checked)}
+                disabled={inputLocked}
+                checked={hideDraft ? true : spreadsheetSafe}
+                onChange={(event) => editDraft(() => setSpreadsheetSafe(event.target.checked))}
               />
               表計算ソフト向け安全版も別ファイルで作る（原本結果は変更しません）
             </label>
+            <p>サンプル操作は選択したCSVを送信せず、公開サンプルと現在の入力条件を使います。</p>
             <div className={styles.actions}>
               <button
                 className={styles.primary}
-                disabled={busy || !file}
+                disabled={busy || !ready || hideDraft || !!pendingQuote || !file}
                 onClick={() => file && void quote(file, false)}
               >
                 {busy ? '処理中…' : '¥3,000の見積りを作る'}
               </button>
-              <button disabled={busy} onClick={() => void quote(sample, true)}>
+              <button disabled={busy || !ready || hideDraft || !!pendingQuote} onClick={() => void quote(sample, true)}>
                 サンプルを完走
               </button>
               <button
-                disabled={busy || !ready || !trialPayment.available}
+                disabled={busy || !ready || hideDraft || !!pendingQuote || !trialPayment.available}
                 onClick={() => void quote(sample, false, true)}
               >
                 50円試験の見積りを作る
@@ -513,8 +637,9 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
             <label>
               確認した場所
               <select
-                value={paymentMethod}
-                onChange={(event) => setPaymentMethod(event.target.value)}
+                disabled={inputLocked}
+                  value={hideDraft ? 'ココナラ' : paymentMethod}
+                onChange={(event) => editDraft(() => setPaymentMethod(event.target.value))}
               >
                 <option>ココナラ</option>
                 <option>銀行振込</option>
@@ -524,9 +649,10 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
             <label>
               取引・入金の照合番号
               <input
-                value={paymentReference}
+                disabled={inputLocked}
+                  value={hideDraft ? '' : paymentReference}
                 maxLength={120}
-                onChange={(event) => setPaymentReference(event.target.value)}
+                onChange={(event) => editDraft(() => setPaymentReference(event.target.value))}
                 placeholder="例: 取引管理番号"
               />
             </label>
@@ -557,7 +683,7 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
           </div>
           {!jobs.length && (
             <p className={styles.empty}>
-              まだ受付はありません。まずサンプルで全工程を確認できます。
+              {ready ? 'まだ受付はありません。まずサンプルで全工程を確認できます。' : '接続確認後に受付を表示します。'}
             </p>
           )}
           <div className={styles.jobs}>
@@ -578,7 +704,7 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
                     <code>{job.id}</code>
                   </div>
                   <span data-status={job.status}>
-                    {statusLabel[job.status] ?? job.status}
+                    {job.status === 'quality_failed' && job.errorCode !== 'QUALITY' ? '処理失敗・再試行待ち' : statusLabel[job.status] ?? job.status}
                   </span>
                 </div>
                 <dl>
@@ -607,7 +733,7 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
                 {job.quoteMinor === 5000 && job.status === 'quoted' && (
                   <div className={styles.actions}>
                     <button
-                      disabled={busy || !ready || !trialPayment.available}
+                      disabled={busy || !ready || hideDraft || !trialPayment.available}
                       onClick={() => void payment(job, 'checkout')}
                     >
                       {trialPayment.mode === 'test'
@@ -615,7 +741,7 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
                         : '50円を支払う'}
                     </button>
                     <button
-                      disabled={busy || !ready || !trialPayment.available}
+                      disabled={busy || !ready || hideDraft || !trialPayment.available}
                       onClick={() => void payment(job, 'confirm')}
                     >
                       支払いを確認して開始
@@ -627,15 +753,18 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
                   job.quoteMinor !== 5000 && (
                     <button
                       className={styles.primary}
-                      disabled={busy || !ready || paymentReference.trim().length < 4}
+                      disabled={busy || !ready || hideDraft || paymentReference.trim().length < 4}
                       onClick={() => void accept(job)}
                     >
                       入金確認済みとして開始
                     </button>
                   )}
+                {job.status === 'accepted' && (
+                  <button disabled={busy || !ready || hideDraft} onClick={() => void accept(job, job.paymentStatus === 'sample')}>受付済みの処理を再開</button>
+                )}
                 {job.status === 'quality_failed' && (
                   <button
-                    disabled={busy || !ready || job.attempt >= 3}
+                    disabled={busy || !ready || hideDraft || job.attempt >= 3}
                     onClick={() =>
                       void accept(job, job.paymentStatus === 'sample')
                     }
@@ -665,7 +794,7 @@ export default function CsvBusinessWorkspace({ workspace = false }: { workspace?
                 )}
                 <button
                   className={styles.delete}
-                  disabled={busy || !ready || job.status === 'processing'}
+                  disabled={busy || !ready || hideDraft || job.status === 'processing'}
                   title={job.status === 'processing' ? '処理の完了後に削除できます。' : undefined}
                   onClick={() => void remove(job)}
                 >
