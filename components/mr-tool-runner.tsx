@@ -84,11 +84,20 @@ function localSession(): MrToolRunnerSession {
     patch(value) { snapshot = { ...snapshot, ...value }; listeners.forEach((listener) => listener()); },
   };
 }
+export function createMrToolRunnerState(initialText = ''): MrToolRunnerState {
+  return { text: initialText, proposal: '', bucket: 'single', rate: '', after: '40', price: '500',
+    summary: '', contents: '', url: '', output: '', result: null, error: '',
+    copied: false, editing: false, running: false, sampleInput: false };
+}
+export function hasMrToolRunnerDraft(value: Partial<MrToolRunnerState>): boolean {
+  const defaults = createMrToolRunnerState();
+  return Boolean(value.result || (['text', 'proposal', 'rate', 'summary', 'contents', 'url', 'output'] as const)
+    .some((key) => value[key]?.trim()) ||
+    (['bucket', 'after', 'price'] as const).some((key) => value[key] !== undefined && value[key]?.trim() !== defaults[key]));
+}
 function useRunnerState(session: MrToolRunnerSession | undefined, initialText: string) {
   const [local] = useState(localSession);
-  const [initial] = useState<MrToolRunnerState>(() => ({ text: initialText, proposal: '', bucket: 'single', rate: '',
-    after: '40', price: '500', summary: '', contents: '', url: '', output: '', result: null, error: '',
-    copied: false, editing: false, running: false, sampleInput: false }));
+  const [initial] = useState(() => createMrToolRunnerState(initialText));
   const store = session ?? local;
   const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
   const state = { ...initial, ...snapshot };

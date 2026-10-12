@@ -4,6 +4,12 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-11 — Tool単独入力の離脱消失も既存guardへ接続（G04 / WEB04、ROCK）
+
+`5d855b84`は全体verify Node2013 pass／1 platform skip、Worker1356、CSV385、GitHub14成功／既知のsecrets誤検出1件。Map変更後のCodeQL新規指摘は0。実buildの復旧後エラー消去・原稿と成果保持・390pxの保存ラベル一行／高さ44px、中止再試行が1event／revision1になることを確認した。
+
+追加の実画面でTool未実行原稿だけがLibrary移動→Backで空になることを再現したため、同じ既存Tool範囲で離脱guardへ接続。本人の仕事・手順別に保存／export後の明示破棄を案内し、取消済み／別手順でも抜けられる。別owner・古いsnapshot・実行中・記録保存不明では破棄を拒否し、保存済みLibraryと仕事は変更しない。関連86試験と独立8＋4件、型・lintに合格。ここでruntimeを凍結して実buildの入力保持・破棄導線と最終同一SHA CIを確認する。
+
 ## 2026-10-11 — 復旧後の実画面とCI指摘を仕上げ（G04 / WEB04 / AI04、ROCK）
 
 `32ccdf3c`の全体verifyはNode2011 pass／1 platform skip、Worker1356、CSV385で成功。実buildでは保存後応答喪失→GET失敗→GET成功で元の原稿・結果・保存操作を復元し、別ownerで非表示、元ownerで復帰、明示保存→再読込→ライブラリ再表示を確認。390pxの案件通知は重なり8.1pxから間隔12pxへ改善。戻る操作で未送信依頼の確認が開き、取消で入力保持、明示破棄後だけ履歴移動することも確認した。

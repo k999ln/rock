@@ -15,7 +15,7 @@ import type { A2AParentControllerSnapshot } from '@/lib/a2a-parent-controller';
 import type { A2APriceQuote } from '@/lib/a2a-price-quote';
 import type { SkyPackageRuntimeBinding } from '@/lib/sky-package-runtime-binding';
 import { formatCurrencyInputFromMinor, formatCurrencyMinor, parseCurrencyInputToMinor } from '@/lib/currency-format';
-import { MrToolRunner, type MrRunner, type MrToolRunnerSession, type MrToolRunnerState } from '@/components/mr-tool-runner';
+import { MrToolRunner, createMrToolRunnerState, hasMrToolRunnerDraft, type MrRunner, type MrToolRunnerSession, type MrToolRunnerState } from '@/components/mr-tool-runner';
 import { DeviceConnection } from '@/components/device-connection';
 import {
   Select,
@@ -55,6 +55,7 @@ const stateNames = {
 type Update = { jobId: string; revision: number; command: WorkCommand };
 type PendingUpdate = Update & { ownerScope: string };
 type Creation = { ownerScope: string; id: string; title: string; templateId: string };
+type RunnerDraft = { key: string; ownerScope: string; jobId: string; stepId: string; snapshot: Partial<MrToolRunnerState> };
 type Delegation = {
   id: string;
   parentJobId: string;
@@ -420,6 +421,7 @@ export default function Workbench({
   }, []);
   const runnerSnapshots = useRef(new Map<string, Partial<MrToolRunnerState>>());
   const runnerListeners = useRef(new Map<string, Set<() => void>>());
+  const [runnerDrafts, setRunnerDrafts] = useState(new Map<string, RunnerDraft>());
   const [filter, setFilter] = useState('open');
   const [pendingCreation, setPendingCreation] = useState<Creation | null>(null);
   const creation = useRef<Creation | null>(null);
@@ -441,7 +443,7 @@ export default function Workbench({
   const hasRetainedDrafts = Object.values(titleDrafts).some(value => value.trim()) ||
     Object.values(noteDrafts).some(value => value.trim()) || Object.values(localPackageTaskDrafts).some(value => value.trim()) ||
     Object.values(delegationFormDrafts).some(value => value.message.trim() || value.budgetLimitInput.trim() || value.parentBudgetLimitInput.trim() || value.continueWhileDeviceOffline);
-  usePendingSaveNavigation(pendingCreation !== null || pending !== null || hasRetainedDrafts || uncertainDelegationOwners.length > 0);
+  usePendingSaveNavigation(pendingCreation !== null || pending !== null || hasRetainedDrafts || uncertainDelegationOwners.length > 0 || runnerDrafts.size > 0);
   const ownsCurrentInput = () => Boolean(ownerScope && ownerScope === currentOwner.current);
   function discardPrivateDraft() {
     if (!ownsCurrentInput() || !currentTitle() || !currentTemplate() || !currentNote() || !currentLocalPackageTask() ||
@@ -698,12 +700,32 @@ export default function Workbench({
         return () => { listeners.delete(listener); };
       },
       patch(value) {
-        runnerSnapshots.current.set(key, { ...runnerSnapshots.current.get(key), ...value });
+        const snapshot = { ...runnerSnapshots.current.get(key), ...value };
+        runnerSnapshots.current.set(key, snapshot);
+        setRunnerDrafts((current) => {
+          const next = new Map(current);
+          if (hasMrToolRunnerDraft(snapshot) || snapshot.running) next.set(key, { key, ownerScope, jobId: selectedId, stepId: runnerStep, snapshot });
+          else next.delete(key);
+          return next;
+        });
         runnerListeners.current.get(key)?.forEach((listener) => listener());
       },
       isActive: () => currentOwner.current === ownerScope && selectedIdRef.current === selectedId && runnerStepRef.current === runnerStep,
     };
   }, [ownerScope, selectedId, runnerStep]);
+  const visibleRunnerDrafts = [...runnerDrafts.values()].filter((draft) => draft.ownerScope === ownerScope).map((draft) => {
+    const job = jobs.find((item) => item.id === draft.jobId);
+    return { ...draft, jobTitle: job?.title ?? draft.jobId, stepTitle: job?.steps.find((step) => step.id === draft.stepId)?.title ?? draft.stepId };
+  });
+  const hasHiddenRunnerDrafts = [...runnerDrafts.values()].some((draft) => draft.ownerScope !== ownerScope);
+  const discardRunnerDraft = useCallback((draft: RunnerDraft) => {
+    if (!ready || !ownerScope || currentOwner.current !== ownerScope || draft.ownerScope !== ownerScope ||
+        runnerSnapshots.current.get(draft.key) !== draft.snapshot || draft.snapshot.running ||
+        updateInFlight.current || pendingUpdate.current !== null) return;
+    runnerSnapshots.current.set(draft.key, createMrToolRunnerState());
+    setRunnerDrafts((current) => { const next = new Map(current); next.delete(draft.key); return next; });
+    runnerListeners.current.get(draft.key)?.forEach((listener) => listener());
+  }, [ready, ownerScope]);
   const locked = busy || running || pending !== null || pendingCreation !== null || loading;
   const visibleJobs = jobs.filter(
     (job) =>
@@ -1220,6 +1242,18 @@ export default function Workbench({
         {hasRetainedDrafts && !pendingCreation && <section className="work-notice" aria-label="仕事の未保存入力">
           <p>{hasPrivateDraft ? '未保存の入力をこのアカウントで保持しています。別の画面へ移動する前に保存するか、入力を破棄してください。保存済みの仕事は変更しません。' : '別のアカウントで入力した未保存の内容を非表示で保持しています。入力したアカウントへ接続し直すと復元できます。'}</p>
           {hasPrivateDraft && <button disabled={busy || delegationBusy || Boolean(pending) || Boolean(ownerScope && uncertainDelegationOwners.includes(ownerScope))} onClick={discardPrivateDraft}>未保存の入力を破棄</button>}
+        </section>}
+        {runnerDrafts.size > 0 && <section className="work-notice" aria-label="Toolの未保存入力・結果">
+          <p>Toolの入力・結果をこの画面内で保持しています。別の画面へ移動する前に、必要な結果を保存・書き出してから破棄してください。破棄しても保存済みの成果ライブラリや仕事の記録は変更しません。</p>
+          {visibleRunnerDrafts.map((draft) => <div key={draft.key}>
+            <p><strong>{draft.jobTitle} / {draft.stepTitle}</strong></p>
+            {(draft.snapshot.running || pending !== null) && <p>実行中・記録の保存結果が未確認の間は破棄できません。</p>}
+            <button type="button" disabled={!ready || Boolean(draft.snapshot.running) || pending !== null || busy}
+              aria-label={`${draft.jobTitle} / ${draft.stepTitle} の入力・結果を破棄`}
+              onClick={() => discardRunnerDraft(draft)}>このToolの入力・結果を破棄</button>
+          </div>)}
+          {hasHiddenRunnerDrafts && <p>別のアカウントのTool入力・結果を非表示で保持しています。元のアカウントに接続し直すと、確認・破棄できます。</p>}
+          {hasHiddenRunnerDrafts && <a href="/signin-with-chatgpt?return_to=/work" target="_blank" rel="noopener noreferrer">別タブで元のアカウントにサインイン</a>}
         </section>}
         {!ownerScope && !loading && !pendingCreation && <p className="work-notice">{OWNER_CHECK_REQUIRED}</p>}
         {pending && (

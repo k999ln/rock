@@ -7529,12 +7529,12 @@
     "reusedPr100Sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
     "separateGridBranch": "codex/compute-grid-recovery-20261011",
     "gridBasePr103Sha": "e80d0357aa88291b6ee955e62af875180d35e6cd",
-    "nextAction": "Finish bounded Map/session-feedback/mobile-action followup, independent review and built recovery recheck. Commit final docs, run same-SHA verify and GitHub CI, ready PR105 with explicit unresolved review gates. Three proposals remain unapplied; no main merge/deployment.",
+    "nextAction": "Commit frozen shared-Tool navigation protection and synced contracts; run full verify/build and actual input retention/discard/owner/cancelled-job paths. Then close final evidence and same-SHA CI, ready PR105. Three approval proposals remain unapplied; no main merge/deployment.",
     "githubSaved": true,
     "mainIntegrated": false,
     "deployed": false,
     "physicalDeviceTested": false,
-    "checkpointAt": "2026-10-12T03:21:39.153630+00:00",
+    "checkpointAt": "2026-10-12T03:39:31.533705+00:00",
     "gridPullRequest": "https://github.com/k999ln/rock/pull/104",
     "gridSourceSha": "050fade2c72c440af8922d4f23a574d6c089cca5",
     "gridGithubSaved": true,
@@ -7547,8 +7547,8 @@
     "evidence": "docs/evidence/quality-reliability-review.json",
     "latestMainObservedSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
     "latestMainObservedAt": "2026-10-12T03:21:39.153630+00:00",
-    "primaryIntermediateCi": "32ccdf3c: full verify2011pass/1skip; CI13success/2failure. Public-prose secret finding remains pending owner review; three CodeQL session-dictionary findings are being fixed with Maps. Android emulator58pass/2physical-only skips, nativeLinux1847 tests passed.",
-    "lastPushedPrimarySha": "32ccdf3c67e5e0b9ffe18ea459bc0293d0c5e81e",
-    "sourceSha": "32ccdf3c67e5e0b9ffe18ea459bc0293d0c5e81e"
+    "primaryIntermediateCi": "5d855b84: full verify2013pass/1skip; CI14success/1public-prose secrets failure. CodeQL new alert annotations0. Later shared-Tool navigation guard is independently reviewed; finalbuild/CI pending.",
+    "lastPushedPrimarySha": "5d855b84269326c5e4fc6e93b967d6906d73c316",
+    "sourceSha": "5d855b84269326c5e4fc6e93b967d6906d73c316"
   }
 }

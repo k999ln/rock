@@ -167,10 +167,11 @@
           "boundary": "ownerScope + job ID + step ID; Workbench lifetime memory only",
           "scope": "Existing shared citation, free-article and Coconala checker fields and output; specialized lazy-runner internal state excluded",
           "recovery": "Restore original input, result and explicit save controls after read failure remount. Late results remain in original session; stale owner/job actions are rejected.",
-          "persistence": "No implicit localStorage write. Leaving Workbench (including same-tab navigation), reload or tab close requires explicit save/export. Tool-only input/output does not trigger the existing navigation guard.",
+          "persistence": "No implicit localStorage write. Forced reload/tab close still loses unsaved memory; save/export remains explicit.",
           "regressions": "tests/workbench-owner-recovery.test.mjs",
           "keyStorage": "Map for session snapshots, subscriptions and last opened steps; no external-name property assignment.",
-          "feedback": "Workbench owns completed Tool recording failures until exact readback; Tool validation/warnings and standalone recording feedback remain local."
+          "feedback": "Workbench owns completed Tool recording failures until exact readback; Tool validation/warnings and standalone recording feedback remain local.",
+          "navigation": "Meaningful shared-Tool input/output/running state joins existing same-tab navigation guard. Original confirmed owner can discard each exact current snapshot by job/step, including cancelled/hidden jobs; pending/running writes and stale/foreign-owner callbacks cannot discard. Saved Library and job records are unchanged. Other-owner identity/details stay hidden; separate-tab links and downloads remain available."
         }
       }
     },

@@ -10,7 +10,7 @@ import * as claims from '../lib/rockstar-entitlement-claim.ts';
 import test from 'node:test';
 import { createSkyToolPackageDraft } from '../lib/sky-tool-package.ts';
 const root = new URL('../', import.meta.url);
-async function setup(t, { onFetch, onWorkResponse, actualRunner = false, componentProps = {} } = {}) {
+async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualNavigation = false, componentProps = {} } = {}) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
   for (const name of readdirSync(new URL('drizzle/', root))
@@ -323,6 +323,15 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, compone
   const exports = {};
   let href = 'https://local.test/work';
   const storage = new Map(); let storageWrites = 0;
+  const windowListeners = new Map(), documentListeners = new Map();
+  const addListener = (map, type, listener) => { if (!map.has(type)) map.set(type, new Set()); map.get(type).add(listener); };
+  class Element {
+    constructor(attributes) { this.attributes = attributes; }
+    closest() { return this; }
+    getAttribute(name) { return this.attributes[name] ?? null; }
+    hasAttribute(name) { return name in this.attributes; }
+  }
+  const document = { addEventListener(type, listener) { addListener(documentListeners, type, listener); }, removeEventListener(type, listener) { documentListeners.get(type)?.delete(listener); } };
   const window = {
     localStorage: { getItem(key) { return storage.get(key) ?? null; }, setItem(key, value) { storageWrites++; storage.set(key, value); }, removeItem(key) { storageWrites++; storage.delete(key); } },
     get location() {
@@ -334,17 +343,25 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, compone
         href = String(url);
       },
     },
-    addEventListener() {},
-    removeEventListener() {},
+    addEventListener(type, listener) { addListener(windowListeners, type, listener); },
+    removeEventListener(type, listener) { windowListeners.get(type)?.delete(listener); },
     setInterval() {
       return 1;
     },
     clearInterval() {},
   };
   const context = {
-    window, Error, crypto, performance, URL, AbortSignal, AbortController, TextEncoder, fetch: trackedFetch,
+    window, document, Element, Error, crypto, performance, URL, AbortSignal, AbortController, TextEncoder, fetch: trackedFetch,
     require(name) { assert.ok(name in modules, name); return modules[name]; },
   };
+  if (actualNavigation) {
+    modules['@/lib/history-navigation-guard'] = await import(new URL('lib/history-navigation-guard.ts', root));
+    const navigationExports = {};
+    runInNewContext(ts.transpileModule(readFileSync(new URL('components/use-pending-save-navigation.ts', root), 'utf8'),
+      { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText,
+      { ...context, exports: navigationExports });
+    Object.assign(modules['@/components/use-pending-save-navigation'], navigationExports);
+  }
   const cloudExports = {};
   runInNewContext(ts.transpileModule(
     readFileSync(new URL('components/workbench-cloud-text.tsx', root), 'utf8'),
@@ -451,7 +468,13 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, compone
     click,
     waitFor,
     find,
-    get navigationBlocked() { return navigationGuards.size > 0; },
+    get navigationBlocked() { return actualNavigation ? Boolean(windowListeners.get('beforeunload')?.size) : navigationGuards.size > 0; },
+    navigateLink(attributes = { href: '/library' }) {
+      let prevented = false;
+      const event = { button: 0, target: new Element(attributes), preventDefault() { prevented = true; } };
+      documentListeners.get('click')?.forEach((listener) => listener(event));
+      return { prevented };
+    },
     get storageWrites() { return storageWrites; },
     nodes: () => nodes(tree),
     text: () => text(tree),
@@ -1089,4 +1112,110 @@ void test('runner session Maps isolate prototype-like authenticated identities a
     assert.equal(h.nodes().find((n) => n.props?.['aria-label'] === '生成結果').props.value, saved.get(owner).output);
   }
   assert.equal(h.storageWrites, 0);
+});
+
+
+void test('runner-only input and generated result block real same-tab navigation until current owner explicitly discards', async (t) => {
+  const h = await setup(t, { actualRunner: true, actualNavigation: true });
+  const job = (await h.routeCall('POST', { id: randomUUID(), title: 'Guarded runner draft', templateId: 'article' })).data.job;
+  h.render(); await h.flush(); await h.click(job.title); await h.click(job.steps[0].title);
+  const input = () => h.nodes().find((n) => n.type === 'textarea' && n.props.placeholder?.includes('本文（出典:'));
+  assert.equal(h.navigateLink().prevented, false, 'unchanged initial Tool does not trap navigation');
+  input().props.onChange({ target: { value: 'Private unsaved runner manuscript' } }); h.render();
+  assert.equal(h.navigateLink().prevented, true, 'actual same-tab link is prevented before Workbench unmount');
+  await h.click('作成する');
+  assert.equal(h.navigateLink().prevented, true, 'confirmed workflow record does not persist its generated result');
+  await h.click('この端末に保存');
+  const writes = h.storageWrites;
+  await h.click('このToolの入力・結果を破棄');
+  assert.equal(input().props.value, '');
+  assert.equal(h.nodes().find((n) => n.props?.['aria-label'] === '生成結果'), undefined);
+  assert.equal(h.storageWrites, writes, 'discard never changes the explicitly saved library');
+  assert.ok(h.text().includes('保存した成果'));
+  assert.equal(h.navigateLink().prevented, false, 'explicit discard releases same-tab navigation');
+  assert.equal((await h.routeCall('GET')).data.jobs.length, 1, 'discard leaves durable workflow intact');
+});
+
+
+void test('hidden and cancelled runner drafts have an owner-only escape without clearing other job or saved records', async (t) => {
+  const h = await setup(t, { actualRunner: true, actualNavigation: true });
+  const jobs = [];
+  for (const title of ['Hidden retained draft', 'Second retained draft']) jobs.push((await h.routeCall('POST', { id: randomUUID(), title, templateId: 'article' })).data.job);
+  const input = () => h.nodes().find((n) => n.type === 'textarea' && n.props.placeholder?.includes('本文（出典:'));
+  h.render(); await h.flush();
+  for (const job of jobs) {
+    await h.click(job.title); await h.click(job.steps[0].title);
+    input().props.onChange({ target: { value: `${job.title} private text` } }); h.render();
+  }
+  const discardFirst = () => h.nodes().find((n) => n.type === 'button' && n.props['aria-label'] === `${jobs[0].title} / ${jobs[0].steps[0].title} の入力・結果を破棄`);
+  assert.ok(discardFirst(), 'a retained draft is reachable even while a different job is selected');
+  discardFirst().props.onClick(); h.render();
+  assert.equal(input().props.value, `${jobs[1].title} private text`, 'individual discard preserves another scope');
+  assert.equal(h.navigateLink().prevented, true);
+  await h.click('この仕事を中止');
+  assert.equal(input(), undefined, 'cancelled workflow hides the runner');
+  assert.ok(h.find('button', 'このToolの入力・結果を破棄'), 'cancelled job cannot trap the user');
+  await h.click('このToolの入力・結果を破棄');
+  assert.equal(h.navigateLink().prevented, false);
+  const stored = (await h.routeCall('GET')).data.jobs;
+  assert.equal(stored.length, 2); assert.equal(stored.find((job) => job.id === jobs[1].id).status, 'cancelled');
+  assert.equal(h.storageWrites, 0);
+});
+
+void test('runner discard rejects different owners and captured callbacks after later input even before rerender', async (t) => {
+  const h = await setup(t, { actualRunner: true, actualNavigation: true }); await h.grant('bob');
+  const job = (await h.routeCall('POST', { id: randomUUID(), title: 'Alice confidential Tool draft', templateId: 'article' })).data.job;
+  h.render(); await h.flush(); await h.click(job.title); await h.click(job.steps[0].title);
+  const input = () => h.nodes().find((n) => n.type === 'textarea' && n.props.placeholder?.includes('本文（出典:'));
+  input().props.onChange({ target: { value: 'Earlier private text' } }); h.render();
+  const oldDiscard = h.find('button', 'このToolの入力・結果を破棄').props.onClick;
+  input().props.onChange({ target: { value: 'Latest private text' } }); oldDiscard(); h.render();
+  assert.equal(input().props.value, 'Latest private text');
+  const confirmedDiscard = h.find('button', 'このToolの入力・結果を破棄').props.onClick;
+  h.rejectNext('GET', 401); await h.click('再読込'); confirmedDiscard(); h.render();
+  assert.equal(h.find('button', 'このToolの入力・結果を破棄'), undefined);
+  assert.ok(!h.text().includes(job.title), 'unknown owner cannot inspect retained Tool scope');
+  assert.equal(h.navigateLink().prevented, true);
+  h.owner('bob'); await h.click('再読込'); oldDiscard(); h.render();
+  assert.equal(h.find('button', 'このToolの入力・結果を破棄'), undefined);
+  assert.ok(!h.text().includes(job.title)); assert.ok(!h.text().includes('Latest private text'));
+  assert.equal(h.navigateLink().prevented, true, 'hidden owner draft remains protected');
+  h.owner('alice'); await h.click('再読込');
+  await h.click('このToolの入力・結果を破棄');
+  assert.equal(h.navigateLink().prevented, false, 'original confirmed owner can discard without reopening the Tool');
+  await h.click(job.title); assert.equal(input().props.value, '');
+  assert.equal(h.storageWrites, 0);
+});
+
+void test('runner discard cannot erase a running or unknown recorded result and validation-only errors never trap navigation', async (t) => {
+  const h = await setup(t, { actualRunner: true, actualNavigation: true, onWorkResponse(method) {
+    if (method === 'PATCH') return Response.json({ error: 'Synthetic record response lost' }, { status: 503 });
+  } });
+  const job = (await h.routeCall('POST', { id: randomUUID(), title: 'Unconfirmed Tool result', templateId: 'article' })).data.job;
+  h.render(); await h.flush(); await h.click(job.title); await h.click(job.steps[0].title);
+  const input = () => h.nodes().find((n) => n.type === 'textarea' && n.props.placeholder?.includes('本文（出典:'));
+  input().props.onChange({ target: { value: 'Tool result waiting for record confirmation' } }); h.render();
+  const oldDiscard = h.find('button', 'このToolの入力・結果を破棄').props.onClick;
+  h.find('button', '作成する').props.onClick(); oldDiscard(); h.render();
+  assert.equal(input().props.value, 'Tool result waiting for record confirmation');
+  assert.equal(h.find('button', 'このToolの入力・結果を破棄').props.disabled, true);
+  await h.flush();
+  const blockedDiscard = h.find('button', 'このToolの入力・結果を破棄');
+  assert.equal(blockedDiscard.props.disabled, true); blockedDiscard.props.onClick(); h.render();
+  assert.ok(h.nodes().find((n) => n.props?.['aria-label'] === '生成結果'));
+  assert.equal(h.navigateLink().prevented, true);
+  await h.click('最新状態を読み直す');
+  await h.click('このToolの入力・結果を破棄');
+  assert.equal(h.navigateLink().prevented, false);
+  assert.equal(h.requests.filter((entry) => entry.method === 'PATCH').length, 1);
+  assert.equal(h.storageWrites, 0);
+
+  const clean = await setup(t, { actualRunner: true, actualNavigation: true });
+  const empty = (await clean.routeCall('POST', { id: randomUUID(), title: 'Validation only', templateId: 'article' })).data.job;
+  clean.render(); await clean.flush(); await clean.click(empty.title); await clean.click(empty.steps[0].title);
+  await clean.click('作成する');
+  assert.ok(clean.text().includes('本文を入力してください。'));
+  clean.nodes().find((n) => n.props?.session && n.props?.tool).props.session.patch({ copied: true, editing: true }); clean.render();
+  assert.equal(clean.find('button', 'このToolの入力・結果を破棄'), undefined);
+  assert.equal(clean.navigateLink().prevented, false, 'error and default values alone do not lock navigation');
 });

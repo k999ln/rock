@@ -3,7 +3,7 @@
   "status": "in_progress",
   "startedAt": "2026-10-11T23:56:26Z",
   "plannedEndAt": "2026-10-12T04:56:26Z",
-  "updatedAt": "2026-10-12T03:21:39.153630+00:00",
+  "updatedAt": "2026-10-12T03:39:31.533705+00:00",
   "baseline": {
     "main": "4055ad380d3876bee8e93eca71b1e072a2785959",
     "reusedPr100": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
@@ -112,18 +112,35 @@
       "before": "Actual built PATCH commit/503 then GET503/GET200 recovered job metadata but lost manuscript, output and explicit save controls. Same defect reproduced0/2 actual-runner/SQLite tests.",
       "after": "Original owner/job/step session restores exact input, generated output and save/copy/download controls after read failure remount. Bob sees no original input; Alice restores it. Local API confirms one passed step, revision1, one event; no Tool rerun.",
       "scope": "74 targeted and4 independent tests; built32ccdf3c PC1280/mobile390; explicit local save confirmed. Shared citation/free-article/Coconala fields only. No automatic persistent storage. Explicit save→reload→Library→same result reopened.",
-      "remaining": "Narrow resolved-record error feedback and mobile action layout followup under review. Tool-only input/output does not guard navigation away from Workbench."
+      "remaining": "Specialized lazy runners excluded; forced reload/tab closure still requires explicit persistence. Bounded same-tab navigation followup is independently reviewed, built acceptance pending."
     },
     {
       "id": "coconala-notice-layout",
       "before": "390px inline output notice overlapped following card by8.1016px",
       "after": "Block notice has12px gap and0 horizontal overflow at390px",
       "scope": "Built32ccdf3c screenshot and DOM rectangle measurement; no visual redesign"
+    },
+    {
+      "id": "tool-result-feedback-and-keys",
+      "before": "A confirmed Tool record still showed its lost-response error; mobile save label wrapped into multiple lines; CodeQL flagged3 dynamic session property writes.",
+      "after": "Parent owns pending record feedback and clears it on exact readback; genuine Tool warning/error remains. Mobile save label is one line,126x44px with0 overflow. Three stores useMap; updated CodeQL has0 new alert annotations.",
+      "scope": "Built5d855b84 recovery and cancellation; cancellation response loss plus exact retry yields revision1/event1.76 targeted and separate independent regressions."
+    },
+    {
+      "id": "tool-draft-navigation",
+      "before": "Built5d855b84: type only Tool manuscript, clickLibrary, Back and reopen Tool produces empty input without warning.",
+      "after": "Meaningful shared-Tool drafts join existing navigation guard; original confirmed owner can discard exact per-job/step memory even when cancelled/hidden, leaving saved Library and work records intact. Different owner/unknown owner hides names/counts/content; stale discard cannot erase newer input.",
+      "scope": "86 related tests plus independent8targeted/4adversarial; no new persistence or service. Actual rebuilt UI and candidate CI pending.",
+      "evidence": [
+        "tool-navigation-before-summary.json",
+        "workbench-runner-navigation-summary.json",
+        "workbench-runner-navigation-independent-summary.json"
+      ]
     }
   ],
   "inProgress": [
-    "Bounded Tool record-feedback/mobile action followup and Map-key correction for three new CodeQL findings",
-    "Final documentation, same-SHA GitHub CI, review-ready PR and bounded handoff"
+    "Rebuild and visually accept the independently reviewed shared-Tool navigation guard",
+    "Final documentation, same-SHA verify/CI and review-ready PR handoff"
   ],
   "knownLimitations": [
     "Memory-only drafts do not survive browser force-close",
@@ -131,7 +148,7 @@
     "No physical Android instrumentation, full OS build/flash, external Agent/Provider or production authentication acceptance",
     "No production deployment, money movement, suspended capability activation or main merge",
     "No performance speedup claim; measured UI overflow and duplicate-count behavior only",
-    "MrToolRunner session retains shared fields only while Workbench remains mounted. Tool-only input/output does not block same-tab navigation away; explicit save/export is required. Specialized lazy-runner internal state is not included."
+    "MrToolRunner retains shared fields only while Workbench is mounted. Same-tab guard and explicit per-Tool discard protect navigation; forced reload/closure can still lose memory. Specialized lazy-runner internal state is not included."
   ],
   "separateGrid": {
     "sourceSha": "050fade2c72c440af8922d4f23a574d6c089cca5",
@@ -163,11 +180,11 @@
   ],
   "verificationLogs": "Large logs, screenshots and unapplied proposals are outside Git in /private/tmp/rock-quality-audit; tracked regression tests reproduce accepted behavior.",
   "finalValidation": {
-    "sourceSha": "32ccdf3c67e5e0b9ffe18ea459bc0293d0c5e81e",
+    "sourceSha": "5d855b84269326c5e4fc6e93b967d6906d73c316",
     "fullVerify": "pass; see validationCheckpoints",
-    "githubCi": "in progress; secrets public-prose finding expected pending approval",
+    "githubCi": "14success/1known public-prose secrets failure",
     "finishedAt": null,
-    "remainingSourceChange": "Bounded record-feedback and mobile result-action followup"
+    "remainingSourceChange": "Independently reviewed shared-Tool same-tab navigation guard"
   },
   "intermediateCi": {
     "sha": "250b57b07e6a3191fc0a0ad11632ab1dbeb9ad58",
@@ -202,7 +219,10 @@
         "work-job-view-compatibility-summary.json",
         "workbench-runner-summary.json",
         "workbench-runner-independent-summary.json",
-        "browser-32ccdf3c-summary.json"
+        "browser-32ccdf3c-summary.json",
+        "workbench-session-map-independent-summary.json",
+        "workbench-record-feedback-summary.json",
+        "workbench-runner-navigation-summary.json"
       ]
     },
     {
@@ -288,10 +308,11 @@
       "5590b7c5",
       "e3567ddd",
       "b9e16184",
-      "32ccdf3c"
+      "32ccdf3c",
+      "5d855b84"
     ],
     "independentReview": "45 scoped cases and two additional URL-intent race cases passed; built-ui-followups-independent-summary.json",
-    "builtRecheck": "32ccdf3c: original selection/input/output/savecontrols restored; Coconala valid discard clears conflict and notice12px gap. Remaining stale record-error feedback and cramped action label need bounded followup."
+    "builtRecheck": "5d855b84: original manuscript/output/savecontrols restored, resolved record error cleared, save label126x44px at390px, no overflow. Cancel/retry oneevent/revision1. One subsequent navigation-protection change still needs rebuilt acceptance."
   },
   "validationCheckpoints": [
     {
@@ -357,6 +378,31 @@
         "osBoot": false
       },
       "ciEvidence": "ci-32cc-native-android-secrets-summary.json"
+    },
+    {
+      "sha": "5d855b84269326c5e4fc6e93b967d6906d73c316",
+      "fullVerify": {
+        "exit": 0,
+        "nodePass": 2013,
+        "nodeSkip": 1,
+        "workerAssertions": 1356,
+        "csvAssertions": 385,
+        "assets": 186,
+        "missingAssets": 0
+      },
+      "githubCi": {
+        "success": 14,
+        "failure": 1,
+        "failedCheck": "SPIDER / secrets",
+        "reason": "Same known public-description false positive; owner review pending"
+      },
+      "codeql": {
+        "conclusion": "success",
+        "newAlertAnnotations": 0,
+        "check": "https://github.com/k999ln/rock/runs/114649977865"
+      },
+      "browserEvidence": "browser-5d855b84-summary.json",
+      "log": "verify-primary-5d855b84.log"
     }
   ],
   "policyPreservation": {
