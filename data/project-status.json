@@ -7512,7 +7512,7 @@
   },
   "qualityRefactor": {
     "startedAt": "2026-10-11T23:56:26Z",
-    "status": "review_ready_with_known_secrets_ci_failure",
+    "status": "followup_in_progress",
     "primaryWorkstream": "Git / CI / Operations",
     "primaryOwner": "ROCK",
     "taskId": "G04",
@@ -7529,7 +7529,7 @@
     "reusedPr100Sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
     "separateGridBranch": "codex/compute-grid-recovery-20261011",
     "gridBasePr103Sha": "e80d0357aa88291b6ee955e62af875180d35e6cd",
-    "nextAction": "Confirm final documentation/test-harness head verify and CI from PR105 receipt. Runtime14bd7988 is unchanged and built-browser accepted (also rebuilt/reopened atf5e5). Then owner-review the three unapplied proposals; main merge/deployment and physical/provider acceptance remain separate.",
+    "nextAction": "Update existing PR105/104 and same-head CI; complete live-preserving Sites integration, its schema-upgrade tests and built-browser checks, then publish existing URL.",
     "githubSaved": true,
     "mainIntegrated": false,
     "deployed": false,
@@ -7548,7 +7548,53 @@
     "latestMainObservedSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
     "latestMainObservedAt": "2026-10-12T03:50:29Z",
     "primaryIntermediateCi": "f5e5f34a local fullverify2019pass/1skip; CI13success/2fail: known prose secrets and Workbench response-ready test race. Wallet prior failure fixed. Workbench63 related/73 independent, Material28 own+independent tests pass; final non-runtime head fullverify/CI receipt belongs in PR105.",
-    "lastPushedPrimarySha": "f5e5f34a95d5947704148151f927971e36e9ea32",
-    "sourceSha": "14bd7988cd334d3419c0e138174b850641d568d7"
+    "lastPushedPrimarySha": "19e75e92d873f0b3e9d6294634cbdbe0d5f96567",
+    "sourceSha": "14bd7988cd334d3419c0e138174b850641d568d7",
+    "followup": {
+      "startedAt": "2026-10-12T14:21:32.246879+00:00",
+      "status": "final_validation_and_site_integration",
+      "mainSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
+      "primaryStartSha": "19e75e92d873f0b3e9d6294634cbdbe0d5f96567",
+      "gridStartSha": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+      "taskIds": [
+        "G04",
+        "WEB04",
+        "AI04",
+        "CSV00",
+        "GRID01"
+      ],
+      "scope": [
+        "secret_findings_and_proposal_review",
+        "real_csv_process_kill_reproduction",
+        "existing_tool_memory_recovery",
+        "independent_grid_review"
+      ],
+      "approvals": "Both scanner exceptions and CSV durable recovery proposal remain unapplied; this goal does not approve them.",
+      "nextAction": "Update existing PR105/104 and same-head CI; complete live-preserving Sites integration, its schema-upgrade tests and built-browser checks, then publish existing URL.",
+      "evidence": "docs/evidence/quality-reliability-review.json#followup",
+      "deployment": {
+        "authorization": "User explicitly requested all fixes on the existing URL in this chat; no new pricing, held feature enablement or main merge approval.",
+        "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+        "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+        "previousVersion": 49,
+        "previousSourceSha": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc",
+        "audience": "public",
+        "state": "preparing_preserving_live_only_csv_contracts",
+        "authorizationRecordedAt": "2026-10-12T16:07:04.459805+00:00"
+      },
+      "resolved": [
+        "Delivery draft/file owner fencing and parent authentication invalidation",
+        "Legal/Patent/Jev synchronous duplicate-submit guard",
+        "CSV delayed event fencing after deletion and input generation reuse"
+      ],
+      "unresolved": [
+        "Scanner exceptions/control pin require owner review; policies unchanged",
+        "CSV processing SIGKILL recovery and expired-processing purge remain unresolved; prior contract proposal remains unapplied",
+        "Canonical nextPrompt synchronization rejected by automatic approval review; user decision pending",
+        "Standalone anonymous drafts and forced tab-close persistence remain outside approved storage contract"
+      ],
+      "localVerify": "2049 pass / 1 existing skip, 1356 work API assertions and 385 CSV assertions; build and metadata PASS",
+      "browserAcceptance": "Delivery draft hidden during 401/other-owner, restored original owner review+File; PC1280/mobile390 overflow0"
+    }
   }
 }

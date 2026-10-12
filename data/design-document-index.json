@@ -1,7 +1,7 @@
 {
   "schema": "rockstaros-design-document-index/1",
   "version": "1.6",
-  "updatedAt": "2026-10-11",
+  "updatedAt": "2026-10-12",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
     "docs/avocado-mini-r5/README.md",
@@ -165,13 +165,15 @@
         "limits": "Current-page memory; no forced-close persistence or Provider acceptance.",
         "runnerSession": {
           "boundary": "ownerScope + job ID + step ID; Workbench lifetime memory only",
-          "scope": "Existing shared citation, free-article and Coconala checker fields and output; specialized lazy-runner internal state excluded",
+          "scope": "Existing shared citation, free-article and Coconala checker fields/output, plus Delivery review JSON, selected File references and result. Other specialized lazy-runner internal state excluded.",
           "recovery": "Restore original input, result and explicit save controls after read failure remount. Late results remain in original session; stale owner/job actions are rejected.",
           "persistence": "No implicit localStorage write. Forced reload/tab close still loses unsaved memory; save/export remains explicit.",
           "regressions": "tests/workbench-owner-recovery.test.mjs",
           "keyStorage": "Map for session snapshots, subscriptions and last opened steps; no external-name property assignment.",
           "feedback": "Workbench owns completed Tool recording failures until exact readback; Tool validation/warnings and standalone recording feedback remain local.",
-          "navigation": "Meaningful shared-Tool input/output/running state joins existing same-tab navigation guard. Original confirmed owner can discard each exact current snapshot by job/step, including cancelled/hidden jobs; pending/running writes and stale/foreign-owner callbacks cannot discard. Saved Library and job records are unchanged. Other-owner identity/details stay hidden; separate-tab links and downloads remain available."
+          "navigation": "Meaningful shared-Tool input/output/running state joins existing same-tab navigation guard. Original confirmed owner can discard each exact current snapshot by job/step, including cancelled/hidden jobs; pending/running writes and stale/foreign-owner callbacks cannot discard. Saved Library and job records are unchanged. Other-owner identity/details stay hidden; separate-tab links and downloads remain available.",
+          "authentication": "MR parent or Delivery 401 invalidates Workbench identity and older list generations, masks private details, and retains original memory. Child 200 alone cannot restore it; explicit parent recheck must confirm the original owner.",
+          "deliveryExecution": "Synchronous lock and current mounted/owner/job/step checks before dispatch, including after file preparation and tracking start. Unknown workflow record blocks stale rerun/discard; already-started late output stays in its original session."
         }
       }
     },
@@ -1071,7 +1073,13 @@
           "docs/evidence/sky-production-auth-verification.json",
           "docs/evidence/sky-csv-expiry-verification.json"
         ],
-        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate"
+        "reviewScope": "2026-10-11 current source contract review; browser, Provider, physical and production acceptance remain separate",
+        "eventHistoryFence": {
+          "regressions": "tests/csv-processing-recovery.test.mjs",
+          "contract": "Append only to the same owner/job/input incarnation, with non-decreasing current revision and no cleanup_pending. Preserve legitimate delayed events after same-incarnation progress.",
+          "acceptance": "Actual local D1/R2 before/after: delayed event cannot resurrect after deletion or enter a same-ID replacement; concurrent explicit resume retains committed history.",
+          "compatibility": "No event format, retry, payment, expiry, API or retention-contract change."
+        }
       },
       "clientRecovery": {
         "implementation": [
@@ -1088,6 +1096,21 @@
         "navigation": "Guard meaningful unsent input and unknown saves; explicit same-owner draft discard preserves committed jobs.",
         "serverRecovery": "Read back completed commit before cleanup; retain winning artifacts; protect accepted/processing event and post-claim read failures.",
         "limits": "Memory-only unsent/pending input. Hard-killed processing recovery and orphan R2 cleanup remain unresolved; no payment or retention-contract change."
+      },
+      "processCrashDiagnostic": {
+        "implementation": "scripts/check-csv-process-crashes.mjs",
+        "command": "node scripts/check-csv-process-crashes.mjs",
+        "scope": "POSIX synthetic input; actual Node/workerd process-group SIGKILL and restart on the same persistent local D1/R2.",
+        "checkpoints": [
+          "claim",
+          "output-stream",
+          "outputs-partial",
+          "completed",
+          "cleanup"
+        ],
+        "observed": "First three remain processing with retry/delete refused and expired cleanup excluded. Completed row/artifacts survive though final event can be absent; cleanup_pending can be retried.",
+        "meaning": "Passing audit confirms these observed states, not processing recovery. Recovery/namespace/deletion proposal remains unapplied.",
+        "limits": "Not production HTTP/auth/browser/provider/payment acceptance; no guarantee of abandoned processing or orphan-object reclamation."
       }
     },
     {
@@ -1263,7 +1286,22 @@
     },
     {
       "id": "mr-delivery",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "workbenchRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": [
+          "components/delivery-runner.tsx",
+          "lib/delivery-runner-state.ts",
+          "components/mr-tool-runner.tsx",
+          "components/workbench.tsx"
+        ],
+        "regressions": "tests/workbench-owner-recovery.test.mjs",
+        "input": "Review JSON, original File references and result remain in existing owner/job/step memory and join the shared navigation guard.",
+        "recovery": "Mask on authentication loss; restore only after original owner is reconfirmed by Workbench. Different owner and stale callbacks cannot dispatch or discard. Retain result while the same workflow command is reconciled.",
+        "compatibility": "PC/approval/API/storage contracts and standalone local-state behavior unchanged; no implicit persistence or automatic replay.",
+        "acceptance": "Actual component/client/auth hook/route with SQLite: lost record reply and failed GET preserve original File bytes/result; 401 to foreign owner dispatches zero; original owner restores; delayed reads/start/completion are fenced. Independently reviewed.",
+        "limits": "Workbench lifetime only; other lazy runners, forced reload, real PC/provider and deployment acceptance remain separate."
+      }
     },
     {
       "id": "rockstar-ledger",
@@ -1280,7 +1318,17 @@
         "tests/jev-evaluation.test.mjs",
         "tests/jev-receipt-boundary.test.mjs",
         "tests/jev-transport.test.mjs"
-      ]
+      ],
+      "submissionRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/jev-evaluation-runner.tsx",
+        "regressions": "tests/lazy-runner-submission.test.mjs",
+        "contract": "Synchronous lock before first await rejects same-frame duplicate submits. Current execution permission and mounted state fence stale handlers; permission toggles do not release an in-flight lock.",
+        "recovery": "Keep input and unlock after failure for an explicit retry. Consent refusal and legal emergency return do not strand the lock.",
+        "compatibility": "Existing payload, explicit consent, pricing gate and optional local-guide metadata history unchanged; no automatic replay or new persistence.",
+        "acceptance": "Actual form handlers: one POST for duplicate submit, zero while prohibited, held request retains lock, input survives explicit retry; independent review covers refusal/emergency recovery.",
+        "limits": "Synthetic transport; no provider/payment acceptance or new cross-navigation input retention guarantee."
+      }
     },
     {
       "id": "rockstar-legal-intake",
@@ -1340,6 +1388,16 @@
         "productionProviderExecutionVerified": false,
         "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
         "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+      },
+      "submissionRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/legal-intake-runner.tsx",
+        "regressions": "tests/lazy-runner-submission.test.mjs",
+        "contract": "Synchronous lock before first await rejects same-frame duplicate submits. Current execution permission and mounted state fence stale handlers; permission toggles do not release an in-flight lock.",
+        "recovery": "Keep input and unlock after failure for an explicit retry. Consent refusal and legal emergency return do not strand the lock.",
+        "compatibility": "Existing payload, explicit consent, pricing gate and optional local-guide metadata history unchanged; no automatic replay or new persistence.",
+        "acceptance": "Actual form handlers: one POST for duplicate submit, zero while prohibited, held request retains lock, input survives explicit retry; independent review covers refusal/emergency recovery.",
+        "limits": "Synthetic transport; no provider/payment acceptance or new cross-navigation input retention guarantee."
       }
     },
     {
@@ -1400,6 +1458,16 @@
         "productionProviderExecutionVerified": false,
         "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
         "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+      },
+      "submissionRecovery": {
+        "document": "docs/sky-tools-complete-design.md",
+        "implementation": "components/patent-assistant-runner.tsx",
+        "regressions": "tests/lazy-runner-submission.test.mjs",
+        "contract": "Synchronous lock before first await rejects same-frame duplicate submits. Current execution permission and mounted state fence stale handlers; permission toggles do not release an in-flight lock.",
+        "recovery": "Keep input and unlock after failure for an explicit retry. Consent refusal and legal emergency return do not strand the lock.",
+        "compatibility": "Existing payload, explicit consent, pricing gate and optional local-guide metadata history unchanged; no automatic replay or new persistence.",
+        "acceptance": "Actual form handlers: one POST for duplicate submit, zero while prohibited, held request retains lock, input survives explicit retry; independent review covers refusal/emergency recovery.",
+        "limits": "Synthetic transport; no provider/payment acceptance or new cross-navigation input retention guarantee."
       }
     },
     {

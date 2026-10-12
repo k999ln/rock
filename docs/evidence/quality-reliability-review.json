@@ -664,5 +664,237 @@
     "rawEvidenceDirectory": "/private/tmp/rock-quality-audit",
     "reviewLimits": "CI secrets finding prevents claiming all-green/merge-ready. Physical/full-OS, real provider, production identity, funds and publication remain separate gates.",
     "verificationNote": "Read the final PR105 receipt before treating any intermediate checkpoint as the current result. Two CI harness races and one fixture ownership assumption were causally corrected without runtime edits or weakened assertions."
+  },
+  "followup": {
+    "startedAt": "2026-10-12T14:21:32.246879+00:00",
+    "status": "final_validation_and_site_integration",
+    "mainSha": "4055ad380d3876bee8e93eca71b1e072a2785959",
+    "primaryStartSha": "19e75e92d873f0b3e9d6294634cbdbe0d5f96567",
+    "gridStartSha": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+    "taskIds": [
+      "G04",
+      "WEB04",
+      "AI04",
+      "CSV00",
+      "GRID01"
+    ],
+    "scope": [
+      "secret_findings_and_proposal_review",
+      "real_csv_process_kill_reproduction",
+      "existing_tool_memory_recovery",
+      "independent_grid_review"
+    ],
+    "approvals": "Both scanner exceptions and CSV durable recovery proposal remain unapplied; this goal does not approve them.",
+    "nextAction": "Update existing PR105/104 and same-head CI; complete live-preserving Sites integration, its schema-upgrade tests and built-browser checks, then publish existing URL.",
+    "evidence": "docs/evidence/quality-reliability-review.json#followup",
+    "originalCheckout": {
+      "root": "/Users/kaiya/Documents/ChatGPT/avokdo",
+      "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+      "branch": "codex/esim-cloud-access",
+      "statusEntries": 168,
+      "statusSha256": "6e8b22d57e72609e6d1f471b238e4a00d75805024a2f236a61fd96f37fd53580",
+      "patchSha256": "a271e8e75dc48416d2d6e7e0b7922bb8ddd6e09bfba4c3bd6311a49b67fb956f"
+    },
+    "githubStart": {
+      "checkedAt": "2026-10-12T14:22:40.023873+00:00",
+      "main": "4055ad380d3876bee8e93eca71b1e072a2785959",
+      "pulls": [
+        {
+          "baseRefName": "main",
+          "headRefName": "codex/rock-refactor-20261011",
+          "headRefOid": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
+          "isDraft": false,
+          "mergedAt": null,
+          "number": 100,
+          "state": "OPEN",
+          "url": "https://github.com/k999ln/rock/pull/100",
+          "checks": {
+            "SUCCESS": 9
+          },
+          "failures": []
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "claude/sky-compute-grid-live",
+          "headRefOid": "e80d0357aa88291b6ee955e62af875180d35e6cd",
+          "isDraft": false,
+          "mergedAt": null,
+          "number": 103,
+          "state": "OPEN",
+          "url": "https://github.com/k999ln/rock/pull/103",
+          "checks": {
+            "FAILURE": 1,
+            "SUCCESS": 7
+          },
+          "failures": [
+            {
+              "name": "SPIDER / secrets",
+              "url": "https://github.com/k999ln/rock/actions/runs/38184274691/job/114603149994"
+            }
+          ]
+        },
+        {
+          "baseRefName": "claude/sky-compute-grid-live",
+          "headRefName": "codex/compute-grid-recovery-20261011",
+          "headRefOid": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+          "isDraft": false,
+          "mergedAt": null,
+          "number": 104,
+          "state": "OPEN",
+          "url": "https://github.com/k999ln/rock/pull/104",
+          "checks": {
+            "FAILURE": 1,
+            "SUCCESS": 6
+          },
+          "failures": [
+            {
+              "name": "SPIDER / secrets",
+              "url": "https://github.com/k999ln/rock/actions/runs/38189944538/job/114620328054"
+            }
+          ]
+        },
+        {
+          "baseRefName": "main",
+          "headRefName": "codex/quality-reliability-20261011",
+          "headRefOid": "19e75e92d873f0b3e9d6294634cbdbe0d5f96567",
+          "isDraft": false,
+          "mergedAt": null,
+          "number": 105,
+          "state": "OPEN",
+          "url": "https://github.com/k999ln/rock/pull/105",
+          "checks": {
+            "FAILURE": 1,
+            "SUCCESS": 14
+          },
+          "failures": [
+            {
+              "name": "SPIDER / secrets",
+              "url": "https://github.com/k999ln/rock/actions/runs/38202814700/job/114659706241"
+            }
+          ]
+        }
+      ]
+    },
+    "verification": [
+      {
+        "scope": "Delivery actual-client and actual execution-access owner/auth races",
+        "result": "pass",
+        "independentChecks": 8,
+        "relatedChecks": 51,
+        "limits": "In-memory same-owner recovery only; not forced-close persistence or production authentication."
+      },
+      {
+        "scope": "Legal/Patent/Jev synchronous submissions",
+        "result": "pass",
+        "targetedChecks": 12,
+        "independentChecks": 22,
+        "beforeAfter": "Same-frame duplicate POST 2 to 1; Jev disabled execution POST 1 to 0."
+      },
+      {
+        "scope": "CSV event fencing",
+        "result": "pass",
+        "targetedChecks": 19,
+        "independentExtraChecks": 2,
+        "beforeAfter": "Old delayed event survived deletion/recreation; conditional insert prevents stale/cross-owner history while allowing legitimate delayed events for same input."
+      },
+      {
+        "scope": "CSV real D1/R2 process-group SIGKILL",
+        "result": "diagnostic reproduced",
+        "checkpoints": 5,
+        "processingRecoverySolved": false,
+        "limits": "Claim, partial R2 stream and partial outputs remain stuck; completion preserves artifacts; cleanup_pending resumes. No orphan-retention/retry contract changes."
+      },
+      {
+        "scope": "Grid server",
+        "result": "pass",
+        "targetedChecks": 59,
+        "independentReplayChecks": 1,
+        "sourceSha": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+        "limits": "Post-D1-commit exception/new store instance fixture, not OS process kill; existing five-minute exact signed replay window maintained."
+      },
+      {
+        "scope": "npm run verify",
+        "result": "pass",
+        "nodeVersion": "v26.0.0",
+        "nodePassed": 2049,
+        "nodeSkipped": 1,
+        "nodeFailed": 0,
+        "workApiAssertions": 1356,
+        "csvWorkerAssertions": 385,
+        "sourceInputsUnchanged": true,
+        "limits": "The one existing platform skip remains; GitHub Node22 check is a separate result. Initial failure was five missing awaits in test registration and was fixed without changing assertions."
+      }
+    ],
+    "deployment": {
+      "authorization": "User explicitly requested all fixes on the existing URL in this chat; no new pricing, held feature enablement or main merge approval.",
+      "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+      "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927",
+      "previousVersion": 49,
+      "previousSourceSha": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc",
+      "audience": "public",
+      "state": "preparing_preserving_live_only_csv_contracts",
+      "authorizationRecordedAt": "2026-10-12T16:07:04.459805+00:00"
+    },
+    "resolved": [
+      "Delivery draft/file owner fencing and parent authentication invalidation",
+      "Legal/Patent/Jev synchronous duplicate-submit guard",
+      "CSV delayed event fencing after deletion and input generation reuse"
+    ],
+    "unresolved": [
+      "Scanner exceptions/control pin require owner review; policies unchanged",
+      "CSV processing SIGKILL recovery and expired-processing purge remain unresolved; prior contract proposal remains unapplied",
+      "Canonical nextPrompt synchronization rejected by automatic approval review; user decision pending",
+      "Standalone anonymous drafts and forced tab-close persistence remain outside approved storage contract"
+    ],
+    "runtimeCandidateSha256": {
+      "components/workbench.tsx": "53269d782ddc331b020ef09cfb6df6d151a9939aac8de7d58699a783d911e4e9",
+      "components/mr-tool-runner.tsx": "271a175f9d34e9fc48d0968aef34daa53834d52d7a47ca97ead44a3333a229df",
+      "components/delivery-runner.tsx": "8752f24c0881076f79f128178692a6d2877807cb5b54502db14f20ef6dc4ea46",
+      "lib/delivery-runner-state.ts": "eb9fd20d8e3c08e923cbfbc54c1760721279399ac5de7055b845d38ab8b64b1f",
+      "components/legal-intake-runner.tsx": "4865263151846571ba112d82cdd982b98622d354fc1b8f363c3068c2786b8a16",
+      "components/patent-assistant-runner.tsx": "3b12d604f9c7bfe47fe5ff5dbdb76b65e907d913b4638b4f94a4df597645a3c6",
+      "components/jev-evaluation-runner.tsx": "3d5f13069c37a872bd84b44ece47a44821d4462371f42334befcd8cac9723278",
+      "lib/csv-job-store.ts": "b26907c79eba627b1cad355777a6051f135ec8ab780538c681024e67c780ba5d",
+      "scripts/check-csv-process-crashes.mjs": "2b65439adb7d776c0eb1527b250b4c7415a217bc5f0e86ff1f2945b4fa885521"
+    },
+    "scannerReview": {
+      "primary": {
+        "head": "19e75e92d873f0b3e9d6294634cbdbe0d5f96567",
+        "commits": 1301,
+        "pinnedFindings": 1,
+        "proposedFindings": 0,
+        "tests": 11
+      },
+      "grid": {
+        "head": "36a9f6b7ca070d2eb92fa8608b41523d1f1c9e08",
+        "commits": 1268,
+        "pinnedFindings": 3,
+        "proposedFindings": 0,
+        "tests": 12,
+        "independentNegativeCases": 15
+      },
+      "applied": false,
+      "note": "Complete reachable histories, pinned Gitleaks 8.30.1; exact rule/path/value proposals tested only in scratch. Intentional github-pat self-test annotation is not a repository leak."
+    },
+    "browser": {
+      "environment": "built local Worker, persisted synthetic D1/R2, gateway-controlled synthetic identity; no production-auth claim",
+      "checks": [
+        "Workbench synthetic job and explicitly saved result survived final build/reload",
+        "Delivery-only review/File draft blocked Library navigation",
+        "401 hid private job/review/discard and disabled creation",
+        "different owner had no prior job/review/discard",
+        "original owner restored exact review and selected File reference without reselecting",
+        "PC1280 and mobile390 document widths equal viewport; keyboard Tab reached file selector"
+      ],
+      "screenshots": [
+        "docs/evidence/quality-delivery-recovery-desktop.png",
+        "docs/evidence/quality-delivery-recovery-mobile.png"
+      ],
+      "limitations": [
+        "Native file input resets its browser label after remount; retained in-memory File count remains authoritative",
+        "No PC connector execution or external delivery/provider calls",
+        "Force-close persistence not added"
+      ]
+    }
   }
 }

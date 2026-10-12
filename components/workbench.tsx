@@ -711,8 +711,13 @@ export default function Workbench({
         runnerListeners.current.get(key)?.forEach((listener) => listener());
       },
       isActive: () => currentOwner.current === ownerScope && selectedIdRef.current === selectedId && runnerStepRef.current === runnerStep,
+      onAuthenticationLost() {
+        if (currentOwner.current !== ownerScope) return;
+        listGeneration.current++; setLoading(false);
+        setOwnerScope(null); setReady(false); setJobs([]);
+      },
     };
-  }, [ownerScope, selectedId, runnerStep]);
+  }, [ownerScope, selectedId, runnerStep, setOwnerScope]);
   const visibleRunnerDrafts = [...runnerDrafts.values()].filter((draft) => draft.ownerScope === ownerScope).map((draft) => {
     const job = jobs.find((item) => item.id === draft.jobId);
     return { ...draft, jobTitle: job?.title ?? draft.jobId, stepTitle: job?.steps.find((step) => step.id === draft.stepId)?.title ?? draft.stepId };

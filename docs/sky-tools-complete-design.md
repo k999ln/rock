@@ -184,7 +184,7 @@ Workbenchは選択した仕事と取得世代を照合し、古い一覧・詳�
 
 WorkbenchのTool結果・状態更新は、元owner・job ID・元revision・command IDをひとつの保留操作として固定する。読込失敗ではこれを消さず、元ownerの一覧または更新応答に同じcommandが記録され、revisionが進んだ証拠を確認してから解除する。結果の再確認はToolそのものの再実行を要求しない。`lib/work-job-view.ts`が一覧・仕事・step・plan・履歴を既存parserと照合し、不完全な成功応答を描画や操作完了へ進めない。保存形式は変えず、旧planは既存storeの正規化を通った応答として受け入れる。
 
-出典整理・無料記事・Coconala検査で共用するMrToolRunnerの既存入力・出力は、親Workbenchのowner・job ID・step ID別memoryに保持する。保存結果の再取得が失敗してTool表示が一度外れても、同じ本人と仕事へ戻れば原稿・生成結果・明示保存操作を復元する。別ownerと別jobへ表示・記録を混在させず、遅延した結果は元sessionへだけ戻す。単体Toolは既存のlocal state相当で動く。 session・購読・最後の手順はMapで外部識別子をkeyとして保持し、通常objectのproperty代入にしない。Tool完了後の記録保存エラーはWorkbenchが未確認commandとともに表示し、照合後に解消する。Tool自体の入力エラー・実行警告はTool側へ残し、単体利用時の記録エラー表示も維持する。結果の見出しと保存操作は狭い幅で行を分け、保存ラベルを分断しない。自動localStorage保存は追加せず、対象Toolだけの未保存入力・結果も既存の同一タブ離脱guardへ含める。親画面で確認済み本人の仕事・手順ごとに保持分を表示し、保存／export後の個別破棄で移動を再開する。取消済み・別手順のdraftにも破棄経路を残す。別owner／本人不明では名前・件数・原稿を出さず一般的な再接続案内だけを表示する。破棄は現在の本人と最新snapshotを照合し、実行中・記録保存不明では拒否する。保存済みLibrary・仕事・外部処理は変更しない。初期値だけ、error／copy状態だけでは移動を止めない。別タブ・downloadを妨げず、historyは既存Navigation API対応範囲を維持する。強制的な再読込・タブ終了をまたぐmemory復元は保証しない。専用lazy runner内部の入力保持は今回の保証範囲外。合格条件は実runner＋route／SQLiteでの保存後応答喪失→GET失敗→再取得、遅延完了、本人切替、別job切替、実build画面での原稿と結果の復元。
+出典整理・無料記事・Coconala検査で共用するMrToolRunnerの既存入力・出力は、親Workbenchのowner・job ID・step ID別memoryに保持する。保存結果の再取得が失敗してTool表示が一度外れても、同じ本人と仕事へ戻れば原稿・生成結果・明示保存操作を復元する。別ownerと別jobへ表示・記録を混在させず、遅延した結果は元sessionへだけ戻す。単体Toolは既存のlocal state相当で動く。 session・購読・最後の手順はMapで外部識別子をkeyとして保持し、通常objectのproperty代入にしない。Tool完了後の記録保存エラーはWorkbenchが未確認commandとともに表示し、照合後に解消する。Tool自体の入力エラー・実行警告はTool側へ残し、単体利用時の記録エラー表示も維持する。結果の見出しと保存操作は狭い幅で行を分け、保存ラベルを分断しない。自動localStorage保存は追加せず、対象Toolだけの未保存入力・結果も既存の同一タブ離脱guardへ含める。親画面で確認済み本人の仕事・手順ごとに保持分を表示し、保存／export後の個別破棄で移動を再開する。取消済み・別手順のdraftにも破棄経路を残す。別owner／本人不明では名前・件数・原稿を出さず一般的な再接続案内だけを表示する。破棄は現在の本人と最新snapshotを照合し、実行中・記録保存不明では拒否する。保存済みLibrary・仕事・外部処理は変更しない。初期値だけ、error／copy状態だけでは移動を止めない。別タブ・downloadを妨げず、historyは既存Navigation API対応範囲を維持する。強制的な再読込・タブ終了をまたぐmemory復元は保証しない。専用lazy runnerは下記のMr. Deliveryだけを追加対象とし、それ以外の内部入力はこの保持保証の対象外。合格条件は実runner＋route／SQLiteでの保存後応答喪失→GET失敗→再取得、遅延完了、本人切替、別job切替、実build画面での原稿と結果の復元。
 
 Cloud AI本文だけが未保存の場合も、本人別draftを同一タブの離脱から保護する。未確認の見積保存は同じrequest IDを保持し、後続の拒否だけで以前の保存失敗を断定しない。初回の確定した入力拒否は修正を許可するが、不明な保存は本人の保存済み見積との一致で照合する。破棄は同じ本人・同じ現在の入力版に限定し、旧handlerから新しい本文・上限を消さない。料金・実行gate、明示承認、Providerへの再送禁止、強制終了をまたぐmemoryの限界は維持する。
 
@@ -429,6 +429,10 @@ Goal fileの読込中は検証・保存を無効にして状態を表示する�
 
 serverの完成状態更新やevent追記の応答が失われても、保存rowを照合するまで成果物を削除しない。既にcompletedなら同じ成果参照を返し、失敗への更新はowner・revision・attempt・inputの同じ処理だけに限定する。acceptedのevent失敗は同じ入金条件で明示再開でき、処理開始直後の一時読取失敗はquality_failedへ復旧する。未知の状態では私有objectを保護し、既存retry／本人削除／retentionへ任せる。
 
+event追記はowner・job ID・inputの世代を照合し、現在revisionが記録対象より古い場合と`cleanup_pending`では拒否する。削除後や同IDで別inputを作り直した後に古いeventを復活させず、同じinputが明示再開で先へ進んだ場合の正当な遅延eventは残す。実D1/R2で旧eventの復活を再現し、削除・同ID再作成・並行再開を回帰で確認した。event形式、retry、支払い、7日の取得期限、削除契約は変更しない。
+
+`node scripts/check-csv-process-crashes.mjs`はPOSIX用の診断であり、合成入力と実local D1/R2を使用してNode／workerdのprocess groupをSIGKILLし、同じ保存先で再起動する。claim直後・R2 stream書込中・一部成果保存後の3地点では`processing`が残り、retry／削除を拒否し、期限後の自動回収も対象外である。completed commit後は成果を読み戻せるが直後のeventは欠け得る。部分cleanup後は`cleanup_pending`から再回収できる。5地点の診断合格はこの現状を正確に観測した意味であり、processingの復旧合格ではない。実HTTP認証・browser・本番Worker・課金の受入と分ける。
+
 process自体がprocessing中に強制終了した場合のlease回収は未実装であり、自動・手動の再実行成功を宣言しない。保存形式と削除契約を伴う追加復旧案は未適用。合格範囲は既存claimの応答喪失、同時受付、owner切替、完成直後の障害、同一内容の明示確認の回帰とローカルD1/R2であり、実課金・外部市場・Queue受入ではない。
 
 ## 6. RockstarOS Market Scanner
@@ -624,6 +628,14 @@ Pixelで結果の保存ボタンが縦に細く伸びる問題を確認したた
 
 正本: `toolkits/mr/rock_star_tools.py`、[Mr integration](mr-integration.md)。
 
+### WebのDelivery入力・結果と本人再確認（WEB04、2026-10-12）
+
+Mr. Deliveryのreview JSON・選択したFile・照合結果は、Workbenchの既存owner／job／step別sessionへ保持する。読込失敗でrunnerが外れても、元ownerの同じ仕事・手順を開けば復元する。Fileは選択済みの参照をmemoryに保持するだけで、原稿の自動永続化・追加送信はしない。意味のある入力・結果は既存の同一タブ離脱guardと個別破棄へ接続し、実行中・仕事記録の応答不明時には破棄できない。別ownerや古い破棄handlerは元の入力を消せない。
+
+MR親画面またはDeliveryが401を受けたら、Workbenchの本人確認と古い一覧取得を無効にし、原稿・File名・仕事名を隠す。子の接続確認が200へ戻るだけでは復元しない。別タブでサインインし、親画面の既存再読込で元ownerを確認してから復元・明示実行する。別ownerでの再認証、File準備中や実行履歴start待ちのowner変更、古い実行handlerはPC Toolを送信しない。既に開始した処理の遅延結果は元sessionだけへ戻す。保存不明の仕事記録は同じcommandを照合し、Toolを再実行しない。
+
+互換性: 既存のPC照合・承認・保存済みLibrary・DB/API形式を維持する。単体Deliveryのlocal state動作も維持し、このowner復旧はWorkbench内のsessionに限定する。強制再読込・タブ終了後のFile復元は保証しない。合格証拠は実component／operations client／認証hook／routeとSQLiteによる、保存後応答喪失→GET失敗→元File bytes・結果の復元、401→別ownerで送信0→元owner復帰、遅延GET・start・完了、保存不明時の古い再実行拒否。`tests/workbench-owner-recovery.test.mjs`と独立レビューで照合し、実PC・外部Provider・公開版の受入は別記する。
+
 ## 13. サブスク顧問
 
 - 目的: 契約、更新日、支払い失敗、定期課金候補を通貨別に確認する。
@@ -658,6 +670,12 @@ Pixelで結果の保存ボタンが縦に細く伸びる問題を確認したた
 `jev-evaluation` は本来、本人が送信対象・送信先・料金・保持条件を確認した後に、最小化した入力を評価するremote evaluatorとして設計する。現在はprovider price quote、owner cap、usage receipt settlementがAPI経路へ未接続のため、server routeをfail-closedにし外部送信を拒否する。料金gate、Sky scope entitlement、明示同意をserver側で受け入れた後に限り再有効化する。評価Receiptはreview signalであり、権限付与、Tool成功、仕事完了、専門家判断の代替にはしない。
 
 受領境界: 既存AI07／ROCKで、`lib/jev-evaluation.ts`は`grounded`・`safe`のboolean確率0〜1と、`usefulness`のSDK criterion位置0〜2だけを検査してReceiptへ写す。欠落・追加回答・異常なtoken数は失敗とし、Providerの任意本文・metadataは返さない。`lib/jev-transport.ts`は20秒でabort、自動再送なし。失敗後は評価結果を作らず本人reviewへ戻し、既存成果・承認を変更しない。詳細とhost合格条件は[LLM・評価モデル設計](llm-evaluation-architecture.md#5-jev-api契約)を参照する。
+
+### 法務・特許・Jevの二重送信防止（WEB04、2026-10-12）
+
+3つの既存formは最初の非同期処理前に同期lockを取り、同じ描画時点の連続submitを1回に限定する。処理中に画面の実行可否が切り替わってもlockを解除せず、禁止状態・unmount後の古いhandlerから送信しない。Jevのボタンも実行禁止を反映する。失敗時は入力を保ったままlockを解除し、本人の次の明示submitだけを許す。自動再送や入力の追加保存はしない。
+
+API payload、オンライン送信同意、料金gate、法務・特許の未認証localガイドと任意metadata履歴を維持する。法務の緊急案内、同意拒否、失敗から次の適切な操作へ戻れることも検査する。`tests/lazy-runner-submission.test.mjs`は修正前の同一frame二重POSTとJev禁止時POSTを再現し、修正後のPOST1／禁止時0、保留中の可否切替、入力保持後の明示再試行を実componentで確認する。独立レビューでも同意拒否・緊急分岐のlock解除を確認した。合成応答の合格を実Provider実行・課金・これら専用runnerの画面離脱をまたぐ入力復元へ転用しない。
 
 ## 15. 特許出願アシスタント
 

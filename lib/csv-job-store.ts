@@ -143,11 +143,17 @@ async function event(
   name: string,
   detail: unknown = {},
 ) {
+  // A delayed append must not recreate history after removal or attach it to a
+  // new input incarnation that reused the same client id. Later revisions of
+  // this input may still append their already-committed transition history.
   await db
     .prepare(
-      'INSERT INTO csv_job_events (job_id, user_id, event, detail_json, created_at) VALUES (?, ?, ?, ?, ?)',
+      "INSERT INTO csv_job_events (job_id, user_id, event, detail_json, created_at) SELECT ?, ?, ?, ?, ? FROM csv_jobs WHERE id = ? AND user_id = ? AND input_key = ? AND revision >= ? AND status <> 'cleanup_pending'",
     )
-    .bind(row.id, row.user_id, name, JSON.stringify(detail), Date.now())
+    .bind(
+      row.id, row.user_id, name, JSON.stringify(detail), Date.now(),
+      row.id, row.user_id, row.input_key, row.revision,
+    )
     .run();
 }
 

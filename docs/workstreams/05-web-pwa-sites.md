@@ -4,6 +4,10 @@
 
 Zemaの見積世代・下書き離脱確認、Workbenchの読取／書込競合と本人別入力・成功応答照合、AMC importの古い読込、CSVの受付IDとowner保持を修正した。対象回帰と独立レビューは合格、統合候補の全体検証・同一SHAのCIは作業中。Walletは共通hookで同じ復旧契約を使用する。仕様はSky Tool全体設計の各節、実装と回帰はqualityRefactorの証拠へ集約する。processing強制終了後のCSV再開は未適用案として分離する。
 
+追補（2026-10-12）: Mr. Deliveryのreview JSON・選択File・結果を既存Workbenchのowner／job／step別memoryと離脱guardへ接続した。親または子の401では旧一覧世代を無効化して私有入力を隠し、元ownerの親再確認後だけ復元する。実client／認証hook／route／SQLiteで、応答喪失後のFile bytes・結果復元、別ownerと古いhandlerの送信0、遅延結果の元session限定を検査し、独立レビューで照合した。Legal／Patent／Jevは同期submit lockで二重送信を防ぎ、禁止中・unmount後の送信拒否、同意拒否・緊急案内・失敗後の明示再試行を回帰確認した。既存同意・料金gate・単体local利用を維持し、自動永続化や他の専用runnerの入力復元は追加していない。
+
+CSVの遅延eventはowner／ID／input世代と進行revisionに束縛し、削除済み・同ID別inputへの旧履歴混入を拒否する。同じinputの並行再開に伴う正当な遅延履歴は保持する。実D1/R2の再現と回帰に加え、`scripts/check-csv-process-crashes.mjs`でNode／workerdを実SIGKILLして同じ保存先へ再起動した。5地点中、claim・stream書込・部分成果の3地点はprocessingのまま再開／削除不可、期限回収も未解決。completedの成果読取とcleanup_pendingの再回収を区別した診断であり、合格をprocessing復旧と呼ばない。追加の保存・削除契約案は未適用。実build／browser、同一SHAの全体CI、既存公開Siteへの反映は統合側の個別証拠へ記録する。
+
 検証状態と再開手順は[data/project-status.json](../../data/project-status.json)の`qualityRefactor`を正とする。全領域完成・main統合・本番公開は未宣言。
 
 

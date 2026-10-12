@@ -10,7 +10,7 @@ import * as claims from '../lib/rockstar-entitlement-claim.ts';
 import test from 'node:test';
 import { createSkyToolPackageDraft } from '../lib/sky-tool-package.ts';
 const root = new URL('../', import.meta.url);
-async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualNavigation = false, componentProps = {} } = {}) {
+async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualDelivery = false, actualTracking = false, actualAccess = false, trackingFetch, deviceFixture, actualNavigation = false, componentProps = {} } = {}) {
   const sqlite = new DatabaseSync(':memory:');
   t.after(() => sqlite.close());
   for (const name of readdirSync(new URL('drizzle/', root))
@@ -362,6 +362,7 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualN
       return 1;
     },
     clearInterval() {},
+    dispatchEvent(event) { windowListeners.get(event.type)?.forEach(listener => listener(event)); },
   };
   const context = {
     window, document, Element, Error, crypto, performance, URL, AbortSignal, AbortController, TextEncoder, fetch: trackedFetch,
@@ -383,25 +384,51 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualN
   ).outputText, { ...context, exports: cloudExports }, { filename: 'components/workbench-cloud-text.tsx' });
   modules['@/components/workbench-cloud-text'] = cloudExports;
   runInNewContext(compiled, { ...context, exports }, { filename: 'components/workbench.tsx' });
-  let runnerInstance = null, runnerExports;
+  let runnerInstance = null, deliveryInstance = null, runnerExports, deliveryExports;
   if (actualRunner) {
     const runnerReact = {
       useState(initial) { const i = runnerInstance.cursor++; if (!(i in runnerInstance.slots)) runnerInstance.slots[i] = typeof initial === 'function' ? initial() : initial;
         const instance = runnerInstance; return [instance.slots[i], (value) => { instance.slots[i] = typeof value === 'function' ? value(instance.slots[i]) : value; }]; },
       useEffect(fn, deps) { const i = runnerInstance.cursor++, old = runnerInstance.slots[i];
         if (!old || deps.some((v, j) => v !== old.deps[j])) { old?.cleanup?.(); const slot = { deps }; runnerInstance.slots[i] = slot; runnerInstance.effects.push(() => { slot.cleanup = fn(); }); } },
+      useRef(value) { const i = runnerInstance.cursor++; if (!(i in runnerInstance.slots)) runnerInstance.slots[i] = { current: value }; return runnerInstance.slots[i]; },
+      useLayoutEffect(fn, deps) { return runnerReact.useEffect(fn, deps); },
       useCallback(fn) { return fn; },
+      useMemo(fn) { return fn(); },
       useSyncExternalStore(_subscribe, getSnapshot) { return getSnapshot(); },
-      lazy() { return inert; }, Suspense: 'suspense',
+      lazy(loader) { return actualDelivery && String(loader).includes('delivery-runner') ? deliveryExports.DeliveryRunner : inert; }, Suspense: 'suspense',
     };
     const runnerModules = { ...modules, react: runnerReact,
-      'lucide-react': Object.fromEntries(['Play','Download','Copy','Check','CircleHelp','RotateCcw'].map((key) => [key, inert])),
+      'lucide-react': Object.fromEntries(['Play','FolderOpen','Download','Copy','Check','CircleHelp','RotateCcw'].map((key) => [key, inert])),
       '@/components/execution-access': { ExecutionSignin: inert, useExecutionAccess: () => ({ executionBlocked: false, accessState: 'ready', setNeedsSignin() {} }) },
       '@/lib/operations-client': { ...client, processedBytes: (value) => new TextEncoder().encode(JSON.stringify(value)).length,
         executeTracked: async ({ task }) => ({ result: await task(), warning: '' }) },
-      '@/lib/device': { deviceToken: () => '', runDevice() { throw Error('No external device in fixture'); } },
+      '@/lib/device': deviceFixture ?? { deviceToken: () => '', runDevice() { throw Error('No external device in fixture'); } },
     };
-    for (const name of ['mr-tools','sky-result-library','sky-result-download']) runnerModules[`@/lib/${name}`] = await import(new URL(`lib/${name}.ts`, root));
+    for (const name of ['mr-tools','sky-result-library','sky-result-download','delivery-runner-state']) runnerModules[`@/lib/${name}`] = await import(new URL(`lib/${name}.ts`, root));
+    if (actualTracking) {
+      const trackingExports = {};
+      runInNewContext(ts.transpileModule(readFileSync(new URL('lib/operations-client.ts', root), 'utf8'),
+        { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText,
+        { ...context, exports: trackingExports, Event, CustomEvent, setTimeout,
+          window: { ...window, dispatchEvent() {} }, fetch: trackingFetch,
+          require(name) { if (name === './device') return { captureDeviceSession: () => ({ id: 'same-device', isCurrent: () => true }), verifyDevice: async () => {} };
+            if (name === './sky-zema-handoff') return { announceSkyZemaJob() {} }; throw new Error(name); } });
+      runnerModules['@/lib/operations-client'] = trackingExports;
+    }
+    if (actualAccess) {
+      const accessExports={};
+      runInNewContext(ts.transpileModule(readFileSync(new URL('components/execution-access.tsx',root),'utf8'),
+        {compilerOptions:{jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText,
+        {...context,exports:accessExports,Event,require(name){if(name==='next/navigation')return{usePathname:()=>'/work'};assert.ok(name in runnerModules,name);return runnerModules[name];}});
+      runnerModules['@/components/execution-access']=accessExports;
+    }
+    if (actualDelivery) {
+      deliveryExports = {};
+      runInNewContext(ts.transpileModule(readFileSync(new URL('components/delivery-runner.tsx', root), 'utf8'),
+        { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, esModuleInterop: true } }).outputText,
+        { ...context, btoa, Uint8Array, exports: deliveryExports, require(name) { assert.ok(name in runnerModules, name); return runnerModules[name]; } });
+    }
     runnerExports = {};
     runInNewContext(ts.transpileModule(readFileSync(new URL('components/mr-tool-runner.tsx', root), 'utf8'),
       { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, esModuleInterop: true } }).outputText,
@@ -413,11 +440,22 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualN
     const node = nodes(tree).find((item) => item.type === runnerExports.MrToolRunner);
     if (!node || runnerInstance?.key !== node.key) {
       runnerInstance?.slots.forEach((slot) => slot?.cleanup?.()); runnerInstance = null;
+      deliveryInstance?.slots.forEach((slot) => slot?.cleanup?.()); deliveryInstance = null;
     }
     if (!node) return;
     runnerInstance ??= { key: node.key, cursor: 0, slots: [], effects: [] };
     runnerInstance.cursor = 0; node.rendered = runnerExports.MrToolRunner(node.props);
     while (runnerInstance.effects.length) runnerInstance.effects.shift()();
+    if (actualDelivery) {
+      const child = nodes(node.rendered).find((item) => item.type === deliveryExports.DeliveryRunner);
+      if (!child) { deliveryInstance?.slots.forEach((slot) => slot?.cleanup?.()); deliveryInstance = null; return; }
+      const parentInstance = runnerInstance;
+      deliveryInstance ??= { cursor: 0, slots: [], effects: [] };
+      runnerInstance = deliveryInstance; runnerInstance.cursor = 0;
+      child.rendered = deliveryExports.DeliveryRunner(child.props);
+      while (runnerInstance.effects.length) runnerInstance.effects.shift()();
+      runnerInstance = parentInstance;
+    }
   }
   function render() {
     cursor = 0;
@@ -472,6 +510,7 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualN
   }
   await grant('alice');
   return {
+    checkExecutionAccess() { window.dispatchEvent(new Event('sky-execution-access-check')); },
     rejectNext(method, status = 503) { rejectNext.set(method, status); },
     sqlite,
     db,
@@ -1253,4 +1292,242 @@ void test('delayed Workbench lists signal snapshot readiness before callers rele
   assert.equal(typeof delayed.release, 'function', 'ready guarantees a releasable captured response');
   delayed.release(); await h.flush();
   assert.equal(h.find('button', '再読込').props.disabled, false, 'released response is read and the component leaves loading');
+});
+
+
+async function deliveryFixture(t, options = {}) {
+  const h = await setup(t, { actualRunner: true, actualDelivery: true, actualNavigation: true, ...options });
+  const job = (await h.routeCall('POST', { id: randomUUID(), title: 'Private delivery check', templateId: 'coconala' })).data.job;
+  const recorded = await h.routeCall('PATCH', { jobId: job.id, revision: job.revision, command: { id: randomUUID(), action: 'record', stepId: job.steps[0].id, tool: job.steps[0].tool, transport: 'browser', outcome: 'passed', sample: false, durationMs: 1 } });
+  assert.equal(recorded.response.status, 200, JSON.stringify(recorded.data));
+  h.render(); await h.flush(); await h.click(job.title); await h.click(job.steps[1].title);
+  const review = () => h.nodes().find((node) => node.props?.id === 'delivery-review');
+  const files = () => h.nodes().find((node) => node.type === 'input' && node.props.type === 'file');
+  const output = () => h.nodes().find((node) => node.props?.['aria-label'] === '納品記録の照合結果');
+  assert.ok(review(), 'actual lazy DeliveryRunner is mounted');
+  return { h, job, review, files, output };
+}
+
+void test('lazy Delivery input and selected Files block navigation and survive failed owner readback without automatic storage', async (t) => {
+  const { h, job, review, files } = await deliveryFixture(t);
+  assert.equal(h.navigateLink().prevented, false);
+  const source = '{"review":"Alice private review"}', file = new File(['private artifact'], 'proof.txt');
+  review().props.onChange({ target: { value: source } }); files().props.onChange({ target: { files: [file] } }); h.render();
+  assert.equal(h.navigateLink().prevented, true, 'lazy input alone must protect Workbench from unmount');
+  h.rejectNext('GET', 401); await h.click('再読込');
+  assert.equal(review(), undefined); assert.ok(!h.text().includes(job.title));
+  assert.equal(h.find('button', 'このToolの入力・結果を破棄'), undefined, 'unconfirmed owner cannot discard');
+  await h.click('再読込'); await h.click(job.title);
+  assert.equal(review().props.value, source); assert.ok(h.text().includes('1ファイルを選択'));
+  await h.click('このToolの入力・結果を破棄');
+  assert.equal(review().props.value, ''); assert.ok(!h.text().includes('1ファイルを選択'));
+  assert.equal(h.navigateLink().prevented, false); assert.equal(h.storageWrites, 0);
+});
+
+void test('lazy Delivery restores the exact original File after owner change and rejects stale input and run callbacks', async (t) => {
+  const calls = [];
+  const { h, job, review, files, output } = await deliveryFixture(t, { deviceFixture: { deviceToken: () => 'fixture-token', async runDevice(name, args) { calls.push({ name, args }); return { status: 'PASS', output: 'Synthetic private delivery result' }; } } });
+  await h.grant('bob');
+  const source = '{"review":"Alice private review"}', file = new File(['private artifact'], 'proof.txt');
+  review().props.onChange({ target: { value: source } }); files().props.onChange({ target: { files: [file] } }); h.render();
+  const staleReview = review().props.onChange, staleRun = h.find('button', 'PCで実行する').props.onClick;
+  h.owner('bob'); await h.click('再読込');
+  staleReview({ target: { value: 'Stale overwrite' } }); staleRun(); h.render(); await h.flush();
+  assert.equal(calls.length, 0, 'old owner cannot dispatch a Tool run'); assert.equal(review(), undefined);
+  assert.ok(!h.text().includes('Alice private review')); assert.equal(h.navigateLink().prevented, true);
+  h.owner('alice'); await h.click('再読込'); await h.click(job.title);
+  assert.equal(review().props.value, source); assert.ok(h.text().includes('1ファイルを選択'));
+  await h.click('PCで実行する'); await h.waitFor(() => Boolean(output()));
+  assert.equal(calls.length, 1); assert.equal(calls[0].name, 'verify_delivery');
+  assert.equal(calls[0].args.files[0].path, file.name); assert.equal(Buffer.from(calls[0].args.files[0].base64, 'base64').toString(), 'private artifact');
+  assert.equal(output().props.value, 'Synthetic private delivery result'); assert.equal(h.storageWrites, 0);
+});
+
+void test('lazy Delivery result and input survive committed-record response loss and failed GET, without duplicate Tool execution', async (t) => {
+  const calls = [];
+  const { h, job, review, files, output } = await deliveryFixture(t, {
+    deviceFixture: { deviceToken: () => 'fixture-token', async runDevice(name, args) { calls.push({ name, args }); return { status: 'PASS', output: 'Delivery verification retained output' }; } },
+    onWorkResponse(method) { if (method === 'PATCH') return Response.json({ error: 'Synthetic delivery record response lost' }, { status: 503 }); },
+  });
+  const source = '{"review":"Original synthetic review"}';
+  review().props.onChange({ target: { value: source } }); files().props.onChange({ target: { files: [new File(['proof'], 'proof.txt')] } }); h.render();
+  const discardBeforeRun = h.find('button', 'このToolの入力・結果を破棄').props.onClick;
+  const run = h.find('button', 'PCで実行する').props.onClick;
+  run(); run(); discardBeforeRun(); h.render();
+  assert.equal(h.find('button', 'このToolの入力・結果を破棄').props.disabled, true, 'in-flight work cannot be discarded');
+  await h.waitFor(() => Boolean(output())); await h.flush();
+  assert.equal(calls.length, 1, 'same-frame double click dispatches one local Tool execution');
+  const expected = output().props.value;
+  assert.equal(h.find('button', 'このToolの入力・結果を破棄').props.disabled, true, 'unknown workflow record keeps its result');
+  h.rejectNext('GET'); await h.click('最新状態を読み直す'); assert.equal(review(), undefined); assert.equal(output(), undefined);
+  await h.click('最新状態を読み直す');
+  assert.equal(review().props.value, source); assert.equal(output().props.value, expected);
+  assert.ok(h.text().includes('1ファイルを選択')); assert.ok(!h.text().includes('Synthetic delivery record response lost'));
+  assert.equal(h.requests.filter((entry) => entry.method === 'PATCH').length, 1); assert.equal(h.storageWrites, 0);
+  await h.click('このToolの入力・結果を破棄'); assert.equal(h.navigateLink().prevented, false);
+  assert.equal((await h.routeCall('GET')).data.jobs.find((item) => item.id === job.id).steps[1].passed, true);
+});
+
+void test('lazy Delivery stops dispatch if its owner changes during File preparation and preserves the original draft', async (t) => {
+  const gate = Promise.withResolvers(), calls = [];
+  const { h, job, review, files } = await deliveryFixture(t, { deviceFixture: { deviceToken: () => 'fixture-token', async runDevice(...args) { calls.push(args); return { status: 'PASS', output: 'unexpected' }; } } });
+  await h.grant('bob');
+  const file = new File(['delayed private proof'], 'proof.txt');
+  const readFile = file.arrayBuffer.bind(file); file.arrayBuffer = async () => { await gate.promise; return readFile(); };
+  review().props.onChange({ target: { value: '{"review":"Retained original owner"}' } }); files().props.onChange({ target: { files: [file] } }); h.render();
+  const refresh = h.find('button', '再読込').props.onClick;
+  h.find('button', 'PCで実行する').props.onClick(); h.render();
+  h.owner('bob'); refresh(); h.render(); await h.flush();
+  assert.equal(review(), undefined); assert.ok(!h.text().includes('Retained original owner'));
+  gate.resolve();
+  await h.waitFor(() => h.find('button', '再読込').props.disabled === false);
+  assert.equal(calls.length, 0, 'file preparation never grants permission to send under a new identity');
+  h.owner('alice'); await h.click('再読込'); await h.click(job.title);
+  assert.equal(review().props.value, '{"review":"Retained original owner"}'); assert.ok(h.text().includes('1ファイルを選択'));
+  assert.equal(h.find('button', 'PCで実行する').props.disabled, false); assert.equal(h.storageWrites, 0);
+});
+
+
+void test('lazy Delivery preserves review JSON across a failed list read and same-owner reauthentication', async (t) => {
+  const { h, job, review } = await deliveryFixture(t);
+  const source = '{"review":"Original review before transport failure"}';
+  review().props.onChange({ target: { value: source } }); h.render();
+  h.rejectNext('GET'); await h.click('再読込'); assert.equal(review(), undefined);
+  await h.click('再読込'); await h.click(job.title);
+  assert.equal(review().props.value, source, 'same-owner remount must restore the exact unsaved JSON');
+  assert.equal(h.storageWrites, 0);
+});
+
+void test('lazy Delivery fences dispatch after real tracked-start owner transition', async (t) => {
+  const waiting = Promise.withResolvers(), release = Promise.withResolvers(), calls = [];
+  const { h, job, review, files } = await deliveryFixture(t, {
+    actualTracking: true,
+    async trackingFetch(_url, options) {
+      const body = JSON.parse(options.body);
+      if (body.action === 'start') { waiting.resolve(); await release.promise; }
+      return Response.json({ id: 'tracking-job', status: body.action === 'finish' ? 'completed' : 'running' });
+    },
+    deviceFixture: { deviceToken: () => 'fixture-token', async runDevice(...args) { calls.push(args); return { status: 'PASS', output: 'Alice private output' }; } },
+  });
+  await h.grant('bob');
+  review().props.onChange({ target: { value: '{"review":"Alice private review"}' } });
+  files().props.onChange({ target: { files: [new File(['private proof'], 'proof.txt')] } }); h.render();
+  const refresh = h.find('button', '再読込').props.onClick;
+  const session = h.nodes().find((node) => node.props?.session && node.props?.tool).props.session;
+  h.find('button', 'PCで実行する').props.onClick(); h.render();
+  await waiting.promise;
+  h.owner('bob'); refresh(); h.render(); await h.flush();
+  assert.equal(review(), undefined, 'Bob is confirmed and Alice runner is hidden');
+  release.resolve(); await h.waitFor(() => session.getSnapshot()?.running !== true);
+  assert.equal(calls.length, 0, 'real tracked start completion must not dispatch Alice payload after Bob is confirmed');
+  h.owner('alice'); await h.click('再読込'); await h.click(job.title);
+  assert.equal(review().props.value, '{"review":"Alice private review"}');
+  assert.equal(h.storageWrites, 0);
+});
+
+void test('lazy Delivery late result belongs only to its original owner session', async (t) => {
+  const started = Promise.withResolvers(), release = Promise.withResolvers();
+  const { h, job, review, files } = await deliveryFixture(t, {
+    deviceFixture: { deviceToken: () => 'fixture-token', async runDevice() { started.resolve(); await release.promise; return { status: 'PASS', output: 'Late Alice private output' }; } },
+  });
+  await h.grant('bob');
+  review().props.onChange({ target: { value: '{"review":"Late Alice review"}' } });
+  files().props.onChange({ target: { files: [new File(['late proof'], 'proof.txt')] } }); h.render();
+  const refresh = h.find('button', '再読込').props.onClick;
+  const session = h.nodes().find((node) => node.props?.session && node.props?.tool).props.session;
+  h.find('button', 'PCで実行する').props.onClick(); h.render(); await started.promise;
+  const before = h.requests.filter((entry) => entry.method === 'PATCH').length;
+  h.owner('bob'); refresh(); h.render(); await h.flush();
+  release.resolve(); await h.waitFor(() => session.getSnapshot()?.running !== true);
+  assert.equal(review(), undefined); assert.ok(!h.text().includes('Late Alice private output'));
+  assert.equal(h.requests.filter((entry) => entry.method === 'PATCH').length,before,'late original result must not be recorded into another owner');
+  h.owner('alice'); await h.click('再読込'); await h.click(job.title);
+  const output = h.nodes().find((node) => node.props?.['aria-label'] === '納品記録の照合結果');
+  assert.equal(review().props.value, '{"review":"Late Alice review"}');
+  assert.equal(output.props.value, 'Late Alice private output'); assert.equal(h.storageWrites,0);
+});
+void test('lazy Delivery stale run cannot replace a result with an unresolved workflow record', async (t) => {
+  let calls=0;
+  const { h, review, files, output }=await deliveryFixture(t,{
+    deviceFixture:{deviceToken:()=> 'fixture-token',async runDevice(){calls++;return{status:'PASS',output:'Original protected output '+calls};}},
+    onWorkResponse(method){if(method==='PATCH')return Response.json({error:'record reply lost'},{status:503});}
+  });
+  review().props.onChange({target:{value:'{"review":"Pending original"}'}});
+  files().props.onChange({target:{files:[new File(['proof'],'proof.txt')]}});h.render();
+  const staleRun=h.find('button','PCで実行する').props.onClick;
+  const session=h.nodes().find(n=>n.props?.session&&n.props?.tool).props.session;
+  staleRun();await h.waitFor(()=>Boolean(output()));await h.flush();
+  assert.equal(h.find('button','このToolの入力・結果を破棄').props.disabled,true,'first record remains unresolved');
+  assert.equal(calls,1);staleRun();await h.waitFor(()=>session.getSnapshot()?.running!==true);h.render();
+  assert.equal(calls,1,'captured pre-pending run cannot re-execute or erase the unresolved result');
+  assert.equal(output().props.value,'Original protected output 1');
+});
+
+void test('lazy Delivery reauthentication masks private input and requires parent owner confirmation before execution', async (t) => {
+  let account = 'alice', rejectPost = true; const calls = [];
+  const { h, job, review, files } = await deliveryFixture(t, {
+    actualTracking: true, actualAccess: true,
+    async trackingFetch(_url, options = {}) {
+      if (options.method === 'GET') return Response.json([]);
+      if (options.method === 'POST' && rejectPost) { rejectPost = false; return Response.json({ error: 'Sign in required' }, { status: 401 }); }
+      return Response.json({ id: 'tracking-' + account, status: 'running' });
+    },
+    deviceFixture: { deviceToken: () => 'same-pc-token', async runDevice(...args) { calls.push({ account, args }); return { status: 'PASS', output: 'Original owner delivery result' }; } },
+  });
+  await h.grant('bob');
+  await h.waitFor(() => h.nodes().some((node) => node.type === 'fieldset' && !node.props.disabled));
+  const source = '{"review":"Alice retained private review"}';
+  review().props.onChange({ target: { value: source } });
+  files().props.onChange({ target: { files: [new File(['Alice private bytes'], 'proof.txt')] } }); h.render();
+  const oldRun = h.find('button', 'PCで実行する').props.onClick;
+  const oldDiscard = h.find('button', 'このToolの入力・結果を破棄').props.onClick;
+  const oldSession = h.nodes().find((node) => node.props?.session && node.props?.tool).props.session;
+  oldRun(); h.render();
+  await h.waitFor(() => oldSession.getSnapshot()?.running !== true); h.render();
+  assert.equal(calls.length, 0, '401 refuses first run');
+  assert.equal(review(), undefined, 'known authentication failure immediately masks private input');
+  assert.equal(h.find('button', 'このToolの入力・結果を破棄'), undefined, 'unconfirmed owner cannot discard');
+  assert.ok(!h.text().includes(job.title));
+  account = 'bob'; h.owner('bob'); h.checkExecutionAccess(); oldRun(); oldDiscard(); await h.flush();
+  assert.equal(calls.length, 0, 'child access refresh and captured callbacks cannot reopen an old owner draft');
+  await h.click('再読込'); assert.equal(review(), undefined); assert.ok(!h.text().includes(job.title));
+  account = 'alice'; h.owner('alice'); await h.click('再読込'); await h.click(job.title);
+  await h.waitFor(() => h.nodes().some((node) => node.type === 'fieldset' && !node.props.disabled));
+  assert.equal(review().props.value, source); assert.ok(h.text().includes('1ファイルを選択'));
+  const session = h.nodes().find((node) => node.props?.session && node.props?.tool).props.session;
+  await h.click('PCで実行する'); await h.waitFor(() => session.getSnapshot()?.running !== true);
+  assert.equal(calls.length, 1); assert.equal(calls[0].account, 'alice'); assert.equal(h.storageWrites, 0);
+});
+
+void test('lazy Delivery parent access401 cannot be hidden by child access200',async(t)=>{
+ let rejecting=false,reads=0;
+ const {h,review,files}=await deliveryFixture(t,{actualTracking:true,actualAccess:true,
+  async trackingFetch(_url,options={}){
+   if(options.method==='GET') { if(rejecting&&reads++===0)return Response.json({error:'signin'}, {status:401});return Response.json([]); }
+   return Response.json({id:'tracking',status:'running'});
+  },deviceFixture:{deviceToken:()=> 'fixture',async runDevice(){return{status:'PASS',output:'unused'};}}
+ });
+ await h.waitFor(()=>h.nodes().some(n=>n.type==='fieldset'&&!n.props.disabled));
+ review().props.onChange({target:{value:'{"review":"Alice private parent auth"}'}});files().props.onChange({target:{files:[new File(['secret proof'],'proof.txt')]}});h.render();
+ rejecting=true;h.checkExecutionAccess();await h.flush();
+ assert.ok(reads>=2,'both actual execution access hooks read the auth endpoint');
+ assert.equal(review(),undefined,'known401 from parent hook must mask private draft even if child200 completes');
+});
+void test('lazy Delivery auth loss invalidates a parent read captured before401',async(t)=>{
+ const entry=Promise.withResolvers(),releaseAuth=Promise.withResolvers();
+ const {h,review,files}=await deliveryFixture(t,{actualTracking:true,
+  async trackingFetch(_url,options={}){
+   if(options.method==='POST'){entry.resolve();await releaseAuth.promise;return Response.json({error:'signin'},{status:401});}
+   return Response.json({id:'tracking',status:'running'});
+  },deviceFixture:{deviceToken:()=> 'fixture',async runDevice(){return{status:'PASS',output:'unused'};}}
+ });
+ review().props.onChange({target:{value:'{"review":"Alice private stale read"}'}});files().props.onChange({target:{files:[new File(['secret proof'],'proof.txt')]}});h.render();
+ const refresh=h.find('button','再読込').props.onClick;
+ const session=h.nodes().find(n=>n.props?.session&&n.props?.tool).props.session;
+ h.find('button','PCで実行する').props.onClick();h.render();await entry.promise;
+ const delayed=h.delayList();refresh();h.render();await delayed.ready;
+ releaseAuth.resolve();await h.waitFor(()=>session.getSnapshot()?.running!==true);h.render();assert.equal(review(),undefined);
+ delayed.release();await h.flush();
+ assert.ok(!h.text().includes('Private delivery check'),'older authenticated read cannot reintroduce private job after known401');
+ assert.equal(h.find('button','このToolの入力・結果を破棄'),undefined,'older read cannot make private draft discardable after auth loss');
 });

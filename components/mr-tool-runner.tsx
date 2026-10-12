@@ -1,5 +1,5 @@
 'use client';
-import { lazy, Suspense, useEffect, useState, useSyncExternalStore, useCallback, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useState, useSyncExternalStore, useCallback, useMemo, type ReactNode } from 'react';
 import {
   readSkyResults,
   saveSkyResult,
@@ -55,6 +55,7 @@ import {
   OperationRequestError,
 } from '@/lib/operations-client';
 import { deviceToken, runDevice, type RunRecorder } from '@/lib/device';
+import { createDeliveryRunnerState, hasDeliveryRunnerDraft, type DeliveryRunnerState, type DeliveryRunnerSession } from '@/lib/delivery-runner-state';
 export type MrRunner =
   | 'coconala'
   | 'citations'
@@ -67,6 +68,7 @@ export type MrRunner =
 export type MrToolRunnerState = {
   text: string; proposal: string; bucket: string; rate: string; after: string; price: string;
   summary: string; contents: string; url: string; output: string; result: CoconalaResult | null;
+  delivery?: DeliveryRunnerState;
   error: string; copied: boolean; editing: boolean; running: boolean; sampleInput: boolean;
 };
 export type MrToolRunnerSession = {
@@ -74,6 +76,7 @@ export type MrToolRunnerSession = {
   subscribe: (listener: () => void) => () => void;
   patch: (value: Partial<MrToolRunnerState>) => void;
   isActive?: () => boolean;
+  onAuthenticationLost?: () => void;
 };
 function localSession(): MrToolRunnerSession {
   let snapshot: Partial<MrToolRunnerState> = {};
@@ -87,11 +90,11 @@ function localSession(): MrToolRunnerSession {
 export function createMrToolRunnerState(initialText = ''): MrToolRunnerState {
   return { text: initialText, proposal: '', bucket: 'single', rate: '', after: '40', price: '500',
     summary: '', contents: '', url: '', output: '', result: null, error: '',
-    copied: false, editing: false, running: false, sampleInput: false };
+    copied: false, editing: false, running: false, sampleInput: false, delivery: undefined };
 }
 export function hasMrToolRunnerDraft(value: Partial<MrToolRunnerState>): boolean {
   const defaults = createMrToolRunnerState();
-  return Boolean(value.result || (['text', 'proposal', 'rate', 'summary', 'contents', 'url', 'output'] as const)
+  return Boolean(hasDeliveryRunnerDraft(value.delivery) || value.result || (['text', 'proposal', 'rate', 'summary', 'contents', 'url', 'output'] as const)
     .some((key) => value[key]?.trim()) ||
     (['bucket', 'after', 'price'] as const).some((key) => value[key] !== undefined && value[key]?.trim() !== defaults[key]));
 }
@@ -104,7 +107,7 @@ function useRunnerState(session: MrToolRunnerSession | undefined, initialText: s
   const patch = useCallback((value: Partial<MrToolRunnerState>) => store.patch(value), [store]);
   const active = useCallback(() => store.isActive?.() !== false, [store]);
   const runningNow = useCallback(() => store.getSnapshot()?.running === true, [store]);
-  return { state, patch, active, runningNow };
+  return { state, patch, active, runningNow, store };
 }
 const demoArticle =
   '# 仕事を小さく自動化する\n\n繰り返している作業を書き出します。毎回同じ手順をひとつ選びます。まずは短い入力で試して、結果を自分で確かめましょう。\n\n## 実践手順\n\nここからは完全版の具体的な手順です。作業を分解して、入力と完成条件を決めます。記録を残すと、次に改善する場所が見つかります。\n\n## 出典\n\n- [Python公式](https://docs.python.org/3/)';
@@ -129,7 +132,17 @@ export function MrToolRunner({
   executionDisabled?: boolean;
   session?: MrToolRunnerSession;
 }) {
-  const { state, patch, active, runningNow } = useRunnerState(session, initialText);
+  const { state, patch, active, runningNow, store } = useRunnerState(session, initialText);
+  const deliverySession = useMemo<DeliveryRunnerSession>(() => ({
+    getSnapshot: () => store.getSnapshot()?.delivery,
+    subscribe: store.subscribe,
+    isActive: store.isActive,
+    onAuthenticationLost: store.onAuthenticationLost,
+    patch(value) {
+      const delivery = { ...createDeliveryRunnerState(), ...store.getSnapshot()?.delivery, ...value };
+      store.patch({ delivery, running: delivery.busy });
+    },
+  }), [store]);
   const [savedResults, setSavedResults] = useState<SkySavedResult[]>([]);
   const [libraryNotice, setLibraryNotice] = useState('');
   useEffect(() => {
@@ -201,6 +214,9 @@ export function MrToolRunner({
   const setRunning = (value: MrToolRunnerState['running']) => patch({ running: value });
   const setSampleInput = (value: MrToolRunnerState['sampleInput']) => patch({ sampleInput: value });
   const { executionBlocked, accessState, setNeedsSignin } = useExecutionAccess();
+  useEffect(() => {
+    if (accessState === 'signin') store.onAuthenticationLost?.();
+  }, [accessState, store]);
   const [connected, setConnected] = useState(false);
   useEffect(() => {
     const update = () => setConnected(!!deviceToken());
@@ -386,8 +402,10 @@ export function MrToolRunner({
           /* Workbench retains the pending receipt. */
         }
       }
-      if (e instanceof OperationRequestError && e.status === 401)
+      if (e instanceof OperationRequestError && e.status === 401) {
         setNeedsSignin(true);
+        store.onAuthenticationLost?.();
+      }
       const message =
         e instanceof Error ? e.message : '入力を確認してください。';
       setError(message);
@@ -414,9 +432,12 @@ export function MrToolRunner({
       {runner}
     </Suspense>
   );
+  if (accessState === 'signin' && store.onAuthenticationLost) return <ExecutionSignin state={accessState} />;
   if (tool === 'delivery-local')
     return loadRunner(
       <DeliveryRunner
+        session={deliverySession}
+        recordErrorHandledByParent={recordErrorHandledByParent}
         onRecord={onRecord}
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}

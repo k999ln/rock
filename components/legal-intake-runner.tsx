@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type SyntheticEvent } from 'react';
+import { useMemo, useState, useRef, useLayoutEffect, type SyntheticEvent } from 'react';
 import {
   AlertTriangle,
   ArrowLeft,
@@ -166,6 +166,13 @@ export function LegalIntakeRunner({
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
 }) {
+  const execution = useRef({ busy: false, disabled: executionDisabled, mounted: true });
+  useLayoutEffect(() => {
+    const current = execution.current;
+    current.disabled = executionDisabled;
+    current.mounted = true;
+    return () => { current.mounted = false; };
+  }, [executionDisabled]);
   const [input, setInput] = useState<LegalIntakeInput>(emptyInput);
   const [understood, setUnderstood] = useState(false);
   const [remoteResearch, setRemoteResearch] = useState(false);
@@ -208,12 +215,14 @@ export function LegalIntakeRunner({
 
   async function submit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (execution.current.busy || execution.current.disabled || !execution.current.mounted) return;
     if (!understood) {
       setNotice(
         '法的助言ではなく、入力内容を保存しないことを確認してください。',
       );
       return;
     }
+    execution.current.busy = true;
     onRunningChange?.(true);
     const next = assessLegalIntake(input);
     setAssessment(next);
@@ -229,6 +238,7 @@ export function LegalIntakeRunner({
           : '一般情報を確認するための次の手順を整理しました。',
     );
     if (next.urgency === 'emergency') {
+      execution.current.busy = false;
       onOutcome?.({ ok: false, text: '緊急性が高い可能性があります。案内と連絡先をこのカードで確認してください。' });
       onRunningChange?.(false);
       return;
@@ -255,6 +265,7 @@ export function LegalIntakeRunner({
         setNotice('端末内のガイドを作成できませんでした。相談内容を修正して再実行してください。');
         onOutcome?.({ ok: false, text: '端末内のガイド作成に失敗しました。入力を確認してください。' });
       } finally {
+        execution.current.busy = false;
         setAiLoading(false);
         onRunningChange?.(false);
       }
@@ -287,6 +298,7 @@ export function LegalIntakeRunner({
       );
       onOutcome?.({ ok: false, text: 'オンライン検索は利用できませんでした。端末内ガイドをこのカードで確認してください。' });
     } finally {
+      execution.current.busy = false;
       setAiLoading(false);
       onRunningChange?.(false);
     }

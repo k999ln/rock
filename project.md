@@ -4,6 +4,14 @@
 
 # RockstarOS — 事業・設計・進捗
 
+## 2026-10-12 — 品質改善の残件を再開（G04 / WEB04 / AI04 / CSV00 / GRID01、ROCK）
+
+14:21 UTC開始。main `4055ad38`、PR105 `19e75e92`、PR104 `36a9f6b7`を再確認した。元checkoutの168件の未保存変更を保持し、前回のcleanな専用worktreeを再利用する。主担当はGit / CI / Operations。CSVの実process終了と同じD1/R2での再起動、個別Toolのmemory入力保持、Grid serverの独立照合を並行して進める。
+
+公開説明文・tokenizer digestの検査例外2案とCSV保存契約変更案は未適用。Grid検査例外とCSV案は前回の自動承認レビュー拒否、説明文例外はSECURITY.mdのowner review待ちであり、今回の続行を承認へ読み替えない。最新mainのアカウント入口とRQ01〜RQ50、削除済み資料、料金・保留gateを維持する。再開証拠は既存の[品質改善記録](docs/evidence/quality-reliability-review.json)のfollowupに追加する。main merge・公開・実機・実資金は行わない。
+
+今回の追加修正は、納品照合の本人確認競合・入力/選択Fileの復旧、法務/特許/Jevの同時送信抑止、削除後に遅れて復活するCSV履歴の抑止。実D1/R2の強制終了5地点を独立再現し、3地点のprocessing再開と期限回収は未解決として保持した。公開サイトへの反映が本チャットで明示指定されたため、既存Site v49/source `e95e63a1` の独自CSV納品/会計/保存契約を照合し、全体verifyと実画面確認後に統合配備する。GitHub PR更新・main未統合・Sites配備の結果は別記録。検査例外、旧nextPrompt訂正、CSV保存契約は承認待ちのまま。
+
 ## 2026-10-12 — 応答準備と模擬保存ownerを試験で明示（G04 / WEB04、ROCK）
 
 `f5e5f34a`のlocal全体verifyは2019 pass／1 skip、Worker1356、CSV385、asset186／欠落0で成功。実build再起動後も保存成果を再表示でき、PC1280／390px横はみ出し0・browser console error0。GitHubは13成功／2失敗で、Walletの旧失敗は解消したがWorkbench試験の遅延GET解除callbackがsnapshot準備前には存在しないraceが見つかった。独立した準備gateで元の2経路とも再現し、準備完了ready・解放後の実応答／JSON完了を待つ修正を行った。関連63件と独立73件が成功し、readyを早める失敗対照も確認した。

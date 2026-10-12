@@ -7,6 +7,10 @@
 検証状態と再開手順は[data/project-status.json](../../data/project-status.json)の`qualityRefactor`を正とする。全領域完成・main統合・本番公開は未宣言。
 
 
+### 続行と公開版への統合
+
+2026-10-12、G04/WEB04/AI04/CSV00/GRID01の限定品質修正を再開。Deliveryの親子認証競合、三つのToolの二重送信、CSVの削除済み入力に対する遅延eventを対象試験と独立レビューで確認。CSV強制終了は実D1/R2を再起動する診断であり、processing残存3地点を復旧済みとは扱わない。利用者が既存URLへの全修正反映を明示したため、Sites v49の固有CSV/会計履歴とmigrationを保持する統合を追加する。全体verify・同一SHAのCI・公開版source/deployment・実画面の証拠は[品質記録](../evidence/quality-reliability-review.json)のfollowupへ分離する。ポリシー例外、CSV保持契約、nextPrompt更新の保留を公開許可へ含めない。
+
 ## プロジェクト別開発Bot（AMC03 / H1 / ROCK）
 
 [担当Botの利用方法](../../toolkits/amc-agent/README.md#プロジェクト別bot)。開発Botの正本はdata/amc/project-bots.json。既存32部隊のtaskAssignmentsを置き換えず、10個の依頼窓口として実装・検証・Git commit・PR提出を担当する。OWNERは具体的な依頼と既存の外部実行条件を決め、EXTERNALはCodex／GitHubの認証と実行環境を提供する。GitHub App、常時実行、main自動mergeは未設定。完了条件は全定義の生成一致、担当外task拒否、holdの引継ぎ、起動失敗とPR受入の区別、対象試験と同一SHAの全体verify。検証: `npm run bot:check`、`node --test tests/project-bots.test.mjs`、`npm run verify`。実BotのGit提出は具体的な開発依頼で別途受け入れる。

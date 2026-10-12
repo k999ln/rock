@@ -16,6 +16,7 @@ function fixture(t) {
   for (const name of readdirSync(new URL('../drizzle/', import.meta.url)).filter((n) => n.endsWith('.sql')).sort())
     sqlite.exec(readFileSync(new URL(`../drizzle/${name}`, import.meta.url), 'utf8'));
   const objects = new Map();
+  let heldEvent = null;
   let failedEvent = null, loseCompletion = false, failPut = null, completionReadFailures = 0, readFailures = 0, claimReadFailures = 0;
   const db = { prepare(sql) { let values = []; return {
     bind(...args) { values = args; return this; },
@@ -25,6 +26,10 @@ function fixture(t) {
     },
     async all() { return { results: sqlite.prepare(sql).all(...values) }; },
     async run() {
+      if (heldEvent && sql.startsWith('INSERT INTO csv_job_events') && values[2] === heldEvent.name) {
+        const held = heldEvent; heldEvent = null;
+        held.ready.resolve(); await held.release.promise;
+      }
       if (sql.startsWith('INSERT INTO csv_job_events') && values[2] === failedEvent) {
         failedEvent = null; throw Error('synthetic event write failure');
       }
@@ -58,6 +63,11 @@ function fixture(t) {
   runInNewContext(compiled, { exports, crypto, TextEncoder, TextDecoder, Uint8Array, Date, Error, Response,
     require(name) { assert.ok(modules[name], name); return modules[name]; } });
   return { ...exports, objects, sqlite, bucket,
+    holdEvent(name) {
+      const held = { name, ready: Promise.withResolvers(), release: Promise.withResolvers() };
+      heldEvent = held;
+      return { ready: held.ready.promise, release: () => held.release.resolve() };
+    },
     failClaimReads(count) { claimReadFailures = count; },
     failCompletionReads(count) { completionReadFailures = count; },
     failEvent(name) { failedEvent = name; }, loseCompletion() { loseCompletion = true; }, failPut(name) { failPut = name; },
@@ -174,4 +184,68 @@ void test('a one-shot post-claim read failure preserves the exact fence and perm
   const retried = await h.retryCsvJob('alice', job.id, row.revision);
   assert.equal(retried.status, 'completed'); assert.equal(retried.attempt, 2);
   assert.ok((await h.csvArtifact('alice', job.id, 'result')).object);
+});
+
+for (const recreate of [false, true]) void test(`late CSV completion event cannot survive deletion${recreate ? ' or join a new input with the same id' : ''}`, async (t) => {
+  const h = fixture(t), job = await h.create(), held = h.holdEvent('completed');
+  const processing = h.acceptCsvJob('alice', job.id, { revision: job.revision });
+  t.after(held.release);
+  await held.ready;
+  const completed = h.stored(job.id); assert.equal(completed.status, 'completed');
+  await h.deleteCsvJob('alice', job.id);
+  assert.equal(h.stored(job.id), undefined);
+  assert.equal(h.sqlite.prepare('SELECT COUNT(*) AS count FROM csv_job_events WHERE job_id = ?').get(job.id).count, 0);
+  assert.equal(h.objects.size, 0);
+  if (recreate) await h.createCsvJob('alice', { id: job.id, name: 'new-generation.csv',
+    bytes: new TextEncoder().encode('id,name\r\n003,new input\r\n'), specification: {}, sample: true });
+  held.release(); await processing;
+  const events = h.sqlite.prepare('SELECT event FROM csv_job_events WHERE job_id = ? ORDER BY id').all(job.id).map(row => row.event);
+  assert.deepEqual(events, recreate ? ['quoted'] : []);
+  if (recreate) {
+    assert.equal(h.stored(job.id).status, 'quoted');
+    assert.notEqual(h.stored(job.id).input_key, completed.input_key);
+    assert.equal(h.objects.size, 1);
+  }
+});
+
+void test('current CSV generation keeps the existing event body and order', async (t) => {
+  const h = fixture(t), job = await h.create();
+  const completed = await h.acceptCsvJob('alice', job.id, { revision: job.revision });
+  const events = h.sqlite.prepare('SELECT * FROM csv_job_events WHERE job_id = ? ORDER BY id').all(job.id);
+  assert.deepEqual(events.map(row => row.event), ['quoted', 'accepted', 'processing', 'completed']);
+  assert.ok(events.every(row => row.user_id === 'alice' && row.job_id === job.id && Number.isSafeInteger(row.created_at)));
+  assert.ok(events.every((row, index) => index === 0 || row.id > events[index - 1].id));
+  assert.deepEqual(JSON.parse(events[2].detail_json), { attempt: 1 });
+  assert.equal(JSON.parse(events[3].detail_json).outputSha256, completed.outputSha256);
+  assert.deepEqual(JSON.parse(events[3].detail_json).validation, JSON.parse(JSON.stringify(completed.validation)));
+});
+
+void test('delayed accepted event remains in same-generation history after concurrent explicit resume', async (t) => {
+  const h = fixture(t), job = await h.create(), held = h.holdEvent('accepted');
+  const first = h.acceptCsvJob('alice', job.id, { revision: job.revision });
+  t.after(held.release);
+  await held.ready;
+  const accepted = h.stored(job.id); assert.equal(accepted.status, 'accepted');
+  const completed = await h.acceptCsvJob('alice', job.id, { revision: accepted.revision });
+  assert.equal(completed.status, 'completed'); assert.equal(completed.attempt, 1);
+  held.release(); await first;
+  const events = h.sqlite.prepare('SELECT event FROM csv_job_events WHERE job_id = ? ORDER BY id').all(job.id).map(row => row.event);
+  assert.equal(events.filter(event => event === 'accepted').length, 1);
+  assert.equal(events.filter(event => event === 'processing').length, 1);
+  assert.equal(events.filter(event => event === 'completed').length, 1);
+});
+
+void test('cleanup-pending CSV row cannot regain a delayed completion event', async (t) => {
+  const h = fixture(t), job = await h.create(), held = h.holdEvent('completed');
+  const processing = h.acceptCsvJob('alice', job.id, { revision: job.revision });
+  t.after(held.release); await held.ready;
+  const remove = h.bucket.delete.bind(h.bucket);
+  h.bucket.delete = async () => { throw Error('synthetic cleanup interruption'); };
+  await assert.rejects(() => h.deleteCsvJob('alice', job.id), /cleanup interruption/);
+  assert.equal(h.stored(job.id).status, 'cleanup_pending');
+  held.release(); await processing;
+  assert.equal(h.sqlite.prepare("SELECT COUNT(*) AS count FROM csv_job_events WHERE job_id = ? AND event = 'completed'").get(job.id).count, 0);
+  h.bucket.delete = remove;
+  await h.deleteCsvJob('alice', job.id);
+  assert.equal(h.stored(job.id), undefined); assert.equal(h.objects.size, 0);
 });
