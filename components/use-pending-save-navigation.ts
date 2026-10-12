@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { guardHistoryNavigation } from '@/lib/history-navigation-guard';
 
 // beforeunload alone does not run for client-side Link navigation. Retain the
 // in-memory retry identity until the user has confirmed the save result.
@@ -15,9 +16,11 @@ export function usePendingSaveNavigation(pending: boolean) {
           link.getAttribute('href')?.startsWith('#')) return;
       event.preventDefault();
     };
+    const releaseHistory = guardHistoryNavigation(window, () => true);
     window.addEventListener('beforeunload', warn);
     document.addEventListener('click', keepPage, true);
     return () => {
+      releaseHistory();
       window.removeEventListener('beforeunload', warn);
       document.removeEventListener('click', keepPage, true);
     };
