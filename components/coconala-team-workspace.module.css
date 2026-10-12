@@ -438,6 +438,7 @@
   color: #ffe5e5;
 }
 .notice {
+  display: block;
   border: 1px solid #6e947d;
   background: #294236;
   color: #d4f5de;
