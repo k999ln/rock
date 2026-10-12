@@ -15,9 +15,6 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 const self = fileURLToPath(import.meta.url);
 const root = resolve(dirname(self), '..');
-const out = resolve(
-  process.env.CSV_CRASH_ARTIFACT_DIR || join(tmpdir(), 'rock-csv-crash-audit'),
-);
 if (process.platform === 'win32')
   throw new Error('CSV crash audit requires POSIX process-group SIGKILL.');
 const owner = 'synthetic-csv-crash-owner';
@@ -263,7 +260,11 @@ if (process.argv[2] === '--child') {
     persistence: process.argv[3],
   });
 } else {
-  mkdirSync(out, { recursive: true });
+  const artifactBase = resolve(process.env.CSV_CRASH_ARTIFACT_DIR || tmpdir());
+  mkdirSync(artifactBase, { recursive: true, mode: 0o700 });
+  // Every run owns a fresh private directory; predictable temp paths can be
+  // pre-created as symlinks by another local user. The override is a parent.
+  const out = mkdtempSync(join(artifactBase, 'rock-csv-crash-audit-'));
   const directory = mkdtempSync(join(out, 'state-'));
   const evidence = {
     startedAt: new Date().toISOString(),

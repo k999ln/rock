@@ -895,6 +895,17 @@
         "No PC connector execution or external delivery/provider calls",
         "Force-close persistence not added"
       ]
+    },
+    "ciFirstCandidate": {
+      "sha": "9670aeee6ecf7ef3d30ef537d94ef3cc9597b0f7",
+      "success": 13,
+      "failure": 2,
+      "failures": [
+        "Known public-prose secrets detection, policy unchanged",
+        "CodeQL: three insecure temporary file locations in the new local crash audit; fixed to a fresh private mkdtemp directory, five real crash checkpoints revalidated"
+      ],
+      "codeqlFix": "The environment override is now a parent directory; every run creates a random private child. No rules, assertions, or product runtime weakened.",
+      "independentReview": "Old predictable-path symlink victim unchanged; new output/state modes 0700; custom parent receives one random child. All five real crash checkpoints pass."
     }
   }
 }
