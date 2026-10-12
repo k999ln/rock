@@ -2,14 +2,14 @@
 
 > `data/project-status.json`、schema、migration、`data/database-deployments.json`から生成する。source検証と本番readbackを混同しない。
 
-更新日: 2026-10-11
+更新日: 2026-10-12
 
 ## 全体
 
 - データ境界: 6、table: 152
 - source inventory: 6/6確認済み
 - current production readback: 0/6
-- 作業進捗: 392 task中 114 done、47 in progress、230 planned、1 blocked
+- 作業進捗: 393 task中 114 done、48 in progress、230 planned、1 blocked
 - 現在milestone: SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる
 
 ## 保存境界と配備状態

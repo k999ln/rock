@@ -12,6 +12,43 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), {
 const MAX_CHECKOUT_BODY_BYTES = 1024;
 const STALE_RESERVATION_MS = 25 * 60 * 60 * 1000;
 const ATTEMPT_RETENTION_MS = 2 * 24 * 60 * 60 * 1000;
+const SKY_TAG_ID = /^[a-z0-9][a-z0-9-]{2,63}$/;
+
+function skyTagUnavailable() {
+  return new Response(`<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Card unavailable</title></head>
+<body><main><h1>This card is not available yet.</h1><p>Please try again later. まだ使えません。</p></main></body></html>`, {
+    status: 200,
+    headers: {
+      'content-type': 'text/html; charset=utf-8',
+      'cache-control': 'no-store',
+      'x-content-type-options': 'nosniff',
+    },
+  });
+}
+
+function skyTagRedirect(request, env) {
+  const url = new URL(request.url);
+  const match = url.pathname.match(/^\/t\/([^/]+)$/);
+  if (!match) return new Response('Not found', { status: 404 });
+  const tagId = match[1];
+  if (!SKY_TAG_ID.test(tagId)) return new Response('Not found', { status: 404 });
+  if (typeof env.SKY_TAG_ORIGIN !== 'string' || !env.SKY_TAG_ORIGIN.trim()) {
+    return skyTagUnavailable();
+  }
+  let origin;
+  let pathname;
+  try {
+    const configured = new URL(env.SKY_TAG_ORIGIN);
+    if (!['http:', 'https:'].includes(configured.protocol) || configured.username || configured.password || configured.search || configured.hash)
+      return skyTagUnavailable();
+    origin = configured.origin;
+    pathname = configured.pathname.replace(/\/+$/, '');
+  } catch {
+    return skyTagUnavailable();
+  }
+  return Response.redirect(`${origin}${pathname}/t/${tagId}${url.search}`, 302);
+}
 
 function positiveInteger(value) {
   const number = Number(value);
@@ -265,6 +302,7 @@ export default {
       if (path === '/rockstaros' || path === '/rockstaros/') {
         return Response.redirect(new URL('/', request.url), 308);
       }
+      if (path.startsWith('/t/')) return skyTagRedirect(request, env);
       if (path === '/api/preorders/offer' && request.method === 'GET') {
         const { ready, products: offeredProducts, terms } = offer(env);
         return json({ ready, products: offeredProducts, terms });

@@ -55,6 +55,8 @@ import {
   OperationRequestError,
 } from '@/lib/operations-client';
 import { deviceToken, runDevice, type RunRecorder } from '@/lib/device';
+import EnglishCitationsRunner from '@/components/english-citations-runner';
+import EnglishPatentAssistant from '@/components/english-patent-assistant';
 export type MrRunner =
   | 'coconala'
   | 'citations'
@@ -66,15 +68,7 @@ export type MrRunner =
   | 'jev-evaluation';
 const demoArticle =
   '# 仕事を小さく自動化する\n\n繰り返している作業を書き出します。毎回同じ手順をひとつ選びます。まずは短い入力で試して、結果を自分で確かめましょう。\n\n## 実践手順\n\nここからは完全版の具体的な手順です。作業を分解して、入力と完成条件を決めます。記録を残すと、次に改善する場所が見つかります。\n\n## 出典\n\n- [Python公式](https://docs.python.org/3/)';
-export function MrToolRunner({
-  tool,
-  initialText = '',
-  onRecord,
-  onRunningChange,
-  onOutcome,
-  onFailure,
-  executionDisabled = false,
-}: {
+export type MrToolRunnerProps = {
   tool: MrRunner;
   initialText?: string;
   onRecord?: RunRecorder;
@@ -82,7 +76,33 @@ export function MrToolRunner({
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   onFailure?: () => void;
   executionDisabled?: boolean;
-}) {
+  language?: 'ja' | 'en';
+  entry?: string;
+};
+
+export function MrToolRunner(props: MrToolRunnerProps) {
+  const { tool, language = 'ja', entry, onOutcome, executionDisabled = false } = props;
+  // Keep the signed-out English card surfaces independent from the generic
+  // execution-access probe. They are local tools and must be readable without
+  // an account or a /api/jobs request.
+  if (language === 'en' && tool === 'citations')
+    return <EnglishCitationsRunner onOutcome={onOutcome} executionDisabled={executionDisabled} cardEntry={entry === 'columbia-card'} />;
+  if (language === 'en' && tool === 'patent-assistant')
+    return <EnglishPatentAssistant cardEntry={entry === 'columbia-card'} />;
+  return <MrToolRunnerCore {...props} />;
+}
+
+function MrToolRunnerCore({
+  tool,
+  initialText = '',
+  onRecord,
+  onRunningChange,
+  onOutcome,
+  onFailure,
+  executionDisabled = false,
+  language = 'ja',
+  entry,
+}: MrToolRunnerProps) {
   const [savedResults, setSavedResults] = useState<SkySavedResult[]>([]);
   const [libraryNotice, setLibraryNotice] = useState('');
   useEffect(() => {
@@ -390,6 +410,8 @@ export function MrToolRunner({
         onRunningChange={onRunningChange}
         onOutcome={onOutcome}
         executionDisabled={executionDisabled}
+        language={language}
+        entry={entry}
       />
     );
   if (tool === 'jev-evaluation')

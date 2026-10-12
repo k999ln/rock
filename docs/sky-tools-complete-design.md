@@ -283,6 +283,16 @@ catalogued → selected → connected → ready → running → review → compl
 | `jev-browser`               | 連続browser操作候補               | candidate | 本人PC                 | 未接続・未実行                            |
 | `mobile-jev`                | Android操作候補                   | candidate | 隔離試験端末           | 個人端末禁止                              |
 
+### Columbia Sky NFCカードの英語入口（2026-10-12）
+
+`/sky/campus/columbia` は、既存の `mr-citations`、`rockstar-amc`、`rockstar-patent-assistant` を `lang=en&entry=columbia-card` 付きで開く英語の案内面である。カードは公開URLだけを持ち、利用権・本人情報・鍵を付与しない。入口とTool説明は未認証でも読める。大学名は `lib/sky-campus.ts` の設定へ集約し、Columbiaの文字名だけを表示して紋章・ロゴは使わない。物理カード、転送、匿名集計の詳細契約は `docs/sky-nfc-columbia.md` を正本とする。
+
+- `mr-citations`: 英語画面はブラウザ内だけで処理し、`## Sources` を出力する。入力・結果を外部へ送らず、既存の日本語入口とPC adapterは変更しない。
+- `rockstar-amc`: 英語カード面は Goal → Plan → Work → Waiting for review → Accepted の手動状態と英語テンプレートをbrowserのlocalStorageへ保存する限定入口で、LLM・有料実行・本人別D1・Zemaの正本台帳を呼ばない。既存の本人別AMC Goalを表示・更新・受入する機能ではなく、別端末や標準AMCへ自動同期しない。復旧は同じbrowser storageから再開するか、この限定下書きをresetする。正本Goalの保存・再開・検収は従来どおり認証済み `/zema/amc` を使う。
+- `rockstar-patent-assistant`: 英語画面は端末内の発明整理、US向け明細書・請求項・150語以内の要約、USPTO Patent Public Search・仮出願案内、Columbia/CTVの一般的注意を出す。`entry=columbia-card` では研究ボタンを表示せず、`/api/patent-research?entry=columbia-card` もbody読取り・認証・料金判定・Provider初期化より先に403で拒否する。カード外の既存日本語利用は変えず、カード外の `lang=en` 研究は英語promptを使い、既存の認証・service scope・料金gate・公式domain制約を通る。
+- 保存・失敗・復旧: CitationsとカードAMC、カードPatent draftはclient内処理であり、カードから外部API費用を発生させない。ページ再読込時の扱いは各限定UIに従い、オンライン研究の失敗を自動再送しない。カード無効化や未登録tagはCampusの既存安全入口へ戻す。
+- 合格条件: `tests/sky-nfc-columbia.test.mjs`、`tests/campus-store.test.mjs`、`sites/avocado-mini/tests/preorder.test.mjs` で英語文字列、query gate、登録tagのredirectと匿名event 1件、CSV、最大長tagのQR SVG、Worker転送を検証する。実物NFC/QRのiPhone・Android受入、本番配備、Columbia名称使用許諾はこの実装合格へ含めない。
+
 ## 4.5 AMC — Goal・部隊・進捗
 
 SPIDER cycle 47: 観測元はcanonical repository内の通常ファイルを一度だけ安全にopenし、位置・BigInt file identityを確認した同じFDから読み、失敗時にも閉じる。内部symlinkと初期absentは維持し、途中消失・不一致は観測失敗へ戻す。hashは取得済みBufferを使い、本人承認やtask受入へ自動昇格させない。詳細・試験境界は[AMC観測読取り設計](amc-goal-orchestrator.md#spider-観測元ファイルの安全な読取り)と[証拠](evidence/spider-observation-source-read.json)。

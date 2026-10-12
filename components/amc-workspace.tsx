@@ -7,8 +7,10 @@ import frame from '@/components/sky-application.module.css';
 import styles from '@/components/sky-library.module.css';
 import AmcQuickBoard from '@/components/amc-quick-board';
 import quick from '@/components/amc-quick-board.module.css';
-export default function AmcWorkspace() {
+import AmcEnglishWorkspace from '@/components/amc-english-workspace';
+export default function AmcWorkspace({ language = 'ja', cardEntry = false }: { language?: 'ja' | 'en'; cardEntry?: boolean }) {
   const [notes, setNotes] = useState(false);
+  if (language === 'en') return <AmcEnglishWorkspace cardEntry={cardEntry} />;
   return (
     <div className={frame.frame}>
       <WorkspaceShell

@@ -122,7 +122,7 @@
       "savedCommit": "0f724cf6efeb04a2971283ea73740c28c8780ff3"
     }
   },
-  "updatedAt": "2026-10-11",
+  "updatedAt": "2026-10-12",
   "milestone": "SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
   "nextAction": "G04/WEB01: 全体verify・同一SHA CIを合格したPR #99をレビューし、承認範囲に従うmain統合と既存Sitesの同一source受入を別途進める。SIM01/SKY21は実issuer／Provider sandboxの本人・資格情報・予算上限・receipt条件を揃えて利用開始を受入。OS10の全OS／Pixelと現行QEMU image、R5/Pro実機は独立した受入を維持する。",
   "tasks": [
@@ -5933,6 +5933,27 @@
         "originalRecord": "CAMPUS01@29202ae6"
       },
       "nextAction": "Revalidate existing Campus runtime and owner/block/report/delete contracts on the integrated candidate before restoring historical done status; production acceptance remains separate."
+    },
+    {
+      "id": "CAMPUS02",
+      "title": "Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外）",
+      "status": "in_progress",
+      "dependsOn": [
+        "CAMPUS01"
+      ],
+      "evidence": [
+        "docs/sky-nfc-columbia.md",
+        "docs/prompts/sky-nfc-columbia-codex.md",
+        "sites/avocado-mini/worker/index.js",
+        "app/sky/campus/[campusId]/page.tsx",
+        "app/api/campus/route.ts",
+        "app/api/patent-research/route.ts",
+        "lib/campus-tags.ts",
+        "lib/sky-campus.ts",
+        "tests/sky-nfc-columbia.test.mjs",
+        "sites/avocado-mini/tests/preorder.test.mjs"
+      ],
+      "nextAction": "PR上でA1〜A7/A9の統合検証を確認し、A8の実物カード（iPhone/Android）受入と印刷・書き込み・配布はownerの別判断まで保留する。"
     }
   ],
   "phaseGates": [

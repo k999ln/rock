@@ -232,11 +232,27 @@ export function campusTagId(value: unknown) {
   return value;
 }
 export function safeRelativeCampusDestination(value: unknown) {
-  if (typeof value !== 'string' || !value.startsWith('/campus'))
+  if (typeof value !== 'string')
     throw new CampusError('タグの移動先はCampus内の相対パスにしてください。');
-  const parsed = new URL(value, 'https://avocado.invalid');
-  if (parsed.origin !== 'https://avocado.invalid' || !parsed.pathname.startsWith('/campus'))
+  let parsed: URL;
+  try {
+    parsed = new URL(value, 'https://avocado.invalid');
+  } catch {
     throw new CampusError('タグの移動先を確認してください。');
+  }
+  if (parsed.origin !== 'https://avocado.invalid')
+    throw new CampusError('タグの移動先を確認してください。');
+  const legacyCampus = parsed.pathname === '/campus' || parsed.pathname.startsWith('/campus/');
+  const skyMatch = parsed.pathname.match(/^\/sky\/campus\/([^/]+)$/);
+  if (!legacyCampus && !skyMatch)
+    throw new CampusError('タグの移動先はCampus内の相対パスにしてください。');
+  if (skyMatch) {
+    try {
+      campusId(skyMatch[1]);
+    } catch {
+      throw new CampusError('タグの移動先を確認してください。');
+    }
+  }
   return `${parsed.pathname}${parsed.search}`;
 }
 export function profileInput(value: unknown): CampusProfileInput {

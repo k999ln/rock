@@ -13,12 +13,45 @@ function protectCode(body:string){
  while(i<lines.length){const match=/^\s*(`{3,}|~{3,})/.exec(lines[i]);if(match){const block=[lines[i++]];const close=new RegExp('^\\s*'+match[1][0]+'{'+match[1].length+',}\\s*$');while(i<lines.length){const line=lines[i++];block.push(line);if(close.test(line))break;}output.push(keep(block.join('\n')));}else{output.push(lines[i++].replace(/(`+)([^\n]*?)\1(?!`)/g,m=>keep(m)));}}
  return{text:output.join('\n'),restore:(value:string)=>preserved.reduce((out,code,index)=>out.split(marker+index+'\uE001').join(code),value)};
 }
-export function formatCitations(input:string){
- const protectedText=protectCode(textInput(input));const body=protectedText.text;const seen=new Set<string>();const pairs:[string,string][]=[];
- const cleaned=body.replace(/（出典:\s*[^）]*）/g,citation=>{const found=[...citation.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)];if(!found.length)return citation;for(const m of found){if(!seen.has(m[2])){seen.add(m[2]);pairs.push([m[1],m[2]]);}}return '';}).replace(/。。+/g,'。').replace(/、、+/g,'、').replace(/ {2,}/g,' ').replace(/\s+(?=[。、])/g,'').replace(/\n{3,}/g,'\n\n');
- let result:string;
- if(!pairs.length)result=cleaned.trimEnd()+'\n';
- else {const header=/^##\s*出典\s*$/m.exec(cleaned);if(header){const end=header.index+header[0].length;const tail=cleaned.slice(end);const next=/^## /m.exec(tail);const existing=next?tail.slice(0,next.index):tail;const after=next?tail.slice(next.index):'';const urls=new Set([...existing.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)].map(m=>m[2]));const additions=pairs.filter(p=>!urls.has(p[1]));result=additions.length?`${cleaned.slice(0,end)}\n${existing.trimEnd()}\n${additions.map(([l,u])=>`- [${l}](${u})`).join('\n')}\n\n${after}`.trimEnd()+'\n':cleaned.trimEnd()+'\n';}else result=cleaned.trimEnd()+`\n---\n\n## 出典\n\n${pairs.map(([l,u])=>`- [${l}](${u})`).join('\n')}\n`;}
+export function formatCitations(input: string, language: 'ja' | 'en' = 'ja') {
+ const protectedText = protectCode(textInput(input));
+ const body = protectedText.text;
+ const seen = new Set<string>();
+ const pairs: [string, string][] = [];
+ const citationPattern = language === 'en'
+   ? /(?:\(Source:\s*(?:\[[^\]]+\]\([^)]+\)\s*)+\)|（出典:\s*[^）]*）)/g
+   : /（出典:\s*[^）]*）/g;
+ const cleaned = body.replace(citationPattern, (citation) => {
+   const found = [...citation.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)];
+   if (!found.length) return citation;
+   for (const match of found) {
+     if (!seen.has(match[2])) {
+       seen.add(match[2]);
+       pairs.push([match[1], match[2]]);
+     }
+   }
+   return '';
+ }).replace(/。。+/g, '。').replace(/、、+/g, '、').replace(/ {2,}/g, ' ').replace(/\s+(?=[。、])/g, '').replace(/\n{3,}/g, '\n\n');
+ const heading = language === 'en' ? 'Sources' : '出典';
+ let result: string;
+ if (!pairs.length) result = cleaned.trimEnd() + '\n';
+ else {
+   const header = new RegExp(`^##\\s*${heading}\\s*$`, 'm').exec(cleaned);
+   if (header) {
+     const end = header.index + header[0].length;
+     const tail = cleaned.slice(end);
+     const next = /^## /m.exec(tail);
+     const existing = next ? tail.slice(0, next.index) : tail;
+     const after = next ? tail.slice(next.index) : '';
+     const urls = new Set([...existing.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)].map((match) => match[2]));
+     const additions = pairs.filter((pair) => !urls.has(pair[1]));
+     result = additions.length
+       ? `${cleaned.slice(0, end)}\n${existing.trimEnd()}\n${additions.map(([label, url]) => `- [${label}](${url})`).join('\n')}\n\n${after}`.trimEnd() + '\n'
+       : cleaned.trimEnd() + '\n';
+   } else {
+     result = cleaned.trimEnd() + `\n---\n\n## ${heading}\n\n${pairs.map(([label, url]) => `- [${label}](${url})`).join('\n')}\n`;
+   }
+ }
  return protectedText.restore(result);
 }
 

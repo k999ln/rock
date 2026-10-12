@@ -85,6 +85,25 @@ void test('patent AI request is stateless and official-source limited', () => {
   assert.deepEqual(request.tools[0]?.filters.allowed_domains, [
     ...PATENT_AI_ALLOWED_DOMAINS,
   ]);
+  assert.ok(PATENT_AI_ALLOWED_DOMAINS.includes('uspto.gov'));
+});
+
+void test('English patent AI request uses an English-only prompt when lang=en', () => {
+  const request = buildPatentAiRequest({
+    ...completeInput,
+    inventionTitle: 'Safe restart system',
+    problem: 'A system loses its safe restart point after interruption.',
+    mechanism: 'It records approval and state transitions before each action.',
+    architecture: 'A client, gateway, worker, and evidence store exchange signed state.',
+    technicalEffect: 'It prevents duplicate external actions after a restart.',
+    differences: 'Approval is rechecked immediately before each external action.',
+    inventor: 'Student',
+    applicant: 'Student',
+  }, '2026-09-12', undefined, 'en');
+  assert.doesNotMatch(request.instructions, /[ぁ-んァ-ヶ一-龯]/u);
+  assert.doesNotMatch(request.input, /[ぁ-んァ-ヶ一-龯]/u);
+  assert.match(request.instructions, /English-language patent prior-art research assistant/);
+  assert.match(request.input, /Invention title:/);
 });
 
 void test('patent AI output requires an allowlisted citation', () => {
