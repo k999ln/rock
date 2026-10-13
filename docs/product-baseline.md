@@ -953,3 +953,6 @@ host fixture、contract、demoは実装してよいが、実端末dispatch、pro
 ## 2026-10-05 avokadoProの独立小型PC方針
 
 利用者指定により、ProはNVIDIA搭載のMac miniのような据え置き小型PCとして、AIとPCゲーム双方を重視する。販売目標は80万円/台（回答80の文脈解釈、税込/税別等未定）。[構成・組立設計](avokado-pro-pc-design.md)へ候補部品、OEM試作とODM販売筐体、冷却・互換性・受入を記録した。MiniはProなしの単体動作を目指す既存R5を維持する。新task MAT16はMini MAT15と別受入であり、購入・組立・生産・公開・受注済みではない。
+## 2026-10-13 Skyの成果をアプリ内へ渡す
+
+利用者の明示指示により、OS上の仕事管理はZema、Sky単体はAgent/Toolの選択・接続と保存済み成果のアプリ内表示を担う。本人別のSky成果一覧を設け、第一者同一originのFitnessアプリを `sky.fitness.plan/1` の表示例にする。型が合わない文章を運動プランに変換せず、NFCや大学名を成果への権限としない。外部アプリ向け認証SDK、実Fitness Agent、Provider出力と本番受入は別条件。[詳細](sky-launch-design.md#sky-app-output-plugins)。

@@ -3415,3 +3415,7 @@ G04 / ROCK。当初12 PRの統合直後にDependabotが3本追加。proxy-addr 2
 ## 追加依存3 PRのmain統合完了
 
 PR #79–81を#82経由でmainへ通常merge。統合commit `eafdc4f1f5eff49401c32e39984534a6629e7f69`、検証候補 `1628d2a8e53c18bcf7ba4b4b4a4b794f56d635f2`。同一候補の総合verify、CodeQL両言語/PR check、署名fixture、SPIDER回帰/公開Web測定が成功。source-map-jsはroot/site双方の修正版へ揃えた。これで当初12本と追加3本の計15 PRを実装・修復・検証・main統合済み。履歴secret警告、修正版未提供のbraces/http-cache-semantics、実機・本番release gateは未解決のまま区別する。証拠とrun URL: docs/evidence/open-pr-integration.json。文書追記後も生成資料とmain verifyを再確認する。
+
+## 2026-10-13 — Sky成果画面とFitness第一者表示（WEB06 / SKY21、ROCK、GitHub反映準備）
+
+最新GitHub main `4273ef02` から隔離branch `codex/sky-app-outputs-20261013` を作り、本人別のSky成果一覧と第一者Fitnessアプリの型付き成果表示を移植。既存のjob・委任・暗号化成果・保存済みCloud AI回答を再利用し、新しい成果DBやToolは追加しない。対象2試験とtypecheckが合格。全体 `TMPDIR=/private/tmp npm run verify` exit0（Node 2144合格・1 skip、仕事API1356、CSV385、Web資産欠落0）。`codex/sky-app-outputs-20261013` へGitHub保存。実Provider、外部アプリSDK、本番本人A/B、main統合、配備は別受入。証拠は `docs/evidence/sky-app-output-plugin-github.json`。

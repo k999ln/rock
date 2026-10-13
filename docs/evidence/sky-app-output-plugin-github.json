@@ -1,0 +1,18 @@
+{
+  "schema": "sky-app-output-plugin-github/1",
+  "date": "2026-10-13",
+  "baseMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+  "branch": "codex/sky-app-outputs-20261013",
+  "scope": "saved owner-scoped Sky output inbox and first-party Fitness typed rendering example",
+  "focusedTests": "2/2 passed",
+  "typecheck": "passed",
+  "fullVerify": "exit 0; Node 2144 passed, 1 skipped; Work API 1356; CSV 385; Web assets 197 references, missing 0",
+  "browserPreview": "previous local source only; not verified on this branch",
+  "realProviderOutputTested": false,
+  "externalCrossOriginSdkAccepted": false,
+  "githubSaved": true,
+  "mainIntegrated": false,
+  "deployed": false,
+  "verifyLogSha256": "b0da5295fbbe0605ee47541a55c8078224f3eb5b444ba537c10a3f9dcab71a9a",
+  "amcTestAdjustment": "timeout fixture increased from 5ms/50ms block to 1000ms/1050ms block to avoid pre-dispatch scheduling race under full parallel suite"
+}

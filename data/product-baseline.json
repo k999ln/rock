@@ -2114,5 +2114,19 @@
       "stripe_connect_configuration_and_threshold_billing",
       "cloud_ai_provider_resale_terms"
     ]
+  },
+  "skyAppOutputPlugin": {
+    "decidedAt": "2026-10-12",
+    "source": "User requested a saved Agent output receptacle and Sky standalone host-app plugins, with Fitness as the first example",
+    "osWorkManager": "Zema",
+    "standaloneSkyOutputInbox": "/sky/outputs",
+    "firstPartyHostExample": "/fitness",
+    "typedOutputSchema": "sky.fitness.plan/1",
+    "authorization": "owner-scoped saved results; NFC and campus context confer no output access",
+    "outsideCurrentAcceptance": [
+      "cross-origin app SDK",
+      "real Fitness Agent",
+      "production Provider output"
+    ]
   }
 }

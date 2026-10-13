@@ -480,7 +480,11 @@ export default function SkyWorkspace({
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
-      <Link href="/sky/marketplace">AI・自動化マーケットプレイス</Link>
+      <nav aria-label="Skyの主要画面">
+        <Link href="/sky/marketplace">AI・自動化マーケットプレイス</Link>
+        {' · '}
+        <Link href="/sky/outputs">Agentの成果を見る</Link>
+      </nav>
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
           <section

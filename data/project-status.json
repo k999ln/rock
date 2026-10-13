@@ -7809,5 +7809,35 @@
         }
       ]
     }
+  },
+  "skyAppOutputPlugin": {
+    "status": "main_based_branch_verified_and_github_saved_not_integrated",
+    "primaryWorkstream": "Web / PWA / Sites",
+    "primaryOwner": "ROCK",
+    "taskIds": [
+      "WEB06",
+      "SKY21"
+    ],
+    "baseMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "branch": "codex/sky-app-outputs-20261013",
+    "routes": [
+      "/sky/outputs",
+      "/fitness"
+    ],
+    "reusedApis": [
+      "/api/work-jobs",
+      "/api/sky/a2a-delegations",
+      "/api/sky/a2a-delegations/{id}/artifacts",
+      "/api/llm/quotes"
+    ],
+    "newOriginalStore": false,
+    "focusedTests": "2/2 passed",
+    "typecheck": "passed",
+    "fullVerify": "exit 0; Node 2144 passed, 1 skipped; Work API 1356; CSV 385; Web assets 197 references, missing 0",
+    "githubSaved": true,
+    "mainIntegrated": false,
+    "deployed": false,
+    "nextAction": "Review branch CI and integrate into main; then deploy matching Site artifact and validate owner A/B, real Provider output, external app scope/origin/revocation separately.",
+    "verifyLogSha256": "b0da5295fbbe0605ee47541a55c8078224f3eb5b444ba537c10a3f9dcab71a9a"
   }
 }

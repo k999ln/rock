@@ -195,3 +195,10 @@ OWNER: 本番サインイン操作、外部アカウント契約/本人確認、
 passedのgateを同一候補の合格へ算入するには、gateのevidenceに含まれるJSON実受入記録を`acceptanceEvidence`へ指定する。記録はschema `sky-launch-acceptance/1`、対象gateId、result `passed`、execution `actual`、実試験environment、observedAtを持ち、sourceCommit・buildSha256・deploymentId・siteVersionの4項目すべてがreportの`candidate`と一致する。mock/fixture、別環境、別gate、候補と異なるsource/build/deployment/versionは拒否する。文書や試験ソースの存在だけでは候補の合格にしない。この構造検査は実顧客導線を実行・認定するものではなく、宣言した候補が実際の配備対象であることと、記録が示す受入範囲の独立確認も必要である。
 
 保存済みR1の監査試験fixture修正は、実配備設定と記録済みの旧本人限定監査を混同しないため、テスト内だけへ限定統合する。現在のpackage-lockに対応する948/911/49の検査は保持。実設定を読むrelease CLI、validator、本番Sites identity、既存アクセス制御は変更しない。35単体試験の合格は本番readbackではなく、公開判定は引き続き未合格。
+## Sky App Output Plugins
+
+OS版ではZemaが依頼・承認・停止・費用を統合する。Sky単体はAgent/Toolを選び、本人が保存した成果を `/sky/outputs` から確認できる。第一者同一originアプリは `SkyAppOutputSlot` で既存のowner-scoped成果APIを読み、アプリの型付きschemaを検証してからそのアプリの画面へ表示する。Fitness例は `sky.fitness.plan/1` のみを運動プランとして扱い、任意の文章や別schemaを変換しない。
+
+入力は既存Zema親job、本人認証済み委任ID、暗号化保存済み成果。出力はAgent名・状態・テキスト部分、対応アプリへの型付き表示。保存と復旧は既存job・委任・成果と、保存を選んだCloud AI回答を正本にし、新たな成果DBを作らない。未ログイン、取得失敗、未保存、ファイル部分の省略、truncated、schema不一致を区別する。完全なテキストだけをコピー・保存対象とし、別Agentへの引継ぎや外部送信には改めて権限・費用・本人承認を要する。
+
+ROCKは第一者表示枠と本人別読取りを担当。外部Providerの実行、外部アプリの認証・origin・scope・失効は別受入である。合格条件は本人A/Bで他人の成果を拒否し、保存していない回答を復元せず、部分・大型・異なるschemaの出力を安全に扱い、同じ親jobへ停止・費用を戻せること。現状はsourceと局所試験のみで、実Providerと本番A/Bは未受入。
