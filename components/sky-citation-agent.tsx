@@ -92,7 +92,7 @@ export default function SkyCitationAgent() {
           <button className={styles.run} type="button" disabled={busy || !markdown.trim()} onClick={() => void run()}>
             {busy ? '実行・保存を確認中…' : '実行して成果を保存'}
           </button>
-          {signIn && <p role="alert" className={styles.notice}><Link href="/signin-with-chatgpt?return_to=%2Fsky%2Fagents%2Fcitations">サインイン</Link>してから実行してください。入力はこの画面に残しています。</p>}
+          {signIn && <p role="alert" className={styles.notice}><Link href="/signin-with-chatgpt?return_to=%2Fos%2Fsky%2Fagents%2Fcitations" target="_blank" rel="noopener noreferrer">別タブでサインイン</Link>し、この画面に戻って再実行してください。入力はこの画面に残しています。</p>}
           {error && <p role="alert" className={styles.notice}>{error}</p>}
         </section>
         <section className={styles.panel} aria-label="Agentの成果">
