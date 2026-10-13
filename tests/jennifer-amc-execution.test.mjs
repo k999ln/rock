@@ -8,6 +8,7 @@ import { parseJenniferKnowledgeRegistry } from "../lib/jennifer-amc-decompositio
 import {
   buildJenniferDispatchPrompt,
   buildJenniferExecutionReport,
+  approveJenniferExecutionGoal,
   createJenniferExecutionGoal,
   createJenniferTaskJobCoordination,
   jenniferDelegationKey,
@@ -30,12 +31,31 @@ const plan = () => createJenniferCoordinationPlan(
   knowledge,
 );
 
-void test("owner confirmation compiles Jennifer's proposal into a valid active AMC goal", () => {
+const approve = (goal) => approveJenniferExecutionGoal(
+  goal,
+  goal.coordinationRef.planSnapshot.amc.goalContract.unresolvedQuestions.map((question) => ({
+    question, disposition: "deferred", note: "原本が接続されるまでinventory以外へは進めない",
+  })),
+  "owner:test-user",
+  "2026-10-10T12:01:00.000Z",
+);
+
+void test("saving Jennifer creates a draft and explicit owner approval unlocks only inventory", () => {
   const source = plan();
-  const goal = createJenniferExecutionGoal(source, "2026-10-10T12:00:00.000Z");
-  assert.equal(validateAmcGoal(goal), goal);
+  const draft = createJenniferExecutionGoal(source, "2026-10-10T12:00:00.000Z");
+  assert.equal(validateAmcGoal(draft), draft);
+  assert.equal(draft.state, "draft");
+  assert.equal(draft.maxParallel, 1);
+  assert.equal(draft.tasks.find(({ id }) => id === "task-goal-contract")?.status, "pending");
+  assert.deepEqual(amcSummary(draft).readyTaskIds, []);
+  assert.throws(
+    () => approveJenniferExecutionGoal(draft, [], "owner:test-user"),
+    /JENNIFER_COLOMBIA_UNRESOLVED/,
+  );
+  const goal = approve(draft);
   assert.equal(goal.state, "active");
   assert.equal(goal.coordinationRef.planId, source.id);
+  assert.deepEqual(goal.coordinationRef.planSnapshot, source);
   assert.equal(goal.requestBrief.goal, goal.instruction);
   assert.equal(goal.tasks.find(({ id }) => id === "task-goal-contract")?.status, "done");
   assert.ok(goal.tasks.every((task) => typeof task.specialistProfile === "string"));
@@ -44,7 +64,7 @@ void test("owner confirmation compiles Jennifer's proposal into a valid active A
 });
 
 void test("dispatch prompt is bounded to one schedulable leaf and its allowed paths", () => {
-  const goal = createJenniferExecutionGoal(plan());
+  const goal = approve(createJenniferExecutionGoal(plan()));
   const prompt = buildJenniferDispatchPrompt(goal, "task-inventory");
   assert.match(prompt, /Task ID: task-inventory/);
   assert.match(prompt, /Allowed paths:/);
@@ -53,7 +73,7 @@ void test("dispatch prompt is bounded to one schedulable leaf and its allowed pa
 });
 
 void test("task execution stays submitted until a different reviewer accepts evidence", () => {
-  let goal = createJenniferExecutionGoal(plan());
+  let goal = approve(createJenniferExecutionGoal(plan()));
   const task = goal.tasks.find(({ id }) => id === "task-inventory");
   const worker = "a2a-worker:worker-delegation";
   goal = applyAmcEvent(goal, {
@@ -90,7 +110,7 @@ void test("task execution stays submitted until a different reviewer accepts evi
 });
 
 void test("delegation correlation and per-leaf cloud jobs are validated", () => {
-  const goal = createJenniferExecutionGoal(plan());
+  const goal = approve(createJenniferExecutionGoal(plan()));
   const task = goal.tasks.find(({ id }) => id === "task-inventory");
   const rootJobId = randomUUID();
   const coordination = createJenniferTaskJobCoordination(
@@ -112,7 +132,7 @@ void test("delegation correlation and per-leaf cloud jobs are validated", () => 
 });
 
 void test("Jennifer report never turns remote completion into accepted AMC completion", () => {
-  const goal = createJenniferExecutionGoal(plan());
+  const goal = approve(createJenniferExecutionGoal(plan()));
   const report = buildJenniferExecutionReport(goal, [{
     id: randomUUID(),
     parentJobId: randomUUID(),

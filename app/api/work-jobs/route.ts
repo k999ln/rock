@@ -81,14 +81,35 @@ export async function POST(request: Request) {
     if (candidate.templateId === 'amc') throw new WorkError('AMC画面から計画を保存してください。');
     if (candidate.templateId === 'material-invention') throw new WorkError('物質候補の専用画面から入力を保存してください。');
     if (candidate.templateId === 'composition') throw new WorkError('仕事を組み立てる画面から計画を保存してください。');
-    const saved = await workStore(db).create(user, candidate);
+    const store = workStore(db);
+    const existingJennifer = candidate.coordination
+      ? await store.findJenniferTaskJob(user, candidate.coordination)
+      : null;
+    if (existingJennifer) return json({ job: existingJennifer, created: false });
+    let saved = null;
+    try { saved = await store.create(user, candidate); }
+    catch (error) {
+      if (!candidate.coordination) throw error;
+    }
+    const recoveredJennifer = !saved && candidate.coordination
+      ? await store.findJenniferTaskJob(user, candidate.coordination)
+      : null;
+    const result = saved ?? recoveredJennifer;
+    const sameJenniferCoordination = !candidate.coordination || (
+      result?.coordination?.schema === candidate.coordination.schema &&
+      result.coordination.rootJobId === candidate.coordination.rootJobId &&
+      result.coordination.planId === candidate.coordination.planId &&
+      result.coordination.taskId === candidate.coordination.taskId &&
+      result.coordination.role === candidate.coordination.role
+    );
     if (
-      !saved ||
-      saved.title !== candidate.title ||
-      saved.templateId !== candidate.templateId
+      !result ||
+      result.title !== candidate.title ||
+      result.templateId !== candidate.templateId ||
+      !sameJenniferCoordination
     )
       throw new WorkError('仕事IDが使用されています。', 409);
-    return json({ job: saved }, 201);
+    return json({ job: result, created: result.id === candidate.id }, result.id === candidate.id ? 201 : 200);
   } catch (error) {
     return rejected(request, error);
   }

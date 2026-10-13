@@ -39,7 +39,7 @@
 
 もう一つの原則として、**LLM・Agent・Toolは別物** です。LLMは「案を出す」、Agentは「許可された手順を進める」、Toolは「個別の処理をする」。権限を決めるのはどれでもなく、OSのBroker（Platform Core）です。
 
-**Jenniferは上の件数へ追加する単体Toolや専門実行Agentではありません。** 利用者の依頼をCOLOMBIA参照付きGoal Contractへ言語化し、Zema内AMCへ逆算分解を依頼し、project担当si／専門siのleaf taskを束ねるproject chief of staffです。Job、承認、実dispatch、artifact、署名済みReceipt、独立review、停止、履歴の実行正本はZemaに残し、Jenniferは検収済み成果と未完了を一つの最終報告へ統合します。責任分界と現状は[Jennifer Coordination](jennifer-coordination.md)を参照してください。
+**Jenniferは上の件数へ追加する単体Toolや専門実行Agentではありません。** 利用者の依頼をCOLOMBIA参照付きGoal Contractへ言語化し、Zema内AMCへ逆算分解を依頼し、project担当si／専門siのleaf taskを束ねるproject chief of staffです。保存は草案であり承認ではありません。COLOMBIAの未決事項、inventory、deliveryを段階承認し、外部委任は全Goalで同時1件に制限します。Job、承認、実dispatch、artifact、署名済みReceipt、workerに結び付いた別principalの独立review、停止、版付き計画、履歴の実行正本はZemaに残し、Jenniferは検収済み成果と未完了を一つの最終報告へ統合します。責任分界と現状は[Jennifer Coordination](jennifer-coordination.md)を参照してください。
 
 ```text
 利用者 ──→ Sky で Tool／担当を選ぶ ──→ Zema で依頼する

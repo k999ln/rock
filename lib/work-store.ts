@@ -58,6 +58,14 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
         }),
       );
     },
+    async listJenniferAmc(user: string) {
+      const rows = await db.prepare(`SELECT payload FROM work_jobs
+        WHERE user_id = ? AND json_extract(payload, '$.templateId') = 'amc'
+          AND json_extract(payload, '$.amcGoal.coordinationRef.schema') = 'rockstaros-jennifer-execution/1'
+        ORDER BY updated_at DESC, id DESC LIMIT 50`)
+        .bind(user).all<{ payload: string }>();
+      return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
+    },
     async findAmcForJenniferPlan(user: string, planId: string) {
       const row = await db
         .prepare(
@@ -71,6 +79,34 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
         .bind(user, planId)
         .first<{ payload: string }>();
       return row ? normalizeWorkJob(JSON.parse(row.payload) as WorkJob) : null;
+    },
+    async findJenniferTaskJob(user: string, coordination: {
+      rootJobId: string;
+      planId: string;
+      taskId: string;
+      role: 'worker' | 'reviewer';
+    }) {
+      const row = await db.prepare(`SELECT payload FROM work_jobs
+        WHERE user_id = ?
+          AND json_extract(payload, '$.coordination.schema') = 'rockstaros-jennifer-task-job/1'
+          AND json_extract(payload, '$.coordination.rootJobId') = ?
+          AND json_extract(payload, '$.coordination.planId') = ?
+          AND json_extract(payload, '$.coordination.taskId') = ?
+          AND json_extract(payload, '$.coordination.role') = ?
+          AND json_extract(payload, '$.status') != 'cancelled'
+        ORDER BY updated_at DESC, id DESC LIMIT 1`)
+        .bind(user, coordination.rootJobId, coordination.planId,
+          coordination.taskId, coordination.role).first<{ payload: string }>();
+      return row ? normalizeWorkJob(JSON.parse(row.payload) as WorkJob) : null;
+    },
+    async listJenniferTaskJobs(user: string, rootJobId: string) {
+      const rows = await db.prepare(`SELECT payload FROM work_jobs
+        WHERE user_id = ?
+          AND json_extract(payload, '$.coordination.schema') = 'rockstaros-jennifer-task-job/1'
+          AND json_extract(payload, '$.coordination.rootJobId') = ?
+        ORDER BY updated_at, id`)
+        .bind(user, rootJobId).all<{ payload: string }>();
+      return rows.results.map((row) => normalizeWorkJob(JSON.parse(row.payload) as WorkJob));
     },
     async create(user: string, job: WorkJob) {
       await db

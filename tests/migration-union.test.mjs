@@ -137,9 +137,14 @@ await test('the forward Web bridge tolerates objects left by an earlier partial 
 });
 
 await test('Sites deploys only the consolidated root bridge after the recorded history', () => {
-  assert.deepEqual(names, ['0013_sky_provider_connections.sql']);
+  assert.deepEqual(names, [
+    '0013_sky_provider_connections.sql',
+    '0014_jennifer_execution_integrity.sql',
+  ]);
   assert.match(read('0013_sky_provider_connections.sql'), /CREATE TABLE IF NOT EXISTS `sky_provider_connections`/);
   assert.doesNotMatch(read('0013_sky_provider_connections.sql'), /^ALTER TABLE/m);
+  assert.match(read('0014_jennifer_execution_integrity.sql'), /CREATE TABLE `jennifer_plan_revisions`/);
+  assert.match(read('0014_jennifer_execution_integrity.sql'), /CREATE TABLE `jennifer_task_attempts`/);
   assert.deepEqual(
     journal.map((entry) => entry.tag + '.sql'),
     names,
@@ -253,7 +258,7 @@ await test('fresh and current production D1 databases converge without losing re
         // SQLite normalizes IF NOT EXISTS away in sqlite_master.
         expectedSchema ??= schema;
         assert.deepEqual(schema, expectedSchema);
-        assert.equal(schema.filter((item) => item.type === 'table').length, 92);
+        assert.equal(schema.filter((item) => item.type === 'table').length, 94);
         // D1 intentionally disallows PRAGMA integrity_check; compare all table/index
         // definitions and retained values instead of claiming that pragma ran.
         if (history === 'current') {

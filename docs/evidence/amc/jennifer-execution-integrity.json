@@ -1,0 +1,52 @@
+{
+  "schema": "rockstaros-jennifer-execution-integrity-evidence/1",
+  "recordedAt": "2026-10-13",
+  "sourceBranch": "codex/jennifer-production-hardening",
+  "baseMain": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
+  "scope": [
+    "draft_save_separate_from_owner_approval",
+    "colombia_unresolved_fail_closed",
+    "inventory_then_delivery_phase_approval",
+    "one_external_delegation_per_goal",
+    "atomic_root_and_initial_plan_creation",
+    "idempotent_server_operation_replay",
+    "unknown_owner_mutation_reuses_exact_request",
+    "exact_child_job_coordination_deduplication",
+    "durable_plan_revisions_and_task_attempts",
+    "server_bound_task_and_review_reports",
+    "pause_stop_resume_and_revision",
+    "currency_separated_cost_projection"
+  ],
+  "focusedVerification": {
+    "command": "node --experimental-strip-types --test tests/workplan-reconcile.test.mjs tests/jennifer-amc-decomposition.test.mjs tests/jennifer-amc-execution.test.mjs tests/jennifer-execution-reports.test.mjs tests/jennifer-execution-store.test.mjs tests/zema-chat-session.test.mjs tests/sky-chat-mcp-recovery.test.mjs tests/database-status.test.mjs tests/web-route-style-contract.test.mjs",
+    "passed": 59,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "lint": "passed",
+  "productionBuild": "passed",
+  "localUiAcceptance": {
+    "result": "passed",
+    "route": "/chat",
+    "checked": [
+      "Jennifer_security_and_agent_domain_decomposition",
+      "draft_save_does_not_approve",
+      "colombia_resolution_required",
+      "inventory_only_ready_after_goal_approval"
+    ]
+  },
+  "repositoryTestsExcludingPcCitations": "passed",
+  "fullVerification": {
+    "result": "blocked_by_existing_platform_requirement",
+    "detail": "This macOS Python 3.11 runtime does not expose os.waitid, so the existing PC citations tests fail closed as designed. The three PC-citations-dependent test files remain for Linux CI; no bypass or skip was added to product code."
+  },
+  "githubCi": "pending",
+  "productionDeployment": "pending",
+  "externalProviderAcceptance": "not_run_configuration_gated",
+  "colombiaSource": "awaiting_source",
+  "claims": {
+    "remoteCompletionAloneAccepted": false,
+    "browserEvidenceCanAdvanceJenniferAmc": false,
+    "providerExecutionEnabledByThisChange": false
+  }
+}

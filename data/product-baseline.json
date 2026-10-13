@@ -1,5 +1,5 @@
 {
-  "version": "1.99",
+  "version": "2.00",
   "decidedAt": "2026-10-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
@@ -29,6 +29,33 @@
     "authorityExpansionFromGoal": false,
     "completionRequiresEvidence": true,
     "note": "Goal駆動の開発管理ツールを求めた指示。既存の製品境界、料金保留、実機・外部操作の個別承認を変更しない。"
+  },
+  "jenniferExecution": {
+    "decidedAt": "2026-10-13",
+    "authority": "docs/jennifer-coordination.md",
+    "role": "project_chief_of_staff_in_front_of_zema",
+    "saveMeansApproval": false,
+    "colombiaSourceStatus": "awaiting_source",
+    "unresolvedQuestionPolicy": "answer_or_reasoned_deferral_before_inventory_approval",
+    "phases": [
+      "draft",
+      "inventory_approved",
+      "delivery_approved",
+      "owner_final_acceptance"
+    ],
+    "maximumConcurrentExternalDelegationsPerGoal": 1,
+    "durablePlanRevisions": true,
+    "semanticDiffInvalidatesApproval": true,
+    "typedServerReports": [
+      "zema-jennifer-task-report/1",
+      "zema-jennifer-review-report/1",
+      "jennifer_goal_receipt"
+    ],
+    "reviewRequiresDistinctPrincipal": true,
+    "reviewBindsPredecessorDelegationAndWorkerReportDigest": true,
+    "remoteCompletionAloneMeansAccepted": false,
+    "browserEvidenceCanAdvanceState": false,
+    "productionExternalDispatch": "configuration_and_owner_approval_gated"
   },
   "hardwareProductFamily": {
     "decidedAt": "2026-09-26",

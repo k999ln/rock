@@ -46,6 +46,7 @@ import { readWorkJobs, readWorkJobResponse, workJobConfirmsCommand } from '@/lib
 import { OperationRequestError } from '@/lib/operations-client';
 import { pendingOwnerStatus } from '@/lib/pending-owner-intent';
 import { OWNER_SCOPE_HEADER, OWNER_CHANGED, OWNER_CHECK_REQUIRED, OWNER_CHANGED_MESSAGE } from '@/lib/owner-intent';
+import { jenniferReviewClaimContract } from '@/lib/jennifer-execution-reports';
 
 const stateNames = {
   active: '作業中',
@@ -54,7 +55,6 @@ const stateNames = {
   cancelled: '中止',
 };
 type Update = { jobId: string; revision: number; command: WorkCommand };
-type WorkbenchAmcGoal = NonNullable<WorkJob['amcGoal']>;
 type JenniferTaskJobCoordination = NonNullable<WorkJob['coordination']>;
 type PendingUpdate = Update & { ownerScope: string };
 type Creation = { ownerScope: string; id: string; title: string; templateId: string };
@@ -522,10 +522,27 @@ export default function Workbench({
     : null;
   const fullDelegationMessage = useMemo(() => {
     const task = delegationForm.message.trim();
-    if (!handoffPackage || handoffPackageState !== 'ready' || !task) return task;
-    try { return rockstarPackageHandoffMessage(handoffPackage, task); }
-    catch { return ''; }
-  }, [delegationForm.message, handoffPackage, handoffPackageState]);
+    if (!task) return task;
+    let message = task;
+    if (handoffPackage && handoffPackageState === 'ready') {
+      try { message = rockstarPackageHandoffMessage(handoffPackage, task); }
+      catch { return ''; }
+    }
+    const selectedJob = jobs.find((job) => job.id === selectedId);
+    const coordination = selectedJob?.coordination;
+    const reviewTask = coordination && delegationRole === 'reviewer'
+      ? jenniferRootJob?.amcGoal?.tasks.find(({ id }) => id === coordination.taskId)
+      : null;
+    if (!reviewTask) return message;
+    return [
+      message,
+      '',
+      '# Jennifer independent review output contract',
+      'Return one text artifact whose entire text is exactly one JSON object matching this shape.',
+      'Decide from the supplied worker artifacts. Every criterion needs one or more evidenceRefs.',
+      jenniferReviewClaimContract(reviewTask),
+    ].join('\n');
+  }, [delegationForm.message, handoffPackage, handoffPackageState, jobs, selectedId, delegationRole, jenniferRootJob]);
   useEffect(() => {
     if (!initialPackageKey || !ownerScope) return;
     const controller = new AbortController();
@@ -688,26 +705,20 @@ export default function Workbench({
     return data.job;
   }, []);
 
-  const recordJenniferEvent = useCallback(async (
+  const reconcileJenniferDelegation = useCallback(async (
     coordination: JenniferTaskJobCoordination,
-    build: (goal: WorkbenchAmcGoal) => Record<string, unknown> | null,
+    delegationId: string,
   ) => {
     const root = await refreshJenniferRoot(coordination);
-    const event = build(root.amcGoal!);
-    if (!event) return root;
     const eventId = crypto.randomUUID();
     try {
       const data = await amcRequest<{ job: WorkJob }>('/api/amc', 'PATCH', {
         jobId: root.id,
         revision: root.revision,
-        command: {
+        jennifer: {
           id: eventId,
-          action: 'amc_event',
-          event: {
-            id: eventId,
-            ...event,
-            expectedRevision: root.amcGoal!.revision,
-          },
+          operation: 'reconcile',
+          delegationId,
         },
       });
       setJenniferRootJob(data.job);
@@ -1079,29 +1090,7 @@ export default function Workbench({
     setDelegationBusy(true);
     setDelegationError('');
     try {
-      await recordJenniferEvent(coordination, (goal) => {
-        const task = goal.tasks.find(({ id }) => id === coordination.taskId);
-        if (!task) throw new Error('Jenniferのleaf taskが親Goalにありません。');
-        if (task.status === 'submitted' || task.status === 'done') return null;
-        if (task.status !== 'running' || task.startedBy !== `a2a-worker:${delegation.id}`)
-          throw new Error('Zemaの実行担当とこの委任が一致しません。');
-        return {
-          type: 'submit_result',
-          actor: `a2a-worker:${delegation.id}`,
-          role: 'worker',
-          taskId: task.id,
-          outcome: 'succeeded',
-          summary:
-            `${delegation.targetAgentName}のremote completion、${documents.length}件のartifact document、` +
-            `${formatCurrencyMinor(usage.amountMinor, usage.currency)}のProvider署名usage Receiptを取得した。`,
-          deliverables: task.deliverables.map(({ path }) => path),
-          evidence: [
-            `a2a:${delegation.id}:remote-completed`,
-            `a2a:${delegation.id}:artifact`,
-            `a2a:${delegation.id}:usage-receipt`,
-          ],
-        };
-      });
+      await reconcileJenniferDelegation(coordination, delegation.id);
       setDelegationError('成果・証拠・usage ReceiptをZemaへ提出しました。完了には別Agentの検収が必要です。');
     } catch (cause) {
       setDelegationError(
@@ -1112,7 +1101,7 @@ export default function Workbench({
     }
   }
 
-  async function verifyJenniferTaskResult(delegation: Delegation, accepted: boolean) {
+  async function verifyJenniferTaskResult(delegation: Delegation) {
     const selectedJob = jobs.find((job) => job.id === selectedId);
     const coordination = selectedJob?.coordination;
     const parsed = parseJenniferDelegationKey(delegation.idempotencyKey);
@@ -1127,35 +1116,8 @@ export default function Workbench({
     setDelegationBusy(true);
     setDelegationError('');
     try {
-      await recordJenniferEvent(coordination, (goal) => {
-        const task = goal.tasks.find(({ id }) => id === coordination.taskId);
-        if (!task) throw new Error('Jenniferのleaf taskが親Goalにありません。');
-        if (task.status === 'done') return null;
-        if (task.status !== 'submitted')
-          throw new Error('担当siの成果をZemaへ提出してから独立検収してください。');
-        const evidence = [
-          `a2a:${delegation.id}:review-artifact`,
-          `a2a:${delegation.id}:review-usage-receipt`,
-        ];
-        return {
-          type: 'verify_task',
-          actor: `a2a-reviewer:${delegation.id}`,
-          role: 'reviewer',
-          taskId: task.id,
-          accepted,
-          evidence,
-          criterionResults: task.acceptanceCriteria.map(({ id }) => ({
-            criterionId: id,
-            passed: accepted,
-            evidence,
-          })),
-        };
-      });
-      setDelegationError(
-        accepted
-          ? '独立reviewerの成果を確認し、leaf taskをZemaで検収済みにしました。'
-          : '独立reviewerの指摘を証拠付きで保存し、leaf taskを未合格にしました。',
-      );
+      await reconcileJenniferDelegation(coordination, delegation.id);
+      setDelegationError('reviewer artifact内の型付き判定をサーバーで照合し、Zemaへ記録しました。');
     } catch (cause) {
       setDelegationError(
         cause instanceof Error ? cause.message : '独立検収をZemaへ保存できませんでした。',
@@ -1175,23 +1137,7 @@ export default function Workbench({
     setDelegationBusy(true);
     setDelegationError('');
     try {
-      await recordJenniferEvent(coordination, (goal) => {
-        const task = goal.tasks.find(({ id }) => id === coordination.taskId);
-        if (!task) throw new Error('Jenniferのleaf taskが親Goalにありません。');
-        if (task.status === 'failed') return null;
-        if (task.status !== 'running' || task.startedBy !== `a2a-worker:${delegation.id}`)
-          throw new Error('Zemaの実行担当とこの失敗委任が一致しません。');
-        return {
-          type: 'submit_result',
-          actor: `a2a-worker:${delegation.id}`,
-          role: 'worker',
-          taskId: task.id,
-          outcome: 'failed',
-          summary: `外部Agentの終了状態を${delegation.state}として確認した。完了扱いにしない。`,
-          deliverables: [],
-          evidence: [`a2a:${delegation.id}:${delegation.state}`],
-        };
-      });
+      await reconcileJenniferDelegation(coordination, delegation.id);
       setDelegationError('外部Agentの失敗状態をZemaへ保存しました。再開には原因確認と明示的なresumeが必要です。');
     } catch (cause) {
       setDelegationError(
@@ -1271,7 +1217,7 @@ export default function Workbench({
           ? jenniferDelegationKey(
               selected.coordination.taskId,
               delegationRole,
-              crypto.randomUUID(),
+              `${selected.coordination.planId.slice(9)}.1`,
             )
           : `zema:${selected.id}:${crypto.randomUUID()}`,
         messageId: crypto.randomUUID(),
@@ -1402,17 +1348,7 @@ export default function Workbench({
       const parsed = parseJenniferDelegationKey(data.delegation.idempotencyKey);
       if (selectedJob.coordination && parsed?.role === 'worker' &&
         parsed.taskId === selectedJob.coordination.taskId) {
-        await recordJenniferEvent(selectedJob.coordination, (goal) => {
-          const task = goal.tasks.find(({ id }) => id === parsed.taskId);
-          if (!task) throw new Error('Jenniferのleaf taskが親Goalにありません。');
-          if (['running', 'submitted', 'done'].includes(task.status)) return null;
-          return {
-            type: 'start_task',
-            actor: `a2a-worker:${data.delegation.id}`,
-            role: 'worker',
-            taskId: task.id,
-          };
-        });
+        await reconcileJenniferDelegation(selectedJob.coordination, data.delegation.id);
       }
       setDelegationReview(null);
       setBrokerAuthorization(null);
@@ -2096,22 +2032,13 @@ export default function Workbench({
                               )}
                             {selected.coordination && correlation?.role === 'reviewer' &&
                               delegation.state === 'remote_completed' && delegation.artifactsCaptured === 1 && (
-                                <>
-                                  <button
-                                    type="button"
-                                    disabled={delegationBusy || !artifactsLoaded || !receiptLoaded || task?.status !== 'submitted'}
-                                    onClick={() => void verifyJenniferTaskResult(delegation, true)}
-                                  >
-                                    reviewer成果を確認して検収合格
-                                  </button>
-                                  <button
-                                    type="button"
-                                    disabled={delegationBusy || !artifactsLoaded || !receiptLoaded || task?.status !== 'submitted'}
-                                    onClick={() => void verifyJenniferTaskResult(delegation, false)}
-                                  >
-                                    reviewer指摘を保存して未合格
-                                  </button>
-                                </>
+                                <button
+                                  type="button"
+                                  disabled={delegationBusy || !artifactsLoaded || !receiptLoaded || task?.status !== 'submitted'}
+                                  onClick={() => void verifyJenniferTaskResult(delegation)}
+                                >
+                                  reviewerの型付き判定をサーバー照合
+                                </button>
                               )}
                             {selected.coordination && correlation?.role === 'worker' &&
                               ['remote_failed', 'remote_rejected', 'expired'].includes(delegation.state) && (

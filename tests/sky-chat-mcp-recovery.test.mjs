@@ -62,7 +62,7 @@ function harness() {
     },
   };
   const exports = {};
-  const context = { Error, Event, queueMicrotask, window, crypto,
+  const context = { Error, Event, queueMicrotask, window, crypto, AbortController, AbortSignal,
     fetch: async (url) => ({ ok: true, json: async () => url === '/api/csv-jobs' ? { jobs: [] } : { funds: [], membership: null, analytics: [] } }),
     require(id) { if (modules[id]) return { __esModule: true, ...modules[id] }; if (id.startsWith('@/components/') || id === 'lucide-react' || id === 'next/link') return {}; if (id === '@/lib/zema-private-storage' || id === '@/lib/currency-format' || id === '@/lib/remote-ai-text-client') return {}; throw Error(`Unexpected module ${id}`); },
   };

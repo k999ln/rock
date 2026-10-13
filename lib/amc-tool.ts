@@ -7,6 +7,7 @@ import {
 } from '../scripts/amc-goal-engine.mjs';
 import { buildRequestPlan } from '../scripts/amc-request-plan.mjs';
 import { estimateGoalEffort } from '../scripts/amc-effort.mjs';
+import { isJenniferCoordinationPlan } from './jennifer-coordination.ts';
 
 export const AMC_TOOL_ID = 'rockstar-amc';
 export const AMC_MAX_GOAL_BYTES = 1_500_000;
@@ -136,7 +137,7 @@ export function validateAmcGoal(value: unknown): AmcGoal {
       typeof reference !== 'object' ||
       Array.isArray(reference) ||
       Object.keys(reference).some((key) =>
-        !['schema', 'planId', 'requestId', 'projectId'].includes(key)) ||
+        !['schema', 'planId', 'requestId', 'projectId', 'planSnapshot', 'phase', 'questionResolutions'].includes(key)) ||
       reference.schema !== 'rockstaros-jennifer-execution/1' ||
       typeof reference.planId !== 'string' ||
       !/^jennifer-[0-9a-f]{8}$/u.test(reference.planId) ||
@@ -146,6 +147,9 @@ export function validateAmcGoal(value: unknown): AmcGoal {
       (reference.projectId !== null &&
         (typeof reference.projectId !== 'string' ||
           !/^[a-z][a-z0-9-]{0,63}$/u.test(reference.projectId))) ||
+      !isJenniferCoordinationPlan(reference.planSnapshot) ||
+      !['draft', 'inventory', 'delivery', 'accepted'].includes(String(reference.phase)) ||
+      (reference.questionResolutions !== undefined && !Array.isArray(reference.questionResolutions)) ||
       candidate.tasks.some((task) =>
         typeof task.specialistProfile !== 'string' ||
         !/^[a-z][a-z0-9-]{0,79}$/u.test(task.specialistProfile) ||

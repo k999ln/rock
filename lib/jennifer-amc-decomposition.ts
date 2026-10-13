@@ -82,7 +82,7 @@ export type JenniferAmcDraft = {
     maxDepth: 5;
     maxChildrenPerNode: 12;
     maxNodes: 100;
-    initialLeafWave: 8;
+    initialLeafWave: 1;
   };
 };
 
@@ -110,7 +110,7 @@ const DOMAIN_DEFINITIONS: readonly DomainDefinition[] = [
     objective: "業務規則、API、状態遷移と失敗時の扱いを実装する",
     ownerRole: "backend-engineer",
     criterion: "正常系と異常系の契約が試験され、未接続処理を成功扱いしない",
-    pattern: /(?:back(?:end)?|バックエンド|api|server|サーバ|runtime|ロジック|システム|開発|実装|作る|作りたい)/iu,
+    pattern: /(?:back(?:end)?|バックエンド|api|server|サーバ|runtime|ロジック|サーバーサイド)/iu,
   },
   {
     id: "data",
@@ -259,7 +259,6 @@ function selectedDomains(request: string): DomainDefinition[] {
       ({ id }) => id,
     ),
   );
-  selected.add("backend");
   if (selected.has("payments")) {
     selected.add("data");
     selected.add("security");
@@ -369,7 +368,10 @@ export function createJenniferAmcDraft(
     confirmation: "required",
     goal: `${projectLabel}${summary}`.slice(0, 1000),
     intent: "作りたいものを、専門担当が実装・検証できる具体的な仕事へ変換する",
-    scopeIn: domains.map(({ title }) => title),
+    scopeIn:
+      domains.length > 0
+        ? domains.map(({ title }) => title)
+        : ["依頼内容の調査・設計・成果物化"],
     scopeOut: [
       "依頼にない製品目的の追加",
       "本人確認前の外部送信・本番公開・課金・資産移動",
@@ -485,7 +487,7 @@ export function createJenniferAmcDraft(
       "各成果を統合する",
       "専門担当の成果を同じGoal revisionへ結合し、境界間の不整合を解消する",
       "integration-engineer",
-      buildTaskIds,
+      buildTaskIds.length > 0 ? buildTaskIds : ["task-architecture"],
       "成果物の競合がなく、全実装単位が同じGoalとplan revisionへ追跡できる",
     ),
     task(
@@ -544,7 +546,7 @@ export function createJenniferAmcDraft(
       maxDepth: 5,
       maxChildrenPerNode: 12,
       maxNodes: 100,
-      initialLeafWave: 8,
+      initialLeafWave: 1,
     },
   };
 }
@@ -631,7 +633,7 @@ export function isJenniferAmcDraft(value: unknown): value is JenniferAmcDraft {
     draft.planningLimits.maxDepth !== 5 ||
     draft.planningLimits.maxChildrenPerNode !== 12 ||
     draft.planningLimits.maxNodes !== 100 ||
-    draft.planningLimits.initialLeafWave !== 8
+    draft.planningLimits.initialLeafWave !== 1
   )
     return false;
 
