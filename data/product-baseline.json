@@ -1,6 +1,6 @@
 {
-  "version": "1.98",
-  "decidedAt": "2026-10-10",
+  "version": "1.99",
+  "decidedAt": "2026-10-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -2094,7 +2094,10 @@
     "payout": "monthly_close_at_month_end_paid_end_of_next_month",
     "firstLineSupport": "avokado",
     "skyHosting": {
-      "url": "https://avocadomini.si/sky",
+      "url": "https://avoado.si/sky",
+      "changedAt": "2026-10-13",
+      "changeReason": "Owner explicitly selected avoado.si/sky after confirming the domain spelling; this supersedes the 2026-10-10 avocadomini.si/sky plan",
+      "currentDelivery": "redirect_to_dedicated_sky_site; same_origin_service_not_yet_accepted",
       "signIn": "own_passkey",
       "notifications": "web_push_first"
     },

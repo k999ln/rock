@@ -24,7 +24,7 @@
 - **Sky fee**: 当面10%（`skyMarketplacePayments.commissionBps=1000`）。0%は「Skyの取り分0、決済の実費は実額」と定義し、従量の粗利が固定費を3か月続けて上回ったら切り替える。
 - **作者への払出し**: 月末締め・翌月末払いの月1回。通信の一次supportはavokadoが受ける。
 - **Miniの回線**: 国内、LTEのみ（5Gなし）、IoT向けdata専用SIM（試作はカード、量産はchip）、SGP.32対応のSIMを選び、遠隔の切替は自作しない。回線つきは別modelかoption。
-- **Skyの置き場所**: `https://avocadomini.si/sky`。本人確認は自前のpasskey。通知はWeb Pushを先に作る。
+- **Skyの置き場所**: 2026-10-13の利用者の明示変更により `https://avoado.si/sky`。10-10の `avocadomini.si/sky` 案を置き換える。現行の公開入口は専用Sky Siteへの転送で、同一origin提供・自前passkey・Web Pushは未受入。
 - **未受入**: 本番課金、回線の開通、端末へのOS導入。電気通信事業法、携帯電話不正利用防止法、資金決済法、特定商取引法、無線の認証、通信partner、Stripe、cloud AI Providerの規約は外部確認が残る（`accountEntryDecision.externalConfirmationsPending`）。
 
 ## 2026-10-09 Skyタイムラインのコード公開と交換可能な保護
@@ -956,3 +956,7 @@ host fixture、contract、demoは実装してよいが、実端末dispatch、pro
 ## 2026-10-13 Skyの成果をアプリ内へ渡す
 
 利用者の明示指示により、OS上の仕事管理はZema、Sky単体はAgent/Toolの選択・接続と保存済み成果のアプリ内表示を担う。本人別のSky成果一覧を設け、第一者同一originのFitnessアプリを `sky.fitness.plan/1` の表示例にする。型が合わない文章を運動プランに変換せず、NFCや大学名を成果への権限としない。外部アプリ向け認証SDK、実Fitness Agent、Provider出力と本番受入は別条件。[詳細](sky-launch-design.md#sky-app-output-plugins)。
+
+## 2026-10-13 Sky公開入口の変更
+
+利用者はドメインの綴りを `avoado.si` と確認し、Skyを `https://avoado.si/sky` から開くよう明示した。10-10の `avocadomini.si/sky` 案をこの入口に変更する。現在はavocadoMiniの公開ルートからSky専用Siteへ転送する構成で、ブラウザのURLは転送先に変わる。NFCタグへ入口URLを書けることと、大学別の本人確認・権限・6接続枠が本番で動くことは別の合格条件とする。
