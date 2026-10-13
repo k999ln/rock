@@ -155,6 +155,7 @@ interface Env {
   A2A_PRICE_QUOTES_REQUIRED?: string;
   SKY_PACKAGE_RUNTIME_BINDING_TRUSTED_KEYS?: string;
   SKY_PACKAGE_RUNTIME_EXTENSION_URI?: string;
+  ROCKSTAR_PUBLIC_ORIGIN?: string;
   ESIMGO_API_KEY?: string;
   ESIMGO_PROFILE_HASH_SECRET?: string;
   ESIMGO_INSTALL_MATERIAL_KEY?: string;
@@ -793,6 +794,22 @@ export class A2ADelegationWorkflow extends WorkflowEntrypoint<Env, DelegationPar
             current.messageId,
             message,
             packageRuntimeInvocation,
+            {
+              schema: 'rockstar-a2a-delegation-context/1',
+              ownerUserId: current.ownerUserId,
+              parentJobId: current.parentJobId,
+              delegationId: current.id,
+              currency: current.budgetCurrency,
+              budgetLimitMinor: current.budgetLimitMinor,
+              ...(this.env.ROCKSTAR_PUBLIC_ORIGIN &&
+                /^https:\/\/[^/?#]+(?:\/[^?#]*)?$/u.test(this.env.ROCKSTAR_PUBLIC_ORIGIN)
+                ? {
+                    receiptCallbackUrl:
+                      `${this.env.ROCKSTAR_PUBLIC_ORIGIN.replace(/\/+$/u, '')}` +
+                      `/api/sky/a2a-delegations/${current.id}/usage-receipt`,
+                  }
+                : {}),
+            },
           );
           if (outcome.kind !== 'task') {
             const latest = await store.get(ownerUserId, delegationId);

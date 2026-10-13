@@ -41,6 +41,7 @@ function runWrangler(args, { timeout = 30_000 } = {}) {
   const result = spawnSync(process.execPath, [wrangler, ...args], {
     cwd: root,
     encoding: 'utf8',
+    maxBuffer: 20 * 1024 * 1024,
     timeout,
     env: {
       ...process.env,

@@ -58,6 +58,20 @@ export function workStore(db: Pick<D1Database, 'prepare'>) {
         }),
       );
     },
+    async findAmcForJenniferPlan(user: string, planId: string) {
+      const row = await db
+        .prepare(
+          `SELECT payload FROM work_jobs
+          WHERE user_id = ?
+            AND json_extract(payload, '$.templateId') = 'amc'
+            AND json_extract(payload, '$.amcGoal.coordinationRef.schema') = 'rockstaros-jennifer-execution/1'
+            AND json_extract(payload, '$.amcGoal.coordinationRef.planId') = ?
+          ORDER BY updated_at DESC, id DESC LIMIT 1`,
+        )
+        .bind(user, planId)
+        .first<{ payload: string }>();
+      return row ? normalizeWorkJob(JSON.parse(row.payload) as WorkJob) : null;
+    },
     async create(user: string, job: WorkJob) {
       await db
         .prepare(

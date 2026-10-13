@@ -124,9 +124,9 @@ requireValue(
 );
 requireValue(
   read('components/sky-chat-workspace.tsx').includes(
-    'if (!isAmc && (conversational || toolId))',
+    'if (!requestedJenniferPlan && !isAmc && (conversational || toolId))',
   ),
-  'AMC planning must not invoke the conversation LLM',
+  'Jennifer and AMC planning must not invoke the conversation LLM',
 );
 
 const architecture = read('docs/llm-evaluation-architecture.md');

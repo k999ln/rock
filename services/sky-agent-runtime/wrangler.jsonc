@@ -5,7 +5,9 @@
   "compatibility_date": "2026-08-18",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "A2A_EGRESS_ALLOWED_ORIGINS": ""
+    "A2A_DELEGATION_EXECUTION_ENABLED": "false",
+    "A2A_EGRESS_ALLOWED_ORIGINS": "",
+    "ROCKSTAR_PUBLIC_ORIGIN": ""
   },
   "triggers": {
     "crons": ["* * * * *"]

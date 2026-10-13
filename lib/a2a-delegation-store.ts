@@ -489,7 +489,10 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
     async expireOverdueBeforeDispatch(now = Date.now(), limit = 50) {
       const rows = await db.prepare(`SELECT id, owner_user_id AS ownerUserId, revision
         FROM agent_delegations
-        WHERE deadline_at <= ? AND state IN ('awaiting_approval','prepared','dispatching')
+        WHERE deadline_at <= ? AND (
+          state IN ('awaiting_approval','prepared','dispatching')
+          OR (state = 'indeterminate' AND remote_task_id IS NULL)
+        )
         ORDER BY deadline_at, id LIMIT ?`)
         .bind(now, Math.min(Math.max(Math.trunc(limit), 1), 100))
         .all<{ id: string; ownerUserId: string; revision: number }>();
@@ -497,7 +500,7 @@ export function a2aDelegationStore(db: Pick<D1Database, 'prepare' | 'batch'>) {
       for (const row of rows.results) {
         try {
           await update(row.ownerUserId, row.id, row.revision,
-            ['awaiting_approval', 'prepared', 'dispatching'], 'deadline_expired',
+            ['awaiting_approval', 'prepared', 'dispatching', 'indeterminate'], 'deadline_expired',
             { state: 'expired', updatedAt: now });
           expired += 1;
         } catch (error) {

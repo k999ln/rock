@@ -6,7 +6,7 @@ import {
 import { database } from '@/lib/fund-store';
 import { requestRockstarUser } from '@/lib/rockstar-device-link';
 import { authorizeRemoteAiRequest, RemoteAiGuardError } from '@/lib/remote-ai-guard';
-import { a2aEgressOriginAllowed } from '@/lib/a2a-authorization';
+import { a2aDelegationExecutionEnabled, a2aEgressOriginAllowed } from '@/lib/a2a-authorization';
 import { missingRockstarServiceScope, rockstarServiceScopeAllowed } from '@/lib/rockstar-service-access';
 import { env } from 'cloudflare:workers';
 
@@ -74,7 +74,27 @@ export async function GET(request: Request) {
       (env as unknown as { ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED?: string }).ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED,
       env, request,
     ))) return missingRockstarServiceScope('Sky');
-    return json({ agents: await a2aAgentDirectory(db).list(owner) });
+    const configuration = env as unknown as {
+      A2A_DELEGATION_EXECUTION_ENABLED?: string;
+      A2A_EGRESS_ALLOWED_ORIGINS?: string;
+      A2A_INPUT_ENCRYPTION_KEY?: string;
+      A2A_TRUSTED_BROKER_KEYS?: string;
+      A2A_TRUSTED_USAGE_KEYS?: string;
+    };
+    return json({
+      agents: await a2aAgentDirectory(db).list(owner),
+      execution: {
+        approvalGateEnabled: a2aDelegationExecutionEnabled(
+          configuration.A2A_DELEGATION_EXECUTION_ENABLED,
+        ),
+        serverConfigurationReady: Boolean(
+          configuration.A2A_EGRESS_ALLOWED_ORIGINS &&
+          configuration.A2A_INPUT_ENCRYPTION_KEY &&
+          configuration.A2A_TRUSTED_BROKER_KEYS &&
+          configuration.A2A_TRUSTED_USAGE_KEYS
+        ),
+      },
+    });
   } catch (error) {
     return errorResponse(error);
   }

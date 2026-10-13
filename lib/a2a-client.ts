@@ -127,6 +127,21 @@ export type A2APackageRuntimeInvocation = {
   pricingVersion: string;
 };
 
+/**
+ * Opaque accounting coordinates a Provider needs to issue the already
+ * owner-approved, signed usage receipt. These values are all part of the
+ * persisted delegation contract; they never grant another capability.
+ */
+export type A2ADelegationReceiptContext = {
+  schema: 'rockstar-a2a-delegation-context/1';
+  ownerUserId: string;
+  parentJobId: string;
+  delegationId: string;
+  currency: string;
+  budgetLimitMinor: number;
+  receiptCallbackUrl?: string;
+};
+
 function object(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
@@ -390,7 +405,8 @@ export function createA2AClient(options: A2AClientOptions) {
       };
     },
     async sendMessage(card: A2AAgentCard, messageId: string, text: string,
-      packageRuntimeInvocation?: A2APackageRuntimeInvocation): Promise<A2AOutcome> {
+      packageRuntimeInvocation?: A2APackageRuntimeInvocation,
+      receiptContext?: A2ADelegationReceiptContext): Promise<A2AOutcome> {
       if (!/^[A-Za-z0-9._:-]{1,128}$/.test(messageId) || !text.trim() || text.length > 32_000)
         throw new A2AClientError('A2A委任メッセージが不正です。', 'invalid_a2a_message');
       if (!options.authorizeDelegation)
@@ -401,6 +417,21 @@ export function createA2AClient(options: A2AClientOptions) {
       let packageRuntimeHeader: Record<string, string> | undefined;
       let packageRuntimeMetadata: Record<string, unknown> | undefined;
       let packageRuntimeExtensions: string[] | undefined;
+      if (receiptContext) {
+        let callback: URL | undefined;
+        if (receiptContext.receiptCallbackUrl) {
+          try { callback = new URL(receiptContext.receiptCallbackUrl); }
+          catch { throw new A2AClientError('Receipt callback URLが不正です。', 'invalid_receipt_context'); }
+        }
+        if (receiptContext.schema !== 'rockstar-a2a-delegation-context/1' ||
+            !/^[A-Za-z0-9._:@+-]{1,256}$/.test(receiptContext.ownerUserId) ||
+            !/^[A-Za-z0-9._:-]{1,128}$/.test(receiptContext.parentJobId) ||
+            !/^[A-Za-z0-9._:-]{1,128}$/.test(receiptContext.delegationId) ||
+            !/^[A-Z]{3}$/.test(receiptContext.currency) ||
+            !Number.isSafeInteger(receiptContext.budgetLimitMinor) || receiptContext.budgetLimitMinor < 0 ||
+            (callback && (callback.protocol !== 'https:' || callback.username || callback.password || callback.hash)))
+          throw new A2AClientError('Receipt contextが不正です。', 'invalid_receipt_context');
+      }
       if (packageRuntimeInvocation) {
         const extensionUri = packageRuntimeInvocation.runtimeExtensionUri;
         const declarations = parsed.capabilities?.extensions ?? [];
@@ -424,13 +455,19 @@ export function createA2AClient(options: A2AClientOptions) {
       const endpoint = safeUrl(iface.url, options.allowedOrigins);
       const inputSha256 = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
       const digest = [...new Uint8Array(inputSha256)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
-      if (packageRuntimeInvocation) packageRuntimeMetadata = {
-        'org.rockstar.sky-package-runtime.v2': {
+      const messageMetadata: Record<string, unknown> = {};
+      if (packageRuntimeInvocation) {
+        packageRuntimeMetadata = {
+          'org.rockstar.sky-package-runtime.v2': {
           schema: 'rockstar-sky-package-invocation/1',
           ...packageRuntimeInvocation,
           requestSha256: digest,
-        },
-      };
+          },
+        };
+        Object.assign(messageMetadata, packageRuntimeMetadata);
+      }
+      if (receiptContext)
+        messageMetadata['org.rockstar.a2a-delegation.v1'] = receiptContext;
       await options.authorizeDelegation({
         messageId,
         targetOrigin: endpoint.origin,
@@ -448,7 +485,7 @@ export function createA2AClient(options: A2AClientOptions) {
             message: {
               role: 'ROLE_USER', messageId, parts: [{ text }],
               ...(packageRuntimeExtensions ? { extensions: packageRuntimeExtensions } : {}),
-              ...(packageRuntimeMetadata ? { metadata: packageRuntimeMetadata } : {}),
+              ...(Object.keys(messageMetadata).length ? { metadata: messageMetadata } : {}),
             },
             configuration: { returnImmediately: true },
           },

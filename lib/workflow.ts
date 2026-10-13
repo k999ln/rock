@@ -13,6 +13,10 @@ import {
   type AmcGoal,
 } from './amc-tool.ts';
 import type { MaterialStudy } from './material-study.ts';
+import {
+  parseJenniferTaskJobCoordination,
+  type JenniferTaskJobCoordination,
+} from './jennifer-amc-execution.ts';
 
 export const workflowTemplates = [
   {
@@ -142,6 +146,7 @@ export type WorkJob = {
   amcGoal?: AmcGoal;
   amcCreationDigest?: string;
   materialStudy?: MaterialStudy;
+  coordination?: JenniferTaskJobCoordination;
 };
 export class WorkError extends Error {
   status: number;
@@ -176,6 +181,11 @@ export function normalizeWorkJob(job: WorkJob): WorkJob {
     validateCompositionJob(job);
     return job;
   }
+  const coordination = job.coordination === undefined
+    ? undefined
+    : parseJenniferTaskJobCoordination(job.coordination);
+  if (job.coordination !== undefined && !coordination)
+    throw new WorkError('Jennifer task jobの関連付けが不正です。');
   const expected = defaultWorkPlan(job.templateId, job.title);
   if (
     job.plan?.schemaVersion === 1 &&
@@ -184,12 +194,16 @@ export function normalizeWorkJob(job: WorkJob): WorkJob {
     job.plan.objective.length <= 1000 &&
     JSON.stringify(job.plan.approvalGates) === JSON.stringify(expected.approvalGates)
   )
-    return job;
+    return coordination ? { ...job, coordination } : job;
   const objective = typeof job.plan?.objective === 'string' &&
     job.plan.objective.trim().length > 0 && job.plan.objective.length <= 1000
     ? job.plan.objective.trim()
     : job.title;
-  return { ...job, plan: { ...expected, objective } };
+  return {
+    ...job,
+    ...(coordination ? { coordination } : {}),
+    plan: { ...expected, objective },
+  };
 }
 export function objectInput(value: unknown, keys: string[]) {
   if (
@@ -272,7 +286,7 @@ export function createWorkJob(
       goal,
     );
   }
-  const input = objectInput(value, ['id', 'title', 'templateId', 'plan']);
+  const input = objectInput(value, ['id', 'title', 'templateId', 'plan', 'coordination']);
   if (input.templateId === 'composition') {
     const plan = parseCompositionPlan(input.plan);
     return {
@@ -291,6 +305,13 @@ export function createWorkJob(
   const plan = input.plan === undefined
     ? defaultWorkPlan(template.id, title)
     : parseWorkPlan(input.plan, template.id, title);
+  const coordination = input.coordination === undefined
+    ? undefined
+    : parseJenniferTaskJobCoordination(input.coordination);
+  if (input.coordination !== undefined && !coordination)
+    throw new WorkError('Jennifer task jobの関連付けが不正です。');
+  if (coordination && template.id !== 'cloud-agent')
+    throw new WorkError('Jenniferの担当AI jobはCloud Agent形式で作成してください。');
   return {
     id: workId(input.id),
     title,
@@ -302,6 +323,7 @@ export function createWorkJob(
     events: [],
     createdAt: now,
     updatedAt: now,
+    ...(coordination ? { coordination } : {}),
   };
 }
 function parseWorkPlan(value: unknown, templateId: string, fallbackObjective: string): WorkPlan {

@@ -3,6 +3,10 @@ import {
   type TextModelProviderId,
 } from './llm-providers.ts';
 import { skyRequestLimit } from './sky-zema-handoff.ts';
+import {
+  isJenniferCoordinationPlan,
+  type JenniferCoordinationPlan,
+} from './jennifer-coordination.ts';
 
 import { ZEMA_CHAT_SESSION_KEY, openZemaPrivateStorage } from './zema-private-storage.ts';
 export { ZEMA_CHAT_SESSION_KEY, clearZemaPrivateSession } from './zema-private-storage.ts';
@@ -41,6 +45,7 @@ export type ZemaChatSession = {
   } | null;
   workflowStatus: 'ready' | 'running' | 'completed' | 'failed';
   outcome: { ok: boolean; text: string } | null;
+  coordination?: JenniferCoordinationPlan | null;
 };
 
 function validMessage(value: unknown): value is ZemaChatMessage {
@@ -98,6 +103,9 @@ function validSession(value: unknown, now: number): value is ZemaChatSession {
       session.workflowStatus === 'running' ||
       session.workflowStatus === 'completed' ||
       session.workflowStatus === 'failed') &&
+    (session.coordination === undefined ||
+      session.coordination === null ||
+      isJenniferCoordinationPlan(session.coordination)) &&
     (outcome === null ||
       (Boolean(outcome) &&
         typeof outcome?.ok === 'boolean' &&
@@ -171,6 +179,7 @@ export function saveZemaChatSession(
           text: session.outcome.text.slice(0, MAX_RESULT_LENGTH),
         }
       : null,
+    coordination: session.coordination ?? undefined,
   };
   if (!validSession(bounded, now))
     throw new Error('Zemaのチャット状態を確認してください。');
