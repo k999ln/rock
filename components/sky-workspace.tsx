@@ -62,6 +62,7 @@ import { skyToolUiState } from '@/lib/sky-tool-ui';
 import { useSkyServiceStatus } from '@/lib/use-sky-service-status';
 import { catalogHostMismatch, detectSkyHost } from '@/lib/sky-tool-compatibility';
 import { CAMPUSES, type CampusId } from '@/lib/campus';
+import { SKY_CAMPUS_RECOMMENDATIONS } from '@/lib/sky-campus-recommendations';
 
 const subscribeHost = () => () => undefined;
 const browserHost = () => detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
@@ -285,10 +286,13 @@ export default function SkyWorkspace({
     };
   }, [setNeedsSignin]);
 
+  const campusRecommended = campusId
+    ? new Set(SKY_CAMPUS_RECOMMENDATIONS[campusId])
+    : recommendedToolIds;
   const visibleTools = catalog.filter((tool) => {
     if (host && catalogHostMismatch(tool, host)) return false;
     const matchesFilter = Boolean(query.trim()) ||
-      (filter === 'おすすめ' && recommendedToolIds.has(tool.id)) ||
+      (filter === 'おすすめ' && campusRecommended.has(tool.id)) ||
       (filter === 'Skyのツール' && tool.status === 'ready') ||
       (filter === '導入候補' && tool.status === 'candidate');
     const provider = providerFor(tool);
