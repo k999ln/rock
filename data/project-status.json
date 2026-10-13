@@ -7844,5 +7844,29 @@
     "nextAction": "Review branch CI; validate signed-in owner A/B and NFC campus identity, entitlement, six-connection exception, real Provider output, and external app scope/origin/revocation separately; main integration remains separate.",
     "verifyLogSha256": "8689c1f0914b61112a9128307de61261d7ca1c132b1a3ba3eaec428ae1c90290",
     "osHomeUrl": "https://avoado.si/os"
+  },
+  "skyCampusNfcLive": {
+    "date": "2026-10-13",
+    "workstream": "WEB06 / SKY21",
+    "status": "web_published_physical_tags_unwritten",
+    "siteVersion": 48,
+    "siteSourceSha": "202ab24e8f2b8d427ea4602ce689fffcd90772db",
+    "campusUrls": {
+      "nyu": "https://avoado.si/os/sky/campus/nyu/hub?source=nfc",
+      "fit": "https://avoado.si/os/sky/campus/fit/hub?source=nfc",
+      "columbia": "https://avoado.si/os/sky/campus/columbia/hub?source=nfc",
+      "fordham": "https://avoado.si/os/sky/campus/fordham/hub?source=nfc",
+      "johnjay": "https://avoado.si/os/sky/campus/johnjay/hub?source=nfc"
+    },
+    "verification": {
+      "fiveHttp200": true,
+      "invalidCampusHttp404": true,
+      "nyuBrowserUniversityAndSkyControls": true,
+      "manifestHttp200": true,
+      "physicalTagWritten": false,
+      "iphoneAndroidReadback": false,
+      "studentSixSlotLiveAcceptance": false
+    },
+    "nextAction": "NDEF HTTPS URIを現物シールへ書き、iPhone/Androidで読み戻す。本人A/Bと学生6枠・購入/Provider/Zemaの同一artifact受入は別に行う。"
   }
 }

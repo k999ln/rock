@@ -1,5 +1,9 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
+## 2026-10-13 — Skyの5大学NFC入口を公開（WEB06 / SKY21、ROCK）
+
+Sky Site v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db` で `avoado.si/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub?source=nfc` を公開。5 URLのHTTP 200、無効大学404、NYUの実ブラウザに大学名とSky操作、FITの実ブラウザに大学別おすすめTool、manifestを確認。`scripts/generate-sky-campus-nfc.mjs` で各大学のNDEF URIとCSVを生成し、対象テストと型・buildを通した。現物シールへの書込み、iPhone/Androidの読取り、学生6枠と購入/Provider/Zemaの本人別本番受入は未実施。次は現物タグの機種・容量を確認して書込み/読戻し。証拠は `docs/evidence/sky-campus-nfc-live.json`。GitHub branch保存とmain統合は公開配備と区別する。
+
 ## 2026-10-13 — 品質改善と仕事compositionをmainへ統合（G04 / H1、ROCK）
 
 完了: PR #111を2026-10-13 15:28:41 UTCにmerge。GitHub main `3ffc21d3a15235e0bde89a118e2f931135a9189e` のtreeは検証済みsource `643559b8e00037b1f960afb9dea7bf309534d539` と完全一致。Web verify、Android、native、SPIDER、CodeQLを含む同一sourceの15チェックがすべて成功。固定policyで到達可能1,265 commitの秘密候補0件。mainのDB移行・workflow・vendor原本は保持。PR #105の品質改善とPR #110の新機能を差分統合し、Site専用CSV/移行は別branchに保持した。公開v54/source `b10c566` の再配備、本番本人の一周、端末download完了、実機OS・商用受入は今回の完了へ含めない。以下は着手・検証時点の記録。

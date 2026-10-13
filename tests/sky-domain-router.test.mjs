@@ -59,4 +59,6 @@ void test('OS and Sky documents point to their own install manifests', async () 
   assert.match(await os.text(), /href="\/os\/manifest\.webmanifest"/);
   const sky = await app.fetch(new Request('https://avoado.si/os/sky'));
   assert.match(await sky.text(), /href="\/os\/sky\/manifest\.webmanifest"/);
+  const campus = await app.fetch(new Request('https://avoado.si/os/sky/campus/nyu/hub?source=nfc'));
+  assert.match(await campus.text(), /href="\/os\/sky\/campus\/nyu\/manifest\.webmanifest"/);
 });

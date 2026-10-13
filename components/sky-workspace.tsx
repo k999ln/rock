@@ -69,6 +69,8 @@ import {
 } from '@/lib/sky-connections';
 import { queueSkyZemaHandoff, skyRequestLimit } from '@/lib/sky-zema-handoff';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
+import { CAMPUSES, type CampusId } from '@/lib/campus';
+import { SKY_CAMPUS_RECOMMENDATIONS } from '@/lib/sky-campus-recommendations';
 
 type FeedFilter = 'おすすめ' | '今使える' | '導入候補' | 'コード';
 
@@ -199,9 +201,11 @@ function actionLabel(
 export default function SkyWorkspace({
   initialMcpOpen = false,
   initialPublishOpen = false,
+  campusId,
 }: {
   initialMcpOpen?: boolean;
   initialPublishOpen?: boolean;
+  campusId?: CampusId;
 }) {
   const [inspected, setInspected] = useState<Automation | null>(null);
   const service = useSkyServiceStatus();
@@ -303,9 +307,12 @@ export default function SkyWorkspace({
     };
   }, [setNeedsSignin]);
 
+  const campusRecommended = campusId
+    ? new Set(SKY_CAMPUS_RECOMMENDATIONS[campusId])
+    : recommendedToolIds;
   const visibleTools = catalog.filter((tool) => {
     const matchesFilter =
-      (filter === 'おすすめ' && recommendedToolIds.has(tool.id)) ||
+      (filter === 'おすすめ' && campusRecommended.has(tool.id)) ||
       (filter === '今使える' && tool.status === 'ready') ||
       (filter === '導入候補' && tool.status === 'candidate');
     const provider = providerFor(tool);
@@ -480,6 +487,20 @@ export default function SkyWorkspace({
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
+      {campusId && (
+        <section aria-label="大学別Sky" style={{padding: '20px 24px', borderRadius: 18, background: '#153321', color: 'white', marginBottom: 20}}>
+          <p style={{margin: '0 0 6px', opacity: .8, fontSize: 12, letterSpacing: '.12em'}}>SKY · {CAMPUSES[campusId].name.toUpperCase()}</p>
+          <h1 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Sky</h1>
+          <p style={{margin: '0 0 12px'}}>{CAMPUSES[campusId].description}</p>
+          <nav aria-label="大学別Skyの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
+            <Link href="/sky/marketplace" style={{color: 'white'}}>Agentを探す</Link>
+            <Link href="/sky/purchases" style={{color: 'white'}}>購入したAgent</Link>
+            <Link href="/sky/outputs" style={{color: 'white'}}>成果を見る</Link>
+            <Link href="/sky/network" style={{color: 'white'}}>接続を管理</Link>
+            <Link href="/chat" style={{color: 'white'}}>Zemaで仕事を管理</Link>
+          </nav>
+        </section>
+      )}
       <nav aria-label="Skyの主要画面">
         <Link href="/sky/marketplace">AI・自動化マーケットプレイス</Link>
         {' · '}
