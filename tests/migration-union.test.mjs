@@ -11,11 +11,13 @@ import { drizzle } from 'drizzle-orm/d1';
 import { migrate } from 'drizzle-orm/d1/migrator';
 
 const folder = new URL('../drizzle/', import.meta.url).pathname;
+const legacyFolder = new URL('../drizzle-legacy/pre-site-bridge/', import.meta.url).pathname;
 const names = readdirSync(folder)
   .filter((name) => name.endsWith('.sql'))
   .sort();
 const read = (name) => readFileSync(folder + name, 'utf8');
-const hash = (name) => createHash('sha256').update(read(name)).digest('hex');
+const readLegacy = (name) => readFileSync(legacyFolder + name, 'utf8');
+const hashLegacy = (name) => createHash('sha256').update(readLegacy(name)).digest('hex');
 const journal = JSON.parse(
   readFileSync(folder + 'meta/_journal.json', 'utf8'),
 ).entries;
@@ -33,7 +35,7 @@ const original = {
 await test('local production start applies the published migrations before serving', (t) => {
   const f = localStartFixture(t);
   const viteConfig = readFileSync(new URL('../vite.config.ts', import.meta.url), 'utf8');
-  assert.match(viteConfig, /migrations_dir: 'services\/sky-web\/migrations'/);
+  assert.match(viteConfig, /migrations_dir: 'drizzle'/);
   const agentRuntimeConfig = readFileSync(
     new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
     'utf8',
@@ -43,7 +45,7 @@ await test('local production start applies the published migrations before servi
     new URL('../wrangler.local.jsonc', import.meta.url),
     'utf8',
   );
-  assert.match(localConfig, /"migrations_dir": "services\/sky-web\/migrations"/);
+  assert.match(localConfig, /"migrations_dir": "drizzle"/);
   // Execute the same runner as npm start; failure and signal boundaries live
   // in start-local-web.test.mjs using this shared fixture.
   const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
@@ -101,7 +103,7 @@ await test('the shared production D1 has exactly one migration owner', () => {
     new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
     'utf8',
   );
-  assert.match(webConfig, /migrations_dir: 'services\/sky-web\/migrations'/);
+  assert.match(webConfig, /migrations_dir: 'drizzle'/);
   assert.doesNotMatch(runtimeConfig, /migrations_dir/);
   assert.match(runtimeConfig, /"database_name": "site-creator-d1"/);
 });
@@ -133,14 +135,29 @@ await test('the forward Web bridge tolerates objects left by an earlier partial 
   ).get());
 });
 
-await test('both published migration filenames and exact SQL bytes stay intact', () => {
-  for (const [name, expected] of Object.entries(original))
-    assert.equal(hash(name), expected);
+await test('Sites deploys only the consolidated root bridge after the recorded history', () => {
+  assert.deepEqual(names, ['0013_sky_provider_connections.sql']);
+  assert.match(read('0013_sky_provider_connections.sql'), /CREATE TABLE IF NOT EXISTS `sky_provider_connections`/);
+  assert.doesNotMatch(read('0013_sky_provider_connections.sql'), /^ALTER TABLE/m);
+  assert.deepEqual(
+    journal.map((entry) => entry.tag + '.sql'),
+    names,
+  );
+  const generated = spawnSync(process.execPath, ['scripts/generate-site-d1-bridge.mjs'], {
+    cwd: new URL('..', import.meta.url),
+    encoding: 'utf8',
+  });
+  assert.equal(generated.status, 0, generated.stderr);
 });
 
-// Exercise real workerd/D1, including Drizzle's timestamp-based migrator. A
-// fresh-only test misses an operations migration older than recorded work_jobs.
-await test('fresh and both historical D1 databases converge without losing records', async (t) => {
+await test('both published migration filenames and exact SQL bytes stay intact', () => {
+  for (const [name, expected] of Object.entries(original))
+    assert.equal(hashLegacy(name), expected);
+});
+
+// Exercise real workerd/D1, including Drizzle's timestamp-based migrator. The
+// bridge must converge both an empty database and the production lineage.
+await test('fresh and current production D1 databases converge without losing records', async (t) => {
   const worker = new Miniflare(
     convertV4MiniflareOptions({
       modules: true,
@@ -154,15 +171,23 @@ await test('fresh and both historical D1 databases converge without losing recor
   );
   t.after(() => worker.dispose());
   const db = await worker.getD1Database('DB');
-  const execute = async (name) => {
-    for (const sql of read(name)
+  const executeSql = async (sql) => {
+    for (const statement of sql
       .split('--> statement-breakpoint')
       .filter((s) => s.trim()))
-      await db.prepare(sql).run();
+      await db.prepare(statement).run();
+  };
+  const execute = async (name) => executeSql(read(name));
+  const webMigrations = new URL('../services/sky-web/migrations/', import.meta.url);
+  const executeProductionLineage = async () => {
+    for (const name of readdirSync(webMigrations)
+      .filter((entry) => entry.endsWith('.sql'))
+      .sort())
+      await executeSql(readFileSync(new URL(name, webMigrations), 'utf8'));
   };
   let expectedSchema;
   for (const mode of ['filename', 'drizzle']) {
-    for (const history of ['fresh', 'release', 'sites']) {
+    for (const history of ['fresh', 'current']) {
       await t.test(`${mode}: ${history}`, async () => {
         const tables = (
           await db
@@ -173,53 +198,25 @@ await test('fresh and both historical D1 databases converge without losing recor
         ).results;
         for (const { name } of tables)
           await db.prepare(`DROP TABLE "${String(name)}"`).run();
-        const prior =
-          history === 'fresh'
-            ? []
-            : names.filter(
-                (n) =>
-                  n.startsWith('0000_') ||
-                  n.startsWith('0001_') ||
-                  n ===
-                    (history === 'release'
-                      ? '0002_work_jobs.sql'
-                      : '0002_operations_backend.sql'),
-              );
-        for (const name of prior) await execute(name);
-        if (history !== 'fresh')
+        if (history === 'current') {
+          await executeProductionLineage();
           await db
             .prepare(
               "INSERT INTO fund_plans VALUES ('owner', '{\"saved\":true}', '2026-09-01')",
             )
             .run();
-        if (history === 'release')
           await db
             .prepare(
               "INSERT INTO work_jobs VALUES ('saved-job','owner','{\"steps\":[\"keep\"]}',7,'2026-09-01')",
             )
             .run();
-        if (history === 'sites')
           await db
             .prepare(
               "INSERT INTO book_records VALUES ('saved-book','owner','revenue',888,'manual','2026-09-01',NULL,1)",
             )
             .run();
+        }
         if (mode === 'drizzle') {
-          await db
-            .prepare(
-              'CREATE TABLE __drizzle_migrations (id SERIAL PRIMARY KEY, hash text NOT NULL, created_at numeric)',
-            )
-            .run();
-          for (const name of prior)
-            await db
-              .prepare(
-                'INSERT INTO __drizzle_migrations (hash, created_at) VALUES (?, ?)',
-              )
-              .bind(
-                hash(name),
-                journal.find((e) => e.tag + '.sql' === name).when,
-              )
-              .run();
           await migrate(drizzle(db), { migrationsFolder: folder });
           await migrate(drizzle(db), { migrationsFolder: folder });
         } else {
@@ -228,11 +225,6 @@ await test('fresh and both historical D1 databases converge without losing recor
               'CREATE TABLE d1_migrations (id INTEGER PRIMARY KEY, name TEXT UNIQUE, applied_at TEXT DEFAULT CURRENT_TIMESTAMP)',
             )
             .run();
-          for (const name of prior)
-            await db
-              .prepare('INSERT INTO d1_migrations (name) VALUES (?)')
-              .bind(name)
-              .run();
           for (let pass = 0; pass < 2; pass++) {
             for (const name of names) {
               if (
@@ -260,10 +252,10 @@ await test('fresh and both historical D1 databases converge without losing recor
         // SQLite normalizes IF NOT EXISTS away in sqlite_master.
         expectedSchema ??= schema;
         assert.deepEqual(schema, expectedSchema);
-        assert.equal(schema.filter((item) => item.type === 'table').length, 80);
+        assert.equal(schema.filter((item) => item.type === 'table').length, 90);
         // D1 intentionally disallows PRAGMA integrity_check; compare all table/index
         // definitions and retained values instead of claiming that pragma ran.
-        if (history !== 'fresh')
+        if (history === 'current') {
           assert.equal(
             (
               await db
@@ -272,7 +264,6 @@ await test('fresh and both historical D1 databases converge without losing recor
             ).plan,
             '{"saved":true}',
           );
-        if (history === 'release')
           assert.equal(
             (
               await db
@@ -283,7 +274,6 @@ await test('fresh and both historical D1 databases converge without losing recor
             ).revision,
             7,
           );
-        if (history === 'sites')
           assert.equal(
             (
               await db
@@ -294,6 +284,7 @@ await test('fresh and both historical D1 databases converge without losing recor
             ).amount,
             888,
           );
+        }
       });
     }
   }

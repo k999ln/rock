@@ -1,14 +1,14 @@
 # Sky Web D1 migrations
 
-This directory is the published migration lineage for the RockstarOS Web/Sites D1 database. Files `0000` through `0016` preserve the history from the last successful Site source commit before the Jennifer publication (`b10c56688b9e38045685246c718d2de7c6f92f2c`). The still-forward `0017_primary_quality_compatibility.sql` bridge uses only idempotent object creation so an existing schema-bootstrap object or an interrupted historical deployment cannot block publication.
+This directory preserves the pre-Sites Sky Web migration lineage and the generated full-schema compatibility bridge used by migration tests. Sites production discovers the repository-root `drizzle/` directory, so the deployable compatibility bridge is mirrored there as `0013_sky_provider_connections.sql`.
 
-Sky Web/Sites is the only migration owner for the shared production `site-creator-d1` database. The separate Sky Agent Runtime binds the same database at runtime but deliberately has no `migrations_dir`; deploying that Worker must never apply a second migration lineage. Repository-root `drizzle/` remains the source and regression-test history for the application schema and isolated Agent Runtime fixtures.
+The Web/Sites deployment is the only migration owner for the shared production `site-creator-d1` database. The separate Sky Agent Runtime binds the same database at runtime but deliberately has no `migrations_dir`; deploying that Worker must never apply a second migration lineage.
 
 Rules:
 
 - Never rename, reorder, delete, or edit a migration recorded by production.
-- Add only a forward migration with a new ordinal for a Sky Web schema change.
-- Keep `vite.config.ts` pointed at this directory.
-- Keep `wrangler.local.jsonc` pointed at this directory.
+- Append schema changes to this source lineage, then run `npm run db:site-bridge` to regenerate the deployable repository-root bridge.
+- Keep this directory as source/test evidence; do not configure it as a second production deployment lineage.
+- Keep `vite.config.ts` and `wrangler.local.jsonc` pointed at repository-root `drizzle/`.
 - Keep `services/sky-agent-runtime/wrangler.jsonc` without a `migrations_dir` while it shares the production Web database.
-- Run `npm run verify` before publication; the migration regression test checks the frozen file list and SHA-256 digests.
+- Run `npm run verify` before publication; migration regression tests verify both lineages and the compatibility bridge.
