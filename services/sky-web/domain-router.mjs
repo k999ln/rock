@@ -3,7 +3,7 @@ const MINI_ORIGIN = 'https://avocadomini.noellesugar1.chatgpt.site';
 const SKY_PREFIXES = [
   '/_next', '/api', '/activity', '/chat', '/coconala-team', '/csv', '/fitness',
   '/fund', '/income', '/market', '/os', '/polymarket', '/settings', '/sky', '/studio',
-  '/wallet', '/work', '/zema', '/rock-icon-', '/loop-icon-', '/toolkits',
+  '/wallet', '/work', '/zema', '/manifest.webmanifest', '/rock-icon-', '/loop-icon-', '/toolkits',
 ];
 
 const isPath = (path, prefix) => path === prefix || path.startsWith(`${prefix}/`);
@@ -58,6 +58,22 @@ async function proxyMini(request, upstreamFetch) {
   });
 }
 
+async function canonicalManifest(response, path) {
+  if (!response.headers.get('content-type')?.includes('text/html')) return response;
+  const manifest = isPath(path, '/os/sky')
+    ? '/os/sky/manifest.webmanifest'
+    : '/os/manifest.webmanifest';
+  const html = await response.text();
+  const headers = new Headers(response.headers);
+  headers.delete('content-length');
+  headers.delete('etag');
+  return new Response(html.replaceAll('href="/manifest.webmanifest"', `href="${manifest}"`), {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 export function withMiniSite(skyWorker, upstreamFetch = fetch) {
   return {
     fetch(request, env, context) {
@@ -69,12 +85,16 @@ export function withMiniSite(skyWorker, upstreamFetch = fetch) {
       }
       if (source.hostname === 'avoado.si' && isPath(path, '/os/sky')) {
         source.pathname = path.slice(3);
-        return skyWorker.fetch(new Request(source, request), env, context);
+        return Promise.resolve(skyWorker.fetch(new Request(source, request), env, context))
+          .then((response) => canonicalManifest(response, path));
       }
       if (path === '/sw.js' && source.hostname === 'avoado.si')
         return new Response('self.addEventListener("install", event => event.waitUntil(self.skipWaiting()));', {
           headers: { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'no-store' },
         });
+      if (path === '/os')
+        return Promise.resolve(skyWorker.fetch(request, env, context))
+          .then((response) => canonicalManifest(response, path));
       return routesToSky(path)
         ? skyWorker.fetch(request, env, context)
         : proxyMini(request, upstreamFetch);
