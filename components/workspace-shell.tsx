@@ -78,7 +78,7 @@ export default function WorkspaceShell({
                   処理中 · 完了まで画面を開いてください
                 </output>
               )}
-              <span className="rock-web-label">WEB / PC</span>
+              <span className="rock-web-label">{tone === 'sky' ? 'WEB / PHONE / PC' : 'WEB / PC'}</span>
               {onConnect ? (
                 <button
                   className="rock-button rock-button-subtle"

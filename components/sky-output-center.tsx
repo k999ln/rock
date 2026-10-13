@@ -201,7 +201,19 @@ export default function SkyOutputCenter({
           {detailState === 'signed_out' && <p className={styles.notice}>サインインが切れました。再ログインしてから更新してください。</p>}
           {detailState === 'unavailable' && <p className={styles.notice} role="alert">成果の状態を取得できません。Zemaの仕事履歴からも確認できます。</p>}
           {detailState === 'ready' && sourceError && <p className={styles.notice} role="alert">{sourceError}を確認できません。未確認の結果は「なし」と扱わず、更新後にもう一度確認してください。</p>}
-          {detailState === 'ready' && !sourceError && delegations.length === 0 && answers.length === 0 && <p className={styles.notice}>この仕事には保存済みのAgent成果・Cloud AI回答がありません。実行中の状態はZemaで確認できます。</p>}
+          {selected?.standaloneAgent && <article className={styles.output}>
+            <div className={styles.outputHead}><div><small>SKY FIRST-PARTY AGENT</small><h3>出典整理Agent</h3><span>完了 · 第一者処理 · 無料</span></div></div>
+            <div className={styles.document}>
+              <pre>{selected.standaloneAgent.text}</pre>
+              <p>出典リンク {selected.standaloneAgent.sourceCount}件</p>
+              {selected.standaloneAgent.warnings.map((warning) => <p key={warning}>{warning}</p>)}
+              <div className={styles.actions}>
+                <button type="button" onClick={() => void copyText(selected.standaloneAgent!.text)}><Copy size={15} /> コピー</button>
+                <button type="button" onClick={() => downloadText(`sky-citations-${selected.id}.md`, selected.standaloneAgent!.text)}><Download size={15} /> Markdownを保存</button>
+              </div>
+            </div>
+          </article>}
+          {detailState === 'ready' && !sourceError && !selected?.standaloneAgent && delegations.length === 0 && answers.length === 0 && <p className={styles.notice}>この仕事には保存済みのAgent成果・Cloud AI回答がありません。実行中の状態はZemaで確認できます。</p>}
           {detailState === 'ready' && delegations.map((delegation) => <article className={styles.output} key={delegation.id}>
             <div className={styles.outputHead}>
               <div><small>AGENT</small><h3>{delegation.targetAgentName}</h3><span>v{delegation.targetAgentVersion} · {delegationState[delegation.state] ?? delegation.state}</span></div>

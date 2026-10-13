@@ -7897,5 +7897,20 @@
       "studentSixSlotLiveAcceptance": false
     },
     "nextAction": "NDEF HTTPS URIを現物シールへ書き、iPhone/Androidで読み戻す。本人A/Bと学生6枠・購入/Provider/Zemaの同一artifact受入は別に行う。"
+  },
+  "skyStandaloneAgentPilot": {
+    "date": "2026-10-13",
+    "taskIds": ["SKY21", "WEB06"],
+    "primaryWorkstream": "Sky / MCP",
+    "primaryOwner": "ROCK",
+    "status": "first_party_agent_implemented_public_acceptance_pending",
+    "scope": "Skyの出典整理AgentをスマホのWebだけで実行し、本人別WorkJobへ成果を保存して再読込する第一者経路",
+    "executionBoundary": "有限の出典整理処理。LLM推論、外部検索、有料Provider、Apple Pay、外部アプリSDKの完成を示さない。",
+    "branch": "codex/sky-standalone-agent-20261013",
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "deployed": false,
+    "liveSiteAtStart": "Sky Site v50: /sky 200, /os/sky 404; Cloud model credential and trusted pricing configuration absent",
+    "nextAction": "対象テスト、型・lint・build、全verify、本人A/Bと再送・再読込の実API検証を通す。GitHubへ保存し、同じsourceをSiteへ反映して正規URLを公開読戻しする。Cloud AgentはProvider・料金・予算・Receiptを別受入する。"
   }
 }

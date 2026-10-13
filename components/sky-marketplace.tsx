@@ -227,6 +227,11 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
 
         <CommerceNavigation />
 
+        <Link href="/sky/agents/citations" className={styles.starterAgent}>
+          <span><strong>今すぐ使える · 出典整理Agent</strong><small>無料 · スマホだけで実行 · 成果はSkyへ保存</small></span>
+          <ArrowRight size={20} aria-hidden="true" />
+        </Link>
+
         {initialPackageState === 'missing' && (
           <output className={styles.registryNote}>
             この購入に含まれるPackageは現在の審査済みRegistryにありません。購入権は有効のままです。Skyで検索するか、販売元へ確認してください。

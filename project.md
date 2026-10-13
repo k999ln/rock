@@ -1,5 +1,9 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
+## 2026-10-13 — Sky単体の第一者Agent実行と成果受け皿（SKY21 / WEB06、ROCK）
+
+Sky単体の利用条件を満たす最初の縦断経路として、出典整理Agentを追加。Sky HomeとMarketplaceから起動し、本人確認後に第一者の有限処理を実行、既存workflowの`active → review → completed`を通して成果を本人別WorkJobへ保存する。成果画面で再表示・コピー・Markdown保存ができる。入力上限、冪等ID/入力hash、本人切替、保存の明示、結果の未検証表示を備える。モデル推論や外部Providerを装わず、無料の限定Agentと明示する。着手時の公開Sky Site v50は`/sky` 200、指定正規URL`/os/sky` 404で、Cloud Provider資格情報と料金設定もない。対象試験・型・lintは検証中で、公開・本人A/B・同一SHAの受入は未完了。次は全verifyと公開Siteの正規経路・本人別成果の実読戻し、Cloud AgentのProvider/料金/予算/Receiptを別gateで整える。
+
 ## 2026-10-13 — Skyの5大学NFC入口を公開（WEB06 / SKY21、ROCK）
 
 Sky Site v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db` で `avoado.si/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub?source=nfc` を公開。5 URLのHTTP 200、無効大学404、NYUの実ブラウザに大学名とSky操作、FITの実ブラウザに大学別おすすめTool、manifestを確認。`scripts/generate-sky-campus-nfc.mjs` で各大学のNDEF URIとCSVを生成し、対象テストと型・buildを通した。現物シールへの書込み、iPhone/Androidの読取り、学生6枠と購入/Provider/Zemaの本人別本番受入は未実施。次は現物タグの機種・容量を確認して書込み/読戻し。証拠は `docs/evidence/sky-campus-nfc-live.json`。GitHub branch保存とmain統合は公開配備と区別する。
