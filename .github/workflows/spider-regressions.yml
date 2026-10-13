@@ -26,6 +26,8 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22'
+      - name: Generate public private-content placeholders
+        run: node scripts/generate-private-modules.mjs
       - name: Test feedback collection and update-message boundaries
         run: node --test tests/spider-feedback.test.mjs tests/service-worker-update.test.mjs tests/spider-web-runtime.test.mjs
       - name: Test defensive path and keyword risk planning
