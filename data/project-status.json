@@ -8111,7 +8111,7 @@
     "scope": "Skyの出典整理AgentをスマホのWebだけで実行し、本人別WorkJobへ成果を保存して再読込する第一者経路",
     "executionBoundary": "有限の出典整理処理。LLM推論、外部検索、有料Provider、Apple Pay、外部アプリSDKの完成を示さない。",
     "branch": "codex/sky-standalone-agent-20261013",
-    "githubSaved": false,
+    "githubSaved": true,
     "mainIntegrated": false,
     "deployed": true,
     "siteVersion": 53,

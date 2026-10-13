@@ -6,7 +6,7 @@
 
 ## 2026-10-13 — Sky単体の出典整理Agent（SKY21 / WEB06、ROCK）
 
-Sky HomeとMarketplaceから、スマホのブラウザで第一者の出典整理Agentを起動する経路を追加。本人認証、入力上限、有限処理、既存workflowの完了遷移、本人別WorkJobへの成果保存・一覧再表示・コピー・Markdown保存を実装した。LLM推論、外部検索、出典の真偽判定、有料Provider/Apple Payは含まない。公開Sky Site v53（source `e09d4de4`）で`/os/sky`・Agent・成果・5大学の短い入口をHTTP 200で確認し、未認証のAgent APIが401で拒否されることを確認した。公開ブラウザで未認証→別タブのサインイン案内と元画面の入力保持を確認。合成Worker/D1の`npm run test:api`は仕事1381・CSV385 assertionに合格し、Agent作成・再送・入力競合・偽造拒否・保存済み一覧・別owner分離を含む。本人A/Bの公開実行・保存・再読込とスマホ実機は未受入。GitHub branch/mainの結果は最終検証後に記録する。次は同じ公開artifactで本人A/Bの保存分離・再送・再読込を確認し、Cloud AgentのProvider資格情報、価格表、予算、Receipt、決済を別gateで進める。
+Sky HomeとMarketplaceから、スマホのブラウザで第一者の出典整理Agentを起動する経路を追加。本人認証、入力上限、有限処理、既存workflowの完了遷移、本人別WorkJobへの成果保存・一覧再表示・コピー・Markdown保存を実装した。LLM推論、外部検索、出典の真偽判定、有料Provider/Apple Payは含まない。公開Sky Site v53（source `e09d4de4`）で`/os/sky`・Agent・成果・5大学の短い入口をHTTP 200で確認し、未認証のAgent APIが401で拒否されることを確認した。公開ブラウザで未認証→別タブのサインイン案内と元画面の入力保持を確認。合成Worker/D1の`npm run test:api`は仕事1381・CSV385 assertionに合格し、Agent作成・再送・入力競合・偽造拒否・保存済み一覧・別owner分離を含む。本人A/Bの公開実行・保存・再読込とスマホ実機は未受入。GitHub branch `codex/sky-standalone-agent-20261013`へ保存済みで、main統合と同一SHA CIは別確認。次は同じ公開artifactで本人A/Bの保存分離・再送・再読込を確認し、Cloud AgentのProvider資格情報、価格表、予算、Receipt、決済を別gateで進める。
 
 ## 現在の作業
 
