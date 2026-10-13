@@ -67,7 +67,7 @@ README.md ─────────────── これは何か（表玄
 | [Mission Control](mission-control.md) | 部隊の担当、段階、次のタスク | task個別の状態（`project.md`が正本） |
 | [workstreams/](workstreams/README.md) | 作業分野ごとの対象・完了条件・検証コマンド | 設計の全文 |
 | [project.md](../project.md) | 日付順の作業ログ＋全taskの状態表（自動生成） | 仕様 |
-| [AGENTS.md](../AGENTS.md) | AI開発エージェントが作業するときのルール | 人向けの説明 |
+| [AGENTS.md](../AGENTS.md) | si開発エージェントが作業するときのルール | 人向けの説明 |
 
 ---
 
@@ -146,7 +146,7 @@ README.md ─────────────── これは何か（表玄
 | [`sim-led-product-architecture.md`](sim-led-product-architecture.md) | 正本 | 現行の主商品（SIM/eSIMを入口にしたサービス）の定義、利用開始の流れ、実行と料金の契約 | 10-06 |
 | [`sim-service-entitlement-claims.md`](sim-service-entitlement-claims.md) | 設計 | SIM/eSIMの購入をRockstarアカウントの利用権へ結び付ける署名付きclaimの仕様 | 10-05 |
 | [`provider-contract-readiness-20260930.md`](provider-contract-readiness-20260930.md) | 記録 | eSIM・クラウド供給元の公開資料比較と契約前の準備（契約・問い合わせは未実施） | 10-05 |
-| [`product-north-star-20260915.md`](product-north-star-20260915.md) | 正本 | 最上位目的（AI自動化チームの所有と効率化）から逆算した開発軸。RQ47の補助資料 | 10-05 |
+| [`product-north-star-20260915.md`](product-north-star-20260915.md) | 正本 | 最上位目的（si自動化チームの所有と効率化）から逆算した開発軸。RQ47の補助資料 | 10-05 |
 | [`rockstaros-1.0-strategy.md`](rockstaros-1.0-strategy.md) | 設計 | 8原則を適用した製品・事業・開発設計。対象市場や代表商品は検証仮説 | 10-05 |
 | [`rockstaros-1.0-architecture.md`](rockstaros-1.0-architecture.md) | 設計 | RockstarOS 1.0 のベース構成と、各systemの現在地・進化方針 | 10-05 |
 | [`rockstaros-product-system-map.md`](rockstaros-product-system-map.md) | 設計 | 製品・サービス・内部システム・`Mr.`・MRの関係図。v1.1（2026-10-02）でSIM/eSIM起点の主商品に合わせてある | 10-07 |
@@ -165,7 +165,7 @@ RockstarOS本体の設計。全設計ポータルが設計書の入口。
 | [`rockstaros-complete-design.md`](rockstaros-complete-design.md) | 正本 | OS全体詳細設計。repositoryの実装と既存の詳細資料への対応 | 10-07 |
 | [`rockstaros-complete-design-v1.0.pdf`](rockstaros-complete-design-v1.0.pdf) | 原本 | RockstarOS 設計書完全版 v1.0（41ページ・32章）の原本PDF | 09-24 |
 | [`rockstaros-complete-design-v1.0.txt`](rockstaros-complete-design-v1.0.txt) | 原本 | 同PDFの全文検索用の抽出テキスト | 09-24 |
-| [`ai-native-os-architecture.md`](ai-native-os-architecture.md) | 正本 | AIネイティブOSの共通設計。交換可能なLLM、記憶、仕事、offlineと外部作用の境界（RQ48） | 10-05 |
+| [`ai-native-os-architecture.md`](ai-native-os-architecture.md) | 正本 | siネイティブOSの共通設計。交換可能なLLM、記憶、仕事、offlineと外部作用の境界（RQ48） | 10-05 |
 | [`ai-native-os-design-audit.md`](ai-native-os-design-audit.md) | 監査 | 同設計のSolによる独立監査。設計上の解消と実装・受入待ちの区別 | 09-20 |
 | [`platform-core.md`](platform-core.md) | 設計 | Platform Core v1。Tool／MCP／Providerの登録、承認、Wallet台帳、更新・rollback（RQ42） | 10-05 |
 | [`system-composition.md`](system-composition.md) | 監査 | 全体構成監査。12層・7経路の選択と接続状態 | 09-19 |
@@ -179,7 +179,9 @@ RockstarOS本体の設計。全設計ポータルが設計書の入口。
 | [`backend-design.md`](backend-design.md) | 履歴 | LOOP バックエンド設計（2026-09-05） | 09-05 |
 | [`deployment-integration.md`](deployment-integration.md) | 履歴 | 配信先（Sites）との統合設計（2026-09-05、承認待ちのまま） | 09-05 |
 
-### C. AI・LLM・Agent
+<a id="c-aillmagent"></a>
+
+### C. si・LLM・Agent
 
 モデルの役割、判断基盤、記憶、エージェント。
 

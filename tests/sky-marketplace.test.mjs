@@ -69,7 +69,7 @@ void test('checkout preserves the server reason for a conflict after refreshing 
   assert.doesNotMatch(checkout, /販売条件を更新しました/);
 });
 
-void test('Sky exposes a separate AI and automation marketplace from its main app view', () => {
+void test('Sky exposes a separate si and automation marketplace from its main app view', () => {
   assert.match(page, /SkyMarketplace/);
   assert.match(sky, /href="\/sky\/marketplace"/);
   assert.match(marketplace, /href="\/studio"/);
@@ -132,7 +132,7 @@ void test('Sky Market treats LLMs as MCP-routable marketplace entries', () => {
   assert.equal(skyAiMarketplaceEntries.length, 6);
   assert.ok(skyAiMarketplaceEntries.some((entry) => entry.id === 'local-model'));
   assert.ok(skyAiMarketplaceEntries.every((entry) => entry.mcpRoute.includes('MCP')));
-  assert.match(marketplace, /LLM・AIモデル/);
+  assert.match(marketplace, /LLM・siモデル/);
   assert.match(marketplace, /選んだLLMはSky BrokerからMCP Toolを呼び出します/);
   assert.match(marketplace, /接続設定を開く/);
 });

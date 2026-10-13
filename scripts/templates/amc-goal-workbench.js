@@ -208,7 +208,7 @@ function wbChatProgressText() {
     '件、成果の確認待ち ' +
     summary.counts.submitted +
     '件。\n' +
-    'これは保存された記録です。外部AIの稼働状況は自動取得していません。'
+    'これは保存された記録です。外部siの稼働状況は自動取得していません。'
   );
 }
 function wbChatPromptForPhase() {
@@ -226,7 +226,7 @@ function wbChatPromptForPhase() {
     blocked:
       '計画に、成果物や合格条件が未整備の作業があります。まだ承認できません。「不足の補完を依頼する」で依頼文をコピーできます。',
     active:
-      '計画と進捗をここで確認できます。AIへの引渡しはコピーで行い、実際に行った作業だけを詳細画面から記録します。',
+      '計画と進捗をここで確認できます。siへの引渡しはコピーで行い、実際に行った作業だけを詳細画面から記録します。',
   }[wbChat.phase];
 }
 function wbChatSave() {
@@ -280,7 +280,7 @@ function wbChatRender() {
     scope: '進めること：保存・復旧の設計\nやらないこと：実機への導入',
     criteria: '例：失敗時の復旧手順がある\n担当と確認方法が決まっている',
     review: '修正は下のボタンから。送信だけでは承認されません',
-    blocked: '相談メモを残す（AIの自動回答は未接続）',
+    blocked: '相談メモを残す（siの自動回答は未接続）',
     active: '進捗についてのメモを書く',
   }[wbChat.phase];
   const actions = [];
@@ -300,7 +300,7 @@ function wbChatRender() {
     actions.push(['repair', '不足の補完を依頼する']);
   } else if (wbChat.phase === 'active') {
     if (wbGoal?.state === 'active')
-      actions.push(['copy-prompt', 'AIに渡す指示をコピー']);
+      actions.push(['copy-prompt', 'siに渡す指示をコピー']);
     actions.push(
       ['status', 'いまの進捗を教えて'],
       ['show-progress', '進捗の詳細・結果を記録'],
@@ -365,7 +365,7 @@ function wbChatCandidates() {
         (lines.length > 6
           ? '\nほか' + (lines.length - 6) + '部隊。詳細ですべて確認できます。'
           : '') +
-        '\n\n今回の目的に必要な仕事か確認してください。新しい課題をAIが考えた結果ではありません。'
+        '\n\n今回の目的に必要な仕事か確認してください。新しい課題をsiが考えた結果ではありません。'
     : 'この目的に合う部隊を特定できませんでした。「担当部隊を調整する」から選んでください。適した既存計画がなければ、無理に承認しないでください。';
 }
 function wbChatPlanCreated() {
@@ -404,7 +404,7 @@ function wbChatGoalChanged(event) {
           wbChat.coverage +
           '\n\n完成の基準：\n' +
           wbChat.criteria +
-          '\n\n次は「AIに渡す指示をコピー」で使うAIへ渡してください。AIはまだ起動していません。'
+          '\n\n次は「siに渡す指示をコピー」で使うsiへ渡してください。siはまだ起動していません。'
       : '進捗の記録を更新しました。外部処理は実行していません。\n\n' +
           wbChatProgressText(),
   );
@@ -586,8 +586,8 @@ function wbRenderRecordFields() {
   wbEl('record-help').textContent = verifying
     ? '成果物と全ての合格条件を確認してください。作業の検収は、実行者とは別の担当が記録します。名前は自己申告です。'
     : type === 'pause' || type === 'resume'
-      ? 'ここでは記録だけを停止・再開します。外部のAIや作業は停止・再開されません。'
-      : '実際に行ったことだけを記録してください。この操作でAIや作業が起動することはありません。';
+      ? 'ここでは記録だけを停止・再開します。外部のsiや作業は停止・再開されません。'
+      : '実際に行ったことだけを記録してください。この操作でsiや作業が起動することはありません。';
   wbEl('record').textContent =
     wbRecordOptions().find(([value]) => value === type)?.[1] ?? '記録する';
 }
@@ -751,7 +751,7 @@ function wbRenderNext(summary) {
   } else if (running) {
     title = '作業の結果を記録してください';
     description =
-      running.title + '。AMCは外部AIの実行状況を自動取得していません。';
+      running.title + '。AMCは外部siの実行状況を自動取得していません。';
     label = '結果を記録する';
     wbNextAction = { taskId: running.id, event: 'submit_result' };
   } else if (wbGoal.tasks.every((task) => task.status === 'done')) {
@@ -763,8 +763,8 @@ function wbRenderNext(summary) {
   } else if (summary.readyTaskIds.length) {
     title = '計画の準備ができました';
     description =
-      '次は指示文をAIに貼り付け、バックアップも渡します。コピーだけでは実行は始まりません。';
-    label = 'AIに渡す指示をコピー';
+      '次は指示文をsiに貼り付け、バックアップも渡します。コピーだけでは実行は始まりません。';
+    label = 'siに渡す指示をコピー';
     wbNextAction = { copy: true };
   } else {
     title = '進めるための確認が必要です';
@@ -807,7 +807,7 @@ function wbRender() {
     done.length +
     ' / ' +
     leaves.length +
-    ' 作業を検収済み。AIの稼働状況ではありません。';
+    ' 作業を検収済み。siの稼働状況ではありません。';
   const missing = wbGoal.tasks.filter(
     (task) =>
       task.scopeReviewRequired ||
@@ -826,7 +826,7 @@ function wbRender() {
     '作業数は製品の完成率ではありません。親の作業とGoal全体は別に確認します。';
   wbEl('approval-blocker').hidden = !missing.length;
   wbEl('approval-blocker').innerHTML =
-    '<strong>まだ承認できません</strong><p>次の作業に成果物または合格条件がありません。補完依頼をコピーして、この会話のAIに渡してください。</p>' +
+    '<strong>まだ承認できません</strong><p>次の作業に成果物または合格条件がありません。補完依頼をコピーして、この会話のsiに渡してください。</p>' +
     wbList(missing.map((task) => task.title + '（' + task.id + '）'));
   wbEl('approve').disabled = missing.length > 0;
   wbEl('repair-prompt').hidden = !missing.length;
@@ -1139,7 +1139,7 @@ function wbApprovePlan() {
   });
   wbShowView('progress');
   wbNotice(
-    '計画を承認しました。次はAIへの引渡しです。まだ実行は始まっていません。',
+    '計画を承認しました。次はsiへの引渡しです。まだ実行は始まっていません。',
   );
 }
 wbOn('approve', 'click', wbApprovePlan);
@@ -1203,7 +1203,7 @@ async function wbCopy(text, repair = false) {
     wbNotice(
       repair
         ? '補完依頼をコピーしました。この会話に貼り付け、バックアップも添付してください。まだ送信していません。'
-        : '指示文をコピーしました。AIに貼り付け、バックアップも渡してください。AMCからは送信・実行していません。',
+        : '指示文をコピーしました。siに貼り付け、バックアップも渡してください。AMCからは送信・実行していません。',
     );
   } catch {
     wbEl('prompt').value = text;
@@ -1394,7 +1394,7 @@ function wbChatReviewMessage() {
     wbChat.coverage +
     '\n\n完成の基準：\n' +
     wbChat.criteria +
-    '\n\n計画に含まれる作業も詳細で確認してください。目的に合わないものがあれば承認しないでください。\n承認は計画の記録だけです。AI起動・課金・公開・実機操作の許可ではありません。'
+    '\n\n計画に含まれる作業も詳細で確認してください。目的に合わないものがあれば承認しないでください。\n承認は計画の記録だけです。si起動・課金・公開・実機操作の許可ではありません。'
   );
 }
 function wbChatAssertDraft() {
@@ -1454,12 +1454,12 @@ function wbChatSubmit(event) {
   } else if (wbChat.phase === 'blocked') {
     wbChatAdd(
       'guide',
-      '相談メモとして残しました。自由文を判断するAIは未接続です。不足の補完を依頼するか、計画の詳細を確認してください。承認や実行はしていません。',
+      '相談メモとして残しました。自由文を判断するsiは未接続です。不足の補完を依頼するか、計画の詳細を確認してください。承認や実行はしていません。',
     );
   } else {
     wbChatAdd(
       'guide',
-      'メモを残しました。自由な質問に回答するAIは未接続です。作業の開始・停止・完了には変えていません。\n\n' +
+      'メモを残しました。自由な質問に回答するsiは未接続です。作業の開始・停止・完了には変えていません。\n\n' +
         wbChatProgressText(),
     );
   }
@@ -1611,7 +1611,7 @@ function wbSimpleCompile(definition, id, createdAt = null) {
   goal.requestBrief = definition.brief;
   goal.planningMethod = 'software_local_prototype_template';
   goal.scopeWarning =
-    '依頼のGoalと意図に沿ったソフトウェア試作の共通7工程。既存AMCの製品taskは含まない。AIによる意味分解ではなく、要件・対象ファイル・試験条件・工数を最初の3工程で具体化する。範囲追加や重要な不明点は本人へ確認する。';
+    '依頼のGoalと意図に沿ったソフトウェア試作の共通7工程。既存AMCの製品taskは含まない。siによる意味分解ではなく、要件・対象ファイル・試験条件・工数を最初の3工程で具体化する。範囲追加や重要な不明点は本人へ確認する。';
   return wbValidate(goal);
 }
 function wbSimplePreview() {
@@ -1681,7 +1681,7 @@ function wbRenderSimple() {
                 ? '成果の確認待ち ' + summary.counts.submitted + '件'
                 : !summary.readyTaskIds.length
                   ? '進めるための確認待ち'
-                  : 'AIへの引渡し待ち';
+                  : 'siへの引渡し待ち';
   wbEl('simple-progress-state').textContent = state;
   wbEl('simple-metrics').innerHTML =
     '<div><strong>' +
@@ -1783,16 +1783,16 @@ function wbRenderSimple() {
         : allTasksDone
           ? '<p>作業の検収はそろいました。詳細からGoal全体の条件と証拠を確認して、最後の検収を記録してください。</p>'
           : wbGoal.state === 'paused'
-            ? '<p>詳細から一時停止の理由と再開条件を確認してください。これは台帳の停止で、外部AIを停止する操作ではありません。</p>'
+            ? '<p>詳細から一時停止の理由と再開条件を確認してください。これは台帳の停止で、外部siを停止する操作ではありません。</p>'
             : wbGoal.state === 'draft'
               ? '<p>詳細から計画の範囲と完成条件を確認してください。まだ承認されていません。</p>'
-              : '<p>実作業を任せるAIが、まだ接続されていません。下のボタンで指示をコピーして、使うAIへ貼り付けられます。</p>') +
+              : '<p>実作業を任せるsiが、まだ接続されていません。下のボタンで指示をコピーして、使うsiへ貼り付けられます。</p>') +
     '<p class="small">この欄は保存した記録から表示します。通知の自動送信は未接続です。</p>';
   wbEl('simple-handoff').hidden =
     wbGoal.state !== 'active' || allTasksDone || !summary.readyTaskIds.length;
   wbEl('simple-boundary').textContent =
-    'AIへの自動送信・実作業・自動進捗取得は未接続です。' +
-    ' 工数は実測ではない仮係数の人時（文書1–3、コード/試験2–6、既存証拠確認0.5–1.5、親検収0.5–1）。AIの所要時間・納期・料金ではありません。具体化後に再見積りします。' +
+    'siへの自動送信・実作業・自動進捗取得は未接続です。' +
+    ' 工数は実測ではない仮係数の人時（文書1–3、コード/試験2–6、既存証拠確認0.5–1.5、親検収0.5–1）。siの所要時間・納期・料金ではありません。具体化後に再見積りします。' +
     (wbGoal.requestBrief
       ? ' この4部隊は今回の依頼専用の役割案で、正本AMCの32部隊は変更していません。'
       : '');

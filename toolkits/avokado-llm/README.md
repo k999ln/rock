@@ -2,7 +2,7 @@
 
 2026-10-05の利用者指定: **既存重みを使わずゼロから事前学習、端末内とクラウドの両方、初回は追加費用なし**。この実装は学習パイプラインのCPU試験であり、実用LLM・Mini実機・クラウド配備の完成ではありません。12万4800パラメーターの小型言語モデルをランダム初期化し、次のUTF-8 byteを予測して学習します。既存モデルへのプロンプト設定や追加学習ではありません。
 
-主担当はAndroid / Device / Local AI、既存AI02の研究工程。Broker、既存Qwen profile、Sky provider、eSIM利用権・課金経路へ接続していません。全体設計と未完了条件は[専用モデル設計](../../docs/avokado-llm-pretraining.md)、実測値は[試験証拠](../../docs/evidence/avokado-llm-pretraining.json)を参照してください。
+主担当はAndroid / Device / Local si、既存AI02の研究工程。Broker、既存Qwen profile、Sky provider、eSIM利用権・課金経路へ接続していません。全体設計と未完了条件は[専用モデル設計](../../docs/avokado-llm-pretraining.md)、実測値は[試験証拠](../../docs/evidence/avokado-llm-pretraining.json)を参照してください。
 
 ## ローカルで再現
 

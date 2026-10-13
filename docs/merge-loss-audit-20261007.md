@@ -92,7 +92,7 @@ diff <(git show 0fbf688b:project.md | grep -E '^#{1,4} ') <(grep -E '^#{1,4} ' p
 | `SIM01` 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す | 進行中（証拠284件） | **台帳に無い** |
 | `SKY21` Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる | 進行中 | **台帳に無い** |
 | `B06` ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理 | 進行中 | **台帳に無い**（`WEB06`・`FB06` の記述からは参照されている） |
-| `G04` 重複するAI・MCP・保存・決済・Sky/Zema契約を共通化し、19 PRをmainへ統合 | 進行中 | **台帳に無い** |
+| `G04` 重複するsi・MCP・保存・決済・Sky/Zema契約を共通化し、19 PRをmainへ統合 | 進行中 | **台帳に無い** |
 | `AI02`〜`AI06` | 進行中 | 予定（コードは入っている） |
 | `MAT15` R5単体の裸眼空間表示・安全・精密3D入力 | 予定 | 進行中 |
 | 準備記録（`esimDevelopment`、`cloudContinuationPreparation`、`satelliteConnectivityPreparation`、`agentInterconnectionPreparation`、`skyStandalonePublication`、`avocadoMiniCustomDomain`、`patentResearch` など） | 23件 | **台帳に無い** |

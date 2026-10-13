@@ -282,7 +282,7 @@ export function validateBaseline(
       spatialPolicy.patentAi?.inventorshipDeterminationAllowed === false &&
       spatialPolicy.patentAi?.automaticFilingAllowed === false &&
       spatialPolicy.accessibility?.twoDimensionalFallbackRequired === true,
-    'avocadoMiniの四方向sensor、XR、Patent AI安全policyを維持してください',
+    'avocadoMiniの四方向sensor、XR、Patent si安全policyを維持してください',
   );
   requireValue(
     spatialSceneContract.$id ===
@@ -344,7 +344,7 @@ export function validateBaseline(
         !isAbsolute(path) &&
         !relative(root, resolve(root, path)).startsWith('..') &&
         existsSync(resolve(root, path)),
-      `AIネイティブOS Core: ${key}の正本が必要です`,
+      `siネイティブOS Core: ${key}の正本が必要です`,
     );
   }
   requireValue(
@@ -420,7 +420,7 @@ export function validateBaseline(
       data.northStar?.dataCollection?.defaultExcluded?.includes(
         'precise_location',
       ),
-    'AIネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層を維持してください',
+    'siネイティブOS CoreからSky・Zema・便利機能・ゲームへ接続する製品階層を維持してください',
   );
   for (const field of ['main', 'nativeHead', 'designHead']) {
     requireValue(
@@ -1050,7 +1050,7 @@ export function validateBaseline(
       data.launchPage?.primaryAction === 'start_service_onboarding' &&
       data.launchPage?.secondaryAction === 'view_avocado_mini_device' &&
       data.launchPage?.publicDownloadFallback === '/connect' &&
-      launchPageSource.includes('アカウントひとつで、Sky・Zema・AI Agentへ') &&
+      launchPageSource.includes('アカウントひとつで、Sky・Zema・si Agentへ') &&
       launchPageSource.includes('SIMは不要です') &&
       !launchPageSource.includes('href="/sky/esim"') &&
       launchPageSource.includes('href="/connect"') &&
@@ -1524,6 +1524,6 @@ if (
     ),
   );
   console.log(
-    '製品ベース: RQ01〜RQ50、AIネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Core・Sky Compute Gridへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、Android余剰計算の固定lot仲介、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
+    '製品ベース: RQ01〜RQ50、siネイティブOS CoreからSky・Zema・便利機能・ゲーム・Material Invention Core・Sky Compute Gridへ接続する製品階層、正式名RockstarOS／内部識別子dev.rock、RockstarOS 1.0とminor／major版管理、運営1名による端末側制限付き緊急保護、運営管理画面・D1命令キュー・追記監査、Android OS Platform Core、物理Android版ローカルLLM、RockstarOS全体の共通visual systemとフロント機能性、Developer Preview紹介とRock Studio、CSV整形、Rock First-party Settlement Walletのsandbox契約、Base USDC本番受取レール、秘密鍵非保管、所有署名、exact/finalized着金照合、外部Wallet／ファンドProvider受け身設計、汎用PAPER市場、自律型ファンド実績再計算、Zemaの接続bot管理、組込み型Sky Tool SDK、Web画面/asset同一commit、メルカリ収益ループ、ホーム・設定utility、OS運用・暗号化保全・QEMU同一候補10gate/SBOM境界、検証済み収益から月最大888 cents、先払い/債務化なし、Sky内MCP、ローカルMCP4機能、共通MCP Connector、MCP接続先3系統、LLMを含むSky Market、Android余剰計算の固定lot仲介、tob基本利用料0／売上手数料10%、owner署名/初回実transfer未完了、ATM手数料0、ATM独立、1.0構成、導入計画、受入雛形、入口、監査SHA、作成規約を確認（意味の一致と最新進捗は別途レビュー）',
   );
 }

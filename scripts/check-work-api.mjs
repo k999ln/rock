@@ -1091,7 +1091,7 @@ try {
   check(downloadedText.headers.get('content-type'), 'text/markdown; charset=utf-8');
   check(downloadedText.headers.get('cache-control'), 'private, no-store');
   check(downloadedText.headers.get('x-content-type-options'), 'nosniff');
-  check(downloadedText.headers.get('content-disposition'), `attachment; filename="sky-ai-${completingText.id}.md"`);
+  check(downloadedText.headers.get('content-disposition'), `attachment; filename="sky-si-${completingText.id}.md"`);
   check(await downloadedText.text(), completedReadback.resultText);
   await call('GET', undefined, { path: downloadTextPath, user: null, status: 401 });
   await call('GET', undefined, { path: downloadTextPath, user: bob, status: 403 });

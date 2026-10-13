@@ -104,7 +104,7 @@ GitHub main 0455499d8726118b8892c5cfbe2e49236c8b4c31を基に専用worktreeで�
 
 ## 2026-10-02 共通実装統合
 
-G04では[重複実装の統合記録](../git-consolidation.md#2026-10-02-共通実装の統合g04)に従い、既存mainとPR #39/#51、AI/MCP/保存/決済/公開Previewの共通処理を一つの検証経路へまとめる。下記の「open PR 0」は2026-09-15時点の履歴であり現在値ではない。今回固有機能を持つ未merge PRを削除せず、共通処理の更新後に各branchをrebaseする。
+G04では[重複実装の統合記録](../git-consolidation.md#2026-10-02-共通実装の統合g04)に従い、既存mainとPR #39/#51、si/MCP/保存/決済/公開Previewの共通処理を一つの検証経路へまとめる。下記の「open PR 0」は2026-09-15時点の履歴であり現在値ではない。今回固有機能を持つ未merge PRを削除せず、共通処理の更新後に各branchをrebaseする。
 
 ## 2026-10-05 未統合PRの現行mainへの収束
 
@@ -112,7 +112,7 @@ G04では[重複実装の統合記録](../git-consolidation.md#2026-10-02-共通
 
 ## AMCとCSVの限定統合（2026-10-05、G04）
 
-今回の「mainにあげて」は、既存のAMC有限fixture 7 scripts / 6 testsとCSV共通処理4修正を最新main `996b1955`起点で統合する承認として扱う。旧ローカルtree全体、別作業のカタログ/UI/配備差分は持ち込まない。主担当ROCK、G04はin_progress。対象試験、固定Goal CLI、全体verify、同一SHA CI、main反映を[今回の証拠](../evidence/amc-fixture-csv-main-integration.json)で分けて記録する。[AMC設計](../amc-autonomy-fixture.md)の実worker・Web未接続と[CSV契約](../csv-business-v1.ja.md)の共通処理範囲を保持する。GitHub統合はSites公開や実AI/課金開始を意味しない。
+今回の「mainにあげて」は、既存のAMC有限fixture 7 scripts / 6 testsとCSV共通処理4修正を最新main `996b1955`起点で統合する承認として扱う。旧ローカルtree全体、別作業のカタログ/UI/配備差分は持ち込まない。主担当ROCK、G04はin_progress。対象試験、固定Goal CLI、全体verify、同一SHA CI、main反映を[今回の証拠](../evidence/amc-fixture-csv-main-integration.json)で分けて記録する。[AMC設計](../amc-autonomy-fixture.md)の実worker・Web未接続と[CSV契約](../csv-business-v1.ja.md)の共通処理範囲を保持する。GitHub統合はSites公開や実si/課金開始を意味しない。
 
 ## SPIDER cycle 43: CI依存の復元
 
@@ -138,18 +138,18 @@ H1 / AMC02、ROCK。SPIDER cycle 48は既存定義の読取り競合（#52）を
 
 最新基点`996b1955`から専用branch `codex/release-blockers`で継続。前回報告のWeb/Android失敗はPR #62で修正済み。native main-1は322 assertions自体は成功していたが、`test_memory_store.py`の3 SQLite接続が未closeで厳格なログ検査が失敗した。`closing`とtransaction contextを組み合わせ、ResourceWarningの検出は維持する。修正commit `c79476e2`のLinux全partitionと`npm run verify`はCI成功。製品runtime修正やOS起動合格とは扱わない。
 
-Local AI unsigned APKの現行source buildを再開し、CI `37278057340`で`sdkmanager: command not found`を再現。存在確認だけだったSDK pathを`GITHUB_PATH`へ登録する修正を`9d82ac5a`へ保存した。後続のKotlin timeout型/API応答版/APK版検査、phone準備status判定を修正し、run `37279537731`で現行v4 APK build成功。実bytesを取得してaapt2・stage/再stage/verifyを照合し、overlay列をartifact lockへ固定した。関連40試験成功。実機未接続のためv4端末受入は未実施。詳細は[同一artifact証拠](../evidence/local-ai-apk-v4-build.json)。
+Local si unsigned APKの現行source buildを再開し、CI `37278057340`で`sdkmanager: command not found`を再現。存在確認だけだったSDK pathを`GITHUB_PATH`へ登録する修正を`9d82ac5a`へ保存した。後続のKotlin timeout型/API応答版/APK版検査、phone準備status判定を修正し、run `37279537731`で現行v4 APK build成功。実bytesを取得してaapt2・stage/再stage/verifyを照合し、overlay列をartifact lockへ固定した。関連40試験成功。実機未接続のためv4端末受入は未実施。詳細は[同一artifact証拠](../evidence/local-ai-apk-v4-build.json)。
 
 残る項目と再開条件:
 
 | 系統・既存task | 担当 | 停止条件と次の合格証拠 |
 | --- | --- | --- |
-| Local AI OS08/OS09 | ROCK/JOINT | 現行v4 overlayのAPK build/ABI/permission/hashと実stage検査は合格。次に対象Pixelでimport、offline plan、停止、再起動を同じAPKで受入。旧v2実機証拠は保持。 |
+| Local si OS08/OS09 | ROCK/JOINT | 現行v4 overlayのAPK build/ABI/permission/hashと実stage検査は合格。次に対象Pixelでimport、offline plan、停止、再起動を同じAPKで受入。旧v2実機証拠は保持。 |
 | Pixel全OS OS02/OS11/RLS02 | OWNER/ROCK | 専用x86_64 Linux・64 GiB RAM・空き400 GiBと予算/アカウント、現行APKを固定してcompile-onlyを実行。署名・flashは別の4/4 gate。 |
 | QEMU配布 LCH02/LCH03/LCH07 | OWNER/ROCK | 製品license選択、正式鍵・署名運用、署名後の同一候補で導入/復旧。現在6/10で、旧VMの成功を最新候補へ転記しない。 |
 | Sky/Cloud/SIM SIM01/SKY07/SKY21 | JOINT/OWNER | 本番設定、販売者/通信会社の契約・接続、実Providerの料金/usage/請求照合、公開同一sourceでdesktop/Pixel受入。eSIM/決済の別作業branchは自動混入しない。 |
 | Wallet/販売 B03/BIL02/WLT06 | JOINT/OWNER | 一般MarketplaceのStripe Connect sandbox・払出し、本人Wallet署名と指定chain/額/宛先。既存CSV専用決済の受入を一般Marketへ拡張しない。 |
-| AI/非金融Game AI02–AI07 | ROCK/JOINT | main統合済みhost fixtureをnative runtimeへ接続し、2モデル切替・旧仕事復旧・限定記憶・単一実行端末・Game/IPを同一契約で受入。 |
+| si/非金融Game AI02–AI07 | ROCK/JOINT | main統合済みhost fixtureをnative runtimeへ接続し、2モデル切替・旧仕事復旧・限定記憶・単一実行端末・Game/IPを同一契約で受入。 |
 | Material/mini MAT03/MAT05/MAT15 | ROCK/JOINT | Core→UI/Sky adapter、合成scene/poseの実装と、別途R5の光学/3D入力/熱/電源/回路・実機試験。旧E1/E2/E3未完了を現行R5製造の必須手順へ自動継承しない。 |
 | IP Studio SKY07/SKY14 | JOINT | 別repositoryのIP Studio runtime、LiveKit Agent/声/モデル/接続先/費用上限、電話Providerを確定して音声・停止・再接続を受入。設定画面保存は実通話ではない。 |
 | Security PR #52 | ROCK/JOINT | PR #52は並行作業でmainへ統合され、Web実測も合格。現行CodeQL workflowは合格したが、既存alertの解消とは別。履歴978 commitの2,868候補出現の元byte分類は未解決。未分類値や失敗をallowlist/警告dismissで消さない。 |
@@ -161,7 +161,7 @@ Local AI unsigned APKの現行source buildを再開し、CI `37278057340`で`sdk
 
 ## 残PRの開発・契約復旧（G04、2026-10-05）
 
-ROCK担当。#63–65 / #69–76をmain 0c90253cへ統合する。ecb4b2afで失われた依存宣言・SIM利用権正本・AMC認可/再検収/強制停止・catalog接続契約・API検証範囲を復旧する。現在のWorkPlan保存とSky library、AMC手動入力UIは保持する。生成物の整理・LLM host研究・Mini launcher・Local AI APKはそれぞれの受入境界を維持する。対象回帰→npm run verify→同一SHA CIが合格条件。秘密情報履歴の候補は未分類で、検査の無効化や広い除外をしない。
+ROCK担当。#63–65 / #69–76をmain 0c90253cへ統合する。ecb4b2afで失われた依存宣言・SIM利用権正本・AMC認可/再検収/強制停止・catalog接続契約・API検証範囲を復旧する。現在のWorkPlan保存とSky library、AMC手動入力UIは保持する。生成物の整理・LLM host研究・Mini launcher・Local si APKはそれぞれの受入境界を維持する。対象回帰→npm run verify→同一SHA CIが合格条件。秘密情報履歴の候補は未分類で、検査の無効化や広い除外をしない。
 
 依存更新PR #79–81: lock変更時はMIT/BSD等のmetadata差分を確認し、`node scripts/sync-web-license-inventory.mjs --write`で台帳を同期する。root/site双方のsource-map-jsとproxy-addr/tinypool/oxfmtを検証。詳細は `docs/evidence/open-pr-integration.json` のdependencyFollowup。法的clearance・未修正advisory・履歴secret・本番gateは独立。
 

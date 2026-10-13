@@ -35,21 +35,21 @@
 
 - 初見の人が製品を想像できるよう、正本の入口を「デジタル発明台」という一文、四方向配置図、物質A・Bを使う8場面の利用例、画面wireframeへ変更した。
 - できる／できない、デジタル仮説・計算・実物実験の三境界、予測と実測の表示を前半へ置き、難しい用語と機械可読契約は後半へ分離した。
-- 実装は2D理解prototype、決定的Core接続、一台cameraから四方向、simulation／Patent AI、外部labの5段階に分け、各役割へ最初の成果物と合格条件を割り当てた。
+- 実装は2D理解prototype、決定的Core接続、一台cameraから四方向、simulation／Patent si、外部labの5段階に分け、各役割へ最初の成果物と合格条件を割り当てた。
 
 ## avocadoMini共有用完成設計と全体構成 / 2026-09-18
 
-- [共有用完成設計書](rockstaros-avocado-mini-complete-design.md)へ、5分説明、全体構造、利用体験、四方向sensor、Core data、再計算、Patent AI、privacy、accessibility、安全境界、現在地、実装順、役割別参加入口、受入条件、用語集を統合した。[専用workstream](workstreams/11-material-invention-avocado-mini.md)からMAT05／MAT06へ直接参加できる。
+- [共有用完成設計書](rockstaros-avocado-mini-complete-design.md)へ、5分説明、全体構造、利用体験、四方向sensor、Core data、再計算、Patent si、privacy、accessibility、安全境界、現在地、実装順、役割別参加入口、受入条件、用語集を統合した。[専用workstream](workstreams/11-material-invention-avocado-mini.md)からMAT05／MAT06へ直接参加できる。
 - 製品baseline v1.76は統合設計を正本として要求し、設計完成を製品完成へ変える改変を負例で拒否する。全体構成監査はMaterial Invention／avocadoMiniを含む12層・7経路を要求する。
-- sandbox Core、XR／interaction契約、設計書は存在するが、XR runtime、四方向sensor実機、simulation／Patent AI Provider、外部lab、実材料性能、特許性、量産は未完成という境界を維持する。
+- sandbox Core、XR／interaction契約、設計書は存在するが、XR runtime、四方向sensor実機、simulation／Patent si Provider、外部lab、実材料性能、特許性、量産は未完成という境界を維持する。
 
 ## Spatial Invention Studio／avocadoMini設計 / 2026-09-18
 
 - 利用者の確認を反映し、avocadoMiniをMaterial Invention Coreと並ぶ別機能ではなく、その中身を人が操作する標準製品体験へ統合した。機械可読baselineとpolicyは`primary_product_experience_not_optional_extension`を要求し、任意addonへ戻す変更を拒否する。
 - RockstarOSを搭載する`avocadoMini`を、north／east／south／westの四方向sensorでhand poseを取得し、物質digital twinのconnect／separate操作から候補branchとsimulation再計算を作るreference device conceptとして設計した。OSの正式名はRockstarOSのままで、旧表示名avocadoOSへ戻していない。
 - XR scene manifestとspatial interaction eventのJSON Schema、安全・privacy・accessibilityの機械可読policyを追加した。gestureは`HYPOTHESIS_ONLY`、物理実行・装置制御・Core DB直接書込み・物理実験最終承認はfalseへ固定した。
-- 既存Sky Patent AIへ人、AI、simulation、文献、実測を分離したevent provenanceを渡すbridgeを設計した。特許性、法的発明者、権利帰属、自動出願の決定は許可しない。既存特許Toolは現在もMaterial Core未接続で、設計完成をruntime完成として扱わない。
-- 製品baseline検査は、XRからの物理実行許可、搭載OSのavocadoOS化、自動特許出願を拒否する負例を持つ。四方向rig、hand tracking、XR表示、再計算、Patent AI bridge、headset／AR実機の受入は未実施。
+- 既存Sky Patent siへ人、si、simulation、文献、実測を分離したevent provenanceを渡すbridgeを設計した。特許性、法的発明者、権利帰属、自動出願の決定は許可しない。既存特許Toolは現在もMaterial Core未接続で、設計完成をruntime完成として扱わない。
+- 製品baseline検査は、XRからの物理実行許可、搭載OSのavocadoOS化、自動特許出願を拒否する負例を持つ。四方向rig、hand tracking、XR表示、再計算、Patent si bridge、headset／AR実機の受入は未実施。
 
 ## Material Invention sandbox Core / 2026-09-17
 
@@ -61,7 +61,7 @@
 
 ## 製品目的から逆算した開発軸 / 2026-09-15
 
-- RQ47として、AI自動化チームの効率化を最上位目的にし、端末内LLM、Tool、署名済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末の順序を機械可読baselineへ固定した。
+- RQ47として、si自動化チームの効率化を最上位目的にし、端末内LLM、Tool、署名済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末の順序を機械可読baselineへ固定した。
 - Pixelは最初のreference hardware、カメラ品質は1.0完成条件外、月50万円規模は長期の検証済み到達指標で収益保証ではない。同意のない包括データ収集、私的本文・鍵・credentialの既定収集、法域未確認の自動税務判断をbaseline検査が拒否する。
 - `npm run baseline:check`と製品baseline負例testに成功。これは設計優先順位の保存であり、収益loop、税務Provider、実ゲーム、専用端末を実装・実証した記録ではない。
 
@@ -71,7 +71,7 @@
 - 試験2のRock所有fixture範囲は合格。同じ合成実行IDと証拠hashをPixelのTool／端末Wallet区間と、Provider署名／Sky bridge／Billing Wallet区間へ渡し、物理6/6、署名精算7/7、Sky→Zema job回帰19/19を合格した。端末側ではBinder Tool二段実行、SQLite再open、review、Provider登録、Wallet一度だけ記録、重複拒否を確認した。二つの相関済み試験区間であり、実売上、外部決済Provider sandbox、返金／chargeback、実払出し、production配備、端末から外部Providerまでの一本通しは未実証。
 - source準備が無関係な親Git repositoryを参照してoverlayを適用済みと誤判定する問題、AIDL生成無効、public SDKで使えないUserHandle API、release manifestによるWAKE_LOCK削除を修正した。
 - Android build／lint 190 task、Android Core 31/31、相関対象host 7/7、Sky→Zema job回帰19/19を維持し、2026-09-16のrepository全体再検証ではWeb 287 test、Fashion Brand Ops 19 test、Worker／D1 143 assertion、本番Web buildを含む`npm run verify`が終了コード0で合格した。
-- 判定は`DO_NOT_START_PAID_FULL_OS_BUILD_RECOVERY_VENDOR_SIGNING_GATES`。外部Providerは初回OS full buildから分離し、アプリ／サーバー側の公開前必須gateへ固定した。GL066の署名検証済み`2026091000` source tag、laguna／muzel 6.6、Dynamic Partition／Virtual A/B／AVBは固定済み。Google純正factory／full OTAの利用条件確認、実ファイルSHA、vendor inventory、production署名／復旧計画が残る。詳細は[Source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)、[Android事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)、[Tool／Wallet相関試験](evidence/pixel-tool-wallet-correlation-20260916.json)、[物理端末AI証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。
+- 判定は`DO_NOT_START_PAID_FULL_OS_BUILD_RECOVERY_VENDOR_SIGNING_GATES`。外部Providerは初回OS full buildから分離し、アプリ／サーバー側の公開前必須gateへ固定した。GL066の署名検証済み`2026091000` source tag、laguna／muzel 6.6、Dynamic Partition／Virtual A/B／AVBは固定済み。Google純正factory／full OTAの利用条件確認、実ファイルSHA、vendor inventory、production署名／復旧計画が残る。詳細は[Source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)、[Android事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)、[Tool／Wallet相関試験](evidence/pixel-tool-wallet-correlation-20260916.json)、[物理端末si証拠](evidence/android-pixel-10-gl066-local-ai-20260916.json)。
 
 ## Rock First-party Settlement Wallet / 2026-09-13
 

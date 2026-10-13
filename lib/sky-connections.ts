@@ -137,7 +137,7 @@ export const skyProviderDefinitions: SkyProviderDefinition[] = [
   {
     id: 'routing',
     name: 'Providerルーティング',
-    detail: '用途ごとに使う生成AI・LLM・ワークフロー・導入先を差し替えます。未接続の候補は実行前にConnectorを登録します。',
+    detail: '用途ごとに使う生成si・LLM・ワークフロー・導入先を差し替えます。未接続の候補は実行前にConnectorを登録します。',
     fields: [
       {
         id: 'imageGeneration',

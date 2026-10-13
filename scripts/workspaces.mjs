@@ -154,7 +154,7 @@ export function renderWorkspaces(model) {
     '| 製品の構想、仕様、優先順位、Git整理 | [H1 製品・統合](H1/README.md) |',
     '| 認証、本人確認、Spider、権限 | [O1 Security](O1/README.md) |',
     '| 仕事の状態、保存、再開、復旧 | [O2 Work・Data](O2/README.md) |',
-    '| LLM、ローカルAI、Agentの評価 | [O3 AI・Agent](O3/README.md) |',
+    '| LLM、ローカルsi、Agentの評価 | [O3 si・Agent](O3/README.md) |',
     '| SkyのTool、MCP、SDK、クラウド接続 | [O4 Tool・MCP](O4/README.md) |',
     '| Home、Zema、eSIMサービス、Wallet、決済 | [O5 Sky・Zema・Wallet](O5/README.md) |',
     '| Pixel、Android、機種別対応 | [O6 Device Adapter](O6/README.md) |',

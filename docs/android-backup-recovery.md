@@ -45,7 +45,7 @@ allowlist方式とし、SkyのTool構成・選択、Zemaのworkflow／job状態�
 
 dual-wrapped v2 envelope、owner binding、legacy読取、wrong key／wrong owner／header・payload改ざん／末尾byte拒否に加え、RockstarOS専用24単語codec、指定4単語の確認UI、Shell API v4のexport／import、allowlist方式のtransactional restore、新端末Keystoreへの再bindingまで実装した。Java 11 Coreは37/37、Android 15 emulatorはBroker 11件（物理再起動専用2件を条件skip）とShell 5/5に合格した。[秘密を含まないemulator証拠](evidence/android-backup-v2-emulator-20260916.json)を保存している。
 
-2026-09-16に、OSを書き換えていない所有Pixel 10でv2 backupを実ファイルへexportし、書込み完了の同期確認、device wrapとrecovery secretのhardware-backed Keystore確認まで合格した。続いて同じ端末を通常再起動し、Skyで選んだTool、実行中だった仕事、履歴とreview状態を復旧し、中断工程をattempt 2として再取得して完了できた。Shell 5件、Broker／Tool／Local AI／Wallet 11件、Operator Agent 5件、再起動2段階の計23件が合格した。[秘密とserialを含まない実機証拠](evidence/android-pixel-10-prefull-physical-20260916.json)を保存している。
+2026-09-16に、OSを書き換えていない所有Pixel 10でv2 backupを実ファイルへexportし、書込み完了の同期確認、device wrapとrecovery secretのhardware-backed Keystore確認まで合格した。続いて同じ端末を通常再起動し、Skyで選んだTool、実行中だった仕事、履歴とreview状態を復旧し、中断工程をattempt 2として再取得して完了できた。Shell 5件、Broker／Tool／Local si／Wallet 11件、Operator Agent 5件、再起動2段階の計23件が合格した。[秘密とserialを含まない実機証拠](evidence/android-pixel-10-prefull-physical-20260916.json)を保存している。
 
 復元先は対象ownerの仕事・選択・承認・台帳が空でなければ拒否する。復元後は自動化を必ず一時停止し、Sky selection tokenを新規生成し、実行中leaseを破棄し、`PROPOSED`／`ISSUED`承認を`STOPPED`へ変換する。導入済みcomponentの権限、session、operator credential、provider secretは復元しない。これによりbackup単体を別端末の実行権限cloneとして使えない。
 

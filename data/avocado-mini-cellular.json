@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-10",
+  "updatedAt": "2026-10-13",
   "product": "avocadoMini",
   "task": "MAT15",
   "relatedTask": "SIM01",
@@ -36,5 +36,21 @@
   "remoteProfileSwitching": "not_built_in_house",
   "lineOwner": "avokado_line_with_connectivity_included_in_service_fee",
   "productForm": "separate_model_or_option",
-  "decisionRecord": "docs/account-entry-proposal.md"
+  "decisionRecord": "docs/account-entry-proposal.md",
+  "trafficPolicy": {
+    "includedCellular": [
+      "own_cloud_control",
+      "own_cloud_agent_messages",
+      "own_cloud_voice"
+    ],
+    "wifiRequired": [
+      "os_and_model_updates",
+      "video_and_streaming",
+      "game_downloads",
+      "bulk_assets"
+    ],
+    "unapprovedCellularFallback": false,
+    "sourceDecision": "docs/account-entry-proposal.md#4-回線内蔵機器の設計案",
+    "implemented": false
+  }
 }

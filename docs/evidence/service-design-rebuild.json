@@ -6,7 +6,7 @@
   "primaryOwner": "ROCK",
   "primarySquad": "H1",
   "primaryWorkstream": "Git / CI / Operations",
-  "scope": "Integrated basic design and documentation consistency only",
+  "scope": "Integrated basic design, cross-system consistency and first-party si display; no execution-logic change",
   "input": {
     "repository": "k999ln/rock",
     "mainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
@@ -191,14 +191,14 @@
     },
     "clarificationRemoteBranchCount": 17
   },
-  "status": "integrated_basic_design_verified_jennifer_source_clarified",
+  "status": "consistency_and_si_display_verification_in_progress",
   "authority": {
     "requirements": "RQ01-RQ50",
     "accountDirection": "2026-10-10 owner confirmed free account; SIM optional; consumer eSIM sale held",
     "pricing": "existing confirmed design preserved; no live fee policy changed",
     "jenniffer": "Git spelling Jennifer: portfolio coordinator; Zema behind it; verified branch source not main"
   },
-  "runtimeChanged": false,
+  "runtimeChanged": true,
   "commercialPoliciesChanged": false,
   "git": {
     "branch": "codex/service-design-rebuild",
@@ -215,7 +215,7 @@
     "ci": "not_yet_confirmed_for_final_metadata_head"
   },
   "verification": {
-    "status": "passed",
+    "status": "previous_revision_passed_current_revision_pending",
     "fullCommand": "TMPDIR=/private/tmp npm run verify",
     "exitCode": 0,
     "nodeTests": 2143,
@@ -237,7 +237,7 @@
     "independentReview": "passed_including_verified_jennifer_source_and_nvidia_ai_pc",
     "rawLog": "/private/tmp/rock-service-design-jennifer-verify.log",
     "rawLogSha256": "4d09f76870b7f2414d9120d4c8e65b4707e8c6ca66ac9f879a0bb0c4fd0bb308",
-    "scope": "Documentation consistency and existing unchanged runtime host regression; no new UI, provider, device, billing, publication or flight acceptance.",
+    "scope": "Prior evidence is retained; current display-source and design revision awaits full verification.",
     "statusRecordUpdatedAfterVerification": true,
     "clarificationChecks": "passed",
     "fullRegressionDocumentCommitBeforeClarification": "a1fe72b4c4d3732f9eded2fddd3ba75ec12363a6",
@@ -249,7 +249,17 @@
       "docs/service-design/05-requirement-coverage.md": "3fffbf0267b27b3b002f4647af90f0d64628942f00b45b0c275d770c708236d8",
       "docs/service-design/README.md": "c0b0328b9333652074f60c34ccfbcb500238c8dca05b383ccc9ae012d41301dc"
     },
-    "runtimeSourceChanged": false
+    "runtimeSourceChanged": true,
+    "initialSiRegression": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 1,
+      "tests": 2143,
+      "pass": 2133,
+      "fail": 9,
+      "skip": 1,
+      "cause": "Existing Cloud text tests still selected the old AI request label; label expectations now synchronized, targeted retest pending.",
+      "log": "/private/tmp/rock-service-design-si-verify.log"
+    }
   },
   "remaining": [
     "Jennifer branch CI, main integration, reviewer provenance, context/native/provider acceptance",
@@ -273,7 +283,8 @@
       "ROCK fixture work independent of paid enablement"
     ],
     "runtimeAcceptanceChanged": false,
-    "clarificationReview": "passed_no_critical_or_medium_findings"
+    "clarificationReview": "passed_no_critical_or_medium_findings",
+    "finalConsistencyReview": "in_progress"
   },
   "jenniferSource": {
     "canonicalName": "Jennifer",
@@ -300,5 +311,43 @@
       "context grants and native UI",
       "production runtime/provider settings and external acceptance"
     ]
+  },
+  "runtimeLogicChanged": false,
+  "displayTextChanged": true,
+  "productTerminology": "data/product-terminology.json",
+  "crossSystemContracts": {
+    "document": "docs/service-design/06-consistency-contracts.md",
+    "scenarioCount": 12,
+    "runtimeAcceptancePerformed": false,
+    "fixedInDesign": [
+      "internal portfolio vs consumer realm",
+      "conversation vs direct Tool entry",
+      "per-job authority and writer epoch",
+      "server ID/revision/artifact correlation",
+      "hierarchical budgets and uncertain holds",
+      "postpay vs provider funding",
+      "price/markup/seller-fee snapshots",
+      "parent cancellation fence",
+      "manual verdict vs authenticated reviewer",
+      "logical path vs actual encrypted artifact",
+      "draft TTL vs saved Goal and deletion",
+      "Mini independent local profile and domestic LTE traffic",
+      "Pro private vs cloud vs Android Grid",
+      "Rocketstar observations vs flight command"
+    ]
+  },
+  "latestRepositoryObservation": {
+    "mainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+    "jenniferPr": 113,
+    "state": "MERGED",
+    "mergedAt": "2026-10-13T18:21:19Z",
+    "sourceSha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+    "sameSourceChecks": {
+      "total": 8,
+      "success": 8
+    },
+    "branchDeleted": true,
+    "fixedDesignInputPreserved": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+    "designBranchMainSynchronization": "pending"
   }
 }

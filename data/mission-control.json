@@ -65,7 +65,7 @@
     "設計、fixture、simulation、Web、QEMU、APK、実機、本番を相互に完成証拠として代用しない。",
     "task件数、文書件数、試験件数から製品完成率を算出しない。",
     "部隊間の変更はICD、schema、event、receiptまたはDevice Profileを通し、相手の内部実装へ直接依存しない。",
-    "AIの提案、Tool成功、外部Provider結果、入金、物理作用を別々の状態として記録する。",
+    "siの提案、Tool成功、外部Provider結果、入金、物理作用を別々の状態として記録する。",
     "外部作用、金融、個人情報、物理設備、飛行は本人承認と独立した安全Gateを必須とする。",
     "blockedは理由、解除条件、決定者を記録する。未実装や困難だけをblockedと呼ばない。",
     "完了には正常系だけでなく、取消、timeout、重複、結果不明、再起動、rollbackの証拠を含める。",
@@ -94,7 +94,7 @@
     {
       "id": "rockstaros",
       "name": "RockstarOS師団",
-      "goal": "全製品へ共通の権限、AI、仕事、Tool、保存、更新、復旧を提供する。"
+      "goal": "全製品へ共通の権限、si、仕事、Tool、保存、更新、復旧を提供する。"
     },
     {
       "id": "avocado-mini",
@@ -224,7 +224,7 @@
       "goal": "本人だけが許可した操作を実行し、全変更を監査・失効できるようにする。",
       "currentStage": 3,
       "primaryOwner": "ROCK",
-      "outcome": "AI、Tool、Provider、運営者が権限を越えず、事故時に停止できる。",
+      "outcome": "si、Tool、Provider、運営者が権限を越えず、事故時に停止できる。",
       "dependsOnSquads": [
         "H1"
       ],
@@ -358,8 +358,8 @@
     {
       "id": "O3",
       "division": "rockstaros",
-      "name": "AI・Agent",
-      "goal": "交換可能なローカルAIが権限を持たずに計画し、Agentが許可済み手順だけを実行する。",
+      "name": "si・Agent",
+      "goal": "交換可能なローカルsiが権限を持たずに計画し、Agentが許可済み手順だけを実行する。",
       "currentStage": 3,
       "primaryOwner": "ROCK",
       "outcome": "オフラインでも支援でき、model変更時も仕事と安全境界を維持する。",
@@ -408,7 +408,7 @@
         "AI02"
       ],
       "stageAssessment": {
-        "scope": "既存DecisionProvider/RouterとAPKの限定AI契約",
+        "scope": "既存DecisionProvider/RouterとAPKの限定si契約",
         "gaps": [
           "model交換・限定記憶・full OS統合は未完了"
         ],
@@ -1292,7 +1292,7 @@
       "id": "P2",
       "division": "avokado-pro",
       "name": "Compute・基板",
-      "goal": "ゲーム、サービス、ローカルAIを所定性能と電力内で実行する。",
+      "goal": "ゲーム、サービス、ローカルsiを所定性能と電力内で実行する。",
       "currentStage": 1,
       "primaryOwner": "ROCK",
       "outcome": "Pro単体で主要体験を安定して実行できる。",
@@ -1324,7 +1324,7 @@
         "docs/avokado-pro-pc-design.md",
         "data/avokado-pro-pc.json"
       ],
-      "acceptanceGate": "代表game、AI、serviceを同時負荷で実測し、熱・電力上限内に収める。",
+      "acceptanceGate": "代表game、si、serviceを同時負荷で実測し、熱・電力上限内に収める。",
       "nextAction": "PRO02: OEM/ODM基板供給、RAM/SSD QVL、firmwareと電源条件を既存候補へ対応付ける",
       "relatedTasks": [],
       "nextTaskIds": [
@@ -1403,7 +1403,7 @@
         "PRO03"
       ],
       "stageAssessment": {
-        "scope": "ProのAI/ゲーム負荷・保存復旧の要求と共通SDKの参照",
+        "scope": "Proのsi/ゲーム負荷・保存復旧の要求と共通SDKの参照",
         "gaps": [
           "対象ゲーム・OS/driver・設定・測定条件は未固定。共通Game SDKのhost試験はPro実機の性能・互換受入ではない"
         ],
@@ -2105,7 +2105,7 @@
         "RKT08"
       ],
       "rules": [
-        "AI判断だけでlaunchしない",
+        "si判断だけでlaunchしない",
         "人、地上system、機体のgo/no-goを分離する"
       ],
       "deliverables": [
@@ -3347,7 +3347,7 @@
       "parentTaskId": "AI02",
       "primaryOwner": "ROCK",
       "assignee": null,
-      "ownerRole": "AI・Agent担当",
+      "ownerRole": "si・Agent担当",
       "scope": "ModelProfileとRuntimeManifestのidentity・hash・互換条件を固定する",
       "inputs": [
         {
@@ -3369,13 +3369,13 @@
         },
         {
           "id": "AI02-01-S2",
-          "action": "指定sectionで次を照合し、対象版・条件・判定理由・残課題を記録する: 2 model候補のID/版、weight/tokenizer/template hash、license、形式、runtime/API、plan schema、context上限と必要資源を記録し、未取得・未測定を明示する。既存Local AI API v2境界を維持する。"
+          "action": "指定sectionで次を照合し、対象版・条件・判定理由・残課題を記録する: 2 model候補のID/版、weight/tokenizer/template hash、license、形式、runtime/API、plan schema、context上限と必要資源を記録し、未取得・未測定を明示する。既存Local si API v2境界を維持する。"
         }
       ],
       "acceptanceCriteria": [
         {
           "id": "AI02-01-AC1",
-          "criterion": "2 model候補のID/版、weight/tokenizer/template hash、license、形式、runtime/API、plan schema、context上限と必要資源を記録し、未取得・未測定を明示する。既存Local AI API v2境界を維持する。",
+          "criterion": "2 model候補のID/版、weight/tokenizer/template hash、license、形式、runtime/API、plan schema、context上限と必要資源を記録し、未取得・未測定を明示する。既存Local si API v2境界を維持する。",
           "status": "not_verified",
           "verification": "指定成果物sectionに対象版・再現条件・確認結果を残し、担当reviewで確認する。実行が必要な項目は計画だけで合格としない。",
           "evidence": []
@@ -3391,7 +3391,7 @@
       "parentTaskId": "AI02",
       "primaryOwner": "ROCK",
       "assignee": null,
-      "ownerRole": "AI・Agent担当",
+      "ownerRole": "si・Agent担当",
       "scope": "hash・license・容量・互換検査で非active model stagingを保護する",
       "inputs": [
         {
@@ -3435,7 +3435,7 @@
       "parentTaskId": "AI02",
       "primaryOwner": "ROCK",
       "assignee": null,
-      "ownerRole": "AI・Agent担当",
+      "ownerRole": "si・Agent担当",
       "scope": "仕事へのmodel/runtime版固定と旧job再開判定を実装する",
       "inputs": [
         {
@@ -3479,7 +3479,7 @@
       "parentTaskId": "AI02",
       "primaryOwner": "ROCK",
       "assignee": null,
-      "ownerRole": "AI・Agent担当",
+      "ownerRole": "si・Agent担当",
       "scope": "Brokerによるatomic切替・health判定・crash rollbackを実装する",
       "inputs": [
         {
@@ -3523,7 +3523,7 @@
       "parentTaskId": "AI02",
       "primaryOwner": "ROCK",
       "assignee": null,
-      "ownerRole": "AI・Agent担当",
+      "ownerRole": "si・Agent担当",
       "scope": "承認済み評価環境で2 model候補の交換・旧job再開・失敗復旧を実測する",
       "inputs": [
         {
@@ -3567,7 +3567,7 @@
       "parentTaskId": "AI02",
       "primaryOwner": "ROCK",
       "assignee": null,
-      "ownerRole": "AI・Agent担当",
+      "ownerRole": "si・Agent担当",
       "scope": "権限非昇格の回帰とAI02の全体完了条件を照合する",
       "inputs": [
         {
@@ -8408,7 +8408,7 @@
       "primaryOwner": "ROCK",
       "assignee": null,
       "ownerRole": "Compute・基板担当",
-      "scope": "サービス＋保存とローカルAI併用の再現負荷を定義する",
+      "scope": "サービス＋保存とローカルsi併用の再現負荷を定義する",
       "inputs": [
         {
           "path": "sites/avocado-mini/src/pages/pro/index.astro",
@@ -8418,14 +8418,14 @@
       "deliverables": [
         {
           "path": "docs/avokado-pro/compute-evaluation.md",
-          "section": "サービス・AI系代表負荷",
-          "description": "サービス＋保存とローカルAI併用の再現負荷を定義する"
+          "section": "サービス・si系代表負荷",
+          "description": "サービス＋保存とローカルsi併用の再現負荷を定義する"
         }
       ],
       "steps": [
         {
           "id": "PRO02-02-S1",
-          "action": "サービス＋保存とローカルAI併用の再現負荷を定義する"
+          "action": "サービス＋保存とローカルsi併用の再現負荷を定義する"
         },
         {
           "id": "PRO02-02-S2",
@@ -11277,7 +11277,7 @@
       "steps": [
         {
           "id": "PRO02-S1",
-          "action": "ゲーム単独、ゲーム＋音声、サービス＋保存、ローカルAI併用の負荷を定義する"
+          "action": "ゲーム単独、ゲーム＋音声、サービス＋保存、ローカルsi併用の負荷を定義する"
         },
         {
           "id": "PRO02-S2",
@@ -12304,7 +12304,7 @@
       "taskId": "AI02",
       "primaryOwner": "ROCK",
       "assignee": null,
-      "ownerRole": "AI・Agent担当",
+      "ownerRole": "si・Agent担当",
       "scope": "model manifest・交換・旧仕事再開を版付きで実装する",
       "inputs": [
         {

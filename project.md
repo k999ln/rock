@@ -1,8 +1,10 @@
-## 2026-10-13 — サービス全体の設計書を再構成
+## 2026-10-13 — サービス再設計・横断契約・si表記の統合
 
-主担当Git / CI / Operations、ROCK、DOC04/H1。利用者の「やりたいことは変わらない、最初から設計書を組み直す」に基づき、最新main `4273ef02`から分離した `codex/service-design-rebuild` で[統合基本設計](docs/service-design/README.md)を作成。利用体験、共通契約、Jenniffer/Mini/Pro/rocketstarのprofile、実現順、RQ01〜RQ50を引き継ぐ。既存ポータル/関係図/OS/Tool詳細/次のpromptの古いSIM主入口と親仕事状態を現在の正本へ合わせる。Jenniferの役割は専用branchで確認済み。実装・価格・権限・原本byte・各受入gateは変更しない。元のdirty作業コピーを保全した。 GitHubの[レビュー用draft PR #114](https://github.com/k999ln/rock/pull/114)へ保存済み。main統合と公開Site配備は行っていない。
+主担当Git / CI / Operations、ROCK、DOC04/H1。利用者の「やりたいことは変わらない、最初から設計書を組み直す」「それぞれ辻褄を合わせる」「全部表記siに変えてai→si」に基づき、最新main `4273ef02`から分離した `codex/service-design-rebuild` で[統合基本設計](docs/service-design/README.md)を入口＋6章の7冊へ再構成。RQ01〜RQ50、無料アカウント入口、Jennifer→Sky→Zema/AMC→Broker→成果の役割を維持し、本人/realm、ID/成果相関、階層予算、価格、停止、真正review、保存/削除、writer交代、Mini/Pro/Grid/Rocketstarの境界を12の横断受入シナリオへ固定した。ProはNVIDIA高性能si PC。MiniはR5・国内LTE・許可トラフィックを明示し旧四方向/5G構想を履歴へ分離する。
 
-検証: 最終 `npm run verify` exit0（Node2142 pass/既存skip1、仕事API1356、CSV385、asset欠落0）。50要望の対応・90参照・Jennifer/Pro補足を含む独立再検収が合格。文書・回帰の結果とGit/GitHub/main/公開の区別は[証拠](docs/evidence/service-design-rebuild.json)へ記録する。次はJennifer sourceのCI/検収・context受入と実装branchへの引継ぎ同期、既存文章仕事の同一公開artifact受入。後払い/旧Wallet gate・passkey/Provider・OS/各hardwareは独立条件。
+第一者の画面、成果文、ヘルプ、Android Shell、Mini/Pro紹介、設計文と図の表示は小文字siへ統一。[表記契約](data/product-terminology.json)でAPI/schema/保存キー/task ID、npm `ai`、外部固有名、原本byteを維持する。実行ロジック・課金方式・権限・受入gateは変更しない。元のdirty作業コピーは保全し、[draft PR #114](https://github.com/k999ln/rock/pull/114)を更新する。main統合と公開Site配備は未実施。
+
+検証中: 前版の全体verify成功（Node2142 pass/既存skip1、仕事API1356、CSV385、asset欠落0）を履歴として保持。今回の表示/設計変更は型検査・baseline、Site24件・Fashion2件・AMC58件が成功し、独立検収の古いSIM/888説明、R5構成、LTE国/SKU、章数の指摘を修正。最終全体verifyとGitHub保存は[証拠](docs/evidence/service-design-rebuild.json)へ別記録する。次は設計/si表示の実装branch同期、realm/ID→取消→階層予算/後払い→真正review→grant/削除復旧→authority移管を既存fixtureで受入。Jennifer専用branchのCI2件/context、Provider/実機/飛行は未受入のまま引き継ぐ。
 
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
@@ -45,7 +47,7 @@ v52/source `08e1ae494a3ae332dbd5d1c2cf1098332cb2744b` は2026-10-12 17:16:32.563
 
 ## 2026-10-12 — Columbiaの学生向けSky NFCカードの設計（Product / UX・Campus、ROCK）
 
-利用者の「NFCタグにSKYを入れるための構想をして」と、質問への回答（タッチでSkyのTool／Agentを開く、Columbiaの学生、avokadoが書いて配る、1枚＝Columbia用Skyの入口、出典整理・AMC・特許アシスタント、英語版、特許は米国を追加しAI調査は最初は出さない、Columbiaと書く、実装はCodex）を受け、[設計書](docs/sky-nfc-columbia.md)と[Codexへの依頼](docs/prompts/sky-nfc-columbia-codex.md)を追加した。既存のCampusタグ入口 `/t/[tagId]` と匿名集計を使い、`avocadomini.si/t/*` からの転送、`/sky/campus/columbia` の英語入口、3つのToolの英語版、カード経由の特許AI調査の停止を実装し、`CAMPUS02` の台帳と設計台帳を同期した。A1〜A7の対象試験56/56、avocadoMini 24/24、型検査、lint、project・mission・design検査は合格。`npm run verify` は対象外の全体試験まで進み、sandboxが `127.0.0.1` のlistenを許可しない `EPERM` と通常macOS/Linux userを要求するPC Citations試験の既知環境差だけで停止し、代表4試験はclean mainでも同じ失敗を確認した。A8の実物カード確認、本番配備、カードの印刷・書き込み・配布はまだ。
+利用者の「NFCタグにSKYを入れるための構想をして」と、質問への回答（タッチでSkyのTool／Agentを開く、Columbiaの学生、avokadoが書いて配る、1枚＝Columbia用Skyの入口、出典整理・AMC・特許アシスタント、英語版、特許は米国を追加しsi調査は最初は出さない、Columbiaと書く、実装はCodex）を受け、[設計書](docs/sky-nfc-columbia.md)と[Codexへの依頼](docs/prompts/sky-nfc-columbia-codex.md)を追加した。既存のCampusタグ入口 `/t/[tagId]` と匿名集計を使い、`avocadomini.si/t/*` からの転送、`/sky/campus/columbia` の英語入口、3つのToolの英語版、カード経由の特許si調査の停止を実装し、`CAMPUS02` の台帳と設計台帳を同期した。A1〜A7の対象試験56/56、avocadoMini 24/24、型検査、lint、project・mission・design検査は合格。`npm run verify` は対象外の全体試験まで進み、sandboxが `127.0.0.1` のlistenを許可しない `EPERM` と通常macOS/Linux userを要求するPC Citations試験の既知環境差だけで停止し、代表4試験はclean mainでも同じ失敗を確認した。A8の実物カード確認、本番配備、カードの印刷・書き込み・配布はまだ。
 
 ## 2026-10-13 — 複数Toolの仕事・レシピを公開製品へ接続（G04 / WEB04、ROCK、着手）
 
@@ -118,7 +120,7 @@ PR #105をmain向けDraftとして保存し、Android/native・RPC・Wallet・Ze
 利用者の「重複・もう使わない内容を削除したい」「gitはprojectへの導線なので見やすく」「パブリックで進めたい。みんなが見れるが大事なところは見れないように」「全部確定でいい」「今まで通りの上に描きたし」を受けた。主担当はGit / CI / Operations（ROCK）。`k999ln/rock` を公開のまま使い続け、履歴は書き換えず、main `bcd31090`（PR #99 統合後）の上に整理のcommitを足した。開いていたPR（#84・#85・#88・#89・#90・#93・#94・#95）はPR #99で統合済みのため、この作業では統合しない。
 
 - 使わなくなった資料を削除した: 実験Toolkit（polymarket・meme-intelligence・avocado-farm）とそのCI、退役branch向けCI 3本、旧avocadoMini版（Mini200 E1/E2・Tower20 E3）、9月前半の作業記録、rocketstarの旧版・作業フォルダ・ZIP重複、それらだけが参照する証拠。fashion-brand-opsはSkyのready Toolなので残した。削除したpathは同日のCodexによる旧指示の削除10件と合わせて `data/archived-paths.json` に記録し、台帳の検査はこの一覧を受け付ける。復元元はすべて削除前のcommit `96845e6006c15e39ba5b45495f79c21bdff7399e`。暗号化したファイルのリンクはこのcommitの固定URLへ向け、公開ファイルでは削除済みと書くだけにした。
-- 大事な資料はgit-cryptで暗号化する（一覧は `.gitattributes`、説明は docs/README.md「暗号化している場所」）: ハード設計・発明・意匠、お金・価格・契約、調査資料、会話記録、AIへの指示文、開発の内部。AMCの画面が表示する台帳は利用者の判断で公開のまま。法律AI・特許AIの指示文と弁護士一覧は `private/` へ移し、鍵がないビルドでは公開用の仮の内容に置き換える（`scripts/generate-private-modules.mjs`）。暗号化はこのcommitからの版に効く。それより前の版はGit履歴の中で読めるまま（利用者はこれを了解して上書きなしの方式を選んだ）。
+- 大事な資料はgit-cryptで暗号化する（一覧は `.gitattributes`、説明は docs/README.md「暗号化している場所」）: ハード設計・発明・意匠、お金・価格・契約、調査資料、会話記録、siへの指示文、開発の内部。AMCの画面が表示する台帳は利用者の判断で公開のまま。法律si・特許siの指示文と弁護士一覧は `private/` へ移し、鍵がないビルドでは公開用の仮の内容に置き換える（`scripts/generate-private-modules.mjs`）。暗号化はこのcommitからの版に効く。それより前の版はGit履歴の中で読めるまま（利用者はこれを了解して上書きなしの方式を選んだ）。
 - 入口を見やすくした: READMEを訪問者向けに書き直し、AGENTS.mdを公開の共通ルールと非公開の `AGENTS.private.md` に分けた。
 - 確定事項を反映した: 主商品はアカウントで使うAgent、SIMは機器の任意部品（製品ベース v1.98 2026-10-10、`accountEntryDecision`、`miniCellularIntent`、入口ページ）。同日のRQ50（Sky Compute Grid、v1.97）は維持した。
 - 公開CIには鍵を渡さない。`npm run verify:public` が鍵の要る検査を名前を出して飛ばす。鍵のある環境では `npm run verify`。push前に `npm run private:check` で暗号化対象が平文で入っていないことを確かめる。
@@ -243,7 +245,7 @@ Compute Gridで、別orderへreceiptを転用でき、別leaseへverified金額�
 
 GitHub main `0455499d`、PR #95 head `dd31cc01`を確認。元dirty checkout・元HTMLの保存記録は保持する。計画生成はread-only、モデル出力は未承認draft。公開Sky/Zemaの実行権限・課金・本人検収・main統合を拡張しない。入力の送信先と範囲を画面に示し、明示操作前にCodexへ送らない。対象試験、実Codex計画、UI、独立検収、同一SHA CIを別々に検証する。
 
-可変計画API・Codex接続画面・追加指示の累積・旧Goal保持を実装。対象132試験合格、独立検収pass。実CodexがGitと対象コードを調査し、README改善の依頼へ固定7工程ではない3作業のdraftを返した。ブラウザから共有確認前の未起動、実候補表示を確認。追加指示での実再計画を検証中。全体verifyは既知のai依存未配置でllm:architecture:check停止、同期／baseline／design等は合格。同一実装SHAのGitHub CIを別途確認する。
+可変計画API・Codex接続画面・追加指示の累積・旧Goal保持を実装。対象132試験合格、独立検収pass。実CodexがGitと対象コードを調査し、README改善の依頼へ固定7工程ではない3作業のdraftを返した。ブラウザから共有確認前の未起動、実候補表示を確認。追加指示での実再計画を検証中。全体verifyは既知の`ai`依存未配置でllm:architecture:check停止、同期／baseline／design等は合格。同一実装SHAのGitHub CIを別途確認する。
 
 実装SHA `9f3d950c` の初回CIはtypecheck通過後、lintの制御文字regexと新規20試験の未await登録で停止。制御文字の拒否条件を文字コード比較へ保ち、既存試験と同じawait登録へ修正して再検証する。実Codexの追加指示は2作業のdraftを返し、既存CLI非変更条件を保持した。
 
@@ -259,7 +261,7 @@ main `0455499d`、PR #95 head `0b106304` と同SHAの8 checks成功を確認。�
 
 添付された47,586 byteのJSONで実GitHub調査を行い、コピーの全byte・Goal ID・revision 1・7 task・既存engineの指示書が一致した。原本hashは不変、着手候補はREQ-01。main `0455499d`、調査時HEAD `0b106304`、Operations参照919 file／72 taskを取得。保存されたactiveは入力の記録でありBot起動の結果ではない。対象試験・独立した読み取り検収・全体CIを続けて確認する。
 
-対象32試験合格。JSON不正・過大・通常ファイル以外・混在引数を拒否し、読込み後に入力pathが変わっても同じsnapshotを引き継ぐ。起動argvはstubで確認し、実モデル任務の完走とは区別する。全体verifyは同期／baseline／design等を通過後、隔離作業木にai依存がないためllm:architecture:checkで停止。[証拠](docs/evidence/project-bot-goal-input.json)と同一実装SHAのCIで補う。
+対象32試験合格。JSON不正・過大・通常ファイル以外・混在引数を拒否し、読込み後に入力pathが変わっても同じsnapshotを引き継ぐ。起動argvはstubで確認し、実モデル任務の完走とは区別する。全体verifyは同期／baseline／design等を通過後、隔離作業木に`ai`依存がないためllm:architecture:checkで停止。[証拠](docs/evidence/project-bot-goal-input.json)と同一実装SHAのCIで補う。
 
 独立したAMC検収担当が入力接続をpassと判定。不正UTF-8の置換を独立再現して修正を確認し、24対象試験を再実行した。元Goalの正式受入やWeb検収イベントではない。実装SHA `bfecf01b63651a7fea4b5279f335136d395538dd` の全体verify・CodeQL等8 check-runsがsuccess。AMC05は直接入力・指示生成・引渡しの範囲でdone。PR #95へ保存、main未統合。添付Goalの7任務完走、無人常駐、Web同期は今回の受入対象に含めない。
 
@@ -269,7 +271,7 @@ main `0455499d`、PR #95 head `0b106304` と同SHAの8 checks成功を確認。�
 
 main `0455499d`、PR #95 head `c65cb8ed` と同SHAの8 CI成功を確認し、同じ専用branchで続行。元のdirty checkoutは保持する。対象は開発Botのワークフローで、Web Toolの起動機能、無人常駐、main統合、公開、実機・実資金のgateは変更しない。検証結果と実Botによる一件完走は分けて記録する。
 
-対象23試験合格。実GitHubのmain/branch/PR/CI、Sky担当186 fileと68 taskを取得し、SKY07-01をrootとするAMC draft（依存含む16 task、承認なし）を作成した。実Codexの起動は行っておらず、実装・検収・Git提出の完走とは区別する。[検証証拠](docs/evidence/project-bot-amc.json)。ローカル全体verifyは既知のai依存未配置で停止。同期・baseline・design等は合格。同一SHAのGitHub CIで全体を確認する。
+対象23試験合格。実GitHubのmain/branch/PR/CI、Sky担当186 fileと68 taskを取得し、SKY07-01をrootとするAMC draft（依存含む16 task、承認なし）を作成した。実Codexの起動は行っておらず、実装・検収・Git提出の完走とは区別する。[検証証拠](docs/evidence/project-bot-amc.json)。ローカル全体verifyは既知の`ai`依存未配置で停止。同期・baseline・design等は合格。同一SHAのGitHub CIで全体を確認する。
 
 実装SHA `59d7d6dc54a15d182e59796f499e008bf7a0b1f4` の全体verify・CodeQL等8 check-runsがsuccess。AMC04はGit収集・AMC候補作成・native Botへの引渡しの接続範囲でdone。後続変更は結果と生成進捗の記録のみ。実Botの開発・独立検収・Git提出の一件完走、Web同期、main統合、公開は未受入。PR #95へ保存し、次の具体的な依頼で実行成果を照合する。
 
@@ -279,7 +281,7 @@ main `0455499d`、PR #95 head `c65cb8ed` と同SHAの8 CI成功を確認し、�
 
 main `0455499d` と作業branch `ad6c3472` を確認、後者の8 CI成功を確認した上で着手。今回の変更後の試験・全体verify・GitHub保存は別記録する。main統合・公開は未実施。
 
-10担当のnative Codex TOML、一覧／担当表示／依頼時の対話CLI、task主担当と保留の引継ぎ、Git／PR提出の作業契約を実装。対象16試験・TOML10件・生成同期・mission/project/diff合格。全体verifyはDB進捗件数を同期後、開発依存ai未配置で停止。GitHub同一head CIを確認する。検証証拠は[担当Bot](docs/evidence/project-bots.json)。 初回CI dcf2616dは追加試験のsort比較関数を要求するlintで停止。文字列比較を明示して再検査する。CodeQL等の取得済み他7 checksはsuccess。実モデル呼出し・PR提出完走の受入、独立検収、GitHub App作成は未実施。
+10担当のnative Codex TOML、一覧／担当表示／依頼時の対話CLI、task主担当と保留の引継ぎ、Git／PR提出の作業契約を実装。対象16試験・TOML10件・生成同期・mission/project/diff合格。全体verifyはDB進捗件数を同期後、開発依存`ai`未配置で停止。GitHub同一head CIを確認する。検証証拠は[担当Bot](docs/evidence/project-bots.json)。 初回CI dcf2616dは追加試験のsort比較関数を要求するlintで停止。文字列比較を明示して再検査する。CodeQL等の取得済み他7 checksはsuccess。実モデル呼出し・PR提出完走の受入、独立検収、GitHub App作成は未実施。
 
 実装SHA `4a8861b4beb11437d4bc08b47455e81f99cd12e1` で全体verify・CodeQLを含む8 check-runsがsuccess。AMC03は開発Botの設定と起動入口の範囲でdone。後続変更はこの結果と生成進捗の記録。PR #95へ保存済み、main統合・公開なし。次は具体的な一件を担当Botへ依頼し、実行成果とPRを受け入れる。
 
@@ -298,7 +300,7 @@ PR #95へ保存。初回head 68a4dcfbのGitHub全体verifyは成功。CodeQLが�
 
 開始2026-10-11 09:13:50 UTC、終了予定19:13:50 UTCの10時間枠。基点mainは `96845e6006c15e39ba5b45495f79c21bdff7399e`、作業branchは `codex/rock-development-20261011`。現在の明示指示に従い、参照監査後に旧CHECKPOINT・重複README・旧指示など8ファイル（161082 bytes）を削除した。必要な開発手順と再開先は現行の入口へ収束し、過去のリンクは固定commitを参照する。[削除一覧と復元方法](docs/git-consolidation.md#obsolete-content-cleanup)。固定証拠・vendor・ライセンス・欠落回収原本は保持。変更文書の相対リンク1,877件は欠落0、project/mission/repository/baseline/design/database検査が合格。全体verifyは統合後に実施し、GitHub保存・main統合・公開・実機受入は未実施。
 
-既存PRの統合とサービス／基盤／応用の開発を専用worktreeで並行する。失われたSIM01・SKY21・B06・G04、AI状態、設計索引を現在の実装と照合して復旧する。過去の成功を今回のsourceへ転記しない。
+既存PRの統合とサービス／基盤／応用の開発を専用worktreeで並行する。失われたSIM01・SKY21・B06・G04、si状態、設計索引を現在の実装と照合して復旧する。過去の成功を今回のsourceへ転記しない。
 
 ## 2026-10-09 — READMEを約1画面に短くし、本文を詳しい版へそのまま移した（Git / CI / Operations、ROCK）
 
@@ -334,7 +336,7 @@ GitHubへの反映: 作業環境からのpushは権限がなく拒否された�
 
 統合CIで旧Sky検査が共通化前の保存APIを要求する点と、既知の公開保存キー名の移動先2pathが誤検知される点を確認した。検査を共通保存境界と呼出元に合わせ、既存の完全一致・path限定規則だけを2pathへ広げる。全履歴走査・既定規則・秘密の非出力・固定controlを維持する。
 
-対象31試験・型・対象lint・production buildと限定UI受入は合格済み。同一commitのGitHub CIを確認してmainへ統合する。[検証範囲と残課題](docs/evidence/sky-zema-main-integration.json)を正本とし、Agent／Cloud AIの表示3経路、実認証・実決済・実接続・実機・公開受入は未完了のまま保持する。GitHub保存はSites配備やローンチの完了を意味しない。
+対象31試験・型・対象lint・production buildと限定UI受入は合格済み。同一commitのGitHub CIを確認してmainへ統合する。[検証範囲と残課題](docs/evidence/sky-zema-main-integration.json)を正本とし、Agent／Cloud siの表示3経路、実認証・実決済・実接続・実機・公開受入は未完了のまま保持する。GitHub保存はSites配備やローンチの完了を意味しない。
 
 ## 2026-10-07 — 保存済みSky修正と最新mainのローカル統合（034、独立検収候補）
 
@@ -381,19 +383,19 @@ commerce 45試験、marketplace 14試験、実UIコンポーネントと実handl
 次は独立レビューと許可されたローカルブラウザーでの409復帰確認。Providerの保存競合、AMC actorの出所、17隣接API、実機・本番Gateは残る。S7-01／親／公開を完了扱いにせず、正本Goal r48は変更しない。
 ## 2026-10-07 — SPIDER: cache修正PRを文書整理後のmainへ同期（SYS15）
 
-Security / ROCK、SYS15主担当H1。既存PR #84へmain `0455499d` の文書整理と履歴復元を取り込み、project.mdの読み方・題名・復元済み履歴・日付順とcache修正の既存記録を両方保持して競合を解消する。cache runtime・13回帰試験・検査workflow・元licenseは前回検証済み `1a5a7079` と同じ内容を維持する。cache／release回帰とrelease／mission／project／database整合検査は合格。ローカル全体verifyは既知の未導入ai依存（ERR_MODULE_NOT_FOUND）で停止。同一SHAのGitHub全体verify／SPIDERは後続確認。main統合、公開、実機変更、警告dismissは行わない。[検証記録](docs/evidence/spider-cache-error-revalidation.json)。
+Security / ROCK、SYS15主担当H1。既存PR #84へmain `0455499d` の文書整理と履歴復元を取り込み、project.mdの読み方・題名・復元済み履歴・日付順とcache修正の既存記録を両方保持して競合を解消する。cache runtime・13回帰試験・検査workflow・元licenseは前回検証済み `1a5a7079` と同じ内容を維持する。cache／release回帰とrelease／mission／project／database整合検査は合格。ローカル全体verifyは既知の未導入`ai`依存（ERR_MODULE_NOT_FOUND）で停止。同一SHAのGitHub全体verify／SPIDERは後続確認。main統合、公開、実機変更、警告dismissは行わない。[検証記録](docs/evidence/spider-cache-error-revalidation.json)。
 
 ## 2026-10-08 — SPIDER: 公開保存キーの移動に伴う固定検査設定の同期（SYS15）
 
-Security / ROCK、SYS15主担当H1。PR #93の秘密検査2件をsourceで確認し、同じ公開storage item名の移動先2 pathが固定controlの設定にないことを確認した。既存の値完全一致とpath完全一致・AND条件を維持して2 pathだけを追加し、公開値の出所記録を保持する。実Gitleaks 8.30.1で修正前の回帰1件失敗を確認し、修正後はpolicy 10件・scanner境界6件が合格。各pathの別秘密値と未承認pathへのコピーを拒否する。同一PR #93 candidateの履歴1,075件を実検査し、旧設定2件／修正設定0件・走査完了を確認。mission／project／database整合は合格、ローカル全体verifyは未導入ai依存で停止。独立レビューで例外の限定と各pathの拒否を確認した。レビュー済みcontrol `b4c9000e` へworkflowを固定した。同一SHA CIは後続確認。main統合、公開、実機、秘密rotationは行わない。[検証記録](docs/evidence/spider-zema-storage-policy.json)。
+Security / ROCK、SYS15主担当H1。PR #93の秘密検査2件をsourceで確認し、同じ公開storage item名の移動先2 pathが固定controlの設定にないことを確認した。既存の値完全一致とpath完全一致・AND条件を維持して2 pathだけを追加し、公開値の出所記録を保持する。実Gitleaks 8.30.1で修正前の回帰1件失敗を確認し、修正後はpolicy 10件・scanner境界6件が合格。各pathの別秘密値と未承認pathへのコピーを拒否する。同一PR #93 candidateの履歴1,075件を実検査し、旧設定2件／修正設定0件・走査完了を確認。mission／project／database整合は合格、ローカル全体verifyは未導入`ai`依存で停止。独立レビューで例外の限定と各pathの拒否を確認した。レビュー済みcontrol `b4c9000e` へworkflowを固定した。同一SHA CIは後続確認。main統合、公開、実機、秘密rotationは行わない。[検証記録](docs/evidence/spider-zema-storage-policy.json)。
 
 ## 2026-10-07 — SPIDER: root画像処理修正PRを文書整理後のmainへ同期（SYS15）
 
-Security / ROCK、SYS15主担当H1。既存PR #90へmain `0455499d` の文書整理と履歴復元を取り込み、project.mdの競合はmainの読み方・題名・復元済み履歴・日付順とroot sharpの既存記録を両方残して解消する。sharp 0.35.5・同梱native lock・license inventory・native回帰3試験は前回検証済み `90f8df72` と同じ内容を維持する。release回帰35/35、release／inventoryとmission／project／databaseの整合検査は合格。ローカル全体verifyは既知のai依存未導入で停止し、root sharpも未導入のためnative 3試験は同一SHAのLinux CIで確認する。独立レビューでmain文書30件・見出し410件・sharp修正と全体nextActionの保持を確認。新しいSHAのGitHub全体verify／SPIDERは後続確認。main統合、公開、実機変更、秘密のローテーションは行わない。[検証記録](docs/evidence/spider-root-sharp-update.json)。
+Security / ROCK、SYS15主担当H1。既存PR #90へmain `0455499d` の文書整理と履歴復元を取り込み、project.mdの競合はmainの読み方・題名・復元済み履歴・日付順とroot sharpの既存記録を両方残して解消する。sharp 0.35.5・同梱native lock・license inventory・native回帰3試験は前回検証済み `90f8df72` と同じ内容を維持する。release回帰35/35、release／inventoryとmission／project／databaseの整合検査は合格。ローカル全体verifyは既知の`ai`依存未導入で停止し、root sharpも未導入のためnative 3試験は同一SHAのLinux CIで確認する。独立レビューでmain文書30件・見出し410件・sharp修正と全体nextActionの保持を確認。新しいSHAのGitHub全体verify／SPIDERは後続確認。main統合、公開、実機変更、秘密のローテーションは行わない。[検証記録](docs/evidence/spider-root-sharp-update.json)。
 
 ## 2026-10-07 — SPIDER: SDK修正PRを文書整理後のmainへ同期（SYS15）
 
-Security / ROCK、SYS15主担当H1。既存PR #89へmain `0455499d`（PR #92の文書整理・履歴復元）を取り込む。競合したproject.mdはmainの読み方・題名・復元済み履歴・日付順を維持し、既存SDK監査同期の記録を残した。SDK 1.32.1のlock、lock hashとlicense台帳、上流の機能・全体nextActionは変更しない。release回帰35/35、release:check、inventory checkは合格、ready 0/6・blocked 6と法的clearanceは維持。mission／project／databaseの整合更新・検査は合格。ローカル全体verifyは既存と同じai依存未導入でllm:architecture:check停止。独立レビューでmain文書30件・見出し410件・SDK修正と全体nextActionの保持を確認。変更SHAのGitHub全体verify・SPIDER再解析は後続確認。main統合・公開・実機変更は行わない。[検証記録](docs/evidence/spider-sdk-lock-audit.json)。
+Security / ROCK、SYS15主担当H1。既存PR #89へmain `0455499d`（PR #92の文書整理・履歴復元）を取り込む。競合したproject.mdはmainの読み方・題名・復元済み履歴・日付順を維持し、既存SDK監査同期の記録を残した。SDK 1.32.1のlock、lock hashとlicense台帳、上流の機能・全体nextActionは変更しない。release回帰35/35、release:check、inventory checkは合格、ready 0/6・blocked 6と法的clearanceは維持。mission／project／databaseの整合更新・検査は合格。ローカル全体verifyは既存と同じ`ai`依存未導入でllm:architecture:check停止。独立レビューでmain文書30件・見出し410件・SDK修正と全体nextActionの保持を確認。変更SHAのGitHub全体verify・SPIDER再解析は後続確認。main統合・公開・実機変更は行わない。[検証記録](docs/evidence/spider-sdk-lock-audit.json)。
 
 ## 2026-10-07 — アカウント入口と回線の役割整理（SIM01 / MAT15 / BIL02、提案のみ）
 
@@ -423,17 +425,17 @@ Security / ROCK。AMCのSYS15主担当は既存taskAssignmentsのH1（coordinati
 
 2026-10-06 SPIDER cycle57: PR #84の旧head `de3a446b`は同一SHAの7検査が成功。main `1f864be0`のPixel build準備と、並行して統合された`e22b4a69`のSky接続案内修正を作業branchへ取り込み、進捗本文と各status fieldを両方保持し、共通nextActionは最新mainを維持する。cache sourceと13回帰試験は変更しない。取り込み後候補の検査は別途確認し、旧SHAの合格を転用しない。mainのCodeQL34件はidentity・rule・path・状態に変化なし。新たなDependabot #26/#27/#28は既存更新PRとの重複を確認して分離し、今回のcache修正で解消済みとはしない。
 
-2026-10-07 SPIDER cycle62: 旧head `819422c4` は同一SHAの全8検査に合格済み（[verify](https://github.com/k999ln/rock/actions/runs/37512489543)）。main `0fbf688b` のSky・データ回収・LLM追加と共通nextActionを保持し、project.mdの競合を両方の記録を残して解消する。cache runtime、13回帰試験、検査workflow、元licenseは変更せず、統合後SHAで再検査する。旧SHAの合格や現在の警告件数を新候補の修正完了に置き換えない。今回のcache回帰13/13、mission／project／database整合と独立レビューは合格。ローカル全体verifyはllm:architecture:checkで未導入aiによるERR_MODULE_NOT_FOUNDとなり、同一SHAのGitHub full verifyを待つ。
+2026-10-07 SPIDER cycle62: 旧head `819422c4` は同一SHAの全8検査に合格済み（[verify](https://github.com/k999ln/rock/actions/runs/37512489543)）。main `0fbf688b` のSky・データ回収・LLM追加と共通nextActionを保持し、project.mdの競合を両方の記録を残して解消する。cache runtime、13回帰試験、検査workflow、元licenseは変更せず、統合後SHAで再検査する。旧SHAの合格や現在の警告件数を新候補の修正完了に置き換えない。今回のcache回帰13/13、mission／project／database整合と独立レビューは合格。ローカル全体verifyはllm:architecture:checkで未導入siによるERR_MODULE_NOT_FOUNDとなり、同一SHAのGitHub full verifyを待つ。
 
 ## 2026-10-06 — SPIDER: root sharp／librsvgの依存修正（SYS15）
 
 Security / ROCK、AMCのSYS15主担当H1を維持する。main `e22b4a69`から独立branchを作り、Dependabot #26のroot開発依存を対象にする。sharpの同梱librsvgでnested XInclude中の重複entity宣言によるuse-after-freeが上流で修正されたため、miniflare向けoverrideをsharp 0.35.5へ上げ、native配布物を含むlockの27項目とlicense inventoryだけを同期する。対象外の依存・法的clearance・release gateは維持。既存PR #88のsite sharp、#89のMCP SDKは重複修正しない。更新前後のnpm advisory検査で対象sharp advisoryの有無を照合し、実際にロードするlibrsvgとSVG／PNG処理を回帰検証する。Macで実ロードされたsharp 0.35.5／libvips 8.18.7／librsvg 2.63.2を確認し、bounded childのSVG pixel・PNG round-tripを含む3/3試験が合格。旧版のnative比較は容量不足で未実行であり、CVEの攻撃再現合格とはしない。ローカル全体verifyはrelease:signing:checkの一時fixture作成でENOSPCとなり未完了。Linuxの同一SHA GitHub検査は後続確認。main上のalertは未統合のためopenであり、件数だけで修正完了としない。[検証記録](docs/evidence/spider-root-sharp-update.json)。
 
-2026-10-07の統合同期: PR #90の元候補 `0e87b9a8` はLinuxのnative 3試験を含む全8検査に合格済み（[verify](https://github.com/k999ln/rock/actions/runs/37554875390)）。main `0fbf688b` の追加機能とglobal nextActionを保持して進捗2ファイルの競合を解消する。sharp依存・lock・license inventory・native回帰試験は元候補から変更せず、統合commitで全体CIとSPIDERを再確認する。元候補の成功を新しいSHAへ転用せず、main上のDependabot #26は未統合のためopen。mission／project／database／release／license inventoryの整合検査と独立レビューは合格。今回のローカル全体verifyはllm:architecture:checkで未導入のai依存によるERR_MODULE_NOT_FOUNDとなり、ENOSPCは発生していない。Linuxの同一SHA CIへ検証を引き継ぐ。
+2026-10-07の統合同期: PR #90の元候補 `0e87b9a8` はLinuxのnative 3試験を含む全8検査に合格済み（[verify](https://github.com/k999ln/rock/actions/runs/37554875390)）。main `0fbf688b` の追加機能とglobal nextActionを保持して進捗2ファイルの競合を解消する。sharp依存・lock・license inventory・native回帰試験は元候補から変更せず、統合commitで全体CIとSPIDERを再確認する。元候補の成功を新しいSHAへ転用せず、main上のDependabot #26は未統合のためopen。mission／project／database／release／license inventoryの整合検査と独立レビューは合格。今回のローカル全体verifyはllm:architecture:checkで未導入の`ai`依存によるERR_MODULE_NOT_FOUNDとなり、ENOSPCは発生していない。Linuxの同一SHA CIへ検証を引き継ぐ。
 
 ## 2026-10-07 — SPIDER: 既存SDK修正PRの依存監査同期（SYS15）
 
-Security / ROCK、SYS15主担当H1。既存Dependabot PR #89のSDK 1.30.0→1.32.1を継続し、main `0fbf688b` の機能・進捗を保持する。release:check失敗を再現し、古いlock hashを指す監査一覧だけを既存generatorで同期した。監査の変更はpackageLockSha256のみで、ライセンス集計・NOT_CLEARED・公開gateは維持。修正後はrelease:check、inventory checkと既存release回帰35/35が成功。SDKの上流OAuth issuer結合修正と、既存credentialのissuer未記録時に残る初回利用の条件をsourceで確認した。SDKはshadcnの推移依存で、今回OAuth連携実装や実credential移行・攻撃再現は行わない。mission／project／database整合と独立レビューは合格。ローカル全体verifyはllm:architecture:checkで未導入ai依存のERR_MODULE_NOT_FOUNDとなった。変更前branchのCodeQL解析は同一ref・SHAで両言語成功、open 34件を保存済み。変更SHAのGitHub全体verify・SPIDER再検査と同一ref比較は後続確認。main統合・公開・実機変更は実行しない。[検証記録](docs/evidence/spider-sdk-lock-audit.json)。
+Security / ROCK、SYS15主担当H1。既存Dependabot PR #89のSDK 1.30.0→1.32.1を継続し、main `0fbf688b` の機能・進捗を保持する。release:check失敗を再現し、古いlock hashを指す監査一覧だけを既存generatorで同期した。監査の変更はpackageLockSha256のみで、ライセンス集計・NOT_CLEARED・公開gateは維持。修正後はrelease:check、inventory checkと既存release回帰35/35が成功。SDKの上流OAuth issuer結合修正と、既存credentialのissuer未記録時に残る初回利用の条件をsourceで確認した。SDKはshadcnの推移依存で、今回OAuth連携実装や実credential移行・攻撃再現は行わない。mission／project／database整合と独立レビューは合格。ローカル全体verifyはllm:architecture:checkで未導入`ai`依存のERR_MODULE_NOT_FOUNDとなった。変更前branchのCodeQL解析は同一ref・SHAで両言語成功、open 34件を保存済み。変更SHAのGitHub全体verify・SPIDER再検査と同一ref比較は後続確認。main統合・公開・実機変更は実行しない。[検証記録](docs/evidence/spider-sdk-lock-audit.json)。
 
 ## 2026-10-06 — Sky・データ回収・LLMの追加機能（HOME01 / SYS01 / WEB14、実装・検証）
 
@@ -451,9 +453,9 @@ main `e12d880c`から隔離した配布候補へ、接続手順を展開した�
 
 ## 2026-10-06 — Pixel 10向けOS完成作業を開始（OS11 / RLS02）
 
-利用者の「os完成させようよ」に基づき、Android / Device / Local AI、ROCKを主担当に全OS compileから同一artifact受入へ進める。最新main e12d880cから隔離branchを開始。署名付き上流安定版の再確認と、生成target-files/otatoolsの内容・hash・build identityを照合する工程を先行する。既存Scaleway案はアカウント設定済み記録があるが予算未確定。全OS buildには専用x86_64 Linuxが必要で、現在のMacは不適合、ADB接続端末0台。クラウド支出上限の回答を待つ間はROCKの準備実装を進める。鍵生成、端末初期化/書込、正式署名、実機合格は未実施。
+利用者の「os完成させようよ」に基づき、Android / Device / Local si、ROCKを主担当に全OS compileから同一artifact受入へ進める。最新main e12d880cから隔離branchを開始。署名付き上流安定版の再確認と、生成target-files/otatoolsの内容・hash・build identityを照合する工程を先行する。既存Scaleway案はアカウント設定済み記録があるが予算未確定。全OS buildには専用x86_64 Linuxが必要で、現在のMacは不適合、ADB接続端末0台。クラウド支出上限の回答を待つ間はROCKの準備実装を進める。鍵生成、端末初期化/書込、正式署名、実機合格は未実施。
 
-署名済みsource `2026100200`へmanifest／adevtool／kernelを同期し、履歴の実機readbackは保持した。build runnerに実行固有BUILD_NUMBER、専用dist／証拠directory、失敗時の状態更新を追加。生成ZIPの機種・番号・Rock APK・image／OTA entryとhash、入力manifest／vendor／Local AIのhashを検査する。host/fixture: phone tests 41件、shell構文、device-support、baseline、design checks合格。ローカル全体verifyは既知のnode_modules未配置（ai package欠落）で停止し、同一branchのGitHub CIで検証する。全OS build、正式署名、flash、復旧は未実施。次は専用Linux／予算確定後にDevice Preview記載のbringup入口を実行し、同一artifactを受け入れる。
+署名済みsource `2026100200`へmanifest／adevtool／kernelを同期し、履歴の実機readbackは保持した。build runnerに実行固有BUILD_NUMBER、専用dist／証拠directory、失敗時の状態更新を追加。生成ZIPの機種・番号・Rock APK・image／OTA entryとhash、入力manifest／vendor／Local siのhashを検査する。host/fixture: phone tests 41件、shell構文、device-support、baseline、design checks合格。ローカル全体verifyは既知のnode_modules未配置（npm package `ai`欠落）で停止し、同一branchのGitHub CIで検証する。全OS build、正式署名、flash、復旧は未実施。次は専用Linux／予算確定後にDevice Preview記載のbringup入口を実行し、同一artifactを受け入れる。
 
 GitHub初回SHA d448c56cの全体verify合格。新規source証拠中の公開GrapheneOS署名指紋がsecret候補になったため、上流公開signersと一致する1値・1pathだけの分類を追加した。実Gitleaksの9 policy回帰合格（値変更・別path・scanner失敗の検出を維持）。最終SHAの全CIは再確認する。
 
@@ -473,7 +475,7 @@ PR #85のCIでDB一覧のnextAction再生成漏れを修正。SPIDERが検出し
 
 braces再帰DoS、http-cache-semanticsの4.3.0にも残ったmax-stale漏洩、CodeQLのConnection header正規表現DoSを修正。bracesのMIT／HTTP cacheのBSD-2-Clause原本・固定出所・変更hashを保持するlocal forkを使用する。局所回帰は旧版4/8 fail→修正版9/9 pass。GitHub全体Node 1362 pass / 0 fail / 1既定のunsupported-platform skip、root/site監査とも0 vulnerabilities。Dependabot #17/#18はdismissせず自動fixed、未処理PRは0。最終mainの再検査結果はGitHubの同一SHAを参照する。
 
-ローカル全体verifyは容量不足で依存再構築が中断し、ai package欠落で停止した。全体合格の根拠はGitHub run `37415979013`。この作業の一時依存だけを除去し、元checkoutの未保存eSIM/決済作業は保持。実機・正式署名・Provider・公開/実課金の個別gateは未解決のまま。[検証と保守条件](docs/evidence/security-gate-completion.json)。
+ローカル全体verifyは容量不足で依存再構築が中断し、npm package `ai`欠落で停止した。全体合格の根拠はGitHub run `37415979013`。この作業の一時依存だけを除去し、元checkoutの未保存eSIM/決済作業は保持。実機・正式署名・Provider・公開/実課金の個別gateは未解決のまま。[検証と保守条件](docs/evidence/security-gate-completion.json)。
 
 ## 2026-10-06 — SPIDER cycle 50: native診断の出力境界
 
@@ -499,7 +501,7 @@ H1 / R04、ROCK、主streamはGit / CI。main `ecb4b2af`でmanifestを旧merge�
 
 ## 2026-10-05 — Skyの保存・接続復帰候補をGitHub mainへ統合
 
-G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分をmain4928b64eへ選択的に移植した後、同時更新されたmain592daeeaのAMC・SPIDER、後続a3951f52のCSV共通処理修正を保持して統合。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補のnpm run verifyは成功（Node1151合格・1環境依存skip、仕事API1069、CSV385 assertions、build・asset検査）。Drizzle追加生成0件、Connector ZIP一致。検証記録はdocs/evidence/sky-github-main-integration.json。旧head21e45371のGitHub verify・SPIDER回帰・本番用応答検査は成功。CodeQL57の保存済みgrant自己照合を整理し、再接続・期限・不正Bearer回帰を追加。最新headのCIはPR #68で確認してから統合する。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
+G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分をmain4928b64eへ選択的に移植した後、同時更新されたmain592daeeaのAMC・SPIDER、後続a3951f52のCSV共通処理修正を保持して統合。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補のnpm run verifyは成功（Node1151合格・1環境依存skip、仕事API1069、CSV385 assertions、build・asset検査）。Drizzle追加生成0件、Connector ZIP一致。検証記録はdocs/evidence/sky-github-main-integration.json。旧head21e45371のGitHub verify・SPIDER回帰・本番用応答検査は成功。CodeQL57の保存済みgrant自己照合を整理し、再接続・期限・不正Bearer回帰を追加。最新headのCIはPR #68で確認してから統合する。公開Skyはv39のままで、実PC権限・新規課金・外部si・本番Cron・本人受入は別条件。
 
 ## 2026-10-05 — AMC有限fixtureとCSV共通処理をmainへ統合する準備（G04）
 
@@ -553,15 +555,15 @@ PR #52 の `eb86040d` に対する repair regressions は MR の source 試験�
 
 ## 2026-10-05 — SPIDER 独立ブランチへ PR #62 の統合候補を同期
 
-当時 main 未反映だった PR #62 候補 `dee0ab70`（19 PR と Android compile 修正）を、SPIDER の独立ブランチへローカル merge した。最新の依存・undici override・license inventory 生成、Campus/AI schema、SIM/eSIM 製品方針を保持し、SPIDER の実装と履歴検査の残事項を併存させた。必要な追跡済み asset の bytes を復元し、進捗 104/161、DB 6 境界/148 tables、Web schema 76 tables を再生成・検査した。MCP ZIP と SDK 0.1.3 tgz を合流後の source へ同期し、typecheck、全 Node 942 件（941 pass / 1 skip）、project/database/schema/baseline/design/repository/version/release の source 整合が成功。公開条件 ready 0/6、実機未受入、SPIDER の未照合 4 値/21 出現と GitHub security check は未解決のまま維持する。push/main merge・security 設定変更は行っていない。
+当時 main 未反映だった PR #62 候補 `dee0ab70`（19 PR と Android compile 修正）を、SPIDER の独立ブランチへローカル merge した。最新の依存・undici override・license inventory 生成、Campus/si schema、SIM/eSIM 製品方針を保持し、SPIDER の実装と履歴検査の残事項を併存させた。必要な追跡済み asset の bytes を復元し、進捗 104/161、DB 6 境界/148 tables、Web schema 76 tables を再生成・検査した。MCP ZIP と SDK 0.1.3 tgz を合流後の source へ同期し、typecheck、全 Node 942 件（941 pass / 1 skip）、project/database/schema/baseline/design/repository/version/release の source 整合が成功。公開条件 ready 0/6、実機未受入、SPIDER の未照合 4 値/21 出現と GitHub security check は未解決のまま維持する。push/main merge・security 設定変更は行っていない。
 
 ## 2026-10-05 — 没入型GTA調査の保存
 
-MAT14 / ROCK: 利用者の「mainにあげて」を受け、9月30日の資料66件・表示技術12方式の調査HTML、証拠JSON、AI生成の構想画像を[既存R5研究資料](docs/avocado-mini-r5/research/immersive-gta/README.md)へ保存する。調査時SHAを保持し、現在のmainやPR状態と区別する。構想画像は未実証で、GTA接続・Mini実機の試験を行っていない。MAT15のplanned、製造承認保留、R5製品要求を維持する。次はPC上の3D体験と光学実験を独立して検証する。原本ハッシュ・リンク・baseline:checkは合格。既存のsparse参照取得が容量不足で失敗し、project:updateとverifyはSIM01根拠不足で停止。MAT14の参照だけ手動同期し全体合格は主張しない。詳細は同ディレクトリのarchive-validation.json。
+MAT14 / ROCK: 利用者の「mainにあげて」を受け、9月30日の資料66件・表示技術12方式の調査HTML、証拠JSON、si生成の構想画像を[既存R5研究資料](docs/avocado-mini-r5/research/immersive-gta/README.md)へ保存する。調査時SHAを保持し、現在のmainやPR状態と区別する。構想画像は未実証で、GTA接続・Mini実機の試験を行っていない。MAT15のplanned、製造承認保留、R5製品要求を維持する。次はPC上の3D体験と光学実験を独立して検証する。原本ハッシュ・リンク・baseline:checkは合格。既存のsparse参照取得が容量不足で失敗し、project:updateとverifyはSIM01根拠不足で停止。MAT14の参照だけ手動同期し全体合格は主張しない。詳細は同ディレクトリのarchive-validation.json。
 
 ## 2026-10-05 — 未統合PRのmain反映（19件統合済み、SPIDER別管理）
 
-利用者の「mainにあげて」により、main `aa7f2b41` を基点に元20 PRを照合した。G04／Git・CI／ROCK担当。依存5件、AI/Game/Decision Fabric8件、Campus/Farm/Meme/LiveKit/名称/domain6件の計19 PRを、全10チェック成功の `1f353524` からPR #62でmain `9f64aee3`へ統合した。元19 headはすべてmainの祖先。旧bring-up branch向けdraft #25はmainへの取り込み確認後にcloseした。SIM/eSIM中心の現行製品方針と本人承認・決済・保存契約を保持し、Farm/MemeはPAPER限定、旧Cloud agent入口は見積・上限・receipt受入までdry-runのみとした。
+利用者の「mainにあげて」により、main `aa7f2b41` を基点に元20 PRを照合した。G04／Git・CI／ROCK担当。依存5件、si/Game/Decision Fabric8件、Campus/Farm/Meme/LiveKit/名称/domain6件の計19 PRを、全10チェック成功の `1f353524` からPR #62でmain `9f64aee3`へ統合した。元19 headはすべてmainの祖先。旧bring-up branch向けdraft #25はmainへの取り込み確認後にcloseした。SIM/eSIM中心の現行製品方針と本人承認・決済・保存契約を保持し、Farm/MemeはPAPER限定、旧Cloud agent入口は見積・上限・receipt受入までdry-runのみとした。
 
 Cloudflare peer型・lock・license inventory、Campusの所属認証と所有者交代競合、fixture model tableの衝突、既存Androidのcompile/Binder例外と古い試験・APK収集契約を修正。全verify成功（Node870、Fashion22、Mini18、公開Preview21、Meme7、Farm25、Worker/D1 1048、CSV113）。AndroidはCore111、SDK7、エミュレータ32件が成功し、実APKのsource SHA・hash・同一署名・Broker限定INTERNET・全APK cleartext禁止を確認。実機再起動専用2件は対象外、実機OS・正式署名・本番金融の受入へ換算しない。
 
@@ -635,7 +637,7 @@ AI02の別工程として124800 parametersをrandom-initから1000 steps学習�
 
 ## 2026-10-05 avokado専用モデルのゼロ事前学習試作を開始
 
-利用者がゼロからの事前学習、端末内とクラウドの両方、追加費用なしの試作を明示指定。AI02 / Android・Device・Local AIを主担当とし、無償のhost CPUでrandom-initの小型学習・評価・保存・再開・推論を先に検証する。Mini実機、cloud deployment、実用会話、本学習は未受入。既存Qwen/Broker/料金gateを置換しない。
+利用者がゼロからの事前学習、端末内とクラウドの両方、追加費用なしの試作を明示指定。AI02 / Android・Device・Local siを主担当とし、無償のhost CPUでrandom-initの小型学習・評価・保存・再開・推論を先に検証する。Mini実機、cloud deployment、実用会話、本学習は未受入。既存Qwen/Broker/料金gateを置換しない。
 
 ## 2026-10-05 GTA VIのプレイ入口実装
 
@@ -647,15 +649,15 @@ Game / Market / FundのROCK担当、AI06の非金融接続サブ項目。利用�
 
 ## 2026-10-05 avokadoProのNVIDIA小型PC構成・組立設計
 
-利用者指定: NVIDIA搭載、Mac miniのような据え置き小型PC、AIとPCゲーム両方、販売目標80万円/台（価格回答80の文脈解釈、税込/税別未定）。Material Invention / avocadoMiniを主担当とし、Mini MAT15から独立したMAT16を追加。main `9f64aee3de9cc74e6b6e7eae34052780e000c296`基点で、Core Ultra 9 / RTX 5080 Laptop 16GB / RAM128GB / SSD2TB×2の構成候補とOEM基準試作→ODM筐体の手順を保存した。確定BOM、見積、購入、物理組立、熱/AI/ゲーム受入、サイト公開は未実施。次は国内供給見積・メモリーQVL・ODM基板供給を確認。設計索引とbaseline/READMEを同期。`npm run verify` exit 0（Node 870、仕事API1048、CSV113）を確認。仕様数値とSVG XML検査、描画した外観図の目視確認が合格。物理受入は0件。証拠: `docs/evidence/avokado-pro-pc-design.json`。設計commit `33cea702c6c36a6bc973bedb966a7ef661514258`をGitHub `codex/avokado-pro-pc`へ保存、draft PR #64作成済み。main統合・サイト公開なし。GitHub CIは確認時check未表示で、local verify合格とは別。
+利用者指定: NVIDIA搭載、Mac miniのような据え置き小型PC、siとPCゲーム両方、販売目標80万円/台（価格回答80の文脈解釈、税込/税別未定）。Material Invention / avocadoMiniを主担当とし、Mini MAT15から独立したMAT16を追加。main `9f64aee3de9cc74e6b6e7eae34052780e000c296`基点で、Core Ultra 9 / RTX 5080 Laptop 16GB / RAM128GB / SSD2TB×2の構成候補とOEM基準試作→ODM筐体の手順を保存した。確定BOM、見積、購入、物理組立、熱/si/ゲーム受入、サイト公開は未実施。次は国内供給見積・メモリーQVL・ODM基板供給を確認。設計索引とbaseline/READMEを同期。`npm run verify` exit 0（Node 870、仕事API1048、CSV113）を確認。仕様数値とSVG XML検査、描画した外観図の目視確認が合格。物理受入は0件。証拠: `docs/evidence/avokado-pro-pc-design.json`。設計commit `33cea702c6c36a6bc973bedb966a7ef661514258`をGitHub `codex/avokado-pro-pc`へ保存、draft PR #64作成済み。main統合・サイト公開なし。GitHub CIは確認時check未表示で、local verify合格とは別。
 
 ## 2026-10-05 — 未完了・停止条件の解消（G04、API v4 APK build・検査・配置成功）
 
 利用者の「全部問題解決して進めて」を受け、Git / CI / Operations（ROCK）を主担当とする。main `996b1955`を独立worktreeへ固定。Web最新CIと直前mainのAndroid CIは合格済み。native main-1の未close SQLite接続、実機OS build/署名/復旧、Provider受入を区別して調査する。既存checkoutで進行中のeSIM/決済変更は別作業として保護する。
 
-nativeのSQLite接続3件を確実にcloseし、Linux CI 1,736試験と`npm run verify`がcommit `c79476e2`で合格。Local AI現行v4のunsigned APK workflowを実行し、9月からの`sdkmanager` PATH不備を再現・修正、`9d82ac5a`で再build中。Web/native workflowへ手動再検証入口を追加し、古いphone手順を`--mode bringup`/`--mode release`へ整合させる。全OS用x86_64 Linux/予算、flash 4 gate、実Provider、Mini実機、未修正版依存2件は未完了。再生成可能なnpm/pip/未使用Lima/停止中Gradleの変換cacheだけを整理し、ソース・VMは保持。ADB接続端末0。PR #65へ保存し、main統合・公開は別。詳細は[停止条件](docs/workstreams/10-git-ci-operations.md)と[証拠](docs/evidence/release-blocker-resolution.json)。
+nativeのSQLite接続3件を確実にcloseし、Linux CI 1,736試験と`npm run verify`がcommit `c79476e2`で合格。Local si現行v4のunsigned APK workflowを実行し、9月からの`sdkmanager` PATH不備を再現・修正、`9d82ac5a`で再build中。Web/native workflowへ手動再検証入口を追加し、古いphone手順を`--mode bringup`/`--mode release`へ整合させる。全OS用x86_64 Linux/予算、flash 4 gate、実Provider、Mini実機、未修正版依存2件は未完了。再生成可能なnpm/pip/未使用Lima/停止中Gradleの変換cacheだけを整理し、ソース・VMは保持。ADB接続端末0。PR #65へ保存し、main統合・公開は別。詳細は[停止条件](docs/workstreams/10-git-ci-operations.md)と[証拠](docs/evidence/release-blocker-resolution.json)。
 
-Local AIの実Kotlin compileでtimeoutのInt/Long不一致を検出し、API v4なのにBinderが3を返す不一致とAPK検査のversionCode=1固定も修正した。旧patch/実機証拠は保持し、追加overlayとhashで追跡。APK lockをbase/順序付きextension hashへ結び、stage metadata改変を拒否する。関連38試験とOS contract/design検査は成功。v4 APKの再build・レビューと現行最終SHAの全体CIは継続中。
+Local siの実Kotlin compileでtimeoutのInt/Long不一致を検出し、API v4なのにBinderが3を返す不一致とAPK検査のversionCode=1固定も修正した。旧patch/実機証拠は保持し、追加overlayとhashで追跡。APK lockをbase/順序付きextension hashへ結び、stage metadata改変を拒否する。関連38試験とOS contract/design検査は成功。v4 APKの再build・レビューと現行最終SHAの全体CIは継続中。
 
 更新: API v4 unsigned APK buildは`2ba33366`のCI `37279537731`で成功。26,416,892 bytesを取得し、CI/手元aapt2でABI・package version 3・権限を確認。actual APKのstage/再stage/verifyも同一。source lockの現在statusをphone準備が受理し、旧APK/overlay不一致とmetadata/symlink差替えを拒否する。関連40試験成功。main `4928b64e`までの並行更新を保持して競合を解消した。最新記録を含む同一HEADの全体CIは最終再実行し、物理端末接続・専用Linux/予算・正式署名・実Provider受入は未完了として残す。
 
@@ -675,7 +677,7 @@ Security／ROCKのSYS15としてDependabot #4／#8の公式advisoryと全依存�
 
 実BalancedPool／Poolへの合成設定で、接続先へのTLS検証callback継承を3形式×3upstreamで確認した。同じ3回帰はintegrity確認済みの旧版で全件失敗、修正版で全件成功。接続を禁止してconstructorだけを検証し、実TLS handshake、WebSocket通信、製品からの脆弱経路到達は実証したものと扱わない。WebSocketの修正は公式advisoryとupstream sourceで確認した。
 
-lockの重複1件を除いたlicense一覧906件／unique873件を再生成し、要審査47件と公開未承認条件を維持。評価日を監査日に揃え、期待件数だけを更新し関連35試験成功。容量不足のため全依存のlocal installは行わず、隔離lock解決と限定回帰を実施した。独立reviewは阻害要因なし。required verifyはproject〜system構成まで成功し、既存ai未導入で停止した。GitHub同一SHAのclean install・全体試験・個別alertを別途確認する。Dependabotのdefault-branch警告はmain未統合の間openであり、件数だけで解消と呼ばない。第23cycleの同一SHA検査結果は改善記録へ同期する。
+lockの重複1件を除いたlicense一覧906件／unique873件を再生成し、要審査47件と公開未承認条件を維持。評価日を監査日に揃え、期待件数だけを更新し関連35試験成功。容量不足のため全依存のlocal installは行わず、隔離lock解決と限定回帰を実施した。独立reviewは阻害要因なし。required verifyはproject〜system構成まで成功し、既存si未導入で停止した。GitHub同一SHAのclean install・全体試験・個別alertを別途確認する。Dependabotのdefault-branch警告はmain未統合の間openであり、件数だけで解消と呼ばない。第23cycleの同一SHA検査結果は改善記録へ同期する。
 
 ## 2026-10-04 — SPIDER第23cycle: 旧MCP入口の互換範囲を固定
 
@@ -683,7 +685,7 @@ Security／ROCKのSYS15として、基準`f7d110c`の同ref全49 CodeQL ID・Dep
 
 同梱MRの正確な接続定義と4機能・既存lifecycleへ限定し、対象外をtransportより前で403拒否する。汎用server IDのprepare／本人確認／execute、SPIDERデータ検査は維持する。新2回帰は旧sourceで200転送を検出し失敗し、修正後は定義7形式・入力6形式の拒否と転送0を確認。第3回帰で実同梱MRのlifecycle・4機能を合成入力で通し、関連31試験がfail／skip0で成功した。最初の互換試験は通知へidを付けたtest側誤りを訂正し、runtimeを変えず再検証した。PC画面側のdevice-lifecycle試験は既存esbuild未導入で読込失敗し、GitHub同一SHAで別途確認する。
 
-Connector ZIPだけをsourceと同期し、MR／vendor／SDK配布物は保持する。 独立reviewは阻害要因なし、ZIP66ファイルがsourceと完全一致。project／database／design検査は成功し、ローカル全体verifyは既存ai依存未導入で停止した。既存／新警告を解消扱いせず、公開後に同一SHAの全体verify・個別alert・SPIDER履歴・native source検査を確認する。実通信probeの担当turnはツール側のsecurity制限で未完了として扱い、代わりに無作用transport stubで転送境界を検証した。実credential、外部Provider、公開配備、main統合、実機操作はない。
+Connector ZIPだけをsourceと同期し、MR／vendor／SDK配布物は保持する。 独立reviewは阻害要因なし、ZIP66ファイルがsourceと完全一致。project／database／design検査は成功し、ローカル全体verifyは既存`ai`依存未導入で停止した。既存／新警告を解消扱いせず、公開後に同一SHAの全体verify・個別alert・SPIDER履歴・native source検査を確認する。実通信probeの担当turnはツール側のsecurity制限で未完了として扱い、代わりに無作用transport stubで転送境界を検証した。実credential、外部Provider、公開配備、main統合、実機操作はない。
 
 ## 2026-10-03 — SPIDER第22cycle: SDKの不正認証でprocessが停止する欠陥を修正
 
@@ -691,59 +693,59 @@ Security／ROCKのSYS15として基準 `1b116e4`のCodeQL #41を調べた。元�
 
 SDKはstring型確認後の2つのBufferのbyte長を検査し、同じBufferを定時間比較する。新1回帰は旧sourceで失敗し、修正後は不正4形式を401で拒否して同じchildのhealthと正当なlist／Tool実行、正常終了・descriptor削除を確認した。SDK6＋Connector6＋descriptor10を一括1回実行し21 pass／0 fail／1環境条件skip。loopbackに接続できる未認証clientの可用性修正であり、Internet／browser到達や秘密漏洩の実証ではない。元#41を解消扱いせず、同一SHAの全検査・個別stateを公開後に確認する。
 
-配布用SDK0.1.3を作り、Studioの導入URLとCLIの最小依存版を同期した。旧archiveは保持し、新tgzの5ファイルが現sourceとbyte一致する検査と、実CLI生成物の版確認を追加した。配布関連4試験も成功し、合計26件中25 pass／1環境条件skip。旧0.1.2へ未反映だった既存Event ID／最大3回送信は配布同期として明記し、新しいruntime追加とは分ける。npm公開・配備・既存Tool更新は実行しない。 独立reviewは阻害要因なし。source／archive hashと検証証拠を保存し、project・database・design検査は成功。ローカル全体verifyは既存ai依存未導入で停止し、GitHub同一SHAでの結果を別途確認する。
+配布用SDK0.1.3を作り、Studioの導入URLとCLIの最小依存版を同期した。旧archiveは保持し、新tgzの5ファイルが現sourceとbyte一致する検査と、実CLI生成物の版確認を追加した。配布関連4試験も成功し、合計26件中25 pass／1環境条件skip。旧0.1.2へ未反映だった既存Event ID／最大3回送信は配布同期として明記し、新しいruntime追加とは分ける。npm公開・配備・既存Tool更新は実行しない。 独立reviewは阻害要因なし。source／archive hashと検証証拠を保存し、project・database・design検査は成功。ローカル全体verifyは既存`ai`依存未導入で停止し、GitHub同一SHAでの結果を別途確認する。
 
 ## 2026-10-03 — SPIDER第21cycle: 外部フォント検査の大文字ホスト見逃しを防ぐ
 
 Security／ROCKのSYS15で基準 `47a999b`のCodeQL #43／#44を確認した。HTML全体の禁止substring検査で未アンカーは意図的であり、アンカーで拒否を弱めない。一方、大文字・小文字混在の同じGoogle Fontsホストを見逃すため、既存2か所をlowercaseとliteral照合へ変更した。既存10 testの順序・他assertionはbyte一致し、実装・配信物・scanner policyは不変。
 
-対象10件と、それを含むサイト全体19件がそれぞれ1回成功（fail/skip0、19種類・29実行）。実callback全体2つの合成26ケース／旧新52評価で、旧が通したホスト表記8件を新が拒否、既存拒否16件と正常2件を維持した。checked-in distの検査であり、fresh Astro build・ブラウザ通信・配備・runtime脆弱性修正とは扱わない。独立reviewは阻害要因なし。source hashと検証記録を保存し、project／database／designは成功。ローカル全体verifyは既存ai依存未導入で停止した。同一SHAのGitHub検査・個別alert状態は公開後に記録する。
+対象10件と、それを含むサイト全体19件がそれぞれ1回成功（fail/skip0、19種類・29実行）。実callback全体2つの合成26ケース／旧新52評価で、旧が通したホスト表記8件を新が拒否、既存拒否16件と正常2件を維持した。checked-in distの検査であり、fresh Astro build・ブラウザ通信・配備・runtime脆弱性修正とは扱わない。独立reviewは阻害要因なし。source hashと検証記録を保存し、project／database／designは成功。ローカル全体verifyは既存`ai`依存未導入で停止した。同一SHAのGitHub検査・個別alert状態は公開後に記録する。
 
 ## 2026-10-03 — SPIDER第20cycle: 納品fixtureの読取境界を確認
 
-Security／ROCKのSYS15で基準 `366fb5a`のCodeQL #37を調べる。固定checkout内fixtureを再帰読取するテストhelperと、実際のMCP入力・workspace読取の境界を区別する。基準の全48 CodeQL ID・Dependabot18件・PR53〜56は不変。非export helperの唯一の非再帰callerは固定rootで、現fixture3通常fileはGitとbyte一致しsymlink／untrackedなし。stat/readの競合自体はあるが、checkout／親を同時変更できる主体を信頼するテストの範囲であり、製品の追加修正根拠は得られなかった。実受信はbytesからprivate一時領域へ入り、既存のdirectory handle基準・nofollow・上限付き読取・private snapshotを通る。Node MCP6件とPython納品境界14件が成功（fail/skip0）。独立reviewも一致し、runtime・test・policyを変更せず#37をopenで保持する。project／database／designは成功し、ローカル全体verifyは既存ai依存未導入で停止した。公開後の同一SHA検査は別に記録する。
+Security／ROCKのSYS15で基準 `366fb5a`のCodeQL #37を調べる。固定checkout内fixtureを再帰読取するテストhelperと、実際のMCP入力・workspace読取の境界を区別する。基準の全48 CodeQL ID・Dependabot18件・PR53〜56は不変。非export helperの唯一の非再帰callerは固定rootで、現fixture3通常fileはGitとbyte一致しsymlink／untrackedなし。stat/readの競合自体はあるが、checkout／親を同時変更できる主体を信頼するテストの範囲であり、製品の追加修正根拠は得られなかった。実受信はbytesからprivate一時領域へ入り、既存のdirectory handle基準・nofollow・上限付き読取・private snapshotを通る。Node MCP6件とPython納品境界14件が成功（fail/skip0）。独立reviewも一致し、runtime・test・policyを変更せず#37をopenで保持する。project／database／designは成功し、ローカル全体verifyは既存`ai`依存未導入で停止した。公開後の同一SHA検査は別に記録する。
 
 ## 2026-10-03 — SPIDER第19cycle: HTTPSの空CA設定を送信前に拒否
 
 Security／ROCKのSYS15で基準 `f4f0155`の全48 CodeQL ID・Dependabot18件・PR53〜56の不変を確認した。#8／#9のTLS試験serverから関連clientを調べ、HTTPSで空CAがNone-only検査を通り、TLS contextなしのsocketが`HTTPSConnection.sock`へ渡る別の欠陥を発見した。旧sourceの合成loopbackでは空文字／False／0の3件が平文でdiscoverと公開fixture認証headerを送り、応答を受理した。実資格情報や選択文章を使わず、値は保存せずbooleanと件数だけを記録した。
 
-HTTPSでfalsey CAを接続前に拒否する1条件の変更と、新1test・6種類の設定拒否を追加。新testは旧sourceで1test内5 subtest失敗を検出し、修正後は関連31 host試験が成功（fail/error/skip0）。正当PathのTLS通信・HTTP fixture・応答期限・不完全応答・再送しない境界は既存試験で保持した。現runtimeの接続先はローカルHTTP fixtureであり、空CAを渡す外部設定経路や実credential漏洩は確認していない。別実装HubClientは公開fixture資格と固定開発HTTPS範囲を維持。元の#8／#9のserver contextは変更せずopenを維持し、この実装修正を同警告の解消とは扱わない。独立reviewも阻害要因なし。project／database／designは成功し、ローカル全体verifyは既存ai依存未導入で停止した。同一SHAのGitHub clean検証を別に確認する。
+HTTPSでfalsey CAを接続前に拒否する1条件の変更と、新1test・6種類の設定拒否を追加。新testは旧sourceで1test内5 subtest失敗を検出し、修正後は関連31 host試験が成功（fail/error/skip0）。正当PathのTLS通信・HTTP fixture・応答期限・不完全応答・再送しない境界は既存試験で保持した。現runtimeの接続先はローカルHTTP fixtureであり、空CAを渡す外部設定経路や実credential漏洩は確認していない。別実装HubClientは公開fixture資格と固定開発HTTPS範囲を維持。元の#8／#9のserver contextは変更せずopenを維持し、この実装修正を同警告の解消とは扱わない。独立reviewも阻害要因なし。project／database／designは成功し、ローカル全体verifyは既存`ai`依存未導入で停止した。同一SHAのGitHub clean検証を別に確認する。
 
 ## 2026-10-03 — SPIDER第18cycle: MCP結果の検証を強化
 
-Security／ROCKのSYS15で基準 `08e77ff`から、同原因のCodeQL #45／#46を確認する。stdio MCPと承認後Connectorのテストにあるドメイン部分一致を、期待する出典文書と正しい結果欄の完全一致へ強化する。既存testと承認・変更拒否・再送拒否を保持し、runtime認可の修正とは扱わない。基準の全48 CodeQL ID・Dependabot18件・既存PR53〜56は不変。関連host12試験が一回で成功し、独立probeは17ケース×旧新34評価で旧判定が通す誤出力13件を新判定が拒否した。正常2ケース・既存拒否2ケースを維持。stdioは完全lifecycle callbackを合成collaboratorで、Connectorは変更対象assertion群だけを評価し、実HTTPの承認境界はhost suiteの証拠と分ける。独立reviewで他のassertion／test順序とproductionの不変を確認。project／database／designは成功し、ローカル全体verifyは既存のai依存未導入で停止した。公開後の同一SHAのclean CIを別に確認する。
+Security／ROCKのSYS15で基準 `08e77ff`から、同原因のCodeQL #45／#46を確認する。stdio MCPと承認後Connectorのテストにあるドメイン部分一致を、期待する出典文書と正しい結果欄の完全一致へ強化する。既存testと承認・変更拒否・再送拒否を保持し、runtime認可の修正とは扱わない。基準の全48 CodeQL ID・Dependabot18件・既存PR53〜56は不変。関連host12試験が一回で成功し、独立probeは17ケース×旧新34評価で旧判定が通す誤出力13件を新判定が拒否した。正常2ケース・既存拒否2ケースを維持。stdioは完全lifecycle callbackを合成collaboratorで、Connectorは変更対象assertion群だけを評価し、実HTTPの承認境界はhost suiteの証拠と分ける。独立reviewで他のassertion／test順序とproductionの不変を確認。project／database／designは成功し、ローカル全体verifyは既存の`ai`依存未導入で停止した。公開後の同一SHAのclean CIを別に確認する。
 
 ## 2026-10-03 — SPIDER第17cycle: HTML報告の完全な出力を回帰検証
 
 Security／ROCKのSYS15で基準 `f0a59b1`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。対象#30はHTML報告の負例テストで、小文字のscript tagだけを否定していた。productionは5特殊文字をエスケープし、現APIのjob ID制約／固定warningとartifact取得の認証・header境界も別に維持されるため、runtime XSS修正とは扱わない。
 
-静的な期待HTML fixtureを追加し、既存の小文字sampleを含む7入力をjob IDとwarningで個別に照合する。通常出力を含む15renderを既存test内で確認し、関連CSV6＋fee2のhost8件が成功。checkoutにiconv-liteがないため、lockと同じ0.7.3の既存sibling依存へbare importだけを向けるwork-only hookで実行した。依存・lockを変更せず、npm ci環境の証拠とは区別する。旧・新callback全体の合成比較では正規出力を両方が受理し、旧判定が通す5種の追加HTMLを新判定はすべて拒否した。小文字scriptの負例も両方で拒否。独立reviewで静的fixtureのmarkupとliteral期待値を確認した。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止し、公開後の同一SHA検査を別に確認する。
+静的な期待HTML fixtureを追加し、既存の小文字sampleを含む7入力をjob IDとwarningで個別に照合する。通常出力を含む15renderを既存test内で確認し、関連CSV6＋fee2のhost8件が成功。checkoutにiconv-liteがないため、lockと同じ0.7.3の既存sibling依存へbare importだけを向けるwork-only hookで実行した。依存・lockを変更せず、npm ci環境の証拠とは区別する。旧・新callback全体の合成比較では正規出力を両方が受理し、旧判定が通す5種の追加HTMLを新判定はすべて拒否した。小文字scriptの負例も両方で拒否。独立reviewで静的fixtureのmarkupとliteral期待値を確認した。project／database／designは成功、ローカル全体verifyは既存`ai`依存未導入で停止し、公開後の同一SHA検査を別に確認する。
 
 ## 2026-10-03 — SPIDER第16cycle: 許可Originの完全一致を確認
 
-Security／ROCKのSYS15で基準 `c2ccfdb`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。対象#36は `loadConfig({}).browserOrigins` の配列に対する完全な要素一致で、URL文字列の部分一致による認可ではない。通常HTTP入口は環境文字列のsplit／trim／filterで得る配列を使用し、request本文からconfig型を変更する経路は確認できなかった。loopback bind／peer、Host完全一致、設定済みbearer／tenant認証を分けて追跡する。修正が必要な欠陥は現範囲で確証できず、runtime・test・scanner policyは変更せず、警告をopenのまま維持する。 実sourceを抽出したOrigin境界10ケースと既存HTTP／認証関連10試験が成功（初回sandboxの4 listener拒否はEPERM、認可済みhost実行の10成功と分離）。独立reviewも一致し、11 source hashを基準commitと照合した。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止し、公開後の同一SHA検査を別に確認する。
+Security／ROCKのSYS15で基準 `c2ccfdb`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。対象#36は `loadConfig({}).browserOrigins` の配列に対する完全な要素一致で、URL文字列の部分一致による認可ではない。通常HTTP入口は環境文字列のsplit／trim／filterで得る配列を使用し、request本文からconfig型を変更する経路は確認できなかった。loopback bind／peer、Host完全一致、設定済みbearer／tenant認証を分けて追跡する。修正が必要な欠陥は現範囲で確証できず、runtime・test・scanner policyは変更せず、警告をopenのまま維持する。 実sourceを抽出したOrigin境界10ケースと既存HTTP／認証関連10試験が成功（初回sandboxの4 listener拒否はEPERM、認可済みhost実行の10成功と分離）。独立reviewも一致し、11 source hashを基準commitと照合した。project／database／designは成功、ローカル全体verifyは既存`ai`依存未導入で停止し、公開後の同一SHA検査を別に確認する。
 
 ## 2026-10-03 — SPIDER第15cycle: 出典保持テストの誤受理を防ぐ
 
-Security／ROCKのSYS15で基準 `5f35b36`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。前回#33 fixedは維持され、今回の同原因groupは#34／#35の出典保持テストである。固定fixtureの出力全体を独立した期待値と照合し、URL文字列が出力の別の場所に残るだけで合格しないようにする。元の本文・有料範囲・footer・コードfence確認と全testを保持し、関連host18件が成功した。各test callback全体を抽出した合成比較では、正しい2出力を両方が受理し、旧判定の全assertionを通る24種の誤出力を新判定はすべて拒否した。独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止。公開後の同一SHA検査と個別alert状態を別に確認する。productionの認証・URL認可・formatterは変更せず、警告をdismissしない。
+Security／ROCKのSYS15で基準 `5f35b36`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。前回#33 fixedは維持され、今回の同原因groupは#34／#35の出典保持テストである。固定fixtureの出力全体を独立した期待値と照合し、URL文字列が出力の別の場所に残るだけで合格しないようにする。元の本文・有料範囲・footer・コードfence確認と全testを保持し、関連host18件が成功した。各test callback全体を抽出した合成比較では、正しい2出力を両方が受理し、旧判定の全assertionを通る24種の誤出力を新判定はすべて拒否した。独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存`ai`依存未導入で停止。公開後の同一SHA検査と個別alert状態を別に確認する。productionの認証・URL認可・formatterは変更せず、警告をdismissしない。
 
 ## 2026-10-03 — SPIDER第14cycle: MCP検証の出力全文を照合
 
-Security／ROCKのSYS15で基準 `d2640f0`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。今回は#33の検証scriptを対象に、期待URLを含むだけで未整形の元入力や異なる文書が合格する盲点を修正する。固定sampleの出力全文との一致に強化し、実stdio MCPが同じ期待値を返す回帰1件を追加。host関連18件が成功した。runtimeのURL認可や認証の修正とは区別し、manual HTTP flowの再実行・OS／実機受入は行わない。旧／新sourceから抽出した実assertionの合成比較で、旧判定が受理する9種の不正出力を新判定がすべて拒否し、実CLIの正解62 bytesを保持した。独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止。公開後の同一SHA検査と個別alert状態を別に確認する。
+Security／ROCKのSYS15で基準 `d2640f0`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・既存PR53〜56の不変を確認した。今回は#33の検証scriptを対象に、期待URLを含むだけで未整形の元入力や異なる文書が合格する盲点を修正する。固定sampleの出力全文との一致に強化し、実stdio MCPが同じ期待値を返す回帰1件を追加。host関連18件が成功した。runtimeのURL認可や認証の修正とは区別し、manual HTTP flowの再実行・OS／実機受入は行わない。旧／新sourceから抽出した実assertionの合成比較で、旧判定が受理する9種の不正出力を新判定がすべて拒否し、実CLIの正解62 bytesを保持した。独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存`ai`依存未導入で停止。公開後の同一SHA検査と個別alert状態を別に確認する。
 
 ## 2026-10-03 — SPIDER第13cycle: 前回native失敗の状態遷移を再確認
 
-Security／ROCKのSYS15で基準 `813f8ee`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・PR53〜56の不変を確認した。前回native37125210005のattempt1失敗と同SHA attempt2成功を分けて保持し、合成Gameの復旧時残高照合を今回の1件として優先する。workerの戻り値は処理試行の有無であり、remoteの適用成功ではない。元artifact／report／logのhash一致で、実際の失敗は50行の保留残高0対期待103と確認した。旧抽出器が0対10を部分一致させた誤分類を訂正し、元記録は保持する。未適用stallを明示的に未適用で終え、UNKNOWNと元要求の遅延適用を別回帰へ追加した。元の21 assertionとwait/join5箇所・production3秒期限は維持。変更file7＋関連TLS2のhost9件と作業用parser4件が成功した。試験fixture／診断の改善であり、productionの脆弱性修正や元CIの通信履歴を完全に再現した主張はしない。 独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存ai依存未導入で停止し、同一SHAのGitHub clean検証を別に確認する。
+Security／ROCKのSYS15で基準 `813f8ee`のPR52 open、main31ef33a、同一refの全48 CodeQL ID・Dependabot18件・PR53〜56の不変を確認した。前回native37125210005のattempt1失敗と同SHA attempt2成功を分けて保持し、合成Gameの復旧時残高照合を今回の1件として優先する。workerの戻り値は処理試行の有無であり、remoteの適用成功ではない。元artifact／report／logのhash一致で、実際の失敗は50行の保留残高0対期待103と確認した。旧抽出器が0対10を部分一致させた誤分類を訂正し、元記録は保持する。未適用stallを明示的に未適用で終え、UNKNOWNと元要求の遅延適用を別回帰へ追加した。元の21 assertionとwait/join5箇所・production3秒期限は維持。変更file7＋関連TLS2のhost9件と作業用parser4件が成功した。試験fixture／診断の改善であり、productionの脆弱性修正や元CIの通信履歴を完全に再現した主張はしない。 独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存`ai`依存未導入で停止し、同一SHAのGitHub clean検証を別に確認する。
 
 ## 2026-10-03 — SPIDER第12cycle: 一時fixtureの権限拒否試験を確認
 
-Security／ROCKのSYS15で基準 `9e12c12`、PR52 open、main31ef33aと同一refのCodeQL全48 ID・Dependabot18件・既存PR53〜56の不変を確認した。対象は #24〜#28 のテスト用権限設定で、privateなBroker DBの不正mode拒否と、一時socketのDACを広げてもpeer UID認証が拒否する境界を調査する。前回の起動guard修正は同一SHAの全体verify・CodeQL・native1,787件が成功済み。今回の調査と前回の修正を区別する。 #24は私有一時DBの0644を拒否する既存host1試験が成功し、親0700・caller所有・fixtureへのHTTP要求0・通常削除を確認した。#25〜#28は使い捨て領域のUID拒否試験で製品へ未同梱、今回の実Linux root／UID試験は未実行、現在のnative CI対象外。runtime不備は確証できず、修正0・test変更0・dismiss0。通常cleanupと強制終了時の限界を分け、11 source hashと同一SHA公開後検査を記録する。 project／database／designは成功、ローカル全体verifyは既存のai依存未導入で停止し、GitHub clean環境の結果と分離する。
+Security／ROCKのSYS15で基準 `9e12c12`、PR52 open、main31ef33aと同一refのCodeQL全48 ID・Dependabot18件・既存PR53〜56の不変を確認した。対象は #24〜#28 のテスト用権限設定で、privateなBroker DBの不正mode拒否と、一時socketのDACを広げてもpeer UID認証が拒否する境界を調査する。前回の起動guard修正は同一SHAの全体verify・CodeQL・native1,787件が成功済み。今回の調査と前回の修正を区別する。 #24は私有一時DBの0644を拒否する既存host1試験が成功し、親0700・caller所有・fixtureへのHTTP要求0・通常削除を確認した。#25〜#28は使い捨て領域のUID拒否試験で製品へ未同梱、今回の実Linux root／UID試験は未実行、現在のnative CI対象外。runtime不備は確証できず、修正0・test変更0・dismiss0。通常cleanupと強制終了時の限界を分け、11 source hashと同一SHA公開後検査を記録する。 project／database／designは成功、ローカル全体verifyは既存の`ai`依存未導入で停止し、GitHub clean環境の結果と分離する。
 
 ## 2026-10-03 — SPIDER第11cycle: 検証guest処理の直接起動を制限
 
 Security／ROCKのSYS15で基準 `6e88d0b`のCodeQL #13〜#16を追跡した。PR52はopen、全48 alert ID・main31ef33a・Dependabot18件・既存PR53〜56は前回から不変。0755／0666はpeer UID拒否をDACから独立確認する意図的な試験である一方、通常imageにも入る `guest-test.py` 本体には明示起動flagの確認がなく、root／ARM64で直接呼ぶと未指定でもinventory・IPC・権限試験・Tool／simulator変更へ進むことをsourceで確認した。boot wrapperのflag確認だけに依存する起動上の不備として扱い、権限昇格やCodeQL4警告の解消とは呼ばない。
 
-スクリプト本体で副作用前に1個の正確なenable tokenを必須化し、従来のroot／ARM64・default local-full／明示game-isolation境界と、peer認証の負例試験を維持する。旧sourceの合成5ケースは最初のinventory直前まで進み、修正後は新規7・既存4・関連scope7のhost18試験が成功した。拒否時の無副作用・成功markerなしと正規入力の継続を確認し、同一SHA GitHub検査へ接続する。独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存の未導入ai packageでllm検査時に停止し、後続gateは未実行。実guest・VM・実機・既存imageの変更は行わない。
+スクリプト本体で副作用前に1個の正確なenable tokenを必須化し、従来のroot／ARM64・default local-full／明示game-isolation境界と、peer認証の負例試験を維持する。旧sourceの合成5ケースは最初のinventory直前まで進み、修正後は新規7・既存4・関連scope7のhost18試験が成功した。拒否時の無副作用・成功markerなしと正規入力の継続を確認し、同一SHA GitHub検査へ接続する。独立reviewも問題なし。project／database／designは成功、ローカル全体verifyは既存の未導入npm package `ai`でllm検査時に停止し、後続gateは未実行。実guest・VM・実機・既存imageの変更は行わない。
 
 ## 2026-10-03 — SPIDER第10cycle: 履歴検査の合成fixture保存を確認
 
@@ -751,7 +753,7 @@ Security／ROCKのSYS15で基準 `061808a`、PR52 open、main31ef33aと全48 Cod
 
 既存privacy試験2件が成功し、一時directoryの0700／caller所有／本repo外と通常試験後の削除を確認した。確認済みGitleaks binaryがローカルにないため実binary回帰1件はskip。これは秘密の安全消去や異常終了後の削除保証ではない。製品の秘密保存欠陥は確証できず、修正0・test変更0・dismiss0。scannerとtestが固定control commitと同一byteであることを確認し、source hashと範囲を保存した。GitHubのchecksum固定binaryを使う検証stepと、同じ公開SHAの個別警告状態は別に確認する。
 
-依存修正PR53はnpm ci成功後、変更lockに対するlicense inventory hash不一致でrelease:checkが意図どおり停止している。既存修正を重複作成したり検証を弱めず、そのPRの正確なlockに一覧を再生成・レビューし、componentのscopeとNOT_CLEAREDを維持して残るgateを確認する必要がある。ローカル全体verifyは既存の未導入ai packageで停止した。main統合・dependency branch更新・実機・秘密の失効は行わない。
+依存修正PR53はnpm ci成功後、変更lockに対するlicense inventory hash不一致でrelease:checkが意図どおり停止している。既存修正を重複作成したり検証を弱めず、そのPRの正確なlockに一覧を再生成・レビューし、componentのscopeとNOT_CLEAREDを維持して残るgateを確認する必要がある。ローカル全体verifyは既存の未導入npm package `ai`で停止した。main統合・dependency branch更新・実機・秘密の失効は行わない。
 
 ## 2026-10-03 — SPIDER第9cycle: 認証検証用の一時権限を確認
 
@@ -759,7 +761,7 @@ Security／ROCKのSYS15として基準 `bca17b6`のCodeQL #17〜#20を確認し�
 
 #17〜#20の0755／0666は、固定imageのコピーへだけ注入する専用observerで、root・ARM64・明示boot flag・空のsimulator DB・事前所有者／mode確認の後に実行される。通常製品installには含まれず、新しいuserdataとnetworkなしの検証guestでUID拒否を独立確認するための一時的なDAC緩和である。daemonは本文前に所有者UIDを確認し、秘密のDBは別の0700／0600に保持する。今回の範囲で製品の認証回避や秘密の漏出は確証できず、runtime修正0・test変更0・dismiss0。source 9fileのhashと確認範囲を証拠JSONへ保存した。
 
-関連host2試験と完全合成のboundary7／entrypoint7ケースが成功。通常の失敗時の復元呼出しを確認したが、復元chmod自体の失敗や強制終了の復旧は未証明である。最初の復元失敗で親directoryの復元が飛ぶ制約を残し、失敗時に検証PASSを返さないことと使い捨てguestの範囲を区別する。実guest・UID／DAC・実機の試験は未実行。ローカル全体verifyは既存の未導入ai packageで停止したため、push後の同一SHA検査を別に記録する。
+関連host2試験と完全合成のboundary7／entrypoint7ケースが成功。通常の失敗時の復元呼出しを確認したが、復元chmod自体の失敗や強制終了の復旧は未証明である。最初の復元失敗で親directoryの復元が飛ぶ制約を残し、失敗時に検証PASSを返さないことと使い捨てguestの範囲を区別する。実guest・UID／DAC・実機の試験は未実行。ローカル全体verifyは既存の未導入npm package `ai`で停止したため、push後の同一SHA検査を別に記録する。
 
 ## 2026-10-03 — SPIDER第8cycle: 仮想画面の秘密をプロセス引数から除く
 
@@ -768,11 +770,11 @@ Security／ROCKのSYS15で基準 `1896dc0`、PR52 open、CodeQL38件・Dependabo
 browser起動を固定argvのosascriptへ変更し、厳密なloopback URLだけを標準入力のAppleScriptへ渡す。引数、環境変数、一時ファイルへ秘密を追加しない。10秒期限、出力破棄、固定error、no-open時の秘密未取得を維持し、失敗時に秘密付きopen argvへ戻さない。非browser VNCは既存の秘密を含まない起動を維持する。#6の解消とは区別し、変更後の回帰と同一SHA GitHub検証を記録する。
 
 
-新4件を含むhost42/42が成功、独立reviewも新4件を再実行して阻害要因なし。Macの実osascriptはブラウザを開かずproduction statementの構文を確認し、合成秘密がプロセス引数に現れないことを確認した。project／database／design整合は成功。ローカル全体verifyは既存の未導入ai packageで停止したため、同じSHAのGitHub検証を確認する。
+新4件を含むhost42/42が成功、独立reviewも新4件を再実行して阻害要因なし。Macの実osascriptはブラウザを開かずproduction statementの構文を確認し、合成秘密がプロセス引数に現れないことを確認した。project／database／design整合は成功。ローカル全体verifyは既存の未導入npm package `ai`で停止したため、同じSHAのGitHub検証を確認する。
 
 ## 2026-10-03 — SPIDER第7cycle: Unix socketの権限境界を確認
 
-Security／ROCKのSYS15として `94889b1`の高優先度指摘#12／#21／#22／#23を確認した。0660は異なる専用UIDを接続するUnix socketで、親0750はgroup書込みを許さない。認証器はUID1000、powerは0／1002、Platformは0／1000、Walletは0／1002を本文読取前に確認し、各clientも送信前にserver UIDを検査する。今回の範囲で越権経路は確認できず、修正0・dismiss0としてsource／boot／client hashと限定試験を記録する。sourceや配置条件が変われば再評価する。既存host試験4件と合成Handler検証14ケースが成功し、独立reviewも同じ結論。実LinuxのUID／socket権限試験は未実行。ローカル全体verifyは既存の未導入ai packageで停止したため、同一SHAのGitHub検証を別に確認する。
+Security／ROCKのSYS15として `94889b1`の高優先度指摘#12／#21／#22／#23を確認した。0660は異なる専用UIDを接続するUnix socketで、親0750はgroup書込みを許さない。認証器はUID1000、powerは0／1002、Platformは0／1000、Walletは0／1002を本文読取前に確認し、各clientも送信前にserver UIDを検査する。今回の範囲で越権経路は確認できず、修正0・dismiss0としてsource／boot／client hashと限定試験を記録する。sourceや配置条件が変われば再評価する。既存host試験4件と合成Handler検証14ケースが成功し、独立reviewも同じ結論。実LinuxのUID／socket権限試験は未実行。ローカル全体verifyは既存の未導入npm package `ai`で停止したため、同一SHAのGitHub検証を別に確認する。
 
 前回 `94889b1`のnative初回とmain-1のみの部分再実行は同一run37105416471で成功した。最大attemptの明示artifact IDと集計report hashが一致し、CodeQL48 IDも状態不変（open38／fixed10）。全体verifyと修正回帰は成功し、履歴秘密検査は既存2,362候補で失敗を維持する。これはsource検証で、OS起動／Pixel／24時間受入ではない。
 
@@ -782,7 +784,7 @@ Git／CIのROCK担当としてSYS15の改善cycleを継続する。基準 `258fa
 
 partitionと集計のartifact名をattempt別にし、同run／headで各partitionの最大attemptを選んだIDだけをdownloadする。最新の失敗を古い成功へ置き換えず、欠落・重複・期限切れ・不完全な一覧・取得失敗では拒否する。全partition成功gate、元ログhash・source inventory・discoveryの既存集計は維持し、旧失敗のartifactを削除しない。選択器をsource inventoryへ含め、合成境界試験と同じSHAの実GitHub部分再実行で確認する。Wallet試験の1秒期限や製品コードは変更しない。
 
-選択器の新規23、既存partition／stack15、freeze13の計51 host試験が合格した。独立reviewで選択器23を再実行し阻害要因なし。選択器をsource inventoryへ含める変更に合わせ、freeze検証器の必須入力も同期し、欠落・hash不一致・改変の拒否4試験を追加した。ローカル全体verifyは未導入ai packageで停止し、後続未実行。GitHubで同じSHAの初回と部分再実行を確認する。
+選択器の新規23、既存partition／stack15、freeze13の計51 host試験が合格した。独立reviewで選択器23を再実行し阻害要因なし。選択器をsource inventoryへ含める変更に合わせ、freeze検証器の必須入力も同期し、欠落・hash不一致・改変の拒否4試験を追加した。ローカル全体verifyは未導入npm package `ai`で停止し、後続未実行。GitHubで同じSHAの初回と部分再実行を確認する。
 
 ## 2026-10-03 — SPIDER第5cycle: PC HTTP受信の無期限占有を修正
 
@@ -790,7 +792,7 @@ Security／ROCKのSYS15で基準 `ce8b0a2`、CodeQL38件・Dependabot18件とPR5
 
 request-line／header／body共通の10秒絶対受信期限をsocket読取ごとに適用し、完全body・解析後もtoken発行／Tool処理前に期限を確認する。通常の分割受信とbuffer先読みを維持し、応答writeには別の有限期限を設定する。単一処理と既存Origin／Host／bearer条件を保持し、MR／Sky MCP両配布ZIPとCI回帰を同期する。loopbackの1接続による無期限占有が対象で、Internet直接到達・flood耐性・OS24時間受入を主張しない。CodeQL#10の解消とは別に実通信で検証する。
 
-macOS Python3.14.7で新しい実HTTP回帰11/11、既存納品境界14/14、MR／MCP／PC adapterのNode18/18（内部Python19）が合格した。独立reviewでも阻害要因なし。両ZIPを再生成し一致を確認。ローカル全体verifyは既存の未導入ai packageで停止し後続未実行のため、push後の同一SHA Linux CIを別途確認する。
+macOS Python3.14.7で新しい実HTTP回帰11/11、既存納品境界14/14、MR／MCP／PC adapterのNode18/18（内部Python19）が合格した。独立reviewでも阻害要因なし。両ZIPを再生成し一致を確認。ローカル全体verifyは既存の未導入npm package `ai`で停止し後続未実行のため、push後の同一SHA Linux CIを別途確認する。
 
 ## 2026-10-03 — SPIDER第4cycle: source確認と修正不要の境界を記録
 
@@ -798,7 +800,7 @@ Security／ROCKのSYS15として基準 `3cb15f1`のCodeQL38件・Dependabot18件
 
 端末IDは登録済み制限付き識別子との完全一致・認証後に応答へ設定され、CRLF／LF／TAB／NULの合成4件は登録helperで拒否された。observerは認証付き合成状態から限定したmetadataだけを返し、既存の実SQLite回帰1件が合格。noVNCは固定長byte配列への範囲内NUL書込で、実encoding関数を使う4,102件の合成境界probeと既存desktop host6試験が合格した。bundleの乱数変換は上流の余分な乱数byteによる縮約であり、暗号処理の変更根拠は得られなかった。probeを実HTTP／RFB handshake／実機／乱数品質の受入へ換算しない。
 
-source hash・根拠・試験の限界を[第4cycleの記録](docs/evidence/spider-improvement-cycle.json)へ保存した。runtime・test・vendor・検査設定を変更せず、警告のdismissや広い除外も行わない。今回の修正件数は0、CodeQL38件・Dependabot18件・履歴候補は残る。ローカル全体verifyは既存の未導入ai依存で停止したため、文書反映後の同一SHA CIを別途確認する。次回は確認済みsource hashの変化と他の未確認指摘・既存依存修正PRを調べる。main統合・配備・実機・秘密失効・24時間運転受入は行わない。
+source hash・根拠・試験の限界を[第4cycleの記録](docs/evidence/spider-improvement-cycle.json)へ保存した。runtime・test・vendor・検査設定を変更せず、警告のdismissや広い除外も行わない。今回の修正件数は0、CodeQL38件・Dependabot18件・履歴候補は残る。ローカル全体verifyは既存の未導入`ai`依存で停止したため、文書反映後の同一SHA CIを別途確認する。次回は確認済みsource hashの変化と他の未確認指摘・既存依存修正PRを調べる。main統合・配備・実機・秘密失効・24時間運転受入は行わない。
 
 ## 2026-10-02 — 販売チャネル共通claim発行・暗号化配信store
 
@@ -814,11 +816,11 @@ Responses streamingの受信進捗をCloud側で読み、本文をmeter記録へ
 
 ## 2026-10-02 — Sky接続復旧の公開v33
 
-Site source `00109c6adccc7b1aa4ff3f72d740d18e1de8ec94`、公開v33、native deployment成功。正本full verifyはNode696、Fashion19、Worker/D1959、CSV/D1/R2113が合格。Siteの関連38件・typecheck/lint/build・bundle131・asset118/missing0・CSV113が合格。配布subsetの全体進捗参照不足119件と旧API harnessの初期schema応答前提は未解決として保存し、全Site verify成功へ換算しない。公開入口/health 200、本人なしの保護API 6件401を読取だけで確認。既存50円CSVは完了・Stripe照合済み、再課金0。本人desktop/Pixel、実AI、Apple Pay、外部OAuth/実行は未受入。GitHub main/PR51は未merge、今回の正本runtime差分は作業木へ反映。[配備証拠](docs/evidence/sky-access-publication-verification.json)。
+Site source `00109c6adccc7b1aa4ff3f72d740d18e1de8ec94`、公開v33、native deployment成功。正本full verifyはNode696、Fashion19、Worker/D1959、CSV/D1/R2113が合格。Siteの関連38件・typecheck/lint/build・bundle131・asset118/missing0・CSV113が合格。配布subsetの全体進捗参照不足119件と旧API harnessの初期schema応答前提は未解決として保存し、全Site verify成功へ換算しない。公開入口/health 200、本人なしの保護API 6件401を読取だけで確認。既存50円CSVは完了・Stripe照合済み、再課金0。本人desktop/Pixel、実si、Apple Pay、外部OAuth/実行は未受入。GitHub main/PR51は未merge、今回の正本runtime差分は作業木へ反映。[配備証拠](docs/evidence/sky-access-publication-verification.json)。
 
 ## 2026-10-02 — Sky共通接続確認と復旧
 
-WEB04/ROCK: 503/通信断/timeout/不正応答で実行可能になっていた共通接続確認を修正。認証が戻るまで実行/設定保存を停止し、再確認は読取だけ、未保存入力はcomponent memoryに保持する。接続設定は一覧取得失敗中の保存を止め、復旧後に編集入力を維持して一覧を取り直す。合成ローカル実ブラウザで401からの復旧、明示的な出典整理、server metadata完了1件、端末成果保存/再取得を確認。公開・本人desktop/Pixel・実AI/Apple Payの受入は別途記録する。
+WEB04/ROCK: 503/通信断/timeout/不正応答で実行可能になっていた共通接続確認を修正。認証が戻るまで実行/設定保存を停止し、再確認は読取だけ、未保存入力はcomponent memoryに保持する。接続設定は一覧取得失敗中の保存を止め、復旧後に編集入力を維持して一覧を取り直す。合成ローカル実ブラウザで401からの復旧、明示的な出典整理、server metadata完了1件、端末成果保存/再取得を確認。公開・本人desktop/Pixel・実si/Apple Payの受入は別途記録する。
 
 ## 2026-10-02 — SIM/eSIM issuer SDKとredeem前取消・置換
 
@@ -826,7 +828,7 @@ SIM/eSIM購入claimのchannel-neutral発行を進め、`lib/rockstar-entitlement
 
 ## Sky focused判定の検証結果（2026-10-02）
 
-WEB04/ROCK: 公開完了判定の整合検査をverifyへ追加。focused stageは既存basic受入を保持し、実Cloud AI/公開両端末/全Tool分類/Apple Payの受入を要求する。7 guard testsと正本全verify exit0（692 Node/19 Fashion/938 Worker-D1）。`--require-stage focused`は期待どおりexit1で未合格を示す。公開v28はこのturnで変更せず、一般marketplace/ConnectをCSV専用50円成功へ昇格しない。直近30分の公開error検索0件は実AI/可用性の受入ではない。証拠docs/evidence/sky-focused-release-check.json。GitHub mainへの保存/統合は未実施。
+WEB04/ROCK: 公開完了判定の整合検査をverifyへ追加。focused stageは既存basic受入を保持し、実Cloud si/公開両端末/全Tool分類/Apple Payの受入を要求する。7 guard testsと正本全verify exit0（692 Node/19 Fashion/938 Worker-D1）。`--require-stage focused`は期待どおりexit1で未合格を示す。公開v28はこのturnで変更せず、一般marketplace/ConnectをCSV専用50円成功へ昇格しない。直近30分の公開error検索0件は実si/可用性の受入ではない。証拠docs/evidence/sky-focused-release-check.json。GitHub mainへの保存/統合は未実施。
 
 ## 2026-10-02 — Sky v28取得・引継ぎ配備
 
@@ -834,7 +836,7 @@ WEB04/ROCK: 保存回答の本人限定Markdown取得・本文だけの削除確
 
 ## 2026-10-02 — Sky保存回答と会話引継ぎのローカル受入
 
-WEB04/ROCK: 会話の現在の依頼文だけをcomponent memoryで仕事画面へ引き継ぎ、仕事選択・見積・承認は本人の操作とする。URL/新しいbrowser storage/D1へ依頼本文を追加保存せず、reloadで未送信の下書きは消える。保存済み回答は本人認証付きMarkdown attachment（private/no-store）で取得でき、未保存/削除済み/別本人は拒否する。本文削除は対象と不可逆性をdialogで確認し、state・usage・予算台帳は保持する。共有予算の確定額は請求書照合済みと表示しない。ローカルbuilt Siteの合成アカウントで引継ぎ/再読込/削除dialog取消/135byteのダウンロード一致を確認、Worker/D1で24項目合格。実AI/本番ownerログイン/Apple Payは未受入、追加課金なし。正本の全verifyと同一Site公開は次の検証。
+WEB04/ROCK: 会話の現在の依頼文だけをcomponent memoryで仕事画面へ引き継ぎ、仕事選択・見積・承認は本人の操作とする。URL/新しいbrowser storage/D1へ依頼本文を追加保存せず、reloadで未送信の下書きは消える。保存済み回答は本人認証付きMarkdown attachment（private/no-store）で取得でき、未保存/削除済み/別本人は拒否する。本文削除は対象と不可逆性をdialogで確認し、state・usage・予算台帳は保持する。共有予算の確定額は請求書照合済みと表示しない。ローカルbuilt Siteの合成アカウントで引継ぎ/再読込/削除dialog取消/135byteのダウンロード一致を確認、Worker/D1で24項目合格。実si/本番ownerログイン/Apple Payは未受入、追加課金なし。正本の全verifyと同一Site公開は次の検証。
 
 ## 2026-10-02 — SIM/eSIM主導サービス要件監査とProvider trust境界
 
@@ -844,15 +846,15 @@ WEB04/ROCK: 会話の現在の依頼文だけをcomponent memoryで仕事画面�
 
 ## 2026-10-02 — Sky v27配備とクラウド仕事の復帰準備
 
-既存Skyへsource 3e895271f4b01542109882fa6c7af521d8166f1b/v27公開成功。quote/history・同じ仕事URLへの復元・期限切れsignin案内を既存auth/Stripeを保持して配備。v25/v26の複文trigger migration分割失敗は、起動時static statementで全guardを揃える経路と再ビルド/新source版で修復。Site Worker/D1 15項目（部分料金表からの回復と合成完了CSV保持）、関連30試験、型/product lint/build/bundle/asset合格。正本full verify663 Node/19 Fashion/858 Worker-D1合格。Sitesの既存design/project在庫欠落は旧v24にも存在し、正本検査合格と区別する。公開D1 schema version 2、quote 0行、既存50円CSV completed/stripe_verified/attempt1/revision3を再確認。desktop未認証のサインイン案内を確認。Pixelはロック中でowner解除待ち、新UIを実機合格とはしない。実AI鍵/料金/invoice/funded Wallet、保存成果UI、会話composer引継ぎ、本人OAuthとApple Payは未受入。false pricing gateと追加課金なしを維持。証拠docs/evidence/sky-cloud-ui-publication-verification.json。GitHub main b3e2676と正本未commit変更／Sites保存を区別し、完全ローンチ未完了。検証後に並行する暗号化入力/queue実装が正本へ追加されたため、663/19/858の合格はUI検証snapshotに限定し、現在の追加queueを合格・配備済みとはしない。v27へは混入していない。
+既存Skyへsource 3e895271f4b01542109882fa6c7af521d8166f1b/v27公開成功。quote/history・同じ仕事URLへの復元・期限切れsignin案内を既存auth/Stripeを保持して配備。v25/v26の複文trigger migration分割失敗は、起動時static statementで全guardを揃える経路と再ビルド/新source版で修復。Site Worker/D1 15項目（部分料金表からの回復と合成完了CSV保持）、関連30試験、型/product lint/build/bundle/asset合格。正本full verify663 Node/19 Fashion/858 Worker-D1合格。Sitesの既存design/project在庫欠落は旧v24にも存在し、正本検査合格と区別する。公開D1 schema version 2、quote 0行、既存50円CSV completed/stripe_verified/attempt1/revision3を再確認。desktop未認証のサインイン案内を確認。Pixelはロック中でowner解除待ち、新UIを実機合格とはしない。実si鍵/料金/invoice/funded Wallet、保存成果UI、会話composer引継ぎ、本人OAuthとApple Payは未受入。false pricing gateと追加課金なしを維持。証拠docs/evidence/sky-cloud-ui-publication-verification.json。GitHub main b3e2676と正本未commit変更／Sites保存を区別し、完全ローンチ未完了。検証後に並行する暗号化入力/queue実装が正本へ追加されたため、663/19/858の合格はUI検証snapshotに限定し、現在の追加queueを合格・配備済みとはしない。v27へは混入していない。
 
 ## 2026-10-02 — Sky仕事画面の見積履歴とサインイン復帰
 
-WEB04/ROCK: Zema WorkbenchのクラウドAI欄に、仕事別の履歴取得、reload時の同じ仕事への復元、認証期限切れの案内と同じURLへの復帰、変更前の仕事へ届いた応答を別の仕事へ表示しない照合を追加。redirectは追従せずサインイン復帰として扱い、応答不明時に実行を再送しない。本文をquoteへ保存せず、回答保存は初期off。共有予算の未送信・期限切れだけを履歴読込時に解放し、結果不明の予約を保持する。15対象試験合格。built Worker/D1＋合成アカウントのローカルブラウザで作成、見積保存、reload、認証期限切れ、復帰、取消、別仕事との履歴分離を確認。料金は署名fixtureであり、本番価格・本番ログイン・実AI・invoiceの合格ではない。最終全文verifyはexit 0（663 Node、19 Fashion、858 Worker/D1項目）。端末認証fixtureの未作成親job/不正UUIDを修正し、本人のactive仕事が必要なguardを保持。証拠はdocs/evidence/sky-cloud-ui-verification.json。公開v24は未変更。次は保存成果UI、Sky会話側の仕事への引継ぎ、同一Site配備と本番owner受入。実Provider credential/料金・資金gateは別受入を維持する。
+WEB04/ROCK: Zema Workbenchのクラウドsi欄に、仕事別の履歴取得、reload時の同じ仕事への復元、認証期限切れの案内と同じURLへの復帰、変更前の仕事へ届いた応答を別の仕事へ表示しない照合を追加。redirectは追従せずサインイン復帰として扱い、応答不明時に実行を再送しない。本文をquoteへ保存せず、回答保存は初期off。共有予算の未送信・期限切れだけを履歴読込時に解放し、結果不明の予約を保持する。15対象試験合格。built Worker/D1＋合成アカウントのローカルブラウザで作成、見積保存、reload、認証期限切れ、復帰、取消、別仕事との履歴分離を確認。料金は署名fixtureであり、本番価格・本番ログイン・実si・invoiceの合格ではない。最終全文verifyはexit 0（663 Node、19 Fashion、858 Worker/D1項目）。端末認証fixtureの未作成親job/不正UUIDを修正し、本人のactive仕事が必要なguardを保持。証拠はdocs/evidence/sky-cloud-ui-verification.json。公開v24は未変更。次は保存成果UI、Sky会話側の仕事への引継ぎ、同一Site配備と本番owner受入。実Provider credential/料金・資金gateは別受入を維持する。
 
 ## 2026-10-02 — Skyクラウド文章の保存・予約・実行記録
 
-WEB04/ROCK: request-bound quoteを0046/D1へ保存し、本人承認digest、親jobの共有予算予約、単一send claim、結果不明時のhold、項目別usageと任意成果保存/本文削除を接続した。原稿は保存せず、client request IDと許可されたProvider request IDは本文を含まない診断metadataとして保持する。Worker/D1で取消後の409を再現し、trigger更新数への依存を保存状態の照合へ変更。10個別試験とWorker/D1 823項目が合格。追加後の全文verifyはexit 0（656 Node、19 Fashion、823 Worker/D1項目）。共有仕事画面のReact memo検査は選択jobを記録callback内でID/revision照合する形とイベントhandlerの依存明示で修復し、検査を無効化せず合格。証拠はdocs/evidence/sky-cloud-text-execution-verification.json。会話UI、公開v24への配備、実Provider credential/応答/invoice、funded Walletは未受入。false pricing gateを維持し、合成Provider試験を実AI実行や請求へ昇格させない。追加決済・実Provider送信なし。
+WEB04/ROCK: request-bound quoteを0046/D1へ保存し、本人承認digest、親jobの共有予算予約、単一send claim、結果不明時のhold、項目別usageと任意成果保存/本文削除を接続した。原稿は保存せず、client request IDと許可されたProvider request IDは本文を含まない診断metadataとして保持する。Worker/D1で取消後の409を再現し、trigger更新数への依存を保存状態の照合へ変更。10個別試験とWorker/D1 823項目が合格。追加後の全文verifyはexit 0（656 Node、19 Fashion、823 Worker/D1項目）。共有仕事画面のReact memo検査は選択jobを記録callback内でID/revision照合する形とイベントhandlerの依存明示で修復し、検査を無効化せず合格。証拠はdocs/evidence/sky-cloud-text-execution-verification.json。会話UI、公開v24への配備、実Provider credential/応答/invoice、funded Walletは未受入。false pricing gateを維持し、合成Provider試験を実si実行や請求へ昇格させない。追加決済・実Provider送信なし。
 
 ## 2026-10-02 — Skyクラウド文章生成の料金準備
 
@@ -864,7 +866,7 @@ Sky v24（source fd619cf9e4bb0f0b6fa7f96f2c255ac89d923cbd）公開成功。Pixel
 
 公開v23/source dbf7405f98ce34941ce090099a2225ff168b5bf7の成功とPixelの価格確認待ち表示を確認。全verify 638 Node/19 Fashion/667 API合格。Pixel公開statusはDB/R2 available、cloud未設定、payments unconfigured。調査でpaymentsはMarketplace専用でCSV専用Webhookを評価しないことを確認。csvPaymentsを独立させ、CSVと一般販売を混同しないヘルプ表示を準備。既存の50円支払いを再実行しない。次に追加fixture/full verifyと同一Site更新後のPixel CSV statusを確認する。
 
-ROCK／WEB04: 公開v22で未反映だったremote AI料金gateを配備対象へ同期し、法務・特許のResponses transportを共通化。20秒abort、manual redirect、store:false、no auto-retry、実model/latency/validated usage/observed web callsを応答へ返す。本文の追加保存や精算台帳の完了ではない。3件追加fixtureと既存法務/特許を含む29件、typecheckを確認。OpenAI Developersは未導入、API keyなし、pricing/budget/usage ledger経路が未接続。本人認証・Rockstar利用権checkは削除せず保持する。公開previewでは利用権enforcement設定なし、claim DB migrationは別受入のまま。次に正本full verify、同一Skyへの配備、公開statusと本人認証後のgate拒否を確認する。完全ローンチ・cloud実応答を完了扱いにしない。
+ROCK／WEB04: 公開v22で未反映だったremote si料金gateを配備対象へ同期し、法務・特許のResponses transportを共通化。20秒abort、manual redirect、store:false、no auto-retry、実model/latency/validated usage/observed web callsを応答へ返す。本文の追加保存や精算台帳の完了ではない。3件追加fixtureと既存法務/特許を含む29件、typecheckを確認。OpenAI Developersは未導入、API keyなし、pricing/budget/usage ledger経路が未接続。本人認証・Rockstar利用権checkは削除せず保持する。公開previewでは利用権enforcement設定なし、claim DB migrationは別受入のまま。次に正本full verify、同一Skyへの配備、公開statusと本人認証後のgate拒否を確認する。完全ローンチ・cloud実応答を完了扱いにしない。
 
 ## 2026-10-02 — Skyの発注前下書き削除
 
@@ -876,25 +878,25 @@ Sky v22（source 456b549886c531de9b8aff27b0ecd6baf18ffc09）公開成功。Pixel
 
 追加受入: Pixelのココナラ案件管理で、合成下書き1件の作成・再読込・タイトル編集・再読込を確認。D1の同一案件1313b4f4-84e6-45d2-9e2f-bf7c3c469871、draft、revision 0→1、update_terms 1件、入出金0件を照合。金額は手数料後見込7800円、担当報酬7566円、見込差額234円で実売上ではない。17入力項目と変更履歴は本人別D1へ内容として保存し、応募前チェックのmetadata-only保存と区別する。実取引・外部連絡・送金、案件内容の保持/削除は未受入。正本の古いpaid-trial未実施表示を既存の50円成功証拠へ合わせ、新たな決済は実施していない。今回は実機受入と証拠同期のみで、配信版はv21のまま。
 
-Sky v21 (659bb8667dc8d18afe4facb90859d9cb79f6576d) 公開成功。Pixelでメルカリ支援の合成原稿、見込950円、本人D1保存、新ページ復元、終了revision 1を確認。受託案件workflowはbrowser下書き・430B Markdown保存・D1 completed/3msを確認。IP Studioのスマホloopback入口を撤去しPC条件を案内、PCでは起動確認未取得と示す。Jev RouterはSky実行未実装／PixelではPCのみ。全34 Toolを実行証拠と接続境界で分類し、ローカル下書きを外部作用に換算しない。正本最新verifyは632 Node/19 Fashion/638 Worker-D1 API合格。0044追加のschema／台帳分類・期待値を合わせ、59 web/113全境界を確認。Cloud AI資格情報と料金・上限管理、Apple Pay、外部OAuth、ココナラ外部実取引・案件内容の保持/削除、OS/app本人連携は未受入。完全ローンチ未完了。GitHub mainはb3e2676、正本実装はローカル未commitでSites source保存と区別。証拠: docs/evidence/sky-pixel-service-acceptance.json。
+Sky v21 (659bb8667dc8d18afe4facb90859d9cb79f6576d) 公開成功。Pixelでメルカリ支援の合成原稿、見込950円、本人D1保存、新ページ復元、終了revision 1を確認。受託案件workflowはbrowser下書き・430B Markdown保存・D1 completed/3msを確認。IP Studioのスマホloopback入口を撤去しPC条件を案内、PCでは起動確認未取得と示す。Jev RouterはSky実行未実装／PixelではPCのみ。全34 Toolを実行証拠と接続境界で分類し、ローカル下書きを外部作用に換算しない。正本最新verifyは632 Node/19 Fashion/638 Worker-D1 API合格。0044追加のschema／台帳分類・期待値を合わせ、59 web/113全境界を確認。Cloud si資格情報と料金・上限管理、Apple Pay、外部OAuth、ココナラ外部実取引・案件内容の保持/削除、OS/app本人連携は未受入。完全ローンチ未完了。GitHub mainはb3e2676、正本実装はローカル未commitでSites source保存と区別。証拠: docs/evidence/sky-pixel-service-acceptance.json。
 
-Sky v20公開成功。PixelでPAPER提案→承認→実行を2件、D1 proposal/receipt/position各2件、仮想残高904.00、再読込後のreceipt一致、次操作への移動、スマホ検索と残高の重なり解消を確認。全34 Toolを証拠別分類し、Mercari・IP Studio・Jev Router・gig workflowのUI受入は未確認として保持。市場修正後のverifyは631 Node/19 Fashion/622 API合格。以後の並行0044 migrationはcanonical schemaと未整合のため最新schema checkは失敗（自身の公開Worker buildは成功）。PCポート38479/8787はlistenなし、Cloud AI keyなし。
+Sky v20公開成功。PixelでPAPER提案→承認→実行を2件、D1 proposal/receipt/position各2件、仮想残高904.00、再読込後のreceipt一致、次操作への移動、スマホ検索と残高の重なり解消を確認。全34 Toolを証拠別分類し、Mercari・IP Studio・Jev Router・gig workflowのUI受入は未確認として保持。市場修正後のverifyは631 Node/19 Fashion/622 API合格。以後の並行0044 migrationはcanonical schemaと未整合のため最新schema checkは失敗（自身の公開Worker buildは成功）。PCポート38479/8787はlistenなし、Cloud si keyなし。
 
 全体verify完走：Node631、Fashion19、Worker/D1 API622 assertions合格。PixelでPAPER提案→承認→実行とD1 receipt/position保存を確認。市場サンプル表記・次操作への移動・完了履歴の再取得を実装し公開受入中。
 
-Sky v18公開成功。Pixelココナラ合成チェック完了（267B入力／180B出力／8ms、D1 completed）、端末保存と新しいページからの成果復元、モバイル操作列・出力可読性を確認。匿名desktopは入力保持・別タブSkyサインイン・GET再確認を受入。関連18試験合格。全体verifyは630/631、並行schema変更のDB表数期待111/実112で失敗し後続段階未実行。Cloud AI credential、Apple Pay、Coconala案件台帳の実利用受入、外部OAuth実行は未完了。
+Sky v18公開成功。Pixelココナラ合成チェック完了（267B入力／180B出力／8ms、D1 completed）、端末保存と新しいページからの成果復元、モバイル操作列・出力可読性を確認。匿名desktopは入力保持・別タブSkyサインイン・GET再確認を受入。関連18試験合格。全体verifyは630/631、並行schema変更のDB表数期待111/実112で失敗し後続段階未実行。Cloud si credential、Apple Pay、Coconala案件台帳の実利用受入、外部OAuth実行は未完了。
 
 Sky v16公開成功。履歴保存の固定診断と二重計算防止を反映。ココナラの案件入力を保持する別タブサインイン／GET再確認を実装し、公開受入を進行中。
 
 履歴保存の診断とlocal計算例外の単発失敗を実装。関連14試験合格。公開受入と全体検査を実施中。
 
-法務・特許の任意local履歴を公開v14へ実装し、v15でMarketの別タブsignin/reloadと法務の処理表示を修正。Pixelでは法務のcompleted/input406B/output998B/3ms、特許のcompleted/input539B/output4650B/2msをD1で確認。特許の初回保存は未確認警告となり、入力を保持した明示再実行で保存できたが初回原因は未特定。特許は架空数値によるmetadata/復旧試験で、内容品質・出願受入ではない。Desktopの未認証法務はlocal結果と未保存表示、Marketは401のsignin/reloadと検索入力保持を確認。本文非送信、未同意通信0、二重生成防止等の関連試験と全体verify620件・Fashion19件・Worker/D1 API540項目に合格。実AI鍵、Apple Pay対応端末、外部OAuth／Providerと未試験Toolが残り、完全ローンチは未完了。GitHub main保存とSites公開は別。
+法務・特許の任意local履歴を公開v14へ実装し、v15でMarketの別タブsignin/reloadと法務の処理表示を修正。Pixelでは法務のcompleted/input406B/output998B/3ms、特許のcompleted/input539B/output4650B/2msをD1で確認。特許の初回保存は未確認警告となり、入力を保持した明示再実行で保存できたが初回原因は未特定。特許は架空数値によるmetadata/復旧試験で、内容品質・出願受入ではない。Desktopの未認証法務はlocal結果と未保存表示、Marketは401のsignin/reloadと検索入力保持を確認。本文非送信、未同意通信0、二重生成防止等の関連試験と全体verify620件・Fashion19件・Worker/D1 API540項目に合格。実si鍵、Apple Pay対応端末、外部OAuth／Providerと未試験Toolが残り、完全ローンチは未完了。GitHub main保存とSites公開は別。
 
 ## 2026-10-02 — 重複実装と検証入口の統合（G04）
 
-利用者の「重複・似たプログラムを統合して」に従い、Git / CI / Operations（ROCK）を主担当として、main `b3e2676` から共通処理を集約する。PR #51 のCSV安全修正・既存検査整合、PR #39 のSite試験接続を履歴ごと取り込んだ。法務／特許AIの通信・引用、Jev通信、MCPのsession／RPC、Tool registry、owner／revision保存、Stripe低水準通信・署名、公開PreviewとWebのSky→Zema契約を対象にする。
+利用者の「重複・似たプログラムを統合して」に従い、Git / CI / Operations（ROCK）を主担当として、main `b3e2676` から共通処理を集約する。PR #51 のCSV安全修正・既存検査整合、PR #39 のSite試験接続を履歴ごと取り込んだ。法務／特許siの通信・引用、Jev通信、MCPのsession／RPC、Tool registry、owner／revision保存、Stripe低水準通信・署名、公開PreviewとWebのSky→Zema契約を対象にする。
 
-各Toolの認証、外部送信同意、owner分離、CAS競合、決済・在庫・本人承認は各adapterに残す。Android／Linuxの実行器、バックアップ形式、商品固有アルゴリズム、固定原本は独立した責務であり削除しない。未mergeのAI／Fund／Game等の新機能PRも重複とみなさず、今回の完了範囲に含めない。共通処理の実装とローカル全体検証は完了。GitHubの同一SHA CIとmain統合はPRの状態・merge commitで追跡する。公開配備、実決済、実機試験は本統合の検証に含まない。
+各Toolの認証、外部送信同意、owner分離、CAS競合、決済・在庫・本人承認は各adapterに残す。Android／Linuxの実行器、バックアップ形式、商品固有アルゴリズム、固定原本は独立した責務であり削除しない。未mergeのsi／Fund／Game等の新機能PRも重複とみなさず、今回の完了範囲に含めない。共通処理の実装とローカル全体検証は完了。GitHubの同一SHA CIとmain統合はPRの状態・merge commitで追跡する。公開配備、実決済、実機試験は本統合の検証に含まない。
 
 fresh `npm ci`後の`npm run verify` exit 0。root 485/485、Fashion 22/22、Site 18/18、公開Preview 21/21、Worker-D1 172項目、CSV-D1/R2 113項目、bundle 131、asset 114（欠落0）が合格。Mini fresh buildは13 route。配布ZIPと共通Stripeコピーをsourceへ同期し、Fashion単体ZIPもverify必須にした。後続のSite配布物一致試験1件も追加し、最終CIで再確認する。独立レビューの追加41試験とstrict型確認で未解決の指摘なし。[証拠](docs/evidence/common-foundation-integration.json)。このdoneはG04の共通実装範囲に限り、未mergeの新機能PR・native実行器・Provider・実機受入を完了に変えない。
 
@@ -904,7 +906,7 @@ Security／ROCKのSYS15で、基準 `3890f16`のCodeQL42件・Dependabot18件か
 
 `a9b10fb`の全体verify、修正回帰、production計測、CodeQLが成功した。新規境界14試験、MR／MCP／PC adapterのNode18（内部Python19）、主546合格／1環境条件skip・失敗0、型検査・lint警告0／エラー0、build・APIまで確認した。実CLI／adapter／MCPの155 byte一致と独立レビューも成功。同一refの#1〜#4それぞれのfixedを確認し、openは42→38件、新規IDなし。各解析SHAとrunは[第3cycleの証拠](docs/evidence/spider-improvement-cycle.json)へ保存した。
 
-Dependabot18件と既存PR53〜56、履歴候補2,362件は残る。履歴検査は同じSHAで659 commitを完走し候補検出による失敗を維持する。初回CIのSky MCP ZIP更新漏れは再生成で修正した。ローカル全体verifyの未導入ai依存停止と容量不足はclean CI成功と分離して記録する。POSIXの安全な読取機能がない環境は拒否し、workspace祖先と同一UIDは信頼範囲とする。OS socket権限#12／#21／#22／#23はsource上の専用group／SO_PEERCRED設計を確認し、このcycleでは変更・dismissしない。main統合・配備・実機変更・秘密失効・24時間運転受入は行わず、SYS15をin_progressで継続する。
+Dependabot18件と既存PR53〜56、履歴候補2,362件は残る。履歴検査は同じSHAで659 commitを完走し候補検出による失敗を維持する。初回CIのSky MCP ZIP更新漏れは再生成で修正した。ローカル全体verifyの未導入`ai`依存停止と容量不足はclean CI成功と分離して記録する。POSIXの安全な読取機能がない環境は拒否し、workspace祖先と同一UIDは信頼範囲とする。OS socket権限#12／#21／#22／#23はsource上の専用group／SO_PEERCRED設計を確認し、このcycleでは変更・dismissしない。main統合・配備・実機変更・秘密失効・24時間運転受入は行わず、SYS15をin_progressで継続する。
 
 ## 2026-10-02 — SPIDER第2cycle: PC Tool定義の読取競合を修正
 
@@ -982,9 +984,9 @@ Sky Agent Runtimeのminutely scannerがreserved+encrypted inputのみを決定�
 
 ## 2026-10-02 — Cloud継続縦断テストをloopbackで再検証
 
-以前`EPERM`で起動できなかったlocal Worker/D1/Workflow suiteを、今回turn限定のlocalhost listener権限で再実行。`npm run test:api` 862 assertions、`npm run sky:a2a:workflow:positive` 10/10、Remote AI暗号化入力/store/public recordとA2A clientの22 tests（Node/Python独立HTTP agent fixtureを含む）、`npm run typecheck`がpass。API試験は合成入力をowner/execution-bound AES-GCMで保存してからsynthetic coordinatorを実行するよう更新。追加Workflow試験はRemote AIのhard pricing gateが閉じている間に`execution_disabled`となり、provider-send claim 0件を確認する。意図的restart/response-loss fixturesのworkerd診断は出るがVitest exit 0。
+以前`EPERM`で起動できなかったlocal Worker/D1/Workflow suiteを、今回turn限定のlocalhost listener権限で再実行。`npm run test:api` 862 assertions、`npm run sky:a2a:workflow:positive` 10/10、Remote si暗号化入力/store/public recordとA2A clientの22 tests（Node/Python独立HTTP agent fixtureを含む）、`npm run typecheck`がpass。API試験は合成入力をowner/execution-bound AES-GCMで保存してからsynthetic coordinatorを実行するよう更新。追加Workflow試験はRemote siのhard pricing gateが閉じている間に`execution_disabled`となり、provider-send claim 0件を確認する。意図的restart/response-loss fixturesのworkerd診断は出るがVitest exit 0。
 
-これはuncommitted local sourceと合成Worker/D1/Workflowだけの受入。価格gateはfalse、Remote AI成功dispatchは未検証、実Provider network call・Cloudflare本番durability・請求/invoice・実SIM/eSIM activation・Android APK/Binder/実機・OS installは未受入。[検証記録](docs/evidence/remote-ai-cloud-workflow-local-20261002.json)。次は外部送信gateを閉じたままCloud queueの取消・期限・再起動受入を増やし、Android Wallet handoff transportとProvider契約後のmeter/invoice照合準備を続ける。
+これはuncommitted local sourceと合成Worker/D1/Workflowだけの受入。価格gateはfalse、Remote si成功dispatchは未検証、実Provider network call・Cloudflare本番durability・請求/invoice・実SIM/eSIM activation・Android APK/Binder/実機・OS installは未受入。[検証記録](docs/evidence/remote-ai-cloud-workflow-local-20261002.json)。次は外部送信gateを閉じたままCloud queueの取消・期限・再起動受入を増やし、Android Wallet handoff transportとProvider契約後のmeter/invoice照合準備を続ける。
 
 ## 2026-10-02 — Cloud LLM取消時の入力消去
 
@@ -1037,7 +1039,7 @@ Follow-up contract prep: added the seller API's concrete POST/GET/PATCH message 
 
 ## 2026-10-02 — SIM claim API integration再確認
 
-前回sandboxで拒否されたloopback listenerをテスト限定の許可で起動し、`npm run test:api`を再実行。Worker/D1は960 assertions、CSV Worker/D1/R2 regressionは113 assertionsでpass。SIM関連ではoperator-configured issuerに対する署名済み初回claim、同一owner再送、別owner拒否、claim code/署名改ざん拒否、Android device-homeのredeem availabilityを合成SQLite/Workerで確認した。これはローカルAPI実装の検証で、実販売・販売元webhook・本番D1・回線開通・AI provider請求を証明しない。
+前回sandboxで拒否されたloopback listenerをテスト限定の許可で起動し、`npm run test:api`を再実行。Worker/D1は960 assertions、CSV Worker/D1/R2 regressionは113 assertionsでpass。SIM関連ではoperator-configured issuerに対する署名済み初回claim、同一owner再送、別owner拒否、claim code/署名改ざん拒否、Android device-homeのredeem availabilityを合成SQLite/Workerで確認した。これはローカルAPI実装の検証で、実販売・販売元webhook・本番D1・回線開通・si provider請求を証明しない。
 
 Android側はこのhostでJDKが起動せず、Gradleもなく、SDKは空の`.sdk` cacheのみ。`adb`はsandbox内でdaemon loopback bindを拒否した。既存`.github/workflows/android.yml`にはAIDL/APK buildとemulator instrumentationが定義されているが、現在のmain commit/working treeは未pushでworkflow実行証拠はない。次はこの実装をCIでcompile/instrumentationし、対応端末を固定してclaimからSky/Zema/Agent入口までを受入する。claim機能のローカル境界は[証拠](docs/evidence/sim-service-android-native-claim-local-20261002.json)を参照。
 
@@ -1045,7 +1047,7 @@ Android側はこのhostでJDKが起動せず、Gradleもなく、SDKは空の`.s
 
 同日Cloud continuity再確認: `npm run sky:a2a:workflow:positive`をloopback対応環境で実行し2 files / 10 tests pass。fixtureは異なるAgent実装とのdispatch、signed final usage/artifact、offline continuation consent、cancel/restart/race、ambiguous-send no-replayを含む。`npm run test:api` 960 Worker/D1 assertionsとCSV 113 assertionsもpass。故意のrestart/ambiguous-send試験はWorkerd engine-abort diagnosticsを出したがVitestはexit 0。外部Provider callは0、hard pricing gateはclosedのまま。合成fixtureの継続はCloudflare本番永続性、実Agent相互接続、production billingの受入ではない。[Cloud evidence](docs/evidence/remote-ai-cloud-workflow-local-20261002.json)。
 
-続けて`npm run sky:agent-runtime:check`を現行sourceで再実行。Remote AI Workflow / A2A Workflow / D1 bindingsを含む251.35 KiB bundleのdry-run buildが成功した。Cloudflareへのdeploy・secret設定・production D1/Workflow稼働は行っていない。
+続けて`npm run sky:agent-runtime:check`を現行sourceで再実行。Remote si Workflow / A2A Workflow / D1 bindingsを含む251.35 KiB bundleのdry-run buildが成功した。Cloudflareへのdeploy・secret設定・production D1/Workflow稼働は行っていない。
 
 ## 2026-10-02 — 販売offer別の初期Agent構成を購入claimへ接続
 
@@ -1088,7 +1090,7 @@ GitHub main b3e2676abd8ae2a0b3f78f48483e067b429d9bc8を再取得し、branch/PR�
 
 Cloudflare workerdで `redirect: error` の非対応を再現。StripeとSky MCPを `manual` に変更し、非2xxを拒否して転送先への資格情報漏えいを防ぐ。実workerdの50円Checkout fixtureと302拒否を追加。前段の正本verifyは604件＋API483項目が合格。
 
-本番CSV決済開始が502で停止したため、Stripe応答のHTTP status・許可リスト内のerror code・検証したrequest IDだけを記録する診断を追加。秘密値・Provider message・入力本文は記録しない。CSVは完了後も同じ画面で成果物を取得できるようにし、途中の401で利用可能状態を解除してサインイン復帰を表示する。対象Stripe/50円試験31件と型検査は合格。本番50円試験はStripe確認済み・処理完了。Pixelで結果CSV保存、同一受付の再読み込み、成果物4種の復元、保存CSVとserver成果物SHA-256一致を確認した。WebhookはStripe側でJPY 50・paid・livemodeと200配送を確認。作成済みCheckoutには旧店舗名のsnapshotが残ったため、public profileをavokado Skyへ修正した。新規Checkoutはavokado Sky表示を実機で確認し、未払いキャンセル後にquoted/unpaid・attempt 0を確認。Apple Pay実機、desktop復帰、外部OAuth、クラウドAI本番応答・実費は未受入。
+本番CSV決済開始が502で停止したため、Stripe応答のHTTP status・許可リスト内のerror code・検証したrequest IDだけを記録する診断を追加。秘密値・Provider message・入力本文は記録しない。CSVは完了後も同じ画面で成果物を取得できるようにし、途中の401で利用可能状態を解除してサインイン復帰を表示する。対象Stripe/50円試験31件と型検査は合格。本番50円試験はStripe確認済み・処理完了。Pixelで結果CSV保存、同一受付の再読み込み、成果物4種の復元、保存CSVとserver成果物SHA-256一致を確認した。WebhookはStripe側でJPY 50・paid・livemodeと200配送を確認。作成済みCheckoutには旧店舗名のsnapshotが残ったため、public profileをavokado Skyへ修正した。新規Checkoutはavokado Sky表示を実機で確認し、未払いキャンセル後にquoted/unpaid・attempt 0を確認。Apple Pay実機、desktop復帰、外部OAuth、クラウドsi本番応答・実費は未受入。
 
 文章モデルadapterはOpenAIのusage（入力・出力・合計・cache token）を妥当性確認して返し、処理時間を計測する。usage未提供はnullで、費用を推定しない。Provider資格情報のredirect転送を拒否し、timeout=504／transport・不正JSON・未完了応答=502を区別する。失敗時の自動再送は行わない。本文やAPIキーの新規保存なし。9件のfixtureは合格、実Provider接続と料金照合は未実施。
 
@@ -1098,7 +1100,7 @@ Cloudflare workerdで `redirect: error` の非対応を再現。StripeとSky MCP
 
 物理SIM/eSIM/service-only offerから来る署名claimをRockstarアカウントへ一度だけ結ぶ`POST/GET /api/rockstar/entitlements`、operator trust key resolver、D1 table/migration 0039を追加。Ed25519署名/domain、scope/form factor、one-time code hash、expiry、same-owner idempotency、cross-owner replay rejectionを検証。`/connect`はoperator issuerが設定されると署名claim bundle入力とowner-scoped利用権を表示する。built Worker/D1 API suiteへclaim HTTP認証・引換・再送・別owner拒否・tampering試験を追加し、`ROCKSTAR_SERVICE_ENTITLEMENTS_REQUIRED=true`時のCloud Agent新規委任に`agents` entitlementを要求した。expired/refunded/revoked claimはscope checkでinactive。Preview defaultはenforcement off。本番販売・契約・決済・carrier activation・issuer key deployment・production billing・OS installを示さず、本番launch flagはまだ無効。`npm run verify`成功: Node 602/602、Fashion 19/19、Worker/D1 API 463 assertions、typecheck/lint/build、bundle/assets checks。seller refund/revocation feed、全service authorization integration、Zema estimate/current spend/itemized usageは次の作業。
 
-## 2026-10-01 — Local AIのcanonical memory storeを実装
+## 2026-10-01 — Local siのcanonical memory storeを実装
 
 AI03に着手。native Python CoreへSQLite canonical memory storeを追加し、本人確認済みの内容だけをowner＋project単位で保存する。本文とmodel-specific projectionはOS cipher adapterで暗号化する必須契約とし、鍵adapterがなければ初期化を拒否する。更新時はrevisionを比較し、canonical変更と同時にprojectionを失効。model profile版ごとのprojectionは正本から再生成し、生成中に正本が変われば保存を拒否する。expiry、delete、content-free tombstone、参照専用list、入力上限も実装。
 
@@ -1134,19 +1136,19 @@ eSIM注文status APIが、不変order snapshotから選ばれたstarter packのI
 
 ## 2026-10-01 — Skyサービスのローンチ設計と前提条件の表示
 
-利用者の1時間の設計・実装指示に基づき、`docs/sky-launch-design.md`を追加。独立Skyを正本に、本人確認・カタログ・実行/成果・作者公開・決済/購入権限・OS/他アプリadapter・Mini適合・保存/削除・監視/復元を設計。`data/sky-service-launch.json`は段階別の必須受入を持ち、完全ローンチ未合格を保持する。Sky専用Siteのruntime外部接続は未設定。秘密・本人情報を返さないservice-status API、外部AI未接続時のガイド表示、CSV保存前提の表示、Sky内のヘルプ/戻り導線を公開。作者申請の入力前サインイン案内・再接続導線を追加。本番readbackでDB接続可、R2設定あり、AI/決済接続待ちを確認。運用・受入手順は `docs/sky-launch-operations.md`。公開URLの存在と本番ログイン後の実行を区別する。既存製品サイト・旧OS Siteのデザインを変更しない。
+利用者の1時間の設計・実装指示に基づき、`docs/sky-launch-design.md`を追加。独立Skyを正本に、本人確認・カタログ・実行/成果・作者公開・決済/購入権限・OS/他アプリadapter・Mini適合・保存/削除・監視/復元を設計。`data/sky-service-launch.json`は段階別の必須受入を持ち、完全ローンチ未合格を保持する。Sky専用Siteのruntime外部接続は未設定。秘密・本人情報を返さないservice-status API、外部si未接続時のガイド表示、CSV保存前提の表示、Sky内のヘルプ/戻り導線を公開。作者申請の入力前サインイン案内・再接続導線を追加。本番readbackでDB接続可、R2設定あり、si/決済接続待ちを確認。運用・受入手順は `docs/sky-launch-operations.md`。公開URLの存在と本番ログイン後の実行を区別する。既存製品サイト・旧OS Siteのデザインを変更しない。
 
-## 2026-10-01 — Local AIモデル切替をロードreceipt後へ変更
+## 2026-10-01 — Local siモデル切替をロードreceipt後へ変更
 
-API v4のread-only `ParcelFileDescriptor`引渡しに、Broker側の`ModelProfileActivationCoordinator`を追加し、publisher署名確認 → Broker private staging → Local AIでexact profileをload → receipt/status照合 → PlatformStore active pointer更新をsourceで接続した。load後にcommitが失敗した場合は旧profileの再loadを試みる。PlatformStoreは別profileを利用中のactive workまたは直近のplan reservationがある間は切替を拒否し、Zema submitとprofile activationは同じprocess lockを使う。静的契約検査とCore JVM 46/46は合格。
+API v4のread-only `ParcelFileDescriptor`引渡しに、Broker側の`ModelProfileActivationCoordinator`を追加し、publisher署名確認 → Broker private staging → Local siでexact profileをload → receipt/status照合 → PlatformStore active pointer更新をsourceで接続した。load後にcommitが失敗した場合は旧profileの再loadを試みる。PlatformStoreは別profileを利用中のactive workまたは直近のplan reservationがある間は切替を拒否し、Zema submitとprofile activationは同じprocess lockを使う。静的契約検査とCore JVM 46/46は合格。
 
-全体の`npm run verify`はexit 0（Node 539/539、Fashion 19/19、Worker/D1 API 322 assertions、production buildとasset checks）。eSIM関連host testsは40/40、bootstrapだけなら17/17。Cloudflare local A2A Workflow positiveは4/4、restart／invalid-proof試験は3経路すべて送信claim 0で停止し、Node/Python A2A client interoperabilityは7/7。これらはhost fixture/local cloud runtimeの証拠で、Provider sandbox・本番Cloudflare・eSIM実発行・端末圏外・実機AIへ転用しない。
+全体の`npm run verify`はexit 0（Node 539/539、Fashion 19/19、Worker/D1 API 322 assertions、production buildとasset checks）。eSIM関連host testsは40/40、bootstrapだけなら17/17。Cloudflare local A2A Workflow positiveは4/4、restart／invalid-proof試験は3経路すべて送信claim 0で停止し、Node/Python A2A client interoperabilityは7/7。これらはhost fixture/local cloud runtimeの証拠で、Provider sandbox・本番Cloudflare・eSIM実発行・端末圏外・実機siへ転用しない。
 
 契約前の実請求、eSIM発行、production dispatchは引き続き無効。Sky eSIM catalog/購入は販売主体・日本の卸/再販・サポート・料金条件が確定するまでread-onlyである。A2Aはnative device gatewayとWallet reservation/settlement handoff、Provider sandbox受入が未完了。モデル切替はAndroid coordinator sourceまでで、user-facing catalogue/API、production artifact source/trust key/license configuration、tokenizer/template stagingが未完了。Android SDK platform/build-toolsがないためautomation/AIDL/APK build、Binder、Pixel profile swapとoffline inferenceは未検証。
 
 ## 2026-10-01 — Android端末能力snapshotをv2へ拡張
 
-Android Brokerの短期`deviceCapabilities`に、eUICC状態だけでなくOS申告のmanufacturer/model/device/product・API level、ActivityManagerのRAM観測、アプリ領域の空き容量、touch/input/audio/camera/connectivity feature、Brokerが署名・version・APIを検証したLocal AI runtimeの現在状態を追加し、JSON Schema protocol v2へ固定。Shellは機種・資源・基本feature・runtimeのモデル読込状態を表示する。ZemaはLocal AIの計画前後に同じ署名済runtimeがready/modelLoadedであることを再確認し、不明・未読込ならWorkをqueueしない。これはmodel profile identity/weight hash/適合性の証明ではなく、native RockstarOS適合と端末内LLM適合は引き続き未評価。ICCID/EID・profile一覧は読まず、30秒で失効し、cloud送信もしない設計。classifier/shell instrumentationと静的契約検査を更新。`npm run verify`は終了コード0（Node 530/530、Fashion 19/19、API 301 assertions、build/assets checks成功）。一時Temurin 17／Gradle 8.11.1でAndroid-independent Coreをcompileし、Ed25519 publisher verifierと再開可能なweights stager追加後は46/46 JUnitが合格。Android SDK platform/build-tools/NDKがないためAndroid APK/AIDL compile・instrumentationは未実施。Skyの一般capability registry、SIM挿入イベント連携、端末適合試験は次段階。
+Android Brokerの短期`deviceCapabilities`に、eUICC状態だけでなくOS申告のmanufacturer/model/device/product・API level、ActivityManagerのRAM観測、アプリ領域の空き容量、touch/input/audio/camera/connectivity feature、Brokerが署名・version・APIを検証したLocal si runtimeの現在状態を追加し、JSON Schema protocol v2へ固定。Shellは機種・資源・基本feature・runtimeのモデル読込状態を表示する。ZemaはLocal siの計画前後に同じ署名済runtimeがready/modelLoadedであることを再確認し、不明・未読込ならWorkをqueueしない。これはmodel profile identity/weight hash/適合性の証明ではなく、native RockstarOS適合と端末内LLM適合は引き続き未評価。ICCID/EID・profile一覧は読まず、30秒で失効し、cloud送信もしない設計。classifier/shell instrumentationと静的契約検査を更新。`npm run verify`は終了コード0（Node 530/530、Fashion 19/19、API 301 assertions、build/assets checks成功）。一時Temurin 17／Gradle 8.11.1でAndroid-independent Coreをcompileし、Ed25519 publisher verifierと再開可能なweights stager追加後は46/46 JUnitが合格。Android SDK platform/build-tools/NDKがないためAndroid APK/AIDL compile・instrumentationは未実施。Skyの一般capability registry、SIM挿入イベント連携、端末適合試験は次段階。
 
 ## 2026-10-01 — 衛星接続のMVP経路を調査
 
@@ -1156,7 +1158,7 @@ Android Brokerの短期`deviceCapabilities`に、eUICC状態だけでなくOS申
 
 ## 2026-10-01 — 端末能力を選択・実行条件へ結ぶfixtureを強化
 
-Linuxの独立AI route fixtureで端末能力snapshotをschema/source/platform/30秒期限付きにし、route側の必須feature宣言、false/unknown拒否、能力digest/evidence/expiry固定、reserve/claim時の鮮度・完全一致再確認を実装。更新後・期限切れ後のplanは再承認を要求し、provider/model/cloudへの自動fallbackはしない。契約とfocused SQLite試験は[compute device capability contract](contracts/compute-device-capabilities.json)・[AI Cloud strategy](systems/rock-star-os/docs/CLOUD-AI-STRATEGY.md)。26 focused tests pass。公開ソフトウェアfixtureのみで、Android Broker、Sky UI、実端末測定、SIM挿入時自動判定への接続は未実施。AI05をin progressへ更新。
+Linuxの独立si route fixtureで端末能力snapshotをschema/source/platform/30秒期限付きにし、route側の必須feature宣言、false/unknown拒否、能力digest/evidence/expiry固定、reserve/claim時の鮮度・完全一致再確認を実装。更新後・期限切れ後のplanは再承認を要求し、provider/model/cloudへの自動fallbackはしない。契約とfocused SQLite試験は[compute device capability contract](contracts/compute-device-capabilities.json)・[si Cloud strategy](systems/rock-star-os/docs/CLOUD-ai-STRATEGY.md)。26 focused tests pass。公開ソフトウェアfixtureのみで、Android Broker、Sky UI、実端末測定、SIM挿入時自動判定への接続は未実施。AI05をin progressへ更新。
 
 ## 2026-10-01 — 圏外継続の同意をZema／Broker／Cloud Workerへ固定
 
@@ -1234,7 +1236,7 @@ ROCK／WEB04: Sky Market経由の出典整理・無料記事・応募前チェ�
 
 ## 2026-10-01 — Zemaのモデル版固定に必要なCore identityを公開
 
-事前に作る`ModelProfilePin`から、profile manifest digest、weight/tokenizer/template hash、runtime component/version/signer/API範囲、plan schema、資源条件を取得できるようにした。Brokerが後続のprofile-aware Local AI APIへ渡し、loaded modelと正確に比較するためのCore側データ契約。既存DBのpin内容を変更せず、Coreテストにprofile/runtime identityの比較を追加。Zema接続、API v3、署名された本物のartifact検証、Javaテスト、2モデルの実機切替は未完了。
+事前に作る`ModelProfilePin`から、profile manifest digest、weight/tokenizer/template hash、runtime component/version/signer/API範囲、plan schema、資源条件を取得できるようにした。Brokerが後続のprofile-aware Local si APIへ渡し、loaded modelと正確に比較するためのCore側データ契約。既存DBのpin内容を変更せず、Coreテストにprofile/runtime identityの比較を追加。Zema接続、API v3、署名された本物のartifact検証、Javaテスト、2モデルの実機切替は未完了。
 
 ## 2026-10-01 — eSIMの契約前fixtureを再検証
 
@@ -1254,13 +1256,13 @@ bootstrap、plan catalog、eSIM Go webhook/provider、install-material、schedul
 
 同日、A2A署名を有効にするBrokerへWallet reservation authorizer注入を必須化。さらに`ValueSpendRuntime.authorize_a2a_proof`を追加し、owner・device・delegation・親job・通貨・cap・承認digest・millisecond期限を同一Wallet transactionで照合し、proof失効までhold releaseを防ぐ。runtime 17件、Hub HTTP 9件、Broker core 33件、A2A Node/Python protocol suite 34件成功。Broker testは実Wallet callableを注入して署名とfenceを通すcross-module fixtureを含む。Cloudflare local Workflow/D1でも、形状・署名が正しい期限切れproof、失効鍵proof、proofなしを送信前に拒否し、Agent discoveryとremote send claimが0件であることを確認。test proofに署名field外の余分な親budgetがあり、以前は期限／失効の個別検査へ到達していなかったfixture defectも修正した。native holdは合成残高でありcloud側論理poolと同一資金ではない。device Gatewayへのproduction wiring、実Provider positive Workflow、実署名鍵、実資金／provider請求は未接続で、production A2A executionはdefault-off。[設計・境界](docs/value-spend-runtime.md) · [Wallet/Billing workstream](docs/workstreams/03-wallet-billing-providers.md) · [Broker boundary](systems/rock-star-os/docs/MCP-BROKER.md)
 
-## 2026-10-01 — API v4でBrokerからLocal AIへモデルを渡すsource経路を追加
+## 2026-10-01 — API v4でBrokerからLocal siへモデルを渡すsource経路を追加
 
-別UIDのLocal AIへファイルパスを渡してもBroker private pathを読めないため、認証済み`installAndLoadModel` AIDLを追加し、読み取り専用ParcelFileDescriptorでhash/lengthを固定したモデルだけを渡す設計にした。Broker clientはstaged fileを再hashしてread-onlyでopen。runtime serviceはregular/read-only FD、上限4 GiB、32 MiB空き容量reserve、正確な長さ、SHA-256を確認してno-backup private storageへstream copyし、atomic rename後にruntime loaderを起動する。完了receiptにprofile ID/hash/byte lengthを含め、Brokerは一致とruntime status再読込みを確認する。UI手動importは別profile IDを報告し、署名profile pinと一致しないmodelをZemaが誤認しない。v3後へのv4 patchはclean apply、TypeScript/Jest 23/23、ESLint、offline manifest check合格。RockstarOS全体の`npm run verify`もexit 0（Node 530/530、Fashion 19/19、API 301 assertions、buildとrelease asset checks）。[検証記録](docs/evidence/local-ai-model-handoff-v4-validation-20261001.json)。Android SDK platform/build-toolsがないためKotlin/AIDL/APK build、Binder/device試験は未実施。installerはまだPlatformStore activation/source downloadに接続されず、tokenizer/template/license receipt、production keys、real inferenceは未完了。
+別UIDのLocal siへファイルパスを渡してもBroker private pathを読めないため、認証済み`installAndLoadModel` AIDLを追加し、読み取り専用ParcelFileDescriptorでhash/lengthを固定したモデルだけを渡す設計にした。Broker clientはstaged fileを再hashしてread-onlyでopen。runtime serviceはregular/read-only FD、上限4 GiB、32 MiB空き容量reserve、正確な長さ、SHA-256を確認してno-backup private storageへstream copyし、atomic rename後にruntime loaderを起動する。完了receiptにprofile ID/hash/byte lengthを含め、Brokerは一致とruntime status再読込みを確認する。UI手動importは別profile IDを報告し、署名profile pinと一致しないmodelをZemaが誤認しない。v3後へのv4 patchはclean apply、TypeScript/Jest 23/23、ESLint、offline manifest check合格。RockstarOS全体の`npm run verify`もexit 0（Node 530/530、Fashion 19/19、API 301 assertions、buildとrelease asset checks）。[検証記録](docs/evidence/local-ai-model-handoff-v4-validation-20261001.json)。Android SDK platform/build-toolsがないためKotlin/AIDL/APK build、Binder/device試験は未実施。installerはまだPlatformStore activation/source downloadに接続されず、tokenizer/template/license receipt、production keys、real inferenceは未完了。
 
 ## 2026-10-01 — AI02へ再開可能なモデルweight stagingを追加
 
-Broker private storageへHTTP range取得を再開し、応答range・byte上限・空き容量reserveを検査して全体SHA-256一致後にatomic promotionする`ResumableModelArtifactStager`をCoreへ追加。symlink経路を拒否し、cacheも再hashする。中断再開、digest/range/overrun/容量/symlink拒否を含むCore JVM testはTemurin 17／Gradle 8.11.1で46/46合格。対象はweightsのみでtokenizer/template/license receipt、production source/trust設定、PlatformStore activation、別UIDのLocal AI runtimeへの安全な引渡しは未実装。API v3 AIDLにmodel install/load RPCがないことを確認し、Broker-private fileがruntimeから読めるとは扱わない。Android SDK platform/build-tools/NDKがないためAPK/AIDL・端末検証も未実施。次段階は認証されたhandoff/load契約、profile activationへのstager接続、Android host/device受入。[JVM検証](docs/evidence/ai02-core-java-validation-20261001.json)。
+Broker private storageへHTTP range取得を再開し、応答range・byte上限・空き容量reserveを検査して全体SHA-256一致後にatomic promotionする`ResumableModelArtifactStager`をCoreへ追加。symlink経路を拒否し、cacheも再hashする。中断再開、digest/range/overrun/容量/symlink拒否を含むCore JVM testはTemurin 17／Gradle 8.11.1で46/46合格。対象はweightsのみでtokenizer/template/license receipt、production source/trust設定、PlatformStore activation、別UIDのLocal si runtimeへの安全な引渡しは未実装。API v3 AIDLにmodel install/load RPCがないことを確認し、Broker-private fileがruntimeから読めるとは扱わない。Android SDK platform/build-tools/NDKがないためAPK/AIDL・端末検証も未実施。次段階は認証されたhandoff/load契約、profile activationへのstager接続、Android host/device受入。[JVM検証](docs/evidence/ai02-core-java-validation-20261001.json)。
 
 ## 2026-10-01 — AI02をZemaのprofile-aware API v3経路へ接続
 
@@ -1394,7 +1396,7 @@ Provider設定・Cloud flag・remote consentだけでは、Sky statusやTool car
 
 ## 2026-10-01 — 認証済みLLM料金見積APIとZemaの見積表示
 
-`POST /api/llm/estimate`はowner認証、remote-AI rate-limit、RockstarOS entitlement、厳密なprovider/model/currency、active operator-trusted key、署名・期限確認を通す。本文/system promptはRockstarOS API内で最大値計算にだけ使い、LLM Providerへ送らない。応答は`providerSubmission=not_performed`、`executionAuthorized=false`を明示し、利用者capを超えてもestimateを隠さず超過表示する。Provider署名料金表はmigration `0042_remote_ai_rate_cards.sql`のD1 tableへ不変IDで保存し、同じcard retryは冪等、変更ID再利用は拒否、失効は一方向とする。Bearer operator endpoint `/api/internal/remote-ai/rate-cards`から登録/失効し、現在のProvider key trust rootは`REMOTE_AI_TRUSTED_RATE_KEYS`から再検証する。5 KB環境変数制限はtrust key listだけに適用され、カード本文のcatalog上限ではない。
+`POST /api/llm/estimate`はowner認証、remote-si rate-limit、RockstarOS entitlement、厳密なprovider/model/currency、active operator-trusted key、署名・期限確認を通す。本文/system promptはRockstarOS API内で最大値計算にだけ使い、LLM Providerへ送らない。応答は`providerSubmission=not_performed`、`executionAuthorized=false`を明示し、利用者capを超えてもestimateを隠さず超過表示する。Provider署名料金表はmigration `0042_remote_ai_rate_cards.sql`のD1 tableへ不変IDで保存し、同じcard retryは冪等、変更ID再利用は拒否、失効は一方向とする。Bearer operator endpoint `/api/internal/remote-ai/rate-cards`から登録/失効し、現在のProvider key trust rootは`REMOTE_AI_TRUSTED_RATE_KEYS`から再検証する。5 KB環境変数制限はtrust key listだけに適用され、カード本文のcatalog上限ではない。
 
 Zema composerは外部providerを選択した状態で「料金を見積もる」を実行し、最大費用、入力/出力上限、価格版、期限、source、通貨に合わせた一件ごとの支出capとcap判定を表示する。入力変更やProvider/model変更で旧見積を破棄する。現在は見積専用と明示し、paid execution routeは引き続きfail-closed。
 
@@ -1416,7 +1418,7 @@ Ed25519署名とtrusted key、owner/root/delegation/task/Agent版/currency/price
 
 ## 2026-10-01 — SIM複数販売チャネルの契約境界
 
-公式の1GLOBAL資料で、Connect APIによるpartner website/app/marketplace販売と他offerへのbundle、Consumer RSPでの店頭POS・個別QR/link・一括QR・in-app/eID配布を確認した。[provider contract readiness](docs/provider-contract-readiness-20260930.md#販売チャネル設計製品要件-2026-10-01)へ、Rockstarの複数販売チャネルは共通署名claimへ集約し、通信購入/開通、claim、端末適合/OS導入、AI利用料は別状態のまま追跡する契約項目を追加。[SIM entitlement design](docs/sim-service-entitlement-claims.md)にもissuer IDと配布チャネル台帳、個人情報/ICCID/eSIM秘密値をclaimへ含めない境界を明記した。公開API説明はeSIMの販売optionのみを示し、物理SIMの流通・国内再販権・Rockstarとの契約・実注文/発行は未受入。次は有料Tool/background provider egressを横断監査し、既存の認可/課金gateを通らない処理を閉じる。
+公式の1GLOBAL資料で、Connect APIによるpartner website/app/marketplace販売と他offerへのbundle、Consumer RSPでの店頭POS・個別QR/link・一括QR・in-app/eID配布を確認した。[provider contract readiness](docs/provider-contract-readiness-20260930.md#販売チャネル設計製品要件-2026-10-01)へ、Rockstarの複数販売チャネルは共通署名claimへ集約し、通信購入/開通、claim、端末適合/OS導入、si利用料は別状態のまま追跡する契約項目を追加。[SIM entitlement design](docs/sim-service-entitlement-claims.md)にもissuer IDと配布チャネル台帳、個人情報/ICCID/eSIM秘密値をclaimへ含めない境界を明記した。公開API説明はeSIMの販売optionのみを示し、物理SIMの流通・国内再販権・Rockstarとの契約・実注文/発行は未受入。次は有料Tool/background provider egressを横断監査し、既存の認可/課金gateを通らない処理を閉じる。
 
 ## 2026-10-01 — Android-independent A2A Wallet hold・receipt精算・復旧
 
@@ -1460,9 +1462,9 @@ owner-authenticated `POST /api/esim/orders/{orderId}/reconcile`を追加し、pr
 
 ## 2026-09-30 — AI02のModelProfileをBroker仕事・run ticketへ固定
 
-AIネイティブOSの未着手実装へ着手。`RuntimeManifest`／`ModelProfileManifest`の入力検査・publisher署名欄・互換判定・canonical digestと、PlatformStore／Engine schema v2→v3移行、active signer一致のLocal AI runtime登録、候補profile保存、Broker verifier後のgeneration切替、owner/jobの冪等profile pinを追加。`Engine.submitPinned`はprofile pinを仕事行へ保存し、`Ticket`からID/version/generationをworkerへ渡す。profile失効後の遅い結果は拒否する。テストは互換性拒否、検証失敗、profile切替後も旧job pinが変わらず、同一DB再open後にTicketへ残る条件を記述した。AI02はin_progress。
+siネイティブOSの未着手実装へ着手。`RuntimeManifest`／`ModelProfileManifest`の入力検査・publisher署名欄・互換判定・canonical digestと、PlatformStore／Engine schema v2→v3移行、active signer一致のLocal si runtime登録、候補profile保存、Broker verifier後のgeneration切替、owner/jobの冪等profile pinを追加。`Engine.submitPinned`はprofile pinを仕事行へ保存し、`Ticket`からID/version/generationをworkerへ渡す。profile失効後の遅い結果は拒否する。テストは互換性拒否、検証失敗、profile切替後も旧job pinが変わらず、同一DB再open後にTicketへ残る条件を記述した。AI02はin_progress。
 
-Engine/Coreの暗号化recoverable snapshotへjob profile ID/version/generationとowner-scoped pinを保存・復元するsourceを追加した。モデル本体、検証済みreceipt、active pointerはbackupに含めず、復旧先はpausedのままprofileを未検証として扱う。profile registry/artifact再検証後の同job再開は未実装で、profile情報がない復旧先では既存Engineがjobをreviewへ止める。ZemaOrchestrator・Local AI API v2の実profile選択、実weight verifier、runtimeへのprofile load、二つ目のモデルを同一Pixelで推論・失敗rollbackする受入も未完了。Node全497/497、typecheck、product lint、database／design／Android architecture checksは成功。作業環境にJava runtimeとGradle executableがなくJava/Android testsは実行していない。GitHubへのpush・main統合も未実施。
+Engine/Coreの暗号化recoverable snapshotへjob profile ID/version/generationとowner-scoped pinを保存・復元するsourceを追加した。モデル本体、検証済みreceipt、active pointerはbackupに含めず、復旧先はpausedのままprofileを未検証として扱う。profile registry/artifact再検証後の同job再開は未実装で、profile情報がない復旧先では既存Engineがjobをreviewへ止める。ZemaOrchestrator・Local si API v2の実profile選択、実weight verifier、runtimeへのprofile load、二つ目のモデルを同一Pixelで推論・失敗rollbackする受入も未完了。Node全497/497、typecheck、product lint、database／design／Android architecture checksは成功。作業環境にJava runtimeとGradle executableがなくJava/Android testsは実行していない。GitHubへのpush・main統合も未実施。
 
 ## 2026-09-30 — A2A provider利用量receiptの検証と内部予算精算を追加
 
@@ -1486,7 +1488,7 @@ Sky A2A adapter/storeに、明示的な本人承認ゲートを実装。新規�
 
 ## 2026-09-30 — A2A agent間委任adapterの基礎実装
 
-利用者が示した「AIエージェントをつなぐ役割」を、設計記録からA2A clientとowner別D1 child-task storeへ進めた。`lib/a2a-client.ts`にA2A 1.0.0 JSON-RPC discovery／send／status／cancel、Broker hook、origin制限、結果不明の再送禁止を実装。`agent_delegations`と`agent_delegation_events`のmigration/storeはowner、parent job、idempotency、承認digest、予算上限・期限、dispatch claim、remote task状態とappend-only遷移記録を保存する。client 6件＋SQLite/D1 store 6件、typecheck、対象lint、schema:checkが成功。`database:status`は87 tables、production readback 0/6でremote migration未適用。詳細は[Sky A2A Bridge](docs/sky-a2a-bridge.md)。
+利用者が示した「siエージェントをつなぐ役割」を、設計記録からA2A clientとowner別D1 child-task storeへ進めた。`lib/a2a-client.ts`にA2A 1.0.0 JSON-RPC discovery／send／status／cancel、Broker hook、origin制限、結果不明の再送禁止を実装。`agent_delegations`と`agent_delegation_events`のmigration/storeはowner、parent job、idempotency、承認digest、予算上限・期限、dispatch claim、remote task状態とappend-only遷移記録を保存する。client 6件＋SQLite/D1 store 6件、typecheck、対象lint、schema:checkが成功。`database:status`は87 tables、production readback 0/6でremote migration未適用。詳細は[Sky A2A Bridge](docs/sky-a2a-bridge.md)。
 
 このadapter/storeはまだproduction経路に接続していない。実Broker snapshot、Walletの共通予算予約、Zema画面、端末切断後も動くcloud worker/queue、異なる実装間の実相互運用、Provider sandboxは未実装・未検証。次は認証済みSKY07 APIから親job・Broker承認digestを検証し、persist-before-dispatch、worker復旧、再接続照合を進める。既存の未コミット変更を保ち、GitHubへのpush/main統合はしていない。
 
@@ -1500,7 +1502,7 @@ Sky A2A adapter/storeに、明示的な本人承認ゲートを実装。新規�
 
 ## 2026-09-30 — 自社衛星網の構想を記録
 
-利用者は衛星を飛ばして通信範囲を広げる方針を示した。eSIM・地上回線・衛星・クラウドをつなぐ調査要件を[継続実行契約](docs/sky-cloud-continuity.md)へ追記。自社衛星網は長期調査対象で、対象地域、速度、可用性、同時接続、対応端末、周波数、衛星数、費用、契約は未確定。端末圏外中のcloud継続とoffline AIを維持する。衛星設計・製造・打上げ・実接続の実行証拠はない。
+利用者は衛星を飛ばして通信範囲を広げる方針を示した。eSIM・地上回線・衛星・クラウドをつなぐ調査要件を[継続実行契約](docs/sky-cloud-continuity.md)へ追記。自社衛星網は長期調査対象で、対象地域、速度、可用性、同時接続、対応端末、周波数、衛星数、費用、契約は未確定。端末圏外中のcloud継続とoffline siを維持する。衛星設計・製造・打上げ・実接続の実行証拠はない。
 
 ## 2026-09-30 — 圏外中のクラウド継続実行を必須要件へ
 
@@ -1536,7 +1538,7 @@ Sky Marketの自動化ToolとLLMを同じマーケット面で扱い、登録・
 
 利用者の「全Toolを使えるようにし、サーバーを個別に管理したくない」「ローカルLLM優先」を受け、画面の到達確認ではなく、実行器・起動・保存・結果確認までを全体の対象にする。主担当はSky / MCPのROCK、既存SKY14を継続し、SDK掲載側のSKY15と連携する。既存taskのdoneは過去の記載範囲の合格であり、今回の全Tool実行完成を意味しない。task状態と既存受入証拠は変更しない。
 
-34件のソース監査時点の最小機能は、ブラウザ決定処理6件、Web API／DB主体3件、別PCサービス必須2件、外部AI必須1件、候補22件。候補は旧Mr.の固定下書き11件、研究Toolの接続計画10件、別アプリIP Studio入口1件であり、LLM起動だけでは22件の本体adapterは実装されない。記事・出典・ココナラチェックと候補下書きにもジョブ受付DB／本人認証の依存があり、CSVはDBと非公開object storageを要する。詳細な分類と根拠はTool設計§1.3。
+34件のソース監査時点の最小機能は、ブラウザ決定処理6件、Web API／DB主体3件、別PCサービス必須2件、外部si必須1件、候補22件。候補は旧Mr.の固定下書き11件、研究Toolの接続計画10件、別アプリIP Studio入口1件であり、LLM起動だけでは22件の本体adapterは実装されない。記事・出典・ココナラチェックと候補下書きにもジョブ受付DB／本人認証の依存があり、CSVはDBと非公開object storageを要する。詳細な分類と根拠はTool設計§1.3。
 
 最初の実用milestoneとして、ローカルWebのViteから同梱Connector／Fashionを自動起動・健康確認する管理runtimeを実装した。対応する正確なローカル開発originだけを許可し、任意originや任意shellは許可しない。実ブラウザのFashion「プランを作って保存」から手動サーバー起動なしでProducerを実行し、合成Tシャツの下書きをDBへ保存、`instagram.calendar.list`の再読込で一致を確認した（run_id `cc7dc198-718a-47d6-bec6-47594978f301`）。Provider4件はmock未接続、LLMは未導入であり、ページ再読込後の結果復元UIも未実装。Sky接続ボタンから共通Connectorの自動起動と基本4機能の検出も確認した。
 
@@ -1544,7 +1546,7 @@ Zema納品Runnerの実在しない「右上PC接続」案内と未接続時の�
 
 runtime／device／MCP／Fashion関連35試験は合格し、isolated Viteの起動→両サービス自動起動→`await server.close()`後の両port停止を含む。isolated Worker／D1のAPI回帰172項目、最終build、typecheck、対象lint、package一致、差分検査も合格。一方、全体`npm test`は389件中378合格・11失敗（既存visual baseline条件、README日本語文言期待、migration-unionの期待32件と現状33件の差）で、全体`verify`も既存visual baselineで停止した。基準を変更して全体合格とはしていない。
 
-全体作業は進行中。ローカル推論runtime／モデルの新規導入は本人回答待ちで、外部AIへ自動で切り替えず、未導入を推論成功と扱わない。Ledger、IP Studio、候補22件の本体adapter、公開Webから本人PCへのrelay、native OSへの常駐搭載、外部Providerは後続の個別受入を要する。既存の認証・scope・一回承認・課金条件は維持し、この最初の実用milestoneを全34 Toolの完成や本番受入に換算しない。
+全体作業は進行中。ローカル推論runtime／モデルの新規導入は本人回答待ちで、外部siへ自動で切り替えず、未導入を推論成功と扱わない。Ledger、IP Studio、候補22件の本体adapter、公開Webから本人PCへのrelay、native OSへの常駐搭載、外部Providerは後続の個別受入を要する。既存の認証・scope・一回承認・課金条件は維持し、この最初の実用milestoneを全34 Toolの完成や本番受入に換算しない。
 
 ## 2026-09-27 — Sky全入口の操作・開閉画面を再監査
 
@@ -1578,9 +1580,9 @@ ready Toolを専用画面へ直接開き、自然文の依頼はZemaへ引き継
 
 利用者の「決済のとこと、登録のところもっと工数減らしたい」を受け、マーケットの開発者向け入口をWebの`/sky/register`掲載申請へ直結。既存`/sky/publish`はPC向けStudio/SDK設定画面のまま分離する。申請者本人の前回の提供者名・サポートURLをワンクリックで再利用し、MCP接続確認で実際に取得したサーバー名だけをツール名の下書きへ反映する。料金方式の無料初期値と架空の無料説明を撤去し、本人選択を必須にした。審査済み外部Packageは一覧で料金方式を確認できる。購入者決済・開発者払出しは未接続のまま。対象試験4件、型、lint、build、Sky/設計チェックは合格。全体`npm run verify`は既存のvisual system期待値と現行avokado配色の不一致で`baseline:check`にて停止。決済対象・商流・Provider・返金・本人確認の決定と受入は未完了。
 
-## 2026-09-27 — SkyにAI・自動化Toolマーケットを追加
+## 2026-09-27 — Skyにsi・自動化Toolマーケットを追加
 
-利用者の「AI、自動化ツールのマーケットプレイスを作る」指示を、既存Skyの発見・接続面の強化として実装。`/sky/marketplace`で34 catalog Toolを検索・カテゴリ・状態別に探し、各Tool詳細へ進める。個別詳細を再設計し、提供元、license、実行場所、料金・実費、作業手順を利用前に確認できるようにした。外部Packageは証拠付き`verified`かつ導入可の公開Registryだけを読み、作者・版・料金・権限・実行先を表示する。候補22件は本体未接続のまま区別し、購入・自動インストール・実課金・公開配備を開始しない。主担当Sky / MCPのROCK、既存SKY02／SKY20。対象18試験、typecheck、lint、build、design/sky check、ローカルPCと390pxブラウザで検索・候補絞り込み・詳細画面・横はみ出しなしを確認。全体`npm run verify`は既存visual system期待値と現行avokado配色の不一致で`baseline:check`にて停止し、全体合格とは記録しない。残る作業は外部Packageの実接続・OAuth・審査本番readback・初見利用者の操作時間の受入。配色基準の正本と検査を整合して全体verifyを再実行する。
+利用者の「si、自動化ツールのマーケットプレイスを作る」指示を、既存Skyの発見・接続面の強化として実装。`/sky/marketplace`で34 catalog Toolを検索・カテゴリ・状態別に探し、各Tool詳細へ進める。個別詳細を再設計し、提供元、license、実行場所、料金・実費、作業手順を利用前に確認できるようにした。外部Packageは証拠付き`verified`かつ導入可の公開Registryだけを読み、作者・版・料金・権限・実行先を表示する。候補22件は本体未接続のまま区別し、購入・自動インストール・実課金・公開配備を開始しない。主担当Sky / MCPのROCK、既存SKY02／SKY20。対象18試験、typecheck、lint、build、design/sky check、ローカルPCと390pxブラウザで検索・候補絞り込み・詳細画面・横はみ出しなしを確認。全体`npm run verify`は既存visual system期待値と現行avokado配色の不一致で`baseline:check`にて停止し、全体合格とは記録しない。残る作業は外部Packageの実接続・OAuth・審査本番readback・初見利用者の操作時間の受入。配色基準の正本と検査を整合して全体verifyを再実行する。
 
 ## 2026-09-27 — AMCの一作業をローカルCodexへ明示起動する入口
 
@@ -1614,7 +1616,7 @@ H1 / AMC02、ROCK。本人のスクリーンショットにある「jevで仮想
 
 H1 / AMC02、ROCK。会話による設定質問も難しいという指摘を受け、通常の入口を依頼1つ→Goalと意図の確認だけに変更。部隊選択、範囲・条件の手入力、JSON操作は通常導線から外す。ソフトウェアのローカル試作向けの共通テンプレートで、依頼専用の4役割・7工程・依存・合格条件・仮の工数を用意する。元の依頼、Goal、意図を保存し、詳細化・意図との一致確認を作業に含める。既存のAMC01等を新しい依頼の代わりに取り込まず、正本32部隊は変更しない。
 
-工数は文書1–3人時、コード/試験2–6人時等の未校正係数で、難易度を解釈した最終見積りではない。未算定を0へ置き換えず、親検収と子作業の工数を区別する。AI意味分解・実行・自動進捗取得・通知配送は未接続。作業が動いている演出はしない。旧チャットと全手動機能は「詳細・手動管理」に維持し、新旧Goal JSONを同じ保存キーで扱う。確認前・置換取消・保存競合で元のGoalを保護する。
+工数は文書1–3人時、コード/試験2–6人時等の未校正係数で、難易度を解釈した最終見積りではない。未算定を0へ置き換えず、親検収と子作業の工数を区別する。si意味分解・実行・自動進捗取得・通知配送は未接続。作業が動いている演出はしない。旧チャットと全手動機能は「詳細・手動管理」に維持し、新旧Goal JSONを同じ保存キーで扱う。確認前・置換取消・保存競合で元のGoalを保護する。
 
 検証完了：対象91/91（画面・CLI36件、テンプレート5件、工数9件を含む）、`npm run verify` exit 0（Node454/454、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。初回全体検証の新規テストのawait不足を修正して再実行した。配布HTMLは最終テンプレート・正本と一致、hashを[検証記録](docs/evidence/amc/goal-orchestrator-audit.json)に残した。ソフトウェア以外の既存製品計画は詳細管理から扱う。実ブラウザ描画・本人の使いやすさ受入・自律実行の受入は別。GitHub最新取得は今回もDNS解決失敗。課金・公開・実機・外部送信は行っていない。
 
@@ -1624,23 +1626,23 @@ H1 / AMC02、ROCK。利用者の「chat形式で作成してみて」に従い�
 
 自由文の「はい」「開始」「完了」を承認・実行・検収へ変換しない。チャットと詳細フォームの条件差分は再確認し、実際に承認した内容を会話へ返す。Goal JSONと既存保存キーは維持。会話は別キーで直近100発言まで保存し、Goal IDとrevisionが変わった場合は最新のGoalを基準に案内を再構成する。会話単独の控えは復元用Goalとは別。入力中の日本語変換とEnterだけでは送信せず、送信ボタンまたはCtrl/Cmd+Enterを使う。
 
-検証完了：対象68/68（画面・CLI27件）、`npm run verify` exit 0（Node431/431、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。同じ配布HTMLを再生成し、現在の正本・テンプレートとの一致とhashを確認した。実ブラウザ描画と本人の使いやすさ受入は未確認。外部AI送信・実製品task着手・課金・実機操作・公開は行っていない。[検証記録](docs/evidence/amc/goal-orchestrator-audit.json)。
+検証完了：対象68/68（画面・CLI27件）、`npm run verify` exit 0（Node431/431、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。同じ配布HTMLを再生成し、現在の正本・テンプレートとの一致とhashを確認した。実ブラウザ描画と本人の使いやすさ受入は未確認。外部si送信・実製品task着手・課金・実機操作・公開は行っていない。[検証記録](docs/evidence/amc/goal-orchestrator-audit.json)。
 
 ## 2026-09-27 — AMCの操作を段階式に整理
 
-H1 / AMC02、ROCK。利用者から「機能はいいがUXが分かりにくい」と指摘があり、既存のオフライン画面だけを改善する。初期画面は目的入力、次に担当候補と予定する仕事、次に計画確認、承認後は次の行動と進捗を表示する。32部隊、詳細設定、保存形式、内部IDは必要な時に開く。エンジンの承認・検収・保留・権限と保存形式は変えず、製品タスクや外部AIを起動しない。
+H1 / AMC02、ROCK。利用者から「機能はいいがUXが分かりにくい」と指摘があり、既存のオフライン画面だけを改善する。初期画面は目的入力、次に担当候補と予定する仕事、次に計画確認、承認後は次の行動と進捗を表示する。32部隊、詳細設定、保存形式、内部IDは必要な時に開く。エンジンの承認・検収・保留・権限と保存形式は変えず、製品タスクや外部siを起動しない。
 
-対象55/55合格（うち画面・CLI14件）。段階切替、状態別操作、コピーの非実行性、復元、保存競合、保存ボタン、壊れたバックアップを確認して配布画面を再生成した。`npm run verify` exit 0（Node418/418、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。最初は生成資料の更新が必要で同期し、制限内実行のローカル試験サーバー待機を停止した後、同じ検証を必要な権限で完走した。実ブラウザの描画確認は未実施で、利用者の使いやすさの受入は別途行う。AI・課金・実機・公開は未実行。詳細は[AMC検証記録](docs/evidence/amc/goal-orchestrator-audit.json)。
+対象55/55合格（うち画面・CLI14件）。段階切替、状態別操作、コピーの非実行性、復元、保存競合、保存ボタン、壊れたバックアップを確認して配布画面を再生成した。`npm run verify` exit 0（Node418/418、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。最初は生成資料の更新が必要で同期し、制限内実行のローカル試験サーバー待機を停止した後、同じ検証を必要な権限で完走した。実ブラウザの描画確認は未実施で、利用者の使いやすさの受入は別途行う。si・課金・実機・公開は未実行。詳細は[AMC検証記録](docs/evidence/amc/goal-orchestrator-audit.json)。
 
 ## 2026-09-27 — AMC Goal Orchestratorのローカル第一版
 
-H1 / AMC02、ROCK。利用者の「指示を部隊ごとに分け、細分化・過程・Goal・進捗をまとめてAIの目標へ渡すツール」という指示を受け、既存AMCを拡張する。32親を192子作業へ展開し、既存183taskの状態・証拠を保持した。AMC02を含め376レコード、親32を除く344実行単位。タスク追加を実装完了や実測並列数へ換算しない。
+H1 / AMC02、ROCK。利用者の「指示を部隊ごとに分け、細分化・過程・Goal・進捗をまとめてsiの目標へ渡すツール」という指示を受け、既存AMCを拡張する。32親を192子作業へ展開し、既存183taskの状態・証拠を保持した。AMC02を含め376レコード、親32を除く344実行単位。タスク追加を実装完了や実測並列数へ換算しない。
 
 ローカルGoal compiler、単独ブラウザ画面、CLI、検収イベントと復旧用JSONを追加。入力から候補部隊を選び、登録済み計画・子作業・前提・合格条件をGoal指示へまとめる。キーワード候補と既存backlogの展開であり、任意指示のLLM分解ではない。新規要求への網羅性は承認前にレビューする。完了は別担当による各条件の証拠確認、親の独立受入、全体Goal受入を必要とする。正本AMCと実行sessionは自動同期しない。
 
 API送信・課金・Scaleway起動・実機・公開・GitHub pushは行わない。外部executor、常時運転、認証と証拠真正性は未実装。ローカル保存の空き容量は回復したが、GitHubの最新取得はDNS解決失敗のため未確認。以前確認したremote SHAを現在の確認済みとは表示しない。検証結果と残課題は[今回の記録](docs/evidence/amc/goal-orchestrator-audit.json)へ記録する。
 
-ローカル第一版の検証完了：対象46/46、`npm run verify` exit 0（Node409/409、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。AMC02はこの限定範囲でdone。型付きlintで検出したtestのawait漏れ、importの型・親子・提出者・成果物整合、同一pathのlock維持を修正した。実ブラウザ描画は未検証。UIの操作契約はmock DOMで確認し、保存JSONを実証済みの物理成果へ読み替えない。376レコードの読込・索引は中央値0.857ms、合成1,000件は3.251msだが、AI並列実行の性能ではない。
+ローカル第一版の検証完了：対象46/46、`npm run verify` exit 0（Node409/409、追加Tool19/19、ローカルAPI149項目、Web asset83参照・欠落0）。AMC02はこの限定範囲でdone。型付きlintで検出したtestのawait漏れ、importの型・親子・提出者・成果物整合、同一pathのlock維持を修正した。実ブラウザ描画は未検証。UIの操作契約はmock DOMで確認し、保存JSONを実証済みの物理成果へ読み替えない。376レコードの読込・索引は中央値0.857ms、合成1,000件は3.251msだが、si並列実行の性能ではない。
 
 ## 2026-09-27 — AMCの担当と次タスクを精査
 
@@ -1743,7 +1745,7 @@ RockstarOS、avocadoMini、avokadoPro、rocketstarを5師団32部隊へ分け、
 **本人決定（AI09、OWNER判断済み）:** 2026-09-25 01:26 ET、決定者は本人、根拠はチャットでの本人指示。Core offline仕事loopとGame最小loopの両方を、OS10の完了前にhost／fixture段階で先に進めてよい。ただし、emulator・実機・OS統合の合格には転用しない。AI09はdoneにした。AI02〜AI05のtask名には「host/fixture段階はOS10非依存で先行可、emulator/実機/OS統合段階はOS10依存のまま」と注記した。`dependsOn`のOS10は残した。AI06はGame側の作業者の担当範囲なので、本記録では変更していない。
 
 **実装（AI02、in_progress）:** `android/core`（純Java）に`ModelProfile`と`ModelProfiles`を追加した。設計書（`docs/ai-native-os-architecture.md`の2章）のとおり、Brokerが持つ管理transactionとして実装している。
-- 前提: 一つのruntime adapter（Local AI API v2、GGUF、plan schema `article-preparation@1/input-v1`）の上に、互換なfixture profileを2つ置く。
+- 前提: 一つのruntime adapter（Local si API v2、GGUF、plan schema `article-preparation@1/input-v1`）の上に、互換なfixture profileを2つ置く。
 - 旧workは作成時のprofileに固定したまま、再起動後も同じprofileで再開する。profileを切り替えた後に作った新workは新profileを使う。
 - 固定したprofile以外が報告した結果は拒否し、状態を変えない。
 - 未知の版、adapterと非互換な版（API・形式・plan schema）、同じIDで内容が違う版は拒否する。
@@ -1783,7 +1785,7 @@ RockstarOS、avocadoMini、avokadoPro、rocketstarを5師団32部隊へ分け、
 - WEB21: 製品名（PR #40）
 - BIL04: 8.88 USDの後継条件とRQ20の期待値
 - ORG02: 優先系列
-- AI09: AI系fixtureの先行可否 → **2026-09-25 01:26 ETに本人決定済み**（Core offline仕事loopとGame最小loopのhost／fixture段階は、OS10完了前に先行してよい。emulator・実機・OS統合の合格には転用しない）。本PRではtaskの状態を変えず、AI09のdone化と依存注記はPR #42で行う
+- AI09: si系fixtureの先行可否 → **2026-09-25 01:26 ETに本人決定済み**（Core offline仕事loopとGame最小loopのhost／fixture段階は、OS10完了前に先行してよい。emulator・実機・OS統合の合格には転用しない）。本PRではtaskの状態を変えず、AI09のdone化と依存注記はPR #42で行う
 
 予約・決済の有効化は判断待ちのままで、WEB15は停止中。
 
@@ -1937,7 +1939,7 @@ GitHub正本へは先行公開済みのブランド・ヘッダー・画像更�
 
 ## 2026-09-24 — プロジェクト別ガイドをR5とrocketstar資料に同期
 
-主担当Git / CI / OperationsのROCK、ORG01。PR #28で製品、SkyのAI自動化チーム、Web共通画面、Tool、native・Androidの開発用package、Toolkits、Workerと製品Siteを[`PROJECTS.md`](PROJECTS.md)に分類した。Sky catalog 34件、native 6 family・9版、Toolkit 6件を照合し、CSV、メルカリ、Fashion Brand OpsをSkyのチーム担当として示す。Material Invention Studioは複合機能で、Core sandboxはあるがSky接続と操作画面は未実装。`/studio`はSky Tool作者用であり発明画面ではない。
+主担当Git / CI / OperationsのROCK、ORG01。PR #28で製品、Skyのsi自動化チーム、Web共通画面、Tool、native・Androidの開発用package、Toolkits、Workerと製品Siteを[`PROJECTS.md`](PROJECTS.md)に分類した。Sky catalog 34件、native 6 family・9版、Toolkit 6件を照合し、CSV、メルカリ、Fashion Brand OpsをSkyのチーム担当として示す。Material Invention Studioは複合機能で、Core sandboxはあるがSky接続と操作画面は未実装。`/studio`はSky Tool作者用であり発明画面ではない。
 
 main統合前にR5とrocketstar完全設計アーカイブが追加されたため、ガイドはR5の1本自律・別Edge Hub不要を現行製品基準とし、Tower20 E3と旧Siteの表示を履歴に分ける。Rocket Starの構想ページとロケットR1.0／A-LINK等の設計アーカイブを別の入口として案内する。資料保存と実機・公開・飛行の受入を混同しない。進捗・README・設計の新しい正本を維持して競合を解消し、統合後の同一SHA検証を確認する。
 
@@ -1985,7 +1987,7 @@ main統合前にR5とrocketstar完全設計アーカイブが追加されたた�
 
 利用者の方針「JevのコードだけGitHubへ保存し、ビルドは友人が行う」に合わせ、`android/jev-provider`へTypeSafe公式`POST https://api.typesafe.ai/v1/systemone`のJava adapter sourceを追加した。`state`／固定`jev-1.13.0`／typed `questions`だけを送るpublic-only契約、request／response bound、score／probability検査、timeout／事前費用gate、失敗時`abstained`、`externalActionAllowed=false`のadvisory-only結果を固定している。API keyはsource・resource・log・backupへ埋め込まず、安全なruntime provisioningが未実装のためAPK applicationは`enabled=false`である。
 
-`dev.rock.jev.provider`は既存Broker／Shell／Local AI／Toolと別UIDのoptional packageで、専用`rock_jev_provider_app` SELinux domainとこのmoduleだけの`INTERNET` permissionを持つ。`ROCK_JEV_PROVIDER_MODE`未指定ではSoong productから除外し、`optional`指定時もdisabledを維持する。`android/jev-preview`のMac loopback debug clientや既存Binder契約へ統合していない。Android Gradle／Soong／emulator／Pixel／TypeSafe live callはこの環境で未実行であり、source追加をOS image・実機受入・公開可能の根拠にしない。
+`dev.rock.jev.provider`は既存Broker／Shell／Local si／Toolと別UIDのoptional packageで、専用`rock_jev_provider_app` SELinux domainとこのmoduleだけの`INTERNET` permissionを持つ。`ROCK_JEV_PROVIDER_MODE`未指定ではSoong productから除外し、`optional`指定時もdisabledを維持する。`android/jev-preview`のMac loopback debug clientや既存Binder契約へ統合していない。Android Gradle／Soong／emulator／Pixel／TypeSafe live callはこの環境で未実行であり、source追加をOS image・実機受入・公開可能の根拠にしない。
 
 検証: `node --test tests/android-jev-provider-boundary.test.mjs`（manifest、権限、disabled、固定endpoint、bounded、advisory-only、Soong／product／SELinux境界）2/2 PASS、`git diff --check` PASS。Gradle executableとAndroid SDKがこのMacにないためprovider unit test／lint／APK buildは未実行。実装commitは`2eb7ad6`。
 
@@ -2101,7 +2103,7 @@ AI07のPhase 0として`lib/decision/`へ型、入力・回答検査、決定的
 
 ## 2026-09-20 — Zemaの名前表示とチャットルームを再設計し、実行を操作確認
 
-利用者が名前の重複と会話画面の見た目を指摘したため、Zema名と担当Botをヘッダーで整理し、Botの定型自己紹介・重複進捗を除去した。チャット本文と実行カードを同じ暗色に揃え、Bot選択時は新しい会話へ切り替え、依頼文をMr.系Toolの入力欄へ自動で引き継ぐ。返信IDをUUIDにして履歴復元後の重複を防ぎ、ローカル会話モデルが使えない場合もToolの実行導線を一つの返答で示す。localhost:3001では架空のココナラ案件チェック1件、出典整理2件を実行し、結果の会話表示、2通目の継続、履歴復元、390px幅を確認した。`npm run verify`は製品350件、Fashion 19件、仕事API149項目とbuildを含めて合格。モデルの橋渡し先4317番は起動していないため、自然なAI返答の成功は未確認。担当はROCK、外部サービスへの送信は行っていない。
+利用者が名前の重複と会話画面の見た目を指摘したため、Zema名と担当Botをヘッダーで整理し、Botの定型自己紹介・重複進捗を除去した。チャット本文と実行カードを同じ暗色に揃え、Bot選択時は新しい会話へ切り替え、依頼文をMr.系Toolの入力欄へ自動で引き継ぐ。返信IDをUUIDにして履歴復元後の重複を防ぎ、ローカル会話モデルが使えない場合もToolの実行導線を一つの返答で示す。localhost:3001では架空のココナラ案件チェック1件、出典整理2件を実行し、結果の会話表示、2通目の継続、履歴復元、390px幅を確認した。`npm run verify`は製品350件、Fashion 19件、仕事API149項目とbuildを含めて合格。モデルの橋渡し先4317番は起動していないため、自然なsi返答の成功は未確認。担当はROCK、外部サービスへの送信は行っていない。
 
 ## 2026-09-20 — ZemaのBot・履歴欄をデスクトップで固定
 
@@ -2215,7 +2217,7 @@ READMEのタイトル直下に、Skyで探す、Zemaで進める、Studioで試�
 
 ## 2026-09-19 — 利用者にとっての役割を先に伝える
 
-利用者の追加指示により、RockstarOSの売りを収益方法ではなく「やりたいことに役立つAIと道具を見つけ、前に進める」に変更した。GitHub冒頭と`/rockstaros`のhero・導線を、Skyで探す、Zemaで進める、Studioで試す流れへ改訂。avocadoMiniを発明の候補を手で考える主役の構想として維持し、料金方針は製品価値の後段の正本へ残す。実機・一般公開・全機能の完成は主張しない。
+利用者の追加指示により、RockstarOSの売りを収益方法ではなく「やりたいことに役立つsiと道具を見つけ、前に進める」に変更した。GitHub冒頭と`/rockstaros`のhero・導線を、Skyで探す、Zemaで進める、Studioで試す流れへ改訂。avocadoMiniを発明の候補を手で考える主役の構想として維持し、料金方針は製品価値の後段の正本へ残す。実機・一般公開・全機能の完成は主張しない。
 
 ## 2026-09-19 — サービス・OS・ホーム・アプリへの入口を明示
 
@@ -2245,7 +2247,7 @@ v4では同じ構成をさらに細径化し、frame φ45 mm、mast φ50 mm、se
 
 自由空間hologram、追跡精度、部品、法規適合を完成扱いにせず、最初は2D／ARと四方向Benchで誤commit 0、raw映像非保存、pod欠落時commit禁止を測る。hardware設計はMAT04の設計証拠へ追加したが、MAT06の実機prototypeは未着手のまま維持する。
 
-検証は`project:check`、`design:check`、`baseline:check`、`git diff --check`とMaterial／製品ベース／Patent AIの関連17 testが合格した。`npm run verify`はrelease、設計、構成、型、lintまで進み、全Node test runnerが新しい出力を返さない状態になったため約1分後に中断した。全体PASSとは記録せず、今回の文書変更に直接関係する検査結果と分ける。
+検証は`project:check`、`design:check`、`baseline:check`、`git diff --check`とMaterial／製品ベース／Patent siの関連17 testが合格した。`npm run verify`はrelease、設計、構成、型、lintまで進み、全Node test runnerが新しい出力を返さない状態になったため約1分後に中断した。全体PASSとは記録せず、今回の文書変更に直接関係する検査結果と分ける。
 
 ## 2026-09-18 — avocadoMiniをビリヤード台規模のFull-scale発明台へ拡張
 
@@ -2267,7 +2269,7 @@ v4では同じ構成をさらに細径化し、frame φ45 mm、mast φ50 mm、se
 
 ## 2026-09-18 — OS本体から全Toolまでの詳細設計体系を正本化
 
-avocadoMiniだけの設計ではRockstarOS全体へ合流できないため、[全設計ポータル](docs/rockstaros-design-portal.md)、[OS全体詳細設計](docs/rockstaros-complete-design.md)、[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)を追加した。Web／PC、Linux／QEMU、Android／Pixelを別環境として説明し、identity、capability、仕事状態、Local AI、記憶、実行場所、外部作用、artifact／receipt、保存、backup、update、UI、Wallet、security、DSP、運用、失敗、受入を一つの依存方向へ統合した。
+avocadoMiniだけの設計ではRockstarOS全体へ合流できないため、[全設計ポータル](docs/rockstaros-design-portal.md)、[OS全体詳細設計](docs/rockstaros-complete-design.md)、[Sky／Zema／全Tool詳細設計](docs/sky-tools-complete-design.md)を追加した。Web／PC、Linux／QEMU、Android／Pixelを別環境として説明し、identity、capability、仕事状態、Local si、記憶、実行場所、外部作用、artifact／receipt、保存、backup、update、UI、Wallet、security、DSP、運用、失敗、受入を一つの依存方向へ統合した。
 
 Tool詳細は現在Skyの11 ready、13 candidate、native 6 familyを同じ書式で説明する。機械可読の[設計被覆台帳](data/design-document-index.json)と`npm run design:check`を追加し、catalogへToolを増やして詳細設計を追加しない変更、存在しない正本、未決定を無条件完成とする表現を失敗させる。これは現scopeの説明被覆であり、Pixel OS image、一般Tool sandbox、実Provider、avocadoMini実機等の未実装を完成へ変更しない。
 
@@ -2279,15 +2281,15 @@ Tool詳細は現在Skyの11 ready、13 candidate、native 6 familyを同じ書�
 
 ## 2026-09-18 — avocadoMini空間発明システムの共有用完成設計を正本化
 
-誰に共有しても、概念の理解から自分の担当作業まで迷わず進める[RockstarOS × avocadoMini 空間発明システム完成設計書](docs/rockstaros-avocado-mini-complete-design.md)を正本化した。普段の言葉による5分説明から、全体構造、利用体験、四方向sensor、Core entity、再計算、Patent AI、privacy、accessibility、安全境界、契約、現在地、実装順、役割別参加入口、最初の1時間、受入条件、用語集までを一つにつないだ。
+誰に共有しても、概念の理解から自分の担当作業まで迷わず進める[RockstarOS × avocadoMini 空間発明システム完成設計書](docs/rockstaros-avocado-mini-complete-design.md)を正本化した。普段の言葉による5分説明から、全体構造、利用体験、四方向sensor、Core entity、再計算、Patent si、privacy、accessibility、安全境界、契約、現在地、実装順、役割別参加入口、最初の1時間、受入条件、用語集までを一つにつないだ。
 
-全体構成はMaterial Invention／avocadoMiniを主要応用systemとして12層・7経路へ更新した。装置非接続sandbox Coreと統合設計は完成しているが、XR runtime、四方向sensor実機、simulation／Patent AI bridge、外部ラボ、実材料性能、特許性、量産は未完成である。[担当作業入口](docs/workstreams/11-material-invention-avocado-mini.md)ではMAT05の合成scene／pose、MAT06の実機／Provider bridgeへ分け、初参加者が役割と完了条件を選べるようにした。
+全体構成はMaterial Invention／avocadoMiniを主要応用systemとして12層・7経路へ更新した。装置非接続sandbox Coreと統合設計は完成しているが、XR runtime、四方向sensor実機、simulation／Patent si bridge、外部ラボ、実材料性能、特許性、量産は未完成である。[担当作業入口](docs/workstreams/11-material-invention-avocado-mini.md)ではMAT05の合成scene／pose、MAT06の実機／Provider bridgeへ分け、初参加者が役割と完了条件を選べるようにした。
 
 ## 2026-09-18 — avocadoMini四方向sensorとSpatial Invention Studioを設計
 
 RockstarOSを搭載するreference device conceptとして`avocadoMini`を定義し、別のVR／AR addonではなくMaterial Invention Coreの標準製品体験へ統合した。north／east／south／westの四方向sensor／cameraで中央のInvention Volumeを捉え、利用者が手で物質digital twinを選び、接続し、離し、工程parameterを動かす。commitされた操作は元候補を破壊せず新しい仮説branchになり、安全制約を先に検査してから交換可能なsimulationを差分再計算する。[Core正本](docs/material-invention-core.md)／[XR共通設計](docs/material-invention-xr.md)／[端末・interaction設計](docs/avocado-mini-spatial-invention.md)。
 
-scene manifest、四方向sensor set、校正digest、tracking model／confidence、gesture phase、対象binding、仮説限定operationを機械可読契約へ固定した。cameraが物理物質を操作する、gestureで物理実験を承認する、XR runtimeが装置やCore DBを直接操作する構成にはしない。Patent AIは人、AI、simulation、文献、実測のsourceを分けた発明開示と先行技術差分を支援するが、特許性、発明者、権利帰属、自動出願を確定しない。現段階は設計で、四方向rig、XR runtime、Material Core→Patent AI bridgeは未実装。
+scene manifest、四方向sensor set、校正digest、tracking model／confidence、gesture phase、対象binding、仮説限定operationを機械可読契約へ固定した。cameraが物理物質を操作する、gestureで物理実験を承認する、XR runtimeが装置やCore DBを直接操作する構成にはしない。Patent siは人、si、simulation、文献、実測のsourceを分けた発明開示と先行技術差分を支援するが、特許性、発明者、権利帰属、自動出願を確定しない。現段階は設計で、四方向rig、XR runtime、Material Core→Patent si bridgeは未実装。
 
 ## 2026-09-17 — Sky統合・開発者還元の設計と成功報酬方針の訂正
 
@@ -2303,13 +2305,13 @@ Sky自体をToolチームの編成・参加・実績の入口とし、回収分�
 
 ## 2026-09-17 — Pixel 10 compile-only full buildの二段階gateを実装
 
-Pixel 10／`frankel`／`GL066`の初回Developer Preview向けに、`COMPILE_BRINGUP`と`RELEASE_FLASH`を分離した。`--mode bringup`は所有者確認済みSKU、固定source、host容量、vendor inventory、review済みLocal AI APKを要求し、Operator Agentは公開設定を与えるか明示的に除外する。成果物manifestはtest/development signing、production未署名、flash禁止を記録する。既存の`release`入口はGoogle純正復旧artifact、production signing plan、Operator trust、`fullBuildInputGatePassed`を引き続き要求し、未合格の現在はfail-closedになる。
+Pixel 10／`frankel`／`GL066`の初回Developer Preview向けに、`COMPILE_BRINGUP`と`RELEASE_FLASH`を分離した。`--mode bringup`は所有者確認済みSKU、固定source、host容量、vendor inventory、review済みLocal si APKを要求し、Operator Agentは公開設定を与えるか明示的に除外する。成果物manifestはtest/development signing、production未署名、flash禁止を記録する。既存の`release`入口はGoogle純正復旧artifact、production signing plan、Operator trust、`fullBuildInputGatePassed`を引き続き要求し、未合格の現在はfail-closedになる。
 
 Scalewayでは課金開始前のdraftとして、PAR 1、Ubuntu 24.04、`COMPUTE3-X32C-64G`（32 dedicated vCPU／64 GB RAM）、600 GB Block Storage 5Kを構成した。表示額はcompute €0.9363/時、storage €0.078/時、IPv4 €0.005/時、合計€1.0193/時（税別）。まだinstance作成、課金、SSH key登録、source sync、Soong buildは行っていない。
 
 検証: Python phone preparation 18件、shell構文、OS contract、Android release architecture 8件、bringup成功／release拒否のCLI実行が合格。`npm run verify`は関連検査、型、lintとNode前半を通過後、既存Miniflare test processが終了しなかったため中断し、全体PASSとは扱わない。
 
-## 2026-09-16 — AIネイティブOSの詳細設計をAstra、監査をSolで進化
+## 2026-09-16 — siネイティブOSの詳細設計をAstra、監査をSolで進化
 
 製品中核を高性能・交換可能な端末内LLMとoffline agentを持つOSへ固定したRQ48を、[共通Coreの詳細設計](docs/ai-native-os-architecture.md)へ具体化する。Sky app／OSの能力差、モデル・記憶・仕事の契約、外部作用の結果照合、Game／IPの独立開発を設計し、[Solの独立監査](docs/ai-native-os-design-audit.md)を反映する。AI01は設計、AI02〜AI06は未着手の実装単位として追跡し、既存固定runtime／2工程Toolの合格を汎用agentの完成へ換算しない。
 
@@ -2339,25 +2341,25 @@ Dockのlocal暗号試験とdry-run buildは合格したが、Android Agent、pro
 
 ## 2026-09-16 — native Sky選択をBrokerへ永続化（物理再起動受入待ち）
 
-Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をBroker SQLite schema v2へ保存するようにした。Zemaは保存済みselection tokenの一致をLocal AI計画の前後で確認し、不一致・未選択は仕事0件で拒否する。既存schema v1はtransaction内でv2へ移行し、未知の新しいschemaはresetせず停止する。
+Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をBroker SQLite schema v2へ保存するようにした。Zemaは保存済みselection tokenの一致をLocal si計画の前後で確認し、不一致・未選択は仕事0件で拒否する。既存schema v1はtransaction内でv2へ移行し、未知の新しいschemaはresetせず停止する。
 
 Host 35 tests、Android全378 task、Android 15 emulatorのBroker 9/9・Shell 4/4は合格した。実行中leaseを残すseedと、端末boot count変更後に回収・再実行して結果／7履歴eventへ到達するrecoverの二段階試験も実装した。所有PixelがADBから外れたため、実端末の再起動受入だけはまだ未実施であり、合格表示しない。
 
-## 2026-09-16 — Local AI plan v2から選択Toolの結果・履歴までPixelで完走
+## 2026-09-16 — Local si plan v2から選択Toolの結果・履歴までPixelで完走
 
-Local AI Binder API v2へ`article-preparation@1/input-v1`専用callを追加した。端末内runtimeはJSON Schemaで出力を制約し、Tool callを無効化する。Brokerはその結果を信用せず、説明wrapper、未知field、Tool差替え、型違反に加え、選択した2つの純粋transformが入力を処理できることまで確認してから仕事を作る。既知のGGUF chat-template制御prefixだけを除去し、それ以外の前後文字は拒否する。
+Local si Binder API v2へ`article-preparation@1/input-v1`専用callを追加した。端末内runtimeはJSON Schemaで出力を制約し、Tool callを無効化する。Brokerはその結果を信用せず、説明wrapper、未知field、Tool差替え、型違反に加え、選択した2つの純粋transformが入力を処理できることまで確認してから仕事を作る。既知のGGUF chat-template制御prefixだけを除去し、それ以外の前後文字は拒否する。
 
 Android 15 emulatorではBroker 8/8とShell 3/3が合格し、モデルなしで仕事0件のまま停止した。所有Pixel 10 GL066でもBroker 8/8とShell 3/3が合格し、ShellのZema依頼が`queued`となり、Broker内の完全試験で`citations@1`→`free-article@1`、読取り可能な結果、5件の履歴、本人確認待ち`review`まで完走した。これは試験署名の単体APK受入であり、native Sky永続handoff、全経路の再起動／失敗復旧、AOSP image、SELinux enforcing、production署名は未完了。[証拠](docs/evidence/android-local-ai-plan-v2-20260916.json)。
 
-## 2026-09-16 — native ZemaをLocal AIと最初の選択Toolへ接続
+## 2026-09-16 — native ZemaをLocal siと最初の選択Toolへ接続
 
-Android Shell APIをv2へ上げ、native Zemaの自然文依頼を署名済みBroker経由でLocal AIへ渡し、Skyで選択済みの`article-preparation@1`だけを厳格JSON planから既存Tool workflowへ登録するsource経路を実装した。モデルはToolを直接呼べず、説明文、未知field、別Toolへの差替え、closed input違反は仕事を作る前に拒否する。request IDは既存仕事へidempotentに結び、成功は`queued`、モデルなし・不正plan・同意不足は`blocked`の構造化応答にした。
+Android Shell APIをv2へ上げ、native Zemaの自然文依頼を署名済みBroker経由でLocal siへ渡し、Skyで選択済みの`article-preparation@1`だけを厳格JSON planから既存Tool workflowへ登録するsource経路を実装した。モデルはToolを直接呼べず、説明文、未知field、別Toolへの差替え、closed input違反は仕事を作る前に拒否する。request IDは既存仕事へidempotentに結び、成功は`queued`、モデルなし・不正plan・同意不足は`blocked`の構造化応答にした。
 
-Android 15 emulatorと所有Pixel 10で、Broker／Tool統合6/6とShell統合3/3がそれぞれ合格した。emulatorはモデルなし、Pixelはモデル出力が厳格plan不合格となったが、いずれも仕事0件のまま停止し、途中保存はなかった。同意なしはLocal AIを呼ぶ前に拒否した。したがってsource接続とfail-closed実機境界は合格、Pixelでの仕事作成・完了は未合格である。次はLocal AIへ計画専用出力契約を追加し、Broker側検査を緩めず実機完走させる。証拠は[`docs/evidence/android-zema-selected-tool-20260916.json`](docs/evidence/android-zema-selected-tool-20260916.json)。
+Android 15 emulatorと所有Pixel 10で、Broker／Tool統合6/6とShell統合3/3がそれぞれ合格した。emulatorはモデルなし、Pixelはモデル出力が厳格plan不合格となったが、いずれも仕事0件のまま停止し、途中保存はなかった。同意なしはLocal siを呼ぶ前に拒否した。したがってsource接続とfail-closed実機境界は合格、Pixelでの仕事作成・完了は未合格である。次はLocal siへ計画専用出力契約を追加し、Broker側検査を緩めず実機完走させる。証拠は[`docs/evidence/android-zema-selected-tool-20260916.json`](docs/evidence/android-zema-selected-tool-20260916.json)。
 
 ## 2026-09-16 — 全体の最適構成と実際の接続状態を一つの監査へ固定
 
-製品目的からOS、Pixel、Sky、Zema、Shell、Broker、Local AI、Tool、検証済み収益、Wallet、Fund、Operator、更新・復旧、Gameまでを再点検した。選択している責任分離と順序は1.0目的に整合するが、全層が一つのPixel上で接続・受入済みではない。Web、単体APK、emulator、fixture、sandbox、物理端末の成功を混ぜず、11層の選択状態と6本のend-to-end flowを[`data/system-composition-audit.json`](data/system-composition-audit.json)へ固定し、説明を[`docs/system-composition.md`](docs/system-composition.md)へ追加した。
+製品目的からOS、Pixel、Sky、Zema、Shell、Broker、Local si、Tool、検証済み収益、Wallet、Fund、Operator、更新・復旧、Gameまでを再点検した。選択している責任分離と順序は1.0目的に整合するが、全層が一つのPixel上で接続・受入済みではない。Web、単体APK、emulator、fixture、sandbox、物理端末の成功を混ぜず、11層の選択状態と6本のend-to-end flowを[`data/system-composition-audit.json`](data/system-composition-audit.json)へ固定し、説明を[`docs/system-composition.md`](docs/system-composition.md)へ追加した。
 
 旧BlackBerry-first taskはPixel 10受入後の二機種目再評価へ変更し、QEMU-firstをスマホOSの優先順位として扱わない。Androidの公開受入表示も実際の6 gate中1合格へ揃えた。最優先はstock Pixel上の`Sky → Zema → Shell → Broker → Local AI → 汎用Tool → 結果・履歴`、次にbackup v2、純正復旧・署名入力、端末側Operator Agentであり、これらの事前gate後だけfull buildへ進む。`npm run system:composition:check`と通常の`npm run verify`で、必須層・flow・証拠の欠落とproduction過大表示を拒否する。
 
@@ -2365,9 +2367,9 @@ Android 15 emulatorと所有Pixel 10で、Broker／Tool統合6/6とShell統合3/
 
 Pixel 10／frankel／GL066向けの製品構成を、機種/SKU、BSP/vendor/partition、boot/recovery、OTA/rollback、SELinux enforcing分離、Keystore喪失backup、CDD/CTS/CTS Verifier/VTS受入の7決定へ統合した。正本は`data/android-release-architecture-policy.json`、説明は`docs/android-production-architecture.md`、自動検査は`npm run android:architecture:check`。
 
-既存の`dev.rock.automation`は信頼identityを変えずheadless Platform Brokerとして残し、最終Home／Sky／Zemaを載せるAndroid launcher／UI入口を`dev.rock.shell`へ分離した。Shellは通信権限、Platform DB、Keystore、Engineと広いPlatform管理権限を持たず、専用BinderだけでBrokerへ接続する。現UIはP1操作画面で、最終native UI完成とは扱わない。Local AI、Tool、MCP、Provider、Operator Agentは別UID／別SELinux domainに固定し、runtime登録からdomainを得ること、Local AIからTool/Walletへ直接接続すること、Operator Agentから製品data planeへBinder接続することを拒否する。Operator Dockは利用者OSとlauncherへ含めない。
+既存の`dev.rock.automation`は信頼identityを変えずheadless Platform Brokerとして残し、最終Home／Sky／Zemaを載せるAndroid launcher／UI入口を`dev.rock.shell`へ分離した。Shellは通信権限、Platform DB、Keystore、Engineと広いPlatform管理権限を持たず、専用BinderだけでBrokerへ接続する。現UIはP1操作画面で、最終native UI完成とは扱わない。Local si、Tool、MCP、Provider、Operator Agentは別UID／別SELinux domainに固定し、runtime登録からdomainを得ること、Local siからTool/Walletへ直接接続すること、Operator Agentから製品data planeへBinder接続することを拒否する。Operator Dockは利用者OSとlauncherへ含めない。
 
-Shell／Brokerのsource分離、3 APKのAndroid Gradle build／lint、Android 15 emulatorのBinder統合試験は完了した。backup Binder経路は後続のShell API v4でv2へ更新済みである。ただし全体実装は未完了で、物理wipe復元、Operator Agent、Local AIの最終image/domain、SELinux enforcing user build、CTS/VTSは未実証である。公開監査はSELinux gateを独立追加し、Android実機を1/6合格へ変更した。欠落していたVTS、VTS HAL、VTS kernelの識別子とhash証拠を必須化した。
+Shell／Brokerのsource分離、3 APKのAndroid Gradle build／lint、Android 15 emulatorのBinder統合試験は完了した。backup Binder経路は後続のShell API v4でv2へ更新済みである。ただし全体実装は未完了で、物理wipe復元、Operator Agent、Local siの最終image/domain、SELinux enforcing user build、CTS/VTSは未実証である。公開監査はSELinux gateを独立追加し、Android実機を1/6合格へ変更した。欠落していたVTS、VTS HAL、VTS kernelの識別子とhash証拠を必須化した。
 
 ## 2026-09-16 — 初回flash前に固定する4項目をfail-closed化
 
@@ -2375,9 +2377,9 @@ Pixel 10／frankel／GL066へ最初に書き込む前の必須条件を、(1) �
 
 現在は0/4合格で、`flashReady=false`を維持する。秘密鍵とrecovery secretそのものはGitへ保存せず、公開fingerprint、手順、artifact identity、hashed試験証拠だけを保存する。4番は`avocadoos-recoverable-backup/2`に固定し、backupごとのDEKをhardware-backed Keystore鍵と所有者だけの256-bit recovery secretで二重wrapする。24単語UI、transactional import、新Keystore再bindingはAndroid 15 emulatorで合格し、残る物理gateはPixel wipe後の実復元と再起動である。運営万能鍵やserver escrowは作らず、full build成功だけで初回flashを許可しない。
 
-## 2026-09-15 — AI自動化チームの効率化を最上位目的へ固定
+## 2026-09-15 — si自動化チームの効率化を最上位目的へ固定
 
-RockstarOSの目的はスマートフォンやOSを作ること自体ではなく、利用者が自分専用のAI自動化チームを所有し、その効率を改善することで、便利さと検証可能な収益機会を増やし、利用者全体の豊かさへつなげること。Pixelは最初のreference hardwareで、カメラ品質を1.0完成条件にせず、将来の専用端末は価値実証後の配布形態とする。
+RockstarOSの目的はスマートフォンやOSを作ること自体ではなく、利用者が自分専用のsi自動化チームを所有し、その効率を改善することで、便利さと検証可能な収益機会を増やし、利用者全体の豊かさへつなげること。Pixelは最初のreference hardwareで、カメラ品質を1.0完成条件にせず、将来の専用端末は価値実証後の配布形態とする。
 
 端末内LLMとToolをoffline-firstで動かし、接続時に外部案件、納品、署名済み収益、Walletを重複なく同期する。一つのTool経済loopを先に完走し、次に複数Toolファンドの一押し実行と実測改善へ進む。月50万円規模は長期の検証済み到達指標であって収益保証ではない。Walletの税務機能は記録、分類候補、集計、export、専門家確認までとし、データ収集はcategory別同意、目的、保存期間、削除・撤回を必須にする。ゲームは同じ権限・receipt・Wallet基盤の派生先とし、1.0の中核loopを止めない。詳細は[製品目的から逆算した開発軸](docs/product-north-star-20260915.md)とRQ47を参照。
 
@@ -2583,7 +2585,7 @@ ToCのPC接続はツール総数4件の固定を廃止し、必須4件が存在�
 
 ## 2026-09-12 — Skyへ「特許出願アシスタント」を追加
 
-Skyのready商品として、ソフトウェア・システム発明の整理、公開状況警告、公式特許情報に限定した候補調査、明細書・請求項・要約・図面指示・提出前チェックのドラフト作成を追加した。発明内容は保存せず、外部AIへの送信は明示同意後だけ行う。
+Skyのready商品として、ソフトウェア・システム発明の整理、公開状況警告、公式特許情報に限定した候補調査、明細書・請求項・要約・図面指示・提出前チェックのドラフト作成を追加した。発明内容は保存せず、外部siへの送信は明示同意後だけ行う。
 
 特許性、登録、侵害回避、期限は保証しない。候補文献と請求項は人が原文と差分を確認し、電子署名、料金支払、特許庁への提出はSkyから実行しない。[実装と安全境界](docs/sky-patent-assistant-20260912.md)。
 
@@ -2609,7 +2611,7 @@ Draft PR #10の初回native CIは、`Hub`から`Sky`への表示変更をPIN画�
 
 Fashion Brand Ops v0.3.0に、許可済みSky originからPCのloopbackへ接続する短期browser sessionを追加した。Skyの商品カードを1回押すと、session発行、MCP initialize、initialized通知、38操作のtools/list検査まで自動で進み、カードとDialogを「接続済み」へ同期する。再表示時はpingとtool一覧を再確認し、停止・失効・tool不足ではbrowser側sessionを破棄する。解除時はPC側sessionも失効する。
 
-利用者の提案を受け、ツール一覧だけでなく役割を持つ担当者と話して進めるAgent Hub方針を追加した。最初の実装としてサブスク顧問へ質問例と自由入力を追加し、月額、要対応、次回更新、全体要約を外部AIなしで回答する。各担当はMCP allowlist、data scope、本人確認、memory、receiptを持ち、外部変更はpolicy gatewayを通す。[役割エージェント仕様](docs/sky-role-agents-20260912.md)。
+利用者の提案を受け、ツール一覧だけでなく役割を持つ担当者と話して進めるAgent Hub方針を追加した。最初の実装としてサブスク顧問へ質問例と自由入力を追加し、月額、要対応、次回更新、全体要約を外部siなしで回答する。各担当はMCP allowlist、data scope、本人確認、memory、receiptを持ち、外部変更はpolicy gatewayを通す。[役割エージェント仕様](docs/sky-role-agents-20260912.md)。
 
 今回はローカルSkyでのPC接続と読み取り会話までを対象とし、HTTPS配信版のloopback接続、Native Sky MCP brokerへの常駐、Walletへの費用転記、解約・支払い・申告は未実装のまま保持する。[実装・安全境界・検証](docs/sky-rockstar-ledger-20260912.md)。
 
@@ -2653,7 +2655,7 @@ Draft PR #10の初回native CIは、`Hub`から`Sky`への表示変更をPIN画�
 
 SkyのX型Timelineと会話受付を維持し、文章の送信または4つの役ボタンから、ブラウザ実行画面を追加操作なしで開くようにした。PCが必要な納品確認は同じ操作で接続画面を開く。外部送信、料金、権限の本人確認は省略しない。
 
-日本語法律相談受付を現在のSky Agent Hubへ統合した。Timeline投稿、法務受付の役割ボタン、自然文の依頼から会話型受付を開ける。公開連絡先33件、ブラウザRunner、公式情報限定の法令AI、安全判定、弁護士引継ぎを同じ画面で利用できる。
+日本語法律相談受付を現在のSky Agent Hubへ統合した。Timeline投稿、法務受付の役割ボタン、自然文の依頼から会話型受付を開ける。公開連絡先33件、ブラウザRunner、公式情報限定の法令si、安全判定、弁護士引継ぎを同じ画面で利用できる。
 
 実装は`toolkits/fashion-brand-ops`、判断と検証境界は[統合記録](docs/fashion-brand-ops-integration.md)、確定要望はRQ18。Creative/Social/Payment/NotificationをProvider化し、SQLite受注台帳とWebhook照合を持つ。価格変更、外部生成、投稿/広告、DM送信、請求、返金、通知は署名付き個別approvalが必要。初期値はmockで、実Higgsfield/Meta/Stripe、外部費用、QEMU/Android/実機OS、Sites再配信、main mergeは変更していない。
 
@@ -2811,7 +2813,7 @@ D01は文書と検査の保存だけ。V01/GX01/GX02/DX01とB04/B02/B03/B05は�
 
 tob側が商品を開発し、Rockが実行方式・料金・ライセンスの異なる商品を管理するSkyと収益Walletを作る。既存ツールも商品とし、Git内の商品をSkyから実利用して準備/操作/結果確認の不便を改善する。汎用生活機能やエコシステム拡大を主目的にしない。確定ベースはRQ01〜RQ11。
 
-main `5cec834`に加えPR #1/native `fcedcfe`と同一SHAのCIを確認。nativeにはWallet台帳・月888 cents・資格・Sky署名配布・MCP/AI実行先がある。BlackBerry優先機種未定。今回のmain保存はベース/監査/作成規約と検査であり、native本体のmergeではない。[差分監査](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/progress-audit-20260909.md)、[次の実行プロンプト](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/hub-wallet-next.md)を参照。
+main `5cec834`に加えPR #1/native `fcedcfe`と同一SHAのCIを確認。nativeにはWallet台帳・月888 cents・資格・Sky署名配布・MCP/si実行先がある。BlackBerry優先機種未定。今回のmain保存はベース/監査/作成規約と検査であり、native本体のmergeではない。[差分監査](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/progress-audit-20260909.md)、[次の実行プロンプト](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/prompts/hub-wallet-next.md)を参照。
 
 既存データ、月額契約、旧試算、ツール原本を保持する。B01ベース保存と、B02商品実利用/条件拡張、B03実行費用/収益接続を分けて記録する。
 
@@ -2821,7 +2823,7 @@ main `5cec834`に加えPR #1/native `fcedcfe`と同一SHAのCIを確認。native
 
 初回の成果物は設計書と進捗文書。その後の「考えて組んでみて」を受け、OS部品の実装へ着手する。端末書込、サイト公開、配信側branchの統合は引き続き行わない。従来の公開停止は独立したOS開発を妨げない。
 
-OS設計v0.1では、元の事業/実行/配信側設計をQ01〜Q09へ対応付け、AOSP方式、Pixel適合ゲート、Tool/Recipe/Work/Runの分離、第三者SDK、権限とAIの境界、端末成果物、署名Store/OTA、AT01〜AT14の受入条件を定義する。最初の縦断実装は「原稿を置く→充電時に2工程→成果物→本人確認」。実装前の機材・BSP確認と、未検証項目を明記する。
+OS設計v0.1では、元の事業/実行/配信側設計をQ01〜Q09へ対応付け、AOSP方式、Pixel適合ゲート、Tool/Recipe/Work/Runの分離、第三者SDK、権限とsiの境界、端末成果物、署名Store/OTA、AT01〜AT14の受入条件を定義する。最初の縦断実装は「原稿を置く→充電時に2工程→成果物→本人確認」。実装前の機材・BSP確認と、未検証項目を明記する。
 
 OS01は設計の完了だけを表す。OS02〜OS05は未着手であり、過去のWebタスクの完了数をOSの実装進捗に換算しない。
 
@@ -3091,7 +3093,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | PRO03-05 | 子作業（PRO03）: 中断・保存・再開の形式と期待状態を定義する | 未着手 | — |
 | PRO03-06 | 子作業（PRO03）: 削除まで含めた非金融gameの受入ケース表を作る | 未着手 | — |
 | PRO02-01 | 子作業（PRO02）: ゲーム単独とゲーム＋音声の再現負荷を定義する | 未着手 | — |
-| PRO02-02 | 子作業（PRO02）: サービス＋保存とローカルAI併用の再現負荷を定義する | 未着手 | — |
+| PRO02-02 | 子作業（PRO02）: サービス＋保存とローカルsi併用の再現負荷を定義する | 未着手 | — |
 | PRO02-03 | 子作業（PRO02）: 解像度・FPS・p95遅延・RAM・I/Oの計測欄を統一する | 未着手 | — |
 | PRO02-04 | 子作業（PRO02）: 電力・温度・継続負荷の比較条件を定義する | 未着手 | — |
 | PRO02-05 | 子作業（PRO02）: CPU・GPU・NPU候補のdriver・OS・供給条件を比較表へ揃える | 未着手 | — |
@@ -3144,7 +3146,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | MINI01-04 | 子作業（MINI01）: 要求・未決・試験の主担当をM1〜M7とOSへ割り当てる | 未着手 | — |
 | MINI01-05 | 子作業（MINI01）: 1本自律・200mm・同型増設・Pro任意の境界を照合する | 未着手 | — |
 | MINI01-06 | 子作業（MINI01）: 要求追跡の欠落とMAT15全体受入との差分をまとめる | 未着手 | — |
-| ORG01 | 製品・SkyのAI自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/rockstaros-product-system-map.md) · [記録](docs/workstreams/README.md) · [記録](scripts/check-sky.mjs) |
+| ORG01 | 製品・Skyのsi自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備 | 完了 | [記録](PROJECTS.md) · [記録](README.md) · [記録](docs/rockstaros-product-system-map.md) · [記録](docs/workstreams/README.md) · [記録](scripts/check-sky.mjs) |
 | ORG02 | avokado Mission ControlでRockstarOS・Mini・Pro・rocketstarを32部隊へ分け、Goal・進捗段階・rule・依存・証拠・次の作業を正本化 | 完了 | [記録](docs/mission-control.md) · [記録](data/mission-control.json) · [記録](scripts/check-mission-control.mjs) · [記録](PROJECTS.md) |
 | MAT14 | R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留） | 完了 | [記録](docs/avocado-mini-r5/README.md) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/avocado-mini-r5/verification.json) · [記録](scripts/verify-avocado-r5-package.py) |
 | MAT15 | R5単体の裸眼空間表示・安全・精密3D入力を成立させ、収納/熱/電源/確定回路/加工図と実機受入を閉じる | 進行中 | [記録](docs/avocado-mini-r5/package/integrated_design.md) · [記録](docs/avocado-mini-cellular.md) · [記録](data/avocado-mini-cellular.json) |
@@ -3155,7 +3157,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | DOC01 | RockstarOS本体・Sky／Zema・全ready／candidate Tool・Material Inventionの詳細設計入口と被覆監査を正本化 | 完了 | [記録](docs/rockstaros-design-portal.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/sky-tools-complete-design.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | DOC02 | RockstarOS設計書完全版v1.0の原本PDF・全文抽出・完全性記録・設計索引をGit正本へ保存 | 完了 | [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rockstaros-complete-design-v1.0.txt) · [記録](data/rockstaros-complete-design-v1.0.json) · [記録](docs/rockstaros-design-portal.md) · [記録](data/design-document-index.json) · [記録](scripts/check-design-document-index.mjs) |
 | DOC03 | rocketstar R1.0・衛星・OS付録・ボタン・生成元・旧版を原本と照合し、設計アーカイブと索引へ保存（製造/飛行未認定） | 完了 | [記録](docs/rocketstar-design/README.md) · [記録](docs/rocketstar-design/inventory.json) · [記録](docs/rocketstar-design/verification.json) · [記録](scripts/verify-rocketstar-archive.py) · [記録](data/design-document-index.json) |
-| DOC04 | avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新 | 完了 | [記録](README.md) · [記録](docs/brand/avokado/avokado-r5-editorial-hero.png) · [記録](docs/brand/avokado/avokado-motion-v2.gif) · [記録](docs/brand/avokado/avokado-system-map.svg) · [記録](data/design-document-index.json) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [記録](docs/service-design/README.md) · [記録](docs/evidence/service-design-rebuild.json) |
+| DOC04 | avokado READMEをR5端末・RockstarOS v1.0現行OS・rocketstar R1.0現行ロケット・事業・機能・全設計書の入口へ刷新 | 完了 | [記録](README.md) · [記録](docs/brand/avokado/avokado-r5-editorial-hero.png) · [記録](docs/brand/avokado/avokado-motion-v2.gif) · [記録](docs/brand/avokado/avokado-system-map.svg) · [記録](data/design-document-index.json) · [記録](docs/avocado-mini-r5/package/package_manifest.json) · [記録](docs/rockstaros-complete-design-v1.0.pdf) · [記録](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [記録](docs/service-design/README.md) · [記録](docs/evidence/service-design-rebuild.json) · [記録](docs/service-design/06-consistency-contracts.md) · [記録](data/product-terminology.json) |
 | AI01 | RQ48をAstraで詳細設計しSolの独立監査を反映（設計のみ、runtime完了ではない） | 完了 | [記録](docs/product-baseline.md) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-native-os-design-audit.md) |
 | AI02 | 親タスク: モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](docs/avokado-llm-pretraining.md) · [記録](docs/evidence/avokado-llm-pretraining.json) · [記録](toolkits/avokado-llm/train.py) · [記録](toolkits/avokado-llm/test_pretraining.py) · [記録](android/core/src/main/java/dev/rock/core/platform/RuntimeManifest.java) · [記録](android/core/src/main/java/dev/rock/core/platform/ModelProfileManifest.java) · [記録](android/core/src/main/java/dev/rock/core/platform/TrustedModelPublisherVerifier.java) · [記録](android/core/src/main/java/dev/rock/core/platform/TrustedModelArtifactPipeline.java) · [記録](android/core/src/main/java/dev/rock/core/platform/ResumableModelArtifactStager.java) · [記録](android/core/src/main/java/dev/rock/core/platform/PlatformStore.java) · [記録](android/core/src/main/java/dev/rock/core/Engine.java) · [記録](android/core/src/test/java/dev/rock/core/PlatformStoreTest.java) · [記録](android/core/src/test/java/dev/rock/core/EngineTest.java) · [記録](android/core/src/test/java/dev/rock/core/platform/TrustedModelPublisherVerifierTest.java) · [記録](android/core/src/test/java/dev/rock/core/platform/ResumableModelArtifactStagerTest.java) · [記録](android/automation/src/main/java/dev/rock/automation/LocalAiConnection.java) · [記録](android/automation/src/main/java/dev/rock/automation/ZemaOrchestrator.java) · [記録](contracts/local-ai-runtime.json) · [記録](os/physical/local-ai-profile-v3.patch) · [記録](docs/evidence/local-ai-profile-v3-validation-20261001.json) · [記録](docs/evidence/ai02-core-java-validation-20261001.json) · [記録](android/local-ai-api/src/main/aidl/dev/rock/localai/ILocalAiService.aidl) · [記録](os/physical/local-ai-model-handoff-v4.patch) · [記録](docs/evidence/local-ai-model-handoff-v4-validation-20261001.json) · [記録](android/automation/src/main/java/dev/rock/automation/ModelProfileActivationCoordinator.java) · [記録](android/automation/src/main/java/dev/rock/automation/ModelProfileOperationLock.java) · [記録](scripts/check-os-contracts.mjs) · [記録](docs/evidence/pr-consolidation-20261005.json) |
 | AI03 | モデル非依存の限定記憶・project分離・根拠・削除契約を実装し、projection更新を受入 | 進行中 | [記録](docs/ai-native-os-architecture.md) · [記録](docs/ai-memory-architecture.md) · [記録](systems/rock-star-os/src/blackberryrock/memory_store.py) · [記録](systems/rock-star-os/src/blackberryrock/memory_access.py) · [記録](systems/rock-star-os/tests/test_memory_store.py) · [記録](systems/rock-star-os/tests/test_memory_access.py) · [記録](docs/evidence/ai03-canonical-memory-store-20261001.json) · [記録](docs/evidence/pr-consolidation-20261005.json) |
@@ -3167,9 +3169,9 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | MAT01 | RQ49 Material Invention Coreのentity・発明loop・安全境界を設計へ固定 | 完了 | [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) · [記録](docs/material-invention-core.md) |
 | MAT02 | 二物質・複数比率・工程条件のsandbox候補graphとfail-closed安全検査を実装 | 完了 | [記録](contracts/material-invention.json) · [記録](contracts/material-invention-fixture.json) · [記録](lib/material-invention.ts) · [記録](tests/material-invention.test.mjs) · [記録](docs/material-invention-core.md) · [記録](docs/validation.md) |
 | MAT03 | Material Invention CoreをZemaの仕事・限定記憶・simulation／外部ラボProviderへ接続して独立受入 | 進行中 | [記録](docs/material-invention-core.md) · [記録](lib/material-study.ts) · [記録](app/api/material-invention/route.ts) · [記録](components/material-invention-workspace.tsx) · [記録](tests/material-study.test.mjs) · [記録](components/use-pending-save-navigation.ts) · [記録](tests/material-workspace-recovery.test.mjs) · [記録](tests/pending-save-navigation.test.mjs) · [記録](lib/owner-intent.ts) · [記録](tests/owner-intent-route.test.mjs) |
-| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定 | 完了 | [記録](docs/material-invention-xr.md) · [記録](docs/avocado-mini-spatial-invention.md) · [記録](docs/avocado-mini-hardware-design.md) · [記録](docs/assets/rockstaros-spatial-table-v1.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](docs/assets/avocado-mini-hardware-00-overview.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-exploded.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-exploded.png) · [記録](docs/assets/avocado-mini-hardware-03-power-control-haptic.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v2.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-exploded-v2.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-exploded-v2.png) · [記録](docs/assets/avocado-mini-hardware-03-power-control-haptic-v2.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-v4-thin-tube.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-v4-thin-tube.png) · [記録](data/material-invention-xr-policy.json) · [記録](contracts/material-invention-xr.json) · [記録](contracts/avocado-mini-spatial-interaction.json) |
+| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent si設計を固定 | 完了 | [記録](docs/material-invention-xr.md) · [記録](docs/avocado-mini-spatial-invention.md) · [記録](docs/avocado-mini-hardware-design.md) · [記録](docs/assets/rockstaros-spatial-table-v1.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](docs/assets/avocado-mini-hardware-00-overview.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-exploded.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-exploded.png) · [記録](docs/assets/avocado-mini-hardware-03-power-control-haptic.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v2.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-exploded-v2.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-exploded-v2.png) · [記録](docs/assets/avocado-mini-hardware-03-power-control-haptic-v2.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-v3-silver-tube.png) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/avocado-mini-hardware-01-sensor-pod-v4-thin-tube.png) · [記録](docs/assets/avocado-mini-hardware-02-chassis-v4-thin-tube.png) · [記録](data/material-invention-xr-policy.json) · [記録](contracts/material-invention-xr.json) · [記録](contracts/avocado-mini-spatial-interaction.json) |
 | MAT05 | Core graphから決定的XR sceneを生成し、四方向pose fixtureのconnect／separate／stale拒否を実装 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
-| MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
+| MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent si provenance bridgeを独立受入 | 未着手 | [記録](docs/avocado-mini-spatial-invention.md) |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了 | [記録](docs/rockstaros-avocado-mini-complete-design.md) · [記録](docs/workstreams/11-material-invention-avocado-mini.md) · [記録](docs/system-composition.md) · [記録](data/system-composition-audit.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-architecture.md) |
 | MAT08 | Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入） | 完了 | [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/README.md) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/design.md) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/engineering/verify_all.py) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/verification.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
 | MAT09 | Mini200 E1専用入力profile・Core adapter・ゲーム／ASR／console OSと20cm実機を独立受入 | 未着手 | [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/README.md) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/game-first-life-connectivity.md) |
@@ -3201,7 +3203,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | BRD01 | 正式製品名をRockstarOS、内部識別子をdev.rockで固定 | 完了 | [記録](data/product-baseline.json) · [記録](docs/product-baseline.md) · [記録](app/layout.tsx) · [記録](app/manifest.ts) · [記録](components/home-screen.tsx) · [記録](android/automation/src/main/java/dev/rock/automation/ApprovalActivity.java) · [記録](tests/product-baseline.test.mjs) |
 | WEB05 | avocadoMiniの製品紹介と回転ツアーをP0.2設計書と黒い製品写真のデザインへ統一 | 完了 | [記録](README.md) · [記録](docs/assets/avocado-mini-hardware-00-overview-v4-thin-tube.png) · [記録](docs/assets/rockstaros-spatial-table-full-scale-v2.png) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/pages/guide/index.astro) · [記録](sites/avocado-mini/src/main.js) · [記録](sites/avocado-mini/src/style.css) · [記録](sites/avocado-mini/src/tower-scene.js) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](sites/avocado-mini/public/images/avocado-mini-hero.png) · [記録](sites/avocado-mini/public/images/avocado-mini-detail.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-front-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-side-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-rear-concept.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-sensor-macro.png) · [記録](sites/avocado-mini/public/images/motion-tower-satin-four-point.png) · [記録](sites/avocado-mini/public/images/avocado-mini-kit.png) · [記録](sites/avocado-mini/public/images/avocado-mini-head-p0.png) · [記録](sites/avocado-mini/public/images/avocado-mini-base-p0.png) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](public/rockstaros/avocado-mini-concept.png) · [記録](docs/product-baseline.md) |
 | WEB06 | GitHubと製品紹介から主要アプリへ進む入口を整え、既存Siteの一般公開と最新版同期を確認する | 進行中 | [記録](README.md) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](app/api/health/route.ts) · [記録](scripts/check-work-api.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) |
-| WEB07 | 利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
+| WEB07 | 利用者の目的とsiの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂 | 完了 | [記録](README.md) · [記録](docs/assets/rockstaros-intro.gif) · [記録](docs/assets/cover-avocado-mini.gif) · [記録](docs/assets/cover-rockstaros.gif) · [記録](docs/assets/cover-sky.gif) · [記録](docs/assets/cover-zema.gif) · [記録](docs/assets/cover-material-studio.gif) · [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](docs/product-baseline.md) · [記録](data/product-baseline.json) |
 | WEB09 | avocadoMiniクラファン企画を提示し、募集確定後に公開支援リンクを設置する | 進行中 | [記録](README.md) · [記録](docs/avocado-mini-crowdfunding.md) · [記録](app/rockstaros/crowdfunding/page.tsx) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB10 | 製品・OS導入ホームに各サービスの役割と利用範囲を示す入口を追加 | 完了 | [記録](app/rockstaros/page.tsx) · [記録](app/rockstaros/preview.module.css) · [記録](data/product-baseline.json) · [記録](scripts/check-product-baseline.mjs) · [記録](docs/product-baseline.md) · [記録](docs/workstreams/05-web-pwa-sites.md) |
 | WEB11 | 製品構想モデルをスクロールで一周見せ、参考価格・購入準備中・OS導入へつなぐ | 完了 | [記録](components/avocado-turntable.tsx) · [記録](components/avocado-turntable.module.css) · [記録](app/rockstaros/page.tsx) · [記録](docs/product-baseline.md) |
@@ -3281,7 +3283,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | N02 | 起動応答確認と自動再読込WIPの検証・採用判断 | 進行中 | [記録](docs/native-os-integration.md) |
 | N03 | 実機候補1機種の型番/SKU・boot/BSP・更新/復旧の適合確認 | 進行中 | [記録](docs/native-os-integration.md) · [記録](docs/phone-preview-20260911.md) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/current-state-20260911.md) · [記録](docs/evidence/launch/progress-audit-20260912.json) · [記録](docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | N04 | Pixel 10受入後だけ二機種目のDevice Support Package候補を再評価 | 未着手 | [記録](docs/device-support-architecture.md) · [記録](data/device-support-matrix.json) |
-| N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
+| N05 | 実USB・外部MCP/si・金融provider・ToB精算と運営pilot | 未着手 | [記録](docs/native-os-integration.md) |
 | RLS01 | fresh Mac/PCへ導入できるQEMU Developer Previewを作成・検証 | 完了 | [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-followup-20260910.md) |
 | RLS02 | 正確な1機種・variantへ限定したPhysical Device Previewを作成・復旧検証 | 進行中 | [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/current-state-20260911.md) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/evidence/launch/progress-audit-20260912.json) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | LCH01 | TLS／累積timeoutの原因と最終CIの照合 | 進行中 | [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/launch-readiness-20260910.md) |
@@ -3294,7 +3296,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | LCH08 | ローカルOSバックエンドの安全終了・ヘルスチェック・再起動時のreceipt復元を検証 | 完了 | [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/backend-launch-20260912.md) · [記録](docs/evidence/launch/backend-rc3-local-20260912.json) · [記録](systems/rock-star-os/scripts/verify-backend-launch.py) · [記録](systems/rock-star-os/tests/test_hub.py) · [記録](systems/rock-star-os/tests/test_hub_server.py) |
 | FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了 | [記録](docs/fashion-brand-ops-integration.md) |
 | FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
-| FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
+| FB03 | DM履歴・購買意向・顧客情報からsi Sales Conciergeと営業パイプラインを生成 | 完了 | [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了 | [記録](toolkits/fashion-brand-ops/db/migrations/003_autonomous_operations.sql) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) |
 | FB05 | 改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合 | 完了 | [記録](components/sky-workspace.tsx) · [記録](lib/sky-routing.ts) · [記録](tests/sky-routing.test.mjs) · [記録](docs/sky-assistant-and-memory.md) |
 | FB06 | Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める | 完了 | [記録](docs/instagram-photo-onboarding-20260912.md) · [記録](toolkits/fashion-brand-ops/db/migrations/004_screenshot_account_intake.sql) · [記録](toolkits/fashion-brand-ops/src/service.mjs) · [記録](toolkits/fashion-brand-ops/test/service.test.mjs) · [記録](components/fashion-brand-ops-runner.tsx) |
@@ -3329,7 +3331,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | RKT10 | 親タスク: 製造・品質・安全の構成管理と段階別証拠matrixを作る | 未着手 | — |
 | ORG03 | AMCの担当・旧版混入・受入条件を精査し、部隊ごとの実行可能taskと検査を同期 | 完了 | [記録](docs/mission-control.md) · [記録](data/mission-control.json) · [記録](scripts/check-mission-control.mjs) · [記録](scripts/sync-mission-control.mjs) · [記録](tests/mission-control.test.mjs) · [記録](docs/evidence/amc/task-precision-audit.json) · [記録](docs/evidence/spider-mission-squad-dom.json) |
 | SYS15 | Spider Security AgentのGitHub検査・コード検査・OS常駐監視・送信前拒否・native表示・boot監督を統合する（ROCK・同一image起動未受入） | 進行中 | [記録](docs/spider-guard.md) · [記録](docs/evidence/spider-guard-source-validation.json) · [記録](docs/workstreams/04-security-identity-compliance.md) · [記録](docs/product-baseline.md) · [記録](docs/rockstaros-complete-design.md) · [記録](data/design-document-index.json) · [記録](systems/rock-star-os/os/platform/sensitive_guard.py) · [記録](systems/rock-star-os/os/platform/supervisor.py) · [記録](systems/rock-star-os/os/platform/service.py) · [記録](systems/rock-star-os/os/platform/runner_control.py) · [記録](systems/rock-star-os/os/platform/install-target.sh) · [記録](systems/rock-star-os/os/ui/security-ui.inc) · [記録](systems/rock-star-os/os/ui/test_ui.c) · [記録](systems/rock-star-os/tests/test_sensitive_guard.py) · [記録](systems/rock-star-os/tests/test_os_security_guard_integration.py) · [記録](systems/rock-star-os/tests/test_os_runner_control.py) · [記録](systems/rock-star-os/os/ui/spider-motion.c) · [記録](systems/rock-star-os/os/ui/spider-motion.h) · [記録](systems/rock-star-os/os/ui/pin-readiness.json) · [記録](scripts/review-native-pin-source.py) · [記録](systems/rock-star-os/tests/test_ui_pin_source_profile.py) · [記録](scripts/build-spider-inspector.mjs) · [記録](toolkits/spider-guard/README.md) · [記録](toolkits/spider-guard/inspector.html) · [記録](toolkits/spider-guard/program-inspector.mjs) · [記録](toolkits/spider-guard/program-inspector.d.mts) · [記録](tests/spider-inspector-artifact.test.mjs) · [記録](tests/spider-program-inspector.test.mjs) · [記録](systems/rock-star-os/os/platform/code_inspector.py) · [記録](systems/rock-star-os/tests/test_code_inspector.py) · [記録](SECURITY.md) · [記録](.github/workflows/spider.yml) · [記録](.github/workflows/spider-codeql.yml) · [記録](.github/spider/gitleaks.toml) · [記録](scripts/spider-repository-scan.py) · [記録](tests/test_spider_repository_scan.py) · [記録](tests/test_spider_gitleaks_policy.py) · [記録](tests/spider-codeql-workflow.test.mjs) · [記録](docs/evidence/spider-github-source-validation.json) · [記録](scripts/spider-feedback.mjs) · [記録](tests/spider-feedback.test.mjs) · [記録](.github/workflows/spider-regressions.yml) · [記録](tests/service-worker-update.test.mjs) · [記録](toolkits/fashion-brand-ops/test/http-security.test.mjs) · [記録](docs/evidence/spider-improvement-cycle.json) · [記録](tests/mcp-local-descriptor.test.mjs) · [記録](tests/test_mr_delivery_boundary.py) · [記録](tests/test_mr_http_deadline.py) · [記録](scripts/select-native-artifacts.py) · [記録](systems/rock-star-os/tests/test_native_artifacts.py) · [記録](docs/native-os-validation.md) · [記録](systems/rock-star-os/os/desktop/launcher.py) · [記録](systems/rock-star-os/tests/test_os_desktop_browser.py) · [記録](systems/rock-star-os/os/desktop/README.md) · [記録](systems/rock-star-os/os/platform/guest-test.py) · [記録](systems/rock-star-os/tests/test_os_platform_isolation_proof.py) · [記録](systems/rock-star-os/tests/test_game_exchange_deadlines.py) · [記録](scripts/verify-mcp-flow.mjs) · [記録](tests/mcp.test.mjs) · [記録](tests/mr-tools.test.mjs) · [記録](tests/csv-transform.test.mjs) · [記録](tests/fixtures/csv-report.html) · [記録](tests/mcp-connector.test.mjs) · [記録](systems/rock-star-os/os/mcp_broker/http.py) · [記録](systems/rock-star-os/tests/test_mcp_http_deadline.py) · [記録](tests/undici-tls-options.test.mjs) · [記録](data/web-third-party-license-audit.json) · [記録](scripts/spider-web-runtime.mjs) · [記録](tests/spider-web-runtime.test.mjs) · [記録](scripts/amc-autonomy-store.mjs) · [記録](tests/amc-autonomy-store-read.test.mjs) · [記録](scripts/amc-parallel.mjs) · [記録](tests/amc-workspace-snapshot.test.mjs) · [記録](docs/evidence/spider-workspace-snapshot-read.json) · [記録](docs/evidence/spider-sky-continuation.json) · [記録](components/spider-workspace.tsx) · [記録](tests/spider-sky.test.mjs) · [記録](tests/spider-workspace-state.test.mjs) · [記録](tests/spider-inspector-worker.test.mjs) · [記録](tests/dependency-cache-revalidation-security.test.mjs) · [記録](docs/evidence/spider-cache-error-revalidation.json) · [記録](docs/evidence/spider-zema-storage-policy.json) · [記録](tests/sharp-native-security.test.mjs) · [記録](docs/evidence/spider-root-sharp-update.json) · [記録](tests/release-readiness.test.mjs) · [記録](docs/evidence/spider-sdk-lock-audit.json) |
-| MAT16 | avokadoProのNVIDIA搭載小型PC設計・調達・AI/PCゲーム/熱/復旧受入 | 進行中 | [記録](docs/avokado-pro-pc-design.md) · [記録](data/avokado-pro-pc.json) · [記録](docs/evidence/avokado-pro-pc-design.json) |
+| MAT16 | avokadoProのNVIDIA搭載小型PC設計・調達・si/PCゲーム/熱/復旧受入 | 進行中 | [記録](docs/avokado-pro-pc-design.md) · [記録](data/avokado-pro-pc.json) · [記録](docs/evidence/avokado-pro-pc-design.json) |
 | ORG04 | 既存AMC担当表を再利用し、機能別の作業部屋・一件の再開手順・アイデア置き場を同期する | 完了 | [記録](workspaces/README.md) · [記録](workspaces/IDEAS.md) · [記録](data/workspaces.json) · [記録](scripts/workspaces.mjs) · [記録](tests/workspaces.test.mjs) · [記録](docs/evidence/workspace-organization.json) |
 | AMC03 | 機能別開発Botの定義と、依頼時にCodexからGit／PRへ提出する起動入口を整備する | 完了 | [記録](data/amc/project-bots.json) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bots.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bots.json) |
 | AMC04 | 担当BotがGitから情報を収集し、既存AMCで計画を作って実行・検収・Git提出を進める入口を接続する | 完了 | [記録](scripts/project-bot-context.mjs) · [記録](scripts/project-bots.mjs) · [記録](tests/project-bot-context.test.mjs) · [記録](toolkits/amc-agent/README.md) · [記録](docs/evidence/project-bot-amc.json) |
@@ -3338,12 +3340,12 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | SIM01 | 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す | 進行中 | [記録](docs/product-baseline.md) · [記録](docs/rockstaros-complete-design.md) · [記録](docs/os-development-design.md) · [記録](toolkits/esim-bootstrap/README.md) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](app/connect/page.tsx) · [記録](components/home-screen.tsx) · [記録](data/product-baseline.json) · [記録](AGENTS.md) · [記録](sites/avocado-mini/src/pages/index.astro) · [記録](sites/avocado-mini/src/service-home.css) · [記録](sites/avocado-mini/tests/astro-build.test.mjs) · [記録](tests/sim-service-entry.test.mjs) · [記録](docs/prompts/rock-current-next-20261002.md) · [記録](docs/sim-service-entitlement-claims.md) · [記録](lib/rockstar-entitlement-claim.ts) · [記録](app/api/rockstar/entitlements/route.ts) · [記録](lib/rockstar-entitlement-event.ts) · [記録](app/api/rockstar/entitlements/events/route.ts) · [記録](db/schema.ts) · [記録](drizzle/0039_rockstar_service_entitlements.sql) · [記録](drizzle/0040_rockstar_entitlement_events.sql) · [記録](tests/rockstar-entitlement-claim.test.mjs) · [記録](components/rockstar-entitlement-claim.tsx) · [記録](scripts/check-work-api.mjs) · [記録](app/api/sky/a2a-delegations/route.ts) · [記録](app/api/sky/a2a-delegations/[id]/route.ts) · [記録](services/sky-agent-runtime/src/worker.ts) · [記録](services/sky-agent-runtime/vitest.config.ts) · [記録](services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs) · [記録](docs/a2a-pricing-extension.md) · [記録](lib/currency-format.ts) · [記録](tests/currency-format.test.mjs) · [記録](components/workbench.tsx) · [記録](app/work/work.css) · [記録](lib/a2a-price-quote.ts) · [記録](tests/a2a-price-quote.test.mjs) · [記録](app/api/sky/a2a-delegations/[id]/broker-authorization/route.ts) · [記録](lib/remote-ai-pricing-gate.ts) · [記録](lib/remote-ai-rate-card.ts) · [記録](lib/remote-ai-rate-card-registry.ts) · [記録](tests/remote-ai-rate-card.test.mjs) · [記録](tests/remote-ai-rate-card-registry.test.mjs) · [記録](app/api/llm/estimate/route.ts) · [記録](components/sky-chat-workspace.tsx) · [記録](docs/evidence/remote-ai-estimate-api-20261001.json) · [記録](drizzle/0042_remote_ai_rate_cards.sql) · [記録](lib/remote-ai-rate-card-store.ts) · [記録](lib/remote-ai-rate-card-operator.ts) · [記録](app/api/internal/remote-ai/rate-cards/route.ts) · [記録](drizzle/0043_a2a_delegation_fanout_limits.sql) · [記録](lib/a2a-delegation-store.ts) · [記録](tests/a2a-client.test.mjs) · [記録](app/api/llm/text/route.ts) · [記録](app/api/legal-guidance/route.ts) · [記録](app/api/patent-research/route.ts) · [記録](app/api/jev-evaluation/route.ts) · [記録](lib/sky-service-status.ts) · [記録](tests/sky-service-status.test.mjs) · [記録](docs/evidence/remote-ai-price-gate-20261001.json) · [記録](drizzle/0044_a2a_live_usage_snapshots.sql) · [記録](lib/a2a-live-usage.ts) · [記録](app/api/sky/a2a-delegations/[id]/usage-snapshots/route.ts) · [記録](tests/a2a-live-usage.test.mjs) · [記録](docs/evidence/a2a-live-usage-local-20261001.json) · [記録](docs/evidence/mcp-pricing-gate-local-20261001.json) · [記録](docs/evidence/product-direction-regression-20261001.json) · [記録](docs/evidence/android-a2a-usage-verifier-20261001.json) · [記録](docs/evidence/android-a2a-wallet-reservation-20261001.json) · [記録](android/core/src/main/java/dev/rock/core/platform/PlatformStore.java) · [記録](android/core/src/test/java/dev/rock/core/A2AWalletReservationTest.java) · [記録](docs/workstreams/03-wallet-billing-providers.md) · [記録](docs/provider-contract-readiness-20260930.md) · [記録](toolkits/sky-mcp-connector/server.mjs) · [記録](tests/mcp-connector.test.mjs) · [記録](public/toolkits/sky-mcp-connector.zip) · [記録](docs/workstreams/02-sky-mcp.md) · [記録](android/core/src/main/java/dev/rock/core/platform/A2AWalletSettlementSync.java) · [記録](android/core/src/main/java/dev/rock/core/platform/A2AWalletHandoffRequest.java) · [記録](android/core/src/test/java/dev/rock/core/A2AWalletHandoffRequestTest.java) · [記録](android/core/src/test/resources/a2a-wallet-handoff-request-v1.json) · [記録](tests/a2a-wallet-handoff-auth.test.mjs) · [記録](android/automation/src/main/java/dev/rock/automation/A2ABrokerDeviceKeyStore.java) · [記録](android/automation/src/androidTest/java/dev/rock/automation/A2ABrokerDeviceKeyStoreTest.java) · [記録](docs/rockstar-device-link.md) · [記録](docs/evidence/rockstar-device-link-local-20261001.json) · [記録](lib/rockstar-device-link.ts) · [記録](lib/request-auth.ts) · [記録](app/api/rockstar/device-authorizations/route.ts) · [記録](app/api/rockstar/device-authorizations/approve/route.ts) · [記録](app/api/rockstar/device-sessions/route.ts) · [記録](app/connect/device/page.tsx) · [記録](components/rockstar-device-authorization.tsx) · [記録](android/core/src/main/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlow.java) · [記録](android/core/src/test/java/dev/rock/core/platform/RockstarDeviceAuthorizationFlowTest.java) · [記録](android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceAuthorizationTransport.java) · [記録](android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceSessionStore.java) · [記録](android/automation/src/androidTest/java/dev/rock/automation/RockstarDeviceAccountLinkTest.java) · [記録](android/shell-api/src/main/aidl/dev/rock/shellapi/IShellApi.aidl) · [記録](android/shell/src/main/java/dev/rock/shell/MainActivity.java) · [記録](android/shell/src/main/java/dev/rock/shell/ShellConnection.java) · [記録](android/automation/src/main/java/dev/rock/automation/RockShellService.java) · [記録](android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerEnrollment.java) · [記録](android/automation/src/main/java/dev/rock/automation/AndroidRockstarDeviceHomeTransport.java) · [記録](android/automation/src/main/AndroidManifest.xml) · [記録](android/automation/build.gradle) · [記録](android/shell/src/androidTest/java/dev/rock/shell/ShellBrokerIntegrationTest.java) · [記録](drizzle/0045_rockstar_device_sessions.sql) · [記録](drizzle/0046_remote_ai_text_executions.sql) · [記録](lib/remote-ai-text-store.ts) · [記録](app/api/rockstar/device-home/route.ts) · [記録](scripts/check-os-contracts.mjs) · [記録](app/api/llm/quotes/route.ts) · [記録](app/api/llm/quotes/[id]/route.ts) · [記録](lib/remote-ai-text-http.ts) · [記録](tests/remote-ai-pricing-gate.test.mjs) · [記録](tests/remote-ai-text-public-record.test.mjs) · [記録](docs/sky-cloud-continuity.md) · [記録](lib/remote-ai-text-input.ts) · [記録](lib/remote-ai-text-execution.ts) · [記録](services/sky-agent-runtime/wrangler.jsonc) · [記録](drizzle/0047_remote_ai_text_durable_inputs.sql) · [記録](tests/remote-ai-text-input.test.mjs) · [記録](drizzle/meta/0047_snapshot.json) · [記録](tests/remote-ai-text-store.test.mjs) · [記録](scripts/database-status.mjs) · [記録](tests/database-status.test.mjs) · [記録](docs/database-status.md) · [記録](docs/evidence/remote-ai-cloud-workflow-local-20261002.json) · [記録](docs/ai-native-os-architecture.md) · [記録](docs/rockstaros-1.0-strategy.md) · [記録](docs/rockstaros-product-system-map.md) · [記録](docs/product-north-star-20260915.md) · [記録](docs/workstreams/01-product-ux.md) · [記録](components/home-screen.module.css) · [記録](tests/web-route-style-contract.test.mjs) · [記録](tests/migration-union.test.mjs) · [記録](docs/evidence/sim-service-entry-local-20261002.json) · [記録](docs/evidence/sim-service-usage-rates-local-20261002.json) · [記録](docs/evidence/sim-service-claim-file-import-local-20261002.json) · [記録](android/shell/src/main/java/dev/rock/shell/UsageCurrencyFormatter.java) · [記録](docs/evidence/sim-service-android-usage-status-local-20261002.json) · [記録](android/shell/src/main/AndroidManifest.xml) · [記録](docs/evidence/sim-led-product-direction-audit-20261002.json) · [記録](android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerDeviceRefStore.java) · [記録](android/automation/src/main/java/dev/rock/automation/AndroidA2ABrokerDeviceTransport.java) · [記録](android/automation/src/main/java/dev/rock/automation/AndroidA2AUsageTrustConfig.java) · [記録](android/automation/src/androidTest/java/dev/rock/automation/AndroidA2AUsageTrustConfigTest.java) · [記録](android/automation/src/main/java/dev/rock/automation/RockApplication.java) · [記録](android/core/src/main/java/dev/rock/core/platform/A2AUsageReceiptVerifier.java) · [記録](docs/rockstaros-1.0-architecture.md) · [記録](android/core/src/test/java/dev/rock/core/platform/A2AUsageReceiptVerifierTest.java) · [記録](android/core/src/test/resources/a2a-price-quote-v1.json) · [記録](docs/evidence/android-a2a-price-quote-verifier-20261002.json) · [記録](docs/evidence/android-a2a-reservation-bridge-audit-20261002.json) · [記録](android/core/src/main/java/dev/rock/core/platform/A2ABrokerAuthorization.java) · [記録](android/core/src/test/java/dev/rock/core/platform/A2ABrokerAuthorizationTest.java) · [記録](android/core/src/test/resources/a2a-wallet-reservation-v2.json) · [記録](android/core/src/test/resources/a2a-broker-authorization-v2.json) · [記録](tests/a2a-wallet-reservation.test.mjs) · [記録](tests/a2a-broker-authorization.test.mjs) · [記録](docs/evidence/android-a2a-native-reservation-core-20261002.json) · [記録](docs/evidence/a2a-price-quote-acquisition-local-20261002.json) · [記録](app/api/sky/a2a-price-quotes/route.ts) · [記録](lib/a2a-price-quote-acquisition.ts) · [記録](tests/a2a-price-quote-acquisition.test.mjs) · [記録](lib/a2a-usage-receipt.ts) · [記録](tests/a2a-usage-receipt.test.mjs) · [記録](lib/a2a-price-quote-consent-store.ts) · [記録](drizzle/0049_a2a_price_quote_consent_events.sql) · [記録](tests/a2a-price-quote-consent-store.test.mjs) · [記録](android/automation/src/main/java/dev/rock/automation/AndroidA2AJson.java) · [記録](docs/evidence/android-a2a-quote-review-source-20261002.json) · [記録](docs/evidence/android-a2a-cloud-draft-bridge-20261002.json) · [記録](docs/evidence/android-a2a-cloud-approval-recovery-20261002.json) · [記録](docs/evidence/android-a2a-native-cancel-20261002.json) · [記録](docs/evidence/android-a2a-detail-recovery-20261002.json) · [記録](android/core/src/main/java/dev/rock/core/platform/A2ARecoveryBinding.java) · [記録](android/core/src/test/java/dev/rock/core/platform/A2ARecoveryBindingTest.java) · [記録](drizzle/0050_rockstar_entitlement_purchase_once.sql) · [記録](lib/rockstar-entitlement-issuer.ts) · [記録](tests/rockstar-entitlement-issuer.test.mjs) · [記録](docs/evidence/remote-ai-text-live-estimate-local-20261002.json) · [記録](lib/llm-providers.ts) · [記録](lib/remote-ai-text-pricing.ts) · [記録](drizzle/0051_remote_ai_text_live_estimates.sql) · [記録](drizzle/meta/0051_snapshot.json) · [記録](tests/llm-providers.test.mjs) · [記録](docs/evidence/sim-service-replacement-ack-local-20261002.json) · [記録](docs/evidence/sim-service-issuer-delivery-store-local-20261002.json) · [記録](docs/evidence/sim-service-issuer-delivery-api-local-20261002.json) · [記録](docs/evidence/sim-service-issuer-rate-limit-local-20261002.json) · [記録](drizzle/0054_rockstar_entitlement_issuer_rate_limits.sql) · [記録](tests/rockstar-entitlement-delivery-http.test.mjs) · [記録](lib/rockstar-entitlement-issuer-store.ts) · [記録](drizzle/0052_rockstar_entitlement_issuer_deliveries.sql) · [記録](drizzle/0053_rockstar_entitlement_delivery_key_ids.sql) · [記録](drizzle/meta/0052_snapshot.json) · [記録](drizzle/meta/0053_snapshot.json) · [記録](tests/rockstar-entitlement-issuer-store.test.mjs) · [記録](docs/evidence/sim-service-android-native-claim-local-20261002.json) · [記録](lib/rockstar-service-offers.ts) · [記録](tests/rockstar-service-offers.test.mjs) · [記録](docs/evidence/rockstar-service-offer-profiles-local-20261002.json) · [記録](components/sky-marketplace.tsx) · [記録](lib/workflow.ts) · [記録](lib/rockstar-package-handoff.ts) · [記録](lib/sky-package-runtime.ts) · [記録](lib/mcp-hub.ts) · [記録](components/mcp-bot-runner.tsx) · [記録](tests/sky-package-runtime.test.mjs) · [記録](tests/rockstar-package-handoff.test.mjs) · [記録](tests/workflow.test.mjs) · [記録](docs/evidence/zema-versioned-plan-local-20261002.json) · [記録](docs/evidence/rockstar-package-zema-handoff-local-20261002.json) · [記録](lib/rockstar-service-package-access.ts) · [記録](tests/rockstar-service-package-access.test.mjs) · [記録](lib/sky-commerce.ts) · [記録](tests/sky-commerce.test.mjs) · [記録](lib/sky-package-runtime-binding.ts) · [記録](tests/sky-package-runtime-binding.test.mjs) · [記録](docs/evidence/sky-package-runtime-binding-local-20261002.json) · [記録](drizzle/0055_sky_package_runtime_bindings.sql) · [記録](lib/sky-package-runtime-binding-store.ts) · [記録](lib/sky-tool-package-store.ts) · [記録](app/api/internal/sky-package-runtime-bindings/route.ts) · [記録](docs/evidence/sky-package-runtime-binding-quote-delegation-local-20261002.json) · [記録](docs/sim-led-product-architecture.md) · [記録](docs/sky-a2a-bridge.md) · [記録](docs/evidence/sim-led-product-correction-20261002.json) · [記録](docs/evidence/a2a-two-agent-handoff-local-20261002.json) · [記録](lib/a2a-result-handoff.ts) · [記録](tests/a2a-result-handoff.test.mjs) · [記録](docs/evidence/a2a-zema-result-handoff-local-20261002.json) · [記録](docs/evidence/a2a-two-agent-cloud-workflow-local-20261002.json) · [記録](lib/esim-device-install-store.ts) · [記録](docs/evidence/esim-install-proof-concurrency-local-20261002.json) · [記録](lib/a2a-parent-controller.ts) · [記録](tests/a2a-parent-controller.test.mjs) · [記録](docs/evidence/a2a-parent-controller-local-20261002.json) · [記録](tests/a2a-delegation-store.test.mjs) · [記録](docs/evidence/a2a-deadline-sweep-local-20261002.json) · [記録](drizzle/0057_a2a_parent_sequence.sql) · [記録](drizzle/meta/_journal.json) · [記録](lib/a2a-delegation-recovery.ts) · [記録](tests/a2a-delegation-recovery.test.mjs) · [記録](docs/evidence/a2a-persisted-handoff-link-local-20261002.json) · [記録](docs/sky-cloud-operations-runbook.md) · [記録](lib/rockstar-entitlement-delivery-http.ts) · [記録](app/api/internal/rockstar/entitlement-deliveries/route.ts) · [記録](docs/evidence/sim-led-product-correction-followup-20261002.json) · [記録](components/esim-purchase-setup.tsx) · [記録](tests/esim-purchase-recovery.test.mjs) · [記録](tests/rockstar-entitlement-claim-ui.test.mjs) · [記録](tests/rockstar-device-authorization-ui.test.mjs) · [記録](tests/rockstar-service-access-history.test.mjs) · [記録](tests/esim-cloud-recovery.test.mjs) |
 | SKY21 | Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる | 進行中 | [記録](docs/sky-launch-design.md) · [記録](data/sky-service-launch.json) · [記録](lib/sky-service-status.ts) · [記録](app/api/sky/service-status/route.ts) · [記録](app/sky/help/page.tsx) · [記録](tests/sky-service-status.test.mjs) · [記録](docs/sky-launch-operations.md) · [記録](components/sky-publisher-form.tsx) · [記録](docs/evidence/sky-pixel-service-acceptance.json) · [記録](lib/operations.ts) · [記録](lib/local-guide-history.ts) · [記録](components/local-guide-history-consent.tsx) · [記録](components/legal-intake-runner.tsx) · [記録](components/patent-assistant-runner.tsx) · [記録](tests/local-guide-history.test.mjs) · [記録](tests/operations.test.mjs) |
 | B06 | ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理 | 進行中 | [記録](docs/sky-tools-complete-design.md) · [記録](docs/workstreams/09-business-pilots.md) · [記録](app/sky/tools/[toolId]/page.tsx) · [記録](components/coconala-team-workspace.tsx) · [記録](app/api/coconala-team/route.ts) · [記録](lib/coconala-team.ts) · [記録](tests/coconala-team.test.mjs) · [記録](tests/coconala-sky-entry.test.mjs) · [記録](tests/coconala-workspace-recovery.test.mjs) · [記録](components/use-pending-save-navigation.ts) · [記録](tests/pending-save-navigation.test.mjs) · [記録](lib/owner-intent.ts) · [記録](tests/owner-intent-route.test.mjs) |
-| G04 | 重複するAI・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する | 進行中 | [記録](docs/git-consolidation.md) · [記録](docs/evidence/common-foundation-integration.json) · [記録](tests/sky-zema-contract.test.mjs) · [記録](tests/shared-stripe.test.mjs) · [記録](tests/mcp-client.test.mjs) · [記録](tests/owner-revision-json-store.test.mjs) · [記録](docs/evidence/pr-consolidation-20261005.json) · [記録](docs/research/rockstar-patent-research.html) · [記録](docs/research/rockstar-patent-sources.json) · [記録](scripts/spider-web-runtime.mjs) · [記録](tests/spider-web-runtime.test.mjs) · [記録](docs/amc-autonomy-fixture.md) · [記録](docs/evidence/amc-fixture-csv-main-integration.json) |
+| G04 | 重複するsi・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する | 進行中 | [記録](docs/git-consolidation.md) · [記録](docs/evidence/common-foundation-integration.json) · [記録](tests/sky-zema-contract.test.mjs) · [記録](tests/shared-stripe.test.mjs) · [記録](tests/mcp-client.test.mjs) · [記録](tests/owner-revision-json-store.test.mjs) · [記録](docs/evidence/pr-consolidation-20261005.json) · [記録](docs/research/rockstar-patent-research.html) · [記録](docs/research/rockstar-patent-sources.json) · [記録](scripts/spider-web-runtime.mjs) · [記録](tests/spider-web-runtime.test.mjs) · [記録](docs/amc-autonomy-fixture.md) · [記録](docs/evidence/amc-fixture-csv-main-integration.json) |
 | AI09 | 本人決定（2026-09-25 01:26 ET、チャット指示）: Core offline仕事loopとGame最小loopの両方を、OS10完了前にhost／fixture段階で先行してよい。emulator・実機・OS統合の合格には転用しない。AI02〜AI05の依存注記に反映（AI06はGame側作業の担当範囲のため本記録では変更しない） | 完了 | [記録](data/project-status.json) · [記録](docs/workstreams/07-android-device-local-ai.md) · [記録](project.md) |
 | DOC05 | PR・task・配備記録なしでmainへ直接入った5コミット（9c1332e・8617863・4b49bf9・862ba30・851bb04）を証拠へ記録し、PR #39のSite試験verify組込みと網羅検査を取り込む | 完了 | [記録](docs/evidence/ledger-sync-20260925.json) · [記録](package.json) · [記録](tests/verify-coverage.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
 | GM01 | AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外） | 進行中 | [記録](lib/game-sandbox.ts) · [記録](tests/game-sandbox.test.mjs) · [記録](tests/fixtures/game-sandbox-session.json) · [記録](docs/workstreams/08-game-market-fund.md) |
 | CAMPUS01 | 大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装 | 進行中 | [記録](app/campus/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/t/[tagId]/route.ts) · [記録](components/campus-workspace.tsx) · [記録](components/campus-workspace.module.css) · [記録](lib/campus.ts) · [記録](lib/campus-store.ts) · [記録](db/schema.ts) · [記録](drizzle/0058_campus_layer.sql) · [記録](tests/campus.test.mjs) · [記録](docs/campus-layer.md) |
-| CAMPUS02 | Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外） | 進行中 | [記録](docs/sky-nfc-columbia.md) · [記録](docs/prompts/sky-nfc-columbia-codex.md) · [記録](sites/avocado-mini/worker/index.js) · [記録](app/sky/campus/[campusId]/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/api/patent-research/route.ts) · [記録](lib/campus-tags.ts) · [記録](lib/sky-campus.ts) · [記録](tests/sky-nfc-columbia.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) |
+| CAMPUS02 | Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許si停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外） | 進行中 | [記録](docs/sky-nfc-columbia.md) · [記録](docs/prompts/sky-nfc-columbia-codex.md) · [記録](sites/avocado-mini/worker/index.js) · [記録](app/sky/campus/[campusId]/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/api/patent-research/route.ts) · [記録](lib/campus-tags.ts) · [記録](lib/sky-campus.ts) · [記録](tests/sky-nfc-columbia.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) |
 
 段階ゲート（作業全体の完了とは別判定）
 
@@ -3361,10 +3363,10 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | GX01-UI | GX01 | OS上の交換操作と台帳変更後D4/D5再検証 | 合格 | GX01-CONTRACT · V01-BOOT | [記録](docs/workstreams/06-native-qemu-release.md) · [記録](docs/gx01-native-ui-20260910.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/game-wallet-release-checkpoint-20260910.md) · [記録](docs/evidence/hub-final-9abf78a/final-c01-completed-stages.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
 | DX01-SDK | DX01 | 共通SDK・2作者/2game/2owner・fresh導入測定 | 合格 | GX01-CONTRACT | [記録](docs/workstreams/06-native-qemu-release.md) · [記録](docs/gx01-reference-sdk-sandbox-20260910.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/README.md) · [記録](docs/evidence/rls01/sdk-final-9abf78a/summary.json) · [記録](docs/evidence/gx01/final-9abf78a-20260910.json) |
 | PREVIEW-INSTALL | RLS01 | 旧9abf78aのfresh導入・起動・保存・復旧・削除を完走（現rc2へ転用しない） | 合格 | V01-ACCEPT | [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/evidence/rls01/final-9abf78a/summary.json) · [記録](docs/evidence/rls01/github-direct-install-9abf78a/summary.json) |
-| ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
+| ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Jennifer専用branchのCI/真正な検収証拠・contextの残条件を解消し、再構成設計と引継ぎを実装branchへ保全同期。Jennifer→Sky→Zema/AMC→担当AI→成果の一周を同一artifactで受入。ProはNVIDIA高性能AI PCのP0候補と実測を進め、後払い/旧Wallet gate、passkey、Provider、各OS/hardwareは独立gate。
+次の作業: 設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer branchのCI2件とcontextを修復し、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。
 <!-- project-status:end -->
 
 ## 次段階の設計

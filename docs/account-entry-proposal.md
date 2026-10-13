@@ -2,7 +2,7 @@
 
 状態: **確定**（2026-10-10、利用者が「全部確定でいい」と明示）。2026-10-07に main `0fbf688` を読んで提案として作成し、2026-10-10に main `96845e6` との差分を確認した。確定内容は [製品ベースの2026-10-10の節](product-baseline.md) と `data/product-baseline.json` の `serviceAccessModel`・`accountEntryDecision`・`miniCellularIntent` へ反映した。本番課金・回線の開通・端末へのOS導入は未受入のまま。
 
-位置付け: 2026-10-02の製品方針（SIM/eSIM購入を入口にしたservice access）に対する見直し案。対象taskは SIM01、MAT15の通信サブ項目、BIL02、SKY07／SKY21。主担当の候補は Wallet / Billing / Providers（課金）と Material Invention / avocadoMini（回線内蔵機器）。OWNERへの進め方の質問には4問とも「おまかせ」の回答だったため、下の「仮決定」は推奨案を置いたもので、OWNERの決定ではない。
+位置付け: 2026-10-02のSIM/eSIM主入口を置き換え、2026-10-10に確定したaccount/service/機器回線の方針。対象taskは SIM01、MAT15の通信サブ項目、BIL02、SKY07／SKY21。主担当の候補は Wallet / Billing / Providers（課金）と Material Invention / avocadoMini（回線内蔵機器）。2026-10-07の推奨案と価格試算は作成時の履歴。第6節の条件は2026-10-10にOWNERが確定した。外部料金試算・Provider条件・本番受入まで確定済みとは扱わない。
 
 ## 1. 提案の要点
 
@@ -29,7 +29,7 @@ OWNERがeSIMに期待していた役割は5つある。eSIMが実際に担える
 - 10/7時点のREADME（Revenue and participation）は「売上へのSky feeを課さない設計」と書いており、code（`lib/sky-marketplace-policy.ts` の1,000 bps）、`docs/sky-network-economy.md`、`npm run baseline:check` が確認する「売上手数料10%」と一致していなかった。10/9のREADME整理で移した `docs/readme-details.md` は10%を現行方針と書いており、この食い違いは解消済み。
 - Web版Skyの本人確認は、hosting側gatewayが渡すheaderに依存する（`lib/request-auth.ts`）。Sky利用者向けのpasskeyはない。WebAuthnの実装は `services/operator-dock/src/operator-webauthn.ts` と `systems/rock-star-os/os/wallet_auth/` にある。
 - eSIM発行adapterはeSIM Go（`lib/esimgo-provider.ts`）。`docs/provider-contract-readiness-20260930.md` は、同Travel APIが同一国での60日超の継続利用を制限し得ること、IoT device利用を認めないことを記録している。
-- Miniのcellular設計（`docs/avocado-mini-cellular.md`）は物理nano-SIM、4G LTE / 5G Sub-6候補、国・通信会社・module未定。比較例のRM520NはM.2 30×52mmで、筐体への収納は未検証と明記されている。
+- 10/7時点のMini cellular設計は物理nano-SIM、4G LTE / 5G Sub-6候補、国・通信会社・module未定だった。10/10確定方針と現行`docs/avocado-mini-cellular.md`は国内LTE・IoT data専用・5Gなし。通信会社/module/SKUと筐体収納は未確定。RM520Nは旧比較資料として保持する。
 - catalogは35件（ready 13、candidate 22）。
 - server pushの実装はない。メッセージアプリの入口はTelegram bridgeのみ。
 
@@ -85,13 +85,13 @@ fee 0%への道筋: 決済を作者accountで直接受ける方式（direct char
 1. Wi-Fiとtetheringを切っても、携帯回線だけでAgentを1つ実行できる。
 2. SIMを別のものに差し替えても、機器の登録とentitlementが残る。
 3. 通信断と再起動の後も、同じjobを二重実行しない。
-4. 通信明細（partner側）とAI使用明細（自社）を別々に照合できる。
+4. 通信明細（partner側）とsi使用明細（自社）を別々に照合できる。
 5. 1か月の通信量が300MiBの枠に収まる（実測）。
 6. 紛失を想定して、機器のaccess・cloudのjob・回線を別々に止められる。
 
 ## 5. 進め方（案）
 
-1. blockedの2件を通す（Stripe実設定、cloud AI Providerのcredentialと料金表）。
+1. blockedの2件を通す（Stripe実設定、cloud si Providerのcredentialと料金表）。
 2. Web版Skyで売る: 自社domainとpasskey、feedと接続button、Agentごとの共有link、期間パス、しきい値請求、月の上限、解約導線、特商法の表記と窓口。表に出すAgentは通しで動く3〜5件。
 3. 届け口を足す: PWAの通知、LINE、共有の050番号で受ける音声Agent 1本。
 4. 回線を試作で確かめる（先に総合通信局と通信partnerへ確認）。
@@ -103,7 +103,7 @@ fee 0%への道筋: 決済を作者accountで直接受ける方式（direct char
 
 ## 6. 確定事項（2026-10-10 OWNER確定）
 
-| 項目 | 仮決定 |
+| 項目 | 確定条件 |
 | --- | --- |
 | 主商品 | アカウントで使うAgent。SIMは機器向けの任意部品 |
 | 売り手 | Web版は自社。機器の回線は自社名義で、通信をサービス料に含める |
@@ -130,8 +130,8 @@ fee 0%への道筋: 決済を作者accountで直接受ける方式（direct char
 - 認証: 認証取得済みmoduleの組込み条件（antenna、筐体、複数無線）、AC adapter。
 - 通信partner: 第三者利用の手続き（MVNOに当たる場合のpartner登録）、SGP.32対応SIMの料金・plan・機器要件、SMSなしの可否。
 - Stripe: 上記Connect構成の料金、direct chargesへの移行、入金周期、しきい値請求の実装。
-- cloud AI Provider: 上乗せして再提供する形の規約適合、usage明細の表示。
-- 電話API: 050番号でAIが応答する形の条件。
+- cloud si Provider: 上乗せして再提供する形の規約適合、usage明細の表示。
+- 電話API: 050番号でsiが応答する形の条件。
 
 ## 8. 確定に伴う文書の更新（2026-10-10）
 

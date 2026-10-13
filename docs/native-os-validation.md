@@ -61,7 +61,7 @@ nativeのsource検査は4つのmain partitionとsupportに分割する。artifac
 | --- | --- | --- |
 | 公開ソース選別・hash照合 | PASS | 第9から511ファイル＋検証部品1ファイル。変更文書・参照差分を記録 |
 | 既存Web `npm run verify` | PASS | 進捗・repository map・型・対象lint・34 unit tests・build・合成D1 API 143 assertions |
-| native Python 6suite | PASS / 1003件 | tests 767、認証63、契約85、ATM40、購入者controller25、AI予算23 |
+| native Python 6suite | PASS / 1003件 | tests 767、認証63、契約85、ATM40、購入者controller25、si予算23 |
 | C UI IPC / 通常observer | PASS / 12＋16件 | 実Unix IPC、元Makefileと同じtest_evidence.py |
 | C compile / UI操作 | PASS | core/platform/uiのcompile、native UI操作・入力・描画・framebuffer変換のhost試験 |
 | 入力の前後照合 | PASS / 520ファイル | 現在のnative source・新規WIP資料・manifest・検証script・CI。増減も比較 |

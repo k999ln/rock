@@ -1,8 +1,8 @@
 ## Sky focused公開判定の修正（2026-10-02）
 
-ROCK/WEB04: 2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実AIの証明にしない。
+ROCK/WEB04: 2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実siの証明にしない。
 
-`focused` stageを追加し、既存basic条件に実Cloud AIの応答・所要時間・項目別usage/cost・上限/timeout、同じ公開sourceのdesktop/Pixel顧客導線、全34 Toolの個別分類、対応端末のApple Payを加えた。既存paid-marketplace/clients scopeを省略せず独立して保持する。`node scripts/check-sky-launch.mjs --require-stage focused` は不足が残る限りexit 1で、設定キーの存在やmockだけでは合格にしない。検査自体の整合は`npm run verify`へ追加した。必要stage/gateの削除、基本受入の省略、合成環境のpassed、根拠欠落、依存cycle、未完了でのlaunch claimを7件の試験で拒否する。
+`focused` stageを追加し、既存basic条件に実Cloud siの応答・所要時間・項目別usage/cost・上限/timeout、同じ公開sourceのdesktop/Pixel顧客導線、全34 Toolの個別分類、対応端末のApple Payを加えた。既存paid-marketplace/clients scopeを省略せず独立して保持する。`node scripts/check-sky-launch.mjs --require-stage focused` は不足が残る限りexit 1で、設定キーの存在やmockだけでは合格にしない。検査自体の整合は`npm run verify`へ追加した。必要stage/gateの削除、基本受入の省略、合成環境のpassed、根拠欠落、依存cycle、未完了でのlaunch claimを7件の試験で拒否する。
 
 # Sky サービス設計とローンチ受入 v1.0
 
@@ -17,6 +17,8 @@ Skyは、利用者がTool・LLMを探し、利用条件を確認し、接続し�
 最初の価値は、文章・出典・案件条件・CSV等の具体的な仕事を、利用者が数分で完了して成果を持ち帰れること。その上で、作者のToolを同じ条件で使える市場を成立させる。掲載件数や接続先の多さを、実行可能数・収益・需要の証拠にしない。
 
 採用する構成は、既存のWeb・API・D1・R2を用いたモジュール分割。カタログ、作者公開、実行契約、購入権限を同じサービス内で扱い、外部実行先だけadapterで分ける。初期段階でマイクロサービスへ全面分割すると本人性・権限・履歴の不整合と運用負担が増えるため、既存の境界と試験を維持する。Cloudの長時間実行は既存A2A Workerへ別接続し、短い文章処理をそれに依存させない。
+
+会話の窓口はJennifer、Zemaは裏の仕事system。Sky直接操作/host appの有限処理は会話を必須にせず同じ業務/承認契約へつなぐ。Jenniferの社内8projectはtenant案件と別の権限領域。[正本/参照/予算/取消/検収/保存を照合する横断契約](service-design/06-consistency-contracts.md)を全入口に適用する。
 
 ## 2. 入口と責任の構成
 
@@ -79,7 +81,7 @@ WebとOSに同じコードがあることと、同じDB・履歴・購入権限�
 
 設定があるだけで「本番稼働」と表示しない。公開の状態APIは秘密、キー名・値、本人ID、私有データを返さず、DB利用可否と必要接続の設定有無のみを返す。疎通・資格情報・商品権限は実行時に再確認する。状態APIに到達できなければ未知のまま扱い、成功状態へ補完しない。
 
-法務・特許は外部AIがなくても標準ガイド／決定論的整理が利用できるので、全停止にせず「標準ガイドのみ・AI接続待ち」と表示する。Jevは接続と明示同意が必要。CSVはDBとファイル保存の条件が必要。PC接続はheartbeatと同じdevice sessionを確認し、登録済みというだけで接続中にしない。
+法務・特許は外部siがなくても標準ガイド／決定論的整理が利用できるので、全停止にせず「標準ガイドのみ・si接続待ち」と表示する。Jevは接続と明示同意が必要。CSVはDBとファイル保存の条件が必要。PC接続はheartbeatと同じdevice sessionを確認し、登録済みというだけで接続中にしない。
 
 ## 6. 本人認証と他アプリの接続
 
@@ -136,7 +138,7 @@ DBバックアップは本人データの取得権限と保管先を決め、最
 
 重要な不足は有料Tool側のアクセス強制。購入済み表示だけではMCP/APIへの権限は付与されない。提供者が短命の購入権限または公式のentitlement照会を検証し、本人・商品・版・期限・返金/紛争失効を反映する必要がある。提供者との受入がない有料商品は販売開始しない。
 
-testとliveの設定・データ・通知を分離する。sandboxで支払い成功・取消・認証失敗・通知不達/再送/順序逆転・受取先停止・返金・購入者違いを試験し、その後に本人の実決済受入へ進む。契約・本人確認・課金はAIだけで完了できない。
+testとliveの設定・データ・通知を分離する。sandboxで支払い成功・取消・認証失敗・通知不達/再送/順序逆転・受取先停止・返金・購入者違いを試験し、その後に本人の実決済受入へ進む。契約・本人確認・課金はsiだけで完了できない。
 
 ## 10. 運用と安全
 

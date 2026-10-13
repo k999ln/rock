@@ -1,5 +1,5 @@
 <!-- service-design-rebuild:start -->
-サービス全体の設計を再構成しました。[Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarの統合設計](docs/service-design/README.md)から、利用体験、共通契約、各製品、実現順、RQ01〜RQ50へ進めます。現行は無料アカウント入口。これは設計書の整理で、本番課金・実機・飛行の完成ではありません。Jennifer（利用者表記Jenniffer）は利用者の全体窓口、Zemaは裏の仕事systemです。専用branchのsourceを確認し、main統合は別に扱います。
+サービス全体の設計を再構成しました。[Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarの統合設計](docs/service-design/README.md)は入口＋6章の7冊で、利用体験、共通契約、各製品、実現順、RQ01〜RQ50と12件の横断受入へ進めます。製品表示は小文字のsi、現行は無料アカウント入口。Jennifer（利用者表記Jenniffer）は利用者の全体窓口、Zemaは裏の仕事systemです。専用branchのsourceを確認し、main統合・本番課金・実機・飛行は個別に受け入れます。
 <!-- service-design-rebuild:end -->
 
 <div align="center">
@@ -77,7 +77,7 @@ When a Wallet or CSV save has an unknown result, keep the page open and use its 
 
 Workbench, Material, Mercari and Coconala also keep private draft recovery tied to the original account. In Coconala, closing and reopening the editor retains unsaved terms. If someone else changes the case while you edit, saving stops with the original input intact; review the newer case before starting a replacement edit. Use the explicit discard action only when you no longer need that account’s unsaved input. No external orders, payments or messages are sent by these recovery controls. Material also protects incomplete local JSON and title edits before they can be exported; save or explicitly discard the current draft before leaving. Empty or unchanged saved work does not block navigation.
 
-If a Zema Tool finishes but its progress record is unconfirmed, use the record’s recovery controls instead of running the Tool again. A failed state reload keeps the original command; it is cleared only after the same account’s saved history confirms it. An unsent Cloud AI prompt also blocks accidental navigation until it is saved or explicitly discarded. The existing citation, free-article and Coconala checker inputs and generated results, plus Mr. Delivery’s review JSON, selected files and result, remain in memory for the same account, job and step while the Workbench reconnects. These Tool drafts also block accidental same-tab navigation. Save or export any result you need, then use the per-Tool discard action shown with its job and step to leave; it clears only that Tool’s in-memory input and generated output, not saved Library results or job records. The original confirmed account can discard a retained draft even after its job is cancelled or another step is selected. Forced reload or tab closure can still lose unsaved memory. For Mr. Delivery, an expired sign-in hides private inputs until the Workbench confirms the original account again; reconnect in a separate tab, then reload the work list. A child connection check alone cannot restore the old account’s inputs. This does not cover the internal state of other specialized runners.
+If a Zema Tool finishes but its progress record is unconfirmed, use the record’s recovery controls instead of running the Tool again. A failed state reload keeps the original command; it is cleared only after the same account’s saved history confirms it. An unsent Cloud si prompt also blocks accidental navigation until it is saved or explicitly discarded. The existing citation, free-article and Coconala checker inputs and generated results, plus Mr. Delivery’s review JSON, selected files and result, remain in memory for the same account, job and step while the Workbench reconnects. These Tool drafts also block accidental same-tab navigation. Save or export any result you need, then use the per-Tool discard action shown with its job and step to leave; it clears only that Tool’s in-memory input and generated output, not saved Library results or job records. The original confirmed account can discard a retained draft even after its job is cancelled or another step is selected. Forced reload or tab closure can still lose unsaved memory. For Mr. Delivery, an expired sign-in hides private inputs until the Workbench confirms the original account again; reconnect in a separate tab, then reload the work list. A child connection check alone cannot restore the old account’s inputs. This does not cover the internal state of other specialized runners.
 
 Zema asks before discarding unsent text when changing conversations or following an internal link. Back/Forward uses the same check in browsers with the Navigation API; older browsers retain only the existing link and unload protection.
 
@@ -106,7 +106,7 @@ The names below are organized by how a person meets them: core surfaces, support
 | **Chat** | Start with a natural-language request and hand it to the right Sky/Zema work path. | Web source; no autonomous execution implied | [`app/chat/`](app/chat/) |
 | **Library** | Reopen saved results and private work artifacts. | Web source + owner-scoped storage rules | [`app/zema/library/`](app/zema/library/) |
 | **Campus** | Find people, projects, opportunities, events, communities, portfolios, resources, and NFC/QR entry points. | Web source + local checks | [`app/campus/`](app/campus/) |
-| **AMC** | Turns a Goal into a plan and records manual progress, review, and acceptance. | Catalog `ready` for assisted preparation; AI implementation and autonomous execution are not connected | [`app/amc/`](app/amc/) · [`toolkits/amc-agent/`](toolkits/amc-agent/) |
+| **AMC** | Turns a Goal into a plan and records manual progress, review, and acceptance. | Catalog `ready` for assisted preparation; si implementation and autonomous execution are not connected | [`app/amc/`](app/amc/) · [`toolkits/amc-agent/`](toolkits/amc-agent/) |
 | **Rock Studio** | Authors a Tool, declares its inputs and permissions, packages it with SDK/MCP, and prepares publication to Sky. | Authoring source; publication and execution still have separate gates | [`app/studio/`](app/studio/) · [`app/sky/publish/`](app/sky/publish/) |
 | **Sky Marketplace / Network / Purchases / Sell** | Finds published Tools, manages connections, and separates buying, selling, and refunds from execution. | Source + fixtures; provider and commercial acceptance are separate | [`app/sky/marketplace/`](app/sky/marketplace/) · [`app/sky/network/`](app/sky/network/) · [`app/sky/purchases/`](app/sky/purchases/) · [`app/sky/sell/`](app/sky/sell/) |
 | **CSV** | Handles one bounded file from request through transformation, inspection, and delivery. | Ready bounded Web path; cloud dispatch and live billing are not live | [`app/csv/`](app/csv/) · [`rockstar-csv-cleanup`](lib/catalog.ts) |
@@ -142,7 +142,7 @@ These live under `services/` and have their own runtime or deployment boundary. 
 | --- | --- | --- |
 | **Browser / PWA** | Sky, Zema, Wallet, Campus, and bounded local Tools. | A browser result is not an OS or production acceptance. |
 | **PC / MCP** | Explicitly connected local tools such as Fashion Brand Ops, Ledger, and delivery checks. | A connector or mock does not authorize third-party external actions. |
-| **Cloud / Worker** | Queueing, remote AI, A2A, and continuity after explicit estimate and approval. | Local Worker fixtures are not live Provider billing. |
+| **Cloud / Worker** | Queueing, remote si, A2A, and continuity after explicit estimate and approval. | Local Worker fixtures are not live Provider billing. |
 | **Linux / QEMU** | RockstarOS Developer Preview and native registry packages. | QEMU acceptance does not transfer to a Pixel or physical device. |
 | **Android / Pixel 10** | Test-signed app, Broker/Shell, limited offline planning, storage, and restart experiments. | It is not a flashed, production-signed RockstarOS image. |
 
@@ -155,7 +155,7 @@ These live under `services/` and have their own runtime or deployment boundary. 
 | Program | Intended role | Current stage |
 | --- | --- | --- |
 | **avocadoMini R5** | A 200 mm stand-alone spatial-input, display, game, and everyday-help device that can use the account and services. | **R5 is the current design baseline.** Design and calculation checks exist; no physical-device tests, manufacturing drawings, or manufacturing approval are complete. |
-| **avokadoPro** | A compact NVIDIA desktop for local AI, services, and PC games, optionally paired with Mini. | Candidate design and planning only; no purchase or assembly. |
+| **avokadoPro** | A compact NVIDIA desktop for local si, services, and PC games, optionally paired with Mini. | Candidate design and planning only; no purchase or assembly. |
 | **Material Invention** | Reproducible digital candidate comparison, then a larger path toward XR, sensors, simulation, patent, and lab work. | 2D candidate comparison and Sky/Zema connection exist. Simulation and laboratory connections are not implemented. |
 | **rocketstar** | A separate reusable small-satellite launch-vehicle and A-LINK design program. | Design archive only; no manufacturing, launch, or flight acceptance. |
 
@@ -252,7 +252,7 @@ The Android `article-tool` and native `hello` example are implementation example
 
 ## Toolkits and implementation pieces
 
-The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded experiments. They are not automatically separate products or separate members of the AI team.
+The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded experiments. They are not automatically separate products or separate members of the si team.
 
 | Toolkit | Role | Stage |
 | --- | --- | --- |
@@ -335,7 +335,7 @@ npm ci --prefix sites/avocado-mini
 npm run verify
 ```
 
-After changing progress records or generated status, run the repository-prescribed update/check commands. Rules for people and AI coding agents are in [AGENTS.md](AGENTS.md).
+After changing progress records or generated status, run the repository-prescribed update/check commands. Rules for people and si coding agents are in [AGENTS.md](AGENTS.md).
 
 `npm run metadata:update` synchronizes project, Mission Control, database status, and workspace records. `project:update` and `mission:update` remain aliases; `metadata:check` checks without writing. Encryption is currently disabled; if encrypted records are restored in a future change, these commands stop before reading or writing locked records.
 

@@ -6,9 +6,9 @@
 
 2026-10-13開始時に対象RockstarOSの公開v53、source `aade8171e4eeffad410242dfe79f59afd2dd6c52`、public audienceを再取得した。新しい複数Tool仕事・レシピ・成果編集は分離sourceで検証中であり、この観測時点の公開版への反映はまだ行っていない。最新候補と公開の区別は[data/project-status.json](../data/project-status.json)の`featureDevelopment`と[今回の証拠](evidence/work-composition-development.json)を参照する。本番本人の一周、静的asset header、一般Cloud Agent課金、正式OS配布は未受入。公開済みWeb Previewを未公開とも、一般ローンチ合格とも扱わない。
 
-2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実AIの証明にしない。
+2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実siの証明にしない。
 
-`focused` stageを追加し、既存basic条件に実Cloud AIの応答・所要時間・項目別usage/cost・上限/timeout、同じ公開sourceのdesktop/Pixel顧客導線、全34 Toolの個別分類、対応端末のApple Payを加えた。既存paid-marketplace/clients scopeを省略せず独立して保持する。`node scripts/check-sky-launch.mjs --require-stage focused` は不足が残る限りexit 1で、設定キーの存在やmockだけでは合格にしない。検査自体の整合は`npm run verify`へ追加した。必要stage/gateの削除、基本受入の省略、合成環境のpassed、根拠欠落、依存cycle、未完了でのlaunch claimを7件の試験で拒否する。
+`focused` stageを追加し、既存basic条件に実Cloud siの応答・所要時間・項目別usage/cost・上限/timeout、同じ公開sourceのdesktop/Pixel顧客導線、全34 Toolの個別分類、対応端末のApple Payを加えた。既存paid-marketplace/clients scopeを省略せず独立して保持する。`node scripts/check-sky-launch.mjs --require-stage focused` は不足が残る限りexit 1で、設定キーの存在やmockだけでは合格にしない。検査自体の整合は`npm run verify`へ追加した。必要stage/gateの削除、基本受入の省略、合成環境のpassed、根拠欠落、依存cycle、未完了でのlaunch claimを7件の試験で拒否する。
 
 旧version4/v8の観測は下記の履歴として保持する。最新公開と混同しない。
 
@@ -20,7 +20,7 @@ Catalogの現行件数・掲載分類は `lib/catalog.ts` と `data/design-docum
 | --- | --- | --- |
 | 検索・カテゴリ・LLM・対応環境 | 独立Market、候補と審査済み外部の区別 | スマホ/PCで選択→詳細→実行まで受入 |
 | 記事無料版・出典整理 | ブラウザ処理、Markdown取得、任意の端末保存、実行履歴 | 公開本人サインイン、保存/再読込、本文漏洩なし |
-| 法務・特許 | 標準ガイド/整理、同意付き外部AI入口 | 標準機能の受入。外部AIは契約・予算・実接続が別途必要 |
+| 法務・特許 | 標準ガイド/整理、同意付き外部si入口 | 標準機能の受入。外部siは契約・予算・実接続が別途必要 |
 | ココナラ | 本人別案件台帳、条件・担当・制作・支払いの記録 | A/B分離と再読込。応募/外部振込の成功にしない |
 | CSV | 受付、見積り、入金照合番号、決定的変換、独立検査、私有成果取得/削除 | 本番の保存→取得→削除、期限/本人分離。カード掲載の税込3,000円は試験条件で、自動Stripe徴収ではない |
 | Market Scanner | PAPER市場の分析・模擬注文 | 実資金の売買/送金・実収益として案内しない |
@@ -38,8 +38,8 @@ Catalogの現行件数・掲載分類は `lib/catalog.ts` と `data/design-docum
 
 - 実行記録: データ保存サービスに接続可能。
 - CSV: 保存設定あり。R2の実際の書込/取得/削除はまだ本人の受入が必要。
-- 法務・特許の外部AI: 接続待ち。標準ガイドを利用可能。
-- Jev: 外部AIの接続待ち。
+- 法務・特許の外部si: 接続待ち。標準ガイドを利用可能。
+- Jev: 外部siの接続待ち。
 - 購入・販売: 決済サービスの接続待ち。
 
 公開version 4のSource SHAは `563f2844be18e476d0ec80893d139561e90643b7`。GitHub mainの照合時点は `b3e2676abd8ae2a0b3f78f48483e067b429d9bc8`。両者を同じ更新として扱わない。後続の配備ID/Source SHAは配備結果の引継ぎ記録へ保存する。
@@ -51,11 +51,11 @@ Catalogの現行件数・掲載分類は `lib/catalog.ts` と `data/design-docum
 | 対象 | 必要設定 | 条件 |
 | --- | --- | --- |
 | 作者審査 | `SKY_REVIEWER_SECRET` / `SKY_REVIEWER_ID` | secretは40文字以上。IDは3〜100文字、既存の小文字英数字/区切り契約。審査者だけが保持し、一般作者へ配布しない |
-| 法務・特許AI | `SKY_REMOTE_LLM_ENABLED=true` / `OPENAI_API_KEY` | モデルAPI契約・利用予算・送信同意・上限を確認。ChatGPTサブスクリプションと別 |
+| 法務・特許si | `SKY_REMOTE_LLM_ENABLED=true` / `OPENAI_API_KEY` | モデルAPI契約・利用予算・送信同意・上限を確認。ChatGPTサブスクリプションと別 |
 | Jev評価 | 同remote有効化 / `AI_GATEWAY_API_KEY` | 実際のJevモデル可用性、送信先条件、費用をproviderで受入 |
 | 決済 | `SKY_PAYMENTS_MODE` / `SKY_STRIPE_SECRET_KEY` / `SKY_STRIPE_WEBHOOK_SECRET` / `SKY_PAYMENT_ORIGIN` | 最初はtest、環境と鍵の整合、公開Skyの正確なOrigin。liveへ切り替える前に受入 |
 
-AIやStripeの本番契約情報が未回答のため、架空の値や別サービスの秘密を流用しない。購入のreceiptとproviderへの実行権限は別である。
+siやStripeの本番契約情報が未回答のため、架空の値や別サービスの秘密を流用しない。購入のreceiptとproviderへの実行権限は別である。
 
 ## 本人による基本利用の受入
 
@@ -89,7 +89,7 @@ sandboxで成功、取消、失敗、通知再送/順序逆転、受取先停止
 ## 障害・更新・復元
 
 - 一般公開前に、私有問い合わせ窓口と責任者、応答時刻、サービス停止/再開の手段を確定する。公開Issueには原文・秘密を送らせない。
-- provider障害は外部AI/Toolだけ停止し、ブラウザ内の有限処理まで不要に停止させない。結果不明の外部操作は照合してから再開する。
+- provider障害は外部si/Toolだけ停止し、ブラウザ内の有限処理まで不要に停止させない。結果不明の外部操作は照合してから再開する。
 - 購入/返金が不明なら再課金を止め、Stripe再照合と注文receiptを確認する。DB上の状態を直接paidに書き換えない。
 - D1と私有R2を対でバックアップ・復元し、owner、hash、期限、削除済み状態の整合をstagingで確認する。停止した同一状態の対復元と、snapshot後の削除を再適用する受入は別にする。2026-10-13の新しい隔離Workerでは対復元のhash・owner・期限拒否を確認したが、snapshot後の削除は古いsnapshotの再生で復活した。journal replay／本番復元は未受入であり、古い対snapshotだけを使う本番復元を合格扱いにしない。
 - CSVの7日は取得期限。再試行可能な削除処理と定期handlerを実装したが、本番Triggerは未設定・未受入。canonicalのprocessing保護とSite inline purgeを区別する。現Siteでは期限を過ぎたfuture processing leaseの削除が状態fixtureで再現し、自然な実writer破壊は未再現。claim／purgeの競合と保持境界を別途検証する。停止した処理のlease復旧と物理削除の保証時刻は別途受入する。
@@ -115,7 +115,7 @@ Stripe最新readback: 本番ダッシュボードへ到達したが支払いが�
 
 全34件の画面をSky v28のbuildで個別確認し、20候補を合成ownerの実Worker/D1で実行・完了記録・結果バイト数まで照合した。11件は端末内の定型下書き、9件は接続計画。サービスとしては過去の限定本番受入3／local14／接続必須16／当環境で利用不可1に分類する。各IDと環境・保存範囲は`docs/evidence/sky-individual-tool-verification.json`へ記録し、これだけで同じ公開版の全顧客導線や外部サービス成功を合格にしない。
 
-顧客インタビューの固定テーマ・仮説と予定調整の固定日時・時間・形式が入力に反することを再現した。候補処理はAI分析済みと表示せず、入力を添えた記入用テンプレートであることを画面と出力へ示す。2 Toolは未検証のテーマ・仮説・日時を自動確定せず、確認欄を未記入にする。本文・結果はserverへ送らず、共通jobsへ状態・処理時間・サイズを記録する。reloadで候補の本文は復元されないため、Markdownを手元へ保存する。クラウドAIの実接続とカレンダーOAuthは残る。合格条件は異なる合成入力でも固定の事実を捏造せず、入力保持、外部未実行表示、metadataと出力サイズ一致を再buildしたUIで確認すること。
+顧客インタビューの固定テーマ・仮説と予定調整の固定日時・時間・形式が入力に反することを再現した。候補処理はsi分析済みと表示せず、入力を添えた記入用テンプレートであることを画面と出力へ示す。2 Toolは未検証のテーマ・仮説・日時を自動確定せず、確認欄を未記入にする。本文・結果はserverへ送らず、共通jobsへ状態・処理時間・サイズを記録する。reloadで候補の本文は復元されないため、Markdownを手元へ保存する。クラウドsiの実接続とカレンダーOAuthは残る。合格条件は異なる合成入力でも固定の事実を捏造せず、入力保持、外部未実行表示、metadataと出力サイズ一致を再buildしたUIで確認すること。
 
 候補の認証失効試験では、旧共通signinが同じタブを遷移させ、直接Tool画面の入力がサンプルへ戻る不具合を再現した。共通ExecutionSigninは元画面を保持し、別タブsigninと明示GET接続確認へ変更する。成功はowner jobsのJSON配列を読み戻して判定し、401/redirect・通信失敗・不正JSONでは既知の失効を解除しない。接続確認はjob作成/実行を再送せず、本人の次の実行まで入力をメモリへ保持する。全Toolの本文を10分保存すると誤って約束していた共通説明も訂正した。候補と記事Toolで未認証→別タブsignin→接続確認→一度だけの実行、確認失敗時の停止を再buildしたUIで受け入れる。
 
@@ -149,7 +149,7 @@ WEB06/ROCK: 正本main b3e2676から今回のCSV受付衝突/競合cleanupと期
 
 ## 共通接続復旧の公開v33
 
-公開v33は接続未確認時の実行停止と同じ画面の入力保持・読取再確認・明示実行を反映した。接続設定の取得失敗中は保存を止め、認証復旧後は編集入力を保持して一覧を読み直す。合成ローカルの出典整理・記事・設定保存/再取得は確認済み。native配備・保護APIと既存50円CSV記録の読戻しは[配備証拠](evidence/sky-access-publication-verification.json)を参照。実AI資格情報/信頼済み料金/利用予算、本人desktop/Pixel、Apple Pay、外部実連携は残り、ローンチ完了ではない。
+公開v33は接続未確認時の実行停止と同じ画面の入力保持・読取再確認・明示実行を反映した。接続設定の取得失敗中は保存を止め、認証復旧後は編集入力を保持して一覧を読み直す。合成ローカルの出典整理・記事・設定保存/再取得は確認済み。native配備・保護APIと既存50円CSV記録の読戻しは[配備証拠](evidence/sky-access-publication-verification.json)を参照。実si資格情報/信頼済み料金/利用予算、本人desktop/Pixel、Apple Pay、外部実連携は残り、ローンチ完了ではない。
 
 
 ## CSV期限切れ削除の候補

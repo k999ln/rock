@@ -171,7 +171,7 @@ await test('titles, dependency chains, parallel count and PC memory do not alter
     estimateGoalEffort({ tasks, maxParallel: 1, ramGiB: 8 }).remainingRange,
   );
   assert.equal(result.unit, '人時');
-  assert.match(result.warning, /AI稼働時間・経過時間・納期・価格ではなく/);
+  assert.match(result.warning, /si稼働時間・経過時間・納期・価格ではなく/);
 });
 
 await test('input rejects unsafe shapes, duplicate counting and unknown references', () => {

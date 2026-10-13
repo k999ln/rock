@@ -27,7 +27,7 @@ avocadoMiniは、物質のdigital twinを1〜2人が手で選び、接続し、�
 - 設計開始時HEAD: `82a53f5`
 - 2026-09-18に`origin`をfetch済み。作業開始時は追跡branchより1 commit先行、worktreeはcleanだった。
 - 現状はMaterial Invention sandbox Coreと9 test、XR／interaction契約、Full-scale conceptまで存在する。
-- 四方向sensor実機、XR runtime、裸眼立体表示、simulation／Patent AI bridgeは未実装である。
+- 四方向sensor実機、XR runtime、裸眼立体表示、simulation／Patent si bridgeは未実装である。
 
 ### 2.2 Concept画像
 
@@ -411,7 +411,7 @@ Gate: HVT-01〜11をFull-scaleで再実行し、誤commitが0である。
 
 - RockstarOS Core、project vault、renderer、haptic、provider gatewayを接続
 - simulationは合成receiptから開始
-- Patent AIへsource-separated packetを作る
+- Patent siへsource-separated packetを作る
 
 Gate: HVT-01〜14、software contract test、復旧試験が同じhardware／software versionで合格する。
 

@@ -1,12 +1,16 @@
 ## 2026-10-13 サービス全体の設計書を再構成する
 
-利用者は「やりたいことが変わったわけではなく、設計書を最初から組み直して素敵なサービスにしたい」と明示し、Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを指定した。[サービス統合設計](service-design/README.md)へ利用体験、共通契約、製品profile、実現順、要求引継ぎを整理する。RQ01〜RQ49とmainの既存RQ50、最新account入口、料金・権限・保存・受入を保持する。UX配置や実現順は再構成案で、新料金・実行許可・公開/製造/飛行合格を確定したことにはしない。利用者の追加指示でGitを再確認し、JennifferのGit表記Jenniferを専用branch `d0151e892794066e1a59b5e4d1dc8863e314947f` で確認した。Jenniferは利用者が話す全体窓口、Zemaは裏側の仕事system。ProはNVIDIAのchip等を使う高性能AI PCという補足を継承する。[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)はmain未統合で、CI/検収/context/Providerの残条件を保持する。Jevとは別system。原本PDF/R5/R1.0・固定vendor・既存実装と証拠のbyte列は変更しない。
+## 2026-10-13 明示更新: 統合設計とsi表記
+
+利用者の「それぞれ辻褄を合わせる」と「全部表記siに変えてai→si」により、[サービス統合設計](service-design/README.md)を入口＋6章の7冊に再構成し、[横断契約と12受入](service-design/06-consistency-contracts.md)へ本人・仕事・費用・停止・成果・復旧の照合条件を固定する。第一者の製品表示は小文字 **si**。[表記契約](../data/product-terminology.json)に従い技術識別子・外部固有名・保存原本は保持する。既存RQ01〜RQ50、料金・権限の正本と未受入gateを変更せず、表記や文書修正をruntime契約の実装・商用・実機合格へ昇格しない。
+
+利用者は「やりたいことが変わったわけではなく、設計書を最初から組み直して素敵なサービスにしたい」と明示し、Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを指定した。[サービス統合設計](service-design/README.md)へ利用体験、共通契約、製品profile、実現順、要求引継ぎを整理する。RQ01〜RQ49とmainの既存RQ50、最新account入口、料金・権限・保存・受入を保持する。UX配置や実現順は再構成案で、新料金・実行許可・公開/製造/飛行合格を確定したことにはしない。利用者の追加指示でGitを再確認し、JennifferのGit表記Jenniferを専用branch `d0151e892794066e1a59b5e4d1dc8863e314947f` で確認した。Jenniferは利用者が話す全体窓口、Zemaは裏側の仕事system。ProはNVIDIAのchip等を使う高性能si PCという補足を継承する。[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)はmain未統合で、CI/検収/context/Providerの残条件を保持する。Jevとは別system。原本PDF/R5/R1.0・固定vendor・既存実装と証拠のbyte列は変更しない。
 
 > **この文書の読み方（2026-10-10追記）** — 利用者が確定した要望と方針判断の **正本** です。新しい判断を上へ足してきたため、並びは日付順ではありません。上から順に、①2026-09-24以降の方針判断（新しい順。RQ48の本文もここにあります）、②「2026-09-24 ハードウェア設計基準 — avocadoMini R5」と「過去の判断履歴」（09-20〜09-22）、③「RockstarOS — 確定した製品ベース」（09-09〜09-21の追記が新しい順に並び、そのあとに RQ01〜RQ50 の本文）、④「現時点の未決事項」と「変更記録」、⑤末尾の日付付き追加指示、です。**日付順・テーマ別に読みたいときは [仕様変遷](spec-history.md) を使ってください。** 食い違ったときは、この文書と [`data/product-baseline.json`](../data/product-baseline.json) が優先です。
 
 ## 2026-10-12 Columbiaの学生に配るNFCカードからSkyを開く
 
-利用者は、NFCタグにSkyを入れる構想を指示し、質問への回答で次を決めた。タッチするとSkyのTool／Agentが開く。使う人はColumbia大学の学生。avokadoが書き込んで配る。1枚のカードは「Columbia用Sky」の入口で、学生向けに選んだTool（出典整理、AMC、特許アシスタント）の一覧を開く。タッチで開く入口とこの3つのToolの画面は英語にする。特許アシスタントは英語版に米国（USPTO）の検索先と仮出願の案内を加え、カードから来た学生にはAI調査を最初は出さない（下書きは無料）。カードと入口ページには「Columbia」と書く（大学のマークの使用規則は承知のうえ。紋章・ロゴは使わない）。実装はCodexが行う。
+利用者は、NFCタグにSkyを入れる構想を指示し、質問への回答で次を決めた。タッチするとSkyのTool／Agentが開く。使う人はColumbia大学の学生。avokadoが書き込んで配る。1枚のカードは「Columbia用Sky」の入口で、学生向けに選んだTool（出典整理、AMC、特許アシスタント）の一覧を開く。タッチで開く入口とこの3つのToolの画面は英語にする。特許アシスタントは英語版に米国（USPTO）の検索先と仮出願の案内を加え、カードから来た学生にはsi調査を最初は出さない（下書きは無料）。カードと入口ページには「Columbia」と書く（大学のマークの使用規則は承知のうえ。紋章・ロゴは使わない）。実装はCodexが行う。
 
 カードにはURLだけを書き、個人情報・利用権・鍵は入れない。URLは `avocadomini.si/t/<tagId>` に固定し、行き先はサーバー側で変える。既存のCampusタグ入口と匿名集計を使う。詳細は[Sky NFCカード設計](sky-nfc-columbia.md)を正本とする。印刷・書き込み・配布、枚数と費用、配る場所の許可は未定。
 
@@ -22,14 +26,14 @@
 
 利用者は2026-10-07の提案（[アカウント入口と回線の役割整理](account-entry-proposal.md)）について「全部確定でいい」と明示した。2026-10-02の「物理SIM/eSIM購入を入口にする」方針はこの判断で置き換える。RQの番号と本文は変えず、主商品の定義をこの節で更新する。機械可読の正本は `data/product-baseline.json` の `serviceAccessModel`（`primaryEntry=rockstar_account_service_access`、`simRequiredForService=false`）と `accountEntryDecision`、`miniCellularIntent`。
 
-- **主商品**: avokadoのアカウントひとつで、スマホ・PC・ブラウザからSky・Zema・AI Agentを使うサービス。アカウントは無料。SIMは不要で、avocadoMiniのような機器だけが通信用の回線を任意で使う。消費者向けeSIMの発行・販売は保留（codeは消さず既定で無効）。
+- **主商品**: avokadoのアカウントひとつで、スマホ・PC・ブラウザからSky・Zema・si Agentを使うサービス。アカウントは無料。SIMは不要で、avocadoMiniのような機器だけが通信用の回線を任意で使う。消費者向けeSIMの発行・販売は保留（codeは消さず既定で無効）。
 - **売り手と最初の客**: 売り手はavokado（Web版は自社、機器の回線は自社名義で通信をサービス料に含める）。最初の客は個人で、文章を納品する個人事業主から始める。
 - **料金**: 期間パス（前払い。有効期間6か月未満、自動更新は既定オンで購入画面に明示し更新前に通知、途中返金は既定なし）、従量のしきい値後払い（累計がしきい値に達した時か月末に登録カードへ請求。初期値はしきい値1,000円、上乗せ30%）、利用者が決める月の上限、回線つき機器の月額基本料。残高は持たない。やめ方は「自動更新を切る」「上限を0にする」「機器の回線を解約する」の3つ。
 - **Sky fee**: 当面10%（`skyMarketplacePayments.commissionBps=1000`）。0%は「Skyの取り分0、決済の実費は実額」と定義し、従量の粗利が固定費を3か月続けて上回ったら切り替える。
 - **作者への払出し**: 月末締め・翌月末払いの月1回。通信の一次supportはavokadoが受ける。
 - **Miniの回線**: 国内、LTEのみ（5Gなし）、IoT向けdata専用SIM（試作はカード、量産はchip）、SGP.32対応のSIMを選び、遠隔の切替は自作しない。回線つきは別modelかoption。
 - **Skyの置き場所**: `https://avocadomini.si/sky`。本人確認は自前のpasskey。通知はWeb Pushを先に作る。
-- **未受入**: 本番課金、回線の開通、端末へのOS導入。電気通信事業法、携帯電話不正利用防止法、資金決済法、特定商取引法、無線の認証、通信partner、Stripe、cloud AI Providerの規約は外部確認が残る（`accountEntryDecision.externalConfirmationsPending`）。
+- **未受入**: 本番課金、回線の開通、端末へのOS導入。電気通信事業法、携帯電話不正利用防止法、資金決済法、特定商取引法、無線の認証、通信partner、Stripe、cloud si Providerの規約は外部確認が残る（`accountEntryDecision.externalConfirmationsPending`）。
 
 ## 2026-10-09 Skyタイムラインのコード公開と交換可能な保護
 
@@ -70,9 +74,9 @@
 
 この節はこれ以前の「eSIM専用」「eSIM商品をOS内で販売」「ハードウェア先行」「交換可能な端末内LLM/OS自体を利用者向け主商品とする」という競合方針より優先する。製品の主な提供価値は、物理SIMまたはeSIMの購入を通じてRockstarOSとSky、Zema、統合エージェントへ短い手順でアクセスできること。SIM/eSIM購入にはサービス利用権を含める。OSバイナリをSIM/eUICCへ格納する要件ではなく、通信サービスの購入・開通とOSの導入・利用権付与は別々の状態として扱う。購入先はRockstar直販に限らず、通信事業者、端末販売店、オンライン販売等の複数チャネルを想定する。販売・開通連携は契約前である。
 
-選ばれる理由は (1) クラウドLLM・エージェントへすばやく簡単にアクセス、(2) 料金と使用量が透明、(3) RockstarOSのSky/Zemaを最小設定で使い始められること。クラウドAI実行は利用量ベースで請求する設計とする。利用者は実行前に単価と見積範囲、実行中の予約額／照合済み額、完了後の項目別usage receiptを確認できる。支出上限を設定し、明示承認のない予算超過を拒否する。通信プラン料金とAI/agent/compute費用は別項目として表示する。料金見積のためProviderへ依頼文を共有する同意は、有料実行のbudget承認と別に取得し、policy versionと依頼digestだけを監査保存する。依頼本文を同意監査行へ保存せず、同じ要求IDを再利用して二重送信しない。
+選ばれる理由は (1) クラウドLLM・エージェントへすばやく簡単にアクセス、(2) 料金と使用量が透明、(3) RockstarOSのSky/Zemaを最小設定で使い始められること。クラウドsi実行は利用量ベースで請求する設計とする。利用者は実行前に単価と見積範囲、実行中の予約額／照合済み額、完了後の項目別usage receiptを確認できる。支出上限を設定し、明示承認のない予算超過を拒否する。通信プラン料金とsi/agent/compute費用は別項目として表示する。料金見積のためProviderへ依頼文を共有する同意は、有料実行のbudget承認と別に取得し、policy versionと依頼digestだけを監査保存する。依頼本文を同意監査行へ保存せず、同じ要求IDを再利用して二重送信しない。
 
-利用開始の標準フローと端末/Cloud境界の詳細は[SIM/eSIM-led service architecture](sim-led-product-architecture.md)を正本とする。短い導線は、物理SIM/eSIM offerと対応状況を確認し、必要なら通信会社の回線開通を明示操作で完了し、Rockstar accountへ一度だけsign-inして購入claimをredeemし、適合端末に署名済みRockstarOS installが受入済みなら利用者承認のinstallへ、それ以外は既存OS app/browserへ進む。利用者はHomeからSky、Zema、Agentを直接開き、各サービスへ再登録しない。料金・見積・上限・明示承認後にcloud taskを送信し、圏外中も同じjobをcloudで継続、再接続時に進捗・結果・項目別usageを受け取る。SIM購入、carrier activation、service entitlement、OS/client install、cloud execution、AI billingは別状態で確認し、claimだけでcarrier開通、OS書込み、Agent実行を代行しない。
+利用開始の標準フローと端末/Cloud境界の詳細は[SIM/eSIM-led service architecture](sim-led-product-architecture.md)を正本とする。短い導線は、物理SIM/eSIM offerと対応状況を確認し、必要なら通信会社の回線開通を明示操作で完了し、Rockstar accountへ一度だけsign-inして購入claimをredeemし、適合端末に署名済みRockstarOS installが受入済みなら利用者承認のinstallへ、それ以外は既存OS app/browserへ進む。利用者はHomeからSky、Zema、Agentを直接開き、各サービスへ再登録しない。料金・見積・上限・明示承認後にcloud taskを送信し、圏外中も同じjobをcloudで継続、再接続時に進捗・結果・項目別usageを受け取る。SIM購入、carrier activation、service entitlement、OS/client install、cloud execution、si billingは別状態で確認し、claimだけでcarrier開通、OS書込み、Agent実行を代行しない。
 
 販売claimは`issuerId + purchaseReferenceSha256`単位で一度だけアカウントへ結合する。販売者は注文全体ではなく各購入明細を一意に表すreferenceをhash化する。同一purchase hashに対する複数のclaim IDや同時redeemはD1のunique constraintで一件に制限し、完全に同じclaim packageを同じアカウントから再送する操作のみ冪等とする。channel-neutral issuer helperは署名claim/code、取消event、置換packageを生成し、未redeem取消tombstoneは旧claimを拒否する。販売元ごとのregistry/注文連携、取消webhook、key custodyとreplacement deliveryのproduction接続は未実装・未受入。
 
@@ -104,7 +108,7 @@
 
 ## 2026-09-30 端末圏外中のクラウド継続実行
 
-利用者は、クラウドAIが先に頼まれた仕事を続ける方針を採用し、準備を明示した。[継続実行契約](sky-cloud-continuity.md)を追加する。受付確認済み・事前承認済みの仕事を予算と期限の範囲で続け、追加承認時は待機する。圏外中の停止要求を停止済みと表示せず、再接続で同じjobを照合する。現在は要件と受入計画で、実クラウド実行・本番課金の受入ではない。
+利用者は、クラウドsiが先に頼まれた仕事を続ける方針を採用し、準備を明示した。[継続実行契約](sky-cloud-continuity.md)を追加する。受付確認済み・事前承認済みの仕事を予算と期限の範囲で続け、追加承認時は待機する。圏外中の停止要求を停止済みと表示せず、再接続で同じjobを照合する。現在は要件と受入計画で、実クラウド実行・本番課金の受入ではない。
 
 ## 過去のeSIM限定方針（2026-10-02 superseded）
 
@@ -112,7 +116,7 @@
 
 ## 2026-09-27 Sky Marketの現行手数料
 
-Sky Marketは自動化ToolとLLMを掲載対象にし、登録・接続・公開・基本利用料は0円とする。検証済みTool売上のSky Market手数料は10%。外部決済、API、AIモデル、cloud等の第三者実費は別表示する。Provider、本人確認、返金、照合の受入前は請求・回収・払出しを有効化しない。旧8.88 USD案と0%の記載は過去の判断履歴・回帰資料であり、この現行方針を上書きしない。
+Sky Marketは自動化ToolとLLMを掲載対象にし、登録・接続・公開・基本利用料は0円とする。検証済みTool売上のSky Market手数料は10%。外部決済、API、siモデル、cloud等の第三者実費は別表示する。Provider、本人確認、返金、照合の受入前は請求・回収・払出しを有効化しない。旧8.88 USD案と0%の記載は過去の判断履歴・回帰資料であり、この現行方針を上書きしない。
 
 同日追加「決済もできるようにして」: WebのSky MarketにStripe Connectの受取先登録、円の買い切り価格設定、Hosted Checkout、購入履歴、署名通知とProvider再照合、10%配分、返金を実装した。価格・作者・送金先はserverの注文snapshotを正本にし、審査有効な販売対象だけ購入できる。LLMも同じPackage条件で扱う。API・DBとProvider代替fixtureの合格は実Stripe sandboxや実資金受入ではない。現在は決済資格情報未設定で課金不可、公開配備・銀行着金も未確認。外部MCP側の有料access認可は提供者との別統合を要する。[決済実装と設定手順](sky-billing.md)。
 
@@ -124,11 +128,11 @@ RockstarOS Web/PWAのbase appに `Campus` を追加する。CampusはNYU / FIT /
 
 ## RQ48 RockstarOS CoreでSky・便利機能・ゲームを接続して発展させる
 
-共通Core、Sky appとOSの能力差、Zema仕事契約、モデル・記憶更新、通信断時の外部作用照合、便利機能とGame／IPの実装順は[AIネイティブOS詳細設計](ai-native-os-architecture.md)を正本とする。[Sol設計監査](ai-native-os-design-audit.md)で設計上の解消と実装・受入待ちを分ける。
+共通Core、Sky appとOSの能力差、Zema仕事契約、モデル・記憶更新、通信断時の外部作用照合、便利機能とGame／IPの実装順は[siネイティブOS詳細設計](ai-native-os-architecture.md)を正本とする。[Sol設計監査](ai-native-os-design-audit.md)で設計上の解消と実装・受入待ちを分ける。
 
 RockstarOS Coreは、高性能で交換可能なローカルLLMを必須条件にせず、cloud/local runtime、権限、記憶、仕事、停止・再開、Tool、receipt、更新、rollback、復旧を共通化する技術基盤である。利用者向け主商品は上記のSIM/eSIM主導service accessであり、cloud LLM/Agentの簡単な利用、透明な従量料金、Sky/Zemaの最小設定利用を提供する。端末内LLMは対応端末向けの追加能力で、専用端末所有は利用条件ではない。
 
-SkyはTool・ファンド・接続先を選ぶ第一者system、ZemaはAIチームへの依頼、役割、進捗、承認、停止、結果、履歴を管理する第一者systemとし、最初の実用経路としてCoreを継続検証する。仕事や生活を便利にするsystemを優先して追加し、ゲーム、IP／動画生成、VRは利用者の関心に基づく優先的な応用開発系統として関連付ける。特定のTool、ゲーム、生成Provider、金融ProviderをOS imageへ直書きせず、署名、version、capability、本人同意、費用、停止、receiptを持つadapterとして独立更新できるようにする。
+SkyはTool・ファンド・接続先を選ぶ第一者system、Zemaはsiチームへの依頼、役割、進捗、承認、停止、結果、履歴を管理する第一者systemとし、最初の実用経路としてCoreを継続検証する。仕事や生活を便利にするsystemを優先して追加し、ゲーム、IP／動画生成、VRは利用者の関心に基づく優先的な応用開発系統として関連付ける。特定のTool、ゲーム、生成Provider、金融ProviderをOS imageへ直書きせず、署名、version、capability、本人同意、費用、停止、receiptを持つadapterとして独立更新できるようにする。
 
 IP／動画／ゲームの標準経路は、Zemaの依頼 → IP StudioのIP・素材・権利・版管理 → SkyのCapability Router → 交換可能な生成／配信／ゲームadapter → 共通Asset Registry → 品質・権利・費用・本人承認 → 公開／ゲーム導入 → Wallet／receipt → 反応・売上を次の依頼へ戻す循環とする。Higgsfield、Runway等の動画生成先、Roblox、GTA／FiveM、独自ゲーム等の導入先、YouTube、Instagram等の配信先はadapter例であり、製品契約の固定構成ではない。
 
@@ -140,7 +144,7 @@ Pixel 10は最初のreference hardwareであり、Googleサービス、カメラ
 
 ## 2026-09-27 指示から部隊・過程・Goalを束ねる管理ツール（v1.96）
 
-利用者は、指示をまず部隊へ分けて問題を細分化し、全進捗と作業過程・Goalを把握し、その計画をGPT等の目標へ一括で渡して完成へ進めるツールを指定した。[AMC Goal Orchestrator](amc-goal-orchestrator.md)を開発管理の入口とする。H1 / AMC02がローカルの計画・指示文出力・検収台帳を担当する。任意指示のAI分解、AIへの自動送信、常時運転は別の未接続段階であり、管理画面だけで完成済みとしない。
+利用者は、指示をまず部隊へ分けて問題を細分化し、全進捗と作業過程・Goalを把握し、その計画をGPT等の目標へ一括で渡して完成へ進めるツールを指定した。[AMC Goal Orchestrator](amc-goal-orchestrator.md)を開発管理の入口とする。H1 / AMC02がローカルの計画・指示文出力・検収台帳を担当する。任意指示のsi分解、siへの自動送信、常時運転は別の未接続段階であり、管理画面だけで完成済みとしない。
 
 Goalは達成条件と証拠で受け入れ、未承認の課金・外部操作・実機・飛行の権限を増やさない。Mini単独・Pro任意、rocketstarの独立安全系、料金保留、既存RQ01〜RQ49を変更しない。
 
@@ -168,7 +172,7 @@ avokadoProは公開製品Siteで、単体でgame、service、compute、storage�
 
 この決定で変えないこと: 参考価格は税・送料別で、決済金額ではない。予約・決済は開始しない（WEB15は停止のまま）。実機試験0件、製造は未承認のまま。
 
-引き続きOWNER判断待ちとして残すこと: R5とMini/Pro製品ラインの関係、R5要求とMAT15の見直し、予約・決済の有効化、製品名（PR #40 の「avokado mini」への改名）、8.88 USD収益料金の後継条件、RQ20の期待値、優先系列、AI系fixtureの先行可否（このうちAI系fixtureの先行可否は、2026-09-25 01:26 ETに本人が決定済み: host／fixture段階はOS10完了前に先行可、emulator・実機・OS統合の合格には転用しない。AI09として記録）。
+引き続きOWNER判断待ちとして残すこと: R5とMini/Pro製品ラインの関係、R5要求とMAT15の見直し、予約・決済の有効化、製品名（PR #40 の「avokado mini」への改名）、8.88 USD収益料金の後継条件、RQ20の期待値、優先系列、si系fixtureの先行可否（このうちsi系fixtureの先行可否は、2026-09-25 01:26 ETに本人が決定済み: host／fixture段階はOS10完了前に先行可、emulator・実機・OS統合の合格には転用しない。AI09として記録）。
 
 既存記述との関係: 下記の「E3の4本＋別Hub必須、旧価格…はR5へ自動継承しない」と、`marketPositioning.r5.priceStatus`（R5価格は未確定、E3価格を引き継がない）は削除せず維持する。今回正式化した¥160,000／¥410,000は、2026-09-22のE3資料にある「1本16万円＋税、4本＋Edge Hub 41万円＋税」と同じ金額だが、**avocadoMini／avokadoPro製品ラインの参考価格**として確定したものである。R5をこの製品ラインの価格・構成で扱うかどうかは判断待ちで、この決定からR5の価格を導かない。
 
@@ -196,7 +200,7 @@ OS v1.0原本のE3配置（PDF p4・17・30）はR5へ適用しない。原本�
 
 以下は各日付時点の判断である。R5と矛盾するavocadoMiniの構成要件は上記を優先し、旧資料・検証記録は保持する。
 
-2026-09-22 最新方針（v1.91）: 利用者提供のTower20 E3設計資料を、avocadoMiniの現行製品基準として採用する。完成製品は、使用時高さ200mm以下の固定式銀色Tower20 4本と、低い別筐体Edge Hub 1台で構成する。三段に見える塔の境界は外観処理で、伸縮機構ではない。各塔は単色camera候補1台を持ち、追加の暗色窓2つは予約領域であって稼働cameraではない。Hubは4入力、PTT日本語音声、ゲーム、保存、権限、承認済みAI adapterをまとめる。提案値は塔外径44mm、台座径96mm、4脚接地点径200mm、Hub 240×200×70mm。算術、候補部品、95.7msの計画値、116Wの電力予算は実機合格ではない。物理試作、camera／ASR／game、転倒・滑り、熱、同期、光学視野、signed recovery、製造は未受入。公開SiteとGitでは[Tower20 E3基準](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-tower20-e3/README.md)を優先し、P0.2、E1、E2は履歴として保持する。予定基本価格は1本16万円＋税、4本＋Edge Hub 41万円＋税。販売条件と製造証拠が揃うまで決済を開始しない。
+2026-09-22 最新方針（v1.91）: 利用者提供のTower20 E3設計資料を、avocadoMiniの現行製品基準として採用する。完成製品は、使用時高さ200mm以下の固定式銀色Tower20 4本と、低い別筐体Edge Hub 1台で構成する。三段に見える塔の境界は外観処理で、伸縮機構ではない。各塔は単色camera候補1台を持ち、追加の暗色窓2つは予約領域であって稼働cameraではない。Hubは4入力、PTT日本語音声、ゲーム、保存、権限、承認済みsi adapterをまとめる。提案値は塔外径44mm、台座径96mm、4脚接地点径200mm、Hub 240×200×70mm。算術、候補部品、95.7msの計画値、116Wの電力予算は実機合格ではない。物理試作、camera／ASR／game、転倒・滑り、熱、同期、光学視野、signed recovery、製造は未受入。公開SiteとGitでは[Tower20 E3基準](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-tower20-e3/README.md)を優先し、P0.2、E1、E2は履歴として保持する。予定基本価格は1本16万円＋税、4本＋Edge Hub 41万円＋税。販売条件と製造証拠が揃うまで決済を開始しない。
 
 2026-09-21 IP／動画／ゲーム展開の交換可能Provider方針: 利用者は、Higgsfield、Roblox、YouTube、GTA等を固定した一つの型にせず、同じ制作・配信・ゲーム導入の流れへ他の生成サービス、ゲーム、SNS、Toolを追加し、利用者が選択または条件付き自動選択できる構成を指定した。IP Studioは特定Provider名ではなく共通capabilityで仕事を要求し、Skyはversion付きmanifest、権限、送信先、費用、商用利用条件、地域、品質条件、稼働状態を比較してadapterを選ぶ。生成物は共通Asset Registryへprovenance、権利、費用、hash、版、Provider receiptとともに保存し、公開、ゲーム提出、報酬付与などのexternal-writeは対象と内容を固定した本人承認を必須とする。Providerの追加・差替えにOS imageの再buildを要求せず、未対応capabilityを別機能で偽装しない。
 2026-09-21 最新方針（v1.90）: 利用者は公開Siteの画像を示し、avocadoMiniの形を銀色の伸縮式Motion Tower 4本と低い中央ユニットの構成として確定した。[Mini200 E2資料の統合基準](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e2/README.md)は、OS、ローカルゲーム、PTT日本語音声、権限、保存、候補演算・ストレージ仕様を中央Coreへ適用する。E2ハード資料の198×178×198mm単体筐体と前面3丸窓は完成製品の外観として採用しない。4本と中央Coreの配線、同期、電源、冷却、音響、実機性能、製造は未確定。公開Siteは4本の外観を維持してE2 Coreの説明を追加する。41万円＋税は4本＋中央ユニットの現行予定基本価格で、最終総額・納期・販売条件が揃うまで決済を開始しない。
@@ -231,7 +235,7 @@ OS v1.0原本のE3配置（PDF p4・17・30）はR5へ適用しない。原本�
 
 2026-09-19 Web公開とバックエンド方針（v1.86）: 利用者は既存の `rockstaros-kaiya.noellesugar1.chatgpt.site` を本人限定から一般公開へ変更するよう明示した。公開ページと公開カタログは匿名閲覧を認め、仕事・Wallet・開発者操作など本人別データはChatGPTサインイン後だけ処理する。バックエンドはWorkerとD1の稼働および主要schemaを匿名のread-only healthで確認し、実操作は本人別のAPI受入を要する。一般公開の意思は確認済みだが、対象Sites所有アカウントが現在の接続から見つからず、配備・公開設定変更・本番DB readbackは未実施。自作部分の製品license条件も未確定で、Webの公開意思をOS imageやソースの再配布許諾へ拡張しない。
 
-2026-09-19 利用者価値を先に伝える方針（v1.85）: 対外的な売りはRock側の収益方法から始めず、利用者が何をしたいか、そのためにどんなAIの役割や道具を見つけられるか、何を前へ進められるかから説明する。avocadoMiniは発明案を手で選び比べる主役のハードウェア構想、Skyは役に合うToolを探す入口、Zemaは依頼・確認・成果の入口として示す。Web版Previewと設計中の実機を明確に分け、現在できない体験を完成済みと表示しない。無料配布とOS従量課金の理念は維持し、料金条件の説明を製品価値の後段に置く。
+2026-09-19 利用者価値を先に伝える方針（v1.85）: 対外的な売りはRock側の収益方法から始めず、利用者が何をしたいか、そのためにどんなsiの役割や道具を見つけられるか、何を前へ進められるかから説明する。avocadoMiniは発明案を手で選び比べる主役のハードウェア構想、Skyは役に合うToolを探す入口、Zemaは依頼・確認・成果の入口として示す。Web版Previewと設計中の実機を明確に分け、現在できない体験を完成済みと表示しない。無料配布とOS従量課金の理念は維持し、料金条件の説明を製品価値の後段に置く。
 
 2026-09-19 配布と料金の理念（v1.84）: 利用者は無料配布を理念とし、OSは従量課金制と明示した。配布時の価格と利用時の料金を区別する。無料配布の対象にavocadoMini本体を含むか、OS利用量の計量単位、単価、上限、外部実費の負担は未確定。既存のSky収益連動・月最大888 USD centsのruntimeと請求状態は、この新方針のOS従量課金と同一視せず、所有者が条件を確定し受入を終えるまで変更しない。配布や課金の実施済み宣言にはしない。
 
@@ -243,17 +247,17 @@ OS v1.0原本のE3配置（PDF p4・17・30）はR5へ適用しない。原本�
 
 2026-09-18 Jev ecosystem 10件の統合（v1.80）: 利用者指定URLの重複を除き、Jev Ultrafast、OpenJev、Jevlike、Jev Trader、Awesome Jev by TypeSafe、TypeSafe Computer Use、Jev Review、Jev Router、Jev Browser、Mobile Jevを役割別にSkyへ登録した。Skyは現在ready 11、candidate 13、合計24 Tool。判断model、browser、Mac、Android、review、routing、市場、referenceを別権限にし、TraderはPAPER限定、Mobileは隔離試験端末限定とする。[Jev ecosystem全体詳細設計](jev-ecosystem-integration-design.md)。source取得、依存導入、API／model／外部service接続、実行は未実施であり、ready数へ含めない。
 
-2026-09-18 Jev Ultrafast候補の追加（v1.79）: `browser-use/jev-ultrafast`をSkyの4件目の導入候補へ追加した。AIが構造化された操作候補から一手を選ぶ方式を、専用Chrome profile、許可origin、`observe`／`prepare`／`act`、秘密入力拒否、外部作用直前の別承認、独立した完了検証へ収める。[詳細設計](jev-ultrafast-integration-design.md)は追加済みだが、source取得、依存導入、API key接続、browser操作は未実施であり、ready数には含めない。
+2026-09-18 Jev Ultrafast候補の追加（v1.79）: `browser-use/jev-ultrafast`をSkyの4件目の導入候補へ追加した。siが構造化された操作候補から一手を選ぶ方式を、専用Chrome profile、許可origin、`observe`／`prepare`／`act`、秘密入力拒否、外部作用直前の別承認、独立した完了検証へ収める。[詳細設計](jev-ultrafast-integration-design.md)は追加済みだが、source取得、依存導入、API key接続、browser操作は未実施であり、ready数には含めない。
 
-2026-09-18 OS／全Tool詳細設計の正本化（v1.78）: avocadoMiniだけでなく、RockstarOS Core、Web／PC、Linux／QEMU、Android／Pixel、Local AI、仕事、権限、保存、更新・復旧、Wallet、運用と、当時のSkyの11 ready Tool、3 candidate Tool、native 6 Tool familyを同じ設計体系へ統合した。[全設計ポータル](rockstaros-design-portal.md)から[OS全体詳細設計](rockstaros-complete-design.md)、[全Tool詳細設計](sky-tools-complete-design.md)、[Material Invention詳細](rockstaros-avocado-mini-complete-design.md)へ進む。`npm run design:check`はcatalog Toolや正本の欠落を拒否する。これは現在scopeの説明被覆であり、未決定値や未実装の完成を意味しない。
+2026-09-18 OS／全Tool詳細設計の正本化（v1.78）: avocadoMiniだけでなく、RockstarOS Core、Web／PC、Linux／QEMU、Android／Pixel、Local si、仕事、権限、保存、更新・復旧、Wallet、運用と、当時のSkyの11 ready Tool、3 candidate Tool、native 6 Tool familyを同じ設計体系へ統合した。[全設計ポータル](rockstaros-design-portal.md)から[OS全体詳細設計](rockstaros-complete-design.md)、[全Tool詳細設計](sky-tools-complete-design.md)、[Material Invention詳細](rockstaros-avocado-mini-complete-design.md)へ進む。`npm run design:check`はcatalog Toolや正本の欠落を拒否する。これは現在scopeの説明被覆であり、未決定値や未実装の完成を意味しない。
 
 2026-09-18 見て分かる設計への再構成（v1.77）: 共有用完成設計を、抽象的な部品説明から「目の前に何があり、手をどう動かし、画面がどう変わるか」が先に分かる構成へ全面改訂した。四方向配置図、8場面の利用例、画面wireframe、できる／できない、三つの世界の境界、処理順、実装phase、役割別の最初の仕事を追加し、専門仕様を後半へ分離した。
 
-2026-09-18 共有用統合設計の正本化（v1.76）: RQ49の目的、avocadoMini四方向sensor、VR／AR／2D操作、安全境界、再計算、発明履歴、Patent AI、役割別の参加入口、実装順、受入条件を[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)へ統合した。「設計完成」は実装、実機、材料性能、特許性、量産の完成を意味しない。担当作業の入口は[Material Invention / avocadoMini workstream](workstreams/11-material-invention-avocado-mini.md)とする。
+2026-09-18 共有用統合設計の正本化（v1.76）: RQ49の目的、avocadoMini四方向sensor、VR／AR／2D操作、安全境界、再計算、発明履歴、Patent si、役割別の参加入口、実装順、受入条件を[共有用完成設計書](rockstaros-avocado-mini-complete-design.md)へ統合した。「設計完成」は実装、実機、材料性能、特許性、量産の完成を意味しない。担当作業の入口は[Material Invention / avocadoMini workstream](workstreams/11-material-invention-avocado-mini.md)とする。
 
-2026-09-18 Material Invention標準体験の統合（v1.75）: `avocadoMini Spatial Invention Studio`を別のVR／AR拡張ではなく、RQ49 Material Invention Coreそのものを人が扱う標準製品体験へ固定した。Coreが物質・候補・安全・証拠の正本、avocadoMiniが四方向sensorとhand interaction、Simulation Orchestratorが再計算、Invention Event LedgerとPatent AIが発明化支援を担当する。headsetがなくても2D fallbackで同じloopを利用できる。
+2026-09-18 Material Invention標準体験の統合（v1.75）: `avocadoMini Spatial Invention Studio`を別のVR／AR拡張ではなく、RQ49 Material Invention Coreそのものを人が扱う標準製品体験へ固定した。Coreが物質・候補・安全・証拠の正本、avocadoMiniが四方向sensorとhand interaction、Simulation Orchestratorが再計算、Invention Event LedgerとPatent siが発明化支援を担当する。headsetがなくても2D fallbackで同じloopを利用できる。
 
-2026-09-18 Spatial Invention／avocadoMini設計（v1.74）: RQ48のVR応用とRQ49を接続し、四方向sensor／cameraで手を追跡して物質digital twinを接続・分離し、候補graphとsimulationを再計算する`Spatial Invention Studio`とRockstarOS reference device concept `avocadoMini`を設計した。操作履歴を既存Patent AIの発明開示・先行技術差分へ引き継ぐが、cameraによる物理物質操作、gestureでの物理実験承認、特許性・発明者の自動決定、自動出願は行わない。[XR設計](material-invention-xr.md)／[端末設計](avocado-mini-spatial-invention.md)。
+2026-09-18 Spatial Invention／avocadoMini設計（v1.74）: RQ48のVR応用とRQ49を接続し、四方向sensor／cameraで手を追跡して物質digital twinを接続・分離し、候補graphとsimulationを再計算する`Spatial Invention Studio`とRockstarOS reference device concept `avocadoMini`を設計した。操作履歴を既存Patent siの発明開示・先行技術差分へ引き継ぐが、cameraによる物理物質操作、gestureでの物理実験承認、特許性・発明者の自動決定、自動出願は行わない。[XR設計](material-invention-xr.md)／[端末設計](avocado-mini-spatial-invention.md)。
 
 2026-09-17発明sandbox Core実装（v1.73）: RQ49の最初の実装として、二物質・複数比率・工程条件から再現可能な候補graphを作る装置非接続sandboxを追加した。SDS不足、危険性不明、禁止物質、単位不一致、許可外設備、温度・圧力上限超過をfail closedにし、全出力の物理実行許可をfalseへ固定する。化学simulation、外部ラボ、実験設備、Zemaの仕事／限定記憶との接続は未実装。[契約と実装](material-invention-core.md)。
 
@@ -263,9 +267,9 @@ OS v1.0原本のE3配置（PDF p4・17・30）はR5へ適用しない。原本�
 
 2026-09-17料金方針の訂正（条件確認中・未実装）: 所有者はシステムを公開し、Sky経由で利益が出た分に対する割合の成功報酬でマネタイズする意向を明示した。Walletはその支払いを円滑にする入口で、外部サービスから本人銀行口座への入金を自動的に徴収する権限ではない。開発者還元は実回収済み成功報酬の一部からとし、別途の還元負担を追加しない。率、対象利益の定義、従来の月888 cents上限との関係、回収方法は未確定。以下の月上限等は現行実装の説明であり、新料金の承認・実装済みを意味しない。正本JSONの`commercialPolicyRevision`と[Sky経済設計](sky-network-economy.md)に区別を記録する。
 
-2026-09-16詳細設計追記（v1.71）: RQ48を[AIネイティブOS詳細設計](ai-native-os-architecture.md)へ具体化する。Astraが設計、Solが[独立監査](ai-native-os-design-audit.md)を担当。モデル・記憶・仕事・外部作用・端末能力の契約と、1.0 Core／便利機能／Game・IP／収益の独立受入を定義する。現在の固定runtimeと純粋な2工程Toolの実機受入から、汎用モデル交換・共有記憶・外部作用・多端末の完成は推測しない。詳細設計の保存はruntime実装や製品公開の完了ではない。
+2026-09-16詳細設計追記（v1.71）: RQ48を[siネイティブOS詳細設計](ai-native-os-architecture.md)へ具体化する。Astraが設計、Solが[独立監査](ai-native-os-design-audit.md)を担当。モデル・記憶・仕事・外部作用・端末能力の契約と、1.0 Core／便利機能／Game・IP／収益の独立受入を定義する。現在の固定runtimeと純粋な2工程Toolの実機受入から、汎用モデル交換・共有記憶・外部作用・多端末の完成は推測しない。詳細設計の保存はruntime実装や製品公開の完了ではない。
 
-2026-09-16全体方針追記（v1.70）: 製品中核を、高性能で交換可能なローカルLLMとoffline agent runtimeを持つAIネイティブOSへ明確化した。Sky／Zemaを最初の第一者system、仕事・生活を便利にする自動化を継続開発系統、ゲーム・IP／動画・VRを関心に基づく優先的な応用系統とする。個別systemはOS imageへ密結合せず、共通の権限・記憶・仕事・Tool・receipt・更新・復旧契約で接続して独立改善できるようにする。RQ48を追加する。
+2026-09-16全体方針追記（v1.70）: 製品中核を、高性能で交換可能なローカルLLMとoffline agent runtimeを持つsiネイティブOSへ明確化した。Sky／Zemaを最初の第一者system、仕事・生活を便利にする自動化を継続開発系統、ゲーム・IP／動画・VRを関心に基づく優先的な応用系統とする。個別systemはOS imageへ密結合せず、共通の権限・記憶・仕事・Tool・receipt・更新・復旧契約で接続して独立改善できるようにする。RQ48を追加する。
 
 2026-09-16 full build入力freeze追記（v1.69）: Pixel 10 GL066のGoogle factory image／full OTAについて、repo外のowner同意記録、公式download URL／掲載SHA-256、実byte SHA-256、ZIP安全性、frankel、A/B、同一build IDを検査する。固定adevtool revisionから生成した`vendor/google_devices`全file／内部symlinkを決定的inventoryへし、build直前に再検証する。正式署名は承認済みpolicyと手順のhashだけをfreezeし、HSM調達、秘密鍵、署名bridge、target-files由来の正確な鍵inventoryは未完了のまま保持する。合成fixture 9/9は合格し、build入口へ三検査を接続した。Google利用条件への代理同意、実ファイル取得、全source／vendor生成、HSM、full build、flashは行っていない。[証拠](evidence/android-prefull-input-freeze-20260916.json)。
 
@@ -275,11 +279,11 @@ OS v1.0原本のE3配置（PDF p4・17・30）はR5へ適用しない。原本�
 
 2026-09-16 backup v2実装追記（v1.66）: 所有者専用256-bit recovery secretをRockstarOS専用checksum付き24単語で提示し、指定4単語の再入力後だけ有効化する。Shell API v4からdual-wrapped v2 backupをexportし、空のowner領域へtransactional importした後、新しいAndroid Keystore鍵へ再bindingする。復元後は自動化を停止し、Sky tokenをrotateし、active承認と実行中leaseを無効化し、導入component authority、Wallet秘密鍵、session、operator credential、provider secretを復元しない。Core 37/37、Android 15 emulatorのBroker 11 non-skipped／Shell 5/5、source build／lint 207 taskは合格。Pixel 10の物理wipe／復元／再起動は未実施なので初回flash gateは未合格のまま維持する。[証拠](evidence/android-backup-v2-emulator-20260916.json)。
 
-2026-09-16 native Sky永続handoff追記（v1.65）: Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をShellの一時状態ではなくBroker SQLite schema v2へ保存する。Zemaは保存済みselection tokenが一致する場合だけLocal AI計画を開始し、不一致は仕事0件で拒否する。schema v1→v2 migration、DB再open、Android 15 emulatorのBroker 9/9・Shell 4/4、全Android 378 taskは合格した。Pixelを実際に再起動して実行中leaseを復旧する二段階試験は端末再接続待ちで、まだ合格扱いにしない。
+2026-09-16 native Sky永続handoff追記（v1.65）: Shell API v3へ`selectSkyTool`と`skySelection`を追加し、Skyで選んだ`article-preparation@1`をShellの一時状態ではなくBroker SQLite schema v2へ保存する。Zemaは保存済みselection tokenが一致する場合だけLocal si計画を開始し、不一致は仕事0件で拒否する。schema v1→v2 migration、DB再open、Android 15 emulatorのBroker 9/9・Shell 4/4、全Android 378 taskは合格した。Pixelを実際に再起動して実行中leaseを復旧する二段階試験は端末再接続待ちで、まだ合格扱いにしない。
 
-2026-09-16計画専用AI結合追記（v1.64）: Local AI Binder API v2へ`article-preparation@1/input-v1`の計画専用callを追加し、JSON Schema constrained decoding、Tool call禁止、Broker側のclosed field／選択Tool／実行可能性の再検証を固定した。Android 15 emulatorはBroker 8/8・Shell 3/3でモデルなし0件停止、所有Pixel 10 GL066は同じ試験数でZema plan、`citations@1`、`free-article@1`、結果、5履歴event、本人確認待ちまで合格した。native Skyの永続handoff、全経路の再起動／失敗復旧、AOSP image、production署名は未完了である。[実機証拠](evidence/android-local-ai-plan-v2-20260916.json)。
+2026-09-16計画専用si結合追記（v1.64）: Local si Binder API v2へ`article-preparation@1/input-v1`の計画専用callを追加し、JSON Schema constrained decoding、Tool call禁止、Broker側のclosed field／選択Tool／実行可能性の再検証を固定した。Android 15 emulatorはBroker 8/8・Shell 3/3でモデルなし0件停止、所有Pixel 10 GL066は同じ試験数でZema plan、`citations@1`、`free-article@1`、結果、5履歴event、本人確認待ちまで合格した。native Skyの永続handoff、全経路の再起動／失敗復旧、AOSP image、production署名は未完了である。[実機証拠](evidence/android-local-ai-plan-v2-20260916.json)。
 
-2026-09-16全体構成追記（v1.63）: RQ47の製品目的に対して、OS、Sky、Zema、Android Shell／Broker、Local AI、Tool、検証済み収益、Wallet／Fund、Operator、更新・復旧、Gameの選択と接続状態を全体構成監査へ固定した。現在の選択は整合するが、全component実装、全必須経路の統合、production準備はいずれも未完了とする。旧BlackBerry-firstの現行task表現とQEMU-firstのスマホ優先順位を退役し、Pixel 10 GL066上のoffline AI team loopをfull build前の最優先とする。[全体構成監査](system-composition.md)。
+2026-09-16全体構成追記（v1.63）: RQ47の製品目的に対して、OS、Sky、Zema、Android Shell／Broker、Local si、Tool、検証済み収益、Wallet／Fund、Operator、更新・復旧、Gameの選択と接続状態を全体構成監査へ固定した。現在の選択は整合するが、全component実装、全必須経路の統合、production準備はいずれも未完了とする。旧BlackBerry-firstの現行task表現とQEMU-firstのスマホ優先順位を退役し、Pixel 10 GL066上のoffline si team loopをfull build前の最優先とする。[全体構成監査](system-composition.md)。
 
 2026-09-16端末基盤追記（v1.62）: 外部Providerは初回OS full buildへ焼き込まず、更新可能なアプリ／サーバー側へ分離する。ただし外部Provider sandbox、返金／chargeback、払出し、再照合はRockstarOS 1.0で実収益を表示・公開する前の必須gateとし、未合格中はlive収益を表示しない。Pixel 10 GL066はGrapheneOS `2026091000`のmanifest tag署名、manifest／adevtool／laguna-muzel 6.6入力と、読取り専用ADBによるDynamic Partition／Virtual A/B／AVB 1.4構成まで固定した。Google純正factory image／full OTAの利用条件確認、実ファイル取得とSHA-256、vendor生成inventory、production署名／復旧計画が未完了なので、有料full build、unlock、flashはまだ開始しない。[source／layout監査](evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json)／[source lock](../os/physical/frankel-source-lock.json)。
 
@@ -291,7 +295,7 @@ OS v1.0原本のE3配置（PDF p4・17・30）はR5へ適用しない。原本�
 
 2026-09-15検証追記（v1.58）: v1.56で不合格だった試験2のうち、Tool完了→Provider署名付きEarning Receipt→Wallet一度だけ反映をROCK_READY fixtureで実装・合格した。Provider署名、完了済み・非サンプルjob、本人、Tool、時刻をSky bridgeで照合し、収益Provider鍵、Billing転送鍵、払出し鍵を分離する。同一Receipt再送は冪等、同じ実行への異なるReceiptは拒否する。実販売・決済Provider sandbox、返金、chargeback、実払出しは未接続であり、試験2全体や1.0の合格、実収益実績にはしない。試験1の所有Pixel 10、実GGUF、機内モード、保存／再起動、30分温度、正確なSKU readbackも未実行のため、有料full buildは引き続き開始しない。[bridge受入証拠](evidence/tool-earning-wallet-bridge-20260915.json)。
 
-2026-09-15追記（v1.57）: 最上位目的を、利用者が自分専用のAI自動化チームを所有し、その効率を継続改善して、便利さと検証可能な収益機会を増やし、利用者全体の豊かさへつなげることに固定する。OS、Pixel、Wallet、ファンド、ゲームはこの目的のための層であり、OSやスマートフォン開発自体を目的にしない。Pixelは最初のreference hardware、カメラ品質は1.0完成条件外、専用端末は価値実証後の配布形態とする。月50万円規模は長期の実測到達指標であり、収益・利回り・達成時期の保証ではない。offline-first実行、Tool→署名済みEarning Receipt→Wallet、ファンド改善、合法的な税務準備、同意可能な改善データ収集、ゲーム派生の順に逆算する。RQ47と[製品目的から逆算した開発軸](product-north-star-20260915.md)を追加する。
+2026-09-15追記（v1.57）: 最上位目的を、利用者が自分専用のsi自動化チームを所有し、その効率を継続改善して、便利さと検証可能な収益機会を増やし、利用者全体の豊かさへつなげることに固定する。OS、Pixel、Wallet、ファンド、ゲームはこの目的のための層であり、OSやスマートフォン開発自体を目的にしない。Pixelは最初のreference hardware、カメラ品質は1.0完成条件外、専用端末は価値実証後の配布形態とする。月50万円規模は長期の実測到達指標であり、収益・利回り・達成時期の保証ではない。offline-first実行、Tool→署名済みEarning Receipt→Wallet、ファンド改善、合法的な税務準備、同意可能な改善データ収集、ゲーム派生の順に逆算する。RQ47と[製品目的から逆算した開発軸](product-north-star-20260915.md)を追加する。
 
 2026-09-15検証追記（v1.56）: 有料Linux環境でのAndroid OS full buildと実機flash／bootは最後に行う。Android単体build／lint、emulator上のBinder／SQLite、Local Action Assistant arm64 APK生成・hash固定・署名限定Binder・GGUFなしの安全な拒否は合格した。純正OSの所有Pixel 10上でのGGUF機内モード推論・保存／再起動・30分温度試験は未実行のため試験1は部分合格。Sky→Zema、job、Android Tool、Wallet／認証済み収益の個別試験は合格したが、Tool完了を署名済みEarning ReceiptとしてWalletへ自動転記する経路が未実装のため試験2は不合格である。正確なSKU readbackと最終freezeを含め、全て合格するまで有料full buildを開始しない。Sky、Zema、Wallet、Tool、LLMのapp-only修正は単体APK更新で反復できる境界を維持し、framework、SELinux、privapp/product設定、boot/vendor/partition/AVB変更だけをOS image再build対象とする。初回build環境はfactory／OTA／target-filesを保存し、最初の実機bootと修正要否の確認まで保持する。[事前試験証拠](evidence/android-pre-full-build-tests-20260915.json)を判定正本とする。
 
@@ -377,7 +381,7 @@ OS v1.0原本のE3配置（PDF p4・17・30）はR5へ適用しない。原本�
 
 2026-09-12追記（v1.15）: 利用者が事業収益のため、Skyで月額8.88 USDを実際に回収できるsystemを必須と明示。Stripe Checkout、署名Webhook、契約・請求台帳、二重申込み防止、支払い・解約管理をRQ20へ追加する。本番コードの準備と実売上の開始は分け、Stripe事業者確認、入金口座、販売表示、live鍵、sandbox受入と本人の最終確認が揃うまで実課金は有効化しない。
 
-2026-09-12追記（v1.14）: 利用者がFashion Brand Opsをより自律的なブランド経営systemへ進める方針を明示。売上・数量・粗利・期限・広告上限から計画するCampaign Autopilot、会話履歴と購入意向から次の一手を作るAI Sales Concierge、署名検証済み入金後の原価・資材・能力・納期を扱うProduction CockpitをRQ19へ追加する。計画と下書きは自動化できるが、投稿、広告、DM、請求、返金等の外部作用は既存approval gateを迂回しない。
+2026-09-12追記（v1.14）: 利用者がFashion Brand Opsをより自律的なブランド経営systemへ進める方針を明示。売上・数量・粗利・期限・広告上限から計画するCampaign Autopilot、会話履歴と購入意向から次の一手を作るsi Sales Concierge、署名検証済み入金後の原価・資材・能力・納期を扱うProduction CockpitをRQ19へ追加する。計画と下書きは自動化できるが、投稿、広告、DM、請求、返金等の外部作用は既存approval gateを迂回しない。
 
 2026-09-12追記（v1.13）: RockstarOS 1.0の基本アプリを **Sky / Chat / Wallet / Polymarket** の4つとして整理する。Skyは自動化アプリを探して接続するエコシステム、Chatは接続済みアプリへの依頼・確認・処理状況・結果の受取、Walletは収支と資金管理、Polymarketは他3アプリから権限と資金を分離した外部市場アプリとする。Polymarketのアプリ枠採用は実取引の開始許可ではなく、提供地域・年齢・本人確認・規制・外部契約を満たすまで市場取得、注文、入出金を無効にする。
 
@@ -397,7 +401,7 @@ OS v1.0原本のE3配置（PDF p4・17・30）はR5へ適用しない。原本�
 
 ## RQ01 製品の中心
 
-Rock star OSは、AI自動化ツールに特化した端末OS。標準の入口は **Sky、Zema、Wallet**。利用者はSkyで商品を選び導入・接続し、Zemaで仕事の指示・実行・停止・確認・結果・履歴を管理し、Walletで自動化によって得たお金と関連費用を管理する。
+Rock star OSは、si自動化ツールに特化した端末OS。標準の入口は **Sky、Zema、Wallet**。利用者はSkyで商品を選び導入・接続し、Zemaで仕事の指示・実行・停止・確認・結果・履歴を管理し、Walletで自動化によって得たお金と関連費用を管理する。
 
 利用者が示した目的は、自動化により時間や収入の余地を作り、より多くの人が創作・学習・ゲームや現実の新しい挑戦へ進めるようにすること。世界がより良くなるという志向は保持するが、自動化の利益・ゲーム通貨の値上がり・社会的効果を保証しない。取引回数や賭け金を製品成功の指標にせず、削減できた負担、実費後の確定収支、本人が選べる行動の増加で検証する。
 
@@ -407,13 +411,13 @@ Rock star OSは、AI自動化ツールに特化した端末OS。標準の入口�
 
 利用者のいう **tob側** が自動化ツールを開発・更新・保守し、商品として供給する。Rock側は接続仕様、必要なSDK/adapter、認証、権限、互換性、実行管理、料金/利用資格、成果物、収支照合の共通基盤を開発する。
 
-「tob」は供給側の役割を指す。特定の一企業への独占、法人名、販売主体、契約先をこの語から推測しない。SDKと署名配布は商品の接続に必要な既存基盤として活用する。商品内部のAIや個別業務ロジックをOSチームの開発義務にしない。
+「tob」は供給側の役割を指す。特定の一企業への独占、法人名、販売主体、契約先をこの語から推測しない。SDKと署名配布は商品の接続に必要な既存基盤として活用する。商品内部のsiや個別業務ロジックをOSチームの開発義務にしない。
 
 ## RQ03 現在開発しているツールも商品
 
 既存・開発中ツールはSky内の独立した商品として扱う。CSV仕事はSky内のToolとして扱い、仕事の作成・実行・確認・停止・結果・履歴はZemaへ集約する。どちらもホーム上の独立アプリにはしない。既存原本・所有者・ライセンス・版を保持し、掲載、接続、許可、実行、更新、停止、削除を商品単位で管理する。通常の商品追加・更新にOS再buildを要求しない。
 
-既存のMr.ユーティリティ、記事APK、native recipeの同名・類似機能を同じ商品実体と決めつけない。source/ref/hash、契約とfixtureを照合してから対応付ける。全商品がAI推論を行う、全商品が収益を生む、全商品が完成済み、と表示しない。
+既存のMr.ユーティリティ、記事APK、native recipeの同名・類似機能を同じ商品実体と決めつけない。source/ref/hash、契約とfixtureを照合してから対応付ける。全商品がsi推論を行う、全商品が収益を生む、全商品が完成済み、と表示しない。
 
 ## RQ04 実行方式の違いを吸収する
 
@@ -539,13 +543,13 @@ RockstarOSの基本アプリはSky、Zema、Wallet、Polymarketの4つ。Skyは�
 
 ZemaはSky Autoを既定とし、利用者へ事前のアプリ選択を強制しない。依頼内容から接続済みの役割を選び、選択結果を会話に表示する。特定アプリへの直接指定は任意で残す。判別不能、対象アプリ未接続、入力不足では勝手に実行せず、必要な追加情報またはSkyでの接続を案内する。実際のjob状態だけをreceiptとして表示し、Zema上の受付メッセージを実行完了の証拠にしない。
 
-Polymarketは独自市場ではなく外部サービス用adapterとして別アプリに置く。アプリ枠と安全な未接続画面は実装対象とするが、実市場データ、注文、清算、Walletからの資金移動は別の接続審査と明示同意が必要。所在地・提供地域・年齢・本人確認・利用規約・規制・資金経路が確認できるまで無効とし、AIによる自動取引や自動再投資は行わない。
+Polymarketは独自市場ではなく外部サービス用adapterとして別アプリに置く。アプリ枠と安全な未接続画面は実装対象とするが、実市場データ、注文、清算、Walletからの資金移動は別の接続審査と明示同意が必要。所在地・提供地域・年齢・本人確認・利用規約・規制・資金経路が確認できるまで無効とし、siによる自動取引や自動再投資は行わない。
 
 ## RQ19 目標駆動のブランド経営エージェントへ拡張する
 
 Fashion Brand Opsは単発操作だけでなく、商品ごとの販売数量、売上、粗利率、期間、広告予算上限を保存し、市場仮説、広告実験、投稿ペース、営業、制作の次アクションを優先順位付きで提示するCampaign Autopilotを持つ。Autopilotのtickは現在のcampaign、承認、DM、署名検証済み売上、制作状態を照合するが、外部作用を直接実行しない。
 
-AI Sales Conciergeは顧客ごとのDM履歴、購入意向、既存注文、確認済みプロフィールをtenant内に保存し、営業stage、segment、欠けている注文情報、人間への引継ぎ、返信下書きを生成する。返信送信は既存の`instagram.dm.reply.prepare`と個別approvalを通し、無差別DM、自動follow、自動送信を追加しない。
+si Sales Conciergeは顧客ごとのDM履歴、購入意向、既存注文、確認済みプロフィールをtenant内に保存し、営業stage、segment、欠けている注文情報、人間への引継ぎ、返信下書きを生成する。返信送信は既存の`instagram.dm.reply.prepare`と個別approvalを通し、無差別DM、自動follow、自動送信を追加しない。
 
 Production Cockpitは署名検証済み決済eventでpaidになった注文だけを制作計画へ入れ、資材、見積原価、日次能力、納期、blocker、制作・品質・発送工程を追跡する。手動toolからpaid/refundedへ変更できない状態遷移を強制し、金額・通貨が注文と一致しない入金eventを拒否する。実工場発注、資材購入、配送契約、実通知は各Providerと別の承認条件が揃うまで行わない。
 
@@ -767,9 +771,11 @@ Dockの全requestは静的HTML、CSS、JavaScriptを含めて専用Workerを先�
 
 Operator Dock、命令キュー、device channel、Android Agentのsource実装は、配備済みまたは端末への実到達を意味しない。専用hostname、Cloudflare Access application、operator subject、専用D1、production WebAuthn公開情報、StrongBox端末登録はowner設定待ちである。現在は`deviceAgent=source_emulator_verified_production_enrollment_pending`とし、production credential、Device Owner provisioning、attestation、実機受入が完了するまでUIは命令をproduction端末へ送信済みと表示しない。
 
-## RQ47 AI自動化チームの効率化から収益・Wallet・ファンド・ゲームへ逆算する
+<a id="rq47-ai自動化チームの効率化から収益walletファンドゲームへ逆算する"></a>
 
-RockstarOSの最上位の社会的目的は、利用者が自分専用のAI自動化チームを所有し、その効率を改善することで、仕事と生活を便利にし、検証可能な収益機会を増やし、利用者全体の豊かさへつなげることである。AIネイティブOSはそのための製品中核、Pixelは最初のreference hardware、Wallet、ファンド、ゲーム、将来の専用端末は実現・配布・拡張する接続層として扱う。スマートフォン市場の一般機能やカメラ品質でiPhoneと競うことを1.0の完成条件にしない。
+## RQ47 si自動化チームの効率化から収益・Wallet・ファンド・ゲームへ逆算する
+
+RockstarOSの最上位の社会的目的は、利用者が自分専用のsi自動化チームを所有し、その効率を改善することで、仕事と生活を便利にし、検証可能な収益機会を増やし、利用者全体の豊かさへつなげることである。siネイティブOSはそのための製品中核、Pixelは最初のreference hardware、Wallet、ファンド、ゲーム、将来の専用端末は実現・配布・拡張する接続層として扱う。スマートフォン市場の一般機能やカメラ品質でiPhoneと競うことを1.0の完成条件にしない。
 
 通信がない間もAgent runtime / Broker / Engineは仕事分解のplan検証、有限Tool実行、再試行、確認待ち、成果保存を続ける。端末内LLMは閉じたschemaのplan候補だけを返す非信頼plannerで、Tool実行、許可発行、仕事・台帳の書込み主体ではない。接続時だけ外部案件取得、外部作用、納品、署名済み収益、Wallet照合を重複なく同期する。最初に一つのToolでこの経済loopを完走し、次に複数Toolファンドを一押しで開始・管理・改善できるようにする。月50万円規模はProvider確認済み収益と全実行費用を持つ長期の到達指標であり、未検証値、PAPER結果、単発売上、将来利回り、全利用者の収入保証として表示しない。
 
@@ -779,7 +785,7 @@ Walletは収益・費用・receipt・払出し状態に加え、合法的な税�
 
 2026-09-21追補: 以下の四方向・Full-scale記述は既存の研究profileとして保持する。新しい使用時20cmのゲーム機profileと音声は[Mini200 E1](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/README.md)へ分離した。四方向に満たない入力を旧契約の合格とせず、架空粒子の結合、科学的simulation、実測を別の証拠として扱う。
 
-RockstarOSは、物質、配合比、混合順序、温度、圧力、雰囲気、加工、保持時間などを型付きデータとして組み合わせ、目的特性に対する新しい材料・用途・工程の候補を作れるようにする。候補は、入力物質の由来、単位、不確かさ、根拠、生成モデル、版、作成者を保持し、単なるAI文章を実証済み発明として表示しない。
+RockstarOSは、物質、配合比、混合順序、温度、圧力、雰囲気、加工、保持時間などを型付きデータとして組み合わせ、目的特性に対する新しい材料・用途・工程の候補を作れるようにする。候補は、入力物質の由来、単位、不確かさ、根拠、生成モデル、版、作成者を保持し、単なるsi文章を実証済み発明として表示しない。
 
 標準の流れは、目的定義 → 物質選択 → 配合・工程候補生成 → 危険性・法規・設備制約のscreening → simulation／既知データとの比較 → 本人承認 → 資格・設備を持つ外部ラボでの実験 → 署名付き測定receiptの取込み → 候補の順位付け・版更新とする。SDS、反応性、毒性、可燃性、圧力、温度、廃棄、輸送、規制情報が不足する候補は物理実行へ進めない。
 
@@ -789,7 +795,7 @@ VR／ARでは同じ候補graphを派生sceneへ投影し、候補、物質lot、
 
 製品目標はビリヤード台規模とし、本体約3.0 m × 1.7 m、有効操作領域約2.4 m × 1.2 m × 高さ1.3 mを初期budgetにする。四方向はcamera四台だけを意味せず、各pod内に複数viewpointを持たせて遮蔽と端部精度を評価する。小型Bench prototypeで追跡、安全停止、誤commitを検証してからFull-scaleへ進み、AR headset／2Dを先に受け入れ、裸眼3Dと強い力覚は独立した研究・安全gateにする。
 
-avocadoMiniの操作履歴は、人の直接操作、AI提案、simulation、文献、実験receiptを分けたまま既存Sky Patent AIへ渡し、発明開示、先行技術候補、構成要件差分、専門家向けpacketを作る。gestureは物理実験・外部共有・出願の最終承認に使わず、cameraは物理物質や装置を直接制御しない。Patent AIは特許性、登録、侵害回避、法的発明者、権利帰属を確定せず、電子署名、料金支払、出願を自動実行しない。詳細は[Spatial Invention Studio](material-invention-xr.md)と[avocadoMini端末設計](avocado-mini-spatial-invention.md)を正本とする。
+avocadoMiniの操作履歴は、人の直接操作、si提案、simulation、文献、実験receiptを分けたまま既存Sky Patent siへ渡し、発明開示、先行技術候補、構成要件差分、専門家向けpacketを作る。gestureは物理実験・外部共有・出願の最終承認に使わず、cameraは物理物質や装置を直接制御しない。Patent siは特許性、登録、侵害回避、法的発明者、権利帰属を確定せず、電子署名、料金支払、出願を自動実行しない。詳細は[Spatial Invention Studio](material-invention-xr.md)と[avocadoMini端末設計](avocado-mini-spatial-invention.md)を正本とする。
 
 ## RQ50 使われていないスマートフォンの計算余力をSkyで仲介する
 
@@ -828,7 +834,7 @@ host fixture、contract、demoは実装してよいが、実端末dispatch、pro
 
 2026-09-16 v1.71: Astra設計・Sol監査によりRQ48の共通Core契約と各応用の独立受入を具体化。現行入口のHub＋Wallet中心、BlackBerry-first、GameのFund完成待ちを同期し、Pixel非破壊23/23受入を現在の構成状態へ反映する。新しい汎用機能は設計段階として追跡する。
 
-2026-09-16 v1.70: 高性能で交換可能なローカルLLMを持つAIネイティブOSを製品中核へ明確化。Sky／Zemaを最初の第一者system、社会に役立つ便利機能を継続開発系統、ゲーム・IP／動画・VRを関心に基づく優先的な応用系統とし、すべてを独立更新可能な共通契約でCoreへ接続するRQ48を追加した。
+2026-09-16 v1.70: 高性能で交換可能なローカルLLMを持つsiネイティブOSを製品中核へ明確化。Sky／Zemaを最初の第一者system、社会に役立つ便利機能を継続開発系統、ゲーム・IP／動画・VRを関心に基づく優先的な応用系統とし、すべてを独立更新可能な共通契約でCoreへ接続するRQ48を追加した。
 
 2026-09-16 v1.65: native Sky選択をBroker SQLite schema v2へ永続化し、Shell API v3のselection tokenが一致する場合だけZema計画を開始するよう固定した。host 35件、Android全378 task、emulatorのBroker 9/9・Shell 4/4は合格。新経路のPixel実再起動受入は端末再接続待ちで未合格を維持する。
 
@@ -836,17 +842,17 @@ host fixture、contract、demoは実装してよいが、実端末dispatch、pro
 
 2026-09-16 v1.59: 所有Pixel 10の読取り専用ADB確認で日本向け`GL066`／`frankel`を最初の物理対象へ確定し、Android物理端末の機種／SKU gateを1/5合格にした。端末serialは保存せず、full build、flash、boot、BSP／復旧、CTS、production署名、販売準備は未合格のまま維持する。
 
-2026-09-15 v1.58: Tool完了とProvider確認済み収益を分離したまま、Provider署名、job照合、鍵分離、Billing D1への一度だけ反映をROCK_READY fixtureで縦断合格した。実Provider sandbox、実収益、払出し、所有Pixel上のAI実行は未完了のまま維持する。
+2026-09-15 v1.58: Tool完了とProvider確認済み収益を分離したまま、Provider署名、job照合、鍵分離、Billing D1への一度だけ反映をROCK_READY fixtureで縦断合格した。実Provider sandbox、実収益、払出し、所有Pixel上のsi実行は未完了のまま維持する。
 
 2026-09-16 v1.63: 当時の全11層の選択と6本のend-to-end flowを一つの構成監査へ固定。2026-09-18 v1.76でMaterial Invention／avocadoMiniを加え、12層・7経路へ更新した。設計選択は適合、全component実装・全必須経路統合・productionは未完了と判定する。
 
-2026-09-16 v1.64: Local AI plan-only API v2とBrokerの二重検証を追加し、emulatorの0件停止、PixelのZema→2 Tool→結果・履歴を合格。native Sky永続handoffと全経路の再起動／失敗復旧は未完了として維持する。
+2026-09-16 v1.64: Local si plan-only API v2とBrokerの二重検証を追加し、emulatorの0件停止、PixelのZema→2 Tool→結果・履歴を合格。native Sky永続handoffと全経路の再起動／失敗復旧は未完了として維持する。
 
-2026-09-15 v1.57: AI自動化チームの効率化を最上位目的に固定し、offline-first実行、検証済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末へ逆算するRQ47を追加。Pixelは最初のreference hardware、月50万円規模は長期の実測目標で収益保証ではなく、改善データ収集はcategory別同意と削除可能性を必須にした。
+2026-09-15 v1.57: si自動化チームの効率化を最上位目的に固定し、offline-first実行、検証済み収益、Wallet、ファンド改善、税務準備、ゲーム、専用端末へ逆算するRQ47を追加。Pixelは最初のreference hardware、月50万円規模は長期の実測目標で収益保証ではなく、改善データ収集はcategory別同意と削除可能性を必須にした。
 
-2026-09-15 v1.56: 有料full buildと実機flash／bootを最後に固定し、正確な端末readback、Android単体APK、emulator、純正Pixel上のoffline AI／温度、Sky→Zema→Tool→Wallet、source／artifact freezeを事前必須gateにした。app-only修正とOS image再build対象を分離し、初回build環境を最初の実機boot確認まで保持する。
+2026-09-15 v1.56: 有料full buildと実機flash／bootを最後に固定し、正確な端末readback、Android単体APK、emulator、純正Pixel上のoffline si／温度、Sky→Zema→Tool→Wallet、source／artifact freezeを事前必須gateにした。app-only修正とOS image再build対象を分離し、初回build環境を最初の実機boot確認まで保持する。
 
-2026-09-16 v1.60: Pixel 10 GL066上の単体APK offline AI、再起動復元、33分22秒の熱試験を合格。Rock所有fixtureのTool→署名Earning Receipt→Wallet bridgeも合格済みとして同期した。外部Provider sandbox、物理PixelのWallet Provider縦断、BSP／復旧入力、source／artifact／署名計画freezeは未完了のため有料full buildを許可しない。
+2026-09-16 v1.60: Pixel 10 GL066上の単体APK offline si、再起動復元、33分22秒の熱試験を合格。Rock所有fixtureのTool→署名Earning Receipt→Wallet bridgeも合格済みとして同期した。外部Provider sandbox、物理PixelのWallet Provider縦断、BSP／復旧入力、source／artifact／署名計画freezeは未完了のため有料full buildを許可しない。
 
 2026-09-16 v1.61: 同一の合成実行IDと証拠hashでPixelのTool／端末Walletと署名済みBilling Walletを相関し、物理6/6・署名精算7/7・Sky→Zema回帰19/19を合格した。配備済み外部Provider一本通しや実収益ではない境界を維持し、Provider sandboxとOS build入力のfreezeが終わるまで有料full buildを許可しない。
 
@@ -920,7 +926,7 @@ host fixture、contract、demoは実装してよいが、実端末dispatch、pro
 
 2026-09-12 v1.11: `k999ln/rock`のRockstarOS Automation Hubへ、Instagram運用・受注型ファッションブランド管理を商品として追加する要望をRQ18へ固定。Provider差替、MCP tool群、受注/顧客/制作/発送DB、Stripe等の決済照合、分析feedback、危険操作の個別approvalを要求する。Mr. One Hubや古いAutomation Hub archiveを正本にせず、実Provider接続を実装完了へ換算しない。
 
-2026-09-12 v1.14: 利用者の「もっとできる」「そうしよ」を、Campaign Autopilot、AI Sales Concierge、Production Cockpit、経営ダッシュボードへの拡張としてRQ19へ固定。目標駆動の計画と内部下書きは進めるが、既存approval、Provider、入金Webhook境界は維持する。
+2026-09-12 v1.14: 利用者の「もっとできる」「そうしよ」を、Campaign Autopilot、si Sales Concierge、Production Cockpit、経営ダッシュボードへの拡張としてRQ19へ固定。目標駆動の計画と内部下書きは進めるが、既存approval、Provider、入金Webhook境界は維持する。
 
 2026-09-12 v1.15: 利用者がSkyで月額8.88 USDを実際に回収できるsystemを事業上の必須条件としたため、Stripe Checkout、署名Webhook、D1契約・請求台帳、二重申込み防止、Customer PortalをRQ20へ追加。本番コードの準備を許可したが、Stripe事業者・入金口座・販売表示・sandbox受入なしにlive課金を開始したことにはしない。
 
@@ -956,4 +962,4 @@ host fixture、contract、demoは実装してよいが、実端末dispatch、pro
 
 ## 2026-10-05 avokadoProの独立小型PC方針
 
-利用者指定により、ProはNVIDIA搭載のMac miniのような据え置き小型PCとして、AIとPCゲーム双方を重視する。販売目標は80万円/台（回答80の文脈解釈、税込/税別等未定）。[構成・組立設計](avokado-pro-pc-design.md)へ候補部品、OEM試作とODM販売筐体、冷却・互換性・受入を記録した。MiniはProなしの単体動作を目指す既存R5を維持する。新task MAT16はMini MAT15と別受入であり、購入・組立・生産・公開・受注済みではない。
+利用者指定により、ProはNVIDIA搭載のMac miniのような据え置き小型PCとして、siとPCゲーム双方を重視する。販売目標は80万円/台（回答80の文脈解釈、税込/税別等未定）。[構成・組立設計](avokado-pro-pc-design.md)へ候補部品、OEM試作とODM販売筐体、冷却・互換性・受入を記録した。MiniはProなしの単体動作を目指す既存R5を維持する。新task MAT16はMini MAT15と別受入であり、購入・組立・生産・公開・受注済みではない。

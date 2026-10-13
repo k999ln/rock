@@ -124,7 +124,7 @@
   },
   "updatedAt": "2026-10-13",
   "milestone": "アカウント起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる",
-  "nextAction": "Jennifer専用branchのCI/真正な検収証拠・contextの残条件を解消し、再構成設計と引継ぎを実装branchへ保全同期。Jennifer→Sky→Zema/AMC→担当AI→成果の一周を同一artifactで受入。ProはNVIDIA高性能AI PCのP0候補と実測を進め、後払い/旧Wallet gate、passkey、Provider、各OS/hardwareは独立gate。",
+  "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer branchのCI2件とcontextを修復し、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
   "tasks": [
     {
       "id": "AMC02",
@@ -1737,7 +1737,7 @@
     {
       "id": "PRO02-02",
       "parentTaskId": "PRO02",
-      "title": "サービス＋保存とローカルAI併用の再現負荷を定義する",
+      "title": "サービス＋保存とローカルsi併用の再現負荷を定義する",
       "status": "planned",
       "dependsOn": [
         "PRO01"
@@ -2331,7 +2331,7 @@
     },
     {
       "id": "ORG01",
-      "title": "製品・SkyのAI自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備",
+      "title": "製品・Skyのsi自動化チーム単位からソース、設計、担当作業へ進めるプロジェクト別入口を整備",
       "status": "done",
       "dependsOn": [],
       "evidence": [
@@ -2516,9 +2516,11 @@
         "docs/rockstaros-complete-design-v1.0.pdf",
         "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf",
         "docs/service-design/README.md",
-        "docs/evidence/service-design-rebuild.json"
+        "docs/evidence/service-design-rebuild.json",
+        "docs/service-design/06-consistency-contracts.md",
+        "data/product-terminology.json"
       ],
-      "serviceReconstructionScope": "2026-10-13 integrated basic design; runtime, publication and product acceptance unchanged"
+      "serviceReconstructionScope": "2026-10-13 integrated basic design, coherent cross-system contracts and first-party si display; authority, billing, physical/public acceptance unchanged"
     },
     {
       "id": "AI01",
@@ -2783,7 +2785,7 @@
     },
     {
       "id": "MAT04",
-      "title": "Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定",
+      "title": "Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent si設計を固定",
       "status": "done",
       "dependsOn": [
         "MAT01",
@@ -2827,7 +2829,7 @@
     },
     {
       "id": "MAT06",
-      "title": "avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入",
+      "title": "avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent si provenance bridgeを独立受入",
       "status": "planned",
       "dependsOn": [
         "MAT03",
@@ -3378,7 +3380,7 @@
     },
     {
       "id": "WEB07",
-      "title": "利用者の目的とAIの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂",
+      "title": "利用者の目的とsiの役割を先に伝える製品紹介へGitHub冒頭とWebページを改訂",
       "status": "done",
       "dependsOn": [
         "WEB05"
@@ -4711,7 +4713,7 @@
     },
     {
       "id": "N05",
-      "title": "実USB・外部MCP/AI・金融provider・ToB精算と運営pilot",
+      "title": "実USB・外部MCP/si・金融provider・ToB精算と運営pilot",
       "status": "planned",
       "dependsOn": [
         "N01"
@@ -4873,7 +4875,7 @@
     },
     {
       "id": "FB03",
-      "title": "DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成",
+      "title": "DM履歴・購買意向・顧客情報からsi Sales Conciergeと営業パイプラインを生成",
       "status": "done",
       "dependsOn": [
         "FB01"
@@ -5334,7 +5336,7 @@
     },
     {
       "id": "MAT16",
-      "title": "avokadoProのNVIDIA搭載小型PC設計・調達・AI/PCゲーム/熱/復旧受入",
+      "title": "avokadoProのNVIDIA搭載小型PC設計・調達・si/PCゲーム/熱/復旧受入",
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
@@ -5346,7 +5348,7 @@
       "rockDeliverable": "候補構成・調達BOM・組立/冷却/受入手順",
       "externalDependency": "OEM/ODM供給、exact SKU QVL/driver/firmware、見積",
       "ownerAction": "見積後の購入・製造・販売条件",
-      "acceptance": "同一Pro実機でAI/ゲーム/熱/保存復旧を独立受入。設計だけでは完了にしない"
+      "acceptance": "同一Pro実機でsi/ゲーム/熱/保存復旧を独立受入。設計だけでは完了にしない"
     },
     {
       "id": "ORG04",
@@ -5825,7 +5827,7 @@
     },
     {
       "id": "G04",
-      "title": "重複するAI・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する",
+      "title": "重複するsi・MCP・保存・決済・Sky/Zema契約と既存PRを統合し、同一候補を検証する",
       "status": "in_progress",
       "dependsOn": [],
       "evidence": [
@@ -5939,7 +5941,7 @@
     },
     {
       "id": "CAMPUS02",
-      "title": "Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外）",
+      "title": "Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許si停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外）",
       "status": "in_progress",
       "dependsOn": [
         "CAMPUS01"
@@ -6141,7 +6143,7 @@
     {
       "id": "ANDROID-PREFULL",
       "task": "OS11",
-      "title": "有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze",
+      "title": "有料full build前に単体APK・emulator・純正Pixel offline si・Sky→Zema→Tool→Walletを完走してfreeze",
       "status": "planned",
       "dependsOn": [
         "PREVIEW-INSTALL"
@@ -6717,7 +6719,7 @@
         "fullVerify": {
           "exitCode": 1,
           "stage": "llm:architecture:check",
-          "reason": "Existing local installation lacks ai; GitHub full install and verification still required."
+          "reason": "Existing local installation lacks si; GitHub full install and verification still required."
         }
       },
       "firstIntegratedMain": "1f864be0612d7f1a8dbe42f674f9fed7d34be50c",
@@ -6760,7 +6762,7 @@
         "fullVerify": {
           "exitCode": 1,
           "stage": "llm:architecture:check",
-          "reason": "Installed dependency tree lacks ai (ERR_MODULE_NOT_FOUND); GitHub full install and exact-SHA verification required",
+          "reason": "Installed dependency tree lacks npm package ai (ERR_MODULE_NOT_FOUND); GitHub full install and exact-SHA verification required",
           "enospc": false
         }
       }
@@ -6793,7 +6795,7 @@
         "fullVerify": {
           "exitCode": 1,
           "stage": "llm:architecture:check",
-          "reason": "Installed dependency tree lacks ai (ERR_MODULE_NOT_FOUND); exact-SHA GitHub full install and verification required",
+          "reason": "Installed dependency tree lacks npm package ai (ERR_MODULE_NOT_FOUND); exact-SHA GitHub full install and verification required",
           "enospc": false
         }
       }
@@ -7198,7 +7200,7 @@
       "localFullVerify": {
         "exitCode": 1,
         "stoppedAt": "llm:architecture:check",
-        "reason": "ai dependency missing; ERR_MODULE_NOT_FOUND",
+        "reason": "npm ai dependency missing; ERR_MODULE_NOT_FOUND",
         "enospc": false
       },
       "localNativeTests": {
@@ -7251,7 +7253,7 @@
       "localFullVerify": {
         "exitCode": 1,
         "stoppedAt": "llm:architecture:check",
-        "reason": "installed ai dependency missing (ERR_MODULE_NOT_FOUND); no ENOSPC",
+        "reason": "installed npm ai dependency missing (ERR_MODULE_NOT_FOUND); no ENOSPC",
         "sameAsPriorLocalLimitation": true
       },
       "preservation": {
@@ -7815,7 +7817,7 @@
   },
   "serviceDesignReconstruction": {
     "date": "2026-10-13",
-    "status": "integrated_basic_design_verified_jennifer_source_clarified",
+    "status": "consistency_and_si_display_verification_in_progress",
     "taskId": "DOC04",
     "primaryWorkstream": "Git / CI / Operations",
     "primaryOwner": "ROCK",
@@ -7823,12 +7825,13 @@
     "inputMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
     "branch": "codex/service-design-rebuild",
     "documents": [
+      "docs/service-design/README.md",
       "docs/service-design/01-service-experience.md",
       "docs/service-design/02-system-contracts.md",
       "docs/service-design/03-product-profiles.md",
       "docs/service-design/04-delivery-and-acceptance.md",
       "docs/service-design/05-requirement-coverage.md",
-      "docs/service-design/README.md"
+      "docs/service-design/06-consistency-contracts.md"
     ],
     "requirementsPreserved": [
       "RQ01",
@@ -7882,13 +7885,13 @@
       "RQ49",
       "RQ50"
     ],
-    "runtimeChanged": false,
+    "runtimeChanged": true,
     "githubSaved": true,
     "mainIntegrated": false,
     "published": false,
     "jennifferRole": "verified_repository_jennifer_portfolio_coordinator",
     "verification": {
-      "status": "passed",
+      "status": "previous_revision_passed_current_revision_pending",
       "fullCommand": "TMPDIR=/private/tmp npm run verify",
       "exitCode": 0,
       "nodeTests": 2143,
@@ -7910,7 +7913,7 @@
       "independentReview": "passed_including_verified_jennifer_source_and_nvidia_ai_pc",
       "rawLog": "/private/tmp/rock-service-design-jennifer-verify.log",
       "rawLogSha256": "4d09f76870b7f2414d9120d4c8e65b4707e8c6ca66ac9f879a0bb0c4fd0bb308",
-      "scope": "Documentation consistency and existing unchanged runtime host regression; no new UI, provider, device, billing, publication or flight acceptance.",
+      "scope": "Prior regression retained as history; current changes include first-party UI/result/help labels and design contracts, with execution logic unchanged.",
       "statusRecordUpdatedAfterVerification": true,
       "clarificationChecks": "passed",
       "fullRegressionDocumentCommitBeforeClarification": "a1fe72b4c4d3732f9eded2fddd3ba75ec12363a6",
@@ -7922,10 +7925,10 @@
         "docs/service-design/05-requirement-coverage.md": "3fffbf0267b27b3b002f4647af90f0d64628942f00b45b0c275d770c708236d8",
         "docs/service-design/README.md": "c0b0328b9333652074f60c34ccfbcb500238c8dca05b383ccc9ae012d41301dc"
       },
-      "runtimeSourceChanged": false
+      "runtimeSourceChanged": true
     },
     "evidence": "docs/evidence/service-design-rebuild.json",
-    "nextAction": "Jennifer専用branchのCI/真正な検収証拠・contextの残条件を解消し、再構成設計と引継ぎを実装branchへ保全同期。Jennifer→Sky→Zema/AMC→担当AI→成果の一周を同一artifactで受入。ProはNVIDIA高性能AI PCのP0候補と実測を進め、後払い/旧Wallet gate、passkey、Provider、各OS/hardwareは独立gate。",
+    "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer branchのCI2件とcontextを修復し、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
     "jenniferSource": {
       "canonicalName": "Jennifer",
       "userSpelling": "Jenniffer",
@@ -7938,6 +7941,10 @@
     "localGitSaved": true,
     "pullRequest": 114,
     "pullRequestUrl": "https://github.com/k999ln/rock/pull/114",
-    "savedContentCommit": "91b26bdf783dd9458c3f7cafe59b834ec0561a38"
+    "savedContentCommit": "91b26bdf783dd9458c3f7cafe59b834ec0561a38",
+    "runtimeLogicChanged": false,
+    "displayTextChanged": true,
+    "productTerminology": "data/product-terminology.json",
+    "crossSystemAcceptanceScenarios": 12
   }
 }

@@ -42,11 +42,11 @@ SkyはToolを探して接続する場所、Zemaは選択後の依頼、実行、
 
 Zema内で実行したjobは、受付、開始、完了、失敗をbrowser eventで即時表示し、本人別D1を3秒または15秒で再照合する。browser eventだけを完了証拠にはしない。CSV、Mercari、Market等の専用画面を持つToolはZemaに担当カードを表示し、専用画面で入力・確認した後、保存済みjob／receiptの進捗をZemaへ戻して確認する。
 
-AMCは専用画面`/amc`に加えてZemaのカード内でも直接使う。32部隊の正本snapshotは読み取り専用、依頼から作るGoalは別の本人用記録である。AMCは会話LLMを呼ばず、計画の保存や着手記録をAIの起動・仕事完成と表示しない。
+AMCは専用画面`/amc`に加えてZemaのカード内でも直接使う。32部隊の正本snapshotは読み取り専用、依頼から作るGoalは別の本人用記録である。AMCは会話LLMを呼ばず、計画の保存や着手記録をsiの起動・仕事完成と表示しない。
 
 ## Skyクラウド回答の取得と会話からの仕事引継ぎ（2026-10-02）
 
-会話の現在の依頼文だけをcomponent memoryで仕事画面へ引き継ぎ、仕事選択・見積・承認は本人の操作とする。URL/新しいbrowser storage/D1へ依頼本文を追加保存せず、reloadで未送信の下書きは消える。保存済み回答は本人認証付きMarkdown attachment（private/no-store）で取得でき、未保存/削除済み/別本人は拒否する。本文削除は対象と不可逆性をdialogで確認し、state・usage・予算台帳は保持する。共有予算の確定額は請求書照合済みと表示しない。ローカルbuilt Siteの合成アカウントで引継ぎ/再読込/削除dialog取消/135byteのダウンロード一致を確認、Worker/D1で24項目合格。実AI/本番ownerログイン/Apple Payは未受入、追加課金なし。正本の全verifyと同一Site公開は次の検証。
+会話の現在の依頼文だけをcomponent memoryで仕事画面へ引き継ぎ、仕事選択・見積・承認は本人の操作とする。URL/新しいbrowser storage/D1へ依頼本文を追加保存せず、reloadで未送信の下書きは消える。保存済み回答は本人認証付きMarkdown attachment（private/no-store）で取得でき、未保存/削除済み/別本人は拒否する。本文削除は対象と不可逆性をdialogで確認し、state・usage・予算台帳は保持する。共有予算の確定額は請求書照合済みと表示しない。ローカルbuilt Siteの合成アカウントで引継ぎ/再読込/削除dialog取消/135byteのダウンロード一致を確認、Worker/D1で24項目合格。実si/本番ownerログイン/Apple Payは未受入、追加課金なし。正本の全verifyと同一Site公開は次の検証。
 証拠: [local results verification](evidence/sky-cloud-results-verification.json)。
 
 > 次の「接続情報の登録と再利用」は2026-09-20の統合（merge `a3a24b8b`）で落ちていた節です。`963027cf` から本文をそのまま復元しました（2026-10-07）。
@@ -93,7 +93,7 @@ SkyからZemaへ渡る仕事の既定実行器はOS内のローカルLLM（Local
 | 法務受付                          | Webブラウザ                                     | 相談内容を整理し、公式情報と無料窓口を案内                                               | 法的助言・期限・受任を保証せず、自動連絡しない                                                             |
 | 特許出願アシスタント              | Webブラウザ                                     | 発明情報から調査候補と出願書類ドラフトを作る                                             | 特許性・登録を保証せず、提出・支払を自動化しない                                                           |
 | Jev品質評価                       | Sky Cloud / 明示同意後のremote evaluator         | 閉じた評価基準に対するEvaluation Receiptを作る                                          | provider設定が必要。評価は助言であり、権限・Tool成功・仕事完了を決めない                                    |
-| AMC — 部隊とGoalの管理             | Webブラウザ / 本人別D1                           | 32部隊を閲覧し、依頼・Goal・意図から共通計画を作り、承認・進捗・検収を手動記録する       | LLM・AI実作業・自動送信は未接続。正本32部隊と本人用Goalを別管理し、自己申告を外部実証にしない              |
+| AMC — 部隊とGoalの管理             | Webブラウザ / 本人別D1                           | 32部隊を閲覧し、依頼・Goal・意図から共通計画を作り、承認・進捗・検収を手動記録する       | LLM・si実作業・自動送信は未接続。正本32部隊と本人用Goalを別管理し、自己申告を外部実証にしない              |
 
 この14件は `lib/catalog.ts` で `ready` とされる。導入候補22件と合わせてcatalogは36件である。ここでの`ready`はSkyの商品UIと安全な縮退経路が利用可能というcatalog状態であり、外部credential設定済み、provider接続確認済み、実機OS合格、本番合格を意味しない。法務受付と特許出願アシスタントはOpenAI未設定時に503を返し、決定論的な案内・draft部分だけを継続する。CSV仕事はSky Cloudで受付・変換・検査・私有保存を行うが、販売・決済・buyer共有は別gateである。RockstarOS Marketsは互換商品名として残る公開ライブ市場の読取専用Toolで、取得失敗時にサンプル値で補完しない。外部Polymarket botは固定commit・clean treeのoffline backtestだけを利用し、秘密鍵と注文runtimeは接続しない。Fashion Brand Opsはstdio/HTTP MCP接続、サブスク顧問はローカルPC台帳、納品記録の照合はPC接続が必要。メルカリ個人版はWeb内で原稿と進捗を管理し、外部操作は公式画面へ引き継ぐ。Fashion Brand Opsの価格変更、外部生成、投稿・広告、DM送信、請求、返金、通知は個別承認が必要である。Jev品質評価は明示同意後のremote evaluatorとして評価Receiptを返すが、権限判定や仕事完了を決めない。
 
@@ -104,11 +104,11 @@ Jev ecosystemの他候補はroute、同意UI、rubric、receipt、credential、p
 | 候補                    | 目的                                         | 現在の状態                                                                          |
 | ----------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------- |
 | faster-whisper          | 音声の文字起こし                             | 候補。Skyからの自動導入・実行は未接続                                               |
-| Transformers.js         | ブラウザ内AI                                 | 候補。モデル選定・配布・実行は未接続                                                |
+| Transformers.js         | ブラウザ内si                                 | 候補。モデル選定・配布・実行は未接続                                                |
 | Playwright              | 許可されたWeb操作とテスト                    | 候補。第三者サイトの無人操作は未許可                                                |
-| Jev Ultrafast           | 構造化された候補から一手を選ぶブラウザ操作AI | 候補。専用profile・許可site・直前承認・独立検証を設計済み。source取得と実行は未実施 |
+| Jev Ultrafast           | 構造化された候補から一手を選ぶブラウザ操作si | 候補。専用profile・許可site・直前承認・独立検証を設計済み。source取得と実行は未実施 |
 | OpenJev                 | 公開modelによるlocal typed decision          | 候補。GPU／model／license／calibration未受入                                        |
-| Jevlike                 | 小型option-scoring modelの研究               | 候補。AI Lab限定。業務判断へ未接続                                                  |
+| Jevlike                 | 小型option-scoring modelの研究               | 候補。si Lab限定。業務判断へ未接続                                                  |
 | Jev Trader              | order bookの売買判断研究                     | 候補。固定replayとPAPER限定。LIVE・秘密鍵は禁止                                     |
 | Awesome Jev by TypeSafe | Jev patternのcommunity資料集                 | reference-only。実行Toolではない                                                    |
 | TypeSafe Computer Use   | OCRとJevによるMac画面操作                    | 候補。隔離accountのobserve試験前                                                    |
@@ -131,7 +131,7 @@ Jev ecosystem 10件の役割、権限、保存、停止、外部作用、受入�
 | `faster-whisper` | faster-whisper | 音声から、編集できるテキストへ。PCで使える文字起こしエンジン。 | PC / Python。CPUまたは対応GPU。Sky実行と外部接続は検証後 |
 | `transformers-js` | Transformers.js | ブラウザでモデルを実行。分類・要約などのワークフローの土台に。 | 対応ブラウザ / JavaScript・WebGPU等。Sky実行と外部接続は検証後 |
 | `playwright` | Playwright | 許可されたWeb操作を再現。確認作業や繰り返しのテストを効率化。 | PC / Node.js・対応ブラウザ。Sky実行と外部接続は検証後 |
-| `jev-ultrafast` | Jev Ultrafast | Web画面の操作候補を番号付きで整理し、AIが許可された一手を選ぶ高速ブラウザエージェント。 | 本人PC / Python 3.12以上・uv・Chrome remote debugging・Browser Harness・TypeSafe API・text model API。Sky実行と外部接続は検証後 |
+| `jev-ultrafast` | Jev Ultrafast | Web画面の操作候補を番号付きで整理し、siが許可された一手を選ぶ高速ブラウザエージェント。 | 本人PC / Python 3.12以上・uv・Chrome remote debugging・Browser Harness・TypeSafe API・text model API。Sky実行と外部接続は検証後 |
 | `jev-trader` | Jev Trader | order bookから売買方向を選ぶJev実験を、RockstarOSのPAPER市場で検証する候補。 | 隔離PC / Bun・TypeSafe API。RockstarOSではPAPER／replay限定。Sky実行と外部接続は検証後 |
 | `typesafe-computer-use` | TypeSafe Computer Use | Mac画面を決定的に読み取り、Jevが次の操作を選ぶcomputer-use候補。 | 隔離したmacOS account / Python・uv・OCR・TypeSafe API・画面操作権限。Sky実行と外部接続は検証後 |
 | `jev-review` | Jev Review | Git差分または指定scopeのcodebaseを、段階的なJev判断でreviewする候補。 | 本人PC / Node.js 24以上・Git・TypeSafe API。dashboardはloopback限定。Sky実行と外部接続は検証後 |
@@ -213,18 +213,20 @@ Skyが接続を確認している間や、通信失敗・サインイン切れ�
 
 ### Skyの公開判定
 
-`npm run sky:launch:check`で不足を確認できます。`node scripts/check-sky-launch.mjs --require-stage focused`は、既存の本人隔離・復旧条件に加え、実クラウドAI、公開版の両端末試験、全Tool分類、Apple Payが未受入なら失敗します。CSVの既存50円決済成功は、これら全部の合格を意味しません。
+`npm run sky:launch:check`で不足を確認できます。`node scripts/check-sky-launch.mjs --require-stage focused`は、既存の本人隔離・復旧条件に加え、実クラウドsi、公開版の両端末試験、全Tool分類、Apple Payが未受入なら失敗します。CSVの既存50円決済成功は、これら全部の合格を意味しません。
 
 ### Skyサービスの利用とローンチ設計
 
-Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除・接続状態・対応環境は `/sky/help`。OS導入は必須ではありません。外部AIや購入/販売は必要な接続設定と本人の条件が揃ってから利用できます。[サービス設計と受入](sky-launch-design.md)・[段階別の受入記録](../data/sky-service-launch.json)・[運用と作者/決済の受入手順](sky-launch-operations.md)を参照してください。設定あり・コード試験・本番合格は別の状態です。
+Skyの単独マーケットは `/sky/marketplace`、利用方法・保存/削除・接続状態・対応環境は `/sky/help`。OS導入は必須ではありません。外部siや購入/販売は必要な接続設定と本人の条件が揃ってから利用できます。[サービス設計と受入](sky-launch-design.md)・[段階別の受入記録](../data/sky-service-launch.json)・[運用と作者/決済の受入手順](sky-launch-operations.md)を参照してください。設定あり・コード試験・本番合格は別の状態です。
 
-### Skyの回答取得・会話引継ぎ（v28配備、実AIは準備中）
+<a id="skyの回答取得会話引継ぎv28配備実aiは準備中"></a>
 
-OpenAIを選んだ会話で「この依頼文を仕事へ引き継ぐ」を押し、仕事を選んで見積を確認します。この操作だけではAI送信や課金は始まりません。保存した回答にはMarkdown取得と本文削除の確認画面を用意しました。未送信の依頼文はreloadで消えるため、必要な内容は手元に保持してください。実AIの接続は準備中です。
+### Skyの回答取得・会話引継ぎ（v28配備、実siは準備中）
+
+OpenAIを選んだ会話で「この依頼文を仕事へ引き継ぐ」を押し、仕事を選んで見積を確認します。この操作だけではsi送信や課金は始まりません。保存した回答にはMarkdown取得と本文削除の確認画面を用意しました。未送信の依頼文はreloadで消えるため、必要な内容は手元に保持してください。実siの接続は準備中です。
 
 <!-- sky-cloud-text-preview:start -->
-Zemaの「仕事」からクラウドAIの依頼準備・見積履歴を確認できます。仕事は再読込後も同じURLへ戻り、認証期限切れは同じ仕事へのサインインを案内します。回答のクラウド保存は初期offです。現在、実Provider資格情報・信頼済み料金・請求照合は未受入のため、AI実行は準備中です。入力してもAIへの送信や課金は始まりません。料金未設定時は見積もりも保存できません。
+Zemaの「仕事」からクラウドsiの依頼準備・見積履歴を確認できます。仕事は再読込後も同じURLへ戻り、認証期限切れは同じ仕事へのサインインを案内します。回答のクラウド保存は初期offです。現在、実Provider資格情報・信頼済み料金・請求照合は未受入のため、si実行は準備中です。入力してもsiへの送信や課金は始まりません。料金未設定時は見積もりも保存できません。
 <!-- sky-cloud-text-preview:end -->
 
 ### Skyの文章ツール
@@ -235,26 +237,28 @@ Sky／Marketで文章ツールを選び、サインインして実行します�
 
 AMCは [Goalと部隊の画面](../app/zema/amc/page.tsx) と [Codex用3役・起動口](../toolkits/amc-agent/README.md) を備えます。Webの自律実行・同期と実モデル完走は未受入です。
 
-AMCの開発用CLIは、OSの導入なしでNode.jsから実行できます。`npm run amc:autonomy:fixture -- help`で操作を表示します。新しい私有ディレクトリに固定の算術Goalを作り、子Taskの実行・ファイル検査・保存・再開・停止を試せます。[設計と実行手順](amc-autonomy-fixture.md)を参照してください。実際の仕事、Codexや外部AI、Sky/ZemaのWeb画面へは未接続で、最後は本人の検収待ちになります。
+AMCの開発用CLIは、OSの導入なしでNode.jsから実行できます。`npm run amc:autonomy:fixture -- help`で操作を表示します。新しい私有ディレクトリに固定の算術Goalを作り、子Taskの実行・ファイル検査・保存・再開・停止を試せます。[設計と実行手順](amc-autonomy-fixture.md)を参照してください。実際の仕事、Codexや外部si、Sky/ZemaのWeb画面へは未接続で、最後は本人の検収待ちになります。
 
-### PAPER市場・ココナラ・CSV・法務/特許・IP Studio・クラウドAIの個別の注意
+<a id="paper市場ココナラcsv法務特許ip-studioクラウドaiの個別の注意"></a>
+
+### PAPER市場・ココナラ・CSV・法務/特許・IP Studio・クラウドsiの個別の注意
 
 - PAPER市場は検証用です。提案後に同じ画面で内容を承認し、実行したレシートは「PAPER実行履歴」から再読込後も確認できます。サンプル価格は実売買の実績ではありません。
 - ココナラの案件管理では、サインイン切れ時も開いている入力画面を保持します。ダイアログの別タブでサインインし、「サインイン後に接続を確認」してから保存します。再確認だけで案件を再送しません。
 
 <!-- sky-service-recovery:start -->
 
-- CSV受付の完了結果・検査・ダウンロードは `/csv` の同じ画面で確認できます。認証が切れた場合はサインイン表示から `/csv` へ戻り、保存済み受付を再取得してください。Stripe診断はHTTP status・許可済みerror code・request IDのみを記録し、秘密値・入力本文・Provider messageを記録しません。50円本番CSV試験は支払い照合・成果物保存・再取得まで確認済みです。クラウドAIの実接続は未受入です。
+- CSV受付の完了結果・検査・ダウンロードは `/csv` の同じ画面で確認できます。認証が切れた場合はサインイン表示から `/csv` へ戻り、保存済み受付を再取得してください。Stripe診断はHTTP status・許可済みerror code・request IDのみを記録し、秘密値・入力本文・Provider messageを記録しません。50円本番CSV試験は支払い照合・成果物保存・再取得まで確認済みです。クラウドsiの実接続は未受入です。
 - 法務・特許の端末内処理は、任意チェックで本文を含まない実行履歴を保存できます。未ログインや履歴保存失敗でもローカル結果を保持し、別タブのサインインから復旧します。
 - 履歴保存の失敗時は固定の診断コードと、完了通知の場合は受付IDを表示します。本文や元例外の内容を診断へ送らず、ローカル計算の例外を自動再実行しません。
 - IP StudioはPCで起動してから専用画面を開きます。スマートフォンからPCへの接続は準備中のため、PC内アドレスへのボタンは表示しません。
 - ココナラの案件管理は、17項目の案件内容と変更履歴を本人別にサーバーへ保存します。実機で下書きの作成・編集・再読込を確認済みですが、ココナラへの契約送信や送金を代行しません。
 - 発注前の案件は「下書きを削除」で対象を確認してから削除できます。担当開始後の案件は削除せず、通信失敗時は一覧を再読込して結果を確認します。
-- クラウドAIは料金見積・支出上限・利用明細の接続まで実行を停止します。オンライン法務・特許には20秒の通信上限を用意し、結果不明時に自動再送しません。実Providerの応答・使用額は未受入です。
+- クラウドsiは料金見積・支出上限・利用明細の接続まで実行を停止します。オンライン法務・特許には20秒の通信上限を用意し、結果不明時に自動再送しません。実Providerの応答・使用額は未受入です。
 - 接続状態は一般商品の購入・販売とCSV専用50円試験を分けて表示します。CSV決済の設定を、一般商品の販売開始とみなしません。
 - クラウド文章生成の料金表v2は通常入力・キャッシュ読込・キャッシュ作成・出力を分けます。見積は最高入力単価を使い、実使用量やtierが不明なら費用確定を止めます。本文を含まないrequest-bound quote、親jobで共有する予算予約、一度だけの送信claim、利用明細と任意成果保存は正本ローカルで接続しました。会話UI・公開環境への接続と実Provider受入は残り、クラウド実送信は無効です。内部予算は入金済みWallet残高ではありません。
 - Toolのサインイン切れでは、元の画面を開いたまま別タブでサインインし、「サインイン後に接続を確認」を押してください。接続確認だけでは実行せず、未保存の入力を保持します。
-- 掲載候補の下書きは、入力を添えた定型テンプレートです。AI分析や外部サービスの実行ではありません。顧客インタビューと予定調整は、根拠・テーマ・日時などを本人が確認して記入します。候補の本文・結果はサーバーへ保存しないため、必要な内容はMarkdownで手元へ保存してください。
+- 掲載候補の下書きは、入力を添えた定型テンプレートです。si分析や外部サービスの実行ではありません。顧客インタビューと予定調整は、根拠・テーマ・日時などを本人が確認して記入します。候補の本文・結果はサーバーへ保存しないため、必要な内容はMarkdownで手元へ保存してください。
 
 <!-- sky-service-recovery:end -->
 

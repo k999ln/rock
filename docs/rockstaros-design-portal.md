@@ -6,13 +6,13 @@
 
 [avokado サービス統合設計](service-design/README.md)を、新しい基本設計の読み始めにする。Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarを、利用体験→共通契約→各製品→実現順→要求引継ぎの順で読む。2026-10-10確定の無料アカウント入口とRQ01〜RQ50を維持し、古いSIM主入口へ戻さない。Jenniferの役割は専用branchで確認済み、main統合・検収/Provider/contextは別受入、Mini/Pro/rocketstarの製造・実機・飛行と本番課金は個別受入。
 
-原本R5/R1.0/PDFのbyte列と各Tool/OSの詳細正本は保持する。今回の再構成は文書と説明の統合で、runtime・公開・実機の合格を更新しない。[証拠と次の作業](evidence/service-design-rebuild.json)。
+原本R5/R1.0/PDFのbyte列と各Tool/OSの詳細正本は保持する。入口＋6章の7冊と[横断整合契約](service-design/06-consistency-contracts.md)で全体を照合し、製品表示は[si表記契約](../data/product-terminology.json)に統一する。実行ロジック・公開・実機の合格は更新しない。[証拠と次の作業](evidence/service-design-rebuild.json)。
 
 avocadoMiniの現行製品要求は[R5統合基本設計](avocado-mini-r5/README.md)。使用時200mm以内・1本自律・別Hub不要を目指す基本設計で、全空間裸眼表示・最終ハードウェアは未成立/未確定。以下のE1/E2/E3、四方向発明台の資料は履歴または別研究profileとして読み、既存OS実装の受入と混同しない。
 
 > **この文書の役割** — **設計書の入口** です。`docs/` 全体の地図は [docs/README.md](README.md)、仕様がいつどう変わったかは [仕様変遷](spec-history.md)、全Toolとエージェントの機能は [エージェント・Tool総覧](agents-and-tools.md) にあります。
 
-このページは、RockstarOS本体、画面、AI、Tool、Wallet、運用、avocadoMini、avokadoPro、rocketstarまで、全設計へ入る唯一の入口である。部隊別のGoal、進捗、rule、依存、証拠、次の作業は[avokado Mission Control](mission-control.md)を正本とする。設計書が多いことを完成とは呼ばない。各systemについて、目的、利用者の操作、責任、入力、出力、状態、権限、保存、失敗、復旧、受入、現在地を説明できることを設計記載の最低条件とする。
+このページは、RockstarOS本体、画面、si、Tool、Wallet、運用、avocadoMini、avokadoPro、rocketstarまで、全設計へ入る唯一の入口である。部隊別のGoal、進捗、rule、依存、証拠、次の作業は[avokado Mission Control](mission-control.md)を正本とする。設計書が多いことを完成とは呼ばない。各systemについて、目的、利用者の操作、責任、入力、出力、状態、権限、保存、失敗、復旧、受入、現在地を説明できることを設計記載の最低条件とする。
 
 ## rocketstar 設計書完全版 R1.0と全履歴の保存
 
@@ -67,7 +67,7 @@ RockstarOS Platform Core
   ├─ ownerとcomponentのidentity
   ├─ capability・権限・本人承認
   ├─ work・step・event・artifact・receipt
-  ├─ Local AI・Agent runtime
+  ├─ Local si・Agent runtime
   ├─ Tool / MCP / Provider実行境界
   ├─ 保存・backup・復旧
   └─ update・rollback・監査・緊急保護
@@ -86,7 +86,7 @@ RockstarOS Platform Core
 | ----------------- | ------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
 | Web / PC          | 現在の製品画面、D1 API、PC Tool、MCP接続                      | AMCを含む13 ready Toolと主要画面がある     | スマホOS、native sandbox、本番Provider     |
 | Linux / QEMU      | native OS契約、署名Tool、更新・復旧、Wallet／Game fixture     | Developer Preview候補の限定受入            | Pixel対応、一般配布、本番鍵                |
-| Android APK       | Broker、Shell、固定Tool、Local AI、backup、Operatorの事前検証 | emulatorと所有Pixelの試験署名APKで限定合格 | RockstarOS image、SELinux最終形、正式署名  |
+| Android APK       | Broker、Shell、固定Tool、Local si、backup、Operatorの事前検証 | emulatorと所有Pixelの試験署名APKで限定合格 | RockstarOS image、SELinux最終形、正式署名  |
 | Pixel 10 OS image | 最初の物理RockstarOS対象                                      | sourceとbuild gateを設計・準備             | full build、flash、CTS/VTS、OTA、純正復旧  |
 | avocadoMini       | Material Inventionの標準操作端末                              | 統合設計とsandbox Core                     | XR runtime、四方向実機、新材料、特許、量産 |
 
@@ -96,7 +96,7 @@ RockstarOS Platform Core
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 製品目的・要求             | [製品ベース](product-baseline.md)                                                                                                                                  | [`data/product-baseline.json`](../data/product-baseline.json)                                                                                      |
 | 全体構成                   | [全体詳細設計](rockstaros-complete-design.md)                                                                                                                      | [`data/system-composition-audit.json`](../data/system-composition-audit.json)                                                                      |
-| AIネイティブCore           | [AIネイティブOS共通設計](ai-native-os-architecture.md)・[Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md)                                        | [`contracts/local-ai-runtime.json`](../contracts/local-ai-runtime.json)・[`contracts/decision-provider.json`](../contracts/decision-provider.json) |
+| siネイティブCore           | [siネイティブOS共通設計](ai-native-os-architecture.md)・[Decision Fabric完成設計](jev-local-qwen-decision-fabric-design.md)                                        | [`contracts/local-ai-runtime.json`](../contracts/local-ai-runtime.json)・[`contracts/decision-provider.json`](../contracts/decision-provider.json) |
 | Android / Pixel            | [Android production architecture](android-production-architecture.md)                                                                                              | [`data/android-release-architecture-policy.json`](../data/android-release-architecture-policy.json)                                                |
 | Linux / QEMU               | [native OS統合](native-os-integration.md)                                                                                                                          | [`data/qemu-release-audit.json`](../data/qemu-release-audit.json)                                                                                  |
 | Platform API               | [Platform Core](platform-core.md)                                                                                                                                  | [`contracts/platform-api.json`](../contracts/platform-api.json)                                                                                    |

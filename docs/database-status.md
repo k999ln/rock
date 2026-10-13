@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Jennifer専用branchのCI/真正な検収証拠・contextの残条件を解消し、再構成設計と引継ぎを実装branchへ保全同期。Jennifer→Sky→Zema/AMC→担当AI→成果の一周を同一artifactで受入。ProはNVIDIA高性能AI PCのP0候補と実測を進め、後払い/旧Wallet gate、passkey、Provider、各OS/hardwareは独立gate。
+設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer branchのCI2件とcontextを修復し、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

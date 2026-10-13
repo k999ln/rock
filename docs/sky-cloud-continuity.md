@@ -1,12 +1,12 @@
 # Sky Cloud — 端末切断中の継続実行
 
-2026-09-30、利用者は「クラウドのAIは、先に頼まれた仕事を続ける」を採用し、その準備を指示した。本書は開発の必須契約・受入条件。A2A 1.0 dispatch／reconciliation／one-shot cancel とlocal Cloudflare Workflow fixturesは一部実装済み。**これはクラウド本番配備、実LLM、契約Provider上の停止・課金受け入れを示さない。**
+2026-09-30、利用者は「クラウドのsiは、先に頼まれた仕事を続ける」を採用し、その準備を指示した。本書は開発の必須契約・受入条件。A2A 1.0 dispatch／reconciliation／one-shot cancel とlocal Cloudflare Workflow fixturesは一部実装済み。**これはクラウド本番配備、実LLM、契約Provider上の停止・課金受け入れを示さない。**
 
 制御プレーン候補と公式料金の同条件比較、実行sandboxの候補、契約前質問は[Cloud agent provider comparison](cloud-agent-provider-comparison-20261001.md)を参照。比較表は2026-10-02に公式料金・制限を再確認した公開料金で、契約見積・LLM料金・本番確定額ではない。Durable Workflowの30日default retention、1 MiB step/event境界、Cloudflare Containersのregional egress、AgentCore V2のregion/8-hour session上限を反映した。Rockstarのdurable job ledgerを実行sandboxの一時sessionやWorkflow retentionで置き換えない。
 
 主担当はSky / MCPのROCK、既存SKY07に関連する。既存のSky Package、Zema、Broker、Walletの契約を再利用する。eSIMは接続と導入の入口で、クラウドのジョブ所有者は認証済みアカウント。eSIM交換・端末変更・複数端末で仕事や費用を重複させない。
 
-2026-10-02の現行製品方針では、物理SIM/eSIM購入がRockstarOS service accessの入口であり、OS binaryやLLMをSIMへ保存する要件ではない。端末上のSky/Zema/Agentは一つのRockstar identityを共有し、回線プラン料金とcloud AI/agent/compute料金を別明細にする。直接Cloud LLMのWorkbenchは署名rate-cardからmodel単位単価、rate source/pricing version、依頼別最大見積、本人指定cap、予約額、完了後のitemized usageを表示する。直接Cloud LLMは有料dispatch gateがfalseの間は送信しない。追加実装ではResponses streamingの出力byteから入力token上限を使った暫定金額を計算し、Cloud D1へ定期保存してWorkbenchとAndroid Shellへ配信する。これはprovider-reported usageではなく、byte/3のtoken proxyを含む概算で、請求額・確定meterには使わない。確定明細はstream終端後のProvider response usageだけで算定し、不明なら上限予約を保持する。A2Aのlive meter表示はProvider署名callbackで受けた暫定usageで、invoice照合前である。A2AのProvider単価/依頼別quoteは未接続なので、その経路も有料実行を無効にする。直接LLMのsigned rate-card/estimate API、quote store、承認/予約/queue source、stream estimate、単価・itemized usage表示、A2A署名meter/receiptのUIは実装しローカルfixtureを検証済み。production pricing/dispatch/meter/invoice, funded Wallet debit, carrier billing and device acceptance remain unproven. 実行中meterを提供しないProviderでは予約上限を実費として表示しない。
+2026-10-02の現行製品方針では、物理SIM/eSIM購入がRockstarOS service accessの入口であり、OS binaryやLLMをSIMへ保存する要件ではない。端末上のSky/Zema/Agentは一つのRockstar identityを共有し、回線プラン料金とcloud si/agent/compute料金を別明細にする。直接Cloud LLMのWorkbenchは署名rate-cardからmodel単位単価、rate source/pricing version、依頼別最大見積、本人指定cap、予約額、完了後のitemized usageを表示する。直接Cloud LLMは有料dispatch gateがfalseの間は送信しない。追加実装ではResponses streamingの出力byteから入力token上限を使った暫定金額を計算し、Cloud D1へ定期保存してWorkbenchとAndroid Shellへ配信する。これはprovider-reported usageではなく、byte/3のtoken proxyを含む概算で、請求額・確定meterには使わない。確定明細はstream終端後のProvider response usageだけで算定し、不明なら上限予約を保持する。A2Aのlive meter表示はProvider署名callbackで受けた暫定usageで、invoice照合前である。A2AのProvider単価/依頼別quoteは未接続なので、その経路も有料実行を無効にする。直接LLMのsigned rate-card/estimate API、quote store、承認/予約/queue source、stream estimate、単価・itemized usage表示、A2A署名meter/receiptのUIは実装しローカルfixtureを検証済み。production pricing/dispatch/meter/invoice, funded Wallet debit, carrier billing and device acceptance remain unproven. 実行中meterを提供しないProviderでは予約上限を実費として表示しない。
 
 ## 実装・検証・本番受入の区分
 
@@ -22,7 +22,7 @@ Local tests and synthetic usage records are not production billing, actual carri
 
 接続中に「この作業を、指定した上限まで、端末が圏外でも続ける」と依頼する。クラウド受付を確認した後は、端末を閉じても、圏外になっても、その範囲内で処理を続ける。再接続すると途中経過、成果、使用量を取得し、同じ仕事として再開する。
 
-携帯が切断中に新しい指示・停止・承認をクラウドへ届けることはできない。クラウド自体と必要なProviderに通信経路があることが前提。端末内AIの仕事とは独立し、再接続時に差分を照合する。端末内処理で代替した仕事をクラウドにも自動投入しない。
+携帯が切断中に新しい指示・停止・承認をクラウドへ届けることはできない。クラウド自体と必要なProviderに通信経路があることが前提。端末内siの仕事とは独立し、再接続時に差分を照合する。端末内処理で代替した仕事をクラウドにも自動投入しない。
 
 ## 受付時に固定する契約
 
@@ -143,9 +143,9 @@ Cloud入口では同じowner/job/quote/cap/deadlineを端末Wallet hold・approv
 
 ## ローカル受入の再検証 — 2026-10-02
 
-以前loopback `EPERM`で起動できなかった試験を、今回ターン限定の隔離ローカルlistener権限で再実行した。`npm run test:api`は862 Worker/D1 assertions、`npm run sky:a2a:workflow:positive`は10 Workflow tests、暗号化入力・store・公開record・A2A clientのfocused testsは23件、`npm run typecheck`は成功。A2A試験は管理されたagent fixtureのみで、Remote AI Workflow試験は現在のhard pricing gateが閉じた時に`execution_disabled`となり、send claimが0件であることだけを確認する。APIハーネスは承認済みのsynthetic promptを暗号化してからcoordinatorを直接呼ぶ形へ更新した。追加で、キュー取消が成立した時に暗号化済みpromptを即時削除するよう修正し、再度の取消要求も安全に復旧することをテストした。
+以前loopback `EPERM`で起動できなかった試験を、今回ターン限定の隔離ローカルlistener権限で再実行した。`npm run test:api`は862 Worker/D1 assertions、`npm run sky:a2a:workflow:positive`は10 Workflow tests、暗号化入力・store・公開record・A2A clientのfocused testsは23件、`npm run typecheck`は成功。A2A試験は管理されたagent fixtureのみで、Remote si Workflow試験は現在のhard pricing gateが閉じた時に`execution_disabled`となり、send claimが0件であることだけを確認する。APIハーネスは承認済みのsynthetic promptを暗号化してからcoordinatorを直接呼ぶ形へ更新した。追加で、キュー取消が成立した時に暗号化済みpromptを即時削除するよう修正し、再度の取消要求も安全に復旧することをテストした。
 
-この結果はローカルsource/D1/Workflow fixtureの検証である。Remote AIの公開paid execution gateは依然falseで、Remote AI Workflowの成功dispatch、外部Provider通信、Cloudflare本番durability、Provider invoice照合、実Wallet請求、carrier activation/fulfillment、Android APK/Binder、OS installationは未検証。詳細は[受入記録](evidence/remote-ai-cloud-workflow-local-20261002.json)。
+この結果はローカルsource/D1/Workflow fixtureの検証である。Remote siの公開paid execution gateは依然falseで、Remote si Workflowの成功dispatch、外部Provider通信、Cloudflare本番durability、Provider invoice照合、実Wallet請求、carrier activation/fulfillment、Android APK/Binder、OS installationは未検証。詳細は[受入記録](evidence/remote-ai-cloud-workflow-local-20261002.json)。
 
 ## 衛星通信への拡張方針
 
@@ -161,7 +161,7 @@ KDDIの公開開発者フローではアプリ掲載と検証代行は申込制�
 
 接続モードは「地上携帯/データ」「direct-to-cell」「専用衛星端末経由」「完全オフライン」を区別し、端末能力snapshotは期限付き・出所付きにする。実際の圏外判定や端末許可はprovider/OEM APIから取得し、eSIMの存在や電波アイコンから推定しない。KDDI公開サービスの空の見通し・対応機種・地域/混雑制限、非対応通話・緊急番号等をユーザー向け提供条件に反映する。料金も一般eSIM data bundleから独立して表示し、契約/請求者が定まるまで購入・有効化しない。
 
-RockstarOSの接続経路が地上回線から衛星に変わっても、受付済みjob IDと本人・予算を維持する。短い指示・停止要求・進捗・結果要約の優先転送を設計し、限られた回線で大容量モデルを無条件に取得しない。全ての回線を失っても、端末内AIと受付済みcloud作業の独立継続を維持する。
+RockstarOSの接続経路が地上回線から衛星に変わっても、受付済みjob IDと本人・予算を維持する。短い指示・停止要求・進捗・結果要約の優先転送を設計し、限られた回線で大容量モデルを無条件に取得しない。全ての回線を失っても、端末内siと受付済みcloud作業の独立継続を維持する。
 
 「どこでも」は目標であり、地下・屋内・遮蔽・提供地域外・混雑時まで保証しない。MVPでは既存事業者連携/専用端末/自社衛星を比較し、後者は対象地域・可用性・速度・同時利用者・端末・予算、周波数認可/国際調整、衛星・地上局・携帯網、製造/打上げ/運用を別々に実現性評価する。ITU非静止衛星の手続きは主管庁による申請・周波数/軌道調整を伴う。[ITU non-GSO procedures](https://www.itu.int/en/ITU-R/space/support/nonGSO/Pages/default.aspx) 独自衛星の技術・規制・資金feasibility、製造・打上げ・無線送信・運用契約、実接続は未実施。外部事業者の技術実証はRockstarの受入証拠ではない。
 

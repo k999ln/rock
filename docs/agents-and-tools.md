@@ -14,7 +14,7 @@
 2. [SkyのTool 37件](#2-skyのtool-37件)
 3. [Skyの役割エージェント（担当）](#3-skyの役割エージェント担当)
 4. [Toolの中にあるサブシステム](#4-toolの中にあるサブシステム)
-5. [OSに入っているAIとAgent](#5-osに入っているaiとagent)
+5. [OSに入っているsiとAgent](#5-osに入っているsiとagent)
 6. [クラウドのAgent](#6-クラウドのagent)
 7. [LLM・モデルの役割](#7-llmモデルの役割)
 8. [開発を進めるエージェント（AMC）](#8-開発を進めるエージェントamc)
@@ -33,7 +33,7 @@
 | --- | --- | ---: | --- | --- |
 | **Tool**（商品） | Skyの一覧に並ぶ自動化。1つの仕事をする部品 | 37（ready 15＋候補22） | 見える。Skyで選ぶ | [第2章](#2-skyのtool-37件) |
 | **役割エージェント**（担当） | 「サブスク顧問」「法務受付」のように、役割を持って会話で仕事を進める担当。許可されたToolだけを使う | 7（実装3＋構成案4） | 見える。Sky／Zemaで話す | [第3章](#3-skyの役割エージェント担当) |
-| **OS内のAgent** | 端末の中で計画・実行・監視をする仕組み（ローカルLLMのplanner、Agent runtime、Security Agentのクモ、Operator Agent） | 4 | 一部見える | [第5章](#5-osに入っているaiとagent) |
+| **OS内のAgent** | 端末の中で計画・実行・監視をする仕組み（ローカルLLMのplanner、Agent runtime、Security Agentのクモ、Operator Agent） | 4 | 一部見える | [第5章](#5-osに入っているsiとagent) |
 | **クラウドのAgent** | 端末が圏外でも仕事を続ける、クラウド側の実行者。外部のAgentへ委任する経路（A2A）を含む | — | 見える。見積と承認のあとに動く | [第6章](#6-クラウドのagent) |
 | **部隊**（AMC） | このプロジェクト自体を開発する体制。3製品＋OSを5師団32部隊に分けたもの。Codexの司令官・実行担当・検収担当を含む | 32部隊＋3エージェント＋10担当Bot | 開発者向け | [第8章](#8-開発を進めるエージェントamc) |
 
@@ -107,15 +107,15 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 | 24 | [`telegram-notifications`](#telegram-notifications) | Telegram通知・承認 | 通知・連絡 | `Mr.` | 既存Botの依頼受付、通知、進捗確認をSkyの仕事につなぐ処理。 |
 | 25 | [`producthunt-discovery`](#producthunt-discovery) | 外部ツール候補の発見 | 市場・商品設計 | `Mr.` | Product Hunt公式API向けの候補検索処理。 |
 | 26 | [`faster-whisper`](#faster-whisper) | faster-whisper | 文字起こし | 第三者 | 音声から、編集できるテキストへ。PCで使える文字起こしエンジン。 |
-| 27 | [`transformers-js`](#transformers-js) | Transformers.js | ブラウザAI | 第三者 | ブラウザでモデルを実行。分類・要約などのワークフローの土台に。 |
+| 27 | [`transformers-js`](#transformers-js) | Transformers.js | ブラウザsi | 第三者 | ブラウザでモデルを実行。分類・要約などのワークフローの土台に。 |
 | 28 | [`playwright`](#playwright) | Playwright | ブラウザ操作 | 第三者 | 許可されたWeb操作を再現。確認作業や繰り返しのテストを効率化。 |
-| 29 | [`jev-ultrafast`](#jev-ultrafast) | Jev Ultrafast | ブラウザ操作AI | 第三者 | Web画面の操作候補を番号付きで整理し、AIが許可された一手を選ぶ高速ブラウザエージェント。 |
+| 29 | [`jev-ultrafast`](#jev-ultrafast) | Jev Ultrafast | ブラウザ操作si | 第三者 | Web画面の操作候補を番号付きで整理し、siが許可された一手を選ぶ高速ブラウザエージェント。 |
 | 30 | [`jev-trader`](#jev-trader) | Jev Trader | 市場判断研究 | 第三者 | order bookから売買方向を選ぶJev実験を、RockstarOSのPAPER市場で検証する候補。 |
-| 31 | [`typesafe-computer-use`](#typesafe-computer-use) | TypeSafe Computer Use | PC画面操作AI | 第三者 | Mac画面を決定的に読み取り、Jevが次の操作を選ぶcomputer-use候補。 |
-| 32 | [`jev-review`](#jev-review) | Jev Review | コードレビューAI | 第三者 | Git差分または指定scopeのcodebaseを、段階的なJev判断でreviewする候補。 |
-| 33 | [`jev-router`](#jev-router) | Jev Router | AIモデルルーティング | 第三者 | Codex／Claude Codeの各turnを、速いmodelまたは強いmodelへ振り分ける候補。 |
-| 34 | [`jev-browser`](#jev-browser) | Jev Browser | ブラウザ操作AI | 第三者 | 既存browser toolの観測・操作・検証loop内で、Jevが画面要素を選ぶruntime候補。 |
-| 35 | [`mobile-jev`](#mobile-jev) | Mobile Jev | Android操作AI | 第三者 | Mobilerun経由のAndroid端末で、Jevが次のmobile操作を選ぶagent候補。 |
+| 31 | [`typesafe-computer-use`](#typesafe-computer-use) | TypeSafe Computer Use | PC画面操作si | 第三者 | Mac画面を決定的に読み取り、Jevが次の操作を選ぶcomputer-use候補。 |
+| 32 | [`jev-review`](#jev-review) | Jev Review | コードレビューsi | 第三者 | Git差分または指定scopeのcodebaseを、段階的なJev判断でreviewする候補。 |
+| 33 | [`jev-router`](#jev-router) | Jev Router | siモデルルーティング | 第三者 | Codex／Claude Codeの各turnを、速いmodelまたは強いmodelへ振り分ける候補。 |
+| 34 | [`jev-browser`](#jev-browser) | Jev Browser | ブラウザ操作si | 第三者 | 既存browser toolの観測・操作・検証loop内で、Jevが画面要素を選ぶruntime候補。 |
+| 35 | [`mobile-jev`](#mobile-jev) | Mobile Jev | Android操作si | 第三者 | Mobilerun経由のAndroid端末で、Jevが次のmobile操作を選ぶagent候補。 |
 
 ### 2.3 各Toolの機能（ready 14件）
 
@@ -128,7 +128,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 - **Columbiaカード英語入口**：`lang=en&entry=columbia-card` ではGoal・Plan・Work・Waiting for review・Acceptedの限定英語下書きを同じbrowserのlocalStorageへ保存します。LLMや有料実行は呼びません。本人別D1/Zemaの正本Goalとは別で、自動同期・別端末再開・正本Goalの検収は行いません。
 - **費用**：計画作成ではLLMや有料の外部実行を呼びません。工数はテンプレートによる参考値です。
 - **使い方の流れ**：1) 依頼・Goal・意図を確認する → 2) 計画を保存し、部隊と作業順を確認する → 3) 作業の開始・提出・検収を記録する → 4) 人の判断が必要な項目を確認し、Goalを受け入れる
-- **やらないこと・注意**：利用可能なのは計画作成と手動の進捗記録です。AIによる実装・自律実行・自動通知は未接続。OS・ハードウェアの32部隊は参照用で、依頼の計画と混同しません。
+- **やらないこと・注意**：利用可能なのは計画作成と手動の進捗記録です。siによる実装・自律実行・自動通知は未接続。OS・ハードウェアの32部隊は参照用で、依頼の計画と混同しません。
 - **開く場所**：`/zema/amc`
 - **元になったもの**：avocadoOS built-in（license: avocadoOS code）
 - **実装**：[`app/amc/`](../app/amc/)・[`app/api/amc/`](../app/api/amc/)・[`lib/amc-tool.ts`](../lib/amc-tool.ts)
@@ -210,7 +210,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 - **状態・由来**：ready／`Mr.`／分類「記事制作」
 - **何をするか**：完全版の原稿から無料の紹介記事を作成。要点と出典を残し、noteへの案内を添えます。
 - **どこで動くか**：ブラウザ内 / Rockへのサインインが必要
-- **費用**：外部AIや有料APIを使わず、端末内で文章を処理します。
+- **費用**：外部siや有料APIを使わず、端末内で文章を処理します。
 - **使い方の流れ**：1) 自分が利用できる原稿を用意する → 2) 無料にする範囲・まとめ・完全版のリンクを入力する → 3) 作成結果と残したい有料部分を確認する → 4) 必要な形式で保存し、本人が公開する
 - **やらないこと・注意**：まとめは入力した文章を使用します。記事の自動執筆・noteへの投稿・販売は行いません。
 - **PC MCPの操作名**：`make_free_article`
@@ -278,9 +278,9 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 - **状態・由来**：ready／Rock／分類「法律・生活支援」
 - **何をするか**：日本語で状況を話すと、公式情報と無料窓口を案内。必要な案件だけ弁護士への引継ぎを準備します。
 - **どこで動くか**：Skyは相談内容を保存しません / 標準は端末内処理、オンライン検索は本人が明示許可した場合だけ
-- **費用**：利用者への料金は0円で提供できます。法令AI接続時のAPI利用料は運営側に発生し、連絡・依頼後の弁護士費用は別途確認が必要です。
+- **費用**：利用者への料金は0円で提供できます。法令si接続時のAPI利用料は運営側に発生し、連絡・依頼後の弁護士費用は別途確認が必要です。
 - **使い方の流れ**：1) 危険・逮捕・公的書類・期限の有無を確認する → 2) 法務受付との会話で、分野・地域・状況と希望を整理する → 3) 政府・裁判所の公式情報に限定した回答と無料窓口を確認する → 4) 刑事弁護が必要な案件は藤原茜弁護士を第一連絡候補として、本人確認後に連絡する
-- **やらないこと・注意**：法令AIの回答は一般情報であり、法的助言、期限計算、勝敗予測、受任保証ではありません。自動送信は行わず、受任可否・利益相反・料金・対応地域は弁護士へ直接確認します。差し迫った危険がある場合は米国内では911へ連絡してください。
+- **やらないこと・注意**：法令siの回答は一般情報であり、法的助言、期限計算、勝敗予測、受任保証ではありません。自動送信は行わず、受任可否・利益相反・料金・対応地域は弁護士へ直接確認します。差し迫った危険がある場合は米国内では911へ連絡してください。
 - **元になったもの**：<https://github.com/k999ln/rock/tree/codex/sky-legal-intake-20260912>（license: MIT）
 - **実装**：[`lib/legal-intake.ts`](../lib/legal-intake.ts)・[`app/api/legal-guidance/`](../app/api/legal-guidance/)
 - **詳細設計**：[全Tool詳細設計の該当節](sky-tools-complete-design.md#14-法務受付) / [法務受付の実装と安全境界](sky-legal-intake-20260912.md)
@@ -291,10 +291,10 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 - **状態・由来**：ready／Rock／分類「法律・生活支援」
 - **何をするか**：システム発明を整理し、先行技術候補の調査、特許性の予備評価、明細書・請求項・要約のドラフトを一つにまとめます。
 - **どこで動くか**：Skyは発明内容を保存しません / 標準は端末内で書類作成、オンライン調査は本人が明示許可した場合だけ
-- **Columbiaカード英語入口**：英語のUS下書き、USPTO Patent Public Search・仮出願・150語以内の要約案内、Columbia/CTVの知的財産注意を表示します。カード経由ではAI調査を画面に出さず、APIもbody読取り・認証・料金・Providerより先に拒否します。カード外の既存日本語利用は変更しません。
-- **費用**：書類ドラフトはブラウザ内で作成します。AI調査を選んだ場合だけ運営側にAPI利用料が発生し、出願料・弁理士費用は別です。
+- **Columbiaカード英語入口**：英語のUS下書き、USPTO Patent Public Search・仮出願・150語以内の要約案内、Columbia/CTVの知的財産注意を表示します。カード経由ではsi調査を画面に出さず、APIもbody読取り・認証・料金・Providerより先に拒否します。カード外の既存日本語利用は変更しません。
+- **費用**：書類ドラフトはブラウザ内で作成します。si調査を選んだ場合だけ運営側にAPI利用料が発生し、出願料・弁理士費用は別です。
 - **使い方の流れ**：1) 発明者・出願人候補と、公開済みかどうかを確認する → 2) 技術課題、仕組み、構成、効果、既存技術との差を入力する → 3) 公式特許情報の候補と原文を確認し、差分を記録する → 4) 明細書・請求項・要約のドラフトを専門家と本人が確認し、本人が提出する
-- **やらないこと・注意**：特許性、登録、侵害回避、期限を保証しません。AI調査は漏れを含む可能性があり、電子署名、料金支払、特許庁への提出は自動実行しません。公開済みの場合は公開記録を保存し、弁理士へ早急に確認してください。
+- **やらないこと・注意**：特許性、登録、侵害回避、期限を保証しません。si調査は漏れを含む可能性があり、電子署名、料金支払、特許庁への提出は自動実行しません。公開済みの場合は公開記録を保存し、弁理士へ早急に確認してください。
 - **元になったもの**：<https://github.com/k999ln/rock/tree/codex/sky-legal-intake-20260912>（license: MIT）
 - **実装**：[`lib/patent-assistant.ts`](../lib/patent-assistant.ts)・[`app/api/patent-research/`](../app/api/patent-research/)
 - **詳細設計**：[全Tool詳細設計の該当節](sky-tools-complete-design.md#15-特許出願アシスタント) / [特許出願アシスタント](sky-patent-assistant-20260912.md)
@@ -463,7 +463,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 <a id="transformers-js"></a>
 #### 27. Transformers.js — `transformers-js`
 
-- **状態・由来**：candidate／第三者／分類「ブラウザAI」
+- **状態・由来**：candidate／第三者／分類「ブラウザsi」
 - **何をするか**：ブラウザでモデルを実行。分類・要約などのワークフローの土台に。
 - **どこで動くか**：対応ブラウザ / JavaScript・WebGPU等
 - **費用**：モデルをダウンロードします。対応状況とメモリ・通信量はモデルごとに異なります。
@@ -487,8 +487,8 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 <a id="jev-ultrafast"></a>
 #### 29. Jev Ultrafast — `jev-ultrafast`
 
-- **状態・由来**：candidate／第三者／分類「ブラウザ操作AI」
-- **何をするか**：Web画面の操作候補を番号付きで整理し、AIが許可された一手を選ぶ高速ブラウザエージェント。
+- **状態・由来**：candidate／第三者／分類「ブラウザ操作si」
+- **何をするか**：Web画面の操作候補を番号付きで整理し、siが許可された一手を選ぶ高速ブラウザエージェント。
 - **どこで動くか**：本人PC / Python 3.12以上・uv・Chrome remote debugging・Browser Harness・TypeSafe API・text model API
 - **費用**：本体はMIT。選択したTypeSafe APIとtext model APIの利用料、通信量、本人PCの電力が別に発生する場合があります。
 - **使い方の流れ**：1) source版・依存関係・MIT表示を固定し、offline testを通す → 2) 普段使いと分離した専用Chrome profileと、操作してよいsiteだけを設定する → 3) 閲覧だけの試験から始め、click・入力・送信を別の権限として確認する → 4) 送信・投稿・予約・購入等は実行直前に内容を表示し、本人が一回だけ許可する → 5) Jevの完了申告とは別に、RockstarOSが結果を読み直してreceiptを保存する
@@ -511,7 +511,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 <a id="typesafe-computer-use"></a>
 #### 31. TypeSafe Computer Use — `typesafe-computer-use`
 
-- **状態・由来**：candidate／第三者／分類「PC画面操作AI」
+- **状態・由来**：candidate／第三者／分類「PC画面操作si」
 - **何をするか**：Mac画面を決定的に読み取り、Jevが次の操作を選ぶcomputer-use候補。
 - **どこで動くか**：隔離したmacOS account / Python・uv・OCR・TypeSafe API・画面操作権限
 - **費用**：本体はMIT。TypeSafe API、text model、OCR、通信、本人PCの電力が別に発生します。
@@ -523,7 +523,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 <a id="jev-review"></a>
 #### 32. Jev Review — `jev-review`
 
-- **状態・由来**：candidate／第三者／分類「コードレビューAI」
+- **状態・由来**：candidate／第三者／分類「コードレビューsi」
 - **何をするか**：Git差分または指定scopeのcodebaseを、段階的なJev判断でreviewする候補。
 - **どこで動くか**：本人PC / Node.js 24以上・Git・TypeSafe API。dashboardはloopback限定
 - **費用**：本体はMIT。review対象量に応じたTypeSafe API利用料が発生する場合があります。
@@ -535,7 +535,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 <a id="jev-router"></a>
 #### 33. Jev Router — `jev-router`
 
-- **状態・由来**：candidate／第三者／分類「AIモデルルーティング」
+- **状態・由来**：candidate／第三者／分類「siモデルルーティング」
 - **何をするか**：Codex／Claude Codeの各turnを、速いmodelまたは強いmodelへ振り分ける候補。
 - **どこで動くか**：本人PC / Node.js 20.12以上・対応CLI・TypeSafe API
 - **費用**：本体はMIT。TypeSafe APIと、選択されたCLI／modelの契約・利用枠が必要です。
@@ -547,7 +547,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 <a id="jev-browser"></a>
 #### 34. Jev Browser — `jev-browser`
 
-- **状態・由来**：candidate／第三者／分類「ブラウザ操作AI」
+- **状態・由来**：candidate／第三者／分類「ブラウザ操作si」
 - **何をするか**：既存browser toolの観測・操作・検証loop内で、Jevが画面要素を選ぶruntime候補。
 - **どこで動くか**：本人PC / Node.js 22以上・対応browser tool・TypeSafe API
 - **費用**：本体はMIT。TypeSafe API、browser実行、接続先通信の費用が別に発生します。
@@ -559,7 +559,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 <a id="mobile-jev"></a>
 #### 35. Mobile Jev — `mobile-jev`
 
-- **状態・由来**：candidate／第三者／分類「Android操作AI」
+- **状態・由来**：candidate／第三者／分類「Android操作si」
 - **何をするか**：Mobilerun経由のAndroid端末で、Jevが次のmobile操作を選ぶagent候補。
 - **どこで動くか**：隔離Android試験端末 / Node.js 22.16以上・pnpm 10.30.1・Mobilerun API・TypeSafe API
 - **費用**：本体はMIT。Mobilerun端末／service、TypeSafe API、通信、端末利用料が別に発生します。
@@ -576,7 +576,7 @@ Toolを使う前後の共通の仕組みは [Sky](sky.md) にあります：外�
 | 名前 | 何か | 扱い |
 | --- | --- | --- |
 | OpenJev（`openjev`） | 公開4Bモデル等で、文章を生成せず選択肢の確率を読むローカル判断の候補 | GPU PCが必要。未導入 |
-| Jevlike（`jevlike`） | 変化する選択肢を採点する小型モデルの学習・評価候補 | AI Labの研究限定 |
+| Jevlike（`jevlike`） | 変化する選択肢を採点する小型モデルの学習・評価候補 | si Labの研究限定 |
 | Awesome Jev by TypeSafe（`awesome-jev-by-typesafe`） | コミュニティのuse case・pattern・promptの資料集 | 実行しない。参考資料のみ |
 
 ---
@@ -589,7 +589,7 @@ Skyは「ツールの一覧」だけでなく、**役割を持つ担当と会話
 | --- | --- | --- | --- |
 | **サブスク顧問** | 契約、定期課金、更新、支払い失敗を確認する。PC内の台帳だけから回答 | `rockstar-ledger` | 実装済み。読み取り専用 |
 | **法務受付** | 相談の安全性と緊急度を先に確認し、公式情報と無料窓口を案内する。弁護士が必要な場合だけ引継ぎ要約と候補を表示。自動送信しない | `rockstar-legal-intake` | 実装済み。オンライン検索は明示同意後だけ |
-| **特許出願担当** | 発明を整理し、公式特許情報の候補調査と出願書類のドラフトを作る。特許性を保証しない | `rockstar-patent-assistant` | 実装済み。AI送信は明示同意、提出は本人 |
+| **特許出願担当** | 発明を整理し、公式特許情報の候補調査と出願書類のドラフトを作る。特許性を保証しない | `rockstar-patent-assistant` | 実装済み。si送信は明示同意、提出は本人 |
 | 営業担当 | 案件条件と応募可否を確認する。応募の送信は本人確認 | `coconala` ほか | 構成案 |
 | 編集担当 | 記事の無料版、出典整理、納品前の照合を行う | `mr-free-article`・`mr-citations`・`mr-delivery` | 構成案 |
 | Wallet担当 | 認証済み収益、実行費用、留保を説明する。送金は本人確認 | Wallet | 構成案 |
@@ -647,7 +647,7 @@ Higgsfield、Runway、Roblox、GTA／FiveM、YouTube、Instagramは接続先の 
 
 | 名前 | なぜToolと数えないか |
 | --- | --- |
-| **Material Invention Studio** | Core・sensor・XR・Safety・Simulation・Patent AI・labを束ねる application system。Skyで組み合わせる「発明チーム」の複合機能で、単体のcatalog Toolではない。机上候補比較・本人用保存を`rockstar-material-invention` Toolとして接続済み。Studio全体のsensor・XR・simulation・labは未接続 |
+| **Material Invention Studio** | Core・sensor・XR・Safety・Simulation・Patent si・labを束ねる application system。Skyで組み合わせる「発明チーム」の複合機能で、単体のcatalog Toolではない。机上候補比較・本人用保存を`rockstar-material-invention` Toolとして接続済み。Studio全体のsensor・XR・simulation・labは未接続 |
 | **Game** | 本体は application。生成や変換だけをToolにできる |
 | **Wallet** | 金融台帳とProviderの境界。Toolの自己申告で残高を変更しない |
 | **Fund** | 確認済みの実績から構成を比較する system。Tool自身に配分の権限を与えない |
@@ -656,7 +656,9 @@ Higgsfield、Runway、Roblox、GTA／FiveM、YouTube、Instagramは接続先の 
 
 ---
 
-## 5. OSに入っているAIとAgent
+<a id="5-osに入っているaiとagent"></a>
+
+## 5. OSに入っているsiとAgent
 
 端末（Android／native OS）の中で動く仕組みです。
 
@@ -669,7 +671,7 @@ Higgsfield、Runway、Roblox、GTA／FiveM、YouTube、Instagramは接続先の 
 
 **Security Agentの状態**は、`starting`／`stopped`／`unavailable`／`watching`／`sensitive_data_detected`／`recent_block`（実際の拒否から30秒）のいずれかです。検出した値そのものは画面にも記録にも出しません。
 
-くわしく: [AIネイティブOS設計](ai-native-os-architecture.md) / [Local Action Assistantの導入](local-ai-os-integration-20260915.md) / [Platform Core](platform-core.md) / [Spider Guard](spider-guard.md) / [緊急アクセスとインシデント対応](security-incident-response.md)
+くわしく: [siネイティブOS設計](ai-native-os-architecture.md) / [Local Action Assistantの導入](local-ai-os-integration-20260915.md) / [Platform Core](platform-core.md) / [Spider Guard](spider-guard.md) / [緊急アクセスとインシデント対応](security-incident-response.md)
 
 ---
 
@@ -683,10 +685,10 @@ Higgsfield、Runway、Roblox、GTA／FiveM、YouTube、Instagramは接続先の 
 | **クラウド継続実行**（Sky Cloud） | 受付確認済み・事前承認済みの仕事を、端末が圏外でも予算と期限の範囲で続ける。再接続すると同じjobの進捗・結果・項目別の利用明細を受け取る | 要件と受入計画。ローカルのWorker/D1/Workflow fixtureで検証。実クラウド実行・本番課金は未受入 |
 | **A2A Bridge**（Agent間の委任） | 外部のAgentを見つけ、接続し、仕事を委任するadapter。署名付き見積、親jobの共通予算、委任の深さ・fan-out・同時実行の上限、暗号化した引継ぎ | NodeとPythonのA2A server fixture間で相互運用を確認。本番のdispatch運用は未確認 |
 | **Sky PackageのクラウドAgent実行** | 審査済みのSky PackageをクラウドのAgentとして実行するbinding | ローカルでpositive dispatchを確認 |
-| **Agent runtime サービス** | Cloudflare Worker。`RemoteAiTextWorkflow`（リモートAIのテキスト処理）と `A2ADelegationWorkflow`（委任）、1分ごとの期限sweep | [`services/sky-agent-runtime/`](../services/sky-agent-runtime/)。本番D1・secret・cronは未設定 |
+| **Agent runtime サービス** | Cloudflare Worker。`RemoteAiTextWorkflow`（リモートsiのテキスト処理）と `A2ADelegationWorkflow`（委任）、1分ごとの期限sweep | [`services/sky-agent-runtime/`](../services/sky-agent-runtime/)。本番D1・secret・cronは未設定 |
 | **Agent Control Plane** | 開発作業をCursor Cloud Agentへ委任する境界。architecture reviewer／implementation／independent verifier／security reviewerの役割に分け、成果はpull requestだけ。Jevはworkflowの形を選ぶ助言役 | `dryRun: true` の決定的なプレビューのみ。リモート実行は料金・予算の統合まで閉じている |
 
-**料金の約束（クラウドの有料実行すべてに共通）**：実行前に単価と見積範囲、実行中に予約額と照合済み額、完了後に項目別の利用明細を見せる。利用者が決めた上限を超える実行は、新しい見積と明示承認なしには行わない。通信プランの料金とAI・Agent・computeの費用は別項目にする。
+**料金の約束（クラウドの有料実行すべてに共通）**：実行前に単価と見積範囲、実行中に予約額と照合済み額、完了後に項目別の利用明細を見せる。利用者が決めた上限を超える実行は、新しい見積と明示承認なしには行わない。通信プランの料金とsi・Agent・computeの費用は別項目にする。
 
 くわしく: [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [Sky Cloud継続実行](sky-cloud-continuity.md) / [A2A Bridge](sky-a2a-bridge.md) / [A2A価格見積拡張](a2a-pricing-extension.md) / [クラウド運用・復旧runbook](sky-cloud-operations-runbook.md) / [Agent Control Plane](agent-control-plane.md) / [クラウドAgent供給元の比較](cloud-agent-provider-comparison-20261001.md)
 
@@ -721,7 +723,7 @@ AMC（avokado Mission Control）は、**このプロジェクト自体を開発�
 | 師団 | 役割 | 部隊数 |
 | --- | --- | ---: |
 | 統合司令部 | 製品優先順位、Interface、予算、合格条件を一つに保つ。 | 1 |
-| RockstarOS師団 | 全製品へ共通の権限、AI、仕事、Tool、保存、更新、復旧を提供する。 | 7 |
+| RockstarOS師団 | 全製品へ共通の権限、si、仕事、Tool、保存、更新、復旧を提供する。 | 7 |
 | avocadoMini師団 | Mini単独で空間入力、game、保存、停止を成立させ、任意で同型miniやProと連携する。 | 7 |
 | avokadoPro師団 | ゲームとサービスをローカルで実行し、Miniの入力を体験へ変換する。 | 7 |
 | rocketstar師団 | Payloadを運び、帰還、回収、再使用できる打上げsystemを成立させる。 | 10 |
@@ -733,9 +735,9 @@ AMC（avokado Mission Control）は、**このプロジェクト自体を開発�
 | ID | 師団 | 部隊 | 目的（Goal） | 達成すると | 段階 |
 | --- | --- | --- | --- | --- | ---: |
 | H1 | 統合司令部 | 製品・Interface統合 | Mini、Pro、RockstarOS、rocketstarの優先順位、正本、Interface、合格条件を同期する。 | 全作業が一つの製品目的と受入条件へ結び付き、重複と責任不明を防ぐ。 | 3 |
-| O1 | RockstarOS師団 | 権限・Security | 本人だけが許可した操作を実行し、全変更を監査・失効できるようにする。 | AI、Tool、Provider、運営者が権限を越えず、事故時に停止できる。 | 3 |
+| O1 | RockstarOS師団 | 権限・Security | 本人だけが許可した操作を実行し、全変更を監査・失効できるようにする。 | si、Tool、Provider、運営者が権限を越えず、事故時に停止できる。 | 3 |
 | O2 | RockstarOS師団 | Work・Data | 仕事、状態、成果物、Receiptを競合なく保存し、再起動後も復元する。 | 仕事の途中と結果を失わず、何が実行されたか追跡できる。 | 3 |
-| O3 | RockstarOS師団 | AI・Agent | 交換可能なローカルAIが権限を持たずに計画し、Agentが許可済み手順だけを実行する。 | オフラインでも支援でき、model変更時も仕事と安全境界を維持する。 | 3 |
+| O3 | RockstarOS師団 | si・Agent | 交換可能なローカルsiが権限を持たずに計画し、Agentが許可済み手順だけを実行する。 | オフラインでも支援でき、model変更時も仕事と安全境界を維持する。 | 3 |
 | O4 | RockstarOS師団 | Tool・MCP | Toolを審査、登録、接続、実行、停止、失効し、結果をReceiptで照合する。 | Toolを追加してもOSの権限・保存・費用境界が崩れない。 | 3 |
 | O5 | RockstarOS師団 | Sky・Zema・Wallet | Tool選択、依頼、進捗、承認、成果、費用、確認済み収益を一つの利用体験にする。 | 利用者が一つの仕事を最後まで理解し、止め、再開し、結果と費用を確認できる。 | 3 |
 | O6 | RockstarOS師団 | Device Adapter | 共通Coreを作り直さず、各hardwareをDevice ProfileとAdapterで接続する。 | Mini、Pro、Pixel、QEMUへ同じ権限・仕事・復旧契約を展開できる。 | 2 |
@@ -748,7 +750,7 @@ AMC（avokado Mission Control）は、**このプロジェクト自体を開発�
 | M6 | avocadoMini師団 | 電源・熱・通信 | Miniを安全に連続運転し、複数MiniとProへ時刻付きで接続する。 | 長時間の利用と増設時にも入力品質と安全を維持する。 | 1 |
 | M7 | avocadoMini師団 | Calibration・安全・受入 | 校正、privacy、入力停止、故障、復旧を実機で受け入れる。 | 誤入力や故障時に危険な動作へ進まず、安全に再開できる。 | 1 |
 | P1 | avokadoPro師団 | Pro統合設計 | Proの要求、構成、BOM、接続、受入条件を一つの正本へ固定する。 | Proを商品説明だけでなく、実装可能で検証可能な製品へ変える。 | 0 |
-| P2 | avokadoPro師団 | Compute・基板 | ゲーム、サービス、ローカルAIを所定性能と電力内で実行する。 | Pro単体で主要体験を安定して実行できる。 | 0 |
+| P2 | avokadoPro師団 | Compute・基板 | ゲーム、サービス、ローカルsiを所定性能と電力内で実行する。 | Pro単体で主要体験を安定して実行できる。 | 0 |
 | P3 | avokadoPro師団 | Game Runtime・SDK | Pro単体とMini連携のgameを作者が導入、実行、保存、削除できるようにする。 | 外部game作者が安全にPro向け体験を提供できる。 | 0 |
 | P4 | avokadoPro師団 | Service・Storage | 利用者別のservice、session、assetを暗号化して保存・復元する。 | ゲームと生活serviceの状態を端末内で安全に継続できる。 | 0 |
 | P5 | avokadoPro師団 | 映像・Audio・I/O | Pro単体でdisplay、audio、controller、network、外部機器を接続する。 | 追加構築なしでgameとserviceを開始できる。 | 0 |
@@ -789,11 +791,11 @@ AMCをCodexから使うための役割定義です。正本は [`data/amc/agent-
 
 ### 8.4 Sky／Zemaの共通準備テンプレート
 
-SkyのTool `rockstar-amc` で新規の依頼を保存すると、**設計・実装・検証・統括** の4役割と7工程の共通テンプレートに置かれます。保存しても7工程はすべて `pending` で、AIや作業processは動きません。これは依頼の意味を理解して分解した結果ではなく、共通の準備計画です。
+SkyのTool `rockstar-amc` で新規の依頼を保存すると、**設計・実装・検証・統括** の4役割と7工程の共通テンプレートに置かれます。保存しても7工程はすべて `pending` で、siや作業processは動きません。これは依頼の意味を理解して分解した結果ではなく、共通の準備計画です。
 
 ### 8.5 設計と監査の役割名
 
-- **Astra** — AIネイティブOSの共通設計を具体化した設計担当（2026-09-16、RQ48）
+- **Astra** — siネイティブOSの共通設計を具体化した設計担当（2026-09-16、RQ48）
 - **Sol** — 正本・契約・Android実装・進捗証拠との整合を独立に監査した担当
 
 くわしく: [Mission Control](mission-control.md) / [AMC Goal Orchestrator](amc-goal-orchestrator.md) / [AMC agentの使い方](../toolkits/amc-agent/README.md) / [Sky専用AMCの取り込み](amc-sky-launch-integration.md) / [AMCの有限fixture実行](amc-autonomy-fixture.md) / [Sol独立監査](ai-native-os-design-audit.md)
@@ -849,7 +851,7 @@ Webアプリ本体とは別に配備する単位です。
 
 | サービス | 何か |
 | --- | --- |
-| [`sky-agent-runtime`](../services/sky-agent-runtime/) | クラウドAgentの実行Worker（リモートAIのテキスト処理、A2A委任、期限sweep） |
+| [`sky-agent-runtime`](../services/sky-agent-runtime/) | クラウドAgentの実行Worker（リモートsiのテキスト処理、A2A委任、期限sweep） |
 | [`sky-billing`](../services/sky-billing/) | 収益・費用の照合と請求のWorker。Walletの実資金受入とは別 |
 | [`sky-web`](../services/sky-web/) | Sky専用Siteの配備adapter。既存のOS用DBを初期化・置換しない |
 | [`operator-dock`](../services/operator-dock/) | 利用者向けOSと分離した、運営専用の端末管理面 |

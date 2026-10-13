@@ -63,11 +63,11 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   assert.match(mini, /data-view="side"/);
   assert.match(mini, /data-view="rear"/);
   assert.match(mini, /Check release status/);
-  assert.match(pro, /AI\. PC games\.<br\b[^>]*>A place on your desk\./);
+  assert.match(pro, /si\. PC games\.<br\b[^>]*>A place on your desk\./);
   assert.match(pro, /¥800,000 design target/);
   assert.match(pro, /COMPACT NVIDIA PC \/ DESIGN P0/);
   assert.match(pro, /id="pro-use-cases"/);
-  assert.match(pro, /AI and games\./);
+  assert.match(pro, /si and games\./);
   assert.match(built('client/install/index.html'), /id="os-use-cases"/);
   assert.match(built('client/install/index.html'), /Input in\./);
   // 2026-10-10: design documents are no longer distributed from the public site.

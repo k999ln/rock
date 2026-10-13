@@ -10,13 +10,13 @@ Jenniferの根拠は[PR #113のJennifer設計・SHA `d0151e89`](https://github.c
 
 **「やりたいことを持ってくれば、使う道具、途中の確認、仕上がった成果まで、一つの場所で扱える。」**
 
-無料のavokadoアカウントを入口に、**Jenniferへ依頼し、Skyで必要な能力を選び、Zemaで仕事を進め、Jenniferと成果を確認する**。利用者が常に話す窓口はJenniferで、Zemaはその裏で仕事を保存・管理するsystemとする。RockstarOSは本人、権限、保存、停止、復旧の共通基盤を受け持つ。スマホ・PC・ブラウザから始められ、専用機器やSIM購入を利用開始条件にしない。
+無料のavokadoアカウントを入口に、**Jenniferへ依頼し、Skyで必要な能力を選び、Zemaで仕事を進め、Jenniferと成果を確認する**。会話で利用者が話す窓口はJenniferで、Zemaはその裏で仕事を保存・管理するsystemとする。RockstarOSは本人、権限、保存、停止、復旧の共通基盤を受け持つ。スマホ・PC・ブラウザから始められ、専用機器やSIM購入を利用開始条件にしない。
 
 最初の客は、文章を納品する個人事業主。最初の価値は「原稿を生成できる」だけでなく、依頼条件と素材を揃え、加工と検査を通し、確認済みの納品用成果を取り出せること。顧客の受領、支払い、売上は別の確認として残す。
 
 ゲストは説明を読み、対応するToolのローカル下書きを試せる。本人別に保存する時、接続・有料実行・公開へ進む時にサインインの理由を示す。ゲストの入力を自動でアカウントへ送らない。サインイン後の記録には一人のownerを持たせ、複数端末利用を複数人共同編集の完成と扱わない。
 
-料金の確定条件は[2026-10-10のアカウント方針](../product-baseline.md#2026-10-10-現行製品方針-アカウントを入口にしsimは機器の任意部品にする)を引き継ぐ。アカウント無料と、Tool購入・AI従量・外部実費・機器回線料を別表示する。本番課金・Provider・規約等の受入が揃うまで、見積画面や試験台帳を実請求と表示しない。
+料金の確定条件は[2026-10-10のアカウント方針](../product-baseline.md#2026-10-10-現行製品方針-アカウントを入口にしsimは機器の任意部品にする)を引き継ぐ。アカウント無料と、Tool購入・si従量・外部実費・機器回線料を別表示する。本番課金・Provider・規約等の受入が揃うまで、見積画面や試験台帳を実請求と表示しない。
 
 ## 2. 名前が体験のどこに現れるか
 
@@ -26,12 +26,12 @@ Jenniferの根拠は[PR #113のJennifer設計・SHA `d0151e89`](https://github.c
 - **Zema**：Jenniferの裏で依頼、計画、承認、進捗、停止、成果、利用額、Receipt、履歴を保持する仕事system。利用者と話す競合人格にはしない。
 - **RockstarOS**：実行条件と本人境界を守るruntime。Broker / Platform Coreがowner・権限・上限・入力digest・期限・失効を強制する。Webにないnative能力は端末適合と受入が済んだ範囲だけ追加する。
 - **avocadoMini**：単独でも遊び、操作し、保存・停止する空間体験の機器program。Proを必須にしない。
-- **avokadoPro**：高性能NVIDIA AI PCを主眼とする独立program。既存のPCゲーム目標も維持し、Miniとの接続は任意。今回の方向確認を最終部品・性能保証・製造受入にせず、構成・互換性・販売受入は[Pro設計](../avokado-pro-pc-design.md)に従う。
+- **avokadoPro**：高性能NVIDIA si PCを主眼とする独立program。既存のPCゲーム目標も維持し、Miniとの接続は任意。今回の方向確認を最終部品・性能保証・製造受入にせず、構成・互換性・販売受入は[Pro設計](../avokado-pro-pc-design.md)に従う。
 - **rocketstar**：独立したhardware / mission program。共通OSの地上支援と飛行安全系を分け、Webの仕事承認で飛行を許可しない。
 
-Jenniferのproject担当はRockstarOS、Hardware、rocketstar、Jennifer / Zema、AMC、Spider Security、Business / Wallet、Governance / Releaseの8つの論理profileで、依頼時に必要な担当だけを使う。常駐processや独自credentialを8つ作る意味ではない。
+GitのJennifer project担当はRockstarOS、Hardware、rocketstar、Jennifer / Zema、AMC、Spider Security、Business / Wallet、Governance / Releaseの8つの社内開発/運営profile。一般利用者の顧客案件とは別の権限領域で、普通のaccountから社内task・private Git・運営命令を操作しない。一般利用者は自分のproject/Goalと許可資料を同じ会話方式で扱い、依頼時に必要な担当だけを使う。常駐processや独自credentialを8つ作る意味ではない。
 
-Jenniferの会話、Skyの能力選択、Zemaの仕事panel、ホストアプリ内の成果表示を一つの体験にまとめる。現行の専用画面は段階的に接続し、同じjobと成果を参照する。埋め込みは新しい実行権限を作らない。
+Sky直接操作とhost appの有限処理は会話を必須にせず、同じowner/job/成果とBroker gateへ接続する。Jenniferの会話、Skyの能力選択、Zemaの仕事panel、ホストアプリ内の成果表示を一つの体験にまとめる。現行の専用画面は段階的に接続し、同じjobと成果を参照する。埋め込みは新しい実行権限を作らない。
 
 ## 3. 基本画面と情報の置き場所
 
@@ -67,14 +67,14 @@ Jenniferの会話、Skyの能力選択、Zemaの仕事panel、ホストアプリ
 
 ## 4. 体験A：原稿を納品用成果へ仕上げる
 
-例は「支給原稿から無料公開版を作り、出典と必須文言を揃えて納品用ファイルにする」。最初は既存の有限処理で一周し、有料AIを必須にしない。
+例は「支給原稿から無料公開版を作り、出典と必須文言を揃えて納品用ファイルにする」。最初は既存の有限処理で一周し、有料siを必須にしない。
 
 1. Jenniferに目的を伝え、Skyの引用整理・無料記事能力を選ぶ。現行の直接入口として、Skyカードの「このToolで仕事を組む」も使える。
 2. Jenniferと原稿、読者、必須文言、文字数などの完成条件を確認し、Zemaの仕事へ置く。入力素材の保存対象と取り扱いを見て本人が保存を選ぶ。
 3. 引用整理 → 無料記事加工 → 完成条件の検査を組む。並び、入力元、各Toolの限界が見える。提案の手順を編集できる。
-4. 実行前に処理範囲を確認する。現行compositionでは外部AI・課金・顧客送信を開始しない。
+4. 実行前に処理範囲を確認する。現行compositionでは外部si・課金・顧客送信を開始しない。
 5. 途中成果を開き、出典の整形と形式検査を確認する。引用整理は事実確認、文字数検査は品質保証として表示しない。
-6. reviewでJenniferが成果と未達条件をまとめ、本人が原稿を読んで検収する。修正が必要なら原成果を残し、編集版を新しい仕事へ渡して再検査する。現行composeの形式検査を独立AI reviewerの実証にしない。
+6. reviewでJenniferが成果と未達条件をまとめ、本人が原稿を読んで検収する。修正が必要なら原成果を残し、編集版を新しい仕事へ渡して再検査する。現行composeの形式検査を独立si reviewerの実証にしない。
 7. 確認済みファイルを取得する。外部への実納品は本人操作または個別の接続・承認契約を使い、ファイル取得だけで納品完了にしない。
 8. 次回用にレシピを保存する。手順と安全な初期設定だけを再利用し、原稿、顧客情報、予算承認、receipt、旧検査合格を持ち込まない。
 
@@ -110,7 +110,7 @@ Jenniferの会話、Skyの能力選択、Zemaの仕事panel、ホストアプリ
 6. 既存タイトルなら正規clientへ明示引き継ぎし、接続・起動・操作・セーブを別々に確認する。起動commandの成功をゲーム起動成功にしない。
 7. Jenniferと結果、対応条件、素材の版、未達項目を確認し、Zemaの記録から次の制作仕事へ戻す。ゲーム内交換、資産売買、外部残高移動は開始しない。
 
-Miniは単独経路、Proは独立PC経路として診断し、任意接続を追加する。対象ゲーム・OS・機器・client版が合格した範囲だけ対応表示する。[Game workstream](../workstreams/08-game-market-fund.md)、[Mini接続契約](../mini-game-client.md)、[AI native設計](../ai-native-os-architecture.md)へ受入を分ける。
+Miniは単独経路、Proは独立PC経路として診断し、任意接続を追加する。対象ゲーム・OS・機器・client版が合格した範囲だけ対応表示する。[Game workstream](../workstreams/08-game-market-fund.md)、[Mini接続契約](../mini-game-client.md)、[si native設計](../ai-native-os-architecture.md)へ受入を分ける。
 
 合格は、非金融sandboxで制作・実行・停止・保存・再開を一周し、owner交代と接続断で前の入力・権限が残らないこと。実公開、外部client、Mini実機、商用権利、売上はそれぞれ別証拠を要する。
 

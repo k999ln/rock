@@ -51,7 +51,7 @@ MINI01: R5の全要求、OPEN01〜08、試験IDを抽出する
 | task | 作業 | 記録状態 / 分類 | 前提待ち・保留 |
 | --- | --- | --- | --- |
 | MAT14 | R5統合基本設計・PDF/Word・図面8組・計算・参考資料を欠落なく保存し、現行入口と履歴を整理（製造承認保留） | 完了記録あり / 現行製品 | — |
-| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent AI設計を固定 | 完了記録あり / 共通基盤 | — |
+| MAT04 | Material Invention Coreの標準体験としてavocadoMiniの四方向sensor・hand操作・再計算・Patent si設計を固定 | 完了記録あり / 共通基盤 | — |
 | MAT07 | 誰でも全体像から担当作業へ合流できるavocadoMini統合完成設計書と全体構成を正本化 | 完了記録あり / 共通基盤 | — |
 | MAT08 | Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入） | 完了記録あり / 旧版・参考 | — |
 | MAT10 | Mini200 E2資料と利用者確定の4本＋中央Core外観をGit正本と公開製品Siteへ同期（実機未受入） | 完了記録あり / 旧版・参考 | — |

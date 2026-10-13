@@ -1,20 +1,20 @@
 # RockstarOS 1.0 — 8原則を適用した製品・事業・開発設計
 
-2026-10-02現行方針: 主商品は物理SIM/eSIM購入を入口にRockstarOS、Sky、Zema、cloud LLM/Agentへアクセスするサービス。これは本書の2026-09-21のhardware-first記述と2026-09-16のlocal-LLM-first市場positioningをsupersedeする。Cloud実行、透明な従量料金、短いservice onboardingを最初に提供する。端末内LLM、offline agent、Pixel/QEMU/native OSは共通基盤・対応端末向け能力および独立したengineering acceptance trackとして維持し、service利用の必須条件にしない。適用する製品要件は[現行製品ベース](product-baseline.md)、SIM/eSIM導線は[claim/onboarding設計](sim-service-entitlement-claims.md)を正本とする。
+2026-10-10確定方針: 主商品は無料avokadoアカウントからSky・Zema・Agentを使うサービス。SIM不要、consumer eSIM販売は保留、Miniは任意の国内LTE/IoT回線option。Jenniferは会話窓口、Skyは発見/接続、裏側Zema/AMCは仕事/承認/停止/成果/費用、OS/Coreは実行権限と保存/復旧を強制する。Jenniferの専用branchとmainは別受入。端末内LLM、offline、Pixel/QEMUは能力と独立engineering系列を保持する。目的・共通責任・各正本・予算・価格・停止/復旧は[統合設計](service-design/README.md)と[横断整合契約](service-design/06-consistency-contracts.md)へ従う。署名/本人/見積/予算/Provider trustと各既存gateを省略しない。
 
-2026-09-16時点の履歴: [製品目的](product-north-star-20260915.md)とRQ48はAI-native OS/Coreを市場の主商品として説明していた。2026-10-02以降はOS/Coreの技術設計を[AIネイティブOS共通設計](ai-native-os-architecture.md)、顧客向け主商品の位置付けを[現行製品ベース](product-baseline.md)で別々に参照する。
+2026-09-16時点の履歴: [製品目的](product-north-star-20260915.md)とRQ48はsi-native OS/Coreを市場の主商品として説明していた。2026-10-02以降はOS/Coreの技術設計を[siネイティブOS共通設計](ai-native-os-architecture.md)、顧客向け主商品の位置付けを[現行製品ベース](product-baseline.md)で別々に参照する。
 
 状態: 設計。利用者が提示した8原則と「現段階を1.0のベースにし、継続改善する」を適用する。[確定要望RQ01〜RQ49](product-baseline.md)、[system構成](rockstaros-1.0-architecture.md)、[Material Invention Core](material-invention-core.md)、[実装承認範囲](execution-approval-20260909.md)を維持する。新しい市場・価格・所有権・実資金取引を確定した文書ではない。
 
 ## 1. 製品価値と共通基盤の区分
 
-**目指す体験: SIM/eSIMからcloud LLM/Agent、Sky、Zemaへすぐ入り、仕事を依頼して料金・進捗・結果を一か所で追える。**
+**目指す体験: accountからJenniferへ依頼し、Skyで能力を選び、Zemaで進捗・確認・成果・費用を追える。**
 
-SIM/eSIM offerはRockstarOS service accessを含む。RockstarOS/Coreはidentity・capability・approval・job recoveryを担い、Skyが「どのAgent/Toolを使うか」、Zemaが「依頼・進捗・承認・成果」、Walletが「費用・itemized usage・確認済み資金」を扱う。LLMとAgentはcloud-firstで、端末内inferenceは対応端末の任意能力として追加する。job success、納品、売上、入金は別eventとし、仕事完了だけで収益を記帳しない。
+旧SIM/eSIM購入claimは任意の招待/店頭/機器経路として保持し、通常サービスの開始条件にしない。RockstarOS/Coreはidentity・capability・approval・job recoveryを担い、Skyが「どのAgent/Toolを使うか」、Zemaが「依頼・進捗・承認・成果」、Walletが「費用・itemized usage・確認済み資金」を扱う。LLMとAgentはcloud-firstで、端末内inferenceは対応端末の任意能力として追加する。job success、納品、売上、入金は別eventとし、仕事完了だけで収益を記帳しない。
 
 | 区分 | この設計での扱い |
 | --- | --- |
-| 利用者の確定指示 | SIM/eSIM購入を入口としたRockstarOS/Sky/Zema/cloud LLM/Agent service access、透明なusage料金、短いonboarding。端末内LLMはoptional。RockstarOS Core、Pixel 10 GL066、Game/SDKは独立した技術・応用trackとして維持 |
+| 利用者の確定指示 | 無料avokadoアカウントを入口としたRockstarOS/Sky/Zema/cloud LLM/Agent service access、透明なusage料金、短いonboarding。SIMは必須にせず、consumer eSIM販売は保留、Miniの国内LTEは任意。端末内LLMはoptional。RockstarOS Core、Pixel 10 GL066、Game/SDKは独立した技術・応用trackとして維持 |
 | 具体化した設計案 | 最初の実用検証を一つの業務に集中し、同じ商品の実行・成果・状態確認・復旧を通す。配布と販売の入口を開発と同時に設計する |
 | 検証する仮説 | 初期利用者は文章・記事・提案を納品する個人事業主/クリエイター。候補商品は既存の引用整理。結果と状態を探す負担の削減が選ばれる理由になる |
 | 未実証 | 需要、継続率、支払意思、競争優位、市場規模、独占、世界初、利益、実機対応、本番金融。設計への記載を実証に換算しない |
@@ -32,7 +32,7 @@ SIM/eSIM offerはRockstarOS service accessを含む。RockstarOS/Coreはidentity
 | べき乗則 | 最初の完了体験、保存/復旧、導入可能性へ開発を集中する | 作業ごとに対象RQ・不便・検証指標を一つ記す。見た目の機能数や生成コード量で優先しない |
 | 明確な楽観主義 | 配布・実用・実機・金融を別ゲートにし、担当・入口・合格証拠を指定する | 同じ配布候補の試験と再現手順。根拠のない完成日を宣言しない |
 | 販売も重要 | CM→対象者向け説明→試用→最初の成果→継続の導線を作る | 広告再生数だけでなく導入・初回完了・自主的再利用を測る。配布未合格時の案内はデモ/試用募集まで |
-| 創業チーム | 製品判断、OS、安全な資金接続、商品供給、利用者支援の責任を分ける | 役割の実名担当・決裁者・障害時の連絡先を決める。株式比率や雇用条件をAIが決定しない |
+| 創業チーム | 製品判断、OS、安全な資金接続、商品供給、利用者支援の責任を分ける | 役割の実名担当・決裁者・障害時の連絡先を決める。株式比率や雇用条件をsiが決定しない |
 
 ## 3. 最初の商品と一周の利用体験
 
@@ -68,7 +68,7 @@ native recipeとPC版Mr.の同名処理を同一商品と決めつけない。�
 
 ## 5. 現在地と開発順
 
-現行順序は共通設計第9節のCore/応用別trackに従う。所有GL066での試験署名APKはLocal AI、Sky/Zema、固定Tool、実再起動、非破壊backupを確認済み。full build/flash、production署名、鍵喪失復旧は未受入。直近はmodel互換/記憶/副作用分類/Sky能力交渉の契約を具体化し、原稿Toolと非金融Game/IP候補を同じ基盤で検証する。後続の収益ProviderとFundは独立gateとする。
+現行順序は共通設計第9節のCore/応用別trackに従う。所有GL066での試験署名APKはLocal si、Sky/Zema、固定Tool、実再起動、非破壊backupを確認済み。full build/flash、production署名、鍵喪失復旧は未受入。直近はmodel互換/記憶/副作用分類/Sky能力交渉の契約を具体化し、原稿Toolと非金融Game/IP候補を同じ基盤で検証する。後続の収益ProviderとFundは独立gateとする。
 
 以下のSHA、D6、RLS01の表は**2026-09-09の設計時点の履歴**。現在の未完了taskや優先順位ではない。現在の進捗は[全体構成](system-composition.md)と進捗JSONを参照する。
 
@@ -113,7 +113,7 @@ native recipeとPC版Mr.の同名処理を同一商品と決めつけない。�
 
 初期チャネル案は対象業務の小さなコミュニティへの説明と紹介。実際の連絡・公開・広告購入は行わない。試用支援のつまずきをHub導線と診断へ還元する。集客数、対応環境に合う人数、導入数、初回完了数、継続数を別々に把握する。
 
-現行RQ20のSky利用料は、検証済み収益から直接実費を先に扱い、残額からUTC月最大888 USD centsまで回収する。収益0なら0、先払い・不足分の債務化・翌月繰越・カード定期請求はしない。ToB利用料0と同一契約の複数端末重複防止を維持する。nativeの月888固定試作は旧契約の履歴で、現行課金条件へ流用しない。商品代/API実費は別軸、CSV等の限定policyは各正本に従う。ATMのRock手数料0、ゲーム料金未定を維持し、previewから実課金を開始しない。
+RQ20の旧成功報酬契約は、検証済み収益から直接実費を先に扱い、残額からUTC月最大888 USD cents、収益0なら0、先払い・不足分の債務化・翌月繰越・カード定期請求なしを履歴とexecutionHoldsとして維持する。現在は期間パス・しきい値後払い・月上限の別料金契約が正本で、未受入の旧成功報酬を同時に自動徴収しない。ToB基本料0、Sky作者手数料10%、同一契約の複数端末重複防止、商品代/API実費の分離を保持する。nativeの月888固定試作は旧契約の履歴。ATMのRock手数料0、ゲーム料金未定を維持し、previewから実課金を開始しない。
 
 採算は契約収入から決済・実行基盤・更新配布・利用者支援等の実コストを引いて検証する。未知の費用を0にしない。無制限の推論無料化、ATM外部費用の無制限補填、架空の販売実績は設計に入れない。
 
@@ -123,7 +123,7 @@ native recipeとPC版Mr.の同名処理を同一商品と決めつけない。�
 
 | 責任 | 決めること | 未割当の扱い |
 | --- | --- | --- |
-| 製品決裁 | 利用者が要望・対象・販売条件の最終判断。担当が証拠と提案を用意 | AIが実証なしに要望を置換しない |
+| 製品決裁 | 利用者が要望・対象・販売条件の最終判断。担当が証拠と提案を用意 | siが実証なしに要望を置換しない |
 | OS/配布 | 候補版、更新/復旧、対応host/機種、出荷停止判断 | 技術責任者の実名を外部試用前に決める |
 | 商品供給（tob） | 商品ロジック、価格/ライセンス、品質と保守 | 接続契約と責任分界を商品ごとに確認する |
 | Wallet/接続 | 認証、台帳、照合、provider境界 | 実資金開始前に運用責任者と確認体制を決める |

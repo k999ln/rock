@@ -20,7 +20,7 @@
 - **RQ38 製品紹介を主役にし、Developer Preview導入を案内する** — 10/10 account入口とMini/Pro/rocketstar紹介を両立。
 - **RQ39 紹介ページとRock Studioのvisual systemを統一する** — 過去の外観決定を新料金・新権限へ変換しない。
 - **RQ40 RockstarOS全体のvisual systemとフロント機能性を改善する** — 既存の目的・契約・受入境界を対応章へ引き継ぐ。
-- **RQ47 AI自動化チームの効率化から収益・Wallet・ファンド・ゲームへ逆算する** — 既存の目的・契約・受入境界を対応章へ引き継ぐ。
+- **RQ47 si自動化チームの効率化から収益・Wallet・ファンド・ゲームへ逆算する** — 既存の目的・契約・受入境界を対応章へ引き継ぐ。
 
 ## [system-contracts](02-system-contracts.md)
 

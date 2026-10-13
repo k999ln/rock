@@ -317,7 +317,7 @@ export default function MaterialInventionWorkspace() {
         <p className={styles.note}>2〜16物質・比率1〜19件。由来、lot、SDS参照、危険分類を含めます。欠損・禁止条件は候補の警告に残ります。</p>
         {sample && <p className={styles.boundary}>合成サンプルです。編集後も実材料の検証記録にはなりません。</p>}
         <div className={styles.actions}><button className={styles.primary} disabled={locked || !source.trim()} onClick={() => void preview()}>この端末で候補を生成</button>{previewRunning && <button onClick={stopPreview}>候補生成を停止</button>}</div>
-        <p className={styles.note}>候補生成はブラウザ内で行います。「入力と候補を保存」を押すと、入力本文を本人用のサーバー保存へ送信します。外部AI・ラボへは送りません。</p>
+        <p className={styles.note}>候補生成はブラウザ内で行います。「入力と候補を保存」を押すと、入力本文を本人用のサーバー保存へ送信します。外部si・ラボへは送りません。</p>
       </section>
       <section aria-label="候補の結果" className={styles.results}>
         <div className={styles.actions}><h3>比較結果</h3>{graph && <span>{graph.candidates.length}候補 / HYPOTHESIS</span>}</div>

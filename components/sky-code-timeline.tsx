@@ -512,7 +512,7 @@ export default function SkyCodeTimeline({
               <p>{providers.find((p) => p.id === draft.protector)?.scope}</p>
               <p className={styles.hint}>
                 SPIDERとSecret
-                CheckはSky内の検査器です。外部AIへコードを送りません。
+                CheckはSky内の検査器です。外部siへコードを送りません。
               </p>
               {changeProtection && (
                 <label className={styles.check}>

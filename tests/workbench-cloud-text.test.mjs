@@ -152,11 +152,11 @@ void test('matching quote approves once and a lost execution response only reads
     if (call.path === `/api/llm/quotes/${record.id}` && call.method === 'POST') return { execution: { ...record, state: 'reserved' } };
     if (call.path === '/api/llm/text') throw new RemoteAiTextClientError(0, 'NETWORK');
   } });
-  h.input('AIへの依頼', 'Changed input');
+  h.input('siへの依頼', 'Changed input');
   await h.click('この上限で承認して実行');
   await until(() => h.text().includes('見積時の依頼文と一致しません'), h);
   assert.equal(h.calls.filter((c) => c.method === 'POST').length, 0);
-  h.input('AIへの依頼', 'Synthetic cloud task');
+  h.input('siへの依頼', 'Synthetic cloud task');
   await h.click('この上限で承認して実行');
   await until(() => h.calls.some((c) => c.path === '/api/llm/text') && h.find('button', '料金見積を確認して保存')?.props.disabled === false, h);
   const posts = h.calls.filter((c) => c.method === 'POST');
@@ -368,21 +368,21 @@ void test('unreconciled usage remains readable without rendering a nonexistent i
 });
 void test('private cloud drafts and pending request IDs are separated by confirmed owner and restored on return', async () => {
   const h = await harness({ onRemote(call) { if (call.path === '/api/llm/quotes' && call.method === 'POST') throw new RemoteAiTextClientError(0, 'NETWORK'); } });
-  h.input('AIへの依頼', 'Alice private instruction'); h.input('親job全体の上限', '10.00');
+  h.input('siへの依頼', 'Alice private instruction'); h.input('親job全体の上限', '10.00');
   await h.quote(); await until(() => h.find('button', '料金見積を確認して保存')?.props.disabled === false, h);
   const staleSubmit = h.quoteHandler(); const originalId = h.calls.find((call) => call.path === '/api/llm/quotes' && call.method === 'POST').body.requestId;
   h.account('b'); await h.click('再読込'); await h.click('Job 2');
   assert.equal(h.nodes().find((node) => node.props?.id === 'work-cloud-text-prompt').props.value, '');
   const count = h.calls.filter((call) => call.method === 'POST').length; staleSubmit({ preventDefault() {} }); await h.flush();
   assert.equal(h.calls.filter((call) => call.method === 'POST').length, count);
-  h.input('AIへの依頼', 'Bob separate instruction');
+  h.input('siへの依頼', 'Bob separate instruction');
   h.account('a'); await h.click('再読込'); await h.click('Job 1');
   assert.equal(h.nodes().find((node) => node.props?.id === 'work-cloud-text-prompt').props.value, 'Alice private instruction');
   await h.quote(); await until(() => h.calls.filter((call) => call.path === '/api/llm/quotes' && call.method === 'POST').length === 2, h);
   assert.equal(h.calls.filter((call) => call.path === '/api/llm/quotes' && call.method === 'POST')[1].body.requestId, originalId);
 });
 void test('unknown owner hides private cloud input and blocks a captured submit until owner confirmation returns', async () => {
-  const h = await harness(); h.input('AIへの依頼', 'Alice private instruction'); h.input('親job全体の上限', '10.00');
+  const h = await harness(); h.input('siへの依頼', 'Alice private instruction'); h.input('親job全体の上限', '10.00');
   const submit = h.quoteHandler(); h.account(null); await h.click('再読込');
   assert.equal(h.nodes().find((node) => node.props?.id === 'work-cloud-text-prompt'), undefined);
   submit({ preventDefault() {} }); await h.flush(); assert.equal(h.calls.filter((call) => call.method === 'POST').length, 0);
@@ -399,7 +399,7 @@ void test('after 401 only a fresh matching parent owner confirmation can reveal 
         if (phase === 'reauthenticated') return { executions: [], executionAvailable: false };
       }
     } });
-    h.input('AIへの依頼', 'Alice preserved private instruction');
+    h.input('siへの依頼', 'Alice preserved private instruction');
     phase = 'expired'; await h.click('状態を更新');
     assert.equal(h.nodes().find((node) => node.props?.id === 'work-cloud-text-prompt'), undefined);
     h.account(account); phase = 'reauthenticated'; await h.click('状態を更新');
@@ -413,7 +413,7 @@ void test('after 401 only a fresh matching parent owner confirmation can reveal 
 void test('a refresh handler captured before 401 must reconfirm the current owner before revealing a private draft', async () => {
   let expired = false;
   const h = await harness({ onRemote(call) { if (expired && call.path.startsWith('/api/llm/quotes?')) throw new RemoteAiTextClientError(401, 'UNAUTHORIZED'); } });
-  h.input('AIへの依頼', 'Alice private instruction');
+  h.input('siへの依頼', 'Alice private instruction');
   const staleRefresh = h.find('button', '状態を更新').props.onClick;
   expired = true; await h.click('状態を更新');
   h.account('b'); expired = false; staleRefresh(); await h.flush();
@@ -425,7 +425,7 @@ void test('a refresh handler captured before 401 must reconfirm the current owne
 void test('Cloud-only input guards actual same-tab navigation, default form does not, and explicit same-owner discard releases it', async () => {
   const h = await harness({ initialDraft: null });
   assert.equal(h.navigateHome(), false);
-  h.input('AIへの依頼', 'Unsaved cloud-only request');
+  h.input('siへの依頼', 'Unsaved cloud-only request');
   assert.equal(h.navigateHome(), true);
   await h.click('Cloud依頼の未保存入力を破棄');
   assert.equal(h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.value, '');
@@ -434,7 +434,7 @@ void test('Cloud-only input guards actual same-tab navigation, default form does
 
 void test('hidden cloud input retains navigation protection and stale owner setters/discard cannot erase it', async () => {
   const h = await harness({ initialDraft: null });
-  h.input('AIへの依頼', 'Alice retained cloud-only input');
+  h.input('siへの依頼', 'Alice retained cloud-only input');
   const oldInput = h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.onChange;
   const oldDiscard = h.find('button', 'Cloud依頼の未保存入力を破棄').props.onClick;
   h.account('b'); await h.click('再読込'); await h.click('Job 2');
@@ -475,7 +475,7 @@ void test('first quote validation refusal permits editing but a refusal after un
     h.input('親job全体の上限', '10.00'); await h.quote();
     if (priorLostResponse) { phase = 'rejected'; await h.quote(); }
     assert.equal(h.find('button', 'Cloud依頼の未保存入力を破棄').props.disabled, priorLostResponse);
-    h.input('AIへの依頼', 'Corrected request');
+    h.input('siへの依頼', 'Corrected request');
     assert.equal(h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.value,
       priorLostResponse ? 'Synthetic cloud task' : 'Corrected request');
     if (priorLostResponse) {
@@ -506,9 +506,9 @@ void test('matching saved quote readback reconciles unknown creation without ano
 
 void test('a captured Cloud discard cannot erase a later same-owner draft or release its navigation guard', async () => {
   const h = await harness({ initialDraft: null });
-  h.input('AIへの依頼', 'Earlier draft');
+  h.input('siへの依頼', 'Earlier draft');
   const staleDiscard = h.find('button', 'Cloud依頼の未保存入力を破棄').props.onClick;
-  h.input('AIへの依頼', 'Later draft with new private work');
+  h.input('siへの依頼', 'Later draft with new private work');
   staleDiscard(); h.render(); await h.flush();
   assert.equal(h.nodes().find((n) => n.props?.id === 'work-cloud-text-prompt').props.value, 'Later draft with new private work');
   assert.equal(h.navigateHome(), true);

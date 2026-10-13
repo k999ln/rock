@@ -23,7 +23,7 @@
 
 ## 2026-10-12 — Columbiaの学生向けNFCカードからSkyへ
 
-利用者がNFCタグにSkyを入れる構想を指示。カード1枚が英語の「Sky for Columbia students」の入口になり、出典整理・AMC・特許アシスタントの英語版へ進む。avokadoが書き込んで配る。特許アシスタントには米国の案内を足し、カード経由ではAI調査を出さない。カードにはURLだけを書く。正本: [Sky NFCカード設計](sky-nfc-columbia.md) / [製品ベース 2026-10-12](product-baseline.md)。
+利用者がNFCタグにSkyを入れる構想を指示。カード1枚が英語の「Sky for Columbia students」の入口になり、出典整理・AMC・特許アシスタントの英語版へ進む。avokadoが書き込んで配る。特許アシスタントには米国の案内を足し、カード経由ではsi調査を出さない。カードにはURLだけを書く。正本: [Sky NFCカード設計](sky-nfc-columbia.md) / [製品ベース 2026-10-12](product-baseline.md)。
 
 ## 2026-10-10 — アカウントを入口にし、SIMは機器の任意部品に／公開rockの整理
 
@@ -43,9 +43,9 @@
 
 | 期 | 期間 | 製品の中心 | 一言でいうと |
 | --- | --- | --- | --- |
-| 0 | 09-04 〜 09-08 | **LOOP / Rock star** — 自動化HubのWebアプリ | AI自動化ツールを見つけて動かすWebアプリとして始まった。`Mr.` のツール4件、ファンド、MCPのワンボタン実行。5日目に「自動化に特化したAndroid（AOSP）OS」の構想が加わる |
+| 0 | 09-04 〜 09-08 | **LOOP / Rock star** — 自動化HubのWebアプリ | si自動化ツールを見つけて動かすWebアプリとして始まった。`Mr.` のツール4件、ファンド、MCPのワンボタン実行。5日目に「自動化に特化したAndroid（AOSP）OS」の構想が加わる |
 | 1 | 09-09 〜 09-11 | **Rock star OS → RockstarOS 1.0** — 自動化ツール専用の端末OS | 確定要望RQ01〜RQ17を固定。Linux/QEMUで動くnative OS、Hub＋Wallet、ゲーム通貨交換、CM発表に向けたDeveloper Preview。端末はBlackBerry優先 |
-| 2 | 09-12 〜 09-16 | **Sky / Zema / Wallet** — AI自動化チームを持つためのOS | Hubを **Sky** と命名、Chatを **Zema** と命名。MCP接続、収益からの8.88 USD精算、メルカリ、Fashion Brand Ops、Wallet。実機はPixel 10に確定。名前が一時 **avocadoOS** になる。最後に「AIネイティブOS」が中核になる（RQ48） |
+| 2 | 09-12 〜 09-16 | **Sky / Zema / Wallet** — si自動化チームを持つためのOS | Hubを **Sky** と命名、Chatを **Zema** と命名。MCP接続、収益からの8.88 USD精算、メルカリ、Fashion Brand Ops、Wallet。実機はPixel 10に確定。名前が一時 **avocadoOS** になる。最後に「siネイティブOS」が中核になる（RQ48） |
 | 3 | 09-17 〜 09-26 | **avocadoMini** — ハードウェアを表の主役に | 名前がRockstarOSへ戻る。物質発明（Material Invention）とavocadoMiniが登場し、7日間に8つの案を経てR5に落ち着く。rocketstarの設計も保存。8.88 USDは保留。最後に「Mini・Pro・rocketstarの3製品＋共通OS」に整理 |
 | 4 | 09-27 〜 10-09 | **SIM/eSIMを入口にしたサービス** | Sky Market（手数料10%）と決済、Campus、AMC。クラウドAgentの継続実行。10-02に **「SIM/eSIMを買うとRockstarOS・Sky・Zema・Agentが使える」** が主商品になる。Spider Guard、ProのPC化、Mini本体SIM、専用モデル |
 | 5 | 10-10 〜 | **アカウントを入口にしたサービス**（現行） | アカウントひとつでSky・Zema・Agentを使う。SIMは不要で、avocadoMiniのような機器だけが任意で回線を使う。料金は期間パス＋従量の後払い＋月の上限。未使用Androidの余剰計算を固定lotとして仲介するSky Compute Grid（RQ50）を追加。公開rockを整理（暗号化は試した同日にやめ、全ファイル公開） |
@@ -71,20 +71,20 @@ Tool入口 Hub（Automation Hub）───────────────�
 
 | テーマ | いま有効な内容 | 決めた日 | 正本 |
 | --- | --- | --- | --- |
-| 主商品 | **avokadoのアカウントひとつ**で、スマホ・PC・ブラウザからSky・Zema・AI Agentを使うサービス。アカウントは無料。SIMは不要で、avocadoMiniのような機器だけが通信用の回線を任意で使う。消費者向けeSIMの販売は保留。売り手はavokado、最初の客は文章を納品する個人事業主 | 10-10 | [製品ベース 2026-10-10](product-baseline.md) / [アカウント入口の確定事項](account-entry-proposal.md) |
+| 主商品 | **avokadoのアカウントひとつ**で、スマホ・PC・ブラウザからSky・Zema・si Agentを使うサービス。アカウントは無料。SIMは不要で、avocadoMiniのような機器だけが通信用の回線を任意で使う。消費者向けeSIMの販売は保留。売り手はavokado、最初の客は文章を納品する個人事業主 | 10-10 | [製品ベース 2026-10-10](product-baseline.md) / [アカウント入口の確定事項](account-entry-proposal.md) |
 | 料金のしくみ | 期間パス（前払い・6か月未満・自動更新は既定オン）＋従量のしきい値後払い＋月の上限＋回線つき機器の基本料。残高は持たない。やめ方は自動更新を切る・上限を0にする・回線を解約するの3つ | 10-10 | 同上 |
 | Skyの置き場所 | `https://avocadomini.si/sky`。本人確認は自前のpasskey、通知はWeb Pushから | 10-10 | 同上 |
 | 選ばれる理由 | ①クラウドLLM・Agentへ速く簡単に ②料金と使用量が透明 ③Sky/Zemaを最小設定で | 10-02 | 同上 |
 | Skyの提供形態 | OSの導入を必須としない独立サービスとしても提供する。OS内と単独Web（`/sky/marketplace`）で同じcatalog・本人認証・履歴・実行条件を共有 | 10-01 | [Sky](sky.md#単独アプリとos内の共通マーケットプレイス) / [Skyローンチ設計](sky-launch-design.md) |
 | Sky Compute Grid | 充電中・未使用のAndroid余剰計算を、public/synthetic text embeddingの固定lotへmatchingする。検証済みlotだけを精算候補にし、実端末dispatchとlive billing/payoutは未開始 | 10-10 | [製品ベース RQ50](product-baseline.md#rq50-使われていないスマートフォンの計算余力をskyで仲介する) / [Compute Grid設計](sky-compute-grid.md) |
-| 最上位の目的 | 利用者が自分専用のAI自動化チームを持ち、その効率を上げて便利さと検証可能な収益機会を増やす（RQ47） | 09-15 | [製品北極星](product-north-star-20260915.md) |
+| 最上位の目的 | 利用者が自分専用のsi自動化チームを持ち、その効率を上げて便利さと検証可能な収益機会を増やす（RQ47） | 09-15 | [製品北極星](product-north-star-20260915.md) |
 | 製品名 | 表示は **RockstarOS**（共通版は `RockstarOS 1.0 Developer Preview`）。内部識別子は `dev.rock`。ブランドは avokado | 09-17 | 製品ベース RQ43・RQ44 |
-| OSの位置づけ | AI・Agent実行、権限、本人性、端末適合、保存・復旧の共通runtime。ローカルLLMは対応端末向けの追加能力で、必須ではない（RQ48） | 09-16 / 10-02 | [AIネイティブOS設計](ai-native-os-architecture.md) |
+| OSの位置づけ | si・Agent実行、権限、本人性、端末適合、保存・復旧の共通runtime。ローカルLLMは対応端末向けの追加能力で、必須ではない（RQ48） | 09-16 / 10-02 | [siネイティブOS設計](ai-native-os-architecture.md) |
 | 標準の入口 | Home（`/`）→ **Sky**（Toolを探す・接続）／**Zema**（仕事を頼む・止める・確認）／**Wallet**（費用と確認済み収益）＋ Market、Campus、設定、追加（`/add`） | 09-12〜10-06 | [Sky](sky.md) / [全Tool設計](sky-tools-complete-design.md) |
 | ハードウェア製品 | **avocadoMini**（現行R5：200mm以内、1本自律、別Hub不要。回線は国内LTE・IoT向けdata専用SIMの別modelかoption）／**avokadoPro**（NVIDIA搭載の小型PC、Miniなしで単独動作）／**rocketstar**（R1.0、別プログラム） | 09-24 / 09-26 / 10-05 | [R5設計](avocado-mini-r5/README.md) / [Pro設計](avokado-pro-pc-design.md) / [rocketstar](rocketstar-design/README.md) |
 | 最初の実機 | Google Pixel 10（日本向け GL066 / `frankel`）。Linux/QEMU版は独立したDeveloper Previewとして保持 | 09-16 | [端末preview](phone-preview-20260911.md) |
 | 端末の分岐 | 署名済みOSと復旧経路が受入済みの正確な機種だけnative OS。それ以外は既存OS上のアプリまたはブラウザ | 10-02 | [SIM/eSIM-led architecture](sim-led-product-architecture.md) |
-| クラウドAIの料金 | 使用量ベース。実行前に単価と見積、実行中に予約額、完了後に項目別の利用明細。上限を超える実行はしない。通信料とは別表示 | 10-02 | 製品ベース冒頭 |
+| クラウドsiの料金 | 使用量ベース。実行前に単価と見積、実行中に予約額、完了後に項目別の利用明細。上限を超える実行はしない。通信料とは別表示 | 10-02 | 製品ベース冒頭 |
 | Sky Marketの手数料 | 登録・接続・公開・基本利用料は0円。検証済みTool売上の手数料は **当面10%**。0%（Skyの取り分0、決済実費は実額）へは、従量の粗利が固定費を3か月続けて上回ったら切り替える。作者への払出しは月1回。第三者実費は別表示 | 09-27 / 10-10 | [Sky経済設計](sky-network-economy.md) / [決済](sky-billing.md) |
 | 8.88 USDの収益料金 | **保留**。収益を得る動線が確定するまで計上・請求・回収しない | 09-24 | 製品ベース「収益料金の保留」 |
 | 公開製品ラインの参考価格 | avocadoMini 1本 ¥160,000、4本 ¥410,000、avokadoPro From ¥880,000（税・送料別、公開Siteの表記どおり）。販売・決済は停止のまま。**R5の価格は未確定**で、R5とこの製品ラインの関係はowner判断待ち。Proは10-05の「販売目標80万円／台」と並んでいて、どちらが現行かは未整理 | 09-25 | [製品ベース 2026-09-25の節](product-baseline.md) |
@@ -109,9 +109,9 @@ Tool入口 Hub（Automation Hub）───────────────�
 | --- | --- | --- |
 | 09-04 | 自動化Hub（LOOP）。ツールを見つけて動かすWebアプリ | 初期実装 |
 | 09-05 | 自動化に特化したAOSPベースのOS（Rock star） | 設計 `6c593ae1` |
-| 09-09 | AI自動化ツールに特化した端末OS。入口はSky（当時Hub）とWallet（RQ01） | v1.0 |
-| 09-15 | 利用者が自分専用のAI自動化チームを所有すること。OSや端末は手段（RQ47） | v1.57 |
-| 09-16 | 高性能で交換可能なローカルLLMを持つAIネイティブOS（RQ48） | v1.70 |
+| 09-09 | si自動化ツールに特化した端末OS。入口はSky（当時Hub）とWallet（RQ01） | v1.0 |
+| 09-15 | 利用者が自分専用のsi自動化チームを所有すること。OSや端末は手段（RQ47） | v1.57 |
+| 09-16 | 高性能で交換可能なローカルLLMを持つsiネイティブOS（RQ48） | v1.70 |
 | 09-19 | 表の主役はハードウェア。最初の製品構想はavocadoMini。OS・LLM・Sky/Zemaは支える技術基盤 | v1.83 |
 | 09-21 | ゲーム機を入口に、生活全体を豊かにするOSへ | v1.89 |
 | 09-26 | ハードウェアは avocadoMini・avokadoPro・rocketstar の3製品。RockstarOSは3製品共通のOS | v1.95 |
@@ -160,7 +160,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 | 09-25 | 公開Siteの製品ラインと参考価格を正式化：avocadoMini 1本 ¥160,000／4本 ¥410,000、avokadoPro From ¥880,000（US$5,800）。税・送料別。販売は停止のまま、R5の価格は未確定 | 本人決定 2026-09-25 00:49〔復元した記録〕 |
 | 09-27 | **Sky Marketの手数料は10%**。登録・接続・公開・基本利用料は0円。Stripe Connectの決済を実装 | 現行手数料 |
 | 09-27 | Mini対応ゲームの分配はクリエイター80%：運営20% | 会話仕様アーカイブ |
-| **10-02** | **クラウドAI・Agentは使用量ベースで課金**。事前見積・上限・項目別明細。通信料とは別項目 | 現行方針 |
+| **10-02** | **クラウドsi・Agentは使用量ベースで課金**。事前見積・上限・項目別明細。通信料とは別項目 | 現行方針 |
 | 10-05 | avokadoProの販売目標は80万円／台（税・送料は未定）。09-25の参考価格 From ¥880,000 を上書きするのかは記録がなく、要確認 | Pro方針 |
 
 ### 3.4 対象端末
@@ -204,9 +204,11 @@ Tool入口 Hub（Automation Hub）───────────────�
 | 09-24 | rocketstar 設計書完全版 R1.0（44ページ・35章）と全付録を保存。RockstarOS 設計書完全版 v1.0（41ページ・32章）も保存 |
 | 09-25 | 公開SiteでMiniとProの製品ページを分離。avokadoProの参考価格 From ¥880,000（US$5,800、税・送料別）を公開Siteどおり正式化〔復元した記録〕 |
 | 09-26 | Proを「単体でgame・service・compute・storage・audioを扱い、任意でMiniと接続する製品」と定義。専用設計は未作成（段階0） |
-| **10-05** | **Proは「NVIDIA搭載のMac miniのような据え置き小型PC」**。AIとPCゲームを重視、販売目標80万円／台（09-25の From ¥880,000 との関係は要確認） |
+| **10-05** | **Proは「NVIDIA搭載のMac miniのような据え置き小型PC」**。siとPCゲームを重視、販売目標80万円／台（09-25の From ¥880,000 との関係は要確認） |
 
-### 3.7 AI・LLM・Agent
+<a id="37-aillmagent"></a>
+
+### 3.7 si・LLM・Agent
 
 | 日付 | 変更 | 版 |
 | --- | --- | --- |
@@ -337,7 +339,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 - **v1.11**：Instagram運用・受注型ファッションブランド管理を商品として追加
 - **v1.12**：自動化ツールの入口を **Sky** と命名
 - **v1.13**：基本アプリを **Sky / Chat / Wallet / Polymarket** の4つに（**RQ18**）
-- **v1.14**：Fashion Brand Opsを目標駆動のブランド経営エージェントへ（**RQ19**）— Campaign Autopilot、AI Sales Concierge、Production Cockpit
+- **v1.14**：Fashion Brand Opsを目標駆動のブランド経営エージェントへ（**RQ19**）— Campaign Autopilot、si Sales Concierge、Production Cockpit
 - **v1.15**：Skyで月額8.88 USDを実際に回収する（**RQ20**初版・Stripe先払い）
 - **v1.16**：tobからSky利用料と売上手数料を取らない（**RQ21**）
 - **v1.17**：MCPの機能はSkyの中に入れる。sidebarをやめる（**RQ22**）
@@ -400,7 +402,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 - **v1.53**：運営1名による緊急保護と限定保守アクセス（**RQ45**）
 - **v1.54 → v1.55**：端末管理画面を利用者Web内の `/operator` として実装 → 同日、利用者OSから分離した **Operator Dock** へ訂正（**RQ46**）
 - **v1.56**：有料のOS full buildと実機flashは最後に行う
-- **v1.57**：最上位目的を「AI自動化チームの所有と効率化」へ固定（**RQ47**）
+- **v1.57**：最上位目的を「si自動化チームの所有と効率化」へ固定（**RQ47**）
 - **v1.58**：Tool完了 → 署名付きEarning Receipt → Walletへ一度だけ反映、のbridgeが合格
 - Pixel 10を最初の実機対象に選定
 
@@ -411,25 +413,27 @@ Tool入口 Hub（Automation Hub）───────────────�
 
 くわしく: [Sky Tool SDK / Rock Studio](sky-tool-sdk.md) / [CSV仕事 v1](csv-business-v1.ja.md) / [Local Action Assistantの導入](local-ai-os-integration-20260915.md) / [Platform Core](platform-core.md) / [緊急アクセスとインシデント対応](security-incident-response.md) / [製品北極星](product-north-star-20260915.md) / [フロント機能性監査](frontend-usability-audit-20260915.md)
 
-#### 2026-09-16（20 commit）— Pixel実機とAIネイティブOS
+<a id="2026-09-1620-commit-pixel実機とaiネイティブos"></a>
+
+#### 2026-09-16（20 commit）— Pixel実機とsiネイティブOS
 
 **仕様の決定**
 - **v1.59**：最初の物理対象を日本向け **Pixel 10 GL066 / `frankel`** へ確定
 - **v1.62**：外部Providerは初回OS full buildへ焼き込まず、更新可能なアプリ／サーバー側へ分離
 - **v1.63**：全体構成監査。**BlackBerry-firstとQEMU-firstのスマホ優先順位を退役**
-- **v1.70**：製品中核を「高性能で交換可能なローカルLLMとoffline agent runtimeを持つAIネイティブOS」へ（**RQ48**）
+- **v1.70**：製品中核を「高性能で交換可能なローカルLLMとoffline agent runtimeを持つsiネイティブOS」へ（**RQ48**）
 - **v1.71**：Astraが設計、Solが独立監査
 
 **この日に作ったもの（実機で確認できたもの）**
 - **v1.60**：所有Pixel 10でQwen3-0.6Bの機内モード推論、再起動後の保持、33分22秒・15推論の熱試験（最大34.4℃）
 - **v1.61**：PixelのTool／端末Walletと、署名済みBilling Walletを同じ実行IDで相関
-- **v1.64**：Local AI plan v2 → Zemaの計画 → 2つのTool → 結果・履歴までPixelで完走
+- **v1.64**：Local si plan v2 → Zemaの計画 → 2つのTool → 結果・履歴までPixelで完走
 - **v1.65**：native Skyの選択をBrokerへ永続化
 - **v1.66**：backup v2（24単語のrecovery secret）
 - **v1.67 / v1.68**：hardware credential署名のOperator Agent
 - **v1.69**：full buildの入力freeze
 
-くわしく: [AIネイティブOS設計](ai-native-os-architecture.md) / [Sol独立監査](ai-native-os-design-audit.md) / [全体構成監査](system-composition.md) / [Android production architecture](android-production-architecture.md) / [バックアップ・全損復元](android-backup-recovery.md) / [初回flash前の固定gate](android-first-flash-gate-20260916.md)
+くわしく: [siネイティブOS設計](ai-native-os-architecture.md) / [Sol独立監査](ai-native-os-design-audit.md) / [全体構成監査](system-composition.md) / [Android production architecture](android-production-architecture.md) / [バックアップ・全損復元](android-backup-recovery.md) / [初回flash前の固定gate](android-first-flash-gate-20260916.md)
 
 ### 期3 — avocadoMini（09-17 〜 09-26）
 
@@ -527,7 +531,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 - **端末の対外表示名を「avokado mini」に**〔復元した記録〕：ownerの訂正で、事業ブランド「avokado」と製品「avokado mini」を区別する変更がPR #40で作られた。`main` へは入らず、10-05に「現行のSIM起点の製品ページで上書き済み」として記録だけ統合された。現行表記は avocadoMini／avokadoPro のままで、**製品名はowner判断待ち**
 
 **この日に作ったもの**
-- プロジェクト別ガイド（`PROJECTS.md`）を新設し、全ToolをAIチームとして整理
+- プロジェクト別ガイド（`PROJECTS.md`）を新設し、全Toolをsiチームとして整理
 - 公開SiteをAstroへ移行、R5へ同期、英語中心へ統一
 - READMEをR5の製品画像とブランドGIFで刷新
 
@@ -608,7 +612,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 **この日に作ったもの**
 - 販売チャネル共通の利用権claim、SIM利用権の返金・失効、料金見積APIとZemaの見積表示、A2Aの価格quote・署名meter・Wallet hold
 - Skyの `/sky/esim` ページ（購入は無効のまま）、Sky Market決済とWalletの統合詳細設計、Skyサービスのローンチ設計
-- Local AIの記憶store、モデルprofileのZema接続
+- Local siの記憶store、モデルprofileのZema接続
 
 くわしく: [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [購入とサービス利用権](sim-service-entitlement-claims.md) / [クラウドAgent供給元の比較](cloud-agent-provider-comparison-20261001.md) / [Skyローンチ設計](sky-launch-design.md) / [Sky Market決済・Wallet統合設計](sky-commerce-design.md)
 
@@ -624,7 +628,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 
 **この日に作ったもの**
 - nativeのSpider Guardと送信前保護、offlineのコード検査、リポジトリの秘密スキャナ、CodeQL
-- AI・MCP・保存・決済・Sky/Zemaの共通契約を集約するrefactor
+- si・MCP・保存・決済・Sky/Zemaの共通契約を集約するrefactor
 
 くわしく: [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [購入とサービス利用権](sim-service-entitlement-claims.md) / [Spider Guard](spider-guard.md)
 
@@ -645,7 +649,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 - **専用モデルの追加指示**：avokado専用モデルをゼロから事前学習し、端末内とクラウドの両方で使う。初回は追加費用なしで試作
 - **GTA VIのプレイ対応要求**：「出来るようにして」。PS5／Xbox公式clientへのhandoffと、Proの将来PC版を分ける
 - **Mini単体の携帯回線**：SIMをMini本体へ入れ、ProなしでMini単体が通信する
-- **avokadoProの独立小型PC方針**：NVIDIA搭載のMac miniのような据え置き小型PC。AIとPCゲームを重視、販売目標80万円／台
+- **avokadoProの独立小型PC方針**：NVIDIA搭載のMac miniのような据え置き小型PC。siとPCゲームを重視、販売目標80万円／台
 - 「pr全部開発しきって」→ 残る全PR（15件）を統合
 - **この日の統合で記録の一部が消えた**：05:09の統合（`ecb4b2af`）で、README・進捗ログ・全Tool設計などが09-29時点の内容へ戻り、09-25〜10-05の追記が落ちた。2026-10-07に文書を復元（[監査](merge-loss-audit-20261007.md)）。task台帳と設計台帳は戻していない
 
@@ -679,7 +683,7 @@ Tool入口 Hub（Automation Hub）───────────────�
 - 料金は期間パス＋従量のしきい値後払い＋月の上限＋回線つき機器の基本料。残高なし。Sky feeは当面10%、0%への切替条件を定義。払出しは月1回、通信の一次supportは自社
 - Miniの回線は国内LTE・IoT向けdata専用SIM（試作はカード、量産はchip）・SGP.32対応・5Gなし・遠隔切替は自作しない。回線つきは別modelかoption
 - Skyは `avocadomini.si/sky` に置き、本人確認は自前のpasskey。通知はWeb Pushから
-- 「パブリックで進めたい、大事なところは見れないように」を受け、公開rockをそのまま使い、不要資料を削除する（履歴は書き換えない。復元元はcommit `96845e6`）。ハード設計・発明・意匠、お金・契約、調査、会話記録、AIの指示文、開発の内部をgit-cryptで暗号化したが、同日（10-11）に「鍵は今一切なくていい」で暗号化をやめ、全ファイル公開に戻した
+- 「パブリックで進めたい、大事なところは見れないように」を受け、公開rockをそのまま使い、不要資料を削除する（履歴は書き換えない。復元元はcommit `96845e6`）。ハード設計・発明・意匠、お金・契約、調査、会話記録、siの指示文、開発の内部をgit-cryptで暗号化したが、同日（10-11）に「鍵は今一切なくていい」で暗号化をやめ、全ファイル公開に戻した
 
 くわしく: [製品ベース 2026-10-10](product-baseline.md) / [アカウント入口の確定事項](account-entry-proposal.md) / [Git統合の記録](git-consolidation.md)
 

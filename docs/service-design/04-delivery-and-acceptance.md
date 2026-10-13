@@ -10,13 +10,13 @@
 
 元の作業コピーは`codex/esim-cloud-access`/`37c06cec`と未保存差分を持ち、同名remote branchは確認できなかった。5大学共通Sky/Fitness成果plugin/要求署名eSIMは、この候補と最新mainのColumbia英語NFC・既存authを比較して個別統合する。再構成は最新mainから分離したbranchで保存し、元のdirty変更を保全する。
 
-Jenniferは専用branch `codex/jennifer-zema-execution` / `d0151e892794066e1a59b5e4d1dc8863e314947f` / PR #113で役割とsourceを確認した。8check中6成功/2失敗、main未統合。役割不明の扱いを訂正し、今回の設計へ利用者窓口→裏のZema/AMC→担当AIという関係を継承する。
+Jenniferは専用branch `codex/jennifer-zema-execution` / `d0151e892794066e1a59b5e4d1dc8863e314947f` / PR #113で役割とsourceを確認した。8check中6成功/2失敗、main未統合。役割不明の扱いを訂正し、今回の設計へ利用者窓口→裏のZema/AMC→担当siという関係を継承する。
 
 ## 0. 基準と引継ぎを揃える
 
 原因: 設計と進捗が複数branch・公開Site・歴史資料へ分かれ、古いSIM入口や過去の受入が現在の説明へ残っている。
 
-成果物: この5章、更新した関係図/ポータル/全体・Tool設計の入口、baselineの再構成理由、証拠と進捗。原本R5/R1.0/PDF、vendor、実装、旧受入証拠は維持する。
+成果物: 入口と6章の計7冊、更新した関係図/ポータル/全体・Tool設計の入口、baselineの再構成理由、横断契約と12受入シナリオ、si表示の統一、証拠と進捗。原本R5/R1.0/PDF、vendor、実行契約、旧受入証拠は維持する。
 
 合格: RQ01〜RQ50の対応、リンク、design/baseline/project/mission整合、`npm run verify`。文書保存、作業branchのGit保存、GitHub、main統合、公開は別記録。設計の見やすさをruntime修正の完了へ換算しない。
 
@@ -25,6 +25,8 @@ Jenniferは専用branch `codex/jennifer-zema-execution` / `d0151e892794066e1a59b
 原因: Jennifer sourceは専用branchにあり、MCP配布ZIPのsource不一致と、SPIDER回帰の `lib/generated/private-content.ts` 未生成でCI2件が失敗している。ROCKは正本sourceから配布物/生成moduleを再現し、同じSHAで対象回帰とverifyを受け入れてから実装branchへ統合する。今回の設計保存で失敗を修正済みにしない。
 
 加えて、worker/reviewer別delegationは存在するが、手動owner検収と真正なreviewer証拠のserver相関照合を区別する必要がある。AMC APIでowner/Goal revision/leaf/別delegation/成果hash/usage/判定を照合する受入、COLOMBIA原本/版、context grant、native UI、実Providerのgateを個別に残す。
+
+横断統合では[整合契約と12シナリオ](06-consistency-contracts.md)を先に固定する。root/leaf/子job/role/realmのserver相関、account/Goalを束ねた予算、取消fence、真正なreview/実artifact、grant/保持/削除/backup、authority epochの順で不足を修正する。現行A2AのparentJob予算だけを月上限へ読み替えない。
 
 ## 1. 既存の成果を持ち帰れる一周
 
@@ -56,7 +58,7 @@ Jenniferは専用branch `codex/jennifer-zema-execution` / `d0151e892794066e1a59b
 
 PixelはOS10/RLS02、正確なPixel10 GL066/frankel、専用x86_64 Linux full build、正式署名、同じimageのboot/権限/保存/再起動/OTA/rollback/純正復旧。試験署名APK23/23や後続Shell受入をfull OSへ転用しない。QEMU/RQ12は独立Developer Previewで同一archive受入を維持する。
 
-MiniはR5の単独操作/保存/停止、光学・入力・安全のprototypeとIoT回線benchを分ける。Proは既存MAT16の閉箱BOM/QVL/AI/game/熱/復旧matrix。Game/発明は非金融fixtureと合成digital twinを共通jobへつなぐ。rocketstarは専用地上記録/観測adapterの契約から進め、工学/製造/飛行gateを独立に保持する。
+MiniはR5の単独操作/保存/停止、光学・入力・安全のprototypeとIoT回線benchを分ける。Proは既存MAT16の閉箱BOM/QVL/si/game/熱/復旧matrix。Game/発明は非金融fixtureと合成digital twinを共通jobへつなぐ。rocketstarは専用地上記録/観測adapterの契約から進め、工学/製造/飛行gateを独立に保持する。
 
 各系列の成果はそのprofileの証拠で判定する。汎用Web回帰の成功をhardwareの成立条件へ数えない。
 

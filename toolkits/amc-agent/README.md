@@ -58,7 +58,7 @@ Goalの版が変わった時は影響する任務を停止して再照合する�
 | `sky` | Sky Bot | Tool・MCP・Agent接続、marketplace |
 | `zema` | Zema Bot | 仕事の依頼・進捗・承認・成果、保存／復旧 |
 | `wallet` | Wallet Bot | 台帳・予約・照合・料金表示 |
-| `rockstaros` | RockstarOS Bot | OS・AI・SIM/eSIM導入、Pixel・QEMU |
+| `rockstaros` | RockstarOS Bot | OS・si・SIM/eSIM導入、Pixel・QEMU |
 | `game` | Game Bot | 非金融ゲーム、作者SDK、sandbox |
 | `security` | Security Bot | 本人性・権限・SPIDER・脆弱性修正 |
 | `avocado-mini` | avocadoMini Bot | Mini・物質発明・試験資料 |

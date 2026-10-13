@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.7",
+  "version": "1.8",
   "updatedAt": "2026-10-13",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -961,7 +961,8 @@
       "coverage": "BRANCH_INPUT_AND_BASIC_DESIGN_WITH_OPEN_ACCEPTANCE",
       "documents": [
         "docs/service-design/03-product-profiles.md",
-        "docs/service-design/02-system-contracts.md"
+        "docs/service-design/02-system-contracts.md",
+        "docs/service-design/06-consistency-contracts.md"
       ]
     }
   ],
@@ -1481,7 +1482,7 @@
         "pricingGateAccepted": false,
         "productionProviderExecutionVerified": false,
         "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
-        "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+        "scope": "legal-guidance and patent-research only; general remote-si encrypted queue/reservation is a separate contract"
       },
       "submissionRecovery": {
         "document": "docs/sky-tools-complete-design.md",
@@ -1569,7 +1570,7 @@
         "pricingGateAccepted": false,
         "productionProviderExecutionVerified": false,
         "routePersistence": "no request/response body storage in these routes; usage is response metadata, not invoice proof or route settlement",
-        "scope": "legal-guidance and patent-research only; general remote-ai encrypted queue/reservation is a separate contract"
+        "scope": "legal-guidance and patent-research only; general remote-si encrypted queue/reservation is a separate contract"
       },
       "submissionRecovery": {
         "document": "docs/sky-tools-complete-design.md",
@@ -2053,12 +2054,13 @@
   "serviceReconstruction": {
     "status": "basic_design_reorganized_open_decisions_not_runtime_complete",
     "books": [
+      "docs/service-design/README.md",
       "docs/service-design/01-service-experience.md",
       "docs/service-design/02-system-contracts.md",
       "docs/service-design/03-product-profiles.md",
       "docs/service-design/04-delivery-and-acceptance.md",
       "docs/service-design/05-requirement-coverage.md",
-      "docs/service-design/README.md"
+      "docs/service-design/06-consistency-contracts.md"
     ],
     "inputMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
     "jennifferRole": "verified_repository_jennifer_portfolio_coordinator",
@@ -2084,6 +2086,9 @@
       "document": "https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md",
       "pullRequest": 113,
       "mainIntegrated": false
-    }
-  }
+    },
+    "consistencyContracts": "docs/service-design/06-consistency-contracts.md",
+    "crossSystemAcceptanceScenarios": 12
+  },
+  "productTerminology": "data/product-terminology.json"
 }

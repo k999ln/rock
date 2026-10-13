@@ -1331,7 +1331,7 @@ await test('Simple confirmation creates only a local request-scoped plan and nev
   assert.equal(ui.elements.get('simple-progress').hidden, false);
   assert.match(
     ui.elements.get('simple-progress-state').textContent,
-    /AIへの引渡し待ち/,
+    /siへの引渡し待ち/,
   );
   assert.ok(
     ui.elements
@@ -1386,7 +1386,7 @@ await test('The reported Jev cryptocurrency bot request reaches review and expli
   assert.equal(ui.downloads.length, 0);
   assert.match(
     ui.elements.get('simple-progress-state').textContent,
-    /AIへの引渡し待ち/,
+    /siへの引渡し待ち/,
   );
   assert.match(
     ui.elements.get('simple-boundary').textContent,

@@ -4,7 +4,7 @@
 
 ## 1. サービスをつくる責任
 
-**Jennifer**は利用者の窓口として目的/Goalと担当AI、確認、成果受領を統括する。**Sky**はcatalog、作者、版、license、価格条件、購入、接続先、対応能力を示す。**Zema**はJenniferの裏の仕事systemとして、AMCで確認済みGoalを有限の仕事へ分解し、現在地、必要確認、停止、成果、費用へ案内する。**Core/Broker**は認証principal、capability、同意、予算、component/入力の版を検査して実行を許可する。**Tool/Provider adapter**は契約で許された個別処理と受信証拠を返す。**Wallet/Commerce**は購入・費用・収益・返金・予約・照合を扱う。
+**Jennifer**は利用者の窓口として目的/Goalと担当si、確認、成果受領を統括する。**Sky**はcatalog、作者、版、license、価格条件、購入、接続先、対応能力を示す。**Zema**はJenniferの裏の仕事systemとして、AMCで確認済みGoalを有限の仕事へ分解し、現在地、必要確認、停止、成果、費用へ案内する。**Core/Broker**は認証principal、capability、同意、予算、component/入力の版を検査して実行を許可する。**Tool/Provider adapter**は契約で許された個別処理と受信証拠を返す。**Wallet/Commerce**は購入・費用・収益・返金・予約・照合を扱う。
 
 Rockは表示状態の正確さ、本人分離、承認、重複防止、停止と結果不明の処理を持つ。外部Providerはmodel、MCP、決済、通信、hardware等の固有能力を持ち、本人は公開・送信・費用・機器操作の条件を選ぶ。内製Providerにも例外経路を作らない。[責任分界](../workstreams/00-responsibility-boundaries.md)のROCK/EXTERNAL/JOINT/OWNERを全仕事の受入へ残す。
 
@@ -15,6 +15,8 @@ Webは既存Web/API/D1/R2を使うmodule分割を維持する。catalog、connec
 依存方向は **UI → 業務契約 → Broker/権限判定 → adapter → 外部実行先**。LLMがToolを選ぶことと、Toolが許可されることは別である。UI、Tool、JenniferからDB・台帳・rootへ直通するAPIは用意しない。
 
 再利用先は[workflow](../../lib/workflow.ts)、[本人認証](../../lib/request-auth.ts)、[service access](../../lib/rockstar-service-access.ts)、[catalog](../../lib/catalog.ts)、[A2A委任](../../lib/a2a-delegation-store.ts)、[cloud継続](../sky-cloud-continuity.md)、[SDK](../sky-tool-sdk.md)。adapterの追加で保存・権限・receiptを作り直さない。
+
+各仕事の記録正本は保存realmとauthorityを一つに固定する。WebはAPI policy/D1/R2、AndroidはUID Broker/SQLite、QEMUはPlatform Core、Miniはlocal runtimeを使い、他surfaceはclient/projectionになる。共通契約は一つのBroker process/DBを共有済みという意味ではない。[参照連鎖、階層予算、停止/精算/削除の投影](06-consistency-contracts.md)を実装時の拘束条件とする。
 
 ## 3. IDと入力の契約
 
@@ -42,7 +44,7 @@ stateDiagram-v2
   cancelled --> [*]
 ```
 
-JenniferのGoal/AMC taskと最終報告は別の状態機械で、WorkJobの四状態を置き換えない。担当AIの提出、独立検収、本人の最終受入は別段階。branchの手動検収を、serverで検証したreviewer証拠へ昇格させない。詳細は[Jennifer profile](03-product-profiles.md#jennifer利用者表記-jenniffer)と[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)。
+JenniferのGoal/AMC taskと最終報告は別の状態機械で、WorkJobの四状態を置き換えない。担当siの提出、独立検収、本人の最終受入は別段階。branchの手動検収を、serverで検証したreviewer証拠へ昇格させない。詳細は[Jennifer profile](03-product-profiles.md#jennifer利用者表記-jenniffer)と[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)。
 
 A2Aは`awaiting_approval`、dispatch系、`working`、`indeterminate`、cancel系、remote終端を別に持つ。[A2A契約](../../lib/a2a-delegation-store.ts)の状態から親画面を投影する。親をcancelledにしたことだけで外部停止や予約解放が成立したとは表示しない。
 
@@ -60,7 +62,7 @@ Cloud停止・結果不明の契約は[継続実行](../sky-cloud-continuity.md)
 
 最新確定の設計は[アカウント入口の判断](../account-entry-proposal.md)とbaselineの`accountEntryDecision`である。アカウント無料、期間パスは6か月未満、従量はしきい値1,000円または月末の後払い・初期上乗せ30%、本人が月の上限を指定する。残高を持たず、回線つき機器には別の基本料を設ける。期間パスの自動更新は既定オンを購入画面へ明示し更新前に通知、途中返金は既定なしという既存判断を引き継ぐ。外部確認と実装・本番受入は残る。
 
-利用者に示す金額は、商品代、passの対象、AI/provider原価、上乗せ、外部決済実費、回線基本料、税等の適用条件を別に説明する。30%とSkyのTool売上手数料10%を同じ注文へ無条件に二重適用しない。対象範囲、丸め、税、取消・請求失敗の契約は決めてから同じreceiptへ結ぶ。
+利用者に示す金額は、商品代、passの対象、si/provider原価、上乗せ、外部決済実費、回線基本料、税等の適用条件を別に説明する。30%とSkyのTool売上手数料10%を同じ注文へ無条件に二重適用しない。対象範囲、丸め、税、取消・請求失敗の契約は決めてから同じreceiptへ結ぶ。
 
 実行画面は **事前見積 → 今回の承認上限 → 予約 → 観測usage → 照合済み請求**を並べる。累計しきい値は決済時点であって、実行予算の許可ではない。並列jobと別端末の予約を月上限へ同時に算入し、利用者の上限を勝手に上げない。上限0は新しい有料実行を止めるが、既に発生した債務・停止不能の費用を消す操作にはしない。
 
@@ -82,7 +84,7 @@ service access、購入済みPackage、接続済みProvider、実行scope、支�
 
 将来のhost app成果連携は、本人/recipient/scope/期限/失効、artifact schema、hash、truncation、表示revisionを検査する。現在の手元Fitness plugin候補を外部cross-origin SDKの完成にしない。成果の表示許可と外部公開・送信・機器作用の許可を分ける。
 
-## 9. AI、ゲーム、発明、物理作用
+## 9. si、ゲーム、発明、物理作用
 
 端末内LLMは非信頼planner、cloud generatorとJevは明示接続する処理役/評価役。全modelの結果はadvisoryで、本人承認・Tool成功・Wallet確定へ昇格しない。[LLM正本](../llm-evaluation-architecture.md)を維持し、対応端末のlocal能力を全機種必須にしない。
 
@@ -93,6 +95,8 @@ service access、購入済みPackage、接続済みProvider、実行scope、支�
 余剰スマホ計算力の仲介はSkyの追加能力で、通常の本人PC/cloud adapterと同一の「実行可能」表示へ混ぜない。`CapacityOffer / ComputeOrder / ComputeLease`を使い、初期供給はAndroid arm64、充電中・idle・unmetered network・thermal none/light。ownerが端末を使い始めたら中断する。公開/合成textを固定runtime/model/tokenizerでembeddingする中断可能lotだけを扱う。
 
 端末自己申告を成功にせず、独立参照計算または別lease quorumで検査する。owner identityと正確な位置を買い手へ公開しない。未指定のcloud fallback、任意code、秘密/個人情報、実資金Wallet記帳・実請求・実払出しは許可しない。現段階のtest credits holdを収益へ換算しない。mainへ未統合のGrid PRも保全比較し、同一artifact/実端末/精算は別受入。[Grid正本](../sky-compute-grid.md)。
+
+外部Agentの署名付きquoteはaccount方針の保留対象。Jennifer branchの署名見積経路は設計/sourceとして保持し、保留解除・対象Provider受入が済むまでpaid実行を有効にしない。運営管理model adapterと外部Agent購入を同じ課金railへ暗黙合流させない。
 
 ## 10. 変更を合格にする証拠
 

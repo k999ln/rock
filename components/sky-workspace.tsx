@@ -443,7 +443,7 @@ export default function SkyWorkspace({
     setRoutedTool(tool);
     setRouteMessage(
       tool.id === 'rockstar-amc'
-        ? 'AMCをZemaで開きます。Goalと意図の確認後に計画を保存できます。AI実作業は開始しません。'
+        ? 'AMCをZemaで開きます。Goalと意図の確認後に計画を保存できます。si実作業は開始しません。'
         : `${roleFor(tool)}が進めます。専用画面を開いて、入力・実行・結果確認を行えます。`,
     );
   }
@@ -480,7 +480,7 @@ export default function SkyWorkspace({
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
-      <Link href="/sky/marketplace">AI・自動化マーケットプレイス</Link>
+      <Link href="/sky/marketplace">si・自動化マーケットプレイス</Link>
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
           <section

@@ -12,11 +12,11 @@
 
 ## 現在地
 
-- AMC02 / H1 再簡素化: 標準入口は「依頼→Goalと意図の確認」のみ。部隊選択と質問票を外し、ソフトウェア試作の汎用4役割7工程・仮工数・依頼文を自動準備する。工数は未校正の係数で納期やAI速度ではない。チャットを含む従来機能は詳細へ保持。AI実行・自動通知は未接続で、未実行を進行中にしない。
+- AMC02 / H1 再簡素化: 標準入口は「依頼→Goalと意図の確認」のみ。部隊選択と質問票を外し、ソフトウェア試作の汎用4役割7工程・仮工数・依頼文を自動準備する。工数は未校正の係数で納期やsi速度ではない。チャットを含む従来機能は詳細へ保持。si実行・自動通知は未接続で、未実行を進行中にしない。
 
-- AMC02 / H1 チャット化: 常設の会話から目的・範囲・完成条件を順に入力し、専用ボタンで計画承認する。案内はルールベースでAI未接続。詳細編集と会話の条件差分を再確認し、自由文を実行権限や完了証拠にしない。会話はGoalとは別保存。
+- AMC02 / H1 チャット化: 常設の会話から目的・範囲・完成条件を順に入力し、専用ボタンで計画承認する。案内はルールベースでsi未接続。詳細編集と会話の条件差分を再確認し、自由文を実行権限や完了証拠にしない。会話はGoalとは別保存。
 
-- AMC02 / H1: 利用者のUX指摘を受け、[AMCローカル画面](../amc-goal-orchestrator.md)を目的入力・計画確認・進捗の段階式へ変更。状態別の次アクションと必要な入力だけを表示する。AI未接続、計画承認と実行の区別、既存保存データは維持する。実ブラウザと本人による使いやすさの確認は別。
+- AMC02 / H1: 利用者のUX指摘を受け、[AMCローカル画面](../amc-goal-orchestrator.md)を目的入力・計画確認・進捗の段階式へ変更。状態別の次アクションと必要な入力だけを表示する。si未接続、計画承認と実行の区別、既存保存データは維持する。実ブラウザと本人による使いやすさの確認は別。
 
 - SIM/eSIM購入後の本人連携は、Web `/connect`に加えてAndroid Shellからも署名付きclaimを登録できるsource経路を追加した。端末内入力は保存せず、現在のRockstar IDへの明示確認を要求し、署名・一度限りのowner bindingはserverが検証する。Android compile/実機、販売元handoff、実購入は未受入。[証拠](../evidence/sim-service-android-native-claim-local-20261002.json)。
 
@@ -45,10 +45,10 @@
 - 履歴: 2026-09-19以前はavocadoMiniを対外的な先行商品としていた。2026-10-02以降、SIM/eSIM主導のサービスが主商品となり、avocadoMiniと`/rockstaros`のhardware紹介は別programとして扱う。実機と販売は未実施。
 - `/connect`は購入claim、回線開通、共通アカウント、端末別導入、Sky/Zema/Agentへの入口を案内する。`/`は利用画面、`/rockstaros/guide`は対象端末向けDeveloper Preview条件を示す。Sky/Zemaは独立アプリとOSの双方から利用できる。旧avocadoMini希望価格は現行のSIM/eSIM service料金ではない。
 - GitHub READMEの冒頭はavocadoMiniの外観と利用場面の構想参考画像から始める。設計画像と実機写真を区別し、製品別GIF、RockstarOSとアプリの役割、開発状況への導線を続ける。クラファンの実URLは未確認で募集済みとは表示しない。
-- 対外メッセージは利用者の目的と役に立つAIの発見を先に伝える。Skyで探し、Zemaで進め、Studioで試す体験とavocadoMini構想を示した後に、料金方針や内部技術を説明する。
+- 対外メッセージは利用者の目的と役に立つsiの発見を先に伝える。Skyで探し、Zemaで進め、Studioで試す体験とavocadoMini構想を示した後に、料金方針や内部技術を説明する。
 - 無料配布を理念とし、OSは従量課金を予定する。無料配布の対象と利用量の計量・単価は未確定。Skyの現行収益連動精算と混同しない。
 - RQ01〜RQ49を製品ベースへ固定済み。RQ49のMaterial Invention Coreは装置非接続sandboxを実装済み。Zema、simulation、外部ラボ、実験設備とのruntime接続は未実装。
-- RQ49 Material Invention Coreの標準製品体験としてSpatial Invention Studio、四方向sensor端末`avocadoMini`、手によるdigital twin操作、差分再計算、Patent AI provenance bridgeを設計済み。別の任意XR addonではない。XR runtime、sensor rig、実機は未実装。
+- RQ49 Material Invention Coreの標準製品体験としてSpatial Invention Studio、四方向sensor端末`avocadoMini`、手によるdigital twin操作、差分再計算、Patent si provenance bridgeを設計済み。別の任意XR addonではない。XR runtime、sensor rig、実機は未実装。
 - Home、全画面からHomeへ戻る導線、Sky／Zema分離、Studio、Developer Preview紹介、共通visual systemを実装済み。
 - Material Invention／avocadoMiniを含む全12層と7本のend-to-end flowを構成監査へ固定した。設計選択は適合、全体統合とproductionは未完了。
 - 仕事作成、処理履歴、CSV、Wallet、設定への主要導線がある。
@@ -60,7 +60,7 @@
 
 UXCHAR01受入（2026-09-21）: `npm run verify`全合格（型、lint、既存試験、production build、asset closure、仕事API149項目）。localhost:3017でSkyのアイコン詳細をEnterで開き、Zemaの一覧・発言から詳細をクリック表示し、Escで元の顔へfocusが戻ることを確認。開発用アカウントの架空出典1件をローカル処理し、完了状態・成果本文が顔の詳細へ反映されることを確認。390×844でもダイアログの本文・閉じるボタンを表示確認。自然会話モデル未接続、本番配備は今回未実施。
 
-1. stock Pixel上でSky／ZemaからBroker、Local AI、汎用Tool、成果再表示まで一本で接続する。
+1. stock Pixel上でSky／ZemaからBroker、Local si、汎用Tool、成果再表示まで一本で接続する。
 2. 再起動と失敗復旧を含め、操作時間、手作業、再利用率を既存手順と比較する。
 3. モバイル、keyboard、focus、処理中navigation、状態表示の回帰を残す。
 4. UI上の「利用可能」「未接続」「準備中」をruntime事実と一致させる。
@@ -73,7 +73,7 @@ UXCHAR01受入（2026-09-21）: `npm run verify`全合格（型、lint、既存�
 
 ## 関連資料
 
-- [AIネイティブOS詳細設計](../ai-native-os-architecture.md)
+- [siネイティブOS詳細設計](../ai-native-os-architecture.md)
 - [Sol設計監査](../ai-native-os-design-audit.md)
 - [製品ベース](../product-baseline.md)
 - [全体構成監査](../system-composition.md)
@@ -101,7 +101,7 @@ Authoritative product flow: purchase a physical SIM/eSIM through any accepted ch
 
 Audit: keep channel-neutral signed entitlement claims, owner-scoped account/device authorization, device capability snapshot, A2A/Cloudflare job recovery, approval digests, rate-card/quote stores, shared budget reservations, live meter snapshots and itemized receipts. Correct the old OS-first product positioning in the architecture/index documents, mark the older device-LLM-first development plan as history, and state that the eSIM bootstrap package is only an eSIM fixture rather than a product-channel restriction. Main Home now has direct Sky, Zema and Agent Workbench actions; `/connect` explains the intended onboarding and routes those actions. The eSIM catalog is demoted to a secondary technical/offer reference and no longer appears as the primary purchase route; the service offer explicitly includes both physical SIM and eSIM distribution channels. SIM01 remains `in_progress`: issuer/purchase distribution, physical SIM fulfillment, carrier activation, accepted Provider price/meter/invoice, production billing, shared production D1, Android SDK/APK acceptance and native OS installation remain unproven. Local usage rows and fixture receipts do not prove production billing.
 
-Follow-up correction: [SIM/eSIM-led product architecture](../sim-led-product-architecture.md) is now the canonical customer/system flow and P0/P1 backlog. It prioritizes quick cloud LLM/agent access, visible usage pricing, and integrated Sky/Zema; treats the purchased SIM/eSIM as the service-access offer rather than an OS download medium; and separates carrier activation, signed entitlement, identity, device install, cloud execution, and AI billing. `docs/product-baseline.md`, `docs/rockstaros-1.0-architecture.md`, and Sky launch documentation now use that same onboarding and accepted-device routing. An A2A Package invocation extension is locally encoded in `SendMessage` metadata and bound to the signed quote/delegation; Provider execution, interoperable responses and execution receipts are still unaccepted.
+Follow-up correction: [SIM/eSIM-led product architecture](../sim-led-product-architecture.md) is now the canonical customer/system flow and P0/P1 backlog. It prioritizes quick cloud LLM/agent access, visible usage pricing, and integrated Sky/Zema; treats the purchased SIM/eSIM as the service-access offer rather than an OS download medium; and separates carrier activation, signed entitlement, identity, device install, cloud execution, and si billing. `docs/product-baseline.md`, `docs/rockstaros-1.0-architecture.md`, and Sky launch documentation now use that same onboarding and accepted-device routing. An A2A Package invocation extension is locally encoded in `SendMessage` metadata and bound to the signed quote/delegation; Provider execution, interoperable responses and execution receipts are still unaccepted.
 
 2026-10-02 continuation: added the authenticated, channel-neutral seller delivery API (`POST` idempotent registration, `GET` exact pending-package recovery, `PATCH` explicit delivery acknowledgement) over the encrypted issuer D1 store. Seller bearer credentials are issuer-scoped by configured token digest; signed package, caller issuer, bounded request, encryption keyring, and idempotency are checked before disclosure. The endpoint has no external checkout/carrier integration. Local tests verify retry/recovery, authentication scope, changed-request rejection, delivery acknowledgement/secret clearing and fail-closed configuration; production issuer secret custody, actual seller webhook/checkout, buyer notification and purchase fulfillment remain pending contract/sandbox work. `npm run build` includes the endpoint; production deployment and D1 readback were not performed.
 
@@ -125,13 +125,13 @@ Implemented source, locally verified behavior, and external acceptance are separ
 
 ## Sky公開判定の検証結果
 
-公開完了判定の整合検査をverifyへ追加。focused stageは既存basic受入を保持し、実Cloud AI/公開両端末/全Tool分類/Apple Payの受入を要求する。7 guard testsと正本全verify exit0（692 Node/19 Fashion/938 Worker-D1）。`--require-stage focused`は期待どおりexit1で未合格を示す。公開v28はこのturnで変更せず、一般marketplace/ConnectをCSV専用50円成功へ昇格しない。直近30分の公開error検索0件は実AI/可用性の受入ではない。証拠docs/evidence/sky-focused-release-check.json。GitHub mainへの保存/統合は未実施。
+公開完了判定の整合検査をverifyへ追加。focused stageは既存basic受入を保持し、実Cloud si/公開両端末/全Tool分類/Apple Payの受入を要求する。7 guard testsと正本全verify exit0（692 Node/19 Fashion/938 Worker-D1）。`--require-stage focused`は期待どおりexit1で未合格を示す。公開v28はこのturnで変更せず、一般marketplace/ConnectをCSV専用50円成功へ昇格しない。直近30分の公開error検索0件は実si/可用性の受入ではない。証拠docs/evidence/sky-focused-release-check.json。GitHub mainへの保存/統合は未実施。
 
 ## Sky focused公開判定の修正（2026-10-02）
 
-ROCK/WEB04: 2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実AIの証明にしない。
+ROCK/WEB04: 2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実siの証明にしない。
 
-`focused` stageを追加し、既存basic条件に実Cloud AIの応答・所要時間・項目別usage/cost・上限/timeout、同じ公開sourceのdesktop/Pixel顧客導線、全34 Toolの個別分類、対応端末のApple Payを加えた。既存paid-marketplace/clients scopeを省略せず独立して保持する。`node scripts/check-sky-launch.mjs --require-stage focused` は不足が残る限りexit 1で、設定キーの存在やmockだけでは合格にしない。検査自体の整合は`npm run verify`へ追加した。必要stage/gateの削除、基本受入の省略、合成環境のpassed、根拠欠落、依存cycle、未完了でのlaunch claimを7件の試験で拒否する。
+`focused` stageを追加し、既存basic条件に実Cloud siの応答・所要時間・項目別usage/cost・上限/timeout、同じ公開sourceのdesktop/Pixel顧客導線、全34 Toolの個別分類、対応端末のApple Payを加えた。既存paid-marketplace/clients scopeを省略せず独立して保持する。`node scripts/check-sky-launch.mjs --require-stage focused` は不足が残る限りexit 1で、設定キーの存在やmockだけでは合格にしない。検査自体の整合は`npm run verify`へ追加した。必要stage/gateの削除、基本受入の省略、合成環境のpassed、根拠欠落、依存cycle、未完了でのlaunch claimを7件の試験で拒否する。
 
 ## Sky v28配備の受入範囲
 
@@ -139,7 +139,7 @@ WEB04/ROCK: 保存回答の本人限定Markdown取得・本文だけの削除確
 
 ## Skyクラウド回答の取得と会話からの仕事引継ぎ（2026-10-02）
 
-会話の現在の依頼文だけをcomponent memoryで仕事画面へ引き継ぎ、仕事選択・見積・承認は本人の操作とする。URL/新しいbrowser storage/D1へ依頼本文を追加保存せず、reloadで未送信の下書きは消える。保存済み回答は本人認証付きMarkdown attachment（private/no-store）で取得でき、未保存/削除済み/別本人は拒否する。本文削除は対象と不可逆性をdialogで確認し、state・usage・予算台帳は保持する。共有予算の確定額は請求書照合済みと表示しない。ローカルbuilt Siteの合成アカウントで引継ぎ/再読込/削除dialog取消/135byteのダウンロード一致を確認、Worker/D1で24項目合格。実AI/本番ownerログイン/Apple Payは未受入、追加課金なし。正本の全verifyと同一Site公開は次の検証。
+会話の現在の依頼文だけをcomponent memoryで仕事画面へ引き継ぎ、仕事選択・見積・承認は本人の操作とする。URL/新しいbrowser storage/D1へ依頼本文を追加保存せず、reloadで未送信の下書きは消える。保存済み回答は本人認証付きMarkdown attachment（private/no-store）で取得でき、未保存/削除済み/別本人は拒否する。本文削除は対象と不可逆性をdialogで確認し、state・usage・予算台帳は保持する。共有予算の確定額は請求書照合済みと表示しない。ローカルbuilt Siteの合成アカウントで引継ぎ/再読込/削除dialog取消/135byteのダウンロード一致を確認、Worker/D1で24項目合格。実si/本番ownerログイン/Apple Payは未受入、追加課金なし。正本の全verifyと同一Site公開は次の検証。
 証拠: [local results verification](../evidence/sky-cloud-results-verification.json)。
 
 ## 2026-10-02 Android Agent委任案の保存・復旧
@@ -202,7 +202,7 @@ Workbench now connects selected parent jobs to estimate and persist direct-text 
 
 次の3行は、SIM/eSIM主導のサービスが主商品になる前（〜2026-10-01）の版にあった記述である。上の「目的」と「現在地」の履歴の項目に置き換えられた。
 
-AIネイティブOSの上で、SkyでToolを選び、ZemaでAIチームへ依頼し、仕事・生活・Game／IPの成果へつなぐ一つの体験を作る。各端末で実際に使える能力を表示し、利用者の不便削減で判断する。
+siネイティブOSの上で、SkyでToolを選び、Zemaでsiチームへ依頼し、仕事・生活・Game／IPの成果へつなぐ一つの体験を作る。各端末で実際に使える能力を表示し、利用者の不便削減で判断する。
 
 - 対外的にはハードウェア製品を主役にし、最初の構想をavocadoMiniとする。OS・LLM・Sky／Zemaはその中核技術として示す。avocadoMiniの実機と販売は未実施。
 

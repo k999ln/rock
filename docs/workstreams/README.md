@@ -41,11 +41,11 @@
 | [Security / Identity / Compliance](04-security-identity-compliance.md) | 認証、秘密、署名、SBOM、法務、マイナンバー   | production鍵、license、独立審査             |
 | [Web / PWA / Sites](05-web-pwa-sites.md)                               | Web画面、PWA、D1、配備、本人限定Site         | sourceと配信版の同一commit化                |
 | [Native / QEMU / Release](06-native-qemu-release.md)                   | Buildroot/Linux、QEMU、更新、復旧、配布      | 正式署名後の同一候補再受入                  |
-| [Android / Device / Local AI](07-android-device-local-ai.md)           | AOSP、Pixel、BSP、実機、端末内AI             | 正確な機種選定、full build、flash、実機試験 |
+| [Android / Device / Local si](07-android-device-local-ai.md)           | AOSP、Pixel、BSP、実機、端末内si             | 正確な機種選定、full build、flash、実機試験 |
 | [Game / Market / Fund](08-game-market-fund.md)                         | ゲーム交換、作者SDK、PAPER市場、自律ファンド | 実ゲームsandboxとprovider境界               |
 | [Business Pilots](09-business-pilots.md)                               | CSV、メルカリ、Fashion Brand Ops             | 第三者の真正な有料取引と継続利用            |
 | [Git / CI / Operations](10-git-ci-operations.md)                       | branch、PR、CI、進捗同期、証拠               | 現在のmerge競合解消とmain統合               |
-| [Material Invention / avocadoMini](11-material-invention-avocado-mini.md) | 物質digital twin、空間操作、安全、再計算、Patent AI | 合成scene／pose実装と四方向prototype       |
+| [Material Invention / avocadoMini](11-material-invention-avocado-mini.md) | 物質digital twin、空間操作、安全、再計算、Patent si | 合成scene／pose実装と四方向prototype       |
 
 ## 分類ルール
 

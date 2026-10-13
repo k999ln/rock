@@ -99,7 +99,7 @@ export function skyToolUiState(
         ? 'Provider設定あり・価格制御未接続'
         : '標準ガイドのみ・価格確認待ち',
       detail:
-        '単価見積・利用者上限・最終usage照合を接続するまで外部AIへ送信しません',
+        '単価見積・利用者上限・最終usage照合を接続するまで外部siへ送信しません',
       className: 'is-connect',
     };
   }
@@ -132,7 +132,7 @@ export function skyToolUiState(
         '原稿・費用・取引状態を管理。公式サービスへの出品や送信は行いません',
       className: 'is-connect',
     };
-  if (tool.id === 'rockstar-amc') return { label: '計画・進捗管理が利用可能', detail: 'AIの自律実行は未接続', className: 'is-ready' };
+  if (tool.id === 'rockstar-amc') return { label: '計画・進捗管理が利用可能', detail: 'siの自律実行は未接続', className: 'is-ready' };
   if (tool.id === 'rockstar-csv-cleanup')
     return {
       label:

@@ -14,7 +14,7 @@
 - Provider: Creative、Social、Payment、Notificationを差し替え可能
 - 安全な初期値: 全Provider `mock`、本番接続・実請求・実投稿なし
 
-MCPは既存のブランド方針、Instagram、DM、注文、決済、制作・発送、分析に加え、Campaign Autopilot、AI Sales Concierge、Production Cockpit、経営ダッシュボード、本番接続診断を38 toolとして公開する。Autopilotは売上・数量・粗利・期限・広告上限から優先操作を提示し、bounded runでは市場整理、投稿計画、投稿下書き、creative承認要求、制作計画など安全な内部作業だけを進める。外部作用は直接実行しない。Conciergeは返信を下書きに留め、Production Cockpitは検証済み入金後だけ制作計画を作る。
+MCPは既存のブランド方針、Instagram、DM、注文、決済、制作・発送、分析に加え、Campaign Autopilot、si Sales Concierge、Production Cockpit、経営ダッシュボード、本番接続診断を38 toolとして公開する。Autopilotは売上・数量・粗利・期限・広告上限から優先操作を提示し、bounded runでは市場整理、投稿計画、投稿下書き、creative承認要求、制作計画など安全な内部作業だけを進める。外部作用は直接実行しない。Conciergeは返信を下書きに留め、Production Cockpitは検証済み入金後だけ制作計画を作る。
 
 ## 承認境界
 

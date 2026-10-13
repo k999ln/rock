@@ -2,11 +2,11 @@
 
 2026-09-21追補: 本書の四方向profileを保持したまま、最新のゲーム機要求は[Mini200 E1（使用時20cm・身体と日本語音声）](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/avocado-mini-mini200-e1/README.md)へ分離した。前面ステレオをnorth/east/south/westへ偽装せず、新しい入力profile・adapter・実機受入を必要とする。本文のFull-scale目標をE1の外形要求とは扱わない。
 
-状態: 製品・hardware・interaction設計。2026-09-18に机上検証機とビリヤード台規模のFull-scale機を分け、概念画像と寸法budgetを追加した。機構、光学、電気、演算、熱、安全、校正、BOM、実機受入は[ハードウェア詳細設計](avocado-mini-hardware-design.md)へ具体化した。`avocadoMini`はRockstarOSを搭載する空間発明端末の名称であり、OSの正式名をavocadoOSへ戻すものではない。筐体、sensor、camera、hand tracking、XR表示、simulation接続、Patent AI連携、実機prototypeは未実装・未選定。
+状態: 製品・hardware・interaction設計。2026-09-18に机上検証機とビリヤード台規模のFull-scale機を分け、概念画像と寸法budgetを追加した。機構、光学、電気、演算、熱、安全、校正、BOM、実機受入は[ハードウェア詳細設計](avocado-mini-hardware-design.md)へ具体化した。`avocadoMini`はRockstarOSを搭載する空間発明端末の名称であり、OSの正式名をavocadoOSへ戻すものではない。筐体、sensor、camera、hand tracking、XR表示、simulation接続、Patent si連携、実機prototypeは未実装・未選定。
 
 ## 製品定義
 
-avocadoMiniは、四方向にsensor／cameraを配置し、その中央を`Invention Volume`として使うRockstarOS端末である。検証は小型Bench機から始めるが、製品目標はビリヤード台ほどの幅を持つFull-scale機とし、利用者が台上の広い空間へ両手を入れて物質の**デジタルツイン**を選び、近付け、接続し、離し、工程条件を変えられるようにする。これはMaterial Invention Coreの中身を人が直接扱う標準製品体験で、別の後付けXR機能ではない。各操作をMaterial Invention Coreの候補graphへ安全な仮説として反映し、制約検査と交換可能なsimulationを再実行する。得られた発明過程を既存のSky Patent AIへ渡し、発明開示、先行技術候補、差分整理、専門家向けpacketの作成を支援する。
+avocadoMiniは、四方向にsensor／cameraを配置し、その中央を`Invention Volume`として使うRockstarOS端末である。検証は小型Bench機から始めるが、製品目標はビリヤード台ほどの幅を持つFull-scale機とし、利用者が台上の広い空間へ両手を入れて物質の**デジタルツイン**を選び、近付け、接続し、離し、工程条件を変えられるようにする。これはMaterial Invention Coreの中身を人が直接扱う標準製品体験で、別の後付けXR機能ではない。各操作をMaterial Invention Coreの候補graphへ安全な仮説として反映し、制約検査と交換可能なsimulationを再実行する。得られた発明過程を既存のSky Patent siへ渡し、発明開示、先行技術候補、差分整理、専門家向けpacketの作成を支援する。
 
 四方向cameraが物理物質を直接変化させるわけではない。初期版は仮想候補だけを操作し、robot、dispenser、heater、pressure vessel等のactuatorを持たない。将来の物理設備は別Provider、別資格、別承認、別停止系として独立受入する。
 
@@ -19,7 +19,7 @@ avocadoMiniは、四方向にsensor／cameraを配置し、その中央を`Inven
 5. Simulation Orchestratorが、その候補を処理できる接続済みmodelを選ぶ。model、version、入力digest、適用範囲、予測誤差を結果に固定する。
 6. 利用者が物質を離すと元候補を削除せず、関係を外した別branchを作る。undo／redoもevent logから再現する。
 7. 有望な候補を並べ、予測と既知データを比較する。新規性はここでは確定しない。
-8. Patent AIが人の操作、AI提案、simulation、既知資料を別sourceとして発明開示へ整理する。公式DB検索候補とclaim chartを作るが、特許性、発明者、権利帰属、侵害回避、出願を自動確定しない。
+8. Patent siが人の操作、si提案、simulation、既知資料を別sourceとして発明開示へ整理する。公式DB検索候補とclaim chartを作るが、特許性、発明者、権利帰属、侵害回避、出願を自動確定しない。
 
 ## Hardware構成
 
@@ -54,7 +54,7 @@ Full-scaleの数値は利用者が指定した「ビリヤード台規模」を�
 | calibration target | intrinsics／extrinsics、volume原点、scaleの校正 | calibration digest不一致、期限超過、移動検知 |
 | local sensor hub | frame同期、timestamp、端末内前処理 | clock drift、欠落frame、順序逆転 |
 | hand tracking engine | 左右hand、joint、confidence、gesture候補 | confidence不足、hand identity曖昧、volume外 |
-| secure compute | Core、projection、tracking、local AI、暗号化project vault | integrity失敗、model hash不一致 |
+| secure compute | Core、projection、tracking、local si、暗号化project vault | integrity失敗、model hash不一致 |
 | display adapter | headset、AR glasses、stereo display、2D monitor | safety overlayを表示できないdevice |
 | physical stop／exit | session停止、camera停止、local data flush | UIから到達不能ならsession開始不可 |
 
@@ -97,11 +97,11 @@ flowchart LR
   C --> P[Spatial Projection]
   P --> X[VR / AR / 2D Renderer]
   C --> L[Invention Event Ledger]
-  L --> A[Patent AI Bridge]
+  L --> A[Patent si Bridge]
   A --> T[Private disclosure / prior-art comparison]
 ```
 
-四方向frameは端末内でSensor Fusionへ集約し、外部Providerへraw camera streamを直接渡さない。Material Invention CoreとSafety Gateが中心であり、simulation、renderer、Patent AIはいずれもCoreを迂回して候補を確定できない。
+四方向frameは端末内でSensor Fusionへ集約し、外部Providerへraw camera streamを直接渡さない。Material Invention CoreとSafety Gateが中心であり、simulation、renderer、Patent siはいずれもCoreを迂回して候補を確定できない。
 
 | service | 入力 | 出力 |
 | --- | --- | --- |
@@ -111,8 +111,8 @@ flowchart LR
 | Constraint／Safety Engine | proposed graph operation | allowed hypothesis、blocked、review required |
 | Simulation Orchestrator | candidate digest、model manifest、budget | version付きSimulationResult |
 | Spatial Renderer | scene、pose、safety overlay | VR／AR／2D表示 |
-| Invention Event Ledger | gesture、graph diff、human／AI source、digest | append-only invention history |
-| Patent AI Bridge | selected event range、candidate、evidence | private disclosure draft、prior-art search intent、difference chart |
+| Invention Event Ledger | gesture、graph diff、human／si source、digest | append-only invention history |
+| Patent si Bridge | selected event range、candidate、evidence | private disclosure draft、prior-art search intent、difference chart |
 
 Core以外は交換可能componentとする。Gesture Intent Engineはgraphへの直接書込み権限を持たず、[`contracts/avocado-mini-spatial-interaction.json`](../contracts/avocado-mini-spatial-interaction.json)のeventをCoreへ提案する。Coreはscene digest、project、owner、対象binding、confidence、gesture phase、operation scopeを再検査する。
 
@@ -131,7 +131,7 @@ Core以外は交換可能componentとする。Gesture Intent Engineはgraphへ�
 | palm stop | pending操作をcancel | なし |
 | undo／redo gesture | eventを戻す／再適用 | 新event。履歴削除なし |
 
-「くっつける」は、組成、界面、積層、混合、接触工程など複数の意味を持つ。Coreは利用者またはAIにrelation typeを確認し、単なる近接を化学結合として記録しない。「離す」も、分離可能性や可逆性をsimulation・実験済みとは扱わない。
+「くっつける」は、組成、界面、積層、混合、接触工程など複数の意味を持つ。Coreは利用者またはsiにrelation typeを確認し、単なる近接を化学結合として記録しない。「離す」も、分離可能性や可逆性をsimulation・実験済みとは扱わない。
 
 ## 再計算loop
 
@@ -144,22 +144,24 @@ commitされた操作ごとに、候補全体を無条件に高コスト再計�
 5. compatibleなsimulation Providerとmodel versionを選び、入力digest、費用、実行先、privacy範囲を提示する。
 6. local／費用0で許可済みの計算だけ自動開始できる。外部送信、有料計算、秘密条件共有は承認を要求する。
 7. 途中結果を`PREDICTED`としてsceneへ差分反映し、古い結果はstale表示にする。
-8. 完了、失敗、cancel、結果不明をreceiptとして残し、Patent AIへsource種別付きで渡す。
+8. 完了、失敗、cancel、結果不明をreceiptとして残し、Patent siへsource種別付きで渡す。
 
 同じcandidate digest、model、version、parameter、providerで再利用可能な結果だけcacheする。別lot、別工程版、別modelの結果を流用しない。
 
-## Patent AIとの接続
+<a id="patent-aiとの接続"></a>
+
+## Patent siとの接続
 
 既存のSky特許出願アシスタントは発明情報の手入力から準備packetを作れるが、現在はMaterial Invention CoreやXR履歴へ未接続である。avocadoMiniでは`Patent AI Bridge`を追加し、次を支援する。
 
 - 選択した候補branchとevent範囲から、課題、構成、操作、技術的効果、代替案、失敗例を発明開示draftへ変換する。
-- 人が行った操作、Local AIが提案した関係、simulation予測、文献、supplier、実験receiptを別sourceとして明示する。
+- 人が行った操作、Local siが提案した関係、simulation予測、文献、supplier、実験receiptを別sourceとして明示する。
 - 四方向sensor、gesture intent、candidate graph、incremental simulation、安全gate、spatial provenanceというsystem発明と、探索で得た材料候補の発明を混ぜずに整理する。
 - 既存Toolの公式情報源限定検索を利用し、候補文献、分類、claim element対比を作る。
 - 公開前にGit、demo、動画、共同room、export、展示の記録を確認し、秘密保持と公開状況を利用者へ確認する。
 - 専門家へ渡す時点のcandidate digest、scene digest、event range、model version、引用URL、取得日時をpacketへ固定する。
 
-Patent AIは「新しい」「特許になる」「侵害しない」「この人が法的発明者」と断定しない。hash chainやtimestampは履歴の改変検知を助けるが、発明日、発明者、優先権、権利帰属の法的証明を単独で保証しない。出願、電子署名、料金支払は現在の安全境界どおり自動実行しない。
+Patent siは「新しい」「特許になる」「侵害しない」「この人が法的発明者」と断定しない。hash chainやtimestampは履歴の改変検知を助けるが、発明日、発明者、優先権、権利帰属の法的証明を単独で保証しない。出願、電子署名、料金支払は現在の安全境界どおり自動実行しない。
 
 ## Invention provenance
 
@@ -168,9 +170,9 @@ Patent AIは「新しい」「特許になる」「侵害しない」「この�
 - project／owner、session、scene／candidate digest
 - 4-view sensor set、calibration digest、tracking model／version、confidence
 - gesture、対象binding、提案したgraph diff、Coreの判断
-- human direct manipulation、human-confirmed AI proposal、AI-only suggestionの区分
+- human direct manipulation、human-confirmed si proposal、si-only suggestionの区分
 - simulation provider／model／version／input digest／result receipt
-- annotation、公開／共有範囲、Patent AI packetへ含めたevent range
+- annotation、公開／共有範囲、Patent si packetへ含めたevent range
 
 raw cameraは既定保存せず、eventはframe内容ではなく必要最小限のpose／hash／confidenceを保持する。再現にraw dataが必要な研究modeは、対象、保存期間、暗号化、利用目的、共有先を別同意する。
 
@@ -191,7 +193,7 @@ raw cameraは既定保存せず、eventはframe内容ではなく必要最小限
 3. **Four-view tabletop rig**: calibration、遮蔽、同期、sensor欠落、別人hand、volume外を試験する。
 4. **View-only XR**: Matter Space、Process Tunnel、安全overlayをheadset／2Dで比較する。
 5. **Simulation fixture**: 合成model receiptでincremental recompute、stale、cancel、結果不明を検証する。
-6. **Patent packet fixture**: event provenanceからprivate draftを生成し、人／AI／simulation sourceが混ざらないことを確認する。
+6. **Patent packet fixture**: event provenanceからprivate draftを生成し、人／si／simulation sourceが混ざらないことを確認する。
 7. **External Provider**: 実材料DB、simulation、特許検索、labは個別に接続・契約・受入する。
 
 ## avocadoMini合格条件
@@ -200,9 +202,9 @@ raw cameraは既定保存せず、eventはframe内容ではなく必要最小限
 - 片手・両手、遮蔽、別人、反射、低照度、手袋、volume外の誤commit率を測り、閾値を実測で固定する。
 - connect／separate／undoが決定的eventとなり、同じevent列から同じ候補branch digestを再現する。
 - 物質を近付けただけではcommitせず、低confidenceや曖昧なrelation typeを確認なしに保存しない。
-- 操作ごとに安全検査が先に走り、simulationやPatent AIがCore gateを迂回しない。
+- 操作ごとに安全検査が先に走り、simulationやPatent siがCore gateを迂回しない。
 - simulationのmodel、version、input、誤差、失敗を保持し、実験証拠へ昇格しない。
-- Patent AI packetが人、AI、simulation、文献、実測を分離し、特許性・発明者・出願完了を断定しない。
+- Patent si packetが人、si、simulation、文献、実測を分離し、特許性・発明者・出願完了を断定しない。
 - raw camera、room mesh、biometric streamが既定保存・外部送信されない。
-- XRなしの2D fallbackで同じ候補graph、履歴、安全状態、Patent AI引継ぎを操作できる。
+- XRなしの2D fallbackで同じ候補graph、履歴、安全状態、Patent si引継ぎを操作できる。
 - prototype成功を物理新材料、実設備安全、特許登録、量産成功として表示しない。

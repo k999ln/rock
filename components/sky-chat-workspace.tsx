@@ -198,7 +198,7 @@ function botStateLabel(tool: Automation, latest: Job | undefined) {
     return '本体未接続';
   }
   if (tool.runner === 'jev-evaluation' && !latest)
-    return '外部AIの接続確認が必要';
+    return '外部siの接続確認が必要';
   return latest ? jobMessage(latest) : 'Sky登録済み';
 }
 
@@ -798,7 +798,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
           if (reason.status === 401) setNeedsSignin(true);
           if (reason.code === 'RATE_CARD_CURRENCY_REQUIRED') setRemoteCurrencyOptions(reason.currencies);
         }
-        setError(reason instanceof Error ? reason.message : 'クラウドAIの料金見積を取得できませんでした。');
+        setError(reason instanceof Error ? reason.message : 'クラウドsiの料金見積を取得できませんでした。');
       } finally {
         if (isCurrent()) {
           estimateAbortRef.current = null;
@@ -905,7 +905,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
         setMessages((current) => conversational
           ? [...current, { id: `${id}-reply`, side: 'sky', text: detail, tool: toolId }]
           : current.map((message) => message.id === `${id}-route`
-            ? { ...message, text: `${message.text}\n\n会話AIは未接続です。Toolの入力と実行は下のカードから使えます。` }
+            ? { ...message, text: `${message.text}\n\n会話siは未接続です。Toolの入力と実行は下のカードから使えます。` }
             : message));
       }).finally(() => {
         if (chatAbortRef.current === controller) {
@@ -1529,7 +1529,7 @@ function AuthenticatedSkyChatWorkspace({ executionBlocked, accessState, setNeeds
               {chatLoading && <output className="zema-thinking">Zemaが返答を考えています…</output>}
               {remoteTextProvider && (
                 <section className="zema-remote-consent" aria-live="polite">
-                  <p>クラウドAIの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
+                  <p>クラウドsiの料金見積です。依頼文は見積計算のためRockstarOS内で処理し、LLM Providerには送信しません。Providerへの実行と請求は、実行前承認・Wallet予約・利用量精算の受入まで無効です。</p>
                   {remoteEstimate && (
                     <dl>
                       <div><dt>最大費用</dt><dd>{formatCurrencyMinor(remoteEstimate.estimate.maximumChargeMinor, remoteEstimate.estimate.currency)}</dd></div>

@@ -411,7 +411,7 @@
         "RQ50"
       ],
       "commercialAndAuthorityPoliciesChanged": false,
-      "runtimeChanged": false,
+      "runtimeChanged": true,
       "jennifferRole": "verified_repository_jennifer_portfolio_coordinator",
       "originalDesignBytesPreserved": true,
       "jenniferSource": {
@@ -422,7 +422,31 @@
         "document": "https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md",
         "pullRequest": 113,
         "mainIntegrated": false
-      }
+      },
+      "books": [
+        "docs/service-design/README.md",
+        "docs/service-design/01-service-experience.md",
+        "docs/service-design/02-system-contracts.md",
+        "docs/service-design/03-product-profiles.md",
+        "docs/service-design/04-delivery-and-acceptance.md",
+        "docs/service-design/05-requirement-coverage.md",
+        "docs/service-design/06-consistency-contracts.md"
+      ],
+      "runtimeLogicChanged": false,
+      "displayTextChanged": true,
+      "consistencyContracts": "docs/service-design/06-consistency-contracts.md",
+      "explicitUpdates": [
+        {
+          "date": "2026-10-13",
+          "instruction": "それぞれ辻褄を合わせる",
+          "result": "Cross-system invariant contracts and 12 acceptance scenarios; implementation gaps remain explicit."
+        },
+        {
+          "date": "2026-10-13",
+          "instruction": "全部表記siに変えてai→si",
+          "result": "First-party display si; compatibility identifiers, provider proper names and original archives preserved."
+        }
+      ]
     }
   },
   "northStar": {
@@ -432,7 +456,7 @@
     "designModel": "gpt-6-astra",
     "auditModel": "gpt-5.6-sol",
     "auditDocument": "docs/ai-native-os-design-audit.md",
-    "purpose": "increase convenience and broadly shared prosperity by continuously improving a user-owned AI automation team and connecting verified outcomes to sustainable income opportunities",
+    "purpose": "increase convenience and broadly shared prosperity by continuously improving a user-owned si automation team and connecting verified outcomes to sustainable income opportunities",
     "productCore": "ai_native_operating_system_with_replaceable_high_performance_local_llm_and_offline_agent_runtime",
     "osIsProductCore": true,
     "osIsUltimateSocialPurpose": false,
@@ -1689,7 +1713,7 @@
   },
   "avokadoProPcIntent": {
     "decisionDate": "2026-10-05",
-    "reason": "Explicit user instruction: NVIDIA-based compact PC resembling Mac mini, AI and PC gaming, price answer 80 interpreted as JPY800000 sales target",
+    "reason": "Explicit user instruction: NVIDIA-based compact PC resembling Mac mini, si and PC gaming, price answer 80 interpreted as JPY800000 sales target",
     "nvidiaGpuRequired": true,
     "standalonePc": true,
     "miniDependency": false,
@@ -1701,7 +1725,7 @@
     "aiPcClarification": {
       "date": "2026-10-13",
       "source": "User explicit clarification",
-      "description": "NVIDIA chip/GPU based high-performance AI PC; preserve standalone PC and prior gaming requirement; no final BOM or performance acceptance implied."
+      "description": "NVIDIA chip/GPU based high-performance si PC; preserve standalone PC and prior gaming requirement; no final BOM or performance acceptance implied."
     }
   },
   "miniCellularIntent": {
@@ -2189,5 +2213,6 @@
       "stripe_connect_configuration_and_threshold_billing",
       "cloud_ai_provider_resale_terms"
     ]
-  }
+  },
+  "productTerminology": "data/product-terminology.json"
 }

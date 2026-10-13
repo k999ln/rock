@@ -95,21 +95,21 @@ void test('product baseline rejects lost requirements, stale-as-live claims and 
   );
   const osLosesCoreRole = structuredClone(source);
   osLosesCoreRole.northStar.osIsProductCore = false;
-  assert.throws(() => validateBaseline(osLosesCoreRole), /AIネイティブOS Core/);
+  assert.throws(() => validateBaseline(osLosesCoreRole), /siネイティブOS Core/);
   const gameBakedIntoCore = structuredClone(source);
   gameBakedIntoCore.northStar.applicationReleaseIndependence = false;
   assert.throws(
     () => validateBaseline(gameBakedIntoCore),
-    /AIネイティブOS Core/,
+    /siネイティブOS Core/,
   );
   const incomeGuarantee = structuredClone(source);
   incomeGuarantee.northStar.monthlyIncomeTargetNature = 'guaranteed_income';
-  assert.throws(() => validateBaseline(incomeGuarantee), /AIネイティブOS Core/);
+  assert.throws(() => validateBaseline(incomeGuarantee), /siネイティブOS Core/);
   const blanketCollection = structuredClone(source);
   blanketCollection.northStar.dataCollection.categorySpecificConsentRequired = false;
   assert.throws(
     () => validateBaseline(blanketCollection),
-    /AIネイティブOS Core/,
+    /siネイティブOS Core/,
   );
   const lostLocalAiBuildEvidence = structuredClone(source);
   lostLocalAiBuildEvidence.localAiRuntime.apkBuilt = false;

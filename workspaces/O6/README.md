@@ -49,7 +49,7 @@ OS02: 型番・source lock・vendor artifactを同じ構成で確認する
 | N02 | 起動応答確認と自動再読込WIPの検証・採用判断 | 進行中 / 共通基盤 | — |
 | N03 | 実機候補1機種の型番/SKU・boot/BSP・更新/復旧の適合確認 | 進行中 / 共通基盤 | — |
 | N04 | Pixel 10受入後だけ二機種目のDevice Support Package候補を再評価 | 未着手 / 共通基盤 | N03 |
-| N05 | 実USB・外部MCP/AI・金融provider・ToB精算と運営pilot | 未着手 / 共通基盤 | — |
+| N05 | 実USB・外部MCP/si・金融provider・ToB精算と運営pilot | 未着手 / 共通基盤 | — |
 
 <details>
 <summary>完了記録のあるtask（当該範囲の記録。製品全体の完成ではありません）</summary>

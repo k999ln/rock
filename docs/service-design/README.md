@@ -2,17 +2,20 @@
 
 再構成版 1.0 / 2026-10-13 / 設計案と既存契約の整理。製品版は RockstarOS 1.0 Developer Preview を維持する。
 
-**自分のやりたいことを、自分のAIチームと進め、成果を仕事・創作・ゲーム・生活へ持ち帰れるサービスを作る。** Jenniferへ目的を話し、Skyで能力を選び、裏側のZemaで仕事を進め、RockstarOSが本人・権限・費用・保存・復旧を支える。MiniとProはその体験を広げる独立した機器。rocketstarは同じ記録・承認思想を使う独立した宇宙工学programである。
+利用者の明示指示により、第一者の製品表示はすべて小文字の **si** を使う。[表記契約](../../data/product-terminology.json)に従い、API/schema・package名・task ID・外部固有名と保存原本は互換性と証拠のため保持する。表記変更で能力・実行権限・受入状態は変えない。
+
+**自分のやりたいことを、自分のsiチームと進め、成果を仕事・創作・ゲーム・生活へ持ち帰れるサービスを作る。** Jenniferへ目的を話し、Skyで能力を選び、裏側のZemaで仕事を進め、RockstarOSが本人・権限・費用・保存・復旧を支える。MiniとProはその体験を広げる独立した機器。rocketstarは同じ記録・承認思想を使う独立した宇宙工学programである。
 
 利用者の「やりたいことは変わっていない。最初から設計書を組み直して素敵なサービスにしたい」という指示に基づき、機能を追加した順の説明から、体験・責任・契約・実現順に読める構成へ組み直した。既存実装を全面作り直す指示、料金変更、実機操作、公開・課金の開始ではない。
 
 ## 読む順番
 
 1. [利用体験](01-service-experience.md) — 誰が何を始め、どこで成果を受け取り、また使いたくなるか。
-2. [共通システムと契約](02-system-contracts.md) — Sky・Zema・OS・AI・Walletの責任、状態、保存、費用、復旧。
+2. [共通システムと契約](02-system-contracts.md) — Sky・Zema・OS・si・Walletの責任、状態、保存、費用、復旧。
 3. [各製品の役割](03-product-profiles.md) — Jennifer、Mini、Pro、rocketstarを同じ構想へ接続する境界。
 4. [実現順と受入](04-delivery-and-acceptance.md) — 再利用する実装、不足、担当、合格証拠、次の作業。
 5. [要望の引継ぎ](05-requirement-coverage.md) — RQ01〜RQ49と最新mainで追加されたRQ50の対応先。
+6. [横断整合契約](06-consistency-contracts.md) — 同じ本人・仕事・予算・成果を追う不変条件と12受入シナリオ。
 
 技術の細部は[全体詳細設計](../rockstaros-complete-design.md)、[全Tool詳細](../sky-tools-complete-design.md)、[全設計ポータル](../rockstaros-design-portal.md)から開く。ここはサービス全体を理解し実装判断へ渡す統合基本設計で、原本PDF、各Device Profile、Tool schemaの代用品にはしない。
 
@@ -20,10 +23,10 @@
 
 - **Sky** — 自分に必要なAgentとToolを見つけ、条件を確かめ、購入・接続し、使う場所へ届けるplatform。
 - **Zema** — 依頼を仕事にし、計画・進捗・確認・停止・成果・使用額を見渡す管理役。
-- **RockstarOS** — UIやAIの主張から独立して、本人・有限権限・実行・保存・復旧を強制する共通runtime。対応する機種ではnative OSとしても提供する。
-- **Jennifer（利用者表記 Jenniffer）** — 利用者が話す全体のプロジェクト統括窓口。目的をGoalへ整理し、担当AIと成果受領をまとめる。Zemaはその裏の仕事system。[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)は専用branchにあり、main統合・本番受入は別。
+- **RockstarOS** — UIやsiの主張から独立して、本人・有限権限・実行・保存・復旧を強制する共通runtime。対応する機種ではnative OSとしても提供する。
+- **Jennifer（利用者表記 Jenniffer）** — 利用者が話す全体のプロジェクト統括窓口。目的をGoalへ整理し、担当siと成果受領をまとめる。Zemaはその裏の仕事system。[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)は専用branchにあり、main統合・本番受入は別。
 - **avocadoMini** — 身体・手・日本語音声で遊び、作り、暮らしへ広げる独立した空間端末。現行はR5。
-- **avokadoPro** — NVIDIAのGPU/chipを使う高性能AI PC。PCゲームも維持する独立据置PCで、Miniへの接続は任意。
+- **avokadoPro** — NVIDIAのGPU/chipを使う高性能si PC。PCゲームも維持する独立据置PCで、Miniへの接続は任意。
 - **rocketstar** — 衛星輸送・帰還・回収・再使用を目指す独立工学program。一般のAgentから機体管制を行わない。
 
 ```mermaid
@@ -33,7 +36,7 @@ flowchart TB
   S --> Z[Zema 仕事・進捗・成果]
   S -. 対応するアプリ内の体験 .-> A[仕事・創作・ゲーム・生活アプリ]
   J --> Z
-  Z --> AMC[AMC 有限のGoal分解と担当AI割当]
+  Z --> AMC[AMC 有限のGoal分解と担当si割当]
   AMC --> C
   Z --> C[RockstarOS 共通契約とBroker]
   A --> C
@@ -42,10 +45,12 @@ flowchart TB
   R --> Z
   R --> A
   M[Mini R5 独立空間端末] --> C
-  P[Pro 独立AI・ゲームPC] --> C
+  P[Pro 独立si・ゲームPC] --> C
   X[rocketstar 専用地上Gateway] -. 工学専用の観測・工程記録 .-> C
-  X --> F[独立機上制御・飛行安全系]
+  F[独立機上制御・飛行安全系] -->|観測だけ| X
 ```
+
+Jenniferは会話による統括の窓口。Sky直接操作・host app・ゲストの有限処理では会話を必須にせず、同じ業務契約へ接続する。8件のJennifer projectは社内開発/運営portfolioで、一般利用者の案件と権限を分ける。
 
 図は到達設計の関係を示す。全接続が実装済み・同じDBへ同期済みという意味ではない。Mini・Pro・rocketstarの完成は、Sky単体の利用開始条件にしない。
 

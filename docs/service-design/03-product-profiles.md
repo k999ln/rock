@@ -12,13 +12,13 @@ Zemaの主な利用者は仕事を依頼・修正・検収する本人。依頼�
 
 ## Jennifer（利用者表記 Jenniffer）
 
-**利用者が常に話す、Rockstar全体のプロジェクト統括窓口。** 目的をGoalへ言語化し、projectを選び、担当AIと必要な確認、成果受領をまとめる。ZemaはJenniferの裏でJob/Task/Run、進捗、承認、停止、artifact、費用、Receipt、履歴を管理し、競合する人格として前面へ出さない。Skyは能力の発見・接続、Brokerは本人・権限・費用の強制を持つ。
+**利用者が常に話す、Rockstar全体のプロジェクト統括窓口。** 目的をGoalへ言語化し、projectを選び、担当siと必要な確認、成果受領をまとめる。ZemaはJenniferの裏でJob/Task/Run、進捗、承認、停止、artifact、費用、Receipt、履歴を管理し、競合する人格として前面へ出さない。Skyは能力の発見・接続、Brokerは本人・権限・費用の強制を持つ。
 
 根拠は[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)、`codex/jennifer-zema-execution` / `d0151e892794066e1a59b5e4d1dc8863e314947f` / [PR #113](https://github.com/k999ln/rock/pull/113)。役割は未定義ではなく、このbranchにWeb構成・計画・実行接続sourceが存在する。main `4273ef02`には未統合。今回、役割と契約を設計へ取り込むが実装sourceはmergeしない。Jevは既存の任意remote evaluatorで、Jenniferと別system。
 
 入力は本人の依頼、目的/意図、範囲と対象外、成功条件、選択したprojectと許可資料。出力はGoal Contract、依存付き計画、担当profile、必要確認、成果の統合報告。計画は`proposed / advisory-only`、本人確認前のGoalはdraft。計画生成はboundedな決定論的処理で、万能な自然言語LLMや自動実行を実証したものではない。
 
-8project（RockstarOS、Hardware、rocketstar、Jennifer/Zema、AMC、Spider Security、Business/Wallet、Governance/Release）に各一つのmanager profileを置く。担当AIは必要時に呼ぶ論理責任者で、常時稼働process・独自credentialを増やさない。Zema内AMCは確認済みGoalを`milestone → work package → task → step`へ分ける。branchの上限はdepth5、1親12子、100node、初回候補8leaf。各専門AIは一leafの成果と証拠を提出し、自分で受入済みにしない。
+社内開発/運営の8project（RockstarOS、Hardware、rocketstar、Jennifer/Zema、AMC、Spider Security、Business/Wallet、Governance/Release）に各一つのmanager profileを置く。一般利用者のtenant案件と資料・保存・許可を分け、profileから管理権限を得ることはない。担当siは必要時に呼ぶ論理責任者で、常時稼働process・独自credentialを増やさない。Zema内AMCは確認済みGoalを`milestone → work package → task → step`へ分ける。branchの上限はdepth5、1親12子、100node、初回候補8leaf。各専門siは一leafの成果と証拠を提出し、自分で受入済みにしない。
 
 本人が「Goalを確認してZemaへ保存」して既存AMCへ渡す。readyなleafだけ別Cloud Agent jobへ結び、worker/reviewerを別delegationとして見積・予算・Broker証明・本人承認へ進める。Zema runtimeのone-shot送信、GetTask照合、CancelTask、結果不明保持、暗号化text artifact、署名済みusage receiptを使う。計画作成やGoal保存は外部送信・費用予約・Tool成功を意味しない。
 
@@ -42,23 +42,27 @@ native OSは、署名済みimage・exact SKU・boot/保存/復旧が受け入れ
 
 価値は、身体・手・日本語音声で遊び、作り、学び、暮らしへ広げる空間端末。現行R5は**使用時全高200mm以内の銀色円筒、1本自律、同型mini増設、外部給電、別Edge Hub不要**。テレビ・スマホ・Pro・外部PC・インターネットを基本操作と保存の必須条件にしない。[R5正本](../avocado-mini-r5/README.md)と[統合基本設計](../avocado-mini-r5/package/integrated_design.md)を引き継ぐ。
 
+Miniはcloud accountなしのlocal guest/個人profileで起動・入力・遊び・保存・停止できる。cloud link、選択作品の同期/送信は別の強い本人確認と同意で結び、service期限切れやlink解除でもlocal作品と停止を保持する。
+
 入力profileはsensor/pose/手/声、game interaction、本人切替。出力はscene/game状態、検査済みartifact、表示能力と安全状態。顔候補の識別を強い本人認証にせず、人別保存・切替・離席lockをOSへ結ぶ。sensor uncertainty・入力喪失・表示停止・熱・給電停止の時は安全な停止と保存へ進み、ゲームの操作をcloud支出へ変換しない。
 
 裸眼で周囲の空間へ粒子が舞う表示は維持する研究目標だが、現行Display HALは`unavailable`。2D/AR等の研究profileで仕事や操作を検証しても、R5全空間表示の成立とは呼ばない。光学・精密3D入力・実部品収納・熱・回路・加工・製造と、実機の安全・性能は未受入。14件のR5算術検査を実機証拠へ転用しない。
 
-通信optionの確定方針は**国内LTE、IoT data専用SIM、試作カード・量産chip、SGP.32対応SIM、遠隔profile切替を自作しない**。回線つき別model/optionと回線なしMiniを保持する。通信料は自社名義の機器service料に含める設計で、consumer eSIM販売の再開ではない。[Mini通信](../avocado-mini-cellular.md)と[data正本](../../data/avocado-mini-cellular.json)を使う。開発boardのbench試験はR5閉箱受入と分ける。
+通信optionの確定方針は**国内LTE、IoT data専用SIM、試作カード・量産chip、SGP.32対応SIM、遠隔profile切替を自作しない**。回線つき別model/optionと回線なしMiniを保持する。通信料は自社名義の機器service料に含める設計で、consumer eSIM販売の再開ではない。[Mini通信](../avocado-mini-cellular.md)と[data正本](../../data/avocado-mini-cellular.json)を使う。開発boardのbench試験はR5閉箱受入と分ける。含まれるLTE通信は自社cloudへの制御・Agent・音声のみ。OS/model更新・映像/streaming・game取得等の大容量転送はWi-Fiへ分け、LTEへの無断fallbackを行わない。
 
 未決は光学方式、module/carrier、BOM・熱・電源・収納の統合。MAT系担当が候補比較と非金融prototypeを出し、OWNERが実機・調達条件を確定する。受入は同一実機の単独入力/停止/保存/再起動と、採用表示方式の測定、安全、通信option、製造工程を別々に記録する。
 
 ## avokadoPro
 
-価値は、**NVIDIAのGPU/chipを使って作る高性能AI PC**。2026-10-13の利用者補足を明記し、ローカルmodel推論・制作の性能を中心に、既存のPCゲーム要望も保持する。形状はMac mini風の小型据置PCを目指す。Miniなしで使え、Miniへ計算・保存・game能力を追加する接続は任意。[Pro P0設計](../avokado-pro-pc-design.md)と[data正本](../../data/avokado-pro-pc.json)は既にmainにある。
+価値は、**NVIDIAのGPU/chipを使って作る高性能si PC**。2026-10-13の利用者補足を明記し、ローカルmodel推論・制作の性能を中心に、既存のPCゲーム要望も保持する。形状はMac mini風の小型据置PCを目指す。Miniなしで使え、Miniへ計算・保存・game能力を追加する接続は任意。[Pro P0設計](../avokado-pro-pc-design.md)と[data正本](../../data/avokado-pro-pc.json)は既にmainにある。
 
 入力は本人のPC操作、対応game、有限のTool/compute要求。出力はPCの成果・保存・game体験と、許可済みMini接続の結果。ホスト管理者権限をMini/Androidへ移さず、外部Toolをplatform鍵で署名しない。ネットワーク断ではPCの基本利用と保存を保持し、Miniとの不明な結果を照合する。
 
-2026-10-05の販売目標**80万円/台**を維持し、税・構成・販売条件は未決。旧88万円は履歴。RTX5080 Laptop 16GB、128GB RAM、4TB SSD等はP0候補で、調達・搭載・性能確定ではない。OEM/ODM、量産販売OS、統合BOM、値入りICD、QVL、収納、電力・騒音・熱、AIとgame実測、原価とsupportは未受入。
+2026-10-05の販売目標**80万円/台**を維持し、税・構成・販売条件は未決。旧88万円は履歴。RTX5080 Laptop 16GB、128GB RAM、4TB SSD等はP0候補で、調達・搭載・性能確定ではない。OEM/ODM、量産販売OS、統合BOM、値入りICD、QVL、収納、電力・騒音・熱、siとgame実測、原価とsupportは未受入。
 
-MAT16/P2が統合候補・調達条件・閉箱受入matrixを出す。OWNERが見積と構成、販売OS等を決める。合格は同一構成で長時間AIと代表game、保存/再起動/復旧、Mini任意接続を測ること。Miniの受入をPro固有の完成へ加算しない。
+MAT16/P2が統合候補・調達条件・閉箱受入matrixを出す。OWNERが見積と構成、販売OS等を決める。合格は同一構成で長時間siと代表game、保存/再起動/復旧、Mini任意接続を測ること。Miniの受入をPro固有の完成へ加算しない。
+
+Pro private推論/制作、契約cloud Provider、Android公開/合成embedding lotのGridは別adapter。ProをGrid供給機やprivate原稿のGrid fallback先に自動登録しない。資源不足時は停止/照合し、違う送信先・価格には新しい同意を要する。
 
 ## rocketstar
 

@@ -12,9 +12,9 @@
 | 履歴 | 書き換えない。整理はmain `bcd31090` の上の `0fbebb63` から |
 | 削除した資料 | 一覧は `data/archived-paths.json`（同日の[旧内容の削除](#obsolete-content-cleanup)の10件を含む）。復元元はすべて削除前のcommit `96845e6006c15e39ba5b45495f79c21bdff7399e`。例: `git show 96845e6006c15e39ba5b45495f79c21bdff7399e:docs/avocado-mini-tower20-e3/README.md` |
 
-暗号化について: 利用者の「大事なところは見れないように」を受けて、`0fbebb63` からgit-cryptで一部（ハード設計・お金と契約・調査・会話記録・AIの指示文・開発の内部の約1,200ファイル）を暗号化した。同じ日に利用者が「鍵は今一切なくていい」と指示したため暗号化をやめ、`.gitattributes` から暗号化の一覧を外して全ファイルを平文に戻した。暗号化していた間のcommit（`0fbebb63`〜`546f8e48`）は、その中身を読むのに当時の鍵が要る。ただし同じ内容は次のcommitから平文で読めるので、鍵がなくても失われるものはない。
+暗号化について: 利用者の「大事なところは見れないように」を受けて、`0fbebb63` からgit-cryptで一部（ハード設計・お金と契約・調査・会話記録・siの指示文・開発の内部の約1,200ファイル）を暗号化した。同じ日に利用者が「鍵は今一切なくていい」と指示したため暗号化をやめ、`.gitattributes` から暗号化の一覧を外して全ファイルを平文に戻した。暗号化していた間のcommit（`0fbebb63`〜`546f8e48`）は、その中身を読むのに当時の鍵が要る。ただし同じ内容は次のcommitから平文で読めるので、鍵がなくても失われるものはない。
 
-暗号化をまた使うときは、`546f8e48` の `.gitattributes` にあった一覧を戻し、新しい鍵を作って `npm run private:check` で確かめる。`scripts/private-files.mjs`・`scripts/generate-private-modules.mjs`・`tests/private-locked.mjs` は、暗号化がなくてもそのまま動く（今は何も飛ばさない）。法律AI・特許AIの指示文と弁護士一覧は `private/` のJSONに置いたままで、ビルド時に `lib/generated/` へ書き出す。
+暗号化をまた使うときは、`546f8e48` の `.gitattributes` にあった一覧を戻し、新しい鍵を作って `npm run private:check` で確かめる。`scripts/private-files.mjs`・`scripts/generate-private-modules.mjs`・`tests/private-locked.mjs` は、暗号化がなくてもそのまま動く（今は何も飛ばさない）。法律si・特許siの指示文と弁護士一覧は `private/` のJSONに置いたままで、ビルド時に `lib/generated/` へ書き出す。
 
 ## 結論
 
@@ -88,7 +88,7 @@ Gitは公開範囲が異なるため、物理的な1 repositoryにはしませ�
 
 | 対象 | 共通の修正先 | 各adapterに残す責務 |
 | --- | --- | --- |
-| 法務・特許AI | `lib/research-ai.ts` | 認証、送信同意、入力上限、公式domain一覧、固有prompt・緊急停止 |
+| 法務・特許si | `lib/research-ai.ts` | 認証、送信同意、入力上限、公式domain一覧、固有prompt・緊急停止 |
 | Jev評価・意思決定 | `lib/jev-transport.ts` | 評価rubric、決定境界、費用見積り、remote opt-in |
 | PC・Fashion MCP | `lib/mcp-client.ts` | origin、token長、protocol範囲、接続世代、変更系承認 |
 | Toolの一覧 | `lib/catalog.ts`、Connectorの既存registry | Job/connectionの型・一覧をcatalogから導出。IP Studio重複とFashion件数差を除去 |
@@ -153,6 +153,6 @@ Stripeのstandalone配布コピーは生成物であり、共通sourceとの一�
 
 ## 2026-10-05 Sky配信候補の正本統合（G04/WEB04）
 
-G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部AI・本番Cron・本人受入は別条件。
+G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部si・本番Cron・本人受入は別条件。
 
 統合後のローカル全体verifyは成功。AMC/SPIDERを含むNode1146合格・1skip、仕事API1069、CSV385 assertions。詳細は[検証記録](evidence/sky-github-main-integration.json)。既存mainの履歴scanner候補2859件は別の未解決事項として保持する。
