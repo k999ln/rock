@@ -7,6 +7,7 @@ import {
   ZEMA_CHAT_SESSION_KEY,
   ZEMA_CHAT_SESSION_TTL_MS,
 } from '../lib/zema-chat-session.ts';
+import { createJenniferCoordinationPlan } from '../lib/jennifer-coordination.ts';
 
 function memoryStorage() {
   const values = new Map();
@@ -108,6 +109,33 @@ void test('malformed or oversized saved state is rejected', () => {
   assert.equal(storage.getItem(ZEMA_CHAT_SESSION_KEY), null);
   storage.setItem(ZEMA_CHAT_SESSION_KEY, 'x'.repeat(1_000_001));
   assert.deepEqual(readZemaChatSessions(storage, 1_000), []);
+});
+
+void test('Jennifer coordination stays inside the bounded Zema session', () => {
+  const storage = memoryStorage();
+  const coordination = createJenniferCoordinationPlan(
+    '資料を調査して比較し、成果物を作成して',
+    'chat-request-1',
+  );
+  const session = {
+    version: 1,
+    id,
+    toolId: 'sky-auto',
+    createdAt: 1_000,
+    messages: [{ id: 'user-plan', side: 'me', text: coordination.requestSummary }],
+    activeRequest: null,
+    workflowStatus: 'ready',
+    outcome: null,
+    coordination,
+  };
+  saveZemaChatSession(session, storage, 1_001);
+  assert.deepEqual(readZemaChatSessions(storage, 1_002), [session]);
+  assert.equal(readZemaChatSessions(storage, 1_002)[0].coordination.amc.engine, 'zema-amc');
+
+  const raw = JSON.parse(storage.getItem(ZEMA_CHAT_SESSION_KEY));
+  raw[0].coordination.authority = 'owner-and-policy-engine';
+  storage.setItem(ZEMA_CHAT_SESSION_KEY, JSON.stringify(raw));
+  assert.deepEqual(readZemaChatSessions(storage, 1_003), []);
 });
 
 await test('AMC chat restores the complete 8,000-character brief and rejects overlong replacement without losing it', () => {

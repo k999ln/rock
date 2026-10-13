@@ -2,33 +2,25 @@
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "rockstar-sky-agent-runtime",
   "main": "src/worker.ts",
-  "compatibility_date": "2026-08-18",
+  "compatibility_date": "2026-10-08",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "A2A_EGRESS_ALLOWED_ORIGINS": ""
+    "A2A_DELEGATION_EXECUTION_ENABLED": "false",
+    "A2A_EGRESS_ALLOWED_ORIGINS": "",
+    "ROCKSTAR_PUBLIC_ORIGIN": "https://rockstaros-kaiya.noellesugar1.chatgpt.site"
   },
   "triggers": {
-    "crons": ["* * * * *"]
+    "crons": ["*/1 * * * *"]
   },
-  "workflows": [
-    {
-      "binding": "REMOTE_AI_TEXT_WORKFLOW",
-      "name": "rockstar-remote-ai-text",
-      "class_name": "RemoteAiTextWorkflow"
-    },
-    {
-      "binding": "A2A_DELEGATION_WORKFLOW",
-      "name": "rockstar-a2a-delegation",
-      "class_name": "A2ADelegationWorkflow"
-    }
-  ],
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "site-creator-d1",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "00000000-0000-4000-8000-000000000000",
       "migrations_dir": "../../drizzle"
     }
   ],
-  "observability": { "enabled": true }
+  "observability": {
+    "enabled": true
+  }
 }
