@@ -63,7 +63,7 @@
     {
       "id": "rockstaros",
       "name": "RockstarOS Bot",
-      "purpose": "共通OS runtime、AI、SIM／eSIM利用開始、端末適合、Pixel／QEMU",
+      "purpose": "共通OS runtime、si、SIM／eSIM利用開始、端末適合、Pixel／QEMU",
       "squads": [
         "O2",
         "O3",

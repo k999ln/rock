@@ -812,7 +812,7 @@ export default function SkyWorkspace({
     setRoutedTool(tool);
     setRouteMessage(
       tool.id === 'rockstar-amc'
-        ? 'AMCをZemaで開きます。Goalと意図の確認後に計画を保存できます。AI実作業は開始しません。'
+        ? 'AMCをZemaで開きます。Goalと意図の確認後に計画を保存できます。si実作業は開始しません。'
         : `${roleFor(tool)}が進めます。専用画面を開いて、入力・実行・結果確認を行えます。`,
     );
   }
@@ -865,7 +865,7 @@ export default function SkyWorkspace({
       )}
       <nav aria-label="Skyの主要画面">
         <Link className="sky-marketplace-link" href="/sky/marketplace">
-          AI・自動化マーケットプレイス
+          si・自動化マーケットプレイス
         </Link>
         <Link className="sky-marketplace-link" href="/sky/outputs">
           Agentの成果を見る

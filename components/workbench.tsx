@@ -683,7 +683,7 @@ export default function Workbench({
     );
     const reference = data.job?.amcGoal?.coordinationRef as { planId?: unknown } | undefined;
     if (!data.job?.amcGoal || reference?.planId !== coordination.planId)
-      throw new Error('Jenniferの親Goalとこの担当AI jobが一致しません。');
+      throw new Error('Jenniferの親Goalとこの担当si jobが一致しません。');
     setJenniferRootJob(data.job);
     return data.job;
   }, []);
@@ -1073,7 +1073,7 @@ export default function Workbench({
     if (!selectedJob || !coordination || parsed?.role !== 'worker' ||
       parsed.taskId !== coordination.taskId || delegation.state !== 'remote_completed' ||
       delegation.artifactsCaptured !== 1 || documents.length === 0 || !usage) {
-      setDelegationError('担当AIの完了状態、保存成果、照合済みusage Receiptを揃えてください。');
+      setDelegationError('担当siの完了状態、保存成果、照合済みusage Receiptを揃えてください。');
       return;
     }
     setDelegationBusy(true);
@@ -1132,7 +1132,7 @@ export default function Workbench({
         if (!task) throw new Error('Jenniferのleaf taskが親Goalにありません。');
         if (task.status === 'done') return null;
         if (task.status !== 'submitted')
-          throw new Error('担当AIの成果をZemaへ提出してから独立検収してください。');
+          throw new Error('担当siの成果をZemaへ提出してから独立検収してください。');
         const evidence = [
           `a2a:${delegation.id}:review-artifact`,
           `a2a:${delegation.id}:review-usage-receipt`,
@@ -1421,7 +1421,7 @@ export default function Workbench({
       setDelegationError(
         parsed?.role === 'reviewer'
           ? '独立reviewerへのdispatchを承認しました。成果とReceiptを待っています。'
-          : '担当AIへのdispatchを承認し、Zemaでleaf taskを実行中にしました。',
+          : '担当siへのdispatchを承認し、Zemaでleaf taskを実行中にしました。',
       );
     } catch (cause) {
       await refreshDelegations(selectedJob.id).catch(() => {});
@@ -1794,7 +1794,7 @@ export default function Workbench({
                     <p>
                       Zema状態: {jenniferRootJob?.amcGoal?.tasks.find(
                         ({ id }) => id === selected.coordination?.taskId,
-                      )?.status ?? '確認中'}。担当AIのremote完了だけでは検収済みにしません。
+                      )?.status ?? '確認中'}。担当siのremote完了だけでは検収済みにしません。
                     </p>
                   </section>
                 )}

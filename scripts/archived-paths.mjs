@@ -2,8 +2,8 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// Files that left the public repository on 2026-10-10 stay in the private
-// archive at a fixed commit. Ledgers may still cite them as historical evidence.
+// Removed files remain readable in Git history. New cleanup batches can pin a
+// per-path restore commit without changing the original archive's provenance.
 const defaultRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const cache = new Map();
 
@@ -30,7 +30,8 @@ export function existsOrArchived(path, root = defaultRoot) {
 export function archiveUrl(path, root = defaultRoot) {
   const archive = archivedPaths(root);
   if (!archive.set.has(path)) return null;
-  return `https://github.com/${archive.repository}/blob/${archive.commit}/${path
+  const commit = archive.restoreCommits?.[path] ?? archive.commit;
+  return `https://github.com/${archive.repository}/blob/${commit}/${path
     .split('/')
     .map(encodeURIComponent)
     .join('/')}`;

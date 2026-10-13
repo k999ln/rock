@@ -2,11 +2,13 @@
 
 ## 2026-10-10 機器用IoT回線を優先し、消費者向けeSIMは保留
 
-利用者が [アカウント入口と回線の役割整理](account-entry-proposal.md) を確定した。主商品はアカウントで使うAgentになり、SIMは機器の任意部品になった。このため契約準備の優先は **機器（avocadoMini）用のIoT向けdata専用回線** へ移す。確認事項: 第三者利用の手続き（MVNOに当たる場合のpartner登録）、SGP.32対応SIMの料金・plan・機器要件、SMSなしの可否、電気通信事業法の登録・届出の要否、携帯電話不正利用防止法の改正（data SIMの本人確認）の対象。本書の消費者向けeSIM（eSIM Go等）の比較と発行・照合ゲートは **保留** とし、codeは既定で無効のまま残す。
+利用者が [アカウント入口の確定方針](product-baseline.md) を確定した。主商品はアカウントで使うAgentになり、SIMは機器の任意部品になった。このため契約準備の優先は **機器（avocadoMini）用のIoT向けdata専用回線** へ移す。確認事項: 第三者利用の手続き（MVNOに当たる場合のpartner登録）、SGP.32対応SIMの料金・plan・機器要件、SMSなしの可否、電気通信事業法の登録・届出の要否、携帯電話不正利用防止法の改正（data SIMの本人確認）の対象。本書の消費者向けeSIM（eSIM Go等）の比較と発行・照合ゲートは **保留** とし、codeは既定で無効のまま残す。
 
-確認日: 2026-10-02（公式公開資料を再確認）。これは契約前の技術・公開価格比較であり、取引条件・販売権・日本国内の提供資格・見積・アカウント審査・sandbox accessを確認した結果ではない。外部への問い合わせ、契約、課金、実profile発行、配備はしていない。SIM/eSIM販売に付属するRockstarOS service accessを主商品とし、物理SIM/eSIM販売・通信開通・OS/client導入を別状態で扱う方針は[product baseline](product-baseline.md)に従う。
+確認日: 2026-10-02（公式公開資料を再確認）。これは契約前の技術・公開価格比較であり、取引条件・販売権・日本国内の提供資格・見積・アカウント審査・sandbox accessを確認した結果ではない。外部への問い合わせ、契約、課金、実profile発行、配備はしていない。現在の主商品は無料accountからのRockstarOS service access。consumer eSIM販売は保留し、任意の機器回線について物理SIM/eSIM販売・通信開通・OS/client導入を別状態で扱う方針は[product baseline](product-baseline.md)に従う。
 
-## 結論
+## 保留中のconsumer eSIM比較（2026-10-02時点の条件）
+
+以下は当時の候補/価格/制限の記録で、現在の供給元推薦・契約済み・提供可能という意味ではない。機器IoT回線の現行確認は冒頭とWallet workstreamを優先する。
 
 最初のeSIM商用・技術打診先は**1GLOBAL Connectを優先候補**、**eSIM GoをUX/APIの比較候補**にする。1GLOBAL ConnectはAccount／Subscriber／Product Offering／Orderを持ち、一般のPOST/PATCH operationにidempotency対応を説明する。一方でAPI Referenceが対応endpointを個別に指定するため、実際のprofile-issuing orderで有効かは契約前に確認する。eSIM Goは公開Quick Startでvalidate→transaction→QRを試せ、branding profileで回線のNetwork Name、Install Name、QR logo、Android Direct Installを設定できるため、「eSIM追加時にRockstarOSブランドを見せる」検証の質問が具体的。eSIM Goのbranding/network-nameはSIM/eSIMの表示とinstall UXであり、OSをeSIMへ格納/自動導入する意味ではない。どちらも日本での再販権、consumer eSIM適合、料金、サポート責任が決まった証拠はない。
 
@@ -51,7 +53,7 @@ RockstarOSのSIM/eSIM商品は、OS内の回線ストアを主要販売経路に
 
 この公開情報が示すのはeSIM提供API・流通optionの存在であり、Rockstarの販売資格、国内通信網/対象プラン、日本での再販権、契約条件、実際の物理SIMカードの販売・発送、実際のeSIM発行、または利用者請求者の合意ではない。物理SIMは採用する通信会社・小売店の通常のSIM販売/配送/開通フローへ接続し、同じ署名claimを発行する別adapterを必要とする。全ての販売元に対して共通化するのは注文IDそのものではなく、issuerが発行する署名済みoffer/purchase claim・取消event・同じRockstar owner bindingである。店頭、外部EC、通信会社、Rockstar checkoutごとに異なる注文番号・本人確認・支払・返金は各source systemで正とし、個人情報、ICCID、EID、eSIM activation secretは共通claimへ入れない。
 
-契約先ごとに、(a)販売者/merchant of recordと通信契約者、(b)物理/eSIMと国・正確なdevice/SKUの適合、(c)profile発行/配送/開通statusとreadback API、(d)注文受付応答喪失時に二重注文/二重請求を防ぐ同一key照合、(e)購入claimの署名鍵/rotation/revocation、(f)refund/chargeback/解約の署名eventと返金主体、(g)通信料・AI使用料の分離、(h)通信/OS導入/サービスclaimの利用者向け表示、(i)一次サポートと障害責任を別々に確認する。SIM/eSIM purchase is offered through multiple channels and includes RockstarOS service access; it is not positioned as checkout inside the OS. Until contracts are accepted, do not present a carrier or seller adapter as live. Do not imply that an OS-side offer reference means seller integration or carrier activation.
+契約先ごとに、(a)販売者/merchant of recordと通信契約者、(b)物理/eSIMと国・正確なdevice/SKUの適合、(c)profile発行/配送/開通statusとreadback API、(d)注文受付応答喪失時に二重注文/二重請求を防ぐ同一key照合、(e)購入claimの署名鍵/rotation/revocation、(f)refund/chargeback/解約の署名eventと返金主体、(g)通信料・si使用料の分離、(h)通信/OS導入/サービスclaimの利用者向け表示、(i)一次サポートと障害責任を別々に確認する。SIM/eSIM purchase is offered through multiple channels and includes RockstarOS service access; it is not positioned as checkout inside the OS. Until contracts are accepted, do not present a carrier or seller adapter as live. Do not imply that an OS-side offer reference means seller integration or carrier activation.
 
 | 確認点 | 1GLOBAL Connect | eSIM Go |
 |---|---|---|
@@ -147,7 +149,7 @@ GoogleはCloud Runをrequest-driven service、task-driven Jobs、pull-driven Wor
 
 ### Rockstar内の従量請求との接続
 
-クラウドのinvoiceは、本人が払う通信費やAI従量額とは別に扱う。Cloudflare/Googleの共通基盤費、agent/API利用料、GPU費、eSIM卸単価、mobile data plan、creator payoutを別meter・別通貨・別price versionで記録する。利用者向けの実請求を有効にするのは、Wallet側の原子的予約、Providerの価格/利用量証跡、返金/reversal、月末invoice照合が接続され、契約上の課金主体が決まってからとする。
+クラウドのinvoiceは、本人が払う通信費やsi従量額とは別に扱う。Cloudflare/Googleの共通基盤費、agent/API利用料、GPU費、eSIM卸単価、mobile data plan、creator payoutを別meter・別通貨・別price versionで記録する。利用者向けの実請求を有効にするのは、Wallet側の原子的予約、Providerの価格/利用量証跡、返金/reversal、月末invoice照合が接続され、契約上の課金主体が決まってからとする。
 
 クラウド上で受付済みjobを続けるには永続job storeだけでなく、provider retryの前にpersistされたone-shot dispatch marker、indeterminate照合、expiry/cap停止、worker isolation、result encryption、owner authorizationが必要。本repoにCloudflare Workflows/D1の試作はあるが、production binding/secret、successful independent A2A provider、圏外端末との実機縦断は未受入。[continuity design](sky-cloud-continuity.md)
 
@@ -161,7 +163,7 @@ eSIM発行／callback endpointには`ESIMGO_API_KEY`、`ESIMGO_CALLBACK_DEDUPE_S
 
 ## API構成案を提示する時の必須境界
 
-- `identity + Sky order/access + device capability`をまとめ、eSIM orderは本人の明示操作と再認証に結びつける。AI agentはplanを提示できるが実注文・top-up・費用上限変更を承認できない。
+- `identity + Sky order/access + device capability`をまとめ、eSIM orderは本人の明示操作と再認証に結びつける。si agentはplanを提示できるが実注文・top-up・費用上限変更を承認できない。
 - Provider webhookはraw-body signatureを検証してからdurable inboxへ記録し、event ID/order/profile versionでdedupeする。署名失敗、順序逆転、重複はprofileを再発行しない。
 - carrier secretsをeSIM adapterだけへ渡す。activation materialは短命・暗号化し、別APIのowner authorizationを得ないagentに返さない。
 - `requested → issued → downloaded → installed → network-attached → service-enabled`を別状態にする。単に回線名が端末表示された状態をRockstarOS/LLM-readyにしない。

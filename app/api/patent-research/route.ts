@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       return Response.json(
         {
           error:
-            '特許調査AIはまだ接続されていません。検索式、データベース入口、書類ドラフトは利用できます。',
+            '特許調査siはまだ接続されていません。検索式、データベース入口、書類ドラフトは利用できます。',
         },
         { status: 503, headers: noStoreHeaders },
       );

@@ -224,7 +224,7 @@ function OrderCard({ order, seller = false, busy = false, onRefresh, onRefund }:
     <div className={styles.orderHeading}><div className={styles.orderIcon}><Package size={23} /></div><div className={styles.orderName}><h3>{order.name}</h3><p>{new Date(order.createdAt).toLocaleDateString('ja-JP')} · 注文 {order.id.slice(0, 8)}</p></div><span className={styles.status} data-status={order.status}>{statusLabels[order.status] || '確認中'}</span></div>
     <div className={styles.orderAmount}><strong>{commerceAmount(order.amountMinor, order.currency)}</strong>{seller && order.status === 'paid' && <span>受取分 {commerceAmount(order.amountMinor - order.commissionMinor, order.currency)} · 手数料10%</span>}{order.refundedMinor > 0 && <span>返金済み {commerceAmount(order.refundedMinor, order.currency)}</span>}</div>
     <div className={styles.actions}>
-      {!seller && order.access && order.endpointUrl && <><button className={styles.primary} type="button" onClick={() => void copyEndpoint()}>{copied ? <Check size={16} /> : <Copy size={16} />}{copied ? 'コピーしました' : 'MCP接続先をコピー'}</button><Link href="/sky/network" className={styles.secondary}>AIと接続する <ArrowRight size={16} /></Link></>}
+      {!seller && order.access && order.endpointUrl && <><button className={styles.primary} type="button" onClick={() => void copyEndpoint()}>{copied ? <Check size={16} /> : <Copy size={16} />}{copied ? 'コピーしました' : 'MCP接続先をコピー'}</button><Link href="/sky/network" className={styles.secondary}>siと接続する <ArrowRight size={16} /></Link></>}
       {!seller && order.status === 'pending' && checkout && <a href={checkout} className={styles.primary}>支払いを続ける <ArrowRight size={16} /></a>}
       {receipt && <a href={receipt} target="_blank" rel="noreferrer" className={styles.textLink}>領収書 <ExternalLink size={14} /></a>}
       {!seller && onRefresh && <button className={styles.textButton} type="button" disabled={busy} onClick={onRefresh}><RefreshCw size={14} />{busy ? '確認中…' : '支払い状況を確認'}</button>}
@@ -232,7 +232,7 @@ function OrderCard({ order, seller = false, busy = false, onRefresh, onRefund }:
     </div>
     {copyError && <p className={styles.error} role="alert">コピーできませんでした。接続先：<span className={styles.endpoint}>{order.endpointUrl}</span></p>}
     {!seller && order.status === 'paid' && !order.access && <p className={styles.notice}>購入済みですが、現在このツールの提供状況を確認しています。</p>}
-    {!seller && order.access && <p className={styles.subtle}>{order.endpointUrl ? '購入済みです。対応環境と提供元の案内を確認して、AIとの接続設定へ進んでください。' : '購入済みです。導入方法は提供元の利用条件・案内をご確認ください。'}</p>}
+    {!seller && order.access && <p className={styles.subtle}>{order.endpointUrl ? '購入済みです。対応環境と提供元の案内を確認して、siとの接続設定へ進んでください。' : '購入済みです。導入方法は提供元の利用条件・案内をご確認ください。'}</p>}
     {!seller && order.status === 'paid' && <EsimPurchaseSetup orderId={order.id} />}
     {!seller && <details className={styles.purchaseConditions}>
       <summary>購入時の販売・返金条件</summary>
@@ -281,7 +281,7 @@ export function SkyPurchases() {
         .finally(() => { busy.current = false; });
     }
   }, [orderId, canceled, refresh]);
-  return <CommercePage title="購入したツール" description="支払い状況と、AIへの接続先をここに。">
+  return <CommercePage title="購入したツール" description="支払い状況と、siへの接続先をここに。">
     {canceled && <output className={styles.notice}>決済を途中で閉じました。支払いが必要な場合は、購入履歴から再開できます。</output>}
     <ErrorNotice error={error || actionError} returnTo="/sky/purchases" />
     {loading && !data && <output className={styles.loading}>購入履歴を読み込んでいます…</output>}

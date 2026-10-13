@@ -8,7 +8,7 @@
 
 利用者は、クモが秘密コード・個人情報のある場所を優先して守り、継続して監視する実機能を要求した。表示デモではなく、正本repository `k999ln/rock` の実処理へ接続する。画面のクモは実際の検査結果を表現するもので、描画や経過時間を保護実績として数えない。
 
-利用者は常駐先として **RockstarOS本体** を選択した。既存Platform serviceのUID 1002で起動し、OS側の固定範囲を継続検査する。Platform MCP送信とRunnerControlのprepare／初回send claimにも検査を組み込む。Web AI／MCP Connectorの送信前検査は補助であり、OS本体への常駐を代替しない。
+利用者は常駐先として **RockstarOS本体** を選択した。既存Platform serviceのUID 1002で起動し、OS側の固定範囲を継続検査する。Platform MCP送信とRunnerControlのprepare／初回send claimにも検査を組み込む。Web si／MCP Connectorの送信前検査は補助であり、OS本体への常駐を代替しない。
 
 OSへの同梱、boot時起動、再起動監督、native画面の実データ表示までが実装範囲。現在は実装・検証中で、変更後の同一imageのboot、Pixel実機、24時間連続運転は未受入。過去のQEMU／Pixel試験を今回の常駐保護の成功に流用しない。
 
@@ -28,7 +28,7 @@ npm run spider:plan -- --changed
 
 ## 現行 main との統合境界（2026-10-05）
 
-`aa7f2b41` と PR #52 の独立したローカル統合では、既存の SIM/eSIM service access、owner 認証、remote AI 予約 store、利用量計測、remote MCP の priced A2A 必須判定を保持する。機密入力の拒否は外部 dispatch より前に実施する。Node の関連 122 件（121 pass / 1 skip）、型検査、MR と native MCP の deadline 20 件が成功した。これらは host fixture の検査であり、OS image、端末、24 時間常駐、production dispatch の受入ではない。
+`aa7f2b41` と PR #52 の独立したローカル統合では、既存の SIM/eSIM service access、owner 認証、remote si 予約 store、利用量計測、remote MCP の priced A2A 必須判定を保持する。機密入力の拒否は外部 dispatch より前に実施する。Node の関連 122 件（121 pass / 1 skip）、型検査、MR と native MCP の deadline 20 件が成功した。これらは host fixture の検査であり、OS image、端末、24 時間常駐、production dispatch の受入ではない。
 
 GitHub と同じ PR head `a85a25e`、control commit `b6ab1988`、Gitleaks 8.30.1、到達可能 681 commit で、履歴候補 2,369 件を再現した。値でまとめると 135 種、rule/file/value では 525 組、line も含めると 570 組。全件が `generic-api-key` で、異なる commit や merge 差分に同じ値が繰り返し現れる。値・候補値の hash・生 report を出力、保存、Git 追加せず、private pipe のメモリ上で比較した。
 
@@ -260,7 +260,7 @@ Platformの起動は`supervisor.py`を経由し、子processの異常終了後�
 
 - 検出器は秘密情報と個人情報の候補を区別し、秘密情報を優先する。ルールの対象、上限、誤検出・見逃しを明示し、検出0件を安全保証へ変換しない。
 - OS監視はPlatformに固定した読取範囲だけを対象にする。原本を自動削除・書換えしない。画面・記録には件数、分類、必要な位置情報、検査時刻と失敗状態を返し、検出値や原文を含めない。
-- Web AIの対象はLLM本文生成、法務、特許、Jevの既存送信経路。MCPの対象は今回接続するConnector境界。実際の外部呼出しより前に検査し、拒否対象は外部呼出しをせずに戻す。未接続の経路、任意アプリ、OS全体の通信を保護済みと表示しない。
+- Web siの対象はLLM本文生成、法務、特許、Jevの既存送信経路。MCPの対象は今回接続するConnector境界。実際の外部呼出しより前に検査し、拒否対象は外部呼出しをせずに戻す。未接続の経路、任意アプリ、OS全体の通信を保護済みと表示しない。
 - Webの既存本人認証、same-origin、利用者別保存、rate limit、外部送信同意を維持する。検出器の判断を本人承認やTool実行権限へ昇格させない。
 - 検査不能、入力上限、読取失敗、接続切れは結果へ反映する。必要な検査が終わらない送信を「検査済み」として通さない。
 - 状態画面は取得した実データから件数・対象・最終検査時刻を表示する。未取得・停止・失敗を0件や稼働中として扱わない。クモの演出停止と監視プロセス停止を区別する。

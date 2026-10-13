@@ -13,7 +13,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     provider: 'Sky AMC',
     handle: '@sky_amc',
     initial: 'A',
-    helper: 'Goalと意図を確認し、計画と部隊の進捗を記録します。AIの自律実行は未接続です。',
+    helper: 'Goalと意図を確認し、計画と部隊の進捗を記録します。siの自律実行は未接続です。',
     placeholder: '作りたいもの・完成したらできることを入力',
   },
   'rockstar-ip-studio': {
@@ -30,7 +30,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     handle: '@sky_proposal',
     initial: '提',
     helper:
-      '案件条件を添えた定型の提案文を作ります。AI生成や応募・送信は行いません。',
+      '案件条件を添えた定型の提案文を作ります。si生成や応募・送信は行いません。',
     placeholder: '案件内容・納期・経験・確認したい条件を入力',
   },
   'gig-workflow': {
@@ -66,7 +66,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     handle: '@sky_seo',
     initial: 'S',
     helper:
-      '記事テーマを添えた検索意図・記事構成の確認テンプレートを作ります。検索調査やAI分析は行いません。',
+      '記事テーマを添えた検索意図・記事構成の確認テンプレートを作ります。検索調査やsi分析は行いません。',
     placeholder: '記事テーマ・読者・狙いたい検索語を入力',
   },
   'landing-page-sprint': {
@@ -93,7 +93,7 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     handle: '@sky_interview',
     initial: '顧',
     helper:
-      '発言を添えて、テーマ・根拠・仮説の記入欄を作ります。AIによる分析は未接続です。',
+      '発言を添えて、テーマ・根拠・仮説の記入欄を作ります。siによる分析は未接続です。',
     placeholder: '顧客の発言・困りごと・利用状況を入力',
   },
   'calendar-coordination': {
@@ -132,11 +132,11 @@ export const skyToolLabels: Record<string, SkyToolLabel> = {
     placeholder: '音声形式・言語・必要な確認内容を入力',
   },
   'transformers-js': {
-    role: 'ブラウザAI役',
-    provider: 'Sky ブラウザAIアシスタント',
+    role: 'ブラウザsi役',
+    provider: 'Sky ブラウザsiアシスタント',
     handle: '@sky_browser_ai',
-    initial: 'AI',
-    helper: 'ブラウザ内AIのモデル・ライセンス・負荷の確認項目を整理します。',
+    initial: 'si',
+    helper: 'ブラウザ内siのモデル・ライセンス・負荷の確認項目を整理します。',
     placeholder: '使いたいモデル・処理内容・制約を入力',
   },
   playwright: {

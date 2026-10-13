@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-05",
+  "updatedAt": "2026-10-13",
   "product": {
     "displayName": "avocadoOS",
     "internalId": "dev.rock",
@@ -146,7 +146,35 @@
     "defaultProvider": "local-model",
     "credentialPolicy": "server_environment_only",
     "remoteGate": "SKY_REMOTE_LLM_ENABLED=true plus request consent",
-    "automaticFallback": false
+    "automaticFallback": false,
+    "zemaWebLocalAgent": {
+      "implementation": "lib/zema-local-agent.ts",
+      "route": "/api/llm/local-agent",
+      "status": "implemented_configuration_required",
+      "role": "untrusted_planner_for_bounded_pure_tools",
+      "authority": "plan_only",
+      "endpointBoundary": "loopback_only",
+      "providers": [
+        "ollama",
+        "openai-compatible"
+      ],
+      "maximumSteps": 3,
+      "allowlistedTools": [
+        "sky_route",
+        "format_citations",
+        "coconala_check"
+      ],
+      "automaticFallback": false,
+      "publicSiteCompanionImplemented": false,
+      "previewEvidenceSource": "210272144f401938b03525ee64024b7346b558e9",
+      "previewScope": "Existing qwen3:0.6b local conversation acceptance; Tool-selection quality limited; not production or Pixel acceptance",
+      "evidence": [
+        "docs/agents-and-tools.md",
+        "lib/zema-local-agent.ts",
+        "app/api/llm/local-agent/route.ts",
+        "tests/zema-local-agent.test.mjs"
+      ]
+    }
   },
   "sdk": {
     "package": "ai",

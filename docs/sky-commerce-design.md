@@ -18,7 +18,7 @@
 
 既存の `SkyToolPackage`、`CommerceOrder`、Web D1、`/api/sky/commerce/[action]`、Stripe Checkout / Connectを拡張する。購入者はSkyで条件を確認し、Stripeでカード決済し、同じSkyアカウントの端末から購入Toolへ接続する。提供者は自分の審査済み商品を販売し、売上・返金・銀行払出しの状態を個別に確認する。
 
-対象は審査有効なAI・自動化Tool/LLM Packageの円建て買い切り。既存の販売手数料10%、登録・接続・公開・基本利用0円を継承する。月額8.88 USD案は利用者の2026-10-01の指示により本設計の対象外。ハードウェア予約、ファンド、ゲーム通貨交換、任意送金をこの決済に混ぜない。
+対象は審査有効なsi・自動化Tool/LLM Packageの円建て買い切り。既存の販売手数料10%、登録・接続・公開・基本利用0円を継承する。月額8.88 USD案は利用者の2026-10-01の指示により本設計の対象外。ハードウェア予約、ファンド、ゲーム通貨交換、任意送金をこの決済に混ぜない。
 
 既存コードの決済経路は既にある。今回作るべきものは、型の一致、返金・紛争の回復、永続的な通知受信、購入権の実行側への接続、運用照合である。汎用EC基盤への全面置換は行わない。
 
@@ -35,6 +35,12 @@
 ### 販売開始前に残る商品判断
 
 初期対象を国内・JPY・カード・オンライン接続型の審査済みPackageとする案で進める。販売主体、税込表示の内訳、返金条件、提供開始時期、ライセンスの版更新範囲は提供者の条件として確定する。既存の買い切りを無期限のクラウド計算量や無料の将来版更新と解釈しない。これらの入力不足は設計作業を止めず、該当商品の販売有効化条件として表現する。
+
+### 無料account・期間パス・従量の接続
+
+主商品は無料accountから使うSky/Jennifer/Zemaで、SIM購入やstored balanceを必須にしない。[共通料金契約](service-design/02-system-contracts.md#6-料金とwalletを説明できるようにする)の期間パス（6か月未満）、しきい値後払い、月上限、任意機器の回線基本料を最新の到達設計とする。本書のJPY買い切り・card・Package版別license・10%は既存Marketplace経路の互換条件であり、全サービスを買い切りへ戻す根拠にしない。期間パスの更新明示/事前通知/取消、後払いのカード登録/同時予約/月上限/請求失敗停止は新しいSKU/railのADR・sandbox・同意を受け入れてから追加する。
+
+旧888 centsを本経路の料金へ復活させない。現行funded Wallet gateを、文書上の後払い決定だけで外さない。商品代、Provider使用額/上乗せ、Sky fee、決済実費、回線、税と返金は適用対象を固定し、同じ注文へ無条件に二重課金しない。BYOKや購入claimも実行同意/支出承認を代替しない。
 
 ## 2. 既存資産と接続点
 
@@ -275,7 +281,7 @@ Provider側のMCP OAuthを保ち、Provider serverが自身の認証contextか�
 
 購入権はbuyer/Package/mode単位でrevisionを増やす。返金済みO1の後にO2を再購入した場合、古いO1観測はO1の資金履歴を更新してもO2を指す現在の権利pointerを消せない。更新条件にsource orderを含める。
 
-Providerのread-only判定cacheは最大60秒という提案値。review期限、subject link期限を超えない。negative invalidationを受けたrevision以下の古いallowを拒否する。financial/external_writeはcache不可で、毎回fresh照会と別のBroker exact approvalを要求する。開始済みの処理は新規開始と区別し、失効が過去の外部副作用やダウンロード済み成果物を消すとは約束しない。
+Providerのread-only allow/cacheの設計上限は60秒で、review期限とsubject link期限も超えない。これは強制すべき契約であり、現行runtimeや配備先で達成済みの主張ではない。negative invalidationを受けたrevision以下の古いallowを拒否する。financial/external_writeはcache不可で、毎回fresh照会と別のBroker exact approvalを要求する。開始済みの処理は新規開始と区別し、失効が過去の外部副作用やダウンロード済み成果物を消すとは約束しない。
 
 cache keyはmode・Provider/account scope・subject link・Package/hash・操作scopeを含む。応答のrecovery epochが独立authorityと一致し、entitlement/packageReview/subjectLinkの各revisionが受信済み値より小さくない場合のみ候補にする。revisionは辞書順ではなく各成分の部分順序で比較する。同じrevision vectorの矛盾はdeny優先で再照合する。審査更新や再連携は該当revisionを増やし、新しいfresh判定で復帰する。単なる通信障害は権利revisionを進める根拠にせず、許されたread-onlyの既存TTL範囲以外ではfail closedとする。高水位の永続scopeは安定したProvider/mode/subjectLink/Package/hashであり、runId/requestDigestごとにリセットしない。runId/requestDigestは個別要求への応答束縛として別に照合する。ローカル待ち時間や応答到着時刻でvalidUntilを延長しない。
 
@@ -358,6 +364,18 @@ secretをserver bindingで差し替え、key IDと検証用の重複期間を管
 
 Connect Account作成は注文operationとは別のseller予約journalへ保存し、opaqueなseller reservation IDをmetadataへ付ける。応答を失った場合に新しいAccountを作り続けず、mode/platform/作成期間/metadataでread-only候補を照合してから既存sellerへattachする。現行のmetadata無しaccountは確定できなければ運用caseへ。口座の付け替えを本人確認の代替にしない。
 
+### 管理・サポート・銀行照合の受入
+
+次の能力はAPI/UI/永続保存/認可/失敗試験までを一つの成果物とする。設計文の存在を運用完了へ換算しない。
+
+- 管理者は閲覧、返金、利用権case解決、設定変更のscopeを分け、強い本人確認・重要操作の再認証・session失効・権限変更監査を持つ。一般利用者、scope不足、失効管理者を拒否する。
+- Support caseは注文/返金/receiptの安全な検索、担当、状態、期限、理由、証拠を持ち、必要最小限の個人情報だけを表示する。無制限の本人なりすましや直接DB変更を通常の復旧経路にしない。
+- 全選択期間の集計とversioned row/commit watermark付きページングを扱う。最初の100件を全額にせず、古いsnapshotの次ページ/入れ子参照/cursor/exportでも現在の閲覧権限を再検査する。未取得額はnull、負残高はそのまま、観測時刻/scopeを示す。
+- 売上、fee、Transfer、account残高、Payout、銀行明細との照合を分ける。Providerの`paid`だけで独立銀行着金を合格にせず、各payoutへ銀行側の額/通貨/時刻/参照の証拠を結ぶ。
+- 日次/再実行可能な照合、未一致/unknown、再送期限、差異case、原事実を残す調整とexportを実装する。監視は実際に通知が届き、担当者が対応を追える訓練まで受け入れる。
+- 緊急停止中も署名通知保存と履歴閲覧を保ち、新しい金銭writeだけを停止する。復元先は配備環境を代表する別DBとし、外部取引/使用済みkey/DB外recovery epochを照合して旧allowを拒否してから再開する。RPO/RTO目標と実測を分ける。
+- secretはserver側でscope・rotation・失効・redactionを管理し、監査の閲覧/保持/改竄検知または別保存を定義する。application権限とDB管理者権限の限界も検査する。販売条件、同意snapshot、領収書、support、retention/export/deletionを同じ対象商品へ結ぶ。
+
 ## 16. 実装の分割と完了条件
 
 1. **型と既存欠陥**: 共有DTO、active変換、販売停止、v1 wrapperの互換。既存commerce/stripe回帰と不具合再現が通る。
@@ -413,6 +431,14 @@ importは金銭履歴の継承であり、新しいMCP提供条件への同意�
 - 正規gateway経由の本人2人と、直origin/preview/custom domain偽装ヘッダを実配備で検査。
 
 モデル検証は金融サービスの実動作証明ではない。有限に選んだ状態・順序の性質だけを確認する。実際の外部API timeout、D1実配備、秘密管理、実銀行受取は別の受入を要する。
+
+### 検査する実装経路と段階
+
+自作modelの成功だけでSecurity PASSにせず、実HTTP/DB/worker/Provider adapterへ異常入力とcrashを入れる。別ownerの入れ子参照、CSRF、test/live混入、SQL injection/XSS/unsafe URL/redirect/SSRF、本文/rate/pagination上限、token/card/KYCのbundle/log/export混入、偽gateway header/直origin/preview/custom-domain迂回を拒否する。raw body署名Webhookは保護を保ったまま到達できることを配備先で確認する。実装者とは異なるreviewを受け、第三者認証や法規適合済みとは呼ばない。
+
+受入ラベルは`ROCK_IMPLEMENTED`（対象code/実装試験）、`SANDBOX_ACCEPTED`（同候補の実Stripe test/gateway/Provider縦断）、`OPERATIONS_ACCEPTED`（権限/通知/停止/照合/復元訓練）、`LIMITED_LIVE_ACCEPTED`（明示対象の実取引照合）、`BANK_RECONCILED`（対象payoutの銀行側照合）を別の証拠分類として残す。taskのstatusを置き換えず、必須FAIL/NOT_RUN/BLOCKEDをPASSへ足さない。旧51/32/103件は履歴で、新候補の合格件数ではない。
+
+検証入口は`npm run typecheck`、commerce/stripe/billing対象回帰、`node --test docs/design-validation/commerce-state-model.test.mjs`、`python3 docs/design-validation/validate-sky-commerce-v2.py`、`npm run schema:check`/`design:check`/`project:check`と最後の`npm run verify`。現行package/sourceに適合する対象試験と独立reviewを加える。証拠へ要件ID、source SHA/change hash、環境/mode、秘匿済みscope、時刻、手順、期待/結果、失敗理由/再開条件を残し、credential未取得はNOT_RUN/BLOCKEDと記録する。
 
 ## 18. 設計上の未決と決め方
 

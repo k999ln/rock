@@ -1,0 +1,821 @@
+{
+  "schema": "rock-service-design-reconstruction/1",
+  "date": "2026-10-13",
+  "userRequest": "Rebuild the design documents from the beginning while preserving the intended goals; Sky, Zema, Jenniffer, OS, Mini, Pro, rocketstar.",
+  "taskId": "DOC04",
+  "primaryOwner": "ROCK",
+  "primarySquad": "H1",
+  "primaryWorkstream": "Git / CI / Operations",
+  "scope": "Integrated basic design, cross-system consistency and first-party si display; no execution-logic change",
+  "input": {
+    "repository": "k999ln/rock",
+    "mainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "sameShaChecks": [
+      {
+        "name": "verify",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617289/job/115384339567"
+      },
+      {
+        "name": "SPIDER CodeQL (javascript-typescript)",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617524/job/115384292270"
+      },
+      {
+        "name": "SPIDER CodeQL (python)",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617524/job/115384291965"
+      },
+      {
+        "name": "SPIDER / production web security measurement",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617833/job/115383727853"
+      },
+      {
+        "name": "SPIDER / repair regressions",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617833/job/115383727308"
+      },
+      {
+        "name": "SPIDER / secrets",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+        "url": "https://github.com/k999ln/rock/actions/runs/38422617571/job/115383714019"
+      }
+    ],
+    "branchCount": 15,
+    "branches": [
+      {
+        "name": "claude/sky-compute-grid-live",
+        "sha": "e80d0357aa88291b6ee955e62af875180d35e6cd"
+      },
+      {
+        "name": "codex/compute-grid-recovery-20261011",
+        "sha": "aba88bdd8c12cc84d533954a81729651e2f72855"
+      },
+      {
+        "name": "codex/grid01-spider-exception",
+        "sha": "47d28b42695f0fb3691b2b0a8972870e67ef2846"
+      },
+      {
+        "name": "codex/grid01-spider-exception-v2",
+        "sha": "2cec96635bb5ab802c70054ec9de55d84f3b7fd4"
+      },
+      {
+        "name": "codex/jev-decision-layer-20260920",
+        "sha": "8978ca44a47bb01edeb12057fe7848959d28db0a"
+      },
+      {
+        "name": "codex/os-completion-prompts",
+        "sha": "842141a0f7fbbbcdb8f057e32fcb2fb221bc8014"
+      },
+      {
+        "name": "codex/pixel10-compile-bringup-20260917",
+        "sha": "771770d08457f46f06a2d4db7c1098daeccdbc74"
+      },
+      {
+        "name": "codex/quality-reliability-20261011",
+        "sha": "6b72470ce25d4e7b20940b1698fde5a12281ed69"
+      },
+      {
+        "name": "codex/readme-product-map",
+        "sha": "9f9211667866f57b4bc9ad896131a4bfb40fecea"
+      },
+      {
+        "name": "codex/rock-refactor-20261011",
+        "sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a"
+      },
+      {
+        "name": "codex/site-feature-composition-20261013",
+        "sha": "b10c56688b9e38045685246c718d2de7c6f92f2c"
+      },
+      {
+        "name": "codex/sites-live-v49",
+        "sha": "e95e63a1dcf2a6a58b6e4ddc6b56bc7994b3a3cc"
+      },
+      {
+        "name": "codex/sites-quality-integration-20261012",
+        "sha": "aade8171e4eeffad410242dfe79f59afd2dd6c52"
+      },
+      {
+        "name": "fix/readme-english-ci",
+        "sha": "b49bdf02ab3b953e91b4f5f4b3ff57634fbd81c9"
+      },
+      {
+        "name": "main",
+        "sha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7"
+      }
+    ],
+    "openPrSnapshot": [
+      {
+        "number": 110,
+        "title": "feat: 複数Toolの仕事・レシピ・成果編集と設定復旧を追加",
+        "head": "codex/site-feature-composition-20261013",
+        "sha": "b10c56688b9e38045685246c718d2de7c6f92f2c",
+        "base": "codex/sites-quality-integration-20261012",
+        "draft": true
+      },
+      {
+        "number": 108,
+        "title": "SPIDER: review exact Compute Grid tokenizer digest exception",
+        "head": "codex/grid01-spider-exception-v2",
+        "sha": "2cec96635bb5ab802c70054ec9de55d84f3b7fd4",
+        "base": "main",
+        "draft": false
+      },
+      {
+        "number": 106,
+        "title": "公開Siteへ品質改善を反映し、入力・成果・認証復旧を保護",
+        "head": "codex/sites-quality-integration-20261012",
+        "sha": "aade8171e4eeffad410242dfe79f59afd2dd6c52",
+        "base": "codex/sites-live-v49",
+        "draft": false
+      },
+      {
+        "number": 105,
+        "title": "fix: 既存ワークフローの二重保存・入力消失・復旧競合を修正",
+        "head": "codex/quality-reliability-20261011",
+        "sha": "6b72470ce25d4e7b20940b1698fde5a12281ed69",
+        "base": "main",
+        "draft": false
+      },
+      {
+        "number": 104,
+        "title": "fix(grid): recover interrupted receipt settlement and idempotent release",
+        "head": "codex/compute-grid-recovery-20261011",
+        "sha": "aba88bdd8c12cc84d533954a81729651e2f72855",
+        "base": "claude/sky-compute-grid-live",
+        "draft": false
+      },
+      {
+        "number": 103,
+        "title": "Sky Compute Grid: 永続grid（既定で無効）とAndroid worker・注文consoleの設計",
+        "head": "claude/sky-compute-grid-live",
+        "sha": "e80d0357aa88291b6ee955e62af875180d35e6cd",
+        "base": "main",
+        "draft": false
+      },
+      {
+        "number": 100,
+        "title": "Web・API・A2A・Androidの責務分離と重複処理の共通化",
+        "head": "codex/rock-refactor-20261011",
+        "sha": "f1d24ceaacd23b2e0b00a5fa65a07a8684d4c95a",
+        "base": "main",
+        "draft": false
+      }
+    ],
+    "mergedPr": {
+      "number": 111,
+      "state": "closed",
+      "merged": true,
+      "mergeCommit": "3ffc21d3a15235e0bde89a118e2f931135a9189e",
+      "head": "643559b8e00037b1f960afb9dea7bf309534d539"
+    },
+    "originalWorkspace": {
+      "path": "/Users/kaiya/Documents/ChatGPT/avokdo",
+      "branch": "codex/esim-cloud-access",
+      "head": "37c06cecc0dad6ebd59aa64a2900413df0ba2d68",
+      "sameNamedRemoteBranch": false,
+      "dirtyChangesPreserved": true
+    },
+    "clarificationRemoteBranchCount": 17
+  },
+  "status": "coherent_design_si_display_and_obsolete_cleanup_verified",
+  "authority": {
+    "requirements": "RQ01-RQ50",
+    "accountDirection": "2026-10-10 owner confirmed free account; SIM optional; consumer eSIM sale held",
+    "pricing": "existing confirmed design preserved; no live fee policy changed",
+    "jenniffer": "Git spelling Jennifer: portfolio coordinator; Zema behind it; source merged into main by PR #113 at 01d2e418; authenticated review and production acceptance remain pending"
+  },
+  "runtimeChanged": true,
+  "commercialPoliciesChanged": false,
+  "git": {
+    "branch": "codex/service-design-rebuild",
+    "baseSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+    "localCommit": true,
+    "githubSaved": true,
+    "mainIntegrated": false,
+    "published": false,
+    "initialDocumentCommit": "a1fe72b4c4d3732f9eded2fddd3ba75ec12363a6",
+    "savedContentCommit": "f759f0928d106e1995448659945a91f729586d72",
+    "pullRequest": 114,
+    "pullRequestUrl": "https://github.com/k999ln/rock/pull/114",
+    "pullRequestState": "draft",
+    "ci": "latest_main_integration_candidate_pending",
+    "savedCleanupContentCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+    "previousSameShaCi": {
+      "sourceCommit": "48dcb824bd0ad76ce11150f6c13532efe9dc2825",
+      "checks": 9,
+      "success": 9,
+      "observedAt": "2026-10-13T20:35:24Z"
+    },
+    "savedCampusHandoffContentCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c"
+  },
+  "verification": {
+    "status": "passed",
+    "fullCommand": "PATH=\"/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+    "nodeVersion": "22.23.3",
+    "exitCode": 0,
+    "verifiedSourceCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
+    "nodeTests": 2168,
+    "nodePass": 2167,
+    "nodeFail": 0,
+    "nodeSkip": 1,
+    "workApiAssertions": 1356,
+    "csvAssertions": 385,
+    "webAssetReferences": 190,
+    "missingAssets": 0,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "baselineCheck": "passed",
+    "designCheck": "passed",
+    "projectCheck": "passed",
+    "missionCheck": "passed",
+    "botCheck": "passed",
+    "requirementsExactlyPreserved": 50,
+    "relativeReferencesChecked": 2800,
+    "missingReferences": 0,
+    "removedPaths": 13,
+    "independentReview": "passed_source_report_vs_HTTP_observation_and_prior_vs_current_verification",
+    "rawLog": "/private/tmp/rock-campus-handoff-node22-verify.log",
+    "rawLogSha256": "61107c28de26722c8c5165ba0e2b749317ca88dd85511291cbf799f4e6374628",
+    "verifiedDocumentSourcesSha256": {
+      "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
+      "docs/service-design/02-system-contracts.md": "8d473d7504caa57a5ab68ba0901a02aa13691ea7e309ce89b1e6c02a439a73db",
+      "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
+      "docs/service-design/04-delivery-and-acceptance.md": "a88de2c5a3f604f641c1efc764d8e22a391ed154715a945f19fa464ffe8b2e71",
+      "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
+      "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
+      "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
+    },
+    "scope": "Current campus-route preservation documentation plus complete host regression using the same Node22 major as GitHub CI. HTTP8URL status/title only; no deployment, source/version, browser, physical NFC/student-slot/Provider or flight acceptance.",
+    "metadataOnlyUpdatesAfterVerification": true,
+    "nodeExecutable": "/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin/node",
+    "npmVersion": "10.9.9"
+  },
+  "remaining": [
+    "Jennifer authenticated reviewer provenance, COLOMBIA/context, native/provider acceptance; Git main integration and prior CI failures resolved",
+    "runtime branch handoff synchronization",
+    "same-artifact authenticated writing/download/recipe acceptance",
+    "postpay and funded-wallet gate ADR, passkey and provider acceptance",
+    "candidate campus and typed app-output integration",
+    "independent Pixel/QEMU/Mini/Pro/rocketstar acceptance"
+  ],
+  "immutableOriginalArtifactsChanged": false,
+  "preservedOriginalArtifactsSha256": {
+    "docs/rockstaros-complete-design-v1.0.pdf": "9f318e6c1fe04abca895c87085931b9b3f15f1a4445aa99b4231ae9a5c1c3855",
+    "docs/avocado-mini-r5/package/integrated_design.md": "b8c8df4605045ad7f7e2bbbb2dd4bff81f48253466bbb2142ee7172279eeacd1",
+    "docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.md": "fc958d4905614ca181b9d93fbc9f6944dcb5bfc9aebb0b5a67d55f53a45d4291"
+  },
+  "review": {
+    "status": "passed",
+    "repairs": [
+      "index version preserved forward at 1.7",
+      "OS journey and milestone use account entry",
+      "ROCK fixture work independent of paid enablement",
+      "free account vs old SIM-first strategy",
+      "held legacy 888 fee vs current postpay",
+      "R5 vs old four-sensor profile",
+      "JP LTE traffic vs old 5G comparison",
+      "Jennifer main integration and fixed-source CI provenance",
+      "manual owner verdict vs authenticated review in Jennifer detail"
+    ],
+    "runtimeAcceptanceChanged": false,
+    "clarificationReview": "passed_no_critical_or_medium_findings",
+    "finalConsistencyReview": "passed_including_latest_main_merge_and_si_terminology"
+  },
+  "jenniferSource": {
+    "canonicalName": "Jennifer",
+    "userSpelling": "Jenniffer",
+    "branch": "codex/jennifer-zema-execution",
+    "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+    "document": "https://github.com/k999ln/rock/blob/3349c2475468443bc7ecd94a4e3782343f514a8f/docs/jennifer-coordination.md",
+    "pullRequest": 113,
+    "mainIntegrated": true,
+    "checks": {
+      "sameSha": true,
+      "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+      "total": 8,
+      "success": 8,
+      "failure": 0
+    },
+    "acceptanceGaps": [
+      "authenticated independent reviewer/server artifact+usage correlation",
+      "COLOMBIA source/version/hash",
+      "context grants and native UI",
+      "production runtime/provider settings and external acceptance"
+    ],
+    "initialObservation": {
+      "sha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+      "mainIntegrated": false,
+      "checks": {
+        "sameSha": true,
+        "total": 8,
+        "success": 6,
+        "failure": 2,
+        "failures": [
+          "verify: MCP ZIP/source mismatch",
+          "SPIDER repair regressions: missing lib/generated/private-content.ts"
+        ]
+      }
+    },
+    "initialInspectedSha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+    "mergeSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+    "mergedAt": "2026-10-13T18:21:19Z",
+    "branchDeleted": true
+  },
+  "runtimeLogicChanged": false,
+  "displayTextChanged": true,
+  "productTerminology": "data/product-terminology.json",
+  "crossSystemContracts": {
+    "document": "docs/service-design/06-consistency-contracts.md",
+    "scenarioCount": 12,
+    "runtimeAcceptancePerformed": false,
+    "fixedInDesign": [
+      "internal portfolio vs consumer realm",
+      "conversation vs direct Tool entry",
+      "per-job authority and writer epoch",
+      "server ID/revision/artifact correlation",
+      "hierarchical budgets and uncertain holds",
+      "postpay vs provider funding",
+      "price/markup/seller-fee snapshots",
+      "parent cancellation fence",
+      "manual verdict vs authenticated reviewer",
+      "logical path vs actual encrypted artifact",
+      "draft TTL vs saved Goal and deletion",
+      "Mini independent local profile and domestic LTE traffic",
+      "Pro private vs cloud vs Android Grid",
+      "Rocketstar observations vs flight command"
+    ]
+  },
+  "latestRepositoryObservation": {
+    "mainSha": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
+    "recordedDate": "2026-10-13",
+    "mergedUpstreamPrs": [
+      112,
+      115,
+      116,
+      117,
+      118
+    ],
+    "scope": "Git source observation; previous Jennifer7/8 checks retained separately with exact SHAs",
+    "mainSameShaChecks": "not_yet_collected_for_latest_main"
+  },
+  "historicalAuditAnchors": {
+    "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+    "nativeHead": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+    "designHead": "de5b102d3525daccf604efd5685bdf8c14ad5d50",
+    "meaning": "Historic anchors retained for provenance, not latest checkout or runtime acceptance."
+  },
+  "obsoleteContentCleanup": {
+    "status": "verified_and_github_saved",
+    "requestedAt": "2026-10-13",
+    "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "primarySquad": "H1",
+    "taskId": "DOC04",
+    "originalArtifactsPreserved": true,
+    "runtimeLogicChanged": false,
+    "productClaimsUpdated": "R5 standalone/200mm/no-Hub/unconfirmed-price; remove obsolete P0 showroom",
+    "removedPaths": 13,
+    "removedDocuments": 11,
+    "removedComponents": 2,
+    "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+    "githubSaved": true,
+    "mainIntegrated": false,
+    "published": false,
+    "verification": {
+      "status": "passed",
+      "fullCommand": "PATH=\"/Users/kaiya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+      "nodeVersion": "24.19.0",
+      "exitCode": 0,
+      "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+      "nodeTests": 2168,
+      "nodePass": 2167,
+      "nodeFail": 0,
+      "nodeSkip": 1,
+      "workApiAssertions": 1356,
+      "csvAssertions": 385,
+      "webAssetReferences": 190,
+      "missingAssets": 0,
+      "typecheck": "passed",
+      "lint": "passed",
+      "build": "passed",
+      "baselineCheck": "passed",
+      "designCheck": "passed",
+      "projectCheck": "passed",
+      "missionCheck": "passed",
+      "botCheck": "passed",
+      "requirementsExactlyPreserved": 50,
+      "relativeReferencesChecked": 2800,
+      "missingReferences": 0,
+      "removedPaths": 13,
+      "independentReview": "passed_RQ50_contract_migration_active_links_archive_restore_immutable_originals_NFC_acceptance_boundaries",
+      "rawLog": "/private/tmp/rock-obsolete-cleanup-verify.log",
+      "rawLogSha256": "e316515a32aef4708b474d76fd46908282bbca6068794c1ce675f8744923a8a8",
+      "verifiedDocumentSourcesSha256": {
+        "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
+        "docs/service-design/02-system-contracts.md": "8d473d7504caa57a5ab68ba0901a02aa13691ea7e309ce89b1e6c02a439a73db",
+        "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
+        "docs/service-design/04-delivery-and-acceptance.md": "24f2692c83a09ef77a818d6ba90f070d310daa2179c5cf0e281ad870cc3c37c9",
+        "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
+        "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
+        "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
+      },
+      "scope": "Current design, deletion, R5 product claims, archive restoration and complete host regression. Browser, physical hardware/OS, live Provider/billing, NFC tag readback and flight acceptance remain separate.",
+      "metadataOnlyUpdatesAfterVerification": true
+    }
+  },
+  "previousSiVerification": {
+    "status": "passed",
+    "fullCommand": "PATH=\"/Users/kaiya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+    "nodeVersion": "24.19.0",
+    "exitCode": 0,
+    "verifiedSourceCommit": "f759f0928d106e1995448659945a91f729586d72",
+    "nodeTests": 2168,
+    "nodePass": 2167,
+    "nodeFail": 0,
+    "nodeSkip": 1,
+    "workApiAssertions": 1356,
+    "csvAssertions": 385,
+    "webAssetReferences": 193,
+    "missingAssets": 0,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "baselineCheck": "passed",
+    "designCheck": "passed",
+    "projectCheck": "passed",
+    "missionCheck": "passed",
+    "botCheck": "passed",
+    "requirementsExactlyCovered": 50,
+    "localReferencesChecked": 92,
+    "independentReview": "passed_including_latest_Jennifer_main_source_si_and_cross_system_contracts",
+    "rawLog": "/private/tmp/rock-service-design-si-final-verify.log",
+    "rawLogSha256": "26bec8ce0989ebdcae69335687a2f6988ca3d7dcdfe134de5f36aca319eb75ea",
+    "verifiedDocumentSourcesSha256": {
+      "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
+      "docs/service-design/02-system-contracts.md": "4adae85807f96a51593a4e6cd9688bc04d24b3559aa57f23763e69675b21ec5d",
+      "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
+      "docs/service-design/04-delivery-and-acceptance.md": "7751cc687256c545fd4070477f249628bd138cd06da968884620d18a569e22f6",
+      "docs/service-design/05-requirement-coverage.md": "81521b78ce771ade01587828621458ad6022e8c0c707096218df7e9b12e6a7c2",
+      "docs/service-design/06-consistency-contracts.md": "ad62a97e398c4b941f35d6739a94cdb0ee1b32b9ec957abcbe863443f00bc7c6",
+      "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
+    },
+    "runtimeSourceChanged": true,
+    "runtimeLogicChanged": false,
+    "statusRecordUpdatedAfterVerification": true,
+    "scope": "First-party display and documentation consistency plus full host regression on integrated main source. No new actual-browser, physical OS/hardware, production provider/billing or flight acceptance.",
+    "uiBrowser": {
+      "status": "not_performed_permission_denied",
+      "reason": "Browser approval review rejected localhost access; no workaround attempted."
+    },
+    "previousDocumentationRegression": {
+      "fullCommand": "TMPDIR=/private/tmp npm run verify",
+      "rawLog": "/private/tmp/rock-service-design-jennifer-verify.log",
+      "rawLogSha256": "4d09f76870b7f2414d9120d4c8e65b4707e8c6ca66ac9f879a0bb0c4fd0bb308",
+      "nodeTests": 2143,
+      "nodePass": 2142,
+      "nodeSkip": 1
+    },
+    "initialSiRegression": {
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "exitCode": 1,
+      "tests": 2143,
+      "pass": 2133,
+      "fail": 9,
+      "skip": 1,
+      "cause": "Existing Cloud text tests still selected the old AI request label; label expectations now synchronized, targeted retest pending.",
+      "log": "/private/tmp/rock-service-design-si-verify.log",
+      "targetedRetest": {
+        "command": "node --experimental-strip-types --test tests/workbench-cloud-text.test.mjs",
+        "exitCode": 0,
+        "tests": 32,
+        "pass": 32
+      }
+    },
+    "node26Run": {
+      "status": "interrupted_not_passed",
+      "command": "TMPDIR=/private/tmp npm run verify",
+      "log": "/private/tmp/rock-service-design-si-current-verify.log",
+      "reason": "Host Node26 wallet recovery suite did not complete; supported bundled Node24 exact suite passed43/43, then full verify passed without skip or assertion changes. Root cause of Node26 wait was not established."
+    },
+    "focusedTests": {
+      "labelAndBaseline": 50,
+      "cloudText": 32,
+      "jennifer": 19,
+      "site": 24,
+      "fashion": 2,
+      "amcTemplate": 58,
+      "allPassed": true,
+      "botAndContext": 24,
+      "walletNode24": 43,
+      "amcNode24Retest": 58,
+      "initialCombinedBotRun": {
+        "status": "failed_test_file_process",
+        "tests": 25,
+        "pass": 24,
+        "failedFile": "tests/amc-goal-cli.test.mjs",
+        "log": "/private/tmp/rock-si-bot-tests.log",
+        "followup": "Exact standalone AMC58/58 and final full regression accepted; no assertion or source weakening."
+      }
+    },
+    "currentDesignReview": {
+      "status": "passed",
+      "books": 7,
+      "relativeReferences": 92,
+      "missingReferences": 0,
+      "uniqueRequirements": 50,
+      "reviewer": "independent final_review agent",
+      "documentSha256": {
+        "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
+        "docs/service-design/02-system-contracts.md": "4adae85807f96a51593a4e6cd9688bc04d24b3559aa57f23763e69675b21ec5d",
+        "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
+        "docs/service-design/04-delivery-and-acceptance.md": "7751cc687256c545fd4070477f249628bd138cd06da968884620d18a569e22f6",
+        "docs/service-design/05-requirement-coverage.md": "81521b78ce771ade01587828621458ad6022e8c0c707096218df7e9b12e6a7c2",
+        "docs/service-design/06-consistency-contracts.md": "ad62a97e398c4b941f35d6739a94cdb0ee1b32b9ec957abcbe863443f00bc7c6",
+        "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
+      }
+    }
+  },
+  "campusRouteContinuity": {
+    "reportedIncident": {
+      "reportedBy": "parallel NFC task",
+      "site": "sky-marketplace",
+      "version": 49,
+      "sourceCommitPrefix": "b06402db",
+      "reportedPublishedAt": "2026-10-13T19:57:00Z",
+      "symptom": "/os/sky and campus Hub routes removed; user screenshot showed404",
+      "reportedRecovery": "redeploy v48; reported browser display restored",
+      "deploymentPerformedByThisTask": false,
+      "versionAndSourceIndependentlyVerified": false
+    },
+    "independentHttpObservation": {
+      "observedAt": "2026-10-13T20:35:24Z",
+      "method": "Python urllib HTTPS GET, response status/resolvedURL/title only",
+      "routes": [
+        {
+          "url": "https://avoado.si/",
+          "status": 200,
+          "title": "avokado — Mini meets Pro"
+        },
+        {
+          "url": "https://avoado.si/os/sky",
+          "status": 200,
+          "title": "Sky — RockstarOS"
+        },
+        {
+          "url": "https://avoado.si/os/sky/outputs",
+          "status": 200,
+          "title": "成果 · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/nyu/hub?source=nfc",
+          "status": 200,
+          "title": "NYU · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/fit/hub?source=nfc",
+          "status": 200,
+          "title": "FIT · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/columbia/hub?source=nfc",
+          "status": 200,
+          "title": "Columbia · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/fordham/hub?source=nfc",
+          "status": 200,
+          "title": "Fordham · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/johnjay/hub?source=nfc",
+          "status": 200,
+          "title": "John Jay · Sky"
+        }
+      ],
+      "browserAcceptance": false,
+      "sourceVersionAcceptance": false,
+      "physicalNfcAcceptance": false,
+      "studentSlotsAcceptance": false,
+      "paidProviderAcceptance": false
+    },
+    "handoff": "Preserve current deployment source/version and eight routes before/after any same-Site publish; integrate v49 capabilities with v48 routes and reaccept the exact artifact. Do not overwrite a newer deployment with an older candidate.",
+    "verification": {
+      "status": "passed",
+      "verifiedSourceCommit": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
+      "focusedChecks": "project:update, metadata:check, baseline:check, design:check, git diff --check",
+      "fullVerify": "Node22.23.3 default test settings; exit0;2168 total/2167 pass/1 existing skip/0fail",
+      "independentReview": "passed",
+      "sourceVersionOrBrowserAccepted": false
+    }
+  },
+  "previousCleanupVerification": {
+    "status": "passed",
+    "fullCommand": "PATH=\"/Users/kaiya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
+    "nodeVersion": "24.19.0",
+    "exitCode": 0,
+    "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+    "nodeTests": 2168,
+    "nodePass": 2167,
+    "nodeFail": 0,
+    "nodeSkip": 1,
+    "workApiAssertions": 1356,
+    "csvAssertions": 385,
+    "webAssetReferences": 190,
+    "missingAssets": 0,
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "baselineCheck": "passed",
+    "designCheck": "passed",
+    "projectCheck": "passed",
+    "missionCheck": "passed",
+    "botCheck": "passed",
+    "requirementsExactlyPreserved": 50,
+    "relativeReferencesChecked": 2800,
+    "missingReferences": 0,
+    "removedPaths": 13,
+    "independentReview": "passed_RQ50_contract_migration_active_links_archive_restore_immutable_originals_NFC_acceptance_boundaries",
+    "rawLog": "/private/tmp/rock-obsolete-cleanup-verify.log",
+    "rawLogSha256": "e316515a32aef4708b474d76fd46908282bbca6068794c1ce675f8744923a8a8",
+    "verifiedDocumentSourcesSha256": {
+      "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
+      "docs/service-design/02-system-contracts.md": "8d473d7504caa57a5ab68ba0901a02aa13691ea7e309ce89b1e6c02a439a73db",
+      "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
+      "docs/service-design/04-delivery-and-acceptance.md": "24f2692c83a09ef77a818d6ba90f070d310daa2179c5cf0e281ad870cc3c37c9",
+      "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
+      "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
+      "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
+    },
+    "scope": "Current design, deletion, R5 product claims, archive restoration and complete host regression. Browser, physical hardware/OS, live Provider/billing, NFC tag readback and flight acceptance remain separate.",
+    "metadataOnlyUpdatesAfterVerification": true
+  },
+  "runtimeDiagnostics": {
+    "node24": {
+      "version": "24.19.0",
+      "fullVerifyExitCode": 1,
+      "fullLog": "/private/tmp/rock-campus-handoff-verify.log",
+      "fullLogSha256": "b40e4a4af95efd6da1bd583dafa0a3aee4ccb75aea01e0648979d24d49645404",
+      "failedFile": "tests/amc-goal-cli.test.mjs",
+      "standaloneExitCode": 1,
+      "standaloneSignal": "SIGSEGV",
+      "tapLog": "/private/tmp/rock-campus-amc-targeted.tap",
+      "tapLogSha256": "0765e9696a161264253a49f36656b3540fcc064437828a04b99ef10dabb76166",
+      "crashReportFile": "node-2026-10-13-163921.ips",
+      "crashReportSha256": "2f9bdca223dda16be4da08b3df651e06c000dbd2a57c84be2c91103c79396d5c",
+      "observedNativeFrame": "V8 ClearStaleLeftTrimmedPointerVisitor and mark-compact garbage collection; EXC_BAD_ACCESS at0xe",
+      "underlyingCauseFixed": false,
+      "individualCaseResultsObserved": false,
+      "individualAssertionFailureEstablished": false
+    },
+    "node26": {
+      "version": "26.0.0",
+      "scope": "same standalone AMC file only",
+      "tests": 58,
+      "pass": 58,
+      "fail": 0,
+      "exitCode": 0,
+      "log": "/private/tmp/rock-campus-amc-node26.tap",
+      "logSha256": "989cb136951c6aba1beb7f8cad651d086a23c644f53d6cd16e54e5f47ac96657",
+      "notFullVerify": true
+    },
+    "rejectedDiagnosticFlag": {
+      "flag": "NODE_OPTIONS=--no-maglev",
+      "exitCode": 9,
+      "reason": "not permitted in NODE_OPTIONS",
+      "testExecuted": false,
+      "adopted": false
+    },
+    "node22": {
+      "officialRuntime": {
+        "source": "https://nodejs.org/dist/latest-v22.x/node-v22.23.3-darwin-arm64.tar.gz",
+        "sha256": "23b25245dcfb9af7262f8ff142e9e2e0af025368117329e7a7458a51e5922f53",
+        "version": "v22.23.3",
+        "node": "/private/tmp/rock-node22-validation/node-v22.23.3-darwin-arm64/bin/node"
+      },
+      "archiveHashMatchesOfficialShasums": true,
+      "ciMajor": 22,
+      "standaloneTests": 58,
+      "standalonePass": 58,
+      "standaloneExitCode": 0,
+      "standaloneLog": "/private/tmp/rock-campus-amc-node22.tap",
+      "standaloneLogSha256": "efc808fe93bc96b2d59cf0a5e977ad8430595c9ee46479678a090221c0aaa8e2",
+      "fullVerifyExitCode": 0,
+      "testSourceChanged": false,
+      "assertionsSkippedOrWeakened": false,
+      "testConcurrencyChanged": false,
+      "globalRuntimeChanged": false,
+      "productDependenciesChanged": false
+    }
+  },
+  "mainIntegration": {
+    "status": "latest_main_candidate_validation_in_progress",
+    "ownerInstruction": "mainへあげて",
+    "recordedDate": "2026-10-13",
+    "branch": "codex/service-design-rebuild",
+    "pullRequest": 114,
+    "designHeadBeforeMainRefresh": "2a02f0fb5dcd2e1368ead1541a4b9390fc2260b1",
+    "sourceMainSha": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
+    "preservedUpstreamPrs": [
+      112,
+      115,
+      116,
+      117,
+      118
+    ],
+    "resolvedConflicts": [
+      "README.md",
+      "components/sky-workspace.tsx",
+      "data/product-baseline.json",
+      "data/project-status.json",
+      "docs/account-entry-proposal.md",
+      "docs/product-baseline.md",
+      "lib/sky-app-manifest.ts",
+      "project.md",
+      "sites/avocado-mini/src/pages/index.astro"
+    ],
+    "preservation": [
+      "Sky Phoenix/feed/Columbia/local Agent and consent/privacy/owner boundaries",
+      "migration0063 and resumable Site compatibility bridge byte-identical to latest main",
+      "RQ01-RQ50 unchanged",
+      "old13path deletion with newest spec-history restore override",
+      "first-party si display",
+      "immutable original/vendor/acceptance evidence and financial/physical gates"
+    ],
+    "actualMainMergePerformed": false,
+    "deploymentPerformed": false,
+    "previousCandidate": {
+      "sourceCommit": "110166f647d1018787fc0372d6a0757005ac60d4",
+      "sourceMainSha": "210272144f401938b03525ee64024b7346b558e9",
+      "fullVerifyExitCode": 0,
+      "nodeVersion": "22.23.3",
+      "nodeTests": 2198,
+      "nodePass": 2197,
+      "nodeSkip": 1,
+      "nodeFail": 0,
+      "webAssets": 195,
+      "rawLog": "/private/tmp/rock-main-design-merge-verify.log",
+      "rawLogSha256": "7ba7f4c4a8a8be585bc15e06faabb58745da52da23131d85ed8a6a705e747811",
+      "supersededReason": "main additionally merged PR112 while previous candidate was waiting for CI"
+    },
+    "additionalPreservation": [
+      "5-campus/PWA/NFC generator and identity boundary",
+      "typed owner-saved app output/Fitness sample; external SDK and actual Provider acceptance separate",
+      "latest public Home/Sky URLs and Mini/Pro domains",
+      "Mini proxy no-cookie/no-identity-forwarding rule",
+      "current R5 site home and si output/download labels"
+    ],
+    "previousSecondCandidate": {
+      "sourceCommit": "d6c1156d5dfe8e40156669e2d0f8cbe20059150e",
+      "sourceMainSha": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
+      "fullVerifyExitCode": 0,
+      "rawLog": "/private/tmp/rock-main-design-latest-verify.log",
+      "rawLogSha256": "d06b4213bbbbe7b5acce1e9b753ea052f3c0708e65f9bb5517d4b2f525b6952c",
+      "supersededReason": "main additionally merged canonical D1 bridge PR118"
+    },
+    "connectRouteRepair": {
+      "implementation": "services/sky-web/domain-router.mjs",
+      "test": "tests/sky-domain-router.test.mjs",
+      "before": "connect claim route was proxied to Mini Site",
+      "after": "bounded /connect and children stay in Sky; near-prefix still excluded",
+      "preFixTest": "failed as expected: mini-site != sky-connect",
+      "postFixTests": 6,
+      "postFixPass": 6,
+      "runtimePolicyOtherThanRoutingChanged": false,
+      "deploymentPerformed": false
+    }
+  },
+  "jenniferIntegrationObservation": {
+    "mainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+    "jenniferPr": 113,
+    "state": "MERGED",
+    "mergedAt": "2026-10-13T18:21:19Z",
+    "sourceSha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+    "sameSourceChecks": {
+      "total": 8,
+      "success": 8,
+      "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f"
+    },
+    "branchDeleted": true,
+    "fixedDesignInputPreserved": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+    "designBranchMainSynchronization": "merged_in_design_branch",
+    "mainSameShaChecks": {
+      "total": 7,
+      "success": 7,
+      "sha": "01d2e41857e8e713bd5df31476deaea8c942e983"
+    }
+  }
+}

@@ -17,9 +17,9 @@
     {
       "id": "rockstaros-core",
       "displayName": "RockstarOS",
-      "mission": "OS Core、端末対応、AI runtime、配布・復旧を一つの製品候補として進める",
+      "mission": "OS Core、端末対応、si runtime、配布・復旧を一つの製品候補として進める",
       "managerAgentId": "jennifer-os-manager",
-      "managerLabel": "OS担当AI",
+      "managerLabel": "OS担当si",
       "taskPrefixes": ["AI", "BRD", "DSP", "LCH", "N", "OS", "RLS", "SIM", "V", "VER"],
       "dependsOn": ["spider-security"],
       "sourceRefs": ["PROJECTS.md", "docs/rockstaros-complete-design.md", "docs/workstreams/06-native-qemu-release.md", "docs/workstreams/07-android-device-local-ai.md"]
@@ -29,7 +29,7 @@
       "displayName": "Hardware",
       "mission": "avocadoMini、avokadoPro、Material Inventionの設計・試作・受入を管理する",
       "managerAgentId": "jennifer-hardware-manager",
-      "managerLabel": "ハードウェア担当AI",
+      "managerLabel": "ハードウェア担当si",
       "taskPrefixes": ["MAT", "MINI", "PRO"],
       "dependsOn": ["rockstaros-core", "spider-security"],
       "sourceRefs": ["PROJECTS.md", "docs/avocado-mini-r5/README.md", "docs/avokado-pro-pc-design.md", "docs/workstreams/11-material-invention-avocado-mini.md"]
@@ -39,7 +39,7 @@
       "displayName": "rocketstar",
       "mission": "ロケット、衛星、A-LINK、受信・回収の設計と段階的な検証を管理する",
       "managerAgentId": "jennifer-rocketstar-manager",
-      "managerLabel": "rocketstar担当AI",
+      "managerLabel": "rocketstar担当si",
       "taskPrefixes": ["RKT"],
       "dependsOn": ["rockstaros-core", "hardware", "spider-security"],
       "sourceRefs": ["PROJECTS.md", "docs/rocketstar-design/README.md"]
@@ -49,7 +49,7 @@
       "displayName": "Jennifer / Zema",
       "mission": "Jenniferを利用者の全体管理窓口、Zemaを実行・承認・成果管理基盤として運用する",
       "managerAgentId": "jennifer-work-manager",
-      "managerLabel": "Jennifer・Zema担当AI",
+      "managerLabel": "Jennifer・Zema担当si",
       "taskPrefixes": ["CAMPUS", "GRID", "HOME", "SKY", "UXCHAR", "WEB"],
       "dependsOn": ["rockstaros-core", "spider-security"],
       "sourceRefs": ["docs/jennifer-coordination.md", "docs/sky-tools-complete-design.md", "components/sky-chat-workspace.tsx"]
@@ -59,7 +59,7 @@
       "displayName": "AMC",
       "mission": "Goal、部隊、任務、独立検収と引継ぎを管理する",
       "managerAgentId": "jennifer-amc-manager",
-      "managerLabel": "AMC担当AI",
+      "managerLabel": "AMC担当si",
       "taskPrefixes": ["AMC"],
       "dependsOn": ["rockstaros-core", "spider-security"],
       "sourceRefs": ["docs/mission-control.md", "data/mission-control.json", "data/amc/agent-definitions.json"]
@@ -79,7 +79,7 @@
       "displayName": "Business / Wallet",
       "mission": "Tool事業、収益、料金、Wallet、PAPER市場と外部Provider境界を管理する",
       "managerAgentId": "jennifer-business-manager",
-      "managerLabel": "事業・Wallet担当AI",
+      "managerLabel": "事業・Wallet担当si",
       "taskPrefixes": ["BIL", "BIZ", "CSV", "DX", "FB", "FND", "GM", "GX", "MKT", "SPN", "WLT"],
       "dependsOn": ["jennifer-zema", "spider-security"],
       "sourceRefs": ["PROJECTS.md", "docs/workstreams/03-wallet-billing-providers.md", "docs/workstreams/08-game-market-fund.md", "docs/workstreams/09-business-pilots.md"]
@@ -89,7 +89,7 @@
       "displayName": "Governance / Release",
       "mission": "正本、設計、Git、DB、公開、証拠とrelease gateを整合させる",
       "managerAgentId": "jennifer-governance-manager",
-      "managerLabel": "統合・公開担当AI",
+      "managerLabel": "統合・公開担当si",
       "taskPrefixes": ["B", "D", "DB", "DOC", "G", "ORG", "R"],
       "dependsOn": ["spider-security"],
       "sourceRefs": ["AGENTS.md", "PROJECTS.md", "docs/README.md", "data/project-status.json"]

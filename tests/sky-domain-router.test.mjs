@@ -9,6 +9,47 @@ void test('Sky, assets and APIs stay native while Mini keeps its home and preord
     assert.equal(routesToSky(path), false, path);
 });
 
+void test('claim registration stays on Sky without proxying link credentials to Mini', async () => {
+  const skyRequests = [];
+  const miniRequests = [];
+  const env = { fixture: 'service-claim' };
+  const context = { fixture: 'request-context' };
+  const app = withMiniSite({ fetch: async (request, receivedEnv, receivedContext) => {
+    assert.equal(receivedEnv, env);
+    assert.equal(receivedContext, context);
+    skyRequests.push(request);
+    return new Response('sky-connect');
+  } }, async (request) => {
+    miniRequests.push(request);
+    return new Response('mini-site');
+  });
+
+  const requests = [
+    new Request('https://avoado.si/connect?source=invitation#rockstar-claim=fixture-link-package', {
+      headers: { cookie: 'rock_session_fixture=1', 'oai-authenticated-user-id': 'fixture-owner' },
+    }),
+    new Request('https://avoado.si/connect/import', {
+      method: 'POST',
+      headers: { origin: 'https://avoado.si', 'content-type': 'application/json', cookie: 'rock_session_fixture=1' },
+      body: JSON.stringify({ claimCode: 'rsk_fixture_code' }),
+    }),
+    new Request('https://avoado.si/connect/status', { method: 'HEAD' }),
+  ];
+  for (const request of requests) {
+    const response = await app.fetch(request, env, context);
+    assert.equal(await response.text(), 'sky-connect');
+    assert.equal(skyRequests.at(-1), request, 'Sky receives the original request, not a Mini-origin rewrite');
+  }
+  assert.equal(miniRequests.length, 0, 'no claim link, cookie or import body reaches the Mini fetcher');
+  assert.equal(skyRequests.length, requests.length);
+  assert.equal(skyRequests[0].headers.get('cookie'), 'rock_session_fixture=1');
+  assert.equal(skyRequests[0].headers.get('oai-authenticated-user-id'), 'fixture-owner');
+  assert.equal(skyRequests[1].headers.get('origin'), 'https://avoado.si');
+  assert.equal(await skyRequests[1].text(), JSON.stringify({ claimCode: 'rsk_fixture_code' }));
+  assert.equal(skyRequests[2].method, 'HEAD');
+  assert.equal(routesToSky('/connectivity'), false, 'the new prefix has a path boundary');
+});
+
 void test('Mini proxy preserves the browser hostname and does not forward Sky identity', async () => {
   let forwarded;
   const app = withMiniSite({ fetch: () => new Response('sky') }, async (request) => {

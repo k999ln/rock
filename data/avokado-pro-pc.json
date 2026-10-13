@@ -7,7 +7,7 @@
     "nvidiaCompute": true,
     "formFactor": "Mac-mini-like compact standalone desktop",
     "workloads": [
-      "local AI",
+      "local si",
       "PC games"
     ],
     "salesPriceTargetJpy": 800000,

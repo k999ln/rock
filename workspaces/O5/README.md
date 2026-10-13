@@ -22,11 +22,11 @@
 - [docs/sky-billing.md](../../docs/sky-billing.md)
 - [docs/workstreams/03-wallet-billing-providers.md](../../docs/workstreams/03-wallet-billing-providers.md)
 - [docs/workstreams/09-business-pilots.md](../../docs/workstreams/09-business-pilots.md)
-- [docs/sim-led-product-architecture.md](../../docs/sim-led-product-architecture.md)
+- [docs/service-design/02-system-contracts.md](../../docs/service-design/02-system-contracts.md)
 
 ## 次の作業
 
-- **SIM01**: 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す — 詳細: `npm run work -- SIM01`
+- **SIM01**: アカウントと任意署名claimからRockstarOS・Sky/Zema・Agentの利用権と端末別利用開始を通す — 詳細: `npm run work -- SIM01`
 - **SKY21**: Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる — 詳細: `npm run work -- SKY21`
 - **SKY19**: SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） — 詳細: `npm run work -- SKY19`
 
@@ -65,12 +65,12 @@ SIM01/SKY21: SIM/eSIM利用開始からSky/Zemaの保存・復旧・費用表示
 | GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 / 共通基盤 | — |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 / 共通基盤 | 実行保留: ToC収益料金の請求・回収・払出し実行 |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 / 共通基盤 | — |
-| SIM01 | 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す | 進行中 / 共通基盤 | SKY07 / SKY21 |
+| SIM01 | アカウントと任意署名claimからRockstarOS・Sky/Zema・Agentの利用権と端末別利用開始を通す | 進行中 / 共通基盤 | SKY07 / SKY21 |
 | SKY21 | Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる | 進行中 / 共通基盤 | SKY07 / SKY20 |
 | B06 | ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理 | 進行中 / 共通基盤 | — |
 | GM01 | AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外） | 進行中 / 共通基盤 | — |
 | CAMPUS01 | 大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装 | 進行中 / 共通基盤 | — |
-| CAMPUS02 | Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外） | 進行中 / 共通基盤 | CAMPUS01 |
+| CAMPUS02 | Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許si停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外） | 進行中 / 共通基盤 | CAMPUS01 |
 
 <details>
 <summary>完了記録のあるtask（当該範囲の記録。製品全体の完成ではありません）</summary>
@@ -108,7 +108,7 @@ SIM01/SKY21: SIM/eSIM利用開始からSky/Zemaの保存・復旧・費用表示
 | DX01 | ゲーム作者向けAPI/SDK・sandbox・複数owner/game分離と導入体験を検証 | 完了記録あり / 共通基盤 | — |
 | FB01 | Instagram運用・受注型ブランド管理をRockstarOS Hub商品とMCPへ統合 | 完了記録あり / 共通基盤 | — |
 | FB02 | 売上・数量・粗利・期限からCampaign Autopilotの計画と次アクションを生成 | 完了記録あり / 共通基盤 | — |
-| FB03 | DM履歴・購買意向・顧客情報からAI Sales Conciergeと営業パイプラインを生成 | 完了記録あり / 共通基盤 | — |
+| FB03 | DM履歴・購買意向・顧客情報からsi Sales Conciergeと営業パイプラインを生成 | 完了記録あり / 共通基盤 | — |
 | FB04 | 入金確認後の制作計画・原価・納期・工程をProduction Cockpitで管理 | 完了記録あり / 共通基盤 | — |
 | FB05 | 改善版Skyの役割フィードへブランド運営役と40 MCP操作を統合 | 完了記録あり / 共通基盤 | — |
 | FB06 | Instagram画面の写真から未確認候補を作り、Meta確認後だけ運用対象へ進める | 完了記録あり / 共通基盤 | — |

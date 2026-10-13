@@ -24,7 +24,7 @@
 - 新料金・新手数料、または月額888の変更
 - ToB `os/settlement` と個人Walletの接続（現状の `personal_wallet_link=NOT_CONNECTED` を維持）
 - Game交換契約（Game担当）および接続transport実装（接続担当）
-- AI compute予算（micro-USD / `simulation_only`）をWallet科目へ混在させること
+- si compute予算（micro-USD / `simulation_only`）をWallet科目へ混在させること
 - 実provider・実資金・KYC・本番ATM
 
 ## 1. 再利用する既存物

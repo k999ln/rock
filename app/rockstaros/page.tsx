@@ -4,7 +4,7 @@ import styles from './preview.module.css';
 
 export const metadata: Metadata = {
   title: 'RockstarOS — アカウントひとつでサービスをはじめる',
-  description: 'avokadoのアカウントひとつで、スマホ・PC・ブラウザからSky、Zema、AI Agentを使えます。SIMは不要です。',
+  description: 'avokadoのアカウントひとつで、スマホ・PC・ブラウザからSky、Zema、si Agentを使えます。SIMは不要です。',
 };
 
 export default function RockstarOSServiceHome() {
@@ -18,8 +18,8 @@ export default function RockstarOSServiceHome() {
     </header>
     <section className={styles.osSection} aria-labelledby="service-title">
       <p className={styles.brand}>ONE ACCOUNT SERVICE ACCESS</p>
-      <h1 id="service-title">アカウントひとつで、Sky・Zema・AI Agentへ。</h1>
-      <p>avokadoのアカウントを作れば、スマホ・PC・ブラウザのどれからでもクラウドAIへ簡単にアクセスできます。作業の料金・進捗・成果を一つのアカウントで確認できます。有料のAI作業は、実行前に見積りを表示し、決めた上限の中で動きます。</p>
+      <h1 id="service-title">アカウントひとつで、Sky・Zema・si Agentへ。</h1>
+      <p>avokadoのアカウントを作れば、スマホ・PC・ブラウザのどれからでもクラウドsiへ簡単にアクセスできます。作業の料金・進捗・成果を一つのアカウントで確認できます。有料のsi作業は、実行前に見積りを表示し、決めた上限の中で動きます。</p>
       <div className={styles.accessCards}>
         <Link href="/connect"><strong>利用開始の流れを見る</strong><span>アカウント作成、端末ごとの使い方（アプリ・ブラウザ・対応端末のOS）を確認します。</span></Link>
         <Link href="/avocado-mini"><strong>avocadoMiniを見る</strong><span>回線を内蔵するモデルは構想中です。製造・販売はまだ始まっていません。</span></Link>

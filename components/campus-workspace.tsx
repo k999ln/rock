@@ -1190,7 +1190,7 @@ function ItemComposer({
         </label>
         <label>
           Tags
-          <input name="tags" placeholder="AI, film, policy" />
+          <input name="tags" placeholder="si, film, policy" />
         </label>
       </div>
       <label>
@@ -1200,7 +1200,7 @@ function ItemComposer({
 
       {kind === 'project' && (
         <div className={styles.formGrid}>
-          <label>Track<input name="track" placeholder="Film / AI / Policy" /></label>
+          <label>Track<input name="track" placeholder="Film / si / Policy" /></label>
           <label>People needed<input name="needs" placeholder="Editor, designer, researcher" /></label>
         </div>
       )}
@@ -1233,7 +1233,7 @@ function ItemComposer({
       )}
       {kind === 'community' && (
         <div className={styles.formGrid}>
-          <label>Category<input name="category" placeholder="Film club / AI / civic tech" /></label>
+          <label>Category<input name="category" placeholder="Film club / si / civic tech" /></label>
           <label>
             Join policy
             <select name="joinPolicy" defaultValue="open">
@@ -1353,7 +1353,7 @@ function ProfileEditor({
           </label>
           <label>
             Headline
-            <input name="headline" defaultValue={profile?.headline ?? ''} placeholder="Film + AI + startups" />
+            <input name="headline" defaultValue={profile?.headline ?? ''} placeholder="Film + si + startups" />
           </label>
         </div>
         <label>
@@ -1362,7 +1362,7 @@ function ProfileEditor({
         </label>
         <div className={styles.formGrid}>
           <label>Skills<input name="skills" defaultValue={profile?.skills.join(', ') ?? ''} placeholder="Editing, Python, policy research" /></label>
-          <label>Interests<input name="interests" defaultValue={profile?.interests.join(', ') ?? ''} placeholder="Film, AI, fashion" /></label>
+          <label>Interests<input name="interests" defaultValue={profile?.interests.join(', ') ?? ''} placeholder="Film, si, fashion" /></label>
           <label>Looking for<input name="lookingFor" defaultValue={profile?.lookingFor.join(', ') ?? ''} placeholder="Designer, cofounder, photographer" /></label>
           <label>Website label<input name="linkLabel" defaultValue={profile?.links[0]?.label ?? ''} placeholder="Portfolio" /></label>
           <label>Website URL<input name="linkUrl" type="url" defaultValue={profile?.links[0]?.url ?? ''} placeholder="https://" /></label>

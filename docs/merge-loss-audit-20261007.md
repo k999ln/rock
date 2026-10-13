@@ -92,12 +92,12 @@ diff <(git show 0fbf688b:project.md | grep -E '^#{1,4} ') <(grep -E '^#{1,4} ' p
 | `SIM01` 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す | 進行中（証拠284件） | **台帳に無い** |
 | `SKY21` Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる | 進行中 | **台帳に無い** |
 | `B06` ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理 | 進行中 | **台帳に無い**（`WEB06`・`FB06` の記述からは参照されている） |
-| `G04` 重複するAI・MCP・保存・決済・Sky/Zema契約を共通化し、19 PRをmainへ統合 | 進行中 | **台帳に無い** |
+| `G04` 重複するsi・MCP・保存・決済・Sky/Zema契約を共通化し、19 PRをmainへ統合 | 進行中 | **台帳に無い** |
 | `AI02`〜`AI06` | 進行中 | 予定（コードは入っている） |
 | `MAT15` R5単体の裸眼空間表示・安全・精密3D入力 | 予定 | 進行中 |
 | 準備記録（`esimDevelopment`、`cloudContinuationPreparation`、`satelliteConnectivityPreparation`、`agentInterconnectionPreparation`、`skyStandalonePublication`、`avocadoMiniCustomDomain`、`patentResearch` など） | 23件 | **台帳に無い** |
 
-現在の台帳には、題名にSIMまたはeSIMを含むtaskがありません。[仕様変遷](spec-history.md)のとおり、2026-10-02以降の主商品はSIM/eSIM起点のサービスなので、台帳と製品方針が食い違っています。
+当時の10/7監査では、SIM/eSIM主入口に対するtask欠落を指摘した。10/10の無料accountへの確定変更後は、その旧入口を現在の不整合判定に使わない。現行task/担当はMission Controlと進捗JSONを照合する。
 
 **PR側だけにあったtask**（2026-10-05 01:42〜01:49の取り込みで、台帳は現行側が残った）
 
@@ -171,7 +171,7 @@ git diff 624124cf 0fbf688b -- <ファイル>
 
 ### 4.3 並行ブランチで番号が重なった要望
 
-2026-09-12〜09-15に、別々のブランチが `docs/product-baseline.md` へ同じ番号で別の要望を追加していました（RQ18、RQ26が2種類、RQ27、RQ32〜RQ34）。統合で残らなかった7節は、現在のRQと番号が対応しないため製品ベースへは戻していません。全文は[保管庫の末尾](merge-loss-audit-20261007/dropped-text.md#並行ブランチで書かれ番号が重なって落ちた要望全文)にあり、内容が近い現行の要望を添えています。経緯は[仕様変遷](spec-history.md)にも書きました。
+2026-09-12〜09-15に、別々のブランチが `docs/product-baseline.md` へ同じ番号で別の要望を追加していました（RQ18、RQ26が2種類、RQ27、RQ32〜RQ34）。統合で残らなかった7節は、現在のRQと番号が対応しないため製品ベースへは戻していません。全文は[保管庫の末尾](merge-loss-audit-20261007/dropped-text.md#並行ブランチで書かれ番号が重なって落ちた要望全文)にあり、内容が近い現行の要望を添えています。経緯は[現行製品方針](product-baseline.md)にも書きました。
 
 ### 4.4 生成される文書
 
@@ -193,7 +193,7 @@ git diff 624124cf 0fbf688b -- <ファイル>
 3. **PR側だけにあった決定の記録を台帳へ入れるか。** `WEB20`（2026-09-25 00:49の製品ラインと参考価格）、`AI09`（2026-09-25 01:26の先行許可）、判断待ちの `WEB21`（製品名）と `BIL04`（8.88 USDの後継）。
 4. **READMEの最初の見出しをどちらにするか。** `main` は2026-10-05まで「One SIM/eSIM. One Rockstar account. …」でした。現在は統合で戻った「From playing to making. …」のままにし、SIM/eSIM起点の説明は本文の最初の事業の節へ戻してあります。見出しを変える場合は `tests/mini200-e1-docs.test.mjs` の期待値も合わせて変えます。
 5. **コードの差を確認するか。** 4.2節の9件と、その後に変更があった22件。
-6. **avokadoProの価格。** 2026-09-25の決定と公開Siteは「From ¥880,000」、2026-10-05のPro PC設計とREADMEは「JPY800,000 sales target」です。どちらが現行かを決めると、[仕様変遷](spec-history.md)の表も確定できます。
+6. **avokadoProの価格。** 2026-09-25の決定と公開Siteは「From ¥880,000」、2026-10-05のPro PC設計とREADMEは「JPY800,000 sales target」です。どちらが現行かを決めると、[現行製品方針](product-baseline.md)の表も確定できます。
 
 ## 6. 調べ方と限界
 

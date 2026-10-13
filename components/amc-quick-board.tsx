@@ -404,7 +404,7 @@ export default function AmcQuickBoard() {
             </button>
           </form>
           <p className={styles.footnote}>
-            進捗は手動のメモです。AI実行や正式な検収は「詳細管理」で扱います。
+            進捗は手動のメモです。si実行や正式な検収は「詳細管理」で扱います。
           </p>
         </section>
       )}

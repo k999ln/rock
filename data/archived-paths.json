@@ -972,6 +972,73 @@
     "toolkits/meme-intelligence-sandbox/run-historical-paper.mjs",
     "toolkits/meme-intelligence-sandbox/run-paper.mjs",
     "toolkits/polymarket-bot-sandbox/README.md",
-    "toolkits/polymarket-bot-sandbox/run-backtest.mjs"
+    "toolkits/polymarket-bot-sandbox/run-backtest.mjs",
+    "docs/product.md",
+    "docs/architecture.md",
+    "docs/fund-and-mcp.md",
+    "docs/os-development-design.md",
+    "docs/os-sky-wallet-game-design.md",
+    "docs/os-readiness-audit-20260909.md",
+    "docs/account-entry-proposal.md",
+    "docs/sim-led-product-architecture.md",
+    "docs/prompts/sky-commerce-wallet-development.md",
+    "docs/spec-history.md",
+    "docs/sim-service-entitlement-claims.md",
+    "components/avocado-turntable.tsx",
+    "components/avocado-turntable.module.css"
+  ],
+  "restoreCommits": {
+    "docs/product.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/architecture.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/fund-and-mcp.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/os-development-design.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/os-sky-wallet-game-design.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/os-readiness-audit-20260909.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/account-entry-proposal.md": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
+    "docs/sim-led-product-architecture.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/prompts/sky-commerce-wallet-development.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/spec-history.md": "210272144f401938b03525ee64024b7346b558e9",
+    "docs/sim-service-entitlement-claims.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "components/avocado-turntable.tsx": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "components/avocado-turntable.module.css": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb"
+  },
+  "cleanupBatches": [
+    {
+      "date": "2026-10-13",
+      "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+      "reason": "User explicitly requested deleting obsolete confusing content; current requirements and reusable contracts consolidated into the service design, OS, entitlement, commerce and provider authorities.",
+      "paths": [
+        "docs/product.md",
+        "docs/architecture.md",
+        "docs/fund-and-mcp.md",
+        "docs/os-development-design.md",
+        "docs/os-sky-wallet-game-design.md",
+        "docs/os-readiness-audit-20260909.md",
+        "docs/account-entry-proposal.md",
+        "docs/sim-led-product-architecture.md",
+        "docs/prompts/sky-commerce-wallet-development.md",
+        "docs/spec-history.md",
+        "docs/sim-service-entitlement-claims.md",
+        "components/avocado-turntable.tsx",
+        "components/avocado-turntable.module.css"
+      ],
+      "currentEntry": "docs/service-design/README.md"
+    },
+    {
+      "date": "2026-10-13",
+      "restoreCommit": "210272144f401938b03525ee64024b7346b558e9",
+      "paths": [
+        "docs/spec-history.md"
+      ],
+      "reason": "Preserve approved deletion during latest-main merge; new feed/local-Agent/Columbia owner decisions transferred into current baseline and canonical designs."
+    },
+    {
+      "date": "2026-10-13",
+      "restoreCommit": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
+      "paths": [
+        "docs/account-entry-proposal.md"
+      ],
+      "reason": "Keep obsolete proposal deleted during PR112 main refresh; latest approved public Home/Sky URLs transferred to current baseline and service contracts."
+    }
   ]
 }

@@ -32,12 +32,16 @@ void test('R5 rejects required hubs, oversize envelopes and unverified acceptanc
   }
 });
 
-void test('R5 prices remain unconfirmed and earlier commercial figures stay historical', () => {
+void test('R5 prices remain unconfirmed and superseded product payloads cannot re-enter the current baseline', () => {
   const market = baseline.marketPositioning;
   assert.equal(market.legacyCommercialFields.appliesToCurrentR5, false);
   assert.equal(market.r5.priceStatus, 'not_confirmed_for_R5_do_not_inherit_E3_prices');
-  assert.equal(market.tower20E3.role, 'historical_E3_baseline_superseded_by_R5');
-  assert.equal(market.mini200E2Integration.role, 'historical_E2_central_core_architecture_not_current_R5_topology');
+  for (const key of ['tower20E3', 'mini200E2Integration', 'avocadoMiniDesiredReferencePriceJpy']) {
+    assert.equal(market[key], undefined);
+    const changed = structuredClone(baseline);
+    changed.marketPositioning[key] = { status: 'current', price: 410000 };
+    assert.throws(() => validateBaseline(changed), /avocadoMini製品ホーム/, key);
+  }
 });
 
 void test('the concise landing page links to complete progress and explicitly withholds manufacture', () => {

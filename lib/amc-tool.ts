@@ -178,7 +178,7 @@ export function createAmcGoal(
     requestBrief: definition.brief,
     planningMethod: 'software_preparation_template',
     scopeWarning:
-      '共通の4役割7工程による準備計画。AIによる意味分解・実作業は未接続。具体的な仕様と工数は最初の工程で確認します。',
+      '共通の4役割7工程による準備計画。siによる意味分解・実作業は未接続。具体的な仕様と工数は最初の工程で確認します。',
   };
   return validateAmcGoal(
     applyGoalEvent(withBrief, {

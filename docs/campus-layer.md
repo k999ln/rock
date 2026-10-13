@@ -10,7 +10,7 @@ Campusは大学の公式サービスではありません。大学名は利用�
 
 | Campus | 主な入口 | 大学向けの使い方 |
 | --- | --- | --- |
-| NYU | Creative / Social / Events | 映画、AI、スタートアップ、アートの共同制作者を探す。プロジェクトを立てる。学生投稿のイベントや機会を見る |
+| NYU | Creative / Social / Events | 映画、si、スタートアップ、アートの共同制作者を探す。プロジェクトを立てる。学生投稿のイベントや機会を見る |
 | FIT | Creative / Portfolio / Opportunities | ファッション、写真、デザイン、ブランド、コンテンツの作品を公開し、モデル・撮影・スタイリング等の共同制作者やgigを探す |
 | Columbia | Research / Resources / Projects | 研究チームを作り、論文・政策資料・データセット等の出典付き資料を共有し、必要な専門性を持つ人を探す |
 | Fordham | Career / Opportunities / Projects | インターン、fellowship、仕事、startup、business、leadershipの機会と共同制作者を探す |
@@ -280,7 +280,7 @@ RockstarOS Home
 └─ Market
 ```
 
-Campusで人や案件を発見し、AI Toolが必要な作業はSky、依頼・作業管理はZema / Work、費用・収益はWalletへ移動できます。Campus自身がSky / Zema / Walletの既存台帳を複製しません。
+Campusで人や案件を発見し、si Toolが必要な作業はSky、依頼・作業管理はZema / Work、費用・収益はWalletへ移動できます。Campus自身がSky / Zema / Walletの既存台帳を複製しません。
 
 ## 受入
 

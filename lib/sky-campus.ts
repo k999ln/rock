@@ -36,7 +36,7 @@ export const SKY_CAMPUS_ENTRIES = {
         title: 'Patent Assistant',
         description: 'Create a local invention assessment and an English draft packet.',
         cost: 'Free',
-        processing: 'The card entry creates a draft in your browser; online AI research is disabled.',
+        processing: 'The card entry creates a draft in your browser; online si research is disabled.',
         href: '/sky/tools/rockstar-patent-assistant?lang=en&entry=columbia-card',
       },
     ] satisfies SkyCampusToolCard[],

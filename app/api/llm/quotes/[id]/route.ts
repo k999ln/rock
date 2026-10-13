@@ -29,7 +29,7 @@ export async function GET(request: Request, context: Context) {
         throw new RemoteAiTextStoreError('NOT_FOUND');
       return new Response(row.resultText, { headers: {
         'Content-Type': 'text/markdown; charset=utf-8',
-        'Content-Disposition': `attachment; filename="sky-ai-${row.id.replace(/[^A-Za-z0-9._-]/g, '-')}.md"`,
+        'Content-Disposition': `attachment; filename="sky-si-${row.id.replace(/[^A-Za-z0-9._-]/g, '-')}.md"`,
         'Cache-Control': 'private, no-store',
         'X-Content-Type-Options': 'nosniff',
         'Referrer-Policy': 'no-referrer',

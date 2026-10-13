@@ -29,7 +29,7 @@ Sky受付 ── 判断できない ──> 13役から本人が選択
 
 現在の受付はLLMエージェントではなく、説明可能なキーワード振り分けである。ただしブランド運営役の内部では、目標からCampaign Autopilot、Sales Concierge、Production Cockpitを組み立てる。自由会話型の複数役plannerは未実装であり、LLMを追加する場合も、実行権限・送信先・料金の確定は決定的なPolicy Brokerとapproval gateへ残す。
 
-AMCはZemaの会話カード内で32部隊の保存時点の記録を読み、依頼・Goal・意図から共通の4役割7工程を準備する。本人の確認後だけ、既存WorkJobの認証・ユーザー別D1・revision競合判定を通してGoalを保存する。手動の着手・成果・検収記録はAI実行や外部検証の証明ではなく、元の32部隊の正本も書き換えない。AMCへの依頼は8,000文字まで保持し、会話LLMへの送信・自動実行はしない。他の役の2,000文字の依頼上限と、外部送信時の同意境界は維持する。
+AMCはZemaの会話カード内で32部隊の保存時点の記録を読み、依頼・Goal・意図から共通の4役割7工程を準備する。本人の確認後だけ、既存WorkJobの認証・ユーザー別D1・revision競合判定を通してGoalを保存する。手動の着手・成果・検収記録はsi実行や外部検証の証明ではなく、元の32部隊の正本も書き換えない。AMCへの依頼は8,000文字まで保持し、会話LLMへの送信・自動実行はしない。他の役の2,000文字の依頼上限と、外部送信時の同意境界は維持する。
 
 ## アプリを毎回入れない仕組み
 
@@ -75,4 +75,4 @@ Sky Memory
 
 ## 完了と呼ばない範囲
 
-Sky Memoryの永続保存、Sky Cloud・提供者OAuth、自由会話型planner、複数役の自動連鎖はまだ実装していない。現在の画面で動くのは13役への決定的な入口、既存ブラウザツール、PC上のSky MCP ConnectorとFashion Brand Opsへの接続、AMCの計画・手動記録までである。AMCのGoal保存をAIによる作業完成へ、job、履歴、設定の保存をcanonical Sky Memory実装済みへ置き換えない。Fashion Brand Opsの実Provider接続・実投稿・実請求には別途credentialと個別承認が必要になる。
+Sky Memoryの永続保存、Sky Cloud・提供者OAuth、自由会話型planner、複数役の自動連鎖はまだ実装していない。現在の画面で動くのは13役への決定的な入口、既存ブラウザツール、PC上のSky MCP ConnectorとFashion Brand Opsへの接続、AMCの計画・手動記録までである。AMCのGoal保存をsiによる作業完成へ、job、履歴、設定の保存をcanonical Sky Memory実装済みへ置き換えない。Fashion Brand Opsの実Provider接続・実投稿・実請求には別途credentialと個別承認が必要になる。

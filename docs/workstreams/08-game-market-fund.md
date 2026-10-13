@@ -2,7 +2,7 @@
 
 ## 目的
 
-AIネイティブOSの共通仕事・記憶・権限契約を、Game／IP制作、ゲーム作者向けAPI/SDK、ゲームとの連携へ広げる。非金融の制作・ゲーム体験はファンド収益の完成と独立して進める。Walletとゲーム通貨の交換、PAPER市場、ファンドはそれぞれの台帳と承認・照合契約を使う。
+siネイティブOSの共通仕事・記憶・権限契約を、Game／IP制作、ゲーム作者向けAPI/SDK、ゲームとの連携へ広げる。非金融の制作・ゲーム体験はファンド収益の完成と独立して進める。Walletとゲーム通貨の交換、PAPER市場、ファンドはそれぞれの台帳と承認・照合契約を使う。
 
 ## 現在地
 
@@ -33,8 +33,8 @@ GM01の保存・復旧では、保持中なのに速度が残る粒子群、重�
 
 ## 関連資料
 
-- [AIネイティブOS詳細設計・Game／IP縦断案](../ai-native-os-architecture.md)
-- [OS/Sky/Wallet/Game design](../os-sky-wallet-game-design.md)
+- [siネイティブOS詳細設計・Game／IP縦断案](../ai-native-os-architecture.md)
+- [OS/Sky/Wallet/Game design](../service-design/06-consistency-contracts.md)
 - [Game API draft](../game-api-contract-draft.md)
 - [GX01 plan](../gx01-contract-implementation-plan.md)
 - [Value/spend runtime](../value-spend-runtime.md)

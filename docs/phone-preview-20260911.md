@@ -11,9 +11,9 @@ bash external/rockstaros/scripts/build-phone-bringup.sh --mode bringup \
   /absolute/path/to/os-tree /absolute/path/to/grapheneos_allowed_signers
 ```
 
-bringupでも、専用x86_64 Linux、64 GiB RAM、空き400 GiB、固定した上流source/tag、生成vendor inventory、現行overlayと一致するレビュー済みLocal AI APKが必要。Operator公開設定がなければ明示除外する。出力は試験用で、OS署名・flash・一般公開を許可しない。release用の入口は`--mode release`で、初回flashの4 gateも維持する。
+bringupでも、専用x86_64 Linux、64 GiB RAM、空き400 GiB、固定した上流source/tag、生成vendor inventory、現行overlayと一致するレビュー済みLocal si APKが必要。Operator公開設定がなければ明示除外する。出力は試験用で、OS署名・flash・一般公開を許可しない。release用の入口は`--mode release`で、初回flashの4 gateも維持する。
 
-2026-10-05のこのMacの読取り診断はDarwin/arm64・16 GiB RAMで不適合。容量を回復してもCPU/OS/RAM条件は変わらない。クラウド予算・専用サーバーの確定は未完了であり、サーバー作成や全OS buildは今回実施していない。Local AI API v2の過去のAPK実機合格を、現在のv3/v4 overlayのbuild・実機合格へ流用しない。APK workflowの`sdkmanager` PATH不足、Kotlin timeout型、Binder API版、APK version検査の不整合を修正した。現行v4 unsigned APKはCI buildと実aapt2検査・stage/再検証が合格し、[同一artifactの証拠](evidence/local-ai-apk-v4-build.json)へ保存した。全OS buildとv4実機受入は未実施。
+2026-10-05のこのMacの読取り診断はDarwin/arm64・16 GiB RAMで不適合。容量を回復してもCPU/OS/RAM条件は変わらない。クラウド予算・専用サーバーの確定は未完了であり、サーバー作成や全OS buildは今回実施していない。Local si API v2の過去のAPK実機合格を、現在のv3/v4 overlayのbuild・実機合格へ流用しない。APK workflowの`sdkmanager` PATH不足、Kotlin timeout型、Binder API版、APK version検査の不整合を修正した。現行v4 unsigned APKはCI buildと実aapt2検査・stage/再検証が合格し、[同一artifactの証拠](evidence/local-ai-apk-v4-build.json)へ保存した。全OS buildとv4実機受入は未実施。
 
 
 ## 全OS compile成果物の検査（OS11 / RLS02）
@@ -22,7 +22,7 @@ bringupでも、専用x86_64 Linux、64 GiB RAM、空き400 GiB、固定した�
 
 ROCKが担当する`scripts/build-phone-bringup.sh`は、呼出しごとにRock commitと乱数を含む`BUILD_NUMBER`を生成し、`m target-files-package otatools-package dist`を実行する。利用者はLinux上の既存のbringupコマンドを使う。成果物は`out/rockstaros-builds/<BUILD_NUMBER>/`、固定manifest、vendor inventory、hook差分と検査結果は`out/rockstaros-evidence/<BUILD_NUMBER>/`へ保存する。再実行時は新しい出力先を使う。
 
-`scripts/verify-phone-artifacts.py`はZIPを展開・実行せず、frankel/userdebug/同一build number、Rockのrelease禁止property、A/B・AVB metadata、boot/system/product等のimage entry、Broker/Shell/記事Tool/Local AIのAPK、OTAツールの存在を検査する。Operatorはconfiguredなら必須、excludedなら混入を拒否する。APKの実byte hashとZIP全体のサイズ・SHA-256を記録し、入力manifest／source lock／Rock commit／vendor inventory／Local AI artifactのhashにも結び付ける。Android上流の`PRODUCT/etc/build.prop`と旧`PRODUCT/build.prop`に対応する。重複／危険path、必須項目のsymlink・空entry、複数target-files候補、不一致は停止する。
+`scripts/verify-phone-artifacts.py`はZIPを展開・実行せず、frankel/userdebug/同一build number、Rockのrelease禁止property、A/B・AVB metadata、boot/system/product等のimage entry、Broker/Shell/記事Tool/Local siのAPK、OTAツールの存在を検査する。Operatorはconfiguredなら必須、excludedなら混入を拒否する。APKの実byte hashとZIP全体のサイズ・SHA-256を記録し、入力manifest／source lock／Rock commit／vendor inventory／Local si artifactのhashにも結び付ける。Android上流の`PRODUCT/etc/build.prop`と旧`PRODUCT/build.prop`に対応する。重複／危険path、必須項目のsymlink・空entry、複数target-files候補、不一致は停止する。
 
 状態は`RUNNING`→`COMPILE_AND_ARTIFACT_CHECKS_PASSED`または`FAILED`。強制終了で`RUNNING`が残っても成功ではない。検査だけの再実行も前回成功receiptを先に`VALIDATION_PENDING`へ無効化する。原因を修正して同じ入口から再実行し、古いZIPを新しいbuildへ流用しない。合格条件はcompile成功と同じbuild numberの構造／hash検査であり、image内部の動作・本番署名・実機boot・復旧の合格を含まない。後続は同じZIP hashを[実機受入雛形](templates/os-acceptance-report.md)へ引き継ぐ。
 
@@ -58,7 +58,7 @@ OS full buildを先に試して後からappやLLMの不具合を直す順序に�
 
 2026-09-15の追加検証では、Core／Tool SDK／Automation／記事ToolのAndroid build・unit test・lint、Local Action Assistantのunsigned arm64 release APK build、Android 15 arm64 Pixel 10 device-profile emulatorでの5 instrumentation testまで合格した。ここでは別APKの署名検査、Binder、Android SQLite、Tool 2工程、review必須、Headless JS、GGUF未導入時の`NO_MODEL` fail-closedを確認した。
 
-2026-09-16にはOSを書き換えていない所有Pixel 10で、Broker／Tool／Local AI／Wallet 11件、権限を絞ったShell 5件、試験署名Operator Agent 5件、実再起動のseed／recover 2段階の計23件が合格した。Skyで選んだTool、途中の仕事、結果、review、履歴を再起動後に回収し、v2 backupはhardware-backedな2経路の鍵で実ファイルへ同期完了した。これは純正OS上の試験署名APK受入であり、Keystore消去後の24単語復元、production credential／StrongBox attestation、Device Owner実行、SELinux enforcingの最終domain、Soong image、flash／bootの合格ではない。[実機証拠](evidence/android-pixel-10-prefull-physical-20260916.json)。
+2026-09-16にはOSを書き換えていない所有Pixel 10で、Broker／Tool／Local si／Wallet 11件、権限を絞ったShell 5件、試験署名Operator Agent 5件、実再起動のseed／recover 2段階の計23件が合格した。Skyで選んだTool、途中の仕事、結果、review、履歴を再起動後に回収し、v2 backupはhardware-backedな2経路の鍵で実ファイルへ同期完了した。これは純正OS上の試験署名APK受入であり、Keystore消去後の24単語復元、production credential／StrongBox attestation、Device Owner実行、SELinux enforcingの最終domain、Soong image、flash／bootの合格ではない。[実機証拠](evidence/android-pixel-10-prefull-physical-20260916.json)。
 
 同日、本番Operator公開設定をrepo外JSONから静的product RROへstageする入口を追加した。exact HTTPS origin／RP、P-256公開鍵、32-byte端末challenge、StrongBox必須、factory reset無効を検証し、stage後も再検証する。端末identity aliasはchallengeへ結び、Python 9/9、Android build／lint、emulator 6/6に合格した。実際のproduction credential／公開値は未投入で、最初の単一Pixel preview以外にはruntimeの一回限りchallenge enrollmentが必要である。[証拠](evidence/android-operator-overlay-stager-20260916.json)。
 
@@ -116,7 +116,7 @@ Pixel 10の安定版`2026091000`を固定した。manifest tag objectは`6c939d1
 2. 公式の`https://grapheneos.org/allowed_signers`をその環境の専用公開鍵ファイルへ取得し、manifestのタグ署名と固定commitを検証する。ユーザー全体のGit設定は変更しない。
 3. cleanなRock checkoutから`python3 scripts/prepare-phone-build.py manifest`でXMLを生成し、OS作業ディレクトリの`.repo/local_manifests/rock-phone.xml`へ保存する。Rockは`external/rockstaros`へ取得され、既存Cuttlefish専用設定と混ぜない。
 4. `repo sync -c -j8`を完了する。公式手順の`source build/envsetup.sh`、`yarn --cwd vendor/adevtool/ install`、`adevtool generate-all -d <lockのdevice>`を実施し、vendor取得・照合結果を保存する。
-5. Google factory／full OTAのhash、vendor inventory、production署名／復旧計画に加え、production Operator AgentのWebAuthn公開trust overlay、端末別attestation challenge、StrongBox登録手順を揃える。`fullBuildInputGatePassed=true`へ進められる根拠をレビューしてから、repo外のreview済み公開JSONを`ROCK_OPERATOR_AGENT_CONFIG`、review済みLocal AI APKを`ROCK_LOCAL_AI_APK`、信頼するaapt2を`ROCK_ANDROID_AAPT2`、所有者が取得した復旧2ファイルを`ROCK_GOOGLE_FACTORY_IMAGE`／`ROCK_GOOGLE_FULL_OTA`、download-only同意記録を`ROCK_GOOGLE_TERMS_RECORD`として指定し、OS作業ディレクトリで`bash external/rockstaros/scripts/build-phone-bringup.sh "$PWD" /absolute/path/to/grapheneos_allowed_signers`を実行する。現在の入口は入力不足、別build、改変、vendor差分ならSoong前に拒否する。入口はRAM 64 GiB以上・空き400 GiB以上を検査し、prepare後とrepo全体検査後にlock指定hook、Local AI APK、Operator RRO、vendor inventoryを再検証する。初回Soong/OS buildの実エラーを解消し、成功した同一sourceと出力hashを記録する。対象機種の`userdebug`出力は開発試験用で、productionは`user`を別に受け入れる。
+5. Google factory／full OTAのhash、vendor inventory、production署名／復旧計画に加え、production Operator AgentのWebAuthn公開trust overlay、端末別attestation challenge、StrongBox登録手順を揃える。`fullBuildInputGatePassed=true`へ進められる根拠をレビューしてから、repo外のreview済み公開JSONを`ROCK_OPERATOR_AGENT_CONFIG`、review済みLocal si APKを`ROCK_LOCAL_AI_APK`、信頼するaapt2を`ROCK_ANDROID_AAPT2`、所有者が取得した復旧2ファイルを`ROCK_GOOGLE_FACTORY_IMAGE`／`ROCK_GOOGLE_FULL_OTA`、download-only同意記録を`ROCK_GOOGLE_TERMS_RECORD`として指定し、OS作業ディレクトリで`bash external/rockstaros/scripts/build-phone-bringup.sh "$PWD" /absolute/path/to/grapheneos_allowed_signers`を実行する。現在の入口は入力不足、別build、改変、vendor差分ならSoong前に拒否する。入口はRAM 64 GiB以上・空き400 GiB以上を検査し、prepare後とrepo全体検査後にlock指定hook、Local si APK、Operator RRO、vendor inventoryを再検証する。初回Soong/OS buildの実エラーを解消し、成功した同一sourceと出力hashを記録する。対象機種の`userdebug`出力は開発試験用で、productionは`user`を別に受け入れる。
 6. Hub／Wallet／Gameの移植、Rock独自の表示、Android正式署名、OTA・復旧を整える。初回flash gate 4/4、機種・SKU・現在build・backupを確認して、書込み手順を別途確定する。
 
 端末の読み取り診断は、adb導入済み・USB接続承認済みの環境で`python3 scripts/inspect-phone.py --serial <本人が選んだ端末ID>`。2026-09-16に実行し、端末serialを除いた必要最小限の結果だけを[端末inventory](evidence/android-pixel-10-gl066-device-inventory-20260916.json)と[boot状態](evidence/android-pixel-10-gl066-boot-state-20260916.json)へ保存した。

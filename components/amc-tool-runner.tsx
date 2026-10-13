@@ -119,7 +119,7 @@ const actionLabels: Record<RecordAction, string> = {
   accept_goal: 'Goal全体を検収',
 };
 const boundary =
-  'このWeb画面は計画・記録用です。保存や着手記録だけでAIは起動しません。ローカルCodexへの一件実行は保存後の明示操作です。';
+  'このWeb画面は計画・記録用です。保存や着手記録だけでsiは起動しません。ローカルCodexへの一件実行は保存後の明示操作です。';
 const lines = (value: string) =>
   value
     .split(/\r?\n/)
@@ -729,7 +729,7 @@ function ManualRecord({
     <details className={styles.manual}>
       <summary>作業・検収を手動で記録する</summary>
       <p className={styles.muted}>
-        AIの開始ボタンではありません。実際に行った作業だけを記録してください。検収者の名前と証拠は自己申告で、本人性や証拠の中身の自動検証は行いません。
+        siの開始ボタンではありません。実際に行った作業だけを記録してください。検収者の名前と証拠は自己申告で、本人性や証拠の中身の自動検証は行いません。
       </p>
       <form onSubmit={submit}>
         <fieldset disabled={disabled}>
@@ -916,7 +916,7 @@ function ManualRecord({
           )}
           {action === 'pause' && (
             <p className={styles.warning}>
-              これは管理上の停止です。外部で動いているAIや作業は停止できません。
+              これは管理上の停止です。外部で動いているsiや作業は停止できません。
             </p>
           )}
           {error && (
@@ -1275,7 +1275,7 @@ export function AmcToolRunner({
     try {
       await navigator.clipboard.writeText(amcPrompt(goal));
       if (mounted.current)
-        setNotice('指示文をコピーしました。AIには送信していません。');
+        setNotice('指示文をコピーしました。siには送信していません。');
     } catch {
       if (mounted.current)
         setError(
@@ -1421,7 +1421,7 @@ export function AmcToolRunner({
       {notice && <output className={styles.notice}>{notice}</output>}
       {busy && (
         <output className={styles.muted}>
-          記録を保存しています。AIを動かしている状態ではありません。
+          記録を保存しています。siを動かしている状態ではありません。
         </output>
       )}
       {executionDisabled && (
@@ -1562,7 +1562,7 @@ export function AmcToolRunner({
                   placeholder="例：毎回細かく指示せず、自分は必要な判断に集中したい"
                 />
                 <p className={styles.muted}>
-                  部隊分けは共通の作業テンプレートです。依頼の細部は、実作業前に確認します。この画面からAIは起動しません。保存後にローカルCodexへ一件ずつ渡せます。
+                  部隊分けは共通の作業テンプレートです。依頼の細部は、実作業前に確認します。この画面からsiは起動しません。保存後にローカルCodexへ一件ずつ渡せます。
                 </p>
                 <p className={styles.warning}>
                   準備する範囲はソフトウェアのローカル試作。公開・外部送信・課金・実機操作などは含みません。意図しない目的や範囲は追加しません。
@@ -1658,7 +1658,7 @@ export function AmcToolRunner({
                 className={styles.primary}
                 onClick={() => void copyPrompt()}
               >
-                AIへ渡す指示をコピー
+                siへ渡す指示をコピー
               </button>
               <span className={styles.muted}>送信や実行は行いません</span>
             </div>

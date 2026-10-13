@@ -219,7 +219,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
         <header className={styles.hero}>
           <div className={styles.heroCopy}>
             <span className={styles.eyebrow}>SKY MARKET</span>
-            <h1>AIと自動化をつなぐ</h1>
+            <h1>siと自動化をつなぐ</h1>
             <p>LLM、MCP、自動化Toolを一つの接続条件で探して使う。</p>
           </div>
           <Link href="/sky/register" className={styles.secondaryAction}><Code2 size={17} /> ツールを登録</Link>
@@ -244,7 +244,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
             {([
               ['all', 'すべて'],
               ['automation', '自動化・MCP'],
-              ['llm', 'LLM・AIモデル'],
+              ['llm', 'LLM・siモデル'],
             ] as const).map(([id, label]) => (
               <button
                 key={id}
@@ -311,7 +311,7 @@ export default function SkyMarketplace({ initialPackageKey = null }: { initialPa
                 <section className={styles.aiSection} aria-labelledby="ai-market-title">
                   <div className={styles.aiSectionHeading}>
                     <div>
-                      <span><BrainCircuit size={15} /> AI RUNTIME</span>
+                      <span><BrainCircuit size={15} /> si RUNTIME</span>
                       <h2 id="ai-market-title">LLMを選ぶ</h2>
                     </div>
                     <small>選んだLLMはSky BrokerからMCP Toolを呼び出します</small>

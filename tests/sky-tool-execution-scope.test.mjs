@@ -31,7 +31,7 @@ void test('AMC exposes assisted planning and progress tracking without claiming 
   assert.equal(candidateOutputKind(tool.id), undefined);
   const status = skyToolUiState(tool);
   assert.equal(status.label, '計画・進捗管理が利用可能');
-  assert.equal(status.detail, 'AIの自律実行は未接続');
+  assert.equal(status.detail, 'siの自律実行は未接続');
 });
 
 for (const tool of catalog.filter((tool) => candidateOutputKind(tool.id))) {
@@ -40,7 +40,7 @@ for (const tool of catalog.filter((tool) => candidateOutputKind(tool.id))) {
     const output = outputFor(tool.id, input);
     assert.ok(output.includes(input));
     assert.match(output, /端末内で入力を添えた定型テンプレート/);
-    assert.match(output, /AIによる分析・外部サービスの実行はしていません/);
+    assert.match(output, /siによる分析・外部サービスの実行はしていません/);
     if (candidateOutputKind(tool.id) === 'connection-plan')
       assert.match(output, /ツール本体・外部サービス・端末は実行していません/);
     assert.throws(() => outputFor(tool.id, '   '), /入力を1行以上/);

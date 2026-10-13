@@ -10,8 +10,8 @@
 | Tool ID                   | 役割                                 | RockstarOSでの置き場所      | 既定effect                  |
 | ------------------------- | ------------------------------------ | --------------------------- | --------------------------- |
 | `jev-ultrafast`           | 構造化DOMからbrowser操作を選ぶ       | Browser Broker              | remote-read。外部作用は停止 |
-| `openjev`                 | 公開modelでtyped decisionを採点      | Local AI／Decision Provider | local-pure                  |
-| `jevlike`                 | 小型option-scoring modelの学習・評価 | AI Lab                      | local-pure                  |
+| `openjev`                 | 公開modelでtyped decisionを採点      | Local si／Decision Provider | local-pure                  |
+| `jevlike`                 | 小型option-scoring modelの学習・評価 | si Lab                      | local-pure                  |
 | `jev-trader`              | order bookから売買方向を選ぶ実験     | Markets sandbox             | PAPERのみ                   |
 | `awesome-jev-by-typesafe` | pattern・use case・starter code集    | Design Library              | reference-only              |
 | `typesafe-computer-use`   | OCRとJevによるMac画面操作            | PC Action Broker            | observeのみから開始         |
@@ -129,7 +129,7 @@ Webの可視controlをindex化し、有限operationと対象を選ぶ。専用Ch
 
 - 入力: textまたはimage feature、可変個のoption、dataset／checkpoint。
 - 出力: option probability、training／evaluation metric、trace。
-- 実行: AI Labだけ。業務本番のdecision providerにはしない。
+- 実行: si Labだけ。業務本番のdecision providerにはしない。
 - 禁止: demoのDoom／chess成績を一般能力へ換算、出所不明dataset、gameからOS権限へ直結。
 - 合格: dataset provenance、train／validation分離、再現seed、calibration、adversarial option、model cardを揃える。
 
@@ -219,10 +219,10 @@ Webの可視controlをindex化し、有限operationと対象を選ぶ。専用Ch
 | ------------------------------ | ---------------------------------------- | ----------------------------------------------- |
 | 各repositoryの採用commit       | Tool maintainer＋security reviewer       | source／dependency review、offline test         |
 | TypeSafe API契約とdata処理     | owner＋privacy／legal reviewer           | retention、region、subprocessor、cost           |
-| local decision modelの採否     | Local AI担当                             | calibration、資源、model license、比較benchmark |
+| local decision modelの採否     | Local si担当                             | calibration、資源、model license、比較benchmark |
 | 最初のbrowser／Mac／mobile対象 | product owner＋target owner              | owned fixture、規約、停止、削除試験             |
 | review sourceの外部送信可否    | repository owner＋security reviewer      | data分類、redaction、provider契約               |
-| Jev Routerのmodel policy       | AI platform owner                        | 品質、費用、latency、fallback評価               |
+| Jev Routerのmodel policy       | si platform owner                        | 品質、費用、latency、fallback評価               |
 | 金融研究の継続可否             | product owner＋legal／financial reviewer | PAPER証拠、法域、risk review。LIVEは別承認      |
 
 ## 12. 現在地

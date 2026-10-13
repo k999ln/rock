@@ -34,7 +34,7 @@ remote内容は読み取り後に作業checkoutへfetchし、refを40桁SHAに�
 
 製品ベースを保存したbranchと実装branchが異なる場合、最初の実装段階はベースと引継ぎ入口/優先順位の統合とする。AGENTS、README、project、進捗JSON、Mission Control、関連設計に同じ再開先と順番を残す。mainへの保存、作業branchでの反映、元native/mainへの統合は別状態として報告する。起動/安全性に直接依存する修正は先行できるが、実機完成や機種選定を独立したHub/Wallet検証の一律の前提にしない。
 
-現在の主商品はSIM/eSIMを入口とするRockstarOS・Sky・Zema・Agentの利用権と透明なusage料金。回線・SIM profile・本人/サービス利用権・OS/client導入状態を別々に追跡し、商品契約、実行資格、費用、保存・復旧を一連で使えるようにする。Walletは既存の予約・台帳・照合を再利用する。実機/金融条件が未解決でも、依存しない契約・adapter・fixture検証は進められる。Web公開や旧repo archiveをこの作業の一律の前提にしない。
+現在の主商品は2026-10-10確定の無料avokadoアカウントを入口とするRockstarOS・Sky・Zema・Agentサービスと透明なusage料金。SIM不要、consumer eSIM発行/販売は保留。Miniの国内LTE/IoT回線は任意機器option。サービス全体と実装順は `docs/service-design/README.md` を参照する。回線・SIM profile・本人/サービス利用権・OS/client導入状態を別々に追跡し、商品契約、実行資格、費用、保存・復旧を一連で使えるようにする。Walletは既存の予約・台帳・照合を再利用する。実機/金融条件が未解決でも、依存しない契約・adapter・fixture検証は進められる。Web公開や旧repo archiveをこの作業の一律の前提にしない。
 
 SDKの接続基盤と商品の業務開発を区別する。remote MCP認可を採用する場合は選んだprotocol版の一次資料を確認するが、API商品全体へ同じ認可方式を強制しない。
 

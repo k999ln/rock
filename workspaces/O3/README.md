@@ -1,12 +1,12 @@
-# O3 — AI・Agent
+# O3 — si・Agent
 
 [作業部屋一覧](../README.md) · [アイデア置き場](../IDEAS.md)
 
 > 自動生成。編集元: data/mission-control.json、data/project-status.json、data/workspaces.json。
 
-**目的:** 交換可能なローカルAIが権限を持たずに計画し、Agentが許可済み手順だけを実行する。
+**目的:** 交換可能なローカルsiが権限を持たずに計画し、Agentが許可済み手順だけを実行する。
 
-**主担当:** ROCK / **評価対象:** 既存DecisionProvider/RouterとAPKの限定AI契約
+**主担当:** ROCK / **評価対象:** 既存DecisionProvider/RouterとAPKの限定si契約
 
 ## 触る場所・読む資料
 
@@ -78,7 +78,7 @@ npm run verify
 新しいチャットや担当へ渡すときは、次の一文へtask IDと今回の成果を入れます。
 
 ```text
-O3 AI・Agentの <task ID> を進める。workspaces/O3/README.mdと
+O3 si・Agentの <task ID> を進める。workspaces/O3/README.mdと
 npm run work -- <task ID> を読み、最新main・作業branch・未保存差分を確認する。
 今回の成果は <一つの成果>。このtaskの範囲で作業し、前提・実行保留・本人承認を維持する。
 終わりに変更path、検証結果、残課題、次の一手を残す。新しい思いつきは別に記録する。

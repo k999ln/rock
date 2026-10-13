@@ -313,7 +313,7 @@ export default function WorkCompositionWorkspace() {
     <div className={styles.workspace}>
       <div className={styles.intro}><div><h1>目的から、仕事を組み立てる。</h1>
         <p>素材を整え、完成条件を検査し、成果を保存。使った手順はレシピにして、次の素材でも使えます。</p>
-        <p className={styles.note}>接続済みの文章・CSV処理を使います。提案はキーワードによる手順の下書きです。外部AIの自律実行や事実確認は行いません。</p>
+        <p className={styles.note}>接続済みの文章・CSV処理を使います。提案はキーワードによる手順の下書きです。外部siの自律実行や事実確認は行いません。</p>
       </div><Link href="/chat?view=work">Zemaの仕事へ</Link></div>
       {toolEntry.state === 'unavailable' && <div className={`${styles.notice} ${styles.error}`} role="alert">{toolEntry.message}</div>}
       {toolEntry.state === 'ready' && !memory.selected && !draft.recipeRef && (!owner || draft.nodes[0]?.tool === toolEntry.toolId) && <p className={styles.notice}>Skyで選んだTool：{toolEntry.name}。目的・素材・完成条件を入力し、処理と検査の手順を確認してください。選択だけでは実行しません。</p>}

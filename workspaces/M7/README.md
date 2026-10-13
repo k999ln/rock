@@ -38,7 +38,7 @@ MINI07: 校正失敗・過熱・通信喪失・OS停止・更新中停電を危�
 | MINI07-04（子） | 原データ保存・送信の既定OFFと許可取消を確認表へ落とす | 未着手 / 現行製品 | MINI01 |
 | MINI07-05（子） | M2〜M6の評価計画から安全側へ渡す条件を整理する | 未着手 / 現行製品 | MINI01 / MINI07-01 |
 | MINI07-06（子） | 未決をHOLDにする安全受入表とレビュー担当をまとめる | 未着手 / 現行製品 | MINI01 / MINI07-02 / MINI07-03 / MINI07-04 / MINI07-05 |
-| MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent AI provenance bridgeを独立受入 | 未着手 / 共通基盤 | MAT03 / MAT05 |
+| MAT06 | avocadoMini四方向Bench／Full-scale prototypeとMaterial Core→Patent si provenance bridgeを独立受入 | 未着手 / 共通基盤 | MAT03 / MAT05 |
 | MINI07（親） | R5校正・停止・privacy・復旧の危険分析と受入表を作る | 未着手 / 現行製品 | MINI01 |
 
 <details>

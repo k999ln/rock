@@ -9,7 +9,7 @@ Local Action Assistant は、端末内Qwenを動かすruntimeとして設計・�
 - `npm run typecheck`：合格
 - `npm run build`：合格
 - LLM provider / routing / handoffの対象テスト：9件合格
-- Local AI準備・APK stagingのPythonテスト：15件合格
+- Local si準備・APK stagingのPythonテスト：15件合格
 - `npm run llm:architecture:check`：合格
 - `npm run os:check`：合格
 - 現在の実行環境：Ollama `11434` は未起動、Sky `3001` は応答なし

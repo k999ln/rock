@@ -2,7 +2,7 @@
 
 - 版: 1.0 / 2026-09-18
 - 対象: Jev / TypeSafe、Local Qwen、Cloud LLM、Codex、RAG、Market、Wallet、MCP、Sky / Zema
-- 状態: **設計確定・host側Phase 0、debug-only Pixel relay preview、optional Android provider sourceの限定実装**。既存のPixel 10向けLocal AI実装を土台にする。`lib/decision/`のProvider契約、Mock、Router、Harness、Policy、TypeSafeのserver側read-only adapterは固定fixtureで試験済みで、独立した`android/jev-preview`へ固定公開fixtureをMac loopback relayへ読むdebug専用clientを追加した。さらに`android/jev-provider`へ公式TypeSafe APIのpublic-only typed adapter source、Gradle／Soong module、専用UID／SELinux network domainを追加したが、APKはmanifest-disabled、productへの搭載は既定除外である。安全なruntime API key provisioning、Android Broker／Shellへの統合、実APIキーでのPixel接続受入、Local Qwen共通Provider、RAG、Cloud fallback、物理実機受入は未完了。
+- 状態: **設計確定・host側Phase 0、debug-only Pixel relay preview、optional Android provider sourceの限定実装**。既存のPixel 10向けLocal si実装を土台にする。`lib/decision/`のProvider契約、Mock、Router、Harness、Policy、TypeSafeのserver側read-only adapterは固定fixtureで試験済みで、独立した`android/jev-preview`へ固定公開fixtureをMac loopback relayへ読むdebug専用clientを追加した。さらに`android/jev-provider`へ公式TypeSafe APIのpublic-only typed adapter source、Gradle／Soong module、専用UID／SELinux network domainを追加したが、APKはmanifest-disabled、productへの搭載は既定除外である。安全なruntime API key provisioning、Android Broker／Shellへの統合、実APIキーでのPixel接続受入、Local Qwen共通Provider、RAG、Cloud fallback、物理実機受入は未完了。
 
 ## 0. この設計を一文でいうと
 
@@ -20,11 +20,11 @@ JevもQwenもCloud LLMも、送金、購入、削除、公開、merge、装置�
 
 ### 解く問題
 
-現在のRockstarOSには、端末内Qwenによる閉じたplan生成と、Tool・Wallet・Marketの安全境界がある。一方で「どの処理をコード、Jev、Local Qwen、Cloud LLMへ渡すか」という共通判断層がない。このまま個別機能へAIを足すと、次の問題が起きる。
+現在のRockstarOSには、端末内Qwenによる閉じたplan生成と、Tool・Wallet・Marketの安全境界がある。一方で「どの処理をコード、Jev、Local Qwen、Cloud LLMへ渡すか」という共通判断層がない。このまま個別機能へsiを足すと、次の問題が起きる。
 
 - 同じ入力が機能ごとに別の基準で外部送信される。
 - confidenceを権限や正しさと誤認する。
-- Local AIが苦手な時に、利用者へ知らせずCloudへ送る。
+- Local siが苦手な時に、利用者へ知らせずCloudへ送る。
 - Tool自身の「完了」を、そのまま本当の完了として扱う。
 - Codex、RAG、Market、Walletが別々の安全基準を持つ。
 - providerやmodelを変えるたびにOS全体を作り直す。
@@ -35,7 +35,7 @@ JevもQwenもCloud LLMも、送金、購入、削除、公開、merge、装置�
 
 | 領域          | 2026-09-18時点の事実                                                                                                                                    | 本設計で追加するもの                                           |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| Local AI      | `llama.rn 0.12.9`、Qwen3-0.6B Q8_0 GGUF、通信権限なしのAPK、Pixel 10 GL066で機内モード推論・再起動保持・33分22秒熱試験、plan-only JSON Schema経路を確認 | provider共通契約、用途別profile、routing、calibration、RAG連携 |
+| Local si      | `llama.rn 0.12.9`、Qwen3-0.6B Q8_0 GGUF、通信権限なしのAPK、Pixel 10 GL066で機内モード推論・再起動保持・33分22秒熱試験、plan-only JSON Schema経路を確認 | provider共通契約、用途別profile、routing、calibration、RAG連携 |
 | Android / OS  | 試験署名APKでBinder経路とBroker連携を確認。`android/jev-provider`へpublic-only TypeSafe adapter sourceを追加したが、APKはdisabled、初回productは除外。AOSP image、正式署名、SELinux最終形、OTAは未完 | Decision ServiceのOS統合、model/provider世代固定、監査event |
 | Platform Core | owner、capability、本人承認、work、Tool、receiptの契約と一部実装がある                                                                                  | 判断結果を権限から分離するPolicy Gate、Decision Receipt        |
 | Sky / Zema    | Tool一覧、選択、仕事、進捗、結果の経路がある                                                                                                            | Routerの説明表示、Cloud送信同意、判断根拠と検証結果の表示      |
@@ -43,9 +43,9 @@ JevもQwenもCloud LLMも、送金、購入、削除、公開、merge、装置�
 | Codex         | repository開発作業は可能                                                                                                                                | preflight、差分review、test、postflightを同じHarnessへ接続     |
 | RAG / Memory  | 仕事記録と限定記憶の設計がある。汎用検索indexは未実装                                                                                                   | owner別Knowledge Engine、候補検索、Jev rerank、引用検証        |
 | Market        | 型付き資産のPAPER提案・承認・receipt・positionが実装済み。LIVE無効                                                                                      | 数値計算と意味判断の分離、異常検知、説明、PAPER評価            |
-| Wallet        | 内部台帳とsandbox境界がある。外部LIVE Providerは未接続                                                                                                  | AIを助言専用に固定し、宛先・金額・承認をhard policyで決定      |
+| Wallet        | 内部台帳とsandbox境界がある。外部LIVE Providerは未接続                                                                                                  | siを助言専用に固定し、宛先・金額・承認をhard policyで決定      |
 
-既存証拠の正本は[Local AI統合](local-ai-os-integration-20260915.md)、[AIネイティブOS](ai-native-os-architecture.md)、[Platform Core](platform-core.md)、[Market](everything-market-and-autonomous-fund-20260913.md)、[Wallet Provider境界](external-wallet-fund-provider-boundary-20260913.md)とする。
+既存証拠の正本は[Local si統合](local-ai-os-integration-20260915.md)、[siネイティブOS](ai-native-os-architecture.md)、[Platform Core](platform-core.md)、[Market](everything-market-and-autonomous-fund-20260913.md)、[Wallet Provider境界](external-wallet-fund-provider-boundary-20260913.md)とする。
 
 ## 3. TypeSafe公式仕様との照合
 
@@ -245,7 +245,7 @@ interface DecisionProvider {
 4. `CloudLLMProvider`: 長文生成と複雑推論専用。Jev互換を装わない。
 5. `OpenJevProvider`: candidate検証後に追加可能。TypeSafe公式Jevと同一と表示しない。
 
-決定的なcode pathは`DecisionProvider`へ入れず、`PolicyEngine`と通常の関数に置く。これによりAIが停止してもhash、金額、権限、状態遷移、停止、履歴は動く。
+決定的なcode pathは`DecisionProvider`へ入れず、`PolicyEngine`と通常の関数に置く。これによりsiが停止してもhash、金額、権限、状態遷移、停止、履歴は動く。
 
 ## 7. Router / Harnessの処理順
 
@@ -277,7 +277,7 @@ Router自身をLLM一発判定にしない。codeのhard conditionを先に適�
 
 | 条件                          | 第一候補         | fallback                       | 禁止                     |
 | ----------------------------- | ---------------- | ------------------------------ | ------------------------ |
-| schema/hash/数値/権限/残高    | CODE             | なし                           | AIで上書き               |
+| schema/hash/数値/権限/残高    | CODE             | なし                           | siで上書き               |
 | 固定候補のintent/domain/risk  | JEV              | Local Qwen → ASK_USER          | confidenceだけで外部作用 |
 | owner_private、端末内で収まる | Local Qwen       | CODE/ASK_USER                  | 無断Cloud送信            |
 | offline必須                   | Local Qwen       | CODE/ASK_USER                  | Jev API / Cloud          |
@@ -370,7 +370,7 @@ confidenceは「当たっている証明」ではない。provider、model版、
 
 ### Android optional TypeSafe Jev provider source
 
-`android/jev-provider/`は、TypeSafeの公式HTTP APIを端末側から扱うための独立したsource moduleである。packageは`dev.rock.jev.provider`、専用UID／専用SELinux domainは`rock_jev_provider_app`、ネットワーク権限はこのmoduleだけが宣言する。Broker、Shell、Local AI、Toolのmanifestや権限は変更せず、Binder service、launcher、shared UID、Tool authorityも持たない。既存の`android/jev-preview/` loopback debug clientはこのmoduleの実装・受入へ転用しない。
+`android/jev-provider/`は、TypeSafeの公式HTTP APIを端末側から扱うための独立したsource moduleである。packageは`dev.rock.jev.provider`、専用UID／専用SELinux domainは`rock_jev_provider_app`、ネットワーク権限はこのmoduleだけが宣言する。Broker、Shell、Local si、Toolのmanifestや権限は変更せず、Binder service、launcher、shared UID、Tool authorityも持たない。既存の`android/jev-preview/` loopback debug clientはこのmoduleの実装・受入へ転用しない。
 
 初期productは`ROCK_JEV_PROVIDER_MODE`未指定で`RockJevProvider`を除外する。`ROCK_JEV_PROVIDER_MODE=optional`を明示した場合だけSoong packageを含めるが、manifestのapplicationは`enabled=false`、`allowBackup=false`のままである。安全なruntime key provisioning、rotation、失効、owner同意がまだ決まっていないため、このdisabled状態を解除する設定やkey fixtureをGitへ追加しない。
 
@@ -402,7 +402,7 @@ Cloud providerを一社へ固定しない。adapterは同じrequest/result契約
 | TypeSafeだけ停止 | CODE、Local Qwen、許可済みCloud                                  | Jev必須の高リスクrouteはASK_USER                     |
 | Cloudだけ停止    | CODE、Jev、Local Qwen                                            | 長文・深い推論は縮退または未完                       |
 | networkが不安定  | local処理、送信前queue                                           | external-writeを自動再送しない                       |
-| 全AI停止         | schema、policy、履歴、停止、手動Tool選択                         | AI判断・生成。権限を緩めない                         |
+| 全si停止         | schema、policy、履歴、停止、手動Tool選択                         | si判断・生成。権限を緩めない                         |
 
 外部作用の送信直後に切断した場合は`uncertain`へ置き、provider query / reconcileだけで解消する。「失敗に見えるから再送」は禁止する。
 
@@ -477,7 +477,7 @@ Marketでは数値と意味を分ける。
 
 ### Wallet
 
-- AIは支払いや送金の提案理由を作れても、金額、recipient、network、asset、fee cap、nonceを決定・変更できない。
+- siは支払いや送金の提案理由を作れても、金額、recipient、network、asset、fee cap、nonceを決定・変更できない。
 - private key、seed、OTPをDecisionProviderへ渡さない。
 - exact payload digestに対する本人承認を必要とし、payload変更で承認を失効する。
 - receiptはDecision Receiptとは別に、Providerのsigned resultと照合する。
@@ -488,7 +488,7 @@ Marketでは数値と意味を分ける。
 - manifestのcapabilityと実際のOS/network権限を照合する。
 - RouterはTool候補を提案できるが、接続、OAuth、費用、外部作用の承認は代行しない。
 - Skyはprovider/model、実行場所、送信data、費用、現在状態を表示する。
-- Zemaは「AIが完了」「Toolが完了」「検証済み」を別表示する。
+- Zemaは「siが完了」「Toolが完了」「検証済み」を別表示する。
 
 ### Hub
 
@@ -588,7 +588,7 @@ backupはpolicy、provider profile、仕事状態、receipt参照を含め、API
 - `DecisionRequest / Result / ProviderCapabilities`を実装。
 - Mock provider、Policy Engine、Decision Receipt、event schemaを作る。
 - 低・中・高リスクの合成fixtureを最低200件作る。
-- AI停止中もCODE、停止、履歴、手動選択が動くことを確認。
+- si停止中もCODE、停止、履歴、手動選択が動くことを確認。
 
 合格: 未知field、secret、scope外、confidence-only authorization、無限retryをすべて拒否する。
 
@@ -628,7 +628,7 @@ backupはpolicy、provider profile、仕事状態、receipt参照を含め、API
 
 - PAPER Marketの異常検知・説明を追加。
 - Walletはadvisoryだけを接続し、外部LIVEは無効のままにする。
-- Material Inventionの候補分類、RAG、Patent AI引継ぎへ適用する。
+- Material Inventionの候補分類、RAG、Patent si引継ぎへ適用する。
 
 合格: Jev/LLMから実送金、実order、物理装置操作へ直結する経路0。
 
@@ -712,6 +712,6 @@ backupはpolicy、provider profile、仕事状態、receipt参照を含め、API
 
 ## 28. 結論
 
-RockstarOSのAI基盤は「一番大きいmodelに全部やらせる仕組み」ではない。codeが制御し、Jevが小さく速い意味判断をし、Local Qwenが秘密とofflineを守り、Cloud LLMが許可された重い思考を担い、別のVerifierとPolicy Engineが結果と権限を確かめる仕組みである。
+RockstarOSのsi基盤は「一番大きいmodelに全部やらせる仕組み」ではない。codeが制御し、Jevが小さく速い意味判断をし、Local Qwenが秘密とofflineを守り、Cloud LLMが許可された重い思考を担い、別のVerifierとPolicy Engineが結果と権限を確かめる仕組みである。
 
 この分離を守れば、Jev、Qwen、Cloud provider、mobile runtimeが変わっても、RockstarOSのowner、承認、Tool、Wallet、Market、Material Inventionの安全境界を作り直さずに進化させられる。
