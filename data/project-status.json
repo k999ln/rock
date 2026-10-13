@@ -7665,9 +7665,9 @@
       "Device preference restore rollback and late-response cancellation",
       "Current public preview and launch-gate reconciliation"
     ],
-    "nextAction": "Finish the separate main integration candidate and exact-SHA CI; authenticated production and device download acceptance remain open.",
+    "nextAction": "Authenticated production/download acceptance remains open. Site-only CSV contract and migrations stay separate; no Site redeployment was performed by this main integration.",
     "githubSaved": true,
-    "mainIntegrated": false,
+    "mainIntegrated": true,
     "deployed": true,
     "productionAuthenticatedAccepted": false,
     "evidence": "docs/evidence/work-composition-development.json",
@@ -7699,10 +7699,12 @@
     },
     "pullRequest": 110,
     "deployedVersion": 54,
-    "deployedSource": "b10c56688b9e38045685246c718d2de7c6f92f2c"
+    "deployedSource": "b10c56688b9e38045685246c718d2de7c6f92f2c",
+    "mainIntegrationPr": 111,
+    "mainMergeCommit": "3ffc21d3a15235e0bde89a118e2f931135a9189e"
   },
   "mainCompositionIntegration": {
-    "status": "local_verified_ci_pending",
+    "status": "main_merged",
     "taskId": "G04",
     "primaryOwner": "ROCK",
     "primarySquad": "H1",
@@ -7710,8 +7712,8 @@
     "qualitySource": "6b72470ce25d4e7b20940b1698fde5a12281ed69",
     "featureSource": "b10c56688b9e38045685246c718d2de7c6f92f2c",
     "branch": "codex/main-work-composition-20261013",
-    "mainMerged": false,
-    "nextAction": "Push the integration candidate, check its exact-SHA GitHub CI (including Android/native), and merge to main under the user request.",
+    "mainMerged": true,
+    "nextAction": "Authenticated production/download acceptance remains open. Site-only CSV contract and migrations stay separate; no Site redeployment was performed by this main integration.",
     "verification": {
       "command": "npm run verify",
       "exitCode": 0,
@@ -7721,6 +7723,91 @@
       "targetTests": 80,
       "migrationHistory": "unchanged from main",
       "workflowAndSecurityPolicy": "unchanged"
+    },
+    "pullRequest": 111,
+    "mergeCommit": "3ffc21d3a15235e0bde89a118e2f931135a9189e",
+    "mergedAt": "2026-10-13T15:28:41Z",
+    "verifiedSourceCommit": "643559b8e00037b1f960afb9dea7bf309534d539",
+    "githubChecks": {
+      "total": 15,
+      "success": 15,
+      "results": [
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630264/job/115381598319",
+          "name": "source-tests",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/runs/115381114095",
+          "name": "CodeQL",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630264/job/115380168908",
+          "name": "partitions (main-0)",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630264/job/115380169109",
+          "name": "partitions (main-1)",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630264/job/115380169096",
+          "name": "partitions (support)",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630264/job/115380169004",
+          "name": "partitions (main-2)",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630271/job/115380166275",
+          "name": "verify",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630274/job/115380166826",
+          "name": "SPIDER / secrets",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630343/job/115380166453",
+          "name": "SPIDER CodeQL (python)",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630419/job/115380166072",
+          "name": "SPIDER / repair regressions",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630264/job/115380168837",
+          "name": "partitions (main-3)",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630343/job/115380165698",
+          "name": "SPIDER CodeQL (javascript-typescript)",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630310/job/115380166388",
+          "name": "public-fixture-tests",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630419/job/115380166236",
+          "name": "SPIDER / production web security measurement",
+          "state": "SUCCESS"
+        },
+        {
+          "link": "https://github.com/k999ln/rock/actions/runs/38421630317/job/115380164919",
+          "name": "prototype",
+          "state": "SUCCESS"
+        }
+      ]
     }
   }
 }

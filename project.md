@@ -1,6 +1,8 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
-## 2026-10-13 — main統合の検証開始（G04 / H1、ROCK）
+## 2026-10-13 — 品質改善と仕事compositionをmainへ統合（G04 / H1、ROCK）
+
+完了: PR #111を2026-10-13 15:28:41 UTCにmerge。GitHub main `3ffc21d3a15235e0bde89a118e2f931135a9189e` のtreeは検証済みsource `643559b8e00037b1f960afb9dea7bf309534d539` と完全一致。Web verify、Android、native、SPIDER、CodeQLを含む同一sourceの15チェックがすべて成功。固定policyで到達可能1,265 commitの秘密候補0件。mainのDB移行・workflow・vendor原本は保持。PR #105の品質改善とPR #110の新機能を差分統合し、Site専用CSV/移行は別branchに保持した。公開v54/source `b10c566` の再配備、本番本人の一周、端末download完了、実機OS・商用受入は今回の完了へ含めない。以下は着手・検証時点の記録。
 
 検証追記: 統合候補で`npm run verify` exit0（Node2143件、2142 pass・既存skip1）、対象80試験、buildとWorker/D1・CSV API検査が成功。CI UI待機は通信前の非同期fingerprintも追跡し、遅延25msで応答喪失と同一ID再試行を確認。公開説明文の誤検出は候補の文言を修正し、scanner/policy/workflowは不変。最新公開は別artifactのv54/source `b10c566`。同一SHA CIとmain統合は次段階。
 

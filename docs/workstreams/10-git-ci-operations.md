@@ -1,4 +1,8 @@
 # Git / CI / Operations
+## 2026-10-13 品質改善・仕事compositionのmain統合（G04 / H1、ROCK）
+
+利用者のmain反映指示によりPR #111をmergeした。source `643559b8e00037b1f960afb9dea7bf309534d539` のGitHub15チェックは全成功、main `3ffc21d3a15235e0bde89a118e2f931135a9189e` のtree一致を読戻し確認。PR #105とPR #110から必要差分を統合し、mainの適用済みDB移行とColumbia英語入口を維持。Site専用CSV契約は別に保持する。元branchの履歴書換え、検査policy変更、Sites再配備は行っていない。検証・残条件は[既存証拠](../evidence/work-composition-development.json)の`mainIntegration`。次は本番本人の一周・端末download・静的header等の既存受入条件を、main統合と区別して扱う。
+
 
 ## 2026-10-11 — 既存機能の品質・復旧改善（G04 / H1、ROCK）
 
