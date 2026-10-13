@@ -54,7 +54,7 @@ JenniferはPR #113 / head `3349c2475468443bc7ecd94a4e3782343f514a8f`で役割と
 
 ### 並行する大学NFC・Sky候補の引継ぎ
 
-2026-10-13の最新mainは`d779297a8684111ac8948137c0ecc3d83b84c5e8`。#115のSky Phoenix/完成feed/Columbia/local Agent、#116/#117のlocal preview・Site互換DB移行、#112の5大学Hub/PWA/NFCと型付きapp成果表示、#118のcanonical D1 bridge/legacy履歴保全が統合済み。#112 headは`df756bea745277b2a292790e843f185e80f00b02`、#115 headは`64cfc83402c8c0b8cde054e10262982838fa85af`。これらをopen候補や未実装へ戻さない。本設計branchは最新mainを保全mergeし、head `7b27ae7d`の全体verify/同一SHA9 CI成功後、利用者の「mainへあげて」によりPR #114をmain `59412c04`へ通常mergeした。merge treeは受入headと一致。Site再配備と実受入は別。
+PR #114へ保全した2026-10-13の上流main baseは`d779297a8684111ac8948137c0ecc3d83b84c5e8`。#115のSky Phoenix/完成feed/Columbia/local Agent、#116/#117のlocal preview・Site互換DB移行、#112の5大学Hub/PWA/NFCと型付きapp成果表示、#118のcanonical D1 bridge/legacy履歴保全が統合済み。#112 headは`df756bea745277b2a292790e843f185e80f00b02`、#115 headは`64cfc83402c8c0b8cde054e10262982838fa85af`。これらをopen候補や未実装へ戻さない。本設計branchは最新mainを保全mergeし、head `7b27ae7d`の全体verify/同一SHA9 CI成功後、利用者の「mainへあげて」によりPR #114をmain `59412c04`へ通常mergeした。merge treeは受入headと一致。Site再配備と実受入は別。
 
 NFC担当からの別artifact報告は`avoado.si`のSky v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db`、5大学の`/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub?source=nfc`。version/sourceと実画面の受入は担当報告として保持する。2026-10-13 20:35 UTCに本設計担当がHTTP再読取りを行い、`/`・`/os/sky`・`/os/sky/outputs`・5大学Hubの8URLで200と各ページtitleを確認した。これだけでは配備source一致、画面操作、実カード、学生資格/枠、Providerの受入にならない。カードのURLは大学contextを選ぶだけで、本人性、学生所属、優待、購入、実行権限を与えない。既存OS/browserからSky→Zemaへ進める。NTAG215への実書込・iPhone/Android再読取り、6枠の運用、有料MCP/Providerの一周は独立した未受入条件である。
 
