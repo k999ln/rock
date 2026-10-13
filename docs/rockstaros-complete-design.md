@@ -34,7 +34,7 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 **RockstarOSは、本人・有限権限・仕事・費用・成果・保存/復旧を共通化するruntimeである。** サービス全体は[統合基本設計](service-design/README.md)、共通責任と11必須項目の具体化は[共通システムと契約](service-design/02-system-contracts.md)を参照する。設計の統一は、Web/native/cloudの認証・DB・履歴を共有済みにする意味ではない。
 
-Skyは「誰に頼むか」を選ぶ場所、Zemaは「頼んだ仕事を最後まで管理する」場所、Platform Coreは「本当に許可された仕事だけを動かす」中心である。
+Jenniferは利用者が話す全体の統括窓口、Skyは能力を発見・接続する場所、ZemaはJenniferの裏の仕事・承認・停止・成果・費用system、Platform Coreは許可された仕事だけを動かす中心。[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)は専用branchで確認し、main未統合とCI/検収/context/実Providerの残条件を[製品profile](service-design/03-product-profiles.md)へ記録する。
 
 ## 2. 利用者の一周
 

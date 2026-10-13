@@ -1,8 +1,8 @@
 ## 2026-10-13 — サービス全体の設計書を再構成
 
-主担当Git / CI / Operations、ROCK、DOC04/H1。利用者の「やりたいことは変わらない、最初から設計書を組み直す」に基づき、最新main `4273ef02`から分離した `codex/service-design-rebuild` で[統合基本設計](docs/service-design/README.md)を作成。利用体験、共通契約、Jenniffer/Mini/Pro/rocketstarのprofile、実現順、RQ01〜RQ50を引き継ぐ。既存ポータル/関係図/OS/Tool詳細/次のpromptの古いSIM主入口と親仕事状態を現在の正本へ合わせる。Jennifferは役割確認待ち。実装・価格・権限・原本byte・各受入gateは変更しない。元のdirty作業コピーを保全した。
+主担当Git / CI / Operations、ROCK、DOC04/H1。利用者の「やりたいことは変わらない、最初から設計書を組み直す」に基づき、最新main `4273ef02`から分離した `codex/service-design-rebuild` で[統合基本設計](docs/service-design/README.md)を作成。利用体験、共通契約、Jenniffer/Mini/Pro/rocketstarのprofile、実現順、RQ01〜RQ50を引き継ぐ。既存ポータル/関係図/OS/Tool詳細/次のpromptの古いSIM主入口と親仕事状態を現在の正本へ合わせる。Jenniferの役割は専用branchで確認済み。実装・価格・権限・原本byte・各受入gateは変更しない。元のdirty作業コピーを保全した。
 
-検証: 最終 `npm run verify` exit0（Node2142 pass/既存skip1、仕事API1356、CSV385、asset欠落0）。50要望の対応・89参照・独立再検収が合格。文書・回帰の結果とGit/GitHub/main/公開の区別は[証拠](docs/evidence/service-design-rebuild.json)へ記録する。次はJenniffer定義と実装branchへの引継ぎ同期、既存文章仕事の同一公開artifact受入。後払い/旧Wallet gate・passkey/Provider・OS/各hardwareは独立条件。
+検証: 最終 `npm run verify` exit0（Node2142 pass/既存skip1、仕事API1356、CSV385、asset欠落0）。50要望の対応・90参照・Jennifer/Pro補足を含む独立再検収が合格。文書・回帰の結果とGit/GitHub/main/公開の区別は[証拠](docs/evidence/service-design-rebuild.json)へ記録する。次はJennifer sourceのCI/検収・context受入と実装branchへの引継ぎ同期、既存文章仕事の同一公開artifact受入。後払い/旧Wallet gate・passkey/Provider・OS/各hardwareは独立条件。
 
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
@@ -3364,7 +3364,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | ANDROID-PREFULL | OS11 | 有料full build前に単体APK・emulator・純正Pixel offline AI・Sky→Zema→Tool→Walletを完走してfreeze | 未合格 | PREVIEW-INSTALL | [記録](docs/phone-preview-20260911.md) · [記録](docs/product-baseline.md) · [記録](.github/workflows/android.yml) · [記録](.github/workflows/local-ai-apk.yml) · [記録](tests/product-baseline.test.mjs) · [記録](tests/test_prepare_phone_build.py) · [記録](tests/test_stage_local_ai_apk.py) · [記録](tests/test_freeze_phone_build_inputs.py) · [記録](docs/evidence/android-pre-full-build-tests-20260915.json) · [記録](docs/evidence/android-local-ai-plan-v2-20260916.json) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 | DEVICE-INSTALL | RLS02 | 初回flash gate 4/4後、対象1機種でflash・初回起動・OTA rollback・純正復旧を完走 | 未合格 | PREVIEW-INSTALL · ANDROID-PREFULL | [記録](docs/android-first-flash-gate-20260916.md) · [記録](data/android-first-flash-gate.json) · [記録](docs/android-production-signing-custody.md) · [記録](data/android-signing-custody-policy.json) · [記録](docs/android-rollback-index-policy.md) · [記録](data/android-rollback-index-policy.json) · [記録](docs/android-google-stock-recovery.md) · [記録](data/android-stock-recovery-policy.json) · [記録](docs/android-backup-recovery.md) · [記録](data/android-backup-recovery-policy.json) · [記録](docs/android-production-architecture.md) · [記録](data/android-release-architecture-policy.json) · [記録](https://github.com/k999ln/rock/blob/96845e6006c15e39ba5b45495f79c21bdff7399e/docs/release-installation-plan-20260909.md) · [記録](docs/phone-preview-20260911.md) · [記録](scripts/freeze-phone-build-inputs.py) · [記録](docs/evidence/android-prefull-input-freeze-20260916.json) |
 
-次の作業: Jennifferの役割を本人定義へ対応付ける。再構成設計と引継ぎを実装branchへ保全同期し、既存文章仕事の保存/成果取得/再利用を同一公開artifactで受入。後払い/旧Wallet gate、passkey、Provider、各OS/hardwareは独立gate。
+次の作業: Jennifer専用branchのCI/真正な検収証拠・contextの残条件を解消し、再構成設計と引継ぎを実装branchへ保全同期。Jennifer→Sky→Zema/AMC→担当AI→成果の一周を同一artifactで受入。ProはNVIDIA高性能AI PCのP0候補と実測を進め、後払い/旧Wallet gate、passkey、Provider、各OS/hardwareは独立gate。
 <!-- project-status:end -->
 
 ## 次段階の設計

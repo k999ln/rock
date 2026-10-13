@@ -70,5 +70,5 @@
 
 - 無料account入口、Proの80万円目標、Mini LTE option、Columbiaカードは最新mainの既存確定判断を参照する。今回新しく決めた料金やhardware仕様ではない。
 - 5大学共用Sky、型付きhost app成果、署名要求eSIMは元のdirty作業候補を保持して比較する。最新main実装と混ぜず、確認後に既存要求の具体化として扱う。
-- Jennifferの名称は今回の明示入力。役割と既存systemとの関係はOWNER確認後に記録する。Jevとの同一視や新しい自律実行権を作らない。
+- JennifferはGit表記Jennifer。[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)を専用branchで確認し、利用者の統括窓口と裏側Zema/AMCの責任を引き継ぐ。main未統合とCI/Provider/context/検収の残条件を記録し、Jevとの同一視や新しい自律実行権を作らない。
 - 新たなUX配置・状態の分類軸・実現順は再構成案。利用者が新要望を確定した履歴と区別する。

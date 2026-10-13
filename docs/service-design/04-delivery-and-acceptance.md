@@ -10,6 +10,8 @@
 
 元の作業コピーは`codex/esim-cloud-access`/`37c06cec`と未保存差分を持ち、同名remote branchは確認できなかった。5大学共通Sky/Fitness成果plugin/要求署名eSIMは、この候補と最新mainのColumbia英語NFC・既存authを比較して個別統合する。再構成は最新mainから分離したbranchで保存し、元のdirty変更を保全する。
 
+Jenniferは専用branch `codex/jennifer-zema-execution` / `d0151e892794066e1a59b5e4d1dc8863e314947f` / PR #113で役割とsourceを確認した。8check中6成功/2失敗、main未統合。役割不明の扱いを訂正し、今回の設計へ利用者窓口→裏のZema/AMC→担当AIという関係を継承する。
+
 ## 0. 基準と引継ぎを揃える
 
 原因: 設計と進捗が複数branch・公開Site・歴史資料へ分かれ、古いSIM入口や過去の受入が現在の説明へ残っている。
@@ -17,6 +19,12 @@
 成果物: この5章、更新した関係図/ポータル/全体・Tool設計の入口、baselineの再構成理由、証拠と進捗。原本R5/R1.0/PDF、vendor、実装、旧受入証拠は維持する。
 
 合格: RQ01〜RQ50の対応、リンク、design/baseline/project/mission整合、`npm run verify`。文書保存、作業branchのGit保存、GitHub、main統合、公開は別記録。設計の見やすさをruntime修正の完了へ換算しない。
+
+### Jenniferを統合する前の修正と証拠
+
+原因: Jennifer sourceは専用branchにあり、MCP配布ZIPのsource不一致と、SPIDER回帰の `lib/generated/private-content.ts` 未生成でCI2件が失敗している。ROCKは正本sourceから配布物/生成moduleを再現し、同じSHAで対象回帰とverifyを受け入れてから実装branchへ統合する。今回の設計保存で失敗を修正済みにしない。
+
+加えて、worker/reviewer別delegationは存在するが、手動owner検収と真正なreviewer証拠のserver相関照合を区別する必要がある。AMC APIでowner/Goal revision/leaf/別delegation/成果hash/usage/判定を照合する受入、COLOMBIA原本/版、context grant、native UI、実Providerのgateを個別に残す。
 
 ## 1. 既存の成果を持ち帰れる一周
 
@@ -54,7 +62,7 @@ MiniはR5の単独操作/保存/停止、光学・入力・安全のprototypeと
 
 ## 未決定事項と決め方
 
-- **Jennifferの責任** — OWNERが用途と役割を説明する。Sky/Zemaとの違いが一つの利用例で説明でき、入力/出力・記憶/削除・送信/費用・停止を既存契約へ割当てた時に確定する。
+- **Jenniferの統合・検収・context** — ROCKが専用branchのCIを修正し、worker/reviewerのserver証拠相関と既存AMCの受入を検証する。OWNERがCOLOMBIA原本/版と利用資料を指定し、JOINTがProvider/nativeの同一候補を受け入れる。役割を再質問せず、既存Git正本を使う。
 - **期間パスの対象・金額・期間** — OWNERとBillingが既存確定範囲内でSKU、対象能力、更新通知、取消/返金条件を固定する。最終確認画面とsandbox/外部確認を通してから販売へ進む。
 - **後払いと旧Wallet gate** — ROCKが支払能力・budget reservationのADRと移行案、EXTERNALが価格/meter/Stripe条件を出す。並列月上限・結果不明・請求失敗を受け入れるまで旧paid gateを開けない。
 - **大学別候補の優先順位** — OWNERの最新指示とmainのColumbiaカードを起点に、元dirty候補を同じSkyへ統合する範囲を確定する。学生所属/枠の資格水準、追加枠価格と実NFCは未受入。

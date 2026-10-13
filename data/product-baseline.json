@@ -412,8 +412,17 @@
       ],
       "commercialAndAuthorityPoliciesChanged": false,
       "runtimeChanged": false,
-      "jennifferRole": "owner_clarification_pending",
-      "originalDesignBytesPreserved": true
+      "jennifferRole": "verified_repository_jennifer_portfolio_coordinator",
+      "originalDesignBytesPreserved": true,
+      "jenniferSource": {
+        "canonicalName": "Jennifer",
+        "userSpelling": "Jenniffer",
+        "branch": "codex/jennifer-zema-execution",
+        "sha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+        "document": "https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md",
+        "pullRequest": 113,
+        "mainIntegrated": false
+      }
     }
   },
   "northStar": {
@@ -1688,7 +1697,12 @@
     "priceTaxUndecided": true,
     "candidateOnly": true,
     "authority": "docs/avokado-pro-pc-design.md",
-    "specification": "data/avokado-pro-pc.json"
+    "specification": "data/avokado-pro-pc.json",
+    "aiPcClarification": {
+      "date": "2026-10-13",
+      "source": "User explicit clarification",
+      "description": "NVIDIA chip/GPU based high-performance AI PC; preserve standalone PC and prior gaming requirement; no final BOM or performance acceptance implied."
+    }
   },
   "miniCellularIntent": {
     "decisionDate": "2026-10-10",

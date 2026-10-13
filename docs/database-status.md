@@ -93,6 +93,6 @@
 
 ## 次の作業
 
-Jennifferの役割を本人定義へ対応付ける。再構成設計と引継ぎを実装branchへ保全同期し、既存文章仕事の保存/成果取得/再利用を同一公開artifactで受入。後払い/旧Wallet gate、passkey、Provider、各OS/hardwareは独立gate。
+Jennifer専用branchのCI/真正な検収証拠・contextの残条件を解消し、再構成設計と引継ぎを実装branchへ保全同期。Jennifer→Sky→Zema/AMC→担当AI→成果の一周を同一artifactで受入。ProはNVIDIA高性能AI PCのP0候補と実測を進め、後払い/旧Wallet gate、passkey、Provider、各OS/hardwareは独立gate。
 
 本番readbackは読み取り専用で行い、migration適用やデータ変更とは分離して記録する。

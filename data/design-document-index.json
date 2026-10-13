@@ -955,6 +955,14 @@
         "data/project-status.json",
         "docs/git-consolidation.md"
       ]
+    },
+    {
+      "id": "jennifer_coordination",
+      "coverage": "BRANCH_INPUT_AND_BASIC_DESIGN_WITH_OPEN_ACCEPTANCE",
+      "documents": [
+        "docs/service-design/03-product-profiles.md",
+        "docs/service-design/02-system-contracts.md"
+      ]
     }
   ],
   "catalogTools": [
@@ -2053,7 +2061,7 @@
       "docs/service-design/README.md"
     ],
     "inputMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
-    "jennifferRole": "owner_clarification_pending",
+    "jennifferRole": "verified_repository_jennifer_portfolio_coordinator",
     "requiredDesignFieldsInherited": [
       "purpose_and_user",
       "end_to_end_experience",
@@ -2067,6 +2075,15 @@
       "acceptance_environment_and_evidence",
       "open_decisions_owner_and_decision_test"
     ],
-    "originalBytesPreserved": true
+    "originalBytesPreserved": true,
+    "jenniferSource": {
+      "canonicalName": "Jennifer",
+      "userSpelling": "Jenniffer",
+      "branch": "codex/jennifer-zema-execution",
+      "sha": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+      "document": "https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md",
+      "pullRequest": 113,
+      "mainIntegrated": false
+    }
   }
 }

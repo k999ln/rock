@@ -6,17 +6,21 @@
 
 ## 利用者が出会うもの
 
-Skyは能力を見つけて接続する場所。Zemaは依頼を仕事にして進捗・確認・停止・成果・使用額を見渡す場所。RockstarOSは本人、有限権限、実行、保存、復旧を守る共通runtimeと、対応機種向けnative OSである。
+Jenniferは利用者が話す全体の統括窓口。Skyは能力を見つけて接続する場所。ZemaはJenniferの裏で依頼・進捗・確認・停止・成果・使用額を管理する仕事system。RockstarOSは本人、有限権限、実行、保存、復旧を守る共通runtimeと、対応機種向けnative OSである。
 
-Miniは身体・手・日本語音声による独立空間端末、ProはNVIDIAを使う独立AI・PCゲームPC、rocketstarは独立した衛星輸送・回収・再使用の工学program。Jennifferは利用者が指定した名称で、役割の正本は確認中。Jevの改名として扱わない。
+Miniは身体・手・日本語音声による独立空間端末、ProはNVIDIAのGPU/chipを使う独立高性能AI PC（PCゲームも保持）、rocketstarは独立した衛星輸送・回収・再使用の工学program。JennifferのGit表記はJennifer。[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)は専用branchにあり、main統合前。Jevとは別system。
 
 ```mermaid
 flowchart TB
   U[本人の目的] --> ACCOUNT[無料avokado account / 対応するゲスト下書き]
-  ACCOUNT --> SKY[Sky 発見・購入・接続]
+  ACCOUNT --> JENNIFER[Jennifer 目的・Goal・担当AI・成果受領]
+  JENNIFER --> SKY[Sky 発見・購入・接続]
+  JENNIFER --> ZEMA
   SKY --> ZEMA[Zema 仕事・確認・停止・成果]
   SKY -. 対応アプリでの利用 .-> APP[仕事・創作・Game・生活アプリ]
-  ZEMA --> CORE[RockstarOS Core / Broker]
+  ZEMA --> AMC[AMC 分解・専門担当・検収]
+  AMC --> CORE[RockstarOS Core / Broker]
+  ZEMA --> CORE
   APP --> CORE
   CORE --> EXEC[端末内 / 本人PC / cloud / self-host]
   EXEC --> RESULT[Artifact・Receipt・usage]
@@ -41,7 +45,7 @@ flowchart TB
 
 ## 実行と成果の流れ
 
-本人の依頼→SkyのTool/Agent選択→Zemaまたは対応アプリで条件確認→Coreで本人/版/権限/見積/上限を再検査→adapter実行→結果schema/receipt照合→成果保存→本人検収/取得→項目別usage/決済照合。
+本人の依頼→JenniferのGoal整理→SkyのTool/Agent選択→裏側Zema/AMCまたは対応アプリで条件確認→Coreで本人/版/権限/見積/上限を再検査→adapter実行→結果schema/receipt照合→成果保存→本人検収/取得→項目別usage/決済照合。
 
 仕事状態は既存Webの`active/review/completed/cancelled`を使う。承認待ち・通信待ち・外部結果不明は子処理と画面の状態で説明する。保存応答が不明なら同じIDを照合し、自動再送しない。親の取消と外部停止確認は別である。
 

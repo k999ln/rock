@@ -10,13 +10,25 @@ Zemaの主な利用者は仕事を依頼・修正・検収する本人。依頼�
 
 失敗・認証切れ・接続不明は保存済み仕事を照合し、実行や購入を自動で再送しない。更新は旧仕事のTool版と入力を保持する。受入は本人A/B、desktop/mobile、保存・再取得・停止・費用の一周。外部host app認証・成果連携は独立受入とする。[Sky設計](../sky-launch-design.md)、[全Tool正本](../sky-tools-complete-design.md)、[共通契約](02-system-contracts.md)へ接続する。
 
-## Jenniffer
+## Jennifer（利用者表記 Jenniffer）
 
-名前は利用者の今回の指定。最新mainの設計書・実装の検索で役割を示す正本を確認できていない。**利用者への役割確認を未決定のまま残す**。Jev、Zema、OSの改名として扱わない。
+**利用者が常に話す、Rockstar全体のプロジェクト統括窓口。** 目的をGoalへ言語化し、projectを選び、担当AIと必要な確認、成果受領をまとめる。ZemaはJenniferの裏でJob/Task/Run、進捗、承認、停止、artifact、費用、Receipt、履歴を管理し、競合する人格として前面へ出さない。Skyは能力の発見・接続、Brokerは本人・権限・費用の強制を持つ。
 
-役割確定後は、利用者が出会う場面、何を入力し何を返すか、継続記憶の有無と削除、失敗時に誰が引き継ぐか、どの既存APIを使うかを一つの契約にする。対話役なら会話を提案・下書きまでにする案、独立ToolならSkyの作者/版/capabilityへ登録する案を比較する。いずれも既存Brokerの本人承認、WorkJob、receiptを共有し、包括的な実行権を作らない。
+根拠は[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)、`codex/jennifer-zema-execution` / `d0151e892794066e1a59b5e4d1dc8863e314947f` / [PR #113](https://github.com/k999ln/rock/pull/113)。役割は未定義ではなく、このbranchにWeb構成・計画・実行接続sourceが存在する。main `4273ef02`には未統合。今回、役割と契約を設計へ取り込むが実装sourceはmergeしない。Jevは既存の任意remote evaluatorで、Jenniferと別system。
 
-決定者はOWNER。合格条件は、Sky/Zemaとの利用場面・責任の違いが具体例一つで説明でき、保存・送信・費用・停止を既存契約へ対応付けられること。名称から新componentやLLM providerの導入を決めない。
+入力は本人の依頼、目的/意図、範囲と対象外、成功条件、選択したprojectと許可資料。出力はGoal Contract、依存付き計画、担当profile、必要確認、成果の統合報告。計画は`proposed / advisory-only`、本人確認前のGoalはdraft。計画生成はboundedな決定論的処理で、万能な自然言語LLMや自動実行を実証したものではない。
+
+8project（RockstarOS、Hardware、rocketstar、Jennifer/Zema、AMC、Spider Security、Business/Wallet、Governance/Release）に各一つのmanager profileを置く。担当AIは必要時に呼ぶ論理責任者で、常時稼働process・独自credentialを増やさない。Zema内AMCは確認済みGoalを`milestone → work package → task → step`へ分ける。branchの上限はdepth5、1親12子、100node、初回候補8leaf。各専門AIは一leafの成果と証拠を提出し、自分で受入済みにしない。
+
+本人が「Goalを確認してZemaへ保存」して既存AMCへ渡す。readyなleafだけ別Cloud Agent jobへ結び、worker/reviewerを別delegationとして見積・予算・Broker証明・本人承認へ進める。Zema runtimeのone-shot送信、GetTask照合、CancelTask、結果不明保持、暗号化text artifact、署名済みusage receiptを使う。計画作成やGoal保存は外部送信・費用予約・Tool成功を意味しない。
+
+短期計画は既存ZemaのsessionStorage（最大8session/24message/10分TTL）に置き、長期Goalはowner確認後のAMC。Jennifer専用の重複DB/長期memoryを作らない。default data accessはnone、本人が対象を指定する。COLOMBIAは上位contextの登録口で、原本/URL/版/hashは`awaiting-source`。内容を推測して適用せず、大学Columbiaとも同一にしない。
+
+現状のbranchにはworker/reviewer別の確認経路があるが、Workbenchではownerの手動検収を使い、AMC APIはA2A reviewer artifact/usageをserverで相関照合していない。**真正な独立reviewerの証拠が自動検証済みとは表示しない。** 到達設計ではowner/Goal revision/leaf/workerとreviewerの別delegation/成果hash/usage/判定を照合し、手動owner判断とremote review証拠を別に表示する。全leaf完了後も、Jenniferの統合報告を本人が受け入れるまでGoalを受入済みにしない。
+
+失敗時は同じGoal/operation/delegationを読み直し、応答喪失を自動再送しない。componentの更新・期限・失効と予算を送信直前に再検査する。actorが変わった時に前の私有計画を表示しない。unknown schema/fieldと権限昇格を拒否する。
+
+branchの同一SHA CIは8件中6成功、2失敗（MCP配布ZIPとsourceの不一致、SPIDER回帰で生成module未生成）。main成功のCIとは別。合格条件はこれらの統合前回帰、owner別保存/再照合、worker/reviewerの証拠相関、context選択、native同等UI、実Provider/D1/secret/trust/callbackの受入。担当はJennifer/Zema projectと既存Sky/AMC/Core/Security担当へ割り当てる。
 
 ## RockstarOS
 
@@ -40,7 +52,7 @@ native OSは、署名済みimage・exact SKU・boot/保存/復旧が受け入れ
 
 ## avokadoPro
 
-価値は、**NVIDIAを使うMac mini風の小型据置PCで、AIとPCゲームを両立させること**。Miniなしで使え、Miniへ計算・保存・game能力を追加する接続は任意。[Pro P0設計](../avokado-pro-pc-design.md)と[data正本](../../data/avokado-pro-pc.json)は既にmainにある。
+価値は、**NVIDIAのGPU/chipを使って作る高性能AI PC**。2026-10-13の利用者補足を明記し、ローカルmodel推論・制作の性能を中心に、既存のPCゲーム要望も保持する。形状はMac mini風の小型据置PCを目指す。Miniなしで使え、Miniへ計算・保存・game能力を追加する接続は任意。[Pro P0設計](../avokado-pro-pc-design.md)と[data正本](../../data/avokado-pro-pc.json)は既にmainにある。
 
 入力は本人のPC操作、対応game、有限のTool/compute要求。出力はPCの成果・保存・game体験と、許可済みMini接続の結果。ホスト管理者権限をMini/Androidへ移さず、外部Toolをplatform鍵で署名しない。ネットワーク断ではPCの基本利用と保存を保持し、Miniとの不明な結果を照合する。
 

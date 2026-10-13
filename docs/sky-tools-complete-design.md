@@ -1,6 +1,6 @@
 ## 共通サービス体験と状態の読み分け
 
-サービス全体の目的、Sky/Zema/OSと各製品の責任、入出力、状態、保存、失敗・復旧、承認、受入と未決定の決め方を[統合基本設計](service-design/README.md)へ整理した。個々のToolの詳細は本書を維持する。`catalogStatus`・`connectionStatus`・本人条件を満たす実行可能性・受入環境を別に説明し、catalogのreadyからcredential設定/実行/本番合格を推測しない。これらの分類は説明の契約で、新schemaへ移行済みとは扱わない。現在の無料account入口と料金設計は最新baselineを優先する。5大学/Fitness等の元dirty候補はmainと別受入。Jennifferは役割確認中で新しいcatalog Toolを登録していない。
+サービス全体の目的、Sky/Zema/OSと各製品の責任、入出力、状態、保存、失敗・復旧、承認、受入と未決定の決め方を[統合基本設計](service-design/README.md)へ整理した。個々のToolの詳細は本書を維持する。`catalogStatus`・`connectionStatus`・本人条件を満たす実行可能性・受入環境を別に説明し、catalogのreadyからcredential設定/実行/本番合格を推測しない。これらの分類は説明の契約で、新schemaへ移行済みとは扱わない。現在の無料account入口と料金設計は最新baselineを優先する。5大学/Fitness等の元dirty候補はmainと別受入。Jenniferは利用者の統括窓口、Zemaは裏側systemとして[JenniferのGit正本](https://github.com/k999ln/rock/blob/d0151e892794066e1a59b5e4d1dc8863e314947f/docs/jennifer-coordination.md)を継承する。専用branchのsourceとmainを分け、新しいcatalog Toolは登録していない。
 
 # Sky／Zema／全Tool詳細設計
 
