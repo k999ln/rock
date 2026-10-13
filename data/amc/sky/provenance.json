@@ -4,15 +4,15 @@
   "files": [
     {
       "path": "sky-amc-plan.json",
-      "sha256": "d3ba883e760d2e3e358aec728109b3557946dd0036b173286d3b7d5b9d6fe574"
+      "sha256": "7b8443f873bb690e34b65a7ea8c7afc2e2f7de5894cede23ac36fddac6248ed1"
     },
     {
       "path": "sky-amc-source.json",
-      "sha256": "1d83acd0c4d463036a3ff1357543a5714879c98a5c14d4ec817dd805da6d495e"
+      "sha256": "4fbae2c5fbcbbe84866244abf73f7e5c7c7bc13e3051f3e3437358106b5d6198"
     },
     {
       "path": "sky-amc-goal.json",
-      "sha256": "0fe39f4153d3ef3eb0f43d039abb3940db5d115436fcaa6d8884bd30928bd289"
+      "sha256": "e7dd08be2650157cddc79422c1149f92be4333a7c01a0373b5dedeabf113f907"
     }
   ],
   "originalsPreserved": true,

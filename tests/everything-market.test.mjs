@@ -106,7 +106,7 @@ void test('D1 runtime keeps exact approval, idempotency and owner isolation', as
     '0012_marketplace_relation_guards.sql',
   ]) {
     const migration = readFileSync(
-      new URL(`../drizzle/${name}`, import.meta.url),
+      new URL(`../drizzle-legacy/pre-site-bridge/${name}`, import.meta.url),
       'utf8',
     );
     for (const statement of migration

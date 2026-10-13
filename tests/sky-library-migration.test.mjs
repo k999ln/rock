@@ -6,16 +6,20 @@ import { readFileSync, readdirSync } from 'node:fs';
 void test('library migration preserves canonical CSV/payment data and scopes bookmarks per owner', (t) => {
   const db = new DatabaseSync(':memory:');
   t.after(() => db.close());
-  const directory = new URL('../drizzle/', import.meta.url);
-  const files = readdirSync(directory).filter(name => name.endsWith('.sql') && !name.startsWith('._')).sort();
+  const directories = [
+    new URL('../drizzle-legacy/pre-site-bridge/', import.meta.url),
+    new URL('../drizzle-legacy/post-site-bridge/', import.meta.url),
+  ];
   const migration = '0059_sky_library.sql';
-  assert.ok(files.includes(migration));
-  for (const name of files.filter(name => name < migration)) db.exec(readFileSync(new URL(name, directory), 'utf8'));
+  assert.ok(readdirSync(directories[1]).includes(migration));
+  for (const directory of directories)
+    for (const name of readdirSync(directory).filter(name => name.endsWith('.sql') && name < migration).sort())
+      db.exec(readFileSync(new URL(name, directory), 'utf8'));
   db.prepare("INSERT INTO csv_jobs (id,user_id,status,payment_status,input_name,input_key,input_bytes,input_sha256,input_encoding,specification_json,quote_minor,currency,expires_at,created_at,updated_at) VALUES ('old-job','alice','quoted','unpaid','old.csv','old-input',10,'hash','utf8','{}',300000,'JPY',9999999999999,1,1)").run();
   db.prepare("INSERT INTO csv_trial_payments VALUES ('payment','old-job','test','synthetic-session',1)").run();
   const tables = () => db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all().map(row => row.name);
   const before = tables();
-  db.exec(readFileSync(new URL(migration, directory), 'utf8'));
+  db.exec(readFileSync(new URL(migration, directories[1]), 'utf8'));
   assert.deepEqual(tables().filter(name => !before.includes(name)), ['sky_library_items']);
   assert.equal(db.prepare("SELECT input_key FROM csv_jobs WHERE id='old-job'").get().input_key, 'old-input');
   assert.equal(db.prepare("SELECT session_id FROM csv_trial_payments WHERE id='payment'").get().session_id, 'synthetic-session');
