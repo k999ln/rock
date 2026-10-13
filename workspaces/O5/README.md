@@ -26,7 +26,7 @@
 
 ## 次の作業
 
-- **SIM01**: 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す — 詳細: `npm run work -- SIM01`
+- **SIM01**: アカウントと任意署名claimからRockstarOS・Sky/Zema・Agentの利用権と端末別利用開始を通す — 詳細: `npm run work -- SIM01`
 - **SKY21**: Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる — 詳細: `npm run work -- SKY21`
 - **SKY19**: SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） — 詳細: `npm run work -- SKY19`
 
@@ -65,7 +65,7 @@ SIM01/SKY21: SIM/eSIM利用開始からSky/Zemaの保存・復旧・費用表示
 | GX02 | 指定された実ゲームの正式sandbox接続と交換条件を検証 | 未着手 / 共通基盤 | — |
 | BIL02 | 有償自動化商品と販売・決済・払出しProvider sandboxを接続し、Earning Receiptから実送金まで受入 | 進行中 / 共通基盤 | 実行保留: ToC収益料金の請求・回収・払出し実行 |
 | CSV00 | CSV仕事の35作業を名前空間付きで管理し、コード完成と外部実績gateを分離 | 進行中 / 共通基盤 | — |
-| SIM01 | 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す | 進行中 / 共通基盤 | SKY07 / SKY21 |
+| SIM01 | アカウントと任意署名claimからRockstarOS・Sky/Zema・Agentの利用権と端末別利用開始を通す | 進行中 / 共通基盤 | SKY07 / SKY21 |
 | SKY21 | Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる | 進行中 / 共通基盤 | SKY07 / SKY20 |
 | B06 | ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理 | 進行中 / 共通基盤 | — |
 | GM01 | AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外） | 進行中 / 共通基盤 | — |

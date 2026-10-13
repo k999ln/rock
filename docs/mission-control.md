@@ -64,7 +64,7 @@ plannedは未着手、in_progressは進行中、blockedは明示停止、doneは
 | O2 | Work・Data | 3 一部統合 | AI04 | 6 | 1.0のpure Tool境界を維持し、外部作用のoperation key・結果不明照合・crash復旧を拡張実装 |
 | O3 | si・Agent | 3 一部統合 | AI02 | 6 | モデルmanifest・仕事への版固定・互換更新を実装し、2候補交換／旧仕事再開を段階受入 |
 | O4 | Tool・MCP | 3 一部統合 | SKY07 | 6 | MCPごとにこのPC・Sky Cloud・提供者MCPの接続先を選び、対応先へワンタップ接続する |
-| O5 | Sky・Zema・Wallet | 3 一部統合 | SIM01, SKY21, SKY19 | 6 | 物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す / Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる / SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） |
+| O5 | Sky・Zema・Wallet | 3 一部統合 | SIM01, SKY21, SKY19 | 6 | アカウントと任意署名claimからRockstarOS・Sky/Zema・Agentの利用権と端末別利用開始を通す / Sky独立サービスの基本利用・作者市場・有料販売・OS/他アプリ接続を証拠別に受け入れる / SkyへToolチーム入口を統合し利益連動成功報酬・Wallet決済・開発者還元を設計（率・月上限等確認中、未実装） |
 | O6 | Device Adapter | 2 試作済み | OS02 | 6 | 【Android/AOSP別トラック】対象Pixel・ソース/BSP・Linuxビルド環境の適合確認 |
 | O7 | Release・運用 | 3 一部統合 | LCH07 | 6 | 同一最終候補の再現配布・導入・復旧リハーサル |
 | M1 | 製品設計・ICD | 1 基本設計あり | MINI01 | 6 | R5要求・OPEN01〜08と部隊別試験の追跡表を作る |

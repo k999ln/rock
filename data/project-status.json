@@ -5436,7 +5436,7 @@
     },
     {
       "id": "SIM01",
-      "title": "物理SIM/eSIM購入からRockstarOS・Sky/Zema・Agentへの一度きり認証と端末別利用開始を通す",
+      "title": "アカウントと任意署名claimからRockstarOS・Sky/Zema・Agentの利用権と端末別利用開始を通す",
       "status": "in_progress",
       "dependsOn": [
         "SKY07",
@@ -5754,7 +5754,8 @@
         "claimTests": 14,
         "esimTests": 19,
         "limits": "eSIM same-scope overflow remains explicit incomplete-resolution 503 after 100 full checks; no live Provider acceptance."
-      }
+      },
+      "currentScope": "Free account entry; optional claim redemption; consumer SIM/eSIM issuance and sales remain held and disabled by default. Existing task ID, API, schema and historical evidence retained."
     },
     {
       "id": "SKY21",
@@ -7817,7 +7818,7 @@
   },
   "serviceDesignReconstruction": {
     "date": "2026-10-13",
-    "status": "coherent_design_and_si_display_verified",
+    "status": "coherent_design_si_display_and_obsolete_cleanup_verified",
     "taskId": "DOC04",
     "primaryWorkstream": "Git / CI / Operations",
     "primaryOwner": "ROCK",
@@ -7895,14 +7896,14 @@
       "fullCommand": "PATH=\"/Users/kaiya/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH\" TMPDIR=/private/tmp npm run verify",
       "nodeVersion": "24.19.0",
       "exitCode": 0,
-      "verifiedSourceCommit": "f759f0928d106e1995448659945a91f729586d72",
+      "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
       "nodeTests": 2168,
       "nodePass": 2167,
       "nodeFail": 0,
       "nodeSkip": 1,
       "workApiAssertions": 1356,
       "csvAssertions": 385,
-      "webAssetReferences": 193,
+      "webAssetReferences": 190,
       "missingAssets": 0,
       "typecheck": "passed",
       "lint": "passed",
@@ -7912,95 +7913,24 @@
       "projectCheck": "passed",
       "missionCheck": "passed",
       "botCheck": "passed",
-      "requirementsExactlyCovered": 50,
-      "localReferencesChecked": 92,
-      "independentReview": "passed_including_latest_Jennifer_main_source_si_and_cross_system_contracts",
-      "rawLog": "/private/tmp/rock-service-design-si-final-verify.log",
-      "rawLogSha256": "26bec8ce0989ebdcae69335687a2f6988ca3d7dcdfe134de5f36aca319eb75ea",
+      "requirementsExactlyPreserved": 50,
+      "relativeReferencesChecked": 2800,
+      "missingReferences": 0,
+      "removedPaths": 13,
+      "independentReview": "passed_RQ50_contract_migration_active_links_archive_restore_immutable_originals_NFC_acceptance_boundaries",
+      "rawLog": "/private/tmp/rock-obsolete-cleanup-verify.log",
+      "rawLogSha256": "e316515a32aef4708b474d76fd46908282bbca6068794c1ce675f8744923a8a8",
       "verifiedDocumentSourcesSha256": {
         "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
-        "docs/service-design/02-system-contracts.md": "4adae85807f96a51593a4e6cd9688bc04d24b3559aa57f23763e69675b21ec5d",
+        "docs/service-design/02-system-contracts.md": "8d473d7504caa57a5ab68ba0901a02aa13691ea7e309ce89b1e6c02a439a73db",
         "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
-        "docs/service-design/04-delivery-and-acceptance.md": "7751cc687256c545fd4070477f249628bd138cd06da968884620d18a569e22f6",
-        "docs/service-design/05-requirement-coverage.md": "81521b78ce771ade01587828621458ad6022e8c0c707096218df7e9b12e6a7c2",
-        "docs/service-design/06-consistency-contracts.md": "ad62a97e398c4b941f35d6739a94cdb0ee1b32b9ec957abcbe863443f00bc7c6",
+        "docs/service-design/04-delivery-and-acceptance.md": "24f2692c83a09ef77a818d6ba90f070d310daa2179c5cf0e281ad870cc3c37c9",
+        "docs/service-design/05-requirement-coverage.md": "241978452e2f2aea74c8c20314940201795c408a865cb0406ea5a7b40c657003",
+        "docs/service-design/06-consistency-contracts.md": "4b723ae64b2c0512262fe3515526ed20be0a22ed26bcf2a9aa23cccc40597e4f",
         "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
       },
-      "runtimeSourceChanged": true,
-      "runtimeLogicChanged": false,
-      "statusRecordUpdatedAfterVerification": true,
-      "scope": "First-party display and documentation consistency plus full host regression on integrated main source. No new actual-browser, physical OS/hardware, production provider/billing or flight acceptance.",
-      "uiBrowser": {
-        "status": "not_performed_permission_denied",
-        "reason": "Browser approval review rejected localhost access; no workaround attempted."
-      },
-      "previousDocumentationRegression": {
-        "fullCommand": "TMPDIR=/private/tmp npm run verify",
-        "rawLog": "/private/tmp/rock-service-design-jennifer-verify.log",
-        "rawLogSha256": "4d09f76870b7f2414d9120d4c8e65b4707e8c6ca66ac9f879a0bb0c4fd0bb308",
-        "nodeTests": 2143,
-        "nodePass": 2142,
-        "nodeSkip": 1
-      },
-      "initialSiRegression": {
-        "command": "TMPDIR=/private/tmp npm run verify",
-        "exitCode": 1,
-        "tests": 2143,
-        "pass": 2133,
-        "fail": 9,
-        "skip": 1,
-        "cause": "Existing Cloud text tests still selected the old AI request label; label expectations now synchronized, targeted retest pending.",
-        "log": "/private/tmp/rock-service-design-si-verify.log",
-        "targetedRetest": {
-          "command": "node --experimental-strip-types --test tests/workbench-cloud-text.test.mjs",
-          "exitCode": 0,
-          "tests": 32,
-          "pass": 32
-        }
-      },
-      "node26Run": {
-        "status": "interrupted_not_passed",
-        "command": "TMPDIR=/private/tmp npm run verify",
-        "log": "/private/tmp/rock-service-design-si-current-verify.log",
-        "reason": "Host Node26 wallet recovery suite did not complete; supported bundled Node24 exact suite passed43/43, then full verify passed without skip or assertion changes. Root cause of Node26 wait was not established."
-      },
-      "focusedTests": {
-        "labelAndBaseline": 50,
-        "cloudText": 32,
-        "jennifer": 19,
-        "site": 24,
-        "fashion": 2,
-        "amcTemplate": 58,
-        "allPassed": true,
-        "botAndContext": 24,
-        "walletNode24": 43,
-        "amcNode24Retest": 58,
-        "initialCombinedBotRun": {
-          "status": "failed_test_file_process",
-          "tests": 25,
-          "pass": 24,
-          "failedFile": "tests/amc-goal-cli.test.mjs",
-          "log": "/private/tmp/rock-si-bot-tests.log",
-          "followup": "Exact standalone AMC58/58 and final full regression accepted; no assertion or source weakening."
-        }
-      },
-      "currentDesignReview": {
-        "status": "passed",
-        "books": 7,
-        "relativeReferences": 92,
-        "missingReferences": 0,
-        "uniqueRequirements": 50,
-        "reviewer": "independent final_review agent",
-        "documentSha256": {
-          "docs/service-design/01-service-experience.md": "09b6499df37e83d1a31a400d1590d5f1a08a6025026ba3983998a80b7e28231e",
-          "docs/service-design/02-system-contracts.md": "4adae85807f96a51593a4e6cd9688bc04d24b3559aa57f23763e69675b21ec5d",
-          "docs/service-design/03-product-profiles.md": "10368fb79ba4cc2e9bf694b9fd09a834a320a70db8de477a5ab14808aabcd355",
-          "docs/service-design/04-delivery-and-acceptance.md": "7751cc687256c545fd4070477f249628bd138cd06da968884620d18a569e22f6",
-          "docs/service-design/05-requirement-coverage.md": "81521b78ce771ade01587828621458ad6022e8c0c707096218df7e9b12e6a7c2",
-          "docs/service-design/06-consistency-contracts.md": "ad62a97e398c4b941f35d6739a94cdb0ee1b32b9ec957abcbe863443f00bc7c6",
-          "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
-        }
-      }
+      "scope": "Current design, deletion, R5 product claims, archive restoration and complete host regression. Browser, physical hardware/OS, live Provider/billing, NFC tag readback and flight acceptance remain separate.",
+      "metadataOnlyUpdatesAfterVerification": true
     },
     "evidence": "docs/evidence/service-design-rebuild.json",
     "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。",
@@ -8027,11 +7957,22 @@
     "crossSystemAcceptanceScenarios": 12,
     "latestMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
     "obsoleteContentCleanup": {
-      "status": "in_progress",
+      "status": "verified_and_github_saved",
       "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
       "taskId": "DOC04",
       "primarySquad": "H1",
-      "scope": "Obsolete design/log removal, current R5 pages, archive restore provenance; original artifacts and current requirements retained"
-    }
+      "scope": "Obsolete design/log removal, current R5 pages, archive restore provenance; original artifacts and current requirements retained",
+      "removedPaths": 13,
+      "removedDocuments": 11,
+      "removedComponents": 2,
+      "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+      "githubSaved": true,
+      "mainIntegrated": false,
+      "published": false,
+      "independentReview": "passed",
+      "fullVerifyExitCode": 0
+    },
+    "savedCleanupContentCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+    "cleanupMetadataNotes": "After full regression, update verification records and SIM01 wording to account/optional claim; metadata checks repeat. Runtime and design sources unchanged."
   }
 }
