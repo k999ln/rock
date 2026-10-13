@@ -50,6 +50,8 @@ Device programs sit alongside the service: avocadoMini R5 and avokadoPro. Materi
 
 The fastest public preview is [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky). Choose **SPIDER**, paste code or text, and review the flagged lines and suggested responses; its bounded browser check does not send or save the original input. For a reproducible local run, start the app below and open `/sky` or `/zema/tools/rockstar-spider`.
 
+In Zema, **Compose work** (`/zema/compose`) combines connected text or CSV Tools with explicit checks. Save the intermediate results, review the final output, then reuse its steps as a recipe for new material. Compare and edit a saved artifact in a separate recheck job; the original result and its approvals remain intact. Recipes contain the processing graph and safe defaults; they do not copy the old manuscript, results, approvals, or payment evidence. The first candidate is under local verification; public deployment and authenticated production acceptance are recorded separately in [the development evidence](docs/evidence/work-composition-development.json).
+
 The preview may require an account and its provider-connected paths are at different stages. The local SPIDER path and the CSV flow below are the clearest ways to see the product contract without treating a design preview as a finished commercial service.
 
 ## From a request to a result

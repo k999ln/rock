@@ -170,6 +170,22 @@ O2 / R03、ROCK。WorkPlan schema 1、開始前だけの目的編集、固定承
 
 合格範囲は実handler/storeとSQLiteによる拒否・取消・競合回帰。合成認証と実requestUserを使う別fixtureを区別し、本番認証・配備・実機・料金保留解除は受入に含めない。[検証と未解決条件](evidence/spider-work-plan-contract.json)を参照する。
 
+### 仕事の組み立てとレシピ（2026-10-13、WEB04 / G04）
+
+目的は、本人が素材・目的・完成条件を入力し、接続済みの複数Toolで処理と検査を組み立て、途中成果と最終成果を保存して次の仕事へ手順を再利用できること。入口は `/zema/compose` とZemaの「組み立てる」。Skyの引用・無料記事・CSVカードからも「このToolで仕事を組む」で、選択処理→新しい検査の空の下書きを開く。URLで私有素材・目的・予算・承認を持ち込まず、既存job、レシピ、編集中入力、ownerごとのmemoryを優先する。内部処理や未接続Tool、重複・不正queryは初期設定へ使わない。CSVの小規模無料処理は、有料CSV受付の注文・決済・納品記録を作成しない。ROCKがWebのUI、計画解析、既存workflow／owner別workStore、実処理、保存・復旧を担当し、本人が素材保存・成果の最終確認を行う。接続済みの引用整理、無料記事加工、CSV整形、成果結合、文字数／必須文言／CSV構造検査だけを実行し、外部AI・課金の接続許可は追加しない。
+
+入出力はversion 1のCompositionPlan（目的、完成条件、text/csv、期限、予算0、最大12手順と依存）と最大12,000文字の素材、手順別artifact／checks。入力元は素材か前の手順のみで、循環、不正参照、型不一致、未接続Tool、検査へ接続しない成果を保存前に拒否する。提案はキーワードによる編集可能な下書きで、意味理解やモデル推論の実証ではない。完成条件の自然文と形式検査は別で、登録した検査を通した後に本人が内容を読む。
+
+状態と保存は既存WorkJobのactive→review→completed／cancelled、revision/CAS、同じcommand IDとpayload fingerprintを用いる。composition fieldを既存owner別work_jobs payloadへ追加し、DB schema・既存template・AMC／Cloud承認を変更しない。最初の実処理で素材を固定し、成果・入力・既存検査を原ownerへ保存。実処理は外部effectなしの有限な処理を計算後にCAS保存する。停止前の確定済み成果は再読込で復元し、未保存手順は同じcommandで再試行する。変更した目的・条件・手順に古い検査合格を移植しない。
+
+保存不明・timeout・503・不正成功応答では、画面内の元owner／job／commandを保持して同一payloadで確認する。別ownerと古い取得世代の応答は拒否し、401では私有入力を隠して元ownerの再確認後だけ復元する。承認のない保存やgeneric Work APIからの計画作成を拒否する。未保存memoryは同じタブの離脱guardで保護するが、強制終了をまたぐ未保存draftの永続復旧は保証しない。保存済み素材・成果を消す操作は本人確認を経る。実顧客データに故障試験をしない。
+
+レシピは保存済みの仕事に独立したname／sanitized planを保持する。素材、目的、成果、顧客情報、本文を含む設定、期限、予算承認、receiptを含めず、graphと各Toolの安全な初期設定だけを再利用する。レシピ一覧SQLはid／revision／recipeを投影し、原稿や成果payloadを取得しない。再利用は元recipeのowner／revisionを同じINSERT条件で確認し、新しい目的・完成条件・素材・job IDで仕事を作る。元仕事と承認を上書きしない。削除や競合では新しい仕事を勝手に作り直さず同IDの結果を照合する。
+
+成果の編集では、開始時の原文とrevisionを読み取り専用で保持し、編集内容と新しい目的・完成条件・文字数・必須文言を別の下書きへ入力する。「編集版を新しい仕事へ」は独立した未検査jobの計画だけを保存し、素材はこのタブに未保存で保持する。保存済み成果の取得は本人認証付きのHTTP attachmentを使い、表示したjob／手順／revisionへ一致させる。別owner・消去済み成果は404、更新済みの版は409で止め、private/no-store、nosniff、plain UTF-8 text／CSVと中立的なファイル名を使用する。新しい素材保存の本人同意と実行後に、別jobの検査・成果として保存する。原job、原artifact、旧検査合格、本人確認、Provider receiptは変更も移植もしない。CSVはCSV構造検査、文章はplain text表示を使い、任意HTMLを実行しない。編集memoryと保存不明の転送snapshotはowner／job／nodeに結び、元owner再確認後だけ戻す。別タブの後続revisionで比較元を置き換えず、開始時版を表示する。明示した素材消去は、その仕事の未保存編集も確認して消す。
+
+合格条件は、実入力で2種類以上の接続済み処理→検査→保存→再表示→レシピ保存→新素材の新jobを一周し、原成果が不変であること。本人切替、401、Origin、競合、応答喪失、二重クリック、失敗検査の再開、素材消去、再起動、PC／390pxを確認する。正常／異常APIは実handler/storeとSQLite、実画面・実D1は別証拠で記録する。候補の対象試験は `tests/work-composition*.test.mjs`、共通owner hookと既存Workbenchの回帰、全体 `npm run verify`。現時点は実装とローカル検証中で、本番本人認証、同一最終SHA CI、公開反映は別受入。未決事項は外部Toolの接続契約と有料実行で、既存の見積／予算／Provider受入が揃うまで候補を利用不可に保つ。
+
 ### Zemaの古い応答と未送信入力（2026-10-11、WEB04）
 
 依頼・Tool・model・通貨・上限・会話が変わると進行中の見積取得を取り消し、取得世代が一致する応答だけを表示する。見積ボタンと実行操作は同期lockで二重開始を防ぐ。見積は本人承認でもTool成功でもなく、既存の費用・権限gateを通す。

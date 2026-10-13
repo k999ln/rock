@@ -1,6 +1,6 @@
 'use client';
 /* oxlint-disable next/no-html-link-for-pages -- Sites sign-in requires top-level navigation. */
-import { useCallback, useEffect, useMemo, useRef, useState, type SetStateAction } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Check, Play, Plus, RefreshCw } from 'lucide-react';
 import {
@@ -40,6 +40,7 @@ import type { McpConnection } from '@/lib/mcp-hub';
 import { McpBotRunner } from '@/components/mcp-bot-runner';
 import { WorkbenchCloudText, WorkbenchCloudTextDeleteDialog, useWorkbenchCloudText } from '@/components/workbench-cloud-text';
 import { Textarea } from '@/components/ui/textarea';
+import { useOwnerMemoryState } from '@/components/use-owner-memory-state';
 import { usePendingSaveNavigation } from '@/components/use-pending-save-navigation';
 import { readWorkJobs, readWorkJobResponse, workJobConfirmsCommand } from '@/lib/work-job-view';
 import { OperationRequestError } from '@/lib/operations-client';
@@ -327,21 +328,6 @@ async function sha256Hex(value: string) {
   const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
   return [...new Uint8Array(bytes)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
-/** Private drafts stay in memory under the owner who entered them. Old event
- * closures cannot edit the currently displayed account after reauthentication. */
-function useWorkbenchOwnerState<T>(owner: string | null, currentOwner: { current: string | null }, initial: T) {
-  const [empty] = useState(initial);
-  const [values, setValues] = useState<Record<string, T>>({});
-  const [identity, setIdentity] = useState({});
-  const currentIdentity = useRef(identity);
-  const setValue = useCallback((next: SetStateAction<T>, author = owner) => {
-    if (!author || currentOwner.current !== author) return;
-    const token = {}; currentIdentity.current = token; setIdentity(token);
-    setValues((current) => ({ ...current, [author]: typeof next === 'function'
-      ? (next as (previous: T) => T)(current[author] ?? empty) : next }));
-  }, [currentOwner, empty, owner]);
-  return [owner ? values[owner] ?? empty : empty, setValue, values, () => currentIdentity.current === identity] as const;
-}
 
 export default function Workbench({
   embedded = false,
@@ -367,13 +353,13 @@ export default function Workbench({
   const [a2aAgents, setA2aAgents] = useState<A2AAgentConnection[]>([]);
   const [agentOrigin, setAgentOrigin] = useState('');
   const [delegationBusy, setDelegationBusy] = useState(false);
-  const [delegationPredecessorId, setDelegationPredecessorId] = useWorkbenchOwnerState<string | null>(ownerScope, currentOwner, null);
-  const [delegationError, setDelegationError] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
-  const [delegationQuoteConsent, setDelegationQuoteConsent, , currentQuoteConsent] = useWorkbenchOwnerState(ownerScope, currentOwner, false);
-  const [delegationQuote, setDelegationQuote, , currentQuote] = useWorkbenchOwnerState<DelegationQuote | null>(ownerScope, currentOwner, null);
+  const [delegationPredecessorId, setDelegationPredecessorId] = useOwnerMemoryState<string | null>(ownerScope, currentOwner, null);
+  const [delegationError, setDelegationError] = useOwnerMemoryState(ownerScope, currentOwner, '');
+  const [delegationQuoteConsent, setDelegationQuoteConsent, , currentQuoteConsent] = useOwnerMemoryState(ownerScope, currentOwner, false);
+  const [delegationQuote, setDelegationQuote, , currentQuote] = useOwnerMemoryState<DelegationQuote | null>(ownerScope, currentOwner, null);
   const [artifactDocuments, setArtifactDocuments] = useState<Record<string, ArtifactDocument[]>>({});
   const [delegationUsageDetails, setDelegationUsageDetails] = useState<Record<string, DelegationUsageDetails | null>>({});
-  const [delegationForm, setDelegationForm, delegationFormDrafts, currentDelegationForm] = useWorkbenchOwnerState(ownerScope, currentOwner, {
+  const [delegationForm, setDelegationForm, delegationFormDrafts, currentDelegationForm] = useOwnerMemoryState(ownerScope, currentOwner, {
     targetAgentId: '',
     targetOrigin: '',
     targetAgentName: '',
@@ -386,25 +372,25 @@ export default function Workbench({
     parentBudgetLimitMinor: 0,
     continueWhileDeviceOffline: false,
   });
-  const [delegationReview, setDelegationReview] = useWorkbenchOwnerState<DelegationReview | null>(ownerScope, currentOwner, null);
+  const [delegationReview, setDelegationReview] = useOwnerMemoryState<DelegationReview | null>(ownerScope, currentOwner, null);
   const [resultReviewConfirmedForJob, setResultReviewConfirmedForJob] = useState('');
-  const [handoffPackageResult, setHandoffPackageResult] = useWorkbenchOwnerState<{
+  const [handoffPackageResult, setHandoffPackageResult] = useOwnerMemoryState<{
     packageKey: string;
     state: 'ready' | 'unavailable' | 'not_included';
     package?: RockstarPackageHandoff;
     manifest?: SkyToolPackage;
   } | null>(ownerScope, currentOwner, null);
-  const [selectedPackageRuntime, setSelectedPackageRuntime] = useWorkbenchOwnerState<{
+  const [selectedPackageRuntime, setSelectedPackageRuntime] = useOwnerMemoryState<{
     packageKey: string; manifestSha256: string; serverId: string; toolName: string;
   } | null>(ownerScope, currentOwner, null);
-  const [localPackageTask, setLocalPackageTask, localPackageTaskDrafts, currentLocalPackageTask] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
+  const [localPackageTask, setLocalPackageTask, localPackageTaskDrafts, currentLocalPackageTask] = useOwnerMemoryState(ownerScope, currentOwner, '');
   const [remoteTextCurrency, setRemoteTextCurrency] = useState(cloudDraft?.currency || 'USD');
   const delegationSubmission = useRef<Record<string, { fingerprint: string; request: DelegationRequest; uncertain: boolean }>>({});
   const [uncertainDelegationOwners, setUncertainDelegationOwners] = useState<string[]>([]);
   const selectedIdRef = useRef('');
-  const [title, setTitle, titleDrafts, currentTitle] = useWorkbenchOwnerState(ownerScope, currentOwner, ''),
-    [templateId, setTemplateId, , currentTemplate] = useWorkbenchOwnerState(ownerScope, currentOwner, 'article'),
-    [note, setNote, noteDrafts, currentNote] = useWorkbenchOwnerState(ownerScope, currentOwner, '');
+  const [title, setTitle, titleDrafts, currentTitle] = useOwnerMemoryState(ownerScope, currentOwner, ''),
+    [templateId, setTemplateId, , currentTemplate] = useOwnerMemoryState(ownerScope, currentOwner, 'article'),
+    [note, setNote, noteDrafts, currentNote] = useOwnerMemoryState(ownerScope, currentOwner, '');
   const [error, setError] = useState(''),
     [loading, setLoading] = useState(true),
     [ready, setReady] = useState(false);

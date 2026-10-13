@@ -1,10 +1,10 @@
 # Sky cloud execution operations and recovery runbook
 
-Status: operator procedure for local preparation and future contracted acceptance, 2026-10-02. This is not authorization to deploy production execution or billing. The runtime currently has no accepted production provider contract, production D1 readback, funded Wallet path, or device acceptance.
+Status: operator procedure for local preparation and future contracted acceptance. Service-entry wording reconciled on 2026-10-13 with the confirmed 2026-10-10 account policy; older execution evidence below remains a historical snapshot. This is not authorization to deploy production execution or billing. The runtime currently has no accepted production provider contract, production D1 readback, funded Wallet path, or device acceptance.
 
 ## Service boundary
 
-The SIM/eSIM is the service-distribution and entitlement entry. Carrier activation, RockstarOS/client installation, cloud task acceptance, LLM/provider execution, metering, and settlement are separate states. A paid task may run after a device disconnects only after the cloud has durably accepted the exact request, saved its authorization and budget reservation, and returned the same job ID. An unsent draft does not run offline. A local usage record is not an invoice or payment.
+A free account is the service entry; a SIM/eSIM is optional connectivity, not a prerequisite for using RockstarOS, Sky or Zema. Carrier activation, account/service entitlement, RockstarOS/client installation, cloud task acceptance, LLM/provider execution, metering, and settlement are separate states. A paid task may run after a device disconnects only after the cloud has durably accepted the exact request, saved its authorization and budget reservation, and returned the same job ID. An unsent draft does not run offline. A local usage record is not an invoice or payment.
 
 The Cloudflare service is `services/sky-agent-runtime/wrangler.jsonc`. It binds the shared D1 database, one-minute scheduled controller, `REMOTE_AI_TEXT_WORKFLOW`, and `A2A_DELEGATION_WORKFLOW`. D1 rows hold job, consent, quote, reservation, send-claim, status, artifact, and usage evidence. Workflows perform bounded dispatch and reconciliation. Client reconnect reads the existing job; it must not create a replacement when a response is lost.
 
@@ -71,4 +71,4 @@ Locally implemented and verified: durable job/recovery source, owner scoping, si
 
 Not accepted: production D1 migration/readback, production secret custody, live Provider sandbox or invoice matching, funded production Wallet settlement, carrier activation, Android APK/device runtime, and exact-model RockstarOS install/recovery. Local tests, usage rows, or successful SIM entitlement claims do not prove any of these.
 
-See [cloud continuity contract](sky-cloud-continuity.md), [SIM/eSIM-led product architecture](sim-led-product-architecture.md), and [provider contract readiness](provider-contract-readiness-20260930.md).
+See [cloud continuity contract](sky-cloud-continuity.md), [current account-led product baseline](product-baseline.md), and [provider contract readiness](provider-contract-readiness-20260930.md).

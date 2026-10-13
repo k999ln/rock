@@ -1,8 +1,10 @@
 # Sky ローンチ運用・受入
 
-最終判定日: 2026-10-02。設計の正本は [Sky サービス設計](sky-launch-design.md)。下記は実装在庫と公開環境で観測した条件であり、一般利用・売上・銀行着金の証明ではない。
+現在の観測追補: 2026-10-13。旧2026-10-02以下の受入数値・版は履歴として保持する。設計の正本は [Sky サービス設計](sky-launch-design.md)。下記は実装在庫と公開環境で観測した条件であり、一般利用・売上・銀行着金の証明ではない。
 
 ## 最新の公開状態と判定
+
+2026-10-13開始時に対象RockstarOSの公開v53、source `aade8171e4eeffad410242dfe79f59afd2dd6c52`、public audienceを再取得した。新しい複数Tool仕事・レシピ・成果編集は分離sourceで検証中であり、この観測時点の公開版への反映はまだ行っていない。最新候補と公開の区別は[data/project-status.json](../data/project-status.json)の`featureDevelopment`と[今回の証拠](evidence/work-composition-development.json)を参照する。本番本人の一周、静的asset header、一般Cloud Agent課金、正式OS配布は未受入。公開済みWeb Previewを未公開とも、一般ローンチ合格とも扱わない。
 
 2026-10-02: 既存Sky v28（source cb55411549649bd57429fa1afeb974139fc024da）公開成功。CSV専用Stripeはliveで、既存JPY50円受付はcompleted/stripe_verified/attempt1/revision3を公開D1で再確認した。新しい決済はしていない。一般MarketplaceのStripe/Connect受入とは別。クラウドProvider keyと信頼料金は未設定、pricing gateはfalse、production Cloud executionは0件。Pixelは接続済みだがロック中。保存回答管理と会話引継ぎの合成受入を本番owner/実AIの証明にしない。
 
@@ -12,7 +14,7 @@
 
 ## 現在の機能と不足
 
-CatalogにはSkyのToolが12件、導入候補が22件ある。`ready` は掲載分類であり、本番の稼働保証ではない。公開Registryの審査済み外部件数は、取得完了前の表示を0件として集計しない。
+Catalogの現行件数・掲載分類は `lib/catalog.ts` と `data/design-document-index.json` で再取得する。旧34件の受入一覧は当時の個別証拠として保持する。`ready` は掲載分類であり、本番の稼働保証ではない。公開Registryの審査済み外部件数は、取得完了前の表示を0件として集計しない。
 
 | 機能群 | 実装済みの範囲 | ローンチ前の確認 |
 | --- | --- | --- |
@@ -80,7 +82,7 @@ AIやStripeの本番契約情報が未回答のため、架空の値や別サー
 
 ## 決済受入
 
-[既存の決済設計](sky-billing.md)に従う。設定とConnect本人確認、JPY買い切り商品、10%手数料、販売/返金条件を確定する。匿名Stripe通知がraw bodyと署名を保ったまま到達するかを最初に確認する。本人用APIの認証を外して通知を通さない。
+[既存の決済設計](sky-billing.md)に従う。設定とConnect本人確認、対象商品、料金・手数料、販売/返金条件は最新の製品基準と料金保留を確認してから確定する。過去の割合やCSV専用少額試験を、全Agentの一般課金条件へ転用しない。匿名Stripe通知がraw bodyと署名を保ったまま到達するかを最初に確認する。本人用APIの認証を外して通知を通さない。
 
 sandboxで成功、取消、失敗、通知再送/順序逆転、受取先停止、返金/紛争、本人違いを試す。提供者が未購入/別本人/返金済み/失効した利用権を拒否して初めて有料Toolの受入となる。銀行着金と注文のpaidを別に照合する。
 
@@ -89,8 +91,8 @@ sandboxで成功、取消、失敗、通知再送/順序逆転、受取先停止
 - 一般公開前に、私有問い合わせ窓口と責任者、応答時刻、サービス停止/再開の手段を確定する。公開Issueには原文・秘密を送らせない。
 - provider障害は外部AI/Toolだけ停止し、ブラウザ内の有限処理まで不要に停止させない。結果不明の外部操作は照合してから再開する。
 - 購入/返金が不明なら再課金を止め、Stripe再照合と注文receiptを確認する。DB上の状態を直接paidに書き換えない。
-- D1と私有R2を対でバックアップ・復元し、owner、hash、期限、削除済み状態の整合をstagingで確認する。
-- CSVの7日は取得期限。再試行可能な削除処理と定期handlerを実装したが、本番Triggerは未設定・未受入。processing中の仕事は保護し、停止した処理のlease復旧と物理削除の保証時刻は別途受入する。
+- D1と私有R2を対でバックアップ・復元し、owner、hash、期限、削除済み状態の整合をstagingで確認する。停止した同一状態の対復元と、snapshot後の削除を再適用する受入は別にする。2026-10-13の新しい隔離Workerでは対復元のhash・owner・期限拒否を確認したが、snapshot後の削除は古いsnapshotの再生で復活した。journal replay／本番復元は未受入であり、古い対snapshotだけを使う本番復元を合格扱いにしない。
+- CSVの7日は取得期限。再試行可能な削除処理と定期handlerを実装したが、本番Triggerは未設定・未受入。canonicalのprocessing保護とSite inline purgeを区別する。現Siteでは期限を過ぎたfuture processing leaseの削除が状態fixtureで再現し、自然な実writer破壊は未再現。claim／purgeの競合と保持境界を別途検証する。停止した処理のlease復旧と物理削除の保証時刻は別途受入する。
 - GitHub正本は既存drizzleの追記migrationで更新する。CSV支払い台帳0037を保持し、Skyライブラリは0059を追加する。専用Sitesの静的schema bootstrap/versionとcanonical migrationの番号を混同しない。旧codeへの切替だけではDB/R2を復元したことにならない。
 
 ## 完了判定

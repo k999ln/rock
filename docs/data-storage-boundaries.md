@@ -10,6 +10,12 @@ RockstarOSには複数のSQLite/D1があり、同じような名前のtableで�
 | Android Work Engine | `android/core/src/main/resources/schema.sql`                           | work、artifact、run、event                      | SQLite外部キー                                                                 |
 | Android Platform    | `android/core/src/main/java/dev/rock/core/platform/PlatformStore.java` | component、owner approval、OS側ledger、event    | 現在はtransactionとアプリ検証が中心。列間は論理関係                            |
 
+## Webの端末設定とサーバー復旧を分ける
+
+端末設定の暗号化backup v1は、Home設定とaddon設定の既存2キーだけを扱う。Wallet資金、認証秘密、D1の仕事・成果、私有R2は含めない。端末設定の書込容量不足を、サーバーbackupの欠如と混同しない。設定復元は全入力を検査して原値・欠如を保持し、途中失敗時に原値への復旧を試みる。復旧書込も失敗した場合は同じタブのmemoryに原値を保持して明示再試行し、成功を表示しない。これは複数キーの完全atomic処理、別タブCAS、強制reload後の未保存memory復元ではない。明示した設定resetが成功したら保留した復旧memoryも破棄する。
+
+D1/R2の対snapshot復元ではowner・hash・期限を同時照合する。2026-10-13隔離試験のsnapshot後削除は古いsnapshotで復活したため、削除journalの再適用と本番復元は未受入として残す。端末設定backupの成功を、このサーバー受入へ転用しない。[今回の検証記録](evidence/work-composition-development.json)を参照する。
+
 ## 重複に見えるが削除しないもの
 
 - `0002_operations_backend.sql` と `0002_work_jobs.sql` は、過去に別々の配信先へ公開された履歴である。filenameとbytesを変更しない。

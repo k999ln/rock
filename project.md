@@ -1,5 +1,15 @@
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
+### 2026-10-13 — 設定復元と最終候補の検収
+
+端末設定の復元途中失敗で原値が消える不具合と、復元取消／初期化後に遅い復号結果が設定を復活させる競合を修正した。対象22件と隣接32件、独立した元再現試験が成功。既存backup v1／2キーと暗号化を維持し、多キーatomic・別tab CAS・reloadをまたぐ原snapshot保持は未証明。Skyの接続済み3Toolから空の新しいcompositionへ進む導線は対象71件と独立レビューで検収。全体verifyはこの追補前のsourceで成功し、最終SHAで再実行する。追加local browser操作は権限拒否で停止し、download完了とレシピ所要時間は合格にしない。D1/R2対復元の34観測は合格件数とせず、snapshot後削除の復活とfuture lease expiry fixtureは未修正として運用正本に残した。最新mainは8c5891fのまま、対象Siteは公開v53/source aade8171のままを再確認し、main統合と候補の公開を分ける。
+
+
+### 2026-10-13 — 新しい仕事体験のローカル検収
+
+F1/F2に原成果を保持する編集・独立検査job（F3）を追加。実ブラウザで引用処理→検査→保存→レシピ→新素材と、編集→新条件検査→本人完了を確認した。実Worker SIGKILL後に同じ保存先から2件の仕事と成果を完全一致で復元。401とowner A/B/A、作成commit後の応答喪失を隔離環境で確認し、元仕事の不変と同ID再試行を検収。独立D1検収7試験、UI/view/owner18試験成功。1280px/390pxで横はみ出しなし。IAB download eventはtimeoutのため未受入。全体verifyはnested Astro依存不足から停止した履歴を残し、依存補完後の同試験成功と、最新sourceの全体検証待ちを区別する。公開v53、main、作業candidate、商用/native gateを分け、静的headerと固定履歴SPIDERの未解決を台帳へ同期する。
+
+
 
 公開版の追加検証: `docs/evidence/site-quality-integration.json` に実D1追加移行、既存CSV leaseの競合・応答喪失、owner認証復旧、Sky→Zema→CSV納品・再読込、1280px/390pxの独立検収を集約。配備前の検証記録と、後述のv52公開receiptを区別して保存する。公開はmain統合・外部Provider・実資金・実機の受入を意味しない。
 
@@ -17,6 +27,12 @@ v52/source `08e1ae494a3ae332dbd5d1c2cf1098332cb2744b` は2026-10-12 17:16:32.563
 > **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
 
 # RockstarOS — 事業・設計・進捗
+
+## 2026-10-13 — 複数Toolの仕事・レシピを公開製品へ接続（G04 / WEB04、ROCK、着手）
+
+00:00:45 UTC開始、5時間の候補開発。最新main `8c5891fc`、公開v53/source `aade8171`、元checkoutの未保存195件を確認し、正規Sites sourceを分離checkoutへ取得した。既存の未保存composition解析・実処理・route・workflowを保全して再利用し、owner/CAS/idempotency、途中成果、完成条件検査、レシピ保存／再利用をUIへ接続する。最新mainのNFC／Columbia変更も3wayで照合し、公開Siteの入力復旧・CSV lease／納品revision・既存migrationと過去作業記録を保持する。
+
+初期検査で未保存composition routeのowner意図照合不足、失敗検査の再開と読取payload検証の不足を確認し、統合時に修正する。build generatorのsymlink上書きは隔離canaryで事前再現済みで、descriptor読取／exclusive一時file／atomic置換へ修正し独立検収中。実装、対象回帰、全体verify、同一SHA CI、PR、公開反映の結果は後続証拠へ分離する。main merge・実課金・実機flashは今回の実行範囲に含めない。
 
 ## 2026-10-12 — 品質改善の残件を再開（G04 / WEB04 / AI04 / CSV00 / GRID01、ROCK）
 

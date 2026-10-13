@@ -191,6 +191,14 @@ ROCKの`os/platform/runner_control.py`は、送信claim前の取消をローカ�
 
 ROCKはPC receiverの結果を同時callbackから保護する。入力は既存job ID・状態・結果、保存は既存SQLite。読み取ったstatus/result/updated_atに対するCASで最初の確定結果を保持し、完全一致の再送は元の行を返す。不一致は競合として利用者に再読込を求める。権限・保存形式・承認・実行回数を変更しない。受入は実SQLiteの競合3回帰と既存HTTP試験、Linux全体の同一SHA CIを分ける。詳細は[既存native検証](native-os-validation.md)と[Core outboxの再照合](ai-native-os-architecture.md)を参照。
 
+### Web端末設定の復元失敗（2026-10-13）
+
+既存AES-GCM端末設定backup v1のHome／addon 2キーを維持する。入力検査後に原値と欠如を保持して復元し、容量・読取・途中削除／書込失敗を成功にしない。元値へrollbackし、復旧書込も失敗した場合は同じタブに原snapshotを保持して再試行する。明示reset成功後に古い復旧memoryを戻さない。保存形式、対象キー、Walletやサーバー履歴の除外を維持する。多キーatomic、別タブCAS、強制reload後のmemory保持、サーバー対backupの受入とは別である。[詳細と保存境界](data-storage-boundaries.md#webの端末設定とサーバー復旧を分ける)と[候補検証](evidence/work-composition-development.json)を正とする。
+
+### Webの複数Tool仕事とレシピ（2026-10-13）
+
+Web版は既存workflowのWorkJob／owner別JSON／revision/CASへcomposition計画・途中成果・検査・操作ID・sanitized recipeを追加する。接続済みのeffect-free処理だけを予算0で実行し、外部Agent、Broker承認、Provider receipt、native能力への昇格は行わない。目的・入力・条件・状態・保存・失敗復旧・承認・互換・合格条件・未決事項は[仕事の組み立てとレシピ](sky-tools-complete-design.md#仕事の組み立てとレシピ2026-10-13web04--g04)を参照。Webの受入をAndroid/nativeの同一契約受入へ転用しない。
+
 ## 8. 一回の実行
 
 1. owner、Tool selection、request hash、revisionを保存する。
