@@ -8,6 +8,7 @@ Rules:
 
 - Never rename, reorder, delete, or edit a published SQL file here.
 - Add only a forward migration with a new ordinal for a Sky Web schema change.
+- `0018_sky_feed_personalization.sql` adds the opt-in Sky Phoenix history and settings tables without changing existing rows.
 - Keep `vite.config.ts` pointed at this directory.
 - Keep `wrangler.local.jsonc` pointed at this directory.
 - Keep `services/sky-agent-runtime/wrangler.jsonc` without a `migrations_dir` while it shares the production Web database.

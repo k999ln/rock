@@ -78,6 +78,7 @@ await test('Sky Web preserves its deployed migration lineage separately from Age
     '0015_csv_billing_account_events.sql': '9c53b391c35b9f9f226f6a4a0cc53d0f2a8c36664bfbaa3de62b3c07c1f2ba0c',
     '0016_sky_code_timeline.sql': '5151b91f2bb2d6a0c9329b4e066ccdc1632a0d48309d693e63fd1cbaa96f6c95',
     '0017_primary_quality_compatibility.sql': '12f842955ed47647302725f57d05a91e7ad29840ebf428d38f80c1ac78033360',
+    '0018_sky_feed_personalization.sql': 'ed7c6c5203f196a387647a3dfc1cd40f7b8a63209c7eece598b43bbf4a1e071d',
   };
   const actual = readdirSync(webMigrations)
     .filter((name) => name.endsWith('.sql'))

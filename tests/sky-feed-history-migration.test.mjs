@@ -3,6 +3,13 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync } from 'node:fs';
 
+void test('published Sky Web Phoenix migration exactly matches the canonical schema migration', () => {
+  assert.equal(
+    readFileSync(new URL('../services/sky-web/migrations/0018_sky_feed_personalization.sql', import.meta.url), 'utf8'),
+    readFileSync(new URL('../drizzle/0063_talented_ulik.sql', import.meta.url), 'utf8'),
+  );
+});
+
 void test('Sky Phoenix migration adds owner-scoped consent and event history without changing prior data', (t) => {
   const db = new DatabaseSync(':memory:');
   t.after(() => db.close());

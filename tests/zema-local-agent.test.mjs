@@ -38,7 +38,7 @@ void test('citation and application checks reuse the existing pure tools', () =>
     language: 'ja',
   });
   assert.match(citations.content, /## 出典/);
-  assert.match(citations.content, /https:\/\/example.com\/source/);
+  assert.ok(citations.content.includes('https://example.com/source'));
 
   const check = executeZemaLocalAgentTool('coconala_check', {
     brief: 'Zoom面談への参加が必須です。',
