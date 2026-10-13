@@ -77,6 +77,7 @@ export async function POST(request: Request) {
       return missingRockstarServiceScope('Zema');
     }
     const candidate = createWorkJob(await body(request));
+    if (candidate.templateId === 'sky-citation-agent') throw new WorkError('Skyの出典整理Agent画面から実行してください。');
     if (candidate.templateId === 'amc') throw new WorkError('AMC画面から計画を保存してください。');
     if (candidate.templateId === 'material-invention') throw new WorkError('物質候補の専用画面から入力を保存してください。');
     if (candidate.templateId === 'composition') throw new WorkError('仕事を組み立てる画面から計画を保存してください。');
@@ -105,6 +106,7 @@ export async function PATCH(request: Request) {
     const store = workStore(database()),
       current = await store.get(user, workId(input.jobId));
     if (!current) throw new WorkError('仕事が見つかりません。', 404);
+    if (current.templateId === 'sky-citation-agent') throw new WorkError('このAgentの完了記録は専用APIで管理します。', 409);
     if (current.templateId === 'amc' || current.amcGoal)
       throw new WorkError('AMC画面から記録を更新してください。');
     const command = parseWorkCommand(input.command);

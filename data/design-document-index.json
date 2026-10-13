@@ -498,6 +498,11 @@
         "docs/amc-autonomy-fixture.md"
       ],
       "interfaceImplementation": [
+        "lib/sky-citation-agent.ts",
+        "app/api/sky/agents/citations/route.ts",
+        "app/sky/agents/citations/page.tsx",
+        "components/sky-citation-agent.tsx",
+        "tests/sky-citation-agent.test.mjs",
         "lib/sky-compute-grid.ts",
         "tests/sky-compute-grid.test.mjs",
         "lib/sky-zema-handoff.ts",

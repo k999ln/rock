@@ -10,6 +10,8 @@ Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and f
 
 [Open RockstarOS Home](https://avoado.si/os) · [Open Sky](https://avoado.si/os/sky) · [Run it locally](#start-developing)
 
+Skyの第一者[出典整理Agent](app/sky/agents/citations/page.tsx)は、サインインした本人がブラウザだけで引用を整理し、その結果を[成果一覧](app/sky/outputs/page.tsx)へ保存する。Sky HomeとMarketplaceから開き、言語とMarkdownを入力して「実行して成果を保存」を選ぶ。無料の有限処理であり、LLM推論・外部検索・リンク先の真偽判定は行わない。Cloud Agentの本番実行と一般Marketplace決済は別受入。[詳細設計](docs/sky-tools-complete-design.md#sky単体の第一者agent縦断経路2026-10-13)。
+
 The new `/os/sky/outputs` page shows a signed-in person's saved Agent results. `/fitness` demonstrates a first-party app displaying a typed `sky.fitness.plan/1` result from Sky; `/fitness?preview=1` is an explicitly labeled display sample. RockstarOS Home is at `avoado.si/os`, and Sky stays under `avoado.si/os/sky`. The product homepage at `/` links to `avocadomini.si` and `avocadopro.si`. A real Fitness Agent, cross-origin app SDK, and production Provider output are not yet accepted. See [Sky App Output Plugins](docs/sky-launch-design.md#sky-app-output-plugins).
 
 [The promise](#the-promise) · [System map](#system-map) · [From a request to a result](#from-a-request-to-a-result) · [Service atlas](#service-atlas) · [Tool catalog](#sky-tool-catalog) · [Status](#where-it-stands) · [Develop](#start-developing)

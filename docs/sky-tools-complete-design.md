@@ -1187,3 +1187,13 @@ Skyの接続管理とZemaのルーティング設定は、入力と基準版を�
 ## Sky成果のアプリ内表示（2026-10-13）
 
 Skyの本人別保存済み成果を `/sky/outputs` で確認し、第一者同一originアプリへ型付き出力として渡す。Fitness例は `sky.fitness.plan/1` のみ表示する。新しいcatalog Toolの登録ではなく、既存成果の表示先を追加する変更である。目的、入力・出力、状態、保存・復旧、失敗、承認、合格条件と外部アプリの未決定条件は[Sky App Output Plugins](sky-launch-design.md#sky-app-output-plugins)を正本とする。外部アプリの実行権・callback・Provider接続はこの実装に含まれない。
+
+## Sky単体の第一者Agent縦断経路（2026-10-13）
+
+目的と利用体験: OS、PC、NFCなしでスマホのSkyから少なくとも一つのAgentを実行し、本人の成果を再訪時に読めるようにする。最初の出典整理Agentは文章中の明示的なMarkdown出典を重複整理する有限の第一者処理で、LLM推論、外部検索、リンク先や主張の真偽判定を行わない。Sky HomeとMarketplaceから `/sky/agents/citations` を開き、言語と文章を入力し「実行して成果を保存」を押す。結果はその場で表示し、`/sky/outputs?job=<id>`、コピー、Markdown持出しへ進める。大学NFCは任意の入口であり、権限ではない。
+
+責任・入出力: ROCKが入力上限、本人認証、同一origin、Agent利用権、処理、WorkJob状態遷移、本人別D1保存を担当する。入力は最大20,000文字のMarkdown、`ja|en`、UUIDの冪等ID、明示的`saveResult=true`。出力は`sky.citations.result/1`、整理済み本文、出典リンク数、未検証の警告、入力SHA-256、実行方式`first-party-rules`。モデル・Provider・課金・作者認証の権限へ昇格しない。未購入の有料Agentや外部Providerへこの無償実行を転用しない。
+
+状態・保存・失敗・復旧: 既存`lib/workflow.ts`の`sky-citation-agent`計画を`active → review → completed`で通した後、成果付きWorkJobを本人別に1回保存する。同じUUIDと入力SHA-256の再送は同じ成果を返し、異なる入力は409。再読込時は本人の`work_jobs`一覧から成果を読む。入力原文は別保存せず、整理後の成果のみ保存するが、本文自体に元の文章が含まれる。401、本人切替409、利用権403、上限413、保存先失敗503を区別し、成功を推測しない。サインインや接続失敗では画面の入力を保持する。削除・保存期間は既存WorkJobの契約に従い、この導線専用の自動削除は設けない。
+
+承認・合格条件・未決定: 保存操作を明示し、外部送信とモデル料金は発生しない。本人A/Bの隔離、同一UUID再送、再訪後の成果読取、モバイル操作、公開Siteの同一SHAを受入条件とする。host単体試験・型・buildだけを公開実利用合格にしない。一般Cloud LLM AgentにはProvider資格情報、署名済み料金表、予算、使用量Receiptと停止/復旧が必要であり、この第一者Agentの成功で代替しない。外部アプリSDKと大学生6 MCP枠も別受入とする。

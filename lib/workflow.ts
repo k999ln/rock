@@ -36,6 +36,12 @@ export const workflowTemplates = [
     steps: [{ id: 'inspect', title: '入力の静的検査を実行する', tool: 'rockstar-spider', runner: 'spider-inspect' }],
   },
   {
+    id: 'sky-citation-agent',
+    name: 'Sky 出典整理Agent',
+    description: 'ブラウザだけで依頼を受け、出典を整理した成果を本人の仕事として保存します。モデル推論や外部検索は行いません。',
+    steps: [{ id: 'organize-sources', title: '出典を整理して成果を保存', tool: 'mr-citations', runner: 'sky-first-party' }],
+  },
+  {
     id: 'article',
     name: '記事の販売準備',
     description: '出典を整理し、無料版を作って内容を確認します。',
@@ -147,6 +153,16 @@ export type WorkJob = {
   amcCreationDigest?: string;
   materialStudy?: MaterialStudy;
   coordination?: JenniferTaskJobCoordination;
+  standaloneAgent?: {
+    schema: 'sky.citations.result/1';
+    agentId: 'sky-citation-agent';
+    inputSha256: string;
+    language: 'ja' | 'en';
+    text: string;
+    sourceCount: number;
+    warnings: string[];
+    execution: 'first-party-rules';
+  };
 };
 export class WorkError extends Error {
   status: number;
