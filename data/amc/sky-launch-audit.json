@@ -336,7 +336,7 @@
         "lib/sky-commerce.ts",
         "lib/sky-stripe.ts",
         "lib/sky-commerce-store.ts",
-        "drizzle/0018_sky_commerce.sql"
+        "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql"
       ],
       "relatedTaskIds": [
         "BIL02"
@@ -493,7 +493,7 @@
       "sha256": "c4ff4e88be562c3f8fd97227754adbb3c10c75fbc75c5243f073de23f319f0c6"
     },
     {
-      "path": "drizzle/0018_sky_commerce.sql",
+      "path": "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
       "sha256": "b595e993c4982e575847195eaa5d8fe39053c487a0391ad372d08b8b13bdae26"
     },
     {

@@ -170,7 +170,7 @@ with tempfile.TemporaryDirectory(prefix="sky-commerce-v2-") as temp:
     db.execute("PRAGMA foreign_keys=ON")
     migrations = sorted(path for path in (REPO / "drizzle").glob("*.sql") if not path.name.startswith("._"))
     migration_contents = {path: path.read_bytes() for path in migrations}
-    migration_journal = REPO / "drizzle/meta/_journal.json"
+    migration_journal = REPO / "drizzle-legacy/post-site-bridge/meta/_journal.json"
     journal_contents = migration_journal.read_bytes()
     journal_names = sorted(f"{entry['tag']}.sql" for entry in json.loads(journal_contents)["entries"])
     check("complete_sorted_migration_inventory_matches_journal", lambda: eq(

@@ -131,7 +131,7 @@ Skyはapp storeだけではなく、発見から接続、実行場所、停止�
 - 状態・保存: D1 `sky_commerce_sellers/offers/orders/events`に環境別の受取先ID、価格版、固定注文条件、Provider ID、返金済み額、状態遷移を保存する。カード・銀行情報は保存しない。`pending→paid`で購入権を得るが、審査期限切れ・失効・manifest変更・部分/全額返金・異議申立てでは利用権を返さない。同一購入者/商品/環境の有効注文は一件にする。
 - 失敗・復旧: 通知の署名だけでなくStripeから現在のCheckout/PaymentIntent/Chargeを再取得し、金額・通貨・mode・metadata・10%・送金先を照合する。遅れたpaid通知で返金状態を巻き戻さない。支払い画面の中止は注文失敗と決めず履歴から再確認できる。API応答を失った処理は同一idempotency keyを再利用し、安全な20時間を過ぎた不明処理は新規決済を作らず運営照合へ止める。
 - 承認: 価格変更時は購入を止め、新価格を表示して再操作を求める。支払いの確定はStripe画面。返金は販売者本人が注文・残額を確認するdialogで明示する。LLM・閲覧・戻りURLだけで金銭処理や購入完了を成立させない。外部MCPの接続許可と購入は別である。
-- 実装: `components/sky-commerce.tsx`と同CSS、`components/sky-marketplace.tsx`、`app/api/sky/commerce/[action]/route.ts`、`lib/sky-commerce.ts`、`lib/sky-commerce-store.ts`、`lib/sky-stripe.ts`。共有手数料は`lib/sky-marketplace-policy.ts`。migrationは`drizzle/0018_sky_commerce.sql`。
+- 実装: `components/sky-commerce.tsx`と同CSS、`components/sky-marketplace.tsx`、`app/api/sky/commerce/[action]/route.ts`、`lib/sky-commerce.ts`、`lib/sky-commerce-store.ts`、`lib/sky-stripe.ts`。共有手数料は`lib/sky-marketplace-policy.ts`。migrationは`drizzle-legacy/post-site-bridge/0018_sky_commerce.sql`。
 - 合格条件・未完了の決め方: SQLite/API・Provider代替fixtureで改ざん/重複/失効/部分返金/所有者分離を検証する。実Stripe sandboxで購入→通知→権利→返金、公開Webhook到達、認証gateway、提供者認可、実売上配分と銀行払出しは別の受入。現在はStripe資格情報未設定、Provider sandbox・本番配備は未実施で、BIL02を完了扱いにしない。設定手順と運営確認は[決済設計](sky-billing.md)を正本にする。
 
 ### 保存領域が消去できない場合（031修正）
@@ -989,7 +989,7 @@ Skyの発見・利用条件表示から実行画面への境界を`lib/sky-tool-
 
 `GET/PUT /api/sky/library`は既存の本人確認・同一origin・JSON上限・Tool allowlistを使う。`sky_library_items`はuser_id＋toolの一意indexとsaved_atだけを持ち、本文・結果・鍵・購入権限・実行同意を保存しない。重複保存は同じ行へ収束し、削除は同じ本人の行だけを対象にする。Sky登録の既存行はライブラリで別の登録記録として参照し、保存を本体接続と表示しない。
 
-正本は `drizzle/0059_sky_library.sql` でライブラリtable/indexを追加する。既存0058までのmigrationと支払い台帳・job/R2成果を保持し、snapshotも現在の全schemaへ同期する。専用Sitesのschema v4は別の配備履歴であり、正本へ静的bootstrapを追加しない。
+正本は `drizzle-legacy/post-site-bridge/0059_sky_library.sql` でライブラリtable/indexを追加する。既存0058までのmigrationと支払い台帳・job/R2成果を保持し、snapshotも現在の全schemaへ同期する。専用Sitesのschema v4は別の配備履歴であり、正本へ静的bootstrapを追加しない。
 
 ライブラリは現在の本人の購入記録を既存のread-only hookで参照する。既存の決済開始・Stripe設定・購入権限処理は変更せず、共有signin表示だけを追加する。ライブラリからの再サインインは別タブとし、元の入力画面を保持する。OS利用ルールは保存済みの配置binding専用resolverを使用し、ブラウザ判定や申告で共有・購入権限を付与しない。Web既定は本人別、保存人数未設定は無制限を意味しない。
 

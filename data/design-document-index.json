@@ -520,7 +520,7 @@
         "systems/rock-star-os/os/mcp_broker/a2a_authorization.py",
         "systems/rock-star-os/src/blackberryrock/spend.py",
         "services/sky-agent-runtime/src/worker.ts",
-        "drizzle/0033_a2a_offline_continuation_consent.sql",
+        "drizzle-legacy/post-site-bridge/0033_a2a_offline_continuation_consent.sql",
         "tests/a2a-delegation-store.test.mjs",
         "tests/a2a-broker-authorization.test.mjs",
         "services/sky-agent-runtime/test/a2a-workflow.positive.test.mjs",

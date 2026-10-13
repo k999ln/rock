@@ -3,7 +3,7 @@
   "date": "2026-10-02",
   "scope": "Persist owner/parent-scoped, user-mediated A2A child lineage from a captured completed result to one separately approved successor.",
   "implementation": {
-    "migration": "drizzle/0057_a2a_parent_sequence.sql adds predecessor_delegation_id and a unique partial index; a D1 trigger requires a same-owner, same-parent, remote_completed predecessor with captured artifacts.",
+    "migration": "drizzle-legacy/post-site-bridge/0057_a2a_parent_sequence.sql adds predecessor_delegation_id and a unique partial index; a D1 trigger requires a same-owner, same-parent, remote_completed predecessor with captured artifacts.",
     "ui": "Zema follow-up draft retains the selected predecessor ID and renders the persisted source link after reload.",
     "api": "Successor creation rejects missing, foreign, incomplete, or uncaptured predecessors; one result cannot be branched into multiple successors.",
     "recovery": "The idempotent submission fingerprint and lost-response comparison bind the predecessor ID.",

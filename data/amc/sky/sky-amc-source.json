@@ -314,7 +314,7 @@
           "lib/db.ts",
           "lib/schema.ts",
           "lib/workflow.ts",
-          "drizzle/0018_sky_commerce.sql",
+          "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
           "drizzle/0019_sky_library.sql"
         ],
         "rules": [
@@ -3029,7 +3029,7 @@
             "exists": true
           },
           {
-            "path": "drizzle/0018_sky_commerce.sql",
+            "path": "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
             "exists": true
           },
           {
@@ -3083,7 +3083,7 @@
             "locator": "現行版の実装と契約"
           },
           {
-            "path": "drizzle/0018_sky_commerce.sql",
+            "path": "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
             "locator": "現行版の実装と契約"
           },
           {
@@ -3136,7 +3136,7 @@
             "exists": true
           },
           {
-            "path": "drizzle/0018_sky_commerce.sql",
+            "path": "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
             "exists": true
           },
           {
@@ -3190,7 +3190,7 @@
             "locator": "現行版の実装と契約"
           },
           {
-            "path": "drizzle/0018_sky_commerce.sql",
+            "path": "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
             "locator": "現行版の実装と契約"
           },
           {
@@ -3243,7 +3243,7 @@
             "exists": true
           },
           {
-            "path": "drizzle/0018_sky_commerce.sql",
+            "path": "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
             "exists": true
           },
           {
@@ -3297,7 +3297,7 @@
             "locator": "現行版の実装と契約"
           },
           {
-            "path": "drizzle/0018_sky_commerce.sql",
+            "path": "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
             "locator": "現行版の実装と契約"
           },
           {
@@ -4815,7 +4815,7 @@
         "docs/sky-billing.md": "0584659bc2d8d25cd50b904176aec6d0e562bd111c7462e1f5ac145d1b2aef2a",
         "docs/sky-tool-sdk.md": "d3f360e7ad5a649989413a46c9d4b5eac726bfdb147348911608902788757720",
         "docs/workstreams/00-responsibility-boundaries.md": "638e422894c6e3ebc3df967dfb7886788bc61eb2ce25f912a8c38cf23c971a67",
-        "drizzle/0018_sky_commerce.sql": "b595e993c4982e575847195eaa5d8fe39053c487a0391ad372d08b8b13bdae26",
+        "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql": "b595e993c4982e575847195eaa5d8fe39053c487a0391ad372d08b8b13bdae26",
         "drizzle/0019_sky_library.sql": "b3a23e2c7944acd42949e38cd26c240016fef73ab624aa1e7de1c5afccc582b4",
         "lib/amc-tool.ts": "5a2c7a8292f080d667ad07721b2404f6a8ad8490abe33d4c23700122860c6cb9",
         "lib/catalog.ts": "09ca5dcc95a73285bde087ea22adbfa14eadb77fa8b8fcc1529f38f12d516604",

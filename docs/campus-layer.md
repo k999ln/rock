@@ -246,7 +246,7 @@ Mutationは既存 `requestUser` を通し、same-originでないrequestを拒否
 
 ## D1 schema
 
-migration: `drizzle/0058_campus_layer.sql`
+migration: `drizzle-legacy/post-site-bridge/0058_campus_layer.sql`
 
 tables:
 
