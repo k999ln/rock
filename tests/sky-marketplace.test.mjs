@@ -113,8 +113,8 @@ void test('catalog icons reveal capabilities without starting or connecting a to
 });
 
 void test('Sky home icon opens a single overview with the next action', () => {
-  assert.match(sky, /aria-haspopup="dialog" onClick=\{\(\) => setInspected\(tool\)\}/);
-  assert.match(sky, /<Dialog open=\{inspected !== null\}/);
+  assert.match(sky, /aria-haspopup="dialog"[\s\S]*?recordPhoenix\(tool\.id, 'detail'\);[\s\S]*?setInspected\(tool\);/);
+  assert.match(sky, /<Dialog[\s\S]*?open=\{inspected !== null\}/);
   assert.match(sky, /state=\{skyToolUiState\(inspected,/);
   assert.match(sky, /手順・提供元を詳しく見る/);
   assert.doesNotMatch(sky, /<ToolCharacterDetails/);

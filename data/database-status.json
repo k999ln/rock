@@ -4,7 +4,7 @@
   "scope": "repository source, local schema convergence, and recorded deployment evidence",
   "summary": {
     "boundaryCount": 6,
-    "tableCount": 152,
+    "tableCount": 154,
     "sourceVerifiedCount": 6,
     "currentProductionReadbackCount": 0
   },
@@ -18,7 +18,7 @@
     "nextAction": "設計/si表示を実装branchへ保全同期し、realm/owner/仕事ID相関→親取消と状態投影→月/Goal予算・価格・後払いadapter→真正reviewer/成果/Receipt→grant・削除/復旧→authority移管の順で既存fixtureを受入。Jennifer統合sourceのcontext/真正reviewを受け入れ、同一artifactで文章成果を持ち帰る一周を検証。ProはNVIDIA高性能si PC、Mini LTE/R5、OS/Providerは独立gate。"
   },
   "webSchema": {
-    "tableCount": 80,
+    "tableCount": 82,
     "tables": [
       "a2a_live_usage_snapshots",
       "a2a_price_quote_consent_events",
@@ -88,6 +88,8 @@
       "sky_commerce_sellers",
       "sky_connections",
       "sky_developer_tokens",
+      "sky_feed_history_events",
+      "sky_feed_personalization_settings",
       "sky_library_items",
       "sky_package_runtime_bindings",
       "sky_provider_connections",
@@ -101,8 +103,8 @@
       "tool_runs",
       "work_jobs"
     ],
-    "migrationCount": 63,
-    "latestMigration": "0062_sky_provider_revision.sql",
+    "migrationCount": 64,
+    "latestMigration": "0063_talented_ulik.sql",
     "accidentalDuplicateCount": 0,
     "publishedConvergenceDeclarations": 6,
     "marketplaceRelationGuardCount": 8,
@@ -158,6 +160,8 @@
           "sky_commerce_sellers",
           "sky_connections",
           "sky_developer_tokens",
+          "sky_feed_history_events",
+          "sky_feed_personalization_settings",
           "sky_library_items",
           "sky_package_runtime_bindings",
           "sky_provider_connections",
@@ -168,7 +172,7 @@
           "sky_tool_packages",
           "sky_tool_submissions"
         ],
-        "tableCount": 35
+        "tableCount": 37
       },
       {
         "id": "marketplace",
@@ -305,6 +309,8 @@
         "sky_commerce_sellers",
         "sky_connections",
         "sky_developer_tokens",
+        "sky_feed_history_events",
+        "sky_feed_personalization_settings",
         "sky_library_items",
         "sky_package_runtime_bindings",
         "sky_provider_connections",
@@ -318,8 +324,8 @@
         "tool_runs",
         "work_jobs"
       ],
-      "expectedAppliedThrough": "0062_sky_provider_revision.sql",
-      "tableCount": 80,
+      "expectedAppliedThrough": "0063_talented_ulik.sql",
+      "tableCount": 82,
       "sourceStatus": "VERIFIED",
       "deployment": {
         "runtime": "Cloudflare D1 / currently owner-only Sites, public access requested",

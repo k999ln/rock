@@ -703,12 +703,14 @@ Higgsfield、Runway、Roblox、GTA／FiveM、YouTube、Instagramは接続先の 
 | ID | 使う場所 | 役割 | モデル／提供元 | 通信 | 権限 | 状態 |
 | --- | --- | --- | --- | --- | --- | --- |
 | `native-local-planner` | Platform Core | ローカルplanner | Qwen3-0.6B-Q8_0-GGUF（llama.rn 0.12.9） | 禁止 | 計画のみ | 実機APKで確認済み |
+| `zema-web-local-agent` | Zema Web local preview | loopback限定planner＋有限Tool loop | Ollama `qwen3:0.6b`（差替可） | loopbackのみ | 閉じたschema、最大3手、副作用なし3 Toolだけ | local Zema通常会話を実画面確認。公開Site用bridgeは未実装 |
 | `sky-openai-legal` | Sky Tool `rockstar-legal-intake` | 任意のクラウド生成 | OpenAI | 明示同意後に任意 | 助言のみ | 実装済み・設定が必要 |
 | `sky-openai-patent` | Sky Tool `rockstar-patent-assistant` | 任意のクラウド生成 | OpenAI | 明示同意後に任意 | 助言のみ | 実装済み・設定が必要 |
 | `sky-jev-evaluator` | Sky Tool `jev-evaluation` | リモート評価器 | TypeSafe AI `jev`（Vercel AI Gateway経由） | 明示同意後に必須 | 助言のみ | 実装済み・設定が必要 |
 | `canonical-long-term-memory` | Platform Core | 記憶 | 未選定 | — | Brokerの範囲内のデータのみ | 設計のみ・未実装 |
 
 - **文章モデルの接続先**（[`lib/llm-providers.ts`](../lib/llm-providers.ts)）：`local-model`（既定）／`ollama`／`openai`／`anthropic`／`google`／`openai-compatible`。資格情報はサーバーの環境変数だけ。リモートは `SKY_REMOTE_LLM_ENABLED=true` と要求ごとの同意が必要。自動fallbackなし。
+- **Zema Web local Agent**（[`lib/zema-local-agent.ts`](../lib/zema-local-agent.ts)）：LLMは計画候補だけを返す。`/api/llm/local-agent`がloopback接続、閉じたJSON schema、最大3手、重複call拒否を確認し、`sky_route`／`format_citations`／`coconala_check`だけを実行する。Tool結果と利用者入力は命令ではなくdataとして再投入する。shell、任意file、外部network、購入、投稿、送信、権限変更はない。軽量modelがschemaまたは完了条件を満たさないときは失敗扱いにする。
 - **Decision Fabric**（設計）：deterministic code・Jev／TypeSafe・Local Qwen・Cloud LLM・Codex・RAG・Market・Wallet・MCPを一つの判断基盤にまとめる構想。Jevは小さな意味判断、Local Qwenは秘密・offline、Cloud LLMは明示同意済みの複雑な推論、Policy Engineが唯一の実行権限の判定者。共通contractと安全policyは追加済み、Router／Harness・TypeSafe／Cloud／RAGの接続は未実装。
 - **avokado専用モデル**（研究）：ゼロから事前学習する専用モデル。random-initの小型モデルをCPUで学習・保存・再開する試作（`avokado-byte-lm-v1`）まで。実用LLM・端末・クラウド配備は未完成。
 

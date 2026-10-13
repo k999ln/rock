@@ -135,3 +135,9 @@ RQ14はAPI/SDK、合成sandbox、動く最小sample、導入/復旧診断を渡�
 正常な一周に加え、owner A/B、期限切れ、revision競合、更新/失効、同じIDの再送、結果不明、予算超過、停止、再起動、artifact再取得を同じ候補で受け入れる。host、fixture、provider sandbox、仮想OS、物理端末、本番を別欄に記録する。
 
 入力schema・権限・状態・保存を変える実装は[11必須項目](../../data/design-document-index.json)と対応する全体/Tool詳細を更新し、`npm run design:check` と `npm run verify` を通す。新たな未決事項は[実現順](04-delivery-and-acceptance.md)の決定者と合格条件へ結ぶ。
+
+## 最新mainのfeed・有限local Agentとの整合
+
+Skyの`sky-usefulness-v2`/`sky-phoenix-v1`は能力の発見・説明だけに使う。おすすめ学習は初期OFF、本人同意でsemantic eventを30日/800件に制限し、入力・会話・成果本文やtoken等を保存しない。正本Tool runのcomplete/failはserver側で照合し、clientの成功自己申告にしない。停止/本人履歴削除、owner切替、保存拒否、401/同期不明時のfallbackは[Skyの現行契約](../sky.md#個人化した1列フィード2026-10-13)を保持する。閲覧・順位・保存は実行権・Job・購入・課金・Agent promptを作らない。
+
+Zema Webのlocal Agentは選択された同じPCのOllama/OpenAI互換loopback endpointだけを使う非信頼planner。閉じたschema、最大3手、`sky_route`/`format_citations`/`coconala_check`の副作用なし処理だけを通す。shell、任意file、外部network、購入/投稿/送信/権限変更、Cloud fallbackを許可しない。通常会話の既存local preview受入とTool選択品質/実成功を分け、公開Workerから本人PCのloopbackに届くとは扱わない。companion/bridgeは未実装で、native Androidの固定Qwen profileやDevice acceptanceへ転用しない。[Agent正本](../agents-and-tools.md)と[LLM境界](../llm-evaluation-architecture.md)へ従う。

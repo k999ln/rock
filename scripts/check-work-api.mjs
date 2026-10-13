@@ -380,6 +380,10 @@ async function start() {
       },
       bindings: {
         ...config.vars,
+        // This suite exercises the production authentication contract. The
+        // generated bundle can also carry the loopback-only local preview
+        // identity, so explicitly disable that convenience binding here.
+        ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: '',
         SKY_REMOTE_LLM_ENABLED: remoteLlmEnabled ? 'true' : 'false',
         SKY_OLLAMA_BASE_URL: remoteModelEndpoint,
         SKY_LOCAL_LLM_BASE_URL: remoteModelEndpoint,

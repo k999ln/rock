@@ -997,7 +997,7 @@
     "docs/account-entry-proposal.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
     "docs/sim-led-product-architecture.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
     "docs/prompts/sky-commerce-wallet-development.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
-    "docs/spec-history.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/spec-history.md": "210272144f401938b03525ee64024b7346b558e9",
     "docs/sim-service-entitlement-claims.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
     "components/avocado-turntable.tsx": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
     "components/avocado-turntable.module.css": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb"
@@ -1023,6 +1023,14 @@
         "components/avocado-turntable.module.css"
       ],
       "currentEntry": "docs/service-design/README.md"
+    },
+    {
+      "date": "2026-10-13",
+      "restoreCommit": "210272144f401938b03525ee64024b7346b558e9",
+      "paths": [
+        "docs/spec-history.md"
+      ],
+      "reason": "Preserve approved deletion during latest-main merge; new feed/local-Agent/Columbia owner decisions transferred into current baseline and canonical designs."
     }
   ]
 }

@@ -54,11 +54,11 @@ JenniferはPR #113 / head `3349c2475468443bc7ecd94a4e3782343f514a8f`で役割と
 
 ### 並行する大学NFC・Sky候補の引継ぎ
 
-2026-10-13のGitHub再読取りで、[PR #112](https://github.com/k999ln/rock/pull/112)は`codex/sky-app-outputs-20261013` / `7df8dfd6740db976c795c058620d7db679062746`、[PR #115](https://github.com/k999ln/rock/pull/115)は`codex/sky-social-feed` / `54bbc021bf1961e1cc939498f904d62e138970e3`、いずれもmain向けのopen候補である。未統合候補をmain実装済みとは扱わない。
+2026-10-13の最新mainは`210272144f401938b03525ee64024b7346b558e9`。PR #115のhead`64cfc83402c8c0b8cde054e10262982838fa85af`はこのmainへ統合済みで、Sky Phoenix/完成feed/Columbia/local Agentを未実装へ戻さない。#116/#117のlocal preview・Site互換DB移行もmainに含む。[PR #112](https://github.com/k999ln/rock/pull/112)は`codex/sky-app-outputs-20261013` / `7df8dfd6740db976c795c058620d7db679062746`のopen候補として残る。本設計branchはこの最新mainを保全mergeし、統合候補の再検証後、利用者の「mainへあげて」によりPR #114を通常mergeする。
 
 NFC担当からの別artifact報告は`avoado.si`のSky v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db`、5大学の`/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub?source=nfc`。version/sourceと実画面の受入は担当報告として保持する。2026-10-13 20:35 UTCに本設計担当がHTTP再読取りを行い、`/`・`/os/sky`・`/os/sky/outputs`・5大学Hubの8URLで200と各ページtitleを確認した。これだけでは配備source一致、画面操作、実カード、学生資格/枠、Providerの受入にならない。カードのURLは大学contextを選ぶだけで、本人性、学生所属、優待、購入、実行権限を与えない。既存OS/browserからSky→Zemaへ進める。NTAG215への実書込・iPhone/Android再読取り、6枠の運用、有料MCP/Providerの一周は独立した未受入条件である。
 
-統合順は最新main→本設計の入口/優先順→#112と#115の候補比較と保全統合→同一候補のCI/UI/実NFC受入。NFC担当のmerge比較報告では`components/sky-workspace.tsx`、`project.md`、`tests/web-route-style-contract.test.mjs`が競合対象。採用時に最新headで再比較し、大学別導線・host成果・feed・local agentの双方の必要機能を保持する。別origin、所属確認、学生枠、料金gateをURL表示だけで成立させない。
+統合順は最新mainと適用済み#115/#116/#117の保全→本設計の入口/優先順→残る#112/dirty候補の比較→同一候補のCI/UI/実NFC受入。NFC担当のmerge比較報告では`components/sky-workspace.tsx`、`project.md`、`tests/web-route-style-contract.test.mjs`が競合対象。採用時に最新headで再比較し、大学別導線・host成果・feed・local agentの双方の必要機能を保持する。別origin、所属確認、学生枠、料金gateをURL表示だけで成立させない。
 
 複数clientは既存jobを表示/照合し、単一authority deviceの移管は独立gate。PC sleep・圏外・失効で仕事を重複実行しない。OS内Zemaとhost app結果画面の違いを、業務契約の複製で解決しない。
 
@@ -89,7 +89,7 @@ Pixelは正確なSKUのBSP/firmware/vendor/partition/AVB/rollback index、再配
 - **Jenniferの統合・検収・context** — ROCKが統合sourceのworker/reviewerのserver証拠相関と既存AMCの受入を検証する。OWNERがCOLOMBIA原本/版と利用資料を指定し、JOINTがProvider/nativeの同一候補を受け入れる。役割を再質問せず、既存Git正本を使う。
 - **期間パスの対象・金額・期間** — OWNERとBillingが既存確定範囲内でSKU、対象能力、更新通知、取消/返金条件を固定する。最終確認画面とsandbox/外部確認を通してから販売へ進む。
 - **後払いと旧Wallet gate** — ROCKが支払能力・budget reservationのADRと移行案、EXTERNALが価格/meter/Stripe条件を出す。並列月上限・結果不明・請求失敗を受け入れるまで旧paid gateを開けない。
-- **大学別候補の優先順位** — OWNERの最新指示とmainのColumbiaカードを起点に、#112/#115と元dirty候補を比較して同じSkyへ統合する範囲を確定する。学生所属/枠の資格水準、追加枠価格と実NFCは未受入。
+- **大学別候補の優先順位** — OWNERの最新指示とmainのColumbiaカードを起点に、#115のmain適用を保持し、#112と元dirty候補を比較して同じSkyへ統合する範囲を確定する。学生所属/枠の資格水準、追加枠価格と実NFCは未受入。
 - **Pro最終構成・Mini表示/回線** — 各hardware担当が値入りBOM/ICD/試験を出し、OWNERが候補と調達条件を決める。旧価格/旧Hubや比較仮定を製品仕様へ昇格しない。
 
 ## 継続する時に読むもの

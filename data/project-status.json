@@ -1,4 +1,26 @@
 {
+  "skyLocalAgentPreview": {
+    "task": "AI04",
+    "primaryOwner": "ROCK",
+    "stage": "local_preview_conversation_verified",
+    "sourceMainSha": "01d2e418",
+    "provider": "ollama",
+    "model": "qwen3:0.6b",
+    "localUrl": "http://localhost:8787/chat",
+    "validation": {
+      "targetedTests": "39/39 passed, including conversation cancellation and duplicate-submit recovery",
+      "typecheck": "passed",
+      "build": "passed with existing chunk-size and duplicate CSS filename warnings",
+      "browserConversation": "passed on a new local Zema thread",
+      "fullTest": "verify reached the full Node suite with localhost enabled but did not pass; PC Citations user boundary, existing MCP lifecycle failures and native dependency floor remain"
+    },
+    "limitations": [
+      "Public Worker cannot reach the user's loopback Ollama without a companion or bridge.",
+      "The 0.6B model's autonomous Tool-selection quality is limited; rejected or unexecuted calls are not counted as success.",
+      "No shell, arbitrary file, external network, purchase, post, message or permission-changing Tool is allowed."
+    ],
+    "nextAction": "Add an authenticated local companion/bridge for the public Site, then verify bounded Tool selection and owner acceptance without weakening Broker authority."
+  },
   "repositoryCleanup": {
     "task": "G01",
     "primaryOwner": "ROCK",
@@ -5781,9 +5803,14 @@
         "components/legal-intake-runner.tsx",
         "components/patent-assistant-runner.tsx",
         "tests/local-guide-history.test.mjs",
-        "tests/operations.test.mjs"
+        "tests/operations.test.mjs",
+        "components/sky-workspace.tsx",
+        "lib/sky-feed-ranking.ts",
+        "tests/sky-feed-ranking.test.mjs",
+        "tests/web-route-style-contract.test.mjs",
+        "docs/sky.md"
       ],
-      "nextAction": "Accept the integrated Sky/Zema entry, owner-scoped library, offer/provider revision conflicts, auth-loss recovery and itemized usage on one source candidate. Historical Sites versions and earlier tests do not prove this branch is deployed or commercially accepted; provider/paid/native gates remain open.",
+      "nextAction": "Verify the new single-column Sky usefulness feed at desktop and 390px, then accept it with the integrated Sky/Zema entry, owner-scoped library, offer/provider revision conflicts, auth-loss recovery and itemized usage on one source candidate. The feed ranks only explicit saved/connected state, authoritative current availability, an ephemeral routed Tool id and curated fallback; it does not create execution authority. Historical Sites versions and local tests do not prove this branch is deployed or commercially accepted; explicit follow, provider/paid/native gates remain open.",
       "recoveredFrom": {
         "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",
@@ -5952,6 +5979,8 @@
         "docs/prompts/sky-nfc-columbia-codex.md",
         "sites/avocado-mini/worker/index.js",
         "app/sky/campus/[campusId]/page.tsx",
+        "app/sky/campus/[campusId]/columbia-feed.tsx",
+        "app/sky/campus/[campusId]/page.module.css",
         "app/api/campus/route.ts",
         "app/api/patent-research/route.ts",
         "lib/campus-tags.ts",
@@ -7957,7 +7986,7 @@
     "displayTextChanged": true,
     "productTerminology": "data/product-terminology.json",
     "crossSystemAcceptanceScenarios": 12,
-    "latestMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+    "latestMainSha": "210272144f401938b03525ee64024b7346b558e9",
     "obsoleteContentCleanup": {
       "status": "verified_and_github_saved",
       "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
@@ -7990,6 +8019,18 @@
       "latestFullVerifySource": "c8c9a888ddec2ba156ec6ce0dcfa908e54f2ce0c",
       "nodeVersion": "22.23.3",
       "node24RuntimeCrash": "documented_unresolved_not_assertion_failure"
+    },
+    "mainIntegration": {
+      "status": "candidate_validation_in_progress",
+      "ownerInstruction": "mainへあげて",
+      "sourceMainSha": "210272144f401938b03525ee64024b7346b558e9",
+      "resolvedConflicts": 4,
+      "preservedUpstreamPrs": [
+        115,
+        116,
+        117
+      ],
+      "siteDeployment": false
     }
   }
 }

@@ -88,8 +88,10 @@ QR : https://avocadomini.si/t/columbia-sky-0001?source=qr
 
 ### 4.3 英語の入口ページ `/sky/campus/columbia`
 
-- 見出しは「Sky for Columbia students」。3つのToolを並べ、それぞれに「何ができるか」「お金がかかるか（どれも無料）」「データがどこで処理されるか」を書く。
+- 2026-10-13のowner指示により、入口は簡易な説明カード一覧ではなく、`design/sky-twitter-feed-mobile-v2.png`を基準にしたSkyの完成フィードUIにする。黒いSky header、「For you／Saved」、依頼入力、単列のTool投稿、画像領域、詳細・保存・開始CTA、下部navigationを持つ。大学の紋章・ロゴは使わず、「Columbia students」は文字だけで表示する。
+- 見出し相当はheaderの「Sky / Columbia students」。3つのToolを単列feedへ並べ、それぞれに「何ができるか」「お金がかかるか（どれも無料）」「データがどこで処理されるか」を書く。
 - 各Toolへは `?lang=en&entry=columbia-card` を付けて開く。
+- 保存はこのbrowserのlocal storageだけに置き、権限・job・課金を作らない。「What are you working on?」の入力は3つのToolのどれに進むかを端末内で選び、入力本文をserverやLLMへ送らない。
 - アカウントを作る・サインインする導線と、プライバシーの説明へのリンクを置く。
 - ページの言語属性を英語（`lang="en"`）にする。今の全体は `lang="ja"` なので、英語の部分には正しい言語属性を付ける。
 - 他の大学（`/sky/campus/nyu` など）にも同じ形で広げられるようにするが、今回はColumbiaだけを公開する。

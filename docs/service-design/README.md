@@ -71,3 +71,5 @@ Jenniferは会話による統括の窓口。Sky直接操作・host app・ゲス�
 Jenniferのcontext・真正検収証拠、課金方式と現行Wallet gateの整合、passkeyの実装・復旧、各端末の実機受入は、[未決定事項と決め方](04-delivery-and-acceptance.md#未決定事項と決め方)に担当と判定条件を置く。
 
 最新再確認: PR #113のJennifer sourceはhead `3349c247`の8check成功後、2026-10-13 18:21:19 UTCにmain `01d2e418`へ統合済み。merge SHAの7checkも成功。本設計branchへmainを保全mergeした。原本/context/真正review/native/Providerの未受入条件は引き続き個別に残す。
+
+main反映の追加指示を受け、最新main `21027214`のSky Phoenix・完成feed・Columbia・有限local Agent・Site互換DB移行を保全mergeして再検証する。#115/#116/#117のGit統合を、本番公開やProvider/実機受入へ換算しない。

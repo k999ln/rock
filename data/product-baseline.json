@@ -392,7 +392,7 @@
           "result": "First-party display si; compatibility identifiers, provider proper names and original archives preserved."
         }
       ],
-      "latestMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+      "latestMainSha": "210272144f401938b03525ee64024b7346b558e9",
       "obsoleteContentCleanup": {
         "requestedAt": "2026-10-13",
         "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
@@ -401,6 +401,11 @@
         "status": "verified_and_github_saved",
         "removedPaths": 13,
         "verifiedSourceCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918"
+      },
+      "mainMergeAuthorization": {
+        "instruction": "mainへあげて",
+        "recordedDate": "2026-10-13",
+        "scope": "PR114 design/si/obsolete-content cleanup; preserve latest main; deployment and physical/financial acceptance remain separate"
       }
     }
   },
@@ -1580,6 +1585,21 @@
     "capabilityMatrix": "data/llm-capabilities.json",
     "localPlanner": "Qwen3-0.6B Q8_0 on llama.rn 0.12.9; fixed test-signed device APK profile; plan-only and untrusted",
     "executionAuthority": "Platform Broker validates identity, capability, approval and plan; Engine executes deterministic tools",
+    "zemaWebLocalAgent": {
+      "status": "local_preview_conversation_verified_tool_selection_quality_limited",
+      "provider": "ollama",
+      "verifiedModel": "qwen3:0.6b",
+      "endpointBoundary": "loopback_only",
+      "plannerSchema": "zema-local-agent/1",
+      "maximumSteps": 3,
+      "allowlistedTools": [
+        "sky_route",
+        "format_citations",
+        "coconala_check"
+      ],
+      "publicSiteLoopbackBridge": false,
+      "cloudFallback": false
+    },
     "skyOpenAiConnections": [
       "rockstar-legal-intake",
       "rockstar-patent-assistant"
@@ -2070,6 +2090,54 @@
     "standaloneSpiderRemainsMemoryOnly": true,
     "doesNotAuthorize": "automatic_code_execution_or_tool_verification",
     "record": "docs/sky-tools-complete-design.md"
+  },
+  "skyFeedIntent": {
+    "decidedAt": "2026-10-13",
+    "requested": true,
+    "layout": "single_column_social_timeline",
+    "primaryModes": [
+      "recommended",
+      "owner_saved_or_connected"
+    ],
+    "algorithm": "sky-usefulness-v2_with_sky-phoenix-v1",
+    "rankingSignals": [
+      "ephemeral_routed_tool_id",
+      "owner_saved_tool",
+      "owner_connected_tool",
+      "authoritative_current_availability",
+      "consented_semantic_feed_history",
+      "multi_action_probability_prediction",
+      "tool_and_category_affinity_with_recency_decay",
+      "repository_curated_fallback"
+    ],
+    "excludedSignals": [
+      "request_or_prompt_body",
+      "zema_conversation_or_result_body",
+      "device_token_or_account_identifier",
+      "raw_scroll_path_or_free_text_analytics",
+      "popularity_or_revenue"
+    ],
+    "categoryAffinityEnabled": true,
+    "historyConsentDefault": false,
+    "historyRetentionDays": 30,
+    "historyEventLimit": 800,
+    "historyEvents": [
+      "qualified_impression",
+      "detail",
+      "route",
+      "launch",
+      "save",
+      "unsave",
+      "connect",
+      "authoritative_job_complete_or_fail"
+    ],
+    "historyStorage": "tab_scoped_bounded_cache_and_authenticated_owner_scoped_d1",
+    "coldStartFallback": "sky-usefulness-v1",
+    "ownerCanPauseAndDeleteHistory": true,
+    "explicitFollowingImplemented": false,
+    "executionOwner": "zema",
+    "feedCreatesExecutionAuthority": false,
+    "record": "docs/sky.md"
   },
   "accountEntryDecision": {
     "decidedAt": "2026-10-10",

@@ -17,14 +17,19 @@ const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
 const localBindingConfig = {
   main: './web-worker.ts',
   compatibility_flags: ['nodejs_compat'],
-  vars: { A2A_EGRESS_ALLOWED_ORIGINS: '' },
+  vars: {
+    A2A_EGRESS_ALLOWED_ORIGINS: '',
+    // This identity is accepted only for loopback request URLs. Public Sites
+    // continue to require their authenticated gateway headers.
+    ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID: 'local-preview:rockstar-owner',
+  },
   d1_databases: d1
     ? [
         {
           binding: d1,
           database_name: 'site-creator-d1',
           database_id: SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
-          migrations_dir: 'drizzle',
+          migrations_dir: 'services/sky-web/migrations',
         },
       ]
     : [],

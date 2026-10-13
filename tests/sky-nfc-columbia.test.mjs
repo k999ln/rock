@@ -67,6 +67,7 @@ void test('Columbia English entry source files do not render Japanese literals',
     'components/amc-english-workspace.tsx',
     'components/english-patent-assistant.tsx',
     'app/sky/campus/[campusId]/page.tsx',
+    'app/sky/campus/[campusId]/columbia-feed.tsx',
     'components/sky-tool-workspace.tsx',
     'components/mr-tool-runner.tsx',
   ]) {
@@ -76,6 +77,17 @@ void test('Columbia English entry source files do not render Japanese literals',
   }
   assert.match(readFileSync('components/sky-tool-workspace.tsx', 'utf8'), /if \(language === 'en'\)/);
   assert.match(readFileSync('components/english-patent-assistant.tsx', 'utf8'), /patent-research\?lang=en/);
+});
+
+void test('Columbia entry uses the finished Sky feed shell and keeps actions connected to the three real tools', () => {
+  const source = readFileSync('app/sky/campus/[campusId]/columbia-feed.tsx', 'utf8');
+  assert.match(source, /For you/);
+  assert.match(source, /Saved/);
+  assert.match(source, /What are you working on\?/);
+  assert.match(source, /sky-columbia-saved-tools/);
+  assert.match(source, /Made for Columbia students\./);
+  assert.match(source, /visibleTools\.map/);
+  assert.match(source, /href=\{tool\.href\}/);
 });
 
 void test('tag redirect preserves a configured origin pathname and records one anonymous event', async () => {

@@ -212,7 +212,7 @@
     "pullRequest": 114,
     "pullRequestUrl": "https://github.com/k999ln/rock/pull/114",
     "pullRequestState": "draft",
-    "ci": "latest_campus_handoff_documentation_head_pending",
+    "ci": "latest_main_integration_candidate_pending",
     "savedCleanupContentCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
     "previousSameShaCi": {
       "sourceCommit": "48dcb824bd0ad76ce11150f6c13532efe9dc2825",
@@ -725,5 +725,35 @@
       "globalRuntimeChanged": false,
       "productDependenciesChanged": false
     }
+  },
+  "mainIntegration": {
+    "status": "candidate_validation_in_progress",
+    "ownerInstruction": "mainへあげて",
+    "recordedDate": "2026-10-13",
+    "branch": "codex/service-design-rebuild",
+    "pullRequest": 114,
+    "designHeadBeforeMainRefresh": "2a02f0fb5dcd2e1368ead1541a4b9390fc2260b1",
+    "sourceMainSha": "210272144f401938b03525ee64024b7346b558e9",
+    "preservedUpstreamPrs": [
+      115,
+      116,
+      117
+    ],
+    "resolvedConflicts": [
+      "components/sky-workspace.tsx",
+      "docs/product-baseline.md",
+      "docs/spec-history.md",
+      "project.md"
+    ],
+    "preservation": [
+      "Sky Phoenix/feed/Columbia/local Agent and consent/privacy/owner boundaries",
+      "migration0063 and resumable Site compatibility bridge byte-identical to latest main",
+      "RQ01-RQ50 unchanged",
+      "old13path deletion with newest spec-history restore override",
+      "first-party si display",
+      "immutable original/vendor/acceptance evidence and financial/physical gates"
+    ],
+    "actualMainMergePerformed": false,
+    "deploymentPerformed": false
   }
 }

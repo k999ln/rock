@@ -49,11 +49,27 @@ Web/PC、Linux/Buildroot/ARM64 QEMU、Pixelは開発・配布profileで、三har
 
 ### 現在の追加機能を同じ契約へつなぐ
 
+<a id="2026-10-13-skyからzemaのローカルagentを使えるようにする"></a>
+
+#### Zema Webの有限ローカルAgent
+
+Sky単体はTool／Agentを発見・保存・接続する入口で、依頼の受け皿と実行履歴はZemaが担う。Web版Zemaは、同じPCで動くOllamaまたはOpenAI互換のloopback endpointを選んだとき、ローカルLLMを権限のないplannerとして利用できる。planner出力は閉じたJSON schemaで検査し、最大3手、`sky_route`／`format_citations`／`coconala_check`の副作用がない3処理だけを許可する。shell、任意file、network、購入、投稿、送信、権限変更は許可しない。Cloudへの自動fallbackも行わない。
+
+2026-10-13のlocal previewではOllama `qwen3:0.6b`を導入し、Zema画面から通常会話が完了することを確認した。軽量modelのTool選択品質は限定的であり、未実行処理を実行済みと数えない。`chatgpt.site`上の公開Workerから利用者PCの`127.0.0.1`へは到達できないため、公開版でこのlocal Agentを使うには将来の端末companion／local bridgeが必要。local preview用の固定userはloopback hostだけで有効で、公開hostの認証を迂回しない。
+
+<a id="2026-10-13-skyをtwitter--x型の1列フィードにする"></a>
+
+#### Skyの1列フィードと本人同意のおすすめ学習
+
+利用者は、Skyの一覧をPinterest型ではなくTwitter / Xのような1列フィードにすると決めた。主表示は「おすすめ」と「マイフィード」。マイフィードは明示保存または接続済みのToolだけを新しい関係順に表示し、明示フォローをまだ持たない初版で「フォロー中」とは呼ばない。
+
+初版の固定順位 `sky-usefulness-v1` に加え、同日の追加指示でX Phoenixの設計をSky用へ縮小した `sky-phoenix-v1` を実装する。本人が「おすすめ学習」をオンにした場合だけ、qualified impression、詳細、依頼先選択、Tool開始、保存／解除、接続と、本人の正本Tool runの完了／失敗を30日・最大800件で保持し、detail／launch／save／connect／skipの確率、直近性、Tool／category affinityを順位へ反映する。履歴0件・保存不可・同期失敗・未知versionではv1へ戻す。依頼本文、Zema会話、結果本文、device token、account identifier、raw scroll、人気、収益は入力にしない。本人は画面から停止・全削除できる。フィード履歴はランキングだけに使い、実行権限、job、支払い、購入、Agent promptを作らない。実作業はZemaが担う。詳細は [Sky](sky.md#個人化した1列フィード2026-10-13) 。
+
 Sky Compute GridはRQ50に従うAndroid余剰計算のmatchingで、公開/合成textの固定embedding lotだけを独立検証する。現在は`sky_test_credits`のhold preview。実請求・実払出しや自動cloud fallbackを開始しない。
 
 SPIDERは本人の明示入力をブラウザ内で静的検査するSky Toolと、OS本体UID 1002の固定範囲監視・対応送信前拒否を分ける。入力原文・ファイル名・検出値の非送信/非保存、実worker状態表示を維持し、画面をOS全通信遮断・安全保証・24時間運用証拠にしない。Skyコード投稿は本人が全文・license・版・保護方式を確認した明示公開で、単体検査と区別する。SPIDER標準保護の交換・取り外しを実行権変更にしない。
 
-Campusは人・project・機会・event・community・portfolio・resourceの入口で、既存Sky/Zema/Walletを複製しない。Columbia NFCカードはavokadoが書き込み配布するURL入口。`avocadomini.si/t/<tagId>`から英語の出典整理・AMC・米国特許案内を開き、無料下書きを先に示す。大学の文字名を使い紋章・ロゴを使わず、カードに本人情報・鍵・利用権を入れない。匿名tag集計はIP・email・正確な位置・raw User-Agentを保存しない。印刷・枚数・費用・配布許可は未定。[Campus](campus-layer.md)、[NFC設計](sky-nfc-columbia.md)に従う。
+Campusは人・project・機会・event・community・portfolio・resourceの入口で、既存Sky/Zema/Walletを複製しない。Columbia NFCカードはavokadoが書き込み配布するURL入口。`avocadomini.si/t/<tagId>`から英語の出典整理・AMC・米国特許案内を開き、無料下書きを先に示す。大学の文字名を使い紋章・ロゴを使わず、カードに本人情報・鍵・利用権を入れない。匿名tag集計はIP・email・正確な位置・raw User-Agentを保存しない。 Columbia入口も`design/sky-twitter-feed-mobile-v2.png`を基準とする英語のFor you／Saved・端末内の依頼振分け・単列3 Tool投稿・browser内保存・実Tool CTA・下部navigationへ揃える。入力をserver/LLMへ送らず、無料local処理と特許si調査停止を保持する。印刷・枚数・費用・配布許可は未定。[Campus](campus-layer.md)、[NFC設計](sky-nfc-columbia.md)に従う。
 
 Campus所属は認証済みemail domainとの一致を`domain_verified`として扱い、在籍・肩書き・大学公式承認にしない。emailをCampus tableへ保存せず、profile公開範囲、block/report、投稿archive、tag停止・集計削除、Campus本人データ削除を維持する。原典のない外部情報はcommunity投稿として区別する。
 
