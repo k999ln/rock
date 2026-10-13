@@ -193,12 +193,7 @@ function statusFor(
   pcConnected = false,
   service?: SkyToolUiContext['service'],
 ) {
-  return skyToolUiState(tool, {
-    fashionConnected,
-    connectedTools,
-    pcConnected,
-    service,
-  });
+  return skyToolUiState(tool, { fashionConnected, connectedTools, pcConnected, service });
 }
 
 function roleFor(tool: Automation) {
