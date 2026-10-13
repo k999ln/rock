@@ -212,8 +212,14 @@
     "pullRequest": 114,
     "pullRequestUrl": "https://github.com/k999ln/rock/pull/114",
     "pullRequestState": "draft",
-    "ci": "final_verification_metadata_head_pending",
-    "savedCleanupContentCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918"
+    "ci": "latest_campus_handoff_documentation_head_pending",
+    "savedCleanupContentCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+    "previousSameShaCi": {
+      "sourceCommit": "48dcb824bd0ad76ce11150f6c13532efe9dc2825",
+      "checks": 9,
+      "success": 9,
+      "observedAt": "2026-10-13T20:35:24Z"
+    }
   },
   "verification": {
     "status": "passed",
@@ -544,5 +550,71 @@
         "docs/service-design/README.md": "679e4f7308c91040f87b6bf790cd7f71116903ba608b256d916c4fde446ad6d0"
       }
     }
+  },
+  "campusRouteContinuity": {
+    "reportedIncident": {
+      "reportedBy": "parallel NFC task",
+      "site": "sky-marketplace",
+      "version": 49,
+      "sourceCommitPrefix": "b06402db",
+      "reportedPublishedAt": "2026-10-13T19:57:00Z",
+      "symptom": "/os/sky and campus Hub routes removed; user screenshot showed404",
+      "reportedRecovery": "redeploy v48; reported browser display restored",
+      "deploymentPerformedByThisTask": false,
+      "versionAndSourceIndependentlyVerified": false
+    },
+    "independentHttpObservation": {
+      "observedAt": "2026-10-13T20:35:24Z",
+      "method": "Python urllib HTTPS GET, response status/resolvedURL/title only",
+      "routes": [
+        {
+          "url": "https://avoado.si/",
+          "status": 200,
+          "title": "avokado — Mini meets Pro"
+        },
+        {
+          "url": "https://avoado.si/os/sky",
+          "status": 200,
+          "title": "Sky — RockstarOS"
+        },
+        {
+          "url": "https://avoado.si/os/sky/outputs",
+          "status": 200,
+          "title": "成果 · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/nyu/hub?source=nfc",
+          "status": 200,
+          "title": "NYU · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/fit/hub?source=nfc",
+          "status": 200,
+          "title": "FIT · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/columbia/hub?source=nfc",
+          "status": 200,
+          "title": "Columbia · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/fordham/hub?source=nfc",
+          "status": 200,
+          "title": "Fordham · Sky"
+        },
+        {
+          "url": "https://avoado.si/os/sky/campus/johnjay/hub?source=nfc",
+          "status": 200,
+          "title": "John Jay · Sky"
+        }
+      ],
+      "browserAcceptance": false,
+      "sourceVersionAcceptance": false,
+      "physicalNfcAcceptance": false,
+      "studentSlotsAcceptance": false,
+      "paidProviderAcceptance": false
+    },
+    "handoff": "Preserve current deployment source/version and eight routes before/after any same-Site publish; integrate v49 capabilities with v48 routes and reaccept the exact artifact. Do not overwrite a newer deployment with an older candidate.",
+    "verification": "Focused design/metadata checks pending for this documentation update; previous full verify remains bound to5086a16a and previous same-SHA CI to48dcb824."
   }
 }

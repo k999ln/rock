@@ -7973,6 +7973,18 @@
       "fullVerifyExitCode": 0
     },
     "savedCleanupContentCommit": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
-    "cleanupMetadataNotes": "After full regression, update verification records and SIM01 wording to account/optional claim; metadata checks repeat. Runtime and design sources unchanged."
+    "cleanupMetadataNotes": "After full regression, update verification records and SIM01 wording to account/optional claim; metadata checks repeat. Runtime and design sources unchanged.",
+    "campusRouteContinuity": {
+      "evidence": "docs/evidence/service-design-rebuild.json",
+      "document": "docs/service-design/04-delivery-and-acceptance.md",
+      "httpUrls": 8,
+      "http200": 8,
+      "deploymentPerformed": false,
+      "sameSiteRoutePreservationGate": "documented",
+      "fullVerifySourceUnchanged": "5086a16a24de6208ee15c8ebf30147c12f2fb918",
+      "previousCiSource": "48dcb824bd0ad76ce11150f6c13532efe9dc2825",
+      "previousCiSuccess": 9,
+      "newDocumentationChecks": "pending"
+    }
   }
 }

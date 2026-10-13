@@ -56,11 +56,17 @@ JenniferはPR #113 / head `3349c2475468443bc7ecd94a4e3782343f514a8f`で役割と
 
 2026-10-13のGitHub再読取りで、[PR #112](https://github.com/k999ln/rock/pull/112)は`codex/sky-app-outputs-20261013` / `7df8dfd6740db976c795c058620d7db679062746`、[PR #115](https://github.com/k999ln/rock/pull/115)は`codex/sky-social-feed` / `54bbc021bf1961e1cc939498f904d62e138970e3`、いずれもmain向けのopen候補である。未統合候補をmain実装済みとは扱わない。
 
-NFC担当からの別artifact報告は`avoado.si`のSky v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db`、5大学の`/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub?source=nfc`。本設計作業ではその公開readbackを再実施していない。カードのURLは大学contextを選ぶだけで、本人性、学生所属、優待、購入、実行権限を与えない。既存OS/browserからSky→Zemaへ進める。NTAG215への実書込・iPhone/Android再読取り、6枠の運用、有料MCP/Providerの一周は独立した未受入条件である。
+NFC担当からの別artifact報告は`avoado.si`のSky v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db`、5大学の`/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub?source=nfc`。version/sourceと実画面の受入は担当報告として保持する。2026-10-13 20:35 UTCに本設計担当がHTTP再読取りを行い、`/`・`/os/sky`・`/os/sky/outputs`・5大学Hubの8URLで200と各ページtitleを確認した。これだけでは配備source一致、画面操作、実カード、学生資格/枠、Providerの受入にならない。カードのURLは大学contextを選ぶだけで、本人性、学生所属、優待、購入、実行権限を与えない。既存OS/browserからSky→Zemaへ進める。NTAG215への実書込・iPhone/Android再読取り、6枠の運用、有料MCP/Providerの一周は独立した未受入条件である。
 
 統合順は最新main→本設計の入口/優先順→#112と#115の候補比較と保全統合→同一候補のCI/UI/実NFC受入。NFC担当のmerge比較報告では`components/sky-workspace.tsx`、`project.md`、`tests/web-route-style-contract.test.mjs`が競合対象。採用時に最新headで再比較し、大学別導線・host成果・feed・local agentの双方の必要機能を保持する。別origin、所属確認、学生枠、料金gateをURL表示だけで成立させない。
 
 複数clientは既存jobを表示/照合し、単一authority deviceの移管は独立gate。PC sleep・圏外・失効で仕事を重複実行しない。OS内Zemaとhost app結果画面の違いを、業務契約の複製で解決しない。
+
+### 同じSiteへの配備で大学入口を失わない
+
+NFC担当から、Sky Site `sky-marketplace` のv49/source prefix `b06402db`（2026-10-13 19:57 UTC公開）が`/os/sky`と大学Hubを削除して404となり、v48の再配備で復旧したとの報告を受けた。これは別担当による障害・復旧報告であり、本設計担当が配備した記録ではない。v49の追加機能はv48の必要routeと比較して保全統合する。
+
+同一Siteの次の配備は、直前の受入済みsource/versionを取得し、`/`・`/os/sky`・`/os/sky/outputs`・5大学HubとNFC queryを回帰対象へ固定する。配備前に同じ候補のrouteと画面を確認し、配備後にsource/version・HTTP・title・実画面とSky→Zemaを読戻す。別候補が同じSiteを更新していた場合は最新の機能を保全比較し、古い候補で上書きしない。routeや画面が欠落した候補を公開受入とせず、既存の復旧手順・直前の受入済みversionを使う。本人性、学生枠、実NFC、有料MCP/Providerのgateは別に残す。
 
 ## 4. OSとハードウェアの独立系列
 

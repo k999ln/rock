@@ -10,7 +10,7 @@
 
 第一者の製品表示は小文字si。[表記契約](data/product-terminology.json)に従いAPI/schema/保存key/task ID、npm `ai`、OpenAI等の外部固有名、署名・原本byteを保持する。今回の追加整理は正本本文の再構成と不要な旧説明の削除であり、料金、実行権限、受入gateを変更しない。
 
-旧文書11件と旧P0表示component2件の削除、必要契約の移行、入口/索引/生成台帳の同期は完了。削除後source `5086a16a24de6208ee15c8ebf30147c12f2fb918`の全体verifyと独立検収が成功し、GitHubへ保存した。最終検証記録の同一SHA CIは別途確認する。元のdirty作業コピーは保全し、設計branchの変更と混ぜない。
+旧文書11件と旧P0表示component2件の削除、必要契約の移行、入口/索引/生成台帳の同期は完了。削除後source `5086a16a24de6208ee15c8ebf30147c12f2fb918`の全体verifyと独立検収が成功し、GitHubへ保存した。検証記録head `48dcb824`の同一SHA 9 CIは全成功。大学NFC担当からのroute消失/復旧報告を既存引継ぎへ追記し、新しい文書差分の検査/CIは別に確認する。元のdirty作業コピーは保全し、設計branchの変更と混ぜない。
 
 ## Git・source・公開の現在地
 
@@ -18,6 +18,8 @@
 - **Jennifer**：PR #113はmain `01d2e41857e8e713bd5df31476deaea8c942e983`へ統合済み。head `3349c2475468443bc7ecd94a4e3782343f514a8f`の8 CIとmergeの7 CIは成功。本設計branchにもmainを保全mergeした。真正review/context/Provider/native受入は統合とは別に残る。
 - **統合設計・si表示**：[PR #114](https://github.com/k999ln/rock/pull/114)に保存済み。整理開始時のbranch HEADは`98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb`。本設計PRのmain統合とSite配備は未実施。以後の最終sourceとCIは[設計証拠](docs/evidence/service-design-rebuild.json)へ記録する。
 - **公開サービス**：記録済みの公開previewは別artifactのv54/source `b10c56688b9e38045685246c718d2de7c6f92f2c`。公開CSV契約・migrationはmainと区別する。今回のmain統合・文書整理で再配備したとはしない。本番本人の一周、端末download完了、商用課金は未受入。
+
+大学NFCの別artifactは、担当報告によるv49のroute消失→v48復旧と、2026-10-13 20:35 UTCの独立HTTP8URL/200・title確認を[既存の設計証拠](docs/evidence/service-design-rebuild.json)へ記録した。配備source/version・追加browser・実カード・学生枠・有料Providerの受入ではない。同じSiteの公開前後に`/os/sky`と5大学Hubを保全する条件を[実現順](docs/service-design/04-delivery-and-acceptance.md)へ追加した。
 
 この記録は対応証拠の固定SHAに基づく。再開時はGitHub main・対象branch・PR・同一SHA CIを読み直し、未取得や過去snapshotを最新確認済みにしない。originはGitHub、Sitesは配信先。GitHub保存、main merge、公開readbackは別結果として残す。
 
