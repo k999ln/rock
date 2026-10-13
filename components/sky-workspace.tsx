@@ -61,6 +61,7 @@ import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 import { skyToolUiState } from '@/lib/sky-tool-ui';
 import { useSkyServiceStatus } from '@/lib/use-sky-service-status';
 import { catalogHostMismatch, detectSkyHost } from '@/lib/sky-tool-compatibility';
+import { CAMPUSES, type CampusId } from '@/lib/campus';
 
 const subscribeHost = () => () => undefined;
 const browserHost = () => detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
@@ -187,9 +188,11 @@ function actionLabel(
 export default function SkyWorkspace({
   initialMcpOpen = false,
   initialPublishOpen = false,
+  campusId,
 }: {
   initialMcpOpen?: boolean;
   initialPublishOpen?: boolean;
+  campusId?: CampusId;
 }) {
   const service = useSkyServiceStatus();
   const [query, setQuery] = useState('');
@@ -457,6 +460,18 @@ export default function SkyWorkspace({
       onConnect={() => router.push('/sky/network')}
     >
       <div className={styles.page}>
+        {campusId && <section aria-label="大学別Sky" style={{padding: '20px 24px', borderRadius: 18, background: '#153321', color: 'white', marginBottom: 20}}>
+          <p style={{margin: '0 0 6px', opacity: .8, fontSize: 12, letterSpacing: '.12em'}}>SKY · {CAMPUSES[campusId].name.toUpperCase()}</p>
+          <h1 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Sky</h1>
+          <p style={{margin: '0 0 12px'}}>{CAMPUSES[campusId].description}</p>
+          <nav aria-label="大学別Skyの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
+            <Link href="/sky/marketplace" style={{color: 'white'}}>Agentを探す</Link>
+            <Link href="/sky/purchases" style={{color: 'white'}}>購入したAgent</Link>
+            <Link href="/sky/outputs" style={{color: 'white'}}>成果を見る</Link>
+            <Link href="/sky/network" style={{color: 'white'}}>接続を管理</Link>
+            <Link href="/chat" style={{color: 'white'}}>Zemaで仕事を管理</Link>
+          </nav>
+        </section>}
         <header className={styles.heading}>
           <div>
             <p className={styles.eyebrow}>YOUR TOOLS</p>
