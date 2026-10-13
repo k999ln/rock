@@ -221,3 +221,9 @@
     grid-column: 1 / -1;
   }
 }
+
+/* Keep existing Tool result actions readable when the heading wraps on mobile. */
+.mr-workbench .bench-output > .bench-heading { flex-wrap: wrap; }
+.mr-workbench .bench-output > .bench-heading > .output-actions { flex-shrink: 0; }
+.mr-workbench .bench-output .output-actions button,
+.mr-workbench .bench-output .output-actions a { white-space: nowrap; }

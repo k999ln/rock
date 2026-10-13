@@ -964,6 +964,8 @@ export function AmcToolRunner({
   const [retry, setRetry] = useState<Operation | null>(null);
   const [importText, setImportText] = useState('');
   const [importConfirmed, setImportConfirmed] = useState(false);
+  const [importReading, setImportReading] = useState(false);
+  const importRead = useRef({ revision: 0, pending: false });
   const [manualDirty, setManualDirty] = useState(false);
   const mounted = useRef(false);
   const busyRef = useRef(false);
@@ -975,7 +977,10 @@ export function AmcToolRunner({
   }, [onOutcome, onRunningChange, onDirtyChange]);
   useEffect(() => {
     mounted.current = true;
+    const importing = importRead.current;
     return () => {
+      importing.revision++;
+      importing.pending = false;
       mounted.current = false;
       mutation.current?.abort();
       if (busyRef.current) callbacks.current.onRunningChange?.(false);
@@ -1124,6 +1129,7 @@ export function AmcToolRunner({
       !!(request.trim() || goalText.trim() || intent.trim())) ||
     manualDirty ||
     !!importText.trim() ||
+    importReading ||
     !!retry;
   useEffect(() => {
     onDirtyChange?.(dirty);
@@ -1186,8 +1192,7 @@ export function AmcToolRunner({
       setRetry(null);
       if (operation.method === 'POST') {
         setTaskId(saved.amcGoal.tasks[0]?.id ?? '');
-        setImportText('');
-        setImportConfirmed(false);
+        replaceImport('');
       }
       const text =
         operation.method === 'POST'
@@ -1226,8 +1231,7 @@ export function AmcToolRunner({
     setRequest('');
     setGoalText('');
     setIntent('');
-    setImportText('');
-    setImportConfirmed(false);
+    replaceImport('');
     setManualDirty(false);
     setMode('request');
     setSurface('goals');
@@ -1279,9 +1283,16 @@ export function AmcToolRunner({
         );
     }
   }
+  function replaceImport(value: string) {
+    importRead.current.revision++;
+    importRead.current.pending = false;
+    setImportReading(false);
+    setImportText(value);
+    setImportConfirmed(false);
+  }
   function importGoal(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (disabled || !importConfirmed) return;
+    if (disabled || importRead.current.pending || !importConfirmed) return;
     try {
       const imported = validateAmcGoal(JSON.parse(importText));
       void perform({
@@ -1461,8 +1472,7 @@ export function AmcToolRunner({
               )
                 return;
               if (selectedId !== event.target.value) setDetailLoading(true);
-              setImportText('');
-              setImportConfirmed(false);
+              replaceImport('');
               setManualDirty(false);
               setSelectedId(event.target.value);
               setTaskId('');
@@ -1815,22 +1825,30 @@ export function AmcToolRunner({
                 onChange={async (event) => {
                   const input = event.currentTarget;
                   const file = input.files?.[0];
+                  input.value = '';
                   if (!file) return;
+                  const revision = ++importRead.current.revision;
+                  importRead.current.pending = true;
+                  setImportReading(true);
                   setImportConfirmed(false);
                   try {
                     if (file.size > 1_500_000)
                       throw new Error('Goal JSONは1.5 MB以下にしてください。');
                     const content = await file.text();
                     validateAmcGoal(JSON.parse(content));
-                    if (mounted.current) {
+                    if (mounted.current && revision === importRead.current.revision) {
                       setImportText(content);
+                      setImportConfirmed(false);
                       setError('');
                     }
                   } catch (reason) {
-                    if (mounted.current)
+                    if (mounted.current && revision === importRead.current.revision)
                       setError(`読み込めません：${message(reason)}`);
                   } finally {
-                    input.value = '';
+                    if (mounted.current && revision === importRead.current.revision) {
+                      importRead.current.pending = false;
+                      setImportReading(false);
+                    }
                   }
                 }}
               />
@@ -1844,21 +1862,20 @@ export function AmcToolRunner({
                 value={importText}
                 required
                 maxLength={2000000}
-                onChange={(event) => {
-                  setImportText(event.target.value);
-                  setImportConfirmed(false);
-                }}
+                onChange={(event) => replaceImport(event.target.value)}
               />
               <label className={styles.check}>
                 <input
                   type="checkbox"
                   required
                   checked={importConfirmed}
+                  disabled={importReading}
                   onChange={(event) => setImportConfirmed(event.target.checked)}
                 />
                 このJSONの範囲・進捗・証拠が自己申告の記録であることを理解し、本人の保存領域へ追加します。
               </label>
-              <button type="submit">内容を検査して別記録に保存</button>
+              {importReading && <output>Goal JSONを読み込んでいます…</output>}
+              <button type="submit" disabled={importReading}>内容を検査して別記録に保存</button>
             </fieldset>
           </form>
         </details>

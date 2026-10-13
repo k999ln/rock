@@ -1,0 +1,173 @@
+{
+  "schema": "rockstaros-work-composition-development/1",
+  "startedAt": "2026-10-13T00:00:45Z",
+  "status": "in_progress",
+  "scope": [
+    "F1",
+    "F2",
+    "F3",
+    "generator-symlink-hardening",
+    "latest-main-existing-feature-reuse",
+    "Sky-to-composition-entry",
+    "device-preference-restore-and-cancel-recovery",
+    "release-observation-reconciliation"
+  ],
+  "baseline": {
+    "main": "8c5891fcb5e04f69618837f52e1ae64afba34399",
+    "siteSource": "aade8171e4eeffad410242dfe79f59afd2dd6c52",
+    "siteVersion": 53
+  },
+  "verification": [
+    {
+      "stage": "local_candidate",
+      "sourceFinalSha": "pending",
+      "uiViewOwnerTests": 18,
+      "independentPersistedD1Tests": 7,
+      "rootWorkerKillRestartJobsUnchanged": 2,
+      "browserWidths": [
+        1280,
+        390
+      ],
+      "rootF3CreateAckLoss": "same job ID recovered; old 2 jobs unchanged; new job completed after fresh checks",
+      "fullVerify": "pending after nested Astro dependency repair",
+      "download": "IAB event timed out; not accepted"
+    },
+    {
+      "stage": "full-local-source-before-Sky-deep-link",
+      "command": "npm run verify",
+      "exitCode": 0,
+      "nodeTests": 2097,
+      "nodePass": 2096,
+      "nodeSkip": 1,
+      "sourceFinalSha": "pending",
+      "qualification": "Existing intentional skip retained. Earlier sandbox loopback EPERM run failed; approved rerun completed all gates/build/API. Later Sky handoff and settings recovery still need final verification."
+    }
+  ],
+  "limitations": [
+    "Authenticated production user journey not yet accepted",
+    "No new payment, cloud contract or physical flash",
+    "Full verify and exact-head CI pending"
+  ],
+  "deliveryBlockers": {
+    "staticHeaders": {
+      "status": "external_supported_capability_not_confirmed",
+      "rawHeadersFileServed": true,
+      "bytes": 690,
+      "sha256": "267ced696576848bf2882547dddb9f7f41a17a45390cfc3b5647f1d87b06bcb9",
+      "sourceAndPublicBytesMatch": true,
+      "reference": "https://developers.cloudflare.com/workers/static-assets/headers/"
+    },
+    "spider": {
+      "sourceSha": "aade8171e4eeffad410242dfe79f59afd2dd6c52",
+      "candidateCount": 1,
+      "context": "public verification prose in an ancestor commit; pinned history scanning",
+      "ownerReviewRequired": true,
+      "policyUnchanged": true
+    },
+    "codeql": {
+      "sourceSha": "aade8171e4eeffad410242dfe79f59afd2dd6c52",
+      "annotations": 13,
+      "generatorChanged": true,
+      "newShaAnalysis": "pending",
+      "otherFindings": "not declared universally safe"
+    }
+  },
+  "currentPublicSite": {
+    "observedAt": "2026-10-13T01:28:11Z",
+    "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+    "version": 53,
+    "access": "public",
+    "deployed": true,
+    "sourceCommit": "aade8171e4eeffad410242dfe79f59afd2dd6c52",
+    "mainMerged": false,
+    "authenticatedProductionAcceptance": "not_run_no_signed_in_browser_available",
+    "securityDelivery": "dynamic headers present; static asset policy incomplete; raw _headers is served as a file",
+    "commercialCloudAgents": "not_accepted",
+    "physicalOsRelease": "not_accepted"
+  },
+  "browserLimits": {
+    "previousAcceptedLocalScope": "F1/F2/F3 through completion and real Worker restart; 401/owner A-B-A/create-ack-loss; 1280/390 overflow check",
+    "subsequentLocalPermission": "denied at localhost:5190; stopped without switching origin/browser to bypass",
+    "notAccepted": [
+      "native file download completion",
+      "latest Sky Tool deep-link real screen",
+      "recipe time comparison"
+    ],
+    "recipeComparison": "not measured; no interaction-speed improvement claim"
+  },
+  "updatedAt": "2026-10-13T01:28:11Z",
+  "settingsRecovery": {
+    "before": "Restoration cleared original settings before writes; a second write failure lost old settings. A late decrypted restoration could resurrect settings after close and explicit reset.",
+    "after": "Validated input and original value/missing-key snapshot; rollback or retained immutable same-tab recovery point; generation fences before commit/download/feedback after awaited work; successful explicit reset forgets recovery.",
+    "tests": 22,
+    "adjacentTests": 32,
+    "independentOriginalRaceReproduction": "passed after repair",
+    "schemaAndKeys": "existing v1/two-key scope unchanged",
+    "limitations": [
+      "No multi-key storage atomicity",
+      "No cross-tab CAS",
+      "No retained recovery point after reload",
+      "Real final browser check not accepted"
+    ]
+  },
+  "pairedStorageObservation": {
+    "environment": "New isolated persisted Workerd D1/R2; synthetic owner; no production or root state changes",
+    "observations": 34,
+    "stoppedPairRestore": "D1/R2 whole snapshot manifests and owner/artifact/expiry readback matched",
+    "postSnapshotDeletedDataReplayed": true,
+    "activeExpiredLeasePurge": "future lease field fixture reproduced deletion; natural active-writer overlap not reproduced",
+    "naturalNearExpiryAcceptCases": {
+      "accepted": [
+        75,
+        150,
+        300,
+        10,
+        20
+      ],
+      "expiredRejected": 5,
+      "unit": "ms before fixture expiry"
+    },
+    "unrepaired": [
+      "Post-snapshot deletion replay journal and production recovery acceptance",
+      "Site expiry/active lease claim-purge race"
+    ],
+    "notAcceptanceCount": true
+  },
+  "independentSummary": {
+    "backendTests": 21,
+    "uiViewOwnerTests": 19,
+    "realPersistedD1Tests": 7,
+    "artifactHandlerSqlTests": 9,
+    "realArtifactHttp": "saved UTF-8 bytes, attachment/private/no-store/nosniff/owner/stale/error responses and unchanged DB row",
+    "skyHandoffTargetTests": 71,
+    "settingsTests": 22,
+    "siteCsvPaymentMigrationPreservation": "39 source files unchanged",
+    "generatorCanary": "7 regressions; original/swap/ancestor alias independent checks passed"
+  },
+  "mainIntegration": {
+    "status": "local_verified_ci_pending",
+    "taskId": "G04",
+    "primaryOwner": "ROCK",
+    "primarySquad": "H1",
+    "baselineMain": "8c5891fcb5e04f69618837f52e1ae64afba34399",
+    "qualitySource": "6b72470ce25d4e7b20940b1698fde5a12281ed69",
+    "featureSource": "b10c56688b9e38045685246c718d2de7c6f92f2c",
+    "branch": "codex/main-work-composition-20261013",
+    "mainMerged": false,
+    "nextAction": "Push the integration candidate, check its exact-SHA GitHub CI (including Android/native), and merge to main under the user request.",
+    "verification": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "nodeTests": 2143,
+      "nodePass": 2142,
+      "nodeSkip": 1,
+      "targetTests": 80,
+      "migrationHistory": "unchanged from main",
+      "workflowAndSecurityPolicy": "unchanged"
+    },
+    "integrationMethod": "Selective squash of PR105 quality code and PR110 feature changes onto current main. Original branches remain; no history rewrite. Site-only CSV contract and applied migrations remain on the Site branch.",
+    "uiCiRepair": "Track both WebCrypto payload fingerprints and HTTP promises in the test harness; lost/unrelated-response tests impose a 25ms fingerprint delay. All original assertions remain.",
+    "codeqlTestReview": "Check complete parsed output URLs, and obtain file identity from an opened descriptor for generator tests.",
+    "proseScanReview": "Rephrase the public API/DB inventory description that generic-api-key misclassified; no credential, scanner exception or policy change."
+  }
+}

@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 import ts from 'typescript';
+import { guardHistoryNavigation } from '../lib/history-navigation-guard.ts';
 
 const compiled = ts.transpileModule(readFileSync(new URL('../components/use-pending-save-navigation.ts', import.meta.url), 'utf8'), {
   compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS },
@@ -16,7 +17,7 @@ void test('pending saves block same-tab SPA links but permit sign-in in another 
     getAttribute(name) { return this.attributes[name] ?? null; } hasAttribute(name) { return name in this.attributes; } }
   const exports = {};
   runInNewContext(compiled, { exports, Element, window: surface(windowListeners), document: surface(documentListeners),
-    require(name) { assert.equal(name, 'react'); return { useEffect(fn) { cleanup?.(); cleanup = fn(); } }; },
+    require(name) { if (name === '@/lib/history-navigation-guard') return { guardHistoryNavigation }; assert.equal(name, 'react'); return { useEffect(fn) { cleanup?.(); cleanup = fn(); } }; },
   });
   const hook = exports.usePendingSaveNavigation;
   hook(false); assert.equal(documentListeners.size, 0);

@@ -115,3 +115,39 @@ await test('wallet entries are user-isolated, idempotent and reversible once', a
     (error) => error instanceof OperationError && error.status === 409,
   );
 });
+
+await test('concurrent same-ID entries and reversals replay only the exact owner operation', async (t) => {
+  const { sqlite, owner, stranger } = fixture();
+  t.after(() => sqlite.close());
+  const original = entry();
+  const created = await Promise.all([
+    owner.book(original),
+    owner.book(original),
+  ]);
+  assert.equal(created[0].id, original.id);
+  assert.equal(created[1].id, original.id);
+  assert.equal((await owner.wallet()).records.length, 1);
+  assert.equal((await owner.wallet()).balance, 24000);
+  await assert.rejects(
+    () => owner.book({ ...original, amount: 38000 }),
+    (e) => e.status === 409,
+  );
+  await assert.rejects(
+    () => stranger.book(original),
+    (e) => e.status === 409,
+  );
+  const reversal = { id: crypto.randomUUID(), reversesId: original.id };
+  const reversed = await Promise.all([
+    owner.book(reversal),
+    owner.book(reversal),
+  ]);
+  assert.equal(reversed[0].id, reversal.id);
+  assert.equal(reversed[1].id, reversal.id);
+  assert.equal((await owner.wallet()).balance, 0);
+  assert.equal((await owner.wallet()).records.length, 2);
+  assert.equal((await stranger.wallet()).records.length, 0);
+  await assert.rejects(
+    () => owner.book({ id: crypto.randomUUID(), reversesId: original.id }),
+    (e) => e.status === 409,
+  );
+});

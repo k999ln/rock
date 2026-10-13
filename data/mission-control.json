@@ -12764,6 +12764,11 @@
           "path": "docs/evidence/integrated-development-20261011.json",
           "section": "G04",
           "description": "対象source、環境、再現操作、合否と未受入条件"
+        },
+        {
+          "path": "docs/evidence/quality-reliability-review.json",
+          "section": "followup",
+          "description": "既存機能の復旧・競合修正、独立検収、PRと公開Siteの候補/受入境界"
         }
       ],
       "steps": [

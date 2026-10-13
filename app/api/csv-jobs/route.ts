@@ -1,3 +1,4 @@
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import { limitCsvRequest } from '@/lib/csv-request-limit';
 import { env } from 'cloudflare:workers';
 import { csvTrialPayments } from '@/lib/csv-trial-payment';
@@ -17,6 +18,7 @@ export const GET = async (request: Request) => {
     return Response.json(
       {
         jobs: await listCsvJobs(user),
+        ownerScope: await ownerScopeFor(user),
         retentionDays: 7,
         trialPayment: csvTrialPayments(env, acceptCsvJob).availability(),
       },
@@ -30,6 +32,8 @@ export const GET = async (request: Request) => {
 export const POST = async (request: Request) => {
   try {
     const user = await requestUser(request);
+    const mismatch = await rejectChangedOwner(request, user);
+    if (mismatch) return mismatch;
     await limitCsvRequest(
       (env as unknown as { DB: D1Database }).DB,
       user,

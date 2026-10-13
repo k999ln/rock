@@ -8,6 +8,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import ts from 'typescript';
 import { catalog } from '../lib/catalog.ts';
 import { skyToolUiState } from '../lib/sky-tool-ui.ts';
+import { capabilityFor } from '../lib/work-composition.ts';
 import { skyToolExecutionScope } from '../lib/sky-tool-execution-scope.ts';
 
 // Render the real component with inert child runners. Mounting a runner is an
@@ -27,6 +28,7 @@ function render(toolId, workspace = false, { tools = catalog, hostMismatch = nul
   const modules = {
     'react': { ...React, useSyncExternalStore: () => 'mac' },
     '@/lib/catalog': { catalog: tools },
+    '@/lib/work-composition': { capabilityFor },
     '@/lib/sky-tool-ui': { skyToolUiState },
     '@/lib/sky-tool-execution-scope': { skyToolExecutionScope },
     '@/lib/use-sky-tool-context': { useSkyToolContext: () => ({}) },
@@ -148,4 +150,15 @@ void test('handoff keeps an encoded product ID inside one Zema path segment', ()
   const tool = { ...catalog.find((item) => item.id === 'mr-citations'), id: 'space / 日本語?x=1#hash' };
   const { html } = render(tool.id, false, { tools: [tool] });
   assert.ok(html.includes(`href="/zema/tools/${encodeURIComponent(tool.id)}"`));
+});
+
+void test('connected CSV, citations and article cards link directly to a new composition without mounting an executor', () => {
+  for (const toolId of ['rockstar-csv-cleanup', 'mr-citations', 'mr-free-article']) {
+    const { html, mounts } = render(toolId);
+    assert.ok(html.includes(`href="/zema/compose?tool=${toolId}"`));
+    assert.ok(html.includes('このToolで仕事を組む'));
+    assert.deepEqual(mounts.filter((item) => runnerNames.has(item.name)), []);
+  }
+  for (const tool of catalog.filter((item) => !capabilityFor(item.id)?.available))
+    assert.equal(render(tool.id).html.includes('/zema/compose?tool='), false, tool.id);
 });

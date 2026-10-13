@@ -12,6 +12,7 @@ import {
   CircleDashed,
 } from 'lucide-react';
 import { catalog } from '@/lib/catalog';
+import { capabilityFor } from '@/lib/work-composition';
 import type { JobTool } from '@/lib/operations';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { SkyCandidateRunner } from '@/components/sky-candidate-runner';
@@ -166,6 +167,10 @@ export default function SkyToolWorkspace({
               <Link className={styles.action} href={`/zema/tools/${encodeURIComponent(tool.id)}`}>
                 Zemaで開く <ArrowUpRight size={16} />
               </Link>
+              {capabilityFor(tool.id)?.available && <Link className={styles.action} href={`/zema/compose?tool=${encodeURIComponent(tool.id)}`}>
+                このToolで仕事を組む <ArrowUpRight size={16} />
+              </Link>}
+              {tool.id === 'rockstar-csv-cleanup' && capabilityFor(tool.id)?.available && <p>仕事の組み立てでは小さなCSVの処理と検査を使えます。有料CSV受付の注文・決済・納品記録は作成しません。</p>}
             </section>
           ) : tool.id === 'rockstar-spider' ? (
             <SpiderWorkspace />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type SyntheticEvent } from 'react';
+import { useMemo, useState, useRef, useLayoutEffect, type SyntheticEvent } from 'react';
 import {
   AlertTriangle,
   ArrowLeft,
@@ -110,6 +110,13 @@ export function PatentAssistantRunner({
   language?: 'ja' | 'en';
   entry?: string;
 }) {
+  const execution = useRef({ busy: false, disabled: executionDisabled, mounted: true });
+  useLayoutEffect(() => {
+    const current = execution.current;
+    current.disabled = executionDisabled;
+    current.mounted = true;
+    return () => { current.mounted = false; };
+  }, [executionDisabled]);
   const [input, setInput] = useState<PatentIntakeInput>(emptyInput);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [assessment, setAssessment] = useState<PatentAssessment | null>(null);
@@ -153,6 +160,8 @@ export function PatentAssistantRunner({
 
   async function analyze(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (execution.current.busy || execution.current.disabled || !execution.current.mounted) return;
+    execution.current.busy = true;
     const next = assessPatentReadiness(input);
     setAssessment(next);
     setStep(3);
@@ -185,6 +194,7 @@ export function PatentAssistantRunner({
         setNotice('技術内容を修正して再実行してください。');
         onOutcome?.({ ok: false, text: '端末内の書類作成に失敗しました。入力を確認してください。' });
       } finally {
+        execution.current.busy = false;
         setRunning(false);
         onRunningChange?.(false);
       }
@@ -221,6 +231,7 @@ export function PatentAssistantRunner({
       );
       onOutcome?.({ ok: false, text: 'オンライン調査は利用できませんでした。端末内の検索式とドラフトをこのカードで確認してください。' });
     } finally {
+      execution.current.busy = false;
       setRunning(false);
       onRunningChange?.(false);
     }
