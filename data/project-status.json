@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-02",
+  "updatedAt": "2026-10-13",
   "milestone": "Pixel 10 compile-only Developer Previewの初回full build準備",
   "nextAction": "Sky公開候補のschema v4・ライブラリ統合はlocal合成212 assertions、関連51試験、保存→Zema起動→出典整理→端末成果復元まで確認。ファイルdownload・clipboardは未受入。S0-02の技術/公開判断を分離したr46と22作業再評価を保持し、親gateは未完了。AI02等の既存参照不足を正本との版照合で解消し、PC権限・本人OAuth・本番配備/復旧は別受入。avocadoMiniはR5を基準に、1本自律・使用時200mm・全空間裸眼表示の方式と安全、精密3D入力、実部品収納を先に検証する（MAT15）。E3の4本＋別Hubを必須構成へ戻さない。Pixel/QEMU等の既存OS受入は独立して継続する。",
   "tasks": [
@@ -967,7 +967,9 @@
         "app/sky/manifest.webmanifest/route.ts",
         "lib/sky-app-manifest.ts",
         "tests/sky-app-manifest.test.mjs",
-        "docs/sky.md"
+        "docs/sky.md",
+        "app/columbia/route.ts",
+        "tests/columbia-shortlink.test.mjs"
       ]
     },
     {

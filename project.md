@@ -1618,3 +1618,7 @@ MR成果保存を短命のDOM外Blobクリックから通常のUTF-8 Markdownリ
 公開画面の既存配布導線を照合し、通常Connectorの許可Originに現行Skyを追加した。health取得200・未認証のservers取得401だけを検証し、キー発行や全Toolの本番受入は行っていない。承認待ちの4機能試験は通常modeを流用せず限定modeを使用する。
 
 Sky接続画面はブラウザのonLineを通信設定のhintとして扱い、Sky APIの応答と本人認証で接続可否を判定する。401応答はSkyへ到達した証拠だが、サインイン完了・PC接続・利用権の証拠ではない。認証待ち/再確認/取得失敗中は接続操作を停止し、再確認はGETだけ。認証再確認中の古い接続応答は成功へ昇格させない。外観と接続コード発行の承認境界は維持する。
+## 2026-10-13 — Columbia Campus short link
+
+WEB04 / ROCK: `https://avoado.si/columbia` を Columbia Campus の安定した公開入口として追加した。GET/HEADを一時転送し、NFC・キャンペーン用queryは保持するが、`campus`はColumbiaへ固定する。既存のSky、Campus、NFCタグ別導線は変更しない。route単体試験・型検査・production build・公開後の実responseを別々に確認する。
+

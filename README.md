@@ -43,6 +43,8 @@ The dedicated **avocadoMini R5** and small-satellite launch vehicle **rocketstar
 
 **Open the design documents:** [avocadoMini R5 PDF](docs/avocado-mini-r5/package/avocadoMini_RockstarOS_R5_Integrated_Design.pdf) · [RockstarOS v1.0 PDF](docs/rockstaros-complete-design-v1.0.pdf) · [rocketstar R1.0 PDF](docs/rocketstar-design/outputs/rocketstar_Complete_Design_R1_0/rocketstar_Complete_Design_R1_0.pdf) · [Complete design index](#design-library)
 
+**Campus entry:** [`https://avoado.si/columbia`](https://avoado.si/columbia) is the stable public shortcut to the Columbia Campus experience. NFC and campaign query parameters are preserved while the campus remains fixed to Columbia.
+
 <!-- sky-cloud-text-preview:start -->
 Zemaの「仕事」からクラウドAIの依頼準備・見積履歴を確認できます。仕事は再読込後も同じURLへ戻り、認証期限切れは同じ仕事へのサインインを案内します。回答のクラウド保存は初期offです。現在、実Provider資格情報・信頼済み料金・請求照合は未受入のため、AI実行は準備中です。入力してもAIへの送信や課金は始まりません。料金未設定時は見積もりも保存できません。
 <!-- sky-cloud-text-preview:end -->
