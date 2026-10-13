@@ -1,6 +1,6 @@
 ## 2026-10-13 — サービス全体の設計書を再構成
 
-主担当Git / CI / Operations、ROCK、DOC04/H1。利用者の「やりたいことは変わらない、最初から設計書を組み直す」に基づき、最新main `4273ef02`から分離した `codex/service-design-rebuild` で[統合基本設計](docs/service-design/README.md)を作成。利用体験、共通契約、Jenniffer/Mini/Pro/rocketstarのprofile、実現順、RQ01〜RQ50を引き継ぐ。既存ポータル/関係図/OS/Tool詳細/次のpromptの古いSIM主入口と親仕事状態を現在の正本へ合わせる。Jenniferの役割は専用branchで確認済み。実装・価格・権限・原本byte・各受入gateは変更しない。元のdirty作業コピーを保全した。
+主担当Git / CI / Operations、ROCK、DOC04/H1。利用者の「やりたいことは変わらない、最初から設計書を組み直す」に基づき、最新main `4273ef02`から分離した `codex/service-design-rebuild` で[統合基本設計](docs/service-design/README.md)を作成。利用体験、共通契約、Jenniffer/Mini/Pro/rocketstarのprofile、実現順、RQ01〜RQ50を引き継ぐ。既存ポータル/関係図/OS/Tool詳細/次のpromptの古いSIM主入口と親仕事状態を現在の正本へ合わせる。Jenniferの役割は専用branchで確認済み。実装・価格・権限・原本byte・各受入gateは変更しない。元のdirty作業コピーを保全した。 GitHubの[レビュー用draft PR #114](https://github.com/k999ln/rock/pull/114)へ保存済み。main統合と公開Site配備は行っていない。
 
 検証: 最終 `npm run verify` exit0（Node2142 pass/既存skip1、仕事API1356、CSV385、asset欠落0）。50要望の対応・90参照・Jennifer/Pro補足を含む独立再検収が合格。文書・回帰の結果とGit/GitHub/main/公開の区別は[証拠](docs/evidence/service-design-rebuild.json)へ記録する。次はJennifer sourceのCI/検収・context受入と実装branchへの引継ぎ同期、既存文章仕事の同一公開artifact受入。後払い/旧Wallet gate・passkey/Provider・OS/各hardwareは独立条件。
 

@@ -204,10 +204,15 @@
     "branch": "codex/service-design-rebuild",
     "baseSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
     "localCommit": true,
-    "githubSaved": false,
+    "githubSaved": true,
     "mainIntegrated": false,
     "published": false,
-    "initialDocumentCommit": "a1fe72b4c4d3732f9eded2fddd3ba75ec12363a6"
+    "initialDocumentCommit": "a1fe72b4c4d3732f9eded2fddd3ba75ec12363a6",
+    "savedContentCommit": "91b26bdf783dd9458c3f7cafe59b834ec0561a38",
+    "pullRequest": 114,
+    "pullRequestUrl": "https://github.com/k999ln/rock/pull/114",
+    "pullRequestState": "draft",
+    "ci": "not_yet_confirmed_for_final_metadata_head"
   },
   "verification": {
     "status": "passed",
