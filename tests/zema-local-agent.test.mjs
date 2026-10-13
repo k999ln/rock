@@ -37,8 +37,10 @@ void test('citation and application checks reuse the existing pure tools', () =>
     markdown: '本文。（出典: [公式](https://example.com/source)）',
     language: 'ja',
   });
-  assert.match(citations.content, /## 出典/);
-  assert.ok(citations.content.includes('https://example.com/source'));
+  assert.equal(
+    citations.content,
+    '本文。\n---\n\n## 出典\n\n- [公式](https://example.com/source)\n',
+  );
 
   const check = executeZemaLocalAgentTool('coconala_check', {
     brief: 'Zoom面談への参加が必須です。',
