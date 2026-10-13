@@ -110,7 +110,7 @@
 
 ## OS稼働受入・ゲーム作者向けWallet・ATM手数料のプロンプト / 2026-09-09
 
-- GitHub 16:09 UTCのmain `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、PR #1 OPEN、同SHAの各CI成功を取得しfetchで一致を確認。監査は `docs/os-readiness-audit-20260909.md`。
+- GitHub 16:09 UTCのmain `7cdbb5fedc86ee3978ed329d9312147d137c9199`、native `fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5`、PR #1 OPEN、同SHAの各CI成功を取得しfetchで一致を確認。監査は `docs/service-design/04-delivery-and-acceptance.md`。
 - RQ12〜15、OS受入のNOT_RUN雛形、実行プロンプト、進捗入口を保存。手数料0の対象は利用者の補足どおりATM。ゲーム料金を無料とも有料とも確定せず、既存OS月額を保持。新しい「OS内にgame要素を入れるとどうなるか」は相談として扱い、全OSのゲーム化を確定仕様にしていない。
 - 別担当がOS不足/Wallet・ATM・ゲーム境界と最終文書を読み取り確認。逆交換の確定消費と原資のWallet側確認、ゲーム作者のmint権限禁止、復元時の同一authority単一writer、2gameの分離を補強した。
 - `npm run verify` 終了コード0。project/repository/baseline整合、型、製品lint、35 unit tests、build、ローカルAPI143 assertionsに成功。既知のVite configLoaderとNode module API警告は残る。本番サイトを公開せず、合成ローカルAPIのみ。
@@ -165,7 +165,7 @@
 
 ## Rock star OS 設計v0.1 / 2026-09-05
 
-- 利用者の「OS開発をメイン」の指示に基づき、[開発設計書](os-development-design.md)を作成。既存product/architecture/fund/MCP/workflowと、配信側 `c6942d5` のbackend-design/READMEを読み、9要求・OS責務・14受入条件・7初期チケットへ対応付けた。
+- 利用者の「OS開発をメイン」の指示に基づき、[開発設計書](rockstaros-complete-design.md)を作成。既存product/architecture/fund/MCP/workflowと、配信側 `c6942d5` のbackend-design/READMEを読み、9要求・OS責務・14受入条件・7初期チケットへ対応付けた。
 - AOSP/Android/Googleの一次資料で、Cuttlefish、Pixelの解除/復旧とvendor入手条件、Linuxビルド要件、バックグラウンド制約、UID/SELinux/Keystore、署名/Store、AVB/Virtual A/Bを確認。参照リンクを設計判断の近くへ記載した。MCPとネイティブOAuthの安全境界も公式仕様で確認。
 - 設計案と既存実装を区別し、OS本体/SDK/第三者Store/Pixel対応は未実装・未検証と明示した。工程/電池/資源の数値は将来の仮目標で、測定実績ではない。
 - READMEとproject.mdをOS中心の案内へ更新し、初期仕様とWeb/PC資産・ファンドの試算式は保持。旧WebのAPI/DB衝突は解消しておらず、本番公開は保留のまま。OS設計の依存条件からは分離した。

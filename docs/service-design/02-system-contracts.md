@@ -26,6 +26,12 @@ ownerを本文の自己申告から決めない。同じoperation IDで違う入
 
 成果はartifact ID、job/step、作者/Tool版、入力版、schema、hash、検査結果、retentionを持つ。実行receipt、検収、納品、実入金は異なる証拠。文章の生成成功だけで権利確認・顧客検収・売上確定を行わない。
 
+### Tool・Recipe・Runの互換境界
+
+Toolは単一機能、Recipeは固定Tool版と型付き入出力・順序・確認点、AutomationはRecipeにowner・対象resource・予定・許可・予算を結ぶ設定、Run/Attemptは一工程の論理実行と再試行である。これらを名前だけで新schemaへ移さず、既存Work/Run/Attempt、Tool SDKとfixtureへ対応づける。Recipeは循環、未知版、型不一致、無制限分岐/再帰、任意shell式を拒否し、最大工程・試行・費用を開始前に説明する。
+
+第三者Toolの導入では作者鍵、配布digest、license/SBOM、OS/API互換、入出力・資源上限、通信先、保持、取消・サポート終了を審査する。導入成功はPackageInstaller等の実結果で確認し、download成功から推測しない。作者鍵、catalog鍵、OS/OTA鍵は分離し、更新/失効/権限差分を実行直前にも照合する。署名は作者の同一性を示すもので、安全性や利益を保証しない。
+
 ## 4. 状態を混ぜない
 
 親仕事の現行Web状態は[workflow](../../lib/workflow.ts)の **`active / review / completed / cancelled`**。作成はactive、手順の合格記録を経てreview、本人完了でcompleted、取消でcancelledとなる。step outcomeのfailed/needs_reviewと、親状態を区別する。
@@ -58,9 +64,15 @@ A2Aは`awaiting_approval`、dispatch系、`working`、`indeterminate`、cancel�
 
 Cloud停止・結果不明の契約は[継続実行](../sky-cloud-continuity.md)、[A2A](../sky-a2a-bridge.md)、nativeは[全体詳細設計](../rockstaros-complete-design.md)を使う。外部通信のない処理だけ、同じ入力・版の有限recipeとして端末内完了を認める。
 
+### 条件実行・ローカル接続の引継ぎ
+
+予定、本人指定の入力取込、充電/通信/熱/容量の条件を承認済みAutomationへ結ぶ。変更中の入力はsnapshotを固定してから扱い、電源OFFや初回unlock前の秘密復号を前提にしない。時刻/DST変更、取り逃し、process終了後のlease/outboxを同じ発火/run IDで照合する。新しい通信先・対象・model・費用・外部作用を条件実行の同意へ自動追加しない。
+
+Mr.の固定Toolは[既存adapter](../../lib/mr-tools.ts)と[固定原本](../../vendor/mr/)を維持する。PC接続はinitialize→initialized→tools/listの通信結果と、別のtools/call結果を確認する。ブラウザ単独/PC/MCPの実行先を表示し、失敗時に黙って別経路へ切り替えない。Origin/Host、短命な接続資格、入力上限、パス逸脱拒否、一時領域消去を保持し、原稿・本文をサーバー履歴やログへ混ぜない。端末自身のlocalhostとPCのlocalhostは異なるため、スマホ接続へ旧loopback tokenを流用しない。
+
 ## 6. 料金とWalletを説明できるようにする
 
-最新確定の設計は[アカウント入口の判断](../account-entry-proposal.md)とbaselineの`accountEntryDecision`である。アカウント無料、期間パスは6か月未満、従量はしきい値1,000円または月末の後払い・初期上乗せ30%、本人が月の上限を指定する。残高を持たず、回線つき機器には別の基本料を設ける。期間パスの自動更新は既定オンを購入画面へ明示し更新前に通知、途中返金は既定なしという既存判断を引き継ぐ。外部確認と実装・本番受入は残る。
+最新確定の設計は[製品ベースのaccount方針](../product-baseline.md)とbaselineの`accountEntryDecision`である。アカウント無料、期間パスは6か月未満、従量はしきい値1,000円または月末の後払い・初期上乗せ30%、本人が月の上限を指定する。残高を持たず、回線つき機器には別の基本料を設ける。期間パスの自動更新は既定オンを購入画面へ明示し更新前に通知、途中返金は既定なしという既存判断を引き継ぐ。外部確認と実装・本番受入は残る。
 
 利用者に示す金額は、商品代、passの対象、si/provider原価、上乗せ、外部決済実費、回線基本料、税等の適用条件を別に説明する。30%とSkyのTool売上手数料10%を同じ注文へ無条件に二重適用しない。対象範囲、丸め、税、取消・請求失敗の契約は決めてから同じreceiptへ結ぶ。
 
@@ -69,6 +81,12 @@ Cloud停止・結果不明の契約は[継続実行](../sky-cloud-continuity.md)
 現行実装にはfunded Walletを要するpaid dispatch gateがある。**後払い・残高なしへ移るための支払能力判定/予約契約のADRと受入は未完了**。設計書の訂正だけでgateを外さず、postpay adapterと同意・meter・同時予約・請求照合が受け入れられるまで現行の実行保留を維持する。既存native合成Walletは回帰系統として残す。
 
 旧月888 centsの成功報酬系は[料金保留](../product-baseline.md)とMission ControlのexecutionHoldsを維持する。ATMのRock手数料0、ゲーム料金未定、検証済み売上10%、条件達成後のSky取り分0%への切替を混ぜない。金融履歴・収益照合のWalletと、消費者のstored balanceは別概念である。
+
+### 旧試算を保存する互換条件
+
+[fund](../../lib/fund.ts)と[個人費用試算](../../lib/settlement.ts)は金融実績や有料実行の予算authorityではない。旧共通収益モデルでは販売先手数料控除後の収益Rから共通運用費Cを最大Rまで回収し、残額へ月最大8.88 USD相当の利用料を一回だけ適用して分配原資Dを求めた。基本枠/boost枠はDと入力率から切り捨て、基本分配は人数で均等、boostは支援予定額比で配分し、未分配額と端数を共同留保へ残す。全分配＋留保=D、支援金をR/Dへ足さない、収益0なら分配0、Tool/端末数で旧利用料を重ねない、個人の電気/通信/API/税/機器費用と混ぜない、という回帰条件を保持する。
+
+現在の実装は旧利用料を`legacyFixture`に限定し、通常試算のfeeは0としている。歴史式を保存しても旧月額の徴収や投資受付を再開しない。旧個人モデルは別の試算として保持し、未回収費用・仮定為替・未実測電力を実収益や請求へ換算しない。
 
 ## 7. 本人と複数端末
 
@@ -84,11 +102,25 @@ service access、購入済みPackage、接続済みProvider、実行scope、支�
 
 将来のhost app成果連携は、本人/recipient/scope/期限/失効、artifact schema、hash、truncation、表示revisionを検査する。現在の手元Fitness plugin候補を外部cross-origin SDKの完成にしない。成果の表示許可と外部公開・送信・機器作用の許可を分ける。
 
+### Homeの追加機能と本人選択データ
+
+既存Home→`/add`のSky・データ回収・LLM入口を再利用する。Skyは標準機能、追加/解除は機能IDだけを`rockstaros.addons.v1`へ保存し、既存暗号化設定backupにも含める。ブラウザ単位の追加設定はaccount entitlementではなく、LLM追加は既存Zema接続/見積/承認への入口でありmodel binary導入ではない。
+
+`/add/data`は本人が選ぶ最大20ファイル＋メモ、合計2 MiB、メモ64 KiB以内を対象に、AES-256-GCM/PBKDF2-SHA256（310000回）の`.rockdata`へ書き出す。本文とpassphraseはブラウザメモリのみで処理し、再読込/消去で破棄する。自動端末走査、他画面の履歴回収、LLM送信は行わない。容量/形式/名前/重複ID/hash/GCM認証の失敗時は取り出さず、保存失敗や処理中の消去/離脱で遅延結果を成功表示しない。phrase再発行はできず、既存backup v1の互換を維持する。外部自動取得が必要なら対象・owner・同意・保存先を確定して既存adapterへ追加する。
+
+BYOKはProvider資格情報と原価負担の選択であり、account本人性、Tool許可、送信同意、支出上限を免除しない。見積のためにProviderへ依頼文を共有する同意と、有料実行のbudget承認を分け、同意監査にはpolicy版と依頼digestだけを残す。通信経路を切り替えてもowner/job/承認scopeは変えず、受付済みcloud jobの圏外継続と未送信のlocal下書きを別に表示する。
+
 ## 9. si、ゲーム、発明、物理作用
 
 端末内LLMは非信頼planner、cloud generatorとJevは明示接続する処理役/評価役。全modelの結果はadvisoryで、本人承認・Tool成功・Wallet確定へ昇格しない。[LLM正本](../llm-evaluation-architecture.md)を維持し、対応端末のlocal能力を全機種必須にしない。
 
 非金融のGame/創作/Material digital twinは同じAsset・provenance・jobへ接続する。GTAは版・server・権限を固定したadapter、交換はRQ13、作者SDKはRQ14、物質の実操作は外部lab、rocketstarは独立制御と安全系のgateを通す。plan、simulation、表示、物理成功を別に記録する。
+
+### Game/ATMと作者SDKの独立条件
+
+RQ13のゲーム交換はATMとは別adapter/同意/試験とし、同じWalletの予約・台帳・照合で二重使用を防ぐ。ゲーム作者が発行できるpoint/bonusと実資金記帳の権限を分離する。ゲーム→Walletは確定消費と承認済み原資を照合する別能力で、方向/通貨/レート/返金が未指定のまま本番へ開かない。ゲーム削除やbackup復元で成立済み交換を消さず、元と復元先を同時に支出可能にしない。ATM障害とgame障害は個別扱いだが、共通Walletが停止中なら双方の新規資金確定を止める。
+
+RQ14はAPI/SDK、合成sandbox、動く最小sample、導入/復旧診断を渡す。2作者・2game・2owner/player（1ownerは2端末）で認証/同意・同時予約・再起動・失効を検査し、同じplayer文字列や冪等キーでも他game/ownerへ漏れないことを確認する。初回導入時間・成功率・原因特定/復旧時間を測り、内部試験を市場優位性や実ゲーム許諾へ換算しない。Game利用だけで未同意のOS月額を始めない。
 
 ### Sky Compute Grid（RQ50）
 

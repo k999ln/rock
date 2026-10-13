@@ -1,8 +1,8 @@
 <a id="rockstaros--simesim主導サービスを支えるaiネイティブos設計"></a>
 
-# RockstarOS — SIM/eSIM主導サービスを支えるsiネイティブOS設計
+# RockstarOS — アカウントサービスを支えるsi・Agent共通runtime設計
 
-状態: 2026-10-02製品方針同期。利用者向けの主商品は**物理SIM/eSIMの購入を入口にRockstarOS、Sky、Zema、クラウドLLM/Agentへ簡単にアクセスできるサービス**である。本書はそのサービスを支えるOS/Coreの技術設計であり、製品が端末内LLMを前提にするという意味ではない。SIM/eSIMの購入権・回線activation・OS/client導入・service entitlementは別状態とし、OS binaryをSIM/eUICCへ保存しない。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品の正本は[product baseline](product-baseline.md)と[SIM/eSIM entitlement design](sim-service-entitlement-claims.md)、LLMとJevの現在地は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)、現在の判定は[全体構成](system-composition.md)、作業入口は[Product / UX](workstreams/01-product-ux.md)および[Android / Device / Local si](workstreams/07-android-device-local-ai.md)。RQ49の物質・配合・工程探索とavocadoMiniは、このCoreの権限、仕事、Tool、receiptを再利用する応用systemであり、全体像は[空間発明システム完成設計書](rockstaros-avocado-mini-complete-design.md)、Core詳細は[Material Invention Core設計](material-invention-core.md)を正本とする。
+状態: 2026-10-10確定の無料アカウント入口へ同期。利用者向けの主商品は**一つのavokadoアカウントで、スマホ・PC・ブラウザからSky・Zema・si Agentを使うサービス**である。Jenniferは会話窓口、Skyは能力の発見/接続、Zema/AMCは裏側の仕事管理。SIM/eSIMの購入は必須にせず、機器回線や署名claimを任意の独立契約として扱う。本書はそのサービスを支えるOS/Coreの技術設計であり、製品が端末内LLMを前提にするという意味ではない。SIM/eSIMの購入権・回線activation・OS/client導入・service entitlementは別状態とし、OS binaryをSIM/eUICCへ保存しない。**本文の新しい契約・状態名・数値目標は提案であり、現行APIや受入済み機能の宣言ではない。** 実装済みの範囲は第8節のsourceと証拠で区別する。製品の正本は[product baseline](product-baseline.md)と[サービス利用権の設計](service-entitlements.md)、LLMとJevの現在地は[LLM・評価モデル設計](llm-evaluation-architecture.md)と[`data/llm-capabilities.json`](../data/llm-capabilities.json)、現在の判定は[全体構成](system-composition.md)、作業入口は[Product / UX](workstreams/01-product-ux.md)および[Android / Device / Local si](workstreams/07-android-device-local-ai.md)。RQ49の物質・配合・工程探索とavocadoMiniは、このCoreの権限、仕事、Tool、receiptを再利用する応用systemであり、全体像は[空間発明システム完成設計書](rockstaros-avocado-mini-complete-design.md)、Core詳細は[Material Invention Core設計](material-invention-core.md)を正本とする。
 
 ## 1. 固定する中核と依存方向
 

@@ -22,7 +22,7 @@
 - [docs/sky-billing.md](../../docs/sky-billing.md)
 - [docs/workstreams/03-wallet-billing-providers.md](../../docs/workstreams/03-wallet-billing-providers.md)
 - [docs/workstreams/09-business-pilots.md](../../docs/workstreams/09-business-pilots.md)
-- [docs/sim-led-product-architecture.md](../../docs/sim-led-product-architecture.md)
+- [docs/service-design/02-system-contracts.md](../../docs/service-design/02-system-contracts.md)
 
 ## 次の作業
 

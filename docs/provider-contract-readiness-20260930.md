@@ -2,11 +2,13 @@
 
 ## 2026-10-10 機器用IoT回線を優先し、消費者向けeSIMは保留
 
-利用者が [アカウント入口と回線の役割整理](account-entry-proposal.md) を確定した。主商品はアカウントで使うAgentになり、SIMは機器の任意部品になった。このため契約準備の優先は **機器（avocadoMini）用のIoT向けdata専用回線** へ移す。確認事項: 第三者利用の手続き（MVNOに当たる場合のpartner登録）、SGP.32対応SIMの料金・plan・機器要件、SMSなしの可否、電気通信事業法の登録・届出の要否、携帯電話不正利用防止法の改正（data SIMの本人確認）の対象。本書の消費者向けeSIM（eSIM Go等）の比較と発行・照合ゲートは **保留** とし、codeは既定で無効のまま残す。
+利用者が [アカウント入口の確定方針](product-baseline.md) を確定した。主商品はアカウントで使うAgentになり、SIMは機器の任意部品になった。このため契約準備の優先は **機器（avocadoMini）用のIoT向けdata専用回線** へ移す。確認事項: 第三者利用の手続き（MVNOに当たる場合のpartner登録）、SGP.32対応SIMの料金・plan・機器要件、SMSなしの可否、電気通信事業法の登録・届出の要否、携帯電話不正利用防止法の改正（data SIMの本人確認）の対象。本書の消費者向けeSIM（eSIM Go等）の比較と発行・照合ゲートは **保留** とし、codeは既定で無効のまま残す。
 
-確認日: 2026-10-02（公式公開資料を再確認）。これは契約前の技術・公開価格比較であり、取引条件・販売権・日本国内の提供資格・見積・アカウント審査・sandbox accessを確認した結果ではない。外部への問い合わせ、契約、課金、実profile発行、配備はしていない。SIM/eSIM販売に付属するRockstarOS service accessを主商品とし、物理SIM/eSIM販売・通信開通・OS/client導入を別状態で扱う方針は[product baseline](product-baseline.md)に従う。
+確認日: 2026-10-02（公式公開資料を再確認）。これは契約前の技術・公開価格比較であり、取引条件・販売権・日本国内の提供資格・見積・アカウント審査・sandbox accessを確認した結果ではない。外部への問い合わせ、契約、課金、実profile発行、配備はしていない。現在の主商品は無料accountからのRockstarOS service access。consumer eSIM販売は保留し、任意の機器回線について物理SIM/eSIM販売・通信開通・OS/client導入を別状態で扱う方針は[product baseline](product-baseline.md)に従う。
 
-## 結論
+## 保留中のconsumer eSIM比較（2026-10-02時点の条件）
+
+以下は当時の候補/価格/制限の記録で、現在の供給元推薦・契約済み・提供可能という意味ではない。機器IoT回線の現行確認は冒頭とWallet workstreamを優先する。
 
 最初のeSIM商用・技術打診先は**1GLOBAL Connectを優先候補**、**eSIM GoをUX/APIの比較候補**にする。1GLOBAL ConnectはAccount／Subscriber／Product Offering／Orderを持ち、一般のPOST/PATCH operationにidempotency対応を説明する。一方でAPI Referenceが対応endpointを個別に指定するため、実際のprofile-issuing orderで有効かは契約前に確認する。eSIM Goは公開Quick Startでvalidate→transaction→QRを試せ、branding profileで回線のNetwork Name、Install Name、QR logo、Android Direct Installを設定できるため、「eSIM追加時にRockstarOSブランドを見せる」検証の質問が具体的。eSIM Goのbranding/network-nameはSIM/eSIMの表示とinstall UXであり、OSをeSIMへ格納/自動導入する意味ではない。どちらも日本での再販権、consumer eSIM適合、料金、サポート責任が決まった証拠はない。
 

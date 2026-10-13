@@ -2,7 +2,7 @@
 
 ## 2026-10-10 回線方式の確定
 
-利用者が [アカウント入口と回線の役割整理](account-entry-proposal.md) を確定した。Miniの回線は次のとおり。
+利用者が [アカウント入口の確定方針](product-baseline.md) を確定した。Miniの回線は次のとおり。
 
 - 範囲は国内。通信方式は **LTEのみ**（5Gは入れない。10-05の「5G Sub-6候補」は取り下げ）。
 - SIMは **IoT向けのdata専用SIM**。試作はカード（nano SIM）、量産はchip（組込み型）。将来の通信partner変更に備えて **SGP.32に対応したSIM** を選ぶ。遠隔のprofile切替は自作しない。

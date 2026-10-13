@@ -12819,7 +12819,7 @@
       "scope": "SIM/eSIM購入から本人認証、端末別利用権、Cloud利用開始と料金確認を段階受入する",
       "inputs": [
         {
-          "path": "docs/sim-led-product-architecture.md",
+          "path": "docs/service-design/02-system-contracts.md",
           "locator": "現行契約・失敗復旧・受入境界"
         },
         {

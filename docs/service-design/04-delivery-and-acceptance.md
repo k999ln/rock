@@ -2,7 +2,7 @@
 
 再構成版 1.0。最初に完成させるのは、文章を納品する個人が「自分の素材から成果を作り、確認・保存・持ち帰り・再利用できる」一周。需要と改善量は実測で判定し、Mini/Pro/Rocketstarの研究と非金融Gameを並行して進める。
 
-主担当はGit / CI / Operations、ROCK、既存DOC04、AMC主担当H1。Sky/ZemaはO5/SKY21、WebはWEB06、共通runtimeはOS10、ProはP2/MAT16、Game/発明は既存AI06等のtaskPlansへ渡す。担当は[Mission Control](../mission-control.md)のtaskAssignmentsを正本にし、prefixから推測しない。
+主担当はGit / CI / Operations、ROCK、既存DOC04、AMC主担当H1。Sky/ZemaはO5/SKY21、WebはWEB06、共通runtimeはOS10、Pro統合設計はP1、PC実装はP2/MAT16、Game/発明は既存AI06等のtaskPlansへ渡す。担当は[Mission Control](../mission-control.md)のtaskAssignmentsを正本にし、prefixから推測しない。
 
 ## 設計入力の現在地
 
@@ -50,7 +50,15 @@ JenniferはPR #113 / head `3349c2475468443bc7ecd94a4e3782343f514a8f`で役割と
 
 担当: O5/WEB06、Core/AI05、ROCK/JOINT。まず通常SkyとmainのColumbia NFC英語入口を同じsource/実responseで受け入れる。カードにURLだけを書き、NFCを本人・利用権・鍵にしない。
 
-5大学共用Hub、対象学生6枠/一般5枠、host app内成果は元作業コピーの追加候補として正本と競合を確認する。アプリ連携は認証、recipient/scope、artifact schema、削除/失効、version対応、本人A/Bを同じAPIで受け入れる。別origin SDK・スマホcloud MCP・有料追加枠を画面だけで完成にしない。
+5大学共用Hub、対象学生6枠/一般5枠、host app内成果は下記の保存済みbranchと元作業コピーの候補を比較し、正本との競合を確認する。アプリ連携は認証、recipient/scope、artifact schema、削除/失効、version対応、本人A/Bを同じAPIで受け入れる。別origin SDK・スマホcloud MCP・有料追加枠を画面だけで完成にしない。
+
+### 並行する大学NFC・Sky候補の引継ぎ
+
+2026-10-13のGitHub再読取りで、[PR #112](https://github.com/k999ln/rock/pull/112)は`codex/sky-app-outputs-20261013` / `7df8dfd6740db976c795c058620d7db679062746`、[PR #115](https://github.com/k999ln/rock/pull/115)は`codex/sky-social-feed` / `54bbc021bf1961e1cc939498f904d62e138970e3`、いずれもmain向けのopen候補である。未統合候補をmain実装済みとは扱わない。
+
+NFC担当からの別artifact報告は`avoado.si`のSky v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db`、5大学の`/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub?source=nfc`。本設計作業ではその公開readbackを再実施していない。カードのURLは大学contextを選ぶだけで、本人性、学生所属、優待、購入、実行権限を与えない。既存OS/browserからSky→Zemaへ進める。NTAG215への実書込・iPhone/Android再読取り、6枠の運用、有料MCP/Providerの一周は独立した未受入条件である。
+
+統合順は最新main→本設計の入口/優先順→#112と#115の候補比較と保全統合→同一候補のCI/UI/実NFC受入。NFC担当のmerge比較報告では`components/sky-workspace.tsx`、`project.md`、`tests/web-route-style-contract.test.mjs`が競合対象。採用時に最新headで再比較し、大学別導線・host成果・feed・local agentの双方の必要機能を保持する。別origin、所属確認、学生枠、料金gateをURL表示だけで成立させない。
 
 複数clientは既存jobを表示/照合し、単一authority deviceの移管は独立gate。PC sleep・圏外・失効で仕事を重複実行しない。OS内Zemaとhost app結果画面の違いを、業務契約の複製で解決しない。
 
@@ -62,12 +70,20 @@ MiniはR5の単独操作/保存/停止、光学・入力・安全のprototypeと
 
 各系列の成果はそのprofileの証拠で判定する。汎用Web回帰の成功をhardwareの成立条件へ数えない。
 
+### OS候補を引き継ぐ際の検査
+
+QEMU/RQ12はsource/依存版/manifestから新しい領域へ再buildし、同一archiveのfresh導入、boot/native UI/Sky/模擬Wallet、許可外操作・通信・重複拒否、通常終了/再起動後の結果・同意・履歴、更新失敗/容量不足/通信断、A/B/backup復元、削除までを一連で記録する。開発者の既存VMやprivate pathへ依存した試用を配布受入にしない。Gameを追加した候補は過負荷/停止でもCoreとWalletの基本操作を維持できることを再試験する。
+
+Pixelは正確なSKUのBSP/firmware/vendor/partition/AVB/rollback index、再配布条件、純正復旧物/hash、USB経路、署名鍵保管/rotation、更新前後のdata互換、保守担当/SLAを揃えて既存first-flash gateへ進む。OTAでsystemを戻しても共有userdataや外部取引が戻るとは扱わず、直前OS/backup形式との互換、未確定取引とauthorityの再照合を受け入れる。開発用userdebug/ADB/root、APK、Cuttlefish、QEMUの成功を正式user imageや実機の証拠へ移さない。
+
+旧AT01〜AT14の分類は[Native OS検証](../native-os-validation.md#継続受入と旧設計からの引継ぎ)に集約する。旧並列数・時間・電池/熱・catalog期限等の仮定は自動採用せず、現行profileの強制点/実測/証拠と、[OS受入報告](../templates/os-acceptance-report.md)、[Native/QEMU](../workstreams/06-native-qemu-release.md#continuing-acceptance)、[Device gate](../../data/android-first-flash-gate.json)へ結ぶ。
+
 ## 未決定事項と決め方
 
 - **Jenniferの統合・検収・context** — ROCKが統合sourceのworker/reviewerのserver証拠相関と既存AMCの受入を検証する。OWNERがCOLOMBIA原本/版と利用資料を指定し、JOINTがProvider/nativeの同一候補を受け入れる。役割を再質問せず、既存Git正本を使う。
 - **期間パスの対象・金額・期間** — OWNERとBillingが既存確定範囲内でSKU、対象能力、更新通知、取消/返金条件を固定する。最終確認画面とsandbox/外部確認を通してから販売へ進む。
 - **後払いと旧Wallet gate** — ROCKが支払能力・budget reservationのADRと移行案、EXTERNALが価格/meter/Stripe条件を出す。並列月上限・結果不明・請求失敗を受け入れるまで旧paid gateを開けない。
-- **大学別候補の優先順位** — OWNERの最新指示とmainのColumbiaカードを起点に、元dirty候補を同じSkyへ統合する範囲を確定する。学生所属/枠の資格水準、追加枠価格と実NFCは未受入。
+- **大学別候補の優先順位** — OWNERの最新指示とmainのColumbiaカードを起点に、#112/#115と元dirty候補を比較して同じSkyへ統合する範囲を確定する。学生所属/枠の資格水準、追加枠価格と実NFCは未受入。
 - **Pro最終構成・Mini表示/回線** — 各hardware担当が値入りBOM/ICD/試験を出し、OWNERが候補と調達条件を決める。旧価格/旧Hubや比較仮定を製品仕様へ昇格しない。
 
 ## 継続する時に読むもの

@@ -34,7 +34,7 @@ GM01の保存・復旧では、保持中なのに速度が残る粒子群、重�
 ## 関連資料
 
 - [siネイティブOS詳細設計・Game／IP縦断案](../ai-native-os-architecture.md)
-- [OS/Sky/Wallet/Game design](../os-sky-wallet-game-design.md)
+- [OS/Sky/Wallet/Game design](../service-design/06-consistency-contracts.md)
 - [Game API draft](../game-api-contract-draft.md)
 - [GX01 plan](../gx01-contract-implementation-plan.md)
 - [Value/spend runtime](../value-spend-runtime.md)

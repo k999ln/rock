@@ -1028,7 +1028,6 @@ export function validateBaseline(
   );
   const launchPageSource = read(resolve(root, 'app/rockstaros/page.tsx'));
   const hardwarePageSource = read(resolve(root, 'app/avocado-mini/page.tsx'));
-  const turntableSource = read(resolve(root, 'components/avocado-turntable.tsx'));
   requireValue(
     data.launchPage?.route === '/rockstaros' &&
       data.launchPage?.role === 'public_account_service_home' &&
@@ -1041,10 +1040,6 @@ export function validateBaseline(
       data.marketPositioning?.leadHardwareConcept === 'avocadoMini' &&
       data.marketPositioning?.leadHardwareForm ===
         'r5_200mm_autonomous_peer_minis_no_required_edge_hub' &&
-      data.marketPositioning?.previousLeadHardwareForm ===
-        'tower20_e3_four_fixed_height_towers_and_separate_edge_hub' &&
-      data.marketPositioning?.legacyReferencePriceAppliesTo ===
-        'historical_motion_tower_p0_kit_only' &&
       data.marketPositioning?.avocadoMiniStage ===
         'design_only_no_physical_prototype_or_sales' &&
       data.launchPage?.primaryAction === 'start_service_onboarding' &&
@@ -1054,33 +1049,20 @@ export function validateBaseline(
       launchPageSource.includes('SIMは不要です') &&
       !launchPageSource.includes('href="/sky/esim"') &&
       launchPageSource.includes('href="/connect"') &&
-      hardwarePageSource.includes('<AvocadoTurntable />') &&
+      hardwarePageSource.includes('avocadoMini R5') &&
+      hardwarePageSource.includes('200mm') &&
+      hardwarePageSource.includes('別Hubは不要') &&
+      hardwarePageSource.includes('価格は未確定') &&
+      !hardwarePageSource.includes('¥410,000') &&
+      !hardwarePageSource.includes('SIM/eSIMから') &&
       hardwarePageSource.includes('href="/rockstaros"') &&
       !launchPageSource.includes('href="/"') &&
       !launchPageSource.includes('createSkyToolApp') &&
-      turntableSource.includes('turn * Math.PI * 2') &&
-      turntableSource.includes('className={styles.designDetails}') &&
-      turntableSource.includes('className={styles.osSection}') &&
-      turntableSource.includes('/rockstaros/avocado-mini-kit-p0.png') &&
-      data.marketPositioning?.motionTowerP0Engineering?.kitTowerCount === 4 &&
-      data.marketPositioning?.motionTowerP0Engineering?.kitEdgeHubCount === 1 &&
-      data.marketPositioning?.motionTowerP0Engineering?.freeStandingMaxHeightMm === 1200 &&
-      data.marketPositioning?.motionTowerP0Engineering?.dockedMaxHeightMm === 1800 &&
-      data.marketPositioning?.motionTowerP0Engineering?.llmCanAuthorizeMotionRecordingOrSafetyBypass === false &&
-      data.marketPositioning?.tower20E3?.document ===
-        'docs/avocado-mini-tower20-e3/README.md' &&
-      data.marketPositioning?.tower20E3?.role ===
-        'historical_E3_baseline_superseded_by_R5' &&
-      data.marketPositioning?.tower20E3?.towerCount === 4 &&
-      data.marketPositioning?.tower20E3?.edgeHubCount === 1 &&
-      data.marketPositioning?.tower20E3?.fixedHeight === true &&
-      data.marketPositioning?.tower20E3?.maximumUsageHeightMm === 200 &&
-      data.marketPositioning?.tower20E3?.activeCameraCandidatesPerTower === 1 &&
-      data.marketPositioning?.tower20E3?.physicalTests === 0 &&
-      data.marketPositioning?.tower20E3?.manufacturingReleased === false &&
-      turntableSource.includes('¥410,000') &&
-      turntableSource.includes('購入する') &&
-      turntableSource.includes('/rockstaros/guide#install'),
+      data.marketPositioning?.legacyCommercialFields?.appliesToCurrentR5 === false &&
+      !['motionTowerP0Engineering', 'mini200E2Integration', 'tower20E3',
+        'avocadoMiniDesiredReferencePriceJpy', 'avocadoMiniSingleTowerProposedExTaxPriceJpy',
+        'currentFourTowerBasePriceJpyExTax'].some((key) => Object.hasOwn(data.marketPositioning, key)) &&
+      !['mini200E1', 'mini200E2', 'tower20E3'].some((key) => Object.hasOwn(data.materialInvention, key)),
     'avocadoMini製品ホームとOSホームを分け、製品から導入ガイドへ進めてください',
   );
   const miniR5 = data.marketPositioning?.r5;
@@ -1496,10 +1478,10 @@ export function validateBaseline(
     'AGENTS.md',
     'README.md',
     'project.md',
-    'docs/product.md',
-    'docs/architecture.md',
-    'docs/fund-and-mcp.md',
-    'docs/os-development-design.md',
+    'docs/service-design/README.md',
+    'docs/service-design/02-system-contracts.md',
+    'docs/service-design/06-consistency-contracts.md',
+    'docs/rockstaros-complete-design.md',
     'docs/os-prototype.md',
   ]) {
     requireValue(

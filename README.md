@@ -1,7 +1,3 @@
-<!-- service-design-rebuild:start -->
-サービス全体の設計を再構成しました。[Sky・Zema・Jenniffer・OS・Mini・Pro・rocketstarの統合設計](docs/service-design/README.md)は入口＋6章の7冊で、利用体験、共通契約、各製品、実現順、RQ01〜RQ50と12件の横断受入へ進めます。製品表示は小文字のsi、現行は無料アカウント入口。Jennifer（利用者表記Jenniffer）は利用者の全体窓口、Zemaは裏の仕事systemです。Jennifer sourceはPR #113でmain統合済み。本設計PRのmain統合、本番課金・実機・飛行は個別に受け入れます。
-<!-- service-design-rebuild:end -->
-
 <div align="center">
 
 # avokado
@@ -9,6 +5,8 @@
 ### One account. More ways to play, make, and get things done.
 
 Find Agents and Tools in **Sky**, keep a piece of work moving in **Zema**, and follow its costs in **Wallet**. **RockstarOS** provides the shared foundation for identity, permissions, records, and recovery.
+
+[Read the service design](docs/service-design/README.md): Jennifer coordinates your goal, Sky supplies capabilities, Zema manages the work and its cost, and RockstarOS enforces identity, permission, storage and recovery. Mini is an independent R5 spatial device; Pro is an NVIDIA si PC; rocketstar has its own engineering and flight-safety gates. The design covers the user journey, shared contracts, product profiles, delivery order, all 50 requirements and 12 cross-system acceptance scenarios.
 
 [Try the public Sky preview](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) · [Run it locally](#start-developing)
 
@@ -305,7 +303,7 @@ Updated: 2026-10-13 / 393 task records (32 parents, 192 children, 169 standalone
 | inspect the separately deployed Workers | [services/README.md](services/README.md) |
 | see the product preview site | [avocadomini.si](https://avocadomini.si) |
 | try the public Sky preview | [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky) |
-| read the confirmed requirements and how they changed | [Product baseline](docs/product-baseline.md) · [Specification history](docs/spec-history.md) |
+| read the confirmed requirements and how they changed | [Product baseline](docs/product-baseline.md) · [現行製品方針](docs/product-baseline.md) |
 
 Most design and work documents are written in Japanese. The README, source contracts, public SDK, and public previews are the intended starting points for a new contributor.
 

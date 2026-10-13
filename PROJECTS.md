@@ -2,7 +2,7 @@
 
 担当Botに実装を依頼する場合は[プロジェクト別Bot](toolkits/amc-agent/README.md#プロジェクト別bot)を使います。Sky、Zema、Walletなどの入口から、専用branchとPRへ成果を残します。
 
-> **この文書の役割** — 製品・実装単位から **ソースコードと担当資料の場所** を探すための案内です。これは何か・今どこまで出来ているかは [README](README.md)、文書全体の地図は [docs/README.md](docs/README.md)、仕様がいつどう変わったかは [仕様変遷](docs/spec-history.md)、全Toolとエージェントの機能は [エージェント・Tool総覧](docs/agents-and-tools.md) にあります。
+> **この文書の役割** — 製品・実装単位から **ソースコードと担当資料の場所** を探すための案内です。これは何か・今どこまで出来ているかは [README](README.md)、文書全体の地図は [docs/README.md](docs/README.md)、仕様がいつどう変わったかは [現行製品方針](docs/product-baseline.md)、全Toolとエージェントの機能は [エージェント・Tool総覧](docs/agents-and-tools.md) にあります。
 
 このページは、`k999ln/rock`の成果物を**製品・実装単位**から探す入口です。確定要望は[製品ベース](docs/product-baseline.md)、現在のtaskと完了条件は[進捗JSON](data/project-status.json)、部隊別Goal・進捗・ruleは[avokado Mission Control](docs/mission-control.md)、設計の正本は[全設計ポータル](docs/rockstaros-design-portal.md)を参照してください。ここに書くディレクトリの存在は、実機・本番・販売の受入完了を意味しません。
 
@@ -30,8 +30,8 @@ rocketstarの`/rocket-star/`はavocadoMiniサイト内のR1.0構想ページで�
 | **Wallet** — 費用と確認済み収益 | [`app/wallet/`](app/wallet/)・[`lib/rock-wallet.ts`](lib/rock-wallet.ts) | [Wallet / Billing / Providers](docs/workstreams/03-wallet-billing-providers.md) |
 | **Home / Settings** — 入口と端末・接続設定 | [`app/page.tsx`](app/page.tsx)・[`app/settings/`](app/settings/) | [Product / UX](docs/workstreams/01-product-ux.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
 | **Rock Studio** — Sky Tool作者向けのコード・SDK入口 | [`app/studio/`](app/studio/)・[`app/sky/publish/`](app/sky/publish/) | [Sky Tool SDK](docs/sky-tool-sdk.md)・[Sky / MCP](docs/workstreams/02-sky-mcp.md) |
-| **はじめる（Connect）** — SIM/eSIM購入の利用権claimの登録と、端末の接続 | [`app/connect/`](app/connect/)・[`app/api/rockstar/`](app/api/rockstar/)・[`app/api/esim/`](app/api/esim/)・[`app/api/devices/`](app/api/devices/) | [SIM/eSIM-led architecture](docs/sim-led-product-architecture.md)・[購入とサービス利用権](docs/sim-service-entitlement-claims.md)・[端末のアカウント接続](docs/rockstar-device-link.md) |
-| **追加（Add）** — 既存OS上のWeb/PWAへSky・データ回収・LLMを足す入口（2026-10-06） | [`app/add/`](app/add/) | [既存端末への機能追加](docs/sim-led-product-architecture.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
+| **はじめる（Connect）** — SIM/eSIM購入の利用権claimの登録と、端末の接続 | [`app/connect/`](app/connect/)・[`app/api/rockstar/`](app/api/rockstar/)・[`app/api/esim/`](app/api/esim/)・[`app/api/devices/`](app/api/devices/) | [SIM/eSIM-led architecture](docs/service-design/02-system-contracts.md)・[購入とサービス利用権](docs/service-entitlements.md)・[端末のアカウント接続](docs/rockstar-device-link.md) |
+| **追加（Add）** — 既存OS上のWeb/PWAへSky・データ回収・LLMを足す入口（2026-10-06） | [`app/add/`](app/add/) | [既存端末への機能追加](docs/service-design/02-system-contracts.md)・[Web / PWA / Sites](docs/workstreams/05-web-pwa-sites.md) |
 | **Campus** — 大学別のPeople / Project / Opportunity / Event / Community / Portfolio / ResourceとNFC/QR入口 | [`app/campus/`](app/campus/)・[`app/api/campus/`](app/api/campus/)・[`app/t/`](app/t/)・[`lib/campus.ts`](lib/campus.ts)・[`lib/campus-store.ts`](lib/campus-store.ts) | [Campus設計](docs/campus-layer.md)・[Product / UX](docs/workstreams/01-product-ux.md) |
 
 <a id="skyのai自動化チーム"></a>

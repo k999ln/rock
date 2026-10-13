@@ -47,7 +47,7 @@
         {"id": "current-public-delivery-readback", "required": true, "status": "blocked", "nextAction": "Obtain supported Sites static header parsing and verify all required routes for the same public version; production authenticated journey remains unaccepted.", "evidence": ["docs/evidence/work-composition-development.json"]},
         { "id": "dependency-license-inventory", "required": true, "status": "pass", "evidence": ["package-lock.json", "data/web-third-party-license-audit.json", "vite.config.ts", "scripts/web-bundle-inventory.mjs", "scripts/check-web-bundle-inventory.mjs", "tests/web-bundle-inventory.test.mjs"] },
         { "id": "product-license", "required": true, "status": "blocked", "ownerAction": "自作部分の製品ライセンスを明示選択し、適用範囲と第三者権利を確認する" },
-        { "id": "public-access-approval", "required": true, "status": "pass", "evidence": ["project.md"] }
+        {"id": "public-access-approval", "required": true, "status": "pass", "evidence": ["project.md", "docs/execution-approval-20260909.md"], "approvalScope": "Existing public intent and conditional approval; not product-license, signing, physical/provider acceptance or a release receipt."}
       ]
     },
     {

@@ -2857,7 +2857,7 @@
     },
     {
       "id": "MAT08",
-      "title": "Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入）",
+      "title": "履歴／R5で退役した構成: Mini200 E1のゲーム中心・生活拡張・衛星通信方針と20cm本体・音声をREADME・図・参照モデルへ保存（実機未受入）",
       "status": "done",
       "dependsOn": [
         "MAT07"
@@ -2867,7 +2867,7 @@
         "docs/avocado-mini-mini200-e1/design.md",
         "docs/avocado-mini-mini200-e1/engineering/verify_all.py",
         "docs/avocado-mini-mini200-e1/verification.json",
-        "docs/avocado-mini-mini200-e1/game-first-life-connectivity.md"
+        "docs/avocado-mini-r5/README.md"
       ]
     },
     {
@@ -2879,12 +2879,12 @@
       ],
       "evidence": [
         "docs/avocado-mini-mini200-e1/README.md",
-        "docs/avocado-mini-mini200-e1/game-first-life-connectivity.md"
+        "docs/avocado-mini-r5/README.md"
       ]
     },
     {
       "id": "MAT10",
-      "title": "Mini200 E2資料と利用者確定の4本＋中央Core外観をGit正本と公開製品Siteへ同期（実機未受入）",
+      "title": "履歴／R5で退役した構成: Mini200 E2資料と利用者確定の4本＋中央Core外観をGit正本と公開製品Siteへ同期（実機未受入）",
       "status": "done",
       "dependsOn": [
         "MAT08"
@@ -2909,7 +2909,7 @@
     },
     {
       "id": "MAT12",
-      "title": "Tower20 E3資料を現行avocadoMini基準へ固定し、4本の固定200mm塔＋別筐体Edge HubをGit正本と公開Siteへ同期（実機未受入）",
+      "title": "履歴／R5で退役した構成: Tower20 E3資料を当時のavocadoMini基準へ固定し、4本の固定200mm塔＋別筐体Edge HubをGit正本と公開Siteへ同期（実機未受入）",
       "status": "done",
       "dependsOn": [
         "MAT10"
@@ -3589,7 +3589,7 @@
     },
     {
       "id": "WEB19",
-      "title": "利用者指定のTower20 E3公開Siteを承認済み画像・英語UI・180度演出ごとAstroで復元して本番配備する",
+      "title": "履歴／R5で退役した構成: 利用者指定のTower20 E3公開Siteを承認済み画像・英語UI・180度演出ごとAstroで復元して本番配備する",
       "status": "done",
       "dependsOn": [
         "WEB17"
@@ -4244,7 +4244,7 @@
         "R03"
       ],
       "evidence": [
-        "docs/os-development-design.md"
+        "docs/rockstaros-complete-design.md"
       ]
     },
     {
@@ -4268,7 +4268,7 @@
         "OS01"
       ],
       "evidence": [
-        "docs/os-development-design.md",
+        "docs/rockstaros-complete-design.md",
         "docs/phone-preview-20260911.md",
         "os/physical/frankel-source-lock.json",
         "docs/evidence/android-pixel-10-gl066-dsp-source-audit-20260916.json"
@@ -4282,7 +4282,7 @@
         "OS02"
       ],
       "evidence": [
-        "docs/os-development-design.md"
+        "docs/rockstaros-complete-design.md"
       ]
     },
     {
@@ -4293,7 +4293,7 @@
         "OS03"
       ],
       "evidence": [
-        "docs/os-development-design.md"
+        "docs/rockstaros-complete-design.md"
       ]
     },
     {
@@ -4304,7 +4304,7 @@
         "OS04"
       ],
       "evidence": [
-        "docs/os-development-design.md"
+        "docs/rockstaros-complete-design.md"
       ]
     },
     {
@@ -4556,7 +4556,7 @@
       ],
       "evidence": [
         "docs/product-baseline.md",
-        "docs/os-readiness-audit-20260909.md",
+        "docs/service-design/04-delivery-and-acceptance.md",
         "docs/workstreams/06-native-qemu-release.md",
         "docs/templates/os-acceptance-report.md",
         "docs/validation.md"
@@ -5445,7 +5445,7 @@
       "evidence": [
         "docs/product-baseline.md",
         "docs/rockstaros-complete-design.md",
-        "docs/os-development-design.md",
+        "docs/rockstaros-complete-design.md",
         "toolkits/esim-bootstrap/README.md",
         "docs/workstreams/07-android-device-local-ai.md",
         "app/connect/page.tsx",
@@ -5457,7 +5457,7 @@
         "sites/avocado-mini/tests/astro-build.test.mjs",
         "tests/sim-service-entry.test.mjs",
         "docs/prompts/rock-current-next-20261002.md",
-        "docs/sim-service-entitlement-claims.md",
+        "docs/service-entitlements.md",
         "lib/rockstar-entitlement-claim.ts",
         "app/api/rockstar/entitlements/route.ts",
         "lib/rockstar-entitlement-event.ts",
@@ -5670,7 +5670,7 @@
         "lib/sky-tool-package-store.ts",
         "app/api/internal/sky-package-runtime-bindings/route.ts",
         "docs/evidence/sky-package-runtime-binding-quote-delegation-local-20261002.json",
-        "docs/sim-led-product-architecture.md",
+        "docs/service-design/02-system-contracts.md",
         "docs/sky-a2a-bridge.md",
         "docs/evidence/sim-led-product-correction-20261002.json",
         "docs/evidence/a2a-two-agent-handoff-local-20261002.json",
@@ -8025,6 +8025,13 @@
     "displayTextChanged": true,
     "productTerminology": "data/product-terminology.json",
     "crossSystemAcceptanceScenarios": 12,
-    "latestMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983"
+    "latestMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+    "obsoleteContentCleanup": {
+      "status": "in_progress",
+      "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+      "taskId": "DOC04",
+      "primarySquad": "H1",
+      "scope": "Obsolete design/log removal, current R5 pages, archive restore provenance; original artifacts and current requirements retained"
+    }
   }
 }

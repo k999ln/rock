@@ -134,7 +134,7 @@ cameraが実物を変化させるわけではない。gestureだけで物理実�
 - [Spatial Invention Studio](../material-invention-xr.md)
 - [avocadoMini端末設計](../avocado-mini-spatial-invention.md)
 - [avocadoMiniハードウェア詳細設計](../avocado-mini-hardware-design.md)
-- [アカウント入口と回線の役割整理（2026-10-10確定）](../account-entry-proposal.md)（Miniの回線方式と試作の合格条件。国内LTE・IoT向けdata専用SIM・SGP.32対応・5Gなし）
+- [アカウント入口の確定方針](../product-baseline.md)（Miniの回線方式と試作の合格条件。国内LTE・IoT向けdata専用SIM・SGP.32対応・5Gなし）
 - [Patent si](../sky-patent-assistant-20260912.md)
 - [製品ベース](../product-baseline.md)
 - [全体構成](../system-composition.md)

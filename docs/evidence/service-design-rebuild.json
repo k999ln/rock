@@ -438,5 +438,21 @@
       "total": 7,
       "success": 7
     }
+  },
+  "historicalAuditAnchors": {
+    "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
+    "nativeHead": "fcedcfec4dd2a242a1ba8fd7ff5eebba97b8ecd5",
+    "designHead": "de5b102d3525daccf604efd5685bdf8c14ad5d50",
+    "meaning": "Historic anchors retained for provenance, not latest checkout or runtime acceptance."
+  },
+  "obsoleteContentCleanup": {
+    "status": "in_progress",
+    "requestedAt": "2026-10-13",
+    "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "primarySquad": "H1",
+    "taskId": "DOC04",
+    "originalArtifactsPreserved": true,
+    "runtimeLogicChanged": false,
+    "productClaimsUpdated": "R5 standalone/200mm/no-Hub/unconfirmed-price; remove obsolete P0 showroom"
   }
 }

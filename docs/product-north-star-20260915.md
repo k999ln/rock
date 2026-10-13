@@ -1,6 +1,6 @@
 # RockstarOS — 製品目的から逆算した開発軸
 
-状態: 2026-09-15から2026-09-16に記録した製品目的の履歴・補助資料。2026-10-02以降、製品の主商品は物理SIM/eSIM購入を入口にRockstarOS、Sky、Zema、クラウドLLM/Agentへアクセスするサービスであり、本書の「端末内LLM/OSを製品中核とする」記述は技術基盤の位置付けとしてのみ読む。製品・配布・onboardingの競合記載は[現行製品ベース](product-baseline.md)と[SIM/eSIM claim設計](sim-service-entitlement-claims.md)に従う。
+状態: 2026-09-15から2026-09-16に記録した製品目的の履歴・補助資料。現在の主商品は無料accountからSky・Zema・si Agentを使うサービスであり、本書の「端末内LLM/OSを製品中核とする」記述は技術基盤の位置付けとしてのみ読む。製品・配布・onboardingの競合記載は[現行製品ベース](product-baseline.md)と[サービス利用権](service-entitlements.md)に従う。
 
 ## 1. 最上位目的
 

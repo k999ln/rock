@@ -972,6 +972,57 @@
     "toolkits/meme-intelligence-sandbox/run-historical-paper.mjs",
     "toolkits/meme-intelligence-sandbox/run-paper.mjs",
     "toolkits/polymarket-bot-sandbox/README.md",
-    "toolkits/polymarket-bot-sandbox/run-backtest.mjs"
+    "toolkits/polymarket-bot-sandbox/run-backtest.mjs",
+    "docs/product.md",
+    "docs/architecture.md",
+    "docs/fund-and-mcp.md",
+    "docs/os-development-design.md",
+    "docs/os-sky-wallet-game-design.md",
+    "docs/os-readiness-audit-20260909.md",
+    "docs/account-entry-proposal.md",
+    "docs/sim-led-product-architecture.md",
+    "docs/prompts/sky-commerce-wallet-development.md",
+    "docs/spec-history.md",
+    "docs/sim-service-entitlement-claims.md",
+    "components/avocado-turntable.tsx",
+    "components/avocado-turntable.module.css"
+  ],
+  "restoreCommits": {
+    "docs/product.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/architecture.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/fund-and-mcp.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/os-development-design.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/os-sky-wallet-game-design.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/os-readiness-audit-20260909.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/account-entry-proposal.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/sim-led-product-architecture.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/prompts/sky-commerce-wallet-development.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/spec-history.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "docs/sim-service-entitlement-claims.md": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "components/avocado-turntable.tsx": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+    "components/avocado-turntable.module.css": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb"
+  },
+  "cleanupBatches": [
+    {
+      "date": "2026-10-13",
+      "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
+      "reason": "User explicitly requested deleting obsolete confusing content; current requirements and reusable contracts consolidated into the service design, OS, entitlement, commerce and provider authorities.",
+      "paths": [
+        "docs/product.md",
+        "docs/architecture.md",
+        "docs/fund-and-mcp.md",
+        "docs/os-development-design.md",
+        "docs/os-sky-wallet-game-design.md",
+        "docs/os-readiness-audit-20260909.md",
+        "docs/account-entry-proposal.md",
+        "docs/sim-led-product-architecture.md",
+        "docs/prompts/sky-commerce-wallet-development.md",
+        "docs/spec-history.md",
+        "docs/sim-service-entitlement-claims.md",
+        "components/avocado-turntable.tsx",
+        "components/avocado-turntable.module.css"
+      ],
+      "currentEntry": "docs/service-design/README.md"
+    }
   ]
 }

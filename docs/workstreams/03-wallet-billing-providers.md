@@ -29,6 +29,21 @@
 
 主なtask: `WLT01`〜`WLT06`, `BIL01`, `BIL02`, `B03`。
 
+## Account・任意機器・Providerの販売前条件
+
+主商品と料金は[共通契約](../service-design/02-system-contracts.md#6-料金とwalletを説明できるようにする)の無料account、期間パス、しきい値後払い、月上限を使う。Skyは`https://avocadomini.si/sky`、本人確認の到達設計は自前passkey、通知はWeb Pushを先行する。売り手はavokado、作者払出しは月末締め翌月末の月1回、Sky feeは当面10%で、0%は「取り分0/決済実費実額」、従量粗利が固定費を3か月連続で超える条件を維持する。粗利・実費を測らず0%へ切り替えない。
+
+外部確認は未了で、以下は法的結論や契約成立の記録ではない。ROCKは確認結果をSKU/対象/責任者/同意/受入gateへ反映し、OWNER/EXTERNAL/JOINTが対象条件を確定する。
+
+- 自社名義の回線を第三者の機器へ提供する形、通信媒介/MVNO/リビリングと非媒介IoTの区分、登録/届出の要否を総合通信局・専門家へ確認する。
+- data専用回線の本人確認義務の対象/施行条件、期間パスの資金決済上の該当性、有効期間/返金/未使用分、特商法の最終確認（分量/総額/支払/提供/解除/期間）と販売主体/supportを確認する。
+- module/antenna/筐体/複数無線/AC adapterの認証条件、通信partnerの第三者利用手続、国内LTE・IoT data専用/SMSなし、SGP.32 SIMのplan/価格/機器要件を確認する。Miniは回線つき別model/option、試作card/量産chip、5Gなし、遠隔profile切替を自作しない。一次supportはavokadoが受ける。
+- 機器回線のAgent制御/音声と、Wi-Fi側のOS更新/映像/game取得を分ける。SIM交換後も機器鍵/登録/entitlementが維持され、通信断/再起動で同jobが二重実行されず、partner通信明細と自社si usageを個別照合できることをbenchで受け入れる。月300 MiB/基本料980円等の旧試算は契約/実測前の仮定で商用価格ではない。紛失時は端末access/cloud job/回線を別々に停止する。
+- Stripe Connectの現在の費用/損失負担、direct chargesへ切り替える場合の責任、月次払出し、しきい値請求/失敗/取消の実装条件を確認する。旧公開料金による試算を今の契約原価にしない。
+- cloud si Providerの上乗せ再提供、BYOK、usage表示/保持条件と、電話APIの050番号でsiが応答する条件を確認する。050/LINE等はWeb/PWA後の届け口候補で、番号契約・実通話・録音・外部作用は別gateと同意で扱う。
+
+根拠の読取入口は[総務省参入資料](https://www.soumu.go.jp/main_content/000477428.pdf)、[資金決済業協会](https://www.s-kessai.jp/businesses/prepaid_means_overview.html)、[消費者庁](https://www.no-trouble.caa.go.jp/what/mailorder/)、[Stripe Connect](https://docs.stripe.com/connect/charges)、[SORACOM第三者利用](https://support.soracom.io/hc/ja/articles/360041001731)。旧提案の閲覧時点と今日の法令/料金を混同せず、契約前に一次資料と対象条件を再確認する。
+
 ## Direct cloud LLM usage billing backlog
 
 Direct LLM execution has a local-only implementation path alongside the A2A receipt path: signed rate card → exact-request quote → owner approval digest → shared parent-budget reserve → single-send claim → observed provider usage → itemized priced record. Migration `0046`, `/api/llm/quotes`, `/api/llm/quotes/{id}`, and the quote-bound branch of `/api/llm/text` implement this state path; 9 synthetic SQLite D1 tests pass. This local record is a metering calculation, not a payment, provider invoice, funded balance, or carrier charge.
@@ -123,7 +138,7 @@ The Android owner-facing source path is now wired end to end: the Shell/AIDL lis
 - execution成功、成果物完成、入金確定、払出し完了を別状態で保存する。
 - 同じreceipt、provider reference、実行IDを二重計上しない。
 - 秘密鍵、seed phrase、包括送金権限をRockstarOSが保持しない。
-- 0売上時の請求、債務化、翌月繰越を行わない。
+- 旧成功報酬/収益分配railでは0売上時の請求、債務化、翌月繰越を行わない。account従量後払いの承認済み使用債務とは別契約として照合する。
 
 ## 関連資料
 
@@ -132,7 +147,7 @@ The Android owner-facing source path is now wired end to end: the Shell/AIDL lis
 - [Provider boundary](../external-wallet-fund-provider-boundary-20260913.md)
 - [First-party settlement](../rock-first-party-settlement-wallet-20260913.md)
 - [Production rail](../rock-wallet-production-rail-20260913.md)
-- [アカウント入口と回線の役割整理（2026-10-10確定）](../account-entry-proposal.md)（期間パス、従量のしきい値後払い、月の上限、Sky feeとConnect費用の試算。本番課金は未受入）
+- [共通料金契約](../service-design/02-system-contracts.md#6-料金とwalletを説明できるようにする)（期間パス、従量のしきい値後払い、月の上限。Provider/回線の条件は本書「Account・任意機器・Providerの販売前条件」。本番課金は未受入）
 
 ## 検証
 
@@ -141,9 +156,9 @@ The Android owner-facing source path is now wired end to end: the Shell/AIDL lis
 - `npm run billing:check`
 - `node --experimental-strip-types --test tests/earning-bridge.test.mjs tests/billing-worker.test.mjs tests/settlement.test.mjs tests/wallet-backend.test.mjs tests/financial-provider.test.mjs tests/rock-wallet.test.mjs`
 
-## SIM/eSIM購入からRockstarOSサービス利用への接続
+## 署名claimと互換eSIM経路
 
-製品形態は物理SIMまたはeSIMの購入にRockstarOS/Sky/Zema/Agentのservice accessを含める。eSIM Goの現行実装は通信profile order用の一つのprovider adapterであり、製品をeSIM専用に限定しない。物理SIM fulfillment、複数販売チャネルの購入claim、carrier activation、Rockstar accountへの一度限りの利用権bindは別の未受入integrationである。OS binaryはSIMに保存せず、対応端末へOSまたは既存OS上clientを導入する。
+サービス入口は無料accountで、[署名利用権](../service-entitlements.md)は任意機器・招待・販売明細に使う追加契約である。以下は既存eSIM adapterの互換/回帰範囲で、消費者eSIM発行/販売は保留・既定無効を維持する。回線開通、service access、本人認証、OS/client導入、Tool実行を別々に受け入れ、旧SIM購入入口へ戻さない。OS binaryはSIMに格納しない。
 
 ### 初期Agent Packの注文固定
 
@@ -253,6 +268,6 @@ Workbenchでbudget minor unitsを通貨別に表示し、Provider signed final u
 
 `npm run sky:a2a:workflow:positive` passes 12/12. Added a Cloudflare Worker/D1/Workflow positive test that registers a Provider-signed Package runtime binding, pins it through approved delegation, confirms the Worker preserves Agent Card extension declaration across durable serialization, sends the bound operation and request digest to a controlled fixture service, captures the completed artifact encrypted, verifies a synthetic Provider-signed usage receipt, and settles the local logical reservation. The mock service binding is not a real Provider or production integration. This updates the previous checkpoint that the successful Package executor path was absent: a local executor fixture now exists, while real Provider implementation, external interoperability, real rates, invoice settlement, and funded Wallet reconciliation remain open. Full `npm run verify` passes after the code change (Node 737/737, API 994 assertions, CSV 113 assertions, Fashion 19/19, typecheck/lint/build and repository gates). Production D1 readback remains 0/6 and all OS/carrier/customer acceptance gates remain separate. See [correction evidence](../evidence/sim-led-product-correction-20261002.json).
 
-## 開発実行プロンプト
+## 実装と受入の再開
 
-[決済とWalletの開発プロンプト](../prompts/sky-commerce-wallet-development.md)を使用する。設計差分の実装、Commerce管理者権限、監査、サポート、停止/復旧、監視、sandboxから限定liveまでの受入を含む。外部Stripe/Cloudflare/OSSの利用と、自社コードの担当を区別する。プロンプト保存は実装合格ではない。
+BIL02は[決済詳細の実装順](../sky-commerce-design.md#16-実装の分割と完了条件)と[受入分類](../sky-commerce-design.md#検査する実装経路と段階)へ再開する。設計/model/DDLの履歴成功をruntimeやProvider受入へ転用せず、最新main/実在branch/同一SHA CIを読み、原稿/秘密をGitへ入れず、既存migration/共通Stripe/Wallet/SDKを再利用する。独立したROCK実装を外部credential待ちで止めず、sandbox/運用/限定live/銀行照合を別証拠にする。完了時はproject/status/workstreamと`npm run project:update`を同期し、commit/PR/main/公開と残条件を別々に報告する。

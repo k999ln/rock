@@ -80,7 +80,7 @@ workerとreviewerは別delegationでも同じGoal/accountに含める。review�
 
 passの対象範囲・quotaは見積で固定し、並列処理が同じquotaを重複消費しないよう予約する。quota適用後の顧客額とProvider原価は別に残す。passを無制限実行や無制限費用補填として扱わない。
 
-税、手数料対象額、通貨、丸め順、FX、請求期間、passと従量の境界の未決条件はpaid開始前にOWNERと外部担当が確定する。この章で新料金・税務policyを作らない。[アカウント方針](../account-entry-proposal.md)と[Sky課金](../sky-billing.md)へ決定と受入を残す。
+税、手数料対象額、通貨、丸め順、FX、請求期間、passと従量の境界の未決条件はpaid開始前にOWNERと外部担当が確定する。この章で新料金・税務policyを作らない。[アカウント入口の確定方針](../product-baseline.md)と[Sky課金](../sky-billing.md)へ決定と受入を残す。
 
 ## 6. 停止・解約・完了は別の作用
 

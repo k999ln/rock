@@ -4,6 +4,8 @@ Skyのタイムラインへ公開ソースの版付き保存を追加する。SP
 
 # RockstarOS 全体詳細設計
 
+現行製品の要望・料金・未受入gateは[製品ベース](product-baseline.md)を正本とし、全体の読み始めは[サービス統合設計](service-design/README.md)。
+
 ## 既存端末への機能追加（2026-10-06、HOME01 / SYS01 / WEB14）
 
 利用者の追加指示に基づき、Sky・データ回収・LLMを既存OS上のWeb/PWAから選んで使う。目的は端末交換やOS書込を要求せず同じ入口を提供すること。主担当はWeb / PWA / Sites、ROCK。SIM/eSIMの通信・利用権と、機能の表示設定は独立し、追加操作だけで権限・課金・Provider接続を成立させない。
@@ -598,4 +600,4 @@ O1 / SYS02（診断共有の秘密非出力）、ROCK、主stream Security / Ide
 
 ## eSIM導入確認後のクラウド利用権（2026-10-06統合）
 
-既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](sim-led-product-architecture.md#optional-esim-cloud-access-implementation)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。
+既存注文・署名済みinstall/device proof・Package審査・本人性を再利用し、期限付きキーの開始、再発行、失効を購入履歴へ接続する。目的、利用体験、責任、入力、出力、状態、保存、失敗・復旧、承認、合格条件と契約未決定事項は[詳細](service-design/02-system-contracts.md)を正本とする。秘密はHttpOnly cookieとDB hashへ分離し、Cloud keyは支払い・管理・本人承認へ昇格しない。実Provider・実端末・本番請求の受入は別gate。

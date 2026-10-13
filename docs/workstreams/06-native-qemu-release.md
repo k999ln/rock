@@ -32,7 +32,7 @@ Buildroot/LinuxのRockstarOSをQEMU Developer Previewとして再現可能にbui
 <a id="continuing-acceptance"></a>
 ## 継続する受入契約（旧実行プロンプトから統合、2026-10-11）
 
-旧 `hub-wallet-next.md` / `os-operational-base-next.md` の必要条件をここへ収束した。旧起点SHA、BlackBerry-first、D6 run44待ち、未実装一覧は現在の指示ではない。現在の主商品はSIM/eSIMからのサービス利用開始、物理対象はPixel 10 GL066／frankel、QEMUは独立系列である。原文の復元元は[削除記録](../git-consolidation.md#obsolete-content-cleanup)。旧受入の成功を新しいsource/imageへ継承しない。
+旧 `hub-wallet-next.md` / `os-operational-base-next.md` の必要条件をここへ収束した。旧起点SHA、BlackBerry-first、D6 run44待ち、未実装一覧は現在の指示ではない。現在の主商品は無料accountからのサービス利用開始、物理対象はPixel 10 GL066／frankel、QEMUは独立系列である。原文の復元元は[削除記録](../git-consolidation.md#obsolete-content-cleanup)。旧受入の成功を新しいsource/imageへ継承しない。
 
 ### QEMU D0〜D6
 

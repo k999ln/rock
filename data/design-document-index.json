@@ -1,6 +1,6 @@
 {
   "schema": "rockstaros-design-document-index/1",
-  "version": "1.8",
+  "version": "1.9",
   "updatedAt": "2026-10-13",
   "authority": "docs/rockstaros-design-portal.md",
   "primaryBooks": [
@@ -218,9 +218,8 @@
       "id": "web_pc",
       "coverage": "DETAILED_IMPLEMENTED_PARTIAL_PRODUCTION",
       "documents": [
-        "docs/architecture.md",
+        "docs/service-design/02-system-contracts.md",
         "docs/backend-design.md",
-        "docs/sim-led-product-architecture.md",
         "docs/rockstaros-complete-design.md"
       ],
       "interfaceImplementation": [
@@ -488,7 +487,7 @@
         "docs/sky-compute-grid.md",
         "docs/amc-goal-orchestrator.md",
         "docs/workstreams/05-web-pwa-sites.md",
-        "docs/sim-led-product-architecture.md",
+        "docs/service-design/02-system-contracts.md",
         "docs/sky-cloud-continuity.md",
         "docs/cloud-agent-provider-comparison-20261001.md",
         "docs/sky-a2a-bridge.md",

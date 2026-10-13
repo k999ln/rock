@@ -1,158 +1,37 @@
-# Gitプロジェクト統合方針
+# Gitの正本・保存・復元方針
 
-整理日: 2026-09-07。native OS追加: 2026-09-09。機械可読の正本は [`data/repository-map.json`](../data/repository-map.json) です。
+製品と設計の正本は `k999ln/rock`。読む入口は[サービス統合設計](service-design/README.md)、現行要望は[製品ベース](product-baseline.md)、repository境界の機械可読正本は[`data/repository-map.json`](../data/repository-map.json)。GitHubへの保存、本設計のmain統合、Sitesでの公開、実機/本番受入は別に記録する。
 
-## 2026-10-11 公開rockの整理（暗号化は同日にやめた）
+## 所有と境界
 
-利用者の「重複・もう使わない内容を削除したい」「今まで通りの上に描きたし」を受け、`k999ln/rock` を公開のまま使い続け、履歴は書き換えずにmainの上へ整理のcommitを足した。repositoryの改名・非公開化・新規作成はしていない。
+RockstarOS・Sky・Zema・Jenniferと各hardware programは同じ製品契約を使う。共通identity、権限、schema、workflow、Receipt、復旧は`rock`で一意に管理する。`k999ln/Mr.`は運用componentの別責務で、credential・顧客原稿・運用秘密を公開Gitへコピーしない。`k999ln/vvvv`等の旧repositoryは新規作業先にしない。取得済み外部sourceを、その運用指示や実アカウントの実行許可へ換算しない。
 
-| 対象 | 扱い |
-| --- | --- |
-| `k999ln/rock` | 製品正本・公開。新規開発もここ。すべてのファイルを平文で置き、読むのに鍵はいらない |
-| 履歴 | 書き換えない。整理はmain `bcd31090` の上の `0fbebb63` から |
-| 削除した資料 | 一覧は `data/archived-paths.json`（同日の[旧内容の削除](#obsolete-content-cleanup)の10件を含む）。復元元はすべて削除前のcommit `96845e6006c15e39ba5b45495f79c21bdff7399e`。例: `git show 96845e6006c15e39ba5b45495f79c21bdff7399e:docs/avocado-mini-tower20-e3/README.md` |
-
-暗号化について: 利用者の「大事なところは見れないように」を受けて、`0fbebb63` からgit-cryptで一部（ハード設計・お金と契約・調査・会話記録・siの指示文・開発の内部の約1,200ファイル）を暗号化した。同じ日に利用者が「鍵は今一切なくていい」と指示したため暗号化をやめ、`.gitattributes` から暗号化の一覧を外して全ファイルを平文に戻した。暗号化していた間のcommit（`0fbebb63`〜`546f8e48`）は、その中身を読むのに当時の鍵が要る。ただし同じ内容は次のcommitから平文で読めるので、鍵がなくても失われるものはない。
-
-暗号化をまた使うときは、`546f8e48` の `.gitattributes` にあった一覧を戻し、新しい鍵を作って `npm run private:check` で確かめる。`scripts/private-files.mjs`・`scripts/generate-private-modules.mjs`・`tests/private-locked.mjs` は、暗号化がなくてもそのまま動く（今は何も飛ばさない）。法律si・特許siの指示文と弁護士一覧は `private/` のJSONに置いたままで、ビルド時に `lib/generated/` へ書き出す。
-
-## 結論
-
-製品は **RockstarOS** の1つです。利用者向けブランド、OS、公開開発の名称を`RockstarOS`へ統一し、内部runtime名`Rockstar_ibot`は互換識別子として維持します。`avocadomini`、`avocadoOS`、`Doraemon`、`Mr. Commerce`、`Private Pixel`、`ワンクリック特許`は独立した新規プロジェクト名として増やさず、履歴上の旧名称または配下機能として扱います。
-
-Gitは公開範囲が異なるため、物理的な1 repositoryにはしません。公開コードと秘密を伴う運用コードを2つの責務へ分け、製品全体の正本を `rock` に固定します。
-
-| repository | 位置付け | 新規開発 | 内容 |
-| --- | --- | --- | --- |
-| `k999ln/rock` | 製品正本・公開 | 可 | 製品方針、Linux native OS、OS/AOSP、Android SDK、公開Web、Work/Fund、公開契約とfixture |
-| `k999ln/Mr.` | 非公開の運用component | 可 | Telegram、クラウド、provider接続、運用receipt、private deployment |
-| `k999ln/vvvv` | 旧履歴 | 不可 | 新しい修正先・CI・deploy先にしない。稼働参照の監査後にarchive候補 |
-| `k999ln/mr-bot-workrooms` | 非公開の作業成果物 | 不可 | 製品sourceや仕様の正本にしない |
-
-`Mr.`内のTelegramやprovider接続を`rock`へコピーしないのは未統合だからではなく、顧客・運用・credential境界を公開Gitから分離するためです。逆に、OS契約や製品方針を`Mr.`で別仕様として増やしません。
-
-## Linux開発成果の追加
-
-`systems/rock-star-os/` に独立開発の封印済みソースから公開可能な実装を取り込む。以後この領域の変更先もrockとする。取得前の開発履歴・個別環境は移管しない。既存 `os/` はAOSP設定のまま保持する。出所と変更理由はIMPORT-MANIFESTと[統合記録](native-os-integration.md)で追跡する。Mr.の非公開全tree・調査台帳・運用データを公開Gitへ入れない。既存の4件の固定vendorは変更しない。
-
-## 重複監査
-
-`rock`のcommit `9e4dc89d995ccbf11f9e3a15efa0e65868874d48`と`Mr.`のcommit `a82a728`をGit blobで比較し、完全一致するpath組を78件確認しました。
-
-- 4件は、`Mr.`のMITツール原本を`rock/vendor/mr`へ固定した意図的なsnapshotです。原本とhashは変更せず、Rock star固有の修正はadapterに置きます。
-- 多くはshadcn由来のUI部品や設定boilerplateです。private packageをpublic buildへ依存させる利点より公開境界を壊す危険が大きいため、cross-repository package化の対象にはしません。
-- 実質的な重複は、製品名、ツールHub、8.88 USD案、仕事workflow、OSという説明です。これらの製品定義と公開契約は`rock`を正本とし、`Mr.`は非公開運用として参照します。
-- `Mr.`のDocker applianceは既存Linux上のworkerであり、AOSP OSではありません。自前OSのbuild/boot完了として扱いません。
-
-## コードの所有ルール
-
-| 領域 | owner | 共有方法 |
-| --- | --- | --- |
-| Product/料金/名称/進捗 | `rock` | README、project.md、repository map |
-| Work/Tool/Recipeの公開契約 | `rock` | schema、fixture、互換テスト |
-| AOSP、Android、端末権限 | `rock` | `android/`、`os/`、`contracts/` |
-| Telegram、顧客Bot、owner Bot | `Mr.` | private serviceとして実装。公開側へ秘密や運用台帳を移さない |
-| Railway/Supabase/provider | `Mr.` | credential参照を含まないinterfaceとreceiptだけを必要に応じて公開契約へ反映 |
-| 既存4ツール原本 | `Mr.` | 固定commitの`vendor/mr` snapshot。adapter/parityは`rock` |
-| UI boilerplate | 各repository | 同一内容でもdeploy境界ごとに保持。製品機能の重複には数えない |
-
-新しい機能はowner側だけに実装します。もう一方で必要になった場合は、コードのコピーではなく、入力・出力・権限・失敗条件を公開契約へ追加し、fixtureで同じ振る舞いを検証します。
-
-## 実施済みと残作業
-
-実施済み:
-
-- repositoryの役割、名称、公開範囲を一つのmapへ固定。
-- `vvvv`を新規開発・runtime・CI・deploy先として禁止。
-- `Mr.`の4ツールは既存の固定commit/hash方式を維持。
-- `npm run repository:check`を追加し、正本が一つであること、legacy参照がactive sourceへ戻らないこと、vendor snapshotが改変されていないことを検査。
-
-残作業:
-
-1. `vvvv`を参照するGitHub Actions、Railway、launchd、ローカルserviceがないことを外部環境ごとに確認する。
-2. 確認できた場合だけ`vvvv`のREADME/descriptionへ後継を表示し、GitHub archiveを行う。履歴削除やforce pushはしない。
-3. `Mr.`内でOS・製品定義を独立に増やしている文書には、`rock`の対応仕様への参照と「private operations」の表示を段階的に追加する。
-4. 共有したい新しい処理は、秘密を除いたcontract/fixtureとして`rock`へ提案し、移植前にライセンスと公開可否を確認する。
-
-## 禁止事項
-
-- `Mr.`の`.env`、account registry、顧客データ、receipt、deployment設定を`rock`へコピーしない。
-- `vendor/mr`の固定原本やhashを書き換えて最新版扱いしない。
-- repository名が似ていることを理由に、稼働先、token、database、公開siteを切り替えない。
-- archive前の稼働参照監査を省略しない。
-
-
-## 2026-10-02 共通実装の統合（G04）
-
-主担当はGit / CI / Operations（ROCK）。利用者の統合指示に基づく実装範囲は次のとおり。名称が似ていても、実行権限や成果物の意味が違う処理まで一つの状態機械へ置き換えない。
-
-| 対象 | 共通の修正先 | 各adapterに残す責務 |
-| --- | --- | --- |
-| 法務・特許si | `lib/research-ai.ts` | 認証、送信同意、入力上限、公式domain一覧、固有prompt・緊急停止 |
-| Jev評価・意思決定 | `lib/jev-transport.ts` | 評価rubric、決定境界、費用見積り、remote opt-in |
-| PC・Fashion MCP | `lib/mcp-client.ts` | origin、token長、protocol範囲、接続世代、変更系承認 |
-| Toolの一覧 | `lib/catalog.ts`、Connectorの既存registry | Job/connectionの型・一覧をcatalogから導出。IP Studio重複とFashion件数差を除去 |
-| Work・ココナラJSON保存 | `lib/owner-revision-json-store.ts` | 入力schema、認証owner、個別状態、競合時のHTTP応答。Mercariの件数制限・再送衝突規則は独立 |
-| Sky・Mini・Fashion決済 | `shared/stripe.mjs` | Connect配分、注文/在庫/規約、請求書、個別のidempotency key、各環境設定 |
-| Web・公開PreviewのSky→Zema | `public-release/rockstaros/packages/sky-zema-core/src/handoff.js` | WebのUUID・10分TTL・Tool一致・一回消費、公開v1の`local`表記と必須入力 |
-| 検証入口 | root `npm run verify` | PR #39 のSite試験と公開Preview全5 suiteを追加。#51のCSV安全修正と既存README/baseline整合を履歴ごと取り込む |
-
-公開Previewの`local`とWeb旧保存のprovider省略は、共通入口で`local-model`に正規化する。remote providerは拒否し、session作成は`ready`までで実行・承認・成功を付与しない。依頼2000文字・メッセージ4000文字/24件・private TTLの定義も共通化する。既存保存key/versionは維持する。
-
-Stripeのstandalone配布コピーは生成物であり、共通sourceとの一致を試験する。手修正の別実装を増やさず、生成後にSite WorkerとPC Connector ZIPを検査する。変更でcredential設定や販売停止gateを解除しない。
-
-以下は監査で似て見えたが、異なる責務として維持する範囲である。Android/Java・Linux/Python・Webの実行器は権限モデルが違い、既存Platform契約とparity fixtureを使う。Webのレビュー待ちとnativeの実行成功を同じ「完了」に変換しない。暗号化端末backup、Web設定export、QEMU diskは復旧対象が違う。記事処理の固定原本とOS移植は既存`contracts/article-fixtures.json`で一致を検証する。Fund、Game、Material等の商品アルゴリズム、未merge PR #25・#40〜#50・#52（#39/#51を除く）の固有機能は本共通化だけでは統合済みにならない。PR #41等にある同じSite試験/README修正は本統合へ収束し、残る固有機能だけを後続でrebaseする。設計archiveの同一blobは保存を要求された原本であり、削除しない。
-
-検証は関連unit/HTTP mock、owner/CAS・再送・署名、MCP切断/再接続、双方のhandoff契約、standalone生成物一致、全体`npm run verify`。Provider sandbox、実機OS、本番配備の成功とは分ける。結果と次の手順は`project.md`とG04へ記録する。rollbackは統合PRのrevertと既存保存schema/versionで行い、DB migrationは追加しない。
-
-<a id="obsolete-content-cleanup"></a>
-## 2026-10-11 未使用の旧内容を現行ツリーから削除（G01）
-
-利用者の「昔の使わない内容は削除したい」という明示指示に従い、従来の「旧文書をすべて履歴として残す」方針を見直した。主担当H1 / Git / CI / Operations、ROCK。import・route・build・CI・台帳・設計索引・証拠の参照を調べ、必要な開発手順はREADMEとworkstream、現在の再開先はproject/status/AMCへ収束した。移動先やarchiveコピーは追加しない。
-
-削除前の復元元は全件 `96845e6006c15e39ba5b45495f79c21bdff7399e`。例: `git show 96845e6006c15e39ba5b45495f79c21bdff7399e:CHECKPOINT.md`。Git履歴は書き換えない。過去の作業ログのリンクは固定commitを参照し、凍結証拠JSONやmerge欠落の回収原本に残る当時のpath/hashは変更しない。それらは当時のsourceを示し、現在の実行入口ではない。
-
-| 削除したpath | 理由 |
-| --- | --- |
-| `CHECKPOINT.md` | 2026-09-12で止まった重複した作業入口。現在の進捗JSON・project・AMCへ収束。 |
-| `docs/progress-audit-20260909-followup.md` | 初回監査の追補。後続監査と現行台帳へ置換済み。凍結証跡は元commitで照合。 |
-| `docs/prompts/docs-reorg-handoff-20261007.md` | PR #92で統合済みの文書整理を未pushとして案内する手順。 |
-| `docs/prompts/rock-current-next-20260911.md` | 旧再開指示。現在のSIM/eSIM主方針と2026-10-02の指示へ置換済み。 |
-| `docs/prompts/rock-current-next-20261001.md` | 前日の再開指示。2026-10-02の指示へ置換済み。 |
-| `docs/prompts/rockstaros-release-20260910.md` | 終了済みの8時間実行指示。結果と受入証拠は既存のrelease記録へ保存済み。 |
-| `docs/prompts/value-spend-runtime-next.md` | 未使用の旧作業指示。現行Wallet/workflowの仕様・台帳から参照なし。 |
-| `docs/readme-details.md` | 旧README全文の重複コピー。製品・設計・課金・開発の正本へ直接案内。 |
-| `docs/prompts/hub-wallet-next.md` | 2026-09-09のHub/Wallet・BlackBerry-first再開指示。GAP受入を現行workstreamへ統合し、現行SIM方針と重複する作業指示を削除。 |
-| `docs/prompts/os-operational-base-next.md` | 旧D6 run44待ちと単一owner未実装を現在形で案内する旧指示。D0〜D6・復旧・Game/Walletの必要受入契約を正本へ統合。 |
-
-現行SIM/eSIM方針、承認、release記録、必要な証拠・固定原本・ライセンスは保持する。過去のマージで失われた台帳・コードの回収元も復旧完了までは保持する。今回の削除で実装・本番・実機の受入を完了扱いにしない。検証とGitHub反映は `data/project-status.json.repositoryCleanup.obsoleteContent` とprojectに記録する。
+`vendor/mr`の原本とprovenance/hashは不変。共通APIが必要な変更はadapter側へ行い、`python3 scripts/package-mr.py`と対象試験でsource/配布物を一致させる。Tool作者の署名をOS/platform鍵で代行せず、OS側が権限・失効・資源制限を強制する。
 
 <a id="repository-storage-policy"></a>
-## Gitに保存するものと再生成するもの（G01、2026-10-05）
 
-利用者のリポジトリ整理指示に基づき、主担当Git / CI / Operations（ROCK）でmain `592daeea322cd47aa189b67dd689e323662c0c67`から整理した。元の作業木の未保存eSIM・決済変更は取り込まない。G04の未統合PR整理とは別の、生成物管理の修正である。
+## Gitへ保存するもの
 
-| 区分 | 保存先・扱い | 根拠・再生成 |
-| --- | --- | --- |
-| Web、Worker、OS、SDKのsource、設定、lock、migration | Gitに保持 | 機能・導入・再現の入力。名前が似ていても別runtimeを削除しない |
-| avocadoMini Siteの配備bundle | `sites/avocado-mini/dist/`をGit対象外 | `npm ci --prefix sites/avocado-mini` → `npm --prefix sites/avocado-mini run build`。Astroがclientを生成し、stage-workerがWorker・migration・hosting設定を複製する |
-| Billing等のdry-run bundleとmap | `services/*/work/`をGit対象外 | `npm run billing:check`、`npm run operator-dock:check`、`npm run sky:agent-runtime:check` |
-| サイト画像・PDF・公開配布ZIP | `sites/avocado-mini/public/`、`public/toolkits/`等を保持 | 利用者がダウンロードする入力・配布物。Siteのpublic素材76件は削除前のdistコピーと全byte一致 |
-| 設計の原本・旧版・QA・package | `docs/rocketstar-design/`、R5等を保持 | 明示された完全保存とhash検査の対象。archive内の`work/`・`outputs/`を機械的に消さない |
-| 要約証拠・過去の受入記録 | `docs/evidence/`を保持 | 元artifactとSHAの証拠。新しい実行の長いlogはGit対象外の`work/`等へ |
-| 固定vendor・native Tool fixture | `vendor/mr/`、`systems/rock-star-os/os/tools/dist/`を保持 | 固定hashと開発用fixtureは単なる一時buildではない |
+実装、設定、最小限のfixture、現行設計、必要な受入証拠、復旧手順を保存する。OS image、build cache、再生成可能な大量ログ・frame・dry-run出力はGit管理外またはrelease artifactへ置く。固定原本PDF/R5/R1、IMPORT-MANIFESTと対象artifactのhashを持つ証拠は、その保存契約を維持する。原稿や秘密値をGitへ追加しない。
 
-除外対象はSite 101ファイル（68,281,525 bytes）とBilling 2ファイル（872,381 bytes）、合計103ファイル・69,153,906 bytes（65.95 MiB）。履歴の書換えは行わないため、これは現在のcheckoutと将来の差分の整理であり、既存Git履歴のダウンロード容量が同じ量だけ減る意味ではない。
+公開repositoryの現行fileは平文で読める。一時的な過去の暗号化を、現在の復元に必要な鍵として案内しない。法務/特許の原稿とcredentialの保管は、sourceの公開状態とは別に本人/保存契約で管理する。
 
-原因はSiteのignoreが`dist/server/.wrangler/`だけを対象にし、rootの`/dist/`が子Siteへ適用されなかったこと、およびignore追加前にBillingの出力が既に追跡されていたこと。`npm test`も古いdistを読むだけだった。Siteの`pretest`でbuildを必須化し、rootのSite試験をその入口へ統一、CIにSiteのlockfile installを追加する。新しい`repository:check`はGit index上の生成物を拒否し、ローカルで再生成したignored出力は許す。rootの広すぎる`**/build/`を除き、`app/api/sky/telegram/build/`のsourceを誤って無視しないようにする。Android buildの既存ignoreは維持する。WEB05の進捗リンクも削除するHTMLコピーから既存のbuild試験へ差し替え、clean checkoutの検査をbuild前に実行できるようにする。`data/amc/`はhash固定の読取専用snapshotなので、当時のdist参照を含め原byteを保持する。
+## 作業と統合
 
-確認コマンド: `npm run repository:check`、`npm run test:avocado-mini-site`、`python3 scripts/verify-rocketstar-archive.py --git`、`npm run verify`。進捗・最終結果は`data/project-status.json`の`repositoryCleanup`と`project.md`に記録する。GitHub保存、main統合、Site公開はそれぞれ独立した状態として扱う。
+現在main、作業branch、PR、同一SHAのCIを取得してから対象source/fixture/証拠を読む。未保存差分のあるcheckoutを保全し、別作業は専用worktreeで行う。branchは`codex/`を用い、履歴を書き換えず通常のcommit/mergeで保存する。競合では現行契約と双方の必要な変更を保全し、削除台帳に登録された旧内容を復活させない。
 
-復旧は削除前commit `592daeea322cd47aa189b67dd689e323662c0c67`から各対象を取得できる。通常の利用では上記buildで再生成し、生成物を再びcommitしない。設計原本や配布assetまで削除範囲を広げる場合は、参照先と完全保存条件を別に確認する。
+`project.md`は現在地・次作業・検証と生成台帳の入口にする。旧作業ログの全文を累積させずGit履歴から読む。正本・索引・status/Mission Controlを同期し、`npm run project:update`、`npm run metadata:check`、`npm run baseline:check`、`npm run design:check`、`npm run verify`を通す。Git保存やCIをProvider/実資金/実機/飛行の受入へ加算しない。
 
+<a id="obsolete-content-cleanup"></a>
 
-## 2026-10-05 Sky配信候補の正本統合（G04/WEB04）
+## 旧内容の削除と復元
 
-G04/WEB04。利用者のmain反映指示により、専用Sites候補b896b2eの15commit差分を現行main4928b64eへ選択的に移植。既存のSIM/eSIM・Cloud料金・LiveKit音声・lazy runnerと既存migrationを保持する。Zema library、Markdown取得、CSV履歴の競合防止・世代別削除・scheduled handler、接続状態と限定Connectorの修正を取り込む。0059でlibraryを追加し、専用Siteの旧journalやschema bootstrapはコピーしない。統合候補の検証と同一SHA CIは実行中。公開Skyはv39のままで、実PC権限・新規課金・外部si・本番Cron・本人受入は別条件。
+2026-10-13の利用者の明示指示「古くて紛らわしい不要な内容は削除」により、初期製品/構成/ファンド・旧OS分冊/監査・旧account提案/SIM主入口・旧Commerce prompt・仕様変遷の重複文書を削除した。必要な現役契約は共通設計02/04/06、OS検証、Commerce、Wallet workstreamへ統合。署名claimは[サービス利用権](service-entitlements.md)へ再編した。
 
-統合後のローカル全体verifyは成功。AMC/SPIDERを含むNode1146合格・1skip、仕事API1069、CSV385 assertions。詳細は[検証記録](evidence/sky-github-main-integration.json)。既存mainの履歴scanner候補2859件は別の未解決事項として保持する。
+製品ベースの旧SIM/旧Mini価格・寸法・日付追記と、projectの長い旧作業ログを現行本文から削除した。RQ01〜RQ50、ゲーム/物質発明、署名・失効・復旧・料金保留と未受入gateは保持する。Miniの旧4塔/Hub・41万円の紹介とP0回転模型を撤去し、R5の1本自律・200mm以内・別Hub不要・価格未確定へ同期した。
+
+削除前の復元commitは `98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb`。[削除台帳](../data/archived-paths.json)の`restoreCommits[path]`が今回のpath別復元先を持つ。以前の削除分は既存の`commit`（`96845e6006c15e39ba5b45495f79c21bdff7399e`）を維持する。台帳を混ぜて一つの古いSHAへ置き換えない。
+
+例: `git show 98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb:docs/sim-led-product-architecture.md` で削除前の本文を読む。`git show`は読取であり、旧仕様を現行へ復活させない。新しく削除するpathは、固定原本条件・incoming参照・現役契約の受け皿を確認し、`git cat-file -e <restoreSHA>:<path>`で実在を確かめてから台帳へ登録する。
+
+検査が旧入口pathを要求する場合は、同じ意味の現行正本を検査するよう同期する。原本hash、要求、Tool/schema、安全/料金gateの判定を削除・緩和して通さない。凍結された過去証拠のpath/hashは保持し、現行のtaskPlan・索引・読取入口を更新する。

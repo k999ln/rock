@@ -692,7 +692,7 @@ Higgsfield、Runway、Roblox、GTA／FiveM、YouTube、Instagramは接続先の 
 
 **料金の約束（クラウドの有料実行すべてに共通）**：実行前に単価と見積範囲、実行中に予約額と照合済み額、完了後に項目別の利用明細を見せる。利用者が決めた上限を超える実行は、新しい見積と明示承認なしには行わない。通信プランの料金とsi・Agent・computeの費用は別項目にする。
 
-くわしく: [SIM/eSIM-led architecture](sim-led-product-architecture.md) / [Sky Cloud継続実行](sky-cloud-continuity.md) / [A2A Bridge](sky-a2a-bridge.md) / [A2A価格見積拡張](a2a-pricing-extension.md) / [クラウド運用・復旧runbook](sky-cloud-operations-runbook.md) / [Agent Control Plane](agent-control-plane.md) / [クラウドAgent供給元の比較](cloud-agent-provider-comparison-20261001.md)
+くわしく: [SIM/eSIM-led architecture](service-design/02-system-contracts.md) / [Sky Cloud継続実行](sky-cloud-continuity.md) / [A2A Bridge](sky-a2a-bridge.md) / [A2A価格見積拡張](a2a-pricing-extension.md) / [クラウド運用・復旧runbook](sky-cloud-operations-runbook.md) / [Agent Control Plane](agent-control-plane.md) / [クラウドAgent供給元の比較](cloud-agent-provider-comparison-20261001.md)
 
 ---
 

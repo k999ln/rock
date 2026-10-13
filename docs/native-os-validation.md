@@ -1,5 +1,21 @@
 # Native OSのRock統合検証
 
+## 継続受入と旧設計からの引継ぎ
+
+現行の判定は[実現順](service-design/04-delivery-and-acceptance.md#4-osとハードウェアの独立系列)、[Native/QEMU](workstreams/06-native-qemu-release.md#continuing-acceptance)、[スマホPreview](phone-preview-20260911.md)と[OS受入報告](templates/os-acceptance-report.md)へ揃える。旧分冊の「未実装」は当時のsnapshotであり、現在Gitに存在するcodeを消したり、受入済みと一括換算したりしない。host/source、仮想OS、Pixel試験署名APK、正式OS image、本番を同じ数へ足さない。
+
+旧AT01〜AT14から引き継ぐ検査範囲は次のとおり。各項目は同じimage/source・profile・環境の検査へ接続し、結果未取得はNOT_RUNとする。
+
+- AT01/02/03: 固定manifestの再現build/boot、UI終了/画面OFFの承認済み二工程、queued/leased/running/結果確定前後の再起動とunlock後の同ID復旧。
+- AT04/05: sample/failed/needs_review/不足成果物/不正hashの通過拒否、本人最終完了、別Tool/user/Workの分離、UID偽装・期限切れgrant・権限拡大の拒否。
+- AT06/07: loop/過剰allocation/子processの資源強制と全停止、原子的artifact確定、crash/容量不足、export/削除/保持、未確定外部作用の照合。
+- AT08/09: 対象機種で画面OFF/充電着脱/通信断/再起動を含む連続運転、同条件の対照OSとの電池/熱測定。件数・期間・条件・遅延理由を記録する。
+- AT10/11: 別作者がSDKから署名catalogの導入→実行→停止→削除を完走し、改変配布物/鍵不一致/期限切れ・古いmetadata/失効版/権限増を拒否する。作者のbuildを運営鍵serverで直接実行しない。
+- AT12/13: 更新中断/起動失敗/直前OSのDB互換/純正復旧、anti-rollback維持、実行件数/支援金と入金の分離、旧試算の保存則/利用料上限と個人費用の分離。
+- AT14: 偽PC、再pairing、資格失効、接続断、不明応答で未許可通信と重複送信を防ぎ、結果不明は同ID照合へ残す。
+
+旧設計の「停止5秒、72時間連続、電池増分5 percentage points/日、text Tool 120秒/256 MiB/入力256 KiB/出力1 MiB、電池30%、catalog7日/外部失効確認24時間」はdeprecatedな工学仮定であり、全profileの採用済み閾値ではない。必要なら担当が対象・強制点・測定条件・代替案をADRで選び、source設定と同一imageの実測で新たに受け入れる。OSの熱/Doze/SELinux/AVBを解除して旧値へ合わせない。
+
 ## PC receiverの終端競合と再送（AI04、2026-10-11）
 
 既存`src/blackberryrock/storage.py`の仕事更新で、2つのSQLite接続が同じrunning状態を読んだ後、完了と取消が両方成功し確定結果を上書きする競合を再現した。更新は読み取ったstatus・result・updated_atに対するCASで行う。同じ終端状態と同じ結果の再送は保存済み行を返し、時刻も書き換えない。異なる成果・状態の後着は409相当の競合として保持し、勝者の結果を消さない。DB schemaとHTTP interfaceは維持する。
