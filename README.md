@@ -29,7 +29,7 @@ The product should feel like one continuous handoff:
 3. Let Zema keep the request, plan, approvals, progress, stop state, result, and history together.
 4. See the estimate before paid cloud work, approve a limit, watch usage while it runs, and read the receipt in Wallet.
 
-Sky helps a person choose and connect the right Tool. **Jennifer** is the project chief of staff in front of Zema: she turns a broad request into a Goal Contract, asks AMC to work backwards into bounded leaf tasks, assigns each leaf to a project or specialist AI, and returns one integrated report. Zema remains the execution ledger for approvals, progress, evidence, artifacts, signed usage receipts, independent review, incomplete work, and stop state. Wallet explains estimates, usage, and receipts. RockstarOS Core checks permission and keeps identity, records, storage, and recovery consistent across clients; an LLM may suggest a plan, but it does not grant itself authority to run it.
+Sky helps a person choose and connect the right Tool. **Jennifer** is the project chief of staff in front of Zema: she turns a broad request into a Goal Contract, asks AMC to work backwards into bounded leaf tasks, assigns each leaf to a project or specialist si, and returns one integrated report. Zema remains the execution ledger for approvals, progress, evidence, artifacts, signed usage receipts, independent review, incomplete work, and stop state. Wallet explains estimates, usage, and receipts. RockstarOS Core checks permission and keeps identity, records, storage, and recovery consistent across clients; an LLM may suggest a plan, but it does not grant itself authority to run it.
 
 The implemented coordination path is:
 
@@ -48,7 +48,7 @@ The map is deliberately drawn from the largest promise down to the smallest impl
 | Zoom level | What a person should understand | The named pieces |
 | --- | --- | --- |
 | **1 / Account** | One identity and one history follow the person across surfaces and devices. | Account, Home, Connect, Add, Settings, Campus |
-| **2 / Work** | A request becomes visible work with an owner, a boundary, a result, and a receipt. | Jennifer → Zema / AMC → specialist AI → reviewer → Wallet |
+| **2 / Work** | A request becomes visible work with an owner, a boundary, a result, and a receipt. | Jennifer → Zema / AMC → specialist si → reviewer → Wallet |
 | **3 / Foundation** | Every execution path checks the same identity, permission, storage, recovery, and stop rules. | RockstarOS Core, Broker, Runner, Storage, Recovery |
 | **4 / Capability** | A bounded Agent or Tool performs one useful job where it is allowed to run. | Local, PC/MCP, Cloud, Provider, native registry |
 
