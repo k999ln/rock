@@ -197,6 +197,12 @@ export type TextGenerationRequest = {
   system?: string;
   prompt: string;
   maxOutputTokens?: number;
+  /** Ask local OpenAI-compatible runtimes to constrain output to one JSON object. */
+  jsonOutput?: boolean;
+  /** Optional JSON Schema for local runtimes with native structured-output support. */
+  jsonSchema?: Record<string, unknown>;
+  /** Disable reasoning traces on local runtimes for short, bounded planner turns. */
+  disableThinking?: boolean;
   clientRequestId?: string;
 };
 
@@ -486,6 +492,7 @@ async function generateTextRequest(
         messages,
         max_tokens: maxOutputTokens,
         stream: false,
+        ...(request.jsonOutput ? { response_format: { type: 'json_object' } } : {}),
       }),
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
@@ -504,7 +511,16 @@ async function generateTextRequest(
     const response = await fetchImpl(`${base}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, messages, stream: false }),
+      body: JSON.stringify({
+        model,
+        messages,
+        stream: false,
+        ...(request.jsonSchema
+          ? { format: request.jsonSchema }
+          : request.jsonOutput ? { format: 'json' } : {}),
+        ...(request.disableThinking ? { think: false } : {}),
+        options: { num_predict: maxOutputTokens },
+      }),
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
     });
     const payload = await jsonResponse(response);

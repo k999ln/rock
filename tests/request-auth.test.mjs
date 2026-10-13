@@ -1,6 +1,30 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { requestUser } from '../lib/request-auth.ts';
+import { configuredLocalDevelopmentUser, requestUser } from '../lib/request-auth.ts';
+
+void test('local preview identity is explicit and loopback-only', () => {
+  assert.equal(
+    configuredLocalDevelopmentUser(
+      new Request('http://localhost:8787/api/jobs'),
+      'local-preview:rockstar-owner',
+    ),
+    'local-preview:rockstar-owner',
+  );
+  assert.equal(
+    configuredLocalDevelopmentUser(
+      new Request('https://rockstaros-kaiya.noellesugar1.chatgpt.site/api/jobs'),
+      'local-preview:rockstar-owner',
+    ),
+    null,
+  );
+  assert.equal(
+    configuredLocalDevelopmentUser(
+      new Request('http://localhost:8787/api/jobs'),
+      'owner-without-preview-prefix',
+    ),
+    null,
+  );
+});
 
 void test('request auth prefers the stable gateway user id', async () => {
   const request = new Request('https://example.test/api/jobs', {

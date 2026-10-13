@@ -1,5 +1,6 @@
 const SITE_HOST_SUFFIX = '.chatgpt.site';
 const SITE_DISPATCH_PREFIX = 'site---';
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 
 function sameOrigin(request: Request) {
   if (request.method === 'GET') return;
@@ -25,6 +26,27 @@ async function pseudonymousEmailId(email: string) {
   return `sites-email-sha256:${hex}`;
 }
 
+export function configuredLocalDevelopmentUser(
+  request: Request,
+  configuredId: unknown,
+) {
+  const host = new URL(request.url).hostname.toLowerCase();
+  if (!LOOPBACK_HOSTS.has(host) || typeof configuredId !== 'string') return null;
+  const id = configuredId.trim();
+  return /^local-preview:[A-Za-z0-9._@-]{1,120}$/.test(id) ? id : null;
+}
+
+/** Match the same identity precedence used by requestUser before applying cloud-only scopes. */
+export function requestUsesEsimCloudIdentity(request: Request) {
+  const authorization = request.headers.get('authorization') ?? '';
+  if (authorization.startsWith('Bearer rock_esim_')) return true;
+  if (authorization.startsWith('Bearer rock_session_') || request.headers.get('oai-authenticated-user-id')?.trim()) return false;
+  const email = request.headers.get('oai-authenticated-user-email')?.trim().toLowerCase() ?? '';
+  const trustedEmail = new URL(request.url).hostname.endsWith(SITE_HOST_SUFFIX) &&
+    (request.headers.get('x-dispatched-app') ?? '').startsWith(SITE_DISPATCH_PREFIX) && validEmail(email);
+  return !trustedEmail && Boolean(request.headers.get('cookie')?.includes('rock_esim_access='));
+}
+
 export async function requestUser(request: Request): Promise<string> {
   sameOrigin(request);
 
@@ -35,6 +57,15 @@ export async function requestUser(request: Request): Promise<string> {
   }
 
   const url = new URL(request.url);
+  if (LOOPBACK_HOSTS.has(url.hostname.toLowerCase())) {
+    const { env } = await import('cloudflare:workers');
+    const localUser = configuredLocalDevelopmentUser(
+      request,
+      (env as unknown as { ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID?: string })
+        .ROCKSTAR_LOCAL_DEVELOPMENT_USER_ID,
+    );
+    if (localUser) return localUser;
+  }
   const dispatch = request.headers.get('x-dispatched-app') ?? '';
   const email =
     request.headers.get('oai-authenticated-user-email')?.trim().toLowerCase() ??
