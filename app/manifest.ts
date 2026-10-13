@@ -2,11 +2,11 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    id: '/',
+    id: '/os',
     name: 'RockstarOS',
     short_name: 'RockstarOS',
     description: 'Sky、Zema、Wallet、Market、Fundを一つのホームから開く。',
-    start_url: '/',
+    start_url: '/os',
     scope: '/',
     display: 'standalone',
     lang: 'ja',
