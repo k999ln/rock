@@ -37,7 +37,12 @@ await test('local production start applies the published migrations before servi
     new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
     'utf8',
   );
-  assert.match(agentRuntimeConfig, /"migrations_dir": "\.\.\/\.\.\/drizzle"/);
+  assert.doesNotMatch(agentRuntimeConfig, /migrations_dir/);
+  const localConfig = readFileSync(
+    new URL('../wrangler.local.jsonc', import.meta.url),
+    'utf8',
+  );
+  assert.match(localConfig, /"migrations_dir": "services\/sky-web\/migrations"/);
   // Execute the same runner as npm start; failure and signal boundaries live
   // in start-local-web.test.mjs using this shared fixture.
   const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
@@ -87,6 +92,17 @@ await test('Sky Web preserves its deployed migration lineage separately from Age
       name,
     );
   }
+});
+
+await test('the shared production D1 has exactly one migration owner', () => {
+  const webConfig = readFileSync(new URL('../vite.config.ts', import.meta.url), 'utf8');
+  const runtimeConfig = readFileSync(
+    new URL('../services/sky-agent-runtime/wrangler.jsonc', import.meta.url),
+    'utf8',
+  );
+  assert.match(webConfig, /migrations_dir: 'services\/sky-web\/migrations'/);
+  assert.doesNotMatch(runtimeConfig, /migrations_dir/);
+  assert.match(runtimeConfig, /"database_name": "site-creator-d1"/);
 });
 
 await test('both published migration filenames and exact SQL bytes stay intact', () => {
