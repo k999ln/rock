@@ -205,7 +205,7 @@
         "lib/fund-store.ts",
         "db/schema.ts",
         "lib/workflow.ts",
-        "drizzle/0018_sky_commerce.sql",
+        "drizzle-legacy/post-site-bridge/0018_sky_commerce.sql",
         "drizzle/0019_sky_library.sql"
       ],
       "inputOutputTypes": {

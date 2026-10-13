@@ -11,7 +11,7 @@ function database(t) {
   const sqlite = new DatabaseSync(':memory:');
   sqlite.exec(
     readFileSync(
-      new URL('../drizzle/0060_sky_code_timeline.sql', import.meta.url),
+      new URL('../drizzle-legacy/post-site-bridge/0060_sky_code_timeline.sql', import.meta.url),
       'utf8',
     ),
   );

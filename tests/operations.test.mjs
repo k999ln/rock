@@ -571,12 +571,10 @@ await test('provider CAS admits one creator/update and preserves owner, provider
 await test('provider additive migration backfills old rows and enforces positive integer versions', () => {
   const sqlite = new DatabaseSync(':memory:');
   try {
-    const files = readdirSync(new URL('../drizzle', import.meta.url)).filter((n) => n.endsWith('.sql')).sort();
-    for (const name of files.filter((n) => n < '0062_sky_provider_revision.sql'))
-      sqlite.exec(readFileSync(new URL('../drizzle/' + name, import.meta.url), 'utf8'));
+    sqlite.exec(readFileSync(new URL('../drizzle-legacy/post-site-bridge/0013_sky_provider_connections.sql', import.meta.url), 'utf8'));
     sqlite.exec("INSERT INTO sky_provider_connections VALUES('legacy','instagram','ready','{\"account\":\"retained\"}','vault-reference',123,456)");
     const old = { ...sqlite.prepare('SELECT * FROM sky_provider_connections').get() };
-    sqlite.exec(readFileSync(new URL('../drizzle/0062_sky_provider_revision.sql', import.meta.url), 'utf8'));
+    sqlite.exec(readFileSync(new URL('../drizzle-legacy/post-site-bridge/0062_sky_provider_revision.sql', import.meta.url), 'utf8'));
     assert.deepEqual({ ...sqlite.prepare('SELECT * FROM sky_provider_connections').get() }, { ...old, revision: 1 });
     for (const revision of [0, -1, 1.5, 'invalid', null])
       assert.throws(() => sqlite.prepare('UPDATE sky_provider_connections SET revision=?').run(revision));

@@ -392,7 +392,7 @@
           "result": "First-party display si; compatibility identifiers, provider proper names and original archives preserved."
         }
       ],
-      "latestMainSha": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
+      "latestMainSha": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
       "obsoleteContentCleanup": {
         "requestedAt": "2026-10-13",
         "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",

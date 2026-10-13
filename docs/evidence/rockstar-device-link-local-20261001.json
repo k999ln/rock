@@ -25,7 +25,7 @@
       "sourceState": "AUTHORED_ANDROID_BUILD_AND_INSTRUMENTATION_NOT_RUN_SDK_UNAVAILABLE",
       "limitedCompile": "Transport and storage Java sources compiled with javac 11 against temporary Android API stubs; not a substitute for Android SDK compilation or runtime"
     },
-    "migration": "drizzle/0045_rockstar_device_sessions.sql"
+    "migration": "drizzle-legacy/post-site-bridge/0045_rockstar_device_sessions.sql"
   },
   "verification": {
     "commands": [

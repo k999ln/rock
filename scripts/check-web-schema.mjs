@@ -27,6 +27,22 @@ const canonicalTables = [
   ),
 ].map((match) => match[2]);
 const canonicalSet = unique(canonicalTables, 'db/schema.tsのtable名');
+const webOnlyTables = [
+  'csv_billing_account_events',
+  'csv_delivery_links',
+  'csv_delivery_revisions',
+  'csv_intake_controls',
+  'csv_job_costs',
+  'csv_monthly_fee_decisions',
+  'csv_operator_events',
+  'csv_operator_outbox',
+  'csv_operator_settings',
+  'csv_payment_events',
+];
+const expectedSet = unique(
+  [...canonicalSet, ...webOnlyTables],
+  'production web table名',
+);
 
 const sqlFiles = readdirSync(migrationsDirectory)
   .filter((name) => name.endsWith('.sql'))
@@ -127,8 +143,8 @@ try {
     .all()
     .map(({ name }) => name);
   const migratedSet = new Set(migratedTables);
-  const missing = [...canonicalSet].filter((name) => !migratedSet.has(name));
-  const extra = [...migratedSet].filter((name) => !canonicalSet.has(name));
+  const missing = [...expectedSet].filter((name) => !migratedSet.has(name));
+  const extra = [...migratedSet].filter((name) => !expectedSet.has(name));
   if (missing.length || extra.length)
     throw new Error(
       `web schema: canonical schemaとmigration結果が不一致です\nmissing: ${missing.join(', ') || '-'}\nextra: ${extra.join(', ') || '-'}`,

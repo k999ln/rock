@@ -72,4 +72,4 @@ Jenniferのcontext・真正検収証拠、課金方式と現行Wallet gateの整
 
 最新再確認: PR #113のJennifer sourceはhead `3349c247`の8check成功後、2026-10-13 18:21:19 UTCにmain `01d2e418`へ統合済み。merge SHAの7checkも成功。本設計branchへmainを保全mergeした。原本/context/真正review/native/Providerの未受入条件は引き続き個別に残す。
 
-main反映の追加指示を受け、最新main `1f256b90`のSky Phoenix・完成feed・Columbia・有限local Agent・Site互換DB移行を保全mergeして再検証する。#112/#115/#116/#117のGit統合を、本番公開やProvider/実機受入へ換算しない。
+main反映の追加指示を受け、最新main `d779297a`のSky Phoenix・完成feed・Columbia・有限local Agent・Site互換DB移行を保全mergeして再検証する。#112/#115/#116/#117/#118のGit統合を、本番公開やProvider/実機受入へ換算しない。

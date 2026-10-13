@@ -54,7 +54,7 @@ JenniferはPR #113 / head `3349c2475468443bc7ecd94a4e3782343f514a8f`で役割と
 
 ### 並行する大学NFC・Sky候補の引継ぎ
 
-2026-10-13の最新mainは`1f256b90e894f3d5e4ae0081e6fe60d564819020`。#115のSky Phoenix/完成feed/Columbia/local Agent、#116/#117のlocal preview・Site互換DB移行、#112の5大学Hub/PWA/NFCと型付きapp成果表示が統合済み。#112 headは`df756bea745277b2a292790e843f185e80f00b02`、#115 headは`64cfc83402c8c0b8cde054e10262982838fa85af`。これらをopen候補や未実装へ戻さない。本設計branchは最新mainを保全mergeし、統合候補の再検証後、利用者の「mainへあげて」によりPR #114を通常mergeする。
+2026-10-13の最新mainは`d779297a8684111ac8948137c0ecc3d83b84c5e8`。#115のSky Phoenix/完成feed/Columbia/local Agent、#116/#117のlocal preview・Site互換DB移行、#112の5大学Hub/PWA/NFCと型付きapp成果表示、#118のcanonical D1 bridge/legacy履歴保全が統合済み。#112 headは`df756bea745277b2a292790e843f185e80f00b02`、#115 headは`64cfc83402c8c0b8cde054e10262982838fa85af`。これらをopen候補や未実装へ戻さない。本設計branchは最新mainを保全mergeし、統合候補の再検証後、利用者の「mainへあげて」によりPR #114を通常mergeする。
 
 NFC担当からの別artifact報告は`avoado.si`のSky v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db`、5大学の`/os/sky/campus/{nyu|fit|columbia|fordham|johnjay}/hub?source=nfc`。version/sourceと実画面の受入は担当報告として保持する。2026-10-13 20:35 UTCに本設計担当がHTTP再読取りを行い、`/`・`/os/sky`・`/os/sky/outputs`・5大学Hubの8URLで200と各ページtitleを確認した。これだけでは配備source一致、画面操作、実カード、学生資格/枠、Providerの受入にならない。カードのURLは大学contextを選ぶだけで、本人性、学生所属、優待、購入、実行権限を与えない。既存OS/browserからSky→Zemaへ進める。NTAG215への実書込・iPhone/Android再読取り、6枠の運用、有料MCP/Providerの一周は独立した未受入条件である。
 
@@ -97,3 +97,5 @@ Pixelは正確なSKUのBSP/firmware/vendor/partition/AVB/rollback index、再配
 [再構成の証拠](../evidence/service-design-rebuild.json)、[プロジェクト進捗](../../data/project-status.json)、[Mission Control](../../data/mission-control.json)、[次の実行プロンプト](../prompts/rock-current-next-20261002.md)。次の実装ではまず最新main/対象branch/公開artifactとdirty候補を保全照合し、上記1の一周を同じsourceへ固定する。
 
 文書検証は `npm run project:update`、`npm run mission:update`、`npm run baseline:check`、`npm run design:check`、`npm run project:check`、`npm run mission:check`、最後に `TMPDIR=/private/tmp npm run verify`。UI実利用の受入は実装変更を対象に別途行い、この設計保存だけで実施済みにしない。
+
+任意サービスclaimの公開`/connect`はMini proxyへ送らずSky Worker自身が扱う。限定prefix修正とclaimリンク/POST/HEAD/近似prefixのfixtureを受け入れた。これはホストのルーティング契約で、同じ配備物の本人claim登録・issuer・device・本番失効の受入は別gateである。

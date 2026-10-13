@@ -32,7 +32,8 @@ async function database(t) {
   t.after(() => worker.dispose());
   const db = await worker.getD1Database('DB');
   for (const file of ['0010_gray_fat_cobra.sql', '0014_sparkling_chimera.sql', '0016_red_crusher_hogan.sql']) {
-    const migration = readFileSync(new URL(`../drizzle/${file}`, import.meta.url), 'utf8');
+    const lineage = file.startsWith('0010_') ? 'pre-site-bridge' : 'post-site-bridge';
+    const migration = readFileSync(new URL(`../drizzle-legacy/${lineage}/${file}`, import.meta.url), 'utf8');
     for (const statement of migration.split('--> statement-breakpoint').filter((value) => value.trim()))
       await db.prepare(statement).run();
   }

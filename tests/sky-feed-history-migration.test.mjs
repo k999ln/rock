@@ -6,18 +6,18 @@ import { readFileSync, readdirSync } from 'node:fs';
 void test('published Sky Web Phoenix migration exactly matches the canonical schema migration', () => {
   assert.equal(
     readFileSync(new URL('../services/sky-web/migrations/0018_sky_feed_personalization.sql', import.meta.url), 'utf8'),
-    readFileSync(new URL('../drizzle/0063_talented_ulik.sql', import.meta.url), 'utf8'),
+    readFileSync(new URL('../drizzle-legacy/post-site-bridge/0063_talented_ulik.sql', import.meta.url), 'utf8'),
   );
 });
 
 void test('Sky Phoenix migration adds owner-scoped consent and event history without changing prior data', (t) => {
   const db = new DatabaseSync(':memory:');
   t.after(() => db.close());
-  const directory = new URL('../drizzle/', import.meta.url);
+  const directory = new URL('../services/sky-web/migrations/', import.meta.url);
   const files = readdirSync(directory)
     .filter((name) => name.endsWith('.sql') && !name.startsWith('._'))
     .sort();
-  const migration = '0063_talented_ulik.sql';
+  const migration = '0018_sky_feed_personalization.sql';
   assert.ok(files.includes(migration));
   for (const name of files.filter((name) => name < migration))
     db.exec(readFileSync(new URL(name, directory), 'utf8'));

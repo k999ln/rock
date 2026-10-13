@@ -361,22 +361,17 @@
     ]
   },
   "latestRepositoryObservation": {
-    "mainSha": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
-    "jenniferPr": 113,
-    "state": "MERGED",
-    "mergedAt": "2026-10-13T18:21:19Z",
-    "sourceSha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
-    "sameSourceChecks": {
-      "total": 8,
-      "success": 8
-    },
-    "branchDeleted": true,
-    "fixedDesignInputPreserved": "d0151e892794066e1a59b5e4d1dc8863e314947f",
-    "designBranchMainSynchronization": "merged_in_design_branch",
-    "mainSameShaChecks": {
-      "total": 7,
-      "success": 7
-    }
+    "mainSha": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
+    "recordedDate": "2026-10-13",
+    "mergedUpstreamPrs": [
+      112,
+      115,
+      116,
+      117,
+      118
+    ],
+    "scope": "Git source observation; previous Jennifer7/8 checks retained separately with exact SHAs",
+    "mainSameShaChecks": "not_yet_collected_for_latest_main"
   },
   "historicalAuditAnchors": {
     "main": "7cdbb5fedc86ee3978ed329d9312147d137c9199",
@@ -733,12 +728,13 @@
     "branch": "codex/service-design-rebuild",
     "pullRequest": 114,
     "designHeadBeforeMainRefresh": "2a02f0fb5dcd2e1368ead1541a4b9390fc2260b1",
-    "sourceMainSha": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
+    "sourceMainSha": "d779297a8684111ac8948137c0ecc3d83b84c5e8",
     "preservedUpstreamPrs": [
       112,
       115,
       116,
-      117
+      117,
+      118
     ],
     "resolvedConflicts": [
       "README.md",
@@ -781,6 +777,45 @@
       "latest public Home/Sky URLs and Mini/Pro domains",
       "Mini proxy no-cookie/no-identity-forwarding rule",
       "current R5 site home and si output/download labels"
-    ]
+    ],
+    "previousSecondCandidate": {
+      "sourceCommit": "d6c1156d5dfe8e40156669e2d0f8cbe20059150e",
+      "sourceMainSha": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
+      "fullVerifyExitCode": 0,
+      "rawLog": "/private/tmp/rock-main-design-latest-verify.log",
+      "rawLogSha256": "d06b4213bbbbe7b5acce1e9b753ea052f3c0708e65f9bb5517d4b2f525b6952c",
+      "supersededReason": "main additionally merged canonical D1 bridge PR118"
+    },
+    "connectRouteRepair": {
+      "implementation": "services/sky-web/domain-router.mjs",
+      "test": "tests/sky-domain-router.test.mjs",
+      "before": "connect claim route was proxied to Mini Site",
+      "after": "bounded /connect and children stay in Sky; near-prefix still excluded",
+      "preFixTest": "failed as expected: mini-site != sky-connect",
+      "postFixTests": 6,
+      "postFixPass": 6,
+      "runtimePolicyOtherThanRoutingChanged": false,
+      "deploymentPerformed": false
+    }
+  },
+  "jenniferIntegrationObservation": {
+    "mainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+    "jenniferPr": 113,
+    "state": "MERGED",
+    "mergedAt": "2026-10-13T18:21:19Z",
+    "sourceSha": "3349c2475468443bc7ecd94a4e3782343f514a8f",
+    "sameSourceChecks": {
+      "total": 8,
+      "success": 8,
+      "sha": "3349c2475468443bc7ecd94a4e3782343f514a8f"
+    },
+    "branchDeleted": true,
+    "fixedDesignInputPreserved": "d0151e892794066e1a59b5e4d1dc8863e314947f",
+    "designBranchMainSynchronization": "merged_in_design_branch",
+    "mainSameShaChecks": {
+      "total": 7,
+      "success": 7,
+      "sha": "01d2e41857e8e713bd5df31476deaea8c942e983"
+    }
   }
 }
