@@ -6,6 +6,7 @@
 .intro { margin: 9px 0 0; color: var(--sky-muted); font-size: 13px; line-height: 1.6; }
 .marketLink { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; flex: 0 0 auto; gap: 8px; padding: 10px 14px; border: 1px solid #46606e; border-radius: 10px; color: #d5eaf4; background: #1b2a34; font-size: 12px; font-weight: 650; text-decoration: none; }
 .marketLink:hover { background: #2a414e; }
+.outputNav { display: flex; flex-wrap: wrap; gap: 8px; }
 .assistant { padding: 20px; border: 1px solid var(--sky-line); border-radius: 18px; background: linear-gradient(120deg, #192731, #141c24); }
 .assistant h2 { margin: 0 0 12px; color: #dbe8ef; font-size: 13px; font-weight: 600; }
 .composer { display: flex; align-items: center; gap: 8px; padding: 5px 6px 5px 14px; border: 1px solid #46606e; border-radius: 12px; background: #0d151c; }

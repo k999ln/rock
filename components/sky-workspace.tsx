@@ -463,9 +463,14 @@ export default function SkyWorkspace({
             <h1 id="sky-feed-title">ツールを選ぶ</h1>
             <p className={styles.intro}>アイコンで機能を確認。そのまま使い始められます。</p>
           </div>
-          <Link className={styles.marketLink} href="/sky/marketplace">
-            <Store size={17} /> マーケット <ArrowUpRight size={15} />
-          </Link>
+          <nav className={styles.outputNav} aria-label="Skyの主要画面">
+            <Link className={styles.marketLink} href="/sky/marketplace">
+              <Store size={17} /> マーケット <ArrowUpRight size={15} />
+            </Link>
+            <Link className={styles.marketLink} href="/sky/outputs">
+              Agentの成果 <ArrowUpRight size={15} />
+            </Link>
+          </nav>
         </header>
         <section className={styles.assistant} aria-labelledby="sky-assistant-title">
           <h2 id="sky-assistant-title">やりたいことから探す</h2>
