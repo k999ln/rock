@@ -197,7 +197,9 @@ passedのgateを同一候補の合格へ算入するには、gateのevidenceに�
 保存済みR1の監査試験fixture修正は、実配備設定と記録済みの旧本人限定監査を混同しないため、テスト内だけへ限定統合する。現在のpackage-lockに対応する948/911/49の検査は保持。実設定を読むrelease CLI、validator、本番Sites identity、既存アクセス制御は変更しない。35単体試験の合格は本番readbackではなく、公開判定は引き続き未合格。
 ## Sky App Output Plugins
 
-OS版ではZemaが依頼・承認・停止・費用を統合する。Sky単体はAgent/Toolを選び、本人が保存した成果を `/sky/outputs` から確認できる。第一者同一originアプリは `SkyAppOutputSlot` で既存のowner-scoped成果APIを読み、アプリの型付きschemaを検証してからそのアプリの画面へ表示する。Fitness例は `sky.fitness.plan/1` のみを運動プランとして扱い、任意の文章や別schemaを変換しない。
+OS版ではZemaが依頼・承認・停止・費用を統合する。Sky単体はAgent/Toolを選び、本人が保存した成果を公開Webの `/os/sky/outputs`（内部route `/sky/outputs`）から確認できる。第一者同一originアプリは `SkyAppOutputSlot` で既存のowner-scoped成果APIを読み、アプリの型付きschemaを検証してからそのアプリの画面へ表示する。Fitness例は `sky.fitness.plan/1` のみを運動プランとして扱い、任意の文章や別schemaを変換しない。
+
+公開Webの正規入口はRockstarOS Homeが `https://avoado.si/os`、Skyが `https://avoado.si/os/sky`、成果が `https://avoado.si/os/sky/outputs`。旧 `/sky` 配下は正規パスへ転送する。内部の既存 `/sky` routeとowner-scoped APIは維持し、Sky Siteが同ドメインの本人認証と保存を担当する。Miniのトップ・予約ページは別Siteからサーバー内で代理取得し、Skyのcookie・本人headerを渡さない。NFCの大学名は表示文脈であり、本人・購入・MCP接続権限へ昇格しない。
 
 入力は既存Zema親job、本人認証済み委任ID、暗号化保存済み成果。出力はAgent名・状態・テキスト部分、対応アプリへの型付き表示。保存と復旧は既存job・委任・成果と、保存を選んだCloud AI回答を正本にし、新たな成果DBを作らない。未ログイン、取得失敗、未保存、ファイル部分の省略、truncated、schema不一致を区別する。完全なテキストだけをコピー・保存対象とし、別Agentへの引継ぎや外部送信には改めて権限・費用・本人承認を要する。
 

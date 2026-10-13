@@ -66,8 +66,8 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   }
   assert.match(marketing, /AVOKADO \/ SPATIAL EXPERIENCES/);
   assert.match(marketing, /Make the room part/);
-  assert.match(marketing, /href="\/mini\/"/);
-  assert.match(marketing, /href="\/pro\/"/);
+  assert.match(marketing, /href="https:\/\/avocadomini\.si\/"/);
+  assert.match(marketing, /href="https:\/\/avocadopro\.si\/"/);
   assert.doesNotMatch(marketing, /SIM \+ eSIM SERVICE ACCESS/);
   assert.match(onboarding, /共通ログイン|同じアカウント/);
   assert.match(onboarding, /利用開始後の主な入口/);
@@ -151,7 +151,7 @@ void test('RockstarOS service entry remains separate from the selected Mini/Pro 
   assert.match(launch, /署名済み導入経路/);
   assert.match(home, /href="\/connect"/);
   assert.match(home, /aria-label="RockstarOSの主要サービス"/);
-  assert.match(home, /href="\/sky"><Cloud/);
+  assert.match(home, /href="\/os\/sky"><Cloud/);
   assert.match(home, /href="\/chat"><MessageCircle/);
   assert.match(home, /href="\/work"><Bot/);
   assert.match(home, /href="\/work"><Bot[^]*?<strong>Agent<\/strong><span>依頼・進捗・費用・成果<\/span>/);

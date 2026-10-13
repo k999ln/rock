@@ -2,31 +2,35 @@
   "schema": "sky-app-output-plugin-github/1",
   "date": "2026-10-13",
   "baseMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
+  "observedMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
   "branch": "codex/sky-app-outputs-20261013",
   "scope": "saved owner-scoped Sky output inbox and first-party Fitness typed rendering example",
   "focusedTests": "2/2 passed",
   "typecheck": "passed",
-  "fullVerify": "exit 0; Node 2144 passed, 1 skipped; Work API 1356; CSV 385; Web assets 197 references, missing 0",
-  "browserPreview": "local Fitness preview inspected; production redirect and Sky public page read back, but signed-in owner A/B not tested",
+  "fullVerify": "exit 0; Node 2149 passed, 1 skipped; Work API 1356; CSV 385; Web assets 197 references, missing 0",
+  "browserPreview": "Public /os Home, /os/sky, guest outputs and Mini/Pro domain navigation inspected; signed-in owner A/B not tested",
   "realProviderOutputTested": false,
   "externalCrossOriginSdkAccepted": false,
   "githubSaved": true,
   "mainIntegrated": false,
   "deployed": true,
   "skySite": {
-    "version": 40,
-    "sourceSha": "55cebb697c2897a7055f19f95f49ad79edca10d4",
-    "deploymentId": "appgdep_6ace694f9f6c81918081a91956665a53",
-    "url": "https://sky-marketplace.noellesugar1.chatgpt.site/sky"
+    "version": 45,
+    "sourceSha": "77563e5d84f555e2930ddfa49213e17c0f6a9194",
+    "deploymentId": "appgdep_6ace768ce80c8191ad6843a96a8ad2b5",
+    "url": "https://avoado.si/os/sky"
   },
   "avoadoSkyEntry": {
-    "mode": "temporary HTTP redirect; browser URL changes to dedicated Sky Site",
-    "miniSiteVersion": 12,
-    "miniSiteSourceSha": "1456aaf1bfb7289a7c4303df0e58107ba3244c5c",
-    "deploymentId": "appgdep_6ace6c4a1ea08191bab9034d4f2fd68e",
-    "entryUrl": "https://avoado.si/sky",
-    "readback": "Browser avoado.si/sky?source=nfc reached dedicated Sky Site /sky?source=nfc; final page HTTP 200; output page HTTP 200 and guest API HTTP 401; avoado.si and avocadomini.si roots HTTP 200"
+    "mode": "Sky Site native at custom domain; /os Home and /os/sky canonical Sky; Mini public pages and preorder API proxied server-side",
+    "miniSiteVersion": 15,
+    "miniSiteSourceSha": "9c6b0387c681682081d393ee2461e4e589422d78",
+    "deploymentId": "appgdep_6ace780abec0819191a88694db3c4b94",
+    "entryUrl": "https://avoado.si/os/sky",
+    "customDomainId": "appgdom_6ace718f2d3c8191a114b3ed015be9f9",
+    "customDomainStatus": "active; SSL active",
+    "readback": "HTTP 200 for /, /os, /os/sky, /os/sky/outputs, /os/manifest.webmanifest, /os/sky/manifest.webmanifest, /preorder/, /api/preorders/offer. /sky gives 308 to /os/sky. Browser Home→Sky→Home keeps avoado.si; guest outputs links to same-origin sign-in. Homepage Mini and Pro links clicked through to avocadomini.si and avocadopro.si; public HTML has three RockstarOS /os links and no /install link. Signed-in A/B and real preorder payment not tested. HTML manifest links resolve to the OS and Sky /os-prefixed manifest URLs.",
+    "osHomeUrl": "https://avoado.si/os"
   },
-  "verifyLogSha256": "28553a06c43ad0f2f1552cac18f689000c10bdd3df5d44d333be5dafbde79ec3",
+  "verifyLogSha256": "8689c1f0914b61112a9128307de61261d7ca1c132b1a3ba3eaec428ae1c90290",
   "amcTestAdjustment": "timeout fixture increased from 5ms/50ms block to 1000ms/1050ms block to avoid pre-dispatch scheduling race under full parallel suite"
 }

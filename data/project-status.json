@@ -7821,7 +7821,9 @@
     "baseMainSha": "4273ef02da9dbb28ede8ba8862b874615fa8a0d7",
     "branch": "codex/sky-app-outputs-20261013",
     "routes": [
-      "/sky/outputs",
+      "/os",
+      "/os/sky",
+      "/os/sky/outputs",
       "/fitness"
     ],
     "reusedApis": [
@@ -7833,13 +7835,14 @@
     "newOriginalStore": false,
     "focusedTests": "2/2 passed",
     "typecheck": "passed",
-    "fullVerify": "exit 0; Node 2144 passed, 1 skipped; Work API 1356; CSV 385; Web assets 197 references, missing 0",
+    "fullVerify": "exit 0; Node 2149 passed, 1 skipped; Work API 1356; CSV 385; Web assets 197 references, missing 0",
     "githubSaved": true,
     "mainIntegrated": false,
     "deployed": true,
-    "deploymentBoundary": "Dedicated Sky Site v40 and avocadoMini Site v12 redirect are live; avoado.si/sky changes browser origin; signed-in owner A/B not verified",
-    "entryUrl": "https://avoado.si/sky",
-    "nextAction": "Review branch CI and integrate into main; design same-origin routing without losing per-user auth, then validate NFC campus routing, owner A/B, real Provider output, and external app scope/origin/revocation separately.",
-    "verifyLogSha256": "28553a06c43ad0f2f1552cac18f689000c10bdd3df5d44d333be5dafbde79ec3"
+    "deploymentBoundary": "Sky Site v45 owns avoado.si; /os Home and /os/sky stay on same host; old /sky redirects; Mini Site v15 root and preorder proxy HTTP 200; Mini/Pro domain navigation and all public OS links at /os verified; signed-in owner A/B not verified",
+    "entryUrl": "https://avoado.si/os/sky",
+    "nextAction": "Review branch CI; validate signed-in owner A/B and NFC campus identity, entitlement, six-connection exception, real Provider output, and external app scope/origin/revocation separately; main integration remains separate.",
+    "verifyLogSha256": "8689c1f0914b61112a9128307de61261d7ca1c132b1a3ba3eaec428ae1c90290",
+    "osHomeUrl": "https://avoado.si/os"
   }
 }

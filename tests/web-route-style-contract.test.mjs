@@ -103,7 +103,7 @@ void test('OS home keeps Work and CSV inside Sky without fake device telemetry',
     resolve(root, 'components/home-screen.module.css'),
     'utf8',
   );
-  for (const route of ['/sky', '/chat', '/campus', '/wallet', '/market', '/settings']) {
+  for (const route of ['/os/sky', '/chat', '/campus', '/wallet', '/market', '/settings']) {
     assert.match(
       home,
       new RegExp(`href: '${route}'`),

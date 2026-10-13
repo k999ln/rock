@@ -116,7 +116,7 @@ fee 0%への道筋: 決済を作者accountで直接受ける方式（direct char
 | 回線つきmodel | 別modelかoption |
 | 通信の一次support | 自社が受け、状態表示と切り分け手順を用意する |
 | MiniのSIM | 試作はカード、量産はchip。SGP.32対応のSIMを選ぶ。5Gは入れない |
-| Skyの置き場所 | 当初案は `https://avocadomini.si/sky`。2026-10-13に利用者が `https://avoado.si/sky` へ変更。現行は専用Sky Siteへの転送で、自前passkeyと同一origin提供は未受入 |
+| RockstarOSとSkyの置き場所 | 2026-10-13の最新指定はHomeが `https://avoado.si/os`、Skyが `https://avoado.si/os/sky`。同一origin提供を公開確認済み。旧 `/sky` は新URLへ転送。自前passkeyと本人A/Bの本番受入は未完了 |
 | 通知 | Web Pushを先に作る |
 
 ## 7. 外部確認（未了）

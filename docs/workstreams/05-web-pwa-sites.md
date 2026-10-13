@@ -1,5 +1,9 @@
 # Web / PWA / Sites
 
+## 2026-10-13 — `avoado.si` のOS/Sky入口（WEB06 / SKY21、ROCK）
+
+Sky Site v45が `avoado.si` を保持し、公開Home `/os` とSky `/os/sky` を同一originで提供する。旧 `/sky` は正規URLへ転送し、Sky Site固有の本人IDとD1を維持する。OS/SkyのPWA manifestの起動先は新URL。`/` の製品Homeと予約APIは既存Mini Siteをサーバー内で代理取得し、Sky cookie・本人headerを渡さない。Mini Site v15の製品HomeからMini・Proの各専用ドメインへ実ブラウザで移動確認済み。RockstarOSの3箇所のリンクは `/os` を指すことを公開HTMLで確認済み。実Provider、本人A/B、大学別NFC権限と6接続枠、外部アプリSDKは未受入。実装・検証の記録は[証拠](../evidence/sky-app-output-plugin-github.json)と[配備手順](../../services/sky-web/README.md)。
+
 ## 2026-10-11 — 既存機能の品質・復旧改善（WEB04 / G04、ROCK）
 
 Zemaの見積世代・下書き離脱確認、Workbenchの読取／書込競合と本人別入力・成功応答照合、AMC importの古い読込、CSVの受付IDとowner保持を修正した。対象回帰と独立レビューは合格、統合候補の全体検証・同一SHAのCIは作業中。Walletは共通hookで同じ復旧契約を使用する。仕様はSky Tool全体設計の各節、実装と回帰はqualityRefactorの証拠へ集約する。processing強制終了後のCSV再開は未適用案として分離する。
