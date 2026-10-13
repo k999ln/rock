@@ -37,6 +37,8 @@ Skyを発見・接続、Zemaを依頼・実行の受け皿とする境界を維�
 
 利用者がNFCタグにSkyを入れる構想を指示。カード1枚が英語の「Sky for Columbia students」の入口になり、出典整理・AMC・特許アシスタントの英語版へ進む。avokadoが書き込んで配る。特許アシスタントには米国の案内を足し、カード経由ではAI調査を出さない。カードにはURLだけを書く。正本: [Sky NFCカード設計](sky-nfc-columbia.md) / [製品ベース 2026-10-12](product-baseline.md)。
 
+2026-10-13、ownerは簡素なlandingではなく、`sky-twitter-feed-mobile-v2.png`を基準にした今使える完成UIを求めた。Columbia入口もSky共通のTwitter / X型単列feedへ揃え、英語のFor you／Saved、端末内の依頼振り分け、3つの実ToolへつながるCTA、browser内保存、下部navigationを持つ。Columbiaの紋章・ロゴは使わない。
+
 ## 2026-10-10 — アカウントを入口にし、SIMは機器の任意部品に／公開rockの整理
 
 利用者が2026-10-07の提案を「全部確定でいい」と確定。主商品は **avokadoのアカウントひとつで使うAgent**（SIM不要）になり、10-02の「SIM/eSIM購入が入口」を置き換えた。料金は期間パス＋従量のしきい値後払い＋月の上限＋回線つき機器の基本料で、残高は持たない。Sky feeは当面10%、条件を満たしたら0%（取り分0・決済実費は実額）。Skyは `avocadomini.si/sky` に置き、本人確認は自前のpasskey。Miniの回線は国内LTE・IoT向けdata専用SIM・SGP.32対応・5Gなし。続けて公開rockを整理し（使わない資料は削除。Git履歴は書き換えず、削除前のcommit `96845e6` から読める）。大事な資料のgit-crypt暗号化も一度入れたが、2026-10-11に利用者の「鍵は今一切なくていい」でやめ、全ファイルを公開に戻した。正本: [製品ベース 2026-10-10](product-baseline.md) / [アカウント入口の確定事項](account-entry-proposal.md)。

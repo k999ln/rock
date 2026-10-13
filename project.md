@@ -1,3 +1,7 @@
+## 2026-10-13 — Columbia入口をSky完成フィードUIへ更新（CAMPUS02 / O5、ROCK）
+
+ownerが指定した `design/sky-twitter-feed-mobile-v2.png` の完成版を基準に、`/sky/campus/columbia` を簡易カード一覧から英語の単列フィードへ更新した。黒いSky header、For you／Saved、端末内の依頼振り分け、3つの実Toolへ進むCTA、browser内保存、画像領域、下部navigationを実装した。大学ロゴは使わず、カード経由の無料・local処理・特許AI停止の境界を維持する。型検査・対象lint・CAMPUS02対象9試験・buildとモバイル実画面を検証した。全体`npm run verify`は既存のPC Citations通常user／`os.waitid`環境差、MCP lifecycle、sharp 0.35.5 floorで失敗しており、全体合格とは扱わない。本番公開・NFC実物配布は別gateのまま。
+
 ## 2026-10-13 — ZemaローカルAgentをlocal previewで実動（AI04 / SKY21、ROCK）
 
 最新main `01d2e418` のJennifer／Spider更新を先に取り込み、重複した`sky-chat-workspace.tsx`と`workspace.css`は両方の機能を残して解消した。Zemaへ閉じた`zema-local-agent/1` planner、最大3手、重複call拒否、許可済みの副作用なし3 Tool（担当検索・出典整形・ココナラ有限検査）を接続。Ollamaのnative JSON Schemaと`think:false`をAgent turnだけに使い、通常の文章生成設定は変更しない。
@@ -3349,7 +3353,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | DOC05 | PR・task・配備記録なしでmainへ直接入った5コミット（9c1332e・8617863・4b49bf9・862ba30・851bb04）を証拠へ記録し、PR #39のSite試験verify組込みと網羅検査を取り込む | 完了 | [記録](docs/evidence/ledger-sync-20260925.json) · [記録](package.json) · [記録](tests/verify-coverage.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
 | GM01 | AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外） | 進行中 | [記録](lib/game-sandbox.ts) · [記録](tests/game-sandbox.test.mjs) · [記録](tests/fixtures/game-sandbox-session.json) · [記録](docs/workstreams/08-game-market-fund.md) |
 | CAMPUS01 | 大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装 | 進行中 | [記録](app/campus/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/t/[tagId]/route.ts) · [記録](components/campus-workspace.tsx) · [記録](components/campus-workspace.module.css) · [記録](lib/campus.ts) · [記録](lib/campus-store.ts) · [記録](db/schema.ts) · [記録](drizzle/0058_campus_layer.sql) · [記録](tests/campus.test.mjs) · [記録](docs/campus-layer.md) |
-| CAMPUS02 | Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外） | 進行中 | [記録](docs/sky-nfc-columbia.md) · [記録](docs/prompts/sky-nfc-columbia-codex.md) · [記録](sites/avocado-mini/worker/index.js) · [記録](app/sky/campus/[campusId]/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/api/patent-research/route.ts) · [記録](lib/campus-tags.ts) · [記録](lib/sky-campus.ts) · [記録](tests/sky-nfc-columbia.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) |
+| CAMPUS02 | Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外） | 進行中 | [記録](docs/sky-nfc-columbia.md) · [記録](docs/prompts/sky-nfc-columbia-codex.md) · [記録](sites/avocado-mini/worker/index.js) · [記録](app/sky/campus/[campusId]/page.tsx) · [記録](app/sky/campus/[campusId]/columbia-feed.tsx) · [記録](app/sky/campus/[campusId]/page.module.css) · [記録](app/api/campus/route.ts) · [記録](app/api/patent-research/route.ts) · [記録](lib/campus-tags.ts) · [記録](lib/sky-campus.ts) · [記録](tests/sky-nfc-columbia.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) |
 
 段階ゲート（作業全体の完了とは別判定）
 

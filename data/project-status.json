@@ -5973,6 +5973,8 @@
         "docs/prompts/sky-nfc-columbia-codex.md",
         "sites/avocado-mini/worker/index.js",
         "app/sky/campus/[campusId]/page.tsx",
+        "app/sky/campus/[campusId]/columbia-feed.tsx",
+        "app/sky/campus/[campusId]/page.module.css",
         "app/api/campus/route.ts",
         "app/api/patent-research/route.ts",
         "lib/campus-tags.ts",

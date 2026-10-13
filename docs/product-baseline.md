@@ -18,6 +18,8 @@ Sky単体はTool／Agentを発見・保存・接続する入口で、依頼の�
 
 カードにはURLだけを書き、個人情報・利用権・鍵は入れない。URLは `avocadomini.si/t/<tagId>` に固定し、行き先はサーバー側で変える。既存のCampusタグ入口と匿名集計を使う。詳細は[Sky NFCカード設計](sky-nfc-columbia.md)を正本とする。印刷・書き込み・配布、枚数と費用、配る場所の許可は未定。
 
+2026-10-13の追加指示により、Columbia入口も簡易な説明カード一覧ではなく、`sky-twitter-feed-mobile-v2.png`を基準にしたSkyの完成フィードUIへ揃える。英語のFor you／Saved、端末内の依頼振り分け、単列の3 Tool投稿、browser内保存、実Toolへ進むCTA、下部navigationを持つ。大学の紋章・ロゴは使わず、カード経由の無料処理・外部送信なし・特許AI調査停止の境界を維持する。
+
 ## 2026-10-10 Sky Compute Grid — 余剰スマートフォン計算力の仲介
 
 利用者は、cloud serverを借りる代わりに、世界中の人が使っていない時間の携帯をMac miniのような計算資源として束ね、誰のどの端末へ何を割り当てるかのmatchingまでSkyに含める方針を明示した。発電余力を束ねるvirtual power plantと同様に、端末は`CapacityOffer`、計算需要は`ComputeOrder`、Skyはmatcher、実行割当は`ComputeLease`、検証済み結果はmeter／receiptとして扱う。
