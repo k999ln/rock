@@ -1,6 +1,6 @@
 {
   "version": "1.99",
-  "decidedAt": "2026-10-10",
+  "decidedAt": "2026-10-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -392,7 +392,7 @@
           "result": "First-party display si; compatibility identifiers, provider proper names and original archives preserved."
         }
       ],
-      "latestMainSha": "210272144f401938b03525ee64024b7346b558e9",
+      "latestMainSha": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
       "obsoleteContentCleanup": {
         "requestedAt": "2026-10-13",
         "restoreCommit": "98a4898e9ea3bbafe276d3357d0a7bebf35eb6cb",
@@ -2171,9 +2171,13 @@
     "payout": "monthly_close_at_month_end_paid_end_of_next_month",
     "firstLineSupport": "avokado",
     "skyHosting": {
-      "url": "https://avocadomini.si/sky",
+      "url": "https://avoado.si/os/sky",
+      "changedAt": "2026-10-13",
+      "changeReason": "Owner specified avoado.si/os for RockstarOS Home and avoado.si/os/sky for Sky on 2026-10-13; supersedes avoado.si/sky",
+      "currentDelivery": "same_origin_os_home_and_sky_active; old_sky_path_redirects; mini_pro_domains_verified; owner_ab_and_campus_nfc_not_accepted",
       "signIn": "own_passkey",
-      "notifications": "web_push_first"
+      "notifications": "web_push_first",
+      "osHomeUrl": "https://avoado.si/os"
     },
     "onHold": [
       "consumer_esim_issuance_and_sales",
@@ -2192,5 +2196,19 @@
       "cloud_ai_provider_resale_terms"
     ]
   },
-  "productTerminology": "data/product-terminology.json"
+  "productTerminology": "data/product-terminology.json",
+  "skyAppOutputPlugin": {
+    "decidedAt": "2026-10-12",
+    "source": "User requested a saved Agent output receptacle and Sky standalone host-app plugins, with Fitness as the first example",
+    "osWorkManager": "Zema",
+    "standaloneSkyOutputInbox": "/sky/outputs",
+    "firstPartyHostExample": "/fitness",
+    "typedOutputSchema": "sky.fitness.plan/1",
+    "authorization": "owner-scoped saved results; NFC and campus context confer no output access",
+    "outsideCurrentAcceptance": [
+      "cross-origin app SDK",
+      "real Fitness Agent",
+      "production Provider output"
+    ]
+  }
 }

@@ -10,7 +10,7 @@
 
 第一者の製品表示は小文字si。[表記契約](data/product-terminology.json)に従いAPI/schema/保存key/task ID、npm `ai`、OpenAI等の外部固有名、署名・原本byteを保持する。今回の追加整理は正本本文の再構成と不要な旧説明の削除であり、料金、実行権限、受入gateを変更しない。
 
-旧文書11件と旧P0表示component2件の削除、必要契約の移行、入口/索引/生成台帳の同期は完了。削除後source `5086a16a24de6208ee15c8ebf30147c12f2fb918`の全体verifyと独立検収が成功し、GitHubへ保存した。検証記録head `48dcb824`の同一SHA 9 CIは全成功。大学NFC担当からのroute消失/復旧報告を既存引継ぎへ追記し、新しい文書差分はsource `c8c9a888`でNode22.23.3（CIと同じmajor）の全体verifyと独立検収が成功。最終検証記録のCIは別に確認する。利用者の「mainへあげて」を受け、最新main `21027214`のSky/Phoenix・Columbia・有限ローカルAgent・DB互換移行を保全merge中。以前のsource検証を統合後候補へ流用せず、再検証と同一SHA CI後に通常mergeする。元のdirty作業コピーは保全し、設計branchの変更と混ぜない。
+旧文書11件と旧P0表示component2件の削除、必要契約の移行、入口/索引/生成台帳の同期は完了。削除後source `5086a16a24de6208ee15c8ebf30147c12f2fb918`の全体verifyと独立検収が成功し、GitHubへ保存した。検証記録head `48dcb824`の同一SHA 9 CIは全成功。大学NFC担当からのroute消失/復旧報告を既存引継ぎへ追記し、新しい文書差分はsource `c8c9a888`でNode22.23.3（CIと同じmajor）の全体verifyと独立検収が成功。最終検証記録のCIは別に確認する。利用者の「mainへあげて」を受け、最新main `1f256b90`のSky/Phoenix・Columbia・有限ローカルAgent・DB互換移行を保全merge中。以前のsource検証を統合後候補へ流用せず、再検証と同一SHA CI後に通常mergeする。元のdirty作業コピーは保全し、設計branchの変更と混ぜない。
 
 ## Git・source・公開の現在地
 
@@ -21,7 +21,9 @@
 
 大学NFCの別artifactは、担当報告によるv49のroute消失→v48復旧と、2026-10-13 20:35 UTCの独立HTTP8URL/200・title確認を[既存の設計証拠](docs/evidence/service-design-rebuild.json)へ記録した。配備source/version・追加browser・実カード・学生枠・有料Providerの受入ではない。同じSiteの公開前後に`/os/sky`と5大学Hubを保全する条件を[実現順](docs/service-design/04-delivery-and-acceptance.md)へ追加した。
 
-main `210272144f401938b03525ee64024b7346b558e9`にはPR #115のSky Phoenix/完成feed/Columbia/local Agentと、#116/#117のlocal preview・Site互換DB移行が統合済み。loopback-only/最大3手/3 pure Tool/Cloud fallbackなし、本人同意初期OFF/30日800件/本文非保存/実行権非付与、serverのowner/retry、migration0063とSiteのresumable bridgeを保持する。既存mainの記録は[Sky](docs/sky.md)、[Agent一覧](docs/agents-and-tools.md)、[DB移行](services/sky-web/migrations/README.md)と進捗JSONへ継承し、旧spec-history/長いprojectログを復活させない。main統合はSite再配備・公開OS/Provider/実NFC受入と別である。
+最新main `1f256b90e894f3d5e4ae0081e6fe60d564819020`にはPR #115のSky Phoenix/完成feed/Columbia/local Agentと、#116/#117のlocal preview・Site互換DB移行が統合済み。loopback-only/最大3手/3 pure Tool/Cloud fallbackなし、本人同意初期OFF/30日800件/本文非保存/実行権非付与、serverのowner/retry、migration0063とSiteのresumable bridgeを保持する。既存mainの記録は[Sky](docs/sky.md)、[Agent一覧](docs/agents-and-tools.md)、[DB移行](services/sky-web/migrations/README.md)と進捗JSONへ継承し、旧spec-history/長いprojectログを復活させない。main統合はSite再配備・公開OS/Provider/実NFC受入と別である。
+
+PR #112はhead `df756bea745277b2a292790e843f185e80f00b02`からmain `1f256b90`へ統合済み。5大学Hub/PWA、NFC生成、同一originの型付きSky成果/Fitness表示、Home `/os`・Sky `/os/sky`・成果の正規URL、旧URL転送、Mini/Pro分離domain、本人情報をMini proxyへ渡さない境界を保全する。公開v48の既存記録は[大学NFC証拠](docs/evidence/sky-campus-nfc-live.json)と[App Output証拠](docs/evidence/sky-app-output-plugin-github.json)へ保持し、今回の配備/実NFC/学生枠/Provider合格とはしない。
 
 この記録は対応証拠の固定SHAに基づく。再開時はGitHub main・対象branch・PR・同一SHA CIを読み直し、未取得や過去snapshotを最新確認済みにしない。originはGitHub、Sitesは配信先。GitHub保存、main merge、公開readbackは別結果として残す。
 
@@ -39,7 +41,7 @@ Pixel 10 GL066 / frankelは確定対象。試験署名APKの非破壊再起動23
 
 ## 次の作業
 
-1. PR #114の最新main保全mergeを再検証し同一SHA CIを確認してmainへ通常mergeする。#115/#116/#117はmain適用済みとし、#112と元dirty候補を比較する。削除した旧入口を復活させず設計/優先順を先に同期して、大学NFC・host成果の残候補を保全統合する。実NFC・所属/枠・有料Providerは別受入とする。
+1. PR #114の最新main保全mergeを再検証し同一SHA CIを確認してmainへ通常mergeする。#112/#115/#116/#117はmain適用済みとし、元dirty候補の未回収差分だけを比較する。削除した旧入口を復活させず設計/優先順を先に同期して、大学NFC・host成果の残候補を保全統合する。実NFC・所属/枠・有料Providerは別受入とする。
 2. [横断契約と12受入](docs/service-design/06-consistency-contracts.md)の順で、realm/owner/root/leaf/成果相関 → 状態投影と親取消fence → account期間/Goal予算・価格/pass/後払いadapter → 真正reviewer/Receipt → grant/削除journal/鍵喪失復旧 → authority epoch/機器適合を既存fixtureへ接続する。
 3. 同じ公開artifactで文章素材→処理→検査→本人review→download完了→再取得→レシピ再利用を一周し、操作時間・復旧・改善を測る。JenniferのCOLOMBIA原本、context grant、独立review証拠のserver照合を別に受け入れる。
 4. Mini R5/任意LTE、ProのNVIDIA閉箱BOM/QVL/si/game/熱/復旧、Pixel全OS/QEMU、非金融Game/発明、rocketstarを各workstreamのgateで進める。consumer eSIM、888成功報酬、実交換/LIVE、未受入Providerの実行保留を解除しない。

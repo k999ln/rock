@@ -2103,7 +2103,7 @@
     },
     "consistencyContracts": "docs/service-design/06-consistency-contracts.md",
     "crossSystemAcceptanceScenarios": 12,
-    "latestMainSha": "01d2e41857e8e713bd5df31476deaea8c942e983"
+    "latestMainSha": "1f256b90e894f3d5e4ae0081e6fe60d564819020"
   },
   "productTerminology": "data/product-terminology.json"
 }

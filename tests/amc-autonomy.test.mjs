@@ -546,14 +546,15 @@ await test('bounded timeout aborts a noncooperative adapter and ignores eventual
 });
 
 await test('synchronous callbacks cannot bypass the elapsed-time limit by blocking the timer', async (t) => {
+  const stepTimeoutMs = 1000;
   const blockTimer = () => {
-    const until = performance.now() + 50;
+    const until = performance.now() + stepTimeoutMs + 50;
     while (performance.now() < until) {
       /* Deliberately block this fixture event loop. */
     }
   };
   for (const side of ['execute', 'review']) {
-    const { directory } = await initialize(t, { policy: { stepTimeoutMs: 5 } });
+    const { directory } = await initialize(t, { policy: { stepTimeoutMs } });
     let callbackSignal;
     const configured = adapters({
       [side]: ({ task, signal }) => {

@@ -13,6 +13,20 @@ const MAX_CHECKOUT_BODY_BYTES = 1024;
 const STALE_RESERVATION_MS = 25 * 60 * 60 * 1000;
 const ATTEMPT_RETENTION_MS = 2 * 24 * 60 * 60 * 1000;
 const SKY_TAG_ID = /^[a-z0-9][a-z0-9-]{2,63}$/;
+const SKY_APP_ORIGIN = 'https://sky-marketplace.noellesugar1.chatgpt.site';
+
+function skyAppRedirect(request) {
+  const source = new URL(request.url);
+  const target = new URL(`${source.pathname}${source.search}`, SKY_APP_ORIGIN);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      location: target.href,
+      'cache-control': 'no-store',
+      'x-content-type-options': 'nosniff',
+    },
+  });
+}
 
 function skyTagUnavailable() {
   return new Response(`<!doctype html>
@@ -302,6 +316,8 @@ export default {
       if (path === '/rockstaros' || path === '/rockstaros/') {
         return Response.redirect(new URL('/', request.url), 308);
       }
+      if (new URL(request.url).hostname === 'avoado.si' && (path === '/sky' || path.startsWith('/sky/')) && ['GET', 'HEAD'].includes(request.method))
+        return skyAppRedirect(request);
       if (path.startsWith('/t/')) return skyTagRedirect(request, env);
       if (path === '/api/preorders/offer' && request.method === 'GET') {
         const { ready, products: offeredProducts, terms } = offer(env);

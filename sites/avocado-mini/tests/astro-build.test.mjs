@@ -46,9 +46,9 @@ test('Astro output separates the ecosystem, Mini, Pro, Rocket Star, and preorder
   assert.equal((experiences.match(/<article /g) || []).length, 4);
   assert.doesNotMatch(experiences, /possibility-flow|system-role-strip|<dl/);
   for (const image of ['usecase-care-motion-v4.jpg', 'usecase-research-development-v4.jpg', 'usecase-everyday-space-v4.jpg', 'usecase-spatial-game-v4.jpg']) assert.ok(experiences.includes(image));
-  for (const href of ['/mini/#mini-use-cases', '/pro/#pro-use-cases', '/pro/#pro-pairing', '#choose-setup']) assert.ok(experiences.includes('href="' + href + '"'));
-  assert.match(home, /href="\/mini\/"/);
-  assert.match(home, /href="\/pro\/"/);
+  for (const href of ['https://avocadomini.si/#mini-use-cases', 'https://avocadopro.si/#pro-use-cases', 'https://avocadopro.si/#pro-pairing', '#choose-setup']) assert.ok(experiences.includes('href="' + href + '"'));
+  assert.match(home, /href="https:\/\/avocadomini\.si\/"/);
+  assert.match(home, /href="https:\/\/avocadopro\.si\/"/);
   assert.match(home, /home-promo-mini/);
   assert.match(home, /home-promo-pro/);
   assert.match(mini, /Give the space<br\b[^>]*>another sense\./);

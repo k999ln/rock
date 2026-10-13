@@ -202,4 +202,3 @@ exact-pin/cookie/purchase-screen復旧の専用fixtureは引継ぎ元の `tests/
 6. consumer eSIM販売を再開する場合だけ、carrier資格/契約、profile発行/導入/失効、物理SIM履行、購入者配送を別受入する。native OSは同じexact image/SKUで署名・installer・rollback・first boot・Sky/Zema起動を別受入し、未対応機種はapp/browserへ留める。
 
 商用offerの期間/scope、無料accountと付帯権利の本番policy、招待issuer運用、引換済みrollover、carrier/device signer、料金/税/最低額/請求周期/返金条件は、既存商品・Provider・release gateで根拠を揃えて決める。条件未指定を実行許可・提供済みへ読み替えない。
-

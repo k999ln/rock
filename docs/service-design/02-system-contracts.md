@@ -141,3 +141,9 @@ RQ14はAPI/SDK、合成sandbox、動く最小sample、導入/復旧診断を渡�
 Skyの`sky-usefulness-v2`/`sky-phoenix-v1`は能力の発見・説明だけに使う。おすすめ学習は初期OFF、本人同意でsemantic eventを30日/800件に制限し、入力・会話・成果本文やtoken等を保存しない。正本Tool runのcomplete/failはserver側で照合し、clientの成功自己申告にしない。停止/本人履歴削除、owner切替、保存拒否、401/同期不明時のfallbackは[Skyの現行契約](../sky.md#個人化した1列フィード2026-10-13)を保持する。閲覧・順位・保存は実行権・Job・購入・課金・Agent promptを作らない。
 
 Zema Webのlocal Agentは選択された同じPCのOllama/OpenAI互換loopback endpointだけを使う非信頼planner。閉じたschema、最大3手、`sky_route`/`format_citations`/`coconala_check`の副作用なし処理だけを通す。shell、任意file、外部network、購入/投稿/送信/権限変更、Cloud fallbackを許可しない。通常会話の既存local preview受入とTool選択品質/実成功を分け、公開Workerから本人PCのloopbackに届くとは扱わない。companion/bridgeは未実装で、native Androidの固定Qwen profileやDevice acceptanceへ転用しない。[Agent正本](../agents-and-tools.md)と[LLM境界](../llm-evaluation-architecture.md)へ従う。
+
+## 公開URL・第一者app成果の既存契約
+
+公開Homeは`https://avoado.si/os`、Skyは`https://avoado.si/os/sky`、成果は`/os/sky/outputs`。内部route `/sky`と公開prefixを分け、旧公開`/sky`は新URLへ転送する。トップのMini/Proは各専用domainへ進む。Mini proxyへcookie・本人header・`x-dispatched-app`を渡さず、返ったSet-Cookieを除去し、Sky owner/APIの同一origin境界を保持する。配備前後のreadbackとdomain routerの受入はGit統合と別である。
+
+`SkyAppOutputSlot`は本人の保存済み成果を同一originの第一者appへ表示する。Fitnessは`sky.fitness.plan/1`の型付き表示例。型不一致、omitted、truncated、未保存、別ownerを別状態とし、自由文を運動planへ変換しない。previewは明示sampleで、実Fitness Agent/Provider成果や外部origin SDK、本番本人受入を完成扱いしない。NFCや大学contextに成果の読取権を付与しない。[既存App Output設計](../sky-launch-design.md#sky-app-output-plugins)とowner保存契約を再利用する。

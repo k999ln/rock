@@ -8,9 +8,9 @@ void test('Sky installs with a separate identity and opens inside its marketplac
   const sky = skyAppManifest(os);
   assert.equal(sky.name, 'Sky');
   assert.notEqual(sky.id, os.id);
-  assert.equal(sky.start_url, '/sky/marketplace');
+  assert.equal(sky.start_url, '/os/sky/marketplace');
   assert.ok(sky.start_url.startsWith(sky.scope));
-  assert.ok('/sky/tools/mr-citations'.startsWith(sky.scope));
+  assert.ok('/os/sky/tools/mr-citations'.startsWith(sky.scope));
   assert.ok(!'/wallet'.startsWith(sky.scope));
   assert.deepEqual(sky.icons, os.icons);
   assert.equal(os.start_url, '/');

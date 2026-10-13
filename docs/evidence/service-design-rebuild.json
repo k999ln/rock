@@ -361,7 +361,7 @@
     ]
   },
   "latestRepositoryObservation": {
-    "mainSha": "01d2e41857e8e713bd5df31476deaea8c942e983",
+    "mainSha": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
     "jenniferPr": 113,
     "state": "MERGED",
     "mergedAt": "2026-10-13T18:21:19Z",
@@ -727,23 +727,29 @@
     }
   },
   "mainIntegration": {
-    "status": "candidate_validation_in_progress",
+    "status": "latest_main_candidate_validation_in_progress",
     "ownerInstruction": "mainへあげて",
     "recordedDate": "2026-10-13",
     "branch": "codex/service-design-rebuild",
     "pullRequest": 114,
     "designHeadBeforeMainRefresh": "2a02f0fb5dcd2e1368ead1541a4b9390fc2260b1",
-    "sourceMainSha": "210272144f401938b03525ee64024b7346b558e9",
+    "sourceMainSha": "1f256b90e894f3d5e4ae0081e6fe60d564819020",
     "preservedUpstreamPrs": [
+      112,
       115,
       116,
       117
     ],
     "resolvedConflicts": [
+      "README.md",
       "components/sky-workspace.tsx",
+      "data/product-baseline.json",
+      "data/project-status.json",
+      "docs/account-entry-proposal.md",
       "docs/product-baseline.md",
-      "docs/spec-history.md",
-      "project.md"
+      "lib/sky-app-manifest.ts",
+      "project.md",
+      "sites/avocado-mini/src/pages/index.astro"
     ],
     "preservation": [
       "Sky Phoenix/feed/Columbia/local Agent and consent/privacy/owner boundaries",
@@ -754,6 +760,27 @@
       "immutable original/vendor/acceptance evidence and financial/physical gates"
     ],
     "actualMainMergePerformed": false,
-    "deploymentPerformed": false
+    "deploymentPerformed": false,
+    "previousCandidate": {
+      "sourceCommit": "110166f647d1018787fc0372d6a0757005ac60d4",
+      "sourceMainSha": "210272144f401938b03525ee64024b7346b558e9",
+      "fullVerifyExitCode": 0,
+      "nodeVersion": "22.23.3",
+      "nodeTests": 2198,
+      "nodePass": 2197,
+      "nodeSkip": 1,
+      "nodeFail": 0,
+      "webAssets": 195,
+      "rawLog": "/private/tmp/rock-main-design-merge-verify.log",
+      "rawLogSha256": "7ba7f4c4a8a8be585bc15e06faabb58745da52da23131d85ed8a6a705e747811",
+      "supersededReason": "main additionally merged PR112 while previous candidate was waiting for CI"
+    },
+    "additionalPreservation": [
+      "5-campus/PWA/NFC generator and identity boundary",
+      "typed owner-saved app output/Fitness sample; external SDK and actual Provider acceptance separate",
+      "latest public Home/Sky URLs and Mini/Pro domains",
+      "Mini proxy no-cookie/no-identity-forwarding rule",
+      "current R5 site home and si output/download labels"
+    ]
   }
 }

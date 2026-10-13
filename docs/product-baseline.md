@@ -14,7 +14,7 @@
 
 2026-10-10の「全部確定でいい」により、主商品はavokadoの無料アカウントひとつで、スマホ・PC・ブラウザからSky・Zema・si Agentを使うサービスとなった。SIM/eSIM購入を入口にする方針を置き換える。SIMにOS binaryを格納しない。専用機器と回線は利用開始条件ではない。
 
-売り手はavokado。最初の客は個人で、文章を納品する個人事業主から始める。ゲストは対応Toolの説明・ローカル下書きを利用でき、本人別保存・接続・有料実行・公開で認証と個別承認を通す。Skyの置き場所は`https://avocadomini.si/sky`、本人確認は自前passkey、通知はWeb Pushを先に作る到達設計で、移行・本番受入は別に判定する。
+売り手はavokado。最初の客は個人で、文章を納品する個人事業主から始める。ゲストは対応Toolの説明・ローカル下書きを利用でき、本人別保存・接続・有料実行・公開で認証と個別承認を通す。最新の公開Homeは`https://avoado.si/os`、Skyは`https://avoado.si/os/sky`、成果は`/os/sky/outputs`、本人確認は自前passkey、通知はWeb Pushを先に作る到達設計で、移行・本番受入は別に判定する。
 
 ### Jennifer、Sky、Zema、OSの役割
 
@@ -48,6 +48,18 @@ rocketstarは衛星輸送・帰還・回収・再使用を目指す独立工学p
 Web/PC、Linux/Buildroot/ARM64 QEMU、Pixelは開発・配布profileで、三hardware製品へ追加する販売機種ではない。最初の物理OS対象はPixel 10 GL066 / `frankel`。QEMU Developer Preview、Android単体APK、Pixel全OS imageを別に検証し、exact機種・署名・boot・復旧が合格した時だけnative OSを案内する。その他は対応client/browserへ分岐する。
 
 ### 現在の追加機能を同じ契約へつなぐ
+
+<a id="2026-10-13-skyの成果をアプリ内へ渡す"></a>
+
+#### Sky成果の同一originアプリ表示
+
+利用者の明示指示により、OS上の仕事管理はZema、Sky単体はAgent/Toolの選択・接続と保存済み成果のアプリ内表示を担う。本人別のSky成果一覧を設け、第一者同一originのFitnessアプリを `sky.fitness.plan/1` の表示例にする。型が合わない文章を運動プランに変換せず、NFCや大学名を成果への権限としない。外部アプリ向け認証SDK、実Fitness Agent、Provider出力と本番受入は別条件。[詳細](sky-launch-design.md#sky-app-output-plugins)。
+
+<a id="2026-10-13-sky公開入口の変更"></a>
+
+#### 公開Home・Sky・製品domainの分離
+
+利用者はドメインの綴りを `avoado.si` と確認した後、RockstarOS Homeを `https://avoado.si/os`、Skyを `https://avoado.si/os/sky` にするよう明示した。旧 `avoado.si/sky` は同じドメインの新URLへ転送する。Sky専用Siteが同ドメインを保持し、Skyパスは同一originで処理する。トップと予約ページはavocadoMini Siteからサーバー内で代理取得する。トップのMini・Proリンクは `avocadomini.si` と `avocadopro.si` の各製品ページへ移ることを公開ブラウザで確認した。NFCタグへ入口URLを書けることと、大学別の本人確認・権限・6接続枠が本番で動くことは別の合格条件とする。
 
 <a id="2026-10-13-skyからzemaのローカルagentを使えるようにする"></a>
 

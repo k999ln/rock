@@ -31,7 +31,7 @@
 
 ## Account・任意機器・Providerの販売前条件
 
-主商品と料金は[共通契約](../service-design/02-system-contracts.md#6-料金とwalletを説明できるようにする)の無料account、期間パス、しきい値後払い、月上限を使う。Skyは`https://avocadomini.si/sky`、本人確認の到達設計は自前passkey、通知はWeb Pushを先行する。売り手はavokado、作者払出しは月末締め翌月末の月1回、Sky feeは当面10%で、0%は「取り分0/決済実費実額」、従量粗利が固定費を3か月連続で超える条件を維持する。粗利・実費を測らず0%へ切り替えない。
+主商品と料金は[共通契約](../service-design/02-system-contracts.md#6-料金とwalletを説明できるようにする)の無料account、期間パス、しきい値後払い、月上限を使う。Skyは`https://avoado.si/os/sky`、本人確認の到達設計は自前passkey、通知はWeb Pushを先行する。売り手はavokado、作者払出しは月末締め翌月末の月1回、Sky feeは当面10%で、0%は「取り分0/決済実費実額」、従量粗利が固定費を3か月連続で超える条件を維持する。粗利・実費を測らず0%へ切り替えない。
 
 外部確認は未了で、以下は法的結論や契約成立の記録ではない。ROCKは確認結果をSKU/対象/責任者/同意/受入gateへ反映し、OWNER/EXTERNAL/JOINTが対象条件を確定する。
 
