@@ -50,6 +50,8 @@ Device programs sit alongside the service: avocadoMini R5 and avokadoPro. Materi
 
 The fastest public preview is [Sky](https://rockstaros-kaiya.noellesugar1.chatgpt.site/sky). Choose **SPIDER**, paste code or text, and review the flagged lines and suggested responses; its bounded browser check does not send or save the original input. For a reproducible local run, start the app below and open `/sky` or `/zema/tools/rockstar-spider`.
 
+In Zema, **Compose work** (`/zema/compose`) combines connected text or CSV Tools with explicit checks. Save the intermediate results, review the final output, then reuse its steps as a recipe for new material. Compare and edit a saved artifact in a separate recheck job; the original result and its approvals remain intact. Recipes contain the processing graph and safe defaults; they do not copy the old manuscript, results, approvals, or payment evidence. The first candidate is under local verification; public deployment and authenticated production acceptance are recorded separately in [the development evidence](docs/evidence/work-composition-development.json).
+
 The preview may require an account and its provider-connected paths are at different stages. The local SPIDER path and the CSV flow below are the clearest ways to see the product contract without treating a design preview as a finished commercial service.
 
 ## From a request to a result
@@ -279,7 +281,7 @@ The `toolkits/` folders are reusable packages, adapters, SDKs, and bounded exper
 Task counts are not a measure of product completion. [All task progress](project.md#%E5%85%A8task%E3%81%AE%E4%BD%9C%E6%A5%AD%E9%80%B2%E6%8D%97) · [Evidence](docs/evidence/)
 
 <!-- project-overview:start -->
-Updated: 2026-10-12 / 392 task records (32 parents, 192 children, 168 standalone; 360 execution units excluding parents): 114 done, 47 in progress, 230 planned, 1 blocked
+Updated: 2026-10-12 / 393 task records (32 parents, 192 children, 169 standalone; 361 execution units excluding parents): 114 done, 48 in progress, 230 planned, 1 blocked
 <!-- project-overview:end -->
 
 ## Find the next level

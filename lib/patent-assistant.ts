@@ -1,3 +1,5 @@
+import { SKY_CAMPUS_ENTRIES } from './sky-campus.ts';
+
 export type DisclosureStatus =
   | 'not_disclosed'
   | 'private_only'
@@ -277,5 +279,87 @@ export function buildPatentPacket(
     '- 特許庁 インターネット出願: https://www.pcinfo.jpo.go.jp/site/4_start/0_online.html',
     '- 特許庁 手続・様式: https://www.jpo.go.jp/system/process/shutugan/pcinfo/operation/appl.html',
     '- 特許庁 手数料: https://www.jpo.go.jp/system/process/tesuryo/hyou.html',
+  ].join('\n');
+}
+
+const englishDisclosureLabels: Record<DisclosureStatus, string> = {
+  not_disclosed: 'Not disclosed',
+  private_only: 'Shared only under confidentiality',
+  already_disclosed: 'Already disclosed publicly',
+  unknown: 'Unknown',
+};
+
+function englishWords(value: string, maxWords: number) {
+  return clean(value).split(/\s+/).filter(Boolean).slice(0, maxWords).join(' ');
+}
+
+export function buildEnglishPatentPacket(
+  input: PatentIntakeInput,
+  assessment: PatentAssessment,
+  options: { cardEntry?: boolean } = {},
+) {
+  const campusName = SKY_CAMPUS_ENTRIES.columbia.name;
+  const abstract = englishWords(
+    [input.problem, input.mechanism, input.technicalEffect].filter(Boolean).join(' '),
+    150,
+  ) || 'Add a concise description of the problem, mechanism, and technical effect.';
+  const claimSubject = clean(input.architecture) || 'a system with the described components';
+  return [
+    '# Sky Patent Assistant — US draft packet',
+    '',
+    `Created: ${new Date().toISOString().slice(0, 10)}`,
+    '',
+    '> This is a browser-generated working draft, not legal advice or a guarantee of patentability. Do not file it without review by a qualified patent professional.',
+    '',
+    `## ${campusName} intellectual property notice`,
+    '',
+    `An invention made in ${campusName} research, or using university resources beyond an incidental level, may be owned by the university. Discuss lab inventions with ${campusName} Technology Ventures (CTV) before taking them outside the university. Undergraduate inventions made only as coursework are often waived back to the student after a request. This notice is general information, not legal advice.`,
+    '',
+    '## Invention',
+    '',
+    `Title: ${clean(input.inventionTitle) || 'Untitled invention'}`,
+    `Inventor candidate: ${clean(input.inventor) || 'To be confirmed'}`,
+    `Applicant candidate: ${clean(input.applicant) || 'To be confirmed'}`,
+    `Disclosure status: ${englishDisclosureLabels[input.disclosureStatus]}`,
+    '',
+    '## Preliminary assessment',
+    '',
+    `Readiness score: ${assessment.score}/100`,
+    ...(assessment.gaps.length ? ['- Follow up: Add more detail to the technical problem, mechanism, architecture, effect, and differences.'] : []),
+    ...(assessment.warnings.length ? ['- Warning: Review public disclosure dates and ownership with a qualified patent professional.'] : []),
+    '',
+    '## Specification draft',
+    '',
+    `Problem: ${clean(input.problem) || 'Describe the technical problem.'}`,
+    '',
+    `Mechanism: ${clean(input.mechanism) || 'Describe the concrete mechanism.'}`,
+    '',
+    `Architecture and data flow: ${claimSubject}`,
+    '',
+    `Technical effect: ${clean(input.technicalEffect) || 'Describe the measurable technical effect.'}`,
+    '',
+    '## Claims',
+    '',
+    `1. A system comprising ${claimSubject}, configured to address ${clean(input.problem) || 'a technical problem'} by ${clean(input.mechanism) || 'performing the described mechanism'}.`,
+    '',
+    '2. The system of claim 1, wherein the system produces the described technical effect.',
+    '',
+    '3. A non-transitory computer-readable medium storing instructions for performing the method of claim 1.',
+    '',
+    '## Abstract (150 words max)',
+    '',
+    abstract,
+    '',
+    '## US filing checklist',
+    '',
+    '- Search official records in USPTO Patent Public Search: https://ppubs.uspto.gov/pubwebapp/',
+    '- Review whether a US provisional application is appropriate: https://www.uspto.gov/patents/basics/understanding-patent-protection/provisional-application',
+    '- Preserve dated invention records and check disclosure dates before filing.',
+    '- Ask CTV or a qualified patent professional to review ownership, inventorship, claims, and filing deadlines.',
+    '',
+    options.cardEntry
+      ? 'The draft is not submitted anywhere and contains no online AI research from this card entry.'
+      : 'The draft is not submitted anywhere. Any online research result requires independent review before use.',
+    '',
   ].join('\n');
 }

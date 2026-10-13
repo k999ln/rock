@@ -1,0 +1,25 @@
+.page { min-height: 100dvh; padding: 48px 20px 72px; color: #17232d; background: #f7fbfd; font-family: system-ui, sans-serif; }
+.inner { width: min(920px, 100%); margin: 0 auto; }
+.eyebrow { margin: 0 0 10px; color: #466e8c; font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+.page h1 { margin: 0; color: #16344a; font-size: clamp(32px, 6vw, 58px); line-height: 1; letter-spacing: -.05em; }
+.lede { max-width: 680px; margin: 18px 0 28px; color: #4d6573; line-height: 1.55; }
+.panel { padding: 24px; border: 1px solid #c9dce7; border-radius: 20px; background: #fff; box-shadow: 0 12px 32px rgb(38 81 106 / 8%); }
+.panel + .panel { margin-top: 16px; }
+.row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.field { display: grid; gap: 7px; margin: 0 0 16px; color: #294352; font-size: 14px; font-weight: 700; }
+.field input, .field textarea, .field select { width: 100%; box-sizing: border-box; padding: 11px 12px; border: 1px solid #b8cedb; border-radius: 10px; color: #17232d; background: #fbfdfe; font: inherit; font-weight: 400; }
+.field textarea { min-height: 90px; resize: vertical; }
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 17px; border: 0; border-radius: 999px; color: #fff; background: #1f638d; font-weight: 700; cursor: pointer; }
+.button:disabled { opacity: .55; cursor: wait; }
+.notice { margin: 14px 0 0; color: #466e8c; font-size: 14px; }
+.error { margin: 14px 0 0; color: #a33131; font-size: 14px; }
+.output { max-height: 540px; overflow: auto; margin-top: 18px; padding: 16px; border-radius: 12px; color: #243843; background: #eef6fa; white-space: pre-wrap; font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.download { display: inline-flex; align-items: center; padding: 0 15px; border: 1px solid #9ab9ca; border-radius: 999px; color: #1f638d; min-height: 40px; font-weight: 700; text-decoration: none; }
+.privacy { display: inline-block; margin-top: 22px; color: #1f638d; font-size: 13px; }
+.muted { color: #5f6f7a; font-size: 14px; line-height: 1.55; }
+.warning { margin: 0 0 20px; padding: 16px; border-left: 4px solid #c0841a; color: #5e4a1f; background: #fff8e6; font-size: 14px; line-height: 1.55; }
+.workflowSteps { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.workflowStep, .workflowStepActive { padding: 7px 10px; border-radius: 999px; color: #5f6f7a; background: #eef6fa; font-size: 12px; font-weight: 700; }
+.workflowStepActive { color: #fff; background: #1f638d; }
+@media (max-width: 680px) { .row { grid-template-columns: 1fr; } .panel { padding: 18px; } }

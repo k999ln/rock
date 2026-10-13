@@ -73,6 +73,7 @@ async function harness({ onRemote, budget = null, records = [], executionAvailab
   }
   modules['@/lib/history-navigation-guard'] = await import(new URL('lib/history-navigation-guard.ts', root));
   modules['@/components/use-pending-save-navigation'] = compile('components/use-pending-save-navigation.ts');
+  modules['@/components/use-owner-memory-state'] = compile('components/use-owner-memory-state.ts');
   const childPath = 'components/workbench-cloud-text.tsx';
   const child = compile(childPath);
   modules['@/components/workbench-cloud-text'] = child;

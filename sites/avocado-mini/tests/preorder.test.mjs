@@ -81,6 +81,31 @@ test('legacy RockstarOS path redirects at the HTTP layer', async () => {
   assert.equal(response.headers.get('location'), `${origin}/`);
 });
 
+test('Sky tag links redirect to the configured origin and preserve source query', async () => {
+  const response = await worker.fetch(
+    new Request(`${origin}/t/columbia-sky-0001?source=qr`),
+    env(database(), { SKY_TAG_ORIGIN: 'https://sky.example.test/' }),
+  );
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get('location'), 'https://sky.example.test/t/columbia-sky-0001?source=qr');
+});
+
+test('Sky tag links preserve a configured origin pathname', async () => {
+  const response = await worker.fetch(
+    new Request(`${origin}/t/columbia-sky-0001?source=nfc`),
+    env(database(), { SKY_TAG_ORIGIN: 'https://avocadomini.si/sky/' }),
+  );
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get('location'), 'https://avocadomini.si/sky/t/columbia-sky-0001?source=nfc');
+});
+
+test('Sky tag links fail closed for malformed IDs and an unset origin', async () => {
+  assert.equal((await worker.fetch(new Request(`${origin}/t/Columbia-sky-0001`), env(database(), { SKY_TAG_ORIGIN: 'https://sky.example.test' }))).status, 404);
+  const unavailable = await worker.fetch(new Request(`${origin}/t/columbia-sky-0001`), env(database()));
+  assert.equal(unavailable.status, 200);
+  assert.match(await unavailable.text(), /This card is not available yet/);
+});
+
 test('sales remain closed until all payment and seller terms exist', async () => {
   const db = database();
   const response = await worker.fetch(checkoutRequest(), env(db, { PREORDER_SHIPPING_DATE: '' }));

@@ -383,6 +383,11 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualD
       module: ts.ModuleKind.CommonJS, esModuleInterop: true } },
   ).outputText, { ...context, exports: cloudExports }, { filename: 'components/workbench-cloud-text.tsx' });
   modules['@/components/workbench-cloud-text'] = cloudExports;
+  const ownerMemoryExports = {};
+  runInNewContext(ts.transpileModule(readFileSync(new URL('components/use-owner-memory-state.ts', root), 'utf8'),
+    { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText,
+    { ...context, exports: ownerMemoryExports }, { filename: 'components/use-owner-memory-state.ts' });
+  modules['@/components/use-owner-memory-state'] = ownerMemoryExports;
   runInNewContext(compiled, { ...context, exports }, { filename: 'components/workbench.tsx' });
   let runnerInstance = null, deliveryInstance = null, runnerExports, deliveryExports;
   if (actualRunner) {
@@ -399,6 +404,8 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualD
       lazy(loader) { return actualDelivery && String(loader).includes('delivery-runner') ? deliveryExports.DeliveryRunner : inert; }, Suspense: 'suspense',
     };
     const runnerModules = { ...modules, react: runnerReact,
+      '@/components/english-citations-runner': inert,
+      '@/components/english-patent-assistant': inert,
       'lucide-react': Object.fromEntries(['Play','FolderOpen','Download','Copy','Check','CircleHelp','RotateCcw'].map((key) => [key, inert])),
       '@/components/execution-access': { ExecutionSignin: inert, useExecutionAccess: () => ({ executionBlocked: false, accessState: 'ready', setNeedsSignin() {} }) },
       '@/lib/operations-client': { ...client, processedBytes: (value) => new TextEncoder().encode(JSON.stringify(value)).length,
@@ -444,7 +451,12 @@ async function setup(t, { onFetch, onWorkResponse, actualRunner = false, actualD
     }
     if (!node) return;
     runnerInstance ??= { key: node.key, cursor: 0, slots: [], effects: [] };
-    runnerInstance.cursor = 0; node.rendered = runnerExports.MrToolRunner(node.props);
+    runnerInstance.cursor = 0;
+    node.rendered = runnerExports.MrToolRunner(node.props);
+    // The language dispatcher has no hooks; render the real Japanese core that
+    // still owns the state and callbacks exercised by this recovery fixture.
+    if (node.rendered?.type?.name === 'MrToolRunnerCore')
+      node.rendered = node.rendered.type(node.rendered.props);
     while (runnerInstance.effects.length) runnerInstance.effects.shift()();
     if (actualDelivery) {
       const child = nodes(node.rendered).find((item) => item.type === deliveryExports.DeliveryRunner);

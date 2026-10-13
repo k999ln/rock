@@ -1261,6 +1261,7 @@ export function validateReleaseReadiness({
     sitesAudit?.access?.observedAt?.slice(0, 10),
     webSecurityPolicy?.evaluatedAt,
     webLicenseAudit?.evaluatedAt,
+    readiness.currentSiteObservation?.observedAt?.slice(0, 10),
   ].filter(Boolean);
   if (
     auditDates.some(
@@ -1298,6 +1299,7 @@ export function validateReleaseReadiness({
       gates: new Map([
         ['source-verification', true],
         ['web-security-policy', true],
+        ['current-public-delivery-readback', true],
         ['dependency-license-inventory', true],
         ['product-license', true],
         ['public-access-approval', true],
@@ -1398,6 +1400,7 @@ export function validateReleaseReadiness({
     fail('Android/マイナンバー/Sites/Web security/license監査正本が必要です');
   }
   const webSecurityResult = validateWebSecurityPolicy({ root, policy: webSecurityPolicy, readiness });
+  const currentPublicResult = validateCurrentPublicSiteObservation({ root, readiness, hosting: sitesHosting });
   const sitesResult = validateOwnerPrivateSitesAudit({
     audit: sitesAudit,
     hosting: sitesHosting,
@@ -1439,8 +1442,51 @@ export function validateReleaseReadiness({
     personalNumber: personalNumberResult,
     sites: sitesResult,
     webSecurity: webSecurityResult,
+    currentPublicSite: currentPublicResult,
     webLicense: webLicenseResult,
   };
+}
+
+/** The current public observation is distinct from the historical owner-private
+ * preview and source/local header policy. Neither is a public runtime receipt. */
+export function validateCurrentPublicSiteObservation({ root, readiness, hosting }) {
+  const label = '現在の公開Site受入';
+  const observation = readiness.currentSiteObservation;
+  const evidencePath = 'docs/evidence/work-composition-development.json';
+  if (!observation || observation.evidence !== evidencePath || !existsSync(resolve(root, evidencePath)))
+    fail(label + ': 現行観測とrepository内の独立した根拠が必要です');
+  const evidence = JSON.parse(readFileSync(resolve(root, evidencePath), 'utf8'));
+  const actual = evidence.currentPublicSite;
+  if (evidence.schema !== 'rockstaros-work-composition-development/1' || !actual ||
+      !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(observation.observedAt || '') ||
+      !Number.isSafeInteger(observation.version) || observation.version < 1 ||
+      !/^[a-f0-9]{40}$/.test(observation.sourceCommit || '') ||
+      observation.projectId !== hosting?.project_id || !observation.projectId ||
+      observation.access !== 'public' || observation.deployed !== true ||
+      ['observedAt', 'version', 'sourceCommit', 'access', 'deployed'].some((key) => observation[key] !== actual[key]))
+    fail(label + ': 同じproject/version/SHA/accessの公開観測ではありません');
+  let url;
+  try { url = new URL(actual.url); } catch { fail(label + ': 公開URLが不正です'); }
+  if (url.protocol !== 'https:' || !url.hostname.endsWith('.chatgpt.site'))
+    fail(label + ': HTTPSのSites公開URLが必要です');
+  const target = readiness.targets.find(({ id }) => id === 'web-pwa-public-preview');
+  const sourcePolicy = target?.gates.find(({ id }) => id === 'web-security-policy');
+  const gate = target?.gates.find(({ id }) => id === 'current-public-delivery-readback');
+  if (sourcePolicy?.acceptanceScope !== 'Source policy and local production responses only; current public delivery is a separate required gate.')
+    fail(label + ': source/local policyと公開runtime受入の範囲を分けてください');
+  if (gate?.required !== true || !gate.evidence?.includes(evidencePath))
+    fail(label + ': 同一公開候補の必須runtime gateと観測根拠が必要です');
+  // This evidence records delivery blockers and an unaccepted authenticated
+  // journey. Marking its summary or gate as pass cannot create missing receipts.
+  // A future accepted candidate needs an independently validated runtime report.
+  if (!evidence.deliveryBlockers?.staticHeaders ||
+      typeof actual.authenticatedProductionAcceptance !== 'string' ||
+      !actual.authenticatedProductionAcceptance.startsWith('not_run') ||
+      evidence.deliveryBlockers.staticHeaders.status !== 'external_supported_capability_not_confirmed')
+    fail(label + ': 現行の未受入観測を独立runtime受入receiptへ置き換える検証が必要です');
+  if (gate.status !== 'blocked')
+    fail(label + ': 静的配信と本番本人経路が未受入のためblockedが必要です');
+  return { status: 'BLOCKED_OBSERVED_PUBLIC_PREVIEW', version: actual.version, sourceCommit: actual.sourceCommit };
 }
 
 export function validateQemuReleaseAudit({

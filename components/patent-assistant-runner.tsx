@@ -25,6 +25,7 @@ import type { PatentAiResult } from '@/lib/patent-ai';
 import { executeLocalGuide } from '@/lib/local-guide-history';
 import { processedBytes } from '@/lib/operations-client';
 import { LocalGuideHistoryConsent, LocalGuideSignin } from './local-guide-history-consent';
+import EnglishPatentAssistant from './english-patent-assistant';
 
 const emptyInput: PatentIntakeInput = {
   inventionTitle: '',
@@ -100,10 +101,14 @@ export function PatentAssistantRunner({
   onRunningChange,
   onOutcome,
   executionDisabled = false,
+  language = 'ja',
+  entry,
 }: {
   onRunningChange?: (running: boolean) => void;
   onOutcome?: (outcome: { ok: boolean; text: string }) => void;
   executionDisabled?: boolean;
+  language?: 'ja' | 'en';
+  entry?: string;
 }) {
   const execution = useRef({ busy: false, disabled: executionDisabled, mounted: true });
   useLayoutEffect(() => {
@@ -252,6 +257,8 @@ export function PatentAssistantRunner({
     );
   }
 
+  if (language === 'en')
+    return <EnglishPatentAssistant cardEntry={entry === 'columbia-card'} />;
   return (
     <section className="legal-runner patent-runner">
       <section className="legal-agent-chat" aria-label="特許出願アシスタント">

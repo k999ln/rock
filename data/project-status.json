@@ -5933,6 +5933,27 @@
         "originalRecord": "CAMPUS01@29202ae6"
       },
       "nextAction": "Revalidate existing Campus runtime and owner/block/report/delete contracts on the integrated candidate before restoring historical done status; production acceptance remains separate."
+    },
+    {
+      "id": "CAMPUS02",
+      "title": "Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外）",
+      "status": "in_progress",
+      "dependsOn": [
+        "CAMPUS01"
+      ],
+      "evidence": [
+        "docs/sky-nfc-columbia.md",
+        "docs/prompts/sky-nfc-columbia-codex.md",
+        "sites/avocado-mini/worker/index.js",
+        "app/sky/campus/[campusId]/page.tsx",
+        "app/api/campus/route.ts",
+        "app/api/patent-research/route.ts",
+        "lib/campus-tags.ts",
+        "lib/sky-campus.ts",
+        "tests/sky-nfc-columbia.test.mjs",
+        "sites/avocado-mini/tests/preorder.test.mjs"
+      ],
+      "nextAction": "PR上でA1〜A7/A9の統合検証を確認し、A8の実物カード（iPhone/Android）受入と印刷・書き込み・配布はownerの別判断まで保留する。"
     }
   ],
   "phaseGates": [
@@ -6172,8 +6193,8 @@
     "distributionCommit": "b7d819cd291b653d165aa124f25a52b9898bfb2e",
     "publicRelease": false,
     "mainMerged": false,
-    "sitesSourceCommit": "25cf0fa2cae303475a9bf54280889a1192be455e",
-    "siteAccess": "DEPLOYED_CUSTOM_ONE_OWNER_ZERO_EXTERNAL_LATEST_SYNC_PENDING",
+    "sitesSourceCommit": "aade8171e4eeffad410242dfe79f59afd2dd6c52",
+    "siteAccess": "PUBLIC_WEB_DEVELOPER_PREVIEW_V53",
     "license": "MIT_PROPOSED_AWAITING_OWNER_SELECTION",
     "signing": "ANDROID_OFFLINE_DUAL_HSM_ARCHITECTURE_APPROVED_OUTER_RELEASE_CUSTODY_AND_ALL_E2E_SIGNING_PENDING",
     "campaign": "IN_PRODUCTION_NOT_SELECTED",
@@ -6239,7 +6260,7 @@
     "previousSitesSourceCommit": "c6942d5ef72e9dd16345b9363e68e0e18ca25079",
     "previousSiteAccess": "NOT_FOUND_RECHECKED_20260911",
     "siteAuthenticatedQa": "NOT_RUN",
-    "siteDeploymentEvidence": "docs/evidence/launch/sites-owner-private-20260911.json",
+    "siteDeploymentEvidence": "docs/evidence/work-composition-development.json",
     "currentStateDocument": "docs/current-state-20260911.md",
     "latestProgressAudit": "docs/evidence/launch/progress-audit-20260912.json",
     "auditCandidateHead": "c182a5b9c8f5f4da59528a41980eb98750ebd234",
@@ -6248,7 +6269,29 @@
     "historicalLocalCandidateCommit": "9a8da90f64c8e6acedb17f163ee23a8ed17a35fc",
     "historicalLocalCandidateEvidence": "docs/evidence/launch/backend-rc3-local-20260912.json",
     "historicalLocalCandidateAcceptance": "PASS_SCOPED_LOCAL_QEMU_DEVELOPER_PREVIEW_NOT_CURRENT_HEAD",
-    "historicalLocalCandidateDistribution": "LOCAL_ONLY_NOT_PUBLISHED_NOT_LEGALLY_CLEARED"
+    "historicalLocalCandidateDistribution": "LOCAL_ONLY_NOT_PUBLISHED_NOT_LEGALLY_CLEARED",
+    "siteObservationHistory": [
+      {
+        "scope": "historical 2026-09 owner-private snapshot",
+        "sitesSourceCommit": "25cf0fa2cae303475a9bf54280889a1192be455e",
+        "siteAccess": "DEPLOYED_CUSTOM_ONE_OWNER_ZERO_EXTERNAL_LATEST_SYNC_PENDING",
+        "siteDeploymentEvidence": "docs/evidence/launch/sites-owner-private-20260911.json"
+      }
+    ],
+    "publicReleaseScope": "Full generally available product release; existing public Web Developer Preview is separately deployed.",
+    "currentWeb": {
+      "observedAt": "2026-10-13T01:28:11Z",
+      "url": "https://rockstaros-kaiya.noellesugar1.chatgpt.site/",
+      "version": 53,
+      "access": "public",
+      "deployed": true,
+      "sourceCommit": "aade8171e4eeffad410242dfe79f59afd2dd6c52",
+      "mainMerged": false,
+      "authenticatedProductionAcceptance": "not_run_no_signed_in_browser_available",
+      "securityDelivery": "dynamic headers present; static asset policy incomplete; raw _headers is served as a file",
+      "commercialCloudAgents": "not_accepted",
+      "physicalOsRelease": "not_accepted"
+    }
   },
   "physicalDevicePreview": {
     "status": "PIXEL_10_GL066_SOURCE_TAG_AND_DEVICE_LAYOUT_FROZEN_RECOVERY_ARTIFACTS_PENDING",
@@ -7653,6 +7696,64 @@
           "policyChanged": false
         }
       }
+    }
+  },
+  "featureDevelopment": {
+    "startedAt": "2026-10-13T00:00:45Z",
+    "plannedEndAt": "2026-10-13T05:00:45Z",
+    "status": "in_progress",
+    "primaryWorkstream": "Git / CI / Operations",
+    "primaryOwner": "ROCK",
+    "taskId": "G04",
+    "relatedTaskIds": [
+      "WEB04",
+      "CSV00"
+    ],
+    "mainObservedSha": "8c5891fcb5e04f69618837f52e1ae64afba34399",
+    "siteBaseSha": "aade8171e4eeffad410242dfe79f59afd2dd6c52",
+    "siteBaseVersion": 53,
+    "workBranch": "codex/site-feature-composition-20261013",
+    "scope": [
+      "F1 validated multi-tool composition",
+      "F2 owner-scoped reusable recipes",
+      "F3 original-preserving artifact editing and independent recheck jobs",
+      "generator symlink hardening",
+      "preserve latest NFC/Columbia main changes",
+      "Sky selected-Tool handoff into new empty composition",
+      "Device preference restore rollback and late-response cancellation",
+      "Current public preview and launch-gate reconciliation"
+    ],
+    "nextAction": "Commit a reviewable source with preserved main/Site contracts; run final exact-SHA verify and GitHub CI; publish the accepted developer-preview candidate at the existing URL and capture public guest readback. Keep authenticated production, static headers, native download receipt and paired-snapshot deletion replay unaccepted.",
+    "githubSaved": false,
+    "mainIntegrated": false,
+    "deployed": false,
+    "productionAuthenticatedAccepted": false,
+    "evidence": "docs/evidence/work-composition-development.json",
+    "localAcceptance": {
+      "implemented": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "independentBackendTests": 21,
+      "independentUiViewOwnerTests": 18,
+      "independentPersistedD1Tests": 7,
+      "workerRestart": "SIGKILL owned Worker; restart same persistence; both root jobs byte-identical",
+      "browser": "F1/F2 plus F3 source comparison, 401/owner A-B-A, committed-create response loss and same-ID recovery, new checks and completion",
+      "oldRootJobsUnchanged": 2,
+      "widths": [
+        1280,
+        390
+      ],
+      "horizontalOverflow": false,
+      "downloadAcceptance": "Real owner-scoped HTTP bytes/headers and DB nonmutation accepted; native browser completion receipt unconfirmed",
+      "fullVerify": "passed before final Sky and settings additions; final exact-SHA repeat pending",
+      "uiViewOwnerTests": 19,
+      "skyHandoffTargetTests": 71,
+      "devicePreferenceAndUiTests": 22,
+      "devicePreferenceAdjacentTests": 32,
+      "independentReviews": "Backend, F3, HTTP artifact, Sky handoff, settings recovery separately accepted; UI late-decrypt/reset finding reproduced and fixed",
+      "browserLimit": "Subsequent localhost:5190 access permission denied; stopped with no browser/origin workaround"
     }
   }
 }

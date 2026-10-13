@@ -12,6 +12,7 @@ import {
   CircleDashed,
 } from 'lucide-react';
 import { catalog } from '@/lib/catalog';
+import { capabilityFor } from '@/lib/work-composition';
 import type { JobTool } from '@/lib/operations';
 import { MrToolRunner } from '@/components/mr-tool-runner';
 import { SkyCandidateRunner } from '@/components/sky-candidate-runner';
@@ -40,13 +41,28 @@ const browserHost = (): SkyHostEnvironment =>
   detectSkyHost(navigator.userAgent, navigator.maxTouchPoints);
 const serverHost = (): null => null;
 
-export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId: string; workspace?: boolean }) {
+export default function SkyToolWorkspace({
+  toolId,
+  workspace = false,
+  language = 'ja',
+  entry,
+}: {
+  toolId: string;
+  workspace?: boolean;
+  language?: 'ja' | 'en';
+  entry?: string;
+}) {
   const runtimeContext = useSkyToolContext();
   const [infoOpen, setInfoOpen] = useState(false);
   const [voiceSetupOpen, setVoiceSetupOpen] = useState(false);
   const tool = catalog.find((item) => item.id === toolId);
   const host = useSyncExternalStore(subscribeHost, browserHost, serverHost);
 
+  if (language === 'en') {
+    if (toolId === 'rockstar-amc') return <AmcWorkspace language="en" cardEntry={entry === 'columbia-card'} />;
+    if (toolId === 'mr-citations') return <MrToolRunner tool="citations" language="en" entry={entry} />;
+    if (toolId === 'rockstar-patent-assistant') return <MrToolRunner tool="patent-assistant" language="en" entry={entry} />;
+  }
   if (workspace && toolId === 'rockstar-amc') return <AmcWorkspace />;
   if (workspace && toolId === 'coconala') return <CoconalaTeamWorkspace workspace={workspace} />;
   if (workspace && toolId === 'rockstar-csv-cleanup') return <CsvBusinessWorkspace workspace={workspace} />;
@@ -151,6 +167,10 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
               <Link className={styles.action} href={`/zema/tools/${encodeURIComponent(tool.id)}`}>
                 Zemaで開く <ArrowUpRight size={16} />
               </Link>
+              {capabilityFor(tool.id)?.available && <Link className={styles.action} href={`/zema/compose?tool=${encodeURIComponent(tool.id)}`}>
+                このToolで仕事を組む <ArrowUpRight size={16} />
+              </Link>}
+              {tool.id === 'rockstar-csv-cleanup' && capabilityFor(tool.id)?.available && <p>仕事の組み立てでは小さなCSVの処理と検査を使えます。有料CSV受付の注文・決済・納品記録は作成しません。</p>}
             </section>
           ) : tool.id === 'rockstar-spider' ? (
             <SpiderWorkspace />
@@ -215,6 +235,8 @@ export default function SkyToolWorkspace({ toolId, workspace = false }: { toolId
             <MrToolRunner
               tool={tool.runner}
               onRunningChange={() => undefined}
+              language={language}
+              entry={entry}
             />
           ) : tool.integration === 'fashion-brand-ops' ? (
             <FashionBrandOpsRunner />

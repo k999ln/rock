@@ -2,13 +2,16 @@ import {
   CampusError,
   CAMPUSES,
   campusFromTagPrefix,
+  campusTagId,
   type CampusId,
   type CampusItemInput,
   type CampusItemKind,
   type CampusProfileInput,
   type CampusPublicProfile,
   matchCampusProfiles,
+  safeRelativeCampusDestination,
 } from './campus';
+import { campusTagQrSvg, campusTagUrls } from './campus-tags';
 
 type Db = Pick<D1Database, 'prepare' | 'batch'>;
 type ProfileRow = {
@@ -538,6 +541,7 @@ export function campusStore(db: Db) {
       mode: string;
       label: string;
       placement: string;
+      destination?: string;
     },
   ) {
     if (!new RegExp(`^${campus}(?:-[a-z0-9]+)*$`).test(input.prefix))
@@ -558,9 +562,26 @@ export function campusStore(db: Db) {
     const records = Array.from({ length: input.count }, (_, index) => {
       const number = String(input.start + index).padStart(4, '0');
       const tagId = `${input.prefix}-${number}`;
-      const destination = `/campus?campus=${campus}&mode=${encodeURIComponent(input.mode)}&tag=${tagId}`;
+      campusTagId(tagId);
+      const destination = input.destination
+        ? safeRelativeCampusDestination(input.destination)
+        : `/campus?campus=${campus}&mode=${encodeURIComponent(input.mode)}&tag=${tagId}`;
+      if (destination.startsWith('/sky/campus/')) {
+        const destinationCampus = destination.split('/')[3]?.split('?')[0];
+        if (destinationCampus !== campus)
+          throw new CampusError('タグの移動先の大学が一致しません。');
+      } else {
+        const destinationCampus = new URL(destination, 'https://avocado.invalid').searchParams.get('campus');
+        if (destinationCampus && destinationCampus !== campus)
+          throw new CampusError('タグの移動先の大学が一致しません。');
+      }
       return { tagId, destination };
     });
+    // Validate every derived QR before the first INSERT. A future change to
+    // the URL or QR capacity must fail the request atomically, rather than
+    // leaving a registered batch that cannot be exported or scanned.
+    for (const record of records)
+      campusTagQrSvg(campusTagUrls(record.tagId).qrUrl);
     const results = await db.batch(
       records.map(({ tagId, destination }) =>
         statement(

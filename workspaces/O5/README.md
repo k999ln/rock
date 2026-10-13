@@ -70,6 +70,7 @@ SIM01/SKY21: SIM/eSIM利用開始からSky/Zemaの保存・復旧・費用表示
 | B06 | ココナラ代表受注・制作担当者への個別発注と入出金を安全に管理 | 進行中 / 共通基盤 | — |
 | GM01 | AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外） | 進行中 / 共通基盤 | — |
 | CAMPUS01 | 大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装 | 進行中 / 共通基盤 | — |
+| CAMPUS02 | Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外） | 進行中 / 共通基盤 | CAMPUS01 |
 
 <details>
 <summary>完了記録のあるtask（当該範囲の記録。製品全体の完成ではありません）</summary>

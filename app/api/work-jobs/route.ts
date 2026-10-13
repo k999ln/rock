@@ -79,6 +79,7 @@ export async function POST(request: Request) {
     const candidate = createWorkJob(await body(request));
     if (candidate.templateId === 'amc') throw new WorkError('AMC画面から計画を保存してください。');
     if (candidate.templateId === 'material-invention') throw new WorkError('物質候補の専用画面から入力を保存してください。');
+    if (candidate.templateId === 'composition') throw new WorkError('仕事を組み立てる画面から計画を保存してください。');
     const saved = await workStore(db).create(user, candidate);
     if (
       !saved ||

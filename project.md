@@ -1,4 +1,15 @@
-> **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-11 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
+> **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
+
+### 2026-10-13 — 設定復元と最終候補の検収
+
+端末設定の復元途中失敗で原値が消える不具合と、復元取消／初期化後に遅い復号結果が設定を復活させる競合を修正した。対象22件と隣接32件、独立した元再現試験が成功。既存backup v1／2キーと暗号化を維持し、多キーatomic・別tab CAS・reloadをまたぐ原snapshot保持は未証明。Skyの接続済み3Toolから空の新しいcompositionへ進む導線は対象71件と独立レビューで検収。全体verifyはこの追補前のsourceで成功し、最終SHAで再実行する。追加local browser操作は権限拒否で停止し、download完了とレシピ所要時間は合格にしない。D1/R2対復元の34観測は合格件数とせず、snapshot後削除の復活とfuture lease expiry fixtureは未修正として運用正本に残した。最新mainは8c5891fのまま、対象Siteは公開v53/source aade8171のままを再確認し、main統合と候補の公開を分ける。
+
+
+### 2026-10-13 — 新しい仕事体験のローカル検収
+
+F1/F2に原成果を保持する編集・独立検査job（F3）を追加。実ブラウザで引用処理→検査→保存→レシピ→新素材と、編集→新条件検査→本人完了を確認した。実Worker SIGKILL後に同じ保存先から2件の仕事と成果を完全一致で復元。401とowner A/B/A、作成commit後の応答喪失を隔離環境で確認し、元仕事の不変と同ID再試行を検収。独立D1検収7試験、UI/view/owner18試験成功。1280px/390pxで横はみ出しなし。IAB download eventはtimeoutのため未受入。全体verifyはnested Astro依存不足から停止した履歴を残し、依存補完後の同試験成功と、最新sourceの全体検証待ちを区別する。公開v53、main、作業candidate、商用/native gateを分け、静的headerと固定履歴SPIDERの未解決を台帳へ同期する。
+
+
 
 公開版の追加検証: `docs/evidence/site-quality-integration.json` に実D1追加移行、既存CSV leaseの競合・応答喪失、owner認証復旧、Sky→Zema→CSV納品・再読込、1280px/390pxの独立検収を集約。配備前の検証記録と、後述のv52公開receiptを区別して保存する。公開はmain統合・外部Provider・実資金・実機の受入を意味しない。
 
@@ -16,6 +27,12 @@ v52/source `08e1ae494a3ae332dbd5d1c2cf1098332cb2744b` は2026-10-12 17:16:32.563
 > **復元の記録** — 2026-10-07に、mergeで本文から失われていた作業記録198節（主に2026-09-24〜10-05。2026-10-05のmerge `ecb4b2af` ほか）をGit履歴から本文を変えずに戻し、①を日付順に並べ直しました。並べ替えは節の順序だけで、文言は変えていません。内訳は [merge欠落の監査](docs/merge-loss-audit-20261007.md) にあります。
 
 # RockstarOS — 事業・設計・進捗
+
+## 2026-10-13 — 複数Toolの仕事・レシピを公開製品へ接続（G04 / WEB04、ROCK、着手）
+
+00:00:45 UTC開始、5時間の候補開発。最新main `8c5891fc`、公開v53/source `aade8171`、元checkoutの未保存195件を確認し、正規Sites sourceを分離checkoutへ取得した。既存の未保存composition解析・実処理・route・workflowを保全して再利用し、owner/CAS/idempotency、途中成果、完成条件検査、レシピ保存／再利用をUIへ接続する。最新mainのNFC／Columbia変更も3wayで照合し、公開Siteの入力復旧・CSV lease／納品revision・既存migrationと過去作業記録を保持する。
+
+初期検査で未保存composition routeのowner意図照合不足、失敗検査の再開と読取payload検証の不足を確認し、統合時に修正する。build generatorのsymlink上書きは隔離canaryで事前再現済みで、descriptor読取／exclusive一時file／atomic置換へ修正し独立検収中。実装、対象回帰、全体verify、同一SHA CI、PR、公開反映の結果は後続証拠へ分離する。main merge・実課金・実機flashは今回の実行範囲に含めない。
 
 ## 2026-10-12 — 品質改善の残件を再開（G04 / WEB04 / AI04 / CSV00 / GRID01、ROCK）
 
@@ -76,6 +93,10 @@ runtime `14bd7988`を凍結し、`npm run verify`はNode2017 pass／1 platform s
 中間確認: Walletの応答喪失後二重記帳（24,000円が48,000円／2件）を実ビルドで再現し、同じ操作の確認で24,000円／1件へ復旧した。別ownerへの入力表示、Zema見積・下書き、Workbench競合、AMC読込、CSV完成後の成果削除、Android送信／receipt、native終端CASを修正し対象試験を実施。GridはPR #104の050fade2でverify／CodeQL成功、secretsは継承した公開仕様digest3件で失敗。限定例外とCSV強制終了後の保存契約変更は未適用の提案として分離した。
 
 PR #105をmain向けDraftとして保存し、Android/native・RPC・Wallet・Zema・ローカル保存先を意味別commitへ分けた。実画面ではCSVとWalletのPC/390px、別owner・応答喪失・再読込、記事2手順と確認メモを通した。Workbench・Material・出品準備の入力本人境界を追加修正し、統合verifyと同一最終SHA CIを照合する。進行中のため合格・性能改善・完了を宣言しない。中間候補`250b57b0`は同一SHAのGitHub15検査すべて成功。追加のCoconala編集revision・Material未送信離脱保護・Workbench記録回収も独立検収済み。08364bf0の全体verifyはNode2005 pass/1 platform skip、Worker1356、CSV385、build成功。PC1280/390pxでMaterial/Mercari/Coconalaの別owner・壊れた成功応答・同一ID回収、案件revision競合拒否、Cloud入力離脱保護も確認した。実画面で見つけた仕事詳細の再選択と破棄後の古いエラー表示の2点を仕上げ、最終committed SHAで再検証する。元checkoutのtracked差分・未保存状態168項目は開始時と一致。生ログはGit外 `/private/tmp/rock-quality-audit/`。再開状態は進捗JSONの`qualityRefactor`。
+
+## 2026-10-12 — Columbiaの学生向けSky NFCカードの設計（Product / UX・Campus、ROCK）
+
+利用者の「NFCタグにSKYを入れるための構想をして」と、質問への回答（タッチでSkyのTool／Agentを開く、Columbiaの学生、avokadoが書いて配る、1枚＝Columbia用Skyの入口、出典整理・AMC・特許アシスタント、英語版、特許は米国を追加しAI調査は最初は出さない、Columbiaと書く、実装はCodex）を受け、[設計書](docs/sky-nfc-columbia.md)と[Codexへの依頼](docs/prompts/sky-nfc-columbia-codex.md)を追加した。既存のCampusタグ入口 `/t/[tagId]` と匿名集計を使い、`avocadomini.si/t/*` からの転送、`/sky/campus/columbia` の英語入口、3つのToolの英語版、カード経由の特許AI調査の停止を実装し、`CAMPUS02` の台帳と設計台帳を同期した。A1〜A7の対象試験56/56、avocadoMini 24/24、型検査、lint、project・mission・design検査は合格。`npm run verify` は対象外の全体試験まで進み、sandboxが `127.0.0.1` のlistenを許可しない `EPERM` と通常macOS/Linux userを要求するPC Citations試験の既知環境差だけで停止し、代表4試験はclean mainでも同じ失敗を確認した。A8の実物カード確認、本番配備、カードの印刷・書き込み・配布はまだ。
 
 ## 2026-10-11 — 公開rockの整理（暗号化は同日にやめた）、確定事項の反映（Git / CI / Operations、ROCK）
 
@@ -2911,7 +2932,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 ## 全taskの作業進捗
 
 <!-- project-status:start -->
-最終更新: 2026-10-12 / SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/392件（親32・子192・独立168。実行単位は親を除く360件）
+最終更新: 2026-10-12 / SIM/eSIM起点のRockstarOSサービス利用開始と透明な料金・保存復旧を実装し、全領域を証拠別に受け入れる / 完了記録 114/393件（親32・子192・独立169。実行単位は親を除く361件）
 
 | ID | 作業 | 状態 | 根拠 |
 | --- | --- | --- | --- |
@@ -3307,6 +3328,7 @@ GitHub main `592daeea322cd47aa189b67dd689e323662c0c67`から専用branch `codex/
 | DOC05 | PR・task・配備記録なしでmainへ直接入った5コミット（9c1332e・8617863・4b49bf9・862ba30・851bb04）を証拠へ記録し、PR #39のSite試験verify組込みと網羅検査を取り込む | 完了 | [記録](docs/evidence/ledger-sync-20260925.json) · [記録](package.json) · [記録](tests/verify-coverage.test.mjs) · [記録](docs/workstreams/05-web-pwa-sites.md) · [記録](project.md) |
 | GM01 | AI06から切り出し: R5 §03 GAME01の最小操作（選択・保持中移動・放す・衝突／結合・分離・取消・時間停止・保存再開）を決定的2D粒子sandboxとしてhost／fixtureで実装し、不正save・版違いを拒否（非金融。R5空間表示・3D入力・実機・OS統合は対象外） | 進行中 | [記録](lib/game-sandbox.ts) · [記録](tests/game-sandbox.test.mjs) · [記録](tests/fixtures/game-sandbox-session.json) · [記録](docs/workstreams/08-game-market-fund.md) |
 | CAMPUS01 | 大学別CampusレイヤーとしてPeople・Project・Opportunity・Event・Community・Portfolio・Resource、プロフィールマッチング、NFC/QR入口とsource別匿名集計、block/report/data削除をWeb runtimeへ実装 | 進行中 | [記録](app/campus/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/t/[tagId]/route.ts) · [記録](components/campus-workspace.tsx) · [記録](components/campus-workspace.module.css) · [記録](lib/campus.ts) · [記録](lib/campus-store.ts) · [記録](db/schema.ts) · [記録](tests/fixtures/site-migration-reference/primary/0058_campus_layer.sql) · [記録](tests/campus.test.mjs) · [記録](docs/campus-layer.md) |
+| CAMPUS02 | Sky NFCカードのColumbia学生向け入口（avocadomini.si転送、タグbatch CSV/QR、英語landingと3 Tool、カード経由の特許AI停止）を設計§4に沿って実装する（印刷・書き込み・配布・本番配備は対象外） | 進行中 | [記録](docs/sky-nfc-columbia.md) · [記録](docs/prompts/sky-nfc-columbia-codex.md) · [記録](sites/avocado-mini/worker/index.js) · [記録](app/sky/campus/[campusId]/page.tsx) · [記録](app/api/campus/route.ts) · [記録](app/api/patent-research/route.ts) · [記録](lib/campus-tags.ts) · [記録](lib/sky-campus.ts) · [記録](tests/sky-nfc-columbia.test.mjs) · [記録](sites/avocado-mini/tests/preorder.test.mjs) |
 
 段階ゲート（作業全体の完了とは別判定）
 

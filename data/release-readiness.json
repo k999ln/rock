@@ -1,6 +1,7 @@
 {
   "schema": "rockstaros-release-readiness/1",
-  "evaluatedAt": "2026-10-04",
+  "evaluatedAt": "2026-10-13",
+  "currentSiteObservation": {"observedAt": "2026-10-13T01:28:11Z", "projectId": "appgprj_6aa444b6e6508191a19f16405d0be927", "version": 53, "sourceCommit": "aade8171e4eeffad410242dfe79f59afd2dd6c52", "access": "public", "deployed": true, "scope": "Existing Web Developer Preview; not full required-gate acceptance, commerce or physical OS", "evidence": "docs/evidence/work-composition-development.json"},
   "policy": {
     "statusRule": "A target is ready only when every required gate passes. Not-applicable gates need an explicit reason.",
     "productLicenseIntent": "data/release-owner-intent-20260911.json",
@@ -42,7 +43,8 @@
       "declaredStatus": "blocked",
       "gates": [
         { "id": "source-verification", "required": true, "status": "pass", "evidence": ["package.json", "docs/validation.md"] },
-        { "id": "web-security-policy", "required": true, "status": "pass", "evidence": ["data/web-security-policy.json", "next.config.ts", "public/_headers", "scripts/check-web-security-response.mjs", "tests/web-security-policy.test.mjs", "docs/evidence/launch/web-security-local-20260917.json"] },
+        {"id": "web-security-policy", "required": true, "status": "pass", "evidence": ["data/web-security-policy.json", "next.config.ts", "public/_headers", "scripts/check-web-security-response.mjs", "tests/web-security-policy.test.mjs", "docs/evidence/launch/web-security-local-20260917.json", "docs/evidence/work-composition-development.json"], "acceptanceScope": "Source policy and local production responses only; current public delivery is a separate required gate."},
+        {"id": "current-public-delivery-readback", "required": true, "status": "blocked", "nextAction": "Obtain supported Sites static header parsing and verify all required routes for the same public version; production authenticated journey remains unaccepted.", "evidence": ["docs/evidence/work-composition-development.json"]},
         { "id": "dependency-license-inventory", "required": true, "status": "pass", "evidence": ["package-lock.json", "data/web-third-party-license-audit.json", "vite.config.ts", "scripts/web-bundle-inventory.mjs", "scripts/check-web-bundle-inventory.mjs", "tests/web-bundle-inventory.test.mjs"] },
         { "id": "product-license", "required": true, "status": "blocked", "ownerAction": "自作部分の製品ライセンスを明示選択し、適用範囲と第三者権利を確認する" },
         { "id": "public-access-approval", "required": true, "status": "pass", "evidence": ["project.md"] }

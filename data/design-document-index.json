@@ -175,6 +175,42 @@
           "authentication": "MR parent or Delivery 401 invalidates Workbench identity and older list generations, masks private details, and retains original memory. Child 200 alone cannot restore it; explicit parent recheck must confirm the original owner.",
           "deliveryExecution": "Synchronous lock and current mounted/owner/job/step checks before dispatch, including after file preparation and tracking start. Unknown workflow record blocks stale rerun/discard; already-started late output stays in its original session."
         }
+      },
+      "workComposition": {
+        "documents": [
+          "docs/sky-tools-complete-design.md",
+          "docs/rockstaros-complete-design.md"
+        ],
+        "implementation": [
+          "lib/work-composition.ts",
+          "lib/work-composition-executor.ts",
+          "lib/work-composition-store.ts",
+          "lib/workflow.ts",
+          "lib/work-composition-view.ts",
+          "components/work-composition-workspace.tsx",
+          "components/use-owner-memory-state.ts",
+          "app/api/work-jobs/composition/route.ts",
+          "app/zema/compose/page.tsx",
+          "app/api/work-jobs/composition/artifact/route.ts",
+          "components/sky-tool-workspace.tsx"
+        ],
+        "regressions": [
+          "tests/work-composition.test.mjs",
+          "tests/work-composition-route.test.mjs",
+          "tests/work-composition-view.test.mjs",
+          "tests/work-composition-ui.test.mjs",
+          "tests/owner-memory-state.test.mjs",
+          "tests/workbench-owner-recovery.test.mjs",
+          "tests/work-composition-artifact-route.test.mjs"
+        ],
+        "input": "Owner scoped objective, acceptance criteria, bounded text/CSV and validated finite local Tool graph",
+        "output": "Persisted intermediate and checked final artifacts, owner-authenticated revision-bound plain text/CSV attachment, original-preserving edited recheck job, plus sanitized reusable recipe",
+        "persistence": "Existing owner scoped work_jobs JSON; revision CAS and exact command fingerprint; no migration",
+        "failureRecovery": "Retain original owner/operation on ambiguous response; retry same operation; hide private input on authentication loss; confirmed artifacts survive restart",
+        "approval": "Explicit source/artifact saving consent; human final review; no carried-over payment or provider approval",
+        "boundary": "Connected effect-free local processing with zero budget only; unconnected Tools rejected; no OS or provider acceptance claim",
+        "evidence": "docs/evidence/work-composition-development.json",
+        "entry": "Zema compose plus the three connected Sky catalog Tools; only safe Tool identity seeds a new empty draft; existing owner/job/recipe/editor state has priority"
       }
     },
     {
@@ -720,7 +756,28 @@
         "docs/data-storage-boundaries.md",
         "docs/android-backup-recovery.md",
         "data/android-backup-recovery-policy.json"
-      ]
+      ],
+      "webDevicePreferences": {
+        "purpose": "Restore only the existing Home and addon preferences without losing original settings on storage failure",
+        "documents": [
+          "docs/data-storage-boundaries.md",
+          "docs/rockstaros-complete-design.md"
+        ],
+        "implementation": [
+          "lib/system-backup.ts",
+          "components/system-maintenance.tsx"
+        ],
+        "regressions": [
+          "tests/system-backup.test.mjs",
+          "tests/system-maintenance-release.test.mjs"
+        ],
+        "input": "Verified AES-GCM device-backup v1 with bounded allowlisted preference strings; explicit user restore/reset",
+        "output": "Existing preference keys restored or reset; success feedback only after every write succeeds",
+        "persistence": "Existing two local Storage keys; original values and missing keys captured before changes; no new durable format or key",
+        "failureRecovery": "Rollback all keys on a partial failure; preserve original recovery snapshot in same-tab memory if rollback fails; successful explicit reset forgets pending recovery",
+        "boundary": "Device preferences only, not D1/R2 jobs, Wallet funds, credentials, cross-tab CAS or crash-durable rollback",
+        "evidence": "docs/evidence/work-composition-development.json"
+      }
     },
     {
       "id": "wallet_market_and_fund",
@@ -916,6 +973,24 @@
         "json_and_prompt_export",
         "explicit_local_codex_single_task_runner"
       ],
+      "columbiaCardEnglishEntry": {
+        "design": "docs/sky-nfc-columbia.md",
+        "implementation": "components/amc-english-workspace.tsx",
+        "states": [
+          "goal",
+          "plan",
+          "work",
+          "review",
+          "accepted"
+        ],
+        "storage": "browser_localStorage_only",
+        "externalExecution": false,
+        "canonicalOwnerLedgerConnected": false,
+        "scope": "limited_card_draft_not_zema_goal_or_cross_device_continuation",
+        "tests": [
+          "tests/sky-nfc-columbia.test.mjs"
+        ]
+      },
       "missionBoardRendering": {
         "scope": "canonical_squad_board_only",
         "text": "createElement_and_textContent",
@@ -1278,7 +1353,17 @@
     },
     {
       "id": "mr-citations",
-      "catalogStatus": "ready"
+      "catalogStatus": "ready",
+      "columbiaCardEnglishEntry": {
+        "design": "docs/sky-nfc-columbia.md",
+        "implementation": "components/english-citations-runner.tsx",
+        "processing": "browser_local_pure",
+        "outputHeading": "Sources",
+        "externalTransfer": false,
+        "tests": [
+          "tests/sky-nfc-columbia.test.mjs"
+        ]
+      }
     },
     {
       "id": "mr-delivery",
@@ -1399,6 +1484,24 @@
     {
       "id": "rockstar-patent-assistant",
       "catalogStatus": "ready",
+      "columbiaCardEnglishEntry": {
+        "design": "docs/sky-nfc-columbia.md",
+        "implementation": [
+          "components/english-patent-assistant.tsx",
+          "lib/patent-assistant.ts",
+          "app/api/patent-research/route.ts"
+        ],
+        "localDraft": true,
+        "onlineResearchVisible": false,
+        "apiGate": "query_entry_rejected_before_body_auth_pricing_or_provider",
+        "officialDomainsAdded": [
+          "uspto.gov"
+        ],
+        "productionProviderExecutionVerified": false,
+        "tests": [
+          "tests/sky-nfc-columbia.test.mjs"
+        ]
+      },
       "recoveredContractReferences": [
         "docs/sky-tools-complete-design.md",
         "lib/local-guide-history.ts",

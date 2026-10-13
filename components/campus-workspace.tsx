@@ -21,6 +21,7 @@ import {
   X,
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   useCallback,
   useEffect,
@@ -123,6 +124,13 @@ type TagAnalytics = {
   link: number;
   lastTap: string | null;
 };
+type TagExportRow = {
+  tagId: string;
+  nfcUrl: string;
+  qrUrl: string;
+  qrSvg: string;
+};
+type TagExport = { tags: TagExportRow[]; csv: string };
 
 const campusOptions: { id: CampusId; label: string }[] = [
   { id: 'nyu', label: 'NYU' },
@@ -254,6 +262,7 @@ export default function CampusWorkspace({
   const [showComposer, setShowComposer] = useState<CampusItemKind | null>(null);
   const [editingProfile, setEditingProfile] = useState(false);
   const [tags, setTags] = useState<TagAnalytics[]>([]);
+  const [tagExport, setTagExport] = useState<TagExport | null>(null);
 
   const load = useCallback(async (nextCampus: CampusId) => {
     setLoading(true);
@@ -303,6 +312,7 @@ export default function CampusWorkspace({
     setTab('overview');
     setQuery('');
     setTags([]);
+    setTagExport(null);
     const url = new URL(window.location.href);
     url.searchParams.set('campus', next);
     url.searchParams.delete('tag');
@@ -547,8 +557,8 @@ export default function CampusWorkspace({
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     await run(
-      () =>
-        api('POST', {
+      async () => {
+        const payload = await api('POST', {
           action: 'registerTags',
           campusId: campus,
           prefix: value(form, 'prefix') || campus,
@@ -557,11 +567,25 @@ export default function CampusWorkspace({
           mode: value(form, 'mode') || data?.campus.defaultMode || 'campus',
           label: value(form, 'label'),
           placement: value(form, 'placement'),
-        }),
+          destination: value(form, 'destination') || undefined,
+        });
+        setTagExport(payload as unknown as TagExport);
+      },
       'NFC / QR tags registered.',
       false,
     );
     await loadAnalytics(campus);
+  }
+
+  async function exportTags() {
+    await run(
+      async () => {
+        const payload = await api('POST', { action: 'exportTags', campusId: campus });
+        setTagExport(payload as unknown as TagExport);
+      },
+      'CSV and QR files are ready to download.',
+      false,
+    );
   }
 
   const itemsByKind = (kind: CampusItemKind) =>
@@ -811,8 +835,10 @@ export default function CampusWorkspace({
               <Tags
                 campus={data.campus}
                 tags={tags}
+                tagExport={tagExport}
                 saving={saving}
                 onSubmit={registerTags}
+                onExport={exportTags}
                 onSetActive={setTagActive}
                 onClearAnalytics={clearTagAnalytics}
               />
@@ -1367,21 +1393,27 @@ function ProfileEditor({
 function Tags({
   campus,
   tags,
+  tagExport,
   saving,
   onSubmit,
+  onExport,
   onSetActive,
   onClearAnalytics,
 }: {
   campus: CampusConfig;
   tags: TagAnalytics[];
+  tagExport: TagExport | null;
   saving: boolean;
   onSubmit: (event: SyntheticEvent<HTMLFormElement>) => void;
+  onExport: () => void;
   onSetActive: (tagId: string, active: boolean) => void;
   onClearAnalytics: (tagId: string) => void;
 }) {
   const total = tags.reduce((sum, tag) => sum + tag.total, 0);
   const nfc = tags.reduce((sum, tag) => sum + tag.nfc, 0);
   const qr = tags.reduce((sum, tag) => sum + tag.qr, 0);
+  const exportedById = new Map((tagExport?.tags ?? []).map((row) => [row.tagId, row]));
+  const dataUrl = (mime: string, value: string) => `data:${mime};charset=utf-8,${encodeURIComponent(value)}`;
   return (
     <section>
       <div className={styles.sectionHeading}>
@@ -1402,7 +1434,7 @@ function Tags({
         <article><strong>{qr}</strong><span>QR</span></article>
       </div>
 
-      <form className={styles.composer} onSubmit={onSubmit}>
+      <form key={campus.id} className={styles.composer} onSubmit={onSubmit}>
         <h3>Register a batch</h3>
         <div className={styles.formGrid}>
           <label>Prefix<input name="prefix" defaultValue={campus.id} /></label>
@@ -1423,11 +1455,55 @@ function Tags({
           </label>
           <label>Label<input name="label" placeholder="Library poster" /></label>
           <label>Placement<input name="placement" placeholder="Student center noticeboard" /></label>
+          <label>
+            Destination
+            <select name="destination" defaultValue={campus.id === 'columbia' ? '/sky/campus/columbia' : ''}>
+              <option value="">Legacy Campus destination</option>
+              {campus.id === 'columbia' && <option value="/sky/campus/columbia">Sky for Columbia students</option>}
+            </select>
+          </label>
         </div>
         <button className={styles.primary} disabled={saving}>
           {saving ? 'Registering…' : 'Register batch'}
         </button>
       </form>
+
+      <div className={styles.tagActions}>
+        <button className={styles.primary} type="button" disabled={saving || tags.length === 0} onClick={onExport}>
+          {saving ? 'Preparing…' : 'Export CSV + QR SVGs'}
+        </button>
+        {tagExport && (
+          <a className={styles.ghost} href={dataUrl('text/csv', tagExport.csv)} download={`${campus.id}-sky-tags.csv`}>
+            Download CSV
+          </a>
+        )}
+      </div>
+      {tagExport && tagExport.tags.length > 0 && (
+        <div className={styles.tagList} aria-label="QR SVG downloads">
+          {tagExport.tags.map((row) => (
+            <article key={`export-${row.tagId}`}>
+              <div>
+                <Radio size={19} />
+                <span>
+                  <strong>{row.tagId}</strong>
+                  <small>{row.nfcUrl}</small>
+                </span>
+              </div>
+              <Image
+                className={styles.tagQr}
+                src={dataUrl('image/svg+xml', row.qrSvg)}
+                alt={`QR code for ${row.tagId}`}
+                width={144}
+                height={144}
+                unoptimized
+              />
+              <a className={styles.ghost} href={dataUrl('image/svg+xml', row.qrSvg)} download={`${row.tagId}.svg`}>
+                Download QR SVG
+              </a>
+            </article>
+          ))}
+        </div>
+      )}
 
       <div className={styles.tagList}>
         {tags.map((tag) => (
@@ -1446,6 +1522,7 @@ function Tags({
             </dl>
             <code>{`/t/${tag.tagId}?source=nfc`}</code>
             <code>{`/t/${tag.tagId}?source=qr`}</code>
+            {exportedById.has(tag.tagId) && <small>CSV and QR SVG are ready above.</small>}
             <div className={styles.tagActions}>
               <button disabled={saving} onClick={() => onSetActive(tag.tagId, !tag.active)}>
                 {tag.active ? 'Deactivate' : 'Activate'}
