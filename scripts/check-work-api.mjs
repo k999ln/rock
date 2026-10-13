@@ -750,6 +750,37 @@ try {
   serviceEntitlementEnforcementEnabled = true;
   await stop();
   await start();
+  const citationPath = '/api/sky/agents/citations';
+  const citationJobId = randomUUID();
+  const citationInput = { markdown: 'A claim. (Source: [Paper](https://example.org/paper))', language: 'en' };
+  const citationOwnerScope = (await call('GET', undefined, { path: '/api/work-jobs' })).ownerScope;
+  const citationHeaders = { 'X-Rock-Owner-Scope': citationOwnerScope };
+  const citationRequest = { id: citationJobId, input: citationInput, saveResult: true };
+  const deniedCitation = await call('POST', citationRequest, {
+    path: citationPath, user: bob, status: 403,
+  });
+  check(deniedCitation.code, 'SERVICE_ENTITLEMENT_REQUIRED');
+  const savedCitation = await call('POST', citationRequest, {
+    path: citationPath, headers: citationHeaders, status: 201,
+  });
+  check(savedCitation.jobId, citationJobId);
+  check(savedCitation.output.schema, 'sky.citations.result/1');
+  check(savedCitation.output.sourceCount, 1);
+  check(savedCitation.output.text.includes('https://example.org/paper'), true);
+  const replayedCitation = await call('POST', citationRequest, {
+    path: citationPath, headers: citationHeaders,
+  });
+  check(replayedCitation.replayed, true);
+  check(replayedCitation.output.inputSha256, savedCitation.output.inputSha256);
+  await call('POST', { ...citationRequest, input: { ...citationInput, markdown: 'Different source' } }, {
+    path: citationPath, headers: citationHeaders, status: 409,
+  });
+  await call('POST', {
+    id: randomUUID(), templateId: 'sky-citation-agent', title: 'Forged citation job',
+  }, { path: '/api/work-jobs', status: 400 });
+  const citationList = await call('GET', undefined, { path: '/api/work-jobs' });
+  check(citationList.jobs.find((job) => job.id === citationJobId)?.standaloneAgent?.schema, 'sky.citations.result/1');
+  check((await call('GET', undefined, { path: '/api/work-jobs', user: bob })).jobs.some((job) => job.id === citationJobId), false);
   const a2aDelegationPath = '/api/sky/a2a-delegations';
   const deniedWithoutAgentClaim = await call('POST', {}, {
     path: a2aDelegationPath, user: bob, status: 403,

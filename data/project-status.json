@@ -8107,14 +8107,18 @@
     "taskIds": ["SKY21", "WEB06"],
     "primaryWorkstream": "Sky / MCP",
     "primaryOwner": "ROCK",
-    "status": "first_party_agent_implemented_public_acceptance_pending",
+    "status": "first_party_agent_site_published_authenticated_acceptance_pending",
     "scope": "Skyの出典整理AgentをスマホのWebだけで実行し、本人別WorkJobへ成果を保存して再読込する第一者経路",
     "executionBoundary": "有限の出典整理処理。LLM推論、外部検索、有料Provider、Apple Pay、外部アプリSDKの完成を示さない。",
     "branch": "codex/sky-standalone-agent-20261013",
     "githubSaved": false,
     "mainIntegrated": false,
-    "deployed": false,
+    "deployed": true,
+    "siteVersion": 53,
+    "siteSourceSha": "e09d4de463156d0f2f765c6a7dcc1769637f666d",
+    "localWorkerD1Test": "scripts/check-work-api.mjs: synthetic owner and entitlement checks cover 201 creation, replay, 409 input collision, 400 generic forgery, stored list and second-owner isolation; npm run test:api passed 1381 work assertions and 385 CSV assertions",
+    "publicReadback": "https://avoado.si/os/sky, /os/sky/agents/citations, /os/sky/outputs and five /os/sky/campus/{id} paths returned HTTP 200; unauthenticated API returned 401 with same-origin Origin; browser showed the sign-in gate and retained draft in original tab",
     "liveSiteAtStart": "Sky Site v50: /sky 200, /os/sky 404; Cloud model credential and trusted pricing configuration absent",
-    "nextAction": "対象テスト、型・lint・build、全verify、本人A/Bと再送・再読込の実API検証を通す。GitHubへ保存し、同じsourceをSiteへ反映して正規URLを公開読戻しする。Cloud AgentはProvider・料金・予算・Receiptを別受入する。"
+    "nextAction": "GitHub main統合と同一SHA CIを確認する。公開Siteの本人A/Bで実行・保存・再送・再読込・分離を受け入れる。Cloud AgentはProvider・料金・予算・Receiptを別受入する。"
   }
 }
