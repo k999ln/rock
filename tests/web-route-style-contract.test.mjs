@@ -105,6 +105,9 @@ void test('Sky feed stays explainable and hands work to the existing Zema path',
   assert.match(sky, /className="sky-feed-reason"/);
   assert.match(sky, /queueSkyZemaHandoff\(tool\.id, request\)/);
   assert.match(sky, /operationRequest<\{ tool: string; saved: boolean \}>/);
+  assert.match(sky, /おすすめを学習/);
+  assert.match(sky, /\/api\/sky\/feed-history/);
+  assert.match(sky, /clearSkyPhoenixHistory/);
   assert.doesNotMatch(sky, /rankSkyFeed\([^)]*requestText/);
 });
 

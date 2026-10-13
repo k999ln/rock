@@ -21,6 +21,12 @@
 
 ---
 
+## 2026-10-13 — SkyへPhoenix型の閲覧履歴学習を追加
+
+利用者の「XのPhoenixモデルや閲覧履歴学習をSky向けに完全実装」という追加判断により、固定順位 `sky-usefulness-v1` をfallbackとして残し、本人同意型の `sky-phoenix-v1` を追加した。表示・詳細・依頼先選択・Tool開始・保存／解除・接続を30日・最大800件のsemantic eventとして扱い、複数行動の確率、直近性、Tool／category affinity、未反応表示を順位へ反映する。学習は初期値OFFで、停止・全削除が可能。依頼文、会話、結果、device/account identifier、raw scroll、人気、収益は保存しない。ランキング履歴から実行権限、Job、課金、購入を作らない。
+
+---
+
 ## 2026-10-13 — ZemaのWebローカルAgentを有限実行へ
 
 Skyを発見・接続、Zemaを依頼・実行の受け皿とする境界を維持しつつ、同じPCのOllama／OpenAI互換endpointをZemaのplannerへ接続した。LLMは権限を持たず、閉じたschema、最大3手、許可済みの副作用なしTool 3件だけを通す。local previewでは`qwen3:0.6b`の通常会話を実画面で確認。公開SiteからPCのloopbackへは接続できず、公開版のlocal Agentにはcompanion／bridgeが未実装。正本: [製品ベース 2026-10-13](product-baseline.md#2026-10-13-skyからzemaのローカルagentを使えるようにする) / [AgentとTool](agents-and-tools.md#5-osに入っているaiとagent)。

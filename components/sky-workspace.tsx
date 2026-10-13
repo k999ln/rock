@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -18,6 +19,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BadgeCheck,
+  BrainCircuit,
   Bookmark,
   CheckCircle2,
   EyeOff,
@@ -28,6 +30,7 @@ import {
   Search,
   Send,
   ShieldCheck,
+  Trash2,
   X,
   Zap,
 } from 'lucide-react';
@@ -72,9 +75,27 @@ import {
 import { queueSkyZemaHandoff, skyRequestLimit } from '@/lib/sky-zema-handoff';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
 import { rankSkyFeed, type SkyFeedMode } from '@/lib/sky-feed-ranking';
+import {
+  appendSkyPhoenixEvent,
+  clearSkyPhoenixHistory,
+  emptySkyPhoenixState,
+  readSkyPhoenixState,
+  setSkyPhoenixEnabled,
+  SKY_PHOENIX_VERSION,
+  type SkyPhoenixEvent,
+  type SkyPhoenixEventType,
+  type SkyPhoenixState,
+  writeSkyPhoenixState,
+} from '@/lib/sky-phoenix';
 
 type FeedScope = 'すべて' | '今使える' | '導入候補' | 'コード';
 type SkyLibraryItem = { tool: string; savedAt: number };
+type SkyFeedHistoryResponse = {
+  enabled: boolean;
+  algorithmVersion: string;
+  events: SkyPhoenixEvent[];
+  retentionDays: number;
+};
 
 const feedModes: { value: SkyFeedMode; label: string }[] = [
   { value: 'recommended', label: 'おすすめ' },
@@ -172,7 +193,12 @@ function statusFor(
   pcConnected = false,
   service?: SkyToolUiContext['service'],
 ) {
-  return skyToolUiState(tool, { fashionConnected, connectedTools, pcConnected, service });
+  return skyToolUiState(tool, {
+    fashionConnected,
+    connectedTools,
+    pcConnected,
+    service,
+  });
 }
 
 function roleFor(tool: Automation) {
@@ -202,6 +228,20 @@ function actionLabel(
   return '接続して使う';
 }
 
+function browserStorage() {
+  try {
+    return window.sessionStorage;
+  } catch {
+    return null;
+  }
+}
+
+function dwellBucket(duration: number) {
+  if (duration >= 30_000) return 30_000;
+  if (duration >= 10_000) return 10_000;
+  return 1_000;
+}
+
 export default function SkyWorkspace({
   initialMcpOpen = false,
   initialPublishOpen = false,
@@ -222,6 +262,11 @@ export default function SkyWorkspace({
   const [mcpOpen, setMcpOpen] = useState(initialMcpOpen);
   const [connectionCenterOpen, setConnectionCenterOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
+  const [learningOpen, setLearningOpen] = useState(false);
+  const [phoenix, setPhoenix] = useState<SkyPhoenixState>(emptySkyPhoenixState);
+  const [learningSync, setLearningSync] = useState<
+    'local' | 'synced' | 'saving'
+  >('local');
   const [connected, setConnected] = useState(false);
   const [fashionConnected, setFashionConnected] = useState(false);
   const [requestText, setRequestText] = useState('');
@@ -248,6 +293,89 @@ export default function SkyWorkspace({
   const { needsSignin, setNeedsSignin } = useExecutionAccess();
   const router = useRouter();
   const searchInput = useRef<HTMLInputElement>(null);
+  const phoenixSession = useRef('');
+  const pendingPhoenixEvents = useRef<SkyPhoenixEvent[]>([]);
+  const phoenixSyncTimer = useRef<number | null>(null);
+  const impressedThisSession = useRef(new Set<string>());
+
+  const flushPhoenixEvents = useCallback(() => {
+    if (phoenixSyncTimer.current !== null) {
+      window.clearTimeout(phoenixSyncTimer.current);
+      phoenixSyncTimer.current = null;
+    }
+    if (!pendingPhoenixEvents.current.length) return;
+    void (async () => {
+      while (pendingPhoenixEvents.current.length) {
+        const events = pendingPhoenixEvents.current.splice(0, 20);
+        try {
+          await operationRequest('/api/sky/feed-history', 'POST', { events });
+          setLearningSync('synced');
+        } catch {
+          setLearningSync('local');
+          return;
+        }
+      }
+    })();
+  }, []);
+
+  const recordPhoenix = useCallback(
+    (
+      toolId: string,
+      type: SkyPhoenixEventType,
+      detail: Pick<SkyPhoenixEvent, 'dwellMs' | 'position'> = {},
+      refreshRanking = true,
+    ) => {
+      if (!phoenix.enabled) return;
+      const storage = browserStorage();
+      if (!storage) return;
+      const event: SkyPhoenixEvent = {
+        id: crypto.randomUUID(),
+        sessionId: phoenixSession.current || crypto.randomUUID(),
+        toolId,
+        type,
+        at: Date.now(),
+        ...(detail.dwellMs === undefined ? {} : { dwellMs: detail.dwellMs }),
+        ...(detail.position === undefined ? {} : { position: detail.position }),
+      };
+      const next = appendSkyPhoenixEvent(storage, event);
+      if (refreshRanking) setPhoenix(next);
+      pendingPhoenixEvents.current.push(event);
+      setLearningSync('saving');
+      if (phoenixSyncTimer.current === null)
+        phoenixSyncTimer.current = window.setTimeout(flushPhoenixEvents, 1_200);
+    },
+    [flushPhoenixEvents, phoenix.enabled],
+  );
+
+  useEffect(() => {
+    let active = true;
+    phoenixSession.current = crypto.randomUUID();
+    const storage = browserStorage();
+    if (!storage) return;
+    const local = readSkyPhoenixState(storage);
+    queueMicrotask(() => {
+      if (active) setPhoenix(local);
+    });
+    void operationRequest<SkyFeedHistoryResponse>('/api/sky/feed-history')
+      .then((remote) => {
+        if (!active || remote.algorithmVersion !== SKY_PHOENIX_VERSION) return;
+        const remoteState: SkyPhoenixState = {
+          version: SKY_PHOENIX_VERSION,
+          enabled: remote.enabled,
+          events: remote.events,
+        };
+        writeSkyPhoenixState(storage, remoteState);
+        const merged = readSkyPhoenixState(storage);
+        setPhoenix(merged);
+        setLearningSync('synced');
+      })
+      .catch(() => setLearningSync('local'));
+    return () => {
+      active = false;
+      if (phoenixSyncTimer.current !== null)
+        window.clearTimeout(phoenixSyncTimer.current);
+    };
+  }, [flushPhoenixEvents]);
 
   useEffect(() => {
     const updateConnection = () => setConnected(Boolean(deviceToken()));
@@ -389,16 +517,19 @@ export default function SkyWorkspace({
       connectedAt,
       availableToolIds,
       routedToolId: routedTool?.id,
+      history: phoenix.enabled ? phoenix.events : [],
     });
   }, [
     availableToolIds,
     connectedAt,
     feedMode,
+    phoenix,
     query,
     routedTool?.id,
     savedAt,
     scope,
   ]);
+  const rankedToolSignature = rankedTools.map(({ tool }) => tool.id).join('|');
   const visibleLocalServers =
     !connected ||
     feedMode === 'library' ||
@@ -410,6 +541,111 @@ export default function SkyWorkspace({
             .toLowerCase()
             .includes(query.trim().toLowerCase()),
         );
+
+  useEffect(() => {
+    if (!phoenix.enabled || feedMode !== 'recommended') return;
+    const nodes = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-sky-tool-id]'),
+    );
+    if (!nodes.length || typeof IntersectionObserver === 'undefined') return;
+    const visible = new Set<HTMLElement>();
+    const startedAt = new Map<HTMLElement, number>();
+    const commit = (node: HTMLElement, now = Date.now()) => {
+      const toolId = node.dataset.skyToolId;
+      const started = startedAt.get(node);
+      startedAt.delete(node);
+      if (!toolId || !started || impressedThisSession.current.has(toolId))
+        return;
+      const duration = now - started;
+      if (duration < 1_000) return;
+      impressedThisSession.current.add(toolId);
+      recordPhoenix(
+        toolId,
+        'impression',
+        {
+          dwellMs: dwellBucket(duration),
+          position: Number(node.dataset.skyPosition ?? 0),
+        },
+        false,
+      );
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const now = Date.now();
+        for (const entry of entries) {
+          const node = entry.target as HTMLElement;
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.55) {
+            visible.add(node);
+            if (document.visibilityState !== 'hidden' && !startedAt.has(node))
+              startedAt.set(node, now);
+          } else {
+            visible.delete(node);
+            commit(node, now);
+          }
+        }
+      },
+      { threshold: [0, 0.55, 1] },
+    );
+    const visibility = () => {
+      const now = Date.now();
+      if (document.visibilityState === 'hidden') {
+        for (const node of visible) commit(node, now);
+      } else {
+        for (const node of visible) {
+          if (!impressedThisSession.current.has(node.dataset.skyToolId ?? ''))
+            startedAt.set(node, now);
+        }
+      }
+    };
+    for (const node of nodes) observer.observe(node);
+    document.addEventListener('visibilitychange', visibility);
+    return () => {
+      const now = Date.now();
+      for (const node of visible) commit(node, now);
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', visibility);
+    };
+  }, [feedMode, phoenix.enabled, rankedToolSignature, recordPhoenix]);
+
+  function openLearningPanel() {
+    const storage = browserStorage();
+    if (storage) setPhoenix(readSkyPhoenixState(storage));
+    setLearningOpen(true);
+  }
+
+  async function toggleLearning() {
+    const storage = browserStorage();
+    if (!storage) {
+      setLearningSync('local');
+      return;
+    }
+    const enabled = !phoenix.enabled;
+    const next = enabled
+      ? setSkyPhoenixEnabled(storage, true)
+      : setSkyPhoenixEnabled(storage, false);
+    const finalState = enabled ? next : clearSkyPhoenixHistory(storage);
+    setPhoenix(finalState);
+    setLearningSync('saving');
+    try {
+      await operationRequest('/api/sky/feed-history', 'PUT', { enabled });
+      setLearningSync('synced');
+    } catch {
+      setLearningSync('local');
+    }
+  }
+
+  async function clearLearning() {
+    const storage = browserStorage();
+    if (storage) setPhoenix(clearSkyPhoenixHistory(storage));
+    pendingPhoenixEvents.current = [];
+    setLearningSync('saving');
+    try {
+      await operationRequest('/api/sky/feed-history', 'DELETE');
+      setLearningSync('synced');
+    } catch {
+      setLearningSync('local');
+    }
+  }
 
   async function connectLocalServer(server: McpConnection) {
     if (server.state === 'connected') {
@@ -455,6 +691,7 @@ export default function SkyWorkspace({
         delete next[tool.id];
         return next;
       });
+      recordPhoenix(tool.id, saved ? 'save' : 'unsave');
     } catch (error) {
       if (error instanceof OperationRequestError && error.status === 401) {
         setNeedsSignin(true);
@@ -494,6 +731,7 @@ export default function SkyWorkspace({
   }
 
   function primaryAction(tool: Automation, request = '') {
+    recordPhoenix(tool.id, 'launch');
     if (tool.id === 'jev-router') {
       setSelected(null);
       router.push('/sky/tools/jev-router');
@@ -544,6 +782,7 @@ export default function SkyWorkspace({
         ...current,
         [connection.tool]: connection.connectedAt,
       }));
+      recordPhoenix(connection.tool, 'connect');
       // A successful Sky connection immediately creates/opens the matching Zema Bot.
       openConnectedTool(connectedTool, lastRequest);
     } catch (error) {
@@ -559,6 +798,7 @@ export default function SkyWorkspace({
   }
 
   function chooseRole(tool: Automation, request = '') {
+    recordPhoenix(tool.id, 'route');
     setLastRequest(request);
     setRoutedTool(tool);
     setRouteMessage(
@@ -678,6 +918,17 @@ export default function SkyWorkspace({
                 {item}
               </button>
             ))}
+            <button
+              type="button"
+              className={
+                'sky-learning-scope' + (phoenix.enabled ? ' is-on' : '')
+              }
+              aria-pressed={phoenix.enabled}
+              onClick={openLearningPanel}
+            >
+              <BrainCircuit size={15} />
+              {phoenix.enabled ? 'おすすめ学習中' : 'おすすめを学習'}
+            </button>
           </fieldset>
 
           {(searchOpen || query) && (
@@ -854,6 +1105,8 @@ export default function SkyWorkspace({
                   <article
                     className={'sky-feed-post ' + status.className}
                     key={tool.id}
+                    data-sky-tool-id={tool.id}
+                    data-sky-position={index + visibleLocalServers.length}
                     style={
                       {
                         '--sky-index': index + visibleLocalServers.length,
@@ -864,7 +1117,11 @@ export default function SkyWorkspace({
                       <button
                         type="button"
                         aria-label={`${tool.name}の機能と利用方法を見る`}
-                        aria-haspopup="dialog" onClick={() => setInspected(tool)}
+                        aria-haspopup="dialog"
+                        onClick={() => {
+                          recordPhoenix(tool.id, 'detail');
+                          setInspected(tool);
+                        }}
                       >
                         <ToolCharacter id={tool.id} />
                       </button>
@@ -935,7 +1192,10 @@ export default function SkyWorkspace({
                         <button
                           type="button"
                           className="sky-post-detail"
-                          onClick={() => setInspected(tool)}
+                          onClick={() => {
+                            recordPhoenix(tool.id, 'detail');
+                            setInspected(tool);
+                          }}
                         >
                           詳細
                         </button>
@@ -991,7 +1251,70 @@ export default function SkyWorkspace({
         </section>
       </div>
 
-      <Dialog open={inspected !== null}
+      <Dialog open={learningOpen} onOpenChange={setLearningOpen}>
+        <DialogContent className="rock-tool-dialog sky-learning-dialog">
+          <div className="sky-learning-title">
+            <span aria-hidden="true">
+              <BrainCircuit size={22} />
+            </span>
+            <div>
+              <p className="rock-eyebrow">Sky Phoenix</p>
+              <DialogTitle className="rock-dialog-title">
+                おすすめの学習
+              </DialogTitle>
+            </div>
+          </div>
+          <DialogDescription className="rock-dialog-description">
+            表示、詳細、保存、接続、実行の選択から、それぞれの行動確率を学習します。依頼文、Zemaの会話、成果本文、端末IDは保存しません。
+          </DialogDescription>
+          <div className="sky-learning-status" aria-live="polite">
+            <div>
+              <span>状態</span>
+              <strong>{phoenix.enabled ? '学習中' : '停止中'}</strong>
+            </div>
+            <div>
+              <span>履歴</span>
+              <strong>{phoenix.events.length}件・30日間</strong>
+            </div>
+            <div>
+              <span>保存</span>
+              <strong>
+                {learningSync === 'saving'
+                  ? '保存中'
+                  : learningSync === 'synced'
+                    ? '本人アカウントと同期'
+                    : 'このタブのみ'}
+              </strong>
+            </div>
+          </div>
+          <p className="sky-learning-boundary">
+            ランキングだけを変えます。Toolの実行許可、課金、購入、ZemaのJobは作りません。
+          </p>
+          <div className="sky-learning-actions">
+            <button
+              type="button"
+              className="sky-learning-toggle"
+              aria-pressed={phoenix.enabled}
+              onClick={() => void toggleLearning()}
+            >
+              <BrainCircuit size={17} />
+              {phoenix.enabled ? '学習を停止して削除' : '学習をオンにする'}
+            </button>
+            <button
+              type="button"
+              className="sky-learning-clear"
+              disabled={!phoenix.events.length}
+              onClick={() => void clearLearning()}
+            >
+              <Trash2 size={16} />
+              履歴をリセット
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={inspected !== null}
         onOpenChange={(open) => {
           if (!open) setInspected(null);
         }}

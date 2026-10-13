@@ -10,7 +10,7 @@ Sky単体はTool／Agentを発見・保存・接続する入口で、依頼の�
 
 利用者は、Skyの一覧をPinterest型ではなくTwitter / Xのような1列フィードにすると決めた。主表示は「おすすめ」と「マイフィード」。マイフィードは明示保存または接続済みのToolだけを新しい関係順に表示し、明示フォローをまだ持たない初版で「フォロー中」とは呼ばない。
 
-おすすめ順は、当該page内の一時的な担当Tool ID、owner-scopedの保存・接続、正本の利用状態、repository定義の初期候補で決め、表示理由を付ける。依頼本文、Zema会話、結果本文、device token、click、滞在時間、scroll、人気を使わない。保存カテゴリから別用途の嗜好を推測しない。フィードは探索面で、保存・詳細閲覧だけで実行権限、job、支払い、購入を作らない。実作業はZemaが担う。詳細は [Sky](sky.md#個人化した1列フィード2026-10-13) 。
+初版の固定順位 `sky-usefulness-v1` に加え、同日の追加指示でX Phoenixの設計をSky用へ縮小した `sky-phoenix-v1` を実装する。本人が「おすすめ学習」をオンにした場合だけ、qualified impression、詳細、依頼先選択、Tool開始、保存／解除、接続と、本人の正本Tool runの完了／失敗を30日・最大800件で保持し、detail／launch／save／connect／skipの確率、直近性、Tool／category affinityを順位へ反映する。履歴0件・保存不可・同期失敗・未知versionではv1へ戻す。依頼本文、Zema会話、結果本文、device token、account identifier、raw scroll、人気、収益は入力にしない。本人は画面から停止・全削除できる。フィード履歴はランキングだけに使い、実行権限、job、支払い、購入、Agent promptを作らない。実作業はZemaが担う。詳細は [Sky](sky.md#個人化した1列フィード2026-10-13) 。
 
 ## 2026-10-12 Columbiaの学生に配るNFCカードからSkyを開く
 

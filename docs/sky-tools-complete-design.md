@@ -41,7 +41,7 @@ Materialとメルカリの保存結果が不明な間は入力と記録IDを元o
 
 ## Skyの説明可能なおすすめフィード
 
-2026-10-13の利用者指示により、SkyのTool一覧はTwitter / X型の1列フィードとする。「おすすめ」は `sky-usefulness-v1`で順位付けし、「マイフィード」は本人が明示保存または接続したToolに限定する。後者はfollow専用状態ではないため「フォロー中」と呼ばない。
+2026-10-13の利用者指示により、SkyのTool一覧はTwitter / X型の1列フィードとする。「おすすめ」は既存固定順位をfallbackに残す `sky-usefulness-v2` と、本人同意後だけ動く `sky-phoenix-v1` で順位付けする。「マイフィード」は本人が明示保存または接続したToolに限定し、follow専用状態ではないため「フォロー中」と呼ばない。
 
 | シグナル | 上限加点 | 条件 |
 | --- | ---: | --- |
@@ -52,8 +52,11 @@ Materialとメルカリの保存結果が不明な間は入力と記録IDを元o
 | 専用導線 | +10 | launch pathまたはrunnerがある |
 | 初期候補 | +8 | repositoryで開示した固定集合 |
 | 導入候補 / pending | -6 / -24 | 未受入の状態を過大表示しない |
+| Phoenix履歴 | -12〜+42 | 本人同意済みのsemantic eventからdetail／launch／save／connect／skipを別々に予測。現在依頼・明示関係・availabilityの安全順位へ加算 |
 
-保存・接続の直近性は限定加点し、同一categoryの連続と過多を決定的に減点する。同点はcanonical Tool IDで安定化する。理由codeと表示labelを返し、現在の依頼、保存、接続、利用可否、初期候補のうち最優先理由を表示する。入力・会話・結果の本文、トークン、owner ID、click、滞在、scroll、人気、収益、impression履歴はシグナルにしない。categoryへの嗜好は別目的利用の同意がないため初版で推測しない。
+履歴eventは `impression`（55%以上・1秒以上、1／10／30秒bucket）、`detail`、`route`、`launch`、`save`、`unsave`、`connect`。さらに本人の正本`tool_runs`から`complete`／`fail`をread-onlyで投影し、client自己申告の完了にしない。30日・800件で切り、10日half-life、Tool直接affinity、弱いcategory affinity、未反応表示のfatigueを使う。入力順に依存せず、同点はcanonical Tool IDで安定化する。理由codeと表示labelを返し、現在の依頼、保存、接続、履歴、利用可否、初期候補のうち最優先理由を表示する。依頼・検索・会話・結果の本文、token、device ID、account identifier、raw scroll、人気、収益は保存しない。
+
+学習は初期値OFF。`rockstar.sky.phoenix.v1`に同一tabだけの上限付きcacheを持ち、認証済みでは`/api/sky/feed-history`へ20件以下で同期する。server応答をownerの正本としてtab cacheを置き換えるため、同じbrowserでaccountを切り替えても前ownerのcacheを新ownerへmergeしない。serverは`sky_feed_personalization_settings`と`sky_feed_history_events`をowner-scopedに保持し、未知field、catalog外Tool、未来／期限外時刻、event IDの内容変更を拒否する。再送は同じeventへ収束する。停止はserver履歴を削除し、全削除は本人の履歴だけをcold startへ戻す。同期失敗・401・storage拒否はランキング学習だけをtab/fallbackへ落とし、Tool開始・保存・接続を失敗させない。
 
 表示・保存・詳細開閉はconnection、job、approval、purchase、receiptを作らない。実行操作は既存のTool状態検査とZema handoffを通す。人気を最適化せず、有用なTool開始と契約に沿った結果の読み取りを目的にする。
 

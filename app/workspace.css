@@ -12926,6 +12926,98 @@
   color: #fff;
   background: #18232c;
 }
+.sky-main-feed .sky-feed-scopes .sky-learning-scope {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: #5b4a84;
+  border-color: #dcd3ee;
+  background: #f8f4ff;
+}
+.sky-main-feed .sky-feed-scopes .sky-learning-scope.is-on {
+  color: #fff;
+  border-color: #6550a0;
+  background: #6550a0;
+}
+.sky-learning-dialog {
+  max-width: 520px;
+}
+.sky-learning-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sky-learning-title > span {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #5f4b92;
+  background: #efe9fb;
+}
+.sky-learning-status {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.sky-learning-status > div {
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid #dbe3e8;
+  border-radius: 12px;
+  background: #f8fbfc;
+}
+.sky-learning-status span,
+.sky-learning-status strong {
+  display: block;
+}
+.sky-learning-status span {
+  color: #687b85;
+  font-size: 11px;
+}
+.sky-learning-status strong {
+  margin-top: 3px;
+  color: #18232c;
+  font-size: 13px;
+}
+.sky-learning-boundary {
+  padding: 11px 12px;
+  border-radius: 12px;
+  color: #40535d;
+  background: #eef5f7;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.sky-learning-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sky-learning-actions button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.sky-learning-toggle {
+  color: #fff;
+  background: #6550a0;
+}
+.sky-learning-clear {
+  color: #5f6f77;
+  border: 1px solid #d7e2e7;
+  background: #fff;
+}
+.sky-learning-clear:disabled {
+  opacity: 0.45;
+}
 .sky-main-feed .sky-assistant {
   padding: 18px 20px;
   border-bottom: 1px solid #dbe3e8;
@@ -13111,6 +13203,12 @@
   }
   .sky-main-feed .sky-feed-scopes {
     padding-inline: 12px;
+  }
+  .sky-main-feed .sky-feed-scopes .sky-learning-scope {
+    margin-left: 0;
+  }
+  .sky-learning-status {
+    grid-template-columns: 1fr;
   }
   .sky-main-feed .sky-assistant {
     padding: 15px 14px;

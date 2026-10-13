@@ -2,6 +2,10 @@
 
 ownerが指定した `design/sky-twitter-feed-mobile-v2.png` の完成版を基準に、`/sky/campus/columbia` を簡易カード一覧から英語の単列フィードへ更新した。黒いSky header、For you／Saved、端末内の依頼振り分け、3つの実Toolへ進むCTA、browser内保存、画像領域、下部navigationを実装した。大学ロゴは使わず、カード経由の無料・local処理・特許AI停止の境界を維持する。型検査・対象lint・CAMPUS02対象9試験・buildとモバイル実画面を検証した。全体`npm run verify`は既存のPC Citations通常user／`os.waitid`環境差、MCP lifecycle、sharp 0.35.5 floorで失敗しており、全体合格とは扱わない。本番公開・NFC実物配布は別gateのまま。
 
+## 2026-10-13 — Sky Phoenix型の閲覧履歴学習を実装（SKY21 / WEB04、ROCK）
+
+利用者の追加指示により、固定順位をfallbackに残して `sky-phoenix-v1` を実装。本人同意後のqualified impression、詳細、依頼先選択、Tool開始、保存／解除、接続を30日・800件で保持し、detail／launch／save／connect／skipの確率、10日half-life、Tool／category affinity、fatigueを順位へ反映する。same-tab cacheと本人別D1の冪等同期、停止・全削除、同期失敗時のtab内継続／cold-start fallbackを追加した。依頼・会話・結果本文、端末／account identifier、raw scroll、人気、収益は保存しない。履歴は実行権限・Job・課金・購入を作らない。対象55試験、typecheck、lint、production buildに合格。本番migration適用、公開配備、本人browser readbackは別。
+
 ## 2026-10-13 — ZemaローカルAgentをlocal previewで実動（AI04 / SKY21、ROCK）
 
 最新main `01d2e418` のJennifer／Spider更新を先に取り込み、重複した`sky-chat-workspace.tsx`と`workspace.css`は両方の機能を残して解消した。Zemaへ閉じた`zema-local-agent/1` planner、最大3手、重複call拒否、許可済みの副作用なし3 Tool（担当検索・出典整形・ココナラ有限検査）を接続。Ollamaのnative JSON Schemaと`think:false`をAgent turnだけに使い、通常の文章生成設定は変更しない。
