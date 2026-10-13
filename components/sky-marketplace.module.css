@@ -201,3 +201,8 @@ a.cardBottom:hover { color: #e5f6fd; }
 
 .inventory { margin: 24px 0 0; color: #91a8b5; font-size: 12px; line-height: 1.8; }
 .inventory span { display: block; color: #8396a1; font-size: 11px; }
+.starterAgent { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 22px; margin: 18px 0; border: 1px solid #83bd9b; border-radius: 16px; background: #183529; color: #e9f9ed; text-decoration: none; }
+.starterAgent span { display: grid; gap: 5px; }
+.starterAgent strong { font-size: 16px; }
+.starterAgent small { font-size: 12px; color: #bbd9c6; }
+.starterAgent:focus-visible { outline: 2px solid #d6f6dd; outline-offset: 3px; }

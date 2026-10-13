@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { routesToSky, withMiniSite } from '../services/sky-web/domain-router.mjs';
 
-test('Sky, assets and APIs stay native while Mini keeps its home and preorder paths', () => {
+void test('Sky, assets and APIs stay native while Mini keeps its home and preorder paths', () => {
   for (const path of ['/sky', '/sky/outputs', '/fitness', '/_next/static/chunk.js', '/api/work-jobs'])
     assert.equal(routesToSky(path), true, path);
   for (const path of ['/', '/preorder/', '/_astro/main.css', '/api/preorders/checkout', '/api/admin/preorders'])
     assert.equal(routesToSky(path), false, path);
 });
 
-test('Mini proxy preserves the browser hostname and does not forward Sky identity', async () => {
+void test('Mini proxy preserves the browser hostname and does not forward Sky identity', async () => {
   let forwarded;
   const app = withMiniSite({ fetch: () => new Response('sky') }, async (request) => {
     forwarded = request;
@@ -25,7 +25,7 @@ test('Mini proxy preserves the browser hostname and does not forward Sky identit
   assert.equal(response.headers.has('set-cookie'), false);
 });
 
-test('cross-origin Mini mutation is rejected before upstream dispatch', async () => {
+void test('cross-origin Mini mutation is rejected before upstream dispatch', async () => {
   let calls = 0;
   const app = withMiniSite({ fetch: () => new Response('sky') }, async () => { calls++; return new Response('mini'); });
   const response = await app.fetch(new Request('https://avoado.si/api/preorders/checkout', {

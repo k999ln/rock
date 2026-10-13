@@ -5,6 +5,7 @@ export const metadata = {
   description: '保存済みAgent成果を確認し、対応アプリへ渡す。',
 };
 
-export default function SkyOutputsPage() {
-  return <SkyOutputCenter />;
+export default async function SkyOutputsPage({ searchParams }: { searchParams: Promise<{ job?: string }> }) {
+  const { job } = await searchParams;
+  return <SkyOutputCenter initialWorkJobId={typeof job === 'string' ? job : undefined} />;
 }

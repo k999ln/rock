@@ -721,6 +721,9 @@ export default function SkyWorkspace({
             <p className={styles.intro}>アイコンで機能を確認。そのまま使い始められます。</p>
           </div>
           <nav className={styles.outputNav} aria-label="Skyの主要画面">
+            <Link className={styles.marketLink} href="/sky/agents/citations">
+              出典整理Agentを使う <ArrowUpRight size={15} />
+            </Link>
             <Link className={styles.marketLink} href="/sky/marketplace">
               <Store size={17} /> マーケット <ArrowUpRight size={15} />
             </Link>

@@ -187,6 +187,11 @@ export default function SkyMarketplace() {
 
         <CommerceNavigation />
 
+        <Link href="/sky/agents/citations" className={styles.starterAgent}>
+          <span><strong>今すぐ使える · 出典整理Agent</strong><small>無料 · スマホだけで実行 · 成果はSkyへ保存</small></span>
+          <ArrowRight size={20} aria-hidden="true" />
+        </Link>
+
         <section id="explore" className={styles.explore} aria-labelledby="explore-title">
           <h2 id="explore-title" className="sr-only">ツール一覧</h2>
           <div className={styles.marketKinds} role="tablist" aria-label="マーケットの種類">

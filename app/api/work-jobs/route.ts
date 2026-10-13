@@ -1,5 +1,6 @@
 import { database, requestUser } from '@/lib/fund-store';
 import { workStore } from '@/lib/work-store';
+import { ownerScopeFor, rejectChangedOwner } from '@/lib/owner-intent';
 import {
   createWorkJob,
   applyWorkCommand,
@@ -62,7 +63,7 @@ async function body(request: Request) {
 export async function GET(request: Request) {
   try {
     const user = await requestUser(request);
-    return json({ jobs: await workStore(database()).list(user) });
+    return json({ jobs: await workStore(database()).list(user), ownerScope: await ownerScopeFor(user) });
   } catch (error) {
     return rejected(request, error);
   }
@@ -71,6 +72,9 @@ export async function POST(request: Request) {
   try {
     const user = await requestUser(request),
       candidate = createWorkJob(await body(request));
+    const changed = await rejectChangedOwner(request, user);
+    if (changed) return changed;
+    if (candidate.templateId === 'sky-citation-agent') throw new WorkError('Skyの出典整理Agent画面から実行してください。');
     const saved = await workStore(database()).create(user, candidate);
     if (
       !saved ||
@@ -94,6 +98,9 @@ export async function PATCH(request: Request) {
     const store = workStore(database()),
       current = await store.get(user, workId(input.jobId));
     if (!current) throw new WorkError('仕事が見つかりません。', 404);
+    const changed = await rejectChangedOwner(request, user);
+    if (changed) return changed;
+    if (current.templateId === 'sky-citation-agent') throw new WorkError('このAgentの完了記録は専用APIで管理します。', 409);
     const next = applyWorkCommand(current, input.command, input.revision);
     if (next !== current && !(await store.update(user, next, current.revision)))
       throw new WorkError(
