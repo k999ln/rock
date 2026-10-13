@@ -1,4 +1,26 @@
 {
+  "skyLocalAgentPreview": {
+    "task": "AI04",
+    "primaryOwner": "ROCK",
+    "stage": "local_preview_conversation_verified",
+    "sourceMainSha": "01d2e418",
+    "provider": "ollama",
+    "model": "qwen3:0.6b",
+    "localUrl": "http://localhost:8787/chat",
+    "validation": {
+      "targetedTests": "39/39 passed, including conversation cancellation and duplicate-submit recovery",
+      "typecheck": "passed",
+      "build": "passed with existing chunk-size and duplicate CSS filename warnings",
+      "browserConversation": "passed on a new local Zema thread",
+      "fullTest": "verify reached the full Node suite with localhost enabled but did not pass; PC Citations user boundary, existing MCP lifecycle failures and native dependency floor remain"
+    },
+    "limitations": [
+      "Public Worker cannot reach the user's loopback Ollama without a companion or bridge.",
+      "The 0.6B model's autonomous Tool-selection quality is limited; rejected or unexecuted calls are not counted as success.",
+      "No shell, arbitrary file, external network, purchase, post, message or permission-changing Tool is allowed."
+    ],
+    "nextAction": "Add an authenticated local companion/bridge for the public Site, then verify bounded Tool selection and owner acceptance without weakening Broker authority."
+  },
   "repositoryCleanup": {
     "task": "G01",
     "primaryOwner": "ROCK",

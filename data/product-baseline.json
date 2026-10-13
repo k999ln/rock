@@ -1576,6 +1576,21 @@
     "capabilityMatrix": "data/llm-capabilities.json",
     "localPlanner": "Qwen3-0.6B Q8_0 on llama.rn 0.12.9; fixed test-signed device APK profile; plan-only and untrusted",
     "executionAuthority": "Platform Broker validates identity, capability, approval and plan; Engine executes deterministic tools",
+    "zemaWebLocalAgent": {
+      "status": "local_preview_conversation_verified_tool_selection_quality_limited",
+      "provider": "ollama",
+      "verifiedModel": "qwen3:0.6b",
+      "endpointBoundary": "loopback_only",
+      "plannerSchema": "zema-local-agent/1",
+      "maximumSteps": 3,
+      "allowlistedTools": [
+        "sky_route",
+        "format_citations",
+        "coconala_check"
+      ],
+      "publicSiteLoopbackBridge": false,
+      "cloudFallback": false
+    },
     "skyOpenAiConnections": [
       "rockstar-legal-intake",
       "rockstar-patent-assistant"

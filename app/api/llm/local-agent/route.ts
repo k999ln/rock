@@ -15,6 +15,33 @@ import { runZemaLocalAgent, ZemaLocalAgentError } from '@/lib/zema-local-agent';
 
 const noStoreHeaders = { 'Cache-Control': 'no-store' };
 
+const plannerSchema = {
+  oneOf: [
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['schema', 'action', 'message'],
+      properties: {
+        schema: { const: 'zema-local-agent/1' },
+        action: { const: 'respond' },
+        message: { type: 'string', minLength: 1, maxLength: 6_000 },
+      },
+    },
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['schema', 'action', 'tool', 'arguments', 'reason'],
+      properties: {
+        schema: { const: 'zema-local-agent/1' },
+        action: { const: 'tool' },
+        tool: { enum: ['sky_route', 'format_citations', 'coconala_check'] },
+        arguments: { type: 'object' },
+        reason: { type: 'string', minLength: 1, maxLength: 500 },
+      },
+    },
+  ],
+} satisfies Record<string, unknown>;
+
 function failure(error: unknown) {
   if (error instanceof RemoteAiGuardError)
     return Response.json({
@@ -97,6 +124,9 @@ export async function POST(request: Request) {
           system,
           prompt,
           maxOutputTokens: 1_200,
+          jsonOutput: true,
+          jsonSchema: provider === 'ollama' ? plannerSchema : undefined,
+          disableThinking: provider === 'ollama',
         }, requestEnv);
         return response.text;
       },

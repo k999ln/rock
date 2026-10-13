@@ -1,5 +1,11 @@
 > **この文書の読み方（2026-10-10追記）** — 利用者が確定した要望と方針判断の **正本** です。新しい判断を上へ足してきたため、並びは日付順ではありません。上から順に、①2026-09-24以降の方針判断（新しい順。RQ48の本文もここにあります）、②「2026-09-24 ハードウェア設計基準 — avocadoMini R5」と「過去の判断履歴」（09-20〜09-22）、③「RockstarOS — 確定した製品ベース」（09-09〜09-21の追記が新しい順に並び、そのあとに RQ01〜RQ50 の本文）、④「現時点の未決事項」と「変更記録」、⑤末尾の日付付き追加指示、です。**日付順・テーマ別に読みたいときは [仕様変遷](spec-history.md) を使ってください。** 食い違ったときは、この文書と [`data/product-baseline.json`](../data/product-baseline.json) が優先です。
 
+## 2026-10-13 SkyからZemaのローカルAgentを使えるようにする
+
+Sky単体はTool／Agentを発見・保存・接続する入口で、依頼の受け皿と実行履歴はZemaが担う。Web版Zemaは、同じPCで動くOllamaまたはOpenAI互換のloopback endpointを選んだとき、ローカルLLMを権限のないplannerとして利用できる。planner出力は閉じたJSON schemaで検査し、最大3手、`sky_route`／`format_citations`／`coconala_check`の副作用がない3処理だけを許可する。shell、任意file、network、購入、投稿、送信、権限変更は許可しない。Cloudへの自動fallbackも行わない。
+
+2026-10-13のlocal previewではOllama `qwen3:0.6b`を導入し、Zema画面から通常会話が完了することを確認した。軽量modelのTool選択品質は限定的であり、未実行処理を実行済みと数えない。`chatgpt.site`上の公開Workerから利用者PCの`127.0.0.1`へは到達できないため、公開版でこのlocal Agentを使うには将来の端末companion／local bridgeが必要。local preview用の固定userはloopback hostだけで有効で、公開hostの認証を迂回しない。
+
 ## 2026-10-13 SkyをTwitter / X型の1列フィードにする
 
 利用者は、Skyの一覧をPinterest型ではなくTwitter / Xのような1列フィードにすると決めた。主表示は「おすすめ」と「マイフィード」。マイフィードは明示保存または接続済みのToolだけを新しい関係順に表示し、明示フォローをまだ持たない初版で「フォロー中」とは呼ばない。

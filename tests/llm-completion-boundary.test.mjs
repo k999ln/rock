@@ -90,3 +90,26 @@ void test('Ollama receives the requested bounded output-token limit', async () =
     assert.equal(body.stream, false);
   }
 });
+
+void test('Ollama JSON mode is opt-in for bounded agent planning', async () => {
+  let plainBody;
+  await generateText({ provider: 'ollama', prompt: 'hello' }, {},
+    async (_url, init) => { plainBody = JSON.parse(init.body); return Response.json(fixtures[0].done); });
+  assert.equal(plainBody.format, undefined);
+
+  let jsonBody;
+  await generateText({ provider: 'ollama', prompt: 'hello', jsonOutput: true }, {},
+    async (_url, init) => { jsonBody = JSON.parse(init.body); return Response.json(fixtures[0].done); });
+  assert.equal(jsonBody.format, 'json');
+
+  const schema = { type: 'object', required: ['message'], properties: { message: { type: 'string' } } };
+  let schemaBody;
+  await generateText({ provider: 'ollama', prompt: 'hello', jsonOutput: true, jsonSchema: schema }, {},
+    async (_url, init) => { schemaBody = JSON.parse(init.body); return Response.json(fixtures[0].done); });
+  assert.deepEqual(schemaBody.format, schema);
+
+  let plannerBody;
+  await generateText({ provider: 'ollama', prompt: 'hello', disableThinking: true }, {},
+    async (_url, init) => { plannerBody = JSON.parse(init.body); return Response.json(fixtures[0].done); });
+  assert.equal(plannerBody.think, false);
+});

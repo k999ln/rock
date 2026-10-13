@@ -1,3 +1,9 @@
+## 2026-10-13 — ZemaローカルAgentをlocal previewで実動（AI04 / SKY21、ROCK）
+
+最新main `01d2e418` のJennifer／Spider更新を先に取り込み、重複した`sky-chat-workspace.tsx`と`workspace.css`は両方の機能を残して解消した。Zemaへ閉じた`zema-local-agent/1` planner、最大3手、重複call拒否、許可済みの副作用なし3 Tool（担当検索・出典整形・ココナラ有限検査）を接続。Ollamaのnative JSON Schemaと`think:false`をAgent turnだけに使い、通常の文章生成設定は変更しない。
+
+local D1、loopback限定preview identity、Ollama `qwen3:0.6b`を用意し、`http://localhost:8787/chat`の新規会話から実応答を確認した。Agent・provider・認証・会話復旧の対象39試験、typecheck、production buildは成功。全体verifyは通常userを要求するPC Citations、既存MCP lifecycle、native dependency floorで失敗しており、全体合格とは扱わない。公開SiteのWorkerは利用者PCのloopbackへ到達できないため、公開配備だけではlocal Agentは使えず、companion／bridgeは未実装。0.6BのTool選択品質は限定的で、未実行Toolを成功にしない。
+
 > **この文書の読み方（2026-10-07追記）** — 日付ごとの **作業ログ** と、全taskの状態表です。構成は上から、①日付付きの記録（**新しい順**。2026-10-12 → 2026-09-11）、②「以下は日付付きの作業履歴」以降の初期の記録（2026-09-04〜09-11頃。当時の並びのまま）、③ [全taskの作業進捗](#全taskの作業進捗)（[`data/project-status.json`](data/project-status.json) から `npm run project:update` で生成）、④末尾の補足、です。新しい記録は題名のすぐ下（①の先頭）に足してください。これは何かを知りたいときは [README](README.md)、仕様の変遷は [仕様変遷](docs/spec-history.md)、文書全体の地図は [docs/README.md](docs/README.md) を見てください。
 
 ## 2026-10-13 — SkyのTwitter / X型フィードと説明可能な順位を実装（SKY21 / WEB04、ROCK）

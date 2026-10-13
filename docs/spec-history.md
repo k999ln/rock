@@ -21,6 +21,12 @@
 
 ---
 
+## 2026-10-13 — ZemaのWebローカルAgentを有限実行へ
+
+Skyを発見・接続、Zemaを依頼・実行の受け皿とする境界を維持しつつ、同じPCのOllama／OpenAI互換endpointをZemaのplannerへ接続した。LLMは権限を持たず、閉じたschema、最大3手、許可済みの副作用なしTool 3件だけを通す。local previewでは`qwen3:0.6b`の通常会話を実画面で確認。公開SiteからPCのloopbackへは接続できず、公開版のlocal Agentにはcompanion／bridgeが未実装。正本: [製品ベース 2026-10-13](product-baseline.md#2026-10-13-skyからzemaのローカルagentを使えるようにする) / [AgentとTool](agents-and-tools.md#5-osに入っているaiとagent)。
+
+---
+
 ## 2026-10-13 — Skyの一覧をTwitter / X型フィードへ
 
 利用者の「フィードはTwitterっぽくしたい」という判断により、Skyはカードを並べるPinterest型ではなく、1列の「おすすめ／マイフィード」へ変更した。おすすめは明示保存、接続、現在の利用可否、page内の一時的な担当Tool ID、初期候補で決め、「なぜ表示されたか」を見せる。入力文、結果本文、行動時間、人気はランキングに使わない。明示的なfollow状態はまだないため「フォロー中」ではなく「マイフィード」と表示する。Skyは発見と接続、Zemaは依頼と実行という境界は維持する。正本: [製品ベース 2026-10-13](product-baseline.md#2026-10-13-skyをtwitter--x型の1列フィードにする) / [Sky](sky.md#個人化した1列フィード2026-10-13)。
