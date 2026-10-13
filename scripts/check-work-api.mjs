@@ -766,7 +766,7 @@ try {
   check(savedCitation.jobId, citationJobId);
   check(savedCitation.output.schema, 'sky.citations.result/1');
   check(savedCitation.output.sourceCount, 1);
-  check(savedCitation.output.text.includes('https://example.org/paper'), true);
+  check(savedCitation.output.text.split('\n').includes('- [Paper](https://example.org/paper)'), true);
   const replayedCitation = await call('POST', citationRequest, {
     path: citationPath, headers: citationHeaders,
   });
