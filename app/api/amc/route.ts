@@ -84,7 +84,14 @@ export async function GET(request: Request) {
   try {
     const user = await requestUser(request);
     const store = workStore(database());
-    const id = new URL(request.url).searchParams.get('id');
+    const query = new URL(request.url).searchParams;
+    const planId = query.get('coordinationPlanId');
+    if (planId !== null) {
+      if (!/^jennifer-[0-9a-f]{8}$/u.test(planId))
+        throw new WorkError('Jennifer plan IDの形式が不正です。');
+      return json({ job: await store.findAmcForJenniferPlan(user, planId) });
+    }
+    const id = query.get('id');
     if (!id) return json({ jobs: await store.listAmc(user) });
     const job = await store.get(user, workId(id));
     if (!job?.amcGoal || job.templateId !== 'amc')

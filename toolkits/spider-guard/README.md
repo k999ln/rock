@@ -1,5 +1,13 @@
 # Spider code inspector
 
+For repository work, a separate metadata-only risk planner prioritizes defensive checks for important paths and fixed keywords:
+
+```sh
+npm run spider:plan -- --changed
+```
+
+`risk-policy.mjs` classifies `.env`/keys/credentials as critical and auth, execution, network, database, finance, and workflow changes as deep-review signals. It reports paths and rule IDs, never source snippets or secret values. This is prioritization, not a vulnerability verdict, exploit engine, automatic repair, or replacement for Gitleaks, CodeQL, the program inspector, or outbound blocking.
+
 Paste or load your own source into the generated `SPIDER.html`; edits trigger a local recheck after 500 ms. The file runs offline, needs no SDK/API key/server, and never executes or uploads the supplied source. Input stays in page memory; the optional JSON download contains report metadata only. Original files are not modified.
 
 Build from the repository root:

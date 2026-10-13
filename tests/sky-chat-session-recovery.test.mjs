@@ -58,6 +58,18 @@ function harness({ saved = [], query = `tool=rockstar-amc&thread=${id}`, pending
     '@/lib/sky-zema-handoff': { ...handoffs, consumeSkyZemaHandoff(tool, _storage, _now, thread) { consumed.push({ tool, thread }); return handoffs.consumeSkyZemaHandoff(tool, storage, undefined, thread); } },
     '@/lib/zema-chat-session': { ...sessions, readZemaChatSessions: () => sessions.readZemaChatSessions(storage), saveZemaChatSession: (s) => sessions.saveZemaChatSession(s, storage) },
     '@/lib/sky-tool-labels': { skyToolLabelFor: () => null },
+    '@/lib/jennifer-coordination': { createJenniferCoordinationPlan: noop },
+    '@/lib/jennifer-projects': { parseJenniferProjectPortfolio: (value) => value },
+    '@/lib/jennifer-amc-decomposition': { parseJenniferKnowledgeRegistry: (value) => value },
+    '@/data/jennifer-projects.json': { default: { projects: [] } },
+    '@/data/jennifer-knowledge.json': { default: { domains: [] } },
+    '@/lib/amc-tool': { amcSummary: () => ({ readyTaskIds: [] }) },
+    '@/lib/jennifer-amc-execution': {
+      buildJenniferDispatchPrompt: noop,
+      buildJenniferExecutionReport: noop,
+      createJenniferExecutionGoal: noop,
+      createJenniferTaskJobCoordination: noop,
+    },
     '@/components/ui/textarea': { Textarea: 'textarea' },
     '@/components/ui/dialog': { Dialog: 'Dialog', DialogContent: 'DialogContent', DialogTitle: 'DialogTitle', DialogDescription: 'DialogDescription' },
   };

@@ -53,6 +53,13 @@ export type AmcTask = {
     deliverables: string[];
   } | null;
   blockReason: string | null;
+  review?: {
+    actor: string;
+    role: 'reviewer';
+    accepted: boolean;
+    evidence: string[];
+    at?: string | null;
+  } | null;
   [key: string]: unknown;
 };
 export type AmcEvent = {
@@ -121,6 +128,33 @@ export function validateAmcGoal(value: unknown): AmcGoal {
     throw new Error('Goalは1.5 MB以下にしてください。');
   const result = validateGoal(value);
   if (!result.ok) throw new Error(result.errors.join('\n'));
+  const candidate = value as AmcGoal;
+  if (candidate.coordinationRef !== undefined) {
+    const reference = candidate.coordinationRef as Record<string, unknown>;
+    if (
+      !reference ||
+      typeof reference !== 'object' ||
+      Array.isArray(reference) ||
+      Object.keys(reference).some((key) =>
+        !['schema', 'planId', 'requestId', 'projectId'].includes(key)) ||
+      reference.schema !== 'rockstaros-jennifer-execution/1' ||
+      typeof reference.planId !== 'string' ||
+      !/^jennifer-[0-9a-f]{8}$/u.test(reference.planId) ||
+      typeof reference.requestId !== 'string' ||
+      reference.requestId.length < 1 ||
+      reference.requestId.length > 100 ||
+      (reference.projectId !== null &&
+        (typeof reference.projectId !== 'string' ||
+          !/^[a-z][a-z0-9-]{0,63}$/u.test(reference.projectId))) ||
+      candidate.tasks.some((task) =>
+        typeof task.specialistProfile !== 'string' ||
+        !/^[a-z][a-z0-9-]{0,79}$/u.test(task.specialistProfile) ||
+        !Array.isArray(task.allowedPaths) ||
+        !task.allowedPaths.every((path) => typeof path === 'string') ||
+        !Array.isArray(task.expectedOutputs) ||
+        !task.expectedOutputs.every((item) => typeof item === 'string'))
+    ) throw new Error('Jennifer実行Goalの参照または担当契約が不正です。');
+  }
   return value as AmcGoal;
 }
 
