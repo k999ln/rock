@@ -1,6 +1,6 @@
 # 仕様変遷 — いつ、何が、どう変わったか
 
-対象期間: 2026-09-04（最初のcommit）〜 2026-10-12 ／ 作成: 2026-10-07、更新: 2026-10-12
+対象期間: 2026-09-04（最初のcommit）〜 2026-10-13 ／ 作成: 2026-10-07、更新: 2026-10-13
 
 この文書は、プロジェクトの仕様が **何日に、何から何へ変わったか** を人が読める順番に並べ直したものです。
 
@@ -21,9 +21,29 @@
 
 ---
 
+## 2026-10-13 — SkyへPhoenix型の閲覧履歴学習を追加
+
+利用者の「XのPhoenixモデルや閲覧履歴学習をSky向けに完全実装」という追加判断により、固定順位 `sky-usefulness-v1` をfallbackとして残し、本人同意型の `sky-phoenix-v1` を追加した。表示・詳細・依頼先選択・Tool開始・保存／解除・接続を30日・最大800件のsemantic eventとして扱い、複数行動の確率、直近性、Tool／category affinity、未反応表示を順位へ反映する。学習は初期値OFFで、停止・全削除が可能。依頼文、会話、結果、device/account identifier、raw scroll、人気、収益は保存しない。ランキング履歴から実行権限、Job、課金、購入を作らない。
+
+---
+
+## 2026-10-13 — ZemaのWebローカルAgentを有限実行へ
+
+Skyを発見・接続、Zemaを依頼・実行の受け皿とする境界を維持しつつ、同じPCのOllama／OpenAI互換endpointをZemaのplannerへ接続した。LLMは権限を持たず、閉じたschema、最大3手、許可済みの副作用なしTool 3件だけを通す。local previewでは`qwen3:0.6b`の通常会話を実画面で確認。公開SiteからPCのloopbackへは接続できず、公開版のlocal Agentにはcompanion／bridgeが未実装。正本: [製品ベース 2026-10-13](product-baseline.md#2026-10-13-skyからzemaのローカルagentを使えるようにする) / [AgentとTool](agents-and-tools.md#5-osに入っているaiとagent)。
+
+---
+
+## 2026-10-13 — Skyの一覧をTwitter / X型フィードへ
+
+利用者の「フィードはTwitterっぽくしたい」という判断により、Skyはカードを並べるPinterest型ではなく、1列の「おすすめ／マイフィード」へ変更した。おすすめは明示保存、接続、現在の利用可否、page内の一時的な担当Tool ID、初期候補で決め、「なぜ表示されたか」を見せる。入力文、結果本文、行動時間、人気はランキングに使わない。明示的なfollow状態はまだないため「フォロー中」ではなく「マイフィード」と表示する。Skyは発見と接続、Zemaは依頼と実行という境界は維持する。正本: [製品ベース 2026-10-13](product-baseline.md#2026-10-13-skyをtwitter--x型の1列フィードにする) / [Sky](sky.md#個人化した1列フィード2026-10-13)。
+
+---
+
 ## 2026-10-12 — Columbiaの学生向けNFCカードからSkyへ
 
 利用者がNFCタグにSkyを入れる構想を指示。カード1枚が英語の「Sky for Columbia students」の入口になり、出典整理・AMC・特許アシスタントの英語版へ進む。avokadoが書き込んで配る。特許アシスタントには米国の案内を足し、カード経由ではAI調査を出さない。カードにはURLだけを書く。正本: [Sky NFCカード設計](sky-nfc-columbia.md) / [製品ベース 2026-10-12](product-baseline.md)。
+
+2026-10-13、ownerは簡素なlandingではなく、`sky-twitter-feed-mobile-v2.png`を基準にした今使える完成UIを求めた。Columbia入口もSky共通のTwitter / X型単列feedへ揃え、英語のFor you／Saved、端末内の依頼振り分け、3つの実ToolへつながるCTA、browser内保存、下部navigationを持つ。Columbiaの紋章・ロゴは使わない。
 
 ## 2026-10-10 — アカウントを入口にし、SIMは機器の任意部品に／公開rockの整理
 

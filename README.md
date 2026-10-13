@@ -58,6 +58,8 @@ In Zema, **Compose work** (`/zema/compose`) combines connected text or CSV Tools
 
 The preview may require an account and its provider-connected paths are at different stages. The local SPIDER path and the CSV flow below are the clearest ways to see the product contract without treating a design preview as a finished commercial service.
 
+For a local Zema conversation, run Ollama on `127.0.0.1:11434`, install `qwen3:0.6b`, build and start this repository, then open `http://localhost:8787/chat`. Choose **Ollama** and model ID `qwen3:0.6b` in the conversation-model panel. The model is an untrusted planner: only three bounded, side-effect-free local functions are allowlisted, and there is no cloud fallback. The public `chatgpt.site` Worker cannot reach a model on your PC loopback; a future companion/bridge is required for that path.
+
 ## From a request to a result
 
 Here is the smallest useful mental model: “Please clean this CSV and show me exactly what changed.” The same shape also applies to writing, a security inspection, a market PAPER check, or a material candidate comparison. **This illustrates the intended end-to-end experience; individual Tools and provider connections are at different stages.**

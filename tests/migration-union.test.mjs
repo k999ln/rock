@@ -79,6 +79,7 @@ await test('Sky Web preserves its deployed migration lineage separately from Age
     '0015_csv_billing_account_events.sql': '9c53b391c35b9f9f226f6a4a0cc53d0f2a8c36664bfbaa3de62b3c07c1f2ba0c',
     '0016_sky_code_timeline.sql': '5151b91f2bb2d6a0c9329b4e066ccdc1632a0d48309d693e63fd1cbaa96f6c95',
     '0017_primary_quality_compatibility.sql': 'a4f8747b03f3da54a0b93755bf61a8075de600daccf153bc2e72ea59e293b43d',
+    '0018_sky_feed_personalization.sql': 'ed7c6c5203f196a387647a3dfc1cd40f7b8a63209c7eece598b43bbf4a1e071d',
   };
   const actual = readdirSync(webMigrations)
     .filter((name) => name.endsWith('.sql'))
@@ -126,7 +127,7 @@ await test('the forward Web bridge tolerates objects left by an earlier partial 
   for (const statement of bridge) sqlite.exec(statement);
   assert.equal(
     sqlite.prepare("SELECT COUNT(*) AS count FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'").get().count,
-    90,
+    92,
   );
   assert.ok(sqlite.prepare(
     "SELECT name FROM sqlite_master WHERE type = 'trigger' AND name = 'a2a_usage_receipt_immutable_update'",
@@ -260,7 +261,7 @@ await test('fresh and both historical D1 databases converge without losing recor
         // SQLite normalizes IF NOT EXISTS away in sqlite_master.
         expectedSchema ??= schema;
         assert.deepEqual(schema, expectedSchema);
-        assert.equal(schema.filter((item) => item.type === 'table').length, 80);
+        assert.equal(schema.filter((item) => item.type === 'table').length, 82);
         // D1 intentionally disallows PRAGMA integrity_check; compare all table/index
         // definitions and retained values instead of claiming that pragma ran.
         if (history !== 'fresh')
