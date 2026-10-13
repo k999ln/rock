@@ -344,6 +344,14 @@ catalogued → selected → connected → ready → running → review → compl
 | `jev-browser`               | 連続browser操作候補               | candidate | 本人PC                 | 未接続・未実行                            |
 | `mobile-jev`                | Android操作候補                   | candidate | 隔離試験端末           | 個人端末禁止                              |
 
+### 大学別SkyのNFC入口（2026-10-13）
+
+目的と体験: NYU、FIT、Columbia、Fordham、John Jayのシールをスマートフォンで読むと、大学名を示す既存Sky画面へ入り、Agent発見・購入済み一覧・成果・接続・Zema仕事管理への操作を使う。RockstarOSの導入は不要。iPhoneは対応機種でNDEF HTTPS URI読取り後の通知を本人が開き、AndroidはOS版と設定に応じてリンクまたは通知を開く。PWA追加は本人操作であり、NFCにSky実行体を格納しない。
+
+入力/出力/状態: 公開URL `https://avoado.si/os/sky/campus/{campus}/hub?source=nfc` を1件のNDEF URIとして書く。`campus` は5つの固定IDのみで、不明なIDは404。Sky画面は大学名と大学別文脈を示し、おすすめの既存Toolを大学別に選び、同じSky Marketplace/成果/接続/Zemaを開く。大学名は認証や在学証明ではない。本人、購入、Agent実行、MCP無料枠は既存のサーバー側契約で判定し、タグを複製しても権限は増えない。一般5枠・対象学生6枠の本番照合は別gate。
+
+保存/失敗/復旧/承認: タグのNDEF URLは公開情報のみで秘密・認証情報を保存しない。書込み時は読み戻し、大学名、正規URL、Sky操作を実機で確認する。破損・読取不能時は書き直すかQR/手入力の同URLで復旧。タグ書込みと物理設置は機材と現物が必要な別の受入。ROCKはWeb配備と5 URL、OWNERは現物配置、JOINTはiPhone/Android読取りと本人A/B、決済/Provider/費用境界を確認する。大学別の機能は既存Skyの文脈と導線から始め、学生6枠や有料追加の提供を未検証で宣言しない。
+
 ### Columbia Sky NFCカードの英語入口（2026-10-12）
 
 `/sky/campus/columbia` は、既存の `mr-citations`、`rockstar-amc`、`rockstar-patent-assistant` を `lang=en&entry=columbia-card` 付きで開く英語の案内面である。カードは公開URLだけを持ち、利用権・本人情報・鍵を付与しない。入口とTool説明は未認証でも読める。大学名は `lib/sky-campus.ts` の設定へ集約し、Columbiaの文字名だけを表示して紋章・ロゴは使わない。物理カード、転送、匿名集計の詳細契約は `docs/sky-nfc-columbia.md` を正本とする。
@@ -1172,3 +1180,6 @@ Skyの詳細表示は同じcatalogの料金・環境・接続状態を読むだ�
 Skyの接続管理とZemaのルーティング設定は、入力と基準版を一緒に保持する。再取得で編集中の基準版を自動更新しない。409では入力を残し、「最新設定を取得」で内容を表示、「最新設定を確認し、入力を残す」を押してから、別操作で保存する。Zemaの通常の自動保存は維持し、競合・保存失敗後は明示再保存に切り替える。取得失敗時は再取得まで保存を止め、遅い応答・Provider切替・二重保存を分離する。401は保護対象の入力を消す。設定保存成功はOAuth・実接続・grant発行の成功を意味しない。
 
 保存SQLはowner/provider/revisionで比較と更新を同時に行い、RETURNINGでその書込結果を返す。秘密入力拒否、routing既定値、LiveKit検証、購入/料金/権利契約は維持。独立検収と統合後の同一候補受入は残り、S7全体・公開Gate・Goal r48は未完了のまま。
+## Sky成果のアプリ内表示（2026-10-13）
+
+Skyの本人別保存済み成果を `/sky/outputs` で確認し、第一者同一originアプリへ型付き出力として渡す。Fitness例は `sky.fitness.plan/1` のみ表示する。新しいcatalog Toolの登録ではなく、既存成果の表示先を追加する変更である。目的、入力・出力、状態、保存・復旧、失敗、承認、合格条件と外部アプリの未決定条件は[Sky App Output Plugins](sky-launch-design.md#sky-app-output-plugins)を正本とする。外部アプリの実行権・callback・Provider接続はこの実装に含まれない。

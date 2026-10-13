@@ -74,6 +74,8 @@ import {
 } from '@/lib/sky-connections';
 import { queueSkyZemaHandoff, skyRequestLimit } from '@/lib/sky-zema-handoff';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
+import { CAMPUSES, type CampusId } from '@/lib/campus';
+import { SKY_CAMPUS_RECOMMENDATIONS } from '@/lib/sky-campus-recommendations';
 import { rankSkyFeed, type SkyFeedMode } from '@/lib/sky-feed-ranking';
 import {
   appendSkyPhoenixEvent,
@@ -240,9 +242,11 @@ function dwellBucket(duration: number) {
 export default function SkyWorkspace({
   initialMcpOpen = false,
   initialPublishOpen = false,
+  campusId,
 }: {
   initialMcpOpen?: boolean;
   initialPublishOpen?: boolean;
+  campusId?: CampusId;
 }) {
   const [inspected, setInspected] = useState<Automation | null>(null);
   const service = useSkyServiceStatus();
@@ -494,7 +498,7 @@ export default function SkyWorkspace({
   );
   const rankedTools = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    const candidates = catalog.filter((tool) => {
+    let candidates = catalog.filter((tool) => {
       const matchesScope =
         scope === 'すべて' ||
         (scope === '今使える' && availableToolIds.has(tool.id)) ||
@@ -507,6 +511,15 @@ export default function SkyWorkspace({
         text.toLowerCase().includes(normalizedQuery)
       );
     });
+    if (
+      campusId &&
+      feedMode === 'recommended' &&
+      scope === 'すべて' &&
+      !normalizedQuery
+    )
+      candidates = candidates.filter((tool) =>
+        SKY_CAMPUS_RECOMMENDATIONS[campusId].includes(tool.id),
+      );
     return rankSkyFeed(candidates, feedMode, {
       savedAt,
       connectedAt,
@@ -516,6 +529,7 @@ export default function SkyWorkspace({
     });
   }, [
     availableToolIds,
+    campusId,
     connectedAt,
     feedMode,
     phoenix,
@@ -835,9 +849,28 @@ export default function SkyWorkspace({
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
-      <Link className="sky-marketplace-link" href="/sky/marketplace">
-        AI・自動化マーケットプレイス
-      </Link>
+      {campusId && (
+        <section aria-label="大学別Sky" style={{padding: '20px 24px', borderRadius: 18, background: '#153321', color: 'white', marginBottom: 20}}>
+          <p style={{margin: '0 0 6px', opacity: .8, fontSize: 12, letterSpacing: '.12em'}}>SKY · {CAMPUSES[campusId].name.toUpperCase()}</p>
+          <h2 style={{margin: '0 0 8px', fontSize: 'clamp(26px, 5vw, 42px)'}}>{CAMPUSES[campusId].shortName} の Sky</h2>
+          <p style={{margin: '0 0 12px'}}>{CAMPUSES[campusId].description}</p>
+          <nav aria-label="大学別Skyの操作" style={{display: 'flex', flexWrap: 'wrap', gap: 14}}>
+            <Link href="/sky/marketplace" style={{color: 'white'}}>Agentを探す</Link>
+            <Link href="/sky/purchases" style={{color: 'white'}}>購入したAgent</Link>
+            <Link href="/sky/outputs" style={{color: 'white'}}>成果を見る</Link>
+            <Link href="/sky/network" style={{color: 'white'}}>接続を管理</Link>
+            <Link href="/chat" style={{color: 'white'}}>Zemaで仕事を管理</Link>
+          </nav>
+        </section>
+      )}
+      <nav aria-label="Skyの主要画面">
+        <Link className="sky-marketplace-link" href="/sky/marketplace">
+          AI・自動化マーケットプレイス
+        </Link>
+        <Link className="sky-marketplace-link" href="/sky/outputs">
+          Agentの成果を見る
+        </Link>
+      </nav>
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
           <header className="sky-feed-header">

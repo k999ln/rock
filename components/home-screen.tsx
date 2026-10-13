@@ -57,7 +57,7 @@ const apps: HomeApp[] = [
     id: 'sky',
     name: 'Sky',
     description: '自動化アプリを探して接続',
-    href: '/sky',
+    href: '/os/sky',
     Icon: Cloud,
     color: 'sky',
   },
@@ -278,7 +278,7 @@ export default function HomeScreen() {
           </button>
         </div>
 
-        <Link href="/sky" className={styles.skyWidget}>
+        <Link href="/os/sky" className={styles.skyWidget}>
           <span className={styles.widgetMark} aria-hidden="true">
             <ShieldCheck size={22} />
           </span>
@@ -291,7 +291,7 @@ export default function HomeScreen() {
         </Link>
 
         <nav className={styles.primaryServiceLinks} aria-label="RockstarOSの主要サービス">
-          <Link href="/sky"><Cloud size={16} /><strong>Sky</strong><span>Agentを探す</span></Link>
+          <Link href="/os/sky"><Cloud size={16} /><strong>Sky</strong><span>Agentを探す</span></Link>
           <Link href="/chat"><MessageCircle size={16} /><strong>Zema</strong><span>仕事を依頼</span></Link>
           <Link href="/work"><Bot size={16} /><strong>Agent</strong><span>依頼・進捗・費用・成果</span></Link>
         </nav>

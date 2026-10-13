@@ -1,5 +1,13 @@
 # Web / PWA / Sites
 
+## 2026-10-13 — Sky大学別NFC入口の公開（WEB06 / SKY21、ROCK）
+
+既存Sky Site v48/source `202ab24e8f2b8d427ea4602ce689fffcd90772db` に5大学の共通Sky画面を配備。NFCのNDEF URIは `https://avoado.si/os/sky/campus/{campus}/hub?source=nfc`。5 URLはHTTP 200、NYUは実ブラウザで大学名とSky操作を確認した。URLは大学文脈だけを選ぶ。本人確認、対象学生6枠、購入権、Agent実行権はタグに含めない。物理シールへの書込み・iPhone/Androidでの読取りは未実施。GitHub branchとmainの同期は別記録。タグ用ファイルの生成は `node scripts/generate-sky-campus-nfc.mjs /private/tmp/sky-campus-nfc`、検査は `node --test tests/sky-campus-nfc.test.mjs`。[設計](../sky-tools-complete-design.md#大学別skyのnfc入口2026-10-13)。
+
+## 2026-10-13 — `avoado.si` のOS/Sky入口（WEB06 / SKY21、ROCK）
+
+Sky Site v45が `avoado.si` を保持し、公開Home `/os` とSky `/os/sky` を同一originで提供する。旧 `/sky` は正規URLへ転送し、Sky Site固有の本人IDとD1を維持する。OS/SkyのPWA manifestの起動先は新URL。`/` の製品Homeと予約APIは既存Mini Siteをサーバー内で代理取得し、Sky cookie・本人headerを渡さない。Mini Site v15の製品HomeからMini・Proの各専用ドメインへ実ブラウザで移動確認済み。RockstarOSの3箇所のリンクは `/os` を指すことを公開HTMLで確認済み。実Provider、本人A/B、大学別NFC権限と6接続枠、外部アプリSDKは未受入。実装・検証の記録は[証拠](../evidence/sky-app-output-plugin-github.json)と[配備手順](../../services/sky-web/README.md)。
+
 ## 2026-10-11 — 既存機能の品質・復旧改善（WEB04 / G04、ROCK）
 
 Zemaの見積世代・下書き離脱確認、Workbenchの読取／書込競合と本人別入力・成功応答照合、AMC importの古い読込、CSVの受付IDとowner保持を修正した。対象回帰と独立レビューは合格、統合候補の全体検証・同一SHAのCIは作業中。Walletは共通hookで同じ復旧契約を使用する。仕様はSky Tool全体設計の各節、実装と回帰はqualityRefactorの証拠へ集約する。processing強制終了後のCSV再開は未適用案として分離する。

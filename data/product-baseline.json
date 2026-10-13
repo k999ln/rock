@@ -1,6 +1,6 @@
 {
-  "version": "1.98",
-  "decidedAt": "2026-10-10",
+  "version": "1.99",
+  "decidedAt": "2026-10-13",
   "repository": "k999ln/rock",
   "authority": "docs/product-baseline.md",
   "promptRules": "docs/prompt-playbook.md",
@@ -2157,9 +2157,13 @@
     "payout": "monthly_close_at_month_end_paid_end_of_next_month",
     "firstLineSupport": "avokado",
     "skyHosting": {
-      "url": "https://avocadomini.si/sky",
+      "url": "https://avoado.si/os/sky",
+      "changedAt": "2026-10-13",
+      "changeReason": "Owner specified avoado.si/os for RockstarOS Home and avoado.si/os/sky for Sky on 2026-10-13; supersedes avoado.si/sky",
+      "currentDelivery": "same_origin_os_home_and_sky_active; old_sky_path_redirects; mini_pro_domains_verified; owner_ab_and_campus_nfc_not_accepted",
       "signIn": "own_passkey",
-      "notifications": "web_push_first"
+      "notifications": "web_push_first",
+      "osHomeUrl": "https://avoado.si/os"
     },
     "onHold": [
       "consumer_esim_issuance_and_sales",
@@ -2176,6 +2180,20 @@
       "carrier_partner_third_party_use_and_sgp32_pricing",
       "stripe_connect_configuration_and_threshold_billing",
       "cloud_ai_provider_resale_terms"
+    ]
+  },
+  "skyAppOutputPlugin": {
+    "decidedAt": "2026-10-12",
+    "source": "User requested a saved Agent output receptacle and Sky standalone host-app plugins, with Fitness as the first example",
+    "osWorkManager": "Zema",
+    "standaloneSkyOutputInbox": "/sky/outputs",
+    "firstPartyHostExample": "/fitness",
+    "typedOutputSchema": "sky.fitness.plan/1",
+    "authorization": "owner-scoped saved results; NFC and campus context confer no output access",
+    "outsideCurrentAcceptance": [
+      "cross-origin app SDK",
+      "real Fitness Agent",
+      "production Provider output"
     ]
   }
 }
