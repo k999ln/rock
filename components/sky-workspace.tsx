@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -17,6 +18,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BadgeCheck,
+  Bookmark,
   CheckCircle2,
   EyeOff,
   Link2,
@@ -69,18 +71,16 @@ import {
 } from '@/lib/sky-connections';
 import { queueSkyZemaHandoff, skyRequestLimit } from '@/lib/sky-zema-handoff';
 import { skyToolLabelFor } from '@/lib/sky-tool-labels';
+import { rankSkyFeed, type SkyFeedMode } from '@/lib/sky-feed-ranking';
 
-type FeedFilter = 'おすすめ' | '今使える' | '導入候補' | 'コード';
+type FeedScope = 'すべて' | '今使える' | '導入候補' | 'コード';
+type SkyLibraryItem = { tool: string; savedAt: number };
 
-const feedFilters: FeedFilter[] = ['おすすめ', '今使える', '導入候補', 'コード'];
-const recommendedToolIds = new Set([
-  'rockstar-amc',
-  'rockstar-csv-cleanup',
-  'coconala',
-  'mr-free-article',
-  'mr-citations',
-  'fashion-brand-ops',
-]);
+const feedModes: { value: SkyFeedMode; label: string }[] = [
+  { value: 'recommended', label: 'おすすめ' },
+  { value: 'library', label: 'マイフィード' },
+];
+const feedScopes: FeedScope[] = ['すべて', '今使える', '導入候補', 'コード'];
 const quickRoleIds = new Set([
   'rockstar-csv-cleanup',
   'coconala',
@@ -165,7 +165,13 @@ function providerFor(tool: Automation) {
     }
   );
 }
-function statusFor(tool: Automation, fashionConnected = false, connectedTools: string[] = [], pcConnected = false, service?: SkyToolUiContext['service']) {
+function statusFor(
+  tool: Automation,
+  fashionConnected = false,
+  connectedTools: string[] = [],
+  pcConnected = false,
+  service?: SkyToolUiContext['service'],
+) {
   return skyToolUiState(tool, { fashionConnected, connectedTools, pcConnected, service });
 }
 
@@ -206,7 +212,8 @@ export default function SkyWorkspace({
   const [inspected, setInspected] = useState<Automation | null>(null);
   const service = useSkyServiceStatus();
   const [query, setQuery] = useState('');
-  const [filter, setFilter] = useState<FeedFilter>('おすすめ');
+  const [feedMode, setFeedMode] = useState<SkyFeedMode>('recommended');
+  const [scope, setScope] = useState<FeedScope>('すべて');
   const [selected, setSelected] = useState<Automation | null>(null);
   const [deviceOpen, setDeviceOpen] = useState(false);
   const [running, setRunning] = useState(false);
@@ -222,6 +229,13 @@ export default function SkyWorkspace({
   const [routedTool, setRoutedTool] = useState<Automation | null>(null);
   const [routeMessage, setRouteMessage] = useState('');
   const [connectedTools, setConnectedTools] = useState<string[]>([]);
+  const [connectedAt, setConnectedAt] = useState<Record<string, number>>({});
+  const [savedAt, setSavedAt] = useState<Record<string, number>>({});
+  const [saveBusy, setSaveBusy] = useState('');
+  const [saveError, setSaveError] = useState<{
+    tool: string;
+    message: string;
+  } | null>(null);
   const [connectionsLoading, setConnectionsLoading] = useState(true);
   const [connectionBusy, setConnectionBusy] = useState(false);
   const [connectionError, setConnectionError] = useState('');
@@ -285,7 +299,17 @@ export default function SkyWorkspace({
     let active = true;
     void operationRequest<SkyConnection[]>('/api/sky/connections')
       .then((connections) => {
-        if (active) setConnectedTools(connections.map(({ tool }) => tool));
+        if (active) {
+          setConnectedTools(connections.map(({ tool }) => tool));
+          setConnectedAt(
+            Object.fromEntries(
+              connections.map(({ tool, connectedAt: timestamp }) => [
+                tool,
+                timestamp,
+              ]),
+            ),
+          );
+        }
       })
       .catch((error) => {
         if (
@@ -303,26 +327,83 @@ export default function SkyWorkspace({
     };
   }, [setNeedsSignin]);
 
-  const visibleTools = catalog.filter((tool) => {
-    const matchesFilter =
-      (filter === 'おすすめ' && recommendedToolIds.has(tool.id)) ||
-      (filter === '今使える' && tool.status === 'ready') ||
-      (filter === '導入候補' && tool.status === 'candidate');
-    const provider = providerFor(tool);
-    const text =
-      tool.name +
-      ' ' +
-      tool.description +
-      ' ' +
-      tool.category +
-      ' ' +
-      provider.name;
-    return (
-      matchesFilter && text.toLowerCase().includes(query.trim().toLowerCase())
-    );
-  });
+  useEffect(() => {
+    let active = true;
+    void operationRequest<SkyLibraryItem[]>('/api/sky/library')
+      .then((items) => {
+        if (active)
+          setSavedAt(
+            Object.fromEntries(
+              items.map(({ tool, savedAt: timestamp }) => [tool, timestamp]),
+            ),
+          );
+      })
+      .catch((error) => {
+        if (
+          active &&
+          error instanceof OperationRequestError &&
+          error.status === 401
+        )
+          setNeedsSignin(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [setNeedsSignin]);
+
+  const availableToolIds = useMemo(
+    () =>
+      new Set(
+        catalog
+          .filter(
+            (tool) =>
+              statusFor(
+                tool,
+                fashionConnected,
+                connectedTools,
+                connected,
+                service,
+              ).className === 'is-ready',
+          )
+          .map((tool) => tool.id),
+      ),
+    [connected, connectedTools, fashionConnected, service],
+  );
+  const rankedTools = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    const candidates = catalog.filter((tool) => {
+      const matchesScope =
+        scope === 'すべて' ||
+        (scope === '今使える' && availableToolIds.has(tool.id)) ||
+        (scope === '導入候補' && tool.status === 'candidate');
+      const provider = providerFor(tool);
+      const text = `${tool.name} ${tool.description} ${tool.category} ${provider.name}`;
+      return (
+        scope !== 'コード' &&
+        matchesScope &&
+        text.toLowerCase().includes(normalizedQuery)
+      );
+    });
+    return rankSkyFeed(candidates, feedMode, {
+      savedAt,
+      connectedAt,
+      availableToolIds,
+      routedToolId: routedTool?.id,
+    });
+  }, [
+    availableToolIds,
+    connectedAt,
+    feedMode,
+    query,
+    routedTool?.id,
+    savedAt,
+    scope,
+  ]);
   const visibleLocalServers =
-    !connected || filter === '導入候補'
+    !connected ||
+    feedMode === 'library' ||
+    scope === '導入候補' ||
+    scope === 'コード'
       ? []
       : localServers.filter((server) =>
           `${server.name} ${server.description}`
@@ -354,6 +435,41 @@ export default function SkyWorkspace({
       });
     } finally {
       setLocalBusy('');
+    }
+  }
+
+  async function toggleSaved(tool: Automation) {
+    if (saveBusy) return;
+    const saved = !savedAt[tool.id];
+    setSaveBusy(tool.id);
+    setSaveError(null);
+    try {
+      await operationRequest<{ tool: string; saved: boolean }>(
+        '/api/sky/library',
+        'PUT',
+        { tool: tool.id, saved },
+      );
+      setSavedAt((current) => {
+        if (saved) return { ...current, [tool.id]: Date.now() };
+        const next = { ...current };
+        delete next[tool.id];
+        return next;
+      });
+    } catch (error) {
+      if (error instanceof OperationRequestError && error.status === 401) {
+        setNeedsSignin(true);
+        setSaveError({
+          tool: tool.id,
+          message: '保存にはサインインが必要です。',
+        });
+      } else
+        setSaveError({
+          tool: tool.id,
+          message:
+            error instanceof Error ? error.message : '保存できませんでした。',
+        });
+    } finally {
+      setSaveBusy('');
     }
   }
 
@@ -424,6 +540,10 @@ export default function SkyWorkspace({
           ? current
           : [...current, connection.tool],
       );
+      setConnectedAt((current) => ({
+        ...current,
+        [connection.tool]: connection.connectedAt,
+      }));
       // A successful Sky connection immediately creates/opens the matching Zema Bot.
       openConnectedTool(connectedTool, lastRequest);
     } catch (error) {
@@ -480,9 +600,105 @@ export default function SkyWorkspace({
       contentClassName="sky-main-feed"
       onConnect={() => setDeviceOpen(true)}
     >
-      <Link href="/sky/marketplace">AI・自動化マーケットプレイス</Link>
+      <Link className="sky-marketplace-link" href="/sky/marketplace">
+        AI・自動化マーケットプレイス
+      </Link>
       <div className="sky-feed-layout">
         <section className="sky-feed-column" aria-labelledby="sky-feed-title">
+          <header className="sky-feed-header">
+            <div className="sky-store-title">
+              <span>Sky</span>
+              <h1 id="sky-feed-title">アプリ</h1>
+            </div>
+            <Tabs
+              value={feedMode}
+              onValueChange={(value) => setFeedMode(value as SkyFeedMode)}
+            >
+              <TabsList
+                className="sky-feed-tabs sky-feed-mode-tabs"
+                aria-label="Sky Timelineの表示"
+              >
+                {feedModes.map((item) => (
+                  <TabsTrigger key={item.value} value={item.value}>
+                    {item.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+            <div className="sky-feed-header-actions">
+              <button
+                className="sky-header-action"
+                aria-label="サービス接続を管理"
+                onClick={() => setConnectionCenterOpen(true)}
+              >
+                <Link2 size={19} />
+                <span>接続</span>
+              </button>
+              <button
+                className="sky-header-action"
+                aria-label="MCP接続・管理"
+                onClick={() => setMcpOpen(true)}
+              >
+                <Network size={19} />
+                <span>MCP</span>
+              </button>
+              <button
+                className="sky-header-action"
+                aria-label={searchOpen ? '検索を閉じる' : 'ツールを検索'}
+                aria-expanded={searchOpen}
+                onClick={() => {
+                  setSearchOpen((open) => !open);
+                  if (searchOpen) setQuery('');
+                }}
+              >
+                {searchOpen ? <X size={19} /> : <Search size={19} />}
+                <span>{searchOpen ? '閉じる' : '検索'}</span>
+              </button>
+              <button
+                aria-label="Skyにツールを掲載"
+                className="sky-header-action"
+                onClick={() => setPublishOpen(true)}
+              >
+                <PackagePlus size={19} />
+                <span>掲載</span>
+              </button>
+            </div>
+          </header>
+
+          <fieldset className="sky-feed-scopes">
+            <legend className="sr-only">フィードを絞り込む</legend>
+            {feedScopes.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={scope === item ? 'is-active' : ''}
+                aria-pressed={scope === item}
+                onClick={() => setScope(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </fieldset>
+
+          {(searchOpen || query) && (
+            <div className="sky-feed-search">
+              <Search size={18} />
+              <input
+                type="search"
+                aria-label="Skyを検索"
+                placeholder="ツール名・できることで検索"
+                value={query}
+                ref={searchInput}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+              {query && (
+                <button aria-label="検索をクリア" onClick={() => setQuery('')}>
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+          )}
+
           <section
             className="sky-assistant"
             aria-labelledby="sky-assistant-title"
@@ -563,227 +779,208 @@ export default function SkyWorkspace({
             </div>
           </section>
 
-          <header className="sky-feed-header">
-            <div className="sky-store-title">
-              <span>Sky</span>
-              <h1 id="sky-feed-title">アプリ</h1>
-            </div>
-            <Tabs
-              value={filter}
-              onValueChange={(value) => setFilter(value as FeedFilter)}
-            >
-              <TabsList
-                className="sky-feed-tabs"
-                aria-label="Sky Timelineの表示"
-              >
-                {feedFilters.map((item) => (
-                  <TabsTrigger key={item} value={item}>
-                    {item}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-            <div className="sky-feed-header-actions">
-              <button
-                className="sky-header-action"
-                aria-label="サービス接続を管理"
-                onClick={() => setConnectionCenterOpen(true)}
-              >
-                <Link2 size={19} />
-                <span>接続</span>
-              </button>
-              <button
-                className="sky-header-action"
-                aria-label="MCP接続・管理"
-                onClick={() => setMcpOpen(true)}
-              >
-                <Network size={19} />
-                <span>MCP</span>
-              </button>
-              <button
-                className="sky-header-action"
-                aria-label={searchOpen ? '検索を閉じる' : 'ツールを検索'}
-                aria-expanded={searchOpen}
-                onClick={() => {
-                  setSearchOpen((open) => !open);
-                  if (searchOpen) setQuery('');
-                }}
-              >
-                {searchOpen ? <X size={19} /> : <Search size={19} />}
-                <span>{searchOpen ? '閉じる' : '検索'}</span>
-              </button>
-              <button
-                aria-label="Skyにツールを掲載"
-                className="sky-header-action"
-                onClick={() => setPublishOpen(true)}
-              >
-                <PackagePlus size={19} />
-                <span>掲載</span>
-              </button>
-            </div>
-          </header>
-
-          {(searchOpen || query) && (
-            <div className="sky-feed-search">
-              <Search size={18} />
-              <input
-                type="search"
-                aria-label="Skyを検索"
-                placeholder="ツール名・できることで検索"
-                value={query}
-                ref={searchInput}
-                onChange={(event) => setQuery(event.target.value)}
-              />
-              {query && (
-                <button aria-label="検索をクリア" onClick={() => setQuery('')}>
-                  <X size={16} />
-                </button>
-              )}
-            </div>
-          )}
-
-          {(filter === 'おすすめ' || filter === 'コード') && <SkyCodeTimeline />}
-          {filter !== 'コード' && <div className="sky-feed" aria-live="polite">
-            {visibleLocalServers.map((server, index) => (
-              <article
-                className="sky-feed-post"
-                key={`local-${server.id}`}
-                style={{ '--sky-index': index } as CSSProperties}
-              >
-                <div className="sky-timeline-node" aria-hidden="true">
-                  <span className="sky-provider-avatar rock-icon-blue">PC</span>
-                </div>
-                <div className="sky-post-body">
-                  <div className="sky-post-meta-row">
-                    <div className="sky-post-author">
-                      <strong>このPCのツール</strong>
-                      <span>@sky_local</span>
-                    </div>
-                    <span className="sky-post-state">
-                      <i aria-hidden="true" />
-                      {server.state === 'connected' ? '接続済み' : '起動中'}
-                    </span>
-                  </div>
-                  <div className="sky-post-open">
-                    <span className="rock-tool-icon rock-icon-blue">
-                      <Network size={22} strokeWidth={1.7} />
-                    </span>
-                    <span>
-                      <small>Sky SDK</small>
-                      <strong>{server.name}</strong>
-                    </span>
-                  </div>
-                  <p className="sky-post-description">{server.description}</p>
-                  <p className="sky-post-place">
-                    {server.state === 'connected'
-                      ? `${server.passport?.tools.length ?? 0}機能を確認済み`
-                      : 'このPCで実行。接続時に機能と権限を確認します。'}
-                  </p>
-                  <div className="sky-post-actions">
-                    <button
-                      className="sky-post-primary"
-                      disabled={Boolean(localBusy)}
-                      onClick={() => void connectLocalServer(server)}
-                    >
-                      {localBusy === server.id
-                        ? '確認中…'
-                        : server.state === 'connected'
-                          ? '機能を見る'
-                          : '接続'}
-                      <ArrowRight size={16} />
-                    </button>
-                  </div>
-                  {localError?.id === server.id && (
-                    <p className="bench-error" role="alert">
-                      {localError.message}
-                    </p>
-                  )}
-                </div>
-              </article>
-            ))}
-            {visibleTools.map((tool, index) => {
-              const provider = providerFor(tool);
-              const status = statusFor(
-                tool,
-                fashionConnected,
-                connectedTools,
-                connected,
-                service,
-              );
-              return (
+          {scope === 'コード' && <SkyCodeTimeline />}
+          {scope !== 'コード' && (
+            <div className="sky-feed" aria-live="polite">
+              {visibleLocalServers.map((server, index) => (
                 <article
-                  className={'sky-feed-post ' + status.className}
-                  key={tool.id}
-                  style={
-                    {
-                      '--sky-index': index + visibleLocalServers.length,
-                    } as CSSProperties
-                  }
+                  className="sky-feed-post"
+                  key={`local-${server.id}`}
+                  style={{ '--sky-index': index } as CSSProperties}
                 >
-                  <div className="sky-timeline-node">
-                    <button type="button" aria-label={`${tool.name}の機能と利用方法を見る`} aria-haspopup="dialog" onClick={() => setInspected(tool)}>
-                      <ToolCharacter id={tool.id} />
-                    </button>
+                  <div className="sky-timeline-node" aria-hidden="true">
+                    <span className="sky-provider-avatar rock-icon-blue">
+                      PC
+                    </span>
                   </div>
                   <div className="sky-post-body">
                     <div className="sky-post-meta-row">
                       <div className="sky-post-author">
-                        <strong>{provider.name}</strong>
-                        {status.className === 'is-ready' && (
-                          <BadgeCheck
-                            className="sky-role-verified"
-                            size={16}
-                            aria-label="Skyで利用可能"
-                          />
-                        )}
-                        <span>{provider.handle}</span>
+                        <strong>このPCのツール</strong>
+                        <span>@sky_local</span>
                       </div>
-                      <span className={'sky-post-state ' + status.className}>
+                      <span className="sky-post-state">
                         <i aria-hidden="true" />
-                        {status.label}
+                        {server.state === 'connected' ? '接続済み' : '起動中'}
                       </span>
                     </div>
                     <div className="sky-post-open">
+                      <span className="rock-tool-icon rock-icon-blue">
+                        <Network size={22} strokeWidth={1.7} />
+                      </span>
                       <span>
-                        <strong>{tool.name}</strong>
+                        <small>Sky SDK</small>
+                        <strong>{server.name}</strong>
                       </span>
                     </div>
-                    <p className="sky-post-description">{tool.description}</p>
-                    <p className="sky-post-place">{status.detail}</p>
+                    <p className="sky-post-description">{server.description}</p>
+                    <p className="sky-post-place">
+                      {server.state === 'connected'
+                        ? `${server.passport?.tools.length ?? 0}機能を確認済み`
+                        : 'このPCで実行。接続時に機能と権限を確認します。'}
+                    </p>
                     <div className="sky-post-actions">
                       <button
                         className="sky-post-primary"
-                        onClick={() => primaryAction(tool)}
+                        disabled={Boolean(localBusy)}
+                        onClick={() => void connectLocalServer(server)}
                       >
-                        {tool.status === 'ready' &&
-                          tool.runner !== 'delivery-local' &&
-                          connectedTools.includes(tool.id) && (
-                            <Zap size={16} fill="currentColor" />
-                          )}
-                        {actionLabel(tool, connectedTools, connected)}
+                        {localBusy === server.id
+                          ? '確認中…'
+                          : server.state === 'connected'
+                            ? '機能を見る'
+                            : '接続'}
                         <ArrowRight size={16} />
                       </button>
                     </div>
+                    {localError?.id === server.id && (
+                      <p className="bench-error" role="alert">
+                        {localError.message}
+                      </p>
+                    )}
                   </div>
                 </article>
-              );
-            })}
-            {visibleTools.length + visibleLocalServers.length === 0 && (
-              <div className="sky-feed-empty">
-                <Search size={25} />
-                <strong>見つかりませんでした</strong>
-                <p>検索を消すか、別のタブを選んでください。</p>
-                <button
-                  onClick={() => {
-                    setQuery('');
-                    setFilter('おすすめ');
-                  }}
-                >
-                  おすすめに戻る
-                </button>
-              </div>
-            )}
-          </div>}
+              ))}
+              {rankedTools.map(({ tool, reason, reasonCode }, index) => {
+                const provider = providerFor(tool);
+                const status = statusFor(
+                  tool,
+                  fashionConnected,
+                  connectedTools,
+                  connected,
+                  service,
+                );
+                return (
+                  <article
+                    className={'sky-feed-post ' + status.className}
+                    key={tool.id}
+                    style={
+                      {
+                        '--sky-index': index + visibleLocalServers.length,
+                      } as CSSProperties
+                    }
+                  >
+                    <div className="sky-timeline-node">
+                      <button
+                        type="button"
+                        aria-label={`${tool.name}の機能と利用方法を見る`}
+                        aria-haspopup="dialog" onClick={() => setInspected(tool)}
+                      >
+                        <ToolCharacter id={tool.id} />
+                      </button>
+                    </div>
+                    <div className="sky-post-body">
+                      <div className="sky-post-meta-row">
+                        <div className="sky-post-author">
+                          <strong>{provider.name}</strong>
+                          {status.className === 'is-ready' && (
+                            <BadgeCheck
+                              className="sky-role-verified"
+                              size={16}
+                              aria-label="Skyで利用可能"
+                            />
+                          )}
+                          <span>{provider.handle}</span>
+                        </div>
+                        <span className={'sky-post-state ' + status.className}>
+                          <i aria-hidden="true" />
+                          {status.label}
+                        </span>
+                      </div>
+                      <div className="sky-feed-reason" data-reason={reasonCode}>
+                        <span aria-hidden="true" />
+                        {reason}
+                      </div>
+                      <div className="sky-post-open">
+                        <span>
+                          <strong>{tool.name}</strong>
+                        </span>
+                      </div>
+                      <p className="sky-post-description">{tool.description}</p>
+                      <p className="sky-post-place">{status.detail}</p>
+                      <div className="sky-post-actions">
+                        <button
+                          className="sky-post-primary"
+                          onClick={() => primaryAction(tool)}
+                        >
+                          {tool.status === 'ready' &&
+                            tool.runner !== 'delivery-local' &&
+                            connectedTools.includes(tool.id) && (
+                              <Zap size={16} fill="currentColor" />
+                            )}
+                          {actionLabel(tool, connectedTools, connected)}
+                          <ArrowRight size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            'sky-post-save' +
+                            (savedAt[tool.id] ? ' is-saved' : '')
+                          }
+                          aria-label={
+                            savedAt[tool.id]
+                              ? `${tool.name}の保存を解除`
+                              : `${tool.name}をマイフィードに保存`
+                          }
+                          aria-pressed={Boolean(savedAt[tool.id])}
+                          disabled={Boolean(saveBusy)}
+                          onClick={() => void toggleSaved(tool)}
+                        >
+                          <Bookmark
+                            size={17}
+                            fill={savedAt[tool.id] ? 'currentColor' : 'none'}
+                          />
+                          <span>{savedAt[tool.id] ? '保存済み' : '保存'}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="sky-post-detail"
+                          onClick={() => setInspected(tool)}
+                        >
+                          詳細
+                        </button>
+                      </div>
+                    {saveError?.tool === tool.id && needsSignin ? (
+                      <ExecutionSignin />
+                    ) : saveError?.tool === tool.id ? (
+                        <p className="bench-error" role="alert">
+                          {saveError.message}
+                        </p>
+                    ) : null}
+                    </div>
+                  </article>
+                );
+              })}
+              {rankedTools.length + visibleLocalServers.length === 0 && (
+                <div className="sky-feed-empty">
+                  {feedMode === 'library' ? (
+                    <Bookmark size={25} />
+                  ) : (
+                    <Search size={25} />
+                  )}
+                  <strong>
+                    {feedMode === 'library'
+                      ? 'マイフィードはまだ空です'
+                      : '見つかりませんでした'}
+                  </strong>
+                  <p>
+                    {feedMode === 'library'
+                      ? '保存または接続したToolが、ここに新しい順で並びます。'
+                      : '検索を消すか、別の絞り込みを選んでください。'}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setQuery('');
+                      setFeedMode('recommended');
+                      setScope('すべて');
+                    }}
+                  >
+                    おすすめに戻る
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
           <SkyMcpCenter
             open={mcpOpen}
             connected={connected}
@@ -794,12 +991,32 @@ export default function SkyWorkspace({
         </section>
       </div>
 
-      <Dialog open={inspected !== null} onOpenChange={(open) => { if (!open) setInspected(null); }}>
-        {inspected && <SkyToolOverview tool={inspected} state={skyToolUiState(inspected, { fashionConnected, connectedTools, pcConnected: connected, service })}>
-          <ol>{inspected.steps.map((step) => <li key={step}>{step}</li>)}</ol>
-          <p>{inspected.note}</p>
-          <Link href={`/sky/tools/${encodeURIComponent(inspected.id)}`}>手順・提供元を詳しく見る</Link>
-        </SkyToolOverview>}
+      <Dialog open={inspected !== null}
+        onOpenChange={(open) => {
+          if (!open) setInspected(null);
+        }}
+      >
+        {inspected && (
+          <SkyToolOverview
+            tool={inspected}
+            state={skyToolUiState(inspected, {
+              fashionConnected,
+              connectedTools,
+              pcConnected: connected,
+              service,
+            })}
+          >
+            <ol>
+              {inspected.steps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+            <p>{inspected.note}</p>
+            <Link href={`/sky/tools/${encodeURIComponent(inspected.id)}`}>
+              手順・提供元を詳しく見る
+            </Link>
+          </SkyToolOverview>
+        )}
       </Dialog>
       <Dialog
         open={selected !== null}
@@ -841,7 +1058,12 @@ export default function SkyWorkspace({
               </div>
 
               {selected.id === 'jev-router' ? (
-                <div className="sky-candidate-state"><p>本体はSkyに未接続です。登録は実行や接続の完了ではありません。</p><Link href="/sky/tools/jev-router">導入条件を見る</Link></div>
+                <div className="sky-candidate-state">
+                  <p>
+                    本体はSkyに未接続です。登録は実行や接続の完了ではありません。
+                  </p>
+                  <Link href="/sky/tools/jev-router">導入条件を見る</Link>
+                </div>
               ) : selected.status === 'candidate' ? (
                 <>
                   <DialogDescription className="rock-dialog-description">

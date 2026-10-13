@@ -5775,9 +5775,14 @@
         "components/legal-intake-runner.tsx",
         "components/patent-assistant-runner.tsx",
         "tests/local-guide-history.test.mjs",
-        "tests/operations.test.mjs"
+        "tests/operations.test.mjs",
+        "components/sky-workspace.tsx",
+        "lib/sky-feed-ranking.ts",
+        "tests/sky-feed-ranking.test.mjs",
+        "tests/web-route-style-contract.test.mjs",
+        "docs/sky.md"
       ],
-      "nextAction": "Accept the integrated Sky/Zema entry, owner-scoped library, offer/provider revision conflicts, auth-loss recovery and itemized usage on one source candidate. Historical Sites versions and earlier tests do not prove this branch is deployed or commercially accepted; provider/paid/native gates remain open.",
+      "nextAction": "Verify the new single-column Sky usefulness feed at desktop and 390px, then accept it with the integrated Sky/Zema entry, owner-scoped library, offer/provider revision conflicts, auth-loss recovery and itemized usage on one source candidate. The feed ranks only explicit saved/connected state, authoritative current availability, an ephemeral routed Tool id and curated fallback; it does not create execution authority. Historical Sites versions and local tests do not prove this branch is deployed or commercially accepted; explicit follow, provider/paid/native gates remain open.",
       "recoveredFrom": {
         "sourceCommit": "624124cf53848542538a94b9d309e24d3efbb1fe",
         "record": "docs/merge-loss-audit-20261007/ledger-records.json",

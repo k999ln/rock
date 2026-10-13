@@ -2062,6 +2062,35 @@
     "doesNotAuthorize": "automatic_code_execution_or_tool_verification",
     "record": "docs/sky-tools-complete-design.md"
   },
+  "skyFeedIntent": {
+    "decidedAt": "2026-10-13",
+    "requested": true,
+    "layout": "single_column_social_timeline",
+    "primaryModes": [
+      "recommended",
+      "owner_saved_or_connected"
+    ],
+    "algorithm": "sky-usefulness-v1",
+    "rankingSignals": [
+      "ephemeral_routed_tool_id",
+      "owner_saved_tool",
+      "owner_connected_tool",
+      "authoritative_current_availability",
+      "repository_curated_fallback"
+    ],
+    "excludedSignals": [
+      "request_or_prompt_body",
+      "zema_conversation_or_result_body",
+      "device_token_or_account_identifier",
+      "click_dwell_scroll_or_impression_history",
+      "popularity_or_revenue"
+    ],
+    "categoryAffinityEnabled": false,
+    "explicitFollowingImplemented": false,
+    "executionOwner": "zema",
+    "feedCreatesExecutionAuthority": false,
+    "record": "docs/sky.md"
+  },
   "accountEntryDecision": {
     "decidedAt": "2026-10-10",
     "decidedBy": "owner",

@@ -39,6 +39,24 @@ Materialとメルカリの保存結果が不明な間は入力と記録IDを元o
 | 受入環境・証拠 | catalog→Zema、実Worker検査、秘密値非出力、sample・不完全結果、停止、古い結果の失効、download、desktop/mobileを検証する。対象host試験・typecheck・design:check・verifyを別記。Provider・OS image・Pixel・24時間監視・本番配備は本変更の受入外。 |
 | 未決定・決定方法 | 継続監視、入力範囲拡大、Skyの全送信への組込みは追加設計。明示的なコード一般公開とその永続履歴は次節の別契約。本人の対象指定と権限・誤検出・復旧試験により決める。新しい有料料金・自動外部修復は設定しない。 |
 
+## Skyの説明可能なおすすめフィード
+
+2026-10-13の利用者指示により、SkyのTool一覧はTwitter / X型の1列フィードとする。「おすすめ」は `sky-usefulness-v1`で順位付けし、「マイフィード」は本人が明示保存または接続したToolに限定する。後者はfollow専用状態ではないため「フォロー中」と呼ばない。
+
+| シグナル | 上限加点 | 条件 |
+| --- | ---: | --- |
+| 現在の依頼先 | +60 | page memory内のTool ID一致。依頼本文はrankerへ渡さない |
+| 保存 | +34 | owner-scoped `sky_library_items` |
+| 接続 | +26 | owner-scoped `sky_connections`。接続はfollowや実行済みを意味しない |
+| 現在利用可 | +18 | `catalog.status`のみではなく `skyToolUiState` の現在状態 |
+| 専用導線 | +10 | launch pathまたはrunnerがある |
+| 初期候補 | +8 | repositoryで開示した固定集合 |
+| 導入候補 / pending | -6 / -24 | 未受入の状態を過大表示しない |
+
+保存・接続の直近性は限定加点し、同一categoryの連続と過多を決定的に減点する。同点はcanonical Tool IDで安定化する。理由codeと表示labelを返し、現在の依頼、保存、接続、利用可否、初期候補のうち最優先理由を表示する。入力・会話・結果の本文、トークン、owner ID、click、滞在、scroll、人気、収益、impression履歴はシグナルにしない。categoryへの嗜好は別目的利用の同意がないため初版で推測しない。
+
+表示・保存・詳細開閉はconnection、job、approval、purchase、receiptを作らない。実行操作は既存のTool状態検査とZema handoffを通す。人気を最適化せず、有用なTool開始と契約に沿った結果の読み取りを目的にする。
+
 ## Skyタイムラインのエージェントコードと交換可能な保護
 
 2026-10-09の明示指示「タイムラインでgitみたいにエージェントのコードを出す」「SPIDERがデフォで守り、取り外し・他のセキュリティーへ変更できる」による追加。主担当はSKY20／ROCK、検査はSYS15と連携。ブラウザ内だけの単体SPIDERとは別に、本人が一般公開すると確定したコードをSkyのサーバーへ送信・保存する。既存Package／SDKの登録・審査・料金・配布権限は再利用対象として残し、このコードフィードをverified Registryへ自動登録しない。
