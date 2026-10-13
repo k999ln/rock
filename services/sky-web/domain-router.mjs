@@ -2,7 +2,7 @@ const MINI_ORIGIN = 'https://avocadomini.noellesugar1.chatgpt.site';
 
 const SKY_PREFIXES = [
   '/_next', '/api', '/activity', '/chat', '/coconala-team', '/csv', '/fitness',
-  '/fund', '/income', '/market', '/polymarket', '/settings', '/sky', '/studio',
+  '/fund', '/income', '/market', '/os', '/polymarket', '/settings', '/sky', '/studio',
   '/wallet', '/work', '/zema', '/rock-icon-', '/loop-icon-', '/toolkits',
 ];
 
@@ -61,8 +61,17 @@ async function proxyMini(request, upstreamFetch) {
 export function withMiniSite(skyWorker, upstreamFetch = fetch) {
   return {
     fetch(request, env, context) {
-      const path = new URL(request.url).pathname;
-      if (path === '/sw.js' && new URL(request.url).hostname === 'avoado.si')
+      const source = new URL(request.url);
+      const path = source.pathname;
+      if (source.hostname === 'avoado.si' && isPath(path, '/sky')) {
+        source.pathname = `/os${path}`;
+        return Response.redirect(source.href, 308);
+      }
+      if (source.hostname === 'avoado.si' && isPath(path, '/os/sky')) {
+        source.pathname = path.slice(3);
+        return skyWorker.fetch(new Request(source, request), env, context);
+      }
+      if (path === '/sw.js' && source.hostname === 'avoado.si')
         return new Response('self.addEventListener("install", event => event.waitUntil(self.skipWaiting()));', {
           headers: { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'no-store' },
         });
